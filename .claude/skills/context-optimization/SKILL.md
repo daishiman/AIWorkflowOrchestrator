@@ -1,199 +1,146 @@
 ---
 name: context-optimization
 description: |
-    トークン使用量の最小化と必要情報の効率的抽出を専門とするスキル。
-    遅延読み込み、インデックス駆動設計、圧縮と精錬により、
-    コンテキストウィンドウを最適活用します。
-    専門分野:
-    - 遅延読み込み: 必要な時に必要な情報のみロード
-    - インデックス設計: 目次駆動、効率的なナビゲーション
-    - 圧縮と精錬: 冗長性排除、本質的情報の抽出
-    - トークン見積もり: 使用量の予測と最適化
-    使用タイミング:
-    - トークン使用量を削減する必要がある時
-    - 大量の情報を効率的に提供したい時
-    - コンテキスト汚染を防ぎたい時
-    - 情報アクセスを最適化する時
-    Use proactively when optimizing token usage, implementing lazy loading,
-    or minimizing context pollution.
+  トークン使用量の最小化と必要情報の効率的抽出を支援するスキル。
+  遅延読み込み、インデックス駆動設計、圧縮と精錬の手順を整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • High Performance Browser Networking / 適用: パフォーマンス測定と最適化 / 目的: 遅延を考慮したコンテキスト設計
+  • Progressive Disclosure パターン / 適用: 段階的な情報開示 / 目的: トークン使用量の抑制
 
-  - `.claude/skills/context-optimization/resources/compression-techniques.md`: 冗長性排除と本質的情報抽出のテクニック
-  - `.claude/skills/context-optimization/resources/index-driven-design.md`: 目次駆動の効率的なナビゲーション設計
-  - `.claude/skills/context-optimization/resources/lazy-loading-patterns.md`: 必要時のみロードする遅延読み込みパターン
-  - `.claude/skills/context-optimization/scripts/estimate-tokens.mjs`: トークン使用量の自動計算スクリプト
-  - `.claude/skills/context-optimization/scripts/estimate-tokens.sh`: トークン使用量の自動計算スクリプト（シェル版）
-
-version: 1.0.0
+  Trigger:
+  Use when minimizing token usage, extracting necessary information efficiently, or optimizing context window utilization.
+  context optimization, token minimization, lazy loading, index-driven design, summarization
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# Context Optimization
+# context-optimization
 
 ## 概要
 
-コンテキスト最適化は、限られたコンテキストウィンドウを最大限に活用するための戦略です。
-必要最小限の情報提供、段階的なロード、効率的な参照設計により、
-トークン使用量を60-80%削減しながら、必要な知識を確実に提供します。
-
-**主要な価値**:
-
-- トークン使用量の大幅削減（60-80%）
-- コンテキスト汚染の防止
-- 必要な情報への高速アクセス
-- スケーラブルな知識提供
-
-## リソース構造
-
-```
-context-optimization/
-├── SKILL.md
-├── resources/
-│   ├── lazy-loading-patterns.md
-│   ├── index-driven-design.md
-│   └── compression-techniques.md
-└── scripts/
-    └── estimate-tokens.sh
-```
-
-### リソース種別
-
-- **遅延読み込み** (`resources/lazy-loading-patterns.md`): 必要な時に必要な情報のみロード
-- **インデックス設計** (`resources/index-driven-design.md`): 目次駆動、効率的なナビゲーション
-- **圧縮テクニック** (`resources/compression-techniques.md`): 冗長性排除、本質的情報の抽出
-- **トークン見積もりスクリプト** (`scripts/estimate-tokens.mjs`): トークン使用量の自動計算（TypeScript）
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# 遅延読み込みパターン
-cat .claude/skills/context-optimization/resources/lazy-loading-patterns.md
-
-# インデックス駆動設計
-cat .claude/skills/context-optimization/resources/index-driven-design.md
-
-# 圧縮テクニック
-cat .claude/skills/context-optimization/resources/compression-techniques.md
-```
-
-### スクリプト実行
-
-```bash
-# 単一ファイルのトークン見積もり（TypeScript）
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
-
-# ディレクトリ内の全ファイルを分析
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <directory>
-
-# 例: SKILL.mdのトークン見積もり
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/context-optimization/SKILL.md
-
-# 例: リソースディレクトリの分析
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/context-optimization/resources/
-```
-
-## いつ使うか
-
-### シナリオ1: トークン削減
-
-**状況**: スキルのトークン使用量が20Kを超えている
-
-**適用条件**:
-
-- [ ] 総トークン数が20K以上
-- [ ] コンテキストウィンドウを圧迫
-- [ ] 削減の余地がある
-
-**期待される成果**: 60-80%の削減
-
-### シナリオ2: 遅延読み込みの実装
-
-**状況**: すべての情報を事前ロードしている
-
-**適用条件**:
-
-- [ ] 多数のリソースファイルがある
-- [ ] すべてを同時に使うことは稀
-- [ ] 段階的な参照が可能
-
-**期待される成果**: 必要時のみロードする設計
+トークン使用量の最小化と必要情報の効率的抽出を行い、コンテキストを最適活用する。
 
 ## ワークフロー
 
-### Phase 1: 遅延読み込み設計
+### Phase 1: 要件整理
 
-**原則**: 全リソースの事前ロード禁止
+**目的**: 目的・制約・優先度を明確化する。
 
-**方法**:
+**アクション**:
 
-- SKILL.mdにインデックスを提供
-- 必要なリソースのみ参照
-- エージェントが判断して選択
+1. 目的と成果物を整理する。
+2. 必要情報と除外情報を整理する。
+3. 優先順位と制約を整理する。
 
-**リソース**: `resources/lazy-loading-patterns.md`
+**Task**: `agents/analyze-context-requirements.md` を参照
 
-### Phase 2: インデックス駆動設計
+### Phase 2: 戦略設計
 
-**原則**: SKILL.mdは「目次」として機能
+**目的**: 参照順序と分割方針を設計する。
 
-**方法**:
+**アクション**:
 
-- リソース構造セクションでディレクトリツリー提示
-- 各Phaseで対応するリソースを明示
-- リソース選択ガイドを提供
+1. 読み込み順序と優先度を設計する。
+2. 分割単位と省略方針を整理する。
+3. 出力形式を統一する。
 
-**リソース**: `resources/index-driven-design.md`
+**Task**: `agents/design-context-strategy.md` を参照
 
-### Phase 3: 圧縮と精錬
+### Phase 3: 圧縮実装
 
-**原則**: 冗長性を排除、本質のみ抽出
+**目的**: 圧縮・要約・抽出を実施する。
 
-**方法**:
+**アクション**:
 
-- 重複削除（DRY原則）
-- 例の最小化（2-3個）
-- 概念要素中心（具体例は最小限）
+1. 重要情報を抽出する。
+2. 圧縮ルールに従って要約する。
+3. 出力形式に整形する。
 
-**リソース**: `resources/compression-techniques.md`
+**Task**: `agents/implement-context-compression.md` を参照
+
+### Phase 4: 検証と記録
+
+**目的**: 構造と使用量を検証し記録する。
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` で構造を検証する。
+2. `scripts/estimate-tokens.mjs` で使用量を見積もる。
+3. `scripts/log_usage.mjs` で記録を更新する。
+
+**Task**: `agents/validate-context-usage.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-context-requirements | Phase 1開始時 | 目的/制約 | 要件整理メモ、優先順位一覧 |
+| design-context-strategy | Phase 2開始時 | 要件整理メモ | 最適化戦略書、出力指針 |
+| implement-context-compression | Phase 3開始時 | 最適化戦略書 | 圧縮サマリ、重要情報一覧 |
+| validate-context-usage | Phase 4開始時 | 圧縮サマリ | 検証レポート、ログ更新内容 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **SKILL.mdは500行以内**: 厳守
-2. **インデックスを充実**: リソース構造セクション必須
-3. **参照を明確に**: どこに何があるか常に明示
+| 推奨事項 | 理由 |
+| --- | --- |
+| 優先順位を明文化する | 必須情報を守るため |
+| 参照順序を設計する | 遅延読み込みを活かすため |
+| 圧縮ルールを統一する | 再現性を高めるため |
+| テンプレートを参照する | 出力の一貫性を保つため |
 
 ### 避けるべきこと
 
-1. **全ロード**: すべてのリソースを一度に参照しない
-2. **冗長性**: 同じ情報を複数箇所に書かない
-3. **過度な詳細**: 本質的でない情報は削除
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 全文を無条件に読み込む | トークン消費が増える |
+| 省略理由を記載しない | 判断根拠が失われる |
+| 検証なしで更新する | 効果が確認できない |
 
-## メトリクス
+## リソース参照
 
-### トークン削減率
+### scripts/（決定論的処理）
 
-**目標**: 60-80%
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/estimate-tokens.mjs` | トークン見積もり |
+| `scripts/estimate-tokens.sh` | 簡易見積もり |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-### 情報アクセス時間
+### references/（詳細知識）
 
-**目標**: <2分
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 圧縮テクニック | [references/compression-techniques.md](references/compression-techniques.md) | 圧縮時 |
+| インデックス設計 | [references/index-driven-design.md](references/index-driven-design.md) | 参照設計時 |
+| 遅延読み込み | [references/lazy-loading-patterns.md](references/lazy-loading-patterns.md) | 省略方針検討時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| 仕様概要 | [references/18-skills-spec-summary.md](references/18-skills-spec-summary.md) | 仕様確認時 |
+| 構造ガイド | [references/skill-structure-guide.md](references/skill-structure-guide.md) | 構造確認時 |
 
-## 変更履歴
+### assets/（テンプレート・素材）
 
-| バージョン | 日付       | 変更内容                          |
-| ---------- | ---------- | --------------------------------- |
-| 1.0.0      | 2025-11-23 | 初版作成 - コンテキスト最適化戦略 |
+| アセット | 用途 |
+| --- | --- |
+| `assets/context-summary-template.md` | コンテキスト整理テンプレート |
 
-## 関連スキル
+### 運用ファイル
 
-- **progressive-disclosure** (`.claude/skills/progressive-disclosure/SKILL.md`): 3層開示モデル
-- **knowledge-management** (`.claude/skills/knowledge-management/SKILL.md`): 知識の体系化
-- **documentation-architecture** (`.claude/skills/documentation-architecture/SKILL.md`): ドキュメント構造設計
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

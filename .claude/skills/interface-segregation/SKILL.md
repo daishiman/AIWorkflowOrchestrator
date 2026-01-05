@@ -2,353 +2,331 @@
 name: interface-segregation
 description: |
   SOLID原則のインターフェース分離原則（ISP）を専門とするスキル。
-  Robert C. Martinの『アジャイルソフトウェア開発の奥義』に基づき、
-  クライアントが使用しないメソッドへの依存を強制しない、
-  小さく焦点を絞ったインターフェース設計を提供します。
+  クライアントが使用しないメソッドへの依存を強制しない設計を実現する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『アジャイルソフトウェア開発の奥義』（Robert C. Martin） / 適用: ISP原則の定義と実践 / 目的: クライアント固有インターフェース設計
+  • 『Refactoring』（Martin Fowler） / 適用: Extract Interface, Decompose Interface / 目的: 段階的な分離リファクタリング
+  • 『Test-Driven Development』（Kent Beck） / 適用: Simple Design, テスト容易性評価 / 目的: 設計品質検証
 
-  - `.claude/skills/interface-segregation/resources/fat-interface-detection.md`: 空実装/例外スロー/条件付き実装による肥大化検出手法
-  - `.claude/skills/interface-segregation/resources/interface-composition.md`: allOf/extends/mixinによる小インターフェース組み合わせパターン
-  - `.claude/skills/interface-segregation/resources/isp-principles.md`: クライアント固有インターフェース分離とSOLID準拠設計
-  - `.claude/skills/interface-segregation/resources/role-interface-design.md`: 役割ベース（IValidatable/IRetryable等）インターフェース設計手法
-  - `.claude/skills/interface-segregation/scripts/analyze-interface.mjs`: インターフェース凝集性とISP違反の自動検出
-  - `.claude/skills/interface-segregation/templates/segregated-interface-template.md`: コア+拡張インターフェース分離設計テンプレート
-
-  専門分野:
-  - ISP原則: クライアント固有のインターフェース分離
-  - Role Interface: 役割ベースのインターフェース設計
-  - Fat Interface: 肥大化インターフェースの検出と分割
-  - Interface Cohesion: インターフェースの凝集性設計
-
-  使用タイミング:
-  - IWorkflowExecutorのようなコアインターフェースを設計する時
-  - 既存インターフェースの肥大化を検出した時
-  - 複数のクライアントが異なる機能を必要とする時
-  - インターフェースの分割を検討する時
-
-  Use proactively when designing core interfaces, detecting fat interfaces,
+  Trigger:
+  Use when detecting fat interfaces, segregating bloated interfaces, designing role-based interfaces,
+  analyzing ISP violations, refactoring interfaces, implementing interface composition patterns,
+  IWorkflowExecutor, IValidatable, IRetryable, empty implementation, exception throwing, conditional implementation.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 version: 1.0.0
+last_updated: 2025-12-31
+tags:
+  - solid
+  - interface-design
+  - architecture
+  - refactoring
+dependencies:
+  - clean-architecture-principles
 ---
 
-# Interface Segregation Principle (ISP)
+# インターフェース分離原則 (ISP)
 
 ## 概要
 
-このスキルは、SOLID 原則の一つであるインターフェース分離原則（ISP）に関する知識を提供します。
+SOLID原則のインターフェース分離原則（ISP）を専門とするスキル。
+Robert C. Martinの『アジャイルソフトウェア開発の奥義』に基づき、
+クライアントが使用しないメソッドへの依存を強制しない設計を実現する。
 
-**ISP の定義**: クライアントは、自分が使用しないメソッドに依存することを強制されるべきではない。
+**コア原則**: 「クライアントに不要なメソッドへの依存を強制しない」
 
-**主要な価値**:
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
-- 必要最小限のインターフェースによる疎結合
-- クライアント固有のインターフェースによる柔軟性
-- 肥大化インターフェースの回避
+---
 
-**対象ユーザー**:
+## ワークフロー
 
-- ワークフローエンジンのインターフェースを設計するエージェント
-- 既存インターフェースをリファクタリングする開発者
-- SOLID 原則に準拠した設計を行うチーム
+### Phase 1: Interface Analysis（分析フェーズ）
 
-## リソース構造
+**目的**: 既存または新規インターフェースのISP違反を検出
 
+**Task**: `agents/analyze-interfaces.md`（Robert C. Martin手法）
+
+**実行条件**:
+
+- 既存インターフェースの肥大化が疑われる時
+- 新規設計のレビューが必要な時
+- クライアントが異なる機能セットを必要とする時
+
+**入力**:
+
+- インターフェース定義（TypeScript/Java/C#等）
+- クライアントコード（任意、使用パターン分析用）
+
+**出力**:
+
+- インターフェース分析レポート（メトリクス、ISP違反パターン）
+- 分離候補リスト（責務グループごとのメソッド分類）
+
+**参照リソース**:
+
+- `references/fat-interface-detection.md`: 肥大化検出手法
+- `references/isp-principles.md`: ISP原則の詳細
+- `scripts/analyze-interface.mjs`: 自動分析ツール
+
+---
+
+### Phase 2: Interface Segregation Design（設計フェーズ）
+
+**目的**: 分析結果に基づき、インターフェースを適切に分離
+
+**Task**: `agents/design-segregation.md`（Martin Fowler手法）
+
+**実行条件**:
+
+- Phase 1で分離推奨度がMedium以上
+- 責務グループが2つ以上特定された時
+
+**入力**:
+
+- インターフェース分析レポート（Phase 1の出力）
+- プロジェクト言語仕様（TypeScript/Java/C#等）
+
+**出力**:
+
+- 分離インターフェース設計書（完全な設計ドキュメント）
+- 実装コードスニペット（対象言語での実装例）
+
+**参照リソース**:
+
+- `references/role-interface-design.md`: 役割ベース設計手法
+- `references/interface-composition.md`: allOf/extends/mixin パターン
+- `assets/segregated-interface-template.md`: 設計テンプレート
+
+---
+
+### Phase 3: Design Validation（検証フェーズ）
+
+**目的**: 設計品質の検証と実装可否の判定
+
+**Task**: `agents/validate-design.md`（Kent Beck手法）
+
+**実行条件**:
+
+- Phase 2で設計書が作成された時
+- 実装前の最終チェックが必要な時
+
+**入力**:
+
+- 分離インターフェース設計書（Phase 2の出力）
+- 元のインターフェース定義（互換性チェック用）
+- クライアントコード（任意）
+
+**出力**:
+
+- 検証結果レポート（Pass/Fail/Warning）
+- 改善提案リスト（問題検出時）
+
+**参照リソース**:
+
+- `references/Level3_advanced.md`: 高度な検証手法
+- `scripts/analyze-interface.mjs`: メトリクス測定
+
+---
+
+### Phase 4: Feedback Recording（記録フェーズ）
+
+**目的**: 実行結果の記録と継続的改善
+
+**アクション**:
+
+1. `scripts/log_usage.mjs` を実行して使用履歴を記録
+2. 成功/失敗の理由をメモとして残す
+3. 改善提案を `LOGS.md` に追記
+
+**実行形式**:
+
+```bash
+node .claude/skills/interface-segregation/scripts/log_usage.mjs \
+  --result success \
+  --phase "{{phase-name}}" \
+  --task "{{task-name}}" \
+  --notes "{{feedback}}"
 ```
-interface-segregation/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── isp-principles.md                       # ISP原則の詳細
-│   ├── fat-interface-detection.md              # 肥大化インターフェースの検出
-│   ├── role-interface-design.md                # 役割ベースインターフェース設計
-│   └── interface-composition.md                # インターフェースの組み合わせ
-├── scripts/
-│   └── analyze-interface.mjs                   # インターフェース分析スクリプト
-└── templates/
-    └── segregated-interface-template.md        # 分離インターフェーステンプレート
+
+---
+
+## Task仕様（ナビゲーション）
+
+各Taskは `agents/` ディレクトリに配置され、実行直前にロードされます。
+
+| Task名                 | 役割                     | 専門家           | 入力                 | 出力                     |
+| ---------------------- | ------------------------ | ---------------- | -------------------- | ------------------------ |
+| **analyze-interfaces** | ISP違反検出              | Robert C. Martin | インターフェース定義 | 分析レポート、分離候補   |
+| **design-segregation** | インターフェース分離設計 | Martin Fowler    | 分析レポート         | 設計書、コードスニペット |
+| **validate-design**    | 設計品質検証             | Kent Beck        | 設計書               | 検証レポート、改善提案   |
+
+**読み込みタイミング**:
+
+- Phase開始時に該当Taskのみロード
+- 複数Taskを同時にロードしない（コンテキスト節約）
+
+---
+
+## ベストプラクティス
+
+### すべきこと
+
+- IWorkflowExecutorのようなコアインターフェースを設計する時
+- 既存インターフェースの肥大化を検出した時（メソッド数>10が目安）
+- 複数のクライアントが異なる機能を必要とする時
+- 空実装、例外スロー、条件付き実装のパターンを発見した時
+- `scripts/analyze-interface.mjs` で定量分析を実施
+- テンプレート `assets/segregated-interface-template.md` を活用
+
+### 避けるべきこと
+
+- 分析なしに直感だけでインターフェースを分離する
+- 過剰な分離（インターフェースが10個以上）
+- 責務が不明確な命名（IData, IHelper等）
+- 既存クライアントへの破壊的変更を考慮しない
+- 検証フェーズをスキップする
+
+---
+
+## リソース参照
+
+### references/ ディレクトリ
+
+**段階的学習**:
+
+- `Level1_basics.md`: ISPの基礎、Fat Interface検出の基本
+- `Level2_intermediate.md`: 役割ベース設計、リファクタリング手法
+- `Level3_advanced.md`: 合成パターン、高度な分離戦略
+- `Level4_expert.md`: アーキテクチャレベルのISP適用、移行戦略
+
+**専門知識**:
+
+- `isp-principles.md`: ISP原則の定義と設計指針
+- `fat-interface-detection.md`: 空実装/例外スロー/条件付き実装による検出
+- `role-interface-design.md`: IValidatable/IRetryable等の役割ベース設計
+- `interface-composition.md`: allOf/extends/mixin による組み合わせパターン
+
+**プロジェクト連携**:
+
+- `requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+
+---
+
+## scripts/ ディレクトリ
+
+| スクリプト名              | 機能                                      | 引数                                                            |
+| ------------------------- | ----------------------------------------- | --------------------------------------------------------------- |
+| **analyze-interface.mjs** | インターフェース凝集性とISP違反の自動検出 | `--file <path>`                                                 |
+| **log_usage.mjs**         | 使用記録・自動評価                        | `--result <success\|failure>` `--phase <name>` `--notes <text>` |
+| **validate-skill.mjs**    | スキル構造検証                            | なし                                                            |
+
+**実行例**:
+
+```bash
+# インターフェース分析
+node scripts/analyze-interface.mjs --file src/interfaces/IWorkflow.ts
+
+# 使用記録
+node scripts/log_usage.mjs --result success --phase analyze --notes "Detected 3 responsibility groups"
+
+# スキル構造検証
+node scripts/validate-skill.mjs
 ```
+
+---
+
+## assets/ ディレクトリ
+
+| テンプレート名                       | 用途                                          |
+| ------------------------------------ | --------------------------------------------- |
+| **segregated-interface-template.md** | コア+拡張インターフェース分離設計テンプレート |
+
+**使用方法**:
+Phase 2（design-segregation）で設計書作成時に使用。
+責務グループごとにインターフェースを定義し、合成パターンで組み合わせる。
+
+---
+
+## メトリクスとフィードバック
+
+### 評価指標
+
+**定量的メトリクス**（EVALS.json で追跡）:
+
+- 使用回数、成功率
+- Task別成功率（analyze/design/validate）
+- 平均メソッド削減数、凝集性改善度
+
+**定性的指標**:
+
+- クライアント満足度
+- 保守性向上度
+- テスト容易性改善度
+
+### レベル基準
+
+| レベル  | 使用回数 | 成功率 | 習熟度                               |
+| ------- | -------- | ------ | ------------------------------------ |
+| Level 1 | 0+       | -      | ISPと肥大化検出の基礎理解            |
+| Level 2 | 5+       | 60%+   | インターフェース分離設計の習熟       |
+| Level 3 | 15+      | 75%+   | 合成パターンの高度な適用             |
+| Level 4 | 30+      | 85%+   | アーキテクチャレベルの設計と移行戦略 |
+
+---
 
 ## コマンドリファレンス
 
 ### リソース読み取り
 
 ```bash
-# ISP原則詳細
-cat .claude/skills/interface-segregation/resources/isp-principles.md
+# 段階的学習
+cat .claude/skills/interface-segregation/references/Level1_basics.md
+cat .claude/skills/interface-segregation/references/Level2_intermediate.md
+cat .claude/skills/interface-segregation/references/Level3_advanced.md
+cat .claude/skills/interface-segregation/references/Level4_expert.md
 
-# 肥大化インターフェースの検出
-cat .claude/skills/interface-segregation/resources/fat-interface-detection.md
+# 専門知識
+cat .claude/skills/interface-segregation/references/isp-principles.md
+cat .claude/skills/interface-segregation/references/fat-interface-detection.md
+cat .claude/skills/interface-segregation/references/role-interface-design.md
+cat .claude/skills/interface-segregation/references/interface-composition.md
+```
 
-# 役割ベースインターフェース設計
-cat .claude/skills/interface-segregation/resources/role-interface-design.md
+### Task実行
 
-# インターフェースの組み合わせ
-cat .claude/skills/interface-segregation/resources/interface-composition.md
+```bash
+# 各Taskは agents/ に配置
+cat .claude/skills/interface-segregation/agents/analyze-interfaces.md
+cat .claude/skills/interface-segregation/agents/design-segregation.md
+cat .claude/skills/interface-segregation/agents/validate-design.md
 ```
 
 ### スクリプト実行
 
 ```bash
-# インターフェース分析
-node .claude/skills/interface-segregation/scripts/analyze-interface.mjs <file.ts>
+node .claude/skills/interface-segregation/scripts/analyze-interface.mjs --help
+node .claude/skills/interface-segregation/scripts/log_usage.mjs --help
+node .claude/skills/interface-segregation/scripts/validate-skill.mjs --help
 ```
 
 ### テンプレート参照
 
 ```bash
-# 分離インターフェーステンプレート
-cat .claude/skills/interface-segregation/templates/segregated-interface-template.md
+cat .claude/skills/interface-segregation/assets/segregated-interface-template.md
 ```
-
----
-
-## 核心知識
-
-### 1. ISP 原則の本質
-
-**問題**: 肥大化したインターフェース（Fat Interface）
-
-```
-# 悪い例: 肥大化インターフェース
-IWorkflowExecutor:
-  + type: string
-  + execute(): Promise<Output>
-  + validate(): ValidationResult
-  + rollback(): Promise<void>        # すべての実装者が必要か？
-  + onProgress(): void               # すべての実装者が必要か？
-  + getMetrics(): Metrics            # すべての実装者が必要か？
-  + scheduleRetry(): void            # すべての実装者が必要か？
-```
-
-**解決**: 小さく焦点を絞ったインターフェース
-
-```
-# 良い例: 分離されたインターフェース
-IWorkflowExecutor:
-  + type: string
-  + execute(): Promise<Output>
-
-IValidatable:
-  + validate(): ValidationResult
-
-IRollbackable:
-  + rollback(): Promise<void>
-
-IProgressReporter:
-  + onProgress(): void
-
-IMetricsProvider:
-  + getMetrics(): Metrics
-```
-
-### 2. 分離の判断基準
-
-**インターフェースを分離すべき兆候**:
-
-| 兆候               | 説明                                     |
-| ------------------ | ---------------------------------------- |
-| 空実装             | 一部の実装クラスでメソッドが空           |
-| 例外スロー         | `NotImplementedError` が発生             |
-| 条件付き実装       | 特定の条件でのみ機能する                 |
-| 異なるクライアント | 異なるクライアントが異なるメソッドを使用 |
-
-**分離のメリット**:
-
-- 実装クラスの負担軽減
-- 変更の影響範囲の限定
-- テストの簡素化
-- 再利用性の向上
-
-### 3. ワークフローエンジンへの適用
-
-**コアインターフェース（必須）**:
-
-```
-IWorkflowExecutor<TInput, TOutput>:
-  + readonly type: string
-  + readonly displayName: string
-  + readonly description: string
-  + execute(input: TInput, context: ExecutionContext): Promise<TOutput>
-```
-
-**拡張インターフェース（オプショナル）**:
-
-```
-# 入力検証が必要な場合のみ実装
-IValidatable<TInput>:
-  + validate(input: TInput): ValidationResult
-
-# リトライ判定が必要な場合のみ実装
-IRetryable:
-  + canRetry(error: Error): boolean
-
-# ロールバック機能が必要な場合のみ実装
-IRollbackable:
-  + rollback(context: ExecutionContext): Promise<void>
-
-# 進捗レポートが必要な場合のみ実装
-IProgressReporter:
-  + onProgress(progress: Progress): void
-
-# メトリクス提供が必要な場合のみ実装
-IMetricsProvider:
-  + getMetrics(): ExecutorMetrics
-```
-
-**実装例**:
-
-```
-# シンプルな実装（コアのみ）
-SimpleExecutor implements IWorkflowExecutor:
-  # executeのみ実装
-
-# 検証付き実装
-ValidatingExecutor implements IWorkflowExecutor, IValidatable:
-  # execute + validate を実装
-
-# フル機能実装
-FullFeaturedExecutor implements
-  IWorkflowExecutor,
-  IValidatable,
-  IRetryable,
-  IRollbackable,
-  IProgressReporter:
-  # すべてを実装
-```
-
-### 4. インターフェースの凝集性
-
-**高凝集なインターフェース**:
-
-- 関連するメソッドのみを含む
-- 単一の責任を持つ
-- クライアントが全てのメソッドを使用する
-
-**凝集性の指標**:
-
-| 指標       | 高凝集     | 低凝集     |
-| ---------- | ---------- | ---------- |
-| メソッド数 | 1-5 個     | 10 個以上  |
-| 使用率     | 80%以上    | 50%未満    |
-| 変更頻度   | 同時に変更 | 個別に変更 |
-
----
-
-## 実装ワークフロー
-
-### Phase 1: インターフェース分析
-
-1. 既存インターフェースの特定
-2. メソッドの使用状況調査
-3. クライアントごとの依存関係マッピング
-
-**判断基準**:
-
-- [ ] 全クライアントが全メソッドを使用しているか？
-- [ ] 空実装や例外スローがないか？
-- [ ] メソッド間の凝集性は高いか？
-
-### Phase 2: 分離設計
-
-1. 役割ベースのグループ分け
-2. コアインターフェースの特定
-3. 拡張インターフェースの設計
-
-**判断基準**:
-
-- [ ] 各インターフェースは単一の責任を持つか？
-- [ ] インターフェースの命名は役割を反映しているか？
-- [ ] 適切な粒度か（細かすぎず、粗すぎず）？
-
-### Phase 3: 実装適用
-
-1. 既存実装のインターフェース対応
-2. 必要なインターフェースのみ実装
-3. クライアントコードの更新
-
-**判断基準**:
-
-- [ ] 実装クラスは必要なインターフェースのみ実装しているか？
-- [ ] クライアントは使用するインターフェースのみに依存しているか？
-- [ ] 後方互換性は維持されているか？
-
-### Phase 4: 検証
-
-1. ISP 準拠の確認
-2. テストの更新
-3. ドキュメントの更新
-
-**判断基準**:
-
-- [ ] 空実装が排除されたか？
-- [ ] 各インターフェースの凝集性は高いか？
-- [ ] テストカバレッジは維持されているか？
-
----
-
-## アンチパターン
-
-### 1. 肥大化インターフェース（Fat Interface）
-
-```
-# 悪い例
-IDoEverything:
-  + methodA()
-  + methodB()
-  + methodC()
-  # ... 20個のメソッド
-
-# 結果: 多くの実装で空メソッドや例外が発生
-```
-
-### 2. 過度な分離（Interface Explosion）
-
-```
-# 悪い例: 1メソッド1インターフェース
-ICanExecute:
-  + execute()
-
-ICanValidate:
-  + validate()
-
-IHasType:
-  + type: string
-
-# 結果: インターフェースが多すぎて管理困難
-```
-
-### 3. マーカーインターフェース乱用
-
-```
-# 悪い例: 空のインターフェース
-ISpecialExecutor:
-  # メソッドなし、マーキング目的のみ
-
-# 結果: 型チェックの意味が薄れる
-```
-
----
-
-## 関連スキル
-
-- `.claude/skills/solid-principles/SKILL.md`: SOLID 原則全般
-- `.claude/skills/design-patterns-behavioral/SKILL.md`: 行動パターン
-- `.claude/skills/open-closed-principle/SKILL.md`: OCP 準拠設計
-- `.claude/skills/factory-patterns/SKILL.md`: Factory 実装
-
----
-
-## 参考文献
-
-- **『アジャイルソフトウェア開発の奥義』** Robert C. Martin 著
-- **『Clean Architecture』** Robert C. Martin 著
-- **『Design Patterns』** Erich Gamma 他著
 
 ---
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                    |
-| ---------- | ---------- | ----------------------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版リリース - ISP 原則、分離設計、ワークフローエンジン適用 |
+| Version | Date       | Changes                                                                                                        |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------- |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に準拠した構造改善。agents/ にTask仕様追加、EVALS.json/LOGS.md作成、Progressive Disclosure適用 |
+| 0.9.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                    |

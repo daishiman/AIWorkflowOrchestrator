@@ -1,217 +1,112 @@
 ---
 name: security-headers
 description: |
-  Webアプリケーションセキュリティヘッダーの設定パターン。
+  HTTPセキュリティヘッダー設定の専門スキル。
+  CSP、HSTS、X-Frame-Options、CSRF対策などの設計・実装・検証を体系的に提供する。
+  Next.js/Express/Nginx等の環境に対応した具体的な実装パターンを含む。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • OWASP Secure Headers Project / 適用: ヘッダー設定基準 / 目的: 業界標準準拠
+  • Web Application Security (Andrew Hoffman) / 適用: 脅威モデリング / 目的: 攻撃ベクトル理解
+  • MDN Web Docs - HTTP Headers / 適用: ディレクティブ仕様 / 目的: 正確な構文
 
-  - `.claude/skills/security-headers/resources/csp-configuration.md`: Csp Configurationリソース
-  - `.claude/skills/security-headers/resources/csrf-prevention.md`: Csrf Preventionリソース
-
-  - `.claude/skills/security-headers/templates/nextjs-security-headers-template.js`: Nextjs Security Headersテンプレート
-
-  - `.claude/skills/security-headers/scripts/validate-security-headers.mjs`: Validate Security Headersスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when implementing security headers, configuring CSP, setting up CSRF protection, or hardening HTTP responses.
+  security headers, CSP, Content-Security-Policy, HSTS, X-Frame-Options, CSRF, XSS prevention, セキュリティヘッダー
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Security Headers
+# セキュリティヘッダー
 
-## スキル概要
+## 概要
 
-**コアドメイン**:
+Webアプリケーションのセキュリティヘッダー設定パターンを体系的に提供するスキル。Content Security Policy（CSP）、HSTS、X-Frame-Options、CSRF対策などの設計・実装・検証までを一貫してサポートする。
 
-- セキュリティヘッダー設定
-- Content Security Policy（CSP）
-- CSRF/XSS/Clickjacking 対策
+## ワークフロー
 
-## 必須セキュリティヘッダー
-
-### 1. Content-Security-Policy（CSP）
-
-**目的**: XSS 攻撃とデータインジェクション攻撃を防止
-
-**基本設定**:
-
-```typescript
-const cspHeader = `
-  default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data: https:;
-  font-src 'self';
-  connect-src 'self';
-  frame-ancestors 'none';
-`
-  .replace(/\s{2,}/g, " ")
-  .trim();
+```
+analyze-requirements → implement-headers → validate-headers
 ```
 
-**推奨設定（厳格）**:
+### Task 1: 要件分析（analyze-requirements）
 
-```typescript
-const strictCspHeader = `
-  default-src 'self';
-  script-src 'self';
-  style-src 'self';
-  img-src 'self' data:;
-  font-src 'self';
-  connect-src 'self';
-  frame-ancestors 'none';
-  base-uri 'self';
-  form-action 'self';
-`
-  .replace(/\s{2,}/g, " ")
-  .trim();
-```
+プロジェクトのセキュリティ要件を分析し、必要なヘッダーを特定する。
 
-### 2. X-Frame-Options
+**Task**: `agents/analyze-requirements.md` を参照
 
-**目的**: Clickjacking 攻撃を防止
+### Task 2: ヘッダー実装（implement-headers）
 
-```typescript
-'X-Frame-Options': 'DENY'
-// または
-'X-Frame-Options': 'SAMEORIGIN'
-```
+要件に基づいて適切なセキュリティヘッダーを実装する。
 
-### 3. X-Content-Type-Options
+**Task**: `agents/implement-headers.md` を参照
 
-**目的**: MIME タイプスニッフィング攻撃を防止
+### Task 3: ヘッダー検証（validate-headers）
 
-```typescript
-'X-Content-Type-Options': 'nosniff'
-```
+実装されたセキュリティヘッダーの正確性と有効性を検証する。
 
-### 4. Strict-Transport-Security（HSTS）
+**Task**: `agents/validate-headers.md` を参照
 
-**目的**: HTTPS 接続を強制
+## Task仕様（ナビゲーション）
 
-```typescript
-'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
-```
+| Task                 | 責務         | 入力             | 出力             |
+| -------------------- | ------------ | ---------------- | ---------------- |
+| analyze-requirements | 要件分析     | プロジェクト情報 | セキュリティ要件 |
+| implement-headers    | ヘッダー実装 | セキュリティ要件 | 設定ファイル     |
+| validate-headers     | ヘッダー検証 | 設定ファイル     | 検証レポート     |
 
-### 5. Referrer-Policy
-
-**目的**: リファラー情報の制御
-
-```typescript
-'Referrer-Policy': 'strict-origin-when-cross-origin'
-```
-
-### 6. Permissions-Policy
-
-**目的**: ブラウザ機能へのアクセス制御
-
-```typescript
-'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
-```
-
-## Next.js での設定
-
-### next.config.js
-
-```javascript
-const nextConfig = {
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "Content-Security-Policy",
-            value: cspHeader,
-          },
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=31536000; includeSubDomains",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
-        ],
-      },
-    ];
-  },
-};
-```
-
-## CSRF 対策
-
-### SameSite Cookie 属性
-
-```typescript
-cookies().set("session_token", token, {
-  sameSite: "lax", // またはstrict
-});
-```
-
-### CSRF トークン検証（追加保護）
-
-```typescript
-// ミドルウェア
-export async function verifyCsrfToken(request: Request): Promise<boolean> {
-  if (request.method === "GET" || request.method === "HEAD") {
-    return true; // 読み取りのみ操作はスキップ
-  }
-
-  const token = request.headers.get("X-CSRF-Token");
-  const sessionToken = cookies().get("csrf_token")?.value;
-
-  return token === sessionToken;
-}
-```
-
-## リソース参照
-
-```bash
-cat .claude/skills/security-headers/resources/csp-configuration.md
-cat .claude/skills/security-headers/resources/csrf-prevention.md
-```
-
-## テンプレート参照
-
-```bash
-cat .claude/skills/security-headers/templates/nextjs-security-headers-template.js
-```
-
-## スクリプト実行
-
-```bash
-node .claude/skills/security-headers/scripts/validate-security-headers.mjs next.config.js
-```
-
-## 判断基準
-
-- [ ] すべての OWASP 推奨ヘッダーが設定されているか？
-- [ ] CSP はアプリケーション要件と互換性があるか？
-- [ ] CSRF 対策は多層化されているか？
-- [ ] Cookie 属性は適切か（HttpOnly、Secure、SameSite）？
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
-1. **CSP 厳格化**: 'unsafe-inline'/'unsafe-eval'を避ける
-2. **HSTS 有効化**: HTTPS 強制
-3. **SameSite Cookie**: Lax/Strict 推奨
-4. **多層 CSRF 対策**: SameSite + CSRF トークン
+### すべきこと
 
-## バージョン履歴
+- プロジェクトの技術スタックに適したヘッダー設定方法を選択する
+- CSPは段階的に導入し、report-onlyモードで影響を確認する
+- SameSite Cookie属性を活用してCSRF対策の基盤とする
+- HSTSは十分なテスト後にpreloadを有効化する
+- 設定後は必ず検証スクリプトで動作確認を行う
 
-| バージョン | 日付       | 変更内容                                        |
-| ---------- | ---------- | ----------------------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版リリース - セキュリティヘッダー設定パターン |
+### 避けるべきこと
+
+- `unsafe-inline`や`unsafe-eval`を安易に使用しない
+- セキュリティヘッダーを無闘に厳しく設定して正常な機能を破損させない
+- HSTSをテスト環境でpreload付きで有効化しない
+- Origin/Referer検証のみに依存したCSRF対策を行わない
+- 設定内容を検証なしに本番環境にデプロイしない
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース     | パス                                                                   | 用途                       |
+| ------------ | ---------------------------------------------------------------------- | -------------------------- |
+| ヘッダー種類 | See [references/header-types.md](references/header-types.md)           | 各ヘッダーの機能と設定方法 |
+| CSP設定      | See [references/csp-configuration.md](references/csp-configuration.md) | CSPディレクティブ詳細      |
+| CSRF対策     | See [references/csrf-prevention.md](references/csrf-prevention.md)     | CSRF防御の多層戦略         |
+
+### scripts/（決定論的処理）
+
+| スクリプト                      | 用途               | 使用例                                             |
+| ------------------------------- | ------------------ | -------------------------------------------------- |
+| `validate-security-headers.mjs` | ヘッダー設定の検証 | `node scripts/validate-security-headers.mjs <url>` |
+| `log_usage.mjs`                 | フィードバック記録 | `node scripts/log_usage.mjs --result success`      |
+
+### assets/（テンプレート）
+
+| テンプレート                          | 用途                              |
+| ------------------------------------- | --------------------------------- |
+| `nextjs-security-headers-template.js` | Next.js用セキュリティヘッダー設定 |
+
+## 変更履歴
+
+| Version | Date       | Changes                                                                |
+| ------- | ---------- | ---------------------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様準拠マイグレーション（Task分離、責務ベースreferences） |
+| 1.1.0   | 2025-12-31 | 日本語化、Trigger/Anchor追加                                           |
+| 1.0.0   | 2025-12-24 | 初版作成                                                               |

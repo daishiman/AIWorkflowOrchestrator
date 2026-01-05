@@ -17,9 +17,9 @@
 
 | エージェント  | レビュー観点               | 判定結果    |
 | ------------- | -------------------------- | ----------- |
-| @arch-police  | アーキテクチャ整合性       | MINOR       |
-| @db-architect | データベース設計           | MINOR/MAJOR |
-| @sec-auditor  | プライバシー・セキュリティ | MINOR/MAJOR |
+| .claude/agents/arch-police.md  | アーキテクチャ整合性       | MINOR       |
+| .claude/agents/db-architect.md | データベース設計           | MINOR/MAJOR |
+| .claude/agents/sec-auditor.md  | プライバシー・セキュリティ | MINOR/MAJOR |
 
 ### 1.2 総合判定
 
@@ -27,7 +27,7 @@
 
 ---
 
-## 2. @arch-police レビュー結果
+## 2. .claude/agents/arch-police.md レビュー結果
 
 ### 2.1 クリーンアーキテクチャのレイヤー違反
 
@@ -73,7 +73,7 @@
 
 ---
 
-## 3. @db-architect レビュー結果
+## 3. .claude/agents/db-architect.md レビュー結果
 
 ### 3.1 スキーマ設計の正規化レベル
 
@@ -121,7 +121,7 @@ CREATE INDEX idx_user_profiles_active ON public.user_profiles (id) WHERE deleted
 
 ---
 
-## 4. @sec-auditor レビュー結果
+## 4. .claude/agents/sec-auditor.md レビュー結果
 
 ### 4.1 個人情報の適切な取り扱い
 
@@ -271,9 +271,9 @@ try {
 
 | 役割          | 判定                        | 日時       |
 | ------------- | --------------------------- | ---------- |
-| @arch-police  | APPROVED (with minor fixes) | 2025-12-10 |
-| @db-architect | APPROVED (with major fix)   | 2025-12-10 |
-| @sec-auditor  | APPROVED (with major fix)   | 2025-12-10 |
+| .claude/agents/arch-police.md  | APPROVED (with minor fixes) | 2025-12-10 |
+| .claude/agents/db-architect.md | APPROVED (with major fix)   | 2025-12-10 |
+| .claude/agents/sec-auditor.md  | APPROVED (with major fix)   | 2025-12-10 |
 
 ---
 

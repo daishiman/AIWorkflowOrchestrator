@@ -1,357 +1,163 @@
 ---
 name: repository-pattern
 description: |
-  Martin FowlerのPoEAAに基づくRepositoryパターン設計と実装を専門とするスキル。
+  データアクセス層の抽象化パターン専門スキル。
   アプリケーション層とデータアクセス層を分離し、ドメインエンティティをコレクション風
-  インターフェースで操作する抽象化を提供します。
+  インターフェースで操作する抽象化を提供する。インターフェース設計、実装、マッピング戦略を包括的にサポート。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Patterns of Enterprise Application Architecture (Martin Fowler) / 適用: Repository Pattern / 目的: 永続化抽象化とドメイン保護
+  • Domain-Driven Design (Eric Evans) / 適用: Aggregate, Repository / 目的: 集約境界とドメイン表現
 
-  - `.claude/skills/repository-pattern/resources/design-principles.md`: Repository設計原則
-  - `.claude/skills/repository-pattern/resources/entity-mapping.md`: エンティティマッピングガイド
-  - `.claude/skills/repository-pattern/resources/implementation-patterns.md`: Repository実装パターン
-  - `.claude/skills/repository-pattern/resources/interface-patterns.md`: Repositoryインターフェース設計パターン
-  - `.claude/skills/repository-pattern/scripts/validate-repository.mjs`: Repository構造検証スクリプト
-  - `.claude/skills/repository-pattern/templates/repository-implementation-template.md`: Repository実装テンプレート
-  - `.claude/skills/repository-pattern/templates/repository-interface-template.md`: Repositoryインターフェーステンプレート
-
-  専門分野:
-  - Repository パターン設計: コレクション風インターフェースによる抽象化
-  - ドメイン型返却: DBの詳細を隠蔽し、ドメインエンティティを返却
-  - インターフェース分離: 共通ドメイン層とインフラ層の適切な配置
-  - クエリメソッド設計: ビジネス要件に基づいた検索メソッドの定義
-
-  使用タイミング:
-  - Repositoryインターフェースを設計する時
-  - Repository実装を作成する時
-  - ドメインエンティティとDB型の変換を設計する時
-  - 既存のRepositoryをリファクタリングする時
-
-  Use proactively when implementing data access layer,
-  designing repository interfaces, or separating domain from infrastructure.
-version: 1.0.0
+  Trigger:
+  Use when designing repository interfaces, implementing data access layers, or separating domain from persistence.
+  repository pattern, data access layer, entity mapping, persistence abstraction, リポジトリパターン
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Repository Pattern
 
 ## 概要
 
-このスキルは、Martin Fowler の PoEAA（Patterns of Enterprise Application Architecture）で定義された
-Repository パターンの設計と実装に関する知識を提供します。
-
-Repository パターンは、ドメイン層とデータアクセス層の間に位置し、ドメインオブジェクトの
-コレクションのように振る舞うインターフェースを提供します。これにより、ビジネスロジックが
-データベースの詳細から独立し、テスト容易性と保守性が向上します。
-
-**主要な価値**:
-
-- ドメイン層が DB の詳細（SQL、テーブル名）から完全に独立
-- コレクション風の直感的な API（add, remove, findById 等）
-- ドメインエンティティと DB オブジェクトの変換を一箇所に集約
-- テスト時にモックやスタブで置換可能
-
-**対象ユーザー**:
-
-- `@repo-dev`エージェント
-- データアクセス層を設計・実装する開発者
-- クリーンアーキテクチャを採用するプロジェクト
-
-## リソース構造
-
-```
-repository-pattern/
-├── SKILL.md                                      # 本ファイル
-├── resources/
-│   ├── design-principles.md                     # Repository設計原則
-│   ├── interface-patterns.md                    # インターフェース設計パターン
-│   ├── implementation-patterns.md               # 実装パターン
-│   └── entity-mapping.md                        # エンティティマッピング
-├── scripts/
-│   └── validate-repository.mjs                  # Repository構造検証
-└── templates/
-    ├── repository-interface-template.md         # インターフェーステンプレート
-    └── repository-implementation-template.md    # 実装テンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# Repository設計原則
-cat .claude/skills/repository-pattern/resources/design-principles.md
-
-# インターフェース設計パターン
-cat .claude/skills/repository-pattern/resources/interface-patterns.md
-
-# 実装パターン
-cat .claude/skills/repository-pattern/resources/implementation-patterns.md
-
-# エンティティマッピング
-cat .claude/skills/repository-pattern/resources/entity-mapping.md
-```
-
-### スクリプト実行
-
-```bash
-# Repository構造検証
-node .claude/skills/repository-pattern/scripts/validate-repository.mjs <repository-file.ts>
-```
-
-### テンプレート参照
-
-```bash
-# インターフェーステンプレート
-cat .claude/skills/repository-pattern/templates/repository-interface-template.md
-
-# 実装テンプレート
-cat .claude/skills/repository-pattern/templates/repository-implementation-template.md
-```
-
-## いつ使うか
-
-### シナリオ 1: 新しい Repository の設計
-
-**状況**: 新しいエンティティに対するデータアクセス層を作成する
-
-**適用条件**:
-
-- [ ] ドメインエンティティが定義されている
-- [ ] CRUD 操作が必要
-- [ ] ビジネス固有の検索条件がある
-
-**期待される成果**: インターフェースと実装ファイルのペア
-
-### シナリオ 2: 既存の直接 DB 操作のリファクタリング
-
-**状況**: ドメイン層に散在する DB 操作を Repository に集約
-
-**適用条件**:
-
-- [ ] ドメイン層に SQL 文や ORM 呼び出しがある
-- [ ] テストで DB モックが困難
-- [ ] DB 変更時の影響範囲が広い
-
-**期待される成果**: 抽象化された Repository 経由のアクセス
-
-### シナリオ 3: 複雑なクエリのカプセル化
-
-**状況**: ビジネスロジック内の複雑なクエリ条件を整理
-
-**適用条件**:
-
-- [ ] JOIN や複数条件を含むクエリがある
-- [ ] 同じクエリパターンが複数箇所で使用
-- [ ] クエリの意図が不明確
-
-**期待される成果**: 意図を表すメソッド名を持つ Repository
+Martin FowlerのPoEAA（Patterns of Enterprise Application Architecture）に基づくRepositoryパターンの設計と実装を専門とするスキル。アプリケーション層とデータアクセス層を分離し、ドメインエンティティをコレクション風インターフェースで操作する抽象化を提供する。
 
 ## ワークフロー
 
-### Phase 1: インターフェース設計
+### Phase 1: 要件把握
 
-**目的**: ドメイン層で使用する Repository の契約を定義
+**目的**: Repositoryの対象と設計要件を明確化
 
-**ステップ**:
+**アクション**:
 
-1. **ドメインエンティティの確認**:
-   - エンティティの属性と型を把握
-   - 一意識別子（ID）の型を確認
-   - 関連エンティティの有無を確認
+1. 対象ドメインエンティティと集約境界を特定
+2. 永続化要件（CRUD操作、検索条件）を整理
+3. 技術スタック（ORM、DB種類）を確認
+4. 既存のRepository実装パターンを確認（あれば）
 
-2. **必要な操作の洗い出し**:
-   - 基本 CRUD（Create, Read, Update, Delete）
-   - ビジネス固有の検索メソッド
-   - バルク操作の必要性
+### Phase 2: インターフェース設計
 
-3. **インターフェース定義**:
-   - ドメイン用語を使用したメソッド名
-   - ドメインエンティティを引数・戻り値とする
-   - DB の詳細を含めない
+**目的**: ドメイン言語を反映したRepository APIを設計
 
-**判断基準**:
+**アクション**:
 
-- [ ] メソッド名はドメイン用語を使用しているか？
-- [ ] 引数に DB 固有の型が含まれていないか？
-- [ ] 戻り値はドメインエンティティか？
-- [ ] インターフェースは共通ドメイン層に配置されているか？
+1. `references/interface-patterns.md` を参照
+2. `references/design-principles.md` の原則に従う
+3. コレクション風の基本操作（add, remove, find）を定義
+4. ドメイン固有のクエリメソッドを追加
+5. 戻り値型をドメインエンティティに限定
 
-**リソース**: `resources/interface-patterns.md`
+**Task**: `agents/design-interface.md` を参照
 
-### Phase 2: 実装設計
+### Phase 3: マッピング戦略設計
 
-**目的**: インターフェースを実装するクラスを設計
+**目的**: ドメイン型とDB型の変換戦略を決定
 
-**ステップ**:
+**アクション**:
 
-1. **データ変換の設計**:
-   - DB オブジェクト → ドメインエンティティ（toEntity）
-   - ドメインエンティティ → DB オブジェクト（toRecord）
+1. `references/entity-mapping.md` を参照
+2. ドメインエンティティとDBスキーマの差異を分析
+3. マッピング戦略（直接/名前変換/構造変換/JSON）を選択
+4. ValueObjectのマッピング方針を決定
+5. Null/Undefined処理のルールを定義
 
-2. **実装の配置決定**:
-   - 共通インフラ層（src/shared/infrastructure/database/repositories/）
+**Task**: `agents/design-entity-mapping.md` を参照
 
-3. **エラーハンドリング設計**:
-   - 存在しないエンティティ
-   - 一意制約違反
-   - DB 接続エラー
+### Phase 4: 実装
 
-**判断基準**:
+**目的**: Repository実装クラスを作成
 
-- [ ] 実装は共通インフラ層に配置されているか？
-- [ ] 変換ロジックが明確か？
-- [ ] エラーハンドリングが適切か？
+**アクション**:
 
-**リソース**: `resources/implementation-patterns.md`
+1. `references/implementation-patterns.md` を参照
+2. `assets/repository-implementation-template.md` をベースに実装
+3. CRUD操作を実装
+4. エンティティマッピング関数を実装
+5. エラーハンドリングとドメイン例外への変換を実装
+6. 依存性注入対応の構造を確保
 
-### Phase 3: テスト設計
+**Task**: `agents/implement-repository.md` を参照
 
-**目的**: Repository の正しい動作を保証
+### Phase 5: 検証
 
-**ステップ**:
+**目的**: 品質基準を満たしているか確認
 
-1. **単体テストの設計**:
-   - 各メソッドの正常系
-   - エラーケース
-   - 境界条件
+**アクション**:
 
-2. **テストダブルの検討**:
-   - インターフェースに対するモック
-   - テスト用のインメモリ実装
+1. `scripts/validate-repository.mjs` で構造検証
+2. 設計原則チェックリストで確認
+3. 実際のユースケースでテスト
+4. `scripts/log_usage.mjs` で記録
 
-**判断基準**:
+## Task仕様ナビ
 
-- [ ] すべての公開メソッドがテストされているか？
-- [ ] 正常系と異常系の両方がカバーされているか？
+| Task                  | 起動タイミング | 入力                             | 出力                           |
+| --------------------- | -------------- | -------------------------------- | ------------------------------ |
+| design-interface      | Phase 2開始時  | ドメインエンティティ、永続化要件 | Repositoryインターフェース定義 |
+| design-entity-mapping | Phase 3開始時  | エンティティ定義、DBスキーマ     | マッピング戦略定義             |
+| implement-repository  | Phase 4開始時  | インターフェース、マッピング戦略 | Repository実装クラス           |
 
-**リソース**: `resources/design-principles.md`
-
-## 核心概念
-
-### 1. コレクション風インターフェース
-
-Repository は、メモリ内のコレクション（配列やセット）のように振る舞うべきです：
-
-**推奨メソッド構造**:
-
-- `add(entity)`: エンティティを永続化
-- `remove(entity)`: エンティティを削除
-- `findById(id)`: ID でエンティティを取得
-- `findAll()`: 全エンティティを取得
-- `findBy条件(params)`: 条件に合うエンティティを検索
-
-### 2. ドメイン型の返却
-
-Repository は常にドメインエンティティを返し、DB の詳細を漏らしません：
-
-**チェックリスト**:
-
-- [ ] 戻り値はドメインエンティティまたは Value Object
-- [ ] テーブル名、カラム名が外部に漏れていない
-- [ ] SQL や ORM 固有の型が外部に漏れていない
-
-### 3. インターフェースと実装の分離
-
-**配置ルール**:
-
-- **インターフェース**: `src/shared/core/interfaces/IXxxRepository.ts`
-- **実装**: `src/shared/infrastructure/database/repositories/XxxRepository.ts`
-
-**依存関係の方向**:
-
-```
-app/ → features/ → shared/infrastructure/ → shared/core/
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **ドメイン用語を使用**:
-   - ✅ `findPendingWorkflows()`
-   - ❌ `findByStatusEquals("PENDING")`
-
-2. **単一責任を維持**:
-   - 1 つの Repository は 1 つの集約ルートに対応
-   - 関連エンティティは集約ルート経由でアクセス
-
-3. **変換ロジックを集約**:
-   - toEntity/toRecord 関数を明確に定義
-   - null/undefined の適切な処理
+| 推奨事項                         | 理由                                 |
+| -------------------------------- | ------------------------------------ |
+| インターフェースを先に設計する   | 実装詳細に引きずられない設計ができる |
+| ドメイン言語でメソッド名を付ける | ビジネス要件が明確になる             |
+| 1集約1リポジトリの原則を守る     | 集約境界が明確になり一貫性を保てる   |
+| マッピング関数を分離する         | テスト容易性と変更容易性が向上する   |
+| DB例外をドメイン例外に変換する   | ドメイン層がインフラに依存しない     |
+| 依存性注入で実装を提供する       | テスト時のモック化が容易になる       |
 
 ### 避けるべきこと
 
-1. **ビジネスロジックの混入**:
-   - ❌ Repository 内でドメインルールを適用
-   - ✅ Repository 外のサービス層で処理
+| 禁止事項                                 | 問題点                           |
+| ---------------------------------------- | -------------------------------- |
+| SQLをドメイン層に漏らす                  | 永続化詳細への依存が発生する     |
+| DB型をそのまま戻り値にする               | ドメイン層がDBスキーマに依存する |
+| 汎用クエリメソッドを公開する             | 抽象化が破綻する                 |
+| Repositoryにビジネスロジックを入れる     | 単一責任原則に違反する           |
+| 集約内部エンティティのRepositoryを作る   | 集約境界が曖昧になる             |
+| トランザクション制御をRepositoryに入れる | 呼び出し側の責務を侵害する       |
 
-2. **トランザクション管理の漏洩**:
-   - ❌ Repository がトランザクションを開始
-   - ✅ 呼び出し側がトランザクションを制御
+## リソース参照
 
-3. **過度に汎用的なメソッド**:
-   - ❌ `find(query: any)`
-   - ✅ 明確な意図を持つメソッド
+### references/（詳細知識）
 
-## トラブルシューティング
+| リソース         | パス                                                                               | 読込条件                        |
+| ---------------- | ---------------------------------------------------------------------------------- | ------------------------------- |
+| 設計原則         | See [references/design-principles.md](references/design-principles.md)             | Phase 2: 設計時                 |
+| インターフェース | See [references/interface-patterns.md](references/interface-patterns.md)           | Phase 2: インターフェース設計時 |
+| 実装パターン     | See [references/implementation-patterns.md](references/implementation-patterns.md) | Phase 4: 実装時                 |
+| マッピング戦略   | See [references/entity-mapping.md](references/entity-mapping.md)                   | Phase 3: マッピング設計時       |
 
-### 問題 1: インターフェースが DB に依存
+### scripts/（決定論的処理）
 
-**症状**: インターフェースに DB 固有の型が含まれる
+| スクリプト                        | 機能                     |
+| --------------------------------- | ------------------------ |
+| `scripts/validate-repository.mjs` | Repository構造の検証     |
+| `scripts/log_usage.mjs`           | 使用記録とフィードバック |
 
-**解決策**:
+### assets/（テンプレート）
 
-1. 引数と戻り値をドメイン型のみに変更
-2. DB 型への変換は実装内で行う
-
-### 問題 2: 変換ロジックが散在
-
-**症状**: 複数箇所で同じ変換処理
-
-**解決策**:
-
-1. toEntity/toRecord 関数を定義
-2. Repository 実装内で一元化
-
-### 問題 3: テストが困難
-
-**症状**: Repository のモックが複雑
-
-**解決策**:
-
-1. インターフェースに対してモック作成
-2. インメモリ実装を提供
-
-## 関連スキル
-
-- **query-optimization** (`.claude/skills/query-optimization/SKILL.md`): N+1 問題回避、JOIN 戦略
-- **transaction-management** (`.claude/skills/transaction-management/SKILL.md`): トランザクション境界
-- **orm-best-practices** (`.claude/skills/orm-best-practices/SKILL.md`): Drizzle ORM 活用
-- **clean-architecture-principles** (`.claude/skills/clean-architecture-principles/SKILL.md`): 依存関係ルール
-
-## メトリクス
-
-### 設計品質スコア
-
-**評価基準**:
-
-- インターフェース分離: DB 依存がないか (0-10 点)
-- ドメイン表現力: メソッド名がドメイン用語か (0-10 点)
-- テスト容易性: モック可能か (0-10 点)
-- 保守性: 変更容易性 (0-10 点)
-
-**目標**: 平均 8 点以上
+| アセット                                       | 用途                           |
+| ---------------------------------------------- | ------------------------------ |
+| `assets/repository-interface-template.md`      | Repositoryインターフェース雛形 |
+| `assets/repository-implementation-template.md` | Repository実装クラス雛形       |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                          |
-| ---------- | ---------- | ------------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版作成 - PoEAA に基づく Repository パターン設計 |
-
-## 参考文献
-
-- **『Patterns of Enterprise Application Architecture』** Martin Fowler 著
-  - Chapter 10: Repository - Repository パターンの詳細
-  - Chapter 11: Unit of Work - トランザクション管理との連携
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、構造再設計、Level形式廃止 |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ追加          |
+| 1.0.0   | 2025-12-24 | 初版                                                |

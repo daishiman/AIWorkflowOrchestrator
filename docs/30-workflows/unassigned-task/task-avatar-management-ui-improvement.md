@@ -136,7 +136,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@req-analyst`
+- **エージェント**: `.claude/agents/req-analyst.md`
 - **選定理由**: ユーザー要件の明確化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -172,7 +172,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **選定理由**: UIコンポーネント設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -180,9 +180,9 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | スキル名                       | 活用方法                |
 | ------------------------------ | ----------------------- |
-| design-system-architecture     | デザインシステム準拠    |
-| component-composition-patterns | Compositionパターン活用 |
-| accessibility-wcag             | WCAG準拠設計            |
+| .claude/skills/design-system-architecture/SKILL.md     | デザインシステム準拠    |
+| .claude/skills/component-composition-patterns/SKILL.md | Compositionパターン活用 |
+| .claude/skills/accessibility-wcag/SKILL.md             | WCAG準拠設計            |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -208,9 +208,9 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | エージェント     | レビュー観点       | 選定理由           |
 | ---------------- | ------------------ | ------------------ |
-| @ui-designer     | UI/UX品質          | ユーザビリティ確認 |
-| @arch-police     | コンポーネント設計 | 設計原則遵守       |
-| @frontend-tester | テスタビリティ     | テスト可能性確認   |
+| .claude/agents/ui-designer.md     | UI/UX品質          | ユーザビリティ確認 |
+| .claude/agents/arch-police.md     | コンポーネント設計 | 設計原則遵守       |
+| .claude/agents/frontend-tester.md | テスタビリティ     | テスト可能性確認   |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -238,7 +238,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@frontend-tester`
+- **エージェント**: `.claude/agents/frontend-tester.md`
 - **選定理由**: フロントエンドテスト専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -246,8 +246,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | スキル名             | 活用方法               |
 | -------------------- | ---------------------- |
-| playwright-testing   | インタラクションテスト |
-| test-data-management | テストデータ準備       |
+| .claude/skills/playwright-testing/SKILL.md   | インタラクションテスト |
+| .claude/skills/test-data-management/SKILL.md | テストデータ準備       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -292,7 +292,7 @@ pnpm --filter @repo/desktop test:run AvatarEditor
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -326,7 +326,7 @@ pnpm --filter @repo/desktop test:run AvatarEditor
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -360,7 +360,7 @@ pnpm --filter @repo/desktop test:run AvatarEditor
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -400,7 +400,7 @@ pnpm --filter @repo/desktop test:run AvatarEditor
 
 ##### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件
@@ -442,7 +442,7 @@ pnpm --filter @repo/desktop test:run AvatarEditor
 
 ##### 使用エージェント
 
-- **エージェント**: `@frontend-tester`
+- **エージェント**: `.claude/agents/frontend-tester.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件
@@ -461,8 +461,8 @@ pnpm --filter @repo/desktop test:run AvatarEditor
 
 | エージェント  | レビュー観点 | 選定理由   |
 | ------------- | ------------ | ---------- |
-| @ui-designer  | UI/UX品質    | 最終UI確認 |
-| @code-quality | コード品質   | 保守性確認 |
+| .claude/agents/ui-designer.md  | UI/UX品質    | 最終UI確認 |
+| .claude/agents/code-quality.md | コード品質   | 保守性確認 |
 
 - **参照**: `.claude/agents/agent_list.md`
 

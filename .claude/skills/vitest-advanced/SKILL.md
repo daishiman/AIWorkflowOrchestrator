@@ -1,326 +1,153 @@
 ---
 name: vitest-advanced
 description: |
-  Vitestの高度な機能と最適化パターンを専門とするスキル。
+  Vitestの高度な機能を活用したテスト実装スキル。
+  並列実行、カバレッジ最適化、非同期テスト処理、モック戦略を実装します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『Test-Driven Development: By Example』（Kent Beck） / 適用: テスト設計 / 目的: 品質向上
 
-  - `.claude/skills/vitest-advanced/resources/async-testing.md`: Async Testingリソース
-  - `.claude/skills/vitest-advanced/resources/coverage-optimization.md`: Coverage Optimizationリソース
-  - `.claude/skills/vitest-advanced/resources/mocking-patterns.md`: Mocking Patternsリソース
-  - `.claude/skills/vitest-advanced/resources/performance-tips.md`: Performance Tipsリソース
-  - `.claude/skills/vitest-advanced/resources/test-structure.md`: Test Structureリソース
-
-  - `.claude/skills/vitest-advanced/templates/test-file-template.ts`: Test Fileテンプレート
-
-  - `.claude/skills/vitest-advanced/scripts/coverage-analyzer.mjs`: Coverage Analyzerスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when optimizing Vitest tests, configuring parallel execution, improving coverage, implementing async testing patterns, or designing mock strategies.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Vitest Advanced
 
 ## 概要
 
-Vitest は Vite-native の高速なテストフレームワークです。
-このスキルでは Vitest の高度な機能と実践的なパターンを提供します。
+Vitestの高度な機能と最適化パターンに特化したスキル。並列テスト実行による高速化、カバレッジ最適化による品質向上、非同期テスト処理、包括的なモック戦略を実装するための体系的なガイダンスを提供します。Red-Green-Refactor循環を中心に、テスト駆動開発の最高実践を実現します。
 
-**核心原則**:
+詳細な手順や背景は各レベルガイドと専門リソースを参照してください。
 
-- 高速なフィードバックループ
-- シンプルで読みやすいテスト
-- 効果的なモッキング戦略
+## エージェント構成
 
-**対象ユーザー**:
+| エージェント             | 役割             | 主な機能                      |
+| ------------------------ | ---------------- | ----------------------------- |
+| test-structure-architect | テスト構造設計   | ファイル組織化、命名規則      |
+| coverage-optimizer       | カバレッジ最適化 | 分析、改善提案、閾値設定      |
+| mock-strategist          | モック戦略       | テストダブル選定、vi.mock活用 |
+| async-test-specialist    | 非同期テスト     | Promise、タイマー、イベント   |
 
-- ユニットテスター（@unit-tester）
-- ビジネスロジック実装エージェント（@logic-dev）
-- フロントエンドアーキテクト（@frontend-architect）
+## ワークフロー
 
-## リソース構造
+### Phase 1: 目的と前提の整理
 
-```
-vitest-advanced/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── test-structure.md                 # テスト構造とライフサイクル
-│   ├── mocking-patterns.md               # モッキングパターン
-│   ├── async-testing.md                  # 非同期テスト
-│   ├── coverage-optimization.md          # カバレッジ最適化
-│   └── performance-tips.md               # パフォーマンス改善
-├── scripts/
-│   └── coverage-analyzer.mjs             # カバレッジ分析スクリプト
-└── templates/
-    └── test-file-template.ts             # テストファイルテンプレート
-```
+**目的**: タスクの目的と前提条件を明確にし、適切なリソースを特定する
 
-## コマンドリファレンス
+**アクション**:
 
-### リソース読み取り
+1. `references/Level1_basics.md` で基礎概念を確認
+2. `references/Level2_intermediate.md` で実務パターンを把握
+3. タスク内容に基づいて必要なスペシャライズドリソース（async-testing、coverage-optimization等）を特定
+4. テンプレート（test-file-template.ts）の準備状況を確認
 
-```bash
-# テスト構造
-cat .claude/skills/vitest-advanced/resources/test-structure.md
+### Phase 2: スキル適用と実装
 
-# モッキングパターン
-cat .claude/skills/vitest-advanced/resources/mocking-patterns.md
+**目的**: スキルの指針に従って高度なテスト機能を実装する
 
-# 非同期テスト
-cat .claude/skills/vitest-advanced/resources/async-testing.md
+**アクション**:
 
-# カバレッジ最適化
-cat .claude/skills/vitest-advanced/resources/coverage-optimization.md
+1. 適切なレベル（Level3_advanced.md / Level4_expert.md）を参照しながら実装
+2. 関連リソースやテンプレートを参照しながら作業を実施
+3. モックパターン、非同期処理、並列化戦略を適用
+4. 重要な判断点や技術的ポイントをドキュメント化
 
-# パフォーマンス改善
-cat .claude/skills/vitest-advanced/resources/performance-tips.md
-```
+### Phase 3: 検証、最適化と記録
 
-### スクリプト実行
+**目的**: 成果物の検証と実行記録の保存、継続的な改善
 
-```bash
-# カバレッジ分析
-# カバレッジ実行→分析→閾値チェック→改善提案を一括実行
-node .claude/skills/vitest-advanced/scripts/coverage-analyzer.mjs
+**アクション**:
 
-# オプション
-node .claude/skills/vitest-advanced/scripts/coverage-analyzer.mjs --threshold 90
-node .claude/skills/vitest-advanced/scripts/coverage-analyzer.mjs --analyze-file coverage/coverage-summary.json
-node .claude/skills/vitest-advanced/scripts/coverage-analyzer.mjs --coverage-dir ./coverage --threshold 80
-```
+1. `scripts/validate-skill.mjs` でスキル構造と実装を確認
+2. `scripts/coverage-analyzer.mjs` でカバレッジ分析を実施
+3. 成果物がパフォーマンス要件に合致するか確認
+4. `scripts/log_usage.mjs` を実行して記録を残す
 
-## クイックリファレンス
+## Task仕様ナビゲーション
 
-### テスト構造
-
-```typescript
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-
-describe("UserService", () => {
-  // Setup
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  // Teardown
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  describe("getUser", () => {
-    it("should return user when found", async () => {
-      // Arrange
-      const mockUser = { id: "1", name: "Test" };
-
-      // Act
-      const result = await service.getUser("1");
-
-      // Assert
-      expect(result).toEqual(mockUser);
-    });
-  });
-});
-```
-
-**詳細**: `resources/test-structure.md`
-
-### モッキング基本
-
-```typescript
-// 関数のMock
-const mockFn = vi.fn().mockReturnValue("result");
-
-// モジュールのMock
-vi.mock("./module", () => ({
-  default: vi.fn(),
-  namedExport: vi.fn(),
-}));
-
-// Spy
-vi.spyOn(object, "method").mockImplementation(() => "mocked");
-```
-
-**詳細**: `resources/mocking-patterns.md`
-
-### 非同期テスト
-
-```typescript
-// async/await
-it("should fetch data", async () => {
-  const result = await fetchData();
-  expect(result).toBeDefined();
-});
-
-// rejects/resolves
-it("should reject on error", async () => {
-  await expect(failingFn()).rejects.toThrow("Error");
-});
-
-// タイマー
-it("should handle timeout", async () => {
-  vi.useFakeTimers();
-  const promise = delayedFn();
-  vi.advanceTimersByTime(1000);
-  await expect(promise).resolves.toBe("done");
-  vi.useRealTimers();
-});
-```
-
-**詳細**: `resources/async-testing.md`
+| タスク種別     | 該当リソース                                 | 主要スクリプト        | テンプレート          | 説明                             |
+| -------------- | -------------------------------------------- | --------------------- | --------------------- | -------------------------------- |
+| 基本テスト構造 | Level1_basics.md, test-structure.md          | validate-skill.mjs    | test-file-template.ts | テストファイルの基本構成         |
+| 並列実行設定   | Level2_intermediate.md, performance-tips.md  | validate-skill.mjs    | -                     | 複数テスト並列実行の最適化       |
+| カバレッジ分析 | Level3_advanced.md, coverage-optimization.md | coverage-analyzer.mjs | -                     | テストカバレッジの測定と最適化   |
+| 非同期テスト   | Level2_intermediate.md, async-testing.md     | validate-skill.mjs    | test-file-template.ts | async/await、Promise処理         |
+| モック戦略     | Level3_advanced.md, mocking-patterns.md      | validate-skill.mjs    | -                     | vi.fn()、vi.mock()の実装         |
+| パフォーマンス | Level4_expert.md, performance-tips.md        | coverage-analyzer.mjs | -                     | テスト実行速度の最適化           |
+| 高度な手法     | Level4_expert.md                             | log_usage.mjs         | -                     | エキスパートレベルの実装パターン |
 
 ## ベストプラクティス
 
-### テスト構造
+### すべきこと ✓
 
-1. **Arrange-Act-Assert**: 明確な 3 部構成
-2. **1 テスト 1 検証**: 単一の振る舞いを検証
-3. **説明的な名前**: should + 動詞で記述
-4. **独立したテスト**: テスト間の依存を排除
+- **段階的な学習**: Level1→Level2→Level3→Level4の順序で進める
+- **リソース活用**: タスク種別に応じた専門リソースを参照する
+- **テンプレート利用**: test-file-template.ts から開始して時間を短縮する
+- **検証実施**: validate-skill.mjs でコード品質を継続的に確認する
+- **カバレッジ測定**: coverage-analyzer.mjs で品質メトリクスを追跡する
+- **非同期対応**: async-testing.md のパターンに従い信頼性を確保する
+- **モックの適切化**: mocking-patterns.md で過度なモック化を避ける
+- **ドキュメント化**: 複雑なテストロジックには説明コメントを追加する
 
-### モッキング
+### 避けるべきこと ✗
 
-1. **最小限のモック**: 必要な依存のみ
-2. **適切なリセット**: beforeEach/afterEach でクリア
-3. **型安全**: vi.MockedFunction で型付け
-4. **実装より振る舞い**: 内部詳細に依存しない
+- **スキップしない**: 基礎レベルをスキップして応用レベルに進まない
+- **無関連リソース**: タスクに無関係なリソースは参照しない
+- **過度なモック**: 実装の詳細までモック化しすぎない
+- **低カバレッジ**: 重要コード部分のカバレッジを低いままにしない
+- **非同期無視**: 非同期処理の本質的な複雑性を軽視しない
+- **並列化リスク**: 並列実行によるテスト干渉を検証なしに有効化しない
+- **検証スキップ**: 本番運用前の検証フェーズを省略しない
 
-### パフォーマンス
+## リソース参照
 
-1. **並行実行**: テストの独立性を確保
-2. **適切なタイムアウト**: 長すぎないタイムアウト
-3. **重いセットアップの共有**: beforeAll の活用
-4. **不要なモックの排除**: シンプルに保つ
+### レベル別ガイド
 
-## 設定例
+- **`references/Level1_basics.md`**: Vitest基礎、テスト基本構造、簡単なテストケース作成
+- **`references/Level2_intermediate.md`**: 実務的なテスト手法、非同期テスト基礎、簡単なモック
+- **`references/Level3_advanced.md`**: 高度なモック戦略、カバレッジ最適化、パフォーマンス改善
+- **`references/Level4_expert.md`**: エキスパートレベルのパターン、複合的なテスト設計、業界最高実践
 
-### vitest.config.ts
+### スペシャライズドリソース
 
-```typescript
-import { defineConfig } from "vitest/config";
+- **`references/async-testing.md`**: 非同期コード（Promise、async/await）のテスト方法
+- **`references/coverage-optimization.md`**: カバレッジ分析と最適化戦略
+- **`references/mocking-patterns.md`**: モック・スタブ・スパイの使い分けと実装パターン
+- **`references/performance-tips.md`**: テスト実行速度とリソース最適化
+- **`references/test-structure.md`**: テストファイル組織と命名規則
+- **`references/legacy-skill.md`**: 旧SKILL.mdの全文、バージョン管理用
 
-export default defineConfig({
-  test: {
-    // テスト環境
-    environment: "node", // または 'jsdom'
+### スクリプトと自動化
 
-    // グローバル設定
-    globals: true,
+- **`scripts/coverage-analyzer.mjs`**: カバレッジ分析と可視化
+  ```bash
+  node .claude/skills/vitest-advanced/scripts/coverage-analyzer.mjs --help
+  ```
+- **`scripts/validate-skill.mjs`**: スキル構造と実装品質の検証
+  ```bash
+  node .claude/skills/vitest-advanced/scripts/validate-skill.mjs --help
+  ```
+- **`scripts/log_usage.mjs`**: 使用記録・自動評価の実施
+  ```bash
+  node .claude/skills/vitest-advanced/scripts/log_usage.mjs --help
+  ```
 
-    // カバレッジ
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "html", "lcov"],
-      exclude: ["**/*.test.ts", "**/*.spec.ts"],
-      thresholds: {
-        lines: 80,
-        branches: 80,
-        functions: 80,
-        statements: 80,
-      },
-    },
+### テンプレート
 
-    // タイムアウト
-    testTimeout: 10000,
-
-    // 並行実行
-    threads: true,
-    maxThreads: 4,
-    minThreads: 1,
-  },
-});
-```
-
-## マッチャー一覧
-
-### 基本マッチャー
-
-| マッチャー        | 説明               |
-| ----------------- | ------------------ |
-| `toBe(value)`     | 厳密等価（===）    |
-| `toEqual(value)`  | 深い等価           |
-| `toBeNull()`      | null チェック      |
-| `toBeUndefined()` | undefined チェック |
-| `toBeDefined()`   | defined チェック   |
-| `toBeTruthy()`    | truthy チェック    |
-| `toBeFalsy()`     | falsy チェック     |
-
-### 数値マッチャー
-
-| マッチャー               | 説明       |
-| ------------------------ | ---------- |
-| `toBeGreaterThan(n)`     | より大きい |
-| `toBeLessThan(n)`        | より小さい |
-| `toBeCloseTo(n, digits)` | 近似値     |
-
-### 文字列マッチャー
-
-| マッチャー       | 説明           |
-| ---------------- | -------------- |
-| `toMatch(regex)` | 正規表現マッチ |
-| `toContain(str)` | 部分文字列     |
-
-### 配列・オブジェクトマッチャー
-
-| マッチャー             | 説明             |
-| ---------------------- | ---------------- |
-| `toContain(item)`      | 要素を含む       |
-| `toContainEqual(item)` | 等価な要素を含む |
-| `toHaveLength(n)`      | 長さ             |
-| `toHaveProperty(key)`  | プロパティ存在   |
-
-### 例外マッチャー
-
-| マッチャー       | 説明         |
-| ---------------- | ------------ |
-| `toThrow()`      | 例外をスロー |
-| `toThrow(error)` | 特定の例外   |
-
-### Mock 関連マッチャー
-
-| マッチャー                          | 説明                     |
-| ----------------------------------- | ------------------------ |
-| `toHaveBeenCalled()`                | 呼び出された             |
-| `toHaveBeenCalledTimes(n)`          | n 回呼び出された         |
-| `toHaveBeenCalledWith(...args)`     | 特定の引数で呼び出された |
-| `toHaveBeenLastCalledWith(...args)` | 最後の呼び出しの引数     |
-| `toHaveReturnedWith(value)`         | 特定の値を返した         |
-
-## 関連スキル
-
-- **tdd-principles** (`.claude/skills/tdd-principles/SKILL.md`): TDD の基本原則
-- **test-doubles** (`.claude/skills/test-doubles/SKILL.md`): テストダブル
-- **test-naming-conventions** (`.claude/skills/test-naming-conventions/SKILL.md`): テスト命名規約
-- **boundary-value-analysis** (`.claude/skills/boundary-value-analysis/SKILL.md`): 境界値分析
-
-## 参考文献
-
-- **Vitest 公式ドキュメント**: https://vitest.dev/
-- **Testing Library**: https://testing-library.com/
-
----
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- Vitest のテスト構造（describe/it/test）の設計
-- vi.fn()、vi.mock()、vi.spyOn()によるモッキング
-- 非同期テストと Fake Timers の活用
-- カバレッジ設定と最適化
-- テスト実行パフォーマンスの改善
-
-### このスキルが行わないこと
-
-- テストダブルの概念的な使い分け（→ test-doubles）
-- TDD サイクルの設計原則（→ tdd-principles）
-- テストケースの設計手法（→ boundary-value-analysis）
-- E2E/Playwright テスト
-
----
+- **`assets/test-file-template.ts`**: テストファイルの標準テンプレート
+  ```bash
+  cat .claude/skills/vitest-advanced/assets/test-file-template.ts
+  ```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                         |
-| ---------- | ---------- | -------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版作成 - Vitest 高度なパターン |
+| Version | Date       | Changes                                                              |
+| ------- | ---------- | -------------------------------------------------------------------- |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様への全面更新、Task仕様ナビ追加、リソース参照の構造化 |
+| 1.0.0   | 2025-12-24 | 仕様準拠と必要なアーティファクト追加                                 |

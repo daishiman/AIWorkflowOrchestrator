@@ -7,7 +7,7 @@
 | タスクID         | T-01-1                                                 |
 | 検証日           | 2025-12-09                                             |
 | 対象ファイル     | `apps/desktop/src/main/infrastructure/security/csp.ts` |
-| 使用エージェント | @electron-security                                     |
+| 使用エージェント | .claude/agents/electron-security.md                                     |
 | 判定             | **PASS**                                               |
 
 ---

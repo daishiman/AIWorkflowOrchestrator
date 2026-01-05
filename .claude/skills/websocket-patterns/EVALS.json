@@ -1,0 +1,79 @@
+{
+  "skillName": "websocket-patterns",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
+  "levels": {
+    "beginner": {
+      "description": "基本的なWebSocket接続と送受信",
+      "criteria": [
+        "WebSocket接続を確立できる",
+        "メッセージの送受信ができる",
+        "接続状態を確認できる"
+      ]
+    },
+    "intermediate": {
+      "description": "再接続とハートビート実装",
+      "criteria": [
+        "Exponential Backoffで再接続を実装できる",
+        "ハートビートで接続監視ができる",
+        "メッセージキューイングを実装できる"
+      ]
+    },
+    "advanced": {
+      "description": "信頼性とエラーハンドリング",
+      "criteria": [
+        "ACK/NACKで配信保証を実装できる",
+        "Circuit Breakerパターンを適用できる",
+        "エラー分類と適切な対処ができる"
+      ]
+    },
+    "expert": {
+      "description": "本番環境対応のアーキテクチャ設計",
+      "criteria": [
+        "スケーラブルなWebSocket基盤を設計できる",
+        "フォールバック戦略を実装できる",
+        "監視・アラートシステムを構築できる"
+      ]
+    }
+  },
+  "metrics": {
+    "connectionReliability": {
+      "target": ">= 99.9%",
+      "description": "接続成功率"
+    },
+    "messageDeliveryRate": {
+      "target": ">= 99.99%",
+      "description": "メッセージ配信率"
+    },
+    "reconnectionTime": {
+      "target": "<= 5s",
+      "description": "再接続所要時間"
+    },
+    "latency": {
+      "target": "<= 100ms",
+      "description": "メッセージレイテンシ（P95）"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "connection-lifecycle",
+      "description": "接続ライフサイクルが適切に管理されている",
+      "weight": 0.25
+    },
+    {
+      "id": "message-reliability",
+      "description": "メッセージの信頼性が確保されている",
+      "weight": 0.25
+    },
+    {
+      "id": "health-monitoring",
+      "description": "接続の健全性が監視されている",
+      "weight": 0.25
+    },
+    {
+      "id": "error-handling",
+      "description": "エラーが適切に処理されている",
+      "weight": 0.25
+    }
+  ]
+}

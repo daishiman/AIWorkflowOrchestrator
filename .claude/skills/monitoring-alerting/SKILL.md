@@ -2,372 +2,117 @@
 name: monitoring-alerting
 description: |
   アプリケーションとインフラの監視・アラート設計を専門とするスキル。
-  メトリクス収集、ログ設計、アラート閾値設定、ダッシュボード構成を提供します。
+  ゴールデンシグナル（レイテンシー・トラフィック・エラー・飽和度）に基づくメトリクス戦略、
+  構造化ログ設計、SLI/SLO定義、アラート閾値設定、ダッシュボード構成を統合的に提供する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Observability Engineering (Charity Majors) / 適用: ログ設計とメトリクス戦略 / 目的: 高カーディナリティ観測の実現
+  • Site Reliability Engineering (Google) / 適用: SLI/SLO設計 / 目的: ビジネス価値に基づく監視体系
+  • Golden Signals / 適用: 4指標（Latency・Traffic・Errors・Saturation） / 目的: 効果的な監視指標の選定
 
-  - `.claude/skills/monitoring-alerting/resources/alerting-rules.md`: 閾値設定、警告/重大レベル、エスカレーション、通知先、抑制ルール設計
-  - `.claude/skills/monitoring-alerting/resources/discord-notifications.md`: Discord Webhook連携、メッセージフォーマット、Embed活用、アラート送信
-  - `.claude/skills/monitoring-alerting/resources/golden-signals.md`: レイテンシー・トラフィック・エラー・飽和度の4指標、SLI/SLO設計
-  - `.claude/skills/monitoring-alerting/resources/logging-design.md`: 構造化ログ（JSON）、ログレベル設計、相関ID、環境別設定
-  - `.claude/skills/monitoring-alerting/scripts/check-metrics.mjs`: メトリクスエンドポイント確認、死活監視、レスポンスタイム測定
-  - `.claude/skills/monitoring-alerting/templates/alert-rules-template.yml`: アラートルール定義テンプレート（Prometheus/Alertmanager形式）
-  - `.claude/skills/monitoring-alerting/templates/dashboard-template.json`: ダッシュボード設定テンプレート（Grafana形式、ゴールデンシグナル可視化）
-  - `.claude/skills/monitoring-alerting/templates/incident-report-template.md`: インシデントレポートテンプレート（発生・影響・原因・対応・再発防止）
-  - `.claude/skills/monitoring-alerting/templates/structured-logger-template.ts`: 構造化ロガー実装テンプレート（Winston/Pino、TypeScript）
-
-  専門分野:
-  - メトリクス設計: ゴールデンシグナル、SLI/SLO
-  - ログ設計: 構造化ログ、ログレベル設計
-  - アラート設計: 閾値設定、エスカレーション
-  - ダッシュボード: 可視化、トレンド分析
-
-  使用タイミング:
-  - 監視戦略を設計する時
-  - アラートルールを定義する時
-  - ログ出力を設計する時
-  - 可観測性を向上させたい時
-
-  Use proactively when users need to design monitoring strategies,
-version: 1.0.0
+  Trigger:
+  Use when designing monitoring strategy, defining SLI/SLO, configuring alerts, implementing structured logging, or building observability dashboards.
+  monitoring, alerting, observability, metrics, logging, SLI, SLO, golden signals, dashboard, Grafana, Prometheus, Discord webhook
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Monitoring & Alerting
 
 ## 概要
 
-このスキルは、『The DevOps Handbook』と『Site Reliability Engineering』の原則に基づき、
-効果的な監視・アラート戦略を提供します。
-
-**主要な価値**:
-
-- 問題の早期検出と迅速な対応
-- システム状態の可視化
-- インシデント対応時間の短縮
-- データ駆動の意思決定
-
-**対象ユーザー**:
-
-- 監視システムを設計するエンジニア
-- インシデント対応を改善したいチーム
-- 可観測性を向上させたい DevOps
-
-## リソース構造
-
-```
-monitoring-alerting/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── golden-signals.md                      # ゴールデンシグナル
-│   ├── logging-design.md                      # ログ設計
-│   ├── alerting-rules.md                      # アラートルール設計
-│   └── discord-notifications.md               # Discord通知
-├── scripts/
-│   └── check-metrics.mjs                      # メトリクス確認スクリプト
-└── templates/
-    └── structured-logger-template.ts          # 構造化ログテンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# ゴールデンシグナル
-cat .claude/skills/monitoring-alerting/resources/golden-signals.md
-
-# ログ設計
-cat .claude/skills/monitoring-alerting/resources/logging-design.md
-
-# アラートルール設計
-cat .claude/skills/monitoring-alerting/resources/alerting-rules.md
-
-# Discord通知
-cat .claude/skills/monitoring-alerting/resources/discord-notifications.md
-```
-
-### スクリプト実行
-
-```bash
-# メトリクス確認
-node .claude/skills/monitoring-alerting/scripts/check-metrics.mjs https://app.example.com
-```
-
-### テンプレート参照
-
-```bash
-# 構造化ログテンプレート
-cat .claude/skills/monitoring-alerting/templates/structured-logger-template.ts
-```
-
-## いつ使うか
-
-### シナリオ 1: 新サービスの監視設計
-
-**状況**: 新しいサービスの監視戦略を設計したい
-
-**適用条件**:
-
-- [ ] 本番環境へのデプロイを予定
-- [ ] SLO/SLI を定義したい
-- [ ] インシデント対応を準備したい
-
-**期待される成果**: 包括的な監視戦略と実装計画
-
-### シナリオ 2: アラート疲れへの対応
-
-**状況**: アラートが多すぎて重要な問題を見逃している
-
-**適用条件**:
-
-- [ ] 誤検知が多い
-- [ ] アラートの優先度が不明確
-- [ ] エスカレーションが機能していない
-
-**期待される成果**: 効果的なアラート戦略への改善
-
-### シナリオ 3: ログの可視性向上
-
-**状況**: ログが散在して問題調査に時間がかかる
-
-**適用条件**:
-
-- [ ] ログフォーマットが不統一
-- [ ] 相関 ID がない
-- [ ] 検索・分析が困難
-
-**期待される成果**: 構造化された効率的なログシステム
+システム可観測性を実現するためのスキル。ゴールデンシグナルに基づくメトリクス戦略、
+構造化ログ設計、SLI/SLO定義、アラート閾値設定を統合的に提供する。
 
 ## ワークフロー
 
-### Phase 1: 要件分析
+### Phase 1: 監視戦略の立案
 
-**目的**: 監視要件と制約を明確化
+**目的**: ビジネス要件からSLI/SLOを定義し、監視対象を決定
 
-**ステップ**:
+**参照エージェント**: `agents/define-sli-slo.md`
 
-1. **ビジネス要件**:
-   - SLO/SLI 目標
-   - 対応時間要件
-   - ステークホルダーの期待
+**アクション**:
 
-2. **技術要件**:
-   - システムアーキテクチャ
-   - 利用可能なツール
-   - データ保持期間
+1. ビジネス目標からSLI（Service Level Indicator）を特定
+2. ゴールデンシグナルの4軸を適用範囲内で選択
+3. SLO（Service Level Objective）の目標値を設定
+4. `references/golden-signals.md` でメトリクス設計パターンを確認
 
-**判断基準**:
+### Phase 2: 監視実装
 
-- [ ] SLO/SLI が定義されているか？
-- [ ] 監視対象が特定されているか？
-- [ ] ツール選択の制約があるか？
+**目的**: SLI/SLOに基づいてメトリクス、ログ、アラートを実装
 
-**リソース**: `resources/golden-signals.md`
+**参照エージェント**: `agents/implement-monitoring.md`
 
-### Phase 2: メトリクス設計
+**アクション**:
 
-**目的**: 収集すべきメトリクスを定義
+1. ログ設計：`references/logging-design.md` で構造化ログ仕様を確認
+2. メトリクス収集：`scripts/check-metrics.mjs` で死活監視を実装
+3. アラートルール定義：`references/alerting-rules.md` で閾値設定
+4. 通知連携：`references/discord-notifications.md` でWebhook統合
 
-**ステップ**:
+### Phase 3: ダッシュボードと検証
 
-1. **ゴールデンシグナル**:
-   - レイテンシー
-   - トラフィック
-   - エラー率
-   - 飽和度
+**目的**: 可観測性の可視化と動作確認
 
-2. **カスタムメトリクス**:
-   - ビジネスメトリクス
-   - アプリケーション固有の指標
+**参照エージェント**: `agents/validate-observability.md`
 
-**判断基準**:
+**アクション**:
 
-- [ ] ゴールデンシグナルがカバーされているか？
-- [ ] メトリクスの粒度は適切か？
+1. `assets/dashboard-template.json` でGrafanaダッシュボード構成
+2. `scripts/check-metrics.mjs` でメトリクス出力を検証
+3. `scripts/log_usage.mjs` で実行記録と成功/失敗を記録
 
-**リソース**: `resources/golden-signals.md`
+## リソース参照
 
-### Phase 3: アラート設計
+### 参照ドキュメント
 
-**目的**: 効果的なアラートルールを定義
+| ドキュメント                                                               | 内容                              |
+| -------------------------------------------------------------------------- | --------------------------------- |
+| [references/basics.md](references/basics.md)                               | 監視基本概念、メトリクス/ログ分類 |
+| [references/patterns.md](references/patterns.md)                           | 実装パターン、設計原則            |
+| [references/golden-signals.md](references/golden-signals.md)               | ゴールデンシグナル4指標詳細       |
+| [references/logging-design.md](references/logging-design.md)               | 構造化ログ仕様、相関ID設計        |
+| [references/alerting-rules.md](references/alerting-rules.md)               | 閾値決定、エスカレーション        |
+| [references/discord-notifications.md](references/discord-notifications.md) | Discord Webhook連携               |
 
-**ステップ**:
+### スクリプト
 
-1. **閾値設定**:
-   - 警告レベル
-   - 重大レベル
-   - 自動復旧
+| スクリプト                   | 用途                                   |
+| ---------------------------- | -------------------------------------- |
+| `scripts/check-metrics.mjs`  | メトリクスエンドポイント確認、死活監視 |
+| `scripts/log_usage.mjs`      | 使用記録・評価スクリプト               |
+| `scripts/validate-skill.mjs` | スキル構造検証                         |
 
-2. **通知設計**:
-   - 通知先
-   - エスカレーション
-   - 抑制ルール
+### テンプレート
 
-**判断基準**:
-
-- [ ] 閾値が適切か？
-- [ ] エスカレーションが定義されているか？
-
-**リソース**: `resources/alerting-rules.md`
-
-### Phase 4: ログ設計
-
-**目的**: 効果的なログ戦略を実装
-
-**ステップ**:
-
-1. **フォーマット**:
-   - 構造化ログ（JSON）
-   - 必須フィールド
-   - 相関 ID
-
-2. **レベル設計**:
-   - ERROR/WARN/INFO/DEBUG
-   - 環境別設定
-
-**判断基準**:
-
-- [ ] ログフォーマットが統一されているか？
-- [ ] 相関 ID が実装されているか？
-
-**リソース**: `resources/logging-design.md`
-
-## 核心知識
-
-### ゴールデンシグナル
-
-SRE の基本的な 4 つの監視指標：
-
-| シグナル     | 説明               | 例                |
-| ------------ | ------------------ | ----------------- |
-| レイテンシー | リクエスト処理時間 | p50, p95, p99     |
-| トラフィック | システム負荷       | RPS, 同時接続数   |
-| エラー       | 失敗率             | 5xx 率, 例外数    |
-| 飽和度       | リソース使用率     | CPU, Memory, Disk |
-
-### SLI/SLO/SLA
-
-```
-SLI (Service Level Indicator): 測定指標
- 例: API応答時間の99パーセンタイル
-
-SLO (Service Level Objective): 目標値
- 例: 99.9%のリクエストが200ms以内
-
-SLA (Service Level Agreement): 契約
- 例: 月間稼働率99.5%を保証
-```
-
-### ログレベル設計
-
-| レベル | 用途               | 本番 | 開発 |
-| ------ | ------------------ | ---- | ---- |
-| ERROR  | 即座の対応が必要   | ✅   | ✅   |
-| WARN   | 注意が必要な状況   | ✅   | ✅   |
-| INFO   | 重要な業務イベント | ✅   | ✅   |
-| DEBUG  | デバッグ情報       | ❌   | ✅   |
-
-詳細は `resources/logging-design.md` を参照
+| テンプレート                           | 用途                              |
+| -------------------------------------- | --------------------------------- |
+| `assets/alert-rules-template.yml`      | Prometheus/Alertmanagerルール定義 |
+| `assets/dashboard-template.json`       | Grafanaダッシュボード設定         |
+| `assets/incident-report-template.md`   | インシデント記録                  |
+| `assets/structured-logger-template.ts` | 構造化ロガー実装例                |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **ゴールデンシグナルの監視**:
-   - 4 つのシグナルを必ず監視
-   - ダッシュボードで可視化
-
-2. **構造化ログの実装**:
-   - JSON フォーマット
-   - 相関 ID の付与
-   - 適切なログレベル
-
-3. **アラートの階層化**:
-   - 重大度に応じた通知
-   - エスカレーションパス
-   - 抑制ルール
+- ゴールデンシグナル優先でメトリクス選定
+- 構造化ログ（JSON形式）で相関ID付与
+- SLI/SLO駆動でアラート閾値決定
+- 段階的監視実装（最初は3〜5メトリクス）
+- アラート抑制ルールでノイズ防止
 
 ### 避けるべきこと
 
-1. **アラート疲れ**:
-   - ❌ 無意味なアラートの乱発
-   - ✅ アクション可能なアラートのみ
-
-2. **情報の過剰収集**:
-   - ❌ すべてを記録
-   - ✅ 必要な情報のみ
-
-3. **メトリクスの孤立**:
-   - ❌ 相関のないメトリクス
-   - ✅ コンテキストのあるダッシュボード
-
-## トラブルシューティング
-
-### 問題 1: アラートが多すぎる
-
-**症状**: 毎日大量のアラートが発生
-
-**対応**:
-
-1. 閾値の見直し
-2. 抑制ルールの追加
-3. 自動復旧の実装
-4. 根本原因の対処
-
-### 問題 2: 問題検出が遅い
-
-**症状**: ユーザー報告で問題が発覚
-
-**対応**:
-
-1. 監視カバレッジの確認
-2. 閾値の調整
-3. 合成監視の追加
-4. ログアラートの追加
-
-### 問題 3: ログが役に立たない
-
-**症状**: ログがあるが調査に使えない
-
-**対応**:
-
-1. 構造化ログへの移行
-2. 相関 ID の追加
-3. コンテキスト情報の充実
-4. ログレベルの見直し
-
-## 関連スキル
-
-- **deployment-strategies** (`.claude/skills/deployment-strategies/SKILL.md`): デプロイ戦略
-- **ci-cd-pipelines** (`.claude/skills/ci-cd-pipelines/SKILL.md`): CI/CD パイプライン
-- **infrastructure-as-code** (`.claude/skills/infrastructure-as-code/SKILL.md`): インフラ構成
-
-## メトリクス
-
-### MTTD（平均検出時間）
-
-**目標**: < 5 分
-
-### MTTR（平均復旧時間）
-
-**目標**: < 15 分
-
-### アラート精度
-
-**目標**: 誤検知率 < 5%
-
-## 変更履歴
-
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-26 | 初版作成 |
-
-## 参考文献
-
-- **『Site Reliability Engineering』** Google 著
-  - Chapter 6: Monitoring Distributed Systems
-
-- **『The DevOps Handbook』** Gene Kim 他著
-  - Part IV: The Second Way - Feedback
+- 無差別なメトリクス収集（コスト増・ノイズ増）
+- 固定閾値のみ（ビジネス目標との乖離）
+- ログレベルの不統一（解析困難）
+- アラート疲れを招く過剰通知

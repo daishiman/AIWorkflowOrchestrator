@@ -1,93 +1,125 @@
 ---
 description: |
   パフォーマンス問題の診断を行うコマンド。
-
-  症状（slow-render/slow-query/memory-leak等）から原因を診断し、
-  修正方法を提案します。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - Phase 2 (frontend): `.claude/agents/router-dev.md` - レンダリング問題診断
-  - Phase 3 (backend): `.claude/agents/repo-dev.md` - クエリパフォーマンス診断
-  - Phase 4 (monitoring): `.claude/agents/sre-observer.md` - システム全体診断
-
-  📚 利用可能スキル（エージェントが参照）:
-  - `.claude/skills/performance-profiling/SKILL.md` - プロファイリング手法
-  - `.claude/skills/query-optimization/SKILL.md` - クエリ最適化
-  - `.claude/skills/memory-leak-detection/SKILL.md` - メモリリーク検出
+  - `.claude/agents/router-dev.md`: レンダリング問題診断
+  - `.claude/agents/repo-dev.md`: クエリパフォーマンス診断
+  - `.claude/agents/sre-observer.md`: システム全体診断
 
   ⚙️ このコマンドの設定:
-  - argument-hint: "[symptom]"（必須: slow-render/slow-query/memory-leak）
-  - allowed-tools: 診断実行用
-    • Task: router-dev/repo-dev/sre-observerエージェント起動用
-    • Read: コード確認用
-    • Bash: プロファイリングツール実行用
-    • Write(docs/**): 診断レポート保存用
-  - model: opus（複雑なパフォーマンス問題診断が必要）
-
-  📋 成果物:
-  - 診断レポート（`docs/performance/diagnosis-report.md`）
-  - 修正提案
-
-  🎯 対応症状:
-  - slow-render: 遅いレンダリング
-  - slow-query: スロークエリ
-  - memory-leak: メモリリーク
+  - argument-hint: [symptom]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: opus
 
   トリガーキーワード: performance issue, slow, パフォーマンス問題, 遅い
 argument-hint: "[symptom]"
 allowed-tools:
   - Task
-  - Read
-  - Bash
-  - Write(docs/**)
 model: opus
 ---
 
 # パフォーマンス問題診断
 
-このコマンドは、パフォーマンス問題を診断します。
+## 目的
 
-## 📋 実行フロー
+`.claude/commands/ai/diagnose-performance-issue.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-### Phase 1: 症状の確認
+## エージェント起動フロー
 
-```bash
-symptom="$ARGUMENTS"
+### Phase 1: レンダリング問題診断の実行
 
-if ! [[ "$symptom" =~ ^(slow-render|slow-query|memory-leak)$ ]]; then
-  エラー: 無効な症状です
-  使用可能: slow-render, slow-query, memory-leak
-fi
-```
+**目的**: レンダリング問題診断に関するタスクを実行し、結果を整理する
 
-### Phase 2-4: エージェント起動（症状別）
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-症状に応じて適切なエージェントを起動
+**ゴール**: レンダリング問題診断の結果と次アクションが提示された状態
 
-### Phase 5: 完了報告
+**起動エージェント**: `.claude/agents/router-dev.md`
 
-```markdown
-## パフォーマンス問題診断完了
+Task ツールで `.claude/agents/router-dev.md` を起動:
 
-### 診断結果
+**コンテキスト**:
 
-原因: ${root_cause}
+- 引数: $ARGUMENTS（[symptom]）
 
-### 修正提案
+**依頼内容**:
 
-${fix_proposal}
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-レポート: docs/performance/diagnosis-report.md
-```
+**期待成果物**:
+
+- `docs/performance/diagnosis-report.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+### Phase 2: クエリパフォーマンス診断の実行
+
+**目的**: クエリパフォーマンス診断に関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: クエリパフォーマンス診断の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/repo-dev.md`
+
+Task ツールで `.claude/agents/repo-dev.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[symptom]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/performance/diagnosis-report.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+### Phase 3: システム全体診断の実行
+
+**目的**: システム全体診断に関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: システム全体診断の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/sre-observer.md`
+
+Task ツールで `.claude/agents/sre-observer.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[symptom]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/performance/diagnosis-report.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
-/ai:diagnose-performance-issue slow-render
+/ai:diagnose-performance-issue [symptom]
 ```
-
-## 参照
-
-- router-dev: `.claude/agents/router-dev.md`
-- repo-dev: `.claude/agents/repo-dev.md`
-- sre-observer: `.claude/agents/sre-observer.md`

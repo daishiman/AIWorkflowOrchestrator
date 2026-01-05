@@ -144,7 +144,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@req-analyst`
+- **エージェント**: `.claude/agents/req-analyst.md`
 - **選定理由**: データポータビリティ要件の明確化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -152,8 +152,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | スキル名                               | 活用方法                 |
 | -------------------------------------- | ------------------------ |
-| requirements-engineering               | エクスポート要件整理     |
-| functional-non-functional-requirements | セキュリティ・互換性要件 |
+| .claude/skills/requirements-engineering/SKILL.md               | エクスポート要件整理     |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | セキュリティ・互換性要件 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -187,7 +187,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@schema-def`
+- **エージェント**: `.claude/agents/schema-def.md`
 - **選定理由**: データスキーマ設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -223,7 +223,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@arch-police`
+- **エージェント**: `.claude/agents/arch-police.md`
 - **選定理由**: アーキテクチャ設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -231,8 +231,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | スキル名                      | 活用方法     |
 | ----------------------------- | ------------ |
-| clean-architecture-principles | レイヤー設計 |
-| solid-principles              | 拡張性確保   |
+| .claude/skills/clean-architecture-principles/SKILL.md | レイヤー設計 |
+| .claude/skills/solid-principles/SKILL.md              | 拡張性確保   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -266,7 +266,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@sec-auditor`
+- **エージェント**: `.claude/agents/sec-auditor.md`
 - **選定理由**: セキュリティ設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -274,8 +274,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | スキル名                      | 活用方法               |
 | ----------------------------- | ---------------------- |
-| cryptographic-practices       | 暗号化アルゴリズム選定 |
-| security-configuration-review | セキュリティ設定       |
+| .claude/skills/cryptographic-practices/SKILL.md       | 暗号化アルゴリズム選定 |
+| .claude/skills/security-configuration-review/SKILL.md | セキュリティ設定       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -309,7 +309,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -334,9 +334,9 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | エージェント  | レビュー観点         | 選定理由           |
 | ------------- | -------------------- | ------------------ |
-| @arch-police  | アーキテクチャ整合性 | 設計品質確認       |
-| @sec-auditor  | セキュリティ設計     | 暗号化実装確認     |
-| @db-architect | データ整合性         | スキーマ整合性確認 |
+| .claude/agents/arch-police.md  | アーキテクチャ整合性 | 設計品質確認       |
+| .claude/agents/sec-auditor.md  | セキュリティ設計     | 暗号化実装確認     |
+| .claude/agents/db-architect.md | データ整合性         | スキーマ整合性確認 |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -364,7 +364,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -406,7 +406,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -471,7 +471,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@schema-def`
+- **エージェント**: `.claude/agents/schema-def.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -505,7 +505,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -538,7 +538,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -580,7 +580,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -615,7 +615,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@electron-architect`
+- **エージェント**: `.claude/agents/electron-architect.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -650,7 +650,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -683,7 +683,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件
@@ -725,7 +725,7 @@ pnpm --filter @repo/shared test:run dataExport
 
 ##### 使用エージェント
 
-- **エージェント**: `@sec-auditor`
+- **エージェント**: `.claude/agents/sec-auditor.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件
@@ -744,9 +744,9 @@ pnpm --filter @repo/shared test:run dataExport
 
 | エージェント  | レビュー観点       | 選定理由       |
 | ------------- | ------------------ | -------------- |
-| @code-quality | コード品質         | 保守性確認     |
-| @arch-police  | アーキテクチャ遵守 | 設計原則確認   |
-| @sec-auditor  | セキュリティ       | 暗号化実装確認 |
+| .claude/agents/code-quality.md | コード品質         | 保守性確認     |
+| .claude/agents/arch-police.md  | アーキテクチャ遵守 | 設計原則確認   |
+| .claude/agents/sec-auditor.md  | セキュリティ       | 暗号化実装確認 |
 
 - **参照**: `.claude/agents/agent_list.md`
 

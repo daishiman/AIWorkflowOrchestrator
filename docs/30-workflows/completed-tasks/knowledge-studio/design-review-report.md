@@ -9,10 +9,10 @@
 
 | レビュー担当                             | 評価                 | Critical | High   | Medium | Low    |
 | ---------------------------------------- | -------------------- | -------- | ------ | ------ | ------ |
-| @req-analyst（要件アナリスト）           | CONDITIONAL_PASS     | -        | 3      | 5      | 4      |
-| @arch-police（アーキテクチャ警察）       | CONDITIONAL_PASS     | -        | 3      | 5      | 4      |
-| @electron-security（セキュリティ専門家） | CONDITIONAL_PASS     | 2        | 4      | 3      | 2      |
-| @ui-designer（UI/UXデザイナー）          | CONDITIONAL_PASS     | -        | 3      | 6      | 4      |
+| .claude/agents/req-analyst.md（要件アナリスト）           | CONDITIONAL_PASS     | -        | 3      | 5      | 4      |
+| .claude/agents/arch-police.md（アーキテクチャ警察）       | CONDITIONAL_PASS     | -        | 3      | 5      | 4      |
+| .claude/agents/electron-security.md（セキュリティ専門家） | CONDITIONAL_PASS     | 2        | 4      | 3      | 2      |
+| .claude/agents/ui-designer.md（UI/UXデザイナー）          | CONDITIONAL_PASS     | -        | 3      | 6      | 4      |
 | **総合**                                 | **CONDITIONAL_PASS** | **2**    | **13** | **19** | **14** |
 
 ### 判定基準
@@ -23,7 +23,7 @@
 
 ---
 
-## 1. 要件妥当性レビュー (@req-analyst)
+## 1. 要件妥当性レビュー (.claude/agents/req-analyst.md)
 
 ### 評価: CONDITIONAL_PASS
 
@@ -46,7 +46,7 @@
 
 ---
 
-## 2. アーキテクチャレビュー (@arch-police)
+## 2. アーキテクチャレビュー (.claude/agents/arch-police.md)
 
 ### 評価: CONDITIONAL_PASS
 
@@ -74,7 +74,7 @@
 
 ---
 
-## 3. セキュリティレビュー (@electron-security)
+## 3. セキュリティレビュー (.claude/agents/electron-security.md)
 
 ### 評価: CONDITIONAL_PASS ⚠️
 
@@ -106,7 +106,7 @@
 
 ---
 
-## 4. UI/UXレビュー (@ui-designer)
+## 4. UI/UXレビュー (.claude/agents/ui-designer.md)
 
 ### 評価: CONDITIONAL_PASS
 
@@ -221,4 +221,4 @@
 ---
 
 **レポート作成者**: Claude Code
-**レビュー参加エージェント**: @req-analyst, @arch-police, @electron-security, @ui-designer
+**レビュー参加エージェント**: .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/electron-security.md, .claude/agents/ui-designer.md

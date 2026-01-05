@@ -1,0 +1,33 @@
+#!/bin/sh
+# post-checkout フック
+# worktreeチェックアウト時にLaunchServicesキャッシュをクリア
+
+# Hooksが無効化されている場合はスキップ
+[ -n "$HUSKY" ] || exit 0
+
+# macOSのみで実行
+if [ "$(uname)" != "Darwin" ]; then
+  exit 0
+fi
+
+# worktreeかどうかを確認
+if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+  WORKTREE_ROOT=$(git rev-parse --show-toplevel)
+
+  # .worktreesディレクトリ内かどうかを確認
+  if echo "$WORKTREE_ROOT" | grep -q ".worktrees"; then
+    echo "🔧 [post-checkout] Worktree detected, clearing LaunchServices cache..."
+
+    # LaunchServicesキャッシュをクリア（バックグラウンドで実行、エラーは無視）
+    /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user > /dev/null 2>&1 &
+
+    # .envシンボリックリンクを確認・作成
+    PROJECT_ROOT=$(cd "$WORKTREE_ROOT/../.." && pwd)
+    if [ ! -L "$WORKTREE_ROOT/apps/desktop/.env" ] && [ -f "$PROJECT_ROOT/.env" ]; then
+      echo "🔧 [post-checkout] Creating .env symlink..."
+      ln -sf "$PROJECT_ROOT/.env" "$WORKTREE_ROOT/apps/desktop/.env"
+    fi
+
+    echo "✅ [post-checkout] Worktree setup complete"
+  fi
+fi

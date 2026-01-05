@@ -1,372 +1,169 @@
 ---
 name: secret-management-architecture
 description: |
-  Secret管理アーキテクチャ設計スキル。環境変数、Vault、KMS、Secrets Managerの
+  シークレット管理アーキテクチャの設計・実装スキル。
+  Vault/KMS/Secrets Manager統合、キーローテーション、アクセス制御マトリクスを体系的に設計する。
+  シークレット分類からライフサイクル管理まで、エンタープライズグレードの機密情報管理戦略を提供。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Clean Architecture (Robert C. Martin) / 適用: 依存関係ルール / 目的: シークレット管理層の分離
+  • Zero Trust Architecture (NIST SP 800-207) / 適用: 認証・認可 / 目的: 最小権限アクセス
+  • OWASP Secrets Management Cheat Sheet / 適用: 実装パターン / 目的: セキュリティベストプラクティス
+  • HashiCorp Vault Best Practices / 適用: Vault統合 / 目的: シークレットバックエンド設計
 
-  - `.claude/skills/secret-management-architecture/resources/access-control-matrix-template.md`: Access Control Matrix Templateリソース
-  - `.claude/skills/secret-management-architecture/resources/kubernetes-secrets-patterns.md`: Kubernetes Secrets Patternsリソース
-  - `.claude/skills/secret-management-architecture/resources/secret-classification-framework.md`: Secret Classification Frameworkリソース
-  - `.claude/skills/secret-management-architecture/resources/vault-integration-patterns.md`: Vault Integration Patternsリソース
-
-  - `.claude/skills/secret-management-architecture/templates/env-example-template.md`: Env Exampleテンプレート
-  - `.claude/skills/secret-management-architecture/templates/rotation-plan-template.md`: Rotation Planテンプレート
-  - `.claude/skills/secret-management-architecture/templates/secret-inventory-template.md`: Secret Inventoryテンプレート
-
-version: 1.0.0
+  Trigger:
+  Use when designing secret management architecture, integrating Vault/KMS, planning key rotation, or creating access control matrices.
+  secret management, vault integration, key rotation, access control, KMS, secrets manager, credential management
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Secret Management Architecture
 
 ## 概要
 
-このスキルは、機密情報を安全に管理するための構造的パターンと実装戦略を提供します。
-プロジェクトの規模、環境の複雑さ、セキュリティ要件に応じた適切な管理方式の選択と、
-階層的な Secret 管理設計を支援します。
+シークレット管理アーキテクチャスキルは、環境変数、HashiCorp Vault、AWS KMS、AWS Secrets Managerなど複数のシークレット保管・管理システムを統合し、エンタープライズグレードの機密情報管理戦略を設計・実装する。
 
-## Secret 管理方式の選択基準
+**主要機能**:
 
-### 1. 環境変数ファイル方式
+- **分類とガバナンス**: シークレット重要度別の保護レベル設計
+- **ライフサイクル管理**: 生成・配布・ローテーション・廃棄の一連プロセス
+- **アクセス制御**: RBAC/ABACによる最小権限実装
+- **バックエンド統合**: Vault/KMS/Secrets Managerの統合アーキテクチャ
+- **監査とコンプライアンス**: アクセスログと監査証跡の確保
 
-**適用条件**:
-
-- 小規模プロジェクト（開発者 5 名以下）
-- 環境数が少ない（dev/prod 程度）
-- ローカル開発が中心
-- Secret 数が少ない（20 個未満）
-
-**メリット**:
-
-- シンプルで理解しやすい
-- セットアップが迅速
-- 追加コストなし
-- ローカル開発との親和性が高い
-
-**デメリット**:
-
-- スケーラビリティに欠ける
-- 手動 Rotation 必要
-- 監査証跡が弱い
-- チーム間共有が困難
-
-**実装パターン**:
+## ワークフロー
 
 ```
-project/
-├── .env.example          # テンプレート（Gitコミット可）
-├── .env.development      # ローカル開発用（Gitignore）
-├── .env.staging          # ステージング用（Gitignore）
-└── .env.production       # 本番用（Gitignore、別管理推奨）
+analyze-requirements → classify-secrets → design-architecture
+                                                  ↓
+validate-architecture ← integrate-backend ← design-access-control
+                                                  ↑
+                                          design-rotation
 ```
 
-**セキュリティ要件**:
+### Task 1: 要件分析（analyze-requirements）
 
-- 必ず.gitignore に追加
-- .env.example には機密情報を含めない
-- 本番 Secret は別管理（クラウド Secrets Manager 等）推奨
+シークレット管理の要件を分析し、スコープと制約を明確化する。
 
-### 2. クラウド Secrets Manager 方式
+**Task**: `agents/analyze-requirements.md` を参照
 
-**適用条件**:
+### Task 2: シークレット分類（classify-secrets）
 
-- 中規模以上プロジェクト（開発者 5 名以上）
-- マルチ環境（dev/staging/prod/DR 等）
-- クラウドネイティブアーキテクチャ
-- 高いセキュリティ要件
+シークレットを重要度・用途別に分類し、保護レベルを決定する。
 
-**対応サービス**:
+**Task**: `agents/classify-secrets.md` を参照
 
-- AWS Secrets Manager
-- Google Cloud Secret Manager
-- Azure Key Vault
-- Railway Secrets
-- GitHub Secrets（CI/CD 専用）
+### Task 3: アーキテクチャ設計（design-architecture）
 
-**メリット**:
+シークレット管理の全体アーキテクチャを設計する。
 
-- 自動 Rotation 対応
-- 完全な監査証跡
-- アクセス制御の細分化
-- 暗号化の自動管理
-- 高可用性
+**Task**: `agents/design-architecture.md` を参照
 
-**デメリット**:
+### Task 4: ローテーション戦略（design-rotation）
 
-- コスト発生
-- セットアップ複雑
-- サービス依存
-- ネットワーク遅延
+キーローテーション戦略と自動化フローを設計する。
 
-**実装パターン**:
+**Task**: `agents/design-rotation.md` を参照
 
-```typescript
-// Secret取得の統一インターフェース
-interface ISecretManager {
-  getSecret(name: string, env: Environment): Promise<string>;
-  rotateSecret(name: string): Promise<void>;
-}
+### Task 5: アクセス制御設計（design-access-control）
 
-// Railway Secrets実装例
-class RailwaySecretManager implements ISecretManager {
-  async getSecret(name: string, env: Environment): Promise<string> {
-    // Railway環境変数から取得（自動注入）
-    return process.env[name] || "";
-  }
-}
-```
+RBAC/ABACベースのアクセス制御マトリクスを設計する。
 
-### 3. HashiCorp Vault 方式
+**Task**: `agents/design-access-control.md` を参照
 
-**適用条件**:
+### Task 6: バックエンド統合（integrate-backend）
 
-- エンタープライズ環境
-- マルチクラウド戦略
-- 動的 Secret 生成が必要
-- 高度な監査要件
+Vault/KMS/Secrets Managerとの統合設計を行う。
 
-**メリット**:
+**Task**: `agents/integrate-backend.md` を参照
 
-- 動的 Secret 生成
-- 最も強力なアクセス制御
-- 完全な監査ログ
-- マルチクラウド対応
-- Secret versioning
+### Task 7: アーキテクチャ検証（validate-architecture）
 
-**デメリット**:
+設計されたアーキテクチャがセキュリティ要件を満たすことを検証する。
 
-- 高い運用コスト
-- 学習曲線が急
-- インフラ複雑化
-- 専門知識が必要
+**Task**: `agents/validate-architecture.md` を参照
 
-**実装パターン**:
-詳細は `resources/vault-integration-patterns.md` を参照
+## Task仕様（ナビゲーション）
 
-### 4. Kubernetes Secrets 方式
+| Task                  | 責務                   | 入力               | 出力                   |
+| --------------------- | ---------------------- | ------------------ | ---------------------- |
+| analyze-requirements  | 要件分析               | ビジネス要件       | 要件定義書             |
+| classify-secrets      | シークレット分類       | シークレット一覧   | 分類マトリクス         |
+| design-architecture   | アーキテクチャ設計     | 要件・分類結果     | アーキテクチャ設計書   |
+| design-rotation       | ローテーション戦略設計 | アーキテクチャ     | ローテーション計画書   |
+| design-access-control | アクセス制御設計       | アーキテクチャ     | アクセス制御マトリクス |
+| integrate-backend     | バックエンド統合設計   | アーキテクチャ     | 統合設計書             |
+| validate-architecture | アーキテクチャ検証     | 全設計ドキュメント | 検証レポート           |
 
-**適用条件**:
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+**注記**: 1 Task = 1 責務。複数責務を1ファイルに入れない。
 
-- Kubernetes 環境
-- コンテナ化アプリケーション
-- マイクロサービスアーキテクチャ
+## ベストプラクティス
 
-**メリット**:
+### すべきこと
 
-- Kubernetes ネイティブ統合
-- Pod レベルでの注入
-- ネームスペース分離
+- **事前分析**: `references/classification-framework.md` でシークレット分類基準を確認
+- **段階的導入**: 開発→ステージング→本番の順で段階的に導入
+- **最小権限**: Principle of Least Privilegeを実装し、RBACを設計
+- **ライフサイクル**: 生成・配布・ローテーション・廃棄の全フェーズを定義
+- **監査ログ**: すべてのアクセスと変更を監査ログに記録
+- **バックアップ**: 重要なシークレット設定のバックアップと災害復旧手順を確立
+- **テスト検証**: `scripts/validate-architecture.mjs` でアーキテクチャ整合性を検証
 
-**デメリット**:
+### 避けるべきこと
 
-- デフォルトでは暗号化なし（etcd 暗号化が必要）
-- Rotation 機能が弱い
-- Kubernetes 依存
+- **ハードコード**: コードにシークレットをハードコードしない
+- **ログ出力**: シークレットをログファイルやスタックトレースに出力しない
+- **バージョン管理**: シークレットをGitリポジトリにコミットしない
+- **単一バックエンド**: 単一の管理システムに依存しない、冗長性を確保
+- **無制限アクセス**: 必要最小限の権限のみ付与
+- **ローテーションなし**: 定期的なローテーション計画なしでの運用
+- **監査なし**: アクセスログや変更履歴の監査機能なしでの運用
+- **環境混在**: 開発環境と本番環境のシークレットを混在させない
 
-**実装パターン**:
-詳細は `resources/kubernetes-secrets-patterns.md` を参照
+## リソース参照
 
-## 階層的 Secret 管理設計
+### references/（詳細知識）
 
-### 3 層階層モデル
+**注記**: references/ は責務/ドメイン単位で分割し、1ファイル=1責務を基本とする。
 
-#### Layer 1: グローバル共通 Secret
+| リソース                                                                  | 説明                           | 対象タスク            |
+| ------------------------------------------------------------------------- | ------------------------------ | --------------------- |
+| See [classification-framework.md](references/classification-framework.md) | シークレット分類フレームワーク | classify-secrets      |
+| See [architecture-patterns.md](references/architecture-patterns.md)       | アーキテクチャパターン         | design-architecture   |
+| See [rotation-strategies.md](references/rotation-strategies.md)           | ローテーション戦略             | design-rotation       |
+| See [access-control-patterns.md](references/access-control-patterns.md)   | アクセス制御パターン           | design-access-control |
+| See [vault-integration.md](references/vault-integration.md)               | Vault統合パターン              | integrate-backend     |
+| See [kubernetes-secrets.md](references/kubernetes-secrets.md)             | Kubernetes Secrets管理         | integrate-backend     |
+| See [compliance-checklist.md](references/compliance-checklist.md)         | コンプライアンスチェックリスト | validate-architecture |
 
-**特性**:
+### scripts/（決定論的処理）
 
-- プロジェクト全体で共通
-- すべての環境で同じ値
-- 変更頻度: 低い
-
-**例**:
-
-- サードパーティ API 基本設定
-- ログ集約サービスエンドポイント
-- 共通暗号化設定
-
-**管理方式**: 中央集約、厳格なアクセス制御
-
-#### Layer 2: 環境固有 Secret
-
-**特性**:
-
-- 環境毎に異なる値（dev/staging/prod）
-- 環境内で共通
-- 変更頻度: 中程度
-
-**例**:
-
-- DATABASE_URL（環境毎に異なる DB）
-- API_ENDPOINT（環境毎のエンドポイント）
-- REDIS_URL（環境毎の Redis）
-
-**管理方式**: 環境グループ機能、環境変数注入
-
-#### Layer 3: サービス専用 Secret
-
-**特性**:
-
-- 特定サービスのみ使用
-- 他サービスからアクセス不可
-- 変更頻度: 高い
-
-**例**:
-
-- DISCORD_WEBHOOK_URL（Discord 連携サービス専用）
-- STRIPE_SECRET_KEY（決済サービス専用）
-- SENDGRID_API_KEY（メールサービス専用）
-
-**管理方式**: サービススコープ制限、最小権限アクセス
-
-### Secret 分類フレームワーク
-
-#### 重要度分類
-
-**Critical（最重要）**:
-
-- 本番データベース認証情報
-- 本番 API キー（課金対象）
-- 暗号化マスターキー
-- OAuth Client Secret（本番）
-
-**High（重要）**:
-
-- ステージング環境認証情報
-- サードパーティ API キー（無料枠）
-- セッション暗号化キー
-
-**Medium（中程度）**:
-
-- 開発環境認証情報
-- 内部 API 認証トークン
-- ログ集約サービスキー
-
-**Low（低）**:
-
-- 非機密設定値
-- 公開情報への参照
-- デフォルト設定
-
-#### スコープ分類
-
-**Global（グローバル）**:
-
-- すべてのサービスで使用
-- 環境横断で共通
-- 例: LOG_LEVEL、APP_NAME
-
-**Environment（環境）**:
-
-- 環境毎に異なる
-- 環境内で共通
-- 例: DATABASE_URL、API_BASE_URL
-
-**Service（サービス）**:
-
-- 特定サービスのみ
-- 他サービスアクセス不可
-- 例: DISCORD_WEBHOOK_URL、STRIPE_KEY
-
-#### Rotation 頻度分類
-
-**頻繁（30 日毎）**:
-
-- 外部 API キー（高リスク）
-- データベースパスワード（本番）
-- OAuth Secret
-
-**定期（90 日毎）**:
-
-- 暗号化キー
-- セッション Secret
-- 内部 API 認証
-
-**不定期（必要時）**:
-
-- 開発環境 Secret
-- 設定値
-- 侵害検知時の緊急 Rotation
-
-## アクセス制御マトリクス設計
-
-### ロール定義
-
-**人間ロール**:
-
-- Developer: 開発環境 Secret のみアクセス
-- DevOps Engineer: すべての環境にアクセス（承認制）
-- Security Admin: すべての Secret へのフルアクセス
-
-**システムロール**:
-
-- CI/CD Pipeline: 必要最小限の Secret（GitHub Secrets 経由）
-- Application Service: 実行時必要な Secret のみ
-- Monitoring Service: ログ・メトリクス用 Secret のみ
-
-### アクセス制御マトリクス例
-
-| Secret 名        | 重要度   | Developer | DevOps     | Security Admin | CI/CD | App Service |
-| ---------------- | -------- | --------- | ---------- | -------------- | ----- | ----------- |
-| DB_PASSWORD_PROD | Critical | ❌        | 🔐（承認） | ✅             | ❌    | ✅          |
-| DB_PASSWORD_DEV  | Medium   | ✅        | ✅         | ✅             | ❌    | ✅          |
-| API_KEY_STRIPE   | Critical | ❌        | 🔐（承認） | ✅             | ❌    | ✅          |
-| DISCORD_WEBHOOK  | High     | ✅        | ✅         | ✅             | ✅    | ✅          |
-| LOG_LEVEL        | Low      | ✅        | ✅         | ✅             | ✅    | ✅          |
-
-🔐 = 承認が必要
-
-## 設計時の判断基準チェックリスト
-
-### Secret 管理方式選択
-
-- [ ] プロジェクト規模（開発者数、環境数）を評価したか？
-- [ ] Secret 数と複雑度を確認したか？
-- [ ] セキュリティ要件（コンプライアンス含む）を確認したか？
-- [ ] 予算とリソース制約を考慮したか？
-- [ ] 既存インフラとの統合性を評価したか？
-
-### 階層設計
-
-- [ ] Secret が 3 層（グローバル/環境/サービス）に分類されているか？
-- [ ] 各層のアクセス権限が明確に定義されているか？
-- [ ] クロススコープアクセスが最小化されているか？
-- [ ] 環境間の Secret 共有が防止されているか？
-
-### アクセス制御
-
-- [ ] すべてのロール（人間・システム）が定義されているか？
-- [ ] 最小権限の原則が適用されているか？
-- [ ] アクセス制御マトリクスが完全か？
-- [ ] 承認プロセスが高リスク Secret に設定されているか？
-
-### Rotation 戦略
-
-- [ ] 各 Secret の重要度に応じた Rotation 頻度が定義されているか？
-- [ ] Rotation プロセスがダウンタイムを発生させないか？
-- [ ] ロールバック手順が明確か？
-- [ ] 自動 Rotation 可能な Secret が特定されているか？
-
-## 関連スキル
-
-- `.claude/skills/zero-trust-security/SKILL.md` - アクセス制御設計の詳細
-- `.claude/skills/encryption-key-lifecycle/SKILL.md` - 鍵ライフサイクル管理
-- `.claude/skills/environment-isolation/SKILL.md` - 環境分離戦略
-- `.claude/skills/railway-secrets-management/SKILL.md` - Railway 統合
-- `.claude/skills/github-actions-security/SKILL.md` - GitHub Actions 統合
-
-## リソースファイル
-
-詳細な実装パターンは以下を参照:
-
-- `resources/vault-integration-patterns.md` - HashiCorp Vault 統合
-- `resources/kubernetes-secrets-patterns.md` - Kubernetes Secrets 実装
-- `resources/secret-classification-framework.md` - Secret 分類詳細
-- `resources/access-control-matrix-template.md` - アクセス制御設計テンプレート
-
-## テンプレート
-
-- `templates/env-example-template.md` - .env.example ファイルテンプレート
-- `templates/secret-inventory-template.md` - Secret 棚卸しテンプレート
-- `templates/rotation-plan-template.md` - Rotation 計画テンプレート
+| スクリプト                  | 用途               | 使用例                                                              |
+| --------------------------- | ------------------ | ------------------------------------------------------------------- |
+| `validate-architecture.mjs` | アーキテクチャ検証 | `node scripts/validate-architecture.mjs --config architecture.yaml` |
+| `log_usage.mjs`             | 使用記録           | `node scripts/log_usage.mjs --result success --phase "Task 7"`      |
+
+### assets/（テンプレート）
+
+| テンプレート                | 用途                   | 対象               |
+| --------------------------- | ---------------------- | ------------------ |
+| `env-template.md`           | 環境変数設定のサンプル | 開発環境構築       |
+| `rotation-plan-template.md` | ローテーション計画書   | ライフサイクル管理 |
+| `inventory-template.md`     | シークレット棚卸し表   | 監査・管理         |
+| `access-matrix-template.md` | アクセス制御マトリクス | アクセス制御設計   |
+
+## 変更履歴
+
+| Version | Date       | Changes                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠: Task分離、責務ベースreferences/ |
+| 1.1.0   | 2025-12-31 | YAML frontmatter改善、Task仕様ナビ追加                    |
+| 1.0.0   | 2025-12-24 | 初版作成                                                  |

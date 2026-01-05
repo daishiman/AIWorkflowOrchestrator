@@ -1,448 +1,122 @@
 ---
 name: command-basic-patterns
 description: |
-  4つの基本実装パターンを専門とするスキル。
-  シンプル指示型、ステップバイステップ型、条件分岐型、ファイル参照型の
-  選択基準と実装例を提供します。
+  基本実装パターン（シンプル指示/ステップバイステップ/条件分岐/ファイル参照）を整理し、パターン選定とテンプレート適用を支援するスキル。
+  選定基準、実装の骨格、検証手順を一貫して整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: コマンド設計 / 目的: 実践的な手順設計パターンの習得
 
-  - `.claude/skills/command-basic-patterns/resources/pattern-selection-guide.md`: 基本パターン選択ガイド
-  - `.claude/skills/command-basic-patterns/templates/step-by-step-template.md`: ステップバイステップコマンドテンプレート
-  - `.claude/skills/command-basic-patterns/scripts/validate-patterns.mjs`: パターン検証スクリプト
-
-  使用タイミング:
-  - コマンドの複雑度に応じたパターンを選択する時
-  - 既存コマンドのパターンを理解したい時
-  - ワークフローの構造化方法を知りたい時
-
-  Use proactively when selecting command patterns, understanding existing commands,
-  or structuring workflows.
-version: 1.0.0
+  Trigger:
+  Use when selecting or reviewing basic command patterns, or structuring workflows for simple/step/conditional/file-reference commands.
+  command basic patterns, simple command, step-by-step, conditional command, file reference
 ---
-
-# Command Basic Patterns
+# command-basic-patterns
 
 ## 概要
 
-このスキルは、Claude Codeコマンドの4つの基本実装パターンを提供します。
-各パターンの選択基準、実装例、使い分けにより、
-コマンドの複雑度に応じた最適な構造を選択できます。
+基本実装パターン（シンプル指示/ステップバイステップ/条件分岐/ファイル参照）を整理し、パターン選定とテンプレート適用を支援する。
 
-**主要な価値**:
+## ワークフロー
 
-- 4つのパターンの完全理解
-- 複雑度に応じた適切な選択
-- パターンごとのベストプラクティス
-- 実装例と応用方法
+### Phase 1: 要件整理
 
-**対象ユーザー**:
+**目的**: 適用パターンと対象範囲を明確化する。
 
-- コマンドを作成するエージェント（@command-arch）
-- ワークフローを構造化したい開発者
-- パターンを学びたいチーム
+**アクション**:
 
-## リソース構造
+1. 対象コマンドの目的と制約を整理する。
+2. パターン選定ガイドで候補を絞る。
+3. 参照ガイドとテンプレートを確認する。
 
-```
-command-basic-patterns/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── pattern1-simple-instruction.md         # シンプル指示型詳細
-│   ├── pattern2-step-by-step.md               # ステップバイステップ型詳細
-│   ├── pattern3-conditional.md                # 条件分岐型詳細
-│   ├── pattern4-file-reference.md             # ファイル参照型詳細
-│   └── pattern-selection-guide.md             # パターン選択ガイド
-└── templates/
-    ├── simple-instruction-template.md         # パターン1テンプレート
-    ├── step-by-step-template.md               # パターン2テンプレート
-    ├── conditional-template.md                # パターン3テンプレート
-    └── file-reference-template.md             # パターン4テンプレート
-```
+**Task**: `agents/analyze-basic-patterns.md` を参照
 
-### リソース種別
+### Phase 2: パターン設計
 
-- **パターン詳細** (`resources/pattern*.md`): 各パターンの詳細仕様と実例
-- **選択ガイド** (`resources/pattern-selection-guide.md`): 意思決定フローチャート
-- **テンプレート** (`templates/`): パターン別のテンプレート
+**目的**: パターン設計と実装方針を具体化する。
 
-## いつ使うか
+**アクション**:
 
-### シナリオ1: パターン選択
+1. 選定パターンの構造とステップを設計する。
+2. テンプレートを使い設計を具体化する。
+3. 例外ケースとガードレールを整理する。
 
-**状況**: どのパターンを使うべきか判断したい
+**Task**: `agents/design-basic-patterns.md` を参照
 
-**適用条件**:
+### Phase 3: 検証と記録
 
-- [ ] コマンドの複雑度が不明
-- [ ] 適切なパターンがわからない
-- [ ] 複数パターンの組み合わせが必要
+**目的**: パターン整合を検証し、記録を残す。
 
-**期待される成果**: 最適なパターンの選択
+**アクション**:
 
-### シナリオ2: 既存コマンドの理解
+1. パターン検証スクリプトで整合性を確認する。
+2. 検証結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
-**状況**: 既存コマンドがどのパターンを使っているか理解したい
+**Task**: `agents/validate-basic-patterns.md` を参照
 
-**適用条件**:
+## Task仕様ナビ
 
-- [ ] パターンが混在している
-- [ ] 各パターンの特徴を知りたい
-- [ ] リファクタリングを検討している
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-basic-patterns | Phase 1開始時 | 対象コマンド/目的 | 要件整理メモ、適用パターン候補 |
+| design-basic-patterns | Phase 2開始時 | 要件整理メモ | パターン設計案、テンプレ適用案 |
+| validate-basic-patterns | Phase 3開始時 | パターン設計案 | 検証レポート、改善方針 |
 
-**期待される成果**: パターンの特定と理解
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-### シナリオ3: ワークフローの構造化
+## ベストプラクティス
 
-**状況**: 複雑なワークフローを整理したい
+### すべきこと
 
-**適用条件**:
+| 推奨事項 | 理由 |
+| --- | --- |
+| パターンを明確に選定する | 実装ブレを防ぐため |
+| テンプレートで設計を統一する | 読みやすさが保てるため |
+| 検証スクリプトを実行する | 逸脱を検知するため |
 
-- [ ] 複数ステップがある
-- [ ] 条件分岐が必要
-- [ ] 外部ファイルの参照が必要
+### 避けるべきこと
 
-**期待される成果**: 構造化されたワークフロー
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 複数パターンを無計画に混在させる | 挙動が不明確になる |
+| 例外処理を後回しにする | 失敗時に対応できない |
+| 記録を残さない | 改善が続かない |
 
-## パターン1: シンプル指示型
+## リソース参照
 
-### 用途
+### scripts/（決定論的処理）
 
-- 単一操作
-- シンプルなワークフロー
-- 明確な手順
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-patterns.mjs` | 基本パターン検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-### 適用例
+### references/（詳細知識）
 
-- フォーマット
-- 単純なビルド
-- 基本的なテスト実行
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | パターン選定時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| パターン選定 | [references/pattern-selection-guide.md](references/pattern-selection-guide.md) | パターン選定時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-### 実装例
+### assets/（テンプレート・素材）
 
-````markdown
----
-description: Format code with Prettier
----
+| アセット | 用途 |
+| --- | --- |
+| `assets/simple-instruction-template.md` | シンプル指示テンプレート |
+| `assets/step-by-step-template.md` | ステップバイステップテンプレート |
+| `assets/conditional-template.md` | 条件分岐テンプレート |
+| `assets/file-reference-template.md` | ファイル参照テンプレート |
 
-# Code Formatting
+### 運用ファイル
 
-Run Prettier on all JavaScript and TypeScript files:
-
-```bash
-npx prettier --write "src/**/*.{js,ts,jsx,tsx}"
-```
-````
-
-Verify formatting is correct.
-
-````
-
-### 特徴
-- ✓ シンプルで理解しやすい
-- ✓ 実行が速い
-- ✓ メンテナンスが容易
-- ✗ 複雑なロジックには不向き
-
-## パターン2: ステップバイステップ型
-
-### 用途
-- 複数ステップの明確なワークフロー
-- 順序が重要な処理
-- 中間結果の確認が必要
-
-### 適用例
-- コンポーネント作成
-- 機能実装
-- 複雑なセットアップ
-
-### 実装例
-
-```markdown
----
-description: Create a new React component with tests
----
-
-# Create React Component
-
-Component name: $ARGUMENTS
-
-## Step 1: Create Component File
-Create `src/components/$ARGUMENTS.tsx` with:
-- TypeScript interface for props
-- Functional component with hooks
-- JSDoc comments
-
-## Step 2: Create Test File
-Create `src/components/$ARGUMENTS.test.tsx` with:
-- Render test
-- Props test
-- Interaction tests
-
-## Step 3: Update Index
-Add export to `src/components/index.ts`
-
-## Step 4: Verify
-Run tests and type checking:
-```bash
-pnpm test -- $ARGUMENTS
-pnpm run typecheck
-````
-
-````
-
-### 特徴
-- ✓ ステップが明確
-- ✓ 進捗が追いやすい
-- ✓ デバッグが容易
-- ✗ 長くなりがち
-
-## パターン3: 条件分岐型
-
-### 用途
-- 環境別処理
-- 条件付き実行
-- 動的ワークフロー
-
-### 適用例
-- 環境別デプロイ
-- 条件付きテスト
-- 動的ビルド
-
-### 実装例
-
-```markdown
----
-description: Deploy to environment (staging/production)
----
-
-# Deployment Command
-
-Environment: $ARGUMENTS
-
-## Environment Detection
-Determine target environment from $ARGUMENTS:
-- If "staging" → Deploy to staging
-- If "production" → Deploy to production
-- Else → Error
-
-## Pre-deployment Checks
-1. Run tests: `pnpm test`
-2. Run linter: `pnpm run lint`
-3. Build: `pnpm run build`
-
-## Deployment Steps
-
-### If Staging:
-```bash
-aws s3 sync dist/ s3://staging-bucket/
-aws cloudfront create-invalidation --distribution-id STAGING_ID
-````
-
-### If Production:
-
-```bash
-# Require confirmation
-aws s3 sync dist/ s3://production-bucket/
-aws cloudfront create-invalidation --distribution-id PROD_ID
-```
-
-## Post-deployment
-
-Verify deployment health:
-
-```bash
-curl -f https://$ARGUMENTS.example.com/health
-```
-
-````
-
-### 特徴
-- ✓ 柔軟性が高い
-- ✓ 環境別処理が可能
-- ✓ 再利用性が高い
-- ✗ 複雑になりやすい
-
-## パターン4: ファイル参照型
-
-### 用途
-- ガイドライン参照
-- チェックリスト実行
-- 標準遵守確認
-
-### 適用例
-- コードレビュー
-- 品質チェック
-- ドキュメント生成
-
-### 実装例
-
-```markdown
----
-description: Review code following team guidelines
----
-
-# Code Review
-
-## Load Guidelines
-Read team coding standards:
-- @.claude/code-standards.md
-- @.claude/review-checklist.md
-
-## Review Criteria
-Based on guidelines, check:
-1. Code style consistency
-2. Test coverage
-3. Documentation
-4. Security considerations
-5. Performance implications
-
-## Generate Review Comments
-Create detailed review with:
-- Issues found (with severity)
-- Suggestions for improvement
-- Approved sections
-````
-
-### 特徴
-
-- ✓ ガイドラインの一元管理
-- ✓ 一貫性の確保
-- ✓ 更新が容易
-- ✗ 外部ファイルへの依存
-
-## パターン選択ガイド
-
-### 意思決定フロー
-
-```
-コマンドの複雑度は？
-│
-├─ シンプル（1-3ステップ）
-│  → パターン1: シンプル指示型
-│
-├─ 中程度（4-8ステップ）
-│  │
-│  ├─ 条件分岐が必要？
-│  │  ├─ Yes → パターン3: 条件分岐型
-│  │  └─ No  → パターン2: ステップバイステップ型
-│  │
-│  └─ 外部ファイル参照が必要？
-│     └─ Yes → パターン4: ファイル参照型
-│
-└─ 複雑（9+ステップ）
-   → パターン2 + パターン3の組み合わせ
-   または
-   → 高度な実装パターンを検討
-```
-
-### 選択基準
-
-| 基準         | パターン1 | パターン2 | パターン3 | パターン4 |
-| ------------ | --------- | --------- | --------- | --------- |
-| ステップ数   | 1-3       | 4-8       | 4-8       | 制約なし  |
-| 条件分岐     | なし      | 少ない    | 多い      | 可能      |
-| 外部参照     | なし      | なし      | なし      | 必要      |
-| 複雑度       | 低        | 中        | 中-高     | 中        |
-| メンテナンス | 容易      | 容易      | 中        | 容易      |
-
-## パターンの組み合わせ
-
-### ステップバイステップ + 条件分岐
-
-```markdown
-## Step 1: Environment Detection
-
-If $ARGUMENTS is "production":
-
-- Require additional approval
-- Use production configuration
-  Else:
-- Use staging configuration
-
-## Step 2: Pre-deployment Checks
-
-Run based on environment:
-
-- Staging: Basic tests
-- Production: Full test suite
-
-## Step 3: Deployment
-
-Execute environment-specific deployment
-```
-
-### ファイル参照 + 条件分岐
-
-```markdown
-## Load Configuration
-
-Read environment-specific config:
-
-- If staging: @.claude/config/staging.md
-- If production: @.claude/config/production.md
-
-## Apply Configuration
-
-Based on loaded config, execute deployment
-```
-
-## 詳細リソースの参照
-
-### パターン詳細
-
-各パターンの詳細は `resources/pattern*.md` を参照
-
-### 選択ガイド
-
-意思決定フローチャートは `resources/pattern-selection-guide.md` を参照
-
-### テンプレート
-
-- パターン1: `templates/simple-instruction-template.md`
-- パターン2: `templates/step-by-step-template.md`
-- パターン3: `templates/conditional-template.md`
-- パターン4: `templates/file-reference-template.md`
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# パターン選択ガイド
-cat .claude/skills/command-basic-patterns/resources/pattern-selection-guide.md
-```
-
-### テンプレート参照
-
-```bash
-# ステップバイステップテンプレート
-cat .claude/skills/command-basic-patterns/templates/step-by-step-template.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# 知識ドキュメントの品質検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-basic-patterns/resources/pattern-selection-guide.md
-
-# トークン見積もり
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-basic-patterns/SKILL.md
-
-# ドキュメント構造分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-basic-patterns
-```
-
-## 関連スキル
-
-- `.claude/skills/command-advanced-patterns/SKILL.md` - パイプライン、メタコマンド、インタラクティブ
-- `.claude/skills/command-arguments-system/SKILL.md` - 条件分岐での引数使用
-- `.claude/skills/command-error-handling/SKILL.md` - 各パターンでのエラーハンドリング
-
-## 更新履歴
-
-- v1.0.0 (2025-11-24): 初版作成
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

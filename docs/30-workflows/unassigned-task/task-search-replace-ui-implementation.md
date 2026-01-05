@@ -1,19 +1,19 @@
-# 検索・置換機能 UIコンポーネント実装 - タスク指示書
+# 検索・置換機能 UI実装 - タスク指示書
 
 ## メタ情報
 
-| 項目             | 内容                                                                              |
-| ---------------- | --------------------------------------------------------------------------------- |
-| タスクID         | UI-SR-001                                                                         |
-| タスク名         | 検索・置換UIコンポーネント実装                                                    |
-| 分類             | 機能実装                                                                          |
-| 対象機能         | FileSearchPanel / FileReplacePanel / WorkspaceSearchPanel / WorkspaceReplacePanel |
-| 優先度           | 高                                                                                |
-| 見積もり規模     | 中規模                                                                            |
-| ステータス       | 未実施                                                                            |
-| 発見元           | Phase 8 - 手動テスト検証（UIなしのためN/A）                                       |
-| 発見日           | 2025-12-12                                                                        |
-| 発見エージェント | -                                                                                 |
+| 項目         | 内容                                |
+| ------------ | ----------------------------------- |
+| タスクID     | task-imp-search-ui-001              |
+| タスク名     | 検索・置換機能 UI実装               |
+| 分類         | 改善                                |
+| 対象機能     | 検索・置換パネル                    |
+| 優先度       | 高                                  |
+| 見積もり規模 | 中規模                              |
+| ステータス   | 未実施                              |
+| 発見元       | Phase 9（手動テスト検証）           |
+| 発見日       | 2026-01-05                          |
+| 前提タスク   | TASK-SEARCH-REPLACE-001（バックエンド実装完了） |
 
 ---
 
@@ -21,25 +21,19 @@
 
 ### 1.1 背景
 
-検索・置換機能の開発において、以下が完了済み：
-
-- **Phase 1（設計）**: UI設計書が作成済み（T-01-1〜T-01-4）
-- **Phase 3（テスト作成）**: UIコンポーネントのテストファイルが作成済み
-- **Phase 4（実装）**: バックエンド/コアロジックのみ実装完了
-
-しかし、**UIコンポーネントの実装が未完了**のため、ユーザーが検索・置換機能を使用できない状態。
+検索・置換機能のバックエンド実装（SearchService、PatternMatcher、ReplaceEngine等）は完了し、テストカバレッジ83.92%を達成した。しかし、フロントエンドUIコンポーネントはElectronアプリとの統合が必要なため、別フェーズでの実装が必要となった。
 
 ### 1.2 問題点・課題
 
-- UIコンポーネントが存在しないため、実装済みのコアロジックをユーザーが利用できない
-- テストファイル（Red状態）は存在するが、コンポーネント本体が未実装
-- 手動テスト（Phase 8）が実施不可能
+- ユーザーが検索・置換機能を利用できない状態
+- バックエンド実装があっても、UIがなければ機能として完結しない
+- キーボードショートカット（Cmd+F/Ctrl+F）が動作しない
 
 ### 1.3 放置した場合の影響
 
-- 検索・置換機能が使用不可能
-- 実装済みのバックエンドコードが無駄になる
-- ユーザー体験の大幅な低下
+- 開発者の生産性低下（ファイル内検索が使えない）
+- 競合製品との機能差が開く
+- ユーザー離脱のリスク
 
 ---
 
@@ -47,46 +41,41 @@
 
 ### 2.1 目的
 
-UI設計書に基づいて、検索・置換機能のReactコンポーネントを実装し、バックエンドのコアロジックと接続する。
+バックエンド検索エンジンと連携し、ユーザーがUIから検索・置換機能を利用できるようにする。
 
 ### 2.2 最終ゴール
 
-- 4つのUIコンポーネントが実装される
-- IPCハンドラーを通じてコアロジックと接続される
-- 既存のテストファイルがすべてGreen状態になる
-- Phase 8の手動テストが実施可能になる
+1. Cmd+F（Mac）/ Ctrl+F（Windows/Linux）で検索パネルが開く
+2. 検索パネルでファイル内検索・置換ができる
+3. Cmd+Shift+F / Ctrl+Shift+Fでワークスペース検索パネルが開く
+4. 検索結果がハイライト表示される
+5. E2Eテストが全て通過する
 
 ### 2.3 スコープ
 
 #### 含むもの
 
-| コンポーネント        | 設計書                                         | テストファイル                      |
-| --------------------- | ---------------------------------------------- | ----------------------------------- |
-| FileSearchPanel       | `task-step01-1-file-search-ui-design.md`       | `FileSearchPanel.test.tsx` ✅       |
-| FileReplacePanel      | `task-step01-2-file-replace-ui-design.md`      | `FileReplacePanel.test.tsx` ✅      |
-| WorkspaceSearchPanel  | `task-step01-3-workspace-search-ui-design.md`  | `WorkspaceSearchPanel.test.tsx` ✅  |
-| WorkspaceReplacePanel | `task-step01-4-workspace-replace-ui-design.md` | `WorkspaceReplacePanel.test.tsx` ✅ |
-
-- IPCハンドラー実装（main↔renderer通信）
+- SearchPanel コンポーネント実装
+- WorkspaceSearchPanel コンポーネント実装
+- Zustand ストア実装（useSearchStore）
 - キーボードショートカット実装
-- アクセシビリティ対応（WCAG 2.1 AA）
+- E2Eテスト（Playwright）
 
 #### 含まないもの
 
-- コアロジックの変更（実装済み）
-- 新規機能追加
-- デザインの変更（設計書に従う）
+- バックエンド検索エンジンの修正（実装済み）
+- 検索アルゴリズムの変更
+- 新規検索オプションの追加
 
 ### 2.4 成果物
 
-| 種別             | 成果物                | 配置先                                                            |
-| ---------------- | --------------------- | ----------------------------------------------------------------- |
-| UIコンポーネント | FileSearchPanel       | `apps/desktop/src/renderer/components/organisms/SearchPanel/`     |
-| UIコンポーネント | FileReplacePanel      | 同上（SearchPanelと統合）                                         |
-| UIコンポーネント | WorkspaceSearchPanel  | `apps/desktop/src/renderer/components/organisms/WorkspaceSearch/` |
-| UIコンポーネント | WorkspaceReplacePanel | 同上（WorkspaceSearchと統合）                                     |
-| IPC              | IPCハンドラー         | `apps/desktop/src/main/ipc/`                                      |
-| IPC              | プリロードスクリプト  | `apps/desktop/src/preload/`                                       |
+| 成果物               | パス                                                              |
+| -------------------- | ----------------------------------------------------------------- |
+| SearchPanel          | apps/desktop/src/features/search/SearchPanel.tsx                  |
+| WorkspaceSearchPanel | apps/desktop/src/features/search/WorkspaceSearchPanel.tsx         |
+| Zustand Store        | apps/desktop/src/features/search/stores/useSearchStore.ts         |
+| カスタムフック       | apps/desktop/src/features/search/hooks/useSearchKeyboardShortcuts.ts |
+| E2Eテスト            | apps/desktop/tests/e2e/search.spec.ts                             |
 
 ---
 
@@ -94,30 +83,29 @@ UI設計書に基づいて、検索・置換機能のReactコンポーネント�
 
 ### 3.1 前提条件
 
-- 検索・置換コアロジックが実装済み（212テスト、100%カバレッジ）
-- UI設計書が完成済み（T-01-1〜T-01-4）
-- テストファイルが作成済み（Red状態）
+- バックエンド検索エンジン実装完了（packages/shared/src/search/）
+- Electronアプリが起動可能な状態
+- Playwrightがセットアップ済み
 
 ### 3.2 依存タスク
 
-- なし（コアロジックは実装済み）
+| タスクID               | 名称                       | ステータス |
+| ---------------------- | -------------------------- | ---------- |
+| TASK-SEARCH-REPLACE-001 | 検索・置換機能バックエンド | 完了       |
 
 ### 3.3 必要な知識・スキル
 
-- React / TypeScript
+- React コンポーネント設計
+- Zustand 状態管理
 - Electron IPC通信
-- Tailwind CSS
-- Vitest / React Testing Library
-- アクセシビリティ（ARIA属性）
+- Playwright E2Eテスト
+- ARIA アクセシビリティ
 
 ### 3.4 推奨アプローチ
 
-1. **IPC層の実装**: main↔renderer間の通信を確立
-2. **共通コンポーネント**: SearchInput, OptionToggle等の共通パーツを先に実装
-3. **FileSearchPanel**: 単一ファイル検索UIを実装
-4. **FileReplacePanel**: FileSearchPanelを拡張して置換UIを実装
-5. **WorkspaceSearchPanel**: ワークスペース検索UIを実装
-6. **WorkspaceReplacePanel**: WorkspaceSearchPanelを拡張して置換UIを実装
+1. TDDでテストファーストで実装
+2. 既存のUI設計書（ui-ux-panels.md）に準拠
+3. アクセシビリティ（WCAG 2.1 AA）準拠
 
 ---
 
@@ -125,221 +113,138 @@ UI設計書に基づいて、検索・置換機能のReactコンポーネント�
 
 ### Phase構成
 
-```
-Phase 3: テスト確認（既存テストがRed状態であることを確認）
-Phase 4-1: IPC層実装
-Phase 4-2: FileSearchPanel実装
-Phase 4-3: FileReplacePanel実装
-Phase 4-4: WorkspaceSearchPanel実装
-Phase 4-5: WorkspaceReplacePanel実装
-Phase 5: リファクタリング
-Phase 6: 品質保証
-Phase 8: 手動テスト（UI実装後に実施）
-```
+このタスクはPhase 4-9のTDDサイクルに従う。
 
----
+### Phase 4: テスト作成（Red）
 
-### Phase 4-1: IPC層実装
+#### 使用スキル
+
+| スキル            | パス                                          |
+| ----------------- | --------------------------------------------- |
+| frontend-testing  | .claude/skills/frontend-testing/SKILL.md      |
+| playwright-testing | .claude/skills/playwright-testing/SKILL.md   |
 
 #### 目的
 
-main↔renderer間の通信を確立し、コアロジックをUI から呼び出せるようにする。
+UIコンポーネントとE2Eの失敗するテストを作成する。
 
-#### Claude Code スラッシュコマンド
+#### 成果物
 
-```
-/ai:create-component ipc-search-replace
-```
-
-#### 使用エージェント
-
-- **エージェント**: @electron-architect
-- **選定理由**: Electron IPC通信の専門家
-- **参照**: `.claude/agents/agent_list.md`
-
-#### 実装内容
-
-```typescript
-// main/ipc/searchHandlers.ts
-ipcMain.handle("search:file", async (_, options) => {
-  return searchService.search(options);
-});
-
-ipcMain.handle("replace:file", async (_, options) => {
-  return replaceService.replace(options);
-});
-
-// preload/index.ts
-contextBridge.exposeInMainWorld("searchAPI", {
-  searchFile: (options) => ipcRenderer.invoke("search:file", options),
-  replaceFile: (options) => ipcRenderer.invoke("replace:file", options),
-});
-```
+- apps/desktop/src/features/search/__tests__/SearchPanel.test.tsx
+- apps/desktop/src/features/search/__tests__/WorkspaceSearchPanel.test.tsx
+- apps/desktop/tests/e2e/search.spec.ts
 
 #### 完了条件
 
-- [ ] IPCハンドラーが実装されている
-- [ ] プリロードスクリプトでAPIが公開されている
-- [ ] 型定義が完了している
+- [ ] 全テストが失敗する（Red状態）
+- [ ] テスト設計書で定義された全ケースがカバーされている
 
 ---
 
-### Phase 4-2: FileSearchPanel実装
+### Phase 5: 実装（Green）
+
+#### 使用スキル
+
+| スキル               | パス                                            |
+| -------------------- | ----------------------------------------------- |
+| electron-ui-patterns | .claude/skills/electron-ui-patterns/SKILL.md    |
+| accessibility-wcag   | .claude/skills/accessibility-wcag/SKILL.md      |
+| state-lifting        | .claude/skills/state-lifting/SKILL.md           |
 
 #### 目的
 
-単一ファイル内検索のUIコンポーネントを実装する。
+テストを通す最小限の実装を行う。
 
-#### Claude Code スラッシュコマンド
+#### 成果物
 
-```
-/ai:create-component FileSearchPanel
-```
-
-#### 使用エージェント
-
-- **エージェント**: @ui-designer, @frontend-tester
-- **選定理由**: UIコンポーネント実装とテストの専門家
-- **参照**: `.claude/agents/agent_list.md`
-
-#### 参照設計書
-
-- `docs/30-workflows/search-replace/task-step01-1-file-search-ui-design.md`
+- SearchPanel.tsx
+- WorkspaceSearchPanel.tsx
+- useSearchStore.ts
+- useSearchKeyboardShortcuts.ts
 
 #### 完了条件
 
-- [ ] コンポーネントが設計書通りに実装されている
-- [ ] 既存テスト（FileSearchPanel.test.tsx）がGreen状態
+- [ ] 全テストが通過する（Green状態）
 - [ ] キーボードショートカットが動作する
-- [ ] ARIA属性が設定されている
+- [ ] 検索結果がハイライト表示される
 
 ---
 
-### Phase 4-3: FileReplacePanel実装
+### Phase 6: リファクタリング
+
+#### 使用スキル
+
+| スキル               | パス                                             |
+| -------------------- | ------------------------------------------------ |
+| refactoring-patterns | .claude/skills/refactoring-patterns/SKILL.md     |
+| clean-code-practices | .claude/skills/clean-code-practices/SKILL.md     |
 
 #### 目的
 
-単一ファイル内置換のUIコンポーネントを実装する（FileSearchPanelの拡張）。
-
-#### Claude Code スラッシュコマンド
-
-```
-/ai:create-component FileReplacePanel
-```
-
-#### 使用エージェント
-
-- **エージェント**: @ui-designer, @frontend-tester
-- **選定理由**: UIコンポーネント実装とテストの専門家
-- **参照**: `.claude/agents/agent_list.md`
-
-#### 参照設計書
-
-- `docs/30-workflows/search-replace/task-step01-2-file-replace-ui-design.md`
+コード品質を改善しつつテストが通る状態を維持する。
 
 #### 完了条件
 
-- [ ] コンポーネントが設計書通りに実装されている
-- [ ] 既存テスト（FileReplacePanel.test.tsx）がGreen状態
-- [ ] 置換プレビュー機能が動作する
-- [ ] 確認ダイアログが実装されている
+- [ ] コードの重複が排除されている
+- [ ] 命名が適切
+- [ ] テストが引き続き通過する
 
 ---
 
-### Phase 4-4: WorkspaceSearchPanel実装
+### Phase 7: 品質保証
+
+#### 使用スキル
+
+| スキル             | パス                                         |
+| ------------------ | -------------------------------------------- |
+| static-analysis    | .claude/skills/static-analysis/SKILL.md      |
+| accessibility-wcag | .claude/skills/accessibility-wcag/SKILL.md   |
 
 #### 目的
 
-ワークスペース全体検索のUIコンポーネントを実装する。
-
-#### Claude Code スラッシュコマンド
-
-```
-/ai:create-component WorkspaceSearchPanel
-```
-
-#### 使用エージェント
-
-- **エージェント**: @ui-designer, @frontend-tester
-- **選定理由**: UIコンポーネント実装とテストの専門家
-- **参照**: `.claude/agents/agent_list.md`
-
-#### 参照設計書
-
-- `docs/30-workflows/search-replace/task-step01-3-workspace-search-ui-design.md`
+品質基準を満たすことを検証する。
 
 #### 完了条件
 
-- [ ] コンポーネントが設計書通りに実装されている
-- [ ] 既存テスト（WorkspaceSearchPanel.test.tsx）がGreen状態
-- [ ] ファイル別結果表示が動作する
-- [ ] 除外パターン設定が動作する
+- [ ] ESLint警告0件
+- [ ] TypeScript型チェック通過
+- [ ] WCAG 2.1 AA準拠
+- [ ] テストカバレッジ80%以上
 
 ---
 
-### Phase 4-5: WorkspaceReplacePanel実装
+### Phase 8: 最終レビューゲート
 
 #### 目的
 
-ワークスペース全体置換のUIコンポーネントを実装する。
-
-#### Claude Code スラッシュコマンド
-
-```
-/ai:create-component WorkspaceReplacePanel
-```
-
-#### 使用エージェント
-
-- **エージェント**: @ui-designer, @frontend-tester
-- **選定理由**: UIコンポーネント実装とテストの専門家
-- **参照**: `.claude/agents/agent_list.md`
-
-#### 参照設計書
-
-- `docs/30-workflows/search-replace/task-step01-4-workspace-replace-ui-design.md`
+全体品質と仕様準拠を確認する。
 
 #### 完了条件
 
-- [ ] コンポーネントが設計書通りに実装されている
-- [ ] 既存テスト（WorkspaceReplacePanel.test.tsx）がGreen状態
-- [ ] 複数ファイル一括置換が動作する
-- [ ] Undo/Redo連携が動作する
+- [ ] 全自動テスト通過
+- [ ] UI設計書との整合性確認
+- [ ] パフォーマンス基準達成（検索応答200ms以内）
 
 ---
 
-### Phase 6: 品質保証
+### Phase 9: 手動テスト検証
 
-#### Claude Code スラッシュコマンド
+#### 使用スキル
 
-```
-/ai:run-all-tests --coverage
-/ai:lint --fix
-/ai:run-accessibility-audit --scope component
-```
-
-#### 完了条件
-
-- [ ] 全テスト成功（コアロジック212 + UI新規テスト）
-- [ ] カバレッジ80%以上維持
-- [ ] Lintエラーなし
-- [ ] アクセシビリティ監査PASS
-
----
-
-### Phase 8: 手動テスト
+| スキル             | パス                                          |
+| ------------------ | --------------------------------------------- |
+| playwright-testing | .claude/skills/playwright-testing/SKILL.md    |
 
 #### 目的
 
-UI実装完了後、手動テストを実施する。
-
-#### テストケース
-
-`docs/30-workflows/search-replace/task-step08-manual-test-result.md` に記載の19テストケースを実施。
+実際の操作で動作確認する。
 
 #### 完了条件
 
-- [ ] 19テストケースすべてPASS
+- [ ] Cmd+F/Ctrl+Fで検索パネルが開く
+- [ ] 検索・置換が正常動作する
+- [ ] ワークスペース検索が動作する
+- [ ] スクリーンショット取得
 
 ---
 
@@ -347,23 +252,25 @@ UI実装完了後、手動テストを実施する。
 
 ### 機能要件
 
-- [ ] FileSearchPanelが動作する
-- [ ] FileReplacePanelが動作する
-- [ ] WorkspaceSearchPanelが動作する
-- [ ] WorkspaceReplacePanelが動作する
-- [ ] IPC通信でコアロジックと接続されている
-- [ ] キーボードショートカットが動作する
+- [ ] SearchPanelが開閉できる
+- [ ] 検索入力でリアルタイム検索が動作する
+- [ ] 検索オプション（大文字小文字、単語単位、正規表現）が切り替え可能
+- [ ] 置換（単一/全置換）が動作する
+- [ ] ワークスペース検索でファイル横断検索ができる
+- [ ] 検索結果クリックでファイル/位置にジャンプできる
 
 ### 品質要件
 
-- [ ] 既存UIテストファイルがすべてGreen状態
-- [ ] カバレッジ80%以上
-- [ ] Lint/型チェッククリア
+- [ ] テストカバレッジ80%以上
+- [ ] ESLint警告0件
+- [ ] TypeScript型チェック通過
 - [ ] WCAG 2.1 AA準拠
+- [ ] 検索応答200ms以内
 
 ### ドキュメント要件
 
-- [ ] 使用方法がコメントで説明されている
+- [ ] コンポーネントにJSDocコメント
+- [ ] READMEなし（プロジェクト規約に従う）
 
 ---
 
@@ -371,72 +278,67 @@ UI実装完了後、手動テストを実施する。
 
 ### テストケース
 
-- 既存テストファイル（4ファイル）の実行
-- 手動テスト19ケースの実施
+参照: docs/30-workflows/search-replace-functionality/phase-4-testing.md
 
 ### 検証手順
 
-```bash
-# UIテスト実行
-pnpm --filter @repo/desktop test:run FileSearchPanel
-pnpm --filter @repo/desktop test:run FileReplacePanel
-pnpm --filter @repo/desktop test:run WorkspaceSearchPanel
-pnpm --filter @repo/desktop test:run WorkspaceReplacePanel
-
-# 全テスト実行
-pnpm --filter @repo/desktop test:run
-```
+1. pnpm --filter @repo/desktop test:run でユニットテスト実行
+2. pnpm --filter @repo/desktop test:e2e でE2Eテスト実行
+3. アプリを起動してCmd+F/Ctrl+Fで検索パネルを開く
+4. 検索・置換操作を実行して動作確認
 
 ---
 
 ## 7. リスクと対策
 
-| リスク                  | 影響度 | 発生確率 | 対策                         |
-| ----------------------- | ------ | -------- | ---------------------------- |
-| 設計書と実装の乖離      | 中     | 低       | 設計書を厳密に参照           |
-| IPC通信のパフォーマンス | 中     | 中       | バッチ処理、デバウンス適用   |
-| アクセシビリティ不足    | 高     | 中       | 設計書のARIA属性を忠実に実装 |
+| リスク                           | 影響度 | 発生確率 | 対策                               |
+| -------------------------------- | ------ | -------- | ---------------------------------- |
+| Electron IPC通信の遅延           | 中     | 低       | 非同期処理とローディング状態の実装 |
+| 大規模ワークスペースでの性能低下 | 高     | 中       | ストリーミング結果表示、仮想スクロール |
+| アクセシビリティ準拠漏れ         | 中     | 中       | axe-coreによる自動チェック         |
 
 ---
 
 ## 8. 参照情報
 
-### 関連設計書
+### 関連ドキュメント
 
-- `docs/30-workflows/search-replace/task-step01-1-file-search-ui-design.md`
-- `docs/30-workflows/search-replace/task-step01-2-file-replace-ui-design.md`
-- `docs/30-workflows/search-replace/task-step01-3-workspace-search-ui-design.md`
-- `docs/30-workflows/search-replace/task-step01-4-workspace-replace-ui-design.md`
-
-### 関連実装（コアロジック）
-
-- `apps/desktop/src/main/search/` - 検索モジュール
-- `apps/desktop/src/main/replace/` - 置換モジュール
-- `apps/desktop/src/main/transaction/` - トランザクションモジュール
+| ドキュメント          | パス                                                               |
+| --------------------- | ------------------------------------------------------------------ |
+| UI設計仕様            | .claude/skills/aiworkflow-requirements/references/ui-ux-panels.md  |
+| SearchService API     | .claude/skills/aiworkflow-requirements/references/api-internal.md  |
+| 検索・置換タスク仕様  | docs/30-workflows/search-replace-functionality/                    |
+| Phase 9検証レポート   | docs/30-workflows/search-replace-functionality/outputs/phase-9/verification-report.md |
 
 ### 参考資料
 
-- [Electron IPC通信](https://www.electronjs.org/docs/latest/tutorial/ipc)
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- React Testing Library: https://testing-library.com/docs/react-testing-library/intro/
+- Playwright: https://playwright.dev/
+- Zustand: https://github.com/pmndrs/zustand
 
 ---
 
 ## 9. 備考
 
-### 既存テストファイル（Red状態）
+### レビュー指摘の原文（該当する場合）
 
-```
-apps/desktop/src/renderer/components/organisms/SearchPanel/__tests__/
-├── FileSearchPanel.test.tsx
-└── FileReplacePanel.test.tsx
+Phase 9 検証レポートより:
 
-apps/desktop/src/renderer/components/organisms/WorkspaceSearch/__tests__/
-├── WorkspaceSearchPanel.test.tsx
-└── WorkspaceReplacePanel.test.tsx
-```
+### フロントエンドUIコンポーネント（未実装）
+
+- **ステータス**: 未実装
+- **理由**: Electronアプリとの統合が必要
+
+#### 必要な作業
+
+1. SearchPanel コンポーネントの実装
+2. WorkspaceSearchPanel コンポーネントの実装
+3. Zustand ストアの実装
+4. キーボードショートカットの実装
+5. E2Eテストの実行
 
 ### 補足事項
 
-- UI設計書（Phase 1）は詳細に記述されているため、実装時は設計書を厳密に参照すること
-- コアロジックは212テスト、100%カバレッジで検証済みのため、UI側の問題に集中できる
-- 手動テスト（Phase 8）はUI実装完了後に実施すること
+- バックエンド実装はpackages/shared/src/search/に完了済み
+- テストカバレッジ83.92%達成済み
+- 設計書はdocs/30-workflows/search-replace-functionality/outputs/phase-2/にある

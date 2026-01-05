@@ -1,244 +1,138 @@
 ---
 name: zero-trust-security
 description: |
-  Zero Trust Security原則に基づく機密情報管理スキル。
+  ゼロトラストセキュリティの専門スキル。
+  認証・認可、マイクロセグメンテーション、継続的検証を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  - Zero Trust Networks（Evan Gilman）/ 適用: セキュリティアーキテクチャ / 目的: 信頼境界排除と継続的検証
+  - NIST SP 800-207 Zero Trust Architecture / 適用: フレームワーク設計 / 目的: 標準準拠
+  - MITRE ATT&CK / 適用: 脅威モデリング / 目的: 攻撃パターン対策
 
-  - `.claude/skills/zero-trust-security/resources/continuous-verification-implementation.md`: Continuous Verification Implementationリソース
-  - `.claude/skills/zero-trust-security/resources/jit-access-patterns.md`: Jit Access Patternsリソース
-  - `.claude/skills/zero-trust-security/resources/rbac-implementation.md`: Rbac Implementationリソース
+  Trigger:
+  ゼロトラスト実装時、認証・認可設計時、アクセス制御強化時、継続的検証実装時に使用
 
-  - `.claude/skills/zero-trust-security/templates/access-policy-template.yaml`: Access Policyテンプレート
-
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Zero Trust Security
 
 ## 概要
 
-Zero Trust（ゼロトラスト）は「誰も信用しない」前提のセキュリティモデルです。
-従来の境界防御ではなく、すべてのアクセスを毎回検証し、最小権限で
-機密情報へのアクセスを制限します。
+Zero Trust Security（ゼロトラスト・セキュリティ）は、「信頼しない、常に検証する」の原則に基づくセキュリティモデル。4つの専門エージェントによる包括的なセキュリティ実装を提供します。
 
-## Zero Trust の 5 原則
+## エージェント構成
 
-### 原則 1: 境界の消失
+| エージェント      | 役割             | 主な機能                                |
+| ----------------- | ---------------- | --------------------------------------- |
+| identity-verifier | ID検証・認証強化 | MFA設計、継続的認証、セッション管理     |
+| access-controller | アクセス制御     | RBAC/ABAC設計、最小権限、JIT権限        |
+| policy-enforcer   | ポリシー適用     | PDP/PEP実装、マイクロセグメンテーション |
+| trust-evaluator   | 信頼性評価       | リスクベース認証、UEBA、動的信頼スコア  |
 
-**従来モデル**: 内部ネットワーク = 安全
-**Zero Trust**: すべてのアクセスが潜在的に危険
+## ワークフロー
 
-**Secret 管理への適用**:
+### Phase 1: 要件分析と戦略策定
 
-- 開発者であっても本番 Secret に無制限アクセスは持たない
-- 社内ネットワークからのアクセスも認証・認可が必要
-- VPN 接続していても追加検証を実施
+**目的**: セキュリティ要件を分析し、ゼロトラスト戦略を策定
 
-**実装の詳細**: `resources/boundary-elimination-patterns.md`
+**アクション**:
 
-### 原則 2: 継続的検証
+1. `identity-verifier` で認証要件を分析
+2. `access-controller` でアクセス制御要件を整理
+3. 既存セキュリティとのギャップを特定
 
-**概念**: すべてのアクセスリクエストを毎回検証する
+### Phase 2: 設計と実装
 
-**Secret 管理への適用**:
+**目的**: ゼロトラスト原則に基づいたシステム設計・実装
 
-- セッショントークンの短い有効期限（15 分-1 時間）
-- Secret アクセス毎の認証・認可チェック
-- 異常なアクセスパターンの即座検知
+**アクション**:
 
-**実装の詳細**: `resources/continuous-verification-implementation.md`
+1. `identity-verifier` で認証フローを設計
+2. `access-controller` でポリシーを定義
+3. `policy-enforcer` でマイクロセグメンテーションを実装
+4. `trust-evaluator` で継続的検証を設定
 
-### 原則 3: マイクロセグメンテーション
+### Phase 3: 検証と運用
 
-**概念**: アクセス権限を細分化し、最小単位で管理
+**目的**: 実装の検証と継続的な運用体制構築
 
-**Secret 管理への適用**:
+**アクション**:
 
-- Secret をサービス単位で分離
-- 各サービスは必要最小限の Secret のみにアクセス
-- クロスサービスアクセスは明示的な承認が必要
+1. `scripts/validate-skill.mjs` でスキル構造検証
+2. ポリシー適用のテスト
+3. `scripts/log_usage.mjs` で使用記録
 
-**実装例**:
+## Task仕様ナビ
 
-```typescript
-const secretPolicies = {
-  "discord-service": ["DISCORD_WEBHOOK_URL"],
-  "ai-service": ["OPENAI_API_KEY", "DATABASE_URL"],
-  "payment-service": ["STRIPE_SECRET_KEY", "DATABASE_URL"],
-};
+| タスク             | 担当エージェント  | 参照リソース                                |
+| ------------------ | ----------------- | ------------------------------------------- |
+| MFA設計            | identity-verifier | `continuous-verification-implementation.md` |
+| RBAC設計           | access-controller | `rbac-implementation.md`                    |
+| JITアクセス        | access-controller | `jit-access-patterns.md`                    |
+| マイクロセグメント | policy-enforcer   | `rbac-implementation.md`                    |
+| リスクベース認証   | trust-evaluator   | `continuous-verification-implementation.md` |
+| 継続的検証         | trust-evaluator   | `continuous-verification-implementation.md` |
 
-function validateServiceAccess(service: string, secretName: string): boolean {
-  const allowed = secretPolicies[service] || [];
-  return allowed.includes(secretName);
-}
-```
+## ベストプラクティス
 
-### 原則 4: 動的ポリシー
+### すべきこと
 
-**概念**: コンテキストに応じてアクセス制御を動的に変更
+- 全てのリクエストで認証・認可を検証する
+- 最小権限の原則を厳守する
+- コンテキストに基づいて動的に信頼を評価する
+- 全てのアクセスを監査ログに記録する
+- 定期的にポリシーとアクセスパターンをレビューする
 
-**適用例**:
+### 避けるべきこと
 
-- 時間帯制限: 営業時間外のアクセスは追加承認
-- 地理的制限: 許可された地域外からのアクセス拒否
-- 異常検知: 通常と異なるパターンで追加認証
+- 「内部ネットワークだから安全」という前提
+- 一度の認証で永続的な信頼を付与
+- 過剰な権限の付与
+- 監査ログなしでの本番運用
 
-**実装の詳細**: `resources/dynamic-policy-engine.md`
+## リソース参照
 
-### 原則 5: 監視と分析
+### エージェント
 
-**概念**: すべての活動を監視し、異常を即座に検知
+| エージェント                  | 説明                   |
+| ----------------------------- | ---------------------- |
+| `agents/identity-verifier.md` | ID検証・認証強化       |
+| `agents/access-controller.md` | アクセス制御設計       |
+| `agents/policy-enforcer.md`   | ポリシー適用・実行     |
+| `agents/trust-evaluator.md`   | 信頼性評価・継続的検証 |
 
-**実装要件**:
+### リファレンス
 
-- すべての Secret アクセスをリアルタイムログ
-- 異常パターンの自動検知
-- アラート通知（Slack、Discord、Email）
+| リソース                                               | 説明                 |
+| ------------------------------------------------------ | -------------------- |
+| `references/continuous-verification-implementation.md` | 継続的検証実装ガイド |
+| `references/jit-access-patterns.md`                    | JITアクセスパターン  |
+| `references/rbac-implementation.md`                    | RBAC実装ガイド       |
 
-**実装の詳細**: `resources/monitoring-and-alerting.md`
+### アセット
 
-## アクセス制御パターン
+| アセット                             | 説明                             |
+| ------------------------------------ | -------------------------------- |
+| `assets/access-policy-template.yaml` | アクセス制御ポリシーテンプレート |
 
-### パターン 1: RBAC (Role-Based Access Control)
+### スクリプト
 
-**構成**: User → Role → Permissions → Secrets
-
-**実装**:
-
-```typescript
-const roles = {
-  developer: {
-    permissions: [{ action: "read", resources: ["secret/dev/*"] }],
-  },
-  devops: {
-    permissions: [
-      { action: "read", resources: ["secret/dev/*", "secret/staging/*"] },
-      { action: "rotate", resources: ["secret/staging/*"] },
-    ],
-  },
-  security_admin: {
-    permissions: [{ action: "*", resources: ["secret/*"] }],
-  },
-};
-```
-
-**詳細**: `resources/rbac-implementation.md`
-
-### パターン 2: ABAC (Attribute-Based Access Control)
-
-**構成**: User Attributes + Resource Attributes + Environment → Decision
-
-**詳細**: `resources/abac-implementation.md`
-
-### パターン 3: JIT (Just-In-Time) Access
-
-**概念**: 必要な時に、必要な期間だけアクセス権限を付与
-
-**実装**:
-
-```typescript
-async function requestJITAccess(
-  userId: string,
-  secretName: string,
-  duration: number,
-  justification: string,
-): Promise<AccessGrant> {
-  const approval = await requestApproval({ userId, secretName, justification });
-
-  return await grantTemporaryAccess({
-    userId,
-    secretName,
-    expiresAt: Date.now() + duration,
-    approvedBy: approval.approver,
-  });
-}
-```
-
-**詳細**: `resources/jit-access-patterns.md`
-
-## 異常検知ルール
-
-### ルールベース検知
-
-```typescript
-const anomalyRules = [
-  {
-    name: "rapid_access",
-    condition: (event) => event.accessCount > 10 && event.timeWindow < 600000,
-    severity: "high",
-    action: "alert",
-  },
-  {
-    name: "unusual_time",
-    condition: (event) => event.hour < 6 || event.hour > 22,
-    severity: "medium",
-    action: "require_mfa",
-  },
-  {
-    name: "new_location",
-    condition: (event) => !event.user.knownLocations.includes(event.location),
-    severity: "high",
-    action: "block",
-  },
-];
-```
-
-**詳細**: `resources/anomaly-detection-rules.md`
-
-## 監査とコンプライアンス
-
-### 監査ログ要件
-
-すべての Secret アクセスで記録:
-
-- Who（誰が）: user_id, email, roles
-- What（何を）: action, secret_name, classification
-- When（いつ）: timestamp
-- Where（どこで）: ip_address, location
-- How（どのように）: access_method, session_id
-- Result（結果）: success/denied/error
-
-**実装**: `resources/audit-logging-implementation.md`
-
-## 実装チェックリスト
-
-### Zero Trust 原則
-
-- [ ] 内部開発者も無制限アクセスを持たない設計か？
-- [ ] すべてのアクセスが毎回検証されるか？
-- [ ] Secret がサービス単位で分離されているか？
-- [ ] 動的ポリシー（時間、地域等）が考慮されているか？
-- [ ] すべてのアクセスが監査ログに記録されるか？
-
-### 最小権限
-
-- [ ] 各サービスが必要最小限の Secret のみにアクセスするか？
-- [ ] クロスサービスアクセスが明示的に承認制か？
-- [ ] 環境間の Secret 共有が防止されているか？
-
-### 継続的検証
-
-- [ ] セッション有効期限が短い（15 分-1 時間）か？
-- [ ] 異常アクセスパターンが検知されるか？
-- [ ] MFA が高リスクアクセスで要求されるか？
-
-## 関連スキル
-
-- `.claude/skills/secret-management-architecture/SKILL.md` - Secret 管理アーキテクチャ
-- `.claude/skills/encryption-key-lifecycle/SKILL.md` - 鍵管理
-- `.claude/skills/environment-isolation/SKILL.md` - 環境分離
-
-## リソースファイル
-
-詳細な実装は以下を参照:
-
-- `resources/rbac-implementation.md` - RBAC 詳細実装
-- `resources/jit-access-patterns.md` - JIT アクセス実装
-- `resources/continuous-verification-implementation.md` - 継続的検証実装
-
-## テンプレート
-
-- `templates/access-policy-template.yaml` - アクセスポリシーテンプレート
+| スクリプト                   | 説明           | 使用方法                             |
+| ---------------------------- | -------------- | ------------------------------------ |
+| `scripts/validate-skill.mjs` | スキル構造検証 | `node scripts/validate-skill.mjs -v` |
+| `scripts/log_usage.mjs`      | 使用記録       | `node scripts/log_usage.mjs`         |
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                      |
+| ---------- | ---------- | --------------------------------------------- |
+| 2.0.0      | 2026-01-01 | 4エージェント体制への再構成、18-skills.md準拠 |
+| 1.1.0      | 2025-12-31 | Task仕様ナビテーブル追加、日本語記述統一      |
+| 1.0.0      | 2025-12-24 | 初版リリース                                  |

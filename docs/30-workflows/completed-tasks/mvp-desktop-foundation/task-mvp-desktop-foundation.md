@@ -182,7 +182,7 @@ MVP の機能範囲を文書化する。
 
 #### 使用エージェント
 
-- **エージェント**: `@req-analyst`（仕様策定アナリスト）
+- **エージェント**: `.claude/agents/req-analyst.md`（仕様策定アナリスト）
 - **選定理由**: 要件の明確化と優先順位付けが専門
 - **参照**: `.claude/agents/req-analyst.md`
 
@@ -190,8 +190,8 @@ MVP の機能範囲を文書化する。
 
 | スキル名                    | 活用方法                   |
 | --------------------------- | -------------------------- |
-| requirements-engineering    | 要件のトリアージと範囲確定 |
-| acceptance-criteria-writing | MVP 完了基準の明確化       |
+| .claude/skills/requirements-engineering/SKILL.md    | 要件のトリアージと範囲確定 |
+| .claude/skills/acceptance-criteria-writing/SKILL.md | MVP 完了基準の明確化       |
 | functional-non-functional   | 機能要件と非機能要件の分類 |
 
 #### 成果物
@@ -231,7 +231,7 @@ packages/shared の内部構造を設計する。
 
 #### 使用エージェント
 
-- **エージェント**: `@arch-police`（アーキテクチャ・ポリス）
+- **エージェント**: `.claude/agents/arch-police.md`（アーキテクチャ・ポリス）
 - **選定理由**: クリーンアーキテクチャの依存関係ルール遵守が専門
 - **参照**: `.claude/agents/arch-police.md`
 
@@ -239,8 +239,8 @@ packages/shared の内部構造を設計する。
 
 | スキル名                      | 活用方法                     |
 | ----------------------------- | ---------------------------- |
-| clean-architecture-principles | レイヤー構造と依存方向の定義 |
-| solid-principles              | 単一責務の原則に基づく分割   |
+| .claude/skills/clean-architecture-principles/SKILL.md | レイヤー構造と依存方向の定義 |
+| .claude/skills/solid-principles/SKILL.md              | 単一責務の原則に基づく分割   |
 
 #### 成果物
 
@@ -277,7 +277,7 @@ SQLite のテーブル設計を行う。
 
 #### 使用エージェント
 
-- **エージェント**: `@db-architect`（DB スキーマ設計）
+- **エージェント**: `.claude/agents/db-architect.md`（DB スキーマ設計）
 - **選定理由**: データベース設計と Drizzle ORM が専門
 - **参照**: `.claude/agents/db-architect.md`
 
@@ -285,9 +285,9 @@ SQLite のテーブル設計を行う。
 
 | スキル名               | 活用方法               |
 | ---------------------- | ---------------------- |
-| database-normalization | 正規化レベルの決定     |
-| indexing-strategies    | 検索パフォーマンス向上 |
-| sql-anti-patterns      | アンチパターン回避     |
+| .claude/skills/database-normalization/SKILL.md | 正規化レベルの決定     |
+| .claude/skills/indexing-strategies/SKILL.md    | 検索パフォーマンス向上 |
+| .claude/skills/sql-anti-patterns/SKILL.md      | アンチパターン回避     |
 
 #### 成果物
 
@@ -324,7 +324,7 @@ CI/CD パイプラインを設計する。
 
 #### 使用エージェント
 
-- **エージェント**: `@devops-eng`（DevOps/CI エンジニア）
+- **エージェント**: `.claude/agents/devops-eng.md`（DevOps/CI エンジニア）
 - **選定理由**: GitHub Actions と自動デプロイが専門
 - **参照**: `.claude/agents/devops-eng.md`
 
@@ -332,8 +332,8 @@ CI/CD パイプラインを設計する。
 
 | スキル名              | 活用方法             |
 | --------------------- | -------------------- |
-| ci-cd-pipelines       | ワークフロー構成設計 |
-| deployment-strategies | リリース戦略の決定   |
+| .claude/skills/ci-cd-pipelines/SKILL.md       | ワークフロー構成設計 |
+| .claude/skills/deployment-strategies/SKILL.md | リリース戦略の決定   |
 
 #### 成果物
 
@@ -372,7 +372,7 @@ package.json の更新とライブラリインストール。
 
 #### 使用エージェント
 
-- **エージェント**: `@dep-mgr`（依存関係管理）
+- **エージェント**: `.claude/agents/dep-mgr.md`（依存関係管理）
 - **選定理由**: パッケージ管理と依存関係解決が専門
 - **参照**: `.claude/agents/dep-mgr.md`
 
@@ -380,8 +380,8 @@ package.json の更新とライブラリインストール。
 
 | スキル名                       | 活用方法                   |
 | ------------------------------ | -------------------------- |
-| monorepo-dependency-management | ワークスペース間の依存管理 |
-| semantic-versioning            | バージョン指定戦略         |
+| .claude/skills/monorepo-dependency-management/SKILL.md | ワークスペース間の依存管理 |
+| .claude/skills/semantic-versioning/SKILL.md            | バージョン指定戦略         |
 
 #### 導入ライブラリ一覧
 
@@ -455,7 +455,7 @@ Repository 層のユニットテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: `@unit-tester`（ユニットテスター）
+- **エージェント**: `.claude/agents/unit-tester.md`（ユニットテスター）
 - **選定理由**: TDD とユニットテストが専門
 - **参照**: `.claude/agents/unit-tester.md`
 
@@ -463,8 +463,8 @@ Repository 層のユニットテストを作成する。
 
 | スキル名       | 活用方法                    |
 | -------------- | --------------------------- |
-| tdd-principles | Red-Green-Refactor サイクル |
-| test-doubles   | SQLite のインメモリ DB 活用 |
+| .claude/skills/tdd-principles/SKILL.md | Red-Green-Refactor サイクル |
+| .claude/skills/test-doubles/SKILL.md   | SQLite のインメモリ DB 活用 |
 
 #### 成果物
 
@@ -509,7 +509,7 @@ Watcher サービスのユニットテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: `@unit-tester`（ユニットテスター）
+- **エージェント**: `.claude/agents/unit-tester.md`（ユニットテスター）
 - **選定理由**: イベント駆動のテストが専門
 - **参照**: `.claude/agents/unit-tester.md`
 
@@ -517,8 +517,8 @@ Watcher サービスのユニットテストを作成する。
 
 | スキル名                   | 活用方法                 |
 | -------------------------- | ------------------------ |
-| event-driven-file-watching | イベント発火のテスト     |
-| test-doubles               | ファイルシステムのモック |
+| .claude/skills/event-driven-file-watching/SKILL.md | イベント発火のテスト     |
+| .claude/skills/test-doubles/SKILL.md               | ファイルシステムのモック |
 
 #### 成果物
 
@@ -563,7 +563,7 @@ React コンポーネントのテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: `@frontend-tester`（フロントエンドテスター）
+- **エージェント**: `.claude/agents/frontend-tester.md`（フロントエンドテスター）
 - **選定理由**: React Testing Library が専門
 - **参照**: `.claude/agents/frontend-tester.md`
 
@@ -620,7 +620,7 @@ shared パッケージの基本構造を構築する。
 
 #### 使用エージェント
 
-- **エージェント**: `@arch-police`（アーキテクチャ・ポリス）
+- **エージェント**: `.claude/agents/arch-police.md`（アーキテクチャ・ポリス）
 - **選定理由**: レイヤー構造の実装が専門
 - **参照**: `.claude/agents/arch-police.md`
 
@@ -669,7 +669,7 @@ SQLite スキーマと Repository を実装する。
 
 #### 使用エージェント
 
-- **エージェント**: `@db-architect`（DB スキーマ設計）
+- **エージェント**: `.claude/agents/db-architect.md`（DB スキーマ設計）
 - **選定理由**: Drizzle ORM と SQLite が専門
 - **参照**: `.claude/agents/db-architect.md`
 
@@ -718,7 +718,7 @@ chokidar によるファイル監視サービスを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: `@local-watcher`（ファイル監視）
+- **エージェント**: `.claude/agents/local-watcher.md`（ファイル監視）
 - **選定理由**: chokidar とイベント駆動が専門
 - **参照**: `.claude/agents/local-watcher.md`
 
@@ -766,7 +766,7 @@ IPC チャネルとハンドラーを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: `@electron-architect`（Electron アーキテクト）
+- **エージェント**: `.claude/agents/electron-architect.md`（Electron アーキテクト）
 - **選定理由**: Electron IPC とセキュリティが専門
 - **参照**: `.claude/agents/electron-architect.md`
 
@@ -807,7 +807,7 @@ React コンポーネントを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: `@electron-ui-dev`（Electron UI 開発）
+- **エージェント**: `.claude/agents/electron-ui-dev.md`（Electron UI 開発）
 - **選定理由**: Electron Renderer と React が専門
 - **参照**: `.claude/agents/electron-ui-dev.md`
 
@@ -858,7 +858,7 @@ MVP でも最低限のコード品質を維持する。
 
 #### 使用エージェント
 
-- **エージェント**: `@code-quality`（コード品質）
+- **エージェント**: `.claude/agents/code-quality.md`（コード品質）
 - **選定理由**: ESLint, Prettier, TypeScript が専門
 - **参照**: `.claude/agents/code-quality.md`
 
@@ -909,7 +909,7 @@ CI ワークフローを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: `@gha-workflow-architect`（GitHub Actions アーキテクト）
+- **エージェント**: `.claude/agents/gha-workflow-architect.md`（GitHub Actions アーキテクト）
 - **選定理由**: GitHub Actions の設計が専門
 - **参照**: `.claude/agents/gha-workflow-architect.md`
 
@@ -948,7 +948,7 @@ CD ワークフローを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: `@electron-release`（Electron リリース）
+- **エージェント**: `.claude/agents/electron-release.md`（Electron リリース）
 - **選定理由**: electron-builder と GitHub Releases が専門
 - **参照**: `.claude/agents/electron-release.md`
 
@@ -1001,7 +1001,7 @@ End-to-End でシステム全体が動作することを確認する。
 
 #### 使用エージェント
 
-- **エージェント**: `@e2e-tester`（E2E テスター）
+- **エージェント**: `.claude/agents/e2e-tester.md`（E2E テスター）
 - **選定理由**: 統合テストと動作検証が専門
 - **参照**: `.claude/agents/e2e-tester.md`
 

@@ -129,6 +129,58 @@ describe("aiHandlers", () => {
 
       expect(result.data.ragSources).toBeUndefined();
     });
+
+    it("systemPromptが設定されている場合に受け取る", async () => {
+      const handler = handlers.get(IPC_CHANNELS.AI_CHAT)!;
+
+      const result = (await handler(
+        {},
+        {
+          message: "Hello",
+          systemPrompt: "You are a helpful assistant.",
+        },
+      )) as {
+        success: boolean;
+        data: { message: string };
+      };
+
+      expect(result.success).toBe(true);
+      expect(result.data.message).toBeTruthy();
+    });
+
+    it("systemPromptが空文字の場合も正しく処理する", async () => {
+      const handler = handlers.get(IPC_CHANNELS.AI_CHAT)!;
+
+      const result = (await handler(
+        {},
+        {
+          message: "Hello",
+          systemPrompt: "",
+        },
+      )) as {
+        success: boolean;
+        data: { message: string };
+      };
+
+      expect(result.success).toBe(true);
+    });
+
+    it("systemPromptがnullやundefinedでも正しく処理する", async () => {
+      const handler = handlers.get(IPC_CHANNELS.AI_CHAT)!;
+
+      const result = (await handler(
+        {},
+        {
+          message: "Hello",
+          systemPrompt: undefined,
+        },
+      )) as {
+        success: boolean;
+        data: { message: string };
+      };
+
+      expect(result.success).toBe(true);
+    });
   });
 
   describe("AI_CHECK_CONNECTION handler", () => {

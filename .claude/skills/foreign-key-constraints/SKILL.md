@@ -1,403 +1,128 @@
 ---
 name: foreign-key-constraints
 description: |
-    C.J.デイトの『リレーショナルデータベース入門』に基づく外部キー制約と参照整合性の設計。
-    CASCADE動作の戦略的選択、循環参照の回避、ソフトデリートとの整合性を提供。
-    専門分野:
-    - 参照整合性: 外部キー制約による関係の論理的一貫性保証
-    - CASCADE動作: ON DELETE/UPDATE の戦略的選択とビジネスルールとの整合
-    - 循環参照回避: 依存関係グラフ分析と設計パターン
-    - ソフトデリート対応: deleted_atカラムとCASCADE動作の矛盾解決
-    使用タイミング:
-    - 外部キー関係の設計時
-    - CASCADE動作の選択時
-    - 循環参照の検出・解消時
-    - ソフトデリートとハードデリートの設計判断時
-    Use proactively when designing foreign key relationships, choosing cascade behaviors,
-    or resolving conflicts between soft delete requirements and referential integrity.
+  外部キー制約と参照整合性をC.J. Dateの理論に基づいて設計するスキル。CASCADE動作の戦略的選択、循環参照の検出・解消、ソフトデリート整合性を提供。SQLite/Turso + Drizzle ORM環境に最適化。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • An Introduction to Database Systems（C.J. Date） / 適用: FK設計 / 目的: 理論的に正しい制約設計
+  • The Pragmatic Programmer（Hunt, Thomas） / 適用: 実装品質 / 目的: 保守性の高い設計
 
-  - `.claude/skills/foreign-key-constraints/resources/cascade-patterns.md`: ON DELETE/UPDATE CASCADE動作パターンとビジネスルール整合性ガイド
-  - `.claude/skills/foreign-key-constraints/templates/fk-design-checklist.md`: 外部キー設計チェックリストテンプレート
-  - `.claude/skills/foreign-key-constraints/scripts/check-fk-integrity.mjs`: 外部キー参照整合性検証スクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when designing foreign key relationships, selecting CASCADE behavior, detecting circular references, integrating soft delete patterns, or reviewing database schema integrity.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Task
 ---
 
-# Foreign Key Constraints Skill
+# 外部キー制約設計
 
 ## 概要
 
-このスキルは、リレーショナルデータベースにおける外部キー制約と参照整合性の設計に関する
-専門知識を提供します。C.J.デイトの理論に基づき、データの整合性を保証しながら、
-ビジネス要件との整合性を実現します。
+外部キー制約と参照整合性の設計を、C.J. Dateの理論的基礎とThe Pragmatic Programmerの実用的指針に基づいて支援。CASCADE動作の戦略的選択、循環参照の検出と解消、ソフトデリートとの整合性確保を実現。
 
-## 外部キー制約の基本
+## ワークフロー
 
-### 定義と目的
+### Phase 1: 設計レビュー
 
-外部キー制約は、あるテーブルのカラムが別のテーブルの主キーを参照することを保証します。
+**目的**: FK制約設計の妥当性を確認し、問題を早期発見
 
-**目的**:
+**アクション**:
 
-1. **参照整合性**: 孤立レコードの防止
-2. **データ品質**: 不正な参照の排除
-3. **自己文書化**: テーブル間の関係を明示
-4. **パフォーマンス**: クエリオプティマイザへのヒント
+1. データベーススキーマ定義を確認
+2. テーブル関係性を分析
+3. FK制約の妥当性を評価
 
-### Drizzle ORM での定義
+**Task**: [agents/design-review.md](agents/design-review.md) を参照
 
-```typescript
-import {
-  sqliteTable,
-  integer,
-  text,
-  foreignKey,
-} from "drizzle-orm/sqlite-core";
+### Phase 2: CASCADE動作の選択
 
-// 親テーブル
-export const users = sqliteTable("users", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name", { length: 100 }).notNull(),
-});
+**目的**: ビジネスルールに合致したCASCADE動作を選択
 
-// 子テーブル
-export const orders = sqliteTable("orders", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id),
-  status: text("status", { length: 20 }).notNull(),
-});
-```
+**アクション**:
 
-## CASCADE 動作の設計
+1. [references/cascade-patterns.md](references/cascade-patterns.md) でパターンを確認
+2. 親子テーブルの関係性を分析
+3. 適切なCASCADE設定を決定
 
-### ON DELETE オプション
+**Task**: [agents/cascade-selection.md](agents/cascade-selection.md) を参照
 
-#### CASCADE
+### Phase 3: 循環参照の検出
 
-**動作**: 親削除時に子も自動削除
+**目的**: 循環参照を検出し、解消策を提案
 
-```typescript
-userId: integer("user_id")
-  .notNull()
-  .references(() => users.id, { onDelete: "cascade" });
-```
+**アクション**:
 
-**適用場面**:
+1. FK制約の依存関係グラフを構築
+2. 循環参照を検出
+3. 解消策を優先順位付きで提案
 
-- 親が削除されたら子も不要な場合
-- ユーザー削除時の関連データ（セッション、一時データ）
-- 親子が強い所有関係にある場合
+**Task**: [agents/circular-detection.md](agents/circular-detection.md) を参照
 
-**注意点**:
+### Phase 4: ソフトデリート統合
 
-- 監査ログ要件と矛盾する可能性
-- 大量削除による長時間ロック
+**目的**: ソフトデリートとFK制約の整合性確保
 
-#### SET NULL
+**アクション**:
 
-**動作**: 親削除時に子の外部キーを NULL に設定
+1. ソフトデリート対象テーブルを特定
+2. FK制約との整合性を設計
+3. クエリ実装パターンを適用
 
-```typescript
-categoryId: integer("category_id").references(() => categories.id, {
-  onDelete: "set null",
-});
-```
+**Task**: [agents/soft-delete-integration.md](agents/soft-delete-integration.md) を参照
 
-**適用場面**:
+## Task仕様ナビ
 
-- 親との関連がオプショナルな場合
-- 親削除後も子レコードを保持したい場合
-- カテゴリ削除時の商品（未分類に変更）
+| Task                                                                     | 用途             | 入力               | 出力                   |
+| ------------------------------------------------------------------------ | ---------------- | ------------------ | ---------------------- |
+| [agents/design-review.md](agents/design-review.md)                       | 設計レビュー     | スキーマ定義       | 妥当性評価レポート     |
+| [agents/cascade-selection.md](agents/cascade-selection.md)               | CASCADE選択      | 関係性・要件       | 推奨CASCADE設定        |
+| [agents/circular-detection.md](agents/circular-detection.md)             | 循環参照検出     | FK依存グラフ       | 循環リスト・解消策     |
+| [agents/soft-delete-integration.md](agents/soft-delete-integration.md)   | ソフトデリート統合 | 削除ポリシー       | 実装パターン           |
 
-**注意点**:
+## ベストプラクティス
 
-- 外部キーカラムが NULL 許可である必要がある
-- アプリケーション側で NULL 処理が必要
+### すべきこと
 
-#### RESTRICT（デフォルト）
+- FK制約追加前に設計レビューを実施
+- CASCADE動作はパターンから選択
+- 循環参照を定期的に検証
+- ソフトデリート導入時はPhase 4を必ず実行
 
-**動作**: 子が存在する場合、親削除を禁止
+### 避けるべきこと
 
-```typescript
-userId: integer("user_id")
-  .notNull()
-  .references(() => users.id, { onDelete: "restrict" });
-```
+- 理論的根拠なしにCASCADEを多用する
+- 循環参照を確認せずにFK制約を追加
+- ソフトデリートとハードデリートの整合性確認を怠る
+- 深い階層のCASCADEをパフォーマンス考慮なしに設定
 
-**適用場面**:
+## リソース参照
 
-- 親削除前に明示的な処理が必要な場合
-- 監査ログ、履歴保持が必要な場合
-- 誤削除防止が重要な場合
-
-**注意点**:
-
-- アプリケーション側で削除順序の管理が必要
-- ソフトデリートと相性が良い
-
-#### NO ACTION
-
-**動作**: RESTRICT と類似（トランザクション終了時にチェック）
-
-```typescript
-userId: integer("user_id")
-  .notNull()
-  .references(() => users.id, { onDelete: "no action" });
-```
-
-**適用場面**:
-
-- 遅延制約（DEFERRABLE）と組み合わせる場合
-- トランザクション内で一時的に制約違反を許容する場合
-
-### ON UPDATE オプション
-
-#### CASCADE（推奨）
-
-**動作**: 親の主キー更新時に子の外部キーも自動更新
-
-```typescript
-userId: integer("user_id")
-  .notNull()
-  .references(() => users.id, { onUpdate: "cascade" });
-```
-
-**注意**: 主キー更新は一般的に推奨されない（UUID を使用）
-
-### CASCADE 動作選択フローチャート
-
-```
-親を削除する際、子レコードはどうすべきか？
-├─ 子も削除すべき
-│   └─ ON DELETE CASCADE
-│
-├─ 子を保持し、関連をNULLに
-│   └─ ON DELETE SET NULL（外部キーNULL許可）
-│
-├─ 子を保持し、関連を維持
-│   ├─ 監査/履歴要件あり？
-│   │   ├─ Yes → ソフトデリート（deleted_at）+ ON DELETE RESTRICT
-│   │   └─ No → ON DELETE RESTRICT + アプリ側で明示処理
-│   │
-│   └─ 親を論理削除のみ？
-│       └─ ON DELETE RESTRICT + ソフトデリート
-│
-└─ デフォルト値に設定
-    └─ ON DELETE SET DEFAULT（稀に使用）
-```
-
-## ソフトデリートとの統合
-
-### 問題
-
-ソフトデリート（deleted_at）と CASCADE DELETE は矛盾します：
-
-- CASCADE DELETE: 物理削除を伝播
-- ソフトデリート: 論理削除のみ、物理レコードは保持
-
-### 解決策
-
-#### パターン 1: ON DELETE RESTRICT + アプリケーション層でソフトデリート
-
-```typescript
-// スキーマ
-export const users = sqliteTable("users", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
-});
-
-export const orders = sqliteTable("orders", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "restrict" }),
-  deletedAt: integer("deleted_at", { mode: "timestamp" }),
-});
-
-// アプリケーション層
-class UserService {
-  async softDelete(userId: number) {
-    await db.transaction(async (tx) => {
-      // 関連レコードをソフトデリート
-      await tx
-        .update(orders)
-        .set({ deletedAt: Date.now() })
-        .where(eq(orders.userId, userId));
-
-      // ユーザーをソフトデリート
-      await tx
-        .update(users)
-        .set({ deletedAt: Date.now() })
-        .where(eq(users.id, userId));
-    });
-  }
-}
-```
-
-#### パターン 2: 履歴テーブル分離
-
-```sql
--- アクティブテーブル（CASCADE DELETE可能）
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL
-);
-
-CREATE TABLE orders (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
-);
-
--- 履歴テーブル（外部キーなし）
-CREATE TABLE orders_history (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  original_order_id INTEGER,  -- 参照のみ、制約なし
-  user_id INTEGER,            -- 参照のみ、制約なし
-  archived_at INTEGER NOT NULL DEFAULT (unixepoch())
-);
-```
-
-### ソフトデリート対応インデックス
-
-```typescript
-// アクティブレコードのみインデックス
-export const users = sqliteTable(
-  "users",
-  {
-    id: integer("id").primaryKey({ autoIncrement: true }),
-    email: text("email", { length: 255 }).notNull(),
-    deletedAt: integer("deleted_at", { mode: "timestamp" }),
-  },
-  (table) => ({
-    activeEmailIdx: index("idx_users_active_email")
-      .on(table.email)
-      .where(sql`deleted_at IS NULL`),
-  }),
-);
-```
-
-## 循環参照の回避
-
-### 検出方法
-
-循環参照の例:
-
-```
-users → departments → managers → users
-```
-
-### 解決パターン
-
-#### パターン 1: 自己参照テーブル
-
-```typescript
-// 階層構造（部門の親子関係）
-export const departments = sqliteTable("departments", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name", { length: 100 }).notNull(),
-  parentId: integer("parent_id").references(() => departments.id),
-});
-```
-
-#### パターン 2: 関係の分離
-
-```typescript
-// 循環を避けるため、管理関係を別テーブルに
-export const departments = sqliteTable("departments", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name", { length: 100 }).notNull(),
-});
-
-export const users = sqliteTable("users", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  departmentId: integer("department_id").references(() => departments.id),
-});
-
-export const departmentManagers = sqliteTable("department_managers", {
-  departmentId: integer("department_id").references(() => departments.id),
-  managerId: integer("manager_id").references(() => users.id),
-  primary: primaryKey({ columns: [departmentId, managerId] }),
-});
-```
-
-#### パターン 3: NULL 許可による打破
-
-```typescript
-export const departments = sqliteTable("departments", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  name: text("name", { length: 100 }).notNull(),
-  // 初期作成時はNULL、後で設定
-  managerId: integer("manager_id").references(() => users.id),
-});
-```
-
-## 外部キー命名規則
-
-### 推奨パターン
-
-```
-fk_[子テーブル]_[親テーブル]
-fk_[子テーブル]_[外部キーカラム]
-```
-
-### 例
-
-```typescript
-// 制約名を明示
-export const orders = pgTable(
-  "orders",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").notNull(),
-  },
-  (table) => ({
-    userFk: foreignKey({
-      name: "fk_orders_users",
-      columns: [table.userId],
-      foreignColumns: [users.id],
-    })
-      .onDelete("restrict")
-      .onUpdate("cascade"),
-  }),
-);
-```
-
-## 設計判断チェックリスト
-
-### 外部キー定義時
-
-- [ ] すべての参照関係に外部キー制約が定義されているか？
-- [ ] 外部キーカラムにインデックスが設定されているか？
-- [ ] CASCADE 動作がビジネスルールと整合しているか？
-- [ ] 循環参照が発生していないか？
-
-### ソフトデリート考慮
-
-- [ ] ソフトデリート要件と CASCADE 動作が矛盾していないか？
-- [ ] 監査ログ要件が CASCADE DELETE で損なわれないか？
-- [ ] アクティブレコードのみのインデックスが設定されているか？
-
-### パフォーマンス考慮
-
-- [ ] 大量削除によるロック影響が評価されているか？
-- [ ] CASCADE 伝播の深さが適切か？
-
-## 関連スキル
-
-- `.claude/skills/database-normalization/SKILL.md` - 正規化と外部キーの関係
-- `.claude/skills/indexing-strategies/SKILL.md` - 外部キーのインデックス
-- `.claude/skills/sql-anti-patterns/SKILL.md` - Polymorphic Associations 回避
-
-## 参照リソース
-
-詳細な情報は以下のリソースを参照:
-
-- `resources/cascade-patterns.md` - CASCADE 動作パターン詳細
-- `templates/fk-design-checklist.md` - 外部キー設計チェックリストテンプレート
-- `scripts/check-fk-integrity.mjs` - 外部キー整合性チェックスクリプト
+### references/（詳細知識）
+
+| リソース         | パス                                                     | 内容                       |
+| ---------------- | -------------------------------------------------------- | -------------------------- |
+| CASCADEパターン  | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |
+
+### scripts/（検証・記録）
+
+| スクリプト             | 用途         | 使用例                                                  |
+| ---------------------- | ------------ | ------------------------------------------------------- |
+| check-fk-integrity.mjs | 整合性検証   | `node scripts/check-fk-integrity.mjs --schema <dir>`   |
+| log_usage.mjs          | 利用記録     | `node scripts/log_usage.mjs --result success`          |
+
+### assets/（テンプレート）
+
+| テンプレート         | 用途                   |
+| -------------------- | ---------------------- |
+| fk-design-checklist.md | FK設計チェックリスト |
+
+## 変更履歴
+
+| Version | Date       | Changes                                                  |
+| ------- | ---------- | -------------------------------------------------------- |
+| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化      |
+| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                               |
+| 1.0.0   | 2025-12-24 | 初版作成                                                 |

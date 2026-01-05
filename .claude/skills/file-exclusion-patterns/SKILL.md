@@ -1,465 +1,363 @@
 ---
 name: file-exclusion-patterns
 description: |
-    ファイル監視システムにおける効率的な除外パターン設計の専門知識。
-    .gitignore互換のglob pattern、プラットフォーム固有の一時ファイル除外、
-    パフォーマンス最適化のための早期除外戦略を提供。
-    使用タイミング:
-    - ファイル監視の除外パターンを設計する時
-    - .gitignoreからパターンを抽出・変換する時
-    - 一時ファイル・システムファイルを除外したい時
-    - 監視対象を効率的に絞り込みたい時
-    - クロスプラットフォーム対応の除外設定を行う時
+  ファイル監視システムにおける効率的な除外パターン設計の専門知識。.gitignore互換のglob pattern、プラットフォーム固有の一時ファイル除外、パフォーマンス最適化のための早期除外戦略を提供。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer / 適用: ファイル監視・パターン設計 / 目的: 実用的な除外戦略とglob構文の習得
+  • Software Engineering at Google / 適用: パフォーマンス最適化・クロスプラットフォーム対応 / 目的: 早期除外戦略とOS間の統一設定
+  • Refactoring / 適用: パターンの保守性 / 目的: 重複を排除し明確な意図を持つ設計
 
-  - `.claude/skills/file-exclusion-patterns/resources/standard-patterns.md`: 標準除外パターンカタログ（node_modules、.git等）
-  - `.claude/skills/file-exclusion-patterns/templates/pattern-builder.ts`: パターンビルダーとChokidar変換テンプレート
-
-  Use proactively when implementing file-exclusion-patterns patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when designing file exclusion patterns, optimizing .gitignore files, improving file watching performance, or implementing cross-platform exclusion rules.
+  Keywords: gitignore, glob pattern, file watching, chokidar, build optimization, node_modules, platform-specific, .DS_Store, Thumbs.db, performance tuning
+version: 1.2.0
+level: 1
+last_updated: 2025-12-31
+allowed-tools:
+  - Bash
+  - Edit
+  - Glob
+  - Grep
+  - Read
+  - Write
 ---
 
-# File Exclusion Patterns
+# ファイル除外パターン設計
 
 ## 概要
 
-このスキルは、ファイル監視システムにおける除外パターン設計の専門知識を提供します。効率的な除外パターンにより、監視負荷を削減し、不要なイベント発火を防ぎます。
+ファイル監視システムにおける効率的な除外パターン設計の専門知識を提供します。
 
----
+.gitignore互換のglob pattern、プラットフォーム固有の一時ファイル除外、パフォーマンス最適化のための早期除外戦略により、ビルドシステムやファイル監視ツールの効率を大幅に改善できます。
 
-## 核心概念
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
-### Glob Patternの基本
+## ワークフロー
 
-| パターン     | 意味                           | 例                                   |
-| ------------ | ------------------------------ | ------------------------------------ |
-| `*`          | 任意の文字列（パス区切り除く） | `*.log` → access.log                 |
-| `**`         | 任意の階層のディレクトリ       | `**/node_modules` → a/b/node_modules |
-| `?`          | 任意の1文字                    | `file?.txt` → file1.txt              |
-| `[abc]`      | 文字クラス                     | `[Ff]ile` → File, file               |
-| `[!abc]`     | 否定文字クラス                 | `[!.]*.js` → .で始まらない.js        |
-| `!(pattern)` | 否定パターン                   | `!(*.md)` → .md以外                  |
-| `{a,b}`      | 選択パターン                   | `*.{js,ts}` → .jsまたは.ts           |
+### Phase 1: 要件分析とTask選択
 
-### 除外設計の原則
+**目的**: プロジェクト要件を分析し、適切なTaskを選択する
 
-1. **早期除外**: ディレクトリレベルで除外（ファイルレベルより効率的）
-2. **明示性**: 暗黙のルールより明示的なパターン
-3. **保守性**: .gitignoreとの整合性を維持
-4. **プラットフォーム対応**: OS固有ファイルを考慮
+**アクション**:
 
----
+1. プロジェクトタイプ、対象プラットフォーム、パフォーマンス要件を確認
+2. 下記の「Task仕様ナビ」から実行すべきTaskを選択
+3. `references/Level1_basics.md` で基礎知識を確認
 
-## 標準除外パターンカタログ
+**Task選択ガイド**:
 
-### パッケージマネージャー関連
+- 新規プロジェクト → Pattern Designer
+- 複数OS対応 → Platform Optimizer
+- パフォーマンス問題 → Performance Tuner
+- 検証が必要 → Pattern Validator
 
-```typescript
-const packageManagerPatterns = [
-  // Node.js
-  "**/node_modules/**",
-  "**/package-lock.json",
-  "**/yarn.lock",
-  "**/pnpm-lock.yaml",
+### Phase 2: Task実行
 
-  // Python
-  "**/__pycache__/**",
-  "**/*.pyc",
-  "**/.venv/**",
-  "**/venv/**",
+**目的**: 選択したTaskを実行し、除外パターンを設計・最適化する
 
-  // その他
-  "**/vendor/**",
-  "**/bower_components/**",
-];
+**アクション**:
+
+1. `agents/` の該当Task仕様書を参照
+2. Task仕様に従って必要な入力を準備
+3. Task実行（必要に応じて複数Taskを順次実行）
+4. 各Taskの成果物を次のTaskへ引き継ぐ
+
+**Task実行順序の例**:
+
+```
+Pattern Designer → Platform Optimizer → Performance Tuner → Pattern Validator
 ```
 
-### バージョン管理システム
+### Phase 3: 検証と記録
 
-```typescript
-const vcsPatterns = ["**/.git/**", "**/.svn/**", "**/.hg/**", "**/.bzr/**"];
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. Pattern Validator で最終検証を実施
+2. 生成されたパターンファイルをプロジェクトに適用
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+**検証コマンド**:
+
+```bash
+node .claude/skills/file-exclusion-patterns/scripts/log_usage.mjs \
+  --result success \
+  --phase "Phase 2" \
+  --agent "pattern-designer"
 ```
 
-### ビルド成果物
-
-```typescript
-const buildPatterns = [
-  "**/dist/**",
-  "**/build/**",
-  "**/out/**",
-  "**/.next/**",
-  "**/.nuxt/**",
-  "**/.output/**",
-  "**/coverage/**",
-  "**/.turbo/**",
-];
-```
-
-### 一時ファイル
-
-```typescript
-const tempFilePatterns = [
-  // エディタ
-  "**/*.swp",
-  "**/*.swo",
-  "**/*~",
-  "**/.#*",
-  "**/#*#",
-
-  // Office
-  "**/~$*",
-  "**/*.tmp",
-
-  // 汎用
-  "**/*.temp",
-  "**/*.bak",
-  "**/*.backup",
-  "**/tmp/**",
-  "**/temp/**",
-];
-```
-
-### プラットフォーム固有
-
-```typescript
-const platformPatterns = {
-  // macOS
-  macos: [
-    "**/.DS_Store",
-    "**/.AppleDouble",
-    "**/.LSOverride",
-    "**/._*",
-    "**/.Spotlight-V100/**",
-    "**/.Trashes/**",
-  ],
-
-  // Windows
-  windows: [
-    "**/Thumbs.db",
-    "**/ehthumbs.db",
-    "**/Desktop.ini",
-    "**/$RECYCLE.BIN/**",
-  ],
-
-  // Linux
-  linux: ["**/.directory", "**/*~"],
-};
-```
-
-### IDE/エディタ設定
-
-```typescript
-const idePatterns = [
-  "**/.idea/**",
-  "**/.vscode/**",
-  "**/*.sublime-*",
-  "**/.project",
-  "**/.classpath",
-  "**/.settings/**",
-];
-```
-
----
-
-## Chokidar向けパターン変換
-
-### .gitignoreからの変換
-
-```typescript
-/**
- * .gitignoreパターンをChokidar用に変換
- */
-function convertGitignoreToChokidar(gitignoreLine: string): string | null {
-  let pattern = gitignoreLine.trim();
-
-  // コメントと空行をスキップ
-  if (!pattern || pattern.startsWith("#")) {
-    return null;
-  }
-
-  // 否定パターンは非対応（スキップ）
-  if (pattern.startsWith("!")) {
-    return null;
-  }
-
-  // 先頭の/を削除（相対パスに変換）
-  pattern = pattern.replace(/^\//, "");
-
-  // ディレクトリ指定（末尾の/）
-  if (pattern.endsWith("/")) {
-    pattern = pattern.slice(0, -1) + "/**";
-  }
-
-  // **/プレフィックスがない場合は追加
-  if (!pattern.startsWith("**/") && !pattern.startsWith("/")) {
-    pattern = "**/" + pattern;
-  }
-
-  return pattern;
-}
-```
-
-### 複合パターンの構築
-
-```typescript
-interface ExclusionConfig {
-  includePackageManagers: boolean;
-  includeVCS: boolean;
-  includeBuildArtifacts: boolean;
-  includeTempFiles: boolean;
-  includePlatformFiles: boolean;
-  includeIDEFiles: boolean;
-  customPatterns: string[];
-}
-
-function buildExclusionPatterns(config: ExclusionConfig): string[] {
-  const patterns: string[] = [];
-
-  if (config.includePackageManagers) {
-    patterns.push(...packageManagerPatterns);
-  }
-  if (config.includeVCS) {
-    patterns.push(...vcsPatterns);
-  }
-  if (config.includeBuildArtifacts) {
-    patterns.push(...buildPatterns);
-  }
-  if (config.includeTempFiles) {
-    patterns.push(...tempFilePatterns);
-  }
-  if (config.includePlatformFiles) {
-    const platform = process.platform;
-    if (platform === "darwin") {
-      patterns.push(...platformPatterns.macos);
-    } else if (platform === "win32") {
-      patterns.push(...platformPatterns.windows);
-    } else {
-      patterns.push(...platformPatterns.linux);
-    }
-  }
-  if (config.includeIDEFiles) {
-    patterns.push(...idePatterns);
-  }
-
-  patterns.push(...config.customPatterns);
-
-  return [...new Set(patterns)]; // 重複除去
-}
-```
-
----
-
-## 推奨パターンセット
-
-### 開発環境（最小）
-
-```typescript
-const minimalDevPatterns = [
-  "**/node_modules/**",
-  "**/.git/**",
-  "**/dist/**",
-  "**/*.tmp",
-  "**/.DS_Store",
-];
-```
-
-### 開発環境（標準）
-
-```typescript
-const standardDevPatterns = [
-  // パッケージ
-  "**/node_modules/**",
-
-  // VCS
-  "**/.git/**",
-
-  // ビルド
-  "**/dist/**",
-  "**/build/**",
-  "**/.next/**",
-
-  // 一時ファイル
-  "**/*.swp",
-  "**/*~",
-  "**/*.tmp",
-
-  // プラットフォーム
-  "**/.DS_Store",
-  "**/Thumbs.db",
-
-  // ログ
-  "**/*.log",
-  "**/logs/**",
-];
-```
-
-### 本番環境（厳格）
-
-```typescript
-const productionPatterns = [
-  // 標準パターン全て
-  ...standardDevPatterns,
-
-  // 追加の除外
-  "**/coverage/**",
-  "**/.turbo/**",
-  "**/.cache/**",
-  "**/test/**",
-  "**/tests/**",
-  "**/__tests__/**",
-  "**/*.test.*",
-  "**/*.spec.*",
-];
-```
-
----
-
-## パターン評価と最適化
-
-### 効率性チェック
-
-```typescript
-/**
- * パターンの効率性を評価
- */
-function evaluatePatternEfficiency(pattern: string): {
-  efficient: boolean;
-  suggestion?: string;
-} {
-  // ディレクトリ優先: ファイルパターンよりディレクトリパターンの方が効率的
-  if (!pattern.includes("/**") && !pattern.endsWith("/")) {
-    if (!pattern.includes(".")) {
-      return {
-        efficient: false,
-        suggestion: `${pattern}/**（ディレクトリとして除外）`,
-      };
-    }
-  }
-
-  // 曖昧なパターンの警告
-  if (pattern === "*" || pattern === "**") {
-    return {
-      efficient: false,
-      suggestion: "より具体的なパターンを使用してください",
-    };
-  }
-
-  return { efficient: true };
-}
-```
-
-### カバレッジ分析
-
-```typescript
-/**
- * 除外パターンがカバーするファイル数を推定
- */
-async function analyzePatternCoverage(
-  watchPath: string,
-  patterns: string[],
-): Promise<{
-  totalFiles: number;
-  excludedFiles: number;
-  coveragePercent: number;
-  patternBreakdown: Map<string, number>;
-}> {
-  // 実装は用途に応じて
-  // micromatchやminimatchを使用してパターンマッチング
-}
-```
-
----
-
-## 判断基準チェックリスト
-
-### 設計時
-
-- [ ] 監視対象ディレクトリのファイル構成を把握したか？
-- [ ] プロジェクトの.gitignoreを確認したか？
-- [ ] 使用するOSのシステムファイルを考慮したか？
-- [ ] パッケージマネージャーのロックファイルを除外したか？
-
-### 実装時
-
-- [ ] ディレクトリパターン（`/**`）を優先しているか？
-- [ ] パターンの重複がないか？
-- [ ] 除外パターンがビジネスに必要なファイルを除外していないか？
-
-### テスト時
-
-- [ ] 意図したファイルが除外されているか？
-- [ ] 必要なファイルが監視対象に含まれているか？
-- [ ] パフォーマンスが改善されているか？
-
----
-
-## アンチパターン
-
-### ❌ 避けるべきパターン
-
-```typescript
-// 1. 過度に広いパターン
-ignored: "*"; // すべて除外
-
-// 2. 重複するパターン
-ignored: [
-  "**/node_modules/**",
-  "node_modules/**", // 重複
-  "./node_modules/**", // 重複
-];
-
-// 3. ファイル単位の除外（非効率）
-ignored: [
-  "**/node_modules/package1/file1.js",
-  "**/node_modules/package1/file2.js",
-  // ディレクトリごと除外すべき
-];
-
-// 4. 拡張子のみの除外（意図しない除外の可能性）
-ignored: "*.json"; // package.jsonも除外される
-```
-
-### ✅ 推奨パターン
-
-```typescript
-// 1. 具体的なパターン
-ignored: "**/node_modules/**";
-
-// 2. 重複のない設計
-ignored: ["**/node_modules/**"]; // 1つで十分
-
-// 3. ディレクトリ単位の除外
-ignored: ["**/node_modules/**"]; // 効率的
-
-// 4. 必要に応じた例外
-ignored: [
-  "**/*.json",
-  "!**/package.json", // 例外（Chokidarでは非対応、フィルタリングで対応）
-];
-```
-
----
-
-## 関連スキル
-
-- `.claude/skills/event-driven-file-watching/SKILL.md` - ファイル監視
-- `.claude/skills/debounce-throttle-patterns/SKILL.md` - イベント最適化
-- `.claude/skills/context-optimization/SKILL.md` - パフォーマンス最適化
-
----
+## Task仕様ナビ
+
+各Taskの詳細仕様は `agents/` ディレクトリに配置されています。実行直前に該当ファイルを読み込んでください。
+
+### Pattern Designer
+
+**ファイル**: `agents/pattern-designer.md`
+
+**目的**: プロジェクト要件に基づいた除外パターンの設計
+
+**入力**:
+
+- プロジェクト情報（言語、パッケージマネージャ、ビルドツール等）
+- カスタム要件（追加の除外パターン）
+
+**出力**:
+
+- .gitignore形式の除外パターンファイル
+- 設計メモ（パターン選択の根拠）
+
+**参照リソース**:
+
+- `references/Level1_basics.md` - 基本パターン
+- `references/standard-patterns.md` - プロジェクト別テンプレート
+- `references/glob-pattern-guide.md` - glob構文リファレンス
+
+**使用タイミング**:
+
+- 新規プロジェクトで.gitignoreを作成する時
+- 既存パターンを見直したい時
+- プロジェクトタイプに応じた標準パターンが必要な時
+
+### Platform Optimizer
+
+**ファイル**: `agents/platform-optimizer.md`
+
+**目的**: Windows/macOS/Linux対応の最適化
+
+**入力**:
+
+- ターゲットプラットフォーム（Windows, macOS, Linux）
+- ベース除外パターン（Pattern Designerの出力）
+
+**出力**:
+
+- プラットフォーム最適化パターン
+- プラットフォーム互換性レポート
+
+**参照リソース**:
+
+- `references/platform-specific-exclusions.md` - OS別パターン集
+- `references/Level3_advanced.md` - クロスプラットフォーム戦略
+
+**使用タイミング**:
+
+- 複数OSで開発するプロジェクトの設定時
+- OS固有の一時ファイルを除外したい時
+- プラットフォーム間の互換性問題を解決したい時
+
+### Performance Tuner
+
+**ファイル**: `agents/performance-tuner.md`
+
+**目的**: パフォーマンス最適化のためのパターン配置
+
+**入力**:
+
+- 除外パターンセット
+- プロジェクト統計情報（ファイル数、ディレクトリ構造等）
+
+**出力**:
+
+- 最適化済み除外パターン（処理順序を最適化）
+- パフォーマンス改善レポート
+
+**参照リソース**:
+
+- `references/Level2_intermediate.md` - 早期除外戦略
+- `references/Level4_expert.md` - 大規模システム最適化
+
+**使用タイミング**:
+
+- ファイル監視が遅い時
+- ビルド時間を短縮したい時
+- 大規模プロジェクトでパフォーマンス問題が発生した時
+
+### Pattern Validator
+
+**ファイル**: `agents/pattern-validator.md`
+
+**目的**: 除外パターンの検証と修正提案
+
+**入力**:
+
+- 検証対象パターン
+- プロジェクトコンテキスト（任意）
+
+**出力**:
+
+- 検証レポート（構文チェック、機能チェック）
+- 修正済みパターン（問題がある場合）
+
+**参照リソース**:
+
+- `references/glob-pattern-guide.md` - 正しいglob構文
+- `references/Level3_advanced.md` - アンチパターン集
+
+**使用タイミング**:
+
+- パターン設計後の最終確認時
+- 既存パターンの問題を診断したい時
+- アンチパターンを検出したい時
+
+## ベストプラクティス
+
+### すべきこと
+
+- **プロジェクト分析**: Pattern Designerでプロジェクトタイプに適したベースパターンを選択する
+- **glob構文の確認**: `references/glob-pattern-guide.md` で正しい構文を参照する
+- **OS対応**: Platform Optimizerで複数OSの一時ファイルを適切に除外する
+- **パフォーマンス重視**: Performance Tunerで頻繁にマッチするパターンを上位に配置する
+- **検証の実施**: Pattern Validatorで構文エラーやアンチパターンをチェックする
+- **段階的実装**: Task仕様に従い、入力→処理→検証のフローを守る
+- **記録の保存**: `scripts/log_usage.mjs` で実行結果を記録し、継続的改善に活用する
+
+### 避けるべきこと
+
+- **検証スキップ**: Pattern Validatorを使わずにパターンを本番適用することを避ける
+- **アンチパターン**: `**/node_modules/*/` などの誤ったglob構文を使用しない
+- **プラットフォーム無視**: OS固有の違いを考慮せず、すべての環境で同じパターンを使わない
+- **順序の軽視**: パフォーマンスを無視した無秩序なパターン配置を避ける
+- **過剰な否定パターン**: `!` による否定パターンを多用しすぎない（保守性低下）
+- **知識の欠如**: globパターンの仕様を理解せずに見よう見まねでパターンを書かない
+- **テスト不足**: 実際のプロジェクトで動作確認せずに複雑なパターンを導入しない
 
 ## リソース参照
 
+### Task仕様書（agents/）
+
+実行直前に読み込む、Taskの詳細仕様書：
+
 ```bash
-# 標準パターンカタログ
-cat .claude/skills/file-exclusion-patterns/resources/standard-patterns.md
+# Pattern Designer - 基本パターン設計
+cat .claude/skills/file-exclusion-patterns/agents/pattern-designer.md
 
-# .gitignore変換ガイド
-cat .claude/skills/file-exclusion-patterns/resources/gitignore-conversion.md
+# Platform Optimizer - プラットフォーム最適化
+cat .claude/skills/file-exclusion-patterns/agents/platform-optimizer.md
 
-# パターンビルダーテンプレート
-cat .claude/skills/file-exclusion-patterns/templates/pattern-builder.ts
+# Performance Tuner - パフォーマンス最適化
+cat .claude/skills/file-exclusion-patterns/agents/performance-tuner.md
+
+# Pattern Validator - パターン検証
+cat .claude/skills/file-exclusion-patterns/agents/pattern-validator.md
 ```
+
+### 学習リソース（references/）
+
+必要時に読み込む知識ベース：
+
+```bash
+# レベル別ガイド
+cat .claude/skills/file-exclusion-patterns/references/Level1_basics.md
+cat .claude/skills/file-exclusion-patterns/references/Level2_intermediate.md
+cat .claude/skills/file-exclusion-patterns/references/Level3_advanced.md
+cat .claude/skills/file-exclusion-patterns/references/Level4_expert.md
+
+# 専門リソース
+cat .claude/skills/file-exclusion-patterns/references/glob-pattern-guide.md
+cat .claude/skills/file-exclusion-patterns/references/platform-specific-exclusions.md
+cat .claude/skills/file-exclusion-patterns/references/standard-patterns.md
+```
+
+### スクリプト実行（scripts/）
+
+決定論的な処理を確実に実行：
+
+```bash
+# スキル構造の検証
+node .claude/skills/file-exclusion-patterns/scripts/validate-skill.mjs
+
+# 使用記録とメトリクス更新
+node .claude/skills/file-exclusion-patterns/scripts/log_usage.mjs \
+  --result success \
+  --phase "Phase 2" \
+  --agent "pattern-designer" \
+  --notes "Node.js monorepo pattern created"
+```
+
+### テンプレート・ツール（assets/）
+
+出力で使用する素材：
+
+```bash
+# パターンビルダーテンプレート
+cat .claude/skills/file-exclusion-patterns/assets/pattern-builder.ts
+```
+
+### よく使うコマンド
+
+```bash
+# gitignore パターンを検証
+npx gitignore-parser .gitignore
+
+# ファイル監視の除外設定をテスト
+chokidar 'src/**/*' --ignore 'node_modules/**'
+
+# git で除外されているか確認
+git check-ignore -v path/to/file
+
+# 既にgit追跡されているファイルをキャッシュから削除
+git rm --cached path/to/file
+```
+
+## トラブルシューティング
+
+### パターンが効かない
+
+**症状**: .gitignoreに追加したのにファイルが除外されない
+
+**原因と対処**:
+
+1. 既にgit追跡されている → `git rm --cached <file>` でキャッシュクリア
+2. glob構文が間違っている → Pattern Validatorで検証
+3. 否定パターンの順序 → 除外パターンの後に `!` パターンを配置
+
+### パフォーマンスが改善しない
+
+**症状**: 除外パターンを追加したが監視が遅い
+
+**原因と対処**:
+
+1. パターンの順序が非効率 → Performance Tunerで最適化
+2. 複雑すぎるパターン → シンプルなディレクトリ除外に変更
+3. 除外漏れ → Pattern Designerで標準パターンを確認
+
+### プラットフォーム間で動作が異なる
+
+**症状**: WindowsとmacOSで除外結果が違う
+
+**原因と対処**:
+
+1. パスセパレータの問題 → `/` を使用（`\` は避ける）
+2. 大文字小文字の扱い → Platform Optimizerで確認
+3. OS固有ファイルの除外漏れ → `references/platform-specific-exclusions.md` を参照
+
+## メトリクスとフィードバック
+
+このスキルの使用状況とパフォーマンスは `EVALS.json` と `LOGS.md` で追跡されます。
+
+**レベルアップ条件**:
+
+- Level 1: 基本的な使用（1回以上、成功率50%以上）
+- Level 2: プラットフォーム最適化の習得（5回以上、成功率70%以上）
+- Level 3: パフォーマンスチューニングの習得（10回以上、成功率80%以上）
+- Level 4: エキスパートレベルの運用（20回以上、成功率90%以上）
+
+**フィードバックの記録**:
+
+```bash
+# 成功時
+node scripts/log_usage.mjs --result success --phase "Phase 2" --agent "pattern-designer"
+
+# 失敗時（改善のヒントを含める）
+node scripts/log_usage.mjs --result failure --notes "glob syntax error detected"
+```
+
+## 変更履歴
+
+| Version | Date       | Changes                                                                                                       |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2025-12-31 | 18-skills.md完全準拠: agents/追加、description更新、Task仕様ナビ刷新、EVALS.json/LOGS.md追加、references/補完 |
+| 1.1.0   | 2025-12-31 | Task仕様ナビ追加・トリガー/アンカー定義・ベストプラクティス拡充                                               |
+| 1.0.0   | 2025-12-24 | 初版リリース - 基本構造とリソース整備                                                                         |

@@ -1,185 +1,138 @@
 ---
 name: workflow-security
 description: |
-  GitHub Actions ワークフローのセキュリティ強化スキル。
+  GitHub Actionsワークフローセキュリティの専門スキル。
+  権限最小化、シークレット保護、サプライチェーン攻撃対策を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  - GitHub Actions Security Hardening（GitHub公式）/ 適用: ワークフロー権限・シークレット保護 / 目的: 安全な自動化
+  - OWASP CI/CD Security（OWASP）/ 適用: サプライチェーン対策 / 目的: 脆弱性防止
+  - Principle of Least Privilege / 適用: 権限設計全般 / 目的: 攻撃面最小化
 
-  - `.claude/skills/workflow-security/resources/permission-hardening.md`: Permission Hardeningリソース
-  - `.claude/skills/workflow-security/resources/supply-chain-security.md`: Supply Chain Securityリソース
+  Trigger:
+  ワークフロー権限監査時、シークレット漏洩対策時、サプライチェーン攻撃対策時、PRワークフロー設計時に使用
 
-  - `.claude/skills/workflow-security/templates/secure-workflow.yaml`: Secure Workflowテンプレート
-
-  - `.claude/skills/workflow-security/scripts/audit-workflow.mjs`: Audit Workflowスクリプト
-
-  専門分野:
-  - 最小権限の原則（GITHUB_TOKEN権限の最小化）
-  - サプライチェーン攻撃対策（アクションの固定、依存関係レビュー）
-  - シークレット管理とトークンのスコープ制御
-  - pull_request vs pull_request_targetの安全な使用
-  - 環境保護とデプロイメント承認フロー
-
-  使用タイミング:
-  - セキュリティ脆弱性の検出時（トークン露出、過剰な権限、未検証のアクション）
-  - ワークフローのセキュリティレビュー時
-  - PRワークフローの作成時（pull_request_targetの使用）
-  - サードパーティアクションの追加時
-  - 本番環境へのデプロイワークフロー設計時
-
-  Use proactively when implementing GitHub Actions workflows with security concerns,
-  permission management, or supply chain protection.
-version: 1.0.0
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
 # GitHub Actions Workflow Security
 
-## ディレクトリ構造
+## 概要
 
-```
-workflow-security/
-├── SKILL.md                          # 本ファイル（セキュリティ概要）
-├── resources/
-│   ├── permission-hardening.md       # 権限最小化の詳細
-│   └── supply-chain-security.md      # サプライチェーン対策
-├── templates/
-│   └── secure-workflow.yaml          # セキュア設定例
-└── scripts/
-    └── audit-workflow.mjs            # セキュリティ監査スクリプト
-```
+GitHub Actions ワークフローのセキュリティ強化スキル。4つの専門エージェントによる包括的なセキュリティ対策を提供します。
 
-## コマンドリファレンス
+## エージェント構成
 
-```bash
-# 権限強化の詳細
-cat .claude/skills/workflow-security/resources/permission-hardening.md
+| エージェント           | 役割                       | 主な機能                                        |
+| ---------------------- | -------------------------- | ----------------------------------------------- |
+| permission-auditor     | 権限監査・最小権限設計     | GITHUB_TOKEN監査、ジョブ/ステップ権限分離       |
+| secret-protector       | シークレット保護           | 露出防止、安全な参照パターン、マスキング        |
+| supply-chain-guard     | サプライチェーン攻撃対策   | SHA固定化、Verified Creator確認、依存関係監査   |
+| pr-workflow-specialist | PRワークフローセキュリティ | pull_request_target対策、ラベルゲート、Fork対策 |
 
-# サプライチェーンセキュリティ
-cat .claude/skills/workflow-security/resources/supply-chain-security.md
+## ワークフロー
 
-# セキュアなワークフロー例
-cat .claude/skills/workflow-security/templates/secure-workflow.yaml
+### Phase 1: セキュリティ評価
 
-# ワークフローのセキュリティ監査
-node .claude/skills/workflow-security/scripts/audit-workflow.mjs .github/workflows/ci.yml
-```
+**目的**: 現状のワークフローセキュリティを評価
 
-## セキュリティチェックリスト
+**アクション**:
 
-### 🔴 Critical（必須対応）
+1. `permission-auditor` で権限設定を監査
+2. `secret-protector` でシークレット露出リスクを確認
+3. `supply-chain-guard` でサードパーティアクションを検証
 
-- [ ] **GITHUB_TOKEN 権限を最小化**: `permissions:`で明示的に制限
-- [ ] **サードパーティアクションをコミット SHA で固定**: `uses: actions/checkout@a81bbbf`
-- [ ] **pull_request_target の安全な使用**: untrusted コードを実行しない
-- [ ] **シークレットを PR から保護**: `if: github.event_name != 'pull_request'`
-- [ ] **本番環境に承認フロー設定**: `environment:`で保護
+### Phase 2: セキュリティ強化
 
-### 🟡 Important（推奨対応）
+**目的**: 特定されたリスクへの対策実施
 
-- [ ] 依存関係レビューの有効化（Dependabot）
-- [ ] コードスキャンの統合（CodeQL、Trivy）
-- [ ] OpenID Connect（OIDC）の使用
-- [ ] ワークフロー実行ログの監視
+**アクション**:
 
-### 🟢 Best Practice（最適化）
+1. 権限の最小化（ジョブ/ステップレベル）
+2. シークレット参照パターンの安全化
+3. アクションのSHA固定化
+4. PRワークフローのセキュリティ設計
 
-- [ ] Sigstore でアクション署名検証
-- [ ] ネットワーク制限（self-hosted runners）
-- [ ] 監査ログの保存
-- [ ] 定期的なセキュリティレビュー（四半期）
+### Phase 3: 検証と継続監視
 
-## 主要なセキュリティ原則
+**目的**: 対策の有効性確認と継続的監視
 
-### 1. 最小権限の原則
+**アクション**:
 
-```yaml
-permissions:
-  contents: read # ソースコード読み取り専用
-  pull-requests: write # PRコメントのみ書き込み
-```
+1. `scripts/validate-skill.mjs` でスキル構造検証
+2. セキュリティチェックリストによる確認
+3. `scripts/log_usage.mjs` で実行記録
 
-**リポジトリ設定**: Settings → Actions → "Read repository contents and packages permissions"
+## Task仕様ナビ
 
-### 2. サプライチェーン攻撃対策
+| タスク                  | 説明                        | 担当エージェント       | 参照リソース               |
+| ----------------------- | --------------------------- | ---------------------- | -------------------------- |
+| GITHUB_TOKEN権限監査    | トークン権限の最小化        | permission-auditor     | `permission-hardening.md`  |
+| シークレット保護        | 露出防止とマスキング        | secret-protector       | `permission-hardening.md`  |
+| アクション固定化        | SHA pinningによる不変性確保 | supply-chain-guard     | `supply-chain-security.md` |
+| Verified Creator確認    | 信頼できるアクション選定    | supply-chain-guard     | `supply-chain-security.md` |
+| pull_request_target対策 | Fork PRからの攻撃防止       | pr-workflow-specialist | `supply-chain-security.md` |
+| ラベルゲート実装        | 信頼されたPRのみ実行        | pr-workflow-specialist | `supply-chain-security.md` |
 
-```yaml
-# ❌ 危険: タグは変更可能
-uses: actions/checkout@v4
+## ベストプラクティス
 
-# ✅ 安全: コミットSHAは不変
-uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675  # v4.1.1
-```
+### すべきこと
 
-### 3. PR ワークフローの安全な設計
+- ワークフロー作成時に `permission-auditor` で権限を最小化する
+- サードパーティアクション追加時に `supply-chain-guard` で検証する
+- PRワークフロー設計時に `pr-workflow-specialist` でセキュリティ確認する
+- シークレット使用箇所で `secret-protector` のパターンに従う
+- 定期的にワークフロー全体のセキュリティ監査を実施する
 
-```yaml
-# ❌ 危険: untrustedコードが実行される
-on: pull_request_target
-steps:
-  - uses: actions/checkout@v4
-  - run: pnpm test  # 攻撃者のコード実行
+### 避けるべきこと
 
-# ✅ 安全: ベースブランチのコードのみ
-on: pull_request_target
-steps:
-  - uses: actions/checkout@v4
-    with:
-      ref: ${{ github.base_ref }}
-```
+- `permissions: write-all` のような過剰な権限付与
+- タグ参照（`@v4`）のみでのアクション使用（SHA固定なし）
+- `pull_request_target` でのFork PRコード直接チェックアウト
+- シークレットの環境変数への無条件展開
+- 未検証サードパーティアクションの本番使用
 
-### 4. シークレット保護
+## リソース参照
 
-```yaml
-- name: Deploy
-  if: github.event_name != 'pull_request'
-  env:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  run: aws s3 sync ./dist s3://bucket
-```
+### エージェント
 
-## セキュリティ監査フロー
+| エージェント                       | 説明                       |
+| ---------------------------------- | -------------------------- |
+| `agents/permission-auditor.md`     | 権限監査の詳細仕様         |
+| `agents/secret-protector.md`       | シークレット保護の詳細     |
+| `agents/supply-chain-guard.md`     | サプライチェーン対策       |
+| `agents/pr-workflow-specialist.md` | PRワークフローセキュリティ |
 
-```
-権限レビュー → アクション固定確認 → シークレット使用箇所チェック
-  ↓              ↓                    ↓
-pull_request_target検証 → 環境保護設定確認 → 監査レポート生成
-```
+### リファレンス
 
-## 関連スキル
+| リソース                              | 説明                         |
+| ------------------------------------- | ---------------------------- |
+| `references/permission-hardening.md`  | 権限強化の詳細ガイド         |
+| `references/supply-chain-security.md` | サプライチェーンセキュリティ |
 
-| スキル名                        | パス                                                  | 関連性           |
-| ------------------------------- | ----------------------------------------------------- | ---------------- |
-| **github-actions-syntax**       | `.claude/skills/github-actions-syntax/SKILL.md`       | 構文基礎         |
-| **secrets-management-gha**      | `.claude/skills/secrets-management-gha/SKILL.md`      | シークレット管理 |
-| **deployment-environments-gha** | `.claude/skills/deployment-environments-gha/SKILL.md` | 環境保護         |
-| **github-actions-expressions**  | `.claude/skills/github-actions-expressions/SKILL.md`  | セキュリティ制御 |
-| **reusable-workflows**          | `.claude/skills/reusable-workflows/SKILL.md`          | 集中管理         |
+### スクリプト
 
-## 使用上の注意
+| スクリプト                   | 説明           | 使用方法                             |
+| ---------------------------- | -------------- | ------------------------------------ |
+| `scripts/validate-skill.mjs` | スキル構造検証 | `node scripts/validate-skill.mjs -v` |
+| `scripts/log_usage.mjs`      | 使用記録       | `node scripts/log_usage.mjs`         |
 
-### 対処する問題
+### アセット
 
-- 過剰な権限（`permissions: write-all`）
-- サプライチェーン攻撃（タグベース参照）
-- トークン露出（PR からのシークレットアクセス）
-- untrusted コード実行（pull_request_target 誤用）
-- 環境保護不足（本番デプロイ承認なし）
+| アセット                      | 説明                       |
+| ----------------------------- | -------------------------- |
+| `assets/secure-workflow.yaml` | セキュアワークフロー実装例 |
 
-### 対処しない問題
+## 変更履歴
 
-- アプリケーションコード脆弱性（SAST/DAST 使用）
-- インフラストラクチャセキュリティ（Terraform 等）
-- コンテナイメージ脆弱性（Trivy 等）
-
-### 推奨フロー
-
-1. **新規作成**: テンプレート使用
-2. **既存改善**: 監査スクリプト実行
-3. **インシデント後**: チェックリスト全確認
-4. **定期レビュー**: 四半期ごと監査
-
----
-
-**メンテナンス**: 四半期ごと更新
-**バージョン管理**: セキュリティ勧告の重大変更時にメジャーバージョンアップ
+| バージョン | 日付       | 変更内容                                      |
+| ---------- | ---------- | --------------------------------------------- |
+| 2.0.0      | 2026-01-01 | 4エージェント体制への再構成、18-skills.md準拠 |
+| 1.1.0      | 2025-12-31 | Task仕様ナビテーブル追加、日本語記述統一      |
+| 1.0.0      | 2025-12-24 | 初版リリース                                  |

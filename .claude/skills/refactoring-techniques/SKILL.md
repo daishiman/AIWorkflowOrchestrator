@@ -1,339 +1,139 @@
 ---
 name: refactoring-techniques
 description: |
-  マーティン・ファウラーの『リファクタリング』に基づくコード改善技術を専門とするスキル。
-  外部から見た振る舞いを変えずに、内部構造を改善する体系的手法を提供します。
+  マーティン・ファウラーの『Refactoring』に基づくコード改善技術を提供するスキル。
+  外部動作を変えずに内部構造を改善する体系的手法を通じて、保守性・可読性を向上させる。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Refactoring (Martin Fowler) / 適用: 全般 / 目的: 体系的なリファクタリング手法
+  • Clean Code (Robert C. Martin) / 適用: 命名・構造 / 目的: 可読性向上
+  • Working Effectively with Legacy Code (Michael Feathers) / 適用: レガシー対応 / 目的: 安全なリファクタリング
 
-  - `.claude/skills/refactoring-techniques/resources/code-smells-catalog.md`: コードスメルカタログ
-  - `.claude/skills/refactoring-techniques/resources/decompose-conditional.md`: Decompose Conditional
-  - `.claude/skills/refactoring-techniques/resources/extract-method.md`: Extract Method
-  - `.claude/skills/refactoring-techniques/resources/introduce-parameter-object.md`: Introduce Parameter Object
-  - `.claude/skills/refactoring-techniques/resources/replace-temp-with-query.md`: Replace Temp with Query
-  - `.claude/skills/refactoring-techniques/scripts/detect-code-smells.mjs`: コードスメル検出スクリプト
-  - `.claude/skills/refactoring-techniques/templates/refactoring-checklist.md`: リファクタリングチェックリスト
-
-  専門分野:
-  - Extract Method: 長大なメソッドから意味のある部分を抽出
-  - Replace Temp with Query: 一時変数をメソッド呼び出しに置換
-  - Introduce Parameter Object: 複数パラメータのオブジェクト化
-  - Decompose Conditional: 複雑な条件式の分解
-  - コードスメル検出: リファクタリングが必要な箇所の特定
-
-  使用タイミング:
-  - メソッドが30行を超える場合
-  - 同じロジックが複数箇所に重複している場合
-  - 複雑な条件式（ネスト3段階以上）がある場合
-  - コードレビューで可読性の問題を指摘された場合
-  - テストが通っている状態でコード品質を改善したい場合
-
-  Use proactively when refactoring code, improving readability, or detecting code smells.
-version: 1.0.0
+  Trigger:
+  Use when improving code structure, detecting code smells, reducing technical debt, or refactoring legacy code.
+  refactoring, code smell, extract method, decompose conditional, technical debt, リファクタリング
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - Task
 ---
 
-# Refactoring Techniques
+# リファクタリング技法
 
 ## 概要
 
-このスキルは、マーティン・ファウラーが『リファクタリング（第 2 版）』で体系化した
-コード改善技術を提供します。リファクタリングとは「外部から見た振る舞いを変えずに、
-内部構造を改善すること」であり、コードの可読性・保守性を高める基盤技術です。
+外部から見た振る舞いを変えずに、内部構造を改善する体系的手法を提供するスキル。
+コードスメルの検出、適切なリファクタリングパターンの選択、テスト保護下での安全な実施を支援する。
 
-**核心原則**:
-
-- コードは書かれるより読まれる回数が多い → 可読性への投資は高リターン
-- 小さなステップで進める → 一度に一つの改善、各ステップでテスト実行
-- テストが安全網 → リファクタリング前に包括的テストを確保
-
-**対象ユーザー**:
-
-- ビジネスロジック実装エージェント（@logic-dev）
-- コードレビュー担当者
-- 技術的負債を削減したい開発者
-
-## リソース構造
-
-```
-refactoring-techniques/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── extract-method.md                 # Extract Method詳細ガイド
-│   ├── decompose-conditional.md          # Decompose Conditional詳細ガイド
-│   ├── introduce-parameter-object.md     # Introduce Parameter Object詳細ガイド
-│   ├── replace-temp-with-query.md        # Replace Temp with Query詳細ガイド
-│   └── code-smells-catalog.md            # コードスメルカタログ
-├── scripts/
-│   └── detect-code-smells.mjs            # コードスメル検出スクリプト
-└── templates/
-    └── refactoring-checklist.md          # リファクタリングチェックリスト
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# Extract Method詳細
-cat .claude/skills/refactoring-techniques/resources/extract-method.md
-
-# Decompose Conditional詳細
-cat .claude/skills/refactoring-techniques/resources/decompose-conditional.md
-
-# Introduce Parameter Object詳細
-cat .claude/skills/refactoring-techniques/resources/introduce-parameter-object.md
-
-# Replace Temp with Query詳細
-cat .claude/skills/refactoring-techniques/resources/replace-temp-with-query.md
-
-# コードスメルカタログ
-cat .claude/skills/refactoring-techniques/resources/code-smells-catalog.md
-```
-
-### スクリプト実行
-
-```bash
-# コードスメル検出
-node .claude/skills/refactoring-techniques/scripts/detect-code-smells.mjs <directory>
-
-# 例: src/features/配下を検査
-node .claude/skills/refactoring-techniques/scripts/detect-code-smells.mjs src/features/
-```
-
-### テンプレート参照
-
-```bash
-# リファクタリングチェックリスト
-cat .claude/skills/refactoring-techniques/templates/refactoring-checklist.md
-```
-
-## 主要リファクタリングカタログ（概要）
-
-### 1. Extract Method
-
-**適用条件**:
-
-- メソッドが 30 行を超える
-- コードブロックにコメントで説明が必要
-- 同じコードが複数箇所に存在
-
-**判断プロセス**:
-
-1. このコードブロックは独立した意味を持つか？
-2. 適切な名前を付けられるか？
-3. 抽出後、元のメソッドは理解しやすくなるか？
-
-**詳細**: `resources/extract-method.md`
-
-### 2. Decompose Conditional
-
-**適用条件**:
-
-- 条件式が複雑（&&/||が 3 つ以上）
-- ネストが 3 段階以上
-- 条件の意図が読み取りにくい
-
-**手順**:
-
-1. 条件部分を意味のあるメソッドに抽出
-2. then 節と else 節をそれぞれメソッドに抽出
-3. 各メソッドに意図を表す名前を付ける
-
-**詳細**: `resources/decompose-conditional.md`
-
-### 3. Introduce Parameter Object
-
-**適用条件**:
-
-- メソッドのパラメータが 4 つ以上
-- 複数のメソッドで同じパラメータ群を使用
-- パラメータ間に論理的関連がある
-
-**手順**:
-
-1. パラメータをグループ化したクラス/型を作成
-2. メソッドシグネチャを変更
-3. 呼び出し元を更新
-
-**詳細**: `resources/introduce-parameter-object.md`
-
-### 4. Replace Temp with Query
-
-**適用条件**:
-
-- 一時変数が一度だけ代入される
-- 計算ロジックが再利用可能
-- 変数名で意図を伝えている
-
-**手順**:
-
-1. 計算ロジックをメソッドに抽出
-2. 一時変数の参照をメソッド呼び出しに置換
-3. 一時変数を削除
-
-**詳細**: `resources/replace-temp-with-query.md`
-
-## コードスメル検出基準
-
-### 長大なメソッド（Long Method）
-
-- **基準**: 30 行超
-- **対処**: Extract Method
-
-### 重複コード（Duplicated Code）
-
-- **基準**: 3 行以上の同一/類似コードが 2 箇所以上
-- **対処**: Extract Function/Method
-
-### マジックナンバー（Magic Number）
-
-- **基準**: 意味不明な数値リテラル
-- **対処**: Introduce Named Constant
-
-### 複雑な条件式（Complex Conditional）
-
-- **基準**: ネスト 3 段階以上、または条件 3 つ以上の組み合わせ
-- **対処**: Decompose Conditional
-
-### パラメータ過多（Long Parameter List）
-
-- **基準**: パラメータ 4 つ以上
-- **対処**: Introduce Parameter Object
-
-**詳細**: `resources/code-smells-catalog.md`
+---
 
 ## ワークフロー
 
-### Phase 1: コードスメル検出
+### Phase 1: コードスメル分析
 
-**目的**: リファクタリングが必要な箇所を特定
+**目的**: リファクタリングが必要な箇所を特定する
 
-**手順**:
+**アクション**:
 
-1. 対象コードを読み込み
-2. コードスメル検出基準に照らして評価
-3. 優先順位付け（影響度 × 修正難易度）
+1. 対象コードをスキャンしてコードスメルを検出
+2. 優先度に基づいて対処順序を決定
+3. 影響範囲と依存関係を把握
 
-**判断基準**:
-
-- [ ] 長大なメソッド（30 行超）は存在しないか？
-- [ ] 重複コードは存在しないか？
-- [ ] マジックナンバーは存在しないか？
-- [ ] 複雑な条件式は存在しないか？
+**Task**: `agents/analyze-code-smells.md` を参照
 
 ### Phase 2: リファクタリング計画
 
-**目的**: 安全なリファクタリング順序を決定
+**目的**: 適切なリファクタリングパターンを選択し計画を立てる
 
-**手順**:
+**アクション**:
 
-1. テストの存在確認（なければ先にテストを書く）
-2. リファクタリング手法の選択
-3. 依存関係の分析
-4. 実行順序の決定
+1. 検出されたスメルに対応するパターンを選択
+2. 段階的な実施計画を策定
+3. テスト戦略を確認
 
-**判断基準**:
+**Task**: `agents/plan-refactoring.md` を参照
 
-- [ ] 包括的なテストが存在するか？
-- [ ] 適切なリファクタリング手法が選択されているか？
-- [ ] 依存関係を考慮した順序か？
+### Phase 3: リファクタリング実施
 
-### Phase 3: リファクタリング実行
+**目的**: 計画に基づいて安全にリファクタリングを実行
 
-**目的**: 一つずつ改善を適用
+**アクション**:
 
-**手順**:
+1. テストが通ることを確認
+2. 小さな変更を順次適用
+3. 各ステップでテストを実行
+4. 完了後に全テストを実行
 
-1. 一つのリファクタリングを適用
-2. テストを実行
-3. 成功を確認してから次へ
-4. 失敗した場合は即座にロールバック
+**Task**: `agents/apply-refactoring.md` を参照
 
-**判断基準**:
+---
 
-- [ ] 各リファクタリング後にテストが通るか？
-- [ ] 可読性が向上したか？
-- [ ] 振る舞いが変わっていないか？
+## Task仕様ナビ
 
-### Phase 4: 検証
+| Task                | 起動タイミング | 入力                 | 出力                       |
+| ------------------- | -------------- | -------------------- | -------------------------- |
+| analyze-code-smells | Phase 1開始時  | ソースコード         | スメル検出レポート         |
+| plan-refactoring    | Phase 2開始時  | スメル検出レポート   | リファクタリング計画書     |
+| apply-refactoring   | Phase 3開始時  | リファクタリング計画 | リファクタリング済みコード |
 
-**目的**: 品質改善を確認
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-**手順**:
-
-1. コードスメル検出を再実行
-2. メトリクス比較（複雑度、行数など）
-3. コードレビュー
-
-**判断基準**:
-
-- [ ] 検出されたコードスメルが解消されたか？
-- [ ] 循環的複雑度が改善されたか？
-- [ ] コードの意図が明確になったか？
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **テストを先に確保**:
-   - リファクタリング前に包括的テストを確認
-   - テストがなければ先にテストを書く
-
-2. **小さなステップで進める**:
-   - 一度に一つの改善
-   - 各ステップ後にテストを実行
-
-3. **名前で意図を表現**:
-   - 抽出したメソッドに意味のある名前を付ける
-   - 名前だけで何をするか分かるようにする
+- テストが通っている状態でのみリファクタリングを開始する
+- 一度に一つのリファクタリングに集中する
+- 小さなコミットで変更を記録する
+- 変更後は必ずテストを実行する
+- コードの意図を明確にする命名を心がける
 
 ### 避けるべきこと
 
-1. **複数の変更を同時に行う**:
-   - ❌ Extract Method と Rename Variable を同時実行
-   - ✅ 一つずつ実行して各ステップでテスト
+- テストなしでのリファクタリング
+- 複数のリファクタリングの同時実施
+- 外部インターフェースの変更
+- パフォーマンスを検証せずに進める
+- リファクタリングと機能追加の混在
 
-2. **テストなしでのリファクタリング**:
-   - ❌ 「簡単だから大丈夫」という判断
-   - ✅ 常にテストで振る舞いを保証
+---
 
-3. **過度な抽象化**:
-   - ❌ 3 行のコードのために新しいクラスを作成
-   - ✅ 適切な粒度で抽象化
+## リソース参照
 
-## 関連スキル
+### references/（詳細知識）
 
-- **tdd-red-green-refactor** (`.claude/skills/tdd-red-green-refactor/SKILL.md`): リファクタリングの安全網となるテスト
-- **clean-code-practices** (`.claude/skills/clean-code-practices/SKILL.md`): 命名規則、小さな関数の原則
-- **code-smell-detection** (`.claude/skills/code-smell-detection/SKILL.md`): アーキテクチャレベルのスメル検出
+| リソース   | パス                                                   | 読込条件                     |
+| ---------- | ------------------------------------------------------ | ---------------------------- |
+| 基本概念   | [references/basics.md](references/basics.md)           | 原則と基本手法を確認するとき |
+| パターン集 | [references/patterns.md](references/patterns.md)       | 具体的な手法を参照するとき   |
+| スメル検出 | [references/code-smells.md](references/code-smells.md) | コードスメルを特定するとき   |
 
-## メトリクス
+### scripts/（検証・実行）
 
-### 循環的複雑度
+| スクリプト                 | 用途                 | 使用例                                                   |
+| -------------------------- | -------------------- | -------------------------------------------------------- |
+| `detect-code-smells.mjs`   | コードスメル検出     | `node scripts/detect-code-smells.mjs <file>`             |
+| `validate-refactoring.mjs` | リファクタリング検証 | `node scripts/validate-refactoring.mjs --before --after` |
+| `log_usage.mjs`            | 使用記録             | `node scripts/log_usage.mjs --result success`            |
 
-**目標**: 関数あたり 10 以下
+### assets/（テンプレート）
 
-**測定**: 分岐数（if/else/switch/for/while）+ 1
+| テンプレート               | 用途                                 |
+| -------------------------- | ------------------------------------ |
+| `refactoring-checklist.md` | リファクタリング実施時チェックリスト |
+| `refactoring-plan.md`      | リファクタリング計画テンプレート     |
 
-### 関数行数
-
-**目標**: 30 行以下
-
-### コード重複率
-
-**目標**: 3%以下
-
-## 参考文献
-
-- **『リファクタリング（第 2 版）』** マーティン・ファウラー著
-  - 第 2 章: リファクタリングの原則
-  - 第 3 章: コードの臭い
-  - 第 6 章〜第 12 章: リファクタリングカタログ
+---
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                |
-| ---------- | ---------- | ------------------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版作成 - マーティン・ファウラーのリファクタリング技法 |
+| Version | Date       | Changes                                        |
+| ------- | ---------- | ---------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠。agents追加、構造刷新 |
+| 1.0.0   | 2025-12-31 | 初版作成                                       |

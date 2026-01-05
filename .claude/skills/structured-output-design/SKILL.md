@@ -1,249 +1,117 @@
 ---
 name: structured-output-design
 description: |
-  AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod、
+  構造化出力の仕様書を設計するためのスキル。スキーマ定義、命名規則、互換性とバージョニング方針を整理し、長期運用に耐える出力契約を作成する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • JSON Schema / 適用: スキーマ設計 / 目的: フィールド仕様の形式化
+  • Semantic Versioning 2.0.0 / 適用: バージョニング設計 / 目的: 互換性ルールの明確化
+  • Postel's Law / 適用: 互換性判断 / 目的: 入出力の許容範囲を整理
 
-  - `.claude/skills/structured-output-design/resources/function-calling-guide.md`: Function Calling Guideリソース
-  - `.claude/skills/structured-output-design/resources/json-schema-patterns.md`: Json Schema Patternsリソース
-  - `.claude/skills/structured-output-design/resources/zod-integration.md`: Zod Integrationリソース
-
-  - `.claude/skills/structured-output-design/templates/json-schema-template.json`: Json Schemaテンプレート
-  - `.claude/skills/structured-output-design/templates/zod-schema-template.ts`: Zod Schemaテンプレート
-
-  - `.claude/skills/structured-output-design/scripts/validate-schema.mjs`: Validate Schemaスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when defining output contracts, schema evolution rules, or compatibility plans for structured data.
+  output contract, schema design, compatibility, versioning, JSON schema
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Structured Output Design
 
 ## 概要
 
-構造化出力設計は、AI からの出力をプログラムで確実に処理可能な形式で
-取得するための設計技術です。
+構造化出力の「契約」を設計し、スキーマ・命名規則・互換性方針を一貫させるスキル。仕様書を作成して関係者の合意形成を促進する。
 
-**主要な価値**:
-
-- 型安全な出力によるバグの削減
-- パース失敗の防止
-- バリデーションによる品質保証
-- 開発者体験の向上
-
-## リソース構造
-
-```
-structured-output-design/
-├── SKILL.md
-├── resources/
-│   ├── json-schema-patterns.md      # JSON Schema設計パターン
-│   ├── function-calling-guide.md    # Function Calling設計ガイド
-│   └── zod-integration.md           # Zod統合ガイド
-├── scripts/
-│   └── validate-schema.mjs          # スキーマ検証スクリプト
-└── templates/
-    ├── json-schema-template.json    # JSON Schemaテンプレート
-    └── zod-schema-template.ts       # Zodスキーマテンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# JSON Schema設計パターン
-cat .claude/skills/structured-output-design/resources/json-schema-patterns.md
-
-# Function Calling設計ガイド
-cat .claude/skills/structured-output-design/resources/function-calling-guide.md
-
-# Zod統合ガイド
-cat .claude/skills/structured-output-design/resources/zod-integration.md
-```
-
-### スクリプト実行
-
-```bash
-# スキーマ検証
-node .claude/skills/structured-output-design/scripts/validate-schema.mjs <schema.json>
-```
-
-### テンプレート参照
-
-```bash
-# JSON Schemaテンプレート
-cat .claude/skills/structured-output-design/templates/json-schema-template.json
-
-# Zodスキーマテンプレート
-cat .claude/skills/structured-output-design/templates/zod-schema-template.ts
-```
+詳細は `references/Level1_basics.md` から段階的に参照する。
 
 ## ワークフロー
 
-### Phase 1: 出力構造の設計
+### Phase 1: 契約要件の整理
 
-**目的**: 必要な出力データの構造を定義
+**目的**: 出力仕様の目的、利用者、互換性要件を明確化する。
 
-**設計要素**:
+**アクション**:
 
-- 必須フィールドの特定
-- データ型の決定（string, number, boolean, object, array）
-- ネスト構造の設計
-- 配列要素の型定義
+1. 仕様の利用者と運用期間を整理する。
+2. 互換性の許容範囲を定義する。
+3. 命名規則とバージョン表現を決定する。
 
-**判断基準**:
+### Phase 2: 仕様書とスキーマの設計
 
-- [ ] すべての必要フィールドが定義されているか？
-- [ ] 各フィールドの型が適切か？
-- [ ] ネストの深さは適切か（3 階層以内推奨）？
+**目的**: 出力契約を文書化し、スキーマとテンプレートを整合させる。
 
-### Phase 2: 制約の定義
+**アクション**:
 
-**目的**: データの有効性を保証する制約を設定
+1. `assets/output-contract-template.md` を埋める。
+2. `assets/json-schema-template.json` を基にスキーマを作成する。
+3. 互換性・移行方針を明記する。
 
-**制約タイプ**:
+### Phase 3: 検証とレビュー
 
-- **文字列制約**: minLength, maxLength, pattern, format
-- **数値制約**: minimum, maximum, multipleOf
-- **配列制約**: minItems, maxItems, uniqueItems
-- **オブジェクト制約**: additionalProperties, dependencies
+**目的**: 仕様書とスキーマの不整合を解消する。
 
-**判断基準**:
+**アクション**:
 
-- [ ] バリデーションルールが明確か？
-- [ ] エラーメッセージが適切か？
-- [ ] 制約が厳しすぎないか？
+1. `scripts/validate-output-contract.mjs` を実行する。
+2. `scripts/validate-schema.mjs` でスキーマの構造を点検する。
+3. 指摘事項を反映し版を確定する。
 
-### Phase 3: スキーマの実装
+## Task仕様ナビ
 
-**目的**: JSON Schema または Zod で実装
-
-**JSON Schema 形式**:
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "field": { "type": "string" }
-  },
-  "required": ["field"]
-}
-```
-
-**Zod 形式**:
-
-```typescript
-const schema = z.object({
-  field: z.string(),
-});
-```
-
-**判断基準**:
-
-- [ ] スキーマが正しく定義されているか？
-- [ ] TypeScript 型推論が機能するか？
-
-### Phase 4: プロンプトへの統合
-
-**目的**: スキーマをプロンプトに組み込み
-
-**統合方法**:
-
-1. **JSON Mode 指定**:
-
-```
-出力は以下のJSON形式で返してください：
-{...schema...}
-```
-
-2. **Function Calling**:
-
-```typescript
-{
-  name: "process_data",
-  parameters: schema
-}
-```
-
-3. **Response Format**:
-
-```typescript
-{
-  response_format: {
-    type: "json_object";
-  }
-}
-```
+| Phase | Task | 目的 | 入力 | 出力 |
+| --- | --- | --- | --- | --- |
+| 1 | 契約要件整理 | 利用者・互換性要件の確認 | ユーザー要求 | 要件メモ |
+| 2 | 契約設計 | 仕様書とスキーマを整備 | 要件メモ | 出力契約書 |
+| 3 | 契約検証 | 仕様書/スキーマの検証 | 出力契約書 | 検証レポート |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **厳密な型定義**:
-   - すべてのフィールドに型を指定
-   - nullable の明示
-   - enum による値制限
-
-2. **適切な制約**:
-   - 文字列長の制限
-   - 数値範囲の指定
-   - 必須フィールドの明示
-
-3. **説明の追加**:
-   - description フィールドの活用
-   - examples の提供
+- フィールドに型・制約・例を必ず記載する。
+- 互換性の原則を明文化する。
+- バージョン表現を出力に含める。
+- 仕様変更は影響範囲を記録する。
 
 ### 避けるべきこと
 
-1. **過度な柔軟性**:
-   - ❌ additionalProperties: true
-   - ✅ additionalProperties: false
+- 必須/任意を曖昧にしたまま運用しない。
+- 破壊的変更をサイレントに入れない。
+- 仕様書とスキーマの不一致を放置しない。
 
-2. **曖昧な型**:
-   - ❌ type: "any"
-   - ✅ 具体的な型指定
+## リソース/スクリプト参照
 
-3. **深いネスト**:
-   - ❌ 5 階層以上のネスト
-   - ✅ 3 階層以内に平坦化
+### references/
 
-## トラブルシューティング
+- `references/Level1_basics.md`: 基礎指針
+- `references/Level2_intermediate.md`: 実務パターン
+- `references/Level3_advanced.md`: 高度な設計指針
+- `references/Level4_expert.md`: 専門領域の注意点
+- `references/schema-patterns.md`: スキーマ設計パターン
+- `references/json-schema-patterns.md`: JSON Schemaの具体例
+- `references/field-naming.md`: 命名規則
+- `references/compatibility-strategies.md`: 互換性戦略
+- `references/function-calling-guide.md`: 関数呼び出し形式の注意点
+- `references/zod-integration.md`: Zod統合の指針
 
-### 問題 1: パースエラー
+### assets/
 
-**症状**: AI の出力が JSON としてパースできない
+- `assets/output-contract-template.md`: 出力契約書テンプレート
+- `assets/json-schema-template.json`: JSON Schema雛形
+- `assets/schema-versioning-template.json`: バージョン表現テンプレート
+- `assets/zod-schema-template.ts`: Zod用テンプレート
 
-**原因**: スキーマが複雑すぎる、制約が不明確
+### scripts/
 
-**解決策**:
-
-1. スキーマを簡略化
-2. 具体例をプロンプトに追加
-3. JSON Mode を有効化
-
-### 問題 2: 型不一致
-
-**症状**: 期待した型と異なる値が返される
-
-**原因**: 制約が不十分、説明が不明確
-
-**解決策**:
-
-1. enum で有効値を制限
-2. format で形式を指定
-3. description を詳細化
-
-## 関連スキル
-
-- **zod-validation** (`.claude/skills/zod-validation/SKILL.md`): Zod バリデーション
-- **json-schema** (`.claude/skills/json-schema/SKILL.md`): JSON Schema 仕様
-- **type-safety-patterns** (`.claude/skills/type-safety-patterns/SKILL.md`): 型安全パターン
+- `scripts/validate-output-contract.mjs`: 仕様書の必須項目検証
+- `scripts/validate-schema.mjs`: JSON Schema構造検証
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-25 | 初版作成 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 2.0.0 | 2026-01-02 | 18-skills.md 仕様に準拠した構造へ更新 |

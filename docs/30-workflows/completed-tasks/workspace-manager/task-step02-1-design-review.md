@@ -7,7 +7,7 @@
 | ドキュメントID | DR-WS-001                        |
 | バージョン     | 1.0.0                            |
 | 作成日         | 2025-12-11                       |
-| 作成者         | @arch-police, @electron-security |
+| 作成者         | .claude/agents/arch-police.md, .claude/agents/electron-security.md |
 | ステータス     | 完了                             |
 | レビュー対象   | DM-WS-001, IPC-WS-001, UI-WS-001 |
 | 関連文書       | FR-WS-001, NFR-WS-001            |
@@ -35,7 +35,7 @@
 
 ## 2. レビュー観点と結果
 
-### 2.1 要件充足レビュー（@req-analyst視点）
+### 2.1 要件充足レビュー（.claude/agents/req-analyst.md視点）
 
 #### チェック項目
 
@@ -69,7 +69,7 @@
 
 ---
 
-### 2.2 アーキテクチャ整合レビュー（@arch-police視点）
+### 2.2 アーキテクチャ整合レビュー（.claude/agents/arch-police.md視点）
 
 #### 2.2.1 Clean Architecture原則準拠
 
@@ -117,7 +117,7 @@
 
 ---
 
-### 2.3 セキュリティ設計レビュー（@electron-security視点）
+### 2.3 セキュリティ設計レビュー（.claude/agents/electron-security.md視点）
 
 #### 2.3.1 Electronセキュリティチェックリスト
 
@@ -183,7 +183,7 @@ function isPathAccessible(
 
 ---
 
-### 2.4 UI/UX設計レビュー（@ui-designer視点）
+### 2.4 UI/UX設計レビュー（.claude/agents/ui-designer.md視点）
 
 #### 2.4.1 アクセシビリティ（WCAG 2.1 AA）
 
@@ -374,7 +374,7 @@ function isPathAccessible(
 
 | 日付       | レビュアー                       | 結果 | コメント         |
 | ---------- | -------------------------------- | ---- | ---------------- |
-| 2025-12-11 | @arch-police, @electron-security | PASS | 初回レビュー完了 |
+| 2025-12-11 | .claude/agents/arch-police.md, .claude/agents/electron-security.md | PASS | 初回レビュー完了 |
 
 ---
 
@@ -382,4 +382,4 @@ function isPathAccessible(
 
 | バージョン | 日付       | 変更者       | 変更内容                        |
 | ---------- | ---------- | ------------ | ------------------------------- |
-| 1.0.0      | 2025-12-11 | @arch-police | 初版作成（4観点の設計レビュー） |
+| 1.0.0      | 2025-12-11 | .claude/agents/arch-police.md | 初版作成（4観点の設計レビュー） |

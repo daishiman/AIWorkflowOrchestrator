@@ -1,109 +1,148 @@
 ---
 name: request-response-examples
 description: |
-  APIリクエスト・レスポンスの具体的なサンプル作成と
-  エラーケースドキュメント化のための知識とテンプレート
+  API仕様に整合したリクエスト/レスポンス例とエラーレスポンス例を作成するスキル。
+  cURLとSDKサンプルを含め、実行可能で説明的な例示を短時間で整備する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • OpenAPI Specification / 適用: 例示とスキーマ整合 / 目的: 仕様一致
+  • RFC 7807 Problem Details / 適用: エラーレスポンス設計 / 目的: 形式統一
+  • API Design Patterns (J.J. Geewax) / 適用: 例示設計 / 目的: 利用者理解の促進
 
-  - `.claude/skills/request-response-examples/resources/error-response-standards.md`: エラーレスポンス標準ガイド
-  - `.claude/skills/request-response-examples/resources/example-design-patterns.md`: リクエスト・レスポンス例 設計パターン
-  - `.claude/skills/request-response-examples/resources/sdk-examples.md`: 言語別SDKサンプル作成ガイド
-  - `.claude/skills/request-response-examples/scripts/generate-curl-examples.js`: OpenAPI 仕様から cURL コマンド例を生成するスクリプト
-  - `.claude/skills/request-response-examples/scripts/validate-examples.js`: OpenAPI 仕様内の example 検証スクリプト
-  - `.claude/skills/request-response-examples/templates/curl-examples.md`: cURLサンプルテンプレート
-  - `.claude/skills/request-response-examples/templates/error-catalog.md`: エラーカタログテンプレート
-version: 1.0.0
+  Trigger:
+  Use when creating API request/response examples, cURL samples, SDK snippets, and error case documentation aligned with the API specification.
+  request response examples, cURL, SDK examples, error responses, OpenAPI
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - Task
 ---
 
-# Request/Response Examples スキル
+# request-response-examples
 
 ## 概要
 
-API ドキュメントにおける具体的なリクエスト・レスポンス例、
-エラーケース、エッジケースの効果的な文書化手法を提供します。
+API仕様に沿ったリクエスト/レスポンス例を、スコープ定義→例示作成→検証の順で整備するスキル。
+利用者がそのまま実行できるサンプルと、失敗時のエラー例を同時に提供する。
 
-## 知識ドメイン
+---
 
-### 1. リクエスト例設計
+## ワークフロー
 
-- cURL コマンド形式
-- 言語別 SDK サンプル（JavaScript, Python, Go, etc.）
-- HTTP リクエスト生フォーマット
-- 必須/オプションパラメータの明示
+### Phase 1: 例示スコープ定義
 
-### 2. レスポンス例設計
+**目的**: 例示対象と必要なケースを決める
 
-- 成功レスポンス（200, 201, 204）
-- ページネーション付きリスト
-- ネストしたリソース表現
-- HATEOAS リンク
+**アクション**:
 
-### 3. エラーレスポンス
+1. API仕様、対象ユーザー、制約を整理する
+2. `references/example-scope.md` で対象範囲とケースを決定する
+3. `references/error-response-standards.md` でエラー形式を確認する
+4. 例示スコープシートを作成する
 
-- RFC 7807 Problem Details 形式
-- エラーコード体系
-- バリデーションエラー詳細
-- リトライ可能性の明示
+**Task**: `agents/define-example-scope.md` を参照
 
-### 4. エッジケース
+### Phase 2: 例示作成
 
-- 空配列・null 値
-- 大量データ
-- 特殊文字・Unicode
-- タイムゾーン・日付形式
+**目的**: テンプレートに沿って実行可能な例を作る
 
-### 5. インタラクティブ例
+**アクション**:
 
-- Try It Out 機能
-- サンドボックス環境
-- テストデータ戦略
+1. `assets/request-response-template.md` で例示を構成する
+2. `assets/curl-examples.md` を使ってcURL例を整備する
+3. `assets/sdk-example-template.md` でSDK例を整備する
+4. `assets/error-catalog.md` でエラー例を整理する
+5. 必要に応じて `scripts/generate-curl-examples.mjs` を使う
 
-## リソース
+**Task**: `agents/compose-examples.md` を参照
 
-| ファイル                                | 内容                             |
-| --------------------------------------- | -------------------------------- |
-| `resources/example-design-patterns.md`  | 効果的なサンプル設計パターン     |
-| `resources/error-response-standards.md` | エラーレスポンス標準（RFC 7807） |
-| `resources/sdk-examples.md`             | 言語別 SDK サンプル作成ガイド    |
+### Phase 3: 検証と統合
 
-## テンプレート
+**目的**: 例示の正確性と一貫性を確認する
 
-| ファイル                     | 用途                       |
-| ---------------------------- | -------------------------- |
-| `templates/curl-examples.md` | cURL コマンドテンプレート  |
-| `templates/error-catalog.md` | エラーカタログテンプレート |
+**アクション**:
 
-## 使用方法
+1. `scripts/validate-examples.mjs` で必須項目を検証する
+2. `references/example-format-guidelines.md` で整合を確認する
+3. ドキュメントに統合し、必要な更新を記録する
 
-```
-このスキルを使用して：
-1. APIエンドポイントの具体的なリクエスト例を作成
-2. 成功・エラーレスポンスの両方を文書化
-3. 開発者が即座に使えるコードスニペットを提供
-4. エッジケースとその処理方法を明示
-```
+**Task**: `agents/validate-examples.md` を参照
 
-## 適用対象
+---
 
-- REST API ドキュメント
-- GraphQL API サンプル
-- WebSocket メッセージ例
-- SDK リファレンス
-- チュートリアル・クイックスタート
+## Task仕様ナビ
 
-## 関連スキル
+| Task                 | 起動タイミング | 入力                         | 出力                     |
+| -------------------- | -------------- | ---------------------------- | ------------------------ |
+| define-example-scope | Phase 1開始時  | API仕様/対象ユーザー/制約    | 例示スコープシート       |
+| compose-examples     | Phase 2開始時  | 例示スコープ/テンプレート    | 例示パッケージ           |
+| validate-examples    | Phase 3開始時  | 例示パッケージ/検証結果      | 検証レポート             |
 
-| スキル                           | パス                                                       | 関連性                                   |
-| -------------------------------- | ---------------------------------------------------------- | ---------------------------------------- |
-| openapi-specification            | `.claude/skills/openapi-specification/SKILL.md`            | OpenAPI 仕様書内の examples 定義         |
-| authentication-docs              | `.claude/skills/authentication-docs/SKILL.md`              | 認証リクエスト/レスポンス例              |
-| api-documentation-best-practices | `.claude/skills/api-documentation-best-practices/SKILL.md` | API ドキュメント全体のベストプラクティス |
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+---
+
+## ベストプラクティス
+
+### すべきこと
+
+| 推奨事項                           | 理由                                     |
+| ---------------------------------- | ---------------------------------------- |
+| 例示対象を先に絞る                 | 重要なケースに集中できる                 |
+| 実行可能なサンプルにする           | 利用者が再現しやすい                     |
+| 成功/失敗ケースを同一シナリオで示す | 期待値と境界が理解しやすい               |
+| プレースホルダーを明示する         | 実値とテスト値の混同を防ぐ               |
+| エラー形式を統一する               | クライアント実装が安定する               |
+
+### 避けるべきこと
+
+| 禁止事項                     | 問題点                               |
+| ---------------------------- | ------------------------------------ |
+| 仕様と異なる値を使う         | 実装時の誤解を生む                   |
+| 例示をコピー不可な形にする   | 使い回しできない                     |
+| エラー例を省略する           | 実運用の失敗時に役立たない           |
+| 例示間で命名や形式が不一致   | 読者が混乱する                       |
+| 機密情報に見える値を使う     | セキュリティ上の誤解を招く           |
+
+---
+
+## リソース参照
+
+### scripts/（決定論的処理）
+
+| スクリプト                          | 機能                             |
+| ----------------------------------- | -------------------------------- |
+| `scripts/validate-examples.mjs`     | 例示テンプレートの必須項目検証   |
+| `scripts/generate-curl-examples.mjs` | OpenAPI仕様からcURL例を生成      |
+
+### references/（詳細知識）
+
+| リソース                       | パス                                                                       | 読込条件             |
+| ------------------------------ | -------------------------------------------------------------------------- | -------------------- |
+| 例示スコープ設計               | [references/example-scope.md](references/example-scope.md)                 | Phase 1で判断する時  |
+| 例示フォーマット指針           | [references/example-format-guidelines.md](references/example-format-guidelines.md) | Phase 3で確認する時  |
+| エラーレスポンス標準           | [references/error-response-standards.md](references/error-response-standards.md) | エラー例を作成する時 |
+| SDK例作成ガイド                | [references/sdk-examples.md](references/sdk-examples.md)                   | SDK例を作成する時    |
+
+### assets/（テンプレート・素材）
+
+| アセット                             | 用途                         |
+| ------------------------------------ | ---------------------------- |
+| `assets/request-response-template.md` | リクエスト/レスポンス例テンプレート |
+| `assets/curl-examples.md`             | cURL例テンプレート            |
+| `assets/sdk-example-template.md`      | SDK例テンプレート             |
+| `assets/error-catalog.md`             | エラーカタログテンプレート     |
+
+---
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                             |
-| ---------- | ---------- | ------------------------------------------------------------------------------------ |
-| 1.0.0      | 2025-11-27 | 初版リリース。リクエスト/レスポンス例設計パターン、RFC 7807 エラー標準、SDK 例を追加 |
+| Version | Date       | Changes                                                                 |
+| ------- | ---------- | ----------------------------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | skill-creator手順に沿って全面改訂。Task/テンプレ/検証フローを再構成。   |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様へ準拠。Anchors/Trigger追加。                           |
+| 1.0.0   | 2025-12-24 | 初版作成。                                                               |

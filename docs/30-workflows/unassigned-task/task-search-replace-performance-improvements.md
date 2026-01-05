@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                           |
 | 発見元           | Phase 7 - 最終レビューゲート                     |
 | 発見日           | 2025-12-12                                       |
-| 発見エージェント | @code-quality                                    |
+| 発見エージェント | .claude/agents/code-quality.md                                    |
 
 ---
 
@@ -21,7 +21,7 @@
 
 ### 1.1 背景
 
-検索・置換機能のT-07-1最終レビューにおいて、@code-qualityエージェントが`WorkspaceSearchService`および`WorkspaceReplaceService`の並列処理実装の欠如を指摘した。現在の実装では、複数ファイルの処理が順次実行されており、大量ファイル処理時にパフォーマンスボトルネックとなる。
+検索・置換機能のT-07-1最終レビューにおいて、.claude/agents/code-quality.mdエージェントが`WorkspaceSearchService`および`WorkspaceReplaceService`の並列処理実装の欠如を指摘した。現在の実装では、複数ファイルの処理が順次実行されており、大量ファイル処理時にパフォーマンスボトルネックとなる。
 
 ### 1.2 問題点・課題
 
@@ -138,18 +138,18 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテスト作成の専門家であり、並列処理のテストケース設計に最適
-- **代替候補**: @frontend-tester（E2Eが必要な場合）
+- **代替候補**: .claude/agents/frontend-tester.md（E2Eが必要な場合）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキルリスト（動的選定）
 
 | スキル名                | 活用方法                                           | 選定理由                 |
 | ----------------------- | -------------------------------------------------- | ------------------------ |
-| tdd-principles          | Red-Green-Refactorサイクルの遵守                   | TDDの原則に従うため      |
-| test-doubles            | モック・スタブの活用                               | 並列処理のテストで必要   |
-| boundary-value-analysis | 境界値テスト（0ファイル、1ファイル、多数ファイル） | 並列処理の境界条件を検証 |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクルの遵守                   | TDDの原則に従うため      |
+| .claude/skills/test-doubles/SKILL.md            | モック・スタブの活用                               | 並列処理のテストで必要   |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト（0ファイル、1ファイル、多数ファイル） | 並列処理の境界条件を検証 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -182,17 +182,17 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック実装の専門家であり、非同期処理パターンに精通
-- **代替候補**: @repo-dev（リポジトリ層が関係する場合）
+- **代替候補**: .claude/agents/repo-dev.md（リポジトリ層が関係する場合）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキルリスト（動的選定）
 
 | スキル名             | 活用方法                     | 選定理由                   |
 | -------------------- | ---------------------------- | -------------------------- |
-| network-resilience   | 並列処理のエラーハンドリング | 部分的失敗への対応         |
-| type-safety-patterns | 型安全な実装                 | TypeScriptの型システム活用 |
+| .claude/skills/network-resilience/SKILL.md   | 並列処理のエラーハンドリング | 部分的失敗への対応         |
+| .claude/skills/type-safety-patterns/SKILL.md | 型安全な実装                 | TypeScriptの型システム活用 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -249,7 +249,7 @@ async search(options: SearchOptions, config: SearchConfig = {}): Promise<SearchR
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -257,8 +257,8 @@ async search(options: SearchOptions, config: SearchConfig = {}): Promise<SearchR
 
 | スキル名               | 活用方法           | 選定理由       |
 | ---------------------- | ------------------ | -------------- |
-| refactoring-techniques | 重複排除、命名改善 | コード品質向上 |
-| clean-code-practices   | 可読性向上         | 保守性確保     |
+| .claude/skills/refactoring-techniques/SKILL.md | 重複排除、命名改善 | コード品質向上 |
+| .claude/skills/clean-code-practices/SKILL.md   | 可読性向上         | 保守性確保     |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -288,7 +288,7 @@ async search(options: SearchOptions, config: SearchConfig = {}): Promise<SearchR
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @code-quality, @sec-auditor
+- **エージェント**: .claude/agents/code-quality.md, .claude/agents/sec-auditor.md
 - **選定理由**: 品質とセキュリティの両面から検証
 - **参照**: `.claude/agents/agent_list.md`
 

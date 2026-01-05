@@ -1,186 +1,168 @@
 ---
 description: |
   ステークホルダーへのヒアリングを実施し、曖昧な要望を検証可能な要件に変換します。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
   - `.claude/agents/req-analyst.md`: 要件定義スペシャリスト（カール・ウィーガーズの要求工学に基づく曖昧性除去と要件構造化）
+  - `.claude/agents/spec-writer.md`: へハンドオフ
+  - `.claude/agents/domain-modeler.md`: との並行作業検討
+  - `.claude/agents/unit-tester.md`: へ要件の引き継ぎ
 
-  📚 利用可能スキル（フェーズごとに必要時のみ参照）:
-  **Phase 1（要望収集・初期分析）:**
-  - `.claude/skills/interview-techniques/SKILL.md`: 5W1H質問法、Why分析による要求抽出
-  - `.claude/skills/requirements-engineering/SKILL.md`: MoSCoW分類による優先順位付け
-
-  **Phase 2-5（明確化・構造化・文書化・検証・レビュー）:**
-  - エージェント内の8つの依存スキル（requirements-triage, ambiguity-elimination等）を自動参照
+  ⚙️ このコマンドの設定:
+  - argument-hint: [stakeholder-name]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: opus
 
   トリガーキーワード: 要件定義、ヒアリング、要求分析、requirements gathering
-  ⚙️ このコマンドの設定:
 argument-hint: "[stakeholder-name]"
 allowed-tools:
-  - Read(docs/**)
-  - Write(docs/00-requirements/**)
+  - Task
 model: opus
 ---
 
-# /ai:gather-requirements
+# .claude/commands/ai/gather-requirements.md
 
-## Phase 1: エージェント起動と準備
+## 目的
 
-### 1.1 Requirements Analystの起動
+`.claude/commands/ai/gather-requirements.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-```bash
-# `.claude/agents/req-analyst.md` エージェントのロード
-cat .claude/agents/req-analyst.md
-```
+## エージェント起動フロー
 
-**起動確認**:
+### Phase 1: 要件定義スペシャリスト（カール・ウィーガーズの要求工学に基づく曖昧性除去と要件構造化）の実行
 
-- [ ] エージェントの役割定義が確認できたか
-- [ ] 5つのフェーズワークフローが理解できたか
-- [ ] ツール使用方針が明確か
+**目的**: 要件定義スペシャリスト（カール・ウィーガーズの要求工学に基づく曖昧性除去と要件構造化）に関するタスクを実行し、結果を整理する
 
-### 1.2 プロジェクトコンテキストの把握
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-```bash
-# システム設計仕様書の確認（必須）
-cat docs/00-requirements/master_system_design.md
-```
+**ゴール**: 要件定義スペシャリスト（カール・ウィーガーズの要求工学に基づく曖昧性除去と要件構造化）の結果と次アクションが提示された状態
 
-**プロジェクト固有の制約確認**:
+**起動エージェント**: `.claude/agents/req-analyst.md`
 
-- [ ] **Specification-Driven Development**: 仕様書を正本とし、実装はその変換結果とする原則
-- [ ] **TDD必須**: すべての機能追加はテスト記述から着手（仕様書 → テスト → 実装）
-- [ ] **Clean Architecture**: 依存関係は外→内（Infrastructure → Application → Domain）
-- [ ] **ハイブリッド構造**: 共通インフラ（shared/）と機能プラグイン（features/）の分離
-- [ ] **技術スタック**: Next.js 15.x, Railway, Turso (SQLite), Drizzle ORM
-- [ ] **プロジェクト用語**: workflows (実行単位), executor (実行クラス), registry (機能レジストリ)
-- [ ] **出力構造**: `docs/00-requirements/` (要件), `docs/20-specifications/features/` (詳細仕様)
+Task ツールで `.claude/agents/req-analyst.md` を起動:
 
----
+**コンテキスト**:
 
-## Phase 2: 要件収集の実行
+- 引数: $ARGUMENTS（[stakeholder-name]）
 
-### 2.1 ステークホルダーヒアリング
+**依頼内容**:
 
-**実行**: `.claude/agents/req-analyst.md` が以下を実施
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-1. interview-techniquesスキルに基づくヒアリング実施
-2. 5W1H質問法による網羅的要求収集
-3. Why分析（5回のWhy繰り返し）による根本ニーズ発見
+**期待成果物**:
 
-**引数処理**:
+- `docs/00-requirements/`
+- `docs/00-requirements/master_system_design.md`
+- `docs/20-specifications/features/`
+- `docs/00-requirements/requirements.md`
 
-- 引数あり: 指定されたステークホルダー向けにカスタマイズした質問セット生成
-- 引数なし: 汎用的な要件収集質問セットを使用
+**完了条件**:
 
-**成果物**: 初期要求リスト（MoSCoW分類付き）
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
-### 2.2 要件の明確化と構造化
+### Phase 2: へハンドオフの実行
 
-**実行**: `.claude/agents/req-analyst.md` が以下を実施（Phase 2-4）
+**目的**: へハンドオフに関するタスクを実行し、結果を整理する
 
-1. 曖昧性検出と除去（「速い」→「応答時間<200ms」）
-2. 機能要件（FR）と非機能要件（NFR）への分離
-3. ユースケースと受け入れ基準の定義
-4. 要件品質検証（一貫性・完全性・検証可能性）
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-**品質基準**:
+**ゴール**: へハンドオフの結果と次アクションが提示された状態
 
-- [ ] 曖昧性スコア: 0（曖昧な表現なし）
-- [ ] 完全性スコア: >95%
-- [ ] 検証可能性スコア: 100%
+**起動エージェント**: `.claude/agents/spec-writer.md`
 
----
+Task ツールで `.claude/agents/spec-writer.md` を起動:
 
-## Phase 3: 成果物生成
+**コンテキスト**:
 
-### 3.1 要件定義書の作成
+- 引数: $ARGUMENTS（[stakeholder-name]）
 
-**出力先**: `docs/00-requirements/requirements.md`
+**依頼内容**:
 
-**必須セクション**:
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-- プロジェクト概要（目的、スコープ、ステークホルダー）
-- 機能要件（FR-XXX 形式、優先順位付き）
-- 非機能要件（NFR-XXX 形式、測定可能な基準）
-- ユースケース（基本フロー、代替フロー、例外フロー）
-- 受け入れ基準（Given-When-Then形式、**TDD対応: テスト可能であること**）
-- 用語集（プロジェクト固有の用語定義: workflows, executor, registry等）
-- **アーキテクチャ制約**（master_system_design.mdからの転記）:
-  - Clean Architecture原則（依存方向: 外→内）
-  - ハイブリッド構造（shared/ と features/ の責務分離）
-  - TDD必須（仕様書 → テスト → 実装の順序）
+**期待成果物**:
 
-**品質検証**: requirements-verificationスキルによる自動検証
+- `docs/00-requirements/`
+- `docs/00-requirements/master_system_design.md`
+- `docs/20-specifications/features/`
+- `docs/00-requirements/requirements.md`
 
-**次フェーズ連携**:
+**完了条件**:
 
-- **詳細仕様**: `docs/20-specifications/features/[機能名].md` への詳細化を想定
-- **TDDフロー**: テストファイル作成（`features/[機能名]/__tests__/`）への引き継ぎ準備
-- **実装ガイド**: Executor実装時の制約を明記（共通インフラはshared/から、機能間依存禁止）
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
----
+### Phase 3: との並行作業検討の実行
 
-## 完了確認
+**目的**: との並行作業検討に関するタスクを実行し、結果を整理する
 
-### 最終チェックリスト
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-- [ ] すべての要望がMoSCoW分類されている
-- [ ] 曖昧な表現が90%以上除去されている（「速い」→「応答時間<200ms」等）
-- [ ] すべての要件に受け入れ基準がある（Given-When-Then形式、テスト可能）
-- [ ] 要件間の矛盾がない
-- [ ] 要件定義書が `docs/00-requirements/requirements.md` に生成されている
-- [ ] 品質スコアが基準値（明確性90%、完全性85%、一貫性100%）を満たしている
-- [ ] **プロジェクト固有制約**が明記されている:
-  - [ ] TDD必須（仕様 → テスト → 実装）の順序が説明されているか
-  - [ ] ハイブリッド構造（shared/ と features/）の責務が説明されているか
-  - [ ] 用語集にworkflows, executor, registryが定義されているか
-  - [ ] 技術スタック制約（Railway, Turso, Drizzle ORM）が記載されているか
+**ゴール**: との並行作業検討の結果と次アクションが提示された状態
 
-### ハンドオフ準備
+**起動エージェント**: `.claude/agents/domain-modeler.md`
 
-次フェーズへの引き継ぎ:
+Task ツールで `.claude/agents/domain-modeler.md` を起動:
 
-- **設計フェーズ**: `/ai:design-system` または `.claude/agents/spec-writer.md` へハンドオフ
-- **ドメインモデリング**: `.claude/agents/domain-modeler.md` との並行作業検討
-- **テスト戦略**: `.claude/agents/unit-tester.md` へ要件の引き継ぎ
+**コンテキスト**:
 
----
+- 引数: $ARGUMENTS（[stakeholder-name]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/00-requirements/`
+- `docs/00-requirements/master_system_design.md`
+- `docs/20-specifications/features/`
+- `docs/00-requirements/requirements.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+### Phase 4: へ要件の引き継ぎの実行
+
+**目的**: へ要件の引き継ぎに関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: へ要件の引き継ぎの結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/unit-tester.md`
+
+Task ツールで `.claude/agents/unit-tester.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[stakeholder-name]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/00-requirements/`
+- `docs/00-requirements/master_system_design.md`
+- `docs/20-specifications/features/`
+- `docs/00-requirements/requirements.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
-### 例1: 新規プロジェクトの要件定義
-
 ```bash
-/ai:gather-requirements "Product Owner"
+/ai:gather-requirements [stakeholder-name]
 ```
-
-**結果**: Product Owner向けにカスタマイズされた質問セットでヒアリング、要件定義書を生成
-
-### 例2: 機能追加の要件定義
-
-```bash
-/ai:gather-requirements
-```
-
-**結果**: 汎用質問セットで要望を収集、既存要件との整合性を確認しながら要件を追加
-
-### 例3: 要件見直し
-
-既存の `docs/00-requirements/requirements.md` を読み込み、品質評価と改善提案を実施
-
----
-
-## トラブルシューティング
-
-### 曖昧な回答が多い場合
-
-→ interview-techniquesスキルの「明確化質問パターン」を活用
-
-### 優先順位が決められない場合
-
-→ requirements-engineeringスキルの「トリアージフレームワーク」でリスク評価
-
-### 要件間の矛盾を発見した場合
-
-→ requirements-verificationスキルの検証チェックリストで体系的に解消

@@ -67,6 +67,104 @@
 | ERR_5002 | NOT_IMPLEMENTED     | 未実装機能 |
 | ERR_5003 | CONFIGURATION_ERROR | 設定エラー |
 
+### 7.1.3 RAG固有エラーコード
+
+RAGパイプライン実装で使用するエラーコード。
+
+| カテゴリ     | エラーコード               | 説明                       |
+| ------------ | -------------------------- | -------------------------- |
+| ファイル     | FILE_NOT_FOUND             | ファイルが見つからない     |
+| ファイル     | FILE_READ_ERROR            | ファイル読み込みエラー     |
+| ファイル     | FILE_WRITE_ERROR           | ファイル書き込みエラー     |
+| ファイル     | UNSUPPORTED_FILE_TYPE      | 非対応ファイル形式         |
+| 変換         | CONVERSION_FAILED          | 変換処理失敗               |
+| 変換         | CONVERTER_NOT_FOUND        | コンバーターが見つからない |
+| **変換**     | **TIMEOUT**                | **変換処理タイムアウト**   |
+| **変換**     | **RESOURCE_EXHAUSTED**     | **同時実行数超過**         |
+| データベース | DB_CONNECTION_ERROR        | DB接続エラー               |
+| データベース | DB_QUERY_ERROR             | クエリ実行エラー           |
+| データベース | DB_TRANSACTION_ERROR       | トランザクションエラー     |
+| データベース | RECORD_NOT_FOUND           | レコードが見つからない     |
+| 埋め込み     | EMBEDDING_GENERATION_ERROR | 埋め込み生成エラー         |
+| 埋め込み     | EMBEDDING_PROVIDER_ERROR   | プロバイダーエラー         |
+| 検索         | SEARCH_ERROR               | 検索処理エラー             |
+| 検索         | QUERY_PARSE_ERROR          | クエリ解析エラー           |
+| グラフ       | ENTITY_EXTRACTION_ERROR    | エンティティ抽出エラー     |
+| グラフ       | RELATION_EXTRACTION_ERROR  | 関係抽出エラー             |
+| グラフ       | COMMUNITY_DETECTION_ERROR  | コミュニティ検出エラー     |
+| 汎用         | VALIDATION_ERROR           | バリデーションエラー       |
+
+**実装場所**: `packages/shared/src/types/rag/errors.ts`
+
+#### RAG変換システムのエラーコード詳細
+
+**ConversionService層のエラー**:
+
+| エラーコード          | 発生タイミング                     | リトライ       | 対処方法                                     |
+| --------------------- | ---------------------------------- | -------------- | -------------------------------------------- |
+| `RESOURCE_EXHAUSTED`  | 同時実行数が最大値（5件）に到達    | 可能（待機後） | 処理中のタスク完了を待つ                     |
+| `TIMEOUT`             | 変換処理が60秒以内に完了しない     | 条件付き       | タイムアウト時間を延長、またはファイルを分割 |
+| `CONVERTER_NOT_FOUND` | 対応コンバーターが登録されていない | 不可           | コンバーター実装またはMIMEタイプ確認         |
+
+**個別Converter層のエラー**:
+
+| エラーコード        | 発生タイミング | 例                                   | 対処方法           |
+| ------------------- | -------------- | ------------------------------------ | ------------------ |
+| `VALIDATION_FAILED` | 入力検証失敗   | MIMEタイプ不一致、最大ネスト深度超過 | 入力データを修正   |
+| `CONVERSION_FAILED` | 変換処理失敗   | YAML構文エラー、正規表現マッチ失敗   | ファイル内容を修正 |
+
+**エラーコンテキスト情報**:
+
+すべてのRAGエラーは以下のコンテキスト情報を含む：
+
+```typescript
+interface RAGErrorContext {
+  converterId?: string; // エラー発生元コンバーターID
+  fileId?: string; // 処理対象ファイルID
+  mimeType?: string; // ファイルのMIMEタイプ
+  filePath?: string; // ファイルパス（オプション）
+
+  // エラー固有の追加情報
+  maxDepth?: number; // YAML: ネスト深度
+  timeout?: number; // TIMEOUT: タイムアウト時間（ms）
+  currentConversions?: number; // RESOURCE_EXHAUSTED: 現在の実行数
+}
+```
+
+**エラー使用例**:
+
+```typescript
+// ConversionService: 同時実行数超過
+createRAGError(
+  ErrorCodes.RESOURCE_EXHAUSTED,
+  `Maximum concurrent conversions reached: 5`,
+  {
+    currentConversions: 5,
+    maxConcurrentConversions: 5,
+  },
+);
+
+// Converter: 変換失敗
+createRAGError(
+  ErrorCodes.CONVERSION_FAILED,
+  `YAML conversion failed: Invalid syntax at line 42`,
+  {
+    converterId: "yaml-converter",
+    fileId: "file-abc123",
+    mimeType: "application/x-yaml",
+    filePath: "/path/to/config.yaml",
+  },
+  originalError, // cause として元のエラーを保持
+);
+
+// Converter: タイムアウト
+createRAGError(ErrorCodes.TIMEOUT, `Conversion timeout after 60000ms`, {
+  converterId: "code-converter",
+  fileId: "file-xyz789",
+  timeout: 60000,
+});
+```
+
 ---
 
 ## 7.2 リトライ戦略

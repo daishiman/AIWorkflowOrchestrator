@@ -1,304 +1,133 @@
 ---
 name: boundary-value-analysis
 description: |
-  境界値分析と同値分割を専門とするスキル。
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  境界値分析と同値分割によるテストケース設計を体系化するスキル。
+  入力領域の分類、境界値抽出、エッジケース追加、組み合わせ最適化を行い、最小のテスト数で検証精度を高める。
 
-  - `.claude/skills/boundary-value-analysis/resources/boundary-value-fundamentals.md`: 境界値分析の基本概念と境界値±1の系統的テスト手法の基礎
-  - `.claude/skills/boundary-value-analysis/resources/combination-strategies.md`: 複数パラメータの組み合わせテスト最適化戦略（ペアワイズ・直交表・全組み合わせ）
-  - `.claude/skills/boundary-value-analysis/resources/edge-cases-catalog.md`: 極端な値・空値・NULL・特殊文字・同時実行・タイムアウト等の実践的エッジケースカタログ
-  - `.claude/skills/boundary-value-analysis/resources/equivalence-partitioning.md`: 入力空間を同じ動作のグループに分割し代表値でテストする同値分割技法と有効・無効クラスの設計
-  - `.claude/skills/boundary-value-analysis/templates/test-case-design-template.md`: テストケース設計テンプレート
-  - `.claude/skills/boundary-value-analysis/scripts/boundary-test-generator.mjs`: 境界値テストケース生成スクリプト
+  Anchors:
+  • The Pragmatic Programmer / 適用: テスト設計 / 目的: 実践的改善と品質維持
+  • Software Testing (Glenford J. Myers) / 適用: 境界値設計 / 目的: 代表値選定の明確化
+  • Rapid Software Testing (James Bach) / 適用: 探索的テスト / 目的: エッジケースの発見
 
-  専門分野:
-  - 境界値分析: 境界値での系統的テスト
-  - 同値分割: 入力空間の効率的な分割
-  - エッジケース: 極端な値、空値、特殊ケース
-  - テストケース最適化: 最小限のテストで最大のカバレッジ
-
-  使用タイミング:
-  - テストケースを設計する時
-  - 入力の妥当性検証をテストする時
-  - バグが境界値で発生した時
-  - テスト数を最適化したい時
-
-  Use proactively when designing test cases for validation logic.
-version: 1.0.0
+  Trigger:
+  Use when designing test cases, validating input boundaries, applying equivalence partitioning, or optimizing test coverage.
+allowed-tools:
+  - bash
+  - node
 ---
 
 # Boundary Value Analysis
 
 ## 概要
 
-境界値分析（BVA）と同値分割（EP）は、効率的なテストケース設計のための
-体系的な技法です。最小限のテストで最大のバグ検出率を実現します。
+境界値分析と同値分割を使って、入力領域ごとのテストケースを設計する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-**核心原則**:
+- テスト設計テンプレ: `assets/test-case-design-template.md`
 
-- バグは境界値で発生しやすい
-- 同値クラス内の値は同じ動作をする
-- 効率的なテストは戦略的に設計する
+## ワークフロー
 
-**対象ユーザー**:
+### Phase 1: 入力領域の整理
 
-- ユニットテスター（@unit-tester）
-- 品質エンジニア（@quality-engineer）
-- ビジネスロジック実装者（@logic-dev）
+**目的**: 入力範囲と制約を明確にする
 
-## リソース構造
+**アクション**:
 
-```
-boundary-value-analysis/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── boundary-value-fundamentals.md    # 境界値分析の基礎
-│   ├── equivalence-partitioning.md       # 同値分割
-│   ├── edge-cases-catalog.md             # エッジケースカタログ
-│   └── combination-strategies.md         # 組み合わせ戦略
-├── scripts/
-│   └── boundary-test-generator.mjs       # 境界値テストケース生成
-└── templates/
-    └── test-case-design-template.md      # テストケース設計テンプレート
-```
+1. `references/Level1_basics.md` で基本概念を確認
+2. `references/boundary-value-fundamentals.md` を参照
+3. 入力パラメータ、範囲、制約を整理
 
-## コマンドリファレンス
+**Task**: `agents/analyze-input-domain.md`
 
-### リソース読み取り
+### Phase 2: 同値クラスと境界値設計
 
-```bash
-# 境界値分析の基礎
-cat .claude/skills/boundary-value-analysis/resources/boundary-value-fundamentals.md
+**目的**: 同値クラスと境界値を定義する
 
-# 同値分割
-cat .claude/skills/boundary-value-analysis/resources/equivalence-partitioning.md
+**アクション**:
 
-# エッジケースカタログ
-cat .claude/skills/boundary-value-analysis/resources/edge-cases-catalog.md
+1. `references/equivalence-partitioning.md` を参照
+2. 有効/無効クラスを定義
+3. 境界値（下限/上限/±1）を抽出
 
-# 組み合わせ戦略
-cat .claude/skills/boundary-value-analysis/resources/combination-strategies.md
-```
+**Task**: `agents/define-equivalence-classes.md`
 
-### スクリプト実行
+### Phase 3: テストケース生成
 
-```bash
-# 境界値テストケース生成
-# 仕様から境界値テストケースとVitestテンプレートを自動生成
+**目的**: テストケースを具体化する
 
-# 数値範囲
-node .claude/skills/boundary-value-analysis/scripts/boundary-test-generator.mjs --range 1 100
+**アクション**:
 
-# 文字列長
-node .claude/skills/boundary-value-analysis/scripts/boundary-test-generator.mjs --type string --maxLength 255
+1. `assets/test-case-design-template.md` を使用
+2. `references/edge-cases-catalog.md` でエッジケースを追加
+3. 複数パラメータは `references/combination-strategies.md` を参照
+4. 必要に応じて `scripts/boundary-test-generator.mjs` を使用
 
-# 配列サイズ
-node .claude/skills/boundary-value-analysis/scripts/boundary-test-generator.mjs --type array --maxSize 10
+**Task**: `agents/generate-boundary-tests.md`
 
-# 日付範囲
-node .claude/skills/boundary-value-analysis/scripts/boundary-test-generator.mjs --type date --from 2024-01-01 --to 2024-12-31
-```
+### Phase 4: 検証と記録
 
-## クイックリファレンス
+**目的**: カバレッジを検証し記録する
 
-### 境界値分析の基本
+**アクション**:
 
-```
-範囲: 1 ≤ x ≤ 100
+1. `references/Level3_advanced.md` を参考に妥当性を確認
+2. `scripts/validate-skill.mjs` で構造検証
+3. `scripts/log_usage.mjs` で記録
 
-テストすべき境界値:
-├─ 0    (下限-1: 無効)
-├─ 1    (下限: 有効)
-├─ 2    (下限+1: 有効)
-├─ 99   (上限-1: 有効)
-├─ 100  (上限: 有効)
-└─ 101  (上限+1: 無効)
-```
+**Task**: `agents/validate-boundary-coverage.md`
 
-**詳細**: `resources/boundary-value-fundamentals.md`
+## Task仕様ナビ
 
-### 同値分割の基本
-
-```
-入力: 年齢（0-150の整数）
-
-同値クラス:
-├─ 無効: 負の数（-∞ ~ -1）
-├─ 有効: 子供（0 ~ 17）
-├─ 有効: 成人（18 ~ 64）
-├─ 有効: 高齢者（65 ~ 150）
-└─ 無効: 範囲外（151 ~ +∞）
-```
-
-**詳細**: `resources/equivalence-partitioning.md`
-
-## テストケース設計フロー
-
-### ステップ1: 入力の特定
-
-```
-対象: validateAge(age: number): boolean
-
-入力:
-- age: 数値（整数を期待）
-- 有効範囲: 0 ~ 150
-```
-
-### ステップ2: 同値クラスの定義
-
-```
-同値クラス:
-EC1: age < 0       → 無効
-EC2: 0 ≤ age ≤ 150 → 有効
-EC3: age > 150     → 無効
-EC4: 非数値        → 無効
-```
-
-### ステップ3: 境界値の特定
-
-```
-境界値:
-BV1: -1   (EC1の境界)
-BV2: 0    (EC1/EC2の境界)
-BV3: 150  (EC2/EC3の境界)
-BV4: 151  (EC3の境界)
-```
-
-### ステップ4: テストケースの生成
-
-```typescript
-it.each([
-  // 同値クラス + 境界値
-  { input: -1, expected: false, desc: "下限未満" },
-  { input: 0, expected: true, desc: "下限" },
-  { input: 75, expected: true, desc: "中央値" },
-  { input: 150, expected: true, desc: "上限" },
-  { input: 151, expected: false, desc: "上限超過" },
-  { input: NaN, expected: false, desc: "非数値" },
-])(
-  "validateAge($input) should return $expected ($desc)",
-  ({ input, expected }) => {
-    expect(validateAge(input)).toBe(expected);
-  },
-);
-```
-
-## よくある境界値パターン
-
-### 数値範囲
-
-| パターン        | テスト値               |
-| --------------- | ---------------------- |
-| `min ≤ x ≤ max` | min-1, min, max, max+1 |
-| `min < x < max` | min, min+1, max-1, max |
-| `x ≥ min`       | min-1, min, min+1      |
-| `x ≤ max`       | max-1, max, max+1      |
-
-### 文字列長
-
-| パターン          | テスト値                |
-| ----------------- | ----------------------- |
-| `len = n`         | n-1, n, n+1             |
-| `len ≤ max`       | 0, 1, max-1, max, max+1 |
-| `min ≤ len ≤ max` | min-1, min, max, max+1  |
-
-### 配列サイズ
-
-| パターン   | テスト値                |
-| ---------- | ----------------------- |
-| 空配列許可 | [], [1], [1,2,...n]     |
-| 空配列禁止 | [], [1], [1,2]          |
-| 最大n個    | [n-1個], [n個], [n+1個] |
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| 入力整理 | 範囲/制約整理 | 仕様/要件 | 入力整理メモ | `references/boundary-value-fundamentals.md` | Phase 1 |
+| 同値クラス設計 | 有効/無効定義 | 入力整理メモ | 同値クラス表 | `references/equivalence-partitioning.md` | Phase 2 |
+| テスト生成 | 境界/エッジ抽出 | 同値クラス表 | テストケース一覧 | `assets/test-case-design-template.md` | Phase 3 |
+| 検証 | カバレッジ確認 | テストケース一覧 | 検証メモ | `references/Level3_advanced.md` | Phase 4 |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **境界を明確にする**:
-   - 仕様から境界値を特定
-   - 暗黙の境界も考慮
-
-2. **同値クラスを網羅**:
-   - 有効クラスから最低1つ
-   - 無効クラスから最低1つ
-
-3. **特殊値をテスト**:
-   - null, undefined, NaN
-   - 空文字列、空配列
-   - 最大値、最小値
+- 入力範囲と制約を明記する
+- 同値クラスを有効/無効で分ける
+- 境界値は下限/上限/±1を必ず含める
+- エッジケースを追加する
 
 ### 避けるべきこと
 
-1. **ランダムな値のみ**:
-   - 境界を見逃す
-   - 再現性がない
+- 同値クラスと境界値の根拠を省略する
+- エラーパスのテストを省く
+- 組み合わせ爆発を無計画に増やす
 
-2. **境界のみ**:
-   - 同値クラスの代表値も必要
-   - 中央値のテストも重要
+## リソース参照
 
-3. **過度なテスト**:
-   - 同値クラス内で複数テストは冗長
-   - 効率的なテスト数を維持
+### 参照資料
 
-## 選択ガイド
+- `references/Level1_basics.md`: 基礎概念
+- `references/Level2_intermediate.md`: 実務適用
+- `references/Level3_advanced.md`: 併用戦略
+- `references/Level4_expert.md`: 監査/最適化
+- `references/boundary-value-fundamentals.md`: 境界値分析の基礎
+- `references/equivalence-partitioning.md`: 同値分割
+- `references/edge-cases-catalog.md`: エッジケース集
+- `references/combination-strategies.md`: 組み合わせ戦略
+- `references/legacy-skill.md`: 旧版要約（移行時のみ）
 
-### 境界値分析を選ぶ場面
+### スクリプト
 
-- 数値範囲の検証
-- 文字列長の制限
-- 配列サイズの制限
-- 日付範囲のチェック
+- `scripts/boundary-test-generator.mjs`: テストケース生成
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
 
-### 同値分割を選ぶ場面
+### テンプレート
 
-- 入力タイプによる分岐
-- カテゴリ分類
-- 複数の有効パターン
-
-### 両方を組み合わせる場面
-
-- 複雑な検証ロジック
-- 複数条件の組み合わせ
-- 高品質なテストが必要
-
-## 関連スキル
-
-- **tdd-principles** (`.claude/skills/tdd-principles/SKILL.md`): TDDの基本原則
-- **test-doubles** (`.claude/skills/test-doubles/SKILL.md`): テストダブル
-- **test-naming-conventions** (`.claude/skills/test-naming-conventions/SKILL.md`): テスト命名規約
-- **vitest-advanced** (`.claude/skills/vitest-advanced/SKILL.md`): Vitest高度な使い方
-
-## 参考文献
-
-- **『ソフトウェアテストの技法』** Boris Beizer著
-- **『テスト技法』** Lee Copeland著
-- **ISTQB Foundation Level Syllabus**
-
----
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- 境界値分析（2値、3値、堅牢性テスト）の適用
-- 同値分割によるテストケース効率化
-- エッジケースカタログからの網羅的テスト設計
-- ペアワイズテスト等の組み合わせ戦略
-
-### このスキルが行わないこと
-
-- テストコードの具体的な実装（→ vitest-advanced）
-- テストダブルの選択（→ test-doubles）
-- テスト命名の詳細（→ test-naming-conventions）
-- パフォーマンステスト/負荷テスト
-
----
+- `assets/test-case-design-template.md`: テスト設計テンプレ
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                        |
-| ---------- | ---------- | ------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版作成 - 境界値分析と同値分割 |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

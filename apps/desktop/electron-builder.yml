@@ -1,6 +1,7 @@
 appId: com.aiworkflow.orchestrator
 productName: AI Workflow Orchestrator
 copyright: Copyright © 2024 AIWorkflowOrchestrator
+electronVersion: 39.2.5
 
 directories:
   buildResources: build

@@ -31,7 +31,23 @@ export function registerAIHandlers(): void {
         }
         conversations.get(conversationId)?.push(request.message);
 
+        // Log system prompt if provided (for debugging)
+        if (request.systemPrompt) {
+          console.log(
+            `[AI_CHAT] System prompt provided (${request.systemPrompt.length} chars)`,
+          );
+        }
+
         // TODO: Replace with actual AI API call
+        // When implementing real LLM integration, include systemPrompt:
+        // const apiResponse = await callLLMAPI({
+        //   messages: [
+        //     ...(request.systemPrompt ? [{ role: 'system', content: request.systemPrompt }] : []),
+        //     { role: 'user', content: request.message }
+        //   ],
+        //   ragEnabled: request.ragEnabled,
+        // });
+
         // For now, return a mock response
         const mockResponses = [
           "ご質問ありがとうございます。ナレッジベースを検索しています...",

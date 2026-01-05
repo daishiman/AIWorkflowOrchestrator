@@ -11,11 +11,18 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
+
+  // E2E環境用のグローバルセットアップ（認証モック初期化）
+  globalSetup: require.resolve("./e2e/global-setup"),
+
   use: {
     // Electron アプリのテスト用 base URL（5173が使用中の場合5174）
     baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:5173",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
+
+    // E2E環境フラグを設定
+    storageState: "./e2e/.auth/user.json",
   },
 
   projects: [

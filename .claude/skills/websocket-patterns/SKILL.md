@@ -1,358 +1,139 @@
 ---
 name: websocket-patterns
 description: |
-  WebSocketによる双方向リアルタイム通信パターンを専門とするスキル。
+  WebSocketによる双方向リアルタイム通信パターン専門スキル。
+  接続ライフサイクル管理、メッセージキューイング、ハートビート戦略、エラーリカバリーを提供する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • RFC 6455 (WebSocket Protocol) / 適用: プロトコル仕様 / 目的: 標準準拠の実装
+  • 『Designing Data-Intensive Applications』(Martin Kleppmann) / 適用: メッセージング設計 / 目的: 信頼性確保
+  • Circuit Breaker Pattern / 適用: エラーリカバリー / 目的: 障害伝播防止
 
-  - `.claude/skills/websocket-patterns/resources/connection-lifecycle.md`: Connection Lifecycleリソース
-  - `.claude/skills/websocket-patterns/resources/heartbeat-strategies.md`: Heartbeat Strategiesリソース
-  - `.claude/skills/websocket-patterns/resources/message-queueing.md`: Message Queueingリソース
-
-  - `.claude/skills/websocket-patterns/templates/websocket-client-template.ts`: Websocket Clientテンプレート
-
-  - `.claude/skills/websocket-patterns/scripts/analyze-websocket-config.mjs`: Analyze Websocket Configスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when implementing WebSocket connections, real-time bidirectional communication, connection lifecycle management, message queueing, or heartbeat monitoring.
+allowed-tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
+  - Task
 ---
 
 # WebSocket Patterns
 
 ## 概要
 
-このスキルは、WebSocket による双方向リアルタイム通信パターンを提供します。
-RFC 6455 に準拠し、信頼性の高いリアルタイム通信の設計を支援します。
-
-**主要な価値**:
-
-- ポーリングよりも低レイテンシで効率的な通信
-- サーバーからのプッシュ型通知
-- 接続断時の自動再接続
-- メッセージの確実な配信
-
-**対象ユーザー**:
-
-- リアルタイム機能を実装するエージェント（@local-sync）
-- 通知システムを構築する開発者
-- ポーリングから WebSocket へ移行するプロジェクト
-
-## リソース構造
-
-```
-websocket-patterns/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── connection-lifecycle.md                 # 接続ライフサイクル管理
-│   ├── heartbeat-strategies.md                 # ハートビート設計
-│   └── message-queueing.md                     # メッセージキューイング
-├── scripts/
-│   └── analyze-websocket-config.mjs            # 設定分析スクリプト
-└── templates/
-    └── websocket-client-template.ts            # WebSocketクライアントテンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# 接続ライフサイクル管理
-cat .claude/skills/websocket-patterns/resources/connection-lifecycle.md
-
-# ハートビート設計
-cat .claude/skills/websocket-patterns/resources/heartbeat-strategies.md
-
-# メッセージキューイング
-cat .claude/skills/websocket-patterns/resources/message-queueing.md
-```
-
-### テンプレート参照
-
-```bash
-# WebSocketクライアントテンプレート
-cat .claude/skills/websocket-patterns/templates/websocket-client-template.ts
-```
-
-### スクリプト実行
-
-```bash
-# WebSocket設定の分析（再接続、ハートビート、キュー設定の妥当性検証）
-node .claude/skills/websocket-patterns/scripts/analyze-websocket-config.mjs <config-file>
-```
-
-## いつ使うか
-
-### シナリオ 1: リアルタイム通知の実装
-
-**状況**: サーバーからのイベントを即座にクライアントに通知したい
-
-**適用条件**:
-
-- [ ] 低レイテンシ（100ms 以下）が必要
-- [ ] サーバーからのプッシュ型通知が必要
-- [ ] 頻繁なデータ更新がある
-
-**期待される成果**: WebSocket 接続による即座の通知
-
-### シナリオ 2: ポーリングからの移行
-
-**状況**: ポーリングによるサーバー負荷が問題になっている
-
-**適用条件**:
-
-- [ ] ポーリング間隔が短い（5 秒以下）
-- [ ] 同時接続クライアントが多い
-- [ ] サーバーリソースを削減したい
-
-**期待される成果**: WebSocket 化によるリソース削減
-
-### シナリオ 3: 接続安定性の向上
-
-**状況**: WebSocket 接続が頻繁に切れる
-
-**適用条件**:
-
-- [ ] ネットワーク環境が不安定
-- [ ] モバイルクライアントがある
-- [ ] 長時間接続が必要
-
-**期待される成果**: ハートビートと自動再接続による安定化
-
-## 核心概念
-
-### 1. 接続ライフサイクル
-
-**目的**: WebSocket 接続の各段階を適切に管理
-
-**状態遷移**:
-
-```
-Disconnected
-    │
-    │ connect()
-    ▼
-Connecting
-    │
-    ├─ 成功 → Connected
-    │
-    └─ 失敗 → Reconnecting
-              │
-              ├─ 成功 → Connected
-              └─ 上限到達 → Disconnected
-```
-
-**詳細**: `resources/connection-lifecycle.md`
-
-### 2. ハートビート（Ping-Pong）
-
-**目的**: 接続の死活監視と維持
-
-**原則**:
-
-- クライアントから定期的に Ping を送信
-- サーバーからの Pong を待機
-- タイムアウトで接続断を検知
-
-**推奨設定**:
-
-```typescript
-const HEARTBEAT_CONFIG = {
-  interval: 30000, // 30秒間隔
-  timeout: 10000, // 10秒タイムアウト
-  maxMissed: 3, // 3回連続失敗で再接続
-};
-```
-
-**詳細**: `resources/heartbeat-strategies.md`
-
-### 3. メッセージキューイング
-
-**目的**: 送信失敗時のメッセージ保全
-
-**原則**:
-
-- 送信待ちメッセージをキューに蓄積
-- 接続復旧時に順次送信
-- 重要メッセージの優先処理
-
-**詳細**: `resources/message-queueing.md`
-
-### 4. 再接続戦略
-
-**目的**: 接続断からの自動復旧
-
-**原則**:
-
-- 指数バックオフで再接続を試行
-- ジッターで同時再接続を回避
-- 最大試行回数で諦める
-
-**計算式**:
-
-```typescript
-delay = min((baseDelay * 2) ^ (attempt + jitter), maxDelay);
-```
-
-**詳細**: retry-strategies スキルと連携
+WebSocketによる双方向リアルタイム通信パターンを専門とするスキル。
+接続ライフサイクル管理、メッセージキューイング、ハートビート戦略、エラーリカバリーを通じて、信頼性の高いリアルタイム通信を実現する。
 
 ## ワークフロー
 
-### Phase 1: 要件分析
+### Phase 1: 接続設計
 
-**ステップ**:
+**目的**: WebSocket接続の要件を整理し設計方針を決定
 
-1. 通信パターンの特定（一方向 vs 双方向）
-2. レイテンシ要件の確認
-3. 接続数の見積もり
+**アクション**:
 
-**判断基準**:
+1. 接続要件の確認（URL、プロトコル、認証方式）
+2. 再接続戦略の決定（Exponential Backoff設定）
+3. メッセージフォーマットの定義（JSON/Binary）
+4. 信頼性要件の確認（ACK必要性、順序保証）
 
-- [ ] WebSocket が最適な選択か？（SSE、Long Polling との比較）
-- [ ] サーバー側の WebSocket サポートがあるか？
+**Task**: `agents/connection-manager.md` を参照
 
-### Phase 2: 接続設計
+### Phase 2: 実装
 
-**ステップ**:
+**目的**: 各エージェントに基づいて機能を実装
 
-1. 接続 URL とプロトコルの決定
-2. 認証方式の選択（URL params、初期メッセージ）
-3. ハートビート間隔の設定
+**アクション（要件に応じて選択）**:
 
-**判断基準**:
+| 機能               | エージェント       | 主な実装内容                       |
+| ------------------ | ------------------ | ---------------------------------- |
+| 接続管理           | connection-manager | 状態マシン、再接続、クリーンアップ |
+| メッセージ送受信   | message-handler    | キューイング、ACK、順序保証        |
+| ヘルスモニタリング | health-monitor     | Ping/Pong、レイテンシ測定          |
+| エラー処理         | error-recoverer    | 分類、リカバリー、フォールバック   |
 
-- [ ] 認証トークンの受け渡し方法が決まっているか？
-- [ ] ハートビート間隔がサーバー設定と整合しているか？
+**Task**: 機能に応じたエージェントを参照
 
-### Phase 3: メッセージ設計
+### Phase 3: 検証と記録
 
-**ステップ**:
+**目的**: 実装の検証と知見の記録
 
-1. メッセージフォーマットの定義（JSON）
-2. メッセージタイプの設計
-3. エラーハンドリングの設計
+**アクション**:
 
-**判断基準**:
+1. 接続・切断・再接続のテスト
+2. メッセージ送受信の信頼性テスト
+3. エッジケース（ネットワーク断など）の確認
+4. `scripts/log_usage.mjs` で実行記録を保存
 
-- [ ] メッセージスキーマが定義されているか？
-- [ ] バージョニング戦略があるか？
+## Task仕様ナビ
 
-### Phase 4: 実装とテスト
-
-**ステップ**:
-
-1. WebSocket クライアントの実装
-2. 再接続ロジックのテスト
-3. 負荷テスト
-
-**判断基準**:
-
-- [ ] 接続断時の動作が期待通りか？
-- [ ] メモリリークがないか？
+| Task               | 説明                                       | 参照                           |
+| ------------------ | ------------------------------------------ | ------------------------------ |
+| 接続ライフサイクル | 接続確立、状態管理、再接続、クリーンアップ | `agents/connection-manager.md` |
+| メッセージング     | キューイング、ACK/NACK、順序保証           | `agents/message-handler.md`    |
+| ヘルスチェック     | ハートビート、レイテンシ測定、接続監視     | `agents/health-monitor.md`     |
+| エラーリカバリー   | 分類、自動復旧、Circuit Breaker            | `agents/error-recoverer.md`    |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **ハートビートの実装**:
-   - サーバーとクライアント両方でタイムアウト監視
-   - Ping-Pong 方式を推奨
-
-2. **再接続の自動化**:
-   - 指数バックオフとジッター
-   - ネットワーク復旧の検知
-
-3. **メッセージのバッファリング**:
-   - 接続断中のメッセージを保存
-   - 復旧時に順次送信
+- 接続状態を明示的な状態マシンで管理する
+- 再接続にはExponential Backoffを使用する
+- 重要なメッセージにはACK確認を実装する
+- ハートビートで接続の健全性を監視する
+- エラーを種別ごとに分類して適切に対処する
+- Circuit Breakerで障害の伝播を防止する
 
 ### 避けるべきこと
 
-1. **即時再接続**:
-   - サーバー負荷集中のリスク
-   - バックオフなしの連続試行
+- ハートビートなしに長時間接続を保持する
+- ACKなしに重要なメッセージを送信する
+- エラーハンドリングなしにプロダクション運用する
+- 再接続の上限なしに無限リトライする
+- 接続状態を確認せずにメッセージを送信する
 
-2. **無限バッファ**:
-   - メモリ枯渇のリスク
-   - サイズ制限を設ける
+## リソース参照
 
-3. **同期ブロッキング**:
-   - メインスレッドのブロック
-   - 非同期処理を徹底
+### agents/（Task仕様書）
 
-## トラブルシューティング
+| エージェント       | パス                           | 用途               |
+| ------------------ | ------------------------------ | ------------------ |
+| connection-manager | `agents/connection-manager.md` | 接続ライフサイクル |
+| message-handler    | `agents/message-handler.md`    | メッセージング     |
+| health-monitor     | `agents/health-monitor.md`     | ヘルスチェック     |
+| error-recoverer    | `agents/error-recoverer.md`    | エラーリカバリー   |
 
-### 問題 1: 接続が頻繁に切れる
+### references/（詳細知識）
 
-**症状**: 数分ごとに再接続が発生
+| リソース           | パス                                 | 用途             |
+| ------------------ | ------------------------------------ | ---------------- |
+| 接続ライフサイクル | `references/connection-lifecycle.md` | 状態遷移パターン |
+| メッセージキュー   | `references/message-queueing.md`     | キューイング設計 |
+| ハートビート戦略   | `references/heartbeat-strategies.md` | 接続監視パターン |
 
-**原因**:
+### scripts/（自動化処理）
 
-- サーバー側のアイドルタイムアウト
-- プロキシによる接続切断
+| スクリプト                   | 用途     | 使用例                                        |
+| ---------------------------- | -------- | --------------------------------------------- |
+| analyze-websocket-config.mjs | 設定分析 | `node scripts/analyze-websocket-config.mjs`   |
+| log_usage.mjs                | 使用記録 | `node scripts/log_usage.mjs --result success` |
+| validate-skill.mjs           | 構造検証 | `node scripts/validate-skill.mjs -v`          |
 
-**解決策**:
+### assets/（テンプレート）
 
-1. ハートビート間隔を短くする（15-30 秒）
-2. サーバーのタイムアウト設定を確認
-3. プロキシ設定を確認
-
-### 問題 2: メッセージが失われる
-
-**症状**: 送信したメッセージがサーバーに届かない
-
-**原因**:
-
-- 接続断中の送信
-- バッファオーバーフロー
-
-**解決策**:
-
-1. 送信前に接続状態を確認
-2. メッセージキューを実装
-3. ACK ベースの確認機構
-
-### 問題 3: メモリリーク
-
-**症状**: 長時間接続でメモリ使用量が増加
-
-**原因**:
-
-- イベントリスナーの未解除
-- 無限バッファリング
-
-**解決策**:
-
-1. 接続終了時にリスナーを解除
-2. バッファサイズに上限を設定
-
-## 関連スキル
-
-- **network-resilience** (`.claude/skills/network-resilience/SKILL.md`): オフライン対応、再接続戦略
-- **retry-strategies** (`.claude/skills/retry-strategies/SKILL.md`): 指数バックオフ、ジッター
-
-## 参考文献
-
-- **RFC 6455**: The WebSocket Protocol
-- **MDN Web Docs**: WebSocket API
+| テンプレート          | パス                                  | 用途                 |
+| --------------------- | ------------------------------------- | -------------------- |
+| WebSocketクライアント | `assets/websocket-client-template.ts` | クライアント実装基盤 |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                            |
-| ---------- | ---------- | ------------------------------------------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版作成 - 接続ライフサイクル、ハートビート、メッセージキューイング |
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- WebSocket 接続の設計と実装
-- ハートビートとタイムアウト管理
-- 再接続戦略の設計
-
-### このスキルが行わないこと
-
-- WebSocket サーバーの実装（クライアント側のみ）
-- HTTP ベースの通信（それは api-client-patterns スキル）
-- メッセージブローカーの設計（それは別途設計が必要）
+| Version | Date       | Changes                                       |
+| ------- | ---------- | --------------------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様準拠。4エージェント体制に拡張 |
+| 1.1.0   | 2025-12-31 | Task仕様ナビ追加、ワークフロー詳細化          |
+| 1.0.0   | 2025-12-24 | 初版作成                                      |

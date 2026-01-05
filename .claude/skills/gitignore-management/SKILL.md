@@ -1,411 +1,122 @@
 ---
 name: gitignore-management
 description: |
-    .gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、
-    プラットフォーム別パターン、.gitignore検証手法を提供します。
-    使用タイミング:
-    - .gitignoreを新規作成する時
-    - .gitignoreに機密パターンを追加する時
-    - プロジェクト固有の除外パターンを設計する時
-    - .gitignoreの完全性を検証する時
-    - Gitignoreベストプラクティスを適用する時
-    Use when designing .gitignore, adding secret patterns,
-    or validating gitignore completeness.
+  .gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、プラットフォーム別パターン、.gitignore検証手法を提供。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Pro Git (Scott Chacon) / 適用: バージョン管理 / 目的: 除外パターンの基礎
+  • The Pragmatic Programmer / 適用: 実践的改善 / 目的: 効率的なパターン設計
+  • GitHub gitignore templates / 適用: 言語別テンプレート / 目的: 標準パターン
 
-  - `.claude/skills/gitignore-management/resources/pattern-library.md`: 機密ファイル、クラウドプロバイダー、プラットフォーム別の除外パターンライブラリ
-  - `.claude/skills/gitignore-management/templates/gitignore-template.txt`: プロジェクト別の.gitignore基本テンプレート
-  - `.claude/skills/gitignore-management/scripts/validate-gitignore.mjs`: .gitignore完全性検証とパターン欠落チェックスクリプト
-
-  Use proactively when implementing gitignore-management patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when designing gitignore files, adding sensitive file patterns, configuring project-specific exclusions, validating gitignore patterns, or optimizing cross-platform exclusion rules.
+  gitignore, ignore patterns, secrets, env files, build artifacts, cache
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
-# .gitignore Management
+# .gitignore 管理スキル
 
 ## 概要
 
-.gitignore は、機密情報の Git 混入を防ぐ第一防衛線です。
-このスキルは、包括的な.gitignore 設計と管理手法を提供します。
-
-## 基本構造
-
-### 配置場所
-
-**必須**: プロジェクトルート（`/`）に配置
-
-### 基本セクション構成
-
-```gitignore
-# ═══════════════════════════════════════
-# Environment Variables
-# ═══════════════════════════════════════
-.env
-.env.local
-.env.*.local
-!.env.example
-
-# ═══════════════════════════════════════
-# Secret Files
-# ═══════════════════════════════════════
-*.key
-*.pem
-secrets/
-
-# ═══════════════════════════════════════
-# Cloud Provider Specific
-# ═══════════════════════════════════════
-.aws/
-gcp-credentials.json
-
-# ═══════════════════════════════════════
-# Platform Specific
-# ═══════════════════════════════════════
-.railway/
-
-# ═══════════════════════════════════════
-# Development Tools
-# ═══════════════════════════════════════
-.vscode/settings.json
-.idea/
-
-# ═══════════════════════════════════════
-# Build Artifacts
-# ═══════════════════════════════════════
-node_modules/
-dist/
-.next/
-
-# ═══════════════════════════════════════
-# Logs & Temporary
-# ═══════════════════════════════════════
-logs/
-*.log
-/tmp/
-
-# ═══════════════════════════════════════
-# Project Specific
-# ═══════════════════════════════════════
-# （プロジェクト固有パターンを追加）
-```
-
-## 環境変数パターン
-
-### 基本パターン
-
-```gitignore
-# すべての.envファイルを除外
-.env
-.env.local
-.env.development
-.env.development.local
-.env.test
-.env.test.local
-.env.staging
-.env.staging.local
-.env.production
-.env.production.local
-
-# テンプレートは除外しない（!で例外）
-!.env.example
-!.env.template
-!.env.sample
-```
-
-**重要**: `!`による例外指定は慎重に使用
-
-### プロジェクト固有パターン
-
-```gitignore
-# Next.js
-.env.local
-
-# Vite
-.env.local
-.env.*.local
-
-# Create React App
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-```
-
-## Secret ファイルパターン
-
-### 秘密鍵・証明書
-
-```gitignore
-# Private Keys
-*.key
-*.pem
-*.p12
-*.pfx
-
-# Certificates
-*.cer
-*.crt
-*.der
-
-# SSH Keys
-id_rsa
-id_dsa
-id_ecdsa
-id_ed25519
-*.pub
-
-# GPG
-*.gpg
-*.asc
-```
-
-### 認証情報ファイル
-
-```gitignore
-# Generic credentials
-credentials.json
-credentials.yaml
-credentials.yml
-token.json
-token.txt
-.credentials
-.token
-auth.json
-auth.yaml
-
-# Secret directories
-secrets/
-.secrets/
-private/
-.private/
-```
-
-## クラウドプロバイダー別パターン
-
-### AWS
-
-```gitignore
-.aws/
-aws-credentials
-.boto
-credentials
-```
-
-### Google Cloud Platform
-
-```gitignore
-gcp-credentials.json
-service-account.json
-.gcloud/
-application_default_credentials.json
-```
-
-### Azure
-
-```gitignore
-azure-credentials
-.azure/
-```
-
-## プラットフォーム別パターン
-
-### Railway
-
-```gitignore
-.railway/
-```
-
-### Vercel
-
-```gitignore
-.vercel/
-```
-
-### Netlify
-
-```gitignore
-.netlify/
-```
-
-## 開発ツール除外
-
-### IDE 設定（個人設定のみ除外）
-
-```gitignore
-# VS Code（個人設定のみ）
-.vscode/settings.json
-.vscode/launch.json
-
-# プロジェクト共有設定は除外しない
-!.vscode/extensions.json
-!.vscode/tasks.json
-
-# JetBrains IDEs
-.idea/
-*.iml
-
-# Vim
-*.swp
-*.swo
-*~
-
-# Emacs
-*~
-\#*\#
-```
-
-### OS 固有ファイル
-
-```gitignore
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
+.gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、プラットフォーム別パターン、.gitignore検証手法を提供。
 
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Linux
-*~
-.directory
-```
+## ワークフロー
 
-## プロジェクト固有パターン追加
+### Phase 1: 要件分析
 
-### Next.js プロジェクト
+**目的**: プロジェクトの除外パターン要件を把握
 
-```gitignore
-# Next.js
-.next/
-out/
-.vercel/
+**アクション**:
 
-# Testing
-.coverage/
-playwright-report/
-test-results/
-```
+1. プロジェクトタイプ（Node.js、Python等）を特定
+2. 機密ファイル（.env、秘密鍵）の存在を確認
+3. ビルド成果物とキャッシュディレクトリを特定
 
-### Local Agent プロジェクト
+**Task**: `agents/analyze-requirements.md` を参照
 
-```gitignore
-# Local Agent Logs
-local-agent/logs/
-local-agent/*.log
+### Phase 2: パターン設計
 
-# Temporary uploads
-local-agent/tmp/
-uploads/tmp/
-```
+**目的**: 適切な除外パターンを設計
 
-## .gitignore 検証
+**アクション**:
 
-### 検証スクリプト
+1. `assets/gitignore-template.txt` をベースに作成
+2. プロジェクト固有パターンを追加
+3. クロスプラットフォーム対応を確認
 
-```bash
-#!/bin/bash
-# .gitignore検証スクリプト
+**Task**: `agents/design-patterns.md` を参照
 
-echo "🔍 Validating .gitignore..."
+### Phase 3: 検証
 
-REQUIRED_PATTERNS=(
-  ".env"
-  "*.key"
-  "*.pem"
-  "secrets/"
-  "node_modules/"
-)
+**目的**: .gitignoreの正確性を検証
 
-MISSING=()
+**アクション**:
 
-for pattern in "${REQUIRED_PATTERNS[@]}"; do
-  if ! grep -q "$pattern" .gitignore 2>/dev/null; then
-    MISSING+=("$pattern")
-  fi
-done
+1. `scripts/validate-gitignore.mjs` で検証
+2. 意図しないファイル除外がないか確認
+3. `scripts/log_usage.mjs` でフィードバック記録
 
-if [ ${#MISSING[@]} -gt 0 ]; then
-  echo "❌ Missing required patterns:"
-  for p in "${MISSING[@]}"; do
-    echo "  - $p"
-  done
-  exit 1
-fi
+**Task**: `agents/validate-gitignore.md` を参照
 
-echo "✅ .gitignore validation passed"
-```
+## Task仕様ナビ
 
-### 動作確認
+| Task                 | 起動タイミング | 入力         | 出力               |
+| -------------------- | -------------- | ------------ | ------------------ |
+| analyze-requirements | Phase 1開始時  | プロジェクト | 要件リスト         |
+| design-patterns      | Phase 2開始時  | 要件リスト   | .gitignoreパターン |
+| validate-gitignore   | Phase 3開始時  | .gitignore   | 検証レポート       |
 
-```bash
-# .gitignoreが機能しているか確認
-git add --dry-run .
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
-# 除外されるべきファイルが追加されないことを確認
-touch .env
-git add --dry-run .env
-# → .env は追加されないはず
-```
+## ベストプラクティス
 
-## トラブルシューティング
+### すべきこと
 
-### 問題 1: .gitignore が効かない
+- 機密ファイル（.env、秘密鍵、API キー）を最優先で除外する
+- プロジェクト固有のビルド出力・キャッシュを明確に列挙する
+- クロスプラットフォーム対応（OS別、エディタ別）を考慮する
+- `scripts/validate-gitignore.mjs` で定期的に検証する
+- パターンの意図をコメントで記録する
 
-**原因**: ファイルが既に Git 管理下にある
+### 避けるべきこと
 
-**解決策**:
+- ワイルドカード `*` だけで除外パターンを定義しない
+- 既に追跡済みの機密ファイルを後から追加しただけにしない（履歴から削除が必要）
+- 特定ディレクトリを除外しながら中のファイルを追跡する矛盾した設定
+- 不要になったパターンの削除を忘れない
 
-```bash
-# Git管理から削除（ファイル自体は削除しない）
-git rm --cached .env
+## リソース参照
 
-# .gitignoreを適用
-git add .gitignore
-git commit -m "chore: update .gitignore to exclude .env"
-```
+### references/（詳細知識）
 
-### 問題 2: 除外したくないファイルが除外される
+| リソース           | パス                                                               | 内容             |
+| ------------------ | ------------------------------------------------------------------ | ---------------- |
+| 基礎知識           | See [references/basics.md](references/basics.md)                   | 構文とパターン   |
+| 実装パターン       | See [references/patterns.md](references/patterns.md)               | 実践的パターン集 |
+| パターンライブラリ | See [references/pattern-library.md](references/pattern-library.md) | 検証済みパターン |
 
-**原因**: パターンが広すぎる
+### scripts/（決定論的処理）
 
-**解決策**:
+| スクリプト               | 用途               | 使用例                                                  |
+| ------------------------ | ------------------ | ------------------------------------------------------- |
+| `validate-gitignore.mjs` | パターン検証       | `node scripts/validate-gitignore.mjs --file .gitignore` |
+| `log_usage.mjs`          | フィードバック記録 | `node scripts/log_usage.mjs --result success`           |
 
-```gitignore
-# 広いパターン
-*.log
+### assets/（テンプレート）
 
-# 特定ファイルは除外しない
-!important.log
-```
+| テンプレート             | 用途                       |
+| ------------------------ | -------------------------- |
+| `gitignore-template.txt` | 汎用.gitignoreテンプレート |
 
-## 実装チェックリスト
+## 変更履歴
 
-- [ ] プロジェクトルート（`/`）に配置されているか？
-- [ ] すべての機密ファイルパターンが含まれているか？
-- [ ] .env.example が除外されずに.env\*が除外されているか？
-- [ ] プロジェクト固有のパターンが追加されているか？
-- [ ] クラウドプロバイダー固有パターンが含まれているか？
-- [ ] プラットフォーム固有パターン（Railway 等）が含まれているか？
-
-## 関連スキル
-
-- `.claude/skills/pre-commit-security/SKILL.md` - pre-commit hook 実装
-- `.claude/skills/secret-management-architecture/SKILL.md` - Secret 分類
-- `.claude/skills/environment-isolation/SKILL.md` - 環境別設定
-
-## リソースファイル
-
-- `resources/pattern-library.md` - パターンライブラリ
-
-## スクリプト
-
-- `scripts/validate-gitignore.mjs` - .gitignore 検証スクリプト
-
-## テンプレート
-
-- `templates/gitignore-template.txt` - 基本テンプレート
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、構造再編成 |
+| 1.0.0   | 2025-12-31 | 初版                                 |

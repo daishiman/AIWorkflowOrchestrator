@@ -1,178 +1,139 @@
 ---
 name: workflow-templates
 description: |
-  GitHub Actions ワークフローテンプレートの選択、カスタマイズ、生成スキル
+  GitHub Actionsワークフローテンプレートの専門スキル。
+  組織標準テンプレート、スターターワークフロー設計を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  - Continuous Delivery（Jez Humble）/ 適用: CI/CDパイプライン設計 / 目的: 継続的デリバリー実現
+  - GitHub Actions Documentation（GitHub公式）/ 適用: ワークフロー構文 / 目的: 標準準拠
+  - GitHub Actions starter-workflows / 適用: テンプレートベース / 目的: ベストプラクティス適用
 
-  - `.claude/skills/workflow-templates/resources/project-type-selection.md`: Project Type Selectionリソース
-  - `.claude/skills/workflow-templates/resources/template-types.md`: Template Typesリソース
+  Trigger:
+  ワークフローテンプレート選定時、CIパイプライン構築時、CDパイプライン構築時、ワークフロー最適化時に使用
 
-  - `.claude/skills/workflow-templates/templates/cd-template.yaml`: CD（継続的デプロイ）テンプレート：環境別デプロイ、ヘルスチェック、通知統合
-  - `.claude/skills/workflow-templates/templates/ci-template.yaml`: CI（継続的統合）テンプレート：Lint、テスト、ビルド、複数バージョン対応
-  - `.claude/skills/workflow-templates/templates/docker-template.yaml`: Dockerテンプレート
-  - `.claude/skills/workflow-templates/templates/nodejs-template.yaml`: Nodejsテンプレート
-
-  - `.claude/skills/workflow-templates/scripts/generate-workflow.mjs`: Generate Workflowスクリプト
-
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Workflow Templates
 
-GitHub Actions ワークフローテンプレートの設計、選択、カスタマイズのための知識スキル。
+## 概要
 
-## 📁 ディレクトリ構造
+GitHub Actions ワークフローテンプレートの選択、カスタマイズ、生成に関する包括的なスキル。4つの専門エージェントによる体系的なワークフロー構築を提供します。
 
-```
-workflow-templates/
-├── SKILL.md                          # このファイル
-├── resources/
-│   ├── template-types.md             # テンプレートタイプ詳細
-│   └── project-type-selection.md     # プロジェクト別選択ガイド
-├── templates/
-│   ├── ci-template.yaml              # 基本CIテンプレート
-│   ├── cd-template.yaml              # 基本CDテンプレート
-│   ├── nodejs-template.yaml          # Node.js専用
-│   └── docker-template.yaml          # Docker専用
-└── scripts/
-    └── generate-workflow.mjs         # テンプレート生成スクリプト
-```
+## エージェント構成
 
-## 🔧 コマンドリファレンス
+| エージェント       | 役割               | 主な機能                                               |
+| ------------------ | ------------------ | ------------------------------------------------------ |
+| template-selector  | テンプレート選定   | プロジェクト分析、テンプレート推奨、カスタマイズガイド |
+| ci-builder         | CIパイプライン構築 | Lint/Test/Build ジョブ設計、キャッシュ戦略             |
+| cd-builder         | CDパイプライン構築 | マルチ環境デプロイ、承認フロー、ロールバック           |
+| workflow-optimizer | ワークフロー最適化 | キャッシュ最適化、並列実行、条件付き実行               |
 
-### リソース参照
+## ワークフロー
 
-```bash
-# テンプレートタイプの詳細
-cat .claude/skills/workflow-templates/resources/template-types.md
+### Phase 1: 要件分析とテンプレート選定
 
-# プロジェクトタイプ別選択ガイド
-cat .claude/skills/workflow-templates/resources/project-type-selection.md
-```
+**目的**: プロジェクト要件を分析し、最適なテンプレートを選定
 
-### テンプレート参照
+**アクション**:
 
-```bash
-# 基本CI/CDワークフロー
-cat .claude/skills/workflow-templates/templates/ci-template.yaml
-cat .claude/skills/workflow-templates/templates/cd-template.yaml
+1. `template-selector` でプロジェクトタイプを分析
+2. `references/project-type-selection.md` に基づくテンプレート選定
+3. カスタマイズポイントの特定
 
-# 言語固有ワークフロー
-cat .claude/skills/workflow-templates/templates/nodejs-template.yaml
-cat .claude/skills/workflow-templates/templates/docker-template.yaml
-```
+### Phase 2: パイプライン構築
 
-### スクリプト実行
+**目的**: CI/CDパイプラインの実装
 
-```bash
-# ワークフロー生成
-node .claude/skills/workflow-templates/scripts/generate-workflow.mjs <project-type> <output-path>
+**アクション**:
 
-# 例: Node.jsプロジェクト用ワークフロー生成
-node .claude/skills/workflow-templates/scripts/generate-workflow.mjs nodejs .github/workflows/
-```
+1. `ci-builder` でCIパイプラインを構築
+2. `cd-builder` でCDパイプラインを構築
+3. 環境別設定とシークレット管理
 
-## 📊 テンプレート選択マトリックス
+### Phase 3: 最適化と検証
 
-| プロジェクトタイプ | 推奨テンプレート                        | 主要機能                                   |
-| ------------------ | --------------------------------------- | ------------------------------------------ |
-| **Node.js**        | `nodejs-template.yaml`                  | pnpm/pnpm/yarn、キャッシング、Lint/Test    |
-| **Python**         | `ci-template.yaml`                      | pip/poetry、仮想環境、pytest               |
-| **Docker**         | `docker-template.yaml`                  | ビルド最適化、レジストリプッシュ、スキャン |
-| **Go/Rust**        | `ci-template.yaml`                      | 言語ツールチェーン、テスト、ビルド         |
-| **汎用 CI/CD**     | `ci-template.yaml` / `cd-template.yaml` | 基本的な CI/CD フロー                      |
+**目的**: パフォーマンス最適化と動作確認
 
-## 🎨 テンプレートタイプ概要
+**アクション**:
 
-**1. 組織テンプレート**: `.github/workflow-templates/` に配置し、組織全体で標準化
-**2. スターターワークフロー**: GitHub 公式が提供するプロジェクトタイプ別テンプレート
-**3. 再利用可能パターン**: Composite Actions / Reusable Workflows 化
+1. `workflow-optimizer` でキャッシュ・並列実行を最適化
+2. `scripts/validate-skill.mjs` でスキル構造検証
+3. `scripts/log_usage.mjs` で使用記録
 
-詳細は `resources/template-types.md` を参照。
+## Task仕様ナビ
 
-## 🔍 プロジェクトタイプ別要点
+| タスク             | 担当エージェント   | 参照リソース                  |
+| ------------------ | ------------------ | ----------------------------- |
+| テンプレート選定   | template-selector  | `project-type-selection.md`   |
+| CIパイプライン構築 | ci-builder         | `assets/ci-template.yaml`     |
+| CDパイプライン構築 | cd-builder         | `assets/cd-template.yaml`     |
+| Node.js環境構築    | ci-builder         | `assets/nodejs-template.yaml` |
+| Dockerビルド       | cd-builder         | `assets/docker-template.yaml` |
+| キャッシュ最適化   | workflow-optimizer | `template-types.md`           |
 
-**Node.js**: パッケージマネージャー自動検出 (pnpm/pnpm/yarn)、依存関係キャッシング
-**Python**: 仮想環境管理 (pip/poetry)、依存関係キャッシング
-**Docker**: マルチステージビルド、BuildKit キャッシュ、セキュリティスキャン
+## ベストプラクティス
 
-詳細は `resources/project-type-selection.md` を参照。
+### すべきこと
 
-## 🚀 使用方法
+- `template-selector` でプロジェクト要件を分析してから開始する
+- 最小限のテンプレートから始めて段階的に拡張する
+- キャッシュ戦略を早期に設計する
+- マルチ環境では環境保護ルールを設定する
+- 定期的に `workflow-optimizer` でパフォーマンスを確認する
 
-### 基本フロー
+### 避けるべきこと
 
-```bash
-# 1. プロジェクトタイプ識別
-ls package.json Dockerfile requirements.txt go.mod 2>/dev/null
+- 要件分析なしのテンプレート選択
+- キャッシュなしでの大規模依存関係インストール
+- 本番環境への承認フローなしのデプロイ
+- 過度に複雑なワークフロー設計
 
-# 2. テンプレート選択（上記マトリックス参照）
+## リソース参照
 
-# 3. テンプレートコピー＆カスタマイズ
-cp .claude/skills/workflow-templates/templates/nodejs-template.yaml .github/workflows/ci.yaml
+### エージェント
 
-# 4. カスタマイズ（ブランチ名、Node.jsバージョン等）
-# エディタで .github/workflows/ci.yaml を編集
+| エージェント                   | 説明                       |
+| ------------------------------ | -------------------------- |
+| `agents/template-selector.md`  | テンプレート選定の詳細仕様 |
+| `agents/ci-builder.md`         | CIパイプライン構築         |
+| `agents/cd-builder.md`         | CDパイプライン構築         |
+| `agents/workflow-optimizer.md` | ワークフロー最適化         |
 
-# 5. コミット＆プッシュ
-git add .github/workflows/ci.yaml
-git commit -m "chore: add CI workflow"
-git push
-```
+### リファレンス
 
-### カスタマイズ例
+| リソース                               | 説明                     |
+| -------------------------------------- | ------------------------ |
+| `references/project-type-selection.md` | プロジェクトタイプ別選定 |
+| `references/template-types.md`         | テンプレートタイプ詳細   |
 
-```yaml
-# ブランチ戦略に合わせる
-on:
-  push:
-    branches: [main, develop] # プロジェクトに応じて変更
+### テンプレート
 
-# バージョンマトリックスを調整
-strategy:
-  matrix:
-    node-version: [18, 20] # 必要なバージョンのみ
-```
+| テンプレート                  | 説明           |
+| ----------------------------- | -------------- |
+| `assets/ci-template.yaml`     | CIパイプライン |
+| `assets/cd-template.yaml`     | CDパイプライン |
+| `assets/docker-template.yaml` | Dockerビルド   |
+| `assets/nodejs-template.yaml` | Node.js環境    |
 
-## 🔗 関連スキル
+### スクリプト
 
-| スキル名                   | パス                                             | 関係性                 |
-| -------------------------- | ------------------------------------------------ | ---------------------- |
-| **github-actions-syntax**  | `.claude/skills/github-actions-syntax/SKILL.md`  | ワークフロー構文基礎   |
-| **caching-strategies-gha** | `.claude/skills/caching-strategies-gha/SKILL.md` | キャッシング最適化     |
-| **reusable-workflows**     | `.claude/skills/reusable-workflows/SKILL.md`     | テンプレート再利用化   |
-| **composite-actions**      | `.claude/skills/composite-actions/SKILL.md`      | 共通処理のアクション化 |
-| **matrix-builds**          | `.claude/skills/matrix-builds/SKILL.md`          | 複数環境対応           |
+| スクリプト                   | 説明           | 使用方法                             |
+| ---------------------------- | -------------- | ------------------------------------ |
+| `scripts/validate-skill.mjs` | スキル構造検証 | `node scripts/validate-skill.mjs -v` |
+| `scripts/log_usage.mjs`      | 使用記録       | `node scripts/log_usage.mjs`         |
 
-## 📝 ベストプラクティス
+## 変更履歴
 
-### テンプレート設計
-
-- **汎用性**: 80%のプロジェクトに適用可能
-- **カスタマイズ性**: 柔軟な調整ポイントを用意
-- **ドキュメント**: コメントで使用方法を記載
-
-### セキュリティ
-
-- **シークレット管理**: 認証情報をハードコード禁止
-- **権限最小化**: 必要最小限のパーミッション
-- **依存関係固定**: アクションバージョンを固定
-
-### 組織標準化
-
-- **命名規則**: 一貫したファイル名・ジョブ名
-- **バージョン管理**: テンプレートのバージョニング
-- **更新プロセス**: 定期的なレビューサイクル
-
-## 🎓 参考リソース
-
-- [GitHub Actions 公式テンプレート](https://github.com/actions/starter-workflows)
-- [組織テンプレート作成ガイド](https://docs.github.com/en/actions/using-workflows/creating-starter-workflows-for-your-organization)
-- [ワークフロー構文リファレンス](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
-
----
-
-**Note**: このスキルはテンプレート選択と初期構築に特化。詳細な構文や高度なカスタマイズは関連スキルを参照。
+| バージョン | 日付       | 変更内容                                      |
+| ---------- | ---------- | --------------------------------------------- |
+| 2.0.0      | 2026-01-01 | 4エージェント体制への再構成、18-skills.md準拠 |
+| 1.1.0      | 2025-12-31 | Task仕様ナビテーブル追加、日本語記述統一      |
+| 1.0.0      | 2025-12-24 | 初版リリース                                  |

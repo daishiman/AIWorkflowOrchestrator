@@ -1,111 +1,124 @@
 ---
 name: authentication-docs
 description: |
-  API認証・認可フローの図解とドキュメント化、
-  トークン取得手順の明確な説明のための知識とテンプレート
+  API認証ドキュメント（OAuth 2.0/PKCE、API Key、JWT、トークン管理）の作成と図解を支援するスキル。
+  認証フローの説明、トークン取得手順、セキュリティ注意点をわかりやすく整理します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • OAuth 2.0 Simplified / 適用: フロー図解 / 目的: 正確な説明と用語整理
+  • Web Application Security / 適用: セキュリティ注意点 / 目的: 安全な認証ドキュメント
+  • API Documentation Best Practices / 適用: ドキュメント構成 / 目的: 読みやすさの担保
 
-  - `.claude/skills/authentication-docs/resources/oauth2-flows.md`: OAuth 2.0各種フロー(Authorization Code、Client Credentials等)の詳細解説
-  - `.claude/skills/authentication-docs/resources/token-management.md`: トークン取得・更新・有効期限管理
-  - `.claude/skills/authentication-docs/resources/security-best-practices.md`: 認証セキュリティベストプラクティス
-  - `.claude/skills/authentication-docs/templates/auth-quickstart.md`: 認証クイックスタートガイドテンプレート
-  - `.claude/skills/authentication-docs/templates/oauth2-diagrams.md`: OAuth 2.0フローシーケンス図テンプレート(Mermaid形式)
-  - `.claude/skills/authentication-docs/scripts/generate-auth-flow-diagram.sh`: 認証フロー図自動生成スクリプト
-  - `.claude/skills/authentication-docs/scripts/test-auth-endpoint.sh`: 認証エンドポイントテストスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when writing authentication docs, creating OAuth flow diagrams, documenting token management, or preparing quickstart guides for API auth.
+allowed-tools:
+  - bash
+  - node
 ---
 
-# Authentication Docs スキル
+# API認証ドキュメント作成スキル
 
 ## 概要
 
-API認証・認可メカニズムの効果的なドキュメント化手法を提供します。
-OAuth 2.0フロー、API Key認証、JWT取得手順などを
-開発者が理解しやすい形式で文書化します。
+認証フローの図解、トークン取得手順、セキュリティ注意点を整理して、読み手が実装できる状態にする。
+必要な詳細は `references/` に外部化し、必要時に参照する。
 
-## 知識ドメイン
+- クイックスタートは `assets/auth-quickstart.md`
+- 図解は `assets/oauth2-diagrams.md`
 
-### 1. 認証方式
+## ワークフロー
 
-- API Key認証（ヘッダー/クエリ）
-- Bearer Token認証
-- Basic認証
-- OAuth 2.0各種フロー
-- OpenID Connect
+### Phase 1: 目的と対象フローの整理
 
-### 2. OAuth 2.0フロー
+**目的**: 認証方式とドキュメントの対象範囲を明確化する
 
-- Authorization Code Flow（+ PKCE）
-- Client Credentials Flow
-- Device Code Flow
-- Implicit Flow（非推奨）
+**アクション**:
 
-### 3. トークン管理
+1. `references/Level1_basics.md` で基本概念を確認
+2. 対象フロー（OAuth/API Key/JWT）を整理
+3. 読者の前提知識を整理
 
-- アクセストークン取得
-- リフレッシュトークン使用
-- トークン有効期限管理
-- スコープと権限
+**Task**: `agents/define-doc-scope.md`
 
-### 4. セキュリティ考慮
+### Phase 2: 図解と手順の作成
 
-- シークレット管理
-- CORS設定
-- レート制限
-- 監査ログ
+**目的**: フロー図解と実装手順を作成する
 
-### 5. 図解・可視化
+**アクション**:
 
-- シーケンス図（Mermaid）
-- フロー図
-- 状態遷移図
+1. `references/oauth2-flows.md` でフロー仕様を確認
+2. `assets/oauth2-diagrams.md` で図解を作成
+3. `references/token-management.md` でトークン説明を補強
+4. `assets/auth-quickstart.md` をベースに手順を作成
 
-## リソース
+**Task**:
+- `agents/create-flow-diagrams.md`
+- `agents/write-quickstart.md`
 
-| ファイル                               | 内容                               |
-| -------------------------------------- | ---------------------------------- |
-| `resources/oauth2-flows.md`            | OAuth 2.0各フローの詳細解説        |
-| `resources/token-management.md`        | トークン取得・更新・管理           |
-| `resources/security-best-practices.md` | 認証セキュリティベストプラクティス |
+### Phase 3: セキュリティ確認と仕上げ
 
-## テンプレート
+**目的**: セキュリティ注意点と品質チェックを行う
 
-| ファイル                       | 用途                          |
-| ------------------------------ | ----------------------------- |
-| `templates/auth-quickstart.md` | 認証クイックスタートガイド    |
-| `templates/oauth2-diagrams.md` | OAuth 2.0フロー図テンプレート |
+**アクション**:
 
-## 使用方法
+1. `references/security-best-practices.md` で注意点を確認
+2. `scripts/test-auth-endpoint.sh` でサンプルを検証
+3. `scripts/log_usage.mjs` で改善記録を残す
 
-```
-このスキルを使用して：
-1. 認証方式の選択と説明
-2. OAuth 2.0フローの図解作成
-3. トークン取得手順のステップバイステップガイド
-4. セキュリティ考慮事項の文書化
-```
+**Task**: `agents/review-security-notes.md`
 
-## 適用対象
+## Task仕様ナビ
 
-- API認証ドキュメント
-- OAuth 2.0統合ガイド
-- SDKクイックスタート
-- セキュリティガイドライン
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| 範囲定義 | 対象フローの整理 | 要件情報 | スコープメモ | `references/Level1_basics.md` | Phase 1 |
+| 図解作成 | OAuthフロー図作成 | スコープメモ | Mermaid図 | `assets/oauth2-diagrams.md` | Phase 2 前半 |
+| 手順作成 | クイックスタート作成 | 図解/要件 | ガイド本文 | `assets/auth-quickstart.md` | Phase 2 後半 |
+| セキュリティレビュー | 注意点の整理 | ガイド本文 | セキュリティ注意点 | `references/security-best-practices.md` | Phase 3 |
 
-## 関連スキル
+## ベストプラクティス
 
-| スキル                           | パス                                                       | 関連性                                  |
-| -------------------------------- | ---------------------------------------------------------- | --------------------------------------- |
-| openapi-specification            | `.claude/skills/openapi-specification/SKILL.md`            | OpenAPIセキュリティスキーム定義         |
-| request-response-examples        | `.claude/skills/request-response-examples/SKILL.md`        | 認証リクエスト/レスポンス例             |
-| api-documentation-best-practices | `.claude/skills/api-documentation-best-practices/SKILL.md` | APIドキュメント全体のベストプラクティス |
+### すべきこと
+
+- 読者の前提知識を明確にする
+- フロー図と手順を必ずセットで提示する
+- トークンの有効期限と更新手順を明記する
+- セキュリティ注意点を別セクションで整理する
+
+### 避けるべきこと
+
+- シークレットや実キーを例に含める
+- 図解のみで説明を省略する
+- 方式を限定して他方式の選択肢を隠す
+
+## リソース参照
+
+### 参照資料
+
+- `references/Level1_basics.md`: 基本概念
+- `references/Level2_intermediate.md`: 実務手順
+- `references/Level3_advanced.md`: 高度な設計
+- `references/Level4_expert.md`: 複合フロー
+- `references/oauth2-flows.md`: OAuthフロー詳細
+- `references/token-management.md`: トークン管理
+- `references/security-best-practices.md`: セキュリティ指針
+- `references/legacy-skill.md`: 旧版要約（移行時のみ参照）
+
+### スクリプト
+
+- `scripts/generate-auth-flow-diagram.sh`: 図生成補助
+- `scripts/test-auth-endpoint.sh`: エンドポイント確認
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
+
+### テンプレート
+
+- `assets/auth-quickstart.md`: クイックスタート
+- `assets/oauth2-diagrams.md`: 図解テンプレ
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                          |
-| ---------- | ---------- | --------------------------------------------------------------------------------- |
-| 1.0.0      | 2025-11-27 | 初版リリース。OAuth 2.0フロー、トークン管理、セキュリティベストプラクティスを追加 |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

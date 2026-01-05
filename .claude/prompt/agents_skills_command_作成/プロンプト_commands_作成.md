@@ -1,4 +1,4 @@
-/ai:create-command
+.claude/commands/ai/create-command.md
 
 次のリスト・エージェントから、Claude Code で使用するcommandを作成して。
 commandは次の階層化に作成して。
@@ -20,7 +20,7 @@ commandは次の階層化に作成して。
 
 ## 15. Git・バージョン管理
 
-### `/ai:commit`
+### `.claude/commands/ai/commit.md`
 
 - **目的**: Conventional Commitsに従ったコミット作成
 - **引数**: `[commit-message]` - コミットメッセージ(オプション、未指定時は自動生成)
@@ -30,17 +30,17 @@ commandは次の階層化に作成して。
   - `model: sonnet`
   - `allowed-tools: Bash(git*)`
 
-### `/ai:create-pr`
+### `.claude/commands/ai/create-pr.md`
 
 - **目的**: Pull Request作成
 - **引数**: `[base-branch]` - ベースブランチ(デフォルト: main)
-- **使用エージェント**: @spec-writer
+- **使用エージェント**: .claude/agents/spec-writer.md
 - **成果物**: GitHub Pull Request
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Bash(git*|gh*), Read`
 
-### `/ai:merge-pr`
+### `.claude/commands/ai/merge-pr.md`
 
 - **目的**: Pull Requestのマージ
 - **引数**: `[pr-number]` - PR番号
@@ -50,11 +50,11 @@ commandは次の階層化に作成して。
   - `model: sonnet`
   - `allowed-tools: Bash(gh pr*|git*)`
 
-### `/ai:tag-release`
+### `.claude/commands/ai/tag-release.md`
 
 - **目的**: リリースタグの作成
 - **引数**: `[version]` - バージョン番号(v1.0.0形式)
-- **使用エージェント**: @spec-writer
+- **使用エージェント**: .claude/agents/spec-writer.md
 - **成果物**: Gitタグ、リリースノート
 - **設定**:
   - `model: sonnet`
@@ -64,34 +64,34 @@ commandは次の階層化に作成して。
 
 ## 16. パッケージ・依存関係
 
-### `/ai:add-dependency`
+### `.claude/commands/ai/add-dependency.md`
 
 - **目的**: 新しい依存パッケージの追加
 - **引数**: `[package-name] [--dev]` - パッケージ名、devDependencyフラグ
-- **使用エージェント**: @dep-mgr
-- **スキル活用**: dependency-auditing
+- **使用エージェント**: .claude/agents/dep-mgr.md
+- **スキル活用**: .claude/skills/dependency-auditing/SKILL.md
 - **成果物**: 更新されたpackage.json
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Bash(pnpm install*|pnpm add*), Read, Edit`
 
-### `/ai:update-dependencies`
+### `.claude/commands/ai/update-dependencies.md`
 
 - **目的**: 依存パッケージの一括更新
 - **引数**: `[strategy]` - 更新戦略(patch/minor/major/latest)
-- **使用エージェント**: @dep-mgr
-- **スキル活用**: upgrade-strategies, semantic-versioning
+- **使用エージェント**: .claude/agents/dep-mgr.md
+- **スキル活用**: .claude/skills/upgrade-strategies/SKILL.md, .claude/skills/semantic-versioning/SKILL.md
 - **成果物**: 更新されたpackage.json
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Bash(pnpm*|pnpm*), Read, Edit`
 
-### `/ai:audit-dependencies`
+### `.claude/commands/ai/audit-dependencies.md`
 
 - **目的**: 依存関係の脆弱性監査
 - **引数**: なし
-- **使用エージェント**: @dep-mgr, @sec-auditor
-- **スキル活用**: dependency-auditing, vulnerability-scanning
+- **使用エージェント**: .claude/agents/dep-mgr.md, .claude/agents/sec-auditor.md
+- **スキル活用**: .claude/skills/dependency-auditing/SKILL.md, vulnerability-scanning
 - **成果物**: 監査レポート
 - **設定**:
   - `model: sonnet`
@@ -101,45 +101,45 @@ commandは次の階層化に作成して。
 
 ## 17. 環境設定・設定ファイル
 
-### `/ai:create-env-file`
+### `.claude/commands/ai/create-env-file.md`
 
 - **目的**: .env.exampleの作成・更新
 - **引数**: なし
-- **使用エージェント**: @secret-mgr
-- **スキル活用**: agent-architecture-patterns, best-practices-curation
+- **使用エージェント**: .claude/agents/secret-mgr.md
+- **スキル活用**: .claude/skills/agent-architecture-patterns/SKILL.md, .claude/skills/best-practices-curation/SKILL.md
 - **成果物**: .env.example
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Read, Write(.env.example)|Edit`
 
-### `/ai:setup-eslint`
+### `.claude/commands/ai/setup-eslint.md`
 
 - **目的**: ESLint設定の最適化
 - **引数**: `[style-guide]` - スタイルガイド(airbnb/google/standard)
-- **使用エージェント**: @code-quality
-- **スキル活用**: eslint-configuration, code-style-guides
+- **使用エージェント**: .claude/agents/code-quality.md
+- **スキル活用**: .claude/skills/eslint-configuration/SKILL.md, .claude/skills/code-style-guides/SKILL.md
 - **成果物**: .eslintrc.json
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Bash(pnpm*), Read, Write, Edit`
 
-### `/ai:setup-prettier`
+### `.claude/commands/ai/setup-prettier.md`
 
 - **目的**: Prettier設定
 - **引数**: なし
-- **使用エージェント**: @code-quality
-- **スキル活用**: prettier-integration
+- **使用エージェント**: .claude/agents/code-quality.md
+- **スキル活用**: .claude/skills/prettier-integration/SKILL.md
 - **成果物**: .prettierrc
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Write(.prettierrc*)`
 
-### `/ai:setup-typescript`
+### `.claude/commands/ai/setup-typescript.md`
 
 - **目的**: TypeScript設定の最適化
 - **引数**: `[strictness]` - 厳格度(strict/moderate/loose)
-- **使用エージェント**: @schema-def
-- **スキル活用**: type-safety-patterns
+- **使用エージェント**: .claude/agents/schema-def.md
+- **スキル活用**: .claude/skills/type-safety-patterns/SKILL.md
 - **成果物**: tsconfig.json
 - **設定**:
   - `model: sonnet`
@@ -149,44 +149,44 @@ commandは次の階層化に作成して。
 
 ## 18. メンテナンス・最適化
 
-### `/ai:clean-codebase`
+### `.claude/commands/ai/clean-codebase.md`
 
 - **目的**: 未使用コード・ファイルの削除
 - **引数**: `[--dry-run]` - ドライランフラグ
-- **使用エージェント**: @code-quality, @arch-police
-- **スキル活用**: code-smell-detection
+- **使用エージェント**: .claude/agents/code-quality.md, .claude/agents/arch-police.md
+- **スキル活用**: .claude/skills/code-smell-detection/SKILL.md
 - **成果物**: クリーンなコードベース
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Read, Grep, Glob, Edit, Bash(rm*)`
 
-### `/ai:update-all-docs`
+### `.claude/commands/ai/update-all-docs.md`
 
 - **目的**: 全ドキュメントの一括更新
 - **引数**: なし
-- **使用エージェント**: @spec-writer, @api-doc-writer, @manual-writer
+- **使用エージェント**: .claude/agents/spec-writer.md, .claude/agents/api-doc-writer.md, .claude/agents/manual-writer.md
 - **成果物**: 更新されたドキュメント
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Read, Edit, Write(docs/**)`
 
-### `/ai:analyze-performance`
+### `.claude/commands/ai/analyze-performance.md`
 
 - **目的**: パフォーマンス分析とボトルネック特定
 - **引数**: `[target]` - 分析対象(frontend/backend/database)
-- **使用エージェント**: @router-dev, @repo-dev, @dba-mgr
-- **スキル活用**: web-performance, query-performance-tuning
+- **使用エージェント**: .claude/agents/router-dev.md, .claude/agents/repo-dev.md, .claude/agents/dba-mgr.md
+- **スキル活用**: .claude/skills/web-performance/SKILL.md, .claude/skills/query-performance-tuning/SKILL.md
 - **成果物**: パフォーマンスレポート
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Read, Bash, Write(docs/**)`
 
-### `/ai:migrate-to-latest`
+### `.claude/commands/ai/migrate-to-latest.md`
 
 - **目的**: フレームワーク・ライブラリの最新版移行
 - **引数**: `[library-name]` - ライブラリ名
-- **使用エージェント**: @dep-mgr, @logic-dev
-- **スキル活用**: upgrade-strategies
+- **使用エージェント**: .claude/agents/dep-mgr.md, .claude/agents/logic-dev.md
+- **スキル活用**: .claude/skills/upgrade-strategies/SKILL.md
 - **成果物**: 移行済みコード
 - **設定**:
   - `model: opus`
@@ -196,42 +196,42 @@ commandは次の階層化に作成して。
 
 ## 19. トラブルシューティング・デバッグ
 
-### `/ai:debug-error`
+### `.claude/commands/ai/debug-error.md`
 
 - **目的**: エラーのデバッグと原因特定
 - **引数**: `[error-message]` - エラーメッセージ
-- **使用エージェント**: @logic-dev, @sec-auditor
+- **使用エージェント**: .claude/agents/logic-dev.md, .claude/agents/sec-auditor.md
 - **成果物**: 原因分析とfix提案
 - **設定**:
   - `model: opus`
   - `allowed-tools: Read, Grep, Bash`
 
-### `/ai:fix-build-error`
+### `.claude/commands/ai/fix-build-error.md`
 
 - **目的**: ビルドエラーの修正
 - **引数**: なし
-- **使用エージェント**: @devops-eng, @code-quality
+- **使用エージェント**: .claude/agents/devops-eng.md, .claude/agents/code-quality.md
 - **成果物**: 修正されたコード
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Bash(pnpm run build*), Read, Edit`
 
-### `/ai:fix-type-errors`
+### `.claude/commands/ai/fix-type-errors.md`
 
 - **目的**: TypeScriptエラーの修正
 - **引数**: `[file-path]` - 対象ファイル(オプション)
-- **使用エージェント**: @schema-def
-- **スキル活用**: type-safety-patterns
+- **使用エージェント**: .claude/agents/schema-def.md
+- **スキル活用**: .claude/skills/type-safety-patterns/SKILL.md
 - **成果物**: 型エラー修正
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Bash(tsc*), Read, Edit`
 
-### `/ai:diagnose-performance-issue`
+### `.claude/commands/ai/diagnose-performance-issue.md`
 
 - **目的**: パフォーマンス問題の診断
 - **引数**: `[symptom]` - 症状(slow-render/slow-query/memory-leak)
-- **使用エージェント**: @router-dev, @repo-dev, @sre-observer
+- **使用エージェント**: .claude/agents/router-dev.md, .claude/agents/repo-dev.md, .claude/agents/sre-observer.md
 - **成果物**: 診断レポート、修正提案
 - **設定**:
   - `model: opus`
@@ -241,32 +241,32 @@ commandは次の階層化に作成して。
 
 ## 20. チーム・コラボレーション
 
-### `/ai:sync-team-standards`
+### `.claude/commands/ai/sync-team-standards.md`
 
 - **目的**: チームコーディング規約の同期
 - **引数**: なし
-- **使用エージェント**: @code-quality, @skill-librarian
+- **使用エージェント**: .claude/agents/code-quality.md, .claude/agents/skill-librarian.md
 - **成果物**: 更新された.claude/CLAUDE.md
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Read, Edit`
 
-### `/ai:create-workflow-template`
+### `.claude/commands/ai/create-workflow-template.md`
 
 - **目的**: チーム用ワークフローテンプレート作成
 - **引数**: `[workflow-name]` - ワークフロー名
-- **使用エージェント**: @gha-workflow-architect
-- **スキル活用**: workflow-templates
+- **使用エージェント**: .claude/agents/gha-workflow-architect.md
+- **スキル活用**: .claude/skills/workflow-templates/SKILL.md
 - **成果物**: Organization workflow template
 - **設定**:
   - `model: sonnet`
   - `allowed-tools: Write(.github/workflow-templates/**)`
 
-### `/ai:onboard-developer`
+### `.claude/commands/ai/onboard-developer.md`
 
 - **目的**: 新規開発者のオンボーディング
 - **引数**: `[developer-role]` - 役割(frontend/backend/fullstack)
-- **使用エージェント**: @manual-writer, @meta-agent-designer
+- **使用エージェント**: .claude/agents/manual-writer.md, .claude/agents/meta-agent-designer.md
 - **成果物**: オンボーディングガイド
 - **設定**:
   - `model: sonnet`
@@ -291,11 +291,11 @@ YAML Frontmatter + Markdown 本文の構造を持つハブ特化型コマンド�
 - `.claude/agents/command-arch.md`: スラッシュコマンド作成専門エージェント（Phase 2で起動）
 
 📚 利用可能スキル（タスクに応じてcommand-archエージェントが必要時に参照）:
-**Phase 1（要件収集時）:** command-naming-conventions, command-placement-priority
-**Phase 2（設計時）:** command-structure-fundamentals, command-arguments-system, command-basic-patterns
-**Phase 3（セキュリティ時）:** command-security-design, command-error-handling（必要時）
-**Phase 4（品質時）:** command-best-practices, command-documentation-patterns（必要時）
-**Phase 5（最適化時）:** command-performance-optimization（必要時）, command-agent-skill-integration（必要時）
+**Phase 1（要件収集時）:** .claude/skills/command-naming-conventions/SKILL.md, .claude/skills/command-placement-priority/SKILL.md
+**Phase 2（設計時）:** .claude/skills/command-structure-fundamentals/SKILL.md, .claude/skills/command-arguments-system/SKILL.md, .claude/skills/command-basic-patterns/SKILL.md
+**Phase 3（セキュリティ時）:** .claude/skills/command-security-design/SKILL.md, .claude/skills/command-error-handling/SKILL.md（必要時）
+**Phase 4（品質時）:** .claude/skills/command-best-practices/SKILL.md, .claude/skills/command-documentation-patterns/SKILL.md（必要時）
+**Phase 5（最適化時）:** .claude/skills/command-performance-optimization/SKILL.md（必要時）, .claude/skills/command-agent-skill-integration/SKILL.md（必要時）
 
 ⚙️ このコマンドの設定:
 

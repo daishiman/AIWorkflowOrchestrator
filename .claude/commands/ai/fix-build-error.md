@@ -1,104 +1,92 @@
 ---
 description: |
   ビルドエラーの修正を行うコマンド。
-
-  ビルドプロセスで発生したエラーを分析し、自動修正を試みます。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - Phase 2: `.claude/agents/devops-eng.md` - ビルド設定・環境専門
-  - Phase 3: `.claude/agents/code-quality.md` - コード修正専門
-
-  📚 利用可能スキル（エージェントが参照）:
-  - `.claude/skills/build-troubleshooting/SKILL.md` - ビルドエラーパターン、解決策
-  - `.claude/skills/nextjs-optimization/SKILL.md` - Next.jsビルド最適化
+  - `.claude/agents/devops-eng.md`: ビルド設定・環境専門
+  - `.claude/agents/code-quality.md`: コード修正専門
 
   ⚙️ このコマンドの設定:
-  - argument-hint: なし
-  - allowed-tools: ビルド実行と修正用
-    • Task: devops-eng/code-qualityエージェント起動用
-    • Bash(pnpm run build*): ビルド実行専用
-    • Read: ビルド設定・コード確認用
-    • Edit: エラー修正用
-  - model: sonnet（標準的なビルドエラー修正タスク）
-
-  📋 成果物:
-  - 修正されたコード
-  - ビルド成功確認
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: opus
 
   トリガーキーワード: build error, ビルドエラー, コンパイルエラー
-argument-hint: ""
 allowed-tools:
   - Task
-  - Bash(pnpm run build*)
-  - Read
-  - Edit
 model: opus
 ---
 
 # ビルドエラー修正
 
-このコマンドは、ビルドエラーを修正します。
+## 目的
 
-## 📋 実行フロー
+`.claude/commands/ai/fix-build-error.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-### Phase 1: ビルド実行とエラー確認
+## エージェント起動フロー
 
-```bash
-echo "ビルド実行中..."
-pnpm build 2>&1 | tee build-error.log
+### Phase 1: ビルド設定・環境専門の実行
 
-if [ $? -eq 0 ]; then
-  echo "ビルド成功: エラーなし"
-  exit 0
-fi
+**目的**: ビルド設定・環境専門に関するタスクを実行し、結果を整理する
 
-echo "ビルドエラー検出"
-cat build-error.log
-```
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-### Phase 2: devops-engエージェントを起動
+**ゴール**: ビルド設定・環境専門の結果と次アクションが提示された状態
 
-**使用エージェント**: `.claude/agents/devops-eng.md`
+**起動エージェント**: `.claude/agents/devops-eng.md`
+
+Task ツールで `.claude/agents/devops-eng.md` を起動:
+
+**コンテキスト**:
+
+- 引数: なし
 
 **依頼内容**:
 
-```markdown
-ビルドエラーを修正してください。
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-**ビルドログ**: ${cat build-error.log}
+**期待成果物**:
 
-**要件**:
+- `docs/reports/fix-build-error.md`
 
-1. エラー種別の特定
-2. 修正実施
-3. ビルド再実行
+**完了条件**:
 
-**スキル参照**: `.claude/skills/build-troubleshooting/SKILL.md`
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
-**成果物**: 修正されたコード
-```
+### Phase 2: コード修正専門の実行
 
-### Phase 3: 完了報告
+**目的**: コード修正専門に関するタスクを実行し、結果を整理する
 
-```markdown
-## ビルドエラー修正完了
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-### 修正内容
+**ゴール**: コード修正専門の結果と次アクションが提示された状態
 
-${fix_summary}
+**起動エージェント**: `.claude/agents/code-quality.md`
 
-### ビルド結果
+Task ツールで `.claude/agents/code-quality.md` を起動:
 
-✅ ビルド成功
-```
+**コンテキスト**:
+
+- 引数: なし
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/reports/fix-build-error.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
 /ai:fix-build-error
 ```
-
-## 参照
-
-- devops-eng: `.claude/agents/devops-eng.md`
-- build-troubleshooting: `.claude/skills/build-troubleshooting/SKILL.md`

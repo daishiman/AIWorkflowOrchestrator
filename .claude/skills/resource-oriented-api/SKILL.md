@@ -1,321 +1,124 @@
 ---
 name: resource-oriented-api
 description: |
-  MCPのリソース指向API設計パターンに関する専門知識。
+  MCPのリソース指向API設計パターンを提供。URIスキーム設計、リソースモデル定義、
+  プロバイダー実装、キャッシュ戦略、リソース変換パターンを網羅する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • RESTful Web APIs (Leonard Richardson) / 適用: リソース設計・URI設計 / 目的: REST原則の適用
+  • MCP Resource Protocol / 適用: リソースプロバイダー実装 / 目的: MCP仕様準拠
 
-  - `.claude/skills/resource-oriented-api/resources/caching-strategies.md`: Caching Strategiesリソース
-  - `.claude/skills/resource-oriented-api/resources/resource-transformation.md`: Resource Transformationリソース
-  - `.claude/skills/resource-oriented-api/resources/uri-scheme-guide.md`: Uri Scheme Guideリソース
-
-  - `.claude/skills/resource-oriented-api/templates/resource-definition-template.json`: Resource Definitionテンプレート
-  - `.claude/skills/resource-oriented-api/templates/resource-provider-template.ts`: Resource Providerテンプレート
-
-  - `.claude/skills/resource-oriented-api/scripts/validate-resource-definition.mjs`: Validate Resource Definitionスクリプト
-  - `.claude/skills/resource-oriented-api/scripts/validate-uri.mjs`: Validate Uriスクリプト
-
-version: 1.0.1
+  Trigger:
+  Use when designing MCP resources, implementing resource providers, or defining URI schemes.
+  MCP resource, resource provider, URI scheme, リソース定義, リソースモデル, API設計
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Resource Oriented API スキル
+# Resource Oriented API
 
 ## 概要
 
-MCP におけるリソース指向 API 設計の専門知識を提供します。ファイル、データベース、外部サービスなど様々なデータソースを統一的なリソースとして扱い、一貫性のあるアクセスパターンを実現します。
+MCPのリソース指向API設計パターンを提供するスキル。URIスキーム設計からリソースプロバイダー実装まで、リソース指向APIの設計・実装を支援する。
 
-## リソースモデル
+## ワークフロー
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  MCP Resource Layer                  │
-├─────────────────────────────────────────────────────┤
-│                                                      │
-│   URI Scheme: protocol://authority/path?query       │
-│                                                      │
-│   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│   │    Files    │  │  Database   │  │   Remote    │ │
-│   │  file://... │  │  db://...   │  │  http://... │ │
-│   └─────────────┘  └─────────────┘  └─────────────┘ │
-│                                                      │
-│   共通インターフェース:                              │
-│   - read(uri) → content                             │
-│   - list(pattern) → resources[]                     │
-│   - subscribe(uri) → updates                        │
-│                                                      │
-└─────────────────────────────────────────────────────┘
-```
+### Phase 1: リソースモデル設計
 
-## 1. リソース URI スキーム
+**目的**: ドメインに適したリソースモデルを設計する
 
-### 標準 URI フォーマット
+**アクション**:
 
-```
-scheme://authority/path?query#fragment
+1. リソースとして公開すべきエンティティを特定
+2. リソース間の階層・関連を定義
+3. URIスキームを設計（`references/uri-scheme-guide.md`参照）
+4. MIME-typeとコンテンツ形式を決定
 
-例:
-file:///project/src/main.ts
-db://sqlite/users?id=123
-git://repo/main/README.md
-memory://session/context
-```
+**Task**: `agents/design-resource-model.md` を参照
 
-### スキーム別設計指針
+### Phase 2: リソースプロバイダー実装
 
-| スキーム    | 用途                 | 例                            |
-| ----------- | -------------------- | ----------------------------- |
-| `file://`   | ローカルファイル     | `file:///home/user/doc.md`    |
-| `db://`     | データベースレコード | `db://sqlite/users/123`       |
-| `git://`    | Git リポジトリ       | `git://repo/branch/path`      |
-| `memory://` | セッションメモリ     | `memory://session/vars`       |
-| `http://`   | 外部 API             | `http://api.example.com/data` |
-| `custom://` | カスタムソース       | `custom://provider/resource`  |
+**目的**: 設計したリソースモデルをMCPプロバイダーとして実装
 
-### URI 正規化ルール
+**アクション**:
 
-```
-1. パス正規化
-   - 末尾スラッシュを統一（なし推奨）
-   - 相対パスを絶対パスに変換
-   - .. および . を解決
+1. リソース定義JSONを作成（`assets/resource-definition-template.json`参照）
+2. プロバイダークラスを実装（`assets/resource-provider-template.ts`参照）
+3. `scripts/validate-resource-definition.mjs`で定義を検証
+4. `scripts/validate-uri.mjs`でURI設計を検証
 
-2. クエリパラメータ
-   - アルファベット順にソート
-   - 重複を除去
-   - 空値を除去
+**Task**: `agents/implement-provider.md` を参照
 
-3. エンコーディング
-   - 非ASCII文字はパーセントエンコード
-   - スペースは%20（+ではなく）
-```
+### Phase 3: 最適化と検証
 
-## 2. リソース定義パターン
+**目的**: パフォーマンスとセキュリティを最適化
 
-### 基本リソース定義
+**アクション**:
 
-```typescript
-interface Resource {
-  uri: string; // 一意識別子
-  name: string; // 人間可読な名前
-  description?: string; // 説明
-  mimeType?: string; // コンテンツタイプ
-}
+1. キャッシュ戦略を適用（`references/caching-strategies.md`参照）
+2. リソース変換パターンを適用（`references/resource-transformation.md`参照）
+3. セキュリティチェック（パストラバーサル、スキーム制限）
+4. 最終検証と記録（`scripts/log_usage.mjs`）
 
-interface ResourceContent {
-  uri: string;
-  mimeType?: string;
-  text?: string; // テキストコンテンツ
-  blob?: string; // Base64バイナリ
-}
+## Task仕様（ナビゲーション）
 
-interface ResourceTemplate {
-  uriTemplate: string; // URIテンプレート
-  name: string;
-  description?: string;
-  mimeType?: string;
-}
-```
+| Task                  | 起動タイミング | 入力                 | 出力                 |
+| --------------------- | -------------- | -------------------- | -------------------- |
+| design-resource-model | Phase 1開始時  | ドメイン要件         | リソースモデル設計書 |
+| implement-provider    | Phase 2開始時  | リソースモデル設計書 | プロバイダー実装     |
 
-### リソースタイプ別実装
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
-```yaml
-# ファイルリソース
-file_resource:
-  uri: "file:///project/config.json"
-  name: "Project Configuration"
-  mimeType: "application/json"
-  capabilities:
-    - read
-    - watch
+## ベストプラクティス
 
-# データベースリソース
-database_resource:
-  uri: "db://sqlite/users"
-  name: "User Records"
-  mimeType: "application/json"
-  capabilities:
-    - read
-    - list
-    - query
+### すべきこと
 
-# 動的リソース（テンプレート）
-template_resource:
-  uriTemplate: "api://github/repos/{owner}/{repo}/issues"
-  name: "GitHub Issues"
-  mimeType: "application/json"
-  parameters:
-    - name: owner
-      required: true
-    - name: repo
-      required: true
-```
+- URIは階層的で直感的な構造にする（例: `/users/123/posts/456`）
+- リソース名は複数形・ケバブケースを使用（例: `my-resources`）
+- パス深度は最大4レベルに制限
+- 特殊文字は適切にパーセントエンコード
+- キャッシュ戦略を必ず検討する
 
-## 3. リソースアクセスパターン
+### 避けるべきこと
 
-### 読み取りパターン
-
-```
-単一リソース読み取り:
-  read(uri) → ResourceContent
-
-リソース一覧取得:
-  list(pattern?) → Resource[]
-
-変更監視:
-  subscribe(uri) → ResourceUpdateStream
-```
-
-### アクセスフロー
-
-```
-クライアント                    MCP Server
-    │                               │
-    │  resources/list               │
-    │ ────────────────────────────► │
-    │                               │
-    │  { resources: [...] }         │
-    │ ◄──────────────────────────── │
-    │                               │
-    │  resources/read { uri: "..." }│
-    │ ────────────────────────────► │
-    │                               │
-    │  { contents: [...] }          │
-    │ ◄──────────────────────────── │
-    │                               │
-    │  resources/subscribe          │
-    │ ────────────────────────────► │
-    │                               │
-    │  notifications/resources/updated │
-    │ ◄──────────────────────────── │
-```
-
-## 4. キャッシュ戦略
-
-### キャッシュレイヤー
-
-```
-┌─────────────────────────────────────┐
-│          アプリケーション            │
-├─────────────────────────────────────┤
-│          L1: メモリキャッシュ        │
-│          (短期間、高速アクセス)      │
-├─────────────────────────────────────┤
-│          L2: ファイルキャッシュ      │
-│          (中期間、永続化)            │
-├─────────────────────────────────────┤
-│          L3: オリジンソース          │
-│          (常に最新)                  │
-└─────────────────────────────────────┘
-```
-
-### キャッシュ制御
-
-| 戦略         | TTL    | 用途                   |
-| ------------ | ------ | ---------------------- |
-| `no-cache`   | 0      | 常に最新データが必要   |
-| `short`      | 1 分   | 頻繁に更新されるデータ |
-| `medium`     | 5 分   | 通常のデータ           |
-| `long`       | 1 時間 | 安定したデータ         |
-| `persistent` | 永続   | 静的リソース           |
-
-### 無効化パターン
-
-```typescript
-// 時間ベース無効化
-cache.set(uri, content, { ttl: 300000 }); // 5分
-
-// イベントベース無効化
-onResourceUpdate((uri) => {
-  cache.invalidate(uri);
-});
-
-// パターンベース無効化
-cache.invalidatePattern("db://sqlite/users/*");
-```
-
-## 5. エラーハンドリング
-
-### リソースエラーコード
-
-| コード                 | 意味                 | 対応               |
-| ---------------------- | -------------------- | ------------------ |
-| `ResourceNotFound`     | リソースが存在しない | 404 相当           |
-| `ResourceAccessDenied` | アクセス権限なし     | 403 相当           |
-| `ResourceUnavailable`  | 一時的に利用不可     | リトライ           |
-| `ResourceInvalid`      | 無効な URI 形式      | クライアントエラー |
-| `ResourceTimeout`      | タイムアウト         | リトライ           |
-
-### エラーレスポンス形式
-
-```json
-{
-  "error": {
-    "code": "ResourceNotFound",
-    "message": "Resource not found: file:///missing.txt",
-    "data": {
-      "uri": "file:///missing.txt",
-      "timestamp": "2025-11-27T10:30:00Z"
-    }
-  }
-}
-```
-
-## 6. 設計チェックリスト
-
-### URI 設計
-
-- [ ] スキームは明確で一貫している？
-- [ ] パスは階層的で予測可能？
-- [ ] クエリパラメータは適切に使用？
-- [ ] エンコーディングは正しい？
-
-### リソース定義
-
-- [ ] 一意の URI が割り当てられている？
-- [ ] mimeType は正確に指定？
-- [ ] 説明は十分に明確？
-- [ ] 必要な機能（read/list/subscribe）が定義？
-
-### キャッシュ
-
-- [ ] キャッシュ戦略は適切？
-- [ ] 無効化メカニズムは実装？
-- [ ] TTL は妥当な値？
-
-### エラー処理
-
-- [ ] 全てのエラーケースを網羅？
-- [ ] エラーメッセージは明確？
-- [ ] リトライ戦略は定義？
+- 動詞をURIに含めない（例: `/getUser` は不可、`/users/123` を使用）
+- パストラバーサル脆弱性を放置しない
+- 無制限のスキーム許可（許可リストで制限する）
+- キャッシュ無効化戦略なしでの運用
 
 ## リソース参照
 
-詳細なパターンとガイドについては以下を参照:
+### references/（詳細知識）
 
-- **URI スキーム設計ガイド**: `cat .claude/skills/resource-oriented-api/resources/uri-scheme-guide.md`
-- **キャッシュ戦略ガイド**: `cat .claude/skills/resource-oriented-api/resources/caching-strategies.md`
-- **リソース変換パターン**: `cat .claude/skills/resource-oriented-api/resources/resource-transformation.md`
+| リソース              | パス                                                                               | 用途                         |
+| --------------------- | ---------------------------------------------------------------------------------- | ---------------------------- |
+| URIスキーム設計ガイド | See [references/uri-scheme-guide.md](references/uri-scheme-guide.md)               | URI構造・命名規則・正規化    |
+| キャッシュ戦略ガイド  | See [references/caching-strategies.md](references/caching-strategies.md)           | 多層キャッシュ・無効化戦略   |
+| リソース変換パターン  | See [references/resource-transformation.md](references/resource-transformation.md) | パイプライン・フィルタリング |
 
-## テンプレート参照
+### scripts/（決定論的処理）
 
-- **リソース定義テンプレート**: `cat .claude/skills/resource-oriented-api/templates/resource-definition-template.json`
-- **リソースプロバイダーテンプレート**: `cat .claude/skills/resource-oriented-api/templates/resource-provider-template.ts`
+| スクリプト                         | 用途               | 使用例                                                          |
+| ---------------------------------- | ------------------ | --------------------------------------------------------------- |
+| `validate-resource-definition.mjs` | リソース定義検証   | `node scripts/validate-resource-definition.mjs definition.json` |
+| `validate-uri.mjs`                 | URI形式検証        | `node scripts/validate-uri.mjs "db://sqlite/users/123"`         |
+| `log_usage.mjs`                    | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
 
-## スクリプト実行
+### assets/（テンプレート）
 
-```bash
-# URI検証
-node .claude/skills/resource-oriented-api/scripts/validate-uri.mjs <uri>
+| テンプレート                        | 用途                         |
+| ----------------------------------- | ---------------------------- |
+| `resource-definition-template.json` | リソース定義JSONテンプレート |
+| `resource-provider-template.ts`     | TypeScriptプロバイダー雛形   |
 
-# リソース定義検証
-node .claude/skills/resource-oriented-api/scripts/validate-resource-definition.mjs <definition.json>
-```
+## 変更履歴
 
-## 関連スキル
-
-| スキル                                         | 用途               |
-| ---------------------------------------------- | ------------------ |
-| `.claude/skills/mcp-protocol/SKILL.md`         | MCP プロトコル基盤 |
-| `.claude/skills/api-connector-design/SKILL.md` | API 設計パターン   |
+| Version | Date       | Changes                                      |
+| ------- | ---------- | -------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に準拠、agents追加、構造改善 |
+| 1.0.1   | 2025-12-24 | Spec alignment and required artifacts added  |

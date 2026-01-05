@@ -13,7 +13,7 @@
 | ステータス       | 未実施                          |
 | 発見元           | ユーザー要望                    |
 | 発見日           | 2025-12-11                      |
-| 発見エージェント | @product-manager                |
+| 発見エージェント | .claude/agents/product-manager.md                |
 
 ---
 
@@ -152,11 +152,11 @@ Phase 9: ドキュメント更新
 
 ### 主要な使用エージェント
 
-- **@arch-police**: RAGアーキテクチャの設計
-- **@db-architect**: ベクトルDBスキーマ設計
-- **@logic-dev**: インデックス・検索ロジック実装
-- **@ui-designer**: RAG管理UI設計
-- **@sec-auditor**: プライバシー・セキュリティ検証
+- **.claude/agents/arch-police.md**: RAGアーキテクチャの設計
+- **.claude/agents/db-architect.md**: ベクトルDBスキーマ設計
+- **.claude/agents/logic-dev.md**: インデックス・検索ロジック実装
+- **.claude/agents/ui-designer.md**: RAG管理UI設計
+- **.claude/agents/sec-auditor.md**: プライバシー・セキュリティ検証
 
 ---
 

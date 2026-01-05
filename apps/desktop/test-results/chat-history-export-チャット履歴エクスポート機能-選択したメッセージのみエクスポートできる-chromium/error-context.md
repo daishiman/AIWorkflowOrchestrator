@@ -1,0 +1,74 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+    - banner [ref=e5]:
+        - generic [ref=e6]:
+            - button "戻る" [ref=e7] [cursor=pointer]:
+                - img [ref=e8]
+            - generic [ref=e10]:
+                - heading "React開発についての質問" [level=1] [ref=e11]
+                - paragraph [ref=e12]: 24件のメッセージ · 4520トークン
+        - button "エクスポート" [ref=e13] [cursor=pointer]:
+            - img [ref=e14]
+            - generic [ref=e17]: エクスポート
+    - main [ref=e18]:
+        - generic [ref=e19]:
+            - generic [ref=e20]:
+                - generic [ref=e21]:
+                    - generic [ref=e22]: ユーザー
+                    - generic [ref=e23]: 2025/12/20 23:30:15
+                - paragraph [ref=e24]: ReactのuseEffectフックについて教えてください。
+            - generic [ref=e25]:
+                - generic [ref=e26]:
+                    - generic [ref=e27]: アシスタント
+                    - generic [ref=e28]: 2025/12/20 23:30:18
+                - paragraph [ref=e29]: useEffectは副作用を扱うためのReact Hookです...
+                - generic [ref=e30]:
+                    - text: claude-3-5-sonnet-20241022
+                    - generic [ref=e31]: "· 入力: 45, 出力: 320"
+    - dialog "エクスポート" [ref=e33]:
+        - generic [ref=e34]:
+            - heading "エクスポート設定" [level=2] [ref=e35]
+            - button "閉じる" [ref=e36] [cursor=pointer]:
+                - img [ref=e37]
+        - generic [ref=e40]:
+            - paragraph [ref=e41]: React開発についての質問
+            - paragraph [ref=e42]: 24件のメッセージ
+        - group "形式を選択" [ref=e43]:
+            - generic [ref=e44]: 形式を選択
+            - generic [ref=e45]:
+                - generic [ref=e46] [cursor=pointer]:
+                    - radio "Markdown 形式 (.md)" [checked] [ref=e47]
+                    - img [ref=e48]
+                    - generic [ref=e51]:
+                        - text: Markdown.md
+                        - paragraph [ref=e52]: 人間が読みやすい形式
+                - generic [ref=e53] [cursor=pointer]:
+                    - radio "JSON 形式 (.json)" [ref=e54]
+                    - img [ref=e55]
+                    - generic [ref=e60]:
+                        - text: JSON.json
+                        - paragraph [ref=e61]: プログラムでの処理に最適
+        - group "エクスポート範囲" [ref=e62]:
+            - generic [ref=e63]: エクスポート範囲
+            - generic [ref=e64]:
+                - generic [ref=e65] [cursor=pointer]:
+                    - radio "全メッセージをエクスポート" [ref=e66]
+                    - generic [ref=e67]: 全メッセージ
+                - generic [ref=e68] [cursor=pointer]:
+                    - radio "選択したメッセージ" [checked] [active] [ref=e69]
+                    - generic [ref=e70]:
+                        - text: 選択したメッセージ
+                        - generic [ref=e71]: (0件選択)
+        - generic [ref=e72]:
+            - generic [ref=e73] [cursor=pointer]:
+                - checkbox "メタデータを含める" [checked] [ref=e74]
+                - generic [ref=e75]: メタデータを含める
+            - paragraph [ref=e76]: タイムスタンプ、モデル情報、トークン数などを含めます
+        - generic [ref=e77]:
+            - button "キャンセル" [ref=e78] [cursor=pointer]
+            - button "ダウンロード" [disabled] [ref=e79]:
+                - img [ref=e80]
+                - text: ダウンロード
+```

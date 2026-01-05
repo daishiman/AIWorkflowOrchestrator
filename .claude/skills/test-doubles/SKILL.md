@@ -1,240 +1,140 @@
 ---
 name: test-doubles
 description: |
-  テストダブル（Mock、Stub、Fake、Spy）の適切な使い分けを専門とするスキル。
+  テストダブルの選択・設計・検証を一貫して整理するスキル。
+  依存関係の分離と検証戦略を統一し、テストの意図と可読性を高める。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Test-Driven Development: By Example / 適用: テストダブル選択 / 目的: テスト意図の明確化
+  • xUnit Test Patterns / 適用: テストパターン / 目的: ダブル設計の一貫性
 
-  - `.claude/skills/test-doubles/resources/fake-patterns.md`: Fake Patternsリソース
-  - `.claude/skills/test-doubles/resources/mock-patterns.md`: Mock Patternsリソース
-  - `.claude/skills/test-doubles/resources/stub-patterns.md`: Stub Patternsリソース
-  - `.claude/skills/test-doubles/resources/types-overview.md`: Types Overviewリソース
-  - `.claude/skills/test-doubles/resources/verification-strategies.md`: Verification Strategiesリソース
-
-  - `.claude/skills/test-doubles/templates/test-double-selection.md`: Test Double Selectionテンプレート
-
-  - `.claude/skills/test-doubles/scripts/test-double-analyzer.mjs`: Test Double Analyzerスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when choosing, designing, or validating test doubles such as mocks, stubs, fakes, or spies.
+  test doubles, mock, stub, fake, spy
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Test Doubles
 
 ## 概要
 
-テストダブルは、テスト対象が依存する外部コンポーネントを置き換えるオブジェクトです。
-適切なテストダブルの選択は、テストの品質と保守性に大きく影響します。
+Mock/Stub/Fake/Spy の使い分けを明確にし、テスト意図に沿った実装と検証を支援するスキル。依存関係の種類と検証目的に基づき、最適なダブル選択と実装手順を整理する。
 
-**核心原則**:
+---
 
-- 目的に応じたテストダブルの選択
-- 過度なモッキングの回避
-- テストの意図を明確にする
+## ワークフロー
 
-**対象ユーザー**:
+### Phase 1: ダブル選定の前提整理
 
-- ビジネスロジック実装エージェント（@logic-dev）
-- テスト作成者
-- 外部依存を持つコードの開発者
+**目的**: テスト目的と依存関係の性質を整理し、選定基準を定義する
 
-## リソース構造
+**アクション**:
 
-```
-test-doubles/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── types-overview.md                 # テストダブルの種類
-│   ├── mock-patterns.md                  # Mockパターン
-│   ├── stub-patterns.md                  # Stubパターン
-│   ├── fake-patterns.md                  # Fakeパターン
-│   └── verification-strategies.md        # 検証戦略
-├── scripts/
-│   └── test-double-analyzer.mjs          # テストダブル分析スクリプト
-└── templates/
-    └── test-double-selection.md          # 選択ガイドテンプレート
-```
+1. テスト対象の依存関係を分類する
+2. 状態検証/振る舞い検証の目的を明確化する
+3. 選定基準と禁止事項を整理する
 
-## コマンドリファレンス
+**Task**: `agents/double-selection-analysis.md` を参照
 
-### リソース読み取り
+### Phase 2: 実装設計とパターン適用
 
-```bash
-# テストダブルの種類
-cat .claude/skills/test-doubles/resources/types-overview.md
+**目的**: 選定基準に沿ってテストダブルの実装方針を設計する
 
-# Mockパターン
-cat .claude/skills/test-doubles/resources/mock-patterns.md
+**アクション**:
 
-# Stubパターン
-cat .claude/skills/test-doubles/resources/stub-patterns.md
+1. Mock/Stub/Fake/Spy のパターンを選択する
+2. 実装粒度と責務を決定する
+3. テンプレートを用いて実装計画を作成する
 
-# Fakeパターン
-cat .claude/skills/test-doubles/resources/fake-patterns.md
+**Task**: `agents/double-implementation-design.md` を参照
 
-# 検証戦略
-cat .claude/skills/test-doubles/resources/verification-strategies.md
-```
+### Phase 3: 検証と品質レビュー
 
-### スクリプト実行
+**目的**: ダブルの使い分けと検証戦略の妥当性を確認する
 
-```bash
-# テストダブル分析
-# テストファイルからMock/Stub/Spy使用状況を分析し、改善提案を出力
-node .claude/skills/test-doubles/scripts/test-double-analyzer.mjs <test-file>
+**アクション**:
 
-# 例
-node .claude/skills/test-doubles/scripts/test-double-analyzer.mjs src/__tests__/user-service.test.ts
-```
+1. 選定基準と実装の整合性を検証する
+2. 過剰なモック化やアンチパターンを確認する
+3. 実行記録を残す
 
-### テンプレート参照
+**Task**: `agents/double-verification.md` を参照
 
-```bash
-# テストダブル選択ガイド
-cat .claude/skills/test-doubles/templates/test-double-selection.md
-```
+---
 
-## テストダブルの種類
+## Task仕様ナビ
 
-### クイックリファレンス
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| double-selection-analysis | Phase 1 開始時 | テスト目的/依存関係 | 選定基準メモ |
+| double-implementation-design | Phase 2 開始時 | 選定基準/制約 | 実装設計書 |
+| double-verification | Phase 3 開始時 | 実装結果/テストログ | 検証レポート |
 
-| 種類  | 目的           | 検証方法     | 使用場面         |
-| ----- | -------------- | ------------ | ---------------- |
-| Dummy | パラメータ埋め | なし         | 使用されない引数 |
-| Stub  | 固定値を返す   | 状態検証     | 入力の制御       |
-| Spy   | 呼び出しを記録 | 振る舞い検証 | 呼び出し確認     |
-| Mock  | 期待を検証     | 振る舞い検証 | 相互作用検証     |
-| Fake  | 簡易実装       | 状態検証     | 複雑な依存       |
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-### 選択フロー
-
-```
-依存をテストダブルに置き換える
-  ↓
-[質問] 依存は使用されるか？
-  ├─ No → Dummy
-  └─ Yes ↓
-[質問] 戻り値の制御が必要か？
-  ├─ Yes → Stub
-  └─ No ↓
-[質問] 呼び出しの検証が必要か？
-  ├─ Yes → Mock または Spy
-  └─ No ↓
-[質問] 本物に近い動作が必要か？
-  └─ Yes → Fake
-```
-
-**詳細**: `resources/types-overview.md`
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **目的を明確にする**:
-   - 何をテストしたいのか
-   - どの検証が必要か
-
-2. **最小限のテストダブル**:
-   - 必要な依存のみ置き換え
-   - 過度なモッキングを避ける
-
-3. **適切な検証方法**:
-   - 状態検証: 結果の正しさ
-   - 振る舞い検証: 相互作用の正しさ
+| 推奨事項 | 理由 |
+| --- | --- |
+| 依存関係の性質を先に整理する | ダブル選択の誤りを防ぐため |
+| 検証目的を明文化する | 状態/振る舞いの混在を防ぐため |
+| テンプレートで実装計画を残す | 実装の一貫性を保つため |
+| 過剰なモック化を避ける | テストの信頼性を維持するため |
 
 ### 避けるべきこと
 
-1. **過度なモッキング**:
-   - ❌ すべての依存をモック化
-   - ✅ テストに必要な依存のみ
-
-2. **実装への密結合**:
-   - ❌ 内部実装の詳細を検証
-   - ✅ 公開インターフェースを検証
-
-3. **不必要な振る舞い検証**:
-   - ❌ すべての呼び出しを検証
-   - ✅ 重要な相互作用のみ
-
-## Vitest での実装
-
-### 基本パターン
-
-```typescript
-import { describe, it, expect, vi, beforeEach } from "vitest";
-
-// Stub
-const mockRepository = {
-  findById: vi.fn().mockResolvedValue({ id: "1", name: "Test" }),
-};
-
-// Spy
-const spyLogger = {
-  log: vi.fn(),
-};
-
-// Mock with expectations
-it("should call repository with correct id", async () => {
-  await service.getUser("user-1");
-  expect(mockRepository.findById).toHaveBeenCalledWith("user-1");
-});
-```
-
-**詳細**: `resources/mock-patterns.md`
-
-## ワークフロー
-
-### テストダブル実装
-
-```
-1. テスト対象の依存を特定
-   ↓
-2. 各依存のテストダブル種類を選択
-   ↓
-3. テストダブルを作成
-   ↓
-4. テストを実装
-   ↓
-5. 検証方法を確認
-   - 状態検証 or 振る舞い検証
-```
-
-## 関連スキル
-
-- **tdd-principles** (`.claude/skills/tdd-principles/SKILL.md`): TDD 原則（@unit-tester 向け）
-- **tdd-red-green-refactor** (`.claude/skills/tdd-red-green-refactor/SKILL.md`): TDD サイクル実装（@logic-dev 向け）
-- **clean-code-practices** (`.claude/skills/clean-code-practices/SKILL.md`): コード品質
-- **refactoring-techniques** (`.claude/skills/refactoring-techniques/SKILL.md`): リファクタリング
-- **vitest-advanced** (`.claude/skills/vitest-advanced/SKILL.md`): Vitest モッキングパターン
-
-## 参考文献
-
-- **『xUnit Test Patterns』** Gerard Meszaros 著
-  - 第 11 章: Using Test Doubles
-- **『Growing Object-Oriented Software, Guided by Tests』** Freeman & Pryce 著
-  - Mock を使った TDD
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 目的なしにモックを導入する | テストが意図不明になる |
+| 1つのダブルに複数責務を持たせる | 変更に弱くなる |
+| 実装詳細に依存した検証を行う | テストが壊れやすくなる |
 
 ---
 
-## 使用上の注意
+## リソース参照
 
-### このスキルが得意なこと
+### scripts/（決定論的処理）
 
-- テストダブル 5 種類（Mock、Stub、Spy、Fake、Dummy）の使い分け判断
-- 適切なテストダブル選択による保守性の高いテスト設計
-- 検証戦略（状態検証 vs 振る舞い検証）の選定
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/test-double-analyzer.mjs` | テストダブルの品質観点を点検する |
+| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs` | 実行記録を保存する |
 
-### このスキルが行わないこと
+### references/（詳細知識）
 
-- Vitest 固有のモッキング API 詳細（→ vitest-advanced）
-- TDD サイクル全体の設計（→ tdd-principles）
-- E2E/統合テストでのモック戦略
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
+| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
+| 種類一覧 | [references/types-overview.md](references/types-overview.md) | 選定時に参照 |
+| Mock パターン | [references/mock-patterns.md](references/mock-patterns.md) | Mock 設計時に参照 |
+| Stub パターン | [references/stub-patterns.md](references/stub-patterns.md) | Stub 設計時に参照 |
+| Fake パターン | [references/fake-patterns.md](references/fake-patterns.md) | Fake 設計時に参照 |
+| 検証戦略 | [references/verification-strategies.md](references/verification-strategies.md) | Phase 3 で参照 |
 
----
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/test-double-selection.md` | 選定基準と実装計画のテンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                      |
-| ---------- | ---------- | ----------------------------- |
-| 1.0.0      | 2025-11-26 | 初版作成 - テストダブルの基礎 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 2.0.0 | 2026-01-02 | Task仕様を再設計し、参照整理と検証フローを刷新 |
+| 1.1.0 | 2025-12-31 | 18-skills.md仕様準拠 | 
+| 1.0.0 | 2025-12-24 | 初期バージョン |

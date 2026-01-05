@@ -1,378 +1,147 @@
 ---
 name: agent-template-patterns
 description: |
-  エージェントテンプレートと設計パターンを専門とするスキル。
-  4タイプのエージェントテンプレート（分析、実装、オーケストレーター、デプロイ）、
-  {{variable}}形式による抽象化、抽象度バランス、概念要素設計の原則を提供。
+  Specialist skill for agent templates and design patterns.
+  Provides 4 types of agent templates (Analysis, Implementation, Orchestrator, Deploy),
+  {{variable}} format abstraction, abstraction balance, and conceptual element design principles.
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: テンプレート設計 / 目的: 手順設計と実践的改善の原則
 
-  - `.claude/skills/agent-template-patterns/resources/template-variable-guide.md`: 変数化ガイド（{{variable}}形式の設計と使用法）
-  - `.claude/skills/agent-template-patterns/resources/template-reference-guide.md`: テンプレート参照ガイド（11個のテンプレート一覧とPhase別活用法）
-  - `.claude/skills/agent-template-patterns/templates/unified-agent-template.md`: 統一エージェントテンプレート
-  - `.claude/skills/agent-template-patterns/templates/analyzer-agent-template.md`: 分析・レビューエージェントテンプレート
-  - `.claude/skills/agent-template-patterns/templates/implementer-agent-template.md`: 実装・生成エージェントテンプレート
-  - `.claude/skills/agent-template-patterns/templates/orchestrator-agent-template.md`: オーケストレーターエージェントテンプレート
-  - `.claude/skills/agent-template-patterns/templates/deployer-agent-template.md`: デプロイ・運用エージェントテンプレート
+  Trigger:
+  Use when creating new agent templates, generalizing existing agents into reusable patterns, designing standard templates for agent mass production, implementing {{variable}} format abstraction, or optimizing conceptual element design and abstraction balance.
+  agent template, template design, orchestrator pattern, variable abstraction, template standardization
 
-  使用タイミング:
-  - 新しいエージェントタイプのテンプレートを作成する時
-  - 既存エージェントを汎用化する時
-  - エージェント量産のための標準化が必要な時
-  - 抽象度のバランスを最適化する時
-  - 変数化によるテンプレートの再利用性を高める時
-
-  関連スキル:
-  - `.claude/skills/agent-structure-design/SKILL.md` - YAML Frontmatter・ワークフロー設計
-  - `.claude/skills/agent-architecture-patterns/SKILL.md` - アーキテクチャパターン選択
-  - `.claude/skills/agent-persona-design/SKILL.md` - ペルソナ・役割定義
-
-  Use proactively when creating reusable agent templates,
-  standardizing agent patterns, or optimizing abstraction levels.
-
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Agent Template Patterns
 
 ## 概要
 
-このスキルは、再利用可能なエージェントテンプレートと設計パターンのガイドラインを提供します。
-
-**主要な価値**:
-
-- テンプレートにより、新規エージェント作成が効率化
-- 変数化により、汎用性と再利用性が向上
-- 適切な抽象度により、柔軟性と明確性が両立
-- 概念要素により、AI が状況に応じた最適解を選択可能
-
-## リソース構造
-
-```
-agent-template-patterns/
-├── SKILL.md
-├── resources/
-│   ├── template-types.md
-│   ├── variable-design-guide.md
-│   └── abstraction-principles.md
-└── templates/
-    ├── analyzer-agent-template.md
-    ├── implementer-agent-template.md
-    ├── orchestrator-agent-template.md
-    └── deployer-agent-template.md
-```
+エージェントテンプレートと設計パターンを専門とするスキル。4タイプのエージェントテンプレート（分析、実装、オーケストレーター、デプロイ）、{{variable}}形式による抽象化、抽象度バランス、概念要素設計の原則を提供します。
 
 ## ワークフロー
 
-### Phase 1: テンプレートタイプの選択
+### Phase 1: 要件分析と設計
 
-**4つのエージェントテンプレート**:
+**目的**: タスク要件を分析し、最適なテンプレートタイプを選定する
 
-#### 1. 分析・レビューエージェント
+**アクション**:
 
-**ツール**: `[Read, Grep]`
-**ワークフロー**: 分析 → チェック → レポート生成
-**成果物**: レポートMarkdown
+1. エージェントのタイプ（分析、実装、オーケストレーター、デプロイ）を判定
+2. 必要な変数化レベルを決定
+3. `references/Level1_basics.md` と `references/Level2_intermediate.md` で基礎と実装方法を確認
+4. `references/template-reference-guide.md` で該当テンプレートを特定
+5. 既存パターンとの互換性を検討
 
-**適用条件**:
+**Task**: `agents/analyze-template-requirements.md` を参照
 
-- コードレビュー
-- セキュリティ監査
-- 品質評価
+### Phase 2: テンプレート実装
 
-#### 2. 実装・生成エージェント
+**目的**: 選定したテンプレートを基にエージェントテンプレートを実装する
 
-**ツール**: `[Read, Write, Edit, Grep]`
-**ワークフロー**: 要件理解 → 設計 → 実装 → テスト → 検証
-**成果物**: 実装コード、テストコード
+**アクション**:
 
-**適用条件**:
+1. `assets/unified-agent-template.md` を参照
+2. {{variable}} 形式の変数を定義（`references/template-variable-guide.md` を参照）
+3. 抽象度バランスを最適化（`references/Level3_advanced.md` を参照）
+4. テンプレート本体を作成・拡張
+5. 設計判断を記録
 
-- 機能実装
-- ファイル生成
-- コード変換
+**Task**: `agents/implement-template.md` を参照
 
-#### 3. オーケストレーターエージェント
+### Phase 3: 検証と最適化
 
-**ツール**: `[Task, Read]`
-**ワークフロー**: 計画 → 委譲 → 進捗管理 → 統合 → 検証
-**成果物**: 統合レポート、進捗トラッキング
+**目的**: テンプレートの品質を確保し、実装記録を残す
 
-**適用条件**:
+**アクション**:
 
-- 複雑タスクの統括
-- マルチエージェント調整
-- プロジェクト管理
+1. `scripts/validate-skill.mjs` でテンプレート構造を検証
+2. 抽象度とバランスをレビュー（`references/Level4_expert.md` を参照）
+3. 概念要素設計が適切かを確認
+4. `scripts/log_usage.mjs` を実行して実装記録を残す
+5. 成果物を `references/legacy-skill.md` に追記（必要に応じて）
 
-#### 4. デプロイ・運用エージェント
+**Task**: `agents/validate-template.md` を参照
 
-**ツール**: `[Bash, Read, Write, Edit, Task]`
-**ワークフロー**: 準備 → 検証 → 実行 → ヘルスチェック → ロールバック（必要時）
-**成果物**: デプロイログ、ステータスレポート
+## Task仕様ナビ
 
-**適用条件**:
+エージェントテンプレートパターンに関連するタスクと対応するリソース・テンプレートの対応表です。
 
-- CI/CDパイプライン
-- インフラ管理
-- 運用自動化
-
-**リソース**: `resources/template-types.md`
-
-### Phase 2: 変数化と汎用化
-
-**目的**: テンプレートを変数化して再利用可能にする
-
-**変数化の原則**:
-
-#### 変数命名規則
-
-**形式**: `{{variable-name}}`
-**例**: `{{agent-name}}`, `{{tool-list}}`, `{{phase-1-objective}}`
-
-#### 変数の種類
-
-**メタデータ変数**:
-
-- `{{agent-name}}`: エージェント名（kebab-case）
-- `{{description-line-1}}`: description第1行
-- `{{tool-list}}`: ツールのリスト
-- `{{model-choice}}`: モデル選択（opus/sonnet/haiku）
-- `{{version}}`: バージョン番号
-
-**セクション変数**:
-
-- `{{専門分野1名}}`: 専門分野の名前
-- `{{専門分野1の詳細説明}}`: 詳細
-- `{{責任1}}`, `{{責任2}}`: 責任範囲
-- `{{制約1}}`, `{{制約2}}`: 制約
-
-**ワークフロー変数**:
-
-- `{{Phase1名}}`, `{{Phase1の目的}}`: Phase情報
-- `{{ステップ1-1}}`: ステップ内容
-- `{{判断基準1-1}}`: 判断基準
-
-**リソース**: `resources/variable-design-guide.md`
-
-### Phase 3: 抽象度のバランス
-
-**目的**: 具体性と抽象性の最適なバランスを実現
-
-**3つの抽象度レベル**:
-
-#### 過度に具体的（避けるべき）
-
-**特徴**:
-
-- 特定のコード例を大量に列挙
-- 固定的な実装パターンの提示
-- 技術的制約の過度な限定
-
-**影響**: AI が例に固定され、柔軟性が低下
-
-#### 適切な抽象度（推奨）
-
-**特徴**:
-
-- 判断基準のチェックリスト形式
-- 原則と制約の明確な記述
-- 設計目標と品質基準の提示
-- 選択肢と判断フローの提供
-
-**影響**: AI が状況に応じて最適な実装を選択可能
-
-#### 過度に抽象的（避けるべき）
-
-**特徴**:
-
-- 曖昧な指示（「良いコードを書くこと」）
-- 測定不可能な基準
-- 判断根拠の欠如
-
-**影響**: 判断基準が不明確、一貫性が保てない
-
-**リソース**: `resources/abstraction-principles.md`
-
-### Phase 4: 概念要素の記述
-
-**目的**: AI が適応的に動作できる概念要素を設計
-
-**4つの原則**:
-
-#### 1. 原則ベースの記述
-
-- 具体的な実装ではなく、守るべき原則を記述
-- 技術選択の判断基準を提供
-- 複数の実装パターンに適用可能な抽象度
-
-**例**:
-
-```markdown
-データ検証の原則:
-
-- 型の正確性: 期待される型システムとの整合性
-- 範囲の妥当性: ドメイン制約との一致
-- 必須項目の存在: 必須フィールドの完全性
-```
-
-#### 2. 階層的な判断基準
-
-- レベル1（必須）: 守らなければならない原則
-- レベル2（推奨）: より良い実装のためのガイドライン
-- レベル3（オプション）: 状況に応じた最適化
-
-#### 3. 検証可能性
-
-- 原則の適用結果が測定可能
-- チェックリストによる自己評価
-- 品質メトリクスとの対応
-
-#### 4. コンテキスト適応性
-
-- プロジェクト固有の要件への参照
-- 技術スタックに依存しない記述
-- AI が状況に応じて最適解を選択できる余地
-
-**リソース**: `resources/abstraction-principles.md`
+| タスク               | 対応Phase | 関連リソース                | テンプレート              | 説明                                                    |
+| -------------------- | --------- | --------------------------- | ------------------------- | ------------------------------------------------------- |
+| **4タイプの選定**    | Phase 1   | Level1_basics.md            | unified-agent-template.md | 分析・実装・オーケストレーター・デプロイの4タイプを判定 |
+| **テンプレート設計** | Phase 1   | template-reference-guide.md | unified-agent-template.md | 11個の既存テンプレートから最適を選択                    |
+| **変数化設計**       | Phase 2   | template-variable-guide.md  | unified-agent-template.md | {{variable}}形式で抽象化                                |
+| **抽象度バランス**   | Phase 2   | Level3_advanced.md          | unified-agent-template.md | 抽象度と具体性のバランスを最適化                        |
+| **概念要素設計**     | Phase 2   | Level2_intermediate.md      | unified-agent-template.md | コア概念要素を定義・設計                                |
+| **実装パターン**     | Phase 2   | Level2_intermediate.md      | unified-agent-template.md | テンプレートの実装方法を確定                            |
+| **テンプレート検証** | Phase 3   | Level4_expert.md            | validate-skill.mjs        | スクリプトで構造検証                                    |
+| **品質確保**         | Phase 3   | Level4_expert.md            | validate-skill.mjs        | アンチパターンを回避、品質基準達成                      |
+| **実装記録**         | Phase 3   | -                           | log_usage.mjs             | 実装履歴を自動記録                                      |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **テンプレート選択**:
-   - エージェントタイプに応じた適切なテンプレート選択
-   - 4つの標準テンプレートから開始
-
-2. **変数の一貫性**:
-   - 命名規則の統一（kebab-case、{{variable}}形式）
-   - 変数の説明を明確に
-
-3. **適切な抽象度**:
-   - 原則ベースの記述
-   - チェックリスト形式の判断基準
-   - 検証可能な品質基準
+- **4つのタイプを意識する**: エージェントが分析・実装・オーケストレーター・デプロイのいずれかを判定してから設計開始
+- **テンプレート参照ガイドを活用**: `template-reference-guide.md` で既存11個のテンプレートから最適を選択
+- **{{variable}}形式で抽象化**: 具体値を避け、{{変数名}}形式で再利用可能に設計
+- **抽象度バランスを最適化**: 高すぎず低すぎない抽象度で、多様なシナリオに対応可能に
+- **概念要素を明確に**: エージェントのコア概念要素を事前に定義・設計
+- **検証スクリプトを実行**: `validate-skill.mjs` で構造の正確性を確認
+- **実装記録を残す**: `log_usage.mjs` で設計判断と実装履歴を記録
+- **リソースレベルを段階的に活用**: Level1→Level2→Level3→Level4で段階的に学習・適用
 
 ### 避けるべきこと
 
-1. **過度な具体化**:
-   - ❌ 大量のコード例
-   - ✅ 原則と判断基準
+- **アンチパターンを無視**: `references/Level3_advanced.md` と `Level4_expert.md` のアンチパターンを確認しないまま実装
+- **抽象度のズレ**: 過度に具体的または過度に抽象的なテンプレートを作成
+- **変数化を忘れる**: ハードコーディングされた値をテンプレートに含める
+- **概念要素を曖昧にする**: エージェントの意図や役割を不明確なまま設計
+- **検証をスキップ**: `validate-skill.mjs` で構造検証を行わないまま納品
+- **既存パターンを無視**: `template-reference-guide.md` を確認せず、重複したテンプレートを作成
+- **ドキュメントをコピペ**: リソースの内容を丸写しせず、プロジェクト固有にカスタマイズ
 
-2. **過度な抽象化**:
-   - ❌ 曖昧な指示
-   - ✅ 測定可能な基準
+## リソース参照
 
-3. **非標準の変数**:
-   - ❌ 独自の命名規則
-   - ✅ {{variable}}形式の統一
+### 学習レベル別リソース
 
-## トラブルシューティング
+| レベル   | ファイル                            | 対象ユーザー       | 目的                                       |
+| -------- | ----------------------------------- | ------------------ | ------------------------------------------ |
+| **基礎** | `references/Level1_basics.md`       | テンプレート初心者 | 4つのエージェントタイプと基本概念を理解    |
+| **実務** | `references/Level2_intermediate.md` | 実装者             | テンプレート設計と概念要素の実装方法を学習 |
+| **応用** | `references/Level3_advanced.md`     | 経験者             | 抽象度バランスとアンチパターンを学習       |
+| **専門** | `references/Level4_expert.md`       | 専門家             | 高度な最適化と品質基準を学習               |
 
-### 問題1: テンプレートが特定のケースにしか適用できない
+### ガイドと参考資料
 
-**症状**: 汎用性が低い
+- **`references/template-reference-guide.md`**: 11個の既存テンプレート一覧とPhase別活用法
+- **`references/template-variable-guide.md`**: {{variable}}形式の設計と使用法の詳細ガイド
+- **`references/legacy-skill.md`**: 旧SKILL.mdの全文（廃止予定の内容も含む）
 
-**原因**: 過度に具体的
+### テンプレート
 
-**解決策**:
+- **`assets/unified-agent-template.md`**: 統一エージェントテンプレート（Phase 2で活用）
 
-1. 変数化を進める
-2. 原則ベースに書き直す
-3. 抽象度を上げる
+### スクリプト/ツール
 
-### 問題2: テンプレートが曖昧すぎる
-
-**症状**: AI が適切な判断をできない
-
-**原因**: 過度に抽象的
-
-**解決策**:
-
-1. 判断基準を追加
-2. チェックリスト化
-3. 具体例を2-3個追加
-
-## 関連スキル
-
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`): 構造設計
-- **agent-architecture-patterns** (`.claude/skills/agent-architecture-patterns/SKILL.md`): アーキテクチャパターン
-- **progressive-disclosure** (`.claude/skills/progressive-disclosure/SKILL.md`): トークン効率化
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- テンプレート変数ガイド (`resources/template-variable-guide.md`)
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# テンプレート変数ガイド
-cat .claude/skills/agent-template-patterns/resources/template-variable-guide.md
-```
-
-### テンプレート参照
-
-```bash
-# 統一エージェントテンプレートを読み取る
-cat .claude/skills/agent-template-patterns/templates/unified-agent-template.md
-
-# テンプレートをコピーして新規エージェントを作成
-cp .claude/skills/agent-template-patterns/templates/unified-agent-template.md .claude/agents/new-agent.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# エージェント構造検証（agent-structure-designスキルのスクリプトを使用）
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
-
-# 循環依存チェック（agent-dependency-designスキルのスクリプトを使用）
-node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
-
-# アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
-node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
-```
-
-## メトリクス
-
-### テンプレート再利用率
-
-**目標**: >70%のエージェントがテンプレートベース
-
-### 抽象度スコア
-
-**評価基準**:
-
-- 具体性: 3-5点（適度）
-- 抽象性: 3-5点（適度）
-- バランス: 6-10点（高い）
-
-**目標**: バランス8点以上
+| スクリプト                   | 用途                   | 実行例                                                                   |
+| ---------------------------- | ---------------------- | ------------------------------------------------------------------------ |
+| `scripts/validate-skill.mjs` | テンプレート構造の検証 | `node .claude/skills/agent-template-patterns/scripts/validate-skill.mjs` |
+| `scripts/log_usage.mjs`      | 実装履歴の自動記録     | `node .claude/skills/agent-template-patterns/scripts/log_usage.mjs`      |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                        |
-| ---------- | ---------- | ----------------------------------------------- |
-| 1.0.0      | 2025-11-24 | 初版作成 - テンプレートとパターンフレームワーク |
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- 汎用エージェントテンプレートの設計
-- 変数化と抽象化
-- 抽象度バランスの最適化
-- 概念要素の記述
-
-### このスキルが行わないこと
-
-- エージェントの実際の実装
-- 具体的なコード生成
-- プロジェクト固有のビジネスロジック
+| Version | Date       | Changes                                                                                                    |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
+| 3.0.0   | 2025-12-31 | agents/3ファイル追加、Phase別Task参照を追加                                                                |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠（Anchors・Triggers・allowed-tools・Task仕様ナビ・詳細なベストプラクティス追加） |
+| 1.0.0   | 2025-12-24 | 初期リリース：基本構成とリソース参照の整備                                                                 |

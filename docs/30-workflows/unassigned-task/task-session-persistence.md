@@ -137,7 +137,7 @@ Phase 6: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: `@req-analyst`
+- **エージェント**: `.claude/agents/req-analyst.md`
 - **選定理由**: 要件定義の専門家として、機能要件・非機能要件を網羅的に定義
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -145,8 +145,8 @@ Phase 6: ドキュメント更新
 
 | スキル名                               | 活用方法                                   |
 | -------------------------------------- | ------------------------------------------ |
-| requirements-engineering               | 機能要件・非機能要件の体系的な定義         |
-| functional-non-functional-requirements | セキュリティ要件、パフォーマンス要件の定義 |
+| .claude/skills/requirements-engineering/SKILL.md               | 機能要件・非機能要件の体系的な定義         |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | セキュリティ要件、パフォーマンス要件の定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -182,7 +182,7 @@ Phase 6: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: `@electron-architect`, `@electron-security`
+- **エージェント**: `.claude/agents/electron-architect.md`, `.claude/agents/electron-security.md`
 - **選定理由**: Electronのセキュアなストレージ設計とIPC設計の専門知識
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -190,9 +190,9 @@ Phase 6: ドキュメント更新
 
 | スキル名                    | 活用方法                            |
 | --------------------------- | ----------------------------------- |
-| electron-architecture       | Main/Renderer間のセキュアな通信設計 |
-| electron-security-hardening | トークンの安全な保存方法の設計      |
-| oauth2-flows                | トークンライフサイクル管理          |
+| .claude/skills/electron-architecture/SKILL.md       | Main/Renderer間のセキュアな通信設計 |
+| .claude/skills/electron-security-hardening/SKILL.md | トークンの安全な保存方法の設計      |
+| .claude/skills/oauth2-flows/SKILL.md                | トークンライフサイクル管理          |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -308,26 +308,26 @@ export interface ElectronAPI {
 
 | エージェント         | レビュー観点         | 選定理由                       |
 | -------------------- | -------------------- | ------------------------------ |
-| `@electron-security` | セキュリティ設計     | トークン保存のセキュリティ評価 |
-| `@arch-police`       | アーキテクチャ整合性 | Main/Renderer分離の適切性      |
-| `@sec-auditor`       | セキュリティ監査     | OWASP観点からのレビュー        |
+| `.claude/agents/electron-security.md` | セキュリティ設計     | トークン保存のセキュリティ評価 |
+| `.claude/agents/arch-police.md`       | アーキテクチャ整合性 | Main/Renderer分離の適切性      |
+| `.claude/agents/sec-auditor.md`       | セキュリティ監査     | OWASP観点からのレビュー        |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**セキュリティ設計** (`@electron-security`)
+**セキュリティ設計** (`.claude/agents/electron-security.md`)
 
 - [ ] トークンが適切に暗号化されているか
 - [ ] safeStorage/keytarの使用が適切か
 - [ ] トークンの有効期限管理が適切か
 
-**アーキテクチャ整合性** (`@arch-police`)
+**アーキテクチャ整合性** (`.claude/agents/arch-police.md`)
 
 - [ ] Main/Renderer の責務分離が適切か
 - [ ] IPC 通信が安全に設計されているか
 
-**セキュリティ監査** (`@sec-auditor`)
+**セキュリティ監査** (`.claude/agents/sec-auditor.md`)
 
 - [ ] トークン漏洩のリスクが最小化されているか
 - [ ] セッションハイジャック対策が考慮されているか
@@ -357,7 +357,7 @@ export interface ElectronAPI {
 
 #### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: TDD原則に基づいたテスト設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -404,7 +404,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: `@electron-architect`, `@logic-dev`
+- **エージェント**: `.claude/agents/electron-architect.md`, `.claude/agents/logic-dev.md`
 - **選定理由**: Electron アーキテクチャとビジネスロジック実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -450,7 +450,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **選定理由**: コード品質改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -508,9 +508,9 @@ pnpm --filter @repo/desktop test:run
 
 | エージェント         | レビュー観点          |
 | -------------------- | --------------------- |
-| `@code-quality`      | コード品質            |
-| `@electron-security` | Electron セキュリティ |
-| `@unit-tester`       | テスト品質            |
+| `.claude/agents/code-quality.md`      | コード品質            |
+| `.claude/agents/electron-security.md` | Electron セキュリティ |
+| `.claude/agents/unit-tester.md`       | テスト品質            |
 
 #### 完了条件
 

@@ -1,194 +1,162 @@
 ---
 name: git-hooks-concepts
 description: |
-  Git Hooksの基本概念、ライフサイクル、実装パターンを提供するスキル。
+  Git Hooksの基本概念、ライフサイクル、実装パターンを提供し、コミット前のコード品質チェックとプッシュ前のテスト自動化を実現するスキル。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Pro Git (Scott Chacon) / 適用: Git Hooksのライフサイクル理解 / 目的: クライアント/サーバー側フックの適切な選択
+  • Continuous Delivery (Jez Humble) / 適用: 自動化パイプライン設計 / 目的: 品質ゲートの段階的実装
 
-  - `.claude/skills/git-hooks-concepts/resources/hook-types-reference.md`: フック種類の詳細リファレンス
-  - `.claude/skills/git-hooks-concepts/resources/implementation-patterns.md`: 10種類の実装パターン（Prettier+ESLint、型チェック、テスト、Conventional Commits検証等）
-  - `.claude/skills/git-hooks-concepts/templates/pre-commit-template.sh`: pre-commitテンプレート
-  - `.claude/skills/git-hooks-concepts/templates/pre-push-template.sh`: pre-pushテンプレート
-  - `.claude/skills/git-hooks-concepts/scripts/validate-git-hooks.mjs`: Git Hooks設定と動作検証スクリプト
-
-  専門分野:
-  - イベント駆動自動化: Git操作をトリガーとした自動スクリプト実行
-  - フックの種類: クライアント側・サーバー側フック
-  - 実行フロー: 終了コード仕様と操作継続/中断制御
-  - 設計原則: Fail Fast、Progressive Validation、Transparent Feedback
-
-  使用タイミング:
-  - Git Hooks を実装する時
-  - コミット前のコード品質チェックを自動化したい時
-  - プッシュ前のテスト実行を強制したい時
-  - コミットメッセージの検証を行う時
-
-  Use proactively when implementing git hooks, automating pre-commit checks,
-  or enforcing code quality gates.
-version: 1.0.0
+  Trigger:
+  Use when implementing Git hooks for pre-commit code quality checks, pre-push test execution, or commit message validation.
+  pre-commit, pre-push, git hooks, husky, lint-staged, conventional commits
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
-# Git Hooks 概念
+# Git Hooks Concepts
 
 ## 概要
 
-Git Hooks の基本概念、ライフサイクル、実装パターンを提供するスキル。
+Git Hooksの基本概念、ライフサイクル、実装パターンを提供するスキル。クライアント側フック（pre-commit、pre-push）の設計・実装・検証を支援し、コード品質チェックとテスト自動化を実現する。
 
-## 核心概念
+**適用範囲**: Git管理下のプロジェクト全般（Node.js、Python、Go等）
 
-### 1. イベント駆動自動化
+## ワークフロー
 
-Git 操作(commit、push 等)をトリガーとして自動的にスクリプトを実行する仕組み
+### Phase 1: 要件確認
 
-### 2. フックの種類
+**目的**: フックの目的と検証項目を明確にする
 
-- クライアント側: pre-commit, prepare-commit-msg, commit-msg, post-commit, pre-push 等
-- サーバー側: pre-receive, update, post-receive
+**アクション**:
 
-### 3. 実行フロー
+1. フックの目的を特定（コード品質、テスト、コミットメッセージ検証など）
+2. [references/hook-types-reference.md](references/hook-types-reference.md) でフック種類を確認
+3. 対象ファイルタイプと検証ツールを決定
 
-Git 操作 → フック検出 → スクリプト実行 → 終了コード判定 → 操作継続/中断
+**Task**: `agents/confirm-requirements.md` を参照
 
-### 4. 終了コード仕様
+### Phase 2: フック実装
 
-- exit 0: 成功（操作継続）
-- exit 1: 失敗（操作中断）
-- exit 2 以上: 非標準（避けるべき）
+**目的**: 選択したフックを実装する
 
-## 設計原則
+**アクション**:
 
-### 1. 早期検出（Fail Fast）
+1. [references/implementation-patterns.md](references/implementation-patterns.md) から適切なパターンを選択
+2. [assets/](assets/) のテンプレートをカスタマイズ
+3. `.git/hooks/` または `.husky/` にスクリプトを配置
 
-- 問題は発生した瞬間に検出
-- コミット前にフォーマット、Lint、テストを実行
-- プッシュ前にビルド確認
+**Task**: `agents/implement-hook.md` を参照
 
-### 2. 段階的検証（Progressive Validation）
+### Phase 3: 検証と記録
 
-- pre-commit: 軽量チェック（< 1 秒）
-- commit-msg: メッセージ検証
-- pre-push: 重量チェック（ビルド、テスト）
+**目的**: フックの動作を確認し、記録する
 
-### 3. 透明性（Transparent Feedback）
+**アクション**:
 
-- 何がトリガーされたか明示
-- なぜブロックされたか説明
-- どう修正すべきか提案
+1. `scripts/validate-git-hooks.mjs` でフック設定を検証
+2. 実際にコミット/プッシュしてフックが発火することを確認
+3. `scripts/log_usage.mjs` で使用実績を記録
 
-### 4. バイパス可能性（Escape Hatch）
+**Task**: `agents/validate-and-log.md` を参照
 
-- `--no-verify` で緊急時スキップ可能
-- ただし使用は最小限に
+## Task仕様（ナビゲーション）
 
-## 実装パターン
+| Task                 | 起動タイミング | 入力             | 出力               |
+| -------------------- | -------------- | ---------------- | ------------------ |
+| confirm-requirements | Phase 1        | フック要件       | 検証項目リスト     |
+| implement-hook       | Phase 2        | 検証項目リスト   | フックスクリプト   |
+| validate-and-log     | Phase 3        | フックスクリプト | 検証結果、使用記録 |
 
-### パターン 1: ゲートキーパー（Gatekeeper）
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
-```bash
-#!/bin/bash
-# 条件チェック → ブロック/許可
-if [ 条件 ]; then
-  echo "Error message"
-  exit 1
-fi
-exit 0
+## ベストプラクティス
+
+### すべきこと
+
+- pre-commitは軽いチェック（1秒以内）、pre-pushで重いテスト実行
+- 明確なエラーメッセージで修正方法を提示
+- 段階的な検証（軽い→重い順序で実行）
+- Task実行前に該当する `agents/*.md` を読み、入出力を確認する
+- Phase完了後に `scripts/log_usage.mjs` で記録を残す
+
+### 避けるべきこと
+
+- pre-commitに重いテスト（ユーザーがスキップするようになる）
+- フックの重複実装（pre-commitとpre-pushで同じ検証）
+- `--no-verify` の日常的な使用（フックの意味がなくなる）
+- エラー時の修正方法を提示しない
+
+**詳細**: See [references/implementation-patterns.md](references/implementation-patterns.md) → ベストプラクティス
+
+## リソース参照
+
+### references/（知識外部化）
+
+| リソース     | パス                                                                           | 内容                            |
+| ------------ | ------------------------------------------------------------------------------ | ------------------------------- |
+| フック種類   | [references/hook-types-reference.md](references/hook-types-reference.md)       | pre-commit/pre-push等の詳細仕様 |
+| 実装パターン | [references/implementation-patterns.md](references/implementation-patterns.md) | 10種類の実装パターン集          |
+
+### scripts/（決定論的処理）
+
+| スクリプト               | 用途               | 使用例                                        |
+| ------------------------ | ------------------ | --------------------------------------------- |
+| `validate-git-hooks.mjs` | フック設定の検証   | `node scripts/validate-git-hooks.mjs`         |
+| `log_usage.mjs`          | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+| `validate-skill.mjs`     | 構造検証           | `node scripts/validate-skill.mjs`             |
+
+### assets/（テンプレート）
+
+| テンプレート             | 用途                 |
+| ------------------------ | -------------------- |
+| `pre-commit-template.sh` | pre-commitフック雛形 |
+| `pre-push-template.sh`   | pre-pushフック雛形   |
+
+## フック実行順序
+
+```
+git commit
+  ↓
+1. pre-commit（ステージ済みファイルチェック）
+  ↓
+2. prepare-commit-msg（メッセージテンプレート）
+  ↓
+[ユーザーがメッセージ編集]
+  ↓
+3. commit-msg（メッセージフォーマット検証）
+  ↓
+[コミット作成]
+  ↓
+4. post-commit（通知）
+
+git push
+  ↓
+pre-push（テスト・ビルド確認）
+  ↓
+[サーバー側フック]
 ```
 
-### パターン 2: 自動修正（Auto-fix）
+**詳細**: See [references/hook-types-reference.md](references/hook-types-reference.md)
 
-```bash
-#!/bin/bash
-# 問題を検出 → 自動修正 → 継続
-npx prettier --write "staged-files"
-git add "modified-files"
-exit 0
-```
+## パフォーマンス目標
 
-### パターン 3: 条件付き実行（Conditional）
+| フック     | 推奨実行時間 | 検証内容例                 |
+| ---------- | ------------ | -------------------------- |
+| pre-commit | < 1秒        | Prettier、ESLint           |
+| commit-msg | < 0.5秒      | Conventional Commits検証   |
+| pre-push   | < 30秒       | テスト、ビルド、型チェック |
 
-```bash
-#!/bin/bash
-# 環境・ファイルタイプに応じて処理分岐
-if [[ "$FILE" == *.ts ]]; then
-  tsc --noEmit
-fi
-exit 0
-```
+## 変更履歴
 
-## 一般的なフック用途
-
-| フック      | 用途           | 例                            |
-| ----------- | -------------- | ----------------------------- |
-| pre-commit  | コード品質     | Prettier、ESLint、型チェック  |
-| commit-msg  | メッセージ検証 | Conventional Commits 準拠確認 |
-| pre-push    | 包括的検証     | テスト実行、ビルド確認        |
-| post-commit | 通知・ログ     | Slack への通知、統計記録      |
-
-## パフォーマンス最適化
-
-### 1. 増分チェック
-
-```bash
-# 全ファイルではなく変更ファイルのみ
-CHANGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep ".ts$")
-```
-
-### 2. 並列実行
-
-```bash
-# 独立チェックを並列化
-prettier --check . &
-eslint . &
-wait
-```
-
-### 3. タイムアウト設定
-
-```bash
-timeout 30s pnpm test || exit 1
-```
-
-## トラブルシューティング
-
-### 問題 1: フックが実行されない
-
-**原因**: 実行権限がない
-**解決**: `chmod +x .git/hooks/pre-commit`
-
-### 問題 2: フックをスキップしたい
-
-**解決**: `git commit --no-verify`（緊急時のみ）
-
-### 問題 3: エラーメッセージが不明瞭
-
-**解決**: `set -x` でデバッグモード有効化
-
-## 関連スキル
-
-- `.claude/skills/claude-code-hooks/SKILL.md`: Claude Code 固有のフック実装
-- `.claude/skills/automation-scripting/SKILL.md`: 自動化スクリプトの作成
-- `.claude/skills/approval-gates/SKILL.md`: 承認ゲートの設計
-
-## 参照リソース
-
-### 詳細リソース
-
-- `.claude/skills/git-hooks-concepts/resources/hook-types-reference.md`: フック種類の詳細リファレンス
-- `.claude/skills/git-hooks-concepts/resources/implementation-patterns.md`: 実装パターン集
-
-### テンプレート
-
-- `.claude/skills/git-hooks-concepts/templates/pre-commit-template.sh`: pre-commit テンプレート
-- `.claude/skills/git-hooks-concepts/templates/pre-push-template.sh`: pre-push テンプレート
-
-### スクリプト
-
-- `.claude/skills/git-hooks-concepts/scripts/validate-git-hooks.mjs`: Git Hooks 設定と動作検証スクリプト
-
-## 参考文献
-
-- 『Pro Git』 Scott Chacon, Ben Straub 著, Apress, 2014
-  - Chapter 8: Customizing Git - Git Hooks
-- Git 公式ドキュメント: https://git-scm.com/docs/githooks
+| Version | Date       | Changes                                 |
+| ------- | ---------- | --------------------------------------- |
+| 2.1.0   | 2026-01-02 | references/を整理、18-skills.md仕様準拠 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠                  |
+| 1.0.0   | 2025-12-24 | 初版作成                                |

@@ -7,7 +7,7 @@
 | タスクID         | T-01-3                                                           |
 | 検証日           | 2025-12-09                                                       |
 | 対象ファイル     | `apps/desktop/src/main/infrastructure/security/ipc-validator.ts` |
-| 使用エージェント | @electron-security                                               |
+| 使用エージェント | .claude/agents/electron-security.md                                               |
 | 判定             | **PASS**                                                         |
 
 ---

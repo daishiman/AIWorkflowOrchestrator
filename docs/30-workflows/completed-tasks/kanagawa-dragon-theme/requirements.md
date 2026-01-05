@@ -7,7 +7,7 @@
 | サブタスクID | T-00-1                     |
 | フェーズ     | Phase 0: 要件定義          |
 | 作成日       | 2025-12-12                 |
-| 担当         | @req-analyst, @ui-designer |
+| 担当         | .claude/agents/req-analyst.md, .claude/agents/ui-designer.md |
 
 ---
 

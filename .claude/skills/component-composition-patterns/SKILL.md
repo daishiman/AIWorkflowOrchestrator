@@ -1,293 +1,150 @@
 ---
 name: component-composition-patterns
 description: |
-  コンポーネント合成パターンと再利用可能なUI構造設計の専門知識
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  コンポーネント合成パターンを用いた再利用可能なUI構造設計を支援するスキル。
+  Compound Components、Polymorphic Components、Slot Pattern の選定と設計手順を整理する。
 
-  - `.claude/skills/component-composition-patterns/resources/compound-components-guide.md`: Compound Components パターン詳細ガイド
-  - `.claude/skills/component-composition-patterns/resources/polymorphic-components.md`: Polymorphic Components 実装ガイド
-  - `.claude/skills/component-composition-patterns/resources/slot-pattern-guide.md`: Slot Pattern 実装ガイド
-  - `.claude/skills/component-composition-patterns/templates/compound-component-template.tsx`: Compound Component テンプレート
-  - `.claude/skills/component-composition-patterns/templates/polymorphic-component-template.tsx`: Polymorphic Component テンプレート
-  - `.claude/skills/component-composition-patterns/scripts/analyze-composition.mjs`: コンポーネント合成パターン分析スクリプト
+  Anchors:
+  • Don't Make Me Think / 適用: UI設計・ユーザビリティ / 目的: 再利用性と保守性向上
+  • Atomic Design / 適用: コンポーネント階層設計 / 目的: 構造の一貫性確保
+  • React Patterns / 適用: 合成設計 / 目的: APIの一貫性
 
-  専門分野:
-  - (要追加)
-
-  使用タイミング:
-  - (要追加)
-
-  Use proactively when (要追加).
-version: 1.0.0
+  Trigger:
+  Use when designing component composition patterns, selecting compound/polymorphic/slot patterns, or validating reusable UI structures.
+  component composition patterns, compound components, polymorphic components, slot pattern, reusable UI
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
 # component-composition-patterns
-
-コンポーネント合成パターンと再利用可能なUI構造設計の専門知識
-
----
 
 ## 概要
 
-### 目的
-
-Reactおよびモダンフロントエンドフレームワークにおけるコンポーネント合成パターンを体系化し、
-柔軟で保守性の高いUIコンポーネント設計を支援する。
-
-### 対象者
-
-- UIコンポーネント設計者
-- フロントエンドエンジニア
-- デザインシステム開発者
-
----
-
-## コア知識領域
-
-### 1. 合成パターン基礎
-
-#### Children Pattern
-
-最もシンプルな合成パターン。コンポーネントの内容を外部から注入。
-
-```tsx
-// 基本的なChildren Pattern
-function Card({ children }) {
-  return <div className="card">{children}</div>;
-}
-
-// 使用例
-<Card>
-  <h2>タイトル</h2>
-  <p>内容</p>
-</Card>;
-```
-
-#### Compound Components
-
-関連するコンポーネントをグループ化し、暗黙的な状態共有を実現。
-
-```tsx
-// Compound Components Pattern
-const Tabs = ({ children, defaultValue }) => {
-  const [activeTab, setActiveTab] = useState(defaultValue);
-  return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
-      {children}
-    </TabsContext.Provider>
-  );
-};
-
-Tabs.List = ({ children }) => <div role="tablist">{children}</div>;
-Tabs.Tab = ({ value, children }) => {
-  /* ... */
-};
-Tabs.Panel = ({ value, children }) => {
-  /* ... */
-};
-
-// 使用例
-<Tabs defaultValue="tab1">
-  <Tabs.List>
-    <Tabs.Tab value="tab1">タブ1</Tabs.Tab>
-    <Tabs.Tab value="tab2">タブ2</Tabs.Tab>
-  </Tabs.List>
-  <Tabs.Panel value="tab1">コンテンツ1</Tabs.Panel>
-  <Tabs.Panel value="tab2">コンテンツ2</Tabs.Panel>
-</Tabs>;
-```
-
-### 2. 高度な合成パターン
-
-#### Slot Pattern
-
-名前付きスロットによる柔軟なコンテンツ配置。
-
-```tsx
-interface CardProps {
-  header?: ReactNode;
-  footer?: ReactNode;
-  children: ReactNode;
-}
-
-function Card({ header, footer, children }: CardProps) {
-  return (
-    <div className="card">
-      {header && <div className="card-header">{header}</div>}
-      <div className="card-body">{children}</div>
-      {footer && <div className="card-footer">{footer}</div>}
-    </div>
-  );
-}
-```
-
-#### Render Props Pattern
-
-レンダリングロジックを外部から注入。
-
-```tsx
-interface MouseTrackerProps {
-  render: (position: { x: number; y: number }) => ReactNode;
-}
-
-function MouseTracker({ render }: MouseTrackerProps) {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  // マウス追跡ロジック...
-  return <>{render(position)}</>;
-}
-```
-
-### 3. 制御パターン
-
-#### Controlled vs Uncontrolled
-
-状態管理の責任分離。
-
-```tsx
-// Controlled Component
-interface ControlledInputProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-// Uncontrolled Component
-interface UncontrolledInputProps {
-  defaultValue?: string;
-  onBlur?: (value: string) => void;
-}
-
-// Hybrid Pattern（両方サポート）
-interface InputProps {
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
-}
-```
-
-### 4. レイアウトパターン
-
-#### Polymorphic Component
-
-`as` propによる要素タイプの動的変更。
+コンポーネント合成パターンと再利用可能なUI構造設計を支援する。Compound Components、Polymorphic Components、Slot Pattern の選定と設計手順を整理する。
 
-```tsx
-interface BoxProps<T extends ElementType> {
-  as?: T;
-  children: ReactNode;
-}
-
-function Box<T extends ElementType = 'div'>({
-  as,
-  children,
-  ...props
-}: BoxProps<T> & ComponentPropsWithoutRef<T>) {
-  const Component = as || 'div';
-  return <Component {...props}>{children}</Component>;
-}
+## ワークフロー
 
-// 使用例
-<Box as="section">セクション</Box>
-<Box as="article">記事</Box>
-<Box as={Link} href="/home">リンク</Box>
-```
+### Phase 1: 要件整理
 
----
+**目的**: 目的・制約・期待APIを明確化する。
 
-## パターン選択ガイド
+**アクション**:
 
-### 選択フローチャート
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/composition-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-```
-コンポーネント設計開始
-    │
-    ├─ 単純なコンテンツラッパー？
-    │   └─ Yes → Children Pattern
-    │
-    ├─ 複数の関連コンポーネント？
-    │   └─ Yes → Compound Components
-    │
-    ├─ 名前付きコンテンツ領域が必要？
-    │   └─ Yes → Slot Pattern
-    │
-    ├─ レンダリングロジックの注入が必要？
-    │   └─ Yes → Render Props
-    │
-    └─ 要素タイプを柔軟に変更したい？
-        └─ Yes → Polymorphic Component
-```
+**Task**: `agents/analyze-composition-requirements.md` を参照
 
-### パターン比較表
+### Phase 2: 合成設計
 
-| パターン     | 柔軟性 | 複雑性 | 型安全性 | 使用場面             |
-| ------------ | ------ | ------ | -------- | -------------------- |
-| Children     | 低     | 低     | 高       | シンプルなラッパー   |
-| Compound     | 高     | 中     | 高       | タブ、アコーディオン |
-| Slot         | 中     | 低     | 高       | カード、モーダル     |
-| Render Props | 高     | 高     | 中       | データ共有           |
-| Polymorphic  | 高     | 中     | 高       | 汎用コンポーネント   |
+**目的**: 合成パターンとAPI設計を確定する。
 
----
+**アクション**:
 
-## アンチパターン
+1. `references/compound-components-guide.md` でCompound設計を確認する。
+2. `references/polymorphic-components.md` で型設計を確認する。
+3. `references/slot-pattern-guide.md` でSlot設計を確認する。
+4. `assets/composition-review-checklist.md` で設計観点を揃える。
 
-### 1. Prop Drilling
+**Task**: `agents/design-composition-patterns.md` を参照
 
-❌ 深い階層へのprop伝播
+### Phase 3: 実装とプロトタイプ
 
-```tsx
-// Bad: 中間コンポーネントが不要なpropsを受け取る
-<App user={user}>
-  <Layout user={user}>
-    <Sidebar user={user}>
-      <UserInfo user={user} />
-```
+**目的**: 合成パターンの実装方針を形にする。
 
-✅ Context または Compound Components を使用
+**アクション**:
 
-```tsx
-// Good: Contextで状態共有
-<UserProvider user={user}>
-  <Layout>
-    <Sidebar>
-      <UserInfo />
-```
+1. `assets/compound-component-template.tsx` でCompound構成を作成する。
+2. `assets/polymorphic-component-template.tsx` で型とPropsを整備する。
+3. `assets/slot-component-template.tsx` でSlot構成を整備する。
 
-### 2. 過度な抽象化
+**Task**: `agents/implement-composition-patterns.md` を参照
 
-❌ 1回しか使わないコンポーネントの過度な汎用化
+### Phase 4: 検証と記録
 
-✅ 3回以上使う時に抽象化を検討
+**目的**: 合成パターンの適合性を検証し記録する。
 
-### 3. 巨大コンポーネント
+**アクション**:
 
-❌ 1ファイル500行超のコンポーネント
+1. `scripts/analyze-composition.mjs` で構造を分析する。
+2. `scripts/validate-skill.mjs` でスキル構造を検証する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-✅ 単一責任原則に基づいて分割
+**Task**: `agents/validate-composition-patterns.md` を参照
 
----
+## Task仕様ナビ
 
-## リソース
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-composition-requirements | Phase 1開始時 | 要件/制約 | 合成要件整理メモ、パターン候補 |
+| design-composition-patterns | Phase 2開始時 | 合成要件整理メモ | 合成パターン設計書、API設計 |
+| implement-composition-patterns | Phase 3開始時 | 合成パターン設計書 | 実装方針メモ、試作構成 |
+| validate-composition-patterns | Phase 4開始時 | 実装方針メモ | 検証レポート、ログ更新内容 |
 
-- `resources/compound-components-guide.md` - Compound Componentsの詳細ガイド
-- `resources/slot-pattern-guide.md` - Slot Patternの実装ガイド
-- `resources/polymorphic-components.md` - Polymorphic Componentの型安全な実装
-- `templates/compound-component-template.tsx` - Compound Componentテンプレート
-- `templates/polymorphic-component-template.tsx` - Polymorphic Componentテンプレート
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
----
+## ベストプラクティス
 
-## 関連スキル
+### すべきこと
 
-- `design-system-architecture` - デザインシステム設計
-- `headless-ui-principles` - ヘッドレスUI原則
-- `accessibility-wcag` - アクセシビリティ対応
+| 推奨事項 | 理由 |
+| --- | --- |
+| 目的と制約を先に整理する | 過度な抽象化を防ぐため |
+| パターン選定を明文化する | 意図と再利用範囲を揃えるため |
+| APIと型設計を早期に確定する | 破綻を防ぐため |
+| テンプレートで構成を揃える | 実装の一貫性を保つため |
 
----
+### 避けるべきこと
 
-## バージョン情報
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 目的に合わないパターン採用 | 保守性が低下する |
+| Props設計の後回し | 実装の破綻につながる |
+| 合成の責務混在 | 再利用性が低下する |
 
-- 作成日: 2025-01-13
-- 最終更新: 2025-01-13
-- バージョン: 1.0.0
+## リソース参照
+
+### scripts/（決定論的処理）
+
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-composition.mjs` | 合成パターン分析 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+
+### references/（詳細知識）
+
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
+| Compound ガイド | [references/compound-components-guide.md](references/compound-components-guide.md) | Compound設計時 |
+| Polymorphic ガイド | [references/polymorphic-components.md](references/polymorphic-components.md) | Polymorphic設計時 |
+| Slot ガイド | [references/slot-pattern-guide.md](references/slot-pattern-guide.md) | Slot設計時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/composition-requirements-template.md` | 要件整理テンプレート |
+| `assets/composition-review-checklist.md` | 設計チェックリスト |
+| `assets/compound-component-template.tsx` | Compound Component テンプレート |
+| `assets/polymorphic-component-template.tsx` | Polymorphic Component テンプレート |
+| `assets/slot-component-template.tsx` | Slot Component テンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

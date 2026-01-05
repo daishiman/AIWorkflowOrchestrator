@@ -1,0 +1,132 @@
+{
+  "$schema": "../../../schemas/skill-evals.schema.json",
+  "skillName": "test-doubles",
+  "version": "1.1.0",
+  "lastUpdated": "2025-12-31",
+  "metrics": {
+    "usageCount": 0,
+    "successCount": 0,
+    "failureCount": 0,
+    "successRate": 0,
+    "averageExecutionTime": null,
+    "lastUsed": null
+  },
+  "levelProgress": {
+    "currentLevel": 1,
+    "nextLevelThreshold": {
+      "level": 2,
+      "requirements": {
+        "minUsageCount": 5,
+        "minSuccessRate": 0.8,
+        "requiredTasks": ["analysis", "implementation"]
+      }
+    },
+    "levels": {
+      "1": {
+        "name": "Basics",
+        "description": "基本的なテストダブル（Mock、Stub）の使い分けができる",
+        "requirements": {
+          "minUsageCount": 0,
+          "minSuccessRate": 0
+        },
+        "achieved": true,
+        "achievedAt": "2025-12-31"
+      },
+      "2": {
+        "name": "Intermediate",
+        "description": "実務的な実装パターンを適用し、適切な検証戦略を選択できる",
+        "requirements": {
+          "minUsageCount": 5,
+          "minSuccessRate": 0.8,
+          "requiredTasks": ["analysis", "implementation"]
+        },
+        "achieved": false,
+        "achievedAt": null
+      },
+      "3": {
+        "name": "Advanced",
+        "description": "複雑なシナリオでFake、Spyを活用し、高度なパターンを適用できる",
+        "requirements": {
+          "minUsageCount": 15,
+          "minSuccessRate": 0.85,
+          "requiredTasks": ["analysis", "implementation", "verification"]
+        },
+        "achieved": false,
+        "achievedAt": null
+      },
+      "4": {
+        "name": "Expert",
+        "description": "テストスメルを検出し、最適なテストダブル戦略を設計できる",
+        "requirements": {
+          "minUsageCount": 30,
+          "minSuccessRate": 0.9,
+          "requiredTasks": ["analysis", "implementation", "verification"],
+          "additionalCriteria": [
+            "複数のプロジェクトでの適用実績",
+            "テストアンチパターンの改善実績"
+          ]
+        },
+        "achieved": false,
+        "achievedAt": null
+      }
+    }
+  },
+  "taskMetrics": {
+    "analysis": {
+      "usageCount": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "averageExecutionTime": null
+    },
+    "implementation": {
+      "usageCount": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "averageExecutionTime": null
+    },
+    "verification": {
+      "usageCount": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "averageExecutionTime": null
+    }
+  },
+  "qualityMetrics": {
+    "codeQualityScore": null,
+    "testSmellsDetected": 0,
+    "patternAdherenceRate": null,
+    "refactoringCount": 0
+  },
+  "feedbackSummary": {
+    "commonIssues": [],
+    "improvementSuggestions": [],
+    "positivePatterns": []
+  },
+  "evaluationCriteria": {
+    "testDoubleSelection": {
+      "description": "適切なテストダブルタイプの選択",
+      "weight": 0.3,
+      "passingScore": 0.8
+    },
+    "patternAdherence": {
+      "description": "パターンへの準拠度",
+      "weight": 0.25,
+      "passingScore": 0.85
+    },
+    "codeQuality": {
+      "description": "テストコードの品質（可読性、保守性）",
+      "weight": 0.25,
+      "passingScore": 0.8
+    },
+    "testSmellAvoidance": {
+      "description": "テストスメルの回避",
+      "weight": 0.2,
+      "passingScore": 0.9
+    }
+  },
+  "notes": [
+    "初回作成時はLevel 1を達成済みとする",
+    "log_usage.mjsの実行により自動更新される",
+    "レベルアップは要件を満たした時点で自動的に判定される"
+  ]
+}

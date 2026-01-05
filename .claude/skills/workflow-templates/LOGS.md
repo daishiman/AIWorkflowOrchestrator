@@ -1,0 +1,31 @@
+# Usage Logs
+
+## 使用記録
+
+| Date       | Version | Phase | Result  | Notes                                   |
+| ---------- | ------- | ----- | ------- | --------------------------------------- |
+| 2026-01-01 | 2.0.0   | All   | success | 18-skills.md仕様準拠、4エージェント体制 |
+
+## 詳細ログ
+
+### 2026-01-01 - v2.0.0 リリース
+
+**実施内容**:
+
+- 4エージェント体制への再構成
+- テンプレート選定・CI構築・CD構築・最適化の分離
+- 既存リファレンス（project-type-selection.md、template-types.md）の活用
+
+**成果物**:
+
+- agents/template-selector.md
+- agents/ci-builder.md
+- agents/cd-builder.md
+- agents/workflow-optimizer.md
+
+**検証結果**:
+
+- スキル構造検証: Pass
+- frontmatter検証: Pass
+- エージェント数: 4
+- リファレンス数: 2

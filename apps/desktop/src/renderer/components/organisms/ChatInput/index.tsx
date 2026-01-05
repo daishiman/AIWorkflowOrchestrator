@@ -41,6 +41,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         placeholder="メッセージを入力..."
         disabled={disabled || sending}
         className="flex-1"
+        data-testid="chat-input"
         aria-label="チャットメッセージ入力"
       />
       <Button
@@ -49,6 +50,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         disabled={disabled || sending || !value.trim()}
         loading={sending}
         rightIcon="send"
+        data-testid="chat-send-button"
         aria-label="送信"
       >
         送信

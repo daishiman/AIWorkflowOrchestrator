@@ -1,509 +1,126 @@
 ---
 name: command-activation-mechanisms
 description: |
-  コマンドの起動メカニズムを専門とするスキル。
-  ユーザー明示起動、モデル自動起動（SlashCommand Tool）、Extended Thinkingトリガー、
-  実行フローの完全図解を提供します。
+  コマンド起動の仕組みを整理し、明示起動/自動起動/Extended Thinkingの設計と検証を支援するスキル。
+  起動フロー、トリガー設計、検証手順を一貫して整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: 手順設計 / 目的: 実行フローの最適化
+  • Human-Computer Interaction (Dix et al.) / 適用: 起動UX設計 / 目的: 誤起動の抑制
+  • Automation Patterns / 適用: 自動起動設計 / 目的: 安定運用
 
-  - `.claude/skills/command-activation-mechanisms/resources/slashcommand-tool-guide.md`: SlashCommandツール詳細ガイド
-  - `.claude/skills/command-activation-mechanisms/resources/user-explicit-activation.md`: ユーザー明示的起動パターン
-  - `.claude/skills/command-activation-mechanisms/resources/execution-flow-diagrams.md`: コマンド実行フロー図解
-  - `.claude/skills/command-activation-mechanisms/resources/extended-thinking-triggers.md`: Extended Thinkingトリガー設計
-  - `.claude/skills/command-activation-mechanisms/templates/auto-invocation-template.md`: 自動起動コマンドテンプレート
-  - `.claude/skills/command-activation-mechanisms/templates/extended-thinking-template.md`: Extended Thinking活用テンプレート
-  - `.claude/skills/command-activation-mechanisms/scripts/validate-activation.mjs`: 起動メカニズム検証スクリプト
-
-  使用タイミング:
-  - SlashCommand Toolによる自動起動を理解したい時
-  - Extended Thinkingを活用したい時
-  - コマンド実行フローを設計する時
-
-  Use proactively when understanding command activation, implementing auto-invocation,
-  or designing execution flows.
-version: 1.0.0
+  Trigger:
+  Use when designing command activation flows, defining auto-invocation triggers, or validating command execution paths.
+  command activation, auto invocation, extended thinking, slashcommand, execution flow
 ---
-
-# Command Activation Mechanisms
+# command-activation-mechanisms
 
 ## 概要
 
-このスキルは、Claude Codeコマンドの起動メカニズムを提供します。
-ユーザー明示起動、SlashCommand Toolによる自動起動、Extended Thinkingトリガー、
-実行フローの完全理解により、効率的なコマンド設計ができます。
+コマンド起動のフロー設計とトリガー設計を整理し、誤起動を防ぎながら運用可能にする。
 
-**主要な価値**:
+## ワークフロー
 
-- 2つの起動モードの完全理解
-- SlashCommand Tool活用方法
-- Extended Thinking統合
-- 実行フロー最適化
+### Phase 1: 要件整理
 
-**対象ユーザー**:
+**目的**: 起動条件と対象範囲を明確化する。
 
-- コマンドを作成するエージェント（@command-arch）
-- 自動起動を実装したい開発者
-- 実行フローを理解したいチーム
+**アクション**:
 
-## リソース構造
+1. 起動パターン（明示/自動/Extended Thinking）を整理する。
+2. 対象コマンドと制約条件を整理する。
+3. 参照すべきフロー資料を選定する。
 
-```
-command-activation-mechanisms/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── user-explicit-activation.md            # ユーザー明示起動詳細
-│   ├── slashcommand-tool-guide.md             # SlashCommand Tool完全ガイド
-│   ├── extended-thinking-triggers.md          # Extended Thinking詳細
-│   └── execution-flow-diagrams.md             # 実行フロー図解集
-└── templates/
-    ├── auto-invocation-template.md            # 自動起動テンプレート
-    └── extended-thinking-template.md          # Extended Thinkingテンプレート
-```
-
-### リソース種別
-
-- **起動詳細** (`resources/*-activation.md`, `*-guide.md`): 各起動モードの詳細
-- **Extended Thinking** (`resources/extended-thinking-triggers.md`): キーワードとパターン
-- **実行フロー** (`resources/execution-flow-diagrams.md`): フロー図解集
-- **テンプレート** (`templates/`): 起動モード別のテンプレート
+**Task**: `agents/analyze-activation-requirements.md` を参照
 
-## いつ使うか
+### Phase 2: 起動設計
 
-### シナリオ1: 自動起動の実装
+**目的**: 起動トリガーとフローを設計する。
 
-**状況**: CLAUDEmdから自動でコマンドを起動したい
+**アクション**:
 
-**適用条件**:
-
-- [ ] 特定のキーワードで自動起動したい
-- [ ] SlashCommand Toolの仕組みを理解したい
-- [ ] descriptionの最適化が必要
+1. 起動トリガーと条件を設計する。
+2. 実行フロー図とテンプレートを整備する。
+3. 例外ケースと安全策を定義する。
 
-**期待される成果**: 自動起動可能なコマンド
+**Task**: `agents/design-activation-flow.md` を参照
 
-### シナリオ2: Extended Thinkingの活用
+### Phase 3: 検証と記録
 
-**状況**: 深い思考を必要とするコマンドを作成したい
+**目的**: 起動メカニズムを検証し記録する。
 
-**適用条件**:
+**アクション**:
 
-- [ ] 複雑な判断が必要
-- [ ] 詳細な分析が必要
-- [ ] 段階的な推論が必要
+1. 検証スクリプトで起動条件を確認する。
+2. レビュー結果と改善点を記録する。
+3. ログと評価情報を更新する。
 
-**期待される成果**: Extended Thinking活用コマンド
+**Task**: `agents/validate-activation-mechanisms.md` を参照
 
-### シナリオ3: 実行フローの理解
+## Task仕様ナビ
 
-**状況**: コマンド実行の内部動作を理解したい
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-activation-requirements | Phase 1開始時 | 起動条件/制約 | 要件整理メモ、参照一覧 |
+| design-activation-flow | Phase 2開始時 | 要件整理メモ | フロー設計、トリガー設計 |
+| validate-activation-mechanisms | Phase 3開始時 | フロー設計 | 検証レポート、改善方針 |
 
-**適用条件**:
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-- [ ] デバッグが必要
-- [ ] パフォーマンス最適化が必要
-- [ ] トラブルシューティングが必要
+## ベストプラクティス
 
-**期待される成果**: 実行フローの完全理解
+### すべきこと
 
-## モード1: ユーザー明示起動
+| 推奨事項 | 理由 |
+| --- | --- |
+| 起動条件を明文化する | 誤起動を防ぐため |
+| フロー図を更新する | 運用の再現性を高めるため |
+| 例外ケースを整理する | 想定外の挙動を防ぐため |
 
-### 基本的な起動
+### 避けるべきこと
 
-```bash
-# 直接入力
-> /commit
+| 禁止事項 | 問題点 |
+| --- | --- |
+| トリガーを増やしすぎる | 誤起動が増える |
+| 検証なしで運用する | 不具合が継続する |
+| 記録を残さない | 改善サイクルが回らない |
 
-# 引数付き
-> /fix-issue 123
+## リソース参照
 
-# 名前空間付き
-> /project:create-feature user-authentication
-```
+### scripts/（決定論的処理）
 
-### 実行フロー
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-activation.mjs` | 起動メカニズム検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-```
-┌──────────────────────────────────────┐
-│ ユーザー入力: /commit "feat: add X" │
-└───────────────┬──────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────┐
-│ Claude Code がコマンドファイル検索     │
-│ 1. .claude/commands/commit.md         │
-│ 2. ~/.claude/commands/commit.md       │
-│ 3. MCP プロンプト                      │
-└───────────────┬────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────┐
-│ コマンドファイル読み込み                │
-│ - Frontmatter 解析                    │
-│ - $ARGUMENTS 置換                     │
-│ - 本文をプロンプトとして使用           │
-└───────────────┬────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────┐
-│ Claude 実行                            │
-│ - 指定モデル使用（デフォルト: Sonnet） │
-│ - allowed-tools 制約適用              │
-│ - ツール呼び出し実行                   │
-└───────────────┬────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────┐
-│ 結果返却                               │
-│ - 標準出力へ表示                       │
-│ - ファイル変更適用                     │
-│ - 完了メッセージ                       │
-└────────────────────────────────────────┘
-```
-
-## モード2: モデル自動起動
-
-### SlashCommand Tool の仕組み
-
-**重要な制約**:
-
-```yaml
-SlashCommand Tool が起動できるのは: ✓ カスタムコマンド（.claude/commands/）
-  ✗ ビルトインコマンド（/compact, /init等）
-
-条件:
-  - description frontmatter が必須
-  - disable-model-invocation: true の場合は起動不可
-```
-
-### CLAUDE.md での設定
-
-```markdown
-# ワークフローキーワード
-
-以下のキーワードを検出したら、対応するコマンドを実行:
-
-## コミット関連
-
-- "commit", "コミット", "変更を保存"
-  → `/commit` を実行
-
-## レビュー関連
-
-- "review", "レビュー", "コードチェック"
-  → `/code-review` を実行
-
-## テスト関連
-
-- "test", "テスト", "動作確認"
-  → `/run-tests` を実行
-
-## デプロイ関連
-
-- "deploy", "デプロイ", "本番反映"
-  → 環境を確認してから `/deploy:staging` または `/deploy:production`
-```
-
-### 実行フロー
-
-```
-┌──────────────────────────────────────┐
-│ ユーザー: "コードをレビューして"      │
-└───────────────┬──────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────┐
-│ Claude が CLAUDE.md 参照              │
-│ "コードレビュー時は /code-review" 発見│
-└───────────────┬────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────┐
-│ SlashCommand Tool 起動判断            │
-│ - description フィールド確認          │
-│ - disable-model-invocation チェック   │
-│ - コマンドの関連性評価                │
-└───────────────┬────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────┐
-│ /code-review 自動実行                 │
-│ （以降はユーザー明示起動と同じ）      │
-└────────────────────────────────────────┘
-```
-
-### description の最適化
-
-**悪い例**:
-
-```yaml
-description: Commit code
-```
-
-**良い例**:
+### references/（詳細知識）
 
-```yaml
-description: |
-  Create a git commit following Conventional Commits specification.
-  Automatically stages changes, analyzes diff, generates descriptive message,
-  and pushes to current branch. Use when you want to commit and push changes
-  in one command. Ideal for rapid development cycles.
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 起動設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 実行フロー | [references/execution-flow-diagrams.md](references/execution-flow-diagrams.md) | フロー設計時 |
+| Extended Thinking | [references/extended-thinking-triggers.md](references/extended-thinking-triggers.md) | トリガー設計時 |
+| SlashCommandガイド | [references/slashcommand-tool-guide.md](references/slashcommand-tool-guide.md) | 自動起動設計時 |
+| 明示起動パターン | [references/user-explicit-activation.md](references/user-explicit-activation.md) | 明示起動設計時 |
+| 要求索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-  Keywords: commit, save changes, git commit
-```
+### assets/（テンプレート・素材）
 
-**最適化のポイント**:
+| アセット | 用途 |
+| --- | --- |
+| `assets/auto-invocation-template.md` | 自動起動テンプレート |
+| `assets/extended-thinking-template.md` | Extended Thinkingテンプレート |
 
-1. 詳細な説明（4-8行）
-2. トリガーキーワードを含める
-3. 使用タイミングを明記
-4. 期待される結果を記述
-
-## Extended Thinking トリガー
-
-### キーワード
-
-コマンド内に以下のキーワードを含めると、Claudeは深い思考モードに入ります:
-
-- `"think carefully"`
-- `"consider thoroughly"`
-- `"analyze deeply"`
-- `"reason about"`
-- `"evaluate carefully"`
-- `"examine in detail"`
-
-### 実装例
-
-```markdown
----
-description: Refactor code with careful analysis
----
-
-# Intelligent Refactoring
-
-## Analysis Phase
-
-**Think carefully** about the code structure:
-
-1. Identify code smells
-2. Consider design patterns
-3. Analyze dependencies
-4. Evaluate maintainability
-
-## Reasoning Phase
-
-**Reason about** the best refactoring approach:
-
-- What patterns would improve the code?
-- What are the risks?
-- What's the migration path?
-- How will this affect existing functionality?
-
-## Planning Phase
-
-**Consider thoroughly** the implementation plan:
-
-- Step-by-step refactoring steps
-- Testing strategy
-- Rollback plan
-
-## Implementation
-
-Apply the refactoring carefully with:
-
-- Incremental changes
-- Continuous testing
-- Documentation updates
-```
-
-### 効果
-
-```
-通常実行:
-→ 即座に実装開始
-→ 浅い分析
-→ リスク見落とし
-
-Extended Thinking:
-→ 深い分析フェーズ
-→ 複数の選択肢を評価
-→ リスクの詳細な検討
-→ より良い実装判断
-```
-
-## 自然言語トリガー
-
-### パターン1: 直接的なキーワード
-
-```markdown
-# CLAUDE.md
-
-## Workflow Rules
-
-When user says:
-
-- "commit" → Execute `/commit`
-- "test" → Execute `/run-tests`
-- "deploy" → Execute `/deploy`
-```
-
-**実行例**:
-
-```
-ユーザー: "変更をコミットして"
-↓
-Claude: CLAUDE.md 参照 → "commit" キーワード検出
-↓
-SlashCommand Tool: /commit 実行
-```
-
-### パターン2: コンテキスト依存
-
-```markdown
-# CLAUDE.md
-
-## Contextual Triggers
-
-When user mentions deployment:
-
-- If mentioning "staging" → `/deploy:staging`
-- If mentioning "production" → `/deploy:production` (ask confirmation)
-- If no environment specified → Ask which environment
-```
-
-**実行例**:
-
-```
-ユーザー: "ステージングにデプロイして"
-↓
-Claude: "staging" 検出
-↓
-SlashCommand Tool: /deploy:staging 実行
-```
-
-### パターン3: 意図推論
-
-```markdown
-# CLAUDE.md
-
-## Intent-based Triggers
-
-Analyze user intent:
-
-- If discussing code quality → Suggest `/code-review`
-- If discussing bugs → Suggest `/analyze-bug`
-- If discussing features → Suggest `/plan-feature`
-```
-
-## デバッグとトラブルシューティング
-
-### コマンドが見つからない
-
-**症状**: `/mycommand` を実行しても "Command not found"
-
-**確認事項**:
-
-1. ファイルが存在するか？
-   ```bash
-   ls .claude/commands/mycommand.md
-   ```
-2. description が設定されているか？
-3. ファイル名が正しいか？（kebab-case）
-
-### 自動起動しない
-
-**症状**: CLAUDE.md で設定したが自動起動しない
-
-**確認事項**:
-
-1. description が詳細か？（4-8行推奨）
-2. トリガーキーワードを含んでいるか？
-3. disable-model-invocation: true になっていないか？
-4. CLAUDE.md の設定が正確か？
-
-### Extended Thinking が機能しない
-
-**症状**: Extended Thinking キーワードを使っても深い思考にならない
-
-**確認事項**:
-
-1. キーワードが正確か？（"think carefully" 等）
-2. コマンドの複雑度が十分か？
-3. モデルが適切か？（Haiku では効果が薄い）
-
-## 詳細リソースの参照
-
-### ユーザー明示起動
-
-詳細は `resources/user-explicit-activation.md` を参照
-
-### SlashCommand Tool ガイド
-
-完全ガイドは `resources/slashcommand-tool-guide.md` を参照
-
-### Extended Thinking トリガー
-
-詳細は `resources/extended-thinking-triggers.md` を参照
-
-### 実行フロー図解
-
-図解集は `resources/execution-flow-diagrams.md` を参照
-
-### テンプレート
-
-- 自動起動: `templates/auto-invocation-template.md`
-- Extended Thinking: `templates/extended-thinking-template.md`
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# ユーザー明示起動の詳細
-cat .claude/skills/command-activation-mechanisms/resources/user-explicit-activation.md
-
-# SlashCommand Tool完全ガイド
-cat .claude/skills/command-activation-mechanisms/resources/slashcommand-tool-guide.md
-
-# Extended Thinking詳細
-cat .claude/skills/command-activation-mechanisms/resources/extended-thinking-triggers.md
-
-# 実行フロー図解集
-cat .claude/skills/command-activation-mechanisms/resources/execution-flow-diagrams.md
-```
-
-### テンプレート参照
-
-```bash
-# 自動起動テンプレート
-cat .claude/skills/command-activation-mechanisms/templates/auto-invocation-template.md
-
-# Extended Thinkingテンプレート
-cat .claude/skills/command-activation-mechanisms/templates/extended-thinking-template.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# 知識ドキュメントの品質検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-activation-mechanisms/resources/slashcommand-tool-guide.md
-
-# トークン見積もり
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-activation-mechanisms/SKILL.md
-
-# ドキュメント構造分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-activation-mechanisms
-```
-
-## 関連スキル
-
-- `.claude/skills/command-structure-fundamentals/SKILL.md` - description最適化
-- `.claude/skills/command-security-design/SKILL.md` - disable-model-invocation
-
-## 更新履歴
-
-- v1.0.0 (2025-11-24): 初版作成
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

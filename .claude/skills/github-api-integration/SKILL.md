@@ -1,192 +1,123 @@
 ---
 name: github-api-integration
 description: |
-    GitHub API を GitHub Actions 内で活用するための統合スキル。
-    専門分野:
-    - REST API: gh CLI、GitHub REST APIの利用、認証パターン
-    - GraphQL API: GitHub GraphQL API、複雑なクエリ、データ取得最適化
-    - API認証: GITHUB_TOKEN、Personal Access Token、権限管理
-    - 実践パターン: Issue/PR操作、リリース管理、ラベル操作、コメント投稿
-    使用タイミング:
-    - ワークフローからGitHub APIを呼び出す時
-    - gh CLIやcurlでGitHub操作を自動化する時
-    - IssueやPull Requestを自動作成・更新する時
-    - GraphQL APIで複雑なデータ取得を行う時
-    - API認証や権限設定に関する問題を解決する時
+  GitHub APIをGitHub Actions内で活用するための統合スキル。REST APIとGraphQL APIの両方を使用して、Issue、Pull Request、リリース、ワークフローなどの自動化を実現。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • GitHub REST API / 適用: Issue、PR、リポジトリ操作 / 目的: 標準的なCRUD操作
+  • GitHub GraphQL API / 適用: 複雑なデータ取得 / 目的: 効率的なバッチ処理
+  • RESTful Web APIs (Leonard Richardson) / 適用: API設計原則 / 目的: 適切なリソース設計
 
-  - `.claude/skills/github-api-integration/resources/graphql-api.md`: GitHub GraphQL APIの詳細リファレンスと複雑なクエリパターン
-  - `.claude/skills/github-api-integration/resources/rest-api.md`: GitHub REST APIとgh CLIの詳細リファレンスと認証パターン
-  - `.claude/skills/github-api-integration/templates/api-workflow.yaml`: GitHub API統合ワークフローの実装テンプレート
-  - `.claude/skills/github-api-integration/scripts/api-helper.mjs`: GitHub API操作とトークン検証のヘルパースクリプト
-
-  Use proactively when implementing github-api-integration patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when integrating GitHub API calls in GitHub Actions, automating Issue and PR operations, generating release notes, managing repositories programmatically, or handling API authentication and rate limiting.
+  github api, rest api, graphql, gh cli, automation, issue, pull request, release
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
-# GitHub API Integration in Actions
+# GitHub API Integration
 
 ## 概要
 
-このスキルは、GitHub Actions 内で GitHub API を活用するための実践的な知識を提供します。
-REST API、GraphQL API、gh CLI の使用方法、認証パターン、実践的なユースケースを網羅します。
-
-**主要な価値**:
-
-- GitHub API の効率的な活用
-- gh CLI による簡潔なワークフロー記述
-- 適切な認証と権限管理
-- 実践的な API 統合パターン
-
-**適用範囲**: GitHub REST API v3、GraphQL API v4、gh CLI v2.x、GITHUB_TOKEN 認証
-
-## リソース構造
-
-```
-github-api-integration/
-├── SKILL.md                   # 本ファイル
-├── resources/
-│   ├── rest-api.md           # REST API詳細 (gh CLI, curl, octokit)
-│   └── graphql-api.md        # GraphQL API詳細
-├── templates/
-│   └── api-workflow.yaml     # API統合ワークフロー例
-└── scripts/
-    └── api-helper.mjs        # API操作ヘルパー
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# REST API詳細リファレンス
-cat .claude/skills/github-api-integration/resources/rest-api.md
-
-# GraphQL API詳細リファレンス
-cat .claude/skills/github-api-integration/resources/graphql-api.md
-```
-
-### テンプレート/スクリプト
-
-```bash
-# API統合ワークフローテンプレート
-cat .claude/skills/github-api-integration/templates/api-workflow.yaml
-
-# APIヘルパースクリプト
-node .claude/skills/github-api-integration/scripts/api-helper.mjs validate-token
-node .claude/skills/github-api-integration/scripts/api-helper.mjs list-issues owner/repo
-```
-
-## クイックリファレンス
-
-### gh CLI 基本操作
-
-```yaml
-# Issue作成
-- name: Create issue
-  run: gh issue create --title "Title" --body "Body" --label "bug"
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-# PR作成
-- name: Create PR
-  run: gh pr create --title "Title" --body "Body" --base main --head feature
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-# リリース作成
-- name: Create release
-  run: gh release create v1.0.0 --title "Release" --notes "Notes"
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-### REST API (curl)
-
-```yaml
-# Issue作成
-- name: Create issue via API
-  run: |
-    curl -X POST \
-      -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-      -H "Accept: application/vnd.github.v3+json" \
-      https://api.github.com/repos/${{ github.repository }}/issues \
-      -d '{"title":"Title","body":"Body"}'
-```
-
-### GraphQL API
-
-```yaml
-# GraphQL クエリ
-- name: Run GraphQL query
-  run: |
-    gh api graphql -f query='
-      query($owner: String!, $repo: String!) {
-        repository(owner: $owner, name: $repo) {
-          pullRequests(first: 10, states: OPEN) {
-            nodes { number title }
-          }
-        }
-      }
-    ' -F owner=${{ github.repository_owner }} -F repo=${{ github.event.repository.name }}
-  env:
-    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+GitHub APIをGitHub Actionsワークフロー内で効果的に活用するための実装ガイド。REST API、GraphQL API、gh CLIを使用した自動化パターンを提供。
 
 ## ワークフロー
 
-### Phase 1: 認証設定
+### Phase 1: API設計
 
-**目的**: API 認証を正しく構成する
+**目的**: API操作の要件と認証方式を決定
 
-1. GITHUB_TOKEN の権限確認
-2. 必要に応じて PAT 作成
-3. Secrets 設定
+**アクション**:
 
-**詳細**: `resources/rest-api.md` (Authentication)
+1. 操作対象（Issue/PR/Release等）を特定
+2. REST API vs GraphQL APIの選択
+3. 認証方式（GITHUB_TOKEN/PAT）を決定
 
-### Phase 2: API 選択
+**Task**: `agents/design-api-integration.md` を参照
 
-**判断基準**:
+### Phase 2: 実装
 
-- **gh CLI**: 簡潔なコマンド、標準操作
-- **REST API**: 詳細制御、カスタムヘッダー
-- **GraphQL API**: 複雑なデータ取得、効率重視
+**目的**: API呼び出しを実装
 
-### Phase 3: 実装
+**アクション**:
 
-1. API エンドポイント構築
-2. リクエストボディ作成
-3. レスポンス処理
-4. エラーハンドリング
+1. `assets/api-workflow.yaml` をベースに作成
+2. 認証とパーミッションを設定
+3. API呼び出しとエラーハンドリングを実装
 
-**テンプレート**: `templates/api-workflow.yaml`
+**Task**: `agents/implement-api-calls.md` を参照
 
-## 判断基準
+### Phase 3: 検証
 
-### API 方式選択
+**目的**: API操作の動作を検証
 
-- [ ] 標準的な GitHub 操作 → gh CLI
-- [ ] 細かい制御が必要 → REST API
-- [ ] 複雑なデータ取得 → GraphQL API
-- [ ] スクリプト化が必要 → Node.js + Octokit
+**アクション**:
 
-### 認証方式選択
+1. ドライランでAPI呼び出しをテスト
+2. レート制限とエラー処理を確認
+3. `scripts/log_usage.mjs` で記録
 
-- [ ] 同一リポジトリ内操作 → GITHUB_TOKEN
-- [ ] 他リポジトリアクセス → Personal Access Token
-- [ ] Organization 操作 → GitHub App Token
+**Task**: `agents/validate-api-integration.md` を参照
 
-## 関連スキル
+## Task仕様ナビ
 
-- **github-actions-syntax** (`.claude/skills/github-actions-syntax/SKILL.md`): ワークフロー構文基礎
-- **github-actions-expressions** (`.claude/skills/github-actions-expressions/SKILL.md`): 式と関数
-- **secrets-management-gha** (`.claude/skills/secrets-management-gha/SKILL.md`): シークレット管理
-- **workflow-security** (`.claude/skills/workflow-security/SKILL.md`): セキュリティベストプラクティス
+| Task                     | 起動タイミング | 入力   | 出力             |
+| ------------------------ | -------------- | ------ | ---------------- |
+| design-api-integration   | Phase 1開始時  | 要件   | API設計書        |
+| implement-api-calls      | Phase 2開始時  | 設計書 | ワークフローYAML |
+| validate-api-integration | Phase 3開始時  | YAML   | 検証レポート     |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## ベストプラクティス
+
+### すべきこと
+
+- GITHUB_TOKENはsecretsとして管理する
+- 必要最小限のパーミッションを設定する
+- GraphQL APIで効率的にデータを取得する
+- レート制限を監視しリトライロジックを実装する
+- エラーレスポンスを適切にハンドリングする
+
+### 避けるべきこと
+
+- トークンをワークフローファイルに直接記載しない
+- 不必要に高い権限スコープを設定しない
+- ループ内で複数回APIを呼び出さない（バッチ処理を使用）
+- APIレスポンスの機密情報をログに出力しない
+- レート制限を無視してリトライしない
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース     | パス                                                                 | 内容              |
+| ------------ | -------------------------------------------------------------------- | ----------------- |
+| 基礎知識     | See [references/basics.md](references/basics.md)                     | API概念と認証     |
+| RESTパターン | See [references/rest-patterns.md](references/rest-patterns.md)       | REST API実装例    |
+| GraphQL      | See [references/graphql-patterns.md](references/graphql-patterns.md) | GraphQL API実装例 |
+
+### scripts/（決定論的処理）
+
+| スクリプト       | 用途               | 使用例                                        |
+| ---------------- | ------------------ | --------------------------------------------- |
+| `api-helper.mjs` | API操作ヘルパー    | `node scripts/api-helper.mjs --action list`   |
+| `log_usage.mjs`  | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+
+### assets/（テンプレート）
+
+| テンプレート        | 用途                |
+| ------------------- | ------------------- |
+| `api-workflow.yaml` | API操作ワークフロー |
 
 ## 変更履歴
 
-- **1.0.0** (2025-11-27): 初版作成 - REST/GraphQL API、gh CLI 統合
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、構造再編成 |
+| 1.0.0   | 2025-12-31 | 初版                                 |

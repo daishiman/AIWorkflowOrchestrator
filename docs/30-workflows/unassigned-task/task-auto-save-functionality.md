@@ -13,7 +13,7 @@
 | ステータス       | 未実施             |
 | 発見元           | ユーザー要望       |
 | 発見日           | 2025-12-11         |
-| 発見エージェント | @product-manager   |
+| 発見エージェント | .claude/agents/product-manager.md   |
 
 ---
 
@@ -147,10 +147,10 @@ Phase 9: ドキュメント更新
 
 ### 主要な使用エージェント
 
-- **@logic-dev**: 自動保存ロジックの実装
-- **@ui-designer**: 設定UI・保存状態表示の設計
-- **@state-manager**: 状態管理の設計
-- **@unit-tester**: TDDでのテスト作成
+- **.claude/agents/logic-dev.md**: 自動保存ロジックの実装
+- **.claude/agents/ui-designer.md**: 設定UI・保存状態表示の設計
+- **.claude/agents/state-manager.md**: 状態管理の設計
+- **.claude/agents/unit-tester.md**: TDDでのテスト作成
 
 ---
 

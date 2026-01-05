@@ -4,244 +4,146 @@ description: |
   アラート設計とAlert Fatigue回避の専門スキル。
   Mike Julianの『入門 監視』に基づく、アクション可能で過負荷を避けるアラートシステム設計を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『入門 監視』（Mike Julian）/ 適用: アラート設計とAlert Fatigue回避戦略 / 目的: アクション可能で過負荷を避けるアラートシステム構築
 
-  - `.claude/skills/alert-design/resources/actionable-alert-design.md`: アクション可能なアラート設計ガイド
-  - `.claude/skills/alert-design/resources/alert-fatigue-prevention.md`: Alert Fatigue回避戦略と実践手法
-  - `.claude/skills/alert-design/resources/threshold-setting-guide.md`: 統計的根拠に基づく閾値設定ガイド
-  - `.claude/skills/alert-design/templates/alert-rules-template.yaml`: アラートルール定義テンプレート
-  - `.claude/skills/alert-design/scripts/analyze-alert-effectiveness.mjs`: アラート有効性分析スクリプト
+  Triggers:
+  - アラートシステムを設計する時、Alert Fatigueを回避したい時に使用
+  - アラート閾値を統計的に設定する時に使用
+  - 通知ルーティング戦略を定義する時に使用
+  - 既存アラートの有効性を改善する時に使用
 
-  使用タイミング:
-  - アラートルールと閾値を設計する時
-  - Alert Fatigue（アラート疲れ）を回避する時
-  - 通知ルーティングとエスカレーションポリシーを設計する時
-  - アクション可能なアラートを設計する時
-  - 適応的閾値を設定する時
-  - アラート有効性をレビューする時
-
-  活性化キーワード: alert, alerting, alert fatigue, threshold, notification,
-  escalation, actionable alert, false positive, alert routing
-
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
 ---
 
 # Alert Design - アラート設計とAlert Fatigue回避
 
 ## 概要
 
-アラート設計は、本当に重要な問題にのみ集中できるよう、
-アクション可能で過負荷を避けるアラートシステムを構築する設計手法です。
+アラート設計とAlert Fatigue回避の専門スキル。Mike Julianの『入門 監視』に基づく、アクション可能で過負荷を避けるアラートシステム設計を提供します。
 
-このスキルは、Mike Julianの『入門 監視』とGoogle SREの実践に基づく
-アラート設計とAlert Fatigue回避の知識を提供します。
+このスキルは以下の領域をカバーします：
 
-## 核心概念
+- **アラートルール設計**: ビジネスロジックに基づく適切なアラート条件の定義
+- **閾値設定方法論**: 統計的根拠に基づいた閾値設定プロセス
+- **Alert Fatigue回避**: 過度な通知を減らし、重要なアラートのシグナル-ノイズ比を改善
+- **アクション可能なアラート**: オペレーターが即座に対応可能なアラート設計
+- **通知ルーティング**: 適切なチームメンバーへのアラート配信戦略
 
-### 1. アクション可能なアラート
+## ワークフロー
 
-**定義**:
-受信者が何をすべきか即座に理解でき、明確なアクションが取れるアラート
+### Phase 1: 目的と前提の整理
 
-**アクション可能性の判断基準**:
+**目的**: タスクの目的と前提条件を明確にする
 
-- [ ] 問題が何かが明確か？
-- [ ] 影響範囲が分かるか？
-- [ ] 対応手順が存在するか？
-- [ ] 受信者が対応できるか？
-- [ ] 対応しないとどうなるかが分かるか？
+**アクション**:
 
-**良いアラート例**:
+1. タスクの背景と現状を把握
+2. 関連リソース（Level 1-4）を確認して知識ベースを整理
+3. 必要なスクリプトやテンプレートを特定
 
-```
-🚨 Critical: API Error Rate > 5%
-Impact: 500 requests/minute failing
-Action: Check error logs, rollback recent deploy if needed
-Runbook: https://runbooks.example.com/api-errors
-Dashboard: https://grafana.example.com/d/api-overview
-```
+**Task**: `agents/analyze-alert-context.md` を参照
 
-**悪いアラート例**:
+### Phase 2: スキル適用と実装
 
-```
-❌ Warning: Something is wrong
-（何が問題か不明、対応方法不明）
-```
+**目的**: スキルの指針に従って具体的なアラート設計を実施
 
-### 2. Alert Fatigueの原因と対策
+**アクション**:
 
-#### 原因1: 過剰なアラート
+1. `references/actionable-alert-design.md` を参照しながらアラート条件を定義
+2. `references/threshold-setting-guide.md` に従って統計的根拠のある閾値を設定
+3. `references/alert-fatigue-prevention.md` でよくあるアンチパターンを確認
+4. `assets/alert-rules-template.yaml` を使用してアラートルールを記述
 
-**問題**:
-毎日何十件ものアラートが発火し、重要なものが埋もれる
+**Task**: `agents/design-alerts.md` を参照
 
-**対策**:
+### Phase 3: 検証と記録
 
-- アラート数を制限（チームあたり10-20個推奨）
-- 重要度に応じた通知チャネル分離
-- アラート集約（時間窓内の複数発火を統合）
+**目的**: 成果物の検証と実行記録の保存
 
-#### 原因2: ノイズ（False Positive）
+**アクション**:
 
-**問題**:
-誤検知が多く、アラートを無視するようになる
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. `scripts/analyze-alert-effectiveness.mjs` でアラート有効性を検証
+3. 成果物が目的に合致するか確認
+4. `scripts/log_usage.mjs` を実行して記録を残す
 
-**対策**:
+**Task**: `agents/validate-alerts.md` を参照
 
-- 統計的根拠に基づく閾値設定
-- 適応的閾値（時間帯、曜日、トラフィックパターン）
-- 持続条件（5分間継続した場合のみアラート）
+## Task仕様ナビ
 
-#### 原因3: アクション不明
+| タスクタイプ           | 説明                                                   | 参照リソース                                       | テンプレート              | 検証スクリプト                  |
+| ---------------------- | ------------------------------------------------------ | -------------------------------------------------- | ------------------------- | ------------------------------- |
+| アラートルール設計     | 監視対象のメトリクスに対するアラート条件を定義         | Level1_basics.md, actionable-alert-design.md       | alert-rules-template.yaml | validate-skill.mjs              |
+| 閾値設定               | 統計的手法に基づいた適切な閾値値を決定                 | Level2_intermediate.md, threshold-setting-guide.md | alert-rules-template.yaml | analyze-alert-effectiveness.mjs |
+| Alert Fatigue回避      | 過度な通知を削減し、信号対ノイズ比を改善               | Level3_advanced.md, alert-fatigue-prevention.md    | -                         | analyze-alert-effectiveness.mjs |
+| 通知ルーティング設計   | アラートを適切なチームメンバーへ配信するポリシーを定義 | Level2_intermediate.md, actionable-alert-design.md | alert-rules-template.yaml | validate-skill.mjs              |
+| アラート有効性レビュー | 既存アラートの実効性を測定・改善                       | Level4_expert.md, alert-fatigue-prevention.md      | -                         | analyze-alert-effectiveness.mjs |
 
-**問題**:
-アラートを受け取っても何をすればいいか分からない
+## ベストプラクティス
 
-**対策**:
+### すべきこと
 
-- アラートにランブックへのリンクを含める
-- 影響範囲と対応手順を明示
-- 関連ダッシュボードへのリンク
+- **明確な目的を持つ**: アラートが何を検知し、誰がどのように対応すべきかを明確にする
+- **統計的根拠を用いる**: ランダムな値ではなく、過去データに基づいた閾値を設定
+- **アクション可能な設計**: アラート受信者が即座に対応できる明確な指示を含める
+- **段階的エスカレーション**: 重大度に応じた通知ルーティングを設計
+- **定期的なレビュー**: アラート有効性を定期的に測定し、改善を繰り返す
+- **ノイズ削減**: 無視されているアラートや頻出するアラートを積極的に排除
+- **ドキュメント化**: アラートルールの意図と設定理由を記録
 
-### 3. アラート重要度階層
+### 避けるべきこと
 
-**Critical（緊急）**:
+- **任意の閾値設定**: 根拠のない数値でアラートを設定しない
+- **過度な感度**: システムを揺さぶるノイズの多い設定を避ける
+- **不足した感度**: 実際の問題を見落とすほど鈍感な設定を避ける
+- **アクション不可能な設計**: 受信者が対応できないアラートを作成しない
+- **チーム間の混乱**: 誰が何に対応すべきかが不明なルーティングを避ける
+- **スタティック化**: ビジネス環境の変化に対応できない固定化されたルール
 
-- 定義: ユーザー影響が大きい、即座の対応が必要
-- 例: サービス停止、エラー率急増、SLO違反
-- 通知先: PagerDuty、即座の電話/SMS
-- 対応時間: 15分以内
+## リソース参照
 
-**Warning（警告）**:
+### レベル別ガイド
 
-- 定義: 問題の予兆、営業時間内対応
-- 例: リソース使用率上昇、レイテンシ増加傾向
-- 通知先: Slack、Email
-- 対応時間: 営業時間内（4時間以内）
+- **Level 1 (基礎)**: `references/Level1_basics.md` - アラート設計の基本概念
+- **Level 2 (実務)**: `references/Level2_intermediate.md` - 実装的なガイドと事例
+- **Level 3 (応用)**: `references/Level3_advanced.md` - 複雑なシステムでの設計パターン
+- **Level 4 (専門)**: `references/Level4_expert.md` - 業界標準と先進的なテクニック
 
-**Info（情報）**:
+### 領域別リソース
 
-- 定義: 情報提供、対応不要
-- 例: デプロイ通知、設定変更通知
-- 通知先: Slackのみ、または通知なし（ダッシュボード表示のみ）
-- 対応時間: 対応不要
+- **アラート設計**: `references/actionable-alert-design.md`
+- **Alert Fatigue対策**: `references/alert-fatigue-prevention.md`
+- **閾値設定方法論**: `references/threshold-setting-guide.md`
+- **過去ドキュメント**: `references/legacy-skill.md`
 
-### 4. 閾値設計
-
-#### 統計的根拠
-
-**過去データ分析**:
-
-```
-過去30日のエラー率:
-- 平均: 0.05%
-- 標準偏差: 0.02%
-- P95: 0.08%
-- P99: 0.12%
-
-閾値設定:
-Warning: 平均 + 2σ = 0.05% + 2×0.02% = 0.09%
-Critical: 平均 + 3σ = 0.05% + 3×0.02% = 0.11%
-```
-
-#### 適応的閾値
-
-**時間帯別調整**:
-
-```
-深夜（0-6時）: トラフィック低 → 閾値を絶対値で設定
-日中（9-18時）: トラフィック高 → 閾値を割合で設定
-```
-
-**曜日別調整**:
-
-```
-平日: 通常閾値
-週末: トラフィック20%減 → 閾値を調整
-```
-
-**トラフィックパターン連動**:
-
-```
-通常時: エラー率 > 1%
-高負荷時（トラフィック2倍）: エラー率 > 2%
-```
-
-### 5. アラート集約
-
-**問題**:
-同一問題で5分間に20件のアラート発火 → ノイズ
-
-**対策**:
-時間窓（5分）内の複数発火を単一通知に統合
-
-**実装例**:
-
-```yaml
-alert: HighErrorRate
-for: 5m # 5分間継続した場合のみ発火
-annotations:
-  summary: "Error rate is {{ $value | humanizePercentage }}"
-  count: "{{ $activeAlerts | len }} occurrences in last 5 minutes"
-```
-
-## 設計チェックリスト
-
-### アクション可能性
-
-- [ ] すべてのアラートに明確なアクション指示が含まれるか？
-- [ ] アラートから関連ダッシュボード・ログにすぐアクセスできるか？
-- [ ] ランブック（対応手順書）が整備されているか？
-- [ ] 受信者が実際に対応できる内容か？
-
-### Alert Fatigue回避
-
-- [ ] 誤検知率は許容範囲内か（目標 < 5%）？
-- [ ] アラート数はチームが対応可能な量か（10-20個/チーム推奨）？
-- [ ] アラート集約で重複通知を防いでいるか？
-- [ ] ノイズの多いアラートは定期的に削除されているか？
-
-### 重要度分類
-
-- [ ] Critical/Warning/Infoの分類基準は明確か？
-- [ ] 通知先は重要度に応じて適切に設定されているか？
-- [ ] オンコール負荷は合理的か（過剰でないか）？
-
-## 関連リソース
-
-詳細な設計パターンと実装ガイドは以下のリソースを参照:
-
-- **アクション可能アラート設計**: `.claude/skills/alert-design/resources/actionable-alert-design.md`
-- **Alert Fatigue回避戦略**: `.claude/skills/alert-design/resources/alert-fatigue-prevention.md`
-- **閾値設定ガイド**: `.claude/skills/alert-design/resources/threshold-setting-guide.md`
-- **アラートルールテンプレート**: `.claude/skills/alert-design/templates/alert-rules-template.yaml`
-
-## 関連スキル
-
-このスキルは以下のスキルと連携します:
-
-- `.claude/skills/slo-sli-design/SKILL.md` - SLOベースアラートの設計
-- `.claude/skills/observability-pillars/SKILL.md` - メトリクスとログの統合
-- `.claude/skills/structured-logging/SKILL.md` - ログベースアラート
-
-## 使用例
-
-### 開発環境での利用
+### スクリプト
 
 ```bash
-# このスキルを参照
-cat .claude/skills/alert-design/SKILL.md
+# スキル構造の検証
+node .claude/skills/alert-design/scripts/validate-skill.mjs
 
-# アクション可能アラート設計を確認
-cat .claude/skills/alert-design/resources/actionable-alert-design.md
+# アラート有効性の分析
+node .claude/skills/alert-design/scripts/analyze-alert-effectiveness.mjs
 
-# アラートルールテンプレートを使用
-cat .claude/skills/alert-design/templates/alert-rules-template.yaml
+# 使用記録の保存
+node .claude/skills/alert-design/scripts/log_usage.mjs
 ```
 
-## 参照文献
+### テンプレート
 
-- Mike Julian, 『入門 監視』, O'Reilly, 2018
-- Betsy Beyer et al., 『Site Reliability Engineering』, O'Reilly, 2016
+- **アラートルール定義**: `assets/alert-rules-template.yaml`
+
+## 変更履歴
+
+| Version | Date       | Changes                                                                                                     |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | agents/3ファイル追加、Phase別Task参照を追加                                                                 |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に準拠した完全リファイン。Task仕様ナビを追加、Triggers・allowed-toolsを実装、本文構成を統一 |
+| 0.9.0   | 2025-12-24 | 初期実装とアーティファクト統合                                                                              |

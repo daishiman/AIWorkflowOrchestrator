@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "skillName": "prettier-integration",
+  "metrics": {
+    "usageCount": 0,
+    "successCount": 0,
+    "failureCount": 0,
+    "successRate": 0
+  },
+  "level": {
+    "current": 1,
+    "maxAchieved": 1
+  },
+  "thresholds": {
+    "level2": { "usageCount": 10, "successRate": 0.7 },
+    "level3": { "usageCount": 50, "successRate": 0.8 },
+    "level4": { "usageCount": 100, "successRate": 0.9 }
+  },
+  "lastEvaluation": null,
+  "history": []
+}

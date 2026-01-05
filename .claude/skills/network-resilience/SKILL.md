@@ -2,455 +2,125 @@
 name: network-resilience
 description: |
   ネットワーク障害に対する耐性設計を専門とするスキル。
-  アンドリュー・タネンバウムの『分散システム』に基づき、
-  部分障害からの自動復旧とデータ整合性保証を設計します。
+  部分障害からの自動復旧、オフラインキュー、データ同期を統合的に提供し、
+  ネットワーク不安定環境でも堅牢に動作するアプリケーションを構築する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Distributed Systems (Andrew Tanenbaum) / 適用: 部分障害への対応設計 / 目的: 障害耐性のあるシステム構築
+  • The Pragmatic Programmer / 適用: 実践的なエラーハンドリング / 目的: 保守性の高いコード設計
+  • Release It! (Michael Nygard) / 適用: サーキットブレーカー・リトライパターン / 目的: プロダクション品質の実現
 
-  - `.claude/skills/network-resilience/resources/offline-queue-patterns.md`: オフラインキュー設計パターン
-  - `.claude/skills/network-resilience/resources/reconnection-strategies.md`: 指数バックオフ・ジッター・ヘルスチェックによる自動再接続アルゴリズム
-  - `.claude/skills/network-resilience/resources/state-synchronization.md`: ローカル・リモート間のデータ整合性保証と競合解決戦略（タイムスタンプ・サーバー優先・手動解決）
-  - `.claude/skills/network-resilience/scripts/analyze-network-config.mjs`: ネットワーク設定の妥当性検証とヘルスチェック間隔・タイムアウト値の推奨スクリプト
-  - `.claude/skills/network-resilience/templates/connection-manager-template.ts`: 接続状態管理・自動再接続・イベント通知を提供する接続マネージャーテンプレート
-  - `.claude/skills/network-resilience/templates/offline-queue-template.ts`: JSONL形式の永続キュー実装とFIFO順序保証・べき等性確保テンプレート
-
-  専門分野:
-  - オフライン対応: ネットワーク切断時のローカルキューイング
-  - 再接続ロジック: 接続状態の監視と自動復旧
-  - データ整合性: 同期状態の管理と競合解決
-  - ヘルスチェック: 定期的な接続状態監視
-
-  使用タイミング:
-  - オフライン時にもタスクを蓄積したい時
-  - ネットワーク復旧後の自動再同期が必要な時
-  - 接続状態に応じた動的な動作切り替えが必要な時
-  - ローカルとリモートのデータ整合性を保証したい時
-
-  Use proactively when implementing network-aware applications
-version: 1.0.0
+  Trigger:
+  Use when implementing network-aware applications, designing offline-first features, implementing automatic reconnection, building offline queues, or ensuring data synchronization between local and remote states.
+  network resilience, offline, reconnection, retry, circuit breaker, state sync, offline queue, connection management
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Network Resilience
 
 ## 概要
 
-このスキルは、ネットワークの不安定性を前提としたアプリケーション設計を提供します。
-オフライン対応、自動再接続、データ整合性保証により、ユーザー体験を損なわない
-堅牢なネットワーク通信を実現します。
-
-**主要な価値**:
-
-- ネットワーク切断時もアプリケーションが継続動作
-- 接続復旧時の自動同期
-- データ損失ゼロの保証
-- ユーザーへの適切な状態通知
-
-**対象ユーザー**:
-
-- ファイル同期機能を実装するエージェント（@local-sync）
-- オフラインファーストアプリケーションの開発者
-- クラウド連携機能の実装者
-
-## リソース構造
-
-```
-network-resilience/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── offline-queue-patterns.md               # オフラインキューの設計パターン
-│   ├── reconnection-strategies.md              # 再接続戦略の詳細
-│   └── state-synchronization.md                # 状態同期の設計
-├── scripts/
-│   └── analyze-network-config.mjs              # ネットワーク設定分析スクリプト
-└── templates/
-    ├── connection-manager-template.ts          # 接続管理テンプレート
-    └── offline-queue-template.ts               # オフラインキューテンプレート
-```
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# オフラインキューの設計パターン
-cat .claude/skills/network-resilience/resources/offline-queue-patterns.md
-
-# 再接続戦略の詳細
-cat .claude/skills/network-resilience/resources/reconnection-strategies.md
-
-# 状態同期の設計
-cat .claude/skills/network-resilience/resources/state-synchronization.md
-```
-
-### スクリプト実行
-
-```bash
-# ネットワーク設定の分析
-node .claude/skills/network-resilience/scripts/analyze-network-config.mjs <config-file>
-```
-
-### テンプレート参照
-
-```bash
-# 接続管理テンプレート
-cat .claude/skills/network-resilience/templates/connection-manager-template.ts
-
-# オフラインキューテンプレート
-cat .claude/skills/network-resilience/templates/offline-queue-template.ts
-```
-
-## いつ使うか
-
-### シナリオ 1: オフライン時のタスク蓄積
-
-**状況**: ネットワーク切断時もユーザー操作を受け付けたい
-
-**適用条件**:
-
-- [ ] モバイルアプリケーションでネットワークが不安定
-- [ ] ユーザー操作をオフラインでも可能にしたい
-- [ ] 接続復旧時に自動的に同期したい
-
-**期待される成果**: ローカルキューによるオフライン対応
-
-### シナリオ 2: 自動再接続
-
-**状況**: ネットワーク切断からの自動復旧が必要
-
-**適用条件**:
-
-- [ ] 長時間稼働するアプリケーション
-- [ ] ユーザー介入なしで復旧したい
-- [ ] 接続状態を適切に通知したい
-
-**期待される成果**: 自動再接続と状態通知
-
-### シナリオ 3: データ整合性保証
-
-**状況**: ローカルとリモートのデータ整合性を保ちたい
-
-**適用条件**:
-
-- [ ] 双方向同期が必要
-- [ ] 競合解決が必要
-- [ ] データ損失を許容できない
-
-**期待される成果**: 整合性保証と競合解決
-
-## 前提条件
-
-### 必要な知識
-
-- [ ] 非同期処理（Promise、async/await）
-- [ ] ファイル I/O（永続化ストレージ）
-- [ ] イベント駆動アーキテクチャ
-
-### 必要なツール
-
-- Read: 既存コードの確認
-- Write: 耐障害ロジックの実装
-- Bash: テスト実行
-
-### 環境要件
-
-- TypeScript/JavaScript 環境
-- ローカルストレージ（ファイルシステム）
-
-## 核心概念
-
-### 1. 接続状態管理
-
-**状態遷移**:
-
-```
-Online（接続中）
-    │
-    │ 接続失敗
-    ▼
-Offline（切断）
-    │
-    │ ヘルスチェック成功
-    ▼
-Reconnecting（再接続中）
-    │
-    ├─ 成功 → Online
-    └─ 失敗 → Offline
-```
-
-**状態イベント**:
-
-- `online`: 接続確立
-- `offline`: 接続切断
-- `reconnecting`: 再接続試行中
-- `error`: エラー発生
-
-### 2. オフラインキュー
-
-**目的**: ネットワーク切断時のタスク蓄積
-
-**設計原則**:
-
-- **永続性**: ファイルシステムに保存（プロセス再起動に対応）
-- **順序保証**: FIFO 順序でタスクを処理
-- **べき等性**: 同じタスクを複数回実行しても安全
-
-**キュー形式**:
-
-```jsonl
-{"id":"task-1","type":"upload","path":"/file1.pdf","timestamp":"2025-11-26T10:00:00Z","retries":0}
-{"id":"task-2","type":"upload","path":"/file2.pdf","timestamp":"2025-11-26T10:01:00Z","retries":0}
-```
-
-**詳細**: `resources/offline-queue-patterns.md`
-
-### 3. ヘルスチェック
-
-**目的**: 接続状態の定期的な監視
-
-**実装パターン**:
-
-- **軽量リクエスト**: `/api/health` エンドポイントへの ping リクエスト
-- **間隔設定**: 30 秒-5 分（環境に応じて調整）
-- **タイムアウト**: 5-10 秒（通常レスポンスより長め）
-
-**判断基準**:
-
-- [ ] ヘルスチェックのエンドポイントが軽量か？
-- [ ] 間隔がネットワーク負荷と応答性のバランスを取っているか？
-- [ ] タイムアウトが適切に設定されているか？
-
-### 4. 再接続戦略
-
-**目的**: 接続切断からの自動復旧
-
-**戦略**:
-
-- **指数バックオフ**: リトライ間隔を指数的に増加
-- **ジッター追加**: 同時リトライによる負荷集中を回避
-- **最大待機時間**: 無限に増加しないよう上限設定
-
-**詳細**: `resources/reconnection-strategies.md`
-
-### 5. 状態同期
-
-**目的**: ローカルとリモートのデータ整合性保証
-
-**同期パターン**:
-
-- **楽観的同期**: ローカル優先で即座に反映、競合時に解決
-- **悲観的同期**: サーバー確認後にローカル反映
-- **マージ同期**: 双方の変更をマージ
-
-**競合解決**:
-
-- **タイムスタンプ優先**: 新しい方を採用
-- **サーバー優先**: サーバーの状態を正とする
-- **手動解決**: ユーザーに選択を委ねる
-
-**詳細**: `resources/state-synchronization.md`
+ネットワーク障害に対する耐性設計を専門とするスキル。
+部分障害からの自動復旧、オフラインキュー、データ同期を統合的に提供し、
+ネットワーク不安定環境でも堅牢に動作するアプリケーションを構築する。
 
 ## ワークフロー
 
-### Phase 1: 接続状態の監視設計
+### Phase 1: 要件分析と耐性設計
 
-**目的**: 接続状態を正確に把握する仕組みを構築
+**目的**: ネットワーク耐性要件を分析し、設計方針を決定
 
-**ステップ**:
+**参照エージェント**: `agents/requirements-analysis.md`
 
-1. **ヘルスチェックエンドポイントの定義**:
-   - 軽量で高速に応答
-   - 認証不要で常に利用可能
+**アクション**:
 
-2. **監視間隔の決定**:
-   - オンライン時: 長め（5 分）
-   - オフライン時: 短め（30 秒）
+1. `references/basics.md` でネットワーク耐性の基本概念を理解
+2. オフライン要件（完全オフライン/一時オフライン）を確認
+3. `references/reconnection-strategies.md` で再接続戦略を選定
+4. `scripts/analyze-network-config.mjs` で設定の妥当性を検証
 
-3. **状態イベントの設計**:
-   - 状態変化時のコールバック
-   - UI への通知
+### Phase 2: 実装
 
-**判断基準**:
+**目的**: 接続管理、オフラインキュー、状態同期を実装
 
-- [ ] ヘルスチェックがネットワーク負荷を抑えているか？
-- [ ] 状態遷移が適切に検出されるか？
-- [ ] イベントが適切に通知されるか？
+**参照エージェント**: `agents/implementation.md`
 
-### Phase 2: オフラインキューの実装
+**アクション**:
 
-**目的**: ネットワーク切断時にタスクを蓄積
+1. `references/patterns.md` で実装パターンを確認
+2. `assets/connection-manager-template.ts` をベースに接続管理を実装
+3. `references/offline-queue-patterns.md` でオフラインキューを実装
+4. `references/state-synchronization.md` でデータ同期を実装
 
-**ステップ**:
+### Phase 3: 検証
 
-1. **キューファイルの設計**:
-   - JSONL 形式（行単位で追記）
-   - 破損耐性のある設計
+**目的**: ネットワーク障害シナリオでの動作検証
 
-2. **キュー操作の実装**:
-   - enqueue: タスク追加
-   - dequeue: タスク取得
-   - peek: 先頭確認（削除なし）
+**参照エージェント**: `agents/validation.md`
 
-3. **永続化の実装**:
-   - 即座にファイル書き込み
-   - プロセス再起動時の復元
+**アクション**:
 
-**判断基準**:
+1. ネットワーク切断/復旧シミュレーション
+2. オフラインキューの永続性確認
+3. 競合解決の動作確認
+4. `scripts/log_usage.mjs` で実行記録を保存
 
-- [ ] キューファイルが破損時も部分的に読めるか？
-- [ ] キューのサイズ上限があるか？
-- [ ] 古いタスクの自動削除があるか？
+## リソース参照
 
-### Phase 3: 再接続ロジックの実装
+### 参照ドキュメント
 
-**目的**: 接続切断からの自動復旧
+| ドキュメント                                                                   | 内容                     |
+| ------------------------------------------------------------------------------ | ------------------------ |
+| [references/basics.md](references/basics.md)                                   | ネットワーク耐性基礎     |
+| [references/patterns.md](references/patterns.md)                               | 実装パターン             |
+| [references/reconnection-strategies.md](references/reconnection-strategies.md) | 再接続戦略               |
+| [references/offline-queue-patterns.md](references/offline-queue-patterns.md)   | オフラインキューパターン |
+| [references/state-synchronization.md](references/state-synchronization.md)     | 状態同期戦略             |
 
-**ステップ**:
+### エージェント
 
-1. **再接続戦略の決定**:
-   - 指数バックオフの設定
-   - ジッター範囲の設定
-   - 最大リトライ回数
+| エージェント                      | 役割                   |
+| --------------------------------- | ---------------------- |
+| `agents/requirements-analysis.md` | 要件分析、設計方針決定 |
+| `agents/implementation.md`        | 実装ガイド             |
+| `agents/validation.md`            | 検証、品質確認         |
 
-2. **再接続プロセスの実装**:
-   - ヘルスチェック成功で接続確立
-   - 失敗時は次の間隔で再試行
+### スクリプト
 
-3. **状態遷移の管理**:
-   - Offline → Reconnecting → Online
-   - 各状態での適切な動作
+| スクリプト                           | 用途                 |
+| ------------------------------------ | -------------------- |
+| `scripts/analyze-network-config.mjs` | 設定検証、推奨値算出 |
+| `scripts/validate-skill.mjs`         | スキル構造検証       |
+| `scripts/log_usage.mjs`              | 使用記録             |
 
-**判断基準**:
+### テンプレート
 
-- [ ] バックオフ間隔が適切か？
-- [ ] 最大待機時間が設定されているか？
-- [ ] 状態遷移が正しく動作するか？
-
-### Phase 4: キュー再開の実装
-
-**目的**: 接続復旧時の自動同期
-
-**ステップ**:
-
-1. **オンライン復帰検知**:
-   - 状態イベントの監視
-   - キュー処理の開始
-
-2. **キューからの処理**:
-   - 順序通りにタスクを処理
-   - 失敗時はリトライまたは再キューイング
-
-3. **完了処理**:
-   - 成功タスクのキューからの削除
-   - 進捗の記録
-
-**判断基準**:
-
-- [ ] オンライン復帰が正しく検知されるか？
-- [ ] キューが順序通りに処理されるか？
-- [ ] 失敗タスクが適切に処理されるか？
+| テンプレート                            | 用途             |
+| --------------------------------------- | ---------------- |
+| `assets/connection-manager-template.ts` | 接続状態管理     |
+| `assets/offline-queue-template.ts`      | オフラインキュー |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **永続キューの使用**:
-   - ✅ ファイルシステムに保存
-   - ✅ JSONL 形式で追記のみ
-   - ✅ プロセス再起動に対応
-
-2. **べき等性の確保**:
-   - ✅ タスク ID で重複を検出
-   - ✅ 同じタスクの複数実行が安全
-
-3. **ユーザー通知**:
-   - ✅ 接続状態の表示
-   - ✅ オフライン時の操作可能性を明示
-   - ✅ 同期進捗の表示
+- オフライン時のタスク蓄積（キュー実装）
+- ネットワーク復旧後の自動再同期
+- 接続状態に応じた動的な動作切り替え
+- 指数バックオフによる再接続
+- べき等性を考慮したキュー設計
 
 ### 避けるべきこと
 
-1. **メモリのみのキュー**:
-   - ❌ プロセス再起動でデータ損失
-   - ✅ ファイルシステムに永続化
-
-2. **無限リトライ**:
-   - ❌ リソース枯渇のリスク
-   - ✅ 最大リトライ回数を設定
-
-3. **静的な再接続間隔**:
-   - ❌ サーバー負荷の集中
-   - ✅ 指数バックオフ + ジッター
-
-## トラブルシューティング
-
-### 問題 1: キューが肥大化する
-
-**症状**: オフライン時間が長くキューが大きくなりすぎる
-
-**解決策**:
-
-1. キューサイズ上限を設定（1000 タスク推奨）
-2. 古いタスクの自動削除（7 日以上経過）
-3. 低優先度タスクの破棄
-
-### 問題 2: 再接続が頻繁に失敗する
-
-**症状**: ヘルスチェックが通らず接続が回復しない
-
-**解決策**:
-
-1. ヘルスチェックのタイムアウトを延長
-2. バックオフ間隔を調整
-3. ネットワーク設定を確認
-
-### 問題 3: 同期後にデータ不整合
-
-**症状**: ローカルとリモートのデータが一致しない
-
-**解決策**:
-
-1. 競合解決戦略を見直し
-2. タイムスタンプの精度を確認
-3. 同期ログで問題を特定
-
-## 関連スキル
-
-- **retry-strategies** (`.claude/skills/retry-strategies/SKILL.md`): リトライ戦略とサーキットブレーカー
-- **multipart-upload** (`.claude/skills/multipart-upload/SKILL.md`): 大容量ファイル転送
-- **api-client-patterns** (`.claude/skills/api-client-patterns/SKILL.md`): API クライアント設計
-
-## 参考文献
-
-- **『Distributed Systems: Principles and Paradigms』** Andrew S. Tanenbaum 著
-  - Chapter 8: Fault Tolerance - 部分障害とリカバリ
-
-- **『Site Reliability Engineering』** Google SRE 著
-  - Chapter 21: Handling Overload - 指数バックオフとジッター
-
-- **『Designing Data-Intensive Applications』** Martin Kleppmann 著
-  - Chapter 5: Replication - データ整合性と競合解決
-
-## 変更履歴
-
-| バージョン | 日付       | 変更内容                                      |
-| ---------- | ---------- | --------------------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版作成 - オフラインキュー、再接続、状態同期 |
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- オフラインキューの設計パターン
-- 再接続戦略の設計
-- 接続状態管理の設計
-- データ整合性の保証
-
-### このスキルが行わないこと
-
-- 具体的なネットワークコードの実装（それは@local-sync エージェントの役割）
-- HTTP リクエストのリトライ戦略（retry-strategies スキル）
-- 大容量ファイル転送（multipart-upload スキル）
+- リトライなしのネットワーク呼び出し
+- オフライン状態の無視
+- 競合解決戦略の未定義
+- 永続化なしのキュー（ブラウザリロードで消失）
+- タイムアウトなしの接続待機

@@ -1,0 +1,61 @@
+{
+  "skill_name": "environment-isolation",
+  "version": "1.0.0",
+  "last_updated": "2025-12-31",
+  "metrics": {
+    "usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "success_rate": 0.0
+  },
+  "level": {
+    "current": 1,
+    "criteria": {
+      "level_1": {
+        "min_usage": 0,
+        "min_success_rate": 0.0,
+        "description": "基本的な環境分離戦略の設計と実装"
+      },
+      "level_2": {
+        "min_usage": 5,
+        "min_success_rate": 0.7,
+        "description": "Secret管理の自動化とCI/CD統合"
+      },
+      "level_3": {
+        "min_usage": 15,
+        "min_success_rate": 0.8,
+        "description": "高度なネットワーク分離とコンプライアンス対応"
+      },
+      "level_4": {
+        "min_usage": 30,
+        "min_success_rate": 0.9,
+        "description": "マルチクラウド・マルチアカウント環境の統合管理"
+      }
+    }
+  },
+  "task_metrics": {
+    "design-strategy": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_duration_minutes": 0,
+      "common_issues": []
+    },
+    "configure-secrets": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_duration_minutes": 0,
+      "common_issues": []
+    },
+    "validate-isolation": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_duration_minutes": 0,
+      "common_issues": []
+    }
+  },
+  "feedback": {
+    "strengths": [],
+    "weaknesses": [],
+    "improvement_suggestions": []
+  }
+}

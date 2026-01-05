@@ -1,0 +1,95 @@
+{
+  "skill": "test-data-management",
+  "version": "2.0.0",
+  "metrics": {
+    "total_uses": 0,
+    "successful_uses": 0,
+    "failed_uses": 0,
+    "success_rate": 0,
+    "last_used": null,
+    "created_at": "2025-12-31T00:00:00Z"
+  },
+  "phase_metrics": {
+    "fixture_design": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "seeding_strategy": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "data_isolation": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "cleanup": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    }
+  },
+  "task_metrics": {
+    "fixture-design": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    },
+    "seeding-strategy": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    },
+    "data-isolation": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    },
+    "cleanup-implementation": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    }
+  },
+  "level_progression": {
+    "current_level": "Level1_basics",
+    "level_requirements": {
+      "Level1_basics": {
+        "min_uses": 0,
+        "min_success_rate": 0,
+        "achieved": true
+      },
+      "Level2_intermediate": {
+        "min_uses": 5,
+        "min_success_rate": 0.7,
+        "achieved": false
+      },
+      "Level3_advanced": {
+        "min_uses": 15,
+        "min_success_rate": 0.8,
+        "achieved": false
+      },
+      "Level4_expert": {
+        "min_uses": 30,
+        "min_success_rate": 0.9,
+        "achieved": false
+      }
+    }
+  },
+  "quality_metrics": {
+    "avg_fixture_reusability": null,
+    "avg_test_isolation_score": null,
+    "avg_cleanup_reliability": null
+  },
+  "feedback": {
+    "common_issues": [],
+    "improvement_suggestions": [],
+    "success_patterns": []
+  }
+}

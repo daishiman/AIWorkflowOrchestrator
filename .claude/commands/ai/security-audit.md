@@ -1,218 +1,131 @@
 ---
 description: |
-  包括的なセキュリティ監査を実施し、脆弱性、権限設定、認証・認可の問題を
-  検出してレポートを生成します。
+  包括的なセキュリティ監査を実施し、脆弱性、権限設定、認証・認可の問題を検出してレポートを生成します。
+  実行は専門エージェントに委譲します。
 
-  🤖 起動エージェント（スコープ別）:
-  - Phase 1-3 (all): `.claude/agents/sec-auditor.md` - 全領域セキュリティ監査
-  - Phase 2 (auth): `.claude/agents/auth-specialist.md` - 認証・認可監査
-  - Phase 2 (api): `.claude/agents/sec-auditor.md` - APIセキュリティ監査
-  - Phase 2 (database): `.claude/agents/dba-mgr.md` - データベースセキュリティ監査
-
-  📚 利用可能スキル（エージェントが参照）:
-  **sec-auditor用:**
-  - `.claude/skills/authentication-authorization-security/SKILL.md` - 認証・認可評価
-  - `.claude/skills/cryptographic-practices/SKILL.md` - 暗号化アルゴリズム、鍵管理
-  - `.claude/skills/security-configuration-review/SKILL.md` - セキュリティヘッダー、CORS
-  - `.claude/skills/code-static-analysis-security/SKILL.md` - SQLインジェクション、XSS検出
-  - `.claude/skills/rate-limiting/SKILL.md` - DoS対策、レート制限
-  - `.claude/skills/input-sanitization/SKILL.md` - パラメータタンパリング防止
-  - `.claude/skills/security-reporting/SKILL.md` - セキュリティレポート生成
-
-  **auth-specialist用:**
-  - `.claude/skills/oauth2-flows/SKILL.md` - OAuth 2.0フロー、PKCE
-  - `.claude/skills/session-management/SKILL.md` - JWT、セッションセキュリティ
-  - `.claude/skills/nextauth-patterns/SKILL.md` - NextAuth.js設定パターン
+  🤖 起動エージェント:
+  - `.claude/agents/sec-auditor.md`: 全領域セキュリティ監査
+  - `.claude/agents/auth-specialist.md`: 認証・認可監査
+  - `.claude/agents/dba-mgr.md`: データベースセキュリティ監査
 
   ⚙️ このコマンドの設定:
-  - argument-hint: "[scope: all|auth|api|database]"（監査スコープ、デフォルト: all）
-  - allowed-tools: セキュリティ監査とレポート生成用
-    • Read: コード確認、設定ファイル分析用
-    • Grep: 脆弱性パターン検索用
-    • Bash: セキュリティツール実行用
-    • Write: 監査レポート生成用
-  - model: opus（複雑なセキュリティ分析が必要）
-
-  📋 成果物:
-  - `docs/security/security-audit-report.md`（包括的セキュリティレポート）
-  - OWASP Top 10チェック結果
-  - 脆弱性一覧と修正提案
+  - argument-hint: [scope: all|auth|api|database]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: opus
 
   トリガーキーワード: security audit, セキュリティ監査, OWASP, 権限チェック, 認証監査
 argument-hint: "[scope: all|auth|api|database]"
 allowed-tools:
-  - Read
-  - Grep
-  - Bash
-  - Write
+  - Task
 model: opus
 ---
 
-# /ai:security-audit - 包括的セキュリティ監査
+# .claude/commands/ai/security-audit.md - 包括的セキュリティ監査
 
-**目的**: プロジェクト全体またはスコープ指定領域のセキュリティ監査を実施し、OWASP Top 10、権限設定、認証・認可の脆弱性を検出してレポートを生成します。
+## 目的
 
-**トリガーキーワード**: security audit, セキュリティ監査, 脆弱性検査, セキュリティレビュー, OWASP, 権限チェック, 認証監査, セキュリティスキャン
+`.claude/commands/ai/security-audit.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
----
+## エージェント起動フロー
 
-## 📋 引数仕様
+### Phase 1: 全領域セキュリティ監査の実行
 
-- **$1 (scope)**: 監査スコープ
-  - `all` (デフォルト): 全領域を監査
-  - `auth`: 認証・認可システムのみ
-  - `api`: APIエンドポイントとセキュリティ
-  - `database`: データベースアクセスとクエリ
+**目的**: 全領域セキュリティ監査に関するタスクを実行し、結果を整理する
 
-**使用例**:
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: 全領域セキュリティ監査の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/sec-auditor.md`
+
+Task ツールで `.claude/agents/sec-auditor.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[scope: all|auth|api|database]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/security/security-audit-report.md`
+- `docs/security/audit-report-`
+- `docs/security/`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+### Phase 2: 認証・認可監査の実行
+
+**目的**: 認証・認可監査に関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: 認証・認可監査の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/auth-specialist.md`
+
+Task ツールで `.claude/agents/auth-specialist.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[scope: all|auth|api|database]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/security/security-audit-report.md`
+- `docs/security/audit-report-`
+- `docs/security/`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+### Phase 3: データベースセキュリティ監査の実行
+
+**目的**: データベースセキュリティ監査に関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: データベースセキュリティ監査の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/dba-mgr.md`
+
+Task ツールで `.claude/agents/dba-mgr.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[scope: all|auth|api|database]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/security/security-audit-report.md`
+- `docs/security/audit-report-`
+- `docs/security/`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+## 使用例
 
 ```bash
-/ai:security-audit
-/ai:security-audit auth
-/ai:security-audit api
-/ai:security-audit database
+/ai:security-audit [scope: all|auth|api|database]
 ```
-
----
-
-## 🎯 実行フロー（3フェーズ構造）
-
-### Phase 1: 準備・分析
-
-**エージェント起動**:
-
-```
-`.claude/agents/sec-auditor.md` を起動し、以下を依頼:
-- スコープ: $1 (デフォルト: all)
-- プロジェクト構造の分析
-- セキュリティ監査対象の特定
-- OWASP Top 10 チェックリスト準備
-```
-
-**スキル参照** (Phase 1):
-
-- `.claude/skills/owasp-top-10/SKILL.md`: OWASP Top 10 脆弱性パターン
-- `.claude/skills/vulnerability-scanning/SKILL.md`: 脆弱性スキャン手法
-- `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト構造理解
-
-**期待成果物**:
-
-- 監査対象ファイル一覧
-- チェックリスト
-- リスク評価基準
-
----
-
-### Phase 2: 監査実行
-
-**エージェント起動**:
-
-```
-スコープに応じて適切なエージェントを起動:
-
-【auth スコープ】
-`.claude/agents/auth-specialist.md` を起動し、以下を依頼:
-- 認証フロー検証
-- セッション管理チェック
-- パスワードポリシー確認
-- OAuth/JWT実装レビュー
-- スキル参照: `.claude/skills/oauth2-flows/SKILL.md`
-- スキル参照: `.claude/skills/nextauth-patterns/SKILL.md`
-
-【api スコープ】
-`.claude/agents/sec-auditor.md` を起動し、以下を依頼:
-- APIエンドポイントの権限チェック
-- 入力検証の確認
-- CSRF/XSS対策レビュー
-- レート制限実装確認
-- スキル参照: `.claude/skills/rate-limiting-strategies/SKILL.md`
-
-【database スコープ】
-`.claude/agents/sec-auditor.md` を起動し、以下を依頼:
-- SQLインジェクション対策確認
-- データベース権限レビュー
-- クエリパラメータ化チェック
-- スキル参照: `.claude/skills/vulnerability-scanning/SKILL.md`
-
-【all スコープ】
-上記すべてのエージェントを順次起動
-```
-
-**エージェント依頼内容**:
-
-- 該当スコープのセキュリティ脆弱性検出
-- pnpm audit / pnpm audit 実行
-- 依存関係の脆弱性チェック
-- コードレビュー実施
-
-**期待成果物**:
-
-- 検出された脆弱性リスト（重大度付き）
-- 依存関係監査結果
-- コードレビュー所見
-
----
-
-### Phase 3: レポート生成・検証
-
-**エージェント起動**:
-
-```
-`.claude/agents/sec-auditor.md` を起動し、以下を依頼:
-- 監査結果の集約
-- セキュリティレポート生成
-- 修正推奨事項の提示
-- 優先度付け
-```
-
-**スキル参照** (Phase 3):
-
-- `.claude/skills/best-practices-curation/SKILL.md`: セキュリティベストプラクティス
-- `.claude/skills/tool-permission-management/SKILL.md`: 権限設定最適化
-
-**成果物**:
-
-- `docs/security/audit-report-[YYYYMMDD].md`: 包括的セキュリティ監査レポート
-  - Executive Summary
-  - 検出された脆弱性（重大度別）
-  - 修正推奨事項（優先度順）
-  - 依存関係監査結果
-  - 次回監査の推奨事項
-
----
-
-## 🔍 検証項目
-
-実行後、以下を確認してください:
-
-- [ ] 監査レポートが `docs/security/` に生成されている
-- [ ] 重大度（Critical/High/Medium/Low）が明記されている
-- [ ] 各脆弱性に修正推奨事項が記載されている
-- [ ] pnpm audit / pnpm audit の結果が含まれている
-- [ ] 次のアクションプランが明確である
-
----
-
-## 📚 関連コマンド
-
-- `/ai:scan-vulnerabilities` - 脆弱性スキャンのみ実施
-- `/ai:setup-auth` - 認証システムの実装
-- `/ai:manage-secrets` - 機密情報管理
-- `/ai:setup-rate-limiting` - レート制限実装
-
----
-
-## 🎓 参考資料
-
-**エージェント仕様**:
-
-- `.claude/agents/sec-auditor.md`: セキュリティ監査エージェント
-- `.claude/agents/auth-specialist.md`: 認証専門エージェント
-
-**スキル仕様**:
-
-- `.claude/skills/owasp-top-10/SKILL.md`: OWASP Top 10 脆弱性パターン
-- `.claude/skills/vulnerability-scanning/SKILL.md`: 脆弱性スキャン手法
-- `.claude/skills/oauth2-flows/SKILL.md`: OAuth 2.0 フロー実装
-- `.claude/skills/nextauth-patterns/SKILL.md`: NextAuth.js パターン
-- `.claude/skills/rate-limiting-strategies/SKILL.md`: レート制限戦略

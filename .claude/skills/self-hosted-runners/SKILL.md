@@ -1,166 +1,142 @@
 ---
 name: self-hosted-runners
 description: |
-  GitHub Actions セルフホストランナーの設計と管理。
+  GitHub Actionsセルフホストランナーの設計、セットアップ、セキュリティ管理を行うスキル。
+  インストールから運用、トラブルシューティングまでの完全なライフサイクル管理を提供する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • GitHub Actions Documentation / 適用: セルフホストランナー公式仕様 / 目的: 正確なAPI使用と設定
+  • CIS Benchmark for Linux / 適用: ランナーホストのセキュリティ / 目的: セキュリティ強化
+  • The Pragmatic Programmer / 適用: 実践的改善 / 目的: 段階的な実装と継続的改善
 
-  - `.claude/skills/self-hosted-runners/resources/runner-labels.md`: Runner Labelsリソース
-  - `.claude/skills/self-hosted-runners/resources/runner-security.md`: Runner Securityリソース
-  - `.claude/skills/self-hosted-runners/resources/runner-setup.md`: Runner Setupリソース
-
-  - `.claude/skills/self-hosted-runners/templates/runner-workflow.yaml`: Runner Workflowテンプレート
-
-  - `.claude/skills/self-hosted-runners/scripts/check-runner-status.mjs`: Check Runner Statusスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when setting up self-hosted runners, configuring runner labels, implementing security measures, troubleshooting runner issues, or optimizing runner performance.
+  self-hosted, runner, GitHub Actions, ephemeral, labels, security, setup, configuration
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Self-Hosted Runners Skill
+# Self-Hosted Runners
 
-GitHub Actions セルフホストランナーの設計、セットアップ、管理スキル。
+## 概要
 
-## ディレクトリ構造
+GitHub Actionsセルフホストランナーの設計と管理を支援するスキル。ランナーのセットアップ、ラベル設計、セキュリティ強化、トラブルシューティングをカバーする。
+
+## ワークフロー
 
 ```
-.claude/skills/self-hosted-runners/
-├── SKILL.md                    # このファイル（概要）
-├── resources/
-│   ├── runner-setup.md         # インストールと設定詳細
-│   ├── runner-labels.md        # ラベル設計とターゲティング
-│   └── runner-security.md      # セキュリティ強化ガイド
-├── templates/
-│   └── runner-workflow.yaml    # ワークフロー例集
-└── scripts/
-    └── check-runner-status.mjs # ステータスチェッカー
+plan-runner → setup-runner → secure-runner → validate-runner
 ```
 
-## コマンドリファレンス
+### Phase 1: 計画
 
-```bash
-# リソース参照
-cat .claude/skills/self-hosted-runners/resources/runner-setup.md
-cat .claude/skills/self-hosted-runners/resources/runner-labels.md
-cat .claude/skills/self-hosted-runners/resources/runner-security.md
+**目的**: ランナー要件を分析し、構成を計画する
 
-# テンプレート
-cat .claude/skills/self-hosted-runners/templates/runner-workflow.yaml
+**Task**: `agents/plan-runner.md` を参照
 
-# ステータス確認
-node .claude/skills/self-hosted-runners/scripts/check-runner-status.mjs [owner] [repo]
-```
+**アクション**:
 
-## ランナータイプ
+1. ワークフロー要件の分析（OS、アーキテクチャ、依存関係）
+2. ランナータイプの決定（永続/エフェメラル）
+3. ラベル設計
 
-| タイプ           | 用途         | 特徴               |
-| ---------------- | ------------ | ------------------ |
-| **永続的**       | 長期稼働     | 常時起動、環境維持 |
-| **エフェメラル** | ジョブ毎破棄 | セキュリティ重視   |
-| **コンテナ**     | Docker 環境  | 分離、スケール     |
-| **VM/物理**      | 専用 HW      | GPU、特殊環境      |
+### Phase 2: セットアップ
 
-## runs-on パターン
+**目的**: ランナーをインストールし設定する
 
-```yaml
-# 基本
-runs-on: self-hosted
+**Task**: `agents/setup-runner.md` を参照
 
-# ラベル複数（AND条件）
-runs-on: [self-hosted, linux, x64, gpu]
+**アクション**:
 
-# マトリクス
-strategy:
-  matrix:
-    runner: [self-hosted-linux, self-hosted-windows]
-runs-on: ${{ matrix.runner }}
+1. ランナーパッケージのインストール
+2. GitHubへの登録
+3. サービスとしての設定
 
-# 条件分岐
-runs-on: ${{ github.ref == 'refs/heads/main' && '[self-hosted, production]' || '[self-hosted, staging]' }}
-```
+### Phase 3: セキュリティ強化
 
-## 主要ユースケース
+**目的**: ランナーのセキュリティを強化する
 
-```yaml
-# プライベート環境アクセス
-jobs:
-  build:
-    runs-on: [self-hosted, internal-network]
-    steps:
-      - uses: actions/checkout@v4
-      - run: curl http://internal-api.company.local
+**Task**: `agents/secure-runner.md` を参照
 
-# GPU利用
-jobs:
-  train:
-    runs-on: [self-hosted, gpu, cuda-11.8]
-    steps:
-      - run: python train.py --gpu
+**アクション**:
 
-# エフェメラルランナー
-jobs:
-  secure:
-    runs-on: [self-hosted, ephemeral, isolated]
-    steps:
-      - uses: actions/checkout@v4
-      - run: ./build.sh
-```
+1. 専用ユーザーでの実行設定
+2. ファイアウォール設定
+3. ログ監視設定
 
-## ラベル設計
+### Phase 4: 検証と記録
 
-### システムラベル（自動）
+**目的**: ランナーの動作確認と記録
 
-- `self-hosted`, `linux`/`windows`/`macOS`, `x64`/`ARM`/`ARM64`
+**アクション**:
 
-### カスタムラベル推奨パターン
+1. テストワークフローでの動作確認
+2. ステータス監視の設定
+3. `scripts/log_usage.mjs` で記録
 
-```bash
-# 環境: [production, staging, development]
-# ハードウェア: [gpu, cuda-11, high-memory, ssd]
-# ネットワーク: [internal-network, vpn-enabled]
-# セキュリティ: [ephemeral, isolated, sandboxed]
-# 用途: [build-server, test-server, deploy-server]
-```
+## Task仕様ナビ
 
-## セキュリティベストプラクティス
+| Task          | 責務             | 入力             | 出力             |
+| ------------- | ---------------- | ---------------- | ---------------- |
+| plan-runner   | 要件分析・計画   | ワークフロー要件 | ランナー構成計画 |
+| setup-runner  | インストール設定 | 構成計画         | 稼働ランナー     |
+| secure-runner | セキュリティ強化 | 稼働ランナー     | 強化済みランナー |
 
-```bash
-# 1. エフェメラルモード（ジョブ後に自動削除）
-./config.sh --url https://github.com/owner/repo --token TOKEN --ephemeral
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-# 2. 専用ユーザー（権限制限）
-sudo useradd -m -s /bin/bash github-runner
-sudo su - github-runner
+## ベストプラクティス
 
-# 3. ネットワーク分離（必要最小限のアクセス）
-sudo iptables -A OUTPUT -d github.com -j ACCEPT
-sudo iptables -A OUTPUT -j DROP
-```
+### すべきこと
 
-詳細は `resources/runner-security.md` を参照してください。
+| 推奨事項                     | 理由                           |
+| ---------------------------- | ------------------------------ |
+| 専用ユーザーで実行する       | 権限分離によるセキュリティ向上 |
+| エフェメラルモードを検討する | クリーンな環境で毎回実行       |
+| ラベルを適切に設計する       | ワークフローの柔軟性向上       |
+| 定期的にアップデートする     | セキュリティパッチの適用       |
+| ログ監視を設定する           | 問題の早期発見                 |
 
-## トラブルシューティング
+### 避けるべきこと
 
-```bash
-# ステータス確認
-node .claude/skills/self-hosted-runners/scripts/check-runner-status.mjs owner repo
-sudo systemctl status actions.runner.*
+| 禁止事項                     | 問題点                     |
+| ---------------------------- | -------------------------- |
+| rootで実行する               | セキュリティリスクが高い   |
+| パブリックリポジトリで使用   | 悪意あるコードの実行リスク |
+| シークレットをランナーに保存 | 認証情報漏洩のリスク       |
+| アップデートを怠る           | 脆弱性が放置される         |
 
-# ログ確認
-tail -f /opt/actions-runner/_diag/Runner_*.log
-tail -f /opt/actions-runner/_diag/Worker_*.log
-```
+## リソース参照
 
-## 関連スキル
+### references/（詳細知識）
 
-- **github-actions-syntax**: `.claude/skills/github-actions-syntax/SKILL.md` - ワークフロー基本構文
-- **workflow-security**: `.claude/skills/workflow-security/SKILL.md` - セキュリティベストプラクティス
-- **docker-build-push-action**: `.claude/skills/docker-build-push-action/SKILL.md` - コンテナベースランナー
-- **deployment-environments-gha**: `.claude/skills/deployment-environments-gha/SKILL.md` - 環境別デプロイ
+| リソース     | パス                                                           | 読込条件           |
+| ------------ | -------------------------------------------------------------- | ------------------ |
+| セットアップ | [references/runner-setup.md](references/runner-setup.md)       | インストール時     |
+| ラベル設計   | [references/runner-labels.md](references/runner-labels.md)     | ラベル設計時       |
+| セキュリティ | [references/runner-security.md](references/runner-security.md) | セキュリティ強化時 |
 
-## 参考リンク
+### scripts/（決定論的処理）
 
-- [Self-hosted runners - GitHub Docs](https://docs.github.com/en/actions/hosting-your-own-runners)
-- [Runner groups](https://docs.github.com/en/actions/hosting-your-own-runners/managing-access-to-self-hosted-runners-using-groups)
-- [Security hardening](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#hardening-for-self-hosted-runners)
+| スクリプト                        | 機能                   |
+| --------------------------------- | ---------------------- |
+| `scripts/log_usage.mjs`           | 使用記録と自動評価     |
+| `scripts/check-runner-status.mjs` | ランナーステータス確認 |
+
+### assets/（テンプレート）
+
+| アセット                      | 用途                       |
+| ----------------------------- | -------------------------- |
+| `assets/runner-workflow.yaml` | ランナー使用ワークフロー例 |
+
+## 変更履歴
+
+| Version | Date       | Changes                                            |
+| ------- | ---------- | -------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills仕様完全準拠、agents/を責務ベースに再構成 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に基づきリファクタリング           |
+| 1.0.0   | 2025-12-24 | 初版                                               |

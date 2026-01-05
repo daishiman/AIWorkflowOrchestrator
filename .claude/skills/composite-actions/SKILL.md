@@ -1,295 +1,124 @@
 ---
 name: composite-actions
 description: |
-  ---
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  GitHub Actions の Composite Actions 設計と実装を支援するスキル。
+  action.yml の構造、入出力設計、再利用性、検証手順を整理する。
 
-  - `.claude/skills/composite-actions/resources/action-syntax.md`: Composite Action 構文リファレンス
-  - `.claude/skills/composite-actions/resources/best-practices.md`: Composite Actions ベストプラクティス
-  - `.claude/skills/composite-actions/scripts/validate-action.mjs`: Composite Action Validator
+  Anchors:
+  • 『The Pragmatic Programmer』（Andrew Hunt, David Thomas） / 適用: 自動化設計 / 目的: 再利用可能な処理の整理
+  • 『GitHub Actions公式ドキュメント』 / 適用: Composite Actions 実装 / 目的: 構文仕様の準拠
+  • 『The Twelve-Factor App』 / 適用: 設定と可搬性 / 目的: アクションの独立性確保
+  • 『Release It!』（Michael Nygard） / 適用: エラーハンドリング / 目的: 安定運用の設計
 
-  専門分野:
-  - (要追加)
-
-  使用タイミング:
-  - (要追加)
-
-  Use proactively when (要追加).
-version: 1.0.0
+  Trigger:
+  Use when designing composite actions, validating action.yml structure, or integrating reusable GitHub Actions steps.
+  composite actions, action.yml, reusable action, inputs outputs, github actions
 ---
-
-# Composite Actions
-
----
-
-name: composite-actions
-version: 1.0.0
-description: |
-Composite Actionsのスキル。
-
-**使用タイミング**:
-
-- 複数ステップを再利用可能なアクションとしてパッケージ化する時
-- ワークフロー間で共通処理を標準化する時
-- 組織全体でベストプラクティスを配布する時
-- シェルスクリプトとGitHub Actionsステップを組み合わせる時
-- カスタムアクションを軽量に作成する時（Dockerやnccビルド不要）
-  dependencies:
-- .claude/skills/github-actions-syntax/SKILL.md
-- .claude/skills/github-actions-expressions/SKILL.md
-  related_skills:
-- .claude/skills/reusable-workflows/SKILL.md
-- .claude/skills/workflow-templates/SKILL.md
-  tags:
-- github-actions
-- composite-actions
-- action-development
-
----
+# composite-actions
 
 ## 概要
 
-Composite Actionsは、複数のワークフローステップを単一の再利用可能なアクションとしてパッケージ化する仕組みです。
+Composite Actions を設計・実装・検証し、再利用可能な自動化コンポーネントを構築する。
 
-**主な利点**: 再利用性、保守性、軽量（DockerやJavaScriptビルド不要）、柔軟性
+## ワークフロー
 
-**使い分け**:
+### Phase 1: 要件整理
 
-- **Composite Action**: 複数ステップの再利用（軽量・柔軟）
-- **Reusable Workflow**: ジョブ全体の再利用（ジョブレベル制御）
-- **JavaScript Action**: 複雑なロジック（プログラマブル）
-- **Docker Action**: カスタムランタイム（環境の完全制御）
+**目的**: 目的・入出力・制約を明確化する。
 
----
+**アクション**:
 
-## ディレクトリ構造
+1. 目的と適用範囲を整理する。
+2. 入力・出力・環境変数を整理する。
+3. 成功条件と制約を整理する。
 
-```
-.github/actions/
-├── setup-node-cache/action.yml
-├── deploy-preview/action.yml
-└── notify-slack/action.yml
-```
+**Task**: `agents/analyze-composite-requirements.md` を参照
 
----
+### Phase 2: 設計
 
-## コマンドリファレンス
+**目的**: action.yml の構成と検証方針を定義する。
 
-```bash
-# 詳細構文リファレンス
-cat .claude/skills/composite-actions/resources/action-syntax.md
+**アクション**:
 
-# ベストプラクティス
-cat .claude/skills/composite-actions/resources/best-practices.md
+1. ステップ構成と実行条件を定義する。
+2. inputs/outputs の設計を確定する。
+3. エラーハンドリングと検証手順を整理する。
 
-# テンプレート
-cat .claude/skills/composite-actions/templates/composite-action/action.yml
+**Task**: `agents/design-composite-action.md` を参照
 
-# アクション検証
-node .claude/skills/composite-actions/scripts/validate-action.mjs <action.yml>
-```
+### Phase 3: 検証と記録
 
----
+**目的**: 構造と構文を検証し記録を更新する。
 
-## 基本的なaction.yml
+**アクション**:
 
-```yaml
-name: "Setup Node with Cache"
-description: "Node.jsのセットアップとnpmキャッシュの設定"
+1. `scripts/validate-skill.mjs` で構造を検証する。
+2. `scripts/validate-action.mjs` で action.yml を検証する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-inputs:
-  node-version:
-    description: "Node.jsのバージョン"
-    required: true
-    default: "18"
+**Task**: `agents/validate-composite-action.md` を参照
 
-outputs:
-  cache-hit:
-    description: "キャッシュがヒットしたかどうか"
-    value: ${{ steps.cache.outputs.cache-hit }}
+## Task仕様ナビ
 
-runs:
-  using: "composite"
-  steps:
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ inputs.node-version }}
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-composite-requirements | Phase 1開始時 | 目的/制約 | 要件整理メモ、成功条件一覧 |
+| design-composite-action | Phase 2開始時 | 要件整理メモ | action.yml 草案、実装ガイド |
+| validate-composite-action | Phase 3開始時 | action.yml 草案 | 検証レポート、ログ更新内容 |
 
-    - name: Cache dependencies
-      id: cache
-      uses: actions/cache@v4
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      shell: bash
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-**ワークフローでの使用**:
+## ベストプラクティス
 
-```yaml
-- uses: ./.github/actions/setup-node-cache
-  with:
-    node-version: "20"
-```
+### すべきこと
 
----
+| 推奨事項 | 理由 |
+| --- | --- |
+| 目的を明確にする | 責務の肥大化を防ぐため |
+| inputs/outputs を明文化する | 再利用性を高めるため |
+| 失敗時の挙動を定義する | 障害時の再現性を保つため |
+| テンプレートを参照する | 構文ミスを防ぐため |
 
-## 入力と出力
+### 避けるべきこと
 
-### inputs定義
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 複数目的を詰め込む | 保守性が低下する |
+| 入出力を曖昧にする | 利用側の混乱を招く |
+| 検証を省略する | 失敗の検知が遅れる |
 
-```yaml
-inputs:
-  environment:
-    description: "デプロイ環境 (dev/staging/prod)"
-    required: true
+## リソース参照
 
-  dry-run:
-    description: "dry-runモードで実行"
-    required: false
-    default: "false"
-```
+### scripts/（決定論的処理）
 
-### outputs定義
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/validate-action.mjs` | action.yml 構文検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-```yaml
-outputs:
-  deployment-url:
-    description: "デプロイされたアプリケーションのURL"
-    value: ${{ steps.deploy.outputs.url }}
-```
+### references/（詳細知識）
 
----
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 構文リファレンス | [references/action-syntax.md](references/action-syntax.md) | 構成設計時 |
+| ベストプラクティス | [references/best-practices.md](references/best-practices.md) | 設計方針整理時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-## シェルスクリプトの実行
+### assets/（テンプレート・素材）
 
-### 基本
+| アセット | 用途 |
+| --- | --- |
+| `assets/composite-action/action.yml` | Composite Action テンプレート |
 
-```yaml
-runs:
-  using: "composite"
-  steps:
-    - name: Run script
-      run: echo "Processing ${{ inputs.file }}"
-      shell: bash # 必須
-```
+### 運用ファイル
 
-### 複数行スクリプト
-
-```yaml
-steps:
-  - name: Complex processing
-    shell: bash
-    run: |
-      set -e
-      if [ "${{ inputs.dry-run }}" = "true" ]; then
-        echo "DRY RUN mode"
-        exit 0
-      fi
-      .claude/skills/composite-actions/scripts/deploy.sh "${{ inputs.environment }}"
-```
-
-### 条件付き実行
-
-```yaml
-steps:
-  - name: Production only
-    if: inputs.environment == 'prod'
-    run: .claude/skills/composite-actions/scripts/prod-checks.sh
-    shell: bash
-```
-
----
-
-## 環境変数とシークレット
-
-### 環境変数の設定
-
-```yaml
-steps:
-  - name: Set environment
-    shell: bash
-    run: |
-      echo "DEPLOY_ENV=${{ inputs.environment }}" >> $GITHUB_ENV
-      echo "BUILD_ID=${{ github.run_id }}" >> $GITHUB_ENV
-
-  - name: Use environment
-    shell: bash
-    run: echo "Deploying to $DEPLOY_ENV (build: $BUILD_ID)"
-```
-
-### シークレットの扱い
-
-**注意**: Composite Actionsは直接シークレットにアクセスできません。ワークフローから環境変数として渡す必要があります。
-
-```yaml
-# ワークフロー側
-- uses: ./.github/actions/deploy
-  env:
-    API_TOKEN: ${{ secrets.API_TOKEN }}
-
-# action.yml側
-steps:
-  - shell: bash
-    run: |
-      if [ -z "$API_TOKEN" ]; then
-        echo "API_TOKEN is required"
-        exit 1
-      fi
-```
-
----
-
-## トラブルシューティング
-
-### shell プロパティが見つからない
-
-```
-Error: Required property is missing: shell
-```
-
-**解決**: すべての `run` ステップに `shell` を指定
-
-```yaml
-- run: echo "test"
-  shell: bash # 必須
-```
-
-### outputsが空
-
-**解決**: step idとoutputsを正しく設定
-
-```yaml
-steps:
-  - id: compute
-    run: echo "result=success" >> $GITHUB_OUTPUT
-    shell: bash
-
-outputs:
-  result:
-    value: ${{ steps.compute.outputs.result }}
-```
-
----
-
-## 関連スキル
-
-| スキル                         | パス                                                 | 用途               |
-| ------------------------------ | ---------------------------------------------------- | ------------------ |
-| **github-actions-syntax**      | `.claude/skills/github-actions-syntax/SKILL.md`      | 基本構文           |
-| **github-actions-expressions** | `.claude/skills/github-actions-expressions/SKILL.md` | 式と関数           |
-| **reusable-workflows**         | `.claude/skills/reusable-workflows/SKILL.md`         | ジョブレベル再利用 |
-| **workflow-templates**         | `.claude/skills/workflow-templates/SKILL.md`         | 組織テンプレート   |
-
----
-
-## 詳細情報
-
-詳細は以下のリソースを参照:
-
-- **action.yml構文**: `cat .claude/skills/composite-actions/resources/action-syntax.md`
-- **ベストプラクティス**: `cat .claude/skills/composite-actions/resources/best-practices.md`
-- **テンプレート**: `cat .claude/skills/composite-actions/templates/composite-action/action.yml`
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

@@ -1,387 +1,141 @@
 ---
 name: linting-formatting-automation
 description: |
-  コード品質とフォーマット自動化の専門スキル。
-  ESLint、Prettier、Biome、Stylelintなどのリンターとフォーマッターのセットアップ、
-  設定、CI/CD統合、pre-commitフック構築、エディタ統合を提供します。
+  Code quality automation for linting and formatting. Provides ESLint, Prettier, Biome setup, CI/CD integration, pre-commit hooks, and tool migration strategies for consistent code style enforcement.
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • ESLint Official Docs / Apply: Rule configuration, plugin integration / Purpose: Correct API usage and best practices
+  • Prettier Philosophy / Apply: Opinionated formatting / Purpose: Minimize configuration bikeshedding
+  • Biome Performance Model / Apply: Rust-based tooling / Purpose: Optimize development workflow speed
 
-  - `.claude/skills/linting-formatting-automation/resources/eslint-config-guide.md`: ESLint設定ガイド（ルール選択、プラグイン統合、カスタムルール）
-  - `.claude/skills/linting-formatting-automation/resources/prettier-biome-comparison.md`: Prettier vs Biome 比較（パフォーマンス、機能、移行戦略）
-  - `.claude/skills/linting-formatting-automation/resources/pre-commit-hook-setup.md`: pre-commitフックセットアップ（husky、lint-staged統合）
-  - `.claude/skills/linting-formatting-automation/resources/ci-cd-integration.md`: CI/CD統合ガイド（GitHub Actions、GitLab CI）
-  - `.claude/skills/linting-formatting-automation/scripts/setup-linter.sh`: リンター自動セットアップスクリプト
-  - `.claude/skills/linting-formatting-automation/templates/eslintrc-template.json`: ESLint設定テンプレート
-  - `.claude/skills/linting-formatting-automation/templates/prettier-config-template.json`: Prettier設定テンプレート
-  - `.claude/skills/linting-formatting-automation/templates/biome-config-template.json`: Biome設定テンプレート
-
-  使用タイミング:
-  - 新規プロジェクトのリンター/フォーマッター初期設定時
-  - 既存プロジェクトのコード品質改善時
-  - CI/CDパイプラインへのリント追加時
-  - pre-commitフック構築時
-  - ESLint → Biomeなどのツール移行時
-
-  関連スキル:
-  - `.claude/skills/prettier-integration/SKILL.md` - Prettier詳細統合
-  - `.claude/skills/code-quality/SKILL.md` - コード品質基準と評価
-  - `.claude/skills/github-actions-workflows/SKILL.md` - GitHub Actions CI/CD
-
-  Use proactively when setting up linting/formatting tools,
-  integrating code quality checks into CI/CD, or configuring
-  pre-commit hooks for consistent code style enforcement.
-
-version: 1.0.0
+  Trigger:
+  Use when setting up linting/formatting for new projects, integrating code quality into CI/CD, configuring pre-commit hooks, or migrating between tools.
+  eslint, prettier, biome, lint, format, pre-commit, husky, lint-staged, code quality
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# リンティング・フォーマット自動化スキル
+# Linting & Formatting Automation
 
 ## 概要
 
-このスキルは、コード品質を自動的に維持するためのリンティングツールと
-フォーマッターの設定・統合に関する知識を提供します。
-一貫したコードスタイルとエラー防止を実現します。
+コードの品質と一貫性を自動化するスキル。ESLint、Prettier、Biome等のツールセットアップからCI/CD統合、pre-commitフック構成まで、開発ワークフロー全体をカバーする。
 
-**主要な価値**:
+## ワークフロー
 
-- 一貫したコードスタイルの自動維持
-- 潜在的なバグの早期発見
-- コードレビューの効率化（スタイル議論の削減）
+### Phase 1: 要件分析
 
-**対象ユーザー**:
+**目的**: プロジェクトに適したツール戦略を決定
 
-- `@code-quality`エージェント
-- フロントエンド開発者
-- バックエンド開発者
-- DevOpsエンジニア
+**アクション**:
 
-## いつ使うか
+1. プロジェクト要件を評価（言語、フレームワーク、チームサイズ）
+2. ツール選択を決定（ESLint+Prettier vs Biome）
+3. 既存設定の移行要否を判断
 
-### シナリオ 1: 新規プロジェクトセットアップ
+**Task**: `agents/analyze-requirements.md` を参照
 
-**状況**: 新しいプロジェクトでコード品質ツールを設定する
+### Phase 2: ツールセットアップ
 
-**適用条件**:
+**目的**: 選択したツールを設定
 
-- [ ] プロジェクトの言語/フレームワークが決定している
-- [ ] チームのコードスタイルガイドがある（またはデフォルト使用）
-- [ ] パッケージマネージャーが利用可能
+**アクション**:
 
-**期待される成果**: 一貫したリンティング/フォーマット環境
+1. 選択ツールの設定ファイルを生成
+2. 必要なプラグイン・拡張を追加
+3. package.jsonにスクリプトを追加
 
-### シナリオ 2: CI/CD統合
+**Task**: `agents/setup-tools.md` を参照
 
-**状況**: プルリクエスト時に自動でコード品質をチェックしたい
+### Phase 3: ワークフロー統合
 
-**適用条件**:
+**目的**: 開発ワークフローに統合
 
-- [ ] CI/CDプラットフォームが利用可能
-- [ ] リンターの設定が完了している
-- [ ] テストとの統合方針が決定している
+**アクション**:
 
-**期待される成果**: 自動化されたコード品質ゲート
+1. pre-commitフックを設定（Husky + lint-staged）
+2. CI/CDパイプラインを構成
+3. エディタ統合を設定
 
-### シナリオ 3: ツール移行
+**Task**: `agents/integrate-workflow.md` を参照
 
-**状況**: ESLint + Prettier から Biome に移行する等
+### Phase 4: 検証
 
-**適用条件**:
+**目的**: 設定が正しく動作することを確認
 
-- [ ] 移行理由が明確（パフォーマンス、設定簡素化等）
-- [ ] 既存ルールの移行計画がある
-- [ ] チームの合意が取れている
+**アクション**:
 
-**期待される成果**: スムーズなツール移行と設定継承
+1. ローカルでコミットテストを実行
+2. CI/CDパイプラインをテスト
+3. チームドキュメントを更新
 
-## 主要ツール比較
+**Task**: `agents/validate-setup.md` を参照
 
-### JavaScript/TypeScript
+## Task仕様（ナビゲーション）
 
-| ツール   | 用途               | 特徴                       |
-| -------- | ------------------ | -------------------------- |
-| ESLint   | リンティング       | 最も成熟、豊富なプラグイン |
-| Prettier | フォーマッティング | オピニオネイテッド、設定少 |
-| Biome    | 両方               | 高速、Rust製、設定簡素     |
-
-### 推奨組み合わせ
-
-```yaml
-シンプル志向:
-  - Biome (リンティング + フォーマッティング)
-  - メリット: 設定が少ない、高速
-  - デメリット: ESLintほどのプラグインエコシステムがない
-
-成熟志向:
-  - ESLint + Prettier
-  - メリット: 豊富なプラグイン、カスタマイズ性
-  - デメリット: 設定が複雑になりがち
-```
-
-## セットアップガイド
-
-### ESLint + Prettier (TypeScript)
-
-```bash
-# パッケージインストール
-pnpm add -D eslint prettier eslint-config-prettier \
-  @typescript-eslint/parser @typescript-eslint/eslint-plugin
+| Task                 | 起動タイミング | 入力             | 出力           |
+| -------------------- | -------------- | ---------------- | -------------- |
+| analyze-requirements | Phase 1開始時  | プロジェクト情報 | ツール選択結果 |
+| setup-tools          | Phase 2開始時  | ツール選択結果   | 設定ファイル群 |
+| integrate-workflow   | Phase 3開始時  | 設定ファイル群   | フック・CI設定 |
+| validate-setup       | Phase 4開始時  | 全設定           | 検証済み設定   |
 
-# 設定ファイル作成
-touch eslint.config.js .prettierrc
-```
-
-**eslint.config.js** (Flat Config):
-
-```javascript
-import tseslint from "@typescript-eslint/eslint-plugin";
-import tsparser from "@typescript-eslint/parser";
-import prettier from "eslint-config-prettier";
-
-export default [
-  {
-    files: ["**/*.ts", "**/*.tsx"],
-    languageOptions: {
-      parser: tsparser,
-      parserOptions: {
-        project: "./tsconfig.json",
-      },
-    },
-    plugins: {
-      "@typescript-eslint": tseslint,
-    },
-    rules: {
-      ...tseslint.configs.recommended.rules,
-      "@typescript-eslint/no-unused-vars": "error",
-      "@typescript-eslint/explicit-function-return-type": "warn",
-    },
-  },
-  prettier,
-];
-```
-
-**.prettierrc**:
-
-```json
-{
-  "semi": true,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "es5",
-  "printWidth": 100
-}
-```
-
-### Biome (オールインワン)
-
-```bash
-# インストール
-pnpm add -D @biomejs/biome
-
-# 初期化
-pnpm biome init
-```
-
-**biome.json**:
-
-```json
-{
-  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "style": {
-        "useConst": "error",
-        "noVar": "error"
-      }
-    }
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 100
-  }
-}
-```
-
-## Pre-commitフック設定
-
-### Husky + lint-staged
-
-```bash
-# インストール
-pnpm add -D husky lint-staged
-
-# Husky初期化
-pnpm exec husky init
-
-# pre-commitフック作成
-echo "pnpm lint-staged" > .husky/pre-commit
-```
-
-**package.json**:
-
-```json
-{
-  "lint-staged": {
-    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md}": ["prettier --write"]
-  }
-}
-```
-
-### Biome版
-
-```json
-{
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx,json}": ["biome check --write"]
-  }
-}
-```
-
-## CI/CD統合
-
-### GitHub Actions
-
-```yaml
-name: Code Quality
-
-on:
-  pull_request:
-    branches: [main]
-
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "pnpm"
-
-      - run: pnpm install
-
-      # ESLint + Prettier
-      - name: Lint
-        run: pnpm eslint . --max-warnings 0
-      - name: Check Format
-        run: pnpm prettier --check .
-
-      # または Biome
-      - name: Biome Check
-        run: pnpm biome ci .
-```
-
-## トラブルシューティング
-
-### 問題 1: ESLintとPrettierの競合
-
-**症状**: フォーマット後にESLintエラーが発生
-
-**原因**: PrettierとESLintのルールが競合
-
-**解決策**:
-
-```bash
-# eslint-config-prettierを最後に適用
-# eslint.config.js で prettier を配列の最後に追加
-```
-
-### 問題 2: pre-commitが遅い
-
-**症状**: コミット時に数十秒待つ
-
-**原因**: 全ファイルをチェックしている
-
-**解決策**:
-
-```json
-{
-  "lint-staged": {
-    "*.ts": ["eslint --fix --cache", "prettier --write"]
-  }
-}
-```
-
-`--cache`オプションで差分のみチェック
-
-### 問題 3: VS Codeで自動フォーマットが効かない
-
-**症状**: 保存時にフォーマットされない
-
-**解決策** (.vscode/settings.json):
-
-```json
-{
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  }
-}
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **段階的に厳格化**: 最初は警告、安定したらエラーに
-2. **キャッシュ活用**: `eslint --cache`でパフォーマンス改善
-3. **エディタ統合**: 保存時自動フォーマットを設定
-4. **CI必須化**: PRマージ前のリントチェック必須
+| 推奨事項                      | 理由                         |
+| ----------------------------- | ---------------------------- |
+| 推奨プリセットから始める      | 安定した基盤から段階的に拡張 |
+| キャッシュを有効化（--cache） | ビルド時間短縮               |
+| エディタ統合を設定            | 即時フィードバック           |
+| CIチェックをマージ必須にする  | 品質ゲート確保               |
 
 ### 避けるべきこと
 
-1. **過度なカスタマイズ**: 標準ルールセットを尊重
-2. **ルールの無効化乱用**: `eslint-disable`は最小限に
-3. **フォーマット議論**: Prettierのオピニオンを受け入れる
+| 禁止事項             | 問題点                 |
+| -------------------- | ---------------------- |
+| 過度なカスタマイズ   | 保守困難、標準から乖離 |
+| eslint-disableの乱用 | 根本原因を隠蔽         |
+| フォーマット議論     | 生産性低下             |
+| キャッシュ未設定     | DX悪化                 |
 
-## チェックリスト
+## リソース参照
 
-### 初期設定時
+### scripts/（決定論的処理）
 
-- [ ] リンター/フォーマッターをインストール
-- [ ] 設定ファイルを作成
-- [ ] package.jsonにスクリプト追加
-- [ ] エディタ設定を追加(.vscode/settings.json)
-- [ ] .gitignoreにキャッシュファイル追加
+| スクリプト            | 用途             |
+| --------------------- | ---------------- |
+| `validate-config.mjs` | 設定ファイル検証 |
+| `log_usage.mjs`       | 使用記録         |
 
-### pre-commit設定時
+### references/（詳細知識）
 
-- [ ] husky + lint-stagedをインストール
-- [ ] pre-commitフックを作成
-- [ ] lint-staged設定を追加
-- [ ] 全員がフックを有効化（postinstall）
+| リソース     | パス                                             | 読込条件         |
+| ------------ | ------------------------------------------------ | ---------------- |
+| 基礎知識     | [references/basics.md](references/basics.md)     | ツール概念理解時 |
+| 設定パターン | [references/patterns.md](references/patterns.md) | 設定作成時       |
 
-### CI/CD設定時
+### assets/（テンプレート）
 
-- [ ] ワークフローファイルを作成
-- [ ] キャッシュを設定（node_modules、ESLintキャッシュ）
-- [ ] 失敗時のPRブロックを設定
-- [ ] エラーレポートのフォーマット調整
+| アセット                  | 用途                         |
+| ------------------------- | ---------------------------- |
+| `eslint.config.js`        | ESLint flat config雛形       |
+| `.prettierrc.json`        | Prettier設定雛形             |
+| `biome.json`              | Biome設定雛形                |
+| `github-actions-lint.yml` | GitHub Actions lint workflow |
+| `lint-staged.config.js`   | lint-staged設定雛形          |
 
-## 関連スキル
+## 変更履歴
 
-- **code-style-guides** (`.claude/skills/code-style-guides/SKILL.md`): コードスタイルガイドライン
-- **clean-code-practices** (`.claude/skills/clean-code-practices/SKILL.md`): クリーンコード原則
-
-## 参考文献
-
-- **ESLint**: https://eslint.org/docs/latest/
-- **Prettier**: https://prettier.io/docs/en/
-- **Biome**: https://biomejs.dev/
-- **Husky**: https://typicode.github.io/husky/
-- **lint-staged**: https://github.com/lint-staged/lint-staged
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
+| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠で再構築 |
+| 2.0.0   | 2025-12-31 | 構造改善                           |

@@ -84,18 +84,194 @@ Turso Cloud DB（本番環境）
 ### ディレクトリ構成
 
 ```
-packages/shared/infrastructure/db/
-├── schema/
-│   ├── index.ts          # スキーマエントリーポイント（全テーブルをre-export）
-│   ├── workflows.ts      # ワークフロー関連テーブル
-│   ├── users.ts          # ユーザー設定
-│   ├── sync.ts           # 同期メタデータ
-│   └── audit.ts          # 監査ログ
-├── migrations/           # 自動生成されるSQLマイグレーション
-├── seed/                 # テストデータシード
-├── client.ts             # DB接続クライアント
-└── types.ts              # 型エクスポート
+packages/shared/
+├── src/
+│   ├── db/
+│   │   ├── schema/
+│   │   │   ├── index.ts          # スキーマエントリーポイント（全テーブルをre-export）✅ 実装済み
+│   │   │   └── chat-history.ts   # チャット履歴スキーマ（chat_sessions, chat_messages）✅ 実装済み
+│   │   ├── env.ts                # 環境変数管理（Zod検証）✅ 実装済み
+│   │   ├── migrate.ts            # マイグレーション実行スクリプト ✅ 実装済み
+│   │   ├── utils.ts              # データベースユーティリティ関数 ✅ 実装済み
+│   │   └── index.ts              # データベースクライアントエクスポート ✅ 実装済み
+│   ├── repositories/
+│   │   ├── chat-session-repository.ts  # セッションリポジトリ
+│   │   └── chat-message-repository.ts  # メッセージリポジトリ
+│   ├── features/
+│   │   └── chat-history/
+│   │       ├── chat-history-service.ts # チャット履歴サービス
+│   │       ├── constants.ts            # 定数定義
+│   │       └── date-formatter.ts       # 日付フォーマッタ
+│   ├── types/
+│   │   ├── chat-session.ts       # セッション型定義
+│   │   ├── chat-message.ts       # メッセージ型定義
+│   │   └── llm-metadata.ts       # LLMメタデータ型定義
+│   └── ipc/
+│       └── channels.ts           # IPCチャネル定義
+├── drizzle/
+│   └── migrations/
+│       ├── 0000_complete_rictor.sql      # 初期マイグレーション
+│       ├── 0001_nice_unicorn.sql         # チャット履歴テーブル + インデックス ✅ 生成済み
+│       └── meta/
+│           ├── _journal.json             # マイグレーション履歴
+│           ├── 0000_snapshot.json        # スナップショット（初期）
+│           └── 0001_snapshot.json        # スナップショット（チャット履歴）
+└── drizzle.config.ts             # Drizzle設定 ✅ 実装済み
 ```
+
+### Drizzle ORM基盤モジュール
+
+データベース操作の基盤となるモジュール群の実装詳細。
+
+#### env.ts - 環境変数管理
+
+**目的**: データベース接続に必要な環境変数の取得とバリデーション
+
+**主要機能**:
+
+| 関数名                  | 説明                                       | 戻り値            |
+| ----------------------- | ------------------------------------------ | ----------------- |
+| `getDatabaseEnv()`      | 環境変数を取得し、Zodスキーマで検証        | `DatabaseEnv`     |
+| `getDatabaseUrl()`      | 接続URL取得（TURSO_DATABASE_URL優先）      | `string`          |
+| `isCloudMode()`         | クラウドモード判定（libsql://で始まるURL） | `boolean`         |
+| `validateDatabaseEnv()` | 環境変数の妥当性検証                       | `SafeParseResult` |
+
+**Zodスキーマ定義**:
+
+```typescript
+export const databaseEnvSchema = z
+  .object({
+    TURSO_DATABASE_URL: z.string().optional(),
+    TURSO_AUTH_TOKEN: z.string().optional(),
+    LOCAL_DB_PATH: z.string().optional(),
+    DATABASE_MODE: z.enum(["local", "cloud"]).optional().default("local"),
+  })
+  .refine(
+    (data) => {
+      // クラウドモードの場合、AUTH_TOKENが必須
+      if (data.DATABASE_MODE === "cloud") {
+        return !!data.TURSO_AUTH_TOKEN;
+      }
+      if (data.TURSO_DATABASE_URL?.startsWith("libsql://")) {
+        return !!data.TURSO_AUTH_TOKEN;
+      }
+      return true;
+    },
+    {
+      message: "TURSO_AUTH_TOKEN is required for cloud mode",
+      path: ["TURSO_AUTH_TOKEN"],
+    },
+  );
+```
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### migrate.ts - マイグレーション実行
+
+**目的**: Drizzle Kitで生成されたマイグレーションファイルの実行
+
+**主要機能**:
+
+| 関数名            | 説明                                      | 戻り値          |
+| ----------------- | ----------------------------------------- | --------------- |
+| `runMigrations()` | マイグレーションフォルダ内のSQLを順次実行 | `Promise<void>` |
+
+**実装例**:
+
+```typescript
+export async function runMigrations(): Promise<void> {
+  const libsqlClient = initializeClient();
+  const db = drizzle(libsqlClient);
+
+  try {
+    await migrate(db, { migrationsFolder: MIGRATIONS_FOLDER });
+    console.log("Migrations completed successfully!");
+  } catch (error) {
+    console.error("Migration failed:", error);
+    throw error;
+  }
+}
+```
+
+**マイグレーションフォルダパス**: `packages/shared/drizzle/migrations/`
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### utils.ts - ユーティリティ関数
+
+**目的**: データベース操作の共通ユーティリティ提供
+
+**主要機能**:
+
+| 関数名               | 説明                                   | 戻り値             |
+| -------------------- | -------------------------------------- | ------------------ |
+| `initializeClient()` | libSQLクライアントの初期化             | `Client`           |
+| `getConnectionUrl()` | 環境に応じた接続URL取得                | `string`           |
+| `isOnline()`         | ネットワーク接続状態の確認（将来実装） | `Promise<boolean>` |
+
+**クライアント初期化ロジック**:
+
+- ローカルモード (`file:`): 認証トークン不要
+- クラウドモード (`libsql://`): 認証トークン必須
+- エラー時の自動リトライ（最大3回、指数バックオフ）
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### index.ts - データベースクライアントエクスポート
+
+**目的**: データベースクライアントとスキーマの一元管理
+
+**エクスポート内容**:
+
+```typescript
+// クライアント
+export { db } from "./client";
+
+// スキーマ
+export * from "./schema";
+
+// ユーティリティ
+export { initializeClient, getConnectionUrl } from "./utils";
+export { runMigrations } from "./migrate";
+export { getDatabaseEnv, getDatabaseUrl, isCloudMode } from "./env";
+```
+
+**使用例**:
+
+```typescript
+import { db, chatSessions, chatMessages } from "@repo/shared/db";
+
+// クエリ実行
+const sessions = await db.select().from(chatSessions);
+```
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### drizzle.config.ts - Drizzle Kit設定
+
+**目的**: マイグレーション生成とDrizzle Studioの設定
+
+**設定内容**:
+
+| 設定項目  | 値                          | 説明                         |
+| --------- | --------------------------- | ---------------------------- |
+| `schema`  | `./dist/src/db/schema/*.js` | コンパイル後のスキーマパス   |
+| `out`     | `./drizzle/migrations`      | マイグレーション出力先       |
+| `dialect` | `sqlite`                    | データベース方言             |
+| `verbose` | `true`                      | 詳細ログ出力                 |
+| `strict`  | `true`                      | 厳密モード（型チェック強化） |
+
+**関連npmスクリプト**:
+
+```json
+{
+  "db:generate": "drizzle-kit generate",
+  "db:migrate": "tsx src/db/migrate.ts",
+  "db:studio": "drizzle-kit studio"
+}
+```
+
+**実装状況**: ✅ 完了（T-04-10）
 
 ### テーブル設計
 
@@ -322,23 +498,207 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 | conflict_resolution | TEXT | NO   | last_write_wins / manual / merge                |
 | last_error          | TEXT | YES  | 最後に発生したエラーメッセージ                  |
 
+#### chat_sessions（チャットセッション）
+
+ユーザーとAIアシスタント間の会話セッションを管理する。
+
+| カラム               | 型      | NULL | 説明                                       |
+| -------------------- | ------- | ---- | ------------------------------------------ |
+| id                   | TEXT    | NO   | UUID主キー（v4）                           |
+| user_id              | TEXT    | NO   | ユーザーID（将来の認証機能との連携用）     |
+| title                | TEXT    | NO   | セッションタイトル（3〜100文字）           |
+| created_at           | TEXT    | NO   | 作成日時（ISO 8601形式、UTC）              |
+| updated_at           | TEXT    | NO   | 最終更新日時（ISO 8601形式、UTC）          |
+| message_count        | INTEGER | NO   | メッセージ総数（非正規化フィールド）       |
+| is_favorite          | INTEGER | NO   | お気に入りフラグ（0: false, 1: true）      |
+| is_pinned            | INTEGER | NO   | ピン留めフラグ（0: false, 1: true）        |
+| pin_order            | INTEGER | YES  | ピン留め時の表示順序（1〜10）              |
+| last_message_preview | TEXT    | YES  | 最終メッセージのプレビュー（最大50文字）   |
+| metadata             | JSON    | NO   | 拡張メタデータ（将来の拡張用）             |
+| deleted_at           | TEXT    | YES  | 削除日時（ソフトデリート用、ISO 8601形式） |
+
+**設計上の注意点**:
+
+- `is_favorite`, `is_pinned` はSQLiteがBOOLEAN型をネイティブサポートしないため INTEGER を使用
+- ピン留めは最大10件まで（ビジネスルール制約）
+- `message_count`, `last_message_preview` は検索・表示最適化のための非正規化フィールド
+- ソフトデリートを採用し、`deleted_at`がNULLでないレコードは論理削除済みとして扱う
+
+#### chat_messages（チャットメッセージ）
+
+セッション内の個別の発言（ユーザーまたはアシスタント）を管理する。
+
+| カラム        | 型      | NULL | 説明                                                                          |
+| ------------- | ------- | ---- | ----------------------------------------------------------------------------- |
+| id            | TEXT    | NO   | UUID主キー（v4）                                                              |
+| session_id    | TEXT    | NO   | 親セッションID（外部キー: ON DELETE CASCADE）                                 |
+| role          | TEXT    | NO   | メッセージロール（user / assistant）                                          |
+| content       | TEXT    | NO   | メッセージ本文（1〜100,000文字）                                              |
+| message_index | INTEGER | NO   | セッション内の順序（0から連番）                                               |
+| timestamp     | TEXT    | NO   | メッセージ送信日時（ISO 8601形式、UTC）                                       |
+| llm_provider  | TEXT    | YES  | **LLMプロバイダー名（Phase 9で実装済み: openai / anthropic / google / xai）** |
+| llm_model     | TEXT    | YES  | **LLMモデル名（Phase 9で実装済み、例: gpt-5.2-instant, claude-sonnet-4.5）**  |
+| llm_metadata  | JSON    | YES  | トークン使用量、応答時間、モデルパラメータ等                                  |
+| attachments   | JSON    | NO   | 添付ファイル情報（JSON配列形式）                                              |
+| system_prompt | TEXT    | YES  | **システムプロンプト（Phase 9で実装済み、AI振る舞いカスタマイズ用）**         |
+| metadata      | JSON    | NO   | 拡張メタデータ（将来の拡張用）                                                |
+
+**llm_metadata の構造**:
+
+```json
+{
+  "version": "20241022",
+  "temperature": 0.7,
+  "maxTokens": 4096,
+  "tokenUsage": {
+    "inputTokens": 45,
+    "outputTokens": 320,
+    "totalTokens": 365
+  },
+  "responseTimeMs": 1234
+}
+```
+
+**設計上の注意点**:
+
+- `session_id`には`ON DELETE CASCADE`を設定し、親セッション削除時にメッセージも削除
+- `UNIQUE(session_id, message_index)` で一意性を保証
+- `llm_provider`, `llm_model`, `llm_metadata` はアシスタント応答のみで使用
+- `attachments` は将来のファイル添付機能に対応
+
+**参照ドキュメント**:
+
+- スキーマ実装: `packages/shared/src/db/schema/chat-history.ts` ✅
+- データベース基盤モジュール:
+  - 環境変数管理: `packages/shared/src/db/env.ts` ✅
+  - マイグレーション実行: `packages/shared/src/db/migrate.ts` ✅
+  - ユーティリティ: `packages/shared/src/db/utils.ts` ✅
+  - クライアントエクスポート: `packages/shared/src/db/index.ts` ✅
+- マイグレーション: `packages/shared/drizzle/migrations/0001_nice_unicorn.sql` ✅
+- Drizzle設定: `packages/shared/drizzle.config.ts` ✅
+- 詳細設計: `docs/30-workflows/rag-pipeline/conv-04-01-table-schema-design.md` ✅
+- インデックス戦略: `docs/30-workflows/rag-pipeline/conv-04-01-index-strategy-design.md` ✅
+- 設計レビュー: `docs/30-workflows/rag-pipeline/conv-07-02-p0-improvement-review.md` ✅
+- 手動テスト結果: `docs/30-workflows/rag-pipeline/conv-08-01-manual-test-results.md` ✅
+
+#### files（RAGファイルメタデータ）
+
+RAGパイプラインに投入されるファイルのメタデータを管理する。
+
+| カラム        | 型      | NULL | 説明                                                 |
+| ------------- | ------- | ---- | ---------------------------------------------------- |
+| id            | TEXT    | NO   | 主キー（ULID形式を推奨）                             |
+| name          | TEXT    | NO   | ファイル名（拡張子を含む）                           |
+| path          | TEXT    | NO   | ファイルの絶対パス                                   |
+| mime_type     | TEXT    | NO   | MIMEタイプ（例: "text/markdown", "application/pdf"） |
+| category      | TEXT    | NO   | ファイルカテゴリ（例: "document", "code", "data"）   |
+| size          | INTEGER | NO   | ファイルサイズ（バイト単位）                         |
+| hash          | TEXT    | NO   | SHA-256ハッシュ値（重複排除に使用）                  |
+| encoding      | TEXT    | NO   | 文字エンコーディング（デフォルト: "utf-8"）          |
+| last_modified | INTEGER | NO   | ファイルシステム上の最終更新日時                     |
+| metadata      | JSON    | NO   | カスタムメタデータ（デフォルト: "{}"）               |
+| created_at    | INTEGER | NO   | レコード作成日時（UNIX時刻）                         |
+| updated_at    | INTEGER | NO   | レコード更新日時（UNIX時刻）                         |
+| deleted_at    | INTEGER | YES  | 論理削除日時（ソフトデリート用）                     |
+
+**設計上の注意点**:
+
+- `hash`カラムで重複ファイルを検出し、同一ファイルの再登録を防止
+- ソフトデリート対応により、削除されたファイルも履歴として保持可能
+- 1つのファイルは複数のチャンク（chunksテーブル）を持つ（1:N関係）
+
+#### chunks（RAGチャンク + FTS5全文検索）
+
+ファイルを分割したチャンクを管理し、FTS5による全文検索を提供する。
+
+| カラム             | 型      | NULL | 説明                                               |
+| ------------------ | ------- | ---- | -------------------------------------------------- |
+| id                 | TEXT    | NO   | UUID主キー                                         |
+| file_id            | TEXT    | NO   | 親ファイルID（外部キー: ON DELETE CASCADE）        |
+| content            | TEXT    | NO   | チャンク本文（FTS5インデックスに同期）             |
+| contextual_content | TEXT    | YES  | コンテキスト付きテキスト（親見出し等を含む）       |
+| chunk_index        | INTEGER | NO   | ファイル内のチャンク順序（0始まり）                |
+| start_line         | INTEGER | YES  | 開始行番号（1始まり）                              |
+| end_line           | INTEGER | YES  | 終了行番号                                         |
+| start_char         | INTEGER | YES  | 開始文字位置（バイトオフセット、0始まり）          |
+| end_char           | INTEGER | YES  | 終了文字位置                                       |
+| parent_header      | TEXT    | YES  | 親見出しテキスト（Markdown階層構造）               |
+| strategy           | TEXT    | NO   | チャンキング戦略（fixed_size/semantic/sentence等） |
+| token_count        | INTEGER | YES  | トークン数（OpenAI tiktoken cl100k_base基準）      |
+| hash               | TEXT    | NO   | SHA-256ハッシュ（重複検出用、UNIQUE制約）          |
+| prev_chunk_id      | TEXT    | YES  | 前のチャンクID（自己参照外部キー）                 |
+| next_chunk_id      | TEXT    | YES  | 次のチャンクID（自己参照外部キー）                 |
+| overlap_tokens     | INTEGER | NO   | オーバーラップトークン数（デフォルト: 0）          |
+| metadata           | JSON    | YES  | 拡張メタデータ（言語、関数名、重要度など）         |
+| created_at         | INTEGER | NO   | 作成日時（UNIX時刻）                               |
+| updated_at         | INTEGER | NO   | 更新日時（UNIX時刻）                               |
+
+**設計上の注意点**:
+
+- `file_id`には`ON DELETE CASCADE`を設定し、親ファイル削除時にチャンクも自動削除
+- FTS5仮想テーブル（`chunks_fts`）とトリガーにより全文検索インデックスと自動同期
+- `token_count`は意図的非正規化（tiktoken計算コスト削減のため）
+- チャンク間の連続性を`prev_chunk_id`/`next_chunk_id`で管理
+
+**FTS5全文検索**:
+
+| 機能           | 説明                                               |
+| -------------- | -------------------------------------------------- |
+| 仮想テーブル   | `chunks_fts` - External Content Tableパターン      |
+| トークナイザー | `unicode61 remove_diacritics 2` - 日本語/英語対応  |
+| スコアリング   | BM25 + Sigmoid正規化（0-1スケール）                |
+| 検索モード     | キーワード検索、フレーズ検索、NEAR検索（近接検索） |
+| 同期方式       | INSERT/UPDATE/DELETEトリガーによる自動同期         |
+
+**参照ドキュメント**:
+
+- スキーマ実装:
+  - `packages/shared/src/db/schema/files.ts` ✅
+  - `packages/shared/src/db/schema/chunks.ts` ✅
+  - `packages/shared/src/db/schema/chunks-fts.ts` ✅
+- 検索クエリ: `packages/shared/src/db/queries/chunks-search.ts` ✅
+- マイグレーション:
+  - `packages/shared/drizzle/migrations/0002_short_norrin_radd.sql` ✅ (files/conversions/extractedMetadata)
+  - `packages/shared/drizzle/migrations/0003_create_chunks_fts.sql` ✅ (chunks + FTS5)
+- 詳細設計: `docs/30-workflows/rag-conversion-system/requirements-chunks-fts5.md` ✅
+- テスト結果: `docs/30-workflows/rag-conversion-system/manual-test-report-chunks-fts5.md` ✅
+- 最終レビュー: `docs/30-workflows/rag-conversion-system/final-review-chunks-fts5.md` ✅
+
 ### インデックス設計
 
-| テーブル            | インデックス名               | カラム                 | 用途                   |
-| ------------------- | ---------------------------- | ---------------------- | ---------------------- |
-| workflows           | idx_workflows_status         | status                 | ステータス検索         |
-| workflows           | idx_workflows_deleted_at     | deleted_at             | アクティブレコード取得 |
-| workflows           | idx_workflows_status_deleted | status, deleted_at     | 複合検索の高速化       |
-| workflow_steps      | idx_steps_workflow_id        | workflow_id            | 親子関係の取得         |
-| workflow_steps      | idx_steps_order              | workflow_id, order     | 順序通りの取得         |
-| workflow_executions | idx_executions_workflow_id   | workflow_id            | 履歴検索               |
-| workflow_executions | idx_executions_status        | status                 | 実行中/失敗の検索      |
-| workflow_executions | idx_executions_started_at    | started_at             | 時系列ソート           |
-| user_profiles       | idx_profiles_deleted_at      | deleted_at             | 有効ユーザー取得       |
-| api_keys            | idx_api_keys_user_id         | user_id                | ユーザー別キー取得     |
-| audit_logs          | idx_audit_event_type         | event_type             | イベント種別検索       |
-| audit_logs          | idx_audit_entity             | entity_type, entity_id | エンティティ別履歴     |
-| audit_logs          | idx_audit_timestamp          | timestamp              | 時系列検索             |
+| テーブル            | インデックス名                      | カラム                        | 用途                                   |
+| ------------------- | ----------------------------------- | ----------------------------- | -------------------------------------- |
+| workflows           | idx_workflows_status                | status                        | ステータス検索                         |
+| workflows           | idx_workflows_deleted_at            | deleted_at                    | アクティブレコード取得                 |
+| workflows           | idx_workflows_status_deleted        | status, deleted_at            | 複合検索の高速化                       |
+| workflow_steps      | idx_steps_workflow_id               | workflow_id                   | 親子関係の取得                         |
+| workflow_steps      | idx_steps_order                     | workflow_id, order            | 順序通りの取得                         |
+| workflow_executions | idx_executions_workflow_id          | workflow_id                   | 履歴検索                               |
+| workflow_executions | idx_executions_status               | status                        | 実行中/失敗の検索                      |
+| workflow_executions | idx_executions_started_at           | started_at                    | 時系列ソート                           |
+| user_profiles       | idx_profiles_deleted_at             | deleted_at                    | 有効ユーザー取得                       |
+| api_keys            | idx_api_keys_user_id                | user_id                       | ユーザー別キー取得                     |
+| audit_logs          | idx_audit_event_type                | event_type                    | イベント種別検索                       |
+| audit_logs          | idx_audit_entity                    | entity_type, entity_id        | エンティティ別履歴                     |
+| audit_logs          | idx_audit_timestamp                 | timestamp                     | 時系列検索                             |
+| chat_sessions       | idx_chat_sessions_user_id           | user_id                       | ユーザー別セッション取得               |
+| chat_sessions       | idx_chat_sessions_created_at        | created_at                    | 作成日時降順ソート                     |
+| chat_sessions       | idx_chat_sessions_is_pinned         | user_id, is_pinned, pin_order | ピン留めセッション取得                 |
+| chat_sessions       | idx_chat_sessions_deleted_at        | deleted_at                    | 有効セッション取得                     |
+| chat_messages       | idx_chat_messages_session_id        | session_id                    | セッション別メッセージ取得             |
+| chat_messages       | idx_chat_messages_timestamp         | timestamp                     | 時系列検索                             |
+| chat_messages       | idx_chat_messages_role              | role                          | ロール別フィルタリング                 |
+| chat_messages       | idx_chat_messages_session_timestamp | session_id, timestamp         | カバリングインデックス（日時降順取得） |
+| chat_messages       | idx_chat_messages_session_message   | session_id, message_index     | メッセージ順序の一意性保証（UNIQUE）   |
+| files               | files_hash_idx                      | hash                          | 重複ファイル検出（UNIQUE）             |
+| files               | files_path_idx                      | path                          | ファイルパス検索                       |
+| files               | files_mime_type_idx                 | mime_type                     | MIMEタイプ別フィルタリング             |
+| files               | files_category_idx                  | category                      | カテゴリ別ファイル一覧取得             |
+| files               | files_created_at_idx                | created_at                    | 時系列ソート                           |
+| chunks              | idx_chunks_file_id                  | file_id                       | ファイル単位の全チャンク取得           |
+| chunks              | idx_chunks_hash                     | hash                          | 重複チャンク検出（UNIQUE）             |
+| chunks              | idx_chunks_chunk_index              | file_id, chunk_index          | ファイル内の順序付きチャンク取得       |
+| chunks              | idx_chunks_strategy                 | strategy                      | 戦略別チャンク統計                     |
 
 ---
 

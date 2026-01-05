@@ -1,389 +1,133 @@
 ---
 name: technical-documentation-standards
 description: |
-  IEEE 830、Documentation as Code、DRY原則に基づく技術文書化標準の専門スキル。
+  IEEE 830やDoc as Codeなどの標準に基づき、技術文書の構造と品質基準を整えるスキル。
+  テンプレート適用と検証フローを通じて、再利用性と明確性を高める。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • IEEE 830 / 適用: 仕様書構造 / 目的: 標準化
+  • Documentation as Code / 適用: 文書運用 / 目的: 継続的管理
+  • Software Requirements (Karl Wiegers) / 適用: 要求記述 / 目的: 明確性
 
-  - `.claude/skills/technical-documentation-standards/resources/clarity-checklist.md`: Clarity Checklistリソース
-  - `.claude/skills/technical-documentation-standards/resources/doc-as-code.md`: Doc As Codeリソース
-  - `.claude/skills/technical-documentation-standards/resources/dry-for-documentation.md`: Dry For Documentationリソース
-  - `.claude/skills/technical-documentation-standards/resources/ieee-830-overview.md`: Ieee 830 Overviewリソース
-  - `.claude/skills/technical-documentation-standards/resources/verification-patterns.md`: Verification Patternsリソース
-
-  - `.claude/skills/technical-documentation-standards/templates/srs-template.md`: IEEE 830準拠のソフトウェア要件仕様書テンプレート（構造化・検証可能記述）
-
-  - `.claude/skills/technical-documentation-standards/scripts/check-dry-violations.mjs`: Check Dry Violationsスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when defining documentation standards, creating SRS templates, or reviewing technical docs for consistency.
+  documentation standards, IEEE 830, SRS, doc-as-code, documentation review
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
 ---
 
-# Technical Documentation Standards
+# technical-documentation-standards
 
 ## 概要
 
-このスキルは、技術文書を「正本」として確立するための標準とプラクティスを提供します。
-アンドリュー・ハントの『達人プログラマー』が提唱する DRY 原則を文書にも適用し、
-IEEE 830 等の国際標準に準拠した品質の高い技術文書を作成します。
+技術文書の標準構造、テンプレート適用、品質検証を一貫して実行するスキル。
 
-**主要な価値**:
-
-- 実装者が迷わない明確な仕様書
-- コードとドキュメントの整合性維持
-- 重複排除による保守性向上
-- 検証可能で曖昧さのない記述
-
-**対象ユーザー**:
-
-- 仕様書を作成するエージェント（@spec-writer）
-- テクニカルライター
-- システムアーキテクト
-
-## リソース構造
-
-```
-technical-documentation-standards/
-├── SKILL.md                                    # 本ファイル（概要と原則）
-├── resources/
-│   ├── ieee-830-overview.md                   # IEEE 830準拠ガイド
-│   ├── dry-for-documentation.md               # DRY原則の文書適用
-│   ├── doc-as-code.md                         # Documentation as Codeプラクティス
-│   ├── clarity-checklist.md                   # 明確性チェックリスト
-│   └── verification-patterns.md               # 検証可能な記述パターン
-├── scripts/
-│   └── check-dry-violations.mjs               # DRY違反検出スクリプト
-└── templates/
-    └── srs-template.md                        # ソフトウェア要件仕様書テンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# IEEE 830準拠ガイド
-cat .claude/skills/technical-documentation-standards/resources/ieee-830-overview.md
-
-# DRY原則の文書適用
-cat .claude/skills/technical-documentation-standards/resources/dry-for-documentation.md
-
-# Documentation as Codeプラクティス
-cat .claude/skills/technical-documentation-standards/resources/doc-as-code.md
-
-# 明確性チェックリスト
-cat .claude/skills/technical-documentation-standards/resources/clarity-checklist.md
-
-# 検証可能な記述パターン
-cat .claude/skills/technical-documentation-standards/resources/verification-patterns.md
-```
-
-### スクリプト実行
-
-```bash
-# DRY違反検出（TypeScript）
-node .claude/skills/technical-documentation-standards/scripts/check-dry-violations.mjs <directory>
-```
-
-### テンプレート参照
-
-```bash
-# ソフトウェア要件仕様書テンプレート
-cat .claude/skills/technical-documentation-standards/templates/srs-template.md
-```
-
-## いつ使うか
-
-### シナリオ 1: 正式な仕様書の作成
-
-**状況**: 実装の根拠となる公式仕様書を作成する
-
-**適用条件**:
-
-- [ ] 複数の実装者が参照する文書である
-- [ ] 長期間メンテナンスされる予定
-- [ ] 品質保証の根拠として使用される
-
-**推奨アプローチ**: IEEE 830 準拠、検証可能な記述
-
-### シナリオ 2: ドキュメント品質の改善
-
-**状況**: 既存ドキュメントの品質が低く、使いにくい
-
-**適用条件**:
-
-- [ ] 曖昧な表現が多い
-- [ ] 重複情報が散在している
-- [ ] 最新状態が不明確
-
-**推奨アプローチ**: DRY 原則適用、明確性チェックリスト
-
-### シナリオ 3: Documentation as Code 導入
-
-**状況**: ドキュメントとコードの乖離を防ぎたい
-
-**適用条件**:
-
-- [ ] ドキュメントを Git で管理したい
-- [ ] ドキュメントの変更を CI で検証したい
-- [ ] ドキュメント生成を自動化したい
-
-**推奨アプローチ**: Markdown、Lint、自動生成
-
-## 前提条件
-
-### 必要な知識
-
-- [ ] 基本的なドキュメンテーションスキル
-- [ ] バージョン管理（Git）の基礎
-- [ ] Markdown の基本構文
-
-### 必要なツール
-
-- Write: ドキュメントの作成
-- Read: 既存ドキュメントの参照
-- Grep: 重複検出、パターン検索
-
-### 環境要件
-
-- Git リポジトリ内でドキュメントを管理
-- Markdown レンダリング環境
+---
 
 ## ワークフロー
 
-### Phase 1: 標準の理解と適用方針決定
+### Phase 1: 文書標準の定義
 
-**目的**: 適用する標準と品質基準を明確化する
+**目的**: 文書タイプに応じた標準構造と品質基準を確定する。
 
-**ステップ**:
+**アクション**:
 
-1. **ドキュメントタイプの特定**:
-   - 要件仕様書 → IEEE 830
-   - API 仕様書 → OpenAPI + DRY
-   - 設計書 → アーキテクチャ標準
+1. 文書目的と対象読者を整理する
+2. 必須セクションと品質基準を定義する
+3. 標準構成を文書化する
 
-2. **品質基準の設定**:
-   - 完全性: 必要な情報がすべて含まれるか
-   - 明確性: 曖昧さがないか
-   - 検証可能性: 検証できる基準があるか
-   - 一貫性: 用語や形式が統一されているか
+**Task**: `agents/define-standard.md` を参照
 
-**判断基準**:
+### Phase 2: テンプレート適用
 
-- [ ] 適用する標準が明確か？
-- [ ] 品質基準が定義されているか？
+**目的**: 標準に基づき文書の構成を整備する。
 
-**リソース**: `resources/ieee-830-overview.md`
+**アクション**:
 
-### Phase 2: DRY 原則の適用
+1. テンプレートを選定する
+2. 章構成に沿って内容を配置する
+3. 重複表現を統合する
 
-**目的**: 重複を排除し、単一の真実の情報源を確立する
+**Task**: `agents/apply-template.md` を参照
 
-**ステップ**:
+### Phase 3: 文書検証と品質レビュー
 
-1. **重複の特定**:
-   - 同じ情報が複数箇所に記述されていないか
-   - 共通定義（データ型、定数、認証方式等）を抽出
+**目的**: 明確性とDRY観点で品質を検証する。
 
-2. **共通定義の作成**:
-   - 共通定義ファイルに集約
-   - 参照による再利用
+**アクション**:
 
-3. **参照方式の確立**:
-   - Markdown リンクで参照
-   - 一貫した参照形式
+1. 構造の抜け漏れを検証する
+2. DRY違反を検出する
+3. 改善提案を整理する
 
-**判断基準**:
+**Task**: `agents/verify-document.md` を参照
 
-- [ ] 同じ情報が 2 箇所以上に記述されていないか？
-- [ ] 共通定義が適切に分離されているか？
-- [ ] 参照が正確で有効か？
+---
 
-**リソース**: `resources/dry-for-documentation.md`
+## Task仕様ナビ
 
-### Phase 3: 明確性の確保
+| Task             | 起動タイミング | 入力             | 出力                 |
+| ---------------- | -------------- | ---------------- | -------------------- |
+| define-standard  | Phase 1開始時  | 文書目的         | 文書標準定義         |
+| apply-template   | Phase 2開始時  | 文書標準定義     | 初期文書ドラフト     |
+| verify-document  | Phase 3開始時  | 初期文書ドラフト | 品質レビュー報告     |
 
-**目的**: 曖昧さを排除し、実装者が迷わない記述にする
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-**ステップ**:
-
-1. **曖昧表現の検出**:
-   - 「適切に」「必要に応じて」「可能であれば」を排除
-   - 具体的な条件や数値に置き換え
-
-2. **検証可能な記述**:
-   - すべての要件にテスト可能な基準
-   - 成功/失敗が明確に判定可能
-
-3. **完全性の確認**:
-   - すべての入力に対して出力が定義
-   - エラーケースが網羅
-
-**判断基準**:
-
-- [ ] 曖昧な表現が残っていないか？
-- [ ] すべての要件が検証可能か？
-- [ ] エッジケースが考慮されているか？
-
-**リソース**: `resources/clarity-checklist.md`, `resources/verification-patterns.md`
-
-### Phase 4: Documentation as Code の実践
-
-**目的**: ドキュメントをコードと同様に管理する
-
-**ステップ**:
-
-1. **バージョン管理**:
-   - Git でドキュメントを管理
-   - 変更履歴の記録
-   - ブランチ戦略の適用
-
-2. **自動検証**:
-   - Markdown リンター
-   - スペルチェック
-   - 構文検証
-
-3. **CI/CD 統合**:
-   - プルリクエストでのレビュー
-   - 自動ビルド・デプロイ
-
-**判断基準**:
-
-- [ ] ドキュメントが Git 管理されているか？
-- [ ] 自動検証が設定されているか？
-- [ ] レビュープロセスがあるか？
-
-**リソース**: `resources/doc-as-code.md`
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **単一の真実の情報源（SSOT）**:
-   - 共通定義は 1 箇所に集約
-   - 他からは参照のみ
-   - 変更は 1 箇所で完結
-
-2. **検証可能な記述**:
-   - 「ログインは高速であるべき」→「ログインは 200ms 以内に完了する」
-   - 測定可能、テスト可能な基準
-
-3. **変更履歴の明記**:
-   - バージョン番号
-   - 変更日と変更内容
-   - 変更理由
+| 推奨事項                         | 理由                               |
+| -------------------------------- | ---------------------------------- |
+| 目的と対象読者を明確にする       | 文書の粒度が揃う                   |
+| テンプレートを使って構成を統一   | 品質のばらつきを抑える             |
+| DRY違反を定期的に検出する         | 保守性が高まる                     |
 
 ### 避けるべきこと
 
-1. **曖昧な表現**:
-   - 「適切に処理する」
-   - 「必要に応じて」
-   - 「可能な限り」
+| 禁止事項                     | 問題点                             |
+| ---------------------------- | ---------------------------------- |
+| 標準を定義せずに文書化する   | ばらつきが大きくなる               |
+| テンプレートを無視する       | 再利用性が低下する                 |
+| 検証を省略する               | 品質低下に気づきにくい             |
 
-2. **重複記述**:
-   - 同じ情報を複数箇所に記載
-   - コピペによる記述
+---
 
-3. **未バージョン管理**:
-   - ローカルファイルのみ
-   - 変更履歴なし
+## リソース参照
 
-## トラブルシューティング
+### scripts/（決定論的処理）
 
-### 問題 1: DRY 違反が見つかる
+| スクリプト                               | 機能                         |
+| ---------------------------------------- | ---------------------------- |
+| `scripts/validate-doc-structure.mjs`     | 文書構造を検証する           |
+| `scripts/check-dry-violations.mjs`       | DRY違反を検出する            |
+| `scripts/log_usage.mjs`                  | 使用記録をLOGS.mdに記録する  |
 
-**症状**: 同じ情報が複数箇所に記述されている
+### references/（詳細知識）
 
-**原因**:
+| リソース            | パス                                                     | 読込条件     |
+| ------------------- | -------------------------------------------------------- | ------------ |
+| 基礎                | [references/Level1_basics.md](references/Level1_basics.md) | 初回利用時   |
+| 実務                | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実務適用時 |
+| 高度設計            | [references/Level3_advanced.md](references/Level3_advanced.md) | 品質改善時 |
+| エキスパート        | [references/Level4_expert.md](references/Level4_expert.md) | 組織適用時 |
+| IEEE 830概要        | [references/ieee-830-overview.md](references/ieee-830-overview.md) | Phase 1 |
+| Doc as Code         | [references/doc-as-code.md](references/doc-as-code.md) | Phase 2 |
+| DRY適用             | [references/dry-for-documentation.md](references/dry-for-documentation.md) | Phase 2 |
+| 明確性チェック      | [references/clarity-checklist.md](references/clarity-checklist.md) | Phase 3 |
+| 検証パターン        | [references/verification-patterns.md](references/verification-patterns.md) | Phase 3 |
 
-- 急いで作成したため重複
-- 参照方式が確立されていない
+### assets/（テンプレート）
 
-**解決策**:
+| アセット                             | 用途                       |
+| ------------------------------------ | -------------------------- |
+| `assets/srs-template.md`             | SRS作成テンプレート        |
+| `assets/document-review-checklist.md` | 文書レビューのチェックリスト |
 
-1. `check-dry-violations.mjs`で検出
-2. 共通定義ファイルに抽出
-3. 参照に置き換え
-
-### 問題 2: 曖昧さが残っている
-
-**症状**: 実装者から質問が来る
-
-**原因**:
-
-- 暗黙の前提がある
-- 条件が明示されていない
-
-**解決策**:
-
-1. 明確性チェックリストで検証
-2. 具体的な条件・数値に置き換え
-3. 例を追加
-
-### 問題 3: ドキュメントとコードが乖離
-
-**症状**: 仕様書と実装が一致しない
-
-**原因**:
-
-- 更新が同期されていない
-- レビュープロセスがない
-
-**解決策**:
-
-1. Documentation as Code 導入
-2. PR でのドキュメント必須化
-3. 自動検証の追加
-
-## 関連スキル
-
-- **structured-writing** (`.claude/skills/structured-writing/SKILL.md`): 構造化ライティング手法
-- **version-control-for-docs** (`.claude/skills/version-control-for-docs/SKILL.md`): ドキュメントのバージョン管理
-- **documentation-architecture** (`.claude/skills/documentation-architecture/SKILL.md`): ドキュメント構造設計
-
-## メトリクス
-
-### DRY 遵守率
-
-**測定方法**: 1 - (重複情報数 / 総情報数)
-**目標**: 100%
-
-### 明確性スコア
-
-**測定方法**: 曖昧表現検出数 / 総文数
-**目標**: 0%（曖昧表現なし）
-
-### 検証可能性率
-
-**測定方法**: 検証可能な要件数 / 総要件数
-**目標**: 100%
-
-## 変更履歴
-
-| バージョン | 日付       | 変更内容                                           |
-| ---------- | ---------- | -------------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版作成 - IEEE 830、DRY、Doc as Code の統合ガイド |
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- 技術文書の品質基準設定
-- DRY 原則のドキュメントへの適用
-- 明確性の確保と曖昧さの排除
-- Documentation as Code の導入
-
-### このスキルが行わないこと
-
-- 文書の具体的なコンテンツ作成
-- プロジェクト固有のビジネスロジック
-- 実際のコード実装
-
-### 参考文献
-
-- **『達人プログラマー』** Andrew Hunt & David Thomas 著
-  - Chapter 1: DRY 原則
-  - Chapter 7: Documentation
-- **IEEE 830-1998**: Software Requirements Specification
-- **Docs for Developers**: Technical Documentation Best Practices

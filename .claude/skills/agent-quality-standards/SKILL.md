@@ -1,387 +1,138 @@
 ---
 name: agent-quality-standards
 description: |
-  エージェント品質基準と検証プロセスを専門とするスキル。
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  エージェント品質基準と検証プロセスを専門とするスキル。エージェント設計、品質メトリクス、検証戦略、エラーハンドリング、品質スコアリングに対応。
 
-  - `.claude/skills/agent-quality-standards/resources/quality-metrics.md`: Quality Metrics
-  - `.claude/skills/agent-quality-standards/templates/quality-checklist-template.md`: Quality Checklist Template
-  - `.claude/skills/agent-quality-standards/scripts/calculate-quality-score.mjs`: calculate-quality-score.mjs
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: エージェント品質設計 / 目的: 実践的な品質基準の構築
+  • Code Complete (Steve McConnell) / 適用: エラーハンドリング戦略 / 目的: 堅牢なエージェント実装
 
-  専門分野:
-  - 完了条件設計: Phase毎チェックリスト、最終完了条件、品質ゲート
-  - 品質メトリクス: 測定可能な基準、スコアリングシステム
-  - エラーハンドリング: 4段階戦略（リトライ、フォールバック、エスカレーション、ロギング）
-  - 品質評価: 5つの品質カテゴリ（構造、設計原則、セキュリティ、ドキュメント、統合）
-
-  使用タイミング:
-  - エージェントの完了条件を設計する時
-  - 品質メトリクスを定義する時
-  - エラーハンドリング戦略を設計する時
-  - 品質評価とスコアリングを行う時
-
-  Use proactively when defining quality standards, completion criteria,
-  or error handling strategies for agents.
+  Trigger:
+  Use when evaluating agent quality, designing completion criteria, defining quality metrics, or planning error handling strategies.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 version: 1.0.0
+level: 1
+last_updated: 2025-12-31
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "手順設計"
+      - "実践的改善"
 ---
 
 # Agent Quality Standards
 
 ## 概要
 
-このスキルは、Claude Codeエージェントの品質基準と検証プロセスの包括的なガイドラインを提供します。
+エージェント品質基準と検証プロセスを専門とするスキル。
 
-**主要な価値**:
-
-- 明確な完了条件により、タスクの完了判定が可能
-- 品質メトリクスにより、エージェントの品質が定量化
-- エラーハンドリング戦略により、障害時の対応が明確
-- 品質評価により、継続的改善が可能
-
-## リソース構造
-
-```
-agent-quality-standards/
-├── SKILL.md
-├── resources/
-│   ├── completion-criteria-design.md
-│   ├── quality-metrics-catalog.md
-│   ├── error-handling-strategies.md
-│   └── quality-scoring-system.md
-└── templates/
-    ├── completion-checklist.md
-    └── quality-scorecard.md
-```
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 ## ワークフロー
 
-### Phase 1: 完了条件の設計
+### Phase 1: 目的と前提の整理
 
-**目的**: 各Phaseとタスク全体の完了判定基準を定義
+**目的**: タスクの目的と前提条件を明確にする
 
-**完了条件の種類**:
+**アクション**:
 
-#### Phase毎の完了条件
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
-**テンプレート**:
+**Task**: `agents/analyze-quality-context.md` を参照
 
-```markdown
-#### Phase [N] 完了条件
+### Phase 2: スキル適用
 
-- [ ] [条件1]
-- [ ] [条件2]
-- [ ] [条件3]
-```
+**目的**: スキルの指針に従って具体的な作業を進める
 
-**設計原則**:
+**アクション**:
 
-- 各Phaseに最低3つの条件
-- 測定可能な基準
-- Yes/Noで判定可能
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 品質スコアを算出し改善提案を作成
 
-#### 最終完了条件
+**Task**: `agents/apply-quality-standards.md` を参照
 
-**必須要素**:
+### Phase 3: 検証と記録
 
-- 全Phaseの完了
-- 成果物の存在確認
-- 品質メトリクスの達成
+**目的**: 成果物の検証と実行記録の保存
 
-**成功の定義**:
-タスクが完了し、期待される成果物が生成され、
-品質基準を満たしている状態を明確に記述
+**アクション**:
 
-**品質ゲート設計**:
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-```
-Phase完了 → 品質チェック → 合格？
-                         ├─ Yes → 次Phase
-                         └─ No  → Phase再実行 or 前Phaseに戻る
-```
+**Task**: `agents/validate-quality.md` を参照
 
-**リソース**: `resources/completion-criteria-design.md`
+---
 
-### Phase 2: 品質メトリクスの定義
+## Task仕様ナビ
 
-**目的**: エージェントの品質を測定可能な形で定義
+| Task                    | 起動タイミング | 入力             | 出力             |
+| ----------------------- | -------------- | ---------------- | ---------------- |
+| analyze-quality-context | Phase 1開始時  | タスク仕様       | コンテキスト分析 |
+| apply-quality-standards | Phase 2開始時  | コンテキスト分析 | 品質評価レポート |
+| validate-quality        | Phase 3開始時  | 品質評価レポート | 検証結果レポート |
 
-**品質メトリクスの例**:
-
-```yaml
-metrics:
-  design_time: < 15 minutes
-  completeness: > 95%
-  clarity_score: > 8/10
-  security_compliance: 100%
-  test_coverage: 3+ test cases
-```
-
-**5つの品質カテゴリ**:
-
-#### 1. 構造的品質
-
-- YAML完全性: name, description必須、tools/model適切
-- セクション完全性: 全必須セクション含む
-- 階層構造: Phase 1-5、各Phaseに3-5ステップ
-
-**評価基準**: 0-10点
-
-#### 2. 設計原則準拠
-
-- 単一責任: エージェントの責務が1つ
-- コンテキスト分離: 詳細がスキルに分離
-- 最小権限: ツール権限が必要最小限
-- Progressive Disclosure: 3層開示適用
-
-**評価基準**: 0-10点
-
-#### 3. セキュリティ品質
-
-- パス制限: write_allowed_paths設定
-- 承認ゲート: 危険操作にapproval_required
-- センシティブ保護: .env, \*.key制限
-- Bash制限: 危険コマンド禁止
-
-**評価基準**: 0-10点
-
-#### 4. ドキュメンテーション品質
-
-- description具体性: 4-8行、トリガー条件含む
-- 参照の正確性: スキル・コマンドパス正確
-- 例の充実: 適切な例提供
-- チェックリスト: 判断基準が測定可能
-
-**評価基準**: 0-10点
-
-#### 5. 統合品質
-
-- 依存関係の妥当性: 循環参照なし
-- ハンドオフの明確性: 標準フォーマット準拠
-- テストケース: 正常系2つ、異常系1つ以上
-- エコシステム適合: Claude Code設計思想に合致
-
-**評価基準**: 0-10点
-
-**品質スコアリング**:
-
-- 9-10点: 優秀（そのまま使用可能）
-- 7-8点: 良好（軽微な調整推奨）
-- 5-6点: 要改善（重要な修正が必要）
-- 0-4点: 不合格（再設計が必要）
-
-**リソース**: `resources/quality-metrics-catalog.md`
-
-### Phase 3: エラーハンドリング戦略
-
-**目的**: 予期されるエラーへの4段階対応を定義
-
-**4段階エラーハンドリング**:
-
-#### レベル1: 自動リトライ
-
-**対象エラー**:
-
-- 一時的なエラー（ネットワーク、ファイルロック）
-- 軽微な構文エラー（自動修正可能）
-
-**リトライ戦略**:
-
-- 最大回数: 3回
-- バックオフ: 1s, 2s, 4s（指数バックオフ）
-- 各リトライで異なるアプローチ
-
-#### レベル2: フォールバック
-
-**リトライ失敗後の代替手段**:
-
-1. 簡略化アプローチ: より単純な方法を試行
-2. 既存テンプレート使用: 汎用パターンを適用
-3. 段階的構築: 最小限から開始
-
-#### レベル3: 人間へのエスカレーション
-
-**エスカレーション条件**:
-
-- 設計方針が決定できない
-- 依存関係の循環が解消できない
-- セキュリティリスクの評価が必要
-- ユーザーの意図が不明確
-
-**エスカレーション形式**:
-
-```json
-{
-  "status": "escalation_required",
-  "reason": "具体的な理由",
-  "attempted_solutions": ["試行1", "試行2"],
-  "current_state": {...},
-  "suggested_question": "ユーザーへの質問"
-}
-```
-
-#### レベル4: ロギング
-
-**ログフォーマット**:
-
-```json
-{
-  "timestamp": "2025-11-24T10:30:00Z",
-  "agent": "agent-name",
-  "phase": "Phase X",
-  "error_type": "ValidationError",
-  "error_message": "詳細メッセージ",
-  "context": {...},
-  "resolution": "解決方法"
-}
-```
-
-**リソース**: `resources/error-handling-strategies.md`
-
-### Phase 4: 品質評価と継続的改善
-
-**目的**: 定期的な品質評価と改善サイクル
-
-**評価プロセス**:
-
-1. 品質スコアカードの作成
-2. 各カテゴリの評価（0-10点）
-3. 総合スコアの算出（平均値）
-4. 改善項目の特定
-5. 優先順位付けと実施
-
-**継続的改善サイクル**:
-
-```
-評価 → 改善計画 → 実施 → 再評価
-  ↑                          ↓
-  └──────────────────────────┘
-```
-
-**リソース**: `resources/quality-scoring-system.md`
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **測定可能な基準**:
-   - ✅ 「テストカバレッジ80%以上」
-   - ❌ 「良いテストを書く」
-
-2. **チェックリスト形式**:
-   - すべての判断基準をチェックリスト化
-   - Yes/Noで判定可能な表現
-
-3. **4段階エラー対応**:
-   - すべてのエラーを4段階で対応
-   - エスカレーション条件を明確化
+- エージェントの完了条件を設計する時
+- 品質メトリクスを定義する時
+- エラーハンドリング戦略を設計する時
+- 品質評価とスコアリングを行う時
 
 ### 避けるべきこと
 
-1. **曖昧な基準**:
-   - ❌ 「適切に実装する」
-   - ✅ 「YAML構文エラーがない」
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-2. **エラーの無視**:
-   - エラーハンドリングを必ず実装
-   - ログを必ず記録
+## リソース参照
 
-## トラブルシューティング
+### 学習リソース（段階別）
 
-### 問題1: 完了条件が曖昧
+| レベル | ファイル                            | 対象                         |
+| ------ | ----------------------------------- | ---------------------------- |
+| 基礎   | `references/Level1_basics.md`       | スキルの基本概念と初期設定   |
+| 実務   | `references/Level2_intermediate.md` | 実装パターンと実務ガイド     |
+| 応用   | `references/Level3_advanced.md`     | 高度な設計と最適化           |
+| 専門   | `references/Level4_expert.md`       | 専門的なアプローチと事例研究 |
 
-**症状**: タスク完了の判定ができない
+### スキル固有リソース
 
-**原因**: 測定不可能な基準
+| リソース                           | 用途                                          |
+| ---------------------------------- | --------------------------------------------- |
+| `references/quality-metrics.md`    | 品質メトリクス定義と計算                      |
+| `references/requirements-index.md` | 要求仕様の索引（docs/00-requirements と同期） |
+| `references/legacy-skill.md`       | 旧SKILL.mdの全文（互換性確認用）              |
 
-**解決策**:
+### テンプレート
 
-1. 数値化可能な基準に変更
-2. チェックリスト形式を徹底
-3. Yes/Noで判定可能な表現
+| テンプレート                           | 用途               |
+| -------------------------------------- | ------------------ |
+| `assets/quality-checklist-template.md` | 品質チェックリスト |
 
-### 問題2: 品質が低下
+### スクリプト（自動化）
 
-**症状**: 品質スコアが低い
+| スクリプト                            | 機能               |
+| ------------------------------------- | ------------------ |
+| `scripts/calculate-quality-score.mjs` | 品質スコア計算     |
+| `scripts/log_usage.mjs`               | 使用記録・自動評価 |
+| `scripts/validate-skill.mjs`          | スキル構造検証     |
 
-**原因**: 継続的改善が行われていない
+## 変更履歴
 
-**解決策**:
-
-1. 品質評価を定期実施
-2. 改善サイクルを確立
-3. 優先順位付けと実施
-
-## 関連スキル
-
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`): 構造設計
-- **agent-validation-testing** (`.claude/skills/agent-validation-testing/SKILL.md`): 検証とテスト
-- **best-practices-curation** (`.claude/skills/best-practices-curation/SKILL.md`): ベストプラクティス
-- **progressive-disclosure** (`.claude/skills/progressive-disclosure/SKILL.md`): トークン効率化
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- 品質メトリクス (`resources/quality-metrics.md`)
-- 品質チェックリストテンプレート (`templates/quality-checklist-template.md`)
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# 品質メトリクス
-cat .claude/skills/agent-quality-standards/resources/quality-metrics.md
-```
-
-### テンプレート参照
-
-```bash
-# 品質チェックリストテンプレートを読み取る
-cat .claude/skills/agent-quality-standards/templates/quality-checklist-template.md
-
-# テンプレートをコピーして新規チェックリストを作成
-cp .claude/skills/agent-quality-standards/templates/quality-checklist-template.md ./quality-checklist.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# エージェント構造検証（agent-structure-designスキルのスクリプトを使用）
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
-
-# 循環依存チェック（agent-dependency-designスキルのスクリプトを使用）
-node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
-
-# アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
-node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
-```
-
-## メトリクス
-
-### 品質スコア分布
-
-**目標**: 平均8点以上、9-10点の比率>70%
-
-### エラー解決率
-
-**目標**: レベル1-2で解決>90%、エスカレーション<10%
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- 完了条件の設計
-- 品質メトリクスの定義
-- エラーハンドリング戦略の設計
-- 品質評価とスコアリング
-
-### このスキルが行わないこと
-
-- エージェントの実際の実装
-- 具体的なコード生成
-- テストの実行（@agent-validation-testingの役割）
+| Version | Date       | Changes                                                  |
+| ------- | ---------- | -------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | agents/追加、Task仕様ナビ改善                            |
+| 1.0.1   | 2025-12-31 | 18-skills.md仕様対応: frontmatter、Trigger、Task仕様ナビ |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added              |

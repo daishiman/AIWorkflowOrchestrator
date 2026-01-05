@@ -44,6 +44,12 @@ import type {
   ReplaceUndoRequest,
   ReplaceRedoRequest,
 } from "./types";
+import type {
+  OpenFileDialogRequest,
+  GetFileMetadataRequest,
+  GetMultipleFileMetadataRequest,
+  ValidateFilePathRequest,
+} from "@repo/shared/schemas";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -219,6 +225,17 @@ const electronAPI: ElectronAPI = {
       safeInvoke(IPC_CHANNELS.REPLACE_UNDO, request),
     redo: (request: ReplaceRedoRequest) =>
       safeInvoke(IPC_CHANNELS.REPLACE_REDO, request),
+  },
+
+  fileSelection: {
+    openDialog: (request: OpenFileDialogRequest) =>
+      safeInvoke(IPC_CHANNELS.FILE_SELECTION_OPEN_DIALOG, request),
+    getMetadata: (request: GetFileMetadataRequest) =>
+      safeInvoke(IPC_CHANNELS.FILE_SELECTION_GET_METADATA, request),
+    getMultipleMetadata: (request: GetMultipleFileMetadataRequest) =>
+      safeInvoke(IPC_CHANNELS.FILE_SELECTION_GET_MULTIPLE_METADATA, request),
+    validatePath: (request: ValidateFilePathRequest) =>
+      safeInvoke(IPC_CHANNELS.FILE_SELECTION_VALIDATE_PATH, request),
   },
 
   // Generic invoke for IPC calls

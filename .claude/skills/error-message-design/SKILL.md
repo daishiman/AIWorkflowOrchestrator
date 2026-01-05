@@ -1,300 +1,148 @@
 ---
 name: error-message-design
 description: |
-    ユーザーフレンドリーなエラーメッセージの設計を専門とするスキル。
-    エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を
-    通じて、ユーザー体験を向上させます。
-    専門分野:
-    - エラーコード体系: 階層的コード、カテゴリ分類
-    - メッセージ設計: アクション指向、コンテキスト考慮
-    - i18n対応: 多言語化、文化的配慮
-    - 開発者向けエラー: デバッグ情報、スタックトレース
-    使用タイミング:
-    - バリデーションエラーメッセージの設計時
-    - APIエラーレスポンスの設計時
-    - 多言語対応のエラーシステム構築時
-    - ユーザー向け/開発者向けエラーの分離時
-    Use proactively when designing validation error messages,
-    API error responses, or building i18n-ready error systems.
+  ユーザーフレンドリーなエラーメッセージの設計を専門とするスキル。
+  エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を提供。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  - The Pragmatic Programmer / 適用: 実践的改善 / 目的: 品質維持
+  - Nielsen Norman Group UX Guidelines / 適用: エラーメッセージ設計 / 目的: ユーザビリティ向上
 
-  - `.claude/skills/error-message-design/resources/api-error-responses.md`: RFC 7807準拠のAPIエラーレスポンス設計
-  - `.claude/skills/error-message-design/resources/error-code-system.md`: 階層的エラーコード体系とカテゴリ分類
-  - `.claude/skills/error-message-design/resources/i18n-error-handling.md`: 多言語対応エラーメッセージの実装
-  - `.claude/skills/error-message-design/resources/user-friendly-messages.md`: アクション指向のユーザーフレンドリーメッセージ
-  - `.claude/skills/error-message-design/templates/error-system-template.ts`: エラーシステム実装テンプレート
-  - `.claude/skills/error-message-design/scripts/validate-error-messages.mjs`: エラーメッセージの検証スクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when designing error messages, creating error code systems, implementing i18n for errors, or building user-friendly error responses.
+  error message, error code, i18n, user-friendly, validation error, API error response
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Error Message Design
 
 ## 概要
 
-このスキルは、ユーザーフレンドリーなエラーメッセージの設計パターンを提供します。
-エラーコード体系、多言語対応、アクション指向のメッセージ設計を通じて、
-エラー発生時もユーザーが次のアクションを取れるようにします。
+ユーザーフレンドリーなエラーメッセージの設計を専門とするスキル。
+エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を
+通じて、ユーザー体験を向上させる。
 
-**主要な価値**:
+## ワークフロー
 
-- ユーザーが理解しやすいエラーメッセージ
-- 開発者がデバッグしやすい情報提供
-- 多言語・多文化対応
-- 一貫したエラーハンドリング
+### Phase 1: エラーメッセージ設計
 
-**対象ユーザー**:
+**目的**: エラータイプを分類し、メッセージを設計する
 
-- スキーマ定義を行うエージェント（@schema-def）
-- APIを設計する開発者
-- フロントエンド開発者
+**アクション**:
 
-## リソース構造
+1. エラー発生シナリオを分析
+2. エラーコード体系を設計
+3. ユーザー向けメッセージを作成
+4. 多言語対応を考慮
 
-```
-error-message-design/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── error-code-system.md                   # エラーコード体系
-│   ├── user-friendly-messages.md              # ユーザーフレンドリーメッセージ
-│   ├── i18n-error-handling.md                 # 多言語対応
-│   └── api-error-responses.md                 # APIエラーレスポンス
-├── scripts/
-│   └── validate-error-messages.mjs            # エラーメッセージ検証
-└── templates/
-    └── error-system-template.ts               # エラーシステムテンプレート
-```
+**Task**: `agents/design-error-messages.md` を参照
 
-## コマンドリファレンス
+### Phase 2: エラーシステム実装
 
-### リソース読み取り
+**目的**: 設計に基づきエラーシステムを実装する
 
-```bash
-# エラーコード体系
-cat .claude/skills/error-message-design/resources/error-code-system.md
+**アクション**:
 
-# ユーザーフレンドリーメッセージ
-cat .claude/skills/error-message-design/resources/user-friendly-messages.md
+1. エラークラス/型を定義
+2. メッセージカタログを実装
+3. i18n翻訳リソースを作成
+4. エラーハンドラーを実装
 
-# 多言語対応
-cat .claude/skills/error-message-design/resources/i18n-error-handling.md
+**Task**: `agents/implement-error-messages.md` を参照
 
-# APIエラーレスポンス
-cat .claude/skills/error-message-design/resources/api-error-responses.md
-```
+### Phase 3: 検証と記録
 
-### スクリプト実行
+**目的**: エラーメッセージの品質を検証する
 
-```bash
-# エラーメッセージ検証
-node .claude/skills/error-message-design/scripts/validate-error-messages.mjs <messages.json>
-```
+**アクション**:
 
-### テンプレート参照
+1. `scripts/validate-error-messages.mjs` で検証
+2. ユーザビリティチェックを実施
+3. `scripts/log_usage.mjs` で記録
 
-```bash
-# エラーシステムテンプレート
-cat .claude/skills/error-message-design/templates/error-system-template.ts
-```
+## Task仕様ナビ
 
-## いつ使うか
+| Task | 起動タイミング | 入力 | 出力 |
+|------|----------------|------|------|
+| design-error-messages | 設計時 | エラー要件 | エラーメッセージ仕様 |
+| implement-error-messages | 実装時 | エラーメッセージ仕様 | エラーシステム実装 |
 
-### シナリオ1: フォームバリデーション
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-**状況**: ユーザー入力のバリデーションエラーを表示する
+## エラーメッセージの3原則
 
-**適用条件**:
+### 1. 何が起きたかを説明
 
-- [ ] 複数のフィールドでエラーが発生し得る
-- [ ] ユーザーが修正方法を理解する必要がある
-- [ ] 多言語対応が必要
+**悪い例**: "Error occurred"
+**良い例**: "Your session has expired"
 
-**期待される成果**: 分かりやすいバリデーションエラー表示
+### 2. なぜ起きたかを説明
 
-### シナリオ2: APIエラーレスポンス
+**悪い例**: "Invalid input"
+**良い例**: "The email address format is incorrect"
 
-**状況**: APIクライアントにエラー情報を返す
+### 3. どうすれば解決できるかを説明
 
-**適用条件**:
+**悪い例**: "Please try again"
+**良い例**: "Please enter a valid email (example: user@domain.com)"
 
-- [ ] HTTPステータスコードの選択
-- [ ] エラーコードの体系化
-- [ ] 開発者向けデバッグ情報の提供
+## ベストプラクティス
 
-**期待される成果**: 一貫したAPIエラーレスポンス
+### すべきこと
 
-### シナリオ3: エラーの国際化
+- ユーザーが理解できる言葉を使用
+- 具体的なアクションを提示
+- エラーコードで問い合わせを容易に
+- 多言語対応を考慮した設計
 
-**状況**: 多言語対応のアプリケーションでエラーを表示
+### 避けるべきこと
 
-**適用条件**:
+- 技術用語の露出（SQLException, NullPointer等）
+- スタックトレースの表示
+- ユーザーを責める表現
+- 曖昧な表現（「問題が発生しました」）
 
-- [ ] 複数の言語でエラーメッセージを表示
-- [ ] 文化的な配慮が必要
-- [ ] メッセージの動的な組み立て
+## リソース参照
 
-**期待される成果**: 自然な多言語エラーメッセージ
+### agents/（Task仕様書）
 
-## 基本概念
+| Task | パス | 用途 |
+|------|------|------|
+| 設計 | See [agents/design-error-messages.md](agents/design-error-messages.md) | メッセージ設計 |
+| 実装 | See [agents/implement-error-messages.md](agents/implement-error-messages.md) | システム実装 |
 
-### エラーメッセージの3要素
+### references/（詳細知識）
 
-```typescript
-// 良いエラーメッセージの構成要素
-interface UserFriendlyError {
-  // 1. 何が起きたか
-  title: string;
-  // 例: "メールアドレスが正しくありません"
+| リソース | パス | 用途 |
+|----------|------|------|
+| ユーザーメッセージ | See [references/user-friendly-messages.md](references/user-friendly-messages.md) | メッセージ設計指針 |
+| エラーコード体系 | See [references/error-code-system.md](references/error-code-system.md) | コード設計 |
+| i18n対応 | See [references/i18n-error-handling.md](references/i18n-error-handling.md) | 多言語対応 |
+| APIレスポンス | See [references/api-error-responses.md](references/api-error-responses.md) | レスポンス形式 |
 
-  // 2. なぜ起きたか
-  reason: string;
-  // 例: "入力された形式がメールアドレスとして認識できません"
+### scripts/（決定論的処理）
 
-  // 3. どうすればいいか
-  action: string;
-  // 例: "example@domain.com のような形式で入力してください"
-}
-```
+| スクリプト | 用途 | 使用例 |
+|------------|------|--------|
+| `validate-error-messages.mjs` | メッセージ検証 | `node scripts/validate-error-messages.mjs` |
+| `log_usage.mjs` | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
 
-### 悪いエラーメッセージ vs 良いエラーメッセージ
+### assets/（テンプレート）
 
-```typescript
-// ❌ 悪い例
-const badErrors = [
-  "Error",
-  "Invalid input",
-  "Something went wrong",
-  "エラーが発生しました",
-  "入力が不正です",
-];
-
-// ✅ 良い例
-const goodErrors = [
-  {
-    bad: "Invalid email",
-    good: {
-      title: "メールアドレスの形式が正しくありません",
-      action: "例: taro@example.com",
-    },
-  },
-  {
-    bad: "Password too short",
-    good: {
-      title: "パスワードは8文字以上必要です",
-      hint: "現在: 5文字",
-      action: "あと3文字追加してください",
-    },
-  },
-  {
-    bad: "Network error",
-    good: {
-      title: "サーバーに接続できません",
-      reason: "ネットワーク接続を確認してください",
-      action: "接続を確認してから、もう一度お試しください",
-    },
-  },
-];
-```
-
-### エラーコード体系
-
-```typescript
-// エラーコードの階層構造
-const ERROR_CODES = {
-  // カテゴリ: AUTH (認証)
-  AUTH_001: "認証が必要です",
-  AUTH_002: "セッションの有効期限が切れました",
-  AUTH_003: "アクセス権限がありません",
-
-  // カテゴリ: VALIDATION (バリデーション)
-  VAL_001: "必須項目が入力されていません",
-  VAL_002: "形式が正しくありません",
-  VAL_003: "値が範囲外です",
-
-  // カテゴリ: RESOURCE (リソース)
-  RES_001: "リソースが見つかりません",
-  RES_002: "リソースが既に存在します",
-  RES_003: "リソースが使用中です",
-} as const;
-
-type ErrorCode = keyof typeof ERROR_CODES;
-```
-
-### APIエラーレスポンス
-
-```typescript
-// RFC 7807 Problem Details準拠
-interface ApiError {
-  type: string; // エラータイプのURI
-  title: string; // 人間が読めるタイトル
-  status: number; // HTTPステータスコード
-  detail?: string; // 詳細な説明
-  instance?: string; // このエラー発生のURI
-  code?: string; // アプリケーション固有のエラーコード
-  errors?: FieldError[]; // フィールド別エラー（バリデーション用）
-}
-
-interface FieldError {
-  field: string; // フィールド名
-  message: string; // エラーメッセージ
-  code?: string; // エラーコード
-}
-
-// 使用例
-const validationError: ApiError = {
-  type: "https://api.example.com/errors/validation",
-  title: "入力内容に問題があります",
-  status: 400,
-  detail: "以下のフィールドを確認してください",
-  code: "VAL_001",
-  errors: [
-    {
-      field: "email",
-      message: "有効なメールアドレスを入力してください",
-      code: "VAL_EMAIL",
-    },
-    {
-      field: "password",
-      message: "パスワードは8文字以上必要です",
-      code: "VAL_PASSWORD_LENGTH",
-    },
-  ],
-};
-```
-
-## 判断基準チェックリスト
-
-### メッセージ設計時
-
-- [ ] ユーザーが何をすべきか明確か？
-- [ ] 技術用語を使っていないか？
-- [ ] エラーの原因が分かるか？
-- [ ] 解決方法が提示されているか？
-
-### コード体系設計時
-
-- [ ] エラーコードは一意か？
-- [ ] カテゴリ分類は適切か？
-- [ ] ドキュメント化されているか？
-- [ ] ログで追跡可能か？
-
-### 多言語対応時
-
-- [ ] プレースホルダーは適切に配置されているか？
-- [ ] 語順の違いに対応しているか？
-- [ ] 文化的な配慮がされているか？
-
-## 関連スキル
-
-- `.claude/skills/zod-validation/SKILL.md` - Zodバリデーション
-- `.claude/skills/type-safety-patterns/SKILL.md` - 型安全性パターン
-- `.claude/skills/input-sanitization/SKILL.md` - 入力サニタイズ
+| テンプレート | 用途 |
+|--------------|------|
+| `error-system-template.ts` | エラーシステム実装テンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                        |
-| ---------- | ---------- | ----------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版リリース - エラーメッセージ設計の基本を網羅 |
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.0.0 | 2026-01-01 | agents追加、Level1-4削除、18-skills.md仕様完全準拠 |
+| 1.0.0 | 2025-12-24 | 初版作成 |

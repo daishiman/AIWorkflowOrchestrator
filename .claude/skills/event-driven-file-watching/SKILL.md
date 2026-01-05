@@ -1,257 +1,130 @@
 ---
 name: event-driven-file-watching
 description: |
-    Ryan Dahlのイベント駆動・非同期I/O思想に基づくファイルシステム監視の専門知識。
-    Chokidarライブラリを中心に、Observer Patternによる効率的なファイル変更検知、
-    クロスプラットフォーム対応、EventEmitterによる疎結合な通知システムを提供。
-    使用タイミング:
-    - Chokidarによるファイル監視システムを設計・実装する時
-    - Observer Patternでイベント通知を設計する時
-    - ファイルシステムイベントのハンドリングを実装する時
-    - クロスプラットフォーム対応の監視設定を決定する時
-    - 監視方式（native fsevents vs polling）を選択する時
+  Chokidarライブラリを中心としたファイルシステム監視の専門スキル。
+  Observer Patternによる効率的なファイル変更検知、クロスプラットフォーム対応、
+  EventEmitterによる疎結合な通知システムを設計・実装する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Node.js EventEmitter / 適用: イベント駆動設計 / 目的: 疎結合な通知メカニズム
+  • Chokidar Documentation / 適用: ファイル監視設定 / 目的: クロスプラットフォーム監視
+  • Observer Pattern (GoF) / 適用: イベント通知設計 / 目的: 変更検知と通知の分離
 
-  - `.claude/skills/event-driven-file-watching/resources/chokidar-config-reference.md`: Chokidar設定オプションとクロスプラットフォーム対応ガイド
-  - `.claude/skills/event-driven-file-watching/resources/event-emitter-patterns.md`: EventEmitterによるObserver Patternとイベント通知システムの実装
-  - `.claude/skills/event-driven-file-watching/templates/watcher-template.ts`: ファイル監視システム実装テンプレート
+  Trigger:
+  Use when implementing file system watching, Chokidar configuration, file change detection, or event-based file monitoring systems.
+  file watching, chokidar, fs watch, file change, event emitter, observer pattern, hot reload
 
-  Use proactively when implementing event-driven-file-watching patterns or solving related problems.
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Event-Driven File Watching
 
 ## 概要
 
-このスキルは、Node.js におけるイベント駆動型ファイル監視の設計と実装に関する専門知識を提供します。Ryan Dahl が提唱する非同期 I/O モデルに基づき、効率的で信頼性の高い監視システムを構築するための原則とパターンを定義します。
+Chokidarライブラリを使用したファイルシステム監視の設計・実装スキル。Observer Patternに基づく疎結合なイベント通知システムを構築し、クロスプラットフォームで動作する効率的な監視機構を提供する。
 
----
+## ワークフロー
 
-## 核心概念
+### Phase 1: アーキテクチャ設計
 
-### 1. イベント駆動アーキテクチャの原則
+**目的**: ファイル監視システムのアーキテクチャを設計
 
-**Ryan Dahl の設計原則**:
+**アクション**:
 
-1. **非同期ファースト**: すべての I/O 操作は非同期 API を使用
-2. **シンプル・コア**: 監視コアは最小限、複雑な処理は外部委譲
-3. **イベント駆動**: 状態変化はイベントとして表現（push > poll）
-4. **エラー伝播**: エラーは隠蔽せず明示的に伝播
+1. 監視要件の整理（対象パス、イベントタイプ）
+2. 実行環境の確認（OS、ファイル数）
+3. Chokidar設定の設計
+4. イベントフローの設計
 
-### 2. Chokidar の選択根拠
+**Task**: `agents/watcher-architect.md` を参照
 
-| 技術         | 特性                                         | 推奨度    |
-| ------------ | -------------------------------------------- | --------- |
-| **Chokidar** | クロスプラットフォーム、安定性、豊富な設定   | ✅ 推奨   |
-| fs.watch     | ネイティブ API、プラットフォーム依存、不安定 | ⚠️ 限定的 |
-| fs.watchFile | polling 方式、高 CPU、遅延                   | ❌ 非推奨 |
+### Phase 2: イベントハンドラ実装
 
-### 3. Observer Pattern の適用
+**目的**: Observer Patternに基づくイベントハンドラを実装
 
-```typescript
-// 基本構造
-class FileWatcher extends EventEmitter {
-  private watcher: FSWatcher | null = null;
+**アクション**:
 
-  constructor(private config: WatcherConfig) {
-    super();
-    this.setMaxListeners(10); // メモリリーク防止
-  }
+1. Chokidar watcher の初期化
+2. イベントハンドラの実装
+3. エラーハンドリングの追加
+4. リソースクリーンアップの実装
 
-  // カスタムイベントタイプ
-  // - fileAdded: 新規ファイル追加
-  // - fileChanged: ファイル変更
-  // - fileRemoved: ファイル削除
-  // - error: エラー発生
-  // - ready: 初期スキャン完了
-}
-```
+**Task**: `agents/event-handler-implementer.md` を参照
 
----
+### Phase 3: パフォーマンス最適化
 
-## Chokidar 設定ガイド
+**目的**: メモリ・CPU・スループットの最適化
 
-### 基本設定パラメータ
+**アクション**:
 
-```typescript
-interface ChokidarOptions {
-  // 除外パターン
-  ignored: string | RegExp | ((path: string) => boolean) | Array<...>;
+1. debounce/throttle の適用
+2. ignored パターンの最適化
+3. polling vs native の選択
+4. メモリリーク対策
 
-  // 監視継続（デフォルト: false）
-  persistent: boolean;
+**Task**: `agents/performance-optimizer.md` を参照
 
-  // 初期スキャンでイベント発火（デフォルト: false）
-  ignoreInitial: boolean;
+## Task仕様（ナビゲーション）
 
-  // 書き込み完了待機
-  awaitWriteFinish: false | {
-    stabilityThreshold: number; // 安定性閾値（ms）
-    pollInterval: number;       // チェック間隔（ms）
-  };
+| Task                      | 起動タイミング | 入力       | 出力                 |
+| ------------------------- | -------------- | ---------- | -------------------- |
+| watcher-architect         | Phase 1開始時  | 監視要件   | アーキテクチャ設計書 |
+| event-handler-implementer | Phase 2開始時  | 設計書     | 実装コード           |
+| performance-optimizer     | Phase 3開始時  | 実装コード | 最適化済みコード     |
 
-  // 監視方式
-  usePolling: boolean;         // polling使用（NFS/Docker向け）
-  interval: number;            // pollingインターバル
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
-  // パーミッション
-  ignorePermissionErrors: boolean;
+## ベストプラクティス
 
-  // シンボリックリンク
-  followSymlinks: boolean;
+### すべきこと
 
-  // ディレクトリ深度
-  depth: number | undefined;   // undefined = 無制限
-}
-```
+- `awaitWriteFinish` で書き込み完了を待機
+- `ignored` パターンでnode_modules等を除外
+- エラーイベントを必ずハンドル
+- `watcher.close()` でリソース解放
+- debounce で高頻度イベントを制御
+- 相対パスより絶対パスを使用
 
-### 環境別推奨設定
+### 避けるべきこと
 
-```typescript
-// 開発環境（ローカルファイルシステム）
-const devConfig: ChokidarOptions = {
-  persistent: true,
-  ignoreInitial: true,
-  awaitWriteFinish: {
-    stabilityThreshold: 100,
-    pollInterval: 50,
-  },
-  usePolling: false, // ネイティブfsevents使用
-  ignored: ["**/node_modules/**", "**/.git/**", "**/dist/**"],
-};
-
-// 本番環境（NFS/Docker volumes）
-const prodConfig: ChokidarOptions = {
-  persistent: true,
-  ignoreInitial: true,
-  awaitWriteFinish: {
-    stabilityThreshold: 500,
-    pollInterval: 100,
-  },
-  usePolling: true, // ネットワークFS向け
-  interval: 1000,
-  ignored: ["**/node_modules/**", "**/.git/**"],
-};
-```
-
----
-
-## イベントハンドリング設計
-
-### イベントタイプと用途
-
-| イベント    | 発火条件         | 典型的なハンドリング   |
-| ----------- | ---------------- | ---------------------- |
-| `add`       | ファイル追加     | 同期キュー追加         |
-| `change`    | ファイル変更     | 差分同期               |
-| `unlink`    | ファイル削除     | リモート削除通知       |
-| `addDir`    | ディレクトリ追加 | ディレクトリ構造同期   |
-| `unlinkDir` | ディレクトリ削除 | リモート削除           |
-| `ready`     | 初期スキャン完了 | 監視準備完了通知       |
-| `error`     | エラー発生       | エラーログ・リカバリー |
-| `raw`       | 低レベルイベント | デバッグ用             |
-
-### ハンドラー実装パターン
-
-```typescript
-// 型安全なイベントハンドラー
-type FileEventHandler = (path: string, stats?: fs.Stats) => void;
-type ErrorHandler = (error: Error) => void;
-type ReadyHandler = () => void;
-
-// イベント登録の模範例
-watcher
-  .on("add", (path, stats) => this.emit("fileAdded", { path, stats }))
-  .on("change", (path, stats) => this.emit("fileChanged", { path, stats }))
-  .on("unlink", (path) => this.emit("fileRemoved", { path }))
-  .on("error", (error) => this.emit("error", error))
-  .on("ready", () => this.emit("ready"));
-```
-
----
-
-## 判断基準チェックリスト
-
-### 設計時
-
-- [ ] 監視対象ディレクトリのファイルシステムタイプを確認したか？（ローカル/NFS/Docker）
-- [ ] 除外パターンは.gitignore と整合しているか？
-- [ ] 書き込み完了待機の閾値は対象ファイルサイズに適しているか？
-- [ ] イベントリスナー数の上限を設定したか？（メモリリーク防止）
-
-### 実装時
-
-- [ ] すべての I/O 操作が非同期 API を使用しているか？
-- [ ] error イベントのハンドラーが登録されているか？
-- [ ] graceful shutdown 時に watcher.close()が呼ばれるか？
-- [ ] リソースリーク防止策が実装されているか？
-
-### テスト時
-
-- [ ] ファイル追加イベントが正しく検知されるか？
-- [ ] 除外パターンが正しく機能するか？
-- [ ] 高負荷時（大量ファイル追加）でもメモリリークしないか？
-
----
-
-## TypeScript 型定義
-
-```typescript
-// ファイルイベント構造
-interface FileEvent {
-  type: "add" | "change" | "unlink";
-  path: string;
-  stats?: fs.Stats;
-  timestamp: string; // ISO8601
-}
-
-// 監視設定
-interface WatcherConfig {
-  watchPath: string;
-  ignored: string[];
-  awaitWriteFinish: {
-    stabilityThreshold: number;
-    pollInterval: number;
-  };
-  usePolling: boolean;
-  persistent: boolean;
-}
-
-// エラー情報
-interface WatcherError {
-  code: string; // EACCES, ENOENT等
-  message: string;
-  path?: string;
-  recoverable: boolean;
-}
-```
-
----
-
-## 関連スキル
-
-- `.claude/skills/debounce-throttle-patterns/SKILL.md` - イベント最適化
-- `.claude/skills/file-exclusion-patterns/SKILL.md` - 除外パターン設計
-- `.claude/skills/graceful-shutdown-patterns/SKILL.md` - シャットダウン処理
-- `.claude/skills/nodejs-stream-processing/SKILL.md` - ストリーム処理
-
----
+- 大規模ディレクトリでの再帰監視（要フィルタ）
+- polling を不要に有効化（パフォーマンス低下）
+- watcher の close 忘れ（メモリリーク）
+- ready イベント前のファイル操作
+- 同期処理をイベントハンドラ内で実行
 
 ## リソース参照
 
-詳細な実装例やテンプレートが必要な場合:
+### references/（詳細知識）
 
-```bash
-# Chokidar設定リファレンス
-cat .claude/skills/event-driven-file-watching/resources/chokidar-config-reference.md
+| リソース                 | パス                                                                                   | 用途             |
+| ------------------------ | -------------------------------------------------------------------------------------- | ---------------- |
+| Chokidar設定リファレンス | See [references/chokidar-config-reference.md](references/chokidar-config-reference.md) | オプション詳細   |
+| EventEmitterパターン     | See [references/event-emitter-patterns.md](references/event-emitter-patterns.md)       | イベント通知設計 |
 
-# EventEmitter実装パターン
-cat .claude/skills/event-driven-file-watching/resources/event-emitter-patterns.md
+### scripts/（決定論的処理）
 
-# 監視システムテンプレート
-cat .claude/skills/event-driven-file-watching/templates/watcher-template.ts
-```
+| スクリプト           | 用途               | 使用例                                        |
+| -------------------- | ------------------ | --------------------------------------------- |
+| `log_usage.mjs`      | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+| `validate-skill.mjs` | スキル構造検証     | `node scripts/validate-skill.mjs`             |
+
+### assets/（テンプレート）
+
+| テンプレート          | 用途                         |
+| --------------------- | ---------------------------- |
+| `watcher-template.ts` | ファイル監視実装テンプレート |
+
+## 変更履歴
+
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md完全準拠版として再構築 |
+| 1.1.0   | 2025-12-31 | agents実装、EVALS/LOGS追加         |
+| 1.0.0   | 2025-12-24 | 初版作成                           |

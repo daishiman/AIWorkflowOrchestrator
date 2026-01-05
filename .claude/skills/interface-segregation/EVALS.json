@@ -1,0 +1,99 @@
+{
+  "skillName": "interface-segregation",
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-31",
+  "metrics": {
+    "usageCount": 0,
+    "successCount": 0,
+    "failureCount": 0,
+    "successRate": 0.0
+  },
+  "levelCriteria": {
+    "level1": {
+      "minUsageCount": 0,
+      "minSuccessRate": 0.0,
+      "description": "Basic understanding of ISP and fat interface detection"
+    },
+    "level2": {
+      "minUsageCount": 5,
+      "minSuccessRate": 0.6,
+      "description": "Proficient in interface segregation design patterns"
+    },
+    "level3": {
+      "minUsageCount": 15,
+      "minSuccessRate": 0.75,
+      "description": "Advanced ISP application with composition patterns"
+    },
+    "level4": {
+      "minUsageCount": 30,
+      "minSuccessRate": 0.85,
+      "description": "Expert-level interface architecture with migration strategies"
+    }
+  },
+  "currentLevel": 1,
+  "phaseMetrics": {
+    "analyze": {
+      "usageCount": 0,
+      "successCount": 0,
+      "avgDuration": null,
+      "commonIssues": []
+    },
+    "design": {
+      "usageCount": 0,
+      "successCount": 0,
+      "avgDuration": null,
+      "commonIssues": []
+    },
+    "validate": {
+      "usageCount": 0,
+      "successCount": 0,
+      "avgDuration": null,
+      "commonIssues": []
+    }
+  },
+  "taskMetrics": {
+    "analyze-interfaces": {
+      "usageCount": 0,
+      "successCount": 0,
+      "successRate": 0.0,
+      "avgMethodsAnalyzed": 0,
+      "avgCohesionScore": 0.0
+    },
+    "design-segregation": {
+      "usageCount": 0,
+      "successCount": 0,
+      "successRate": 0.0,
+      "avgInterfacesCreated": 0,
+      "avgMethodsPerInterface": 0
+    },
+    "validate-design": {
+      "usageCount": 0,
+      "successCount": 0,
+      "successRate": 0.0,
+      "avgIssuesDetected": 0
+    }
+  },
+  "qualityIndicators": {
+    "interfaceSegregationQuality": {
+      "avgMethodsReduced": 0,
+      "avgCohesionImprovement": 0.0,
+      "avgClientSatisfaction": 0.0
+    },
+    "designPatterns": {
+      "allOf": 0,
+      "extends": 0,
+      "mixin": 0
+    },
+    "violations": {
+      "fatInterface": 0,
+      "emptyImplementation": 0,
+      "exceptionThrowing": 0,
+      "conditionalImplementation": 0
+    }
+  },
+  "feedbackLoop": {
+    "improvementSuggestions": [],
+    "commonPitfalls": [],
+    "bestPractices": []
+  }
+}

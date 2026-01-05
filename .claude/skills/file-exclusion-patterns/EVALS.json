@@ -1,0 +1,80 @@
+{
+  "skill_name": "file-exclusion-patterns",
+  "version": "1.2.0",
+  "metrics": {
+    "usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "success_rate": 0,
+    "avg_execution_time_seconds": 0,
+    "last_used": null
+  },
+  "level_criteria": {
+    "level_1": {
+      "description": "Basic pattern design and .gitignore creation",
+      "requirements": {
+        "usage_count": 1,
+        "success_rate": 0.5
+      },
+      "achieved": false,
+      "achieved_date": null
+    },
+    "level_2": {
+      "description": "Platform-specific optimizations and glob pattern mastery",
+      "requirements": {
+        "usage_count": 5,
+        "success_rate": 0.7
+      },
+      "achieved": false,
+      "achieved_date": null
+    },
+    "level_3": {
+      "description": "Performance tuning and anti-pattern detection",
+      "requirements": {
+        "usage_count": 10,
+        "success_rate": 0.8
+      },
+      "achieved": false,
+      "achieved_date": null
+    },
+    "level_4": {
+      "description": "Expert-level large-scale system pattern design",
+      "requirements": {
+        "usage_count": 20,
+        "success_rate": 0.9
+      },
+      "achieved": false,
+      "achieved_date": null
+    }
+  },
+  "feedback": {
+    "positive": [],
+    "negative": [],
+    "suggestions": []
+  },
+  "task_metrics": {
+    "pattern_designer": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    },
+    "platform_optimizer": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    },
+    "performance_tuner": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    },
+    "pattern_validator": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    }
+  },
+  "common_issues": [],
+  "improvement_suggestions": [],
+  "last_updated": "2025-12-31T00:00:00Z"
+}

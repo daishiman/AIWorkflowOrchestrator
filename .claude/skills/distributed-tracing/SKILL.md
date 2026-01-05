@@ -1,280 +1,148 @@
 ---
 name: distributed-tracing
 description: |
-    分散トレーシングとOpenTelemetry統合の専門スキル。
-    マイクロサービスアーキテクチャにおけるリクエストフローの可視化とボトルネック特定を提供します。
-    使用タイミング:
-    - 分散システムのリクエストフロー を可視化する時
-    - OpenTelemetryで分散トレーシングを導入する時
-    - トレースIDとスパンIDを設計する時
-    - サービス間の呼び出し関係を追跡する時
-    - レイテンシボトルネックを特定する時
-    - W3C Trace Contextでトレースを伝播させる時
-    活性化キーワード: distributed tracing, OpenTelemetry, span, trace ID,
-    W3C Trace Context, Jaeger, Zipkin, trace propagation, bottleneck
+  分散トレーシングの設計とOpenTelemetry導入を支援するスキル。
+  トレース構造、スパン設計、検証手順を体系化する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Observability Engineering / 適用: 観測設計 / 目的: 可観測性の一貫性確保
+  • W3C Trace Context / 適用: コンテキスト伝播 / 目的: 標準準拠
+  • OpenTelemetry / 適用: 計測とエクスポート / 目的: ベンダー非依存化
 
-  - `.claude/skills/distributed-tracing/resources/span-design-guide.md`: スパンの適切な粒度設計、命名規則、属性設計ガイド
-  - `.claude/skills/distributed-tracing/resources/trace-structure-design.md`: トレース構造とスパン階層の設計パターン
-  - `.claude/skills/distributed-tracing/resources/w3c-trace-context.md`: W3C Trace Context標準準拠の実装ガイド
-  - `.claude/skills/distributed-tracing/templates/tracing-config.ts`: OpenTelemetryトレーシング設定のTypeScriptテンプレート
-  - `.claude/skills/distributed-tracing/scripts/analyze-trace.mjs`: トレースデータ分析とボトルネック特定スクリプト
-
-  Use proactively when implementing distributed-tracing patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when designing trace structures, implementing OpenTelemetry instrumentation, or validating span propagation.
+  distributed tracing, opentelemetry, span, trace context, w3c
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# Distributed Tracing - 分散トレーシング
+# distributed-tracing
 
 ## 概要
 
-分散トレーシングは、マイクロサービスやサーバーレスアーキテクチャにおいて、
-単一リクエストがシステム全体をどのように流れるかを可視化する技術です。
+分散トレーシングの設計から検証までを整理し、OpenTelemetry導入を支援する。
 
-このスキルは、OpenTelemetry の標準と『Mastering Distributed Tracing』に基づく
-実践的な分散トレーシング設計と実装知識を提供します。
+## ワークフロー
 
-## 核心概念
+### Phase 1: 要件整理
 
-### 1. トレースの構造
+**目的**: トレーシングの目的とスコープを明確化する。
 
-#### トレース（Trace）
+**アクション**:
 
-**定義**: 単一リクエストのエンドツーエンドの流れ
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/tracing-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-**構成要素**: 複数のスパン（Span）の集合
+**Task**: `agents/analyze-tracing-requirements.md` を参照
 
-**例**:
+### Phase 2: トレース設計
 
-```
-Trace: "ユーザー注文処理"
-├─ Span 1: API Gateway (100ms)
-├─ Span 2: Order Service (80ms)
-│  ├─ Span 2.1: Database Query (30ms)
-│  └─ Span 2.2: Payment API Call (40ms)
-└─ Span 3: Notification Service (20ms)
-```
+**目的**: トレース構造とスパン設計を定義する。
 
-#### スパン（Span）
+**アクション**:
 
-**定義**: 処理の一単位（関数呼び出し、API 呼び出し等）
+1. `references/trace-structure-design.md` で構造設計を確認する。
+2. `references/span-design-guide.md` でスパン設計を整理する。
+3. `assets/span-naming-checklist.md` で命名観点を揃える。
 
-**属性**:
+**Task**: `agents/design-trace-structure.md` を参照
 
-- **Span ID**: スパン識別子（16 バイト Hex）
-- **Trace ID**: 所属トレース識別子（16 バイト Hex）
-- **Parent Span ID**: 親スパン識別子
-- **開始時刻**: スパン開始のタイムスタンプ
-- **終了時刻**: スパン終了のタイムスタンプ
-- **Duration**: 処理時間（終了時刻 - 開始時刻）
-- **Attributes**: カスタム属性（user_id、endpoint 等）
-- **Events**: スパン内のイベント（ログ等）
-- **Status**: 成功/失敗
+### Phase 3: 実装と計測準備
 
-### 2. トレース ID/スパン ID 設計
+**目的**: 実装方針と計測設定を整備する。
 
-#### Trace ID
+**アクション**:
 
-**フォーマット**: 16 バイト（32 文字 Hex）
+1. `references/w3c-trace-context.md` で伝播仕様を確認する。
+2. `assets/tracing-config.ts` を参照して設定を整理する。
+3. 実装方針メモを作成する。
 
-```
-例: 4bf92f3577b34da6a3ce929d0e0e4736
-```
+**Task**: `agents/implement-instrumentation-plan.md` を参照
 
-**生成**:
+### Phase 4: 検証と運用
 
-- エントリーポイント（API Gateway、Load Balancer）で生成
-- 外部から受信した場合は引き継ぐ（W3C Trace Context）
+**目的**: トレース構造の検証と記録を行う。
 
-**伝播**:
+**アクション**:
 
-- すべてのサービス間通信で引き継ぐ
-- HTTP ヘッダー `traceparent` で伝達
+1. `scripts/analyze-trace.mjs` で検証する。
+2. `assets/trace-evaluation-template.md` で評価を整理する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-#### Span ID
+**Task**: `agents/validate-tracing-setup.md` を参照
 
-**フォーマット**: 8 バイト（16 文字 Hex）
+## Task仕様ナビ
 
-```
-例: 00f067aa0ba902b7
-```
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-tracing-requirements | Phase 1開始時 | 目的/制約 | 要件メモ、スコープ整理 |
+| design-trace-structure | Phase 2開始時 | 要件メモ | トレース設計、命名方針 |
+| implement-instrumentation-plan | Phase 3開始時 | 設計方針 | 実装方針、計測設定 |
+| validate-tracing-setup | Phase 4開始時 | 実装方針 | 検証レポート、改善提案 |
 
-**生成**:
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-- 各スパン開始時に生成
-- 親スパン ID として子スパンに引き継がれる
+## ベストプラクティス
 
-### 3. W3C Trace Context
+### すべきこと
 
-**標準ヘッダー**:
+| 推奨事項 | 理由 |
+| --- | --- |
+| スパン命名を統一する | 可視化の精度が上がる |
+| 伝播仕様を明文化する | 断絶を防ぐ |
+| サンプリングを定義する | 負荷を制御できる |
+| 検証結果を記録する | 改善が継続する |
 
-```
-traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-             |   |                                |                |
-             version  trace-id (32 hex)         span-id (16 hex)  flags
-```
+### 避けるべきこと
 
-**フィールド**:
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 目的不明の計測 | ノイズが増える |
+| 伝播忘れ | トレースが分断される |
+| 全量収集のみ | 本番負荷が高い |
 
-- **version**: 常に `00`
-- **trace-id**: トレース識別子（32 文字 Hex）
-- **span-id**: 現在のスパン識別子（16 文字 Hex）
-- **flags**: サンプリング等のフラグ（01 = sampled）
+## リソース参照
 
-**伝播方法**:
+### scripts/（決定論的処理）
 
-```typescript
-// リクエスト送信時
-const response = await fetch("https://downstream-service/api", {
-  headers: {
-    traceparent: `00-${traceId}-${spanId}-01`,
-  },
-});
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-trace.mjs` | トレース構造分析 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-// リクエスト受信時
-const traceContext = parseTraceParent(req.headers["traceparent"]);
-```
+### references/（詳細知識）
 
-### 4. スパン設計原則
-
-#### ビジネスロジック単位
-
-**良いスパン**:
-
-```
-✅ "process_order" - ビジネス的意味がある
-✅ "validate_payment" - 明確な処理単位
-✅ "send_notification" - 独立した機能
-```
-
-**悪いスパン**:
-
-```
-❌ "function_A" - 意味不明
-❌ "line_123" - 技術的すぎる
-❌ "do_stuff" - 曖昧
-```
-
-#### 適切な粒度
-
-**粗すぎる**:
-
-```
-❌ 1つのスパンで全処理 → ボトルネック特定不可
-```
-
-**細かすぎる**:
-
-```
-❌ 1行ごとにスパン → オーバーヘッド大、ノイズ
-```
-
-**適切**:
-
-```
-✅ ビジネスロジックの意味のある単位
-✅ ボトルネック特定に有用な粒度
-```
-
-### 5. サンプリング戦略
-
-#### ヘッドベースサンプリング
-
-**定義**: リクエスト受信時に記録するか決定
-
-**利点**: シンプル、リソース予測可能
-
-**実装**:
-
-```typescript
-const samplingRate = 0.01; // 1%
-const shouldSample = Math.random() < samplingRate;
-```
-
-#### テールベースサンプリング
-
-**定義**: リクエスト完了後に記録するか決定
-
-**利点**: エラーリクエストを確実に記録
-
-**条件**:
-
-```yaml
-tail_sampling:
-  policies:
-    - name: errors
-      type: status_code
-      status_code: { status_codes: [ERROR] }
-    - name: slow_requests
-      type: latency
-      latency: { threshold_ms: 1000 }
-    - name: baseline
-      type: probabilistic
-      probabilistic: { sampling_percentage: 1 }
-```
-
-## 実装チェックリスト
-
-### 基本設定
-
-- [ ] OpenTelemetry がインストール・設定されているか？
-- [ ] 自動計装が有効化されているか？
-- [ ] トレースエクスポーターが設定されているか（Jaeger、Zipkin 等）？
-
-### トレーシング設計
-
-- [ ] Trace ID が全サービスで一貫しているか？
-- [ ] W3C Trace Context に準拠しているか？
-- [ ] スパンがビジネスロジックの意味のある単位か？
-- [ ] スパン属性に診断に有用な情報が含まれるか？
-
-### ログ統合
-
-- [ ] ログに trace_id/span_id が含まれるか？
-- [ ] ログからトレーシングシステムにナビゲート可能か？
-
-### サンプリング
-
-- [ ] エラーリクエストは 100%記録されるか？
-- [ ] 正常リクエストは適切にサンプリングされるか（1-10%）？
-- [ ] サンプリング率は診断能力とコストをバランスしているか？
-
-## 関連リソース
-
-詳細な実装パターンと設計ガイドは以下のリソースを参照:
-
-- **トレース構造設計**: `.claude/skills/distributed-tracing/resources/trace-structure-design.md`
-- **W3C Trace Context 実装**: `.claude/skills/distributed-tracing/resources/w3c-trace-context.md`
-- **スパン設計ガイド**: `.claude/skills/distributed-tracing/resources/span-design-guide.md`
-- **トレーシング設定テンプレート**: `.claude/skills/distributed-tracing/templates/tracing-config.ts`
-
-## 関連スキル
-
-このスキルは以下のスキルと連携します:
-
-- `.claude/skills/observability-pillars/SKILL.md` - ログ・メトリクスとの統合
-- `.claude/skills/structured-logging/SKILL.md` - ログへの trace_id 埋め込み
-
-## 使用例
-
-### 開発環境での利用
-
-```bash
-# このスキルを参照
-cat .claude/skills/distributed-tracing/SKILL.md
-
-# W3C Trace Context実装を確認
-cat .claude/skills/distributed-tracing/resources/w3c-trace-context.md
-
-# トレーシング設定テンプレートを使用
-cat .claude/skills/distributed-tracing/templates/tracing-config.ts
-```
-
-## 参照文献
-
-- Yuri Shkuro, 『Mastering Distributed Tracing』, Packt, 2019
-- OpenTelemetry Documentation, https://opentelemetry.io/docs/
-- W3C Trace Context Specification, https://www.w3.org/TR/trace-context/
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
+| トレース設計 | [references/trace-structure-design.md](references/trace-structure-design.md) | 構造設計時 |
+| スパン設計 | [references/span-design-guide.md](references/span-design-guide.md) | スパン設計時 |
+| Trace Context | [references/w3c-trace-context.md](references/w3c-trace-context.md) | 伝播設計時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/tracing-requirements-template.md` | 要件整理テンプレート |
+| `assets/span-naming-checklist.md` | スパン命名チェック |
+| `assets/trace-evaluation-template.md` | 検証テンプレート |
+| `assets/tracing-config.ts` | 設定サンプル |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

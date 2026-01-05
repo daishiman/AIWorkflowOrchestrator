@@ -7,8 +7,8 @@
 | サブタスクID | T-03-1, T-03-2                  |
 | フェーズ     | Phase 3: テスト作成             |
 | 作成日       | 2025-12-12                      |
-| 担当         | @unit-tester                    |
-| 使用スキル   | tdd-principles, vitest-advanced |
+| 担当         | .claude/agents/unit-tester.md                    |
+| 使用スキル   | .claude/skills/tdd-principles/SKILL.md, .claude/skills/vitest-advanced/SKILL.md |
 
 ---
 

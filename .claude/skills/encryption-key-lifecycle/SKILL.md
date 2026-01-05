@@ -1,278 +1,133 @@
 ---
 name: encryption-key-lifecycle
 description: |
-    暗号化と鍵ライフサイクル管理スキル。暗号化アルゴリズム選定、
-    鍵生成、保管、ローテーション、廃棄の全フェーズを網羅します。
-    保存時・転送時・使用時の暗号化戦略を提供します。
-    使用タイミング:
-    - 暗号化方式を選択する時
-    - 鍵生成・保管方法を設計する時
-    - Secret Rotationプロセスを実装する時
-    - 鍵の廃棄・無効化手順を定義する時
-    - データ保護要件を評価する時
-    Use when selecting encryption algorithms, designing key management,
-    implementing rotation processes, or establishing data protection.
+  暗号化鍵のライフサイクル管理（生成、ローテーション、失効、バックアップ）のベストプラクティスを提供するスキル。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  - NIST SP 800-57 / 適用: 鍵ライフサイクル全般 / 目的: 業界標準準拠
+  - AWS KMS Best Practices / 適用: クラウド鍵管理 / 目的: クラウド実装パターン
+  - Continuous Delivery (Jez Humble) / 適用: 自動化設計 / 目的: ローテーション自動化
 
-  - `.claude/skills/encryption-key-lifecycle/resources/rotation-procedures.md`: 暗号化鍵のローテーション手順とゼロダウンタイム移行戦略
-  - `.claude/skills/encryption-key-lifecycle/scripts/generate-keys.mjs`: 暗号化鍵生成スクリプト
-
-  Use proactively when implementing encryption-key-lifecycle patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when implementing key generation, rotation, revocation, backup strategies, or managing cryptographic key lifecycle.
+  encryption key, key rotation, key lifecycle, key management, cryptographic keys, HSM, KMS
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
-# Encryption & Key Lifecycle Management
+# Encryption Key Lifecycle
 
 ## 概要
 
-機密情報の保護には、適切な暗号化技術と鍵の全ライフサイクル管理が不可欠です。
-このスキルは、保存時、転送時、使用時の各段階での暗号化方式選択と、
-鍵の生成から廃棄までの完全なライフサイクル管理を提供します。
+暗号化鍵のライフサイクル管理を支援するスキル。鍵の生成から廃棄までの全フェーズにおけるセキュリティベストプラクティスを提供する。
 
-## 暗号化レベルの選択
+## ワークフロー
 
-### レベル 1: 保存時暗号化（Encryption at Rest）
+### Phase 1: 鍵生成戦略
 
-**対象**: ディスク、データベース、バックアップ
+**目的**: 適切な暗号化鍵生成方法とパラメータを決定
 
-**推奨アルゴリズム**:
+**アクション**:
+1. 用途に応じた鍵タイプを選択（対称/非対称）
+2. 鍵長と暗号アルゴリズムを決定
+3. 鍵生成環境のセキュリティ要件を確認
+4. 初期鍵マテリアルの生成手順を策定
 
-- **AES-256-GCM**: 標準的な対称鍵暗号化（高速、安全）
-- **ChaCha20-Poly1305**: モバイル・組み込みデバイス向け
+**Task**: `agents/key-generation-strategy.md` を参照
 
-**基本実装**:
+### Phase 2: ローテーションポリシー
 
-```typescript
-import crypto from "crypto";
+**目的**: 鍵ローテーションの頻度と手順を策定
 
-class EncryptionService {
-  private algorithm = "aes-256-gcm";
-  private key: Buffer;
+**アクション**:
+1. ローテーション間隔を決定（リスク評価に基づく）
+2. ローテーション手順を文書化
+3. 旧鍵の移行期間を設定
+4. 自動ローテーションの実装を検討
 
-  encrypt(plaintext: string): { encrypted: string; iv: string; tag: string } {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(this.algorithm, this.key, iv);
-    let encrypted = cipher.update(plaintext, "utf8", "hex");
-    encrypted += cipher.final("hex");
-    return {
-      encrypted,
-      iv: iv.toString("hex"),
-      tag: cipher.getAuthTag().toString("hex"),
-    };
-  }
-}
-```
+**Task**: `agents/rotation-policy.md` を参照
 
-**詳細**: `resources/symmetric-encryption-guide.md`
+### Phase 3: 失効プロセス
 
-### レベル 2: 転送時暗号化（Encryption in Transit）
+**目的**: 鍵漏洩や廃棄時の失効手順を確立
 
-**必須要件**:
+**アクション**:
+1. 失効トリガー条件を定義
+2. 緊急失効手順を策定
+3. 失効通知プロセスを確立
+4. 影響範囲の特定と対応手順を文書化
 
-- **TLS 1.3**: すべての HTTP 通信（HTTPS）
-- **SSH**: Git 操作、サーバーアクセス
+**Task**: `agents/revocation-process.md` を参照
 
-**実装**:
+## Task仕様（ナビゲーション）
 
-```typescript
-const apiClient = axios.create({
-  baseURL: "https://api.example.com",
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: true,
-    minVersion: "TLSv1.3",
-  }),
-});
-```
+| Task | 起動タイミング | 入力 | 出力 |
+|------|----------------|------|------|
+| key-generation-strategy | 鍵生成設計時 | 暗号化要件 | 鍵生成戦略書 |
+| rotation-policy | ローテーション設計時 | 鍵生成戦略書 | ローテーションポリシー |
+| revocation-process | 失効設計時 | ローテーションポリシー | 失効手順書 |
 
-### レベル 3: 使用時暗号化（Encryption in Use）
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
-**手法**: Secret 使用後の即座メモリクリア
+## ベストプラクティス
 
-**実装**:
+### すべきこと
 
-```typescript
-class SecureString {
-  private buffer: Buffer;
+- 鍵マテリアルは暗号学的に安全な乱数生成器（CSPRNG）で生成
+- 環境ごとに異なる鍵を使用（本番/ステージング/開発）
+- 鍵のバックアップはオフライン環境で暗号化して保管
+- 定期的なローテーションを自動化
+- アクセスログを監査証跡として保持
 
-  use<T>(callback: (secret: string) => T): T {
-    try {
-      return callback(this.buffer.toString("utf8"));
-    } finally {
-      this.buffer.fill(0); // ゼロクリア
-    }
-  }
-}
-```
+### 避けるべきこと
 
-## 鍵ライフサイクル管理
+- ソースコードに鍵をハードコーディング
+- 鍵を平文で保存・転送
+- ローテーション期間を過度に長く設定
+- 単一の鍵を複数用途で共有
+- 失効した鍵の再利用
+- MD5/SHA1/DES等の非推奨アルゴリズムの使用
 
-### Phase 1: 鍵生成（Generation）
+**詳細**: See [references/rotation-procedures.md](references/rotation-procedures.md)
 
-**要件**:
+## リソース参照
 
-- 暗号学的に安全な乱数生成器（CSRNG）使用
-- 十分な鍵長（AES-256、RSA-4096）
+### agents/（Task仕様書）
 
-**実装**:
+| Task | パス | 用途 |
+|------|------|------|
+| 鍵生成戦略 | See [agents/key-generation-strategy.md](agents/key-generation-strategy.md) | アルゴリズム・鍵長選定 |
+| ローテーション | See [agents/rotation-policy.md](agents/rotation-policy.md) | 定期更新設計 |
+| 失効プロセス | See [agents/revocation-process.md](agents/revocation-process.md) | 緊急対応・廃棄 |
 
-```typescript
-// 対称鍵生成
-function generateSymmetricKey(): Buffer {
-  return crypto.randomBytes(32); // 256 bits
-}
+### references/（詳細知識）
 
-// 非対称鍵ペア生成
-function generateAsymmetricKeyPair() {
-  return crypto.generateKeyPairSync("rsa", {
-    modulusLength: 4096,
-  });
-}
-```
+| リソース | パス | 用途 |
+|----------|------|------|
+| ローテーション手順 | See [references/rotation-procedures.md](references/rotation-procedures.md) | ローテーション詳細 |
 
-**詳細**: `resources/key-generation-guide.md`
+### scripts/（決定論的処理）
 
-### Phase 2: 鍵保管（Storage）
+| スクリプト | 用途 | 使用例 |
+|------------|------|--------|
+| `generate-keys.mjs` | 鍵生成 | `node scripts/generate-keys.mjs --algorithm AES --size 256` |
+| `log_usage.mjs` | 使用ログ記録 | `node scripts/log_usage.mjs --result success` |
 
-**保管方式選択**:
+### assets/（テンプレート）
 
-| 鍵タイプ               | 重要度   | 推奨保管方式    |
-| ---------------------- | -------- | --------------- |
-| マスター暗号化キー     | Critical | HSM, KMS        |
-| データベースパスワード | Critical | Secrets Manager |
-| API キー               | High     | Secrets Manager |
-| セッション Secret      | High     | 環境変数        |
+| テンプレート | 用途 |
+|--------------|------|
+| `key-policy-template.md` | 鍵管理ポリシー文書テンプレート |
 
-**詳細**: `resources/key-storage-strategies.md`
-
-### Phase 3: 鍵使用（Usage）
-
-**原則**:
-
-- 最小権限でのみアクセス
-- すべてのアクセスをログ記録
-- 使用後のメモリクリア
-
-### Phase 4: 鍵ローテーション（Rotation）
-
-**ゼロダウンタイム Rotation（5 段階）**:
-
-1. 新鍵生成
-2. 両方の鍵を有効化（新旧並存）
-3. アプリケーションを新鍵に移行
-4. 旧鍵を無効化（読み取り専用）
-5. 監視期間後、旧鍵を完全削除
-
-**詳細**: `resources/rotation-procedures.md`
-
-### Phase 5: 鍵廃棄（Disposal）
-
-**要件**:
-
-- セキュアな上書き・ゼロ化
-- ストレージとバックアップから完全削除
-- 廃棄の監査証跡
-
-**実装**:
-
-```typescript
-async function disposeKey(key: Buffer): Promise<void> {
-  // 複数回上書き
-  for (let i = 0; i < 3; i++) {
-    key.fill(0);
-    key.fill(255);
-  }
-  key.fill(0); // 最終ゼロクリア
-}
-```
-
-## 暗号化アルゴリズム選択
-
-### 対称鍵暗号
-
-| アルゴリズム      | 鍵長    | 用途          | 推奨度     |
-| ----------------- | ------- | ------------- | ---------- |
-| AES-256-GCM       | 256-bit | データ暗号化  | ⭐⭐⭐⭐⭐ |
-| ChaCha20-Poly1305 | 256-bit | モバイル・IoT | ⭐⭐⭐⭐   |
-
-**推奨**: AES-256-GCM
-
-### 非対称鍵暗号
-
-| アルゴリズム | 鍵長     | 用途         | 推奨度     |
-| ------------ | -------- | ------------ | ---------- |
-| RSA-4096     | 4096-bit | 鍵交換、署名 | ⭐⭐⭐⭐   |
-| Ed25519      | 256-bit  | SSH、署名    | ⭐⭐⭐⭐⭐ |
-
-**推奨**: Ed25519
-
-### ハッシュ関数
-
-| アルゴリズム | 用途               | 推奨度     |
-| ------------ | ------------------ | ---------- |
-| SHA-256      | 汎用ハッシュ       | ⭐⭐⭐⭐⭐ |
-| Argon2       | パスワードハッシュ | ⭐⭐⭐⭐⭐ |
-
-## Rotation スケジューリング
-
-### 頻度の決定
-
-| Secret 重要度 | Rotation 頻度 | 自動化     |
-| ------------- | ------------- | ---------- |
-| Critical      | 30 日毎       | 推奨       |
-| High          | 90 日毎       | 推奨       |
-| Medium        | 180 日毎      | オプション |
-| Low           | 不定期        | 不要       |
-
-### 自動化実装
-
-```typescript
-import cron from "node-cron";
-
-class AutoRotation {
-  setup(): void {
-    // Critical: 毎月1日
-    cron.schedule("0 0 1 * *", () => this.rotateCritical());
-
-    // High: 四半期初日
-    cron.schedule("0 0 1 */3 *", () => this.rotateHigh());
-  }
-}
-```
-
-**詳細**: `resources/rotation-automation.md`
-
-## 実装チェックリスト
-
-### 暗号化設計
-
-- [ ] 保存時・転送時・使用時の各段階で暗号化されているか？
-- [ ] 適切なアルゴリズムが選択されているか？
-- [ ] 鍵長が十分か？（AES-256、RSA-4096）
-
-### 鍵管理
-
-- [ ] 鍵生成に CSRNG が使用されているか？
-- [ ] 鍵と暗号化データが分離保管されているか？
-- [ ] 鍵のバージョニングが実装されているか？
-
-### Rotation プロセス
-
-- [ ] Rotation 手順がダウンタイムを発生させないか？
-- [ ] ロールバック手順が明確か？
-- [ ] Rotation 頻度が適切か？
-
-## 関連スキル
-
-- `.claude/skills/secret-management-architecture/SKILL.md` - Secret 管理
-- `.claude/skills/zero-trust-security/SKILL.md` - アクセス制御
-
-## リソースファイル
-
-- `resources/rotation-procedures.md` - Rotation 手順詳細
-
-## スクリプト
-
-- `scripts/generate-keys.mjs` - 鍵生成スクリプト
+## 変更履歴
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.0.0 | 2026-01-01 | 18-skills.md仕様完全準拠、agents追加、構造最適化 |
+| 1.0.0 | 2025-12-24 | 初版作成 |

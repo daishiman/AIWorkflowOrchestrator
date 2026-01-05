@@ -1,257 +1,132 @@
 ---
 name: caching-strategies-gha
 description: |
-  GitHub Actions ワークフロー高速化のためのキャッシング戦略。
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  GitHub Actions のキャッシュ戦略を設計し、キー設計、パス選定、ヒット率改善、10GB制限管理を行うスキル。
+  actions/cache の最適化、依存キャッシュの分割、Dockerレイヤー連携などを体系化する。
 
-  - `.claude/skills/caching-strategies-gha/resources/cache-action.md`: actions/cache 完全リファレンス
-  - `.claude/skills/caching-strategies-gha/resources/cache-optimization.md`: キャッシュ最適化戦略
-  - `.claude/skills/caching-strategies-gha/resources/cache-patterns.md`: 言語別キャッシュパターン
-  - `.claude/skills/caching-strategies-gha/templates/cache-examples.yaml`: GitHub Actions キャッシュ設定例集
-  - `.claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs`: GitHub Actions キャッシュサイズ見積もりツール
+  Anchors:
+  • The Pragmatic Programmer / 適用: 実践的改善 / 目的: 反復的な最適化
+  • Continuous Delivery / 適用: パイプライン最適化 / 目的: 実行時間の短縮
+  • Site Reliability Engineering / 適用: キャパシティ管理 / 目的: キャッシュ制限の管理
 
-  専門分野:
-  - キャッシュアクション: actions/cache構文、キー設計、パスパターン
-  - 言語別パターン: Node.js/Python/Go/Rust/Docker層の最適化
-  - キャッシュ最適化: ヒット率向上、ストレージ制限、キー戦略
-  - パフォーマンス: ビルド時間短縮、依存関係復元、層キャッシング
-
-  使用タイミング:
-  - ワークフローのビルド時間を短縮したい時
-  - 依存関係のインストール時間を削減したい時
-  - Dockerビルドを高速化したい時
-  - キャッシュヒット率を改善したい時
-  - ストレージ制限（10GB）を管理する時
-version: 1.0.0
+  Trigger:
+  Use when optimizing GitHub Actions cache performance, designing cache keys/paths, reducing CI build time, or managing cache size limits.
+allowed-tools:
+  - bash
+  - node
 ---
 
 # GitHub Actions Caching Strategies
 
 ## 概要
 
-このスキルは、GitHub Actions ワークフローの実行時間を短縮するキャッシング戦略を提供します。
-actions/cacheの効果的な使用法から、言語別の最適化パターン、キャッシュヒット率の向上まで網羅します。
+GitHub Actions のキャッシュ戦略を設計し、ヒット率とサイズを最適化する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-**主要な価値**:
-
-- ビルド時間の50-80%短縮
-- 依存関係インストールの高速化
-- ストレージ効率的なキャッシュ戦略
-- 言語・フレームワーク別のベストプラクティス
-
-**制約**:
-
-- キャッシュサイズ上限: 単一エントリ10GB、リポジトリ合計10GB
-- キャッシュ保持期間: 7日間未使用で削除
-- キャッシュキーは一度作成されると不変
-
-## リソース構造
-
-```
-caching-strategies-gha/
-├── SKILL.md                                    # 本ファイル（概要とクイックリファレンス）
-├── resources/
-│   ├── cache-action.md                         # actions/cache完全リファレンス
-│   ├── cache-patterns.md                       # 言語別キャッシュパターン
-│   └── cache-optimization.md                   # 最適化戦略とトラブルシューティング
-├── templates/
-│   └── cache-examples.yaml                     # 実用的なキャッシュ設定例
-└── scripts/
-    └── estimate-cache-size.mjs                 # キャッシュサイズ見積もりツール
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# actions/cache完全リファレンス
-cat .claude/skills/caching-strategies-gha/resources/cache-action.md
-
-# 言語別キャッシュパターン
-cat .claude/skills/caching-strategies-gha/resources/cache-patterns.md
-
-# キャッシュ最適化戦略
-cat .claude/skills/caching-strategies-gha/resources/cache-optimization.md
-```
-
-### テンプレート参照
-
-```bash
-# 実用的なキャッシュ設定例
-cat .claude/skills/caching-strategies-gha/templates/cache-examples.yaml
-```
-
-### スクリプト実行
-
-```bash
-# キャッシュサイズ見積もり
-node .claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs <directory>
-```
-
-## クイックリファレンス
-
-### 基本的なキャッシュ設定
-
-```yaml
-- name: Cache dependencies
-  uses: actions/cache@v4
-  with:
-    path: ~/.pnpm
-    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-    restore-keys: |
-      ${{ runner.os }}-node-
-```
-
-### 言語別キャッシュパターン
-
-| 言語/ツール        | キャッシュパス                                     | キーパターン                                                     |
-| ------------------ | -------------------------------------------------- | ---------------------------------------------------------------- |
-| **Node.js (pnpm)** | `~/.pnpm`                                          | `${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}` |
-| **Node.js (pnpm)** | `~/.pnpm-store`                                    | `${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}`    |
-| **Python (pip)**   | `~/.cache/pip`                                     | `${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}`   |
-| **Go**             | `~/go/pkg/mod`                                     | `${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}`              |
-| **Rust**           | `~/.cargo/registry`<br>`~/.cargo/git`<br>`target/` | `${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}`       |
-| **Docker**         | `/tmp/.buildx-cache`                               | `${{ runner.os }}-buildx-${{ github.sha }}`                      |
-
-### キャッシュキー戦略
-
-| 戦略                   | キーパターン                            | 用途                             |
-| ---------------------- | --------------------------------------- | -------------------------------- |
-| **完全一致**           | `${{ hashFiles('**/lock-file') }}`      | 依存関係が変更された時のみ更新   |
-| **プレフィックス一致** | `restore-keys: ${{ runner.os }}-node-`  | 部分ヒットで古いキャッシュを利用 |
-| **日付ベース**         | `${{ runner.os }}-${{ github.run_id }}` | 毎実行で新規キャッシュ作成       |
-| **ブランチ別**         | `${{ runner.os }}-${{ github.ref }}`    | ブランチごとに独立したキャッシュ |
-
-### キャッシュ最適化チェックリスト
-
-- [ ] **キーに適切なハッシュ**: ロックファイル（package-lock.json, Cargo.lock等）を使用
-- [ ] **restore-keys設定**: 完全一致しない場合の部分一致を許可
-- [ ] **パス最適化**: 必要最小限のディレクトリのみキャッシュ
-- [ ] **サイズ監視**: 大きなキャッシュ（>1GB）は分割を検討
-- [ ] **有効期限認識**: 7日間未使用で自動削除されることを考慮
+- キャッシュ例: `assets/cache-examples.yaml`
 
 ## ワークフロー
 
-### Phase 1: キャッシュ要件の特定
+### Phase 1: キャッシュ対象の整理
 
-1. **キャッシュ対象の特定**
-   - 依存関係: pnpm, pip, cargo等のパッケージマネージャー
-   - ビルド成果物: target/, dist/, .next/等
-   - ツールバイナリ: ダウンロードした実行ファイル
+**目的**: キャッシュ対象と制約を整理する
 
-2. **ロックファイルの確認**
-   - package-lock.json, pnpm-lock.yaml
-   - requirements.txt, Pipfile.lock
-   - go.sum, Cargo.lock
+**アクション**:
 
-**リソース**: `resources/cache-patterns.md`
+1. `references/Level1_basics.md` で基本概念を確認
+2. `references/cache-action.md` で actions/cache を確認
+3. キャッシュ対象/頻度/制限を整理
 
-### Phase 2: キャッシュ戦略の設計
+**Task**: `agents/analyze-cache-requirements.md`
 
-1. **キーパターンの設計**
-   - ハッシュベース: `${{ hashFiles('**/lock-file') }}`
-   - restore-keys: 部分一致パターンの定義
+### Phase 2: キー設計
 
-2. **パスの最適化**
-   - 必要なディレクトリのみ指定
-   - 大きなディレクトリは分割
+**目的**: キーとパスを設計する
 
-**リソース**: `resources/cache-action.md`
+**アクション**:
 
-### Phase 3: 実装と検証
+1. `references/cache-patterns.md` を参照
+2. キーに含める入力を整理
+3. restore-keys の戦略を決定
 
-1. **キャッシュアクションの追加**
+**Task**: `agents/design-cache-keys.md`
 
-   ```yaml
-   - uses: actions/cache@v4
-     with:
-       path: <cache-paths>
-       key: <primary-key>
-       restore-keys: <fallback-keys>
-   ```
+### Phase 3: 最適化と分割
 
-2. **ヒット率の確認**
-   - Actions UIでcache-hit出力を確認
-   - ビルド時間の変化を測定
+**目的**: ヒット率とサイズを最適化する
 
-**リソース**: `resources/cache-optimization.md`
+**アクション**:
 
-### Phase 4: 最適化と改善
+1. `references/cache-optimization.md` を参照
+2. `scripts/estimate-cache-size.mjs` でサイズを見積もる
+3. 分割/除外/レイヤー化方針を決定
 
-1. **パフォーマンス分析**
-   - キャッシュヒット率の測定
-   - キャッシュサイズの確認
-   - ビルド時間の比較
+**Task**: `agents/optimize-cache-strategy.md`
 
-2. **継続的改善**
-   - キーパターンの調整
-   - パスの最適化
-   - 不要なキャッシュの削除
+### Phase 4: 検証と記録
 
-**スクリプト**: `scripts/estimate-cache-size.mjs`
+**目的**: 効果を検証し記録する
 
-## 関連スキル
+**アクション**:
 
-このスキルは以下のスキルと連携して使用されます:
+1. `references/Level4_expert.md` で監査観点を確認
+2. ヒット率/速度改善を確認
+3. `scripts/validate-skill.mjs` で構造検証
+4. `scripts/log_usage.mjs` で記録
 
-- **github-actions-syntax** (`.claude/skills/github-actions-syntax/SKILL.md`)
-  - ワークフロー構文の基礎
-  - キャッシュアクションを組み込むワークフロー構造
+**Task**: `agents/validate-cache-impact.md`
 
-- **docker-build-push-action** (`.claude/skills/docker-build-push-action/SKILL.md`)
-  - Dockerビルドキャッシュとの統合
-  - BuildKitキャッシュバックエンドとの組み合わせ
+## Task仕様ナビ
 
-- **matrix-builds** (`.claude/skills/matrix-builds/SKILL.md`)
-  - マトリックスビルドでのキャッシュ共有
-  - OS/バージョン別のキャッシュ戦略
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| 対象整理 | キャッシュ対象整理 | ワークフロー | 対象メモ | `references/cache-action.md` | Phase 1 |
+| キー設計 | キー/パス設計 | 対象メモ | キー設計メモ | `references/cache-patterns.md` | Phase 2 |
+| 最適化 | 分割/除外方針 | キー設計メモ | 最適化メモ | `references/cache-optimization.md` | Phase 3 |
+| 検証 | 効果確認 | 最適化メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |
 
-- **cost-optimization-gha** (`.claude/skills/cost-optimization-gha/SKILL.md`)
-  - キャッシュによるランナー使用時間削減
-  - ストレージコストとのトレードオフ
+## ベストプラクティス
 
-## 使用例
+### すべきこと
 
-### Node.js (pnpm) の高速化
+- キーの粒度を明確にする
+- restore-keys を設定する
+- 10GB制限を意識する
+- 大きなキャッシュは分割する
 
-```yaml
-- name: Setup pnpm
-  uses: pnpm/action-setup@v2
+### 避けるべきこと
 
-- name: Cache pnpm store
-  uses: actions/cache@v4
-  with:
-    path: ~/.pnpm-store
-    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-    restore-keys: |
-      ${{ runner.os }}-pnpm-
+- 変更頻度の高い入力をキーに含めすぎる
+- ヒット率を測定しない
+- キャッシュ肥大を放置する
 
-- name: Install dependencies
-  run: pnpm install --frozen-lockfile
-```
+## リソース参照
 
-### Docker ビルドキャッシュ
+### 参照資料
 
-```yaml
-- name: Set up Docker Buildx
-  uses: docker/setup-buildx-action@v3
+- `references/Level1_basics.md`: 基礎概念
+- `references/Level2_intermediate.md`: 設計ガイド
+- `references/Level3_advanced.md`: 最適化
+- `references/Level4_expert.md`: 監査/計測
+- `references/cache-action.md`: actions/cache 仕様
+- `references/cache-patterns.md`: 言語別パターン
+- `references/cache-optimization.md`: 最適化戦略
+- `references/legacy-skill.md`: 旧版要約（移行時のみ）
 
-- name: Cache Docker layers
-  uses: actions/cache@v4
-  with:
-    path: /tmp/.buildx-cache
-    key: ${{ runner.os }}-buildx-${{ github.sha }}
-    restore-keys: |
-      ${{ runner.os }}-buildx-
+### スクリプト
 
-- name: Build and push
-  uses: docker/build-push-action@v5
-  with:
-    cache-from: type=local,src=/tmp/.buildx-cache
-    cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-```
+- `scripts/estimate-cache-size.mjs`: サイズ見積り
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
 
-**詳細な実装例**: `templates/cache-examples.yaml`
+### テンプレート
+
+- `assets/cache-examples.yaml`: キャッシュ設定例
+
+## 変更履歴
+
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

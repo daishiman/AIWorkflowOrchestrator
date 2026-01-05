@@ -1,0 +1,83 @@
+{
+  "skillName": "web-performance",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
+  "levels": {
+    "beginner": {
+      "description": "基本的な画像最適化とLighthouse測定",
+      "criteria": [
+        "next/imageコンポーネントを正しく使用できる",
+        "Lighthouseでパフォーマンススコアを測定できる",
+        "priority属性の適切な使用場面を理解している"
+      ]
+    },
+    "intermediate": {
+      "description": "コード分割とフォント最適化",
+      "criteria": [
+        "next/dynamicで動的インポートを実装できる",
+        "next/fontでフォントを最適化できる",
+        "Core Web Vitalsの閾値を理解している"
+      ]
+    },
+    "advanced": {
+      "description": "総合的なパフォーマンス最適化",
+      "criteria": [
+        "バンドル分析から最適化戦略を立案できる",
+        "CLS問題を特定し解決できる",
+        "Server Componentsを活用してバンドルサイズを削減できる"
+      ]
+    },
+    "expert": {
+      "description": "パフォーマンスアーキテクチャ設計",
+      "criteria": [
+        "プロジェクト全体のパフォーマンス戦略を設計できる",
+        "複雑なキャッシュ戦略を実装できる",
+        "パフォーマンス監視・自動化パイプラインを構築できる"
+      ]
+    }
+  },
+  "metrics": {
+    "lighthouseScore": {
+      "target": ">= 90",
+      "description": "Lighthouseパフォーマンススコア"
+    },
+    "lcp": {
+      "target": "<= 2500ms",
+      "description": "Largest Contentful Paint"
+    },
+    "fid": {
+      "target": "<= 100ms",
+      "description": "First Input Delay"
+    },
+    "cls": {
+      "target": "<= 0.1",
+      "description": "Cumulative Layout Shift"
+    },
+    "bundleSize": {
+      "target": "minimized",
+      "description": "初期バンドルサイズ"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "metrics-measured",
+      "description": "最適化前後でメトリクスを測定している",
+      "weight": 0.3
+    },
+    {
+      "id": "core-web-vitals-improved",
+      "description": "Core Web Vitalsが改善している",
+      "weight": 0.3
+    },
+    {
+      "id": "best-practices-followed",
+      "description": "ベストプラクティスに従っている",
+      "weight": 0.2
+    },
+    {
+      "id": "maintainability-preserved",
+      "description": "メンテナンス性を損なっていない",
+      "weight": 0.2
+    }
+  ]
+}

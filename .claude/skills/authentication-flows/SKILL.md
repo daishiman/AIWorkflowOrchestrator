@@ -1,256 +1,125 @@
 ---
 name: authentication-flows
 description: |
-  ## 概要
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  API Key、JWT、OAuth 2.0、mTLS などの認証方式を比較し、適切なフロー設計と実装方針を整理するスキル。
+  方式選定、トークン管理、署名戦略、セキュリティ対策を一貫して設計します。
 
-  - `.claude/skills/authentication-flows/resources/api-key.md`: API Key Authentication
-  - `.claude/skills/authentication-flows/resources/jwt.md`: JSON Web Token (JWT)
-  - `.claude/skills/authentication-flows/resources/mtls.md`: Mutual TLS (mTLS)
-  - `.claude/skills/authentication-flows/resources/oauth2.md`: OAuth 2.0フロー種別（Authorization Code・PKCE・Client Credentials・Device Code）の実装ガイドとTypeScriptサンプルコード
-  - `.claude/skills/authentication-flows/templates/jwt-service-template.ts`: JWT Service Template
-  - `.claude/skills/authentication-flows/templates/oauth2-client-template.ts`: OAuth 2.0 Client Template
-  - `.claude/skills/authentication-flows/scripts/validate-auth-config.mjs`: Authentication Configuration Validator
+  Anchors:
+  • Web Application Security / 適用: 脅威整理 / 目的: 認証フローのリスク把握
+  • OWASP Authentication Cheat Sheet / 適用: 実装ベストプラクティス / 目的: 安全な実装指針
+  • RFC 6749 & RFC 7519 / 適用: OAuth/JWT仕様 / 目的: 標準準拠の設計
 
-  専門分野:
-  - (要追加)
-
-  使用タイミング:
-  - (要追加)
-
-  Use proactively when (要追加).
-version: 1.0.0
+  Trigger:
+  Use when selecting authentication flows (API Key/JWT/OAuth/mTLS), designing token strategy, or validating auth configuration.
+allowed-tools:
+  - bash
+  - node
 ---
 
-# Authentication Flows スキル
+# Authentication Flows
 
 ## 概要
 
-外部API認証の実装パターンを提供するスキル。
-OAuth 2.0、JWT、API Key、相互TLSなど、主要な認証方式の
-実装手法とセキュリティベストプラクティスを解説します。
+複数の認証方式を比較し、最適なフローとトークン戦略を設計する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-## 対象エージェント
-
-- @gateway-dev
-- @backend-architect
-- @security-engineer
-- @auth-specialist
-
-## 含まれるリソース
-
-### 1. OAuth 2.0 (resources/oauth2.md)
-
-- Authorization Code Flow
-- Client Credentials Flow
-- PKCE拡張
-- トークンリフレッシュ戦略
-
-### 2. JWT (resources/jwt.md)
-
-- JWT構造と検証
-- 署名アルゴリズム選択
-- クレーム設計
-- トークンローテーション
-
-### 3. API Key (resources/api-key.md)
-
-- API Key管理
-- 安全な保存方法
-- ローテーション戦略
-- 使用量追跡
-
-### 4. 相互TLS (resources/mtls.md)
-
-- 証明書ベース認証
-- 証明書管理
-- 信頼チェーン構築
-- 証明書ローテーション
+- 方式別ガイドは `references/api-key.md`, `references/jwt.md`, `references/oauth2.md`, `references/mtls.md`
+- 実装例は `assets/` を利用
 
 ## ワークフロー
 
-```
-1. 認証要件分析
-   ├── サービス間 vs ユーザー認証の判断
-   ├── セキュリティ要件の特定
-   └── 既存認証基盤の確認
+### Phase 1: 要件整理
 
-2. 認証方式選択
-   ├── OAuth 2.0: ユーザー委譲、サードパーティ連携
-   ├── JWT: ステートレス認証、マイクロサービス
-   ├── API Key: シンプルなサービス間通信
-   └── mTLS: 高セキュリティ要件
+**目的**: 認証要件と制約を整理する
 
-3. 実装
-   ├── 認証フローの実装
-   ├── トークン管理の実装
-   └── エラーハンドリング
+**アクション**:
 
-4. セキュリティ検証
-   ├── 脆弱性テスト
-   ├── トークンリーク検出
-   └── 有効期限検証
-```
+1. `references/Level1_basics.md` で基礎概念を確認
+2. 対象システムの要件と制約を整理
+3. セキュリティ要件と脅威を洗い出す
 
-## 認証方式選択ガイド
+**Task**: `agents/analyze-auth-requirements.md`
 
-| シナリオ                   | 推奨方式                     | 理由                       |
-| -------------------------- | ---------------------------- | -------------------------- |
-| ユーザー代理でAPI呼び出し  | OAuth 2.0 Auth Code          | ユーザー同意フロー対応     |
-| サービス間通信             | OAuth 2.0 Client Credentials | サービスアカウント認証     |
-| SPAからのAPI呼び出し       | OAuth 2.0 + PKCE             | トークン漏洩対策           |
-| 社内マイクロサービス       | JWT                          | ステートレス、検証容易     |
-| シンプルなAPI連携          | API Key                      | 実装簡易、低オーバーヘッド |
-| 金融・医療等高セキュリティ | mTLS                         | 双方向認証、強力な暗号化   |
+### Phase 2: 方式選定と設計
+
+**目的**: 認証方式とトークン戦略を決定する
+
+**アクション**:
+
+1. `references/api-key.md` / `references/jwt.md` / `references/oauth2.md` / `references/mtls.md` を比較
+2. トークン構造・署名・有効期限方針を決定
+3. `assets/jwt-service-template.ts` / `assets/oauth2-client-template.ts` を参照
+
+**Task**:
+- `agents/select-auth-method.md`
+- `agents/design-token-strategy.md`
+
+### Phase 3: 検証と記録
+
+**目的**: 設定の妥当性を検証し記録する
+
+**アクション**:
+
+1. `scripts/validate-auth-config.mjs` で設定検証
+2. `scripts/validate-skill.mjs` で構造検証
+3. `scripts/log_usage.mjs` で改善記録を残す
+
+**Task**: `agents/validate-auth-implementation.md`
+
+## Task仕様ナビ
+
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| 要件整理 | 目的・制約の整理 | 要件情報 | 要件メモ | `references/Level1_basics.md` | Phase 1 |
+| 方式選定 | 認証方式の選定 | 要件メモ | 選定メモ | `references/api-key.md` | Phase 2 前半 |
+| トークン設計 | 署名と有効期限の設計 | 選定メモ | 設計メモ | `references/jwt.md` | Phase 2 後半 |
+| 検証レビュー | 設定の検証 | 設定ファイル | 検証結果 | `scripts/validate-auth-config.mjs` | Phase 3 |
 
 ## ベストプラクティス
 
-### トークン管理
+### すべきこと
 
-```typescript
-// トークンキャッシュとリフレッシュ
-class TokenManager {
-  private accessToken: string | null = null;
-  private refreshToken: string | null = null;
-  private expiresAt: number = 0;
+- 要件と制約を先に整理する
+- トークン有効期限と更新戦略を明記する
+- 方式選定の理由を記録する
+- 標準仕様に準拠した設定を採用する
 
-  async getToken(): Promise<string> {
-    // 有効期限の5分前にリフレッシュ
-    if (this.accessToken && Date.now() < this.expiresAt - 5 * 60 * 1000) {
-      return this.accessToken;
-    }
+### 避けるべきこと
 
-    if (this.refreshToken) {
-      return this.refreshAccessToken();
-    }
+- シークレットのハードコード
+- 暗号化無しの認証情報送信
+- 複数方式の無計画な混在
+- 検証無しで設計を確定する
 
-    return this.authenticate();
-  }
+## リソース参照
 
-  private async refreshAccessToken(): Promise<string> {
-    // リフレッシュトークンで新しいアクセストークン取得
-  }
+### 参照資料
 
-  private async authenticate(): Promise<string> {
-    // 初回認証
-  }
-}
-```
+- `references/Level1_basics.md`: 基本概念
+- `references/Level2_intermediate.md`: 実装パターン
+- `references/Level3_advanced.md`: 脅威と最適化
+- `references/Level4_expert.md`: エンタープライズ運用
+- `references/api-key.md`: API Key
+- `references/jwt.md`: JWT
+- `references/oauth2.md`: OAuth 2.0
+- `references/mtls.md`: mTLS
+- `references/legacy-skill.md`: 旧版要約（移行時のみ参照）
 
-### シークレット管理
+### スクリプト
 
-```typescript
-// 環境変数からシークレット取得
-function getSecret(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required secret: ${name}`);
-  }
-  return value;
-}
+- `scripts/validate-auth-config.mjs`: 設定検証
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
 
-// AWS Secrets Manager例
-async function getSecretFromSecretsManager(secretId: string): Promise<string> {
-  const client = new SecretsManagerClient({});
-  const response = await client.send(
-    new GetSecretValueCommand({ SecretId: secretId }),
-  );
-  return response.SecretString!;
-}
-```
+### テンプレート
 
-### エラーハンドリング
+- `assets/jwt-service-template.ts`: JWTテンプレ
+- `assets/oauth2-client-template.ts`: OAuthテンプレ
 
-```typescript
-// 認証エラーの分類
-function handleAuthError(error: unknown): never {
-  if (error instanceof AuthError) {
-    switch (error.code) {
-      case "invalid_token":
-        // トークン無効 → 再認証
-        throw new UnauthorizedError("Token is invalid or expired");
+## 変更履歴
 
-      case "insufficient_scope":
-        // スコープ不足 → 403
-        throw new ForbiddenError("Insufficient permissions");
-
-      case "invalid_client":
-        // クライアント設定エラー → 設定確認
-        throw new ConfigurationError("Invalid client credentials");
-
-      default:
-        throw new AuthenticationError(error.message);
-    }
-  }
-  throw error;
-}
-```
-
-## セキュリティチェックリスト
-
-### 設計時
-
-- [ ] 適切な認証方式を選択したか？
-- [ ] トークン有効期限を設定したか？
-- [ ] シークレットの保存場所を決定したか？
-
-### 実装時
-
-- [ ] トークンをログに出力していないか？
-- [ ] HTTPSを使用しているか？
-- [ ] エラーメッセージに機密情報を含めていないか？
-
-### 運用時
-
-- [ ] シークレットローテーションが設定されているか？
-- [ ] 認証失敗のモニタリングがあるか？
-- [ ] トークン漏洩検出の仕組みがあるか？
-
-## アンチパターン
-
-### ❌ トークンのログ出力
-
-```typescript
-// NG: トークンをログに出力
-console.log("Token:", accessToken);
-logger.info({ headers: request.headers }); // Authorizationヘッダー含む
-
-// ✅ マスキング
-console.log("Token:", maskToken(accessToken));
-logger.info({ headers: maskHeaders(request.headers) });
-```
-
-### ❌ ハードコードされたシークレット
-
-```typescript
-// NG: コードにシークレット埋め込み
-const apiKey = "sk-12345-secret-key";
-
-// ✅ 環境変数使用
-const apiKey = process.env.API_KEY;
-```
-
-### ❌ 無期限トークン
-
-```typescript
-// NG: 有効期限なしのJWT
-const token = jwt.sign({ userId: 123 }, secret);
-
-// ✅ 適切な有効期限
-const token = jwt.sign({ userId: 123 }, secret, { expiresIn: "1h" });
-```
-
-## 参考資料
-
-- **RFC 6749**: The OAuth 2.0 Authorization Framework
-- **RFC 7519**: JSON Web Token (JWT)
-- **RFC 7636**: Proof Key for Code Exchange (PKCE)
-- **OWASP**: Authentication Cheat Sheet
-
-## 関連スキル
-
-- api-client-patterns: APIクライアント実装パターン
-- http-best-practices: HTTPベストプラクティス
-- rate-limiting: レート制限実装
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

@@ -1,0 +1,56 @@
+# サンプルYAMLファイル
+# 手動テスト用のYAML設定ファイル
+
+# アプリケーション設定
+app:
+  name: RAG Conversion System
+  version: 1.0.0
+  description: A system for converting various file formats for RAG processing
+
+# サーバー設定
+server:
+  host: localhost
+  port: 3000
+  ssl:
+    enabled: false
+    cert: /path/to/cert.pem
+    key: /path/to/key.pem
+
+# データベース設定
+database:
+  type: postgresql
+  host: localhost
+  port: 5432
+  name: rag_db
+  credentials:
+    username: postgres
+    password: secret
+
+# ロギング設定
+logging:
+  level: info
+  outputs:
+    - type: console
+      format: json
+    - type: file
+      path: /var/log/app.log
+      maxSize: 10MB
+      maxFiles: 5
+
+# 変換設定
+conversion:
+  maxFileSize: 10485760 # 10MB
+  supportedFormats:
+    - markdown
+    - typescript
+    - javascript
+    - python
+    - yaml
+  timeout: 60000 # 60秒
+
+# 配列の例
+tags:
+  - rag
+  - conversion
+  - nlp
+  - ai

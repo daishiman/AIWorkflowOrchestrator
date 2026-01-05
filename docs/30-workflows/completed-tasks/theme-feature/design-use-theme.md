@@ -479,4 +479,4 @@ describe("useTheme", () => {
 
 | バージョン | 日付       | 変更者                 | 変更内容 |
 | ---------- | ---------- | ---------------------- | -------- |
-| 1.0.0      | 2025-12-08 | @custom-hooks-patterns | 初版作成 |
+| 1.0.0      | 2025-12-08 | @.claude/skills/custom-hooks-patterns/SKILL.md | 初版作成 |

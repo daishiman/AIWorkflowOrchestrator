@@ -1,0 +1,58 @@
+{
+  "skill_name": "electron-packaging",
+  "current_level": 1,
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "last_evaluated": null
+  },
+  "levels": {
+    "1": {
+      "name": "Novice",
+      "description": "基本的なElectronビルドとパッケージング",
+      "requirements": {
+        "min_usage_count": 0,
+        "min_success_rate": 0.0
+      }
+    },
+    "2": {
+      "name": "Intermediate",
+      "description": "クロスプラットフォーム対応とコード署名の実装",
+      "requirements": {
+        "min_usage_count": 5,
+        "min_success_rate": 0.7
+      }
+    },
+    "3": {
+      "name": "Advanced",
+      "description": "自動更新機構とCI/CD統合",
+      "requirements": {
+        "min_usage_count": 15,
+        "min_success_rate": 0.8
+      }
+    },
+    "4": {
+      "name": "Expert",
+      "description": "大規模プロジェクトと複雑な配布戦略",
+      "requirements": {
+        "min_usage_count": 30,
+        "min_success_rate": 0.85
+      }
+    }
+  },
+  "evaluation_criteria": {
+    "success_indicators": [
+      "ビルドが正常に完了した",
+      "各プラットフォーム用のインストーラーが生成された",
+      "コード署名が適切に適用された",
+      "自動更新機構が正常に動作した"
+    ],
+    "failure_indicators": [
+      "ビルドエラーが発生した",
+      "署名に失敗した",
+      "インストーラー生成でエラーが発生した",
+      "設定ファイルの検証に失敗した"
+    ]
+  }
+}

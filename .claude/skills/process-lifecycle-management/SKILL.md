@@ -5,266 +5,125 @@ description: |
   Linuxカーネルのプロセス管理思想に基づき、プロセスの生成、実行、
   監視、終了までの完全な制御と、シグナル処理、ゾンビプロセス回避を設計します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer（Andrew Hunt, David Thomas）/ 適用: プロセス管理 / 目的: 実践的改善と品質維持
 
-  - `.claude/skills/process-lifecycle-management/resources/child-process-patterns.md`: 子プロセス管理パターン
-  - `.claude/skills/process-lifecycle-management/resources/process-states.md`: プロセス状態管理ガイド
-  - `.claude/skills/process-lifecycle-management/resources/signal-handling.md`: SIGTERM、SIGINT、SIGHUPの適切なハンドリングとGraceful Shutdown実装
-  - `.claude/skills/process-lifecycle-management/scripts/check-process-health.mjs`: プロセスヘルスチェックスクリプト
-  - `.claude/skills/process-lifecycle-management/templates/signal-handler.template.ts`: Signal Handler Template
-
-  専門分野:
-  - プロセス状態管理: 起動、実行、待機、終了の各フェーズ
-  - シグナル処理: SIGTERM、SIGINT、SIGKILL、SIGHUPの適切なハンドリング
-  - 子プロセス管理: spawn、fork、execのパターンとリソース回収
-  - ゾンビプロセス回避: 適切なプロセス終了と回収メカニズム
-  - PM2連携: PM2によるプロセスライフサイクルの外部管理
-
-  使用タイミング:
-  - Node.jsプロセスの起動・終了フローを設計する時
-  - シグナルハンドラーを実装する時
-  - 子プロセスの管理戦略を決定する時
-  - PM2でプロセスを管理する設定を行う時
-
-  Use proactively when designing process startup/shutdown flows,
-  implementing signal handlers, or managing child processes.
-version: 1.0.0
+  Trigger:
+  process lifecycle management, application startup and shutdown control, graceful shutdown implementation, signal handler design, PM2 process management configuration
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Process Lifecycle Management
+# プロセスライフサイクル管理
 
 ## 概要
 
-プロセスライフサイクル管理は、Node.js アプリケーションの起動から終了までの
-全フェーズを制御し、システムリソースの適切な利用と安定稼働を保証します。
-
-**主要な価値**:
-
-- 予測可能なプロセス動作
-- シグナルによる優雅な制御
-- リソースリークの防止
-- 高可用性の実現
-
-## リソース構造
-
-```
-process-lifecycle-management/
-├── SKILL.md
-├── resources/
-│   ├── process-states.md
-│   ├── signal-handling.md
-│   └── child-process-patterns.md
-├── scripts/
-│   └── check-process-health.mjs
-└── templates/
-    └── signal-handler.template.ts
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# プロセス状態ガイド
-cat .claude/skills/process-lifecycle-management/resources/process-states.md
-
-# シグナル処理ガイド
-cat .claude/skills/process-lifecycle-management/resources/signal-handling.md
-
-# 子プロセスパターン
-cat .claude/skills/process-lifecycle-management/resources/child-process-patterns.md
-```
-
-### スクリプト実行
-
-```bash
-# プロセスヘルスチェック
-node .claude/skills/process-lifecycle-management/scripts/check-process-health.mjs <pid>
-```
-
-### テンプレート参照
-
-```bash
-# シグナルハンドラーテンプレート
-cat .claude/skills/process-lifecycle-management/templates/signal-handler.template.ts
-```
+Node.jsプロセスのライフサイクル管理を専門とするスキル。Linuxカーネルのプロセス管理思想に基づき、プロセスの生成、実行、監視、終了までの完全な制御と、シグナル処理、ゾンビプロセス回避を設計します。
 
 ## ワークフロー
 
-### Phase 1: プロセス起動
+### Phase 1: ライフサイクル分析
 
-**起動シーケンス**:
+**目的**: プロセスの要件と状態遷移を分析
 
-1. 環境変数の読み込み
-2. 設定ファイルの解析
-3. 依存サービスへの接続確認
-4. ポートのバインド（必要に応じて）
-5. ready 状態の通知
+**アクション**:
 
-**PM2 との連携**:
+1. アプリケーションの起動・終了要件を特定
+2. 管理対象プロセス（親・子）を洗い出し
+3. 必要なシグナル処理を決定
+4. 状態遷移図を設計
 
-```javascript
-// PM2にready状態を通知
-process.send && process.send("ready");
-```
+**Task**: `agents/analyze-lifecycle.md` を参照
 
-**判断基準**:
+### Phase 2: シグナルハンドラ実装
 
-- [ ] 必須環境変数は設定されているか？
-- [ ] 依存サービスへの接続は成功するか？
-- [ ] 起動タイムアウトは適切か？
+**目的**: Graceful Shutdownとシグナル処理を実装
 
-**リソース**: `resources/process-states.md`
+**アクション**:
 
-### Phase 2: プロセス実行
+1. `assets/signal-handler.template.ts` を基にハンドラーを実装
+2. SIGTERM、SIGINT、SIGHUPの処理を定義
+3. クリーンアップ関数を登録
+4. タイムアウト処理を設定
 
-**実行中の監視項目**:
+**Task**: `agents/implement-handlers.md` を参照
 
-- メモリ使用量
-- CPU 使用率
-- イベントループの遅延
-- アクティブな接続数
+### Phase 3: シャットダウン検証
 
-**ヘルスチェック設計**:
+**目的**: 実装したシグナルハンドラの動作を検証
 
-```javascript
-// シンプルなヘルスチェック
-const healthCheck = () => ({
-  status: "healthy",
-  uptime: process.uptime(),
-  memory: process.memoryUsage(),
-  pid: process.pid,
-});
-```
+**アクション**:
 
-**判断基準**:
+1. `scripts/check-process-health.mjs` で動作確認
+2. シグナル送信テストを実施
+3. リソースリークを検証
+4. PM2との連携を確認
 
-- [ ] 定期的なヘルスチェックを実施しているか？
-- [ ] メモリリークの兆候はないか？
-- [ ] イベントループは正常か？
+**Task**: `agents/validate-shutdown.md` を参照
 
-### Phase 3: シグナル処理
+## Task仕様ナビ
 
-**対応すべきシグナル**:
-
-| シグナル | 動作              | 用途               |
-| -------- | ----------------- | ------------------ |
-| SIGTERM  | Graceful Shutdown | PM2 stop/restart   |
-| SIGINT   | Graceful Shutdown | Ctrl+C             |
-| SIGHUP   | 設定再読み込み    | ログローテーション |
-| SIGUSR2  | カスタム動作      | デバッグ情報出力   |
-
-**シグナルハンドラー設計**:
-
-```javascript
-process.on("SIGTERM", async () => {
-  console.log("SIGTERM received, shutting down...");
-  await gracefulShutdown();
-  process.exit(0);
-});
-```
-
-**リソース**: `resources/signal-handling.md`
-
-### Phase 4: プロセス終了
-
-**終了シーケンス**:
-
-1. 新規リクエストの受付停止
-2. 進行中リクエストの完了待機
-3. データベース接続のクローズ
-4. キャッシュのフラッシュ
-5. ログのフラッシュ
-6. プロセス終了（exit code 0）
-
-**終了コード規約**:
-| コード | 意味 | 用途 |
-|-------|------|------|
-| 0 | 正常終了 | 意図した終了 |
-| 1 | 一般エラー | 予期しないエラー |
-| 2 | 設定エラー | 環境変数・設定不備 |
-| 130 | SIGINT | Ctrl+C |
-| 143 | SIGTERM | kill/PM2 stop |
-
-**判断基準**:
-
-- [ ] 終了コードは適切に設定されているか？
-- [ ] すべてのリソースは解放されているか？
-- [ ] 終了ログは出力されているか？
-
-### Phase 5: 子プロセス管理
-
-**子プロセスパターン**:
-
-- **spawn**: 長時間実行、ストリーム処理
-- **fork**: Node.js プロセス間通信
-- **exec**: 短時間コマンド実行
-
-**ゾンビプロセス回避**:
-
-```javascript
-const child = spawn("command", ["args"]);
-child.on("exit", (code) => {
-  console.log(`Child exited with code ${code}`);
-});
-// 必ずexitイベントを処理
-```
-
-**リソース**: `resources/child-process-patterns.md`
+| Task               | 起動タイミング | 入力                     | 出力                 |
+| ------------------ | -------------- | ------------------------ | -------------------- |
+| analyze-lifecycle  | Phase 1開始時  | アプリケーション要件情報 | ライフサイクル設計書 |
+| implement-handlers | Phase 2開始時  | ライフサイクル設計       | シグナルハンドラ実装 |
+| validate-shutdown  | Phase 3開始時  | 実装済みハンドラ         | 検証結果レポート     |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **シグナルハンドラー実装**: SIGTERM/SIGINT は必須
-2. **タイムアウト設定**: 無限待機を避ける
-3. **終了コード設定**: 意味のある exit code
-4. **ログ出力**: 起動・終了時のログ
+- Node.jsプロセスの起動・終了フローを設計する時
+- シグナルハンドラーを実装する時
+- 子プロセスの管理戦略を決定する時
+- PM2でプロセスを管理する設定を行う時
+- Graceful Shutdownの実装時にタイムアウトを設定する
+- クリーンアップ関数を逆順（後入れ先出し）で実行する
 
 ### 避けるべきこと
 
-1. **シグナル無視**: `process.on('SIGTERM', () => {})` は危険
-2. **同期ブロッキング**: 終了処理での同期 I/O
-3. **ゾンビ放置**: 子プロセスの未回収
-4. **リソース未解放**: DB 接続、ファイルハンドルの放置
+- アンチパターンや注意点を確認せずに進めることを避ける
+- graceful shutdownの実装なしに本番環境へ展開することを避ける
+- シグナルハンドラーなしのプロセス管理を避ける
+- 子プロセスの終了確認なしの設計を避ける
+- SIGKILLへのハンドラー登録（不可能）を試みることを避ける
 
-## PM2 との統合
+## リソース参照
 
-### wait_ready モード
+### references/
 
-```javascript
-// アプリケーション側
-const server = app.listen(port, () => {
-  process.send && process.send('ready');
-});
+| リソース           | パス                                   | 用途                           |
+| ------------------ | -------------------------------------- | ------------------------------ |
+| 基本概念           | `references/basics.md`                 | プロセス管理の基本理論         |
+| 実装パターン       | `references/patterns.md`               | パターンのナビゲーション       |
+| シグナル処理       | `references/signal-handling.md`        | シグナルハンドリング詳細ガイド |
+| プロセス状態       | `references/process-states.md`         | 状態遷移とライフサイクル管理   |
+| 子プロセスパターン | `references/child-process-patterns.md` | 子プロセス管理の実装パターン集 |
 
-// ecosystem.config.js
-{
-  wait_ready: true,
-  listen_timeout: 10000
-}
-```
+### scripts/
 
-### Graceful Shutdown 連携
+| スクリプト                 | 用途                   | 使用例                                  |
+| -------------------------- | ---------------------- | --------------------------------------- |
+| `check-process-health.mjs` | プロセスヘルスチェック | `node scripts/check-process-health.mjs` |
+| `validate-skill.mjs`       | スキル構造検証         | `node scripts/validate-skill.mjs`       |
+| `log_usage.mjs`            | 使用記録と自動評価     | `node scripts/log_usage.mjs`            |
 
-```javascript
-// PM2からのSIGINTを処理
-process.on("SIGINT", async () => {
-  await closeConnections();
-  process.exit(0);
-});
-```
+### assets/
+
+| テンプレート                 | 用途                           |
+| ---------------------------- | ------------------------------ |
+| `signal-handler.template.ts` | Signal Handler実装テンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-26 | 初版作成 |
-
-## 関連スキル
-
-- **pm2-ecosystem-config** (`.claude/skills/pm2-ecosystem-config/SKILL.md`)
-- **graceful-shutdown-patterns** (`.claude/skills/graceful-shutdown-patterns/SKILL.md`)
-- **memory-monitoring-strategies** (`.claude/skills/memory-monitoring-strategies/SKILL.md`)
+| Version | Date       | Changes                                                                                      |
+| ------- | ---------- | -------------------------------------------------------------------------------------------- |
+| 2.1.0   | 2026-01-02 | 18-skills.md完全準拠: references/構造変更（Level1-4→basics/patterns）、validate-shutdown追加 |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様準拠版に再構築: agents/Task仕様書追加、references統合                        |
+| 1.1.0   | 2025-12-31 | Anchors/Trigger追加、Task仕様ナビ（テーブル形式）追加                                        |
+| 1.0.0   | 2025-12-24 | 初版作成                                                                                     |

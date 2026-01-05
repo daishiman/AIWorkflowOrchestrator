@@ -1,322 +1,152 @@
 ---
 name: api-versioning
 description: |
-  APIバージョニング戦略と後方互換性管理を専門とするスキル。
+  APIバージョニング戦略と後方互換性管理を専門とするスキル。破壊的変更の管理、段階的廃止プロセス、バージョン間の移行ガイド作成を支援します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  **Anchors（参考資料）:**
+  • 『RESTful Web APIs』（Leonard Richardson）/ 適用: API設計とバージョニング戦略 / 目的: RESTfulなバージョニング方式の理解と実装
 
-  - `.claude/skills/api-versioning/resources/versioning-strategies.md`: バージョニング方式の比較と選択基準
-  - `.claude/skills/api-versioning/resources/breaking-changes.md`: 破壊的変更の定義と影響範囲管理
-  - `.claude/skills/api-versioning/resources/deprecation-process.md`: 段階的廃止プロセスとHTTPヘッダー活用
-  - `.claude/skills/api-versioning/templates/migration-guide-template.md`: バージョン間移行ガイドテンプレート
-  - `.claude/skills/api-versioning/templates/deprecation-notice-template.md`: 非推奨化通知テンプレート
-  - `.claude/skills/api-versioning/scripts/check-breaking-changes.js`: 破壊的変更検出スクリプト
-  - `.claude/skills/api-versioning/scripts/generate-migration-guide.sh`: 移行ガイド自動生成スクリプト
-
-  核心知識:
-  - バージョニング方式の選択（URL Path / Header / Query）
-  - 破壊的変更の管理と移行戦略
-  - 非推奨化（Deprecation）プロセス
-  - バージョン間の差分文書化
-
-  使用タイミング:
-  - APIバージョニング戦略を決定する時
+  **Triggers（自動発動条件）:**
+  - API バージョニング戦略を決定する時
   - 破壊的変更を導入する時
   - エンドポイントを非推奨化する時
   - バージョン間の移行ガイドを作成する時
-
-version: 1.0.0
+  - APIバージョン管理を設計する時
+  - 後方互換性を検証する時
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# API Versioning スキル
+# APIバージョニング
 
 ## 概要
 
-APIバージョニング戦略の設計と後方互換性管理に関する専門知識を提供します。
+APIバージョニング戦略と後方互換性管理を専門とするスキル。破壊的変更の定義と管理、段階的廃止（Deprecation）プロセス、バージョン間の移行ガイド作成を支援します。
 
-## コマンドリファレンス
+**対応範囲:**
 
-```bash
-# リソース参照
-cat .claude/skills/api-versioning/resources/versioning-strategies.md
-cat .claude/skills/api-versioning/resources/deprecation-process.md
-cat .claude/skills/api-versioning/resources/breaking-changes.md
+- APIバージョニング方式の選択（URI、ヘッダー、クエリパラメータなど）
+- 破壊的変更の検出と影響分析
+- エンドポイント廃止の段階的実行
+- 後方互換性の維持戦略
+- バージョン間の移行ガイド自動生成
 
-# テンプレート参照
-cat .claude/skills/api-versioning/templates/migration-guide-template.md
-cat .claude/skills/api-versioning/templates/deprecation-notice-template.md
-```
+詳細な手順や背景は `references/Level1_basics.md`、`references/Level2_intermediate.md` 以上を参照してください。
 
----
+## ワークフロー
 
-## 知識領域1: バージョニング方式
+### Phase 1: 目的と前提の整理
 
-### 主要な方式比較
+**目的**: タスクの目的と前提条件を明確にする
 
-| 方式             | 例                                            | メリット             | デメリット     |
-| ---------------- | --------------------------------------------- | -------------------- | -------------- |
-| **URL Path**     | `/api/v1/users`                               | 明確、キャッシュ容易 | URLが長くなる  |
-| **Header**       | `Accept: application/vnd.api+json; version=1` | URLがシンプル        | 発見しにくい   |
-| **Query**        | `/api/users?version=1`                        | シンプル             | キャッシュ問題 |
-| **Content-Type** | `Content-Type: application/vnd.api.v1+json`   | 標準的               | 複雑           |
+**アクション**:
 
-### 選択基準
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
-| 条件             | 推奨方式 |
-| ---------------- | -------- |
-| RESTful純粋主義  | Header   |
-| 開発者体験重視   | URL Path |
-| レガシー互換性   | Query    |
-| 新規プロジェクト | URL Path |
-| 外部公開API      | URL Path |
-| 内部API          | Header   |
+**Task**: `agents/analyze-versioning-context.md` を参照
 
-### 推奨: URL Path Versioning
+### Phase 2: スキル適用
 
-```
-/api/v1/users     ← 現行バージョン
-/api/v2/users     ← 新バージョン
-```
+**目的**: スキルの指針に従って具体的な作業を進める
 
-**理由**:
+**アクション**:
 
-- 直感的で発見しやすい
-- キャッシュが容易
-- デバッグが簡単
-- 広く採用されている
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
----
+**Task**: `agents/design-versioning-strategy.md` を参照
 
-## 知識領域2: バージョン番号設計
+### Phase 3: 検証と記録
 
-### Semantic Versioning（SemVer）原則
+**目的**: 成果物の検証と実行記録の保存
 
-```
-MAJOR.MINOR.PATCH
-例: 1.2.3
-```
+**アクション**:
 
-| 種類  | 変更時             | URL反映            |
-| ----- | ------------------ | ------------------ |
-| MAJOR | 破壊的変更         | ✅ 反映（v1 → v2） |
-| MINOR | 後方互換の機能追加 | ❌ 非反映          |
-| PATCH | バグ修正           | ❌ 非反映          |
-
-### URL表記
-
-```
-/api/v1/...      ← メジャーバージョンのみ
-/api/v1.2/...    ← 避ける（複雑化）
-```
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-### バージョン選択ロジック
+**Task**: `agents/validate-versioning.md` を参照
 
-```
-クライアントリクエスト → バージョン解決
-├─ /api/v1/users → API v1.x.x の最新を使用
-├─ /api/v2/users → API v2.x.x の最新を使用
-└─ /api/users    → デフォルトバージョン（v1）を使用
-```
+## Task仕様ナビ
 
----
+| Task                     | 説明                              | リソース                         | スクリプト                    |
+| ------------------------ | --------------------------------- | -------------------------------- | ----------------------------- |
+| バージョニング方式の決定 | URI/ヘッダー/クエリなどの方式選択 | `versioning-strategies.md`       | -                             |
+| 破壊的変更の検出         | APIの変更が破壊的かを判定         | `breaking-changes.md`            | `check-breaking-changes.js`   |
+| 廃止プロセス実行         | エンドポイント段階的廃止          | `deprecation-process.md`         | `generate-migration-guide.sh` |
+| 移行ガイド作成           | バージョン間の移行手順書          | `migration-guide-template.md`    | `generate-migration-guide.sh` |
+| 非推奨通知               | クライアントへの廃止予告          | `deprecation-notice-template.md` | -                             |
+| 後方互換性検証           | 変更が互換性を保つか確認          | `Level2_intermediate.md`         | -                             |
 
-## 知識領域3: 破壊的変更の定義
-
-### 破壊的変更（Breaking Changes）
+## ベストプラクティス
 
-| 変更種類                 | 破壊的？ | 説明                     |
-| ------------------------ | -------- | ------------------------ |
-| エンドポイント削除       | ✅ Yes   | 既存クライアントが壊れる |
-| フィールド削除           | ✅ Yes   | 既存クライアントが壊れる |
-| フィールド名変更         | ✅ Yes   | 既存クライアントが壊れる |
-| 必須フィールド追加       | ✅ Yes   | 既存リクエストが無効に   |
-| 型変更                   | ✅ Yes   | パース失敗の可能性       |
-| ステータスコード変更     | ✅ Yes   | エラーハンドリング破損   |
-| 認証方式変更             | ✅ Yes   | 認証失敗                 |
-| オプションフィールド追加 | ❌ No    | 後方互換                 |
-| 新エンドポイント追加     | ❌ No    | 後方互換                 |
-| レスポンスフィールド追加 | ❌ No    | 後方互換（通常）         |
-
-### 非破壊的変更
-
-| 変更種類                 | 注意点                           |
-| ------------------------ | -------------------------------- |
-| オプションフィールド追加 | デフォルト値を設定               |
-| 新エンドポイント追加     | 既存に影響なし                   |
-| レスポンスフィールド追加 | クライアントは無視すべき         |
-| 列挙値の追加             | クライアントは未知値を処理すべき |
-
----
-
-## 知識領域4: 非推奨化プロセス
-
-### 段階的廃止フロー
-
-```
-1. 告知期間（2-4週間）
-   ├─ ドキュメント更新
-   ├─ Sunset ヘッダー追加
-   └─ 移行ガイド公開
-
-2. 警告期間（4-8週間）
-   ├─ Deprecation ヘッダー追加
-   ├─ ログ監視（使用状況）
-   └─ 個別通知
+### すべきこと
 
-3. 移行サポート期間（4-12週間）
-   ├─ 新旧両方を並行稼働
-   ├─ 移行サポート提供
-   └─ 使用量モニタリング
+- **バージョニング戦略を決定する時**: `versioning-strategies.md` で各方式の利点と制限を確認
+- **破壊的変更を導入する時**: `check-breaking-changes.js` で事前検出
+- **エンドポイントを非推奨化する時**: `deprecation-process.md` に基づいて段階的廃止を計画
+- **バージョン間の移行ガイドを作成する時**: `migration-guide-template.md` を活用
+- **後方互換性を維持する時**: `Level3_advanced.md` の互換性パターンを参考
+- **複雑な変更を行う時**: 複数の関連リソースを参照して総合的に判断
 
-4. 廃止実行
-   ├─ エンドポイント無効化
-   ├─ 410 Gone レスポンス
-   └─ 代替エンドポイント案内
-```
+### 避けるべきこと
 
-### HTTPヘッダー
+- 予期せぬ破壊的変更を導入することを避ける
+- 廃止予告なしにエンドポイント削除を避ける
+- アンチパターンや注意点を確認せずに進めることを避ける
+- 後方互換性オプションを検討せずに決定することを避ける
+- ドキュメント作成なしにバージョン変更を進めることを避ける
 
-```http
-# 非推奨警告
-Deprecation: true
-Deprecation: @1735689600  # Unix timestamp
+## リソース参照
 
-# 廃止日
-Sunset: Sat, 01 Mar 2025 00:00:00 GMT
+### 学習用ドキュメント
 
-# 代替リソース
-Link: </api/v2/users>; rel="successor-version"
-```
+| リソース                            | 説明                                |
+| ----------------------------------- | ----------------------------------- |
+| `references/Level1_basics.md`       | レベル1: バージョニング基礎概念     |
+| `references/Level2_intermediate.md` | レベル2: 実務的なバージョニング運用 |
+| `references/Level3_advanced.md`     | レベル3: 複雑なバージョニング設計   |
+| `references/Level4_expert.md`       | レベル4: エンタープライズ対応戦略   |
 
-### OpenAPI での非推奨マーク
+### テクニカルリソース
 
-```yaml
-paths:
-  /api/v1/users:
-    get:
-      deprecated: true
-      summary: "[非推奨] ユーザー一覧取得"
-      description: |
-        ⚠️ このエンドポイントは2025年3月1日に廃止されます。
-        代替: GET /api/v2/users
-      x-sunset-date: "2025-03-01"
-```
+| リソース                              | 用途                             |
+| ------------------------------------- | -------------------------------- |
+| `references/breaking-changes.md`      | 破壊的変更の定義と検出方法       |
+| `references/deprecation-process.md`   | 段階的廃止プロセスとHTTPヘッダー |
+| `references/versioning-strategies.md` | バージョニング方式の比較         |
+| `references/requirements-index.md`    | 要求仕様の索引                   |
 
----
+### テンプレート
 
-## 知識領域5: 移行戦略
-
-### 並行稼働パターン
-
-```
-期間1: v1のみ
-期間2: v1（主）+ v2（ベータ）
-期間3: v1（非推奨）+ v2（主）
-期間4: v2のみ
-```
-
-### バージョン分岐実装
-
-```typescript
-// ルーティング例（Next.js）
-// app/api/v1/users/route.ts
-// app/api/v2/users/route.ts
-
-// バージョン共通ロジック
-// lib/api/users/v1.ts
-// lib/api/users/v2.ts
-```
-
-### データ変換レイヤー
-
-```typescript
-// v1 → v2 変換
-function transformV1ToV2(v1Data: V1User): V2User {
-  return {
-    id: v1Data.id,
-    fullName: `${v1Data.firstName} ${v1Data.lastName}`, // フィールド統合
-    email: v1Data.email,
-    role: mapRoleV1ToV2(v1Data.role), // 値マッピング
-    createdAt: v1Data.created_at, // 命名規則変更
-  };
-}
-```
-
----
-
-## 知識領域6: バージョン間差分文書化
-
-### 変更ログ形式
-
-```markdown
-# API Changelog
-
-## v2.0.0 (2025-03-01)
-
-### 破壊的変更
-
-- `GET /users` のレスポンス構造が変更されました
-  - `first_name` + `last_name` → `full_name` に統合
-- `role` フィールドの値が変更されました
-  - `"admin"` → `"administrator"`
-
-### 新機能
-
-- `GET /users/{id}/activity` エンドポイント追加
-- ページネーションに `cursor` パラメータ追加
-
-### 非推奨
-
-- `GET /users?page=N` は廃止予定（`cursor` を使用してください）
-
-### 移行ガイド
-
-詳細は [Migration Guide v1 → v2](./migration-v1-v2.md) を参照
-```
-
----
-
-## 判断基準チェックリスト
-
-### バージョン戦略
-
-- [ ] バージョニング方式が決定されているか？
-- [ ] URLパターンが一貫しているか？
-- [ ] デフォルトバージョンが定義されているか？
-
-### 破壊的変更
-
-- [ ] 変更は本当に破壊的か？
-- [ ] 非破壊的な代替案はないか？
-- [ ] 影響範囲を把握しているか？
-
-### 非推奨化
-
-- [ ] 十分な告知期間があるか？（最低4週間）
-- [ ] 移行ガイドが準備されているか？
-- [ ] Deprecation/Sunsetヘッダーが設定されているか？
-- [ ] 使用状況をモニタリングしているか？
-
-### 移行サポート
-
-- [ ] 新旧バージョンの並行稼働期間があるか？
-- [ ] 移行ツールやスクリプトが提供されているか？
-- [ ] サポート連絡先が明示されているか？
-
----
-
-## 関連スキル
-
-- `.claude/skills/openapi-specification/SKILL.md`: OpenAPI仕様書作成
-- `.claude/skills/request-response-examples/SKILL.md`: バージョン別実例
-- `.claude/skills/authentication-docs/SKILL.md`: 認証バージョニング
-
----
+| テンプレート                            | 用途                       |
+| --------------------------------------- | -------------------------- |
+| `assets/deprecation-notice-template.md` | 廃止予告メッセージ作成     |
+| `assets/migration-guide-template.md`    | バージョン間移行ガイド作成 |
+
+### ユーティリティスクリプト
+
+| スクリプト                            | 機能                 |
+| ------------------------------------- | -------------------- |
+| `scripts/check-breaking-changes.js`   | 破壊的変更の自動検出 |
+| `scripts/generate-migration-guide.sh` | 移行ガイドの自動生成 |
+| `scripts/validate-skill.mjs`          | スキル構造の検証     |
+| `scripts/log_usage.mjs`               | 使用記録と自動評価   |
+
+### 参考書籍
+
+- 『RESTful Web APIs』（Leonard Richardson）- リソース設計とAPI設計原則
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容     |
-| ---------- | ---------- | ------------ |
-| 1.0.0      | 2025-11-27 | 初版リリース |
+| Version | Date       | Changes                                                                            |
+| ------- | ---------- | ---------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | agents/3ファイル追加、Phase別Task参照を追加、name修正                              |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様対応：YAML frontmatter更新、Triggers追加、Task仕様ナビテーブル追加 |

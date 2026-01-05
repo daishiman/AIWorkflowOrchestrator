@@ -12,7 +12,7 @@
 
 ## 背景と目的
 
-Phase 5.5 Final Review Gate において、`@frontend-tester` エージェントによるテスト品質レビューで以下の改善点が指摘された：
+Phase 5.5 Final Review Gate において、`.claude/agents/frontend-tester.md` エージェントによるテスト品質レビューで以下の改善点が指摘された：
 
 1. **状態遷移テストの不足**
 2. **キーボードナビゲーションテストの不足**
@@ -496,7 +496,7 @@ open coverage/lcov-report/index.html
 - [ ] ARIA/アクセシビリティテストが全て通過している
 - [ ] エッジケーステストが全て通過している
 - [ ] 各コンポーネントのカバレッジが目標値を達成している
-- [ ] `@frontend-tester` レビューで PASS 評価
+- [ ] `.claude/agents/frontend-tester.md` レビューで PASS 評価
 
 ## 関連ドキュメント
 

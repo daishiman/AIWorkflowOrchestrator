@@ -5,304 +5,133 @@ description: |
   API仕様の定義、OpenAPI連携、バリデーションルールの標準化を通じて、
   相互運用性の高いデータ構造を設計します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Effective TypeScript (Dan Vanderkam) / 適用: 型安全性とスキーマ設計 / 目的: 堅牢なスキーマ構造の実現
+  • JSON Schema仕様 (Draft 2020-12) / 適用: 標準スキーマ定義 / 目的: 言語非依存なデータバリデーション
 
-  - `.claude/skills/json-schema/resources/json-schema-basics.md`: Draft 2020-12準拠の型システム、$ref参照、required/additionalProperties基礎
-  - `.claude/skills/json-schema/resources/openapi-integration.md`: OpenAPI 3.0/3.1のJSON Schema互換性、components定義、リクエスト/レスポンス分離
-  - `.claude/skills/json-schema/resources/schema-composition.md`: allOf/oneOf/anyOfによるスキーマ継承と多態性実装パターン
-  - `.claude/skills/json-schema/resources/validation-keywords.md`: 型別バリデーションキーワード（minLength/pattern/minimum/format等）リファレンス
-  - `.claude/skills/json-schema/scripts/validate-json-schema.mjs`: JSON Schemaの構文検証とDraft仕様準拠チェック
-  - `.claude/skills/json-schema/templates/api-schema-template.json`: OpenAPI components/schemasセクション作成テンプレート
-
-  専門分野:
-  - JSON Schema: Draft 2020-12準拠、バリデーションキーワード
-  - OpenAPI連携: Swagger/OpenAPI 3.x統合
-  - スキーマ参照: $ref、$defs、外部スキーマ
-  - 高度な機能: conditionals、compositions、formats
-
-  使用タイミング:
-  - OpenAPI/Swagger仕様でAPI定義を行う際
-  - 外部システムとのデータ交換フォーマット定義時
-  - 言語非依存のバリデーションルール定義時
-  - ドキュメント生成のためのスキーマ定義時
-
-  Use proactively when defining OpenAPI specifications,
-version: 1.0.0
+  Trigger:
+  JSONスキーマ定義、APIレスポンス検証、データバリデーション設計、OpenAPI統合、スキーマ継承パターン、複雑なデータ構造の妥当性確認時に使用。
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
 ---
 
-# JSON Schema
+# JSONスキーマ
 
 ## 概要
 
-このスキルは、JSON Schema 仕様に基づくスキーマ設計のベストプラクティスを提供します。
-OpenAPI 連携、スキーマの再利用、高度なバリデーションパターンを通じて、
-相互運用性の高いデータ構造を設計します。
+このスキルは、JSON Schema Draft 2020-12仕様に基づくスキーマ設計における段階的ガイダンスを提供する。
+API仕様の定義、OpenAPI連携、バリデーションルール標準化、スキーマ構成パターンを支援し、
+相互運用性の高いデータ構造を実現する。
 
-**主要な価値**:
+## ワークフロー
 
-- 言語非依存のスキーマ定義
-- OpenAPI/Swagger 連携
-- ドキュメント自動生成の基盤
-- 相互運用性の確保
+### Phase 1: 要件と構造の整理
 
-**対象ユーザー**:
+**目的**: スキーマ設計の要件と構造を把握する
 
-- スキーマ定義を行うエージェント（@schema-def）
-- API 設計者
-- システム間連携を担当するエンジニア
+**Task**: `agents/analyze-requirements.md`
 
-## リソース構造
+**アクション**:
 
-```
-json-schema/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── json-schema-basics.md                  # JSON Schema基礎
-│   ├── openapi-integration.md                 # OpenAPI連携
-│   ├── schema-composition.md                  # スキーマ合成
-│   └── validation-keywords.md                 # バリデーションキーワード
-├── scripts/
-│   └── validate-json-schema.mjs               # スキーマ検証スクリプト
-└── templates/
-    └── api-schema-template.json               # APIスキーマテンプレート
-```
+1. 対象となるスキーマの種類と目的を確認
+2. 必要なスキーマレベルを判断（基礎/中級/上級/専門）
+3. 参照する references/ ファイルを選択:
+   - 基礎: `references/Level1_basics.md`
+   - 中級: `references/Level2_intermediate.md`
+   - 上級: `references/Level3_advanced.md`
+   - 専門: `references/Level4_expert.md`
 
-## コマンドリファレンス
+### Phase 2: スキーマ設計と実装
 
-### リソース読み取り
+**目的**: 段階的ガイダンスに従ってスキーマを設計する
 
-```bash
-# JSON Schema基礎
-cat .claude/skills/json-schema/resources/json-schema-basics.md
+**Task**: `agents/design-schema.md`
 
-# OpenAPI連携
-cat .claude/skills/json-schema/resources/openapi-integration.md
+**アクション**:
 
-# スキーマ合成
-cat .claude/skills/json-schema/resources/schema-composition.md
+1. 必要に応じて以下の参照資料を読む:
+   - JSON Schema基礎: `references/json-schema-basics.md`
+   - スキーマ構成パターン: `references/schema-composition.md`
+   - バリデーションキーワード: `references/validation-keywords.md`
+   - OpenAPI連携: `references/openapi-integration.md`
 
-# バリデーションキーワード
-cat .claude/skills/json-schema/resources/validation-keywords.md
-```
+2. テンプレートを使用して作成:
+   - OpenAPI スキーマテンプレート: `assets/api-schema-template.json`
 
-### スクリプト実行
+### Phase 3: 検証と記録
 
-```bash
-# JSON Schemaの検証
-node .claude/skills/json-schema/scripts/validate-json-schema.mjs <schema.json>
-```
+**目的**: 作成したスキーマを検証し、使用履歴を記録する
 
-### テンプレート参照
+**Task**: `agents/validate-schema.md`
 
-```bash
-# APIスキーマテンプレート
-cat .claude/skills/json-schema/templates/api-schema-template.json
-```
+**アクション**:
 
-## いつ使うか
+1. JSON Schema構文の検証: `node scripts/validate-json-schema.mjs <schema-file>`
+2. スキル構造の検証: `node scripts/validate-skill.mjs`
+3. 使用記録の保存: `node scripts/log_usage.mjs --result success --phase "schema-design"`
 
-### シナリオ 1: OpenAPI 仕様の定義
+## Task仕様ナビ
 
-**状況**: RESTful API の仕様を OpenAPI 形式で定義する
+| Task                 | 対象レベル | 参照リソース           | 使用テンプレート         |
+| -------------------- | ---------- | ---------------------- | ------------------------ |
+| 基本的なスキーマ定義 | Level 1    | json-schema-basics.md  | api-schema-template.json |
+| APIスキーマ設計      | Level 2    | openapi-integration.md | api-schema-template.json |
+| 複雑なスキーマ構成   | Level 3    | schema-composition.md  | api-schema-template.json |
+| マルチバージョン対応 | Level 3    | openapi-integration.md | -                        |
+| バリデーション規則   | Level 2-4  | validation-keywords.md | api-schema-template.json |
+| 型安全性の確保       | Level 4    | Level4_expert.md       | -                        |
 
-**適用条件**:
+## ベストプラクティス
 
-- [ ] API 仕様書を作成する必要がある
-- [ ] Swagger ドキュメントを生成したい
-- [ ] クライアントコードを自動生成したい
+### すべきこと
 
-**期待される成果**: 完全な OpenAPI 仕様書
+- JSON Schema Draft 2020-12準拠のスキーマを設計する
+- OpenAPI 3.0/3.1仕様と互換性を確保する
+- $ref参照による適切なスキーマの再利用を行う
+- 必須項目（required）と追加プロパティ（additionalProperties）を明確に定義する
+- minLength、pattern、minimum等のバリデーションキーワードを活用する
+- allOf、oneOf、anyOfを使ったスキーマ継承と多態性を実装する
+- 型安全性を確保し、相互運用性の高い構造を設計する
 
-### シナリオ 2: 外部システム連携
+### 避けるべきこと
 
-**状況**: 外部システムとのデータ交換フォーマットを定義する
+- スキーマバージョンの混在利用
+- $refの過度な深いネストによる複雑化
+- additionalProperties: falseなしで未定義プロパティを許容する
+- バリデーションキーワードの定義不足による検証漏れ
+- OpenAPI仕様への非準拠な設計
+- ドキュメント不足による意図の曖昧さ
 
-**適用条件**:
+## リソース/スクリプト参照
 
-- [ ] 異なる言語/プラットフォーム間でデータをやり取りする
-- [ ] 標準化されたフォーマットが必要
-- [ ] バリデーションルールを共有したい
+### references/ （段階的参照資料）
 
-**期待される成果**: 相互運用可能な JSON Schema
+- **Level1_basics.md**: JSON Schema設計の基礎知識
+- **Level2_intermediate.md**: 実務レベルのスキーマ設計
+- **Level3_advanced.md**: 高度なスキーマ構成パターン
+- **Level4_expert.md**: 専門的なスキーマ設計技法
+- **json-schema-basics.md**: Draft 2020-12準拠の型システム、$ref参照、required/additionalProperties基礎
+- **openapi-integration.md**: OpenAPI 3.0/3.1のJSON Schema互換性、components定義、リクエスト/レスポンス分離
+- **schema-composition.md**: allOf/oneOf/anyOfによるスキーマ継承と多態性実装パターン
+- **validation-keywords.md**: 型別バリデーションキーワード（minLength/pattern/minimum/format等）リファレンス
+- **requirements-index.md**: 要求仕様の索引（docs/00-requirements と同期）
 
-### シナリオ 3: 設定ファイルスキーマ
+### scripts/ （実行スクリプト）
 
-**状況**: アプリケーションの設定ファイルのスキーマを定義する
+- **validate-json-schema.mjs**: JSON Schemaの構文検証とDraft仕様準拠チェック
+- **validate-skill.mjs**: スキル構造の整合性検証
+- **log_usage.mjs**: スキル使用記録と評価
 
-**適用条件**:
+### assets/ （出力テンプレート）
 
-- [ ] 設定ファイルのバリデーションが必要
-- [ ] IDE での補完機能を提供したい
-- [ ] ドキュメントを自動生成したい
-
-**期待される成果**: 設定ファイル用 JSON Schema
-
-## 基本概念
-
-### JSON Schema の構造
-
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schemas/user",
-  "title": "User",
-  "description": "ユーザー情報を表すスキーマ",
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "format": "uuid",
-      "description": "ユーザーID"
-    },
-    "email": {
-      "type": "string",
-      "format": "email",
-      "description": "メールアドレス"
-    },
-    "name": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 100,
-      "description": "ユーザー名"
-    },
-    "age": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 150,
-      "description": "年齢"
-    }
-  },
-  "required": ["id", "email", "name"],
-  "additionalProperties": false
-}
-```
-
-### 型システム
-
-```json
-{
-  "type": "string"   // 文字列
-  "type": "number"   // 数値（浮動小数点）
-  "type": "integer"  // 整数
-  "type": "boolean"  // 真偽値
-  "type": "array"    // 配列
-  "type": "object"   // オブジェクト
-  "type": "null"     // null
-  "type": ["string", "null"]  // 複数の型（Nullable）
-}
-```
-
-### スキーマ参照
-
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schemas/order",
-  "$defs": {
-    "address": {
-      "type": "object",
-      "properties": {
-        "street": { "type": "string" },
-        "city": { "type": "string" },
-        "country": { "type": "string" }
-      },
-      "required": ["street", "city", "country"]
-    }
-  },
-  "type": "object",
-  "properties": {
-    "shippingAddress": { "$ref": "#/$defs/address" },
-    "billingAddress": { "$ref": "#/$defs/address" }
-  }
-}
-```
-
-### スキーマ合成
-
-```json
-{
-  "allOf": [
-    { "$ref": "#/$defs/baseEntity" },
-    { "$ref": "#/$defs/timestamps" },
-    {
-      "properties": {
-        "customField": { "type": "string" }
-      }
-    }
-  ],
-
-  "oneOf": [
-    { "$ref": "#/$defs/creditCard" },
-    { "$ref": "#/$defs/bankTransfer" },
-    { "$ref": "#/$defs/paypal" }
-  ],
-
-  "anyOf": [{ "type": "string" }, { "type": "number" }]
-}
-```
-
-### 条件付きスキーマ
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "type": { "enum": ["personal", "business"] },
-    "taxId": { "type": "string" }
-  },
-  "if": {
-    "properties": { "type": { "const": "business" } }
-  },
-  "then": {
-    "required": ["taxId"]
-  },
-  "else": {
-    "properties": { "taxId": false }
-  }
-}
-```
-
-## 判断基準チェックリスト
-
-### スキーマ設計時
-
-- [ ] $schemaと$id を指定しているか？
-- [ ] title と description を記載しているか？
-- [ ] required を適切に指定しているか？
-- [ ] additionalProperties を考慮しているか？
-
-### 再利用性確保時
-
-- [ ] 共通の定義を$defs にまとめているか？
-- [ ] 適切な粒度で分割しているか？
-- [ ] 外部参照は相対パスか絶対 URI か？
-
-### OpenAPI 連携時
-
-- [ ] components セクションに配置しているか？
-- [ ] nullable vs type: ["...", "null"]の選択は適切か？
-- [ ] discriminator を使用すべきか？
-
-## JSON Schema vs Zod
-
-| 観点         | JSON Schema            | Zod                   |
-| ------------ | ---------------------- | --------------------- |
-| 言語         | 言語非依存             | TypeScript            |
-| 実行時       | バリデーションのみ     | バリデーション + 変換 |
-| 型推論       | 外部ツール必要         | 自動                  |
-| OpenAPI      | ネイティブサポート     | zod-to-openapi 必要   |
-| ユースケース | API 仕様、設定ファイル | TypeScript アプリ     |
-
-## 関連スキル
-
-- `.claude/skills/zod-validation/SKILL.md` - Zod バリデーション
-- `.claude/skills/type-safety-patterns/SKILL.md` - 型安全性パターン
-- `.claude/skills/error-message-design/SKILL.md` - エラーメッセージ設計
+- **api-schema-template.json**: OpenAPI components/schemasセクション作成テンプレート
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                    |
-| ---------- | ---------- | ------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版リリース - JSON Schema 設計の基本を網羅 |
+| Version | Date       | Changes                                                                                                                                                        |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠: YAML frontmatter更新（Anchors/Trigger追加）、ワークフロー再構成（Phase 1-3）、Task仕様ナビテーブル追加、リソース参照セクション整理 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                    |

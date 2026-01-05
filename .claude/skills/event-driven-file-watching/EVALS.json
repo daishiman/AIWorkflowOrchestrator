@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "skill_name": "event-driven-file-watching",
+    "version": "1.0.0",
+    "last_updated": "2025-12-31",
+    "evaluation_criteria": {
+      "success_metrics": [
+        "Chokidar watcher successfully implemented",
+        "Event handlers properly configured",
+        "Cross-platform compatibility achieved",
+        "Observer pattern correctly applied"
+      ],
+      "quality_metrics": [
+        "Debouncing implemented for rapid changes",
+        "Error handling comprehensive",
+        "Memory leaks prevented",
+        "Performance optimized"
+      ]
+    }
+  },
+  "usage_stats": {
+    "total_invocations": 0,
+    "successful_executions": 0,
+    "failed_executions": 0,
+    "phases_executed": {
+      "phase_1_setup": 0,
+      "phase_2_implementation": 0,
+      "phase_3_validation": 0
+    },
+    "agents_executed": {
+      "watcher_architect": 0,
+      "event_handler_implementer": 0,
+      "performance_optimizer": 0
+    }
+  },
+  "performance_metrics": {
+    "average_execution_time": null,
+    "token_efficiency": {
+      "avg_tokens_per_invocation": null,
+      "context_reuse_rate": null
+    },
+    "error_patterns": []
+  },
+  "level_progression": {
+    "current_level": 1,
+    "level_history": [
+      {
+        "level": 1,
+        "achieved_date": "2025-12-31",
+        "criteria_met": "Initial creation"
+      }
+    ],
+    "next_level_criteria": {
+      "level": 2,
+      "requirements": [
+        "10+ successful invocations",
+        "Use of advanced event patterns",
+        "Performance optimization applied"
+      ]
+    }
+  },
+  "feedback_summary": {
+    "common_issues": [],
+    "improvement_suggestions": [],
+    "user_satisfaction": null
+  }
+}

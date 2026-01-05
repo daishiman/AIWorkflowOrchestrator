@@ -1,184 +1,147 @@
 ---
 name: docker-build-push-action
 description: |
-    GitHub ActionsにおけるDockerイメージのビルドとプッシュの専門知識。
-    専門分野:
-    - docker/build-push-action: 公式アクションの完全な構文とオプション
-    - BuildKit: キャッシュ、マルチステージビルド、最適化戦略
-    - マルチプラットフォームビルド: linux/amd64、linux/arm64対応
-    - レジストリ認証: GHCR、DockerHub、ECR、GCR統合
-    - タグ戦略: セマンティックバージョニング、Git SHA、ブランチベース
-    使用タイミング:
-    - Dockerイメージをビルド・プッシュするワークフローを作成する時
-    - マルチプラットフォーム対応のイメージを構築する時
-    - コンテナレジストリへの認証を設定する時
-    - BuildKitキャッシュを最適化してビルド時間を短縮する時
+  GitHub ActionsでのDockerビルド/プッシュを設計・実装するスキル。
+  レジストリ認証、キャッシュ戦略、マルチプラットフォーム対応を整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • docker/build-push-action / 適用: ビルドとプッシュ / 目的: 自動化
+  • BuildKit / 適用: キャッシュ最適化 / 目的: ビルド高速化
+  • Registry Authentication / 適用: 認証設計 / 目的: 安全な配布
 
-  - `.claude/skills/docker-build-push-action/resources/build-push-syntax.md`: docker/build-push-action完全構文、BuildKitキャッシュ、マルチプラットフォームビルド
-  - `.claude/skills/docker-build-push-action/resources/registry-auth.md`: GHCR、DockerHub、ECR、GCRへの認証パターンとSecrets管理
-  - `.claude/skills/docker-build-push-action/templates/docker-workflow.yaml`: 基本/マルチプラットフォーム/マルチレジストリの8種類のワークフロー例
-  - `.claude/skills/docker-build-push-action/scripts/analyze-dockerfile.mjs`: Dockerfileの最適化提案とビルドパフォーマンス分析
-
-  Use proactively when implementing docker-build-push-action patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when configuring GitHub Actions for Docker build and push, managing registry auth, or optimizing BuildKit cache.
+  docker build push action, buildx, registry auth, github actions docker
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# Docker Build/Push Action
+# docker-build-push-action
 
 ## 概要
 
-GitHub Actions で Docker イメージをビルド・プッシュするための専門知識を提供します。
+GitHub ActionsでのDockerビルド/プッシュを体系化し、キャッシュと認証設計を支援する。
 
-## リソース構造
+## ワークフロー
 
-```
-docker-build-push-action/
-├── SKILL.md
-├── resources/
-│   ├── build-push-syntax.md     # 完全構文、BuildKit
-│   └── registry-auth.md         # GHCR/DockerHub/ECR/GCR認証
-├── templates/
-│   └── docker-workflow.yaml     # 8種のワークフロー例
-└── scripts/
-    └── analyze-dockerfile.mjs   # Dockerfile分析
-```
+### Phase 1: 要件整理
 
-## コマンドリファレンス
+**目的**: ビルド対象とレジストリ要件を明確化する。
 
-```bash
-# 完全構文リファレンス
-cat .claude/skills/docker-build-push-action/resources/build-push-syntax.md
+**アクション**:
 
-# レジストリ認証パターン
-cat .claude/skills/docker-build-push-action/resources/registry-auth.md
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/build-push-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-# ワークフロー例（基本/マルチプラットフォーム/マルチレジストリ等）
-cat .claude/skills/docker-build-push-action/templates/docker-workflow.yaml
+**Task**: `agents/analyze-build-push-requirements.md` を参照
 
-# Dockerfile分析
-node .claude/skills/docker-build-push-action/scripts/analyze-dockerfile.mjs <path>
-```
+### Phase 2: ワークフロー設計
 
-## クイックスタート
+**目的**: ビルド/プッシュのワークフローを設計する。
 
-### 基本ビルド・プッシュ
+**アクション**:
 
-```yaml
-name: Docker Build
-on:
-  push:
-    branches: [main]
+1. `references/build-push-syntax.md` で構文を確認する。
+2. `references/registry-auth.md` で認証方針を整理する。
+3. `assets/registry-checklist.md` で設計観点を揃える。
 
-jobs:
-  docker:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: type=ref,event=branch
-      - uses: docker/build-push-action@v5
-        with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-```
+**Task**: `agents/design-workflow-configuration.md` を参照
 
-### マルチプラットフォーム
+### Phase 3: 実装と設定
 
-```yaml
-- uses: docker/setup-qemu-action@v3
-- uses: docker/build-push-action@v5
-  with:
-    platforms: linux/amd64,linux/arm64
-    tags: ghcr.io/${{ github.repository }}:latest
-    cache-from: type=gha
-    cache-to: type=gha,mode=max
-```
+**目的**: workflow とキャッシュ設定を実装する。
 
-## 主要概念
+**アクション**:
 
-### BuildKit キャッシュ
+1. `assets/docker-workflow.yaml` を参照して実装する。
+2. `references/Level2_intermediate.md` でキャッシュ設定を確認する。
+3. 設定メモを作成する。
 
-| タイプ          | 説明                      | 用途           |
-| --------------- | ------------------------- | -------------- |
-| `type=gha`      | GitHub Actions キャッシュ | 標準 CI/CD     |
-| `type=registry` | レジストリキャッシュ      | マルチランナー |
-| `mode=max`      | 全中間レイヤー            | 最大再利用     |
+**Task**: `agents/implement-build-push-pipeline.md` を参照
 
-### タグ戦略
+### Phase 4: 検証と運用
 
-| パターン                          | 例           |
-| --------------------------------- | ------------ |
-| `type=ref,event=branch`           | `main`       |
-| `type=semver,pattern={{version}}` | `1.2.3`      |
-| `type=sha`                        | `sha-abc123` |
+**目的**: Dockerfileとワークフローの検証を行う。
 
-### プラットフォーム
+**アクション**:
 
-`linux/amd64`, `linux/arm64`, `linux/arm/v7`
+1. `scripts/analyze-dockerfile.mjs` で分析する。
+2. `assets/workflow-evaluation-template.md` で結果を整理する。
+3. `scripts/log_usage.mjs` で記録を更新する。
+
+**Task**: `agents/validate-build-push-workflow.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-build-push-requirements | Phase 1開始時 | 目的/制約 | 要件メモ、対象一覧 |
+| design-workflow-configuration | Phase 2開始時 | 要件メモ | ワークフロー設計、認証方針 |
+| implement-build-push-pipeline | Phase 3開始時 | 設計方針 | 実装メモ、設定案 |
+| validate-build-push-workflow | Phase 4開始時 | 実装メモ | 検証レポート、改善提案 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
-### セキュリティ
+### すべきこと
 
-- 最小権限: `contents: read`, `packages: write`
-- PR プッシュ禁止: `push: ${{ github.event_name != 'pull_request' }}`
-- BuildKit Secrets: `RUN --mount=type=secret`
-- イメージスキャン: Trivy 統合
+| 推奨事項 | 理由 |
+| --- | --- |
+| キャッシュを設定する | ビルド時間を短縮できる |
+| 認証をSecretsで管理 | セキュリティを保つ |
+| タグ戦略を統一する | リリースが追跡しやすい |
+| 検証結果を記録する | 改善が継続する |
 
-### パフォーマンス
+### 避けるべきこと
 
-- Buildx 並列化（デフォルト有効）
-- マルチステージビルド
-- レイヤー順序最適化（変更少 → 多）
-- GitHub Actions キャッシュ: `type=gha,mode=max`
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 資格情報の埋め込み | 漏洩リスクが高い |
+| キャッシュ無効化 | CIが遅くなる |
+| 非推奨アクション使用 | 更新リスクが高い |
 
-### Dockerfile 最適化
+## リソース参照
 
-```dockerfile
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN pnpm ci
-COPY . .
-RUN pnpm run build
-CMD ["node", "dist/index.js"]
-```
+### scripts/（決定論的処理）
 
-## 関連スキル
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-dockerfile.mjs` | Dockerfile分析 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-| スキル                                           | 内容             |
-| ------------------------------------------------ | ---------------- |
-| `.claude/skills/github-actions-syntax/SKILL.md`  | ワークフロー構文 |
-| `.claude/skills/secrets-management-gha/SKILL.md` | Secrets 管理     |
-| `.claude/skills/caching-strategies-gha/SKILL.md` | キャッシュ戦略   |
-| `.claude/skills/workflow-security/SKILL.md`      | セキュリティ     |
+### references/（詳細知識）
 
-## トラブルシューティング
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
+| 構文ガイド | [references/build-push-syntax.md](references/build-push-syntax.md) | 設計時 |
+| 認証ガイド | [references/registry-auth.md](references/registry-auth.md) | 認証設計時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-**ビルド失敗**: `node scripts/analyze-dockerfile.mjs Dockerfile` または `build-args: BUILDKIT_PROGRESS=plain`
+### assets/（テンプレート・素材）
 
-**認証エラー**: `permissions: packages: write` 確認、`secrets.GITHUB_TOKEN` 存在確認
+| アセット | 用途 |
+| --- | --- |
+| `assets/build-push-requirements-template.md` | 要件整理テンプレート |
+| `assets/registry-checklist.md` | 認証チェック |
+| `assets/workflow-evaluation-template.md` | 検証テンプレート |
+| `assets/docker-workflow.yaml` | ワークフロー例 |
 
-**マルチプラットフォームエラー**: `docker/setup-qemu-action@v3` と `docker/setup-buildx-action@v3` 確認
+### 運用ファイル
 
-## 更新履歴
-
-- **v1.0.0** (2025-11-27): 初版作成
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

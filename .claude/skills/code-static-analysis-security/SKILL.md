@@ -1,434 +1,121 @@
 ---
 name: code-static-analysis-security
 description: |
-  コード静的解析によるセキュリティ脆弱性検出のベストプラクティスを提供します。
-  SAST（Static Application Security Testing）ツール、パターンベース検出、
-  データフロー分析によるSQLインジェクション、XSS、コマンドインジェクション、
-  センシティブデータ露出、危険な関数使用の検出を行います。
+  静的解析によるセキュリティ脆弱性検出を整理し、SAST運用と検出ルールの設計を支援するスキル。
+  SQLインジェクション、XSS、コマンドインジェクションなどの検出と改善方針を扱う。
 
-  使用タイミング:
-  - コードレビュー時のセキュリティチェック
-  - SQLインジェクション、XSS検出時
-  - センシティブデータ露出の検出時
-  - 危険な関数（eval、exec等）使用チェック時
+  Anchors:
+  • Web Application Security (Andrew Hoffman) / 適用: 脅威分析と検出観点 / 目的: 脆弱性検出の精度向上
+  • OWASP ASVS / 適用: 検出基準の整理 / 目的: セキュリティ要件の明文化
+  • Secure by Design (OWASP) / 適用: 改善方針 / 目的: 安全な設計判断
 
-  Use this skill when performing static code analysis, detecting injection vulnerabilities,
-  or validating input handling security.
-
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/code-static-analysis-security/resources/injection-patterns.md`: SQL/XSS/コマンドインジェクションの検出パターンと正規表現
-  - `.claude/skills/code-static-analysis-security/scripts/scan-sql-injection.mjs`: SQLインジェクション脆弱性の自動スキャンスクリプト
-  - `.claude/skills/code-static-analysis-security/templates/sast-config-template.json`: ESLint Securityプラグイン等のSAST設定テンプレート
-version: 1.0.0
-related_skills:
-  - .claude/skills/owasp-top-10/SKILL.md
-  - .claude/skills/input-sanitization/SKILL.md
-  - .claude/skills/security-testing/SKILL.md
+  Trigger:
+  Use when running SAST, defining detection rules, auditing injection vulnerabilities, or documenting static analysis findings.
+  static analysis, SAST, SQL injection, XSS, command injection, security review
 ---
+# code-static-analysis-security
 
-# Code Static Analysis Security
+## 概要
 
-## スキル概要
+静的解析による脆弱性検出を体系化し、検出ルールと改善方針を一貫して整理する。
 
-静的コード解析によるセキュリティ脆弱性検出の専門知識を提供します。
+## ワークフロー
 
-**専門分野**:
+### Phase 1: 目的と対象整理
 
-- インジェクション脆弱性検出（SQL、Command、LDAP等）
-- XSS（クロスサイトスクリプティング）検出
-- センシティブデータ露出検出
-- 危険な関数使用検出
-- データフロー分析（Taint Analysis）
+**目的**: 対象範囲と検出方針を明確化する。
 
----
+**アクション**:
 
-## 1. SQLインジェクション検出
+1. 対象コードと検出対象（SQLi/XSS等）を整理する。
+2. 参照すべき検出パターンを選定する。
+3. SAST設定の要件を確認する。
 
-### 検出パターン
+**Task**: `agents/analyze-sast-requirements.md` を参照
 
-**文字列連結クエリ**:
+### Phase 2: 検出設計
 
-```javascript
-// ❌ 危険（検出対象）
-const query = `SELECT * FROM users WHERE id = ${userId}`;
-const query = "DELETE FROM posts WHERE id = " + postId;
-db.query(`UPDATE users SET name = '${userName}'`);
+**目的**: 検出ルールと運用手順を設計する。
 
-// ✅ 安全（パラメータ化）
-const query = "SELECT * FROM users WHERE id = $1";
-db.query(query, [userId]);
-```
+**アクション**:
 
-**検出方法**:
+1. 検出パターンを基にルールを整備する。
+2. SAST設定テンプレートを調整する。
+3. 結果レポートの形式を確認する。
 
-```javascript
-// Grepパターン
-/(query|exec|raw)\s*\(\s*['"`].*\$\{/
-/(query|exec)\s*\(\s*['"`].*\+/
-```
+**Task**: `agents/design-detection-rules.md` を参照
 
-**判断基準**:
+### Phase 3: 検証と記録
 
-- [ ] SQLクエリに変数が文字列連結されていないか？
-- [ ] パラメータ化クエリ（$1、?等）を使用しているか？
-- [ ] ORMを使用しているか（Drizzle、Prisma等）？
+**目的**: 検出結果を検証し、記録を残す。
 
----
+**アクション**:
 
-### データフロー追跡
+1. 検出スクリプトで対象をスキャンする。
+2. 結果をレビューして改善方針を整理する。
+3. ログと評価情報を更新する。
 
-**Source → Sink分析**:
+**Task**: `agents/validate-sast-findings.md` を参照
 
-```
-Source（入力元）:
-  - req.body
-  - req.params
-  - req.query
-  - req.headers
+## Task仕様ナビ
 
-Processing（処理）:
-  - 検証・サニタイズの有無
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |
+| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |
+| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |
 
-Sink（危険な処理）:
-  - db.query()
-  - db.exec()
-  - db.raw()
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-**例**:
+## ベストプラクティス
 
-```javascript
-// ❌ 危険: req.params → query（検証なし）
-app.get("/users/:id", (req, res) => {
-  const query = `SELECT * FROM users WHERE id = ${req.params.id}`;
-  db.query(query); // SQLインジェクション脆弱性
-});
+### すべきこと
 
-// ✅ 安全: 検証 + パラメータ化
-app.get("/users/:id", (req, res) => {
-  const userId = parseInt(req.params.id, 10);
-  if (isNaN(userId)) {
-    return res.status(400).json({ error: "Invalid ID" });
-  }
-  db.query("SELECT * FROM users WHERE id = $1", [userId]);
-});
-```
+| 推奨事項 | 理由 |
+| --- | --- |
+| 検出対象を明確にする | 誤検出を抑えるため |
+| ルールを段階的に調整する | 運用負荷を下げるため |
+| 検出結果を記録する | 改善サイクルを回すため |
 
-**判断基準**:
+### 避けるべきこと
 
-- [ ] ユーザー入力からクエリまでの経路が追跡されているか？
-- [ ] 入力検証が実装されているか？
+| 禁止事項 | 問題点 |
+| --- | --- |
+| ルールなしでスキャンする | 結果が不安定になる |
+| 重大度を評価しない | 優先度が不明になる |
+| 記録を残さない | 改善が継続できない |
 
----
+## リソース参照
 
-## 2. XSS（Cross-Site Scripting）検出
+### scripts/（決定論的処理）
 
-### DOM操作の危険な関数
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-**検出対象**:
+### references/（詳細知識）
 
-```javascript
-// ❌ 危険
-element.innerHTML = userInput;
-document.write(userInput);
-element.outerHTML = data;
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-// React
-<div dangerouslySetInnerHTML={{ __html: userInput }} />;
+### assets/（テンプレート・素材）
 
-// ❌ 動的スクリプト生成
-eval(userInput);
-new Function(userInput)();
-setTimeout(userInput, 1000); // 文字列を渡す
-```
+| アセット | 用途 |
+| --- | --- |
+| `assets/sast-config-template.json` | SAST設定テンプレート |
 
-**安全な代替**:
+### 運用ファイル
 
-```javascript
-// ✅ 安全
-element.textContent = userInput; // 自動エスケープ
-element.setAttribute("data-value", userInput);
-
-// React
-<div>{userInput}</div>; // 自動エスケープ
-```
-
-**検出パターン**:
-
-```javascript
-/\.innerHTML\s*=/
-/dangerouslySetInnerHTML/
-/document\.write/
-/eval\s*\(/
-/new\s+Function\s*\(/
-```
-
-**判断基準**:
-
-- [ ] innerHTML使用時はサニタイズされているか？
-- [ ] dangerouslySetInnerHTMLは最小限に抑えられているか？
-- [ ] eval、new Function()は使用されていないか？
-
----
-
-## 3. コマンドインジェクション検出
-
-### 危険なNode.js関数
-
-**検出対象**:
-
-```javascript
-const { exec, execSync, spawn } = require("child_process");
-
-// ❌ 危険
-exec(`ls -la ${userInput}`);
-execSync(`rm -rf ${directory}`);
-
-// ✅ 安全（引数配列）
-spawn("ls", ["-la", userInput]);
-```
-
-**検出パターン**:
-
-```javascript
-/exec\s*\(\s*['"`].*\$\{/
-/execSync\s*\(\s*['"`].*\+/
-```
-
-**判断基準**:
-
-- [ ] exec、execSyncに変数が文字列連結されていないか？
-- [ ] spawnの引数配列形式を使用しているか？
-- [ ] ユーザー入力は検証・ホワイトリスト化されているか？
-
----
-
-## 4. パストラバーサル検出
-
-### ファイル操作の脆弱性
-
-**検出対象**:
-
-```javascript
-const fs = require("fs");
-
-// ❌ 危険
-const filePath = `/uploads/${req.params.filename}`;
-fs.readFileSync(filePath);
-
-// ユーザー入力: ../../../../etc/passwd
-```
-
-**安全な実装**:
-
-```javascript
-const path = require("path");
-
-// ✅ 安全
-const uploadsDir = "/var/uploads";
-const filename = path.basename(req.params.filename); // ディレクトリ削除
-const filePath = path.join(uploadsDir, filename);
-
-if (!filePath.startsWith(uploadsDir)) {
-  throw new Error("Invalid file path");
-}
-
-fs.readFileSync(filePath);
-```
-
-**判断基準**:
-
-- [ ] ファイルパスにユーザー入力が含まれる場合、path.basename()を使用しているか？
-- [ ] ファイルパスが許可されたディレクトリ内か検証しているか？
-- [ ] `../`パターンが拒否されているか？
-
----
-
-## 5. センシティブデータ露出検出
-
-### ハードコードされたシークレット
-
-**検出パターン**:
-
-```javascript
-// ❌ 危険
-const apiKey = "sk-1234567890abcdef";
-const password = "admin123";
-const secret = "my-secret-key";
-
-// ✅ 安全
-const apiKey = process.env.API_KEY;
-```
-
-**検出方法**:
-
-```bash
-# Grepパターン
-grep -r "apiKey\s*=\s*['\"]" --include="*.js"
-grep -r "password\s*=\s*['\"]" --include="*.ts"
-```
-
-**判断基準**:
-
-- [ ] APIキー、パスワードが環境変数から取得されているか？
-- [ ] .envファイルが.gitignoreに含まれているか？
-- [ ] ハードコードされたシークレットが存在しないか？
-
----
-
-### ログ出力のセンシティブデータ
-
-**検出対象**:
-
-```javascript
-// ❌ 危険
-console.log("User:", user); // passwordフィールド含む
-logger.debug("Request", req.body); // パスワード含む可能性
-console.log("Token:", token);
-
-// ✅ 安全
-console.log("User ID:", user.id); // IDのみ
-logger.debug("Request", { userId: req.body.userId }); // 選択的
-```
-
-**判断基準**:
-
-- [ ] ユーザーオブジェクト全体をログに出力していないか？
-- [ ] トークン、パスワードがログに含まれていないか？
-
----
-
-## 6. 危険な関数の検出
-
-### 動的コード実行
-
-**検出対象**:
-
-```javascript
-// ❌ 危険
-eval(userInput);
-new Function(userInput)();
-setTimeout(userInput, 1000); // 文字列
-setInterval(code, 1000);
-
-// ✅ 安全
-setTimeout(() => safeFunction(), 1000); // 関数
-```
-
-**判断基準**:
-
-- [ ] eval()は使用されていないか？
-- [ ] new Function()は使用されていないか？
-- [ ] setTimeout/setIntervalに文字列が渡されていないか？
-
----
-
-### 安全でないデシリアライズ
-
-**検出対象**:
-
-```javascript
-// ❌ 危険
-const obj = eval("(" + userInput + ")");
-const data = JSON.parse(untrustedData); // プロトタイプ汚染リスク
-
-// ✅ より安全
-const data = JSON.parse(untrustedData);
-delete data.__proto__;
-delete data.constructor;
-```
-
-**判断基準**:
-
-- [ ] 信頼できないデータのデシリアライズ前に検証があるか？
-- [ ] プロトタイプ汚染対策があるか？
-
----
-
-## 7. 静的解析ツール統合
-
-### ESLint Security Plugins
-
-**推奨プラグイン**:
-
-```json
-{
-  "plugins": ["security", "no-secrets"],
-  "extends": ["plugin:security/recommended"],
-  "rules": {
-    "security/detect-object-injection": "error",
-    "security/detect-non-literal-regexp": "warn",
-    "security/detect-unsafe-regex": "error",
-    "no-secrets/no-secrets": "error"
-  }
-}
-```
-
-**判断基準**:
-
-- [ ] ESLint security pluginが導入されているか？
-- [ ] セキュリティルールがエラーレベルに設定されているか？
-
----
-
-### Semgrep
-
-**実行例**:
-
-```bash
-# 自動ルールセット
-semgrep --config auto .
-
-# OWASP Top 10ルール
-semgrep --config "p/owasp-top-ten" .
-
-# カスタムルール
-semgrep --config custom-rules.yaml .
-```
-
-**判断基準**:
-
-- [ ] CI/CDでSemgrepが実行されているか？
-- [ ] カスタムルールでプロジェクト固有パターンを検出しているか？
-
----
-
-## リソース・スクリプト・テンプレート
-
-### リソース
-
-- `resources/injection-patterns.md`: インジェクション検出パターン
-- `resources/xss-detection-guide.md`: XSS検出ガイド
-- `resources/data-flow-analysis.md`: データフロー分析手法
-
-### スクリプト
-
-- `scripts/scan-sql-injection.mjs`: SQLインジェクションスキャン
-- `scripts/detect-xss-vulnerabilities.mjs`: XSS検出
-- `scripts/find-dangerous-functions.mjs`: 危険な関数検出
-
-### テンプレート
-
-- `templates/sast-config-template.json`: SAST設定テンプレート
-- `templates/code-scan-report-template.md`: コードスキャンレポート
-
----
-
-## 関連スキル
-
-- `.claude/skills/owasp-top-10/SKILL.md`: A03（インジェクション）
-- `.claude/skills/input-sanitization/SKILL.md`: 入力サニタイズ
-- `.claude/skills/security-reporting/SKILL.md`: レポート生成
-
----
-
-## 変更履歴
-
-### v1.0.0 (2025-11-26)
-
-- 初版リリース
-- @sec-auditorエージェントからコード静的解析知識を抽出
-- SQLインジェクション、XSS、コマンドインジェクション、パストラバーサル検出を定義
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

@@ -1,258 +1,150 @@
 ---
 name: database-monitoring
 description: |
-    Database Reliability Engineeringに基づくデータベース監視と可観測性の専門スキル。
-    SQLite/Turso統計情報、スロークエリログ、接続数監視、
-    ディスク使用量、レプリケーション遅延などの運用メトリクスを提供します。
-    使用タイミング:
-    - 本番DBの健全性を監視する時
-    - パフォーマンス劣化を検知する時
-    - アラート設定を構築する時
-    - SLI/SLOを設計する時
+  データベース監視の設計・実装・検証を体系化するスキル。
+  SQLite/Tursoの統計情報、スロークエリ、接続数、ストレージを含めた監視運用を整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Designing Data-Intensive Applications / 適用: 性能とスケーリング設計 / 目的: 監視メトリクスの根拠整理
+  • Database Reliability Engineering / 適用: SREの監視設計 / 目的: 監視項目の体系化
+  • Observability / 適用: 監視と診断 / 目的: 可観測性の向上
 
-  - `.claude/skills/database-monitoring/resources/alerting-strategies.md`: アクション可能なアラート設計とエスカレーションパターン
-  - `.claude/skills/database-monitoring/resources/health-metrics.md`: 監視すべき主要指標と閾値設計ガイドライン
-  - `.claude/skills/database-monitoring/resources/sqlite-statistics.md`: SQLite/Turso統計情報の活用とクエリパターン
-  - `.claude/skills/database-monitoring/resources/slow-query-logging.md`: スロークエリログ設定と分析手法
-  - `.claude/skills/database-monitoring/templates/alert-rules-template.md`: アラートルール定義テンプレート
-  - `.claude/skills/database-monitoring/templates/monitoring-dashboard-template.md`: Grafanaダッシュボード設計テンプレート
-  - `.claude/skills/database-monitoring/scripts/connection-stats.mjs`: 接続数統計収集スクリプト
-  - `.claude/skills/database-monitoring/scripts/health-check.mjs`: データベース健全性チェックスクリプト
-
-  Use proactively when implementing database-monitoring patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when designing database monitoring metrics, alert thresholds, SLI/SLOs, or operational dashboards for SQLite/Turso.
+  database monitoring, sqlite metrics, turso monitoring, slow query, alerting, sli slo
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# Database Monitoring スキル
+# database-monitoring
 
 ## 概要
 
-Database Reliability Engineering の原則に基づき、SQLite/Tursoデータベースの
-健全性監視、パフォーマンス追跡、アラート設計を体系化したスキルです。
-
-### このスキルが提供するもの
-
-| カテゴリ             | 内容                                   |
-| -------------------- | -------------------------------------- |
-| 統計情報活用         | PRAGMA統計とsqlite_stat テーブルの活用 |
-| スロークエリ監視     | ログ設定、分析、最適化トリガー         |
-| 健全性メトリクス     | 監視すべき主要指標と閾値設計           |
-| アラート設計         | アクション可能なアラートルール         |
-| プラットフォーム固有 | Turso の監視機能活用                   |
+SQLite/Turso を中心に、監視項目の選定・アラート設計・ダッシュボード設計を整理し、運用で使える監視設計を提供する。
 
 ## ワークフロー
 
-### Phase 1: 監視要件の定義
+### Phase 1: 要件整理
 
-**目的**: 何を監視すべきかを明確化
+**目的**: 監視対象と品質要件を整理する。
 
-**実行内容**:
+**アクション**:
 
-1. ビジネス要件からSLI/SLOを導出
-2. 重要なデータベース操作を特定
-3. 監視対象メトリクスを選定
-4. アラート閾値の初期設定
+1. 監視対象DBと用途を整理する。
+2. 重要なSLI/SLOとアラート目的を明確化する。
+3. 監視対象の優先度を整理する。
 
-**完了条件**:
+**Task**: `agents/analyze-monitoring-requirements.md` を参照
 
-- [ ] SLI（Service Level Indicators）が定義されている
-- [ ] 監視対象メトリクスリストが作成されている
-- [ ] アラート優先度が分類されている
+### Phase 2: 設計
 
-### Phase 2: メトリクス収集の設定
+**目的**: メトリクスとアラートの設計を行う。
 
-**目的**: SQLite/Turso統計情報を活用した監視基盤構築
+**アクション**:
 
-**実行内容**:
+1. `references/health-metrics.md` で監視指標を整理する。
+2. `references/alerting-strategies.md` でアラート設計を確認する。
+3. ダッシュボード構成を決める。
 
-1. クエリログの有効化（アプリケーションレベル）
-2. スロークエリログの設定
-3. 統計情報収集間隔の最適化
-4. メトリクスエクスポーターの設定（必要に応じて）
+**Task**: `agents/design-monitoring-architecture.md` を参照
 
-**重要な統計情報源**:
+### Phase 3: 実装
 
-| 情報源               | 用途                     |
-| -------------------- | ------------------------ |
-| PRAGMA database_list | データベース接続状態     |
-| PRAGMA table_info    | テーブル構造とメタデータ |
-| PRAGMA index_list    | インデックス一覧         |
-| sqlite_stat1/stat4   | クエリプランナー統計     |
-| PRAGMA page_count    | データベースサイズ統計   |
+**目的**: 監視の初期実装を行い、ログを整備する。
 
-**完了条件**:
+**アクション**:
 
-- [ ] クエリログが有効化されている
-- [ ] スロークエリログが設定されている
-- [ ] 主要PRAGMA統計へのクエリが準備されている
+1. `scripts/connection-stats.mjs` と `scripts/health-check.mjs` を実行する。
+2. `assets/alert-rules-template.md` を使ってアラートを定義する。
+3. 変更点を記録する。
 
-### Phase 3: アラート設計
+**Task**: `agents/implement-monitoring-setup.md` を参照
 
-**目的**: アクション可能なアラートを構築
+### Phase 4: 検証と運用
 
-**アラートレベル定義**:
+**目的**: 監視の品質を検証し、運用記録を残す。
 
-| レベル   | 条件                             | 対応                 |
-| -------- | -------------------------------- | -------------------- |
-| Critical | データ損失リスク、サービス停止   | 即座にオンコール対応 |
-| Warning  | パフォーマンス劣化、リソース逼迫 | 営業時間内に対応     |
-| Info     | 傾向変化、注意喚起               | 次回スプリントで検討 |
+**アクション**:
 
-**主要アラートパターン**:
+1. `assets/monitoring-review-checklist.md` で検証する。
+2. `references/slow-query-logging.md` で改善点を確認する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-1. **接続数アラート**
-   - Warning: 最大接続数の 80% 超過
-   - Critical: 最大接続数の 95% 超過
+**Task**: `agents/validate-monitoring-quality.md` を参照
 
-2. **スロークエリアラート**
-   - Warning: 5秒超クエリが 10件/分
-   - Critical: 30秒超クエリが発生
+## Task仕様ナビ
 
-3. **ディスク使用量アラート**
-   - Warning: 80% 使用
-   - Critical: 90% 使用
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-monitoring-requirements | Phase 1開始時 | 監視対象/要件 | 監視要件メモ、優先度一覧 |
+| design-monitoring-architecture | Phase 2開始時 | 要件メモ | メトリクス設計、アラート設計 |
+| implement-monitoring-setup | Phase 3開始時 | 設計方針 | 設定メモ、初期検証結果 |
+| validate-monitoring-quality | Phase 4開始時 | 設定メモ | 検証レポート、改善提案 |
 
-4. **レプリケーション遅延**
-   - Warning: 10秒以上の遅延
-   - Critical: 60秒以上の遅延
-
-**完了条件**:
-
-- [ ] アラートルールが定義されている
-- [ ] 通知ルーティングが設定されている
-- [ ] エスカレーションパスが明確
-
-### Phase 4: ダッシュボード構築
-
-**目的**: 可視化による運用効率化
-
-**推奨ダッシュボードパネル**:
-
-1. **概要パネル**
-   - データベースサイズ
-   - 接続数（現在/最大）
-   - トランザクション数/秒
-
-2. **パフォーマンスパネル**
-   - クエリ実行時間分布
-   - スロークエリ件数推移
-   - キャッシュヒット率
-
-3. **リソースパネル**
-   - ディスクI/O
-   - メモリ使用量
-   - CPU使用率
-
-4. **エラーパネル**
-   - デッドロック発生
-   - 接続エラー
-   - タイムアウト
-
-**完了条件**:
-
-- [ ] ダッシュボードが構築されている
-- [ ] リフレッシュ間隔が適切
-- [ ] 関係者がアクセス可能
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
-### 監視設計の原則
+### すべきこと
 
-1. **アクション可能なアラートのみ**
-   - アラートは対応アクションが明確なもののみ
-   - Alert Fatigue（アラート疲れ）を防ぐ
+| 推奨事項 | 理由 |
+| --- | --- |
+| 監視目的を明確にする | アラートの精度が上がる |
+| SLI/SLOを先に決める | 閾値設計が容易になる |
+| スロークエリを継続監視する | 性能劣化を早期検知できる |
+| ダッシュボードを要約する | 運用判断が迅速になる |
 
-2. **段階的な閾値設定**
-   - いきなりCriticalではなくWarningから
-   - 対応時間を確保できる設計
+### 避けるべきこと
 
-3. **コンテキストの付与**
-   - アラートにはクエリ例や影響範囲を含める
-   - 対応手順へのリンクを含める
-
-4. **定期的なレビュー**
-   - 月次でアラート発火頻度を分析
-   - 閾値の調整とルールの整理
-
-### Turso 固有の考慮事項
-
-**Turso**:
-
-- libSQL HTTP接続とWebSocketの監視
-- エッジロケーション別のレイテンシ追跡
-- レプリケーション遅延の監視
-- データベースブランチ間の同期状態確認
-- 読み取り専用レプリカの負荷分散状況
-
-## チェックリスト
-
-### 監視設定時
-
-- [ ] クエリログが有効か？
-- [ ] スロークエリログの閾値は適切か？
-- [ ] 接続数の上限監視があるか？
-- [ ] ディスク使用量監視があるか？
-
-### アラート設計時
-
-- [ ] アラートにアクション定義があるか？
-- [ ] エスカレーションパスが明確か？
-- [ ] 重複アラートの抑制があるか？
-- [ ] テスト環境でアラートテストしたか？
-
-### 運用時
-
-- [ ] ダッシュボードを定期確認しているか？
-- [ ] アラート発火時の対応が迅速か？
-- [ ] 月次でメトリクス傾向をレビューしているか？
-- [ ] 閾値の調整を行っているか？
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 目的のない指標追加 | ノイズが増える |
+| 閾値の過小設定 | アラート疲れが起きる |
+| 記録の欠落 | 改善ができない |
 
 ## リソース参照
 
-詳細な知識が必要な場合:
+### scripts/（決定論的処理）
 
-```bash
-# SQLite/Turso統計情報の詳細
-cat .claude/skills/database-monitoring/resources/sqlite-statistics.md
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/connection-stats.mjs` | 接続統計取得 |
+| `scripts/health-check.mjs` | 健全性チェック |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-# スロークエリログの設定と分析
-cat .claude/skills/database-monitoring/resources/slow-query-logging.md
+### references/（詳細知識）
 
-# 健全性メトリクスと閾値設計
-cat .claude/skills/database-monitoring/resources/health-metrics.md
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
+| 健全性指標 | [references/health-metrics.md](references/health-metrics.md) | 指標選定時 |
+| アラート設計 | [references/alerting-strategies.md](references/alerting-strategies.md) | アラート設計時 |
+| スロークエリ | [references/slow-query-logging.md](references/slow-query-logging.md) | 改善時 |
+| SQLite統計 | [references/sqlite-statistics.md](references/sqlite-statistics.md) | 指標確認時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-# アラート設計パターン
-cat .claude/skills/database-monitoring/resources/alerting-strategies.md
-```
+### assets/（テンプレート・素材）
 
-## スクリプト
+| アセット | 用途 |
+| --- | --- |
+| `assets/alert-rules-template.md` | アラート定義テンプレート |
+| `assets/monitoring-dashboard-template.md` | ダッシュボードテンプレート |
+| `assets/monitoring-requirements-template.md` | 監視要件整理 |
+| `assets/monitoring-review-checklist.md` | 検証チェックリスト |
 
-```bash
-# DB健全性チェック
-node .claude/skills/database-monitoring/scripts/health-check.mjs
+### 運用ファイル
 
-# 接続数統計収集
-node .claude/skills/database-monitoring/scripts/connection-stats.mjs
-```
-
-## テンプレート
-
-```bash
-# Grafanaダッシュボード設計テンプレート
-cat .claude/skills/database-monitoring/templates/monitoring-dashboard-template.md
-
-# アラートルール設計テンプレート
-cat .claude/skills/database-monitoring/templates/alert-rules-template.md
-```
-
-## 関連スキル
-
-| スキル                   | 関係性                     |
-| ------------------------ | -------------------------- |
-| query-performance-tuning | スロークエリ検出後の最適化 |
-| backup-recovery          | 障害検知時の復旧対応       |
-| connection-pooling       | 接続数問題の解決           |
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

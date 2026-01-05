@@ -1,98 +1,63 @@
 ---
 description: |
   GitHub Actionsワークフローテンプレートを作成するコマンド。
-
-  Organization全体で共有できるワークフローテンプレートを生成し、
-  チーム全体のCI/CD品質を向上させます。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - Phase 2: `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント
-
-  📚 利用可能スキル（gha-workflow-architectエージェントが参照）:
-  - `.claude/skills/workflow-templates/SKILL.md` - ワークフローパターン、ベストプラクティス
-  - `.claude/skills/github-actions-optimization/SKILL.md` - 並列化、キャッシュ最適化
-  - `.claude/skills/ci-cd-security/SKILL.md` - セキュアなCI/CD設計
+  - `.claude/agents/gha-workflow-architect.md`: GitHub Actions専門エージェント
 
   ⚙️ このコマンドの設定:
-  - argument-hint: "[workflow-name]"（必須: test/build/deploy等）
-  - allowed-tools: テンプレート生成用
-    • Task: gha-workflow-architectエージェント起動用
-    • Write(.github/workflow-templates/**): テンプレート生成専用
-  - model: sonnet（標準的なワークフローテンプレート生成）
-
-  📋 成果物:
-  - `.github/workflow-templates/[workflow-name].yml`
-  - `.github/workflow-templates/[workflow-name].properties.json`
-
-  🎯 対応ワークフロー:
-  - test: テスト自動化
-  - build: ビルド・デプロイ
-  - security: セキュリティスキャン
+  - argument-hint: [workflow-name]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: workflow template, GitHub Actions, CI/CD テンプレート
 argument-hint: "[workflow-name]"
 allowed-tools:
   - Task
-  - Write(.github/workflow-templates/**)
 model: sonnet
 ---
 
 # ワークフローテンプレート作成
 
-このコマンドは、GitHub Actionsワークフローテンプレートを作成します。
+## 目的
 
-## 📋 実行フロー
+`.claude/commands/ai/create-workflow-template.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-### Phase 1: ワークフロー名の確認
+## エージェント起動フロー
 
-```bash
-workflow_name="$ARGUMENTS"
+### Phase 1: GitHub Actions専門エージェントの実行
 
-if [ -z "$workflow_name" ]; then
-  エラー: ワークフロー名は必須です
-  使用例: /ai:create-workflow-template test
-fi
-```
+**目的**: GitHub Actions専門エージェントに関するタスクを実行し、結果を整理する
 
-### Phase 2: gha-workflow-architectエージェントを起動
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-**使用エージェント**: `.claude/agents/gha-workflow-architect.md`
+**ゴール**: GitHub Actions専門エージェントの結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/gha-workflow-architect.md`
+
+Task ツールで `.claude/agents/gha-workflow-architect.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[workflow-name]）
 
 **依頼内容**:
 
-```markdown
-「${workflow_name}」ワークフローテンプレートを作成してください。
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-**要件**:
+**期待成果物**:
 
-1. .github/workflow-templates/${workflow_name}.yml生成
-2. .github/workflow-templates/${workflow_name}.properties.json生成
+- `.github/workflow-templates/`
 
-**スキル参照**: `.claude/skills/workflow-templates/SKILL.md`
+**完了条件**:
 
-**成果物**: ワークフローテンプレート
-```
-
-### Phase 3: 完了報告
-
-```markdown
-## ワークフローテンプレート作成完了
-
-ワークフロー: ${workflow_name}
-
-### 成果物
-
-✅ .github/workflow-templates/${workflow_name}.yml
-✅ .github/workflow-templates/${workflow_name}.properties.json
-```
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
-/ai:create-workflow-template test
+/ai:create-workflow-template [workflow-name]
 ```
-
-## 参照
-
-- gha-workflow-architect: `.claude/agents/gha-workflow-architect.md`
-- workflow-templates: `.claude/skills/workflow-templates/SKILL.md`

@@ -140,7 +140,7 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 使用エージェント
 
-- **エージェント**: `@req-analyst`
+- **エージェント**: `.claude/agents/req-analyst.md`
 - **選定理由**: 機能要件・非機能要件の明確化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -148,8 +148,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 | スキル名                 | 活用方法                   |
 | ------------------------ | -------------------------- |
-| requirements-engineering | プロフィール拡張要件の整理 |
-| use-case-modeling        | ユーザー設定シナリオ定義   |
+| .claude/skills/requirements-engineering/SKILL.md | プロフィール拡張要件の整理 |
+| .claude/skills/use-case-modeling/SKILL.md        | ユーザー設定シナリオ定義   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -185,7 +185,7 @@ Supabase user_profiles テーブルの拡張スキーマを設計する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@db-architect`
+- **エージェント**: `.claude/agents/db-architect.md`
 - **選定理由**: データベース設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -193,8 +193,8 @@ Supabase user_profiles テーブルの拡張スキーマを設計する。
 
 | スキル名               | 活用方法                |
 | ---------------------- | ----------------------- |
-| database-normalization | 正規化設計              |
-| json-optimization      | JSONB活用（通知設定等） |
+| .claude/skills/database-normalization/SKILL.md | 正規化設計              |
+| .claude/skills/json-optimization/SKILL.md      | JSONB活用（通知設定等） |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -228,7 +228,7 @@ Supabase user_profiles テーブルの拡張スキーマを設計する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@schema-def`
+- **エージェント**: `.claude/agents/schema-def.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -261,15 +261,15 @@ Supabase user_profiles テーブルの拡張スキーマを設計する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキル
 
 | スキル名                   | 活用方法                 |
 | -------------------------- | ------------------------ |
-| design-system-architecture | 設定画面レイアウト       |
-| accessibility-wcag         | フォームアクセシビリティ |
+| .claude/skills/design-system-architecture/SKILL.md | 設定画面レイアウト       |
+| .claude/skills/accessibility-wcag/SKILL.md         | フォームアクセシビリティ |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -295,9 +295,9 @@ Supabase user_profiles テーブルの拡張スキーマを設計する。
 
 | エージェント  | レビュー観点               | 選定理由           |
 | ------------- | -------------------------- | ------------------ |
-| @arch-police  | アーキテクチャ整合性       | 既存設計との整合性 |
-| @db-architect | データベース設計           | スキーマ品質確認   |
-| @sec-auditor  | プライバシー・セキュリティ | 個人情報の取り扱い |
+| .claude/agents/arch-police.md  | アーキテクチャ整合性       | 既存設計との整合性 |
+| .claude/agents/db-architect.md | データベース設計           | スキーマ品質確認   |
+| .claude/agents/sec-auditor.md  | プライバシー・セキュリティ | 個人情報の取り扱い |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -325,7 +325,7 @@ Supabase user_profiles テーブルの拡張スキーマを設計する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -397,7 +397,7 @@ ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS preferences JSONB DEFAULT '{}
 
 ##### 使用エージェント
 
-- **エージェント**: `@schema-def`
+- **エージェント**: `.claude/agents/schema-def.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -430,7 +430,7 @@ ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS preferences JSONB DEFAULT '{}
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -473,7 +473,7 @@ pnpm --filter @repo/desktop test:run profileHandlers
 
 ##### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 成果物
@@ -505,7 +505,7 @@ pnpm --filter @repo/desktop test:run profileHandlers
 
 ##### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件
@@ -542,8 +542,8 @@ pnpm --filter @repo/desktop test:run profileHandlers
 
 | エージェント  | レビュー観点 | 選定理由     |
 | ------------- | ------------ | ------------ |
-| @code-quality | コード品質   | 保守性確認   |
-| @sec-auditor  | プライバシー | 個人情報保護 |
+| .claude/agents/code-quality.md | コード品質   | 保守性確認   |
+| .claude/agents/sec-auditor.md  | プライバシー | 個人情報保護 |
 
 - **参照**: `.claude/agents/agent_list.md`
 

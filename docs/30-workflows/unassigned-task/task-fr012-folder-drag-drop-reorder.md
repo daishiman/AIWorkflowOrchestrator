@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                                  |
 | 発見元           | Phase 0 (要件定義) - FR-WS-001                          |
 | 発見日           | 2025-12-11                                              |
-| 発見エージェント | @req-analyst                                            |
+| 発見エージェント | .claude/agents/req-analyst.md                                            |
 
 ---
 
@@ -148,7 +148,7 @@ Phase 9: ドキュメント更新・未完了タスク記録
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: UI/UX要件の詳細化が可能
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -156,8 +156,8 @@ Phase 9: ドキュメント更新・未完了タスク記録
 
 | スキル名                    | 活用方法                                |
 | --------------------------- | --------------------------------------- |
-| acceptance-criteria-writing | Given-When-Then形式での受け入れ基準定義 |
-| accessibility-wcag          | アクセシビリティ要件の定義              |
+| .claude/skills/acceptance-criteria-writing/SKILL.md | Given-When-Then形式での受け入れ基準定義 |
+| .claude/skills/accessibility-wcag/SKILL.md          | アクセシビリティ要件の定義              |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -192,7 +192,7 @@ Phase 9: ドキュメント更新・未完了タスク記録
 
 ##### 使用エージェント
 
-- **エージェント**: @domain-modeler
+- **エージェント**: .claude/agents/domain-modeler.md
 
 ##### 成果物
 
@@ -222,14 +222,14 @@ Phase 9: ドキュメント更新・未完了タスク記録
 
 ##### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 
 ##### 活用スキル
 
 | スキル名              | 活用方法                     |
 | --------------------- | ---------------------------- |
-| accessibility-wcag    | aria-grabbed等のARIA属性設計 |
-| tailwind-css-patterns | ドラッグ状態のスタイリング   |
+| .claude/skills/accessibility-wcag/SKILL.md    | aria-grabbed等のARIA属性設計 |
+| .claude/skills/tailwind-css-patterns/SKILL.md | ドラッグ状態のスタイリング   |
 
 ##### 成果物
 
@@ -255,8 +255,8 @@ Phase 9: ドキュメント更新・未完了タスク記録
 
 | エージェント | レビュー観点         | 選定理由                       |
 | ------------ | -------------------- | ------------------------------ |
-| @arch-police | アーキテクチャ整合性 | データモデル変更の影響範囲確認 |
-| @ui-designer | UI/UX設計            | アクセシビリティとUX確認       |
+| .claude/agents/arch-police.md | アーキテクチャ整合性 | データモデル変更の影響範囲確認 |
+| .claude/agents/ui-designer.md | UI/UX設計            | アクセシビリティとUX確認       |
 
 #### レビューチェックリスト
 
@@ -280,7 +280,7 @@ Phase 9: ドキュメント更新・未完了タスク記録
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 
 #### 成果物
 
@@ -405,14 +405,14 @@ dnd-kitを使用したドラッグ&ドロップUIを実装する。
 
 ##### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 
 ##### 活用スキル
 
 | スキル名                       | 活用方法                   |
 | ------------------------------ | -------------------------- |
-| component-composition-patterns | Compound Componentパターン |
-| accessibility-wcag             | ARIA属性の適用             |
+| .claude/skills/component-composition-patterns/SKILL.md | Compound Componentパターン |
+| .claude/skills/accessibility-wcag/SKILL.md             | ARIA属性の適用             |
 
 ---
 
@@ -459,9 +459,9 @@ dnd-kitを使用したドラッグ&ドロップUIを実装する。
 
 | エージェント     | レビュー観点     | 選定理由                         |
 | ---------------- | ---------------- | -------------------------------- |
-| @code-quality    | コード品質       | リファクタリング品質確認         |
-| @frontend-tester | テスト品質       | E2Eテスト網羅性確認              |
-| @ui-designer     | アクセシビリティ | WCAG準拠確認、キーボード操作確認 |
+| .claude/agents/code-quality.md    | コード品質       | リファクタリング品質確認         |
+| .claude/agents/frontend-tester.md | テスト品質       | E2Eテスト網羅性確認              |
+| .claude/agents/ui-designer.md     | アクセシビリティ | WCAG準拠確認、キーボード操作確認 |
 
 ---
 
@@ -664,4 +664,4 @@ function migrateToV2(
 
 | バージョン | 日付       | 変更者       | 変更内容                   |
 | ---------- | ---------- | ------------ | -------------------------- |
-| 1.0.0      | 2025-12-11 | @req-analyst | 初版作成(FR-012単一タスク) |
+| 1.0.0      | 2025-12-11 | .claude/agents/req-analyst.md | 初版作成(FR-012単一タスク) |

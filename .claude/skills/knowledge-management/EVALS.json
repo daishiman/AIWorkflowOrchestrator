@@ -1,0 +1,51 @@
+{
+  "skill": "knowledge-management",
+  "version": "1.0.0",
+  "metrics": {
+    "total_uses": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "success_rate": 0.0,
+    "last_used": null,
+    "avg_execution_time_minutes": null
+  },
+  "level_criteria": {
+    "level_1": {
+      "min_uses": 0,
+      "min_success_rate": 0.0,
+      "description": "Basic usage: Understanding SECI model fundamentals and applying basic workflows"
+    },
+    "level_2": {
+      "min_uses": 5,
+      "min_success_rate": 0.7,
+      "description": "Intermediate: Successfully applying curation framework and externalization techniques"
+    },
+    "level_3": {
+      "min_uses": 15,
+      "min_success_rate": 0.8,
+      "description": "Advanced: Mastering combination strategies and quality assurance processes"
+    },
+    "level_4": {
+      "min_uses": 30,
+      "min_success_rate": 0.9,
+      "description": "Expert: Full SECI cycle implementation with freshness strategy and organizational impact"
+    }
+  },
+  "current_level": 1,
+  "phase_metrics": {
+    "clarification": {
+      "uses": 0,
+      "avg_time_minutes": null
+    },
+    "application": {
+      "uses": 0,
+      "avg_time_minutes": null
+    },
+    "verification": {
+      "uses": 0,
+      "avg_time_minutes": null
+    }
+  },
+  "common_issues": [],
+  "improvement_suggestions": []
+}

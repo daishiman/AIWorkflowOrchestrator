@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "requirements": [
+    {
+      "file": "docs/00-requirements/01-overview.md",
+      "skills": [
+        "requirements-engineering",
+        "requirements-documentation",
+        "product-vision",
+        "stakeholder-communication",
+        "project-architecture-integration"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/02-non-functional-requirements.md",
+      "skills": [
+        "requirements-engineering",
+        "functional-non-functional-requirements",
+        "slo-sli-design",
+        "web-performance",
+        "tdd-principles",
+        "tdd-red-green-refactor",
+        "test-naming-conventions",
+        "flaky-test-prevention",
+        "security-configuration-review",
+        "zero-trust-security",
+        "accessibility-wcag",
+        "monitoring-alerting",
+        "retry-strategies",
+        "clean-code-practices",
+        "observability-pillars"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/03-technology-stack.md",
+      "skills": [
+        "requirements-engineering",
+        "project-architecture-integration",
+        "documentation-architecture",
+        "nextjs-app-router",
+        "server-components-patterns",
+        "react-hooks-advanced",
+        "electron-architecture",
+        "electron-packaging",
+        "orm-best-practices",
+        "mcp-protocol",
+        "prompt-engineering-for-agents",
+        "linting-formatting-automation"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/04-directory-structure.md",
+      "skills": [
+        "requirements-engineering",
+        "documentation-architecture",
+        "project-architecture-integration",
+        "monorepo-dependency-management",
+        "nextjs-app-router",
+        "electron-architecture",
+        "agent-structure-design"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/05-architecture.md",
+      "skills": [
+        "requirements-engineering",
+        "architectural-patterns",
+        "clean-architecture-principles",
+        "project-architecture-integration",
+        "plugin-architecture",
+        "database-normalization",
+        "query-optimization",
+        "vector-search-alternatives"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/06-core-interfaces.md",
+      "skills": [
+        "requirements-engineering",
+        "api-contract-design",
+        "interface-segregation",
+        "repository-pattern",
+        "structured-logging",
+        "type-safety-patterns"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/07-error-handling.md",
+      "skills": [
+        "requirements-engineering",
+        "error-handling-pages",
+        "error-message-design",
+        "error-boundary",
+        "retry-strategies",
+        "structured-logging",
+        "monitoring-alerting"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/08-api-design.md",
+      "skills": [
+        "requirements-engineering",
+        "api-contract-design",
+        "openapi-specification",
+        "resource-oriented-api",
+        "api-versioning",
+        "request-response-examples",
+        "api-documentation-best-practices",
+        "json-schema",
+        "http-best-practices"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/09-local-agent.md",
+      "skills": [
+        "requirements-engineering",
+        "agent-structure-design",
+        "agent-architecture-patterns",
+        "agent-lifecycle-management",
+        "event-driven-file-watching",
+        "file-watcher-security",
+        "file-watcher-observability",
+        "retry-strategies",
+        "backup-recovery"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/10-discord-bot.md",
+      "skills": [
+        "requirements-engineering",
+        "integration-patterns",
+        "api-client-patterns",
+        "rate-limiting",
+        "websocket-patterns"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/11-plugin-development.md",
+      "skills": [
+        "requirements-engineering",
+        "plugin-architecture",
+        "api-contract-design",
+        "json-schema",
+        "interface-segregation"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/12-deployment.md",
+      "skills": [
+        "requirements-engineering",
+        "deployment-strategies",
+        "deployment-environments-gha",
+        "ci-cd-pipelines",
+        "railway-secrets-management",
+        "railway-turso-management",
+        "github-actions-syntax",
+        "github-actions-security",
+        "electron-distribution",
+        "monitoring-alerting",
+        "backup-recovery"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/13-environment-variables.md",
+      "skills": [
+        "requirements-engineering",
+        "secret-management-architecture",
+        "environment-isolation",
+        "secrets-management-gha",
+        "gitignore-management",
+        "railway-secrets-management"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/14-task-workflow-specification.md",
+      "skills": [
+        "requirements-engineering",
+        "task-decomposition",
+        "process-lifecycle-management",
+        "workflow-templates",
+        "approval-gates",
+        "command-structure-fundamentals",
+        "command-activation-mechanisms",
+        "structured-output",
+        "agent-structure-design",
+        "agent-quality-standards"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/15-database-design.md",
+      "skills": [
+        "requirements-engineering",
+        "database-normalization",
+        "orm-best-practices",
+        "query-optimization",
+        "database-migrations",
+        "indexing-strategies",
+        "foreign-key-constraints",
+        "query-performance-tuning",
+        "transaction-management",
+        "connection-pooling"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/16-ui-ux-guidelines.md",
+      "skills": [
+        "requirements-engineering",
+        "design-system-architecture",
+        "apple-hig-guidelines",
+        "accessibility-wcag",
+        "user-centric-writing",
+        "information-architecture",
+        "structured-writing"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/17-security-guidelines.md",
+      "skills": [
+        "requirements-engineering",
+        "security-configuration-review",
+        "zero-trust-security",
+        "authentication-authorization-security",
+        "security-headers",
+        "input-sanitization",
+        "dependency-security-scanning",
+        "security-scanning",
+        "rbac-implementation",
+        "cryptographic-practices"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/18-claude-code-skill-specification.md",
+      "skills": [
+        "requirements-engineering",
+        "skill-creation-workflow",
+        "skill-librarian-commands",
+        "command-structure-fundamentals",
+        "command-documentation-patterns",
+        "command-naming-conventions",
+        "command-activation-mechanisms",
+        "agent-structure-design",
+        "agent-quality-standards",
+        "agent-validation-testing"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/99-glossary.md",
+      "skills": [
+        "requirements-engineering",
+        "knowledge-management",
+        "documentation-architecture",
+        "ubiquitous-language"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/master_system_design.md",
+      "skills": [
+        "requirements-engineering",
+        "project-architecture-integration",
+        "architectural-patterns",
+        "documentation-architecture",
+        "product-vision",
+        "information-architecture"
+      ]
+    },
+    {
+      "file": "docs/00-requirements/task-orchestration-specification.md",
+      "skills": [
+        "requirements-engineering",
+        "multi-agent-systems",
+        "task-decomposition",
+        "process-lifecycle-management",
+        "workflow-templates",
+        "prompt-engineering-for-agents",
+        "structured-output",
+        "context-window-optimization",
+        "approval-gates",
+        "error-recovery-prompts",
+        "multi-turn-conversation"
+      ]
+    }
+  ]
+}

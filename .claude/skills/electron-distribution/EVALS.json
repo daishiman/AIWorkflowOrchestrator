@@ -1,0 +1,39 @@
+{
+  "skill_name": "electron-distribution",
+  "version": "2.0.0",
+  "current_level": 1,
+  "levels": {
+    "1": {
+      "min_uses": 0,
+      "min_success_rate": 0,
+      "description": "Basic understanding of electron-updater and release workflows"
+    },
+    "2": {
+      "min_uses": 5,
+      "min_success_rate": 0.7,
+      "description": "Practical implementation of auto-update features"
+    },
+    "3": {
+      "min_uses": 15,
+      "min_success_rate": 0.8,
+      "description": "Advanced CI/CD integration and multi-platform distribution"
+    },
+    "4": {
+      "min_uses": 30,
+      "min_success_rate": 0.9,
+      "description": "Expert-level app store distribution and optimization"
+    }
+  },
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "average_satisfaction": 0,
+    "last_evaluated": "2025-12-31T00:00:00Z"
+  },
+  "feedback_summary": {
+    "strengths": [],
+    "weaknesses": [],
+    "improvement_suggestions": []
+  }
+}

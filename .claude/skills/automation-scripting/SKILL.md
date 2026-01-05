@@ -1,166 +1,119 @@
 ---
 name: automation-scripting
 description: |
-  ## 概要
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  自動化スクリプト（Bash/Python/Node）の設計・実装・運用を支援するスキル。
+  冪等性、エラーハンドリング、ログ設計、CI/CD統合の指針を整理します。
 
-  - `.claude/skills/automation-scripting/resources/script-patterns.md`: スクリプトパターン集
+  Anchors:
+  • The Pragmatic Programmer / 適用: 自動化の実務 / 目的: 再現性の高いスクリプト設計
+  • Automation Pipeline Patterns / 適用: ワークフロー設計 / 目的: 反復作業の効率化
+  • Unix Philosophy / 適用: スクリプト構成 / 目的: 小さな責務分離
 
-  専門分野:
-  - (要追加)
-
-  使用タイミング:
-  - (要追加)
-
-  Use proactively when (要追加).
-version: 1.0.0
+  Trigger:
+  Use when designing automation scripts, adding error handling/logging, or integrating scripts into CI/CD pipelines.
+allowed-tools:
+  - bash
+  - node
 ---
 
 # 自動化スクリプティング
 
 ## 概要
 
-開発タスクの自動化に必要なスクリプティングパターンとベストプラクティス
+再利用可能で保守性の高いスクリプトを設計し、反復作業を自動化する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-## 核心概念
+- テンプレは `assets/script-template.sh`
+- 実装パターンは `references/script-patterns.md`
 
-### 1. スクリプトの役割
+## ワークフロー
 
-- 反復的な手作業の自動化
-- CI/CDパイプラインの実装
-- 環境セットアップの標準化
+### Phase 1: 目的と前提の整理
 
-### 2. スクリプト言語の選択
+**目的**: 自動化対象と制約を整理する
 
-| 用途         | 言語         | 理由                       |
-| ------------ | ------------ | -------------------------- |
-| Gitフック    | Bash         | 標準搭載                   |
-| ビルド       | Node.js/pnpm | フロントエンドエコシステム |
-| データ処理   | Python       | 豊富なライブラリ           |
-| システム管理 | Bash         | OS統合                     |
+**アクション**:
 
-### 3. スクリプト設計の原則
+1. `references/Level1_basics.md` で基礎概念を確認
+2. 自動化対象の範囲と入出力を整理
+3. 実行環境と権限の制約を確認
 
-- 単一責任: 1スクリプト = 1タスク
-- 冪等性: 何度実行しても同じ結果
-- 可視性: エラー出力は明確に
-- テスト可能性: 関数化・モジュール化
+**Task**: `agents/analyze-automation-context.md`
 
-## 設計パターン
+### Phase 2: スクリプト設計と実装
 
-### パターン1: チェック・実行・検証
+**目的**: 冪等性とエラーハンドリングを含む設計を行う
 
-```bash
-#!/bin/bash
-# 前提条件チェック → 処理実行 → 結果検証
+**アクション**:
 
-# チェック
-if [ ! -d "src" ]; then
-  echo "Error: src directory not found"
-  exit 1
-fi
+1. `references/Level2_intermediate.md` で実装パターンを確認
+2. `assets/script-template.sh` を基に構造を決定
+3. ログとエラー処理を設計する
 
-# 実行
-pnpm run build
+**Task**:
+- `agents/design-automation-script.md`
+- `agents/implement-automation-script.md`
 
-# 検証
-if [ ! -f "dist/index.js" ]; then
-  echo "Error: Build output not found"
-  exit 1
-fi
-```
+### Phase 3: 検証と記録
 
-### パターン2: エラーハンドリング
+**目的**: スクリプトの検証と記録を行う
 
-```bash
-#!/bin/bash
-set -euo pipefail  # 厳密モード
-trap 'echo "Error on line $LINENO"' ERR
+**アクション**:
 
-# エラー発生時も実行
-cleanup() {
-  rm -f temp_file
-  pkill -P $$ || true
-}
-trap cleanup EXIT
-```
+1. 実行結果を確認して改善点を整理
+2. `scripts/validate-skill.mjs` で構造検証
+3. `scripts/log_usage.mjs` で改善記録
 
-### パターン3: 並列実行
+**Task**: `agents/validate-automation-script.md`
 
-```bash
-#!/bin/bash
-# 複数のタスクを並列化
+## Task仕様ナビ
 
-task1 &
-PID1=$!
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| コンテキスト整理 | 目的と制約の整理 | 要件情報 | 目的メモ | `references/Level1_basics.md` | Phase 1 |
+| 設計 | 冪等性・エラー設計 | 目的メモ | 設計メモ | `references/Level2_intermediate.md` | Phase 2 前半 |
+| 実装 | スクリプト実装 | 設計メモ | 実装結果 | `assets/script-template.sh` | Phase 2 後半 |
+| 検証 | 動作検証と改善 | 実装結果 | 検証レポート | `references/Level3_advanced.md` | Phase 3 |
 
-task2 &
-PID2=$!
+## ベストプラクティス
 
-wait $PID1 $PID2
-echo "All tasks completed"
-```
+### すべきこと
 
-## 実装パターン
+- 冪等性を前提に設計する
+- 失敗時のエラー出力を明示する
+- 実行ログを必ず残す
+- 実行環境の差分を考慮する
 
-### パターン1: ビルドスクリプト
+### 避けるべきこと
 
-```bash
-#!/bin/bash
-# 自動ビルド・最適化
+- ハードコードされたパスやシークレット
+- 例外処理なしの実行
+- 実行結果の検証を省略する
 
-pnpm run clean
-pnpm run build
-pnpm run optimize
-pnpm run test
-```
+## リソース参照
 
-### パターン2: デプロイスクリプト
+### 参照資料
 
-```bash
-#!/bin/bash
-# 本番環境へのデプロイ自動化
-
-check_branch
-run_tests
-build_production
-backup_current
-deploy_new
-verify_deployment
-```
-
-### パターン3: セットアップスクリプト
-
-```bash
-#!/bin/bash
-# 開発環境の初期化
-
-install_dependencies
-configure_git_hooks
-setup_database
-generate_env_file
-```
-
-## 関連スキル
-
-- `.claude/skills/git-hooks-concepts/SKILL.md`: Gitフック統合
-- `.claude/skills/linting-formatting-automation/SKILL.md`: コード品質自動化
-- `.claude/skills/approval-gates/SKILL.md`: 承認プロセス自動化
-
-## 参照リソース
-
-### 詳細リソース
-
-- `.claude/skills/automation-scripting/resources/script-patterns.md`: スクリプトパターン集
-- `.claude/skills/automation-scripting/resources/error-handling.md`: エラーハンドリング
-
-### テンプレート
-
-- `.claude/skills/automation-scripting/templates/generic-script-template.sh`: 汎用スクリプト
-- `.claude/skills/automation-scripting/templates/parallel-runner-template.sh`: 並列実行テンプレート
+- `references/Level1_basics.md`: 基礎概念
+- `references/Level2_intermediate.md`: 実装パターン
+- `references/Level3_advanced.md`: CI/CD統合
+- `references/Level4_expert.md`: 分散処理と高度運用
+- `references/script-patterns.md`: スクリプトパターン
+- `references/legacy-skill.md`: 旧版要約（移行時のみ参照）
 
 ### スクリプト
 
-- `.claude/skills/automation-scripting/scripts/validate-scripts.mjs`: スクリプト検証ツール
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
+
+### テンプレート
+
+- `assets/script-template.sh`: スクリプトテンプレ
+
+## 変更履歴
+
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、assets追加            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠                              |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

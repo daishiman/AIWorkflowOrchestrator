@@ -1,381 +1,150 @@
 ---
 name: docker-best-practices
 description: |
-    コンテナ化とDockerのベストプラクティスを専門とするスキル。
-    効率的なDockerfile、イメージ最適化、セキュリティ対策を提供します。
-    専門分野:
-    - Dockerfile最適化: マルチステージビルド、レイヤーキャッシュ
-    - イメージサイズ削減: ベースイメージ選択、不要ファイル削除
-    - セキュリティ: 非rootユーザー、脆弱性スキャン
-    - docker-compose: ローカル開発環境構築
-    使用タイミング:
-    - Dockerfileを作成・最適化する時
-    - コンテナイメージサイズを削減したい時
-    - コンテナセキュリティを強化する時
-    - ローカル開発環境を構築する時
-    Use proactively when users need to create or optimize Dockerfiles,
-    reduce image sizes, or improve container security.
+  Dockerfile最適化、セキュリティ、マルチステージビルドを体系化するスキル。
+  イメージ最適化とローカル開発環境の設計を支援する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Dockerfile Best Practices / 適用: レイヤー最適化 / 目的: ビルド効率向上
+  • Image Security / 適用: 最小権限 / 目的: セキュリティ強化
+  • Multi-stage Builds / 適用: ビルド分離 / 目的: イメージ最小化
 
-  - `.claude/skills/docker-best-practices/resources/dockerfile-optimization.md`: レイヤーキャッシュ活用、ベースイメージ選択、イメージサイズ削減の最適化
-  - `.claude/skills/docker-best-practices/resources/image-security.md`: 非rootユーザー実行、脆弱性スキャン、シークレット管理のセキュリティ対策
-  - `.claude/skills/docker-best-practices/resources/local-development.md`: docker-composeを使ったローカル開発環境構築パターン
-  - `.claude/skills/docker-best-practices/resources/multi-stage-builds.md`: マルチステージビルドによるイメージサイズ削減とビルド最適化
-  - `.claude/skills/docker-best-practices/templates/docker-compose-template.yml`: ローカル開発用docker-compose設定テンプレート
-  - `.claude/skills/docker-best-practices/templates/nodejs-dockerfile-template.dockerfile`: Node.js本番環境向け最適化Dockerfileテンプレート
-  - `.claude/skills/docker-best-practices/scripts/analyze-image.mjs`: Dockerイメージ分析とサイズ最適化提案スクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when optimizing Dockerfiles, improving image security, or designing local development container setups.
+  dockerfile optimization, image security, multi-stage build, docker compose
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# Docker Best Practices
+# docker-best-practices
 
 ## 概要
 
-このスキルは、Docker 公式ベストプラクティスとセキュリティガイドラインに基づき、
-効率的で安全なコンテナ化を支援します。
-
-**主要な価値**:
-
-- 高速なビルドと小さなイメージサイズ
-- セキュアなコンテナ実行
-- 効率的なローカル開発環境
-- 本番運用に適した設定
-
-**対象ユーザー**:
-
-- アプリケーションをコンテナ化するエンジニア
-- イメージサイズを最適化したい DevOps
-- コンテナセキュリティを強化したいチーム
-
-## リソース構造
-
-```
-docker-best-practices/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── dockerfile-optimization.md             # Dockerfile最適化
-│   ├── image-security.md                      # イメージセキュリティ
-│   ├── multi-stage-builds.md                  # マルチステージビルド
-│   └── local-development.md                   # ローカル開発環境
-├── scripts/
-│   └── analyze-image.mjs                      # イメージ分析スクリプト
-└── templates/
-    ├── nodejs-dockerfile-template.dockerfile  # Node.js Dockerfile
-    └── docker-compose-template.yml            # docker-compose テンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# Dockerfile最適化
-cat .claude/skills/docker-best-practices/resources/dockerfile-optimization.md
-
-# イメージセキュリティ
-cat .claude/skills/docker-best-practices/resources/image-security.md
-
-# マルチステージビルド
-cat .claude/skills/docker-best-practices/resources/multi-stage-builds.md
-
-# ローカル開発環境
-cat .claude/skills/docker-best-practices/resources/local-development.md
-```
-
-### テンプレート参照
-
-```bash
-# Node.js Dockerfile
-cat .claude/skills/docker-best-practices/templates/nodejs-dockerfile-template.dockerfile
-
-# docker-compose
-cat .claude/skills/docker-best-practices/templates/docker-compose-template.yml
-```
-
-### スクリプト実行
-
-```bash
-# イメージ分析
-node .claude/skills/docker-best-practices/scripts/analyze-image.mjs myapp:latest
-```
-
-## いつ使うか
-
-### シナリオ 1: 新規 Dockerfile 作成
-
-**状況**: アプリケーションをコンテナ化したい
-
-**適用条件**:
-
-- [ ] Node.js/Python/Go などのアプリケーション
-- [ ] 本番運用を想定
-- [ ] イメージサイズを意識
-
-**期待される成果**: 最適化された Dockerfile
-
-### シナリオ 2: イメージサイズ削減
-
-**状況**: 既存イメージが大きすぎる
-
-**適用条件**:
-
-- [ ] イメージが 500MB 以上
-- [ ] ビルド時間が長い
-- [ ] デプロイに時間がかかる
-
-**期待される成果**: 小さく高速なイメージ
-
-### シナリオ 3: セキュリティ強化
-
-**状況**: コンテナのセキュリティを向上させたい
-
-**適用条件**:
-
-- [ ] root ユーザーで実行している
-- [ ] 脆弱性スキャンを実施していない
-- [ ] シークレットがイメージに含まれている
-
-**期待される成果**: セキュアなコンテナ構成
+Dockerfile最適化からセキュリティ強化、ローカル開発環境の設計までを整理する。
 
 ## ワークフロー
 
-### Phase 1: 要件分析
+### Phase 1: 要件整理
 
-**目的**: コンテナ化の要件を明確化
+**目的**: コンテナ化の目的と制約を明確化する。
 
-**ステップ**:
+**アクション**:
 
-1. **アプリケーション分析**:
-   - 言語/ランタイム
-   - 依存関係
-   - 必要なシステムパッケージ
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/docker-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-2. **環境要件**:
-   - 環境変数
-   - ボリューム
-   - ポート
+**Task**: `agents/analyze-docker-requirements.md` を参照
 
-**判断基準**:
+### Phase 2: Dockerfile設計
 
-- [ ] ランタイムが特定されているか？
-- [ ] 依存関係が明確か？
-- [ ] 環境要件が整理されているか？
+**目的**: Dockerfileとビルド戦略を設計する。
 
-### Phase 2: ベースイメージ選択
+**アクション**:
 
-**目的**: 適切なベースイメージを選択
+1. `references/dockerfile-optimization.md` で最適化方針を確認する。
+2. `references/multi-stage-builds.md` でビルド分離を整理する。
+3. `assets/dockerfile-review-checklist.md` で設計観点を揃える。
 
-**ステップ**:
+**Task**: `agents/design-dockerfile-plan.md` を参照
 
-1. **イメージ比較**:
-   - 公式イメージの確認
-   - サイズ比較
-   - セキュリティ考慮
+### Phase 3: 実装と環境整備
 
-2. **バージョン選択**:
-   - LTS バージョン
-   - セキュリティパッチ
+**目的**: コンテナ設定と開発環境を整備する。
 
-**判断基準**:
+**アクション**:
 
-- [ ] 公式イメージを使用しているか？
-- [ ] 適切なバージョンか？
+1. `assets/nodejs-dockerfile-template.dockerfile` を参照して実装する。
+2. `assets/docker-compose-template.yml` を参照して開発環境を整える。
+3. `references/image-security.md` でセキュリティ方針を確認する。
 
-**リソース**: `resources/dockerfile-optimization.md`
+**Task**: `agents/implement-container-setup.md` を参照
 
-### Phase 3: Dockerfile 作成
+### Phase 4: 検証と運用
 
-**目的**: 最適化された Dockerfile を作成
+**目的**: イメージ品質を検証し記録を更新する。
 
-**ステップ**:
+**アクション**:
 
-1. **マルチステージビルド**:
-   - ビルドステージ
-   - 実行ステージ
+1. `scripts/analyze-image.mjs` で検証する。
+2. `assets/image-evaluation-template.md` で結果を整理する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-2. **レイヤー最適化**:
-   - キャッシュ活用
-   - 不要ファイル削除
+**Task**: `agents/validate-image-quality.md` を参照
 
-**判断基準**:
+## Task仕様ナビ
 
-- [ ] マルチステージビルドを使用しているか？
-- [ ] レイヤーキャッシュが効いているか？
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-docker-requirements | Phase 1開始時 | 目的/制約 | 要件メモ、対象範囲 |
+| design-dockerfile-plan | Phase 2開始時 | 要件メモ | Dockerfile設計、最適化方針 |
+| implement-container-setup | Phase 3開始時 | 設計方針 | 実装方針、環境構成 |
+| validate-image-quality | Phase 4開始時 | 実装方針 | 検証レポート、改善提案 |
 
-**リソース**: `resources/multi-stage-builds.md`
-
-### Phase 4: セキュリティ対策
-
-**目的**: セキュアなイメージを構築
-
-**ステップ**:
-
-1. **ユーザー設定**:
-   - 非 root ユーザーの作成
-   - 適切な権限設定
-
-2. **脆弱性対策**:
-   - スキャンの実施
-   - パッケージの更新
-
-**判断基準**:
-
-- [ ] 非 root ユーザーで実行されるか？
-- [ ] 脆弱性スキャンを実施したか？
-
-**リソース**: `resources/image-security.md`
-
-## 核心知識
-
-### ベースイメージ比較
-
-| イメージ       | サイズ | 特徴               |
-| -------------- | ------ | ------------------ |
-| node:20        | ~1GB   | フル機能、開発向け |
-| node:20-slim   | ~200MB | 必要最小限         |
-| node:20-alpine | ~180MB | 軽量、musl libc    |
-| distroless     | ~100MB | 最小、デバッグ困難 |
-
-### Dockerfile ベストプラクティス
-
-```dockerfile
-# 1. 公式イメージを使用
-FROM node:20-alpine
-
-# 2. 非rootユーザーを作成
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
-
-# 3. 依存関係を先にコピー（キャッシュ活用）
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
-
-# 4. ソースコードをコピー
-COPY --chown=nextjs:nodejs . .
-
-# 5. ビルド
-RUN pnpm build
-
-# 6. 非rootユーザーに切り替え
-USER nextjs
-
-# 7. 実行
-CMD ["pnpm", "start"]
-```
-
-### .dockerignore
-
-```
-node_modules
-.git
-.env*
-*.log
-dist
-coverage
-.next
-```
-
-詳細は各リソースを参照
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **マルチステージビルド**:
-   - ビルド環境と実行環境を分離
-   - 最終イメージを最小化
-
-2. **レイヤーキャッシュ活用**:
-   - 変更頻度の低いものを先に
-   - package.json を先にコピー
-
-3. **非 root ユーザー**:
-   - 専用ユーザーを作成
-   - 最小限の権限
+| 推奨事項 | 理由 |
+| --- | --- |
+| マルチステージビルドを使う | イメージを小さくする |
+| 非root実行を徹底する | セキュリティを高める |
+| キャッシュを活用する | ビルド時間を短縮する |
+| 検証結果を記録する | 改善が継続する |
 
 ### 避けるべきこと
 
-1. **latest タグ**:
-   - ❌ `FROM node:latest`
-   - ✅ `FROM node:20-alpine`
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 不要ファイルを含める | イメージが肥大化する |
+| セキュリティ検証を省略 | リスクが増える |
+| 目的外のツール導入 | 運用が複雑化する |
 
-2. **シークレットの埋め込み**:
-   - ❌ `ENV API_KEY=xxx`
-   - ✅ 実行時に環境変数で渡す
+## リソース参照
 
-3. **不要なパッケージ**:
-   - ❌ 開発依存をすべて含める
-   - ✅ 本番に必要なもののみ
+### scripts/（決定論的処理）
 
-## トラブルシューティング
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-image.mjs` | イメージ分析 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-### 問題 1: イメージが大きい
+### references/（詳細知識）
 
-**症状**: イメージサイズが 500MB 以上
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
+| Dockerfile最適化 | [references/dockerfile-optimization.md](references/dockerfile-optimization.md) | 設計時 |
+| イメージセキュリティ | [references/image-security.md](references/image-security.md) | 実装時 |
+| マルチステージ | [references/multi-stage-builds.md](references/multi-stage-builds.md) | 設計時 |
+| ローカル開発 | [references/local-development.md](references/local-development.md) | 環境整備時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-**対応**:
+### assets/（テンプレート・素材）
 
-1. マルチステージビルドを使用
-2. alpine ベースイメージを検討
-3. .dockerignore を確認
-4. 不要なファイルを削除
+| アセット | 用途 |
+| --- | --- |
+| `assets/docker-requirements-template.md` | 要件整理テンプレート |
+| `assets/dockerfile-review-checklist.md` | Dockerfileチェック |
+| `assets/image-evaluation-template.md` | 検証テンプレート |
+| `assets/nodejs-dockerfile-template.dockerfile` | Dockerfileテンプレート |
+| `assets/docker-compose-template.yml` | Composeテンプレート |
 
-### 問題 2: ビルドが遅い
+### 運用ファイル
 
-**症状**: ビルドに数分以上かかる
-
-**対応**:
-
-1. レイヤーキャッシュを活用
-2. 依存関係のインストールを先に
-3. .dockerignore で node_modules を除外
-
-### 問題 3: 権限エラー
-
-**症状**: ファイル書き込みで権限エラー
-
-**対応**:
-
-1. CHOWN でファイル所有者を設定
-2. 書き込み先ディレクトリの権限確認
-3. ボリュームマウントの権限確認
-
-## 関連スキル
-
-- **ci-cd-pipelines** (`.claude/skills/ci-cd-pipelines/SKILL.md`): CI/CD パイプライン
-- **deployment-strategies** (`.claude/skills/deployment-strategies/SKILL.md`): デプロイ戦略
-- **infrastructure-as-code** (`.claude/skills/infrastructure-as-code/SKILL.md`): インフラ構成
-
-## メトリクス
-
-### イメージサイズ目標
-
-| アプリ種類  | 目標サイズ |
-| ----------- | ---------- |
-| Node.js API | < 200MB    |
-| Next.js     | < 300MB    |
-| Python API  | < 200MB    |
-| Go          | < 50MB     |
-
-### ビルド時間目標
-
-- キャッシュあり: < 1 分
-- キャッシュなし: < 5 分
-
-## 変更履歴
-
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-26 | 初版作成 |
-
-## 参考文献
-
-- **Docker 公式ドキュメント**
-  - [Dockerfile best practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
-
-- **Hadolint**
-  - [Dockerfile linter](https://github.com/hadolint/hadolint)
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

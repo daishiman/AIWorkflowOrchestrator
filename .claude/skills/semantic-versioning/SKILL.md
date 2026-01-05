@@ -2,416 +2,129 @@
 name: semantic-versioning
 description: |
   セマンティックバージョニング（semver）に基づく依存関係変更の影響予測と対応戦略を専門とするスキル。
+  依存パッケージのバージョンアップ時の破壊的変更検出、影響分析、移行戦略立案を支援する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Semantic Versioning 2.0.0 Specification / 適用: バージョン番号の解釈 / 目的: 変更の性質を正確に判断
+  • The Pragmatic Programmer / 適用: リスク軽減と段階的移行 / 目的: 安全なアップグレード
+  • Keep a Changelog / 適用: 変更履歴の解析 / 目的: 破壊的変更の特定
 
-  - `.claude/skills/semantic-versioning/resources/breaking-change-detection.md`: Breaking Change Detectionリソース
-  - `.claude/skills/semantic-versioning/resources/migration-strategies.md`: Migration Strategiesリソース
-  - `.claude/skills/semantic-versioning/resources/semver-specification.md`: Semver Specificationリソース
-  - `.claude/skills/semantic-versioning/resources/version-range-patterns.md`: Version Range Patternsリソース
-
-  - `.claude/skills/semantic-versioning/templates/upgrade-assessment-template.md`: Upgrade Assessmentテンプレート
-
-  - `.claude/skills/semantic-versioning/scripts/analyze-version-impact.mjs`: Analyze Version Impactスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when managing package dependency updates, analyzing version compatibility, detecting breaking changes, planning migration strategies, or assessing upgrade risks.
+  semver, dependency, version, breaking change, migration, upgrade, compatibility, package update
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Semantic Versioning
 
 ## 概要
 
-このスキルは、セマンティックバージョニング（semver）の仕様に基づき、
-依存関係のバージョン変更が持つ意味を正確に理解し、変更影響を予測する方法論を提供します。
-
-semver は`MAJOR.MINOR.PATCH`形式でバージョンを表現し、各部分の変更が持つ意味を明確に定義します:
-
-- **MAJOR**: 後方互換性のない変更（破壊的変更）
-- **MINOR**: 後方互換性のある機能追加
-- **PATCH**: 後方互換性のあるバグ修正
-
-**主要な価値**:
-
-- バージョン変更のリスクを事前に予測
-- 適切なバージョン範囲指定による安定性と更新性のバランス
-- 破壊的変更への計画的な対応
-
-**対象ユーザー**:
-
-- 依存関係を管理するエージェント（@dep-mgr）
-- パッケージをメンテナンスする開発者
-- アップグレード計画を立案するチーム
-
-## リソース構造
-
-```
-semantic-versioning/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── semver-specification.md                 # semver仕様の詳細解説
-│   ├── version-range-patterns.md               # バージョン範囲指定パターン
-│   ├── breaking-change-detection.md            # 破壊的変更の検出と対応
-│   └── migration-strategies.md                 # バージョン移行戦略
-├── scripts/
-│   └── analyze-version-impact.mjs              # バージョン変更影響分析スクリプト
-└── templates/
-    └── upgrade-assessment-template.md          # アップグレード評価テンプレート
-```
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# semver仕様詳細
-cat .claude/skills/semantic-versioning/resources/semver-specification.md
-
-# バージョン範囲指定パターン
-cat .claude/skills/semantic-versioning/resources/version-range-patterns.md
-
-# 破壊的変更の検出と対応
-cat .claude/skills/semantic-versioning/resources/breaking-change-detection.md
-
-# バージョン移行戦略
-cat .claude/skills/semantic-versioning/resources/migration-strategies.md
-```
-
-### スクリプト実行
-
-```bash
-# バージョン変更影響分析（TypeScript）
-node .claude/skills/semantic-versioning/scripts/analyze-version-impact.mjs <package-name> <current-version> <target-version>
-
-# 例: lodashの更新影響を分析
-node .claude/skills/semantic-versioning/scripts/analyze-version-impact.mjs lodash 4.17.19 4.17.21
-```
-
-### テンプレート参照
-
-```bash
-# アップグレード評価テンプレート
-cat .claude/skills/semantic-versioning/templates/upgrade-assessment-template.md
-```
-
-## いつ使うか
-
-### シナリオ 1: バージョン変更の影響評価
-
-**状況**: 依存パッケージを更新する前にリスクを評価したい
-
-**適用条件**:
-
-- [ ] バージョン番号が変更される
-- [ ] 変更が Major/Minor/Patch のいずれかを特定する必要がある
-- [ ] 更新によるリスクを評価する必要がある
-
-**期待される成果**: リスクレベルと推奨アプローチの決定
-
-### シナリオ 2: バージョン範囲指定の決定
-
-**状況**: package.json に新しい依存関係を追加する
-
-**適用条件**:
-
-- [ ] 新しいパッケージを追加する
-- [ ] 既存パッケージのバージョン範囲を見直す
-- [ ] 安定性と更新性のバランスを取る必要がある
-
-**期待される成果**: 適切なバージョン範囲指定（^、~、固定）
-
-### シナリオ 3: 破壊的変更への対応
-
-**状況**: Major バージョンアップが必要で、破壊的変更が含まれる
-
-**適用条件**:
-
-- [ ] Major バージョンが変更される
-- [ ] CHANGELOG に Breaking Changes が記載されている
-- [ ] コード修正が必要になる可能性がある
-
-**期待される成果**: 移行計画と必要なコード変更の特定
-
-## バージョン変更タイプ別判断基準
-
-### Major 変更 (X.y.z → (X+1).0.0)
-
-**特徴**:
-
-- 後方互換性のない変更を含む
-- API の削除・変更がある可能性
-- 既存コードが動作しなくなる可能性
-
-**リスクレベル**: 🔴 高
-
-**推奨アプローチ**:
-
-1. CHANGELOG とマイグレーションガイドを確認
-2. 破壊的変更の影響範囲を調査
-3. テスト環境で動作確認
-4. 段階的な移行計画を策定
-5. ロールバック計画を準備
-
-**判断基準**:
-
-- [ ] 移行ガイドが提供されているか？
-- [ ] 破壊的変更が自プロジェクトに影響するか？
-- [ ] 十分なテストカバレッジがあるか？
-- [ ] ロールバック可能な状態か？
-
-### Minor 変更 (x.Y.z → x.(Y+1).0)
-
-**特徴**:
-
-- 後方互換性を保った機能追加
-- 新しい API や機能が追加される
-- 既存コードは動作し続ける（はず）
-
-**リスクレベル**: 🟡 中
-
-**推奨アプローチ**:
-
-1. 新機能のリリースノートを確認
-2. 自動テストで動作確認
-3. 新機能の活用機会を評価
-4. パフォーマンス影響を確認
-
-**判断基準**:
-
-- [ ] 自動テストが通過するか？
-- [ ] 新機能を活用する予定があるか？
-- [ ] パフォーマンスへの影響はないか？
-
-### Patch 変更 (x.y.Z → x.y.(Z+1))
-
-**特徴**:
-
-- バグ修正やセキュリティパッチ
-- 後方互換性を保証
-- 機能変更なし
-
-**リスクレベル**: 🟢 低
-
-**推奨アプローチ**:
-
-1. リリースノートで修正内容を確認
-2. セキュリティパッチは優先適用
-3. 自動テストで回帰確認
-
-**判断基準**:
-
-- [ ] セキュリティパッチか？
-- [ ] 自分が遭遇したバグの修正か？
-- [ ] 回帰テストが通過するか？
-
-## バージョン範囲指定パターン
-
-### キャレット (^) - 推奨デフォルト
-
-**形式**: `^X.Y.Z`
-
-**許可範囲**: Minor と Patch の更新を許可
-
-**例**:
-
-- `^1.2.3` → `>=1.2.3 <2.0.0`
-- `^0.2.3` → `>=0.2.3 <0.3.0` (0.x.x の場合は注意)
-
-**使用場面**:
-
-- 一般的なライブラリ依存
-- 互換性が信頼できるパッケージ
-- 新機能を自動的に取り込みたい場合
-
-### チルダ (~) - 安定性重視
-
-**形式**: `~X.Y.Z`
-
-**許可範囲**: Patch の更新のみ許可
-
-**例**:
-
-- `~1.2.3` → `>=1.2.3 <1.3.0`
-
-**使用場面**:
-
-- クリティカルなシステム
-- Minor 更新でも影響が懸念される場合
-- 安定性を最優先する場合
-
-### 固定バージョン - 最大の安定性
-
-**形式**: `X.Y.Z`
-
-**許可範囲**: 指定バージョンのみ
-
-**使用場面**:
-
-- 特定バージョンでのみ動作が保証される場合
-- バージョン間の挙動差異が大きい場合
-- 再現性が最重要な場合
-
-**注意**: メンテナンス負荷が高い
-
-### 禁止パターン
-
-- `*` または `latest`: 使用禁止（再現性の喪失）
-- `>X.Y.Z`: 使用注意（将来の Major 変更を許可してしまう）
+セマンティックバージョニング（semver）に基づく依存関係変更の影響予測と対応戦略を専門とするスキル。バージョンアップ時の破壊的変更検出、影響分析、移行戦略立案をカバーする。
 
 ## ワークフロー
 
-### Phase 1: バージョン変更の分類
+```
+analyze-impact → plan-migration → execute-upgrade → validate-results
+```
 
-**目的**: 変更タイプ（Major/Minor/Patch）を特定する
+### Phase 1: 影響分析
 
-**ステップ**:
+**目的**: バージョン変更の影響範囲を特定する
 
-1. 現在のバージョンと目標バージョンを取得
-2. バージョン差分を計算
-3. 変更タイプを分類
+**Task**: `agents/analyze-impact.md` を参照
 
-**判断基準**:
+**アクション**:
 
-- [ ] 現在のバージョンが正確に把握されているか？
-- [ ] 目標バージョンが明確か？
-- [ ] 変更タイプが正しく分類されているか？
+1. 現在のバージョンと更新対象バージョンを確認
+2. CHANGELOGやリリースノートを分析
+3. 破壊的変更を特定
 
-### Phase 2: リスク評価
+### Phase 2: 移行計画
 
-**目的**: 変更が持つリスクを評価する
+**目的**: 安全な移行戦略を策定する
 
-**ステップ**:
+**Task**: `agents/plan-migration.md` を参照
 
-1. 変更タイプに基づくベースリスクを設定
-2. CHANGELOG とリリースノートを確認
-3. 破壊的変更の有無を確認
-4. 影響範囲を調査
+**アクション**:
 
-**判断基準**:
+1. 破壊的変更への対応方法を決定
+2. 段階的移行計画を作成
+3. テスト戦略を策定
 
-- [ ] CHANGELOG が確認されたか？
-- [ ] 破壊的変更が特定されたか？
-- [ ] 影響範囲が評価されたか？
+### Phase 3: 実行と検証
 
-### Phase 3: 対応戦略の決定
+**目的**: 移行を実行し、成功を検証する
 
-**目的**: 適切な更新アプローチを決定する
+**アクション**:
 
-**ステップ**:
+1. 依存関係を更新
+2. テストスイートを実行
+3. `scripts/log_usage.mjs` で記録
 
-1. リスクレベルに応じた戦略を選択
-2. テスト計画を立案
-3. ロールバック計画を準備
+## Task仕様ナビ
 
-**判断基準**:
+| Task           | 責務     | 入力             | 出力             |
+| -------------- | -------- | ---------------- | ---------------- |
+| analyze-impact | 影響分析 | バージョン情報   | 破壊的変更リスト |
+| plan-migration | 移行計画 | 破壊的変更リスト | 移行計画書       |
 
-- [ ] 戦略がリスクに適合しているか？
-- [ ] テスト計画が十分か？
-- [ ] ロールバック可能か？
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **CHANGELOG を必ず確認**:
-   - リリースノートや GitHub Releases を確認
-   - Breaking Changes セクションに注目
-   - Deprecation 警告を確認
-
-2. **段階的な更新**:
-   - 一度に複数の Major 更新を行わない
-   - 1 パッケージずつ更新して影響を切り分け
-   - 各更新後にテストを実行
-
-3. **バージョン範囲の適切な選択**:
-   - 信頼できるパッケージには`^`を使用
-   - クリティカルな依存には`~`を検討
-   - 固定バージョンは最小限に
+| 推奨事項                     | 理由                           |
+| ---------------------------- | ------------------------------ |
+| CHANGELOGを必ず確認する      | 破壊的変更の事前把握           |
+| 段階的にアップグレードする   | 問題の特定が容易               |
+| テストカバレッジを確保する   | 回帰の早期発見                 |
+| ロックファイルをコミットする | 再現可能なビルドの保証         |
+| 0.x.xバージョンは慎重に扱う  | 破壊的変更がいつでも起こりうる |
 
 ### 避けるべきこと
 
-1. **ワイルドカードの使用**:
-   - ❌ `*` や `latest` は使用しない
-   - ✅ 明示的なバージョン範囲を指定
+| 禁止事項                         | 問題点               |
+| -------------------------------- | -------------------- |
+| メジャーバージョンを無確認で更新 | 破壊的変更による障害 |
+| 複数依存を同時にアップグレード   | 問題の特定が困難     |
+| テストなしでのアップグレード     | 回帰バグの見逃し     |
+| 自動マージを有効にする           | 破壊的変更の見逃し   |
 
-2. **CHANGELOG 未確認での更新**:
-   - ❌ バージョン番号だけで判断しない
-   - ✅ 変更内容を理解してから更新
+## リソース参照
 
-3. **一括大規模更新**:
-   - ❌ すべての依存を一度に更新
-   - ✅ 段階的に更新して問題を切り分け
+### references/（詳細知識）
 
-## トラブルシューティング
+| リソース       | パス                                                                               | 読込条件         |
+| -------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| Semver仕様     | [references/semver-specification.md](references/semver-specification.md)           | バージョン解釈時 |
+| 破壊的変更検出 | [references/breaking-change-detection.md](references/breaking-change-detection.md) | 影響分析時       |
+| 移行戦略       | [references/migration-strategies.md](references/migration-strategies.md)           | 移行計画時       |
+| バージョン範囲 | [references/version-range-patterns.md](references/version-range-patterns.md)       | 範囲指定時       |
 
-### 問題 1: 0.x.x バージョンの扱い
+### scripts/（決定論的処理）
 
-**症状**: `^0.2.3`が期待通りに動作しない
+| スクリプト                           | 機能               |
+| ------------------------------------ | ------------------ |
+| `scripts/log_usage.mjs`              | 使用記録と自動評価 |
+| `scripts/analyze-version-impact.mjs` | バージョン影響分析 |
 
-**原因**: semver では 0.x.x は不安定版とみなされ、
-`^0.2.3`は`>=0.2.3 <0.3.0`と解釈される（Minor まで固定）
+### assets/（テンプレート）
 
-**解決策**: 0.x.x バージョンでは`~`と同等の動作になることを理解し、
-必要に応じて明示的な範囲指定を使用
-
-### 問題 2: ピアデペンデンシーの競合
-
-**症状**: 異なるパッケージが異なるバージョンのピア依存を要求
-
-**原因**: パッケージ間のピア依存バージョンの不整合
-
-**解決策**:
-
-1. 競合するバージョン範囲を確認
-2. 共通するバージョン範囲を探す
-3. 必要に応じてどちらかのパッケージを更新
-
-### 問題 3: プレリリースバージョンの扱い
-
-**症状**: `^1.0.0-alpha`が期待通りに動作しない
-
-**原因**: プレリリースバージョン（-alpha, -beta, -rc 等）は
-通常のバージョン範囲に含まれない
-
-**解決策**: プレリリースバージョンは明示的に指定するか、
-安定版を待って更新
-
-## 関連スキル
-
-- **dependency-auditing** (`.claude/skills/dependency-auditing/SKILL.md`): セキュリティ脆弱性の検出と評価
-- **upgrade-strategies** (`.claude/skills/upgrade-strategies/SKILL.md`): 段階的アップグレード戦略
-- **lock-file-management** (`.claude/skills/lock-file-management/SKILL.md`): ロックファイルの整合性管理
-
-## メトリクス
-
-### バージョン更新の安全性スコア
-
-**評価基準**:
-
-- 変更タイプの分類精度 (0-10 点)
-- CHANGELOG 確認の実施 (0-10 点)
-- テスト実行の網羅性 (0-10 点)
-- ロールバック計画の有無 (0-10 点)
-
-**目標**: 平均 8 点以上
-
-### 破壊的変更の検出率
-
-**測定方法**: (検出した破壊的変更数 / 実際の破壊的変更数) × 100
-
-**目標**: >95%
+| アセット                                | 用途                           |
+| --------------------------------------- | ------------------------------ |
+| `assets/upgrade-assessment-template.md` | アップグレード評価テンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                             |
-| ---------- | ---------- | ---------------------------------------------------- |
-| 1.0.0      | 2025-11-27 | 初版作成 - semver に基づく変更影響評価フレームワーク |
-
-## 参考文献
-
-- **Semantic Versioning 2.0.0**: https://semver.org/
-- **pnpm semver**: https://docs.npmjs.com/cli/v6/using-pnpm/semver
-- **node-semver**: https://github.com/pnpm/node-semver
+| Version | Date       | Changes                                            |
+| ------- | ---------- | -------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills仕様完全準拠、agents/を責務ベースに再構成 |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様に基づきリファクタリング           |
+| 1.0.0   | 2025-12-24 | 初版                                               |

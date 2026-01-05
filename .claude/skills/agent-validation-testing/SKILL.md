@@ -2,288 +2,162 @@
 name: agent-validation-testing
 description: |
   エージェントの検証とテストケース設計を専門とするスキル。
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
 
-  - `.claude/skills/agent-validation-testing/resources/test-case-patterns.md`: Test Case Patterns
-  - `.claude/skills/agent-validation-testing/templates/test-case-template.json`: "$schema": "https://json-schema.org/draft/2020-12/schema",
-  - `.claude/skills/agent-validation-testing/scripts/validate-agent.mjs`: validate-agent.mjs
+  **Anchors:**
+  • Test-Driven Development: By Example（Kent Beck）/ 適用: エージェント検証とテストケース設計 / 目的: Red-Green-Refactorパターンに基づく信頼性の高い検証
 
-  専門分野:
-  - 構文検証: YAML/Markdown構文チェック、パス検証
-  - テストケース設計: 正常系・異常系・エッジケースの作成
-  - 最終検証: 設計原則準拠、完全性確認、統合テスト
-  - デバッグ: エラー特定、修正、再検証
+  **Trigger:**
+  エージェント検証・テストケース設計・テスト実装・結果評価・バリデーション実行時に使用
 
-  使用タイミング:
-  - エージェントファイル生成後の検証時
-  - テストケースを作成する時
-  - デプロイ前の最終検証時
-  - エラーをデバッグする時
+  **公式リソース:**
+  - Kent Beck『Test-Driven Development: By Example』: TDDの基本原則と実装パターン
+  - Level 1-4のガイドで段階的に習得可能
+  - テストケースパターンと実装テンプレート完備
 
-  Use proactively when validating agent files, creating test cases,
-  or performing final verification before deployment.
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - Grep
+  - Edit
+  - Glob
 ---
 
 # Agent Validation Testing
 
 ## 概要
 
-このスキルは、Claude Codeエージェントの検証とテストに関する包括的なガイドラインを提供します。
+このスキルは、エージェントの検証とテストケース設計を専門とします。テスト駆動開発（TDD）の原則に基づいて、エージェントの動作を検証し、包括的なテストケースを設計・実装します。
 
-**主要な価値**:
+Kent Beck著『Test-Driven Development: By Example』の Red-Green-Refactor パターンを適用し、エージェントの信頼性と品質を確保します。詳細な手順や背景は以下を参照してください：
 
-- 構文エラーの早期検出により、実行時エラーを防止
-- テストケースにより、エージェントの動作が保証
-- 最終検証により、品質基準への準拠を確認
-
-## リソース構造
-
-```
-agent-validation-testing/
-├── SKILL.md
-├── resources/
-│   ├── syntax-validation-guide.md
-│   ├── test-case-patterns.md
-│   └── final-verification-checklist.md
-├── scripts/
-│   ├── validate-yaml.sh
-│   └── validate-markdown.sh
-└── templates/
-    └── test-case-template.json
-```
+- `references/Level1_basics.md` - 基礎的な検証テスト手法
+- `references/Level2_intermediate.md` - 実務的なテストケース設計
+- `references/Level3_advanced.md` - 複雑なシナリオの検証
+- `references/Level4_expert.md` - エキスパートレベルの手法
 
 ## ワークフロー
 
-### Phase 1: 構文検証
+### Phase 1: 目的と前提の整理
 
-**目的**: YAML/Markdown構文の正確性を確認
+**目的**: タスクの目的と前提条件を明確にする
 
-**検証項目**:
+**アクション**:
 
-#### YAML構文検証
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. エージェントの検証対象と検証方法を明確化
+3. 必要なテンプレートとスクリプトを特定
 
-```bash
-.claude/skills/agent-validation-testing/scripts/validate-yaml.sh .claude/agents/[agent-name].md
-```
+**Task**: `agents/analyze-validation-context.md` を参照
 
-**チェック内容**:
+### Phase 2: スキル適用
 
-- YAMLパースエラーがないか
-- 必須フィールド（name, description）が存在するか
-- インデントが正しいか
-- 特殊文字のエスケープが適切か
+**目的**: スキルの指針に従って具体的な作業を進める
 
-#### Markdown構文検証
+**アクション**:
 
-```bash
-.claude/skills/agent-validation-testing/scripts/validate-markdown.sh .claude/agents/[agent-name].md
-```
+1. テストケース設計フェーズ（`references/test-case-patterns.md` 参照）
+2. テスト実装フェーズ（`assets/test-case-template.json` 活用）
+3. 検証実行と結果分析
+4. フィードバック反映と改善
 
-**チェック内容**:
+**Task**: `agents/design-test-cases.md` を参照
 
-- 見出しレベルが適切か（#, ##, ###）
-- コードブロックが正しく閉じられているか
-- リストの形式が正しいか
-- リンクが有効か
+### Phase 3: 検証と記録
 
-#### パス検証
+**目的**: 成果物の検証と実行記録の保存
 
-**チェック内容**:
+**アクション**:
 
-- スキル参照パスが存在するか
-- 相対パスが正しいか
-- コマンド参照が有効か
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. テストケースが要件に合致するか確認
+3. 検証結果をドキュメント化
+4. `scripts/log_usage.mjs` を実行して記録を残す
 
-**リソース**: `resources/syntax-validation-guide.md`
+**Task**: `agents/validate-tests.md` を参照
 
-### Phase 2: テストケース設計
+## Task仕様ナビ
 
-**目的**: エージェントの動作を検証するテストケース作成
-
-**テストケース構成**（最低3つ）:
-
-#### テストケース1（基本動作）
-
-```json
-{
-  "test_id": "TC001",
-  "type": "normal",
-  "name": "基本的な動作テスト",
-  "input": {
-    "task": "典型的な使用例",
-    "context": {}
-  },
-  "expected_behavior": "標準ワークフロー実行",
-  "expected_output": {
-    "status": "completed",
-    "artifacts": ["file1.md"]
-  },
-  "success_criteria": ["全Phaseが完了", "成果物が生成される", "エラーがない"]
-}
-```
-
-#### テストケース2（高度な使用例）
-
-**目的**: 複雑なシナリオでの動作確認
-
-#### テストケース3（エラーケース）
-
-**目的**: エラーハンドリングの確認
-
-- エラー検出
-- 適切なエラーメッセージ
-- リカバリー動作
-
-**リソース**: `resources/test-case-patterns.md`
-
-### Phase 3: 最終検証
-
-**目的**: 全検証項目のクリア確認
-
-**検証チェックリスト**:
-
-#### 設計原則の遵守
-
-- [ ] 単一責任の原則に従っているか？
-- [ ] コンテキスト分離の原則に従っているか？
-- [ ] Progressive Disclosure原則を適用しているか？
-- [ ] 最小権限の原則に従っているか？
-
-#### 構造的完全性
-
-- [ ] YAML Frontmatterが完全か？
-- [ ] 全必須セクションが含まれているか？
-- [ ] ワークフローが5段階以上あるか？
-- [ ] 依存関係が明確に定義されているか？
-
-#### 品質メトリクス
-
-- [ ] トークン使用量が推奨範囲内（<10K）か？
-- [ ] descriptionの具体性（4-8行）？
-- [ ] チェックリスト項目数（Phase毎に3つ以上）？
-- [ ] テストケース数（3つ以上）？
-
-#### セキュリティ
-
-- [ ] ツール権限が適切に制限されているか？
-- [ ] 危険な操作に承認要求が設定されているか？
-- [ ] センシティブファイルへのアクセスが制限されているか？
-
-**リソース**: `resources/final-verification-checklist.md`
-
-### Phase 4: デバッグと修正
-
-**目的**: 検出されたエラーの修正
-
-**デバッグプロセス**:
-
-1. エラーの特定
-2. 原因の分析
-3. 修正の実施
-4. 再検証
-
-**リソース**: すべてのリソースファイル
+| Task                 | 説明                                 | 参照リソース            | 対応フェーズ |
+| -------------------- | ------------------------------------ | ----------------------- | ------------ |
+| エージェント検証計画 | 検証対象を特定し、検証方法を設計     | Level1_basics.md        | Phase 1      |
+| テストケース設計     | TDD原則に従ったテストケースを設計    | test-case-patterns.md   | Phase 2      |
+| テスト実装           | テストコード実装とテンプレート活用   | test-case-template.json | Phase 2      |
+| エッジケース検証     | 境界値とエラーケースの検証           | Level2_intermediate.md  | Phase 2      |
+| パフォーマンス検証   | 応答時間とリソース使用量の測定       | Level3_advanced.md      | Phase 3      |
+| 結果分析と改善       | テスト結果の分析とフィードバック反映 | Level4_expert.md        | Phase 3      |
+| バリデーション実行   | スクリプトによる最終検証             | validate-skill.mjs      | Phase 3      |
+| 記録保存             | テスト実行記録を自動保存             | log_usage.mjs           | Phase 3      |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **段階的検証**:
-   - 構文 → テスト → 最終検証の順
-
-2. **自動化**:
-   - スクリプトによる自動検証
-   - CI/CDパイプラインへの統合
-
-3. **テストの充実**:
-   - 正常系・異常系・エッジケース
+- **早期にテストを書く**: 実装前にテストケースを設計（TDD）
+- **エージェント検証計画を立てる**: 検証対象と検証方法を明確化
+- **テストケース設計パターンを活用**: `references/test-case-patterns.md` を参照
+- **エッジケースを網羅**: 境界値、エラー条件、異常系を含める
+- **テンプレートを活用**: `assets/test-case-template.json` を使用
+- **デプロイ前に最終検証**: 本番環境での問題を未然に防止
+- **テスト結果を記録**: `scripts/log_usage.mjs` で実行記録を保存
+- **フィードバックループを回す**: テスト結果から改善点を抽出
 
 ### 避けるべきこと
 
-1. **検証のスキップ**:
-   - ❌ 検証なしでデプロイ
-   - ✅ 必ず全検証を実施
+- **Red-Green-Refactorサイクルを無視する**: TDDの原則に従う
+- **テストなしに実装を進める**: バグの温床になる
+- **境界値テストを省く**: エッジケースは重要な検証項目
+- **テスト結果の分析を怠る**: パターンから学習する
+- **アンチパターン適用**: `references/Level2_intermediate.md` の注意点を確認
+- **レベルに応じた学習をスキップ**: Level1 → Level4の段階的習得
+- **スクリプト検証をスキップ**: 最終確認は自動化スクリプトで実施
 
-2. **不十分なテスト**:
-   - ❌ 正常系のみ
-   - ✅ 異常系も含める
+## リソース参照
 
-## トラブルシューティング
+### 学習ガイド（段階的習得）
 
-### 問題1: YAML構文エラー
+| レベル | リソース                            | 対象                     | 学習時間 |
+| ------ | ----------------------------------- | ------------------------ | -------- |
+| 基礎   | `references/Level1_basics.md`       | テスト駆動開発の基本原則 | 2-3時間  |
+| 実務   | `references/Level2_intermediate.md` | 実務的なテストケース設計 | 4-5時間  |
+| 応用   | `references/Level3_advanced.md`     | 複雑なシナリオの検証     | 6-8時間  |
+| 専門   | `references/Level4_expert.md`       | エキスパートレベルの手法 | 8-10時間 |
 
-**症状**: YAMLパースエラー
+### パターンとテンプレート
 
-**原因**: インデント、特殊文字
+- **テストケース設計パターン**: `references/test-case-patterns.md`
+  - Red-Green-Refactorパターン
+  - エッジケース検証パターン
+  - パフォーマンステストパターン
 
-**解決策**:
+- **テスト実装テンプレート**: `assets/test-case-template.json`
+  - JSON Schema形式のテストテンプレート
+  - 再利用可能な構造化テストケース
+  - 自動検証対応フォーマット
 
-1. インデントを確認（スペース2個）
-2. 特殊文字をエスケープ
-3. YAMLバリデーターで検証
-
-### 問題2: テストが失敗
-
-**症状**: テストケースが期待通りに動作しない
-
-**原因**: エージェントの実装または期待値の誤り
-
-**解決策**:
-
-1. エラーメッセージを分析
-2. 期待値が適切か確認
-3. エージェントをデバッグ
-
-## 関連スキル
-
-- **agent-quality-standards** (`.claude/skills/agent-quality-standards/SKILL.md`): 品質基準
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`): 構造設計
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- テストケースパターン (`resources/test-case-patterns.md`)
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
+### 検証ツールとスクリプト
 
 ```bash
-# テストケースパターン
-cat .claude/skills/agent-validation-testing/resources/test-case-patterns.md
+# スキル構造の検証
+node .claude/skills/agent-validation-testing/scripts/validate-skill.mjs
+
+# エージェント検証
+node .claude/skills/agent-validation-testing/scripts/validate-agent.mjs --agent <agent-name>
+
+# 使用記録とメトリクス
+node .claude/skills/agent-validation-testing/scripts/log_usage.mjs --check
 ```
 
-### 他のスキルのスクリプトを活用
+### 参考資料
 
-```bash
-# エージェント構造検証（agent-structure-designスキルのスクリプトを使用）
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
-
-# 循環依存チェック（agent-dependency-designスキルのスクリプトを使用）
-node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
-
-# アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
-node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
-```
-
-## メトリクス
-
-### 検証合格率
-
-**目標**: 初回検証で>80%、再検証で100%
-
-### テストカバレッジ
-
-**目標**: 正常系2+ 異常系1+
+- `references/legacy-skill.md` - 旧SKILL.mdの全文（移行参考）
+- `references/requirements-index.md` - 要求仕様の索引（docs/00-requirements と同期）
+- 参考書籍: Kent Beck『Test-Driven Development: By Example』
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                              |
-| ---------- | ---------- | ------------------------------------- |
-| 1.0.0      | 2025-11-24 | 初版作成 - 検証とテストフレームワーク |
+| Version | Date       | Changes                                                                                                       |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | agents/3ファイル追加、Phase別Task参照を追加                                                                   |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様への完全準拠: Anchors/Trigger定義、Task仕様ナビ追加、リソース参照整理、ベストプラクティス拡充 |
+| 1.0.0   | 2025-12-24 | 初版リリース: スキル構造定義、基本ワークフロー、段階的学習ガイド                                              |

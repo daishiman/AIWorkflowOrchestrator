@@ -12,7 +12,7 @@
 
 ## 背景と目的
 
-Phase 5.5 Final Review Gate において、`@code-quality` エージェントによるコード品質レビューで以下の改善点が指摘された：
+Phase 5.5 Final Review Gate において、`.claude/agents/code-quality.md` エージェントによるコード品質レビューで以下の改善点が指摘された：
 
 1. **JSDoc コメント不足**
 2. **Error Boundary 未実装**
@@ -352,10 +352,10 @@ apps/desktop/src/renderer/components/AuthGuard/
 
 | 項目               | 検証方法             | 担当エージェント |
 | ------------------ | -------------------- | ---------------- |
-| JSDoc品質          | コードレビュー       | @code-quality    |
-| Error Boundary動作 | 単体テスト           | @unit-tester     |
-| 型安全性           | TypeScript厳密モード | @code-quality    |
-| エラーメッセージ   | UIレビュー           | @ui-designer     |
+| JSDoc品質          | コードレビュー       | .claude/agents/code-quality.md    |
+| Error Boundary動作 | 単体テスト           | .claude/agents/unit-tester.md     |
+| 型安全性           | TypeScript厳密モード | .claude/agents/code-quality.md    |
+| エラーメッセージ   | UIレビュー           | .claude/agents/ui-designer.md     |
 
 ### 6.2 コード品質レビュー
 
@@ -371,7 +371,7 @@ apps/desktop/src/renderer/components/AuthGuard/
 - [ ] AuthErrorBoundary が実装されテストが通過している
 - [ ] エラーハンドリングが統一され日本語化されている
 - [ ] any型が排除されている
-- [ ] `@code-quality` レビューで PASS 評価
+- [ ] `.claude/agents/code-quality.md` レビューで PASS 評価
 
 ## 関連ドキュメント
 

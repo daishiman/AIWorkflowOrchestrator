@@ -1,231 +1,135 @@
 ---
 name: pm2-ecosystem-config
 description: |
-  PM2エコシステム設定の設計と最適化を専門とするスキル。
-  Alexandre Strzelewiczの思想に基づき、ecosystem.config.js の
-  構成、実行モード選択、環境設定、監視設定を体系的に設計します。
+  PM2エコシステム設定の専門スキル。
+  Node.jsプロセス管理のためのecosystem.config.js設計、実行モード選択、環境変数管理、パフォーマンス最適化を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • PM2 Documentation (Keymetrics) / 適用: プロセス管理設定 / 目的: 運用自動化
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: DRY原則・保守性 / 目的: 品質向上
+  • Node.js Design Patterns (Mario Casciaro, Luciano Mammino) / 適用: スケーリング戦略 / 目的: パフォーマンス最適化
 
-  - `.claude/skills/pm2-ecosystem-config/resources/config-structure-guide.md`: ecosystem.config.js構造（apps配列、必須/推奨オプション、共通設定）
-  - `.claude/skills/pm2-ecosystem-config/resources/environment-management.md`: env階層設計、env_production分離、機密情報外部化パターン
-  - `.claude/skills/pm2-ecosystem-config/resources/execution-modes.md`: fork vs cluster選択基準、instances数決定、負荷タイプ別最適化
-  - `.claude/skills/pm2-ecosystem-config/scripts/validate-ecosystem.mjs`: ecosystem.config.js構文検証と設定項目の整合性チェック
-  - `.claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js`: PM2設定ファイルテンプレート（実行モード、再起動戦略、環境変数含む）
-
-  専門分野:
-  - ecosystem.config.js設計: apps配列、環境設定、共通オプション
-  - 実行モード選択: fork vs cluster、instances数決定
-  - 再起動戦略: autorestart、max_restarts、min_uptime
-  - 環境変数管理: env、env_production、機密情報外部化
-
-  使用タイミング:
-  - PM2でNode.jsアプリケーションを管理する時
-  - ecosystem.config.jsを新規作成する時
-  - 既存PM2設定を最適化する時
-  - 本番環境でのプロセス管理設定を設計する時
-
-  Use proactively when designing PM2 configurations, optimizing
-  process management, or setting up production Node.js environments.
-version: 1.0.0
+  Trigger:
+  Use when configuring PM2 ecosystem.config.js, deploying Node.js applications with PM2, optimizing PM2 cluster mode, managing PM2 environment variables, or troubleshooting PM2 process issues
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# PM2 Ecosystem Configuration
+# PM2 Ecosystem Configuration スキル
 
 ## 概要
 
-PM2 エコシステム設定は、Node.js アプリケーションのプロセス管理を
-宣言的に定義するフレームワークです。Alexandre Strzelewicz が設計した
-この設定システムにより、本番環境での安定稼働を実現します。
+PM2エコシステム設定の設計と最適化を専門とするスキル。ecosystem.config.jsの構成、実行モード選択、環境設定、監視設定を体系的に設計し、Node.jsアプリケーションのプロセス管理を最適化します。
 
-**主要な価値**:
+このスキルは以下のタスクに対応します：
 
-- 宣言的設定による再現性
-- 環境別設定の分離
-- 実行モードの最適選択
-- 自動再起動による高可用性
-
-## リソース構造
-
-```
-pm2-ecosystem-config/
-├── SKILL.md
-├── resources/
-│   ├── config-structure-guide.md
-│   ├── execution-modes.md
-│   └── environment-management.md
-├── scripts/
-│   └── validate-ecosystem.mjs
-└── templates/
-    └── ecosystem.config.template.js
-```
-
-### リソース種別
-
-- **設定構造ガイド** (`resources/config-structure-guide.md`): apps 配列、必須/オプション項目
-- **実行モード** (`resources/execution-modes.md`): fork vs cluster、instances 数決定
-- **環境管理** (`resources/environment-management.md`): env 設定、機密情報管理
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# 設定構造ガイド
-cat .claude/skills/pm2-ecosystem-config/resources/config-structure-guide.md
-
-# 実行モード選択ガイド
-cat .claude/skills/pm2-ecosystem-config/resources/execution-modes.md
-
-# 環境管理ガイド
-cat .claude/skills/pm2-ecosystem-config/resources/environment-management.md
-```
-
-### スクリプト実行
-
-```bash
-# ecosystem.config.js検証
-node .claude/skills/pm2-ecosystem-config/scripts/validate-ecosystem.mjs <config-file>
-```
-
-### テンプレート参照
-
-```bash
-# テンプレートを参照
-cat .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js
-
-# テンプレートをコピー
-cp .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js ./ecosystem.config.js
-```
+- ecosystem.config.jsの新規作成と既存設定の最適化
+- forkモードとclusterモードの選択と実装
+- 環境変数管理と本番環境構築
+- プロセス監視とエラーハンドリング設定
+- パフォーマンスチューニングとリソース最適化
 
 ## ワークフロー
 
-### Phase 1: アプリケーション要件の理解
+### Phase 1: 要件確認と初期設計
 
-**収集すべき情報**:
+**目的**: アプリケーション特性を分析し、PM2設定の方針を決定
 
-- エントリーポイント（script）
-- 実行モード要件（I/O bound vs CPU bound）
-- 環境変数要件
-- リソース制約
+**アクション**:
 
-**判断基準**:
+1. `references/basics.md`でPM2の基本を確認
+2. アプリケーション種別（Web API、バッチ、WebSocket等）を特定
+3. 負荷特性（I/O bound、CPU bound）を判断
+4. 実行モード（fork/cluster）の初期選択
 
-- [ ] エントリーポイントは明確か？
-- [ ] 負荷特性を理解しているか？
-- [ ] 環境別の要件は把握できたか？
+**Task**: `agents/design-config.md`を参照
 
-### Phase 2: 実行モードの決定
+### Phase 2: 設定ファイル作成
 
-**fork vs cluster の選択**:
+**目的**: ecosystem.config.jsを作成し、基本設定を実装
 
-| 特性           | fork                   | cluster           |
-| -------------- | ---------------------- | ----------------- |
-| インスタンス数 | 1                      | 複数              |
-| 負荷タイプ     | I/O bound              | CPU bound         |
-| ステート       | ステートフル可         | ステートレス必須  |
-| 用途           | ファイル処理、外部 API | HTTP/API サーバー |
+**アクション**:
 
-**instances 数の決定**:
+1. `assets/ecosystem.config.template.js`をベースに作成
+2. `references/config-reference.md`で設定オプションを確認
+3. 必須項目（name、script、instances）を設定
+4. ログ設定と再起動戦略を実装
+5. `scripts/validate-ecosystem.mjs`で検証
 
-- 自動設定: `"max"` または `0` で CPU 数に自動調整
-- 固定値: 明示的な数値で制御
-- 予約: `-1` でシステム用に 1 コア確保
+**Task**: `agents/design-config.md`を参照
 
-**リソース**: `resources/execution-modes.md`
+### Phase 3: 最適化と調整
 
-### Phase 3: 設定ファイルの作成
+**目的**: パフォーマンスを最適化し、運用要件を満たす
 
-**必須項目**:
+**アクション**:
 
-```javascript
-{
-  name: 'app-name',      // プロセス名
-  script: './dist/index.js',  // エントリーポイント
-  cwd: './app-directory' // 作業ディレクトリ
-}
-```
+1. `references/patterns.md`で最適化パターンを確認
+2. instances数の調整とクラスタモード最適化
+3. メモリ制限と再起動戦略の調整
+4. 環境変数の階層設計と機密情報の外部化
+5. 負荷テストと監視設定の検証
 
-**推奨項目**:
-
-```javascript
-{
-  exec_mode: 'fork',     // または 'cluster'
-  instances: 1,          // インスタンス数
-  autorestart: true,     // 自動再起動
-  max_restarts: 10,      // 最大再起動回数
-  min_uptime: '10s'      // 最小稼働時間
-}
-```
-
-**リソース**: `resources/config-structure-guide.md`
-
-### Phase 4: 環境設定
-
-**環境変数の階層**:
-
-```javascript
-{
-  env: {
-    // 共通設定（すべての環境）
-    NODE_ENV: 'development'
-  },
-  env_production: {
-    // 本番環境専用
-    NODE_ENV: 'production'
-  }
-}
-```
-
-**機密情報の管理**:
-
-- 設定ファイルに直接記載しない
-- `.env` ファイルまたは環境変数マネージャー使用
-- `env_file` オプションでファイル参照
-
-**リソース**: `resources/environment-management.md`
-
-### Phase 5: 検証
-
-**構文チェック**:
-
-```bash
-node -c ecosystem.config.js
-```
-
-**PM2 検証**:
-
-```bash
-pm2 start ecosystem.config.js --dry-run
-```
+**Task**: `agents/optimize-performance.md`を参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **説明的な命名**: プロジェクト名-コンポーネント名
-2. **ビルド成果物指定**: `./dist/index.js` など
-3. **環境分離**: `env` と `env_production` を分離
-4. **再起動制限**: `max_restarts` で無限ループ防止
+- PM2でNode.jsアプリケーションを管理する時
+- ecosystem.config.jsを新規作成する時
+- 既存PM2設定を最適化する時
+- 本番環境でのプロセス管理設定を設計する時
+- クラスタモードでパフォーマンスを向上させる時
 
 ### 避けるべきこと
 
-1. **機密情報の直接記載**: API キー、パスワード
-2. **絶対パスのハードコード**: 環境依存を避ける
-3. **過大な instances 数**: リソース枯渇の原因
-4. **再起動設定なし**: クラッシュ時に停止
+- 実行モードを検討せずにデフォルト設定を使用する
+- CPU数を超えるinstances数を設定する
+- 本番環境でwatchモードを有効にする
+- 機密情報を設定ファイルに直接記述する
+- メモリリーク対策（max_memory_restart）を設定しない
+
+## Task仕様ナビ
+
+| Task                 | 起動タイミング | 入力                         | 出力                |
+| -------------------- | -------------- | ---------------------------- | ------------------- |
+| design-config        | Phase 1-2      | アプリケーション情報         | ecosystem.config.js |
+| optimize-performance | Phase 3        | 既存設定、パフォーマンス要件 | 最適化済み設定      |
+
+**詳細仕様**: 各Taskの詳細は`agents/`ディレクトリの対応ファイルを参照
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース         | パス                             | 内容                                       |
+| ---------------- | -------------------------------- | ------------------------------------------ |
+| 基礎知識         | `references/basics.md`           | PM2基本、ecosystem.config.js構造、基本操作 |
+| 設定パターン     | `references/patterns.md`         | 実行モード選択、環境変数、再起動戦略       |
+| 設定リファレンス | `references/config-reference.md` | 全オプションの完全リファレンス             |
+
+### scripts/（決定論的処理）
+
+| スクリプト               | 用途                    | 使用例                                                          |
+| ------------------------ | ----------------------- | --------------------------------------------------------------- |
+| `validate-ecosystem.mjs` | ecosystem.config.js検証 | `node scripts/validate-ecosystem.mjs ecosystem.config.js`       |
+| `log_usage.mjs`          | スキル使用記録          | `node scripts/log_usage.mjs --result success --phase "Phase 2"` |
+
+### assets/（テンプレート）
+
+| テンプレート                   | 用途                    |
+| ------------------------------ | ----------------------- |
+| `ecosystem.config.template.js` | ecosystem.config.js雛形 |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-26 | 初版作成 |
-
-## 関連スキル
-
-- **process-lifecycle-management** (`.claude/skills/process-lifecycle-management/SKILL.md`)
-- **graceful-shutdown-patterns** (`.claude/skills/graceful-shutdown-patterns/SKILL.md`)
-- **log-rotation-strategies** (`.claude/skills/log-rotation-strategies/SKILL.md`)
-- **memory-monitoring-strategies** (`.claude/skills/memory-monitoring-strategies/SKILL.md`)
+| Version | Date       | Changes                                              |
+| ------- | ---------- | ---------------------------------------------------- |
+| 2.0.0   | 2025-01-02 | 18-skills.md仕様完全準拠。agents統合、references再編 |
+| 1.0.0   | 2025-12-31 | 初版リリース                                         |

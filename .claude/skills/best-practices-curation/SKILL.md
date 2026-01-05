@@ -1,269 +1,130 @@
 ---
 name: best-practices-curation
 description: |
-  ベストプラクティスの収集、評価、統合、更新を体系的に行うスキル。
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  ベストプラクティスの収集・評価・統合・更新を体系化するスキル。
+  情報源の信頼性評価、品質スコアリング、統合パターンを用いて知識ベースを改善する。
 
-  - `.claude/skills/best-practices-curation/resources/information-source-evaluation.md`: 一次・二次・三次情報源の分類と信頼性評価基準、優先順位付けと採用判断の実践ガイド
-  - `.claude/skills/best-practices-curation/resources/integration-strategies.md`: 4つの統合パターン（追加型・強化型・置換型・統合型）と重複排除戦略、知識統合のベストプラクティス
-  - `.claude/skills/best-practices-curation/resources/quality-scoring.md`: 品質スコアリングガイド
-  - `.claude/skills/best-practices-curation/templates/evaluation-checklist.md`: ベストプラクティス評価チェックリスト
+  Anchors:
+  • The Pragmatic Programmer / 適用: 実践的改善 / 目的: 継続的な品質向上
+  • Evidence-Based Management / 適用: 評価基準 / 目的: 判断の一貫性を担保
+  • Knowledge Management (Nonaka) / 適用: 知識統合 / 目的: 暗黙知の体系化
 
-  専門分野:
-  - 情報収集: 一次/二次/三次情報源の特定と収集
-  - 品質評価: 正確性、完全性、明確性の3軸評価
-  - 統合: 矛盾解消、重複排除、体系化
-  - 継続的更新: 陳腐化検出、更新サイクル、バージョニング
-
-  使用タイミング:
-  - ベストプラクティスを収集して体系化する時
-  - 情報源の信頼性を評価する必要がある時
-  - 知識の品質を保証したい時
-  - 陳腐化を防ぎたい時
-
-  Use proactively when curating best practices, evaluating information sources,
-  or maintaining knowledge quality.
-version: 1.0.0
+  Trigger:
+  Use when collecting best practices, assessing source credibility, scoring quality, integrating guidance, or updating knowledge bases.
+allowed-tools:
+  - bash
+  - node
 ---
 
 # Best Practices Curation
 
 ## 概要
 
-ベストプラクティスキュレーションは、質の高い知識を継続的に収集・評価・統合・更新するプロセスです。
-情報の氾濫する現代において、信頼できる情報を選別し、体系化することで、
-組織全体で活用可能な価値ある知識ベースを構築します。
+ベストプラクティスの収集から統合・更新までを一貫して整理する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-**主要な価値**:
-
-- 信頼できる情報源からの知識収集
-- 客観的な品質評価（3軸スコアリング）
-- 矛盾のない統合された知識体系
-- 陳腐化を防ぐ継続的更新
-
-## リソース構造
-
-```
-best-practices-curation/
-├── SKILL.md
-├── resources/
-│   ├── information-source-evaluation.md
-│   ├── quality-scoring.md
-│   └── integration-strategies.md
-└── templates/
-    └── evaluation-checklist.md
-```
-
-### リソース種別
-
-- **情報源評価** (`resources/information-source-evaluation.md`): 一次/二次/三次情報源の分類と評価基準
-- **品質スコアリング** (`resources/quality-scoring.md`): 3軸評価（正確性・完全性・明確性）
-- **統合戦略** (`resources/integration-strategies.md`): 追加/強化/置換/統合の4パターン
-- **評価チェックリスト** (`templates/evaluation-checklist.md`): ベストプラクティス評価の標準チェックリスト
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# 情報源評価ガイド
-cat .claude/skills/best-practices-curation/resources/information-source-evaluation.md
-
-# 品質スコアリングガイド
-cat .claude/skills/best-practices-curation/resources/quality-scoring.md
-
-# 統合戦略ガイド
-cat .claude/skills/best-practices-curation/resources/integration-strategies.md
-```
-
-### テンプレート参照
-
-```bash
-# 評価チェックリストテンプレートを読み取る
-cat .claude/skills/best-practices-curation/templates/evaluation-checklist.md
-
-# 評価チェックリストを新しいファイルにコピー
-cp .claude/skills/best-practices-curation/templates/evaluation-checklist.md ./new-evaluation.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# 知識ドキュメントの品質検証（knowledge-managementスキルのスクリプトを使用）
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
-
-# トークン見積もり（context-optimizationスキルのスクリプトを使用）
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
-```
-
-## いつ使うか
-
-### シナリオ1: ベストプラクティスの収集
-
-**状況**: 散在する情報を体系的に収集したい
-
-**適用条件**:
-
-- [ ] 複数の情報源が存在
-- [ ] 情報の信頼性が不明
-- [ ] 体系化が必要
-
-**期待される成果**: 評価された情報の収集
-
-### シナリオ2: 品質評価
-
-**状況**: 収集した情報の品質を保証したい
-
-**適用条件**:
-
-- [ ] 情報源の信頼性が不明
-- [ ] 客観的な評価基準が必要
-- [ ] 採用可否の判断が必要
-
-**期待される成果**: 品質スコアに基づく採用判断
-
-### シナリオ3: 継続的な品質維持
-
-**状況**: 既存の知識ベースの品質を維持したい
-
-**適用条件**:
-
-- [ ] 定期的な更新が必要
-- [ ] 陳腐化を防ぎたい
-- [ ] 品質低下を検出したい
-
-**期待される成果**: 更新サイクルと品質保証プロセスの確立
+- 評価チェックリスト: `assets/evaluation-checklist.md`
 
 ## ワークフロー
 
-### Phase 1: 収集 (Capture)
+### Phase 1: スコープと情報源整理
 
-**目的**: 価値ある情報を見逃さず収集
+**目的**: 収集対象と情報源の優先度を決める
 
-**情報源の分類**:
+**アクション**:
 
-- 一次情報源: 公式ドキュメント、書籍、論文
-- 二次情報源: ブログ、チュートリアル
-- 三次情報源: SNS、フォーラム
+1. `references/Level1_basics.md` で基礎方針を確認
+2. `references/information-source-evaluation.md` で情報源を分類
+3. 対象テーマと採用基準を整理
 
-**判断基準**:
+**Task**: `agents/analyze-curation-scope.md`
 
-- [ ] 一次情報源を優先しているか？
-- [ ] 著者の専門性を確認したか？
-- [ ] 最新の情報か（1年以内）？
+### Phase 2: 評価とスコアリング
 
-**リソース**: `resources/information-source-evaluation.md`
+**目的**: 信頼性と品質を評価する
 
-### Phase 2: 評価 (Evaluate)
+**アクション**:
 
-**目的**: 収集した情報の品質を判断
+1. `references/quality-scoring.md` を参照
+2. `assets/evaluation-checklist.md` で採点
+3. 補完が必要な情報を整理
 
-**3軸評価**:
+**Task**: `agents/evaluate-source-quality.md`
 
-- 正確性: 事実に基づいているか
-- 完全性: 必要な情報がすべて含まれているか
-- 明確性: 理解しやすいか
+### Phase 3: 統合と更新
 
-**スコアリング**:
+**目的**: ベストプラクティスを統合し更新する
 
-```
-総合スコア = (正確性 × 0.4) + (完全性 × 0.3) + (明確性 × 0.3)
+**アクション**:
 
-採用基準:
-8-10点: 即座に採用
-6-7点: 補完して採用
-0-5点: 不採用
-```
+1. `references/integration-strategies.md` で統合パターンを選択
+2. 重複排除と一貫性チェックを実施
+3. 更新内容を整理
 
-**リソース**: `resources/quality-scoring.md`
+**Task**: `agents/integrate-best-practice.md`
 
-### Phase 3: 統合 (Integrate)
+### Phase 4: 検証と記録
 
-**目的**: 評価された情報を既存知識に統合
+**目的**: 更新内容の妥当性を検証し記録する
 
-**統合パターン**:
+**アクション**:
 
-- 追加型: 独立した要素として追加
-- 強化型: 既存知識を補完・詳細化
-- 置換型: 古い情報を更新
-- 統合型: 複数の知識を統合する枠組み
+1. `references/Level4_expert.md` の監査観点を確認
+2. `scripts/validate-skill.mjs` で構造検証
+3. `scripts/log_usage.mjs` で記録
 
-**判断基準**:
+**Task**: `agents/validate-curation-update.md`
 
-- [ ] 重複を排除したか？
-- [ ] 矛盾を解消したか？
-- [ ] 関連性を明示したか？
+## Task仕様ナビ
 
-**リソース**: `resources/integration-strategies.md`
-
-### Phase 4: 更新 (Update)
-
-**目的**: 知識の鮮度を維持
-
-**更新トリガー**:
-
-- 時間ベース: 6ヶ月ごと
-- イベントベース: 技術アップデート
-- フィードバックベース: 問題報告
-
-**判断基準**:
-
-- [ ] 陳腐化検出メカニズムがあるか？
-- [ ] 更新サイクルが定義されているか？
-- [ ] バージョニング戦略があるか？
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| スコープ整理 | 収集対象の定義 | テーマ/目的 | スコープメモ | `references/Level1_basics.md` | Phase 1 |
+| 品質評価 | 情報源評価 | 情報源リスト | 評価スコア | `references/quality-scoring.md` | Phase 2 |
+| 統合 | 重複排除と統合 | 評価スコア | 統合メモ | `references/integration-strategies.md` | Phase 3 |
+| 検証 | 更新の妥当性確認 | 統合メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |
 
 ## ベストプラクティス
 
-### 収集時
+### すべきこと
 
-1. **情報源を明記**: 必ず出典を記録
-2. **即座に記録**: 後回しにしない
-3. **タグ付け**: 検索しやすく
+- 情報源を一次/二次/三次で分類する
+- 評価基準を定義してスコア化する
+- 統合パターンを明示する
+- 更新履歴を必ず残す
 
-### 評価時
+### 避けるべきこと
 
-1. **複数の視点**: 3軸で評価
-2. **客観的基準**: 主観を排除
-3. **評価理由を記録**: 後で検証可能に
+- 評価基準を持たずに採用する
+- 重複や矛盾を放置する
+- 更新履歴を省略する
 
-### 統合時
+## リソース参照
 
-1. **重複チェック**: 統合前に検索
-2. **関連性の明示**: 他の知識との関係を明確に
-3. **段階的統合**: 一度に大量ではなく段階的に
+### 参照資料
 
-### 更新時
+- `references/Level1_basics.md`: 基礎概念
+- `references/Level2_intermediate.md`: 評価と整合の運用
+- `references/Level3_advanced.md`: 統合と改善の高度化
+- `references/Level4_expert.md`: 監査と継続改善
+- `references/information-source-evaluation.md`: 情報源評価
+- `references/quality-scoring.md`: 品質スコアリング
+- `references/integration-strategies.md`: 統合戦略
+- `references/legacy-skill.md`: 旧版要約（移行時のみ）
 
-1. **定期レビュー**: 6ヶ月ごと
-2. **バージョニング**: セマンティックバージョニング遵守
-3. **変更履歴**: すべての変更を記録
+### スクリプト
 
-## メトリクス
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
 
-### 採用率
+### テンプレート
 
-**目標**: >70%
-
-### 平均品質スコア
-
-**目標**: >8.0点
-
-### 陳腐化率
-
-**目標**: <10%
+- `assets/evaluation-checklist.md`: 評価チェックリスト
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                  |
-| ---------- | ---------- | --------------------------------------------------------- |
-| 1.0.0      | 2025-11-23 | 初版作成 - ベストプラクティスキュレーションフレームワーク |
-
-## 関連スキル
-
-- **knowledge-management** (`.claude/skills/knowledge-management/SKILL.md`): SECI Model、知識キュレーション
-- **progressive-disclosure** (`.claude/skills/progressive-disclosure/SKILL.md`): トークン効率、3層モデル
-- **documentation-architecture** (`.claude/skills/documentation-architecture/SKILL.md`): ドキュメント構造設計
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

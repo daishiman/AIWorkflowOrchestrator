@@ -1,263 +1,151 @@
 ---
 name: github-actions-expressions
 description: |
-    GitHub Actionsのワークフローで使用できる式構文とコンテキストオブジェクトを専門とするスキル。
-    ${{ }}構文、演算子、リテラル、組み込み関数、および利用可能なすべてのコンテキスト（github, env, job, steps, runner, secrets, needs, matrix, inputs）を提供します。
-    専門分野:
-    - 式構文: ${{ }}、演算子（論理、比較、算術）、リテラル
-    - コンテキストオブジェクト: github（イベント情報）、env（環境変数）、job（ジョブ情報）、steps（ステップ出力）
-    - 組み込み関数: contains、startsWith、endsWith、format、join、toJSON、fromJSON、hashFiles、always、success、failure
-    - 条件付き実行: if式、マトリクス展開、動的値生成
-    使用タイミング:
-    - ワークフローで条件付き実行（if:）を設定する時
-    - ステップ出力を参照したり、動的に値を生成する時
-    - コンテキスト情報（ブランチ名、コミットSHA、イベントタイプ）を使用する時
-    - 組み込み関数で文字列操作やJSON処理を行う時
-    Use proactively when users need to implement conditional logic, reference context objects,
-    or use built-in functions in GitHub Actions workflows.
+  GitHub Actionsのワークフローで使用できる式構文とコンテキストオブジェクトを専門とするスキル。
+  ${{ }}構文、演算子、リテラル、組み込み関数、および利用可能なすべてのコンテキスト（github, env, job, steps, runner, secrets, needs, matrix, inputs）を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Continuous Delivery (Jez Humble) / 適用: パイプライン設計とCI/CD自動化 / 目的: 信頼性の高いワークフロー式の設計
 
-  - `.claude/skills/github-actions-expressions/resources/builtin-functions.md`: contains/startsWith/format/join/toJSON/hashFiles等の組み込み関数詳細
-  - `.claude/skills/github-actions-expressions/resources/conditional-patterns.md`: if式による条件付き実行とマトリクス展開の実践パターン
-  - `.claude/skills/github-actions-expressions/resources/context-objects.md`: github/env/job/steps/runner/secrets/needs/matrix/inputsコンテキスト詳細
-  - `.claude/skills/github-actions-expressions/resources/expression-syntax.md`: ${{ }}構文・演算子・リテラル・評価ルールリファレンス
-  - `.claude/skills/github-actions-expressions/templates/expression-examples.yaml`: 頻出式パターンのテンプレート集
-  - `.claude/skills/github-actions-expressions/scripts/validate-expressions.mjs`: 式構文検証スクリプト
-
+  Trigger:
+  Use when implementing conditional execution (if:), referencing step outputs, generating dynamic values, or utilizing context information (branch names, commit SHA, event types) in GitHub Actions workflows.
+  Keywords: github actions, workflow, expressions, context, ${{ }}, if condition, matrix, secrets, steps output
 version: 1.0.0
+level: 1
+last_updated: 2025-12-31
 ---
 
 # GitHub Actions Expressions
 
 ## 概要
 
-このスキルは、GitHub Actions ワークフローで使用される式構文とコンテキストオブジェクトを体系的に提供します。
-`${{ }}`構文を使った動的な値生成、条件付き実行、ステップ間のデータ参照など、
-ワークフローの柔軟性と再利用性を大幅に向上させる機能を網羅しています。
+GitHub Actionsのワークフローで使用できる式構文とコンテキストオブジェクトを専門とするスキル。
+${{ }}構文、演算子、リテラル、組み込み関数、および利用可能なすべてのコンテキスト（github, env, job, steps, runner, secrets, needs, matrix, inputs）を提供します。
+**適用範囲**: GitHub Actionsワークフローを使用するすべてのリポジトリ
 
-**主要な価値**:
+## ワークフロー
 
-- 条件付き実行による効率的なワークフロー設計
-- コンテキスト情報の活用による動的な処理
-- 組み込み関数による強力なデータ操作
-- ステップ間の依存関係と出力の管理
+### Phase 1: 要件分析とタスク起動
 
-**対象ユーザー**:
+**目的**: ワークフロー要件を分析し、適切な式設計を行う
 
-- GitHub Actions ワークフローを設計・実装するエージェント
-- 動的な条件付き実行を必要とする開発者
-- ワークフローの再利用性を高めたいチーム
+**タスク**: Expression Analyzer (`agents/expression-analyzer.md`)
 
-## リソース構造
+**アクション**:
 
-```
-github-actions-expressions/
-├── SKILL.md                                    # 本ファイル（概要とクイックリファレンス）
-├── resources/
-│   ├── expression-syntax.md                   # 式構文の詳細（演算子、リテラル、評価順序）
-│   ├── context-objects.md                     # すべてのコンテキストオブジェクトの詳細
-│   ├── builtin-functions.md                   # すべての組み込み関数の詳細と使用例
-│   └── conditional-patterns.md                # 条件付き実行の実践パターン
-├── scripts/
-│   └── validate-expressions.mjs               # 式構文の検証スクリプト
-└── templates/
-    └── expression-examples.yaml               # 頻出パターンのテンプレート集
-```
+1. ワークフロー要件を明確化（条件分岐、動的値生成、コンテキスト使用）
+2. [references/context-objects.md](references/context-objects.md) でコンテキストを選択
+3. Expression Analyzer タスクを起動し、式設計仕様書を作成
+   - 使用コンテキストの選択
+   - 組み込み関数の選定
+   - 適用パターンの特定
 
-### リソース種別
+**成果物**: 式設計仕様書（使用コンテキスト、関数、パターン、エッジケース含む）
 
-- **式構文** (`resources/expression-syntax.md`): `${{ }}`構文、演算子、リテラル、評価ルール
-- **コンテキストオブジェクト** (`resources/context-objects.md`): github、env、job、steps、runner、secrets、needs、matrix、inputs
-- **組み込み関数** (`resources/builtin-functions.md`): contains、startsWith、format、join、toJSON、fromJSON、hashFiles、ステータス関数
-- **パターン集** (`resources/conditional-patterns.md`): 条件付き実行、マトリクス展開、動的値生成の実践例
-- **検証スクリプト** (`scripts/validate-expressions.mjs`): 式構文の妥当性検証
-- **テンプレート** (`templates/expression-examples.yaml`): コピー＆ペースト可能な頻出パターン
+### Phase 2: 式の実装
 
-## コマンドリファレンス
+**目的**: 設計された式を正確なYAML形式で実装する
 
-### リソース参照（詳細が必要な場合）
+**タスク**: Expression Implementer (`agents/expression-implementer.md`)
 
-```bash
-# 式構文の詳細（演算子、リテラル、評価ルール）
-cat .claude/skills/github-actions-expressions/resources/expression-syntax.md
+**アクション**:
 
-# すべてのコンテキストオブジェクトの詳細
-cat .claude/skills/github-actions-expressions/resources/context-objects.md
+1. `references/expression-syntax.md` で構文規則を確認
+2. Expression Implementer タスクを起動し、式を実装
+   - 設計仕様書に基づく実装
+   - `assets/expression-examples.yaml` のテンプレート形式に準拠
+   - 説明コメントとエッジケース対応を追加
 
-# すべての組み込み関数の詳細と使用例
-cat .claude/skills/github-actions-expressions/resources/builtin-functions.md
+**成果物**: 実装済みワークフロー式（YAML形式、コメント、使用例含む）
 
-# 条件付き実行の実践パターン
-cat .claude/skills/github-actions-expressions/resources/conditional-patterns.md
-```
+### Phase 3: 検証と記録
 
-### スクリプト実行
+**目的**: 実装された式の品質を検証し、実行記録を保存する
 
-```bash
-# ワークフローファイル内の式構文を検証
-node .claude/skills/github-actions-expressions/scripts/validate-expressions.mjs <workflow.yml>
+**タスク**: Expression Validator (`agents/expression-validator.md`)
 
-# テンプレート参照
-cat .claude/skills/github-actions-expressions/templates/expression-examples.yaml
-```
+**アクション**:
 
-## クイックリファレンス
+1. Expression Validator タスクを起動し、検証を実施
+   - `scripts/validate-expressions.mjs` で構文検証
+   - `references/conditional-patterns.md` でアンチパターン確認
+   - エッジケーステスト実施
+2. 検証レポートを確認し、必要に応じて修正
+3. `scripts/log_usage.mjs` で実行記録を保存
 
-### 式構文の基本
+**成果物**: 検証レポート、修正提案、ログ記録
 
-| 構文                            | 説明             | 例                                   |
-| ------------------------------- | ---------------- | ------------------------------------ |
-| `${{ <expression> }}`           | 式の評価         | `${{ github.ref }}`                  |
-| `${{ env.NAME }}`               | 環境変数参照     | `${{ env.NODE_VERSION }}`            |
-| `${{ secrets.TOKEN }}`          | シークレット参照 | `${{ secrets.GITHUB_TOKEN }}`        |
-| `${{ steps.id.outputs.value }}` | ステップ出力参照 | `${{ steps.build.outputs.version }}` |
+## Task仕様（実行直前に参照）
 
-### 主要なコンテキストオブジェクト
+### Expression Analyzer
 
-| コンテキスト | 用途             | 主要プロパティ                                     |
-| ------------ | ---------------- | -------------------------------------------------- |
-| `github`     | イベント情報     | `ref`, `sha`, `actor`, `event_name`, `repository`  |
-| `env`        | 環境変数         | カスタム環境変数、`GITHUB_*`変数                   |
-| `job`        | ジョブ情報       | `status`, `container`, `services`                  |
-| `steps`      | ステップ出力     | `<step_id>.outputs.<name>`, `<step_id>.conclusion` |
-| `runner`     | ランナー情報     | `os`, `arch`, `temp`, `tool_cache`                 |
-| `secrets`    | シークレット     | リポジトリ/組織のシークレット                      |
-| `needs`      | 依存ジョブ       | `<job_id>.outputs.<name>`, `<job_id>.result`       |
-| `matrix`     | マトリクス値     | マトリクス戦略の各パラメータ                       |
-| `inputs`     | ワークフロー入力 | `workflow_dispatch`/`workflow_call`の入力          |
+- **パス**: `agents/expression-analyzer.md`
+- **役割**: ワークフロー要件を分析し、適切な式設計を行う
+- **入力**: ワークフロー要件、既存ワークフローファイル（任意）
+- **出力**: 式設計仕様書（コンテキスト、関数、パターン、エッジケース）
+- **参照**: `references/context-objects.md`, `references/builtin-functions.md`, `references/conditional-patterns.md`
 
-### 頻出の組み込み関数
+### Expression Implementer
 
-| 関数                         | 説明                      | 例                                          |
-| ---------------------------- | ------------------------- | ------------------------------------------- |
-| `contains(search, item)`     | 文字列/配列の包含チェック | `contains(github.ref, 'refs/tags/')`        |
-| `startsWith(search, prefix)` | 前方一致チェック          | `startsWith(github.ref, 'refs/heads/main')` |
-| `endsWith(search, suffix)`   | 後方一致チェック          | `endsWith(matrix.os, '-latest')`            |
-| `format(template, ...)`      | 文字列フォーマット        | `format('v{0}.{1}', major, minor)`          |
-| `join(array, separator)`     | 配列結合                  | `join(matrix.*, ', ')`                      |
-| `toJSON(value)`              | JSON 文字列化             | `toJSON(github.event)`                      |
-| `fromJSON(json)`             | JSON 解析                 | `fromJSON(steps.data.outputs.json)`         |
-| `hashFiles(pattern)`         | ファイルハッシュ          | `hashFiles('**/package-lock.json')`         |
+- **パス**: `agents/expression-implementer.md`
+- **役割**: 設計された式を正確なYAML形式で実装する
+- **入力**: 式設計仕様書
+- **出力**: 実装済みワークフロー式（YAML、コメント、使用例）
+- **参照**: `references/expression-syntax.md`, `assets/expression-examples.yaml`
 
-### ステータスチェック関数
+### Expression Validator
 
-| 関数          | 評価結果               | 用途              |
-| ------------- | ---------------------- | ----------------- |
-| `success()`   | 前ステップ成功時`true` | `if: success()`   |
-| `failure()`   | 前ステップ失敗時`true` | `if: failure()`   |
-| `always()`    | 常に`true`             | `if: always()`    |
-| `cancelled()` | キャンセル時`true`     | `if: cancelled()` |
+- **パス**: `agents/expression-validator.md`
+- **役割**: 実装された式の品質を検証する
+- **入力**: 実装済みワークフロー式、式設計仕様書（参照用）
+- **出力**: 検証レポート（構文、ロジック、セキュリティ、パフォーマンス）
+- **参照**: `scripts/validate-expressions.mjs`, `references/conditional-patterns.md`
 
-### 条件式の実践例
+## ベストプラクティス
 
-```yaml
-# ブランチによる条件分岐
-- if: github.ref == 'refs/heads/main'
-  run: echo "main branch"
+### すべきこと
 
-# タグプッシュの検出
-- if: startsWith(github.ref, 'refs/tags/')
-  run: echo "Tag pushed"
+- 必ず `references/context-objects.md` でコンテキストの利用可能性を確認
+- `references/builtin-functions.md` から適切な関数を選択
+- `references/conditional-patterns.md` の推奨パターンを適用
+- セキュリティリスク（secrets の不適切な使用）に注意
+- エッジケースを考慮した設計・実装
 
-# PRラベルによる条件実行
-- if: contains(github.event.pull_request.labels.*.name, 'deploy')
-  run: echo "Deploy label found"
+### 避けるべきこと
 
-# 失敗時のクリーンアップ
-- if: failure()
-  run: docker-compose down
+- コンテキストや関数の仕様を確認せずに進めること
+- `references/conditional-patterns.md` のアンチパターンを使用すること
+- 検証なしで本番環境に適用すること
+- 複雑すぎる式（可読性・保守性の低下）
 
-# マトリクス値による分岐
-- if: matrix.os == 'ubuntu-latest'
-  run: apt-get update
+## リソース参照
 
-# 複数条件の組み合わせ
-- if: success() && github.ref == 'refs/heads/main'
-  run: pnpm run deploy
-```
+### references/（知識外部化）
 
-## ワークフローにおける式の使用フェーズ
+| リソース     | パス                                                                     | 内容                                     |
+| ------------ | ------------------------------------------------------------------------ | ---------------------------------------- |
+| コンテキスト | [references/context-objects.md](references/context-objects.md)           | github, env, job, steps等のコンテキスト  |
+| 組み込み関数 | [references/builtin-functions.md](references/builtin-functions.md)       | 文字列関数、配列関数、型変換等           |
+| 条件パターン | [references/conditional-patterns.md](references/conditional-patterns.md) | ブランチ/イベント条件、アンチパターン    |
+| 式構文       | [references/expression-syntax.md](references/expression-syntax.md)       | ${{ }}構文、演算子、リテラル、エスケープ |
 
-### Phase 1: ワークフロー/ジョブレベル
+### scripts/（決定論的処理）
 
-- **トリガー条件**: `on.push.branches`、`on.pull_request.types`
-- **ジョブ条件**: `jobs.<job_id>.if`
-- **環境選択**: `jobs.<job_id>.environment`
+| スクリプト                 | 用途               | 使用例                                                  |
+| -------------------------- | ------------------ | ------------------------------------------------------- |
+| `validate-expressions.mjs` | 式の構文検証       | `node scripts/validate-expressions.mjs <workflow-file>` |
+| `log_usage.mjs`            | フィードバック記録 | `node scripts/log_usage.mjs --result success`           |
+| `validate-skill.mjs`       | 構造検証           | `node scripts/validate-skill.mjs`                       |
 
-### Phase 2: ステップレベル
+### assets/（テンプレート）
 
-- **ステップ条件**: `steps[*].if`
-- **動的入力**: `steps[*].with.<param>`
-- **環境変数**: `steps[*].env`
+| テンプレート               | 用途                 |
+| -------------------------- | -------------------- |
+| `expression-examples.yaml` | 標準的な式パターン集 |
 
-### Phase 3: 出力と参照
+## 変更履歴
 
-- **ステップ出力**: `steps.<step_id>.outputs.<name>`
-- **ジョブ出力**: `jobs.<job_id>.outputs.<name>`
-- **依存ジョブ参照**: `needs.<job_id>.outputs.<name>`
-
-## 関連スキル
-
-このスキルは以下のスキルと連携して使用されます:
-
-| スキル名                      | パス                                                | 関係性                            |
-| ----------------------------- | --------------------------------------------------- | --------------------------------- |
-| **github-actions-syntax**     | `.claude/skills/github-actions-syntax/SKILL.md`     | ワークフロー基本構文 → 式の使用   |
-| **conditional-execution-gha** | `.claude/skills/conditional-execution-gha/SKILL.md` | 式を活用した条件付き実行パターン  |
-| **matrix-builds**             | `.claude/skills/matrix-builds/SKILL.md`             | マトリクス戦略と式の組み合わせ    |
-| **reusable-workflows**        | `.claude/skills/reusable-workflows/SKILL.md`        | inputs/outputs/needs コンテキスト |
-| **composite-actions**         | `.claude/skills/composite-actions/SKILL.md`         | inputs/outputs コンテキスト       |
-
-## 使用例
-
-### 基本的な条件付き実行
-
-```yaml
-name: Deploy
-on: [push, pull_request]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - if: success()
-        run: pnpm run deploy
-```
-
-### ステップ出力の活用
-
-```yaml
-steps:
-  - id: version
-    run: echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
-
-  - if: startsWith(steps.version.outputs.VERSION, 'v2')
-    run: echo "Version 2.x detected"
-```
-
-### コンテキスト情報の活用
-
-```yaml
-steps:
-  - name: Build image
-    run: |
-      docker build -t myapp:${{ github.sha }} .
-      docker tag myapp:${{ github.sha }} myapp:${{ github.ref_name }}
-```
-
-## 詳細情報へのアクセス
-
-詳細な説明、すべての演算子、コンテキストプロパティ、組み込み関数、実践パターンについては、
-上記の**コマンドリファレンス**に記載されたリソースファイルを参照してください。
-
-特に以下の場合は該当リソースを参照:
-
-- **演算子や評価順序の詳細** → `resources/expression-syntax.md`
-- **コンテキストオブジェクトの全プロパティ** → `resources/context-objects.md`
-- **組み込み関数の全リスト** → `resources/builtin-functions.md`
-- **実践的なパターン集** → `resources/conditional-patterns.md`、`templates/expression-examples.yaml`
+| Version | Date       | Changes                                                                               |
+| ------- | ---------- | ------------------------------------------------------------------------------------- |
+| 1.1.0   | 2026-01-02 | references/を整理、Level1-4削除、18-skills.md仕様準拠                                 |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様準拠: agents/追加、EVALS.json/LOGS.md作成、Progressive Disclosure適用 |

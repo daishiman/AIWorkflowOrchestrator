@@ -1,0 +1,56 @@
+{
+  "skill_name": "domain-services",
+  "version": "2.0.0",
+  "current_level": 1,
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "last_evaluated": null
+  },
+  "levels": {
+    "1": {
+      "description": "基本的なドメインサービスの識別と設計が可能",
+      "requirements": {
+        "min_usage_count": 0,
+        "min_success_rate": 0.0
+      }
+    },
+    "2": {
+      "description": "複数集約間の操作をサービスとして設計可能",
+      "requirements": {
+        "min_usage_count": 10,
+        "min_success_rate": 0.7
+      }
+    },
+    "3": {
+      "description": "ドメインサービスとアプリケーションサービスの境界を適切に設計可能",
+      "requirements": {
+        "min_usage_count": 25,
+        "min_success_rate": 0.8
+      }
+    },
+    "4": {
+      "description": "複雑なサービス連携パターンの設計をリード可能",
+      "requirements": {
+        "min_usage_count": 50,
+        "min_success_rate": 0.9
+      }
+    }
+  },
+  "task_metrics": {
+    "service_designer": {
+      "uses": 0,
+      "successes": 0,
+      "failures": 0
+    }
+  },
+  "common_issues": [],
+  "improvement_suggestions": [],
+  "feedback_summary": {
+    "positive_count": 0,
+    "negative_count": 0,
+    "neutral_count": 0,
+    "recent_feedback": []
+  }
+}

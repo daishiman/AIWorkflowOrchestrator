@@ -6,7 +6,7 @@
 | ---------- | -------------------- |
 | 文書ID     | REQ-USER-PROFILE-001 |
 | 作成日     | 2025-12-10           |
-| 担当者     | @req-analyst         |
+| 担当者     | .claude/agents/req-analyst.md         |
 | ステータス | 確定                 |
 | 関連タスク | TASK-USER-DATA-02    |
 
@@ -540,5 +540,5 @@ interface ImportProfilePayload {
 
 | 版  | 日付       | 変更内容                                   | 担当者       |
 | --- | ---------- | ------------------------------------------ | ------------ |
-| 1.0 | 2025-12-10 | 初版作成                                   | @req-analyst |
+| 1.0 | 2025-12-10 | 初版作成                                   | .claude/agents/req-analyst.md |
 | 1.1 | 2025-12-10 | レビュー指摘対応: データ分類セクション追加 | Review Team  |

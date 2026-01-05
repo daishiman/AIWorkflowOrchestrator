@@ -1,370 +1,147 @@
 ---
 name: dependency-security-scanning
 description: |
-    依存関係の脆弱性スキャンとSCA（Software Composition Analysis）のベストプラクティスを提供します。
-    pnpm audit、Snyk、OSSスキャンツールを使用した既知脆弱性の検出、
-    CVE評価、CVSS スコアリング、修正可能性の評価、推移的依存関係の分析を行います。
-    📚 このスキルの使用タイミング:
-    - 依存関係の脆弱性スキャン時
-    - package.json、requirements.txt等のレビュー時
-    - CI/CDパイプラインへのセキュリティスキャン統合時
-    - 既知のCVE（Common Vulnerabilities and Exposures）チェック時
-    - ライブラリアップグレード計画時
-    - Supply Chain攻撃リスク評価時
-    🔍 評価対象:
-    - 直接依存関係の脆弱性
-    - 推移的依存関係（間接依存）の脆弱性
-    - CVSS スコアとリスク評価
-    - 修正バージョンの利用可能性
-    - ライセンスコンプライアンス
-    Use this skill when running dependency audits, reviewing package updates,
-    or integrating security scanning into CI/CD pipelines.
+  依存関係の脆弱性スキャン、CVE評価、レポート作成を体系化するスキル。
+  SCAの運用と修正計画の整理を支援する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • OWASP Dependency-Check / 適用: 依存スキャン / 目的: 検出の標準化
+  • CVSS v3.1 Specification / 適用: 重大度評価 / 目的: 優先度の整合性
+  • Web Application Security / 適用: 脅威評価 / 目的: リスク判定の一貫性
 
-  - `.claude/skills/dependency-security-scanning/resources/cve-evaluation-guide.md`: CVE識別子の理解とCVSSスコアリングの評価ガイド
-  - `.claude/skills/dependency-security-scanning/templates/dependency-audit-report-template.md`: 依存関係監査レポートの標準テンプレート
-  - `.claude/skills/dependency-security-scanning/scripts/run-dependency-scan.mjs`: 依存関係の脆弱性スキャンを実行する自動化スクリプト
-
-  Use proactively when implementing dependency-security-scanning patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when scanning dependencies for vulnerabilities, evaluating CVE reports, producing audit reports, or planning remediation.
+  dependency scan, CVE, CVSS, SCA, supply chain security, audit report
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
+# dependency-security-scanning
 
-# Dependency Security Scanning
+## 概要
 
-## スキル概要
+依存関係の脆弱性スキャンから評価・レポート・修正計画までを一貫して支援する。
 
-依存関係のセキュリティスキャンと Software Composition Analysis（SCA）の専門知識を提供します。
+## ワークフロー
 
-**専門分野**:
+### Phase 1: 要件整理
 
-- pnpm audit、Snyk 等のツール活用
-- CVE（Common Vulnerabilities and Exposures）評価
-- CVSS（Common Vulnerability Scoring System）スコアリング
-- 推移的依存関係の脆弱性分析
-- Supply Chain 攻撃リスク評価
+**目的**: 監査範囲とスキャン条件を整理する。
 
----
+**アクション**:
 
-## 1. スキャンツールの選択
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/scan-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-### Node.js/JavaScript
+**Task**: `agents/analyze-scan-requirements.md` を参照
 
-**ツール比較**:
-| ツール | カバレッジ | 速度 | CI/CD 統合 | 無料プラン | 推奨度 |
-|-------|----------|------|----------|----------|-------|
-| **pnpm audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
-| **pnpm audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
-| **yarn audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
-| **Snyk** | 高 | 中速 | ✅ | ✅ | ✅ 推奨 |
-| **Dependabot** | 中 | - | ✅ | ✅ | ✅ GitHub |
-| **pnpm-check** | 中 | 高速 | ⚠️ | ✅ | ⚠️ 補助 |
+### Phase 2: スキャン実行
 
-**実行例**:
+**目的**: 依存関係の脆弱性を検出する。
 
-```bash
-# pnpm audit
-pnpm audit --json > audit-report.json
+**アクション**:
 
-# 重要度フィルタ
-pnpm audit --audit-level=moderate
+1. `scripts/run-dependency-scan.mjs` を実行する。
+2. `references/Level2_intermediate.md` でツールの使い分けを確認する。
+3. 検出結果を整理する。
 
-# 自動修正
-pnpm audit fix
+**Task**: `agents/scan-executor.md` を参照
 
-# Snyk
-snyk test --json > snyk-report.json
-snyk monitor  # 継続的監視
-```
+### Phase 3: CVE評価
 
----
+**目的**: 検出結果を評価し、優先度を付ける。
 
-### Python
+**アクション**:
 
-**ツール**:
+1. `references/cve-evaluation-guide.md` で評価基準を確認する。
+2. 影響範囲と優先度を記録する。
+3. `references/Level3_advanced.md` を参照する。
 
-- `pip-audit`: pip 専用監査ツール
-- `safety`: PyPI 脆弱性 DB
-- `Snyk`: 多言語対応
+**Task**: `agents/cve-evaluator.md` を参照
 
-**実行例**:
+### Phase 4: レポートと修正計画
 
-```bash
-# pip-audit
-pip-audit --format json > audit-report.json
+**目的**: 監査レポートと修正計画を作成する。
 
-# safety
-safety check --json
-```
+**アクション**:
 
----
+1. `assets/dependency-audit-report-template.md` でレポートを作成する。
+2. `assets/remediation-plan-template.md` で修正計画を整理する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-## 2. スキャン結果の解析
+**Task**: `agents/report-generator.md` と `agents/remediation-planner.md` を参照
 
-### pnpm audit 出力構造
+## Task仕様ナビ
 
-**JSON 形式**:
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-scan-requirements | Phase 1開始時 | 監査範囲 | 要件メモ、制約一覧 |
+| scan-executor | Phase 2開始時 | リポジトリ情報 | スキャン結果 |
+| cve-evaluator | Phase 3開始時 | スキャン結果 | 優先度付き評価 |
+| report-generator | Phase 4開始時 | 評価結果 | 監査レポート |
+| remediation-planner | Phase 4開始時 | 評価結果 | 修正計画 |
 
-```json
-{
-  "vulnerabilities": {
-    "package-name": {
-      "name": "package-name",
-      "severity": "high",
-      "isDirect": false,
-      "via": ["another-package"],
-      "effects": [],
-      "range": "1.0.0 - 1.5.0",
-      "nodes": ["node_modules/package-name"],
-      "fixAvailable": {
-        "name": "parent-package",
-        "version": "2.0.0",
-        "isSemVerMajor": true
-      }
-    }
-  },
-  "metadata": {
-    "vulnerabilities": {
-      "info": 0,
-      "low": 2,
-      "moderate": 5,
-      "high": 3,
-      "critical": 1
-    }
-  }
-}
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-**重要フィールド**:
+## ベストプラクティス
 
-- `severity`: 重要度（info、low、moderate、high、critical）
-- `isDirect`: 直接依存 vs 推移的依存
-- `fixAvailable`: 修正バージョンの有無
-- `via`: 依存関係経路
+### すべきこと
 
----
+| 推奨事項 | 理由 |
+| --- | --- |
+| 監査範囲を明示する | 漏れを防止できる |
+| CVSS評価を記録する | 優先度が明確になる |
+| レポートを共有する | 説明責任を果たせる |
+| 修正計画を明文化する | 実行が容易になる |
 
-### CVSS スコアリング
+### 避けるべきこと
 
-**スコア範囲**:
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 結果を放置する | リスクが残る |
+| 優先度なしで修正 | 効果が薄い |
+| 根拠を記録しない | 追跡が困難 |
+| 自動化を省略する | 継続監査が難しい |
 
-```
-0.0: None
-0.1-3.9: Low
-4.0-6.9: Medium
-7.0-8.9: High
-9.0-10.0: Critical
-```
+## リソース参照
 
-**ベクトル文字列例**:
+### scripts/（決定論的処理）
 
-```
-CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/run-dependency-scan.mjs` | 依存関係スキャン |
+| `scripts/validate-skill.mjs` | スキル構造検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-**要素**:
+### references/（詳細知識）
 
-- AV（Attack Vector）: ネットワーク、隣接、ローカル
-- AC（Attack Complexity）: 低、高
-- PR（Privileges Required）: なし、低、高
-- UI（User Interaction）: なし、要
-- C/I/A（Confidentiality/Integrity/Availability Impact）
-
-**判断基準**:
-
-- [ ] CVSS 7.0 以上（High/Critical）は優先修正対象か？
-- [ ] Attack Vector: Network の脆弱性は重視されているか？
-
----
-
-## 3. 修正可能性の評価
-
-### 直接依存関係
-
-**修正パターン**:
-
-```bash
-# 直接依存パッケージのアップグレード
-pnpm install package-name@latest
-
-# または特定バージョン
-pnpm install package-name@2.0.0
-```
-
-**判断**:
-
-- fixAvailable: true → 自動修正可能
-- isSemVerMajor: true → 破壊的変更の可能性
-
----
-
-### 推移的依存関係
-
-**問題**: 間接的な依存関係の脆弱性
-
-**修正アプローチ**:
-
-1. **親パッケージのアップグレード**: 親が新しいバージョンで修正済み依存を使用
-2. **pnpm override**: package.json でバージョンを強制
-   ```json
-   {
-     "overrides": {
-       "vulnerable-package": "^2.0.0"
-     }
-   }
-   ```
-3. **代替パッケージ**: 親パッケージを別のものに置き換え
-
-**判断基準**:
-
-- [ ] 推移的依存関係も含めてスキャンしているか？
-- [ ] 親パッケージのアップグレード計画があるか？
-- [ ] override の使用は文書化されているか？
-
----
-
-## 4. 脆弱性の優先順位付け
-
-### リスクマトリクス
-
-**計算式**:
-
-```
-リスクスコア = CVSS スコア × 悪用可能性 × 影響範囲
-
-悪用可能性:
-  - 既知のエクスプロイト存在: 1.5
-  - PoC（概念実証）存在: 1.2
-  - 理論的のみ: 1.0
-
-影響範囲:
-  - 本番環境で使用: 1.5
-  - 開発環境のみ: 1.0
-  - devDependencies: 0.8
-```
-
-**優先順位**:
-
-```
-1. Critical + 既知のエクスプロイト + 本番環境 → 即座に修正
-2. High + PoC存在 + 本番環境 → 早期修正（1週間以内）
-3. Medium + 本番環境 → 計画的修正（1ヶ月以内）
-4. Low または devDependencies → 監視、次回更新時に対応
-```
-
-**判断基準**:
-
-- [ ] Critical/High 脆弱性は即座に修正計画があるか？
-- [ ] devDependencies の脆弱性は適切に評価されているか？
-
----
-
-## 5. CI/CD 統合
-
-### GitHub Actions 例
-
-```yaml
-name: Security Scan
-
-on: [push, pull_request]
-
-jobs:
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      - name: Install dependencies
-        run: pnpm ci
-
-      - name: Run pnpm audit
-        run: pnpm audit --audit-level=moderate
-        continue-on-error: true
-
-      - name: Snyk Security Scan
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
-```
-
-**判断基準**:
-
-- [ ] プルリクエストでスキャンが自動実行されるか？
-- [ ] Critical/High 脆弱性でビルドが失敗するか？
-- [ ] スキャン結果がレビュー可能な形式で保存されるか？
-
----
-
-## 6. Supply Chain 攻撃対策
-
-### リスク
-
-**攻撃パターン**:
-
-- 正規パッケージの侵害（maintainer 乗っ取り）
-- Typosquatting（名前類似パッケージ）
-- 依存関係混入（正規パッケージに悪意ある依存追加）
-
-**検出**:
-
-```bash
-# パッケージの信頼性チェック
-pnpm view package-name
-
-# 最終更新、maintainer、ダウンロード数を確認
-```
-
-**対策**:
-
-- [ ] lock file（package-lock.json）使用で依存固定
-- [ ] pnpm ci 使用（pnpm install ではなく）
-- [ ] 信頼できるレジストリのみ使用
-- [ ] パッケージ署名検証（pnpm v7+）
-
----
-
-## リソース・スクリプト・テンプレート
-
-### リソース
-
-- `resources/cve-evaluation-guide.md`: CVE 評価ガイド
-- `resources/dependency-update-strategy.md`: 依存更新戦略
-- `resources/supply-chain-security.md`: サプライチェーンセキュリティ
-
-### スクリプト
-
-- `scripts/run-dependency-scan.mjs`: 依存関係スキャン実行
-- `scripts/analyze-audit-results.mjs`: 監査結果分析
-- `scripts/check-outdated-packages.mjs`: 古いパッケージチェック
-
-### テンプレート
-
-- `templates/dependency-audit-report-template.md`: 監査レポートテンプレート
-- `templates/vulnerability-triage-template.md`: 脆弱性トリアージテンプレート
-
----
-
-## 関連スキル
-
-- `.claude/skills/owasp-top-10/SKILL.md`: A06（脆弱で古いコンポーネント）
-- `.claude/skills/security-reporting/SKILL.md`: レポート生成
-- `.claude/skills/ci-cd-pipelines/SKILL.md`: CI/CD 統合
-
----
-
-## 変更履歴
-
-### v1.0.0 (2025-11-26)
-
-- 初版リリース
-- @sec-auditor エージェントから依存関係スキャン知識を抽出
-- pnpm audit、Snyk、CVE 評価、Supply Chain 攻撃対策を定義
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | スキャン時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 評価時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 運用時 |
+| CVE評価 | [references/cve-evaluation-guide.md](references/cve-evaluation-guide.md) | 評価時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/dependency-audit-report-template.md` | 監査レポート |
+| `assets/scan-requirements-template.md` | 要件整理テンプレート |
+| `assets/remediation-plan-template.md` | 修正計画テンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

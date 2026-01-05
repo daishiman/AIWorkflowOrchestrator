@@ -13,7 +13,7 @@
 | ステータス       | 未実施                             |
 | 発見元           | ユーザー要望                       |
 | 発見日           | 2025-12-11                         |
-| 発見エージェント | @product-manager                   |
+| 発見エージェント | .claude/agents/product-manager.md                   |
 
 ---
 
@@ -175,10 +175,10 @@ Phase 9: ドキュメント更新
 
 ### 主要な使用エージェント
 
-- **@ui-designer**: テーマ設計・UI適用
-- **@arch-police**: テーマシステムのアーキテクチャ設計
-- **@frontend-tester**: UIコンポーネントのテスト
-- **@code-quality**: CSSの品質検証
+- **.claude/agents/ui-designer.md**: テーマ設計・UI適用
+- **.claude/agents/arch-police.md**: テーマシステムのアーキテクチャ設計
+- **.claude/agents/frontend-tester.md**: UIコンポーネントのテスト
+- **.claude/agents/code-quality.md**: CSSの品質検証
 
 ---
 

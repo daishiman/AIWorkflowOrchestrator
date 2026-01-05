@@ -1,367 +1,169 @@
 ---
 name: agent-dependency-design
 description: |
-  エージェント依存関係とインターフェース設計を専門とするスキル。
-  スキル参照、コマンド連携、エージェント間協調のプロトコルを定義し、
-  循環依存を防ぎながら効果的なマルチエージェントシステムを構築します。
+  Specializes in agent dependency and interface design. Defines skill references, command coordination, and inter-agent collaboration protocols while preventing circular dependencies to build effective multi-agent systems.
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • "The Pragmatic Programmer" (Andrew Hunt, David Thomas) / Application: Procedure design and practical improvement / Purpose: Build effective agent collaboration mechanisms
+  • "Software Architecture in Practice" (Len Bass, Paul Clements, Rick Kazman) / Application: Interface design patterns / Purpose: Minimize dependencies and improve maintainability
 
-  - `.claude/skills/agent-dependency-design/resources/dependency-patterns.md`: 4種類の依存関係（スキル・エージェント・コマンド・ツール）のパターンと標準ハンドオフプロトコル（JSON形式）、循環依存検出・解消策
-  - `.claude/skills/agent-dependency-design/templates/handoff-protocol-template.json`: ハンドオフプロトコルテンプレート
-  - `.claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs`: 循環依存検出スクリプト (Node.js)
-  - `.claude/skills/agent-dependency-design/scripts/check-circular-deps.sh`: 循環依存検出スクリプト (Shell)
+  Trigger:
+  Use when defining inter-agent data handoffs, designing multi-agent collaboration, detecting or resolving circular dependencies, or defining handoff protocols.
+  agent collaboration, dependency graph, handoff protocol, circular dependency, skill reference, multi-agent system
 
-  専門分野:
-  - スキル参照設計: Mandatory起動プロトコル、相対パス管理、参照タイミング
-  - コマンド連携設計: 実行マトリクス、期待動作定義
-  - エージェント間協調: ハンドオフプロトコル、情報受け渡し、循環依存検出
-  - 依存関係最適化: 依存グラフ分析、循環解消戦略
-
-  使用タイミング:
-  - エージェントがスキルを参照する必要がある時
-  - エージェント間の情報受け渡しを設計する時
-  - 依存関係の循環を検出・解消する時
-  - ハンドオフプロトコルを定義する時
-
-  Use proactively when designing agent dependencies, skill references,
-  or multi-agent collaboration protocols.
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Agent Dependency Design
+# エージェント依存関係デザイン
 
 ## 概要
 
-このスキルは、エージェント依存関係とインターフェース設計の包括的なガイドラインを提供します。
-スキル、コマンド、他エージェントとの依存関係を適切に設計し、
-循環依存を防ぎながら効果的な協調を実現します。
+エージェント依存関係とインターフェース設計を専門とするスキル。
+スキル参照、コマンド連携、エージェント間協調のプロトコルを定義し、
+循環依存を防ぎながら効果的なマルチエージェントシステムを構築します。
 
-**主要な価値**:
+このスキルは以下の主要領域をカバーしています：
 
-- スキル参照の標準化により、知識の再利用性が向上
-- ハンドオフプロトコルにより、エージェント間の情報受け渡しが明確化
-- 循環依存の検出と解消により、システムの健全性が保たれる
-- 依存関係マトリクスにより、全体像が可視化される
+- **ハンドオフプロトコル**: エージェント間のデータ受け渡し仕様
+- **循環依存検出**: 自動的に依存関係の問題を検出・解消
+- **エージェントインターフェース設計**: 明確で保守性の高い協調メカニズム
+- **スキル参照**: エージェント間のスキル依存関係の管理
 
-## リソース構造
-
-```
-agent-dependency-design/
-├── SKILL.md
-├── resources/
-│   └── dependency-patterns.md
-├── scripts/
-│   ├── check-circular-deps.sh
-│   └── check-circular-deps.mjs
-└── templates/
-    └── handoff-protocol-template.json
-```
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# 依存関係パターン（スキル参照、循環依存解消策）
-cat .claude/skills/agent-dependency-design/resources/dependency-patterns.md
-```
-
-### スクリプト実行
-
-```bash
-# 循環依存検出スクリプト（TypeScript）
-node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agents-directory>
-
-# 例: .claude/agents/内の全エージェントの循環依存をチェック
-node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs .claude/agents
-
-# シェルスクリプト版
-bash .claude/skills/agent-dependency-design/scripts/check-circular-deps.sh <agents-directory>
-```
-
-### テンプレート参照
-
-```bash
-# ハンドオフプロトコルテンプレート（JSON形式）
-cat .claude/skills/agent-dependency-design/templates/handoff-protocol-template.json
-
-# テンプレートをコピーして新規ハンドオフ定義を作成
-cp .claude/skills/agent-dependency-design/templates/handoff-protocol-template.json ./handoff-config.json
-```
-
-## いつ使うか
-
-### シナリオ1: スキル参照設計
-
-**状況**: エージェントが外部スキルを参照する必要がある
-
-**適用条件**:
-
-- [ ] 詳細な専門知識が必要
-- [ ] 知識の再利用が有効
-- [ ] Progressive Disclosureを適用したい
-
-**期待される成果**: 効率的なスキル参照プロトコル
-
-### シナリオ2: エージェント間協調
-
-**状況**: 複数エージェントが連携してタスクを実行する
-
-**適用条件**:
-
-- [ ] タスクが複数エージェントに分割される
-- [ ] 情報の受け渡しが必要
-- [ ] 進捗管理が重要
-
-**期待される成果**: 標準化されたハンドオフプロトコル
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 ## ワークフロー
 
-### Phase 1: スキル依存関係の設計
+### Phase 1: 目的と前提の整理
 
-**目的**: エージェントが使用するスキルを定義
+**目的**: タスクの目的と前提条件を明確にする
 
-**スキル参照の3段階**:
+**アクション**:
 
-#### ステップ1: スキル依存関係マトリクス作成
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要なリソース、スクリプト、テンプレートを特定
+3. エージェント間の依存関係を図示する
 
-**テンプレート**:
+**Task**: `agents/analyze-context.md` を参照
 
-```markdown
-| スキル名 | 参照タイミング | 参照方法 | 必須/推奨 |
-| -------- | -------------- | -------- | --------- |
-| skill-1  | Phase X        | cat ...  | 必須      |
-| skill-2  | Phase Y        | cat ...  | 推奨      |
-```
+### Phase 2: スキル適用と設計
 
-**判断基準**:
+**目的**: スキルの指針に従って具体的な作業を進める
 
-- 必須: エージェントが機能するために絶対必要
-- 推奨: 品質向上のために望ましい
-- オプション: 特定シナリオでのみ使用
+**アクション**:
 
-#### ステップ2: スキル参照コマンドの記述
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. `assets/handoff-protocol-template.json` を基に協調プロトコルを定義
+3. `scripts/check-circular-deps.mjs` を使用して循環依存をチェック
+4. 重要な判断点をメモとして残す
 
-**基本形式**:
+**Task**: `agents/design-dependencies.md` を参照
 
-```bash
-cat .claude/skills/[skill-name]/SKILL.md
-```
+### Phase 3: 検証と記録
 
-**相対パスの原則**:
+**目的**: 成果物の検証と実行記録の保存
 
-- スキル名のみ（❌）: `knowledge-management`
-- フルパス（✅）: `.claude/skills/knowledge-management/SKILL.md`
+**アクション**:
 
-#### ステップ3: 参照タイミングの明確化
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+4. `scripts/check-circular-deps.sh` で最終的な依存関係チェックを実施
 
-**指定方法**:
+**Task**: `agents/validate-dependencies.md` を参照
 
-- どのPhase/ステップで参照するか
-- なぜそのタイミングで必要か
-- 取得する知識の内容
+---
 
-**リソース**: `resources/skill-reference-protocol.md`
+## Task仕様ナビ
 
-### Phase 2: コマンド連携の設計
+| Task                  | 起動タイミング | 入力             | 出力             |
+| --------------------- | -------------- | ---------------- | ---------------- |
+| analyze-context       | Phase 1開始時  | タスク仕様       | コンテキスト分析 |
+| design-dependencies   | Phase 2開始時  | コンテキスト分析 | 設計ドキュメント |
+| validate-dependencies | Phase 3開始時  | 設計ドキュメント | 検証結果レポート |
 
-**目的**: エージェントが実行するコマンドを定義
-
-**コマンド実行マトリクス**:
-
-```markdown
-| コマンド名 | 実行タイミング | 実行方法 | 必須/推奨 |
-| ---------- | -------------- | -------- | --------- |
-| /cmd-1     | Step X         | /cmd...  | 必須      |
-```
-
-**期待される動作の定義**:
-
-- コマンドが何を実行するか
-- 期待される出力
-- エラー時の対応
-
-**リソース**: `resources/command-integration-guide.md`
-
-### Phase 3: エージェント間協調の設計
-
-**目的**: 他エージェントとの連携を定義
-
-**協調関係の種類**:
-
-- **前提エージェント**: このエージェントの前に実行されるべき
-- **後続エージェント**: このエージェントの後に実行されるべき
-- **並行エージェント**: 並行して実行可能
-- **サブエージェント**: このエージェントが委譲する対象
-
-**ハンドオフプロトコル設計**:
-
-```json
-{
-  "from_agent": "this-agent",
-  "to_agent": "next-agent",
-  "status": "completed|partial|failed",
-  "summary": "実施内容サマリー",
-  "artifacts": ["file1.md", "file2.py"],
-  "context": {
-    "key_decisions": [],
-    "unresolved_issues": [],
-    "next_steps": []
-  },
-  "metadata": {
-    "duration": "5m30s",
-    "model_used": "sonnet",
-    "token_count": 15420
-  }
-}
-```
-
-**必須情報**:
-
-- from_agent, to_agent: 送信元と宛先
-- status: 完了状態
-- summary: 実施内容の要約
-- artifacts: 生成された成果物
-- context: 引き継ぎコンテキスト
-- metadata: メタ情報
-
-**リソース**: `resources/handoff-protocol-design.md`
-
-### Phase 4: 循環依存の検出と解消
-
-**目的**: 依存関係グラフから循環を検出し、解消する
-
-**検出方法**:
-
-```bash
-.claude/skills/agent-dependency-design/scripts/detect-circular-dependencies.sh
-```
-
-**循環パターンの例**:
-
-```
-A → B → C → A （循環！）
-```
-
-**解消策**:
-
-1. **依存の方向性を再検討**:
-   - 本当にその依存が必要か
-   - 逆方向にできないか
-
-2. **共通依存を上位に抽出**:
-
-   ```
-   A → D ← C
-   ↓       ↓
-   B ← ─ ─ ┘
-   ```
-
-3. **エージェントの責務を再分割**:
-   - 循環の原因となる責務を分離
-   - 新しいエージェントを作成
-
-**リソース**: `resources/circular-dependency-resolution.md`
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **相対パスの徹底**:
-   - すべてのスキル参照は相対パス
-   - `.claude/skills/[skill-name]/SKILL.md`
-
-2. **依存関係の可視化**:
-   - 依存関係マトリクスを作成
-   - グラフで表現
-
-3. **ハンドオフの標準化**:
-   - JSON形式で統一
-   - 必須情報を明示
+- エージェント間の情報受け渡しを明確に定義する
+- ハンドオフプロトコルを JSON スキーマで厳密に定義する
+- `scripts/check-circular-deps.mjs` を使用して定期的に依存関係を検証する
+- レベル別リソースを順序通り学習して段階的に理解を深める
+- エージェント間のインターフェースを文書化し、チーム全体で共有する
+- 依存関係は DAG (有向非環グラフ) 構造を保つ
+- エージェント間のエラーハンドリング戦略を事前に定義する
 
 ### 避けるべきこと
 
-1. **循環依存の放置**:
-   - ❌ A → B → A
-   - ✅ 早期検出と解消
+- アンチパターンや注意点を確認せずに進めることを避ける
+- 循環依存を許容する設計を避ける
+- 暗黙的なハンドオフ仕様を避ける
+- エージェント間の密結合を避ける
+- スキル参照の責任を不明確にすることを避ける
+- テンプレートを参照せずに独自のプロトコルを設計することを避ける
 
-2. **曖昧な依存関係**:
-   - ❌ 「関連するスキル」とだけ記載
-   - ✅ 具体的なパスと参照タイミング
+## リソース参照
 
-3. **過度な依存**:
-   - ❌ 10個以上のスキルに依存
-   - ✅ 必要最小限（3-5個）
+### 学習リソース
 
-## トラブルシューティング
+| リソース                            | 用途                                              |
+| ----------------------------------- | ------------------------------------------------- |
+| `references/Level1_basics.md`       | 基本概念と用語の理解                              |
+| `references/Level2_intermediate.md` | 実務的な設計パターン                              |
+| `references/Level3_advanced.md`     | 応用パターンと最適化                              |
+| `references/Level4_expert.md`       | 高度なシステム設計                                |
+| `references/dependency-patterns.md` | 4種類の依存関係パターンと標準ハンドオフプロトコル |
+| `references/legacy-skill.md`        | 旧SKILL.mdの参考資料                              |
 
-### 問題1: スキルが見つからない
+### 実装ツール
 
-**症状**: `cat .claude/skills/xxx/SKILL.md` が失敗
+| ツール                                  | 機能                             |
+| --------------------------------------- | -------------------------------- |
+| `scripts/check-circular-deps.mjs`       | Node.js環境での循環依存検出      |
+| `scripts/check-circular-deps.sh`        | Shell環境での循環依存検出        |
+| `scripts/validate-skill.mjs`            | スキル構造検証                   |
+| `scripts/log_usage.mjs`                 | 使用記録・自動評価               |
+| `assets/handoff-protocol-template.json` | ハンドオフプロトコルテンプレート |
 
-**原因**: 相対パスが間違っている
+## コマンドリファレンス
 
-**解決策**:
+### リソース読み取り
 
-1. パスを確認
-2. スキルが実際に存在するか確認
-3. 相対パスの基準を確認
+```bash
+cat .claude/skills/agent-dependency-design/references/Level1_basics.md
+cat .claude/skills/agent-dependency-design/references/Level2_intermediate.md
+cat .claude/skills/agent-dependency-design/references/Level3_advanced.md
+cat .claude/skills/agent-dependency-design/references/Level4_expert.md
+cat .claude/skills/agent-dependency-design/references/dependency-patterns.md
+cat .claude/skills/agent-dependency-design/references/legacy-skill.md
+```
 
-### 問題2: 循環依存が発生
+### スクリプト実行
 
-**症状**: 依存関係が複雑で管理困難
+```bash
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs --help
+.claude/skills/agent-dependency-design/scripts/check-circular-deps.sh
+node .claude/skills/agent-dependency-design/scripts/log_usage.mjs --help
+node .claude/skills/agent-dependency-design/scripts/validate-skill.mjs --help
+```
 
-**原因**: 適切な設計がされていない
+### テンプレート参照
 
-**解決策**:
+```bash
+cat .claude/skills/agent-dependency-design/assets/handoff-protocol-template.json
+```
 
-1. 依存関係グラフを可視化
-2. 循環を特定
-3. 解消策（3つ）のいずれかを適用
+## 変更履歴
 
-## 関連スキル
-
-- **multi-agent-systems** (`.claude/skills/multi-agent-systems/SKILL.md`): エージェント間協調
-- **agent-architecture-patterns** (`.claude/skills/agent-architecture-patterns/SKILL.md`): アーキテクチャパターン
-- **progressive-disclosure** (`.claude/skills/progressive-disclosure/SKILL.md`): スキル設計
-- **knowledge-management** (`.claude/skills/knowledge-management/SKILL.md`): 知識の体系化
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- 依存関係パターン (`resources/dependency-patterns.md`)
-- ハンドオフプロトコルテンプレート (`templates/handoff-protocol-template.json`)
-- 循環依存検出スクリプト (`scripts/check-circular-deps.sh`)
-
-## メトリクス
-
-### 依存関係の健全性
-
-**評価基準**:
-
-- 循環依存数: 0個（必須）
-- 平均依存数: 3-5個
-- 深さ: 最大3レベル
-
-**目標**: 循環依存ゼロ、適度な依存数
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- スキル参照プロトコルの設計
-- ハンドオフプロトコルの標準化
-- 循環依存の検出と解消
-- 依存関係の可視化
-
-### このスキルが行わないこと
-
-- エージェントの実際の実装
-- 具体的なコード生成
-- スキルの作成（@skill-librarianの役割）
+| Version | Date       | Changes                                                                                      |
+| ------- | ---------- | -------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | agents/追加、Task仕様ナビ改善                                                                |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様への完全移行：Trigger追加、Task仕様ナビ実装、allowed-tools定義、日本語化完了 |

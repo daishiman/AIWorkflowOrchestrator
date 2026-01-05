@@ -1,36 +1,20 @@
 ---
 description: |
   新しいスラッシュコマンド（.claude/commands/*.md）を作成する専門コマンド。
-
-  YAML Frontmatter + Markdown 本文の構造を持つハブ特化型コマンドファイルを生成します。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
   - `.claude/agents/command-arch.md`: スラッシュコマンド作成専門エージェント（Phase 2で起動）
 
-  📚 利用可能スキル（タスクに応じてcommand-archエージェントが必要時に参照）:
-  **Phase 1（要件収集時）:** command-naming-conventions, command-placement-priority
-  **Phase 2（設計時）:** command-structure-fundamentals, command-arguments-system, command-basic-patterns
-  **Phase 3（セキュリティ時）:** command-security-design, command-error-handling（必要時）
-  **Phase 4（品質時）:** command-best-practices, command-documentation-patterns（必要時）
-  **Phase 5（最適化時）:** command-performance-optimization（必要時）, command-agent-skill-integration（必要時）
-
   ⚙️ このコマンドの設定:
-  - argument-hint: オプション引数1つ（未指定時はインタラクティブ）
-  - allowed-tools: エージェント起動と最小限の確認用
-    • Task: command-archエージェント起動用
-    • Read: 既存コマンド・スキル参照確認用
-    • Write(.claude/commands/**): コマンドファイル生成用（パス制限）
-    • Grep, Glob: 既存パターン検索・重複チェック用
-  - model: sonnet（標準的なコマンド作成タスク）
+  - argument-hint: [command-name]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: command, slash-command, コマンド作成, workflow, 自動化
 argument-hint: "[command-name]"
 allowed-tools:
   - Task
-  - Read
-  - Write(.claude/commands/**)
-  - Grep
-  - Glob
 model: sonnet
 ---
 
@@ -38,69 +22,43 @@ model: sonnet
 
 ## 目的
 
-`.claude/agents/command-arch.md` エージェントを起動し、ハブ特化型のスラッシュコマンドファイルを生成します。
+`.claude/commands/ai/create-command.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
 ## エージェント起動フロー
 
-### Phase 1: 引数確認
+### Phase 1: スラッシュコマンド作成専門エージェント（Phase 2で起動）の実行
 
-```markdown
-コマンド名: "$ARGUMENTS"
+**目的**: スラッシュコマンド作成専門エージェント（Phase 2で起動）に関するタスクを実行し、結果を整理する
 
-引数未指定の場合:
-ユーザーに対話的にコマンド名を質問
-```
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-### Phase 2: command-arch エージェント起動
+**ゴール**: スラッシュコマンド作成専門エージェント（Phase 2で起動）の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/command-arch.md`
 
 Task ツールで `.claude/agents/command-arch.md` を起動:
 
-```markdown
-エージェント: .claude/agents/command-arch.md
-コマンド名: ${コマンド名}
+**コンテキスト**:
 
-依頼内容:
+- 引数: $ARGUMENTS（[command-name]）
 
-- ハブ特化型コマンドファイルの作成
-- argument-hint, allowed-tools, model の動的最適化
-- フェーズ別スキル条件付き参照
-- 量産可能なテンプレート構造使用
+**依頼内容**:
 
-必須要件:
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-1. コマンドはエージェント・スキル呼び出しハブに特化
-2. 詳細な実装手順はエージェント・スキルに委譲
-3. allowed-tools は最小権限パターンから選択
-4. description に依存エージェント・スキルを構造化記述
-```
+**期待成果物**:
 
-**期待成果物:**
+- `.claude/commands/`
+- `.claude/commands/ai/command_list.md`
 
-- `.claude/commands/*.md`（ハブ特化型）
-- 動的最適化された YAML Frontmatter
-- 簡潔な本文（エージェント起動手順のみ）
+**完了条件**:
 
-### Phase 3: 検証と報告
-
-- 作成ファイルパス確認
-- YAML 構文検証
-- 完了報告
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
-### コマンド名指定
-
 ```bash
-/ai:create-command analyze-logs
+/ai:create-command [command-name]
 ```
-
-### インタラクティブモード
-
-```bash
-/ai:create-command
-```
-
-## 参照
-
-- エージェント: `.claude/agents/command-arch.md`
-- コマンドリスト: `.claude/commands/ai/command_list.md`

@@ -1,386 +1,169 @@
 ---
 name: infrastructure-as-code
 description: |
-  Infrastructure as Codeの原則に基づく構成管理の自動化を専門とするスキル。
-  環境変数管理、Secret管理、Railway統合を中心に、再現可能なインフラ構成を実現します。
+  Infrastructure as Code（IaC）の原則に基づく構成管理の自動化を専門とするスキル。
+  環境変数管理、Secret管理、Railway統合を中心に、再現可能で安全なインフラ構成を実現します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）/ 適用: 設定の外部化・DRY原則・エラーの早期検出 / 目的: 保守性とセキュリティの両立
+  • IaC 4原則（宣言的定義・べき等性・バージョン管理・不変インフラ）/ 適用: インフラ構成全体 / 目的: 再現可能性の確保
 
-  - `.claude/skills/infrastructure-as-code/resources/environment-variables.md`: 環境変数の分類（機密/環境固有/共通）と管理場所の設計パターン
-  - `.claude/skills/infrastructure-as-code/resources/iac-principles.md`: IaCの4原則（宣言的定義/べき等性/バージョン管理/不変インフラ）
-  - `.claude/skills/infrastructure-as-code/resources/railway-integration.md`: railway.json構成、Turso統合、環境変数設定の詳細
-  - `.claude/skills/infrastructure-as-code/resources/secrets-management.md`: GitHub Secrets/Railway Secretsによるセキュアなクレデンシャル管理
-  - `.claude/skills/infrastructure-as-code/scripts/validate-env.mjs`: .env.exampleと実際の環境変数の検証
-  - `.claude/skills/infrastructure-as-code/templates/env-example-template.txt`: .env.exampleファイル作成テンプレート
-  - `.claude/skills/infrastructure-as-code/templates/railway-json-template.json`: railway.json（ビルド/デプロイ構成）テンプレート
-
-  専門分野:
-  - 宣言的構成管理: あるべき状態をコードで定義
-  - 環境変数設計: 開発/ステージング/本番環境の構成管理
-  - Secret管理: セキュアなクレデンシャル管理
-  - Railway統合: Railway CLIとGit統合による自動デプロイ
-
-  使用タイミング:
-  - Railway構成を設計・最適化する時
-  - 環境変数とSecretの管理戦略を設計する時
-  - 複数環境間の構成差分を最小化する時
-  - ローカル開発環境とクラウド環境を同期する時
-
-  Use proactively when users need to manage environment variables,
-version: 1.0.0
+  Trigger:
+  Use when designing environment variables, managing secrets, configuring Railway deployments, or setting up infrastructure as code for Next.js/Electron projects.
+  Keywords: railway.json, .env.example, environment variables, GitHub Secrets, Railway Secrets, Turso integration, infrastructure automation
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Infrastructure as Code
 
 ## 概要
 
-このスキルは、Kief Morris の『Infrastructure as Code』の原則に基づき、
-インフラストラクチャ構成をコードとして管理し、再現可能で一貫性のある環境を実現します。
+Infrastructure as Codeの原則に基づく構成管理の自動化を専門とするスキル。
+環境変数管理、Secret管理、Railway統合を中心に、再現可能なインフラ構成を実現します。
 
-**主要な価値**:
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
-- インフラ構成の宣言的定義と自動化
-- 環境間の構成差分の最小化
-- セキュアな Secret 管理
-- 変更の追跡と監査可能性
+## ワークフロー
 
-**対象ユーザー**:
+### Phase 1: 環境変数設計
 
-- Railway 上でアプリケーションをデプロイする DevOps
-- 環境変数管理を最適化したい開発者
-- インフラ構成のコード化を実現したいチーム
+**目的**: プロジェクトの環境変数構成を設計し、.env.exampleを整備
 
-## リソース構造
+**アクション**:
 
-```
-infrastructure-as-code/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── iac-principles.md                      # IaC原則と理論
-│   ├── environment-variables.md               # 環境変数設計パターン
-│   ├── secrets-management.md                  # Secret管理ベストプラクティス
-│   └── railway-integration.md                 # Railway統合詳細
-├── scripts/
-│   └── validate-env.mjs                       # 環境変数検証スクリプト
-└── templates/
-    ├── railway-json-template.json             # railway.json テンプレート
-    └── env-example-template.txt               # .env.example テンプレート
-```
+1. 必要な環境変数を洗い出し
+2. 命名規則と分類を決定
+3. バリデーションルールを定義
+4. `assets/env-example-template.txt` をベースに.env.example作成
+
+**Task**: `agents/environment-design.md` を参照
+
+### Phase 2: シークレット管理
+
+**目的**: GitHub Secrets/Railway Secretsの安全な管理戦略を実装
+
+**アクション**:
+
+1. シークレット分類（開発/ステージング/本番）
+2. ローテーション戦略の策定
+3. アクセス制御の設定
+
+**Task**: `agents/secret-manager.md` を参照
+
+### Phase 3: Railway統合構成
+
+**目的**: Railway.jsonとデプロイ構成の最適化
+
+**アクション**:
+
+1. `assets/railway-json-template.json` をベースに設定
+2. 環境別ビルド/スタートコマンド定義
+3. `scripts/validate-env.mjs` で検証
+
+**Task**: `agents/railway-configurator.md` を参照
+
+### Phase 4: 検証と完了
+
+**目的**: 構成の整合性確認と記録
+
+**アクション**:
+
+1. `agents/railway-validator.md` で検証実行
+2. 環境間の差分レポート作成
+3. `scripts/log_usage.mjs` で記録
+
+## ベストプラクティス
+
+### すべきこと
+
+- Railway構成を設計・最適化する時
+- 環境変数とSecretの管理戦略を設計する時
+- 複数環境間の構成差分を最小化する時
+- ローカル開発環境とクラウド環境を同期する時
+
+### 避けるべきこと
+
+- シークレットをソースコードにハードコード
+- 環境変数のバリデーションを省略
+- 環境間の設定差分を文書化せずに運用
+
+## Task仕様ナビ
+
+| Task             | 起動タイミング | 入力             | 出力                 | 参照エージェント                 |
+| ---------------- | -------------- | ---------------- | -------------------- | -------------------------------- |
+| 環境変数設計     | Phase 1開始時  | プロジェクト要件 | .env.example         | `agents/environment-design.md`   |
+| シークレット管理 | Phase 2開始時  | 機密情報リスト   | シークレット管理計画 | `agents/secret-manager.md`       |
+| Railway構成      | Phase 3開始時  | 環境変数設計書   | railway.json         | `agents/railway-configurator.md` |
+| 構成検証         | Phase 4開始時  | 全構成ファイル   | 検証レポート         | `agents/railway-validator.md`    |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース   | パス                              | 内容             |
+| ---------- | --------------------------------- | ---------------- |
+| 基礎知識   | references/Level1_basics.md       | IaC基本概念      |
+| 実務ガイド | references/Level2_intermediate.md | 環境変数管理実践 |
+| 高度な技法 | references/Level3_advanced.md     | マルチ環境戦略   |
+| 専門知識   | references/Level4_expert.md       | セキュリティ強化 |
+
+### scripts/（決定論的処理）
+
+| スクリプト       | 用途         | 使用例                                        |
+| ---------------- | ------------ | --------------------------------------------- |
+| validate-env.mjs | 環境変数検証 | `node scripts/validate-env.mjs`               |
+| log_usage.mjs    | 使用記録     | `node scripts/log_usage.mjs --result success` |
+
+### assets/（テンプレート）
+
+| テンプレート               | 用途                    |
+| -------------------------- | ----------------------- |
+| env-example-template.txt   | .env.example雛形        |
+| railway-json-template.json | Railway構成テンプレート |
 
 ## コマンドリファレンス
 
 ### リソース読み取り
 
 ```bash
-# IaC原則と理論
-cat .claude/skills/infrastructure-as-code/resources/iac-principles.md
-
-# 環境変数設計パターン
-cat .claude/skills/infrastructure-as-code/resources/environment-variables.md
-
-# Secret管理ベストプラクティス
-cat .claude/skills/infrastructure-as-code/resources/secrets-management.md
-
-# Railway統合詳細
-cat .claude/skills/infrastructure-as-code/resources/railway-integration.md
+cat .claude/skills/infrastructure-as-code/references/Level1_basics.md
+cat .claude/skills/infrastructure-as-code/references/Level2_intermediate.md
+cat .claude/skills/infrastructure-as-code/references/Level3_advanced.md
+cat .claude/skills/infrastructure-as-code/references/Level4_expert.md
+cat .claude/skills/infrastructure-as-code/references/environment-variables.md
+cat .claude/skills/infrastructure-as-code/references/iac-principles.md
+cat .claude/skills/infrastructure-as-code/references/legacy-skill.md
+cat .claude/skills/infrastructure-as-code/references/railway-integration.md
+cat .claude/skills/infrastructure-as-code/references/secrets-management.md
 ```
 
 ### スクリプト実行
 
 ```bash
-# 環境変数の検証
-node .claude/skills/infrastructure-as-code/scripts/validate-env.mjs .env.example .env
+node .claude/skills/infrastructure-as-code/scripts/log_usage.mjs --help
+node .claude/skills/infrastructure-as-code/scripts/validate-env.mjs --help
+node .claude/skills/infrastructure-as-code/scripts/validate-skill.mjs --help
 ```
 
 ### テンプレート参照
 
 ```bash
-# railway.json テンプレート
-cat .claude/skills/infrastructure-as-code/templates/railway-json-template.json
-
-# .env.example テンプレート
-cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
+cat .claude/skills/infrastructure-as-code/assets/env-example-template.txt
+cat .claude/skills/infrastructure-as-code/assets/railway-json-template.json
 ```
-
-## いつ使うか
-
-### シナリオ 1: Railway 構成の設計
-
-**状況**: 新しいプロジェクトを Railway にデプロイしたい
-
-**適用条件**:
-
-- [ ] Next.js/Node.js アプリケーション
-- [ ] GitHub 連携でのデプロイ
-- [ ] 環境変数の設定が必要
-
-**期待される成果**: 再現可能な railway.json 構成
-
-### シナリオ 2: 環境変数管理の最適化
-
-**状況**: 開発/ステージング/本番で環境変数がバラバラ
-
-**適用条件**:
-
-- [ ] 複数環境が存在
-- [ ] 環境ごとの設定差分が管理困難
-- [ ] Secret 漏洩リスクがある
-
-**期待される成果**: 一元管理された環境変数戦略
-
-### シナリオ 3: ローカル開発環境の同期
-
-**状況**: ローカルと本番で動作が異なる
-
-**適用条件**:
-
-- [ ] 環境変数の設定漏れがある
-- [ ] .env ファイルの手動管理
-- [ ] 本番環境との乖離
-
-**期待される成果**: Railway CLI による環境同期
-
-## ワークフロー
-
-### Phase 1: 現状分析と要件定義
-
-**目的**: 現在のインフラ構成を理解し、IaC 化の要件を定義
-
-**ステップ**:
-
-1. **現在の構成確認**:
-   - 使用中のサービス（Railway, Turso 等）
-   - 環境変数の一覧
-   - Secret 情報の所在
-
-2. **環境の特定**:
-   - 開発環境
-   - ステージング環境
-   - 本番環境
-
-**判断基準**:
-
-- [ ] すべてのサービスが特定されているか？
-- [ ] 環境変数が一覧化されているか？
-- [ ] Secret 情報の管理方法が把握されているか？
-
-**リソース**: `resources/iac-principles.md`
-
-### Phase 2: 環境変数設計
-
-**目的**: 環境変数の分類と管理戦略を設計
-
-**ステップ**:
-
-1. **変数の分類**:
-   - 機密情報（Secret）: API Key, Token
-   - 環境固有: DATABASE_URL, API_ENDPOINT
-   - 共通設定: NODE_ENV, LOG_LEVEL
-
-2. **管理場所の決定**:
-   - GitHub Secrets: CI/CD 用
-   - Railway Variables: デプロイ用
-   - .env.example: ドキュメント用
-
-**判断基準**:
-
-- [ ] すべての変数が分類されているか？
-- [ ] 管理場所が決定しているか？
-- [ ] .env.example が更新されているか？
-
-**リソース**: `resources/environment-variables.md`
-
-### Phase 3: Railway 構成の実装
-
-**目的**: railway.json による宣言的構成
-
-**ステップ**:
-
-1. **railway.json 作成**:
-   - ビルドコマンド設定
-   - スタートコマンド設定
-   - 再起動ポリシー設定
-
-2. **環境変数の設定**:
-   - Turso 統合（TURSO_DATABASE_URL, TURSO_AUTH_TOKEN）
-   - Railway Secrets 設定
-   - Railway Variables 設定
-
-**判断基準**:
-
-- [ ] railway.json が作成されているか？
-- [ ] 環境変数が Railway に設定されているか？
-- [ ] Turso 統合が構成されているか？
-
-**リソース**: `resources/railway-integration.md`
-
-### Phase 4: 検証とドキュメント
-
-**目的**: 構成の検証とメンテナンス可能なドキュメント作成
-
-**ステップ**:
-
-1. **動作検証**:
-   - ローカル開発での動作確認
-   - Railway CLI 経由での変数確認
-   - デプロイ動作確認
-
-2. **ドキュメント更新**:
-   - .env.example 更新
-   - README 更新
-   - 変更履歴記録
-
-**判断基準**:
-
-- [ ] ローカルと本番で同一動作か？
-- [ ] ドキュメントが最新か？
-
-## 核心知識
-
-### IaC の 4 原則
-
-1. **宣言的定義**: あるべき状態をコードで記述
-2. **べき等性**: 何度実行しても同じ結果
-3. **バージョン管理**: すべての変更を追跡
-4. **不変インフラ**: 変更ではなく再構築
-
-### 環境変数の分類
-
-| 種別     | 例                               | 管理場所                        |
-| -------- | -------------------------------- | ------------------------------- |
-| 機密情報 | API_KEY, TURSO_AUTH_TOKEN        | GitHub Secrets, Railway Secrets |
-| 環境固有 | TURSO_DATABASE_URL, API_ENDPOINT | Railway Variables               |
-| 共通設定 | NODE_ENV, LOG_LEVEL              | railway.json, .env              |
-
-### Railway 構成要素
-
-```json
-{
-  "$schema": "https://railway.app/railway.schema.json",
-  "build": {
-    "builder": "NIXPACKS"
-  },
-  "deploy": {
-    "startCommand": "pnpm start",
-    "restartPolicyType": "ON_FAILURE"
-  }
-}
-```
-
-詳細は `resources/railway-integration.md` を参照
-
-## ベストプラクティス
-
-### すべきこと
-
-1. **Secret はコードに含めない**:
-   - ✅ 環境変数経由で注入
-   - ✅ .env.example にダミー値
-   - ✅ .gitignore に.env を追加
-
-2. **環境差分を最小化**:
-   - ✅ 同一構成を全環境に適用
-   - ✅ 環境固有設定は環境変数で
-   - ✅ Railway CLI でローカルと同期
-
-3. **構成をコード管理**:
-   - ✅ railway.json をリポジトリに含める
-   - ✅ 変更は PR 経由でレビュー
-   - ✅ 変更履歴を追跡
-
-### 避けるべきこと
-
-1. **ハードコード Secret**:
-   - ❌ コード内に直接記述
-   - ❌ コミット履歴に残す
-   - ❌ ログに出力
-
-2. **手動構成**:
-   - ❌ 管理画面での手動設定のみ
-   - ❌ ドキュメント化されていない設定
-   - ❌ 再現不可能な構成
-
-## トラブルシューティング
-
-### 問題 1: ローカルと本番で動作が異なる
-
-**症状**: ローカルでは動作するが、本番で動作しない
-
-**原因**:
-
-- 環境変数の設定漏れ
-- 環境変数の値が異なる
-
-**解決策**:
-
-1. Railway CLI で環境変数を確認
-2. .env.example と比較
-3. 不足分を設定
-
-### 問題 2: Secret 漏洩の疑い
-
-**症状**: API キーやトークンがログに出力された
-
-**原因**:
-
-- 環境変数を echo している
-- エラーメッセージに含まれている
-
-**解決策**:
-
-1. 即座に Secret をローテーション
-2. コードから直接参照を排除
-3. ログ出力を見直し
-
-### 問題 3: デプロイが失敗する
-
-**症状**: Railway 上でビルドまたは起動が失敗
-
-**原因**:
-
-- 環境変数の未設定
-- railway.json の構文エラー
-- ビルドコマンドの誤り
-
-**解決策**:
-
-1. Railway Logs で詳細確認
-2. 環境変数一覧を確認
-3. railway.json を検証
-
-## 関連スキル
-
-- **ci-cd-pipelines** (`.claude/skills/ci-cd-pipelines/SKILL.md`): CI/CD パイプライン設計
-- **deployment-strategies** (`.claude/skills/deployment-strategies/SKILL.md`): デプロイ戦略
-- **monitoring-alerting** (`.claude/skills/monitoring-alerting/SKILL.md`): モニタリング
-
-## メトリクス
-
-### 環境変数カバレッジ
-
-**目標**: 100%（すべての必要変数が設定済み）
-
-### 構成変更追跡率
-
-**目標**: 100%（すべての変更がコード経由）
-
-### Secret 漏洩インシデント
-
-**目標**: 0 件
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                           |
-| ---------- | ---------- | ---------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版作成 - Railway 統合と IaC 原則 |
-
-## 参考文献
-
-- **『Infrastructure as Code』** Kief Morris 著
-  - Chapter 1: What Is Infrastructure as Code?
-  - Chapter 6: Building Servers as Code
-
-- **Railway Documentation**
-  - https://docs.railway.app/
+| Version | Date       | Changes                                        |
+| ------- | ---------- | ---------------------------------------------- |
+| 2.1.0   | 2026-01-02 | ワークフローをPhase別に再構成、agents/参照追加 |
+| 2.0.0   | 2026-01-02 | 18-skills.md完全準拠、Task仕様ナビ追加         |
+| 1.0.0   | 2025-12-24 | 初版                                           |

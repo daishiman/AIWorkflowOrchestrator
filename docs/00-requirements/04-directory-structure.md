@@ -52,6 +52,8 @@
 | apps/web/          | Next.js Webアプリ                                               |
 | apps/desktop/      | Electronデスクトップアプリ                                      |
 | local-agent/       | ローカルファイル監視エージェント                                |
+| scripts/           | **プロジェクト管理スクリプト（setup-worktree.sh等）**           |
+| .husky/            | **Gitフック（post-checkout等）**                                |
 | .github/workflows/ | CI/CDワークフロー                                               |
 | 設定ファイル群     | package.json、tsconfig.json等                                   |
 
@@ -60,6 +62,34 @@
 - packages/shared/: 4階層（core → infrastructure → ui → types）で依存方向を制御
 - apps/: 各アプリは独立してデプロイ可能
 - docs/: 番号プレフィックスで整理（参照しやすい）
+
+### 4.2.1 docs/ 詳細構造
+
+| パス                                                      | 役割                               |
+| --------------------------------------------------------- | ---------------------------------- |
+| 00-requirements/                                          | システム要件定義                   |
+| 00-requirements/05-architecture.md                        | アーキテクチャ設計                 |
+| 00-requirements/08-api-design.md                          | API設計                            |
+| 00-requirements/17-security-guidelines.md                 | セキュリティガイドライン           |
+| 10-design/                                                | 設計ドキュメント                   |
+| 20-specifications/                                        | 仕様書                             |
+| 30-api/                                                   | **APIリファレンス**                |
+| 30-api/converters/                                        | コンバーターAPI仕様                |
+| 30-api/converters/markdown-converter.md                   | MarkdownConverter API              |
+| 30-api/converters/code-converter.md                       | CodeConverter API                  |
+| 30-api/converters/yaml-converter.md                       | YAMLConverter API                  |
+| 30-workflows/                                             | **ワークフロー・プロジェクト記録** |
+| 30-workflows/rag-conversion-system/                       | RAG変換システムプロジェクト        |
+| 30-workflows/rag-conversion-system/manual-test-report.md  | 手動テスト結果レポート             |
+| 30-workflows/rag-conversion-system/quality-report.md      | 品質保証レポート                   |
+| 30-workflows/rag-conversion-system/final-review-report.md | 最終レビューレポート               |
+| 30-workflows/login-recovery/                              | **ログイン機能復旧プロジェクト**   |
+| 30-workflows/login-recovery/README.md                     | プロジェクト完全ガイド             |
+| 30-workflows/login-recovery/step11-final-review.md        | 最終レビュー結果                   |
+| 30-workflows/login-recovery/step12-manual-test-guide.md   | 手動テストガイド                   |
+| 40-manuals/                                               | **ユーザー/開発者マニュアル**      |
+| 40-manuals/rag-conversion-guide.md                        | RAG変換システム使用ガイド          |
+| 99-adr/                                                   | Architecture Decision Records      |
 
 ---
 
@@ -92,6 +122,31 @@
 | external/[service-name]/ | 外部サービス（Discord等）                 |
 | logging/                 | ログ基盤                                  |
 
+### 4.3.2.1 packages/shared/src/db/（データベース詳細構造）
+
+| パス                                    | 役割                                           |
+| --------------------------------------- | ---------------------------------------------- |
+| **スキーマ定義**                        |                                                |
+| schema/index.ts                         | スキーマエントリーポイント（re-export）        |
+| schema/chat-history.ts                  | チャット履歴スキーマ                           |
+| schema/files.ts                         | RAGファイルメタデータスキーマ                  |
+| schema/chunks.ts                        | RAGチャンクスキーマ + FTS5                     |
+| schema/chunks-fts.ts                    | FTS5仮想テーブル管理関数                       |
+| schema/conversions.ts                   | ファイル変換履歴スキーマ                       |
+| schema/extracted-metadata.ts            | 抽出メタデータスキーマ                         |
+| schema/relations.ts                     | テーブル間リレーション定義                     |
+| **検索クエリ**                          |                                                |
+| queries/chunks-search.ts                | FTS5全文検索クエリ（キーワード/フレーズ/NEAR） |
+| **データベース基盤**                    |                                                |
+| env.ts                                  | 環境変数管理（Zod検証）                        |
+| migrate.ts                              | マイグレーション実行スクリプト                 |
+| utils.ts                                | データベースユーティリティ関数                 |
+| index.ts                                | データベースクライアントエクスポート           |
+| **テスト**                              |                                                |
+| schema/**tests**/chunks.test.ts         | chunksスキーマテスト                           |
+| schema/**tests**/chunks-fts.test.ts     | FTS5管理関数テスト（7ケース）                  |
+| queries/**tests**/chunks-search.test.ts | FTS5検索クエリテスト（74ケース）               |
+
 ### 4.3.3 ui/（共通UIコンポーネント層）
 
 | パス        | 役割                                      |
@@ -103,13 +158,66 @@
 
 ### 4.3.4 types/（共通型定義）
 
-| パス             | 役割         |
-| ---------------- | ------------ |
-| [domain-name].ts | ドメイン型   |
-| api.ts           | API型        |
-| index.ts         | エクスポート |
+| パス                 | 役割                                    |
+| -------------------- | --------------------------------------- |
+| [domain-name].ts     | ドメイン型                              |
+| api.ts               | API型                                   |
+| rag/branded.ts       | RAG Branded Type定義（ID型）            |
+| rag/interfaces.ts    | RAG共通インターフェース                 |
+| rag/errors.ts        | RAGエラー型                             |
+| rag/result.ts        | Result型（Railway Oriented Programming) |
+| rag/file/            | RAGファイル・変換ドメイン型             |
+| rag/file/types.ts    | 型定義・定数・インターフェース          |
+| rag/file/schemas.ts  | Zodスキーマ（ランタイムバリデーション） |
+| rag/file/utils.ts    | ユーティリティ関数                      |
+| rag/file/index.ts    | バレルエクスポート                      |
+| rag/graph/           | Knowledge Graph型定義                   |
+| rag/graph/types.ts   | Entity・Relation・Community型定義       |
+| rag/graph/schemas.ts | Zodスキーマ（カスタム制約含む）         |
+| rag/graph/utils.ts   | PageRank、正規化等のユーティリティ      |
+| rag/graph/index.ts   | バレルエクスポート                      |
+| index.ts             | エクスポート                            |
 
-**依存方向**: types ← core ← infrastructure ← ui（逆方向禁止）
+### 4.3.5 src/services/（ドメインサービス層）
+
+| パス                                                       | 役割                                           |
+| ---------------------------------------------------------- | ---------------------------------------------- |
+| conversion/                                                | **ファイル変換サービス**                       |
+| conversion/types.ts                                        | 変換関連型定義（IConverter, ConverterInput等） |
+| conversion/base-converter.ts                               | BaseConverter抽象クラス（Template Method）     |
+| conversion/converter-registry.ts                           | ConverterRegistry（Repository Pattern）        |
+| conversion/conversion-service.ts                           | ConversionService（統括サービス）              |
+| conversion/converters/                                     | **各種コンバーター実装**                       |
+| conversion/converters/index.ts                             | コンバーター登録・エクスポート                 |
+| conversion/converters/html-converter.ts                    | HTMLConverter実装                              |
+| conversion/converters/csv-converter.ts                     | CSVConverter実装                               |
+| conversion/converters/json-converter.ts                    | JSONConverter実装                              |
+| conversion/converters/markdown-converter.ts                | MarkdownConverter実装                          |
+| conversion/converters/code-converter.ts                    | CodeConverter実装                              |
+| conversion/converters/yaml-converter.ts                    | YAMLConverter実装                              |
+| conversion/converters/**tests**/                           | **コンバーターユニットテスト**                 |
+| conversion/converters/**tests**/index.test.ts              | 登録処理テスト                                 |
+| conversion/converters/**tests**/markdown-converter.test.ts | MarkdownConverterテスト（54ケース）            |
+| conversion/converters/**tests**/code-converter.test.ts     | CodeConverterテスト（51ケース）                |
+| conversion/converters/**tests**/yaml-converter.test.ts     | YAMLConverterテスト（61ケース）                |
+| conversion/**manual-tests**/                               | **手動テストスクリプト**                       |
+| conversion/**manual-tests**/run-manual-tests.ts            | 手動テスト実行スクリプト                       |
+| conversion/**manual-tests**/fixtures/                      | テスト用サンプルファイル                       |
+| conversion/**manual-tests**/fixtures/sample.md             | Markdownサンプル                               |
+| conversion/**manual-tests**/fixtures/sample.ts             | TypeScriptサンプル                             |
+| conversion/**manual-tests**/fixtures/sample.js             | JavaScriptサンプル                             |
+| conversion/**manual-tests**/fixtures/sample.py             | Pythonサンプル                                 |
+| conversion/**manual-tests**/fixtures/sample.yaml           | YAMLサンプル                                   |
+| conversion/**manual-tests**/fixtures/empty.md              | 空ファイルサンプル                             |
+
+**サービス層の特徴**:
+
+- shared/types/rag のみに依存（外部ライブラリ依存を最小化）
+- Result型でエラーハンドリング
+- 100%テストカバレッジ（Phase 6で検証済み）
+- Template Method・Repository・Singletonパターン適用
+
+**依存方向**: types ← core ← infrastructure ← ui ← services（逆方向禁止）
 
 ---
 
@@ -157,16 +265,20 @@
 
 ### 4.5.1 main/（Main Process）
 
-| パス                  | 役割                      |
-| --------------------- | ------------------------- |
-| index.ts              | エントリーポイント        |
-| ipc/channels.ts       | IPCチャネル定義（型定義） |
-| ipc/handlers/         | ハンドラー実装            |
-| ipc/workspaceHandlers | ワークスペースIPC         |
-| ipc/validation.ts     | 入力バリデーション        |
-| services/             | バックグラウンドサービス  |
-| windows/              | ウィンドウ管理            |
-| config/               | 設定（security、app）     |
+| パス                                     | 役割                                                             |
+| ---------------------------------------- | ---------------------------------------------------------------- |
+| index.ts                                 | エントリーポイント                                               |
+| ipc/channels.ts                          | IPCチャネル定義（型定義）                                        |
+| ipc/handlers/                            | ハンドラー実装                                                   |
+| ipc/authHandlers.ts                      | 認証IPC（withValidation適用）                                    |
+| ipc/workspaceHandlers.ts                 | ワークスペースIPC                                                |
+| ipc/aiHandlers.ts                        | **AI/LLM チャットIPC（AI_CHAT、AI_CHECK_CONNECTION、AI_INDEX）** |
+| ipc/validation.ts                        | 入力バリデーション                                               |
+| infrastructure/secureStorage.ts          | トークン暗号化（safeStorage）                                    |
+| infrastructure/security/ipc-validator.ts | IPC送信元検証（withValidation）                                  |
+| services/                                | バックグラウンドサービス                                         |
+| windows/                                 | ウィンドウ管理                                                   |
+| config/                                  | 設定（security、app）                                            |
 
 ### 4.5.2 preload/（セキュリティ境界）
 
@@ -192,16 +304,33 @@
 
 ### 4.5.4 renderer/components/（Atomic Design）
 
-| パス       | 役割                                         |
-| ---------- | -------------------------------------------- |
-| atoms/     | 基本UI要素（Button、Input、Icon、Badge等）   |
-| molecules/ | 複合要素（Tooltip、NavIcon、FileTreeItem等） |
-| organisms/ | 機能単位（AppDock、Sidebar、GlassPanel等）   |
+| パス                                              | 役割                                                                 |
+| ------------------------------------------------- | -------------------------------------------------------------------- |
+| atoms/                                            | 基本UI要素（Button、Input、Icon、Badge等）                           |
+| molecules/                                        | 複合要素（Tooltip、NavIcon、FileTreeItem等）                         |
+| molecules/LLMSelector/                            | **LLMプロバイダー/モデル選択ドロップダウン（100%テストカバレッジ）** |
+| molecules/ChatMessage/                            | チャットメッセージ表示コンポーネント                                 |
+| organisms/                                        | 機能単位（AppDock、Sidebar、GlassPanel等）                           |
+| AuthGuard/                                        | **認証ガード（HOC）**                                                |
+| AuthGuard/index.tsx                               | 認証状態による表示制御                                               |
+| AuthGuard/LoadingScreen.tsx                       | ローディング画面                                                     |
+| AuthGuard/types.ts                                | AuthGuard型定義                                                      |
+| AuthGuard/hooks/useAuthState.ts                   | 認証状態取得フック                                                   |
+| AuthGuard/utils/getAuthState.ts                   | 状態判定純粋関数                                                     |
+| AuthGuard/AuthGuard.test.tsx                      | AuthGuardテスト（67 tests）                                          |
+| AuthGuard/utils/getAuthState.test.ts              | getAuthState単体テスト（5 tests）                                    |
+| organisms/AccountSection/                         | **アカウント管理セクション**                                         |
+| AccountSection/index.tsx                          | プロフィール・アバター・連携管理UI                                   |
+| AccountSection/AccountSection.test.tsx            | 基本機能テスト（55 tests）                                           |
+| AccountSection/AccountSection.portal.test.tsx     | Portal機能テスト（27 tests）                                         |
+| AccountSection/AccountSection.a11y.test.tsx       | アクセシビリティテスト（15 tests）                                   |
+| AccountSection/AccountSection.edge-cases.test.tsx | エッジケーステスト（18 tests）                                       |
 
 ### 4.5.5 renderer/views/（画面構成）
 
 | パス           | 役割                                   |
 | -------------- | -------------------------------------- |
+| AuthView/      | **ログイン画面（OAuthボタン配置）**    |
 | DashboardView/ | ダッシュボード（統計・アクティビティ） |
 | EditorView/    | エディタ（ファイルツリー・編集）       |
 | ChatView/      | AIチャット                             |
@@ -210,15 +339,16 @@
 
 ### 4.5.6 renderer/store/（Zustand状態管理）
 
-| パス                  | 役割                                   |
-| --------------------- | -------------------------------------- |
-| index.ts              | 統合ストア（createAppStore）           |
-| slices/               | 機能別スライス                         |
-| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）     |
-| slices/editorSlice    | エディタ状態（ファイル、フォルダ）     |
-| slices/chatSlice      | チャット状態（メッセージ、入力）       |
-| slices/workspaceSlice | ワークスペース状態（複数フォルダ管理） |
-| types/workspace.ts    | Workspace型定義（Branded Types）       |
+| パス                  | 役割                                                                            |
+| --------------------- | ------------------------------------------------------------------------------- |
+| index.ts              | 統合ストア（createAppStore）                                                    |
+| slices/               | 機能別スライス                                                                  |
+| slices/authSlice      | **認証状態（ログイン、トークン、セッション）**                                  |
+| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）                                              |
+| slices/editorSlice    | エディタ状態（ファイル、フォルダ）                                              |
+| slices/chatSlice      | **チャット状態（メッセージ、入力、LLM選択、システムプロンプト、テンプレート）** |
+| slices/workspaceSlice | ワークスペース状態（複数フォルダ管理）                                          |
+| types/workspace.ts    | Workspace型定義（Branded Types）                                                |
 
 ### 4.5.7 Electron 3プロセスモデル
 
@@ -253,18 +383,20 @@
 
 ## 4.8 ルートの設定ファイル群
 
-| ファイル            | 役割                   |
-| ------------------- | ---------------------- |
-| package.json        | ワークスペースルート   |
-| pnpm-workspace.yaml | pnpmワークスペース設定 |
-| tsconfig.json       | TypeScript基本設定     |
-| tsconfig.base.json  | 共通TypeScript設定     |
-| .eslintrc.js        | ESLint設定             |
-| .prettierrc         | Prettier設定           |
-| vitest.config.ts    | Vitest設定             |
-| .env.example        | 環境変数サンプル       |
-| .gitignore          | Git無視設定            |
-| README.md           | プロジェクト説明       |
+| ファイル                  | 役割                                   |
+| ------------------------- | -------------------------------------- |
+| package.json              | ワークスペースルート                   |
+| pnpm-workspace.yaml       | pnpmワークスペース設定                 |
+| tsconfig.json             | TypeScript基本設定                     |
+| tsconfig.base.json        | 共通TypeScript設定                     |
+| .eslintrc.js              | ESLint設定                             |
+| .prettierrc               | Prettier設定                           |
+| vitest.config.ts          | Vitest設定                             |
+| .env.example              | 環境変数サンプル                       |
+| .gitignore                | Git無視設定                            |
+| .husky/post-checkout      | **worktree切替時の自動クリーンアップ** |
+| scripts/setup-worktree.sh | **worktree手動セットアップスクリプト** |
+| README.md                 | プロジェクト説明                       |
 
 ---
 

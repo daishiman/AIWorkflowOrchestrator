@@ -25,7 +25,7 @@ Phase 5.5 Final Review Gate において、`@frontend-tester` エージェント
 | ステータス       | 完了                                                      |
 | 発見元           | Phase 5.5 最終レビューゲート                              |
 | 発見日           | 2025-12-09                                                |
-| 発見エージェント | @frontend-tester                                          |
+| 発見エージェント | .claude/agents/frontend-tester.md                                          |
 
 ---
 
@@ -42,7 +42,7 @@ Phase 5.5 Final Review Gate において、`@frontend-tester` エージェント
 
 ### 背景
 
-Phase 5.5 Final Review Gate において、`@frontend-tester` エージェントが既存テストを分析した結果、以下の改善点が指摘された：
+Phase 5.5 Final Review Gate において、`.claude/agents/frontend-tester.md` エージェントが既存テストを分析した結果、以下の改善点が指摘された：
 
 - 状態遷移テストが rerender によるシミュレーションのみで、実際の状態変更フローを十分に検証していない
 - キーボードナビゲーション（Tab, Enter, Space, Escape）のテストが存在しない
@@ -145,7 +145,7 @@ AuthGuard の状態遷移ロジックの検証テスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: フロントエンドテスト戦略の統合管理と高品質なテスト自動化の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -153,10 +153,10 @@ AuthGuard の状態遷移ロジックの検証テスト作成
 
 | スキル名                | 活用方法                          |
 | ----------------------- | --------------------------------- |
-| tdd-principles          | Red-Green-Refactor サイクルの実践 |
-| vitest-advanced         | Vitest でのモック、非同期テスト   |
-| boundary-value-analysis | 状態境界のテストケース設計        |
-| test-doubles            | useAppStore のモック設計          |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactor サイクルの実践 |
+| .claude/skills/vitest-advanced/SKILL.md         | Vitest でのモック、非同期テスト   |
+| .claude/skills/boundary-value-analysis/SKILL.md | 状態境界のテストケース設計        |
+| .claude/skills/test-doubles/SKILL.md            | useAppStore のモック設計          |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -223,7 +223,7 @@ AuthView のキーボードナビゲーションテスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: アクセシビリティテスト（axe-core + WCAG 2.1 AA）の専門知識
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -231,9 +231,9 @@ AuthView のキーボードナビゲーションテスト作成
 
 | スキル名           | 活用方法                       |
 | ------------------ | ------------------------------ |
-| accessibility-wcag | WCAG キーボード操作要件の実装  |
-| playwright-testing | userEvent によるキーボード操作 |
-| tdd-principles     | テストファーストアプローチ     |
+| .claude/skills/accessibility-wcag/SKILL.md | WCAG キーボード操作要件の実装  |
+| .claude/skills/playwright-testing/SKILL.md | userEvent によるキーボード操作 |
+| .claude/skills/tdd-principles/SKILL.md     | テストファーストアプローチ     |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -299,7 +299,7 @@ AccountSection の ARIA/アクセシビリティテスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: アクセシビリティテスト（axe-core + WCAG 2.1 AA）の専門知識
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -307,8 +307,8 @@ AccountSection の ARIA/アクセシビリティテスト作成
 
 | スキル名           | 活用方法                   |
 | ------------------ | -------------------------- |
-| accessibility-wcag | ARIA 属性要件の検証        |
-| tdd-principles     | テストファーストアプローチ |
+| .claude/skills/accessibility-wcag/SKILL.md | ARIA 属性要件の検証        |
+| .claude/skills/tdd-principles/SKILL.md     | テストファーストアプローチ |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -374,7 +374,7 @@ AccountSection のエッジケーステスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: テストカバレッジ80%+達成、境界値・異常系テストの専門知識
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -382,9 +382,9 @@ AccountSection のエッジケーステスト作成
 
 | スキル名                | 活用方法                   |
 | ----------------------- | -------------------------- |
-| boundary-value-analysis | 境界値・エッジケース設計   |
-| test-doubles            | エラー状態のモック         |
-| tdd-principles          | テストファーストアプローチ |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値・エッジケース設計   |
+| .claude/skills/test-doubles/SKILL.md            | エラー状態のモック         |
+| .claude/skills/tdd-principles/SKILL.md          | テストファーストアプローチ |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -452,7 +452,7 @@ TDD の Green フェーズとして、テストが失敗している原因を分
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント設計、アクセシビリティ基準（WCAG）の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -460,9 +460,9 @@ TDD の Green フェーズとして、テストが失敗している原因を分
 
 | スキル名              | 活用方法                  |
 | --------------------- | ------------------------- |
-| accessibility-wcag    | ARIA 属性の正しい実装     |
-| tailwind-css-patterns | truncate クラスなどの適用 |
-| error-boundary        | エラーハンドリングの実装  |
+| .claude/skills/accessibility-wcag/SKILL.md    | ARIA 属性の正しい実装     |
+| .claude/skills/tailwind-css-patterns/SKILL.md | truncate クラスなどの適用 |
+| .claude/skills/error-boundary/SKILL.md        | エラーハンドリングの実装  |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -515,7 +515,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: テストカバレッジ80%+達成の責務を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -546,7 +546,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 目的
 
-実装完了後、テスト品質が十分であることを @frontend-tester エージェントがレビューする。
+実装完了後、テスト品質が十分であることを .claude/agents/frontend-tester.md エージェントがレビューする。
 
 #### 背景
 
@@ -556,28 +556,28 @@ pnpm --filter @repo/desktop test:run
 
 | エージェント     | レビュー観点     | 選定理由                           |
 | ---------------- | ---------------- | ---------------------------------- |
-| @frontend-tester | テスト品質       | フロントエンドテスト戦略の統合管理 |
-| @code-quality    | コード品質       | ESLint/Prettier 設定、静的解析     |
-| @ui-designer     | アクセシビリティ | WCAG 準拠、アクセシビリティ基準    |
+| .claude/agents/frontend-tester.md | テスト品質       | フロントエンドテスト戦略の統合管理 |
+| .claude/agents/code-quality.md    | コード品質       | ESLint/Prettier 設定、静的解析     |
+| .claude/agents/ui-designer.md     | アクセシビリティ | WCAG 準拠、アクセシビリティ基準    |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**テスト品質** (@frontend-tester)
+**テスト品質** (.claude/agents/frontend-tester.md)
 
 - [ ] テストケースが適切に設計されているか
 - [ ] 境界値・異常系のテストがあるか
 - [ ] テストの可読性・保守性
 - [ ] テストカバレッジが十分か
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] コーディング規約への準拠
 - [ ] 可読性・保守性の確保
 - [ ] 過度な複雑性の有無
 
-**アクセシビリティ** (@ui-designer)
+**アクセシビリティ** (.claude/agents/ui-designer.md)
 
 - [ ] WCAG 2.1 AA への準拠
 - [ ] キーボード操作の完全対応
@@ -630,7 +630,7 @@ pnpm --filter @repo/desktop test:run
 | ------------------- | ------ | -------- | --------------------------------- | -------------- |
 | 既存テストとの競合  | 中     | 低       | 既存テストを先に実行して確認      | T-02-\*        |
 | モック設計の複雑化  | 中     | 中       | 共通のテストユーティリティを作成  | T-02-\*        |
-| ARIA 属性の実装漏れ | 高     | 中       | @ui-designer によるレビューを追加 | T-03-01        |
+| ARIA 属性の実装漏れ | 高     | 中       | .claude/agents/ui-designer.md によるレビューを追加 | T-03-01        |
 
 ---
 

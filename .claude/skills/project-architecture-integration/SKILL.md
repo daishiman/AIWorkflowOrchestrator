@@ -1,451 +1,184 @@
 ---
 name: project-architecture-integration
 description: |
-  プロジェクト固有のアーキテクチャ設計原則を専門とするスキル。
-  ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API、
-  テスト戦略、エラーハンドリング、CI/CDの原則をエージェント設計に統合します。
+  プロジェクト固有のアーキテクチャ設計原則を統合するスキル。ハイブリッドアーキテクチャ（shared/features）、Clean Architecture依存関係ルール、データベース設計、REST API、テスト戦略、エラーハンドリング、CI/CD原則をエージェント設計に適用する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Clean Architecture / 適用: 依存関係ルールと境界設計 / 目的: アーキテクチャ層の分離と依存方向制御
+  • Hybrid Architecture (shared/features) / 適用: ドメイン分離と再利用設計 / 目的: 循環依存回避と単一責任維持
+  • docs/00-requirements/ / 適用: プロジェクト技術スタック仕様 / 目的: 要求仕様との整合性確保
 
-  - `.claude/skills/project-architecture-integration/resources/hybrid-architecture-guide.md`: Hybrid Architecture Guide
-  - `.claude/skills/project-architecture-integration/scripts/check-architecture-compliance.mjs`: check-architecture-compliance.mjs
-  - `.claude/skills/project-architecture-integration/templates/architecture-compliance-checklist.md`: アーキテクチャ準拠チェックリスト
-
-  専門分野:
-  - ハイブリッドアーキテクチャ: shared/features構造、依存関係ルール、機能追加ワークフロー
-  - データベース設計: JSON活用、トランザクション、vector search、インデックス戦略
-  - REST API設計: RESTful原則、バージョニング、HTTPステータス、レスポンス標準化
-  - テスト戦略: TDD、テストピラミッド、カバレッジ目標、モック方針
-  - エラーハンドリング: エラー分類、リトライ戦略、構造化ログ、サーキットブレーカー
-  - CI/CD: GitHub Actions、品質ゲート、自動デプロイ、通知要件
-
-  使用タイミング:
-  - エージェントがプロジェクト構造に準拠したファイルを生成する時
-  - データベース操作を行うエージェントを設計する時
-  - API連携エージェントを設計する時
-  - テスト実行エージェントを設計する時
-  - デプロイ関連エージェントを設計する時
-
-  Use proactively when designing agents that interact with project architecture,
-  database, APIs, or deployment pipelines.
-version: 1.0.0
+  Trigger:
+  Use when designing agents that generate project-specific files, database operations, API integrations, test strategies, error handling, or CI/CD workflows. Apply when determining file placement (shared/ vs features/), enforcing dependency rules, or ensuring architecture compliance.
+  architecture compliance, hybrid structure, shared features, dependency rules, agent file generation, database design, REST API, testing strategy
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
 # Project Architecture Integration
 
 ## 概要
 
-このスキルは、プロジェクト固有のアーキテクチャ設計原則とベストプラクティスを
-エージェント設計に統合する方法を提供します。
-
-**主要な価値**:
-
-- プロジェクトアーキテクチャに準拠したエージェント設計
-- データベース、API、テスト、デプロイの原則を反映
-- 一貫性のある実装とベストプラクティスの適用
-
-**重要**: このスキルは `docs/00-requirements/master_system_design.md` の内容に基づきます。
-
-## リソース構造
-
-```
-project-architecture-integration/
-├── SKILL.md
-├── resources/
-│   ├── hybrid-architecture-guide.md
-│   ├── database-design-principles.md
-│   ├── api-design-standards.md
-│   ├── test-strategy-guide.md
-│   ├── error-handling-patterns.md
-│   └── cicd-requirements.md
-└── templates/
-    └── architecture-compliance-checklist.md
-```
+プロジェクト固有のアーキテクチャ設計原則に基づいてエージェント設計を支援するスキル。Clean Architectureの依存関係ルールとHybrid Architecture（shared/features）パターンを統合し、プロジェクト構造に準拠したファイル生成、データベース設計、API連携を実現する。
 
 ## ワークフロー
 
-### Phase 1: ハイブリッドアーキテクチャの理解
+### Phase 1: アーキテクチャ分析
 
-**目的**: shared/features構造の原則をエージェント設計に反映
+**目的**: プロジェクト構造とアーキテクチャ要件を分析し、適用すべきパターンを特定
 
-**設計方針の理解**:
+**アクション**:
 
-- **shared**: 複数機能で共有する共通インフラ（AI、DB、外部サービス連携等）
-- **features**: 機能ごとの垂直スライス設計、1フォルダで機能が完結
-- **MVP効率**: 機能追加・削除が高速、認知負荷を削減、拡張性を確保
+1. エージェントの役割と責務を分析し、ドメイン依存性を判定
+2. 生成対象ファイルの種類を特定（UI/ビジネスロジック/データアクセス層）
+3. 既存プロジェクト構造を確認し、shared/とfeatures/の現状を把握
+4. 依存関係ルールに基づいて配置先を決定
 
-**レイヤー構造と責務**:
+**Task**: `agents/architecture-analysis.md` を参照
 
-- `shared/core/`: ビジネスルール、共通エンティティ定義（外部依存ゼロ）
-- `shared/infrastructure/`: 外部サービス接続層（DB、AI、Discord等）
-- `features/`: 機能ごとのビジネスロジック、1機能＝1フォルダの独立性
-- `app/`: HTTPエンドポイント、プレゼンテーション層（Next.js App Router）
+### Phase 2: 準拠性検証
 
-**依存関係の方向性原則**:
+**目的**: 生成されたファイルやエージェント設計がアーキテクチャ原則に準拠しているか検証
 
-- 外から内への単方向依存: `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
-- 逆方向の依存は禁止（ESLintで強制）
-- 機能間の相互依存は禁止（features/各機能は独立）
-- 共通インフラの活用により重複を排除
+**アクション**:
 
-**機能追加ワークフロー原則**:
+1. ファイル配置の妥当性を検証
+2. 依存方向の正当性を確認（shared/ → features/ 禁止、features/ → features/ 禁止）
+3. `scripts/check-architecture-compliance.mjs` で自動検証
+4. 違反項目をリストアップし、修正提案を作成
 
-- 仕様書作成 → スキーマ定義（Zod） → Executor実装 → Registry登録 → テスト作成
-- コアインターフェース（IWorkflowExecutor, IRepository）の実装準拠
-- 各機能は独立したフォルダで完結（schema.ts, executor.ts, **tests**/）
-- 共通インフラは`@/shared/infrastructure/`からimport
+**Task**: `agents/compliance-check.md` を参照
 
-**エージェント設計時の考慮点**:
+### Phase 3: 統合と記録
 
-- [ ] 生成するファイルはプロジェクト構造（shared/features/app）のどの層に配置すべきか？
-- [ ] 複数機能で共有する要素か、特定機能固有の要素か？
-- [ ] 外部依存（DB、AI、Discord）を持つ場合、shared/infrastructureを活用しているか？
-- [ ] ビジネスルールやエンティティ定義はshared/coreに集約されているか？
-- [ ] 機能間で重複するロジックが発生していないか？（共通化の検討）
-- [ ] 依存関係の方向性ルールに違反していないか？（ESLintで検証）
+**目的**: アーキテクチャ原則をエージェント設計に統合し、実行記録を保存
 
-**リソース**: `resources/hybrid-architecture-guide.md`
+**アクション**:
 
-### Phase 2: データベース設計原則
+1. 検証済みアーキテクチャ設計をエージェント仕様に統合
+2. アーキテクチャドキュメントを更新
+3. `scripts/log_usage.mjs` で使用記録を保存
 
-**目的**: データベース操作の原則をエージェントに反映
+**Task**: `agents/integration.md` を参照
 
-**主要原則**:
+## Task仕様ナビ
 
-#### 1. JSON活用
+| Task                  | 起動タイミング                | 入力                       | 出力                           |
+| --------------------- | ----------------------------- | -------------------------- | ------------------------------ |
+| architecture-analysis | Phase 1開始時                 | エージェント仕様、構造情報 | アーキテクチャパターン、配置先 |
+| compliance-check      | Phase 2開始時、ファイル生成後 | ファイルパス、依存関係情報 | 準拠性レポート、修正提案       |
+| integration           | Phase 3開始時、検証完了後     | 検証済み設計、統合対象     | 統合完了設計、実行記録         |
 
-- 柔軟なスキーマ設計
-- 半構造化データの効率的保存
-- SQLite JSON関数の活用（json_extract, json_set等）
-
-#### 2. トランザクション管理
-
-- ACID特性の遵守
-- 適切なトランザクション境界の設定
-- ロールバック戦略
-
-#### 3. インデックス戦略
-
-- パフォーマンス最適化
-- クエリパターンに基づくインデックス設計
-- 式インデックスによるJSONフィールドのインデックス化
-
-#### 4. ベクトル検索の代替戦略
-
-- SQLiteにはネイティブなベクトル型なし
-- JSON形式でのベクトルストレージ
-- アプリケーション層でのコサイン類似度計算
-- または外部サービス（Pinecone、Weaviate等）の活用
-
-**エージェント設計時の考慮点**:
-
-- [ ] エージェントがデータベース操作を行う場合、トランザクション境界は明確か？
-- [ ] JSON フィールドの活用を検討しているか？
-- [ ] インデックス戦略が定義されているか？
-- [ ] ベクトル検索が必要な場合、適切な代替戦略（外部サービス or アプリケーション層）が考慮されているか？
-
-**リソース**: `resources/database-design-principles.md`
-
-### Phase 3: REST API設計
-
-**目的**: API設計の原則をエージェントに反映
-
-**主要原則**:
-
-#### 1. RESTful原則
-
-- リソースベースのURL設計
-- 適切なHTTPメソッド使用（GET, POST, PUT, DELETE）
-- ステートレス通信
-
-#### 2. APIバージョニング
-
-- URLパスベースのバージョニング（`/api/v1/`）
-- 後方互換性の維持
-- 非推奨APIの段階的廃止
-
-#### 3. HTTPステータスコード
-
-- 適切なステータスコードの使用
-- 2xx（成功）、4xx（クライアントエラー）、5xx（サーバーエラー）
-- エラーレスポンスの標準化
-
-#### 4. レスポンス形式
-
-- JSON形式の標準化
-- ページネーション対応
-- フィルタリング、ソート機能
-
-**エージェント設計時の考慮点**:
-
-- [ ] 外部API呼び出しがある場合、リトライ戦略は定義されているか？
-- [ ] HTTPステータスコードの適切な処理が考慮されているか？
-- [ ] レスポンス形式が標準に準拠しているか？
-
-**リソース**: `resources/api-design-standards.md`
-
-### Phase 4: テスト戦略
-
-**目的**: TDDとテストピラミッドの原則をエージェントに反映
-
-**主要原則**:
-
-#### 1. テストピラミッド
-
-- 静的型チェック（TypeScript）
-- ユニットテスト（Vitest）
-- 統合テスト
-- E2Eテスト（Playwright）
-
-#### 2. TDDサイクル
-
-- Red-Green-Refactorサイクル
-- テストファースト開発
-- 継続的リファクタリング
-
-#### 3. カバレッジ目標
-
-- ユニットテスト: 80%以上
-- 統合テスト: 主要フロー網羅
-- E2Eテスト: クリティカルパス
-
-#### 4. モック/スタブ方針
-
-- 外部依存のモック化
-- テストデータの管理
-- テストの独立性確保
-
-**エージェント設計時の考慮点**:
-
-- [ ] テスト関連エージェントはテストピラミッドの原則に従っているか？
-- [ ] TDDサイクルが考慮されているか？
-- [ ] カバレッジ目標が定義されているか？
-
-**リソース**: `resources/test-strategy-guide.md`
-
-### Phase 5: エラーハンドリングとロギング
-
-**目的**: エラー処理とログ戦略をエージェントに反映
-
-**主要原則**:
-
-#### 1. エラー分類
-
-- Validation: 入力検証エラー
-- Business: ビジネスルールエラー
-- External: 外部サービスエラー
-- Infrastructure: インフラエラー
-- Internal: 内部エラー
-
-#### 2. リトライ戦略
-
-- 指数バックオフ
-- 最大リトライ回数
-- リトライ可能エラーの判定
-
-#### 3. 構造化ログ
-
-- JSON形式
-- トレーサビリティ（request_id, workflow_id）
-- ログレベル（DEBUG, INFO, WARN, ERROR）
-
-#### 4. サーキットブレーカー
-
-- 障害の波及防止
-- 自動回復メカニズム
-- フォールバック戦略
-
-**エージェント設計時の考慮点**:
-
-- [ ] エラーログは構造化され、トレーサビリティが確保されているか？
-- [ ] リトライ戦略が定義されているか？
-- [ ] サーキットブレーカーパターンが考慮されているか？
-
-**リソース**: `resources/error-handling-patterns.md`
-
-### Phase 6: CI/CD要件
-
-**目的**: CI/CDパイプラインの原則をエージェントに反映
-
-**主要原則**:
-
-#### 1. GitHub Actionsワークフロー
-
-- ci.yml: 品質ゲート（型チェック、Lint、テスト、ビルド）
-- deploy.yml: 自動デプロイ（Railway統合）
-- 再利用可能ワークフローパターン
-
-#### 2. 品質ゲート
-
-- 型チェック（tsc --noEmit）
-- Lint（ESLint）
-- テスト（Vitest）
-- ビルド（Next.js build）
-
-#### 3. 自動デプロイ
-
-- Railway統合
-- Discord通知
-- ヘルスチェック
-
-**エージェント設計時の考慮点**:
-
-- [ ] CI/CD関連エージェントは品質ゲートを考慮しているか？
-- [ ] デプロイ関連エージェントは通知要件（Discord等）を満たしているか？
-- [ ] ヘルスチェックが考慮されているか？
-
-**リソース**: `resources/cicd-requirements.md`
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **アーキテクチャ準拠**:
-   - 必ず master_system_design.md を参照
-   - プロジェクト構造に準拠したファイル配置
-
-2. **原則の適用**:
-   - データベース、API、テスト、デプロイの原則を反映
-   - エージェント設計時のチェックリスト活用
-
-3. **一貫性の維持**:
-   - プロジェクト全体で一貫した設計
-   - ベストプラクティスの徹底
+- エージェントがプロジェクト構造に準拠したファイルを生成する時に適用
+- データベース操作、API連携、テスト実行、デプロイ関連エージェント設計時に使用
+- shared/ と features/ の配置判断に迷った時は必ず Task を起動
+- 依存関係ルールの違反チェックを必ず実行
+- ドメイン非依存のコード（汎用UI、ユーティリティ）は shared/ に配置
+- ビジネスロジックは features/ に配置し、Bounded Contextで分離
 
 ### 避けるべきこと
 
-1. **アーキテクチャ違反**:
-   - ❌ 逆方向の依存関係
-   - ✅ 外から内への単方向依存
+- shared/ から features/ への依存（循環依存の原因）
+- features/ 間の直接依存（shared/ を経由すること）
+- ドメインロジックを shared/ に配置しない
+- アーキテクチャ検証をスキップしない
+- 曖昧な命名（utils/、helpers/など）を避ける
 
-2. **原則の無視**:
-   - ❌ トランザクション境界の未定義
-   - ✅ 明確なトランザクション管理
+## リソース参照
 
-## トラブルシューティング
+### references/（詳細知識）
 
-### 問題1: 依存関係違反
+| リソース             | パス                                                                                   | 内容                           |
+| -------------------- | -------------------------------------------------------------------------------------- | ------------------------------ |
+| 基礎知識             | See [references/basics.md](references/basics.md)                                       | アーキテクチャ基本概念         |
+| 実装パターン         | See [references/patterns.md](references/patterns.md)                                   | 具体的な実装例とアンチパターン |
+| Hybrid Architecture  | See [references/hybrid-architecture-guide.md](references/hybrid-architecture-guide.md) | shared/features構造詳細        |
+| 要件仕様インデックス | See [references/requirements-index.md](references/requirements-index.md)               | プロジェクト要求仕様との同期   |
+| Level 1（基礎）      | See [references/Level1_basics.md](references/Level1_basics.md)                         | スキル適用タイミングと最小要件 |
+| Level 2（実務）      | See [references/Level2_intermediate.md](references/Level2_intermediate.md)             | テンプレート運用と実践手順     |
+| Level 3（応用）      | See [references/Level3_advanced.md](references/Level3_advanced.md)                     | 複雑なアーキテクチャパターン   |
+| Level 4（専門）      | See [references/Level4_expert.md](references/Level4_expert.md)                         | カスタムパターン設計           |
 
-**症状**: ESLintエラー
+### scripts/（決定論的処理）
 
-**原因**: アーキテクチャ原則違反
+| スクリプト                          | 用途                   | 使用例                                                         |
+| ----------------------------------- | ---------------------- | -------------------------------------------------------------- |
+| `check-architecture-compliance.mjs` | アーキテクチャ準拠検証 | `node scripts/check-architecture-compliance.mjs --path src`    |
+| `log_usage.mjs`                     | 使用記録と自動評価     | `node scripts/log_usage.mjs --result success --phase analysis` |
+| `validate-skill.mjs`                | スキル構造検証         | `node scripts/validate-skill.mjs`                              |
 
-**解決策**:
+### assets/（テンプレート）
 
-1. 依存関係の方向性を確認
-2. shared/infrastructureの活用
-3. 機能間の直接依存を排除
+| テンプレート                           | 用途                             |
+| -------------------------------------- | -------------------------------- |
+| `architecture-compliance-checklist.md` | アーキテクチャ準拠チェックリスト |
 
-### 問題2: テスト戦略が不明確
-
-**症状**: テストが不十分
-
-**原因**: テストピラミッドの未適用
-
-**解決策**:
-
-1. テストピラミッドを確認
-2. ユニットテスト、統合テスト、E2Eテストを適切に配分
-3. カバレッジ目標を設定
-
-## 関連スキル
-
-- **agent-architecture-patterns** (`.claude/skills/agent-architecture-patterns/SKILL.md`): アーキテクチャパターン
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`): 構造設計
-- **agent-quality-standards** (`.claude/skills/agent-quality-standards/SKILL.md`): 品質基準
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- ハイブリッドアーキテクチャガイド (`resources/hybrid-architecture-guide.md`)
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
+## クイックスタート
 
 ```bash
-# ハイブリッドアーキテクチャガイドを読み取る
-cat .claude/skills/project-architecture-integration/resources/hybrid-architecture-guide.md
+# 1. 基礎知識を理解
+cat references/basics.md
+cat references/hybrid-architecture-guide.md
+
+# 2. アーキテクチャ分析 Task を起動（詳細は agents/architecture-analysis.md）
+# Task内で配置先と依存関係を決定
+
+# 3. 準拠性チェックを実行
+node scripts/check-architecture-compliance.mjs --path <target-files>
+
+# 4. 使用記録を保存
+node scripts/log_usage.mjs --result success --phase integration
 ```
 
-### プロジェクト設計仕様書の参照
+## 学習パス
 
 ```bash
-# マスターシステム設計仕様書を読み取る
-cat docs/00-requirements/master_system_design.md
+# 初心者向け
+cat references/basics.md              # 基本概念
+cat references/hybrid-architecture-guide.md  # 構造理解
 
-# 特定セクションの抽出（例: アーキテクチャ設計詳細）
-grep -A 50 "アーキテクチャ設計詳細" docs/00-requirements/master_system_design.md
+# 中級者向け
+cat references/patterns.md            # 実装パターン
+node scripts/check-architecture-compliance.mjs --help  # 検証ツール
+
+# 上級者向け
+cat references/Level3_advanced.md     # 複雑なパターン適用
+
+# 専門家向け
+cat references/Level4_expert.md       # カスタムパターン設計
 ```
 
-### 他のスキルのスクリプトを活用
+## 依存関係ルールまとめ
 
-```bash
-# エージェント構造検証
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+### ✅ 許可される依存
 
-# アーキテクチャパターン検証
-node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+- **features → shared**: ビジネスロジックが汎用コンポーネントを使用
+- **features → features（同一フィーチャー内）**: フィーチャー内の内部依存
+- **pages → features**: ページが機能を使用
+- **pages → shared**: ページが汎用コンポーネントを使用
 
-# ドキュメント構造分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <doc_directory>
+### ❌ 禁止される依存
 
-# 循環依存チェック
-node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs
-```
+- **shared → features**: 循環依存を引き起こす
+- **features → features（異なるフィーチャー間）**: 境界を破壊する
 
-## メトリクス
-
-### アーキテクチャ準拠率
-
-**目標**: 100%（すべてのエージェントがアーキテクチャに準拠）
-
-### 原則適用率
-
-**評価基準**:
-
-- データベース原則: 適用すべきエージェントで100%
-- API設計原則: 適用すべきエージェントで100%
-- テスト戦略: 適用すべきエージェントで100%
+**解決策**: 共通ロジックをshared/に移動し、依存方向を一方向に保つ
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                          |
-| ---------- | ---------- | ------------------------------------------------- |
-| 1.0.0      | 2025-11-24 | 初版作成 - プロジェクト固有設計原則フレームワーク |
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- プロジェクトアーキテクチャ原則の適用
-- データベース、API、テスト、デプロイの原則統合
-- アーキテクチャ準拠の検証
-
-### このスキルが行わないこと
-
-- エージェントの実際の実装
-- 具体的なコード生成
-- プロジェクト固有のビジネスロジック実装
-
-### 推奨される使用フロー
-
-1. master_system_design.md を参照
-2. エージェントの役割に応じた原則を適用
-3. アーキテクチャ準拠を検証
-
-### 参考文献
-
-- **master_system_design.md**: プロジェクトの設計仕様書（必須参照）
-  - セクション2: 非機能要件
-  - セクション4: ディレクトリ構造
-  - セクション5: アーキテクチャ設計詳細
-  - セクション5.2: データベース設計原則
-  - セクション7: エラーハンドリング仕様
-  - セクション8: REST API設計原則
-  - セクション12: デプロイメント
+| Version | Date       | Changes                                              |
+| ------- | ---------- | ---------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、SKILL.md簡潔化、知識外部化 |
+| 2.0.0   | 2025-12-31 | Anchors/Trigger統合、agents/追加、description更新    |
+| 1.0.0   | 2025-12-24 | 初版作成                                             |

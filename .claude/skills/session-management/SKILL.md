@@ -1,312 +1,141 @@
 ---
 name: session-management
 description: |
-  セッション管理とトークンライフサイクル戦略の実装パターン。
+  Claude Codeセッションの状態管理、コンテキスト保持、会話履歴の効率的な運用を支援するスキル。
+  長時間セッションでのコンテキスト消費最適化、セッション再開時の状態復元、
+  マルチタスク切り替え時の状態保存・復元を提供する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer (Hunt & Thomas) / 適用: 状態管理の原則 / 目的: 効率的なセッション運用
+  • Domain-Driven Design (Evans) / 適用: コンテキスト境界 / 目的: 適切な状態分離
+  • Clean Architecture (Martin) / 適用: 依存関係管理 / 目的: セッション間の独立性確保
 
-  - `.claude/skills/session-management/resources/cookie-attributes-guide.md`: Cookie Attributes Guideリソース
-  - `.claude/skills/session-management/resources/session-strategy-comparison.md`: Session Strategy Comparisonリソース
-
-  - `.claude/skills/session-management/templates/database-session-template.ts`: Database Sessionテンプレート
-  - `.claude/skills/session-management/templates/jwt-session-template.ts`: Jwt Sessionテンプレート
-
-  - `.claude/skills/session-management/scripts/validate-session-config.mjs`: Validate Session Configスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when managing Claude Code sessions, preserving context across interactions, or optimizing token usage in long conversations.
+  session management, context preservation, token optimization, session state, conversation history
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - TodoWrite
 ---
 
 # Session Management
 
-## スキル概要
+## 概要
 
-このスキルは、セッション管理とトークンライフサイクルの実装戦略を提供します。
+Claude Codeセッションの効率的な状態管理を支援するスキル。
+コンテキスト保持、トークン消費最適化、セッション再開・切り替えをスムーズに行う。
 
-**コアドメイン**:
+---
 
-- セッション戦略の選択（JWT vs. Database）
-- トークンライフサイクル管理
-- セッションセキュリティ対策
-- Cookie 属性の適切な設定
+## ワークフロー
 
-**専門家の思想**:
-
-- **OWASP**: セッション管理のセキュリティベストプラクティス
-- **核心概念**: セキュアで効率的、ユーザビリティを損なわないセッション管理
-
-## セッション戦略の比較
-
-### 1. JWT-based Session（ステートレス）
-
-**メリット/デメリット**:
-
-- ✅ スケーラビリティ、分散システム、パフォーマンス
-- ❌ 即座無効化困難、動的権限変更に弱い
-
-**適用**: マイクロサービス、高トラフィック、サーバーレス
-
-### 2. Database-based Session（ステートフル）
-
-**メリット/デメリット**:
-
-- ✅ 即座無効化、動的権限変更、セキュリティ
-- ❌ データベース負荷、スケーラビリティ課題
-
-**適用**: 高セキュリティ、即座ログアウト必須、詳細追跡
-
-### 3. Hybrid Session
-
-**戦略**: JWT（基本情報）+ Database（詳細/検証）
-**適用**: 両方のメリットが必要な場合
-
-## トークンライフサイクル管理
-
-### 有効期限戦略
-
-| アプリタイプ          | アクセストークン | リフレッシュトークン |
-| --------------------- | ---------------- | -------------------- |
-| B2B（高セキュリティ） | 15 分            | 7 日                 |
-| B2C（一般）           | 1 時間           | 30 日                |
-| 内部ツール            | 8 時間           | 90 日                |
-
-### トークン更新メカニズム
-
-**自動更新**: 有効期限 5 分前に自動リフレッシュ
-**ローテーション**: リフレッシュトークン使用時に新トークン発行
-
-詳細な実装パターンは以下を参照:
-
-```bash
-cat .claude/skills/session-management/templates/jwt-session-template.ts
+```
+analyze-session → plan-context → optimize-tokens → restore-state
+                                        ↓
+                  summarize-progress ← save-checkpoint
 ```
 
-## セッションセキュリティ対策
+### Task 1: セッション分析（analyze-session）
 
-### 1. Session Fixation（セッション固定）対策
+現在のセッション状態とコンテキスト使用状況を分析する。
 
-**対策**: ログイン成功時にセッション ID 再生成
+**Task**: `agents/analyze-session.md` を参照
 
-### 2. Session Hijacking（セッションハイジャック）対策
+### Task 2: コンテキスト計画（plan-context）
 
-**対策**:
+効率的なコンテキスト配分を計画する。
 
-- Cookie 属性（HttpOnly、Secure、SameSite）
-- セッションタイムアウト（アイドル 30 分、絶対 8 時間）
-- デバイス/IP 変更検出
+**Task**: `agents/plan-context.md` を参照
 
-### 3. Concurrent Session Control（同時セッション制御）
+### Task 3: トークン最適化（optimize-tokens）
 
-**戦略**: Single/Multiple/Selective Invalidation
+トークン消費を最適化し、長時間セッションを可能にする。
 
-詳細な実装パターンは以下を参照:
+**Task**: `agents/optimize-tokens.md` を参照
 
-```bash
-cat .claude/skills/session-management/templates/database-session-template.ts
-cat .claude/skills/session-management/resources/session-strategy-comparison.md
-```
+### Task 4: チェックポイント保存（save-checkpoint）
 
-## Cookie 属性の詳細設定
+セッション状態をチェックポイントとして保存する。
 
-### 必須属性
+**Task**: `agents/save-checkpoint.md` を参照
 
-**HttpOnly**: JavaScript アクセス禁止（XSS 対策）
-**Secure**: HTTPS 通信のみ（中間者攻撃対策）
-**SameSite**: Strict/Lax/None（CSRF 対策）
+### Task 5: 状態復元（restore-state）
 
-### 推奨設定
+保存されたチェックポイントからセッション状態を復元する。
 
-```typescript
-{
-  httpOnly: true,
-  secure: true, // 本番環境
-  sameSite: 'lax', // 一般的アプリ
-  maxAge: 3600, // 秒単位
-  path: '/', // 必要最小限のパス
-}
-```
+**Task**: `agents/restore-state.md` を参照
 
-詳細な Cookie 属性ガイドは以下を参照:
+### Task 6: 進捗サマリー（summarize-progress）
 
-```bash
-cat .claude/skills/session-management/resources/cookie-attributes-guide.md
-```
+セッションの進捗を要約し、次のアクションを明確にする。
 
-## トークン無効化
+**Task**: `agents/summarize-progress.md` を参照
 
-### ログアウト時の無効化
+---
 
-**処理フロー**:
+## Task仕様（ナビゲーション）
 
-1. クライアント: サーバーに無効化リクエスト
-2. サーバー: セッション無効化（Database 戦略）
-3. サーバー: Cookie クリア（Max-Age=0）
-4. クライアント: ローカルストレージクリア、リダイレクト
+| Task              | 責務                 | 入力               | 出力                 |
+| ----------------- | -------------------- | ------------------ | -------------------- |
+| analyze-session   | セッション状態分析   | 現在の会話コンテキスト | 状態分析レポート     |
+| plan-context      | コンテキスト配分計画 | 状態分析レポート   | コンテキスト計画書   |
+| optimize-tokens   | トークン最適化       | コンテキスト計画書 | 最適化済みコンテキスト |
+| save-checkpoint   | チェックポイント保存 | セッション状態     | チェックポイントファイル |
+| restore-state     | 状態復元             | チェックポイント   | 復元されたコンテキスト |
+| summarize-progress| 進捗サマリー         | セッション履歴     | 進捗レポート         |
 
-### セキュリティインシデント時の一括無効化
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+**注記**: 1 Task = 1 責務。必要なTaskのみ実行する。
 
-**処理**: すべてのセッション + リフレッシュトークン無効化 + ユーザー通知
-
-詳細な実装パターンは以下を参照:
-
-```bash
-cat .claude/skills/session-management/templates/database-session-template.ts
-```
-
-## リソース参照
-
-### セッション戦略比較
-
-```bash
-cat .claude/skills/session-management/resources/session-strategy-comparison.md
-```
-
-### Cookie 属性ガイド
-
-```bash
-cat .claude/skills/session-management/resources/cookie-attributes-guide.md
-```
-
-### トークン更新パターン
-
-```bash
-cat .claude/skills/session-management/resources/token-refresh-patterns.md
-```
-
-### セキュリティ対策詳細
-
-```bash
-cat .claude/skills/session-management/resources/session-security-measures.md
-```
-
-## スクリプト実行
-
-### セッション設定検証
-
-```bash
-node .claude/skills/session-management/scripts/validate-session-config.mjs <config-file>
-```
-
-## テンプレート参照
-
-### JWT セッション実装
-
-```bash
-cat .claude/skills/session-management/templates/jwt-session-template.ts
-```
-
-### Database セッション実装
-
-```bash
-cat .claude/skills/session-management/templates/database-session-template.ts
-```
-
-## 実装ワークフロー
-
-### Phase 1: 戦略選択
-
-1. 非機能要件分析（スケーラビリティ、セキュリティ、コスト）
-2. JWT vs. Database vs. Hybrid の評価
-3. トレードオフ分析と選択
-4. 選択理由の文書化
-
-### Phase 2: 有効期限設計
-
-1. リスク評価（データ機密性、ユーザータイプ）
-2. アクセストークン有効期限設定
-3. リフレッシュトークン有効期限設定
-4. アイドルタイムアウト/絶対タイムアウト設計
-
-### Phase 3: セキュリティ強化
-
-1. Cookie 属性設定（HttpOnly、Secure、SameSite）
-2. セッション固定対策実装
-3. セッションハイジャック対策実装
-4. 同時セッション制御実装（必要に応じて）
-
-### Phase 4: 無効化メカニズム
-
-1. ログアウト処理実装（クライアント・サーバー両側）
-2. トークンローテーション実装
-3. 一括無効化機能実装
-4. セキュリティインシデント対応手順定義
-
-### Phase 5: モニタリング
-
-1. セッションメトリクス収集（アクティブセッション数、平均時間）
-2. 異常検出パターン実装（IP 変更、UA 変更、並行ログイン）
-3. セキュリティイベントログ実装
-4. アラート設定
-
-## 判断基準
-
-### 戦略選択の判断
-
-- [ ] 非機能要件（スケーラビリティ、セキュリティ、コスト）は明確か？
-- [ ] 即座無効化の必要性は評価されているか？
-- [ ] データベース負荷は許容範囲か？
-- [ ] トレードオフは文書化されているか？
-
-### セキュリティの判断
-
-- [ ] Cookie 属性（HttpOnly、Secure、SameSite）は適切か？
-- [ ] セッション固定対策は実装されているか？
-- [ ] セッションハイジャック対策は多層化されているか？
-- [ ] 異常検出パターンは実装されているか？
-
-### 運用の判断
-
-- [ ] セッションメトリクスは収集されているか？
-- [ ] セキュリティイベントはログに記録されているか？
-- [ ] インシデント対応手順は定義されているか？
-- [ ] 一括無効化機能は実装されているか？
+---
 
 ## ベストプラクティス
 
-### セッション戦略選択
+### すべきこと
 
-1. **デフォルト**: JWT-based（スケーラビリティ重視）
-2. **高セキュリティ**: Database-based（即座無効化必須）
-3. **ハイブリッド**: 両方の利点を活用（複雑性増）
+| 推奨事項                           | 理由                             |
+| ---------------------------------- | -------------------------------- |
+| 重要な状態は明示的にメモを残す     | セッション再開時の復元が容易     |
+| TodoWriteで進捗を追跡する          | 中断時の再開が容易               |
+| 不要なコンテキストは早めに削除する | トークン消費を抑制               |
+| 定期的にチェックポイントを作成する | 長時間作業での安全性確保         |
+| セッション終了時に進捗を要約する   | 次回セッションの効率向上         |
 
-### トークン有効期限
+### 避けるべきこと
 
-1. **アクセストークン**: 短命（15 分-1 時間）
-2. **リフレッシュトークン**: 長命（30 日-90 日）
-3. **バランス**: セキュリティとユーザビリティ
+| 禁止事項                           | 問題点                           |
+| ---------------------------------- | -------------------------------- |
+| 大量のファイルを一度に読み込む     | コンテキスト枯渇                 |
+| 進捗メモなしで長時間作業する       | 再開困難                         |
+| 複数の無関係なタスクを同時進行する | 状態管理の複雑化                 |
+| チェックポイントなしで複雑な変更   | ロールバック不能                 |
 
-### Cookie 設定
+---
 
-1. **HttpOnly**: 常に true（XSS 対策）
-2. **Secure**: 本番環境で true（中間者攻撃対策）
-3. **SameSite**: Lax/Strict（CSRF 対策）
+## リソース参照
 
-### セキュリティ
+### scripts/（決定論的処理）
 
-1. **多層防御**: Cookie + Session + Token
-2. **定期検証**: 異常パターン検出
-3. **即座対応**: インシデント時の一括無効化
+| スクリプト                  | 用途                     | 使用例                                           |
+| --------------------------- | ------------------------ | ------------------------------------------------ |
+| `log_usage.mjs`             | フィードバック記録       | `node scripts/log_usage.mjs --result success`    |
 
-## 関連スキル連携
+### references/（詳細知識）
 
-### oauth2-flows との連携
+| リソース               | パス                                                                 | 読込条件                       |
+| ---------------------- | -------------------------------------------------------------------- | ------------------------------ |
+| コンテキスト管理基礎   | [references/context-management.md](references/context-management.md) | コンテキスト管理の詳細が必要時 |
+| トークン最適化手法     | [references/token-optimization.md](references/token-optimization.md) | トークン最適化の詳細が必要時   |
+| チェックポイント設計   | [references/checkpoint-design.md](references/checkpoint-design.md)   | チェックポイント設計の詳細が必要時 |
 
-- OAuth 2.0 で取得したトークンをセッションに統合
-- リフレッシュフローとトークン更新の連携
+---
 
-### nextauth-patterns との連携
+## 変更履歴
 
-- NextAuth.js のセッション戦略設定
-- セッションコールバックでのカスタマイズ
-
-### security-headers との連携
-
-- Cookie 属性と CSRF 対策の多層化
-- セキュリティヘッダーとの組み合わせ
-
-## バージョン履歴
-
-| バージョン | 日付       | 変更内容                                              |
-| ---------- | ---------- | ----------------------------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版リリース - セッション管理とトークンライフサイクル |
+| Version | Date       | Changes                                |
+| ------- | ---------- | -------------------------------------- |
+| 1.0.0   | 2026-01-02 | 18-skills.md仕様準拠で新規作成         |

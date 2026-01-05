@@ -6,7 +6,7 @@
 | ------------ | ------------------------------------- |
 | テスト対象   | API Key Management機能                |
 | テスト実施日 | 2025-12-10                            |
-| テスト実施者 | @frontend-tester                      |
+| テスト実施者 | .claude/agents/frontend-tester.md                      |
 | テスト環境   | Electron Desktop App (localhost:5174) |
 | 総合結果     | **PASS** (7/7 テストケース)           |
 
@@ -213,5 +213,5 @@ API Key Management機能は以下の品質を満たしています:
 
 | 役割         | 承認者           | 日付       |
 | ------------ | ---------------- | ---------- |
-| テスト実施者 | @frontend-tester | 2025-12-10 |
-| レビュー担当 | @code-quality    | 2025-12-10 |
+| テスト実施者 | .claude/agents/frontend-tester.md | 2025-12-10 |
+| レビュー担当 | .claude/agents/code-quality.md    | 2025-12-10 |

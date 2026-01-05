@@ -1,0 +1,45 @@
+# ジョブ出力テンプレート
+# このテンプレートをベースにワークフローを構築してください
+
+name: ジョブ出力の基本パターン
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # ジョブ1: データを生成して出力
+  generate-data:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+      timestamp: ${{ steps.timestamp.outputs.value }}
+    steps:
+      - name: バージョン生成
+        id: version
+        run: echo "value=1.0.0" >> $GITHUB_OUTPUT
+
+      - name: タイムスタンプ生成
+        id: timestamp
+        run: echo "value=$(date -Iseconds)" >> $GITHUB_OUTPUT
+
+  # ジョブ2: 出力を受け取って使用
+  use-data:
+    runs-on: ubuntu-latest
+    needs: generate-data
+    steps:
+      - name: 受信したデータを表示
+        run: |
+          echo "バージョン: ${{ needs.generate-data.outputs.version }}"
+          echo "タイムスタンプ: ${{ needs.generate-data.outputs.timestamp }}"
+
+      - name: 条件分岐での使用例
+        if: needs.generate-data.outputs.version != ''
+        run: echo "バージョンが設定されています"
+
+# ベストプラクティス:
+# 1. 出力名はケバブケースを使用（例: build-version）
+# 2. ステップIDを必ず設定（id: step-name）
+# 3. GITHUB_OUTPUT を使用（set-output は非推奨）
+# 4. needs で依存関係を明示

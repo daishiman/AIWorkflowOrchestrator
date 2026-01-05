@@ -1,610 +1,125 @@
 ---
 name: command-advanced-patterns
 description: |
-  高度な実装パターンを専門とするスキル。
-  パイプラインパターン（複数コマンド連鎖）、メタコマンドパターン（コマンド自身の管理）、
-  インタラクティブパターン（ユーザー確認統合）の設計と実装を提供します。
+  高度なコマンド設計パターンを整理し、パイプライン/メタコマンド/インタラクティブ設計を支援するスキル。
+  パターン選定、テンプレート適用、検証手順を一貫して整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: 実践パターン選定 / 目的: 再現性のある設計
+  • Design Patterns (GoF) / 適用: パターン適用判断 / 目的: 拡張性の確保
+  • User-Centered Design / 適用: インタラクティブ設計 / 目的: 誤操作の抑制
 
-  - `.claude/skills/command-advanced-patterns/resources/pipeline-pattern-guide.md`: パイプラインパターン詳細ガイド
-  - `.claude/skills/command-advanced-patterns/resources/interactive-pattern-guide.md`: インタラクティブパターン詳細ガイド
-  - `.claude/skills/command-advanced-patterns/resources/meta-command-pattern-guide.md`: メタコマンドパターン詳細ガイド
-  - `.claude/skills/command-advanced-patterns/templates/pipeline-template.md`: パイプラインコマンドテンプレート
-  - `.claude/skills/command-advanced-patterns/templates/interactive-template.md`: インタラクティブコマンドテンプレート
-  - `.claude/skills/command-advanced-patterns/templates/meta-command-template.md`: メタコマンドテンプレート
-  - `.claude/skills/command-advanced-patterns/scripts/validate-advanced.mjs`: 高度パターン検証スクリプト
-
-  使用タイミング:
-  - 複数コマンドを連鎖させたい時
-  - コマンドを管理するメタコマンドを作成する時
-  - ユーザー確認を統合したインタラクティブなコマンドを作成する時
-
-  Use proactively when chaining multiple commands, creating meta-commands,
-  or building interactive commands with user confirmation.
-version: 1.0.0
+  Trigger:
+  Use when designing pipeline commands, meta-commands, or interactive command flows.
+  command patterns, pipeline command, meta command, interactive command
 ---
-
-# Command Advanced Patterns
+# command-advanced-patterns
 
 ## 概要
 
-このスキルは、Claude Codeコマンドの高度な実装パターンを提供します。
-パイプラインパターン、メタコマンドパターン、インタラクティブパターンにより、
-複雑なワークフローや自動化を実現できます。
+高度なコマンド設計パターンを整理し、複合的な起動や対話フローを設計する。
 
-**主要な価値**:
+## ワークフロー
 
-- 複数コマンドの効率的な連鎖
-- コマンド管理の自動化
-- ユーザーインタラクションの統合
-- 高度なワークフローの実装
+### Phase 1: 要件整理
 
-**対象ユーザー**:
+**目的**: 適用パターンと対象範囲を明確化する。
 
-- コマンドを作成するエージェント（@command-arch）
-- 複雑なワークフローを自動化したい開発者
-- 高度なコマンドパターンを学びたいチーム
+**アクション**:
 
-## リソース構造
+1. 対象コマンドと目的を整理する。
+2. 適用パターン（パイプライン/メタ/インタラクティブ）を選定する。
+3. 参照ガイドとテンプレートを確認する。
 
-```
-command-advanced-patterns/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── pipeline-pattern-guide.md              # パイプラインパターン詳細
-│   ├── meta-command-pattern-guide.md          # メタコマンドパターン詳細
-│   └── interactive-pattern-guide.md           # インタラクティブパターン詳細
-└── templates/
-    ├── pipeline-template.md                   # パイプラインテンプレート
-    ├── meta-command-template.md               # メタコマンドテンプレート
-    └── interactive-template.md                # インタラクティブテンプレート
-```
+**Task**: `agents/analyze-advanced-requirements.md` を参照
 
-### リソース種別
+### Phase 2: パターン設計
 
-- **パターンガイド** (`resources/*-guide.md`): 各パターンの詳細仕様と実例
-- **テンプレート** (`templates/`): パターン別のテンプレート
+**目的**: パターン設計と実装方針を具体化する。
 
-## いつ使うか
+**アクション**:
 
-### シナリオ1: 複数コマンド連鎖
+1. 選定パターンのフローと責務を定義する。
+2. テンプレートを使い設計を具体化する。
+3. 例外ケースとガードレールを整理する。
 
-**状況**: 複数のコマンドを順番に実行したい
+**Task**: `agents/design-advanced-patterns.md` を参照
 
-**適用条件**:
+### Phase 3: 検証と記録
 
-- [ ] 複数ステップのワークフローがある
-- [ ] 各ステップが独立したコマンドになっている
-- [ ] ステップ間の依存関係がある
+**目的**: 実装方針を検証し、記録を残す。
 
-**期待される成果**: パイプラインコマンド
+**アクション**:
 
-### シナリオ2: コマンド管理の自動化
+1. 検証スクリプトでパターン整合を確認する。
+2. レビュー結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
-**状況**: コマンド自身を管理するコマンドを作成したい
+**Task**: `agents/validate-advanced-patterns.md` を参照
 
-**適用条件**:
+## Task仕様ナビ
 
-- [ ] コマンドの一覧表示が必要
-- [ ] コマンドの検索機能が必要
-- [ ] コマンドのメタデータ管理が必要
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-advanced-requirements | Phase 1開始時 | 対象コマンド/目的 | 要件整理メモ、適用パターン一覧 |
+| design-advanced-patterns | Phase 2開始時 | 要件整理メモ | パターン設計案、テンプレ適用案 |
+| validate-advanced-patterns | Phase 3開始時 | パターン設計案 | 検証レポート、改善方針 |
 
-**期待される成果**: メタコマンド
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-### シナリオ3: ユーザー確認の統合
+## ベストプラクティス
 
-**状況**: 危険な操作の前にユーザー確認を求めたい
+### すべきこと
 
-**適用条件**:
+| 推奨事項 | 理由 |
+| --- | --- |
+| パターンを明確に選定する | 実装ブレを防ぐため |
+| テンプレートで設計を統一する | 変更容易性が高まるため |
+| 例外ケースを明記する | 安定運用につながるため |
 
-- [ ] 破壊的な操作を行う
-- [ ] ユーザーの明示的な承認が必要
-- [ ] 条件付き実行が必要
+### 避けるべきこと
 
-**期待される成果**: インタラクティブコマンド
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 複数パターンを無計画に混在させる | 挙動が不明確になる |
+| 検証なしで実装する | 不具合が残る |
+| 記録を残さない | 改善が続かない |
 
-## パターン1: パイプラインパターン
+## リソース参照
 
-### 概要
+### scripts/（決定論的処理）
 
-複数のコマンドを連鎖させ、統一されたワークフローを実現するパターン。
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-advanced.mjs` | 高度パターン検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-### 用途
+### references/（詳細知識）
 
-- フル機能開発パイプライン
-- CI/CDパイプライン
-- 複雑なワークフローの自動化
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | パターン選定時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| パイプライン | [references/pipeline-pattern-guide.md](references/pipeline-pattern-guide.md) | パイプライン設計時 |
+| メタコマンド | [references/meta-command-pattern-guide.md](references/meta-command-pattern-guide.md) | メタ設計時 |
+| インタラクティブ | [references/interactive-pattern-guide.md](references/interactive-pattern-guide.md) | 対話設計時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-### 実装例
+### assets/（テンプレート・素材）
 
-```markdown
----
-description: Full feature development pipeline
----
+| アセット | 用途 |
+| --- | --- |
+| `assets/pipeline-template.md` | パイプラインテンプレート |
+| `assets/meta-command-template.md` | メタコマンドテンプレート |
+| `assets/interactive-template.md` | インタラクティブテンプレート |
 
-# Feature Pipeline
+### 運用ファイル
 
-Feature name: $ARGUMENTS
-
-## Phase 1: Planning
-
-Execute `/plan-feature $ARGUMENTS`
-Wait for completion.
-
-## Phase 2: Implementation
-
-Execute `/implement-feature $ARGUMENTS`
-Wait for completion.
-
-## Phase 3: Testing
-
-Execute `/test-feature $ARGUMENTS`
-Wait for completion.
-
-## Phase 4: Review
-
-Execute `/review-feature $ARGUMENTS`
-Wait for completion.
-
-## Phase 5: Deployment
-
-Execute `/deploy-feature $ARGUMENTS staging`
-If successful, ask for production deployment approval.
-
-## Summary
-
-Provide summary of all phases:
-
-- Planning results
-- Implementation changes
-- Test results
-- Review feedback
-- Deployment status
-```
-
-### エラーハンドリング
-
-```markdown
-## Error Handling
-
-If any phase fails:
-
-1. Stop the pipeline
-2. Show which phase failed
-3. Show error details
-4. Suggest remediation steps
-5. Offer rollback if applicable
-
-Example:
-```
-
-❌ Pipeline failed at Phase 3: Testing
-
-Error: 5 tests failed
-
-- test/auth.test.js: 3 failures
-- test/api.test.js: 2 failures
-
-Suggested actions:
-
-1. Fix failing tests
-2. Re-run pipeline: /feature-pipeline $ARGUMENTS
-
-Rollback available:
-
-- /rollback-feature $ARGUMENTS
-
-```
-
-```
-
-## パターン2: メタコマンドパターン
-
-### 概要
-
-コマンド自身を管理・操作するコマンドのパターン。
-
-### 用途
-
-- コマンド一覧表示
-- コマンド検索
-- コマンド実行履歴管理
-
-### 実装例1: コマンド一覧
-
-````markdown
----
-description: List all available commands with descriptions
----
-
-# Command List
-
-## Step 1: Scan Commands
-
-List all command files:
-
-```bash
-find .claude/commands -name "*.md" -type f
-find ~/.claude/commands -name "*.md" -type f 2>/dev/null
-```
-````
-
-## Step 2: Extract Metadata
-
-For each command file:
-
-- Read description from frontmatter
-- Extract argument-hint if present
-- Note file location
-
-## Step 3: Display
-
-Format as table:
-
-```
-| Command | Description | Arguments |
-|---------|-------------|-----------|
-| /commit | Create git commit | [message] |
-| /test   | Run tests | [pattern] |
-...
-```
-
-Group by namespace:
-
-- project:\* - Project commands
-- user:\* - User commands
-
-````
-
-### 実装例2: コマンド検索
-
-```markdown
----
-description: Search commands by keyword
----
-
-# Command Search
-
-Search keyword: $ARGUMENTS
-
-## Step 1: Search
-Search in command descriptions:
-```bash
-grep -r "description:" .claude/commands --include="*.md" | \
-grep -i "$ARGUMENTS"
-````
-
-## Step 2: Rank Results
-
-Rank by relevance:
-
-- Exact match in description: High
-- Partial match in description: Medium
-- Match in command name: Low
-
-## Step 3: Display
-
-Show ranked results with usage examples
-
-````
-
-### 実装例3: コマンド履歴
-
-```markdown
----
-description: Show command execution history
----
-
-# Command History
-
-## Step 1: Load History
-Read command execution log (if available)
-
-## Step 2: Format Display
-Show recent commands:
-````
-
-Recent Commands:
-
-1. /commit "feat: add login" (2 mins ago)
-2. /test unit (5 mins ago)
-3. /deploy staging (10 mins ago)
-
-```
-
-## Step 3: Quick Re-run
-Offer to re-run recent commands:
-"Re-run a command? Enter number or 'n' to cancel:"
-```
-
-## パターン3: インタラクティブパターン
-
-### 概要
-
-ユーザーとの対話を統合し、動的に実行内容を決定するパターン。
-
-### 用途
-
-- 危険な操作の確認
-- 動的な選択肢の提供
-- ウィザード形式のワークフロー
-
-### 実装例1: 確認付きデプロイ
-
-````markdown
----
-description: Interactive database migration
-disable-model-invocation: true
----
-
-# Database Migration
-
-Migration file: $ARGUMENTS
-
-## Step 1: Preview Changes
-
-Show the migration SQL:
-
-```bash
-cat migrations/$ARGUMENTS
-```
-````
-
-Display:
-
-- Number of tables affected
-- Number of rows affected (estimate)
-- Potential data loss warnings
-
-## Step 2: Dry Run
-
-Execute in transaction (rollback):
-
-```sql
-BEGIN;
-\i migrations/$ARGUMENTS
-ROLLBACK;
-```
-
-Show dry run results:
-
-- Changes that would be applied
-- No errors detected
-
-## Step 3: User Confirmation
-
-⚠️ **This will modify the production database.**
-
-Ask user: "Proceed with migration? (yes/no)"
-
-If "yes":
-→ Proceed to Step 4
-If "no":
-→ Cancel migration
-Else:
-→ Ask again
-
-## Step 4: Execute (if confirmed)
-
-```sql
-BEGIN;
-\i migrations/$ARGUMENTS
-COMMIT;
-```
-
-## Step 5: Verification
-
-Verify migration succeeded:
-
-- Check migration status
-- Verify expected changes
-- Run smoke tests
-
-````
-
-### 実装例2: ウィザード形式
-
-```markdown
----
-description: Interactive project setup wizard
----
-
-# Project Setup Wizard
-
-## Step 1: Welcome
-Display:
-````
-
-🚀 Project Setup Wizard
-This wizard will guide you through setting up a new project.
-
-```
-
-## Step 2: Project Type
-Ask: "What type of project?"
-Options:
-1. Web Application (React + TypeScript)
-2. API Server (Node.js + Express)
-3. Full Stack (Next.js)
-4. CLI Tool (TypeScript)
-
-Wait for user selection: $PROJECT_TYPE
-
-## Step 3: Configuration
-Based on $PROJECT_TYPE, ask:
-- Project name
-- Package manager (pnpm/yarn/pnpm)
-- Testing framework (Jest/Vitest/None)
-- Linter (ESLint/Biome/None)
-
-## Step 4: Confirmation
-Show summary:
-```
-
-Project Configuration:
-
-- Type: $PROJECT_TYPE
-- Name: $PROJECT_NAME
-- Package Manager: $PKG_MANAGER
-- Testing: $TEST_FRAMEWORK
-- Linter: $LINTER
-
-Proceed? (yes/no)
-
-```
-
-## Step 5: Execute Setup
-If confirmed:
-1. Create project structure
-2. Install dependencies
-3. Configure tools
-4. Create initial files
-5. Initialize git
-
-## Step 6: Next Steps
-Display next steps:
-```
-
-✅ Project setup complete!
-
-Next steps:
-
-1. cd $PROJECT_NAME
-2. $PKG_MANAGER run dev
-
-Commands available:
-
-- /dev - Start development server
-- /test - Run tests
-- /build - Build for production
-
-```
-
-```
-
-## パターンの組み合わせ
-
-### パイプライン + インタラクティブ
-
-```markdown
-## Phase 1: Planning
-
-Execute planning phase
-
-## Phase 2: Confirmation
-
-Ask user: "Review plan and proceed to implementation? (yes/no)"
-
-If "no":
-
-- Ask: "What changes are needed?"
-- Update plan
-- Ask for confirmation again
-
-## Phase 3: Implementation
-
-If confirmed, proceed with implementation pipeline
-```
-
-### メタコマンド + パイプライン
-
-```markdown
-## Step 1: Analyze Workflow
-
-Detect which commands should be chained
-
-## Step 2: Suggest Pipeline
-
-Show suggested pipeline:
-```
-
-Detected workflow:
-
-1. /test
-2. /lint
-3. /build
-4. /deploy
-
-Create pipeline command? (yes/no)
-
-```
-
-## Step 3: Generate Pipeline
-If confirmed, create new pipeline command file
-```
-
-## 詳細リソースの参照
-
-### パイプラインパターン詳細
-
-詳細は `resources/pipeline-pattern-guide.md` を参照
-
-### メタコマンドパターン詳細
-
-詳細は `resources/meta-command-pattern-guide.md` を参照
-
-### インタラクティブパターン詳細
-
-詳細は `resources/interactive-pattern-guide.md` を参照
-
-### テンプレート
-
-- パイプライン: `templates/pipeline-template.md`
-- メタコマンド: `templates/meta-command-template.md`
-- インタラクティブ: `templates/interactive-template.md`
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# パイプラインパターン詳細
-cat .claude/skills/command-advanced-patterns/resources/pipeline-pattern-guide.md
-
-# メタコマンドパターン詳細
-cat .claude/skills/command-advanced-patterns/resources/meta-command-pattern-guide.md
-
-# インタラクティブパターン詳細
-cat .claude/skills/command-advanced-patterns/resources/interactive-pattern-guide.md
-```
-
-### テンプレート参照
-
-```bash
-# パイプラインテンプレート
-cat .claude/skills/command-advanced-patterns/templates/pipeline-template.md
-
-# メタコマンドテンプレート
-cat .claude/skills/command-advanced-patterns/templates/meta-command-template.md
-
-# インタラクティブテンプレート
-cat .claude/skills/command-advanced-patterns/templates/interactive-template.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# 知識ドキュメントの品質検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-advanced-patterns/resources/pipeline-pattern-guide.md
-
-# トークン見積もり
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-advanced-patterns/SKILL.md
-
-# ドキュメント構造分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-advanced-patterns
-```
-
-## 関連スキル
-
-- `.claude/skills/command-basic-patterns/SKILL.md` - 基本パターンの理解
-- `.claude/skills/command-error-handling/SKILL.md` - パイプラインでのエラーハンドリング
-- `.claude/skills/command-security-design/SKILL.md` - インタラクティブコマンドのセキュリティ
-
-## 更新履歴
-
-- v1.0.0 (2025-11-24): 初版作成
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

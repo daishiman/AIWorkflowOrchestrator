@@ -1,0 +1,79 @@
+{
+  "skillName": "workflow-templates",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
+  "levels": {
+    "beginner": {
+      "description": "基本的なテンプレート選択と適用",
+      "criteria": [
+        "プロジェクトタイプに応じたテンプレートを選択できる",
+        "CIテンプレートの基本構造を理解している",
+        "キャッシュ設定の基本を理解している"
+      ]
+    },
+    "intermediate": {
+      "description": "カスタマイズと複数環境対応",
+      "criteria": [
+        "テンプレートをプロジェクト要件に合わせてカスタマイズできる",
+        "CI/CDパイプラインを構築できる",
+        "マルチ環境デプロイを設定できる"
+      ]
+    },
+    "advanced": {
+      "description": "最適化と高度なパターン適用",
+      "criteria": [
+        "キャッシュ戦略を最適化できる",
+        "並列実行とマトリクスビルドを活用できる",
+        "条件付き実行を適切に設計できる"
+      ]
+    },
+    "expert": {
+      "description": "組織標準テンプレート設計",
+      "criteria": [
+        "組織全体の標準テンプレートを設計できる",
+        "再利用可能なワークフローを構築できる",
+        "パフォーマンス分析に基づく継続的改善ができる"
+      ]
+    }
+  },
+  "metrics": {
+    "templateCoverage": {
+      "target": ">= 90%",
+      "description": "プロジェクトタイプのテンプレートカバー率"
+    },
+    "cacheHitRate": {
+      "target": ">= 80%",
+      "description": "キャッシュヒット率"
+    },
+    "pipelineSuccessRate": {
+      "target": ">= 95%",
+      "description": "パイプライン成功率"
+    },
+    "avgExecutionTime": {
+      "target": "< 10min",
+      "description": "平均実行時間"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "template-selection",
+      "description": "適切なテンプレートが選択されている",
+      "weight": 0.25
+    },
+    {
+      "id": "ci-implementation",
+      "description": "CIパイプラインが適切に構築されている",
+      "weight": 0.25
+    },
+    {
+      "id": "cd-implementation",
+      "description": "CDパイプラインが適切に構築されている",
+      "weight": 0.25
+    },
+    {
+      "id": "optimization",
+      "description": "パフォーマンス最適化が実施されている",
+      "weight": 0.25
+    }
+  ]
+}

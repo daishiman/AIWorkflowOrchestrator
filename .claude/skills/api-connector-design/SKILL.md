@@ -1,282 +1,117 @@
 ---
 name: api-connector-design
 description: |
-  外部APIとの統合設計パターンに関する専門知識。
-  RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
+  外部APIとの統合設計パターンに関する専門知識。RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『RESTful Web APIs』（Leonard Richardson）/ 適用: RESTful API設計、HTTPセマンティクス / 目的: リソース中心の設計パターン理解
+  • 『Building Microservices』（Sam Newman）/ 適用: APIコントラクト設計、マイクロサービス間通信 / 目的: サービス境界の明確化
 
-  - `.claude/skills/api-connector-design/resources/authentication-flows.md`: OAuth 2.0、API Key、JWTなどの認証フロー詳細
-  - `.claude/skills/api-connector-design/resources/error-handling-patterns.md`: API統合におけるエラーハンドリングパターン
-  - `.claude/skills/api-connector-design/resources/rate-limiting-strategies.md`: Rate Limiting対策とリトライ戦略
-  - `.claude/skills/api-connector-design/templates/api-client-template.ts`: APIクライアント実装テンプレート
-  - `.claude/skills/api-connector-design/templates/auth-config-template.json`: 認証設定ファイルテンプレート
-  - `.claude/skills/api-connector-design/scripts/test-api-connection.mjs`: API接続テストスクリプト
-
-  使用タイミング:
-  - 外部API（Google Drive, Slack, GitHub等）との統合設計時
-  - 認証フロー（OAuth 2.0, API Key等）の実装設計時
-  - Rate Limitingやリトライ戦略の設計時
-  - API統合アーキテクチャのレビュー時
-version: 1.0.1
-tags: [api, integration, rest, graphql, websocket, authentication]
-related_skills:
-  - .claude/skills/mcp-protocol/SKILL.md
-  - .claude/skills/tool-security/SKILL.md
-  - .claude/skills/integration-patterns/SKILL.md
+  Trigger:
+  Use when designing authentication flows (OAuth 2.0, API Key, JWT), implementing rate limiting and retry strategies, or reviewing API integration architecture.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# API Connector Design スキル
+# API Connector Design
 
 ## 概要
 
-外部APIとの統合において、適切な設計パターンと実装指針を提供します。RESTful API、GraphQL、WebSocketなど様々なAPI形式に対応し、認証、エラーハンドリング、パフォーマンス最適化を網羅します。
+外部APIとの統合設計パターンを専門とするスキル。RESTful、GraphQL、WebSocket等のAPI統合の設計と実装を支援します。
 
-## API統合タイプ分類
+## ワークフロー
 
-### 1. RESTful API
+### Phase 1: 統合要件の整理
 
-**特徴**:
+**目的**: APIの型、認証要件、制約を明確化
 
-- HTTPメソッドによるCRUD操作
-- ステートレス通信
-- リソース指向設計
+**タスク**:
 
-**設計パターン**:
+- APIの種類（REST/GraphQL/WebSocket）を特定
+- 認証方式（OAuth 2.0/API Key/JWT等）を確認
+- Rate Limit、タイムアウト、リトライポリシーを把握
 
-```
-GET    /resources          - リソース一覧取得
-GET    /resources/{id}     - 個別リソース取得
-POST   /resources          - リソース作成
-PUT    /resources/{id}     - リソース更新（全体）
-PATCH  /resources/{id}     - リソース更新（部分）
-DELETE /resources/{id}     - リソース削除
-```
+**Task**: `agents/analyze-connector-context.md` を参照
 
-**ベストプラクティス**:
+### Phase 2: 統合設計の実装
 
-- Content-Type: application/json の一貫した使用
-- 適切なHTTPステータスコードの返却
-- HALまたはJSON:APIフォーマットの採用検討
+**目的**: 認証、エラーハンドリング、リトライロジックの設計
 
-### 2. GraphQL
+**タスク**:
 
-**特徴**:
+- `references/authentication-flows.md` で認証フロー選択
+- `references/error-handling-patterns.md` でエラーハンドリング設計
+- `references/rate-limiting-strategies.md` でリトライ戦略を適用
+- テンプレートから実装コード生成
 
-- スキーマベースの型システム
-- 単一エンドポイント
-- 柔軟なクエリ構造
+**Task**: `agents/design-connector.md` を参照
 
-**設計パターン**:
+### Phase 3: 検証と最適化
 
-```graphql
-query {
-  user(id: "123") {
-    name
-    email
-    posts {
-      title
-    }
-  }
-}
+**目的**: 設計の完全性とベストプラクティス準拠を確認
 
-mutation {
-  createUser(input: { name: "John" }) {
-    id
-    name
-  }
-}
-```
+**タスク**:
 
-**ベストプラクティス**:
+- エッジケース（接続失敗、タイムアウト）の処理確認
+- API仕様との整合性チェック
+- パフォーマンス・セキュリティ要件の検証
 
-- N+1問題の回避（DataLoader使用）
-- 複雑度制限の実装
-- 適切なエラーハンドリング
+**Task**: `agents/validate-connector.md` を参照
 
-### 3. WebSocket
+## Task仕様ナビ
 
-**特徴**:
+| Task                   | 入力                      | 出力                      | 複雑度 |
+| ---------------------- | ------------------------- | ------------------------- | ------ |
+| 認証フロー設計         | API仕様、認可要件         | auth-config-template.json | 中     |
+| APIクライアント実装    | エンドポイント、認証      | APIクライアントコード     | 高     |
+| エラーハンドリング設計 | エラー仕様、リトライ      | エラーハンドリング手順    | 中     |
+| Rate Limit対応         | API制限仕様、トラフィック | リトライ・バックオフ戦略  | 低     |
+| 統合アーキレビュー     | 設計書、実装コード        | レビューコメント、改善案  | 高     |
 
-- 双方向リアルタイム通信
-- 持続的接続
-- 低レイテンシ
+## ベストプラクティス
 
-**設計パターン**:
+### すべきこと
 
-```
-Client <──────────────> Server
-    │ CONNECT              │
-    │ ─────────────────────▶
-    │ MESSAGE              │
-    │ ◀────────────────────│
-    │ MESSAGE              │
-    │ ─────────────────────▶
-    │ DISCONNECT           │
-    │ ─────────────────────▶
-```
+- 外部API（Google Drive、Slack、GitHub等）との統合設計時にこのスキルを使用
+- 複数の認証方式を検討し、API要件に最適なものを選択
+- エラーハンドリング（タイムアウト、リトライ、バックオフ）を最初から設計に含める
+- Rate Limitingやクォータ管理を実装設計の段階で考慮
+- テンプレートを参照して実装の一貫性を保証
+- セキュリティレビュー（認証情報の扱い、暗号化通信）を実施
 
-**ベストプラクティス**:
+### 避けるべきこと
 
-- ハートビートによる接続維持
-- 再接続ロジックの実装
-- メッセージキューイング
-
-### 4. Webhook
-
-**特徴**:
-
-- イベント駆動型
-- プッシュ型通知
-- 非同期処理
-
-**設計パターン**:
-
-```
-┌─────────┐   Event発生   ┌──────────┐   POST   ┌─────────┐
-│ Service │ ────────────▶ │ Webhook  │ ────────▶│ Your    │
-│         │               │ Endpoint │          │ Server  │
-└─────────┘               └──────────┘          └─────────┘
-```
-
-## 認証・認可パターン
-
-### API Key認証
-
-```javascript
-// ヘッダーベース
-headers: {
-  'X-API-Key': process.env.API_KEY
-}
-
-// クエリパラメータベース（非推奨）
-url: `${baseUrl}?api_key=${apiKey}`
-```
-
-**セキュリティ考慮事項**:
-
-- [ ] 環境変数での管理
-- [ ] HTTPS通信の強制
-- [ ] ローテーション計画
-
-### OAuth 2.0
-
-**Authorization Code Flow**:
-
-```
-1. Client → Authorization Server: 認可リクエスト
-2. User: ログイン・承認
-3. Authorization Server → Client: 認可コード
-4. Client → Authorization Server: トークンリクエスト
-5. Authorization Server → Client: アクセストークン
-```
-
-**実装チェックリスト**:
-
-- [ ] state パラメータによるCSRF対策
-- [ ] PKCE（Proof Key for Code Exchange）実装
-- [ ] リフレッシュトークンの安全な保存
-- [ ] トークン有効期限管理
-
-### JWT（JSON Web Token）
-
-```javascript
-// トークン構造
-header.payload.signature
-
-// 検証ステップ
-1. 署名検証
-2. 有効期限（exp）チェック
-3. 発行者（iss）検証
-4. 対象者（aud）検証
-```
-
-## Rate Limiting対策
-
-### 検出方法
-
-```javascript
-// レスポンスヘッダーから制限情報を取得
-const rateLimitInfo = {
-  limit: response.headers["X-RateLimit-Limit"],
-  remaining: response.headers["X-RateLimit-Remaining"],
-  reset: response.headers["X-RateLimit-Reset"],
-};
-```
-
-### リトライ戦略
-
-**指数バックオフ**:
-
-```javascript
-const delay = Math.min(
-  initialDelay * Math.pow(backoffFactor, attempt),
-  maxDelay,
-);
-// ジッターを追加（同時リトライ回避）
-const jitteredDelay = delay * (0.5 + Math.random());
-```
-
-**リトライ条件**:
-| HTTPステータス | リトライ可能 | 説明 |
-|---------------|-------------|------|
-| 429 | ✅ | Too Many Requests |
-| 500 | ✅ | Internal Server Error |
-| 502 | ✅ | Bad Gateway |
-| 503 | ✅ | Service Unavailable |
-| 504 | ✅ | Gateway Timeout |
-| 400 | ❌ | Bad Request |
-| 401 | ❌ | Unauthorized |
-| 403 | ❌ | Forbidden |
-| 404 | ❌ | Not Found |
-
-## 設計時の判断基準
-
-### API統合チェックリスト
-
-- [ ] 適切なAPI統合タイプが選択されているか？
-- [ ] 認証方式はセキュリティ要件を満たすか？
-- [ ] Rate Limitingとリトライ戦略は定義されているか？
-- [ ] タイムアウト設定は適切か？
-- [ ] エラーハンドリングは網羅的か？
-
-### パフォーマンスチェックリスト
-
-- [ ] 接続プーリングが実装されているか？
-- [ ] キャッシュ戦略が定義されているか？
-- [ ] ペイロードサイズは最適化されているか？
-- [ ] 圧縮（gzip）が有効か？
+- 認証方式を軽く考えて後付けする（最初から設計に含めること）
+- エラーハンドリングを「エラーが起きたら例外」で済ませる（具体的なリトライ戦略が必須）
+- Rate Limitに対応しないまま実装を進める（接続失敗の原因になる）
+- APIドキュメントを確認しないまま実装を始める（余分な手戻りが発生）
+- 認証トークンやAPIキーをコード内に埋め込む（設定ファイル化すること）
 
 ## リソース参照
 
-詳細なパターンと実装例については以下を参照:
-
-- **認証フロー詳細**: `cat .claude/skills/api-connector-design/resources/authentication-flows.md`
-- **Rate Limiting戦略**: `cat .claude/skills/api-connector-design/resources/rate-limiting-strategies.md`
-- **エラーハンドリング**: `cat .claude/skills/api-connector-design/resources/error-handling-patterns.md`
-
-## テンプレート参照
-
-- **APIクライアントテンプレート**: `cat .claude/skills/api-connector-design/templates/api-client-template.ts`
-- **認証設定テンプレート**: `cat .claude/skills/api-connector-design/templates/auth-config-template.json`
-
-## スクリプト実行
-
-```bash
-# API接続テスト
-node .claude/skills/api-connector-design/scripts/test-api-connection.mjs <base-url>
-
-# 認証フロー検証
-node .claude/skills/api-connector-design/scripts/validate-auth-flow.mjs <config.json>
-```
+- `references/Level1_basics.md`: 基礎概念と標準パターン
+- `references/Level2_intermediate.md`: 実装レベルの詳細ガイド
+- `references/Level3_advanced.md`: マイクロサービス間通信等の応用パターン
+- `references/Level4_expert.md`: 複雑な統合シナリオと最適化
+- `references/authentication-flows.md`: OAuth 2.0、API Key、JWT等の詳細比較
+- `references/error-handling-patterns.md`: エラー分類、リトライ戦略、タイムアウト管理
+- `references/rate-limiting-strategies.md`: Rate Limit検出、バックオフ、トークンバケット
 
 ## 関連スキル
 
-| スキル                                          | 用途             |
-| ----------------------------------------------- | ---------------- |
-| `.claude/skills/mcp-protocol/SKILL.md`          | MCP設定          |
-| `.claude/skills/tool-security/SKILL.md`         | セキュリティ設定 |
-| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計     |
-| `.claude/skills/integration-patterns/SKILL.md`  | 統合パターン     |
+- `.claude/skills/api-client-patterns`: クライアント実装パターンの詳細
+- `.claude/skills/api-contract-design`: APIコントラクト設計
+- `.claude/skills/authentication-flows`: 認証フロー実装
+
+## 変更履歴
+
+| Version | Date       | Changes                                     |
+| ------- | ---------- | ------------------------------------------- |
+| 2.0.0   | 2025-12-31 | agents/3ファイル追加、Phase別Task参照を追加 |
+| 1.0.2   | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ追加  |
+| 1.0.1   | 2025-12-24 | アーティファクト追加とspec整合化            |

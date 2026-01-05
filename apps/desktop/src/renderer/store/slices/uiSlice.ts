@@ -8,6 +8,12 @@ export interface UISlice {
   windowSize: WindowSize;
   responsiveMode: ResponsiveMode;
 
+  // System Prompt UI State
+  isSystemPromptPanelExpanded: boolean;
+  isSaveTemplateDialogOpen: boolean;
+  isDeleteConfirmDialogOpen: boolean;
+  targetTemplateId: string | null;
+
   // Actions
   showDynamicIsland: (
     status: "processing" | "completed",
@@ -17,6 +23,13 @@ export interface UISlice {
   setMobileDrawerOpen: (open: boolean) => void;
   toggleMobileDrawer: () => void;
   setWindowSize: (size: WindowSize) => void;
+
+  // System Prompt UI Actions
+  toggleSystemPromptPanel: () => void;
+  openSaveTemplateDialog: () => void;
+  closeSaveTemplateDialog: () => void;
+  openDeleteConfirmDialog: (templateId: string) => void;
+  closeDeleteConfirmDialog: () => void;
 }
 
 // Helper to calculate responsive mode
@@ -36,6 +49,12 @@ export const createUISlice: StateCreator<UISlice, [], [], UISlice> = (set) => ({
   mobileDrawerOpen: false,
   windowSize: { width: 1200, height: 800 },
   responsiveMode: "desktop",
+
+  // System Prompt UI Initial State
+  isSystemPromptPanelExpanded: false,
+  isSaveTemplateDialogOpen: false,
+  isDeleteConfirmDialogOpen: false,
+  targetTemplateId: null,
 
   // Actions
   showDynamicIsland: (status, message) => {
@@ -69,6 +88,35 @@ export const createUISlice: StateCreator<UISlice, [], [], UISlice> = (set) => ({
     set({
       windowSize: size,
       responsiveMode: calculateResponsiveMode(size.width),
+    });
+  },
+
+  // System Prompt UI Actions
+  toggleSystemPromptPanel: () => {
+    set((state) => ({
+      isSystemPromptPanelExpanded: !state.isSystemPromptPanelExpanded,
+    }));
+  },
+
+  openSaveTemplateDialog: () => {
+    set({ isSaveTemplateDialogOpen: true });
+  },
+
+  closeSaveTemplateDialog: () => {
+    set({ isSaveTemplateDialogOpen: false });
+  },
+
+  openDeleteConfirmDialog: (templateId) => {
+    set({
+      isDeleteConfirmDialogOpen: true,
+      targetTemplateId: templateId,
+    });
+  },
+
+  closeDeleteConfirmDialog: () => {
+    set({
+      isDeleteConfirmDialogOpen: false,
+      targetTemplateId: null,
     });
   },
 });

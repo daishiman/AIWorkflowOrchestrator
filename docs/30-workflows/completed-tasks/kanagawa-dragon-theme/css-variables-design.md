@@ -7,7 +7,7 @@
 | サブタスクID | T-01-1        |
 | フェーズ     | Phase 1: 設計 |
 | 作成日       | 2025-12-12    |
-| 担当         | @ui-designer  |
+| 担当         | .claude/agents/ui-designer.md  |
 
 ---
 

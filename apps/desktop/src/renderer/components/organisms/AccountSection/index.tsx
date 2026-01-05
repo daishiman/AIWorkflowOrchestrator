@@ -19,6 +19,16 @@ interface ConfirmDialogState {
 }
 
 /**
+ * アバターメニューの表示位置
+ */
+interface MenuPosition {
+  /** メニューのtop座標（px） */
+  top: number;
+  /** メニューのleft座標（px） */
+  left: number;
+}
+
+/**
  * AccountSectionコンポーネントのProps
  */
 export interface AccountSectionProps {
@@ -92,10 +102,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   const [authResult, setAuthResult] = useState<AuthResultType>(null);
   const [previousAuthState, setPreviousAuthState] = useState(isAuthenticated);
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
-  const [menuPosition, setMenuPosition] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
+  const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>({
     isOpen: false,
     type: null,
@@ -103,6 +110,32 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   const [deleteConfirmEmail, setDeleteConfirmEmail] = useState("");
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const avatarButtonRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * アバターメニューを閉じる
+   * @param returnFocus - trueの場合、フォーカスをアバターボタンに戻す
+   */
+  const closeAvatarMenu = useCallback((returnFocus = false) => {
+    setIsAvatarMenuOpen(false);
+    setMenuPosition(null);
+    if (returnFocus) {
+      const button = avatarButtonRef.current?.querySelector("button");
+      button?.focus();
+    }
+  }, []);
+
+  /**
+   * アバターメニューの表示位置を計算
+   * @returns メニュー位置、またはボタンが見つからない場合はnull
+   */
+  const calculateMenuPosition = useCallback((): MenuPosition | null => {
+    if (!avatarButtonRef.current) return null;
+    const rect = avatarButtonRef.current.getBoundingClientRect();
+    return {
+      top: rect.bottom + 8, // mt-2相当
+      left: rect.left,
+    };
+  }, []);
 
   // 認証状態が変わったときに新規登録かログインかを判定
   useEffect(() => {
@@ -134,8 +167,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
       const isInsideMenu = avatarMenuRef.current?.contains(target);
 
       if (!isInsideButtonContainer && !isInsideMenu) {
-        setIsAvatarMenuOpen(false);
-        setMenuPosition(null);
+        closeAvatarMenu();
       }
     };
 
@@ -146,6 +178,36 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, [isAvatarMenuOpen, closeAvatarMenu]);
+
+  // Escキーでメニューを閉じる
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isAvatarMenuOpen) {
+        closeAvatarMenu(true); // フォーカスをアバターボタンに戻す
+      }
+    };
+
+    if (isAvatarMenuOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isAvatarMenuOpen, closeAvatarMenu]);
+
+  // メニューを開いた時に最初のメニュー項目にフォーカスを移動
+  useEffect(() => {
+    if (isAvatarMenuOpen && avatarMenuRef.current) {
+      // 次のティックでフォーカスを移動（Portalがレンダリングされた後）
+      requestAnimationFrame(() => {
+        const firstMenuItem = avatarMenuRef.current?.querySelector(
+          '[role="menuitem"]',
+        ) as HTMLElement;
+        firstMenuItem?.focus();
+      });
+    }
   }, [isAvatarMenuOpen]);
 
   const handleStartEdit = useCallback(() => {
@@ -205,33 +267,28 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   // アバターメニュー操作
   const handleToggleAvatarMenu = useCallback(() => {
     setIsAvatarMenuOpen((prev) => {
-      if (!prev && avatarButtonRef.current) {
+      if (!prev) {
         // メニューを開く時に位置を計算
-        const rect = avatarButtonRef.current.getBoundingClientRect();
-        setMenuPosition({
-          top: rect.bottom + 8, // mt-2相当
-          left: rect.left,
-        });
+        const position = calculateMenuPosition();
+        setMenuPosition(position);
       } else {
         setMenuPosition(null);
       }
       return !prev;
     });
-  }, []);
+  }, [calculateMenuPosition]);
 
   const handleUploadAvatar = useCallback(() => {
     uploadAvatar();
-    setIsAvatarMenuOpen(false);
-    setMenuPosition(null);
-  }, [uploadAvatar]);
+    closeAvatarMenu();
+  }, [uploadAvatar, closeAvatarMenu]);
 
   const handleUseProviderAvatar = useCallback(
     (provider: OAuthProvider) => {
       useProviderAvatar(provider);
-      setIsAvatarMenuOpen(false);
-      setMenuPosition(null);
+      closeAvatarMenu();
     },
-    [useProviderAvatar],
+    [useProviderAvatar, closeAvatarMenu],
   );
 
   // アバター削除ハンドラー（確認ダイアログを表示）
@@ -240,9 +297,8 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
       isOpen: true,
       type: "remove-avatar",
     });
-    setIsAvatarMenuOpen(false);
-    setMenuPosition(null);
-  }, []);
+    closeAvatarMenu();
+  }, [closeAvatarMenu]);
 
   // アバター削除確定
   const handleConfirmRemoveAvatar = useCallback(() => {
@@ -426,6 +482,8 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                   size="sm"
                   onClick={handleToggleAvatarMenu}
                   aria-label="アバターを編集"
+                  aria-expanded={isAvatarMenuOpen}
+                  aria-haspopup="menu"
                   className="absolute -bottom-1 -right-1 w-6 h-6 !p-0 rounded-full bg-white/20 hover:bg-white/30"
                 >
                   <Icon name="pencil" size={12} />
@@ -439,6 +497,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                   <div
                     ref={avatarMenuRef}
                     role="menu"
+                    aria-label="アバター編集メニュー"
                     className="fixed w-48 bg-[var(--bg-secondary)] border border-white/10 rounded-lg shadow-lg z-[9999]"
                     style={{ top: menuPosition.top, left: menuPosition.left }}
                   >

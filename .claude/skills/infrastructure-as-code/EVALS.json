@@ -1,0 +1,75 @@
+{
+  "skill_name": "infrastructure-as-code",
+  "version": "1.0.0",
+  "level": 1,
+  "metrics": {
+    "usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "success_rate": 0,
+    "last_used": null,
+    "average_duration_minutes": null
+  },
+  "level_criteria": {
+    "level_1": {
+      "description": "基礎的な環境変数管理とRailway構成",
+      "requirements": {
+        "usage_count": 5,
+        "success_rate": 0.6
+      },
+      "achieved": false
+    },
+    "level_2": {
+      "description": "実務レベルのSecret管理と複数環境対応",
+      "requirements": {
+        "usage_count": 15,
+        "success_rate": 0.75
+      },
+      "achieved": false
+    },
+    "level_3": {
+      "description": "応用レベルの自動化とCI/CD統合",
+      "requirements": {
+        "usage_count": 30,
+        "success_rate": 0.85
+      },
+      "achieved": false
+    },
+    "level_4": {
+      "description": "専門家レベルのマルチクラウド・マルチ環境管理",
+      "requirements": {
+        "usage_count": 50,
+        "success_rate": 0.9
+      },
+      "achieved": false
+    }
+  },
+  "feedback": {
+    "strengths": [],
+    "weaknesses": [],
+    "improvement_suggestions": []
+  },
+  "task_metrics": {
+    "environment-design": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    },
+    "secret-manager": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    },
+    "railway-configurator": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    },
+    "railway-validator": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    }
+  },
+  "last_updated": "2025-12-31T08:09:00Z"
+}

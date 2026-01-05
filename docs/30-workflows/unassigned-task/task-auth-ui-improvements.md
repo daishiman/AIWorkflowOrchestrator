@@ -267,7 +267,7 @@ z-index値の階層構造を設計する。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネントのレイヤリング設計に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -316,7 +316,7 @@ profileHandlersのエラーハンドリングロジックを設計する。
 
 #### 使用エージェント
 
-- **エージェント**: @gateway-dev
+- **エージェント**: .claude/agents/gateway-dev.md
 - **選定理由**: 外部サービス（Supabase）との連携とエラーハンドリングに専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -370,7 +370,7 @@ authSliceの状態更新ロジックを設計する。
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: クライアント状態管理に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -423,7 +423,7 @@ AccountSectionコンポーネントのz-indexテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDDに基づくテスト作成に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -431,7 +431,7 @@ AccountSectionコンポーネントのz-indexテストを作成する。
 
 | スキル名       | 活用方法                                     |
 | -------------- | -------------------------------------------- |
-| tdd-principles | Red-Green-Refactorサイクルに従ったテスト作成 |
+| .claude/skills/tdd-principles/SKILL.md | Red-Green-Refactorサイクルに従ったテスト作成 |
 
 #### テストケース
 
@@ -494,7 +494,7 @@ profileHandlersのフォールバックテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDDに基づくテスト作成に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -569,7 +569,7 @@ authSliceの状態更新テストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDDに基づくテスト作成に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -637,7 +637,7 @@ AccountSection/index.tsxのz-index値を修正する。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネントの実装に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -691,7 +691,7 @@ profileHandlers.tsのエラー検出ロジックを修正する。
 
 #### 使用エージェント
 
-- **エージェント**: @gateway-dev
+- **エージェント**: .claude/agents/gateway-dev.md
 - **選定理由**: 外部サービス連携とエラーハンドリングに専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -758,7 +758,7 @@ authSlice.tsの状態更新ロジックを修正する。
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: クライアント状態管理に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -819,7 +819,7 @@ pnpm --filter @repo/desktop test:run src/renderer/store/slices/authSlice.test.ts
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質管理に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -888,7 +888,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: 品質チェックの実行と評価に専門性を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -954,30 +954,30 @@ pnpm --filter @repo/desktop typecheck
 
 | エージェント  | レビュー観点       | 選定理由                               |
 | ------------- | ------------------ | -------------------------------------- |
-| @code-quality | コード品質         | コーディング規約、可読性、保守性       |
-| @arch-police  | アーキテクチャ遵守 | レイヤー違反、依存関係                 |
-| @unit-tester  | テスト品質         | テストカバレッジ、テストケースの適切性 |
-| @sec-auditor  | セキュリティ       | 入力検証、エラーハンドリング           |
+| .claude/agents/code-quality.md | コード品質         | コーディング規約、可読性、保守性       |
+| .claude/agents/arch-police.md  | アーキテクチャ遵守 | レイヤー違反、依存関係                 |
+| .claude/agents/unit-tester.md  | テスト品質         | テストカバレッジ、テストケースの適切性 |
+| .claude/agents/sec-auditor.md  | セキュリティ       | 入力検証、エラーハンドリング           |
 
 #### レビューチェックリスト
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] コーディング規約への準拠
 - [ ] 可読性・保守性の確保
 - [ ] 適切なエラーハンドリング
 
-**アーキテクチャ遵守** (@arch-police)
+**アーキテクチャ遵守** (.claude/agents/arch-police.md)
 
 - [ ] レイヤー間の依存関係が適切か
 - [ ] 既存設計との整合性
 
-**テスト品質** (@unit-tester)
+**テスト品質** (.claude/agents/unit-tester.md)
 
 - [ ] テストケースが適切に設計されているか
 - [ ] 境界値・異常系のテストがあるか
 
-**セキュリティ** (@sec-auditor)
+**セキュリティ** (.claude/agents/sec-auditor.md)
 
 - [ ] 入力検証・サニタイズの実装
 - [ ] エラーメッセージの適切性

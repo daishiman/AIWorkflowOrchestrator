@@ -2,285 +2,131 @@
 name: type-safety-patterns
 description: |
   TypeScript厳格モードによる型安全性設計を専門とするスキル。
+  型推論、型ガード、ジェネリック、識別可能ユニオンのパターンを体系的に設計します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『Effective TypeScript』（Dan Vanderkam） / 適用: 型設計原則 / 目的: 型安全性最大化
+  • TypeScript Handbook / 適用: 型システム理解 / 目的: 正確な型設計
 
-  - `.claude/skills/type-safety-patterns/resources/discriminated-union-patterns.md`: Discriminated Union Patternsリソース
-  - `.claude/skills/type-safety-patterns/resources/generics-patterns.md`: Generics Patternsリソース
-  - `.claude/skills/type-safety-patterns/resources/strict-mode-guide.md`: Strict Mode Guideリソース
-  - `.claude/skills/type-safety-patterns/resources/type-guard-patterns.md`: Type Guard Patternsリソース
-
-  - `.claude/skills/type-safety-patterns/templates/type-safe-patterns.ts`: Type Safe Patternsテンプレート
-
-  - `.claude/skills/type-safety-patterns/scripts/check-type-safety.mjs`: Check Type Safetyスクリプト
-
-version: 1.0.0
+  Trigger:
+  TypeScript型設計時、型ガード実装時、ジェネリック設計時、ユニオン型設計時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Type Safety Patterns
+# Type Safety Patterns スキル
 
 ## 概要
 
-このスキルは、TypeScript 厳格モードを活用した堅牢な型システムの構築方法を提供します。
-型ガード、Discriminated Unions、ジェネリクスなどの高度な型機能を使いこなし、
-コンパイル時のエラー検出を最大化することで、より安全なコードを実現します。
+TypeScript厳格モードによる型安全性設計を専門とするスキル。型推論分析、型ガード設計、ジェネリック型パターン、識別可能ユニオン設計を通じて、コンパイル時に型エラーを検出し、ランタイムエラーを防止します。
 
-**主要な価値**:
+## ワークフロー
 
-- コンパイル時のエラー検出によるランタイムエラーの防止
-- IDE の強力なコード補完と型推論の活用
-- 自己文書化されたコードによる保守性の向上
+### Phase 1: 型推論分析
 
-**対象ユーザー**:
+**目的**: 既存コードの型推論状況を把握し、問題箇所を特定
 
-- スキーマ定義を行うエージェント（@schema-def）
-- 型安全な API を設計する開発者
-- TypeScript の型システムを深く活用したいチーム
+**アクション**:
 
-## リソース構造
+1. `references/Level1_basics.md` と `references/strict-mode-guide.md` を確認
+2. `agents/type-inference-analysis.md` を参照し、any型やワイドニング問題を検出
+3. 改善が必要な箇所をリストアップ
+
+### Phase 2: 型安全性設計
+
+**目的**: 型ガードとパターンを設計し、型安全性を向上
+
+**アクション**:
+
+1. `agents/type-guard-design.md` を参照し、型ガードを設計
+2. `agents/generic-type-patterns.md` で再利用可能なジェネリックを設計
+3. `agents/discriminated-union-design.md` で識別可能ユニオンを設計
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/check-type-safety.mjs` で型安全性を確認
+2. `scripts/validate-skill.mjs` でスキル構造を確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+## Task仕様（ナビゲーション）
+
+型安全性設計の各タスクと対応するエージェント・リソースの対応表
+
+| Task                 | エージェント                           | 思考様式         | 説明                           |
+| -------------------- | -------------------------------------- | ---------------- | ------------------------------ |
+| 型推論分析           | `agents/type-inference-analysis.md`    | Dan Vanderkam    | 型推論状況を分析し問題を特定   |
+| 型ガード設計         | `agents/type-guard-design.md`          | Anders Hejlsberg | 安全な型ナローイングを実現     |
+| ジェネリック設計     | `agents/generic-type-patterns.md`      | Matt Pocock      | 再利用可能なジェネリックを設計 |
+| 識別可能ユニオン設計 | `agents/discriminated-union-design.md` | Basarat Ali Syed | 網羅性チェック付きユニオン設計 |
+
+### ワークフロー順序
 
 ```
-type-safety-patterns/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── strict-mode-guide.md                   # TypeScript厳格モード設定
-│   ├── type-guard-patterns.md                 # 型ガードパターン
-│   ├── discriminated-union-patterns.md        # Discriminated Unionsパターン
-│   └── generics-patterns.md                   # ジェネリクスパターン
-├── scripts/
-│   └── check-type-safety.mjs                  # 型安全性チェックスクリプト
-└── templates/
-    └── type-safe-patterns.ts                  # 型安全パターンテンプレート
+type-inference-analysis → type-guard-design → generic-type-patterns → discriminated-union-design
 ```
 
-## コマンドリファレンス
+1. **type-inference-analysis**: 型推論結果を分析し、any型やワイドニング問題を検出
+2. **type-guard-design**: ユニオン型を安全に絞り込む型ガードを設計
+3. **generic-type-patterns**: 再利用可能なジェネリック型と関数を設計
+4. **discriminated-union-design**: 網羅性チェック付きの識別可能ユニオンを設計
 
-### リソース読み取り
+## ベストプラクティス
 
-```bash
-# TypeScript厳格モード設定ガイド
-cat .claude/skills/type-safety-patterns/resources/strict-mode-guide.md
+### すべきこと
 
-# 型ガードパターン
-cat .claude/skills/type-safety-patterns/resources/type-guard-patterns.md
+- strictモードを有効にし、すべての厳格オプションを使用
+- any型を避け、unknown型とType Guardを組み合わせて使用
+- 型推論を活用し、明示的な型注釈を最小化
+- 識別可能ユニオンでexhaustive checkを実装
 
-# Discriminated Unionsパターン
-cat .claude/skills/type-safety-patterns/resources/discriminated-union-patterns.md
+### 避けるべきこと
 
-# ジェネリクスパターン
-cat .claude/skills/type-safety-patterns/resources/generics-patterns.md
-```
+- as型アサーションの乱用
+- any型の明示的使用
+- strictモードの無効化
+- 型安全性を犠牲にした妥協
 
-### スクリプト実行
+## リソース参照
 
-```bash
-# 型安全性チェック
-node .claude/skills/type-safety-patterns/scripts/check-type-safety.mjs <file.ts>
-```
+### references/（詳細知識）
 
-### テンプレート参照
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 型設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細分析時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| strictモード設定 | [references/strict-mode-guide.md](references/strict-mode-guide.md) | 初期設定時 |
+| 型ガードパターン | [references/type-guard-patterns.md](references/type-guard-patterns.md) | 型ナローイング設計時 |
+| ジェネリックパターン | [references/generics-patterns.md](references/generics-patterns.md) | 汎用型設計時 |
+| 識別可能ユニオン | [references/discriminated-union-patterns.md](references/discriminated-union-patterns.md) | 網羅性チェック設計時 |
 
-```bash
-# 型安全パターンテンプレート
-cat .claude/skills/type-safety-patterns/templates/type-safe-patterns.ts
-```
+### scripts/（決定論的処理）
 
-## いつ使うか
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/check-type-safety.mjs` | 型安全性チェック |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-### シナリオ 1: 厳格モードの導入
+### assets/（テンプレート・素材）
 
-**状況**: 既存プロジェクトに TypeScript 厳格モードを導入したい
-
-**適用条件**:
-
-- [ ] strict オプションを有効にしたい
-- [ ] 型安全性を高めたい
-- [ ] IDE の補完機能を最大限活用したい
-
-**期待される成果**: 適切に設定された tsconfig.json と型安全なコード
-
-### シナリオ 2: 型ガードの実装
-
-**状況**: ランタイムで型を判別し、型安全に処理したい
-
-**適用条件**:
-
-- [ ] 外部データの型を確認する必要がある
-- [ ] Union 型を安全に絞り込みたい
-- [ ] カスタム型ガード関数を作成したい
-
-**期待される成果**: 型安全な型ガード実装
-
-### シナリオ 3: Discriminated Unions の設計
-
-**状況**: 複数の状態を持つデータ構造を型安全に設計したい
-
-**適用条件**:
-
-- [ ] 状態ごとに異なるプロパティを持つ
-- [ ] 状態に応じた処理を型安全に行いたい
-- [ ] 網羅性チェックを活用したい
-
-**期待される成果**: 型安全な Discriminated Union 設計
-
-## 基本概念
-
-### TypeScript 厳格モード設定
-
-```json
-// tsconfig.json
-{
-  "compilerOptions": {
-    // 厳格モード（推奨）
-    "strict": true,
-
-    // 追加の厳格オプション
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noPropertyAccessFromIndexSignature": true
-  }
-}
-```
-
-### 型ガードの基本
-
-```typescript
-// typeof型ガード
-function processValue(value: string | number) {
-  if (typeof value === "string") {
-    // value は string 型として認識
-    return value.toUpperCase();
-  }
-  // value は number 型として認識
-  return value.toFixed(2);
-}
-
-// instanceof型ガード
-function processError(error: Error | string) {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return error;
-}
-
-// in型ガード
-interface Dog {
-  bark(): void;
-}
-interface Cat {
-  meow(): void;
-}
-
-function makeSound(animal: Dog | Cat) {
-  if ("bark" in animal) {
-    animal.bark();
-  } else {
-    animal.meow();
-  }
-}
-
-// カスタム型ガード（is キーワード）
-function isString(value: unknown): value is string {
-  return typeof value === "string";
-}
-```
-
-### Discriminated Unions
-
-```typescript
-// 判別フィールドによるユニオン型
-type Result<T> = { success: true; data: T } | { success: false; error: Error };
-
-function handleResult<T>(result: Result<T>) {
-  if (result.success) {
-    // result.data にアクセス可能
-    console.log(result.data);
-  } else {
-    // result.error にアクセス可能
-    console.error(result.error.message);
-  }
-}
-
-// 状態管理でのDiscriminated Union
-type LoadingState<T> =
-  | { status: "idle" }
-  | { status: "loading" }
-  | { status: "success"; data: T }
-  | { status: "error"; error: Error };
-
-function renderState<T>(state: LoadingState<T>) {
-  switch (state.status) {
-    case "idle":
-      return "Ready";
-    case "loading":
-      return "Loading...";
-    case "success":
-      return `Data: ${state.data}`;
-    case "error":
-      return `Error: ${state.error.message}`;
-  }
-}
-```
-
-### 網羅性チェック
-
-```typescript
-// never型を使用した網羅性チェック
-function assertNever(x: never): never {
-  throw new Error(`Unexpected value: ${x}`);
-}
-
-type Shape =
-  | { kind: "circle"; radius: number }
-  | { kind: "square"; size: number }
-  | { kind: "rectangle"; width: number; height: number };
-
-function getArea(shape: Shape): number {
-  switch (shape.kind) {
-    case "circle":
-      return Math.PI * shape.radius ** 2;
-    case "square":
-      return shape.size ** 2;
-    case "rectangle":
-      return shape.width * shape.height;
-    default:
-      // 新しいshapeが追加された場合、コンパイルエラー
-      return assertNever(shape);
-  }
-}
-```
-
-## 判断基準チェックリスト
-
-### TypeScript 設定時
-
-- [ ] strict: true が設定されているか？
-- [ ] noUncheckedIndexedAccess を有効にすべきか？
-- [ ] プロジェクトの要件に合った厳格度か？
-
-### 型ガード実装時
-
-- [ ] 適切な型ガードの種類を選択しているか？
-- [ ] 型述語（is）を正しく使用しているか？
-- [ ] エッジケースを考慮しているか？
-
-### Discriminated Union 設計時
-
-- [ ] 判別フィールドは明確か？
-- [ ] 網羅性チェックが可能な設計か？
-- [ ] 将来の拡張に対応できる設計か？
-
-## 関連スキル
-
-- `.claude/skills/zod-validation/SKILL.md` - Zod バリデーション
-- `.claude/skills/error-message-design/SKILL.md` - エラーメッセージ設計
+| アセット | 用途 |
+| --- | --- |
+| `assets/type-safe-patterns.ts` | 型安全パターンテンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                    |
-| ---------- | ---------- | ------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版リリース - 型安全性パターンの基本を網羅 |
+| Version | Date       | Changes                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様対応、4エージェント体制、Task仕様ナビ追加 |
+| 1.0.0   | 2025-12-24 | 初期リリース                                              |

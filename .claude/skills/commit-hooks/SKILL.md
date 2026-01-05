@@ -1,276 +1,152 @@
 ---
 name: commit-hooks
 description: |
-  Git commit hooksとプレコミット品質ゲートの専門知識。
-  Husky、lint-staged統合による自動lint/format実行を設計します。
+  Git commit フック（pre-commit/commit-msg/pre-push）の設計・実装・検証を体系化するスキル。
+  Husky と lint-staged を軸に、品質ゲートと運用ルールを整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Pro Git / 適用: Git Hooks設計 / 目的: フック運用の基礎
+  • Clean Code / 適用: 品質ゲート設計 / 目的: コミット品質の維持
+  • Accelerate / 適用: フィードバックループ / 目的: 継続改善
 
-  - `.claude/skills/commit-hooks/resources/husky-configuration.md`: Huskyによるコミットフック設定
-  - `.claude/skills/commit-hooks/resources/lint-staged-patterns.md`: lint-stagedパターンと設定例
-  - `.claude/skills/commit-hooks/resources/performance-optimization.md`: コミットフックのパフォーマンス最適化
-  - `.claude/skills/commit-hooks/templates/pre-commit-basic.sh`: 基本的なpre-commitフックシェルスクリプト
-  - `.claude/skills/commit-hooks/templates/lint-staged-advanced.js`: 高度なlint-staged設定
-  - `.claude/skills/commit-hooks/scripts/test-hooks.mjs`: コミットフックテストスクリプト
-
-  使用タイミング:
-  - コミット時の自動品質チェックを設定する時
-  - Husky、lint-stagedを導入する時
-  - ステージングファイルのみを処理する設定を行う時
-  - pre-commit、commit-msg、pre-pushフックを設計する時
-  - コミットフローの自動化を計画する時
-version: 1.0.0
+  Trigger:
+  Use when designing commit hooks, integrating husky/lint-staged, enforcing commit message rules, or validating pre-push checks.
+  commit hooks, husky, lint-staged, commit-msg, pre-commit, pre-push
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# Commit Hooks Skill
+# commit-hooks
 
 ## 概要
 
-このスキルは、Linus Torvalds（Git作者）のGit Hooksコンセプトを、
-品質自動化に応用したコミットフック設定を支援します。
+Git commit フックの設計から実装・検証までを整理し、品質ゲートと運用ルールを一貫して支援する。
 
-## Husky設定
+## ワークフロー
 
-### 1. インストールと初期化
+### Phase 1: 要件整理
 
-```bash
-pnpm add -D husky
-pnpm exec husky init
-```
+**目的**: 対象フック、品質要件、制約を明確化する。
 
-### 2. フックファイル作成
+**アクション**:
 
-**pre-commit** (.husky/pre-commit):
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/hook-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+**Task**: `agents/analyze-hook-requirements.md` を参照
 
-pnpm lint-staged
-```
+### Phase 2: フック設計
 
-**commit-msg** (.husky/commit-msg):
+**目的**: Husky と lint-staged の構成を設計し、品質ゲートを定義する。
 
-```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+**アクション**:
 
-pnpm commitlint --edit $1
-```
+1. `references/husky-configuration.md` で導入前提を確認する。
+2. `references/lint-staged-patterns.md` で対象範囲を設計する。
+3. `assets/hook-policy-checklist.md` で設計観点を整理する。
 
-**pre-push** (.husky/pre-push):
+**Task**: `agents/design-hook-configuration.md` を参照
 
-```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+### Phase 3: 実装と準備
 
-pnpm test
-```
+**目的**: フック設定を実装し、検証に備える。
 
-### 3. 実行権限
+**アクション**:
 
-```bash
-chmod +x .husky/pre-commit
-chmod +x .husky/commit-msg
-chmod +x .husky/pre-push
-```
+1. `assets/pre-commit-basic.sh` で pre-commit を整備する。
+2. `assets/commit-msg-template.sh` で commit-msg を整備する。
+3. `assets/pre-push-template.sh` で pre-push を整備する。
+4. `assets/lint-staged-advanced.js` で lint-staged を整備する。
 
-## lint-staged設定
+**Task**: `agents/implement-hook-setup.md` を参照
 
-### 基本設定
+### Phase 4: 検証と運用
 
-**package.json**:
+**目的**: フックの動作を検証し、改善サイクルを回す。
 
-```json
-{
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,yml,yaml}": ["prettier --write"]
-  }
-}
-```
+**アクション**:
 
-### 高度な設定
+1. `scripts/test-hooks.mjs` で動作検証する。
+2. `references/performance-optimization.md` で改善観点を確認する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-**関数形式** (.lintstagedrc.js):
+**Task**: `agents/validate-hook-setup.md` を参照
 
-```javascript
-module.exports = {
-  "*.{ts,tsx}": (filenames) => [
-    `eslint --fix ${filenames.join(" ")}`,
-    `prettier --write ${filenames.join(" ")}`,
-    `vitest related --run ${filenames.join(" ")}`, // 関連テスト実行
-  ],
-  "*.{json,md}": (filenames) => [`prettier --write ${filenames.join(" ")}`],
-};
-```
+## Task仕様ナビ
 
-## フックタイプ別戦略
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-hook-requirements | Phase 1開始時 | 対象/要件 | 要件整理メモ、品質ゲート一覧 |
+| design-hook-configuration | Phase 2開始時 | 要件整理メモ | フック設計、検証ルール |
+| implement-hook-setup | Phase 3開始時 | フック設計 | 導入手順、設定案 |
+| validate-hook-setup | Phase 4開始時 | 設定案 | 検証レポート、改善提案 |
 
-### pre-commit
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-**目的**: コード品質保証
+## ベストプラクティス
 
-**実行内容**:
+### すべきこと
 
-- lint実行（eslint --fix）
-- format実行（prettier --write）
-- 型チェック（tsc --noEmit）オプション
+| 推奨事項 | 理由 |
+| --- | --- |
+| フックごとに目的を定義する | 冗長な検証を避ける |
+| lint-stagedで対象を限定する | 実行時間を安定させる |
+| commit-msg規約を明文化する | 品質と履歴を揃える |
+| 検証結果を記録する | 改善が継続する |
 
-**パフォーマンス考慮**:
+### 避けるべきこと
 
-- ステージングファイルのみ処理
-- 並列実行活用
-- キャッシュ活用
+| 禁止事項 | 問題点 |
+| --- | --- |
+| すべてのファイルを処理する | コミットが遅くなる |
+| 依存ツールなしで有効化する | 失敗が続く |
+| 目的の重複 | フックが冗長化する |
+| 記録を残さない | 改善が途切れる |
 
-### commit-msg
+## リソース参照
 
-**目的**: コミットメッセージ規約強制
+### scripts/（決定論的処理）
 
-**ツール**: commitlint
-
-**設定例**:
-
-```json
-{
-  "extends": ["@commitlint/config-conventional"],
-  "rules": {
-    "type-enum": [
-      2,
-      "always",
-      [
-        "feat",
-        "fix",
-        "docs",
-        "style",
-        "refactor",
-        "test",
-        "chore",
-        "perf",
-        "ci"
-      ]
-    ]
-  }
-}
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/test-hooks.mjs` | フック動作テスト |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-### pre-push
+### references/（詳細知識）
 
-**目的**: テスト実行、ビルド検証
-
-**実行内容**:
-
-- 全テスト実行
-- ビルド成功確認
-- カバレッジ閾値チェック
-
-## パフォーマンス最適化
-
-### 1. 並列実行
-
-**lint-stagedデフォルト**: 並列実行
-
-**カスタマイズ**:
-
-```javascript
-{
-  concurrent: true,  // 並列実行有効
-  chunkSize: 10      // ファイルチャンクサイズ
-}
-```
-
-### 2. 対象ファイル制限
-
-**glob pattern活用**:
-
-```json
-{
-  "lint-staged": {
-    "src/**/*.{ts,tsx}": ["eslint --fix"], // src配下のみ
-    "!**/*.test.ts": ["eslint --fix"] // テスト除外
-  }
-}
-```
-
-### 3. ESLintキャッシュ
-
-```bash
-eslint --cache --fix
-```
-
-## 統合フロー
-
-```
-git add
-  ↓
-pre-commit hook
-  ↓
-lint-staged
-  ├─ ESLint --fix
-  ├─ Prettier --write
-  └─ 型チェック（オプション）
-  ↓
-成功? → commit続行
-失敗? → commit中止、エラー表示
-```
-
-## トラブルシューティング
-
-### フック実行されない
-
-```bash
-# Huskyインストール確認
-ls -la .husky
-
-# Git hooksパス確認
-git config core.hooksPath
-```
-
-### パフォーマンス問題
-
-- キャッシュ有効化
-- 対象ファイル絞り込み
-- 並列実行確認
-
-## 詳細リソース
-
-```bash
-# Husky設定ガイド
-cat .claude/skills/commit-hooks/resources/husky-configuration.md
-
-# lint-stagedパターン
-cat .claude/skills/commit-hooks/resources/lint-staged-patterns.md
-
-# パフォーマンス最適化
-cat .claude/skills/commit-hooks/resources/performance-optimization.md
-```
-
-## テンプレート
-
-```bash
-# 基本pre-commitフック
-cat .claude/skills/commit-hooks/templates/pre-commit-basic.sh
-
-# 高度なlint-staged設定
-cat .claude/skills/commit-hooks/templates/lint-staged-advanced.js
-```
-
-## スクリプト
-
-```bash
-# コミットフック動作テスト
-node .claude/skills/commit-hooks/scripts/test-hooks.mjs
-```
-
-## 関連スキル
-
-- `.claude/skills/eslint-configuration/SKILL.md`: ESLint設定
-- `.claude/skills/prettier-integration/SKILL.md`: Prettier統合
-
-## 参考文献
-
-- **Husky公式ドキュメント**: https://typicode.github.io/husky/
-- **lint-staged**: https://github.com/okonet/lint-staged
-- **『Pro Git』** Scott Chacon著
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
+| Husky設定 | [references/husky-configuration.md](references/husky-configuration.md) | Husky設計時 |
+| lint-staged | [references/lint-staged-patterns.md](references/lint-staged-patterns.md) | lint-staged設計時 |
+| 最適化 | [references/performance-optimization.md](references/performance-optimization.md) | 改善時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/hook-requirements-template.md` | 要件整理テンプレート |
+| `assets/hook-policy-checklist.md` | 設計チェックリスト |
+| `assets/pre-commit-basic.sh` | pre-commit フックテンプレート |
+| `assets/commit-msg-template.sh` | commit-msg フックテンプレート |
+| `assets/pre-push-template.sh` | pre-push フックテンプレート |
+| `assets/lint-staged-advanced.js` | lint-staged 設定テンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

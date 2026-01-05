@@ -1,241 +1,125 @@
 ---
 name: artifact-management-gha
 description: |
-  ---
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  GitHub Actions のアーティファクト管理（upload/download、ジョブ間共有、保持期間、クリーンアップ）の設計と実装を支援するスキル。
+  データ受け渡しの設計、容量最適化、保管期間戦略を整理し、再現性の高い成果物管理を実現します。
 
-  - `.claude/skills/artifact-management-gha/resources/download-artifact.md`: Download Artifact 詳細
-  - `.claude/skills/artifact-management-gha/resources/retention-optimization.md`: 保持期間とストレージ最適化
-  - `.claude/skills/artifact-management-gha/resources/upload-artifact.md`: Upload Artifact 詳細
-  - `.claude/skills/artifact-management-gha/templates/artifact-workflow.yaml`: GitHub Actions Artifact Management ワークフロー例
-  - `.claude/skills/artifact-management-gha/scripts/cleanup-artifacts.mjs`: GitHub Actions Artifact Cleanup Script
+  Anchors:
+  • The Pragmatic Programmer / 適用: 成果物管理の実践的改善 / 目的: 確実な共有と品質維持
+  • GitHub Actions Artifacts / 適用: upload/download仕様 / 目的: 正しい設定と制限理解
+  • Lean Waste Reduction / 適用: 保持期間と容量管理 / 目的: ストレージ最適化
 
-  専門分野:
-  - (要追加)
-
-  使用タイミング:
-  - (要追加)
-
-  Use proactively when (要追加).
-version: 1.0.0
+  Trigger:
+  Use when designing or implementing GitHub Actions artifact upload/download flows, job-to-job data sharing, retention policies, or cleanup automation.
+allowed-tools:
+  - bash
+  - node
 ---
 
-# Artifact Management (GitHub Actions)
-
----
-
-name: artifact-management-gha
-description: |
-GitHub Actionsのアーティファクト管理スキル。
-ビルド成果物のアップロード・ダウンロード、ジョブ間/ワークフロー間でのデータ共有、
-保持期間設定、パス指定パターン、クリーンアップ戦略を提供。
-
-使用タイミング:
-
-- ビルド成果物（dist/, build/, \*.jar）をワークフローで共有する時
-- actions/upload-artifact、actions/download-artifactの構文を確認する時
-- アーティファクトの保持期間やストレージ最適化が必要な時
-
-version: 1.0.0
-skill_type: knowledge
-tags: [github-actions, artifacts, build, deployment, workflow]
-related_skills:
-
-- ../github-actions-syntax/SKILL.md
-- ../deployment-environments-gha/SKILL.md
-- ../caching-strategies-gha/SKILL.md
-  dependencies: []
-
----
+# アーティファクト管理（GitHub Actions）
 
 ## 概要
 
-GitHub Actionsのアーティファクト管理に関する知識を提供するスキルです。
-ビルド成果物の保存、ジョブ間共有、ワークフロー間アクセス、保持期間設定、ストレージ最適化を扱います。
+GitHub Actions ワークフロー内で成果物を管理するための設計・実装・検証の手順を提供する。
+必要な詳細は `references/` に外部化し、必要時にのみ参照する。
 
-## リソース構造
+- ワークフロー例は `assets/artifact-workflow.yaml` を使用
+- 仕様確認は `references/upload-artifact.md` と `references/download-artifact.md` を参照
 
-```
-artifact-management-gha/
-├── SKILL.md                          # 本ファイル（概要、コマンド参照）
-├── resources/
-│   ├── upload-artifact.md            # actions/upload-artifact詳細（309行）
-│   ├── download-artifact.md          # actions/download-artifact詳細（405行）
-│   └── retention-optimization.md     # 保持期間とストレージ最適化（288行）
-├── templates/
-│   └── artifact-workflow.yaml        # アーティファクト活用ワークフロー例
-└── scripts/
-    └── cleanup-artifacts.mjs         # アーティファクトクリーンアップスクリプト
-```
+## ワークフロー
 
-## コマンドリファレンス
+### Phase 1: 目的と利用パターンの整理
 
-### リソース読み取り
+**目的**: アーティファクトの用途と制約を明確化する
 
-```bash
-# アップロード構文詳細
-cat .claude/skills/artifact-management-gha/resources/upload-artifact.md
+**アクション**:
 
-# ダウンロード構文詳細
-cat .claude/skills/artifact-management-gha/resources/download-artifact.md
+1. `references/Level1_basics.md` で基礎概念を確認
+2. ジョブ間/ワークフロー間の共有要件を整理
+3. 期待される保持期間と容量制約を整理
 
-# 保持期間とストレージ最適化
-cat .claude/skills/artifact-management-gha/resources/retention-optimization.md
-```
+**Task**: `agents/analyze-artifact-context.md`
 
-### テンプレート・スクリプト
+### Phase 2: 設計と実装
 
-```bash
-# ワークフロー例
-cat .claude/skills/artifact-management-gha/templates/artifact-workflow.yaml
+**目的**: アップロード/ダウンロードのフローと保持戦略を設計する
 
-# クリーンアップスクリプト実行
-node .claude/skills/artifact-management-gha/scripts/cleanup-artifacts.mjs <owner> <repo>
-```
+**アクション**:
 
-## いつ使うか
+1. `assets/artifact-workflow.yaml` を基にフローを構成
+2. `references/upload-artifact.md` でアップロード仕様を確認
+3. `references/download-artifact.md` でダウンロード仕様を確認
+4. `references/retention-optimization.md` で保持期間を決定
 
-### シナリオ1: ビルド成果物の保存
+**Task**:
+- `agents/design-artifact-flow.md`
+- `agents/implement-artifact-steps.md`
 
-**トリガー**: ビルドしたdist/, build/, \*.jarを後続ジョブで使用
-**アクション**: upload-artifactでビルド成果物を保存
-**成果**: 各ジョブでビルドを繰り返さず、成果物を再利用
+### Phase 3: 検証と最適化
 
-### シナリオ2: クロスジョブデータ共有
+**目的**: 実装の信頼性とストレージ効率を確認する
 
-**トリガー**: テストジョブでビルドジョブの成果物が必要
-**アクション**: download-artifactで依存ジョブの成果物を取得
-**成果**: 効率的なジョブ分離と並列実行
+**アクション**:
 
-### シナリオ3: ストレージ最適化
+1. `scripts/validate-skill.mjs` でスキル構造を検証
+2. `scripts/cleanup-artifacts.mjs` で削除戦略を検討
+3. `scripts/log_usage.mjs` で改善フィードバックを記録
 
-**トリガー**: アーティファクトストレージコストが増大
-**アクション**: 保持期間短縮、不要ファイル除外、クリーンアップ自動化
-**成果**: ストレージコスト削減と管理効率化
+**Task**: `agents/optimize-retention.md`
 
-## 基本パターン
+## Task仕様ナビ
 
-### アップロード
-
-```yaml
-- uses: actions/upload-artifact@v4
-  with:
-    name: build-output
-    path: dist/
-    retention-days: 7
-    if-no-files-found: error
-```
-
-### ダウンロード
-
-```yaml
-- uses: actions/download-artifact@v4
-  with:
-    name: build-output
-    path: ./dist
-```
-
-### パターンマッチング
-
-```yaml
-path: |
-  **/*.js
-  **/*.css
-  !node_modules/**
-```
-
-## 主要オプション
-
-| オプション          | 説明                       | 推奨値                            |
-| ------------------- | -------------------------- | --------------------------------- |
-| `retention-days`    | 保持期間（1-90日）         | CI: 7-14日、リリース: 30-90日     |
-| `if-no-files-found` | ファイル未発見時           | 必須: `error`, オプション: `warn` |
-| `compression-level` | 圧縮レベル（0-9）          | デフォルト: 6, テキスト: 9        |
-| `pattern`           | ダウンロード時のパターン   | `build-*`                         |
-| `merge-multiple`    | 複数アーティファクトマージ | `true`/`false`                    |
-
-## ワークフロー例
-
-### ビルド→テスト→デプロイ
-
-```yaml
-jobs:
-  build:
-    steps:
-      - run: pnpm run build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-  test:
-    needs: build
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-      - run: pnpm test
-
-  deploy:
-    needs: test
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-      - run: ./deploy.sh
-```
-
-### マトリックスビルド
-
-```yaml
-strategy:
-  matrix:
-    os: [ubuntu, windows, macos]
-steps:
-  - uses: actions/upload-artifact@v4
-    with:
-      name: build-${{ matrix.os }}
-      path: dist/
-```
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| 利用パターン整理 | 目的と制約の整理 | ワークフロー要件 | 利用パターン要約 | `references/Level1_basics.md` | Phase 1 |
+| フロー設計 | upload/downloadの設計 | 利用パターン要約 | フロー設計メモ | `assets/artifact-workflow.yaml` | Phase 2 前半 |
+| 実装手順整理 | 設定手順の明確化 | フロー設計メモ | 実装チェックリスト | `references/upload-artifact.md` | Phase 2 後半 |
+| 保持最適化 | 保持期間と削除戦略 | 実装チェックリスト | 最適化メモ | `references/retention-optimization.md` | Phase 3 |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- 明確なアーティファクト名（`build-v1.2.3`）
-- 適切な保持期間設定（デフォルト90日は過剰）
-- 不要ファイル除外（`!node_modules/**`）
-- サイズの大きいアーティファクトは圧縮
+- 利用パターン（ジョブ間/ワークフロー間）を明確化する
+- retention-days を目的に合わせて明示する
+- アーティファクト名に識別子（SHA/Run ID）を含める
+- 容量削減のために不要ファイルを除外する
+- クリーンアップの方針を事前に決める
 
 ### 避けるべきこと
 
-- 不要ファイルアップロード（`node_modules/`, `.git/`）
-- 過度に長い保持期間
-- 曖昧な命名（`output`, `result`）
+- 保持期間の無制限設定
+- 古い成果物を参照するフロー設計
+- 圧縮前の不要ファイル削除を省略する
+- cleanup を手動運用だけに依存する
 
-## リソースへの参照
+## リソース参照
 
-詳細はリソースを参照：
+### 参照資料
 
-- **upload-artifact.md**: パス指定、除外パターン、オプション詳細
-- **download-artifact.md**: クロスワークフローアクセス、パターンマッチング
-- **retention-optimization.md**: 保持期間戦略、コスト削減、自動クリーンアップ
+- `references/Level1_basics.md`: 基本概念と最小チェック
+- `references/Level2_intermediate.md`: 実装パターン
+- `references/Level3_advanced.md`: 複数アーティファクト運用
+- `references/Level4_expert.md`: 最適化とトラブルシュート
+- `references/upload-artifact.md`: upload-artifact の仕様
+- `references/download-artifact.md`: download-artifact の仕様
+- `references/retention-optimization.md`: 保持期間と容量最適化
+- `references/legacy-skill.md`: 旧版要約（移行時のみ参照）
 
-## 関連スキル
+### スクリプト
 
-| スキル名                        | パス                                                  | 使用タイミング     |
-| ------------------------------- | ----------------------------------------------------- | ------------------ |
-| **github-actions-syntax**       | `.claude/skills/github-actions-syntax/SKILL.md`       | YAML構文基本       |
-| **deployment-environments-gha** | `.claude/skills/deployment-environments-gha/SKILL.md` | デプロイ時         |
-| **caching-strategies-gha**      | `.claude/skills/caching-strategies-gha/SKILL.md`      | キャッシュ使い分け |
+- `scripts/cleanup-artifacts.mjs`: アーティファクト削除の補助
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
 
-## メトリクス
+### テンプレート
 
-- **ストレージ使用量**: リポジトリ設定 → Actions → Artifacts storage
-- **アーティファクトサイズ**: ワークフローログで確認（推奨: 100MB以下）
+- `assets/artifact-workflow.yaml`: ワークフロー例
 
 ## 変更履歴
 
-- **1.0.0** (2025-01-27): 初版作成
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 1.0.1   | 2025-12-31 | 18-skills.md 仕様に準拠し、Task仕様ナビ追加         |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

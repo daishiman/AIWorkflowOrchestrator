@@ -1,346 +1,147 @@
 ---
 name: slo-sli-design
 description: |
-  SLO/SLI設計とエラーバジェット管理の専門スキル。
+  SLO（Service Level Objective）とSLI（Service Level Indicator）の設計、
+  エラーバジェット管理、信頼性目標の策定を支援するスキル。
+  Googleの SRE プラクティスに基づき、適切な信頼性目標を設計する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Site Reliability Engineering (Google) / 適用: SLO/SLI設計原則 / 目的: 信頼性目標の最適化
+  • The Site Reliability Workbook (Google) / 適用: 実践的なSLO実装 / 目的: 運用可能なSLO設計
+  • Implementing Service Level Objectives (Hidalgo) / 適用: SLO成熟度モデル / 目的: 段階的導入
 
-  - `.claude/skills/slo-sli-design/resources/error-budget-management.md`: Error Budget Managementリソース
-  - `.claude/skills/slo-sli-design/resources/sli-design-guide.md`: Sli Design Guideリソース
-
-  - `.claude/skills/slo-sli-design/templates/slo-definition-template.yaml`: Slo Definitionテンプレート
-
-  - `.claude/skills/slo-sli-design/scripts/calculate-error-budget.mjs`: Calculate Error Budgetスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when designing SLOs, defining SLIs, calculating error budgets, or establishing reliability targets.
+  SLO design, SLI definition, error budget, reliability target, service level objective
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
 ---
 
-# SLO/SLI Design - サービスレベル目標設計
+# SLO/SLI Design
 
 ## 概要
 
-SLO（Service Level Objective）と SLI（Service Level Indicator）は、
-サービス品質を定量的に定義・測定・管理するためのフレームワークです。
+SLO/SLI設計とエラーバジェット管理を支援するスキル。
+サービスの信頼性目標を適切に設計し、運用可能な形で定義する。
 
-このスキルは、Google SRE の実践と『Site Reliability Engineering』に基づく
-SLO/SLI 設計とエラーバジェット管理の知識を提供します。
+---
 
-## 核心概念
-
-### 1. SLI/SLO/SLA の関係
-
-**SLI (Service Level Indicator)**:
-
-- 定義: サービス品質を測定する指標
-- 例: リクエスト成功率、レイテンシ P99、エラー率
-- 測定: システムから自動収集可能な定量的指標
-
-**SLO (Service Level Objective)**:
-
-- 定義: SLI の目標値（社内目標）
-- 例: 可用性 99.9%、P99 レイテンシ < 200ms
-- 用途: 信頼性と開発速度のバランス調整
-
-**SLA (Service Level Agreement)**:
-
-- 定義: 顧客との契約（法的拘束力）
-- 例: 可用性 99.5%、違反時は返金
-- 関係: SLO > SLA（SLO の方が厳しい）
-
-**関係図**:
+## ワークフロー
 
 ```
-SLI = 測定指標 (何を測るか)
-  ↓
-SLO = 目標値 (どこまで達成するか、社内目標)
-  ↓
-SLA = 契約 (顧客との約束、SLOより緩い)
+identify-cuj → design-sli → set-slo → calculate-budget → define-policy
+                                              ↓
+                         review-slo ← monitor-budget
 ```
 
-### 2. ユーザー中心の SLI 設計
+### Task 1: CUJ特定（identify-cuj）
 
-**設計原則**:
-内部システム健全性ではなく、ユーザーが体験する品質を測定
+Critical User Journey（重要なユーザージャーニー）を特定する。
 
-**アンチパターン**:
-❌ CPU 使用率、メモリ使用率 → 内部指標
-✅ リクエスト成功率、レイテンシ → ユーザー体験
+**Task**: `agents/identify-cuj.md` を参照
 
-**SLI 設計ステップ**:
+### Task 2: SLI設計（design-sli）
 
-1. ユーザージャーニーを特定
-2. 各ジャーニーの品質を測定可能な指標に変換
-3. 自動測定可能か検証
-4. SLI を明確に定義
+測定可能なService Level Indicatorを設計する。
 
-### 3. SLI の種類
+**Task**: `agents/design-sli.md` を参照
 
-#### 可用性 SLI（Availability）
+### Task 3: SLO設定（set-slo）
 
-**定義**: 成功したリクエストの割合
+適切なService Level Objectiveを設定する。
 
-**計算式**:
+**Task**: `agents/set-slo.md` を参照
 
-```
-可用性 = 成功リクエスト数 / 全リクエスト数
-```
+### Task 4: エラーバジェット計算（calculate-budget）
 
-**成功の定義**:
+エラーバジェットを計算し、消費率を追跡する。
 
-- HTTP ステータスコード 2xx
-- ビジネスロジックが正常に完了
-- 応答時間が許容範囲内
+**Task**: `agents/calculate-budget.md` を参照
 
-**測定方法**:
+### Task 5: ポリシー定義（define-policy）
 
-```
-# Prometheusクエリ例
-sum(rate(http_requests_total{status=~"2.."}[5m]))
-/
-sum(rate(http_requests_total[5m]))
-```
+エラーバジェット消費時のポリシーを定義する。
 
-#### レイテンシ SLI（Latency）
+**Task**: `agents/define-policy.md` を参照
 
-**定義**: リクエスト処理時間の分布
+### Task 6: SLOレビュー（review-slo）
 
-**パーセンタイル選択**:
+既存のSLOをレビューし、改善点を特定する。
 
-- P50（中央値）: 半数のユーザー体験
-- P95: 95%のユーザー体験
-- P99: 99%のユーザー体験（ロングテール）
+**Task**: `agents/review-slo.md` を参照
 
-**目標設定例**:
+---
 
-```
-P50 < 100ms  # 半数のユーザーは100ms以内
-P95 < 300ms  # 95%のユーザーは300ms以内
-P99 < 500ms  # 99%のユーザーは500ms以内
-```
+## Task仕様（ナビゲーション）
 
-**測定方法**:
+| Task             | 責務                 | 入力                  | 出力                     |
+| ---------------- | -------------------- | --------------------- | ------------------------ |
+| identify-cuj     | CUJ特定              | サービス概要          | CUJ一覧                  |
+| design-sli       | SLI設計              | CUJ一覧               | SLI定義書                |
+| set-slo          | SLO設定              | SLI定義書             | SLO定義書                |
+| calculate-budget | エラーバジェット計算 | SLO定義書・実績データ | エラーバジェットレポート |
+| define-policy    | ポリシー定義         | SLO定義書             | バジェットポリシー       |
+| review-slo       | SLOレビュー          | 既存SLO・実績データ   | 改善提案レポート         |
 
-```
-# Prometheusクエリ例
-histogram_quantile(0.99,
-  rate(http_request_duration_seconds_bucket[5m])
-)
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+**注記**: 1 Task = 1 責務。CUJ特定から順番に実行することを推奨。
 
-#### エラー率 SLI（Error Rate）
+---
 
-**定義**: エラーレスポンスの割合
+## ベストプラクティス
 
-**計算式**:
+### すべきこと
 
-```
-エラー率 = エラーリクエスト数 / 全リクエスト数
-```
+| 推奨事項                                 | 理由                               |
+| ---------------------------------------- | ---------------------------------- |
+| ユーザー視点でCUJを定義する              | 技術指標ではなくユーザー体験を測定 |
+| 測定可能で自動化可能なSLIを設計する      | 継続的なモニタリングを可能にする   |
+| 現実的で達成可能なSLOを設定する          | 100%は目標としない                 |
+| エラーバジェットポリシーを事前に定義する | 消費時のアクションを明確にする     |
+| 定期的にSLOをレビューする                | ビジネス要件の変化に対応           |
 
-**エラーの定義**:
+### 避けるべきこと
 
-- HTTP ステータスコード 5xx（サーバーエラー）
-- HTTP ステータスコード 4xx（一部、429 等）
-- タイムアウト
+| 禁止事項                               | 問題点                       |
+| -------------------------------------- | ---------------------------- |
+| 100%の可用性を目標にする               | 非現実的で改善余地がなくなる |
+| 技術指標のみでSLIを設計する            | ユーザー体験と乖離するリスク |
+| エラーバジェットを無視して開発を続ける | 信頼性の低下                 |
+| 単一のSLOで全てをカバーしようとする    | 重要な指標の見落とし         |
 
-**測定方法**:
+---
 
-```
-# Prometheusクエリ例
-sum(rate(http_requests_total{status=~"5.."}[5m]))
-/
-sum(rate(http_requests_total[5m]))
-```
+## リソース参照
 
-### 4. SLO 設定フレームワーク
+### scripts/（決定論的処理）
 
-#### 現実的な SLO 設定
+| スクリプト                   | 用途                 | 使用例                                                           |
+| ---------------------------- | -------------------- | ---------------------------------------------------------------- |
+| `calculate-error-budget.mjs` | エラーバジェット計算 | `node scripts/calculate-error-budget.mjs --slo 99.9 --period 30` |
+| `log_usage.mjs`              | フィードバック記録   | `node scripts/log_usage.mjs --result success`                    |
 
-**ステップ 1**: 過去データ分析
+### references/（詳細知識）
 
-```
-過去3ヶ月の実績:
-- 可用性: 99.95%
-- P99レイテンシ: 250ms
-- エラー率: 0.05%
-```
+| リソース             | パス                                                                           | 読込条件                       |
+| -------------------- | ------------------------------------------------------------------------------ | ------------------------------ |
+| SLI設計ガイド        | [references/sli-design-guide.md](references/sli-design-guide.md)               | SLI設計の詳細が必要時          |
+| エラーバジェット管理 | [references/error-budget-management.md](references/error-budget-management.md) | エラーバジェットの詳細が必要時 |
 
-**ステップ 2**: 技術制約の考慮
+### assets/（テンプレート）
 
-```
-データベース可用性: 99.9% (外部依存)
-→ 自サービスは最大 99.9% までしか達成不可
-```
+| アセット                              | 用途                |
+| ------------------------------------- | ------------------- |
+| `assets/slo-definition-template.yaml` | SLO定義テンプレート |
 
-**ステップ 3**: ビジネス期待との調整
+---
 
-```
-ビジネス要件: 99.99% (年間52分のダウンタイム)
-技術制約: 99.9% (年間8.76時間のダウンタイム)
-→ 現実的な折衷案: 99.95% (年間4.38時間)
-```
+## 変更履歴
 
-**ステップ 4**: 段階的目標設定
-
-```
-初期SLO: 99.9% (達成可能)
-6ヶ月後: 99.95% (段階的厳格化)
-1年後: 99.99% (最終目標)
-```
-
-#### 複数 SLO の管理
-
-**単一サービスで複数の SLO**:
-
-```yaml
-slos:
-  - name: "API可用性"
-    sli: "成功リクエスト率"
-    target: 99.9%
-    window: 30日間
-
-  - name: "APIレイテンシ"
-    sli: "P99レイテンシ"
-    target: < 500ms
-    window: 30日間
-
-  - name: "エラー率"
-    sli: "5xxエラー率"
-    target: < 0.1%
-    window: 30日間
-```
-
-### 5. エラーバジェット
-
-#### 計算方法
-
-**公式**:
-
-```
-エラーバジェット = (1 - SLO) × 測定期間のリクエスト数
-```
-
-**例**:
-
-```
-SLO: 99.9%
-測定期間: 30日間
-総リクエスト数: 100,000,000
-
-エラーバジェット = (1 - 0.999) × 100,000,000
-                = 0.001 × 100,000,000
-                = 100,000リクエスト
-
-→ 30日間で100,000回のエラーまで許容
-```
-
-#### エラーバジェット消費追跡
-
-**リアルタイム計算**:
-
-```
-現在のエラー数: 50,000
-エラーバジェット: 100,000
-残りバジェット: 50,000 (50%)
-消費ペース: 2,000/日
-予測枯渇日: 25日後
-```
-
-**測定方法**:
-
-```
-# Prometheusクエリ例
-# 30日間のエラー数
-sum(increase(http_requests_total{status=~"5.."}[30d]))
-
-# エラーバジェット残量
-error_budget_total - sum(increase(http_requests_total{status=~"5.."}[30d]))
-```
-
-#### エラーバジェットポリシー
-
-**バジェット枯渇時のアクション**:
-
-| 残量   | アクション                 |
-| ------ | -------------------------- |
-| > 50%  | 通常開発速度               |
-| 25-50% | 新機能デプロイ慎重化       |
-| 10-25% | 新機能凍結、信頼性改善優先 |
-| < 10%  | 緊急対応、すべての変更凍結 |
-
-## 設計チェックリスト
-
-### SLI 設計
-
-- [ ] SLI はユーザー体験を正確に反映しているか？
-- [ ] SLI は自動測定可能で明確に定義されているか？
-- [ ] SLI は曖昧さなく、誰が測定しても同じ結果になるか？
-- [ ] ビジネス目標と SLI は整合しているか？
-
-### SLO 設定
-
-- [ ] SLO は過去データと技術制約を考慮して現実的か？
-- [ ] SLO は達成可能だが、容易すぎない適切な難易度か？
-- [ ] 複数 SLO がバランスよく設定されているか（可用性、レイテンシ、エラー率）？
-- [ ] 測定期間（ローリングウィンドウ）は適切か？
-
-### エラーバジェット管理
-
-- [ ] エラーバジェットの計算方法は明確で自動化可能か？
-- [ ] バジェット消費状況をリアルタイムで追跡できるか？
-- [ ] バジェット枯渇時のエスカレーションプロセスが定義されているか？
-- [ ] SLO 定期レビュープロセスが確立されているか？
-
-## 関連リソース
-
-詳細な設計ガイドと実装パターンは以下のリソースを参照:
-
-- **SLI 設計ガイド**: `.claude/skills/slo-sli-design/resources/sli-design-guide.md`
-- **SLO 設定フレームワーク**: `.claude/skills/slo-sli-design/resources/slo-setting-framework.md`
-- **エラーバジェット管理**: `.claude/skills/slo-sli-design/resources/error-budget-management.md`
-- **SLO 定義テンプレート**: `.claude/skills/slo-sli-design/templates/slo-definition-template.yaml`
-
-## 関連スキル
-
-このスキルは以下のスキルと連携します:
-
-- `.claude/skills/observability-pillars/SKILL.md` - メトリクス収集と可視化
-- `.claude/skills/alert-design/SKILL.md` - SLO 違反アラートの設計
-- `.claude/skills/structured-logging/SKILL.md` - SLI 測定に必要なログ設計
-
-## 使用例
-
-### 開発環境での利用
-
-```bash
-# このスキルを参照
-cat .claude/skills/slo-sli-design/SKILL.md
-
-# SLI設計ガイドを確認
-cat .claude/skills/slo-sli-design/resources/sli-design-guide.md
-
-# SLO定義テンプレートを使用
-cat .claude/skills/slo-sli-design/templates/slo-definition-template.yaml
-```
-
-### エージェントからの参照
-
-```markdown
-## Phase 2: SLO/SLI 設計とメトリクス定義
-
-**使用スキル**: `.claude/skills/slo-sli-design/SKILL.md`
-
-**実行内容**:
-
-1. ユーザー中心の SLI 定義
-2. 現実的な SLO 設定とエラーバジェット設計
-3. ダッシュボードとメトリクス可視化設計
-```
-
-## 参照文献
-
-- Betsy Beyer et al., 『Site Reliability Engineering』, O'Reilly, 2016
-- Alex Hidalgo, 『Implementing Service Level Objectives』, O'Reilly, 2020
-- Google SRE Workbook, https://sre.google/workbook/table-of-contents/
+| Version | Date       | Changes                        |
+| ------- | ---------- | ------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様準拠で全面改訂 |
+| 1.0.0   | 2025-12-24 | 初版作成                       |

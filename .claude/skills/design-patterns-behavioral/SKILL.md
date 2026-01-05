@@ -1,410 +1,153 @@
 ---
 name: design-patterns-behavioral
 description: |
-    GoF（Gang of Four）の行動パターンを専門とするスキル。
-    エリック・ガンマの『デザインパターン』に基づき、オブジェクト間の通信と
-    責務の分散を効果的に設計するパターンを提供します。
-    専門分野:
-    - Strategy Pattern: アルゴリズムのファミリーをカプセル化し、交換可能にする
-    - Template Method Pattern: アルゴリズムの骨格を定義し、サブクラスで詳細を実装
-    - Command Pattern: 操作をオブジェクトとしてカプセル化し、実行を遅延または取消可能に
-    - Chain of Responsibility: リクエストを処理者のチェーンに沿って渡す
-    - Observer Pattern: オブジェクト間の一対多の依存関係を定義
-    - State Pattern: オブジェクトの内部状態に応じて動作を変更
-    使用タイミング:
-    - ワークフローエンジンでアルゴリズムの切り替えが必要な時
-    - 共通処理フローを定義し、個別実装を分離したい時
-    - 操作の実行、取り消し、キューイングが必要な時
-    - イベント駆動アーキテクチャを設計する時
-    Use proactively when designing workflow engines, plugin systems,
-    or any architecture requiring flexible algorithm selection.
+  GoFの行動パターンを用いて、オブジェクト間の責務分散と通信設計を支援するスキル。
+  パターン選定、実装方針、検証手順を体系化する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Design Patterns / 適用: 行動パターンの設計理論 / 目的: 相互作用の整理
+  • Command Pattern / 適用: 操作の実行・取り消し / 目的: 実行制御の柔軟化
+  • Strategy Pattern / 適用: アルゴリズム切替 / 目的: 変更容易性の確保
 
-  - `.claude/skills/design-patterns-behavioral/resources/chain-of-responsibility-pattern.md`: リクエスト処理チェーンとミドルウェアパイプラインの設計パターン
-  - `.claude/skills/design-patterns-behavioral/resources/command-pattern.md`: 操作のカプセル化とUndo/Redo機能の実装パターン
-  - `.claude/skills/design-patterns-behavioral/resources/observer-pattern.md`: 状態変化の自動通知とイベント駆動アーキテクチャの実現
-  - `.claude/skills/design-patterns-behavioral/resources/pattern-selection-guide.md`: 適切な行動パターンを選択するための判断フローチャートと比較マトリックス
-  - `.claude/skills/design-patterns-behavioral/resources/state-pattern.md`: 状態に応じた振る舞い変更と状態遷移管理
-  - `.claude/skills/design-patterns-behavioral/resources/strategy-pattern.md`: アルゴリズムの交換可能性とStrategy実装詳細
-  - `.claude/skills/design-patterns-behavioral/resources/template-method-pattern.md`: 共通処理フローの定義とフックポイント設計
-  - `.claude/skills/design-patterns-behavioral/templates/strategy-implementation.md`: Strategy パターンの実装テンプレートとコード例
-  - `.claude/skills/design-patterns-behavioral/templates/template-method-implementation.md`: Template Method パターンの実装テンプレートとコード例
-  - `.claude/skills/design-patterns-behavioral/scripts/validate-pattern-usage.mjs`: パターン使用の適切性を検証するスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when designing flexible object collaboration, selecting behavioral patterns, or validating pattern usage in implementations.
+  behavioral design patterns, strategy, command, observer, state, template method
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# Design Patterns - Behavioral
+# design-patterns-behavioral
 
 ## 概要
 
-このスキルは、GoF（Gang of Four）が体系化した 23 のデザインパターンのうち、
-行動パターン（Behavioral Patterns）に特化した知識を提供します。
+GoFの行動パターンを用いて、責務分散・通信設計・検証を支援する。
 
-行動パターンは、オブジェクト間の通信パターンとアルゴリズムの責務分散に焦点を当て、
-柔軟で拡張可能なシステム設計を可能にします。
+## ワークフロー
 
-**主要な価値**:
+### Phase 1: 要件整理
 
-- アルゴリズムの交換可能性による拡張性の向上
-- 共通処理フローの標準化と個別実装の分離
-- オブジェクト間の疎結合による保守性の向上
+**目的**: 課題と制約を整理し、対象パターンの候補を明確化する。
 
-**対象ユーザー**:
+**アクション**:
 
-- ワークフローエンジンを設計するエージェント
-- プラグインシステムを構築する開発者
-- 拡張性の高いアーキテクチャを設計するチーム
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/pattern-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-## リソース構造
+**Task**: `agents/analyze-pattern-requirements.md` を参照
 
-```
-design-patterns-behavioral/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── strategy-pattern.md                     # Strategyパターン詳細
-│   ├── template-method-pattern.md              # Template Methodパターン詳細
-│   ├── command-pattern.md                      # Commandパターン詳細
-│   ├── chain-of-responsibility-pattern.md      # Chain of Responsibilityパターン詳細
-│   ├── observer-pattern.md                     # Observerパターン詳細
-│   ├── state-pattern.md                        # Stateパターン詳細
-│   └── pattern-selection-guide.md              # パターン選択ガイド
-├── scripts/
-│   └── validate-pattern-usage.mjs              # パターン使用検証スクリプト
-└── templates/
-    ├── strategy-implementation.md              # Strategy実装テンプレート
-    └── template-method-implementation.md       # Template Method実装テンプレート
-```
+### Phase 2: パターン設計
 
-## コマンドリファレンス
+**目的**: 行動パターンの選定と設計方針を決定する。
 
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+**アクション**:
 
-### リソース読み取り
+1. `references/pattern-selection-guide.md` で選定基準を確認する。
+2. `assets/pattern-selection-checklist.md` で判断観点を揃える。
+3. 個別パターンのガイドを参照する。
 
-```bash
-# Strategyパターン詳細
-cat .claude/skills/design-patterns-behavioral/resources/strategy-pattern.md
+**Task**: `agents/design-pattern-application.md` を参照
 
-# Template Methodパターン詳細
-cat .claude/skills/design-patterns-behavioral/resources/template-method-pattern.md
+### Phase 3: 実装と構成
 
-# Commandパターン詳細
-cat .claude/skills/design-patterns-behavioral/resources/command-pattern.md
+**目的**: パターンの実装方針を整理し、テンプレートに反映する。
 
-# Chain of Responsibilityパターン詳細
-cat .claude/skills/design-patterns-behavioral/resources/chain-of-responsibility-pattern.md
+**アクション**:
 
-# Observerパターン詳細
-cat .claude/skills/design-patterns-behavioral/resources/observer-pattern.md
+1. `assets/strategy-implementation.md` を参照して構成を整理する。
+2. `assets/template-method-implementation.md` を参照して設計を整理する。
+3. 必要なパターンの実装メモを作成する。
 
-# Stateパターン詳細
-cat .claude/skills/design-patterns-behavioral/resources/state-pattern.md
+**Task**: `agents/implement-pattern-solution.md` を参照
 
-# パターン選択ガイド
-cat .claude/skills/design-patterns-behavioral/resources/pattern-selection-guide.md
-```
+### Phase 4: 検証と記録
 
-### スクリプト実行
+**目的**: 適用結果を検証し、改善サイクルを回す。
 
-```bash
-# パターン使用検証
-node .claude/skills/design-patterns-behavioral/scripts/validate-pattern-usage.mjs <file.ts>
-```
+**アクション**:
 
-### テンプレート参照
+1. `scripts/validate-pattern-usage.mjs` で適用を検証する。
+2. `assets/pattern-evaluation-template.md` で評価を整理する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-```bash
-# Strategy実装テンプレート
-cat .claude/skills/design-patterns-behavioral/templates/strategy-implementation.md
+**Task**: `agents/validate-pattern-usage.md` を参照
 
-# Template Method実装テンプレート
-cat .claude/skills/design-patterns-behavioral/templates/template-method-implementation.md
-```
+## Task仕様ナビ
 
----
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-pattern-requirements | Phase 1開始時 | 課題/制約 | パターン候補、要件メモ |
+| design-pattern-application | Phase 2開始時 | 要件メモ | 選定結果、設計方針 |
+| implement-pattern-solution | Phase 3開始時 | 設計方針 | 実装方針メモ、構成案 |
+| validate-pattern-usage | Phase 4開始時 | 実装方針メモ | 検証レポート、改善提案 |
 
-## 核心知識
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-### 1. Strategy Pattern（戦略パターン）
+## ベストプラクティス
 
-**目的**: アルゴリズムのファミリーを定義し、それぞれをカプセル化して交換可能にする
+### すべきこと
 
-**構成要素**:
+| 推奨事項 | 理由 |
+| --- | --- |
+| パターン選定理由を明記する | 変更時の判断が明確になる |
+| 責務境界を明文化する | 依存が過剰になるのを防ぐ |
+| 検証結果を記録する | 改善が継続する |
+| 既存設計との整合を確認する | 不整合による複雑化を防ぐ |
 
-- **Strategy（戦略インターフェース）**: アルゴリズムの共通インターフェース
-- **ConcreteStrategy（具体的戦略）**: アルゴリズムの具体的実装
-- **Context（コンテキスト）**: Strategy を保持し、クライアントとの橋渡しを行う
+### 避けるべきこと
 
-**適用場面**:
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 目的が曖昧なまま適用 | 過剰設計になる |
+| 似た責務の重複 | 読みにくくなる |
+| 検証を省略する | 目的未達のまま残る |
 
-- [ ] 同じ目的を達成する複数のアルゴリズムが存在する
-- [ ] アルゴリズムを実行時に切り替える必要がある
-- [ ] アルゴリズムの詳細をクライアントから隠蔽したい
+## リソース参照
 
-**ワークフローエンジンへの適用**:
+### scripts/（決定論的処理）
 
-- IWorkflowExecutor が Strategy Interface
-- 各ワークフロー実装（認証、通知等）が Concrete Strategy
-- WorkflowEngine が Context
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-pattern-usage.mjs` | パターン適用の検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-詳細: `resources/strategy-pattern.md`
+### references/（詳細知識）
 
----
-
-### 2. Template Method Pattern（テンプレートメソッドパターン）
-
-**目的**: アルゴリズムの骨格を定義し、一部の処理をサブクラスに委ねる
-
-**構成要素**:
-
-- **AbstractClass（抽象クラス）**: テンプレートメソッドと抽象メソッドを定義
-- **ConcreteClass（具体クラス）**: 抽象メソッドを実装
-
-**Hook Methods（フックメソッド）**:
-
-- オプショナルな拡張ポイント
-- デフォルト実装を持ち、必要に応じてオーバーライド
-
-**適用場面**:
-
-- [ ] 複数のクラスに共通のアルゴリズム構造がある
-- [ ] アルゴリズムの一部のみが異なる
-- [ ] 共通処理を一箇所に集約したい
-
-**ワークフローエンジンへの適用**:
-
-- 共通フロー: 検証 → 前処理 → 実行 → 後処理 → エラーハンドリング
-- 各ステップをフックポイントとして提供
-- BaseWorkflowExecutor で骨格を定義
-
-詳細: `resources/template-method-pattern.md`
-
----
-
-### 3. Command Pattern（コマンドパターン）
-
-**目的**: 操作をオブジェクトとしてカプセル化し、実行の遅延・キューイング・取り消しを可能にする
-
-**構成要素**:
-
-- **Command（コマンドインターフェース）**: execute()メソッドを定義
-- **ConcreteCommand（具体コマンド）**: 実際の処理を実装
-- **Invoker（起動者）**: コマンドの実行を制御
-- **Receiver（受信者）**: 実際の処理を行うオブジェクト
-
-**適用場面**:
-
-- [ ] 操作の履歴管理が必要（Undo/Redo）
-- [ ] 操作のキューイングやスケジューリングが必要
-- [ ] 操作のログ記録が必要
-
-**ワークフローエンジンへの適用**:
-
-- ワークフロー操作を Command としてカプセル化
-- 操作履歴の管理とロールバック
-- バッチ実行やスケジューリング
-
-詳細: `resources/command-pattern.md`
-
----
-
-### 4. Chain of Responsibility Pattern（責任の連鎖パターン）
-
-**目的**: リクエストを処理者のチェーンに沿って渡し、適切な処理者が対応
-
-**構成要素**:
-
-- **Handler（ハンドラインターフェース）**: リクエスト処理の共通インターフェース
-- **ConcreteHandler（具体ハンドラ）**: 特定のリクエストを処理
-- **Client（クライアント）**: チェーンの最初にリクエストを送信
-
-**適用場面**:
-
-- [ ] 複数のオブジェクトがリクエストを処理する可能性がある
-- [ ] 処理者を動的に決定したい
-- [ ] リクエストの送信者と受信者を疎結合にしたい
-
-**ワークフローエンジンへの適用**:
-
-- バリデーションチェーン
-- ミドルウェアパイプライン
-- エラーハンドリングチェーン
-
-詳細: `resources/chain-of-responsibility-pattern.md`
-
----
-
-### 5. Observer Pattern（オブザーバーパターン）
-
-**目的**: オブジェクト間の一対多の依存関係を定義し、状態変化を自動通知
-
-**構成要素**:
-
-- **Subject（サブジェクト）**: 状態を持ち、Observer を管理
-- **Observer（オブザーバー）**: 状態変化の通知を受け取るインターフェース
-- **ConcreteObserver（具体オブザーバー）**: 通知を受けて処理を行う
-
-**適用場面**:
-
-- [ ] オブジェクトの状態変化を他のオブジェクトに通知したい
-- [ ] 通知先を動的に追加・削除したい
-- [ ] イベント駆動アーキテクチャを実現したい
-
-**ワークフローエンジンへの適用**:
-
-- ワークフロー状態変化の通知
-- ログ記録、メトリクス収集
-- UI 更新トリガー
-
-詳細: `resources/observer-pattern.md`
-
----
-
-### 6. State Pattern（ステートパターン）
-
-**目的**: オブジェクトの内部状態に応じて動作を変更する
-
-**構成要素**:
-
-- **Context（コンテキスト）**: 現在の状態を保持
-- **State（状態インターフェース）**: 状態ごとの振る舞いを定義
-- **ConcreteState（具体状態）**: 特定の状態での振る舞いを実装
-
-**適用場面**:
-
-- [ ] オブジェクトの振る舞いが状態に依存する
-- [ ] 状態遷移のロジックが複雑
-- [ ] if-else や switch 文が状態判定で多用されている
-
-**ワークフローエンジンへの適用**:
-
-- ワークフローの状態管理（PENDING → PROCESSING → COMPLETED/FAILED）
-- 状態に応じた操作の制限
-- 状態遷移の明示的な管理
-
-詳細: `resources/state-pattern.md`
-
----
-
-## パターン選択ガイド
-
-### 判断フローチャート
-
-```
-アルゴリズムを切り替える必要がある？
-├─ はい → Strategy Pattern
-└─ いいえ
-    ↓
-共通の処理フローがある？
-├─ はい → Template Method Pattern
-└─ いいえ
-    ↓
-操作を履歴管理・取り消しする必要がある？
-├─ はい → Command Pattern
-└─ いいえ
-    ↓
-複数のオブジェクトがリクエストを処理する可能性がある？
-├─ はい → Chain of Responsibility Pattern
-└─ いいえ
-    ↓
-状態変化を他のオブジェクトに通知する必要がある？
-├─ はい → Observer Pattern
-└─ いいえ
-    ↓
-オブジェクトの振る舞いが状態に依存する？
-├─ はい → State Pattern
-└─ いいえ → 他のパターンを検討
-```
-
-### パターン組み合わせ
-
-| 組み合わせ                         | 用途                                |
-| ---------------------------------- | ----------------------------------- |
-| Strategy + Template Method         | アルゴリズム切り替え + 共通フロー   |
-| Strategy + Factory                 | アルゴリズム切り替え + 動的生成     |
-| Command + Observer                 | 操作履歴 + 状態通知                 |
-| State + Observer                   | 状態管理 + 状態変化通知             |
-| Chain of Responsibility + Strategy | パイプライン + アルゴリズム切り替え |
-
-詳細: `resources/pattern-selection-guide.md`
-
----
-
-## 実装ワークフロー
-
-### Phase 1: パターン選択
-
-1. 要件の分析
-2. パターン選択ガイドに基づく判断
-3. 適用パターンの決定
-
-**判断基準**:
-
-- [ ] 要件に最も適したパターンが選択されているか？
-- [ ] パターンの組み合わせは適切か？
-- [ ] 過剰設計になっていないか？
-
-### Phase 2: インターフェース設計
-
-1. パターンの構成要素を特定
-2. インターフェースの定義
-3. 型パラメータの設計
-
-**判断基準**:
-
-- [ ] インターフェースは最小限か？
-- [ ] 型安全性が確保されているか？
-- [ ] 拡張性が考慮されているか？
-
-### Phase 3: 実装
-
-1. 抽象クラス/インターフェースの実装
-2. 具体クラスの実装
-3. コンテキスト/クライアントの実装
-
-**判断基準**:
-
-- [ ] SOLID 原則に準拠しているか？
-- [ ] パターンの意図が正しく実現されているか？
-- [ ] テスト可能な構造になっているか？
-
-### Phase 4: 検証
-
-1. ユニットテストの作成
-2. パターン適用の効果確認
-3. リファクタリング
-
-**判断基準**:
-
-- [ ] パターン適用により目的が達成されているか？
-- [ ] コードの可読性は向上しているか？
-- [ ] パフォーマンスに問題はないか？
-
----
-
-## 関連スキル
-
-- `.claude/skills/factory-patterns/SKILL.md`: Factory パターンとの組み合わせ
-- `.claude/skills/open-closed-principle/SKILL.md`: OCP 準拠設計
-- `.claude/skills/interface-segregation/SKILL.md`: インターフェース設計
-- `.claude/skills/plugin-architecture/SKILL.md`: プラグインシステム設計
-
----
-
-## 参考文献
-
-- **『Design Patterns: Elements of Reusable Object-Oriented Software』** Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides 著
-- **『Head First デザインパターン』** Eric Freeman, Elisabeth Robson 著
-- **『パターン指向リファクタリング入門』** Joshua Kerievsky 著
-
----
-
-## 変更履歴
-
-| バージョン | 日付       | 変更内容                                                                |
-| ---------- | ---------- | ----------------------------------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版リリース - 6 つの行動パターン、パターン選択ガイド、実装ワークフロー |
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
+| パターン選定 | [references/pattern-selection-guide.md](references/pattern-selection-guide.md) | 選定時 |
+| Chain of Responsibility | [references/chain-of-responsibility-pattern.md](references/chain-of-responsibility-pattern.md) | 適用時 |
+| Command | [references/command-pattern.md](references/command-pattern.md) | 適用時 |
+| Observer | [references/observer-pattern.md](references/observer-pattern.md) | 適用時 |
+| State | [references/state-pattern.md](references/state-pattern.md) | 適用時 |
+| Strategy | [references/strategy-pattern.md](references/strategy-pattern.md) | 適用時 |
+| Template Method | [references/template-method-pattern.md](references/template-method-pattern.md) | 適用時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/pattern-requirements-template.md` | 要件整理テンプレート |
+| `assets/pattern-selection-checklist.md` | 選定チェックリスト |
+| `assets/pattern-evaluation-template.md` | 検証テンプレート |
+| `assets/strategy-implementation.md` | Strategy実装テンプレート |
+| `assets/template-method-implementation.md` | Template Method実装テンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

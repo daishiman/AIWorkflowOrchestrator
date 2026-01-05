@@ -1,0 +1,253 @@
+<!doctype html>
+<!--
+  レスポンシブ画像 テンプレート
+
+  原則: 適切なサイズの画像を適切なデバイスに配信
+  参考: Responsive Web Design (Ethan Marcotte)
+
+  使用方法:
+  1. 各パターンを用途に応じて選択
+  2. 実際の画像パスとサイズに置き換え
+  3. alt属性を適切に設定
+-->
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>レスポンシブ画像テンプレート</title>
+    <style>
+      /* 基本的なレスポンシブ画像スタイル */
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* アスペクト比を維持したコンテナ */
+      .aspect-ratio-box {
+        position: relative;
+        width: 100%;
+      }
+
+      .aspect-ratio-box::before {
+        content: "";
+        display: block;
+        padding-top: 56.25%; /* 16:9 アスペクト比 */
+      }
+
+      .aspect-ratio-box > img,
+      .aspect-ratio-box > video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* レイアウトシフト防止 */
+      .img-container {
+        aspect-ratio: 16 / 9;
+        background-color: #f0f0f0;
+      }
+
+      .img-container > img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ==========================================================================
+       パターン1: srcset + sizes（解像度切り替え）
+       同じ画像を異なるサイズで提供
+       ========================================================================== -->
+    <section>
+      <h2>パターン1: srcset + sizes</h2>
+
+      <img
+        src="image-800.jpg"
+        srcset="
+          image-400.jpg   400w,
+          image-800.jpg   800w,
+          image-1200.jpg 1200w,
+          image-1600.jpg 1600w
+        "
+        sizes="(max-width: 600px) 100vw,
+             (max-width: 1000px) 50vw,
+             800px"
+        alt="画像の説明文"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <!--
+      解説:
+      - srcset: 利用可能な画像とその幅（w記述子）を列挙
+      - sizes: 各ブレークポイントでの表示幅を指定
+        - 600px以下: ビューポート幅の100%
+        - 1000px以下: ビューポート幅の50%
+        - それ以上: 800px固定
+      - ブラウザが最適な画像を自動選択
+      -->
+    </section>
+
+    <!-- ==========================================================================
+       パターン2: picture要素（アートディレクション）
+       異なるアスペクト比やクロップの画像を提供
+       ========================================================================== -->
+    <section>
+      <h2>パターン2: picture要素（アートディレクション）</h2>
+
+      <picture>
+        <!-- デスクトップ: 横長の画像 -->
+        <source media="(min-width: 1024px)" srcset="hero-desktop.jpg" />
+
+        <!-- タブレット: 正方形に近い画像 -->
+        <source media="(min-width: 768px)" srcset="hero-tablet.jpg" />
+
+        <!-- モバイル: 縦長または正方形の画像 -->
+        <img src="hero-mobile.jpg" alt="ヒーロー画像の説明" loading="eager" />
+      </picture>
+
+      <!--
+      解説:
+      - 各source要素でブレークポイントごとに異なる画像を指定
+      - img要素はフォールバック（必須）
+      - アートディレクション: デバイスごとに最適な構図の画像を提供
+      -->
+    </section>
+
+    <!-- ==========================================================================
+       パターン3: picture要素（フォーマット切り替え）
+       モダンフォーマットとフォールバック
+       ========================================================================== -->
+    <section>
+      <h2>パターン3: フォーマット切り替え</h2>
+
+      <picture>
+        <!-- AVIF（最も効率的） -->
+        <source type="image/avif" srcset="image.avif" />
+
+        <!-- WebP（広くサポート） -->
+        <source type="image/webp" srcset="image.webp" />
+
+        <!-- JPEG（フォールバック） -->
+        <img src="image.jpg" alt="画像の説明" loading="lazy" decoding="async" />
+      </picture>
+
+      <!--
+      解説:
+      - type属性でMIMEタイプを指定
+      - ブラウザは上から順にサポートするフォーマットを選択
+      - 最新ブラウザはAVIF/WebPを使用し、古いブラウザはJPEGを使用
+      -->
+    </section>
+
+    <!-- ==========================================================================
+       パターン4: 高解像度ディスプレイ対応（x記述子）
+       Retinaディスプレイなど向け
+       ========================================================================== -->
+    <section>
+      <h2>パターン4: 高解像度ディスプレイ対応</h2>
+
+      <img
+        src="logo.png"
+        srcset="logo.png 1x, logo@2x.png 2x, logo@3x.png 3x"
+        alt="ロゴ"
+        width="200"
+        height="50"
+      />
+
+      <!--
+      解説:
+      - x記述子でデバイスピクセル比を指定
+      - 1x: 標準ディスプレイ
+      - 2x: Retinaディスプレイ（2倍）
+      - 3x: 高密度ディスプレイ（3倍）
+      - ロゴなど固定サイズの画像に適している
+      -->
+    </section>
+
+    <!-- ==========================================================================
+       パターン5: レイアウトシフト防止
+       CLS（Cumulative Layout Shift）対策
+       ========================================================================== -->
+    <section>
+      <h2>パターン5: レイアウトシフト防止</h2>
+
+      <!-- 方法1: width/height属性 -->
+      <img
+        src="photo.jpg"
+        width="800"
+        height="600"
+        alt="写真"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <!-- 方法2: aspect-ratioプロパティ -->
+      <div class="img-container">
+        <img src="photo.jpg" alt="写真" loading="lazy" decoding="async" />
+      </div>
+
+      <!--
+      解説:
+      - width/height属性でアスペクト比を事前に計算可能に
+      - CSSのaspect-ratioプロパティでも同様の効果
+      - 画像読み込み前にスペースを確保し、レイアウトシフトを防止
+      -->
+    </section>
+
+    <!-- ==========================================================================
+       パターン6: 遅延読み込み（Lazy Loading）
+       ========================================================================== -->
+    <section>
+      <h2>パターン6: 遅延読み込み</h2>
+
+      <!-- ファーストビュー外の画像 -->
+      <img
+        src="below-fold.jpg"
+        alt="スクロール後に表示される画像"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <!-- ファーストビュー内の重要な画像（遅延読み込みしない） -->
+      <img
+        src="hero.jpg"
+        alt="ヒーロー画像"
+        loading="eager"
+        fetchpriority="high"
+      />
+
+      <!--
+      解説:
+      - loading="lazy": ビューポートに近づくまで読み込みを遅延
+      - loading="eager": 即座に読み込み（デフォルト）
+      - fetchpriority="high": LCP画像など重要な画像の優先度を上げる
+      - decoding="async": デコードを非同期化しメインスレッドをブロックしない
+      -->
+    </section>
+
+    <!-- ==========================================================================
+       注意事項
+       ==========================================================================
+
+       1. alt属性は必須
+          - 装飾的な画像: alt=""（空文字列）
+          - 意味のある画像: 内容を説明するテキスト
+
+       2. パフォーマンス最適化
+          - 適切なサイズの画像を用意（不要に大きな画像を避ける）
+          - モダンフォーマット（AVIF、WebP）を優先
+          - ファーストビュー外の画像はlazy loading
+
+       3. アクセシビリティ
+          - alt属性で画像の意味を伝える
+          - 装飾的な画像にはrole="presentation"も検討
+
+       ========================================================================== -->
+  </body>
+</html>

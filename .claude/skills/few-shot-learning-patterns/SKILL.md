@@ -1,390 +1,164 @@
 ---
 name: few-shot-learning-patterns
 description: |
-    Few-Shot Learning（少数例示学習）のパターンとベストプラクティスを提供するスキル。
-    効果的な例示の設計、構造化、配置により、AIの出力品質を大幅に向上させます。
-    専門分野:
-    - 例示設計: 効果的な入出力ペアの作成
-    - パターン構造: 例示の形式と配置最適化
-    - ドメイン適応: 領域特化した例示戦略
-    - 品質制御: 例示の一貫性と多様性のバランス
-    使用タイミング:
-    - AIに特定の出力形式を学習させたい時
-    - 複雑なタスクの期待出力を示したい時
-    - 一貫した出力スタイルを確立したい時
-    - Zero-Shotで十分な結果が得られない時
-    Use proactively when designing AI prompts with examples,
-    establishing output patterns, or improving response consistency.
+  Few-Shot Learning（少数例示学習）のパターンとベストプラクティスを提供するスキル。効果的な例示の設計、構造化、配置により、AIの出力品質を大幅に向上させます。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  • The Pragmatic Programmer / 適用: 例示パターン設計の品質基準 / 目的: 実践的改善と一貫性維持
+  • Few-Shot戦略 / 適用: 段階的複雑度設計と最適shot数決定 / 目的: AIの学習効率最大化
 
-  - `.claude/skills/few-shot-learning-patterns/resources/domain-specific-patterns.md`: 領域特化したFew-Shot例示の設計パターン
-  - `.claude/skills/few-shot-learning-patterns/resources/example-design-principles.md`: 効果的な入出力ペアの設計原則
-  - `.claude/skills/few-shot-learning-patterns/resources/shot-count-strategies.md`: 例示数の最適化戦略（Zero/One/Few/Many-Shot）
-  - `.claude/skills/few-shot-learning-patterns/templates/advanced-few-shot.md`: 高度なFew-Shotプロンプトテンプレート
-  - `.claude/skills/few-shot-learning-patterns/templates/basic-few-shot.md`: 基本的なFew-Shotプロンプトテンプレート
-
-version: 1.0.0
+  Trigger:
+  Use when you need to design effective example patterns for AI learning, standardize output formats, or improve task performance beyond zero-shot capabilities. Keywords: few-shot, examples, prompting, output consistency, pattern learning.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Few-Shot Learning Patterns
 
 ## 概要
 
-Few-Shot Learning は、少数の例示を通じて AI に
-タスクのパターンを学習させる手法です。
+Few-Shot Learning（少数例示学習）のパターンとベストプラクティスを提供するスキル。効果的な例示の設計、構造化、配置により、AIの出力品質を大幅に向上させます。
 
-**主要な価値**:
+このスキルは以下のシナリオで活用されます：
 
-- 出力形式の明確な伝達
-- 期待品質の具体的な示範
-- タスク理解の促進
-- 一貫性の向上
+- **出力形式の統一**: AIに特定の形式やスタイルを学習させたい時
+- **パターン学習の加速**: Zero-Shotでは不十分な複雑なタスク対応
+- **品質向上**: 一貫性のある高品質な出力の確保
+- **ドメイン固有タスク**: 業界別、言語別、領域別パターンの最適化
 
-## リソース構造
-
-```
-few-shot-learning-patterns/
-├── SKILL.md
-├── resources/
-│   ├── example-design-principles.md    # 例示設計の原則
-│   ├── shot-count-strategies.md        # 例数選択戦略
-│   └── domain-specific-patterns.md     # ドメイン別パターン
-└── templates/
-    ├── basic-few-shot.md               # 基本Few-Shotテンプレート
-    └── advanced-few-shot.md            # 高度なFew-Shotテンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# 例示設計の原則
-cat .claude/skills/few-shot-learning-patterns/resources/example-design-principles.md
-
-# 例数選択戦略
-cat .claude/skills/few-shot-learning-patterns/resources/shot-count-strategies.md
-
-# ドメイン別パターン
-cat .claude/skills/few-shot-learning-patterns/resources/domain-specific-patterns.md
-```
-
-### テンプレート参照
-
-```bash
-# 基本テンプレート
-cat .claude/skills/few-shot-learning-patterns/templates/basic-few-shot.md
-
-# 高度なテンプレート
-cat .claude/skills/few-shot-learning-patterns/templates/advanced-few-shot.md
-```
-
-## Few-Shot Learning 基礎
-
-### Zero-Shot vs Few-Shot vs Many-Shot
-
-| アプローチ | 例数 | 用途             | 利点         | 欠点             |
-| ---------- | ---- | ---------------- | ------------ | ---------------- |
-| Zero-Shot  | 0    | シンプルなタスク | トークン効率 | 曖昧さ           |
-| One-Shot   | 1    | 形式の示範       | 最小限の例示 | 限定的なパターン |
-| Few-Shot   | 2-5  | 複雑なタスク     | バランス     | 設計コスト       |
-| Many-Shot  | 6+   | 高精度要求       | 堅牢性       | トークン消費     |
-
-### 基本構造
-
-```
-[タスク説明]
-
-例1:
-入力: [入力例1]
-出力: [出力例1]
-
-例2:
-入力: [入力例2]
-出力: [出力例2]
-
-...
-
-実際のタスク:
-入力: [実際の入力]
-出力:
-```
-
-## 例示設計の原則
-
-### 1. 代表性
-
-**目的**: 例示がタスクの典型的なケースを網羅
-
-**良い例**:
-
-- タスクの主要パターンを含む
-- 現実的なデータを使用
-- 境界ケースを適度に含む
-
-**悪い例**:
-
-- 極端なケースばかり
-- 非現実的なデータ
-- すべて同じパターン
-
-### 2. 多様性
-
-**目的**: 異なるバリエーションを示す
-
-**良い例**:
-
-```markdown
-例 1: 短いテキストの要約
-入力: "AI は機械学習の一分野です。"
-出力: "AI = 機械学習の分野"
-
-例 2: 長いテキストの要約
-入力: "人工知能（AI）は、コンピュータサイエンスの一分野であり、
-人間の知的能力を模倣するシステムの開発を目指しています。"
-出力: "AI = 人間の知能を模倣するコンピュータサイエンス分野"
-```
-
-### 3. 一貫性
-
-**目的**: 例示間で同じルールを適用
-
-**チェックリスト**:
-
-- [ ] フォーマットが統一されているか
-- [ ] 同じタイプの入力に同じ処理を適用しているか
-- [ ] 暗黙のルールが一貫しているか
-
-### 4. 漸進的複雑性
-
-**目的**: 簡単な例から複雑な例へ
-
-**推奨順序**:
-
-1. 最もシンプルなケース
-2. 標準的なケース
-3. やや複雑なケース
-4. （必要に応じて）エッジケース
+詳細な実装手順や背景知識は、レベル別リソースを参照してください。
 
 ## ワークフロー
 
-### Phase 1: タスク分析
+### Phase 1: 目的と前提の整理
 
-**目的**: Few-Shot が適切かを判断
+**目的**: タスクの目的と前提条件を明確にする
 
-**判断基準**:
+**アクション**:
 
-```
-Zero-Shotで十分？
-├─ はい: 簡単なタスク、明確な指示
-└─ いいえ: Few-Shotを検討
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
-Few-Shotが必要な場合:
-├─ 特定の出力形式が必要
-├─ 暗黙のルールがある
-├─ 品質基準が高い
-└─ Zero-Shotで失敗した
-```
+### Phase 2: スキル適用
 
-### Phase 2: 例示数の決定
+**目的**: スキルの指針に従って具体的な作業を進める
 
-**目的**: 最適な例数を選択
+**アクション**:
 
-**ガイドライン**:
-| 状況 | 推奨例数 | 理由 |
-|------|---------|------|
-| 形式のみ伝達 | 1-2 | 最小限で十分 |
-| 複数パターン | 3-5 | 各パターンに 1 例 |
-| 高精度要求 | 5-7 | 堅牢性向上 |
-| コンテキスト制限 | 2-3 | トークン節約 |
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-### Phase 3: 例示の作成
+### Phase 3: 検証と記録
 
-**目的**: 効果的な例示を設計
+**目的**: 成果物の検証と実行記録の保存
 
-**作成手順**:
+**アクション**:
 
-1. タスクの典型例を収集
-2. 多様性を確保して選択
-3. 一貫したフォーマットで記述
-4. 複雑性順に配置
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-### Phase 4: 検証と改善
+## Task仕様ナビ
 
-**目的**: 例示の有効性を確認
+このスキルを効果的に活用するためのTask仕様リファレンス：
 
-**検証方法**:
+| レベル      | 対象タスク           | 説明                                           | 推奨リソース                                         | 活用シーン                                     |
+| ----------- | -------------------- | ---------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------- |
+| **Level 1** | 基礎的なFew-Shot設計 | 単純な1-3例の例示パターンの構築                | Level1_basics.md                                     | 初めてFew-Shotを導入する場合、基本的な形式学習 |
+| **Level 2** | 実務的なFew-Shot実装 | 3-5例の構造化された例示セットの作成            | Level2_intermediate.md, example-design-principles.md | 実際のプロジェクトでの導入、パターンの最適化   |
+| **Level 3** | 高度なFew-Shot戦略   | 複数ドメイン向け最適化、shot数の動的調整       | Level3_advanced.md, shot-count-strategies.md         | 複雑なタスク、複数パターンの統合               |
+| **Level 4** | エキスパート最適化   | 専門領域向けカスタマイズ、パフォーマンス最大化 | Level4_expert.md, domain-specific-patterns.md        | 高度な要件、業界別カスタマイズ                 |
 
-1. 実際の入力でテスト
-2. 出力の一貫性を確認
-3. エッジケースで検証
-4. 必要に応じて例示を調整
+**選択基準**:
 
-## タスク別パターン
-
-### 分類タスク
-
-```markdown
-以下のテキストを「ポジティブ」「ネガティブ」「中立」に分類してください。
-
-例 1:
-テキスト: この製品は素晴らしいです！
-分類: ポジティブ
-
-例 2:
-テキスト: 品質が悪く、返品しました。
-分類: ネガティブ
-
-例 3:
-テキスト: 商品を受け取りました。
-分類: 中立
-
-実際のタスク:
-テキスト: [入力テキスト]
-分類:
-```
-
-### 抽出タスク
-
-```markdown
-テキストから製品名と価格を抽出してください。
-
-例 1:
-テキスト: iPhone 15 Pro は 159,800 円で販売中です。
-抽出結果:
-
-- 製品名: iPhone 15 Pro
-- 価格: 159,800 円
-
-例 2:
-テキスト: 新型 MacBook Air が 148,800 円から。
-抽出結果:
-
-- 製品名: MacBook Air
-- 価格: 148,800 円から
-
-実際のタスク:
-テキスト: [入力テキスト]
-抽出結果:
-```
-
-### 変換タスク
-
-```markdown
-日本語をビジネス英語に翻訳してください。
-
-例 1:
-日本語: お忙しいところ恐れ入りますが
-英語: I apologize for taking your valuable time, but
-
-例 2:
-日本語: ご検討のほどよろしくお願いいたします
-英語: I would appreciate your kind consideration
-
-実際のタスク:
-日本語: [入力テキスト]
-英語:
-```
-
-### 生成タスク
-
-```markdown
-製品説明から 3 つのキャッチコピーを生成してください。
-
-例 1:
-製品説明: 軽量で持ち運びやすいノート PC
-キャッチコピー:
-
-1. 「どこでも、あなたのオフィス」
-2. 「軽さが、自由を連れてくる」
-3. 「モビリティ、新時代へ」
-
-実際のタスク:
-製品説明: [製品説明]
-キャッチコピー:
-```
+- **出力品質の判断**: 現在の結果が「満足できない」→ Level 2 へ、「不十分」→ Level 3 へ
+- **タスク複雑度**: 単一形式 → Level 1, 複数パターン → Level 2-3, ドメイン固有 → Level 3-4
+- **運用規模**: 個人利用 → Level 1-2, チーム利用 → Level 2-3, 本番環境 → Level 3-4
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **実データに近い例を使用**:
-   - 実際のユースケースから例を選ぶ
-   - 人工的すぎる例を避ける
-
-2. **明確な区切りを使用**:
-   - 入力と出力を明確に分離
-   - 例の間に一貫した区切り
-
-3. **エッジケースを含める**:
-   - 想定される困難なケースを 1 つは含める
-   - ただし過度に複雑にしない
-
-4. **フォーマットを統一**:
-   - すべての例で同じ構造
-   - 一貫したラベリング
+- **例示の質を重視する**: 誤った例や曖昧な例を避け、高品質で明確な例示を3-5個準備
+- **段階的な複雑度設定**: シンプルな例から複雑な例へ段階的に進め、パターン認識を促進
+- **実際のビジネスケース**: 実務で想定される入力と出力を使用し、現実的な学習を実現
+- **メタデータの明示**: 例示の意図や注意点をコメントで明記し、AIの理解を深める
+- **ドメイン固有パターン**: 業界別、言語別、フォーマット別にカスタマイズした例示を用意
+- **段階的な改善**: 初版（1-3例）から始め、結果を検証しながら例示を増やす
+- **コンテキスト情報の包含**: 例示にタスク背景や制約条件を含める
 
 ### 避けるべきこと
 
-1. **例の詰め込みすぎ**:
-   - ❌ 10 個以上の例
-   - ✅ 3-5 個の厳選された例
+- **不適切な例示**: 誤った例やアンチパターンを含める（例外的な説明が必要）
+- **一貫性の欠如**: 例示ごとに異なるスタイルやフォーマットで混乱を招く
+- **過度な複雑化**: 初期段階で5例以上の複雑な例を提供して認知負荷を高める
+- **コンテキスト不足**: 例示の背景や意図を説明せずにAIに示す
+- **検証なしの運用**: Few-Shotの効果を検証せず本番環境に投入する
+- **静的な例示セット**: 実績に基づかずに例示を作成し、継続的な改善を行わない
+- **言語混在**: 同一タスク内で複数言語の例示を無秩序に混在させる
 
-2. **矛盾する例**:
-   - ❌ 同じ入力タイプに異なる出力形式
-   - ✅ 一貫したルール適用
+## リソース参照
 
-3. **過度に単純な例**:
-   - ❌ 現実と乖離した単純例
-   - ✅ 適度な複雑性を持つ例
+### 学習リソース（段階的ガイド）
 
-4. **説明の省略**:
-   - ❌ 例だけで暗黙のルールを伝える
-   - ✅ 必要に応じて明示的な説明を追加
+| リソース                              | 用途                                 | 対象レベル |
+| ------------------------------------- | ------------------------------------ | ---------- |
+| **references/Level1_basics.md**       | Few-Shotの基本概念と最小構成パターン | レベル1    |
+| **references/Level2_intermediate.md** | 実務的な実装とパターン最適化         | レベル2    |
+| **references/Level3_advanced.md**     | 高度な戦略と複雑なシナリオ対応       | レベル3    |
+| **references/Level4_expert.md**       | エキスパート向けカスタマイズと最適化 | レベル4    |
 
-## トラブルシューティング
+### ドメイン別リソース
 
-### 問題 1: 出力形式が安定しない
+- **references/domain-specific-patterns.md**: 業界別、領域別のFew-Shotパターン集
+- **references/example-design-principles.md**: 効果的な例示設計の原則と手法
+- **references/shot-count-strategies.md**: 最適な例示数（shot数）の決定戦略
 
-**症状**: 例と異なる形式で出力される
+### テンプレート集
 
-**対策**:
+- **assets/basic-few-shot.md**: 基本的なFew-Shotプロンプトテンプレート
+- **assets/advanced-few-shot.md**: 高度な用途向けテンプレート
 
-1. 例の数を増やす（3→5）
-2. 出力形式を明示的に指示
-3. 一貫性の高い例を選び直す
+### スクリプトとツール
 
-### 問題 2: 特定パターンを学習しない
+```bash
+# スキル構造の検証
+node .claude/skills/few-shot-learning-patterns/scripts/validate-skill.mjs --help
 
-**症状**: ある種類の入力だけ失敗
+# 使用記録と自動評価
+node .claude/skills/few-shot-learning-patterns/scripts/log_usage.mjs --help
+```
 
-**対策**:
+### 参考文献
 
-1. そのパターンの例を追加
-2. 例の配置順を変更（問題パターンを最後に）
-3. 明示的なルール説明を追加
-
-### 問題 3: トークン制限に到達
-
-**症状**: 例が多すぎてコンテキスト不足
-
-**対策**:
-
-1. 例を厳選して減らす
-2. 例の長さを短縮
-3. 最も重要なパターンに絞る
-
-## 関連スキル
-
-- **prompt-engineering-for-agents** (`.claude/skills/prompt-engineering-for-agents/SKILL.md`)
-- **chain-of-thought-reasoning** (`.claude/skills/chain-of-thought-reasoning/SKILL.md`)
-- **hallucination-prevention** (`.claude/skills/hallucination-prevention/SKILL.md`)
+- **references/legacy-skill.md**: 旧バージョンのSKILL.mdと変更履歴
+- 『The Pragmatic Programmer』: 実践的改善と品質維持の原則
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-25 | 初版作成 |
+| Version   | Date       | 変更内容                                                                                                                                         |
+| --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1.1.0** | 2025-12-31 | 18-skills.md仕様に準拠 - frontmatter最適化（Anchors/Trigger追加、allowed-tools定義）、Task仕様ナビ追加、ベストプラクティス充実、リソース参照整理 |
+| 1.0.0     | 2025-12-24 | 初期リリース - Spec alignment and required artifacts added                                                                                       |
+
+### バージョン1.1.0の主要な改善
+
+- **YAML frontmatter の最適化**
+  - `name`, `description`(Anchors/Trigger), `allowed-tools` の明確化
+  - バージョンとレベル情報の更新
+
+- **Task仕様ナビの追加**
+  - レベル別タスク分類（Level 1-4）
+  - 選択基準の明示
+
+- **ベストプラクティスの充実**
+  - すべきこと：7項目に拡充
+  - 避けるべきこと：7項目に拡充
+
+- **リソース参照の構造化**
+  - 学習リソース、ドメイン別リソース、テンプレート集に分類
+  - スクリプト実行例の追加

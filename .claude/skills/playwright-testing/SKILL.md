@@ -4,375 +4,324 @@ description: |
   Playwrightによるブラウザ自動化テストの実装技術。
   安定した待機戦略、適切なセレクタ選択、効率的なテスト設計を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Test-Driven Development: By Example (Kent Beck) / 適用: Red-Green-Refactorサイクル / 目的: テスト設計と実装フロー
+  • Playwright Best Practices / 適用: セレクタ戦略・待機パターン / 目的: フレーキーテスト防止
 
-  - `.claude/skills/playwright-testing/resources/playwright-best-practices.md`: Playwrightテスト設計のベストプラクティス（安定性、保守性、並列実行）
-  - `.claude/skills/playwright-testing/resources/selector-strategies.md`: data-testid、Role-based、Label-basedセレクタの優先順位と使い分け
-  - `.claude/skills/playwright-testing/resources/waiting-strategies.md`: 自動待機、明示的待機、条件ベース待機の使い分けとフレーキーテスト回避
-  - `.claude/skills/playwright-testing/scripts/validate-test-structure.mjs`: Playwrightテストファイルの構造と命名規則を検証
-  - `.claude/skills/playwright-testing/templates/test-template.ts`: Page Object Model、Fixture活用を含むPlaywrightテストのTypeScriptテンプレート
-
-  専門分野:
-  - セレクタ戦略: data-testid、Role-based、Label-basedの優先順位設計
-  - 待機戦略: 自動待機、明示的待機、条件ベース待機パターン
-  - テスト構造: Page Object Model、Fixture活用、並列実行最適化
-  - ブラウザコンテキスト: 独立した環境管理、認証状態の再利用
-
-  使用タイミング:
-  - E2Eテストの実装が必要な時
-  - ブラウザ自動化テストが求められる時
-  - フレーキーテストの問題を解決する時
-  - クロスブラウザテストが必要な時
-  - Playwrightのセレクタ戦略を適用する時
-  - テスト待機戦略の最適化が必要な時
-
-  Use proactively when implementing E2E tests, troubleshooting flaky tests,
-  or optimizing browser automation strategies.
-version: 1.0.0
+  Trigger:
+  Use when implementing E2E tests, browser automation, fixing flaky tests, selecting Playwright selectors, optimizing wait strategies, or designing cross-browser test suites.
+  E2E testing, browser automation, Playwright selectors, flaky test debugging, test wait strategies, accessibility testing
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Playwright Testing Skill
 
 ## 概要
 
-Playwright によるブラウザ自動化テストの実装技術。安定した待機戦略、適切なセレクタ選択、効率的なテスト設計を提供します。
+Playwrightによるブラウザ自動化テストの実装を支援するスキル。
 
-## 核心概念
+**目的**: 安定したE2Eテストの作成、フレーキーテストの排除、効率的なセレクタ戦略の適用
 
-### 1. Playwright の基本アーキテクチャ
+**提供価値**:
 
-Playwright は、Chromium、Firefox、WebKit を統一 API で制御できるブラウザ自動化ツールです。
+- 適切なセレクタ選択による保守性の向上
+- 効果的な待機戦略によるテストの安定化
+- ベストプラクティスに基づくテスト設計
 
-**主要コンポーネント**:
+## ワークフロー
 
-- **Browser**: ブラウザインスタンス
-- **Context**: 独立したブラウザセッション（Cookie、ストレージ分離）
-- **Page**: 個別のタブまたはウィンドウ
-- **Locator**: 要素を特定するためのセレクタ
+### Phase 1: テスト設計
 
-### 2. 安定した待機戦略
+**目的**: テスト対象とシナリオの分析・設計
 
-**明示的待機の重要性**:
+**アクション**:
 
-```typescript
-// ❌ 悪い例: 固定時間待機
-await page.waitForTimeout(5000);
+1. テスト要件の確認（機能仕様、ユーザーシナリオ）
+2. テストケースの洗い出し（正常系・異常系・境界値）
+3. テストの独立性と原子性の確保
 
-// ✅ 良い例: 条件ベース待機
-await page.waitForSelector('[data-testid="submit-button"]');
-await page.waitForLoadState("networkidle");
+**Task**: `agents/test-designer.md` を参照
+
+- 入力: 機能仕様、ユーザーストーリー
+- 出力: テスト設計書、テストケース一覧
+
+**参照**:
+
+- [references/Level1_basics.md](references/Level1_basics.md) - テスト設計の基礎原則
+- [references/playwright-best-practices.md](references/playwright-best-practices.md) - Playwrightベストプラクティス
+
+### Phase 2: セレクタ戦略の選定
+
+**目的**: 保守性の高いセレクタの選択
+
+**アクション**:
+
+1. セレクタ優先順位の確認（Role > Label > TestId > CSS）
+2. アクセシビリティを考慮したセレクタの選択
+3. 脆弱なセレクタ（CSSクラス、XPath）の回避
+
+**Task**: `agents/selector-strategist.md` を参照
+
+- 入力: テストケース、対象UI
+- 出力: セレクタ戦略、実装ガイドライン
+
+**参照**:
+
+- [references/selector-strategies.md](references/selector-strategies.md) - セレクタ戦略の詳細
+
+### Phase 3: テスト実装
+
+**目的**: テストコードの実装
+
+**アクション**:
+
+1. テンプレートの選択と適用
+2. Given-When-Then パターンでの記述
+3. 適切な待機戦略の適用
+4. エラーハンドリングの実装
+
+**Task**: `agents/test-implementer.md` を参照
+
+- 入力: テスト設計書、セレクタ戦略
+- 出力: テストコード
+
+**参照**:
+
+- [references/Level2_intermediate.md](references/Level2_intermediate.md) - 実装パターン
+- [references/waiting-strategies.md](references/waiting-strategies.md) - 待機戦略
+- [assets/test-template.ts](assets/test-template.ts) - テストテンプレート
+
+### Phase 4: デバッグと最適化
+
+**目的**: フレーキーテストの解消とパフォーマンス最適化
+
+**アクション**:
+
+1. テストの実行と失敗原因の分析
+2. 待機戦略の調整
+3. 並列実行の最適化
+4. リトライ設定の調整
+
+**Task**: `agents/test-debugger.md` を参照
+
+- 入力: 失敗したテスト、エラーログ
+- 出力: 修正されたテスト、最適化レポート
+
+**参照**:
+
+- [references/Level3_advanced.md](references/Level3_advanced.md) - 高度なデバッグ技法
+- [references/Level4_expert.md](references/Level4_expert.md) - パフォーマンス最適化
+
+### Phase 5: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. テスト構造の検証（`scripts/validate-test-structure.mjs`）
+2. テストカバレッジの確認
+3. 実行ログの記録（`scripts/log_usage.mjs`）
+
+**スクリプト**:
+
+```bash
+# テスト構造の検証
+node .claude/skills/playwright-testing/scripts/validate-test-structure.mjs <test-file-path>
+
+# 使用ログの記録
+node .claude/skills/playwright-testing/scripts/log_usage.mjs \
+  --result success \
+  --phase "implementation" \
+  --notes "E2E test suite completed"
 ```
 
-**待機戦略の種類**:
+## Task仕様ナビゲーション
 
-1. **要素出現待機**: `waitForSelector()`
-2. **ネットワークアイドル待機**: `waitForLoadState('networkidle')`
-3. **条件待機**: `waitForFunction()`
-4. **自動待機**: Locator API が自動的に待機
+各Taskは独立した作業単位として `agents/` に定義されています。
 
-### 3. セレクタ戦略
+| Task             | ファイル                        | 役割                   | 主な出力       |
+| ---------------- | ------------------------------- | ---------------------- | -------------- |
+| テスト設計       | `agents/test-designer.md`       | テストケースの設計     | テスト設計書   |
+| セレクタ戦略     | `agents/selector-strategist.md` | セレクタパターンの選定 | セレクタ戦略   |
+| テスト実装       | `agents/test-implementer.md`    | テストコードの実装     | テストコード   |
+| デバッグ・最適化 | `agents/test-debugger.md`       | フレーキーテストの解消 | 修正済みテスト |
 
-**セレクタ優先順位**:
+**使用タイミング**:
 
-1. **data-testid 属性** (最優先):
-
-```typescript
-await page.locator('[data-testid="login-button"]').click();
-```
-
-2. **アクセシビリティセレクタ**:
-
-```typescript
-await page.getByRole("button", { name: "Submit" }).click();
-await page.getByLabel("Email").fill("test@example.com");
-```
-
-3. **テキストベース**:
-
-```typescript
-await page.getByText("Login").click();
-```
-
-4. **CSS セレクタ** (最終手段):
-
-```typescript
-await page.locator(".btn-primary").click(); // 避けるべき
-```
-
-### 4. テスト構造とフック
-
-**基本構造**:
-
-```typescript
-import { test, expect } from "@playwright/test";
-
-test.describe("認証フロー", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("https://example.com");
-  });
-
-  test("正常ログイン", async ({ page }) => {
-    // Given: 初期状態
-    await page.getByLabel("Email").fill("user@example.com");
-    await page.getByLabel("Password").fill("password123");
-
-    // When: アクション
-    await page.getByRole("button", { name: "Login" }).click();
-
-    // Then: 検証
-    await expect(page).toHaveURL("/dashboard");
-    await expect(page.getByText("Welcome")).toBeVisible();
-  });
-
-  test.afterEach(async ({ page }) => {
-    // クリーンアップ
-  });
-});
-```
-
-### 5. 並列実行とテスト分離
-
-**テスト並列実行**:
-
-```typescript
-// playwright.config.ts
-export default {
-  workers: 4, // 並列実行数
-  fullyParallel: true,
-};
-```
-
-**テストコンテキスト分離**:
-
-```typescript
-test.use({
-  storageState: "auth.json", // 認証状態の再利用
-});
-```
-
-## 実装パターン
-
-### パターン 1: Page Object Model (POM)
-
-```typescript
-// pages/LoginPage.ts
-export class LoginPage {
-  constructor(private page: Page) {}
-
-  async goto() {
-    await this.page.goto("/login");
-  }
-
-  async login(email: string, password: string) {
-    await this.page.getByLabel("Email").fill(email);
-    await this.page.getByLabel("Password").fill(password);
-    await this.page.getByRole("button", { name: "Login" }).click();
-  }
-
-  async getErrorMessage() {
-    return this.page.getByTestId("error-message").textContent();
-  }
-}
-
-// tests/login.spec.ts
-test("ログイン失敗時のエラー表示", async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  await loginPage.goto();
-  await loginPage.login("invalid@example.com", "wrong");
-
-  const error = await loginPage.getErrorMessage();
-  expect(error).toContain("Invalid credentials");
-});
-```
-
-### パターン 2: Fixture 活用
-
-```typescript
-// fixtures/testUser.ts
-import { test as base } from "@playwright/test";
-
-export const test = base.extend({
-  authenticatedPage: async ({ page }, use) => {
-    // セットアップ
-    await page.goto("/login");
-    await page.getByLabel("Email").fill("test@example.com");
-    await page.getByLabel("Password").fill("password");
-    await page.getByRole("button", { name: "Login" }).click();
-    await page.waitForURL("/dashboard");
-
-    // テストに渡す
-    await use(page);
-
-    // クリーンアップ
-    await page.context().close();
-  },
-});
-
-// tests/dashboard.spec.ts
-test("ダッシュボード表示", async ({ authenticatedPage }) => {
-  await expect(authenticatedPage.getByText("Dashboard")).toBeVisible();
-});
-```
-
-### パターン 3: API 呼び出しとの連携
-
-```typescript
-test("APIとUIの統合テスト", async ({ page, request }) => {
-  // APIでデータ準備
-  const response = await request.post("/api/users", {
-    data: { name: "Test User", email: "test@example.com" },
-  });
-  const user = await response.json();
-
-  // UIで確認
-  await page.goto("/users");
-  await expect(page.getByText(user.name)).toBeVisible();
-});
-```
-
-## 判断基準
-
-### いつこのスキルを使うべきか
-
-- [ ] ブラウザでのユーザーインタラクションをテストする必要がある
-- [ ] クロスブラウザ互換性を検証する必要がある
-- [ ] E2E テストの自動化が求められている
-- [ ] 視覚的な検証（レンダリング確認）が必要
-
-### いつ他の手段を使うべきか
-
-- [ ] 単体テスト（Vitest 等で十分）
-- [ ] API テスト（Supertest 等が適切）
-- [ ] パフォーマンステスト（専門ツールを使用）
+- 各Phaseの開始時に対応するTaskを読み込む
+- Task間の依存関係: 設計 → セレクタ → 実装 → デバッグ
+- 必要に応じてフェーズを反復（特にデバッグフェーズ）
 
 ## ベストプラクティス
 
-### DO（推奨）
+### すべきこと
 
-1. **data-testid 属性を使用**:
+**テスト設計**:
 
-```typescript
-<button data-testid="submit-button">Submit</button>;
+- テストの独立性を保つ（他のテストに依存しない）
+- 各テストは1つの責務のみを持つ（原子性）
+- Given-When-Thenパターンで明確に記述
 
-await page.locator('[data-testid="submit-button"]').click();
+**セレクタ選択**:
+
+- 優先順位を守る: Role > Label > TestId > CSS
+- アクセシビリティを考慮したセレクタを使用
+- data-testid は安定性が必要な場合のみ使用
+
+**待機戦略**:
+
+- 固定時間待機（sleep）は避ける
+- 状態変化を待つ適切なメソッドを使用
+  - `waitForSelector()` - 要素の出現を待つ
+  - `waitForResponse()` - API応答を待つ
+  - `waitForFunction()` - 任意の条件を待つ
+
+**エラーハンドリング**:
+
+- 意図的な失敗ケースは明示的にテスト
+- タイムアウト値は適切に設定
+- エラーメッセージは具体的に
+
+### 避けるべきこと
+
+**アンチパターン**:
+
+- CSSクラス名に依存したセレクタ（スタイル変更で壊れる）
+- XPathの過度な使用（保守性が低い）
+- 固定時間待機（`page.waitForTimeout(3000)`）
+- テスト間のデータ依存関係
+- 過度なリトライ設定（根本原因を隠蔽）
+
+**フレーキーテストの原因**:
+
+- レースコンディション（適切な待機がない）
+- テスト実行順序への依存
+- 共有状態の変更
+- タイムアウトが短すぎる
+- ネットワーク依存の不安定性
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース           | パス                                                                                   | 読み込みタイミング               |
+| ------------------ | -------------------------------------------------------------------------------------- | -------------------------------- |
+| 基礎知識           | See [references/Level1_basics.md](references/Level1_basics.md)                         | Phase 1（テスト設計時）          |
+| 中級               | See [references/Level2_intermediate.md](references/Level2_intermediate.md)             | Phase 3（実装時）                |
+| 上級               | See [references/Level3_advanced.md](references/Level3_advanced.md)                     | Phase 4（デバッグ時）            |
+| エキスパート       | See [references/Level4_expert.md](references/Level4_expert.md)                         | パフォーマンス最適化が必要な場合 |
+| ベストプラクティス | See [references/playwright-best-practices.md](references/playwright-best-practices.md) | すべてのPhase                    |
+| セレクタ戦略       | See [references/selector-strategies.md](references/selector-strategies.md)             | Phase 2（セレクタ選定時）        |
+| 待機戦略           | See [references/waiting-strategies.md](references/waiting-strategies.md)               | Phase 3, 4（実装・デバッグ時）   |
+
+### scripts/（決定論的処理）
+
+| スクリプト                    | 用途             | 使用例                                                             |
+| ----------------------------- | ---------------- | ------------------------------------------------------------------ |
+| `validate-skill.mjs`          | スキル構造の検証 | `node scripts/validate-skill.mjs`                                  |
+| `validate-test-structure.mjs` | テスト構造の検証 | `node scripts/validate-test-structure.mjs tests/e2e/login.spec.ts` |
+| `log_usage.mjs`               | 使用ログの記録   | `node scripts/log_usage.mjs --result success --phase "Phase 3"`    |
+
+### assets/（テンプレート）
+
+| テンプレート       | 用途                 |
+| ------------------ | -------------------- |
+| `test-template.ts` | テストコードのひな型 |
+
+## コマンドリファレンス
+
+### スキル構造の確認
+
+```bash
+# スキル構造の検証
+node .claude/skills/playwright-testing/scripts/validate-skill.mjs
+
+# referencesファイルの一覧
+ls .claude/skills/playwright-testing/references/
+
+# agentsファイルの一覧
+ls .claude/skills/playwright-testing/agents/
 ```
 
-2. **自動待機を活用**:
+### リソース読み取り
 
-```typescript
-// Locator APIは自動的に要素が利用可能になるまで待機
-await page.getByRole("button").click();
+```bash
+# 基礎知識
+cat .claude/skills/playwright-testing/references/Level1_basics.md
+
+# セレクタ戦略
+cat .claude/skills/playwright-testing/references/selector-strategies.md
+
+# 待機戦略
+cat .claude/skills/playwright-testing/references/waiting-strategies.md
+
+# ベストプラクティス
+cat .claude/skills/playwright-testing/references/playwright-best-practices.md
 ```
 
-3. **明示的なアサーション**:
+### テスト検証
 
-```typescript
-await expect(page.getByText("Success")).toBeVisible();
-await expect(page).toHaveURL("/dashboard");
+```bash
+# テスト構造の検証
+node .claude/skills/playwright-testing/scripts/validate-test-structure.mjs tests/e2e/login.spec.ts
+
+# 検証ヘルプ
+node .claude/skills/playwright-testing/scripts/validate-test-structure.mjs --help
 ```
 
-4. **テスト独立性を保つ**:
+### ログ記録
 
-```typescript
-test.beforeEach(async ({ page }) => {
-  // 各テストで初期状態をリセット
-  await page.goto("/");
-});
-```
+```bash
+# 成功ログの記録
+node .claude/skills/playwright-testing/scripts/log_usage.mjs \
+  --result success \
+  --phase "implementation" \
+  --agent "test-implementer" \
+  --notes "Login test suite completed"
 
-### DON'T（非推奨）
+# 失敗ログの記録
+node .claude/skills/playwright-testing/scripts/log_usage.mjs \
+  --result failure \
+  --phase "debugging" \
+  --notes "Flaky test in checkout flow"
 
-1. **固定時間待機を避ける**:
-
-```typescript
-// ❌
-await page.waitForTimeout(3000);
-
-// ✅
-await page.waitForSelector('[data-testid="loaded"]');
-```
-
-2. **脆弱なセレクタを避ける**:
-
-```typescript
-// ❌
-await page.locator(".btn.btn-primary.mt-3").click();
-
-// ✅
-await page.locator('[data-testid="submit-btn"]').click();
-```
-
-3. **過度な並列実行を避ける**:
-
-```typescript
-// workers: 50 は避ける（リソース枯渇）
+# ヘルプ表示
+node .claude/skills/playwright-testing/scripts/log_usage.mjs --help
 ```
 
 ## トラブルシューティング
 
-### 問題 1: 要素が見つからない
+### よくある問題と解決策
 
-**症状**: `TimeoutError: locator.click: Timeout 30000ms exceeded`
+**問題: テストがフレーキー（不安定）**
 
-**解決策**:
+- 原因: 不適切な待機戦略
+- 解決: `references/waiting-strategies.md` を参照し、適切な待機メソッドを使用
 
-```typescript
-// デバッグ: 要素の存在確認
-await page.screenshot({ path: "debug.png" });
-console.log(await page.content()); // HTML確認
+**問題: セレクタが頻繁に壊れる**
 
-// 待機戦略の調整
-await page.waitForLoadState("networkidle");
-await page.waitForSelector('[data-testid="button"]', { state: "visible" });
-```
+- 原因: CSSクラスやXPathへの依存
+- 解決: `references/selector-strategies.md` を参照し、Role-basedセレクタに変更
 
-### 問題 2: フレーキーテスト
+**問題: テストが遅い**
 
-**症状**: テストが時々失敗する
+- 原因: 並列実行されていない、不要な待機
+- 解決: `references/Level4_expert.md` のパフォーマンス最適化セクションを参照
 
-**解決策**:
+**問題: テスト間で状態が共有される**
 
-```typescript
-// リトライ設定
-test.describe.configure({ retries: 2 });
+- 原因: クリーンアップ不足、共有データへの依存
+- 解決: `beforeEach` / `afterEach` でクリーンアップを徹底
 
-// より安定した待機
-await expect(page.getByText("Loaded")).toBeVisible({ timeout: 10000 });
-```
+## 変更履歴
 
-### 問題 3: 並列実行時のデータ競合
-
-**症状**: テストが干渉し合う
-
-**解決策**:
-
-```typescript
-// テストごとに一意なデータ
-const userId = `user-${Date.now()}`;
-
-// または並列実行を無効化
-test.describe.configure({ mode: "serial" });
-```
-
-## 関連スキル
-
-- **test-data-management** (`.claude/skills/test-data-management/SKILL.md`): テストデータのセットアップとクリーンアップ
-- **flaky-test-prevention** (`.claude/skills/flaky-test-prevention/SKILL.md`): テストの安定化技術
-- **visual-regression-testing** (`.claude/skills/visual-regression-testing/SKILL.md`): 視覚的回帰テスト
-- **api-mocking** (`.claude/skills/api-mocking/SKILL.md`): API モックとテスト環境構築
-
-## リソース
-
-- [resources/playwright-best-practices.md](resources/playwright-best-practices.md) - Playwright のベストプラクティス詳細
-- [resources/selector-strategies.md](resources/selector-strategies.md) - セレクタ戦略の詳細ガイド
-- [resources/waiting-strategies.md](resources/waiting-strategies.md) - 待機戦略の詳細
-- [scripts/validate-test-structure.mjs](scripts/validate-test-structure.mjs) - テスト構造検証スクリプト
-- [templates/test-template.ts](templates/test-template.ts) - テストテンプレート
-
-## 参考文献
-
-- Playwright 公式ドキュメント: https://playwright.dev/
-- 『End-to-End Web Testing』 - ユーザーフロー中心のテスト設計
-- 『Playwright 実践入門』 - フレーキーテスト防止技術
+| Version | Date       | Changes                                                        |
+| ------- | ---------- | -------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md 仕様準拠、agents/追加、Progressive Disclosure適用 |
+| 1.0.0   | 2025-12-24 | 初版リリース                                                   |

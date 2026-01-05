@@ -55,6 +55,7 @@ import {
   ArrowUp,
   ArrowDown,
   Replace,
+  Plus,
   type LucideIcon,
 } from "lucide-react";
 
@@ -112,7 +113,8 @@ export type IconName =
   | "arrow-down"
   | "file"
   | "folder-search"
-  | "replace";
+  | "replace"
+  | "plus";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -177,6 +179,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   file: File,
   "folder-search": FolderSearch,
   replace: Replace,
+  plus: Plus,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(

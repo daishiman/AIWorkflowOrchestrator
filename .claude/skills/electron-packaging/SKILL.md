@@ -1,544 +1,132 @@
 ---
 name: electron-packaging
 description: |
-  Electronアプリケーションのビルド・パッケージング専門知識
+  Electronアプリケーションのビルド・パッケージング・配布を統一的に管理する専門知識。
+  electron-builderによるクロスプラットフォーム対応、コード署名、インストーラー生成を支援。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • electron-builder / 適用: ビルド設定・パッケージング / 目的: クロスプラットフォーム配布
+  • Code Signing / 適用: macOS/Windows署名 / 目的: セキュアな配布
+  • The Pragmatic Programmer / 適用: ビルドプロセス設計 / 目的: 繰り返し可能なワークフロー
 
-  - `.claude/skills/electron-packaging/resources/electron-builder-config.md`: electron-builder詳細設定
-  - `.claude/skills/electron-packaging/resources/code-signing.md`: コード署名ガイド
-  - `.claude/skills/electron-packaging/resources/platform-specific.md`: プラットフォーム固有設定
-  - `.claude/skills/electron-packaging/templates/electron-builder.yml`: ビルド設定テンプレート
-  - `.claude/skills/electron-packaging/scripts/build.sh`: ビルドスクリプト
-
-  専門分野:
-  - パッケージング: electron-builder、electron-forge
-  - コード署名: macOS/Windowsコード署名
-  - アイコン生成: 各プラットフォーム用アイコン
-  - インストーラー: DMG、NSIS、AppImage
-
-  使用タイミング:
-  - Electronアプリをビルドする時
-  - 配布用パッケージを作成する時
-  - コード署名を設定する時
-  - インストーラーをカスタマイズする時
-
-version: 1.0.0
+  Trigger:
+  Use when building production Electron applications, generating installers for macOS/Windows/Linux, implementing code signing, or packaging desktop apps for release.
+  electron-builder, dmg, exe, AppImage, code signing, packaging
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# electron-packaging
-
-Electronアプリケーションのビルド・パッケージング専門知識
-
----
+# Electron Packaging
 
 ## 概要
 
-### 目的
-
-Electronアプリケーションを各プラットフォーム向けに
-ビルド・パッケージングし、配布可能な形式で出力する。
-
-### 対象者
-
-- Electronアプリ開発者
-- DevOpsエンジニア
-- リリースマネージャー
-
----
-
-## ビルドツール選択
-
-### electron-builder vs electron-forge
-
-| 特徴           | electron-builder       | electron-forge     |
-| -------------- | ---------------------- | ------------------ |
-| 設定形式       | YAML/JSON              | JavaScript         |
-| カスタマイズ性 | 高い                   | 非常に高い         |
-| 学習曲線       | 低い                   | やや高い           |
-| 自動更新統合   | 内蔵                   | プラグイン         |
-| モノレポ対応   | 良好                   | 良好               |
-| **推奨ケース** | シンプルなプロジェクト | 高度なカスタマイズ |
-
----
-
-## electron-builder設定
-
-### 基本設定
-
-```yaml
-# electron-builder.yml
-appId: com.company.appname
-productName: My Electron App
-copyright: Copyright © 2024 Company
-
-# ディレクトリ設定
-directories:
-  output: dist
-  buildResources: build
-
-# ファイル設定
-files:
-  - "dist/**/*"
-  - "package.json"
-  - "!**/*.{ts,tsx,map}"
-  - "!**/node_modules/*/{CHANGELOG.md,README.md}"
-  - "!**/node_modules/.bin"
-
-# アイコン
-icon: build/icon
-
-# 圧縮設定
-asar: true
-asarUnpack:
-  - "**/*.node"
-  - "**/node_modules/sharp/**"
-
-# npmRebuild
-npmRebuild: true
-nodeGypRebuild: false
-```
-
-### macOS設定
-
-```yaml
-# electron-builder.yml (macOS section)
-mac:
-  target:
-    - target: dmg
-      arch:
-        - x64
-        - arm64
-    - target: zip
-      arch:
-        - x64
-        - arm64
-
-  category: public.app-category.developer-tools
-  darkModeSupport: true
-  hardenedRuntime: true
-  gatekeeperAssess: false
-
-  # エンタイトルメント
-  entitlements: build/entitlements.mac.plist
-  entitlementsInherit: build/entitlements.mac.plist
-
-  # 署名
-  identity: "Developer ID Application: Company Name (TEAM_ID)"
-
-  # ファイル関連付け
-  extendInfo:
-    NSDocumentsFolderUsageDescription: "ドキュメントへのアクセスが必要です"
-    NSDownloadsFolderUsageDescription: "ダウンロードへのアクセスが必要です"
-
-dmg:
-  sign: false
-  contents:
-    - x: 130
-      y: 220
-    - x: 410
-      y: 220
-      type: link
-      path: /Applications
-  background: build/dmg-background.png
-  window:
-    width: 540
-    height: 380
-```
-
-### Windows設定
-
-```yaml
-# electron-builder.yml (Windows section)
-win:
-  target:
-    - target: nsis
-      arch:
-        - x64
-        - ia32
-    - target: portable
-      arch:
-        - x64
-
-  # 署名
-  sign: ./scripts/sign.js
-  certificateFile: ${env.WIN_CERT_FILE}
-  certificatePassword: ${env.WIN_CERT_PASSWORD}
-
-  # アイコン（256x256以上推奨）
-  icon: build/icon.ico
-
-  # ファイル関連付け
-  fileAssociations:
-    - ext: myext
-      name: My File Type
-      description: My Application File
-      icon: build/file-icon.ico
-
-nsis:
-  oneClick: false
-  perMachine: false
-  allowToChangeInstallationDirectory: true
-  installerIcon: build/installer-icon.ico
-  uninstallerIcon: build/uninstaller-icon.ico
-  installerHeader: build/installer-header.bmp
-  installerSidebar: build/installer-sidebar.bmp
-  license: LICENSE.txt
-  createDesktopShortcut: true
-  createStartMenuShortcut: true
-  shortcutName: My Electron App
-```
-
-### Linux設定
-
-```yaml
-# electron-builder.yml (Linux section)
-linux:
-  target:
-    - target: AppImage
-      arch:
-        - x64
-    - target: deb
-      arch:
-        - x64
-    - target: rpm
-      arch:
-        - x64
-
-  category: Development
-  maintainer: maintainer@company.com
-  vendor: Company Name
-
-  # アイコン（複数サイズ）
-  icon: build/icons
-
-  # デスクトップエントリ
-  desktop:
-    Name: My Electron App
-    Comment: A desktop application
-    Categories: Development;Utility;
-
-appImage:
-  systemIntegration: ask
-  license: LICENSE.txt
-
-deb:
-  depends:
-    - libnotify4
-    - libappindicator3-1
-  afterInstall: build/scripts/postinst.sh
-  afterRemove: build/scripts/postrm.sh
-
-snap:
-  grade: stable
-  confinement: classic
-```
-
----
-
-## コード署名
-
-### macOS署名
-
-```bash
-# 必要な環境変数
-export APPLE_ID="your@email.com"
-export APPLE_ID_PASSWORD="app-specific-password"
-export APPLE_TEAM_ID="TEAM_ID"
-export CSC_LINK="path/to/certificate.p12"
-export CSC_KEY_PASSWORD="certificate-password"
-```
-
-```plist
-<!-- build/entitlements.mac.plist -->
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>com.apple.security.cs.allow-jit</key>
-    <true/>
-    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
-    <true/>
-    <key>com.apple.security.cs.disable-library-validation</key>
-    <true/>
-    <key>com.apple.security.automation.apple-events</key>
-    <true/>
-</dict>
-</plist>
-```
-
-### Windows署名
-
-```javascript
-// scripts/sign.js
-exports.default = async function (configuration) {
-  const signTool = require("electron-builder-lib/out/codeSign/windowsCodeSign");
-
-  // Azure SignTool例
-  if (process.env.AZURE_KEY_VAULT_URI) {
-    await signTool.sign({
-      path: configuration.path,
-      name: "My Electron App",
-      site: "https://myapp.com",
-      signToolArgs: [
-        "sign",
-        "/fd",
-        "SHA256",
-        "/tr",
-        "http://timestamp.digicert.com",
-        "/td",
-        "SHA256",
-        "/kvu",
-        process.env.AZURE_KEY_VAULT_URI,
-        "/kvc",
-        process.env.AZURE_KEY_VAULT_CERT_NAME,
-        "/kvi",
-        process.env.AZURE_CLIENT_ID,
-        "/kvs",
-        process.env.AZURE_CLIENT_SECRET,
-        "/kvt",
-        process.env.AZURE_TENANT_ID,
-      ],
-    });
-  }
-};
-```
-
----
-
-## アイコン生成
-
-### 必要なサイズ
-
-```
-icons/
-├── icon.icns          # macOS (1024x1024以上から自動生成)
-├── icon.ico           # Windows (256x256以上推奨)
-├── icon.png           # Linux fallback
-├── 16x16.png
-├── 32x32.png
-├── 48x48.png
-├── 64x64.png
-├── 128x128.png
-├── 256x256.png
-├── 512x512.png
-└── 1024x1024.png      # macOS Retina用
-```
-
-### アイコン生成スクリプト
-
-```bash
-#!/bin/bash
-# scripts/generate-icons.sh
-
-SOURCE="build/icon-source.png"  # 1024x1024以上の元画像
-
-# PNG各サイズ生成
-for size in 16 32 48 64 128 256 512 1024; do
-  sips -z $size $size "$SOURCE" --out "build/icons/${size}x${size}.png"
-done
-
-# macOS icns生成
-mkdir -p build/icon.iconset
-for size in 16 32 64 128 256 512 1024; do
-  sips -z $size $size "$SOURCE" --out "build/icon.iconset/icon_${size}x${size}.png"
-  if [ $size -le 512 ]; then
-    double=$((size * 2))
-    sips -z $double $double "$SOURCE" --out "build/icon.iconset/icon_${size}x${size}@2x.png"
-  fi
-done
-iconutil -c icns build/icon.iconset -o build/icon.icns
-rm -rf build/icon.iconset
-
-# Windows ico生成（ImageMagick使用）
-convert "build/icons/256x256.png" \
-  "build/icons/128x128.png" \
-  "build/icons/64x64.png" \
-  "build/icons/48x48.png" \
-  "build/icons/32x32.png" \
-  "build/icons/16x16.png" \
-  build/icon.ico
-
-echo "✅ Icons generated successfully"
-```
-
----
-
-## ビルドスクリプト
-
-### package.json設定
-
-```json
-{
-  "scripts": {
-    "build": "npm run build:renderer && npm run build:main",
-    "build:renderer": "vite build",
-    "build:main": "tsc -p tsconfig.main.json",
-
-    "package": "electron-builder --publish never",
-    "package:mac": "electron-builder --mac --publish never",
-    "package:win": "electron-builder --win --publish never",
-    "package:linux": "electron-builder --linux --publish never",
-
-    "publish": "electron-builder --publish always",
-    "publish:mac": "electron-builder --mac --publish always",
-    "publish:win": "electron-builder --win --publish always"
-  }
-}
-```
-
-### CI/CDビルド（GitHub Actions）
-
-```yaml
-# .github/workflows/build.yml
-name: Build & Release
-
-on:
-  push:
-    tags:
-      - "v*"
-
-jobs:
-  build-mac:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Package
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          CSC_LINK: ${{ secrets.MAC_CERTS }}
-          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish:mac
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Package
-        env:
-          WIN_CERT_FILE: ${{ secrets.WIN_CERT_FILE }}
-          WIN_CERT_PASSWORD: ${{ secrets.WIN_CERT_PASSWORD }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish:win
-
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Package
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish -- --linux
-```
-
----
-
-## 最適化
-
-### ビルドサイズ削減
-
-```yaml
-# electron-builder.yml
-asar: true
-asarUnpack:
-  - "**/*.node"
-
-# 不要ファイル除外
-files:
-  - "!**/*.{ts,tsx,map}"
-  - "!**/*.d.ts"
-  - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}"
-  - "!**/node_modules/.bin"
-  - "!**/*.md"
-  - "!**/LICENSE*"
-  - "!**/.eslintrc*"
-  - "!**/.prettier*"
-```
-
-### ネイティブモジュール処理
-
-```json
-// package.json
-{
-  "optionalDependencies": {
-    "fsevents": "^2.3.3"
-  },
-  "build": {
-    "npmRebuild": true,
-    "nodeGypRebuild": false,
-    "nativeRebuilder": "parallel"
-  }
-}
-```
-
----
-
-## トラブルシューティング
-
-### よくある問題
-
-| 問題                 | 原因                 | 解決策                            |
-| -------------------- | -------------------- | --------------------------------- |
-| 署名エラー           | 証明書の問題         | 環境変数確認、証明書更新          |
-| asar読み込みエラー   | ネイティブモジュール | asarUnpackに追加                  |
-| アイコン表示されない | サイズ不足           | 各プラットフォーム要件確認        |
-| ビルドが遅い         | キャッシュなし       | electron-builder キャッシュ有効化 |
-
----
-
-## 関連リソース
-
-### 詳細ドキュメント
-
-- `resources/electron-builder-config.md` - 詳細設定
-- `resources/code-signing.md` - コード署名ガイド
-- `resources/platform-specific.md` - プラットフォーム固有
-
-### テンプレート・スクリプト
-
-- `templates/electron-builder.yml` - ビルド設定
-- `scripts/build.sh` - ビルドスクリプト
+Electronアプリケーションのビルド・パッケージング・配布を一貫して実現する専門知識。
+electron-builderによるクロスプラットフォーム対応、デジタル署名、インストーラー生成を支援する。
+
+## ワークフロー
+
+### Phase 1: ビルド設定の準備
+
+**目的**: ターゲットプラットフォームとビルド設定を確認
+
+**アクション**:
+
+1. ターゲットプラットフォーム（macOS/Windows/Linux）を特定
+2. `references/build-config-guide.md` でビルド設定を確認
+3. `assets/electron-builder.yml` をベースに設定ファイルを作成
+
+### Phase 2: ビルドとパッケージング
+
+**目的**: アプリケーションをビルドしパッケージング
+
+**アクション**:
+
+1. `agents/validate-build-config.md` で設定を検証
+2. `agents/execute-build.md` でビルドを実行
+3. `scripts/generate-icons.mjs` でアイコンを生成
+
+### Phase 3: コード署名とインストーラー生成
+
+**目的**: 署名済みインストーラーを生成
+
+**アクション**:
+
+1. `agents/apply-code-signing.md` でコード署名
+2. `agents/generate-installers.md` でインストーラー生成
+3. 成果物の動作確認
+
+### Phase 4: 検証と記録
+
+**目的**: 成果物の検証と記録
+
+**アクション**:
+
+1. 生成されたパッケージの動作確認
+2. `scripts/log_usage.mjs` で記録
+
+## Task仕様ナビ
+
+| Task                  | 起動タイミング       | 入力              | 出力                |
+| --------------------- | -------------------- | ----------------- | ------------------- |
+| validate-build-config | ビルド前             | package.json/設定 | 検証結果            |
+| execute-build         | ビルド実行時         | ビルド設定        | バイナリファイル    |
+| apply-code-signing    | 署名実行時           | 証明書・バイナリ  | 署名済みバイナリ    |
+| generate-installers   | インストーラー生成時 | ビルド成果物      | .dmg/.exe/.AppImage |
+| configure-auto-update | 自動更新設定時       | サーバー設定      | updater設定         |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## ベストプラクティス
+
+### すべきこと
+
+- **ステージング環境テスト**: 本番前に完全なビルド・署名フローを検証
+- **CI/CD自動化**: 各プラットフォーム用パイプラインを構築
+- **認証情報管理**: 署名用認証情報をセキュアに管理
+- **クロスプラットフォーム検証**: 全ターゲットで動作確認
+- **段階的リリース**: ロールバック策を備えたリリース戦略
+
+### 避けるべきこと
+
+- **認証情報埋め込み**: コードベースに直接埋め込まない
+- **署名なし配布**: セキュリティリスク
+- **バージョン重複**: 同一バージョンで異なるビルド
+- **本番初テスト**: 設定変更を本番環境で初めてテストしない
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース             | パス                                                                               | 用途               |
+| -------------------- | ---------------------------------------------------------------------------------- | ------------------ |
+| ビルド設定ガイド     | See [references/build-config-guide.md](references/build-config-guide.md)           | ビルド設定の詳細   |
+| ビルドプロセスガイド | See [references/build-process-guide.md](references/build-process-guide.md)         | ビルドフロー       |
+| コード署名           | See [references/code-signing.md](references/code-signing.md)                       | 署名手順           |
+| electron-builder設定 | See [references/electron-builder-config.md](references/electron-builder-config.md) | 設定オプション     |
+| インストーラー生成   | See [references/installer-generation.md](references/installer-generation.md)       | インストーラー作成 |
+| 自動更新ガイド       | See [references/auto-update-guide.md](references/auto-update-guide.md)             | 自動更新設定       |
+
+### scripts/（決定論的処理）
+
+| スクリプト           | 用途               | 使用例                                                          |
+| -------------------- | ------------------ | --------------------------------------------------------------- |
+| `generate-icons.mjs` | アイコン生成       | `node scripts/generate-icons.mjs --input icon.png`              |
+| `log_usage.mjs`      | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 4"` |
+
+### assets/（テンプレート）
+
+| テンプレート           | 用途                             |
+| ---------------------- | -------------------------------- |
+| `electron-builder.yml` | electron-builder設定テンプレート |
+
+## 変更履歴
+
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様完全準拠、構造最適化 |
+| 1.0.0   | 2025-12-31 | 初版作成                             |

@@ -1,339 +1,126 @@
 ---
 name: open-closed-principle
 description: |
-  SOLID原則の開放閉鎖原則（OCP）を専門とするスキル。
-  Robert C. Martinの『アジャイルソフトウェア開発の奥義』に基づき、
-  拡張に開かれ、修正に閉じた設計を提供します。
+  オープン・クローズド原則（OCP）の専門スキル。
+  拡張に対して開き、修正に対して閉じた設計を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『Clean Architecture』（Robert C. Martin） / 適用: SOLID原則 / 目的: 保守性向上
+  • 『アジャイルソフトウェア開発の奥義』（Robert C. Martin） / 適用: 設計パターン / 目的: 拡張性確保
 
-  - `.claude/skills/open-closed-principle/resources/extension-mechanisms.md`: 拡張メカニズム（Extension Mechanisms）
-  - `.claude/skills/open-closed-principle/resources/ocp-fundamentals.md`: OCP原則の基本（Open-Closed Principle Fundamentals）
-  - `.claude/skills/open-closed-principle/resources/ocp-patterns.md`: OCP準拠パターン（OCP-Compliant Patterns）
-  - `.claude/skills/open-closed-principle/resources/refactoring-to-ocp.md`: OCPへのリファクタリング（Refactoring to OCP）
-  - `.claude/skills/open-closed-principle/scripts/analyze-extensibility.mjs`: コードの拡張性分析とOCP違反検出（switch文・if-elseチェーン・型チェック・フラグパラメータ）
-  - `.claude/skills/open-closed-principle/templates/extension-point-template.md`: Strategy/Template Method/Plugin Registryによる拡張ポイント設計テンプレート
-
-  専門分野:
-  - OCP原則: 拡張と修正の分離
-  - Strategy: 振る舞いの動的交換
-  - Template Method: アルゴリズムの骨格定義
-  - Plugin Architecture: 拡張ポイントの設計
-
-  使用タイミング:
-  - 新しいワークフロータイプの追加が必要な時
-  - 既存コードを修正せずに機能拡張したい時
-  - 拡張ポイントを設計する時
-  - レガシーコードをOCP準拠にリファクタリングする時
-
-  Use proactively when designing extension points, adding workflow types,
-version: 1.0.0
+  Trigger:
+  OCP適用時、拡張可能設計時、SOLID原則実装時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Open-Closed Principle (OCP)
 
 ## 概要
 
-このスキルは、SOLID 原則の一つである開放閉鎖原則（OCP）に関する知識を提供します。
+SOLID原則の開放閉鎖原則（OCP: Open-Closed Principle）は、
+ソフトウェアエンティティが拡張に対して開かれ、修正に対して閉じていることを述べています。
 
-**OCP の定義**: ソフトウェアのエンティティ（クラス、モジュール、関数など）は、拡張に対して開いていて、修正に対して閉じているべきである。
+このスキルは以下を実現します：
 
-**主要な価値**:
+- 既存コードを修正せずに新機能を追加できる拡張可能な設計
+- アンチパターン（if-elseチェーン、switch文、型チェック）の識別と改善
+- Strategy、Template Method、Plugin Registryなどの拡張パターンの適用
+- レガシーコードのOCP準拠への段階的なリファクタリング
 
-- 既存コードの安定性維持
-- 新機能追加の容易性
-- リグレッションリスクの低減
+詳細な手順や背景は `references/` ディレクトリを参照してください。
 
-**対象ユーザー**:
+## ワークフロー
 
-- ワークフローエンジンの拡張ポイントを設計するエージェント
-- 既存システムに新機能を追加する開発者
-- レガシーコードをリファクタリングするチーム
+### Phase 1: 現状分析
 
-## リソース構造
+**目的**: OCP違反パターンを検出し、改善対象を特定
 
-```
-open-closed-principle/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── ocp-fundamentals.md                     # OCP原則の基本
-│   ├── extension-mechanisms.md                 # 拡張メカニズム
-│   ├── ocp-patterns.md                         # OCP準拠パターン
-│   └── refactoring-to-ocp.md                   # OCPへのリファクタリング
-├── scripts/
-│   └── analyze-extensibility.mjs               # 拡張性分析スクリプト
-└── templates/
-    └── extension-point-template.md             # 拡張ポイントテンプレート
-```
+**アクション**:
 
-## コマンドリファレンス
+1. `references/basics.md` でOCPの基本概念を確認
+2. `agents/analyze-violations.md` を参照してコード分析を実施
+3. 違反箇所をリストアップし優先度を設定
 
-### リソース読み取り
+**Task**: `agents/analyze-violations.md` を参照
 
-```bash
-# OCP原則の基本
-cat .claude/skills/open-closed-principle/resources/ocp-fundamentals.md
+### Phase 2: 拡張設計
 
-# 拡張メカニズム
-cat .claude/skills/open-closed-principle/resources/extension-mechanisms.md
+**目的**: OCP準拠の拡張ポイントを設計
 
-# OCP準拠パターン
-cat .claude/skills/open-closed-principle/resources/ocp-patterns.md
+**アクション**:
 
-# OCPへのリファクタリング
-cat .claude/skills/open-closed-principle/resources/refactoring-to-ocp.md
-```
+1. `references/ocp-patterns.md` で適切なパターンを選定
+2. `agents/design-extension.md` を参照して設計を実施
+3. `assets/extension-point-template.md` でテンプレートを活用
 
-### スクリプト実行
+**Task**: `agents/design-extension.md` を参照
 
-```bash
-# 拡張性分析
-node .claude/skills/open-closed-principle/scripts/analyze-extensibility.mjs <file.ts>
-```
+### Phase 3: 実装と検証
 
-### テンプレート参照
+**目的**: 成果物の検証と実行記録の保存
 
-```bash
-# 拡張ポイントテンプレート
-cat .claude/skills/open-closed-principle/templates/extension-point-template.md
-```
+**アクション**:
 
----
+1. `scripts/analyze-extensibility.mjs` で改善後のコード品質を再度確認
+2. `scripts/validate-skill.mjs` でスキル構造を確認
+3. 成果物がOCP原則に準拠しているか確認
+4. `scripts/log_usage.mjs` を実行して記録を残す
 
-## 核心知識
+## Task仕様（ナビゲーション）
 
-### 1. OCP 原則の本質
+| Task               | 起動タイミング | 入力         | 出力         |
+| ------------------ | -------------- | ------------ | ------------ |
+| analyze-violations | Phase 1開始時  | 対象コード   | 違反レポート |
+| design-extension   | Phase 2開始時  | 違反レポート | 拡張設計書   |
 
-**問題**: 変更のたびに既存コードを修正
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
-```
-# 悪い例: 新しいタイプを追加するたびに修正が必要
-WorkflowEngine:
-  execute(workflow: Workflow):
-    switch (workflow.type):
-      case 'AI_ANALYSIS':
-        return this.executeAIAnalysis(workflow)
-      case 'DATA_TRANSFORM':
-        return this.executeDataTransform(workflow)
-      # 新しいタイプを追加 → ここを修正
-      case 'NEW_TYPE':
-        return this.executeNewType(workflow)
-```
+## ベストプラクティス
 
-**解決**: 拡張に開き、修正に閉じる
+### すべきこと
 
-```
-# 良い例: 新しいタイプは登録するだけ
-WorkflowEngine:
-  private executors: Map<string, IWorkflowExecutor>
+- **拡張ポイントを明確にする**: 新しいタイプ・変数が追加される可能性がある場所を事前に設計
+- **抽象化を活用する**: インターフェース、基底クラス、ジェネリクスで変動部を隠蔽
+- **段階的に適用する**: すべてを一度にOCP準拠にするのではなく、段階的に改善
+- **アンチパターンを避ける**: if-elseチェーン、switch文、型チェック、フラグパラメータを識別・リファクタリング
+- **テストを追加する**: リファクタリング前後で拡張性とバグの有無を検証
 
-  registerExecutor(executor: IWorkflowExecutor):
-    this.executors.set(executor.type, executor)
+### 避けるべきこと
 
-  execute(workflow: Workflow):
-    executor = this.executors.get(workflow.type)
-    if (!executor):
-      throw new UnknownTypeError(workflow.type)
-    return executor.execute(workflow.input, context)
+- **過度な抽象化**: 実装されない拡張ポイントを設計しない（YAGNI原則に反する）
+- **複雑性の増加**: 単純な機能を複雑にしないため、本当に拡張が必要な箇所のみに適用
+- **アンチパターンの無視**: switch文やif-elseチェーンを放置しない
+- **テストなしのリファクタリング**: 変更前に既存機能が正常に動作することを確認
+- **一度に全体をリファクタリング**: 段階的に、失敗しやすい部分から改善
 
-# 新しいタイプの追加（既存コードを修正しない）
-engine.registerExecutor(new NewTypeExecutor())
-```
+## リソース参照
 
-### 2. 拡張メカニズム
+### references/（詳細知識）
 
-| メカニズム           | 説明                         | 使用場面               |
-| -------------------- | ---------------------------- | ---------------------- |
-| **Strategy**         | 振る舞いを動的に交換         | アルゴリズムの切り替え |
-| **Template Method**  | アルゴリズムの骨格を定義     | 処理フローの共通化     |
-| **Plugin/Registry**  | 動的な機能追加               | プラグインシステム     |
-| **Decorator**        | 機能の動的追加               | 横断的関心事           |
-| **Abstract Factory** | オブジェクトファミリーの生成 | 製品バリエーション     |
+| リソース         | パス                                                                         | 用途                |
+| ---------------- | ---------------------------------------------------------------------------- | ------------------- |
+| 基礎知識         | See [references/basics.md](references/basics.md)                             | OCP基本概念         |
+| 原則詳細         | See [references/ocp-fundamentals.md](references/ocp-fundamentals.md)         | 定義・歴史・検証    |
+| パターン集       | See [references/ocp-patterns.md](references/ocp-patterns.md)                 | Strategy/Template等 |
+| 拡張メカニズム   | See [references/extension-mechanisms.md](references/extension-mechanisms.md) | パターン選定ガイド  |
+| リファクタリング | See [references/refactoring-to-ocp.md](references/refactoring-to-ocp.md)     | 段階的改善手順      |
 
-### 3. ワークフローエンジンでの OCP 適用
+### assets/（テンプレート）
 
-**拡張ポイントの設計**:
-
-```
-# 拡張ポイント1: Executor登録
-IWorkflowExecutor:
-  + readonly type: string
-  + execute(input, context): Promise<Output>
-
-WorkflowRegistry:
-  + register(executor: IWorkflowExecutor): void  # 拡張ポイント
-  + create(type: string): IWorkflowExecutor
-
-# 拡張ポイント2: ミドルウェア/インターセプター
-IExecutionMiddleware:
-  + execute(input, context, next): Promise<Output>
-
-MiddlewareChain:
-  + use(middleware: IExecutionMiddleware): void  # 拡張ポイント
-  + execute(input, context): Promise<Output>
-
-# 拡張ポイント3: イベントフック
-IWorkflowHook:
-  + onBeforeExecute?(context): void
-  + onAfterExecute?(result, context): void
-  + onError?(error, context): void
-
-HookRegistry:
-  + register(hook: IWorkflowHook): void  # 拡張ポイント
-```
-
-**新しいワークフロータイプの追加**:
-
-```
-# 既存コードを修正せずに新しいタイプを追加
-
-# 1. 新しいExecutorを作成
-NotificationExecutor implements IWorkflowExecutor:
-  readonly type = 'NOTIFICATION'
-  readonly displayName = '通知'
-
-  execute(input, context):
-    # 実装
-
-# 2. レジストリに登録
-registry.register(new NotificationExecutor())
-
-# 完了！WorkflowEngineのコードは一切変更なし
-```
-
-### 4. OCP 違反の兆候
-
-| 兆候                 | 説明                               |
-| -------------------- | ---------------------------------- |
-| **長い switch 文**   | 新しいケースを追加するたびに修正   |
-| **if-else チェーン** | 条件分岐の追加で既存コードを変更   |
-| **型チェック**       | instanceof/typeof による分岐       |
-| **フラグパラメータ** | ブール値で振る舞いを切り替え       |
-| **頻繁な修正**       | 機能追加で既存ファイルを頻繁に変更 |
-
----
-
-## 実装ワークフロー
-
-### Phase 1: 変動点の特定
-
-1. 頻繁に変更される部分を特定
-2. 将来の変更可能性を評価
-3. 拡張ポイントを設計
-
-**判断基準**:
-
-- [ ] 新しい機能タイプは追加される可能性があるか？
-- [ ] アルゴリズムは交換される可能性があるか？
-- [ ] 外部システムの統合は増える可能性があるか？
-
-### Phase 2: 抽象化の導入
-
-1. 安定した抽象（インターフェース）を定義
-2. 変動する部分を抽象に依存させる
-3. 具体的な実装を分離
-
-**判断基準**:
-
-- [ ] インターフェースは安定しているか？
-- [ ] 実装の詳細は隠蔽されているか？
-- [ ] 新しい実装の追加は容易か？
-
-### Phase 3: 拡張メカニズムの実装
-
-1. 適切なパターンを選択（Strategy/Template/Plugin）
-2. 登録/解決メカニズムを実装
-3. 拡張 API を提供
-
-**判断基準**:
-
-- [ ] 拡張方法は明確か？
-- [ ] 既存コードの修正なしに拡張できるか？
-- [ ] 拡張のドキュメントは十分か？
-
-### Phase 4: 検証
-
-1. 新機能追加のシミュレーション
-2. 既存コードへの影響確認
-3. テストの実施
-
-**判断基準**:
-
-- [ ] 新機能追加で既存ファイルの変更は最小限か？
-- [ ] リグレッションテストはパスするか？
-- [ ] 拡張ポイントは適切に機能するか？
-
----
-
-## アンチパターン
-
-### 1. 早すぎる抽象化
-
-```
-# 悪い例: 1つの実装しかないのに抽象化
-IUserRepository:
-  + findById(id): User
-
-# 実装は1つだけ
-UserRepository implements IUserRepository
-
-# 将来の拡張が明確でない場合は直接実装でOK
-```
-
-### 2. 過度な拡張ポイント
-
-```
-# 悪い例: すべてが拡張ポイント
-IWorkflowExecutor:
-  + type: ITypeProvider           # 過度
-  + execute: IExecutionStrategy   # 過度
-  + validate: IValidationStrategy # 過度
-  + log: ILoggingStrategy         # 過度
-
-# 良い例: 本当に変動する部分のみ
-IWorkflowExecutor:
-  + readonly type: string
-  + execute(input, context): Promise<Output>
-  + validate?(input): ValidationResult  # オプション
-```
-
-### 3. 抽象の漏れ
-
-```
-# 悪い例: 抽象が具体的な実装に依存
-IWorkflowExecutor:
-  + execute(input, context): Promise<Output>
-  + getAIClient(): AIClient  # AIに依存 → 漏れ
-
-# 良い例: 純粋な抽象
-IWorkflowExecutor:
-  + execute(input, context): Promise<Output>
-  # AI依存はコンストラクタ注入で解決
-```
-
----
-
-## 関連スキル
-
-- `.claude/skills/design-patterns-behavioral/SKILL.md`: Strategy, Template Method
-- `.claude/skills/plugin-architecture/SKILL.md`: プラグインアーキテクチャ
-- `.claude/skills/interface-segregation/SKILL.md`: ISP 準拠設計
-- `.claude/skills/factory-patterns/SKILL.md`: Factory 実装
-
----
-
-## 参考文献
-
-- **『アジャイルソフトウェア開発の奥義』** Robert C. Martin 著
-- **『Clean Architecture』** Robert C. Martin 著
-- **『Design Patterns』** Erich Gamma 他著
-
----
+| リソース     | パス                                 | 用途             |
+| ------------ | ------------------------------------ | ---------------- |
+| 拡張ポイント | `assets/extension-point-template.md` | 設計テンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                          |
-| ---------- | ---------- | ----------------------------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版リリース - OCP 原則、拡張メカニズム、ワークフローエンジン適用 |
+| Version | Date       | Changes                      |
+| ------- | ---------- | ---------------------------- |
+| 2.1.0   | 2026-01-02 | agents/追加、Level構造を統合 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に対応       |
+| 1.0.0   | 2025-12-24 | 初期実装                     |

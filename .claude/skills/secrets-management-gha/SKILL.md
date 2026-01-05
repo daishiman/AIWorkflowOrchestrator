@@ -1,232 +1,122 @@
 ---
 name: secrets-management-gha
 description: |
-  GitHub Actionsワークフローでの安全な秘密情報管理。
-  リポジトリシークレット、環境シークレット、組織シークレット、Dependabotシークレットの使用方法、
-  OIDCによるクラウドプロバイダー認証、シークレットローテーション、監査ベストプラクティスを提供。
+  GitHub Actionsワークフローでの安全な秘密情報管理を実現する。
+  リポジトリ/環境/組織/Dependabotの4種類のシークレット使い分け、OIDCによるクラウド認証、ローテーション、監査を包括的に提供する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Web Application Security (Andrew Hoffman) / 適用: 脅威モデリング・セキュア設計 / 目的: シークレット管理戦略の基盤
+  • GitHub Actions Secrets API / 適用: シークレット設定・アクセス制御 / 目的: 各タイプの正確な使い分け
+  • OpenID Connect (OIDC) Specification / 適用: クラウドプロバイダー認証 / 目的: 長期認証情報の排除
 
-  - `.claude/skills/secrets-management-gha/resources/oidc-authentication.md`: OIDC Authenticationリソース
-  - `.claude/skills/secrets-management-gha/resources/secret-best-practices.md`: Secret Best Practicesリソース
-  - `.claude/skills/secrets-management-gha/resources/secret-types.md`: Secret Typesリソース
-
-  - `.claude/skills/secrets-management-gha/templates/oidc-examples.yaml`: OIDC Examplesテンプレート
-
-  - `.claude/skills/secrets-management-gha/scripts/check-secret-usage.mjs`: Check Secret Usageスクリプト
-
-  Use proactively when implementing GitHub Actions workflows with secret management,
-  OIDC authentication, or secure credential handling.
-version: 1.0.0
+  Trigger:
+  Use when configuring GitHub Actions secrets, implementing cloud OIDC authentication, rotating secrets, or auditing secret access patterns.
+  GitHub secrets, OIDC, secret rotation, environment secrets, organization secrets, cloud authentication
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # GitHub Actions Secrets Management
 
-GitHub Actions ワークフローでの秘密情報の安全な管理と使用方法。
+## 概要
 
-## ディレクトリ構造
+GitHub Actionsワークフローでの安全な秘密情報管理を実現するスキル。リポジトリ/環境/組織/Dependabotの4種類のシークレット使い分け、OIDCクラウド認証、ローテーション、アクセス監査を段階的に提供する。
+
+## ワークフロー
 
 ```
-.claude/skills/secrets-management-gha/
-├── SKILL.md                        # 本ファイル（概要とリファレンス）
-├── resources/
-│   ├── secret-types.md             # シークレットの種類と優先順位
-│   ├── oidc-authentication.md      # OIDC認証詳細（AWS/GCP/Azure）
-│   └── secret-best-practices.md    # セキュリティベストプラクティス
-├── templates/
-│   └── oidc-examples.yaml          # OIDCワークフローテンプレート
-└── scripts/
-    └── check-secret-usage.mjs      # シークレット使用チェッカー
+secret-type-determination → oidc-authentication → secret-rotation → access-audit
 ```
 
-## コマンドリファレンス
+### Task 1: シークレットタイプ判定（secret-type-determination）
 
-### リソース参照
+要件に基づき4種類のGitHubシークレットから最適なタイプを選定する。
 
-```bash
-# シークレットの種類と優先順位
-cat .claude/skills/secrets-management-gha/resources/secret-types.md
+**Task**: `agents/secret-type-determination.md` を参照
 
-# OIDC認証設定（AWS/GCP/Azure）
-cat .claude/skills/secrets-management-gha/resources/oidc-authentication.md
+### Task 2: OIDC認証実装（oidc-authentication）
 
-# セキュリティベストプラクティス
-cat .claude/skills/secrets-management-gha/resources/secret-best-practices.md
-```
+AWS/Azure/GCPへのOIDC認証を実装し、長期認証情報を排除する。
 
-### テンプレート参照
+**Task**: `agents/oidc-authentication.md` を参照
 
-```bash
-# OIDCワークフロー例
-cat .claude/skills/secrets-management-gha/templates/oidc-examples.yaml
-```
+### Task 3: シークレットローテーション（secret-rotation）
 
-### スクリプト実行
+定期的なシークレット更新プロセスを自動化する。
 
-```bash
-# ワークフローファイル内のシークレット使用チェック
-node .claude/skills/secrets-management-gha/scripts/check-secret-usage.mjs <workflow-file.yml>
-```
+**Task**: `agents/secret-rotation.md` を参照
 
-## シークレットタイプ概要
+### Task 4: アクセス監査（access-audit）
 
-### 1. リポジトリシークレット
+ワークフロー内のシークレット使用パターンを分析し、セキュリティリスクを特定する。
 
-- スコープ: 単一リポジトリのすべてのワークフロー
-- 設定場所: Settings → Secrets and variables → Actions
-- アクセス: `${{ secrets.SECRET_NAME }}`
+**Task**: `agents/access-audit.md` を参照
 
-### 2. 環境シークレット
+## Task仕様（ナビゲーション）
 
-- スコープ: 特定の環境（production, staging 等）
-- 保護ルール: レビュー要求、待機タイマー、デプロイブランチ制限
-- アクセス: `environment`キー指定が必要
+| Task                      | 責務                   | 入力               | 出力                       |
+| ------------------------- | ---------------------- | ------------------ | -------------------------- |
+| secret-type-determination | シークレットタイプ選定 | プロジェクト要件   | シークレット設計書         |
+| oidc-authentication       | OIDC認証実装           | シークレット設計書 | OIDCワークフロー設定       |
+| secret-rotation           | ローテーション自動化   | シークレット設計書 | ローテーションワークフロー |
+| access-audit              | セキュリティ監査       | ワークフロー定義   | 監査レポート               |
 
-### 3. 組織シークレット
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+**注記**: 1 Task = 1 責務。必要なTaskのみ実行する。
 
-- スコープ: 組織内の複数リポジトリ
-- 可視性: 選択したリポジトリまたはすべて
-- 優先順位: リポジトリ > 環境 > 組織
+## ベストプラクティス
 
-### 4. Dependabot シークレット
+### すべきこと
 
-- スコープ: Dependabot ワークフロー専用
-- 用途: プライベートレジストリ認証
+| 推奨事項                   | 理由                                      |
+| -------------------------- | ----------------------------------------- |
+| 環境ごとにシークレット分離 | 本番/ステージングの誤用を防止             |
+| OIDC認証を優先             | 長期認証情報不要、自動ローテーション      |
+| 最小権限の原則             | 必要なワークフロー/環境のみにアクセス許可 |
+| 監査ログ定期レビュー       | 異常アクセスの早期検出                    |
+| 90日以内のローテーション   | 漏洩時の影響範囲を限定                    |
 
-## Secrets コンテキストアクセスパターン
+### 避けるべきこと
 
-### 基本アクセス
+| 禁止事項                       | 問題点                                 |
+| ------------------------------ | -------------------------------------- |
+| シークレットのログ出力         | 漏洩後の消去が不可能                   |
+| `secrets: inherit` の濫用      | 外部Actionへの過剰な露出               |
+| コミット履歴への含有           | Git履歴からの完全削除が困難            |
+| 同一シークレットの複数環境共有 | 影響範囲の拡大                         |
+| Dependabotシークレットの混同   | スコープが異なり意図しないアクセス不可 |
 
-```yaml
-- name: Use secret
-  run: echo "Secret exists"
-  env:
-    API_TOKEN: ${{ secrets.API_TOKEN }}
-```
+## リソース参照
 
-### 環境シークレット
+### references/（詳細知識）
 
-```yaml
-jobs:
-  deploy:
-    environment: production
-    steps:
-      - name: Deploy with env secret
-        run: deploy.sh
-        env:
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-```
+| リソース                       | パス                                                                       | 読込条件           |
+| ------------------------------ | -------------------------------------------------------------------------- | ------------------ |
+| シークレットタイプ詳細         | [references/secret-types.md](references/secret-types.md)                   | タイプ選定時       |
+| OIDC認証フロー                 | [references/oidc-authentication.md](references/oidc-authentication.md)     | クラウド認証実装時 |
+| セキュリティベストプラクティス | [references/secret-best-practices.md](references/secret-best-practices.md) | 監査・レビュー時   |
 
-### 条件付きアクセス
+### scripts/（決定論的処理）
 
-```yaml
-- name: Conditional secret
-  if: ${{ secrets.OPTIONAL_SECRET != '' }}
-  env:
-    SECRET: ${{ secrets.OPTIONAL_SECRET }}
-```
+| スクリプト                       | 機能                               |
+| -------------------------------- | ---------------------------------- |
+| `scripts/check-secret-usage.mjs` | ワークフロー内シークレット静的解析 |
+| `scripts/log_usage.mjs`          | フィードバック記録                 |
 
-## OIDC 認証（概要）
+### assets/（テンプレート）
 
-### メリット
+| アセット                    | 用途                               |
+| --------------------------- | ---------------------------------- |
+| `assets/oidc-examples.yaml` | AWS/Azure/GCP OIDC設定テンプレート |
 
-- ✅ 長期認証情報不要
-- ✅ 自動ローテーション
-- ✅ きめ細かいアクセス制御
-- ✅ 監査証跡
+## 変更履歴
 
-### サポートクラウド
-
-- AWS (AssumeRoleWithWebIdentity)
-- GCP (Workload Identity Federation)
-- Azure (Workload Identity Federation)
-- HashiCorp Vault
-
-### 基本パターン
-
-```yaml
-jobs:
-  deploy:
-    permissions:
-      id-token: write # OIDC トークン要求
-      contents: read
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsRole
-          aws-region: us-east-1
-```
-
-## セキュリティベストプラクティス（概要）
-
-### 最小権限の原則
-
-```yaml
-permissions:
-  contents: read
-  id-token: write # 必要な権限のみ
-```
-
-### シークレット漏洩防止
-
-- ❌ `echo ${{ secrets.SECRET }}`（ログに表示される）
-- ✅ 環境変数経由でのみ使用
-- ✅ GitHub 自動マスキング機能を信頼
-
-### ローテーション戦略
-
-- 定期的なシークレット更新（90 日推奨）
-- OIDC 使用で自動ローテーション
-- 監査ログレビュー
-
-## セキュリティ考慮事項
-
-### 避けるべきパターン
-
-```yaml
-# ❌ シークレットをログ出力
-- run: echo ${{ secrets.API_KEY }}
-
-# ❌ Pull Requestトリガーでシークレット使用
-on: pull_request  # フォークからアクセス可能
-
-# ❌ シークレットをアーティファクトに含める
-- uses: actions/upload-artifact@v3
-  with:
-    path: config-with-secrets.json
-```
-
-### 推奨パターン
-
-```yaml
-# ✅ 環境変数経由
-- run: ./deploy.sh
-  env:
-    API_KEY: ${{ secrets.API_KEY }}
-
-# ✅ プロテクテッド環境
-environment: production  # レビュー必須
-
-# ✅ OIDC使用
-permissions:
-  id-token: write
-```
-
-## 関連スキル
-
-このスキルは以下のスキルと連携します:
-
-- **workflow-security** (`.claude/skills/workflow-security/SKILL.md`): 全体的なワークフローセキュリティ戦略
-- **deployment-environments-gha** (`.claude/skills/deployment-environments-gha/SKILL.md`): 環境ベースのデプロイ保護
-- **github-api-integration** (`.claude/skills/github-api-integration/SKILL.md`): API 経由のシークレット管理
-
-## 詳細情報
-
-各トピックの詳細は、対応するリソースファイルを参照してください:
-
-1. **シークレットタイプと優先順位**: `resources/secret-types.md`
-2. **OIDC 認証設定**: `resources/oidc-authentication.md`
-3. **セキュリティベストプラクティス**: `resources/secret-best-practices.md`
-4. **実装例**: `templates/oidc-examples.yaml`
+| Version | Date       | Changes                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠（Level1-4削除、Trigger英語化）   |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様へ初期準拠（Frontmatter改訂、本文再構成） |

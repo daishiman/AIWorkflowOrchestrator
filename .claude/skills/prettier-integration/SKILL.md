@@ -1,191 +1,250 @@
 ---
 name: prettier-integration
 description: |
-  ESLintとPrettierの統合とフォーマット自動化の専門知識。
+  ESLintとPrettierの統合とフォーマット自動化の専門知識を提供します。
   責務分離、競合解決、エディタ統合、保存時自動実行を設計します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer (Hunt, Thomas) / 適用: 実践的改善アプローチ、自動化の価値判断 / 目的: ツール統合の最適化指針
+  • Prettier公式ドキュメント / 適用: 設定オプション選択、デフォルト値理解 / 目的: opinionatedツールの適切な活用
+  • ESLint + Prettier統合ガイド / 適用: 責務分離、競合回避パターン / 目的: 適切な統合設計
 
-  - `.claude/skills/prettier-integration/resources/automation-strategies.md`: Prettier Automation Strategies
-  - `.claude/skills/prettier-integration/resources/conflict-resolution.md`: Prettier-ESLint Conflict Resolution
-  - `.claude/skills/prettier-integration/resources/editor-integration.md`: Prettier Editor Integration
-  - `.claude/skills/prettier-integration/scripts/format-check.mjs`: Prettierフォーマット検証スクリプト
-  - `.claude/skills/prettier-integration/templates/prettierrc-base.json`: prettierrc-base設定ファイル
-  - `.claude/skills/prettier-integration/templates/vscode-settings.json`: vscode-settings設定ファイル
+  Trigger:
+  Use when setting up Prettier with ESLint, resolving formatting conflicts, configuring editor integration, or implementing automated formatting workflows.
+  prettier integration, eslint prettier conflict, code formatting setup, auto format on save, prettier eslint setup, formatting automation
 
-  使用タイミング:
-  - ESLintとPrettierを統合する時
-  - フォーマットルールの競合を解決する時
-  - エディタでの保存時自動フォーマットを設定する時
-  - lint/formatの責務を分離する時
-  - 自動フォーマット適用戦略を設計する時
-version: 1.0.0
+allowed-tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
 ---
 
-# Prettier Integration Skill
+# Prettier統合スキル
 
 ## 概要
 
-このスキルは、ESLint と Prettier の責務分離と効果的な統合戦略を提供します。
+ESLintとPrettierの統合とフォーマット自動化の専門知識。責務分離、競合解決、エディタ統合、保存時自動実行を設計します。
 
-## 責務分離の原則
+## ワークフロー
 
-### ESLint 役割
+### Phase 1: 初期セットアップ
 
-- **コード品質**: 論理エラー、潜在的バグの検出
-- **保守性**: 複雑度、関数長、命名規約の検証
-- **ベストプラクティス**: アンチパターンの検出
+**目的**: Prettierをプロジェクトに導入し、基本設定を確立
 
-### Prettier 役割
+**アクション**:
 
-- **コードフォーマット**: インデント、改行、スペース
-- **視覚的一貫性**: スタイルの統一
-- **スタイル**: クォート、セミコロン、括弧の配置
+1. `references/basics.md` で基本概念を確認
+2. `agents/setup-prettier.md` のTask仕様に従ってセットアップを実行
+3. `assets/prettierrc-base.json` を参照して設定ファイルを作成
 
-## 統合戦略
+**成果物**: .prettierrc.json, .prettierignore, package.jsonスクリプト追加
 
-### アプローチ 1: 競合解決（推奨）
+### Phase 2: 競合解決
 
-**eslint-config-prettier を使用**:
+**目的**: ESLintとPrettierのルール競合を解決
+
+**アクション**:
+
+1. `references/conflict-resolution.md` で競合パターンを確認
+2. `agents/resolve-conflicts.md` のTask仕様に従って競合を解決
+3. eslint-config-prettierで自動無効化を実施
+
+**成果物**: 競合のないESLint設定
+
+### Phase 3: エディタ統合
+
+**目的**: 保存時自動フォーマットを実現
+
+**アクション**:
+
+1. `references/editor-integration.md` でエディタ別パターンを確認
+2. `agents/integrate-editor.md` のTask仕様に従って統合を実施
+3. `assets/vscode-settings.json` を参照して設定
+
+**成果物**: エディタ設定ファイル、保存時自動フォーマット動作確認
+
+### Phase 4: 検証と記録
+
+**目的**: セットアップ完了を検証し、フィードバックを記録
+
+**アクション**:
+
+1. `scripts/format-check.mjs` でフォーマット検証を実行
+2. `scripts/log_usage.mjs` で実行記録を保存
+
+## Task仕様（ナビゲーション）
+
+| Task              | 起動タイミング | 入力             | 出力                   |
+| ----------------- | -------------- | ---------------- | ---------------------- |
+| setup-prettier    | Phase 1開始時  | プロジェクト情報 | Prettier設定ファイル   |
+| resolve-conflicts | Phase 2開始時  | ESLint設定       | 競合解決済みESLint設定 |
+| integrate-editor  | Phase 3開始時  | エディタ情報     | エディタ統合設定       |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## ベストプラクティス
+
+### すべきこと
+
+- ESLintとPrettierを統合する時は責務分離を明確にする
+- フォーマットルールの競合を解決する時はeslint-config-prettierを使用
+- エディタでの保存時自動フォーマットを設定する時はエディタ固有のパターンに従う
+- デフォルト設定を優先し、カスタマイズは最小限にとどめる
+- チーム全体で同じ設定を共有する
+
+### 避けるべきこと
+
+- ESLintのstyling rulesとPrettierルールを重複設定しない
+- 手動フォーマットと自動フォーマットを混在させない
+- CI/CDパイプラインなしで本番環境にPrettierを導入しない
+- アンチパターンや注意点を確認せずに進めない
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース     | パス                                                                           | 説明                         |
+| ------------ | ------------------------------------------------------------------------------ | ---------------------------- |
+| 基本概念     | See [references/basics.md](references/basics.md)                               | Prettier概要、責務分離の原則 |
+| 統合パターン | See [references/patterns.md](references/patterns.md)                           | 実践的な統合パターン集       |
+| 競合解決     | See [references/conflict-resolution.md](references/conflict-resolution.md)     | ESLint競合解決戦略           |
+| エディタ統合 | See [references/editor-integration.md](references/editor-integration.md)       | エディタ別統合パターン       |
+| 自動化戦略   | See [references/automation-strategies.md](references/automation-strategies.md) | CI/CD統合、自動化レベル      |
+
+### scripts/（決定論的処理）
+
+| スクリプト         | 用途                     | 使用例                                                          |
+| ------------------ | ------------------------ | --------------------------------------------------------------- |
+| `format-check.mjs` | Prettierフォーマット検証 | `node scripts/format-check.mjs --path ./src`                    |
+| `log_usage.mjs`    | 使用記録・自動評価       | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
+
+### assets/（テンプレート）
+
+| テンプレート           | 用途                         |
+| ---------------------- | ---------------------------- |
+| `prettierrc-base.json` | 基本Prettier設定テンプレート |
+| `vscode-settings.json` | VS Code設定テンプレート      |
+
+## 主要概念
+
+### 責務分離の原則
+
+**ESLint 役割**:
+
+- コード品質の検証
+- バグの検出
+- ベストプラクティスの強制
+
+**Prettier 役割**:
+
+- コードフォーマットの統一
+- スタイルの自動修正
+- チーム全体のコード一貫性
+
+### 統合戦略
+
+1. **eslint-config-prettier使用**: Prettierと競合するESLintルールを自動無効化
+2. **実行順序の制御**: Prettier → ESLint --fix の順で実行
+3. **エディタ統合**: 保存時に自動フォーマットを実行
+4. **CI/CD統合**: PRレビュー時にフォーマットチェックを実施
+
+## クイックスタート
+
+### 1. Prettierインストール
+
+```bash
+pnpm add -D prettier eslint-config-prettier
+```
+
+### 2. Prettier設定作成
+
+`.prettierrc.json`:
 
 ```json
 {
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier" // 最後に配置してPrettierと競合するルールを無効化
-  ]
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "es5"
 }
 ```
 
-**メリット**:
+### 3. ESLint設定更新
 
-- ESLint と Prettier を独立実行
-- 責務が明確に分離
-- パフォーマンス最適化可能
+`.eslintrc.json`:
 
-### アプローチ 2: 実行分離
+```json
+{
+  "extends": ["eslint:recommended", "prettier"]
+}
+```
 
-**package.json スクリプト**:
+### 4. package.jsonスクリプト追加
 
 ```json
 {
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   }
 }
 ```
 
-**実行順序**: `pnpm lint` → `pnpm format`
+### 5. VS Code設定
 
-### アプローチ 3: エディタ統合
-
-**VSCode 設定例** (.vscode/settings.json):
+`.vscode/settings.json`:
 
 ```json
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  }
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
 ```
 
-**動作フロー**:
+## トラブルシューティング
 
-1. 保存時に自動フォーマット（Prettier）
-2. ESLint 自動修正（--fix）
-3. 残るエラーを表示
+### ESLintとPrettierの競合
 
-## 競合ルールの解決
+**症状**: ESLintエラーを修正するとPrettier警告が出る
 
-### Prettier に委譲すべき ESLint ルール
+**解決**:
 
-以下のルールは無効化（eslint-config-prettier が自動対応）:
+1. `eslint-config-prettier` をインストール
+2. `.eslintrc.json` の `extends` 最後に `"prettier"` を追加
+3. 競合チェック: `npx eslint-config-prettier .eslintrc.json`
 
-- `indent`: Prettier が管理
-- `quotes`: Prettier が管理
-- `semi`: Prettier が管理
-- `max-len`: Prettier が管理
-- `comma-dangle`: Prettier が管理
-- `arrow-parens`: Prettier が管理
-- `object-curly-spacing`: Prettier が管理
+### 保存時フォーマットが動作しない
 
-### 共存可能な ESLint ルール
+**症状**: ファイル保存時に自動フォーマットされない
 
-以下は ESLint で管理（Prettier と競合しない）:
+**解決**:
 
-- `no-unused-vars`: ロジックチェック
-- `no-console`: コード品質
-- `complexity`: 複雑度制限
-- `max-lines-per-function`: 保守性
+1. Prettier拡張機能がインストールされているか確認
+2. `.vscode/settings.json` で `editor.defaultFormatter` を設定
+3. `.prettierrc` がプロジェクトルートにあるか確認
 
-## 自動フォーマット適用
+### lint-stagedでエラー
 
-### コミットフック統合（lint-staged）
+**症状**: pre-commit hookが失敗する
+
+**解決**:
 
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md}": ["prettier --write"]
+    "*.{ts,tsx,js,jsx}": ["prettier --write", "eslint --fix"]
   }
 }
 ```
 
-### CI/CD 統合
+## 変更履歴
 
-```yaml
-# GitHub Actions例
-- name: Check formatting
-  run: pnpm format:check
-
-- name: Lint code
-  run: pnpm lint
-```
-
-## 詳細リソース
-
-```bash
-# 競合解決ガイド
-cat .claude/skills/prettier-integration/resources/conflict-resolution.md
-
-# エディタ統合パターン
-cat .claude/skills/prettier-integration/resources/editor-integration.md
-
-# 自動化戦略
-cat .claude/skills/prettier-integration/resources/automation-strategies.md
-```
-
-## テンプレート
-
-```bash
-# Prettier基本設定
-cat .claude/skills/prettier-integration/templates/prettierrc-base.json
-
-# VSCode設定
-cat .claude/skills/prettier-integration/templates/vscode-settings.json
-```
-
-## スクリプト
-
-```bash
-# フォーマット検証
-node .claude/skills/prettier-integration/scripts/format-check.mjs [target-directory]
-```
-
-## 関連スキル
-
-- `.claude/skills/eslint-configuration/SKILL.md`: ESLint ルール設定
-- `.claude/skills/commit-hooks/SKILL.md`: コミットフック統合
-- `.claude/skills/code-style-guides/SKILL.md`: スタイルガイド選択
-
-## 参考文献
-
-- **Prettier 公式ドキュメント**: https://prettier.io/docs/
-- **eslint-config-prettier**: https://github.com/prettier/eslint-config-prettier
-- **『Maintainable JavaScript』** Nicholas C. Zakas 著
+| Version | Date       | Changes                                                        |
+| ------- | ---------- | -------------------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills.md完全準拠：references階層化廃止、Task仕様書形式統一 |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様準拠：frontmatter更新、references統合          |
+| 1.1.0   | 2025-12-31 | YAML frontmatter拡張、Task仕様ナビ追加                         |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                    |

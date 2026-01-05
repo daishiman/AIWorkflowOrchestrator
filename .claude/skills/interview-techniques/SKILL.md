@@ -1,330 +1,184 @@
 ---
 name: interview-techniques
 description: |
-  要求抽出のためのヒアリングスキル。オープンエンド質問、要求の深掘り、
-  前提の明確化を通じて、ユーザーの真のニーズを引き出します。
+  ユーザーインタビュー、要件ヒアリング、ステークホルダー聞き取り時に使用するスキル。
+  オープンエンド質問、要求の深掘り、前提の明確化を通じて、ユーザーの真のニーズを引き出します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Interviewing Users (Steve Portigal) / 適用: インタビュー設計と実施 / 目的: バイアスを避け深い洞察を得る
+  • Just Enough Research (Erika Hall) / 適用: 実践的なヒアリング / 目的: 限られた時間で最大の洞察を得る
+  • Software Requirements (Karl Wiegers) / 適用: 要件分析と構造化 / 目的: 曖昧さを排除し完全性を確保
+  • The Mom Test (Rob Fitzpatrick) / 適用: 過去の具体的行動の質問 / 目的: 仮定的な話を避け真の課題を発見
 
-  - `.claude/skills/interview-techniques/resources/5w1h-framework.md`: Why/Who/What/When/Where/Howによる網羅的要件理解手法
-  - `.claude/skills/interview-techniques/resources/question-types.md`: 7種類の質問タイプ（オープン/クローズド/深堀り/仮説検証/シナリオ/比較/反転）と使い分け
-  - `.claude/skills/interview-techniques/resources/why-analysis.md`: 5回のWhy繰り返しによる根本ニーズ発見手法
-  - `.claude/skills/interview-techniques/scripts/prepare-interview.mjs`: ヒアリング準備チェックリストと質問セット自動生成
-  - `.claude/skills/interview-techniques/templates/interview-guide.md`: インタビュー実施ガイドとフロー制御テンプレート
-
-  専門分野:
-  - 質問設計: オープンエンド質問、クローズド質問の使い分け
-  - 要求抽出: 暗黙的なニーズの顕在化、隠れた要求の発見
-  - 曖昧性除去: 明確化質問による曖昧な表現の具体化
-  - 前提明示化: 「当たり前」と思われている前提の発見
-
-  使用タイミング:
-  - ユーザーから要望をヒアリングする時
-  - 曖昧な要求を明確化する時
-  - 隠れたニーズを発見する時
-  - ステークホルダーの優先順位を確認する時
-
-  Use proactively when users need to extract requirements, clarify ambiguous requests,
-version: 1.0.0
+  Trigger:
+  Use when conducting user interviews, requirements gathering, stakeholder hearing.
+  Open-ended question design, ambiguous requirement clarification, hidden needs discovery, 5Why analysis.
+allowed-tools:
+  - Grep
+  - Read
+  - Edit
+  - mcp__claude-in-chrome__find
+  - mcp__claude-in-chrome__read_page
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
-# Interview Techniques
+# Interview Techniques（インタビューテクニック）
 
 ## 概要
 
-このスキルは、要求抽出のための効果的なヒアリング技法を提供します。
-オープンエンド質問を活用し、ユーザーの真のニーズを引き出すことで、
-より良い要件定義を実現します。
+要求抽出のためのヒアリングスキル。オープンエンド質問、要求の深掘り、前提の明確化を通じて、ユーザーの真のニーズを引き出すための体系的アプローチです。
 
-**核心概念**:
+このスキルは以下の場面で活用できます:
 
-- **オープンエンド質問**: 自由な回答を促す質問で深い洞察を得る
-- **5W1H**: Why/Who/What/When/Where/How による網羅的な理解
-- **Why 分析**: 5 回の Why で根本ニーズを発見
-- **前提の明示化**: 暗黙の前提を顕在化
-
-**主要な価値**:
-
-- ユーザーの真のニーズの発見
+- ユーザー要件のヒアリング
+- ステークホルダーからのニーズ抽出
 - 曖昧な要求の明確化
-- ステークホルダー間の認識統一
+- 隠れたニーズや潜在ニーズの発見
 
-## リソース構造
-
-```
-interview-techniques/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── question-types.md                       # 質問タイプ別ガイド
-│   ├── 5w1h-framework.md                       # 5W1Hフレームワーク詳細
-│   ├── why-analysis.md                         # Why分析手法
-│   └── clarification-patterns.md               # 明確化質問パターン
-├── scripts/
-│   └── generate-questions.mjs                  # 質問生成支援スクリプト
-└── templates/
-    └── interview-guide-template.md             # ヒアリングガイドテンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# 質問タイプガイド
-cat .claude/skills/interview-techniques/resources/question-types.md
-
-# 5W1Hフレームワーク
-cat .claude/skills/interview-techniques/resources/5w1h-framework.md
-
-# Why分析手法
-cat .claude/skills/interview-techniques/resources/why-analysis.md
-
-# 明確化質問パターン
-cat .claude/skills/interview-techniques/resources/clarification-patterns.md
-```
-
-### テンプレート参照
-
-```bash
-# ヒアリングガイドテンプレート
-cat .claude/skills/interview-techniques/templates/interview-guide-template.md
-```
-
-## いつ使うか
-
-### シナリオ 1: 初期要求のヒアリング
-
-**状況**: 新しいプロジェクトや機能の要求を収集
-
-**適用条件**:
-
-- [ ] 要求が明確でない
-- [ ] ステークホルダーが複数存在
-- [ ] 優先順位が不明確
-
-**期待される成果**: 構造化された要求リスト
-
-### シナリオ 2: 曖昧な要求の明確化
-
-**状況**: 「〜など」「適切に」などの曖昧な表現がある
-
-**適用条件**:
-
-- [ ] 定性的な表現が含まれる
-- [ ] 範囲が不明確
-- [ ] 条件が曖昧
-
-**期待される成果**: 具体的で測定可能な要求
-
-### シナリオ 3: 隠れたニーズの発見
-
-**状況**: 表面的な要求の背後にある真のニーズを探る
-
-**適用条件**:
-
-- [ ] 「なぜ」が明確でない
-- [ ] 代替案の検討が必要
-- [ ] 根本的な問題解決を目指す
-
-**期待される成果**: 根本ニーズと優先順位の明確化
+詳細な手順や背景は `references/Level1_basics.md`（基礎）から `references/Level4_expert.md`（専門）の段階別ガイドを参照してください。
 
 ## ワークフロー
 
-### Phase 1: オープンエンド質問による探索
+### Phase 1: インタビュー準備と前提整理
 
-**目的**: 幅広い情報を収集する
+**目的**: インタビューの目的、対象者、質問項目を明確にする
 
-**質問パターン**:
+**詳細アクション**:
 
-1. **目的の理解**:
-   - 「この機能で何を達成したいですか？」
-   - 「なぜこの機能が必要ですか？」
+1. **現状確認**: `references/Level1_basics.md` でインタビューの基本概念を確認
+2. **目的設定**: 何を知りたいのか（要件、ニーズ、痛点など）を定義
+3. **対象者分析**: 誰にどのような形式でヒアリングするかを決定
+4. **質問設計**: `references/question-types.md` で質問タイプを選択
+5. **準備ツール**: `scripts/prepare-interview.mjs` で質問セットを自動生成
 
-2. **ユーザーの理解**:
-   - 「誰がこの機能を使いますか？」
-   - 「どのような状況で使いますか？」
+**出力例**: ヒアリング計画書、質問リスト、準備チェックリスト
 
-3. **現状の理解**:
-   - 「現在はどのように対処していますか？」
-   - 「何が問題になっていますか？」
+### Phase 2: インタビュー実施と深掘り
 
-**判断基準**:
+**目的**: 実際のインタビューを実施し、深い洞察を得る
 
-- [ ] 目的が理解できたか？
-- [ ] ユーザーが特定できたか？
-- [ ] 現状の問題が把握できたか？
+**詳細アクション**:
 
-**リソース**: `resources/question-types.md`
+1. **フロー開始**: `assets/interview-guide.md` でインタビューフローを確認
+2. **初期質問**: オープンエンド質問から始めて、相手の背景を理解
+3. **深掘り**: `references/why-analysis.md` で5Why分析を実施
+4. **仮説検証**: `references/question-types.md` の検証質問で確認
+5. **メモ記録**: 重要な発言や着眼点をリアルタイムで記録
 
-### Phase 2: 5W1H による網羅的理解
+**出力例**: インタビュー記録、重要ポイント抽出、初期分析メモ
 
-**目的**: 漏れなく要求を理解する
+### Phase 3: 分析・整理と検証
 
-**フレームワーク**:
+**目的**: ヒアリング結果を分析・整理し、隠れた要件を構造化する
 
-- **Why**: なぜこの機能が必要か（目的・背景）
-- **Who**: 誰が使うか（ユーザー、ステークホルダー）
-- **What**: 何を実現したいか（期待される結果）
-- **When**: いつ使うか（使用タイミング、頻度）
-- **Where**: どこで使うか（環境、コンテキスト）
-- **How**: どのように使うか（操作フロー）
+**詳細アクション**:
 
-**判断基準**:
+1. **要件整理**: `references/5w1h-framework.md` でWhy/Who/What/When/Where/Howに分類
+2. **ニーズ抽出**: 表面的な要求から潜在ニーズを抽出
+3. **優先順位付け**: ステークホルダーのニーズを評価・優先付け
+4. **検証実施**: `scripts/validate-skill.mjs` で抽出内容の完全性を確認
+5. **記録保存**: `scripts/log_usage.mjs` でインタビュー記録とラーニングを保存
 
-- [ ] 6 つの観点すべてが確認できたか？
-- [ ] 各観点で十分な情報が得られたか？
+**出力例**: 要件一覧、ニーズマップ、優先度表、実施レポート
 
-**リソース**: `resources/5w1h-framework.md`
+## Task仕様ナビ
 
-### Phase 3: Why 分析による深掘り
+このスキルで対応できるタスク一覧:
 
-**目的**: 根本的なニーズを発見する
-
-**手法**:
-
-1. 表面的な要求に対して「なぜ？」を問う
-2. その回答に対してさらに「なぜ？」を繰り返す
-3. 5 回程度繰り返すことで根本ニーズに到達
-
-**例**:
-
-```
-要求: 「レポート出力機能が欲しい」
-Why 1: なぜレポートが必要？→「上司に報告するため」
-Why 2: なぜ報告が必要？→「進捗を把握してもらうため」
-Why 3: なぜ進捗把握が必要？→「問題を早期発見するため」
-Why 4: なぜ早期発見が重要？→「遅延を防ぐため」
-Why 5: なぜ遅延を防ぎたい？→「納期を守るため」
-
-→ 根本ニーズ: 「プロジェクトの納期遵守」
-→ 代替案: リアルタイムダッシュボード、アラート機能なども検討可能
-```
-
-**判断基準**:
-
-- [ ] 根本的なニーズが特定できたか？
-- [ ] 代替案の検討が可能になったか？
-
-**リソース**: `resources/why-analysis.md`
-
-### Phase 4: 曖昧性の明確化
-
-**目的**: 曖昧な表現を具体化する
-
-**明確化質問パターン**:
-
-1. **量的曖昧性**:
-   - 「『高速』とは具体的に何秒以内ですか？」
-   - 「『多くの』とは何件以上を想定していますか？」
-
-2. **質的曖昧性**:
-   - 「『使いやすい』とはどういう状態ですか？」
-   - 「それをどうやって測定しますか？」
-
-3. **範囲の曖昧性**:
-   - 「『など』には他に何が含まれますか？」
-   - 「すべてを列挙していただけますか？」
-
-4. **条件の曖昧性**:
-   - 「『場合によって』とはどのような条件ですか？」
-   - 「すべての条件を教えていただけますか？」
-
-**判断基準**:
-
-- [ ] 曖昧な表現がすべて明確化されたか？
-- [ ] 具体的な数値や条件が定義されたか？
-
-**リソース**: `resources/clarification-patterns.md`
-
-## 質問設計の原則
-
-### オープンエンド質問
-
-- **特徴**: 自由な回答を促す
-- **パターン**: 「どのように〜」「なぜ〜」「何が〜」
-- **用途**: 探索的な情報収集
-
-### クローズド質問
-
-- **特徴**: Yes/No や選択式の回答
-- **パターン**: 「〜ですか？」「A と B どちらですか？」
-- **用途**: 確認、選択の絞り込み
-
-### 使い分け
-
-```
-探索フェーズ: オープンエンド質問 → 幅広い情報収集
-確認フェーズ: クローズド質問 → 理解の確認
-深掘りフェーズ: Why質問 → 根本ニーズの発見
-明確化フェーズ: 具体化質問 → 曖昧性の除去
-```
+| Task ID | タスク名                   | 説明                                       | 参照リソース           | 使用スクリプト        |
+| ------- | -------------------------- | ------------------------------------------ | ---------------------- | --------------------- |
+| INT-001 | 初期ヒアリング計画         | インタビューの目的・対象者・方法を定義     | Level1_basics.md       | prepare-interview.mjs |
+| INT-002 | オープンエンド質問設計     | 相手を誘導しない質問の構成                 | question-types.md      | prepare-interview.mjs |
+| INT-003 | 深掘り分析実施             | 5Why分析による根本ニーズ発見               | why-analysis.md        | -                     |
+| INT-004 | 仮説検証インタビュー       | 仮説を検証する質問設計                     | question-types.md      | prepare-interview.mjs |
+| INT-005 | 5W1Hフレームワーク適用     | 要件を網羅的に整理                         | 5w1h-framework.md      | -                     |
+| INT-006 | ステークホルダーヒアリング | 複数利害関係者の要望を集約                 | Level2_intermediate.md | prepare-interview.mjs |
+| INT-007 | 要件の曖昧さ解消           | 曖昧な要求を具体化・明確化                 | Level2_intermediate.md | -                     |
+| INT-008 | インタビュー記録分析       | ヒアリング結果から洞察を抽出               | Level3_advanced.md     | log_usage.mjs         |
+| INT-009 | ニーズ・ウォント区別       | 真のニーズと一時的な要望を区別             | Level3_advanced.md     | -                     |
+| INT-010 | ペルソナ構築               | インタビュー結果からユーザーペルソナを作成 | Level4_expert.md       | -                     |
 
 ## ベストプラクティス
 
-### すべきこと
+### すべきこと (Do)
 
-1. **傾聴を優先**:
-   - 回答を遮らない
-   - 相手のペースに合わせる
-   - メモを取りながら聞く
+- **ユーザーから要望をヒアリングする時**: オープンエンド質問で相手の自由な表現を促す
+- **曖昧な要求を明確化する時**: 具体例や理由を深掘りして背景を理解する
+- **隠れたニーズを発見する時**: 5Why分析で根本原因をたどる
+- **ステークホルダーの優先順位を確認する時**: 複数の視点から優先度を検証
+- **インタビュー前に**: `prepare-interview.mjs` で質問セットを準備
+- **インタビュー中に**: アクティブリスニングで相手の真意を引き出す
+- **インタビュー後に**: `log_usage.mjs` で記録を保存し、経験値を蓄積
 
-2. **オープンエンド質問を優先**:
-   - 「どのように〜」で始める
-   - Yes/No 質問は最小限
+### 避けるべきこと (Don't)
 
-3. **具体例を求める**:
-   - 「例えば？」「具体的には？」
-   - 抽象的な回答を具体化
+- 誘導的な質問（yes/no質問が先行）を避ける → 相手の回答が限定される
+- インタビューの目的を明確にせずに開始することを避ける → 的外れなヒアリングになる
+- アンチパターンや注意点を確認せずに進めることを避ける
+- メモを取らない → 重要なニュアンスを見落とす
+- 相手の発言を遮断する → 本当の要望が出てこない
+- 自分の仮説を押し付ける → バイアスがかかる
+- インタビュー結果を記録しない → 次のインタビューに活かせない
 
-### 避けるべきこと
+## リソース参照
 
-1. **誘導質問**:
-   - ❌ 「〜だと思いませんか？」
-   - ✅ 「どのようにお考えですか？」
+### 学習資料 (references/)
 
-2. **複合質問**:
-   - ❌ 「A についてと B について教えてください」
-   - ✅ 質問は 1 つずつ
+| ファイル                            | 対象レベル | 内容                                                                        |
+| ----------------------------------- | ---------- | --------------------------------------------------------------------------- |
+| `references/Level1_basics.md`       | 初心者     | インタビューの基本概念、基本的な質問タイプ、はじめる心得                    |
+| `references/Level2_intermediate.md` | 実務者     | 実務的なインタビュー設計、ステークホルダー管理、記録方法                    |
+| `references/Level3_advanced.md`     | 上級者     | 複雑なニーズ分析、複数ステークホルダーの調整、仮説検証                      |
+| `references/Level4_expert.md`       | 専門家     | ペルソナ構築、カスタマージャーニーマップ、組織的ヒアリング戦略              |
+| `references/5w1h-framework.md`      | 全レベル   | Why/Who/What/When/Where/Howの構造化フレームワーク                           |
+| `references/question-types.md`      | 全レベル   | 7種類の質問タイプ（オープン/クローズド/深堀り/仮説検証/シナリオ/比較/反転） |
+| `references/why-analysis.md`        | 全レベル   | 5回のWhy繰り返しによる根本ニーズ発見手法                                    |
+| `references/legacy-skill.md`        | 参考       | 旧SKILL.mdの全文（履歴参照用）                                              |
 
-3. **前提を含む質問**:
-   - ❌ 「この機能は速くあるべきですよね？」
-   - ✅ 「速度についてどのような要求がありますか？」
+### 実行ツール (scripts/)
 
-## 関連スキル
+| スクリプト                      | 目的           | 用途例                                                 |
+| ------------------------------- | -------------- | ------------------------------------------------------ |
+| `scripts/prepare-interview.mjs` | ヒアリング準備 | インタビュー前の質問セット自動生成、チェックリスト生成 |
+| `scripts/log_usage.mjs`         | 使用記録・評価 | インタビュー結果の記録、学習成果の追跡                 |
+| `scripts/validate-skill.mjs`    | 構造検証       | スキルの構造完全性確認、リソース整合性確認             |
 
-- **requirements-engineering** (`.claude/skills/requirements-engineering/SKILL.md`): 要件工学
-- **use-case-modeling** (`.claude/skills/use-case-modeling/SKILL.md`): ユースケース
-- **acceptance-criteria-writing** (`.claude/skills/acceptance-criteria-writing/SKILL.md`): 受け入れ基準
+### テンプレート (assets/)
 
-## メトリクス
+| テンプレート                | 用途                                             |
+| --------------------------- | ------------------------------------------------ |
+| `assets/interview-guide.md` | インタビュー実施ガイド、フロー制御、質問順序管理 |
 
-### 質問の効果性
+### コマンドリファレンス
 
-**測定方法**: (明確化された要求数 / 初期の曖昧な要求数) × 100
-**目標**: >90%
+```bash
+# リソース確認
+cat .claude/skills/interview-techniques/references/Level1_basics.md
+cat .claude/skills/interview-techniques/references/Level2_intermediate.md
+cat .claude/skills/interview-techniques/references/question-types.md
+cat .claude/skills/interview-techniques/references/5w1h-framework.md
+cat .claude/skills/interview-techniques/references/why-analysis.md
 
-### 要求カバレッジ
+# インタビュー準備
+node .claude/skills/interview-techniques/scripts/prepare-interview.mjs --help
+node .claude/skills/interview-techniques/scripts/prepare-interview.mjs --generate
 
-**測定方法**: 5W1H すべてがカバーされた要求の割合
-**目標**: 100%
+# テンプレート参照
+cat .claude/skills/interview-techniques/assets/interview-guide.md
 
-### ヒアリング品質スコア
-
-- 目的の明確さ (0-10)
-- ユーザーの特定 (0-10)
-- 条件の具体性 (0-10)
-- 優先順位の明確さ (0-10)
-  **目標**: 平均 8 点以上
+# 検証・記録
+node .claude/skills/interview-techniques/scripts/validate-skill.mjs
+node .claude/skills/interview-techniques/scripts/log_usage.mjs --record "Interview with User A"
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-25 | 初版作成 |
-
-## 参考文献
-
-- **『Exploring Requirements: Quality Before Design』** Donald Gause, Gerald Weinberg 著
-- **『Software Requirements』** Karl Wiegers 著 - Chapter 6: Finding the Voice of the User
+| Version | Date       | Changes                                                                                                                                |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠（YAML frontmatter拡張、Anchors・Trigger追加、Task仕様ナビ追加、ワークフロー詳細化、ベストプラクティス充実） |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                            |

@@ -1,379 +1,117 @@
 ---
 name: tailwind-css-patterns
 description: |
-  Tailwind CSSを活用した効率的で保守性の高いスタイリングパターンの専門知識。
-  Class Variance Authority (CVA)、Tailwind Merge、レスポンシブデザイン、
-  ダークモード対応の実装パターンを提供します。
+  Tailwind CSS のユーティリティ設計とパターン化を支援するスキル。レイアウト・状態・レスポンシブ対応を整理し、再利用可能なUIパターンを構築する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Tailwind CSS Documentation / 適用: ユーティリティ設計 / 目的: 公式ベストプラクティス準拠
+  • Responsive Web Design / 適用: ブレークポイント設計 / 目的: モバイルファーストの整理
+  • Class Variance Authority (CVA) / 適用: バリアント設計 / 目的: 状態と組み合わせの整理
 
-  - `.claude/skills/tailwind-css-patterns/resources/cva-guide.md`: CVA Guideリソース
-  - `.claude/skills/tailwind-css-patterns/resources/dark-mode-guide.md`: Dark Mode Guideリソース
-  - `.claude/skills/tailwind-css-patterns/resources/responsive-patterns.md`: Responsive Patternsリソース
-
-  - `.claude/skills/tailwind-css-patterns/templates/component-variants-template.tsx`: Component Variantsテンプレート
-  - `.claude/skills/tailwind-css-patterns/templates/tailwind-config-template.js`: Tailwind Configテンプレート
-
-  - `.claude/skills/tailwind-css-patterns/scripts/analyze-tailwind.mjs`: Analyze Tailwindスクリプト
-
-  Use proactively when implementing Tailwind CSS styling patterns, component variants,
-  or responsive design systems.
-version: 1.0.0
+  Trigger:
+  Use when designing Tailwind UI patterns, reducing utility bloat, or standardizing responsive and state styles.
+  tailwind css, utility classes, responsive design, component patterns, class variance
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# tailwind-css-patterns
-
-Tailwind CSS を活用した効率的で保守性の高いスタイリングパターンの専門知識
+# Tailwind CSS Patterns
 
 ## 概要
 
-### 目的
-
-Tailwind CSS のユーティリティファーストアプローチを最大限活用し、
-一貫性のある保守しやすい UI スタイリングを実現するパターンを提供する。
-
-### 対象者
-
-- フロントエンドエンジニア
-- UI コンポーネント開発者
-- デザインシステム実装者
-
----
-
-## コアパターン
-
-### 1. Class Variance Authority (CVA)
-
-コンポーネントのバリアント管理に最適なパターン。
-
-```tsx
-import { cva, type VariantProps } from "class-variance-authority";
-
-const button = cva(
-  // ベーススタイル
-  "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2",
-  {
-    variants: {
-      variant: {
-        primary: "bg-blue-600 text-white hover:bg-blue-700",
-        secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
-        outline: "border border-gray-300 bg-transparent hover:bg-gray-100",
-        ghost: "hover:bg-gray-100",
-        destructive: "bg-red-600 text-white hover:bg-red-700",
-      },
-      size: {
-        sm: "h-8 px-3 text-sm",
-        md: "h-10 px-4 text-base",
-        lg: "h-12 px-6 text-lg",
-      },
-    },
-    defaultVariants: {
-      variant: "primary",
-      size: "md",
-    },
-  },
-);
-
-type ButtonProps = VariantProps<typeof button>;
-```
-
-### 2. Tailwind Merge (twMerge)
-
-クラスの競合を解決し、安全にマージ。
-
-```tsx
-import { twMerge } from "tailwind-merge";
-
-// 競合するクラスは後者が優先
-twMerge("px-4 py-2", "px-6"); // → 'py-2 px-6'
-
-// clsxと組み合わせ
-import clsx from "clsx";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-// 使用例
-cn(
-  "base-class",
-  isActive && "active-class",
-  { "conditional-class": condition },
-  className, // 外部からのクラスで上書き可能
-);
-```
-
-### 3. Responsive Design
-
-モバイルファーストのレスポンシブパターン。
-
-```tsx
-// モバイルファースト（小さい画面から大きい画面へ）
-<div className="
-  flex flex-col           // モバイル: 縦並び
-  md:flex-row             // タブレット以上: 横並び
-  lg:gap-8                // デスクトップ: 間隔を広く
-">
-
-// ブレークポイント
-// sm: 640px
-// md: 768px
-// lg: 1024px
-// xl: 1280px
-// 2xl: 1536px
-```
-
-### 4. Dark Mode
-
-ダークモード対応パターン。
-
-```tsx
-// クラスベース（推奨）
-<div className="
-  bg-white text-gray-900
-  dark:bg-gray-900 dark:text-white
-">
-
-// tailwind.config.js
-module.exports = {
-  darkMode: 'class', // or 'media'
-};
-
-// CSS変数との組み合わせ
-<div className="
-  bg-[var(--color-background)]
-  text-[var(--color-text)]
-">
-```
-
----
-
-## 高度なパターン
-
-### 5. 条件付きスタイル
-
-```tsx
-// 状態ベースのスタイル
-const itemClasses = cn(
-  'px-4 py-2 rounded-md transition-colors',
-  {
-    'bg-blue-500 text-white': isSelected,
-    'bg-gray-100 hover:bg-gray-200': !isSelected,
-    'opacity-50 cursor-not-allowed': isDisabled,
-  }
-);
-
-// グループとピアセレクタ
-<div className="group">
-  <button>Hover me</button>
-  <div className="hidden group-hover:block">
-    ホバーで表示
-  </div>
-</div>
-
-<input className="peer" />
-<label className="peer-focus:text-blue-500">
-  入力フォーカスで色が変わる
-</label>
-```
-
-### 6. アニメーション
-
-```tsx
-// 組み込みアニメーション
-<div className="animate-spin">  // 回転
-<div className="animate-pulse"> // 点滅
-<div className="animate-bounce">// バウンス
-
-// カスタムアニメーション（tailwind.config.js）
-module.exports = {
-  theme: {
-    extend: {
-      animation: {
-        'fade-in': 'fadeIn 0.3s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-      },
-    },
-  },
-};
-
-// トランジション
-<div className="transition-all duration-300 ease-in-out hover:scale-105">
-```
-
-### 7. レイアウトパターン
-
-```tsx
-// Flexbox
-<div className="flex items-center justify-between gap-4">
-
-// Grid
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-// コンテナ
-<div className="container mx-auto px-4">
-
-// スタック（縦並び）
-<div className="flex flex-col space-y-4">
-
-// インラインスタック（横並び）
-<div className="flex items-center space-x-2">
-```
-
----
-
-## コンポーネントパターン
-
-### Button
-
-```tsx
-const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  },
-);
-```
-
-### Card
-
-```tsx
-const Card = ({ className, ...props }) => (
-  <div
-    className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
-      className,
-    )}
-    {...props}
-  />
-);
-
-const CardHeader = ({ className, ...props }) => (
-  <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
-);
-
-const CardContent = ({ className, ...props }) => (
-  <div className={cn("p-6 pt-0", className)} {...props} />
-);
-```
-
-### Input
-
-```tsx
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
-    return (
-      <input
-        type={type}
-        className={cn(
-          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
-          "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-          "placeholder:text-muted-foreground",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          "disabled:cursor-not-allowed disabled:opacity-50",
-          className,
-        )}
-        ref={ref}
-        {...props}
-      />
-    );
-  },
-);
-```
-
----
-
-## 設定パターン
-
-### tailwind.config.js
-
-```javascript
-module.exports = {
-  darkMode: "class",
-  content: ["./src/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    container: {
-      center: true,
-      padding: "1rem",
-    },
-    extend: {
-      colors: {
-        border: "hsl(var(--border))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        // ...
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
-    },
-  },
-  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
-};
-```
-
----
-
-## リソース
-
-- `resources/cva-guide.md` - CVA 詳細ガイド
-- `resources/responsive-patterns.md` - レスポンシブデザインパターン
-- `resources/dark-mode-guide.md` - ダークモード実装ガイド
-- `templates/tailwind-config-template.js` - 設定ファイルテンプレート
-- `templates/component-variants-template.tsx` - コンポーネントバリアントテンプレート
-
----
-
-## 関連スキル
-
-- `design-system-architecture` - デザイントークンとの統合
-- `component-composition-patterns` - コンポーネント設計
-- `accessibility-wcag` - アクセシブルなスタイリング
-
----
-
-## バージョン情報
-
-- 作成日: 2025-01-13
-- 最終更新: 2025-01-13
-- バージョン: 1.0.0
+Tailwind CSS のクラス設計とパターン化を整理し、再利用可能なUIライブラリを構築するスキル。クラス肥大化を抑え、レスポンシブと状態表現を体系化する。
+
+詳細は `references/Level1_basics.md` から段階的に参照する。
+
+## ワークフロー
+
+### Phase 1: コンテキスト整理
+
+**目的**: UIの目的と制約を整理する。
+
+**アクション**:
+
+1. 画面種別と利用シーンを整理する。
+2. レイアウトと状態表現の要件を確認する。
+3. 使用するブレークポイント方針を決定する。
+
+### Phase 2: パターン設計
+
+**目的**: パターンライブラリを設計する。
+
+**アクション**:
+
+1. `assets/pattern-library.md` からパターンを選定する。
+2. `assets/component-variants-template.tsx` を基にバリアントを定義する。
+3. 再利用ルールと命名規則を定める。
+
+### Phase 3: 検証
+
+**目的**: クラス肥大化と一貫性を検証する。
+
+**アクション**:
+
+1. `scripts/analyze-tailwind.mjs` で利用状況を分析する。
+2. `scripts/check-utility-bloat.mjs` でクラス長を検査する。
+3. 改善点をパターンに反映する。
+
+## Task仕様ナビ
+
+| Phase | Task | 目的 | 入力 | 出力 |
+| --- | --- | --- | --- | --- |
+| 1 | コンテキスト整理 | 画面目的と制約を整理 | ユーザー要求 | コンテキストメモ |
+| 2 | パターン設計 | パターンとバリアントを設計 | コンテキストメモ | パターン設計書 |
+| 3 | パターン検証 | クラス肥大化と一貫性確認 | UI実装 | 検証レポート |
+
+## ベストプラクティス
+
+### すべきこと
+
+- 同一用途のUIは同じパターンを使い回す。
+- レスポンシブはモバイルファーストで設計する。
+- 状態表現はバリアントで整理する。
+- 長すぎるクラスはコンポーネント化を検討する。
+
+### 避けるべきこと
+
+- クラスのコピペによるばらつきを放置しない。
+- ブレークポイントの乱用を避ける。
+- 任意値の多用を常態化させない。
+
+## リソース/スクリプト参照
+
+### references/
+
+- `references/Level1_basics.md`: 基礎指針
+- `references/Level2_intermediate.md`: 実務パターン
+- `references/Level3_advanced.md`: 高度な設計指針
+- `references/Level4_expert.md`: 専門領域の注意点
+- `references/layout-patterns.md`: レイアウトパターン
+- `references/responsive-strategy.md`: ブレークポイント設計
+- `references/responsive-patterns.md`: レスポンシブ実装例
+- `references/component-states.md`: 状態設計
+- `references/cva-guide.md`: バリアント設計
+- `references/dark-mode-guide.md`: ダークモード設計
+
+### assets/
+
+- `assets/pattern-library.md`: パターンライブラリ
+- `assets/component-skeletons.md`: コンポーネント骨組み
+- `assets/component-variants-template.tsx`: バリアントテンプレート
+- `assets/tailwind-config-template.js`: 設定テンプレート
+
+### scripts/
+
+- `scripts/analyze-tailwind.mjs`: Tailwind 使用状況分析
+- `scripts/check-utility-bloat.mjs`: クラス肥大化検査
+
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 2.0.0 | 2026-01-02 | 18-skills.md 仕様に準拠した構造へ更新 |

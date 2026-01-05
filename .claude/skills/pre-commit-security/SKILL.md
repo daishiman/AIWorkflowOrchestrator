@@ -1,404 +1,356 @@
 ---
 name: pre-commit-security
 description: |
-  pre-commit hookセキュリティスキル。機密情報検出パターン、
-  git-secrets/gitleaks統合、チーム展開戦略、Git履歴スキャンを提供します。
+  pre-commit hookセキュリティスキル。機密情報検出パターン、git-secrets/gitleaks統合、チーム展開戦略、Git履歴スキャンを実装し、コミット前の機密情報漏洩を防ぐ。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Web Application Security (Andrew Hoffman) / 適用: 脅威モデリング・セキュア設計 / 目的: セキュリティリスクの体系的評価
+  • OWASP Top 10 / 適用: 機密情報検出パターン設計 / 目的: 業界標準の脆弱性分類に基づくパターン定義
+  • git-secrets / gitleaks公式ドキュメント / 適用: ツール統合・設定 / 目的: 公式ベストプラクティスに準拠した導入
 
-  - `.claude/skills/pre-commit-security/resources/detection-pattern-library.md`: Secret Detection Pattern Library
-  - `.claude/skills/pre-commit-security/scripts/setup-git-security.mjs`: Git Security Setup Script
-  - `.claude/skills/pre-commit-security/templates/pre-commit-hook-template.sh`: Pre-commit Hook Template for Secret Detection
-
-  使用タイミング:
-  - pre-commit hookを実装する時
-  - 機密情報検出パターンを設計する時
-  - git-secrets/gitleaksを導入する時
-  - Git履歴をスキャンする時
-  - チーム全体にhookを展開する時
-
-  Use when implementing pre-commit hooks, detecting secrets,
-  or scanning Git history for sensitive information.
-version: 1.0.0
+  Trigger:
+  Use when implementing pre-commit hooks for secret detection, designing detection patterns, integrating git-secrets/gitleaks, scanning Git history for leaked secrets, or deploying security hooks across teams.
+  pre-commit security, secret detection, git-secrets, gitleaks, credential scanning, Git history scan
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
 # Pre-commit Security Hooks
 
 ## 概要
 
-pre-commit hook は、コミット時に自動で機密情報をチェックし、
-Git 混入を防ぐ第二防衛線です。このスキルは、効果的な hook 実装と
-ツール統合手法を提供します。
+pre-commit hookセキュリティスキル。コミット前に機密情報（APIキー、パスワード、接続文字列など）を自動検出し、誤ってリポジトリに含めることを防ぐ。git-secrets/gitleaksの統合、カスタム検出パターンの設計、チーム全体への展開戦略、Git履歴の遡及的スキャンをカバーする。
 
-## ツール選択
+## ワークフロー
 
-### git-secrets
+### Phase 1: 機密情報分析
 
-**特徴**:
+**目的**: 検出すべき機密情報のパターンを特定
 
-- AWS Labs が開発
-- pre-commit/pre-push hook として動作
-- カスタムパターン追加可能
-- 軽量、高速
+**アクション**:
 
-**推奨用途**: AWS プロジェクト、シンプルな検出
+1. プロジェクトで使用するクラウドサービス・APIを洗い出す
+2. 検出すべきシークレットの種類（APIキー、接続文字列、証明書等）を特定
+3. 既存コードベースをスキャンし、漏洩リスクを評価
+4. 検出パターンの優先度を決定
 
-**インストール**:
+**Task**: See [agents/analyze-secrets.md](agents/analyze-secrets.md)
+
+### Phase 2: フック設定
+
+**目的**: pre-commit hookを実装・統合
+
+**アクション**:
+
+1. git-secrets/gitleaksの選定と導入
+2. カスタム検出パターンの実装
+3. ホワイトリスト（誤検知除外）の設定
+4. チーム展開戦略の策定（.git/hooks/共有方法）
+5. CI/CD統合の実装
+
+**Task**: See [agents/configure-hooks.md](agents/configure-hooks.md)
+
+**ツール選択基準**:
+
+| 条件                                 | 推奨ツール  | 理由                       |
+| ------------------------------------ | ----------- | -------------------------- |
+| AWS中心のプロジェクト                | git-secrets | AWS公式、軽量              |
+| 多様なクラウドサービス使用           | gitleaks    | 包括的なパターンライブラリ |
+| CI/CD統合が必須                      | gitleaks    | SARIF形式対応              |
+| カスタムパターンのメンテナンスを重視 | git-secrets | シンプルな正規表現ベース   |
+
+**詳細**: See [references/basics.md](references/basics.md) - ツール選択ガイド
+
+### Phase 3: セキュリティ検証
+
+**目的**: フックの有効性を検証し、継続的に改善
+
+**アクション**:
+
+1. テストケースによる検出精度の確認
+2. Git履歴の遡及的スキャン（既存リークの発見）
+3. 誤検知率の測定と調整
+4. CI/CD統合の実装
+
+**Task**: See [agents/validate-security.md](agents/validate-security.md)
+
+**検証スクリプト**:
 
 ```bash
-# macOS
+# Hook動作検証
+node .claude/skills/pre-commit-security/scripts/validate-security.mjs
+
+# 検出精度テスト
+node .claude/skills/pre-commit-security/scripts/validate-security.mjs --test-mode
+
+# Git履歴スキャン
+node .claude/skills/pre-commit-security/scripts/scan-history.mjs --verbose --report=leak-report.json
+```
+
+## Task仕様ナビ
+
+| Task              | 起動タイミング | 入力                           | 出力                              |
+| ----------------- | -------------- | ------------------------------ | --------------------------------- |
+| analyze-secrets   | Phase 1開始時  | コードベース、使用サービス一覧 | 検出パターン仕様、リスク評価      |
+| configure-hooks   | Phase 2開始時  | 検出パターン仕様               | 設定済みpre-commit hook、展開計画 |
+| validate-security | Phase 3開始時  | 設定済みhook                   | 検証レポート、履歴スキャン結果    |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## ベストプラクティス
+
+### すべきこと
+
+- **導入時**:
+  - プロジェクトで使用するクラウドサービスを洗い出してから導入
+  - git-secrets/gitleaksのツール選択基準に従う
+  - 必ずホワイトリストを設定（`.env.example`等）
+
+- **パターン設計時**:
+  - プロバイダー固有パターンを優先（AWS、OpenAI、Anthropic等）
+  - エントロピーベース検出はホワイトリストと併用
+  - 定期的なパターン更新（四半期ごと推奨）
+
+- **チーム展開時**:
+  - `.githooks/` で共有hookを管理
+  - README.mdにセットアップ手順を記載
+  - セットアップスクリプトを提供
+
+- **運用時**:
+  - CI/CDで必須チェックを実施（ローカルhookの補完）
+  - Git履歴スキャンを初回セットアップ時に必ず実施
+  - 検出精度メトリクスを定期測定（TP率≥95%、FP率≤5%）
+
+### 避けるべきこと
+
+- **導入時**:
+  - ホワイトリストなしで運用しない（誤検知多発）
+  - チーム展開戦略なしで個人設定のままにしない
+  - Git履歴スキャンを省略しない（既存リークが残る）
+
+- **パターン設計時**:
+  - 検出パターンを確認せずに導入しない
+  - 広範すぎるエントロピーパターンを使用しない
+  - パターン更新を怠らない（新サービス対応）
+
+- **運用時**:
+  - CI/CD統合なしでローカルのみに依存しない
+  - `--no-verify` を常用しない（緊急時もホワイトリストで対応）
+  - リーク発見時にシークレットローテーションを遅延させない
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース           | パス                                                                                   | 内容                                                     |
+| ------------------ | -------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| 基礎ガイド         | See [references/basics.md](references/basics.md)                                       | pre-commit hookの仕組み、ツール選択、基本設定            |
+| 検出パターン設計   | See [references/patterns.md](references/patterns.md)                                   | 正規表現、エントロピー検出、ホワイトリスト戦略           |
+| パターンライブラリ | See [references/detection-pattern-library.md](references/detection-pattern-library.md) | AWS/GCP/OpenAI/GitHub等のパターン集                      |
+| チーム展開戦略     | See [references/deployment.md](references/deployment.md)                               | 共有hook、husky統合、強制適用戦略                        |
+| CI/CD統合          | See [references/ci-integration.md](references/ci-integration.md)                       | GitHub Actions、GitLab CI、その他CI/CDサービス統合ガイド |
+
+### agents/（Task仕様書）
+
+| Task              | パス                                                           | 入力                       | 出力                           |
+| ----------------- | -------------------------------------------------------------- | -------------------------- | ------------------------------ |
+| analyze-secrets   | See [agents/analyze-secrets.md](agents/analyze-secrets.md)     | コードベース、サービス一覧 | 検出パターン仕様、リスク評価   |
+| configure-hooks   | See [agents/configure-hooks.md](agents/configure-hooks.md)     | 検出パターン仕様           | 設定済みhook、展開計画         |
+| validate-security | See [agents/validate-security.md](agents/validate-security.md) | 設定済みhook               | 検証レポート、履歴スキャン結果 |
+
+### scripts/（自動化）
+
+| スクリプト             | 用途                         | 使用例                                                              |
+| ---------------------- | ---------------------------- | ------------------------------------------------------------------- |
+| setup-git-security.mjs | Git Security自動セットアップ | `node scripts/setup-git-security.mjs`                               |
+| validate-security.mjs  | Hook動作検証・検出精度テスト | `node scripts/validate-security.mjs --test-mode --verbose`          |
+| scan-history.mjs       | Git履歴スキャン              | `node scripts/scan-history.mjs --verbose --report=leak-report.json` |
+| log_usage.mjs          | 使用記録・自動評価           | `node scripts/log_usage.mjs --result success --phase "Phase 3"`     |
+
+### assets/（テンプレート）
+
+| テンプレート             | 用途                 | パス                                                                         |
+| ------------------------ | -------------------- | ---------------------------------------------------------------------------- |
+| Pre-commit Hook Template | カスタムhookの実装例 | See [assets/pre-commit-hook-template.sh](assets/pre-commit-hook-template.sh) |
+
+## クイックスタート
+
+### 1. ツールインストール
+
+```bash
+# git-secrets（AWS中心）
 brew install git-secrets
 
-# Linux
-git clone https://github.com/awslabs/git-secrets.git
-cd git-secrets
-sudo make install
+# gitleaks（多様なサービス）
+brew install gitleaks
 ```
 
-**セットアップ**:
+### 2. 自動セットアップ
 
 ```bash
-cd /path/to/repo
-git secrets --install
-git secrets --register-aws
-
-# カスタムパターン追加
-git secrets --add 'sk-proj-[a-zA-Z0-9]{48}'
-git secrets --add 'https://discord\.com/api/webhooks/\d+/[a-zA-Z0-9_-]+'
-
-# ホワイトリスト
-git secrets --add --allowed '.env.example'
+# セットアップスクリプト実行
+node .claude/skills/pre-commit-security/scripts/setup-git-security.mjs
 ```
 
-### gitleaks
+**含まれる処理**:
 
-**特徴**:
+- git-secretsのインストール確認・初期化
+- AWSパターン登録
+- OpenAI/Anthropic/Discord/GitHub等のパターン追加
+- ホワイトリスト設定
+- Git履歴スキャン
+- .gitignore検証
 
-- 高速、高精度
-- CI/CD 統合が容易
-- 詳細なレポート生成（JSON/SARIF）
-- エントロピーベース検出
+### 3. 手動セットアップ（カスタマイズ時）
 
-**推奨用途**: CI/CD 統合、詳細レポート必要時
+**git-secretsの場合**:
 
-**設定ファイル** (`.gitleaks.toml`):
+```bash
+# 初期化
+cd your-repo
+git secrets --install
 
-```toml
-title = "gitleaks config"
+# パターン追加
+git secrets --register-aws
+git secrets --add 'sk-proj-[a-zA-Z0-9]{48}'
+
+# ホワイトリスト
+git secrets --add --allowed 'example'
+```
+
+**gitleaksの場合**:
+
+```bash
+# .gitleaks.toml作成
+cat > .gitleaks.toml <<'EOF'
+title = "Gitleaks Configuration"
 
 [[rules]]
 id = "openai-api-key"
 description = "OpenAI API Key"
 regex = '''sk-proj-[a-zA-Z0-9]{48}'''
-
-[[rules]]
-id = "stripe-secret-key"
-description = "Stripe Secret Key"
-regex = '''sk_live_[0-9a-zA-Z]{24,}'''
-
-[[rules]]
-id = "generic-api-key"
-description = "Generic API Key"
-regex = '''(?i)(api[_-]?key|apikey)\s*[:=]\s*["'][a-zA-Z0-9]{20,}["']'''
+tags = ["api-key", "openai"]
 
 [allowlist]
-paths = [
-  '''.env.example''',
-  '''tests/fixtures/.*'''
-]
+paths = [".env.example"]
+regexes = ["example", "sample"]
+EOF
+
+# pre-commit hook設定
+cat > .git/hooks/pre-commit <<'EOF'
+#!/bin/sh
+gitleaks protect --staged --verbose
+EOF
+chmod +x .git/hooks/pre-commit
 ```
 
-### truffleHog
-
-**特徴**:
-
-- エントロピーベース検出（パターン非依存）
-- Git 履歴の深層スキャン
-- 高い検出率（誤検知も多い）
-
-**推奨用途**: 包括的履歴スキャン、初回監査
-
-**実行**:
+### 4. テスト
 
 ```bash
-# Git履歴全体スキャン
-trufflehog git file://. --only-verified
+# 検出テスト（ブロックされるべき）
+echo 'API_KEY="sk-proj-test123456789012345678901234567890123456"' > test.txt
+git add test.txt
+git commit -m "test"  # ❌ ブロックされる
 
-# 特定期間のみ
-trufflehog git file://. --since-commit abc123
+# クリーンアップ
+rm test.txt
+git reset HEAD
 ```
 
-## 検出パターン設計
+### 5. チーム展開
 
-### 汎用 Secret パターン
-
-```regex
-# Password
-(password|passwd|pwd)\s*[:=]\s*["'][^"']{8,}["']
-
-# API Key
-(api[_-]?key|apikey)\s*[:=]\s*["'][a-zA-Z0-9]{20,}["']
-
-# Secret/Token
-(secret[_-]?key|token)\s*[:=]\s*["'][^"']{20,}["']
-
-# Bearer Token
-(auth|authorization)\s*[:=]\s*["']Bearer\s+[a-zA-Z0-9._-]+["']
-```
-
-### クラウドプロバイダー固有
-
-```regex
-# AWS
-AKIA[0-9A-Z]{16}                    # Access Key ID
-[a-zA-Z0-9/+=]{40}                  # Secret Access Key
-
-# Google Cloud
-AIza[0-9A-Za-z\\-_]{35}             # API Key
-
-# OpenAI
-sk-proj-[a-zA-Z0-9]{48}             # API Key
-
-# Anthropic
-sk-ant-api03-[a-zA-Z0-9_-]{95}      # API Key
-
-# Stripe
-(sk|pk)_(live|test)_[0-9a-zA-Z]{24,}
-
-# GitHub
-ghp_[a-zA-Z0-9]{36}                 # Personal Access Token
-github_pat_[a-zA-Z0-9]{22}_[a-zA-Z0-9]{59}
-
-# Discord
-https://discord\.com/api/webhooks/\d+/[a-zA-Z0-9_-]+
-```
-
-### 接続文字列パターン
-
-```regex
-# SQLite/Turso
-libsql://[^:]+:[^@]+@[^/]+
-
-# MySQL
-mysql://[^:]+:[^@]+@[^/]+
-
-# MongoDB
-mongodb(\+srv)?://[^:]+:[^@]+@
-
-# Redis
-redis://:[^@]+@[^/]+
-```
-
-### 暗号化鍵パターン
-
-```regex
-# RSA Private Key
------BEGIN RSA PRIVATE KEY-----
-
-# SSH Private Key
------BEGIN OPENSSH PRIVATE KEY-----
-
-# PGP Private Key
------BEGIN PGP PRIVATE KEY BLOCK-----
-
-# Generic Private Key
------BEGIN .* PRIVATE KEY-----
-```
-
-## 誤検知対策
-
-### ホワイトリスト設計
+**共有hookスクリプト（推奨）**:
 
 ```bash
-# ファイルパスホワイトリスト
-WHITELIST_FILES=(
-  ".env.example"
-  ".env.template"
-  "tests/fixtures/"
-  "tests/mocks/"
-  "docs/examples/"
-  "README.md"
-)
+# .githooks/ に配置
+mkdir -p .githooks
+cp .git/hooks/pre-commit .githooks/pre-commit
+git add .githooks/pre-commit
 
-# 文字列ホワイトリスト
-WHITELIST_STRINGS=(
-  "example"
-  "sample"
-  "test"
-  "mock"
-  "fixture"
-  "placeholder"
-  "your-api-key-here"
-  "replace-with-actual"
-)
+# チームメンバーは設定のみ
+git config core.hooksPath .githooks
 ```
 
-### コンテキストベース除外
+**詳細**: See [references/deployment.md](references/deployment.md)
 
-```bash
-# pre-commit hookでのコンテキストチェック
-MATCHED_LINE=$(git diff --cached "$FILE" | grep -E "$PATTERN")
+### 6. CI/CD統合
 
-# "example"を含む行は除外
-if echo "$MATCHED_LINE" | grep -qi "example"; then
-  continue  # ホワイトリスト
-fi
+**GitHub Actions**:
 
-# コメント行は除外
-if echo "$MATCHED_LINE" | grep -qE '^\s*(#|//|/\*)'; then
-  continue  # コメント
-fi
+```yaml
+# .github/workflows/security.yml
+name: Secret Scan
+on: [push, pull_request]
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
 ```
 
-## pre-commit hook 実装
+**詳細**: See [references/ci-integration.md](references/ci-integration.md)
 
-### シンプルな実装
+## トラブルシューティング
 
-```bash
-#!/bin/bash
-# .git/hooks/pre-commit
+### よくある問題
 
-set -e
+| 問題                           | 原因                             | 対策                                                    |
+| ------------------------------ | -------------------------------- | ------------------------------------------------------- |
+| 誤検知が多い                   | ホワイトリスト不足               | `.env.example`、`tests/fixtures/`等を除外               |
+| hookが動作しない               | 実行権限がない                   | `chmod +x .git/hooks/pre-commit`                        |
+| チームメンバーが設定していない | セットアップ忘れ                 | CI/CDで必須チェック、セットアップスクリプト提供         |
+| パフォーマンスが遅い           | 大規模リポジトリで全履歴スキャン | 差分のみスキャン（`gitleaks protect`）、CI/CDで並列実行 |
+| `--no-verify`でバイパスされる  | ローカルhookのみ                 | CI/CDで必須チェック、pre-receive hook（サーバー側）     |
 
-FILES=$(git diff --cached --name-only)
+**詳細**: See [references/patterns.md](references/patterns.md#トラブルシューティング)、[references/deployment.md](references/deployment.md#トラブルシューティング)
 
-for FILE in $FILES; do
-  if git diff --cached "$FILE" | grep -qE "sk-proj-[a-zA-Z0-9]{48}"; then
-    echo "🚨 OpenAI API Key detected in $FILE"
-    exit 1
-  fi
-done
+## リーク発見時の対処
 
-exit 0
-```
+### Critical/Highリスクの場合
 
-### 詳細実装（テンプレート参照）
+1. **即座にシークレットを無効化**
 
-詳細は `templates/pre-commit-hook-template.sh` を参照
+   ```bash
+   # AWS例
+   aws iam delete-access-key --access-key-id AKIA...
+   ```
 
-## チーム展開戦略
+2. **影響範囲の調査**
 
-### 自動セットアップスクリプト
+   ```bash
+   # コミット情報確認
+   git log --all --grep="<leaked-secret>"
+   ```
 
-```bash
-#!/bin/bash
-# scripts/setup-git-security.sh
+3. **Git履歴からの削除**（チーム調整後）
 
-set -e
+   ```bash
+   # BFG Repo-Cleaner使用
+   brew install bfg
+   bfg --delete-files credentials.json your-repo.git
+   git push --force
+   ```
 
-# git-secretsインストール
-if ! command -v git-secrets &> /dev/null; then
-  brew install git-secrets  # macOS
-fi
+4. **インシデントレポート作成**
+   - 漏洩したシークレットの種類
+   - 漏洩期間（コミット日時）
+   - 対応履歴（無効化、削除、影響調査）
 
-# 初期化
-git secrets --install --force
+**詳細**: See [agents/validate-security.md](agents/validate-security.md#4-リーク発見時の対応)
 
-# パターン登録
-git secrets --register-aws
-git secrets --add 'sk-proj-[a-zA-Z0-9]{48}'
-git secrets --add --allowed '.env.example'
+## 変更履歴
 
-# 履歴スキャン
-git secrets --scan-history
-
-echo "✅ Git security setup complete"
-```
-
-### オンボーディングプロセス統合
-
-```markdown
-# 新規メンバーオンボーディングチェックリスト
-
-- [ ] リポジトリをクローン
-- [ ] `.claude/skills/pre-commit-security/scripts/setup-git-security.sh` を実行
-- [ ] `.env.example` をコピーして `.env.local` 作成
-- [ ] テストコミットで hook 動作確認:
-      echo "test=secret" > test.txt
-      git add test.txt
-      git commit -m "test" # → ブロックされるはず
-- [ ] test.txt を削除
-```
-
-## Git 履歴スキャン
-
-### 全履歴スキャン
-
-```bash
-# git-secretsで全履歴
-git secrets --scan-history
-
-# gitleaksで全履歴
-gitleaks detect --source . --verbose
-
-# truffleHogで全履歴（高精度）
-trufflehog git file://. --only-verified
-```
-
-### 特定期間のスキャン
-
-```bash
-# 最近100コミット
-git log --all --pretty=format:%H | head -100 | xargs -I {} gitleaks detect --log-opts={}
-
-# 2025年1月以降
-gitleaks detect --log-opts="--since='2025-01-01'"
-```
-
-### 削除済みファイルのスキャン
-
-```bash
-# 削除されたファイルを含む全ファイル追跡
-git log --all --pretty=format: --name-only --diff-filter=D | sort -u > deleted-files.txt
-
-# 各削除ファイルの内容をスキャン
-while IFS= read -r file; do
-  git log --all --pretty=format:%H -- "$file" | while read commit; do
-    git show "$commit:$file" 2>/dev/null | gitleaks detect --no-git --verbose
-  done
-done < deleted-files.txt
-```
-
-## 実装チェックリスト
-
-### .gitignore
-
-- [ ] プロジェクトルートに配置されているか？
-- [ ] 環境変数パターンが含まれているか？
-- [ ] Secret ファイルパターンが含まれているか？
-- [ ] クラウドプロバイダー別パターンが含まれているか？
-- [ ] プロジェクト固有パターンが追加されているか？
-
-### pre-commit hook
-
-- [ ] hook が.git/hooks/pre-commit に配置されているか？
-- [ ] 実行権限があるか？（chmod +x）
-- [ ] 検出パターンが包括的か？
-- [ ] ホワイトリストが設定されているか？
-- [ ] エラーメッセージが明確か？
-
-### チーム展開
-
-- [ ] セットアップスクリプトが提供されているか？
-- [ ] オンボーディングプロセスに組み込まれているか？
-- [ ] 全員が hook を有効化しているか確認済みか？
-
-## 関連スキル
-
-- `.claude/skills/gitignore-management/SKILL.md` - .gitignore 設計詳細
-- `.claude/skills/github-actions-security/SKILL.md` - CI/CD 統合
-- `.claude/skills/zero-trust-security/SKILL.md` - アクセス制御
-
-## リソースファイル
-
-- `resources/detection-pattern-library.md` - 検出パターンライブラリ
-
-## スクリプト
-
-- `scripts/setup-git-security.mjs` - Git Security 自動セットアップ
-
-## テンプレート
-
-- `templates/pre-commit-hook-template.sh` - pre-commit hook テンプレート
+| Version | Date       | Changes                                                                          |
+| ------- | ---------- | -------------------------------------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠に移行、詳細知識をreferencesに外部化、agents/scripts追加 |
+| 2.0.0   | 2026-01-02 | Task仕様書追加、検証スクリプト強化                                               |
+| 1.0.0   | 2025-12-24 | 初版作成、基本構造とリソース整備                                                 |

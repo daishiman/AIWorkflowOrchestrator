@@ -12,7 +12,7 @@
 
 ## 背景と目的
 
-Phase 5.5 Final Review Gate において、`@electron-security` エージェントによるセキュリティレビューで以下の改善点が指摘された：
+Phase 5.5 Final Review Gate において、`.claude/agents/electron-security.md` エージェントによるセキュリティレビューで以下の改善点が指摘された：
 
 1. **Content Security Policy (CSP) 未設定**
 2. **入力値バリデーション不足**
@@ -292,10 +292,10 @@ apps/desktop/src/main/security/
 
 | 項目               | 検証方法             | 担当エージェント   |
 | ------------------ | -------------------- | ------------------ |
-| CSP設定            | DevTools Console確認 | @electron-security |
-| 入力バリデーション | 単体テスト           | @unit-tester       |
-| IPC検証            | 統合テスト           | @e2e-tester        |
-| 状態最小化         | コードレビュー       | @sec-auditor       |
+| CSP設定            | DevTools Console確認 | .claude/agents/electron-security.md |
+| 入力バリデーション | 単体テスト           | .claude/agents/unit-tester.md       |
+| IPC検証            | 統合テスト           | .claude/agents/e2e-tester.md        |
+| 状態最小化         | コードレビュー       | .claude/agents/sec-auditor.md       |
 
 ### 6.2 セキュリティレビュー
 
@@ -311,7 +311,7 @@ apps/desktop/src/main/security/
 - [ ] IPC呼び出し元の検証が実装されている
 - [ ] Renderer側で機密トークンが保持されていない
 - [ ] セキュリティテストがすべてパスしている
-- [ ] `@electron-security` レビューで PASS 評価
+- [ ] `.claude/agents/electron-security.md` レビューで PASS 評価
 
 ## 関連ドキュメント
 

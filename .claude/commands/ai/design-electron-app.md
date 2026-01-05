@@ -1,41 +1,20 @@
 ---
 description: |
   Electronデスクトップアプリケーションのアーキテクチャ設計を行う専門コマンド。
-
-  プロセスモデル、IPC設計、セキュアなコンテキスト分離を実現し、
-  保守性の高いアプリケーション構造を構築します。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
   - `.claude/agents/electron-architect.md`: Electronアーキテクチャ設計専門エージェント
 
-  📚 利用可能スキル（electron-architectエージェントが必要時に参照）:
-  **必須スキル:** electron-architecture
-
   ⚙️ このコマンドの設定:
-  - argument-hint: [app-name] - アプリケーション名（オプション）
-  - allowed-tools: アーキテクチャ設計に必要な最小権限
-    • Task: electron-architectエージェント起動用
-    • Read: 既存ファイル確認用
-    • Write(src/**|electron-builder.yml): プロジェクト構造生成用
-    • Edit: 既存ファイル修正用
-    • Grep: パターン検索用
-  - model: sonnet（設計タスク）
-
-  🎯 成果物:
-  - src/main/index.ts: Mainプロセスエントリーポイント
-  - src/preload/index.ts: Preloadスクリプト
-  - src/shared/ipc-types.ts: IPC型定義
-  - src/renderer/: Rendererプロセス（UI）
+  - argument-hint: [app-name]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: opus
 
   トリガーキーワード: electron, デスクトップアプリ, architecture, 設計, main process, renderer
 argument-hint: "[app-name]"
 allowed-tools:
   - Task
-  - Read
-  - Write(src/**|electron-builder.yml)
-  - Edit
-  - Grep
-  - Glob
 model: opus
 ---
 
@@ -43,82 +22,45 @@ model: opus
 
 ## 目的
 
-`.claude/agents/electron-architect.md` エージェントを起動し、Electronアプリケーションのアーキテクチャを設計します。
+`.claude/commands/ai/design-electron-app.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
 ## エージェント起動フロー
 
-### Phase 1: 引数確認とコンテキスト収集
+### Phase 1: Electronアーキテクチャ設計専門エージェントの実行
 
-```markdown
-アプリケーション名: "$ARGUMENTS"
+**目的**: Electronアーキテクチャ設計専門エージェントに関するタスクを実行し、結果を整理する
 
-引数未指定の場合:
-ユーザーに対話的に以下を質問:
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-- アプリケーション名
-- 主な機能・用途
-- 対象プラットフォーム（macOS/Windows/Linux）
-- UIフレームワーク（React/Vue/Vanilla）
-```
+**ゴール**: Electronアーキテクチャ設計専門エージェントの結果と次アクションが提示された状態
 
-### Phase 2: electron-architect エージェント起動
+**起動エージェント**: `.claude/agents/electron-architect.md`
 
 Task ツールで `.claude/agents/electron-architect.md` を起動:
 
-```markdown
-エージェント: .claude/agents/electron-architect.md
-アプリケーション名: ${app-name}
+**コンテキスト**:
 
-依頼内容:
+- 引数: $ARGUMENTS（[app-name]）
 
-- Electronアプリケーションのアーキテクチャ設計
-- Main/Renderer/Preloadプロセスの責務分離
-- IPCチャネル設計と型定義
-- セキュリティ設定（contextIsolation、sandbox）
+**依頼内容**:
 
-必須要件:
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-1. contextIsolation: true
-2. nodeIntegration: false
-3. sandbox: true（推奨）
-4. 型安全なIPC設計
-5. Preloadでの最小限API公開
+**期待成果物**:
 
-成果物:
+- `src/main/index.ts`
+- `src/preload/index.ts`
+- `src/shared/ipc-types.ts`
+- `src/renderer/`
 
-- src/main/index.ts
-- src/preload/index.ts
-- src/shared/ipc-types.ts
-- プロジェクトディレクトリ構造
-```
+**完了条件**:
 
-### Phase 3: 確認と次のステップ
-
-**期待成果物:**
-
-- Mainプロセスエントリーポイント
-- Preloadスクリプト
-- IPC型定義
-- ディレクトリ構造
-
-**次のステップ案内:**
-
-- `/ai:create-electron-window`: ウィンドウ/UI実装
-- `/ai:secure-electron-app`: セキュリティ強化
-- `/ai:build-electron-app`: ビルド設定
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
-# アプリ名を指定して設計開始
-/ai:design-electron-app my-desktop-app
-
-# 対話的に設計開始
-/ai:design-electron-app
+/ai:design-electron-app [app-name]
 ```
-
-## 注意事項
-
-- このコマンドはアーキテクチャ設計に特化しています
-- UI実装は `/ai:create-electron-window` を使用してください
-- セキュリティ監査は `/ai:secure-electron-app` を使用してください

@@ -1,232 +1,125 @@
 ---
 name: code-style-guides
 description: |
-  業界標準コードスタイルガイドの選択と適用の専門知識。
-  Airbnb、Google、Standard等のスタイルガイド適用とカスタマイズを行います。
+  主要コードスタイルガイドの比較と適用を整理し、チーム規約の統一と移行を支援するスキル。
+  Airbnb/Google/Standardの選定、カスタマイズ、移行計画を扱う。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Clean Code (Robert C. Martin) / 適用: 命名と意図の明確化 / 目的: 可読性の向上
+  • Style Guide Comparison / 適用: ガイド選定 / 目的: 適合性評価
+  • Migration Patterns / 適用: 移行計画 / 目的: 変更影響の最小化
 
-  - `.claude/skills/code-style-guides/resources/style-guide-comparison.md`: 主要スタイルガイド(Airbnb、Google、Standard)の比較
-  - `.claude/skills/code-style-guides/resources/customization-patterns.md`: スタイルガイドのカスタマイズパターン
-  - `.claude/skills/code-style-guides/resources/migration-strategies.md`: スタイルガイド移行戦略
-  - `.claude/skills/code-style-guides/templates/airbnb-base.json`: Airbnbスタイルベース設定
-  - `.claude/skills/code-style-guides/templates/google.json`: Googleスタイル設定
-  - `.claude/skills/code-style-guides/templates/standard.json`: Standardスタイル設定
-  - `.claude/skills/code-style-guides/scripts/detect-style.mjs`: プロジェクトのコードスタイル自動検出スクリプト
-
-  使用タイミング:
-  - プロジェクトのスタイルガイドを選択する時
-  - 既存コードパターンに基づいてスタイルを決定する時
-  - チーム規約とスタイルガイドを整合させる時
-  - カスタムスタイルルールを設計する時
-  - スタイルガイド移行を計画する時
-version: 1.0.0
+  Trigger:
+  Use when selecting or migrating style guides, unifying team conventions, or customizing linting rules.
+  code style guide, ESLint config, Prettier rules, migration, coding conventions
 ---
-
-# Code Style Guides Skill
+# code-style-guides
 
 ## 概要
 
-このスキルは、主要なJavaScript/TypeScriptスタイルガイドの選択と適用を支援します。
+主要スタイルガイドの比較と適用方針を整理し、設定と運用の一貫性を確保する。
 
-## 主要スタイルガイド
+## ワークフロー
 
-### 1. Airbnb JavaScript Style Guide
+### Phase 1: 現状整理
 
-**特徴**:
+**目的**: 現行スタイルと要件を明確化する。
 
-- 最も広範なコミュニティ採用
-- 厳格なルールセット
-- React推奨設定あり
+**アクション**:
 
-**適用方法**:
+1. 既存コードのスタイル傾向を把握する。
+2. チームの規約と制約を整理する。
+3. 比較対象となるガイドを選定する。
 
-```json
-{
-  "extends": [
-    "airbnb-base", // JavaScript
-    "airbnb", // React含む
-    "airbnb-typescript" // TypeScript
-  ]
-}
-```
+**Task**: `agents/analyze-style-requirements.md` を参照
 
-**主要ルール**:
+### Phase 2: 適用設計
 
-- セミコロン必須
-- シングルクォート推奨
-- 末尾カンマ推奨
-- アロー関数優先
+**目的**: 選定ガイドの適用方針と移行計画を作る。
 
-**適用プロジェクト**:
+**アクション**:
 
-- React/TypeScriptプロジェクト
-- 高品質基準を求めるチーム
-- コミュニティ標準に従いたい場合
+1. ガイドの差分と適用ルールを整理する。
+2. カスタマイズ方針と例外ルールを定義する。
+3. 移行ステップとレビュー基準を決める。
 
-### 2. Google JavaScript Style Guide
+**Task**: `agents/design-style-adoption.md` を参照
 
-**特徴**:
+### Phase 3: 検証と記録
 
-- Google社内標準
-- 実用主義
-- TypeScript公式推奨に近い
+**目的**: 設定適用の検証と記録を行う。
 
-**適用方法**:
+**アクション**:
 
-```json
-{
-  "extends": ["google"]
-}
-```
+1. スタイル検出スクリプトで現状を確認する。
+2. 設定差分と影響範囲を整理する。
+3. ログと評価情報を更新する。
 
-**主要ルール**:
+**Task**: `agents/validate-style-rollout.md` を参照
 
-- セミコロン必須
-- シングルクォート推奨
-- インデント2スペース
-- const/let推奨（var禁止）
+## Task仕様ナビ
 
-**適用プロジェクト**:
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-style-requirements | Phase 1開始時 | 既存コード/規約 | 要件整理メモ、比較対象一覧 |
+| design-style-adoption | Phase 2開始時 | 要件整理メモ | 適用方針、移行計画 |
+| validate-style-rollout | Phase 3開始時 | 適用方針 | 検証レポート、記録更新内容 |
 
-- エンタープライズプロジェクト
-- TypeScript中心の開発
-- 実用性重視
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-### 3. Standard JS
+## ベストプラクティス
 
-**特徴**:
+### すべきこと
 
-- セミコロンなし
-- 設定ゼロ（opinionated）
-- シンプル
+| 推奨事項 | 理由 |
+| --- | --- |
+| 既存規約と差分を明確化する | 影響範囲を把握するため |
+| 例外ルールを最小化する | ガイドの一貫性を保つため |
+| 移行計画を段階化する | 変更負荷を下げるため |
 
-**適用方法**:
+### 避けるべきこと
 
-```json
-{
-  "extends": ["standard"]
-}
-```
+| 禁止事項 | 問題点 |
+| --- | --- |
+| ルール変更を一括適用する | レビュー負荷が増える |
+| 例外を無制限に追加する | ルールが形骸化する |
+| 検証を省略する | 不整合が残る |
 
-**主要ルール**:
+## リソース参照
 
-- セミコロンなし
-- シングルクォート
-- インデント2スペース
-- スペース多用
+### scripts/（決定論的処理）
 
-**適用プロジェクト**:
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/detect-style.mjs` | 既存スタイルの検出 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-- 設定を最小化したい場合
-- セミコロンなし派
-- Node.jsプロジェクト
+### references/（詳細知識）
 
-## カスタマイズ戦略
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 適用設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細比較時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 比較ガイド | [references/style-guide-comparison.md](references/style-guide-comparison.md) | ガイド選定時 |
+| カスタマイズ | [references/customization-patterns.md](references/customization-patterns.md) | 例外設計時 |
+| 移行戦略 | [references/migration-strategies.md](references/migration-strategies.md) | 移行計画時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-### ベース継承 + オーバーライド
+### assets/（テンプレート・素材）
 
-```json
-{
-  "extends": ["airbnb-base"],
-  "rules": {
-    // プロジェクト固有ルールで上書き
-    "no-console": "off", // 開発中はconsole許可
-    "max-len": ["error", { "code": 100 }] // 行長を100に緩和
-  }
-}
-```
+| アセット | 用途 |
+| --- | --- |
+| `assets/airbnb-base.json` | Airbnb設定ベース |
+| `assets/google.json` | Google設定ベース |
+| `assets/standard.json` | Standard設定ベース |
 
-### 段階的適用
+### 運用ファイル
 
-**Phase 1: 基本ルールのみ**:
-
-- eslint:recommended
-- 必須エラールールのみ
-
-**Phase 2: スタイルガイド導入**:
-
-- airbnb-base追加
-- warnレベルで運用
-
-**Phase 3: 厳格化**:
-
-- warnをerrorに格上げ
-- 追加ルール有効化
-
-## スタイルガイド選択フローチャート
-
-```
-プロジェクトタイプ?
-├─ React? → Airbnb
-├─ TypeScript? → Airbnb TypeScript or Google
-├─ Node.js? → Standard or Airbnb Base
-└─ シンプル重視? → Standard
-```
-
-## 既存コード分析
-
-### パターン検出
-
-**インデント**:
-
-```bash
-# スペース使用率を確認
-grep -r "^  " src/ | wc -l  # 2スペース
-grep -r "^    " src/ | wc -l  # 4スペース
-grep -r "^\t" src/ | wc -l  # タブ
-```
-
-**セミコロン**:
-
-```bash
-# セミコロン使用率
-grep -r ";" src/**/*.js | wc -l
-```
-
-## 詳細リソース
-
-```bash
-# スタイルガイド比較
-cat .claude/skills/code-style-guides/resources/style-guide-comparison.md
-
-# カスタマイズパターン
-cat .claude/skills/code-style-guides/resources/customization-patterns.md
-
-# 移行戦略
-cat .claude/skills/code-style-guides/resources/migration-strategies.md
-```
-
-## テンプレート
-
-```bash
-# Airbnb基本設定
-cat .claude/skills/code-style-guides/templates/airbnb-base.json
-
-# Google設定
-cat .claude/skills/code-style-guides/templates/google.json
-
-# Standard設定
-cat .claude/skills/code-style-guides/templates/standard.json
-```
-
-## スクリプト
-
-```bash
-# スタイル自動検出
-node .claude/skills/code-style-guides/scripts/detect-style.mjs [src-directory]
-```
-
-## 関連スキル
-
-- `.claude/skills/eslint-configuration/SKILL.md`: ESLint設定基盤
-- `.claude/skills/prettier-integration/SKILL.md`: フォーマット統合
-
-## 参考文献
-
-- **Airbnb JavaScript Style Guide**: https://github.com/airbnb/javascript
-- **Google JavaScript Style Guide**: https://google.github.io/styleguide/jsguide.html
-- **StandardJS**: https://standardjs.com/
-- **『Clean Code』** Robert C. Martin著
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

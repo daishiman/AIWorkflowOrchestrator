@@ -1,112 +1,125 @@
 ---
 description: |
   パフォーマンス分析とボトルネック特定を行うコマンド。
-
-  フロントエンド・バックエンド・データベースのパフォーマンスを分析し、
-  ボトルネックを特定して最適化提案を行います。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - Phase 2 (frontend): `.claude/agents/router-dev.md` - フロントエンドパフォーマンス分析
-  - Phase 3 (backend): `.claude/agents/logic-dev.md` - バックエンドロジック分析
-  - Phase 4 (database): `.claude/agents/dba-mgr.md` - クエリパフォーマンス分析
-
-  📚 利用可能スキル（エージェントが参照）:
-  - `.claude/skills/web-performance/SKILL.md` - Core Web Vitals、最適化手法
-  - `.claude/skills/query-performance-tuning/SKILL.md` - クエリ最適化、インデックス設計
-  - `.claude/skills/profiling-techniques/SKILL.md` - プロファイリング、ボトルネック特定
+  - `.claude/agents/router-dev.md`: フロントエンドパフォーマンス分析
+  - `.claude/agents/logic-dev.md`: バックエンドロジック分析
+  - `.claude/agents/dba-mgr.md`: クエリパフォーマンス分析
 
   ⚙️ このコマンドの設定:
-  - argument-hint: "[target]"（frontend/backend/database、デフォルト: all）
-  - allowed-tools: 分析実行とレポート生成用
-    • Task: 3エージェント起動用
-    • Read: コード・クエリ確認用
-    • Bash: プロファイリングツール実行用
-    • Write(docs/**): パフォーマンスレポート保存用
-  - model: sonnet（標準的なパフォーマンス分析タスク）
-
-  📋 成果物:
-  - パフォーマンス分析レポート（`docs/performance/analysis-report.md`）
-  - ボトルネック一覧と最適化提案
-
-  🎯 分析対象:
-  - フロントエンド: Core Web Vitals、Bundle Size、レンダリング
-  - バックエンド: API Response Time、メモリ使用量
-  - データベース: スロークエリ、インデックス効率
+  - argument-hint: [target]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: opus
 
   トリガーキーワード: performance, analyze performance, パフォーマンス分析, ボトルネック
 argument-hint: "[target]"
 allowed-tools:
   - Task
-  - Read
-  - Bash
-  - Write(docs/**)
 model: opus
 ---
 
 # パフォーマンス分析
 
-このコマンドは、パフォーマンス分析とボトルネック特定を行います。
+## 目的
 
-## 📋 実行フロー
+`.claude/commands/ai/analyze-performance.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-### Phase 1: 分析対象の確認
+## エージェント起動フロー
 
-```bash
-target="${ARGUMENTS:-all}"
+### Phase 1: フロントエンドパフォーマンス分析の実行
 
-if ! [[ "$target" =~ ^(frontend|backend|database|all)$ ]]; then
-  エラー: 無効な分析対象です
-  使用可能: frontend, backend, database, all
-fi
-```
+**目的**: フロントエンドパフォーマンス分析に関するタスクを実行し、結果を整理する
 
-### Phase 2-4: エージェント起動（対象別）
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-**frontend分析** (router-dev):
+**ゴール**: フロントエンドパフォーマンス分析の結果と次アクションが提示された状態
 
-- Core Web Vitals測定
-- Bundle Size分析
-- Next.js最適化チェック
+**起動エージェント**: `.claude/agents/router-dev.md`
 
-**backend分析** (logic-dev):
+Task ツールで `.claude/agents/router-dev.md` を起動:
 
-- API Response Time測定
-- メモリプロファイリング
-- 非効率ロジック検出
+**コンテキスト**:
 
-**database分析** (dba-mgr):
+- 引数: $ARGUMENTS（[target]）
 
-- スロークエリ検出
-- インデックス効率評価
-- N+1クエリ検出
+**依頼内容**:
 
-### Phase 5: 完了報告
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-```markdown
-## パフォーマンス分析完了
+**期待成果物**:
 
-### ボトルネック検出
+- `docs/performance/analysis-report.md`
 
-- Critical: ${critical_count}件
-- High: ${high_count}件
-- Medium: ${medium_count}件
+**完了条件**:
 
-### 最適化提案
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
-[最適化アクション一覧]
+### Phase 2: バックエンドロジック分析の実行
 
-レポート: docs/performance/analysis-report.md
-```
+**目的**: バックエンドロジック分析に関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: バックエンドロジック分析の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/logic-dev.md`
+
+Task ツールで `.claude/agents/logic-dev.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[target]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/performance/analysis-report.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+### Phase 3: クエリパフォーマンス分析の実行
+
+**目的**: クエリパフォーマンス分析に関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: クエリパフォーマンス分析の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/dba-mgr.md`
+
+Task ツールで `.claude/agents/dba-mgr.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[target]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/performance/analysis-report.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
-/ai:analyze-performance frontend
+/ai:analyze-performance [target]
 ```
-
-## 参照
-
-- router-dev: `.claude/agents/router-dev.md`
-- logic-dev: `.claude/agents/logic-dev.md`
-- dba-mgr: `.claude/agents/dba-mgr.md`
-- web-performance: `.claude/skills/web-performance/SKILL.md`

@@ -1,0 +1,6 @@
+{
+  "url": "./openapi.yaml",
+  "docExpansion": "none",
+  "persistAuthorization": true,
+  "filter": true
+}

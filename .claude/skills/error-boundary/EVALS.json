@@ -1,0 +1,62 @@
+{
+  "skill_name": "error-boundary",
+  "version": "2.0.0",
+  "last_updated": "2025-12-31",
+  "metrics": {
+    "total_executions": 0,
+    "successful_executions": 0,
+    "failed_executions": 0,
+    "success_rate": 0.0
+  },
+  "level": {
+    "current": 1,
+    "criteria": {
+      "level_1": {
+        "min_executions": 0,
+        "min_success_rate": 0.0,
+        "description": "基本的なError Boundary実装が可能"
+      },
+      "level_2": {
+        "min_executions": 5,
+        "min_success_rate": 0.7,
+        "description": "複数のフォールバックパターンを使い分けられる"
+      },
+      "level_3": {
+        "min_executions": 15,
+        "min_success_rate": 0.8,
+        "description": "高度なエラー回復戦略と監視設定が実装できる"
+      },
+      "level_4": {
+        "min_executions": 30,
+        "min_success_rate": 0.9,
+        "description": "エキスパートレベルのエラーアーキテクチャ設計と最適化が可能"
+      }
+    }
+  },
+  "task_metrics": {
+    "error_boundary_implementation": {
+      "executions": 0,
+      "successes": 0,
+      "failures": 0,
+      "average_completion_time_minutes": 0,
+      "common_issues": []
+    },
+    "fallback_ui_design": {
+      "executions": 0,
+      "successes": 0,
+      "failures": 0,
+      "average_completion_time_minutes": 0,
+      "common_issues": []
+    },
+    "error_monitoring_setup": {
+      "executions": 0,
+      "successes": 0,
+      "failures": 0,
+      "average_completion_time_minutes": 0,
+      "common_issues": []
+    }
+  },
+  "improvement_areas": [],
+  "strengths": [],
+  "evaluation_history": []
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Hardened Runtime（必須） -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <false/>
+
+    <!-- JIT使用が必要な場合（V8等） -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+
+    <!-- ダイナミックライブラリのロード（必要に応じて） -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <false/>
+
+    <!-- プラグインサポート（必要に応じて） -->
+    <key>com.apple.security.cs.disable-executable-page-protection</key>
+    <false/>
+
+    <!-- App Sandboxing（App Store用） -->
+    <!-- <key>com.apple.security.app-sandbox</key>
+    <true/> -->
+
+    <!-- ネットワークアクセス -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- ファイルアクセス（ユーザー選択ファイル） -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- カメラアクセス（必要に応じて） -->
+    <!-- <key>com.apple.security.device.camera</key>
+    <true/> -->
+
+    <!-- マイクアクセス（必要に応じて） -->
+    <!-- <key>com.apple.security.device.audio-input</key>
+    <true/> -->
+
+    <!-- Automation（AppleScript等、必要に応じて） -->
+    <!-- <key>com.apple.security.automation.apple-events</key>
+    <true/> -->
+</dict>
+</plist>

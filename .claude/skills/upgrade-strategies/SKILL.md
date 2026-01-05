@@ -1,491 +1,164 @@
 ---
 name: upgrade-strategies
 description: |
-  依存関係の安全なアップグレード戦略と段階的更新手法を専門とするスキル。
+  アップグレード戦略の専門スキル。
+  段階的移行、後方互換性、リスク軽減を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『Release It!』（Michael Nygard） / 適用: アップグレード戦略 / 目的: 安全な更新
 
-  - `.claude/skills/upgrade-strategies/resources/automation-patterns.md`: Automation Patternsリソース
-  - `.claude/skills/upgrade-strategies/resources/rollback-procedures.md`: Rollback Proceduresリソース
-  - `.claude/skills/upgrade-strategies/resources/strategy-selection-guide.md`: Strategy Selection Guideリソース
-  - `.claude/skills/upgrade-strategies/resources/tdd-integration.md`: Tdd Integrationリソース
-
-  - `.claude/skills/upgrade-strategies/templates/upgrade-plan-template.md`: Upgrade Planテンプレート
-
-  - `.claude/skills/upgrade-strategies/scripts/check-upgrades.mjs`: Check Upgradesスクリプト
-
-version: 1.0.0
+  Trigger:
+  バージョンアップグレード時、マイグレーション計画時、依存関係更新時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Upgrade Strategies
 
 ## 概要
 
-このスキルは、依存関係を安全かつ効率的にアップグレードするための
-戦略と手法を提供します。
+依存関係の安全なアップグレード戦略と段階的更新手法を専門とするスキル。本スキルは、複雑なバージョン管理、互換性検証、段階的ロールアウト、リスク最小化を含む包括的なアップグレード戦略の策定と実行をサポートします。
 
-適切なアップグレード戦略を選択することで、
-破壊的変更のリスクを最小化しながら、セキュリティと機能の恩恵を受けられます。
-
-**主要な価値**:
-
-- セキュリティパッチの迅速な適用
-- 新機能へのタイムリーなアクセス
-- 技術的負債の蓄積防止
-
-**対象ユーザー**:
-
-- 依存関係を管理するエージェント（@dep-mgr）
-- テクニカルリード
-- DevOps エンジニア
-
-## リソース構造
-
-```
-upgrade-strategies/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── strategy-selection-guide.md             # 戦略選択ガイド
-│   ├── tdd-integration.md                      # TDD統合パターン
-│   ├── rollback-procedures.md                  # ロールバック手順
-│   └── automation-patterns.md                  # 自動化パターン
-├── scripts/
-│   └── check-upgrades.mjs                      # アップグレード候補チェック
-└── templates/
-    └── upgrade-plan-template.md                # アップグレード計画テンプレート
-```
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# 戦略選択ガイド
-cat .claude/skills/upgrade-strategies/resources/strategy-selection-guide.md
-
-# TDD統合パターン
-cat .claude/skills/upgrade-strategies/resources/tdd-integration.md
-
-# ロールバック手順
-cat .claude/skills/upgrade-strategies/resources/rollback-procedures.md
-
-# 自動化パターン
-cat .claude/skills/upgrade-strategies/resources/automation-patterns.md
-```
-
-### スクリプト実行
-
-```bash
-# アップグレード候補チェック
-node .claude/skills/upgrade-strategies/scripts/check-upgrades.mjs
-
-# 例: セキュリティアップデートのみ
-node .claude/skills/upgrade-strategies/scripts/check-upgrades.mjs --security-only
-```
-
-### テンプレート参照
-
-```bash
-# アップグレード計画テンプレート
-cat .claude/skills/upgrade-strategies/templates/upgrade-plan-template.md
-```
-
-## いつ使うか
-
-### シナリオ 1: 定期的なアップグレード
-
-**状況**: 定期的な依存関係メンテナンスサイクルでのアップグレード
-
-**適用条件**:
-
-- [ ] 定期的なメンテナンスウィンドウが設定されている
-- [ ] 複数のパッケージを同時に更新する必要がある
-- [ ] テストカバレッジが十分（>60%）
-
-**期待される成果**: 安全に更新された依存関係と検証済みのシステム
-
-### シナリオ 2: セキュリティパッチの緊急適用
-
-**状況**: 重大なセキュリティ脆弱性の修正が必要
-
-**適用条件**:
-
-- [ ] Critical/High の脆弱性が検出された
-- [ ] パッチが利用可能
-- [ ] 迅速な対応が必要
-
-**期待される成果**: 脆弱性が解消された状態
-
-### シナリオ 3: メジャーバージョンアップ
-
-**状況**: フレームワークやライブラリのメジャーバージョンアップ
-
-**適用条件**:
-
-- [ ] Major バージョンが変更される
-- [ ] 破壊的変更が含まれる可能性がある
-- [ ] 移行ガイドが提供されている
-
-**期待される成果**: 新バージョンへの完全な移行
-
-## アップグレード戦略の種類
-
-### 1. 段階的アップグレード（推奨デフォルト）
-
-**概要**: 小さな更新を頻繁に行う
-
-**適用条件**:
-
-- 定期的なメンテナンスが可能
-- テストカバレッジが十分
-- CI/CD パイプラインが整備されている
-
-**メリット**:
-
-- リスクの分散
-- 問題の早期発見
-- ロールバックが容易
-
-**手順**:
-
-```bash
-# 1. 更新可能なパッケージを確認
-pnpm outdated
-
-# 2. Patchバージョンから更新
-pnpm update --latest
-
-# 3. テスト実行
-pnpm test
-
-# 4. コミット
-git add . && git commit -m "chore: update patch dependencies"
-```
-
-### 2. 一括アップグレード
-
-**概要**: 多数のパッケージを一度に更新
-
-**適用条件**:
-
-- 長期間更新されていない
-- 大規模なリファクタリングの一環
-- 十分なテスト時間が確保できる
-
-**リスク**:
-
-- 問題の切り分けが困難
-- 複数の破壊的変更が同時に発生
-
-**手順**:
-
-```bash
-# 1. 現状をバックアップ
-git checkout -b upgrade/bulk-update
-
-# 2. 全パッケージを最新に
-pnpm update --latest
-
-# 3. ビルドエラーを修正
-pnpm build
-
-# 4. テストを修正・実行
-pnpm test
-
-# 5. E2Eテスト
-pnpm test:e2e
-```
-
-### 3. セキュリティファーストアップグレード
-
-**概要**: セキュリティパッチを最優先で適用
-
-**適用条件**:
-
-- セキュリティ脆弱性が検出された
-- パッチが利用可能
-- 迅速な対応が必要
-
-**手順**:
-
-```bash
-# 1. 脆弱性を確認
-pnpm audit
-
-# 2. セキュリティパッチのみ適用
-pnpm audit --fix
-
-# 3. 検証
-pnpm test
-
-# 4. 即座にデプロイ
-```
-
-### 4. フィーチャーフラグ型アップグレード
-
-**概要**: フィーチャーフラグで新バージョンの使用を制御
-
-**適用条件**:
-
-- 段階的なロールアウトが必要
-- A/B テストを行いたい
-- リスクを最小化したい
-
-**実装例**:
-
-```javascript
-// feature-flags.js
-const flags = {
-  USE_NEW_LIBRARY_VERSION: process.env.NEW_LIB === "true",
-};
-
-// usage.js
-const lib = flags.USE_NEW_LIBRARY_VERSION
-  ? require("lib@2.0.0")
-  : require("lib@1.0.0");
-```
-
-## TDD 統合
-
-### テスト駆動アップグレードの流れ
-
-```
-1. 既存テストの実行（Green）
-   ↓
-2. パッケージを更新
-   ↓
-3. テストを実行（Red/Green）
-   ↓
-4. 失敗したテストを修正
-   ↓
-5. 全テスト通過（Green）
-   ↓
-6. コミット
-```
-
-### 推奨テストカバレッジ
-
-| レベル | カバレッジ | 適用範囲                 |
-| ------ | ---------- | ------------------------ |
-| 最小   | 60%以上    | 段階的アップグレード     |
-| 推奨   | 80%以上    | 一括アップグレード       |
-| 理想   | 90%以上    | メジャーバージョンアップ |
-
-### 静的テスト（100%必須）
-
-```bash
-# TypeScript型チェック
-pnpm tsc --noEmit
-
-# ESLintチェック
-pnpm eslint .
-
-# Prettierチェック
-pnpm prettier --check .
-```
+詳細な手順や背景は `references/Level1_basics.md`（基礎）、`references/Level2_intermediate.md`（実務）、`references/Level3_advanced.md`（応用）、`references/Level4_expert.md`（専門）を参照してください。
 
 ## ワークフロー
 
-### Phase 1: 計画
+### Phase 1: 計画策定
 
-**目的**: アップグレードの範囲と戦略を決定
+**目的**: アップグレード計画を策定し、リスクを評価する
 
-**ステップ**:
+**Task**: `agents/upgrade-planning.md`
 
-1. 更新可能なパッケージを確認
-2. 各パッケージの変更内容を調査
-3. 影響範囲を評価
-4. 戦略を選択
-5. タイムラインを策定
+**入力**:
 
-**判断基準**:
+- package.json、ロックファイル、アップグレード対象
 
-- [ ] 更新対象を特定したか？
-- [ ] 破壊的変更を確認したか？
-- [ ] 戦略を選択したか？
-- [ ] ロールバック計画があるか？
+**出力**:
 
-### Phase 2: 準備
+- アップグレード計画書、互換性マトリクス
 
-**目的**: アップグレードに必要な準備を完了
+### Phase 2: 依存関係分析
 
-**ステップ**:
+**目的**: 依存関係グラフを構築し、影響範囲を把握する
 
-1. テストカバレッジを確認・改善
-2. ベースラインのテスト結果を記録
-3. フィーチャーブランチを作成
-4. 依存関係の現状を文書化
+**Task**: `agents/dependency-analysis.md`
 
-**判断基準**:
+**入力**:
 
-- [ ] テストカバレッジは十分か？
-- [ ] ベースラインを記録したか？
-- [ ] ブランチを作成したか？
+- package.json、ロックファイル
 
-### Phase 3: 実施
+**出力**:
 
-**目的**: アップグレードを安全に実行
+- 依存関係レポート、競合・脆弱性情報
 
-**ステップ**:
+### Phase 3: テスト戦略設計
 
-1. パッケージを更新
-2. ビルドエラーを修正
-3. テストを実行・修正
-4. 静的解析を実行
-5. 手動テストを実施
+**目的**: アップグレードの安全性を検証するテスト計画を設計する
 
-**判断基準**:
+**Task**: `agents/test-strategy.md`
 
-- [ ] ビルドが成功するか？
-- [ ] 全テストが通過するか？
-- [ ] 静的解析をパスするか？
+**入力**:
 
-### Phase 4: 検証
+- 影響範囲、既存テストスイート
 
-**目的**: アップグレードが正しく完了したことを確認
+**出力**:
 
-**ステップ**:
+- テスト計画書、テストケース
 
-1. 全テストスイートを実行
-2. パフォーマンスを測定
-3. セキュリティ監査を実行
-4. ステージング環境でテスト
-5. コードレビューを実施
+### Phase 4: 段階的ロールアウト
 
-**判断基準**:
+**目的**: アップグレードを段階的に展開し、モニタリングを行う
 
-- [ ] 回帰がないか？
-- [ ] パフォーマンス低下がないか？
-- [ ] 新しい脆弱性が導入されていないか？
+**Task**: `agents/rollout-execution.md`
 
-### Phase 5: 本番適用
+**入力**:
 
-**目的**: 安全に本番環境へデプロイ
+- アップグレード計画、テスト計画、環境情報
 
-**ステップ**:
+**出力**:
 
-1. 本番デプロイを実行
-2. スモークテストを実施
-3. モニタリングを強化
-4. 問題発生時はロールバック
-5. 成功を確認・文書化
+- ロールアウトレポート
 
-**判断基準**:
+## Task仕様（ナビゲーション）
 
-- [ ] デプロイが成功したか？
-- [ ] エラー率が正常か？
-- [ ] パフォーマンスが正常か？
+| Task                   | 役割                   | 参照先                          |
+| ---------------------- | ---------------------- | ------------------------------- |
+| upgrade-planning.md    | アップグレード計画策定 | `agents/upgrade-planning.md`    |
+| dependency-analysis.md | 依存関係分析           | `agents/dependency-analysis.md` |
+| test-strategy.md       | テスト戦略設計         | `agents/test-strategy.md`       |
+| rollout-execution.md   | 段階的ロールアウト実行 | `agents/rollout-execution.md`   |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **小さく頻繁に更新**:
-   - 週次または隔週でのパッチ更新
-   - 月次でのマイナー更新
-   - 四半期でのメジャー更新検討
-
-2. **自動化を活用**:
-   - Dependabot の活用
-   - Renovate の活用
-   - CI/CD での自動テスト
-
-3. **文書化**:
-   - 変更内容の記録
-   - 問題と解決策の記録
-   - 次回への学びの記録
+- **前提条件の確認**: `references/Level1_basics.md`を参照し、アップグレード前に環境・依存関係を完全に把握する
+- **段階的実施**: 本番環境への一括アップグレードを避け、開発→ステージング→本番の段階的展開を実施する
+- **互換性検証**: `references/strategy-selection-guide.md`に基づき、アップグレード前に詳細な互換性テストを実施する
+- **ロールバック計画の事前準備**: `references/rollback-procedures.md`に従い、問題発生時の復旧手順を明確にしておく
+- **テスト自動化**: `references/tdd-integration.md`を参照し、アップグレード検証をテスト化・自動化する
+- **ドキュメント更新**: アップグレード計画、テスト結果、変更内容を記録・共有する
+- **チーム間のコミュニケーション**: 変更スケジュール、影響範囲、リスク要因を関係者に事前通知する
 
 ### 避けるべきこと
 
-1. **長期間の放置**:
-   - ❌ 6 ヶ月以上更新しない
-   - ✅ 定期的なメンテナンスサイクル
+- 十分なテストなしに本番環境でアップグレードを実行しない
+- 単一バージョンへの一括アップグレードにより複数の破壊的変更を同時に導入しない
+- ロールバック手段なしにアップグレードを開始しない
+- 依存関係の相互影響やバージョン競合を考慮せずにアップグレードを進めない
+- アップグレード前のバックアップやスナップショット作成を省略しない
+- 既知の問題や互換性の警告を無視して進めない
+- 自動スクリプトによるアップグレードを十分にレビューなしで実行しない
 
-2. **テストなしの更新**:
-   - ❌ テストをスキップして更新
-   - ✅ テストで検証してから更新
+## リソース参照
 
-3. **一括大量更新**:
-   - ❌ 全パッケージを同時に最新化
-   - ✅ 段階的に更新して問題を切り分け
+### references/ - 学習リソース
 
-## トラブルシューティング
+| ファイル                      | 対象Level | 説明                                                                           |
+| ----------------------------- | --------- | ------------------------------------------------------------------------------ |
+| `Level1_basics.md`            | 1         | アップグレード戦略の基礎概念、バージョン管理、依存関係の基本的な扱い方         |
+| `Level2_intermediate.md`      | 2         | 段階的アップグレード計画、テスト戦略、ロールバック手順、実務的な注意点         |
+| `Level3_advanced.md`          | 3         | 複雑な依存関係の解決、自動化スクリプト、パフォーマンス検証、CI/CD統合          |
+| `Level4_expert.md`            | 4         | エンタープライズレベルのアップグレード戦略、大規模マイグレーション、リスク管理 |
+| `automation-patterns.md`      | 2-4       | アップグレード自動化パターン、スクリプト設計、CI/CD パイプラインの実装         |
+| `rollback-procedures.md`      | 2-3       | ロールバック手順、フォールバック戦略、復旧テスト、タイムラインの設定           |
+| `strategy-selection-guide.md` | 1-3       | アップグレード戦略の選択基準、メリット・デメリットの比較、適用シーン別ガイド   |
+| `tdd-integration.md`          | 2-4       | テスト駆動型アップグレード、テストケースの設計、回帰テストの自動化             |
+| `legacy-skill.md`             | -         | 旧SKILL.mdの全文（参考資料）                                                   |
 
-### 問題 1: 型エラーの大量発生
+### scripts/ - 自動化スクリプト
 
-**症状**: TypeScript の型エラーが大量に発生
-
-**対応**:
-
-1. まず`@types/*`パッケージを更新
-2. 型定義の変更点を確認
-3. 一つずつ修正、または`any`で一時回避
-4. 根本的な修正を後で実施
-
-### 問題 2: 推移的依存の競合
-
-**症状**: ピア依存の競合でインストールが失敗
-
-**対応**:
+| スクリプト           | 機能                                                               |
+| -------------------- | ------------------------------------------------------------------ |
+| `check-upgrades.mjs` | アップグレード前の環境チェック、依存関係の分析、互換性レポート生成 |
+| `validate-skill.mjs` | スキル構造の検証、リソース・テンプレートの整合性確認               |
+| `log_usage.mjs`      | スキル使用記録の保存、実行統計の自動更新、評価スコアの計算         |
 
 ```bash
-# overridesで強制解決
-# package.json
-{
-  "pnpm": {
-    "overrides": {
-      "conflicting-package": "^1.0.0"
-    }
-  }
-}
+node .claude/skills/upgrade-strategies/scripts/check-upgrades.mjs --help
+node .claude/skills/upgrade-strategies/scripts/validate-skill.mjs --help
+node .claude/skills/upgrade-strategies/scripts/log_usage.mjs --help
 ```
 
-### 問題 3: テストの大量失敗
+### assets/ - テンプレート
 
-**症状**: アップグレード後にテストが大量に失敗
+| テンプレート               | 用途                                                                     |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `upgrade-plan-template.md` | アップグレード計画書のテンプレート（段階、リスク評価、テスト計画を含む） |
 
-**対応**:
-
-1. 一旦ロールバック
-2. 段階的なアップグレードに切り替え
-3. 一つのパッケージずつ更新
-
-## 関連スキル
-
-- **semantic-versioning** (`.claude/skills/semantic-versioning/SKILL.md`): バージョン変更の影響評価
-- **dependency-auditing** (`.claude/skills/dependency-auditing/SKILL.md`): セキュリティ監査
-- **lock-file-management** (`.claude/skills/lock-file-management/SKILL.md`): ロックファイルの管理
-
-## メトリクス
-
-### アップグレードの効果測定
-
-**測定指標**:
-
-- アップグレード成功率
-- ロールバック発生率
-- 平均アップグレード時間
-- 技術的負債スコアの推移
-
-**目標値**:
-
-- 成功率: >95%
-- ロールバック率: <5%
-- Patch 更新時間: <30 分
-- Minor 更新時間: <2 時間
+```bash
+cat .claude/skills/upgrade-strategies/assets/upgrade-plan-template.md
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                    |
-| ---------- | ---------- | ------------------------------------------- |
-| 1.0.0      | 2025-11-27 | 初版作成 - アップグレード戦略フレームワーク |
-
-## 参考文献
-
-- **Dependabot**: https://docs.github.com/en/code-security/dependabot
-- **Renovate**: https://docs.renovatebot.com/
-- **pnpm update**: https://docs.npmjs.com/cli/v10/commands/pnpm-update
+| Version | Date       | Changes                                                                                               |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------- |
+| 1.1.0   | 2026-01-01 | agents/にTask仕様書を作成、ワークフローを4フェーズに再構成                                            |
+| 1.0.1   | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ追加、Anchors/Trigger/allowed-tools追加、ベストプラクティス拡充 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                           |

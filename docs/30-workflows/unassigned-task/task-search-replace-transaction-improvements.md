@@ -13,7 +13,7 @@
 | ステータス       | 未実施                               |
 | 発見元           | Phase 7 - 最終レビューゲート         |
 | 発見日           | 2025-12-12                           |
-| 発見エージェント | @code-quality                        |
+| 発見エージェント | .claude/agents/code-quality.md                        |
 
 ---
 
@@ -21,7 +21,7 @@
 
 ### 1.1 背景
 
-検索・置換機能のT-07-1最終レビューにおいて、@code-qualityエージェントが`TransactionManager`にタイムアウト機能が未実装であることを指摘した。現在の実装では、トランザクションが長時間放置された場合に自動的にロールバックされず、リソースリークやデッドロックの原因となる可能性がある。
+検索・置換機能のT-07-1最終レビューにおいて、.claude/agents/code-quality.mdエージェントが`TransactionManager`にタイムアウト機能が未実装であることを指摘した。現在の実装では、トランザクションが長時間放置された場合に自動的にロールバックされず、リソースリークやデッドロックの原因となる可能性がある。
 
 ### 1.2 問題点・課題
 
@@ -179,7 +179,7 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: タイマーを使用したユニットテストの設計に最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -187,9 +187,9 @@ Phase 6: 品質保証
 
 | スキル名               | 活用方法                         | 選定理由                 |
 | ---------------------- | -------------------------------- | ------------------------ |
-| tdd-principles         | Red-Green-Refactorサイクルの遵守 | TDDの原則に従うため      |
-| test-doubles           | タイマーのモック化               | vi.useFakeTimersの活用   |
-| transaction-management | トランザクションテスト設計       | 正しいテストシナリオ設計 |
+| .claude/skills/tdd-principles/SKILL.md         | Red-Green-Refactorサイクルの遵守 | TDDの原則に従うため      |
+| .claude/skills/test-doubles/SKILL.md           | タイマーのモック化               | vi.useFakeTimersの活用   |
+| .claude/skills/transaction-management/SKILL.md | トランザクションテスト設計       | 正しいテストシナリオ設計 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -273,7 +273,7 @@ describe("トランザクションタイムアウト", () => {
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック（トランザクション管理）の実装に最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -281,8 +281,8 @@ describe("トランザクションタイムアウト", () => {
 
 | スキル名               | 活用方法                     | 選定理由                       |
 | ---------------------- | ---------------------------- | ------------------------------ |
-| transaction-management | トランザクションパターン実装 | 正しい状態管理                 |
-| type-safety-patterns   | 型安全な実装                 | タイムアウトオプションの型定義 |
+| .claude/skills/transaction-management/SKILL.md | トランザクションパターン実装 | 正しい状態管理                 |
+| .claude/skills/type-safety-patterns/SKILL.md   | 型安全な実装                 | タイムアウトオプションの型定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -315,7 +315,7 @@ describe("トランザクションタイムアウト", () => {
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 

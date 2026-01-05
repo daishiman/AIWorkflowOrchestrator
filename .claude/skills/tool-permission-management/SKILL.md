@@ -1,184 +1,135 @@
 ---
 name: tool-permission-management
 description: |
-  ツール権限管理とセキュリティ制御を専門とするスキル。
+  ツール権限の要件整理、ポリシー設計、監査運用を体系化するスキル。
+  最小権限の原則と変更履歴を徹底し、安全なツール利用を支援する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer / 適用: 権限運用 / 目的: 実務的な安全性
+  • Zero Trust Architecture (NIST SP 800-207) / 適用: アクセス制御 / 目的: 最小権限の徹底
 
-  - `.claude/skills/tool-permission-management/resources/tool-selection-matrix.md`: Tool Selection Matrixリソース
-
-  - `.claude/skills/tool-permission-management/templates/permission-template.yaml`: Permissionテンプレート
-
-  - `.claude/skills/tool-permission-management/scripts/analyze-permissions.mjs`: Analyze Permissionsスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when defining or reviewing tool permissions, access policies, or least-privilege settings.
+  permissions, least privilege, access policy
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Tool Permission Management
 
 ## 概要
 
-ツール権限管理は、最小権限の原則に基づき、エージェントに必要最小限の
-ツール権限のみを付与するセキュリティ設計手法です。
+ツール権限の設計と運用を一貫した手順で整備するスキル。要件整理、ポリシー設計、監査の流れを確立し、権限過多や監査不備を防ぐ。
 
-**主要な価値**:
-
-- 最小権限によりセキュリティリスクを最小化
-- パス制限により誤操作を防止
-- 承認要求により危険な操作を制御
+---
 
 ## ワークフロー
 
-### Phase 1: ツール選択
+### Phase 1: 権限要件の整理
 
-**ツール選択の判断フロー**:
+**目的**: ツール利用目的と必要権限を整理する
 
-```
-エージェントの役割は？
-├─ 分析・レビュー → [Read, Grep, Glob]
-├─ 実装・生成 → [Read, Write, Edit, Grep]
-├─ 委譲・調整 → [Task, Read]
-└─ デプロイ・管理 → [Bash, Read, Write, Edit, Task]
-```
+**アクション**:
 
-**ツールカテゴリ**:
+1. 対象ツールと実行タスクを洗い出す
+2. 必要なアクセス範囲と禁止事項を整理する
+3. 監査要件とログ要件を定義する
 
-#### 読み取り専用 `[Read, Grep, Glob]`
+**Task**: `agents/permission-requirements.md` を参照
 
-- 用途: 分析、レビュー、監査
-- リスク: 低
-- パス制限: 不要（読み取り のみ）
+### Phase 2: ポリシー設計と設定
 
-#### 読み書き `[Read, Write, Edit, Grep]`
+**目的**: 最小権限のポリシーを設計し設定する
 
-- 用途: 実装、生成、変換
-- リスク: 中
-- パス制限: **必須**
+**アクション**:
 
-#### オーケストレーター `[Task, Read]`
+1. 権限テンプレートをベースにポリシーを設計する
+2. リスク評価に基づき権限を最小化する
+3. 設定変更の履歴と理由を記録する
 
-- 用途: マルチエージェント調整
-- リスク: 中
-- パス制限: 不要
+**Task**: `agents/permission-policy-design.md` を参照
 
-#### フル権限 `[Bash, Read, Write, Edit, Task]`
+### Phase 3: 監査と運用
 
-- 用途: デプロイ、インフラ管理
-- リスク: 高
-- パス制限: **必須**
-- 承認要求: **推奨**
+**目的**: 権限の運用状況を監査し改善する
 
-### Phase 2: パス制限の設定
+**アクション**:
 
-**write_allowed_paths**:
+1. 権限スキャンと監査を実行する
+2. 逸脱や過剰権限を洗い出す
+3. 実行記録を保存する
 
-```yaml
-write_allowed_paths:
-  - ".claude/agents/**/*.md"
-  - "src/features/**/*.ts"
-  - "docs/**/*.md"
-```
+**Task**: `agents/permission-audit-ops.md` を参照
 
-**write_forbidden_paths**:
+---
 
-```yaml
-write_forbidden_paths:
-  - ".env"
-  - "**/*.key"
-  - "**/*.pem"
-  - ".git/**"
-  - "node_modules/**"
-```
+## Task仕様ナビ
 
-### Phase 3: 承認要求の設定
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| permission-requirements | Phase 1 開始時 | ツール一覧/目的 | 権限要件メモ |
+| permission-policy-design | Phase 2 開始時 | 要件/制約 | 権限ポリシー |
+| permission-audit-ops | Phase 3 開始時 | 監査ログ/設定 | 監査レポート |
 
-**approval_required**:
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-```yaml
-approval_required: true
-```
-
-**approval_required_for**:
-
-```yaml
-approval_required_for:
-  - "rm *"
-  - "git push"
-  - "pnpm publish"
-```
-
-### Phase 4: Bash 制限
-
-**許可されるコマンド**:
-
-```yaml
-approved_commands:
-  - "ls"
-  - "find"
-  - "grep"
-  - "git status"
-```
-
-**禁止されるコマンド**:
-
-- `rm -rf`
-- `sudo`
-- `curl | sh`
-- `wget | sh`
+---
 
 ## ベストプラクティス
 
-✅ **すべきこと**:
+### すべきこと
 
-- 必要最小限のツールのみ選択
-- パス制限を必ず設定（Write/Edit 使用時）
-- 危険な操作に承認要求
+| 推奨事項 | 理由 |
+| --- | --- |
+| 最小権限の原則を適用する | リスクを抑えるため |
+| 権限変更の理由を記録する | 監査性を高めるため |
+| 定期的な権限レビューを実施する | 逸脱を防ぐため |
+| 権限テンプレートを統一する | 運用コストを下げるため |
 
-❌ **避けるべきこと**:
+### 避けるべきこと
 
-- 不要なツール権限の付与
-- パス制限の省略
-- 承認なしの危険操作
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 管理者権限の乱用 | セキュリティ事故につながる |
+| ログを記録しない | 監査不能になる |
+| 権限変更の履歴を残さない | 原因追跡が難しくなる |
 
-## 関連スキル
+---
 
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`)
-- **agent-quality-standards** (`.claude/skills/agent-quality-standards/SKILL.md`)
+## リソース参照
 
-## 詳細リファレンス
+### scripts/（決定論的処理）
 
-詳細な実装ガイドとツールは以下を参照:
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-permissions.mjs` | 権限構成を分析する |
+| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs` | 実行記録を保存する |
 
-- ツール選択マトリックス (`resources/tool-selection-matrix.md`)
+### references/（詳細知識）
 
-## コマンドリファレンス
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
+| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 監査時に参照 |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模運用時に参照 |
+| 権限マトリクス | [references/tool-selection-matrix.md](references/tool-selection-matrix.md) | 設計時に参照 |
 
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+### assets/（テンプレート・素材）
 
-### リソース読み取り
-
-```bash
-# ツール選択マトリックスを読み取る
-cat .claude/skills/tool-permission-management/resources/tool-selection-matrix.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# エージェント構造検証（ツール権限も含む）
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
-
-# アーキテクチャパターン検証
-node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
-
-# 知識ドキュメントの品質検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
-```
+| アセット | 用途 |
+| --- | --- |
+| `assets/permission-template.yaml` | 権限ポリシーのテンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-24 | 初版作成 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 2.0.0 | 2026-01-02 | Task仕様と監査フローを再設計し、参照を整理 |
+| 1.0.0 | 2025-12-31 | 初期バージョン |

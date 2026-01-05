@@ -13,7 +13,7 @@
 | ステータス       | 未実施                          |
 | 発見元           | ユーザー要望                    |
 | 発見日           | 2025-12-11                      |
-| 発見エージェント | @product-manager                |
+| 発見エージェント | .claude/agents/product-manager.md                |
 
 ---
 
@@ -90,10 +90,10 @@
 
 ## 3. 主要な使用エージェント
 
-- **@ui-designer**: LLM選択UIの設計
-- **@gateway-dev**: LLM API統合
-- **@state-manager**: 会話状態管理
-- **@arch-police**: マルチLLMアーキテクチャ設計
+- **.claude/agents/ui-designer.md**: LLM選択UIの設計
+- **.claude/agents/gateway-dev.md**: LLM API統合
+- **.claude/agents/state-manager.md**: 会話状態管理
+- **.claude/agents/arch-police.md**: マルチLLMアーキテクチャ設計
 
 ---
 

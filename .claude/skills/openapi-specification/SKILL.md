@@ -1,227 +1,122 @@
 ---
 name: openapi-specification
 description: |
-  OpenAPI 3.x仕様に準拠したAPI仕様書の設計と作成を専門とするスキル。
+  OpenAPI仕様の専門スキル。
+  API定義、スキーマ設計、ドキュメント生成を提供します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『OpenAPI Specification』（Linux Foundation） / 適用: API仕様設計 / 目的: REST API標準化
+  • 『RESTful API設計のベストプラクティス』（複数出典） / 適用: エンドポイント設計 / 目的: 一貫性確保
 
-  - `.claude/skills/openapi-specification/resources/openapi-structure.md`: OpenAPI 3.x 構造ガイド
-  - `.claude/skills/openapi-specification/resources/schema-design-patterns.md`: OpenAPI スキーマ設計パターン
-  - `.claude/skills/openapi-specification/resources/security-schemes.md`: OpenAPI セキュリティスキーム設計
-  - `.claude/skills/openapi-specification/scripts/validate-openapi.mjs`: OpenAPI仕様ファイルの構文検証と整合性チェックを実行
-  - `.claude/skills/openapi-specification/templates/endpoint-template.yaml`: 個別エンドポイント定義のYAMLテンプレート（パス、メソッド、レスポンス含む）
-  - `.claude/skills/openapi-specification/templates/openapi-base-template.yaml`: 完全なOpenAPI 3.x仕様書のベーステンプレート（info、servers、paths構造含む）
-
-  使用タイミング:
-  - 新規OpenAPI仕様書を作成する時
-  - 既存OpenAPI仕様書を更新する時
-  - エンドポイントやスキーマを設計する時
-  - OpenAPI構文エラーを解決する時
-
-version: 1.0.0
+  Trigger:
+  OpenAPI仕様書作成時、API定義ドキュメント作成時、Swagger仕様設計時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # OpenAPI Specification スキル
 
 ## 概要
 
-OpenAPI 3.x 仕様に準拠した API 仕様書の設計と作成に関する専門知識を提供します。
+OpenAPI 3.x仕様に準拠したAPI仕様書の設計と作成を専門とするスキル。RESTful APIの設計原則に基づいて、セキュアで保守性の高いAPI仕様書を作成します。エンドポイント設計、スキーマ定義、認証・認可設定、エラーハンドリング、およびドキュメント生成を統合的に実施します。
 
-## コマンドリファレンス
+詳細な手順や背景は `references/` ディレクトリを参照してください。
 
-```bash
-# リソース参照
-cat .claude/skills/openapi-specification/resources/openapi-structure.md
-cat .claude/skills/openapi-specification/resources/schema-design-patterns.md
-cat .claude/skills/openapi-specification/resources/security-schemes.md
+## ワークフロー
 
-# テンプレート参照
-cat .claude/skills/openapi-specification/templates/openapi-base-template.yaml
-cat .claude/skills/openapi-specification/templates/endpoint-template.yaml
+### Phase 1: 要件定義
 
-# スクリプト実行
-node .claude/skills/openapi-specification/scripts/validate-openapi.mjs <openapi-file>
-```
+**目的**: API仕様の要件を明確化
 
----
+**アクション**:
 
-## 知識領域 1: OpenAPI 3.x 基本構造
+1. `references/basics.md` でOpenAPI基本構造を確認
+2. エンドポイント数、認証方式、レート制限を定義
+3. 既存API仕様の有無を確認（更新か新規作成か判定）
 
-### 仕様書の主要セクション
+### Phase 2: 仕様設計
 
-| セクション   | 目的                                                        | 必須 |
-| ------------ | ----------------------------------------------------------- | ---- |
-| `openapi`    | バージョン指定（"3.0.x" or "3.1.x"）                        | ✅   |
-| `info`       | メタデータ（title, version, description, contact, license） | ✅   |
-| `servers`    | ベース URL 定義（環境別）                                   | 推奨 |
-| `paths`      | エンドポイント定義                                          | ✅   |
-| `components` | 再利用可能コンポーネント                                    | 推奨 |
-| `security`   | グローバル認証要件                                          | 推奨 |
-| `tags`       | エンドポイントカテゴリ分類                                  | 推奨 |
+**目的**: OpenAPI仕様書を設計・作成
 
-### バージョン選択基準
+**アクション**:
 
-- **3.0.x**: 広範なツールサポート、既存プロジェクト
-- **3.1.x**: JSON Schema 完全互換、Webhook 対応、新規プロジェクト
+1. `agents/design-api.md` を参照して設計を実施
+2. `assets/openapi-base-template.yaml` をベースに仕様書を作成
+3. `references/schema-design-patterns.md` でスキーマ設計
+4. `references/security-schemes.md` でセキュリティ構成
 
----
+**Task**: `agents/design-api.md` を参照
 
-## 知識領域 2: パス（Paths）設計
+### Phase 3: 検証
 
-### エンドポイント構造
+**目的**: 仕様書の検証と記録
 
-各エンドポイントに含めるべき要素:
+**アクション**:
 
-| 要素          | 説明                                   | 必須                  |
-| ------------- | -------------------------------------- | --------------------- |
-| `summary`     | 1 行説明（<50 文字）                   | ✅                    |
-| `description` | 詳細説明（Markdown 対応）              | 推奨                  |
-| `operationId` | 一意の操作識別子                       | ✅                    |
-| `tags`        | カテゴリ分類                           | 推奨                  |
-| `parameters`  | パス/クエリ/ヘッダーパラメータ         | 条件付き              |
-| `requestBody` | リクエストボディ                       | POST/PUT/PATCH で必要 |
-| `responses`   | ステータスコード別レスポンス           | ✅                    |
-| `security`    | 認証要件（グローバルをオーバーライド） | 条件付き              |
+1. `agents/validate-spec.md` を参照して検証を実施
+2. `scripts/validate-openapi.mjs` で構文チェック
+3. セキュリティ設定とベストプラクティスを確認
 
-### HTTP メソッド使用規約
+**Task**: `agents/validate-spec.md` を参照
 
-| メソッド | 用途             | 冪等性 | リクエストボディ |
-| -------- | ---------------- | ------ | ---------------- |
-| GET      | リソース取得     | ✅     | なし             |
-| POST     | リソース作成     | ❌     | 必要             |
-| PUT      | リソース完全置換 | ✅     | 必要             |
-| PATCH    | リソース部分更新 | ✅     | 必要             |
-| DELETE   | リソース削除     | ✅     | なし             |
+## Task仕様（ナビゲーション）
 
----
+| Task          | 起動タイミング | 入力           | 出力           |
+| ------------- | -------------- | -------------- | -------------- |
+| design-api    | Phase 2開始時  | API要件        | 仕様書ドラフト |
+| validate-spec | Phase 3開始時  | 仕様書ドラフト | 検証済み仕様書 |
 
-## 知識領域 3: コンポーネント（Components）設計
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
-### 再利用可能コンポーネントタイプ
+## ベストプラクティス
 
-| タイプ            | 用途                 | 参照方法                                       |
-| ----------------- | -------------------- | ---------------------------------------------- |
-| `schemas`         | データモデル定義     | `$ref: '#/components/schemas/User'`            |
-| `responses`       | 共通レスポンス定義   | `$ref: '#/components/responses/NotFound'`      |
-| `parameters`      | 共通パラメータ定義   | `$ref: '#/components/parameters/PageLimit'`    |
-| `requestBodies`   | 共通リクエストボディ | `$ref: '#/components/requestBodies/UserInput'` |
-| `headers`         | 共通ヘッダー定義     | `$ref: '#/components/headers/X-Rate-Limit'`    |
-| `securitySchemes` | 認証スキーム定義     | security 設定で参照                            |
-| `links`           | 操作間リンク         | HATEOAS 実装                                   |
-| `callbacks`       | Webhook 定義         | 非同期操作                                     |
+### すべきこと
 
-### スキーマ設計原則
+- **新規OpenAPI仕様書を作成する時**: `openapi-base-template.yaml` をテンプレートとして使用し、info、servers、paths、componentsの全セクションを網羅する
+- **既存OpenAPI仕様書を更新する時**: 変更前後の仕様差異を明確にし、破壊的変更がないか検証する
+- **エンドポイントやスキーマを設計する時**: `schema-design-patterns.md` と `openapi-structure.md` を参照して一貫性を保つ
+- **OpenAPI構文エラーを解決する時**: `validate-openapi.mjs` で具体的なエラー箇所を特定してから修正する
+- **セキュリティスキームを設定する時**: `security-schemes.md` のベストプラクティスを遵守し、全エンドポイントに適切な認証を適用する
+- **Level別の学習**: 基礎（Level1）→実務（Level2）→応用（Level3）→専門（Level4）の順で進める
+- **版管理**: API仕様の更新履歴をCHANGELOG.mdで記録し、ユーザーに影響を通知する
 
-1. **DRY 原則**: 複数エンドポイントで使用されるスキーマは抽出
-2. **必須フィールド明示**: `required`配列で必須フィールドを列挙
-3. **説明追加**: 各プロパティに`description`を付与
-4. **型制約**: `format`、`minLength`、`maxLength`、`pattern`を活用
-5. **例示値**: `example`または`examples`を追加
+### 避けるべきこと
 
----
+- アンチパターンや注意点を確認せずに進めることを避ける
+- セキュリティスキーム設定を後付けしない（設計段階から組み込む）
+- 複数のエンドポイント間で不一貫なスキーマ定義を避ける
+- エラーレスポンスの定義をスキップしない
+- `required` フィールドの指定を曖昧にしない
+- セキュリティ関連の設定をハードコード化しない（環境ごとに切り替え可能にする）
+- OpenAPI仕様の検証をスキップして本番環境にデプロイしない
 
-## 知識領域 4: データ型とフォーマット
+## リソース参照
 
-### 基本型
+### references/（詳細知識）
 
-| type      | format      | 用途                        |
-| --------- | ----------- | --------------------------- |
-| `string`  | -           | 一般文字列                  |
-| `string`  | `date`      | ISO 8601 日付（YYYY-MM-DD） |
-| `string`  | `date-time` | ISO 8601 日時               |
-| `string`  | `email`     | メールアドレス              |
-| `string`  | `uri`       | URI 形式                    |
-| `string`  | `uuid`      | UUID 形式                   |
-| `string`  | `password`  | パスワード（UI 非表示）     |
-| `integer` | `int32`     | 32 ビット整数               |
-| `integer` | `int64`     | 64 ビット整数               |
-| `number`  | `float`     | 単精度浮動小数点            |
-| `number`  | `double`    | 倍精度浮動小数点            |
-| `boolean` | -           | 真偽値                      |
-| `array`   | -           | 配列（items 必須）          |
-| `object`  | -           | オブジェクト                |
+| リソース         | パス                                                                             | 用途             |
+| ---------------- | -------------------------------------------------------------------------------- | ---------------- |
+| 基礎知識         | See [references/basics.md](references/basics.md)                                 | OpenAPI基本構造  |
+| 構造ガイド       | See [references/openapi-structure.md](references/openapi-structure.md)           | 全セクション仕様 |
+| スキーマパターン | See [references/schema-design-patterns.md](references/schema-design-patterns.md) | スキーマ設計     |
+| セキュリティ     | See [references/security-schemes.md](references/security-schemes.md)             | 認証・認可設定   |
 
-### 制約オプション
+### assets/（テンプレート）
 
-| 制約                      | 適用型         | 説明                  |
-| ------------------------- | -------------- | --------------------- |
-| `minLength` / `maxLength` | string         | 文字列長制約          |
-| `pattern`                 | string         | 正規表現パターン      |
-| `minimum` / `maximum`     | number/integer | 数値範囲              |
-| `minItems` / `maxItems`   | array          | 配列長制約            |
-| `uniqueItems`             | array          | 要素一意性            |
-| `enum`                    | any            | 列挙値制約            |
-| `nullable`                | any            | null 許可             |
-| `readOnly` / `writeOnly`  | any            | 読み取り/書き込み専用 |
-
----
-
-## 知識領域 5: セキュリティスキーム
-
-### 認証タイプ
-
-| type            | 用途           | 設定例                 |
-| --------------- | -------------- | ---------------------- |
-| `apiKey`        | API キー認証   | ヘッダー/クエリ/Cookie |
-| `http`          | HTTP 認証      | Basic、Bearer          |
-| `oauth2`        | OAuth 2.0      | 各種フロー             |
-| `openIdConnect` | OpenID Connect | OIDC Discovery         |
-
-### グローバル vs エンドポイント別
-
-```yaml
-# グローバル（全エンドポイントに適用）
-security:
-  - BearerAuth: []
-
-# エンドポイント別（グローバルをオーバーライド）
-paths:
-  /public:
-    get:
-      security: [] # 認証不要
-```
-
----
-
-## 判断基準チェックリスト
-
-### 構造品質
-
-- [ ] `openapi`バージョンが指定されているか？
-- [ ] `info`セクションに title、version、description があるか？
-- [ ] `servers`に環境別 URL が定義されているか？
-
-### エンドポイント品質
-
-- [ ] すべてのエンドポイントに`summary`があるか？
-- [ ] すべてのエンドポイントに一意の`operationId`があるか？
-- [ ] 適切な`tags`でカテゴリ分類されているか？
-
-### スキーマ品質
-
-- [ ] 共通スキーマが`components/schemas`に抽出されているか？
-- [ ] 必須フィールドが`required`で明示されているか？
-- [ ] 各プロパティに`description`があるか？
-
-### セキュリティ品質
-
-- [ ] 認証が必要なエンドポイントに`security`が設定されているか？
-- [ ] `securitySchemes`が適切に定義されているか？
-
----
-
-## 関連スキル
-
-- `.claude/skills/swagger-ui/SKILL.md`: インタラクティブドキュメント生成
-- `.claude/skills/api-versioning/SKILL.md`: バージョニング戦略
-- `.claude/skills/request-response-examples/SKILL.md`: 実例追加
-
----
+| リソース           | パス                                | 用途         |
+| ------------------ | ----------------------------------- | ------------ |
+| ベーステンプレート | `assets/openapi-base-template.yaml` | 仕様書ベース |
+| エンドポイント     | `assets/endpoint-template.yaml`     | 個別パス定義 |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容     |
-| ---------- | ---------- | ------------ |
-| 1.0.0      | 2025-11-27 | 初版リリース |
+| Version | Date       | Changes                      |
+| ------- | ---------- | ---------------------------- |
+| 1.2.0   | 2026-01-02 | agents/追加、Level構造を統合 |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様に準拠       |
+| 1.0.0   | 2025-12-24 | 初期実装                     |

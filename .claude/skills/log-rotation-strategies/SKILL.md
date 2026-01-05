@@ -1,243 +1,140 @@
 ---
 name: log-rotation-strategies
 description: |
-  Node.jsアプリケーションのログローテーション戦略を専門とするスキル。
-  PM2、logrotate、Winston等を活用した効率的なログ管理を設計します。
+  Node.jsアプリケーションのログローテーション戦略設計・実装スキル。PM2、logrotate、Winston、集中ログシステムを活用した効率的ログ管理を提供。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『Site Reliability Engineering』(Google) / 適用: ログ管理SLO / 目的: 運用卓越性
+  • 『Systems Performance』(Brendan Gregg) / 適用: ディスクUSEメソッド / 目的: キャパシティプランニング
+  • PM2-logrotate Module / 適用: サイズ/時間ベースローテーション / 目的: 自動ログ管理
 
-  - `.claude/skills/log-rotation-strategies/resources/log-aggregation.md`: 集中ログ管理オプション（ELK/Datadog/CloudWatch/Loki）、サービス選定基準
-  - `.claude/skills/log-rotation-strategies/resources/pm2-logrotate-guide.md`: pm2-logrotate設定、max_size/retain/compress、ecosystem.config.js統合
-  - `.claude/skills/log-rotation-strategies/resources/rotation-patterns.md`: サイズベース・時間ベース・ハイブリッド方式の選択基準と実装パターン
-  - `.claude/skills/log-rotation-strategies/scripts/analyze-log-usage.mjs`: ログ使用量分析（ディレクトリサイズ、世代数、圧縮率）
-  - `.claude/skills/log-rotation-strategies/templates/winston-rotation.template.ts`: Winston DailyRotateFile設定テンプレート（TypeScript）
-
-  専門分野:
-  - PM2ログ管理: pm2-logrotate、ログファイル設定、自動ローテーション
-  - ログフォーマット: 構造化ログ、JSON形式、タイムスタンプ
-  - ローテーション戦略: サイズベース、時間ベース、ハイブリッド
-  - ログ集約: 集中ログ管理、外部サービス連携
-
-  使用タイミング:
-  - ログローテーションを設定する時
-  - ディスク容量管理を最適化する時
-  - ログフォーマットを標準化する時
-  - PM2ログ設定を行う時
-
-  Use proactively when configuring log rotation, optimizing disk usage,
-version: 1.0.0
+  Trigger:
+  Use when configuring log rotation, optimizing disk capacity for logs, designing log retention policies,
+  or integrating with centralized logging systems (ELK, Datadog, CloudWatch, Loki).
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
 # Log Rotation Strategies
 
+> **相対パス**: `SKILL.md`
+> **読込条件**: スキル使用時（自動）
+
+---
+
 ## 概要
 
-ログローテーションは、ディスク容量を管理しながらログを適切に保持するための
-重要な運用プラクティスです。アプリケーションの可観測性を維持しつつ、
-リソース効率を最適化します。
+Node.js アプリケーションのログローテーション戦略を設計・実装するスキル。
 
-**主要な価値**:
+**対象領域**:
 
-- ディスク容量の効率的管理
-- ログの長期保持と検索性
-- アプリケーションパフォーマンスの維持
-- コンプライアンス要件への対応
+- PM2 logrotate によるプロセスマネージャー統合
+- Winston DailyRotateFile によるアプリケーションレベル制御
+- logrotate (Linux) によるシステムレベル管理
+- 集中ログシステム（ELK/Datadog/CloudWatch/Loki）への統合
 
-## リソース構造
-
-```
-log-rotation-strategies/
-├── SKILL.md
-├── resources/
-│   ├── rotation-patterns.md
-│   ├── pm2-logrotate-guide.md
-│   └── log-aggregation.md
-├── scripts/
-│   └── analyze-log-usage.mjs
-└── templates/
-    └── winston-rotation.template.ts
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# ローテーションパターンガイド
-cat .claude/skills/log-rotation-strategies/resources/rotation-patterns.md
-
-# PM2ログローテーションガイド
-cat .claude/skills/log-rotation-strategies/resources/pm2-logrotate-guide.md
-
-# ログ集約ガイド
-cat .claude/skills/log-rotation-strategies/resources/log-aggregation.md
-```
-
-### スクリプト実行
-
-```bash
-# ログ使用量分析
-node .claude/skills/log-rotation-strategies/scripts/analyze-log-usage.mjs [log-dir]
-```
-
-### テンプレート参照
-
-```bash
-# Winstonログローテーションテンプレート
-cat .claude/skills/log-rotation-strategies/templates/winston-rotation.template.ts
-```
+---
 
 ## ワークフロー
 
-### Phase 1: ログ戦略設計
+### Phase 1: 要件分析
 
-**ローテーション方式の選択**:
-| 方式 | 特徴 | 適用シナリオ |
-|------|------|-------------|
-| サイズベース | ファイルサイズで分割 | 均一なログ量 |
-| 時間ベース | 時間間隔で分割 | 時系列分析重視 |
-| ハイブリッド | サイズ+時間 | 大規模本番環境 |
+**Task**: `agents/analyze-requirements.md`
 
-**判断基準**:
+| 入力                               | 出力             |
+| ---------------------------------- | ---------------- |
+| アプリケーション情報、ビジネス要件 | 要件分析レポート |
 
-- [ ] 1 日あたりの予想ログ量は？
-- [ ] 必要な保持期間は？
-- [ ] ディスク容量の制約は？
+**参照**: `references/basics.md`
 
-**リソース**: `resources/rotation-patterns.md`
+### Phase 2: 戦略設計
 
-### Phase 2: PM2 ログ設定
+**Task**: `agents/design-strategy.md`
 
-**pm2-logrotate 設定**:
+| 入力             | 出力       |
+| ---------------- | ---------- |
+| 要件分析レポート | 戦略設計書 |
 
-```bash
-# インストール
-pm2 install pm2-logrotate
+**参照**: `references/rotation-patterns.md`, `references/log-aggregation.md`
 
-# 設定確認
-pm2 conf pm2-logrotate
-```
+### Phase 3: 実装
 
-**主要設定項目**:
+**Task**: `agents/implement-rotation.md`
 
-```bash
-pm2 set pm2-logrotate:max_size 10M      # ファイルサイズ上限
-pm2 set pm2-logrotate:retain 7          # 保持世代数
-pm2 set pm2-logrotate:compress true     # 圧縮有効化
-pm2 set pm2-logrotate:rotateInterval '0 0 * * *'  # 毎日0時
-```
+| 入力       | 出力             |
+| ---------- | ---------------- |
+| 戦略設計書 | 実装完了レポート |
 
-**ecosystem.config.js 設定**:
+**参照**: `references/pm2-logrotate-guide.md`, `assets/winston-rotation.template.ts`
 
-```javascript
-{
-  error_file: './logs/error.log',
-  out_file: './logs/out.log',
-  log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
-  merge_logs: true,
-  log_type: 'json'
-}
-```
+### Phase 4: 検証
 
-**リソース**: `resources/pm2-logrotate-guide.md`
+**Task**: `agents/validate-setup.md`
 
-### Phase 3: アプリケーションログ
+| 入力             | 出力             |
+| ---------------- | ---------------- |
+| 実装完了レポート | 検証完了レポート |
 
-**Winston ローテーション**:
+**参照**: `scripts/analyze-log-usage.mjs`
 
-```javascript
-const winston = require("winston");
-require("winston-daily-rotate-file");
-
-const transport = new winston.transports.DailyRotateFile({
-  filename: "logs/app-%DATE%.log",
-  datePattern: "YYYY-MM-DD",
-  maxSize: "20m",
-  maxFiles: "14d",
-  compress: true,
-});
-```
-
-**Pino ローテーション**:
-
-```javascript
-const pino = require("pino");
-const rfs = require("rotating-file-stream");
-
-const stream = rfs.createStream("app.log", {
-  size: "10M",
-  interval: "1d",
-  compress: "gzip",
-  path: "./logs",
-});
-
-const logger = pino(stream);
-```
-
-### Phase 4: システムレベルローテーション
-
-**logrotate 設定** (`/etc/logrotate.d/myapp`):
-
-```
-/var/log/myapp/*.log {
-    daily
-    rotate 7
-    compress
-    delaycompress
-    missingok
-    notifempty
-    copytruncate
-    dateext
-}
-```
-
-**オプション解説**:
-| オプション | 説明 |
-|-----------|------|
-| daily | 毎日ローテーション |
-| rotate 7 | 7 世代保持 |
-| compress | gzip 圧縮 |
-| delaycompress | 1 世代後に圧縮 |
-| copytruncate | ログを切り詰め（再起動不要） |
-
-### Phase 5: ログ集約
-
-**集中ログ管理オプション**:
-| サービス | 特徴 |
-|---------|------|
-| ELK Stack | オンプレミス、高度な分析 |
-| Datadog | SaaS、APM 統合 |
-| CloudWatch | AWS 統合、低コスト |
-| Loki | Grafana 統合、軽量 |
-
-**リソース**: `resources/log-aggregation.md`
+---
 
 ## ベストプラクティス
 
-### すべきこと
+| すべきこと                                | 避けるべきこと             |
+| ----------------------------------------- | -------------------------- |
+| ログ生成量を事前に分析                    | 無制限ログ出力             |
+| サイズ/時間/ハイブリッド方式を適切に選択  | ローテーション世代数未指定 |
+| ecosystem.config.js に pm2-logrotate 統合 | ログフォーマット未標準化   |
+| compress: true でディスク使用量削減       | 集約前の重要ログ削除       |
+| 定期的なログディレクトリ監視              | 検証なしの本番デプロイ     |
 
-1. **構造化ログ**: JSON 形式でログを出力し、解析を容易に
-2. **ログレベル活用**: debug/info/warn/error を適切に使い分け
-3. **タイムスタンプ統一**: ISO8601 形式でタイムゾーン明示
-4. **圧縮有効化**: 古いログは gzip 圧縮でディスク節約
+---
 
-### 避けるべきこと
+## Task ナビゲーション
 
-1. **無制限ログ**: サイズ・世代制限なしのログ設定
-2. **console.log 依存**: 本番環境での生 console.log 使用
-3. **機密情報ログ**: パスワード、トークン等のログ出力
-4. **同期ログ**: 高負荷時のブロッキング I/O
+| Task                      | 目的                               | 参照リソース             |
+| ------------------------- | ---------------------------------- | ------------------------ |
+| `analyze-requirements.md` | ログ生成パターンの定量分析         | `basics.md`              |
+| `design-strategy.md`      | ローテーション方式・パラメータ決定 | `rotation-patterns.md`   |
+| `implement-rotation.md`   | 設定ファイル作成・適用             | `pm2-logrotate-guide.md` |
+| `validate-setup.md`       | 動作検証・本番運用可否判断         | `scripts/`               |
 
-## 変更履歴
+---
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-26 | 初版作成 |
+## リソース参照
+
+### References
+
+| ファイル                 | 内容                                   | 読込条件       |
+| ------------------------ | -------------------------------------- | -------------- |
+| `basics.md`              | ログローテーション基礎概念・用語       | 初回使用時     |
+| `rotation-patterns.md`   | サイズ/時間/ハイブリッド方式の選択基準 | 戦略設計時     |
+| `pm2-logrotate-guide.md` | PM2 logrotate 設定詳細ガイド           | PM2 使用時     |
+| `log-aggregation.md`     | 集中ログシステム選定・統合ガイド       | スケール検討時 |
+
+### Assets
+
+| ファイル                       | 内容                                     |
+| ------------------------------ | ---------------------------------------- |
+| `winston-rotation.template.ts` | Winston DailyRotateFile 設定テンプレート |
+
+### Scripts
+
+| スクリプト              | 用途                     |
+| ----------------------- | ------------------------ |
+| `analyze-log-usage.mjs` | ログ使用量分析・容量予測 |
+| `log_usage.mjs`         | スキル使用記録・自動評価 |
+
+---
 
 ## 関連スキル
 
-- **pm2-ecosystem-config** (`.claude/skills/pm2-ecosystem-config/SKILL.md`)
-- **process-lifecycle-management** (`.claude/skills/process-lifecycle-management/SKILL.md`)
-- **monitoring-alerting** (`.claude/skills/monitoring-alerting/SKILL.md`)
+- `logging-observability` - ログ観測可能性とモニタリング
+- `disk-management` - ディスク容量管理
+- `pm2-configuration` - PM2 設定全般

@@ -1,6 +1,6 @@
 # SQLite/Turso Migration Updates Summary
 
-This document summarizes the key changes made to adapt the database-migrations skill for SQLite/Turso usage.
+This document summarizes the key changes made to adapt the .claude/skills/database-migrations/SKILL.md skill for SQLite/Turso usage.
 
 ## Completed Updates
 

@@ -1,227 +1,151 @@
 ---
 name: cost-optimization-gha
 description: |
-    GitHub Actions ワークフローのコスト最適化戦略。
-    専門分野:
-    - 実行時間削減: ジョブ並列化、キャッシング、条件実行
-    - ランナーコスト: ランナー選択、self-hosted vs hosted、スペック最適化
-    - ストレージコスト: アーティファクト管理、保持期間、キャッシュ戦略
-    - 無駄の削減: 不要な実行回避、スケジュール最適化、同時実行制御
-    使用タイミング:
-    - GitHub Actions の実行コストを削減したい時
-    - 月次請求額を最適化したい時
-    - ランナーの使用時間を短縮したい時
-    - ストレージコストを管理する時
-    - 無料枠を効率的に使用したい時
+  GitHub Actions の実行コストを最適化するためのスキル。
+  コスト計測、削減施策の設計、実装、継続的な監視を一連で扱う。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • High Performance Browser Networking / 適用: 計測から改善する姿勢 / 目的: 速度とコストの可視化
+  • Designing Data-Intensive Applications / 適用: 制約下の設計判断 / 目的: ランナー/ストレージの効率化
+  • Continuous Delivery / 適用: 改善の反復 / 目的: 継続的最適化のサイクル化
 
-  - `.claude/skills/cost-optimization-gha/resources/execution-time.md`: 並列化、キャッシング、条件実行による実行時間短縮戦略
-  - `.claude/skills/cost-optimization-gha/resources/runner-costs.md`: ランナータイプ選択、self-hosted活用によるコスト削減手法
-  - `.claude/skills/cost-optimization-gha/templates/optimized-workflow.yaml`: コスト最適化を実装したワークフローの実践例
-  - `.claude/skills/cost-optimization-gha/scripts/estimate-costs.mjs`: ワークフロー実行コストを見積もる計算スクリプト
-
-  Use proactively when implementing cost-optimization-gha patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when optimizing GitHub Actions workflow execution time, reducing runner costs, managing billing, or optimizing artifact storage and cache usage.
+  github actions cost optimization, runner costs, workflow budget, artifact storage, caching strategy
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
-
-# GitHub Actions Cost Optimization
+# cost-optimization-gha
 
 ## 概要
 
-このスキルは、GitHub Actions の実行コストを削減するための包括的な最適化戦略を提供します。
-実行時間の短縮、適切なランナー選択、ストレージ管理を通じてコスト効率を最大化します。
+GitHub Actions のコストを計測し、実行時間・ランナー単価・ストレージを最適化する。
 
-**主要な価値**:
+## ワークフロー
 
-- 実行コストの 30-70%削減
-- 無料枠の効率的な活用
-- ランナー使用時間の最適化
-- ストレージコストの管理
+### Phase 1: 現状把握
 
-**制約**:
+**目的**: 実行時間、コスト、ストレージのベースラインを把握する。
 
-- 無料枠: パブリックリポジトリは無制限、プライベートは月 2000 分
-- ストレージ: 500MB まで無料、超過分は$0.008/GB/day
-- ランナーコスト: Linux ($0.008/分), Windows ($0.016/分), macOS ($0.08/分)
+**アクション**:
 
-## リソース構造
+1. 実行頻度とジョブ構成を整理する。
+2. `scripts/estimate-costs.mjs` で概算コストを見積もる。
+3. コスト要因（ランナー種別、マトリクス、アーティファクト）を洗い出す。
 
-```
-cost-optimization-gha/
-├── SKILL.md                                    # 本ファイル（概要とクイックリファレンス）
-├── resources/
-│   ├── execution-time.md                       # 実行時間短縮戦略
-│   └── runner-costs.md                         # ランナーコスト最適化
-├── templates/
-│   └── optimized-workflow.yaml                 # コスト最適化ワークフロー例
-└── scripts/
-    └── estimate-costs.mjs                      # コスト見積もりツール
-```
+**Task**: `agents/analyze-cost-baseline.md` を参照
 
-## コマンドリファレンス
+### Phase 2: 最適化設計
 
-### リソース読み取り
+**目的**: 削減施策と優先順位を設計する。
 
-```bash
-# 実行時間短縮戦略
-cat .claude/skills/cost-optimization-gha/resources/execution-time.md
+**アクション**:
 
-# ランナーコスト最適化
-cat .claude/skills/cost-optimization-gha/resources/runner-costs.md
-```
+1. 優先順位と削減目標を決める。
+2. ランナー選定・キャッシュ・ストレージ方針を整理する。
+3. 影響範囲とリスクを評価する。
 
-### テンプレート参照
+**Task**: `agents/design-cost-optimization.md` を参照
 
-```bash
-# コスト最適化ワークフロー例
-cat .claude/skills/cost-optimization-gha/templates/optimized-workflow.yaml
-```
+### Phase 3: 実装
 
-### スクリプト実行
+**目的**: ワークフローを改善し、コスト削減を実装する。
 
-```bash
-# ワークフローコスト見積もり
-node .claude/skills/cost-optimization-gha/scripts/estimate-costs.mjs <workflow.yaml>
-```
+**アクション**:
 
-## クイックリファレンス
+1. 変更点をワークフローに反映する。
+2. キャッシュ、条件分岐、並列化を適用する。
+3. 変更内容を記録する。
 
-### コスト削減戦略マトリックス
+**Task**: `agents/implement-cost-controls.md` を参照
 
-| 戦略                       | 削減効果 | 実装難易度 | 優先度 |
-| -------------------------- | -------- | ---------- | ------ |
-| **並列ジョブ実行**         | 30-50%   | 低         | 🔴 高  |
-| **キャッシング**           | 40-70%   | 低         | 🔴 高  |
-| **条件実行**               | 20-80%   | 中         | 🟡 中  |
-| **self-hosted ランナー**   | 60-100%  | 高         | 🟢 低  |
-| **適切なランナー選択**     | 10-50%   | 低         | 🔴 高  |
-| **アーティファクト最適化** | 5-20%    | 低         | 🟡 中  |
-| **同時実行制御**           | 10-30%   | 低         | 🟡 中  |
+### Phase 4: 検証と運用
 
-### ランナーコスト比較
+**目的**: 施策の効果を検証し、継続的に改善する。
 
-| ランナータイプ               | 分単価 | 1000 分あたり | 使用ケース         |
-| ---------------------------- | ------ | ------------- | ------------------ |
-| **Linux (ubuntu-latest)**    | $0.008 | $8            | 一般的な CI/CD     |
-| **Windows (windows-latest)** | $0.016 | $16           | .NET、Windows 専用 |
-| **macOS (macos-latest)**     | $0.08  | $80           | iOS/macOS ビルド   |
-| **macOS (macos-14, M1)**     | $0.16  | $160          | 高速 macOS ビルド  |
-| **self-hosted**              | $0     | $0            | 高頻度実行         |
+**アクション**:
 
-### 実行時間短縮パターン
+1. 実行時間・コスト・品質の変化を確認する。
+2. `scripts/validate-skill.mjs` で構造を検証する。
+3. `scripts/log_usage.mjs` で記録を残す。
 
-#### 1. 並列ジョブ実行
+**Task**: `agents/validate-cost-impact.md` を参照
 
-```yaml
-jobs:
-  test:
-    strategy:
-      matrix:
-        node: [18, 20, 22]
-    runs-on: ubuntu-latest
-    # 3つのジョブが並列実行 → 1/3の時間
-```
+## Task仕様ナビ
 
-#### 2. キャッシング活用
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-cost-baseline | Phase 1開始時 | 現状の実行情報 | ベースラインメモ、コスト要因一覧 |
+| design-cost-optimization | Phase 2開始時 | ベースラインメモ | 最適化計画、優先順位表 |
+| implement-cost-controls | Phase 3開始時 | 最適化計画 | 改善済みワークフロー、変更記録 |
+| validate-cost-impact | Phase 4開始時 | 改善済みワークフロー | 検証レポート、運用ログ |
 
-```yaml
-- uses: actions/cache@v4
-  with:
-    path: ~/.pnpm
-    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-    # 依存関係インストール時間を80%削減
-```
-
-#### 3. 条件実行
-
-```yaml
-on:
-  push:
-    paths:
-      - "src/**"
-      - "tests/**"
-  # ドキュメント変更時は実行しない → 無駄な実行を削減
-```
-
-### 無料枠最適化
-
-**プライベートリポジトリの無料枠 (月 2000 分)**:
-
-| プラン         | 無料枠    | Linux 換算 | macOS 換算 |
-| -------------- | --------- | ---------- | ---------- |
-| **Free**       | 2,000 分  | 2,000 分   | 250 分     |
-| **Pro**        | 3,000 分  | 3,000 分   | 375 分     |
-| **Team**       | 3,000 分  | 3,000 分   | 375 分     |
-| **Enterprise** | 50,000 分 | 50,000 分  | 6,250 分   |
-
-**最適化テクニック**:
-
-- Linux ランナーを優先使用（最もコスト効率が良い）
-- macOS は必要な場合のみ使用
-- self-hosted ランナーで無料枠を節約
-
-## 関連スキル
-
-このスキルは以下のスキルと連携して使用します:
-
-| スキル                        | パス                                                | 関連性                           |
-| ----------------------------- | --------------------------------------------------- | -------------------------------- |
-| **caching-strategies-gha**    | `.claude/skills/caching-strategies-gha/SKILL.md`    | キャッシング戦略で実行時間を短縮 |
-| **parallel-jobs-gha**         | `.claude/skills/parallel-jobs-gha/SKILL.md`         | 並列実行で実行時間を削減         |
-| **conditional-execution-gha** | `.claude/skills/conditional-execution-gha/SKILL.md` | 不要な実行を回避                 |
-| **concurrency-control**       | `.claude/skills/concurrency-control/SKILL.md`       | 同時実行制御で無駄を削減         |
-| **artifact-management-gha**   | `.claude/skills/artifact-management-gha/SKILL.md`   | ストレージコストを最適化         |
-| **self-hosted-runners**       | `.claude/skills/self-hosted-runners/SKILL.md`       | ランナーコストを削減             |
-| **matrix-builds**             | `.claude/skills/matrix-builds/SKILL.md`             | マトリックスビルドで並列化       |
-
-## コスト見積もりガイド
-
-### 月次コスト計算例
-
-**シナリオ**: 1 日 20 回実行、各実行 10 分のワークフロー
-
-```
-基本コスト (Linux):
-  20回/日 × 30日 × 10分 × $0.008/分 = $48/月
-
-最適化後 (キャッシング + 並列化):
-  20回/日 × 30日 × 3分 × $0.008/分 = $14.4/月
-
-削減額: $33.6/月 (70%削減)
-```
-
-### ストレージコスト計算
-
-```
-アーティファクト: 1GB × 30日 × $0.008/GB/day = $0.24/月
-保持期間を7日に短縮: 1GB × 7日 × $0.008/GB/day = $0.056/月
-
-削減額: $0.184/月 (77%削減)
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
-1. **ランナー選択の最適化**
-   - デフォルトは Linux (ubuntu-latest)
-   - macOS は必要な場合のみ
-   - Windows は.NET/Windows 専用タスクのみ
+### すべきこと
 
-2. **実行時間の最小化**
-   - キャッシングを最大限活用
-   - 並列ジョブで時間短縮
-   - 不要なステップを削除
+| 推奨事項 | 理由 |
+| --- | --- |
+| ベースラインを計測する | 効果測定に必須 |
+| ランナー種別を見直す | 単価差が大きい |
+| キャッシュを活用する | 実行時間を短縮できる |
+| アーティファクトの保持期間を管理する | ストレージコストを抑える |
+| 実行頻度を最適化する | 無駄な実行を減らす |
 
-3. **不要な実行の回避**
-   - path フィルターで対象ファイル限定
-   - 条件式で不要なジョブをスキップ
-   - 同時実行制御で重複実行を防止
+### 避けるべきこと
 
-4. **ストレージ管理**
-   - アーティファクト保持期間を最小化
-   - 不要なアーティファクトは生成しない
-   - キャッシュサイズを最適化
+| 禁止事項 | 問題点 |
+| --- | --- |
+| コスト計測なしの変更 | 効果が判断できない |
+| ランナー種別の固定化 | 最適化余地を失う |
+| キャッシュ未使用 | 実行時間が伸びる |
+| 変更記録を残さない | 再現性が失われる |
 
-詳細な戦略と実装例は、各リソースファイルを参照してください。
+## リソース参照
+
+### scripts/（決定論的処理）
+
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/estimate-costs.mjs` | ワークフローコストの概算 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+
+### references/（詳細知識）
+
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 施策設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装検討時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 運用改善時 |
+| ランナー単価 | [references/runner-costs.md](references/runner-costs.md) | ランナー選定時 |
+| 実行時間最適化 | [references/execution-time.md](references/execution-time.md) | 時間短縮検討時 |
+| ストレージ管理 | [references/artifact-storage.md](references/artifact-storage.md) | 保持期間設計時 |
+| 請求監視 | [references/billing-monitoring.md](references/billing-monitoring.md) | 監視設定時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/optimized-workflow.yaml` | 最適化ワークフロー例 |
+| `assets/cost-optimization-plan.md` | 最適化計画テンプレート |
+| `assets/runner-selection-matrix.md` | ランナー選定マトリクス |
+| `assets/cost-report-template.md` | コスト検証レポート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

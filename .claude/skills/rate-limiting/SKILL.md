@@ -1,283 +1,145 @@
 ---
 name: rate-limiting
 description: |
-  Rate Limitingとクォータ管理のベストプラクティスを提供します。
-  外部APIのレート制限を適切に処理し、サーバー側・クライアント側両方の
-  観点からRate Limitingを実装するためのパターンを提供します。
+  Rate Limitingとクォータ管理のベストプラクティスを提供するスキル。
+  サーバー側のAPI保護とクライアント側の429対応の両方をカバーし、
+  Token Bucket、Sliding Window等のアルゴリズム選定から実装までを支援。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『Designing Data-Intensive Applications』（Kleppmann）/ 適用: 分散システムのRate Limiting / 目的: スケーラブルな設計
+  • 『API Design Patterns』（Geewax）/ 適用: API保護 / 目的: RESTful APIのベストプラクティス
+  • RFC 6585 / 適用: 429 Too Many Requests / 目的: 標準準拠のレスポンス設計
 
-  - `.claude/skills/rate-limiting/resources/algorithms.md`: Rate Limiting Algorithms（レート制限アルゴリズム）
-  - `.claude/skills/rate-limiting/resources/client-handling.md`: Client-Side Rate Limit Handling（クライアント側のレート制限対応）
-  - `.claude/skills/rate-limiting/resources/quota-management.md`: Quota Management（クォータ管理）
-  - `.claude/skills/rate-limiting/resources/server-implementation.md`: Server-Side Rate Limiting（サーバー側レート制限）
-  - `.claude/skills/rate-limiting/scripts/simulate-rate-limit.mjs`: Rate Limit Simulation Tool
-  - `.claude/skills/rate-limiting/templates/rate-limiter-template.ts`: Rate Limiter Template
+  Trigger:
+  Use when designing API rate limiting, implementing DoS protection, handling external API rate limits, or managing quota systems.
+  rate limiting, rate limiter, throttling, 429, token bucket, sliding window, quota, api protection
 
-  専門分野:
-  - レート制限アルゴリズム: Token Bucket、Leaky Bucket、Sliding Window
-  - クライアント側対応: 429レスポンス処理、Retry-After、バックオフ戦略
-  - サーバー側実装: ミドルウェア設計、分散レート制限、Redis実装
-  - クォータ管理: 使用量追跡、クォータアラート、階層型制限
-
-  使用タイミング:
-  - APIのRate Limiting設計時
-  - DoS/DDoS攻撃対策の実装時
-  - 外部APIクライアントの実装時
-  - クォータ管理システムの設計時
-
-  Use proactively when designing API rate limiting, implementing DoS protection,
-  or building external API clients that need to handle rate limits.
-version: 1.1.0
-related_skills:
-  - .claude/skills/retry-strategies/SKILL.md
-  - .claude/skills/http-best-practices/SKILL.md
-  - .claude/skills/api-client-patterns/SKILL.md
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Rate Limiting
 
 ## 概要
 
-このスキルは、Rate Limiting とクォータ管理のベストプラクティスを提供します。
-外部 API のレート制限を適切に処理し、サーバー側・クライアント側両方の観点から
-Rate Limiting を実装するためのパターンを提供します。
-
-**主要な価値**:
-
-- DoS/DDoS 攻撃からの保護
-- サービス品質の維持
-- リソースの公平な配分
-- コスト管理と予測可能性
-
-**対象ユーザー**:
-
-- @sec-auditor: セキュリティ監査時の Rate Limiting 評価
-- @gateway-dev: API ゲートウェイの Rate Limiting 設計
-- @backend-architect: バックエンドサービスの Rate Limiting 実装
-
-## リソース構造
-
-```
-rate-limiting/
-├── SKILL.md                              # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── algorithms.md                     # レート制限アルゴリズム詳細
-│   ├── client-handling.md                # クライアント側対応パターン
-│   ├── server-implementation.md          # サーバー側実装パターン
-│   └── quota-management.md               # クォータ管理詳細
-├── scripts/
-│   └── simulate-rate-limit.mjs           # レート制限シミュレーションスクリプト
-└── templates/
-    └── rate-limiter-template.ts          # Rate Limiterテンプレート
-```
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# レート制限アルゴリズム詳細
-cat .claude/skills/rate-limiting/resources/algorithms.md
-
-# クライアント側対応パターン
-cat .claude/skills/rate-limiting/resources/client-handling.md
-
-# サーバー側実装パターン
-cat .claude/skills/rate-limiting/resources/server-implementation.md
-
-# クォータ管理詳細
-cat .claude/skills/rate-limiting/resources/quota-management.md
-```
-
-### スクリプト実行
-
-```bash
-# レート制限シミュレーション
-node .claude/skills/rate-limiting/scripts/simulate-rate-limit.mjs <config-file>
-```
-
-### テンプレート参照
-
-```bash
-# Rate Limiterテンプレート
-cat .claude/skills/rate-limiting/templates/rate-limiter-template.ts
-```
+Rate Limitingとクォータ管理のベストプラクティスを提供するスキル。サーバー側のAPI保護（DoS対策）とクライアント側の外部API対応の両面から、適切なアルゴリズム選定と実装パターンを支援します。
 
 ## ワークフロー
 
-```
-1. 要件分析
-   ├── レート制限の対象特定
-   ├── 制限値の決定
-   └── 違反時の動作定義
+### Phase 1: 要件分析
 
-2. 設計
-   ├── アルゴリズム選択
-   ├── ストレージ選択
-   └── ヘッダー設計
+**目的**: Rate Limitingの要件と適用範囲を明確化する
 
-3. 実装
-   ├── レート制限ロジック
-   ├── レスポンスヘッダー
-   └── エラーハンドリング
+**アクション**:
 
-4. 検証
-   ├── 負荷テスト
-   ├── エッジケース確認
-   └── 分散環境テスト
-```
+1. 保護対象（API、エンドポイント、ユーザー種別）を特定
+2. サーバー側保護かクライアント側対応かを判断
+3. 制限粒度（IP、ユーザー、API Key）を決定
 
-## アルゴリズム選択ガイド
+**Task**: `agents/analyze-requirements.md` を参照
 
-| アルゴリズム           | 特徴                   | 適用場面       |
-| ---------------------- | ---------------------- | -------------- |
-| Token Bucket           | バースト許容、柔軟     | 一般的な API   |
-| Leaky Bucket           | 均一なレート、シンプル | ストリーム処理 |
-| Fixed Window           | 実装が簡単             | 低トラフィック |
-| Sliding Window Log     | 正確、メモリ大         | 厳密な制限     |
-| Sliding Window Counter | バランス良い           | スケーラブル   |
+### Phase 2: アルゴリズム選定
+
+**目的**: 要件に適したRate Limitingアルゴリズムを選定する
+
+**アクション**:
+
+1. Token Bucket、Leaky Bucket、Sliding Window等を比較
+2. バースト許容度、分散環境対応を考慮
+3. ストレージ要件（Redis、メモリ）を検討
+
+**Task**: `agents/select-algorithm.md` を参照
+
+### Phase 3: 実装
+
+**目的**: 選定したアルゴリズムを実装する
+
+**アクション**:
+
+1. Rate Limiterミドルウェアを実装
+2. 適切なHTTPヘッダー（X-RateLimit-\*、Retry-After）を設定
+3. クライアント側の429対応とExponential Backoffを実装
+
+**Task**: `agents/implement-limiter.md` を参照
+
+### Phase 4: 検証とモニタリング
+
+**目的**: Rate Limitingの効果を検証しモニタリングを設定する
+
+**アクション**:
+
+1. 負荷テストでRate Limitingの動作を確認
+2. レート制限のメトリクスを収集
+3. アラート閾値を設定
+
+**Task**: `agents/validate-limiter.md` を参照
+
+## Task仕様ナビ
+
+| Task                 | 起動タイミング | 入力               | 出力               |
+| -------------------- | -------------- | ------------------ | ------------------ |
+| analyze-requirements | Phase 1開始時  | システム要件       | 要件定義書         |
+| select-algorithm     | Phase 2開始時  | 要件定義書         | アルゴリズム選定書 |
+| implement-limiter    | Phase 3開始時  | アルゴリズム選定書 | Rate Limiter実装   |
+| validate-limiter     | Phase 4開始時  | Rate Limiter実装   | 検証レポート       |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
-### レスポンスヘッダー
+### すべきこと
 
-```typescript
-// 標準的なレート制限ヘッダー
-interface RateLimitHeaders {
-  'X-RateLimit-Limit': string;      // 最大リクエスト数
-  'X-RateLimit-Remaining': string;  // 残りリクエスト数
-  'X-RateLimit-Reset': string;      // リセット時刻（Unix時間）
-  'Retry-After': string;            // リトライまでの秒数（429時）
-}
+| 推奨事項                             | 理由                               |
+| ------------------------------------ | ---------------------------------- |
+| X-RateLimit-\* ヘッダーを返す        | クライアントが残り回数を把握可能   |
+| Retry-Afterヘッダーを429に含める     | クライアントが適切に待機可能       |
+| Token BucketでバーストをGraceful許容 | 一時的なスパイクに柔軟対応         |
+| Redisで分散環境のカウンターを共有    | 複数インスタンス間で一貫性確保     |
+| Exponential Backoffで429をリトライ   | サーバー負荷を軽減しつつ成功率向上 |
 
-// レスポンス例
-HTTP/1.1 429 Too Many Requests
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 0
-X-RateLimit-Reset: 1705312800
-Retry-After: 60
-```
+### 避けるべきこと
 
-### クライアント側処理
+| 禁止事項                         | 問題点                      |
+| -------------------------------- | --------------------------- |
+| 429エラーを即座にリトライ        | サーバー負荷増大、Ban対象に |
+| Rate Limitヘッダーを無視         | 無駄なリクエストで制限到達  |
+| 固定間隔でのリトライ             | サンダリングハード問題発生  |
+| メモリ内カウンターのみ           | サーバー再起動でリセット    |
+| エンドユーザーにレート制限を隠す | UX悪化、問い合わせ増加      |
 
-```typescript
-async function fetchWithRateLimit(url: string): Promise<Response> {
-  const response = await fetch(url);
+## リソース参照
 
-  if (response.status === 429) {
-    const retryAfter = response.headers.get("Retry-After");
-    const waitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : 60000;
+### references/（詳細知識）
 
-    console.log(`Rate limited. Waiting ${waitTime}ms...`);
-    await sleep(waitTime);
+| リソース         | パス                                                                       | 読込条件               |
+| ---------------- | -------------------------------------------------------------------------- | ---------------------- |
+| アルゴリズム比較 | [references/algorithms.md](references/algorithms.md)                       | アルゴリズム選定時     |
+| サーバー実装     | [references/server-implementation.md](references/server-implementation.md) | サーバー側実装時       |
+| クライアント対応 | [references/client-handling.md](references/client-handling.md)             | クライアント側実装時   |
+| クォータ管理     | [references/quota-management.md](references/quota-management.md)           | クォータシステム設計時 |
 
-    return fetchWithRateLimit(url); // リトライ
-  }
+### scripts/（決定論的処理）
 
-  return response;
-}
-```
+| スクリプト                        | 機能                          |
+| --------------------------------- | ----------------------------- |
+| `scripts/simulate-rate-limit.mjs` | Rate Limitingシミュレーション |
+| `scripts/log_usage.mjs`           | スキル使用履歴の記録          |
 
-### サーバー側実装
+### assets/（テンプレート）
 
-```typescript
-// Expressミドルウェア例
-function rateLimit(options: { windowMs: number; max: number }) {
-  const store = new Map<string, { count: number; resetAt: number }>();
+| アセット                          | 用途                         |
+| --------------------------------- | ---------------------------- |
+| `assets/rate-limiter-template.ts` | Rate Limiterミドルウェア雛形 |
 
-  return (req: Request, res: Response, next: NextFunction) => {
-    const key = req.ip;
-    const now = Date.now();
-    const record = store.get(key);
+## 変更履歴
 
-    if (!record || record.resetAt < now) {
-      store.set(key, { count: 1, resetAt: now + options.windowMs });
-      setHeaders(res, options.max, options.max - 1, now + options.windowMs);
-      return next();
-    }
-
-    if (record.count >= options.max) {
-      setHeaders(res, options.max, 0, record.resetAt);
-      const retryAfter = Math.ceil((record.resetAt - now) / 1000);
-      res.setHeader("Retry-After", retryAfter);
-      return res.status(429).json({
-        error: { code: "RATE_LIMIT_EXCEEDED", retryAfter },
-      });
-    }
-
-    record.count++;
-    setHeaders(res, options.max, options.max - record.count, record.resetAt);
-    next();
-  };
-}
-```
-
-## 品質チェックリスト
-
-### 設計時
-
-- [ ] 適切なアルゴリズムを選択したか？
-- [ ] レート制限値は妥当か？
-- [ ] バースト許容が必要か検討したか？
-
-### 実装時
-
-- [ ] 標準的なヘッダーを返しているか？
-- [ ] 分散環境で正しく動作するか？
-- [ ] エラーレスポンスが適切か？
-
-### 運用時
-
-- [ ] レート制限のヒット率をモニタリングしているか？
-- [ ] 異常なパターンを検出できるか？
-- [ ] 制限値の調整が可能か？
-
-## アンチパターン
-
-### ❌ クライアント側でのレート制限無視
-
-```typescript
-// NG: 429を無視してリトライ
-while (true) {
-  const response = await fetch(url);
-  if (response.ok) break;
-  // Retry-Afterを無視
-}
-```
-
-### ❌ グローバルレート制限のみ
-
-```typescript
-// NG: 全ユーザー共有の制限
-const globalLimit = 1000; // 全ユーザーで1000リクエスト
-
-// ✅: ユーザー別制限
-const userLimit = 100; // ユーザーあたり100リクエスト
-```
-
-### ❌ 不適切なキー設計
-
-```typescript
-// NG: IPアドレスのみ（NAT環境で問題）
-const key = req.ip;
-
-// ✅: 認証済みユーザーはユーザーID
-const key = req.user?.id || req.ip;
-```
-
-## 参考資料
-
-- **RFC 6585**: Additional HTTP Status Codes (429)
-- **IETF Draft**: RateLimit Header Fields for HTTP
-- **『Building Microservices』** Sam Newman 著
-
-## 関連スキル
-
-- `.claude/skills/retry-strategies/SKILL.md`: リトライ・サーキットブレーカー
-- `.claude/skills/http-best-practices/SKILL.md`: HTTP ベストプラクティス
-- `.claude/skills/api-client-patterns/SKILL.md`: API クライアント実装パターン
+| Version | Date       | Changes                                    |
+| ------- | ---------- | ------------------------------------------ |
+| 3.1.0   | 2026-01-02 | agents/追加（4エージェント体制確立）       |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、Task仕様ナビ追加 |
+| 1.1.0   | 2025-12-24 | 仕様整合                                   |

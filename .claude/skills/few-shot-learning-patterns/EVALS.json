@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "skill": "few-shot-learning-patterns",
+  "version": "1.2.0",
+  "lastUpdated": "2025-12-31",
+  "metrics": {
+    "usage": {
+      "totalExecutions": 0,
+      "successfulExecutions": 0,
+      "failedExecutions": 0,
+      "successRate": 0.0
+    },
+    "performance": {
+      "averageExecutionTime": 0,
+      "tokenUsageAverage": 0,
+      "peakTokenUsage": 0
+    },
+    "quality": {
+      "userSatisfactionScore": 0.0,
+      "outputQualityScore": 0.0,
+      "consistencyScore": 0.0
+    }
+  },
+  "evaluationCriteria": {
+    "exampleQuality": {
+      "weight": 0.3,
+      "description": "例示の質と明確性",
+      "criteria": [
+        "誤りや曖昧さがないか",
+        "高品質で明確な例が3-5個準備されているか",
+        "実際のユースケースを反映しているか"
+      ]
+    },
+    "consistency": {
+      "weight": 0.25,
+      "description": "一貫性とスタイル統一",
+      "criteria": [
+        "すべての例示が同一のスタイル・フォーマットで統一されているか",
+        "言語が混在していないか",
+        "用語の使用が一貫しているか"
+      ]
+    },
+    "progressiveComplexity": {
+      "weight": 0.2,
+      "description": "段階的複雑度",
+      "criteria": [
+        "シンプルな例から複雑な例へ段階的に進んでいるか",
+        "パターン認識を促進する配置になっているか",
+        "学習曲線が適切か"
+      ]
+    },
+    "metadata": {
+      "weight": 0.15,
+      "description": "メタデータの充実性",
+      "criteria": [
+        "例示の意図や注意点がコメントで明記されているか",
+        "適用条件が明確か",
+        "制約事項が記載されているか"
+      ]
+    },
+    "domainAdaptation": {
+      "weight": 0.1,
+      "description": "ドメイン適合性",
+      "criteria": [
+        "対象ドメインの要件を満たしているか",
+        "業界別、言語別にカスタマイズされているか",
+        "実用性と現実性があるか"
+      ]
+    }
+  },
+  "levelProgression": {
+    "level1": {
+      "name": "基礎的なFew-Shot設計",
+      "requirements": {
+        "totalExecutions": 5,
+        "successRate": 0.6
+      },
+      "description": "単純な1-3例の例示パターンの構築"
+    },
+    "level2": {
+      "name": "実務的なFew-Shot実装",
+      "requirements": {
+        "totalExecutions": 15,
+        "successRate": 0.7,
+        "qualityScore": 0.65
+      },
+      "description": "3-5例の構造化された例示セットの作成"
+    },
+    "level3": {
+      "name": "高度なFew-Shot戦略",
+      "requirements": {
+        "totalExecutions": 30,
+        "successRate": 0.8,
+        "qualityScore": 0.75,
+        "consistencyScore": 0.7
+      },
+      "description": "複数ドメイン向け最適化、shot数の動的調整"
+    },
+    "level4": {
+      "name": "エキスパート最適化",
+      "requirements": {
+        "totalExecutions": 50,
+        "successRate": 0.85,
+        "qualityScore": 0.85,
+        "consistencyScore": 0.8,
+        "userSatisfactionScore": 0.8
+      },
+      "description": "専門領域向けカスタマイズ、パフォーマンス最大化"
+    }
+  },
+  "improvementAreas": [],
+  "feedback": {
+    "commonIssues": [],
+    "successPatterns": [],
+    "recommendations": []
+  }
+}

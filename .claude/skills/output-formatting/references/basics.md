@@ -1,0 +1,133 @@
+# Output Formatting 基礎知識
+
+> **相対パス**: `references/basics.md`
+> **原典**: The Pragmatic Programmer, Google Developer Documentation Style Guide
+
+---
+
+## 出力フォーマットとは
+
+データを人間やシステムが理解しやすい形式で表現する方法。
+
+### 主要な形式
+
+| 形式       | 用途                         | 特徴                   |
+| ---------- | ---------------------------- | ---------------------- |
+| Markdown   | ドキュメント、レポート       | 人間可読、シンプル     |
+| JSON       | API、設定ファイル            | 構造化、機械可読       |
+| YAML       | 設定、CI/CD                  | 人間可読、階層表現     |
+| CSV/Table  | データ一覧、スプレッドシート | 表形式、データ分析向け |
+| Plain Text | ログ、メモ                   | 最もシンプル           |
+
+---
+
+## フォーマット選択の基準
+
+### 対象読者
+
+| 読者           | 推奨形式                 |
+| -------------- | ------------------------ |
+| 人間（開発者） | Markdown, YAML           |
+| 人間（一般）   | Markdown, Plain Text     |
+| システム       | JSON, CSV                |
+| 両方           | YAML, Markdown with JSON |
+
+### データ構造
+
+| 構造タイプ   | 推奨形式      |
+| ------------ | ------------- |
+| 単純リスト   | Markdown, CSV |
+| 階層構造     | JSON, YAML    |
+| キーバリュー | JSON, YAML    |
+| 表形式       | CSV, Table    |
+| 混在（複合） | Markdown      |
+
+---
+
+## 基本的なフォーマット例
+
+### Markdown
+
+```markdown
+# タイトル
+
+## セクション1
+
+- 項目1
+- 項目2
+
+## セクション2
+
+**太字** と _イタリック_
+```
+
+### JSON
+
+```json
+{
+  "title": "Example",
+  "items": [
+    { "id": 1, "name": "Item 1" },
+    { "id": 2, "name": "Item 2" }
+  ]
+}
+```
+
+### YAML
+
+```yaml
+title: Example
+items:
+  - id: 1
+    name: Item 1
+  - id: 2
+    name: Item 2
+```
+
+### Table (Markdown)
+
+```markdown
+| ID  | Name   | Value |
+| --- | ------ | ----- |
+| 1   | Item 1 | 100   |
+| 2   | Item 2 | 200   |
+```
+
+---
+
+## 基本原則
+
+### 一貫性
+
+同じタイプの情報は常に同じ形式で表現する。
+
+### 可読性
+
+人間が読む場合、適切な空白とインデントを使用する。
+
+### 保守性
+
+将来の変更を考慮し、拡張しやすい構造にする。
+
+### 正確性
+
+形式の仕様に準拠し、パーサーエラーを防ぐ。
+
+---
+
+## よくある間違い
+
+| 間違い                   | 正しい方法               |
+| ------------------------ | ------------------------ |
+| 不統一なインデント       | 2スペースまたは4スペース |
+| 閉じタグの欠如（JSON）   | すべての括弧を閉じる     |
+| 不正なエスケープ         | 特殊文字を適切に処理     |
+| 過度に深いネスト（5層+） | 3層以内に抑える          |
+
+---
+
+## 関連リソース
+
+- **要件分析Task**: See `agents/analyze-format-requirements.md`
+- **構造設計Task**: See `agents/design-format-structure.md`
+- **生成検証Task**: See `agents/generate-and-validate.md`

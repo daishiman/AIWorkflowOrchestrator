@@ -1,0 +1,90 @@
+{
+  "skill_name": "electron-security-hardening",
+  "version": "2.0.0",
+  "current_level": 1,
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "last_evaluated": null
+  },
+  "levels": {
+    "1": {
+      "name": "Basics",
+      "description": "基本的なセキュリティ設定とCSP実装",
+      "requirements": {
+        "min_usage_count": 0,
+        "min_success_rate": 0
+      },
+      "capabilities": [
+        "セキュリティ監査の実施",
+        "基本的なCSP設定",
+        "IPC通信の基本的な保護"
+      ]
+    },
+    "2": {
+      "name": "Intermediate",
+      "description": "CSP実装、IPC保護、コンテキストアイソレーション",
+      "requirements": {
+        "min_usage_count": 3,
+        "min_success_rate": 0.8
+      },
+      "capabilities": [
+        "厳格なCSPポリシー設計",
+        "安全なIPC設計パターンの適用",
+        "コンテキストアイソレーションの実装"
+      ]
+    },
+    "3": {
+      "name": "Advanced",
+      "description": "プロセス隔離、サンドボックス化、脆弱性管理",
+      "requirements": {
+        "min_usage_count": 10,
+        "min_success_rate": 0.85
+      },
+      "capabilities": [
+        "プロセス隔離の完全実装",
+        "継続的な脆弱性管理",
+        "サンドボックス化の基本実装"
+      ]
+    },
+    "4": {
+      "name": "Expert",
+      "description": "セキュリティアーキテクチャ設計、脅威対応、複雑なシナリオ対応",
+      "requirements": {
+        "min_usage_count": 25,
+        "min_success_rate": 0.9
+      },
+      "capabilities": [
+        "セキュリティアーキテクチャの設計",
+        "複雑な脅威シナリオへの対応",
+        "カスタムサンドボックスポリシーの実装",
+        "セキュリティ監査の自動化"
+      ]
+    }
+  },
+  "evaluation_criteria": {
+    "success_indicators": [
+      "セキュリティ監査で重大な脆弱性が検出されない",
+      "CSPポリシーが適切に機能しCSP違反が発生しない",
+      "IPC通信が入力検証により保護されている",
+      "プロセス隔離が正しく実装されている",
+      "依存関係の脆弱性が継続的に管理されている",
+      "サンドボックス化が適切に機能している"
+    ],
+    "failure_indicators": [
+      "セキュリティ監査でCriticalまたはHighの脆弱性が残存",
+      "CSP設定が不適切または無効",
+      "IPC通信に入力検証が欠如",
+      "nodeIntegration: true が使用されている",
+      "contextIsolation: false が使用されている",
+      "依存関係に既知の脆弱性が残存"
+    ]
+  },
+  "feedback_loop": {
+    "enabled": true,
+    "log_file": "LOGS.md",
+    "auto_level_up": true,
+    "review_frequency": "after_each_use"
+  }
+}

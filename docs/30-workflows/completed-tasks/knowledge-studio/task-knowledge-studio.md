@@ -187,7 +187,7 @@ HTMLから抽出した5つのビュー（Dashboard、Editor、Chat、Graph、Set
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 曖昧な要望を検証可能な要件に変換する専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -195,8 +195,8 @@ HTMLから抽出した5つのビュー（Dashboard、Editor、Chat、Graph、Set
 
 | スキル名                 | 活用方法                   |
 | ------------------------ | -------------------------- |
-| requirements-engineering | 要件の完全性・曖昧性排除   |
-| use-case-modeling        | ユーザー操作シナリオの定義 |
+| .claude/skills/requirements-engineering/SKILL.md | 要件の完全性・曖昧性排除   |
+| .claude/skills/use-case-modeling/SKILL.md        | ユーザー操作シナリオの定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -242,7 +242,7 @@ HTMLから抽出した5つのビュー（Dashboard、Editor、Chat、Graph、Set
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: 複雑な状態を予測可能に管理する専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -250,7 +250,7 @@ HTMLから抽出した5つのビュー（Dashboard、Editor、Chat、Graph、Set
 
 | スキル名      | 活用方法       |
 | ------------- | -------------- |
-| state-lifting | 状態の配置判断 |
+| .claude/skills/state-lifting/SKILL.md | 状態の配置判断 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -296,7 +296,7 @@ IPC通信チャネルと型定義の要件を定義する
 
 #### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 - **選定理由**: ElectronのIPC設計に精通した専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -304,7 +304,7 @@ IPC通信チャネルと型定義の要件を定義する
 
 | スキル名                    | 活用方法      |
 | --------------------------- | ------------- |
-| electron-security-hardening | IPC安全性設計 |
+| .claude/skills/electron-security-hardening/SKILL.md | IPC安全性設計 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -352,7 +352,7 @@ UIコンポーネントのAtomic Design分解を行う
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: スケーラブルなUIコンポーネント設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -360,8 +360,8 @@ UIコンポーネントのAtomic Design分解を行う
 
 | スキル名             | 活用方法              |
 | -------------------- | --------------------- |
-| apple-hig-guidelines | macOSネイティブUI準拠 |
-| accessibility-wcag   | アクセシビリティ設計  |
+| .claude/skills/apple-hig-guidelines/SKILL.md | macOSネイティブUI準拠 |
+| .claude/skills/accessibility-wcag/SKILL.md   | アクセシビリティ設計  |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -407,7 +407,7 @@ Spatial DesignのDesign Tokens定義を行う
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: デザイントークン設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -415,7 +415,7 @@ Spatial DesignのDesign Tokens定義を行う
 
 | スキル名             | 活用方法            |
 | -------------------- | ------------------- |
-| apple-hig-guidelines | macOSビジュアル準拠 |
+| .claude/skills/apple-hig-guidelines/SKILL.md | macOSビジュアル準拠 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -461,7 +461,7 @@ Zustandストア構造の設計を行う
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: React状態管理の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -469,7 +469,7 @@ Zustandストア構造の設計を行う
 
 | スキル名      | 活用方法         |
 | ------------- | ---------------- |
-| state-lifting | 状態の適切な配置 |
+| .claude/skills/state-lifting/SKILL.md | 状態の適切な配置 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -515,7 +515,7 @@ IPC通信の詳細設計を行う
 
 #### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 - **選定理由**: ElectronアーキテクチャとIPC設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -523,7 +523,7 @@ IPC通信の詳細設計を行う
 
 | スキル名                    | 活用方法        |
 | --------------------------- | --------------- |
-| electron-security-hardening | セキュアIPC設計 |
+| .claude/skills/electron-security-hardening/SKILL.md | セキュアIPC設計 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -563,34 +563,34 @@ IPC通信の詳細設計を行う
 
 | エージェント       | レビュー観点         | 選定理由                   |
 | ------------------ | -------------------- | -------------------------- |
-| @req-analyst       | 要件充足性           | 要件工学の権威             |
-| @arch-police       | アーキテクチャ整合性 | Clean Architecture専門家   |
-| @electron-security | Electronセキュリティ | Electronセキュリティ専門家 |
-| @ui-designer       | UI設計妥当性         | デザインシステム専門家     |
+| .claude/agents/req-analyst.md       | 要件充足性           | 要件工学の権威             |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性 | Clean Architecture専門家   |
+| .claude/agents/electron-security.md | Electronセキュリティ | Electronセキュリティ専門家 |
+| .claude/agents/ui-designer.md       | UI設計妥当性         | デザインシステム専門家     |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**要件充足性** (@req-analyst)
+**要件充足性** (.claude/agents/req-analyst.md)
 
 - [ ] 要件が明確かつ検証可能か
 - [ ] 5つのビュー全ての機能が網羅されているか
 - [ ] 受け入れ基準が具体的か
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] ディレクトリ構造がプロジェクト規約に準拠しているか
 - [ ] 依存関係の方向が正しいか
 - [ ] 責務分離が適切か
 
-**Electronセキュリティ** (@electron-security)
+**Electronセキュリティ** (.claude/agents/electron-security.md)
 
 - [ ] contextIsolation有効でIPC設計されているか
 - [ ] nodeIntegration無効が前提になっているか
 - [ ] CSP設定が考慮されているか
 
-**UI設計妥当性** (@ui-designer)
+**UI設計妥当性** (.claude/agents/ui-designer.md)
 
 - [ ] UI/UXガイドラインに準拠しているか
 - [ ] アクセシビリティが考慮されているか
@@ -647,7 +647,7 @@ Atoms/Moleculesコンポーネントのテストを作成する
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: フロントエンドテスト戦略の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -655,8 +655,8 @@ Atoms/Moleculesコンポーネントのテストを作成する
 
 | スキル名       | 活用方法                   |
 | -------------- | -------------------------- |
-| tdd-principles | Red-Green-Refactorサイクル |
-| test-doubles   | モック/スタブの活用        |
+| .claude/skills/tdd-principles/SKILL.md | Red-Green-Refactorサイクル |
+| .claude/skills/test-doubles/SKILL.md   | モック/スタブの活用        |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -711,7 +711,7 @@ Organismsコンポーネントのテストを作成する
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: フロントエンドテスト戦略の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -719,7 +719,7 @@ Organismsコンポーネントのテストを作成する
 
 | スキル名       | 活用方法                   |
 | -------------- | -------------------------- |
-| tdd-principles | Red-Green-Refactorサイクル |
+| .claude/skills/tdd-principles/SKILL.md | Red-Green-Refactorサイクル |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -773,7 +773,7 @@ Zustandストアのテストを作成する
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDD再発見者の専門性
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -781,7 +781,7 @@ Zustandストアのテストを作成する
 
 | スキル名       | 活用方法       |
 | -------------- | -------------- |
-| tdd-principles | 状態遷移テスト |
+| .claude/skills/tdd-principles/SKILL.md | 状態遷移テスト |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -836,7 +836,7 @@ IPC通信のテストを作成する
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDD再発見者の専門性
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -844,7 +844,7 @@ IPC通信のテストを作成する
 
 | スキル名     | 活用方法  |
 | ------------ | --------- |
-| test-doubles | IPCモック |
+| .claude/skills/test-doubles/SKILL.md | IPCモック |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -901,7 +901,7 @@ Design TokensのCSS/Tailwind実装を行う
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: デザインシステム実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -909,7 +909,7 @@ Design TokensのCSS/Tailwind実装を行う
 
 | スキル名             | 活用方法              |
 | -------------------- | --------------------- |
-| apple-hig-guidelines | macOS準拠のビジュアル |
+| .claude/skills/apple-hig-guidelines/SKILL.md | macOS準拠のビジュアル |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -968,7 +968,7 @@ Atomsコンポーネントの実装を行う
 
 #### 使用エージェント
 
-- **エージェント**: @electron-ui-dev
+- **エージェント**: .claude/agents/electron-ui-dev.md
 - **選定理由**: Electron UIコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -976,7 +976,7 @@ Atomsコンポーネントの実装を行う
 
 | スキル名           | 活用方法     |
 | ------------------ | ------------ |
-| accessibility-wcag | WCAG準拠実装 |
+| .claude/skills/accessibility-wcag/SKILL.md | WCAG準拠実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1033,7 +1033,7 @@ Moleculesコンポーネントの実装を行う
 
 #### 使用エージェント
 
-- **エージェント**: @electron-ui-dev
+- **エージェント**: .claude/agents/electron-ui-dev.md
 - **選定理由**: Electron UIコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1041,7 +1041,7 @@ Moleculesコンポーネントの実装を行う
 
 | スキル名           | 活用方法     |
 | ------------------ | ------------ |
-| accessibility-wcag | WCAG準拠実装 |
+| .claude/skills/accessibility-wcag/SKILL.md | WCAG準拠実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1097,7 +1097,7 @@ Organismsコンポーネントの実装を行う
 
 #### 使用エージェント
 
-- **エージェント**: @electron-ui-dev
+- **エージェント**: .claude/agents/electron-ui-dev.md
 - **選定理由**: Electron UIコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1105,7 +1105,7 @@ Organismsコンポーネントの実装を行う
 
 | スキル名             | 活用方法              |
 | -------------------- | --------------------- |
-| apple-hig-guidelines | macOSネイティブUI準拠 |
+| .claude/skills/apple-hig-guidelines/SKILL.md | macOSネイティブUI準拠 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1162,7 +1162,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @electron-ui-dev
+- **エージェント**: .claude/agents/electron-ui-dev.md
 - **選定理由**: Electron UIコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1170,7 +1170,7 @@ pnpm --filter @repo/desktop test:run
 
 | スキル名             | 活用方法              |
 | -------------------- | --------------------- |
-| apple-hig-guidelines | macOSネイティブUI準拠 |
+| .claude/skills/apple-hig-guidelines/SKILL.md | macOSネイティブUI準拠 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1223,7 +1223,7 @@ Zustandストアの実装を行う
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: React状態管理の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1231,7 +1231,7 @@ Zustandストアの実装を行う
 
 | スキル名      | 活用方法         |
 | ------------- | ---------------- |
-| state-lifting | 状態の適切な配置 |
+| .claude/skills/state-lifting/SKILL.md | 状態の適切な配置 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1284,7 +1284,7 @@ IPC通信の実装を行う
 
 #### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 - **選定理由**: ElectronアーキテクチャとIPC実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1292,7 +1292,7 @@ IPC通信の実装を行う
 
 | スキル名                    | 活用方法        |
 | --------------------------- | --------------- |
-| electron-security-hardening | セキュアIPC実装 |
+| .claude/skills/electron-security-hardening/SKILL.md | セキュアIPC実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1349,7 +1349,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質管理の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1357,8 +1357,8 @@ pnpm --filter @repo/desktop test:run
 
 | スキル名               | 活用方法               |
 | ---------------------- | ---------------------- |
-| refactoring-techniques | 安全なリファクタリング |
-| clean-code-practices   | 可読性向上             |
+| .claude/skills/refactoring-techniques/SKILL.md | 安全なリファクタリング |
+| .claude/skills/clean-code-practices/SKILL.md   | 可読性向上             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1412,7 +1412,7 @@ WCAG 2.1 AA準拠のアクセシビリティを確保する。
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: アクセシビリティテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1420,7 +1420,7 @@ WCAG 2.1 AA準拠のアクセシビリティを確保する。
 
 | スキル名           | 活用方法     |
 | ------------------ | ------------ |
-| accessibility-wcag | WCAG準拠監査 |
+| .claude/skills/accessibility-wcag/SKILL.md | WCAG準拠監査 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1476,7 +1476,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: テスト実行の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1484,7 +1484,7 @@ pnpm --filter @repo/desktop test:run
 
 | スキル名       | 活用方法       |
 | -------------- | -------------- |
-| tdd-principles | テスト品質確認 |
+| .claude/skills/tdd-principles/SKILL.md | テスト品質確認 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1530,7 +1530,7 @@ Lint・型チェックの実行と結果確認を行う
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質管理の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1538,7 +1538,7 @@ Lint・型チェックの実行と結果確認を行う
 
 | スキル名                      | 活用方法 |
 | ----------------------------- | -------- |
-| linting-formatting-automation | 自動修正 |
+| .claude/skills/linting-formatting-automation/SKILL.md | 自動修正 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1583,7 +1583,7 @@ Electronはセキュリティリスクが高いため、セキュリティ監査
 
 #### 使用エージェント
 
-- **エージェント**: @electron-security
+- **エージェント**: .claude/agents/electron-security.md
 - **選定理由**: Electronセキュリティの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1591,7 +1591,7 @@ Electronはセキュリティリスクが高いため、セキュリティ監査
 
 | スキル名                    | 活用方法         |
 | --------------------------- | ---------------- |
-| electron-security-hardening | セキュリティ監査 |
+| .claude/skills/electron-security-hardening/SKILL.md | セキュリティ監査 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1657,10 +1657,10 @@ Phase 5の自動検証だけでは検出できない設計判断やベストプ�
 
 | エージェント       | レビュー観点       | 選定理由                    |
 | ------------------ | ------------------ | --------------------------- |
-| @code-quality      | コード品質         | ESLint作者の専門性          |
-| @arch-police       | アーキテクチャ遵守 | Clean Architecture専門家    |
-| @frontend-tester   | テスト品質         | Testing Library作者の専門性 |
-| @electron-security | セキュリティ       | Electronセキュリティ専門家  |
+| .claude/agents/code-quality.md      | コード品質         | ESLint作者の専門性          |
+| .claude/agents/arch-police.md       | アーキテクチャ遵守 | Clean Architecture専門家    |
+| .claude/agents/frontend-tester.md   | テスト品質         | Testing Library作者の専門性 |
+| .claude/agents/electron-security.md | セキュリティ       | Electronセキュリティ専門家  |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1668,31 +1668,31 @@ Phase 5の自動検証だけでは検出できない設計判断やベストプ�
 
 | 対象領域       | エージェント                   | レビュー観点                     |
 | -------------- | ------------------------------ | -------------------------------- |
-| フロントエンド | @ui-designer, @frontend-tester | アクセシビリティ、ユーザビリティ |
-| Electron       | @electron-security             | IPC通信セキュリティ、CSP         |
+| フロントエンド | .claude/agents/ui-designer.md, .claude/agents/frontend-tester.md | アクセシビリティ、ユーザビリティ |
+| Electron       | .claude/agents/electron-security.md             | IPC通信セキュリティ、CSP         |
 
 #### レビューチェックリスト
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] コーディング規約への準拠
 - [ ] 可読性・保守性の確保
 - [ ] 適切なエラーハンドリング
 - [ ] 過度な複雑性の有無
 
-**アーキテクチャ遵守** (@arch-police)
+**アーキテクチャ遵守** (.claude/agents/arch-police.md)
 
 - [ ] 実装がアーキテクチャ設計に従っているか
 - [ ] レイヤー間の依存関係が適切か
 - [ ] SOLID原則への準拠
 
-**テスト品質** (@frontend-tester)
+**テスト品質** (.claude/agents/frontend-tester.md)
 
 - [ ] テストカバレッジが十分か
 - [ ] テストケースが適切に設計されているか
 - [ ] 境界値・異常系のテストがあるか
 
-**セキュリティ** (@electron-security)
+**セキュリティ** (.claude/agents/electron-security.md)
 
 - [ ] IPC通信のセキュリティ
 - [ ] CSP設定の適切性
@@ -1762,7 +1762,7 @@ Phase 5の自動検証だけでは検出できない設計判断やベストプ�
 
 #### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: ドキュメント作成の専門家
 - **参照**: `.claude/agents/agent_list.md`
 

@@ -1,234 +1,136 @@
 ---
 name: memory-monitoring-strategies
 description: |
-  Node.jsアプリケーションのメモリ監視とリーク検出を専門とするスキル。
-  PM2、V8ヒープ分析、メモリプロファイリングを活用した効率的なメモリ管理を設計します。
+  Node.jsアプリケーションのメモリ監視とリーク検出パターン。PM2、V8ヒープ分析、メモリプロファイリングを活用した効率的メモリ管理を提供。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Observability Engineering / 適用: メモリメトリクスとアラート / 目的: 本番監視
+  • Systems Performance / 適用: ヒープ分析とプロファイリング / 目的: メモリ最適化
+  • Node.js Documentation / 適用: process.memoryUsage、V8ヒープ統計 / 目的: API活用
 
-  - `.claude/skills/memory-monitoring-strategies/resources/heap-analysis.md`: heapdump取得、Chrome DevTools分析、スナップショット比較、リーク原因特定
-  - `.claude/skills/memory-monitoring-strategies/resources/leak-detection.md`: リーク兆候の検出、継続的増加パターン、GC効果測定、原因診断手法
-  - `.claude/skills/memory-monitoring-strategies/resources/memory-metrics.md`: RSS/heapUsed/heapTotal/external各メトリクス説明、警告閾値設定
-  - `.claude/skills/memory-monitoring-strategies/scripts/memory-monitor.mjs`: メモリ使用量のリアルタイム監視（PID/PM2アプリ指定、閾値アラート）
-  - `.claude/skills/memory-monitoring-strategies/templates/memory-tracker.template.ts`: PM2カスタムメトリクス実装テンプレート（TypeScript、io.metric活用）
-
-  専門分野:
-  - メモリ監視: ヒープ使用量、RSS、外部メモリの追跡
-  - リーク検出: メモリリークの特定と診断手法
-  - PM2メモリ管理: max_memory_restart、メモリアラート設定
-  - プロファイリング: heapdump、Chrome DevTools連携
-
-  使用タイミング:
-  - メモリ使用量の監視を設定する時
-  - メモリリークを調査する時
-  - PM2のメモリ制限を設定する時
-  - ヒープ分析を行う時
-
-  Use proactively when configuring memory monitoring, investigating leaks,
-version: 1.0.0
+  Trigger:
+  Use when setting up memory monitoring, investigating memory leaks, configuring PM2 memory limits,
+  analyzing heap dumps, or designing production memory alerting strategies.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Memory Monitoring Strategies
 
+> **相対パス**: `SKILL.md`
+> **読込条件**: スキル使用時（自動）
+
+---
+
 ## 概要
 
-メモリ監視は、Node.js アプリケーションの安定性とパフォーマンスを
-維持するための重要な運用プラクティスです。メモリリークの早期検出と
-適切なリソース管理を実現します。
+Node.js アプリケーションのメモリ監視とリーク検出パターン。
 
-**主要な価値**:
+**対象領域**:
 
-- メモリリークの早期検出
-- OOM クラッシュの防止
-- パフォーマンスの最適化
-- リソース使用量の可視化
+| 領域           | 説明                                |
+| -------------- | ----------------------------------- |
+| メトリクス監視 | RSS/heapUsed/heapTotal/external     |
+| リーク検出     | 継続的増加パターン、原因診断        |
+| ヒープ分析     | heapdump 取得、Chrome DevTools 分析 |
+| PM2 統合       | メモリ制限、カスタムメトリクス      |
 
-## リソース構造
-
-```
-memory-monitoring-strategies/
-├── SKILL.md
-├── resources/
-│   ├── memory-metrics.md
-│   ├── leak-detection.md
-│   └── heap-analysis.md
-├── scripts/
-│   └── memory-monitor.mjs
-└── templates/
-    └── memory-tracker.template.ts
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# メモリメトリクスガイド
-cat .claude/skills/memory-monitoring-strategies/resources/memory-metrics.md
-
-# リーク検出ガイド
-cat .claude/skills/memory-monitoring-strategies/resources/leak-detection.md
-
-# ヒープ分析ガイド
-cat .claude/skills/memory-monitoring-strategies/resources/heap-analysis.md
-```
-
-### スクリプト実行
-
-```bash
-# メモリ監視スクリプト
-node .claude/skills/memory-monitoring-strategies/scripts/memory-monitor.mjs <pid>
-node .claude/skills/memory-monitoring-strategies/scripts/memory-monitor.mjs --pm2 <app-name>
-```
-
-### テンプレート参照
-
-```bash
-# メモリトラッカーテンプレート
-cat .claude/skills/memory-monitoring-strategies/templates/memory-tracker.template.ts
-```
+---
 
 ## ワークフロー
 
-### Phase 1: メトリクス理解
+### Phase 1: 監視戦略設計
 
-**Node.js メモリメトリクス**:
+**Task**: `agents/basic-monitoring-setup.md`
 
-```javascript
-const usage = process.memoryUsage();
-// {
-//   rss: 30000000,        // Resident Set Size（物理メモリ）
-//   heapTotal: 20000000,  // V8ヒープ合計
-//   heapUsed: 15000000,   // V8ヒープ使用量
-//   external: 1000000,    // C++オブジェクト
-//   arrayBuffers: 500000  // ArrayBuffer
-// }
-```
+| 入力       | 出力     |
+| ---------- | -------- |
+| アプリ特性 | 監視戦略 |
 
-**メトリクス説明**:
-| メトリクス | 説明 | 警告閾値 |
-|-----------|------|---------|
-| RSS | 物理メモリ総使用量 | 500MB-1GB |
-| heapUsed | JS オブジェクトメモリ | ヒープの 80% |
-| heapTotal | V8 ヒープ確保量 | 継続的増加 |
-| external | ネイティブオブジェクト | 異常な増加 |
+**参照**: `references/basics.md`, `references/memory-metrics.md`
 
-**リソース**: `resources/memory-metrics.md`
+### Phase 2: 実装
 
-### Phase 2: PM2 メモリ設定
+**Task**: `agents/pm2-memory-monitoring.md`
 
-**max_memory_restart 設定**:
+| 入力     | 出力     |
+| -------- | -------- |
+| 監視戦略 | 監視実装 |
 
-```javascript
-// ecosystem.config.js
-{
-  max_memory_restart: '500M',  // メモリ超過で再起動
-  exp_backoff_restart_delay: 100  // 再起動間隔
-}
-```
+**参照**: `references/patterns.md`, `assets/`
 
-**推奨設定**:
-| 環境 | max_memory_restart |
-|------|-------------------|
-| 開発 | 256M-512M |
-| ステージング | 512M-1G |
-| 本番 | 1G-2G |
+### Phase 3: リーク検出・分析
 
-### Phase 3: メモリ監視実装
+**Task**: `agents/memory-leak-detection.md`, `agents/heap-dump-analysis.md`
 
-**基本監視**:
+| 入力       | 出力         |
+| ---------- | ------------ |
+| メモリ異常 | 原因レポート |
 
-```javascript
-setInterval(() => {
-  const usage = process.memoryUsage();
-  const heapPercent = (usage.heapUsed / usage.heapTotal) * 100;
+**参照**: `references/heap-analysis.md`, `references/leak-detection.md`
 
-  if (heapPercent > 85) {
-    console.warn(`High heap usage: ${heapPercent.toFixed(1)}%`);
-  }
-}, 30000);
-```
-
-**PM2 カスタムメトリクス**:
-
-```javascript
-const io = require("@pm2/io");
-
-io.metric({
-  name: "Heap Used",
-  value: () => {
-    const usage = process.memoryUsage();
-    return Math.round(usage.heapUsed / 1024 / 1024);
-  },
-});
-```
-
-### Phase 4: リーク検出
-
-**リーク兆候**:
-
-- heapUsed の継続的増加
-- GC 後もメモリが解放されない
-- 長時間運用で RSS 増加
-
-**検出手法**:
-
-1. 定期的なメモリスナップショット
-2. heapdump による詳細分析
-3. Chrome DevTools での可視化
-
-**リソース**: `resources/leak-detection.md`
-
-### Phase 5: ヒープ分析
-
-**heapdump 取得**:
-
-```javascript
-const heapdump = require("heapdump");
-
-// 手動トリガー
-heapdump.writeSnapshot("/tmp/heap-" + Date.now() + ".heapsnapshot");
-
-// シグナルトリガー
-process.on("SIGUSR2", () => {
-  heapdump.writeSnapshot();
-});
-```
-
-**分析手順**:
-
-1. Chrome DevTools を開く
-2. Memory → Load からスナップショット読み込み
-3. Summary/Comparison ビューで分析
-
-**リソース**: `resources/heap-analysis.md`
+---
 
 ## ベストプラクティス
 
-### すべきこと
+| すべきこと                                     | 避けるべきこと                 |
+| ---------------------------------------------- | ------------------------------ |
+| 複数メトリクス（RSS, heapUsed, heapTotal）監視 | 単一メトリクスのみ依存         |
+| 段階的閾値（Warning + Critical）設定           | 過剰アラート設定               |
+| 定期的ヒープダンプ取得                         | 本番でいきなり分析             |
+| PM2 メモリ制限との併用                         | リーク原因の推測（裏付けなし） |
+| GC 効果の測定                                  | メモリ制限の過度な厳格化       |
 
-1. **定期監視**: メモリ使用量を継続的に追跡
-2. **閾値アラート**: 危険値に達したら通知
-3. **GC 監視**: GC 頻度と効果を追跡
-4. **ベースライン設定**: 正常時のメモリ使用量を把握
+---
 
-### 避けるべきこと
+## Task ナビゲーション
 
-1. **グローバル変数蓄積**: 不要なグローバルキャッシュ
-2. **イベントリスナーリーク**: removeListener の漏れ
-3. **クロージャリーク**: 不要な参照の保持
-4. **バッファ蓄積**: 未解放の Buffer/ArrayBuffer
+| Task                                    | 目的             | 参照リソース        |
+| --------------------------------------- | ---------------- | ------------------- |
+| `basic-monitoring-setup.md`             | 基本監視設定     | `memory-metrics.md` |
+| `pm2-memory-monitoring.md`              | PM2 監視         | `patterns.md`       |
+| `memory-leak-detection.md`              | リーク検出       | `leak-detection.md` |
+| `heap-dump-analysis.md`                 | ヒープ分析       | `heap-analysis.md`  |
+| `alert-threshold-configuration.md`      | アラート設定     | `memory-metrics.md` |
+| `realtime-monitoring-implementation.md` | リアルタイム監視 | `patterns.md`       |
 
-## 変更履歴
+---
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-26 | 初版作成 |
+## リソース参照
+
+### References
+
+| ファイル            | 内容                               | 読込条件         |
+| ------------------- | ---------------------------------- | ---------------- |
+| `basics.md`         | メモリ監視基礎概念、メトリクス概要 | 初回使用時       |
+| `patterns.md`       | PM2 統合、アラート、GC 監視        | 設計時           |
+| `memory-metrics.md` | 各メトリクス詳細定義と閾値設定     | メトリクス設計時 |
+| `heap-analysis.md`  | heapdump 取得・DevTools 分析       | リーク調査時     |
+| `leak-detection.md` | リーク兆候検出・原因診断           | リーク調査時     |
+
+### Assets
+
+| ファイル                     | 内容                               |
+| ---------------------------- | ---------------------------------- |
+| `memory-tracker.template.ts` | PM2 カスタムメトリクステンプレート |
+
+### Scripts
+
+| スクリプト           | 用途                   |
+| -------------------- | ---------------------- |
+| `memory-monitor.mjs` | リアルタイムメモリ監視 |
+| `validate-skill.mjs` | スキル検証             |
+| `log_usage.mjs`      | 使用記録               |
+
+---
 
 ## 関連スキル
 
-- **pm2-ecosystem-config** (`.claude/skills/pm2-ecosystem-config/SKILL.md`)
-- **process-lifecycle-management** (`.claude/skills/process-lifecycle-management/SKILL.md`)
-- **monitoring-alerting** (`.claude/skills/monitoring-alerting/SKILL.md`)
+- `logging-observability` - オブザーバビリティ設計
+- `graceful-shutdown` - 適切なリソースクリーンアップ
+- `health-check-implementation` - ヘルスチェック設計

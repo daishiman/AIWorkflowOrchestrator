@@ -1,276 +1,143 @@
 ---
 name: web-performance
 description: |
-  Next.jsアプリケーションのパフォーマンス最適化を専門とするスキル。
+  Next.jsアプリケーションのパフォーマンス最適化スキル。
+  Core Web Vitals（LCP、FID、CLS）改善、バンドルサイズ削減、画像・フォント最適化を提供する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『High Performance Browser Networking』(Ilya Grigorik) / 適用: ネットワーク最適化 / 目的: レイテンシ削減
+  • Web Vitals (Google) / 適用: Core Web Vitals測定 / 目的: UXメトリクス改善
+  • Next.js Documentation / 適用: next/image, next/font, App Router / 目的: フレームワーク最適化
 
-  - `.claude/skills/web-performance/resources/code-splitting.md`: Code Splittingリソース
-  - `.claude/skills/web-performance/resources/dynamic-import.md`: Dynamic Importリソース
-  - `.claude/skills/web-performance/resources/font-optimization.md`: Font Optimizationリソース
-  - `.claude/skills/web-performance/resources/image-optimization.md`: Image Optimizationリソース
-
-  - `.claude/skills/web-performance/templates/dynamic-import-template.md`: Dynamic Importテンプレート
-  - `.claude/skills/web-performance/templates/image-component-template.md`: Image Componentテンプレート
-
-  - `.claude/skills/web-performance/scripts/analyze-bundle.mjs`: Analyze Bundleスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when optimizing Core Web Vitals (LCP, FID, CLS), reducing bundle size, implementing image optimization with next/image, or optimizing font loading with next/font.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Web Performance
 
 ## 概要
 
-このスキルは、Next.js App Router におけるパフォーマンス最適化の
-ベストプラクティスを提供します。Core Web Vitals の改善と
-ユーザー体験の向上を実現します。
-
-**核心哲学**:
-
-- **Speed First**: 初期ロードの最小化とインタラクション最適化
-- **Progressive Loading**: 必要な時に必要なものだけを読み込む
-- **Measurable**: 測定可能な指標に基づく最適化
-
-**主要な価値**:
-
-- Core Web Vitals（LCP、FID、CLS）の改善
-- バンドルサイズの最適化
-- ユーザー体験の向上
-
-## リソース構造
-
-```
-web-performance/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── dynamic-import.md                       # 動的インポートガイド
-│   ├── image-optimization.md                   # 画像最適化ガイド
-│   ├── font-optimization.md                    # フォント最適化ガイド
-│   └── code-splitting.md                       # Code Splittingガイド
-├── scripts/
-│   └── analyze-bundle.mjs                      # バンドル分析スクリプト
-└── templates/
-    ├── dynamic-import-template.md              # 動的インポートテンプレート
-    └── image-component-template.md             # 画像コンポーネントテンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# 動的インポートガイド
-cat .claude/skills/web-performance/resources/dynamic-import.md
-
-# 画像最適化ガイド
-cat .claude/skills/web-performance/resources/image-optimization.md
-
-# フォント最適化ガイド
-cat .claude/skills/web-performance/resources/font-optimization.md
-
-# Code Splittingガイド
-cat .claude/skills/web-performance/resources/code-splitting.md
-```
-
-### スクリプト実行
-
-```bash
-# バンドル分析
-node .claude/skills/web-performance/scripts/analyze-bundle.mjs <build-output-dir>
-```
-
-### テンプレート参照
-
-```bash
-# 動的インポートテンプレート
-cat .claude/skills/web-performance/templates/dynamic-import-template.md
-
-# 画像コンポーネントテンプレート
-cat .claude/skills/web-performance/templates/image-component-template.md
-```
-
-## いつ使うか
-
-### シナリオ 1: 初期ロード最適化
-
-**状況**: ページの初期読み込みが遅い
-
-**適用条件**:
-
-- [ ] LCP が 2.5 秒を超えている
-- [ ] バンドルサイズが大きい
-- [ ] 不要な JavaScript が初期ロードに含まれている
-
-**期待される成果**: LCP の改善、TTFB の短縮
-
-### シナリオ 2: インタラクション最適化
-
-**状況**: ユーザー操作への応答が遅い
-
-**適用条件**:
-
-- [ ] FID/INP が 100ms を超えている
-- [ ] 重いコンポーネントがある
-- [ ] サードパーティスクリプトが多い
-
-**期待される成果**: インタラクション応答性の向上
-
-### シナリオ 3: 視覚的安定性
-
-**状況**: ページ読み込み時にレイアウトがずれる
-
-**適用条件**:
-
-- [ ] CLS が 0.1 を超えている
-- [ ] 画像サイズが未指定
-- [ ] フォントが FOUT を引き起こしている
-
-**期待される成果**: 視覚的安定性の向上
-
-## 知識領域
-
-### 領域 1: 動的インポート
-
-**next/dynamic**:
-
-```typescript
-import dynamic from "next/dynamic";
-
-const HeavyComponent = dynamic(() => import("./HeavyComponent"), {
-  loading: () => <Skeleton />,
-  ssr: false, // クライアントのみ
-});
-```
-
-**React.lazy（Client Components 内）**:
-
-```typescript
-"use client";
-import { lazy, Suspense } from "react";
-
-const LazyComponent = lazy(() => import("./LazyComponent"));
-```
-
-**詳細は**: `resources/dynamic-import.md` を参照
-
-### 領域 2: 画像最適化
-
-**next/image**:
-
-```typescript
-import Image from "next/image";
-
-<Image
-  src="/image.jpg"
-  alt="説明"
-  width={800}
-  height={600}
-  priority // LCP画像の場合
-  placeholder="blur"
-/>;
-```
-
-**詳細は**: `resources/image-optimization.md` を参照
-
-### 領域 3: フォント最適化
-
-**next/font**:
-
-```typescript
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
-```
-
-**詳細は**: `resources/font-optimization.md` を参照
-
-### 領域 4: Code Splitting
-
-**ルートベース分割**（自動）:
-
-- App Router は各ルートを自動的に分割
-- Layout は共有、Page は個別バンドル
-
-**コンポーネントベース分割**:
-
-- 条件付きコンポーネントを dynamic import で分割
-- モーダル、ドロワー、タブコンテンツなど
-
-**詳細は**: `resources/code-splitting.md` を参照
+Next.jsアプリケーションのパフォーマンス最適化を専門とするスキル。
+Core Web Vitals（LCP、FID、CLS）改善、バンドルサイズ削減、画像最適化、フォント最適化を通じて、ページ速度向上とユーザー体験改善を実現する。
 
 ## ワークフロー
 
-### Phase 1: 測定
+### Phase 1: パフォーマンス監査
 
-1. Lighthouse でベースラインを測定
-2. Core Web Vitals を記録
-3. バンドルサイズを分析
+**目的**: 現状のパフォーマンスを測定しボトルネックを特定
 
-### Phase 2: 分析
+**アクション**:
 
-1. ボトルネックを特定
-2. 優先順位を決定
-3. 改善計画を策定
+1. Lighthouse/PageSpeed Insightsでベースライン測定
+2. Core Web Vitals（LCP、FID、CLS）の現在値を記録
+3. `scripts/analyze-bundle.mjs` でバンドルサイズを分析
+4. 問題の優先度を策定
 
-### Phase 3: 最適化
+**Task**: `agents/performance-auditor.md` を参照
 
-1. 画像/フォント最適化
-2. 動的インポート適用
-3. Code Splitting 実装
+### Phase 2: 最適化実装
 
-### Phase 4: 検証
+**目的**: 特定した問題に対する最適化を実装
 
-1. Lighthouse で再測定
-2. 改善効果を確認
-3. 回帰テスト実施
+**アクション（問題種別に応じて選択）**:
 
-### Phase 5: 監視
+| 問題           | エージェント        | 主な施策                     |
+| -------------- | ------------------- | ---------------------------- |
+| LCP（画像）    | image-optimizer     | next/image、priority属性     |
+| FID            | bundle-optimizer    | コード分割、動的インポート   |
+| CLS            | rendering-optimizer | フォント最適化、アスペクト比 |
+| バンドルサイズ | bundle-optimizer    | Tree Shaking、個別インポート |
 
-1. Real User Monitoring 設定
-2. パフォーマンスバジェット設定
-3. 継続的な監視
+**Task**: 問題種別に応じたエージェントを参照
 
-## 設計原則
+### Phase 3: 検証と記録
 
-### 遅延読み込みの原則
+**目的**: 改善効果を測定し記録
 
-Above the Fold（ファーストビュー）以外は遅延読み込みを検討する。
+**アクション**:
 
-### 優先度の原則
+1. Lighthouse/Core Web Vitalsで改善後のメトリクスを測定
+2. 改善前後の差分を記録
+3. `scripts/log_usage.mjs` で実行記録を保存
+4. 必要に応じてPhase 2に戻りイテレーション
 
-LCP 要素には`priority`を設定し、その他は遅延読み込みする。
+## Task仕様ナビ
 
-### 測定の原則
+| Task               | 説明                                                  | 参照                            |
+| ------------------ | ----------------------------------------------------- | ------------------------------- |
+| パフォーマンス監査 | Lighthouse分析、Core Web Vitals測定、ボトルネック特定 | `agents/performance-auditor.md` |
+| 画像最適化         | next/image活用、priority設定、placeholder実装         | `agents/image-optimizer.md`     |
+| バンドル最適化     | コード分割、動的インポート、Tree Shaking              | `agents/bundle-optimizer.md`    |
+| レンダリング最適化 | フォント最適化、CLS防止、スケルトンUI                 | `agents/rendering-optimizer.md` |
 
-最適化前後で必ず測定し、効果を検証する。
+## ベストプラクティス
 
-### 予算の原則
+### すべきこと
 
-パフォーマンスバジェットを設定し、超過を監視する。
+- 最適化の前後でメトリクスを必ず測定する
+- LCP対象画像にはpriority属性を付与する
+- next/fontでフォントを最適化しCLSを防止する
+- Server Componentsを活用しクライアントバンドルを削減する
+- 重いライブラリは動的インポートで遅延読み込みする
+- 画像にwidth/heightまたはaspect-ratioを指定する
 
-## Core Web Vitals 目標値
+### 避けるべきこと
 
-| 指標 | 良好   | 改善が必要 | 不良   |
-| ---- | ------ | ---------- | ------ |
-| LCP  | ≤2.5s  | ≤4.0s      | >4.0s  |
-| FID  | ≤100ms | ≤300ms     | >300ms |
-| INP  | ≤200ms | ≤500ms     | >500ms |
-| CLS  | ≤0.1   | ≤0.25      | >0.25  |
+- メトリクス測定なしで最適化完了と判断する
+- 全ての画像にpriority属性を付与する（LCP画像のみ）
+- Barrel Fileからの一括インポート
+- use clientを不必要に広範囲に適用する
+- 過度な最適化でメンテナンス性を犠牲にする
 
-## 関連スキル
+## リソース参照
 
-- `.claude/skills/nextjs-app-router/SKILL.md` - ルーティング構造
-- `.claude/skills/server-components-patterns/SKILL.md` - データフェッチ最適化
-- `.claude/skills/seo-optimization/SKILL.md` - SEO 最適化
+### agents/（Task仕様書）
+
+| エージェント        | パス                            | 用途               |
+| ------------------- | ------------------------------- | ------------------ |
+| performance-auditor | `agents/performance-auditor.md` | パフォーマンス監査 |
+| image-optimizer     | `agents/image-optimizer.md`     | 画像最適化         |
+| bundle-optimizer    | `agents/bundle-optimizer.md`    | バンドル最適化     |
+| rendering-optimizer | `agents/rendering-optimizer.md` | レンダリング最適化 |
+
+### references/（詳細知識）
+
+| リソース        | パス                                  | 用途                 |
+| --------------- | ------------------------------------- | -------------------- |
+| Core Web Vitals | `references/core-web-vitals.md`       | メトリクス定義と閾値 |
+| 最適化パターン  | `references/optimization-patterns.md` | 実装パターン集       |
+| 画像最適化      | `references/image-optimization.md`    | next/image詳細       |
+| コード分割      | `references/code-splitting.md`        | 分割戦略             |
+| 動的インポート  | `references/dynamic-import.md`        | next/dynamic詳細     |
+| フォント最適化  | `references/font-optimization.md`     | next/font詳細        |
+
+### scripts/（自動化処理）
+
+| スクリプト         | 用途         | 使用例                                        |
+| ------------------ | ------------ | --------------------------------------------- |
+| analyze-bundle.mjs | バンドル分析 | `node scripts/analyze-bundle.mjs`             |
+| log_usage.mjs      | 使用記録     | `node scripts/log_usage.mjs --result success` |
+| validate-skill.mjs | 構造検証     | `node scripts/validate-skill.mjs -v`          |
+
+### assets/（テンプレート）
+
+| テンプレート       | パス                                 | 用途                     |
+| ------------------ | ------------------------------------ | ------------------------ |
+| 動的インポート     | `assets/dynamic-import-template.md`  | next/dynamicテンプレート |
+| 画像コンポーネント | `assets/image-component-template.md` | next/imageテンプレート   |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容     |
-| ---------- | ---------- | ------------ |
-| 1.0.0      | 2025-11-25 | 初版リリース |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様に完全準拠。4エージェント体制に拡張 |
+| 1.1.0   | 2025-12-31 | ワークフロー詳細化、Task仕様ナビ追加                |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

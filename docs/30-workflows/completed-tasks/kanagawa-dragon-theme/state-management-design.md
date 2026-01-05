@@ -7,7 +7,7 @@
 | サブタスクID | T-01-3         |
 | フェーズ     | Phase 1: 設計  |
 | 作成日       | 2025-12-12     |
-| 担当         | @state-manager |
+| 担当         | .claude/agents/state-manager.md |
 
 ---
 

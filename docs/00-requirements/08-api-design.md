@@ -249,6 +249,82 @@
 | GET      | /api/health    | ヘルスチェック | 不要 |
 | GET      | /api/v1/status | 詳細ステータス | 必要 |
 
+### 8.10.5 チャット履歴
+
+チャットセッションとメッセージの管理、エクスポート機能を提供する。
+
+| メソッド | パス                           | 説明                   | 認証 |
+| -------- | ------------------------------ | ---------------------- | ---- |
+| GET      | /api/v1/sessions               | セッション一覧取得     | 必要 |
+| GET      | /api/v1/sessions/{id}          | セッション詳細取得     | 必要 |
+| POST     | /api/v1/sessions               | セッション作成         | 必要 |
+| PATCH    | /api/v1/sessions/{id}          | セッション更新         | 必要 |
+| DELETE   | /api/v1/sessions/{id}          | セッション削除         | 必要 |
+| GET      | /api/v1/sessions/{id}/messages | メッセージ一覧取得     | 必要 |
+| POST     | /api/v1/sessions/{id}/messages | メッセージ追加         | 必要 |
+| GET      | /api/v1/sessions/{id}/export   | セッションエクスポート | 必要 |
+| POST     | /api/v1/sessions/export/batch  | 一括エクスポート       | 必要 |
+| GET      | /api/v1/sessions/{id}/preview  | エクスポートプレビュー | 必要 |
+
+**実装ファイル**:
+
+| 種別        | パス                                                                  |
+| ----------- | --------------------------------------------------------------------- |
+| 型定義      | `packages/shared/src/types/chat-session.ts`                           |
+| 型定義      | `packages/shared/src/types/chat-message.ts`                           |
+| リポジトリ  | `packages/shared/src/repositories/chat-session-repository.ts`         |
+| リポジトリ  | `packages/shared/src/repositories/chat-message-repository.ts`         |
+| サービス    | `packages/shared/src/features/chat-history/chat-history-service.ts`   |
+| IPCチャネル | `packages/shared/src/ipc/channels.ts`                                 |
+| 詳細設計    | `docs/30-workflows/chat-history-persistence/api-design.md`            |
+| OpenAPI仕様 | `docs/30-workflows/chat-history-persistence/openapi-chat-export.yaml` |
+
+**デスクトップアプリUI実装**:
+
+```
+apps/desktop/src/
+├── renderer/
+│   └── views/
+│       └── ChatHistoryView/
+│           └── index.tsx           # チャット履歴詳細ビュー
+└── components/
+    └── chat/
+        ├── index.ts                # コンポーネントエクスポート
+        ├── types.ts                # チャットUI型定義
+        ├── ChatHistoryList.tsx     # セッション一覧
+        ├── ChatHistoryListItem.tsx # セッションアイテム
+        ├── ChatHistoryListStates.tsx # 一覧状態コンポーネント
+        ├── ChatHistorySearch.tsx   # 検索・フィルター
+        ├── ChatHistoryExport.tsx   # エクスポートダイアログ
+        ├── DeleteConfirmDialog.tsx # 削除確認ダイアログ
+        └── chat-search-utils.ts    # 検索ユーティリティ
+```
+
+**ルーティング**:
+
+| パス                       | コンポーネント  | 説明                   |
+| -------------------------- | --------------- | ---------------------- |
+| `/chat/history/:sessionId` | ChatHistoryView | セッション詳細表示     |
+| `/chat/history`            | -（未実装）     | セッション一覧（TODO） |
+
+**エクスポートAPI詳細**:
+
+エクスポートエンドポイントは以下のクエリパラメータをサポート:
+
+| パラメータ      | 型                   | 説明                                        |
+| --------------- | -------------------- | ------------------------------------------- |
+| format          | `markdown` \| `json` | エクスポート形式（デフォルト: markdown）    |
+| range           | `all` \| `selected`  | エクスポート範囲（デフォルト: all）         |
+| messageIds      | string[]             | 選択メッセージID（range=selected時必須）    |
+| includeMetadata | boolean              | LLMメタデータを含めるか（デフォルト: true） |
+| download        | boolean              | ファイルダウンロードモード                  |
+
+**レスポンス形式**:
+
+- Markdown形式: `Content-Type: text/markdown; charset=utf-8`
+- JSON形式: `Content-Type: application/json; charset=utf-8`
+- 一括エクスポート: `Content-Type: application/zip`
+
 ---
 
 ## 8.11 Desktop IPC API（認証・プロフィール）
@@ -257,13 +333,21 @@
 
 Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 
-| チャネル            | 用途                 | Request                       | Response                           |
-| ------------------- | -------------------- | ----------------------------- | ---------------------------------- |
-| `auth:login`        | OAuth ログイン開始   | `{ provider: OAuthProvider }` | `IPCResponse<void>`                |
-| `auth:logout`       | ログアウト           | なし                          | `IPCResponse<void>`                |
-| `auth:get-session`  | セッション取得       | なし                          | `IPCResponse<AuthSession>`         |
-| `auth:refresh`      | トークンリフレッシュ | なし                          | `IPCResponse<AuthSession>`         |
-| `auth:check-online` | オンライン状態確認   | なし                          | `IPCResponse<{ online: boolean }>` |
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/ipc/authHandlers.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- Preload公開: `apps/desktop/src/preload/index.ts`
+
+**チャンネル一覧**:
+
+| チャネル            | 用途                 | Request                       | Response                           | 実装箇所            | セキュリティ       |
+| ------------------- | -------------------- | ----------------------------- | ---------------------------------- | ------------------- | ------------------ |
+| `auth:login`        | OAuth ログイン開始   | `{ provider: OAuthProvider }` | `IPCResponse<void>`                | authHandlers.ts:77  | withValidation適用 |
+| `auth:logout`       | ログアウト           | なし                          | `IPCResponse<void>`                | authHandlers.ts:145 | withValidation適用 |
+| `auth:get-session`  | セッション取得       | なし                          | `IPCResponse<AuthSession>`         | authHandlers.ts:187 | withValidation適用 |
+| `auth:refresh`      | トークンリフレッシュ | なし                          | `IPCResponse<AuthSession>`         | authHandlers.ts     | withValidation適用 |
+| `auth:check-online` | オンライン状態確認   | なし                          | `IPCResponse<{ online: boolean }>` | authHandlers.ts     | withValidation適用 |
 
 ### 8.11.2 プロフィール IPC チャネル
 
@@ -318,6 +402,127 @@ interface IPCResponse<T> {
   error?: { code: string; message: string };
 }
 ```
+
+### 8.11.5 認証状態管理
+
+**状態遷移**:
+
+```
+checking → authenticated: セッション復元成功
+checking → unauthenticated: セッションなし
+unauthenticated → authenticated: ログイン成功
+authenticated → unauthenticated: ログアウト
+```
+
+**状態とUI表示の対応**:
+
+| 状態            | AuthGuard表示内容 | 説明                   |
+| --------------- | ----------------- | ---------------------- |
+| checking        | LoadingScreen     | セッション確認中       |
+| authenticated   | children          | 認証済み（メインUI）   |
+| unauthenticated | AuthView          | 未認証（ログイン画面） |
+
+**実装コンポーネント**:
+
+| コンポーネント | ファイル                                     | 責務                   |
+| -------------- | -------------------------------------------- | ---------------------- |
+| AuthGuard      | `components/AuthGuard/index.tsx`             | 認証状態による表示制御 |
+| useAuthState   | `components/AuthGuard/hooks/useAuthState.ts` | 認証状態取得フック     |
+| getAuthState   | `components/AuthGuard/utils/getAuthState.ts` | 状態判定純粋関数       |
+| LoadingScreen  | `components/AuthGuard/LoadingScreen.tsx`     | ローディング画面       |
+| AuthView       | `views/AuthView/index.tsx`                   | ログイン画面           |
+
+### 8.11.6 IPCセキュリティ実装
+
+**withValidationラッパー**:
+
+すべての認証関連IPCハンドラーは`withValidation`でラップされ、以下を検証:
+
+1. webContentsに対応するBrowserWindowの存在確認
+2. DevToolsからの呼び出し検出・拒否
+3. 許可されたウィンドウリストとの照合
+
+**実装ファイル**: `apps/desktop/src/main/infrastructure/security/ipc-validator.ts`
+
+**チャンネルホワイトリスト**:
+
+認証関連チャンネルは`channels.ts`で明示的に許可リストに登録:
+
+```typescript
+// apps/desktop/src/preload/channels.ts
+export const ALLOWED_CHANNELS = {
+  invoke: [
+    IPC_CHANNELS.AUTH.LOGIN, // "auth:login"
+    IPC_CHANNELS.AUTH.LOGOUT, // "auth:logout"
+    IPC_CHANNELS.AUTH.GET_SESSION, // "auth:get-session"
+    IPC_CHANNELS.AUTH.REFRESH, // "auth:refresh"
+    IPC_CHANNELS.AUTH.CHECK_ONLINE, // "auth:check-online"
+    // ...
+  ],
+  on: [
+    IPC_CHANNELS.AUTH.STATE_CHANGED, // "auth:state-changed"
+    // ...
+  ],
+} as const;
+```
+
+### 8.11.7 AI/チャット IPC チャネル
+
+Electronデスクトップアプリでは、IPC通信でAIチャット機能とLLM選択機能を提供する。
+
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/ipc/aiHandlers.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+**チャンネル一覧**:
+
+| チャネル              | 用途                            | Request        | Response                  | 実装箇所              |
+| --------------------- | ------------------------------- | -------------- | ------------------------- | --------------------- |
+| `AI_CHAT`             | LLMへのメッセージ送信と応答取得 | AIChatRequest  | AIChatResponse            | aiHandlers.ts:21-89   |
+| `AI_CHECK_CONNECTION` | LLM/RAG接続状態確認             | なし           | AICheckConnectionResponse | aiHandlers.ts:93-112  |
+| `AI_INDEX`            | RAGドキュメントインデックス作成 | AIIndexRequest | AIIndexResponse           | aiHandlers.ts:116-143 |
+
+**型定義詳細**: 型定義は[コアインターフェース 6.9](./06-core-interfaces.md#69-llm-チャット関連型定義desktop-ipc)を参照。
+
+**LLM選択状態管理**:
+
+- **Store**: Zustand chatSlice
+- **状態**: currentProviderId（"openai" | "anthropic" | "google" | "xai"）、currentModelId
+- **初期値**: OpenAI gpt-5.2-instant
+- **切り替え**: リアルタイム（確認ダイアログなし）
+
+**対応LLMプロバイダー**:
+
+| プロバイダー | モデル例                         | コンテキストウィンドウ |
+| ------------ | -------------------------------- | ---------------------- |
+| OpenAI       | gpt-5.2-instant, gpt-4           | 400K, 8K               |
+| Anthropic    | claude-sonnet-4.5, claude-3-opus | 200K (1M beta), 200K   |
+| Google       | gemini-3-flash, gemini-pro       | 1M, 32K                |
+| xAI          | grok-4.1-fast, grok-1            | 2M, 8K                 |
+
+**統合仕様**:
+
+- LLM選択とシステムプロンプトは独立して設定可能
+- メッセージ送信時、両方の設定を`AI_CHAT` IPCリクエストに含める
+- プロバイダー/モデル切り替え時もシステムプロンプトは保持される
+- 会話履歴は保持されるが、各モデルは独立して動作
+
+**セキュリティ考慮事項**:
+
+| 項目                       | 対策                                          |
+| -------------------------- | --------------------------------------------- |
+| APIキー保護                | Electron SafeStorageで暗号化保存              |
+| プロンプトインジェクション | ローカルアプリのため影響限定的                |
+| XSS攻撃                    | React自動エスケープ + IPC経由で文字列のみ送信 |
+| レート制限対応             | プロバイダー側のレート制限エラーを通知        |
+
+**参照**:
+
+- 詳細仕様: [アーキテクチャ設計 5.8.7](./05-architecture.md#587-ipcチャネル設計チャットllm選択)
+- 型定義: [コアインターフェース 6.9](./06-core-interfaces.md#69-llm-チャット関連型定義desktop-ipc)
+- UI仕様: [UI/UX 16.19](./16-ui-ux-guidelines.md#1619-llm選択機能chat-llm-switching)
 
 ---
 
@@ -479,6 +684,424 @@ interface ProfileExportData {
 | 429            | `valid`         | レートリミット（認証は成功）       |
 | 500-504        | `network_error` | サーバーエラー                     |
 | タイムアウト   | `timeout`       | 接続タイムアウト（10秒）           |
+
+---
+
+## 8.15 内部サービスAPI（RAG変換システム）
+
+### 8.15.1 ConversionService API
+
+RAG Conversion Systemは、HTTPエンドポイントとしてではなく、TypeScriptの内部サービスクラスとして実装されています。
+
+**利用場所**: `packages/shared/src/services/conversion/`
+
+**主要クラス**:
+
+| クラス              | 責務                                       |
+| ------------------- | ------------------------------------------ |
+| `ConversionService` | 変換処理の統括、タイムアウト・同時実行制御 |
+| `ConverterRegistry` | 利用可能なコンバーターの管理と選択         |
+| `BaseConverter`     | 共通変換処理の抽象基底クラス               |
+
+### 8.15.2 ConversionService メソッド
+
+#### convert()
+
+```typescript
+async convert(
+  input: ConverterInput,
+  options?: ConverterOptions
+): Promise<Result<ConverterOutput, RAGError>>
+```
+
+**機能**:
+
+- 単一ファイルを変換
+- 同時実行数チェック（デフォルト: 最大5件）
+- タイムアウト管理（デフォルト: 60秒）
+- 自動コンバーター選択
+
+**パラメータ**:
+
+- `input.fileId`: ファイルID（Branded型）
+- `input.content`: ファイルコンテンツ（文字列またはBuffer）
+- `input.mimeType`: MIMEタイプ
+- `input.filePath`: ファイルパス（オプション）
+- `options.maxContentLength`: 最大コンテンツ長（デフォルト: 100,000文字）
+- `options.timeout`: タイムアウト時間（ミリ秒）
+
+**戻り値**:
+
+- 成功: `{ success: true, data: ConverterOutput }`
+- 失敗: `{ success: false, error: RAGError }`
+
+#### convertBatch()
+
+```typescript
+async convertBatch(
+  inputs: ConverterInput[],
+  options?: ConverterOptions
+): Promise<BatchConversionResult[]>
+```
+
+**機能**:
+
+- 複数ファイルを一括変換
+- チャンク単位で処理（同時実行数制限）
+- Promise.allSettled()で一部失敗を許容
+
+**戻り値**:
+
+- 各ファイルの変換結果（成功/失敗）の配列
+
+#### canConvert()
+
+```typescript
+canConvert(input: ConverterInput): boolean
+```
+
+**機能**:
+
+- 変換可能性を事前確認
+- コンバーター検索のみ（変換は実行しない）
+
+#### getSupportedMimeTypes()
+
+```typescript
+getSupportedMimeTypes(): string[]
+```
+
+**機能**:
+
+- サポートしているMIMEタイプ一覧を取得
+
+### 8.15.3 使用パターン
+
+**パターン1: グローバルインスタンス使用**
+
+```typescript
+import { globalConversionService } from "@repo/shared/services/conversion";
+
+const result = await globalConversionService.convert(input);
+```
+
+**パターン2: カスタム設定インスタンス**
+
+```typescript
+import { createConversionService } from "@repo/shared/services/conversion";
+
+const service = createConversionService(customRegistry, {
+  defaultTimeout: 30000,
+  maxConcurrentConversions: 10,
+});
+
+const result = await service.convert(input);
+```
+
+### 8.15.4 エラーハンドリング
+
+**エラーコード**:
+
+| コード                | 説明               | 原因                                   |
+| --------------------- | ------------------ | -------------------------------------- |
+| `RESOURCE_EXHAUSTED`  | 同時実行数超過     | 最大同時実行数に到達                   |
+| `TIMEOUT`             | タイムアウト       | 変換処理が指定時間内に完了しなかった   |
+| `CONVERTER_NOT_FOUND` | コンバーター未検出 | 対応するコンバーターが登録されていない |
+| `CONVERSION_FAILED`   | 変換失敗           | 個別コンバーターでのエラー             |
+
+**Result型パターン**:
+
+```typescript
+const result = await service.convert(input);
+
+if (result.success) {
+  const { convertedContent, extractedMetadata } = result.data;
+  // 成功時の処理
+} else {
+  const { code, message, context } = result.error;
+  // エラー処理
+  console.error(`[${code}] ${message}`, context);
+}
+```
+
+### 8.15.5 性能特性
+
+| 指標                       | 値     |
+| -------------------------- | ------ |
+| デフォルトタイムアウト     | 60秒   |
+| 最大同時実行数             | 5件    |
+| サポートMIMEタイプ         | 18種類 |
+| 平均変換時間（小ファイル） | 3-50ms |
+| 平均変換時間（Markdown）   | 400ms  |
+
+---
+
+## 8.16 チャンク検索API（RAG全文検索）
+
+### 8.16.1 概要
+
+FTS5全文検索機能を利用したチャンク検索APIの設計。将来的にREST APIまたはElectron IPCとして実装予定。
+
+**実装状況**: データベース層（chunks-search.ts）のみ実装済み、API層は未実装
+
+### 8.16.2 検索エンドポイント（将来実装）
+
+#### キーワード検索
+
+**エンドポイント**: `POST /api/v1/chunks/search/keyword`
+
+**リクエストボディ**:
+
+| フィールド      | 型     | 必須 | 説明                                    |
+| --------------- | ------ | ---- | --------------------------------------- |
+| query           | string | Yes  | 検索クエリ（複数キーワードOR検索）      |
+| fileId          | string | No   | ファイルIDで絞り込み（ULID形式）        |
+| limit           | number | No   | 取得件数（デフォルト: 10、最大: 100）   |
+| offset          | number | No   | オフセット（デフォルト: 0）             |
+| highlightTags   | object | No   | ハイライトタグ（開始/終了タグ）         |
+| bm25ScaleFactor | number | No   | BM25スケールファクタ（デフォルト: 0.3） |
+
+**レスポンス**:
+
+| フィールド            | 型      | 説明                                 |
+| --------------------- | ------- | ------------------------------------ |
+| results               | array   | 検索結果配列                         |
+| results[].id          | string  | チャンクID                           |
+| results[].content     | string  | チャンク本文                         |
+| results[].highlighted | string  | ハイライト適用済み本文（オプション） |
+| results[].score       | number  | 関連度スコア（0.0 - 1.0）            |
+| results[].fileId      | string  | 親ファイルID                         |
+| results[].chunkIndex  | number  | ファイル内の順序                     |
+| totalCount            | number  | 総ヒット数                           |
+| hasMore               | boolean | 次ページの有無                       |
+
+#### フレーズ検索
+
+**エンドポイント**: `POST /api/v1/chunks/search/phrase`
+
+**リクエストボディ**: キーワード検索と同じ（queryは完全一致フレーズ）
+
+**動作**: 語順を保持した完全一致検索
+
+#### NEAR検索（近接検索）
+
+**エンドポイント**: `POST /api/v1/chunks/search/near`
+
+**リクエストボディ**:
+
+| フィールド   | 型       | 必須 | 説明                                |
+| ------------ | -------- | ---- | ----------------------------------- |
+| terms        | string[] | Yes  | 検索キーワード配列（2個以上）       |
+| nearDistance | number   | No   | 近接距離（デフォルト: 5、最大: 50） |
+| fileId       | string   | No   | ファイルIDで絞り込み                |
+| limit        | number   | No   | 取得件数                            |
+| offset       | number   | No   | オフセット                          |
+
+**動作**: 指定距離内にすべてのキーワードが出現するチャンクを検索
+
+### 8.16.3 性能目標
+
+| 指標               | 目標値（10,000チャンク） | 備考             |
+| ------------------ | ------------------------ | ---------------- |
+| キーワード検索速度 | < 100ms                  | 95パーセンタイル |
+| フレーズ検索速度   | < 100ms                  | 95パーセンタイル |
+| NEAR検索速度       | < 150ms                  | 95パーセンタイル |
+| 並行検索（10req）  | < 100ms（平均）          | スループット維持 |
+
+### 8.16.4 使用例（データベース層）
+
+現在実装済みのデータベース層APIの使用例：
+
+```typescript
+// キーワード検索
+import { searchChunksByKeyword } from "@repo/shared/db/queries/chunks-search";
+
+const results = await searchChunksByKeyword(db, {
+  query: "TypeScript JavaScript",
+  limit: 10,
+  offset: 0,
+});
+
+// フレーズ検索
+const phraseResults = await searchChunksByPhrase(db, {
+  query: "typed superset",
+  limit: 10,
+});
+
+// NEAR検索
+const nearResults = await searchChunksByNear(db, ["JavaScript", "library"], {
+  nearDistance: 5,
+  limit: 10,
+});
+```
+
+### 8.16.5 実装ステータス
+
+| レイヤー       | 実装状況    | 備考                       |
+| -------------- | ----------- | -------------------------- |
+| データベース層 | ✅ 実装済み | `queries/chunks-search.ts` |
+| サービス層     | 未実装      | 将来追加予定               |
+| REST API層     | 未実装      | Next.js App Router         |
+| Desktop IPC層  | 未実装      | Electron IPC               |
+
+**参照実装**: `packages/shared/src/db/queries/chunks-search.ts`
+
+---
+
+## 8.17 Embedding Generation API
+
+> **実装**: `packages/shared/src/services/embedding/`
+
+### 8.17.1 主要インターフェース
+
+#### ドキュメント埋め込み処理
+
+**メソッド**: `EmbeddingPipeline.process()`
+
+```typescript
+process(
+  input: PipelineInput,
+  config?: PipelineConfig,
+  onProgress?: (progress: PipelineProgress) => void
+): Promise<PipelineOutput>
+```
+
+**入力パラメータ**:
+
+| パラメータ                                | 型           | 説明                               |
+| ----------------------------------------- | ------------ | ---------------------------------- |
+| `input.documentId`                        | string       | ドキュメント識別子                 |
+| `input.documentType`                      | DocumentType | markdown / code / text             |
+| `input.text`                              | string       | ドキュメントテキスト               |
+| `input.metadata`                          | object       | メタデータ（オプション）           |
+| `config.chunking.strategy`                | string       | fixed / markdown / code / semantic |
+| `config.chunking.options.chunkSize`       | number       | 512（デフォルト）                  |
+| `config.embedding.modelId`                | string       | EMB-002等                          |
+| `config.embedding.batchOptions.batchSize` | number       | 50（デフォルト）                   |
+| `onProgress`                              | function     | 進捗コールバック                   |
+
+**出力パラメータ**:
+
+| フィールド              | 型         | 説明                   |
+| ----------------------- | ---------- | ---------------------- |
+| `documentId`            | string     | ドキュメントID         |
+| `chunks`                | Chunk[]    | 生成されたチャンク配列 |
+| `embeddings`            | number[][] | 埋め込みベクトル配列   |
+| `chunksProcessed`       | number     | 処理されたチャンク数   |
+| `embeddingsGenerated`   | number     | 生成された埋め込み数   |
+| `duplicatesRemoved`     | number     | 重複排除数             |
+| `cacheHits`             | number     | キャッシュヒット数     |
+| `totalProcessingTimeMs` | number     | 総処理時間（ms）       |
+| `stageTimings`          | object     | ステージ別処理時間     |
+
+#### 単一埋め込み生成
+
+**メソッド**: `EmbeddingService.embed()`
+
+```typescript
+embed(
+  text: string,
+  options?: EmbedOptions
+): Promise<EmbeddingResult>
+```
+
+**入力パラメータ**:
+
+| パラメータ        | 型           | 説明                 |
+| ----------------- | ------------ | -------------------- |
+| `text`            | string       | 埋め込み対象テキスト |
+| `options.timeout` | number       | タイムアウト（ms）   |
+| `options.retry`   | RetryOptions | リトライ設定         |
+
+**出力パラメータ**:
+
+| フィールド         | 型       | 説明             |
+| ------------------ | -------- | ---------------- |
+| `embedding`        | number[] | 埋め込みベクトル |
+| `tokenCount`       | number   | トークン数       |
+| `model`            | string   | 使用モデル       |
+| `processingTimeMs` | number   | 処理時間（ms）   |
+
+#### バッチ埋め込み生成
+
+**メソッド**: `EmbeddingService.embedBatch()`
+
+```typescript
+embedBatch(
+  texts: string[],
+  options?: BatchEmbedOptions
+): Promise<BatchEmbeddingResult>
+```
+
+**入力パラメータ**:
+
+| パラメータ                    | 型       | 説明                           |
+| ----------------------------- | -------- | ------------------------------ |
+| `texts`                       | string[] | テキスト配列                   |
+| `options.batchSize`           | number   | バッチサイズ（デフォルト: 50） |
+| `options.concurrency`         | number   | 並列数（デフォルト: 2）        |
+| `options.enableDeduplication` | boolean  | 重複排除（デフォルト: true）   |
+
+**出力パラメータ**:
+
+| フィールド         | 型         | 説明                 |
+| ------------------ | ---------- | -------------------- |
+| `embeddings`       | number[][] | 埋め込みベクトル配列 |
+| `duplicatesRemoved | number     | 重複排除数           |
+| `totalTimeMs`      | number     | 総処理時間（ms）     |
+
+#### チャンク生成
+
+**メソッド**: `ChunkingService.chunk()`
+
+```typescript
+chunk(
+  document: Document,
+  strategy: ChunkingStrategy,
+  options?: ChunkingOptions
+): Promise<Chunk[]>
+```
+
+**入力パラメータ**:
+
+| パラメータ            | 型               | 説明                            |
+| --------------------- | ---------------- | ------------------------------- |
+| `document.id`         | string           | ドキュメントID                  |
+| `document.type`       | DocumentType     | markdown / code / text          |
+| `document.content`    | string           | ドキュメント本文                |
+| `strategy`            | ChunkingStrategy | fixed / markdown / code / ...   |
+| `options.chunkSize`   | number           | チャンクサイズ（デフォルト512） |
+| `options.overlapSize` | number           | オーバーラップ（デフォルト50）  |
+
+**出力パラメータ**:
+
+| フィールド                | 型     | 説明                 |
+| ------------------------- | ------ | -------------------- |
+| `chunks[].content`        | string | チャンク本文         |
+| `chunks[].metadata.index` | number | チャンクインデックス |
+| `chunks[].metadata.type`  | string | チャンクタイプ       |
+| `chunks[].size`           | number | サイズ（文字数）     |
+
+### 8.17.2 エラーコード
+
+| エラーコード              | 説明                         | HTTPステータス |
+| ------------------------- | ---------------------------- | -------------- |
+| `EMB_INVALID_INPUT`       | 入力パラメータが不正         | 400            |
+| `EMB_PROVIDER_ERROR`      | プロバイダAPIエラー          | 502            |
+| `EMB_CIRCUIT_OPEN`        | サーキットブレーカーが開状態 | 503            |
+| `EMB_RATE_LIMIT_EXCEEDED` | レート制限超過               | 429            |
+| `EMB_TIMEOUT`             | タイムアウト                 | 504            |
+| `EMB_CACHE_ERROR`         | キャッシュエラー             | 500            |
+
+### 8.17.3 性能指標
+
+| 指標                         | 値      |
+| ---------------------------- | ------- |
+| 1000チャンク処理時間         | 2.17秒  |
+| メモリ使用量（1000チャンク） | 8.9MB   |
+| キャッシュヒット率           | 95%以上 |
+| 重複排除率                   | 10-15%  |
+| 差分更新高速化               | 4.34倍  |
 
 ---
 

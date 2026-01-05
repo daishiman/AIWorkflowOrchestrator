@@ -92,10 +92,10 @@ Tests       1143 passed (1143)
 
 | 観点                 | エージェント    | 結果 |
 | -------------------- | --------------- | ---- |
-| 要件充足性           | @req-analyst    | PASS |
-| アーキテクチャ整合性 | @arch-police    | PASS |
-| ドメインモデル妥当性 | @domain-modeler | PASS |
-| セキュリティ設計     | @sec-auditor    | PASS |
+| 要件充足性           | .claude/agents/req-analyst.md    | PASS |
+| アーキテクチャ整合性 | .claude/agents/arch-police.md    | PASS |
+| ドメインモデル妥当性 | .claude/agents/domain-modeler.md | PASS |
+| セキュリティ設計     | .claude/agents/sec-auditor.md    | PASS |
 
 **判定**: PASS
 
@@ -103,9 +103,9 @@ Tests       1143 passed (1143)
 
 | 観点               | エージェント  | 結果 |
 | ------------------ | ------------- | ---- |
-| コード品質         | @code-quality | PASS |
-| アーキテクチャ遵守 | @arch-police  | PASS |
-| テスト品質         | @unit-tester  | PASS |
+| コード品質         | .claude/agents/code-quality.md | PASS |
+| アーキテクチャ遵守 | .claude/agents/arch-police.md  | PASS |
+| テスト品質         | .claude/agents/unit-tester.md  | PASS |
 
 **判定**: PASS
 

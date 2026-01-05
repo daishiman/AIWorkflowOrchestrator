@@ -1,14 +1,20 @@
 ---
 description: |
   コンポーネントテスト自動生成（Vitest + React Testing Library）
+  実行は専門エージェントに委譲します。
+
+  🤖 起動エージェント:
+  - `.claude/agents/frontend-tester.md`: 担当エージェント
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: <component-path>
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
+
+  トリガーキーワード: component test, react testing, vitest, testing library, コンポーネントテスト, テスト生成
+argument-hint: "<component-path>"
 allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash
-argument-hint: <component-path>
+  - Task
 model: sonnet
 ---
 
@@ -16,138 +22,43 @@ model: sonnet
 
 ## 目的
 
-指定したReactコンポーネントに対して、Vitest + React Testing Libraryを使用したテストファイルを自動生成します。
+`.claude/commands/ai/generate-component-tests.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-## 使用方法
+## エージェント起動フロー
 
-```bash
-/ai:generate-component-tests <component-path>
-```
+### Phase 1: 担当エージェントの実行
 
-### 引数
+**目的**: 担当エージェントに関するタスクを実行し、結果を整理する
 
-- `component-path` (必須): テスト対象コンポーネントのパス
-  - 例: `packages/shared/ui/primitives/Button/Button.tsx`
-  - 例: `src/components/Header.tsx`
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-## 実行フロー
+**ゴール**: 担当エージェントの結果と次アクションが提示された状態
 
-### Phase 1: コンポーネント分析
+**起動エージェント**: `.claude/agents/frontend-tester.md`
 
-1. コンポーネントファイルを読み込み
-2. Props インターフェースの抽出
-3. バリアント、サイズ、状態の特定
-4. イベントハンドラーの特定
+Task ツールで `.claude/agents/frontend-tester.md` を起動:
 
-### Phase 2: テストケース設計
+**コンテキスト**:
 
-1. レンダリングテスト
-   - デフォルトProps でのレンダリング
-   - 各バリアントのレンダリング
-   - 各サイズのレンダリング
-   - children の正常表示
+- 引数: $ARGUMENTS（<component-path>）
 
-2. インタラクションテスト
-   - onClick イベント
-   - onChange イベント
-   - フォーカス/ブラー
-   - キーボード操作
+**依頼内容**:
 
-3. Props テスト
-   - 必須Props
-   - オプショナルProps
-   - デフォルト値
-   - エッジケース
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-4. アクセシビリティテスト
-   - jest-axe による自動検証
-   - ARIA属性の確認
-   - disabled 状態
+**期待成果物**:
 
-### Phase 3: テストファイル生成
+- `packages/shared/ui/primitives/Button/Button.tsx`
+- `src/components/Header.tsx`
 
-```typescript
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { axe, toHaveNoViolations } from 'jest-axe';
-import { describe, it, expect, vi } from 'vitest';
-import { ComponentName } from './ComponentName';
+**完了条件**:
 
-expect.extend(toHaveNoViolations);
-
-describe('ComponentName', () => {
-  describe('Rendering', () => {
-    it('renders correctly with default props', () => {
-      render(<ComponentName />);
-      expect(screen.getByRole('...')).toBeInTheDocument();
-    });
-  });
-
-  describe('Interactions', () => {
-    it('handles click events', async () => {
-      const handleClick = vi.fn();
-      render(<ComponentName onClick={handleClick} />);
-      await userEvent.click(screen.getByRole('...'));
-      expect(handleClick).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('Accessibility', () => {
-    it('should have no a11y violations', async () => {
-      const { container } = render(<ComponentName />);
-      const results = await axe(container);
-      expect(results).toHaveNoViolations();
-    });
-  });
-});
-```
-
-## エージェント起動
-
-Task ツールで `@frontend-tester` エージェントを起動し、以下を依頼:
-
-コンテキスト:
-
-- 対象コンポーネント: "$ARGUMENTS"
-
-@frontend-tester エージェントに以下を依頼:
-
-- Phase 1: コンポーネント分析（Props、バリアント、イベント）
-- Phase 2: テストケース設計（レンダリング、インタラクション、a11y）
-- Phase 3: テストファイル生成
-
-期待される成果物:
-
-- `{component-path}.test.tsx`
-- テストケース一覧（正常系、異常系、エッジケース）
-
-品質基準:
-
-- すべてのバリアントがテストされている
-- インタラクションテストが網羅されている
-- アクセシビリティテストが含まれている
-
-## 成果物
-
-- `{component-path}.test.tsx` - コンポーネントテストファイル
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
-# Button コンポーネントのテスト生成
-/ai:generate-component-tests packages/shared/ui/primitives/Button/Button.tsx
-
-# Header コンポーネントのテスト生成
-/ai:generate-component-tests src/components/Header.tsx
+/ai:generate-component-tests <component-path>
 ```
-
-## 注意事項
-
-- 既存のテストファイルがある場合は上書き確認
-- テスト実行後の結果確認を推奨
-- カバレッジレポートの確認を推奨
-
-## 参照
-
-- `.claude/agents/frontend-tester.md`
-- `.claude/skills/frontend-testing/SKILL.md`

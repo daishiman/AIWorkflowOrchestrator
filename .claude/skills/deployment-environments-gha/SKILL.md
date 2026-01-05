@@ -1,285 +1,148 @@
 ---
 name: deployment-environments-gha
 description: |
-  >
+  GitHub Actions の environments 設計、承認フロー、シークレット運用を体系化するスキル。
+  複数環境の保護ルールと段階的デプロイを整理する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Release It! / 適用: 環境分離 / 目的: 本番保護
+  • GitHub Actions / 適用: environments と approval / 目的: 標準的な運用設計
+  • The Pragmatic Programmer / 適用: 自動化 / 目的: 手順の一貫性
 
-  - `.claude/skills/deployment-environments-gha/resources/approval-workflows.md`: 承認者設定、待機タイマー、デプロイゲートの実装パターン
-  - `.claude/skills/deployment-environments-gha/resources/environment-config.md`: 環境設定、保護ルール、シークレット管理の詳細ガイド
-  - `.claude/skills/deployment-environments-gha/templates/deployment-workflow.yaml`: 複数環境への段階的デプロイの実装サンプル
-  - `.claude/skills/deployment-environments-gha/scripts/check-environment.mjs`: 環境ステータスと設定を確認する診断スクリプト
-
-  Use proactively when implementing deployment-environments-gha patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when setting up multi-environment deployments, approval gates, protection rules, or environment-specific secrets in GitHub Actions.
+  github actions environments, approval workflow, deployment gates, environment secrets
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
+# deployment-environments-gha
 
-# Deployment Environments Skill (GitHub Actions)
+## 概要
 
-GitHub Actions のデプロイメント環境機能を活用し、安全で管理された複数環境へのデプロイメントを実現するスキル。
+GitHub Actions の環境設計から承認・シークレット・デプロイ戦略までを一貫して支援する。
 
-## 使用タイミング
+## ワークフロー
 
-- **複数環境デプロイ**: development/staging/production への段階的デプロイ
-- **承認ワークフロー**: 本番環境への手動承認が必要な場合
-- **環境固有設定**: 環境ごとに異なるシークレットや変数を使用
-- **保護ルール適用**: 特定ブランチからのみデプロイ可能にする
-- **デプロイ履歴追跡**: 環境ごとのデプロイメント履歴を管理
+### Phase 1: 環境セットアップ
 
-## ディレクトリ構造
+**目的**: 環境と保護ルールを整理する。
 
-```
-deployment-environments-gha/
-├── SKILL.md                          # このファイル（~150-200行）
-├── resources/
-│   ├── environment-config.md         # 環境設定、保護ルール、シークレット
-│   └── approval-workflows.md         # 承認者設定、待機タイマー、ゲート
-├── templates/
-│   └── deployment-workflow.yaml      # 複数環境デプロイの実装例
-└── scripts/
-    └── check-environment.mjs         # 環境ステータスチェッカー
-```
+**アクション**:
 
-## コマンドリファレンス
+1. `references/environment-config.md` で設定方法を確認する。
+2. `assets/environment-setup-checklist.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-### リソース参照
+**Task**: `agents/environment-setup.md` を参照
 
-```bash
-# 環境設定の詳細（保護ルール、シークレット、変数）
-cat .claude/skills/deployment-environments-gha/resources/environment-config.md
+### Phase 2: 承認フロー設計
 
-# 承認ワークフロー設計（レビュアー、タイマー、ゲート）
-cat .claude/skills/deployment-environments-gha/resources/approval-workflows.md
-```
+**目的**: 承認ゲートとデプロイ条件を設計する。
 
-### テンプレート使用
+**アクション**:
 
-```bash
-# 複数環境デプロイメントワークフローのサンプル
-cat .claude/skills/deployment-environments-gha/templates/deployment-workflow.yaml
-```
+1. `references/approval-workflows.md` で承認パターンを確認する。
+2. `assets/approval-workflow-template.md` でフローを整理する。
+3. 例外条件を記録する。
 
-### スクリプト実行
+**Task**: `agents/approval-workflow-design.md` を参照
 
-```bash
-# 環境のステータスと設定を確認
-node .claude/skills/deployment-environments-gha/scripts/check-environment.mjs [environment-name]
-```
+### Phase 3: シークレット管理
 
-## 環境の基本構文
+**目的**: 環境別シークレットと変数を整理する。
 
-### 環境指定
+**アクション**:
 
-```yaml
-name: Deploy to Production
+1. `assets/secrets-plan-template.md` で要件を整理する。
+2. シークレットの管理方針を記録する。
+3. ローテーション計画を整理する。
 
-on:
-  push:
-    branches: [main]
+**Task**: `agents/secrets-management.md` を参照
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: https://example.com
+### Phase 4: デプロイ戦略設計
 
-    steps:
-      - name: Deploy
-        run: |
-          echo "Deploying to ${{ github.event.deployment.environment }}"
-          echo "URL: ${{ github.event.deployment.payload.url }}"
-```
+**目的**: 段階的デプロイと検証フローを設計する。
 
-### 複数環境への段階的デプロイ
+**アクション**:
 
-```yaml
-name: Multi-Environment Deploy
+1. `assets/deployment-workflow.yaml` で実装例を確認する。
+2. `agents/deployment-strategy.md` の観点で設計する。
+3. `scripts/log_usage.mjs` で記録を更新する。
 
-on:
-  push:
-    branches: [main]
+**Task**: `agents/deployment-strategy.md` を参照
 
-jobs:
-  deploy-dev:
-    runs-on: ubuntu-latest
-    environment: development
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Dev
-        run: echo "Deploying to development"
+## Task仕様ナビ
 
-  deploy-staging:
-    needs: deploy-dev
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Staging
-        run: echo "Deploying to staging"
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| environment-setup | Phase 1開始時 | 要件 | 環境設定メモ |
+| approval-workflow-design | Phase 2開始時 | 環境設定 | 承認フロー設計 |
+| secrets-management | Phase 3開始時 | 設定方針 | シークレット計画 |
+| deployment-strategy | Phase 4開始時 | 設計メモ | デプロイ戦略 |
 
-  deploy-prod:
-    needs: deploy-staging
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: https://prod.example.com
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Production
-        run: echo "Deploying to production"
-```
-
-### 環境固有のシークレットと変数
-
-```yaml
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: production
-
-    steps:
-      - name: Deploy with Environment Secrets
-        env:
-          API_KEY: ${{ secrets.API_KEY }} # 環境固有
-          DATABASE_URL: ${{ secrets.DATABASE_URL }} # 環境固有
-          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }} # 環境変数
-        run: |
-          echo "Deploying with API_KEY to $DEPLOY_ENV"
-          ./deploy.sh
-```
-
-### 条件付き環境選択
-
-```yaml
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
-
-    steps:
-      - name: Deploy
-        run: |
-          echo "Deploying to environment: ${{ github.event.deployment.environment }}"
-```
-
-## 環境保護ルールの概要
-
-### 主要な保護機能
-
-1. **Required Reviewers**: 手動承認を要求（最大 6 名のレビュアー）
-2. **Wait Timer**: デプロイ前の待機時間（最大 43,200 分 = 30 日）
-3. **Deployment Branches**: 特定ブランチからのみデプロイ許可
-4. **Environment Secrets**: 環境専用のシークレット管理
-
-### 設定場所
-
-```
-Repository → Settings → Environments → [環境名] → Protection rules
-```
-
-詳細は `resources/environment-config.md` を参照してください。
-
-## 承認ワークフローのパターン
-
-### パターン 1: 単一承認者
-
-```yaml
-# 環境設定で1名のレビュアーを指定
-environment:
-  name: production # Settings で Required reviewers: 1人設定済み
-```
-
-### パターン 2: 複数承認者
-
-```yaml
-# 環境設定で複数のレビュアーを指定
-environment:
-  name: production # Settings で Required reviewers: 3人設定済み
-```
-
-### パターン 3: 待機タイマー併用
-
-```yaml
-# 環境設定で待機時間を追加
-environment:
-  name: production # Settings で Wait timer: 10分 + Required reviewers設定済み
-```
-
-詳細なパターンと実装例は `resources/approval-workflows.md` を参照してください。
-
-## 関連スキル
-
-このスキルは以下のスキルと組み合わせて使用します:
-
-- **github-actions-syntax**: `.claude/skills/github-actions-syntax/SKILL.md`
-  - 基本的なワークフロー構文の理解
-- **secrets-management-gha**: `.claude/skills/secrets-management-gha/SKILL.md`
-  - 環境固有のシークレット管理
-- **conditional-execution-gha**: `.claude/skills/conditional-execution-gha/SKILL.md`
-  - 環境ごとの条件分岐
-- **workflow-security**: `.claude/skills/workflow-security/SKILL.md`
-  - セキュアなデプロイメント設計
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
-### 環境の命名規則
+### すべきこと
 
-```yaml
-# 推奨される環境名
-environments:
-  - development # または dev
-  - staging # または stage, uat
-  - production # または prod
-```
+| 推奨事項 | 理由 |
+| --- | --- |
+| 環境ごとに保護ルールを設定する | 誤デプロイを防止できる |
+| 承認フローを明文化する | 運用ミスを減らせる |
+| シークレットを分離する | 情報漏えいを防げる |
+| デプロイ戦略を段階化する | 影響を最小化できる |
 
-### 段階的デプロイメント
+### 避けるべきこと
 
-```yaml
-# 依存関係チェーンで安全性を確保
-jobs:
-  deploy-dev:
-    environment: development
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 全環境を同一設定で運用 | 本番保護が弱い |
+| 承認手順を省略 | 誤変更のリスク |
+| シークレットの共通化 | 露出リスクが増える |
+| 戻し手順を省略 | 障害対応が遅れる |
 
-  deploy-staging:
-    needs: deploy-dev
-    environment: staging
+## リソース参照
 
-  deploy-prod:
-    needs: deploy-staging
-    environment: production # 本番は最後
-```
+### scripts/（決定論的処理）
 
-### 環境 URL の活用
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/check-environment.mjs` | 環境設定チェック |
+| `scripts/validate-skill.mjs` | スキル構造検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-```yaml
-environment:
-  name: production
-  url: https://prod.example.com # デプロイメント履歴にリンク表示
-```
+### references/（詳細知識）
 
-## トラブルシューティング
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 承認設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | シークレット管理時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 運用時 |
+| 承認フロー | [references/approval-workflows.md](references/approval-workflows.md) | 承認設計時 |
+| 環境設定 | [references/environment-config.md](references/environment-config.md) | 設定時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-### 承認が表示されない
+### assets/（テンプレート・素材）
 
-原因: 環境保護ルールが未設定
-解決: Repository Settings → Environments → Protection rules を確認
+| アセット | 用途 |
+| --- | --- |
+| `assets/deployment-workflow.yaml` | デプロイYAML例 |
+| `assets/environment-setup-checklist.md` | 環境設定チェック |
+| `assets/approval-workflow-template.md` | 承認フロー整理 |
+| `assets/secrets-plan-template.md` | シークレット計画 |
 
-### 環境シークレットが使えない
+### 運用ファイル
 
-原因: 環境名の不一致、またはシークレット未設定
-解決: `environment:` の name と Settings の環境名が一致しているか確認
-
-### デプロイが特定ブランチで失敗
-
-原因: Deployment branches ルールで許可されていない
-解決: Protection rules → Deployment branches で対象ブランチを追加
-
-## さらに詳しく
-
-- **環境設定の完全ガイド**: `resources/environment-config.md`
-- **承認ワークフローの設計**: `resources/approval-workflows.md`
-- **実装テンプレート**: `templates/deployment-workflow.yaml`
-- **環境状態の確認**: `scripts/check-environment.mjs`
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

@@ -2,239 +2,130 @@
 name: transaction-script
 description: |
   マーティン・ファウラーのPofEAAに基づくトランザクションスクリプトパターンを専門とするスキル。
+  シンプルなビジネスロジックを手続き型で組織化し、CRUDベースのアプリケーション開発を効率化します。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Patterns of Enterprise Application Architecture (Martin Fowler) / 適用: パターン定義と適用条件 / 目的: 適切なパターン選択
+  • Designing Data-Intensive Applications (Martin Kleppmann) / 適用: データモデリング / 目的: 手続き型アプローチの妥当性検証
 
-  - `.claude/skills/transaction-script/resources/domain-model-comparison.md`: Domain Model Comparisonリソース
-  - `.claude/skills/transaction-script/resources/executor-pattern.md`: Executor Patternリソース
-  - `.claude/skills/transaction-script/resources/pattern-overview.md`: Pattern Overviewリソース
+  Trigger:
+  Use when implementing simple business logic, CRUD operations, building quick prototypes, or when domain model overhead is not justified.
+  transaction script, executor pattern, procedural business logic, simple CRUD, PofEAA
 
-  - `.claude/skills/transaction-script/templates/executor-template.md`: Executorテンプレート
-
-  - `.claude/skills/transaction-script/scripts/analyze-executor.mjs`: Analyze Executorスクリプト
-
-version: 1.0.0
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 ---
 
 # Transaction Script
 
 ## 概要
 
-トランザクションスクリプトは、マーティン・ファウラーが『Patterns of Enterprise Application Architecture (PofEAA)』で
-解説したビジネスロジック組織化パターンです。一つのスクリプト（手続き）で一つのビジネストランザクションを実現します。
-
-**核心原則**:
-
-- 一つのリクエストに対して一つのスクリプト
-- 手続き型のシンプルなロジック
-- 理解しやすく変更しやすい
-
-**対象ユーザー**:
-
-- ビジネスロジック実装エージェント（@logic-dev）
-- シンプルな CRUD 操作を実装する開発者
-- 既存の手続き型コードを整理したい開発者
-
-## リソース構造
-
-```
-transaction-script/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── pattern-overview.md               # パターンの詳細解説
-│   ├── domain-model-comparison.md        # ドメインモデルとの比較
-│   └── executor-pattern.md               # Executorパターンの実装
-├── scripts/
-│   └── analyze-executor.mjs              # Executor分析スクリプト
-└── templates/
-    └── executor-template.md              # Executor実装テンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# パターン詳細
-cat .claude/skills/transaction-script/resources/pattern-overview.md
-
-# ドメインモデルとの比較
-cat .claude/skills/transaction-script/resources/domain-model-comparison.md
-
-# Executorパターン
-cat .claude/skills/transaction-script/resources/executor-pattern.md
-```
-
-### スクリプト実行
-
-```bash
-# Executor分析（実装の品質チェック）
-node .claude/skills/transaction-script/scripts/analyze-executor.mjs src/features/
-```
-
-### テンプレート参照
-
-```bash
-# Executor実装テンプレート
-cat .claude/skills/transaction-script/templates/executor-template.md
-```
-
-## パターンの特徴
-
-### 構造
-
-各トランザクションは独立したスクリプト（関数/メソッド）として実装されます。
-
-**典型的な流れ**:
-
-1. 入力の検証
-2. データの取得（リポジトリ経由）
-3. ビジネスロジックの実行
-4. データの永続化
-5. 結果の返却
-
-### 利点
-
-- **シンプル**: 理解しやすい手続き型
-- **直接的**: リクエストと処理の 1 対 1 対応
-- **変更容易**: 影響範囲が限定的
-- **デバッグ容易**: 処理フローが明確
-
-### 欠点
-
-- **重複**: 類似ロジックが各スクリプトに重複しやすい
-- **スケール困難**: ロジックが複雑になると管理が困難
-- **ドメイン知識分散**: ビジネスルールが散在しやすい
-
-## 適用条件
-
-### トランザクションスクリプトが適切な場合
-
-- [ ] ビジネスロジックがシンプル
-- [ ] CRUD 操作が中心
-- [ ] ドメインモデルが不要または過剰
-- [ ] チームが手続き型に慣れている
-- [ ] 短期プロジェクト
-
-### ドメインモデルを検討すべき場合
-
-- [ ] ビジネスルールが複雑
-- [ ] 同じルールが複数箇所で必要
-- [ ] エンティティ間の関係が複雑
-- [ ] 長期的な保守が必要
-
-**詳細**: `resources/domain-model-comparison.md`
-
-## Executor パターン
-
-### 概要
-
-プロジェクト固有のトランザクションスクリプト実装パターンです。
-各機能のビジネスロジックを Executor クラスとして実装します。
-
-### 構造
-
-```
-features/
-└── [機能名]/
-    ├── schema.ts      # 入出力スキーマ（Zod）
-    ├── executor.ts    # ビジネスロジック（Transaction Script）
-    └── __tests__/     # テスト
-```
-
-### インターフェース
-
-```typescript
-interface IWorkflowExecutor {
-  execute(input: Input): Promise<Output>;
-}
-```
-
-**詳細**: `resources/executor-pattern.md`
+マーティン・ファウラーのPofEAAに基づくトランザクションスクリプトパターンを専門とするスキル。
+ビジネスロジックを手続き型で組織化し、各リクエストに対して一つのスクリプトが直接処理を実行するパターンを提供します。
 
 ## ワークフロー
 
-### トランザクションスクリプト実装
+### Phase 1: 要件分析
 
-```
-1. 要件の理解
-   ↓
-2. 入出力の定義（スキーマ）
-   ↓
-3. テストの作成（TDD）
-   ↓
-4. スクリプトの実装
-   - 入力検証
-   - データ取得
-   - ロジック実行
-   - 永続化
-   - 結果返却
-   ↓
-5. リファクタリング
-   ↓
-6. 検証
-```
+**目的**: ビジネス要件がトランザクションスクリプトに適しているか判断
 
-### 判断フロー
+**アクション**:
 
-```
-ビジネスロジック実装
-  ↓
-[質問] ロジックはシンプルか？
-  ├─ Yes → Transaction Script
-  └─ No  → Domain Modelを検討
-  ↓
-[質問] 同じルールが複数箇所で必要か？
-  ├─ Yes → 共通関数に抽出、またはDomain Model
-  └─ No  → Transaction Scriptを継続
-```
+1. ビジネス要件の複雑度を評価
+2. CRUD操作の比率を確認
+3. `references/pattern-overview.md` でパターン適用条件を確認
+4. `references/domain-model-comparison.md` で代替パターンと比較
+
+**Task**: `agents/analyze-requirements.md` を参照
+
+### Phase 2: Executor設計
+
+**目的**: トランザクションスクリプトの具体的な設計を行う
+
+**アクション**:
+
+1. スクリプトの入出力インターフェースを定義
+2. 処理フロー（検証→取得→ロジック→永続化→返却）を設計
+3. `references/executor-pattern.md` で実装パターンを参照
+4. `assets/executor-template.md` をベースに設計
+
+**Task**: `agents/design-executor.md` を参照
+
+### Phase 3: 実装
+
+**目的**: 設計に基づいてトランザクションスクリプトを実装
+
+**アクション**:
+
+1. Executorクラス/関数を実装
+2. エラーハンドリングを追加
+3. `scripts/analyze-executor.mjs` で設計検証
+4. `scripts/validate-skill.mjs` でスキル構造を確認
+
+**Task**: `agents/implement-executor.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task                 | 起動タイミング | 入力             | 出力               |
+| -------------------- | -------------- | ---------------- | ------------------ |
+| analyze-requirements | Phase 1開始時  | ビジネス要件     | パターン適用判断書 |
+| design-executor      | Phase 2開始時  | パターン適用判断 | Executor設計書     |
+| implement-executor   | Phase 3開始時  | Executor設計書   | 実装済みスクリプト |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **一つのスクリプトは一つのトランザクション**:
-   - 責任を明確に
-   - 関数名でトランザクションを表現
-
-2. **共通ロジックの抽出**:
-   - 重複を発見したら共通関数に
-   - ただし早すぎる抽象化は避ける
-
-3. **テスト駆動**:
-   - スクリプトごとにテストを作成
-   - エッジケースをカバー
+- 一つのスクリプトは一つのトランザクション
+- 明確な関数名でトランザクションを表現（例: `processOrder`, `cancelSubscription`）
+- 共通ロジックは関数に抽出
+- 処理フローを上から下へ読める形で記述
 
 ### 避けるべきこと
 
-1. **巨大なスクリプト**:
-   - ❌ 100 行を超えるスクリプト
-   - ✅ 適切に分割して呼び出し
+- 巨大なスクリプト（100行超）
+- 深いネスト（3段階超）
+- 過度な抽象化（シンプルさを維持）
+- ドメインモデルが必要なほど複雑なロジック
 
-2. **過度な抽象化**:
-   - ❌ シンプルなロジックに複雑なパターンを適用
-   - ✅ シンプルさを維持
+## リソース参照
 
-3. **ビジネスルールの散在**:
-   - ❌ 同じルールが複数スクリプトに重複
-   - ✅ 共通関数に抽出
+### references/（詳細知識）
 
-## 関連スキル
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細分析時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| パターン概要 | [references/pattern-overview.md](references/pattern-overview.md) | 構造・実装・適用条件確認時 |
+| Executor Pattern | [references/executor-pattern.md](references/executor-pattern.md) | Executor実装時 |
+| Domain Model比較 | [references/domain-model-comparison.md](references/domain-model-comparison.md) | 代替パターン検討時 |
 
-- **refactoring-techniques** (`.claude/skills/refactoring-techniques/SKILL.md`): コードの改善
-- **tdd-red-green-refactor** (`.claude/skills/tdd-red-green-refactor/SKILL.md`): テスト駆動開発
-- **domain-driven-design** (`.claude/skills/domain-driven-design/SKILL.md`): 複雑なドメインの場合
+### scripts/（決定論的処理）
 
-## 参考文献
+| スクリプト             | 用途               | 使用例                                            |
+| ---------------------- | ------------------ | ------------------------------------------------- |
+| `analyze-executor.mjs` | Executor設計の検証 | `node scripts/analyze-executor.mjs --path <file>` |
+| `validate-skill.mjs`   | スキル構造検証     | `node scripts/validate-skill.mjs`                 |
+| `log_usage.mjs`        | 使用記録           | `node scripts/log_usage.mjs --result success`     |
 
-- **『Patterns of Enterprise Application Architecture』** マーティン・ファウラー著
-  - 第 9 章: Domain Logic Patterns
-  - Transaction Script (110-115 ページ)
+### assets/（テンプレート）
+
+| テンプレート           | 用途                     |
+| ---------------------- | ------------------------ |
+| `executor-template.md` | Executor実装テンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                       |
-| ---------- | ---------- | ---------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版作成 - PofEAA のトランザクションスクリプト |
+| Version | Date       | Changes                                                 |
+| ------- | ---------- | ------------------------------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md準拠、Anchors/Trigger追加、ワークフロー改善 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added             |

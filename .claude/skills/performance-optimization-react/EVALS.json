@@ -1,0 +1,67 @@
+{
+  "skill_name": "performance-optimization-react",
+  "current_level": 2,
+  "levels": {
+    "1": {
+      "description": "React DevTools Profilerで測定し、ボトルネックを特定できる",
+      "criteria": [
+        "Profilerでレンダリング時間を測定できる",
+        "再レンダリング回数を記録できる",
+        "ボトルネックコンポーネントを特定できる"
+      ]
+    },
+    "2": {
+      "description": "React.memo、useCallback、useMemoを適切に適用できる",
+      "criteria": [
+        "測定に基づいて最適化手法を選択できる",
+        "依存配列を正確に設定できる",
+        "最適化前後の効果を測定できる"
+      ]
+    },
+    "3": {
+      "description": "Context分割やコンポーネント設計でパフォーマンスを最適化できる",
+      "criteria": [
+        "Context更新の影響範囲を分析できる",
+        "適切なContext分割戦略を設計できる",
+        "コンポーネント構造を最適化できる"
+      ]
+    },
+    "4": {
+      "description": "体系的なパフォーマンス最適化プロセスを確立できる",
+      "criteria": [
+        "チーム全体で測定駆動の最適化を実践できる",
+        "最適化プロセスを文書化・共有できる",
+        "継続的なパフォーマンス監視体制を構築できる"
+      ]
+    }
+  },
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "average_satisfaction": 0.0,
+    "last_evaluated": "2026-01-02T06:00:00Z",
+    "phase_metrics": {
+      "analyze": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "optimize": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "validate": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      }
+    }
+  },
+  "quality_indicators": {
+    "rendering_time_reduction_avg": 0.0,
+    "re-render_count_reduction_avg": 0.0,
+    "optimization_accuracy": 0.0
+  }
+}

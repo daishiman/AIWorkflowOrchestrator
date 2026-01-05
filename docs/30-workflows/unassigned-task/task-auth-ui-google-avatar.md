@@ -188,7 +188,7 @@ Phase 6: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: TDD原則に基づいたテスト設計
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -338,24 +338,24 @@ pnpm --filter @repo/desktop test:run
 
 | エージェント    | レビュー観点 |
 | --------------- | ------------ |
-| `@code-quality` | コード品質   |
-| `@unit-tester`  | テスト品質   |
-| `@sec-auditor`  | セキュリティ |
+| `.claude/agents/code-quality.md` | コード品質   |
+| `.claude/agents/unit-tester.md`  | テスト品質   |
+| `.claude/agents/sec-auditor.md`  | セキュリティ |
 
 #### レビューチェックリスト
 
-**コード品質** (`@code-quality`)
+**コード品質** (`.claude/agents/code-quality.md`)
 
 - [x] フォールバックロジックの正確性
 - [x] 型安全性の確保
 - [x] コメントの適切性
 
-**テスト品質** (`@unit-tester`)
+**テスト品質** (`.claude/agents/unit-tester.md`)
 
 - [x] 既存テストが通過
 - [ ] toLinkedProvider のユニットテスト追加
 
-**セキュリティ** (`@sec-auditor`)
+**セキュリティ** (`.claude/agents/sec-auditor.md`)
 
 - [x] 外部データの適切な取り扱い
 - [x] nullチェックの実施

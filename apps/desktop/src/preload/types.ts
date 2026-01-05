@@ -1,5 +1,16 @@
 // IPC Request/Response Types
 
+import type {
+  OpenFileDialogRequest,
+  OpenFileDialogResponse,
+  GetFileMetadataRequest,
+  GetFileMetadataResponse,
+  GetMultipleFileMetadataRequest,
+  GetMultipleFileMetadataResponse,
+  ValidateFilePathRequest,
+  ValidateFilePathResponse,
+} from "@repo/shared/schemas";
+
 // File operations
 export interface GetFileTreeRequest {
   rootPath: string;
@@ -129,6 +140,7 @@ export interface AIChatRequest {
   message: string;
   conversationId?: string;
   ragEnabled?: boolean;
+  systemPrompt?: string;
 }
 
 export interface AIChatResponse {
@@ -851,6 +863,21 @@ export interface ElectronAPI {
     ) => Promise<ReplaceWorkspaceAllResponse>;
     undo: (request: ReplaceUndoRequest) => Promise<ReplaceUndoResponse>;
     redo: (request: ReplaceRedoRequest) => Promise<ReplaceRedoResponse>;
+  };
+
+  fileSelection: {
+    openDialog: (
+      request: OpenFileDialogRequest,
+    ) => Promise<OpenFileDialogResponse>;
+    getMetadata: (
+      request: GetFileMetadataRequest,
+    ) => Promise<GetFileMetadataResponse>;
+    getMultipleMetadata: (
+      request: GetMultipleFileMetadataRequest,
+    ) => Promise<GetMultipleFileMetadataResponse>;
+    validatePath: (
+      request: ValidateFilePathRequest,
+    ) => Promise<ValidateFilePathResponse>;
   };
 
   // Generic invoke for IPC calls

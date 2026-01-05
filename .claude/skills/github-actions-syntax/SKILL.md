@@ -1,191 +1,125 @@
 ---
 name: github-actions-syntax
 description: |
-    GitHub Actions ワークフロー構文の完全リファレンス。
-    専門分野:
-    - ワークフロー構文: YAML構造、イベントトリガー、ジョブ・ステップ定義
-    - トリガー設計: push/pull_request/schedule/workflow_dispatch/workflow_call
-    - 権限管理: permissions設定、最小権限の原則
-    - 実行制御: concurrency、条件分岐、デフォルト設定
-    使用タイミング:
-    - ワークフローファイル(.github/workflows/*.yml)を作成・編集する時
-    - イベントトリガーを設定する時
-    - ジョブやステップの構文エラーを解決する時
-    - パーミッション、環境変数、条件分岐を設定する時
+  GitHub Actionsワークフローの構文とイベントトリガー、ジョブ定義、ステップ実行、パーミッション管理、環境変数設定について実装指針を提供する。CI/CDパイプラインの構築と管理を支援。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • GitHub Actions Workflow Syntax / 適用: ワークフロー構造設計 / 目的: 公式構文に準拠した実装
+  • YAML 1.2 Specification / 適用: 構文検証・パース / 目的: 正確なYAML記述
+  • 12-Factor App (Config) / 適用: 環境変数設計 / 目的: 環境非依存の設定管理
 
-  - `.claude/skills/github-actions-syntax/resources/event-triggers.md`: push/pull_request/schedule/workflow_dispatch等のイベントトリガー詳細
-  - `.claude/skills/github-actions-syntax/resources/jobs-and-steps.md`: ジョブ・ステップ定義とランナー環境選択ガイド
-  - `.claude/skills/github-actions-syntax/resources/permissions-and-env.md`: permissions設定と環境変数管理の詳細
-  - `.claude/skills/github-actions-syntax/resources/workflow-syntax-reference.md`: GitHub Actions YAML構文完全リファレンス
-  - `.claude/skills/github-actions-syntax/templates/workflow-template.yaml`: 基本CI/CDワークフローテンプレート
-  - `.claude/skills/github-actions-syntax/scripts/validate-workflow.mjs`: ワークフロー構文検証スクリプト
-
-  Use proactively when implementing github-actions-syntax patterns or solving related problems.
-version: 1.0.0
+  Trigger:
+  Use when creating or editing GitHub Actions workflow files, troubleshooting syntax errors, configuring event triggers, setting up job dependencies and matrix strategies, or managing permissions and environment variables.
+  github actions, workflow syntax, yaml, event trigger, jobs, steps, permissions, environment variables
+allowed-tools:
+  - Glob
+  - Grep
+  - Read
+  - Edit
+  - Write
+  - Bash
 ---
 
-# GitHub Actions Workflow Syntax
+# GitHub Actions Syntax
 
 ## 概要
 
-このスキルは、GitHub Actions ワークフローファイルの YAML 構文を体系的に提供します。
-ワークフローの基本構造からイベントトリガー、ジョブ・ステップ定義、権限管理まで網羅します。
-
-**主要な価値**:
-
-- ワークフロー構文の正確な理解と適用
-- トリガー設計による効率的な CI/CD
-- 最小権限の原則に基づくセキュアな設定
-
-## リソース構造
-
-```
-github-actions-syntax/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── workflow-syntax-reference.md            # 完全な構文リファレンス
-│   ├── event-triggers.md                       # イベントトリガー詳細
-│   ├── jobs-and-steps.md                       # ジョブ・ステップ定義詳細
-│   └── permissions-and-env.md                  # 権限・環境変数詳細
-├── templates/
-│   └── workflow-template.yaml                  # CI/CDワークフローテンプレート
-└── scripts/
-    └── validate-workflow.mjs                   # ワークフロー構文検証スクリプト
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# 完全な構文リファレンス
-cat .claude/skills/github-actions-syntax/resources/workflow-syntax-reference.md
-
-# イベントトリガー詳細
-cat .claude/skills/github-actions-syntax/resources/event-triggers.md
-
-# ジョブ・ステップ定義
-cat .claude/skills/github-actions-syntax/resources/jobs-and-steps.md
-
-# 権限・環境変数
-cat .claude/skills/github-actions-syntax/resources/permissions-and-env.md
-```
-
-### テンプレート参照
-
-```bash
-# CI/CDワークフローテンプレート
-cat .claude/skills/github-actions-syntax/templates/workflow-template.yaml
-```
-
-### スクリプト実行
-
-```bash
-# ワークフロー構文検証
-node .claude/skills/github-actions-syntax/scripts/validate-workflow.mjs <workflow-file.yml>
-```
-
-## クイックリファレンス
-
-### 基本テンプレート
-
-```yaml
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-permissions:
-  contents: read
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm test
-```
-
-### 主要なイベントトリガー
-
-| イベント            | 説明                       | 主な用途               |
-| ------------------- | -------------------------- | ---------------------- |
-| `push`              | コミットのプッシュ         | CI/CD、テスト実行      |
-| `pull_request`      | PR 作成・更新              | コードレビュー、テスト |
-| `workflow_dispatch` | 手動トリガー               | オンデマンド実行       |
-| `schedule`          | cron スケジュール          | 定期実行               |
-| `workflow_call`     | 他ワークフローから呼び出し | 再利用可能ワークフロー |
-
-### 主要なパーミッション
-
-| スコープ        | 説明                         |
-| --------------- | ---------------------------- |
-| `contents`      | リポジトリコンテンツ読み書き |
-| `pull-requests` | PR 操作                      |
-| `packages`      | GitHub Packages 公開         |
-| `deployments`   | デプロイ管理                 |
-| `issues`        | Issue 操作                   |
+GitHub Actionsワークフロー構文の実装ガイド。ワークフローファイルの基本構造、イベントトリガー、ジョブ定義、ステップ実行、パーミッション管理、環境変数設定をカバー。
 
 ## ワークフロー
 
-### Phase 1: 構造設計
+### Phase 1: 構文設計
 
-1. イベントトリガーの決定
-2. ジョブ構成の設計
-3. 依存関係（needs）の定義
+**目的**: ワークフローの目的と構造を設計
 
-**リソース**: `resources/event-triggers.md`
+**アクション**:
 
-### Phase 2: ジョブ・ステップ定義
+1. ワークフローの目的（CI/CD/自動化）を明確化
+2. 必要なイベントトリガーを特定
+3. ジョブの依存関係と実行順序を設計
 
-1. ランナー環境の選択
-2. ステップの定義（uses/run）
-3. 環境変数の設定
+**Task**: `agents/design-workflow.md` を参照
 
-**リソース**: `resources/jobs-and-steps.md`
+### Phase 2: 実装
 
-### Phase 3: 権限・セキュリティ設定
+**目的**: ワークフローYAMLを実装
 
-1. パーミッションの設定
-2. シークレットの参照
-3. 同時実行制御
+**アクション**:
 
-**リソース**: `resources/permissions-and-env.md`
+1. `assets/workflow-template.yaml` をベースに作成
+2. イベントトリガー、ジョブ、ステップを実装
+3. パーミッションと環境変数を設定
 
-## 判断基準
+**Task**: `agents/implement-workflow.md` を参照
 
-### ワークフロー作成時
+### Phase 3: 検証
 
-- [ ] 必要最小限のパーミッションが設定されているか？
-- [ ] 適切なイベントトリガーが設定されているか？
-- [ ] ジョブの依存関係が正しく定義されているか？
-- [ ] タイムアウトが設定されているか？
+**目的**: ワークフロー構文を検証
 
-### レビュー時
+**アクション**:
 
-- [ ] 構文エラーがないか？
-- [ ] 権限が過剰ではないか？
-- [ ] シークレットが適切に使用されているか？
-- [ ] 同時実行制御が必要か？
+1. `scripts/validate-workflow.mjs` で構文検証
+2. ローカルまたはテストブランチで動作確認
+3. `scripts/log_usage.mjs` で記録
 
-## 関連スキル
+**Task**: `agents/validate-workflow.md` を参照
 
-- **github-actions-expressions** (`.claude/skills/github-actions-expressions/SKILL.md`): 式と関数
-- **github-actions-debugging** (`.claude/skills/github-actions-debugging/SKILL.md`): デバッグ手法
-- **reusable-workflows** (`.claude/skills/reusable-workflows/SKILL.md`): 再利用可能ワークフロー
-- **matrix-builds** (`.claude/skills/matrix-builds/SKILL.md`): マトリックス戦略
-- **workflow-security** (`.claude/skills/workflow-security/SKILL.md`): セキュリティベストプラクティス
-- **caching-strategies-gha** (`.claude/skills/caching-strategies-gha/SKILL.md`): キャッシュ戦略
+## Task仕様ナビ
+
+| Task               | 起動タイミング | 入力       | 出力               |
+| ------------------ | -------------- | ---------- | ------------------ |
+| design-workflow    | Phase 1開始時  | 要件・目的 | ワークフロー設計書 |
+| implement-workflow | Phase 2開始時  | 設計書     | ワークフローYAML   |
+| validate-workflow  | Phase 3開始時  | YAML       | 検証レポート       |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## ベストプラクティス
+
+### すべきこと
+
+- ワークフローファイルを作成する前に構文仕様を確認する
+- イベントトリガーを適切に設定して不要な実行を防ぐ
+- ジョブに明示的なpermissionsを設定する
+- シークレットはsecretsコンテキスト経由で参照する
+- マトリックス戦略で複数環境テストを効率化する
+- キャッシュを活用して実行時間を短縮する
+
+### 避けるべきこと
+
+- シークレットをワークフロー定義やログに露出しない
+- 過度に複雑なワークフロー設計で保守性を損なわない
+- 不必要なジョブの並列実行でリソースを浪費しない
+- キャッシュキーの設計が不適切でキャッシュミスを多発させない
+- パーミッションを最小限の原則に従わずに設定しない
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース     | パス                                                                 | 内容                 |
+| ------------ | -------------------------------------------------------------------- | -------------------- |
+| 基礎知識     | See [references/basics.md](references/basics.md)                     | ワークフロー基本構造 |
+| 構文パターン | See [references/patterns.md](references/patterns.md)                 | 実装パターン集       |
+| 構文一覧     | See [references/syntax-reference.md](references/syntax-reference.md) | 完全構文リファレンス |
+
+### scripts/（決定論的処理）
+
+| スクリプト              | 用途               | 使用例                                            |
+| ----------------------- | ------------------ | ------------------------------------------------- |
+| `validate-workflow.mjs` | ワークフロー検証   | `node scripts/validate-workflow.mjs workflow.yml` |
+| `log_usage.mjs`         | フィードバック記録 | `node scripts/log_usage.mjs --result success`     |
+
+### assets/（テンプレート）
+
+| テンプレート             | 用途                         |
+| ------------------------ | ---------------------------- |
+| `workflow-template.yaml` | ワークフロー基本テンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-27 | 初版作成 |
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、構造再編成 |
+| 1.1.0   | 2025-12-31 | Anchor/Trigger形式に改善             |
+| 1.0.0   | 2025-12-24 | 初版                                 |

@@ -1,290 +1,151 @@
 ---
 name: zod-validation
 description: |
-  Zodライブラリによるランタイムバリデーションと型推論を専門とするスキル。
+  Zodライブラリによるランタイムバリデーション、スキーマ定義、TypeScript型推論を専門とするスキル。
+  型安全なバリデーションロジックを設計・実装し、API・フォーム・ドメイン層での検証を網羅する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Zod Official Documentation / 適用: スキーマAPI・バリデーション / 目的: 公式パターン準拠
+  • Effective TypeScript (Dan Vanderkam) / 適用: 型設計・型推論 / 目的: ランタイム安全性担保
+  • @hookform/resolvers / 適用: フォーム統合 / 目的: React Hook Form連携
 
-  - `.claude/skills/zod-validation/resources/custom-validation-techniques.md`: Custom Validation Techniquesリソース
-  - `.claude/skills/zod-validation/resources/performance-optimization.md`: Performance Optimizationリソース
-  - `.claude/skills/zod-validation/resources/schema-definition-patterns.md`: Schema Definition Patternsリソース
-  - `.claude/skills/zod-validation/resources/type-inference-guide.md`: Type Inference Guideリソース
-
-  - `.claude/skills/zod-validation/templates/api-schema-template.ts`: Api Schemaテンプレート
-  - `.claude/skills/zod-validation/templates/schema-template.ts`: Schemaテンプレート
-
-  - `.claude/skills/zod-validation/scripts/validate-schema.mjs`: Validate Schemaスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when implementing runtime validation with Zod, defining TypeScript schemas, integrating form validation (react-hook-form), or validating API requests/responses. Keywords: zod, schema, safeParse, refine, z.infer, zodResolver.
+allowed-tools:
+  - Bash
+  - Edit
+  - Glob
+  - Grep
+  - Read
+  - Write
+  - Task
 ---
 
 # Zod Validation
 
 ## 概要
 
-このスキルは、Zod ライブラリを使用したランタイムバリデーションと型推論に関する包括的な知識を提供します。
-Douglas Crockford が提唱する「堅牢なデータ構造」の設計原則を適用し、TypeScript の型システムと
-ランタイムバリデーションをシームレスに統合します。
+Zodライブラリによるランタイムバリデーションとスキーマ定義を専門とするスキル。
+TypeScriptの型推論と組み合わせて、コンパイル時とランタイムの両方で型安全性を確保する。
 
-**主要な価値**:
+## ワークフロー
 
-- TypeScript 型とランタイムバリデーションの完全な統合
-- 再利用可能で保守性の高いスキーマ設計
-- パフォーマンスを考慮した最適化されたバリデーション
+### Phase 1: スキーマ設計
 
-**対象ユーザー**:
+**目的**: データ構造からZodスキーマを設計する
 
-- スキーマ定義を行うエージェント（@schema-def）
-- 入出力バリデーションを実装する開発者
-- 型安全な API を設計するチーム
+**アクション**:
 
-## リソース構造
+1. バリデーション対象のデータ構造を分析
+2. TypeScript型からZodスキーマへマッピング
+3. 制約（min/max/regex/refine）を追加
+4. 再利用可能なスキーマパターンを適用
+5. `z.infer<typeof schema>` で型推論を確認
 
-```
-zod-validation/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── schema-definition-patterns.md          # スキーマ定義パターン
-│   ├── type-inference-guide.md                # 型推論の詳細ガイド
-│   ├── custom-validation-techniques.md        # カスタムバリデーション技法
-│   └── performance-optimization.md            # パフォーマンス最適化
-├── scripts/
-│   └── validate-schema.mjs                    # スキーマ検証スクリプト
-└── templates/
-    ├── schema-template.ts                     # 標準スキーマテンプレート
-    └── api-schema-template.ts                 # APIスキーマテンプレート
-```
+**Task**: `agents/schema-designer.md` を参照
 
-## コマンドリファレンス
+### Phase 2: バリデーション実装
 
-### リソース読み取り
+**目的**: 設計したスキーマでバリデーションロジックを実装する
 
-```bash
-# スキーマ定義パターン
-cat .claude/skills/zod-validation/resources/schema-definition-patterns.md
+**アクション**:
 
-# 型推論ガイド
-cat .claude/skills/zod-validation/resources/type-inference-guide.md
+1. parse/safeParseの適切な選択
+2. エラーハンドリングの実装
+3. カスタムバリデーション（refine/superRefine）の実装
+4. エラーメッセージのフォーマット
 
-# カスタムバリデーション技法
-cat .claude/skills/zod-validation/resources/custom-validation-techniques.md
+**Task**: `agents/validation-implementer.md` を参照
 
-# パフォーマンス最適化
-cat .claude/skills/zod-validation/resources/performance-optimization.md
-```
+### Phase 3: 統合
 
-### スクリプト実行
+**目的**: フレームワークやAPIにバリデーションを統合する
 
-```bash
-# スキーマファイルの検証
-node .claude/skills/zod-validation/scripts/validate-schema.mjs <schema.ts>
-```
+**アクション**:
 
-### テンプレート参照
+- **フォーム統合**: react-hook-form + zodResolver
+- **API統合**: リクエスト/レスポンス検証
 
-```bash
-# 標準スキーマテンプレート
-cat .claude/skills/zod-validation/templates/schema-template.ts
+**Task**: `agents/form-integrator.md` または `agents/api-validator.md` を参照
 
-# APIスキーマテンプレート
-cat .claude/skills/zod-validation/templates/api-schema-template.ts
-```
+### Phase 4: 検証と記録
 
-## いつ使うか
+**目的**: 成果物の検証と実行記録の保存
 
-### シナリオ 1: 新機能のスキーマ定義
+**アクション**:
 
-**状況**: 新機能の入出力データ構造を定義する必要がある
+1. `scripts/validate-schema.mjs` でスキーマ構造を確認
+2. `scripts/validate-skill.mjs` でスキル構造を確認
+3. `scripts/log_usage.mjs` で記録を残す
 
-**適用条件**:
+## Task仕様ナビ
 
-- [ ] 入力データの型と制約が明確に定義されている
-- [ ] TypeScript とランタイムの両方で型を保証したい
-- [ ] 再利用可能なスキーマパーツが必要
+| Task               | リソース                         | 説明                                 |
+| ------------------ | -------------------------------- | ------------------------------------ |
+| スキーマ設計       | agents/schema-designer.md        | データ構造からZodスキーマを設計      |
+| バリデーション実装 | agents/validation-implementer.md | スキーマを使用したバリデーション実装 |
+| フォーム統合       | agents/form-integrator.md        | react-hook-form等との統合            |
+| API検証            | agents/api-validator.md          | APIリクエスト/レスポンス検証         |
 
-**期待される成果**: 型安全で再利用可能な Zod スキーマ
+## ベストプラクティス
 
-### シナリオ 2: API バリデーションの実装
+### すべきこと
 
-**状況**: API エンドポイントのリクエスト/レスポンスを検証する
+- **型推論を活用する**: `z.infer<typeof schema>` を使用して型安全性を確保
+- **safeParseを使用する**: ユーザー入力には例外をスローしないsafeParseを使用
+- **エラーメッセージをカスタマイズする**: ユーザーフレンドリーなメッセージを定義
+- **スキーマを再利用する**: 共通パターンは抽出して再利用（extend, merge, pick, omit）
+- **段階的バリデーション**: 複雑なバリデーションはrefine/superRefineで実装
+- 詳細は `references/schema-patterns.md` と `references/validation-patterns.md` を参照
 
-**適用条件**:
+### 避けるべきこと
 
-- [ ] リクエストボディの構造検証が必要
-- [ ] レスポンスの型保証が必要
-- [ ] エラーメッセージのカスタマイズが必要
+- **parseを直接使用しない**: ユーザー入力にはsafeParseを使用（例外回避）
+- **バリデーションロジックを分散させない**: 一箇所にまとめる
+- **非同期バリデーションを過度に使用しない**: パフォーマンスへの影響を考慮
+- **エラーハンドリングを省略しない**: すべてのバリデーション結果を処理
+- **any型を使用しない**: `z.any()` の使用は最小限に
 
-**期待される成果**: 堅牢な API バリデーションロジック
+## リソース参照
 
-### シナリオ 3: フォームバリデーション
+### agents/（Task仕様書）
 
-**状況**: ユーザー入力のクライアントサイド検証を実装する
+| ファイル                         | 説明                           |
+| -------------------------------- | ------------------------------ |
+| agents/schema-designer.md        | スキーマ設計のTask仕様書       |
+| agents/validation-implementer.md | バリデーション実装のTask仕様書 |
+| agents/form-integrator.md        | フォーム統合のTask仕様書       |
+| agents/api-validator.md          | API検証のTask仕様書            |
 
-**適用条件**:
+### references/（詳細知識）
 
-- [ ] フォームフィールドの検証ルールが定義されている
-- [ ] リアルタイムバリデーションが必要
-- [ ] サーバーサイドと共通のスキーマを使いたい
+| ファイル                           | 説明                           |
+| ---------------------------------- | ------------------------------ |
+| references/schema-patterns.md      | スキーマパターンと実装例       |
+| references/validation-patterns.md  | バリデーションパターンと実践例 |
+| references/integration-patterns.md | フレームワーク統合パターン     |
 
-**期待される成果**: 一貫したクライアント/サーバーバリデーション
+### scripts/（検証・ロギング）
 
-## 基本概念
+| スクリプト            | 説明                  | 使用法                                           |
+| --------------------- | --------------------- | ------------------------------------------------ |
+| `validate-schema.mjs` | Zodスキーマの構造検証 | `node scripts/validate-schema.mjs <schema-file>` |
+| `validate-skill.mjs`  | スキル構造の検証      | `node scripts/validate-skill.mjs`                |
+| `log_usage.mjs`       | 使用統計とログ記録    | `node scripts/log_usage.mjs --help`              |
 
-### Zod スキーマの基本原則
+### assets/（テンプレート）
 
-**1. 型の明確性 (Type Clarity)**
-
-```typescript
-// ✅ 良い例: 明確な型定義
-const userSchema = z.object({
-  id: z.string().uuid(),
-  email: z.string().email(),
-  age: z.number().int().positive(),
-  role: z.enum(["admin", "user", "guest"]),
-});
-
-// ❌ 悪い例: 曖昧な型
-const badSchema = z.object({
-  id: z.any(),
-  data: z.unknown(),
-});
-```
-
-**2. 防御的バリデーション (Defensive Validation)**
-
-```typescript
-// すべての外部入力は「信頼できない」と仮定
-const inputSchema = z.object({
-  username: z
-    .string()
-    .min(3, "3文字以上必要です")
-    .max(50, "50文字以下にしてください")
-    .regex(/^[a-zA-Z0-9_]+$/, "英数字とアンダースコアのみ使用可能"),
-  password: z
-    .string()
-    .min(8, "8文字以上必要です")
-    .regex(/[A-Z]/, "大文字を含めてください")
-    .regex(/[0-9]/, "数字を含めてください"),
-});
-```
-
-**3. シンプルさの追求 (Simplicity First)**
-
-```typescript
-// ✅ 良い例: フラットで理解しやすい構造
-const addressSchema = z.object({
-  street: z.string(),
-  city: z.string(),
-  postalCode: z.string(),
-});
-
-const userSchema = z.object({
-  name: z.string(),
-  address: addressSchema, // 再利用可能なパーツ
-});
-
-// ❌ 悪い例: 過度にネストした構造
-const deeplyNestedSchema = z.object({
-  user: z.object({
-    profile: z.object({
-      contact: z.object({
-        address: z.object({
-          // 深すぎるネスト
-        }),
-      }),
-    }),
-  }),
-});
-```
-
-### 型推論の活用
-
-```typescript
-import { z } from "zod";
-
-// スキーマ定義
-const productSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1),
-  price: z.number().positive(),
-  category: z.enum(["electronics", "clothing", "books"]),
-  tags: z.array(z.string()).optional(),
-  createdAt: z.coerce.date(),
-});
-
-// 型推論
-type Product = z.infer<typeof productSchema>;
-// → { id: string; name: string; price: number; category: 'electronics' | 'clothing' | 'books'; tags?: string[]; createdAt: Date }
-
-// 入力型と出力型を分離
-type ProductInput = z.input<typeof productSchema>;
-type ProductOutput = z.output<typeof productSchema>;
-```
-
-### スキーマ合成パターン
-
-```typescript
-// 基本スキーマ
-const baseEntitySchema = z.object({
-  id: z.string().uuid(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
-});
-
-// 拡張
-const userSchema = baseEntitySchema.extend({
-  email: z.string().email(),
-  name: z.string(),
-});
-
-// 部分的な選択
-const userUpdateSchema = userSchema
-  .pick({
-    email: true,
-    name: true,
-  })
-  .partial(); // すべてオプショナルに
-
-// 除外
-const publicUserSchema = userSchema.omit({
-  createdAt: true,
-  updatedAt: true,
-});
-```
-
-## 判断基準チェックリスト
-
-### スキーマ設計時
-
-- [ ] スキーマは再利用可能なパーツに分割されているか？
-- [ ] TypeScript 型と Zod スキーマの整合性が保たれているか？
-- [ ] バリデーションエラーメッセージは具体的か？
-- [ ] パフォーマンスへの影響を考慮しているか？
-
-### カスタムバリデーション時
-
-- [ ] カスタムバリデーションは必要最小限か？
-- [ ] エラーメッセージは具体的か？
-- [ ] 非同期バリデーションの使用は適切か？
-- [ ] ビジネスロジックと混同していないか？
-
-### 型推論時
-
-- [ ] z.infer<typeof schema>で型が正しく推論されるか？
-- [ ] ジェネリクスの使用が適切か？
-- [ ] 循環参照がないか？
-
-## 関連スキル
-
-- `.claude/skills/type-safety-patterns/SKILL.md` - TypeScript 型安全性パターン
-- `.claude/skills/input-sanitization/SKILL.md` - 入力サニタイゼーション
-- `.claude/skills/error-message-design/SKILL.md` - エラーメッセージ設計
-- `.claude/skills/json-schema/SKILL.md` - JSON Schema 仕様
+| テンプレート                        | 説明                     | 用途                |
+| ----------------------------------- | ------------------------ | ------------------- |
+| assets/schema-template.ts           | 基本スキーマテンプレート | 新規スキーマ作成    |
+| assets/api-schema-template.ts       | APIスキーマテンプレート  | API検証実装         |
+| assets/form-validation-template.tsx | フォーム統合テンプレート | react-hook-form連携 |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                    |
-| ---------- | ---------- | --------------------------------------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版リリース - Zod バリデーションの基本パターン、型推論、スキーマ合成を網羅 |
+| Version | Date       | Changes                                                                     |
+| ------- | ---------- | --------------------------------------------------------------------------- |
+| 4.0.0   | 2026-01-01 | 18-skills.md完全準拠: 4エージェント体制、統合パターン追加、テンプレート拡充 |
+| 3.0.0   | 2026-01-01 | 18-skills.md仕様準拠：agents/追加、references/整理、ワークフロー刷新        |
+| 2.0.0   | 2025-12-31 | YAML frontmatter最適化、Task仕様ナビ追加                                    |
+| 1.0.0   | 2025-12-24 | 初版作成                                                                    |

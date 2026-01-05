@@ -8,7 +8,7 @@
 
 #### 1. PM / プロダクトオーナー
 
-- エージェント名: `@product-manager`
+- エージェント名: `.claude/agents/product-manager.md`
 - エージェントの配置: `.claude/agents/product-manager.md`
 - モデル: opus
 - モデル人物: ジェフ・サザーランド (Jeff Sutherland) - スクラムの共同考案者
@@ -18,7 +18,7 @@
 
 #### 2. 仕様策定アナリスト
 
-- エージェント名: `@req-analyst`
+- エージェント名: `.claude/agents/req-analyst.md`
 - エージェントの配置: `.claude/agents/req-analyst.md`
 - モデル: opus
 - モデル人物: カール・ウィーガーズ (Karl Wiegers) - 要求工学の権威
@@ -28,7 +28,7 @@
 
 #### 3. テクニカルライター（仕様書作成者）
 
-- エージェント名: `@spec-writer`
+- エージェント名: `.claude/agents/spec-writer.md`
 - エージェントの配置: `.claude/agents/spec-writer.md`
 - モデル: opus
 - モデル人物: アンドリュー・ハント (Andrew Hunt) - 『達人プログラマー』著者
@@ -38,7 +38,7 @@
 
 #### 4. アーキテクチャ・ポリス
 
-- エージェント名: `@arch-police`
+- エージェント名: `.claude/agents/arch-police.md`
 - エージェントの配置: `.claude/agents/arch-police.md`
 - モデル: opus
 - モデル人物: ロバート・C・マーティン (Uncle Bob) - クリーンアーキテクチャ提唱者
@@ -52,7 +52,7 @@
 
 #### 5. UI コンポーネント設計
 
-- エージェント名: `@ui-designer`
+- エージェント名: `.claude/agents/ui-designer.md`
 - エージェントの配置: `.claude/agents/ui-designer.md`
 - モデル: opus
 - モデル人物: ミシェル・ウェストホフ (Michel Westhoff)、Diana Mounter など先進的デザインシステム実践者
@@ -62,7 +62,7 @@
 
 #### 6. ページ/ルーティング実装
 
-- エージェント名: `@router-dev`
+- エージェント名: `.claude/agents/router-dev.md`
 - エージェントの配置: `.claude/agents/router-dev.md`
 - モデル: opus
 - モデル人物: ギジェルモ・ラウチ (Guillermo Rauch) - Vercel CEO / Next.js 生みの親
@@ -72,7 +72,7 @@
 
 #### 7. クライアント状態管理
 
-- エージェント名: `@state-manager`
+- エージェント名: `.claude/agents/state-manager.md`
 - エージェントの配置: `.claude/agents/state-manager.md`
 - モデル: opus
 - モデル人物: ダン・アブラモフ (Dan Abramov) - Redux 開発者
@@ -86,7 +86,7 @@
 
 #### 8. ドメインモデラー
 
-- エージェント名: `@domain-modeler`
+- エージェント名: `.claude/agents/domain-modeler.md`
 - エージェントの配置: `.claude/agents/domain-modeler.md`
 - モデル: opus
 - モデル人物: エリック・エヴァンス (Eric Evans) - DDD 提唱者
@@ -96,7 +96,7 @@
 
 #### 9. ワークフローエンジン実装
 
-- エージェント名: `@workflow-engine`
+- エージェント名: `.claude/agents/workflow-engine.md`
 - エージェントの配置: `.claude/agents/workflow-engine.md`
 - モデル: opus
 - モデル人物: エリック・ガンマ (Erich Gamma) - GoF『デザインパターン』著者
@@ -106,7 +106,7 @@
 
 #### 10. 外部連携ゲートウェイ
 
-- エージェント名: `@gateway-dev`
+- エージェント名: `.claude/agents/gateway-dev.md`
 - エージェントの配置: `.claude/agents/gateway-dev.md`
 - モデル: opus
 - モデル人物: サム・ニューマン (Sam Newman) - マイクロサービス専門家
@@ -120,7 +120,7 @@
 
 #### 11. スキーマ定義
 
-- エージェント名: `@schema-def`
+- エージェント名: `.claude/agents/schema-def.md`
 - エージェントの配置: `.claude/agents/schema-def.md`
 - モデル: opus
 - モデル人物: ダグラス・クロックフォード (Douglas Crockford) - JSON の普及者
@@ -130,7 +130,7 @@
 
 #### 12. ビジネスロジック実装
 
-- エージェント名: `@logic-dev`
+- エージェント名: `.claude/agents/logic-dev.md`
 - エージェントの配置: `.claude/agents/logic-dev.md`
 - モデル: opus
 - モデル人物: マーティン・ファウラー (Martin Fowler) - リファクタリングの父
@@ -140,7 +140,7 @@
 
 #### 13. AI プロンプトエンジニア
 
-- エージェント名: `@prompt-eng`
+- エージェント名: `.claude/agents/prompt-eng.md`
 - エージェントの配置: `.claude/agents/prompt-eng.md`
 - モデル: opus
 - モデル人物: ライリー・グッドサイド (Riley Goodside) - プロンプトエンジニアリングのパイオニア
@@ -154,7 +154,7 @@
 
 #### 14. DB スキーマ設計
 
-- エージェント名: `@db-architect`
+- エージェント名: `.claude/agents/db-architect.md`
 - エージェントの配置: `.claude/agents/db-architect.md`
 - モデル: sonnet
 - モデル人物: C.J.デイト (C.J. Date) - リレーショナルデータベース研究者
@@ -164,7 +164,7 @@
 
 #### 15. リポジトリ実装
 
-- エージェント名: `@repo-dev`
+- エージェント名: `.claude/agents/repo-dev.md`
 - エージェントの配置: `.claude/agents/repo-dev.md`
 - モデル: opus
 - モデル人物: ヴラド・ミハルセア (Vlad Mihalcea) - Java/Hibernate パフォーマンスエキスパート
@@ -174,7 +174,7 @@
 
 #### 16. DevOps/CI エンジニア
 
-- エージェント名: `@devops-eng`
+- エージェント名: `.claude/agents/devops-eng.md`
 - エージェントの配置: `.claude/agents/devops-eng.md`
 - モデル: sonnet
 - モデル人物: ジーン・キム (Gene Kim) - 『The Phoenix Project』著者
@@ -188,7 +188,7 @@
 
 #### 17. ファイル監視（ウォッチャー）
 
-- エージェント名: `@local-watcher`
+- エージェント名: `.claude/agents/local-watcher.md`
 - エージェントの配置: `.claude/agents/local-watcher.md`
 - モデル: sonnet
 - モデル人物: ライアン・ダール (Ryan Dahl) - Node.js / Deno 開発者
@@ -198,7 +198,7 @@
 
 #### 18. ネットワーク同期（シンク）
 
-- エージェント名: `@local-sync`
+- エージェント名: `.claude/agents/local-sync.md`
 - エージェントの配置: `.claude/agents/local-sync.md`
 - モデル: sonnet
 - モデル人物: アンドリュー・タネンバウム (Andrew S. Tanenbaum) - 『コンピュータネットワーク』著者
@@ -208,7 +208,7 @@
 
 #### 19. プロセス管理
 
-- エージェント名: `@process-mgr`
+- エージェント名: `.claude/agents/process-mgr.md`
 - エージェントの配置: `.claude/agents/process-mgr.md`
 - モデル: sonnet
 - モデル人物: アレクサンドル・ストラッセ (Alexandre Strzelewicz) - PM2 作者
@@ -222,7 +222,7 @@
 
 #### 20. ユニットテスター
 
-- エージェント名: `@unit-tester`
+- エージェント名: `.claude/agents/unit-tester.md`
 - エージェントの配置: `.claude/agents/unit-tester.md`
 - モデル: sonnet
 - モデル人物: ケント・ベック (Kent Beck) - TDD 再発見者
@@ -232,7 +232,7 @@
 
 #### 21. E2E テスター
 
-- エージェント名: `@e2e-tester`
+- エージェント名: `.claude/agents/e2e-tester.md`
 - エージェントの配置: `.claude/agents/e2e-tester.md`
 - モデル: sonnet
 - モデル人物: グレブ・バフムートフ (Gleb Bahmutov) - 元 Cypress VP of Engineering
@@ -242,7 +242,7 @@
 
 #### 22. コード品質管理者（リンター）
 
-- エージェント名: `@code-quality`
+- エージェント名: `.claude/agents/code-quality.md`
 - エージェントの配置: `.claude/agents/code-quality.md`
 - モデル: sonnet
 - モデル人物: ニコラス・ザカス (Nicholas C. Zakas) - ESLint 作者
@@ -256,7 +256,7 @@
 
 #### 23. 認証・認可スペシャリスト
 
-- エージェント名: `@auth-specialist`
+- エージェント名: `.claude/agents/auth-specialist.md`
 - エージェントの配置: `.claude/agents/auth-specialist.md`
 - モデル: sonnet
 - モデル人物: アーロン・パレッキ (Aaron Parecki) - OAuth 2.0 規格貢献者
@@ -266,7 +266,7 @@
 
 #### 24. セキュリティ監査人
 
-- エージェント名: `@sec-auditor`
+- エージェント名: `.claude/agents/sec-auditor.md`
 - エージェントの配置: `.claude/agents/sec-auditor.md`
 - モデル: opus
 - モデル人物: ブルース・シュナイアー (Bruce Schneier) - 暗号・セキュリティの巨人
@@ -276,7 +276,7 @@
 
 #### 25. 機密情報管理者
 
-- エージェント名: `@secret-mgr`
+- エージェント名: `.claude/agents/secret-mgr.md`
 - エージェントの配置: `.claude/agents/secret-mgr.md`
 - モデル: sonnet
 - モデル人物: ケルシー・ハイタワー (Kelsey Hightower) - クラウドネイティブ・セキュリティ専門家
@@ -290,7 +290,7 @@
 
 #### 26. ロギング・監視設計者
 
-- エージェント名: `@sre-observer`
+- エージェント名: `.claude/agents/sre-observer.md`
 - エージェントの配置: `.claude/agents/sre-observer.md`
 - モデル: sonnet
 - モデル人物: ベッツィ・ベイヤー (Betsy Beyer) - 『Site Reliability Engineering』編集者
@@ -300,7 +300,7 @@
 
 #### 27. データベース管理者（DBA）
 
-- エージェント名: `@dba-mgr`
+- エージェント名: `.claude/agents/dba-mgr.md`
 - エージェントの配置: `.claude/agents/dba-mgr.md`
 - モデル: sonnet
 - モデル人物: スコット・アンブラー (Scott Ambler) - アジャイルデータベース手法提唱者
@@ -314,7 +314,7 @@
 
 #### 28. API ドキュメント作成者
 
-- エージェント名: `@api-doc-writer`
+- エージェント名: `.claude/agents/api-doc-writer.md`
 - エージェントの配置: `.claude/agents/api-doc-writer.md`
 - モデル: sonnet
 - モデル人物: キン・レーン (Kin Lane) - The API Evangelist
@@ -324,7 +324,7 @@
 
 #### 29. ユーザーマニュアル作成者
 
-- エージェント名: `@manual-writer`
+- エージェント名: `.claude/agents/manual-writer.md`
 - エージェントの配置: `.claude/agents/manual-writer.md`
 - モデル: sonnet
 - モデル人物: キャシー・シエラ (Kathy Sierra) - 『Badass: Making Users Awesome』著者
@@ -334,7 +334,7 @@
 
 #### 30. 依存パッケージ管理者
 
-- エージェント名: `@dep-mgr`
+- エージェント名: `.claude/agents/dep-mgr.md`
 - エージェントの配置: `.claude/agents/dep-mgr.md`
 - モデル: sonnet
 - モデル人物: アイザック・シュレーター (Isaac Z. Schlueter) - pnpm 創始者
@@ -348,7 +348,7 @@
 
 #### 31. フック構成管理者
 
-- エージェント名: `@hook-master`
+- エージェント名: `.claude/agents/hook-master.md`
 - エージェントの配置: `.claude/agents/hook-master.md`
 - モデル: sonnet
 - モデル人物: リーナス・トーバルズ (Linus Torvalds) - Git / Linux カーネル開発者
@@ -358,7 +358,7 @@
 
 #### 32. コマンド・オーケストレーター
 
-- エージェント名: `@command-arch`
+- エージェント名: `.claude/agents/command-arch.md`
 - エージェントの配置: `.claude/agents/command-arch.md`
 - モデル: sonnet
 - モデル人物: ギャング・オブ・フォー (GoF) - デザインパターン著者グループ
@@ -368,7 +368,7 @@
 
 #### 33. メタ・エージェント設計者
 
-- エージェント名: `@meta-agent-designer`
+- エージェント名: `.claude/agents/meta-agent-designer.md`
 - エージェントの配置: `.claude/agents/meta-agent-designer.md`
 - モデル: opus
 - モデル人物: マービン・ミンスキー (Marvin Minsky) - AI の父、『心の社会』著者
@@ -378,7 +378,7 @@
 
 #### 34. スキル・ナレッジエンジニア
 
-- エージェント名: `@skill-librarian`
+- エージェント名: `.claude/agents/skill-librarian.md`
 - エージェントの配置: `.claude/agents/skill-librarian.md`
 - モデル: sonnet
 - モデル人物: 野中 郁次郎 (Ikujiro Nonaka) - ナレッジマネジメントの権威
@@ -388,7 +388,7 @@
 
 #### 35. MCP ツール統合スペシャリスト
 
-- エージェント名: `@mcp-integrator`
+- エージェント名: `.claude/agents/mcp-integrator.md`
 - エージェントの配置: `.claude/agents/mcp-integrator.md`
 - モデル: sonnet
 - モデル人物: ダリオ・アモデイ (Dario Amodei) - Anthropic CEO (Claude 開発企業)
@@ -398,7 +398,7 @@
 
 #### 36. GitHub Actions ワークフロー・アーキテクト
 
-- エージェント名: `@gha-workflow-architect`
+- エージェント名: `.claude/agents/gha-workflow-architect.md`
 - エージェントの配置: `.claude/agents/gha-workflow-architect.md`
 - モデル: sonnet
 - モデル人物: ケルシー・ハイタワー (Kelsey Hightower) - Kubernetes/CI/CD エバンジェリスト
@@ -417,7 +417,7 @@
 
 #### 37. Electron アーキテクト
 
-- エージェント名: `@electron-architect`
+- エージェント名: `.claude/agents/electron-architect.md`
 - エージェントの配置: `.claude/agents/electron-architect.md`
 - モデル: opus
 - モデル人物: Felix Rieseberg - Slack Electron アーキテクト
@@ -427,7 +427,7 @@
 
 #### 38. Electron UI Developer
 
-- エージェント名: `@electron-ui-dev`
+- エージェント名: `.claude/agents/electron-ui-dev.md`
 - エージェントの配置: `.claude/agents/electron-ui-dev.md`
 - モデル: sonnet
 - モデル人物: Zeke Sikelianos - Electron Core Team
@@ -437,7 +437,7 @@
 
 #### 39. Electron Security Engineer
 
-- エージェント名: `@electron-security`
+- エージェント名: `.claude/agents/electron-security.md`
 - エージェントの配置: `.claude/agents/electron-security.md`
 - モデル: sonnet
 - モデル人物: Samuel Attard - Electron Security Team
@@ -447,10 +447,10 @@
 
 #### 40. Electron DevOps（ビルド・配布統合）
 
-- エージェント名: `@electron-devops`
+- エージェント名: `.claude/agents/electron-devops.md`
 - エージェントの配置: `.claude/agents/electron-devops.md`
 - モデル: sonnet
-- 統合元: `@electron-builder` + `@electron-release`を統合
+- 統合元: `.claude/agents/electron-builder.md` + `.claude/agents/electron-release.md`を統合
 - モデル人物: develar (electron-builder作者) + Shelley Vohr (Electron Release Coordinator)
 - 目的: Electronアプリケーションのビルド・パッケージング・配布・自動更新を一貫して管理。
 - 背景: ビルドから配布までの一貫したパイプラインにより、効率的なリリース管理を実現。
@@ -465,7 +465,7 @@
 
 #### 41. フロントエンドテスター
 
-- エージェント名: `@frontend-tester`
+- エージェント名: `.claude/agents/frontend-tester.md`
 - エージェントの配置: `.claude/agents/frontend-tester.md`
 - モデル: sonnet
 - モデル人物: Kent C. Dodds - Testing Library 作者

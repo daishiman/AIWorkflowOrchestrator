@@ -26,8 +26,8 @@
       "import": "./dist/infrastructure/database/index.js"
     },
     "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.js"
+      "types": "./dist/src/types/index.d.ts",
+      "import": "./dist/src/types/index.js"
     },
     "./types/auth": {
       "types": "./dist/types/auth.d.ts",
@@ -52,6 +52,10 @@
     "./types/replace": {
       "types": "./dist/src/types/replace.d.ts",
       "import": "./dist/src/types/replace.js"
+    },
+    "./types/rag": {
+      "types": "./dist/types/rag/index.d.ts",
+      "import": "./dist/types/rag/index.js"
     }
   },
   "scripts": {
@@ -61,21 +65,32 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.15",
     "@supabase/supabase-js": "^2.86.2",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.39.0",
+    "openai": "^6.15.0",
+    "papaparse": "^5.5.3",
+    "react-router-dom": "^7.11.0",
+    "tiktoken": "^1.0.22",
+    "turndown": "^7.2.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
+    "@types/papaparse": "^5.3.16",
+    "@types/turndown": "^5.0.5",
+    "@vitest/coverage-v8": "^2.1.9",
     "better-sqlite3": "^12.5.0",
+    "drizzle-kit": "^0.31.8",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
-  },
-  "peerDependencies": {
-    "better-sqlite3": "^12.0.0"
   }
 }

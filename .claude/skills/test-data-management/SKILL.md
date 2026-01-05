@@ -1,234 +1,141 @@
 ---
 name: test-data-management
 description: |
-  E2Eテストのためのテストデータ管理戦略。
+  テストデータの設計・生成・隔離・クリーンアップを体系化するスキル。
+  E2E/統合/単体テストの再現性を高め、データ依存による不安定化を防ぐ。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Test-Driven Development: By Example / 適用: テストデータ設計 / 目的: 再現性と最小実装
+  • Growing Object-Oriented Software, Guided by Tests / 適用: フィクスチャ設計 / 目的: 依存性の分離
 
-  - `.claude/skills/test-data-management/resources/cleanup-patterns.md`: Cleanup Patternsリソース
-  - `.claude/skills/test-data-management/resources/data-isolation-techniques.md`: Data Isolation Techniquesリソース
-  - `.claude/skills/test-data-management/resources/seeding-strategies.md`: Seeding Strategiesリソース
-
-  - `.claude/skills/test-data-management/templates/fixture-template.ts`: Fixtureテンプレート
-
-  - `.claude/skills/test-data-management/scripts/generate-test-data.mjs`: Generate Test Dataスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when planning or implementing test data setup, seeding, isolation, or cleanup.
+  test data, fixture, seeding, teardown
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Test Data Management Skill
+# Test Data Management
 
 ## 概要
 
-E2E テストのためのテストデータ管理戦略。Seeding（データ準備）、Teardown（クリーンアップ）、データ分離技術を提供。
+テストに必要なデータを再現性高く用意し、テスト間の干渉を防ぐための実務スキル。フィクスチャ設計、シーディング戦略、データ分離、クリーンアップの判断を一貫した手順で支援する。
 
-## 核心概念
+---
 
-### 1. Seeding（データ準備）戦略
+## ワークフロー
 
-**目的**: テスト実行前に必要なデータを準備
+### Phase 1: 要件とデータ境界の整理
 
-```typescript
-// APIによるSeeding
-test.beforeEach(async ({ request }) => {
-  await request.post("/api/users", {
-    data: { name: "Test User", email: "test@example.com" },
-  });
-});
+**目的**: テスト対象のデータ要件と分離境界を明確にする
 
-// Fixtureファイル使用
-import testData from "./fixtures/users.json";
+**アクション**:
 
-test.beforeEach(async ({ request }) => {
-  for (const user of testData) {
-    await request.post("/api/users", { data: user });
-  }
-});
-```
+1. テスト目的と対象ドメインを整理する
+2. 必要なエンティティと依存関係を洗い出す
+3. データ分離と再利用の境界を決める
+4. 制約と禁止事項（本番データ禁止など）を明文化する
 
-### 2. Teardown（クリーンアップ）戦略
+**Task**: `agents/data-requirement-mapping.md` を参照
 
-**目的**: テスト実行後にデータを削除
+### Phase 2: フィクスチャ/シーディング設計
 
-```typescript
-test.afterEach(async ({ request }) => {
-  // テストデータ削除
-  await request.delete("/api/users/test@example.com");
-});
+**目的**: 再現性と運用性を両立したデータ投入方式を設計する
 
-// データベース直接クリーンアップ
-test.afterEach(async () => {
-  await db.query('DELETE FROM users WHERE email LIKE "test-%"');
-});
-```
+**アクション**:
 
-### 3. テストデータ分離
+1. フィクスチャ方針と生成方式を選択する
+2. シーディングの順序と依存を定義する
+3. 生成テンプレートと自動生成スクリプトを整備する
+4. 失敗時のロールバック手順を決める
 
-**並列実行時のデータ競合回避**:
+**Task**: `agents/fixture-strategy-design.md` を参照
 
-```typescript
-test("ユーザー作成", async ({ page }) => {
-  // 一意なデータ生成
-  const uniqueEmail = `user-${Date.now()}@example.com`;
-  const uniqueId = crypto.randomUUID();
+### Phase 3: 検証とクリーンアップ
 
-  await page.goto("/register");
-  await page.getByLabel("Email").fill(uniqueEmail);
-  // ...
-});
-```
+**目的**: データの再現性とクリーンアップの確実性を検証する
 
-## 実装パターン
+**アクション**:
 
-### パターン 1: Fixture-based パターン
+1. 生成データの一意性と妥当性を確認する
+2. テスト実行後のクリーンアップ結果を検証する
+3. 再実行時の状態再現性を評価する
+4. 実行記録を残す
 
-```typescript
-// fixtures/test-user.ts
-export const test = base.extend({
-  testUser: async ({ request }, use) => {
-    // Setup
-    const user = {
-      name: "Test User",
-      email: `test-${Date.now()}@example.com`,
-    };
-    const response = await request.post("/api/users", { data: user });
-    const createdUser = await response.json();
+**Task**: `agents/cleanup-validation.md` を参照
 
-    // テストに渡す
-    await use(createdUser);
+---
 
-    // Cleanup
-    await request.delete(`/api/users/${createdUser.id}`);
-  },
-});
+## Task仕様ナビ
 
-// テスト使用
-test("ユーザープロフィール表示", async ({ page, testUser }) => {
-  await page.goto(`/users/${testUser.id}`);
-  await expect(page.getByText(testUser.name)).toBeVisible();
-});
-```
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| data-requirement-mapping | Phase 1 開始時 | テスト目的/対象 | テストデータ要件定義 |
+| fixture-strategy-design | Phase 2 開始時 | 要件定義/制約 | フィクスチャ設計書 |
+| cleanup-validation | Phase 3 開始時 | 生成データ/実行結果 | クリーンアップ検証レポート |
 
-### パターン 2: Database Seeding
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-```typescript
-// setup/seed-database.ts
-import { PrismaClient } from "@prisma/client";
-
-export async function seedDatabase() {
-  const prisma = new PrismaClient();
-
-  await prisma.user.createMany({
-    data: [
-      { name: "User 1", email: "user1@test.com" },
-      { name: "User 2", email: "user2@test.com" },
-    ],
-  });
-
-  await prisma.$disconnect();
-}
-
-// tests/users.spec.ts
-test.beforeAll(async () => {
-  await seedDatabase();
-});
-
-test.afterAll(async () => {
-  const prisma = new PrismaClient();
-  await prisma.user.deleteMany({ where: { email: { endsWith: "@test.com" } } });
-  await prisma.$disconnect();
-});
-```
-
-### パターン 3: トランザクションベース
-
-```typescript
-test.describe("トランザクション使用", () => {
-  let transactionId;
-
-  test.beforeEach(async ({ request }) => {
-    // トランザクション開始
-    const response = await request.post("/api/transactions/begin");
-    transactionId = (await response.json()).id;
-  });
-
-  test.afterEach(async ({ request }) => {
-    // ロールバック
-    await request.post(`/api/transactions/${transactionId}/rollback`);
-  });
-
-  test("データ作成テスト", async ({ page }) => {
-    // トランザクション内でデータ操作
-    // ...
-  });
-});
-```
+---
 
 ## ベストプラクティス
 
-### DO（推奨）
+### すべきこと
 
-1. **一意なテストデータ生成**:
+| 推奨事項 | 理由 |
+| --- | --- |
+| テスト目的とデータ境界を最初に定義する | 生成範囲の過不足を防ぐため |
+| 一意性の担保方法を固定する | 並列実行時の衝突を避けるため |
+| シーディング順序を明記する | 依存関係の破綻を防ぐため |
+| クリーンアップを自動化する | 再現性と安定運用のため |
 
-```typescript
-const email = `test-${crypto.randomUUID()}@example.com`;
-const timestamp = Date.now();
-```
+### 避けるべきこと
 
-2. **最小限のデータセット**:
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 本番データを直接使用する | セキュリティと再現性のリスク |
+| グローバル共有データに依存する | テストの独立性が崩れる |
+| クリーンアップ確認を省略する | 後続テストの汚染につながる |
 
-```typescript
-// ✅ 必要最小限
-await createUser({ name: "Test", email: "test@example.com" });
+---
 
-// ❌ 過剰なデータ
-await create100Users(); // 不要
-```
+## リソース参照
 
-3. **クリーンアップの確実な実行**:
+### scripts/（決定論的処理）
 
-```typescript
-test.afterEach(async () => {
-  // 必ずクリーンアップ
-});
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/generate-test-data.mjs` | テストデータを生成する |
+| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs` | 実行記録を保存する |
 
-### DON'T（非推奨）
+### references/（詳細知識）
 
-1. **固定データへの依存を避ける**:
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
+| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
+| クリーンアップ | [references/cleanup-patterns.md](references/cleanup-patterns.md) | Phase 3 で参照 |
+| データ分離 | [references/data-isolation-techniques.md](references/data-isolation-techniques.md) | Phase 1 で参照 |
+| シーディング | [references/seeding-strategies.md](references/seeding-strategies.md) | Phase 2 で参照 |
 
-```typescript
-// ❌ 固定データ（他テストと競合）
-await page.fill('[name="email"]', "fixed@example.com");
+### assets/（テンプレート・素材）
 
-// ✅ 動的データ
-await page.fill('[name="email"]', `test-${Date.now()}@example.com`);
-```
+| アセット | 用途 |
+| --- | --- |
+| `assets/fixture-template.ts` | フィクスチャ実装の雛形 |
 
-2. **グローバルステートを避ける**:
+## 変更履歴
 
-```typescript
-// ❌
-let globalUser; // 避けるべき
-
-// ✅
-test.beforeEach(async ({ }, testInfo) => {
-  const user = { ... }; // テストスコープ内
-});
-```
-
-## リソース
-
-- [resources/seeding-strategies.md](resources/seeding-strategies.md) - Seeding 戦略詳細（API、DB、Fixture）
-- [resources/cleanup-patterns.md](resources/cleanup-patterns.md) - クリーンアップパターンとベストプラクティス
-- [resources/data-isolation-techniques.md](resources/data-isolation-techniques.md) - 並列実行時のデータ分離技術
-- [scripts/generate-test-data.mjs](scripts/generate-test-data.mjs) - テストデータ生成スクリプト
-- [templates/fixture-template.ts](templates/fixture-template.ts) - Playwright の fixture 拡張テンプレート
-
-## 関連スキル
-
-- **playwright-testing** (`.claude/skills/playwright-testing/SKILL.md`): Playwright の基本操作
-- **flaky-test-prevention** (`.claude/skills/flaky-test-prevention/SKILL.md`): テスト安定化
-- **api-mocking** (`.claude/skills/api-mocking/SKILL.md`): API モック
+| Version | Date | Changes |
+| --- | --- | --- |
+| 3.0.0 | 2026-01-02 | スキル構造を刷新し、Task仕様と検証フローを再設計 |
+| 2.0.0 | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ整備 |
+| 1.0.0 | 2025-12-24 | 初期バージョン |

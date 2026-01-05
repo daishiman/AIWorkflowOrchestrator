@@ -51,6 +51,7 @@ export const IPC_CHANNELS = {
   AUTH_REFRESH: "auth:refresh",
   AUTH_STATE_CHANGED: "auth:state-changed",
   AUTH_CHECK_ONLINE: "auth:check-online",
+  AUTH_TEST_CALLBACK: "auth:test-callback", // 開発用: コールバックURLを手動送信
 
   // Profile operations
   PROFILE_GET: "profile:get",
@@ -104,6 +105,12 @@ export const IPC_CHANNELS = {
   REPLACE_WORKSPACE_ALL: "replace:workspace:all",
   REPLACE_UNDO: "replace:undo",
   REPLACE_REDO: "replace:redo",
+
+  // File Selection operations
+  FILE_SELECTION_OPEN_DIALOG: "file-selection:open-dialog",
+  FILE_SELECTION_GET_METADATA: "file-selection:get-metadata",
+  FILE_SELECTION_GET_MULTIPLE_METADATA: "file-selection:get-multiple-metadata",
+  FILE_SELECTION_VALIDATE_PATH: "file-selection:validate-path",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -139,6 +146,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AUTH_GET_SESSION,
   IPC_CHANNELS.AUTH_REFRESH,
   IPC_CHANNELS.AUTH_CHECK_ONLINE,
+  IPC_CHANNELS.AUTH_TEST_CALLBACK, // 開発用
   // Profile channels
   IPC_CHANNELS.PROFILE_GET,
   IPC_CHANNELS.PROFILE_UPDATE,
@@ -182,6 +190,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.REPLACE_WORKSPACE_ALL,
   IPC_CHANNELS.REPLACE_UNDO,
   IPC_CHANNELS.REPLACE_REDO,
+  // File Selection channels
+  IPC_CHANNELS.FILE_SELECTION_OPEN_DIALOG,
+  IPC_CHANNELS.FILE_SELECTION_GET_METADATA,
+  IPC_CHANNELS.FILE_SELECTION_GET_MULTIPLE_METADATA,
+  IPC_CHANNELS.FILE_SELECTION_VALIDATE_PATH,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

@@ -1,664 +1,120 @@
 ---
 name: command-documentation-patterns
 description: |
-  コマンドのドキュメンテーションを専門とするスキル。
-  セルフドキュメンティング構造、使用例、トラブルシューティング、
-  ユーザーフレンドリーな説明の作成方法を提供します。
+  コマンドのドキュメント設計（セルフドキュメンティング構造/使用例/トラブルシューティング）を整理し、説明の一貫性と読みやすさを支援するスキル。
+  章構成、記述ルール、検証手順を一貫して整理する。
 
-  使用タイミング:
-  - コマンドのドキュメントを作成する時
-  - 使用例を充実させたい時
-  - トラブルシューティングセクションを追加する時
+  Anchors:
+  • Software Requirements (Karl Wiegers) / 適用: 要求の言語化と構造化 / 目的: 説明品質の安定化
 
-  Use proactively when documenting commands, adding examples,
-  or creating troubleshooting sections.
-
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/command-documentation-patterns/resources/documentation-guide.md`: セルフドキュメンティング構造とMarkdownセクション構成ガイド
-  - `.claude/skills/command-documentation-patterns/scripts/validate-docs.mjs`: コマンドドキュメントの完全性検証スクリプト
-  - `.claude/skills/command-documentation-patterns/templates/command-documentation.md`: description/argument-hint/allowed-toolsを含むコマンドテンプレート
-version: 1.0.0
+  Trigger:
+  Use when documenting commands, creating usage examples, or designing troubleshooting sections for command workflows.
+  command documentation, usage examples, troubleshooting, self-documenting structure
 ---
-
-# Command Documentation Patterns
+# command-documentation-patterns
 
 ## 概要
 
-このスキルは、Claude Codeコマンドのドキュメンテーションパターンを提供します。
-セルフドキュメンティング構造、豊富な使用例、トラブルシューティングにより、
-ユーザーフレンドリーで保守しやすいコマンドを作成できます。
+コマンドのドキュメント設計（セルフドキュメンティング構造/使用例/トラブルシューティング）を整理し、説明の一貫性と読みやすさを支援する。
 
-**主要な価値**:
+## ワークフロー
 
-- 自己説明的なコマンド構造
-- 豊富な使用例
-- 実践的なトラブルシューティング
-- 一貫したドキュメンテーション
+### Phase 1: 要件整理
 
-**対象ユーザー**:
+**目的**: ドキュメントの目的と読者像を明確化する。
 
-- コマンドを作成するエージェント（@command-arch）
-- ドキュメントを充実させたい開発者
-- ユーザーフレンドリーなコマンドを作成したいチーム
+**アクション**:
 
-## リソース構造
+1. 対象コマンドと読者を整理する。
+2. 必要な章構成と使用例を決める。
+3. 参照ガイドとテンプレートを確認する。
 
-```
-command-documentation-patterns/
-├── SKILL.md                                    # 本ファイル
-├── resources/
-│   ├── self-documenting-structure.md          # セルフドキュメンティング構造
-│   ├── example-patterns.md                    # 使用例パターン
-│   ├── troubleshooting-guide.md               # トラブルシューティングガイド
-│   └── writing-style-guide.md                 # ライティングスタイルガイド
-└── templates/
-    ├── full-documentation-template.md         # 完全ドキュメントテンプレート
-    └── minimal-documentation-template.md      # 最小ドキュメントテンプレート
-```
+**Task**: `agents/analyze-documentation-requirements.md` を参照
 
-### リソース種別
+### Phase 2: ドキュメント設計
 
-- **構造詳細** (`resources/*.md`): 各ドキュメンテーションパターンの詳細
-- **スタイルガイド** (`resources/writing-style-guide.md`): ライティング規則
-- **テンプレート** (`templates/`): ドキュメントテンプレート
+**目的**: ドキュメント構造と記述ルールを具体化する。
 
-## いつ使うか
+**アクション**:
 
-### シナリオ1: 新規コマンドのドキュメント作成
+1. セクション構成と見出しを設計する。
+2. 例とトラブルシューティングを設計する。
+3. テンプレートで表現を統一する。
 
-**状況**: 新しいコマンドに適切なドキュメントを追加したい
+**Task**: `agents/design-documentation-structure.md` を参照
 
-**適用条件**:
+### Phase 3: 検証と記録
 
-- [ ] ドキュメント構造が不明
-- [ ] 何を書くべきかわからない
-- [ ] 一貫性のあるスタイルが欲しい
+**目的**: ドキュメント品質を検証し、記録を残す。
 
-**期待される成果**: 完全なドキュメント
+**アクション**:
 
-### シナリオ2: 使用例の追加
+1. 検証スクリプトで完全性を確認する。
+2. 検証結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
-**状況**: コマンドの使い方を示す例を追加したい
+**Task**: `agents/validate-documentation.md` を参照
 
-**適用条件**:
+## Task仕様ナビ
 
-- [ ] 基本的な使用例のみ
-- [ ] 高度な使用例が欠けている
-- [ ] エッジケースの例が必要
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-documentation-requirements | Phase 1開始時 | 対象コマンド/読者 | 要件整理メモ、章構成案 |
+| design-documentation-structure | Phase 2開始時 | 要件整理メモ | ドキュメント設計案、テンプレ適用案 |
+| validate-documentation | Phase 3開始時 | ドキュメント設計案 | 検証レポート、改善方針 |
 
-**期待される成果**: 豊富な使用例
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
-### シナリオ3: トラブルシューティングの追加
+## ベストプラクティス
 
-**状況**: よくある問題と解決方法を文書化したい
+### すべきこと
 
-**適用条件**:
+| 推奨事項 | 理由 |
+| --- | --- |
+| 読者像を明確にする | 説明粒度が合うため |
+| 例と手順を並記する | 利用時の迷いが減るため |
+| 検証スクリプトで完全性を確認する | 抜け漏れを防ぐため |
 
-- [ ] ユーザーが同じ問題で困っている
-- [ ] エラーメッセージが不明確
-- [ ] デバッグ方法が不明
+### 避けるべきこと
 
-**期待される成果**: 実用的なトラブルシューティング
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 章構成を曖昧にする | 読みづらくなる |
+| 例を省略する | 利用者が迷う |
+| 記録を残さない | 改善が続かない |
 
-## セルフドキュメンティング構造
+## リソース参照
 
-### 完全版テンプレート
+### scripts/（決定論的処理）
 
-````markdown
----
-description: |
-  [4-8行の詳細な説明]
-  [キーワードを含める]
-  [使用タイミングを明記]
-argument-hint: [arg1] [arg2]
----
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-docs.mjs` | ドキュメント完全性検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-# [Command Name]
+### references/（詳細知識）
 
-## 📋 Purpose
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| ドキュメントガイド | [references/documentation-guide.md](references/documentation-guide.md) | 章構成設計時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
 
-[このコマンドの目的]
+### assets/（テンプレート・素材）
 
-## 📥 Input
+| アセット | 用途 |
+| --- | --- |
+| `assets/command-documentation.md` | コマンドドキュメントテンプレート |
 
-- `$ARGUMENTS`: [引数の説明]
-- `$1`: [第一引数]（必要な場合）
-- `$2`: [第二引数]（必要な場合）
+### 運用ファイル
 
-## 📤 Output
-
-- [生成されるファイル]
-- [コンソール出力]
-- [副作用]
-
-## ⚙️ Prerequisites
-
-- [必要な環境]
-- [依存関係]
-- [権限]
-
-## 🔧 Configuration
-
-このコマンドが参照する設定:
-
-- `.env` ファイル
-- `package.json`
-- プロジェクト設定ファイル
-
-## 🚀 Execution Steps
-
-1. [ステップ1]
-2. [ステップ2]
-3. [ステップ3]
-
-## 📝 Examples
-
-### Example 1: Basic usage
-
-```bash
-/command basic-input
-```
-````
-
-Expected output:
-
-```
-✅ Operation completed successfully
-📁 Created: output.txt
-```
-
-### Example 2: Advanced usage
-
-```bash
-/command advanced-input --flag
-```
-
-Expected output:
-
-```
-🔄 Processing with advanced options...
-✅ Done
-```
-
-## 🐛 Troubleshooting
-
-### Problem 1: [Common issue]
-
-**Symptoms**: [What user sees]
-
-**Solution**:
-
-1. [Step to fix]
-2. [Step to verify]
-
-### Problem 2: [Another issue]
-
-**Symptoms**: [What user sees]
-
-**Solution**:
-[How to fix]
-
-## ⚠️ Warnings
-
-- [Important warning 1]
-- [Important warning 2]
-
-## 🔗 Related
-
-- [Related command 1]
-- [Related command 2]
-- [Documentation link]
-
-````
-
-### 最小版テンプレート
-
-```markdown
----
-description: [Brief description]
----
-
-# [Command Name]
-
-## Purpose
-[What this does]
-
-## Usage
-```bash
-/command [arguments]
-````
-
-## Example
-
-```bash
-/command example-input
-```
-
-Expected: [What happens]
-
-````
-
-## セクション別ガイド
-
-### Purpose セクション
-
-**良い例**:
-```markdown
-## 📋 Purpose
-This command creates a new React component with:
-- TypeScript interface
-- Unit tests
-- Storybook story
-- Export in index file
-
-Use this when you need a fully-configured component ready for development.
-````
-
-**悪い例**:
-
-```markdown
-## Purpose
-
-Creates component
-```
-
-### Input セクション
-
-**詳細な説明**:
-
-```markdown
-## 📥 Input
-
-### Required
-
-- `$ARGUMENTS`: Component name in PascalCase
-  - Must be unique
-  - Must not conflict with HTML elements
-  - Example: `UserProfile`, `NavigationBar`
-
-### Optional Environment Variables
-
-- `COMPONENT_TEMPLATE`: Custom template path
-  - Default: `.claude/templates/component.tsx`
-  - Override for project-specific templates
-```
-
-### Output セクション
-
-**明確な期待値**:
-
-```markdown
-## 📤 Output
-
-### Files Created
-
-- `src/components/[Name]/[Name].tsx` - Component implementation
-- `src/components/[Name]/[Name].test.tsx` - Unit tests
-- `src/components/[Name]/[Name].stories.tsx` - Storybook stories
-- `src/components/[Name]/index.ts` - Export file
-
-### Console Output
-```
-
-✅ Component created: UserProfile
-📁 Files created: 4
-🧪 Tests generated: 3
-📚 Story created: 1
-
-Next steps:
-
-1. cd src/components/UserProfile
-2. Review generated files
-3. pnpm test -- UserProfile
-
-```
-
-```
-
-### Prerequisites セクション
-
-**包括的なリスト**:
-
-```markdown
-## ⚙️ Prerequisites
-
-### Environment
-
-- Node.js >= 18.0.0
-- pnpm >= 9.0.0
-
-### Dependencies
-
-- React >= 18.0.0
-- TypeScript >= 5.0.0
-- Testing Library installed
-
-### Permissions
-
-- Write access to `src/components/` directory
-- Read access to template files
-
-### Project Structure
-
-Required directories:
-```
-
-src/
-└── components/
-└── index.ts (must exist)
-
-```
-
-```
-
-## 使用例パターン
-
-### レベル1: 基本的な使用
-
-````markdown
-### Example 1: Basic Usage
-
-最もシンプルな形式:
-
-```bash
-/create-component Button
-```
-````
-
-What happens:
-
-1. Creates Button component in `src/components/Button/`
-2. Generates tests
-3. Updates exports
-
-Result:
-
-```
-✅ Button component created
-📁 4 files created
-🧪 3 tests passing
-```
-
-````
-
-### レベル2: 一般的な使用
-
-```markdown
-### Example 2: With Props
-Props付きコンポーネント:
-
-```bash
-/create-component UserCard
-````
-
-Then define props when prompted:
-
-```typescript
-interface UserCardProps {
-  name: string;
-  email: string;
-  avatar?: string;
-}
-```
-
-Result: Component with typed props interface
-
-````
-
-### レベル3: 高度な使用
-
-```markdown
-### Example 3: Custom Template
-カスタムテンプレート使用:
-
-```bash
-COMPONENT_TEMPLATE=.claude/templates/advanced-component.tsx \
-/create-component Dashboard
-````
-
-This uses your custom template with:
-
-- Advanced state management
-- Custom hooks
-- Error boundaries
-
-Result: Fully-featured component
-
-````
-
-### レベル4: エッジケース
-
-```markdown
-### Example 4: Nested Component
-ネストされたコンポーネント:
-
-```bash
-/create-component forms/LoginForm
-````
-
-Creates:
-
-```
-src/
-└── components/
-    └── forms/
-        └── LoginForm/
-            ├── LoginForm.tsx
-            ├── LoginForm.test.tsx
-            └── index.ts
-```
-
-Note: Parent directory `forms/` must exist
-
-````
-
-## トラブルシューティングパターン
-
-### パターン1: 症状 → 原因 → 解決
-
-```markdown
-## 🐛 Troubleshooting
-
-### Component already exists
-**Symptoms**:
-````
-
-❌ Error: Component 'Button' already exists
-📁 Found at: src/components/Button/
-
-````
-
-**Cause**:
-A component with this name already exists in the project.
-
-**Solution**:
-1. Choose a different name:
-   ```bash
-   /create-component PrimaryButton
-````
-
-2. Or delete existing component first:
-   ```bash
-   rm -rf src/components/Button/
-   /create-component Button
-   ```
-
-````
-
-### パターン2: チェックリスト形式
-
-```markdown
-### Build fails after component creation
-
-Run through this checklist:
-
-- [ ] Is TypeScript installed? `pnpm list typescript`
-- [ ] Is tsconfig.json valid? `npx tsc --noEmit`
-- [ ] Are all imports correct? Check file paths
-- [ ] Is the component exported? Check `index.ts`
-- [ ] Are tests passing? `pnpm test -- [ComponentName]`
-
-If all checked and still failing:
-```bash
-# Clear cache and rebuild
-rm -rf node_modules/.cache
-pnpm run build
-````
-
-````
-
-### パターン3: FAQ形式
-
-```markdown
-### FAQ
-
-**Q: Can I create components in subdirectories?**
-A: Yes, use forward slashes:
-```bash
-/create-component forms/LoginForm
-/create-component modals/ConfirmDialog
-````
-
-**Q: How do I use a custom template?**
-A: Set `COMPONENT_TEMPLATE` environment variable:
-
-```bash
-export COMPONENT_TEMPLATE=./my-template.tsx
-/create-component MyComponent
-```
-
-**Q: Can I skip tests generation?**
-A: Not with this command. To create component only:
-
-```bash
-/create-component-no-tests MyComponent
-```
-
-````
-
-## ライティングスタイル
-
-### 原則
-
-1. **明確さ > 簡潔さ**
-   - 曖昧さを避ける
-   - 具体的な例を提供
-   - 専門用語を説明
-
-2. **能動態を使用**
-   - ✓ "Creates a component"
-   - ✗ "A component is created"
-
-3. **現在形を使用**
-   - ✓ "This command creates..."
-   - ✗ "This command will create..."
-
-4. **箇条書きを活用**
-   - 長い文章より箇条書き
-   - ステップは番号付き
-   - オプションは記号
-
-5. **コードブロックを使用**
-   - コマンド例
-   - 期待される出力
-   - 設定ファイル例
-
-### 絵文字の使用
-
-```markdown
-推奨される絵文字:
-
-📋 Purpose / Overview
-📥 Input
-📤 Output
-⚙️ Prerequisites / Configuration
-🚀 Execution / Steps
-📝 Examples
-🐛 Troubleshooting
-⚠️ Warnings
-✅ Success
-❌ Error
-💡 Tips
-🔗 Related / Links
-📁 Files
-🧪 Tests
-````
-
-### トーンとボイス
-
-```
-✓ フレンドリー:
-  "Let's create a component together!"
-
-✓ プロフェッショナル:
-  "This command generates production-ready components."
-
-✓ 助けになる:
-  "If you encounter issues, check the troubleshooting section below."
-
-✗ 技術的すぎ:
-  "Instantiates a React functional component utilizing TypeScript generics..."
-
-✗ カジュアルすぎ:
-  "Yo, this thing makes components, ya know?"
-```
-
-## 詳細リソースの参照
-
-### セルフドキュメンティング構造
-
-詳細は `resources/self-documenting-structure.md` を参照
-
-### 使用例パターン
-
-詳細は `resources/example-patterns.md` を参照
-
-### トラブルシューティングガイド
-
-詳細は `resources/troubleshooting-guide.md` を参照
-
-### ライティングスタイルガイド
-
-詳細は `resources/writing-style-guide.md` を参照
-
-### テンプレート
-
-- 完全版: `templates/full-documentation-template.md`
-- 最小版: `templates/minimal-documentation-template.md`
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# ドキュメンテーションガイド
-cat .claude/skills/command-documentation-patterns/resources/documentation-guide.md
-```
-
-### 他のスキルのスクリプトを活用
-
-```bash
-# 知識ドキュメントの品質検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-documentation-patterns/resources/documentation-guide.md
-
-# トークン見積もり
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-documentation-patterns/SKILL.md
-
-# ドキュメント構造分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-documentation-patterns
-```
-
-## 関連スキル
-
-- `.claude/skills/command-structure-fundamentals/SKILL.md` - description書き方
-- `.claude/skills/command-arguments-system/SKILL.md` - argument-hint説明
-- `.claude/skills/command-error-handling/SKILL.md` - エラーメッセージ設計
-
-## 更新履歴
-
-- v1.0.0 (2025-11-24): 初版作成
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

@@ -1,278 +1,201 @@
 ---
 name: parallel-jobs-gha
 description: |
-  GitHub Actionsの並列ジョブ実行とジョブ依存関係管理のスキル。
+  GitHub Actionsの並列ジョブ実行とジョブ依存関係管理のスキル。needs構文による依存関係制御、outputs/artifacts/cacheを活用したデータ受け渡し、matrix戦略による並列度調整を提供する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) - CI/CDパイプラインの段階的改善による実行時間短縮とリソース効率化
+  • GitHub Actions公式ドキュメント - needs構文、outputs、artifacts、cacheの正確な実装
+  • Continuous Delivery (Jez Humble, David Farley) - フィードバックサイクル短縮とパイプライン最適化
 
-  - `.claude/skills/parallel-jobs-gha/resources/data-passing.md`: ジョブ間のデータ受け渡し手法（outputs、artifacts、cache活用パターン）
-  - `.claude/skills/parallel-jobs-gha/resources/job-dependencies.md`: needs構文による依存関係グラフと実行順序制御パターン
-  - `.claude/skills/parallel-jobs-gha/scripts/visualize-deps.mjs`: ワークフロー内ジョブ依存関係をMermaid形式で可視化
-  - `.claude/skills/parallel-jobs-gha/templates/parallel-workflow.yaml`: 並列実行、依存関係、データ共有を含むGitHub Actionsワークフローテンプレート
-version: 1.0.0
-triggers:
-  - needs キーワード
-  - ジョブ依存関係
-  - 並列実行
-  - ジョブ間データ共有
-  - outputs 定義
-dependencies: []
-related_skills:
-  - .claude/skills/matrix-builds/SKILL.md
-  - .claude/skills/concurrency-control/SKILL.md
-  - .claude/skills/conditional-execution-gha/SKILL.md
-  - .claude/skills/artifact-management-gha/SKILL.md
-  - .claude/skills/caching-strategies-gha/SKILL.md
+  Trigger:
+  Use when implementing parallel job execution in GitHub Actions, managing job dependencies with needs syntax, or optimizing workflow performance through parallelization.
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 ---
 
 # GitHub Actions Parallel Jobs Skill
 
-GitHub Actions での並列ジョブ実行とジョブ依存関係管理の専門知識を提供します。
+## 概要
 
-## ディレクトリ構造
+GitHub Actionsのワークフローにおいて、needs構文による依存関係制御、outputs/artifacts/cacheを活用したジョブ間データ受け渡し、matrix戦略による並列度調整を実現するスキル。CI/CDパイプラインの実行時間短縮とリソース効率化を目的とする。
 
-```
-parallel-jobs-gha/
-├── SKILL.md                          # このファイル（スキル定義）
-├── resources/
-│   ├── job-dependencies.md           # needs構文と依存関係グラフ
-│   └── data-passing.md               # outputs、artifacts、通信パターン
-├── templates/
-│   └── parallel-workflow.yaml        # 並列ジョブの実装例
-└── scripts/
-    └── visualize-deps.mjs            # 依存関係グラフ可視化
-```
+## ワークフロー
 
-## コマンドリファレンス
+### Phase 1: 分析
 
-### リソース参照
+1. 並列化の目的を明確化する（実行時間短縮/リソース効率化/早期失敗検出）
+2. 現在のワークフロー構造を把握する
+3. ジョブ間の依存関係を洗い出す
+4. データ受け渡し要件を特定する（outputs/artifacts/cache）
+5. Analysis Taskで分析レポートを作成する
 
-```bash
-# ジョブ依存関係の詳細（needs構文、依存グラフ）
-cat .claude/skills/parallel-jobs-gha/resources/job-dependencies.md
+### Phase 2: 実装
 
-# データ受け渡しパターン（outputs、artifacts）
-cat .claude/skills/parallel-jobs-gha/resources/data-passing.md
-```
+1. 分析レポートに基づきワークフロー設計を行う
+2. needs構文でジョブ依存関係を定義する
+3. データ受け渡しを実装する（outputs/artifacts/cache）
+4. matrix戦略で並列度を調整する
+5. Implementation Taskでワークフロー定義を生成する
 
-### テンプレート参照
+### Phase 3: 検証
 
-```bash
-# 並列ジョブ実装例
-cat .claude/skills/parallel-jobs-gha/templates/parallel-workflow.yaml
-```
+1. ワークフロー構文を検証する
+2. ジョブ依存関係の循環参照を確認する
+3. データ受け渡しの整合性を確認する
+4. Validation Taskで検証レポートを作成する
+5. 実行記録をLOGS.mdとEVALS.jsonに保存する
 
-### スクリプト実行
+## Task仕様ナビゲーション
 
-```bash
-# ワークフローの依存関係グラフを可視化（Mermaid形式）
-node .claude/skills/parallel-jobs-gha/scripts/visualize-deps.mjs .github/workflows/ci.yml
-```
+| Task               | ファイル                   | 役割                                 | 入力                                                     | 出力                                       |
+| ------------------ | -------------------------- | ------------------------------------ | -------------------------------------------------------- | ------------------------------------------ |
+| **Analysis**       | `agents/analysis.md`       | 並列化要件の分析と適用パターンの選定 | 現在のワークフロー定義、並列化の目的・要件               | 分析レポート                               |
+| **Implementation** | `agents/implementation.md` | 並列ジョブ実行とジョブ依存関係の実装 | 分析レポート、既存ワークフロー定義（任意）               | 実装済みワークフロー定義、ジョブ依存関係図 |
+| **Validation**     | `agents/validation.md`     | 実装されたワークフローの検証と記録   | 実装済みワークフロー定義、ジョブ依存関係図、分析レポート | 検証レポート、EVALS.json、LOGS.md          |
 
-## 並列ジョブの基本パターン
+## ベストプラクティス
 
-### 完全並列実行
+### すべきこと
 
-```yaml
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run lint
+- **段階的な並列化**: シーケンシャルなワークフローから徐々に並列化を進める
+- **依存関係の最小化**: 不要なneedsを避け、真に依存するジョブのみを連鎖させる
+- **データ受け渡しの使い分け**: 文字列はoutputs、ファイルはartifacts、依存関係はcacheを活用する
+- **クリティカルパスの最適化**: ワークフロー全体の実行時間を決定する最長パスを短縮する
+- **早期失敗の実現**: 高速で重要なチェック（lintなど）を先に実行し、失敗時は後続ジョブをスキップする
+- **明確な命名規則**: ジョブ名、artifact名、output名を統一し、可読性を高める
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm test
+### 避けるべきこと
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run build
-```
+- **過剰な並列化**: リソース制限を超える並列ジョブ実行（GitHub Actionsの同時実行制限に注意）
+- **循環依存**: needsによる循環参照はエラーとなる
+- **大きなoutputs**: outputsは文字列のみ対応、大きなデータはartifactsを使用する
+- **不要なartifacts**: 一時ファイルや巨大なnode_modulesのアップロードは避ける（cacheを使用）
+- **検証の省略**: ワークフロー構文やジョブ依存関係の検証を怠らない
 
-すべてのジョブが同時に開始されます。
+## リソース参照
 
-### シーケンシャル依存関係
+### references/（詳細知識）
 
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run build
+| リソース       | パス                                                                       | 内容                                       |
+| -------------- | -------------------------------------------------------------------------- | ------------------------------------------ |
+| 基礎知識       | See [references/Level1_basics.md](references/Level1_basics.md)             | 基礎知識と適用タイミング                   |
+| 中級           | See [references/Level2_intermediate.md](references/Level2_intermediate.md) | リソース/スクリプト/テンプレート活用       |
+| 上級           | See [references/Level3_advanced.md](references/Level3_advanced.md)         | Progressive Disclosure設計とトークン最適化 |
+| エキスパート   | See [references/Level4_expert.md](references/Level4_expert.md)             | フィードバックループと改善サイクル         |
+| データ受け渡し | See [references/data-passing.md](references/data-passing.md)               | outputs/artifacts/cache活用パターン        |
+| ジョブ依存関係 | See [references/job-dependencies.md](references/job-dependencies.md)       | needs構文と依存関係グラフ                  |
 
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm test
+### scripts/（決定論的処理）
 
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run deploy
-```
+| スクリプト           | 用途               | 使用例                                                          |
+| -------------------- | ------------------ | --------------------------------------------------------------- |
+| `visualize-deps.mjs` | 依存関係可視化     | `node scripts/visualize-deps.mjs .github/workflows/ci.yml`      |
+| `validate-skill.mjs` | スキル構造検証     | `node scripts/validate-skill.mjs`                               |
+| `log_usage.mjs`      | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
 
-依存関係チェーン: build → test → deploy
+### assets/（テンプレート）
 
-### 複数依存関係
+| テンプレート             | 用途                                                                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| `parallel-workflow.yaml` | 5つの実装例（基本CI/CD、マルチプラットフォーム、複雑グラフ、条件付き実行、失敗ハンドリング） |
 
-```yaml
-jobs:
-  unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run test:unit
+## 主要概念
 
-  integration-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run test:integration
+### 依存関係パターン
 
-  deploy:
-    needs: [unit-tests, integration-tests]
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run deploy
-```
+- **シーケンシャル**: A → B → C → D（直列実行）
+- **ファンアウト**: A → (B, C, D)（分岐並列）
+- **ファンイン**: (A, B, C) → D（集約）
+- **ダイアモンド**: A → (B, C) → D（最も一般的なCI/CDパターン）
 
-deploy は両方のテストジョブの完了を待ちます。
+### データ受け渡し手法
 
-## ジョブ間データ受け渡し
+- **Outputs**: 文字列データ（環境変数、設定値、バージョン情報など）
+- **Artifacts**: ファイル（ビルド成果物、レポート、ログなど）
+- **Cache**: 依存関係（node_modules、.cache、ビルドキャッシュなど）
 
-### Outputs 使用
+### 条件付き実行
 
-```yaml
-jobs:
-  version:
-    runs-on: ubuntu-latest
-    outputs:
-      app_version: ${{ steps.get_version.outputs.version }}
-    steps:
-      - id: get_version
-        run: echo "version=1.2.3" >> $GITHUB_OUTPUT
-
-  deploy:
-    needs: version
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Deploying ${{ needs.version.outputs.app_version }}"
-```
-
-### Artifacts 使用
-
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm run build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-      - run: pnpm test
-```
-
-## 条件付き並列実行
-
-### 条件付き依存
-
-```yaml
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - run: pnpm test
-
-  deploy-staging:
-    needs: test
-    if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Deploy to staging"
-
-  deploy-production:
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Deploy to production"
-```
-
-## パフォーマンス最適化のヒント
-
-1. **独立タスクを並列化**: lint、test、build などの独立したタスクは並列実行
-2. **適切な needs 設定**: 不要な依存関係を作らない
-3. **Matrix と組み合わせ**: 複数環境テストを並列化
-4. **Artifacts を最小化**: 必要なファイルのみをアップロード
-5. **キャッシュ活用**: 共通依存関係はキャッシュで共有
-
-## よくある使用パターン
-
-### CI/CD パイプライン
-
-```
-Build → Test (unit, integration, e2e) → Deploy (staging | production)
-```
-
-### マルチ環境テスト
-
-```
-Build → Test Matrix (OS × Node version) → Aggregate Results → Deploy
-```
-
-### ドキュメント生成
-
-```
-Code Lint | Docs Build → Deploy Docs
-     ↓
-    Test
-```
-
-## 関連スキル
-
-詳細な知識については、以下のスキルを参照してください:
-
-- **matrix-builds**: マトリックスビルドとの組み合わせで並列化を最大化
-- **concurrency-control**: 並列実行の制御と制限
-- **conditional-execution-gha**: 条件付き実行パターン
-- **artifact-management-gha**: ジョブ間ファイル共有
-- **caching-strategies-gha**: キャッシュによる実行時間短縮
+- **always()**: 前ジョブの結果に関わらず実行（レポート生成、クリーンアップ）
+- **success()**: 前ジョブが成功した場合のみ実行（デプロイ、リリース）
+- **failure()**: 前ジョブが失敗した場合のみ実行（エラー通知、ロールバック）
 
 ## トラブルシューティング
 
-### ジョブが並列実行されない
+### よくあるエラーと解決方法
 
-**原因**: 不要な needs 依存関係が設定されている
+#### 1. 循環依存エラー
 
-**解決**: needs を削除し、本当に必要な依存関係のみ保持
+**エラー**: `Cycle detected in job dependencies`
 
-### データが受け渡せない
+**原因**: needsによる循環参照（A → B → C → A）
 
-**原因**: outputs 設定の誤り、または artifacts の未アップロード
+**解決方法**:
 
-**解決**: resources/data-passing.md の正しいパターンを参照
+- `scripts/visualize-deps.mjs`で依存関係グラフを可視化
+- 循環を構成するジョブの依存関係を見直す
+- 必要に応じてジョブを分割または統合する
 
-### 依存関係が複雑で理解できない
+#### 2. Artifactサイズ制限エラー
 
-**原因**: ジョブグラフが複雑化
+**エラー**: `Artifact size exceeds maximum allowed size`
 
-**解決**: scripts/visualize-deps.mjs で依存関係を可視化
+**原因**: Artifactの合計サイズが10GB（無料プラン）を超過
 
----
+**解決方法**:
 
-**詳細情報**: resources/ディレクトリ内のドキュメントを参照してください。
+- 不要なファイルを除外（`.artifactignore`を使用）
+- `node_modules`はcacheを使用し、artifactには含めない
+- 大きなファイルは圧縮してからアップロード
+- 保持期間を短縮（デフォルト90日→7日など）
+
+#### 3. 同時実行制限エラー
+
+**エラー**: ジョブがキューに長時間留まる
+
+**原因**: GitHub Actionsの同時実行制限（無料プラン: 20ジョブ/リポジトリ）
+
+**解決方法**:
+
+- matrix戦略の並列度を調整（`max-parallel`を設定）
+- 優先度の低いジョブは`concurrency`グループでシリアル化
+- クリティカルパス以外のジョブを別ワークフローに分離
+
+#### 4. Outputsが取得できない
+
+**エラー**: `needs.job_name.outputs.output_name`が空
+
+**原因**:
+
+- outputs定義の構文エラー
+- 前ジョブがスキップされた
+- outputsに改行や特殊文字が含まれる
+
+**解決方法**:
+
+- outputs定義を確認（`outputs:`配下に正しく定義されているか）
+- 前ジョブの実行ログで値が設定されているか確認
+- 改行はJSON形式でエスケープ（`toJSON()`を使用）
+
+#### 5. Cacheヒット率が低い
+
+**症状**: キャッシュが頻繁にミスする
+
+**原因**:
+
+- キャッシュキーが不安定（日時やランダム値を含む）
+- ファイルパスのパターンが広すぎる
+- キャッシュサイズが10GBを超え、古いキャッシュが削除される
+
+**解決方法**:
+
+- キャッシュキーを安定化（`hashFiles('**/package-lock.json')`を使用）
+- restore-keysでフォールバック戦略を設定
+- 不要なファイルを除外してキャッシュサイズを削減

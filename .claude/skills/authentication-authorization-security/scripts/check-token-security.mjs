@@ -17,8 +17,25 @@
  *   - センシティブデータのペイロード含有
  */
 
-import { readFileSync, readdirSync, statSync } from "fs";
+import { readFileSync, readdirSync, statSync, existsSync } from "fs";
 import { join, extname } from "path";
+
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
+const EXIT_FILE_MISSING = 3;
+
+function showHelp() {
+  console.log(`
+JWT/トークンセキュリティチェック
+
+Usage:
+  node check-token-security.mjs <target-directory>
+
+Options:
+  -h, --help    このヘルプを表示
+  `);
+}
 
 const colors = {
   reset: "\x1b[0m",
@@ -345,12 +362,37 @@ class TokenSecurityChecker {
 }
 
 // メイン実行
-const targetDir = process.argv[2] || "./src";
+const args = process.argv.slice(2);
+if (args.includes("-h") || args.includes("--help")) {
+  showHelp();
+  process.exit(EXIT_SUCCESS);
+}
+
+if (args.length > 1) {
+  console.error(`${colors.red}Error: too many arguments${colors.reset}`);
+  showHelp();
+  process.exit(EXIT_ARGS_ERROR);
+}
+
+const targetDir = args[0] || "./src";
+if (targetDir.startsWith("-")) {
+  console.error(`${colors.red}Error: invalid target directory${colors.reset}`);
+  showHelp();
+  process.exit(EXIT_ARGS_ERROR);
+}
+
+if (!existsSync(targetDir)) {
+  console.error(
+    `${colors.red}Error: target directory not found: ${targetDir}${colors.reset}`,
+  );
+  process.exit(EXIT_FILE_MISSING);
+}
 
 try {
   const checker = new TokenSecurityChecker(targetDir);
   checker.check();
+  process.exit(EXIT_SUCCESS);
 } catch (error) {
   console.error(`${colors.red}エラー: ${error.message}${colors.reset}`);
-  process.exit(1);
+  process.exit(EXIT_ERROR);
 }

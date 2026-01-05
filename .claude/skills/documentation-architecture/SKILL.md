@@ -1,442 +1,134 @@
 ---
 name: documentation-architecture
 description: |
-    ドキュメント構造設計、リソース分割、階層設計を専門とするスキル。
-    500行制約に基づく適切なファイル分割とトピックベース組織化により、
-    保守性と発見可能性の高いドキュメントアーキテクチャを実現します。
-    専門分野:
-    - ファイル分割: トピック別、レベル別、機能別、ハイブリッド分割
-    - リソース組織化: ディレクトリ構造、命名規則、参照設計
-    - 階層設計: 概要から詳細への段階的深化
-    - メタデータ最適化: 発見可能性、検索性の向上
-    使用タイミング:
-    - SKILL.mdが500行を超える可能性がある時
-    - リソースファイルの分割戦略を決定する時
-    - ドキュメントの階層構造を設計する時
-    - 情報の発見可能性を向上させる時
-    Use proactively when designing document structure, splitting large files,
-    or organizing knowledge resources.
+  ドキュメント構造設計・リソース分割・階層設計を専門とするスキル。
+  500行制約に基づく適切なファイル分割とトピックベース組織化により、
+  保守性と発見可能性の高いドキュメントアーキテクチャを実現する。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • Information Architecture (Rosenfeld/Morville) / 適用: 情報組織化パターン / 目的: 発見可能性向上
+  • Clean Architecture (Robert C. Martin) / 適用: 依存関係ルール / 目的: 責任分離設計
+  • The Pragmatic Programmer (Hunt/Thomas) / 適用: DRY原則 / 目的: 重複回避
 
-  - `.claude/skills/documentation-architecture/resources/directory-organization.md`: スキルリソースのディレクトリ構造設計パターン
-  - `.claude/skills/documentation-architecture/resources/hierarchy-design.md`: 概要から詳細への段階的ドキュメント階層設計
-  - `.claude/skills/documentation-architecture/resources/naming-conventions.md`: ファイルとディレクトリの命名規則標準化
-  - `.claude/skills/documentation-architecture/resources/splitting-patterns.md`: トピック別・レベル別・機能別・ハイブリッドの4分割パターン
-  - `.claude/skills/documentation-architecture/templates/resource-structure.md`: リソース構造のテンプレート
-  - `.claude/skills/documentation-architecture/scripts/analyze-structure.mjs`: ドキュメント構造分析スクリプト
-  - `.claude/skills/documentation-architecture/scripts/analyze-structure.sh`: ドキュメント構造分析シェルスクリプト
-
-version: 1.0.0
+  Trigger:
+  Use when designing documentation structure, splitting large files over 500 lines, organizing resources with topic-based structure, improving discoverability, or establishing naming conventions.
+  documentation structure, file splitting, directory organization, hierarchy design, naming conventions, 500-line constraint
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Documentation Architecture
 
 ## 概要
 
-ドキュメントアーキテクチャは、知識を効率的に組織化し、保守性と発見可能性を最大化する設計原則です。
-
-Claude Code スキルシステムにおいては、500 行制約に基づく適切なファイル分割と、
-トピックベースの組織化により、スケーラブルで保守しやすい知識ベースを構築します。
-
-**主要な価値**:
-
-- 500 行制約の遵守による可読性維持
-- 適切な分割による保守性向上
-- 論理的な階層構造による発見可能性向上
-- トピックベース組織化による再利用性向上
-
-**対象ユーザー**:
-
-- スキルを設計するエージェント（@skill-librarian）
-- 大規模なドキュメントを管理する開発者
-- 知識ベースの構造を最適化したいチーム
-
-## リソース構造
-
-```
-documentation-architecture/
-├── SKILL.md                          # 本ファイル（設計原則）
-├── resources/
-│   ├── splitting-patterns.md        # ファイル分割の4パターン
-│   ├── directory-organization.md    # ディレクトリ構造設計
-│   ├── naming-conventions.md        # 命名規則とパターン
-│   └── hierarchy-design.md          # 階層設計の原則
-├── scripts/
-│   └── analyze-structure.sh         # ドキュメント構造分析
-└── templates/
-    └── resource-structure.md        # リソース構造テンプレート
-```
-
-### リソース種別
-
-- **分割パターン** (`resources/splitting-patterns.md`): トピック別、レベル別、機能別、ハイブリッド
-- **ディレクトリ組織化** (`resources/directory-organization.md`): フォルダ構造、配置基準
-- **命名規則** (`resources/naming-conventions.md`): ファイル・ディレクトリの命名パターン
-- **階層設計** (`resources/hierarchy-design.md`): 概要から詳細への段階的設計
-- **分析スクリプト** (`scripts/analyze-structure.mjs`): 構造の妥当性を自動分析（TypeScript）
-- **テンプレート** (`templates/resource-structure.md`): 標準的なリソース構造
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# ファイル分割パターン
-cat .claude/skills/documentation-architecture/resources/splitting-patterns.md
-
-# ディレクトリ組織化ガイド
-cat .claude/skills/documentation-architecture/resources/directory-organization.md
-
-# 命名規則ガイド
-cat .claude/skills/documentation-architecture/resources/naming-conventions.md
-
-# 階層設計原則
-cat .claude/skills/documentation-architecture/resources/hierarchy-design.md
-```
-
-### スクリプト実行
-
-```bash
-# スキルディレクトリの構造分析（TypeScript）
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <skill-directory>
-
-# 例: documentation-architectureスキル自体を分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/documentation-architecture
-
-# 例: 他のスキルの構造を分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/knowledge-management
-```
-
-### テンプレート参照
-
-```bash
-# リソース構造テンプレートを読み取る
-cat .claude/skills/documentation-architecture/templates/resource-structure.md
-
-# 新しいスキルにテンプレートを適用
-cp .claude/skills/documentation-architecture/templates/resource-structure.md ./new-skill/resources/
-```
-
-## いつ使うか
-
-### シナリオ 1: 500 行超過への対応
-
-**状況**: SKILL.md またはリソースが 500 行を超えそう
-
-**適用条件**:
-
-- [ ] 現在の行数が 400 行を超えている
-- [ ] 追加したい内容が 100 行以上ある
-- [ ] 分割可能なトピックが存在する
-
-**期待される成果**: 適切な分割戦略の決定と実施
-
-### シナリオ 2: ドキュメント構造の設計
-
-**状況**: 新しいスキルやドキュメントの構造を設計する
-
-**適用条件**:
-
-- [ ] 複数のトピックを扱う
-- [ ] ユーザーレベルが混在（初心者～上級者）
-- [ ] 段階的な学習パスが必要
-
-**期待される成果**: 論理的で発見可能性の高い構造
-
-### シナリオ 3: 既存ドキュメントのリファクタリング
-
-**状況**: 既存のドキュメントが肥大化し、保守が困難
-
-**適用条件**:
-
-- [ ] ドキュメントが 1000 行を超えている
-- [ ] 情報の発見が困難
-- [ ] 更新時に影響範囲が不明確
-
-**期待される成果**: リファクタリング計画と実施
-
-## 前提条件
-
-### 必要な知識
-
-- [ ] Markdown 基本文法
-- [ ] ファイルシステムの基本概念
-- [ ] 情報アーキテクチャの基礎
-
-### 必要なツール
-
-- Read: 既存構造の分析
-- Write: ファイルの作成
-- Bash: ディレクトリ操作
-
-### 環境要件
-
-- `.claude/skills/`ディレクトリが存在する
+ドキュメント構造設計・リソース分割・階層設計を専門とするスキル。500行制約に基づく適切なファイル分割とトピックベース組織化により、保守性と発見可能性の高いドキュメントアーキテクチャを実現する。
 
 ## ワークフロー
 
-### Phase 1: 分割必要性の判断
+### Phase 1: 構造分析
 
-**目的**: ファイル分割が必要かどうかを判断する
+**目的**: 現在のドキュメント構造を評価し、改善点を特定
 
-**判断フロー**:
+**アクション**:
 
-```
-現在の行数は？
-├─ <300行 → 分割不要（単一ファイルで継続）
-├─ 300-500行 → 判断2へ
-│   └─ 将来の拡張予定は？
-│       ├─ あり → 分割推奨
-│       └─ なし → 単一ファイルでOK
-└─ >500行 → 分割必須
-```
+1. `scripts/analyze-structure.mjs` で構造を分析
+2. 500行超過ファイルを検出
+3. 階層深度と命名一貫性を評価
+4. 改善優先度を決定
 
-**判断基準**:
+**Task**: `agents/analyze-structure.md` を参照
 
-- [ ] 現在の行数は？
-- [ ] 将来的な追加予定は？
-- [ ] 独立したトピックが存在するか？
+### Phase 2: 組織化設計
 
-**リソース**: `resources/splitting-patterns.md`
+**目的**: 最適なディレクトリ構造とファイル分割を設計
 
-### Phase 2: 分割パターンの選択
+**アクション**:
 
-**目的**: 最適な分割パターンを選択する
+1. トピックベースの組織化戦略を決定
+2. ファイル分割パターンを選択
+3. 命名規則を統一
+4. 階層構造を設計
 
-**4 つのパターン**:
+**Task**: `agents/design-organization.md` を参照
 
-1. **トピック別分割**:
-   - 適用: 独立したテーマごと
-   - 命名: `[topic]-[subtopic].md`
+### Phase 3: 構造再編実装
 
-2. **レベル別分割**:
-   - 適用: 学習段階がある
-   - 命名: `01-basics.md`, `02-intermediate.md`, `03-advanced.md`
+**目的**: 設計に基づいて構造を再編し、検証する
 
-3. **機能別分割**:
-   - 適用: CRUD 等の操作ごと
-   - 命名: `create.md`, `read.md`, `update.md`, `delete.md`
+**アクション**:
 
-4. **ハイブリッド分割**:
-   - 適用: 複数基準の組み合わせ
-   - 構造: カテゴリ/レベル/機能の階層
+1. ディレクトリ構造を作成
+2. ファイル分割を実行
+3. 相互参照を更新
+4. `scripts/validate-structure.mjs` で検証
+5. `scripts/log_usage.mjs` で記録
 
-**選択基準**:
+**Task**: `agents/implement-restructure.md` を参照
 
-- [ ] どのパターンが対象知識に最適か？
-- [ ] ユーザーの学習パスが明確か？
-- [ ] 各ファイルが独立して理解可能か？
+## Task仕様ナビ
 
-**リソース**: `resources/splitting-patterns.md`
+| Task                  | 起動タイミング | 入力             | 出力         |
+| --------------------- | -------------- | ---------------- | ------------ |
+| analyze-structure     | Phase 1開始時  | 対象ディレクトリ | 分析レポート |
+| design-organization   | Phase 2開始時  | 分析レポート     | 設計書       |
+| implement-restructure | Phase 3開始時  | 設計書           | 再編済み構造 |
 
-### Phase 3: ディレクトリ構造の設計
-
-**目的**: ファイルを適切なディレクトリに配置する
-
-**標準構造**:
-
-```
-skill-name/
-├── SKILL.md
-├── resources/
-│   ├── [topic]-[aspect].md
-│   └── [category]/
-│       ├── [subtopic].md
-│       └── [subtopic].md
-├── scripts/
-│   └── [purpose].sh
-├── templates/
-│   └── [template-name].[ext]
-└── assets/
-    └── [schema|sample].[ext]
-```
-
-**配置基準**:
-
-- resources/: ドキュメント（.md）
-- scripts/: 実行可能スクリプト
-- templates/: 再利用可能フォーマット
-- assets/: スキーマ、サンプルデータ
-
-**リソース**: `resources/directory-organization.md`
-
-### Phase 4: 命名規則の適用
-
-**目的**: 一貫性のある命名により発見可能性を向上
-
-**命名パターン**:
-
-- トピック別: `[domain]-[topic].md`
-- Phase 別: `[framework]-[phase].md`
-- レベル別: `[number]-[level]-[topic].md`
-
-**判断基準**:
-
-- [ ] 命名から内容が推測できるか？
-- [ ] アルファベット順で論理的な並びか？
-- [ ] 他のファイルと区別できるか？
-
-**リソース**: `resources/naming-conventions.md`
-
-## リソースへの参照
-
-- **ファイル分割パターン**: `resources/splitting-patterns.md`
-  - 4 つの分割パターンの詳細
-  - 適用条件と判断基準
-  - 具体的な実装例
-
-- **ディレクトリ組織化**: `resources/directory-organization.md`
-  - 標準ディレクトリ構造
-  - 配置基準とベストプラクティス
-
-- **命名規則**: `resources/naming-conventions.md`
-  - ファイル・ディレクトリの命名パターン
-  - 一貫性の確保
-
-- **階層設計**: `resources/hierarchy-design.md`
-  - 概要から詳細への段階的設計
-  - トレーサビリティの確保
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-1. **早期分割の検討**:
-   - 300 行を超えたら分割を検討
-   - 500 行は絶対に超えない
-
-2. **論理的な構造**:
-   - トピックごとに明確に分離
-   - 階層が深すぎない（3 階層まで）
-
-3. **明確な参照**:
-   - SKILL.md から各リソースへの参照を明示
-   - 参照タイミングのガイダンス
+| 推奨事項                 | 理由                       |
+| ------------------------ | -------------------------- |
+| 分析スクリプトを先に実行 | 客観的データに基づく設計   |
+| 1ファイル1トピック原則   | 発見可能性と保守性の向上   |
+| 4層以下の階層に抑える    | 深すぎると発見可能性が低下 |
+| 命名規則を統一           | 一貫性による認知負荷軽減   |
+| 500行制約を遵守          | 可読性と管理性の確保       |
 
 ### 避けるべきこと
 
-1. **過度な分割**:
-   - ❌ 10 行のファイルを大量に作成
-   - ✅ 各ファイル 300-450 行の適切なサイズ
+| 禁止事項               | 問題点                   |
+| ---------------------- | ------------------------ |
+| 分析なしでいきなり実装 | 不適切な構造設計のリスク |
+| 複数トピックの混在     | 発見可能性と保守性の低下 |
+| 過度な分割             | 管理コスト増大           |
+| 循環参照               | 依存関係の複雑化         |
 
-2. **曖昧な命名**:
-   - ❌ `misc.md`, `other.md`, `utils.md`
-   - ✅ `error-handling-strategies.md`
+## リソース参照
 
-3. **深すぎる階層**:
-   - ❌ `resources/api/rest/v2/endpoints/users/get-user-by-id.md`
-   - ✅ `resources/api-endpoints.md`
+### scripts/（決定論的処理）
 
-## トラブルシューティング
+| スクリプト               | 機能               |
+| ------------------------ | ------------------ |
+| `analyze-structure.mjs`  | 構造分析と違反検出 |
+| `validate-structure.mjs` | 構造検証           |
+| `log_usage.mjs`          | フィードバック記録 |
 
-### 問題 1: 分割後に情報が見つからない
+### references/（詳細知識）
 
-**症状**: 必要な情報がどのファイルにあるか分からない
+| リソース       | パス                                                                       | 読込条件         |
+| -------------- | -------------------------------------------------------------------------- | ---------------- |
+| 組織化パターン | [references/organization-patterns.md](references/organization-patterns.md) | 設計時に参照     |
+| 命名規則       | [references/naming-conventions.md](references/naming-conventions.md)       | 命名検討時に参照 |
+| 分割戦略       | [references/splitting-strategies.md](references/splitting-strategies.md)   | 分割設計時に参照 |
 
-**原因**: SKILL.md からの参照が不明確
+### assets/（テンプレート）
 
-**解決策**:
-
-1. 「リソース構造」セクションを SKILL.md に追加
-2. 各 Phase で対応するリソースを明示
-3. リソース選択ガイドを提供
-
-### 問題 2: ファイルが多すぎて管理困難
-
-**症状**: 10 個以上のリソースファイルがあり、把握できない
-
-**原因**: 過度な分割
-
-**解決策**:
-
-1. 関連するトピックを統合
-2. サブディレクトリでカテゴリ化
-3. 各リソースを 300-450 行に保つ
-
-### 問題 3: 階層が深すぎる
-
-**症状**: `resources/category/subcategory/topic/detail.md`
-
-**原因**: 過度な階層化
-
-**解決策**:
-
-1. 階層を 2-3 レベルに制限
-2. フラットな構造を優先
-3. 命名で階層を表現（`category-subcategory-topic.md`）
-
-## 関連スキル
-
-- **progressive-disclosure** (`.claude/skills/progressive-disclosure/SKILL.md`): 3 層開示モデル、トークン効率
-- **knowledge-management** (`.claude/skills/knowledge-management/SKILL.md`): SECI Model、知識の体系化
-- **context-optimization** (`.claude/skills/context-optimization/SKILL.md`): トークン最適化
-- **best-practices-curation** (`.claude/skills/best-practices-curation/SKILL.md`): ドキュメント品質評価
-
-## メトリクス
-
-### ファイルサイズ分布
-
-**測定**: 各ファイルの行数分布
-
-**目標**:
-
-- SKILL.md: 350-450 行
-- リソース: 各 300-450 行
-- 500 行超過: 0 ファイル
-
-### 発見時間
-
-**測定**: ユーザーが必要な情報を見つけるまでの時間
-
-**目標**: <2 分
-
-### 保守性スコア
-
-**評価基準**:
-
-- ファイル分割の適切性: 0-10 点
-- 命名の一貫性: 0-10 点
-- 階層の論理性: 0-10 点
-
-**目標**: 平均 8 点以上
+| アセット                | 用途                         |
+| ----------------------- | ---------------------------- |
+| `structure-template.md` | ドキュメント構造テンプレート |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                      |
-| ---------- | ---------- | --------------------------------------------- |
-| 1.0.0      | 2025-11-23 | 初版作成 - ドキュメント構造設計フレームワーク |
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- ファイル分割戦略の決定
-- ディレクトリ構造の設計
-- 命名規則の定義
-- 階層設計の最適化
-
-### このスキルが行わないこと
-
-- ドキュメントの内容作成（構造設計のみ）
-- 実際のファイル分割作業（設計を提供）
-- コードの実装
-
-### 推奨される使用フロー
-
-1. 分割必要性の判断（Phase 1）
-2. 分割パターンの選択（Phase 2）
-3. ディレクトリ構造の設計（Phase 3）
-4. 命名規則の適用（Phase 4）
-
-### 参考文献
-
-- **『Information Architecture for the Web and Beyond』** Louis Rosenfeld 他著
-  - 情報組織化の原則
-
-- **『Documenting Software Architectures』** Paul Clements 他著
-  - ドキュメント構造の設計
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
+| 2.1.0   | 2026-01-01 | 18-skills.md仕様完全準拠版に再構築 |
+| 2.0.0   | 2025-12-31 | 初版作成                           |

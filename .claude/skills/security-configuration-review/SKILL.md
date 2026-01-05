@@ -1,573 +1,137 @@
 ---
 name: security-configuration-review
 description: |
-  セキュリティ関連設定のレビューとベストプラクティスを提供します。
+  セキュリティ関連設定のレビュー、構成監査、セキュリティベースライン確認を統一的に実施するスキル。脅威モデリングに基づいた設定評価とベストプラクティスの適用を通じて、アプリケーションのセキュリティ態勢を向上させます。
 
-  📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
+  Anchors:
+  • 『Web Application Security』（Andrew Hoffman） / 適用: セキュリティ設定監査 / 目的: セキュリティ態勢の向上
 
-  - `.claude/skills/security-configuration-review/resources/security-headers-guide.md`: Security Headers Guideリソース
-
-  - `.claude/skills/security-configuration-review/templates/cors-config-template.js`: Cors Configテンプレート
-  - `.claude/skills/security-configuration-review/templates/helmet-config-template.js`: Helmet Configテンプレート
-  - `.claude/skills/security-configuration-review/templates/security-checklist.md`: Security Checklistテンプレート
-
-  - `.claude/skills/security-configuration-review/scripts/check-security-headers.mjs`: Check Security Headersスクリプト
-
-version: 1.0.0
+  Trigger:
+  セキュリティ設定レビュー、構成監査、セキュリティベースライン確認時に使用。セキュリティヘッダー設定、CORS設定、認証・認可の監査などの場面で自動選択対象。
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Security Configuration Review
 
-## スキル概要
+## 概要
 
-アプリケーションのセキュリティ設定を包括的にレビューする専門知識を提供します。
+セキュリティ関連設定のレビュー、構成監査、セキュリティベースライン確認を統一的に実施するスキルです。脅威モデリングに基づいた設定評価とベストプラクティスの適用を通じて、アプリケーションのセキュリティ態勢を向上させます。
 
-**専門分野**:
+本スキルは以下を対象とします：
 
-- HTTP セキュリティヘッダー設定
-- CORS（Cross-Origin Resource Sharing）設定
-- 環境変数とシークレット管理
-- セキュリティログとモニタリング
-- CSP（Content Security Policy）
+- **セキュリティヘッダー** (CSP, X-Frame-Options, X-Content-Type-Options など)
+- **認証・認可設定** (JWT, CORS, OAuth2 フロー)
+- **暗号化と通信セキュリティ** (TLS/SSL, 鍵管理)
+- **サードパーティ依存関係** (ライブラリのセキュリティリスク)
+- **コンプライアンス要件** (GDPR, PCI-DSS など)
 
----
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
-## 1. HTTP セキュリティヘッダー
+## ワークフロー
 
-### Helmet.js ミドルウェア
+### Phase 1: 目的と前提の整理
 
-**推奨設定**:
+**目的**: タスクの目的と前提条件を明確にする
 
-```javascript
-const helmet = require("helmet");
+**アクション**:
 
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"], // 本番では'unsafe-inline'削除推奨
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'"],
-        fontSrc: ["'self'"],
-        objectSrc: ["'none'"],
-        upgradeInsecureRequests: [],
-      },
-    },
-    hsts: {
-      maxAge: 31536000, // 1年
-      includeSubDomains: true,
-      preload: true,
-    },
-    frameguard: { action: "deny" },
-    noSniff: true,
-    xssFilter: true,
-  }),
-);
-```
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
-**判断基準**:
+### Phase 2: スキル適用
 
-- [ ] Helmet.js または同等のミドルウェアが使用されているか？
-- [ ] 本番環境ですべてのセキュリティヘッダーが有効か？
+**目的**: スキルの指針に従って具体的な作業を進める
 
----
+**アクション**:
 
-### 個別ヘッダー詳細
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-**Strict-Transport-Security（HSTS）**:
+### Phase 3: 検証と記録
 
-```
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-```
+**目的**: 成果物の検証と実行記録の保存
 
-- 目的: HTTPS 強制、HTTP→HTTPS ダウングレード攻撃防止
-- [ ] max-age は 1 年（31536000 秒）以上か？
-- [ ] includeSubDomains が設定されているか？
+**アクション**:
 
-**X-Frame-Options**:
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-```
-X-Frame-Options: DENY
-```
+## Task仕様ナビ
 
-- 目的: Clickjacking 攻撃防止
-- [ ] `DENY`または`SAMEORIGIN`が設定されているか？
+| Task                       | 対応リソース                          | 主な検査項目                         | 推奨スクリプト               |
+| -------------------------- | ------------------------------------- | ------------------------------------ | ---------------------------- |
+| セキュリティヘッダー監査   | `references/security-headers-guide.md` | CSP, X-Frame-Options, HSTS 等        | `check-security-headers.mjs` |
+| CORS設定レビュー           | `assets/cors-config-template.js`   | オリジン検証, メソッド制限, 認証情報 | -                            |
+| 認証・認可監査             | `references/Level2_intermediate.md`    | JWT トークン, Session 管理, RBAC     | -                            |
+| 依存パッケージ脆弱性確認   | `references/requirements-index.md`     | CVE, ライセンス要件                  | -                            |
+| セキュリティチェックリスト | `assets/security-checklist.md`     | OWASP Top 10, CWE 対応               | -                            |
+| Helmet設定最適化           | `assets/helmet-config-template.js` | ミドルウェア構成, ベストプラクティス | -                            |
+| コンプライアンス確認       | `references/Level3_advanced.md`        | GDPR, PCI-DSS, SOC2                  | -                            |
+| 脅威モデル分析             | `references/Level4_expert.md`          | 攻撃面, リスク評価, 優先度付け       | -                            |
 
-**X-Content-Type-Options**:
+## ベストプラクティス
 
-```
-X-Content-Type-Options: nosniff
-```
+### すべきこと
 
-- 目的: MIME タイプスニッフィング防止
-- [ ] `nosniff`が設定されているか？
+- `references/Level1_basics.md` を参照し、適用範囲を明確にする
+- `references/Level2_intermediate.md` を参照し、実務手順を整理する
+- **脅威モデリング** に基づいて、攻撃面と優先度を把握する
+- **OWASP Top 10** に対応した設定チェックを実施する
+- セキュリティヘッダーは **段階的に** 導入し、アプリケーション動作を確認する
+- **定期的に** 脆弱性情報を確認し、依存パッケージを更新する
+- セキュリティ設定の **変更履歴と根拠** を記録する
 
-**Referrer-Policy**:
+### 避けるべきこと
 
-```
-Referrer-Policy: no-referrer
-```
+- アンチパターンや注意点を確認せずに進めることを避ける
+- セキュリティヘッダーを **厳格に設定しすぎて** アプリケーション機能を破損させる
+- **古い設定** のまま進める（定期的にレビューを実施）
+- コンプライアンス要件を **見落とす** （業界標準の確認が重要）
+- 脆弱性スキャンの結果を **無視する**
 
-- 目的: Referer ヘッダー情報漏洩防止
-- [ ] `no-referrer`または`strict-origin-when-cross-origin`が設定されているか？
+## リソース参照
 
-**Permissions-Policy**:
+### 📖 References（参考文献と学習リソース）
 
-```
-Permissions-Policy: geolocation=(), microphone=(), camera=()
-```
+| カテゴリ       | リソース                              | 説明                                       |
+| -------------- | ------------------------------------- | ------------------------------------------ |
+| **基礎知識**   | `references/Level1_basics.md`          | セキュリティ設定の基本概念とチェックリスト |
+| **実務ガイド** | `references/Level2_intermediate.md`    | 実践的なセキュリティ監査手順               |
+| **応用技法**   | `references/Level3_advanced.md`        | 高度な脅威モデリングとリスク評価           |
+| **専門知識**   | `references/Level4_expert.md`          | エンタープライズセキュリティ戦略           |
+| **業界標準**   | `references/requirements-index.md`     | OWASP, NIST, GDPR 等のコンプライアンス要件 |
+| **特定技術**   | `references/security-headers-guide.md` | HTTP セキュリティヘッダーの詳細ガイド      |
 
-- 目的: ブラウザ機能アクセス制限
-- [ ] 不要な機能が無効化されているか？
+### 🔧 Scripts（自動化スクリプト）
 
----
+| スクリプト                   | 用途                     | コマンド                                         |
+| ---------------------------- | ------------------------ | ------------------------------------------------ |
+| `check-security-headers.mjs` | セキュリティヘッダー検証 | `node scripts/check-security-headers.mjs --help` |
+| `validate-skill.mjs`         | スキル構造の検証         | `node scripts/validate-skill.mjs --help`         |
+| `log_usage.mjs`              | 使用記録と自動評価       | `node scripts/log_usage.mjs --help`              |
 
-## 2. Content Security Policy（CSP）
+### 📋 Templates（テンプレート集）
 
-### CSP Directive
-
-**基本設定**:
-
-```
-Content-Security-Policy:
-  default-src 'self';
-  script-src 'self' 'nonce-{random}';
-  style-src 'self' 'nonce-{random}';
-  img-src 'self' data: https:;
-  font-src 'self';
-  connect-src 'self';
-  frame-ancestors 'none';
-  base-uri 'self';
-  form-action 'self';
-```
-
-**XSS 対策レベル**:
-
-```
-レベル1（緩い）:
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
-
-レベル2（標準）:
-  script-src 'self' 'nonce-{random}';
-
-レベル3（厳格）:
-  script-src 'nonce-{random}';
-  require-trusted-types-for 'script';
-```
-
-**判断基準**:
-
-- [ ] CSP が設定されているか？
-- [ ] `'unsafe-inline'`は本番環境で避けているか？
-- [ ] nonce または hash を使用しているか？
-- [ ] `'unsafe-eval'`は使用されていないか？
-
----
-
-### CSP Reporting
-
-**Report-Uri 設定**:
-
-```
-Content-Security-Policy:
-  default-src 'self';
-  report-uri /api/csp-violations;
-```
-
-**レポート受信**:
-
-```javascript
-app.post(
-  "/api/csp-violations",
-  express.json({ type: "application/csp-report" }),
-  (req, res) => {
-    const report = req.body;
-    logger.warn("CSP violation", {
-      documentUri: report["document-uri"],
-      violatedDirective: report["violated-directive"],
-      blockedUri: report["blocked-uri"],
-    });
-    res.status(204).end();
-  },
-);
-```
-
-**判断基準**:
-
-- [ ] CSP 違反レポートが収集されているか？
-- [ ] 違反パターンを分析して設定を改善しているか？
-
----
-
-## 3. CORS 設定
-
-### 設定評価
-
-**安全な設定**:
-
-```javascript
-const cors = require("cors");
-
-app.use(
-  cors({
-    origin: process.env.ALLOWED_ORIGINS.split(","), // ホワイトリスト
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    maxAge: 86400, // プリフライトキャッシュ: 24時間
-  }),
-);
-```
-
-**危険な設定**:
-
-```javascript
-// ❌ すべてのオリジン許可
-app.use(cors({ origin: "*", credentials: true }));
-
-// ❌ 動的オリジン（検証なし）
-app.use(cors({ origin: req.headers.origin }));
-```
-
-**判断基準**:
-
-- [ ] 許可オリジンはホワイトリストで制限されているか？
-- [ ] `origin: '*'`と credentials: true の組み合わせは避けているか？
-- [ ] 動的オリジン許可時に検証があるか？
-- [ ] 不要な HTTP メソッドは許可していないか？
-
----
-
-## 4. 環境変数とシークレット管理
-
-### .env ファイル管理
-
-**チェック項目**:
-
-- [ ] `.env`ファイルが`.gitignore`に含まれているか？
-- [ ] `.env.example`でテンプレートを提供しているか？
-- [ ] 本番と開発で異なる`.env`ファイルを使用しているか？
-
-**.gitignore 必須エントリ**:
-
-```gitignore
-# 環境変数
-.env
-.env.local
-.env.*.local
-
-# 秘密鍵
-*.key
-*.pem
-*.p12
-*.pfx
-
-# 認証情報
-credentials.json
-auth.json
-```
-
----
-
-### シークレット命名規約
-
-**推奨パターン**:
-
-```bash
-# ✅ 明確な命名
-TURSO_DATABASE_URL=libsql://...
-JWT_SECRET=...
-API_KEY_OPENAI=...
-ENCRYPTION_KEY=...
-
-# ❌ 曖昧な命名
-SECRET=...
-KEY=...
-PASSWORD=...
-```
-
-**判断基準**:
-
-- [ ] シークレット名は用途が明確か？
-- [ ] 環境別に異なる接頭辞があるか（DEV*、PROD*等）？
-
----
-
-### シークレット注入
-
-**Railway/Vercel 設定**:
-
-```javascript
-// ビルド時チェック
-if (!process.env.TURSO_DATABASE_URL) {
-  throw new Error("TURSO_DATABASE_URL is not set");
-}
-
-// 必須環境変数リスト
-const requiredEnvVars = [
-  "TURSO_DATABASE_URL",
-  "TURSO_AUTH_TOKEN",
-  "JWT_SECRET",
-  "SESSION_SECRET",
-  "OPENAI_API_KEY",
-];
-
-requiredEnvVars.forEach((varName) => {
-  if (!process.env[varName]) {
-    console.error(`Missing required environment variable: ${varName}`);
-    process.exit(1);
-  }
-});
-```
-
-**判断基準**:
-
-- [ ] 起動時に必須環境変数をチェックしているか？
-- [ ] デフォルト値が安全でないシークレットを使用していないか？
-
----
-
-## 5. セキュリティロギング
-
-### ログ記録対象
-
-**必須イベント**:
-
-- 認証成功/失敗（ユーザー、時刻、IP）
-- 認可失敗（アクセス拒否）
-- 管理者操作（ユーザー削除、権限変更等）
-- セキュリティ例外（CSRF 検出、不正トークン等）
-- システムエラー（例外、クラッシュ）
-
-**ログ禁止データ**:
-
-- パスワード（平文、ハッシュ）
-- セッショントークン、JWT
-- クレジットカード番号
-- 社会保障番号
-- API キー、シークレット
-
-**実装例**:
-
-```javascript
-// ✅ 安全なログ
-logger.info("Login successful", {
-  userId: user.id,
-  ipAddress: req.ip,
-  timestamp: new Date().toISOString(),
-});
-
-// ❌ 危険なログ
-logger.debug("User data", {
-  password: user.password, // 絶対に禁止
-  token: sessionToken,
-});
-```
-
-**判断基準**:
-
-- [ ] センシティブデータがログに出力されていないか？
-- [ ] セキュリティイベントが記録されているか？
-- [ ] ログは構造化されているか（JSON 形式推奨）？
-
----
-
-## 6. Rate Limiting 設定
-
-### 実装確認
-
-**認証エンドポイント**:
-
-```javascript
-const rateLimit = require("express-rate-limit");
-
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15分
-  max: 5, // 5回試行
-  message: "Too many login attempts, please try again later",
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.post("/api/login", loginLimiter, loginHandler);
-```
-
-**グローバル Rate Limiting**:
-
-```javascript
-const globalLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1時間
-  max: 100, // 100リクエスト
-  skip: (req) => req.ip === "trusted-ip", // ホワイトリスト
-});
-
-app.use("/api/", globalLimiter);
-```
-
-**判断基準**:
-
-- [ ] 認証エンドポイントに Rate Limiting があるか？
-- [ ] API グローバル Rate Limiting があるか？
-- [ ] レート超過時に 429 ステータスコードが返されるか？
-- [ ] Retry-After ヘッダーが設定されているか？
-
----
-
-## 7. エラーハンドリングとセキュリティ
-
-### 情報漏洩防止
-
-**本番環境エラーレスポンス**:
-
-```javascript
-// ✅ 安全（本番環境）
-app.use((err, req, res, next) => {
-  logger.error("Server error", {
-    message: err.message,
-    stack: err.stack,
-    userId: req.session?.userId,
-  });
-
-  res.status(500).json({
-    error: "Internal server error", // 詳細を隠す
-  });
-});
-
-// ❌ 危険（本番環境で使用禁止）
-app.use((err, req, res, next) => {
-  res.status(500).json({
-    error: err.message,
-    stack: err.stack, // スタックトレース露出
-    query: req.query, // 内部情報漏洩
-  });
-});
-```
-
-**判断基準**:
-
-- [ ] 本番環境でスタックトレースを返していないか？
-- [ ] エラーメッセージは一般的か（詳細を隠す）？
-- [ ] 内部パス、DB 情報が漏洩していないか？
-
----
-
-## 8. HTTPS/TLS 設定
-
-### HTTPS 強制
-
-**実装**:
-
-```javascript
-// すべてのHTTPリクエストをHTTPSにリダイレクト
-app.use((req, res, next) => {
-  if (
-    req.header("x-forwarded-proto") !== "https" &&
-    process.env.NODE_ENV === "production"
-  ) {
-    return res.redirect(`https://${req.header("host")}${req.url}`);
-  }
-  next();
-});
-```
-
-### HSTS 設定
-
-**ヘッダー**:
-
-```
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-```
-
-**preload リスト登録**:
-https://hstspreload.org/ に登録することで、ブラウザが常に HTTPS を強制
-
-**判断基準**:
-
-- [ ] 本番環境で HTTPS が強制されているか？
-- [ ] HSTS ヘッダーが設定されているか？
-- [ ] max-age は 1 年以上か？
-
----
-
-## 9. 設定ファイル監査チェックリスト
-
-### セキュリティヘッダー
-
-- [ ] Content-Security-Policy 設定
-- [ ] Strict-Transport-Security（HSTS）設定
-- [ ] X-Frame-Options 設定
-- [ ] X-Content-Type-Options 設定
-- [ ] Referrer-Policy 設定
-- [ ] Permissions-Policy 設定
-
-### CORS
-
-- [ ] 許可オリジンがホワイトリストで制限
-- [ ] `origin: '*'`と credentials: true の組み合わせなし
-- [ ] 不要な HTTP メソッドを許可していない
-- [ ] プリフライトリクエストのキャッシュ設定
-
-### 環境変数
-
-- [ ] .env が.gitignore に含まれる
-- [ ] .env.example でテンプレート提供
-- [ ] ハードコードされたシークレットなし
-- [ ] 起動時の必須環境変数チェック
-
-### ロギング
-
-- [ ] センシティブデータがログに出力されない
-- [ ] セキュリティイベントが記録される
-- [ ] ログは構造化されている（JSON）
-- [ ] ログレベルが適切に設定
-
-### Rate Limiting
-
-- [ ] 認証エンドポイントに Rate Limiting
-- [ ] グローバル Rate Limiting 設定
-- [ ] 429 ステータスコード返却
-- [ ] Retry-After ヘッダー設定
-
----
-
-## リソース・スクリプト・テンプレート
-
-### リソース
-
-- `resources/security-headers-guide.md`: セキュリティヘッダー詳細
-- `resources/cors-best-practices.md`: CORS 設定ベストプラクティス
-- `resources/environment-variables-management.md`: 環境変数管理ガイド
-
-### スクリプト
-
-- `scripts/check-security-headers.mjs`: セキュリティヘッダーチェック
-- `scripts/audit-cors-config.mjs`: CORS 設定監査
-- `scripts/scan-env-files.mjs`: 環境変数ファイルスキャン
-
-### テンプレート
-
-- `templates/helmet-config-template.js`: Helmet.js 設定テンプレート
-- `templates/cors-config-template.js`: CORS 設定テンプレート
-- `templates/security-checklist.md`: セキュリティ設定チェックリスト
-
----
-
-## 関連スキル
-
-- `.claude/skills/authentication-authorization-security/SKILL.md`: セッション Cookie 設定
-- `.claude/skills/rate-limiting-strategies/SKILL.md`: Rate Limiting 詳細
-- `.claude/skills/owasp-top-10/SKILL.md`: A05（セキュリティ設定ミス）
-
----
+| テンプレート                | 用途                           | 参照パス                              |
+| --------------------------- | ------------------------------ | ------------------------------------- |
+| `cors-config-template.js`   | CORS設定の実装例               | `assets/cors-config-template.js`   |
+| `helmet-config-template.js` | Helmet ミドルウェア設定例      | `assets/helmet-config-template.js` |
+| `security-checklist.md`     | セキュリティ監査チェックリスト | `assets/security-checklist.md`     |
+
+### 📚 Legacy（旧バージョンリソース）
+
+- `references/legacy-skill.md`: 旧 SKILL.md の完全版（参考用）
 
 ## 変更履歴
 
-### v1.0.0 (2025-11-26)
-
-- 初版リリース
-- @sec-auditor エージェントからセキュリティ設定レビュー知識を抽出
-- セキュリティヘッダー、CORS、環境変数、ロギングの評価基準を定義
+| Version | Date       | Changes                                                                                                                                                                                                                                         |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様への完全準拠。YAML frontmatterにAnchorsとTriggerを追加。Task仕様ナビテーブルを実装。リソース参照セクションを整理し、References/Scripts/Templatesの3階層に構成。ベストプラクティスを「すべきこと」「避けるべきこと」で大幅拡充。 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                                                                                                     |
