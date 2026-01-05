@@ -857,6 +857,38 @@ gh pr checks <PR_NUMBER>
 - [ ] PRが作成されている
 - [ ] CIが通過している
 - [ ] レビュー準備が完了している
+- [ ] タスクディレクトリがcompleted-tasksに移動されている
+
+## タスク完了処理【必須】
+
+**PRが作成され、CIが通過した後、タスクディレクトリを完了タスクフォルダに移動する。**
+
+### 移動手順
+
+```bash
+# タスクディレクトリをcompleted-tasksに移動
+mv docs/30-workflows/{{タスク名}}/ docs/30-workflows/completed-tasks/
+
+# 移動を確認
+ls docs/30-workflows/completed-tasks/ | grep {{タスク名}}
+
+# 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): {{タスク名}}をcompleted-tasksに移動"
+git push
+```
+
+### 移動対象
+
+| 対象 | 移動先 | 備考 |
+|------|--------|------|
+| `docs/30-workflows/{{タスク名}}/` | `docs/30-workflows/completed-tasks/{{タスク名}}/` | 全成果物含む |
+
+### 注意事項
+
+- **未タスク（unassigned-task）は移動しない**: Phase 10-3で生成された未完了タスク指示書は移動対象外
+- **artifacts.jsonのstatus更新**: 移動前に`artifacts.json`の`status`が`"completed"`になっていることを確認
+- **PRへの反映**: 移動後のコミットもPRに含める（またはマージ後に別コミット）
 
 ## 次のPhase
 
