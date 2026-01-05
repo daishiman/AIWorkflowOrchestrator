@@ -97,24 +97,32 @@ type-inference-analysis → type-guard-design → generic-type-patterns → disc
 
 ## リソース参照
 
-### 参照資料（references/）
+### references/（詳細知識）
 
-- **Level1_basics.md**: 型安全性の基礎
-- **Level2_intermediate.md**: 実務的な型設計
-- **strict-mode-guide.md**: strictモード設定ガイド
-- **type-guard-patterns.md**: 型ガードパターン集
-- **generics-patterns.md**: ジェネリックパターン集
-- **discriminated-union-patterns.md**: 識別可能ユニオンパターン
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 型設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細分析時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| strictモード設定 | [references/strict-mode-guide.md](references/strict-mode-guide.md) | 初期設定時 |
+| 型ガードパターン | [references/type-guard-patterns.md](references/type-guard-patterns.md) | 型ナローイング設計時 |
+| ジェネリックパターン | [references/generics-patterns.md](references/generics-patterns.md) | 汎用型設計時 |
+| 識別可能ユニオン | [references/discriminated-union-patterns.md](references/discriminated-union-patterns.md) | 網羅性チェック設計時 |
 
-### スクリプト（scripts/）
+### scripts/（決定論的処理）
 
-- **check-type-safety.mjs**: 型安全性チェック
-- **log_usage.mjs**: 使用記録スクリプト
-- **validate-skill.mjs**: スキル構造検証
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/check-type-safety.mjs` | 型安全性チェック |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-### アセット（assets/）
+### assets/（テンプレート・素材）
 
-- **type-safe-patterns.ts**: 型安全パターンテンプレート
+| アセット | 用途 |
+| --- | --- |
+| `assets/type-safe-patterns.ts` | 型安全パターンテンプレート |
 
 ## 変更履歴
 

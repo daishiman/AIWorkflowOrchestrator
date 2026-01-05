@@ -12,6 +12,13 @@ description: |
   Trigger:
   Use when detecting code smells, identifying refactoring targets, analyzing technical debt, or documenting anti-patterns.
   code smells, anti-patterns, refactoring targets, technical debt, architecture review
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 # code-smell-detection
 
