@@ -290,13 +290,14 @@ Phase完了時に以下を**すべて**実行すること:
 
 ### assets/（テンプレート）
 
-| テンプレート               | パス                                                                         |
-| -------------------------- | ---------------------------------------------------------------------------- |
-| Phase仕様書テンプレート    | See [assets/phase-spec-template.md](assets/phase-spec-template.md)           |
-| スキル実行指示テンプレート | See [assets/skill-execution-template.md](assets/skill-execution-template.md) |
-| フィードバック記録         | See [assets/feedback-record-template.md](assets/feedback-record-template.md) |
-| 未完了タスクテンプレート   | See [assets/unassigned-task-template.md](assets/unassigned-task-template.md) |
-| メインタスクテンプレート   | See [assets/main-task-template.md](assets/main-task-template.md)             |
+| テンプレート               | パス                                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------------- |
+| Phase仕様書テンプレート    | See [assets/phase-spec-template.md](assets/phase-spec-template.md)                     |
+| スキル実行指示テンプレート | See [assets/skill-execution-template.md](assets/skill-execution-template.md)           |
+| フィードバック記録         | See [assets/feedback-record-template.md](assets/feedback-record-template.md)           |
+| 未完了タスクテンプレート   | See [assets/unassigned-task-template.md](assets/unassigned-task-template.md)           |
+| メインタスクテンプレート   | See [assets/main-task-template.md](assets/main-task-template.md)                       |
+| 実装ガイドテンプレート     | See [assets/implementation-guide-template.md](assets/implementation-guide-template.md) |
 
 ### scripts/（決定論的処理）
 
@@ -311,6 +312,8 @@ Phase完了時に以下を**すべて**実行すること:
 
 | Version | Date       | Changes                                                                       |
 | ------- | ---------- | ----------------------------------------------------------------------------- |
+| 2.4.0   | 2026-01-05 | 実装ガイドPart2に「なぜ」の設計理由説明を必須化、用語集セクション追加         |
+| 2.3.0   | 2026-01-05 | Phase 10に実装ガイド（概念的+技術的）作成を必須化、テンプレート追加           |
 | 2.2.0   | 2026-01-04 | スキルフィードバック【必須】化、チェックリストをテーブル形式に改善            |
 | 2.1.0   | 2026-01-04 | artifacts.json更新の必須化を追加、Phase完了時チェックリスト追加               |
 | 2.0.0   | 2026-01-04 | 責務分離: skill仕様チェックをskill-creatorへ委譲、references/へ詳細移動       |
