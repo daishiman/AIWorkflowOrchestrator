@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-05T03:29:25.452Z",
-  "totalKeywords": 385,
+  "generated": "2026-01-05T14:01:04.617Z",
+  "totalKeywords": 402,
   "keywords": {
     "API": [
       "api-core.md",
@@ -144,6 +144,12 @@
       "architecture-file-conversion.md",
       "interfaces-llm.md"
     ],
+    "Search": [
+      "api-internal.md"
+    ],
+    "Service": [
+      "api-internal.md"
+    ],
     "関連ドキュメント": [
       "api-internal.md",
       "architecture-auth-security.md",
@@ -154,6 +160,7 @@
       "environment-variables.md",
       "error-handling.md",
       "glossary.md",
+      "interfaces-chat-history.md",
       "interfaces-llm.md",
       "local-agent.md",
       "overview.md",
@@ -230,10 +237,14 @@
     ],
     "Knowledge": [
       "architecture-rag.md",
+      "database-architecture.md",
+      "database-implementation.md",
       "ui-ux-design-system.md"
     ],
     "Graph": [
-      "architecture-rag.md"
+      "architecture-rag.md",
+      "database-architecture.md",
+      "database-implementation.md"
     ],
     "型定義": [
       "architecture-rag.md",
@@ -279,6 +290,7 @@
       "claude-code-commands.md",
       "claude-code-overview.md",
       "claude-code-skills-overview.md",
+      "interfaces-chat-history.md",
       "interfaces-converter.md",
       "task-workflow.md",
       "technology-backend.md",
@@ -469,6 +481,7 @@
     ],
     "インターフェース": [
       "claude-code-skills-structure.md",
+      "interfaces-chat-history.md",
       "interfaces-converter.md",
       "interfaces-core.md",
       "interfaces-workflow.md"
@@ -542,6 +555,17 @@
     "スキーマ設計": [
       "database-architecture.md"
     ],
+    "テーブル": [
+      "database-architecture.md"
+    ],
+    "Repository": [
+      "database-architecture.md",
+      "interfaces-chat-history.md",
+      "interfaces-core.md"
+    ],
+    "パターン設計": [
+      "database-architecture.md"
+    ],
     "型安全クエリ・マイグレーション": [
       "database-implementation.md"
     ],
@@ -565,6 +589,15 @@
       "quality-requirements.md"
     ],
     "ベクトル検索実装": [
+      "database-implementation.md"
+    ],
+    "テーブル群": [
+      "database-implementation.md"
+    ],
+    "GraphRAG": [
+      "database-implementation.md"
+    ],
+    "基盤": [
       "database-implementation.md"
     ],
     "パフォーマンス最適化": [
@@ -838,6 +871,7 @@
     ],
     "インターフェース仕様": [
       "interfaces-auth.md",
+      "interfaces-chat-history.md",
       "interfaces-converter.md",
       "interfaces-core.md",
       "interfaces-llm.md",
@@ -850,6 +884,36 @@
     "ワークスペース型定義": [
       "interfaces-auth.md"
     ],
+    "チャット履歴永続化": [
+      "interfaces-chat-history.md"
+    ],
+    "データベーススキーマ": [
+      "interfaces-chat-history.md"
+    ],
+    "ドメインエンティティ型定義": [
+      "interfaces-chat-history.md"
+    ],
+    "サービスインターフェース": [
+      "interfaces-chat-history.md"
+    ],
+    "ビジネスルール": [
+      "interfaces-chat-history.md"
+    ],
+    "エクスポート形式": [
+      "interfaces-chat-history.md"
+    ],
+    "セッションタイトル": [
+      "interfaces-chat-history.md"
+    ],
+    "User": [
+      "interfaces-chat-history.md"
+    ],
+    "Assistant": [
+      "interfaces-chat-history.md"
+    ],
+    "品質メトリクス": [
+      "interfaces-chat-history.md"
+    ],
     "コンバーター": [
       "interfaces-converter.md"
     ],
@@ -858,9 +922,6 @@
     ],
     "ドキュメント": [
       "interfaces-converter.md"
-    ],
-    "Repository": [
-      "interfaces-core.md"
     ],
     "Logger": [
       "interfaces-core.md"

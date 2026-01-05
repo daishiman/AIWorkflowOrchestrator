@@ -129,6 +129,43 @@ RAGパイプライン実装で使用する共通型定義。
 - DIP（依存性逆転原則）準拠のデータアクセス抽象化
 - `findById`, `findAll`, `create`, `update`, `delete`
 
+### Repository パターン詳細
+
+**実装場所**: `packages/shared/src/db/repositories/`
+
+#### BaseRepository<TTable, TSelect, TInsert, TId>
+
+基底Repositoryクラス。全てのRepositoryが継承し、共通CRUD操作を提供する。
+
+| メソッド          | 戻り値                                       | 説明                         |
+| ----------------- | -------------------------------------------- | ---------------------------- |
+| findById(id)      | Result<TSelect \| null, RAGError>            | IDでエンティティを取得       |
+| findAll(params?)  | Result<PaginatedResult<TSelect>, RAGError>   | 全レコード（ページネーション付き） |
+| create(data)      | Result<TSelect, RAGError>                    | 新規エンティティを作成       |
+| createMany(data[])| Result<TSelect[], RAGError>                  | 一括作成                     |
+| update(id, data)  | Result<TSelect, RAGError>                    | エンティティを更新           |
+| delete(id)        | Result<void, RAGError>                       | エンティティを削除           |
+| exists(id)        | Result<boolean, RAGError>                    | 存在確認                     |
+| count()           | Result<number, RAGError>                     | 件数取得                     |
+
+#### 具体Repository
+
+| Repository       | 対象テーブル | Branded Type | 固有メソッド                          |
+| ---------------- | ------------ | ------------ | ------------------------------------- |
+| FileRepository   | files        | FileId       | findByHash, findByPath, softDelete    |
+| ChunkRepository  | chunks       | ChunkId      | findByFileId, deleteByFileId, findAdjacent |
+| EntityRepository | entities     | EntityId     | upsert, searchByName, findTopByImportance |
+
+#### ファクトリ関数
+
+```typescript
+import { createRepositories } from "@repo/shared/db/repositories";
+
+const repos = createRepositories(db);
+const file = await repos.files.findById(fileId);
+const chunks = await repos.chunks.findByFileId(fileId);
+```
+
 **Strategy パターン**:
 
 - `Converter<TInput, TOutput>` - ファイル変換の抽象化
