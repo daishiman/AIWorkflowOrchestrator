@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-04
+> 自動生成: 2026-01-05
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -121,7 +121,7 @@ node scripts/list-specs.mjs --topics
 
 ## インターフェース
 
-**関連キーワード**: インターフェース, 型定義, IConverter, Repository, Logger
+**関連キーワード**: インターフェース, 型定義, IConverter, Repository, Logger, ChatSession, ChatMessage, チャット履歴
 
 ### references/interfaces-auth.md
 
@@ -150,6 +150,19 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| LLM チャット関連型定義（Desktop IPC） | L8 |
 | Embedding Generation 型定義 | L124 |
 | 関連ドキュメント | L276 |
+
+### references/interfaces-chat-history.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| データベーススキーマ | L19 |
+| ドメインエンティティ型定義 | L65 |
+| Repositoryインターフェース | L113 |
+| サービスインターフェース | L143 |
+| ビジネスルール | L168 |
+| エクスポート形式 | L188 |
+| 品質メトリクス | L228 |
+| 関連ドキュメント | L238 |
 
 ### references/interfaces-rag.md
 
