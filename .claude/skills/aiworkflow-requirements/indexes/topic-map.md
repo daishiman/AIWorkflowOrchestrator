@@ -121,13 +121,27 @@ node scripts/list-specs.mjs --topics
 
 ## インターフェース
 
-**関連キーワード**: インターフェース, 型定義, IConverter, Repository, Logger, ChatSession, ChatMessage, チャット履歴
+**関連キーワード**: インターフェース, 型定義, IConverter, Repository, Logger
 
 ### references/interfaces-auth.md
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
 | ワークスペース型定義 | L124 |
+
+### references/interfaces-chat-history.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| データベーススキーマ | L21 |
+| ドメインエンティティ型定義 | L68 |
+| Repositoryインターフェース | L115 |
+| サービスインターフェース | L148 |
+| ビジネスルール | L171 |
+| エクスポート形式 | L192 |
+| User | L203 |
+| Assistant | L207 |
+| 品質メトリクス | L244 |
 
 ### references/interfaces-converter.md
 
@@ -139,10 +153,10 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| IRepository インターフェース | L8 |
-| Result型 | L41 |
-| Logger インターフェース | L76 |
-| IAIClient インターフェース | L111 |
-| IFileWatcher インターフェース | L144 |
+| Result型 | L70 |
+| Logger インターフェース | L105 |
+| IAIClient インターフェース | L140 |
+| IFileWatcher インターフェース | L173 |
 
 ### references/interfaces-llm.md
 
@@ -150,19 +164,6 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| LLM チャット関連型定義（Desktop IPC） | L8 |
 | Embedding Generation 型定義 | L124 |
 | 関連ドキュメント | L276 |
-
-### references/interfaces-chat-history.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L8 |
-| データベーススキーマ | L19 |
-| ドメインエンティティ型定義 | L65 |
-| Repositoryインターフェース | L113 |
-| サービスインターフェース | L143 |
-| ビジネスルール | L168 |
-| エクスポート形式 | L188 |
-| 品質メトリクス | L228 |
-| 関連ドキュメント | L238 |
 
 ### references/interfaces-rag.md
 
@@ -224,6 +225,8 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| データベース統一アーキテクチャ | L8 |
 | 環境別接続設定 | L54 |
 | スキーマ設計 | L82 |
+| Knowledge Graph テーブル | L717 |
+| Repository パターン設計 | L772 |
 
 ### references/database-implementation.md
 
@@ -234,7 +237,8 @@ node scripts/list-specs.mjs --topics
 | テスト戦略 | L144 |
 | エラーハンドリング | L174 |
 | ベクトル検索実装（DiskANN） | L205 |
-| パフォーマンス最適化 | L263 |
+| Knowledge Graphテーブル群（GraphRAG基盤） | L263 |
+| パフォーマンス最適化 | L449 |
 
 ### references/database-operations.md
 
@@ -460,13 +464,13 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| 設計方針 | L8 |
 | ルート構造 | L45 |
 | packages/shared/ 詳細構造 | L96 |
-| apps/web/ 詳細構造（Next.js） | L224 |
-| apps/desktop/ 詳細構造（Electron） | L264 |
-| local-agent/ 詳細構造 | L363 |
-| .github/workflows/ 詳細構造 | L374 |
-| ルートの設定ファイル群 | L384 |
-| 機能追加の手順 | L403 |
-| 構造の選択理由 | L435 |
+| apps/web/ 詳細構造（Next.js） | L231 |
+| apps/desktop/ 詳細構造（Electron） | L271 |
+| local-agent/ 詳細構造 | L370 |
+| .github/workflows/ 詳細構造 | L381 |
+| ルートの設定ファイル群 | L391 |
+| 機能追加の手順 | L410 |
+| 構造の選択理由 | L442 |
 
 ### references/discord-bot.md
 

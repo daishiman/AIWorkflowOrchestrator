@@ -146,6 +146,13 @@
 | schema/**tests**/chunks.test.ts         | chunksスキーマテスト                           |
 | schema/**tests**/chunks-fts.test.ts     | FTS5管理関数テスト（7ケース）                  |
 | queries/**tests**/chunks-search.test.ts | FTS5検索クエリテスト（74ケース）               |
+| **Repository実装**                      |                                                |
+| repositories/index.ts                   | バレルエクスポート・ファクトリ関数             |
+| repositories/base.repository.ts         | 基底Repositoryクラス（抽象、ジェネリクス）     |
+| repositories/file.repository.ts         | FileRepository（filesテーブル、論理削除対応）  |
+| repositories/chunk.repository.ts        | ChunkRepository（chunksテーブル、隣接取得）    |
+| repositories/entity.repository.ts       | EntityRepository（entitiesテーブル、upsert）   |
+| repositories/__tests__/                 | Repository単体テスト                           |
 
 ### ui/（共通UIコンポーネント層）
 
