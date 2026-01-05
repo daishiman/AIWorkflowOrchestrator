@@ -1,5 +1,11 @@
 import "@testing-library/jest-dom";
-import { vi } from "vitest";
+import { vi, beforeAll, afterEach, afterAll } from "vitest";
+import { server } from "./mocks/server";
+
+// MSWサーバー設定
+beforeAll(() => server.listen({ onUnhandledRequest: "warn" }));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 // グローバルモック
 // Electronのモジュールをモック

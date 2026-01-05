@@ -7,99 +7,87 @@
 
 ### レスポンスタイム目標
 
-**UI操作**:
+システムの各操作に対するレスポンスタイム目標を定める。ユーザー体験を損なわないため、操作ごとに適切な目標値を設定している。
 
-| 操作                            | 目標   | 測定基準 |
-| ------------------------------- | ------ | -------- |
-| ボタンクリック → フィードバック | <100ms | P50      |
-| ページ遷移                      | <200ms | P50      |
-| AI応答の初回トークン            | <2秒   | P50      |
-| タスク一覧の読み込み            | <300ms | P50      |
+**UI操作のレスポンスタイム**:
 
-**Electron固有**:
+| 操作                            | 目標   | 測定基準 | 理由                                             |
+| ------------------------------- | ------ | -------- | ------------------------------------------------ |
+| ボタンクリック → フィードバック | <100ms | P50      | 即座のフィードバックでユーザーの操作感を維持     |
+| ページ遷移                      | <200ms | P50      | シームレスなナビゲーション体験の提供             |
+| AI応答の初回トークン            | <2秒   | P50      | ユーザーが待機していると感じない限界値           |
+| タスク一覧の読み込み            | <300ms | P50      | 一覧表示は頻繁な操作のため高速化が必須           |
 
-| 操作                        | 目標   |
-| --------------------------- | ------ |
-| アプリ起動時間              | <3秒   |
-| Main/Rendererプロセス間通信 | <50ms  |
-| ファイルシステム操作        | <500ms |
-| システムプロンプト保存      | <100ms |
-| テンプレート一覧読み込み    | <200ms |
-| テンプレート適用            | <50ms  |
+**Electron固有のレスポンスタイム**:
 
-**測定基準**:
+| 操作                        | 目標   | 理由                                           |
+| --------------------------- | ------ | ---------------------------------------------- |
+| アプリ起動時間              | <3秒   | ネイティブアプリとして許容される起動時間       |
+| Main/Rendererプロセス間通信 | <50ms  | IPC通信のオーバーヘッドを最小化                |
+| ファイルシステム操作        | <500ms | ローカルI/O操作の標準的な許容時間              |
+| システムプロンプト保存      | <100ms | 設定変更の即時反映を保証                       |
+| テンプレート一覧読み込み    | <200ms | テンプレート選択UIの応答性確保                 |
+| テンプレート適用            | <50ms  | 選択後の即座な反映                             |
 
-- P50（中央値）: 上記目標値
-- P95: 目標値の1.5倍
-- P99: 目標値の2倍
+**測定基準の定義**:
 
-```typescript
-// パフォーマンス計測の例
-performance.mark("operation-start");
-// ... 操作実行 ...
-performance.mark("operation-end");
-performance.measure("operation", "operation-start", "operation-end");
-```
+- P50（中央値）: 上記目標値。全リクエストの50%がこの時間内に完了
+- P95: 目標値の1.5倍。95%のリクエストがこの時間内に完了
+- P99: 目標値の2倍。99%のリクエストがこの時間内に完了
+
+パフォーマンス計測には Performance API を使用し、操作の開始と終了にマークを設置して計測する。
 
 ### メモリ使用量
 
-**目標値**:
+メモリ使用量の目標値を定める。長時間稼働でもメモリリークを防止し、安定した動作を維持する。
 
-- アイドル時: <200MB（デスクトップ版）
-- 通常使用時: <500MB
-- AI対話中: <800MB
-- 長時間稼働: メモリリークなし（24時間で±10%以内）
+| 状態         | 目標値  | 説明                                       |
+| ------------ | ------- | ------------------------------------------ |
+| アイドル時   | <200MB  | デスクトップ版の基本メモリ消費             |
+| 通常使用時   | <500MB  | 一般的な操作中のメモリ使用量               |
+| AI対話中     | <800MB  | ストリーミングレスポンス処理中のピーク値   |
+| 長時間稼働   | ±10%    | 24時間稼働でメモリ使用量の変動を10%以内に  |
 
-```typescript
-// メモリ使用量監視の例
-if (process.memoryUsage().heapUsed > THRESHOLD) {
-  logger.warn("High memory usage detected", {
-    heapUsed: process.memoryUsage().heapUsed,
-  });
-}
-```
+メモリ使用量が閾値を超えた場合は、構造化ログに警告を出力し、問題の早期発見を可能にする。
 
 ### ビルド時間最適化
 
-| ビルド種別             | 目標時間 |
-| ---------------------- | -------- |
-| 開発ビルド（HMR）      | <5秒     |
-| プロダクションビルド   | <2分     |
-| Electronパッケージング | <3分     |
-| CIビルド全体           | <10分    |
+開発効率を維持するため、各種ビルドの目標時間を定める。
+
+| ビルド種別             | 目標時間 | 説明                                   |
+| ---------------------- | -------- | -------------------------------------- |
+| 開発ビルド（HMR）      | <5秒     | ホットモジュールリプレースメントの応答 |
+| プロダクションビルド   | <2分     | 本番用最適化ビルド                     |
+| Electronパッケージング | <3分     | デスクトップアプリのパッケージ化       |
+| CIビルド全体           | <10分    | GitHub ActionsでのCI/CD実行時間        |
 
 ### RAG変換システムのパフォーマンス要件
 
-**ファイル変換処理の性能目標**:
+ファイル変換処理（RAG用チャンク生成）の性能目標を定める。
+
+**ファイルサイズ別処理時間**:
 
 | ファイルサイズ | 目標処理時間 | 実測値（2025-12-25） | 状態      |
 | -------------- | ------------ | -------------------- | --------- |
-| < 10KB         | < 50ms       | 3-12ms               | ✅ 達成   |
-| 10KB - 100KB   | < 200ms      | 50-100ms             | ✅ 達成   |
-| 100KB - 1MB    | < 1s         | 400ms（Markdown）    | ✅ 達成   |
-| 1MB - 10MB     | < 5s         | 未検証               | ⚠️ 要検証 |
-| > 10MB         | < 30s        | 未検証               | ⚠️ 要検証 |
+| 10KB未満       | 50ms未満     | 3-12ms               | 達成      |
+| 10KB - 100KB   | 200ms未満    | 50-100ms             | 達成      |
+| 100KB - 1MB    | 1秒未満      | 400ms（Markdown）    | 達成      |
+| 1MB - 10MB     | 5秒未満      | 未検証               | 要検証    |
+| 10MB超         | 30秒未満     | 未検証               | 要検証    |
 
 **同時実行制御**:
 
-- 最大同時実行数: 5件
-- タイムアウト: デフォルト60秒（設定可能）
-- メモリ制限: 最大コンテンツ長100,000文字
+| パラメータ       | 設定値         | 理由                                     |
+| ---------------- | -------------- | ---------------------------------------- |
+| 最大同時実行数   | 5件            | CPU使用率とメモリのバランスを考慮        |
+| タイムアウト     | 60秒（可変）   | 大容量ファイル処理に対応                 |
+| 最大コンテンツ長 | 100,000文字    | メモリ溢れ防止とチャンク品質のバランス   |
 
-**性能モニタリング**:
+**性能劣化の検出基準**:
 
-```bash
-# 手動パフォーマンステスト
-pnpm tsx packages/shared/src/services/conversion/__manual-tests__/run-manual-tests.ts
-
-# 実行時間とメモリ使用量が出力される
-```
-
-**性能劣化の検出**:
-
-- 手動テストで処理時間が目標値の2倍を超えたら調査
-- メモリ使用量が1GB超えたら最適化検討
-- タイムアウトエラーが頻発したら並列度の見直し
+- 処理時間が目標値の2倍を超えた場合は調査を開始
+- メモリ使用量が1GBを超えた場合は最適化を検討
+- タイムアウトエラーが頻発する場合は並列度を見直し
 
 ---
 
@@ -107,415 +95,161 @@ pnpm tsx packages/shared/src/services/conversion/__manual-tests__/run-manual-tes
 
 ### Red-Green-Refactor サイクル
 
+TDD（テスト駆動開発）は「Red-Green-Refactor」の3フェーズで進める。
+
 **Phase 1: Red（失敗するテストを書く）**
 
-```typescript
-// Step 1: テストケースを定義
-describe("TaskRepository", () => {
-  it("should create a new task with generated ID", () => {
-    // Arrange: テストデータ準備
-    const repository = new TaskRepository();
-    const input = { title: "New Task", status: "pending" };
-
-    // Act: 実行
-    const task = repository.create(input);
-
-    // Assert: 期待される結果
-    expect(task).toHaveProperty("id");
-    expect(task.title).toBe("New Task");
-    expect(task.status).toBe("pending");
-  });
-});
-// この時点では実装がないため失敗する
-```
+まず実装が存在しない状態でテストを書く。テストは必ず失敗する（Red）。この段階で期待する振る舞いを明確に定義する。テストの構造はArrange-Act-Assertパターンに従い、テストデータの準備、実行、検証を明確に分離する。
 
 **Phase 2: Green（最小限の実装で成功させる）**
 
-```typescript
-// Step 2: 最小限の実装
-class TaskRepository {
-  create(input: { title: string; status: string }) {
-    return {
-      id: crypto.randomUUID(),
-      ...input,
-    };
-  }
-}
-// テストが成功することを確認
-```
+テストを通過させるための最小限の実装を行う。この段階では「動くこと」を最優先し、コードの美しさは後回しにする。テストが成功（Green）したら次のフェーズへ進む。
 
 **Phase 3: Refactor（品質向上）**
 
-```typescript
-// Step 3: テストを保護にリファクタリング
-class TaskRepository {
-  create(input: CreateTaskInput): Task {
-    if (!input.title.trim()) {
-      throw new Error("Title is required");
-    }
+テストがグリーンの状態を維持しながら、コードの品質を向上させる。重複の除去、命名の改善、設計パターンの適用などを行う。リファクタリング後もテストが成功することを確認する。
 
-    return {
-      id: this.generateId(),
-      title: input.title.trim(),
-      status: input.status,
-      createdAt: new Date(),
-    };
-  }
+**サイクル管理の指針**:
 
-  private generateId(): string {
-    return crypto.randomUUID();
-  }
-}
-// テストが引き続き成功することを確認
-```
-
-**サイクル管理**:
-
-- 1サイクル: 5-15分を目安
-- 常にグリーン状態を維持
-- 1サイクルで1つの振る舞いだけ追加
+| 項目               | 指針                                 |
+| ------------------ | ------------------------------------ |
+| 1サイクルの目安    | 5-15分                               |
+| 状態維持           | 常にグリーン状態を維持               |
+| 振る舞い追加       | 1サイクルで1つの振る舞いだけを追加   |
 
 ### テストピラミッド（個人開発最適化版）
 
-```
-        /\
-       /  \  E2E (5%)
-      /────\
-     /      \  Integration (15%)
-    /────────\
-   /          \  Unit (80%)
-  /────────────\
-```
+テストは「ピラミッド」構造で構築する。下層（Unit）が最も多く、上層（E2E）は最小限に抑える。
 
-**現実的なカバレッジ目標**:
-
-| レベル      | 目標カバレッジ | 実行頻度     | 投資時間 |
-| ----------- | -------------- | ------------ | -------- |
-| Unit        | 70-80%         | 毎回コミット | 60%      |
-| Integration | 50-60%         | 毎回push     | 25%      |
-| E2E         | 主要フロー     | CI/CD        | 15%      |
+| レベル      | 割合  | 目標カバレッジ | 実行頻度     | 投資時間 |
+| ----------- | ----- | -------------- | ------------ | -------- |
+| Unit        | 80%   | 70-80%         | 毎回コミット | 60%      |
+| Integration | 15%   | 50-60%         | 毎回push     | 25%      |
+| E2E         | 5%    | 主要フロー     | CI/CD        | 15%      |
 
 **優先すべきテスト対象**:
 
-1. **必須（Unit 100%）**:
-   - ビジネスロジック（Core Domain）
-   - データ変換・計算処理
-   - エラーハンドリング
-
-2. **重要（Unit 80%）**:
-   - API Gateway層
-   - リポジトリ実装
-   - カスタムHooks
-
-3. **推奨（Integration 60%）**:
-   - React コンポーネント（RTL）
-   - IPC 通信
-   - 外部API連携
-
-4. **最小限（E2E クリティカルパス）**:
-   - タスク作成・編集・削除
-   - AI対話の基本フロー
+1. **必須（Unit 100%）**: ビジネスロジック、データ変換・計算処理、エラーハンドリング
+2. **重要（Unit 80%）**: API Gateway層、リポジトリ実装、カスタムHooks
+3. **推奨（Integration 60%）**: Reactコンポーネント（RTL）、IPC通信、外部API連携
+4. **最小限（E2Eクリティカルパス）**: タスク作成・編集・削除、AI対話の基本フロー
 
 ### Vitest ユニットテスト構成
 
-**ファイル構成**:
+ユニットテストはVitestを使用する。テストファイルはソースコードと同じディレクトリ構造で`__tests__`配下に配置する。
 
-```
-src/
-  features/
-    task/
-      core/
-        domain/
-          Task.ts
-        application/
-          TaskService.ts
-      __tests__/
-        unit/
-          Task.test.ts           # ドメインモデル
-          TaskService.test.ts    # アプリケーションサービス
-        integration/
-          TaskRepository.test.ts # リポジトリ統合
-```
+**ファイル配置規則**:
+
+| 配置先                      | 内容                   |
+| --------------------------- | ---------------------- |
+| `__tests__/unit/`           | ドメインモデルのテスト |
+| `__tests__/integration/`    | リポジトリ統合テスト   |
 
 **ベストプラクティス**:
 
-```typescript
-// ✅ 良い例: 独立性、明確性、速度
-describe("TaskService", () => {
-  let service: TaskService;
-  let mockRepository: MockTaskRepository;
+- 各テストは独立して実行可能であること
+- テストデータはbeforeEachで初期化
+- モックはテストごとに明確に設定
+- 1テストにつき1つのアサーションを目安にする
 
-  beforeEach(() => {
-    mockRepository = createMockRepository();
-    service = new TaskService(mockRepository);
-  });
+**並列実行の設定**:
 
-  describe("createTask", () => {
-    it("should generate UUID for new task", () => {
-      const input = { title: "Test" };
-
-      const task = service.createTask(input);
-
-      expect(task.id).toMatch(/^[0-9a-f-]{36}$/);
-    });
-
-    it("should throw error when title is empty", () => {
-      const input = { title: "" };
-
-      expect(() => service.createTask(input)).toThrow("Title is required");
-    });
-  });
-});
-```
-
-**並列実行の最適化**:
-
-```typescript
-// vitest.config.ts
-export default defineConfig({
-  test: {
-    threads: true,
-    maxConcurrency: 5,
-    isolate: true,
-    testTimeout: 10000,
-    hookTimeout: 10000,
-  },
-});
-```
+Vitestの並列実行はデフォルトで有効。スレッド数は5、テストタイムアウトは10秒に設定。各テストは分離されて実行される。
 
 ### モック戦略
 
-**MSW（Mock Service Worker） - API モック**:
+外部依存をテストから分離するため、適切なモック手法を使用する。
 
-```typescript
-// src/shared/testing/msw/handlers.ts
-import { http, HttpResponse } from "msw";
+**MSW（Mock Service Worker）によるAPIモック**:
 
-export const handlers = [
-  http.get("/api/tasks", () => {
-    return HttpResponse.json([
-      { id: "1", title: "Task 1" },
-      { id: "2", title: "Task 2" },
-    ]);
-  }),
+MSWはネットワークレベルでHTTPリクエストをインターセプトし、モックレスポンスを返す。実装ファイルは`apps/desktop/src/test/mocks/`に配置済み（2026-01-05実装完了）。
 
-  http.post("/api/tasks", async ({ request }) => {
-    const task = await request.json();
-    return HttpResponse.json(
-      { id: crypto.randomUUID(), ...task },
-      { status: 201 },
-    );
-  }),
-];
-
-// src/shared/testing/msw/server.ts
-import { setupServer } from "msw/node";
-import { handlers } from "./handlers";
-
-export const server = setupServer(...handlers);
-```
-
-**vi.mock - モジュールモック**:
-
-```typescript
-import { vi } from "vitest";
-import { ClaudeClient } from "@/shared/infrastructure/ai/ClaudeClient";
-
-vi.mock("@/shared/infrastructure/ai/ClaudeClient");
-
-describe("AIService", () => {
-  it("should send prompt to Claude", async () => {
-    const mockSend = vi.fn().mockResolvedValue({
-      content: [{ type: "text", text: "Response" }],
-    });
-
-    vi.mocked(ClaudeClient).mockImplementation(() => ({
-      send: mockSend,
-    }));
-
-    const service = new AIService();
-    await service.ask("Hello");
-
-    expect(mockSend).toHaveBeenCalled();
-  });
-});
-```
+| ハンドラー種別  | 対象               | 機能                           |
+| --------------- | ------------------ | ------------------------------ |
+| Supabase Auth   | 認証エンドポイント | ログイン、サインアップ、ログアウトのモック |
+| Anthropic API   | AIエンドポイント   | ストリーミングレスポンス対応   |
 
 **テストダブルの使い分け**:
 
-| ダブル   | 用途                 | 例                                |
-| -------- | -------------------- | --------------------------------- |
-| **Stub** | 決まった値を返す     | `vi.fn().mockReturnValue(42)`     |
-| **Mock** | 呼び出しを検証       | `expect(mock).toHaveBeenCalled()` |
-| **Spy**  | 実装を保持しつつ監視 | `vi.spyOn(obj, 'method')`         |
-| **Fake** | 軽量な代替実装       | InMemoryRepository                |
+| ダブル種別 | 用途                 | 使用場面                       |
+| ---------- | -------------------- | ------------------------------ |
+| Stub       | 決まった値を返す     | 外部サービスの固定レスポンス   |
+| Mock       | 呼び出しを検証       | 関数が正しく呼ばれたか確認     |
+| Spy        | 実装を保持しつつ監視 | 既存実装の振る舞いを観察       |
+| Fake       | 軽量な代替実装       | InMemoryRepositoryなど         |
+
+### テストユーティリティ（実装済み 2026-01-05）
+
+テストの効率化のため、共通ユーティリティを提供。配置先は`apps/desktop/src/test/`。
+
+| ファイル          | 用途                                   |
+| ----------------- | -------------------------------------- |
+| `utils.tsx`       | カスタムレンダー関数                   |
+| `test-helpers.ts` | ストアモック、waitForなど              |
+| `factories.ts`    | テストデータファクトリー               |
+| `mocks/`          | MSWハンドラー・サーバー設定            |
+| `setup.ts`        | テストセットアップ（MSW統合、DOM拡張） |
+
+**カスタムレンダー関数の種類**:
+
+| 関数名              | 用途                         |
+| ------------------- | ---------------------------- |
+| renderWithRouter    | Router込みレンダリング       |
+| renderWithProviders | 全Provider込み統合テスト用   |
+
+**テストデータファクトリー**:
+
+ファクトリー関数はユニークIDを自動生成し、テスト間の干渉を防止する。createMockChatSession、createMockChatMessageなどを提供。beforeEachでresetFactoriesを呼び出してカウンターをリセットする。
 
 ### React Testing Library ベストプラクティス
 
-**ユーザー視点テストの具体例**:
+RTL（React Testing Library）はユーザー視点でのテストを推奨する。実装の詳細ではなく、ユーザーが見る要素（ラベル、ロール、テキスト）でクエリを行う。
 
-```typescript
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { TaskForm } from './TaskForm';
+**推奨クエリの優先順位**:
 
-describe('TaskForm', () => {
-  it('should create task when user fills form and submits', async () => {
-    const user = userEvent.setup();
-    const onSubmit = vi.fn();
-
-    render(<TaskForm onSubmit={onSubmit} />);
-
-    // ユーザーがラベルでフィールドを見つける
-    const titleInput = screen.getByLabelText(/タスク名/i);
-    const submitButton = screen.getByRole('button', { name: /作成/i });
-
-    // ユーザーが入力する
-    await user.type(titleInput, '新しいタスク');
-    await user.click(submitButton);
-
-    // 期待される結果
-    expect(onSubmit).toHaveBeenCalledWith({
-      title: '新しいタスク',
-    });
-  });
-});
-```
+1. getByRole - アクセシビリティロールで要素を取得
+2. getByLabelText - フォーム要素をラベルで取得
+3. getByText - 表示テキストで要素を取得
+4. getByTestId - 最終手段としてdata-testid属性を使用
 
 **アクセシビリティテストの統合**:
 
-```typescript
-import { render } from '@testing-library/react';
-import { axe, toHaveNoViolations } from 'jest-axe';
-
-expect.extend(toHaveNoViolations);
-
-describe('TaskList', () => {
-  it('should have no accessibility violations', async () => {
-    const { container } = render(
-      <TaskList tasks={[{ id: '1', title: 'Task 1', status: 'pending' }]} />
-    );
-
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
-  });
-});
-```
+jest-axeを使用して自動アクセシビリティチェックを実施。各コンポーネントがWCAG基準を満たしていることを検証する。
 
 ### E2Eテスト（Playwright）効率化
 
+E2EテストはPlaywrightを使用し、クリティカルパス（最重要ユーザーフロー）のみをカバーする。
+
 **クリティカルパスの特定**:
 
-```typescript
-// tests/e2e/critical-paths.spec.ts
-import { test, expect } from "@playwright/test";
-
-test.describe("Critical User Journeys", () => {
-  test("should create and complete task", async ({ page }) => {
-    await page.goto("/");
-
-    // タスク作成
-    await page.getByLabel("タスク名").fill("重要なタスク");
-    await page.getByRole("button", { name: "作成" }).click();
-
-    // 作成確認
-    await expect(page.getByText("重要なタスク")).toBeVisible();
-  });
-});
-```
+| パス               | 内容                       |
+| ------------------ | -------------------------- |
+| タスク作成・完了   | 基本的なCRUD操作           |
+| AI対話フロー       | プロンプト送信と応答受信   |
 
 **フレーキーテストの防止策**:
 
-```typescript
-// ✅ 良い例: 明示的な待機
-test("should load tasks", async ({ page }) => {
-  await page.goto("/tasks");
-  await page.waitForLoadState("networkidle");
-  await page.waitForSelector('[data-testid="task-list"]');
+| 対策               | 説明                                       |
+| ------------------ | ------------------------------------------ |
+| 明示的な待機       | waitForLoadState、waitForSelectorを使用    |
+| ネットワーク待機   | networkidleを活用                          |
+| 固定時間待機の禁止 | waitForTimeoutは使用しない                 |
 
-  const tasks = await page.getByRole("listitem").count();
-  expect(tasks).toBeGreaterThan(0);
-});
+**CI/CD統合**:
 
-// ❌ 悪い例: 固定時間待機
-test("should load tasks", async ({ page }) => {
-  await page.goto("/tasks");
-  await page.waitForTimeout(1000); // フレーキー
-});
-```
-
-**CI/CD統合パターン**:
-
-```yaml
-# .github/workflows/e2e.yml
-name: E2E Tests
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-      - run: pnpm install
-      - run: pnpm exec playwright install --with-deps
-      - run: pnpm build
-      - run: pnpm exec playwright test
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report
-          path: playwright-report/
-```
+GitHub Actionsでテストを実行し、失敗時はplaywright-reportをアーティファクトとして保存する。
 
 ### Electron アプリテスト
 
-**Main/Renderer プロセステスト戦略**:
+Electronアプリ固有のテスト戦略を定める。
 
-```typescript
-// IPC通信のモック
-export const createIPCMock = () => {
-  const handlers = new Map();
+**Main/Rendererプロセステスト**:
 
-  return {
-    handle: (channel: string, handler: Function) => {
-      handlers.set(channel, handler);
-    },
-    invoke: async (channel: string, ...args: any[]) => {
-      const handler = handlers.get(channel);
-      if (!handler) throw new Error(`No handler for ${channel}`);
-      return handler({}, ...args);
-    },
-    clear: () => handlers.clear(),
-  };
-};
-```
+IPC通信のモックを作成し、プロセス間通信をテスト可能にする。ハンドラーの登録と呼び出しをシミュレートする。
 
 **ファイルシステム操作のテスト**:
 
-```typescript
-import { vi } from "vitest";
-import { vol } from "memfs";
-
-vi.mock("fs/promises");
-
-describe("FileStorage", () => {
-  beforeEach(() => {
-    vol.reset();
-    vol.fromJSON({
-      "/app/data/tasks.json": JSON.stringify([]),
-    });
-  });
-
-  it("should save tasks to file", async () => {
-    const storage = new FileStorage("/app/data");
-    await storage.saveTasks([{ id: "1", title: "Task 1" }]);
-
-    const content = vol.readFileSync("/app/data/tasks.json", "utf8");
-    expect(JSON.parse(content)).toHaveLength(1);
-  });
-});
-```
+memfsを使用して仮想ファイルシステムを構築し、実際のファイルI/Oなしでテストを実行する。
 
 ---
 
@@ -523,27 +257,27 @@ describe("FileStorage", () => {
 
 ### 認証・認可
 
-| 項目           | 実装                         |
-| -------------- | ---------------------------- |
-| 認証方式       | NextAuth.js + Discord OAuth  |
-| セッション管理 | セッションCookie（30日有効） |
-| API認証        | JWT または API Key           |
+| 項目           | 実装                         | 理由                                   |
+| -------------- | ---------------------------- | -------------------------------------- |
+| 認証方式       | NextAuth.js + Discord OAuth  | ソーシャルログインで導入障壁を下げる   |
+| セッション管理 | セッションCookie（30日有効） | 長期ログイン維持でUX向上               |
+| API認証        | JWT または API Key           | ステートレス認証で拡張性確保           |
 
 ### データ保護
 
-| 項目           | 実装                 |
-| -------------- | -------------------- |
-| API キー       | 環境変数管理         |
-| ローカルデータ | Electron safeStorage |
-| 通信           | HTTPS必須            |
+| 項目           | 実装                 | 理由                                   |
+| -------------- | -------------------- | -------------------------------------- |
+| API キー       | 環境変数管理         | コードベースへの露出を防止             |
+| ローカルデータ | Electron safeStorage | OSのセキュアストレージを活用           |
+| 通信           | HTTPS必須            | 中間者攻撃を防止                       |
 
 ### 脆弱性対策
 
-| 対策         | ツール                   |
-| ------------ | ------------------------ |
-| 依存関係監査 | `pnpm audit`、Dependabot |
-| CSP設定      | next.config.ts           |
-| XSS/CSRF     | React デフォルト保護     |
+| 対策         | ツール                   | 実施タイミング   |
+| ------------ | ------------------------ | ---------------- |
+| 依存関係監査 | pnpm audit、Dependabot   | PR作成時、週次   |
+| CSP設定      | next.config.ts           | 初期設定時       |
+| XSS/CSRF     | React デフォルト保護     | フレームワーク   |
 
 ---
 
@@ -551,15 +285,17 @@ describe("FileStorage", () => {
 
 ### エラーハンドリング
 
-- グローバルエラーバウンダリ
-- ユーザーフレンドリーなエラーメッセージ
-- 構造化ログ出力
+- グローバルエラーバウンダリを設置し、予期しないエラーでもアプリがクラッシュしないようにする
+- ユーザーフレンドリーなエラーメッセージを表示し、技術的な詳細は隠蔽する
+- 構造化ログを出力し、問題の診断を容易にする
 
 ### オフライン対応
 
-- ローカルSQLiteへのフォールバック
-- 同期キューの実装
-- オフライン状態の明示的な表示
+| 機能               | 説明                                       |
+| ------------------ | ------------------------------------------ |
+| ローカルSQLite     | オンライン不可時のフォールバック           |
+| 同期キュー         | オフライン中の操作を記録し、復帰時に同期   |
+| 状態表示           | オフライン状態をUIで明示的に表示           |
 
 ---
 
@@ -567,33 +303,35 @@ describe("FileStorage", () => {
 
 ### コード品質
 
-| ツール            | 用途               |
-| ----------------- | ------------------ |
-| ESLint            | コード品質チェック |
-| Prettier          | フォーマット統一   |
-| TypeScript strict | 型安全性           |
+| ツール            | 用途               | 設定                   |
+| ----------------- | ------------------ | ---------------------- |
+| ESLint            | コード品質チェック | 推奨ルールセット       |
+| Prettier          | フォーマット統一   | 自動フォーマット       |
+| TypeScript strict | 型安全性           | 厳格モード有効         |
 
 **RAG変換システムの品質実績（2025-12-25時点）**:
 
-| 指標                   | 結果                               | 評価    |
-| ---------------------- | ---------------------------------- | ------- |
-| ESLintエラー           | 0                                  | ✅ 完璧 |
-| TypeScriptエラー       | 0                                  | ✅ 完璧 |
-| ユニットテスト         | 201/201 PASS（100%）               | ✅ 完璧 |
-| テストカバレッジ       | 100%（全指標）                     | ✅ 完璧 |
-| 手動テスト             | 7/7 PASS（100%）                   | ✅ 完璧 |
-| ビルド                 | 成功（1.58s）                      | ✅ 完璧 |
-| アーキテクチャレビュー | A+評価（98/100）                   | ✅ 優秀 |
-| **総合評価**           | **A+（本番環境デプロイ準備完了）** | ✅ 完璧 |
+| 指標                   | 結果           | 評価   |
+| ---------------------- | -------------- | ------ |
+| ESLintエラー           | 0              | 完璧   |
+| TypeScriptエラー       | 0              | 完璧   |
+| ユニットテスト         | 201/201 PASS   | 完璧   |
+| テストカバレッジ       | 100%（全指標） | 完璧   |
+| 手動テスト             | 7/7 PASS       | 完璧   |
+| ビルド                 | 成功（1.58s）  | 完璧   |
+| アーキテクチャレビュー | A+評価（98/100）| 優秀  |
+| **総合評価**           | **A+（本番環境デプロイ準備完了）** | 完璧 |
 
 **品質保証プロセス**:
 
-- Phase 0-4: TDD Red-Green-Refactor
-- Phase 5: コードリファクタリング
-- Phase 6: 品質ゲート（ESLint/TypeCheck/Test/Build/Coverage）
-- Phase 7: 最終アーキテクチャレビュー
-- Phase 8: 手動テスト検証
-- Phase 9: ドキュメント更新
+| Phase | 内容                   |
+| ----- | ---------------------- |
+| 0-4   | TDD Red-Green-Refactor |
+| 5     | コードリファクタリング |
+| 6     | 品質ゲート実行         |
+| 7     | アーキテクチャレビュー |
+| 8     | 手動テスト検証         |
+| 9     | ドキュメント更新       |
 
 **新規モジュールに適用する品質基準**:
 
@@ -607,30 +345,13 @@ describe("FileStorage", () => {
 
 ### CI/CD
 
-```yaml
-# .github/workflows/ci.yml
-name: CI
-on: [push, pull_request]
+GitHub Actionsを使用してCI/CDパイプラインを構築する。
 
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-      - run: pnpm install
-      - run: pnpm lint
-      - run: pnpm typecheck
+**Lintジョブ**:
+チェックアウト後、pnpmでインストールし、lintとtypecheckを実行する。
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-      - run: pnpm install
-      - run: pnpm test:coverage
-      - uses: codecov/codecov-action@v4
-```
+**Testジョブ**:
+チェックアウト後、pnpmでインストールし、カバレッジ付きテストを実行。結果をCodecovにアップロードする。
 
 ---
 
@@ -638,14 +359,18 @@ jobs:
 
 ### WCAG 2.1 AA 準拠
 
-- キーボード操作完全対応
-- スクリーンリーダー対応（ARIA属性）
-- コントラスト比 4.5:1 以上
+| 要件                 | 実装方法                       |
+| -------------------- | ------------------------------ |
+| キーボード操作       | 全機能がキーボードで操作可能   |
+| スクリーンリーダー   | ARIA属性を適切に設定           |
+| コントラスト比       | 4.5:1 以上を確保               |
 
 ### 多言語対応
 
-- i18n実装（React i18next）
-- 日本語・英語サポート
+| 項目     | 実装               |
+| -------- | ------------------ |
+| i18n実装 | React i18next      |
+| 対応言語 | 日本語・英語       |
 
 ---
 
@@ -661,16 +386,46 @@ jobs:
 | UI層（React）      | 70%以上              | RTL + Vitest      |
 | E2E                | クリティカルパス100% | Playwright        |
 
+### カバレッジ閾値設定（実装済み 2026-01-05）
+
+vitest.config.tsで設定済みの閾値:
+
+| パッケージ | lines | functions | branches | statements |
+| ---------- | ----- | --------- | -------- | ---------- |
+| desktop    | 80%   | 80%       | 60%      | 80%        |
+| shared     | 65%   | 80%       | 60%      | 65%        |
+
+**現在の実績（2026-01-05）**:
+
+| パッケージ | カバレッジ | テスト数 | 状態   |
+| ---------- | ---------- | -------- | ------ |
+| desktop    | 83.86%     | 5,476    | 達成   |
+| shared     | 67.2%      | 203      | 達成   |
+
+閾値未達の場合、CI/CDでテストが失敗する。
+
+### Vitest UI（実装済み 2026-01-05）
+
+@vitest/uiを導入済み。ブラウザでテスト結果を視覚化できる。
+
+**機能**:
+- テスト結果のリアルタイム表示
+- カバレッジマップの視覚化
+- 失敗テストのフィルタリング
+- テストファイルのホットリロード
+
+**起動コマンド**: pnpm --filter @repo/desktop test:ui
+
 **RAG変換システムの実績（2025-12-25時点）**:
 
-| モジュール            | Statements | Branches | Functions | Lines    | テスト数      |
-| --------------------- | ---------- | -------- | --------- | -------- | ------------- |
-| base-converter.ts     | 100%       | 100%     | 100%      | 100%     | -             |
-| markdown-converter.ts | 100%       | 100%     | 100%      | 100%     | 54ケース      |
-| code-converter.ts     | 100%       | 100%     | 100%      | 100%     | 51ケース      |
-| yaml-converter.ts     | 100%       | 100%     | 100%      | 100%     | 61ケース      |
-| conversion-service.ts | 100%       | 100%     | 100%      | 100%     | -             |
-| **総合**              | **100%**   | **100%** | **100%**  | **100%** | **201ケース** |
+| モジュール              | Statements | Branches | Functions | Lines | テスト数 |
+| ----------------------- | ---------- | -------- | --------- | ----- | -------- |
+| base-converter.ts       | 100%       | 100%     | 100%      | 100%  | -        |
+| markdown-converter.ts   | 100%       | 100%     | 100%      | 100%  | 54       |
+| code-converter.ts       | 100%       | 100%     | 100%      | 100%  | 51       |
+| yaml-converter.ts       | 100%       | 100%     | 100%      | 100%  | 61       |
+| conversion-service.ts   | 100%       | 100%     | 100%      | 100%  | -        |
+| **総合**                | **100%**   | **100%** | **100%**  | **100%** | **201** |
 
 **達成方法**:
 
@@ -680,21 +435,18 @@ jobs:
 
 **今後の新規コンバーターに適用する基準**:
 
-- ドメインサービス層（services/conversion/）: **100%必須**
-- 新規コンバーター実装: **100%必須**（Phase 6でチェック）
+| 対象                     | 基準                  |
+| ------------------------ | --------------------- |
+| ドメインサービス層       | 100%必須              |
+| 新規コンバーター実装     | 100%必須（Phase 6）   |
 
 ### 測定コマンド
 
-```bash
-# ユニットテスト カバレッジ
-pnpm vitest --coverage
-
-# カバレッジ閾値チェック（CI用）
-pnpm vitest --coverage --coverage.thresholds.lines=70
-
-# E2E カバレッジ
-pnpm exec playwright test --reporter=html
-```
+| 目的                   | コマンド                                          |
+| ---------------------- | ------------------------------------------------- |
+| ユニットテストカバレッジ | pnpm vitest --coverage                           |
+| 閾値チェック（CI用）   | pnpm vitest --coverage --coverage.thresholds.lines=70 |
+| E2Eカバレッジ          | pnpm exec playwright test --reporter=html        |
 
 ---
 

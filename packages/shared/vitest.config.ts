@@ -7,7 +7,13 @@ export default defineConfig({
     include: ["**/*.test.ts"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json", "html"],
+      reporter: ["text", "json", "html", "lcov"],
+      thresholds: {
+        lines: 65,
+        functions: 80,
+        branches: 60,
+        statements: 65,
+      },
       exclude: [
         "node_modules/",
         "dist/",
