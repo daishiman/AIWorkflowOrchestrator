@@ -16,3 +16,6 @@ export * from "./vector-index.js";
 
 // リレーション
 export * from "./relations.js";
+
+// Knowledge Graph
+export * from "./graph/index.js";

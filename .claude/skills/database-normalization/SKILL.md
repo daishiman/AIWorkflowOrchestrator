@@ -137,10 +137,9 @@ allowed-tools:
 | `assets/denormalization-decision-template.md` | 非正規化判断記録 |
 | `assets/normalization-review-checklist.md` | 検証チェックリスト |
 
-### 運用ファイル
+## 変更履歴
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| Version | Date       | Changes                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 2.0.0   | 2026-01-04 | 18-skills.md仕様完全準拠版に再構築、運用ファイル形式を統一 |
+| 1.0.0   | 2025-12-24 | 初版作成                                                  |
