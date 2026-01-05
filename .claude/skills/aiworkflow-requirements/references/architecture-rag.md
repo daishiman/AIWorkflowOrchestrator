@@ -410,3 +410,77 @@ FOREIGN KEY (chunk_id) REFERENCES chunks(id) ON DELETE CASCADE
 | レート制限対応             | プロバイダー側のレート制限エラーをRendererに通知 |
 
 ---
+
+## エンティティ抽出サービス (NER)
+
+### 概要
+
+チャンクからエンティティを抽出し、Knowledge Graphのノード候補を生成するサービス。
+RAGパイプラインにおいて、ドキュメントから構造化情報を抽出する中核コンポーネント。
+
+### RAGパイプラインにおける位置づけ
+
+```
+ドキュメント → 変換 → チャンキング → [NER] → Knowledge Graph → 検索
+                                      ↓
+                              ┌──────────────────┐
+                              │ エンティティ抽出  │
+                              │  サービス (NER)  │
+                              └────────┬─────────┘
+                                       │
+                    ┌──────────────────┼──────────────────┐
+                    ↓                  ↓                  ↓
+             ┌────────────┐    ┌─────────────┐    ┌────────────┐
+             │  entities  │    │chunk_entities│    │ graphRela- │
+             │  テーブル   │    │  テーブル    │    │   tions    │
+             └────────────┘    └─────────────┘    └────────────┘
+```
+
+### データフロー
+
+1. **入力**: Chunk（テキスト断片）
+2. **処理**: IEntityExtractor.extract()
+3. **出力**: ExtractedEntity[]
+4. **永続化**: entities + chunk_entities テーブルへ保存
+
+### 抽出方式
+
+| 方式       | 実装クラス             | 特性                              |
+| ---------- | ---------------------- | --------------------------------- |
+| LLMベース  | LLMEntityExtractor     | 高精度、未知エンティティ対応      |
+| ルールベース | RuleBasedEntityExtractor | 高速、パターンマッチ、フォールバック用 |
+
+### ExtractedEntity → EntityEntity 変換
+
+NERサービスの出力（ExtractedEntity）は、Knowledge Graph永続化時にEntityEntityに変換される。
+
+| ExtractedEntity     | EntityEntity        | 変換ロジック                    |
+| ------------------- | ------------------- | ------------------------------- |
+| name                | name                | そのまま                        |
+| normalizedName      | normalizedName      | そのまま                        |
+| type                | type                | EntityType enum にマッピング    |
+| confidence          | importance          | 初期重要度として使用             |
+| description         | description         | そのまま（LLM生成時のみ）       |
+| aliases             | aliases             | JSON配列として格納              |
+| mentions            | → chunk_entities    | 位置情報を中間テーブルへ保存    |
+
+### 実装ファイル
+
+| 種別           | パス                                                   |
+| -------------- | ------------------------------------------------------ |
+| サービス       | `packages/shared/src/services/extraction/`             |
+| LLM抽出器      | `packages/shared/src/services/extraction/entity-extractor.ts` |
+| ルール抽出器   | `packages/shared/src/services/extraction/rule-based-extractor.ts` |
+| 型定義         | `packages/shared/src/services/extraction/types.ts`     |
+| プロンプト     | `packages/shared/src/services/extraction/prompts/`     |
+| テスト         | `packages/shared/src/services/extraction/__tests__/`   |
+
+### 関連スキーマ
+
+| テーブル        | 役割                                | 参照                                 |
+| --------------- | ----------------------------------- | ------------------------------------ |
+| entities        | エンティティ本体（ノード）          | `db/schema/graph/entities.ts`        |
+| chunk_entities  | チャンクとエンティティの関連付け    | `db/schema/graph/chunk-entities.ts`  |
+| graph_relations | エンティティ間の関係（エッジ）      | `db/schema/graph/relations.ts`       |
+
+---
