@@ -619,7 +619,7 @@ Phase 10: ドキュメント更新
 
 ## 目的
 
-実装した内容をシステム要件ドキュメントに反映し、実装ガイドを作成し、未完了タスクを検出・記録する。
+実装した内容をシステム要件ドキュメントに反映し、技術的な理解を促進するドキュメントを作成し、未完了タスクを検出・記録する。
 
 ## サブフェーズ
 
@@ -662,6 +662,36 @@ Phase 10: ドキュメント更新
 2. 更新したRequirementsファイルのエントリを確認
 3. `"skills"` 配列に記載されているスキル名を確認
 4. 該当するスキル（`.claude/skills/<スキル名>/SKILL.md`）を確認・更新
+
+### Phase 10-2: 技術ドキュメント作成【必須】
+
+**目的**: 実装内容を「概念的理解」と「技術的詳細」の両面から説明するドキュメントを作成する。
+
+**配置先**: `outputs/phase-10/technical-documentation.md`
+
+**ドキュメント構成**:
+
+| セクション | 内容 | 対象読者 |
+|-----------|------|----------|
+| 概念編 | 日常の例え話で機能を説明 | 中学生レベル |
+| アーキテクチャ編 | コンポーネント構成と役割 | 初級エンジニア |
+| 技術詳細編 | 実装の詳細と理由 | 中級〜上級エンジニア |
+| 実装判断の理由 | なぜこう実装したかの説明 | 全レベル |
+| 用語集 | 専門用語の定義 | 全レベル |
+
+**記述ルール**:
+
+1. **概念編**: 日常生活での例え話を必ず含める
+2. **技術詳細編**: 各コードブロックに「なぜこうしたのか」を記述
+3. **専門用語**: 初出時に必ず説明を付ける
+4. **実装判断**: 「選択肢A vs B」形式で判断理由を明示
+
+**品質基準**:
+- 中学生が概念編を読んで機能の目的を理解できる
+- 新人エンジニアがアーキテクチャ編を読んで全体構造を把握できる
+- 経験者が技術詳細編を読んでコードの意図を理解できる
+
+See [references/technical-documentation-guide.md](references/technical-documentation-guide.md)
 
 ### Phase 10-3: 未タスク検出【必須】
 
@@ -731,6 +761,7 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-8/
 | 成果物               | パス                                           | 必須 | 説明                       |
 | -------------------- | ---------------------------------------------- | ---- | -------------------------- |
 | 実装ガイド           | `outputs/phase-10/implementation-guide.md`     | ✅   | 概念的+技術的ドキュメント  |
+| 技術ドキュメント     | `outputs/phase-10/technical-documentation.md`  | ✅   | 概念＋技術詳細             |
 | ドキュメント更新履歴 | `outputs/phase-10/documentation-update-log.md` | ✅   | 更新履歴                   |
 | 未タスク検出レポート | `outputs/phase-10/unassigned-task-report.md`   | ✅   | 検出結果（なしでも出力）   |
 | 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`       | 条件 | 検出時のみ作成             |
@@ -739,6 +770,10 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-8/
 
 - [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
+- [ ] 技術ドキュメントが作成されている
+- [ ] 概念編が日常の例え話を含んでいる
+- [ ] 技術詳細編が「なぜ」を説明している
+- [ ] 専門用語が用語集で定義されている
 - [ ] 関連ドキュメントが更新されている
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
@@ -822,6 +857,80 @@ gh pr checks <PR_NUMBER>
 - [ ] PRが作成されている
 - [ ] CIが通過している
 - [ ] レビュー準備が完了している
+- [ ] タスクディレクトリがcompleted-tasksに移動されている
+
+## タスク完了処理【必須】
+
+**PRが作成され、CIが通過した後、タスクディレクトリを完了タスクフォルダに移動する。**
+
+### 移動手順
+
+```bash
+# タスクディレクトリをcompleted-tasksに移動
+mv docs/30-workflows/{{タスク名}}/ docs/30-workflows/completed-tasks/
+
+# 移動を確認
+ls docs/30-workflows/completed-tasks/ | grep {{タスク名}}
+
+# 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): {{タスク名}}をcompleted-tasksに移動"
+git push
+```
+
+### 移動対象
+
+| 対象 | 移動先 | 備考 |
+|------|--------|------|
+| `docs/30-workflows/{{タスク名}}/` | `docs/30-workflows/completed-tasks/{{タスク名}}/` | 全成果物含む |
+
+### 注意事項
+
+- **未タスク（unassigned-task）は移動しない**: Phase 10-3で生成された未完了タスク指示書は移動対象外（下記参照）
+- **artifacts.jsonのstatus更新**: 移動前に`artifacts.json`の`status`が`"completed"`になっていることを確認
+- **PRへの反映**: 移動後のコミットもPRに含める（またはマージ後に別コミット）
+
+### 未タスク（unassigned-task）の完了時処理
+
+**Phase 10-3で生成された未タスク指示書が、将来別のタスクとして完了した場合の処理手順。**
+
+#### 未タスクのライフサイクル
+
+```
+[検出] → [unassigned-taskに配置] → [タスクとして着手] → [完了] → [completed-tasksに移動]
+```
+
+1. **検出時**: `docs/30-workflows/unassigned-task/task-*.md` に指示書を生成
+2. **着手時**: 指示書に従って新規タスクディレクトリを作成（`docs/30-workflows/{{タスク名}}/`）
+3. **完了時**:
+   - 新規タスクディレクトリを `completed-tasks/` に移動
+   - 元の未タスク指示書（`unassigned-task/task-*.md`）を削除
+
+#### 未タスク完了時の手順
+
+```bash
+# 1. 完了したタスクディレクトリをcompleted-tasksに移動
+mv docs/30-workflows/{{タスク名}}/ docs/30-workflows/completed-tasks/
+
+# 2. 元の未タスク指示書を削除（タスクが完了したため不要）
+rm docs/30-workflows/unassigned-task/task-{{タスクID}}.md
+
+# 3. 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): {{タスク名}}を完了、未タスク指示書を削除"
+git push
+```
+
+#### 例: 検索・置換UI実装タスクの場合
+
+```bash
+# search-replace-ui-implementationタスクが完了した場合
+mv docs/30-workflows/search-replace-ui-implementation/ docs/30-workflows/completed-tasks/
+rm docs/30-workflows/unassigned-task/task-search-replace-ui-implementation.md
+git add docs/30-workflows/
+git commit -m "docs(workflows): search-replace-ui-implementationを完了"
+git push
+```
 
 ## 次のPhase
 

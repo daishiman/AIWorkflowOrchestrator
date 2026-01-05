@@ -209,7 +209,8 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| 内部サービスAPI（RAG変換システム） | L8 |
 | チャンク検索API（RAG全文検索） | L157 |
 | Embedding Generation API | L269 |
-| 関連ドキュメント | L426 |
+| Search Service API | L426 |
+| 関連ドキュメント | L694 |
 
 ---
 

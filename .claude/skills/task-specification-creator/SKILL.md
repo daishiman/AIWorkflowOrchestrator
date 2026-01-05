@@ -60,6 +60,12 @@ generate-task-specs（タスク仕様書生成）
 └─────────────────────────────────────┘
     ↓
 docs/30-workflows/{{機能名}}/phase-*.md
+    ↓
+Phase 1〜11 実行
+    ↓
+PR作成・CI通過
+    ↓
+docs/30-workflows/completed-tasks/{{機能名}}/ へ移動
 ```
 
 ### 並列実行グループ
@@ -122,6 +128,72 @@ docs/30-workflows/{{機能名}}/phase-*.md
 
 **Phase別テンプレート**: See [references/phase-templates.md](references/phase-templates.md)
 **出力ディレクトリ構造**: See [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)
+
+## Phase 11: タスク完了処理【必須】
+
+Phase 11でPR作成・CI通過後、タスクディレクトリを完了タスクフォルダに移動する。
+
+### タスク完了フロー
+
+```
+Phase 11: PR作成
+    ↓
+CI通過確認
+    ↓
+タスクディレクトリを completed-tasks/ に移動
+    ↓
+（該当する場合）未タスク指示書を削除
+    ↓
+変更をコミット・プッシュ
+    ↓
+ワークフロー完了
+```
+
+### 移動手順
+
+```bash
+# 1. タスクディレクトリをcompleted-tasksに移動
+mv docs/30-workflows/{{タスク名}}/ docs/30-workflows/completed-tasks/
+
+# 2. 移動を確認
+ls docs/30-workflows/completed-tasks/ | grep {{タスク名}}
+
+# 3. 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): {{タスク名}}をcompleted-tasksに移動"
+git push
+```
+
+### 未タスク完了時の追加処理
+
+**未タスク（unassigned-task）から派生したタスクが完了した場合:**
+
+```bash
+# 1. 完了タスクディレクトリを移動
+mv docs/30-workflows/{{タスク名}}/ docs/30-workflows/completed-tasks/
+
+# 2. 元の未タスク指示書を削除（タスク完了のため不要）
+rm docs/30-workflows/unassigned-task/task-{{タスクID}}.md
+
+# 3. 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): {{タスク名}}を完了、未タスク指示書を削除"
+git push
+```
+
+### 完了条件チェックリスト
+
+| # | 項目 | 必須 |
+|---|------|------|
+| 1 | PRが作成されている | ✅ |
+| 2 | CIが全て通過している | ✅ |
+| 3 | タスクディレクトリが `completed-tasks/` に移動済み | ✅ |
+| 4 | `artifacts.json` の `status` が `"completed"` | ✅ |
+| 5 | （該当時）未タスク指示書が削除済み | 条件 |
+
+**詳細テンプレート**: See [references/phase-templates.md](references/phase-templates.md)
+
+---
 
 ## Phase 10: 未タスク検出 & 実装ガイド作成【必須】
 
@@ -364,6 +436,7 @@ Phase完了時に以下を**すべて**実行すること:
 
 | Version | Date       | Changes                                                                       |
 | ------- | ---------- | ----------------------------------------------------------------------------- |
+| 2.6.0   | 2026-01-05 | Phase 11タスク完了処理【必須】を追加、completed-tasks移動フローを明文化、未タスク完了時処理を追加 |
 | 2.5.0   | 2026-01-05 | 実装ガイドPart2に「なぜ」の設計理由説明を必須化、用語集セクション追加         |
 | 2.4.0   | 2026-01-05 | Phase 10-3: 実装ガイド作成【必須】を追加、implementation-guide-template.md追加 |
 | 2.3.0   | 2026-01-05 | Phase 10未タスク検出【必須】化、generate-unassigned-task.mdを5セクション構造に更新 |

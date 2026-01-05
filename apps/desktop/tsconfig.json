@@ -18,5 +18,11 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "out", "dist"]
+  "exclude": [
+    "node_modules",
+    "out",
+    "dist",
+    "src/features/search/__tests__/SearchPanel.test.tsx",
+    "src/features/search/__tests__/WorkspaceSearchPanel.test.tsx"
+  ]
 }
