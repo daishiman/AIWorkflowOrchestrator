@@ -1,0 +1,79 @@
+{
+  "taskId": "CONV-06-04",
+  "taskName": "エンティティ抽出サービス (NER)",
+  "createdAt": "2026-01-05T00:00:00Z",
+  "lastUpdated": "2026-01-05T00:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "required": ["CONV-03-04"],
+    "optional": []
+  },
+  "outputs": {
+    "code": [
+      "packages/shared/src/services/extraction/entity-extractor.ts",
+      "packages/shared/src/services/extraction/types.ts",
+      "packages/shared/src/services/extraction/prompts/entity-extraction-prompt.ts",
+      "packages/shared/src/services/extraction/__tests__/entity-extractor.test.ts"
+    ],
+    "documentation": [
+      "docs/30-workflows/entity-extraction-ner/outputs/phase-10/implementation-guide.md"
+    ]
+  }
+}
