@@ -1,0 +1,254 @@
+{
+  "feature": "conv-04-05-knowledge-graph-tables",
+  "taskId": "CONV-04-05",
+  "created": "2026-01-04T22:39:41Z",
+  "lastUpdated": "2026-01-04T23:59:00Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:10:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/database-schema.md",
+          "description": "データベーススキーマ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/index-strategy.md",
+          "description": "インデックス戦略設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:15:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:30:00Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/entities.test.ts",
+          "description": "entitiesテストファイル"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/graph-relations-table.test.ts",
+          "description": "relationsテストファイル"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/relation-evidence.test.ts",
+          "description": "relationEvidenceテストファイル"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/communities.test.ts",
+          "description": "communitiesテストファイル"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/junction-tables.test.ts",
+          "description": "中間テーブルテストファイル"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/graph-relations.test.ts",
+          "description": "Drizzleリレーションテストファイル"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/index.test.ts",
+          "description": "エクスポートテストファイル"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:45:00Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/entities.ts",
+          "description": "entitiesテーブル定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/relations.ts",
+          "description": "relationsテーブル定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/relation-evidence.ts",
+          "description": "relationEvidenceテーブル定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/communities.ts",
+          "description": "communitiesテーブル定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/entity-communities.ts",
+          "description": "entityCommunitiesテーブル定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/chunk-entities.ts",
+          "description": "chunkEntitiesテーブル定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/graph-relations.ts",
+          "description": "Drizzleリレーション定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/index.ts",
+          "description": "スキーマエクスポート"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:50:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/refactoring-report.md",
+          "description": "リファクタリングレポート"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:52:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/quality-assurance-report.md",
+          "description": "品質保証レポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:55:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:57:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-01-04T23:59:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/documentation-report.md",
+          "description": "ドキュメント更新レポート"
+        }
+      ]
+    },
+    "11": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"]
+  },
+  "codeArtifacts": {
+    "outputPath": "packages/shared/src/db/schema/graph/",
+    "files": [
+      {
+        "name": "entities.ts",
+        "description": "entitiesテーブル定義"
+      },
+      {
+        "name": "relations.ts",
+        "description": "relationsテーブル定義"
+      },
+      {
+        "name": "relation-evidence.ts",
+        "description": "relationEvidenceテーブル定義"
+      },
+      {
+        "name": "communities.ts",
+        "description": "communitiesテーブル定義"
+      },
+      {
+        "name": "entity-communities.ts",
+        "description": "entityCommunitiesテーブル定義"
+      },
+      {
+        "name": "chunk-entities.ts",
+        "description": "chunkEntitiesテーブル定義"
+      },
+      {
+        "name": "graph-relations.ts",
+        "description": "Drizzleリレーション定義"
+      },
+      {
+        "name": "index.ts",
+        "description": "スキーマエクスポート"
+      }
+    ]
+  },
+  "skills": [
+    "drizzle-orm",
+    "database-normalization",
+    "indexing-strategies",
+    "type-safety-patterns",
+    "tdd-red-green-refactor"
+  ]
+}

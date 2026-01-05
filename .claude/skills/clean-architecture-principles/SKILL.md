@@ -12,6 +12,13 @@ description: |
   Trigger:
   Use when reviewing architecture layers, enforcing dependency rules, designing boundaries, or validating layer compliance.
   clean architecture, dependency rule, layer violation, boundary interface, architecture review
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 # clean-architecture-principles
 
