@@ -1,0 +1,95 @@
+{
+  "workflowName": "frontend-testing-best-practices",
+  "createdAt": "2026-01-04T22:40:00Z",
+  "lastUpdated": "2026-01-05T01:30:00Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-04T23:10:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-04T23:15:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/e2e-scenarios.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-04T23:18:00Z",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-05T00:00:00Z",
+      "artifacts": ["outputs/phase-4/test-specifications.md"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-05T00:05:00Z",
+      "artifacts": [
+        "outputs/phase-5/implementation-record.md",
+        "apps/desktop/src/test/mocks/handlers.ts",
+        "apps/desktop/src/test/mocks/server.ts",
+        "apps/desktop/src/test/utils.tsx",
+        "apps/desktop/src/test/test-helpers.ts",
+        "apps/desktop/src/test/factories.ts"
+      ]
+    },
+    "6": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-05T00:08:00Z",
+      "artifacts": ["outputs/phase-6/refactoring-record.md"]
+    },
+    "7": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-05T00:10:00Z",
+      "artifacts": ["outputs/phase-7/quality-report.md"]
+    },
+    "8": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-05T00:12:00Z",
+      "artifacts": ["outputs/phase-8/final-review-result.md"]
+    },
+    "9": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-05T00:15:00Z",
+      "artifacts": ["outputs/phase-9/manual-test-result.md"]
+    },
+    "10": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-05T01:30:00Z",
+      "artifacts": [
+        "outputs/phase-10/implementation-guide.md",
+        "outputs/phase-10/documentation-update-log.md"
+      ]
+    },
+    "11": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "metrics": {
+    "desktopCoverage": 83.86,
+    "sharedCoverage": 67.2,
+    "totalTests": 5679,
+    "testsPassed": 5679
+  }
+}

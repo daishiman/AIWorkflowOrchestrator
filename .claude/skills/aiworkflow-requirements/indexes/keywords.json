@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-04T13:02:59.079Z",
-  "totalKeywords": 392,
+  "generated": "2026-01-05T03:29:25.452Z",
+  "totalKeywords": 385,
   "keywords": {
     "API": [
       "api-core.md",
@@ -195,8 +195,7 @@
     ],
     "workflows": [
       "architecture-database.md",
-      "directory-structure.md",
-      "quality-requirements.md"
+      "directory-structure.md"
     ],
     "テーブル設計": [
       "architecture-database.md"
@@ -613,7 +612,6 @@
     ],
     "CI": [
       "deployment.md",
-      "quality-requirements.md",
       "technology-devops.md"
     ],
     "CD": [
@@ -680,8 +678,7 @@
       "directory-structure.md"
     ],
     "github": [
-      "directory-structure.md",
-      "quality-requirements.md"
+      "directory-structure.md"
     ],
     "ルートの設定ファイル群": [
       "directory-structure.md"
@@ -1013,19 +1010,10 @@
     "パフォーマンス要件": [
       "quality-requirements.md"
     ],
-    "手動パフォーマンステスト": [
-      "quality-requirements.md"
-    ],
-    "実行時間とメモリ使用量が出力される": [
-      "quality-requirements.md"
-    ],
     "TDD": [
       "quality-requirements.md"
     ],
     "実践ガイド": [
-      "quality-requirements.md"
-    ],
-    "yml": [
       "quality-requirements.md"
     ],
     "可用性": [
@@ -1034,23 +1022,11 @@
     "保守性": [
       "quality-requirements.md"
     ],
-    "ci": [
-      "quality-requirements.md"
-    ],
     "アクセシビリティ": [
       "quality-requirements.md",
       "ui-ux-components.md"
     ],
     "テストカバレッジ目標": [
-      "quality-requirements.md"
-    ],
-    "ユニットテスト": [
-      "quality-requirements.md"
-    ],
-    "カバレッジ": [
-      "quality-requirements.md"
-    ],
-    "カバレッジ閾値チェック": [
       "quality-requirements.md"
     ],
     "セキュリティ実装・入力バリデーション": [

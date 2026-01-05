@@ -9,7 +9,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createRef } from "react";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom/vitest";
 import {
   UnifiedSearchPanel,
   type UnifiedSearchPanelRef,
