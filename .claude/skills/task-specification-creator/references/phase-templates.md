@@ -886,9 +886,51 @@ git push
 
 ### 注意事項
 
-- **未タスク（unassigned-task）は移動しない**: Phase 10-3で生成された未完了タスク指示書は移動対象外
+- **未タスク（unassigned-task）は移動しない**: Phase 10-3で生成された未完了タスク指示書は移動対象外（下記参照）
 - **artifacts.jsonのstatus更新**: 移動前に`artifacts.json`の`status`が`"completed"`になっていることを確認
 - **PRへの反映**: 移動後のコミットもPRに含める（またはマージ後に別コミット）
+
+### 未タスク（unassigned-task）の完了時処理
+
+**Phase 10-3で生成された未タスク指示書が、将来別のタスクとして完了した場合の処理手順。**
+
+#### 未タスクのライフサイクル
+
+```
+[検出] → [unassigned-taskに配置] → [タスクとして着手] → [完了] → [completed-tasksに移動]
+```
+
+1. **検出時**: `docs/30-workflows/unassigned-task/task-*.md` に指示書を生成
+2. **着手時**: 指示書に従って新規タスクディレクトリを作成（`docs/30-workflows/{{タスク名}}/`）
+3. **完了時**:
+   - 新規タスクディレクトリを `completed-tasks/` に移動
+   - 元の未タスク指示書（`unassigned-task/task-*.md`）を削除
+
+#### 未タスク完了時の手順
+
+```bash
+# 1. 完了したタスクディレクトリをcompleted-tasksに移動
+mv docs/30-workflows/{{タスク名}}/ docs/30-workflows/completed-tasks/
+
+# 2. 元の未タスク指示書を削除（タスクが完了したため不要）
+rm docs/30-workflows/unassigned-task/task-{{タスクID}}.md
+
+# 3. 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): {{タスク名}}を完了、未タスク指示書を削除"
+git push
+```
+
+#### 例: 検索・置換UI実装タスクの場合
+
+```bash
+# search-replace-ui-implementationタスクが完了した場合
+mv docs/30-workflows/search-replace-ui-implementation/ docs/30-workflows/completed-tasks/
+rm docs/30-workflows/unassigned-task/task-search-replace-ui-implementation.md
+git add docs/30-workflows/
+git commit -m "docs(workflows): search-replace-ui-implementationを完了"
+git push
+```
 
 ## 次のPhase
 
