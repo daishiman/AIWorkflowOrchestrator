@@ -711,10 +711,21 @@ RAGパイプラインに投入されるファイルのメタデータを管理�
 | entities            | entities_type_idx                   | type                          | タイプ別フィルタリング                 |
 | entities            | entities_importance_idx             | importance                    | 重要度順ソート                         |
 | entities            | entities_name_type_idx              | normalized_name, type         | 正規化名+タイプ一意性保証（UNIQUE）    |
+| graph_relations     | graph_relations_source_id_idx       | source_id                     | 始点エンティティからの関係取得         |
+| graph_relations     | graph_relations_target_id_idx       | target_id                     | 終点エンティティへの関係取得           |
+| graph_relations     | graph_relations_type_idx            | type                          | 関係タイプ別フィルタリング             |
+| chunk_entities      | chunk_entities_chunk_id_idx         | chunk_id                      | チャンク内のエンティティ取得           |
+| chunk_entities      | chunk_entities_entity_id_idx        | entity_id                     | エンティティが出現するチャンク取得     |
+| communities         | communities_level_idx               | level                         | 階層レベル別フィルタリング             |
+| communities         | communities_parent_id_idx           | parent_id                     | 子コミュニティ取得                     |
 
 ---
 
 ## Knowledge Graph テーブル
+
+GraphRAGシステムのノード・エッジ・コミュニティを管理するテーブル群。
+
+**実装場所**: `packages/shared/src/db/schema/graph/`
 
 ### entities（エンティティ / Knowledge Graphノード）
 
@@ -761,11 +772,101 @@ Knowledge Graphのノード（エンティティ）を管理するテーブル�
 - `importance` スコアでエンティティのランキングを実現
 - `embedding` でセマンティック検索をサポート（ベクトル類似度検索）
 - エンティティ削除時は関連する `relations` テーブルもCASCADEで削除
+- NERサービス（`services/extraction/`）の出力をこのテーブルに永続化
 
 **参照ドキュメント**:
 
 - スキーマ実装: `packages/shared/src/db/schema/graph/entities.ts` ✅
 - Repository実装: `packages/shared/src/db/repositories/entity.repository.ts` ✅
+
+### graph_relations（関係/エッジ）
+
+エンティティ間の関係を管理する。
+
+| カラム        | 型      | NULL | 説明                                      |
+| ------------- | ------- | ---- | ----------------------------------------- |
+| id            | TEXT    | NO   | UUID主キー                                |
+| source_id     | TEXT    | NO   | 始点エンティティID（外部キー: CASCADE）   |
+| target_id     | TEXT    | NO   | 終点エンティティID（外部キー: CASCADE）   |
+| type          | TEXT    | NO   | 関係タイプ（23種類）                      |
+| weight        | REAL    | NO   | 関係の強さ（0.0-1.0、デフォルト: 0.5）    |
+| bidirectional | INTEGER | NO   | 双方向フラグ（0: false, 1: true）         |
+| description   | TEXT    | YES  | 関係の説明                                |
+| metadata      | JSON    | YES  | 追加メタデータ                            |
+| created_at    | INTEGER | NO   | 作成日時（UNIX時刻）                      |
+| updated_at    | INTEGER | NO   | 更新日時（UNIX時刻）                      |
+
+**制約**:
+- Self-loop禁止（`source_id !== target_id`）
+- `source_id + target_id + type` の組み合わせで一意性を保証
+
+### relation_evidence（関係の証拠）
+
+関係の根拠となるチャンク情報を管理する。
+
+| カラム       | 型      | NULL | 説明                                     |
+| ------------ | ------- | ---- | ---------------------------------------- |
+| id           | TEXT    | NO   | UUID主キー                               |
+| relation_id  | TEXT    | NO   | 関係ID（外部キー: CASCADE）              |
+| chunk_id     | TEXT    | NO   | 根拠チャンクID（外部キー: CASCADE）      |
+| confidence   | REAL    | NO   | 信頼度スコア（0.0-1.0）                  |
+| excerpt      | TEXT    | YES  | 抜粋テキスト（根拠箇所）                 |
+| created_at   | INTEGER | NO   | 作成日時（UNIX時刻）                     |
+
+### chunk_entities（チャンク-エンティティ中間テーブル）
+
+チャンクとエンティティの多対多関係を管理する。NERサービスの出力（Mention情報）をこのテーブルに保存。
+
+| カラム        | 型      | NULL | 説明                                     |
+| ------------- | ------- | ---- | ---------------------------------------- |
+| chunk_id      | TEXT    | NO   | チャンクID（複合主キー、外部キー: CASCADE）|
+| entity_id     | TEXT    | NO   | エンティティID（複合主キー、外部キー: CASCADE）|
+| mention_count | INTEGER | NO   | チャンク内出現回数（デフォルト: 1）      |
+| positions     | JSON    | NO   | 出現位置リスト（JSON配列）               |
+
+**positions配列の構造**:
+```json
+[
+  { "startChar": 10, "endChar": 20, "surfaceForm": "TypeScript" },
+  { "startChar": 50, "endChar": 60, "surfaceForm": "TS" }
+]
+```
+
+**NERサービスとの連携**:
+- `ExtractedEntity.mentions` → `chunk_entities.positions` に変換
+- 同一チャンク内の複数出現を1レコードにまとめて管理
+
+### communities（コミュニティ）
+
+意味的に関連するエンティティ群のクラスタ（Leiden Algorithm）を管理する。
+
+| カラム       | 型      | NULL | 説明                                     |
+| ------------ | ------- | ---- | ---------------------------------------- |
+| id           | TEXT    | NO   | UUID主キー                               |
+| level        | INTEGER | NO   | 階層レベル（0=ルート）                   |
+| parent_id    | TEXT    | YES  | 親コミュニティID（level 0はNULL）        |
+| name         | TEXT    | NO   | コミュニティ名                           |
+| summary      | TEXT    | YES  | コミュニティ要約（最大2000文字）         |
+| member_count | INTEGER | NO   | メンバー数                               |
+| metadata     | JSON    | YES  | 追加メタデータ                           |
+| created_at   | INTEGER | NO   | 作成日時（UNIX時刻）                     |
+| updated_at   | INTEGER | NO   | 更新日時（UNIX時刻）                     |
+
+### entity_communities（エンティティ-コミュニティ中間テーブル）
+
+エンティティとコミュニティの多対多関係を管理する。
+
+| カラム       | 型      | NULL | 説明                                     |
+| ------------ | ------- | ---- | ---------------------------------------- |
+| entity_id    | TEXT    | NO   | エンティティID（複合主キー）             |
+| community_id | TEXT    | NO   | コミュニティID（複合主キー）             |
+| membership_score | REAL | NO  | 所属スコア（0.0-1.0）                    |
+| created_at   | INTEGER | NO   | 作成日時（UNIX時刻）                     |
+
+**参照ドキュメント**:
+- スキーマ実装: `packages/shared/src/db/schema/graph/`
+- 型定義: `packages/shared/src/types/rag/graph/`
+- 詳細設計: `docs/30-workflows/conv-04-05-knowledge-graph-tables/`
 
 ---
 

@@ -482,3 +482,111 @@ interface ProfileExportData {
 | タイムアウト   | `timeout`       | 接続タイムアウト（10秒）           |
 
 ---
+
+## エンティティ抽出サービス (NER)
+
+### 概要
+
+チャンクからエンティティを抽出する内部サービス。現在はElectronアプリ内部で使用され、外部REST APIは未公開。
+
+**実装場所**: `packages/shared/src/services/extraction/`
+
+### 内部サービスAPI
+
+NERサービスは`IEntityExtractor`インターフェースを通じて利用する。
+
+**基本使用例**:
+
+```typescript
+import { RuleBasedEntityExtractor, LLMEntityExtractor } from "@repo/shared/services/extraction";
+
+// ルールベース抽出器（高速・フォールバック用）
+const ruleExtractor = new RuleBasedEntityExtractor();
+
+// LLMベース抽出器（高精度）
+const llmExtractor = new LLMEntityExtractor(llmProvider);
+
+// 単一チャンクから抽出
+const result = await extractor.extract(chunk, {
+  types: ["technology", "organization"],
+  minConfidence: 0.7
+});
+
+// バッチ抽出
+const batchResult = await extractor.extractBatch(chunks);
+
+// 結果マージ（重複除去）
+const mergedEntities = extractor.mergeEntities(batchResult.data.results);
+```
+
+### IEntityExtractor インターフェース
+
+| メソッド        | 説明                               | 戻り値                            |
+| --------------- | ---------------------------------- | --------------------------------- |
+| `extract()`     | 単一チャンクからエンティティ抽出   | `Result<ExtractionResult, Error>` |
+| `extractBatch()`| 複数チャンクからバッチ抽出         | `Result<BatchExtractionResult, Error>` |
+| `mergeEntities()`| 抽出結果のマージ（重複除去）      | `ExtractedEntity[]`               |
+
+### EntityExtractionOptions
+
+| オプション           | 型        | デフォルト | 説明                        |
+| -------------------- | --------- | ---------- | --------------------------- |
+| types                | string[]  | 全タイプ   | 抽出対象のエンティティタイプ |
+| minConfidence        | number    | 0.5        | 最小信頼度閾値              |
+| maxEntitiesPerChunk  | number    | 20         | チャンクあたり最大抽出数    |
+| minNameLength        | number    | 2          | 最小名前長                  |
+| generateDescriptions | boolean   | true       | 説明生成（LLMのみ）         |
+| useLLM               | boolean   | true       | LLM使用フラグ               |
+
+### 将来的なREST API（予定）
+
+将来的にREST APIとして公開する場合の設計案:
+
+| メソッド | パス                              | 説明                       | 認証 |
+| -------- | --------------------------------- | -------------------------- | ---- |
+| POST     | /api/v1/extraction/entities       | テキストからエンティティ抽出 | 必要 |
+| POST     | /api/v1/extraction/entities/batch | バッチエンティティ抽出     | 必要 |
+
+**リクエスト例（POST /api/v1/extraction/entities）**:
+```json
+{
+  "content": "TypeScriptはMicrosoftが開発した言語です",
+  "options": {
+    "types": ["technology", "organization"],
+    "minConfidence": 0.7
+  }
+}
+```
+
+**レスポンス例**:
+```json
+{
+  "entities": [
+    {
+      "name": "TypeScript",
+      "normalizedName": "typescript",
+      "type": "technology",
+      "confidence": 0.9,
+      "mentions": [{ "startPosition": 0, "endPosition": 10 }]
+    },
+    {
+      "name": "Microsoft",
+      "normalizedName": "microsoft",
+      "type": "organization",
+      "confidence": 0.9,
+      "mentions": [{ "startPosition": 12, "endPosition": 21 }]
+    }
+  ],
+  "processingTimeMs": 45
+}
+```
+
+### エラーハンドリング
+
+| エラークラス       | 説明                     | 対処                         |
+| ------------------ | ------------------------ | ---------------------------- |
+| `LLMProviderError` | LLM API呼び出し失敗      | ルールベースにフォールバック |
+| `JsonParseError`   | LLMレスポンスのJSON不正  | ルールベースにフォールバック |
+| `ValidationError`  | 入力バリデーション失敗   | エラーメッセージを返却       |
+
+---
