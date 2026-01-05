@@ -87,14 +87,38 @@
 - Electronアプリが起動可能な状態
 - Playwrightがセットアップ済み
 
-### 3.1.1 ⚠️ 重要: typecheckから除外されているテストファイル
+### 3.1.1 ⚠️ 重要: 現在除外されているテストファイル
 
-バックエンド実装時に、UIコンポーネント未実装のためテストファイルがtypecheckから**一時的に除外**されています。
+バックエンド実装時（TASK-SEARCH-REPLACE-001）に、UIコンポーネントが未実装のため、以下のテストファイルが**typecheckとテスト実行の両方から一時的に除外**されています。
 
-**除外されているファイル** (apps/desktop/tsconfig.json):
+#### 除外されているファイル
 
-- `src/features/search/__tests__/SearchPanel.test.tsx`
-- `src/features/search/__tests__/WorkspaceSearchPanel.test.tsx`
+| ファイル                                                      | 説明                                         |
+| ------------------------------------------------------------- | -------------------------------------------- |
+| `src/features/search/__tests__/SearchPanel.test.tsx`          | ファイル内検索パネルのテスト（作成済み）     |
+| `src/features/search/__tests__/WorkspaceSearchPanel.test.tsx` | ワークスペース検索パネルのテスト（作成済み） |
+
+#### 除外設定の場所
+
+| 設定ファイル                    | 除外の目的                   |
+| ------------------------------- | ---------------------------- |
+| `apps/desktop/tsconfig.json`    | TypeScript型チェックから除外 |
+| `apps/desktop/vitest.config.ts` | テスト実行から除外           |
+
+#### なぜ除外されているか
+
+- テストファイルは**TDDアプローチで先に作成済み**
+- しかしテスト対象のUIコンポーネント（`SearchPanel.tsx`、`WorkspaceSearchPanel.tsx`）が未実装
+- そのため、importエラーが発生しCIが失敗する
+- UI実装完了までの一時的な措置として除外
+
+#### UI実装後の動作
+
+**Phase 0で除外を解除すると：**
+
+1. 作成済みのテストが自動的にCI/テスト実行の対象になる
+2. 最初はimportエラーで失敗する（Red状態）
+3. Phase 5でUIコンポーネントを実装すると、テストが通過する（Green状態）
 
 **Phase 0（実装開始時）で必ず除外を解除してください。**
 
@@ -400,3 +424,19 @@ Phase 9 検証レポートより:
 - バックエンド実装はpackages/shared/src/search/に完了済み
 - テストカバレッジ83.92%達成済み
 - 設計書はdocs/30-workflows/search-replace-functionality/outputs/phase-2/にある
+
+### 作成済みUIテストについて
+
+以下のテストファイルは**すでに作成済み**ですが、現在はCI/テスト実行から除外されています：
+
+| テストファイル                  | テストケース数 | 内容                                                                           |
+| ------------------------------- | -------------- | ------------------------------------------------------------------------------ |
+| `SearchPanel.test.tsx`          | 約30件         | 検索入力、オプション切替、置換操作、キーボードナビゲーション、アクセシビリティ |
+| `WorkspaceSearchPanel.test.tsx` | 約25件         | ワークスペース検索、ファイルフィルタ、結果表示、ファイルジャンプ               |
+
+**UI実装完了後、これらのテストが自動的に実行されます。**
+
+除外状態の追跡情報：
+
+- 追跡ファイル: `docs/30-workflows/search-replace-functionality/artifacts.json`
+- キー: `pendingTestExclusions`
