@@ -68,7 +68,7 @@ const createMockSearchResults = (): FileSearchResult[] => [
 ];
 
 // モックSearchService
-const createMockSearchService = () => ({
+const _createMockSearchService = () => ({
   searchInWorkspace: vi.fn().mockImplementation(async function* () {
     for (const result of createMockSearchResults()) {
       yield result;
@@ -638,7 +638,7 @@ describe("WorkspaceSearchPanel", () => {
   describe("パフォーマンス", () => {
     it("デバウンスによって不要な検索が防がれる", async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-      const mockSearch = vi.fn();
+      const _mockSearch = vi.fn();
       render(<WorkspaceSearchPanel {...defaultProps} />);
 
       const searchInput = screen.getByRole("searchbox", { name: /検索/ });

@@ -506,7 +506,7 @@ describe("SearchPanel", () => {
       render(<SearchPanel {...defaultProps} />);
 
       const searchInput = screen.getByRole("searchbox");
-      const closeButton = screen.getByRole("button", { name: /閉じる/ });
+      const _closeButton = screen.getByRole("button", { name: /閉じる/ });
 
       // 最初のフォーカス
       expect(document.activeElement).toBe(searchInput);
