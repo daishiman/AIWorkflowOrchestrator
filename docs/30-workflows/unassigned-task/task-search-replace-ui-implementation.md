@@ -126,20 +126,32 @@
 
 このタスクはPhase 0（準備）+ Phase 4-9のTDDサイクルに従う。
 
-### Phase 0: 準備作業（typecheck除外解除）【必須】
+### Phase 0: 準備作業（除外解除）【必須】
 
 #### 目的
 
-バックエンド実装時に一時的に除外されたテストファイルをtypecheckに再追加する。
+バックエンド実装時に一時的に除外されたテストファイルをtypecheckとテスト実行の両方に再追加する。
 
 #### 手順
 
-1. `apps/desktop/tsconfig.json` を開く
-2. `exclude` 配列から以下のエントリを**削除**する:
+1. **tsconfig.json の除外解除**
+   - `apps/desktop/tsconfig.json` を開く
+   - `exclude` 配列から以下のエントリを**削除**する:
+
    ```json
    "src/features/search/__tests__/SearchPanel.test.tsx",
    "src/features/search/__tests__/WorkspaceSearchPanel.test.tsx"
    ```
+
+2. **vitest.config.ts の除外解除**
+   - `apps/desktop/vitest.config.ts` を開く
+   - `test.exclude` 配列から以下のエントリを**削除**する:
+
+   ```typescript
+   "src/features/search/__tests__/SearchPanel.test.tsx",
+   "src/features/search/__tests__/WorkspaceSearchPanel.test.tsx",
+   ```
+
 3. ファイルを保存
 
 #### 確認コマンド
@@ -147,12 +159,17 @@
 ```bash
 # 除外解除後は型エラーが出ることを確認（これはPhase 5で解消される）
 pnpm --filter @repo/desktop typecheck
+
+# テスト実行でもエラーが出ることを確認
+pnpm --filter @repo/desktop test:run
 ```
 
 #### 完了条件
 
 - [ ] tsconfig.jsonからテストファイル除外が削除されている
+- [ ] vitest.config.tsからテストファイル除外が削除されている
 - [ ] 型エラーが出ることを確認（UIコンポーネント未実装のため）
+- [ ] テスト実行でimportエラーが出ることを確認（UIコンポーネント未実装のため）
 
 ---
 
