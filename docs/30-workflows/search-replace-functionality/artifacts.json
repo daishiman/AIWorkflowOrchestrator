@@ -3,7 +3,7 @@
   "taskName": "検索・置換機能",
   "createdAt": "2026-01-04T00:00:00Z",
   "lastUpdated": "2026-01-05T13:30:00Z",
-  "status": "in_progress",
+  "status": "completed",
   "phases": {
     "1": {
       "name": "要件定義",
@@ -117,10 +117,21 @@
     },
     "11": {
       "name": "PR作成",
-      "status": "pending",
+      "status": "completed",
       "specFile": "phase-11-pr.md",
-      "artifacts": []
+      "artifacts": [],
+      "prNumber": 189,
+      "prUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/189"
     }
+  },
+  "pendingTypecheckExclusions": {
+    "description": "UIコンポーネント未実装のため一時的にtypecheckから除外されているファイル",
+    "files": [
+      "apps/desktop/src/features/search/__tests__/SearchPanel.test.tsx",
+      "apps/desktop/src/features/search/__tests__/WorkspaceSearchPanel.test.tsx"
+    ],
+    "configFile": "apps/desktop/tsconfig.json",
+    "resolveBy": "task-imp-search-ui-001（検索・置換機能 UI実装）のPhase 0で除外解除"
   },
   "skillFeedback": []
 }

@@ -2,17 +2,17 @@
 
 ## メタ情報
 
-| 項目         | 内容                                |
-| ------------ | ----------------------------------- |
-| タスクID     | task-imp-search-ui-001              |
-| タスク名     | 検索・置換機能 UI実装               |
-| 分類         | 改善                                |
-| 対象機能     | 検索・置換パネル                    |
-| 優先度       | 高                                  |
-| 見積もり規模 | 中規模                              |
-| ステータス   | 未実施                              |
-| 発見元       | Phase 9（手動テスト検証）           |
-| 発見日       | 2026-01-05                          |
+| 項目         | 内容                                            |
+| ------------ | ----------------------------------------------- |
+| タスクID     | task-imp-search-ui-001                          |
+| タスク名     | 検索・置換機能 UI実装                           |
+| 分類         | 改善                                            |
+| 対象機能     | 検索・置換パネル                                |
+| 優先度       | 高                                              |
+| 見積もり規模 | 中規模                                          |
+| ステータス   | 未実施                                          |
+| 発見元       | Phase 9（手動テスト検証）                       |
+| 発見日       | 2026-01-05                                      |
 | 前提タスク   | TASK-SEARCH-REPLACE-001（バックエンド実装完了） |
 
 ---
@@ -69,13 +69,13 @@
 
 ### 2.4 成果物
 
-| 成果物               | パス                                                              |
-| -------------------- | ----------------------------------------------------------------- |
-| SearchPanel          | apps/desktop/src/features/search/SearchPanel.tsx                  |
-| WorkspaceSearchPanel | apps/desktop/src/features/search/WorkspaceSearchPanel.tsx         |
-| Zustand Store        | apps/desktop/src/features/search/stores/useSearchStore.ts         |
+| 成果物               | パス                                                                 |
+| -------------------- | -------------------------------------------------------------------- |
+| SearchPanel          | apps/desktop/src/features/search/SearchPanel.tsx                     |
+| WorkspaceSearchPanel | apps/desktop/src/features/search/WorkspaceSearchPanel.tsx            |
+| Zustand Store        | apps/desktop/src/features/search/stores/useSearchStore.ts            |
 | カスタムフック       | apps/desktop/src/features/search/hooks/useSearchKeyboardShortcuts.ts |
-| E2Eテスト            | apps/desktop/tests/e2e/search.spec.ts                             |
+| E2Eテスト            | apps/desktop/tests/e2e/search.spec.ts                                |
 
 ---
 
@@ -87,10 +87,21 @@
 - Electronアプリが起動可能な状態
 - Playwrightがセットアップ済み
 
+### 3.1.1 ⚠️ 重要: typecheckから除外されているテストファイル
+
+バックエンド実装時に、UIコンポーネント未実装のためテストファイルがtypecheckから**一時的に除外**されています。
+
+**除外されているファイル** (apps/desktop/tsconfig.json):
+
+- `src/features/search/__tests__/SearchPanel.test.tsx`
+- `src/features/search/__tests__/WorkspaceSearchPanel.test.tsx`
+
+**Phase 0（実装開始時）で必ず除外を解除してください。**
+
 ### 3.2 依存タスク
 
-| タスクID               | 名称                       | ステータス |
-| ---------------------- | -------------------------- | ---------- |
+| タスクID                | 名称                       | ステータス |
+| ----------------------- | -------------------------- | ---------- |
 | TASK-SEARCH-REPLACE-001 | 検索・置換機能バックエンド | 完了       |
 
 ### 3.3 必要な知識・スキル
@@ -113,16 +124,46 @@
 
 ### Phase構成
 
-このタスクはPhase 4-9のTDDサイクルに従う。
+このタスクはPhase 0（準備）+ Phase 4-9のTDDサイクルに従う。
+
+### Phase 0: 準備作業（typecheck除外解除）【必須】
+
+#### 目的
+
+バックエンド実装時に一時的に除外されたテストファイルをtypecheckに再追加する。
+
+#### 手順
+
+1. `apps/desktop/tsconfig.json` を開く
+2. `exclude` 配列から以下のエントリを**削除**する:
+   ```json
+   "src/features/search/__tests__/SearchPanel.test.tsx",
+   "src/features/search/__tests__/WorkspaceSearchPanel.test.tsx"
+   ```
+3. ファイルを保存
+
+#### 確認コマンド
+
+```bash
+# 除外解除後は型エラーが出ることを確認（これはPhase 5で解消される）
+pnpm --filter @repo/desktop typecheck
+```
+
+#### 完了条件
+
+- [ ] tsconfig.jsonからテストファイル除外が削除されている
+- [ ] 型エラーが出ることを確認（UIコンポーネント未実装のため）
+
+---
 
 ### Phase 4: テスト作成（Red）
 
 #### 使用スキル
 
-| スキル            | パス                                          |
-| ----------------- | --------------------------------------------- |
-| frontend-testing  | .claude/skills/frontend-testing/SKILL.md      |
-| playwright-testing | .claude/skills/playwright-testing/SKILL.md   |
+| スキル             | パス                                       |
+| ------------------ | ------------------------------------------ |
+| frontend-testing   | .claude/skills/frontend-testing/SKILL.md   |
+| playwright-testing | .claude/skills/playwright-testing/SKILL.md |
 
 #### 目的
 
@@ -130,8 +171,8 @@ UIコンポーネントとE2Eの失敗するテストを作成する。
 
 #### 成果物
 
-- apps/desktop/src/features/search/__tests__/SearchPanel.test.tsx
-- apps/desktop/src/features/search/__tests__/WorkspaceSearchPanel.test.tsx
+- apps/desktop/src/features/search/**tests**/SearchPanel.test.tsx
+- apps/desktop/src/features/search/**tests**/WorkspaceSearchPanel.test.tsx
 - apps/desktop/tests/e2e/search.spec.ts
 
 #### 完了条件
@@ -145,11 +186,11 @@ UIコンポーネントとE2Eの失敗するテストを作成する。
 
 #### 使用スキル
 
-| スキル               | パス                                            |
-| -------------------- | ----------------------------------------------- |
-| electron-ui-patterns | .claude/skills/electron-ui-patterns/SKILL.md    |
-| accessibility-wcag   | .claude/skills/accessibility-wcag/SKILL.md      |
-| state-lifting        | .claude/skills/state-lifting/SKILL.md           |
+| スキル               | パス                                         |
+| -------------------- | -------------------------------------------- |
+| electron-ui-patterns | .claude/skills/electron-ui-patterns/SKILL.md |
+| accessibility-wcag   | .claude/skills/accessibility-wcag/SKILL.md   |
+| state-lifting        | .claude/skills/state-lifting/SKILL.md        |
 
 #### 目的
 
@@ -174,10 +215,10 @@ UIコンポーネントとE2Eの失敗するテストを作成する。
 
 #### 使用スキル
 
-| スキル               | パス                                             |
-| -------------------- | ------------------------------------------------ |
-| refactoring-patterns | .claude/skills/refactoring-patterns/SKILL.md     |
-| clean-code-practices | .claude/skills/clean-code-practices/SKILL.md     |
+| スキル               | パス                                         |
+| -------------------- | -------------------------------------------- |
+| refactoring-patterns | .claude/skills/refactoring-patterns/SKILL.md |
+| clean-code-practices | .claude/skills/clean-code-practices/SKILL.md |
 
 #### 目的
 
@@ -195,10 +236,10 @@ UIコンポーネントとE2Eの失敗するテストを作成する。
 
 #### 使用スキル
 
-| スキル             | パス                                         |
-| ------------------ | -------------------------------------------- |
-| static-analysis    | .claude/skills/static-analysis/SKILL.md      |
-| accessibility-wcag | .claude/skills/accessibility-wcag/SKILL.md   |
+| スキル             | パス                                       |
+| ------------------ | ------------------------------------------ |
+| static-analysis    | .claude/skills/static-analysis/SKILL.md    |
+| accessibility-wcag | .claude/skills/accessibility-wcag/SKILL.md |
 
 #### 目的
 
@@ -231,9 +272,9 @@ UIコンポーネントとE2Eの失敗するテストを作成する。
 
 #### 使用スキル
 
-| スキル             | パス                                          |
-| ------------------ | --------------------------------------------- |
-| playwright-testing | .claude/skills/playwright-testing/SKILL.md    |
+| スキル             | パス                                       |
+| ------------------ | ------------------------------------------ |
+| playwright-testing | .claude/skills/playwright-testing/SKILL.md |
 
 #### 目的
 
@@ -291,11 +332,11 @@ UIコンポーネントとE2Eの失敗するテストを作成する。
 
 ## 7. リスクと対策
 
-| リスク                           | 影響度 | 発生確率 | 対策                               |
-| -------------------------------- | ------ | -------- | ---------------------------------- |
-| Electron IPC通信の遅延           | 中     | 低       | 非同期処理とローディング状態の実装 |
+| リスク                           | 影響度 | 発生確率 | 対策                                   |
+| -------------------------------- | ------ | -------- | -------------------------------------- |
+| Electron IPC通信の遅延           | 中     | 低       | 非同期処理とローディング状態の実装     |
 | 大規模ワークスペースでの性能低下 | 高     | 中       | ストリーミング結果表示、仮想スクロール |
-| アクセシビリティ準拠漏れ         | 中     | 中       | axe-coreによる自動チェック         |
+| アクセシビリティ準拠漏れ         | 中     | 中       | axe-coreによる自動チェック             |
 
 ---
 
@@ -303,12 +344,12 @@ UIコンポーネントとE2Eの失敗するテストを作成する。
 
 ### 関連ドキュメント
 
-| ドキュメント          | パス                                                               |
-| --------------------- | ------------------------------------------------------------------ |
-| UI設計仕様            | .claude/skills/aiworkflow-requirements/references/ui-ux-panels.md  |
-| SearchService API     | .claude/skills/aiworkflow-requirements/references/api-internal.md  |
-| 検索・置換タスク仕様  | docs/30-workflows/search-replace-functionality/                    |
-| Phase 9検証レポート   | docs/30-workflows/search-replace-functionality/outputs/phase-9/verification-report.md |
+| ドキュメント         | パス                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| UI設計仕様           | .claude/skills/aiworkflow-requirements/references/ui-ux-panels.md                     |
+| SearchService API    | .claude/skills/aiworkflow-requirements/references/api-internal.md                     |
+| 検索・置換タスク仕様 | docs/30-workflows/search-replace-functionality/                                       |
+| Phase 9検証レポート  | docs/30-workflows/search-replace-functionality/outputs/phase-9/verification-report.md |
 
 ### 参考資料
 
