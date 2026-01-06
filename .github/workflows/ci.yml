@@ -184,7 +184,8 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/shared/coverage/lcov.info,./apps/desktop/coverage/lcov.info
           flags: shared,desktop
-          fail_ci_if_error: true
+          # CODECOV_TOKEN未設定時はスキップ（トークン設定後にtrueに変更）
+          fail_ci_if_error: false
           verbose: true
 
   build:
