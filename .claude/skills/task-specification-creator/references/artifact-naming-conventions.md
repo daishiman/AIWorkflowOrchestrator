@@ -13,7 +13,7 @@
 
 | 成果物タイプ           | 配置先                                  | 説明                             |
 | ---------------------- | --------------------------------------- | -------------------------------- |
-| **ドキュメント成果物** | `docs/30-workflows/{{機能名}}/outputs/` | 設計書、仕様書、レビュー結果など |
+| **ドキュメント成果物** | `docs/30-workflows/{{FEATURE_NAME}}/outputs/` | 設計書、仕様書、レビュー結果など |
 | **コード成果物**       | プロジェクトの該当ディレクトリ          | 実装コード、テストコード         |
 
 ### コード成果物の配置ルール
@@ -27,7 +27,7 @@ packages/shared/src/{{feature}}/*.test.ts         # テストコード
 apps/desktop/src/{{feature}}/component.tsx        # Electron実装
 
 # ❌ 誤った配置
-docs/30-workflows/{{機能名}}/outputs/phase-5/index.ts  # ダメ！
+docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-5/index.ts  # ダメ！
 ```
 
 ### Phase別の成果物タイプ
@@ -37,14 +37,16 @@ docs/30-workflows/{{機能名}}/outputs/phase-5/index.ts  # ダメ！
 | 1 要件定義         | ✅ 要件定義書、受け入れ基準 | -                                    |
 | 2 設計             | ✅ 設計書、API仕様          | -                                    |
 | 3 設計レビュー     | ✅ レビュー結果             | -                                    |
-| 4 テスト作成       | ✅ テスト仕様書             | ✅ テストコード（※プロジェクト配置） |
-| 5 実装             | ✅ 実装サマリー             | ✅ 実装コード（※プロジェクト配置）   |
-| 6 リファクタリング | ✅ リファクタ記録           | ✅ 改善コード（※プロジェクト配置）   |
-| 7 品質保証         | ✅ 品質レポート             | -                                    |
-| 8 最終レビュー     | ✅ レビュー結果             | -                                    |
-| 9 手動テスト       | ✅ テスト結果               | -                                    |
-| 10 ドキュメント    | ✅ 更新記録                 | -                                    |
-| 11 PR作成          | ✅ PR情報                   | -                                    |
+| 4 テスト作成         | ✅ テスト仕様書             | ✅ テストコード（※プロジェクト配置） |
+| 5 実装               | ✅ 実装サマリー             | ✅ 実装コード（※プロジェクト配置）   |
+| 6 テスト拡充         | ✅ カバレッジ/統合テスト結果 | ✅ 追加テストコード（※プロジェクト配置） |
+| 7 テストカバレッジ確認 | ✅ 検証レポート             | -                                    |
+| 8 リファクタリング   | ✅ リファクタ記録           | ✅ 改善コード（※プロジェクト配置）   |
+| 9 品質保証           | ✅ 品質レポート             | -                                    |
+| 10 最終レビュー      | ✅ レビュー結果             | -                                    |
+| 11 手動テスト        | ✅ テスト結果               | -                                    |
+| 12 ドキュメント      | ✅ 更新記録                 | -                                    |
+| 13 PR作成            | ✅ PR情報                   | -                                    |
 
 ---
 
@@ -53,13 +55,13 @@ docs/30-workflows/{{機能名}}/outputs/phase-5/index.ts  # ダメ！
 ### 1.1 ディレクトリ構造
 
 ```
-docs/30-workflows/{{機能名}}/
+docs/30-workflows/{{FEATURE_NAME}}/
 ├── index.md                           # ワークフローインデックス
 ├── artifacts.json                     # 成果物レジストリ（動的更新）
 ├── phase-1-requirements.md            # Phase 1 仕様書
 ├── phase-2-design.md                  # Phase 2 仕様書
 ├── ...
-├── phase-11-pr-creation.md            # Phase 11 仕様書
+├── phase-13-pr-creation.md            # Phase 13 仕様書
 └── outputs/                           # 各Phase成果物格納
     ├── phase-1/                       # Phase 1 成果物
     │   ├── requirements-definition.md
@@ -95,12 +97,15 @@ docs/30-workflows/{{機能名}}/
 | 4     | テスト仕様書         | `test-specification.md`       |
 | 4     | テストケース         | `test-cases.md`               |
 | 5     | 実装サマリー         | `implementation-summary.md`   |
-| 6     | リファクタリング記録 | `refactoring-log.md`          |
-| 7     | 品質レポート         | `quality-report.md`           |
-| 8     | 最終レビュー結果     | `final-review-result.md`      |
-| 9     | 手動テスト結果       | `manual-test-result.md`       |
-| 10    | ドキュメント更新記録 | `documentation-update-log.md` |
-| 11    | PR情報               | `pr-info.md`                  |
+| 6     | カバレッジレポート   | `coverage-report.md`          |
+| 6     | 統合テスト結果       | `integration-test.md`         |
+| 7     | カバレッジ検証結果   | `coverage-report.md`          |
+| 8     | リファクタリング記録 | `refactoring-log.md`          |
+| 9     | 品質レポート         | `quality-report.md`           |
+| 10    | 最終レビュー結果     | `final-review-result.md`      |
+| 11    | 手動テスト結果       | `manual-test-result.md`       |
+| 12    | ドキュメント更新記録 | `documentation-update-log.md` |
+| 13    | PR情報               | `pr-info.md`                  |
 
 ---
 
@@ -112,7 +117,7 @@ docs/30-workflows/{{機能名}}/
 
 ```json
 {
-  "feature": "{{機能名}}",
+  "feature": "{{FEATURE_NAME}}",
   "created": "2024-01-15T10:00:00Z",
   "lastUpdated": "2024-01-15T15:30:00Z",
   "phases": {
@@ -211,7 +216,7 @@ Phase N 実行完了
 
 ```bash
 node scripts/register-artifact.mjs \
-  --workflow "docs/30-workflows/{{機能名}}" \
+  --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1 \
   --type "document" \
   --path "outputs/phase-1/requirements-definition.md" \
@@ -222,7 +227,7 @@ node scripts/register-artifact.mjs \
 
 ```bash
 node scripts/update-dependencies.mjs \
-  --workflow "docs/30-workflows/{{機能名}}" \
+  --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1
 ```
 
@@ -230,7 +235,7 @@ node scripts/update-dependencies.mjs \
 
 ```bash
 node scripts/complete-phase.mjs \
-  --workflow "docs/30-workflows/{{機能名}}" \
+  --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1 \
   --artifacts "outputs/phase-1/requirements-definition.md:要件定義書,outputs/phase-1/acceptance-criteria.md:受け入れ基準"
 ```

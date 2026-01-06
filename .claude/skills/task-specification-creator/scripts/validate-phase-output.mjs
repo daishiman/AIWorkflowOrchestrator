@@ -9,7 +9,7 @@
  *   node scripts/validate-phase-output.mjs docs/30-workflows/chat-llm-switching
  *
  * 検証項目:
- *   - Phase 1 ~ Phase 11 の11ファイルが存在するか
+ *   - Phase 1 ~ Phase 13 の13ファイルが存在するか
  *   - 各ファイルに必須セクションが含まれているか
  *   - 命名規則に従っているか
  *   - index.md が存在するか
@@ -18,19 +18,21 @@
 import { readFileSync, existsSync, readdirSync } from "fs";
 import { join, basename } from "path";
 
-// Phase定義 (Phase 1〜11)
+// Phase定義 (Phase 1〜13)
 const PHASES = [
   { number: 1, name: "requirements", displayName: "要件定義" },
   { number: 2, name: "design", displayName: "設計" },
   { number: 3, name: "design-review", displayName: "設計レビューゲート" },
   { number: 4, name: "test-creation", displayName: "テスト作成" },
   { number: 5, name: "implementation", displayName: "実装" },
-  { number: 6, name: "refactoring", displayName: "リファクタリング" },
-  { number: 7, name: "quality-assurance", displayName: "品質保証" },
-  { number: 8, name: "final-review", displayName: "最終レビューゲート" },
-  { number: 9, name: "manual-test", displayName: "手動テスト検証" },
-  { number: 10, name: "documentation", displayName: "ドキュメント更新" },
-  { number: 11, name: "pr-creation", displayName: "PR作成" },
+  { number: 6, name: "test-expansion", displayName: "テスト拡充" },
+  { number: 7, name: "coverage-check", displayName: "テストカバレッジ確認" },
+  { number: 8, name: "refactoring", displayName: "リファクタリング" },
+  { number: 9, name: "quality-assurance", displayName: "品質保証" },
+  { number: 10, name: "final-review", displayName: "最終レビューゲート" },
+  { number: 11, name: "manual-test", displayName: "手動テスト検証" },
+  { number: 12, name: "documentation", displayName: "ドキュメント更新" },
+  { number: 13, name: "pr-creation", displayName: "PR作成" },
 ];
 
 // 必須セクション
@@ -154,6 +156,16 @@ class PhaseValidator {
       if (!section.pattern.test(content)) {
         this.errors.push(
           `Phase ${phaseNum} (${files[0]}): 必須セクション「${section.name}」がありません`,
+        );
+      }
+    }
+
+    // Phase 1〜11は統合テスト連携セクション必須
+    if (Number(phaseNum) >= 1 && Number(phaseNum) <= 11) {
+      const integrationSection = /^##\s+統合テスト連携/m.test(content);
+      if (!integrationSection) {
+        this.errors.push(
+          `Phase ${phaseNum} (${files[0]}): 必須セクション「統合テスト連携」がありません`,
         );
       }
     }

@@ -9,17 +9,17 @@
 
 ---
 
-## Phase 10での未タスク検出【必須】
+## Phase 12での未タスク検出【必須】
 
-**Phase 10完了前に、未完了タスクの検出を必ず実行すること。**
+**Phase 12完了前に、未完了タスクの検出を必ず実行すること。**
 
 ### 検出ソース一覧
 
 | # | ソース | 確認項目 | 必須 |
 | --- | --- | --- | --- |
 | 1 | Phase 3レビュー結果 | MINOR判定の指摘事項 | ✅ |
-| 2 | Phase 8レビュー結果 | MINOR判定の指摘事項 | ✅ |
-| 3 | Phase 9手動テスト結果 | スコープ外の発見事項 | ✅ |
+| 2 | Phase 10レビュー結果 | MINOR判定の指摘事項 | ✅ |
+| 3 | Phase 11手動テスト結果 | スコープ外の発見事項 | ✅ |
 | 4 | 各Phase成果物 | 「将来対応」「TODO」「FIXME」 | ✅ |
 | 5 | コードベース | TODO/FIXME/HACK/XXXコメント | ✅ |
 | 6 | スキルLOGS.md | partial/failure記録の改善提案 | ✅ |
@@ -34,14 +34,14 @@ grep -rn "TODO\|FIXME\|将来対応\|later\|TBD" outputs/
 grep -rn "TODO\|FIXME\|HACK\|XXX" packages/ apps/ --include="*.ts" --include="*.tsx"
 
 # レビュー結果からMINOR判定を検出
-grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-8/
+grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 ```
 
 ### 出力要件
 
 | 出力物 | 必須 | 配置先 |
 | --- | --- | --- |
-| 未タスク検出レポート | ✅ | `outputs/phase-10/unassigned-task-report.md` |
+| 未タスク検出レポート | ✅ | `outputs/phase-12/unassigned-task-report.md` |
 | 未タスク指示書（該当時） | 条件 | `docs/30-workflows/unassigned-task/` |
 
 **重要**: 未タスクが検出されなかった場合でも、検出レポートに「未対応課題は検出されませんでした」と明記すること。
@@ -55,9 +55,9 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-8/
 | 発見元       | 記録対象                                 |
 | ------------ | ---------------------------------------- |
 | Phase 3      | MINOR判定された設計上の未対応項目        |
-| Phase 8      | MINOR判定された実装上の未対応項目        |
-| Phase 9      | 手動テストで発見されたスコープ外の改善点 |
-| Phase 10     | ドキュメント更新時に発見された追加タスク |
+| Phase 10     | MINOR判定された実装上の未対応項目        |
+| Phase 11     | 手動テストで発見されたスコープ外の改善点 |
+| Phase 12     | ドキュメント更新時に発見された追加タスク |
 | 全Phase共通  | 将来的に必要となる拡張機能               |
 | 全Phase共通  | 技術的負債として認識された項目           |
 | 全Phase共通  | セキュリティ上の懸念（緊急性が低いもの） |
@@ -138,7 +138,7 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-8/
 | ---------------- | ----------------------------------- |
 | 要件系           | `requirements-{{機能領域}}.md`      |
 | 改善系           | `task-{{改善領域}}-improvements.md` |
-| バグ修正         | `task-{{機能名}}-bugfix.md`         |
+| バグ修正         | `task-{{FEATURE_NAME}}-bugfix.md`   |
 | リファクタリング | `task-{{対象}}-refactoring.md`      |
 | セキュリティ     | `task-{{対象}}-security.md`         |
 | パフォーマンス   | `task-{{対象}}-performance.md`      |
@@ -180,7 +180,7 @@ task-improvement.md
 
 ---
 
-## Phase 7 レビュー結果との連携
+## Phase 10 レビュー結果との連携
 
 ### レビュー判定別の対応
 
@@ -202,12 +202,12 @@ task-improvement.md
     ↓
 docs/30-workflows/unassigned-task/ に配置
     ↓
-Phase 8へ進行
+Phase 11へ進行
 ```
 
 ---
 
-## Phase 8 手動テスト結果との連携
+## Phase 11 手動テスト結果との連携
 
 ### 発見された課題の分類
 

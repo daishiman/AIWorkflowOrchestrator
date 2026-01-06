@@ -1,6 +1,6 @@
 # 技術ドキュメント作成ガイド
 
-> Phase 10-2で作成する技術ドキュメントの詳細ガイドライン
+> Phase 12-3で作成する技術ドキュメントの詳細ガイドライン
 
 ## 1. ドキュメントの目的
 
@@ -242,6 +242,6 @@ Xがあると: [解決]
 ## 5. 実例参照
 
 技術ドキュメントの実例:
-- `docs/30-workflows/search-replace-functionality/outputs/phase-10/technical-documentation.md`
+- `docs/30-workflows/search-replace-functionality/outputs/phase-12/technical-documentation.md`
 
 このドキュメントは上記ガイドラインに従って作成されています。
