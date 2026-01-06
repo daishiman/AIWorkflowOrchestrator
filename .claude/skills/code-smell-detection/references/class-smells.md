@@ -412,3 +412,85 @@ grep -rn "class.*{" src/ --include="*.ts" -A 50 | \
 - [ ] 他クラスのデータに過度に依存するメソッドがないか
 - [ ] 内部実装に依存した密結合がないか
 - [ ] 継承した機能を拒否していないか
+
+---
+
+## 実装事例（2026-01-06追加）
+
+### God Component検出とリファクタリング事例
+
+search-replace-ui-implementation Phase 10で、EditorViewコンポーネントのGod Component問題を検出し改善した事例。
+
+#### 検出された問題
+
+EditorViewコンポーネント（713行）を分析した結果、以下のGod Componentの兆候を検出：
+
+**定量的指標**:
+- 総行数: 713行（閾値500行を超過）
+- useState使用数: 12箇所（閾値10を超過）
+- useEffect使用数: 6箇所（閾値5を超過）
+- useRef使用数: 5箇所
+
+**定性的指標**:
+- 複数の異なる関心事が混在
+  - エディタ表示とコンテンツ管理
+  - 検索・置換機能
+  - キーボードショートカット処理
+  - ファイル操作（保存、読み込み）
+- 単一責任の原則に違反
+
+#### 検出したスメルの詳細
+
+**God Component（主要スメル）**
+- 症状: 1つのコンポーネントに複数の責務が集約
+- 影響: 変更時の影響範囲が広く、テストが困難
+
+**Long Method（付随スメル）**
+- 対象: editorInstanceRefの初期化ロジック（80行）
+- 症状: useRefとuseEffect内に位置計算、スクロール、置換処理が密集
+- 影響: 可読性低下、部分的なテストが不可能
+
+**Feature Envy（付随スメル）**
+- 対象: workspaceSearchProvider実装部分
+- 症状: EditorView内でIPC通信の詳細（リクエスト組み立て、レスポンス解析）を直接実装
+- 影響: Electron APIへの依存がコンポーネント全体に波及
+
+**Complex Conditional（付随スメル）**
+- 対象: キーボードショートカット処理
+- 症状: 6つの条件分岐（Cmd+F、Cmd+Shift+F、Cmd+P、F3、Escape等）が1つのuseEffect内に存在
+- 影響: ショートカット追加時に既存ロジックへの影響確認が必要
+
+#### 改善アプローチ
+
+Extract Hookパターンを適用し、責務ごとにカスタムフックを抽出：
+
+1. **useEditorInstance**: エディタ操作ロジックを抽出
+   - 位置計算（calculateCharPosition、calculateLineColumn）
+   - スクロール処理（scrollToLine）
+   - 置換処理（replaceText、replaceAllText）
+
+2. **useWorkspaceSearch**: IPC検索ロジックを抽出
+   - Electron API呼び出しの詳細を隠蔽
+   - AsyncGeneratorでストリーミング検索を提供
+
+3. **useSearchKeyboardShortcuts**: ショートカット処理を抽出
+   - キーイベントのハンドリング
+   - モード切り替えロジック
+
+#### 改善結果
+
+- EditorView: 713行 → 495行（約30%削減）
+- 各フックが独立してテスト可能に
+- 新しいショートカット追加時はuseSearchKeyboardShortcutsのみ修正
+- エディタ実装変更時はuseEditorInstanceのアダプターのみ差し替え
+
+#### Reactコンポーネント向けGod Component検出基準
+
+従来のクラス向け基準に加え、Reactコンポーネント固有の指標：
+
+| 指標 | 閾値 | 説明 |
+|------|------|------|
+| useState数 | 10以上 | 状態管理が複雑化している兆候 |
+| useEffect数 | 5以上 | 副作用処理が多すぎる兆候 |
+| 総行数 | 500行以上 | クラス同様 |
+| 関心事の数 | 3以上 | 異なる責務の混在 |

@@ -5,6 +5,49 @@
 import type { RefObject } from "react";
 
 /**
+ * マッチ情報（共有パッケージの型定義をローカルにコピー）
+ */
+export interface SearchMatch {
+  /** 行番号 (1-indexed) */
+  line: number;
+  /** 列番号 (1-indexed) */
+  column: number;
+  /** マッチした文字列の長さ */
+  length: number;
+  /** マッチしたテキスト */
+  text: string;
+  /** マッチした行全体のテキスト */
+  lineText: string;
+  /** コンテキスト（前後の行） */
+  context?: {
+    before: string[];
+    after: string[];
+  };
+}
+
+/**
+ * ファイル検索結果（共有パッケージの型定義をローカルにコピー）
+ */
+export interface FileSearchResult {
+  /** ファイルパス */
+  filePath: string;
+  /** マッチ一覧 */
+  matches: SearchMatch[];
+}
+
+/**
+ * 検索オプション
+ */
+export interface SearchOptions {
+  /** 大文字小文字を区別 */
+  caseSensitive: boolean;
+  /** 正規表現を使用 */
+  regex: boolean;
+  /** 単語単位で検索 */
+  wholeWord: boolean;
+}
+
+/**
  * エディタインスタンスのインターフェース
  */
 export interface EditorInstance {
@@ -65,6 +108,26 @@ export interface SearchPanelProps {
 }
 
 /**
+ * 検索プロバイダのオプション
+ */
+export interface SearchProviderOptions {
+  caseSensitive: boolean;
+  regex: boolean;
+  wholeWord: boolean;
+  includePattern?: string;
+  excludePattern?: string;
+}
+
+/**
+ * 検索プロバイダの型
+ */
+export type SearchProvider = (
+  workspacePath: string,
+  query: string,
+  options: SearchProviderOptions,
+) => AsyncGenerator<FileSearchResult>;
+
+/**
  * WorkspaceSearchPanel コンポーネントの Props
  */
 export interface WorkspaceSearchPanelProps {
@@ -80,6 +143,8 @@ export interface WorkspaceSearchPanelProps {
   initialSearchText?: string;
   /** 置換モードを表示するか */
   showReplace?: boolean;
+  /** 検索プロバイダ（テスト用） */
+  searchProvider?: SearchProvider;
 }
 
 /**

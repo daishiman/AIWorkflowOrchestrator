@@ -1,0 +1,421 @@
+{
+  "taskId": "task-imp-search-ui-001",
+  "taskName": "検索・置換機能 UI実装",
+  "createdAt": "2026-01-05",
+  "lastUpdated": "2026-01-06T14:50:00Z",
+  "status": "in_progress",
+  "priority": "HIGH",
+  "relatedTasks": ["TASK-SEARCH-REPLACE-001"],
+  "phases": {
+    "phase-0": {
+      "name": "準備",
+      "status": "completed",
+      "completedAt": "2026-01-05T14:30:00Z",
+      "skills": [],
+      "artifacts": [
+        {
+          "name": "tdd-preparation-result.md",
+          "path": "outputs/phase-0/tdd-preparation-result.md",
+          "description": "TDD準備結果（除外設定の削除内容）"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "アーキテクチャ設計",
+      "status": "completed",
+      "completedAt": "2026-01-05T14:35:00Z",
+      "skills": ["architectural-patterns", "state-lifting"],
+      "artifacts": [
+        {
+          "name": "architecture-design.md",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計書"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "詳細設計",
+      "status": "completed",
+      "completedAt": "2026-01-05T14:40:00Z",
+      "skills": ["electron-ui-patterns", "accessibility-wcag"],
+      "artifacts": [
+        {
+          "name": "detailed-design.md",
+          "path": "outputs/phase-3/detailed-design.md",
+          "description": "詳細設計書"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-05T14:45:00Z",
+      "skills": ["frontend-testing", "playwright-testing"],
+      "artifacts": [
+        {
+          "name": "test-review-result.md",
+          "path": "outputs/phase-4/test-review-result.md",
+          "description": "既存テストレビュー結果"
+        },
+        {
+          "name": "test-execution-result.md",
+          "path": "outputs/phase-4/test-execution-result.md",
+          "description": "TDD Red状態確認結果"
+        }
+      ],
+      "codeArtifacts": [
+        {
+          "name": "SearchPanel.test.tsx",
+          "path": "apps/desktop/src/features/search/__tests__/SearchPanel.test.tsx",
+          "description": "SearchPanelユニットテスト（46テスト）"
+        },
+        {
+          "name": "WorkspaceSearchPanel.test.tsx",
+          "path": "apps/desktop/src/features/search/__tests__/WorkspaceSearchPanel.test.tsx",
+          "description": "WorkspaceSearchPanelユニットテスト（48テスト）"
+        },
+        {
+          "name": "useSearchStore.test.ts",
+          "path": "apps/desktop/src/features/search/__tests__/useSearchStore.test.ts",
+          "description": "useSearchStoreユニットテスト（21テスト）"
+        },
+        {
+          "name": "useSearchKeyboardShortcuts.test.ts",
+          "path": "apps/desktop/src/features/search/__tests__/useSearchKeyboardShortcuts.test.ts",
+          "description": "useSearchKeyboardShortcutsユニットテスト（13テスト）"
+        },
+        {
+          "name": "TextAreaEditorAdapter.test.ts",
+          "path": "apps/desktop/src/features/search/__tests__/TextAreaEditorAdapter.test.ts",
+          "description": "TextAreaEditorAdapterユニットテスト（26テスト）"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-05T17:10:00Z",
+      "skills": ["electron-ui-patterns", "accessibility-wcag", "state-lifting"],
+      "artifacts": [
+        {
+          "name": "implementation-log.md",
+          "path": "outputs/phase-5/implementation-log.md",
+          "description": "実装ログ"
+        }
+      ],
+      "codeArtifacts": [
+        {
+          "name": "SearchPanel.tsx",
+          "path": "apps/desktop/src/features/search/components/SearchPanel.tsx",
+          "description": "ファイル内検索パネル"
+        },
+        {
+          "name": "WorkspaceSearchPanel.tsx",
+          "path": "apps/desktop/src/features/search/components/WorkspaceSearchPanel.tsx",
+          "description": "ワークスペース検索パネル"
+        },
+        {
+          "name": "useSearchStore.ts",
+          "path": "apps/desktop/src/features/search/stores/useSearchStore.ts",
+          "description": "検索状態管理ストア"
+        },
+        {
+          "name": "useSearchKeyboardShortcuts.ts",
+          "path": "apps/desktop/src/features/search/hooks/useSearchKeyboardShortcuts.ts",
+          "description": "キーボードショートカットフック"
+        },
+        {
+          "name": "types.ts",
+          "path": "apps/desktop/src/features/search/types.ts",
+          "description": "型定義"
+        },
+        {
+          "name": "index.ts",
+          "path": "apps/desktop/src/features/search/index.ts",
+          "description": "バレルエクスポート"
+        }
+      ],
+      "progress": {
+        "componentsImplemented": true,
+        "testsPassingRate": "100%",
+        "testsPassing": 154,
+        "coverageAchieved": "94.31%",
+        "coverageTarget": "80%",
+        "notes": "全モジュールでカバレッジ80%以上達成（hooks/stores/adaptersのテスト追加済み）",
+        "coverageBreakdown": {
+          "features/search": "100%",
+          "search/adapters": "97.46%",
+          "search/components": "91.76%",
+          "search/hooks": "100%",
+          "search/stores": "100%",
+          "search/utils": "100%"
+        }
+      }
+    },
+    "phase-6": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-05T17:25:00Z",
+      "skills": ["refactoring-patterns", "clean-code-practices"],
+      "artifacts": [
+        {
+          "name": "refactoring-log.md",
+          "path": "outputs/phase-6/refactoring-log.md",
+          "description": "リファクタリング記録"
+        }
+      ],
+      "changes": [
+        "型定義のローカル化（FileSearchResult, SearchMatch）",
+        "Implicit any型の修正",
+        "Import文の整理"
+      ]
+    },
+    "phase-7": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-05T17:30:00Z",
+      "skills": ["accessibility-wcag"],
+      "artifacts": [
+        {
+          "name": "quality-report.md",
+          "path": "outputs/phase-7/quality-report.md",
+          "description": "品質レポート"
+        }
+      ],
+      "quality": {
+        "testsPassing": 3116,
+        "coverage": "84.17%",
+        "searchFeatureCoverage": "100%",
+        "eslintWarnings": 0,
+        "typescriptErrors": 0,
+        "wcagCompliance": "AA",
+        "accessibilityTests": 11
+      }
+    },
+    "phase-8": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "completedAt": "2026-01-05T17:40:00Z",
+      "skills": [],
+      "artifacts": [
+        {
+          "name": "final-review.md",
+          "path": "outputs/phase-8/final-review.md",
+          "description": "最終レビュー結果"
+        }
+      ],
+      "review": {
+        "functionalRequirements": "all_passed",
+        "qualityRequirements": "mostly_passed",
+        "documentationRequirements": "all_passed",
+        "uiDesignConsistency": "verified",
+        "backendApiIntegration": "verified",
+        "accessibilityCompliance": "wcag_aa_verified",
+        "recommendations": [
+          "Phase 9でパフォーマンス実測",
+          "Phase 9でE2Eテスト実施"
+        ]
+      }
+    },
+    "phase-9": {
+      "name": "手動テスト",
+      "status": "in_progress",
+      "skills": ["playwright-testing"],
+      "artifacts": [
+        {
+          "name": "manual-test-result.md",
+          "path": "outputs/phase-9/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ],
+      "bugfixes": [
+        {
+          "id": "BF-001",
+          "description": "Cmd+H がMacの「アプリを隠す」と競合",
+          "status": "fixed",
+          "fixedAt": "2026-01-06T14:46:00Z",
+          "files": [
+            "apps/desktop/src/features/search/components/SearchPanel.tsx"
+          ]
+        },
+        {
+          "id": "BF-002",
+          "description": "検索結果が表示されない（editorContentのクロージャ問題）",
+          "status": "fixed",
+          "fixedAt": "2026-01-06T14:47:00Z",
+          "files": ["apps/desktop/src/renderer/views/EditorView/index.tsx"]
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "completedAt": "2026-01-05T18:50:00Z",
+      "lastUpdated": "2026-01-06T17:00:00Z",
+      "skills": ["code-smell-detection", "refactoring-patterns"],
+      "artifacts": [
+        {
+          "name": "implementation-guide.md",
+          "path": "outputs/phase-10/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 概念的説明 + Part 2: 技術的詳細 + セクション10: EditorView統合フック）"
+        },
+        {
+          "name": "unassigned-task-report.md",
+          "path": "outputs/phase-10/unassigned-task-report.md",
+          "description": "未タスク検出レポート（2026-01-06更新、3件検出）"
+        },
+        {
+          "name": "documentation-update-log.md",
+          "path": "outputs/phase-10/documentation-update-log.md",
+          "description": "システムドキュメント更新履歴"
+        },
+        {
+          "name": "task-editorview-hooks-coverage.md",
+          "path": "docs/30-workflows/unassigned-task/task-editorview-hooks-coverage.md",
+          "description": "未タスク指示書: EditorView hooks テストカバレッジ改善"
+        },
+        {
+          "name": "task-filename-search-migration.md",
+          "path": "docs/30-workflows/unassigned-task/task-filename-search-migration.md",
+          "description": "未タスク指示書: ファイル名検索のPhase 5移行"
+        }
+      ],
+      "codeArtifacts": [
+        {
+          "name": "useEditorInstance.ts",
+          "path": "apps/desktop/src/renderer/views/EditorView/hooks/useEditorInstance.ts",
+          "description": "EditorInstanceアダプターフック（2026-01-06リファクタリング）"
+        },
+        {
+          "name": "useWorkspaceSearch.ts",
+          "path": "apps/desktop/src/renderer/views/EditorView/hooks/useWorkspaceSearch.ts",
+          "description": "ワークスペース検索プロバイダフック（2026-01-06リファクタリング）"
+        },
+        {
+          "name": "useSearchKeyboardShortcuts.ts",
+          "path": "apps/desktop/src/renderer/views/EditorView/hooks/useSearchKeyboardShortcuts.ts",
+          "description": "キーボードショートカットフック（2026-01-06リファクタリング）"
+        }
+      ],
+      "summary": {
+        "unassignedTasksDetected": 3,
+        "implementationGuideCreated": true,
+        "systemDocsUpdated": "not_needed",
+        "notes": "2026-01-06: EditorViewリファクタリング実施、3件の未タスク検出"
+      },
+      "refactoring": {
+        "date": "2026-01-06",
+        "description": "EditorViewからカスタムフックを抽出（713行→495行、約30%削減）",
+        "hooksExtracted": [
+          "useEditorInstance",
+          "useWorkspaceSearch",
+          "useSearchKeyboardShortcuts"
+        ],
+        "testCoverage": "83.9%",
+        "testsTotal": 3135
+      }
+    },
+    "phase-11": {
+      "name": "PR作成",
+      "status": "not_started",
+      "skills": [],
+      "artifacts": [
+        {
+          "name": "pr-info.md",
+          "path": "outputs/phase-11/pr-info.md",
+          "description": "PR情報"
+        }
+      ]
+    },
+    "phase-5-integration": {
+      "name": "EditorView統合",
+      "status": "completed",
+      "completedAt": "2026-01-05T23:20:00Z",
+      "skills": ["architectural-patterns"],
+      "artifacts": [
+        {
+          "name": "integration-log.md",
+          "path": "outputs/phase-5-integration/integration-log.md",
+          "description": "EditorView統合ログ"
+        }
+      ],
+      "codeArtifacts": [
+        {
+          "name": "TextAreaEditorAdapter.ts",
+          "path": "apps/desktop/src/features/search/adapters/TextAreaEditorAdapter.ts",
+          "description": "EditorInstanceアダプター（TextArea用）"
+        },
+        {
+          "name": "adapters/index.ts",
+          "path": "apps/desktop/src/features/search/adapters/index.ts",
+          "description": "アダプターバレルエクスポート"
+        }
+      ],
+      "modifiedFiles": [
+        {
+          "path": "apps/desktop/src/features/search/index.ts",
+          "changes": "アダプターエクスポート追加"
+        },
+        {
+          "path": "apps/desktop/src/renderer/views/EditorView/index.tsx",
+          "changes": "Phase 5 SearchPanel/WorkspaceSearchPanel統合"
+        }
+      ],
+      "integration": {
+        "searchModes": {
+          "file": "SearchPanel (Phase 5)",
+          "workspace": "WorkspaceSearchPanel (Phase 5)",
+          "filename": "UnifiedSearchPanel (既存、将来移行予定)"
+        },
+        "adapterPattern": "TextAreaをEditorInstanceインターフェースでラップ",
+        "testsPassing": 94,
+        "backwardCompatibility": "maintained"
+      }
+    }
+  },
+  "skillFeedback": {
+    "architectural-patterns": {
+      "result": "success",
+      "phase": 2,
+      "notes": "コンポーネント分割設計に使用"
+    },
+    "state-lifting": {
+      "result": "success",
+      "phase": 2,
+      "notes": "Zustand Store設計に使用"
+    },
+    "electron-ui-patterns": {
+      "result": "success",
+      "phase": 5,
+      "notes": "Electronアプリ向けUIパターン適用"
+    },
+    "accessibility-wcag": {
+      "result": "success",
+      "phase": 5,
+      "notes": "WCAG 2.1 AA準拠のARIA属性実装"
+    },
+    "frontend-testing": {
+      "result": "success",
+      "phase": 5,
+      "notes": "94テスト全合格、fireEventパターンでfake timers対応"
+    },
+    "playwright-testing": null,
+    "refactoring-patterns": {
+      "result": "success",
+      "phase": 6,
+      "notes": "型定義のローカル化とimplicit any型の修正"
+    },
+    "clean-code-practices": {
+      "result": "success",
+      "phase": 6,
+      "notes": "TypeScriptエラー0件達成"
+    }
+  },
+  "completionCriteria": {
+    "testCoverage": "80%",
+    "eslintWarnings": 0,
+    "typescriptErrors": 0,
+    "wcagCompliance": "AA",
+    "searchResponseTime": "200ms"
+  }
+}

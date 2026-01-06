@@ -54,6 +54,13 @@ export const createWorkspaceSlice: StateCreator<
   loadWorkspace: async () => {
     set({ workspaceIsLoading: true, workspaceError: null });
 
+    // electronAPIが利用できない場合は空のワークスペースを使用
+    if (typeof window === "undefined" || !window.electronAPI?.workspace) {
+      console.warn("electronAPI.workspace is not available");
+      set({ workspaceIsLoading: false });
+      return;
+    }
+
     try {
       // 永続化されたワークスペースを読み込む
       const response = await window.electronAPI.workspace.load();
@@ -143,6 +150,11 @@ export const createWorkspaceSlice: StateCreator<
    * @description 現在のワークスペース状態を永続化
    */
   saveWorkspace: async () => {
+    // electronAPIが利用できない場合はスキップ
+    if (!window.electronAPI?.workspace) {
+      return;
+    }
+
     const { workspace } = get();
     const serialized = serializeWorkspace(workspace);
 
@@ -158,6 +170,12 @@ export const createWorkspaceSlice: StateCreator<
    * @description ダイアログを表示してフォルダを選択し、ワークスペースに追加
    */
   addFolder: async () => {
+    // electronAPIが利用できない場合はスキップ
+    if (!window.electronAPI?.workspace) {
+      set({ workspaceError: "electronAPI is not available" });
+      return;
+    }
+
     try {
       // ダイアログを表示してフォルダを選択
       const response = await window.electronAPI.workspace.addFolder();
@@ -347,6 +365,11 @@ export const createWorkspaceSlice: StateCreator<
    * @param folderPath フォルダパス
    */
   loadFolderTree: async (folderId: FolderId, folderPath: FolderPath) => {
+    // electronAPIが利用できない場合はスキップ
+    if (!window.electronAPI?.file) {
+      return;
+    }
+
     try {
       const response = await window.electronAPI.file.getTree({
         rootPath: folderPath,
