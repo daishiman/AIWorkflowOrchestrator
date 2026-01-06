@@ -362,6 +362,38 @@
 | `WATCH_DIR`        | 監視ディレクトリ（例: `./InputBox`）  | Yes  |
 | `OUTPUT_DIR`       | 出力ディレクトリ（例: `./OutputBox`） | Yes  |
 
+### CI/CD環境（GitHub Secrets）（実装済み 2026-01-05）
+
+GitHub ActionsのCI/CDパイプラインで使用する環境変数。
+
+| 変数名          | 説明                     | 設定方法              | 必須 | 用途                                 |
+| --------------- | ------------------------ | --------------------- | ---- | ------------------------------------ |
+| `CODECOV_TOKEN` | Codecov認証トークン      | GitHub Secrets        | Yes  | カバレッジレポートのアップロード認証 |
+
+**設定手順**:
+
+1. Codecov (https://codecov.io) にGitHubでサインイン
+2. 対象リポジトリを追加
+3. Settings → General → Repository Upload Token をコピー
+4. GitHubリポジトリ → Settings → Secrets and variables → Actions
+5. New repository secret → Name: `CODECOV_TOKEN`, Value: コピーしたトークン
+
+**セキュリティ要件**:
+
+- トークンはGitHub Secretsで暗号化管理
+- ログに出力しない（GitHub Actionsが自動マスキング）
+- 漏洩時は即座にCodecovダッシュボードで再生成
+
+**使用例（.github/workflows/ci.yml）**:
+
+```yaml
+- name: Upload coverage to Codecov
+  uses: codecov/codecov-action@v5
+  with:
+    token: ${{ secrets.CODECOV_TOKEN }}
+    fail_ci_if_error: true
+```
+
 ---
 
 ## 関連ドキュメント

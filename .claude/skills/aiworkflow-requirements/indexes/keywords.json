@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-05T14:01:04.617Z",
-  "totalKeywords": 402,
+  "generated": "2026-01-06T00:00:00.000Z",
+  "totalKeywords": 403,
   "keywords": {
     "API": [
       "api-core.md",
@@ -1238,6 +1238,9 @@
       "technology-devops.md"
     ],
     "無料枠の活用ガイド": [
+      "technology-devops.md"
+    ],
+    "ツール選定": [
       "technology-devops.md"
     ],
     "学習リソースとコミュニティ": [
