@@ -8,14 +8,7 @@ export default defineConfig({
     globals: true,
     environment: "happy-dom",
     include: ["src/**/*.test.{ts,tsx}"],
-    exclude: [
-      "node_modules/",
-      "out/",
-      "dist/",
-      // UIコンポーネント未実装のため一時除外（task-imp-search-ui-001で実装予定）
-      "src/features/search/__tests__/SearchPanel.test.tsx",
-      "src/features/search/__tests__/WorkspaceSearchPanel.test.tsx",
-    ],
+    exclude: ["node_modules/", "out/", "dist/"],
     setupFiles: ["./src/test/setup.ts"],
     coverage: {
       provider: "v8",

@@ -136,8 +136,17 @@ Reactカスタムフックの抽出基準・設計パターン・合成パター
 
 | アセット | 用途 |
 | --- | --- |
-| `assets/basic-hooks-template.md` | 基本フックテンプレート |
-| `assets/advanced-hooks-template.md` | 高度フックテンプレート |
+| `assets/basic-hooks-template.md` | 基本フックテンプレート（インデックス） |
+| `assets/basic-state-hooks.md` | 状態管理フック（useToggle, useCounter, useInput） |
+| `assets/side-effect-hooks.md` | 副作用フック（useDebounce, useInterval, useTimeout） |
+| `assets/event-hooks.md` | イベントフック（useEventListener, useClickOutside） |
+| `assets/browser-api-hooks.md` | ブラウザAPIフック（useLocalStorage, useMediaQuery） |
+| `assets/utility-hooks.md` | ユーティリティフック（usePrevious, useMounted） |
+| `assets/advanced-hooks-template.md` | 高度フックテンプレート（インデックス） |
+| `assets/data-fetch-hooks.md` | データフェッチフック（useFetch, useAsync） |
+| `assets/form-hooks.md` | フォームフック（useForm） |
+| `assets/advanced-state-hooks.md` | 高度状態管理フック（useReducerWithMiddleware, useUndoRedo） |
+| `assets/websocket-hooks.md` | WebSocketフック（useWebSocket） |
 | `assets/hook-review-checklist.md` | レビュー観点チェック |
 | `assets/hook-api-contract-template.md` | API設計テンプレート |
 
@@ -147,4 +156,11 @@ Reactカスタムフックの抽出基準・設計パターン・合成パター
 | --- | --- |
 | `EVALS.json` | レベル評価・メトリクス管理 |
 | `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+
+## 変更履歴
+
+| Version | Date       | Changes                                      |
+| ------- | ---------- | -------------------------------------------- |
+| 1.2.0   | 2026-01-06 | assets分割（500行制限対応）、9カテゴリファイル作成 |
+| 1.1.0   | 2026-01-06 | extraction-criteria.md実装事例追加           |
+| 1.0.0   | 2026-01-01 | 初版作成                                     |

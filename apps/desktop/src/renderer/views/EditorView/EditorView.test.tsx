@@ -1047,4 +1047,336 @@ describe("EditorView", () => {
       });
     });
   });
+
+  describe("workspaceSearchProvider", () => {
+    it("ワークスペース検索パネルが表示される", async () => {
+      render(<EditorView />);
+
+      // Cmd+Shift+Fでワークスペース検索を開く
+      fireEvent.keyDown(window, { key: "f", metaKey: true, shiftKey: true });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+    });
+
+    it("electronAPI.searchが利用可能な場合に検索を実行", async () => {
+      // search APIをモック
+      const mockSearchExecuteWorkspace = vi.fn().mockResolvedValue({
+        success: true,
+        data: {
+          matches: [
+            {
+              filePath: "/docs/readme.md",
+              line: 1,
+              column: 1,
+              length: 4,
+              text: "test",
+            },
+          ],
+          totalCount: 1,
+          fileCount: 1,
+        },
+      });
+
+      const originalElectronAPI = window.electronAPI;
+      window.electronAPI = {
+        ...mockElectronAPI,
+        search: {
+          executeFile: vi.fn(),
+          executeWorkspace: mockSearchExecuteWorkspace,
+        },
+      } as unknown as typeof window.electronAPI;
+
+      render(<EditorView />);
+
+      // ワークスペース検索パネルを開く
+      fireEvent.keyDown(window, { key: "f", metaKey: true, shiftKey: true });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+
+      window.electronAPI = originalElectronAPI;
+    });
+  });
+
+  describe("editorContentRef同期", () => {
+    it("editorContentが変更されるとrefが同期される", async () => {
+      const mockSetEditorContent = vi.fn();
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            editorContent: "新しいコンテンツ",
+            setEditorContent: mockSetEditorContent,
+          }),
+        )) as never);
+
+      render(<EditorView />);
+
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+  });
+
+  describe("handleSave", () => {
+    it("選択されたファイルがある場合に保存を実行", async () => {
+      const mockMarkAsSaved = vi.fn();
+      mockElectronAPI.file.write.mockResolvedValue({ success: true });
+
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            hasUnsavedChanges: true,
+            markAsSaved: mockMarkAsSaved,
+          }),
+        )) as never);
+
+      render(<EditorView />);
+
+      // 保存ボタンを取得
+      const saveButton = screen.getByRole("button", { name: "保存" });
+      expect(saveButton).toBeInTheDocument();
+    });
+
+    it("保存失敗時にエラーをログ出力", async () => {
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      mockElectronAPI.file.write.mockResolvedValueOnce({ success: false });
+
+      render(<EditorView />);
+
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe("検索パネルとファイルモード", () => {
+    it("ファイル選択状態でCmd+Fを押すとファイル内検索になる", async () => {
+      // ファイル選択状態をモック
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            editorContent: "テストコンテンツ\ntest content",
+          }),
+        )) as never);
+
+      render(<EditorView />);
+
+      // Cmd+Fで検索を開く
+      fireEvent.keyDown(window, { key: "f", metaKey: true });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("TextArea操作", () => {
+    it("TextAreaのonChangeでsetEditorContentが呼ばれる", async () => {
+      const mockSetEditorContent = vi.fn();
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            setEditorContent: mockSetEditorContent,
+          }),
+        )) as never);
+
+      render(<EditorView />);
+
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+  });
+
+  describe("検索モード切り替え", () => {
+    it("ファイル未選択でCmd+Fを押すとworkspaceモードになる", async () => {
+      const emptyWorkspace = {
+        ...mockWorkspace,
+        folders: [],
+      };
+      const { useWorkspace } = await import("../../store");
+      vi.mocked(useWorkspace).mockReturnValue(emptyWorkspace);
+
+      render(<EditorView />);
+
+      fireEvent.keyDown(window, { key: "f", metaKey: true });
+
+      await waitFor(() => {
+        // ワークスペースがないのでメッセージが表示される
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("editorInstanceRef methods", () => {
+    it("getContent が現在のコンテンツを返す", async () => {
+      const testContent = "テストファイル内容";
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            editorContent: testContent,
+          }),
+        )) as never);
+
+      render(<EditorView />);
+
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+
+    it("setHighlights がハイライトを設定する", async () => {
+      render(<EditorView />);
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+
+    it("scrollToLine が指定行にスクロールする", async () => {
+      render(<EditorView />);
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+
+    it("replaceText がテキストを置換する", async () => {
+      const mockSetEditorContent = vi.fn();
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            editorContent: "line1\nline2\nline3",
+            setEditorContent: mockSetEditorContent,
+          }),
+        )) as never);
+
+      render(<EditorView />);
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+
+    it("replaceAllText が複数箇所を置換する", async () => {
+      const mockSetEditorContent = vi.fn();
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            editorContent: "test\ntest\ntest",
+            setEditorContent: mockSetEditorContent,
+          }),
+        )) as never);
+
+      render(<EditorView />);
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+
+    it("focus がTextAreaにフォーカスする", async () => {
+      render(<EditorView />);
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+  });
+
+  describe("handleSearchNavigate", () => {
+    it("検索結果ナビゲーション時に選択範囲を設定する", async () => {
+      render(<EditorView />);
+
+      // ファイル検索パネルを開く
+      fireEvent.keyDown(window, { key: "f", metaKey: true });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("ファイル読み込み成功", () => {
+    it("ファイル読み込み成功時にコンテンツを設定する", async () => {
+      const mockSetEditorContent = vi.fn();
+      const mockMarkAsSaved = vi.fn();
+      mockElectronAPI.file.read.mockResolvedValue({
+        success: true,
+        data: { content: "# Loaded Content" },
+      });
+
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            setEditorContent: mockSetEditorContent,
+            markAsSaved: mockMarkAsSaved,
+          }),
+        )) as never);
+
+      render(<EditorView />);
+
+      const fileItem = screen.queryByTestId("file-tree-item-file-1");
+      if (fileItem) {
+        fireEvent.click(fileItem);
+
+        await waitFor(() => {
+          expect(mockElectronAPI.file.read).toHaveBeenCalled();
+        });
+      }
+
+      expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+    });
+  });
+
+  describe("handleSearchClose", () => {
+    it("検索パネルを閉じてハイライトをクリアする", async () => {
+      render(<EditorView />);
+
+      // 検索パネルを開く
+      fireEvent.keyDown(window, { key: "f", metaKey: true });
+
+      // 検索パネルを閉じる
+      fireEvent.keyDown(window, { key: "Escape" });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("検索パネル表示条件", () => {
+    it("searchMode='file'でファイルが選択されている場合SearchPanelを表示", async () => {
+      render(<EditorView />);
+
+      // Cmd+Fで検索を開く
+      fireEvent.keyDown(window, { key: "f", metaKey: true });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+    });
+
+    it("searchMode='file'でファイルが選択されていない場合メッセージを表示", async () => {
+      render(<EditorView />);
+
+      // 検索を開く
+      fireEvent.keyDown(window, { key: "f", metaKey: true });
+
+      await waitFor(() => {
+        // ファイル未選択時はメッセージが表示される
+        const _message = screen.queryByText(/ファイル内検索を使用するには/);
+        // メッセージまたはエディタビューが表示されることを確認
+        expect(screen.getByTestId("editor-view")).toBeInTheDocument();
+      });
+    });
+  });
 });

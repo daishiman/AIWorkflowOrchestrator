@@ -8,12 +8,20 @@ import React, {
 import clsx from "clsx";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
 import { WorkspaceSidebar } from "../../components/organisms/WorkspaceSidebar";
-import type { SearchMatch } from "../../components/organisms/SearchPanel/FileSearchPanel";
+// Phase 5 実装のSearchPanelを統合
+import { SearchPanel, WorkspaceSearchPanel } from "../../../features/search";
+import {
+  useEditorInstance,
+  useWorkspaceSearch,
+  useSearchKeyboardShortcuts,
+} from "./hooks";
+// 既存のUnifiedSearchPanelは将来削除予定、現在はファイル名検索用に残す
 import {
   UnifiedSearchPanel,
   type SearchMode,
   type UnifiedSearchPanelRef,
 } from "../../components/organisms/SearchPanel/UnifiedSearchPanel";
+import type { SearchMatch } from "../../components/organisms/SearchPanel/FileSearchPanel";
 import type { SearchResultItemProps } from "../../components/organisms/WorkspaceSearch/WorkspaceSearchPanel";
 import { FileSelectorTrigger } from "../../components/organisms/FileSelectorTrigger";
 import {
@@ -74,6 +82,16 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const searchPanelRef = useRef<UnifiedSearchPanelRef>(null);
 
+  // Phase 5 SearchPanel用のEditorInstanceアダプター
+  const { editorInstanceRef } = useEditorInstance({
+    textAreaRef,
+    editorContent,
+    setEditorContent,
+  });
+
+  // ワークスペース検索プロバイダ
+  const workspaceSearchProvider = useWorkspaceSearch();
+
   // File selector modal state
   const {
     isOpen: isFileSelectorOpen,
@@ -117,77 +135,15 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
   }, [loadWorkspace]);
 
   // Keyboard shortcut handler for search
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Cmd+F (Mac) or Ctrl+F (Windows/Linux) to open file search
-      if ((e.metaKey || e.ctrlKey) && e.key === "f" && !e.shiftKey) {
-        e.preventDefault();
-        // ファイルが選択されている場合はfileモード、なければworkspaceモード
-        setSearchMode(selectedFilePath ? "file" : "workspace");
-        setShowReplace(false);
-        setIsSearchPanelOpen(true);
-      }
-      // Cmd+T (Mac) or Ctrl+T (Windows/Linux) to open file replace
-      if ((e.metaKey || e.ctrlKey) && e.key === "t" && !e.shiftKey) {
-        e.preventDefault();
-        // ファイルが選択されている場合はfileモード、なければworkspaceモード
-        setSearchMode(selectedFilePath ? "file" : "workspace");
-        setShowReplace(true);
-        setIsSearchPanelOpen(true);
-      }
-      // Cmd+Shift+F (Mac) or Ctrl+Shift+F (Windows/Linux) to open workspace search
-      if ((e.metaKey || e.ctrlKey) && e.key === "f" && e.shiftKey) {
-        e.preventDefault();
-        setSearchMode("workspace");
-        setShowReplace(false);
-        setIsSearchPanelOpen(true);
-      }
-      // Cmd+Shift+T (Mac) or Ctrl+Shift+T (Windows/Linux) to open workspace replace
-      if ((e.metaKey || e.ctrlKey) && e.key === "t" && e.shiftKey) {
-        e.preventDefault();
-        setSearchMode("workspace");
-        setShowReplace(true);
-        setIsSearchPanelOpen(true);
-      }
-      // Cmd+P (Mac) or Ctrl+P (Windows/Linux) to open file name search
-      if ((e.metaKey || e.ctrlKey) && e.key === "p") {
-        e.preventDefault();
-        setSearchMode("filename");
-        setShowReplace(false);
-        setIsSearchPanelOpen(true);
-      }
-      // F3 to go to next match, Shift+F3 to go to previous
-      if (e.key === "F3" && isSearchPanelOpen && searchMode === "file") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          searchPanelRef.current?.goToPrev();
-        } else {
-          searchPanelRef.current?.goToNext();
-        }
-      }
-      // Cmd+N / Ctrl+N to go to next match (Vim-style)
-      if (
-        (e.metaKey || e.ctrlKey) &&
-        e.key === "n" &&
-        isSearchPanelOpen &&
-        searchMode === "file"
-      ) {
-        e.preventDefault();
-        if (e.shiftKey) {
-          searchPanelRef.current?.goToPrev();
-        } else {
-          searchPanelRef.current?.goToNext();
-        }
-      }
-      // Escape to close search
-      if (e.key === "Escape" && isSearchPanelOpen) {
-        setIsSearchPanelOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isSearchPanelOpen, searchMode, selectedFilePath]);
+  useSearchKeyboardShortcuts({
+    isSearchPanelOpen,
+    searchMode,
+    selectedFilePath,
+    searchPanelRef,
+    setSearchMode,
+    setShowReplace,
+    setIsSearchPanelOpen,
+  });
 
   // Handle search navigation (scroll to match position and highlight)
   const handleSearchNavigate = useCallback(
@@ -436,8 +392,44 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
           </div>
         </header>
 
-        {/* Search Panel */}
-        {isSearchPanelOpen && (
+        {/* Search Panel - Phase 5実装を使用 */}
+        {isSearchPanelOpen && searchMode === "file" && selectedFilePath && (
+          <div className="border-b border-white/10 p-2">
+            <SearchPanel
+              isOpen={isSearchPanelOpen}
+              onClose={handleSearchClose}
+              editorRef={editorInstanceRef}
+              showReplace={showReplace}
+            />
+          </div>
+        )}
+
+        {/* Workspace Search Panel - Phase 5実装を使用 */}
+        {isSearchPanelOpen && searchMode === "workspace" && workspacePath && (
+          <div className="border-b border-white/10 p-2">
+            <WorkspaceSearchPanel
+              isOpen={isSearchPanelOpen}
+              onClose={handleSearchClose}
+              workspacePath={workspacePath}
+              onFileOpen={(filePath, line, column) => {
+                handleFileSelect(filePath).then(() => {
+                  // ファイル読み込み後に該当行にジャンプ
+                  setTimeout(() => {
+                    if (textAreaRef.current && editorInstanceRef.current) {
+                      editorInstanceRef.current.scrollToLine(line, column);
+                    }
+                  }, 100);
+                });
+                setIsSearchPanelOpen(false);
+              }}
+              showReplace={showReplace}
+              searchProvider={workspaceSearchProvider}
+            />
+          </div>
+        )}
+
+        {/* Filename Search - 既存のUnifiedSearchPanelを使用（将来Phase 5に移行予定） */}
+        {isSearchPanelOpen && searchMode === "filename" && (
           <div className="border-b border-white/10">
             <UnifiedSearchPanel
               ref={searchPanelRef}
@@ -449,10 +441,24 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
               onFileNameSelect={handleFileNameSelect}
               onClose={handleSearchClose}
               onContentUpdated={setEditorContent}
-              initialMode={searchMode}
-              showReplace={showReplace}
+              initialMode="filename"
+              showReplace={false}
               className="bg-[var(--bg-secondary)]"
             />
+          </div>
+        )}
+
+        {/* ファイルが選択されていない状態でのファイル内検索 */}
+        {isSearchPanelOpen && searchMode === "file" && !selectedFilePath && (
+          <div className="border-b border-white/10 p-4 text-center text-gray-400">
+            ファイル内検索を使用するには、まずファイルを開いてください。
+            <button
+              type="button"
+              onClick={() => setSearchMode("workspace")}
+              className="ml-2 text-blue-400 hover:underline"
+            >
+              ワークスペース検索を使用
+            </button>
           </div>
         )}
 
