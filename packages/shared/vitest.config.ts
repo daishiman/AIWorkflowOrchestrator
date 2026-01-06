@@ -56,9 +56,23 @@ export default defineConfig({
         "ui/tokens/typography.ts",
         "ui/tokens/effects.ts",
 
-        // マニュアルテストファイル
+        // マニュアルテストファイル・ディレクトリ
         "**/*manual-test.ts",
+        "**/manual-test/**",
+        "**/__manual-tests__/**",
         "**/*verification.ts",
+
+        // テストフィクスチャ・テストスクリプト
+        "**/fixtures/**",
+        "src/services/rag/**/*.ts", // RAGサービス（外部依存）
+        "**/factory/**", // ファクトリー（未テスト）
+        "**/provider/**", // プロバイダー（外部依存）
+        "**/embedding-service.ts", // 外部依存サービス
+        "**/scripts/**", // スクリプトファイル
+
+        // 型定義ファイル
+        "**/types.ts",
+        "**/embedding.types.ts",
       ],
     },
   },

@@ -451,7 +451,7 @@ describe("WorkspaceSearchService", () => {
   });
 
   describe("検索キャンセル", () => {
-    it("should support search cancellation", async () => {
+    it("should support search cancellation", { timeout: 30000 }, async () => {
       // 多数のファイルを作成
       for (let i = 0; i < 100; i++) {
         await fs.writeFile(

@@ -129,6 +129,43 @@ RAGパイプライン実装で使用する共通型定義。
 - DIP（依存性逆転原則）準拠のデータアクセス抽象化
 - `findById`, `findAll`, `create`, `update`, `delete`
 
+### Repository パターン詳細
+
+**実装場所**: `packages/shared/src/db/repositories/`
+
+#### BaseRepository<TTable, TSelect, TInsert, TId>
+
+基底Repositoryクラス。全てのRepositoryが継承し、共通CRUD操作を提供する。
+
+| メソッド          | 戻り値                                       | 説明                         |
+| ----------------- | -------------------------------------------- | ---------------------------- |
+| findById(id)      | Result<TSelect \| null, RAGError>            | IDでエンティティを取得       |
+| findAll(params?)  | Result<PaginatedResult<TSelect>, RAGError>   | 全レコード（ページネーション付き） |
+| create(data)      | Result<TSelect, RAGError>                    | 新規エンティティを作成       |
+| createMany(data[])| Result<TSelect[], RAGError>                  | 一括作成                     |
+| update(id, data)  | Result<TSelect, RAGError>                    | エンティティを更新           |
+| delete(id)        | Result<void, RAGError>                       | エンティティを削除           |
+| exists(id)        | Result<boolean, RAGError>                    | 存在確認                     |
+| count()           | Result<number, RAGError>                     | 件数取得                     |
+
+#### 具体Repository
+
+| Repository       | 対象テーブル | Branded Type | 固有メソッド                          |
+| ---------------- | ------------ | ------------ | ------------------------------------- |
+| FileRepository   | files        | FileId       | findByHash, findByPath, softDelete    |
+| ChunkRepository  | chunks       | ChunkId      | findByFileId, deleteByFileId, findAdjacent |
+| EntityRepository | entities     | EntityId     | upsert, searchByName, findTopByImportance |
+
+#### ファクトリ関数
+
+```typescript
+import { createRepositories } from "@repo/shared/db/repositories";
+
+const repos = createRepositories(db);
+const file = await repos.files.findById(fileId);
+const chunks = await repos.chunks.findByFileId(fileId);
+```
+
 **Strategy パターン**:
 
 - `Converter<TInput, TOutput>` - ファイル変換の抽象化
@@ -519,5 +556,122 @@ HybridRAG検索エンジンのクエリ・結果インターフェース。Keywo
 **テスト品質**: 123テストケース、96.93%カバレッジ達成（types, schemas, utils, type-inference, .claude/skills/zod-validation/SKILL.md）
 
 **参照**: `docs/30-workflows/completed-tasks/rag-search-system/` - 詳細な設計・実装ドキュメント
+
+### エンティティ抽出サービス (NER)
+
+チャンクからエンティティを抽出し、Knowledge Graphのノード候補を生成するサービス。LLMベースとルールベースの2つの抽出方式を提供。
+
+**実装場所**: `packages/shared/src/services/extraction/`
+
+#### アーキテクチャ
+
+```
+Chunk (テキスト断片)
+    │
+    ↓
+┌─────────────────────────────────────────────────┐
+│         IEntityExtractor                         │
+│  ┌─────────────────┐   ┌─────────────────┐      │
+│  │ LLMEntityExtractor│   │RuleBasedExtractor│    │
+│  │  (AIで抽出)     │   │ (パターンマッチ)│     │
+│  └─────────────────┘   └─────────────────┘      │
+└─────────────────────────────────────────────────┘
+    │
+    ↓
+ExtractedEntity[] → (後続処理で) → EntityEntity (Knowledge Graph)
+```
+
+#### インターフェース
+
+**IEntityExtractor**: エンティティ抽出の抽象インターフェース
+
+| メソッド       | 説明                             |
+| -------------- | -------------------------------- |
+| extract()      | 単一チャンクからエンティティ抽出 |
+| extractBatch() | 複数チャンクからバッチ抽出       |
+| mergeEntities()| 抽出結果のマージ（重複除去）     |
+
+**ILLMProvider**: LLM通信の抽象インターフェース（依存性注入用）
+
+| プロパティ/メソッド | 説明                    |
+| ------------------- | ----------------------- |
+| modelId             | 使用モデルID            |
+| generate()          | プロンプト送信・応答取得 |
+
+#### 抽出オプション (EntityExtractionOptions)
+
+| オプション            | 型        | デフォルト | 説明                       |
+| --------------------- | --------- | ---------- | -------------------------- |
+| types                 | string[]  | 全52タイプ | 抽出対象のエンティティタイプ |
+| minConfidence         | number    | 0.5        | 最小信頼度閾値             |
+| maxEntitiesPerChunk   | number    | 20         | チャンクあたり最大抽出数   |
+| minNameLength         | number    | 2          | 最小名前長                 |
+| generateDescriptions  | boolean   | true       | 説明生成（LLMのみ）        |
+| useLLM                | boolean   | true       | LLM使用フラグ              |
+
+#### 抽出結果型 (ExtractedEntity)
+
+| プロパティ     | 型         | 説明                       |
+| -------------- | ---------- | -------------------------- |
+| name           | string     | エンティティ名（原形）     |
+| normalizedName | string     | 正規化名（小文字・空白正規化）|
+| type           | EntityType | エンティティタイプ（52種類）|
+| confidence     | number     | 信頼度スコア（0.0〜1.0）   |
+| description    | string?    | 説明文（LLM生成時のみ）    |
+| aliases        | string[]   | 別名・エイリアス           |
+| mentions       | Mention[]  | テキスト内出現情報         |
+
+#### Mention型（出現情報）
+
+| プロパティ     | 型     | 説明                           |
+| -------------- | ------ | ------------------------------ |
+| chunkId        | string | 出現チャンクID                 |
+| startPosition  | number | 開始位置（文字オフセット）     |
+| endPosition    | number | 終了位置（文字オフセット）     |
+| context        | string | 前後コンテキスト（最大200文字）|
+
+#### 抽出器実装
+
+**LLMEntityExtractor**: AIベースの高精度抽出
+
+- プロンプトエンジニアリングによる52タイプ分類
+- 説明文・エイリアス生成
+- 未知エンティティの検出が可能
+- 処理時間: 数秒〜（LLM API依存）
+
+**RuleBasedEntityExtractor**: パターンマッチングによる高速抽出
+
+- 正規表現による技術名・組織名・日付検出
+- LLMフォールバック用途
+- 処理時間: ミリ秒単位
+
+#### パターンカテゴリ（RuleBased）
+
+| カテゴリ   | 検出例                                | 信頼度 |
+| ---------- | ------------------------------------- | ------ |
+| 技術名     | TypeScript, React, PostgreSQL, Docker | 0.85-0.9 |
+| 組織名     | Google, Microsoft, OpenAI             | 0.9    |
+| 日付       | 2024-01-15, 2024年1月15日, 2024/01/15 | 0.9-0.95 |
+
+#### エラー型
+
+| エラークラス       | 説明                     |
+| ------------------ | ------------------------ |
+| LLMProviderError   | LLM API呼び出し失敗      |
+| JsonParseError     | LLMレスポンスのJSON不正  |
+
+#### ユーティリティ関数
+
+| 関数              | 説明                           |
+| ----------------- | ------------------------------ |
+| normalizeEntityName | 名前正規化（小文字・空白処理）|
+| escapeRegex       | 正規表現特殊文字エスケープ     |
+| mergeOptions      | オプションとデフォルトのマージ |
+| findMentionsInText | テキスト内出現位置検出         |
+| deduplicateEntities | 重複エンティティのマージ     |
+
+**テスト品質**: 69テストケース、97.78%カバレッジ達成
+
+**参照**: `docs/30-workflows/entity-extraction-ner/outputs/phase-10/implementation-guide.md` - 詳細な設計・実装ドキュメント
 
 ---

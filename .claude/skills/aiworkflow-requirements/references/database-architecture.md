@@ -94,9 +94,17 @@ packages/shared/
 │   │   ├── migrate.ts            # マイグレーション実行スクリプト ✅ 実装済み
 │   │   ├── utils.ts              # データベースユーティリティ関数 ✅ 実装済み
 │   │   └── index.ts              # データベースクライアントエクスポート ✅ 実装済み
-│   ├── repositories/
-│   │   ├── chat-session-repository.ts  # セッションリポジトリ
-│   │   └── chat-message-repository.ts  # メッセージリポジトリ
+│   ├── repositories/                         # チャット履歴用Repository
+│   │   ├── chat-session-repository.ts        # セッションリポジトリ
+│   │   └── chat-message-repository.ts        # メッセージリポジトリ
+│   ├── db/
+│   │   ├── repositories/                     # RAG用Repository（Result型パターン）
+│   │   │   ├── index.ts                      # ファクトリ関数・エクスポート
+│   │   │   ├── base.repository.ts            # 基底Repository（CRUD抽象化）
+│   │   │   ├── file.repository.ts            # FileRepository
+│   │   │   ├── chunk.repository.ts           # ChunkRepository
+│   │   │   ├── entity.repository.ts          # EntityRepository
+│   │   │   └── __tests__/                    # 単体テスト
 │   ├── features/
 │   │   └── chat-history/
 │   │       ├── chat-history-service.ts # チャット履歴サービス
@@ -699,5 +707,331 @@ RAGパイプラインに投入されるファイルのメタデータを管理�
 | chunks              | idx_chunks_hash                     | hash                          | 重複チャンク検出（UNIQUE）             |
 | chunks              | idx_chunks_chunk_index              | file_id, chunk_index          | ファイル内の順序付きチャンク取得       |
 | chunks              | idx_chunks_strategy                 | strategy                      | 戦略別チャンク統計                     |
+| entities            | entities_normalized_name_idx        | normalized_name               | エンティティ名検索                     |
+| entities            | entities_type_idx                   | type                          | タイプ別フィルタリング                 |
+| entities            | entities_importance_idx             | importance                    | 重要度順ソート                         |
+| entities            | entities_name_type_idx              | normalized_name, type         | 正規化名+タイプ一意性保証（UNIQUE）    |
+| graph_relations     | graph_relations_source_id_idx       | source_id                     | 始点エンティティからの関係取得         |
+| graph_relations     | graph_relations_target_id_idx       | target_id                     | 終点エンティティへの関係取得           |
+| graph_relations     | graph_relations_type_idx            | type                          | 関係タイプ別フィルタリング             |
+| chunk_entities      | chunk_entities_chunk_id_idx         | chunk_id                      | チャンク内のエンティティ取得           |
+| chunk_entities      | chunk_entities_entity_id_idx        | entity_id                     | エンティティが出現するチャンク取得     |
+| communities         | communities_level_idx               | level                         | 階層レベル別フィルタリング             |
+| communities         | communities_parent_id_idx           | parent_id                     | 子コミュニティ取得                     |
+
+---
+
+## Knowledge Graph テーブル
+
+GraphRAGシステムのノード・エッジ・コミュニティを管理するテーブル群。
+
+**実装場所**: `packages/shared/src/db/schema/graph/`
+
+### entities（エンティティ / Knowledge Graphノード）
+
+Knowledge Graphのノード（エンティティ）を管理するテーブル。
+
+| カラム             | 型      | NULL | 説明                                               |
+| ------------------ | ------- | ---- | -------------------------------------------------- |
+| id                 | TEXT    | NO   | 主キー（UUID）                                     |
+| name               | TEXT    | NO   | エンティティ名（元の表記を保持）                   |
+| normalized_name    | TEXT    | NO   | 検索用正規化名（小文字化）                         |
+| type               | TEXT    | NO   | エンティティタイプ（下記参照）                     |
+| description        | TEXT    | YES  | エンティティの説明文                               |
+| aliases            | JSON    | NO   | 別名リスト（JSON配列、デフォルト: []）             |
+| embedding          | BLOB    | YES  | 埋め込みベクトル（Float32Array）                   |
+| embedding_model_id | TEXT    | YES  | ベクトル生成モデルID                               |
+| importance         | REAL    | NO   | 重要度スコア（0.0-1.0、デフォルト: 0.5）           |
+| mention_count      | INTEGER | NO   | ドキュメント内出現回数（デフォルト: 1）            |
+| metadata           | JSON    | YES  | 拡張メタデータ（source, confidence等）             |
+| created_at         | INTEGER | NO   | 作成日時（UNIX時刻）                               |
+| updated_at         | INTEGER | NO   | 更新日時（UNIX時刻）                               |
+
+**エンティティタイプ一覧**:
+
+| タイプ       | 説明           | 例                     |
+| ------------ | -------------- | ---------------------- |
+| person       | 人物           | "田中太郎"             |
+| organization | 組織・会社     | "Anthropic"            |
+| location     | 場所・地域     | "東京"                 |
+| date         | 日付・期間     | "2024年1月"            |
+| event        | イベント       | "Claude発表"           |
+| technology   | 技術・言語     | "TypeScript"           |
+| concept      | 概念・アイデア | "マイクロサービス"     |
+| product      | 製品・サービス | "Claude Code"          |
+| api          | APIエンドポイント | "/api/v1/chat"      |
+| function     | 関数           | "createRepository"     |
+| class        | クラス         | "BaseRepository"       |
+| document     | ドキュメント   | "README.md"            |
+| section      | セクション     | "Getting Started"      |
+| other        | その他         | -                      |
+
+**設計上の注意点**:
+
+- `normalized_name + type` の組み合わせでユニーク制約（同タイプ内で同名不可）
+- `importance` スコアでエンティティのランキングを実現
+- `embedding` でセマンティック検索をサポート（ベクトル類似度検索）
+- エンティティ削除時は関連する `relations` テーブルもCASCADEで削除
+- NERサービス（`services/extraction/`）の出力をこのテーブルに永続化
+
+**参照ドキュメント**:
+
+- スキーマ実装: `packages/shared/src/db/schema/graph/entities.ts` ✅
+- Repository実装: `packages/shared/src/db/repositories/entity.repository.ts` ✅
+
+### graph_relations（関係/エッジ）
+
+エンティティ間の関係を管理する。
+
+| カラム        | 型      | NULL | 説明                                      |
+| ------------- | ------- | ---- | ----------------------------------------- |
+| id            | TEXT    | NO   | UUID主キー                                |
+| source_id     | TEXT    | NO   | 始点エンティティID（外部キー: CASCADE）   |
+| target_id     | TEXT    | NO   | 終点エンティティID（外部キー: CASCADE）   |
+| type          | TEXT    | NO   | 関係タイプ（23種類）                      |
+| weight        | REAL    | NO   | 関係の強さ（0.0-1.0、デフォルト: 0.5）    |
+| bidirectional | INTEGER | NO   | 双方向フラグ（0: false, 1: true）         |
+| description   | TEXT    | YES  | 関係の説明                                |
+| metadata      | JSON    | YES  | 追加メタデータ                            |
+| created_at    | INTEGER | NO   | 作成日時（UNIX時刻）                      |
+| updated_at    | INTEGER | NO   | 更新日時（UNIX時刻）                      |
+
+**制約**:
+- Self-loop禁止（`source_id !== target_id`）
+- `source_id + target_id + type` の組み合わせで一意性を保証
+
+### relation_evidence（関係の証拠）
+
+関係の根拠となるチャンク情報を管理する。
+
+| カラム       | 型      | NULL | 説明                                     |
+| ------------ | ------- | ---- | ---------------------------------------- |
+| id           | TEXT    | NO   | UUID主キー                               |
+| relation_id  | TEXT    | NO   | 関係ID（外部キー: CASCADE）              |
+| chunk_id     | TEXT    | NO   | 根拠チャンクID（外部キー: CASCADE）      |
+| confidence   | REAL    | NO   | 信頼度スコア（0.0-1.0）                  |
+| excerpt      | TEXT    | YES  | 抜粋テキスト（根拠箇所）                 |
+| created_at   | INTEGER | NO   | 作成日時（UNIX時刻）                     |
+
+### chunk_entities（チャンク-エンティティ中間テーブル）
+
+チャンクとエンティティの多対多関係を管理する。NERサービスの出力（Mention情報）をこのテーブルに保存。
+
+| カラム        | 型      | NULL | 説明                                     |
+| ------------- | ------- | ---- | ---------------------------------------- |
+| chunk_id      | TEXT    | NO   | チャンクID（複合主キー、外部キー: CASCADE）|
+| entity_id     | TEXT    | NO   | エンティティID（複合主キー、外部キー: CASCADE）|
+| mention_count | INTEGER | NO   | チャンク内出現回数（デフォルト: 1）      |
+| positions     | JSON    | NO   | 出現位置リスト（JSON配列）               |
+
+**positions配列の構造**:
+```json
+[
+  { "startChar": 10, "endChar": 20, "surfaceForm": "TypeScript" },
+  { "startChar": 50, "endChar": 60, "surfaceForm": "TS" }
+]
+```
+
+**NERサービスとの連携**:
+- `ExtractedEntity.mentions` → `chunk_entities.positions` に変換
+- 同一チャンク内の複数出現を1レコードにまとめて管理
+
+### communities（コミュニティ）
+
+意味的に関連するエンティティ群のクラスタ（Leiden Algorithm）を管理する。
+
+| カラム       | 型      | NULL | 説明                                     |
+| ------------ | ------- | ---- | ---------------------------------------- |
+| id           | TEXT    | NO   | UUID主キー                               |
+| level        | INTEGER | NO   | 階層レベル（0=ルート）                   |
+| parent_id    | TEXT    | YES  | 親コミュニティID（level 0はNULL）        |
+| name         | TEXT    | NO   | コミュニティ名                           |
+| summary      | TEXT    | YES  | コミュニティ要約（最大2000文字）         |
+| member_count | INTEGER | NO   | メンバー数                               |
+| metadata     | JSON    | YES  | 追加メタデータ                           |
+| created_at   | INTEGER | NO   | 作成日時（UNIX時刻）                     |
+| updated_at   | INTEGER | NO   | 更新日時（UNIX時刻）                     |
+
+### entity_communities（エンティティ-コミュニティ中間テーブル）
+
+エンティティとコミュニティの多対多関係を管理する。
+
+| カラム       | 型      | NULL | 説明                                     |
+| ------------ | ------- | ---- | ---------------------------------------- |
+| entity_id    | TEXT    | NO   | エンティティID（複合主キー）             |
+| community_id | TEXT    | NO   | コミュニティID（複合主キー）             |
+| membership_score | REAL | NO  | 所属スコア（0.0-1.0）                    |
+| created_at   | INTEGER | NO   | 作成日時（UNIX時刻）                     |
+
+**参照ドキュメント**:
+- スキーマ実装: `packages/shared/src/db/schema/graph/`
+- 型定義: `packages/shared/src/types/rag/graph/`
+- 詳細設計: `docs/30-workflows/conv-04-05-knowledge-graph-tables/`
+
+---
+
+## Repository パターン設計
+
+### 概要
+
+RAGパイプラインのデータアクセス層はRepositoryパターンで実装されている。
+データベース操作を抽象化し、型安全なCRUD操作と統一的なエラーハンドリングを提供する。
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   Application Layer                     │
+│  (サービス、ユースケース、コントローラー)                 │
+└────────────────────────┬────────────────────────────────┘
+                         │ 依存
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│                    Repository Layer                     │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────┐   │
+│  │  FileRepo   │ │  ChunkRepo  │ │   EntityRepo    │   │
+│  └──────┬──────┘ └──────┬──────┘ └────────┬────────┘   │
+│         │               │                  │            │
+│         └───────────────┼──────────────────┘            │
+│                         │                               │
+│              ┌──────────▼──────────┐                   │
+│              │   BaseRepository    │                   │
+│              │  (共通CRUD操作)      │                   │
+│              └──────────┬──────────┘                   │
+└─────────────────────────┼───────────────────────────────┘
+                          │ 依存
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                 Infrastructure Layer                    │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────────┐   │
+│  │ Drizzle ORM │ │   Schema    │ │  types/rag/*    │   │
+│  └─────────────┘ └─────────────┘ └─────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### BaseRepository（基底クラス）
+
+共通のCRUD操作を提供する抽象クラス。
+
+**ジェネリクス型パラメータ**:
+
+| パラメータ | 説明                           | 例                    |
+| ---------- | ------------------------------ | --------------------- |
+| TTable     | Drizzleテーブル型              | `typeof files`        |
+| TSelect    | SELECT結果型                   | `File`                |
+| TInsert    | INSERT入力型                   | `NewFile`             |
+| TId        | Branded ID型                   | `FileId`              |
+
+**提供メソッド**:
+
+| メソッド             | 戻り値型                                     | 説明                       |
+| -------------------- | -------------------------------------------- | -------------------------- |
+| `findById(id)`       | `Result<TSelect \| null, RAGError>`          | IDでレコードを取得         |
+| `findAll(params?)`   | `Result<PaginatedResult<TSelect>, RAGError>` | 全レコード取得（ページング）|
+| `create(data)`       | `Result<TSelect, RAGError>`                  | レコード作成               |
+| `createMany(data[])` | `Result<TSelect[], RAGError>`                | 一括作成                   |
+| `update(id, data)`   | `Result<TSelect, RAGError>`                  | レコード更新               |
+| `delete(id)`         | `Result<void, RAGError>`                     | レコード削除               |
+| `exists(id)`         | `Result<boolean, RAGError>`                  | 存在確認                   |
+| `count()`            | `Result<number, RAGError>`                   | 件数取得                   |
+
+**実装場所**: `packages/shared/src/db/repositories/base.repository.ts`
+
+### FileRepository
+
+filesテーブル用Repository。論理削除（ソフトデリート）とハッシュ検索をサポート。
+
+**固有メソッド**:
+
+| メソッド                | 戻り値型                         | 説明                            |
+| ----------------------- | -------------------------------- | ------------------------------- |
+| `findById(id)` override | `Result<File \| null, RAGError>` | 論理削除を除外して取得          |
+| `findByHash(hash)`      | `Result<File \| null, RAGError>` | SHA-256ハッシュで検索           |
+| `findByPath(path)`      | `Result<File \| null, RAGError>` | ファイルパスで検索              |
+| `findByCategory(cat)`   | `Result<File[], RAGError>`       | カテゴリ別一覧取得              |
+| `softDelete(id)`        | `Result<void, RAGError>`         | 論理削除（deletedAt設定）       |
+| `findByIds(ids[])`      | `Result<File[], RAGError>`       | 複数ID一括取得                  |
+
+**設計判断**: `findById` をオーバーライドして `isNull(deletedAt)` 条件を自動付与。
+
+**実装場所**: `packages/shared/src/db/repositories/file.repository.ts`
+
+### ChunkRepository
+
+chunksテーブル用Repository。ファイル単位の操作と隣接チャンク取得をサポート。
+
+**固有メソッド**:
+
+| メソッド              | 戻り値型                                              | 説明                          |
+| --------------------- | ----------------------------------------------------- | ----------------------------- |
+| `findByFileId(fid)`   | `Result<Chunk[], RAGError>`                           | ファイルの全チャンク（順序付き）|
+| `deleteByFileId(fid)` | `Result<number, RAGError>`                            | ファイルのチャンク一括削除    |
+| `findByHash(hash)`    | `Result<Chunk \| null, RAGError>`                     | ハッシュで検索                |
+| `findByIds(ids[])`    | `Result<Chunk[], RAGError>`                           | 複数ID一括取得                |
+| `findAdjacent(cid)`   | `Result<{prev: Chunk\|null, next: Chunk\|null}, ...>` | 前後チャンク取得              |
+
+**設計判断**: `findByFileId` は `chunkIndex` でソート。チャンクの順序が重要なため。
+
+**実装場所**: `packages/shared/src/db/repositories/chunk.repository.ts`
+
+### EntityRepository
+
+entitiesテーブル用Repository。Knowledge Graph検索とUpsertをサポート。
+
+**固有メソッド**:
+
+| メソッド                           | 戻り値型                           | 説明                            |
+| ---------------------------------- | ---------------------------------- | ------------------------------- |
+| `findByNormalizedNameAndType(n,t)` | `Result<Entity \| null, RAGError>` | 正規化名+タイプで検索           |
+| `findByType(type)`                 | `Result<Entity[], RAGError>`       | タイプ別一覧取得                |
+| `searchByName(query, limit?)`      | `Result<Entity[], RAGError>`       | 名前部分一致検索（重要度順）    |
+| `findTopByImportance(limit?)`      | `Result<Entity[], RAGError>`       | 重要度上位取得                  |
+| `upsert(data)`                     | `Result<Entity, RAGError>`         | 存在すれば更新、なければ作成   |
+
+**設計判断**: `upsert` は `normalizedName + type` の組み合わせで既存判定。
+
+**実装場所**: `packages/shared/src/db/repositories/entity.repository.ts`
+
+### エラーハンドリング（Result型パターン）
+
+全Repositoryメソッドは `Result<T, RAGError>` 型を返す。
+
+**使用するErrorCodes**:
+
+| コード             | 意味           | 発生ケース                      |
+| ------------------ | -------------- | ------------------------------- |
+| `DB_QUERY_ERROR`   | DBクエリエラー | SQL実行失敗、接続エラー等       |
+| `RECORD_NOT_FOUND` | レコード未検出 | update/delete時にIDが存在しない |
+
+**使用例**:
+
+```typescript
+const result = await fileRepository.findById(fileId);
+if (!result.success) {
+  // エラーハンドリング
+  console.error(result.error.message);
+  return;
+}
+const file = result.data; // 型安全にアクセス
+```
+
+### ファクトリ関数
+
+`createRepositories(db)` で全Repositoryを一括生成。
+
+```typescript
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
+import { createRepositories } from "@repo/shared/db/repositories";
+
+const sqlite = new Database("./data.db");
+const db = drizzle(sqlite);
+const repos = createRepositories(db);
+
+// 各Repositoryにアクセス
+const fileResult = await repos.files.findById(fileId);
+const chunkResult = await repos.chunks.findByFileId(fileId);
+const entityResult = await repos.entities.searchByName("TypeScript");
+```
+
+**実装場所**: `packages/shared/src/db/repositories/index.ts`
 
 ---

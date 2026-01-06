@@ -133,6 +133,45 @@ DISCORD_CLIENT_ID=your-client-id
 DISCORD_CLIENT_SECRET=your-client-secret
 ```
 
+## CI/CD
+
+### 自動チェック
+
+PRに対して以下のチェックが自動実行されます:
+
+| ジョブ    | 内容                           |
+| --------- | ------------------------------ |
+| lint      | ESLintによるコード品質チェック |
+| typecheck | TypeScript型チェック           |
+| test      | Vitestによるユニットテスト実行 |
+| security  | 依存関係のセキュリティ監査     |
+| coverage  | カバレッジチェック（80%閾値）  |
+| build     | ビルド成功確認                 |
+
+### カバレッジ閾値
+
+| 項目    | 閾値 |
+| ------- | ---- |
+| Project | 80%  |
+| Patch   | 80%  |
+
+### カバレッジ確認方法
+
+1. PRのChecksタブで`coverage`ジョブを確認
+2. Codecov botのコメントでカバレッジ差分を確認
+3. ローカルで確認: `pnpm test:coverage`
+
+### カバレッジが80%未満の場合
+
+```bash
+# カバレッジが低いファイルを特定
+pnpm test:coverage
+open packages/shared/coverage/index.html
+
+# テストを追加して再実行
+pnpm test:coverage
+```
+
 ## ブランチ戦略
 
 - `main`: 本番環境用ブランチ

@@ -136,6 +136,9 @@
 | Railway        | 本システムのホスティング環境。PaaS                       |
 | Nixpacks       | Railway のビルダー。自動でビルド設定を検出               |
 | GitHub Actions | CI/CD パイプライン。テスト、ビルド、デプロイを自動化     |
+| Codecov        | コードカバレッジ可視化サービス。PRにカバレッジ差分をコメント（実装済み 2026-01-05） |
+| Code Coverage  | コードカバレッジ。テストがコードのどれだけをカバーしているかを示す指標。閾値80% |
+| lcov           | カバレッジレポートの標準フォーマット。Codecovとの連携に使用 |
 | PM2            | Node.js プロセスマネージャー。Local Agent の管理に使用   |
 | 構造化ログ     | JSON 形式のログ。request_id、workflow_id、user_id を含む |
 | 一時ストレージ | Railway の /tmp ディレクトリ。再デプロイ時に削除される   |

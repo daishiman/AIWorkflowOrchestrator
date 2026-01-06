@@ -128,6 +128,39 @@ vi.mock("@repo/shared/types/auth", () => ({
     LINK_FAILED: "profile/link-failed",
     VALIDATION_FAILED: "profile/validation-failed",
   },
+  DEFAULT_NOTIFICATION_SETTINGS: {
+    emailNotifications: true,
+    pushNotifications: false,
+    inAppNotifications: true,
+  },
+  IMPORT_LIMITS: {
+    MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+    CURRENT_VERSION: "1.0",
+  },
+}));
+
+// Mock @repo/shared/schemas/auth
+vi.mock("@repo/shared/schemas/auth", () => ({
+  timezoneSchema: { safeParse: vi.fn().mockReturnValue({ success: true }) },
+  localeSchema: { safeParse: vi.fn().mockReturnValue({ success: true }) },
+  partialNotificationSettingsSchema: {
+    safeParse: vi.fn().mockReturnValue({ success: true }),
+  },
+  profileExportDataSchema: {
+    safeParse: vi.fn().mockReturnValue({ success: true }),
+  },
+}));
+
+// Mock profileSync module
+vi.mock("../infrastructure/profileSync.js", () => ({
+  syncProfileToMetadata: vi.fn().mockResolvedValue({ success: true }),
+  syncMetadataToProfile: vi.fn().mockResolvedValue({ success: true }),
+  ensureProfileConsistency: vi.fn().mockResolvedValue({ success: true }),
+  SYNC_ERROR_CODES: {
+    AUTH_UPDATE_FAILED: "sync/auth-update-failed",
+    DB_UPDATE_FAILED: "sync/db-update-failed",
+    CONSISTENCY_CHECK_FAILED: "sync/consistency-check-failed",
+  },
 }));
 
 // Import after mocks
