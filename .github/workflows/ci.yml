@@ -118,10 +118,6 @@ jobs:
       - name: Run desktop app tests
         run: pnpm --filter @repo/desktop test:run
 
-      - name: Run tests with coverage
-        run: pnpm test:coverage
-        continue-on-error: true
-
   security:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -148,6 +144,48 @@ jobs:
       - name: Run security audit
         run: pnpm audit --audit-level=high
         continue-on-error: true
+
+  # カバレッジ計測とCodecov連携
+  # PRまたはmainブランチへのpush時のみ実行
+  coverage:
+    name: Coverage Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [test]
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Configure git to use HTTPS instead of SSH
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @repo/shared build
+
+      - name: Run tests with coverage
+        run: pnpm test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/shared/coverage/lcov.info,./apps/desktop/coverage/lcov.info
+          flags: shared,desktop
+          fail_ci_if_error: true
+          verbose: true
 
   build:
     name: Build Check

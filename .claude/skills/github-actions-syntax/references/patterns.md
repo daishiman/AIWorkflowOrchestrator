@@ -302,6 +302,87 @@ jobs:
 
 ---
 
+## パターン9: Codecov統合
+
+### 目的
+
+カバレッジレポートをCodecovにアップロードし、品質ゲートとして機能させる
+
+### 実装
+
+```yaml
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [test] # テストジョブ完了後に実行
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test:coverage
+
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/shared/coverage/lcov.info,./apps/desktop/coverage/lcov.info
+          flags: shared,desktop
+          fail_ci_if_error: true # 品質ゲートとして機能
+          verbose: true
+```
+
+### 設計ポイント
+
+| 設定               | 値                       | 理由                                         |
+| ------------------ | ------------------------ | -------------------------------------------- |
+| needs: [test]      | テスト依存               | テスト失敗時はカバレッジ不要                 |
+| if条件             | PR or main               | featureブランチはPRで検証                    |
+| fail_ci_if_error   | true                     | 閾値未達でPRをブロック                       |
+| flags              | パッケージ別             | モノレポでパッケージ別追跡                   |
+| timeout-minutes    | 10                       | 通常5分以内、余裕を持って設定                |
+
+### codecov.yml設定例
+
+```yaml
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+        threshold: 1%
+
+flags:
+  shared:
+    paths:
+      - packages/shared/
+    carryforward: true
+  desktop:
+    paths:
+      - apps/desktop/
+    carryforward: true
+
+comment:
+  require_changes: true
+```
+
+---
+
 ## 関連リソース
 
 - **基礎知識**: See [basics.md](basics.md)
