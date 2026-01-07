@@ -100,8 +100,8 @@
 
 | 要素         | 規則                            | 例                                      |
 | ------------ | ------------------------------- | --------------------------------------- |
-| ディレクトリ | `docs/30-workflows/{{機能名}}/` | `docs/30-workflows/chat-llm-switching/` |
-| ファイル名   | `phase-{{N}}-{{英語名}}.md`     | `phase-1-requirements.md`               |
+| ディレクトリ | `docs/30-workflows/{{FEATURE_NAME}}/` | `docs/30-workflows/chat-llm-switching/` |
+| ファイル名   | `phase-{{N}}-{{英語名}}.md`           | `phase-1-requirements.md`               |
 
 ### 4.2 成果物テーブル形式
 
@@ -110,7 +110,7 @@
 
 | 成果物     | パス                                                   | 説明                |
 | ---------- | ------------------------------------------------------ | ------------------- |
-| 要件定義書 | `docs/30-workflows/{{機能名}}/phase-1-requirements.md` | Phase 1の主要成果物 |
+| 要件定義書 | `docs/30-workflows/{{FEATURE_NAME}}/phase-1-requirements.md` | Phase 1の主要成果物 |
 ```
 
 ---
@@ -148,8 +148,8 @@
 
 | 参照資料   | パス                                        | 内容            |
 | ---------- | ------------------------------------------- | --------------- |
-| 要件定義書 | `docs/30-workflows/{{機能名}}/phase-1-*.md` | Phase 1の成果物 |
-| 設計書     | `docs/30-workflows/{{機能名}}/phase-2-*.md` | Phase 2の成果物 |
+| 要件定義書 | `docs/30-workflows/{{FEATURE_NAME}}/phase-1-*.md` | Phase 1の成果物 |
+| 設計書     | `docs/30-workflows/{{FEATURE_NAME}}/phase-2-*.md` | Phase 2の成果物 |
 ```
 
 ### 6.2 依存方向

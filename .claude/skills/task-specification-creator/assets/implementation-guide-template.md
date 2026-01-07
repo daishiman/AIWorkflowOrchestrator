@@ -1,6 +1,6 @@
 # 実装ガイドテンプレート
 
-Phase 10で作成する実装ガイドのテンプレート。
+Phase 12で作成する実装ガイドのテンプレート。
 **2パート構成**で、異なる読者層に対応する。
 
 ---
@@ -8,7 +8,7 @@ Phase 10で作成する実装ガイドのテンプレート。
 ## 配置先
 
 ```
-outputs/phase-10/implementation-guide.md
+outputs/phase-12/implementation-guide.md
 ```
 
 ---
@@ -16,21 +16,21 @@ outputs/phase-10/implementation-guide.md
 ## テンプレート本体
 
 ````markdown
-# {{機能名}} - 実装ガイド
+# {{FEATURE_NAME}} - 実装ガイド
 
 ## メタ情報
 
 | 項目     | 内容                       |
 | -------- | -------------------------- |
-| 機能名   | {{機能名}}                 |
-| 作成日   | {{YYYY-MM-DD}}             |
+| 機能名   | {{FEATURE_NAME}}           |
+| 作成日   | {{CREATED_DATE}}           |
 | 対象読者 | 開発者・技術者・学習者     |
 
 ---
 
 # Part 1: 概念的な説明（中学生でもわかる版）
 
-## 1. {{機能名}}って何？
+## 1. {{FEATURE_NAME}}って何？
 
 ### 1.1 身近な例で考えてみよう
 
@@ -249,7 +249,7 @@ const withRelations = await db.query.{{テーブル}}.findFirst({
 
 | タスクID   | タスク名       | 状態   |
 | ---------- | -------------- | ------ |
-| {{ID}}     | {{タスク名}}   | 未実施 |
+| {{TASK_ID}} | {{TASK_NAME}} | 未実施 |
 
 ---
 

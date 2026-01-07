@@ -103,7 +103,7 @@
 
 ## 正常フロー
 
-Phase 1 → Phase 2 → Phase 3 → ... → Phase 11
+Phase 1 → Phase 2 → Phase 3 → ... → Phase 13
 
 ## 修正ループ（レビューゲート）
 
@@ -112,7 +112,7 @@ Phase 1 → Phase 2 → Phase 3 → ... → Phase 11
 - MAJOR（要件問題） → Phase 1
 - MAJOR（設計問題） → Phase 2
 
-### Phase 8（最終レビュー）での戻り
+### Phase 10（最終レビュー）での戻り
 
 - MAJOR（実装問題） → Phase 5
 - MAJOR（テスト問題） → Phase 4

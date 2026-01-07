@@ -106,8 +106,8 @@ class SkillSelectionValidator {
     const skills = [...skillSection.matchAll(skillPattern)];
 
     if (skills.length === 0) {
-      // Phase 11 (PR作成) はスキル不使用が許容される
-      if (phaseNum === "11") {
+      // Phase 13 (PR作成) はスキル不使用が許容される
+      if (phaseNum === "13") {
         this.passes.push(`Phase ${phaseNum}: スキル不使用（直接実行Phase）`);
       } else {
         this.warnings.push(`Phase ${phaseNum}: スキルが選定されていません`);

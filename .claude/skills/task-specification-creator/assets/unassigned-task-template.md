@@ -15,34 +15,34 @@ docs/30-workflows/unassigned-task/{{ファイル名}}.md
 
 ## ファイル命名規則
 
-| タスク種別       | 命名パターン                        | 例                                  |
-| ---------------- | ----------------------------------- | ----------------------------------- |
-| 要件系           | `requirements-{{機能領域}}.md`      | `requirements-auth-improvements.md` |
-| 改善系           | `task-{{改善領域}}-improvements.md` | `task-ui-improvements.md`           |
-| バグ修正         | `task-{{機能名}}-bugfix.md`         | `task-auth-session-bugfix.md`       |
-| リファクタリング | `task-{{対象}}-refactoring.md`      | `task-api-layer-refactoring.md`     |
-| セキュリティ     | `task-{{対象}}-security.md`         | `task-auth-security.md`             |
-| パフォーマンス   | `task-{{対象}}-performance.md`      | `task-search-performance.md`        |
+| タスク種別       | 命名パターン                           | 例                                  |
+| ---------------- | -------------------------------------- | ----------------------------------- |
+| 要件系           | `requirements-{{FEATURE_AREA}}.md`     | `requirements-auth-improvements.md` |
+| 改善系           | `task-{{IMPROVEMENT_AREA}}-improvements.md` | `task-ui-improvements.md`      |
+| バグ修正         | `task-{{FEATURE_NAME}}-bugfix.md`      | `task-auth-session-bugfix.md`       |
+| リファクタリング | `task-{{TARGET}}-refactoring.md`       | `task-api-layer-refactoring.md`     |
+| セキュリティ     | `task-{{TARGET}}-security.md`          | `task-auth-security.md`             |
+| パフォーマンス   | `task-{{TARGET}}-performance.md`       | `task-search-performance.md`        |
 
 ---
 
 ## テンプレート本体
 
 ```markdown
-# {{タスク名}} - タスク指示書
+# {{TASK_NAME}} - タスク指示書
 
 ## メタ情報
 
 | 項目         | 内容                                                                |
 | ------------ | ------------------------------------------------------------------- |
-| タスクID     | {{タスクID}}                                                        |
-| タスク名     | {{タスク名}}                                                        |
+| タスクID     | {{TASK_ID}}                                                         |
+| タスク名     | {{TASK_NAME}}                                                       |
 | 分類         | {{要件/改善/バグ修正/リファクタリング/セキュリティ/パフォーマンス}} |
 | 対象機能     | {{対象機能}}                                                        |
 | 優先度       | {{高/中/低}}                                                        |
 | 見積もり規模 | {{大規模/中規模/小規模}}                                            |
 | ステータス   | 未実施                                                              |
-| 発見元       | {{発見元フェーズ: Phase 7/Phase 8/その他}}                          |
+| 発見元       | {{発見元フェーズ: Phase 10/Phase 11/Phase 12/その他}}                       |
 | 発見日       | {{YYYY-MM-DD}}                                                      |
 
 ---
