@@ -1,0 +1,154 @@
+{
+  "feature": "chat-multi-llm-switching",
+  "taskId": "TASK-CHAT-LLM-SWITCH-001",
+  "created": "2026-01-07T00:00:00Z",
+  "lastUpdated": "2026-01-07T22:35:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-07T16:40:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/use-cases.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-07T16:50:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/api-specification.md",
+        "outputs/phase-2/ui-design.md",
+        "outputs/phase-2/state-management-design.md",
+        "outputs/phase-2/schema-design.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-07T17:10:00Z",
+      "reviewResult": "PASS",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/solid-compliance-report.md",
+        "outputs/phase-3/execution-record.md"
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-07T22:35:00Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-data-design.md",
+        "outputs/phase-4/test-doubles-design.md",
+        "outputs/phase-4/integration-test-scenarios.md",
+        "outputs/phase-4/execution-record.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-08T10:30:00Z",
+      "testResults": {
+        "total": 234,
+        "passed": 234,
+        "failed": 0
+      },
+      "artifacts": ["outputs/phase-5/execution-record.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-08T10:45:00Z",
+      "testResults": {
+        "total": 360,
+        "passed": 360,
+        "failed": 0,
+        "added": 126
+      },
+      "artifacts": ["outputs/phase-6/execution-record.md"]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-08T11:00:00Z",
+      "coverageResults": {
+        "llmSlice": {
+          "statements": 99.25,
+          "branch": 90.56,
+          "functions": 100,
+          "lines": 99.25
+        },
+        "schemas": "excluded_by_config"
+      },
+      "artifacts": ["outputs/phase-7/execution-record.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-08T11:15:00Z",
+      "refactoringResult": "no_changes_required",
+      "artifacts": ["outputs/phase-8/execution-record.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-08T12:00:00Z",
+      "qualityResults": {
+        "lint": "0 errors, 4 warnings (non-LLM)",
+        "typecheck": "PASS",
+        "tests": {
+          "total": 360,
+          "passed": 360,
+          "failed": 0
+        }
+      },
+      "artifacts": ["outputs/phase-9/execution-record.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-08T12:30:00Z",
+      "reviewResult": "PASS",
+      "artifacts": ["outputs/phase-10/execution-record.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "blocked",
+      "blockedReason": "UI components not yet implemented",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-08T12:45:00Z",
+      "artifacts": ["outputs/phase-12/implementation-summary.md"]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

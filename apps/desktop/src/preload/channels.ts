@@ -111,6 +111,10 @@ export const IPC_CHANNELS = {
   FILE_SELECTION_GET_METADATA: "file-selection:get-metadata",
   FILE_SELECTION_GET_MULTIPLE_METADATA: "file-selection:get-multiple-metadata",
   FILE_SELECTION_VALIDATE_PATH: "file-selection:validate-path",
+
+  // LLM operations
+  LLM_GET_PROVIDERS: "llm:get-providers",
+  LLM_CHECK_HEALTH: "llm:check-health",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -195,6 +199,9 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.FILE_SELECTION_GET_METADATA,
   IPC_CHANNELS.FILE_SELECTION_GET_MULTIPLE_METADATA,
   IPC_CHANNELS.FILE_SELECTION_VALIDATE_PATH,
+  // LLM channels
+  IPC_CHANNELS.LLM_GET_PROVIDERS,
+  IPC_CHANNELS.LLM_CHECK_HEALTH,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

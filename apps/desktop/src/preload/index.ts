@@ -50,6 +50,7 @@ import type {
   GetMultipleFileMetadataRequest,
   ValidateFilePathRequest,
 } from "@repo/shared/schemas";
+import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -236,6 +237,12 @@ const electronAPI: ElectronAPI = {
       safeInvoke(IPC_CHANNELS.FILE_SELECTION_GET_MULTIPLE_METADATA, request),
     validatePath: (request: ValidateFilePathRequest) =>
       safeInvoke(IPC_CHANNELS.FILE_SELECTION_VALIDATE_PATH, request),
+  },
+
+  llm: {
+    getProviders: () => safeInvoke(IPC_CHANNELS.LLM_GET_PROVIDERS),
+    checkHealth: (providerId: LLMProviderId) =>
+      safeInvoke(IPC_CHANNELS.LLM_CHECK_HEALTH, providerId),
   },
 
   // Generic invoke for IPC calls
