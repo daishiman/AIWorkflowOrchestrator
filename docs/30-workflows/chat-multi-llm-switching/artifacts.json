@@ -2,8 +2,8 @@
   "feature": "chat-multi-llm-switching",
   "taskId": "TASK-CHAT-LLM-SWITCH-001",
   "created": "2026-01-07T00:00:00Z",
-  "lastUpdated": "2026-01-07T22:35:00Z",
-  "status": "in_progress",
+  "lastUpdated": "2026-01-08T13:00:00Z",
+  "status": "completed",
   "phases": {
     "1": {
       "name": "要件定義",
@@ -132,7 +132,9 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-01-08T13:00:00Z",
+      "prUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/196",
       "artifacts": []
     }
   },
