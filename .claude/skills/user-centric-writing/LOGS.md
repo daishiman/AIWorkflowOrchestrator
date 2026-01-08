@@ -1,8 +1,8 @@
-# Documentation Architecture Skill - Usage Logs
+# User-Centric Writing Skill - Usage Logs
 
 ## 概要
 
-このファイルは `documentation-architecture` スキルの使用履歴を記録します。
+このファイルは `user-centric-writing` スキルの使用履歴を記録します。
 各実行の結果、所要時間、フィードバックを蓄積し、継続的な改善に活用します。
 
 ## ログフォーマット
@@ -23,14 +23,14 @@
 <!-- ログエントリはここに追記されます -->
 <!-- 最新のエントリが上部に来るよう、新規エントリは下記の "## 使用履歴" セクションの直後に追加してください -->
 
-### 2026-01-08 12:00:00
+### 2026-01-08 12:15:00
 
 - **結果**: success
 - **Task**: logging-service Phase 12 ドキュメント更新
 - **Phase**: Phase 12-1 実装ガイド作成
-- **所要時間**: 15 分
-- **メモ**: ConversionLogger実装ガイドの構造設計に適用。Part 1（概念的説明）とPart 2（技術的詳細）の2パート構成を設計
-- **フィードバック**: ドキュメント構造の設計に有効。500行制約内で適切な分割ができた
+- **所要時間**: 20 分
+- **メモ**: ConversionLogger実装ガイドのPart 1（概念的説明）作成に適用。日常的な例え（図書室の記録、郵便ポスト）を使用して中学生でもわかる説明を作成
+- **フィードバック**: ペルソナ分析（初学者・非技術者）に基づくコンテンツ設計が有効。Plain Language Guidelinesに従った明確な文章作成ができた
 
 ---
 
@@ -77,7 +77,7 @@
 
 ### 現在のレベル: 1
 
-- **条件**: 基本的な構造分析とファイル分割が可能
+- **条件**: 基本的なペルソナ分析とコンテンツ作成が可能
 - **次のレベルへの要件**:
   - 成功実行数: 10回以上
   - 成功率: 70%以上
@@ -107,31 +107,21 @@
 - 成功実行回数: 1
 - 失敗実行回数: 0
 - 成功率: 100.0%
-- 平均所要時間: 15 分
+- 平均所要時間: 20 分
 
 ### Task別統計
 
-#### 構造分析 (structure-analysis)
+#### ペルソナ分析 (persona-analysis)
 
-- 実行回数: 0
-- 成功率: 0.0%
+- 実行回数: 1
+- 成功率: 100.0%
 
-#### ファイル分割 (file-splitting)
+#### コンテンツ作成 (content-drafting)
 
-- 実行回数: 0
-- 成功率: 0.0%
+- 実行回数: 1
+- 成功率: 100.0%
 
-#### 階層設計 (hierarchy-design)
-
-- 実行回数: 0
-- 成功率: 0.0%
-
-#### ディレクトリ組織化 (directory-organization)
-
-- 実行回数: 0
-- 成功率: 0.0%
-
-#### 命名規則標準化 (naming-standardization)
+#### 読みやすさレビュー (readability-review)
 
 - 実行回数: 0
 - 成功率: 0.0%
@@ -145,11 +135,11 @@
 スキル実行後に以下のコマンドを実行:
 
 ```bash
-node .claude/skills/documentation-architecture/scripts/log_usage.mjs \
+node .claude/skills/user-centric-writing/scripts/log_usage.mjs \
   --result success \
-  --task "structure-analysis" \
-  --phase "Phase 1" \
-  --notes "Initial structure analysis completed"
+  --task "content-drafting" \
+  --phase "Phase 12-1" \
+  --notes "Implementation guide Part 1 created"
 ```
 
 ### 手動記録
