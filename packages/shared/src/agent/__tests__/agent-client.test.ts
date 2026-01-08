@@ -238,13 +238,22 @@ describe("AgentClient", () => {
 
       const queryPromise = client.query("Hello", mockOnMessage);
 
+      // Attach error handler to prevent unhandled rejection during timer advancement
+      let caughtError: Error | null = null;
+      queryPromise.catch((e) => {
+        caughtError = e;
+      });
+
       // Advance through all retries (maxRetries = 3)
       // Retry 1: 1000ms, Retry 2: 2000ms, Retry 3: 4000ms
       await vi.advanceTimersByTimeAsync(1000);
       await vi.advanceTimersByTimeAsync(2000);
       await vi.advanceTimersByTimeAsync(4000);
 
-      await expect(queryPromise).rejects.toThrowError(AgentQueryError);
+      // Wait for promise to settle
+      await vi.runAllTimersAsync();
+
+      expect(caughtError).toBeInstanceOf(AgentQueryError);
     });
 
     it("should throw AgentTimeoutError when query exceeds timeout", async () => {
@@ -442,10 +451,19 @@ describe("AgentClient", () => {
 
       const queryPromise = client.query("Hello", vi.fn());
 
+      // Attach error handler to prevent unhandled rejection during timer advancement
+      let caughtError: Error | null = null;
+      queryPromise.catch((e) => {
+        caughtError = e;
+      });
+
       // Advance through all retries
       await vi.advanceTimersByTimeAsync(10000);
 
-      await expect(queryPromise).rejects.toThrowError(AgentQueryError);
+      // Wait for promise to settle
+      await vi.runAllTimersAsync();
+
+      expect(caughtError).toBeInstanceOf(AgentQueryError);
     });
   });
 
