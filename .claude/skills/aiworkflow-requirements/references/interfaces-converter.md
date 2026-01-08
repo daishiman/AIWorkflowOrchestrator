@@ -69,8 +69,65 @@ if (result.success) {
 
 ---
 
+## IConversionLogger インターフェース
+
+変換処理のログ記録用インターフェース。バッファリングによる効率的なDB書き込みをサポート。
+
+> **実装**: `packages/shared/src/services/logging/types.ts`
+> **詳細設計**: `docs/30-workflows/logging-service/`
+
+### 必須メソッド
+
+| メソッド | 戻り値 | 説明 |
+| -------- | ------ | ---- |
+| `info(fileId, message, metadata?)` | `void` | INFOレベルログ記録 |
+| `warn(fileId, message, metadata?)` | `void` | WARNレベルログ記録 |
+| `error(fileId, message, error?, metadata?)` | `void` | ERRORレベルログ記録 |
+| `flush()` | `Promise<void>` | バッファを強制フラッシュ |
+| `dispose()` | `void` | リソース解放 |
+
+### 設定オプション
+
+| オプション | 型 | デフォルト | 説明 |
+| ---------- | -- | ---------- | ---- |
+| `bufferSize` | `number` | 100 | バッファサイズ（件数） |
+| `flushIntervalMs` | `number` | 5000 | 自動フラッシュ間隔（ミリ秒） |
+
+### 使用例
+
+```typescript
+import { ConversionLogger } from "@repo/shared/services/logging";
+
+const logger = new ConversionLogger(repository, {
+  bufferSize: 100,
+  flushIntervalMs: 5000,
+});
+
+// ログ記録
+logger.info("file-123", "変換開始", { mimeType: "text/markdown" });
+logger.warn("file-123", "処理時間が長い", { elapsed: 5000 });
+logger.error("file-123", "変換失敗", new Error("Parse error"));
+
+// 終了時
+await logger.flush();
+logger.dispose();
+```
+
+### ILogRepository インターフェース
+
+ログ永続化用リポジトリインターフェース（DIP適用）。
+
+| メソッド | 戻り値 | 説明 |
+| -------- | ------ | ---- |
+| `bulkInsert(entries)` | `Promise<void>` | バッチインサート |
+
+> **実装予定**: CONV-05-02 (LogRepository実装タスク)
+
+---
+
 ## 関連ドキュメント
 
 - [内部API仕様（ConversionService）](./api-internal-conversion.md)
 - [コアインターフェース仕様](./interfaces-core.md)
 - [エラーハンドリング仕様](./error-handling.md)
+- [ファイル変換アーキテクチャ](./architecture-file-conversion.md)

@@ -10,6 +10,10 @@ import type {
   ExtractionResult,
   BatchExtractionResult,
   ExtractedEntity,
+  RelationExtractionOptionsInput,
+  RelationExtractionResult,
+  BatchRelationExtractionResult,
+  ExtractedRelation,
 } from "./types";
 
 // =============================================================================
@@ -68,4 +72,47 @@ export interface IEntityExtractor {
    * 複数結果のエンティティをマージ
    */
   mergeEntities(results: ExtractionResult[]): ExtractedEntity[];
+}
+
+// =============================================================================
+// Relation Extractor Interface (CONV-06-05)
+// =============================================================================
+
+/**
+ * 関係抽出インターフェース
+ * @description エンティティ間の関係を抽出するStrategy Pattern
+ */
+export interface IRelationExtractor {
+  /**
+   * 単一チャンクからエンティティ間の関係を抽出
+   * @param chunk 処理対象のチャンク
+   * @param entities チャンクから抽出済みのエンティティ
+   * @param options 抽出オプション
+   * @returns 抽出された関係を含む結果
+   */
+  extract(
+    chunk: Chunk,
+    entities: ExtractedEntity[],
+    options?: RelationExtractionOptionsInput,
+  ): Promise<Result<RelationExtractionResult, Error>>;
+
+  /**
+   * 複数チャンクからバッチで関係を抽出
+   * @param chunks 処理対象のチャンク配列
+   * @param entitiesByChunk チャンクIDとエンティティのマップ
+   * @param options 抽出オプション
+   * @returns バッチ抽出結果
+   */
+  extractBatch(
+    chunks: Chunk[],
+    entitiesByChunk: Map<string, ExtractedEntity[]>,
+    options?: RelationExtractionOptionsInput,
+  ): Promise<Result<BatchRelationExtractionResult, Error>>;
+
+  /**
+   * 複数結果の関係をマージ（重複統合）
+   * @param results 各チャンクからの抽出結果
+   * @returns マージされた関係の配列
+   */
+  mergeRelations(results: RelationExtractionResult[]): ExtractedRelation[];
 }
