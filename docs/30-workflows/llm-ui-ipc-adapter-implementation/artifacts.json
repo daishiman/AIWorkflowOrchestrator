@@ -1,9 +1,9 @@
 {
   "taskId": "TASK-LLM-UI-IPC-ADAPTER-001",
   "taskName": "llm-ui-ipc-adapter-implementation",
-  "status": "in_progress",
+  "status": "completed",
   "createdAt": "2026-01-08T23:05:00Z",
-  "lastUpdated": "2026-01-09T08:30:00Z",
+  "lastUpdated": "2026-01-09T08:45:00Z",
   "phases": {
     "1": {
       "name": "要件定義",
@@ -166,8 +166,15 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "completedAt": "2026-01-09T08:45:00Z",
+      "artifacts": [
+        {
+          "type": "pr",
+          "path": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/203",
+          "description": "LLM UI/IPC/Adapter implementation PR"
+        }
+      ]
     }
   },
   "skillsUsed": {
