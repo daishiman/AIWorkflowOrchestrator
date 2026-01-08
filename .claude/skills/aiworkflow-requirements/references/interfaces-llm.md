@@ -97,6 +97,124 @@ LLMモデル情報型。
 
 プロバイダーID列挙型。OpenAI、Anthropic、Google、xAIの4つの値を持つ。
 
+---
+
+## Multi-LLM Provider Switching 型定義
+
+> **実装**: `packages/shared/src/types/llm/schemas/`
+> **状態管理**: `apps/desktop/src/renderer/store/slices/llmSlice.ts`
+> **詳細設計**: `docs/30-workflows/chat-multi-llm-switching/outputs/phase-12/implementation-guide.md`
+
+### 概要
+
+チャット内でLLMプロバイダー・モデルを動的に切り替える機能の型定義。Zodスキーマによる型安全性とランタイムバリデーションを提供。
+
+### Zodスキーマ型定義
+
+#### LLMProviderSchema
+
+LLMプロバイダーの完全な型定義。
+
+| フィールド       | 型             | 必須 | 説明                     |
+| ---------------- | -------------- | ---- | ------------------------ |
+| id               | LLMProviderId  | ✓    | プロバイダーID           |
+| name             | string         | ✓    | プロバイダー名（表示用） |
+| description      | string         | -    | 説明文                   |
+| iconUrl          | string         | -    | アイコンURL              |
+| models           | LLMModel[]     | ✓    | 利用可能なモデル一覧     |
+| isAvailable      | boolean        | ✓    | 利用可能フラグ           |
+| apiKeyConfigured | boolean        | ✓    | APIキー設定済みフラグ    |
+
+#### LLMModelSchema
+
+LLMモデル情報の型定義。
+
+| フィールド  | 型      | 必須 | 説明                 |
+| ----------- | ------- | ---- | -------------------- |
+| id          | string  | ✓    | モデルID             |
+| name        | string  | ✓    | モデル名（表示用）   |
+| description | string  | -    | 説明文               |
+| maxTokens   | number  | ✓    | 最大トークン数       |
+| isDefault   | boolean | ✓    | デフォルトモデルか   |
+
+#### LLMChatRequestSchema
+
+チャットリクエストの型定義。
+
+| フィールド   | 型           | 必須 | 説明                        |
+| ------------ | ------------ | ---- | --------------------------- |
+| messages     | LLMMessage[] | ✓    | メッセージ配列              |
+| modelId      | string       | ✓    | 使用するモデルID            |
+| systemPrompt | string       | -    | システムプロンプト          |
+| temperature  | number       | -    | 温度パラメータ（0-2）       |
+| maxTokens    | number       | -    | 最大出力トークン数          |
+| stream       | boolean      | -    | ストリーミング有効フラグ    |
+
+#### LLMChatResponseSchema
+
+チャットレスポンスの型定義（Discriminated Union）。
+
+**成功時**:
+| フィールド | 型              | 説明           |
+| ---------- | --------------- | -------------- |
+| success    | true (literal)  | 成功フラグ     |
+| data       | LLMResponseData | レスポンスデータ |
+
+**失敗時**:
+| フィールド | 型              | 説明       |
+| ---------- | --------------- | ---------- |
+| success    | false (literal) | 失敗フラグ |
+| error      | LLMError        | エラー情報 |
+
+#### LLMErrorSchema
+
+エラー情報の型定義。
+
+| フィールド   | 型           | 必須 | 説明                   |
+| ------------ | ------------ | ---- | ---------------------- |
+| code         | LLMErrorCode | ✓    | エラーコード           |
+| message      | string       | ✓    | エラーメッセージ       |
+| details      | Record       | -    | 追加詳細情報           |
+| retryable    | boolean      | ✓    | リトライ可能か         |
+| retryAfterMs | number       | -    | リトライ待機時間（ms） |
+
+#### LLMErrorCode
+
+エラーコード列挙型。API_KEY_MISSING、API_KEY_INVALID、NETWORK_ERROR、TIMEOUT、RATE_LIMIT、CONTEXT_LENGTH_EXCEEDED、CONTENT_FILTER、MODEL_NOT_FOUND、SERVICE_UNAVAILABLE、UNKNOWNの10種類。
+
+#### HealthCheckResultSchema
+
+ヘルスチェック結果の型定義。
+
+| フィールド  | 型               | 必須 | 説明               |
+| ----------- | ---------------- | ---- | ------------------ |
+| providerId  | LLMProviderId    | ✓    | プロバイダーID     |
+| status      | healthy/degraded/unhealthy | ✓ | 接続状態     |
+| latencyMs   | number           | -    | レイテンシ（ms）   |
+| checkedAt   | string (ISO8601) | ✓    | チェック日時       |
+| errorMessage| string           | -    | エラーメッセージ   |
+
+### バリデーション関数
+
+| 関数名                  | 説明                               |
+| ----------------------- | ---------------------------------- |
+| validateChatRequest     | リクエストを検証（エラー時throw）  |
+| validateChatResponse    | レスポンスを検証（エラー時throw）  |
+| safeParseChatRequest    | リクエストを安全にパース           |
+| safeParseChatResponse   | レスポンスを安全にパース           |
+
+### IPC通信
+
+| チャンネル           | 説明                   |
+| -------------------- | ---------------------- |
+| llm:get-providers    | プロバイダー一覧取得   |
+| llm:check-health     | ヘルスチェック実行     |
+
+### 品質メトリクス
+
+- テストカバレッジ: 99.25% (Statement)、90.56% (Branch)
+- 全360件の自動テスト成功
+
 #### ChatMessage
 
 チャットメッセージ型。

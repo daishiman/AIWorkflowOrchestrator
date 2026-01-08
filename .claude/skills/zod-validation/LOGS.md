@@ -2,6 +2,15 @@
 
 このスキルの使用履歴を記録します。
 
+## 2026-01-08
+
+- **Phase**: Phase 12 ドキュメント整備
+- **Result**: success
+- **Task**: chat-multi-llm-switching
+- **Notes**: schema-patterns.mdにSuccess/Error レスポンスパターン（Discriminated Union）を追加。LLMChatResponseSchemaの実装事例を参照として記載。
+
+---
+
 ## 2026-01-01 (v4.0.0)
 
 - **Phase**: Phase 4 (検証とイテレーション)

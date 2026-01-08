@@ -21,12 +21,25 @@
 
 ## 統計サマリー
 
-- **総使用回数**: 0
-- **成功回数**: 0
+- **総使用回数**: 1
+- **成功回数**: 1
 - **失敗回数**: 0
-- **成功率**: N/A
-- **現在のレベル**: Level 1 (Basics)
-- **最終使用日**: 未使用
+- **成功率**: 100%
+- **現在のレベル**: Level 2 (Intermediate)
+- **最終使用日**: 2026-01-08
+
+---
+
+## 使用履歴
+
+### 2026-01-08 - SUCCESS
+
+- **Phase**: Phase 4 (テスト作成)
+- **Task**: test-doubles-design
+- **Result**: success
+- **Context**: chat-multi-llm-switching機能のモック設計
+- **Notes**: ILLMAdapter, IPC通信, Zustand Storeのモック設計を完了
+- **Feedback**: Discriminated Unionパターンのモック設計が効果的
 
 ---
 
