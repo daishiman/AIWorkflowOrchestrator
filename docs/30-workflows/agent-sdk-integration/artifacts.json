@@ -192,12 +192,40 @@
       "name": "ドキュメント更新",
       "status": "completed",
       "completedAt": "2026-01-08T14:30:00Z",
-      "artifacts": []
+      "artifacts": [
+        {
+          "type": "documentation",
+          "path": "docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 概念的説明 + Part 2: 技術的詳細）"
+        },
+        {
+          "type": "documentation",
+          "path": "docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md",
+          "description": "APIリファレンス"
+        },
+        {
+          "type": "documentation",
+          "path": "docs/30-workflows/agent-sdk-integration/outputs/phase-12/documentation-update-log.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "documentation",
+          "path": "docs/30-workflows/agent-sdk-integration/outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
     },
     "13": {
       "name": "PR作成",
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "completedAt": "2026-01-08T15:00:00Z",
+      "artifacts": [
+        {
+          "type": "pull-request",
+          "url": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/199",
+          "description": "feat(agent): Claude Agent SDK統合基盤の構築"
+        }
+      ]
     }
   },
   "dependencies": {

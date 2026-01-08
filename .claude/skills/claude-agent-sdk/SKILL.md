@@ -204,9 +204,18 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --help
 node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 ```
 
+## 関連ドキュメント
+
+| ドキュメント               | パス                                                                         | 説明                                |
+| -------------------------- | ---------------------------------------------------------------------------- | ----------------------------------- |
+| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md` | 統合システム設計仕様（型定義、IPC） |
+| APIリファレンス            | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`  | 公開API詳細リファレンス             |
+| 実装ガイド                 | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド      |
+
 ## 変更履歴
 
-| Version | Date       | Changes                                      |
-| ------- | ---------- | -------------------------------------------- |
-| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加   |
-| 1.0.0   | 2026-01-08 | 初期バージョン作成                           |
+| Version | Date       | Changes                                               |
+| ------- | ---------- | ----------------------------------------------------- |
+| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携        |
+| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加            |
+| 1.0.0   | 2026-01-08 | 初期バージョン作成                                    |

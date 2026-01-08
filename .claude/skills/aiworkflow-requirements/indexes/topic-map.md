@@ -165,6 +165,21 @@ node scripts/list-specs.mjs --topics
 | Embedding Generation 型定義 | L124 |
 | 関連ドキュメント | L276 |
 
+### references/interfaces-agent-sdk.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| アーキテクチャ | L25 |
+| Preload API（window.agentAPI） | L54 |
+| 型定義 | L125 |
+| エラー型 | L171 |
+| IPC チャンネル | L199 |
+| Zodスキーマ | L213 |
+| 設定定数 | L248 |
+| React Hook（useAgent） | L260 |
+| セッション管理 | L285 |
+| 関連ドキュメント | L318 |
+
 ### references/interfaces-rag.md
 
 | セクション | 行 |
