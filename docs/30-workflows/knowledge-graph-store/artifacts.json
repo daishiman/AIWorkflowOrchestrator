@@ -1,0 +1,89 @@
+{
+  "taskId": "CONV-08-01",
+  "taskName": "Knowledge Graph ストア実装",
+  "status": "in_progress",
+  "createdAt": "2026-01-08T23:10:00Z",
+  "lastUpdated": "2026-01-08T23:10:00Z",
+  "dependencies": ["CONV-04-05"],
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "deliverables": [
+    {
+      "name": "Knowledge Graphストア実装",
+      "path": "packages/shared/src/services/graph/knowledge-graph-store.ts"
+    },
+    {
+      "name": "型定義",
+      "path": "packages/shared/src/services/graph/types.ts"
+    },
+    {
+      "name": "テストファイル",
+      "path": "packages/shared/src/services/graph/__tests__/knowledge-graph-store.test.ts"
+    }
+  ]
+}
