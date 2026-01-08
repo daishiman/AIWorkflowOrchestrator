@@ -18,8 +18,9 @@
 import { readFileSync, existsSync, readdirSync } from "fs";
 import { join, basename } from "path";
 
-// Phase定義 (Phase 1〜13)
-const PHASES = [
+// Phase定義 (Phase 0〜13)
+// Phase 0は条件付き（外部SDK調査が必要な場合のみ）
+const PHASES_REQUIRED = [
   { number: 1, name: "requirements", displayName: "要件定義" },
   { number: 2, name: "design", displayName: "設計" },
   { number: 3, name: "design-review", displayName: "設計レビューゲート" },
@@ -34,6 +35,17 @@ const PHASES = [
   { number: 12, name: "documentation", displayName: "ドキュメント更新" },
   { number: 13, name: "pr-creation", displayName: "PR作成" },
 ];
+
+// Phase 0（条件付き）
+const PHASE_OPTIONAL = {
+  number: 0,
+  name: "sdk-research",
+  displayName: "外部SDK調査",
+  optional: true,
+};
+
+// 後方互換性のためPHASESを維持
+const PHASES = PHASES_REQUIRED;
 
 // 必須セクション
 const REQUIRED_SECTIONS = [
@@ -83,12 +95,30 @@ class PhaseValidator {
     // index.md 確認
     this.validateIndexFile();
 
-    // 各Phaseファイル確認
+    // Phase 0 の存在確認（オプショナル）
+    this.validateOptionalPhase0();
+
+    // 各Phaseファイル確認 (Phase 1〜13)
     for (const phase of PHASES) {
       this.validatePhaseFile(phase);
     }
 
     return this.report();
+  }
+
+  validateOptionalPhase0() {
+    const files = readdirSync(this.workflowDir).filter(
+      (f) => f.startsWith("phase-0-") && f.endsWith(".md"),
+    );
+
+    if (files.length > 0) {
+      // Phase 0が存在する場合は検証
+      console.log("ℹ️  Phase 0 (外部SDK調査) が検出されました - 検証します\n");
+      this.validatePhaseFile(PHASE_OPTIONAL);
+    } else {
+      // Phase 0が存在しない場合は情報として記録
+      this.passes.push("Phase 0: 外部SDK調査なし（条件付きPhase）");
+    }
   }
 
   validateIndexFile() {
@@ -160,7 +190,7 @@ class PhaseValidator {
       }
     }
 
-    // Phase 1〜11は統合テスト連携セクション必須
+    // Phase 1〜11は統合テスト連携セクション必須（Phase 0は除外）
     if (Number(phaseNum) >= 1 && Number(phaseNum) <= 11) {
       const integrationSection = /^##\s+統合テスト連携/m.test(content);
       if (!integrationSection) {
@@ -168,6 +198,13 @@ class PhaseValidator {
           `Phase ${phaseNum} (${files[0]}): 必須セクション「統合テスト連携」がありません`,
         );
       }
+    }
+
+    // Phase 0の場合、追加の寛容性を持つ
+    if (Number(phaseNum) === 0 && phase.optional) {
+      this.passes.push(
+        `Phase 0: 外部SDK調査ファイルが正しく存在 (${files[0]})`,
+      );
     }
 
     // 品質チェック

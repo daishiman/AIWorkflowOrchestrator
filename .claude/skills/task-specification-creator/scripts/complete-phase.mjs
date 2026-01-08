@@ -19,9 +19,11 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
 
-// Phase依存関係マップ (Phase 1〜13)
+// Phase依存関係マップ (Phase 0〜13)
+// Phase 0は条件付き（外部SDK調査が必要な場合のみ）
 const PHASE_DEPENDENCIES = {
-  1: [], // 要件定義
+  0: [], // 外部SDK調査（条件付き）- 依存なし
+  1: [], // 要件定義 - Phase 0がある場合は["0"]になる可能性あり
   2: ["1"], // 設計 ← 要件定義
   3: ["1", "2"], // 設計レビュー ← 要件定義, 設計
   4: ["1", "2", "3"], // テスト作成 ← 要件定義, 設計, レビュー

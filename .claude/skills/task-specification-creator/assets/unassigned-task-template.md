@@ -117,20 +117,20 @@ docs/30-workflows/unassigned-task/{{ファイル名}}.md
 
 ### Phase {{番号}}: {{フェーズ名}}
 
-#### Claude Code スラッシュコマンド
+#### 使用スキル
 
-> ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-> タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
-```
+| スキル名 | パス | 選定理由 |
+|---------|------|---------|
+| {{SKILL_NAME}} | `.claude/skills/{{SKILL_NAME}}/SKILL.md` | {{選定理由（Trigger/Anchor）}} |
 
-{{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
-
-# 例: /ai:design-architecture, /ai:generate-unit-tests, /ai:create-component など
+**実行方法**:
 
 ```
+各スキルのSKILL.mdを読み込み、スキルを参照して実行
+```
 
-- **参照**: `.claude/commands/ai/command_list.md`
-- **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+- **参照**: `.claude/skills/` 配下のスキル一覧, スキルリスト`.claude/skills/skill-list.md`
+- **選定方法**: スキルのSKILL.md内「Trigger」キーワードと「Anchors」を参照し、タスクに最も適したスキルを選択
 
 #### 目的
 
@@ -231,7 +231,7 @@ docs/30-workflows/unassigned-task/{{ファイル名}}.md
 ### How（どのように実行するか）
 
 - [ ] 前提条件・依存関係が明記されている
-- [ ] Claude Codeスラッシュコマンド（/ai:xxx形式）が選定されている
+- [ ] 使用スキルが`.claude/skills/skill-list.md`から選定されている（スキル名・パス・選定理由が明記）
 - [ ] 完了条件が検証可能な形で定義されている
 - [ ] テストケース/検証方法が記載されている
 - [ ] リスクと対策が検討されている
