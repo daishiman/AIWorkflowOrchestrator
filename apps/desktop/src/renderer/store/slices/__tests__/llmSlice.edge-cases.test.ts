@@ -178,7 +178,7 @@ describe("llmSlice エッジケーステスト", () => {
   describe("エラー状態からの回復", () => {
     it("エラー状態からfetchProvidersを再実行して成功", async () => {
       // 初期エラー状態
-      store.error = {
+      store.llmError = {
         code: "NETWORK_ERROR",
         message: "Connection failed",
         retryable: true,
@@ -203,7 +203,7 @@ describe("llmSlice エッジケーステスト", () => {
 
       await store.fetchProviders();
 
-      expect(store.error).toBeNull();
+      expect(store.llmError).toBeNull();
       expect(store.providers.length).toBe(1);
     });
 
@@ -377,8 +377,8 @@ describe("llmSlice エッジケーステスト", () => {
 
       await store.fetchProviders();
 
-      expect(store.error).not.toBeNull();
-      expect(store.error?.message).toContain("not available");
+      expect(store.llmError).not.toBeNull();
+      expect(store.llmError?.message).toContain("not available");
     });
 
     it("window自体が未定義の場合、fetchProvidersがエラーを設定", async () => {
@@ -386,7 +386,7 @@ describe("llmSlice エッジケーステスト", () => {
 
       await store.fetchProviders();
 
-      expect(store.error).not.toBeNull();
+      expect(store.llmError).not.toBeNull();
     });
 
     it("checkHealthメソッドが未定義の場合、エラーステータスが設定される", async () => {
@@ -415,7 +415,7 @@ describe("llmSlice エッジケーステスト", () => {
           models: [{ id: "gpt-4o", name: "GPT-4o", isDefault: true }],
         },
       ];
-      store.error = {
+      store.llmError = {
         code: "NETWORK_ERROR",
         message: "Error",
         retryable: true,
@@ -424,7 +424,7 @@ describe("llmSlice エッジケーステスト", () => {
       store.resetSelection();
 
       // エラーはresetSelectionではクリアされない
-      expect(store.error).not.toBeNull();
+      expect(store.llmError).not.toBeNull();
     });
 
     it("clearErrorは選択状態に影響しない", () => {
@@ -438,15 +438,15 @@ describe("llmSlice エッジケーステスト", () => {
       ];
       store.selectedProviderId = "openai";
       store.selectedModelId = "gpt-4o";
-      store.error = {
+      store.llmError = {
         code: "UNKNOWN",
         message: "Error",
         retryable: false,
       };
 
-      store.clearError();
+      store.clearLLMError();
 
-      expect(store.error).toBeNull();
+      expect(store.llmError).toBeNull();
       expect(store.selectedProviderId).toBe("openai");
       expect(store.selectedModelId).toBe("gpt-4o");
     });
@@ -467,7 +467,7 @@ describe("llmSlice エッジケーステスト", () => {
 
       await store.fetchProviders();
 
-      expect(store.error?.retryable).toBe(true);
+      expect(store.llmError?.retryable).toBe(true);
     });
 
     it("fetchProviders失敗時、エラーコードがUNKNOWNになる", async () => {
@@ -481,7 +481,7 @@ describe("llmSlice エッジケーステスト", () => {
 
       await store.fetchProviders();
 
-      expect(store.error?.code).toBe("UNKNOWN");
+      expect(store.llmError?.code).toBe("UNKNOWN");
     });
 
     it("非Errorオブジェクトがthrowされた場合のメッセージ", async () => {
@@ -495,7 +495,7 @@ describe("llmSlice エッジケーステスト", () => {
 
       await store.fetchProviders();
 
-      expect(store.error?.message).toBe("Failed to fetch providers");
+      expect(store.llmError?.message).toBe("Failed to fetch providers");
     });
   });
 });

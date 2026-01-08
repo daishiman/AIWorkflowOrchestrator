@@ -14,6 +14,7 @@ import { registerDialogHandlers } from "./dialogHandlers";
 import { registerWorkspaceHandlers } from "./workspaceHandlers";
 import { registerSearchHandlers } from "./searchHandlers";
 import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
+import { registerLLMHandlers } from "../handlers/llm";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -36,6 +37,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   registerWorkspaceHandlers();
   registerSearchHandlers();
   registerFileSelectionHandlers();
+  registerLLMHandlers();
 
   // Register handlers that need window reference
   registerWindowHandlers(mainWindow);

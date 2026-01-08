@@ -50,7 +50,12 @@ import type {
   GetMultipleFileMetadataRequest,
   ValidateFilePathRequest,
 } from "@repo/shared/schemas";
-import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
+import type {
+  LLMProviderId,
+  LLMChatRequest,
+  LLMError,
+} from "@repo/shared/types/llm/schemas";
+import type { LLMStreamChunk } from "./types";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -242,7 +247,17 @@ const electronAPI: ElectronAPI = {
   llm: {
     getProviders: () => safeInvoke(IPC_CHANNELS.LLM_GET_PROVIDERS),
     checkHealth: (providerId: LLMProviderId) =>
-      safeInvoke(IPC_CHANNELS.LLM_CHECK_HEALTH, providerId),
+      safeInvoke(IPC_CHANNELS.LLM_CHECK_HEALTH, { providerId }),
+    sendChat: (request: LLMChatRequest) =>
+      safeInvoke(IPC_CHANNELS.LLM_SEND_CHAT, request),
+    streamChat: (request: LLMChatRequest) =>
+      safeInvoke(IPC_CHANNELS.LLM_STREAM_CHAT, request),
+    onStreamChunk: (callback: (chunk: LLMStreamChunk) => void) =>
+      safeOn<LLMStreamChunk>(IPC_CHANNELS.LLM_STREAM_CHUNK, callback),
+    onStreamEnd: (callback: (streamId: string) => void) =>
+      safeOn<string>(IPC_CHANNELS.LLM_STREAM_END, callback),
+    onStreamError: (callback: (error: LLMError) => void) =>
+      safeOn<LLMError>(IPC_CHANNELS.LLM_STREAM_ERROR, callback),
   },
 
   // Generic invoke for IPC calls
