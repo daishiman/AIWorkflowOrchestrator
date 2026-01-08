@@ -917,7 +917,12 @@ Phase 12: ドキュメント更新
 
 ## 目的
 
-実装した内容をシステム要件ドキュメントに反映し、技術的な理解を促進するドキュメントを作成し、未完了タスクを検出・記録する。
+実装した内容をシステム要件ドキュメントに反映し、技術的な理解を促進するドキュメントを作成し、未完了タスクを検出・記録する。また、スキルフィードバックを収集し、skill-creatorを通じてスキルの継続的改善を行う。
+
+## 使用スキル
+
+- `technical-documentation-guide`: 技術ドキュメント作成
+- `skill-creator`: スキルフィードバック記録・改善【必須】
 
 ## サブフェーズ
 
@@ -949,6 +954,86 @@ Phase 12: ドキュメント更新
 | 5 | コードベース | TODO/FIXME/HACK/XXXコメント |
 | 6 | スキルLOGS.md | partial/failure記録 |
 
+### Phase 12-4: スキルフィードバック・改善・新規作成【必須】
+
+**skill-creator**を使用して、ワークフロー実行中に使用したスキルのフィードバックを記録・改善し、必要に応じて新規スキルを作成する。
+
+#### 12-4-1: フィードバック収集
+
+各Phaseで使用したスキルの実行結果を評価し記録する。
+
+```bash
+# フィードバック記録
+node .claude/skills/task-specification-creator/scripts/log_usage.mjs \
+  --skill {{SKILL_NAME}} --result {{success|failure|partial}} --phase {{PHASE_NUMBER}}
+```
+
+#### 12-4-2: 既存スキル改善判定
+
+skill-creatorで改善必要性を判定し、必要な場合は更新する。
+
+```bash
+# 改善判定
+node .claude/skills/skill-creator/scripts/check_improvement_needed.mjs \
+  --skill {{SKILL_NAME}}
+
+# スキル更新（必要な場合）
+node .claude/skills/skill-creator/scripts/detect_mode.mjs \
+  --request "スキルを更新" --skill-path .claude/skills/{{SKILL_NAME}}
+```
+
+#### 12-4-3: 新規スキル必要性判定【重要】
+
+ワークフロー実行中に以下の状況が発生した場合、**新規スキル作成**を検討する:
+
+| 検出条件 | 新規スキル作成の判断基準 |
+| -------- | ------------------------ |
+| 手動作業の繰り返し | 同じ手順を3回以上手動で実行した |
+| 既存スキル不在 | 必要なスキルが見つからず自前で対応した |
+| スキルの責務超過 | 1つのスキルに複数責務を詰め込んだ |
+| ドメイン知識の欠落 | 特定ドメインの専門知識が必要だった |
+| 再利用性の発見 | 他タスクでも使える汎用的な処理パターンを発見 |
+
+#### 12-4-4: 新規スキル作成
+
+新規スキルが必要と判定された場合、skill-creatorの**createモード**で作成する。
+
+```bash
+# 新規スキル作成
+node .claude/skills/skill-creator/scripts/detect_mode.mjs \
+  --request "{{NEW_SKILL_DESCRIPTION}}"
+
+# 作成後の検証
+node .claude/skills/skill-creator/scripts/validate_all.mjs \
+  .claude/skills/{{NEW_SKILL_NAME}}
+
+# スキルリスト更新
+node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
+  --skill-path .claude/skills/{{NEW_SKILL_NAME}}
+```
+
+**新規スキル作成時の必須項目**:
+
+| 項目 | 内容 |
+| ---- | ---- |
+| 目的 | なぜこのスキルが必要か（ワークフロー実行時の課題） |
+| Trigger | いつこのスキルを使うべきか |
+| 境界 | 何をするか/しないか |
+| 成果物 | 何を出力するか |
+| 参照元タスク | このスキルの必要性を発見したタスク名 |
+
+#### 改善・作成判定基準
+
+| 条件                    | 判定     | アクション                   |
+| ----------------------- | -------- | ---------------------------- |
+| 同じ問題が3回以上発生   | 既存改善 | ベストプラクティスに追加     |
+| ワークフロー不足        | 既存改善 | Phase/アクション追加         |
+| Trigger選定ミスが多発   | 既存改善 | Trigger条件見直し            |
+| 成果物形式が不統一      | 既存改善 | テンプレート追加             |
+| **既存スキルで対応不可** | **新規作成** | **skill-creator createモード** |
+| **汎用的パターン発見**   | **新規作成** | **skill-creator createモード** |
+| 上記以外                | 保留     | LOGS.mdに記録のみ            |
+
 ## 成果物
 
 | 成果物               | パス                                           | 必須 | 説明                       |
@@ -956,6 +1041,7 @@ Phase 12: ドキュメント更新
 | 実装ガイド           | `outputs/phase-12/implementation-guide.md`     | ✅   | 概念的+技術的ドキュメント  |
 | ドキュメント更新履歴 | `outputs/phase-12/documentation-update-log.md` | ✅   | 更新履歴                   |
 | 未タスク検出レポート | `outputs/phase-12/unassigned-task-report.md`   | ✅   | 検出結果（なしでも出力）   |
+| スキルフィードバック | `outputs/phase-12/skill-feedback-report.md`    | ✅   | スキル使用結果・改善提案   |
 | 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`       | 条件 | 検出時のみ作成             |
 
 ## 完了条件
@@ -965,6 +1051,8 @@ Phase 12: ドキュメント更新
 - [ ] 関連ドキュメントが更新されている
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
+- [ ] **スキルフィードバックがskill-creatorで記録されている**【必須】
+- [ ] スキル改善が必要な場合、skill-creatorで更新が実行されている
 - [ ] artifacts.jsonが更新されている
 - [ ] **本Phase内の全スキルを100%実行完了**
 

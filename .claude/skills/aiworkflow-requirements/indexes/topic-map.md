@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-05
+> 自動生成: 2026-01-07
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -93,11 +93,31 @@ node scripts/list-specs.mjs --topics
 | workflowsテーブル設計 | L49 |
 | ベクトル検索設計（将来拡張） | L99 |
 
+### references/architecture-embedding-pipeline.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 主要コンポーネント | L21 |
+| チャンキング戦略 | L33 |
+| 埋め込みプロバイダー | L52 |
+| 信頼性機能 | L66 |
+| パフォーマンス最適化 | L94 |
+| 品質メトリクス | L121 |
+| 関連ドキュメント | L149 |
+
 ### references/architecture-file-conversion.md
 
 | セクション | 行 |
-|------------|----|\n| A ファイル変換基盤アーキテクチャ | L8 |
-| B Embedding Generation Pipeline アーキテクチャ | L584 |
+|------------|----|\n| 概要 | L8 |
+| 主要コンポーネント | L15 |
+| ログ記録サービス（ConversionLogger） | L26 |
+| アーキテクチャパターン | L71 |
+| 実装済みコンバーター | L80 |
+| 品質指標 | L118 |
+| 新規コンバーター追加手順 | L127 |
+| コンバーター優先度ガイドライン | L137 |
+| パフォーマンス要件 | L146 |
+| 既知の制限事項 | L156 |
 
 ### references/architecture-monorepo.md
 
@@ -116,6 +136,7 @@ node scripts/list-specs.mjs --topics
 | DiskANNベクトル検索アーキテクチャ | L157 |
 | オフライン・同期アーキテクチャ | L246 |
 | Desktop状態管理 | L277 |
+| エンティティ抽出サービス (NER) | L414 |
 
 ---
 
@@ -143,11 +164,39 @@ node scripts/list-specs.mjs --topics
 | Assistant | L207 |
 | 品質メトリクス | L244 |
 
+### references/interfaces-converter-extension.md
+
+| セクション | 行 |
+|------------|----|\n| BaseConverter 継承による実装 | L14 |
+| 実装の最小構成 | L42 |
+| カスタムメタデータの追加 | L100 |
+| エラーハンドリングのベストプラクティス | L138 |
+| テストの実装パターン | L176 |
+| 関連ドキュメント | L242 |
+
+### references/interfaces-converter-implementations.md
+
+| セクション | 行 |
+|------------|----|\n| 実装クラス一覧 | L10 |
+| HTMLConverter | L24 |
+| CSVConverter | L62 |
+| JSONConverter | L112 |
+| MarkdownConverter | L171 |
+| 概要 | L196 |
+| CodeConverter | L229 |
+| YAMLConverter | L279 |
+| PlainTextConverter（未実装） | L328 |
+| 関連ドキュメント | L366 |
+
 ### references/interfaces-converter.md
 
 | セクション | 行 |
-|------------|----|\n| A IConverter インターフェース | L8 |
-| 概要 | L223 |
+|------------|----|\n| 概要 | L8 |
+| ドキュメント構成 | L15 |
+| IConverter インターフェース | L24 |
+| 実装クラス一覧 | L56 |
+| IConversionLogger インターフェース | L72 |
+| 関連ドキュメント | L128 |
 
 ### references/interfaces-core.md
 
@@ -180,11 +229,53 @@ node scripts/list-specs.mjs --topics
 | セッション管理 | L285 |
 | 関連ドキュメント | L318 |
 
+### references/interfaces-rag-chunk-embedding.md
+
+| セクション | 行 |
+|------------|----|\n| 主要型 | L16 |
+| ChunkEntity型 | L25 |
+| EmbeddingEntity型 | L47 |
+| チャンキング戦略 | L67 |
+| 埋め込みプロバイダー | L83 |
+| デフォルト設定 | L96 |
+| ベクトル演算ユーティリティ | L121 |
+| バリデーション | L143 |
+| 関連ドキュメント | L151 |
+
+### references/interfaces-rag-file-selection.md
+
+| セクション | 行 |
+|------------|----|\n| IPCチャンネル | L14 |
+| リクエスト/レスポンス型 | L25 |
+| セキュリティ機能 | L54 |
+| UIコンポーネント | L65 |
+| 実装場所 | L84 |
+| 関連ドキュメント | L93 |
+
+### references/interfaces-rag-search.md
+
+| セクション | 行 |
+|------------|----|\n| 主要型 | L16 |
+| 列挙型 | L58 |
+| 検索設定型 | L68 |
+| デフォルト値 | L108 |
+| ユーティリティ関数 | L116 |
+| 型ガード | L131 |
+| バリデーション | L141 |
+| 関連ドキュメント | L155 |
+
 ### references/interfaces-rag.md
 
 | セクション | 行 |
-|------------|----|\n| FileSelection API | L8 |
-| RAG型定義 | L81 |
+|------------|----|\n| 概要 | L8 |
+| ドキュメント構成 | L12 |
+| Branded Types | L22 |
+| RAGエラー型 | L45 |
+| 共通インターフェース | L66 |
+| ファイル・変換ドメイン型 | L123 |
+| Knowledge Graph型 | L149 |
+| 設計原則 | L163 |
+| 関連ドキュメント | L292 |
 
 ### references/interfaces-workflow.md
 
@@ -218,15 +309,48 @@ node scripts/list-specs.mjs --topics
 | エンドポイント命名規則 | L325 |
 | Electron IPC API設計 | L346 |
 | AIプロバイダーAPI連携 | L453 |
+| エンティティ抽出サービス (NER) | L486 |
+
+### references/api-internal-chunk-search.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 検索エンドポイント（将来実装） | L14 |
+| 性能目標 | L69 |
+| 使用例（データベース層） | L78 |
+| 実装ステータス | L105 |
+
+### references/api-internal-conversion.md
+
+| セクション | 行 |
+|------------|----|\n| ConversionService API | L8 |
+
+### references/api-internal-embedding.md
+
+| セクション | 行 |
+|------------|----|\n| 主要インターフェース | L10 |
+| エラーコード | L140 |
+| 性能指標 | L151 |
+
+### references/api-internal-search.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| 主要クラス | L14 |
+| SearchService メソッド | L24 |
+| エラーコード | L182 |
+| 使用パターン | L192 |
+| 性能特性 | L251 |
+| デフォルト除外パターン | L261 |
+| 関連ドキュメント | L274 |
 
 ### references/api-internal.md
 
 | セクション | 行 |
-|------------|----|\n| 内部サービスAPI（RAG変換システム） | L8 |
-| チャンク検索API（RAG全文検索） | L157 |
-| Embedding Generation API | L269 |
-| Search Service API | L426 |
-| 関連ドキュメント | L694 |
+|------------|----|\n| 概要 | L8 |
+| API一覧 | L12 |
+| 各APIの概要 | L21 |
+| 関連ドキュメント | L49 |
 
 ---
 
@@ -237,11 +361,14 @@ node scripts/list-specs.mjs --topics
 ### references/database-architecture.md
 
 | セクション | 行 |
-|------------|----|\n| データベース統一アーキテクチャ | L8 |
-| 環境別接続設定 | L54 |
-| スキーマ設計 | L82 |
-| Knowledge Graph テーブル | L717 |
-| Repository パターン設計 | L772 |
+|------------|----|\n| 採用技術と選定理由 | L8 |
+| アーキテクチャ概要 | L17 |
+| 設計原則 | L43 |
+| 環境別接続設定 | L50 |
+| ディレクトリ構成 | L76 |
+| 基盤モジュール | L97 |
+| 使用例 | L144 |
+| 関連ドキュメント | L155 |
 
 ### references/database-implementation.md
 
@@ -264,6 +391,19 @@ node scripts/list-specs.mjs --topics
 | Electron ローカルストレージ | L103 |
 | 関連ドキュメント | L166 |
 
+### references/database-schema.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| テーブル一覧 | L13 |
+| ワークフロー関連テーブル | L31 |
+| ユーザー関連テーブル | L70 |
+| チャット関連テーブル | L104 |
+| RAG関連テーブル | L140 |
+| 変換処理関連テーブル | L182 |
+| インデックス設計 | L208 |
+| 関連ドキュメント | L245 |
+
 ---
 
 ## UI/UX
@@ -273,11 +413,10 @@ node scripts/list-specs.mjs --topics
 ### references/ui-ux-advanced.md
 
 | セクション | 行 |
-|------------|----|\n| Portal実装パターン | L8 |
-| ナビゲーションUI設計（ChatView） | L343 |
-| システムプロンプト設定UI | L540 |
-| LLM選択機能（Chat LLM Switching） | L773 |
-| 関連ドキュメント | L923 |
+|------------|----|\n| 概要 | L8 |
+| ドキュメント一覧 | L13 |
+| トピック別参照 | L22 |
+| 関連ドキュメント | L41 |
 
 ### references/ui-ux-components.md
 
@@ -296,6 +435,20 @@ node scripts/list-specs.mjs --topics
 | タイポグラフィ | L121 |
 | スペーシングとレイアウト | L160 |
 
+### references/ui-ux-file-selector.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| コンポーネント構成 | L21 |
+| トリガーボタン | L47 |
+| モーダルダイアログ | L63 |
+| ドロップゾーン | L75 |
+| ファイルリスト | L86 |
+| フィルター機能 | L98 |
+| キーボード操作 | L110 |
+| アニメーション | L121 |
+| アクセシビリティ対応 | L132 |
+
 ### references/ui-ux-forms.md
 
 | セクション | 行 |
@@ -303,12 +456,81 @@ node scripts/list-specs.mjs --topics
 | 認証UI設計 | L69 |
 | APIキー設定UI設計 | L277 |
 
+### references/ui-ux-llm-selector.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| UI構成 | L18 |
+| プロバイダーとモデル一覧 | L28 |
+| 状態管理 | L43 |
+| UXフロー | L57 |
+| スタイルガイドライン | L77 |
+| アクセシビリティ | L104 |
+| エラーハンドリング | L114 |
+| テストカバレッジ | L122 |
+| システムプロンプト連携 | L138 |
+
+### references/ui-ux-navigation.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| ナビゲーションボタン仕様 | L14 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L30 |
+| テスト検証済み項目 | L44 |
+| アクセシビリティ対応事例 | L59 |
+| ナビゲーションパターンのベストプラクティス | L91 |
+| 関連ドキュメント | L103 |
+
 ### references/ui-ux-panels.md
 
 | セクション | 行 |
-|------------|----|\n| アイコンとイラスト | L8 |
-| 検索・置換パネルUI設計 | L45 |
-| ファイルセレクターUI設計 | L219 |
+|------------|----|\n| 概要 | L8 |
+| ドキュメント構成 | L12 |
+| アイコンとイラスト | L21 |
+| パネル共通ガイドライン | L58 |
+| 関連ドキュメント | L80 |
+
+### references/ui-ux-portal-patterns.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| Stacking Context問題の理解 | L17 |
+| 基本実装パターン | L32 |
+| イベントハンドリング | L65 |
+| WAI-ARIA Menu Pattern実装 | L85 |
+| テスト設計 | L114 |
+| パフォーマンス最適化 | L129 |
+| ベストプラクティス | L140 |
+| 注意事項 | L151 |
+| 実装チェックリスト | L167 |
+
+### references/ui-ux-search-panel.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| キーボードショートカット | L22 |
+| タブバー設計 | L37 |
+| ファイル内検索パネル（FileSearchPanel） | L62 |
+| ワークスペース検索パネル（WorkspaceSearchPanel） | L100 |
+| ファイル名検索パネル（FileNameSearchPanel） | L130 |
+| ハイライト表示 | L151 |
+| アクセシビリティ対応 | L163 |
+| エラー状態 | L177 |
+| パフォーマンス考慮事項 | L188 |
+
+### references/ui-ux-system-prompt.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| UIコンポーネント構成 | L15 |
+| パネル展開/折りたたみ仕様 | L27 |
+| システムプロンプト入力エリア仕様 | L39 |
+| プロンプトテンプレート管理仕様 | L56 |
+| 状態管理構造（Zustand） | L91 |
+| LLM連携仕様 | L113 |
+| データ永続化 | L123 |
+| アクセシビリティ対応 | L131 |
+| パフォーマンス要件 | L157 |
 
 ---
 
@@ -316,13 +538,32 @@ node scripts/list-specs.mjs --topics
 
 **関連キーワード**: 認証, 暗号化, CSP, バリデーション, インシデント
 
+### references/security-api-electron.md
+
+| セクション | 行 |
+|------------|----|\n| API セキュリティ | L10 |
+| 依存関係セキュリティ | L53 |
+| Electron セキュリティ | L78 |
+| 関連ドキュメント | L142 |
+
 ### references/security-implementation.md
 
 | セクション | 行 |
-|------------|----|\n| 入力バリデーション | L8 |
-| API セキュリティ | L361 |
-| 依存関係セキュリティ | L412 |
-| Electron セキュリティ | L451 |
+|------------|----|\n| 概要 | L8 |
+| ドキュメント構成 | L14 |
+| セキュリティ原則 | L23 |
+| 関連ドキュメント | L46 |
+
+### references/security-input-validation.md
+
+| セクション | 行 |
+|------------|----|\n| バリデーション原則 | L10 |
+| 入力タイプ別バリデーション | L22 |
+| SQLインジェクション対策 | L37 |
+| XSS対策 | L54 |
+| Zodスキーマによるバリデーション | L70 |
+| ファイル変換のセキュリティ | L84 |
+| 関連ドキュメント | L132 |
 
 ### references/security-operations.md
 
@@ -380,19 +621,44 @@ node scripts/list-specs.mjs --topics
 
 **関連キーワード**: Skill, Agent, Command, Progressive Disclosure, Task
 
+### references/claude-code-agents-spec.md
+
+| セクション | 行 |
+|------------|----|\n| ファイル配置 | L10 |
+| YAML Frontmatter 必須フィールド | L19 |
+| YAML Frontmatter オプションフィールド | L26 |
+| 完全な YAML Frontmatter 記述形式 | L36 |
+| description フィールドの詳細記述規則 | L66 |
+| 依存スキルの記述規則 | L91 |
+| 本文の必須セクション | L129 |
+| 目的 | L148 |
+| 責務 | L152 |
+| 背景 | L156 |
+
+### references/claude-code-agents-workflow.md
+
+| セクション | 行 |
+|------------|----|\n| ワークフローセクションの記述形式（各Phase共通） | L10 |
+| ワークフロー | L15 |
+| ペルソナ設計 | L67 |
+| ツール権限設定 | L82 |
+| エージェント間協調 | L95 |
+| ハンドオフプロトコル | L106 |
+| agent_list.md 仕様 | L119 |
+| エラーハンドリング | L157 |
+| 状態管理 | L178 |
+| 品質基準 | L202 |
+
 ### references/claude-code-agents.md
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
-| Agent（エージェント）仕様 | L34 |
-| 目的 | L169 |
-| 責務 | L173 |
-| 背景 | L177 |
-| 役割定義 | L181 |
-| ワークフロー | L199 |
-| {{チーム名}} | L343 |
-| 品質基準 | L369 |
-| 命名規則 | L387 |
+| ドキュメント構成 | L14 |
+| Agent 層の役割 | L23 |
+| 責務境界 | L34 |
+| 関連エージェント | L47 |
+| 関連スキル | L55 |
+| 関連ドキュメント | L66 |
 
 ### references/claude-code-commands.md
 
@@ -421,6 +687,20 @@ node scripts/list-specs.mjs --topics
 | 変更履歴 | L282 |
 | ドキュメント構成 | L302 |
 
+### references/claude-code-skills-agents.md
+
+| セクション | 行 |
+|------------|----|\n| 目的 | L10 |
+| agents/ の位置づけ（誤解防止） | L17 |
+| agents/*.md 標準フォーマット（必須テンプレ） | L26 |
+| agents/*.md テンプレ（Markdown見出しで構造化） | L43 |
+| メタ情報 | L50 |
+| プロフィール | L58 |
+| 知識ベース | L74 |
+| 実行仕様 | L100 |
+| インターフェース | L128 |
+| 関連ドキュメント | L175 |
+
 ### references/claude-code-skills-overview.md
 
 | セクション | 行 |
@@ -441,25 +721,68 @@ node scripts/list-specs.mjs --topics
 | {{番号}}. {{エージェント役割名}} | L395 |
 | 参照（最小限に維持） | L416 |
 
+### references/claude-code-skills-resources.md
+
+| セクション | 行 |
+|------------|----|\n| scripts/ ディレクトリ仕様 | L10 |
+| references/ ディレクトリ仕様 | L47 |
+| Progressive Disclosure パターン | L77 |
+| Quick start | L84 |
+| Advanced features | L88 |
+| assets/ ディレクトリ仕様 | L124 |
+| ワークフローパターン | L145 |
+| 出力パターン | L175 |
+| {{出力タイプ}}構造 | L184 |
+| {{セクション1名}} | L190 |
+
 ### references/claude-code-skills-structure.md
 
 | セクション | 行 |
-|------------|----|\n| Skill構造仕様 | L10 |
-| SKILL.md 仕様 | L42 |
-| agents/ ディレクトリ仕様（Task仕様書） | L125 |
-| メタ情報 | L152 |
-| プロフィール | L160 |
-| 知識ベース | L176 |
-| 実行仕様 | L202 |
-| インターフェース | L230 |
-| scripts/ ディレクトリ仕様（維持） | L277 |
-| references/ ディレクトリ仕様（維持＋補強） | L316 |
+|------------|----|\n| 概要 | L10 |
+| ドキュメント構成 | L16 |
+| Skill構造仕様 | L25 |
+| SKILL.md 仕様 | L50 |
+| 関連ドキュメント | L133 |
 
 ---
 
 ## その他
 
 **関連キーワード**: デプロイ, Railway, 環境変数, Discord, プラグイン
+
+### references/deployment-electron.md
+
+| セクション | 行 |
+|------------|----|\n| ビルドターゲット | L10 |
+| リリースフロー | L20 |
+| リリースチェックリスト | L32 |
+| 自動更新（electron-updater） | L45 |
+| コードサイニング | L72 |
+| デプロイチェックリスト | L96 |
+| データベースマイグレーションのロールバック | L147 |
+| 関連ドキュメント | L173 |
+
+### references/deployment-gha.md
+
+| セクション | 行 |
+|------------|----|\n| ワークフロー構成 | L10 |
+| CI ワークフロー要件（PR時） | L20 |
+| キャッシュ戦略 | L54 |
+| 並列実行の活用 | L76 |
+| CD ワークフロー要件（mainマージ時） | L95 |
+| モニタリングとアラート | L119 |
+| GitHub Secrets の要件 | L166 |
+| 関連ドキュメント | L184 |
+
+### references/deployment-railway.md
+
+| セクション | 行 |
+|------------|----|\n| 無料枠の制限と最適化 | L10 |
+| スリープモード対策 | L43 |
+| カスタムドメイン設定 | L73 |
+| 環境分離 | L90 |
+| ロールバック | L115 |
+| 関連ドキュメント | L140 |
 
 ### references/deployment.md
 
@@ -564,18 +887,32 @@ node scripts/list-specs.mjs --topics
 | 新規仕様の追加手順 | L72 |
 | ファイルサイズ管理 | L80 |
 
+### references/task-workflow-phases.md
+
+| セクション | 行 |
+|------------|----|\n| フェーズ構造 | L8 |
+| 出力テンプレート | L186 |
+
+### references/task-workflow-rules.md
+
+| セクション | 行 |
+|------------|----|\n| 品質ゲート | L8 |
+| コマンド・エージェント・スキル選定ルール | L37 |
+| タスク分解ルール | L94 |
+| ドキュメント更新ルール | L115 |
+| 実行時のコマンド・エージェント・スキル | L136 |
+| 関連ドキュメント | L160 |
+
 ### references/task-workflow.md
 
 | セクション | 行 |
-|------------|----|\n| 概要 | L6 |
-| フェーズ構造 | L30 |
-| 品質ゲート | L509 |
-| コマンド・エージェント・スキル選定ルール | L538 |
-| タスク分解ルール | L597 |
-| 出力テンプレート | L618 |
-| ドキュメント更新ルール | L643 |
-| 実行時のコマンド・エージェント・スキル | L664 |
-| 関連ドキュメント | L688 |
+|------------|----|\n| 概要 | L8 |
+| ドキュメント構成 | L32 |
+| フェーズ構造（概要） | L41 |
+| 品質ゲート（概要） | L71 |
+| 出力テンプレート | L82 |
+| 実行時のコマンド・エージェント・スキル | L107 |
+| 関連ドキュメント | L131 |
 
 ---
 

@@ -60,6 +60,10 @@
     "./agent": {
       "types": "./dist/src/agent/index.d.ts",
       "import": "./dist/src/agent/index.js"
+    },
+    "./types/llm/schemas": {
+      "types": "./dist/src/types/llm/schemas/index.d.ts",
+      "import": "./dist/src/types/llm/schemas/index.js"
     }
   },
   "scripts": {

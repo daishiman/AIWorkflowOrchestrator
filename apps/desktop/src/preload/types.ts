@@ -11,6 +11,12 @@ import type {
   ValidateFilePathResponse,
 } from "@repo/shared/schemas";
 
+import type {
+  LLMProvider,
+  LLMProviderId,
+  HealthCheckResult,
+} from "@repo/shared/types/llm/schemas";
+
 // File operations
 export interface GetFileTreeRequest {
   rootPath: string;
@@ -878,6 +884,11 @@ export interface ElectronAPI {
     validatePath: (
       request: ValidateFilePathRequest,
     ) => Promise<ValidateFilePathResponse>;
+  };
+
+  llm: {
+    getProviders: () => Promise<LLMProvider[]>;
+    checkHealth: (providerId: LLMProviderId) => Promise<HealthCheckResult>;
   };
 
   // Generic invoke for IPC calls
