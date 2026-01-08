@@ -131,6 +131,50 @@ type Event = z.infer<typeof eventSchema>;
 // { type: 'click'; x: number; y: number } | { type: 'keypress'; key: string }
 ```
 
+### Success/Error レスポンスパターン（API応答に最適）
+
+```typescript
+// 成功時のレスポンス
+const successResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.object({
+    id: z.string(),
+    content: z.string(),
+  }),
+});
+
+// 失敗時のレスポンス
+const errorResponseSchema = z.object({
+  success: z.literal(false),
+  error: z.object({
+    code: z.enum(["NOT_FOUND", "UNAUTHORIZED", "TIMEOUT"]),
+    message: z.string(),
+    retryable: z.boolean(),
+  }),
+});
+
+// Discriminated Union（"success" で判別）
+const apiResponseSchema = z.discriminatedUnion("success", [
+  successResponseSchema,
+  errorResponseSchema,
+]);
+
+type ApiResponse = z.infer<typeof apiResponseSchema>;
+
+// 使用例：型推論が効く
+function handleResponse(response: ApiResponse) {
+  if (response.success) {
+    // TypeScriptは response.data の存在を認識
+    console.log(response.data.content);
+  } else {
+    // TypeScriptは response.error の存在を認識
+    console.error(response.error.message);
+  }
+}
+```
+
+> **実装事例**: `packages/shared/src/types/llm/schemas/response.ts` の `LLMChatResponseSchema`
+
 ---
 
 ## 再利用パターン
