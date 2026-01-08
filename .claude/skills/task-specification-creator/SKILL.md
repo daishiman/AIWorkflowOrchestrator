@@ -390,27 +390,16 @@ git push
 
 ---
 
-## Phase 12: 未タスク検出 & 実装ガイド作成【必須】
+## Phase 12: ドキュメント更新 & スキル改善【必須】
 
-Phase 12では2つの必須作業を行う:
+Phase 12では4つの必須作業を行う:
 
-1. **未タスク検出**: 技術的負債の可視化と継続的改善
-2. **実装ガイド作成**: 概念的説明と技術的詳細のドキュメント化
+1. **実装ガイド作成**: 概念的説明と技術的詳細のドキュメント化
+2. **システムドキュメント更新**: 既存ドキュメントへの反映
+3. **未タスク検出**: 技術的負債の可視化と継続的改善
+4. **スキルフィードバック・改善・新規作成**: skill-creatorによる継続的スキル改善
 
-### Phase 12-2: 未タスク検出
-
-| ソース | 確認項目 | Grepパターン例 |
-| --- | --- | --- |
-| Phase 3レビュー結果 | MINOR判定の指摘事項 | `outputs/phase-3/` |
-| Phase 9レビュー結果 | MINOR判定の指摘事項 | `outputs/phase-9/` |
-| Phase 11手動テスト結果 | スコープ外の発見事項 | `outputs/phase-11/` |
-| 各Phase成果物 | 「将来対応」「TODO」「FIXME」 | `grep -r "TODO\|FIXME\|将来対応" outputs/` |
-| コードベース | TODO/FIXME/HACK/XXXコメント | `grep -rn "TODO\|FIXME\|HACK\|XXX" packages/ apps/` |
-| スキルLOGS.md | partial/failure記録 | 各使用スキルのLOGS.md |
-
-**詳細仕様**: See [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
-
-### Phase 12-3: 実装ガイド作成
+### Phase 12-1: 実装ガイド作成
 
 実装した内容を「概念的な説明」と「技術的な詳細」の両面からドキュメント化する。
 
@@ -434,19 +423,99 @@ Phase 12では2つの必須作業を行う:
 
 **テンプレート**: See [assets/implementation-guide-template.md](assets/implementation-guide-template.md)
 
+### Phase 12-2: システムドキュメント更新
+
+- 更新対象: `docs/00-requirements/` 配下
+- 更新対象: `.claude/skills/aiworkflow-requirements/references/`
+- 更新原則: 概要のみ記載、Single Source of Truth遵守
+
+### Phase 12-3: 未タスク検出
+
+| ソース | 確認項目 | Grepパターン例 |
+| --- | --- | --- |
+| Phase 3レビュー結果 | MINOR判定の指摘事項 | `outputs/phase-3/` |
+| Phase 9レビュー結果 | MINOR判定の指摘事項 | `outputs/phase-9/` |
+| Phase 11手動テスト結果 | スコープ外の発見事項 | `outputs/phase-11/` |
+| 各Phase成果物 | 「将来対応」「TODO」「FIXME」 | `grep -r "TODO\|FIXME\|将来対応" outputs/` |
+| コードベース | TODO/FIXME/HACK/XXXコメント | `grep -rn "TODO\|FIXME\|HACK\|XXX" packages/ apps/` |
+| スキルLOGS.md | partial/failure記録 | 各使用スキルのLOGS.md |
+
+**詳細仕様**: See [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
+
+### Phase 12-4: スキルフィードバック・改善・新規作成【必須】
+
+**skill-creator**を使用して、ワークフロー実行中に使用したスキルのフィードバックを記録・改善し、必要に応じて新規スキルを作成する。
+
+#### 12-4-1: フィードバック収集
+
+各Phaseで使用したスキルの実行結果を評価し記録する。
+
+```bash
+# フィードバック記録
+node .claude/skills/task-specification-creator/scripts/log_usage.mjs \
+  --skill {{SKILL_NAME}} --result {{success|failure|partial}} --phase {{PHASE_NUMBER}}
+```
+
+#### 12-4-2: 既存スキル改善判定
+
+skill-creatorで改善必要性を判定し、必要な場合は更新する。
+
+```bash
+# スキル更新（必要な場合）
+node .claude/skills/skill-creator/scripts/detect_mode.mjs \
+  --request "スキルを更新" --skill-path .claude/skills/{{SKILL_NAME}}
+```
+
+#### 12-4-3: 新規スキル必要性判定【重要】
+
+ワークフロー実行中に以下の状況が発生した場合、**新規スキル作成**を検討する:
+
+| 検出条件 | 新規スキル作成の判断基準 |
+| -------- | ------------------------ |
+| 手動作業の繰り返し | 同じ手順を3回以上手動で実行した |
+| 既存スキル不在 | 必要なスキルが見つからず自前で対応した |
+| スキルの責務超過 | 1つのスキルに複数責務を詰め込んだ |
+| ドメイン知識の欠落 | 特定ドメインの専門知識が必要だった |
+| 再利用性の発見 | 他タスクでも使える汎用的な処理パターンを発見 |
+
+#### 12-4-4: 新規スキル作成
+
+新規スキルが必要と判定された場合、skill-creatorの**createモード**で作成する。
+
+```bash
+# 新規スキル作成
+node .claude/skills/skill-creator/scripts/detect_mode.mjs \
+  --request "{{NEW_SKILL_DESCRIPTION}}"
+
+# 作成後の検証
+node .claude/skills/skill-creator/scripts/validate_all.mjs \
+  .claude/skills/{{NEW_SKILL_NAME}}
+
+# スキルリスト更新
+node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
+  --skill-path .claude/skills/{{NEW_SKILL_NAME}}
+```
+
+**詳細仕様**: See [references/feedback-flow.md](references/feedback-flow.md)
+
 ### 出力要件
 
 | 出力物 | 必須 | 配置先 |
 | --- | --- | --- |
-| 未タスク検出レポート | ✅ | `outputs/phase-12/unassigned-task-report.md` |
 | 実装ガイド | ✅ | `outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新記録 | ✅ | `outputs/phase-12/documentation-update-log.md` |
+| 未タスク検出レポート | ✅ | `outputs/phase-12/unassigned-task-report.md` |
+| スキルフィードバック | ✅ | `outputs/phase-12/skill-feedback-report.md` |
 | 未タスク指示書（該当時） | 条件 | `docs/30-workflows/unassigned-task/` |
 
 ### 完了条件
 
-- [ ] 実装ガイドが作成されている
+- [ ] 実装ガイド（Part 1: 概念的説明 + Part 2: 技術的詳細）が作成されている
+- [ ] ドキュメント更新記録が出力されている
 - [ ] 未タスク検出レポートが出力されている
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
+- [ ] **スキルフィードバックがskill-creatorで記録されている**【必須】
+- [ ] スキル改善/新規作成が必要な場合、skill-creatorで実行されている
 - [ ] **本Phase内の全スキルを100%実行完了**
 
 ---

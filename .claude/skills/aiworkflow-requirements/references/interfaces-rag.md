@@ -287,6 +287,103 @@ ExtractedEntity[] → (後続処理で) → EntityEntity (Knowledge Graph)
 
 **参照**: `docs/30-workflows/entity-extraction-ner/outputs/phase-10/implementation-guide.md` - 詳細な設計・実装ドキュメント
 
+### 関係抽出サービス (Relation Extraction)
+
+エンティティ間の関係を抽出し、Knowledge Graphのエッジを生成するサービス。LLMベースの高精度抽出を提供。
+
+**実装場所**: `packages/shared/src/services/extraction/`
+
+#### アーキテクチャ
+
+```
+ExtractedEntity[] (エンティティ抽出結果)
+    │
+    ↓
+┌─────────────────────────────────────────────────┐
+│         IRelationExtractor                       │
+│  ┌─────────────────────────────────────────┐    │
+│  │ LLMRelationExtractor                     │    │
+│  │  (AIで関係抽出 - 15種類の関係タイプ対応)│    │
+│  └─────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────┘
+    │
+    ↓
+ExtractedRelation[] → (後続処理で) → RelationEntity (Knowledge Graph Edge)
+```
+
+#### インターフェース
+
+**IRelationExtractor**: 関係抽出の抽象インターフェース
+
+| メソッド        | 説明                                   |
+| --------------- | -------------------------------------- |
+| extract()       | 単一チャンクからエンティティ間関係抽出 |
+| extractBatch()  | 複数チャンクからバッチ抽出             |
+| mergeRelations()| 抽出結果のマージ（重複除去・統合）     |
+
+#### 抽出オプション (RelationExtractionOptions)
+
+| オプション            | 型             | デフォルト | 説明                           |
+| --------------------- | -------------- | ---------- | ------------------------------ |
+| minConfidence         | number         | 0.5        | 最小信頼度閾値                 |
+| allowedRelationTypes  | RelationType[] | 全15タイプ | 抽出対象の関係タイプ制限       |
+| temperature           | number         | 0.1        | LLMの温度パラメータ            |
+| maxTokens             | number         | 2000       | 最大トークン数                 |
+
+#### 抽出結果型 (ExtractedRelation)
+
+| プロパティ     | 型                | 説明                                 |
+| -------------- | ----------------- | ------------------------------------ |
+| sourceEntity   | string            | 関係の起点エンティティ名             |
+| targetEntity   | string            | 関係の終点エンティティ名             |
+| relationType   | RelationType      | 関係タイプ（15種類）                 |
+| description    | string?           | 関係の説明文（LLM生成）              |
+| evidence       | RelationEvidence[]| 根拠情報（必須1件以上）              |
+| confidence     | number            | 信頼度スコア（0.0〜1.0）             |
+| bidirectional  | boolean           | 双方向関係フラグ                     |
+| attributes     | Record<string, unknown>? | カスタム属性（拡張用）         |
+
+#### 関係タイプ (RelationType) - 15種類
+
+| タイプ            | カテゴリ     | 説明                     | 例                              |
+| ----------------- | ------------ | ------------------------ | ------------------------------- |
+| belongs_to        | 所属関係     | 組織への所属             | 山田→A社                        |
+| related_to        | 汎用関係     | 一般的な関連             | AI→機械学習                     |
+| causes            | 因果関係     | 原因-結果                | バグ→エラー                     |
+| depends_on        | 依存関係     | 技術的依存               | React→JavaScript                |
+| created_by        | 作成関係     | 作成者-成果物            | TypeScript→Microsoft            |
+| uses              | 使用関係     | 使用-被使用              | Next.js→React                   |
+| part_of           | 包含関係     | 部分-全体                | 章→本                           |
+| located_in        | 位置関係     | 場所-所在                | Google→カリフォルニア           |
+| succeeds          | 時系列関係   | 後継-先行                | Python 3→Python 2               |
+| precedes          | 時系列関係   | 先行-後継                | HTML→HTML5                      |
+| competes_with     | 競合関係     | 競合関係                 | React→Vue                       |
+| collaborates_with | 協力関係     | 協力・提携               | OpenAI→Microsoft                |
+| implements        | 実装関係     | インターフェース-実装    | Express→HTTPサーバー            |
+| extends           | 拡張関係     | 拡張元-拡張先            | TypeScript→JavaScript           |
+| other             | その他       | 分類困難な関係           | -                               |
+
+#### RelationEvidence型（根拠情報）
+
+| プロパティ     | 型     | 説明                           |
+| -------------- | ------ | ------------------------------ |
+| chunkId        | string | 出現チャンクID                 |
+| text           | string | 根拠テキスト                   |
+| startPosition  | number | 開始位置（文字オフセット）     |
+| endPosition    | number | 終了位置（文字オフセット）     |
+
+#### エラー型
+
+| エラーコード        | 説明                     |
+| ------------------- | ------------------------ |
+| LLM_API_ERROR       | LLM API呼び出し失敗      |
+| PARSE_ERROR         | LLMレスポンスのJSON不正  |
+| VALIDATION_ERROR    | Zodスキーマバリデーション失敗 |
+| TIMEOUT             | タイムアウト             |
+| RATE_LIMITED        | レート制限超過           |
+
+**参照**: `docs/30-workflows/CONV-06-05-relation-extraction/outputs/phase-12/implementation-guide.md` - 詳細な設計・実装ドキュメント
+
 ---
 
 ## 関連ドキュメント
