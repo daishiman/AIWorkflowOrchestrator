@@ -56,6 +56,15 @@ export default defineConfig({
         __dirname,
         "../../packages/shared/schemas/index.ts",
       ),
+      // Agent SDK integration - resolve to source files instead of dist
+      "@repo/shared/agent": resolve(
+        __dirname,
+        "../../packages/shared/src/agent/index.ts",
+      ),
+      "@anthropic-ai/claude-agent-sdk": resolve(
+        __dirname,
+        "src/test/__mocks__/@anthropic-ai/claude-agent-sdk.ts",
+      ),
     },
   },
 });
