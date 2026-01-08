@@ -1,9 +1,9 @@
 /**
- * エンティティ抽出サービス
- * @description NER機能のエクスポート
+ * エンティティ・関係抽出サービス
+ * @description NER/RE機能のエクスポート
  */
 
-// Types
+// Entity Types
 export type {
   EntityType,
   Mention,
@@ -15,6 +15,19 @@ export type {
   LLMEntityResponse,
 } from "./types";
 
+// Relation Types (CONV-06-05)
+export type {
+  RelationType,
+  RelationEvidence,
+  ExtractedRelation,
+  RelationExtractionOptions,
+  RelationExtractionOptionsInput,
+  RelationExtractionResult,
+  BatchRelationExtractionResult,
+  LLMRelationResponse,
+} from "./types";
+
+// Entity Schemas
 export {
   MentionSchema,
   ExtractedEntitySchema,
@@ -25,17 +38,35 @@ export {
   DEFAULT_EXTRACTION_OPTIONS,
 } from "./types";
 
+// Relation Schemas (CONV-06-05)
+export {
+  RelationTypes,
+  RelationTypeSchema,
+  RelationEvidenceSchema,
+  ExtractedRelationSchema,
+  RelationExtractionOptionsSchema,
+  RelationExtractionResultSchema,
+  BatchRelationExtractionResultSchema,
+  LLMRelationResponseSchema,
+  DEFAULT_RELATION_EXTRACTION_OPTIONS,
+  BIDIRECTIONAL_RELATION_TYPES,
+} from "./types";
+
 // Interfaces
 export type {
   IEntityExtractor,
+  IRelationExtractor,
   ILLMProvider,
   LLMGenerateOptions,
   LLMGenerateResult,
 } from "./interfaces";
 
-// Implementations
+// Entity Implementations
 export { LLMEntityExtractor } from "./entity-extractor";
 export { RuleBasedEntityExtractor } from "./rule-based-extractor";
+
+// Relation Implementations (CONV-06-05)
+export { LLMRelationExtractor } from "./relation-extractor";
 
 // Errors
 export {
@@ -56,9 +87,16 @@ export {
   deduplicateEntities,
 } from "./utils";
 
-// Prompts
+// Entity Prompts
 export {
   buildEntityExtractionPrompt,
   SYSTEM_PROMPT,
   ENTITY_TYPE_DESCRIPTIONS,
 } from "./prompts/entity-extraction";
+
+// Relation Prompts (CONV-06-05)
+export {
+  buildRelationExtractionPrompt,
+  RELATION_SYSTEM_PROMPT,
+  RELATION_TYPE_DESCRIPTIONS,
+} from "./prompts/relation-extraction";
