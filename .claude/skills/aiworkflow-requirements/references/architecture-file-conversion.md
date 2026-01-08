@@ -21,6 +21,52 @@
 | `ConverterRegistry` | 利用可能なコンバーターの管理と選択（Repositoryパターン） |
 | `ConversionService` | 変換処理の統括（タイムアウト・同時実行制御） |
 | `MetadataExtractor` | テキストからのメタデータ抽出 |
+| `ConversionLogger` | 変換処理のログ記録（バッファリング対応） |
+
+## ログ記録サービス（ConversionLogger）
+
+**実装場所**: `packages/shared/src/services/logging/`
+**詳細設計**: `docs/30-workflows/logging-service/`
+
+変換処理の監査・トラブルシューティング用のログ記録サービス。
+
+### 主要機能
+
+| 機能 | 説明 |
+|------|------|
+| INFOログ | 正常な処理の記録（開始、完了、進捗） |
+| WARNログ | 注意が必要な状況（パフォーマンス警告等） |
+| ERRORログ | エラー発生時の記録（スタックトレース保存） |
+| バッファリング | メモリバッファによる効率的なDB書き込み |
+| 自動フラッシュ | サイズベース・時間ベースの自動書き込み |
+
+### アーキテクチャ
+
+```
+ConversionLogger → buffer[] → ILogRepository → Database
+                    ↑
+              サイズ/時間トリガーでflush
+```
+
+### インターフェース
+
+- `IConversionLogger`: ログ記録のインターフェース
+- `ILogRepository`: 永続化層のインターフェース（DIP適用）
+
+### 設定オプション
+
+| オプション | デフォルト | 説明 |
+|------------|------------|------|
+| bufferSize | 100 | バッファサイズ（件数） |
+| flushIntervalMs | 5000 | 自動フラッシュ間隔（ミリ秒） |
+
+### 品質指標
+
+| 指標 | 実績 |
+|------|------|
+| テストカバレッジ（Line） | 96.69% |
+| テストカバレッジ（Branch） | 94.59% |
+| テスト数 | 22ケース |
 
 ## アーキテクチャパターン
 
@@ -152,3 +198,4 @@ YAML正規化、構造解析、トップレベルキー抽出、インデント�
 - [RAGアーキテクチャ](./architecture-rag.md)
 - [内部API仕様](./api-internal.md)
 - [コンバーター型定義](./interfaces-converter.md)
+- [ConversionLogger実装ガイド](../../../../../docs/30-workflows/logging-service/outputs/phase-12/implementation-guide.md)

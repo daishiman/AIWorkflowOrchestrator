@@ -26,6 +26,7 @@ Turso統一アーキテクチャにおけるテーブル設計とインデック
 | chat_messages | チャットメッセージ | ✅ 実装済み |
 | files | RAGファイルメタデータ | ✅ 実装済み |
 | chunks | RAGチャンク + FTS5 | ✅ 実装済み |
+| conversion_logs | 変換処理ログ | 設計済み |
 
 ## ワークフロー関連テーブル
 
@@ -177,6 +178,32 @@ Turso統一アーキテクチャにおけるテーブル設計とインデック
 | metadata | JSON | YES | 拡張メタデータ |
 | created_at | INTEGER | NO | 作成日時 |
 | updated_at | INTEGER | NO | 更新日時 |
+
+## 変換処理関連テーブル
+
+### conversion_logs（変換処理ログ）
+
+> **実装予定**: CONV-05-02 (LogRepository実装タスク)
+> **詳細設計**: `docs/30-workflows/logging-service/`
+
+| カラム | 型 | NULL | 説明 |
+|--------|------|------|------|
+| id | TEXT | NO | UUID主キー |
+| file_id | TEXT | NO | 対象ファイルID |
+| level | TEXT | NO | ログレベル（info / warn / error） |
+| message | TEXT | NO | ログメッセージ |
+| metadata | JSON | YES | 追加メタデータ |
+| error_stack | TEXT | YES | エラー時のスタックトレース |
+| timestamp | TEXT | NO | ログ記録日時（ISO8601形式） |
+| created_at | TEXT | NO | 作成日時 |
+
+**インデックス計画**:
+
+| インデックス | カラム | 用途 |
+|--------------|--------|------|
+| idx_conversion_logs_file_id | file_id | ファイル単位ログ取得 |
+| idx_conversion_logs_level | level | レベルフィルタ |
+| idx_conversion_logs_timestamp | timestamp | 日付範囲検索 |
 
 ## インデックス設計
 

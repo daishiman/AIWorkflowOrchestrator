@@ -1,0 +1,149 @@
+{
+  "taskId": "CONV-05-01",
+  "taskName": "logging-service",
+  "featureName": "logging-service",
+  "status": "completed",
+  "createdAt": "2026-01-07T00:00:00Z",
+  "lastUpdated": "2026-01-07T13:15:00Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/domain-model.md",
+        "outputs/phase-2/zod-schema-design.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md",
+        "packages/shared/src/services/logging/__tests__/conversion-logger.test.ts",
+        "packages/shared/src/services/logging/__tests__/mocks/log-repository.mock.ts",
+        "packages/shared/src/services/logging/types.ts"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["packages/shared/src/services/logging/conversion-logger.ts"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md",
+        "packages/shared/src/services/logging/__tests__/conversion-logger.test.ts"
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/gate-result.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-13/pr-info.md"]
+    }
+  },
+  "expectedArtifacts": {
+    "code": [
+      "packages/shared/src/services/logging/types.ts",
+      "packages/shared/src/services/logging/conversion-logger.ts",
+      "packages/shared/src/services/logging/__tests__/conversion-logger.test.ts"
+    ],
+    "documentation": [
+      "outputs/phase-1/requirements-definition.md",
+      "outputs/phase-1/acceptance-criteria.md",
+      "outputs/phase-2/architecture-design.md",
+      "outputs/phase-2/domain-model.md",
+      "outputs/phase-3/design-review-result.md",
+      "outputs/phase-4/test-specification.md",
+      "outputs/phase-4/test-cases.md",
+      "outputs/phase-6/coverage-report.md",
+      "outputs/phase-6/integration-test.md",
+      "outputs/phase-7/coverage-report.md",
+      "outputs/phase-7/integration-test.md",
+      "outputs/phase-7/gate-result.md",
+      "outputs/phase-9/quality-report.md",
+      "outputs/phase-10/final-review-result.md",
+      "outputs/phase-11/manual-test-result.md",
+      "outputs/phase-12/implementation-guide.md",
+      "outputs/phase-12/documentation-update-log.md",
+      "outputs/phase-12/unassigned-task-report.md",
+      "outputs/phase-13/pr-info.md"
+    ]
+  },
+  "dependencies": {
+    "upstream": ["CONV-04-02"],
+    "downstream": ["CONV-05-02"]
+  },
+  "skills": {
+    "phase-1": ["requirements-engineering", "acceptance-criteria-writing"],
+    "phase-2": ["architectural-patterns", "domain-modeling", "zod-validation"],
+    "phase-4": ["tdd-principles", "test-doubles", "boundary-value-analysis"],
+    "phase-5": [
+      "clean-code-practices",
+      "error-handling-patterns",
+      "type-safety-patterns"
+    ],
+    "phase-6": ["test-coverage-analysis", "integration-testing"],
+    "phase-7": ["test-coverage-analysis"],
+    "phase-8": [
+      "refactoring-patterns",
+      "code-smell-detection",
+      "solid-principles"
+    ],
+    "phase-9": ["static-analysis", "security-scanning"],
+    "phase-12": ["documentation-architecture", "user-centric-writing"]
+  }
+}
