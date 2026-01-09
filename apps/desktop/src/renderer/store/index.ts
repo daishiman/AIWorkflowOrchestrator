@@ -29,6 +29,7 @@ import {
   createSystemPromptTemplateSlice,
   type SystemPromptTemplateSlice,
 } from "./slices/systemPromptTemplateSlice";
+import { createLLMSlice, type LLMSlice } from "./slices/llmSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -41,7 +42,8 @@ export type AppStore = NavigationSlice &
   AuthSlice &
   WorkspaceSlice &
   FileSelectionSlice &
-  SystemPromptTemplateSlice;
+  SystemPromptTemplateSlice &
+  LLMSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -92,6 +94,7 @@ export const useAppStore = create<AppStore>()(
         ...createWorkspaceSlice(...args),
         ...createFileSelectionSlice(...args),
         ...createSystemPromptTemplateSlice(...args),
+        ...createLLMSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -228,3 +231,25 @@ export const useClearFileSelectionError = () =>
   useAppStore((state) => state.clearError);
 export const useResetFileSelection = () =>
   useAppStore((state) => state.resetFileSelection);
+
+// LLM selectors - single hook for all LLM-related state and actions
+export const useLLMStore = () =>
+  useAppStore((state) => ({
+    providers: state.providers,
+    selectedProviderId: state.selectedProviderId,
+    selectedModelId: state.selectedModelId,
+    isLoading: state.llmIsLoading,
+    error: state.llmError,
+    healthStatus: state.healthStatus,
+    fetchProviders: state.fetchProviders,
+    selectProvider: state.selectProvider,
+    selectModel: state.selectModel,
+    checkHealth: state.checkHealth,
+    resetSelection: state.resetSelection,
+    clearError: state.clearLLMError,
+    setLoading: state.setLLMLoading,
+    setError: state.setLLMError,
+    getSelectedProvider: state.getSelectedProvider,
+    getSelectedModel: state.getSelectedModel,
+    isProviderAvailable: state.isProviderAvailable,
+  }));

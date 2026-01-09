@@ -16,6 +16,7 @@ RAGパイプライン実装で使用する共通型定義とインターフェ�
 | FileSelection API | [interfaces-rag-file-selection.md](./interfaces-rag-file-selection.md) | IPC通信インターフェース、セキュリティ機能 |
 | チャンク・埋め込み型 | [interfaces-rag-chunk-embedding.md](./interfaces-rag-chunk-embedding.md) | チャンク分割戦略、埋め込みプロバイダー |
 | 検索クエリ・結果型 | [interfaces-rag-search.md](./interfaces-rag-search.md) | HybridRAG検索、RRF、CRAG評価 |
+| Knowledge Graph Store | [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md) | ナレッジグラフの永続化・操作 |
 
 ---
 
@@ -153,8 +154,10 @@ const chunks = await repos.chunks.findByFileId(fileId);
 | 型名            | 役割       | 説明                   |
 | --------------- | ---------- | ---------------------- |
 | EntityEntity    | ノード     | 頂点（52種類のタイプ） |
-| RelationEntity  | エッジ     | 辺（23種類の関係）     |
+| RelationEntity  | エッジ     | 辺（15種類の関係）     |
 | CommunityEntity | クラスター | 意味的グループ         |
+
+**永続化層**: [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md) - IKnowledgeGraphStoreインターフェース
 
 **詳細参照**: `specs/05-architecture.md` セクション5.6
 

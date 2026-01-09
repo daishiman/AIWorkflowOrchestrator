@@ -52,3 +52,34 @@
 - 単一責務の原則に準拠
 
 ---
+
+## 2026-01-09
+
+| 項目         | 値                                                       |
+| ------------ | -------------------------------------------------------- |
+| 使用者       | Claude                                                   |
+| タスク       | CONV-08-01 Knowledge Graph ストア実装 Phase 8            |
+| 結果         | success                                                  |
+| 対象ファイル | knowledge-graph-store.ts, knowledge-graph-store.test.ts  |
+
+### 検出したコードスメル
+
+| スメル            | 対象                     | 対応                           |
+| ----------------- | ------------------------ | ------------------------------ |
+| Unused Import     | `desc` from drizzle-orm  | 削除                           |
+| Unused Import     | `NewRelationEvidence`    | 削除                           |
+| Unused Parameter  | embedding, limit, threshold | `_`プレフィックス追加       |
+| Unsafe Type Cast  | `as any`                 | `as EntityType`に変更          |
+| Unused Test Import| 8件の未使用import        | 削除                           |
+
+### 成果
+
+- ESLintエラー: 4 → 0
+- 型安全性向上（`as any` → `as EntityType`）
+- 未使用コードの削除によるコードの明確化
+
+### 改善提案
+
+- `as any`検出ルールの強化を検討
+
+---

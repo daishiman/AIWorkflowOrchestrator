@@ -115,6 +115,11 @@ export const IPC_CHANNELS = {
   // LLM operations
   LLM_GET_PROVIDERS: "llm:get-providers",
   LLM_CHECK_HEALTH: "llm:check-health",
+  LLM_SEND_CHAT: "llm:send-chat",
+  LLM_STREAM_CHAT: "llm:stream-chat",
+  LLM_STREAM_CHUNK: "llm:stream-chunk",
+  LLM_STREAM_END: "llm:stream-end",
+  LLM_STREAM_ERROR: "llm:stream-error",
 
   // Slide operations
   SLIDE_EXECUTE_PHASE: "slide:executePhase",
@@ -213,6 +218,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   // LLM channels
   IPC_CHANNELS.LLM_GET_PROVIDERS,
   IPC_CHANNELS.LLM_CHECK_HEALTH,
+  IPC_CHANNELS.LLM_SEND_CHAT,
+  IPC_CHANNELS.LLM_STREAM_CHAT,
   // Slide channels
   IPC_CHANNELS.SLIDE_EXECUTE_PHASE,
   IPC_CHANNELS.SLIDE_START_WATCHING,
@@ -232,6 +239,10 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AUTH_STATE_CHANGED,
   // Workspace channels
   IPC_CHANNELS.WORKSPACE_FOLDER_CHANGED,
+  // LLM stream channels
+  IPC_CHANNELS.LLM_STREAM_CHUNK,
+  IPC_CHANNELS.LLM_STREAM_END,
+  IPC_CHANNELS.LLM_STREAM_ERROR,
   // Slide channels
   IPC_CHANNELS.SLIDE_STRUCTURE_CHANGED,
   IPC_CHANNELS.SLIDE_SYNC_STATUS_CHANGED,

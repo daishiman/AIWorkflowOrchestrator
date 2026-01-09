@@ -135,6 +135,16 @@
 | schema/conversions.ts                   | ファイル変換履歴スキーマ                       |
 | schema/extracted-metadata.ts            | 抽出メタデータスキーマ                         |
 | schema/relations.ts                     | テーブル間リレーション定義                     |
+| **Knowledge Graphスキーマ**             |                                                |
+| schema/graph/                           | Knowledge Graphテーブル群                      |
+| schema/graph/entities.ts                | entitiesテーブル（ノード、52種類EntityType）   |
+| schema/graph/relations.ts               | relationsテーブル（エッジ）※graphRelations    |
+| schema/graph/relation-evidence.ts       | relation_evidenceテーブル（証拠）              |
+| schema/graph/communities.ts             | communitiesテーブル（Leidenクラスター）        |
+| schema/graph/junction-tables.ts         | entity_communities, chunk_entities中間テーブル |
+| schema/graph/graph-relations.ts         | Drizzleリレーション定義（6リレーション）       |
+| schema/graph/index.ts                   | バレルエクスポート                             |
+| schema/graph/__tests__/                 | スキーマテスト（198ケース）                    |
 | **検索クエリ**                          |                                                |
 | queries/chunks-search.ts                | FTS5全文検索クエリ（キーワード/フレーズ/NEAR） |
 | **データベース基盤**                    |                                                |
@@ -216,6 +226,17 @@
 | conversion/**manual-tests**/fixtures/sample.py             | Pythonサンプル                                 |
 | conversion/**manual-tests**/fixtures/sample.yaml           | YAMLサンプル                                   |
 | conversion/**manual-tests**/fixtures/empty.md              | 空ファイルサンプル                             |
+| graph/                                                     | **Knowledge Graph Store サービス**             |
+| graph/knowledge-graph-store.ts                             | KnowledgeGraphStore実装（17メソッド）          |
+| graph/types.ts                                             | ストア固有の型定義                             |
+| graph/index.ts                                             | バレルエクスポート                             |
+| graph/__tests__/                                           | Knowledge Graph Store テスト                   |
+| graph/__tests__/knowledge-graph-store.test.ts              | ストア機能テスト（178ケース）                  |
+| extraction/                                                | **エンティティ抽出サービス (NER)**             |
+| extraction/entity-extractor.ts                             | LLMベースエンティティ抽出                      |
+| extraction/rule-based-extractor.ts                         | ルールベースエンティティ抽出                   |
+| extraction/types.ts                                        | 抽出関連型定義                                 |
+| extraction/__tests__/                                      | 抽出サービステスト                             |
 
 **サービス層の特徴**:
 

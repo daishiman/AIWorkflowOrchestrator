@@ -51,11 +51,11 @@ describe("llmSlice", () => {
     });
 
     it("isLoadingがfalseである", () => {
-      expect(store.isLoading).toBe(false);
+      expect(store.llmIsLoading).toBe(false);
     });
 
     it("errorがnullである", () => {
-      expect(store.error).toBeNull();
+      expect(store.llmError).toBeNull();
     });
 
     it("healthStatusが空オブジェクトである", () => {
@@ -118,12 +118,12 @@ describe("llmSlice", () => {
 
     it("isLoadingがfalseになる", async () => {
       await store.fetchProviders();
-      expect(store.isLoading).toBe(false);
+      expect(store.llmIsLoading).toBe(false);
     });
 
     it("errorがnullのままである", async () => {
       await store.fetchProviders();
-      expect(store.error).toBeNull();
+      expect(store.llmError).toBeNull();
     });
   });
 
@@ -145,8 +145,8 @@ describe("llmSlice", () => {
 
     it("errorに値が設定される", async () => {
       await store.fetchProviders();
-      expect(store.error).not.toBeNull();
-      expect(store.error?.message).toBe("Failed to fetch providers");
+      expect(store.llmError).not.toBeNull();
+      expect(store.llmError?.message).toBe("Failed to fetch providers");
     });
 
     it("providersが空のままである", async () => {
@@ -156,7 +156,7 @@ describe("llmSlice", () => {
 
     it("isLoadingがfalseになる", async () => {
       await store.fetchProviders();
-      expect(store.isLoading).toBe(false);
+      expect(store.llmIsLoading).toBe(false);
     });
   });
 
@@ -332,7 +332,7 @@ describe("llmSlice", () => {
   // ==========================================================================
   describe("TS-020-09: clearError", () => {
     beforeEach(() => {
-      store.error = {
+      store.llmError = {
         code: "NETWORK_ERROR",
         message: "Connection failed",
         retryable: true,
@@ -340,36 +340,36 @@ describe("llmSlice", () => {
     });
 
     it("errorがnullになる", () => {
-      store.clearError();
-      expect(store.error).toBeNull();
+      store.clearLLMError();
+      expect(store.llmError).toBeNull();
     });
   });
 
   // ==========================================================================
   // 追加テストケース
   // ==========================================================================
-  describe("setLoading", () => {
+  describe("setLLMLoading", () => {
     it("isLoadingをtrueに設定する", () => {
-      store.setLoading(true);
-      expect(store.isLoading).toBe(true);
+      store.setLLMLoading(true);
+      expect(store.llmIsLoading).toBe(true);
     });
 
     it("isLoadingをfalseに設定する", () => {
-      store.setLoading(true);
-      store.setLoading(false);
-      expect(store.isLoading).toBe(false);
+      store.setLLMLoading(true);
+      store.setLLMLoading(false);
+      expect(store.llmIsLoading).toBe(false);
     });
   });
 
-  describe("setError", () => {
+  describe("setLLMError", () => {
     it("エラーを設定する", () => {
       const error = {
         code: "API_KEY_INVALID" as const,
         message: "Invalid API key",
         retryable: false,
       };
-      store.setError(error);
-      expect(store.error).toEqual(error);
+      store.setLLMError(error);
+      expect(store.llmError).toEqual(error);
     });
   });
 

@@ -182,8 +182,12 @@
 | Self-loop        | ノードが自分自身に接続する辺。Knowledge Graphでは禁止                                  |
 | Bidirectional    | 双方向の関係。related_to、concurrent_with等                                            |
 | Graph Density    | グラフの密度。エッジ数と最大可能エッジ数の比率                                         |
-| PageRank         | グラフのノード重要度を計算するアルゴリズム。本システムでは簡易版（接続数ベース）を使用 |
-| Leiden Algorithm | コミュニティ検出アルゴリズム。階層的クラスタリングが可能                               |
+| PageRank             | グラフのノード重要度を計算するアルゴリズム。本システムでは簡易版（接続数ベース）を使用 |
+| Leiden Algorithm     | コミュニティ検出アルゴリズム。階層的クラスタリングが可能                               |
+| Knowledge Graph Store| Knowledge Graphの永続化・操作を担うサービス。17メソッドのCRUD操作を提供                |
+| StoredEntity         | データベースに永続化されたエンティティ。EntityIdで識別                                 |
+| StoredRelation       | データベースに永続化された関係。RelationIdで識別、evidence_count含む                   |
+| RelationEvidence     | 関係の証拠情報。chunk_id、excerpt、confidenceを保持                                    |
 
 ### ベクトル演算・データ構造
 
