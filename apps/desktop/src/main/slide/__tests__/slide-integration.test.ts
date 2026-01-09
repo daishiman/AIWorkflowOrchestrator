@@ -155,11 +155,14 @@ describe("Slide Integration Tests", () => {
       // Cancel immediately
       syncManager.cancel();
 
+      // Set up rejection handler BEFORE advancing timers to prevent unhandled rejection
+      const assertion = expect(syncPromise).rejects.toThrow("Cancelled");
+
       // Advance timers
       await vi.advanceTimersByTimeAsync(1000);
 
-      // Sync should fail due to cancellation
-      await expect(syncPromise).rejects.toThrow("Cancelled");
+      // Wait for assertion to complete
+      await assertion;
     });
   });
 
