@@ -3,7 +3,7 @@
   "taskName": "llm-ui-ipc-adapter-implementation",
   "status": "completed",
   "createdAt": "2026-01-08T23:05:00Z",
-  "lastUpdated": "2026-01-09T08:45:00Z",
+  "lastUpdated": "2026-01-09T10:30:00Z",
   "phases": {
     "1": {
       "name": "要件定義",
@@ -155,12 +155,37 @@
     "12": {
       "name": "ドキュメント更新",
       "status": "completed",
-      "completedAt": "2026-01-09T08:30:00Z",
+      "completedAt": "2026-01-09T10:30:00Z",
       "artifacts": [
         {
           "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part1: 概念的説明、Part2: 技術的詳細）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
           "path": "outputs/phase-12/documentation-report.md",
-          "description": "ドキュメント更新レポート"
+          "description": "ドキュメント更新サマリ"
+        },
+        {
+          "type": "spec-update",
+          "path": ".claude/skills/aiworkflow-requirements/references/interfaces-llm.md",
+          "description": "システム仕様書（LLMインターフェース）更新"
         }
       ]
     },

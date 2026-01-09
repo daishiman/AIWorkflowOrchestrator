@@ -285,6 +285,8 @@ node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
 
 ### 未タスク検出結果
 
+a;
+
 - 検出数: {{count}}件
 - 指示書作成: {{created_count}}件
 
