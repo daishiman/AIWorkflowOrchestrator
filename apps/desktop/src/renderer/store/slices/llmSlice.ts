@@ -22,8 +22,8 @@ export interface LLMSlice {
   providers: LLMProvider[];
   selectedProviderId: LLMProviderId | null;
   selectedModelId: string | null;
-  isLoading: boolean;
-  error: LLMError | null;
+  llmIsLoading: boolean;
+  llmError: LLMError | null;
   healthStatus: Record<LLMProviderId, HealthCheckResult | undefined>;
 
   // Actions
@@ -32,9 +32,9 @@ export interface LLMSlice {
   selectModel: (modelId: string) => void;
   checkHealth: (providerId: LLMProviderId) => Promise<void>;
   resetSelection: () => void;
-  clearError: () => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: LLMError | null) => void;
+  clearLLMError: () => void;
+  setLLMLoading: (loading: boolean) => void;
+  setLLMError: (error: LLMError | null) => void;
 
   // Selectors
   getSelectedProvider: () => LLMProvider | undefined;
@@ -89,13 +89,13 @@ export const createLLMSlice: StateCreator<LLMSlice, [], [], LLMSlice> = (
   providers: [],
   selectedProviderId: null,
   selectedModelId: null,
-  isLoading: false,
-  error: null,
+  llmIsLoading: false,
+  llmError: null,
   healthStatus: {} as Record<LLMProviderId, HealthCheckResult | undefined>,
 
   // Actions
   fetchProviders: async () => {
-    set({ isLoading: true, error: null });
+    set({ llmIsLoading: true, llmError: null });
 
     try {
       const providers = await fetchProvidersFromIPC();
@@ -108,12 +108,12 @@ export const createLLMSlice: StateCreator<LLMSlice, [], [], LLMSlice> = (
         providers,
         selectedProviderId: firstProvider?.id || null,
         selectedModelId: defaultModel?.id || null,
-        isLoading: false,
+        llmIsLoading: false,
       });
     } catch (error) {
       set({
-        isLoading: false,
-        error: {
+        llmIsLoading: false,
+        llmError: {
           code: "UNKNOWN",
           message:
             error instanceof Error
@@ -185,16 +185,16 @@ export const createLLMSlice: StateCreator<LLMSlice, [], [], LLMSlice> = (
     }
   },
 
-  clearError: () => {
-    set({ error: null });
+  clearLLMError: () => {
+    set({ llmError: null });
   },
 
-  setLoading: (loading) => {
-    set({ isLoading: loading });
+  setLLMLoading: (loading) => {
+    set({ llmIsLoading: loading });
   },
 
-  setError: (error) => {
-    set({ error });
+  setLLMError: (llmError) => {
+    set({ llmError });
   },
 
   // Selectors

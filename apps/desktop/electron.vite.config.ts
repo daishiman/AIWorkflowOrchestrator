@@ -17,6 +17,11 @@ export default defineConfig(({ mode }) => {
           env.VITE_AUTH_REDIRECT_URL,
         ),
       },
+      resolve: {
+        alias: {
+          "@": resolve(__dirname, "src"),
+        },
+      },
       build: {
         outDir: "out/main",
         rollupOptions: {

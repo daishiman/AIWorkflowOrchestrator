@@ -25,7 +25,11 @@ export {
 } from "./message";
 
 // リクエスト
-export { LLMChatRequestSchema, type LLMChatRequest } from "./request";
+export {
+  LLMChatRequestSchema,
+  type LLMChatRequest,
+  type LLMChatRequestInput,
+} from "./request";
 
 // レスポンス
 export {
@@ -39,6 +43,8 @@ export {
   type LLMResponseData,
   type LLMChatResponse,
   type LLMStreamChunk,
+  // Alias for StreamChunk (backward compatibility)
+  type LLMStreamChunk as StreamChunk,
 } from "./response";
 
 // エラー

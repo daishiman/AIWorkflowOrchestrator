@@ -64,6 +64,10 @@
     "./types/llm/schemas": {
       "types": "./dist/src/types/llm/schemas/index.d.ts",
       "import": "./dist/src/types/llm/schemas/index.js"
+    },
+    "./types/llm": {
+      "types": "./dist/src/types/llm/schemas/index.d.ts",
+      "import": "./dist/src/types/llm/schemas/index.js"
     }
   },
   "scripts": {

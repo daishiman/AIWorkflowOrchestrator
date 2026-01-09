@@ -205,10 +205,43 @@ LLMモデル情報の型定義。
 
 ### IPC通信
 
-| チャンネル           | 説明                   |
-| -------------------- | ---------------------- |
-| llm:get-providers    | プロバイダー一覧取得   |
-| llm:check-health     | ヘルスチェック実行     |
+| チャンネル           | メソッド | 入力             | 出力                    | 説明                   |
+| -------------------- | -------- | ---------------- | ----------------------- | ---------------------- |
+| llm:get-providers    | invoke   | なし             | LLMProvider[]           | プロバイダー一覧取得   |
+| llm:check-health     | invoke   | LLMProviderId    | HealthCheckResult       | ヘルスチェック実行     |
+| llm:send-chat        | invoke   | LLMChatRequest   | LLMChatResponse         | チャット送信           |
+| llm:stream-chat      | send/on  | LLMChatRequest   | LLMStreamChunk (連続)   | ストリーミングチャット |
+
+### LLMアダプター実装
+
+> **実装**: `apps/desktop/src/main/adapters/llm/`
+> **IPCハンドラー**: `apps/desktop/src/main/handlers/llm.ts`
+> **UIコンポーネント**: `apps/desktop/src/renderer/components/llm/`
+> **詳細ガイド**: `docs/30-workflows/llm-ui-ipc-adapter-implementation/outputs/phase-12/implementation-guide.md`
+
+#### 対応プロバイダー
+
+| プロバイダー | アダプター | 主要モデル |
+| ------------ | ---------- | ---------- |
+| OpenAI | OpenAIAdapter | GPT-4o, GPT-4-turbo, GPT-3.5-turbo |
+| Anthropic | AnthropicAdapter | Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku |
+| Google | GoogleAdapter | Gemini 1.5 Pro, Gemini 2.0 Flash |
+| xAI | xAIAdapter | Grok-2, Grok-2-mini |
+
+#### UIコンポーネント
+
+| コンポーネント | 責務 | パス |
+| -------------- | ---- | ---- |
+| ProviderSelector | プロバイダー選択UI | `components/llm/ProviderSelector.tsx` |
+| ModelSelector | モデル選択UI | `components/llm/ModelSelector.tsx` |
+| HealthIndicator | 接続状態インジケーター | `components/llm/HealthIndicator.tsx` |
+| LLMSelectorPanel | 統合パネル | `components/llm/LLMSelectorPanel.tsx` |
+
+#### アーキテクチャパターン
+
+- **Adapterパターン**: 各プロバイダーのAPIを統一インターフェースに変換
+- **Factoryパターン**: プロバイダーIDからアダプターインスタンスを生成
+- **Template Methodパターン**: BaseLLMAdapterで共通処理（リトライ、エラーハンドリング）を実装
 
 ### 品質メトリクス
 
