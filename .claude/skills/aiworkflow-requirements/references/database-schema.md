@@ -28,6 +28,12 @@ Turso統一アーキテクチャにおけるテーブル設計とインデック
 | chunks | RAGチャンク + FTS5 | ✅ 実装済み |
 | conversions | ファイル変換履歴 | ✅ 実装済み |
 | conversion_logs | 変換処理ログ | 設計済み |
+| entities | Knowledge Graphノード | ✅ 実装済み |
+| relations | Knowledge Graphエッジ | ✅ 実装済み |
+| relation_evidence | 関係の証拠チャンク | ✅ 実装済み |
+| communities | Leidenクラスター | 設計済み |
+| entity_communities | エンティティ-コミュニティ中間 | 設計済み |
+| chunk_entities | チャンク-エンティティ中間 | 設計済み |
 
 ## ワークフロー関連テーブル
 

@@ -65,19 +65,20 @@ Knowledge Graphのエッジ（辺）を表現するEntity型。
 | id            | RelationId         | 関係一意識別子（UUID）    |
 | sourceId      | EntityId           | 始点エンティティID        |
 | targetId      | EntityId           | 終点エンティティID        |
-| type          | RelationType       | 関係タイプ（23種類）      |
+| type          | RelationType       | 関係タイプ（15種類）      |
 | weight        | number             | 関係の強さ（0.0〜1.0）    |
 | bidirectional | boolean            | 双方向関係かどうか        |
 | evidence      | RelationEvidence[] | 関係の証拠（必須1件以上） |
 
-**関係タイプ（23種類、5カテゴリ）**:
+**関係タイプ（15種類、5カテゴリ）**:
 
-1. 汎用関係: related_to, part_of, has_part, belongs_to（4種類）
-2. 時間的関係: preceded_by, followed_by, concurrent_with（3種類）
-3. 技術的関係: uses, used_by, implements, extends, depends_on, calls, imports（7種類）
-4. 階層関係: parent_of, child_of（2種類）
-5. 参照関係: references, referenced_by, defines, defined_by（4種類）
-6. 人物関係: authored_by, works_for, collaborates_with（3種類）
+1. 一般関係: related_to, part_of, has_part, belongs_to（4種類）
+2. コード関係: uses, implements, extends, depends_on（4種類）
+3. 参照関係: references, defines（2種類）
+4. 階層関係: contains, contained_by（2種類）
+5. 時間・作成関係: precedes, follows, created_by（3種類）
+
+**詳細仕様**: [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md)
 
 **制約**:
 

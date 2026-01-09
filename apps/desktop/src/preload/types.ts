@@ -14,8 +14,32 @@ import type {
 import type {
   LLMProvider,
   LLMProviderId,
+  LLMChatRequest,
+  LLMChatResponse,
   HealthCheckResult,
+  LLMError,
 } from "@repo/shared/types/llm/schemas";
+
+// LLM Stream Types
+export interface LLMStreamChunkDelta {
+  content?: string;
+  role?: string;
+}
+
+export interface LLMStreamChunk {
+  id: string;
+  delta?: LLMStreamChunkDelta;
+  done: boolean;
+  metadata?: {
+    model?: string;
+    finishReason?: string;
+    usage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  };
+}
 
 // File operations
 export interface GetFileTreeRequest {
@@ -889,6 +913,11 @@ export interface ElectronAPI {
   llm: {
     getProviders: () => Promise<LLMProvider[]>;
     checkHealth: (providerId: LLMProviderId) => Promise<HealthCheckResult>;
+    sendChat: (request: LLMChatRequest) => Promise<LLMChatResponse>;
+    streamChat: (request: LLMChatRequest) => Promise<string>;
+    onStreamChunk: (callback: (chunk: LLMStreamChunk) => void) => () => void;
+    onStreamEnd: (callback: (streamId: string) => void) => () => void;
+    onStreamError: (callback: (error: LLMError) => void) => () => void;
   };
 
   // Generic invoke for IPC calls

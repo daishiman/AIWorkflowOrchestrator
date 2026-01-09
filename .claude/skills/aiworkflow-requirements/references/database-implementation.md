@@ -278,7 +278,7 @@ Knowledge Graphのノード（頂点）を格納するテーブル。
 | id                 | TEXT    | PRIMARY KEY           | エンティティID（UUID）      |
 | name               | TEXT    | NOT NULL              | エンティティ名（元の形式）  |
 | normalized_name    | TEXT    | NOT NULL              | 正規化されたエンティティ名  |
-| type               | TEXT    | NOT NULL              | エンティティタイプ（14種類）|
+| type               | TEXT    | NOT NULL              | エンティティタイプ（52種類）|
 | description        | TEXT    | NULL                  | エンティティの説明          |
 | aliases            | TEXT    | NOT NULL DEFAULT '[]' | 別名（JSON配列）            |
 | embedding          | BLOB    | NULL                  | ベクトル埋め込み            |
@@ -295,15 +295,23 @@ Knowledge Graphのノード（頂点）を格納するテーブル。
 - `entities_importance_idx`: 重要度順ソート用
 - `entities_name_type_idx`: UNIQUE（正規化名＋タイプ）
 
-**エンティティタイプ（14種類）**:
+**エンティティタイプ（52種類）**:
 
-| カテゴリ     | タイプ                                              |
-| ------------ | --------------------------------------------------- |
-| 一般         | `person`, `organization`, `location`, `date`, `event` |
-| 技術         | `technology`, `concept`, `product`                  |
-| コード       | `api`, `function`, `class`                          |
-| 文書         | `document`, `section`                               |
-| フォールバック | `other`                                           |
+| カテゴリ     | タイプ                                                              |
+| ------------ | ------------------------------------------------------------------- |
+| 人物・組織   | `person`, `organization`, `company`, `team`, `department`           |
+| 場所         | `location`, `country`, `city`, `region`, `building`, `address`      |
+| 時間         | `date`, `time`, `datetime`, `period`, `duration`                    |
+| 技術         | `technology`, `framework`, `library`, `tool`, `platform`            |
+| コード       | `api`, `endpoint`, `function`, `method`, `class`, `interface`, `module`, `package`, `variable`, `constant` |
+| ドキュメント | `document`, `file`, `section`, `chapter`, `paragraph`               |
+| データ       | `database`, `table`, `column`, `schema`, `index`, `query`           |
+| 概念         | `concept`, `pattern`, `principle`, `methodology`, `architecture`    |
+| プロダクト   | `product`, `service`, `feature`, `version`, `release`               |
+| イベント     | `event`, `meeting`, `milestone`, `deadline`                         |
+| フォールバック | `other`                                                           |
+
+**詳細仕様**: [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md)
 
 ### relationsテーブル（エッジ）
 
@@ -314,7 +322,7 @@ Knowledge Graphのエッジ（辺）を格納するテーブル。
 | id             | TEXT    | PRIMARY KEY               | 関係ID（UUID）            |
 | source_id      | TEXT    | FK→entities(id) CASCADE   | 始点エンティティID        |
 | target_id      | TEXT    | FK→entities(id) CASCADE   | 終点エンティティID        |
-| type           | TEXT    | NOT NULL                  | 関係タイプ（23種類）      |
+| type           | TEXT    | NOT NULL                  | 関係タイプ（15種類）      |
 | description    | TEXT    | NULL                      | 関係の説明                |
 | weight         | REAL    | NOT NULL DEFAULT 0.5      | 関係の強さ（0.0〜1.0）    |
 | bidirectional  | INTEGER | NOT NULL DEFAULT 0        | 双方向関係フラグ          |
@@ -330,16 +338,17 @@ Knowledge Graphのエッジ（辺）を格納するテーブル。
 - `relations_weight_idx`: 重み順ソート用
 - `relations_source_target_type_idx`: UNIQUE（始点＋終点＋タイプ）
 
-**関係タイプ（23種類）**:
+**関係タイプ（15種類）**:
 
-| カテゴリ | タイプ                                                  |
-| -------- | ------------------------------------------------------- |
-| 基本     | `related_to`, `part_of`, `has_part`, `belongs_to`       |
-| 時間     | `preceded_by`, `followed_by`, `concurrent_with`         |
-| コード   | `uses`, `used_by`, `implements`, `extends`, `depends_on`, `calls`, `imports` |
-| 階層     | `parent_of`, `child_of`                                 |
-| 参照     | `references`, `referenced_by`, `defines`, `defined_by`  |
-| 社会     | `authored_by`, `works_for`, `collaborates_with`         |
+| カテゴリ   | タイプ                                              |
+| ---------- | --------------------------------------------------- |
+| 一般       | `related_to`, `part_of`, `has_part`, `belongs_to`   |
+| コード     | `uses`, `implements`, `extends`, `depends_on`       |
+| 参照       | `references`, `defines`                             |
+| 階層       | `contains`, `contained_by`                          |
+| 時間       | `precedes`, `follows`, `created_by`                 |
+
+**詳細仕様**: [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md)
 
 **注記**: 変数名は`graphRelations`を使用（Drizzle ORMの`relations`関数との衝突回避）
 
@@ -431,7 +440,7 @@ interface EntityPosition {
 | entityCommunitiesRelations   | 中間テーブル→エンティティ・コミュニティ   |
 | chunkEntitiesRelations       | 中間テーブル→チャンク・エンティティ       |
 
-### テストカバレッジ
+### テストカバレッジ（スキーマ）
 
 | テストファイル                | テスト数 | 検証内容                       |
 | ----------------------------- | -------- | ------------------------------ |
@@ -443,6 +452,16 @@ interface EntityPosition {
 | graph-relations.test.ts       | 23       | Drizzleリレーション定義        |
 | index.test.ts                 | 29       | エクスポート・型安全性         |
 | **合計**                      | **198**  |                                |
+
+### テストカバレッジ（Knowledge Graph Store）
+
+| テストファイル                | テスト数 | 検証内容                       |
+| ----------------------------- | -------- | ------------------------------ |
+| knowledge-graph-store.test.ts | 178      | ストア全機能（CRUD・クエリ等） |
+
+**カバレッジ**: Line 87.96%, Branch 77.77%, Function 100%
+
+**詳細仕様**: [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md)
 
 ---
 
