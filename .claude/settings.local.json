@@ -88,7 +88,9 @@
       "Skill(ai:create-component)",
       "Skill(ai:write-spec)",
       "Skill(ai:design-database)",
-      "Skill"
+      "Skill",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
     ],
     "deny": [],
     "ask": []
