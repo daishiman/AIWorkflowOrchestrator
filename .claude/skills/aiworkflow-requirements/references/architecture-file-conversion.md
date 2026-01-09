@@ -22,6 +22,7 @@
 | `ConversionService` | 変換処理の統括（タイムアウト・同時実行制御） |
 | `MetadataExtractor` | テキストからのメタデータ抽出 |
 | `ConversionLogger` | 変換処理のログ記録（バッファリング対応） |
+| `HistoryService` | 変換履歴のバージョン管理（履歴取得・差分比較・復元） |
 
 ## ログ記録サービス（ConversionLogger）
 
@@ -68,14 +69,62 @@ ConversionLogger → buffer[] → ILogRepository → Database
 | テストカバレッジ（Branch） | 94.59% |
 | テスト数 | 22ケース |
 
+## 履歴管理サービス（HistoryService）
+
+**実装場所**: `packages/shared/src/services/history/`
+**詳細設計**: `docs/30-workflows/CONV-05-02-history-service/`
+
+変換履歴のバージョン管理用サービス。履歴一覧取得、バージョン間差分比較、過去バージョンへの復元機能を提供。
+
+### 主要機能
+
+| 機能 | 説明 |
+|------|------|
+| 履歴一覧取得 | ファイル単位のバージョン履歴をページネーション付きで取得 |
+| バージョン詳細取得 | 特定バージョンの詳細情報を取得 |
+| 差分比較 | 2つのバージョン間のサイズ・メタデータ・コンテンツ変更を比較 |
+| バージョン復元 | 過去バージョンの状態に新規変換として復元 |
+| 最新バージョン取得 | ファイルの最新変換結果を取得 |
+| バージョン数取得 | ファイルの総バージョン数をカウント |
+
+### アーキテクチャ
+
+```
+HistoryService → ConversionRepository → Database (conversions table)
+                        ↑
+                  Result型でエラーハンドリング
+```
+
+### インターフェース
+
+- `IHistoryService`: 履歴管理のサービスインターフェース（6メソッド）
+- `ConversionRepository`: 永続化層のインターフェース（DIP適用）
+
+### 設計パターン
+
+| パターン | 適用箇所 | 目的 |
+|----------|----------|------|
+| Repository | `ConversionRepository` | データアクセス抽象化 |
+| Result Type | 全メソッド戻り値 | 明示的エラーハンドリング |
+| Dependency Injection | コンストラクタ | テスタビリティ向上 |
+
+### 品質指標
+
+| 指標 | 実績 |
+|------|------|
+| テストカバレッジ（Line） | 100% |
+| テストカバレッジ（Branch） | 100% |
+| テスト数 | 41ケース |
+
 ## アーキテクチャパターン
 
 | パターン | 適用箇所 | 目的 |
 |----------|----------|------|
 | Template Method | `BaseConverter.convert()` | 変換フローの標準化 |
-| Repository | `ConverterRegistry` | コンバーター管理の抽象化 |
-| Factory | `createConverterInput()` | 型安全なオブジェクト生成 |
+| Repository | `ConverterRegistry`, `ConversionRepository` | コンバーター/変換履歴管理の抽象化 |
+| Factory | `createConverterInput()`, `createHistoryService()` | 型安全なオブジェクト生成 |
 | Singleton | `globalConverterRegistry` | グローバルインスタンス提供 |
+| Result Type | `HistoryService` | 明示的エラーハンドリング |
 
 ## 実装済みコンバーター
 

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-07T22:48:10.956Z",
-  "totalKeywords": 615,
+  "generated": "2026-01-08T22:48:30.498Z",
+  "totalKeywords": 631,
   "keywords": {
     "API": [
       "api-core.md",
@@ -10,6 +10,7 @@
       "api-internal-embedding.md",
       "api-internal-search.md",
       "api-internal.md",
+      "interfaces-agent-sdk.md",
       "interfaces-converter-implementations.md",
       "interfaces-rag-file-selection.md",
       "security-api-electron.md",
@@ -70,6 +71,7 @@
     ],
     "IPC": [
       "api-endpoints.md",
+      "interfaces-agent-sdk.md",
       "interfaces-llm.md",
       "interfaces-rag-file-selection.md"
     ],
@@ -148,6 +150,7 @@
       "claude-code-skills-overview.md",
       "claude-code-skills-structure.md",
       "database-schema.md",
+      "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
       "interfaces-converter-implementations.md",
       "interfaces-converter.md",
@@ -193,6 +196,10 @@
     ],
     "ConversionService": [
       "api-internal-conversion.md"
+    ],
+    "HistoryService": [
+      "api-internal-conversion.md",
+      "architecture-file-conversion.md"
     ],
     "Embedding": [
       "api-internal-embedding.md",
@@ -262,6 +269,7 @@
       "environment-variables.md",
       "error-handling.md",
       "glossary.md",
+      "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
       "interfaces-converter-extension.md",
       "interfaces-converter-implementations.md",
@@ -353,7 +361,8 @@
       "architecture-embedding-pipeline.md"
     ],
     "アーキテクチャ": [
-      "architecture-embedding-pipeline.md"
+      "architecture-embedding-pipeline.md",
+      "interfaces-agent-sdk.md"
     ],
     "主要コンポーネント": [
       "architecture-embedding-pipeline.md",
@@ -386,6 +395,9 @@
       "architecture-file-conversion.md"
     ],
     "ConversionLogger": [
+      "architecture-file-conversion.md"
+    ],
+    "履歴管理サービス": [
       "architecture-file-conversion.md"
     ],
     "アーキテクチャパターン": [
@@ -440,6 +452,7 @@
     ],
     "型定義": [
       "architecture-rag.md",
+      "interfaces-agent-sdk.md",
       "interfaces-llm.md"
     ],
     "実装": [
@@ -464,7 +477,8 @@
     "Agent": [
       "claude-code-agents-spec.md",
       "claude-code-agents-workflow.md",
-      "claude-code-agents.md"
+      "claude-code-agents.md",
+      "interfaces-agent-sdk.md"
     ],
     "仕様詳細": [
       "claude-code-agents-spec.md"
@@ -593,7 +607,8 @@
     "Claude": [
       "claude-code-agents.md",
       "claude-code-commands.md",
-      "claude-code-overview.md"
+      "claude-code-overview.md",
+      "interfaces-agent-sdk.md"
     ],
     "Code": [
       "claude-code-agents.md",
@@ -1262,7 +1277,11 @@
     "References": [
       "glossary.md"
     ],
+    "SDK": [
+      "interfaces-agent-sdk.md"
+    ],
     "インターフェース仕様": [
+      "interfaces-agent-sdk.md",
       "interfaces-auth.md",
       "interfaces-chat-history.md",
       "interfaces-converter.md",
@@ -1270,6 +1289,45 @@
       "interfaces-llm.md",
       "interfaces-rag.md",
       "interfaces-workflow.md"
+    ],
+    "Preload": [
+      "interfaces-agent-sdk.md"
+    ],
+    "window": [
+      "interfaces-agent-sdk.md"
+    ],
+    "agentAPI": [
+      "interfaces-agent-sdk.md"
+    ],
+    "エラー型": [
+      "interfaces-agent-sdk.md",
+      "interfaces-rag.md"
+    ],
+    "チャンネル": [
+      "interfaces-agent-sdk.md",
+      "interfaces-rag-file-selection.md"
+    ],
+    "Zod": [
+      "interfaces-agent-sdk.md",
+      "security-input-validation.md"
+    ],
+    "スキーマ": [
+      "interfaces-agent-sdk.md"
+    ],
+    "設定定数": [
+      "interfaces-agent-sdk.md"
+    ],
+    "React": [
+      "interfaces-agent-sdk.md"
+    ],
+    "Hook": [
+      "interfaces-agent-sdk.md"
+    ],
+    "useAgent": [
+      "interfaces-agent-sdk.md"
+    ],
+    "セッション管理": [
+      "interfaces-agent-sdk.md"
     ],
     "認証・プロフィール型定義": [
       "interfaces-auth.md"
@@ -1373,6 +1431,12 @@
     "IConversionLogger": [
       "interfaces-converter.md"
     ],
+    "IHistoryService": [
+      "interfaces-converter.md"
+    ],
+    "ConversionRepository": [
+      "interfaces-converter.md"
+    ],
     "Logger": [
       "interfaces-core.md"
     ],
@@ -1399,6 +1463,16 @@
     "チャット関連型定義": [
       "interfaces-llm.md"
     ],
+    "Multi": [
+      "interfaces-llm.md"
+    ],
+    "Provider": [
+      "interfaces-llm.md"
+    ],
+    "Switching": [
+      "interfaces-llm.md",
+      "ui-ux-llm-selector.md"
+    ],
     "チャンク・埋め込み型定義": [
       "interfaces-rag-chunk-embedding.md"
     ],
@@ -1423,9 +1497,6 @@
       "interfaces-rag-search.md"
     ],
     "FileSelection": [
-      "interfaces-rag-file-selection.md"
-    ],
-    "チャンネル": [
       "interfaces-rag-file-selection.md"
     ],
     "レスポンス型": [
@@ -1466,9 +1537,6 @@
       "interfaces-rag.md"
     ],
     "Types": [
-      "interfaces-rag.md"
-    ],
-    "エラー型": [
       "interfaces-rag.md"
     ],
     "共通インターフェース": [
@@ -1643,9 +1711,6 @@
       "security-input-validation.md"
     ],
     "対策": [
-      "security-input-validation.md"
-    ],
-    "Zod": [
       "security-input-validation.md"
     ],
     "スキーマによるバリデーション": [
@@ -1955,9 +2020,6 @@
       "ui-ux-llm-selector.md"
     ],
     "Chat": [
-      "ui-ux-llm-selector.md"
-    ],
-    "Switching": [
       "ui-ux-llm-selector.md"
     ],
     "構成": [

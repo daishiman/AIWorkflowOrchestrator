@@ -125,6 +125,68 @@ logger.dispose();
 
 ---
 
+## IHistoryService インターフェース
+
+ファイル変換履歴のバージョン管理用サービスインターフェース。履歴一覧取得、バージョン間差分比較、過去バージョンへの復元機能を提供。
+
+> **実装**: `packages/shared/src/services/history/`
+> **型定義**: `packages/shared/src/services/history/types.ts`
+
+### 必須メソッド
+
+| メソッド | 戻り値 | 説明 |
+| -------- | ------ | ---- |
+| `getFileHistory(fileId, options?)` | `Promise<Result<PaginatedResult<VersionHistoryItem>, Error>>` | 履歴一覧取得（ページネーション対応） |
+| `getVersionDetail(conversionId)` | `Promise<Result<VersionHistoryItem, Error>>` | 特定バージョン詳細取得 |
+| `getVersionDiff(idA, idB)` | `Promise<Result<VersionDiff, Error>>` | バージョン間差分取得 |
+| `restoreToVersion(fileId, conversionId)` | `Promise<Result<VersionHistoryItem, Error>>` | 過去バージョンへ復元 |
+| `getLatestVersion(fileId)` | `Promise<Result<VersionHistoryItem | null, Error>>` | 最新バージョン取得 |
+| `getVersionCount(fileId)` | `Promise<Result<number, Error>>` | バージョン数取得 |
+
+### 使用例
+
+```typescript
+import { createHistoryService } from "@repo/shared/services/history";
+
+const historyService = createHistoryService(repository, logger);
+
+// 履歴一覧取得
+const result = await historyService.getFileHistory("file-123", {
+  pagination: { limit: 10, offset: 0 }
+});
+
+// バージョン復元
+const restored = await historyService.restoreToVersion("file-123", "conv-456");
+```
+
+### 関連型定義
+
+| 型 | 説明 |
+| -- | ---- |
+| `VersionHistoryItem` | バージョン履歴の1件分（conversionId, fileId, version, createdAt等） |
+| `VersionDiff` | バージョン間差分（sizeChange, metadataChanges, contentChanged） |
+| `HistoryOptions` | フィルタ・ページネーションオプション |
+| `PaginatedResult<T>` | ページネーション結果（items, total, hasMore） |
+
+---
+
+## ConversionRepository インターフェース
+
+変換履歴の永続化用リポジトリインターフェース（DIP適用）。
+
+> **実装**: `packages/shared/src/services/history/types.ts`
+
+### 必須メソッド
+
+| メソッド | 戻り値 | 説明 |
+| -------- | ------ | ---- |
+| `findByFileId(fileId, options?)` | `Promise<Result<Conversion[], Error>>` | ファイル単位で履歴取得 |
+| `findById(conversionId)` | `Promise<Result<Conversion | null, Error>>` | ID指定で取得 |
+| `create(data)` | `Promise<Result<Conversion, Error>>` | 新規作成 |
+| `countByFileId(fileId)` | `Promise<Result<number, Error>>` | 件数カウント |
+
+---
+
 ## 関連ドキュメント
 
 - [内部API仕様（ConversionService）](./api-internal-conversion.md)
