@@ -51,6 +51,7 @@ import type {
   ValidateFilePathRequest,
 } from "@repo/shared/schemas";
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
+import type { SkillPhase, SyncStatus, SlideApi } from "./types";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -264,14 +265,36 @@ const electronAPI: ElectronAPI = {
   },
 };
 
+// Slide API for slide dependency management
+const slideApi: SlideApi = {
+  executePhase: (phase: SkillPhase, projectPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_EXECUTE_PHASE, phase, projectPath),
+  startWatching: (projectPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_START_WATCHING, projectPath),
+  stopWatching: () => safeInvoke(IPC_CHANNELS.SLIDE_STOP_WATCHING),
+  getSyncStatus: (projectPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_GET_SYNC_STATUS, projectPath),
+  manualSync: (projectPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_MANUAL_SYNC, projectPath),
+  cancelExecution: () => safeInvoke(IPC_CHANNELS.SLIDE_CANCEL_EXECUTION),
+  onStructureChange: (callback: (path: string) => void) =>
+    safeOn<string>(IPC_CHANNELS.SLIDE_STRUCTURE_CHANGED, callback),
+  onSyncStatusChange: (callback: (status: SyncStatus) => void) =>
+    safeOn<SyncStatus>(IPC_CHANNELS.SLIDE_SYNC_STATUS_CHANGED, callback),
+  onExecutionProgress: (callback: (progress: number) => void) =>
+    safeOn<number>(IPC_CHANNELS.SLIDE_EXECUTION_PROGRESS, callback),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electronAPI", electronAPI);
+    contextBridge.exposeInMainWorld("slideApi", slideApi);
   } catch (error) {
-    console.error("Failed to expose electronAPI:", error);
+    console.error("Failed to expose APIs:", error);
   }
 } else {
   // Fallback for non-isolated context (development)
   (window as unknown as { electronAPI: ElectronAPI }).electronAPI = electronAPI;
+  (window as unknown as { slideApi: SlideApi }).slideApi = slideApi;
 }
