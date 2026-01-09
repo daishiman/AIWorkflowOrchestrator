@@ -1,0 +1,184 @@
+{
+  "taskId": "CONV-08-01",
+  "taskName": "Knowledge Graph ストア実装",
+  "status": "in_progress",
+  "createdAt": "2026-01-08T23:10:00Z",
+  "lastUpdated": "2026-01-09T06:50:00Z",
+  "dependencies": ["CONV-04-05"],
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/domain-model.md",
+        "outputs/phase-2/repository-interface.md",
+        "outputs/phase-2/drizzle-queries.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-09T00:30:00Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/boundary-test-cases.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:28:00Z",
+      "artifacts": [
+        "packages/shared/src/services/graph/knowledge-graph-store.ts",
+        "packages/shared/src/services/graph/types.ts",
+        "packages/shared/src/services/graph/errors.ts",
+        "outputs/phase-5/implementation-report.md"
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:35:00Z",
+      "artifacts": [
+        "packages/shared/src/services/graph/__tests__/errors.test.ts",
+        "outputs/phase-6/test-expansion-report.md"
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:35:00Z",
+      "artifacts": ["outputs/phase-7/coverage-report.md"],
+      "coverageResults": {
+        "total": {
+          "lines": 87.96,
+          "branches": 77.77,
+          "functions": 100
+        },
+        "files": {
+          "errors.ts": { "lines": 100, "branches": 100, "functions": 100 },
+          "types.ts": { "lines": 100, "branches": 100, "functions": 100 },
+          "knowledge-graph-store.ts": {
+            "lines": 86.98,
+            "branches": 76.16,
+            "functions": 100
+          }
+        },
+        "testCount": 178,
+        "todoCount": 1
+      }
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:44:00Z",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"],
+      "refactoringChanges": [
+        "Removed unused import: desc from drizzle-orm",
+        "Removed unused import: NewRelationEvidence",
+        "Prefixed unused parameters with underscore: _embedding, _limit, _threshold",
+        "Replaced 'as any' with 'as EntityType' for better type safety"
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:46:00Z",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"],
+      "qualityChecks": {
+        "typeCheck": "passed",
+        "eslint": "passed",
+        "prettier": "passed",
+        "build": "passed",
+        "tests": "178 passed, 1 todo"
+      }
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:46:00Z",
+      "artifacts": ["outputs/phase-10/final-review-report.md"],
+      "reviewResults": {
+        "codeQuality": "passed",
+        "testCoverage": "87.96% line, 77.77% branch, 100% function",
+        "securityReview": "passed - uses parameterized queries via Drizzle ORM",
+        "architectureCompliance": "passed"
+      }
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:47:00Z",
+      "artifacts": ["outputs/phase-11/manual-test-report.md"],
+      "manualTestResults": {
+        "note": "バックエンドライブラリのため、テストスイートが手動検証に相当",
+        "verifiedItems": [
+          "API統合テスト（178テスト）が全てパス",
+          "Entity CRUD操作の動作確認",
+          "Relation CRUD操作の動作確認",
+          "Graph traversal（BFS, 最短経路）の動作確認",
+          "Batch操作の動作確認",
+          "エラーハンドリングの動作確認"
+        ]
+      }
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-09T06:50:00Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "deliverables": [
+    {
+      "name": "Knowledge Graphストア実装",
+      "path": "packages/shared/src/services/graph/knowledge-graph-store.ts"
+    },
+    {
+      "name": "型定義",
+      "path": "packages/shared/src/services/graph/types.ts"
+    },
+    {
+      "name": "エラー定義",
+      "path": "packages/shared/src/services/graph/errors.ts"
+    },
+    {
+      "name": "メインテストファイル",
+      "path": "packages/shared/src/services/graph/__tests__/knowledge-graph-store.test.ts"
+    },
+    {
+      "name": "エラーテストファイル",
+      "path": "packages/shared/src/services/graph/__tests__/errors.test.ts"
+    },
+    {
+      "name": "実装ガイド",
+      "path": "docs/30-workflows/knowledge-graph-store/outputs/phase-12/implementation-guide.md"
+    }
+  ]
+}
