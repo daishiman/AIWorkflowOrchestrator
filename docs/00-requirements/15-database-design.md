@@ -664,6 +664,39 @@ RAGパイプラインに投入されるファイルのメタデータを管理�
 - テスト結果: `docs/30-workflows/rag-conversion-system/manual-test-report-chunks-fts5.md` ✅
 - 最終レビュー: `docs/30-workflows/rag-conversion-system/final-review-chunks-fts5.md` ✅
 
+#### conversions（ファイル変換履歴）
+
+ファイルをMarkdownやプレーンテキストに変換した履歴を記録。変換結果のキャッシング、バージョン管理、エラー追跡に使用。
+
+| カラム        | 型      | NULL | 説明                                                        |
+| ------------- | ------- | ---- | ----------------------------------------------------------- |
+| id            | TEXT    | NO   | 主キー（ULID形式推奨）                                      |
+| file_id       | TEXT    | NO   | filesテーブルへの外部キー（CASCADE DELETE）                 |
+| status        | TEXT    | NO   | 変換ステータス（pending / processing / completed / failed） |
+| converter_id  | TEXT    | NO   | 変換エンジン識別子（例: "markdown-converter-v1"）           |
+| input_hash    | TEXT    | NO   | 入力ファイルのハッシュ値（キャッシュ判定用）                |
+| output_hash   | TEXT    | YES  | 出力結果のハッシュ値（変換完了時）                          |
+| duration      | INTEGER | YES  | 変換処理時間（ミリ秒）                                      |
+| input_size    | INTEGER | YES  | 入力ファイルサイズ（バイト）                                |
+| output_size   | INTEGER | YES  | 出力ファイルサイズ（バイト）                                |
+| error         | TEXT    | YES  | エラーメッセージ（failed時）                                |
+| error_details | JSON    | YES  | エラー詳細（スタックトレース等）                            |
+| created_at    | INTEGER | NO   | 作成日時（UNIX時刻）                                        |
+| updated_at    | INTEGER | NO   | 更新日時（UNIX時刻）                                        |
+
+**設計上の注意点**:
+
+- `file_id`には`ON DELETE CASCADE`を設定し、親ファイル削除時に変換履歴も自動削除
+- `input_hash`で同一入力のキャッシュヒット判定が可能
+- `status`でペンディング/処理中/完了/失敗の状態管理
+- HistoryServiceによるバージョン管理・差分比較・復元機能を提供
+
+**参照ドキュメント**:
+
+- スキーマ実装: `packages/shared/src/db/schema/conversions.ts` ✅
+- サービス実装: `packages/shared/src/services/history/` ✅
+- 詳細設計: `docs/30-workflows/CONV-05-02-history-service/` ✅
+
 ### インデックス設計
 
 | テーブル            | インデックス名                      | カラム                        | 用途                                   |
@@ -699,6 +732,11 @@ RAGパイプラインに投入されるファイルのメタデータを管理�
 | chunks              | idx_chunks_hash                     | hash                          | 重複チャンク検出（UNIQUE）             |
 | chunks              | idx_chunks_chunk_index              | file_id, chunk_index          | ファイル内の順序付きチャンク取得       |
 | chunks              | idx_chunks_strategy                 | strategy                      | 戦略別チャンク統計                     |
+| conversions         | conversions_file_id_idx             | file_id                       | ファイル単位履歴取得                   |
+| conversions         | conversions_status_idx              | status                        | ステータス検索                         |
+| conversions         | conversions_input_hash_idx          | input_hash                    | キャッシュヒット判定                   |
+| conversions         | conversions_created_at_idx          | created_at                    | 時系列ソート                           |
+| conversions         | conversions_file_status_idx         | file_id, status               | 複合検索                               |
 
 ---
 

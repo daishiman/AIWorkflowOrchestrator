@@ -26,6 +26,7 @@ Turso統一アーキテクチャにおけるテーブル設計とインデック
 | chat_messages | チャットメッセージ | ✅ 実装済み |
 | files | RAGファイルメタデータ | ✅ 実装済み |
 | chunks | RAGチャンク + FTS5 | ✅ 実装済み |
+| conversions | ファイル変換履歴 | ✅ 実装済み |
 | conversion_logs | 変換処理ログ | 設計済み |
 | entities | Knowledge Graphノード | ✅ 実装済み |
 | relations | Knowledge Graphエッジ | ✅ 実装済み |
@@ -186,6 +187,39 @@ Turso統一アーキテクチャにおけるテーブル設計とインデック
 | updated_at | INTEGER | NO | 更新日時 |
 
 ## 変換処理関連テーブル
+
+### conversions（ファイル変換履歴）
+
+> **実装**: `packages/shared/src/db/schema/conversions.ts`
+> **サービス**: `packages/shared/src/services/history/`
+
+ファイルをMarkdownやプレーンテキストに変換した履歴を記録。変換結果のキャッシング、バージョン管理、エラー追跡に使用。
+
+| カラム | 型 | NULL | 説明 |
+|--------|------|------|------|
+| id | TEXT | NO | 主キー（ULID形式推奨） |
+| file_id | TEXT | NO | filesテーブルへの外部キー（CASCADE DELETE） |
+| status | TEXT | NO | 変換ステータス（pending / processing / completed / failed） |
+| converter_id | TEXT | NO | 変換エンジン識別子（例: "markdown-converter-v1"） |
+| input_hash | TEXT | NO | 入力ファイルのハッシュ値（キャッシュ判定用） |
+| output_hash | TEXT | YES | 出力結果のハッシュ値（変換完了時） |
+| duration | INTEGER | YES | 変換処理時間（ミリ秒） |
+| input_size | INTEGER | YES | 入力ファイルサイズ（バイト） |
+| output_size | INTEGER | YES | 出力ファイルサイズ（バイト） |
+| error | TEXT | YES | エラーメッセージ（failed時） |
+| error_details | JSON | YES | エラー詳細（スタックトレース等） |
+| created_at | INTEGER | NO | 作成日時（UNIX時刻） |
+| updated_at | INTEGER | NO | 更新日時（UNIX時刻） |
+
+**インデックス**:
+
+| インデックス | カラム | 用途 |
+|--------------|--------|------|
+| conversions_file_id_idx | file_id | ファイル単位履歴取得 |
+| conversions_status_idx | status | ステータス検索 |
+| conversions_input_hash_idx | input_hash | キャッシュヒット判定 |
+| conversions_created_at_idx | created_at | 時系列ソート |
+| conversions_file_status_idx | file_id, status | 複合検索 |
 
 ### conversion_logs（変換処理ログ）
 

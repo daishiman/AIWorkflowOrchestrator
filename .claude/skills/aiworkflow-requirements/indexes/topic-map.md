@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-07
+> 自動生成: 2026-01-08
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -110,14 +110,14 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 主要コンポーネント | L15 |
-| ログ記録サービス（ConversionLogger） | L26 |
-| アーキテクチャパターン | L71 |
-| 実装済みコンバーター | L80 |
-| 品質指標 | L118 |
-| 新規コンバーター追加手順 | L127 |
-| コンバーター優先度ガイドライン | L137 |
-| パフォーマンス要件 | L146 |
-| 既知の制限事項 | L156 |
+| ログ記録サービス（ConversionLogger） | L27 |
+| 履歴管理サービス（HistoryService） | L72 |
+| アーキテクチャパターン | L119 |
+| 実装済みコンバーター | L129 |
+| 品質指標 | L167 |
+| 新規コンバーター追加手順 | L176 |
+| コンバーター優先度ガイドライン | L186 |
+| パフォーマンス要件 | L195 |
 
 ### references/architecture-monorepo.md
 
@@ -143,6 +143,20 @@ node scripts/list-specs.mjs --topics
 ## インターフェース
 
 **関連キーワード**: インターフェース, 型定義, IConverter, Repository, Logger
+
+### references/interfaces-agent-sdk.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| アーキテクチャ | L25 |
+| Preload API（window.agentAPI） | L54 |
+| 型定義 | L125 |
+| エラー型 | L171 |
+| IPC チャンネル | L199 |
+| Zodスキーマ | L213 |
+| 設定定数 | L248 |
+| React Hook（useAgent） | L260 |
+| セッション管理 | L285 |
 
 ### references/interfaces-auth.md
 
@@ -196,7 +210,9 @@ node scripts/list-specs.mjs --topics
 | IConverter インターフェース | L24 |
 | 実装クラス一覧 | L56 |
 | IConversionLogger インターフェース | L72 |
-| 関連ドキュメント | L128 |
+| IHistoryService インターフェース | L128 |
+| ConversionRepository インターフェース | L173 |
+| 関連ドキュメント | L190 |
 
 ### references/interfaces-core.md
 
@@ -211,23 +227,9 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| LLM チャット関連型定義（Desktop IPC） | L8 |
-| Embedding Generation 型定義 | L124 |
-| 関連ドキュメント | L276 |
-
-### references/interfaces-agent-sdk.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L8 |
-| アーキテクチャ | L25 |
-| Preload API（window.agentAPI） | L54 |
-| 型定義 | L125 |
-| エラー型 | L171 |
-| IPC チャンネル | L199 |
-| Zodスキーマ | L213 |
-| 設定定数 | L248 |
-| React Hook（useAgent） | L260 |
-| セッション管理 | L285 |
-| 関連ドキュメント | L318 |
+| Multi-LLM Provider Switching 型定義 | L102 |
+| Embedding Generation 型定義 | L242 |
+| 関連ドキュメント | L394 |
 
 ### references/interfaces-rag-chunk-embedding.md
 
@@ -275,7 +277,7 @@ node scripts/list-specs.mjs --topics
 | ファイル・変換ドメイン型 | L123 |
 | Knowledge Graph型 | L149 |
 | 設計原則 | L163 |
-| 関連ドキュメント | L292 |
+| 関連ドキュメント | L389 |
 
 ### references/interfaces-workflow.md
 
@@ -324,6 +326,7 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| ConversionService API | L8 |
+| HistoryService API | L155 |
 
 ### references/api-internal-embedding.md
 
@@ -396,13 +399,13 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | テーブル一覧 | L13 |
-| ワークフロー関連テーブル | L31 |
-| ユーザー関連テーブル | L70 |
-| チャット関連テーブル | L104 |
-| RAG関連テーブル | L140 |
-| 変換処理関連テーブル | L182 |
-| インデックス設計 | L208 |
-| 関連ドキュメント | L245 |
+| ワークフロー関連テーブル | L32 |
+| ユーザー関連テーブル | L71 |
+| チャット関連テーブル | L105 |
+| RAG関連テーブル | L141 |
+| 変換処理関連テーブル | L183 |
+| インデックス設計 | L242 |
+| 関連ドキュメント | L279 |
 
 ---
 
