@@ -9,3 +9,6 @@ export * from "./infrastructure";
 
 // Utils
 export * from "./utils";
+
+// Slide
+export * from "./src/slide";

@@ -120,6 +120,17 @@ export const IPC_CHANNELS = {
   LLM_STREAM_CHUNK: "llm:stream-chunk",
   LLM_STREAM_END: "llm:stream-end",
   LLM_STREAM_ERROR: "llm:stream-error",
+
+  // Slide operations
+  SLIDE_EXECUTE_PHASE: "slide:executePhase",
+  SLIDE_START_WATCHING: "slide:startWatching",
+  SLIDE_STOP_WATCHING: "slide:stopWatching",
+  SLIDE_GET_SYNC_STATUS: "slide:getSyncStatus",
+  SLIDE_MANUAL_SYNC: "slide:manualSync",
+  SLIDE_CANCEL_EXECUTION: "slide:cancelExecution",
+  SLIDE_STRUCTURE_CHANGED: "slide:structureChanged",
+  SLIDE_SYNC_STATUS_CHANGED: "slide:syncStatusChanged",
+  SLIDE_EXECUTION_PROGRESS: "slide:executionProgress",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -209,6 +220,13 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.LLM_CHECK_HEALTH,
   IPC_CHANNELS.LLM_SEND_CHAT,
   IPC_CHANNELS.LLM_STREAM_CHAT,
+  // Slide channels
+  IPC_CHANNELS.SLIDE_EXECUTE_PHASE,
+  IPC_CHANNELS.SLIDE_START_WATCHING,
+  IPC_CHANNELS.SLIDE_STOP_WATCHING,
+  IPC_CHANNELS.SLIDE_GET_SYNC_STATUS,
+  IPC_CHANNELS.SLIDE_MANUAL_SYNC,
+  IPC_CHANNELS.SLIDE_CANCEL_EXECUTION,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -225,4 +243,8 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.LLM_STREAM_CHUNK,
   IPC_CHANNELS.LLM_STREAM_END,
   IPC_CHANNELS.LLM_STREAM_ERROR,
+  // Slide channels
+  IPC_CHANNELS.SLIDE_STRUCTURE_CHANGED,
+  IPC_CHANNELS.SLIDE_SYNC_STATUS_CHANGED,
+  IPC_CHANNELS.SLIDE_EXECUTION_PROGRESS,
 ];

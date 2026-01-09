@@ -1069,10 +1069,54 @@ export interface ReplaceRedoResponse {
   error?: string;
 }
 
+// ===== Slide operations =====
+
+import type {
+  SkillPhase,
+  SkillExecutionResult,
+  SyncStatus,
+  SlideResponse,
+} from "@repo/shared";
+
+export type { SkillPhase, SkillExecutionResult, SyncStatus, SlideResponse };
+
+export interface SlideExecutePhaseRequest {
+  phase: SkillPhase;
+  projectPath: string;
+}
+
+export interface SlideStartWatchingRequest {
+  projectPath: string;
+}
+
+export interface SlideGetSyncStatusRequest {
+  projectPath: string;
+}
+
+export interface SlideManualSyncRequest {
+  projectPath: string;
+}
+
+export interface SlideApi {
+  executePhase: (
+    phase: SkillPhase,
+    projectPath: string,
+  ) => Promise<SlideResponse<SkillExecutionResult>>;
+  startWatching: (projectPath: string) => Promise<SlideResponse>;
+  stopWatching: () => Promise<SlideResponse>;
+  getSyncStatus: (projectPath: string) => Promise<SlideResponse<SyncStatus>>;
+  manualSync: (projectPath: string) => Promise<SlideResponse>;
+  cancelExecution: () => Promise<SlideResponse>;
+  onStructureChange: (callback: (path: string) => void) => () => void;
+  onSyncStatusChange: (callback: (status: SyncStatus) => void) => () => void;
+  onExecutionProgress: (callback: (progress: number) => void) => () => void;
+}
+
 // Global type declaration
 declare global {
   interface Window {
     electronAPI: ElectronAPI;
+    slideApi: SlideApi;
   }
 }
 
