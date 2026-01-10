@@ -11,26 +11,39 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-// Agent SDKのモック
-const mockAgentAPI = {
-  query: vi.fn(),
-  abort: vi.fn(),
-  getStatus: vi.fn(),
-  onMessage: vi.fn(),
-};
+// ホイストされるモック関数
+const { mockReadFile, mockWriteFile, mockAgentAPI } = vi.hoisted(() => {
+  return {
+    mockReadFile: vi.fn(),
+    mockWriteFile: vi.fn(),
+    mockAgentAPI: {
+      query: vi.fn(),
+      abort: vi.fn(),
+      getStatus: vi.fn(),
+      onMessage: vi.fn(),
+    },
+  };
+});
 
+// Agent SDKのモック
 vi.mock("../agent-client", () => ({
   getAgentAPI: () => mockAgentAPI,
 }));
 
-// fs/promisesのモック
-vi.mock("fs/promises", () => ({
-  readFile: vi.fn(),
-  writeFile: vi.fn(),
-  stat: vi.fn(),
-}));
-
-import { readFile } from "fs/promises";
+// fs/promisesのモック (ESM対応: default exportが必要)
+vi.mock("fs/promises", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("fs/promises")>();
+  return {
+    ...actual,
+    default: {
+      ...actual,
+      readFile: mockReadFile,
+      writeFile: mockWriteFile,
+    },
+    readFile: mockReadFile,
+    writeFile: mockWriteFile,
+  };
+});
 import {
   createModifierSkill,
   buildModifierPrompt,
@@ -233,7 +246,7 @@ describe("ModifierSkill", () => {
       const htmlContent = "<html><body>Updated content</body></html>";
       const structureContent = "# Original\n\nContent";
 
-      (readFile as ReturnType<typeof vi.fn>)
+      mockReadFile
         .mockResolvedValueOnce(htmlContent)
         .mockResolvedValueOnce(structureContent);
 
@@ -258,7 +271,7 @@ describe("ModifierSkill", () => {
       const htmlContent = "<html></html>";
       const structureContent = "# Title";
 
-      (readFile as ReturnType<typeof vi.fn>)
+      mockReadFile
         .mockResolvedValueOnce(htmlContent)
         .mockResolvedValueOnce(structureContent);
 
@@ -276,7 +289,7 @@ describe("ModifierSkill", () => {
       const htmlContent = "<html></html>";
       const structureContent = "# Title";
 
-      (readFile as ReturnType<typeof vi.fn>)
+      mockReadFile
         .mockResolvedValueOnce(htmlContent)
         .mockResolvedValueOnce(structureContent);
 
@@ -326,7 +339,7 @@ describe("ModifierSkill", () => {
         "<html>" + "a".repeat(10 * 1024 * 1024 - 100) + "</html>";
       const structureContent = "# Title";
 
-      (readFile as ReturnType<typeof vi.fn>)
+      mockReadFile
         .mockResolvedValueOnce(largeHtml)
         .mockResolvedValueOnce(structureContent);
 
@@ -346,7 +359,7 @@ describe("ModifierSkill", () => {
         "<html>" + "a".repeat(10 * 1024 * 1024 + 100) + "</html>";
       const structureContent = "# Title";
 
-      (readFile as ReturnType<typeof vi.fn>)
+      mockReadFile
         .mockResolvedValueOnce(oversizedHtml)
         .mockResolvedValueOnce(structureContent);
 
