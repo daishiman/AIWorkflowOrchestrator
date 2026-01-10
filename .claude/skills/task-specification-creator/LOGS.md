@@ -46,6 +46,39 @@
 
 ---
 
+## 2026-01-10 - 未タスク指示書生成
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: CONV-05-03
+- タスク名: 履歴/ログ表示UIコンポーネント
+- Phase: 12（未タスク検出・指示書作成）
+- 実行者: Claude Code
+
+### 結果
+- ステータス: success
+- 記録日時: 2026-01-10
+
+### 発見事項
+- **良かった点**: unassigned-task-template.mdに基づく統一フォーマットで作成
+- **良かった点**: Why/What/How構成で100人中100人が同じ理解で実行可能
+- **良かった点**: システム仕様（aiworkflow-requirements）との連携が明確
+
+### 成果
+以下の未タスク指示書を作成:
+1. **task-history-ui-integration.md** (High): UIコンポーネント統合
+2. **task-history-preload-setup.md** (High): preloadスクリプト設定
+3. **task-history-ipc-handlers.md** (High): IPCハンドラー登録
+4. **task-history-manual-testing.md** (Medium): 統合後手動テスト
+5. **task-history-improvements.md** (Low): 4件の改善タスクをまとめ
+
+配置先: `docs/30-workflows/unassigned-task/`
+
+### 次のアクション
+- [ ] 高優先度タスク3件の実施（UIコンポーネントのアプリ統合）
+
+---
+
 ## 2026-01-09 - タスク実行フィードバック
 
 ### コンテキスト

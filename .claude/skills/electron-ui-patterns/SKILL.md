@@ -183,10 +183,151 @@ Electron IPC通信をカプセル化し、検索パネルがIPC詳細を知ら�
 - エディタ実装変更時の影響をアダプター層に局所化
 - IPC通信のモック化によりテスト容易性向上
 
+### IPC通信エラーハンドリングパターン（2026-01-10追加）
+
+CONV-05-03（履歴/ログ表示UIコンポーネント）で適用したIPC通信のエラーハンドリングパターン。
+
+#### パターン概要
+
+Electron IPC通信において、以下のエラー状況に対応するための統一的なパターン。
+
+| エラー種別 | 原因 | 対応 |
+|-----------|------|------|
+| API未利用可能 | preload未設定、contextBridge未公開 | 明示的なエラーメッセージ |
+| IPC通信失敗 | チャンネル未登録、タイムアウト | 再試行機能付きエラー表示 |
+| データ取得失敗 | DBエラー、ファイル不在 | Result型でエラー情報を伝播 |
+
+#### Result型パターン
+
+IPC通信の結果を型安全に扱うためのパターン。
+
+```typescript
+// 成功/失敗を型で区別
+interface SuccessResult<T> {
+  success: true;
+  data: T;
+}
+
+interface ErrorResult {
+  success: false;
+  error: Error;
+}
+
+type Result<T> = SuccessResult<T> | ErrorResult;
+
+// 使用例：IPC応答の処理
+const result = await window.historyAPI.getFileHistory(fileId, options);
+if (result.success) {
+  setHistory(result.data.items);
+} else {
+  setError(result.error);
+}
+```
+
+#### API利用可能性チェックパターン
+
+preloadスクリプトでAPIが正しく公開されているかを確認。
+
+```typescript
+function useVersionHistory(fileId: string) {
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchHistory = useCallback(async () => {
+    // API利用可能性チェック
+    if (!window.historyAPI) {
+      setError(new Error("History API not available"));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const result = await window.historyAPI.getFileHistory(fileId);
+      // ...
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error(String(err)));
+    }
+  }, [fileId]);
+}
+```
+
+#### 再試行機能付きエラー表示パターン
+
+エラー発生時にユーザーが再試行できるUIを提供。
+
+```tsx
+function ErrorDisplay({
+  message,
+  onRetry
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <div role="alert" className="rounded-lg bg-red-50 p-4 text-center">
+      <p className="mb-3 text-red-700">
+        エラーが発生しました: {message}
+      </p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white"
+      >
+        再試行
+      </button>
+    </div>
+  );
+}
+
+// 使用例：履歴一覧でのエラーハンドリング
+if (error && history.length === 0) {
+  return <ErrorDisplay message={error.message} onRetry={refresh} />;
+}
+```
+
+#### Window型拡張パターン
+
+TypeScriptでwindowオブジェクトの拡張を型安全に行う。
+
+```typescript
+// types.tsで型を定義
+interface HistoryAPI {
+  getFileHistory(fileId: string, options?: PaginationOptions): Promise<Result<PaginatedResult>>;
+  // ...
+}
+
+declare global {
+  interface Window {
+    historyAPI?: HistoryAPI;  // ?でオプショナルに
+  }
+}
+
+// コンポーネントでの使用
+if (window.historyAPI) {
+  const result = await window.historyAPI.getFileHistory(fileId);
+}
+```
+
+#### エラー種別の分類
+
+| エラークラス | 表示メッセージ | 再試行 |
+|-------------|---------------|--------|
+| NetworkError | 「通信エラーが発生しました」 | 可 |
+| NotFoundError | 「データが見つかりません」 | 不可 |
+| RestoreError | 「復元に失敗しました」 | 可 |
+| DBError | 「データベースエラーが発生しました」 | 可 |
+
+#### 実装詳細
+
+詳細は以下を参照：
+- 実装例: `apps/desktop/src/renderer/hooks/useVersionHistory.ts`
+- 型定義: `apps/desktop/src/renderer/components/history/types.ts`
+- 仕様書: `.claude/skills/aiworkflow-requirements/references/ui-ux-history-panel.md`
+
 ## 変更履歴
 
 | Version | Date       | Changes                                       |
 | ------- | ---------- | --------------------------------------------- |
+| 2.4.0   | 2026-01-10 | IPC通信エラーハンドリングパターン追加（CONV-05-03） |
 | 2.3.0   | 2026-01-06 | validate-skill.mjs追加                        |
 | 2.2.0   | 2026-01-06 | editor-integration.md追加、skill-creator準拠  |
 | 2.1.0   | 2026-01-06 | EditorView検索統合パターン追加                |
