@@ -1,0 +1,188 @@
+{
+  "taskId": "CONV-05-03",
+  "taskName": "history-ui-components",
+  "description": "履歴/ログ表示UIコンポーネント",
+  "createdAt": "2026-01-10",
+  "updatedAt": "2026-01-10",
+  "status": "pending",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "skills": ["acceptance-criteria-writing"],
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "skills": [
+        "component-composition-patterns",
+        "custom-hooks-patterns",
+        "electron-ui-patterns"
+      ],
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/data-flow.md",
+        "outputs/phase-2/props-design.md",
+        "outputs/phase-2/hooks-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "skills": [],
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "pending",
+      "skills": [
+        "tdd-principles",
+        "frontend-testing",
+        "test-naming-conventions",
+        "boundary-value-analysis"
+      ],
+      "outputs": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "pending",
+      "skills": [
+        "clean-code-practices",
+        "accessibility-wcag",
+        "apple-hig-guidelines",
+        "component-composition-patterns",
+        "custom-hooks-patterns"
+      ],
+      "outputs": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "skills": [
+        "test-coverage",
+        "integration-testing",
+        "frontend-testing",
+        "vitest-advanced"
+      ],
+      "outputs": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "skills": ["test-coverage", "vitest-advanced"],
+      "outputs": [
+        "outputs/phase-7/coverage-final-report.md",
+        "outputs/phase-7/coverage-judgment.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "pending",
+      "skills": [
+        "clean-code-practices",
+        "code-smell-detection",
+        "solid-principles"
+      ],
+      "outputs": [
+        "outputs/phase-8/refactoring-record.md",
+        "outputs/phase-8/code-review-result.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "skills": [
+        "linting-formatting-automation",
+        "accessibility-wcag",
+        "performance-testing"
+      ],
+      "outputs": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/accessibility-audit.md",
+        "outputs/phase-9/performance-report.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "skills": [],
+      "outputs": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/checklist.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "pending",
+      "skills": [],
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/bug-report.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新 & スキル改善",
+      "status": "pending",
+      "skills": ["api-documentation-best-practices", "knowledge-management"],
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/hooks-documentation.md",
+        "outputs/phase-12/integration-guide.md",
+        "outputs/phase-12/api-specification.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "skills": [],
+      "outputs": [
+        "outputs/phase-13/pr-description.md",
+        "outputs/phase-13/pre-merge-checks.md"
+      ]
+    }
+  ],
+  "dependencies": ["CONV-05-01", "CONV-05-02"],
+  "components": [
+    "VersionHistory",
+    "VersionDetail",
+    "ConversionLogs",
+    "RestoreDialog"
+  ],
+  "hooks": [
+    "useVersionHistory",
+    "useVersionDetail",
+    "useConversionLogs",
+    "useRestore"
+  ],
+  "targetPaths": {
+    "components": "apps/desktop/src/renderer/components/history/",
+    "hooks": "apps/desktop/src/renderer/hooks/"
+  }
+}

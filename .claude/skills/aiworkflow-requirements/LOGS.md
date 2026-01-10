@@ -29,6 +29,24 @@
 
 ---
 
+### 2026-01-10 履歴UI仕様更新
+
+- **結果**: success
+- **Task**: CONV-05-03 履歴/ログ表示UIコンポーネント Phase 12 システム仕様書更新
+- **更新内容**:
+  - `references/ui-ux-history-panel.md`: 実装詳細・Props定義・型定義・テスト情報を追加（v1.0.0 → v1.1.0）
+  - `indexes/topic-map.md`: ui-ux-history-panel.mdのセクション情報を更新（14セクションに拡張）
+- **追加セクション**:
+  - ファイル構成（コンポーネント・フックのファイルパス）
+  - Props定義（4コンポーネント分のインターフェース）
+  - フック詳細（4フックの詳細仕様）
+  - データ型（VersionHistoryItem, ConversionLog, Result, PaginatedResult）
+  - テストカバレッジ（94.43%達成、8テストファイル）
+  - 統合手順（前提条件・必要な作業）
+- **備考**: CONV-05-03の実装完了に伴う仕様書の充実化
+
+---
+
 ### 2026-01-10 - agent-dashboard-foundation Phase 12
 
 - **結果**: success
@@ -42,5 +60,4 @@
 - **備考**: エージェントダッシュボード基盤のUI・状態管理・IPC設計を文書化
 
 ---
-
 （ログエントリはここに追記されます）
