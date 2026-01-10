@@ -29,4 +29,37 @@
 
 ---
 
+## 2026-01-10: community-detection-leiden
+
+| 項目         | 内容                                                       |
+| ------------ | ---------------------------------------------------------- |
+| タスクID     | CONV-08-02                                                 |
+| 操作         | create-spec / update-spec                                  |
+| 対象ファイル | interfaces-rag-community-detection.md（新規）、interfaces-rag.md、architecture-rag.md、topic-map.md |
+| 結果         | success                                                    |
+| 備考         | Leidenアルゴリズムによるコミュニティ検出機能の仕様追加     |
+
+### 更新詳細
+
+- **新規作成**: `references/interfaces-rag-community-detection.md`
+  - ICommunityDetector / ICommunityRepository インターフェース定義
+  - Community / CommunityDetectionOptions / CommunityStructure 型定義
+  - Leidenアルゴリズム処理フロー
+  - 使用例・実装ガイドライン
+
+- **更新**: `references/interfaces-rag.md`
+  - ドキュメント構成にCommunity Detection参照追加
+  - CommunityId Branded Type追加
+  - COMMUNITY_DETECTION_ERROR エラー型追加
+
+- **更新**: `references/architecture-rag.md`
+  - 「コミュニティ検出サービス (Leiden Algorithm)」セクション追加（116行）
+  - RAGパイプライン位置づけ図
+  - アーキテクチャ図・処理フロー
+
+- **更新**: `indexes/topic-map.md`
+  - インターフェースセクションにinterfaces-rag-community-detection.md追加
+
+---
+
 （ログエントリはここに追記されます）
