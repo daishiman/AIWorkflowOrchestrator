@@ -485,3 +485,120 @@ NERサービスの出力（ExtractedEntity）は、Knowledge Graph永続化時�
 | graph_relations | エンティティ間の関係（エッジ）      | `db/schema/graph/relations.ts`       |
 
 ---
+
+## コミュニティ検出サービス (Leiden Algorithm)
+
+### 概要
+
+Knowledge Graphのエンティティを意味的に関連するグループ（コミュニティ）に自動分類するサービス。
+GraphRAGにおいて、グラフ全体の構造を把握し、質問に対する包括的な回答を生成するための基盤を提供する。
+
+### RAGパイプラインにおける位置づけ
+
+```
+ドキュメント → 変換 → チャンキング → NER → 関係抽出 → [コミュニティ検出] → 検索・要約
+                                                            ↓
+                                                ┌──────────────────┐
+                                                │  コミュニティ検出  │
+                                                │  サービス (Leiden)│
+                                                └────────┬─────────┘
+                                                         │
+                              ┌───────────────────────────┼───────────────────────────┐
+                              ↓                           ↓                           ↓
+                       ┌────────────┐             ┌─────────────┐             ┌────────────┐
+                       │ communities │             │entity_      │             │ Community  │
+                       │  テーブル   │             │communities  │             │  Summary   │
+                       └────────────┘             └─────────────┘             └────────────┘
+```
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     CommunityDetector                            │
+│                  (ICommunityDetector実装)                        │
+├─────────────────────────────────────────────────────────────────┤
+│  detect()               │ Leidenアルゴリズムによる検出          │
+│  saveResults()          │ コミュニティをDBに永続化              │
+│  getCommunitiesForEntity()│ エンティティのコミュニティ取得      │
+│  getCommunitiesByLevel()│ レベル別コミュニティ取得              │
+│  getCommunityMembers()  │ コミュニティメンバー取得              │
+└───────────────┬─────────────────────────────────────────────────┘
+                │
+       ┌────────┴────────┐
+       ▼                 ▼
+┌─────────────┐   ┌──────────────────┐
+│LeidenAlgorithm│   │ICommunityRepository│
+│ (Pure Function)│   │   (Persistence)   │
+└─────────────┘   └──────────────────┘
+```
+
+### Leidenアルゴリズム処理フロー
+
+1. **Local Move Phase**: 各ノードを隣接ノードのコミュニティへ試行移動
+2. **Refinement Phase**: コミュニティ内でさらにサブコミュニティを検出
+3. **Aggregation Phase**: コミュニティをスーパーノードとして集約
+4. **Hierarchy Build**: 階層構造を構築（level 0 → level N）
+
+### 主要インターフェース
+
+**ICommunityDetector**: コミュニティ検出サービスの抽象インターフェース
+
+| メソッド                      | 説明                                 |
+| ----------------------------- | ------------------------------------ |
+| detect()                      | グラフからコミュニティを検出         |
+| saveResults()                 | 検出結果をDBに永続化                 |
+| getCommunitiesForEntity()     | エンティティの所属コミュニティ取得   |
+| getCommunitiesByLevel()       | レベル別コミュニティ取得             |
+| getCommunityMembers()         | コミュニティのメンバー取得           |
+
+**ICommunityRepository**: コミュニティ永続化の抽象インターフェース
+
+| メソッド                      | 説明                                 |
+| ----------------------------- | ------------------------------------ |
+| insert() / insertMany()       | コミュニティ挿入                     |
+| findById() / findByEntityId() | コミュニティ検索                     |
+| findByLevel()                 | レベル別検索                         |
+| deleteAll()                   | 全削除（再検出時）                   |
+| addEntityCommunityMapping()   | エンティティ-コミュニティマッピング  |
+
+### Community型
+
+| プロパティ         | 型            | 説明                           |
+| ------------------ | ------------- | ------------------------------ |
+| id                 | CommunityId   | コミュニティ一意識別子         |
+| level              | number        | 階層レベル（0が最下層）        |
+| memberEntityIds    | EntityId[]    | 直接メンバーエンティティID     |
+| parentCommunityId  | CommunityId?  | 親コミュニティID               |
+| childCommunityIds  | CommunityId[] | 子コミュニティID               |
+| size               | number        | コミュニティサイズ             |
+| modularity         | number        | モジュラリティ貢献             |
+
+### 検出オプション (CommunityDetectionOptions)
+
+| オプション         | デフォルト | 説明                           |
+| ------------------ | ---------- | ------------------------------ |
+| resolution         | 1.0        | 解像度（大→小コミュニティ多）  |
+| maxLevels          | 3          | 最大階層レベル数               |
+| minCommunitySize   | 2          | 最小コミュニティサイズ         |
+| maxIterations      | 100        | 最大イテレーション数           |
+| seed               | undefined  | 乱数シード（再現性用）         |
+
+### 実装ファイル
+
+| 種別           | パス                                                         |
+| -------------- | ------------------------------------------------------------ |
+| アルゴリズム   | `packages/shared/src/services/graph/leiden-algorithm.ts`     |
+| サービス       | `packages/shared/src/services/graph/community-detector.ts`   |
+| インターフェース | `packages/shared/src/services/graph/interfaces/`            |
+| 型定義         | `packages/shared/src/services/graph/types.ts`                |
+| テスト         | `packages/shared/src/services/graph/__tests__/`              |
+
+### テスト品質
+
+- **52テストケース**（単体 + 統合）
+- **92.06% Line Coverage**, **81.30% Branch Coverage**, **100% Function Coverage**
+
+**詳細参照**: [interfaces-rag-community-detection.md](./interfaces-rag-community-detection.md)
+
+---

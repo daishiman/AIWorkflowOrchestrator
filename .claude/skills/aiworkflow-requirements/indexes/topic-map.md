@@ -279,6 +279,20 @@ node scripts/list-specs.mjs --topics
 | 設計原則 | L163 |
 | 関連ドキュメント | L389 |
 
+### references/interfaces-rag-community-detection.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 要件 | L25 |
+| 設計 | L49 |
+| インターフェース定義 | L85 |
+| 型定義 | L120 |
+| エラー型 | L168 |
+| 使用例 | L180 |
+| 実装ガイドライン | L210 |
+| 関連ドキュメント | L232 |
+| 変更履歴 | L244 |
+
 ### references/interfaces-workflow.md
 
 | セクション | 行 |

@@ -4,7 +4,12 @@
  * @description Knowledge Graphストアのドメイン型定義
  */
 
-import type { EntityId, RelationId, ChunkId } from "../../types/rag/branded";
+import type {
+  EntityId,
+  RelationId,
+  ChunkId,
+  CommunityId,
+} from "../../types/rag/branded";
 import type { EntityType, RelationType } from "../../types/rag/graph/types";
 
 // =============================================================================
@@ -346,4 +351,190 @@ export function normalizeEntityName(name: string): string {
     .trim() // 前後空白除去
     .replace(/[^\w\s]/g, "") // 特殊文字除去
     .replace(/\s+/g, " "); // 連続空白を単一に
+}
+
+// =============================================================================
+// Community Types (Leiden Algorithm)
+// =============================================================================
+
+/**
+ * グラフエッジ（コミュニティ検出用）
+ *
+ * @description
+ * Leidenアルゴリズムの入力となるエッジ表現。
+ * StoredRelationから変換して使用する。
+ */
+export interface GraphEdge {
+  /** ソースノードID */
+  readonly source: EntityId;
+
+  /** ターゲットノードID */
+  readonly target: EntityId;
+
+  /** エッジの重み (0より大きい正の実数) */
+  readonly weight: number;
+}
+
+/**
+ * コミュニティ
+ *
+ * @description
+ * Leidenアルゴリズムで検出されたコミュニティ。
+ * 階層構造を持ち、複数レベルで存在可能。
+ */
+export interface Community {
+  /** コミュニティ一意識別子 */
+  readonly id: CommunityId;
+
+  /** 階層レベル (0が最下層) */
+  readonly level: number;
+
+  /** このコミュニティに直接属するエンティティID */
+  readonly memberEntityIds: readonly EntityId[];
+
+  /** 子コミュニティID (上位レベルのコミュニティのみ) */
+  readonly childCommunityIds: readonly CommunityId[];
+
+  /** 親コミュニティID (最上位以外) */
+  readonly parentCommunityId?: CommunityId;
+
+  /** コミュニティサイズ (直接または間接メンバー数) */
+  readonly size: number;
+
+  /** 内部エッジ数 */
+  readonly internalEdges: number;
+
+  /** 外部エッジ数 */
+  readonly externalEdges: number;
+
+  /** このコミュニティのモジュラリティ貢献 */
+  readonly modularity: number;
+
+  /** サマリー（LLM生成、オプション） */
+  readonly summary?: string;
+
+  /** 作成日時 */
+  readonly createdAt: Date;
+
+  /** 更新日時 */
+  readonly updatedAt: Date;
+}
+
+/**
+ * コミュニティ構造
+ *
+ * @description
+ * Leidenアルゴリズムの出力。
+ * 全コミュニティと階層情報を含む。
+ */
+export interface CommunityStructure {
+  /** 検出された全コミュニティ */
+  readonly communities: readonly Community[];
+
+  /** 階層レベル数 */
+  readonly levels: number;
+
+  /** グラフ全体のモジュラリティ */
+  readonly totalModularity: number;
+
+  /** エンティティ→コミュニティのマッピング */
+  readonly entityToCommunity: ReadonlyMap<EntityId, readonly CommunityId[]>;
+}
+
+/**
+ * コミュニティ検出オプション
+ *
+ * @description
+ * Leidenアルゴリズムのパラメータ。
+ */
+export interface CommunityDetectionOptions {
+  /** 解像度パラメータ (デフォルト: 1.0) */
+  readonly resolution?: number;
+
+  /** 最大階層レベル数 (デフォルト: 3) */
+  readonly maxLevels?: number;
+
+  /** 最小コミュニティサイズ (デフォルト: 2) */
+  readonly minCommunitySize?: number;
+
+  /** 最大イテレーション数 (デフォルト: 100) */
+  readonly maxIterations?: number;
+
+  /** 乱数シード (再現性確保用) */
+  readonly seed?: number;
+}
+
+/**
+ * コミュニティ検出結果
+ *
+ * @description
+ * Leidenアルゴリズムの実行結果。
+ * 構造情報と処理メタデータを含む。
+ */
+export interface CommunityDetectionResult {
+  /** コミュニティ構造 */
+  readonly structure: CommunityStructure;
+
+  /** 処理時間（ミリ秒） */
+  readonly processingTimeMs: number;
+
+  /** 使用したオプション */
+  readonly options: Required<CommunityDetectionOptions>;
+
+  /** 処理統計 */
+  readonly stats: CommunityDetectionStats;
+}
+
+/**
+ * コミュニティ検出統計
+ */
+export interface CommunityDetectionStats {
+  /** 入力ノード数 */
+  readonly nodeCount: number;
+
+  /** 入力エッジ数 */
+  readonly edgeCount: number;
+
+  /** 検出されたコミュニティ数 */
+  readonly communityCount: number;
+
+  /** 実行イテレーション数 */
+  readonly iterationsRun: number;
+
+  /** 収束したかどうか */
+  readonly converged: boolean;
+}
+
+/**
+ * コミュニティエラーコード
+ */
+export enum CommunityErrorCode {
+  /** グラフ読み込み失敗 */
+  GRAPH_LOAD_FAILED = "GRAPH_LOAD_FAILED",
+
+  /** 検出処理失敗 */
+  DETECTION_FAILED = "DETECTION_FAILED",
+
+  /** 保存失敗 */
+  SAVE_FAILED = "SAVE_FAILED",
+
+  /** コミュニティが見つからない */
+  NOT_FOUND = "NOT_FOUND",
+
+  /** 無効なパラメータ */
+  INVALID_PARAMETER = "INVALID_PARAMETER",
+}
+
+/**
+ * コミュニティ検出エラー
+ */
+export class CommunityDetectionError extends Error {
+  constructor(
+    message: string,
+    public readonly code: CommunityErrorCode,
+    public readonly cause?: Error,
+  ) {
+    super(message);
+    this.name = "CommunityDetectionError";
+  }
 }
