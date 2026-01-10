@@ -1,6 +1,6 @@
 # スキル一覧
 
-最終更新日: 2026-01-04 (task-specification-creator追加、skill-creator/aiworkflow-requirements概要更新)
+最終更新日: 2026-01-09 (aiworkflow-requirements更新)
 
 ## 1. API Document Writer
 
@@ -677,5 +677,5 @@
 | **.claude/skills/transaction-management/SKILL.md**           | `.claude/skills/transaction-management/SKILL.md`           | ACID特性を保証するトランザクション設計と実装を専門とするスキル                 | .claude/agents/db-architect.md, .claude/agents/repo-dev.md                                        |
 | **.claude/skills/example-usage-patterns/SKILL.md**           | `.claude/skills/example-usage-patterns/SKILL.md`           | 明確・完全・実践的・保守可能な使用例設計パターン                               | .claude/agents/api-doc-writer.md, .claude/agents/manual-writer.md, .claude/agents/spec-writer.md  |
 | **.claude/skills/feature-flag-patterns/SKILL.md**            | `.claude/skills/feature-flag-patterns/SKILL.md`            | Release/Experiment/Ops/Permission Toggle設計、ロールアウト戦略                 | .claude/agents/devops-eng.md, .claude/agents/gateway-dev.md                                       |
-| **.claude/skills/aiworkflow-requirements/SKILL.md**          | `.claude/skills/aiworkflow-requirements/SKILL.md`          | プロジェクト仕様管理（48ファイル・10トピック）、検索→参照ワークフロー          | 全エージェント共通（開発時参照用）                                                                |
+| **.claude/skills/aiworkflow-requirements/SKILL.md** | `.claude/skills/aiworkflow-requirements/SKILL.md` | AIWorkflowOrchestratorプロジェクトの仕様管理スキル。 仕様書を検索・参照するためのインターフェース。 references/配下に全... |
 | **.claude/skills/task-specification-creator/SKILL.md**       | `.claude/skills/task-specification-creator/SKILL.md`       | Phase 1-11タスク仕様書生成、スキル動的選定、skill-creator連携                  | 全エージェント共通（タスク分解・仕様書生成用）                                                    |

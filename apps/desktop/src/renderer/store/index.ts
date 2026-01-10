@@ -30,6 +30,7 @@ import {
   type SystemPromptTemplateSlice,
 } from "./slices/systemPromptTemplateSlice";
 import { createLLMSlice, type LLMSlice } from "./slices/llmSlice";
+import { createAgentSlice, type AgentSlice } from "./slices/agentSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -43,7 +44,8 @@ export type AppStore = NavigationSlice &
   WorkspaceSlice &
   FileSelectionSlice &
   SystemPromptTemplateSlice &
-  LLMSlice;
+  LLMSlice &
+  AgentSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -95,6 +97,7 @@ export const useAppStore = create<AppStore>()(
         ...createFileSelectionSlice(...args),
         ...createSystemPromptTemplateSlice(...args),
         ...createLLMSlice(...args),
+        ...createAgentSlice(...args),
       }),
       {
         name: "knowledge-studio-store",

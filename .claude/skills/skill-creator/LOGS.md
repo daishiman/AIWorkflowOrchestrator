@@ -323,6 +323,24 @@
 
 ---
 
+## [2026-01-09T22:49:48.473Z]
+
+- **Agent**: unknown
+- **Phase**: unknown
+- **Result**: ✓ 成功
+- **Notes**: コミュニティ検出（Leiden）仕様をシステム仕様書に追加：interfaces-rag-community-detection.md新規作成、interfaces-rag.md/architecture-rag.md/topic-map.md更新
+
+---
+
+## [2026-01-09T22:50:33.455Z]
+
+- **Agent**: skill-creator
+- **Phase**: update
+- **Result**: ✓ 成功
+- **Notes**: aiworkflow-requirements仕様書更新（Agent Dashboard IPC、Zustand Slice、ViewType）
+
+---
+
 ## 2026-01-10 - タスク実行フィードバック (CONV-08-02)
 
 ### コンテキスト
@@ -358,14 +376,5 @@
 
 ### 次のアクション
 - [ ] (なし)
-
----
-
-## [2026-01-09T22:49:48.473Z]
-
-- **Agent**: unknown
-- **Phase**: unknown
-- **Result**: ✓ 成功
-- **Notes**: コミュニティ検出（Leiden）仕様をシステム仕様書に追加：interfaces-rag-community-detection.md新規作成、interfaces-rag.md/architecture-rag.md/topic-map.md更新
 
 ---

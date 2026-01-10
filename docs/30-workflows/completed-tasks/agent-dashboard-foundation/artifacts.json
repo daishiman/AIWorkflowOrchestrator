@@ -1,0 +1,138 @@
+{
+  "taskId": "AGENT-001",
+  "taskName": "agent-dashboard-foundation",
+  "status": "in_progress",
+  "createdAt": "2026-01-10T00:14:31Z",
+  "lastUpdated": "2026-01-10T18:30:00Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-10T09:00:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-10T09:30:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/ui-component-design.md",
+        "outputs/phase-2/ipc-channel-design.md",
+        "outputs/phase-2/type-definitions.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-10T10:00:00Z",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-10T16:21:00Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md",
+        "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.test.ts",
+        "apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-10T16:28:00Z",
+      "artifacts": [
+        "outputs/phase-5/implementation-result.md",
+        "apps/desktop/src/renderer/store/slices/agentSlice.ts",
+        "apps/desktop/src/renderer/views/AgentView/index.tsx"
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-10T16:50:00Z",
+      "artifacts": [
+        "outputs/phase-6/boundary-value-tests.md",
+        "outputs/phase-6/edge-case-tests.md",
+        "outputs/phase-6/test-expansion-result.md",
+        "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.test.ts",
+        "apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx",
+        "apps/desktop/src/renderer/__tests__/integration/navigation.integration.test.ts",
+        "apps/desktop/src/renderer/__tests__/integration/state-sync.integration.test.ts"
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-10T17:00:00Z",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-gaps.md"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-10T17:20:00Z",
+      "artifacts": [
+        "outputs/phase-8/refactoring-report.md",
+        "outputs/phase-8/code-smell-report.md",
+        "apps/desktop/src/renderer/views/AgentView/index.tsx"
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-10T17:35:00Z",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/accessibility-report.md",
+        "outputs/phase-9/security-report.md"
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-10T17:50:00Z",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-10T18:10:00Z",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "apps/desktop/src/renderer/App.tsx"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-10T18:30:00Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "upstream": [],
+    "downstream": ["AGENT-002", "AGENT-003"]
+  },
+  "skillFeedback": []
+}
