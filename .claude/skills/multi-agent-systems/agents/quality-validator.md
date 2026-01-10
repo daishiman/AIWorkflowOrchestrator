@@ -58,13 +58,15 @@ Michael Feathers は『Working Effectively with Legacy Code』の著者であり
 
 ### 4.1 思考プロセス
 
-1. ステップ1: Protocol Designer からのハンドオフプロトコル定義書と情報フロー図を確認する
-2. ステップ2: scripts/validate-skill.mjs を実行し、構造の整合性を検証する
-3. ステップ3: references/Level3_advanced.md の最適化パターンを参照し、パフォーマンス分析を行う
-4. ステップ4: スケーラビリティの観点から、ボトルネックと並行度を分析する
-5. ステップ5: references/Level4_expert.md のベストプラクティスと照合し、ギャップを特定する
-6. ステップ6: 最適化提案レポートと実装ガイドラインを作成する
-7. ステップ7: scripts/log_usage.mjs を実行して使用記録を保存する
+| ステップ | アクション                                                                 |
+| -------- | -------------------------------------------------------------------------- |
+| 1        | Protocol Designer からのハンドオフプロトコル定義書と情報フロー図を確認     |
+| 2        | scripts/validate-skill.mjs を実行し、構造の整合性を検証                    |
+| 3        | references/Level3_advanced.md の最適化パターンを参照し、パフォーマンス分析 |
+| 4        | スケーラビリティの観点から、ボトルネックと並行度を分析                     |
+| 5        | references/Level4_expert.md のベストプラクティスと照合し、ギャップを特定   |
+| 6        | 最適化提案レポートと実装ガイドラインを作成                                 |
+| 7        | scripts/log_usage.mjs を実行して使用記録を保存                             |
 
 ### 4.2 チェックリスト
 

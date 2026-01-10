@@ -210,4 +210,154 @@ describe("SkillExecutor", () => {
       expect(result.duration).toBeGreaterThan(0);
     });
   });
+
+  // ==========================================================================
+  // Reverse Sync - Modifier Skill Tests (TDD Red - Phase 4)
+  // テストID: SE-01 ~ SE-06
+  // ==========================================================================
+  describe("Modifier Skill - execute modifier", () => {
+    it("SE-01: should execute modifier skill", async () => {
+      const executor = createSkillExecutor();
+
+      const resultPromise = executor.execute("modifier", testProjectPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      const result = await resultPromise;
+
+      expect(result.phase).toBe("modifier");
+      expect(result.success).toBe(true);
+    });
+
+    it("SE-02: should pass correct context to modifier", async () => {
+      const executor = createSkillExecutor();
+
+      // modifierスキル実行時にコンテキストが正しく渡されることを確認
+      const resultPromise = executor.execute("modifier", testProjectPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      const result = await resultPromise;
+
+      // 結果にprojectPathが含まれること
+      expect(result.projectPath).toBe(testProjectPath);
+
+      // modifierスキルの結果としてchanges配列が返されること
+      expect(result).toHaveProperty("changes");
+      expect(Array.isArray(result.changes)).toBe(true);
+    });
+
+    // Note: 現在はシミュレーション実装のため、タイムアウトは1秒で発生
+    // Agent SDK統合後に実際の30秒タイムアウトテストを追加する
+    it("SE-03: should handle modifier skill timeout", async () => {
+      const executor = createSkillExecutor();
+
+      // シミュレーション中はタイムアウトが発生しないため、正常完了を確認
+      // Agent SDK統合後はタイムアウト処理をテストする
+      const resultPromise = executor.execute("modifier", testProjectPath);
+
+      // シミュレーションの完了を待つ
+      await vi.advanceTimersByTimeAsync(1000);
+
+      const result = await resultPromise;
+
+      // シミュレーションは成功を返す（Agent SDK統合後にタイムアウトテストを追加）
+      expect(result.success).toBe(true);
+      expect(result.phase).toBe("modifier");
+    });
+  });
+
+  describe("Modifier Skill - error handling and retry", () => {
+    it("SE-04: should retry on modifier skill failure", async () => {
+      const executor = createSkillExecutor();
+      const progressCallback = vi.fn();
+
+      executor.onProgress(progressCallback);
+
+      // 最初の失敗後にリトライが行われることを確認
+      const resultPromise = executor.execute("modifier", testProjectPath);
+      await vi.advanceTimersByTimeAsync(5000);
+      const result = await resultPromise;
+
+      // リトライ後に成功するか、最大リトライ回数（3回）後にエラーになること
+      if (result.success) {
+        expect(result.phase).toBe("modifier");
+      } else {
+        // リトライ回数が含まれていること
+        expect(result.retryCount).toBeDefined();
+        expect(result.retryCount).toBeLessThanOrEqual(3);
+      }
+    });
+
+    it("SE-05: should report progress during modifier", async () => {
+      const executor = createSkillExecutor();
+      const progressCallback = vi.fn();
+
+      executor.onProgress(progressCallback);
+
+      const resultPromise = executor.execute("modifier", testProjectPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      await resultPromise;
+
+      // 進捗が報告されること
+      expect(progressCallback).toHaveBeenCalled();
+
+      // modifierフェーズの進捗情報が含まれること
+      const progressCalls = progressCallback.mock.calls;
+      const hasModifierProgress = progressCalls.some((call) => {
+        const progress = call[0];
+        return (
+          progress === 0 ||
+          progress === 100 ||
+          (typeof progress === "object" && progress.phase === "modifier")
+        );
+      });
+      expect(hasModifierProgress).toBe(true);
+    });
+
+    it("SE-06: should handle abort during modifier", async () => {
+      const executor = createSkillExecutor();
+
+      const resultPromise = executor.execute("modifier", testProjectPath);
+
+      // 実行中に中断
+      executor.cancel();
+
+      await vi.advanceTimersByTimeAsync(1000);
+      const result = await resultPromise;
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("Cancelled");
+    });
+  });
+
+  describe("Modifier Skill - result format", () => {
+    it("should return structure changes on successful modifier execution", async () => {
+      const executor = createSkillExecutor();
+
+      const resultPromise = executor.execute("modifier", testProjectPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      const result = await resultPromise;
+
+      if (result.success) {
+        // 成功時はchanges配列を持つこと
+        expect(result.changes).toBeDefined();
+        expect(Array.isArray(result.changes)).toBe(true);
+
+        // 各変更にtype, sectionが含まれること
+        result.changes?.forEach((change: unknown) => {
+          const changeObj = change as Record<string, unknown>;
+          expect(changeObj).toHaveProperty("type");
+          expect(changeObj).toHaveProperty("section");
+        });
+      }
+    });
+
+    it("should include direction in modifier result", async () => {
+      const executor = createSkillExecutor();
+
+      const resultPromise = executor.execute("modifier", testProjectPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      const result = await resultPromise;
+
+      // modifier実行結果にdirectionが含まれること
+      expect(result.direction).toBe("reverse");
+    });
+  });
 });

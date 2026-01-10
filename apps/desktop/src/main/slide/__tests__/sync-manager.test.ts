@@ -172,4 +172,158 @@ describe("SyncManager", () => {
       expect(mockExecutor.execute).toHaveBeenCalledTimes(2);
     });
   });
+
+  // ==========================================================================
+  // Reverse Sync Tests (TDD Red - Phase 4)
+  // テストID: SM-01 ~ SM-06
+  // ==========================================================================
+  describe("Reverse Sync - reverseSync", () => {
+    it("SM-01: should execute modifier skill on reverseSync", async () => {
+      const mockExecutor = createMockExecutor();
+      const manager = createSyncManager(mockExecutor);
+
+      // reverseSyncメソッドが存在することを確認
+      expect(typeof manager.reverseSync).toBe("function");
+
+      await manager.reverseSync(testProjectPath);
+
+      // modifierスキルが実行されること
+      expect(mockExecutor.execute).toHaveBeenCalledWith(
+        "modifier",
+        testProjectPath,
+      );
+    });
+
+    it("SM-02: should return structure changes on success", async () => {
+      const mockExecutor = createMockExecutor();
+      const expectedChanges = {
+        success: true,
+        duration: 1000,
+        changes: [
+          {
+            type: "modify",
+            section: "# スライド1",
+            before: "旧内容",
+            after: "新内容",
+          },
+        ],
+      };
+      (mockExecutor.execute as ReturnType<typeof vi.fn>).mockResolvedValue(
+        expectedChanges,
+      );
+
+      const manager = createSyncManager(mockExecutor);
+      const result = await manager.reverseSync(testProjectPath);
+
+      expect(result).toEqual(expectedChanges);
+    });
+
+    it("SM-03: should throw error on reverseSync failure", async () => {
+      const mockExecutor = createMockExecutor();
+      (mockExecutor.execute as ReturnType<typeof vi.fn>).mockResolvedValue({
+        success: false,
+        error: "Modifier skill failed",
+      });
+
+      const manager = createSyncManager(mockExecutor);
+
+      await expect(manager.reverseSync(testProjectPath)).rejects.toThrow(
+        "Modifier skill failed",
+      );
+    });
+
+    it("SM-04: should update sync direction on reverseSync", async () => {
+      const mockExecutor = createMockExecutor();
+      const manager = createSyncManager(mockExecutor);
+      const statusCallback = vi.fn();
+
+      // ステータス変更のコールバックを登録
+      manager.onStatusChange(statusCallback);
+
+      await manager.reverseSync(testProjectPath);
+
+      // ステータスコールバックでdirectionが'reverse'になっていること
+      expect(statusCallback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          direction: "reverse",
+          status: "syncing",
+        }),
+      );
+    });
+  });
+
+  describe("Reverse Sync - cancel and progress", () => {
+    it("SM-05: should handle cancel during reverseSync", async () => {
+      const mockExecutor = createMockExecutor();
+      // 長時間実行をシミュレート
+      let resolvePromise: (value: unknown) => void;
+      (mockExecutor.execute as ReturnType<typeof vi.fn>).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolvePromise = resolve;
+          }),
+      );
+
+      const manager = createSyncManager(mockExecutor);
+
+      // reverseSyncを開始（完了を待たない）
+      const syncPromise = manager.reverseSync(testProjectPath);
+
+      // キャンセルを実行
+      manager.cancel();
+
+      expect(mockExecutor.cancel).toHaveBeenCalled();
+
+      // クリーンアップのため、Promiseを解決
+      resolvePromise!({ success: false, cancelled: true });
+      await expect(syncPromise).rejects.toThrow();
+    });
+
+    it("SM-06: should emit progress during reverseSync", async () => {
+      const mockExecutor = createMockExecutor();
+      const manager = createSyncManager(mockExecutor);
+      const progressCallback = vi.fn();
+
+      manager.onProgress(progressCallback);
+
+      // progressコールバックがエグゼキューターに登録されること
+      expect(mockExecutor.onProgress).toHaveBeenCalledWith(progressCallback);
+
+      await manager.reverseSync(testProjectPath);
+
+      // executeが呼ばれることで進捗が報告される
+      expect(mockExecutor.execute).toHaveBeenCalled();
+    });
+  });
+
+  describe("Reverse Sync - onStatusChange", () => {
+    it("should register status change callback", () => {
+      const mockExecutor = createMockExecutor();
+      const manager = createSyncManager(mockExecutor);
+      const statusCallback = vi.fn();
+
+      // onStatusChangeメソッドが存在することを確認
+      expect(typeof manager.onStatusChange).toBe("function");
+
+      // コールバック登録がエラーなく完了すること
+      expect(() => manager.onStatusChange(statusCallback)).not.toThrow();
+    });
+
+    it("should call status callback with correct direction for forward sync", async () => {
+      const mockExecutor = createMockExecutor();
+      const manager = createSyncManager(mockExecutor);
+      const statusCallback = vi.fn();
+
+      manager.onStatusChange(statusCallback);
+
+      await manager.sync(testProjectPath);
+
+      // 順方向同期のステータス
+      expect(statusCallback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          direction: "forward",
+        }),
+      );
+    });
+  });
 });

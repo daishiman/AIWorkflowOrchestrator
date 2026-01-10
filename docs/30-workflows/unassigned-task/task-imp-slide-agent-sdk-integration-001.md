@@ -150,8 +150,61 @@ skill-executor.tsにClaude Agent SDKを統合し、スキルフェーズ（heari
 
 ---
 
+---
+
+## slide-reverse-sync関連追加要件（2026-01-10追記）
+
+### 追加対象ファイル
+
+| ファイル                                        | 対応内容                                 |
+| ----------------------------------------------- | ---------------------------------------- |
+| `apps/desktop/src/main/slide/agent-client.ts`   | シミュレーション→実SDK API呼び出しに置換 |
+| `apps/desktop/src/main/slide/modifier-skill.ts` | ModifierSkill実行ロジック（変更不要）    |
+
+### 追加TODOコメント
+
+**agent-client.ts:192**:
+
+```typescript
+// TODO: Agent SDK統合後に実際のAPI呼び出しを実装
+```
+
+### 追加PENDINGテスト項目
+
+以下のテストがSDK統合後に実施可能：
+
+1. SyncStatusIndicator表示（UI/UXテスト）
+2. 同期成功フィードバック（UI/UXテスト）
+3. エラーフィードバック（UI/UXテスト）
+4. Agent SDK連携（統合テスト）
+5. Main/Renderer IPC（統合テスト）
+
+### 追加完了条件
+
+- [ ] agent-client.tsが実Agent SDK呼び出しを行う
+- [ ] APIキーがsafeStorageで暗号化保存される
+- [ ] 30秒タイムアウトが正常動作する
+- [ ] ModifierSkill（HTML→structure.md逆同期）が実動作する
+- [ ] changeContextMapによる無限ループ防止が実環境で動作する
+
+---
+
 ## 参照リソース
+
+### slide-dependency-management関連
 
 - 関連タスク: `docs/30-workflows/task-agent-sdk-integration.md`
 - 実装ガイド: `docs/30-workflows/slide-dependency-management/outputs/phase-12/implementation-guide.md`
 - 設計書: `docs/30-workflows/slide-dependency-management/outputs/phase-2/architecture-design.md`
+
+### slide-reverse-sync関連
+
+- 実装ガイド: `docs/30-workflows/slide-reverse-sync/outputs/phase-12/implementation-guide.md`
+- 未タスク検出レポート: `docs/30-workflows/slide-reverse-sync/outputs/phase-12/unassigned-task-report.md`
+- Agent SDKインターフェース: `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`
+- API仕様: `docs/30-workflows/slide-reverse-sync/outputs/phase-2/api-specification.md`
+- IPC設計: `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md`
+
+---
+
+**最終更新**: 2026-01-10（slide-reverse-sync Phase 12より追記）

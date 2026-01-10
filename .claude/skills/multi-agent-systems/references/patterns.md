@@ -198,6 +198,79 @@ const events = [
 ];
 ```
 
+### 変更コンテキストマップ（changeContextMap）
+
+双方向同期における無限ループを防止するためのパターン。
+変更の発生元と方向を追跡し、TTL（Time-To-Live）による自動クリーンアップで
+循環的な同期トリガーを防ぐ。
+
+```typescript
+// 変更コンテキストの型定義
+interface ChangeContext {
+  direction: "forward" | "reverse"; // 同期方向
+  timestamp: number; // 変更発生時刻
+  triggeredBy: string; // 発生元ファイル
+}
+
+// 変更コンテキストマップ
+const changeContextMap = new Map<string, ChangeContext>();
+
+// TTL設定（ミリ秒）
+const CHANGE_CONTEXT_TTL = 1000;
+
+// 無限ループ防止の実装例
+function shouldTriggerSync(
+  filePath: string,
+  direction: "forward" | "reverse"
+): boolean {
+  const context = changeContextMap.get(filePath);
+  const now = Date.now();
+
+  // コンテキストがある場合、TTL内で逆方向の変更なら同期をスキップ
+  if (context) {
+    const isWithinTTL = now - context.timestamp < CHANGE_CONTEXT_TTL;
+    const isReverseDirection = context.direction !== direction;
+
+    if (isWithinTTL && isReverseDirection) {
+      return false; // 無限ループ防止：同期をスキップ
+    }
+  }
+
+  // 新しいコンテキストを登録
+  changeContextMap.set(filePath, {
+    direction,
+    timestamp: now,
+    triggeredBy: filePath,
+  });
+
+  return true; // 同期を実行
+}
+
+// 定期的なクリーンアップ
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, context] of changeContextMap.entries()) {
+    if (now - context.timestamp > CHANGE_CONTEXT_TTL) {
+      changeContextMap.delete(key);
+    }
+  }
+}, CHANGE_CONTEXT_TTL);
+```
+
+**適用場面**:
+
+- 双方向ファイル同期（例：index.html ↔ structure.md）
+- リアルタイムコラボレーション機能
+- キャッシュ同期システム
+
+**設計ポイント**:
+
+| 項目       | 推奨値     | 説明                           |
+| ---------- | ---------- | ------------------------------ |
+| TTL        | 1000ms     | 同期処理完了を待つ十分な時間   |
+| クリーンアップ間隔 | TTLと同値 | メモリリーク防止               |
+| 方向追跡   | 必須       | 逆方向の変更を識別するために必要 |
+
 ## 終了条件パターン
 
 ### フィードバックループ終了条件
