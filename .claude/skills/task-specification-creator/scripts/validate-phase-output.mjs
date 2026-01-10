@@ -52,7 +52,7 @@ const REQUIRED_SECTIONS = [
   { pattern: /^#\s+Phase\s+(-?\d+):/m, name: "タイトル (# Phase N:)" },
   { pattern: /^##\s+メタ情報/m, name: "メタ情報" },
   { pattern: /^##\s+目的/m, name: "目的" },
-  { pattern: /^##\s+使用スキル/m, name: "使用スキル" },
+  { pattern: /^##\s+実行タスク/m, name: "実行タスク" },
   { pattern: /^##\s+参照資料/m, name: "参照資料" },
   { pattern: /^##\s+(成果物|実行手順)/m, name: "成果物/実行手順" },
   { pattern: /^##\s+完了条件/m, name: "完了条件" },
@@ -65,13 +65,6 @@ const QUALITY_CHECKS = [
     pattern: /(適切に|必要に応じて|など|〜等|できるだけ)/g,
     severity: "warning",
     message: "曖昧な表現が含まれています",
-  },
-  {
-    name: "スキル選定理由",
-    pattern: /`[a-z-]+`:\s*.+/,
-    severity: "error",
-    message: "スキル選定理由が記載されていません",
-    inSection: "使用スキル",
   },
 ];
 
@@ -225,21 +218,21 @@ class PhaseValidator {
       }
     }
 
-    // スキル選定セクションの検証
-    const skillSection = content.match(/^##\s+使用スキル[\s\S]*?(?=^##|\z)/m);
-    if (skillSection) {
-      const skillContent = skillSection[0];
-      // スキル名と選定理由のパターン: `skill-name`: 理由
-      const skillPattern = /`([a-z][a-z0-9-]*)`:\s*(.+)/g;
-      const skills = [...skillContent.matchAll(skillPattern)];
+    // 実行タスクセクションの検証
+    const taskSection = content.match(/^##\s+実行タスク[\s\S]*?(?=^##|\z)/m);
+    if (taskSection) {
+      const taskContent = taskSection[0];
+      // タスク名と目的のパターン: - タスク名: 目的
+      const taskPattern = /-\s+(.+?):\s*(.+)/g;
+      const tasks = [...taskContent.matchAll(taskPattern)];
 
-      if (skills.length === 0) {
+      if (tasks.length === 0) {
         this.warnings.push(
-          `Phase ${phaseNum}: スキルが選定されていないか、形式が正しくありません`,
+          `Phase ${phaseNum}: 実行タスクが定義されていないか、形式が正しくありません`,
         );
       } else {
         this.passes.push(
-          `Phase ${phaseNum}: ${skills.length}個のスキルが選定済み`,
+          `Phase ${phaseNum}: ${tasks.length}個の実行タスクが定義済み`,
         );
       }
     }

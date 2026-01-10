@@ -1,0 +1,2198 @@
+{
+  "generated": "2026-01-08T22:48:30.498Z",
+  "totalKeywords": 631,
+  "keywords": {
+    "API": [
+      "api-core.md",
+      "api-endpoints.md",
+      "api-internal-chunk-search.md",
+      "api-internal-conversion.md",
+      "api-internal-embedding.md",
+      "api-internal-search.md",
+      "api-internal.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-converter-implementations.md",
+      "interfaces-rag-file-selection.md",
+      "security-api-electron.md",
+      "ui-ux-forms.md"
+    ],
+    "設計原則・認証・レート制限": [
+      "api-core.md"
+    ],
+    "設計方針": [
+      "api-core.md",
+      "directory-structure.md"
+    ],
+    "バージョニング": [
+      "api-core.md"
+    ],
+    "HTTP": [
+      "api-core.md"
+    ],
+    "ステータスコード": [
+      "api-core.md"
+    ],
+    "リクエスト": [
+      "api-core.md",
+      "interfaces-rag-file-selection.md"
+    ],
+    "レスポンス形式": [
+      "api-core.md"
+    ],
+    "ページネーション": [
+      "api-core.md"
+    ],
+    "フィルタリング・ソート": [
+      "api-core.md"
+    ],
+    "認証・認可": [
+      "api-core.md",
+      "discord-bot.md",
+      "security-principles.md"
+    ],
+    "レート制限": [
+      "api-core.md",
+      "discord-bot.md"
+    ],
+    "CORS": [
+      "api-core.md"
+    ],
+    "設定": [
+      "api-core.md",
+      "directory-structure.md"
+    ],
+    "エンドポイント一覧": [
+      "api-endpoints.md"
+    ],
+    "Desktop": [
+      "api-endpoints.md",
+      "architecture-rag.md",
+      "interfaces-llm.md"
+    ],
+    "IPC": [
+      "api-endpoints.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-llm.md",
+      "interfaces-rag-file-selection.md"
+    ],
+    "認証・プロフィール": [
+      "api-endpoints.md",
+      "interfaces-auth.md"
+    ],
+    "エンドポイント命名規則": [
+      "api-endpoints.md"
+    ],
+    "Electron": [
+      "api-endpoints.md",
+      "architecture-auth-security.md",
+      "database-operations.md",
+      "deployment-electron.md",
+      "deployment.md",
+      "directory-structure.md",
+      "environment-variables.md",
+      "glossary.md",
+      "security-api-electron.md",
+      "technology-core.md",
+      "ui-ux-components.md"
+    ],
+    "設計": [
+      "api-endpoints.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-forms.md",
+      "ui-ux-navigation.md",
+      "ui-ux-search-panel.md"
+    ],
+    "AI": [
+      "api-endpoints.md",
+      "glossary.md",
+      "master-design.md",
+      "technology-backend.md"
+    ],
+    "プロバイダー": [
+      "api-endpoints.md"
+    ],
+    "連携": [
+      "api-endpoints.md"
+    ],
+    "エンティティ抽出サービス": [
+      "api-endpoints.md",
+      "architecture-rag.md"
+    ],
+    "NER": [
+      "api-endpoints.md",
+      "architecture-rag.md"
+    ],
+    "チャンク検索": [
+      "api-internal-chunk-search.md"
+    ],
+    "RAG": [
+      "api-internal-chunk-search.md",
+      "api-internal-conversion.md",
+      "api-internal.md",
+      "architecture-auth-security.md",
+      "architecture-rag.md",
+      "database-schema.md",
+      "glossary.md",
+      "interfaces-rag.md"
+    ],
+    "全文検索": [
+      "api-internal-chunk-search.md"
+    ],
+    "概要": [
+      "api-internal-chunk-search.md",
+      "api-internal-search.md",
+      "api-internal.md",
+      "architecture-embedding-pipeline.md",
+      "architecture-file-conversion.md",
+      "claude-code-agents.md",
+      "claude-code-commands.md",
+      "claude-code-overview.md",
+      "claude-code-skills-overview.md",
+      "claude-code-skills-structure.md",
+      "database-schema.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-chat-history.md",
+      "interfaces-converter-implementations.md",
+      "interfaces-converter.md",
+      "interfaces-rag.md",
+      "security-implementation.md",
+      "task-workflow.md",
+      "technology-backend.md",
+      "technology-core.md",
+      "technology-devops.md",
+      "ui-ux-advanced.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "検索エンドポイント": [
+      "api-internal-chunk-search.md"
+    ],
+    "将来実装": [
+      "api-internal-chunk-search.md"
+    ],
+    "性能目標": [
+      "api-internal-chunk-search.md"
+    ],
+    "使用例": [
+      "api-internal-chunk-search.md",
+      "database-architecture.md"
+    ],
+    "データベース層": [
+      "api-internal-chunk-search.md"
+    ],
+    "実装ステータス": [
+      "api-internal-chunk-search.md"
+    ],
+    "内部サービス": [
+      "api-internal-conversion.md"
+    ],
+    "変換システム": [
+      "api-internal-conversion.md"
+    ],
+    "ConversionService": [
+      "api-internal-conversion.md"
+    ],
+    "HistoryService": [
+      "api-internal-conversion.md",
+      "architecture-file-conversion.md"
+    ],
+    "Embedding": [
+      "api-internal-embedding.md",
+      "architecture-embedding-pipeline.md",
+      "interfaces-llm.md"
+    ],
+    "Generation": [
+      "api-internal-embedding.md",
+      "architecture-embedding-pipeline.md",
+      "interfaces-llm.md"
+    ],
+    "主要インターフェース": [
+      "api-internal-embedding.md"
+    ],
+    "エラーコード": [
+      "api-internal-embedding.md",
+      "api-internal-search.md"
+    ],
+    "性能指標": [
+      "api-internal-embedding.md"
+    ],
+    "Search": [
+      "api-internal-search.md"
+    ],
+    "Service": [
+      "api-internal-search.md"
+    ],
+    "主要クラス": [
+      "api-internal-search.md"
+    ],
+    "SearchService": [
+      "api-internal-search.md"
+    ],
+    "メソッド": [
+      "api-internal-search.md"
+    ],
+    "使用パターン": [
+      "api-internal-search.md"
+    ],
+    "性能特性": [
+      "api-internal-search.md"
+    ],
+    "デフォルト除外パターン": [
+      "api-internal-search.md"
+    ],
+    "関連ドキュメント": [
+      "api-internal-search.md",
+      "api-internal.md",
+      "architecture-auth-security.md",
+      "architecture-embedding-pipeline.md",
+      "architecture-file-conversion.md",
+      "claude-code-agents-spec.md",
+      "claude-code-agents-workflow.md",
+      "claude-code-agents.md",
+      "claude-code-skills-agents.md",
+      "claude-code-skills-resources.md",
+      "claude-code-skills-structure.md",
+      "database-architecture.md",
+      "database-operations.md",
+      "database-schema.md",
+      "deployment-electron.md",
+      "deployment-gha.md",
+      "deployment-railway.md",
+      "deployment.md",
+      "directory-structure.md",
+      "discord-bot.md",
+      "environment-variables.md",
+      "error-handling.md",
+      "glossary.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-chat-history.md",
+      "interfaces-converter-extension.md",
+      "interfaces-converter-implementations.md",
+      "interfaces-converter.md",
+      "interfaces-llm.md",
+      "interfaces-rag-chunk-embedding.md",
+      "interfaces-rag-file-selection.md",
+      "interfaces-rag-search.md",
+      "interfaces-rag.md",
+      "local-agent.md",
+      "overview.md",
+      "plugin-development.md",
+      "quality-requirements.md",
+      "security-api-electron.md",
+      "security-implementation.md",
+      "security-input-validation.md",
+      "security-operations.md",
+      "task-workflow-rules.md",
+      "task-workflow.md",
+      "technology-devops.md",
+      "ui-ux-advanced.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "内部": [
+      "api-internal.md"
+    ],
+    "仕様": [
+      "api-internal.md",
+      "claude-code-agents-workflow.md",
+      "claude-code-commands.md",
+      "claude-code-skills-process.md",
+      "claude-code-skills-structure.md",
+      "discord-bot.md"
+    ],
+    "一覧": [
+      "api-internal.md"
+    ],
+    "の概要": [
+      "api-internal.md"
+    ],
+    "認証・セキュリティ": [
+      "architecture-auth-security.md"
+    ],
+    "アーキテクチャ設計": [
+      "architecture-auth-security.md",
+      "architecture-database.md",
+      "architecture-monorepo.md",
+      "architecture-patterns.md",
+      "architecture-rag.md"
+    ],
+    "認証アーキテクチャ": [
+      "architecture-auth-security.md"
+    ],
+    "Supabase": [
+      "architecture-auth-security.md"
+    ],
+    "セキュリティアーキテクチャ": [
+      "architecture-auth-security.md"
+    ],
+    "パイプラインアーキテクチャ": [
+      "architecture-auth-security.md"
+    ],
+    "データベース": [
+      "architecture-database.md"
+    ],
+    "データベース設計原則": [
+      "architecture-database.md"
+    ],
+    "workflows": [
+      "architecture-database.md",
+      "directory-structure.md"
+    ],
+    "テーブル設計": [
+      "architecture-database.md"
+    ],
+    "ベクトル検索設計": [
+      "architecture-database.md"
+    ],
+    "将来拡張": [
+      "architecture-database.md"
+    ],
+    "Pipeline": [
+      "architecture-embedding-pipeline.md"
+    ],
+    "アーキテクチャ": [
+      "architecture-embedding-pipeline.md",
+      "interfaces-agent-sdk.md"
+    ],
+    "主要コンポーネント": [
+      "architecture-embedding-pipeline.md",
+      "architecture-file-conversion.md"
+    ],
+    "チャンキング戦略": [
+      "architecture-embedding-pipeline.md",
+      "interfaces-rag-chunk-embedding.md"
+    ],
+    "埋め込みプロバイダー": [
+      "architecture-embedding-pipeline.md",
+      "interfaces-rag-chunk-embedding.md"
+    ],
+    "信頼性機能": [
+      "architecture-embedding-pipeline.md"
+    ],
+    "パフォーマンス最適化": [
+      "architecture-embedding-pipeline.md",
+      "database-implementation.md",
+      "ui-ux-portal-patterns.md"
+    ],
+    "品質メトリクス": [
+      "architecture-embedding-pipeline.md",
+      "interfaces-chat-history.md"
+    ],
+    "ファイル変換基盤アーキテクチャ": [
+      "architecture-file-conversion.md"
+    ],
+    "ログ記録サービス": [
+      "architecture-file-conversion.md"
+    ],
+    "ConversionLogger": [
+      "architecture-file-conversion.md"
+    ],
+    "履歴管理サービス": [
+      "architecture-file-conversion.md"
+    ],
+    "アーキテクチャパターン": [
+      "architecture-file-conversion.md"
+    ],
+    "実装済みコンバーター": [
+      "architecture-file-conversion.md"
+    ],
+    "品質指標": [
+      "architecture-file-conversion.md"
+    ],
+    "新規コンバーター追加手順": [
+      "architecture-file-conversion.md"
+    ],
+    "コンバーター優先度ガイドライン": [
+      "architecture-file-conversion.md"
+    ],
+    "パフォーマンス要件": [
+      "architecture-file-conversion.md",
+      "quality-requirements.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "既知の制限事項": [
+      "architecture-file-conversion.md"
+    ],
+    "技術的負債": [
+      "architecture-file-conversion.md"
+    ],
+    "将来の拡張ポイント": [
+      "architecture-file-conversion.md"
+    ],
+    "モノレポ": [
+      "architecture-monorepo.md",
+      "directory-structure.md"
+    ],
+    "モノレポアーキテクチャ": [
+      "architecture-monorepo.md"
+    ],
+    "機能追加パターン": [
+      "architecture-patterns.md"
+    ],
+    "Knowledge": [
+      "architecture-rag.md",
+      "database-implementation.md",
+      "interfaces-rag.md",
+      "ui-ux-design-system.md"
+    ],
+    "Graph": [
+      "architecture-rag.md",
+      "database-implementation.md",
+      "interfaces-rag.md"
+    ],
+    "型定義": [
+      "architecture-rag.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-llm.md"
+    ],
+    "実装": [
+      "architecture-rag.md",
+      "ui-ux-portal-patterns.md"
+    ],
+    "DiskANN": [
+      "architecture-rag.md",
+      "database-implementation.md"
+    ],
+    "ベクトル検索アーキテクチャ": [
+      "architecture-rag.md"
+    ],
+    "オフライン・同期アーキテクチャ": [
+      "architecture-rag.md"
+    ],
+    "状態管理": [
+      "architecture-rag.md",
+      "claude-code-agents-workflow.md",
+      "ui-ux-llm-selector.md"
+    ],
+    "Agent": [
+      "claude-code-agents-spec.md",
+      "claude-code-agents-workflow.md",
+      "claude-code-agents.md",
+      "interfaces-agent-sdk.md"
+    ],
+    "仕様詳細": [
+      "claude-code-agents-spec.md"
+    ],
+    "ファイル配置": [
+      "claude-code-agents-spec.md"
+    ],
+    "YAML": [
+      "claude-code-agents-spec.md"
+    ],
+    "Frontmatter": [
+      "claude-code-agents-spec.md"
+    ],
+    "必須フィールド": [
+      "claude-code-agents-spec.md"
+    ],
+    "オプションフィールド": [
+      "claude-code-agents-spec.md"
+    ],
+    "完全な": [
+      "claude-code-agents-spec.md"
+    ],
+    "記述形式": [
+      "claude-code-agents-spec.md",
+      "spec-guidelines.md"
+    ],
+    "description": [
+      "claude-code-agents-spec.md"
+    ],
+    "フィールドの詳細記述規則": [
+      "claude-code-agents-spec.md"
+    ],
+    "依存スキルの記述規則": [
+      "claude-code-agents-spec.md"
+    ],
+    "本文の必須セクション": [
+      "claude-code-agents-spec.md"
+    ],
+    "エージェント名": [
+      "claude-code-agents-spec.md"
+    ],
+    "目的": [
+      "claude-code-agents-spec.md",
+      "claude-code-commands.md",
+      "claude-code-skills-agents.md"
+    ],
+    "責務": [
+      "claude-code-agents-spec.md"
+    ],
+    "背景": [
+      "claude-code-agents-spec.md",
+      "claude-code-commands.md"
+    ],
+    "役割定義": [
+      "claude-code-agents-spec.md"
+    ],
+    "行数制約": [
+      "claude-code-agents-spec.md"
+    ],
+    "命名規則": [
+      "claude-code-agents-spec.md",
+      "claude-code-commands.md",
+      "claude-code-skills-process.md",
+      "spec-guidelines.md"
+    ],
+    "ファイル参照形式": [
+      "claude-code-agents-spec.md",
+      "claude-code-commands.md",
+      "claude-code-skills-process.md"
+    ],
+    "ワークフロー・協調パターン": [
+      "claude-code-agents-workflow.md"
+    ],
+    "ワークフローセクションの記述形式": [
+      "claude-code-agents-workflow.md"
+    ],
+    "Phase": [
+      "claude-code-agents-workflow.md"
+    ],
+    "共通": [
+      "claude-code-agents-workflow.md"
+    ],
+    "ワークフロー": [
+      "claude-code-agents-workflow.md",
+      "interfaces-workflow.md"
+    ],
+    "ペルソナ設計": [
+      "claude-code-agents-workflow.md"
+    ],
+    "ツール権限設定": [
+      "claude-code-agents-workflow.md"
+    ],
+    "エージェント間協調": [
+      "claude-code-agents-workflow.md"
+    ],
+    "ハンドオフプロトコル": [
+      "claude-code-agents-workflow.md"
+    ],
+    "agent": [
+      "claude-code-agents-workflow.md",
+      "directory-structure.md"
+    ],
+    "list": [
+      "claude-code-agents-workflow.md",
+      "claude-code-skills-process.md"
+    ],
+    "md": [
+      "claude-code-agents-workflow.md",
+      "claude-code-skills-agents.md",
+      "claude-code-skills-process.md",
+      "claude-code-skills-structure.md"
+    ],
+    "エラーハンドリング": [
+      "claude-code-agents-workflow.md",
+      "database-implementation.md",
+      "discord-bot.md",
+      "local-agent.md",
+      "plugin-development.md",
+      "ui-ux-llm-selector.md"
+    ],
+    "品質基準": [
+      "claude-code-agents-workflow.md",
+      "claude-code-commands.md",
+      "claude-code-skills-process.md"
+    ],
+    "Claude": [
+      "claude-code-agents.md",
+      "claude-code-commands.md",
+      "claude-code-overview.md",
+      "interfaces-agent-sdk.md"
+    ],
+    "Code": [
+      "claude-code-agents.md",
+      "claude-code-commands.md",
+      "claude-code-overview.md"
+    ],
+    "層仕様書": [
+      "claude-code-agents.md",
+      "claude-code-commands.md"
+    ],
+    "ドキュメント構成": [
+      "claude-code-agents.md",
+      "claude-code-overview.md",
+      "claude-code-skills-structure.md",
+      "interfaces-converter.md",
+      "interfaces-rag.md",
+      "security-implementation.md",
+      "task-workflow.md",
+      "ui-ux-panels.md"
+    ],
+    "層の役割": [
+      "claude-code-agents.md"
+    ],
+    "責務境界": [
+      "claude-code-agents.md"
+    ],
+    "関連エージェント": [
+      "claude-code-agents.md"
+    ],
+    "関連スキル": [
+      "claude-code-agents.md"
+    ],
+    "Command": [
+      "claude-code-commands.md"
+    ],
+    "コマンド": [
+      "claude-code-commands.md"
+    ],
+    "コマンド名": [
+      "claude-code-commands.md"
+    ],
+    "ゴール": [
+      "claude-code-commands.md"
+    ],
+    "エージェント起動フロー": [
+      "claude-code-commands.md"
+    ],
+    "カテゴリ名": [
+      "claude-code-commands.md"
+    ],
+    "参照": [
+      "claude-code-commands.md",
+      "claude-code-overview.md",
+      "claude-code-skills-process.md"
+    ],
+    "変更履歴": [
+      "claude-code-commands.md",
+      "claude-code-overview.md"
+    ],
+    "層アーキテクチャ設計仕様書": [
+      "claude-code-overview.md"
+    ],
+    "beta": [
+      "claude-code-overview.md"
+    ],
+    "層アーキテクチャ": [
+      "claude-code-overview.md"
+    ],
+    "各層の詳細仕様": [
+      "claude-code-overview.md"
+    ],
+    "共通仕様": [
+      "claude-code-overview.md"
+    ],
+    "用語定義": [
+      "claude-code-overview.md"
+    ],
+    "クイックリファレンス": [
+      "claude-code-overview.md",
+      "master-design.md"
+    ],
+    "agents": [
+      "claude-code-skills-agents.md"
+    ],
+    "ディレクトリ仕様": [
+      "claude-code-skills-agents.md",
+      "claude-code-skills-resources.md"
+    ],
+    "Task": [
+      "claude-code-skills-agents.md"
+    ],
+    "仕様書": [
+      "claude-code-skills-agents.md"
+    ],
+    "の位置づけ": [
+      "claude-code-skills-agents.md"
+    ],
+    "誤解防止": [
+      "claude-code-skills-agents.md"
+    ],
+    "標準フォーマット": [
+      "claude-code-skills-agents.md"
+    ],
+    "必須テンプレ": [
+      "claude-code-skills-agents.md"
+    ],
+    "テンプレ": [
+      "claude-code-skills-agents.md"
+    ],
+    "Markdown": [
+      "claude-code-skills-agents.md"
+    ],
+    "見出しで構造化": [
+      "claude-code-skills-agents.md"
+    ],
+    "メタ情報": [
+      "claude-code-skills-agents.md"
+    ],
+    "プロフィール": [
+      "claude-code-skills-agents.md"
+    ],
+    "知識ベース": [
+      "claude-code-skills-agents.md"
+    ],
+    "実行仕様": [
+      "claude-code-skills-agents.md"
+    ],
+    "インターフェース": [
+      "claude-code-skills-agents.md",
+      "interfaces-chat-history.md",
+      "interfaces-converter.md",
+      "interfaces-core.md",
+      "interfaces-workflow.md"
+    ],
+    "Skill": [
+      "claude-code-skills-overview.md",
+      "claude-code-skills-process.md",
+      "claude-code-skills-structure.md"
+    ],
+    "概念・コア原則": [
+      "claude-code-skills-overview.md"
+    ],
+    "コア原則": [
+      "claude-code-skills-overview.md"
+    ],
+    "作成・更新プロセス": [
+      "claude-code-skills-process.md"
+    ],
+    "スキル作成・更新プロセス": [
+      "claude-code-skills-process.md"
+    ],
+    "フィードバックループ": [
+      "claude-code-skills-process.md"
+    ],
+    "Resources": [
+      "claude-code-skills-process.md"
+    ],
+    "Scripts": [
+      "claude-code-skills-process.md"
+    ],
+    "skill": [
+      "claude-code-skills-process.md"
+    ],
+    "番号": [
+      "claude-code-skills-process.md"
+    ],
+    "エージェント役割名": [
+      "claude-code-skills-process.md"
+    ],
+    "最小限に維持": [
+      "claude-code-skills-process.md"
+    ],
+    "scripts": [
+      "claude-code-skills-resources.md"
+    ],
+    "references": [
+      "claude-code-skills-resources.md"
+    ],
+    "assets": [
+      "claude-code-skills-resources.md"
+    ],
+    "Progressive": [
+      "claude-code-skills-resources.md"
+    ],
+    "Disclosure": [
+      "claude-code-skills-resources.md"
+    ],
+    "パターン": [
+      "claude-code-skills-resources.md",
+      "ui-ux-advanced.md"
+    ],
+    "スキル名": [
+      "claude-code-skills-resources.md"
+    ],
+    "Quick": [
+      "claude-code-skills-resources.md"
+    ],
+    "start": [
+      "claude-code-skills-resources.md"
+    ],
+    "Advanced": [
+      "claude-code-skills-resources.md"
+    ],
+    "features": [
+      "claude-code-skills-resources.md"
+    ],
+    "ワークフローパターン": [
+      "claude-code-skills-resources.md"
+    ],
+    "出力パターン": [
+      "claude-code-skills-resources.md"
+    ],
+    "出力タイプ": [
+      "claude-code-skills-resources.md"
+    ],
+    "構造": [
+      "claude-code-skills-resources.md"
+    ],
+    "タイトル変数": [
+      "claude-code-skills-resources.md"
+    ],
+    "セクション": [
+      "claude-code-skills-resources.md"
+    ],
+    "出力形式名": [
+      "claude-code-skills-resources.md"
+    ],
+    "構造・フォーマット": [
+      "claude-code-skills-structure.md"
+    ],
+    "構造仕様": [
+      "claude-code-skills-structure.md"
+    ],
+    "SKILL": [
+      "claude-code-skills-structure.md"
+    ],
+    "Turso": [
+      "database-architecture.md",
+      "database-operations.md"
+    ],
+    "統一アーキテクチャ": [
+      "database-architecture.md"
+    ],
+    "データベース設計": [
+      "database-architecture.md",
+      "database-implementation.md",
+      "database-operations.md"
+    ],
+    "採用技術と選定理由": [
+      "database-architecture.md"
+    ],
+    "アーキテクチャ概要": [
+      "database-architecture.md"
+    ],
+    "設計原則": [
+      "database-architecture.md",
+      "interfaces-rag.md"
+    ],
+    "環境別接続設定": [
+      "database-architecture.md"
+    ],
+    "ディレクトリ構成": [
+      "database-architecture.md"
+    ],
+    "基盤モジュール": [
+      "database-architecture.md"
+    ],
+    "型安全クエリ・マイグレーション": [
+      "database-implementation.md"
+    ],
+    "型安全なクエリ実装": [
+      "database-implementation.md"
+    ],
+    "Embedded": [
+      "database-implementation.md"
+    ],
+    "Replicas": [
+      "database-implementation.md"
+    ],
+    "とオフライン対応": [
+      "database-implementation.md"
+    ],
+    "マイグレーション管理": [
+      "database-implementation.md"
+    ],
+    "テスト戦略": [
+      "database-implementation.md",
+      "quality-requirements.md"
+    ],
+    "ベクトル検索実装": [
+      "database-implementation.md"
+    ],
+    "テーブル群": [
+      "database-implementation.md"
+    ],
+    "GraphRAG": [
+      "database-implementation.md"
+    ],
+    "基盤": [
+      "database-implementation.md"
+    ],
+    "運用・": [
+      "database-operations.md"
+    ],
+    "ストレージ": [
+      "database-operations.md"
+    ],
+    "無料枠の活用": [
+      "database-operations.md"
+    ],
+    "セキュリティベストプラクティス": [
+      "database-operations.md",
+      "environment-variables.md"
+    ],
+    "運用・メンテナンス": [
+      "database-operations.md"
+    ],
+    "ローカルストレージ": [
+      "database-operations.md"
+    ],
+    "データベーススキーマ設計": [
+      "database-schema.md"
+    ],
+    "テーブル一覧": [
+      "database-schema.md"
+    ],
+    "ワークフロー関連テーブル": [
+      "database-schema.md"
+    ],
+    "ユーザー関連テーブル": [
+      "database-schema.md"
+    ],
+    "チャット関連テーブル": [
+      "database-schema.md"
+    ],
+    "関連テーブル": [
+      "database-schema.md"
+    ],
+    "変換処理関連テーブル": [
+      "database-schema.md"
+    ],
+    "インデックス設計": [
+      "database-schema.md"
+    ],
+    "アプリのリリース": [
+      "deployment-electron.md",
+      "deployment.md"
+    ],
+    "ビルドターゲット": [
+      "deployment-electron.md"
+    ],
+    "リリースフロー": [
+      "deployment-electron.md"
+    ],
+    "リリースチェックリスト": [
+      "deployment-electron.md"
+    ],
+    "自動更新": [
+      "deployment-electron.md"
+    ],
+    "electron": [
+      "deployment-electron.md"
+    ],
+    "updater": [
+      "deployment-electron.md"
+    ],
+    "コードサイニング": [
+      "deployment-electron.md"
+    ],
+    "デプロイチェックリスト": [
+      "deployment-electron.md",
+      "deployment.md"
+    ],
+    "データベースマイグレーションのロールバック": [
+      "deployment-electron.md"
+    ],
+    "GitHub": [
+      "deployment-gha.md",
+      "deployment.md"
+    ],
+    "Actions": [
+      "deployment-gha.md",
+      "deployment.md"
+    ],
+    "CI": [
+      "deployment-gha.md",
+      "deployment.md",
+      "technology-devops.md"
+    ],
+    "CD": [
+      "deployment-gha.md",
+      "deployment.md",
+      "technology-devops.md"
+    ],
+    "パイプライン": [
+      "deployment-gha.md",
+      "deployment.md"
+    ],
+    "ワークフロー構成": [
+      "deployment-gha.md"
+    ],
+    "ワークフロー要件": [
+      "deployment-gha.md"
+    ],
+    "PR": [
+      "deployment-gha.md"
+    ],
+    "キャッシュ戦略": [
+      "deployment-gha.md"
+    ],
+    "並列実行の活用": [
+      "deployment-gha.md"
+    ],
+    "main": [
+      "deployment-gha.md"
+    ],
+    "マージ時": [
+      "deployment-gha.md"
+    ],
+    "モニタリングとアラート": [
+      "deployment-gha.md",
+      "deployment.md"
+    ],
+    "Secrets": [
+      "deployment-gha.md",
+      "deployment.md"
+    ],
+    "の要件": [
+      "deployment-gha.md",
+      "deployment.md"
+    ],
+    "Railway": [
+      "deployment-railway.md",
+      "deployment.md"
+    ],
+    "デプロイ戦略": [
+      "deployment-railway.md",
+      "deployment.md"
+    ],
+    "無料枠の制限と最適化": [
+      "deployment-railway.md"
+    ],
+    "スリープモード対策": [
+      "deployment-railway.md"
+    ],
+    "カスタムドメイン設定": [
+      "deployment-railway.md"
+    ],
+    "環境分離": [
+      "deployment-railway.md"
+    ],
+    "ロールバック": [
+      "deployment-railway.md"
+    ],
+    "デプロイメント": [
+      "deployment.md"
+    ],
+    "Deployment": [
+      "deployment.md"
+    ],
+    "デプロイメント戦略概要": [
+      "deployment.md"
+    ],
+    "ロールバック戦略": [
+      "deployment.md"
+    ],
+    "ディレクトリ構造": [
+      "directory-structure.md"
+    ],
+    "ルート構造": [
+      "directory-structure.md"
+    ],
+    "packages": [
+      "directory-structure.md"
+    ],
+    "shared": [
+      "directory-structure.md"
+    ],
+    "詳細構造": [
+      "directory-structure.md"
+    ],
+    "apps": [
+      "directory-structure.md"
+    ],
+    "web": [
+      "directory-structure.md"
+    ],
+    "Next": [
+      "directory-structure.md",
+      "technology-core.md"
+    ],
+    "js": [
+      "directory-structure.md",
+      "technology-core.md"
+    ],
+    "desktop": [
+      "directory-structure.md"
+    ],
+    "local": [
+      "directory-structure.md"
+    ],
+    "github": [
+      "directory-structure.md"
+    ],
+    "ルートの設定ファイル群": [
+      "directory-structure.md"
+    ],
+    "機能追加の手順": [
+      "directory-structure.md"
+    ],
+    "構造の選択理由": [
+      "directory-structure.md"
+    ],
+    "依存関係ルール": [
+      "directory-structure.md"
+    ],
+    "pnpm": [
+      "directory-structure.md",
+      "technology-core.md"
+    ],
+    "workspace": [
+      "directory-structure.md",
+      "technology-core.md"
+    ],
+    "Discord": [
+      "discord-bot.md"
+    ],
+    "Bot": [
+      "discord-bot.md"
+    ],
+    "機能概要": [
+      "discord-bot.md",
+      "local-agent.md"
+    ],
+    "イベントハンドリング": [
+      "discord-bot.md",
+      "ui-ux-portal-patterns.md"
+    ],
+    "スラッシュコマンド": [
+      "discord-bot.md"
+    ],
+    "メッセージ解析": [
+      "discord-bot.md"
+    ],
+    "通知システム": [
+      "discord-bot.md"
+    ],
+    "設定項目": [
+      "discord-bot.md",
+      "local-agent.md"
+    ],
+    "デプロイ・運用": [
+      "discord-bot.md"
+    ],
+    "開発ガイドライン": [
+      "discord-bot.md"
+    ],
+    "環境変数管理": [
+      "environment-variables.md"
+    ],
+    "環境変数の分類": [
+      "environment-variables.md"
+    ],
+    "環境別設定": [
+      "environment-variables.md"
+    ],
+    "アプリでの環境変数": [
+      "environment-variables.md"
+    ],
+    "トラブルシューティング": [
+      "environment-variables.md"
+    ],
+    "チーム開発での運用": [
+      "environment-variables.md"
+    ],
+    "必須環境変数一覧": [
+      "environment-variables.md"
+    ],
+    "エラーハンドリング仕様": [
+      "error-handling.md"
+    ],
+    "エラー分類": [
+      "error-handling.md"
+    ],
+    "リトライ戦略": [
+      "error-handling.md"
+    ],
+    "サーキットブレーカー": [
+      "error-handling.md"
+    ],
+    "将来対応": [
+      "error-handling.md"
+    ],
+    "エラーレスポンス形式": [
+      "error-handling.md"
+    ],
+    "エラーログ出力": [
+      "error-handling.md"
+    ],
+    "ユーザー向けエラーメッセージ": [
+      "error-handling.md"
+    ],
+    "エラーハンドリングの実装指針": [
+      "error-handling.md"
+    ],
+    "用語集": [
+      "glossary.md"
+    ],
+    "Glossary": [
+      "glossary.md"
+    ],
+    "システム用語": [
+      "glossary.md"
+    ],
+    "アーキテクチャ用語": [
+      "glossary.md"
+    ],
+    "パッケージ": [
+      "glossary.md"
+    ],
+    "ディレクトリ": [
+      "glossary.md"
+    ],
+    "インターフェース用語": [
+      "glossary.md"
+    ],
+    "UI": [
+      "glossary.md",
+      "interfaces-rag-file-selection.md",
+      "ui-ux-advanced.md",
+      "ui-ux-components.md",
+      "ui-ux-design-system.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-forms.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "デザイン用語": [
+      "glossary.md"
+    ],
+    "テスト用語": [
+      "glossary.md"
+    ],
+    "用語": [
+      "glossary.md"
+    ],
+    "データベース用語": [
+      "glossary.md"
+    ],
+    "認証・認可用語": [
+      "glossary.md"
+    ],
+    "エラーハンドリング用語": [
+      "glossary.md"
+    ],
+    "インフラ用語": [
+      "glossary.md"
+    ],
+    "参考資料": [
+      "glossary.md"
+    ],
+    "References": [
+      "glossary.md"
+    ],
+    "SDK": [
+      "interfaces-agent-sdk.md"
+    ],
+    "インターフェース仕様": [
+      "interfaces-agent-sdk.md",
+      "interfaces-auth.md",
+      "interfaces-chat-history.md",
+      "interfaces-converter.md",
+      "interfaces-core.md",
+      "interfaces-llm.md",
+      "interfaces-rag.md",
+      "interfaces-workflow.md"
+    ],
+    "Preload": [
+      "interfaces-agent-sdk.md"
+    ],
+    "window": [
+      "interfaces-agent-sdk.md"
+    ],
+    "agentAPI": [
+      "interfaces-agent-sdk.md"
+    ],
+    "エラー型": [
+      "interfaces-agent-sdk.md",
+      "interfaces-rag.md"
+    ],
+    "チャンネル": [
+      "interfaces-agent-sdk.md",
+      "interfaces-rag-file-selection.md"
+    ],
+    "Zod": [
+      "interfaces-agent-sdk.md",
+      "security-input-validation.md"
+    ],
+    "スキーマ": [
+      "interfaces-agent-sdk.md"
+    ],
+    "設定定数": [
+      "interfaces-agent-sdk.md"
+    ],
+    "React": [
+      "interfaces-agent-sdk.md"
+    ],
+    "Hook": [
+      "interfaces-agent-sdk.md"
+    ],
+    "useAgent": [
+      "interfaces-agent-sdk.md"
+    ],
+    "セッション管理": [
+      "interfaces-agent-sdk.md"
+    ],
+    "認証・プロフィール型定義": [
+      "interfaces-auth.md"
+    ],
+    "ワークスペース型定義": [
+      "interfaces-auth.md"
+    ],
+    "チャット履歴永続化": [
+      "interfaces-chat-history.md"
+    ],
+    "データベーススキーマ": [
+      "interfaces-chat-history.md"
+    ],
+    "ドメインエンティティ型定義": [
+      "interfaces-chat-history.md"
+    ],
+    "Repository": [
+      "interfaces-chat-history.md",
+      "interfaces-core.md"
+    ],
+    "サービスインターフェース": [
+      "interfaces-chat-history.md"
+    ],
+    "ビジネスルール": [
+      "interfaces-chat-history.md"
+    ],
+    "エクスポート形式": [
+      "interfaces-chat-history.md"
+    ],
+    "セッションタイトル": [
+      "interfaces-chat-history.md"
+    ],
+    "User": [
+      "interfaces-chat-history.md"
+    ],
+    "Assistant": [
+      "interfaces-chat-history.md"
+    ],
+    "IConverter": [
+      "interfaces-converter-extension.md",
+      "interfaces-converter.md"
+    ],
+    "拡張ガイド": [
+      "interfaces-converter-extension.md"
+    ],
+    "BaseConverter": [
+      "interfaces-converter-extension.md"
+    ],
+    "継承による実装": [
+      "interfaces-converter-extension.md"
+    ],
+    "実装の最小構成": [
+      "interfaces-converter-extension.md"
+    ],
+    "カスタムメタデータの追加": [
+      "interfaces-converter-extension.md"
+    ],
+    "エラーハンドリングのベストプラクティス": [
+      "interfaces-converter-extension.md"
+    ],
+    "テストの実装パターン": [
+      "interfaces-converter-extension.md"
+    ],
+    "コンバーター実装クラス詳細": [
+      "interfaces-converter-implementations.md"
+    ],
+    "実装クラス一覧": [
+      "interfaces-converter-implementations.md",
+      "interfaces-converter.md"
+    ],
+    "HTMLConverter": [
+      "interfaces-converter-implementations.md"
+    ],
+    "CSVConverter": [
+      "interfaces-converter-implementations.md"
+    ],
+    "JSONConverter": [
+      "interfaces-converter-implementations.md"
+    ],
+    "MarkdownConverter": [
+      "interfaces-converter-implementations.md"
+    ],
+    "ドキュメント": [
+      "interfaces-converter-implementations.md"
+    ],
+    "CodeConverter": [
+      "interfaces-converter-implementations.md"
+    ],
+    "YAMLConverter": [
+      "interfaces-converter-implementations.md"
+    ],
+    "PlainTextConverter": [
+      "interfaces-converter-implementations.md"
+    ],
+    "未実装": [
+      "interfaces-converter-implementations.md"
+    ],
+    "コンバーター": [
+      "interfaces-converter.md"
+    ],
+    "IConversionLogger": [
+      "interfaces-converter.md"
+    ],
+    "IHistoryService": [
+      "interfaces-converter.md"
+    ],
+    "ConversionRepository": [
+      "interfaces-converter.md"
+    ],
+    "Logger": [
+      "interfaces-core.md"
+    ],
+    "コア": [
+      "interfaces-core.md"
+    ],
+    "IRepository": [
+      "interfaces-core.md"
+    ],
+    "Result": [
+      "interfaces-core.md"
+    ],
+    "IAIClient": [
+      "interfaces-core.md"
+    ],
+    "IFileWatcher": [
+      "interfaces-core.md"
+    ],
+    "LLM": [
+      "interfaces-llm.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "チャット関連型定義": [
+      "interfaces-llm.md"
+    ],
+    "Multi": [
+      "interfaces-llm.md"
+    ],
+    "Provider": [
+      "interfaces-llm.md"
+    ],
+    "Switching": [
+      "interfaces-llm.md",
+      "ui-ux-llm-selector.md"
+    ],
+    "チャンク・埋め込み型定義": [
+      "interfaces-rag-chunk-embedding.md"
+    ],
+    "主要型": [
+      "interfaces-rag-chunk-embedding.md",
+      "interfaces-rag-search.md"
+    ],
+    "ChunkEntity": [
+      "interfaces-rag-chunk-embedding.md"
+    ],
+    "EmbeddingEntity": [
+      "interfaces-rag-chunk-embedding.md"
+    ],
+    "デフォルト設定": [
+      "interfaces-rag-chunk-embedding.md"
+    ],
+    "ベクトル演算ユーティリティ": [
+      "interfaces-rag-chunk-embedding.md"
+    ],
+    "バリデーション": [
+      "interfaces-rag-chunk-embedding.md",
+      "interfaces-rag-search.md"
+    ],
+    "FileSelection": [
+      "interfaces-rag-file-selection.md"
+    ],
+    "レスポンス型": [
+      "interfaces-rag-file-selection.md"
+    ],
+    "セキュリティ機能": [
+      "interfaces-rag-file-selection.md"
+    ],
+    "コンポーネント": [
+      "interfaces-rag-file-selection.md",
+      "ui-ux-components.md"
+    ],
+    "実装場所": [
+      "interfaces-rag-file-selection.md"
+    ],
+    "検索クエリ・結果型定義": [
+      "interfaces-rag-search.md"
+    ],
+    "列挙型": [
+      "interfaces-rag-search.md"
+    ],
+    "検索設定型": [
+      "interfaces-rag-search.md"
+    ],
+    "デフォルト値": [
+      "interfaces-rag-search.md"
+    ],
+    "ユーティリティ関数": [
+      "interfaces-rag-search.md"
+    ],
+    "型ガード": [
+      "interfaces-rag-search.md"
+    ],
+    "・ファイル選択": [
+      "interfaces-rag.md"
+    ],
+    "Branded": [
+      "interfaces-rag.md"
+    ],
+    "Types": [
+      "interfaces-rag.md"
+    ],
+    "共通インターフェース": [
+      "interfaces-rag.md"
+    ],
+    "ファイル・変換ドメイン型": [
+      "interfaces-rag.md"
+    ],
+    "IWorkflowExecutor": [
+      "interfaces-workflow.md",
+      "plugin-development.md"
+    ],
+    "ローカルエージェント仕様": [
+      "local-agent.md"
+    ],
+    "ファイル監視": [
+      "local-agent.md"
+    ],
+    "クラウド同期": [
+      "local-agent.md"
+    ],
+    "オフライン対応": [
+      "local-agent.md"
+    ],
+    "セキュリティ": [
+      "local-agent.md",
+      "quality-requirements.md",
+      "security-api-electron.md"
+    ],
+    "PM": [
+      "local-agent.md"
+    ],
+    "プロセス管理": [
+      "local-agent.md"
+    ],
+    "ヘルスチェック": [
+      "local-agent.md"
+    ],
+    "開発・デバッグ": [
+      "local-agent.md"
+    ],
+    "統合システム設計仕様書": [
+      "master-design.md"
+    ],
+    "Universal": [
+      "master-design.md"
+    ],
+    "Workflow": [
+      "master-design.md"
+    ],
+    "Orchestrator": [
+      "master-design.md"
+    ],
+    "目次": [
+      "master-design.md"
+    ],
+    "ドキュメント管理": [
+      "master-design.md"
+    ],
+    "関連リソース": [
+      "master-design.md"
+    ],
+    "プロジェクト概要": [
+      "overview.md"
+    ],
+    "システムの目的": [
+      "overview.md"
+    ],
+    "設計の核心概念": [
+      "overview.md"
+    ],
+    "対象ユーザー": [
+      "overview.md"
+    ],
+    "スコープ定義": [
+      "overview.md"
+    ],
+    "アーキテクチャ原則": [
+      "overview.md"
+    ],
+    "成功基準": [
+      "overview.md"
+    ],
+    "機能プラグイン追加手順": [
+      "plugin-development.md"
+    ],
+    "プラグインアーキテクチャ概要": [
+      "plugin-development.md"
+    ],
+    "プラグイン追加フロー": [
+      "plugin-development.md"
+    ],
+    "実装ガイド": [
+      "plugin-development.md"
+    ],
+    "スキーマ定義ガイド": [
+      "plugin-development.md"
+    ],
+    "共通インフラストラクチャの使用": [
+      "plugin-development.md"
+    ],
+    "テスト作成ガイド": [
+      "plugin-development.md"
+    ],
+    "Registry": [
+      "plugin-development.md"
+    ],
+    "登録": [
+      "plugin-development.md"
+    ],
+    "実装チェックリスト": [
+      "plugin-development.md",
+      "ui-ux-portal-patterns.md"
+    ],
+    "サンプルプラグイン仕様": [
+      "plugin-development.md"
+    ],
+    "個人開発における注意点": [
+      "plugin-development.md"
+    ],
+    "非機能要件": [
+      "quality-requirements.md"
+    ],
+    "TDD": [
+      "quality-requirements.md"
+    ],
+    "実践ガイド": [
+      "quality-requirements.md"
+    ],
+    "可用性": [
+      "quality-requirements.md"
+    ],
+    "保守性": [
+      "quality-requirements.md"
+    ],
+    "アクセシビリティ": [
+      "quality-requirements.md",
+      "ui-ux-components.md",
+      "ui-ux-llm-selector.md"
+    ],
+    "テストカバレッジ目標": [
+      "quality-requirements.md"
+    ],
+    "セキュリティ・": [
+      "security-api-electron.md"
+    ],
+    "依存関係セキュリティ": [
+      "security-api-electron.md"
+    ],
+    "セキュリティ実装仕様": [
+      "security-implementation.md"
+    ],
+    "セキュリティ原則": [
+      "security-implementation.md"
+    ],
+    "入力バリデーション・ファイル変換セキュリティ": [
+      "security-input-validation.md"
+    ],
+    "バリデーション原則": [
+      "security-input-validation.md"
+    ],
+    "入力タイプ別バリデーション": [
+      "security-input-validation.md"
+    ],
+    "SQL": [
+      "security-input-validation.md"
+    ],
+    "インジェクション対策": [
+      "security-input-validation.md"
+    ],
+    "XSS": [
+      "security-input-validation.md"
+    ],
+    "対策": [
+      "security-input-validation.md"
+    ],
+    "スキーマによるバリデーション": [
+      "security-input-validation.md"
+    ],
+    "ファイル変換のセキュリティ": [
+      "security-input-validation.md"
+    ],
+    "セキュリティ運用・インシデント対応": [
+      "security-operations.md"
+    ],
+    "ログ・監査": [
+      "security-operations.md"
+    ],
+    "ファイル選択セキュリティ": [
+      "security-operations.md"
+    ],
+    "インシデント対応": [
+      "security-operations.md"
+    ],
+    "セキュリティチェックリスト": [
+      "security-operations.md"
+    ],
+    "セキュリティ設計原則・認証認可": [
+      "security-principles.md"
+    ],
+    "セキュリティ設計原則": [
+      "security-principles.md"
+    ],
+    "データ保護": [
+      "security-principles.md"
+    ],
+    "仕様書記述ガイドライン": [
+      "spec-guidelines.md"
+    ],
+    "すべきこと": [
+      "spec-guidelines.md"
+    ],
+    "避けるべきこと": [
+      "spec-guidelines.md"
+    ],
+    "新規仕様の追加手順": [
+      "spec-guidelines.md"
+    ],
+    "ファイルサイズ管理": [
+      "spec-guidelines.md"
+    ],
+    "分割候補を分析": [
+      "spec-guidelines.md"
+    ],
+    "設定に基づいて分割": [
+      "spec-guidelines.md"
+    ],
+    "タスクワークフロー": [
+      "task-workflow-phases.md",
+      "task-workflow-rules.md"
+    ],
+    "フェーズ定義": [
+      "task-workflow-phases.md"
+    ],
+    "フェーズ構造": [
+      "task-workflow-phases.md",
+      "task-workflow.md"
+    ],
+    "出力テンプレート": [
+      "task-workflow-phases.md",
+      "task-workflow.md"
+    ],
+    "ルール・選定基準": [
+      "task-workflow-rules.md"
+    ],
+    "品質ゲート": [
+      "task-workflow-rules.md",
+      "task-workflow.md"
+    ],
+    "コマンド・エージェント・スキル選定ルール": [
+      "task-workflow-rules.md"
+    ],
+    "タスク分解ルール": [
+      "task-workflow-rules.md"
+    ],
+    "ドキュメント更新ルール": [
+      "task-workflow-rules.md"
+    ],
+    "実行時のコマンド・エージェント・スキル": [
+      "task-workflow-rules.md",
+      "task-workflow.md"
+    ],
+    "タスク実行仕様書生成ガイド": [
+      "task-workflow.md"
+    ],
+    "バックエンド技術スタック": [
+      "technology-backend.md"
+    ],
+    "データベース・": [
+      "technology-backend.md"
+    ],
+    "統合": [
+      "technology-backend.md"
+    ],
+    "バックエンド・データベース": [
+      "technology-backend.md"
+    ],
+    "開発ツール": [
+      "technology-backend.md"
+    ],
+    "コア技術スタック": [
+      "technology-core.md"
+    ],
+    "TypeScript": [
+      "technology-core.md"
+    ],
+    "コアランタイム": [
+      "technology-core.md"
+    ],
+    "バージョン確認": [
+      "technology-core.md"
+    ],
+    "nvmrc": [
+      "technology-core.md"
+    ],
+    "での固定": [
+      "technology-core.md"
+    ],
+    "yaml": [
+      "technology-core.md"
+    ],
+    "フロントエンド": [
+      "technology-core.md"
+    ],
+    "DevOps": [
+      "technology-devops.md"
+    ],
+    "技術スタック": [
+      "technology-devops.md"
+    ],
+    "パッケージ管理・": [
+      "technology-devops.md"
+    ],
+    "パッケージ構成詳細": [
+      "technology-devops.md"
+    ],
+    "依存関係管理戦略": [
+      "technology-devops.md"
+    ],
+    "依存関係の監査": [
+      "technology-devops.md"
+    ],
+    "バンドルサイズ分析": [
+      "technology-devops.md"
+    ],
+    "未使用依存関係の検出": [
+      "technology-devops.md"
+    ],
+    "更新頻度とリスク評価": [
+      "technology-devops.md"
+    ],
+    "無料枠の活用ガイド": [
+      "technology-devops.md"
+    ],
+    "ツール選定": [
+      "technology-devops.md"
+    ],
+    "学習リソースとコミュニティ": [
+      "technology-devops.md"
+    ],
+    "マイグレーション計画": [
+      "technology-devops.md"
+    ],
+    "高度な": [
+      "ui-ux-advanced.md"
+    ],
+    "UX": [
+      "ui-ux-advanced.md",
+      "ui-ux-components.md",
+      "ui-ux-design-system.md",
+      "ui-ux-forms.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md"
+    ],
+    "インデックス": [
+      "ui-ux-advanced.md"
+    ],
+    "ドキュメント一覧": [
+      "ui-ux-advanced.md"
+    ],
+    "トピック別参照": [
+      "ui-ux-advanced.md"
+    ],
+    "ガイドライン": [
+      "ui-ux-components.md",
+      "ui-ux-design-system.md",
+      "ui-ux-forms.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md"
+    ],
+    "コンポーネント設計原則": [
+      "ui-ux-components.md"
+    ],
+    "Apple": [
+      "ui-ux-components.md"
+    ],
+    "HIG": [
+      "ui-ux-components.md"
+    ],
+    "準拠": [
+      "ui-ux-components.md"
+    ],
+    "向け": [
+      "ui-ux-components.md"
+    ],
+    "インタラクション設計": [
+      "ui-ux-components.md"
+    ],
+    "WCAG": [
+      "ui-ux-components.md"
+    ],
+    "AA": [
+      "ui-ux-components.md"
+    ],
+    "デザインシステム": [
+      "ui-ux-design-system.md"
+    ],
+    "デザインシステム概要": [
+      "ui-ux-design-system.md"
+    ],
+    "Spatial": [
+      "ui-ux-design-system.md"
+    ],
+    "Design": [
+      "ui-ux-design-system.md"
+    ],
+    "Tokens": [
+      "ui-ux-design-system.md"
+    ],
+    "Studio": [
+      "ui-ux-design-system.md"
+    ],
+    "カラーシステム": [
+      "ui-ux-design-system.md"
+    ],
+    "タイポグラフィ": [
+      "ui-ux-design-system.md"
+    ],
+    "スペーシングとレイアウト": [
+      "ui-ux-design-system.md"
+    ],
+    "ファイルセレクター": [
+      "ui-ux-file-selector.md"
+    ],
+    "コンポーネント構成": [
+      "ui-ux-file-selector.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "トリガーボタン": [
+      "ui-ux-file-selector.md"
+    ],
+    "モーダルダイアログ": [
+      "ui-ux-file-selector.md"
+    ],
+    "ドロップゾーン": [
+      "ui-ux-file-selector.md"
+    ],
+    "ファイルリスト": [
+      "ui-ux-file-selector.md"
+    ],
+    "フィルター機能": [
+      "ui-ux-file-selector.md"
+    ],
+    "キーボード操作": [
+      "ui-ux-file-selector.md"
+    ],
+    "アニメーション": [
+      "ui-ux-file-selector.md"
+    ],
+    "アクセシビリティ対応": [
+      "ui-ux-file-selector.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "レスポンシブ対応": [
+      "ui-ux-file-selector.md"
+    ],
+    "WorkspaceFileSelector": [
+      "ui-ux-file-selector.md"
+    ],
+    "モード": [
+      "ui-ux-file-selector.md"
+    ],
+    "フォルダ一括選択機能": [
+      "ui-ux-file-selector.md"
+    ],
+    "フォーム・認証": [
+      "ui-ux-forms.md"
+    ],
+    "フォーム設計": [
+      "ui-ux-forms.md"
+    ],
+    "認証": [
+      "ui-ux-forms.md"
+    ],
+    "キー設定": [
+      "ui-ux-forms.md"
+    ],
+    "選択機能": [
+      "ui-ux-llm-selector.md"
+    ],
+    "Chat": [
+      "ui-ux-llm-selector.md"
+    ],
+    "構成": [
+      "ui-ux-llm-selector.md"
+    ],
+    "プロバイダーとモデル一覧": [
+      "ui-ux-llm-selector.md"
+    ],
+    "フロー": [
+      "ui-ux-llm-selector.md"
+    ],
+    "スタイルガイドライン": [
+      "ui-ux-llm-selector.md"
+    ],
+    "テストカバレッジ": [
+      "ui-ux-llm-selector.md"
+    ],
+    "システムプロンプト連携": [
+      "ui-ux-llm-selector.md"
+    ],
+    "関連タスクドキュメント": [
+      "ui-ux-llm-selector.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "ナビゲーション": [
+      "ui-ux-navigation.md"
+    ],
+    "ChatView": [
+      "ui-ux-navigation.md"
+    ],
+    "ナビゲーションボタン仕様": [
+      "ui-ux-navigation.md"
+    ],
+    "ボタンスタイルガイドライン": [
+      "ui-ux-navigation.md"
+    ],
+    "アイコンのみボタン": [
+      "ui-ux-navigation.md"
+    ],
+    "テスト検証済み項目": [
+      "ui-ux-navigation.md"
+    ],
+    "アクセシビリティ対応事例": [
+      "ui-ux-navigation.md"
+    ],
+    "ナビゲーションパターンのベストプラクティス": [
+      "ui-ux-navigation.md"
+    ],
+    "パネル・セレクター": [
+      "ui-ux-panels.md"
+    ],
+    "アイコンとイラスト": [
+      "ui-ux-panels.md"
+    ],
+    "パネル共通ガイドライン": [
+      "ui-ux-panels.md"
+    ],
+    "Portal": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "実装パターン": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "Stacking": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "Context": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "問題の理解": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "基本実装パターン": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "WAI": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "ARIA": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "Menu": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "Pattern": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "テスト設計": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "ベストプラクティス": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "注意事項": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "参考実装": [
+      "ui-ux-portal-patterns.md"
+    ],
+    "検索・置換パネル": [
+      "ui-ux-search-panel.md"
+    ],
+    "キーボードショートカット": [
+      "ui-ux-search-panel.md"
+    ],
+    "タブバー設計": [
+      "ui-ux-search-panel.md"
+    ],
+    "ファイル内検索パネル": [
+      "ui-ux-search-panel.md"
+    ],
+    "FileSearchPanel": [
+      "ui-ux-search-panel.md"
+    ],
+    "ワークスペース検索パネル": [
+      "ui-ux-search-panel.md"
+    ],
+    "WorkspaceSearchPanel": [
+      "ui-ux-search-panel.md"
+    ],
+    "ファイル名検索パネル": [
+      "ui-ux-search-panel.md"
+    ],
+    "FileNameSearchPanel": [
+      "ui-ux-search-panel.md"
+    ],
+    "ハイライト表示": [
+      "ui-ux-search-panel.md"
+    ],
+    "エラー状態": [
+      "ui-ux-search-panel.md"
+    ],
+    "パフォーマンス考慮事項": [
+      "ui-ux-search-panel.md"
+    ],
+    "実装アーキテクチャ": [
+      "ui-ux-search-panel.md"
+    ],
+    "システムプロンプト設定": [
+      "ui-ux-system-prompt.md"
+    ],
+    "パネル展開": [
+      "ui-ux-system-prompt.md"
+    ],
+    "折りたたみ仕様": [
+      "ui-ux-system-prompt.md"
+    ],
+    "システムプロンプト入力エリア仕様": [
+      "ui-ux-system-prompt.md"
+    ],
+    "プロンプトテンプレート管理仕様": [
+      "ui-ux-system-prompt.md"
+    ],
+    "状態管理構造": [
+      "ui-ux-system-prompt.md"
+    ],
+    "Zustand": [
+      "ui-ux-system-prompt.md"
+    ],
+    "連携仕様": [
+      "ui-ux-system-prompt.md"
+    ],
+    "データ永続化": [
+      "ui-ux-system-prompt.md"
+    ],
+    "テスト実装": [
+      "ui-ux-system-prompt.md"
+    ],
+    "デザイントークン": [
+      "ui-ux-system-prompt.md"
+    ],
+    "セキュリティ考慮事項": [
+      "ui-ux-system-prompt.md"
+    ]
+  }
+}

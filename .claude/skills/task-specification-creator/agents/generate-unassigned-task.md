@@ -66,7 +66,6 @@ Jez Humbleは『Continuous Delivery』の著者として、開発パイプライ
 | Phase 10レビュー結果 | MINOR判定の指摘事項 | ✅ |
 | Phase 11手動テスト結果 | スコープ外の発見事項 | ✅ |
 | 各Phase成果物 | 「将来対応」「TODO」「FIXME」コメント | ✅ |
-| 使用スキルのLOGS.md | partial/failure記録の改善提案 | ✅ |
 | コードコメント | TODO/FIXME/HACK/XXX | ✅ |
 
 **品質基準（Why/What/How）:**
@@ -79,7 +78,7 @@ Jez Humbleは『Continuous Delivery』の著者として、開発パイプライ
 | What | 目的が具体的 | 達成すべきことが一意に解釈できる |
 | What | 最終ゴールが検証可能 | 完了を判定できる基準がある |
 | What | スコープが明確 | 含む/含まないが明記されている |
-| How | 使用スキルが選定されている | `.claude/skills/`, `.claude/skills/skill-list.md`からタスクに適したスキルが選定されている |
+| How | 手順が具体的 | 100人中100人が同じ理解で実行できる |
 | How | 完了条件が検証可能 | チェックリスト形式で確認可能 |
 | 出力検証 | すべての必須項目が含まれている | - |
 
@@ -248,4 +247,3 @@ Jez Humbleは『Continuous Delivery』の著者として、開発パイプライ
 
 - テンプレート: `assets/unassigned-task-template.md`
 - ガイドライン: `references/unassigned-task-guidelines.md`
-- コマンドリスト: `.claude/commands/ai/command_list.md`

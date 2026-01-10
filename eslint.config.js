@@ -22,6 +22,7 @@ export default tseslint.config(
       "**/*.mjs",
       "pnpm-lock.yaml",
       "**/next-env.d.ts",
+      "docs/99-claude/**",
     ],
   },
   {

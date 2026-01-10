@@ -4,9 +4,6 @@ description: |
   ユーザーから与えられたタスクを単一責務の原則に基づいて分解し、
   Phase 1からPhase 13までの実行可能なタスク仕様書ドキュメントを生成する。
 
-  スキル選定は仕様書作成時に動的に行う。使用するスキルはタスクの性質に応じて
-  現在利用可能なスキル（.claude/skills/）から選定する。
-
   Anchors:
   • Clean Code (Robert C. Martin) / 適用: 単一責務の原則 / 目的: タスク分解の基準
   • Continuous Delivery (Jez Humble) / 適用: フェーズゲート / 目的: 品質パイプライン構築
@@ -34,9 +31,9 @@ allowed-tools:
 **核心的な考え方**:
 
 1. **タスク仕様書を作成する**ことが目的
-2. **使用するスキルは仕様書作成時に動的に選定する**
-3. 現在利用可能なスキル（`.claude/skills/`）からタスクに適したものを選ぶ
-4. タスク完了後は**skill-creator**でフィードバックを記録する
+2. **100人中100人が同じ理解で実行できる**粒度で記述
+3. 各Phaseで必要な**目的・手順・成果物・完了条件**を明確化
+4. Phase完了後は**artifacts.json**で進捗を追跡
 
 ## ワークフロー
 
@@ -45,10 +42,7 @@ allowed-tools:
     ↓
 decompose-task（タスク分解）
     ↓
-┌─────────────────────────────────────┐
-│ analyze-skills（利用可能スキル確認）│ ← 並列実行
-│ identify-scope（スコープ定義）      │
-└─────────────────────────────────────┘
+identify-scope（スコープ定義）
     ↓
 design-phases（Phase構成設計）
     ↓
@@ -72,8 +66,7 @@ docs/30-workflows/completed-tasks/{{FEATURE_NAME}}/ へ移動
 
 | グループ   | 含まれるTask                            | 同期ポイント        |
 | ---------- | --------------------------------------- | ------------------- |
-| parallel-1 | analyze-skills, identify-scope          | design-phases       |
-| parallel-2 | output-phase-files, update-dependencies | skill-feedback-loop |
+| parallel-1 | output-phase-files, update-dependencies | Phase完了           |
 
 ## システム仕様参照（aiworkflow-requirements連携）【必須】
 
@@ -193,11 +186,10 @@ docs/30-workflows/completed-tasks/{{FEATURE_NAME}}/ へ移動
 
 **各Phase完了時に以下を必ず実行すること:**
 
-1. **スキル100%実行**: Phase内で指定された全スキルを完全に実行
+1. **タスク完全実行**: Phase内で指定された全タスクを完全に実行
 2. **成果物確認**: 全ての必須成果物が生成されていることを検証
-3. **フィードバック記録**: 使用スキルの結果をLOGS.mdに記録
-4. **artifacts.json更新**: Phase完了ステータスを更新
-5. **Phase末端の実行確認**: 各スキルを100%実行し、各タスクを完遂した旨を必ず明記
+3. **artifacts.json更新**: Phase完了ステータスを更新
+4. **完了条件チェック**: 各タスクを完遂した旨を必ず明記
 
 ```bash
 # Phase完了時の検証コマンド
@@ -238,7 +230,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.mjs
 - [ ] 統合テストシナリオが全カテゴリで定義されている
 - [ ] すべてのテストが失敗状態（Red）
 - [ ] テストカバレッジ目標が設定されている
-- [ ] **本Phase内の全スキルを100%実行完了**
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ---
 
@@ -300,7 +292,7 @@ pnpm test:e2e
 - [ ] 統合テストの追加が完了している
 - [ ] フロントエンド・バックエンド接続テストが成功
 - [ ] カバレッジレポートが出力されている
-- [ ] **本Phase内の全スキルを100%実行完了**
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ---
 
@@ -321,7 +313,7 @@ Phase 6の拡充結果を検証し、**カバレッジ基準を満たすまで**
 - [ ] 統合テストが全て成功
 - [ ] フロントエンド・バックエンド接続テストが成功
 - [ ] カバレッジレポートが出力されている
-- [ ] **本Phase内の全スキルを100%実行完了**
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ---
 
@@ -329,10 +321,26 @@ Phase 6の拡充結果を検証し、**カバレッジ基準を満たすまで**
 
 Phase 13でPR作成・CI通過後、タスクディレクトリを完了タスクフォルダに移動する。
 
+### ⚠️ PR作成に関する重要な注意【必須確認】
+
+**PR作成は自動実行しない。必ずユーザーの明示的な許可を得てから実行すること。**
+
+| 禁止事項 | 理由 |
+|----------|------|
+| 勝手にPRを作成する | レビュー前の変更がリモートに反映されてしまう |
+| ユーザー確認なしで`/ai:diff-to-pr`を実行する | 意図しないブランチやコミットが作成される可能性 |
+| ローカル確認をスキップする | 動作確認されていないコードがPRに含まれる |
+
 ### タスク完了フロー
 
 ```
-Phase 13: PR作成（/ai:diff-to-pr 使用）
+Phase 1〜12 完了
+    ↓
+【必須】ローカルでの動作確認
+    ↓
+【必須】ユーザーにPR作成の許可を確認
+    ↓
+ユーザー許可後: PR作成（/ai:diff-to-pr 使用）
     ↓
 CI通過確認
     ↓
@@ -345,16 +353,28 @@ CI通過確認
 ワークフロー完了
 ```
 
+### ローカル確認チェックリスト【PR作成前に必須】
+
+PR作成前に以下を**必ず**確認すること:
+
+| # | 確認項目 | コマンド例 |
+|---|----------|------------|
+| 1 | ビルドが成功する | `pnpm build` |
+| 2 | 全テストがパスする | `pnpm test` |
+| 3 | 型チェックがパスする | `pnpm typecheck` |
+| 4 | Lintエラーがない | `pnpm lint` |
+| 5 | 実際の動作確認（該当する場合） | `pnpm dev` で手動確認 |
+
 ### `/ai:diff-to-pr` スキルの使用
 
-Phase 13では `/ai:diff-to-pr` スキルを使用してPR作成を行う:
+**ユーザーの許可を得た後にのみ**、`/ai:diff-to-pr` スキルを使用してPR作成を行う:
 
 ```bash
-# diff-to-pr スキルを呼び出し
+# ユーザー許可後にのみ実行
 /ai:diff-to-pr
 ```
 
-このスキルが自動的に以下を実行:
+このスキルが実行する内容:
 1. 変更差分の確認
 2. コミットメッセージ生成
 3. PR作成
@@ -379,25 +399,26 @@ git push
 
 | # | 項目 | 必須 |
 |---|------|------|
-| 1 | PRが作成されている | ✅ |
-| 2 | CIが全て通過している | ✅ |
-| 3 | タスクディレクトリが `completed-tasks/` に移動済み | ✅ |
-| 4 | `artifacts.json` の `status` が `"completed"` | ✅ |
-| 5 | （該当時）未タスク指示書が削除済み | 条件 |
-| 6 | **本Phase内の全作業を100%完了** | ✅ |
+| 1 | **ローカルでビルド・テスト・型チェック・Lintが全てパス** | ✅ |
+| 2 | **ユーザーにPR作成の許可を確認済み** | ✅ |
+| 3 | PRが作成されている | ✅ |
+| 4 | CIが全て通過している | ✅ |
+| 5 | タスクディレクトリが `completed-tasks/` に移動済み | ✅ |
+| 6 | `artifacts.json` の `status` が `"completed"` | ✅ |
+| 7 | （該当時）未タスク指示書が削除済み | 条件 |
+| 8 | **本Phase内の全タスクを100%完了** | ✅ |
 
 **詳細テンプレート**: See [references/phase-templates.md](references/phase-templates.md)
 
 ---
 
-## Phase 12: ドキュメント更新 & スキル改善【必須】
+## Phase 12: ドキュメント更新【必須】
 
-Phase 12では4つの必須作業を行う:
+Phase 12では3つの必須作業を行う:
 
 1. **実装ガイド作成**: 概念的説明と技術的詳細のドキュメント化
-2. **システムドキュメント更新**: 既存ドキュメントへの反映
+2. **システムドキュメント更新**: 既存ドキュメントへの反映（aiworkflow-requirements含む）
 3. **未タスク検出**: 技術的負債の可視化と継続的改善
-4. **スキルフィードバック・改善・新規作成**: skill-creatorによる継続的スキル改善
 
 ### Phase 12-1: 実装ガイド作成
 
@@ -438,65 +459,8 @@ Phase 12では4つの必須作業を行う:
 | Phase 11手動テスト結果 | スコープ外の発見事項 | `outputs/phase-11/` |
 | 各Phase成果物 | 「将来対応」「TODO」「FIXME」 | `grep -r "TODO\|FIXME\|将来対応" outputs/` |
 | コードベース | TODO/FIXME/HACK/XXXコメント | `grep -rn "TODO\|FIXME\|HACK\|XXX" packages/ apps/` |
-| スキルLOGS.md | partial/failure記録 | 各使用スキルのLOGS.md |
 
 **詳細仕様**: See [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
-
-### Phase 12-4: スキルフィードバック・改善・新規作成【必須】
-
-**skill-creator**を使用して、ワークフロー実行中に使用したスキルのフィードバックを記録・改善し、必要に応じて新規スキルを作成する。
-
-#### 12-4-1: フィードバック収集
-
-各Phaseで使用したスキルの実行結果を評価し記録する。
-
-```bash
-# フィードバック記録
-node .claude/skills/task-specification-creator/scripts/log_usage.mjs \
-  --skill {{SKILL_NAME}} --result {{success|failure|partial}} --phase {{PHASE_NUMBER}}
-```
-
-#### 12-4-2: 既存スキル改善判定
-
-skill-creatorで改善必要性を判定し、必要な場合は更新する。
-
-```bash
-# スキル更新（必要な場合）
-node .claude/skills/skill-creator/scripts/detect_mode.mjs \
-  --request "スキルを更新" --skill-path .claude/skills/{{SKILL_NAME}}
-```
-
-#### 12-4-3: 新規スキル必要性判定【重要】
-
-ワークフロー実行中に以下の状況が発生した場合、**新規スキル作成**を検討する:
-
-| 検出条件 | 新規スキル作成の判断基準 |
-| -------- | ------------------------ |
-| 手動作業の繰り返し | 同じ手順を3回以上手動で実行した |
-| 既存スキル不在 | 必要なスキルが見つからず自前で対応した |
-| スキルの責務超過 | 1つのスキルに複数責務を詰め込んだ |
-| ドメイン知識の欠落 | 特定ドメインの専門知識が必要だった |
-| 再利用性の発見 | 他タスクでも使える汎用的な処理パターンを発見 |
-
-#### 12-4-4: 新規スキル作成
-
-新規スキルが必要と判定された場合、skill-creatorの**createモード**で作成する。
-
-```bash
-# 新規スキル作成
-node .claude/skills/skill-creator/scripts/detect_mode.mjs \
-  --request "{{NEW_SKILL_DESCRIPTION}}"
-
-# 作成後の検証
-node .claude/skills/skill-creator/scripts/validate_all.mjs \
-  .claude/skills/{{NEW_SKILL_NAME}}
-
-# スキルリスト更新
-node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
-  --skill-path .claude/skills/{{NEW_SKILL_NAME}}
-```
-
-**詳細仕様**: See [references/feedback-flow.md](references/feedback-flow.md)
 
 ### 出力要件
 
@@ -505,7 +469,6 @@ node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
 | 実装ガイド | ✅ | `outputs/phase-12/implementation-guide.md` |
 | ドキュメント更新記録 | ✅ | `outputs/phase-12/documentation-update-log.md` |
 | 未タスク検出レポート | ✅ | `outputs/phase-12/unassigned-task-report.md` |
-| スキルフィードバック | ✅ | `outputs/phase-12/skill-feedback-report.md` |
 | 未タスク指示書（該当時） | 条件 | `docs/30-workflows/unassigned-task/` |
 
 ### 完了条件
@@ -514,9 +477,8 @@ node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
 - [ ] ドキュメント更新記録が出力されている
 - [ ] 未タスク検出レポートが出力されている
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
-- [ ] **スキルフィードバックがskill-creatorで記録されている**【必須】
-- [ ] スキル改善/新規作成が必要な場合、skill-creatorで実行されている
-- [ ] **本Phase内の全スキルを100%実行完了**
+- [ ] aiworkflow-requirementsが更新されている（該当する場合）
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ---
 
@@ -525,13 +487,11 @@ node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
 | Task                     | 責務                       | 実行パターン | 入力             | 出力                  |
 | ------------------------ | -------------------------- | ------------ | ---------------- | --------------------- |
 | decompose-task           | タスクを単一責務に分解     | seq          | ユーザー要求     | タスク分解リスト      |
-| analyze-skills           | 利用可能スキルを確認・選定 | **par**      | タスク分解リスト | スキル選定結果        |
-| identify-scope           | スコープ・前提・制約を定義 | **par**      | タスク分解リスト | スコープ定義          |
-| design-phases            | Phase構成を設計            | **agg**      | 上記の集約       | フェーズ設計書        |
+| identify-scope           | スコープ・前提・制約を定義 | seq          | タスク分解リスト | スコープ定義          |
+| design-phases            | Phase構成を設計            | seq          | スコープ定義     | フェーズ設計書        |
 | generate-task-specs      | タスク仕様書を生成         | seq          | フェーズ設計書   | タスク仕様書一覧      |
 | output-phase-files       | 個別Markdownファイルを出力 | **par**      | タスク仕様書一覧 | phase-\*.md           |
 | update-dependencies      | Phase間の依存関係を設定    | **par**      | タスク仕様書一覧 | 依存関係マップ        |
-| skill-feedback-loop      | skill-creatorでFBを記録    | seq          | 実行結果         | LOGS.md更新           |
 | generate-unassigned-task | 未完了タスク指示書を生成   | cond         | レビュー課題     | unassigned-task/\*.md |
 
 **実行パターン凡例**:
@@ -543,49 +503,6 @@ node .claude/skills/skill-creator/scripts/update_skill_list.mjs \
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 **注記**: 1 Task = 1 責務。複数責務を1ファイルに入れない。
-
----
-
-## スキルフィードバック【必須】
-
-**各Phase完了時に使用したスキルへのフィードバックを必ず記録する。** これはスキル品質改善・利用状況追跡の中核プロセス。
-
-### 記録タイミング
-
-| イベント       | 記録内容                                           |
-| -------------- | -------------------------------------------------- |
-| Phase完了時    | 使用した各スキルの結果（success/failure/partial）  |
-| スキル選定時   | 選定理由と期待される効果                           |
-| 問題発生時     | failure/partialとして記録し、改善点を備考に追加    |
-
-### 記録コマンド
-
-```bash
-# フィードバック記録（各スキルごとに実行）
-node .claude/skills/task-specification-creator/scripts/log_usage.mjs \
-  --skill {{SKILL_NAME}} --result {{success|failure|partial}} --phase {{PHASE_NUMBER}}
-
-# Phase完了・成果物登録
-node .claude/skills/task-specification-creator/scripts/complete-phase.mjs \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}} --artifacts "..."
-
-# スキル仕様準拠チェック（skill-creatorに委譲）
-node .claude/skills/skill-creator/scripts/quick_validate.mjs .claude/skills/{{SKILL_NAME}}
-```
-
-### Phase仕様書への記録形式
-
-各Phase仕様書の「スキルフィードバック記録」セクションに以下を**必ず**記載:
-
-```markdown
-## スキルフィードバック記録
-
-| スキル          | 結果    | 備考                           |
-| --------------- | ------- | ------------------------------ |
-| {{SKILL_NAME}}  | success | {{SKILL_USAGE_DESCRIPTION}} |
-```
-
-**フィードバックフロー**: See [references/feedback-flow.md](references/feedback-flow.md)
 
 ---
 
@@ -625,16 +542,15 @@ node .claude/skills/skill-creator/scripts/quick_validate.mjs .claude/skills/{{SK
 
 Phase完了時に以下を**すべて**実行すること:
 
-| # | 項目                                         | 対象ファイル                    |
-| - | -------------------------------------------- | ------------------------------- |
-| 1 | Phase仕様書のステータスを `完了` に更新      | `phase-{{PHASE_NUMBER}}-*.md`   |
-| 2 | Phase仕様書に `完了日` を追加                | `phase-{{PHASE_NUMBER}}-*.md`   |
-| 3 | Phase仕様書の完了条件をすべてチェック        | `phase-{{PHASE_NUMBER}}-*.md`   |
-| 4 | **スキルフィードバックを記録**【必須】       | `phase-{{PHASE_NUMBER}}-*.md` + LOGS.md |
-| 5 | **`artifacts.json` の該当Phaseを更新**【必須】 | `artifacts.json`               |
-| 6 | `index.md` のPhase一覧テーブルを更新         | `index.md`                      |
+| # | 項目                                           | 対象ファイル                    |
+| - | ---------------------------------------------- | ------------------------------- |
+| 1 | Phase仕様書のステータスを `完了` に更新        | `phase-{{PHASE_NUMBER}}-*.md`   |
+| 2 | Phase仕様書に `完了日` を追加                  | `phase-{{PHASE_NUMBER}}-*.md`   |
+| 3 | Phase仕様書の完了条件をすべてチェック          | `phase-{{PHASE_NUMBER}}-*.md`   |
+| 4 | **`artifacts.json` の該当Phaseを更新**【必須】 | `artifacts.json`                |
+| 5 | `index.md` のPhase一覧テーブルを更新           | `index.md`                      |
 
-**重要**: 項目4と5は必須。これらを省略するとワークフロー追跡が破綻する。
+**重要**: 項目4は必須。これを省略するとワークフロー追跡が破綻する。
 
 **詳細**: See [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)
 
@@ -645,23 +561,20 @@ Phase完了時に以下を**すべて**実行すること:
 ### すべきこと
 
 - 各Phaseを独立したMarkdownファイルとして出力
-- タスクに応じて適切なスキルを動的に選定し、選定理由を明記
-- Phase完了後に使用したskillをskill-creatorでフィードバック記録
 - **各Phase完了時に `artifacts.json` を必ず更新**
-- **各Phase完了時に全スキルを100%実行し、完了を明記**
+- **各Phase完了時に全タスクを100%実行し、完了を明記**
 - 100人中100人が同じ理解で実行できる粒度で記述
 - コード成果物はプロジェクトディレクトリに配置（outputs/ではない）
 - TodoWriteでサブタスクを管理し、進捗を可視化
+- Phase 12でaiworkflow-requirementsを適切に更新
 
 ### 避けるべきこと
 
-- スキルを固定的に決めつける
-- スキル選定理由を省略
-- skill-creatorでのフィードバック記録を省略
 - **`artifacts.json` の更新を忘れる**
-- **スキル100%実行の確認を省略する**
+- **タスク100%実行の確認を省略する**
 - 1つのファイルに全Phaseを詰め込む
 - コード成果物を `outputs/` 配下に配置する
+- 曖昧な表現で記述する（誰が読んでも同じ理解になるようにする）
 
 **詳細**: See [references/quality-standards.md](references/quality-standards.md)
 
@@ -671,52 +584,46 @@ Phase完了時に以下を**すべて**実行すること:
 
 ### agents/（Task仕様書）
 
-| Task                 | パス                                                                         |
-| -------------------- | ---------------------------------------------------------------------------- |
-| タスク分解           | See [agents/decompose-task.md](agents/decompose-task.md)                     |
-| スキル分析           | See [agents/analyze-skills.md](agents/analyze-skills.md)                     |
-| スコープ特定         | See [agents/identify-scope.md](agents/identify-scope.md)                     |
-| フェーズ設計         | See [agents/design-phases.md](agents/design-phases.md)                       |
-| タスク仕様書生成     | See [agents/generate-task-specs.md](agents/generate-task-specs.md)           |
-| 個別ファイル出力     | See [agents/output-phase-files.md](agents/output-phase-files.md)             |
-| 依存関係更新         | See [agents/update-dependencies.md](agents/update-dependencies.md)           |
-| スキルフィードバック | See [agents/skill-feedback-loop.md](agents/skill-feedback-loop.md)           |
-| 未完了タスク生成     | See [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md) |
+| Task             | パス                                                                         |
+| ---------------- | ---------------------------------------------------------------------------- |
+| タスク分解       | See [agents/decompose-task.md](agents/decompose-task.md)                     |
+| スコープ特定     | See [agents/identify-scope.md](agents/identify-scope.md)                     |
+| フェーズ設計     | See [agents/design-phases.md](agents/design-phases.md)                       |
+| タスク仕様書生成 | See [agents/generate-task-specs.md](agents/generate-task-specs.md)           |
+| 個別ファイル出力 | See [agents/output-phase-files.md](agents/output-phase-files.md)             |
+| 依存関係更新     | See [agents/update-dependencies.md](agents/update-dependencies.md)           |
+| 未完了タスク生成 | See [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md) |
 
 ### references/（詳細知識）
 
 | リソース                 | パス                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------ |
 | Phase別テンプレート      | See [references/phase-templates.md](references/phase-templates.md)                         |
-| フィードバックフロー     | See [references/feedback-flow.md](references/feedback-flow.md)                             |
 | 品質基準                 | See [references/quality-standards.md](references/quality-standards.md)                     |
 | 成果物命名規則           | See [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md) |
 | 未完了タスクガイドライン | See [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md)   |
 | レビューゲート判定基準   | See [references/review-gate-criteria.md](references/review-gate-criteria.md)               |
 | システム仕様更新         | See [references/spec-update-workflow.md](references/spec-update-workflow.md)               |
+| 技術ドキュメントガイド   | See [references/technical-documentation-guide.md](references/technical-documentation-guide.md) |
 
 ### assets/（テンプレート）
 
-| テンプレート               | パス                                                                                   |
-| -------------------------- | -------------------------------------------------------------------------------------- |
-| Phase仕様書テンプレート    | See [assets/phase-spec-template.md](assets/phase-spec-template.md)                     |
-| 共通ヘッダーテンプレート   | See [assets/common-header-template.md](assets/common-header-template.md)               |
-| 共通フッターテンプレート   | See [assets/common-footer-template.md](assets/common-footer-template.md)               |
-| 統合テストテンプレート     | See [assets/integration-test-template.md](assets/integration-test-template.md)         |
-| スキル実行指示テンプレート | See [assets/skill-execution-template.md](assets/skill-execution-template.md)           |
-| フィードバック記録         | See [assets/feedback-record-template.md](assets/feedback-record-template.md)           |
-| 未完了タスクテンプレート   | See [assets/unassigned-task-template.md](assets/unassigned-task-template.md)           |
-| メインタスクテンプレート   | See [assets/main-task-template.md](assets/main-task-template.md)                       |
-| 実装ガイドテンプレート     | See [assets/implementation-guide-template.md](assets/implementation-guide-template.md) |
+| テンプレート             | パス                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------- |
+| Phase仕様書テンプレート  | See [assets/phase-spec-template.md](assets/phase-spec-template.md)                     |
+| 共通ヘッダーテンプレート | See [assets/common-header-template.md](assets/common-header-template.md)               |
+| 共通フッターテンプレート | See [assets/common-footer-template.md](assets/common-footer-template.md)               |
+| 統合テストテンプレート   | See [assets/integration-test-template.md](assets/integration-test-template.md)         |
+| 未完了タスクテンプレート | See [assets/unassigned-task-template.md](assets/unassigned-task-template.md)           |
+| メインタスクテンプレート | See [assets/main-task-template.md](assets/main-task-template.md)                       |
+| 実装ガイドテンプレート   | See [assets/implementation-guide-template.md](assets/implementation-guide-template.md) |
 
 ### scripts/（決定論的処理）
 
-| スクリプト                     | 用途                            | 使用例                                                                         |
-| ------------------------------ | ------------------------------- | ------------------------------------------------------------------------------ |
-| `log_usage.mjs`                | フィードバック記録              | `node scripts/log_usage.mjs --skill tdd-principles --result success --phase 4` |
-| `validate-phase-output.mjs`    | Phase出力ファイル検証           | `node scripts/validate-phase-output.mjs docs/30-workflows/{{FEATURE_NAME}}`    |
-| `validate-skill-selection.mjs` | スキル選定の検証（存在確認）    | `node scripts/validate-skill-selection.mjs docs/30-workflows/{{FEATURE_NAME}}` |
-| `complete-phase.mjs`           | Phase完了・成果物登録・依存更新 | `node scripts/complete-phase.mjs --workflow <path> --phase <N> --artifacts ""` |
+| スクリプト                  | 用途                            | 使用例                                                                         |
+| --------------------------- | ------------------------------- | ------------------------------------------------------------------------------ |
+| `validate-phase-output.mjs` | Phase出力ファイル検証           | `node scripts/validate-phase-output.mjs docs/30-workflows/{{FEATURE_NAME}}`    |
+| `complete-phase.mjs`        | Phase完了・成果物登録・依存更新 | `node scripts/complete-phase.mjs --workflow <path> --phase <N> --artifacts ""` |
 
 ---
 
@@ -724,6 +631,7 @@ Phase完了時に以下を**すべて**実行すること:
 
 | Version | Date       | Changes                                                                       |
 | ------- | ---------- | ----------------------------------------------------------------------------- |
+| 5.0.0   | 2026-01-10 | スキル選定機能削除、スキルフィードバック機能削除、シンプル化（aiworkflow-requirements更新は維持） |
 | 4.0.0   | 2026-01-06 | Git Worktree削除、結合テストカバレッジ基準追加、テンプレート責務分離、変数化強化 |
 | 3.1.0   | 2026-01-07 | Phase 6追加（テスト拡充）、Phase再番号付け（1-13）、統合テスト連携（Phase 1-11）必須化 |
 | 3.0.0   | 2026-01-06 | Phase再構成（1-13）、テストカバレッジ確認Phase追加、統合テスト必須化、/ai:diff-to-pr統合 |

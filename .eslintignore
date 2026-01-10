@@ -17,3 +17,6 @@ coverage/
 .claude/skills/
 .claude/commands/
 .claude/agents/
+
+# Archived Claude Code Skills (documentation only)
+docs/99-claude/
