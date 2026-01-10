@@ -7,6 +7,8 @@
 export type {
   SlideProject,
   SyncStatus,
+  SyncDirection,
+  StructureChange,
   SkillPhase,
   SkillExecutionResult,
   WatcherConfig,

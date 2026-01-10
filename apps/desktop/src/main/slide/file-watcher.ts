@@ -21,6 +21,8 @@ export interface SlideWatcher {
   stop(): void;
   /** structure.md変更時のコールバックを登録 */
   onStructureChange(callback: (path: string) => void): void;
+  /** index.html変更時のコールバックを登録（逆同期用） */
+  onHtmlChange(callback: (path: string) => void): void;
   /** スキル起因の変更としてマーク（無限ループ防止） */
   markAsSkillChange(path: string, phase: SkillPhase): void;
   /** 変更コンテキストをクリア */
@@ -48,18 +50,17 @@ const CHANGE_CONTEXT_TTL = 1000;
  */
 export const createSlideWatcher = (projectPath: string): SlideWatcher => {
   let watcher: FSWatcher | null = null;
-  const callbacks: Array<(path: string) => void> = [];
+  const structureCallbacks: Array<(path: string) => void> = [];
+  const htmlCallbacks: Array<(path: string) => void> = [];
   const changeContextMap = new Map<string, ChangeContext>();
 
   /**
-   * 変更イベントを処理する
-   * 無限ループ防止のため、スキル起因の変更は無視する
+   * スキル起因の変更かどうかをチェックする
    */
-  const handleChange = (filePath: string): void => {
+  const isSkillOriginatedChange = (filePath: string): boolean => {
     const context = changeContextMap.get(filePath);
     const now = Date.now();
 
-    // スキル起因の変更かどうかをチェック
     const isSkillChange =
       context?.source === "skill" &&
       now - context.timestamp < CHANGE_CONTEXT_TTL;
@@ -67,11 +68,28 @@ export const createSlideWatcher = (projectPath: string): SlideWatcher => {
     if (isSkillChange) {
       // スキル起因の変更は無視（無限ループ防止）
       changeContextMap.delete(filePath);
+      return true;
+    }
+
+    return false;
+  };
+
+  /**
+   * 変更イベントを処理する
+   * 無限ループ防止のため、スキル起因の変更は無視する
+   */
+  const handleChange = (filePath: string): void => {
+    // スキル起因の変更かどうかをチェック
+    if (isSkillOriginatedChange(filePath)) {
       return;
     }
 
-    // ユーザー起因の変更としてコールバックを実行
-    callbacks.forEach((cb) => cb(filePath));
+    // ファイルの種類に応じてコールバックを実行
+    if (filePath.endsWith("structure.md")) {
+      structureCallbacks.forEach((cb) => cb(filePath));
+    } else if (filePath.endsWith("index.html")) {
+      htmlCallbacks.forEach((cb) => cb(filePath));
+    }
   };
 
   return {
@@ -83,7 +101,10 @@ export const createSlideWatcher = (projectPath: string): SlideWatcher => {
 
     start() {
       const structurePath = `${projectPath}/structure.md`;
-      watcher = chokidar.watch(structurePath, {
+      const htmlPath = `${projectPath}/index.html`;
+
+      // structure.mdとindex.html両方を監視
+      watcher = chokidar.watch([structurePath, htmlPath], {
         persistent: DEFAULT_CONFIG.persistent,
         ignoreInitial: DEFAULT_CONFIG.ignoreInitial,
         awaitWriteFinish: DEFAULT_CONFIG.awaitWriteFinish,
@@ -101,12 +122,17 @@ export const createSlideWatcher = (projectPath: string): SlideWatcher => {
         watcher.close();
         watcher = null;
       }
-      callbacks.length = 0;
+      structureCallbacks.length = 0;
+      htmlCallbacks.length = 0;
       changeContextMap.clear();
     },
 
     onStructureChange(callback) {
-      callbacks.push(callback);
+      structureCallbacks.push(callback);
+    },
+
+    onHtmlChange(callback) {
+      htmlCallbacks.push(callback);
     },
 
     markAsSkillChange(path, phase) {

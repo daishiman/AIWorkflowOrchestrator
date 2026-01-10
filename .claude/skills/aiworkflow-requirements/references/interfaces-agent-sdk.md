@@ -315,6 +315,140 @@ interface SessionContext {
 
 ---
 
+## ModifierSkill（スライド逆同期機能）
+
+### 概要
+
+スライドプレゼンテーション機能において、Reveal.js HTML（index.html）の変更をstructure.md（構造定義ファイル）に逆同期する機能。Claude Agent SDKを活用してAI駆動のHTML解析と構造抽出を実現する。
+
+**実装ファイル**:
+
+- `apps/desktop/src/main/slide/modifier-skill.ts` - ModifierSkill実行ロジック
+- `apps/desktop/src/main/slide/agent-client.ts` - Agent SDK通信クライアント
+- `apps/desktop/src/main/slide/skill-executor.ts` - スキル実行オーケストレーション
+- `apps/desktop/src/main/slide/sync-manager.ts` - 同期管理（順方向・逆方向）
+- `apps/desktop/src/main/slide/file-watcher.ts` - ファイル監視
+- `packages/shared/src/slide/types.ts` - 共通型定義
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   File System                                │
+│   index.html (Reveal.js)    ←→    structure.md (Markdown)   │
+└───────────────┬─────────────────────────────┬───────────────┘
+                │ 変更検知                      │ 更新
+┌───────────────┴─────────────────────────────┴───────────────┐
+│                   FileWatcher (chokidar)                     │
+│              onHtmlChange / onStructureChange               │
+└───────────────┬─────────────────────────────────────────────┘
+                │
+┌───────────────┴─────────────────────────────────────────────┐
+│                   SyncManager                                │
+│           forwardSync() / reverseSync()                     │
+│           changeContextMap（無限ループ防止）                 │
+└───────────────┬─────────────────────────────────────────────┘
+                │
+┌───────────────┴─────────────────────────────────────────────┐
+│                   SkillExecutor                              │
+│              executeModifierSkill()                          │
+└───────────────┬─────────────────────────────────────────────┘
+                │
+┌───────────────┴─────────────────────────────────────────────┐
+│                   ModifierSkill                              │
+│              execute() → prompt生成 → Agent呼び出し          │
+└───────────────┬─────────────────────────────────────────────┘
+                │
+┌───────────────┴─────────────────────────────────────────────┐
+│                   AgentClient                                │
+│              executeSkill() → Claude Agent SDK              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 型定義
+
+```typescript
+// ModifierSkill入力
+interface ModifierSkillInput {
+  html: string;           // Reveal.js HTML
+  currentStructure: string; // 現在のstructure.md
+  projectPath: string;    // プロジェクトパス
+}
+
+// ModifierSkill出力
+interface ModifierSkillOutput {
+  updatedStructure: string; // 更新後のstructure.md
+  changes: StructureChange[];
+}
+
+// 変更情報
+interface StructureChange {
+  type: 'add' | 'remove' | 'modify';
+  section: string;
+  description: string;
+}
+
+// 同期状態
+type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
+
+// 同期方向
+type SyncDirection = 'forward' | 'reverse';
+```
+
+### 無限ループ防止（changeContextMap）
+
+双方向同期における無限ループを防止するためのマーキング機構。
+
+```typescript
+interface ChangeContext {
+  direction: SyncDirection;
+  timestamp: number;
+  filePath: string;
+}
+
+// TTL: 1000ms
+// 同じファイルへの変更を短時間で検知した場合、
+// 逆方向の同期による変更として判定しスキップ
+```
+
+### IPC チャンネル（スライド同期）
+
+| チャンネル             | 方向            | 説明                   |
+| ---------------------- | --------------- | ---------------------- |
+| `slide:sync-status`    | Main → Renderer | 同期状態通知           |
+| `slide:sync-progress`  | Main → Renderer | 同期進捗通知           |
+| `slide:reverse-sync`   | Renderer → Main | 逆同期手動トリガー     |
+| `slide:sync-error`     | Main → Renderer | 同期エラー通知         |
+
+### 設定定数
+
+| 定数                    | 値      | 説明                         |
+| ----------------------- | ------- | ---------------------------- |
+| `SYNC_TIMEOUT`          | `30000` | 同期処理タイムアウト (ms)    |
+| `CHANGE_CONTEXT_TTL`    | `1000`  | 変更コンテキスト有効期間 (ms) |
+| `DEBOUNCE_DELAY`        | `300`   | ファイル変更debounce (ms)    |
+| `AWAIT_WRITE_FINISH`    | `300`   | 書き込み完了待機 (ms)        |
+
+### 実装状態
+
+| コンポーネント | 状態                 | 備考                           |
+| -------------- | -------------------- | ------------------------------ |
+| ModifierSkill  | シミュレーション実装 | Agent SDK統合後に実SDK呼び出し |
+| AgentClient    | シミュレーション実装 | Agent SDK統合後に実API連携     |
+| SyncManager    | 完了                 | 双方向同期ロジック実装済み     |
+| FileWatcher    | 完了                 | chokidarベース監視実装済み     |
+| SkillExecutor  | 完了                 | オーケストレーション実装済み   |
+
+### 関連ドキュメント（スライド逆同期）
+
+| ドキュメント     | パス                                                              |
+| ---------------- | ----------------------------------------------------------------- |
+| 実装ガイド       | `docs/30-workflows/slide-reverse-sync/outputs/phase-12/implementation-guide.md` |
+| API仕様          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/api-specification.md` |
+| IPC設計          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md` |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント         | パス                                                                             |

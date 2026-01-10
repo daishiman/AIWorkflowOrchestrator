@@ -1,0 +1,309 @@
+{
+  "$schema": "../../.schema/artifacts.schema.json",
+  "taskId": "task-feat-slide-reverse-sync-001",
+  "taskName": "index.html→structure.md逆同期機能",
+  "feature": "slide-reverse-sync",
+  "createdAt": "2026-01-10",
+  "updatedAt": "2026-01-10",
+  "status": "Phase 12完了（SDK統合待ち）",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "完了",
+      "skills": ["acceptance-criteria-writing"],
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "完了",
+      "skills": [
+        "domain-modeling",
+        "api-client-patterns",
+        "electron-ipc-patterns"
+      ],
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計書",
+          "path": "outputs/phase-2/architecture-design.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "ドメインモデル",
+          "path": "outputs/phase-2/domain-model.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "API仕様書",
+          "path": "outputs/phase-2/api-specification.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "IPC設計書",
+          "path": "outputs/phase-2/ipc-design.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "完了",
+      "skills": [],
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "完了",
+      "skills": [
+        "tdd-principles",
+        "integration-testing",
+        "boundary-value-analysis"
+      ],
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "テストケース",
+          "path": "outputs/phase-4/test-cases.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "統合テスト設計書",
+          "path": "outputs/phase-4/integration-test-design.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "完了",
+      "skills": [
+        "agent-lifecycle-management",
+        "multi-agent-systems",
+        "clean-code-practices",
+        "error-handling-patterns"
+      ],
+      "artifacts": [
+        {
+          "name": "実装サマリー",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "完了",
+      "skills": ["test-coverage", "integration-testing"],
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-6/coverage-report.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "統合テスト結果",
+          "path": "outputs/phase-6/integration-test.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "完了",
+      "skills": ["test-coverage"],
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "統合テスト結果",
+          "path": "outputs/phase-7/integration-test.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "完了",
+      "skills": [
+        "refactoring-patterns",
+        "code-smell-detection",
+        "solid-principles"
+      ],
+      "artifacts": [
+        {
+          "name": "リファクタリングログ",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "コードスメルレポート",
+          "path": "outputs/phase-8/code-smell-report.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "完了",
+      "skills": ["agent-quality-standards", "security-configuration-review"],
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "品質メトリクス",
+          "path": "outputs/phase-9/quality-metrics.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "セキュリティチェック結果",
+          "path": "outputs/phase-9/security-check.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "完了",
+      "skills": [],
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "完了（一部PENDING）",
+      "skills": ["exploratory-testing"],
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "完了",
+      "skills": ["technical-documentation-standards", "skill-creator"],
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "status": "作成済み"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "作成済み"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "未実施",
+      "skills": ["/ai:diff-to-pr"],
+      "artifacts": [
+        {
+          "name": "PR作成記録",
+          "path": "outputs/phase-13/pr-creation-record.md",
+          "status": "未作成"
+        }
+      ]
+    }
+  ],
+  "totalSkillsUsed": [
+    "acceptance-criteria-writing",
+    "domain-modeling",
+    "api-client-patterns",
+    "electron-ipc-patterns",
+    "tdd-principles",
+    "integration-testing",
+    "boundary-value-analysis",
+    "agent-lifecycle-management",
+    "multi-agent-systems",
+    "clean-code-practices",
+    "error-handling-patterns",
+    "test-coverage",
+    "refactoring-patterns",
+    "code-smell-detection",
+    "solid-principles",
+    "agent-quality-standards",
+    "security-configuration-review",
+    "technical-documentation-standards",
+    "skill-creator",
+    "/ai:diff-to-pr"
+  ],
+  "systemRequirementsReferences": [
+    ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md",
+    ".claude/skills/aiworkflow-requirements/references/api-endpoints.md",
+    ".claude/skills/aiworkflow-requirements/references/error-handling.md",
+    ".claude/skills/aiworkflow-requirements/references/quality-requirements.md",
+    ".claude/skills/aiworkflow-requirements/references/coding-standards.md",
+    ".claude/skills/aiworkflow-requirements/references/security-guidelines.md"
+  ],
+  "dependencies": [
+    {
+      "taskId": "task-imp-slide-agent-sdk-integration-001",
+      "type": "前提タスク",
+      "description": "Agent SDK統合機能が完了していることが必要"
+    }
+  ]
+}
