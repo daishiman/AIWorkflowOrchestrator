@@ -388,6 +388,100 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ---
 
+## Slide IPC API（スライド同期）
+
+### 概要
+
+スライドプレゼンテーション機能における双方向同期のIPCチャンネル。Reveal.js HTML（index.html）とstructure.md間の同期状態を管理する。
+
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/slide/sync-manager.ts`
+- ファイル監視: `apps/desktop/src/main/slide/file-watcher.ts`
+- スキル実行: `apps/desktop/src/main/slide/skill-executor.ts`
+- 型定義: `packages/shared/src/slide/types.ts`
+
+### チャンネル一覧
+
+| チャネル               | 方向            | 用途                 | Payload                              |
+| ---------------------- | --------------- | -------------------- | ------------------------------------ |
+| `slide:sync-status`    | Main → Renderer | 同期状態通知         | `{ status: SyncStatus, direction: SyncDirection }` |
+| `slide:sync-progress`  | Main → Renderer | 同期進捗通知         | `{ percent: number, message: string }` |
+| `slide:reverse-sync`   | Renderer → Main | 逆同期手動トリガー   | `{ projectPath: string }`            |
+| `slide:sync-error`     | Main → Renderer | 同期エラー通知       | `{ code: string, message: string }`  |
+| `slide:watch-start`    | Renderer → Main | ファイル監視開始     | `{ projectPath: string }`            |
+| `slide:watch-stop`     | Renderer → Main | ファイル監視停止     | `{ projectPath: string }`            |
+
+### 型定義
+
+```typescript
+// 同期状態
+type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
+
+// 同期方向
+type SyncDirection = 'forward' | 'reverse';
+
+// 同期状態通知ペイロード
+interface SyncStatusPayload {
+  status: SyncStatus;
+  direction: SyncDirection;
+  timestamp: number;
+}
+
+// 同期進捗ペイロード
+interface SyncProgressPayload {
+  percent: number;
+  message: string;
+}
+
+// 同期エラーペイロード
+interface SyncErrorPayload {
+  code: 'AGENT_ERROR' | 'FILE_ERROR' | 'TIMEOUT' | 'VALIDATION_ERROR';
+  message: string;
+  details?: unknown;
+}
+```
+
+### 同期フロー
+
+```
+1. ユーザーがindex.htmlを編集
+2. FileWatcherがonHtmlChangeイベントを発火
+3. SyncManagerがreverseSync()を開始
+   → slide:sync-status { status: 'syncing', direction: 'reverse' }
+4. SkillExecutorがModifierSkillを実行
+   → slide:sync-progress { percent: 50, message: 'AI分析中...' }
+5. structure.mdを更新
+   → slide:sync-status { status: 'synced', direction: 'reverse' }
+6. changeContextMapに記録（無限ループ防止）
+```
+
+### エラーコード
+
+| コード             | 説明                       | 対処                           |
+| ------------------ | -------------------------- | ------------------------------ |
+| `AGENT_ERROR`      | Agent SDK呼び出し失敗      | API接続確認、リトライ          |
+| `FILE_ERROR`       | ファイル読み書き失敗       | パーミッション確認             |
+| `TIMEOUT`          | 同期タイムアウト（30秒）   | 処理の再試行                   |
+| `VALIDATION_ERROR` | レスポンス形式不正         | Agent出力確認                  |
+
+### 実装状態
+
+| コンポーネント | 状態                 | 備考                           |
+| -------------- | -------------------- | ------------------------------ |
+| IPCチャンネル  | 設計完了             | SDK統合時に実装                |
+| 同期ロジック   | 実装完了             | シミュレーション環境で動作確認 |
+| エラー通知     | 実装完了             | 全エラーコード対応済み         |
+
+### 関連ドキュメント
+
+| ドキュメント         | パス                                                                         |
+| -------------------- | ---------------------------------------------------------------------------- |
+| IPC設計詳細          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md`         |
+| Agent SDKインターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md` |
+
+---
+
 ## エンドポイント命名規則
 
 ### 命名パターン

@@ -54,7 +54,7 @@ export const createSkillExecutor = (): SkillExecutor => {
   };
 
   return {
-    async execute(phase, _projectPath) {
+    async execute(phase, projectPath) {
       if (executing) {
         return {
           phase,
@@ -107,6 +107,19 @@ export const createSkillExecutor = (): SkillExecutor => {
         }
 
         emitProgress(100);
+
+        // modifierスキルの場合は追加情報を含める
+        if (phase === "modifier") {
+          return {
+            phase,
+            success: true,
+            output: `Skill ${skillName} executed successfully`,
+            duration: Date.now() - startTime,
+            changes: [], // 変更リスト（シミュレーションでは空）
+            direction: "reverse" as const,
+            projectPath, // コンテキスト情報
+          };
+        }
 
         return {
           phase,

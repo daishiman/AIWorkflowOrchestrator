@@ -17,6 +17,7 @@ RAGパイプライン実装で使用する共通型定義とインターフェ�
 | チャンク・埋め込み型 | [interfaces-rag-chunk-embedding.md](./interfaces-rag-chunk-embedding.md) | チャンク分割戦略、埋め込みプロバイダー |
 | 検索クエリ・結果型 | [interfaces-rag-search.md](./interfaces-rag-search.md) | HybridRAG検索、RRF、CRAG評価 |
 | Knowledge Graph Store | [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md) | ナレッジグラフの永続化・操作 |
+| Community Detection | [interfaces-rag-community-detection.md](./interfaces-rag-community-detection.md) | Leidenアルゴリズム、コミュニティ検出 |
 
 ---
 

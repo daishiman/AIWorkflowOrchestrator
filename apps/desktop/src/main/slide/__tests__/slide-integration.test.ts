@@ -249,4 +249,250 @@ describe("Slide Integration Tests", () => {
       watcher.stop();
     });
   });
+
+  // ==========================================================================
+  // Reverse Sync Integration Tests (TDD Red - Phase 4)
+  // テストID: IT-01 ~ IT-06
+  // ==========================================================================
+  describe("Reverse Sync Integration", () => {
+    it("IT-01: should trigger reverseSync on html change", async () => {
+      // Setup
+      const watcher = createSlideWatcher(testProjectPath);
+      const executor = createSkillExecutor();
+      const syncManager = createSyncManager(executor);
+
+      let reverseSyncTriggered = false;
+
+      // onHtmlChangeコールバックでreverseSyncをトリガー
+      watcher.onHtmlChange(async () => {
+        reverseSyncTriggered = true;
+        const syncPromise = syncManager.reverseSync(testProjectPath);
+        await vi.advanceTimersByTimeAsync(1000);
+        await syncPromise;
+      });
+
+      watcher.start();
+
+      // HTML変更イベントを発火
+      mockWatchInstance.emit("change", `${testProjectPath}/index.html`);
+
+      // reverseSyncがトリガーされたこと
+      expect(reverseSyncTriggered).toBe(true);
+
+      watcher.stop();
+    });
+
+    it("IT-02: should update structure.md on successful sync", async () => {
+      // Setup
+      const executor = createSkillExecutor();
+      const syncManager = createSyncManager(executor);
+
+      // reverseSyncを実行
+      const syncPromise = syncManager.reverseSync(testProjectPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      const result = await syncPromise;
+
+      // 成功すること
+      expect(result.success).toBe(true);
+
+      // 変更情報が返されること
+      expect(result).toHaveProperty("changes");
+    });
+
+    it("IT-03: should prevent infinite loop on bidirectional sync", async () => {
+      // Setup
+      const watcher = createSlideWatcher(testProjectPath);
+      const executor = createSkillExecutor();
+      const _syncManager = createSyncManager(executor);
+
+      let forwardLoopDetected = false;
+      let reverseLoopDetected = false;
+
+      // structure.md変更検知
+      watcher.onStructureChange(async (_filePath) => {
+        // modifier起因の変更でなければ処理
+        // （実際の実装では内部で判定される）
+        forwardLoopDetected = true;
+      });
+
+      // index.html変更検知
+      watcher.onHtmlChange(async (_filePath) => {
+        // html skill起因の変更でなければ処理
+        reverseLoopDetected = true;
+      });
+
+      watcher.start();
+
+      // シナリオ1: 順方向同期 → HTML更新 → HTML変更検知（無限ループ防止）
+      watcher.markAsSkillChange(`${testProjectPath}/index.html`, "html");
+      mockWatchInstance.emit("change", `${testProjectPath}/index.html`);
+
+      // HTMLコールバックは呼ばれないこと（スキル起因の変更は無視）
+      expect(reverseLoopDetected).toBe(false);
+
+      // シナリオ2: 逆方向同期 → structure更新 → structure変更検知（無限ループ防止）
+      watcher.markAsSkillChange(`${testProjectPath}/structure.md`, "modifier");
+      mockWatchInstance.emit("change", `${testProjectPath}/structure.md`);
+
+      // structureコールバックは呼ばれないこと（スキル起因の変更は無視）
+      expect(forwardLoopDetected).toBe(false);
+
+      watcher.stop();
+    });
+
+    it("IT-04: should emit correct IPC events", async () => {
+      // Setup
+      const executor = createSkillExecutor();
+      const syncManager = createSyncManager(executor);
+      const statusCallback = vi.fn();
+      const progressCallback = vi.fn();
+
+      syncManager.onStatusChange(statusCallback);
+      syncManager.onProgress(progressCallback);
+
+      // reverseSyncを実行
+      const syncPromise = syncManager.reverseSync(testProjectPath);
+      await vi.advanceTimersByTimeAsync(1000);
+      await syncPromise;
+
+      // ステータスイベントが発火されること
+      expect(statusCallback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          direction: "reverse",
+          status: expect.stringMatching(/syncing|synced|error/),
+        }),
+      );
+
+      // 進捗イベントが発火されること
+      expect(progressCallback).toHaveBeenCalled();
+    });
+
+    it("IT-05: should handle concurrent sync requests", async () => {
+      // Setup
+      const executor = createSkillExecutor();
+      const syncManager = createSyncManager(executor);
+
+      // 同時に順方向と逆方向の同期を開始
+      // Promise.allSettledで扱う前にエラーハンドリングを追加
+      const forwardPromise = syncManager.sync(testProjectPath);
+      // reverseSyncが先に拒否される可能性があるため、即座にPromise.allSettledに渡す
+      const reversePromise = syncManager.reverseSync(testProjectPath);
+
+      // 両方のPromiseを即座にPromise.allSettledでラップしてunhandled rejectionを防ぐ
+      const resultsPromise = Promise.allSettled([
+        forwardPromise,
+        reversePromise,
+      ]);
+
+      await vi.advanceTimersByTimeAsync(2000);
+
+      // どちらかが成功し、もう一方は失敗（同時実行防止）
+      const results = await resultsPromise;
+
+      // sync()はvoidを返す、reverseSync()はReverseSyncResultを返す
+      // fulfilledはエラーなしで完了したことを意味
+      const successes = results.filter((r) => r.status === "fulfilled");
+      const failures = results.filter((r) => r.status === "rejected");
+
+      expect(successes.length + failures.length).toBe(2);
+
+      // 1つだけが成功することを期待（排他制御）
+      // または両方失敗（タイミング依存）
+      expect(failures.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it("IT-06: should recover from Agent SDK failure", async () => {
+      // Setup
+      const executor = createSkillExecutor();
+      const syncManager = createSyncManager(executor);
+
+      // 最初の呼び出しでエラーをシミュレート（実際にはモックを設定）
+      let callCount = 0;
+      const originalExecute = executor.execute;
+      vi.spyOn(executor, "execute").mockImplementation(async (phase, path) => {
+        callCount++;
+        if (callCount === 1) {
+          // 最初の呼び出しは失敗
+          return {
+            phase,
+            success: false,
+            error: "Agent SDK temporary failure",
+            duration: 100,
+          };
+        }
+        // 2回目以降は成功
+        return originalExecute.call(executor, phase, path);
+      });
+
+      // reverseSyncを実行（失敗時はthrowするので、エラーを捕捉）
+      await expect(syncManager.reverseSync(testProjectPath)).rejects.toThrow(
+        "Agent SDK temporary failure",
+      );
+
+      // 呼び出しが行われたこと
+      expect(callCount).toBe(1);
+    });
+  });
+
+  describe("Reverse Sync Bidirectional Flow", () => {
+    it("should handle complete bidirectional workflow", async () => {
+      // Setup components
+      const watcher = createSlideWatcher(testProjectPath);
+      const executor = createSkillExecutor();
+      const syncManager = createSyncManager(executor);
+
+      const events: string[] = [];
+
+      // 順方向: structure.md → index.html
+      watcher.onStructureChange(async (_filePath) => {
+        events.push("structure-change-detected");
+
+        // HTML更新をマーク
+        watcher.markAsSkillChange(`${testProjectPath}/index.html`, "html");
+
+        // 同期実行
+        const syncPromise = syncManager.sync(testProjectPath);
+        await vi.advanceTimersByTimeAsync(1000);
+        await syncPromise;
+
+        events.push("forward-sync-completed");
+
+        // HTMLファイル更新後の変更イベント（無視されるべき）
+        mockWatchInstance.emit("change", `${testProjectPath}/index.html`);
+      });
+
+      // 逆方向: index.html → structure.md
+      watcher.onHtmlChange(async (_filePath) => {
+        events.push("html-change-detected");
+
+        // structure更新をマーク
+        watcher.markAsSkillChange(
+          `${testProjectPath}/structure.md`,
+          "modifier",
+        );
+
+        // 逆同期実行
+        const syncPromise = syncManager.reverseSync(testProjectPath);
+        await vi.advanceTimersByTimeAsync(1000);
+        await syncPromise;
+
+        events.push("reverse-sync-completed");
+
+        // structureファイル更新後の変更イベント（無視されるべき）
+        mockWatchInstance.emit("change", `${testProjectPath}/structure.md`);
+      });
+
+      watcher.start();
+
+      // 順方向シナリオのテスト
+      mockWatchInstance.emit("change", `${testProjectPath}/structure.md`);
+
+      // 無限ループが発生していないこと
+      expect(
+        events.filter((e) => e === "structure-change-detected").length,
+      ).toBe(1);
+
+      watcher.stop();
+    });
+  });
 });

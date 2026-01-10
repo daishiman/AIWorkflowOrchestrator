@@ -30,6 +30,25 @@ export type SyncStatus = "synced" | "out-of-sync" | "syncing" | "error";
 export type SkillPhase = "hearing" | "structure" | "html" | "modifier";
 
 /**
+ * 同期方向
+ */
+export type SyncDirection = "forward" | "reverse";
+
+/**
+ * 構造変更情報
+ */
+export interface StructureChange {
+  /** 変更タイプ */
+  type: "add" | "modify" | "delete";
+  /** 変更対象のセクション */
+  section: string;
+  /** 変更前の値 */
+  before?: string;
+  /** 変更後の値 */
+  after?: string;
+}
+
+/**
  * スキル実行結果
  */
 export interface SkillExecutionResult {
@@ -43,6 +62,14 @@ export interface SkillExecutionResult {
   error?: string;
   /** 実行時間（ミリ秒） */
   duration: number;
+  /** 変更リスト（modifierフェーズ用） */
+  changes?: StructureChange[];
+  /** 同期方向（modifierフェーズ用） */
+  direction?: SyncDirection;
+  /** プロジェクトパス（modifierフェーズ用） */
+  projectPath?: string;
+  /** リトライ回数（エラー時用） */
+  retryCount?: number;
 }
 
 /**
