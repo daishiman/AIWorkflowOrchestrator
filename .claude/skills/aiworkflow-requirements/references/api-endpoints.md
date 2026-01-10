@@ -262,6 +262,72 @@ export const ALLOWED_CHANNELS = {
 } as const;
 ```
 
+### Agent Dashboard IPC チャネル
+
+Electronデスクトップアプリでは、IPC通信でスキル管理・エージェント実行機能を提供する。
+
+**実装ファイル**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- 型定義: `apps/desktop/src/renderer/store/slices/agentSlice.ts`
+- 設計書: `docs/30-workflows/agent-dashboard-foundation/outputs/phase-2/ipc-channel-design.md`
+
+**チャンネル一覧**:
+
+| チャネル               | 方向            | 用途               | Request                     | Response                |
+| ---------------------- | --------------- | ------------------ | --------------------------- | ----------------------- |
+| `agent:get-skills`     | Renderer → Main | スキル一覧取得     | なし                        | `{ skills: Skill[] }`   |
+| `agent:get-skill-detail` | Renderer → Main | スキル詳細取得   | `{ skillId: string }`       | `{ skill: SkillDetail }`|
+| `agent:execute`        | Renderer → Main | エージェント実行   | `ExecuteRequest`            | `{ executionId: string }` |
+| `agent:abort`          | Renderer → Main | 実行中断           | `{ executionId: string }`   | `{ success: boolean }`  |
+| `agent:get-status`     | Renderer → Main | ステータス取得     | なし                        | `GetStatusResponse`     |
+| `agent:status-changed` | Main → Renderer | ステータス変更通知 | -                           | `StatusChangedEvent`    |
+| `agent:stream-chunk`   | Main → Renderer | 出力ストリーム     | -                           | `StreamChunkEvent`      |
+| `agent:stream-end`     | Main → Renderer | ストリーム終了     | -                           | `StreamEndEvent`        |
+| `agent:stream-error`   | Main → Renderer | エラー通知         | -                           | `StreamErrorEvent`      |
+
+**型定義**:
+
+| 型名           | 説明                     |
+| -------------- | ------------------------ |
+| `Skill`        | スキル基本情報           |
+| `SkillDetail`  | スキル詳細（Anchor含む） |
+| `Anchor`       | 参照文献・適用方法       |
+| `AgentState`   | Zustand状態              |
+| `AgentActions` | Zustandアクション        |
+
+**Skill型**:
+
+| プロパティ    | 型         | 説明                   |
+| ------------- | ---------- | ---------------------- |
+| `id`          | `string`   | 一意識別子             |
+| `name`        | `string`   | スキル名               |
+| `description` | `string`   | 説明文                 |
+| `path`        | `string`   | スキルファイルパス     |
+| `triggers`    | `string[]` | トリガーキーワード     |
+| `category`    | `string?`  | カテゴリ（任意）       |
+
+**Anchor型**:
+
+| プロパティ    | 型       | 説明               |
+| ------------- | -------- | ------------------ |
+| `source`      | `string` | 参照元（書籍等）   |
+| `application` | `string` | 適用方法           |
+| `purpose`     | `string` | 目的               |
+
+**実装状況**:
+
+| 項目                 | 状態   | タスク    |
+| -------------------- | ------ | --------- |
+| チャネル定数定義     | 完了   | AGENT-001 |
+| ホワイトリスト追加   | 完了   | AGENT-001 |
+| Zustand agentSlice   | 完了   | AGENT-001 |
+| AgentView UI         | 完了   | AGENT-001 |
+| IPCハンドラー実装    | 未実装 | AGENT-005 |
+| Preload API実装      | 未実装 | AGENT-002 |
+
+---
+
 ### AI/チャット IPC チャネル
 
 Electronデスクトップアプリでは、IPC通信でAIチャット機能とLLM選択機能を提供する。

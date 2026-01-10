@@ -1,7 +1,13 @@
 // Knowledge Studio Store Types
 
 // ビュー型
-export type ViewType = "dashboard" | "editor" | "chat" | "graph" | "settings";
+export type ViewType =
+  | "dashboard"
+  | "editor"
+  | "chat"
+  | "graph"
+  | "settings"
+  | "agent";
 
 // ファイルノード型
 export interface FileNode {

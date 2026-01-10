@@ -23,10 +23,10 @@ describe("AppDock", () => {
       );
     });
 
-    it("5つのナビゲーションアイテムを表示する", () => {
+    it("6つのナビゲーションアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
       const buttons = screen.getAllByRole("button");
-      expect(buttons).toHaveLength(5);
+      expect(buttons).toHaveLength(6);
     });
   });
 
@@ -49,6 +49,11 @@ describe("AppDock", () => {
     it("Graphアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
       expect(screen.getByLabelText("Graph")).toBeInTheDocument();
+    });
+
+    it("Agentアイテムを表示する", () => {
+      render(<AppDock {...defaultProps} />);
+      expect(screen.getByLabelText("Agent")).toBeInTheDocument();
     });
 
     it("Settingsアイテムを表示する", () => {
@@ -74,6 +79,9 @@ describe("AppDock", () => {
 
       fireEvent.click(screen.getByLabelText("Graph"));
       expect(handleViewChange).toHaveBeenCalledWith("graph");
+
+      fireEvent.click(screen.getByLabelText("Agent"));
+      expect(handleViewChange).toHaveBeenCalledWith("agent");
 
       fireEvent.click(screen.getByLabelText("Settings"));
       expect(handleViewChange).toHaveBeenCalledWith("settings");

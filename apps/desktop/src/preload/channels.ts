@@ -131,6 +131,17 @@ export const IPC_CHANNELS = {
   SLIDE_STRUCTURE_CHANGED: "slide:structureChanged",
   SLIDE_SYNC_STATUS_CHANGED: "slide:syncStatusChanged",
   SLIDE_EXECUTION_PROGRESS: "slide:executionProgress",
+
+  // Agent operations
+  AGENT_GET_SKILLS: "agent:get-skills",
+  AGENT_GET_SKILL_DETAIL: "agent:get-skill-detail",
+  AGENT_EXECUTE: "agent:execute",
+  AGENT_ABORT: "agent:abort",
+  AGENT_GET_STATUS: "agent:get-status",
+  AGENT_STATUS_CHANGED: "agent:status-changed",
+  AGENT_STREAM_CHUNK: "agent:stream-chunk",
+  AGENT_STREAM_END: "agent:stream-end",
+  AGENT_STREAM_ERROR: "agent:stream-error",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -227,6 +238,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SLIDE_GET_SYNC_STATUS,
   IPC_CHANNELS.SLIDE_MANUAL_SYNC,
   IPC_CHANNELS.SLIDE_CANCEL_EXECUTION,
+  // Agent channels
+  IPC_CHANNELS.AGENT_GET_SKILLS,
+  IPC_CHANNELS.AGENT_GET_SKILL_DETAIL,
+  IPC_CHANNELS.AGENT_EXECUTE,
+  IPC_CHANNELS.AGENT_ABORT,
+  IPC_CHANNELS.AGENT_GET_STATUS,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -247,4 +264,9 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SLIDE_STRUCTURE_CHANGED,
   IPC_CHANNELS.SLIDE_SYNC_STATUS_CHANGED,
   IPC_CHANNELS.SLIDE_EXECUTION_PROGRESS,
+  // Agent channels
+  IPC_CHANNELS.AGENT_STATUS_CHANGED,
+  IPC_CHANNELS.AGENT_STREAM_CHUNK,
+  IPC_CHANNELS.AGENT_STREAM_END,
+  IPC_CHANNELS.AGENT_STREAM_ERROR,
 ];

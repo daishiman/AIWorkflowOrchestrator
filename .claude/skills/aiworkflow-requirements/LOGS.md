@@ -29,4 +29,18 @@
 
 ---
 
+### 2026-01-10 - agent-dashboard-foundation Phase 12
+
+- **結果**: success
+- **Task**: AGENT-001 Phase 12 システム仕様書更新
+- **更新内容**:
+  - `references/api-endpoints.md`: Agent Dashboard IPCチャネル（9チャネル）追加
+  - `references/architecture-patterns.md`: Zustand Sliceパターン、agentSlice詳細追加
+  - `references/ui-ux-navigation.md`: AppDockナビゲーション、Agentメニュー仕様追加
+  - `references/interfaces-agent-sdk.md`: Skill Dashboard型定義追加
+- **型定義追加**: Skill, SkillDetail, Anchor, AgentState, AgentActions
+- **備考**: エージェントダッシュボード基盤のUI・状態管理・IPC設計を文書化
+
+---
+
 （ログエントリはここに追記されます）

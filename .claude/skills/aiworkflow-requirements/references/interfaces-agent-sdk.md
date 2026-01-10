@@ -315,6 +315,95 @@ interface SessionContext {
 
 ---
 
+---
+
+## Skill Dashboard 型定義
+
+Agent Dashboard機能で使用する型定義。Claude Agent SDKとは独立した、スキル管理用の型。
+
+**実装ファイル**: `apps/desktop/src/renderer/store/slices/agentSlice.ts`
+
+### Skill型
+
+スキルの基本情報を表す。
+
+| プロパティ    | 型         | 必須 | 説明                   |
+| ------------- | ---------- | ---- | ---------------------- |
+| `id`          | `string`   | ✓    | 一意識別子             |
+| `name`        | `string`   | ✓    | スキル名               |
+| `description` | `string`   | ✓    | 説明文                 |
+| `path`        | `string`   | ✓    | スキルファイルパス     |
+| `triggers`    | `string[]` | ✓    | トリガーキーワード     |
+| `category`    | `string`   | -    | カテゴリ（任意）       |
+
+### SkillDetail型
+
+スキルの詳細情報（Skillを継承）。
+
+| プロパティ      | 型         | 必須 | 説明                   |
+| --------------- | ---------- | ---- | ---------------------- |
+| `anchors`       | `Anchor[]` | ✓    | アンカー情報           |
+| `workflow`      | `string`   | -    | ワークフロー定義       |
+| `bestPractices` | `string[]` | -    | ベストプラクティス     |
+
+### Anchor型
+
+スキルのアンカー情報（参照文献と適用方法）。
+
+| プロパティ    | 型       | 必須 | 説明               |
+| ------------- | -------- | ---- | ------------------ |
+| `source`      | `string` | ✓    | 参照元（書籍等）   |
+| `application` | `string` | ✓    | 適用方法           |
+| `purpose`     | `string` | ✓    | 目的               |
+
+### AgentExecutionStatus型
+
+エージェント実行状態を表す列挙型。
+
+| 値          | 説明                   |
+| ----------- | ---------------------- |
+| `idle`      | 待機中                 |
+| `executing` | 実行中                 |
+| `completed` | 完了                   |
+| `error`     | エラー                 |
+| `aborted`   | 中断                   |
+
+### AgentState型
+
+Zustand agentSliceの状態インターフェース。
+
+| プロパティ           | 型                      | 説明               |
+| -------------------- | ----------------------- | ------------------ |
+| `skills`             | `Skill[]`               | スキル一覧         |
+| `selectedSkill`      | `Skill \| null`         | 選択中のスキル     |
+| `skillFilter`        | `string`                | フィルター文字列   |
+| `skillCategory`      | `string \| null`        | カテゴリフィルター |
+| `executionStatus`    | `AgentExecutionStatus`  | 実行状態           |
+| `currentExecutionId` | `string \| null`        | 実行ID             |
+| `executionOutput`    | `string[]`              | 実行出力           |
+| `isLoading`          | `boolean`               | ローディング状態   |
+| `error`              | `string \| null`        | エラーメッセージ   |
+
+### AgentActions型
+
+Zustand agentSliceのアクションインターフェース。
+
+| アクション           | 引数                           | 説明             |
+| -------------------- | ------------------------------ | ---------------- |
+| `setSkills`          | `skills: Skill[]`              | スキル一覧設定   |
+| `selectSkill`        | `skill: Skill \| null`         | スキル選択       |
+| `setSkillFilter`     | `filter: string`               | フィルター設定   |
+| `setSkillCategory`   | `category: string \| null`     | カテゴリ設定     |
+| `setExecutionStatus` | `status: AgentExecutionStatus` | 実行状態設定     |
+| `setCurrentExecutionId` | `id: string \| null`        | 実行ID設定       |
+| `appendOutput`       | `output: string`               | 出力追加         |
+| `clearExecution`     | -                              | 実行クリア       |
+| `setLoading`         | `isLoading: boolean`           | ローディング設定 |
+| `setError`           | `error: string \| null`        | エラー設定       |
+| `resetAgentState`    | -                              | 状態リセット     |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント         | パス                                                                             |
@@ -323,3 +412,4 @@ interface SessionContext {
 | APIリファレンス      | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`      |
 | Claude Agent SDKスキル | `.claude/skills/claude-agent-sdk/SKILL.md`                                      |
 | LLMインターフェース  | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`            |
+| Skill Dashboard実装ガイド | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |

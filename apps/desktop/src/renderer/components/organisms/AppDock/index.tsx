@@ -3,7 +3,13 @@ import clsx from "clsx";
 import { Icon, type IconName } from "../../atoms/Icon";
 import { NavIcon } from "../../molecules/NavIcon";
 
-export type ViewType = "dashboard" | "editor" | "chat" | "graph" | "settings";
+export type ViewType =
+  | "dashboard"
+  | "editor"
+  | "chat"
+  | "graph"
+  | "settings"
+  | "agent";
 
 export interface AppDockProps {
   currentView: ViewType;
@@ -28,6 +34,7 @@ const navItems: NavItem[] = [
   { id: "editor", icon: "folder-tree", label: "Editor", shortcut: "Cmd+2" },
   { id: "chat", icon: "message-circle", label: "Chat", shortcut: "Cmd+3" },
   { id: "graph", icon: "network", label: "Graph", shortcut: "Cmd+4" },
+  { id: "agent", icon: "bot", label: "Agent", shortcut: "Cmd+5" },
   { id: "settings", icon: "user", label: "Settings", shortcut: "Cmd+," },
 ];
 

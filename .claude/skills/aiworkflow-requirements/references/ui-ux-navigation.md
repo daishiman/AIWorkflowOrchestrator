@@ -1,4 +1,4 @@
-# ナビゲーションUI設計（ChatView）
+# ナビゲーションUI設計
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
@@ -6,6 +6,74 @@
 ---
 
 ## 概要
+
+デスクトップアプリにおけるナビゲーションUI設計を定義する。
+AppDockによるメインナビゲーションと、各View内のサブナビゲーションを提供する。
+
+---
+
+## AppDockナビゲーション
+
+### 概要
+
+左サイドバーに配置されたメインナビゲーション。ViewType切り替えによる画面遷移を提供する。
+
+**実装場所**: `apps/desktop/src/renderer/components/AppDock/index.tsx`
+
+### メニュー項目一覧
+
+| 項目       | ViewType     | アイコン       | 説明                     |
+| ---------- | ------------ | -------------- | ------------------------ |
+| Dashboard  | `dashboard`  | `LayoutDashboard` | ダッシュボード        |
+| Editor     | `editor`     | `FileText`     | ファイルエディター       |
+| Chat       | `chat`       | `MessageSquare`| AIチャット               |
+| Graph      | `graph`      | `Network`      | ナレッジグラフ           |
+| Agent      | `agent`      | `Bot`          | スキル管理・エージェント実行 |
+| Settings   | `settings`   | `Settings`     | 設定画面                 |
+
+### Agent メニュー仕様
+
+| 要素             | 仕様                        |
+| ---------------- | --------------------------- |
+| 配置             | AppDock メインメニュー      |
+| アイコン         | Lucide Icons `Bot`          |
+| ラベル           | "Agent"                     |
+| ViewType         | `agent`                     |
+| 遷移先コンポーネント | `AgentView`             |
+| 実装ファイル     | `views/AgentView/index.tsx` |
+
+**実装箇所**:
+
+| ファイル                      | 変更内容                         |
+| ----------------------------- | -------------------------------- |
+| `components/AppDock/index.tsx`| navItemsにAgent項目追加          |
+| `store/slices/uiSlice.ts`     | ViewTypeに"agent"追加            |
+| `App.tsx`                     | renderViewにAgentViewケース追加  |
+| `views/AgentView/index.tsx`   | AgentViewコンポーネント実装      |
+
+### ViewType型定義
+
+| ViewType     | 説明                     |
+| ------------ | ------------------------ |
+| `dashboard`  | ダッシュボード画面       |
+| `editor`     | エディター画面           |
+| `chat`       | チャット画面             |
+| `graph`      | グラフ画面               |
+| `agent`      | エージェント画面         |
+| `settings`   | 設定画面                 |
+
+### navItems配列構造
+
+| プロパティ | 型         | 説明                   |
+| ---------- | ---------- | ---------------------- |
+| `id`       | `ViewType` | 一意識別子             |
+| `icon`     | `LucideIcon` | Lucideアイコン       |
+| `label`    | `string`   | メニューラベル         |
+| `onClick`  | `function` | クリック時のsetView呼び出し |
+
+---
+
+## ChatViewナビゲーション
 
 ChatViewには履歴ページへの導線として、ヘッダー右上にナビゲーションボタンを配置する。
 
