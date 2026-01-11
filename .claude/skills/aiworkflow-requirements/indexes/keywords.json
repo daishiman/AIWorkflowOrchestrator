@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-11T11:39:45.643Z",
-  "totalKeywords": 655,
+  "generated": "2026-01-11T21:48:53.834Z",
+  "totalKeywords": 659,
   "keywords": {
     "API": [
       "api-core.md",
@@ -106,6 +106,7 @@
       "api-endpoints.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
@@ -167,6 +168,7 @@
       "interfaces-converter.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "security-implementation.md",
@@ -197,7 +199,8 @@
       "api-internal-chunk-search.md",
       "database-architecture.md",
       "interfaces-rag-community-detection.md",
-      "interfaces-rag-community-summarization.md"
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md"
     ],
     "データベース層": [
       "api-internal-chunk-search.md"
@@ -296,6 +299,7 @@
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
       "interfaces-rag-file-selection.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag-search.md",
       "interfaces-rag.md",
@@ -491,7 +495,8 @@
       "interfaces-agent-sdk.md",
       "interfaces-llm.md",
       "interfaces-rag-community-detection.md",
-      "interfaces-rag-community-summarization.md"
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md"
     ],
     "実装": [
       "architecture-rag.md",
@@ -512,6 +517,10 @@
       "claude-code-agents-workflow.md",
       "ui-ux-llm-selector.md"
     ],
+    "クエリ分類器": [
+      "architecture-rag.md",
+      "interfaces-rag-search.md"
+    ],
     "コミュニティ検出サービス": [
       "architecture-rag.md"
     ],
@@ -520,6 +529,15 @@
     ],
     "Algorithm": [
       "architecture-rag.md"
+    ],
+    "GraphRAG": [
+      "architecture-rag.md",
+      "database-implementation.md",
+      "interfaces-rag-graphrag-query.md"
+    ],
+    "クエリサービス": [
+      "architecture-rag.md",
+      "interfaces-rag-graphrag-query.md"
     ],
     "Agent": [
       "claude-code-agents-spec.md",
@@ -717,6 +735,7 @@
       "claude-code-overview.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "ui-ux-history-panel.md"
     ],
@@ -951,9 +970,6 @@
       "database-implementation.md"
     ],
     "テーブル群": [
-      "database-implementation.md"
-    ],
-    "GraphRAG": [
       "database-implementation.md"
     ],
     "基盤": [
@@ -1337,6 +1353,7 @@
       "interfaces-converter.md",
       "interfaces-core.md",
       "interfaces-llm.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "interfaces-workflow.md"
@@ -1354,6 +1371,7 @@
       "interfaces-agent-sdk.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md"
     ],
@@ -1384,6 +1402,9 @@
       "interfaces-agent-sdk.md"
     ],
     "Dashboard": [
+      "interfaces-agent-sdk.md"
+    ],
+    "AGENT": [
       "interfaces-agent-sdk.md"
     ],
     "ModifierSkill": [
@@ -1565,16 +1586,19 @@
     "要件": [
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md"
     ],
     "インターフェース定義": [
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md"
     ],
     "実装ガイドライン": [
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md"
     ],
     "コミュニティ要約インターフェース仕様": [
@@ -2131,6 +2155,9 @@
       "ui-ux-llm-selector.md"
     ],
     "統合手順": [
+      "ui-ux-history-panel.md"
+    ],
+    "統合ステータス": [
       "ui-ux-history-panel.md"
     ],
     "選択機能": [

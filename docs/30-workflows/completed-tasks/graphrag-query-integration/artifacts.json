@@ -1,0 +1,107 @@
+{
+  "taskId": "CONV-08-04",
+  "taskName": "graphrag-query-integration",
+  "featureName": "GraphRAGクエリへのコミュニティ要約統合",
+  "status": "not_started",
+  "createdAt": "2026-01-11T00:00:00.000Z",
+  "lastUpdated": "2026-01-11T00:00:00.000Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "prerequisite": [
+      {
+        "taskId": "CONV-08-02",
+        "taskName": "Leidenコミュニティ検出",
+        "status": "completed"
+      },
+      {
+        "taskId": "CONV-08-03",
+        "taskName": "コミュニティ要約生成",
+        "status": "completed"
+      }
+    ],
+    "subsequent": [
+      {
+        "taskId": "CONV-08-05",
+        "taskName": "コミュニティ可視化UI",
+        "status": "not_started"
+      }
+    ]
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-rag-community-summarization.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-rag-community-detection.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-rag.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-rag-search.md"
+    ],
+    "relatedDocs": [
+      "docs/30-workflows/completed-tasks/community-summarization/outputs/phase-12/implementation-guide.md"
+    ]
+  }
+}
