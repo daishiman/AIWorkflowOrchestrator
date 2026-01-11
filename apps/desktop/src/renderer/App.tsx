@@ -11,6 +11,7 @@ import { GraphView } from "./views/GraphView";
 import { SettingsView } from "./views/SettingsView";
 import { AgentView } from "./views/AgentView";
 import { ChatHistoryView } from "./views/ChatHistoryView";
+import { HistoryPage } from "./pages/HistoryPage";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import type { ViewType } from "./components/organisms/AppDock";
 
@@ -106,6 +107,15 @@ function App(): JSX.Element {
                     エクスポート
                   </button>
                 </div>
+              </div>
+            }
+          />
+          {/* バージョン履歴ページ */}
+          <Route
+            path="/history/:fileId"
+            element={
+              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
+                <HistoryPage />
               </div>
             }
           />
