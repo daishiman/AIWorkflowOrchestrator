@@ -378,3 +378,12 @@
 - [ ] (なし)
 
 ---
+
+## [2026-01-11T22:39:12.186Z]
+
+- **Agent**: unknown
+- **Phase**: unknown
+- **Result**: ✓ 成功
+- **Notes**: GraphRAGQueryService実装内容追加: interfaces-rag-graphrag-query.md新規作成、architecture-rag.md更新、topic-map.md更新、SKILL.md v6.4.0
+
+---

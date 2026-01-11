@@ -1,9 +1,9 @@
 /**
  * @file 検索モジュール
- * @description CONV-07-01/02: クエリ分類器・キーワード検索のエクスポート
+ * @description CONV-07-01: クエリ分類器, CONV-07-02: キーワード検索, CONV-08-04: GraphRAGクエリ統合
  */
 
-// Types
+// Query Classifier Types
 export {
   queryTypeSchema,
   searchWeightsSchema,
@@ -17,9 +17,11 @@ export {
   type IQueryClassifier,
 } from "./types";
 
-// Implementations
+// Query Classifier Implementations
 export { RuleBasedQueryClassifier } from "./rule-based-query-classifier";
 export { LLMQueryClassifier } from "./llm-query-classifier";
+
+// Keyword Search Strategy (CONV-07-02)
 export {
   KeywordSearchStrategy,
   MAX_QUERY_LENGTH,
@@ -29,3 +31,18 @@ export {
   type KeywordNearOptions,
   type IKeywordSearchStrategy,
 } from "./keyword-search-strategy";
+
+// GraphRAG Query Service (CONV-08-04)
+export { GraphRAGQueryService } from "./graphrag-query-service";
+export type {
+  IGraphRAGQueryService,
+  GraphRAGQueryServiceDependencies,
+  GraphRAGQueryOptions,
+  GraphRAGQueryResponse,
+  GraphRAGQueryError,
+  CommunitySummaryReference,
+  ChunkReference,
+  EntityReference,
+  SearchStrategy,
+  QueryMetadata,
+} from "./graphrag-query-service";
