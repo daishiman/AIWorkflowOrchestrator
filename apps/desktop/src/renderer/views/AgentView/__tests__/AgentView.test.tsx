@@ -2,22 +2,43 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { AgentView } from "../index";
 
+// Mock skillAPI
+vi.mock("../../../preload", () => ({
+  skillAPI: {
+    listImported: vi.fn().mockResolvedValue({ success: true, data: [] }),
+    listAvailable: vi.fn().mockResolvedValue({ success: true, data: [] }),
+    import: vi.fn().mockResolvedValue({ success: true }),
+    remove: vi.fn().mockResolvedValue({ success: true }),
+    getDetail: vi.fn().mockResolvedValue({ success: true, data: null }),
+  },
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // AgentSlice
   skills: [],
+  availableSkills: [],
+  importedSkillIds: [],
   selectedSkill: null,
   skillFilter: "",
   skillCategory: null,
+  isImportDialogOpen: false,
+  toastMessage: null,
   executionStatus: "idle" as const,
   currentExecutionId: null,
   executionOutput: [],
   isLoading: false,
   error: null,
   setSkills: vi.fn(),
+  setAvailableSkills: vi.fn(),
+  setImportedSkillIds: vi.fn(),
   selectSkill: vi.fn(),
   setSkillFilter: vi.fn(),
   setSkillCategory: vi.fn(),
+  openImportDialog: vi.fn(),
+  closeImportDialog: vi.fn(),
+  showToast: vi.fn(),
+  clearToast: vi.fn(),
   setExecutionStatus: vi.fn(),
   setCurrentExecutionId: vi.fn(),
   appendOutput: vi.fn(),
@@ -56,9 +77,7 @@ describe("AgentView", () => {
 
     it("should display description text", () => {
       render(<AgentView />);
-      expect(
-        screen.getByText("エージェント機能の管理と実行"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("スキルの管理と実行")).toBeInTheDocument();
     });
 
     it("should have h1 heading", () => {
@@ -76,7 +95,7 @@ describe("AgentView", () => {
       ) => selector(createMockState({ isLoading: true }))) as never);
 
       render(<AgentView />);
-      expect(screen.getByText("読み込み中...")).toBeInTheDocument();
+      expect(screen.getByText("スキルを読み込み中...")).toBeInTheDocument();
     });
   });
 
@@ -84,7 +103,7 @@ describe("AgentView", () => {
     it("should display placeholder message when not loading", () => {
       render(<AgentView />);
       expect(
-        screen.getByText("エージェント機能は準備中です"),
+        screen.getByText("スキルがインポートされていません"),
       ).toBeInTheDocument();
     });
   });
@@ -365,7 +384,7 @@ describe("AgentView", () => {
       ) => selector(createMockState({ isLoading: true }))) as never);
 
       const { rerender } = render(<AgentView />);
-      expect(screen.getByText("読み込み中...")).toBeInTheDocument();
+      expect(screen.getByText("スキルを読み込み中...")).toBeInTheDocument();
 
       // Rerender with content
       const mockSkills = [

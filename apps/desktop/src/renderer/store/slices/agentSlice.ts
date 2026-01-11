@@ -1,47 +1,5 @@
 import { StateCreator } from "zustand";
-
-/**
- * スキルのアンカー情報
- * 参照文献と適用方法を定義
- */
-export interface Anchor {
-  /** 参照元（書籍、ドキュメント等） */
-  source: string;
-  /** 適用方法 */
-  application: string;
-  /** 目的 */
-  purpose: string;
-}
-
-/**
- * スキル基本情報
- */
-export interface Skill {
-  /** 一意識別子 */
-  id: string;
-  /** スキル名 */
-  name: string;
-  /** 説明文 */
-  description: string;
-  /** スキルファイルパス */
-  path: string;
-  /** トリガーキーワード */
-  triggers: string[];
-  /** カテゴリ（任意） */
-  category?: string;
-}
-
-/**
- * スキル詳細情報（Skill拡張）
- */
-export interface SkillDetail extends Skill {
-  /** アンカー情報 */
-  anchors: Anchor[];
-  /** ワークフロー定義（任意） */
-  workflow?: string;
-  /** ベストプラクティス（任意） */
-  bestPractices?: string[];
-}
+import type { Skill, SkillCategory } from "@repo/shared/types/skill";
 
 /**
  * エージェント実行状態
@@ -58,14 +16,22 @@ export type AgentExecutionStatus =
  */
 export interface AgentState {
   // スキル関連
-  /** スキル一覧 */
+  /** スキル一覧（インポート済み） */
   skills: Skill[];
+  /** 利用可能なスキル一覧（インポート用） */
+  availableSkills: Skill[];
+  /** インポート済みスキルID一覧 */
+  importedSkillIds: string[];
   /** 選択中のスキル */
   selectedSkill: Skill | null;
   /** スキルフィルター文字列 */
   skillFilter: string;
   /** スキルカテゴリフィルター */
-  skillCategory: string | null;
+  skillCategory: SkillCategory | null;
+  /** インポートダイアログ表示状態 */
+  isImportDialogOpen: boolean;
+  /** トーストメッセージ */
+  toastMessage: { type: "success" | "error"; message: string } | null;
 
   // 実行関連
   /** 実行状態 */
@@ -89,12 +55,24 @@ export interface AgentActions {
   // スキル操作
   /** スキル一覧を設定 */
   setSkills: (skills: Skill[]) => void;
+  /** 利用可能スキル一覧を設定 */
+  setAvailableSkills: (skills: Skill[]) => void;
+  /** インポート済みスキルIDを設定 */
+  setImportedSkillIds: (ids: string[]) => void;
   /** スキルを選択 */
   selectSkill: (skill: Skill | null) => void;
   /** フィルター文字列を設定 */
   setSkillFilter: (filter: string) => void;
   /** カテゴリフィルターを設定 */
-  setSkillCategory: (category: string | null) => void;
+  setSkillCategory: (category: SkillCategory | null) => void;
+  /** インポートダイアログを開く */
+  openImportDialog: () => void;
+  /** インポートダイアログを閉じる */
+  closeImportDialog: () => void;
+  /** トーストを表示 */
+  showToast: (type: "success" | "error", message: string) => void;
+  /** トーストをクリア */
+  clearToast: () => void;
 
   // 実行操作
   /** 実行状態を設定 */
@@ -126,9 +104,13 @@ export interface AgentSlice extends AgentState, AgentActions {}
 const initialAgentState: AgentState = {
   // スキル関連
   skills: [],
+  availableSkills: [],
+  importedSkillIds: [],
   selectedSkill: null,
   skillFilter: "",
   skillCategory: null,
+  isImportDialogOpen: false,
+  toastMessage: null,
 
   // 実行関連
   executionStatus: "idle",
@@ -150,13 +132,29 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   ...initialAgentState,
 
   // スキル操作
-  setSkills: (skills) => set({ skills }),
+  setSkills: (skills) =>
+    set({
+      skills,
+      importedSkillIds: skills.map((s) => s.id),
+    }),
+
+  setAvailableSkills: (skills) => set({ availableSkills: skills }),
+
+  setImportedSkillIds: (ids) => set({ importedSkillIds: ids }),
 
   selectSkill: (skill) => set({ selectedSkill: skill }),
 
   setSkillFilter: (filter) => set({ skillFilter: filter }),
 
   setSkillCategory: (category) => set({ skillCategory: category }),
+
+  openImportDialog: () => set({ isImportDialogOpen: true }),
+
+  closeImportDialog: () => set({ isImportDialogOpen: false }),
+
+  showToast: (type, message) => set({ toastMessage: { type, message } }),
+
+  clearToast: () => set({ toastMessage: null }),
 
   // 実行操作
   setExecutionStatus: (status) => set({ executionStatus: status }),

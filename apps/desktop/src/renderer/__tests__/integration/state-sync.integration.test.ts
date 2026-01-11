@@ -27,9 +27,11 @@ describe("State Sync - agent slice", () => {
       const skill = {
         id: "skill-1",
         name: "Persistent Skill",
+        slug: "persistent-skill",
         description: "Should persist",
         path: "/path",
         triggers: ["test"],
+        anchors: [],
       };
 
       // Set up in agent view
@@ -79,9 +81,11 @@ describe("State Sync - agent slice", () => {
         {
           id: "skill-1",
           name: "Test",
+          slug: "test",
           description: "Test",
           path: "/path",
           triggers: [],
+          anchors: [],
         },
       ]);
       useAppStore.getState().setSkillFilter("test");
@@ -96,9 +100,11 @@ describe("State Sync - agent slice", () => {
       const skill = {
         id: "skill-1",
         name: "Stable Skill",
+        slug: "stable-skill",
         description: "Should not change",
         path: "/path",
         triggers: ["stable"],
+        anchors: [],
       };
 
       // Set up agent state
@@ -133,9 +139,11 @@ describe("State Sync - agent slice", () => {
         {
           id: "skill-1",
           name: "Test",
+          slug: "test",
           description: "Test",
           path: "/path",
           triggers: [],
+          anchors: [],
         },
       ]);
       useAppStore.getState().setExecutionStatus("executing");
@@ -154,9 +162,11 @@ describe("State Sync - agent slice", () => {
       const skill = {
         id: "skill-1",
         name: "Preserved Skill",
+        slug: "preserved-skill",
         description: "Should remain",
         path: "/path",
         triggers: [],
+        anchors: [],
       };
 
       // Set up state
@@ -187,9 +197,11 @@ describe("State Sync - agent slice", () => {
         {
           id: "skill-1",
           name: "Concurrent",
+          slug: "concurrent",
           description: "Test",
           path: "/path",
           triggers: [],
+          anchors: [],
         },
       ]);
 
@@ -213,33 +225,39 @@ describe("State Sync - agent slice", () => {
         {
           id: "s1",
           name: "Skill 1",
+          slug: "skill-1",
           description: "D1",
           path: "/p1",
           triggers: [],
+          anchors: [],
         },
         {
           id: "s2",
           name: "Skill 2",
+          slug: "skill-2",
           description: "D2",
           path: "/p2",
           triggers: [],
+          anchors: [],
         },
       ]);
       useAppStore.getState().selectSkill({
         id: "s1",
         name: "Skill 1",
+        slug: "skill-1",
         description: "D1",
         path: "/p1",
         triggers: [],
+        anchors: [],
       });
       useAppStore.getState().setSkillFilter("Skill");
-      useAppStore.getState().setSkillCategory("test");
+      useAppStore.getState().setSkillCategory("testing");
 
       // Verify all updates applied
       expect(useAppStore.getState().skills).toHaveLength(2);
       expect(useAppStore.getState().selectedSkill?.id).toBe("s1");
       expect(useAppStore.getState().skillFilter).toBe("Skill");
-      expect(useAppStore.getState().skillCategory).toBe("test");
+      expect(useAppStore.getState().skillCategory).toBe("testing");
     });
   });
 

@@ -143,6 +143,13 @@ export const IPC_CHANNELS = {
   AGENT_STREAM_END: "agent:stream-end",
   AGENT_STREAM_ERROR: "agent:stream-error",
 
+  // Skill management operations
+  SKILL_LIST_AVAILABLE: "skill:list-available",
+  SKILL_LIST_IMPORTED: "skill:list-imported",
+  SKILL_IMPORT: "skill:import",
+  SKILL_REMOVE: "skill:remove",
+  SKILL_GET_DETAIL: "skill:get-detail",
+
   // History operations
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
@@ -250,6 +257,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_EXECUTE,
   IPC_CHANNELS.AGENT_ABORT,
   IPC_CHANNELS.AGENT_GET_STATUS,
+  // Skill management channels
+  IPC_CHANNELS.SKILL_LIST_AVAILABLE,
+  IPC_CHANNELS.SKILL_LIST_IMPORTED,
+  IPC_CHANNELS.SKILL_IMPORT,
+  IPC_CHANNELS.SKILL_REMOVE,
+  IPC_CHANNELS.SKILL_GET_DETAIL,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,

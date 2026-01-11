@@ -62,9 +62,11 @@ describe("Navigation Integration - agent view", () => {
         {
           id: "skill-1",
           name: "Test Skill",
+          slug: "test-skill",
           description: "Description",
           path: "/path",
           triggers: ["test"],
+          anchors: [],
         },
       ]);
       useAppStore.getState().setSkillFilter("test");
@@ -86,9 +88,11 @@ describe("Navigation Integration - agent view", () => {
       const skill = {
         id: "skill-1",
         name: "Test Skill",
+        slug: "test-skill",
         description: "Description",
         path: "/path",
         triggers: ["test"],
+        anchors: [],
       };
 
       useAppStore.getState().setCurrentView("agent");
