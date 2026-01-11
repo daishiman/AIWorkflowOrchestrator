@@ -137,8 +137,9 @@ node scripts/list-specs.mjs --topics
 | DiskANNベクトル検索アーキテクチャ | L158 |
 | オフライン・同期アーキテクチャ | L247 |
 | Desktop状態管理 | L278 |
-| エンティティ抽出サービス (NER) | L415 |
-| コミュニティ検出サービス (Leiden Algorithm) | L489 |
+| クエリ分類器 | L415 |
+| エンティティ抽出サービス (NER) | L459 |
+| コミュニティ検出サービス (Leiden Algorithm) | L533 |
 
 ---
 
@@ -306,7 +307,8 @@ node scripts/list-specs.mjs --topics
 | ユーティリティ関数 | L116 |
 | 型ガード | L131 |
 | バリデーション | L141 |
-| 関連ドキュメント | L155 |
+| クエリ分類器 | L155 |
+| 関連ドキュメント | L175 |
 
 ### references/interfaces-rag.md
 

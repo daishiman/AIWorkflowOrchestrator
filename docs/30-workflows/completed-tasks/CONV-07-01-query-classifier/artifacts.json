@@ -1,0 +1,241 @@
+{
+  "taskId": "CONV-07-01",
+  "taskName": "クエリ分類器実装",
+  "status": "completed",
+  "createdAt": "2026-01-10T00:00:00.000Z",
+  "lastUpdated": "2026-01-11T00:00:00.000Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design.md",
+          "description": "設計書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/types.test.ts",
+          "description": "型スキーマテスト"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/rule-based-query-classifier.test.ts",
+          "description": "ルールベース分類器テスト"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/llm-query-classifier.test.ts",
+          "description": "LLMベース分類器テスト"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/query-classifier.integration.test.ts",
+          "description": "統合テスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-report.md",
+          "description": "テスト作成レポート"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/types.ts",
+          "description": "型定義・スキーマ"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/rule-based-query-classifier.ts",
+          "description": "ルールベース分類器実装"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/llm-query-classifier.ts",
+          "description": "LLMベース分類器実装"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/index.ts",
+          "description": "エクスポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-report.md",
+          "description": "実装レポート"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/boundary.test.ts",
+          "description": "境界値テスト"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/error-handling.test.ts",
+          "description": "異常系テスト"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/pattern-coverage.test.ts",
+          "description": "パターン網羅テスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "description": "テスト拡充レポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テストレポート"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "description": "ドキュメント更新記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "parentTask": "CONV-07",
+    "requiredTasks": ["CONV-03-05"]
+  },
+  "deliverables": {
+    "code": [
+      "packages/shared/src/services/search/types.ts",
+      "packages/shared/src/services/search/query-classifier.ts",
+      "packages/shared/src/services/search/llm-query-classifier.ts",
+      "packages/shared/src/services/search/rule-based-query-classifier.ts"
+    ],
+    "tests": [
+      "packages/shared/src/services/search/__tests__/query-classifier.test.ts"
+    ],
+    "docs": [
+      "docs/30-workflows/CONV-07-01-query-classifier/outputs/phase-12/implementation-guide.md"
+    ]
+  }
+}
