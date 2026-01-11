@@ -20,6 +20,7 @@ const { mockSkills, mockSkillAPI } = vi.hoisted(() => {
       triggers: ["tdd"],
       anchors: [],
       category: "testing",
+      lastModified: new Date("2024-01-01"),
     },
     {
       id: "skill-2",
@@ -30,6 +31,7 @@ const { mockSkills, mockSkillAPI } = vi.hoisted(() => {
       triggers: ["review"],
       anchors: [],
       category: "development",
+      lastModified: new Date("2024-01-01"),
     },
   ];
 

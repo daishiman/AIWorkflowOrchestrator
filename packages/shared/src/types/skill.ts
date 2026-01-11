@@ -173,15 +173,3 @@ export interface RemoveResult {
   /** 実際に削除されたか */
   removed: boolean;
 }
-
-/**
- * IPCエラー
- */
-export interface IPCError {
-  /** エラーコード */
-  code: "VALIDATION_ERROR" | "NOT_FOUND" | "AUTH_ERROR" | "INTERNAL_ERROR";
-  /** エラーメッセージ */
-  message: string;
-  /** 詳細情報 */
-  details?: unknown;
-}

@@ -26,7 +26,7 @@ export const SkillCard = forwardRef<HTMLButtonElement, SkillCardProps>(
       }
     };
 
-    const getCategoryColorClasses = (category: SkillCategory): string => {
+    const getCategoryColorClasses = (category: string): string => {
       const colorMap: Record<string, string> = {
         green: "bg-green-500/20 text-green-400",
         blue: "bg-blue-500/20 text-blue-400",
@@ -36,7 +36,8 @@ export const SkillCard = forwardRef<HTMLButtonElement, SkillCardProps>(
         yellow: "bg-yellow-500/20 text-yellow-400",
         gray: "bg-gray-500/20 text-gray-400",
       };
-      const color = SKILL_CATEGORIES[category]?.color || "gray";
+      const color =
+        SKILL_CATEGORIES[category as SkillCategory]?.color || "gray";
       return colorMap[color] || colorMap.gray;
     };
 
@@ -83,7 +84,8 @@ export const SkillCard = forwardRef<HTMLButtonElement, SkillCardProps>(
             <span
               className={`px-2 py-0.5 text-xs rounded-full ${getCategoryColorClasses(skill.category)}`}
             >
-              {SKILL_CATEGORIES[skill.category].label}
+              {SKILL_CATEGORIES[skill.category as SkillCategory]?.label ||
+                skill.category}
             </span>
           )}
         </div>

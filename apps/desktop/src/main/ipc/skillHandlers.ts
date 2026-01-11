@@ -8,15 +8,18 @@
 import { ipcMain, IpcMainInvokeEvent, BrowserWindow } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { SkillService } from "../services/skill/SkillService";
-import { validateIpcSender } from "../infrastructure/security/ipc-validator";
+import {
+  validateIpcSender,
+  toIPCValidationError,
+} from "../infrastructure/security/ipc-validator";
 
 /**
  * スキル管理IPCハンドラーを登録する
- * @param _mainWindow メインウィンドウ（将来的な拡張用）
+ * @param mainWindow メインウィンドウ
  * @param skillService スキルサービスインスタンス
  */
 export function registerSkillHandlers(
-  _mainWindow: BrowserWindow,
+  mainWindow: BrowserWindow,
   skillService: SkillService,
 ): void {
   // skill:list-available - 利用可能なスキルをスキャン
@@ -26,8 +29,13 @@ export function registerSkillHandlers(
       event: IpcMainInvokeEvent,
       args?: { basePath?: string; forceRefresh?: boolean },
     ) => {
-      if (!validateIpcSender(event.sender)) {
-        throw { code: "AUTH_ERROR", message: "Invalid IPC sender" };
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_LIST_AVAILABLE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
       }
       return skillService.scanAvailableSkills(args?.forceRefresh);
     },
@@ -37,8 +45,13 @@ export function registerSkillHandlers(
   ipcMain.handle(
     IPC_CHANNELS.SKILL_LIST_IMPORTED,
     async (event: IpcMainInvokeEvent) => {
-      if (!validateIpcSender(event.sender)) {
-        throw { code: "AUTH_ERROR", message: "Invalid IPC sender" };
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_LIST_IMPORTED,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
       }
       return skillService.getImportedSkills();
     },
@@ -48,8 +61,11 @@ export function registerSkillHandlers(
   ipcMain.handle(
     IPC_CHANNELS.SKILL_IMPORT,
     async (event: IpcMainInvokeEvent, args: { skillIds: string[] }) => {
-      if (!validateIpcSender(event.sender)) {
-        throw { code: "AUTH_ERROR", message: "Invalid IPC sender" };
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_IMPORT, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
       }
       if (!Array.isArray(args?.skillIds)) {
         throw {
@@ -65,8 +81,11 @@ export function registerSkillHandlers(
   ipcMain.handle(
     IPC_CHANNELS.SKILL_REMOVE,
     async (event: IpcMainInvokeEvent, args: { skillId: string }) => {
-      if (!validateIpcSender(event.sender)) {
-        throw { code: "AUTH_ERROR", message: "Invalid IPC sender" };
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_REMOVE, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
       }
       if (typeof args?.skillId !== "string") {
         throw { code: "VALIDATION_ERROR", message: "skillId must be a string" };
@@ -79,8 +98,13 @@ export function registerSkillHandlers(
   ipcMain.handle(
     IPC_CHANNELS.SKILL_GET_DETAIL,
     async (event: IpcMainInvokeEvent, args: { skillId: string }) => {
-      if (!validateIpcSender(event.sender)) {
-        throw { code: "AUTH_ERROR", message: "Invalid IPC sender" };
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_GET_DETAIL,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
       }
       if (typeof args?.skillId !== "string") {
         throw { code: "VALIDATION_ERROR", message: "skillId must be a string" };

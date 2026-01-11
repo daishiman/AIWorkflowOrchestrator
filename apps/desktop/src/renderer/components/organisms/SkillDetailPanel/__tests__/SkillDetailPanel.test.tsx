@@ -12,17 +12,18 @@ const mockSkill: Skill = {
   triggers: ["tdd", "test"],
   anchors: [
     {
-      name: "TDD by Example",
+      source: "TDD by Example",
       application: "Red-Green-Refactor",
       purpose: "テスト駆動開発",
     },
     {
-      name: "Clean Code",
+      source: "Clean Code",
       application: "テスト可読性",
       purpose: "メンテナンス性",
     },
   ],
   category: "testing",
+  lastModified: new Date("2024-01-01"),
 };
 
 describe("SkillDetailPanel", () => {

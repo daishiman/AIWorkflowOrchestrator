@@ -12,6 +12,7 @@ const mockAvailableSkills: Skill[] = [
     path: ".claude/skills/tdd-principles/SKILL.md",
     triggers: ["tdd"],
     anchors: [],
+    lastModified: new Date(),
   },
   {
     id: "skill-2",
@@ -21,6 +22,7 @@ const mockAvailableSkills: Skill[] = [
     path: ".claude/skills/code-review/SKILL.md",
     triggers: ["review"],
     anchors: [],
+    lastModified: new Date(),
   },
 ];
 

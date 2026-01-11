@@ -122,13 +122,13 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
 
   // Extract unique categories from skills
   const availableCategories = useMemo(() => {
-    const categories = new Set<SkillCategory>();
+    const categories = new Set<string>();
     skills.forEach((skill) => {
       if (skill.category) {
         categories.add(skill.category);
       }
     });
-    return Array.from(categories);
+    return Array.from(categories) as SkillCategory[];
   }, [skills]);
 
   // Fetch imported skills on mount
