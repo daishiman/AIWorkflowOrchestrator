@@ -152,6 +152,26 @@ CRAG（Corrective RAG）評価スコア
 
 ---
 
+## クエリ分類器
+
+検索クエリを分類し、最適な検索戦略を選択するコンポーネント。
+
+### IQueryClassifier
+
+| メソッド           | 説明                       |
+| ------------------ | -------------------------- |
+| classify()         | クエリを分類               |
+| getSearchWeights() | タイプに応じた検索重み取得 |
+
+**実装**:
+
+- LLMQueryClassifier: 高精度分類（推奨）
+- RuleBasedQueryClassifier: フォールバック用
+
+**参照**: `packages/shared/src/services/search/`
+
+---
+
 ## 関連ドキュメント
 
 - [RAG・ファイル選択インターフェース](./interfaces-rag.md)

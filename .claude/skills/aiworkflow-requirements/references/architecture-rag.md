@@ -412,6 +412,50 @@ FOREIGN KEY (chunk_id) REFERENCES chunks(id) ON DELETE CASCADE
 
 ---
 
+## クエリ分類器
+
+### 概要
+
+HybridRAG検索パイプラインの入口として、検索クエリを分析し最適な検索戦略を選択するコンポーネント。
+
+### RAGパイプラインにおける位置づけ
+
+```
+クエリ → [クエリ分類器] → 検索重み決定 → Keyword/Semantic/Graph検索 → RRF統合 → 結果
+```
+
+### アーキテクチャ
+
+| 分類器                   | 特性                     | 用途           |
+| ------------------------ | ------------------------ | -------------- |
+| RuleBasedQueryClassifier | 高速、パターンマッチング | フォールバック |
+| LLMQueryClassifier       | 高精度、コンテキスト理解 | 推奨           |
+
+### クエリタイプと検索重み
+
+| タイプ       | 特徴                 | K:S:G          |
+| ------------ | -------------------- | -------------- |
+| local        | 特定情報の検索       | 0.35:0.35:0.30 |
+| global       | 全体概要の把握       | 0.20:0.30:0.50 |
+| relationship | 関係性・比較の質問   | 0.20:0.20:0.60 |
+| hybrid       | 判断困難時のバランス | 0.33:0.33:0.34 |
+
+### 実装ファイル
+
+| 種別         | パス                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| 型定義       | `packages/shared/src/services/search/types.ts`                       |
+| ルールベース | `packages/shared/src/services/search/rule-based-query-classifier.ts` |
+| LLMベース    | `packages/shared/src/services/search/llm-query-classifier.ts`        |
+| テスト       | `packages/shared/src/services/search/__tests__/`                     |
+
+### テスト品質
+
+- **186テストケース**
+- **94.13% Line Coverage**, **92.18% Branch Coverage**, **95.23% Function Coverage**
+
+---
+
 ## エンティティ抽出サービス (NER)
 
 ### 概要
