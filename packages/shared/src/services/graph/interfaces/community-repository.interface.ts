@@ -6,7 +6,7 @@
 
 import type { Result } from "../../../types/rag/result";
 import type { EntityId, CommunityId } from "../../../types/rag/branded";
-import type { Community } from "../types";
+import type { Community, CommunitySummary } from "../types";
 
 /**
  * エンティティ-コミュニティマッピング
@@ -94,4 +94,38 @@ export interface ICommunityRepository {
   addEntityCommunityMappings(
     mappings: readonly EntityCommunityMapping[],
   ): Promise<Result<void, Error>>;
+
+  /**
+   * コミュニティの要約を取得する
+   *
+   * @param communityId コミュニティID
+   * @returns 要約またはnull（Result型）
+   */
+  getSummary(
+    communityId: CommunityId,
+  ): Promise<Result<CommunitySummary | null, Error>>;
+
+  /**
+   * コミュニティの要約を更新または作成する
+   *
+   * @param communityId コミュニティID
+   * @param summary 要約データ
+   * @returns 更新成功の結果（Result型）
+   */
+  updateSummary(
+    communityId: CommunityId,
+    summary: CommunitySummary,
+  ): Promise<Result<void, Error>>;
+
+  /**
+   * 埋め込みベクトルで要約をセマンティック検索する
+   *
+   * @param embedding 検索クエリの埋め込みベクトル
+   * @param options 検索オプション
+   * @returns 類似度順にソートされた要約リスト（Result型）
+   */
+  searchSummariesByEmbedding(
+    embedding: readonly number[],
+    options?: { level?: number; limit?: number },
+  ): Promise<Result<CommunitySummary[], Error>>;
 }

@@ -15,6 +15,8 @@ import { registerWorkspaceHandlers } from "./workspaceHandlers";
 import { registerSearchHandlers } from "./searchHandlers";
 import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
 import { registerLLMHandlers } from "../handlers/llm";
+import { registerHistoryHandlers } from "./historyHandlers";
+import { createHistoryService } from "../services/HistoryService";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -64,6 +66,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Register API Key handlers (always available - local storage only)
   const apiKeyStorage = createApiKeyStorage();
   registerApiKeyHandlers(mainWindow, apiKeyStorage);
+
+  // Register History handlers
+  const historyService = createHistoryService();
+  registerHistoryHandlers(mainWindow, historyService);
 }
 
 // Re-export for menu actions

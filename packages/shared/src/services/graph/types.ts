@@ -538,3 +538,126 @@ export class CommunityDetectionError extends Error {
     this.name = "CommunityDetectionError";
   }
 }
+
+// =============================================================================
+// Community Summarization Types (CONV-08-03)
+// =============================================================================
+
+/**
+ * コミュニティ要約
+ *
+ * @description
+ * LLMによって生成されたコミュニティの要約情報。
+ * グローバルクエリへの回答やセマンティック検索に使用。
+ */
+export interface CommunitySummary {
+  /** 対象コミュニティID */
+  readonly communityId: CommunityId;
+
+  /** コミュニティの階層レベル */
+  readonly level: number;
+
+  /** 要約テキスト */
+  readonly summary: string;
+
+  /** キーワードリスト（検索用） */
+  readonly keywords: readonly string[];
+
+  /** 主要エンティティ名（最大5件） */
+  readonly mainEntities: readonly string[];
+
+  /** 主要関係の説明（最大5件） */
+  readonly mainRelations: readonly string[];
+
+  /** 全体的な傾向（positive/negative/neutral） */
+  readonly sentiment: "positive" | "negative" | "neutral";
+
+  /** 信頼度 (0.0-1.0) */
+  readonly confidence: number;
+
+  /** 要約トークン数 */
+  readonly tokenCount: number;
+
+  /** 埋め込みベクトル（セマンティック検索用） */
+  readonly embedding?: readonly number[];
+
+  /** 作成日時 */
+  readonly createdAt: Date;
+}
+
+/**
+ * コミュニティ要約生成オプション
+ */
+export interface CommunitySummarizationOptions {
+  /** 要約の最大トークン数 (デフォルト: 200) */
+  readonly maxSummaryTokens?: number;
+
+  /** キーワードの最大数 (デフォルト: 10) */
+  readonly maxKeywords?: number;
+
+  /** 子コミュニティの要約を使用 (デフォルト: true) */
+  readonly useChildSummaries?: boolean;
+
+  /** 埋め込みを生成 (デフォルト: true) */
+  readonly generateEmbedding?: boolean;
+
+  /** 並列処理の最大数 (デフォルト: 5) */
+  readonly maxConcurrency?: number;
+
+  /** 要約スタイル (デフォルト: "concise") */
+  readonly summaryStyle?: "detailed" | "concise" | "technical";
+}
+
+/**
+ * コミュニティ一括要約生成結果
+ */
+export interface CommunitySummarizationResult {
+  /** 生成された要約リスト */
+  readonly summaries: readonly CommunitySummary[];
+
+  /** 失敗したコミュニティID */
+  readonly failedCommunities: readonly CommunityId[];
+
+  /** 使用した総トークン数 */
+  readonly totalTokensUsed: number;
+
+  /** 処理時間（ミリ秒） */
+  readonly processingTimeMs: number;
+}
+
+/**
+ * コミュニティ要約エラーコード
+ */
+export enum CommunitySummarizationErrorCode {
+  /** LLM呼び出し失敗 */
+  LLM_GENERATION_FAILED = "LLM_GENERATION_FAILED",
+
+  /** JSONパース失敗 */
+  JSON_PARSE_FAILED = "JSON_PARSE_FAILED",
+
+  /** 埋め込み生成失敗 */
+  EMBEDDING_FAILED = "EMBEDDING_FAILED",
+
+  /** コミュニティが見つからない */
+  COMMUNITY_NOT_FOUND = "COMMUNITY_NOT_FOUND",
+
+  /** グラフデータ読み込み失敗 */
+  GRAPH_DATA_LOAD_FAILED = "GRAPH_DATA_LOAD_FAILED",
+
+  /** DB保存失敗 */
+  DB_SAVE_FAILED = "DB_SAVE_FAILED",
+}
+
+/**
+ * コミュニティ要約エラー
+ */
+export class CommunitySummarizationError extends Error {
+  constructor(
+    message: string,
+    public readonly code: CommunitySummarizationErrorCode,
+    public readonly cause?: Error,
+  ) {
+    super(message);
+    this.name = "CommunitySummarizationError";
+  }
+}

@@ -259,7 +259,21 @@ node scripts/list-specs.mjs --topics
 | 使用例 | L193 |
 | 実装ガイドライン | L229 |
 | 関連ドキュメント | L252 |
-| 変更履歴 | L263 |
+| 変更履歴 | L264 |
+
+### references/interfaces-rag-community-summarization.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 要件 | L26 |
+| 設計 | L51 |
+| インターフェース定義 | L103 |
+| 型定義 | L128 |
+| エラー型 | L175 |
+| 使用例 | L187 |
+| 実装ガイドライン | L248 |
+| 関連ドキュメント | L279 |
+| 変更履歴 | L290 |
 
 ### references/interfaces-rag-file-selection.md
 

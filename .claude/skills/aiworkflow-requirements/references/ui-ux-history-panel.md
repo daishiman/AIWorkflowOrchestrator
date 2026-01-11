@@ -544,7 +544,48 @@ interface PaginationOptions {
 3. **HistoryPage.tsx作成**: 履歴表示ページコンポーネント
 4. **ルーティング設定**: 履歴ページへのルート追加
 
-詳細は `docs/30-workflows/history-ui-components/outputs/phase-12/integration-guide.md` を参照。
+詳細は `docs/30-workflows/history-ui-integration/outputs/phase-12/implementation-guide.md` を参照。
+
+---
+
+## 統合ステータス
+
+### 統合タスク: history-ui-integration
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | history-ui-integration |
+| 統合日 | 2026-01-11 |
+| ステータス | **完了**（HistoryServiceスタブ実装） |
+
+### 実装済み項目
+
+| カテゴリ | ファイル | ステータス |
+|----------|----------|-----------|
+| IPC チャンネル | `apps/desktop/src/preload/channels.ts` | 完了 |
+| preload API | `apps/desktop/src/preload/index.ts` | 完了 |
+| IPC ハンドラー | `apps/desktop/src/main/ipc/historyHandlers.ts` | 完了 |
+| ページコンポーネント | `apps/desktop/src/renderer/pages/HistoryPage.tsx` | 完了 |
+| ルーティング | `apps/desktop/src/renderer/App.tsx` | 完了 |
+| サービス | `apps/desktop/src/main/services/HistoryService.ts` | スタブ実装 |
+
+### テスト結果
+
+| テストファイル | テスト数 | ステータス |
+|---------------|----------|-----------|
+| historyHandlers.test.ts | 22 | PASS |
+| HistoryPage.test.tsx | 18 | PASS |
+| RestoreDialog.test.tsx | 12 | PASS |
+| **合計** | **52** | **全テスト成功** |
+
+### 残課題
+
+| 課題 | 依存関係 | 優先度 |
+|------|----------|--------|
+| HistoryService実DBに統合 | CONV-05-02 | 高 |
+| validateDOMNesting警告修正 | CONV-05-03 | 低 |
+
+詳細: `docs/30-workflows/unassigned-task/task-history-service-db-integration.md`
 
 ---
 
@@ -557,8 +598,8 @@ interface PaginationOptions {
 | デザインシステム | ui-ux-design-system.md            |
 | アクセシビリティ | ui-ux-advanced.md                 |
 | ファイル変換アーキテクチャ | architecture-file-conversion.md |
-| 実装ガイド | docs/30-workflows/history-ui-components/outputs/phase-12/implementation-guide.md |
-| 統合ガイド | docs/30-workflows/history-ui-components/outputs/phase-12/integration-guide.md |
+| 統合実装ガイド | docs/30-workflows/history-ui-integration/outputs/phase-12/implementation-guide.md |
+| 未タスク指示書 | docs/30-workflows/unassigned-task/task-history-service-db-integration.md |
 
 ---
 
@@ -566,5 +607,6 @@ interface PaginationOptions {
 
 | Version | Date       | Changes                      |
 | ------- | ---------- | ---------------------------- |
+| 1.2.0   | 2026-01-11 | 統合ステータスセクション追加（history-ui-integration完了） |
 | 1.1.0   | 2026-01-10 | 実装詳細・型定義・テスト情報を追加 |
 | 1.0.0   | 2026-01-10 | CONV-05-03で初版作成         |
