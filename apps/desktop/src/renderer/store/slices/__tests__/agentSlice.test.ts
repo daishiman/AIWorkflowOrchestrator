@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { createAgentSlice, type AgentSlice, type Skill } from "../agentSlice";
+import { createAgentSlice, type AgentSlice } from "../agentSlice";
+import type { Skill } from "@repo/shared/types/skill";
 
 describe("agentSlice", () => {
   let store: AgentSlice;
@@ -25,18 +26,22 @@ describe("agentSlice", () => {
   const mockSkill: Skill = {
     id: "test-skill-001",
     name: "Test Skill",
+    slug: "test-skill",
     description: "A test skill for unit testing",
     path: "/path/to/skill",
     triggers: ["test", "unit"],
+    anchors: [],
     category: "testing",
   };
 
   const mockSkill2: Skill = {
     id: "test-skill-002",
     name: "Another Skill",
+    slug: "another-skill",
     description: "Another test skill",
     path: "/path/to/another-skill",
     triggers: ["another"],
+    anchors: [],
   };
 
   describe("初期状態", () => {

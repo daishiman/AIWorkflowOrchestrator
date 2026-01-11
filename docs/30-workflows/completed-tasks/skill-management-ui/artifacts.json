@@ -1,0 +1,249 @@
+{
+  "workflow": {
+    "id": "AGENT-002",
+    "name": "skill-management-ui",
+    "description": "AgentView内にスキルインポート・一覧・検索・詳細表示機能を実装し、ユーザーが必要なスキルを選択的にインポートして管理・実行できるようにする",
+    "createdAt": "2026-01-10",
+    "status": "pending",
+    "totalPhases": 13
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    {
+      "phase": 13,
+      "name": "PR作成・CI確認",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    }
+  ],
+  "dependencies": {
+    "requires": ["AGENT-001"],
+    "parallelWith": ["AGENT-003"],
+    "blocksFor": ["AGENT-004"]
+  },
+  "expectedArtifacts": {
+    "phase-1": [
+      "outputs/phase-1/requirements.md",
+      "outputs/phase-1/acceptance-criteria.md",
+      "outputs/phase-1/wireframes.md"
+    ],
+    "phase-2": [
+      "outputs/phase-2/design.md",
+      "outputs/phase-2/component-structure.md",
+      "outputs/phase-2/type-definitions.md",
+      "outputs/phase-2/ipc-api.md",
+      "outputs/phase-2/state-management.md"
+    ],
+    "phase-3": [
+      "outputs/phase-3/requirements-review.md",
+      "outputs/phase-3/design-review.md",
+      "outputs/phase-3/accessibility-review.md",
+      "outputs/phase-3/integration-test-review.md",
+      "outputs/phase-3/security-review.md",
+      "outputs/phase-3/review-result.md"
+    ],
+    "phase-4": [
+      "outputs/phase-4/test-plan.md",
+      "outputs/phase-4/unit-tests-created.md",
+      "outputs/phase-4/integration-tests-created.md"
+    ],
+    "phase-5": [
+      "outputs/phase-5/implementation-log.md",
+      "outputs/phase-5/component-checklist.md"
+    ],
+    "phase-6": [
+      "outputs/phase-6/edge-case-tests.md",
+      "outputs/phase-6/error-handling-tests.md",
+      "outputs/phase-6/integration-tests.md",
+      "outputs/phase-6/accessibility-tests.md",
+      "outputs/phase-6/test-expansion-result.md"
+    ],
+    "phase-7": [
+      "outputs/phase-7/coverage-report.md",
+      "outputs/phase-7/coverage-gate-result.md"
+    ],
+    "phase-8": [
+      "outputs/phase-8/refactoring-log.md",
+      "outputs/phase-8/code-quality-metrics.md"
+    ],
+    "phase-9": [
+      "outputs/phase-9/lint-result.md",
+      "outputs/phase-9/typecheck-result.md",
+      "outputs/phase-9/security-audit.md",
+      "outputs/phase-9/quality-gate-result.md"
+    ],
+    "phase-10": [
+      "outputs/phase-10/requirements-fulfillment.md",
+      "outputs/phase-10/non-functional-fulfillment.md",
+      "outputs/phase-10/design-consistency.md",
+      "outputs/phase-10/code-quality.md",
+      "outputs/phase-10/test-results.md",
+      "outputs/phase-10/integration-test-results.md",
+      "outputs/phase-10/final-review-result.md"
+    ],
+    "phase-11": [
+      "outputs/phase-11/dev-environment-check.md",
+      "outputs/phase-11/skill-list-check.md",
+      "outputs/phase-11/import-dialog-check.md",
+      "outputs/phase-11/detail-panel-check.md",
+      "outputs/phase-11/search-filter-check.md",
+      "outputs/phase-11/keyboard-nav-check.md",
+      "outputs/phase-11/responsive-check.md",
+      "outputs/phase-11/ipc-check.md",
+      "outputs/phase-11/persistence-check.md",
+      "outputs/phase-11/manual-test-result.md"
+    ],
+    "phase-12": [
+      "outputs/phase-12/updated-design.md",
+      "outputs/phase-12/component-docs.md",
+      "outputs/phase-12/ipc-api-docs.md",
+      "outputs/phase-12/state-management-docs.md",
+      "outputs/phase-12/implementation-guide.md",
+      "outputs/phase-12/test-docs.md",
+      "outputs/phase-12/changelog-update.md",
+      "outputs/phase-12/doc-consistency-check.md"
+    ],
+    "phase-13": [
+      "outputs/phase-13/change-verification.md",
+      "outputs/phase-13/pr-url.md",
+      "outputs/phase-13/ci-result.md",
+      "outputs/phase-13/review-ready.md",
+      "outputs/phase-13/merge-ready.md",
+      "outputs/phase-13/completion-report.md"
+    ]
+  },
+  "codeArtifacts": [
+    {
+      "type": "component",
+      "name": "SkillImportDialog",
+      "path": "apps/desktop/src/renderer/components/organisms/SkillImportDialog/index.tsx"
+    },
+    {
+      "type": "component",
+      "name": "SkillList",
+      "path": "apps/desktop/src/renderer/components/organisms/SkillList/index.tsx"
+    },
+    {
+      "type": "component",
+      "name": "SkillCard",
+      "path": "apps/desktop/src/renderer/components/molecules/SkillCard/index.tsx"
+    },
+    {
+      "type": "component",
+      "name": "SkillDetailPanel",
+      "path": "apps/desktop/src/renderer/components/organisms/SkillDetailPanel/index.tsx"
+    },
+    {
+      "type": "component",
+      "name": "SkillSearchBar",
+      "path": "apps/desktop/src/renderer/components/molecules/SkillSearchBar/index.tsx"
+    },
+    {
+      "type": "component",
+      "name": "SkillCategoryFilter",
+      "path": "apps/desktop/src/renderer/components/molecules/SkillCategoryFilter/index.tsx"
+    },
+    {
+      "type": "view",
+      "name": "AgentView",
+      "path": "apps/desktop/src/renderer/views/AgentView/index.tsx"
+    },
+    {
+      "type": "store",
+      "name": "SkillSlice",
+      "path": "apps/desktop/src/renderer/store/slices/skillSlice.ts"
+    }
+  ],
+  "testCoverage": {
+    "targets": {
+      "line": { "minimum": 80, "recommended": 90 },
+      "branch": { "minimum": 60, "recommended": 70 },
+      "function": { "minimum": 80, "recommended": 90 }
+    },
+    "current": null
+  }
+}

@@ -317,36 +317,99 @@ interface SessionContext {
 
 ---
 
-## Skill Dashboard 型定義
+## Skill Dashboard 型定義（AGENT-002）
 
 Agent Dashboard機能で使用する型定義。Claude Agent SDKとは独立した、スキル管理用の型。
+AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を定義する。
 
-**実装ファイル**: `apps/desktop/src/renderer/store/slices/agentSlice.ts`
+### 実装ファイル
 
-### Skill型
+| ファイル | 説明 |
+| -------- | ---- |
+| `packages/shared/src/types/skill.ts` | Skill型定義（共有） |
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts` | Zustand状態管理 |
+| `apps/desktop/src/renderer/views/AgentView/index.tsx` | メインビュー |
+| `apps/desktop/src/renderer/views/AgentView/components/` | UIコンポーネント群 |
+| `apps/desktop/src/main/skill/skill-handler.ts` | Main Process IPCハンドラー |
+| `apps/desktop/src/preload/skillApi.ts` | Preload API |
+
+---
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Renderer Process                         │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │                    AgentView                             │ │
+│  │  ┌─────────────┬─────────────┬─────────────────────────┐ │ │
+│  │  │ SkillSearch │ CategoryFil │      SkillList          │ │ │
+│  │  │     Bar     │    ter      │  ┌─────────────────┐   │ │ │
+│  │  └─────────────┴─────────────┤  │   SkillCard     │   │ │ │
+│  │                               │  │   SkillCard     │   │ │ │
+│  │  ┌─────────────────────────┐ │  │   SkillCard     │   │ │ │
+│  │  │   SkillDetailPanel      │ │  └─────────────────┘   │ │ │
+│  │  │                         │ └─────────────────────────┘ │ │
+│  │  └─────────────────────────┘                             │ │
+│  │  ┌─────────────────────────────────────────────────────┐ │ │
+│  │  │             SkillImportDialog (Modal)               │ │ │
+│  │  └─────────────────────────────────────────────────────┘ │ │
+│  └──────────────────────────┬──────────────────────────────┘ │
+│                              │ window.skillAPI                │
+└──────────────────────────────┼───────────────────────────────┘
+                               │ IPC (contextBridge)
+┌──────────────────────────────┼───────────────────────────────┐
+│                        Main Process                           │
+│  ┌───────────────────────────┴────────────────────────────┐  │
+│  │                    skill-handler.ts                     │  │
+│  │              (IPC Handler for skill:* channels)        │  │
+│  └───────────────────────────┬────────────────────────────┘  │
+│  ┌───────────────────────────┴────────────────────────────┐  │
+│  │                    skill-service.ts                     │  │
+│  │              (スキルスキャン・解析ロジック)             │  │
+│  └───────────────────────────┬────────────────────────────┘  │
+└──────────────────────────────┼───────────────────────────────┘
+                               │ File System
+┌──────────────────────────────┴───────────────────────────────┐
+│                   .claude/skills/**/*.md                      │
+│                   (SKILL.md、agents/*.md)                     │
+└───────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 型定義
+
+#### Skill型
 
 スキルの基本情報を表す。
 
-| プロパティ    | 型         | 必須 | 説明                   |
-| ------------- | ---------- | ---- | ---------------------- |
-| `id`          | `string`   | ✓    | 一意識別子             |
-| `name`        | `string`   | ✓    | スキル名               |
-| `description` | `string`   | ✓    | 説明文                 |
-| `path`        | `string`   | ✓    | スキルファイルパス     |
-| `triggers`    | `string[]` | ✓    | トリガーキーワード     |
-| `category`    | `string`   | -    | カテゴリ（任意）       |
+| プロパティ    | 型              | 必須 | 説明                   |
+| ------------- | --------------- | ---- | ---------------------- |
+| `id`          | `string`        | ✓    | 一意識別子             |
+| `name`        | `string`        | ✓    | スキル名               |
+| `slug`        | `string`        | ✓    | URLスラッグ            |
+| `description` | `string`        | ✓    | 説明文                 |
+| `path`        | `string`        | ✓    | スキルファイルパス     |
+| `triggers`    | `string[]`      | ✓    | トリガーキーワード     |
+| `anchors`     | `Anchor[]`      | ✓    | アンカー情報           |
+| `category`    | `SkillCategory` | -    | カテゴリ（任意）       |
 
-### SkillDetail型
+```typescript
+// packages/shared/src/types/skill.ts
+export interface Skill {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  path: string;
+  triggers: string[];
+  anchors: Anchor[];
+  category?: SkillCategory;
+}
+```
 
-スキルの詳細情報（Skillを継承）。
-
-| プロパティ      | 型         | 必須 | 説明                   |
-| --------------- | ---------- | ---- | ---------------------- |
-| `anchors`       | `Anchor[]` | ✓    | アンカー情報           |
-| `workflow`      | `string`   | -    | ワークフロー定義       |
-| `bestPractices` | `string[]` | -    | ベストプラクティス     |
-
-### Anchor型
+#### Anchor型
 
 スキルのアンカー情報（参照文献と適用方法）。
 
@@ -356,7 +419,36 @@ Agent Dashboard機能で使用する型定義。Claude Agent SDKとは独立し�
 | `application` | `string` | ✓    | 適用方法           |
 | `purpose`     | `string` | ✓    | 目的               |
 
-### AgentExecutionStatus型
+```typescript
+export interface Anchor {
+  source: string;
+  application: string;
+  purpose: string;
+}
+```
+
+#### SkillCategory型
+
+スキルのカテゴリを表す列挙型。
+
+| 値            | 説明                   |
+| ------------- | ---------------------- |
+| `development` | 開発関連               |
+| `testing`     | テスト関連             |
+| `documentation` | ドキュメント関連     |
+| `workflow`    | ワークフロー関連       |
+| `other`       | その他                 |
+
+```typescript
+export type SkillCategory =
+  | 'development'
+  | 'testing'
+  | 'documentation'
+  | 'workflow'
+  | 'other';
+```
+
+#### AgentExecutionStatus型
 
 エージェント実行状態を表す列挙型。
 
@@ -368,39 +460,187 @@ Agent Dashboard機能で使用する型定義。Claude Agent SDKとは独立し�
 | `error`     | エラー                 |
 | `aborted`   | 中断                   |
 
-### AgentState型
+---
 
-Zustand agentSliceの状態インターフェース。
+### Zustand状態管理（agentSlice）
+
+Zustand Sliceパターンで実装された状態管理。
+
+#### AgentState型
 
 | プロパティ           | 型                      | 説明               |
 | -------------------- | ----------------------- | ------------------ |
-| `skills`             | `Skill[]`               | スキル一覧         |
+| `skills`             | `Skill[]`               | インポート済みスキル一覧 |
+| `availableSkills`    | `Skill[]`               | 利用可能なスキル一覧 |
+| `importedSkillIds`   | `string[]`              | インポート済みスキルID |
 | `selectedSkill`      | `Skill \| null`         | 選択中のスキル     |
-| `skillFilter`        | `string`                | フィルター文字列   |
-| `skillCategory`      | `string \| null`        | カテゴリフィルター |
+| `skillFilter`        | `string`                | 検索フィルター文字列 |
+| `skillCategory`      | `SkillCategory \| null` | カテゴリフィルター |
+| `isImportDialogOpen` | `boolean`               | インポートダイアログ表示状態 |
+| `toastMessage`       | `ToastMessage \| null`  | トースト通知       |
 | `executionStatus`    | `AgentExecutionStatus`  | 実行状態           |
 | `currentExecutionId` | `string \| null`        | 実行ID             |
 | `executionOutput`    | `string[]`              | 実行出力           |
 | `isLoading`          | `boolean`               | ローディング状態   |
 | `error`              | `string \| null`        | エラーメッセージ   |
 
-### AgentActions型
+#### AgentActions型
 
-Zustand agentSliceのアクションインターフェース。
+| アクション             | 引数                           | 説明                 |
+| ---------------------- | ------------------------------ | -------------------- |
+| `setSkills`            | `skills: Skill[]`              | スキル一覧設定       |
+| `setAvailableSkills`   | `skills: Skill[]`              | 利用可能スキル設定   |
+| `setImportedSkillIds`  | `ids: string[]`                | インポート済みID設定 |
+| `selectSkill`          | `skill: Skill \| null`         | スキル選択           |
+| `setSkillFilter`       | `filter: string`               | フィルター設定       |
+| `setSkillCategory`     | `category: SkillCategory \| null` | カテゴリ設定      |
+| `openImportDialog`     | -                              | インポートダイアログ開 |
+| `closeImportDialog`    | -                              | インポートダイアログ閉 |
+| `showToast`            | `message: ToastMessage`        | トースト表示         |
+| `clearToast`           | -                              | トーストクリア       |
+| `setExecutionStatus`   | `status: AgentExecutionStatus` | 実行状態設定         |
+| `setCurrentExecutionId` | `id: string \| null`          | 実行ID設定           |
+| `appendOutput`         | `output: string`               | 出力追加             |
+| `clearExecution`       | -                              | 実行クリア           |
+| `setLoading`           | `isLoading: boolean`           | ローディング設定     |
+| `setError`             | `error: string \| null`        | エラー設定           |
+| `resetAgentState`      | -                              | 状態リセット         |
 
-| アクション           | 引数                           | 説明             |
-| -------------------- | ------------------------------ | ---------------- |
-| `setSkills`          | `skills: Skill[]`              | スキル一覧設定   |
-| `selectSkill`        | `skill: Skill \| null`         | スキル選択       |
-| `setSkillFilter`     | `filter: string`               | フィルター設定   |
-| `setSkillCategory`   | `category: string \| null`     | カテゴリ設定     |
-| `setExecutionStatus` | `status: AgentExecutionStatus` | 実行状態設定     |
-| `setCurrentExecutionId` | `id: string \| null`        | 実行ID設定       |
-| `appendOutput`       | `output: string`               | 出力追加         |
-| `clearExecution`     | -                              | 実行クリア       |
-| `setLoading`         | `isLoading: boolean`           | ローディング設定 |
-| `setError`           | `error: string \| null`        | エラー設定       |
-| `resetAgentState`    | -                              | 状態リセット     |
+---
+
+### IPC チャンネル（スキル管理）
+
+| チャンネル          | 方向            | 説明                     | 戻り値                  |
+| ------------------- | --------------- | ------------------------ | ----------------------- |
+| `skill:list`        | Renderer → Main | インポート済みスキル取得 | `APIResponse<Skill[]>`  |
+| `skill:available`   | Renderer → Main | 利用可能スキル取得       | `APIResponse<Skill[]>`  |
+| `skill:import`      | Renderer → Main | スキルインポート         | `APIResponse<void>`     |
+| `skill:remove`      | Renderer → Main | スキル削除               | `APIResponse<void>`     |
+| `skill:detail`      | Renderer → Main | スキル詳細取得           | `APIResponse<Skill>`    |
+
+#### APIResponse型
+
+```typescript
+interface APIResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+```
+
+---
+
+### Preload API（window.skillAPI）
+
+#### listImported
+
+インポート済みのスキル一覧を取得する。
+
+**戻り値**: `Promise<APIResponse<Skill[]>>`
+
+#### listAvailable
+
+利用可能なスキル一覧を取得する。
+
+**戻り値**: `Promise<APIResponse<Skill[]>>`
+
+#### import
+
+スキルをインポートする。
+
+| パラメータ | 型       | 必須 | 説明       |
+| ---------- | -------- | ---- | ---------- |
+| `skillId`  | `string` | ✓    | スキルID   |
+
+**戻り値**: `Promise<APIResponse<void>>`
+
+#### remove
+
+スキルを削除する。
+
+| パラメータ | 型       | 必須 | 説明       |
+| ---------- | -------- | ---- | ---------- |
+| `skillId`  | `string` | ✓    | スキルID   |
+
+**戻り値**: `Promise<APIResponse<void>>`
+
+#### getDetail
+
+スキルの詳細情報を取得する。
+
+| パラメータ | 型       | 必須 | 説明       |
+| ---------- | -------- | ---- | ---------- |
+| `skillId`  | `string` | ✓    | スキルID   |
+
+**戻り値**: `Promise<APIResponse<Skill>>`
+
+---
+
+### UIコンポーネント
+
+#### コンポーネント階層
+
+```
+AgentView
+├── Header (h1 + description)
+├── SkillSearchBar
+├── SkillCategoryFilter
+├── SkillList
+│   └── SkillCard (複数)
+├── SkillDetailPanel (選択時)
+├── SkillImportDialog (ダイアログ)
+└── Toast (通知)
+```
+
+#### コンポーネント仕様
+
+| コンポーネント       | ファイル                          | 責務                     |
+| -------------------- | --------------------------------- | ------------------------ |
+| `AgentView`          | `views/AgentView/index.tsx`       | メインビュー、状態管理   |
+| `SkillList`          | `components/SkillList.tsx`        | スキル一覧表示           |
+| `SkillCard`          | `components/SkillCard.tsx`        | スキルカード表示         |
+| `SkillDetailPanel`   | `components/SkillDetailPanel.tsx` | スキル詳細パネル         |
+| `SkillImportDialog`  | `components/SkillImportDialog.tsx`| インポートダイアログ     |
+| `SkillSearchBar`     | `components/SkillSearchBar.tsx`   | 検索バー                 |
+| `SkillCategoryFilter`| `components/SkillCategoryFilter.tsx` | カテゴリフィルター    |
+
+#### アクセシビリティ要件
+
+| 要件             | 実装                                |
+| ---------------- | ----------------------------------- |
+| キーボードナビ   | Tab/Enter/Escで操作可能             |
+| スクリーンリーダー | aria-label、role属性設定          |
+| フォーカス管理   | ダイアログ開閉時のフォーカス制御    |
+| セマンティック   | header/main/aside/regionロール使用 |
+
+---
+
+### 統合テスト戦略
+
+#### テストカテゴリ
+
+| カテゴリ               | 検証内容                                       |
+| ---------------------- | ---------------------------------------------- |
+| API接続テスト          | skill:list, skill:import等のエンドポイント疎通 |
+| データフローテスト     | UI操作→Store→IPC→Main→IPC→Store→UIの往復       |
+| エラーハンドリング     | API障害時のトースト表示・リトライ機能          |
+| 状態同期テスト         | Zustand状態とUI表示の同期                      |
+| レスポンシブ動作テスト | 画面サイズによるレイアウト変更                 |
+
+#### テストファイル
+
+| ファイル                             | テスト種別       |
+| ------------------------------------ | ---------------- |
+| `AgentView.test.tsx`                 | ユニットテスト   |
+| `SkillManagement.integration.test.tsx` | 統合テスト     |
+
+#### 検証シナリオ
+
+1. **マウント時にスキル取得**: listImported API呼び出し確認
+2. **検索・フィルター連携**: 検索バー→Store→UI表示更新
+3. **インポートフロー**: ダイアログ→選択→API→一覧更新
+4. **削除フロー**: 選択→確認→API→一覧更新
+5. **エラーリトライ**: API失敗→エラー表示→再試行→成功
 
 ---
 
@@ -537,12 +777,15 @@ interface ChangeContext {
 | IPC設計          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md` |
 
 ---
+
 ## 関連ドキュメント
 
-| ドキュメント         | パス                                                                             |
-| -------------------- | -------------------------------------------------------------------------------- |
-| 実装ガイド           | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` |
-| APIリファレンス      | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`      |
-| Claude Agent SDKスキル | `.claude/skills/claude-agent-sdk/SKILL.md`                                      |
-| LLMインターフェース  | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`            |
-| Skill Dashboard実装ガイド | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |
+| ドキュメント                    | パス                                                                             |
+| ------------------------------- | -------------------------------------------------------------------------------- |
+| Agent SDK実装ガイド             | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` |
+| Agent SDK APIリファレンス       | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`      |
+| Claude Agent SDKスキル          | `.claude/skills/claude-agent-sdk/SKILL.md`                                      |
+| LLMインターフェース             | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`            |
+| Agent Dashboard実装ガイド       | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |
+| スキル管理UI実装ガイド（AGENT-002） | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md` |
+| スキル管理UIテストドキュメント  | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`            |

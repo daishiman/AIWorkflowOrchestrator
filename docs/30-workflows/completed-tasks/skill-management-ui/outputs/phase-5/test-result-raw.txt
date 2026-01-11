@@ -1,0 +1,96 @@
+
+ RUN  v2.1.9 /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260110-231158-wt1/apps/desktop
+
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > 表示 > スキル名を表示する
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > 表示 > スキル説明を表示する
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > 表示 > トリガーバッジを表示する
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > 選択状態 > 選択時にハイライトする
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > 選択状態 > 非選択時はハイライトしない
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > インタラクション > クリック時にonClickを呼び出す
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > インタラクション > Enterキーでクリックできる
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > インタラクション > Spaceキーでクリックできる
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > アクセシビリティ > 適切なaria-labelを持つ
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > アクセシビリティ > 選択時にaria-pressed=trueを持つ
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > アクセシビリティ > 非選択時にaria-pressed=falseを持つ
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > スタイル > GlassPanelスタイルを適用する
+ ✓ src/renderer/components/molecules/SkillCard/__tests__/SkillCard.test.tsx > SkillCard > スタイル > ホバー時にスケールアップする
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > 表示 > セレクト要素をレンダリングする
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > 表示 > 全てのカテゴリを表示する
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > 表示 > null値で「全て」オプションを表示する
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > 表示 > 選択されたカテゴリを表示する
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > インタラクション > カテゴリ選択時にonChangeを呼び出す
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > インタラクション > 「全て」選択時にnullでonChangeを呼び出す
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > アクセシビリティ > 適切なaria-labelを持つ
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > アクセシビリティ > combobox roleを持つ
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > 空のカテゴリ > カテゴリがない場合は「全て」のみ表示
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > スタイル > GlassPanelスタイルを適用する
+ ✓ src/renderer/components/molecules/SkillCategoryFilter/__tests__/SkillCategoryFilter.test.tsx > SkillCategoryFilter > スタイル > フォーカス時にリングを表示する
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > 表示 > 入力フィールドをレンダリングする
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > 表示 > 現在の値を表示する
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > 表示 > 検索アイコンを表示する
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > スキル一覧表示 > スキルカードを表示する
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > スキル一覧表示 > グリッドレイアウトで表示する
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > ローディング状態 > ローディング中はスケルトンを表示する
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > ローディング状態 > ローディング中はaria-busy=trueを持つ
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > 空状態 > スキルがない場合に空状態メッセージを表示する
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > 空状態 > インポートボタンを表示する
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > 検索フィルター > 検索語でスキルを絞り込む
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > 検索フィルター > 名前でマッチする
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > 検索フィルター > 説明でマッチする
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > 検索フィルター > トリガーでマッチする
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > カテゴリフィルター > カテゴリでスキルを絞り込む
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > 選択状態 > 選択されたスキルをハイライトする
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > アクセシビリティ > リストのroleを持つ
+ ✓ src/renderer/components/organisms/SkillList/__tests__/SkillList.test.tsx > SkillList > アクセシビリティ > 各カードがlistitem roleを持つ
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > インタラクション > デバウンス付きでonChangeを呼び出す 616ms
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > 表示 > スキル名を表示する
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > 表示 > スキル説明を表示する
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > 表示 > トリガーを表示する
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > 表示 > アンカーリストを表示する
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > 表示 > パスを表示する
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > 表示 > カテゴリを表示する
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > アクション > 実行ボタンクリックでonExecuteを呼び出す 377ms
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > アクション > 削除ボタンクリックで確認ダイアログを表示
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > アクション > 削除確認でonDeleteを呼び出す
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > アクション > 削除キャンセルでonDeleteを呼び出さない
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > アクション > 閉じるボタンクリックでonCloseを呼び出す
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > キーボード操作 > Escapeキーで閉じる
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > null skill > skillがnullの場合はnullを返す
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > アクセシビリティ > complementary roleを持つ
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > アクセシビリティ > 適切なaria-labelを持つ
+ ✓ src/renderer/components/organisms/SkillDetailPanel/__tests__/SkillDetailPanel.test.tsx > SkillDetailPanel > スタイル > GlassPanelスタイルを適用する
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > インタラクション > 連続入力でデバウンスされる 419ms
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > インタラクション > クリアボタンで値をクリアする
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > インタラクション > Escapeキーで値をクリアする
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > アクセシビリティ > 適切なaria-labelを持つ
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > アクセシビリティ > searchbox roleを持つ
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > アクセシビリティ > 値があるときクリアボタンが表示される
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > アクセシビリティ > 値がないときクリアボタンが非表示
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > スタイル > フォーカス時にリングを表示する
+ ✓ src/renderer/components/molecules/SkillSearchBar/__tests__/SkillSearchBar.test.tsx > SkillSearchBar > スタイル > GlassPanelスタイルを適用する
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > 表示制御 > 閉じているときはレンダリングしない
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > 表示制御 > 開いているときはダイアログを表示する
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > 表示制御 > タイトルを表示する
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > スキル一覧 > 利用可能なスキルを表示する
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > スキル一覧 > 既にインポート済みのスキルをマークする
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > スキル一覧 > インポート済みスキルに「インポート済み」ラベルを表示
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > スキル選択 > スキルを選択できる
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > スキル選択 > 選択を解除できる
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > スキル選択 > 複数スキルを選択できる 487ms
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > インポート > 選択したスキルIDでonImportを呼び出す
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > インポート > 選択がない場合はインポートボタンを無効化
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > インポート > 選択があればインポートボタンを有効化
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > インポート > 選択数を表示する
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > キャンセル > キャンセルボタンクリックでonCloseを呼び出す
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > キャンセル > Escapeキーでoncloseを呼び出す 456ms
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > キャンセル > キャンセル時に選択をリセットする
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > 検索 > 検索機能がある
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > アクセシビリティ > dialog roleを持つ 491ms
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > アクセシビリティ > aria-modal=trueを持つ
+ ✓ src/renderer/components/organisms/SkillImportDialog/__tests__/SkillImportDialog.test.tsx > SkillImportDialog > アクセシビリティ > フォーカストラップが機能する
+
+ Test Files  6 passed (6)
+      Tests  87 passed (87)
+   Start at  11:53:19
+   Duration  18.96s (transform 7.44s, setup 15.75s, collect 27.39s, tests 7.38s, environment 26.93s, prepare 6.07s)
+

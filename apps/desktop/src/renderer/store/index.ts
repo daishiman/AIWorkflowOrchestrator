@@ -120,6 +120,9 @@ export const useAppStore = create<AppStore>()(
 // Export types
 export * from "./types";
 
+// Alias for tests
+export const useStore = useAppStore;
+
 // Selector hooks for better performance
 export const useCurrentView = () => useAppStore((state) => state.currentView);
 export const useSelectedFile = () => useAppStore((state) => state.selectedFile);
