@@ -295,7 +295,7 @@ describe("SkillImportManager", () => {
 
       // Re-initialize manager
       try {
-        const module = vi.importActual("../SkillImportManager") as {
+        const module = vi.importActual("../SkillImportManager") as unknown as {
           SkillImportManager: typeof SkillImportManager;
         };
         manager = new module.SkillImportManager(mockStore as never);

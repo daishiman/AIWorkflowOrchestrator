@@ -156,7 +156,7 @@ describe("skillHandlers", () => {
     // Try to import and register handlers (will fail in Red phase)
     try {
       const { registerSkillHandlers } = await import("../skillHandlers");
-      registerSkillHandlers(mockMainWindow, mockSkillService);
+      registerSkillHandlers(mockMainWindow, mockSkillService as any);
     } catch {
       // Expected in Red phase - module doesn't exist
     }
