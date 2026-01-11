@@ -1,0 +1,176 @@
+{
+  "feature": "community-summarization",
+  "taskId": "CONV-08-03",
+  "created": "2026-01-10T23:12:34Z",
+  "lastUpdated": "2026-01-11T11:30:00Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-01-11T00:00:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-01-11T00:15:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/api-specification.md",
+        "outputs/phase-2/type-definitions.md",
+        "outputs/phase-2/prompt-design.md",
+        "outputs/phase-2/process-flow.md",
+        "outputs/phase-2/integration-design.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-01-11T00:20:00Z",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-01-11T00:30:00Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-01-11T09:25:00Z",
+      "artifacts": [
+        "packages/shared/src/services/graph/community-summarizer.ts",
+        "packages/shared/src/services/graph/interfaces/community-summarizer.interface.ts",
+        "packages/shared/src/services/graph/prompts/community-summary-prompt.ts",
+        "packages/shared/src/services/graph/types.ts"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-01-11T09:30:00Z",
+      "artifacts": [
+        "packages/shared/src/services/graph/__tests__/community-summarizer.test.ts"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-01-11T09:35:00Z",
+      "artifacts": [],
+      "metrics": {
+        "community-summarizer.ts": "95.69%",
+        "community-summary-prompt.ts": "100%"
+      }
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-01-11T09:45:00Z",
+      "artifacts": [],
+      "notes": "Lint errors fixed: unused imports, unused parameters, unused test variables"
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-01-11T09:50:00Z",
+      "artifacts": [],
+      "notes": "Security review passed: No injection vulnerabilities, proper type safety, error handling"
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-01-11T09:55:00Z",
+      "artifacts": [],
+      "notes": "All 56 tests passed. All acceptance criteria met: AC-01 to AC-07, QC-01 to QC-02"
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-01-11T10:00:00Z",
+      "artifacts": ["outputs/phase-11/manual-test-checklist.md"],
+      "notes": "All 56 tests passed, 95%+ coverage achieved, manual test checklist created"
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-01-11T11:30:00Z",
+      "artifacts": [
+        "outputs/phase-12/api-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ],
+      "systemSpecUpdates": [
+        ".claude/skills/aiworkflow-requirements/references/interfaces-rag-community-summarization.md",
+        ".claude/skills/aiworkflow-requirements/references/interfaces-rag-community-detection.md"
+      ],
+      "unassignedTasks": [
+        "docs/30-workflows/unassigned-task/task-08-04-graphrag-query-integration.md",
+        "docs/30-workflows/unassigned-task/task-08-05-community-visualization-ui.md"
+      ],
+      "notes": "Phase 12 complete: Implementation guide (Part 1+2), system spec created and updated, 2 unassigned tasks detected and documented"
+    },
+    "13": {
+      "status": "completed",
+      "completedAt": "2026-01-11T12:00:00Z",
+      "artifacts": [],
+      "prUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/217",
+      "notes": "PR #217 created. CI checks in progress. Pre-push validation passed (4030 tests, lint, typecheck)."
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "codeArtifacts": [
+    {
+      "type": "interface",
+      "path": "packages/shared/src/services/graph/interfaces/community-summarizer.interface.ts",
+      "description": "ICommunitySummarizer インターフェース"
+    },
+    {
+      "type": "service",
+      "path": "packages/shared/src/services/graph/community-summarizer.ts",
+      "description": "CommunitySummarizer サービス実装"
+    },
+    {
+      "type": "prompt",
+      "path": "packages/shared/src/services/graph/prompts/community-summary-prompt.ts",
+      "description": "コミュニティ要約プロンプト"
+    },
+    {
+      "type": "types",
+      "path": "packages/shared/src/services/graph/types.ts",
+      "description": "CommunitySummary, CommunitySummarizationOptions 型追加"
+    },
+    {
+      "type": "test",
+      "path": "packages/shared/src/services/graph/__tests__/community-summarizer.test.ts",
+      "description": "ユニット・統合テスト"
+    },
+    {
+      "type": "test",
+      "path": "packages/shared/src/services/graph/__tests__/community-summary-prompt.test.ts",
+      "description": "プロンプト生成関数テスト"
+    }
+  ],
+  "references": {
+    "taskInstruction": "docs/30-workflows/unassigned-task/task-08-03-community-summarization.md",
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-rag-community-summarization.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-rag-community-detection.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-rag-knowledge-graph-store.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-rag.md",
+      ".claude/skills/aiworkflow-requirements/references/database-schema.md"
+    ]
+  }
+}

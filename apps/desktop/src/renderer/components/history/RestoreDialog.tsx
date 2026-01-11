@@ -19,7 +19,9 @@ export interface RestoreDialogProps {
   /** キャンセル時コールバック */
   onCancel: () => void;
   /** 復元中フラグ */
-  isRestoring: boolean;
+  isLoading?: boolean;
+  /** エラー情報 */
+  error?: Error | null;
 }
 
 /**
@@ -44,18 +46,19 @@ export function RestoreDialog({
   version,
   onConfirm,
   onCancel,
-  isRestoring,
+  isLoading = false,
+  error = null,
 }: RestoreDialogProps): JSX.Element | null {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   // Escapeキー処理
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !isRestoring) {
+      if (event.key === "Escape" && !isLoading) {
         onCancel();
       }
     },
-    [onCancel, isRestoring],
+    [onCancel, isLoading],
   );
 
   // キーボードイベントリスナー
@@ -115,13 +118,22 @@ export function RestoreDialog({
           <p className="text-sm text-amber-600">
             ⚠️ 現在のバージョンは履歴として保存されます
           </p>
+
+          {error && (
+            <div
+              role="alert"
+              className="rounded-md bg-red-50 p-3 text-sm text-red-600"
+            >
+              エラー: {error.message}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
-            disabled={isRestoring}
+            disabled={isLoading}
             className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
           >
             キャンセル
@@ -130,10 +142,10 @@ export function RestoreDialog({
           <button
             type="button"
             onClick={onConfirm}
-            disabled={isRestoring}
+            disabled={isLoading}
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
           >
-            {isRestoring ? "復元中..." : "復元する"}
+            {isLoading ? "復元中..." : "復元する"}
           </button>
         </div>
       </div>

@@ -93,4 +93,39 @@
 - **備考**: エージェントダッシュボード基盤のUI・状態管理・IPC設計を文書化
 
 ---
+
+## 2026-01-11: community-summarization
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | CONV-08-03                                                                                        |
+| 操作         | create-spec / update-spec                                                                         |
+| 対象ファイル | interfaces-rag-community-summarization.md（新規）、interfaces-rag-community-detection.md、topic-map.md |
+| 結果         | success                                                                                           |
+| 備考         | コミュニティ要約生成機能の仕様追加（ICommunitySummarizer、セマンティック検索）                    |
+
+### 更新詳細
+
+- **新規作成**: `references/interfaces-rag-community-summarization.md`
+  - ICommunitySummarizer インターフェース定義（4メソッド）
+  - ICommunityRepository 拡張メソッド（getSummary, updateSummary, searchSummariesByEmbedding）
+  - CommunitySummary / CommunitySummarizationOptions / CommunitySummarizationResult 型定義
+  - エラーコード定義（LLM_GENERATION_FAILED, JSON_PARSE_FAILED, EMBEDDING_FAILED, DB_SAVE_FAILED）
+  - 使用例・実装ガイドライン
+
+- **更新**: `references/interfaces-rag-community-detection.md`（v1.0.0 → v1.1.0）
+  - スコープ表に「コミュニティ要約（→ interfaces-rag-community-summarization.md）」参照追加
+  - 関連ドキュメント表に要約仕様追加
+  - 変更履歴にエントリ追加
+
+- **更新**: `indexes/topic-map.md`
+  - インターフェースセクションにinterfaces-rag-community-summarization.md追加（10セクション）
+
+### インデックス再生成
+
+- **ファイル数**: 82ファイル
+- **キーワード数**: 655キーワード
+- **コマンド**: `node scripts/generate-index.mjs`
+
+---
 （ログエントリはここに追記されます）

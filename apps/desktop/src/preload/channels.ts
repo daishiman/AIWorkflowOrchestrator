@@ -149,6 +149,12 @@ export const IPC_CHANNELS = {
   SKILL_IMPORT: "skill:import",
   SKILL_REMOVE: "skill:remove",
   SKILL_GET_DETAIL: "skill:get-detail",
+
+  // History operations
+  HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
+  HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
+  HISTORY_GET_CONVERSION_LOGS: "history:getConversionLogs",
+  HISTORY_RESTORE_VERSION: "history:restoreVersion",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -257,6 +263,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_IMPORT,
   IPC_CHANNELS.SKILL_REMOVE,
   IPC_CHANNELS.SKILL_GET_DETAIL,
+  // History channels
+  IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
+  IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
+  IPC_CHANNELS.HISTORY_GET_CONVERSION_LOGS,
+  IPC_CHANNELS.HISTORY_RESTORE_VERSION,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

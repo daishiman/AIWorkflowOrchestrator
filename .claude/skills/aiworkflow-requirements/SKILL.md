@@ -138,6 +138,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                              |
 | ------- | ---------- | ---------------------------------------------------- |
+| 6.3.0   | 2026-01-11 | コミュニティ要約仕様追加: interfaces-rag-community-summarization.md新規、interfaces-rag-community-detection.md更新（v1.1.0）、topic-map.md更新 |
 | 6.2.0   | 2026-01-10 | コミュニティ検出（Leiden）仕様追加: interfaces-rag-community-detection.md新規、interfaces-rag.md/architecture-rag.md/topic-map.md更新 |
 | 6.1.0   | 2026-01-06 | 500行超過ファイル分割（9ファイル→インデックス化）、70ファイル構成に拡張 |
 | 6.0.0   | 2026-01-06 | skill-creator準拠: agents/をTask仕様書テンプレート化、EVALS.json/LOGS.md/log_usage.mjs追加 |

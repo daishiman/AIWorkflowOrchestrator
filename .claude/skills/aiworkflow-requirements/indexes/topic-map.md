@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-08
+> 自動生成: 2026-01-11
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -128,15 +128,17 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| 機能追加パターン | L8 |
+| Zustand Sliceパターン（Desktop） | L75 |
 
 ### references/architecture-rag.md
 
 | セクション | 行 |
 |------------|----|\n| Knowledge Graph型定義（RAG実装） | L8 |
-| DiskANNベクトル検索アーキテクチャ | L157 |
-| オフライン・同期アーキテクチャ | L246 |
-| Desktop状態管理 | L277 |
-| エンティティ抽出サービス (NER) | L414 |
+| DiskANNベクトル検索アーキテクチャ | L158 |
+| オフライン・同期アーキテクチャ | L247 |
+| Desktop状態管理 | L278 |
+| エンティティ抽出サービス (NER) | L415 |
+| コミュニティ検出サービス (Leiden Algorithm) | L489 |
 
 ---
 
@@ -228,8 +230,8 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| LLM チャット関連型定義（Desktop IPC） | L8 |
 | Multi-LLM Provider Switching 型定義 | L102 |
-| Embedding Generation 型定義 | L242 |
-| 関連ドキュメント | L394 |
+| Embedding Generation 型定義 | L275 |
+| 関連ドキュメント | L427 |
 
 ### references/interfaces-rag-chunk-embedding.md
 
@@ -244,6 +246,34 @@ node scripts/list-specs.mjs --topics
 | バリデーション | L143 |
 | 関連ドキュメント | L151 |
 
+### references/interfaces-rag-community-detection.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 要件 | L25 |
+| 設計 | L50 |
+| インターフェース定義 | L101 |
+| 型定義 | L132 |
+| エラー型 | L181 |
+| 使用例 | L193 |
+| 実装ガイドライン | L229 |
+| 関連ドキュメント | L252 |
+| 変更履歴 | L264 |
+
+### references/interfaces-rag-community-summarization.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 要件 | L26 |
+| 設計 | L51 |
+| インターフェース定義 | L103 |
+| 型定義 | L128 |
+| エラー型 | L175 |
+| 使用例 | L187 |
+| 実装ガイドライン | L248 |
+| 関連ドキュメント | L279 |
+| 変更履歴 | L290 |
+
 ### references/interfaces-rag-file-selection.md
 
 | セクション | 行 |
@@ -253,6 +283,18 @@ node scripts/list-specs.mjs --topics
 | UIコンポーネント | L65 |
 | 実装場所 | L84 |
 | 関連ドキュメント | L93 |
+
+### references/interfaces-rag-knowledge-graph-store.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 要件 | L25 |
+| 設計 | L49 |
+| インターフェース定義 | L139 |
+| エラー型 | L176 |
+| 実装ガイドライン | L187 |
+| 関連ドキュメント | L209 |
+| 変更履歴 | L219 |
 
 ### references/interfaces-rag-search.md
 
@@ -271,27 +313,13 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L12 |
-| Branded Types | L22 |
-| RAGエラー型 | L45 |
-| 共通インターフェース | L66 |
-| ファイル・変換ドメイン型 | L123 |
-| Knowledge Graph型 | L149 |
-| 設計原則 | L163 |
-| 関連ドキュメント | L389 |
-
-### references/interfaces-rag-community-detection.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L8 |
-| 要件 | L25 |
-| 設計 | L49 |
-| インターフェース定義 | L85 |
-| 型定義 | L120 |
-| エラー型 | L168 |
-| 使用例 | L180 |
-| 実装ガイドライン | L210 |
-| 関連ドキュメント | L232 |
-| 変更履歴 | L244 |
+| Branded Types | L24 |
+| RAGエラー型 | L47 |
+| 共通インターフェース | L68 |
+| ファイル・変換ドメイン型 | L125 |
+| Knowledge Graph型 | L151 |
+| 設計原則 | L167 |
+| 関連ドキュメント | L393 |
 
 ### references/interfaces-workflow.md
 
@@ -322,10 +350,11 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| エンドポイント一覧 | L8 |
 | Desktop IPC API（認証・プロフィール） | L126 |
-| エンドポイント命名規則 | L325 |
-| Electron IPC API設計 | L346 |
-| AIプロバイダーAPI連携 | L453 |
-| エンティティ抽出サービス (NER) | L486 |
+| Slide IPC API（スライド同期） | L391 |
+| エンドポイント命名規則 | L485 |
+| Electron IPC API設計 | L506 |
+| AIプロバイダーAPI連携 | L613 |
+| エンティティ抽出サービス (NER) | L646 |
 
 ### references/api-internal-chunk-search.md
 
@@ -397,7 +426,7 @@ node scripts/list-specs.mjs --topics
 | エラーハンドリング | L174 |
 | ベクトル検索実装（DiskANN） | L205 |
 | Knowledge Graphテーブル群（GraphRAG基盤） | L263 |
-| パフォーマンス最適化 | L449 |
+| パフォーマンス最適化 | L468 |
 
 ### references/database-operations.md
 
@@ -413,13 +442,13 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | テーブル一覧 | L13 |
-| ワークフロー関連テーブル | L32 |
-| ユーザー関連テーブル | L71 |
-| チャット関連テーブル | L105 |
-| RAG関連テーブル | L141 |
-| 変換処理関連テーブル | L183 |
-| インデックス設計 | L242 |
-| 関連ドキュメント | L279 |
+| ワークフロー関連テーブル | L38 |
+| ユーザー関連テーブル | L77 |
+| チャット関連テーブル | L111 |
+| RAG関連テーブル | L147 |
+| 変換処理関連テーブル | L189 |
+| インデックス設計 | L248 |
+| 関連ドキュメント | L285 |
 
 ---
 
@@ -473,6 +502,20 @@ node scripts/list-specs.mjs --topics
 | 認証UI設計 | L69 |
 | APIキー設定UI設計 | L277 |
 
+### references/ui-ux-history-panel.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L9 |
+| ファイル構成 | L16 |
+| コンポーネント構成 | L39 |
+| カスタムフック | L138 |
+| データ型 | L242 |
+| データフロー | L310 |
+| UI設計 | L350 |
+| アクセシビリティ | L395 |
+| エラーハンドリング | L440 |
+| パフォーマンス | L475 |
+
 ### references/ui-ux-llm-selector.md
 
 | セクション | 行 |
@@ -491,12 +534,14 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
-| ナビゲーションボタン仕様 | L14 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L30 |
-| テスト検証済み項目 | L44 |
-| アクセシビリティ対応事例 | L59 |
-| ナビゲーションパターンのベストプラクティス | L91 |
-| 関連ドキュメント | L103 |
+| AppDockナビゲーション | L15 |
+| ChatViewナビゲーション | L76 |
+| ナビゲーションボタン仕様 | L82 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L98 |
+| テスト検証済み項目 | L112 |
+| アクセシビリティ対応事例 | L127 |
+| ナビゲーションパターンのベストプラクティス | L159 |
+| 関連ドキュメント | L171 |
 
 ### references/ui-ux-panels.md
 
@@ -534,24 +579,6 @@ node scripts/list-specs.mjs --topics
 | アクセシビリティ対応 | L163 |
 | エラー状態 | L177 |
 | パフォーマンス考慮事項 | L188 |
-
-### references/ui-ux-history-panel.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L9 |
-| ファイル構成 | L16 |
-| コンポーネント構成 | L39 |
-| Props定義 | L78 |
-| カスタムフック | L138 |
-| データ型 | L242 |
-| データフロー | L310 |
-| UI設計 | L350 |
-| アクセシビリティ | L395 |
-| エラーハンドリング | L440 |
-| パフォーマンス | L475 |
-| テストカバレッジ | L509 |
-| 統合手順 | L533 |
-| 関連ドキュメント | L551 |
 
 ### references/ui-ux-system-prompt.md
 
@@ -838,13 +865,13 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| 設計方針 | L8 |
 | ルート構造 | L45 |
 | packages/shared/ 詳細構造 | L96 |
-| apps/web/ 詳細構造（Next.js） | L231 |
-| apps/desktop/ 詳細構造（Electron） | L271 |
-| local-agent/ 詳細構造 | L370 |
-| .github/workflows/ 詳細構造 | L381 |
-| ルートの設定ファイル群 | L391 |
-| 機能追加の手順 | L410 |
-| 構造の選択理由 | L442 |
+| apps/web/ 詳細構造（Next.js） | L252 |
+| apps/desktop/ 詳細構造（Electron） | L292 |
+| local-agent/ 詳細構造 | L391 |
+| .github/workflows/ 詳細構造 | L402 |
+| ルートの設定ファイル群 | L412 |
+| 機能追加の手順 | L431 |
+| 構造の選択理由 | L463 |
 
 ### references/discord-bot.md
 

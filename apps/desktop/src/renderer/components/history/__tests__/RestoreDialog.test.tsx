@@ -41,7 +41,7 @@ describe("RestoreDialog", () => {
     version: createMockVersionHistoryItem(),
     onConfirm: vi.fn(),
     onCancel: vi.fn(),
-    isRestoring: false,
+    isLoading: false,
   };
 
   beforeEach(() => {
@@ -108,8 +108,8 @@ describe("RestoreDialog", () => {
     });
 
     it("RD-007: 復元中はボタンがdisabledになる", () => {
-      // Given: isRestoring=true
-      render(<RestoreDialog {...defaultProps} isRestoring={true} />);
+      // Given: isLoading=true
+      render(<RestoreDialog {...defaultProps} isLoading={true} />);
 
       // Then: 復元ボタンがdisabled
       expect(
@@ -118,8 +118,8 @@ describe("RestoreDialog", () => {
     });
 
     it("RD-008: 復元中はボタンテキストが「復元中...」", () => {
-      // Given: isRestoring=true
-      render(<RestoreDialog {...defaultProps} isRestoring={true} />);
+      // Given: isLoading=true
+      render(<RestoreDialog {...defaultProps} isLoading={true} />);
 
       // Then: ボタンテキストが「復元中...」
       expect(screen.getByText(/復元中/)).toBeInTheDocument();

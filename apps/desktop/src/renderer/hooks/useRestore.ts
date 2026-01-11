@@ -21,8 +21,11 @@ interface UseRestoreReturn {
   isRestoring: boolean;
   /** エラー情報 */
   error: Error | null;
-  /** 復元実行 */
-  restore: (fileId: string, conversionId: string) => Promise<void>;
+  /** 復元実行（成功時は復元結果、失敗時はnull） */
+  restore: (
+    fileId: string,
+    conversionId: string,
+  ) => Promise<VersionHistoryItem | null>;
   /** エラークリア */
   clearError: () => void;
 }
@@ -39,12 +42,15 @@ export function useRestore(options: UseRestoreOptions = {}): UseRestoreReturn {
   const [error, setError] = useState<Error | null>(null);
 
   const restore = useCallback(
-    async (fileId: string, conversionId: string) => {
+    async (
+      fileId: string,
+      conversionId: string,
+    ): Promise<VersionHistoryItem | null> => {
       if (!window.historyAPI) {
         const err = new Error("History API not available");
         setError(err);
         onError?.(err);
-        return;
+        return null;
       }
 
       try {
@@ -58,14 +64,17 @@ export function useRestore(options: UseRestoreOptions = {}): UseRestoreReturn {
 
         if (result.success) {
           onSuccess?.(result.data);
+          return result.data;
         } else {
           setError(result.error);
           onError?.(result.error);
+          return null;
         }
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
         setError(error);
         onError?.(error);
+        return null;
       } finally {
         setIsRestoring(false);
       }
