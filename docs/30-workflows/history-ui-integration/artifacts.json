@@ -1,0 +1,332 @@
+{
+  "taskId": "history-ui-integration",
+  "taskName": "履歴UIコンポーネントのアプリケーション統合",
+  "createdAt": "2026-01-10T23:22:00+09:00",
+  "lastUpdated": "2026-01-11T11:15:00+09:00",
+  "status": "phase_12_completed",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-11T00:30:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "機能・非機能要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-11T01:00:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "統合アーキテクチャ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/component-design.md",
+          "description": "HistoryPageコンポーネント設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ipc-design.md",
+          "description": "IPC/preloadハンドラー設計書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-11T01:15:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS）"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-11T02:00:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧（25ケース）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-design.md",
+          "description": "統合テスト設計書"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/pages/__tests__/HistoryPage.test.tsx",
+          "description": "HistoryPageコンポーネントテスト（13ケース）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/__tests__/historyHandlers.test.ts",
+          "description": "historyHandlersテスト（12ケース）"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-11T09:10:00+09:00",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "apps/desktop/src/preload/channels.ts",
+          "description": "IPC チャンネル定義追加（history:*チャンネル4種）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/preload/index.ts",
+          "description": "historyAPI エクスポート追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/historyHandlers.ts",
+          "description": "履歴IPC ハンドラー実装（4ハンドラー）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/pages/HistoryPage.tsx",
+          "description": "HistoryPageコンポーネント実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/App.tsx",
+          "description": "/history/:fileIdルート追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/HistoryService.ts",
+          "description": "HistoryServiceスタブ実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/index.ts",
+          "description": "historyHandlers登録追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/history/RestoreDialog.tsx",
+          "description": "エラー表示機能追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/hooks/useRestore.ts",
+          "description": "戻り値型修正（結果返却対応）"
+        }
+      ],
+      "testResults": {
+        "historyHandlers.test.ts": "18 tests passed",
+        "HistoryPage.test.tsx": "14 tests passed"
+      }
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-11T09:35:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジ分析レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/integration-test.md",
+          "description": "統合テスト実行結果"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/pages/__tests__/HistoryPage.test.tsx",
+          "description": "HistoryPage追加テスト（TS-07〜TS-10）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/__tests__/historyHandlers.test.ts",
+          "description": "historyHandlers追加テスト（TS-11〜TS-14）"
+        }
+      ],
+      "testResults": {
+        "historyHandlers.test.ts": "22 tests passed",
+        "HistoryPage.test.tsx": "18 tests passed",
+        "RestoreDialog.test.tsx": "12 tests passed",
+        "total": "52 tests passed"
+      }
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-11T09:38:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ再測定レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/integration-test.md",
+          "description": "統合テスト実行結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/gate-result.md",
+          "description": "ゲート判定結果（PASS）"
+        }
+      ],
+      "gateResult": "PASS"
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-11T09:45:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/test-result.md",
+          "description": "テスト継続成功確認"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/historyHandlers.ts",
+          "description": "normalizeError関数追加による重複排除"
+        }
+      ],
+      "refactoring": {
+        "changedFiles": 1,
+        "linesReduced": 8,
+        "testsPassed": "52/52"
+      }
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-11T09:52:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質検証結果レポート"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/pages/HistoryPage.tsx",
+          "description": "onBack→onClose プロップ修正"
+        }
+      ],
+      "qualityGate": {
+        "lint": "PASS",
+        "typeCheck": "PASS (after fix)",
+        "security": "PASS",
+        "tests": "52/52 PASS"
+      }
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-11T10:10:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（PASS）"
+        }
+      ],
+      "gateResult": "PASS"
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-11T10:25:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（制約事項あり）"
+        }
+      ],
+      "testResults": {
+        "verified": 12,
+        "deferred": 4,
+        "na": 2,
+        "automatedTests": "52/52 PASS"
+      }
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-11T11:00:00+09:00",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 概念的説明 + Part 2: 技術的詳細）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "description": "ドキュメント更新ログ（システム仕様書更新、未タスク指示書作成含む）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート（9件検出、1件指示書作成）"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/unassigned-task/task-history-service-db-integration.md",
+          "description": "未タスク指示書: HistoryServiceデータベース統合"
+        },
+        {
+          "type": "document",
+          "path": ".claude/skills/aiworkflow-requirements/references/ui-ux-history-panel.md",
+          "description": "システム仕様書更新: 統合ステータスセクション追加（v1.2.0）"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "CONV-05-01": "completed",
+    "CONV-05-02": "completed",
+    "CONV-05-03": "completed"
+  }
+}

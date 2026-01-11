@@ -56,6 +56,11 @@ import type {
   LLMError,
 } from "@repo/shared/types/llm/schemas";
 import type { SkillPhase, SyncStatus, SlideApi, LLMStreamChunk } from "./types";
+import type {
+  HistoryAPI,
+  PaginationOptions,
+  LogFilterOptions,
+} from "../renderer/components/history/types";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -299,11 +304,24 @@ const slideApi: SlideApi = {
     safeOn<number>(IPC_CHANNELS.SLIDE_EXECUTION_PROGRESS, callback),
 };
 
+// History API for version history management
+const historyAPI: HistoryAPI = {
+  getFileHistory: (fileId: string, options?: PaginationOptions) =>
+    safeInvoke(IPC_CHANNELS.HISTORY_GET_FILE_HISTORY, fileId, options),
+  getVersionDetail: (conversionId: string) =>
+    safeInvoke(IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL, conversionId),
+  getConversionLogs: (conversionId: string, options?: LogFilterOptions) =>
+    safeInvoke(IPC_CHANNELS.HISTORY_GET_CONVERSION_LOGS, conversionId, options),
+  restoreVersion: (fileId: string, conversionId: string) =>
+    safeInvoke(IPC_CHANNELS.HISTORY_RESTORE_VERSION, fileId, conversionId),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electronAPI", electronAPI);
     contextBridge.exposeInMainWorld("slideApi", slideApi);
+    contextBridge.exposeInMainWorld("historyAPI", historyAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -311,4 +329,5 @@ if (process.contextIsolated) {
   // Fallback for non-isolated context (development)
   (window as unknown as { electronAPI: ElectronAPI }).electronAPI = electronAPI;
   (window as unknown as { slideApi: SlideApi }).slideApi = slideApi;
+  (window as unknown as { historyAPI: HistoryAPI }).historyAPI = historyAPI;
 }
