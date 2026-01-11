@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-08T22:48:30.498Z",
-  "totalKeywords": 631,
+  "generated": "2026-01-11T11:39:45.643Z",
+  "totalKeywords": 655,
   "keywords": {
     "API": [
       "api-core.md",
@@ -66,6 +66,7 @@
     ],
     "Desktop": [
       "api-endpoints.md",
+      "architecture-patterns.md",
       "architecture-rag.md",
       "interfaces-llm.md"
     ],
@@ -78,6 +79,12 @@
     "認証・プロフィール": [
       "api-endpoints.md",
       "interfaces-auth.md"
+    ],
+    "Slide": [
+      "api-endpoints.md"
+    ],
+    "スライド同期": [
+      "api-endpoints.md"
     ],
     "エンドポイント命名規則": [
       "api-endpoints.md"
@@ -97,8 +104,12 @@
     ],
     "設計": [
       "api-endpoints.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-knowledge-graph-store.md",
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
+      "ui-ux-history-panel.md",
       "ui-ux-navigation.md",
       "ui-ux-search-panel.md"
     ],
@@ -154,6 +165,9 @@
       "interfaces-chat-history.md",
       "interfaces-converter-implementations.md",
       "interfaces-converter.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "security-implementation.md",
       "task-workflow.md",
@@ -162,6 +176,7 @@
       "technology-devops.md",
       "ui-ux-advanced.md",
       "ui-ux-file-selector.md",
+      "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md",
       "ui-ux-navigation.md",
       "ui-ux-panels.md",
@@ -180,7 +195,9 @@
     ],
     "使用例": [
       "api-internal-chunk-search.md",
-      "database-architecture.md"
+      "database-architecture.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md"
     ],
     "データベース層": [
       "api-internal-chunk-search.md"
@@ -276,7 +293,10 @@
       "interfaces-converter.md",
       "interfaces-llm.md",
       "interfaces-rag-chunk-embedding.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
       "interfaces-rag-file-selection.md",
+      "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag-search.md",
       "interfaces-rag.md",
       "local-agent.md",
@@ -292,6 +312,7 @@
       "technology-devops.md",
       "ui-ux-advanced.md",
       "ui-ux-file-selector.md",
+      "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md",
       "ui-ux-navigation.md",
       "ui-ux-panels.md",
@@ -308,7 +329,8 @@
       "claude-code-commands.md",
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
-      "discord-bot.md"
+      "discord-bot.md",
+      "ui-ux-history-panel.md"
     ],
     "一覧": [
       "api-internal.md"
@@ -439,21 +461,37 @@
     "機能追加パターン": [
       "architecture-patterns.md"
     ],
+    "Zustand": [
+      "architecture-patterns.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "Slice": [
+      "architecture-patterns.md"
+    ],
+    "パターン": [
+      "architecture-patterns.md",
+      "claude-code-skills-resources.md",
+      "ui-ux-advanced.md"
+    ],
     "Knowledge": [
       "architecture-rag.md",
       "database-implementation.md",
+      "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "ui-ux-design-system.md"
     ],
     "Graph": [
       "architecture-rag.md",
       "database-implementation.md",
+      "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md"
     ],
     "型定義": [
       "architecture-rag.md",
       "interfaces-agent-sdk.md",
-      "interfaces-llm.md"
+      "interfaces-llm.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md"
     ],
     "実装": [
       "architecture-rag.md",
@@ -473,6 +511,15 @@
       "architecture-rag.md",
       "claude-code-agents-workflow.md",
       "ui-ux-llm-selector.md"
+    ],
+    "コミュニティ検出サービス": [
+      "architecture-rag.md"
+    ],
+    "Leiden": [
+      "architecture-rag.md"
+    ],
+    "Algorithm": [
+      "architecture-rag.md"
     ],
     "Agent": [
       "claude-code-agents-spec.md",
@@ -597,6 +644,7 @@
       "discord-bot.md",
       "local-agent.md",
       "plugin-development.md",
+      "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md"
     ],
     "品質基準": [
@@ -666,7 +714,11 @@
     ],
     "変更履歴": [
       "claude-code-commands.md",
-      "claude-code-overview.md"
+      "claude-code-overview.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "ui-ux-history-panel.md"
     ],
     "層アーキテクチャ設計仕様書": [
       "claude-code-overview.md"
@@ -746,7 +798,8 @@
     "Skill": [
       "claude-code-skills-overview.md",
       "claude-code-skills-process.md",
-      "claude-code-skills-structure.md"
+      "claude-code-skills-structure.md",
+      "interfaces-agent-sdk.md"
     ],
     "概念・コア原則": [
       "claude-code-skills-overview.md"
@@ -795,10 +848,6 @@
     ],
     "Disclosure": [
       "claude-code-skills-resources.md"
-    ],
-    "パターン": [
-      "claude-code-skills-resources.md",
-      "ui-ux-advanced.md"
     ],
     "スキル名": [
       "claude-code-skills-resources.md"
@@ -1243,6 +1292,7 @@
       "ui-ux-design-system.md",
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
+      "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md",
       "ui-ux-navigation.md",
       "ui-ux-panels.md",
@@ -1287,6 +1337,7 @@
       "interfaces-converter.md",
       "interfaces-core.md",
       "interfaces-llm.md",
+      "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "interfaces-workflow.md"
     ],
@@ -1301,6 +1352,9 @@
     ],
     "エラー型": [
       "interfaces-agent-sdk.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md"
     ],
     "チャンネル": [
@@ -1327,6 +1381,15 @@
       "interfaces-agent-sdk.md"
     ],
     "セッション管理": [
+      "interfaces-agent-sdk.md"
+    ],
+    "Dashboard": [
+      "interfaces-agent-sdk.md"
+    ],
+    "ModifierSkill": [
+      "interfaces-agent-sdk.md"
+    ],
+    "スライド逆同期機能": [
       "interfaces-agent-sdk.md"
     ],
     "認証・プロフィール型定義": [
@@ -1496,6 +1559,27 @@
       "interfaces-rag-chunk-embedding.md",
       "interfaces-rag-search.md"
     ],
+    "コミュニティ検出インターフェース仕様": [
+      "interfaces-rag-community-detection.md"
+    ],
+    "要件": [
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-knowledge-graph-store.md"
+    ],
+    "インターフェース定義": [
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-knowledge-graph-store.md"
+    ],
+    "実装ガイドライン": [
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-knowledge-graph-store.md"
+    ],
+    "コミュニティ要約インターフェース仕様": [
+      "interfaces-rag-community-summarization.md"
+    ],
     "FileSelection": [
       "interfaces-rag-file-selection.md"
     ],
@@ -1511,6 +1595,9 @@
     ],
     "実装場所": [
       "interfaces-rag-file-selection.md"
+    ],
+    "Store": [
+      "interfaces-rag-knowledge-graph-store.md"
     ],
     "検索クエリ・結果型定義": [
       "interfaces-rag-search.md"
@@ -1675,6 +1762,7 @@
     "アクセシビリティ": [
       "quality-requirements.md",
       "ui-ux-components.md",
+      "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md"
     ],
     "テストカバレッジ目標": [
@@ -1964,6 +2052,7 @@
     ],
     "コンポーネント構成": [
       "ui-ux-file-selector.md",
+      "ui-ux-history-panel.md",
       "ui-ux-system-prompt.md"
     ],
     "トリガーボタン": [
@@ -2016,6 +2105,34 @@
     "キー設定": [
       "ui-ux-forms.md"
     ],
+    "履歴": [
+      "ui-ux-history-panel.md"
+    ],
+    "ログ表示": [
+      "ui-ux-history-panel.md"
+    ],
+    "ファイル構成": [
+      "ui-ux-history-panel.md"
+    ],
+    "カスタムフック": [
+      "ui-ux-history-panel.md"
+    ],
+    "データ型": [
+      "ui-ux-history-panel.md"
+    ],
+    "データフロー": [
+      "ui-ux-history-panel.md"
+    ],
+    "パフォーマンス": [
+      "ui-ux-history-panel.md"
+    ],
+    "テストカバレッジ": [
+      "ui-ux-history-panel.md",
+      "ui-ux-llm-selector.md"
+    ],
+    "統合手順": [
+      "ui-ux-history-panel.md"
+    ],
     "選択機能": [
       "ui-ux-llm-selector.md"
     ],
@@ -2034,9 +2151,6 @@
     "スタイルガイドライン": [
       "ui-ux-llm-selector.md"
     ],
-    "テストカバレッジ": [
-      "ui-ux-llm-selector.md"
-    ],
     "システムプロンプト連携": [
       "ui-ux-llm-selector.md"
     ],
@@ -2045,6 +2159,9 @@
       "ui-ux-system-prompt.md"
     ],
     "ナビゲーション": [
+      "ui-ux-navigation.md"
+    ],
+    "AppDock": [
       "ui-ux-navigation.md"
     ],
     "ChatView": [
@@ -2174,9 +2291,6 @@
       "ui-ux-system-prompt.md"
     ],
     "状態管理構造": [
-      "ui-ux-system-prompt.md"
-    ],
-    "Zustand": [
       "ui-ux-system-prompt.md"
     ],
     "連携仕様": [
