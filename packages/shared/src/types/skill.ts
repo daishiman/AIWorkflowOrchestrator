@@ -7,12 +7,23 @@
  * アンカー（参照文献）情報
  */
 export interface Anchor {
-  /** 参照元名 */
-  name: string;
+  /** 参照元名（source） */
+  source: string;
+  /** @deprecated Use `source` instead */
+  name?: string;
   /** 適用方法 */
   application: string;
   /** 目的 */
   purpose: string;
+}
+
+/**
+ * 環境設定
+ */
+export interface EnvironmentConfig {
+  type: "html" | "markdown" | "code";
+  autoRefresh?: boolean;
+  debounce?: number;
 }
 
 /**
@@ -62,8 +73,20 @@ export interface Skill {
   /** Anchor一覧 */
   anchors: Anchor[];
   /** カテゴリ（推論または手動設定） */
-  category?: SkillCategory;
-  /** 最終更新日 */
+  category?: SkillCategory | string;
+  /** 環境設定 */
+  environment?: EnvironmentConfig;
+  /** ライセンス */
+  license?: string;
+  /** 許可されたツール */
+  allowedTools?: string[];
+  /** タグ */
+  tags?: string[];
+  /** 依存関係 */
+  dependencies?: string[];
+  /** 最終更新日（Date） */
+  lastModified: Date;
+  /** @deprecated Use `lastModified` instead */
   lastUpdated?: string;
 }
 
@@ -103,4 +126,62 @@ export interface OperationResult<T = void> {
   data?: T;
   /** エラーメッセージ */
   error?: string;
+}
+
+/**
+ * スキルスキャンエラー
+ */
+export interface SkillScanError {
+  /** エラーが発生したパス */
+  path: string;
+  /** エラーメッセージ */
+  error: string;
+  /** エラーコード */
+  code: "PARSE_ERROR" | "READ_ERROR" | "INVALID_FORMAT";
+}
+
+/**
+ * スキルスキャン結果
+ */
+export interface SkillScanResult {
+  /** 検出されたスキル */
+  skills: Skill[];
+  /** スキャン中のエラー */
+  errors: SkillScanError[];
+  /** スキャン日時 */
+  scannedAt: Date;
+}
+
+/**
+ * インポート結果
+ */
+export interface ImportResult {
+  /** 成功フラグ */
+  success: boolean;
+  /** インポートされた件数 */
+  importedCount: number;
+  /** エラーメッセージ */
+  errors: string[];
+}
+
+/**
+ * 削除結果
+ */
+export interface RemoveResult {
+  /** 成功フラグ */
+  success: boolean;
+  /** 実際に削除されたか */
+  removed: boolean;
+}
+
+/**
+ * IPCエラー
+ */
+export interface IPCError {
+  /** エラーコード */
+  code: "VALIDATION_ERROR" | "NOT_FOUND" | "AUTH_ERROR" | "INTERNAL_ERROR";
+  /** エラーメッセージ */
+  message: string;
+  /** 詳細情報 */
+  details?: unknown;
 }
