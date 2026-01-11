@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-11T11:39:45.643Z",
-  "totalKeywords": 655,
+  "generated": "2026-01-11T23:03:46.231Z",
+  "totalKeywords": 658,
   "keywords": {
     "API": [
       "api-core.md",
@@ -511,6 +511,10 @@
       "architecture-rag.md",
       "claude-code-agents-workflow.md",
       "ui-ux-llm-selector.md"
+    ],
+    "クエリ分類器": [
+      "architecture-rag.md",
+      "interfaces-rag-search.md"
     ],
     "コミュニティ検出サービス": [
       "architecture-rag.md"
@@ -1386,6 +1390,9 @@
     "Dashboard": [
       "interfaces-agent-sdk.md"
     ],
+    "AGENT": [
+      "interfaces-agent-sdk.md"
+    ],
     "ModifierSkill": [
       "interfaces-agent-sdk.md"
     ],
@@ -2131,6 +2138,9 @@
       "ui-ux-llm-selector.md"
     ],
     "統合手順": [
+      "ui-ux-history-panel.md"
+    ],
+    "統合ステータス": [
       "ui-ux-history-panel.md"
     ],
     "選択機能": [
