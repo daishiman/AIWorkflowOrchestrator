@@ -12,6 +12,9 @@ export * from "./chat-session";
 export * from "./chat-message";
 export * from "./llm-metadata";
 
+// スキル管理型定義
+export * from "./skill";
+
 // ファイル選択型定義
 export type {
   FileExtension,
