@@ -69,6 +69,8 @@ vi.mock("@/renderer/store", () => ({
 }));
 
 // agentAPIのモック
+type StatusCallback = (status: AgentExecutionStatus) => void;
+let _statusCallback: StatusCallback | null = null;
 
 const mockAgentAPI = {
   start: vi.fn().mockResolvedValue({ executionId: "exec-123" }),
@@ -76,9 +78,9 @@ const mockAgentAPI = {
   respondPermission: vi.fn().mockResolvedValue(undefined),
   onStream: vi.fn(() => () => {}),
   onStatus: vi.fn((callback: StatusCallback) => {
-    statusCallback = callback;
+    _statusCallback = callback;
     return () => {
-      statusCallback = null;
+      _statusCallback = null;
     };
   }),
   onPermission: vi.fn(() => () => {}),
