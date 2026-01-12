@@ -206,16 +206,40 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 ## 関連ドキュメント
 
-| ドキュメント               | パス                                                                         | 説明                                |
-| -------------------------- | ---------------------------------------------------------------------------- | ----------------------------------- |
-| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md` | 統合システム設計仕様（型定義、IPC） |
-| APIリファレンス            | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`  | 公開API詳細リファレンス             |
-| 実装ガイド                 | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド      |
+| ドキュメント                  | パス                                                                           | 説明                                |
+| ----------------------------- | ------------------------------------------------------------------------------ | ----------------------------------- |
+| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`    | 統合システム設計仕様（型定義、IPC） |
+| 実装ガイド                    | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド      |
+
+### AGENT-005実装成果物
+
+| ドキュメント         | パス                                                                         | 説明                    |
+| -------------------- | ---------------------------------------------------------------------------- | ----------------------- |
+| 要件定義             | `docs/30-workflows/claude-code-integration/outputs/phase-1/`                 | 受け入れ基準、スコープ  |
+| 設計                 | `docs/30-workflows/claude-code-integration/outputs/phase-2/`                 | アーキテクチャ、型定義  |
+| テスト仕様           | `docs/30-workflows/claude-code-integration/outputs/phase-4/`                 | テストケース設計        |
+| 実装サマリー         | `docs/30-workflows/claude-code-integration/outputs/phase-5/implementation-summary.md` | 実装概要     |
+| 品質検証レポート     | `docs/30-workflows/claude-code-integration/outputs/phase-9/`                 | セキュリティチェック    |
+| 最終レビュー         | `docs/30-workflows/claude-code-integration/outputs/phase-10/`                | リリースチェックリスト  |
+| 手動テスト結果       | `docs/30-workflows/claude-code-integration/outputs/phase-11/`                | 手動検証結果            |
+| 実装ガイド           | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` | 概念・技術詳細 |
+
+### 実装ファイル
+
+| ファイル           | パス                                                           | 説明                   |
+| ------------------ | -------------------------------------------------------------- | ---------------------- |
+| 型定義             | `packages/shared/src/types/agent-execution.ts`                 | Agent実行関連型        |
+| HooksFactory       | `apps/desktop/src/main/services/agent/HooksFactory.ts`         | SDK Hooks生成          |
+| PermissionRules    | `apps/desktop/src/main/services/agent/PermissionRules.ts`      | 権限ルール定義         |
+| AgentExecutor      | `apps/desktop/src/main/services/agent/AgentExecutor.ts`        | SDK query()統合        |
+| ExecutionManager   | `apps/desktop/src/main/services/agent/ExecutionManager.ts`     | 複数実行管理           |
+| IPCハンドラー      | `apps/desktop/src/main/ipc/agentHandlers.ts`                   | IPC通信処理            |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                               |
-| ------- | ---------- | ----------------------------------------------------- |
-| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携        |
-| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加            |
-| 1.0.0   | 2026-01-08 | 初期バージョン作成                                    |
+| Version | Date       | Changes                                                    |
+| ------- | ---------- | ---------------------------------------------------------- |
+| 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正        |
+| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携             |
+| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加                 |
+| 1.0.0   | 2026-01-08 | 初期バージョン作成                                         |
