@@ -1,0 +1,168 @@
+{
+  "taskId": "CONV-07-02",
+  "taskName": "キーワード検索戦略（FTS5/BM25）",
+  "featureName": "keyword-search-fts5",
+  "status": "in_progress",
+  "createdAt": "2026-01-11T00:00:00Z",
+  "lastUpdated": "2026-01-11T23:40:00Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-11T22:55:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "機能要件・非機能要件一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-11T23:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/api-design.md",
+          "description": "API設計書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-11T23:05:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS）"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-11T23:25:00Z",
+      "tddState": "red",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧（32件）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-design.md",
+          "description": "統合テスト設計"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/keyword-search-strategy.test.ts",
+          "description": "ユニットテストファイル"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/__tests__/keyword-search-strategy.integration.test.ts",
+          "description": "統合テストファイル"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-11T23:40:00Z",
+      "tddState": "green",
+      "testResults": {
+        "unitTests": {
+          "total": 30,
+          "passed": 30,
+          "failed": 0
+        }
+      },
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/search/keyword-search-strategy.ts",
+          "description": "KeywordSearchStrategy実装"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "required": ["CONV-04-03"],
+    "optional": ["CONV-07-01"]
+  },
+  "metadata": {
+    "size": "medium",
+    "targetPackage": "@repo/shared",
+    "targetPath": "packages/shared/src/services/search/"
+  }
+}

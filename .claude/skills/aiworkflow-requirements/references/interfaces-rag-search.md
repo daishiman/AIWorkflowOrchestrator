@@ -172,6 +172,54 @@ CRAG（Corrective RAG）評価スコア
 
 ---
 
+## キーワード検索戦略
+
+SQLite FTS5とBM25アルゴリズムを使用したキーワード検索戦略。
+
+**実装場所**: `packages/shared/src/services/search/keyword-search-strategy.ts`
+
+### IKeywordSearchStrategy
+
+| メソッド            | 説明                                       |
+| ------------------- | ------------------------------------------ |
+| search()            | SearchQueryを受けてキーワード検索を実行    |
+| searchNear()        | 近接検索（NEAR演算子）を実行               |
+| getStrategyName()   | 戦略名を返す（"keyword"）                  |
+| getMetrics()        | StrategyMetricを返す                       |
+| normalizeScore()    | BM25スコアをシグモイド関数で0-1に正規化    |
+| buildFTS5Query()    | テキストからFTS5クエリ文字列を生成         |
+| toSearchResultItem()| FTS検索結果をSearchResultItemに変換        |
+
+### KeywordSearchError
+
+| type        | 説明                         |
+| ----------- | ---------------------------- |
+| validation  | クエリ長超過、無効形式       |
+| database    | DB接続エラー、クエリ実行失敗 |
+| timeout     | 検索タイムアウト（10秒超過） |
+
+### 定数
+
+| 定数名              | 値    | 説明                           |
+| ------------------- | ----- | ------------------------------ |
+| MAX_QUERY_LENGTH    | 1000  | クエリ最大文字数               |
+| DEFAULT_SCALE_FACTOR| 0.5   | BM25スコア正規化のスケール係数 |
+| SEARCH_TIMEOUT_MS   | 10000 | 検索タイムアウト（ミリ秒）     |
+
+### 検索モード
+
+| モード  | 判定条件                    | 検索関数                 |
+| ------- | --------------------------- | ------------------------ |
+| keyword | 通常クエリ                  | searchChunksByKeyword()  |
+| phrase  | ダブルクォートで囲まれた文字列 | searchChunksByPhrase()   |
+| near    | searchNear()メソッド呼び出し | searchChunksByNear()     |
+
+**テスト品質**: 35テストケース、93.39%カバレッジ達成
+
+**参照**: `docs/30-workflows/keyword-search-fts5/` - 詳細な設計・実装ドキュメント
+
+---
+
 ## 関連ドキュメント
 
 - [RAG・ファイル選択インターフェース](./interfaces-rag.md)
