@@ -1,0 +1,107 @@
+{
+  "taskId": "AGENT-004",
+  "taskName": "agent-execution-ui",
+  "featureName": "agent-execution-ui",
+  "status": "not_started",
+  "createdAt": "2026-01-12T00:00:00Z",
+  "lastUpdated": "2026-01-12T00:00:00Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "AGENT-001": "completed",
+    "AGENT-002": "completed",
+    "AGENT-003": "completed",
+    "AGENT-005": "parallel"
+  }
+}
