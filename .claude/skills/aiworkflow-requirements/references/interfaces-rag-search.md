@@ -220,6 +220,88 @@ SQLite FTS5とBM25アルゴリズムを使用したキーワード検索戦略�
 
 ---
 
+---
+
+## ベクトル検索戦略（VectorSearchStrategy）
+
+libSQL/TursoのDiskANNベクトルインデックスを使用したセマンティック検索戦略。
+
+**実装場所**: `packages/shared/src/services/search/strategies/vector-search-strategy.ts`
+
+### ISearchStrategy実装
+
+| 実装クラス                 | name       | 状態   | 説明                       |
+| -------------------------- | ---------- | ------ | -------------------------- |
+| KeywordSearchStrategy      | "keyword"  | 実装済 | FTS5/BM25全文検索          |
+| VectorSearchStrategy       | "semantic" | 実装済 | DiskANNベクトル検索        |
+| CachedVectorSearchStrategy | "semantic" | 実装済 | キャッシュ付きベクトル検索 |
+| GraphSearchStrategy        | "graph"    | 実装済 | GraphRAGクエリ検索         |
+
+### VectorSearchStrategyインターフェース
+
+| メソッド      | 戻り値                                     | 説明                     |
+| ------------- | ------------------------------------------ | ------------------------ |
+| search()      | Promise<Result<SearchResultItem[], Error>> | ベクトル検索実行         |
+| getMetrics()  | StrategyMetric                             | 検索メトリクス取得       |
+| name          | "semantic"                                 | 戦略名（readonly）       |
+
+### Result型
+
+```typescript
+type Result<T, E> = Ok<T> | Err<E>;
+
+class Ok<T> {
+  constructor(readonly value: T);
+  isOk(): this is Ok<T>;
+  isErr(): this is Err<never>;
+}
+
+class Err<E> {
+  constructor(readonly error: E);
+  isOk(): this is Ok<never>;
+  isErr(): this is Err<E>;
+}
+```
+
+### フィルタ対応
+
+| フィルタ       | VectorSearchStrategy | 説明                     |
+| -------------- | -------------------- | ------------------------ |
+| fileIds        | ✅ 対応              | 特定ファイルに限定       |
+| minRelevance   | ✅ 対応              | 最低類似度閾値（0-1）    |
+| limit          | ✅ 対応              | 最大結果数（1-100）      |
+| dateRange      | ❌ 未対応            | 将来対応予定             |
+| fileTypes      | ❌ 未対応            | 将来対応予定             |
+| workspaceIds   | ❌ 未対応            | 将来対応予定             |
+
+### 定数
+
+| 定数名              | 値    | 説明                      |
+| ------------------- | ----- | ------------------------- |
+| MAX_QUERY_LENGTH    | 1000  | クエリ最大文字数          |
+| MIN_LIMIT           | 1     | 最小取得件数              |
+| MAX_LIMIT           | 100   | 最大取得件数              |
+| DEFAULT_LIMIT       | 10    | デフォルト取得件数        |
+| DEFAULT_MIN_RELEVANCE | 0   | デフォルト最低類似度      |
+
+### CachedVectorSearchStrategy
+
+埋め込みキャッシュを使用した高速化版。
+
+| 設定項目       | デフォルト値 | 説明                     |
+| -------------- | ------------ | ------------------------ |
+| ttlMs          | 300000 (5分) | キャッシュ有効期間       |
+| maxSize        | 1000         | 最大キャッシュエントリ数 |
+
+### テスト品質
+
+- **83テストケース**
+- **98.71% Line Coverage**, **95.65% Branch Coverage**, **100% Function Coverage**
+
+**詳細参照**: `docs/30-workflows/vector-search-diskann/outputs/phase-12/api-specification.md`
+
+---
+
 ## 関連ドキュメント
 
 - [RAG・ファイル選択インターフェース](./interfaces-rag.md)

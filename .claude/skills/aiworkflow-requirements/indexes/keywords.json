@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-12T12:53:05.899Z",
-  "totalKeywords": 664,
+  "generated": "2026-01-12T13:36:39.655Z",
+  "totalKeywords": 667,
   "keywords": {
     "API": [
       "api-core.md",
@@ -537,6 +537,13 @@
       "architecture-rag.md"
     ],
     "Algorithm": [
+      "architecture-rag.md"
+    ],
+    "VectorSearchStrategy": [
+      "architecture-rag.md",
+      "interfaces-rag-search.md"
+    ],
+    "セマンティック検索": [
       "architecture-rag.md"
     ],
     "GraphRAG": [
@@ -1658,6 +1665,9 @@
       "interfaces-rag-search.md"
     ],
     "キーワード検索戦略": [
+      "interfaces-rag-search.md"
+    ],
+    "ベクトル検索戦略": [
       "interfaces-rag-search.md"
     ],
     "・ファイル選択": [
