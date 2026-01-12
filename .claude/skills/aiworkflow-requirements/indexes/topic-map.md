@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-11
+> 自動生成: 2026-01-12
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -140,6 +140,7 @@ node scripts/list-specs.mjs --topics
 | クエリ分類器 | L415 |
 | エンティティ抽出サービス (NER) | L459 |
 | コミュニティ検出サービス (Leiden Algorithm) | L533 |
+| GraphRAGクエリサービス | L650 |
 
 ---
 
@@ -284,6 +285,20 @@ node scripts/list-specs.mjs --topics
 | UIコンポーネント | L65 |
 | 実装場所 | L84 |
 | 関連ドキュメント | L93 |
+
+### references/interfaces-rag-graphrag-query.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 要件 | L26 |
+| 設計 | L51 |
+| インターフェース定義 | L106 |
+| 型定義 | L129 |
+| エラー型 | L172 |
+| 使用例 | L185 |
+| 実装ガイドライン | L249 |
+| 関連ドキュメント | L282 |
+| 変更履歴 | L293 |
 
 ### references/interfaces-rag-knowledge-graph-store.md
 

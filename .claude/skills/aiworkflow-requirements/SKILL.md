@@ -63,7 +63,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 | ---------------- | ---------- |
 | 概要・品質       | 4          |
 | アーキテクチャ   | 6          |
-| インターフェース | 6          |
+| インターフェース | 7          |
 | API設計          | 3          |
 | データベース     | 3          |
 | UI/UX            | 5          |
@@ -138,6 +138,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                              |
 | ------- | ---------- | ---------------------------------------------------- |
+| 6.4.0   | 2026-01-12 | GraphRAGクエリサービス仕様追加: interfaces-rag-graphrag-query.md新規、architecture-rag.md更新、topic-map.md更新 |
 | 6.3.0   | 2026-01-11 | コミュニティ要約仕様追加: interfaces-rag-community-summarization.md新規、interfaces-rag-community-detection.md更新（v1.1.0）、topic-map.md更新 |
 | 6.2.0   | 2026-01-10 | コミュニティ検出（Leiden）仕様追加: interfaces-rag-community-detection.md新規、interfaces-rag.md/architecture-rag.md/topic-map.md更新 |
 | 6.1.0   | 2026-01-06 | 500行超過ファイル分割（9ファイル→インデックス化）、70ファイル構成に拡張 |
