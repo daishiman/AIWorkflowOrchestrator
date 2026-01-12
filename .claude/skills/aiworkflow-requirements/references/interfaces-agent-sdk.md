@@ -778,6 +778,155 @@ interface ChangeContext {
 
 ---
 
+## Agent Execution Types (AGENT-005)
+
+Claude Agent SDK統合タスクで追加された型定義。
+
+### 実装ファイル
+
+| ファイル                                                  | 説明                   |
+| --------------------------------------------------------- | ---------------------- |
+| `packages/shared/src/types/agent-execution.ts`            | 共有型定義             |
+| `apps/desktop/src/main/services/agent/AgentExecutor.ts`   | 実行制御クラス         |
+| `apps/desktop/src/main/services/agent/ExecutionManager.ts`| 複数実行管理           |
+| `apps/desktop/src/main/services/agent/HooksFactory.ts`    | Hooks生成ファクトリ    |
+| `apps/desktop/src/main/services/agent/PermissionRules.ts` | 権限ルール定義         |
+| `apps/desktop/src/main/ipc/agentHandlers.ts`              | IPCハンドラー          |
+
+### AgentExecutionRequest
+
+SDK実行リクエスト。
+
+| プロパティ         | 型                  | 必須 | 説明                       |
+| ------------------ | ------------------- | ---- | -------------------------- |
+| `executionId`      | `string`            | -    | 実行ID（UUID、省略時自動生成） |
+| `skillId`          | `string`            | -    | スキルID                   |
+| `skillPath`        | `string`            | -    | スキルファイルパス         |
+| `prompt`           | `string`            | ✓    | ユーザーからのプロンプト   |
+| `workingDirectory` | `string`            | -    | 作業ディレクトリ           |
+| `tools`            | `string[]`          | -    | 許可するツール一覧         |
+| `permissionMode`   | `PermissionMode`    | -    | 権限モード                 |
+
+### AgentStreamMessage
+
+ストリーミングメッセージ。
+
+| プロパティ    | 型                       | 説明              |
+| ------------- | ------------------------ | ----------------- |
+| `executionId` | `string`                 | 実行ID            |
+| `type`        | `AgentStreamMessageType` | メッセージ種別    |
+| `content`     | `unknown`                | メッセージ内容    |
+| `timestamp`   | `number`                 | タイムスタンプ(ms)|
+
+### AgentStreamMessageType
+
+| 値         | 説明               |
+| ---------- | ------------------ |
+| `assistant`| アシスタント発言   |
+| `user`     | ユーザー発言       |
+| `result`   | 実行結果           |
+| `tool_use` | ツール使用         |
+| `status`   | ステータス通知     |
+| `error`    | エラー             |
+
+### AgentExecutionStatus
+
+実行状態。
+
+| プロパティ    | 型                    | 説明                 |
+| ------------- | --------------------- | -------------------- |
+| `executionId` | `string`              | 実行ID               |
+| `status`      | `ExecutionStatusType` | 現在のステータス     |
+| `startedAt`   | `number`              | 開始時刻（ms）       |
+| `completedAt` | `number?`             | 完了時刻（ms）       |
+| `error`       | `string?`             | エラーメッセージ     |
+
+### ExecutionStatusType
+
+| 値          | 説明     |
+| ----------- | -------- |
+| `running`   | 実行中   |
+| `completed` | 完了     |
+| `cancelled` | キャンセル |
+| `error`     | エラー   |
+
+### PermissionRequest
+
+Permission要求（UIダイアログ用）。
+
+| プロパティ    | 型                       | 説明                      |
+| ------------- | ------------------------ | ------------------------- |
+| `executionId` | `string`                 | 実行ID                    |
+| `requestId`   | `string`                 | リクエストID（応答用）    |
+| `toolName`    | `string`                 | ツール名                  |
+| `args`        | `Record<string, unknown>`| ツール引数                |
+| `reason`      | `string?`                | 確認理由                  |
+
+### PermissionResponse
+
+Permission応答。
+
+| プロパティ       | 型        | 説明                |
+| ---------------- | --------- | ------------------- |
+| `requestId`      | `string`  | リクエストID        |
+| `approved`       | `boolean` | 承認されたか        |
+| `rememberChoice` | `boolean?`| 選択を記憶するか    |
+| `rejectReason`   | `string?` | 拒否理由            |
+
+### PermissionRules
+
+権限ルールセット。
+
+| プロパティ | 型                 | 説明           |
+| ---------- | ------------------ | -------------- |
+| `allow`    | `PermissionRule[]` | 自動許可ルール |
+| `deny`     | `PermissionRule[]` | 拒否ルール     |
+| `ask`      | `PermissionRule[]` | 確認要求ルール |
+
+### AGENT_DEFAULTS
+
+デフォルト設定定数。
+
+| 定数                        | 値     | 説明                    |
+| --------------------------- | ------ | ----------------------- |
+| `DEFAULT_TOOLS`             | 6種類  | Read,Edit,Write,Bash,Glob,Grep |
+| `DEFAULT_PERMISSION_MODE`   | default| デフォルト権限モード    |
+| `PERMISSION_TIMEOUT_MS`     | 30000  | Permission応答タイムアウト(ms) |
+| `MAX_CONCURRENT_EXECUTIONS` | 5      | 最大同時実行数          |
+
+### DANGEROUS_PATTERNS
+
+危険パターン定数。
+
+| 定数             | 内容                                    |
+| ---------------- | --------------------------------------- |
+| `BASH_COMMANDS`  | rm -rf, sudo, chmod 777, dd if=, mkfs, >/dev/, フォークボム |
+| `PROTECTED_PATHS`| /etc/**, /usr/**, /var/**, **/.bashrc, **/.zshrc, **/.profile |
+
+### IPC チャンネル（Agent実行）
+
+| チャンネル                  | 方向            | 説明             |
+| --------------------------- | --------------- | ---------------- |
+| `agent:start`               | Renderer → Main | 実行開始         |
+| `agent:stop`                | Renderer → Main | 実行停止         |
+| `agent:stop-all`            | Renderer → Main | 全実行停止       |
+| `agent:get-active-executions` | Renderer → Main | 実行一覧取得   |
+| `agent:stream`              | Main → Renderer | ストリーミング   |
+| `agent:status`              | Main → Renderer | ステータス通知   |
+| `agent:permission`          | Main → Renderer | 権限確認要求     |
+| `agent:permission:res`      | Renderer → Main | 権限確認応答     |
+
+### 関連ドキュメント（AGENT-005）
+
+| ドキュメント           | パス                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------- |
+| 実装ガイド             | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` |
+| アーキテクチャ設計書   | `docs/30-workflows/claude-code-integration/outputs/phase-2/architecture-design.md`   |
+| 型定義書               | `docs/30-workflows/claude-code-integration/outputs/phase-2/type-definitions.md`      |
+| テスト仕様書           | `docs/30-workflows/claude-code-integration/outputs/phase-4/test-specification.md`    |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                    | パス                                                                             |

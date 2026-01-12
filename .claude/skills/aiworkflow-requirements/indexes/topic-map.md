@@ -162,6 +162,10 @@ node scripts/list-specs.mjs --topics
 | 設定定数 | L248 |
 | React Hook（useAgent） | L260 |
 | セッション管理 | L285 |
+| Skill Dashboard 型定義（AGENT-002） | L320 |
+| ModifierSkill（スライド逆同期機能） | L647 |
+| Agent Execution Types（AGENT-005） | L781 |
+| 関連ドキュメント | L930 |
 
 ### references/interfaces-auth.md
 
@@ -324,7 +328,8 @@ node scripts/list-specs.mjs --topics
 | 型ガード | L131 |
 | バリデーション | L141 |
 | クエリ分類器 | L155 |
-| 関連ドキュメント | L175 |
+| キーワード検索戦略 | L175 |
+| 関連ドキュメント | L223 |
 
 ### references/interfaces-rag.md
 

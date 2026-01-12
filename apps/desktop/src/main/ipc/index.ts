@@ -17,6 +17,7 @@ import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
 import { registerLLMHandlers } from "../handlers/llm";
 import { registerHistoryHandlers } from "./historyHandlers";
 import { createHistoryService } from "../services/HistoryService";
+import { registerAgentExecutionHandlers } from "./agentHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -70,6 +71,9 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Register History handlers
   const historyService = createHistoryService();
   registerHistoryHandlers(mainWindow, historyService);
+
+  // Register Agent Execution handlers (AGENT-005)
+  registerAgentExecutionHandlers(mainWindow);
 }
 
 // Re-export for menu actions

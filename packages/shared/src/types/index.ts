@@ -15,6 +15,9 @@ export * from "./llm-metadata";
 // スキル管理型定義
 export * from "./skill";
 
+// Agent Execution型定義 (AGENT-005)
+export * from "./agent-execution";
+
 // ファイル選択型定義
 export type {
   FileExtension,

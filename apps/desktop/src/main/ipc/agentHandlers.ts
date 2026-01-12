@@ -1,0 +1,226 @@
+/**
+ * Agent Execution IPC Handlers
+ *
+ * Claude Agent SDK統合のためのIPCハンドラー
+ * ExecutionManagerを介してエージェント実行を管理
+ *
+ * @see docs/30-workflows/claude-code-integration/outputs/phase-2/architecture-design.md
+ */
+import { ipcMain, IpcMainInvokeEvent, BrowserWindow } from "electron";
+import { IPC_CHANNELS } from "../../preload/channels";
+import { ExecutionManager } from "../services/agent";
+import {
+  validateIpcSender,
+  toIPCValidationError,
+} from "../infrastructure/security/ipc-validator";
+import type {
+  AgentExecutionRequest,
+  PermissionResponse,
+  PermissionRules,
+} from "@repo/shared";
+
+// シングルトンのExecutionManager
+let executionManager: ExecutionManager | null = null;
+
+/**
+ * エージェント実行IPCハンドラーを登録する
+ * @param mainWindow メインウィンドウ
+ * @param customRules カスタム権限ルール（オプション）
+ */
+export function registerAgentExecutionHandlers(
+  mainWindow: BrowserWindow,
+  customRules?: PermissionRules,
+): void {
+  // ExecutionManagerを初期化
+  executionManager = new ExecutionManager();
+
+  // agent:start - エージェント実行を開始
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_EXECUTION_START,
+    async (event: IpcMainInvokeEvent, request: AgentExecutionRequest) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.AGENT_EXECUTION_START,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (!request?.prompt || typeof request.prompt !== "string") {
+        throw { code: "VALIDATION_ERROR", message: "prompt must be a string" };
+      }
+
+      if (!executionManager) {
+        throw {
+          code: "NOT_INITIALIZED",
+          message: "ExecutionManager not initialized",
+        };
+      }
+
+      const executionId = await executionManager.startExecution(
+        request,
+        mainWindow,
+        customRules,
+      );
+
+      return { executionId };
+    },
+  );
+
+  // agent:stop - 特定の実行を停止
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_EXECUTION_STOP,
+    async (event: IpcMainInvokeEvent, args: { executionId: string }) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.AGENT_EXECUTION_STOP,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (typeof args?.executionId !== "string") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "executionId must be a string",
+        };
+      }
+
+      if (!executionManager) {
+        throw {
+          code: "NOT_INITIALIZED",
+          message: "ExecutionManager not initialized",
+        };
+      }
+
+      const success = executionManager.stopExecution(args.executionId);
+      return { success };
+    },
+  );
+
+  // agent:stop-all - すべての実行を停止
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_EXECUTION_STOP_ALL,
+    async (event: IpcMainInvokeEvent) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.AGENT_EXECUTION_STOP_ALL,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (!executionManager) {
+        throw {
+          code: "NOT_INITIALIZED",
+          message: "ExecutionManager not initialized",
+        };
+      }
+
+      executionManager.stopAllExecutions();
+      return { success: true };
+    },
+  );
+
+  // agent:get-active-executions - アクティブな実行一覧を取得
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_EXECUTION_GET_ACTIVE,
+    async (event: IpcMainInvokeEvent) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.AGENT_EXECUTION_GET_ACTIVE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (!executionManager) {
+        throw {
+          code: "NOT_INITIALIZED",
+          message: "ExecutionManager not initialized",
+        };
+      }
+
+      const executions = executionManager.getActiveExecutions();
+      return { executions };
+    },
+  );
+
+  // agent:permission:res - Permission応答を受け取る
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_EXECUTION_PERMISSION_RES,
+    async (event: IpcMainInvokeEvent, response: PermissionResponse) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.AGENT_EXECUTION_PERMISSION_RES,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (typeof response?.requestId !== "string") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "requestId must be a string",
+        };
+      }
+
+      if (typeof response?.approved !== "boolean") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "approved must be a boolean",
+        };
+      }
+
+      if (!executionManager) {
+        throw {
+          code: "NOT_INITIALIZED",
+          message: "ExecutionManager not initialized",
+        };
+      }
+
+      // executionIdを取得するために、すべてのアクティブな実行を試行
+      const activeExecutions = executionManager.getActiveExecutions();
+      let resolved = false;
+
+      for (const executionId of activeExecutions) {
+        if (executionManager.resolvePermission(executionId, response)) {
+          resolved = true;
+          break;
+        }
+      }
+
+      return { success: resolved };
+    },
+  );
+}
+
+/**
+ * エージェント実行IPCハンドラーを解除する
+ */
+export function unregisterAgentExecutionHandlers(): void {
+  // すべての実行を停止
+  if (executionManager) {
+    executionManager.stopAllExecutions();
+    executionManager = null;
+  }
+
+  // ハンドラーを解除
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_EXECUTION_START);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_EXECUTION_STOP);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_EXECUTION_STOP_ALL);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_EXECUTION_GET_ACTIVE);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_EXECUTION_PERMISSION_RES);
+}
+
+/**
+ * ExecutionManagerのインスタンスを取得（テスト用）
+ */
+export function getExecutionManager(): ExecutionManager | null {
+  return executionManager;
+}
