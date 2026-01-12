@@ -23,6 +23,7 @@
     "infrastructure/**/*.ts",
     "types/**/*.ts",
     "src/**/*.ts",
+    "services/**/*.ts",
     "utils/**/*.ts",
     "schemas/**/*.ts"
   ],

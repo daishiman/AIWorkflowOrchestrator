@@ -112,12 +112,13 @@ node scripts/list-specs.mjs --topics
 | 主要コンポーネント | L15 |
 | ログ記録サービス（ConversionLogger） | L27 |
 | 履歴管理サービス（HistoryService） | L72 |
-| アーキテクチャパターン | L119 |
-| 実装済みコンバーター | L129 |
-| 品質指標 | L167 |
-| 新規コンバーター追加手順 | L176 |
-| コンバーター優先度ガイドライン | L186 |
-| パフォーマンス要件 | L195 |
+| Electron統合（history-service-db-integration） | L119 |
+| アーキテクチャパターン | L215 |
+| 実装済みコンバーター | L225 |
+| 品質指標 | L263 |
+| 新規コンバーター追加手順 | L272 |
+| コンバーター優先度ガイドライン | L282 |
+| パフォーマンス要件 | L291 |
 
 ### references/architecture-monorepo.md
 
@@ -388,6 +389,7 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| ConversionService API | L8 |
 | HistoryService API | L155 |
+| Electron HistoryService API | L328 |
 
 ### references/api-internal-embedding.md
 
