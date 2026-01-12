@@ -1,5 +1,5 @@
 {
-  "generated": "2026-01-12T12:54:09.085Z",
+  "generated": "2026-01-12T13:38:20.888Z",
   "totalKeywords": 664,
   "keywords": {
     "API": [
@@ -552,7 +552,8 @@
       "claude-code-agents-spec.md",
       "claude-code-agents-workflow.md",
       "claude-code-agents.md",
-      "interfaces-agent-sdk.md"
+      "interfaces-agent-sdk.md",
+      "ui-ux-components.md"
     ],
     "仕様詳細": [
       "claude-code-agents-spec.md"
@@ -1311,6 +1312,7 @@
     ],
     "UI": [
       "glossary.md",
+      "interfaces-agent-sdk.md",
       "interfaces-rag-file-selection.md",
       "ui-ux-advanced.md",
       "ui-ux-components.md",
@@ -1414,7 +1416,8 @@
       "interfaces-agent-sdk.md"
     ],
     "AGENT": [
-      "interfaces-agent-sdk.md"
+      "interfaces-agent-sdk.md",
+      "ui-ux-components.md"
     ],
     "ModifierSkill": [
       "interfaces-agent-sdk.md"
@@ -1423,7 +1426,8 @@
       "interfaces-agent-sdk.md"
     ],
     "Execution": [
-      "interfaces-agent-sdk.md"
+      "interfaces-agent-sdk.md",
+      "ui-ux-components.md"
     ],
     "Types": [
       "interfaces-agent-sdk.md",

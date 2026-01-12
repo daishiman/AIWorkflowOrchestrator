@@ -162,10 +162,6 @@ node scripts/list-specs.mjs --topics
 | 設定定数 | L248 |
 | React Hook（useAgent） | L260 |
 | セッション管理 | L285 |
-| Skill Dashboard 型定義（AGENT-002） | L320 |
-| ModifierSkill（スライド逆同期機能） | L647 |
-| Agent Execution Types（AGENT-005） | L781 |
-| 関連ドキュメント | L930 |
 
 ### references/interfaces-auth.md
 
@@ -494,6 +490,7 @@ node scripts/list-specs.mjs --topics
 | Apple HIG 準拠（Electron向け） | L51 |
 | インタラクション設計 | L106 |
 | アクセシビリティ（WCAG 2.1 AA準拠） | L196 |
+| Agent Execution UI コンポーネント（AGENT-004） | L257 |
 
 ### references/ui-ux-design-system.md
 
