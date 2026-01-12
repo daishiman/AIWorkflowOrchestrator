@@ -148,10 +148,12 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "not_started",
-      "startedAt": null,
-      "completedAt": null,
-      "artifacts": []
+      "status": "completed",
+      "startedAt": "2026-01-12T19:00:00Z",
+      "completedAt": "2026-01-12T19:30:00Z",
+      "artifacts": [
+        "PR #226: https://github.com/daishiman/AIWorkflowOrchestrator/pull/226"
+      ]
     }
   },
   "dependencies": {
