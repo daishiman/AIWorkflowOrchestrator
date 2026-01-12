@@ -128,6 +128,52 @@
 - ファイルシステムへの無制限アクセス
 - シェルコマンドの無制限実行
 
+### スキル管理セキュリティ
+
+**実装場所**: `apps/desktop/src/main/services/skill/SkillScanner.ts`
+
+スキル管理機能では、ファイルシステムアクセスに関する追加のセキュリティ対策を実装する。
+
+**パストラバーサル防止**:
+
+| チェック項目         | 実装                           | エラーコード              |
+| -------------------- | ------------------------------ | ------------------------- |
+| パス正規化           | `path.normalize()` + `path.resolve()` | -                         |
+| ベースパス検証       | `startsWith(basePath)`         | PATH_TRAVERSAL_DETECTED   |
+| `../` パターン検出   | 相対パスの上位参照を拒否       | PATH_TRAVERSAL_DETECTED   |
+
+```typescript
+// 実装パターン
+private validatePath(targetPath: string): void {
+  const normalized = path.normalize(targetPath);
+  const resolved = path.resolve(this.basePath, normalized);
+
+  if (!resolved.startsWith(this.basePath)) {
+    throw new Error("PATH_TRAVERSAL_DETECTED");
+  }
+}
+```
+
+**シンボリックリンク検証**:
+
+| チェック項目         | 実装                           | 対応                     |
+| -------------------- | ------------------------------ | ------------------------ |
+| リンク検出           | `fs.lstat().isSymbolicLink()`  | リンク先を検証           |
+| リンク先解決         | `fs.realpath()`                | ベースパス外なら除外     |
+| 循環リンク           | 検出時は除外                   | エラーログを出力         |
+
+**IPCチャネル検証**:
+
+全てのスキル管理IPCハンドラは`validateIpcSender`を使用して呼び出し元を検証する。
+
+| チャネル              | 検証項目                       |
+| --------------------- | ------------------------------ |
+| `skill:list-available`| sender検証 + パストラバーサル検証 |
+| `skill:list-imported` | sender検証                     |
+| `skill:import`        | sender検証 + skillIds検証      |
+| `skill:remove`        | sender検証 + skillId検証       |
+| `skill:get-detail`    | sender検証 + skillId検証       |
+
 ### 自動更新のセキュリティ
 
 | 項目         | 要件                         |

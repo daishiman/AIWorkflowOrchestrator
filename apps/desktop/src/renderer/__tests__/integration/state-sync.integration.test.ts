@@ -32,6 +32,7 @@ describe("State Sync - agent slice", () => {
         path: "/path",
         triggers: ["test"],
         anchors: [],
+        lastModified: new Date(),
       };
 
       // Set up in agent view
@@ -86,6 +87,7 @@ describe("State Sync - agent slice", () => {
           path: "/path",
           triggers: [],
           anchors: [],
+          lastModified: new Date(),
         },
       ]);
       useAppStore.getState().setSkillFilter("test");
@@ -105,6 +107,7 @@ describe("State Sync - agent slice", () => {
         path: "/path",
         triggers: ["stable"],
         anchors: [],
+        lastModified: new Date(),
       };
 
       // Set up agent state
@@ -144,6 +147,7 @@ describe("State Sync - agent slice", () => {
           path: "/path",
           triggers: [],
           anchors: [],
+          lastModified: new Date(),
         },
       ]);
       useAppStore.getState().setExecutionStatus("executing");
@@ -167,6 +171,7 @@ describe("State Sync - agent slice", () => {
         path: "/path",
         triggers: [],
         anchors: [],
+        lastModified: new Date(),
       };
 
       // Set up state
@@ -202,6 +207,7 @@ describe("State Sync - agent slice", () => {
           path: "/path",
           triggers: [],
           anchors: [],
+          lastModified: new Date(),
         },
       ]);
 
@@ -230,6 +236,7 @@ describe("State Sync - agent slice", () => {
           path: "/p1",
           triggers: [],
           anchors: [],
+          lastModified: new Date(),
         },
         {
           id: "s2",
@@ -239,6 +246,7 @@ describe("State Sync - agent slice", () => {
           path: "/p2",
           triggers: [],
           anchors: [],
+          lastModified: new Date(),
         },
       ]);
       useAppStore.getState().selectSkill({
@@ -249,6 +257,7 @@ describe("State Sync - agent slice", () => {
         path: "/p1",
         triggers: [],
         anchors: [],
+        lastModified: new Date(),
       });
       useAppStore.getState().setSkillFilter("Skill");
       useAppStore.getState().setSkillCategory("testing");

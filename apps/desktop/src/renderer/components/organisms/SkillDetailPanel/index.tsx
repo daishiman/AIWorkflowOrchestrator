@@ -125,10 +125,10 @@ export const SkillDetailPanel: React.FC<SkillDetailPanelProps> = ({
           <ul className="space-y-2">
             {skill.anchors.map((anchor, index) => (
               <li
-                key={`${anchor.name}-${index}`}
+                key={`${anchor.source}-${index}`}
                 className="p-2 rounded bg-slate-700/30 border border-slate-700/50"
               >
-                <p className="font-medium text-slate-200">{anchor.name}</p>
+                <p className="font-medium text-slate-200">{anchor.source}</p>
                 <p className="text-sm text-slate-400">
                   適用: {anchor.application}
                 </p>

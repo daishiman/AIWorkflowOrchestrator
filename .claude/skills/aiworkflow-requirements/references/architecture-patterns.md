@@ -165,3 +165,88 @@
 - 全アクションのテストを実装
 
 ---
+
+## スキル管理サービス（Desktop Main Process）
+
+### 概要
+
+スキル管理バックエンドはElectronのMain Processで動作し、SKILL.mdファイルで定義されたスキルのスキャン・インポート・管理を担当する。Facadeパターンを採用し、外部からは単一のサービスインターフェースを提供する。
+
+**実装場所**: `apps/desktop/src/main/services/skill/`
+
+### コンポーネント構成
+
+```
+Main Process (Electron)
+├── SkillService (Facade - エントリポイント)
+│   ├── SkillScanner (スキル検出・パス検証)
+│   ├── SkillParser (SKILL.md解析)
+│   └── SkillImportManager (インポート管理・永続化)
+└── IPC Handlers (Renderer通信)
+    └── skillHandlers.ts
+```
+
+### ファイル構成
+
+| ファイル                 | 責務                           |
+| ------------------------ | ------------------------------ |
+| `SkillScanner.ts`        | ディレクトリスキャン・パス検証 |
+| `SkillParser.ts`         | SKILL.md解析・構造化           |
+| `SkillImportManager.ts`  | インポート状態管理・永続化     |
+| `SkillService.ts`        | Facadeサービス（外部API）      |
+| `index.ts`               | エクスポート                   |
+| `skillHandlers.ts`       | IPCハンドラ（ipc/配下）        |
+
+### 型定義
+
+| 型名                | 定義場所                           | 説明                     |
+| ------------------- | ---------------------------------- | ------------------------ |
+| `Skill`             | `packages/shared/src/types/skill.ts` | スキル情報               |
+| `Anchor`            | `packages/shared/src/types/skill.ts` | 知識のアンカー           |
+| `EnvironmentConfig` | `packages/shared/src/types/skill.ts` | 環境設定                 |
+| `SkillScanResult`   | `packages/shared/src/types/skill.ts` | スキャン結果             |
+| `ImportResult`      | `packages/shared/src/types/skill.ts` | インポート結果           |
+| `RemoveResult`      | `packages/shared/src/types/skill.ts` | 削除結果                 |
+
+### IPC APIチャネル
+
+| チャネル              | 引数                | 戻り値             | 説明                     |
+| --------------------- | ------------------- | ------------------ | ------------------------ |
+| `skill:list-available`| `basePath: string`  | `Skill[]`          | スキルスキャン           |
+| `skill:list-imported` | なし                | `Skill[]`          | インポート済み取得       |
+| `skill:import`        | `skillIds: string[]`| `ImportResult`     | スキルインポート         |
+| `skill:remove`        | `skillId: string`   | `RemoveResult`     | インポート解除           |
+| `skill:get-detail`    | `skillId: string`   | `Skill \| null`    | スキル詳細取得           |
+
+### データフロー
+
+```
+1. Renderer → IPC Channel → Main Process
+2. Main Process → SkillService → Scanner/Parser/Manager
+3. 結果 → IPC Channel → Renderer
+```
+
+### SkillService（Facade）API
+
+| メソッド              | 引数                | 戻り値               | 説明               |
+| --------------------- | ------------------- | -------------------- | ------------------ |
+| `scanAvailableSkills` | `basePath: string`  | `Promise<Skill[]>`   | スキルスキャン     |
+| `getImportedSkills`   | -                   | `Promise<Skill[]>`   | インポート済み取得 |
+| `importSkills`        | `skillIds: string[]`| `Promise<ImportResult>` | インポート     |
+| `removeSkill`         | `skillId: string`   | `Promise<RemoveResult>` | 削除           |
+| `getSkillById`        | `skillId: string`   | `Promise<Skill \| null>` | 詳細取得     |
+| `clearCache`          | -                   | `void`               | キャッシュクリア   |
+
+### キャッシュ機構
+
+- スキャン結果はメモリにキャッシュ（TTLベース無効化）
+- `clearCache()`で手動クリア可能
+- アプリ再起動でキャッシュはクリア
+
+### 永続化
+
+- インポート状態は`electron-store`で永続化
+- アプリ再起動後もインポート状態を維持
+- ストレージキー: `importedSkillIds`
+
+---

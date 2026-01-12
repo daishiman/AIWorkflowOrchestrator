@@ -129,6 +129,7 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 機能追加パターン | L8 |
 | Zustand Sliceパターン（Desktop） | L75 |
+| スキル管理サービス（Desktop Main Process） | L169 |
 
 ### references/architecture-rag.md
 
@@ -623,7 +624,7 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| API セキュリティ | L10 |
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
-| 関連ドキュメント | L142 |
+| 関連ドキュメント | L188 |
 
 ### references/security-implementation.md
 

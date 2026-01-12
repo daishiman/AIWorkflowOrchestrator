@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-12T01:39:28.083Z",
-  "totalKeywords": 659,
+  "generated": "2026-01-11T22:41:47.957Z",
+  "totalKeywords": 661,
   "keywords": {
     "API": [
       "api-core.md",
@@ -106,7 +106,6 @@
       "api-endpoints.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
@@ -168,7 +167,6 @@
       "interfaces-converter.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "security-implementation.md",
@@ -199,8 +197,7 @@
       "api-internal-chunk-search.md",
       "database-architecture.md",
       "interfaces-rag-community-detection.md",
-      "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md"
+      "interfaces-rag-community-summarization.md"
     ],
     "データベース層": [
       "api-internal-chunk-search.md"
@@ -299,7 +296,6 @@
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
       "interfaces-rag-file-selection.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag-search.md",
       "interfaces-rag.md",
@@ -477,6 +473,15 @@
       "claude-code-skills-resources.md",
       "ui-ux-advanced.md"
     ],
+    "スキル管理サービス": [
+      "architecture-patterns.md"
+    ],
+    "Main": [
+      "architecture-patterns.md"
+    ],
+    "Process": [
+      "architecture-patterns.md"
+    ],
     "Knowledge": [
       "architecture-rag.md",
       "database-implementation.md",
@@ -495,8 +500,7 @@
       "interfaces-agent-sdk.md",
       "interfaces-llm.md",
       "interfaces-rag-community-detection.md",
-      "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md"
+      "interfaces-rag-community-summarization.md"
     ],
     "実装": [
       "architecture-rag.md",
@@ -529,15 +533,6 @@
     ],
     "Algorithm": [
       "architecture-rag.md"
-    ],
-    "GraphRAG": [
-      "architecture-rag.md",
-      "database-implementation.md",
-      "interfaces-rag-graphrag-query.md"
-    ],
-    "クエリサービス": [
-      "architecture-rag.md",
-      "interfaces-rag-graphrag-query.md"
     ],
     "Agent": [
       "claude-code-agents-spec.md",
@@ -735,7 +730,6 @@
       "claude-code-overview.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "ui-ux-history-panel.md"
     ],
@@ -970,6 +964,9 @@
       "database-implementation.md"
     ],
     "テーブル群": [
+      "database-implementation.md"
+    ],
+    "GraphRAG": [
       "database-implementation.md"
     ],
     "基盤": [
@@ -1353,7 +1350,6 @@
       "interfaces-converter.md",
       "interfaces-core.md",
       "interfaces-llm.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
       "interfaces-workflow.md"
@@ -1371,7 +1367,6 @@
       "interfaces-agent-sdk.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md"
     ],
@@ -1586,19 +1581,16 @@
     "要件": [
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md"
     ],
     "インターフェース定義": [
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md"
     ],
     "実装ガイドライン": [
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md"
     ],
     "コミュニティ要約インターフェース仕様": [

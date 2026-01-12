@@ -12,12 +12,13 @@ const mockSkill: Skill = {
   triggers: ["tdd", "test"],
   anchors: [
     {
-      name: "TDD by Example",
+      source: "TDD by Example",
       application: "Red-Green-Refactor",
       purpose: "テスト駆動開発",
     },
   ],
   category: "testing",
+  lastModified: new Date("2024-01-01"),
 };
 
 describe("SkillCard", () => {

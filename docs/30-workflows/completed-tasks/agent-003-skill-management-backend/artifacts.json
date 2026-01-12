@@ -1,0 +1,235 @@
+{
+  "taskId": "AGENT-003",
+  "taskName": "スキル管理バックエンド",
+  "branch": "task/agent-003-skill-management-backend",
+  "createdAt": "2026-01-11",
+  "status": "実施中",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-11T22:35:00Z",
+      "document": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/functional-requirements.md",
+        "outputs/phase-1/skill-md-spec.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/ipc-contract.md",
+        "outputs/phase-1/requirements.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-11T23:10:00Z",
+      "document": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/type-definitions.md",
+        "outputs/phase-2/class-design.md",
+        "outputs/phase-2/ipc-design.md",
+        "outputs/phase-2/security-design.md",
+        "outputs/phase-2/design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-11T23:25:00Z",
+      "document": "phase-3-design-review.md",
+      "outputs": [
+        "outputs/phase-3/pattern-review.md",
+        "outputs/phase-3/security-review.md",
+        "outputs/phase-3/ipc-review.md",
+        "outputs/phase-3/error-handling-review.md",
+        "outputs/phase-3/review-summary.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（Red）",
+      "status": "completed",
+      "completedAt": "2026-01-11T23:50:00Z",
+      "document": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-red-status.md",
+        "apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts",
+        "apps/desktop/src/main/services/skill/__tests__/SkillParser.test.ts",
+        "apps/desktop/src/main/services/skill/__tests__/SkillImportManager.test.ts",
+        "apps/desktop/src/main/services/skill/__tests__/SkillService.test.ts",
+        "apps/desktop/src/main/services/skill/__tests__/integration.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/skillHandlers.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（Green）",
+      "status": "completed",
+      "completedAt": "2026-01-12T00:00:00Z",
+      "document": "phase-5-implementation.md",
+      "outputs": [
+        "outputs/phase-5/test-green-status.md",
+        "apps/desktop/src/main/services/skill/SkillScanner.ts",
+        "apps/desktop/src/main/services/skill/SkillParser.ts",
+        "apps/desktop/src/main/services/skill/SkillImportManager.ts",
+        "apps/desktop/src/main/services/skill/SkillService.ts",
+        "apps/desktop/src/main/services/skill/index.ts",
+        "apps/desktop/src/main/ipc/skillHandlers.ts"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-12T00:10:00Z",
+      "document": "phase-6-test-expansion.md",
+      "outputs": [
+        "outputs/phase-6/coverage-analysis.md",
+        "outputs/phase-6/coverage-final.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-12T00:15:00Z",
+      "document": "phase-7-coverage-check.md",
+      "outputs": [
+        "outputs/phase-7/unit-coverage-result.md",
+        "outputs/phase-7/integration-coverage-result.md",
+        "outputs/phase-7/test-quality-check.md",
+        "outputs/phase-7/integration-test-result.md",
+        "outputs/phase-7/gate-result.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-12T00:20:00Z",
+      "document": "phase-8-refactoring.md",
+      "outputs": [
+        "outputs/phase-8/code-analysis.md",
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/refactoring-test-result.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-12T06:50:00Z",
+      "document": "phase-9-quality.md",
+      "outputs": [
+        "outputs/phase-9/eslint-result.md",
+        "outputs/phase-9/typecheck-result.md",
+        "outputs/phase-9/security-check.md",
+        "outputs/phase-9/performance-check.md",
+        "outputs/phase-9/final-test-result.md",
+        "outputs/phase-9/quality-summary.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-12T07:00:00Z",
+      "document": "phase-10-final-review.md",
+      "outputs": [
+        "outputs/phase-10/requirements-check.md",
+        "outputs/phase-10/design-check.md",
+        "outputs/phase-10/acceptance-criteria-check.md",
+        "outputs/phase-10/code-quality-check.md",
+        "outputs/phase-10/integration-test-check.md",
+        "outputs/phase-10/final-review-result.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-01-12T07:10:00Z",
+      "document": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/test-environment.md",
+        "outputs/phase-11/scan-test-result.md",
+        "outputs/phase-11/import-test-result.md",
+        "outputs/phase-11/get-imported-test-result.md",
+        "outputs/phase-11/detail-test-result.md",
+        "outputs/phase-11/remove-test-result.md",
+        "outputs/phase-11/security-test-result.md",
+        "outputs/phase-11/persistence-test-result.md",
+        "outputs/phase-11/manual-test-summary.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-12T07:20:00Z",
+      "document": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/api-reference.md",
+        "outputs/phase-12/skill-md-format.md",
+        "outputs/phase-12/troubleshooting.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/document-summary.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "document": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  ],
+  "expectedArtifacts": {
+    "implementation": [
+      "apps/desktop/src/main/services/skill/SkillScanner.ts",
+      "apps/desktop/src/main/services/skill/SkillParser.ts",
+      "apps/desktop/src/main/services/skill/SkillImportManager.ts",
+      "apps/desktop/src/main/services/skill/SkillService.ts",
+      "apps/desktop/src/main/services/skill/index.ts",
+      "apps/desktop/src/main/ipc/skillHandlers.ts"
+    ],
+    "tests": [
+      "apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/SkillParser.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/SkillImportManager.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/SkillService.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/integration.test.ts",
+      "apps/desktop/src/main/ipc/__tests__/skillHandlers.test.ts"
+    ],
+    "types": ["packages/shared/src/types/agent.ts"],
+    "documentation": [
+      "outputs/phase-12/implementation-guide.md",
+      "outputs/phase-12/api-reference.md",
+      "outputs/phase-12/skill-md-format.md",
+      "outputs/phase-12/troubleshooting.md",
+      "outputs/phase-12/unassigned-task-report.md",
+      "outputs/phase-12/documentation-update-log.md",
+      "outputs/phase-13/final-check.md",
+      "outputs/phase-13/pr-review.md",
+      "outputs/phase-13/completion-report.md"
+    ]
+  },
+  "ipcChannels": [
+    "skill:list-available",
+    "skill:list-imported",
+    "skill:import",
+    "skill:remove",
+    "skill:get-detail"
+  ],
+  "qualityTargets": {
+    "lineCoverage": "80%+",
+    "branchCoverage": "60%+",
+    "functionCoverage": "80%+",
+    "eslintErrors": 0,
+    "typeErrors": 0
+  }
+}

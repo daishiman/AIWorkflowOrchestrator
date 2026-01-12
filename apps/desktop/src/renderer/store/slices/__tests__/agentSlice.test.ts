@@ -32,6 +32,7 @@ describe("agentSlice", () => {
     triggers: ["test", "unit"],
     anchors: [],
     category: "testing",
+    lastModified: new Date("2024-01-01"),
   };
 
   const mockSkill2: Skill = {
@@ -42,6 +43,7 @@ describe("agentSlice", () => {
     path: "/path/to/another-skill",
     triggers: ["another"],
     anchors: [],
+    lastModified: new Date("2024-01-01"),
   };
 
   describe("初期状態", () => {

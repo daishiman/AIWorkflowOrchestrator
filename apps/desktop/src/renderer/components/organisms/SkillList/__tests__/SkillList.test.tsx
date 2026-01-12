@@ -13,6 +13,7 @@ const mockSkills: Skill[] = [
     triggers: ["tdd", "test"],
     anchors: [],
     category: "testing",
+    lastModified: new Date("2024-01-01"),
   },
   {
     id: "skill-2",
@@ -23,6 +24,7 @@ const mockSkills: Skill[] = [
     triggers: ["review", "code"],
     anchors: [],
     category: "development",
+    lastModified: new Date("2024-01-01"),
   },
 ];
 
@@ -311,6 +313,7 @@ describe("SkillList", () => {
         triggers: [`trigger-${i}`],
         anchors: [],
         category: "testing" as const,
+        lastModified: new Date("2024-01-01"),
       }));
       render(
         <SkillList
@@ -370,6 +373,7 @@ describe("SkillList", () => {
           triggers: ["helper"],
           anchors: [],
           category: "testing",
+          lastModified: new Date("2024-01-01"),
         },
       ];
       render(

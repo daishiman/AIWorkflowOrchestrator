@@ -67,6 +67,7 @@ describe("Navigation Integration - agent view", () => {
           path: "/path",
           triggers: ["test"],
           anchors: [],
+          lastModified: new Date(),
         },
       ]);
       useAppStore.getState().setSkillFilter("test");
@@ -93,6 +94,7 @@ describe("Navigation Integration - agent view", () => {
         path: "/path",
         triggers: ["test"],
         anchors: [],
+        lastModified: new Date(),
       };
 
       useAppStore.getState().setCurrentView("agent");
