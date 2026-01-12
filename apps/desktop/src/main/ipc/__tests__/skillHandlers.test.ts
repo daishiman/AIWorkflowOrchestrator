@@ -107,6 +107,13 @@ vi.mock("../../infrastructure/security/ipc-validator.js", () => ({
     ) => handler,
   ),
   validateIpcSender: vi.fn().mockReturnValue(true),
+  toIPCValidationError: vi.fn().mockImplementation((result) => ({
+    success: false,
+    error: {
+      code: result.errorCode ?? "IPC_UNAUTHORIZED",
+      message: result.errorMessage ?? "Unauthorized IPC call",
+    },
+  })),
 }));
 
 // Import after mocks
