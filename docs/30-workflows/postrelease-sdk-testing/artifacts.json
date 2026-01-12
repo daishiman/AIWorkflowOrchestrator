@@ -2,20 +2,32 @@
   "taskId": "AGENT-005-POSTRELEASE",
   "taskName": "postrelease-sdk-testing",
   "category": "品質保証",
-  "status": "待機中",
+  "status": "進行中",
   "createdAt": "2026-01-12T00:00:00Z",
-  "lastUpdated": "2026-01-12T00:00:00Z",
-  "blockedBy": "@anthropic-ai/claude-agent-sdk pnpmリリース",
+  "lastUpdated": "2026-01-12T14:00:00Z",
+  "blockedBy": null,
   "phases": {
     "1": {
       "name": "要件定義",
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "completedAt": "2026-01-12T14:00:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
     },
     "2": {
       "name": "設計",
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "completedAt": "2026-01-12T15:00:00Z",
+      "artifacts": [
+        "outputs/phase-2/test-architecture.md",
+        "outputs/phase-2/e2e-test-scenarios.md",
+        "outputs/phase-2/performance-test-design.md",
+        "outputs/phase-2/stability-test-design.md",
+        "outputs/phase-2/network-test-design.md"
+      ]
     },
     "3": {
       "name": "設計レビューゲート",

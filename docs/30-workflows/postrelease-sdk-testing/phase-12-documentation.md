@@ -164,6 +164,68 @@ Post-release SDK統合テストを通じて得られた知見、テスト結果�
 
 ---
 
+### タスク6: 未タスク検出【必須】
+
+**目的**: 技術的負債を可視化し、継続的改善のための未タスクを検出する。
+
+**実行手順**:
+
+1. Phase成果物からMINOR判定の指摘事項を抽出
+   ```bash
+   grep -r "MINOR\|将来対応\|TODO\|FIXME" outputs/
+   ```
+2. コードベースのTODO/FIXMEを検出
+   ```bash
+   grep -rn "TODO\|FIXME\|HACK\|XXX" apps/desktop/src/ packages/
+   ```
+3. 検出結果を分類・整理
+4. 未タスク指示書を作成（該当する場合）
+
+**検出ソース**:
+
+| ソース                 | 確認項目                      | Grepパターン例                             |
+| ---------------------- | ----------------------------- | ------------------------------------------ |
+| Phase 3レビュー結果    | MINOR判定の指摘事項           | `outputs/phase-3/`                         |
+| Phase 9レビュー結果    | MINOR判定の指摘事項           | `outputs/phase-9/`                         |
+| Phase 11手動テスト結果 | スコープ外の発見事項          | `outputs/phase-11/`                        |
+| 各Phase成果物          | 「将来対応」「TODO」「FIXME」 | `grep -r "TODO\|FIXME\|将来対応" outputs/` |
+| コードベース           | TODO/FIXME/HACK/XXXコメント   | `grep -rn "TODO\|FIXME\|HACK\|XXX" apps/`  |
+
+**期待される成果物**:
+
+- 未タスク検出レポート
+- 未タスク指示書（該当する場合は `docs/30-workflows/unassigned-task/` に配置）
+
+---
+
+### タスク7: システム仕様更新（aiworkflow-requirements）【必須】
+
+**目的**: 仕様変更がある場合、aiworkflow-requirementsを更新する。
+
+**実行手順**:
+
+1. 本タスクで発見・確定した仕様変更を確認
+2. 該当する仕様ファイルを特定
+   ```bash
+   node .claude/skills/aiworkflow-requirements/scripts/search-spec.mjs "agent-sdk"
+   ```
+3. 仕様ファイルを更新（該当する場合）
+4. 更新記録を作成
+
+**更新対象候補**:
+
+| 仕様ファイル                 | 更新条件                               |
+| ---------------------------- | -------------------------------------- |
+| `interfaces-agent-sdk.md`    | SDK APIの仕様変更があった場合          |
+| `quality-requirements.md`    | パフォーマンス基準の変更があった場合   |
+| `claude-code-agents-spec.md` | エージェント動作の仕様変更があった場合 |
+
+**期待される成果物**:
+
+- ドキュメント更新記録（更新がない場合も「更新不要」と明記）
+
+---
+
 ## 参照資料
 
 | 参照資料           | パス                                                                                 | 内容           |
@@ -177,13 +239,16 @@ Post-release SDK統合テストを通じて得られた知見、テスト結果�
 
 ## 成果物
 
-| 成果物                     | パス                                          | 内容           |
-| -------------------------- | --------------------------------------------- | -------------- |
-| テスト結果サマリー         | `outputs/phase-12/test-summary.md`            | 総合結果       |
-| SDK統合ガイド（更新）      | `outputs/phase-12/sdk-integration-guide.md`   | 統合ガイド     |
-| テストケースドキュメント   | `outputs/phase-12/test-case-documentation.md` | テスト詳細     |
-| パフォーマンスベースライン | `outputs/phase-12/performance-baseline.md`    | 性能基準       |
-| トラブルシューティング     | `outputs/phase-12/troubleshooting-guide.md`   | 問題解決ガイド |
+| 成果物                     | パス                                           | 内容             |
+| -------------------------- | ---------------------------------------------- | ---------------- |
+| テスト結果サマリー         | `outputs/phase-12/test-summary.md`             | 総合結果         |
+| SDK統合ガイド（更新）      | `outputs/phase-12/sdk-integration-guide.md`    | 統合ガイド       |
+| テストケースドキュメント   | `outputs/phase-12/test-case-documentation.md`  | テスト詳細       |
+| パフォーマンスベースライン | `outputs/phase-12/performance-baseline.md`     | 性能基準         |
+| トラブルシューティング     | `outputs/phase-12/troubleshooting-guide.md`    | 問題解決ガイド   |
+| 未タスク検出レポート       | `outputs/phase-12/unassigned-task-report.md`   | 技術的負債一覧   |
+| ドキュメント更新記録       | `outputs/phase-12/documentation-update-log.md` | 仕様更新記録     |
+| 未タスク指示書（該当時）   | `docs/30-workflows/unassigned-task/`           | 新規タスク指示書 |
 
 ---
 
@@ -208,6 +273,10 @@ Post-release SDK統合テストを通じて得られた知見、テスト結果�
 - [ ] テストケースドキュメントが作成されている
 - [ ] パフォーマンスベースラインが文書化されている
 - [ ] トラブルシューティングガイドが作成されている
+- [ ] 未タスク検出レポートが出力されている
+- [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
+- [ ] aiworkflow-requirementsが更新されている（該当する場合）
+- [ ] ドキュメント更新記録が出力されている
 - [ ] 全ドキュメントがレビュー可能な状態
 - [ ] **本Phase内の全タスクを100%実行完了**
 
@@ -223,8 +292,10 @@ Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成
 4. テストケースドキュメント更新
 5. パフォーマンスベースライン文書化
 6. トラブルシューティングガイド作成
-7. 成果物の配置
-8. 完了条件の検証
+7. 未タスク検出
+8. システム仕様更新（aiworkflow-requirements）
+9. 成果物の配置
+10. 完了条件の検証
 
 **重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
 
