@@ -146,9 +146,9 @@ describe("agentSlice", () => {
       expect(store.executionStatus).toBe("error");
     });
 
-    it("should set execution status to aborted", () => {
-      store.setExecutionStatus("aborted");
-      expect(store.executionStatus).toBe("aborted");
+    it("should set execution status to cancelled", () => {
+      store.setExecutionStatus("cancelled");
+      expect(store.executionStatus).toBe("cancelled");
     });
 
     it("should set current execution id", () => {
@@ -463,10 +463,10 @@ describe("agentSlice", () => {
       expect(store.executionStatus).toBe("error");
     });
 
-    it("should transition from executing to aborted", () => {
+    it("should transition from executing to cancelled", () => {
       store.setExecutionStatus("executing");
-      store.setExecutionStatus("aborted");
-      expect(store.executionStatus).toBe("aborted");
+      store.setExecutionStatus("cancelled");
+      expect(store.executionStatus).toBe("cancelled");
     });
 
     it("should transition from completed back to idle", () => {
@@ -481,8 +481,8 @@ describe("agentSlice", () => {
       expect(store.executionStatus).toBe("idle");
     });
 
-    it("should transition from aborted back to idle", () => {
-      store.setExecutionStatus("aborted");
+    it("should transition from cancelled back to idle", () => {
+      store.setExecutionStatus("cancelled");
       store.setExecutionStatus("idle");
       expect(store.executionStatus).toBe("idle");
     });

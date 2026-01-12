@@ -55,7 +55,18 @@ import type {
   LLMChatRequest,
   LLMError,
 } from "@repo/shared/types/llm/schemas";
-import type { SkillPhase, SyncStatus, SlideApi, LLMStreamChunk } from "./types";
+import type {
+  SkillPhase,
+  SyncStatus,
+  SlideApi,
+  LLMStreamChunk,
+  AgentExecutionAPI,
+  AgentStartRequest,
+  AgentStreamPayload,
+  AgentStatusPayload,
+  AgentPermissionRequest,
+  AgentPermissionResponse,
+} from "./types";
 import type {
   HistoryAPI,
   PaginationOptions,
@@ -316,12 +327,31 @@ const historyAPI: HistoryAPI = {
     safeInvoke(IPC_CHANNELS.HISTORY_RESTORE_VERSION, fileId, conversionId),
 };
 
+// Agent Execution API for agent execution UI
+const agentAPI: AgentExecutionAPI = {
+  start: (request: AgentStartRequest) =>
+    safeInvoke(IPC_CHANNELS.AGENT_EXECUTE, request),
+  stop: () => safeInvoke(IPC_CHANNELS.AGENT_ABORT),
+  respondPermission: (response: AgentPermissionResponse) =>
+    safeInvoke(IPC_CHANNELS.AGENT_PERMISSION_RESPOND, response),
+  onStream: (callback: (payload: AgentStreamPayload) => void) =>
+    safeOn<AgentStreamPayload>(IPC_CHANNELS.AGENT_STREAM_CHUNK, callback),
+  onStatus: (callback: (payload: AgentStatusPayload) => void) =>
+    safeOn<AgentStatusPayload>(IPC_CHANNELS.AGENT_STATUS_CHANGED, callback),
+  onPermission: (callback: (request: AgentPermissionRequest) => void) =>
+    safeOn<AgentPermissionRequest>(
+      IPC_CHANNELS.AGENT_PERMISSION_REQUEST,
+      callback,
+    ),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electronAPI", electronAPI);
     contextBridge.exposeInMainWorld("slideApi", slideApi);
     contextBridge.exposeInMainWorld("historyAPI", historyAPI);
+    contextBridge.exposeInMainWorld("agentAPI", agentAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -330,4 +360,5 @@ if (process.contextIsolated) {
   (window as unknown as { electronAPI: ElectronAPI }).electronAPI = electronAPI;
   (window as unknown as { slideApi: SlideApi }).slideApi = slideApi;
   (window as unknown as { historyAPI: HistoryAPI }).historyAPI = historyAPI;
+  (window as unknown as { agentAPI: AgentExecutionAPI }).agentAPI = agentAPI;
 }

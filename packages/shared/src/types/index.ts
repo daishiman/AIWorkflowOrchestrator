@@ -15,6 +15,9 @@ export * from "./llm-metadata";
 // スキル管理型定義
 export * from "./skill";
 
+// エージェント実行型定義
+export * from "./agent";
+
 // ファイル選択型定義
 export type {
   FileExtension,
