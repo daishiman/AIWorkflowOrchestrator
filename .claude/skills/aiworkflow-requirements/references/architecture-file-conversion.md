@@ -116,6 +116,102 @@ HistoryService → ConversionRepository → Database (conversions table)
 | テストカバレッジ（Branch） | 100% |
 | テスト数 | 41ケース |
 
+## Electron統合（history-service-db-integration）
+
+**実装場所**: `apps/desktop/src/main/services/HistoryService.ts`
+**詳細設計**: `docs/30-workflows/history-service-db-integration/`
+**統合日**: 2026-01-12
+
+Electron MainプロセスのHistoryServiceがshared HistoryServiceと統合され、DB接続が実現。
+
+### 統合アーキテクチャ
+
+```
+┌─────────────┐    IPC    ┌─────────────────────────┐    DI    ┌─────────────────────────┐
+│  Renderer   │ ───────── │  Electron HistoryService │ ──────── │  shared HistoryService  │
+│  (React UI) │           │     (アダプター層)        │          │   (ビジネスロジック)     │
+└─────────────┘           └─────────────────────────┘          └─────────────────────────┘
+                                     │                                    │
+                                     │ DI                                 │ DI
+                                     ▼                                    ▼
+                          ┌─────────────────┐              ┌─────────────────────────┐
+                          │  LogRepository  │              │  ConversionRepository   │
+                          └─────────────────┘              └─────────────────────────┘
+                                     │                                    │
+                                     └──────────────┬─────────────────────┘
+                                                    ▼
+                                          ┌────────────────┐
+                                          │    SQLite DB   │
+                                          └────────────────┘
+```
+
+### アダプターパターン（型変換）
+
+Electron HistoryServiceはshared型をRenderer型に変換するアダプター。
+
+| 項目 | shared型 | Renderer型 |
+|------|----------|------------|
+| ファイルサイズ | `sizeBytes: number` | `size: number` |
+| ハッシュ | `contentHash: string` | `hash: string` |
+| 最新フラグ | `isCurrentVersion: boolean` | `isLatest: boolean` |
+| 作成日時 | `createdAt: Date` | `createdAt: string` (ISO 8601) |
+
+### IPCチャンネル
+
+| チャンネル | 用途 | バリデーション |
+|-----------|------|---------------|
+| `history:getFileHistory` | 履歴一覧取得 | fileId必須 |
+| `history:getVersionDetail` | バージョン詳細取得 | conversionId必須 |
+| `history:getConversionLogs` | 変換ログ取得 | conversionId必須 |
+| `history:restoreVersion` | バージョン復元 | fileId, conversionId必須 |
+
+### 依存性注入
+
+```typescript
+// ファクトリ関数（本番用）
+export function createHistoryServiceWithDI(
+  sharedHistoryService: IHistoryService,
+  logRepository: LogRepository,
+  logger: IConversionLogger,
+): HistoryService {
+  return new HistoryService(sharedHistoryService, logRepository, logger);
+}
+
+// @deprecated DI必須
+export function createHistoryService(): HistoryService {
+  throw new Error("Use createHistoryServiceWithDI()");
+}
+```
+
+### LogRepositoryインターフェース
+
+shared HistoryServiceにはログ取得機能がないため、Electron側でLogRepositoryを追加定義。
+
+```typescript
+export interface LogRepository {
+  findByConversionId(
+    conversionId: string,
+    options?: { limit?: number; offset?: number; level?: string }
+  ): Promise<Result<PaginatedResult<ConversionLogRecord>, Error>>;
+}
+```
+
+### 品質指標
+
+| 指標 | 実績 |
+|------|------|
+| テストカバレッジ（Line） | 92.16% |
+| テストカバレッジ（Branch） | 100% |
+| テストカバレッジ（Function） | 91.66% |
+| 統合テスト数 | 31ケース |
+| IPCハンドラーテスト数 | 22ケース |
+
+### セキュリティ
+
+- 全チャンネルがホワイトリストに登録済み（`preload/channels.ts`）
+- contextIsolation: true, nodeIntegration: false
+- Result型パターンによるエラーハンドリング
+
 ## アーキテクチャパターン
 
 | パターン | 適用箇所 | 目的 |

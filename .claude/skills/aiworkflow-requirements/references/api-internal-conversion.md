@@ -322,3 +322,135 @@ if (result.success) {
 - [IHistoryService インターフェース](./interfaces-converter.md#ihistoryservice-インターフェース)
 - [ConversionRepository インターフェース](./interfaces-converter.md#conversionrepository-インターフェース)
 - [ファイル変換アーキテクチャ](./architecture-file-conversion.md)
+
+---
+
+## Electron HistoryService API
+
+Electron MainプロセスのHistoryServiceは、shared HistoryServiceとIPCを橋渡しするアダプター層。
+
+**実装場所**: `apps/desktop/src/main/services/HistoryService.ts`
+**統合日**: 2026-01-12（history-service-db-integration）
+
+### アーキテクチャ
+
+```
+Renderer → IPC → Electron HistoryService → shared HistoryService → DB
+                        ↓
+                  LogRepository → DB (logs)
+```
+
+### IPCチャンネル
+
+#### history:getFileHistory
+
+```typescript
+// Renderer側
+const result = await window.historyAPI.getFileHistory(fileId, options);
+
+// 戻り値型
+Promise<Result<PaginatedResult<VersionHistoryItem>, Error>>
+```
+
+| パラメータ | 型 | 必須 | デフォルト |
+|------------|----|----|----------|
+| fileId | string | ✓ | - |
+| options.limit | number | - | 20 |
+| options.offset | number | - | 0 |
+
+#### history:getVersionDetail
+
+```typescript
+// Renderer側
+const result = await window.historyAPI.getVersionDetail(conversionId);
+
+// 戻り値型
+Promise<Result<VersionDetailData, Error>>
+```
+
+`VersionDetailData`はバージョン情報とログ一覧を統合した型。
+
+#### history:getConversionLogs
+
+```typescript
+// Renderer側
+const result = await window.historyAPI.getConversionLogs(conversionId, options);
+
+// 戻り値型
+Promise<Result<PaginatedResult<ConversionLog>, Error>>
+```
+
+| パラメータ | 型 | 必須 | デフォルト |
+|------------|----|----|----------|
+| conversionId | string | ✓ | - |
+| options.limit | number | - | 50 |
+| options.offset | number | - | 0 |
+| options.level | string | - | undefined |
+
+#### history:restoreVersion
+
+```typescript
+// Renderer側
+const result = await window.historyAPI.restoreVersion(fileId, conversionId);
+
+// 戻り値型
+Promise<Result<VersionHistoryItem, Error>>
+```
+
+### 型変換（shared → Renderer）
+
+| shared型 | Renderer型 | 変換 |
+|----------|------------|------|
+| `sizeBytes` | `size` | フィールド名変更 |
+| `contentHash` | `hash` | フィールド名変更 |
+| `isCurrentVersion` | `isLatest` | フィールド名変更 |
+| `createdAt: Date` | `createdAt: string` | ISO 8601形式 |
+
+### エラーメッセージ（日本語ローカライズ）
+
+| 内部エラー | ユーザー向けメッセージ |
+|-----------|---------------------|
+| `Conversion not found` | 「指定されたバージョンが見つかりません」 |
+| `does not belong to file` | 「このファイルには復元できません」 |
+| `database` / `DB` | 「データベース接続に問題があります」 |
+| その他 | 「予期しないエラーが発生しました」 |
+
+### 使用パターン
+
+**パターン1: DI使用（推奨）**
+
+```typescript
+import { createHistoryServiceWithDI } from "./services/HistoryService";
+
+const historyService = createHistoryServiceWithDI(
+  sharedHistoryService,
+  logRepository,
+  logger
+);
+```
+
+**パターン2: IPCハンドラー登録**
+
+```typescript
+ipcMain.handle("history:getFileHistory", async (_, fileId, options) => {
+  return historyService.getFileHistory(fileId, options);
+});
+```
+
+### 性能特性
+
+| 指標 | 目標 | 実績 |
+|------|------|------|
+| getFileHistory | <200ms | 達成 |
+| getVersionDetail | <100ms | 達成 |
+| getConversionLogs | <200ms | 達成 |
+| restoreVersion | <500ms | 達成 |
+
+### 品質メトリクス
+
+| 指標 | 実績 |
+|------|------|
+| Line Coverage | 92.16% |
+| Branch Coverage | 100% |
+| Function Coverage | 91.66% |
+| 統合テスト数 | 31ケース |
