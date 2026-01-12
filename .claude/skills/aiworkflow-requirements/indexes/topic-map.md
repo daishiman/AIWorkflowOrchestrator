@@ -142,7 +142,8 @@ node scripts/list-specs.mjs --topics
 | クエリ分類器 | L415 |
 | エンティティ抽出サービス (NER) | L459 |
 | コミュニティ検出サービス (Leiden Algorithm) | L533 |
-| GraphRAGクエリサービス | L650 |
+| VectorSearchStrategy（セマンティック検索） | L650 |
+| GraphRAGクエリサービス | L726 |
 
 ---
 
@@ -326,7 +327,7 @@ node scripts/list-specs.mjs --topics
 | バリデーション | L141 |
 | クエリ分類器 | L155 |
 | キーワード検索戦略 | L175 |
-| 関連ドキュメント | L223 |
+| ベクトル検索戦略（VectorSearchStrategy） | L225 |
 
 ### references/interfaces-rag.md
 

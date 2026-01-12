@@ -647,6 +647,82 @@ GraphRAGにおいて、グラフ全体の構造を把握し、質問に対する
 
 ---
 
+## VectorSearchStrategy（セマンティック検索）
+
+### 概要
+
+libSQL/TursoのDiskANNベクトルインデックスを使用したセマンティック検索戦略。
+ISearchStrategyインターフェースを実装し、HybridRAGのTriple Search（Keyword/Semantic/Graph）のSemantic検索を担当する。
+
+**実装場所**: `packages/shared/src/services/search/strategies/`
+
+### アーキテクチャ図
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      HybridRAG Triple Search                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
+│  │ KeywordSearch   │  │ VectorSearch    │  │ GraphSearch     │  │
+│  │ Strategy        │  │ Strategy ★      │  │ Strategy        │  │
+│  │ (FTS5/BM25)     │  │ (DiskANN/Cosine)│  │ (Community)     │  │
+│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘  │
+│           │                    │                    │            │
+│           └────────────────────┼────────────────────┘            │
+│                                ↓                                 │
+│                    ┌─────────────────────┐                       │
+│                    │   RRF統合           │                       │
+│                    │   (Reciprocal Rank  │                       │
+│                    │    Fusion)          │                       │
+│                    └─────────────────────┘                       │
+│                                                                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 主要クラス
+
+| クラス                     | 責務                                 |
+| -------------------------- | ------------------------------------ |
+| VectorSearchStrategy       | ISearchStrategy実装、ベクトル検索    |
+| CachedVectorSearchStrategy | 埋め込みキャッシュ付きの検索         |
+
+### ISearchStrategyインターフェース準拠
+
+| メソッド      | 戻り値                                | 説明                           |
+| ------------- | ------------------------------------- | ------------------------------ |
+| search()      | Promise<Result<SearchResultItem[], Error>> | ベクトル検索実行         |
+| getMetrics()  | StrategyMetric                        | 検索メトリクス取得             |
+| name          | "semantic"                            | 戦略名                         |
+
+### フィルタ対応状況
+
+| フィルタ       | 状態   | 説明                           |
+| -------------- | ------ | ------------------------------ |
+| fileIds        | 実装済 | 特定ファイルに限定             |
+| minRelevance   | 実装済 | 最低類似度閾値                 |
+| limit          | 実装済 | 最大結果数（1-100）            |
+| dateRange      | 未実装 | 将来対応予定                   |
+| fileTypes      | 未実装 | 将来対応予定                   |
+| workspaceIds   | 未実装 | 将来対応予定                   |
+
+### キャッシュ戦略
+
+| 設定項目       | デフォルト値 | 説明                           |
+| -------------- | ------------ | ------------------------------ |
+| TTL            | 5分          | キャッシュ有効期間             |
+| maxSize        | 1000エントリ | 最大キャッシュエントリ数       |
+| アルゴリズム   | LRU          | 最も使われていないものを削除   |
+
+### テスト品質
+
+- **83テストケース**（単体35 + 統合15 + キャッシュ33）
+- **98.71% Line Coverage**, **95.65% Branch Coverage**, **100% Function Coverage**
+
+**詳細参照**: `docs/30-workflows/vector-search-diskann/outputs/phase-12/implementation-guide.md`
+
+---
+
 ## GraphRAGクエリサービス
 
 ### 概要
