@@ -646,3 +646,75 @@ GraphRAGにおいて、グラフ全体の構造を把握し、質問に対する
 **詳細参照**: [interfaces-rag-community-detection.md](./interfaces-rag-community-detection.md)
 
 ---
+
+## GraphRAGクエリサービス
+
+### 概要
+
+コミュニティ要約を活用してユーザークエリに対する包括的な回答を生成するサービス。
+ICommunitySummarizer.searchSummaries()と連携し、関連するコミュニティ要約をコンテキストとしてLLMに提供する。
+
+### RAGパイプラインにおける位置づけ
+
+```
+ドキュメント → 変換 → チャンキング → NER → コミュニティ検出 → コミュニティ要約
+                                                                    ↓
+                                                          [GraphRAGクエリサービス]
+                                                                    ↓
+                                              ┌──────────────────────────────────────┐
+                                              │     GraphRAGQueryService              │
+                                              │  (IGraphRAGQueryService実装)          │
+                                              ├──────────────────────────────────────┤
+                                              │  query()                             │
+                                              │    ├─ validateInput()                │
+                                              │    ├─ Promise.all():                 │
+                                              │    │   ├─ classifyQuery()            │
+                                              │    │   └─ searchWithFallback()       │
+                                              │    ├─ buildPrompt()                  │
+                                              │    └─ llmProvider.generate()         │
+                                              └──────────────────────────────────────┘
+```
+
+### 主要インターフェース
+
+**IGraphRAGQueryService**: GraphRAGクエリサービスの抽象インターフェース
+
+| メソッド                      | 説明                                 |
+| ----------------------------- | ------------------------------------ |
+| query()                       | クエリ実行・回答生成                 |
+
+**GraphRAGQueryOptions**: クエリオプション
+
+| オプション             | デフォルト | 説明                           |
+| ---------------------- | ---------- | ------------------------------ |
+| limit                  | 10         | 最大検索結果数（1-20）         |
+| communityLevel         | -          | コミュニティ階層レベル（0-5）  |
+| confidenceThreshold    | 0.5        | confidence閾値（0-1）          |
+| enableCommunitySummary | true       | コミュニティ要約検索を有効化   |
+
+### 依存関係
+
+| 依存サービス         | 用途                                 |
+| -------------------- | ------------------------------------ |
+| IQueryClassifier     | クエリタイプ分類                     |
+| ICommunitySummarizer | コミュニティ要約検索                 |
+| IEmbeddingProvider   | 埋め込み生成                         |
+| ILLMProvider         | 回答テキスト生成                     |
+
+### 実装ファイル
+
+| 種別           | パス                                                                 |
+| -------------- | -------------------------------------------------------------------- |
+| サービス       | `packages/shared/src/services/search/graphrag-query-service.ts`      |
+| 型定義         | `packages/shared/src/services/search/graphrag-query-service.ts`      |
+| テスト         | `packages/shared/src/services/search/__tests__/graphrag-query-service.test.ts` |
+| 統合テスト     | `packages/shared/src/services/search/__tests__/graphrag-query-service.integration.test.ts` |
+
+### テスト品質
+
+- **44テストケース**（単体24 + 統合20）
+- **100% Line Coverage**, **91.66% Branch Coverage**, **100% Function Coverage**
+
+**詳細参照**: [interfaces-rag-graphrag-query.md](./interfaces-rag-graphrag-query.md)
+
+---

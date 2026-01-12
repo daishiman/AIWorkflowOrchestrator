@@ -1,9 +1,9 @@
 /**
- * @file クエリ分類器モジュール
- * @description CONV-07-01: クエリ分類器のエクスポート
+ * @file クエリ分類器・GraphRAGクエリモジュール
+ * @description CONV-07-01: クエリ分類器, CONV-08-04: GraphRAGクエリ統合
  */
 
-// Types
+// Query Classifier Types
 export {
   queryTypeSchema,
   searchWeightsSchema,
@@ -17,6 +17,21 @@ export {
   type IQueryClassifier,
 } from "./types";
 
-// Implementations
+// Query Classifier Implementations
 export { RuleBasedQueryClassifier } from "./rule-based-query-classifier";
 export { LLMQueryClassifier } from "./llm-query-classifier";
+
+// GraphRAG Query Service (CONV-08-04)
+export { GraphRAGQueryService } from "./graphrag-query-service";
+export type {
+  IGraphRAGQueryService,
+  GraphRAGQueryServiceDependencies,
+  GraphRAGQueryOptions,
+  GraphRAGQueryResponse,
+  GraphRAGQueryError,
+  CommunitySummaryReference,
+  ChunkReference,
+  EntityReference,
+  SearchStrategy,
+  QueryMetadata,
+} from "./graphrag-query-service";
