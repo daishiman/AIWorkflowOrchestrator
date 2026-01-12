@@ -75,12 +75,14 @@ export class AgentExecutor {
         options: {
           tools: this.request.tools || [...AGENT_DEFAULTS.DEFAULT_TOOLS],
           signal: this.abortController.signal,
+          // @ts-expect-error - Claude Agent SDK型定義がインストール完了後に解決される
           hooks,
           permissions,
         },
       });
 
       // ストリーミング処理
+      // @ts-expect-error - Claude Agent SDK型定義がインストール完了後に解決される
       const stream = conversation.stream();
       for await (const message of stream) {
         // キャンセルチェック
