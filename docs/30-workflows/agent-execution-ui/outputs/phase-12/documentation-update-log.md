@@ -29,12 +29,34 @@
 
 ### 3. システム仕様書
 
-| 仕様書                  | セクション                       | 変更内容 |
-| ----------------------- | -------------------------------- | -------- |
-| interfaces-agent-sdk.md | Agent Execution UI関連型         | 参照のみ |
-| ui-ux-components.md     | AgentExecutionViewコンポーネント | 参照のみ |
+| 仕様書                  | セクション                                     | 変更内容                      |
+| ----------------------- | ---------------------------------------------- | ----------------------------- |
+| interfaces-agent-sdk.md | Agent Execution UI 型定義（AGENT-004）         | 新規セクション追加（約300行） |
+| ui-ux-components.md     | Agent Execution UI コンポーネント（AGENT-004） | 新規セクション追加（約250行） |
 
-**注記**: 既存システム仕様書にはAGENT-004の型定義が既に含まれているため、追加更新は不要と判断。
+**更新内容詳細**:
+
+#### interfaces-agent-sdk.md 追加内容
+
+- AgentExecutionStatus型（7状態）
+- AgentMessage型
+- PermissionRequest/Response型
+- AgentExecutionState型
+- Agent Execution用IPCチャンネル定義
+- Preload API拡張（startExecution, stopExecution, respondToPermission等）
+- アクセシビリティ要件
+
+#### ui-ux-components.md 追加内容
+
+- コンポーネント階層図
+- AgentExecutionView仕様
+- AgentChatInterface仕様
+- AgentMessageInput仕様
+- AgentExecutionControls仕様
+- PermissionDialog仕様（フォーカストラップ含む）
+- AgentOutputStream仕様
+- インタラクション設計（メッセージ送信フロー、権限確認フロー）
+- 視覚デザイン仕様
 
 ### 4. 未タスク検出
 
