@@ -73,6 +73,18 @@
       "types": "./dist/src/types/skill.d.ts",
       "import": "./dist/src/types/skill.js"
     },
+    "./services/history/types": {
+      "types": "./dist/src/services/history/types.d.ts",
+      "import": "./dist/src/services/history/types.js"
+    },
+    "./types/rag/result": {
+      "types": "./dist/src/types/rag/result.d.ts",
+      "import": "./dist/src/types/rag/result.js"
+    },
+    "./services/logging/types": {
+      "types": "./dist/src/services/logging/types.d.ts",
+      "import": "./dist/src/services/logging/types.js"
+    },
     "./types/agent": {
       "types": "./dist/src/types/agent.d.ts",
       "import": "./dist/src/types/agent.js"

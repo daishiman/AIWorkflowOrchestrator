@@ -536,7 +536,7 @@ interface PaginationOptions {
 
 - CONV-05-01（ロギングサービス）: **完了**
 - CONV-05-02（履歴取得サービス）: **実装完了**（PR未作成、`packages/shared/src/services/history/`）
-- history-service-db-integration: **未実施**（スタブ→本実装の置換が必要）
+- history-service-db-integration: **完了**（DB統合済み、全テスト成功、カバレッジ目標達成）
 
 ### 必要な統合作業
 
@@ -568,7 +568,7 @@ interface PaginationOptions {
 | IPC ハンドラー | `apps/desktop/src/main/ipc/historyHandlers.ts` | 完了 |
 | ページコンポーネント | `apps/desktop/src/renderer/pages/HistoryPage.tsx` | 完了 |
 | ルーティング | `apps/desktop/src/renderer/App.tsx` | 完了 |
-| サービス | `apps/desktop/src/main/services/HistoryService.ts` | スタブ実装 |
+| サービス | `apps/desktop/src/main/services/HistoryService.ts` | **DB統合完了** |
 
 ### テスト結果
 
@@ -619,18 +619,20 @@ interface PaginationOptions {
 | CONV-05-02 | 履歴取得サービス | CONV-05-01 | **実装完了**（PR未作成） | `packages/shared/src/services/history/` |
 | history-ui-integration | UI統合 | CONV-05-02 | **完了**（スタブ接続） | preload/IPC/ページ統合 |
 | history-ipc-handlers | IPCハンドラー | history-ui-integration | **完了** | 4チャンネル実装 |
-| history-service-db-integration | DB統合 | CONV-05-02 | **未実施** | スタブ→本実装置換 |
+| history-service-db-integration | DB統合 | CONV-05-02 | **完了** | DB統合済み、カバレッジ92%+ |
 | CONV-05-03 | UIコンポーネント | CONV-05-02 | **未着手** | 4コンポーネント＋4フック |
 
 ### 残課題
 
 | 課題 | 依存タスク | 優先度 | 未タスク指示書 |
 |------|-----------|--------|---------------|
-| HistoryService実DB統合 | CONV-05-02 | 高 | task-history-service-db-integration.md |
-| UIコンポーネント実装 | CONV-05-02, history-service-db-integration | 中 | CONV-05-03 |
+| UIコンポーネント実装 | CONV-05-02, ~~history-service-db-integration~~ | 中 | CONV-05-03 |
 | validateDOMNesting警告修正 | CONV-05-03 | 低 | - |
+| Rendererビルド問題修正 | なし | 高 | task-renderer-build-fix.md ✅ |
+| GUI手動テスト実施 | Rendererビルド修正 | 中 | task-history-gui-manual-test.md ✅ |
+| エラーメッセージ国際化対応 | なし | 低 | task-error-i18n-support.md ✅ |
 
-詳細: `docs/30-workflows/unassigned-task/task-history-service-db-integration.md`
+未タスク指示書の配置先: `docs/30-workflows/unassigned-task/`
 
 ---
 
@@ -652,6 +654,8 @@ interface PaginationOptions {
 
 | Version | Date       | Changes                      |
 | ------- | ---------- | ---------------------------- |
+| 1.6.0   | 2026-01-12 | 未タスク指示書作成完了（renderer-build-fix、history-gui-manual-test、error-i18n-support） |
+| 1.5.0   | 2026-01-12 | history-service-db-integration完了（DB統合済み、全テスト成功、カバレッジ92%+達成、残課題更新） |
 | 1.4.0   | 2026-01-12 | タスク依存関係一覧追加（CONV-05-01/02/03、統合タスク状態の正確な反映） |
 | 1.3.0   | 2026-01-12 | IPCハンドラー詳細セクション追加（history-ipc-handlers完了、テストカバレッジ・チャンネル仕様・セキュリティ情報） |
 | 1.2.0   | 2026-01-11 | 統合ステータスセクション追加（history-ui-integration完了） |
