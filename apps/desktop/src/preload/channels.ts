@@ -142,6 +142,8 @@ export const IPC_CHANNELS = {
   AGENT_STREAM_CHUNK: "agent:stream-chunk",
   AGENT_STREAM_END: "agent:stream-end",
   AGENT_STREAM_ERROR: "agent:stream-error",
+  AGENT_PERMISSION_REQUEST: "agent:permission-request",
+  AGENT_PERMISSION_RESPOND: "agent:permission-respond",
 
   // Skill management operations
   SKILL_LIST_AVAILABLE: "skill:list-available",
@@ -257,6 +259,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_EXECUTE,
   IPC_CHANNELS.AGENT_ABORT,
   IPC_CHANNELS.AGENT_GET_STATUS,
+  IPC_CHANNELS.AGENT_PERMISSION_RESPOND,
   // Skill management channels
   IPC_CHANNELS.SKILL_LIST_AVAILABLE,
   IPC_CHANNELS.SKILL_LIST_IMPORTED,
@@ -293,4 +296,5 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_STREAM_CHUNK,
   IPC_CHANNELS.AGENT_STREAM_END,
   IPC_CHANNELS.AGENT_STREAM_ERROR,
+  IPC_CHANNELS.AGENT_PERMISSION_REQUEST,
 ];
