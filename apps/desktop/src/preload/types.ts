@@ -1069,6 +1069,35 @@ export interface ReplaceRedoResponse {
   error?: string;
 }
 
+// ===== Agent Execution operations =====
+
+import type {
+  AgentStartRequest,
+  AgentStreamPayload,
+  AgentStatusPayload,
+  PermissionRequest as AgentPermissionRequest,
+  PermissionResponse as AgentPermissionResponse,
+} from "@repo/shared/types/agent";
+
+export type {
+  AgentStartRequest,
+  AgentStreamPayload,
+  AgentStatusPayload,
+  AgentPermissionRequest,
+  AgentPermissionResponse,
+};
+
+export interface AgentExecutionAPI {
+  start: (request: AgentStartRequest) => Promise<{ executionId: string }>;
+  stop: () => Promise<void>;
+  respondPermission: (response: AgentPermissionResponse) => Promise<void>;
+  onStream: (callback: (payload: AgentStreamPayload) => void) => () => void;
+  onStatus: (callback: (payload: AgentStatusPayload) => void) => () => void;
+  onPermission: (
+    callback: (request: AgentPermissionRequest) => void,
+  ) => () => void;
+}
+
 // ===== Slide operations =====
 
 import type {
@@ -1117,6 +1146,7 @@ declare global {
   interface Window {
     electronAPI: ElectronAPI;
     slideApi: SlideApi;
+    agentAPI: AgentExecutionAPI;
   }
 }
 

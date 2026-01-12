@@ -1,0 +1,165 @@
+{
+  "taskId": "AGENT-004",
+  "taskName": "agent-execution-ui",
+  "featureName": "agent-execution-ui",
+  "status": "in_progress",
+  "createdAt": "2026-01-12T00:00:00Z",
+  "lastUpdated": "2026-01-12T19:00:00Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "startedAt": "2026-01-12T11:47:00Z",
+      "completedAt": "2026-01-12T11:50:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "startedAt": "2026-01-12T11:50:00Z",
+      "completedAt": "2026-01-12T11:55:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/type-definitions.md",
+        "outputs/phase-2/ipc-design.md",
+        "outputs/phase-2/component-design.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "startedAt": "2026-01-12T11:55:00Z",
+      "completedAt": "2026-01-12T11:57:00Z",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "startedAt": "2026-01-12T11:57:00Z",
+      "completedAt": "2026-01-12T12:30:00Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "startedAt": "2026-01-12T12:30:00Z",
+      "completedAt": "2026-01-12T14:00:00Z",
+      "artifacts": [
+        "packages/shared/src/types/agent.ts",
+        "apps/desktop/src/renderer/store/slices/agentSlice.ts",
+        "apps/desktop/src/renderer/components/molecules/AgentMessageInput/AgentMessageInput.tsx",
+        "apps/desktop/src/renderer/components/molecules/AgentOutputStream/AgentOutputStream.tsx",
+        "apps/desktop/src/renderer/components/molecules/AgentExecutionControls/AgentExecutionControls.tsx",
+        "apps/desktop/src/renderer/components/organisms/AgentChatInterface/AgentChatInterface.tsx",
+        "apps/desktop/src/renderer/components/organisms/PermissionDialog/PermissionDialog.tsx",
+        "apps/desktop/src/renderer/views/AgentExecutionView/AgentExecutionView.tsx",
+        "apps/desktop/src/renderer/views/AgentExecutionView/hooks/useAgentExecution.ts",
+        "apps/desktop/src/preload/channels.ts",
+        "apps/desktop/src/preload/types.ts",
+        "apps/desktop/src/preload/index.ts"
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "startedAt": "2026-01-12T14:00:00Z",
+      "completedAt": "2026-01-12T14:50:00Z",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "apps/desktop/src/renderer/views/AgentExecutionView/__tests__/AgentExecutionView.ipc.test.tsx",
+        "apps/desktop/src/renderer/views/AgentExecutionView/__tests__/AgentExecutionView.permission.test.tsx",
+        "apps/desktop/src/renderer/views/AgentExecutionView/__tests__/AgentExecutionView.error.test.tsx",
+        "apps/desktop/src/renderer/views/AgentExecutionView/__tests__/AgentExecutionView.a11y.test.tsx",
+        "apps/desktop/src/renderer/views/AgentExecutionView/hooks/__tests__/useAgentExecution.test.ts"
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "startedAt": "2026-01-12T14:50:00Z",
+      "completedAt": "2026-01-12T15:00:00Z",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/gate-result.md"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "startedAt": "2026-01-12T15:00:00Z",
+      "completedAt": "2026-01-12T17:15:00Z",
+      "artifacts": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/code-quality-report.md",
+        "outputs/phase-8/test-result.md",
+        "apps/desktop/src/renderer/utils/agentApi.ts"
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "startedAt": "2026-01-12T17:15:00Z",
+      "completedAt": "2026-01-12T18:00:00Z",
+      "artifacts": [
+        "outputs/phase-9/static-analysis.md",
+        "outputs/phase-9/security-report.md",
+        "outputs/phase-9/performance-report.md",
+        "outputs/phase-9/accessibility-report.md"
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "startedAt": "2026-01-12T18:00:00Z",
+      "completedAt": "2026-01-12T18:30:00Z",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/artifacts-summary.md"
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "startedAt": "2026-01-12T18:30:00Z",
+      "completedAt": "2026-01-12T18:45:00Z",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/findings.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "startedAt": "2026-01-12T18:45:00Z",
+      "completedAt": "2026-01-12T19:00:00Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/documentation-update-log.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "completed",
+      "startedAt": "2026-01-12T19:00:00Z",
+      "completedAt": "2026-01-12T19:30:00Z",
+      "artifacts": [
+        "PR #226: https://github.com/daishiman/AIWorkflowOrchestrator/pull/226"
+      ]
+    }
+  },
+  "dependencies": {
+    "AGENT-001": "completed",
+    "AGENT-002": "completed",
+    "AGENT-003": "completed",
+    "AGENT-005": "parallel"
+  }
+}

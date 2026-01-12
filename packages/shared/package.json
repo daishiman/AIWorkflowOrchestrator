@@ -72,6 +72,10 @@
     "./types/skill": {
       "types": "./dist/src/types/skill.d.ts",
       "import": "./dist/src/types/skill.js"
+    },
+    "./types/agent": {
+      "types": "./dist/src/types/agent.d.ts",
+      "import": "./dist/src/types/agent.js"
     }
   },
   "scripts": {

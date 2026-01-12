@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-12T12:55:26.232Z",
-  "totalKeywords": 666,
+  "generated": "2026-01-12T13:36:39.655Z",
+  "totalKeywords": 667,
   "keywords": {
     "API": [
       "api-core.md",
@@ -559,7 +559,8 @@
       "claude-code-agents-spec.md",
       "claude-code-agents-workflow.md",
       "claude-code-agents.md",
-      "interfaces-agent-sdk.md"
+      "interfaces-agent-sdk.md",
+      "ui-ux-components.md"
     ],
     "仕様詳細": [
       "claude-code-agents-spec.md"
@@ -1318,6 +1319,7 @@
     ],
     "UI": [
       "glossary.md",
+      "interfaces-agent-sdk.md",
       "interfaces-rag-file-selection.md",
       "ui-ux-advanced.md",
       "ui-ux-components.md",
@@ -1421,13 +1423,18 @@
       "interfaces-agent-sdk.md"
     ],
     "AGENT": [
-      "interfaces-agent-sdk.md"
+      "interfaces-agent-sdk.md",
+      "ui-ux-components.md"
     ],
     "ModifierSkill": [
       "interfaces-agent-sdk.md"
     ],
     "スライド逆同期機能": [
       "interfaces-agent-sdk.md"
+    ],
+    "Execution": [
+      "interfaces-agent-sdk.md",
+      "ui-ux-components.md"
     ],
     "認証・プロフィール型定義": [
       "interfaces-auth.md"

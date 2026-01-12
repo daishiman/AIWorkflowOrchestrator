@@ -1,0 +1,91 @@
+# ドキュメント更新記録
+
+## 更新日: 2026-01-12
+
+## メタ情報
+
+| 項目       | 値                 |
+| ---------- | ------------------ |
+| Phase      | 12                 |
+| 機能名     | agent-execution-ui |
+| ステータス | 完了               |
+
+## 更新内容
+
+### 1. 実装ガイド（新規作成）
+
+| ドキュメント                               | 種別 | 内容                                 |
+| ------------------------------------------ | ---- | ------------------------------------ |
+| `outputs/phase-12/implementation-guide.md` | 新規 | Part 1: 概念的説明、Part 2: 技術詳細 |
+
+### 2. コードコメント（既存）
+
+| ファイル                           | 種別 | 内容                      |
+| ---------------------------------- | ---- | ------------------------- |
+| AgentExecutionView.tsx             | 既存 | JSDocコメント付き         |
+| agentSlice.ts                      | 既存 | JSDocコメント付き         |
+| PermissionDialog.tsx               | 既存 | JSDocコメント付き         |
+| packages/shared/src/types/agent.ts | 既存 | 型定義にJSDocコメント付き |
+
+### 3. システム仕様書
+
+| 仕様書                  | セクション                                     | 変更内容                      |
+| ----------------------- | ---------------------------------------------- | ----------------------------- |
+| interfaces-agent-sdk.md | Agent Execution UI 型定義（AGENT-004）         | 新規セクション追加（約300行） |
+| ui-ux-components.md     | Agent Execution UI コンポーネント（AGENT-004） | 新規セクション追加（約250行） |
+
+**更新内容詳細**:
+
+#### interfaces-agent-sdk.md 追加内容
+
+- AgentExecutionStatus型（7状態）
+- AgentMessage型
+- PermissionRequest/Response型
+- AgentExecutionState型
+- Agent Execution用IPCチャンネル定義
+- Preload API拡張（startExecution, stopExecution, respondToPermission等）
+- アクセシビリティ要件
+
+#### ui-ux-components.md 追加内容
+
+- コンポーネント階層図
+- AgentExecutionView仕様
+- AgentChatInterface仕様
+- AgentMessageInput仕様
+- AgentExecutionControls仕様
+- PermissionDialog仕様（フォーカストラップ含む）
+- AgentOutputStream仕様
+- インタラクション設計（メッセージ送信フロー、権限確認フロー）
+- 視覚デザイン仕様
+
+### 4. 未タスク検出
+
+| ドキュメント                                 | 種別 | 内容                 |
+| -------------------------------------------- | ---- | -------------------- |
+| `outputs/phase-12/unassigned-task-report.md` | 新規 | 未完了タスク検出結果 |
+
+## Phase成果物一覧
+
+| 成果物               | パス                                           |
+| -------------------- | ---------------------------------------------- |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`     |
+| 未タスク検出レポート | `outputs/phase-12/unassigned-task-report.md`   |
+| ドキュメント更新履歴 | `outputs/phase-12/documentation-update-log.md` |
+
+## レビュー状況
+
+- [x] 実装ガイド作成完了（Part 1 + Part 2）
+- [x] コードコメント確認完了（既存JSDoc）
+- [x] システム仕様書確認完了（追加更新不要）
+- [x] 未タスク検出完了
+
+## 完了条件の達成状況
+
+- [x] 実装ガイドが作成されている（Part 1: 概念的 + Part 2: 技術的）
+- [x] 新規型定義にJSDoc/TSDocが追加されている
+- [x] 新規コンポーネントにJSDoc/TSDocが追加されている
+- [x] IPCチャンネル仕様が文書化されている
+- [x] コンポーネント仕様が文書化されている
+- [x] システム仕様書（aiworkflow-requirements）が確認されている
+- [x] 未タスク検出レポートが作成されている
+- [x] 本Phase内の全タスクを100%実行完了
