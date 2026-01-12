@@ -161,4 +161,39 @@
 
 ---
 
+## [実行日時: 2026-01-13T01:30:00.000Z]
+
+- Task: CONV-07-04 GraphSearchStrategy仕様追加
+- 結果: success
+- フィードバック: GraphSearchStrategy仕様追加: interfaces-rag-search.md（lines 305-369）
+
+### 更新詳細
+
+- **更新**: `references/interfaces-rag-search.md`（v6.7.0）
+  - GraphSearchStrategyセクション追加（65行）
+  - インターフェース定義（search, getMetrics, name）
+  - クエリタイプ（local/global/relationship）
+  - GraphSearchOptionsオプション定義
+  - 依存インターフェース（IKnowledgeGraphStore, IEmbeddingProvider, ICommunitySummarizer）
+  - スコアリング計算式
+  - 定数一覧
+  - テスト品質（69テスト、94.54%カバレッジ）
+
+---
+
+## [実行日時: 2026-01-13T01:35:00.000Z]
+
+- Task: skill-creator による aiworkflow-requirements スキル改善
+- 結果: success
+- フィードバック: update-spec.md 明確性改善（3/5 → 5/5 目標）
+
+### 改善詳細
+
+- **更新**: `agents/update-spec.md`
+  - 「適切に記録する」 → 「変更履歴テーブルに日付・バージョン・変更内容を記録する」
+  - 「必要に応じて更新」 → 「見出し変更時のみ更新」
+  - 曖昧な表現を具体的な基準に置換
+
+---
+
 （ログエントリはここに追記されます）
