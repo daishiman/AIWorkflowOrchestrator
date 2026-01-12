@@ -534,8 +534,9 @@ interface PaginationOptions {
 
 ### 前提条件
 
-- CONV-05-01（履歴データ永続化）が完了していること
-- CONV-05-02（履歴取得サービス）が完了していること
+- CONV-05-01（ロギングサービス）: **完了**
+- CONV-05-02（履歴取得サービス）: **実装完了**（PR未作成、`packages/shared/src/services/history/`）
+- history-service-db-integration: **未実施**（スタブ→本実装の置換が必要）
 
 ### 必要な統合作業
 
@@ -578,12 +579,56 @@ interface PaginationOptions {
 | RestoreDialog.test.tsx | 12 | PASS |
 | **合計** | **52** | **全テスト成功** |
 
+### IPCハンドラー詳細（history-ipc-handlers）
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | task-req-history-ipc-001 |
+| タスク名 | history-ipc-handlers |
+| 完了日 | 2026-01-12 |
+| ステータス | **完了** |
+
+#### IPCハンドラーテストカバレッジ
+
+| 指標 | 達成値 | 目標値 |
+|------|--------|--------|
+| Line Coverage | 100% | 80% |
+| Branch Coverage | 95% | 60% |
+| Function Coverage | 100% | 80% |
+
+#### 登録済みIPCチャンネル
+
+| チャンネル | 用途 | バリデーション |
+|-----------|------|---------------|
+| `history:getFileHistory` | 履歴一覧取得 | fileId必須 |
+| `history:getVersionDetail` | バージョン詳細取得 | conversionId必須 |
+| `history:getConversionLogs` | 変換ログ取得 | conversionId必須 |
+| `history:restoreVersion` | バージョン復元 | fileId, conversionId必須 |
+
+#### セキュリティ
+
+- 全チャンネルがホワイトリストに登録済み（`preload/channels.ts`）
+- contextIsolation: true, nodeIntegration: false
+- Result型パターンによるエラーハンドリング
+
+### タスク依存関係一覧
+
+| タスクID | タスク名 | 依存関係 | 状態 | 備考 |
+|----------|----------|----------|------|------|
+| CONV-05-01 | ロギングサービス | なし | **完了** | 履歴データ永続化基盤 |
+| CONV-05-02 | 履歴取得サービス | CONV-05-01 | **実装完了**（PR未作成） | `packages/shared/src/services/history/` |
+| history-ui-integration | UI統合 | CONV-05-02 | **完了**（スタブ接続） | preload/IPC/ページ統合 |
+| history-ipc-handlers | IPCハンドラー | history-ui-integration | **完了** | 4チャンネル実装 |
+| history-service-db-integration | DB統合 | CONV-05-02 | **未実施** | スタブ→本実装置換 |
+| CONV-05-03 | UIコンポーネント | CONV-05-02 | **未着手** | 4コンポーネント＋4フック |
+
 ### 残課題
 
-| 課題 | 依存関係 | 優先度 |
-|------|----------|--------|
-| HistoryService実DBに統合 | CONV-05-02 | 高 |
-| validateDOMNesting警告修正 | CONV-05-03 | 低 |
+| 課題 | 依存タスク | 優先度 | 未タスク指示書 |
+|------|-----------|--------|---------------|
+| HistoryService実DB統合 | CONV-05-02 | 高 | task-history-service-db-integration.md |
+| UIコンポーネント実装 | CONV-05-02, history-service-db-integration | 中 | CONV-05-03 |
+| validateDOMNesting警告修正 | CONV-05-03 | 低 | - |
 
 詳細: `docs/30-workflows/unassigned-task/task-history-service-db-integration.md`
 
@@ -607,6 +652,8 @@ interface PaginationOptions {
 
 | Version | Date       | Changes                      |
 | ------- | ---------- | ---------------------------- |
+| 1.4.0   | 2026-01-12 | タスク依存関係一覧追加（CONV-05-01/02/03、統合タスク状態の正確な反映） |
+| 1.3.0   | 2026-01-12 | IPCハンドラー詳細セクション追加（history-ipc-handlers完了、テストカバレッジ・チャンネル仕様・セキュリティ情報） |
 | 1.2.0   | 2026-01-11 | 統合ステータスセクション追加（history-ui-integration完了） |
 | 1.1.0   | 2026-01-10 | 実装詳細・型定義・テスト情報を追加 |
 | 1.0.0   | 2026-01-10 | CONV-05-03で初版作成         |
