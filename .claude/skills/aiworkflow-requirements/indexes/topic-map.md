@@ -325,7 +325,8 @@ node scripts/list-specs.mjs --topics
 | 型ガード | L131 |
 | バリデーション | L141 |
 | クエリ分類器 | L155 |
-| 関連ドキュメント | L175 |
+| キーワード検索戦略 | L175 |
+| 関連ドキュメント | L223 |
 
 ### references/interfaces-rag.md
 
@@ -491,6 +492,7 @@ node scripts/list-specs.mjs --topics
 | Apple HIG 準拠（Electron向け） | L51 |
 | インタラクション設計 | L106 |
 | アクセシビリティ（WCAG 2.1 AA準拠） | L196 |
+| Agent Execution UI コンポーネント（AGENT-004） | L257 |
 
 ### references/ui-ux-design-system.md
 
