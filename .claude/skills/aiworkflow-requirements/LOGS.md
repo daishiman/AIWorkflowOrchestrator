@@ -145,6 +145,22 @@
 
 ---
 
+## [実行日時: 2026-01-12T12:55:54.882Z]
+
+- Task: CONV-07-03 VectorSearchStrategy仕様追加
+- 結果: success
+- フィードバック: VectorSearchStrategy仕様追加: v6.6.0
+
+---
+
+## [実行日時: 2026-01-12T12:56:01.636Z]
+
+- Task: unknown
+- 結果: success
+- フィードバック: v6.6.0更新: VectorSearchStrategy仕様追加（architecture-rag.md, interfaces-rag-search.md）
+
+---
+
 ## 2026-01-12: AGENT-005 Claude Agent SDK統合
 
 | 項目         | 内容                                                                                       |
@@ -185,5 +201,6 @@
 - **コマンド**: `node scripts/generate-index.mjs`
 
 ---
+
 
 （ログエントリはここに追記されます）

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-12T13:38:20.888Z",
-  "totalKeywords": 664,
+  "generated": "2026-01-12T13:36:39.655Z",
+  "totalKeywords": 667,
   "keywords": {
     "API": [
       "api-core.md",
@@ -537,6 +537,13 @@
       "architecture-rag.md"
     ],
     "Algorithm": [
+      "architecture-rag.md"
+    ],
+    "VectorSearchStrategy": [
+      "architecture-rag.md",
+      "interfaces-rag-search.md"
+    ],
+    "セマンティック検索": [
       "architecture-rag.md"
     ],
     "GraphRAG": [
@@ -1429,10 +1436,6 @@
       "interfaces-agent-sdk.md",
       "ui-ux-components.md"
     ],
-    "Types": [
-      "interfaces-agent-sdk.md",
-      "interfaces-rag.md"
-    ],
     "認証・プロフィール型定義": [
       "interfaces-auth.md"
     ],
@@ -1664,10 +1667,16 @@
     "キーワード検索戦略": [
       "interfaces-rag-search.md"
     ],
+    "ベクトル検索戦略": [
+      "interfaces-rag-search.md"
+    ],
     "・ファイル選択": [
       "interfaces-rag.md"
     ],
     "Branded": [
+      "interfaces-rag.md"
+    ],
+    "Types": [
       "interfaces-rag.md"
     ],
     "共通インターフェース": [
