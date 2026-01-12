@@ -106,7 +106,7 @@ vi.mock("../../infrastructure/security/ipc-validator.js", () => ({
       _options: unknown,
     ) => handler,
   ),
-  validateIpcSender: vi.fn().mockReturnValue(true),
+  validateIpcSender: vi.fn().mockReturnValue({ valid: true }),
   toIPCValidationError: vi.fn().mockImplementation((result) => ({
     success: false,
     error: {
