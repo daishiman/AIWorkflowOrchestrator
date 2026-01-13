@@ -24,6 +24,13 @@ export type {
   AgentStatusPayload,
 } from "./agent";
 
+// プレビュー環境型定義 (AGENT-006)
+export type {
+  EnvironmentType,
+  PreviewEnvironmentConfig,
+  PreviewContent,
+} from "./agent";
+
 // Agent Execution型定義 (AGENT-005)
 export type {
   PermissionMode,
