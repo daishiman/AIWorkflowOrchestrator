@@ -1098,6 +1098,52 @@ export interface AgentExecutionAPI {
   ) => () => void;
 }
 
+// ===== Agent SDK Session operations =====
+
+export interface AgentSDKCreateSessionResponse {
+  sessionId: string;
+}
+
+export interface AgentSDKResumeSessionRequest {
+  sessionId: string;
+}
+
+export interface AgentSDKDestroySessionRequest {
+  sessionId: string;
+}
+
+export interface AgentSDKQueryRequest {
+  prompt: string;
+  options?: {
+    timeout?: number;
+  };
+}
+
+export interface AgentSDKStatus {
+  status: "initializing" | "initialized" | "error";
+  error?: string;
+}
+
+export interface AgentSDKMessage {
+  type: "text" | "tool_use" | "tool_result" | "error";
+  content: string;
+  toolName?: string;
+  toolInput?: Record<string, unknown>;
+}
+
+export interface AgentSDKAPI {
+  getStatus: () => Promise<AgentSDKStatus>;
+  createSession: () => Promise<AgentSDKCreateSessionResponse>;
+  resumeSession: (request: AgentSDKResumeSessionRequest) => Promise<void>;
+  destroySession: (request: AgentSDKDestroySessionRequest) => Promise<void>;
+  query: (request: AgentSDKQueryRequest) => Promise<void>;
+  abort: () => void;
+  onMessage: (callback: (message: AgentSDKMessage) => void) => () => void;
+  setOption: (options: { timeout?: number }) => void;
+  getOption: (key: string) => number | undefined;
+  setSessionId: (sessionId: string) => void;
+}
+
 // ===== Slide operations =====
 
 import type {
@@ -1147,6 +1193,7 @@ declare global {
     electronAPI: ElectronAPI;
     slideApi: SlideApi;
     agentAPI: AgentExecutionAPI;
+    agentSDKAPI: AgentSDKAPI;
   }
 }
 
