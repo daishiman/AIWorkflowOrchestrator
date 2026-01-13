@@ -134,18 +134,21 @@ function generateMockCommunities(): Community[] {
  * Generate mock entity data for development
  */
 function generateMockEntities(entityIds: readonly EntityId[]): StoredEntity[] {
+  const now = new Date();
   return entityIds.map((id) => ({
     id,
     name: `Entity ${id}`,
     normalizedName: `entity_${id}`.toLowerCase(),
     type: "concept" as const,
     description: `Description for ${id}`,
-    sourceDocumentIds: [],
-    sourceChunkIds: [],
-    textUnit: null,
-    extractedAt: new Date(),
-    updatedAt: new Date(),
-    mentions: 1,
+    aliases: [],
+    embedding: null,
+    chunkIds: [],
+    mentionCount: 1,
+    importance: 0.5,
+    attributes: null,
+    createdAt: now,
+    updatedAt: now,
   }));
 }
 
