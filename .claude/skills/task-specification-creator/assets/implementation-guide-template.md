@@ -1,5 +1,11 @@
 # 実装ガイドテンプレート
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase 12（ドキュメント更新）実行時
+> - 読み込み条件: 実装ガイド（implementation-guide.md）を作成するとき
+> - 出力先: outputs/phase-12/implementation-guide.md
+> - 関連リソース: references/technical-documentation-guide.md
+
 Phase 12で作成する実装ガイドのテンプレート。
 **2パート構成**で、異なる読者層に対応する。
 

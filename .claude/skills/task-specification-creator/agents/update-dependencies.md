@@ -6,6 +6,9 @@
 | -------- | ---------------------- |
 | 名前     | Dependency Coordinator |
 | 専門領域 | 依存関係管理           |
+| Task種別 | Script Task            |
+
+> 注記: このTaskはScript Taskとして設計。決定論的な依存関係設定を行う。
 
 ---
 
@@ -13,7 +16,9 @@
 
 ### 2.1 背景
 
-ソフトウェアアーキテクチャにおける依存関係管理の原則を適用し、Phase間の参照関係を正確に設定する。循環依存を防ぎ、明確な依存フローを構築する。
+ソフトウェアアーキテクチャにおける依存関係管理の原則を適用し、
+Phase間の参照関係を正確に設定する。
+循環依存を防ぎ、明確な依存フローを構築する。
 
 ### 2.2 目的
 
@@ -38,11 +43,19 @@
 | Clean Architecture  | 依存関係の方向性制御     |
 | Continuous Delivery | パイプラインの依存フロー |
 
+### 3.2 スキーマ参照
+
+| スキーマ           | パス                            | 用途           |
+| ------------------ | ------------------------------- | -------------- |
+| 成果物定義スキーマ | schemas/artifact-definition.json | 依存関係マップ |
+
+> Progressive Disclosure: 依存関係更新時にスキーマを読み込む
+
 ---
 
 ## 4. 実行仕様
 
-### 4.1 思考プロセス
+### 4.1 思考プロセス（スクリプト処理）
 
 | ステップ | アクション                                |
 | -------- | ----------------------------------------- |
@@ -60,7 +73,6 @@
 | 参照資料更新 | 各ファイルの参照が正しく設定      |
 | 循環依存     | 循環依存がないことを確認          |
 | 戻りフロー   | レビューゲートの戻り先が明確      |
-| 出力検証     | すべての必須項目が含まれている    |
 
 ### 4.3 ビジネスルール（制約）
 
@@ -75,7 +87,7 @@
 
 ### 5.1 入力
 
-**注記**: generate-task-specsの完了を待ってから実行開始。output-phase-filesとは**並列実行**可能。
+**実行パターン**: generate-task-specsの完了を待機。output-phase-filesとは**並列実行**可能。
 
 | データ名       | 提供元              | 実行パターン | 検証ルール   | 欠損時処理     |
 | -------------- | ------------------- | ------------ | ------------ | -------------- |
@@ -83,38 +95,130 @@
 
 ### 5.2 出力
 
-| 成果物名         | 受領先            | 内容                       |
-| ---------------- | ----------------- | -------------------------- |
+| 成果物名         | 受領先             | 内容                       |
+| ---------------- | ------------------ | -------------------------- |
 | 依存関係マップ   | output-phase-files | Phase間の依存関係          |
 | 更新済みファイル | output-phase-files | 参照資料セクション更新済み |
 
-#### 出力テンプレート
+#### 出力テンプレート（依存関係マップ）
 
-```markdown
-## 依存関係マップ
-
-| Phase | 参照する前Phase成果物  |
-| ----- | ---------------------- |
-| 1     | （なし - 最初のPhase） |
-| 2     | Phase 1 の成果物       |
-| 3     | Phase 1, 2 の成果物    |
-| 4     | Phase 1, 2, 3 の成果物 |
-| ...   | ...                    |
-
-## 正常フロー
-
-Phase 1 → Phase 2 → Phase 3 → ... → Phase 13
-
-## 修正ループ（レビューゲート）
-
-### Phase 3（設計レビュー）での戻り
-
-- MAJOR（要件問題） → Phase 1
-- MAJOR（設計問題） → Phase 2
-
-### Phase 10（最終レビュー）での戻り
-
-- MAJOR（実装問題） → Phase 5
-- MAJOR（テスト問題） → Phase 4
-- CRITICAL → Phase 1
+```json
+{
+  "normalFlow": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "reviewLoops": {
+    "3": {
+      "MAJOR_requirements": 1,
+      "MAJOR_design": 2
+    },
+    "10": {
+      "MAJOR_implementation": 5,
+      "MAJOR_test": 4,
+      "CRITICAL": 1
+    }
+  },
+  "coverageLoop": {
+    "7": {
+      "coverage_not_met": 6
+    }
+  }
+}
 ```
+
+### 5.3 出力検証（スクリプト）
+
+```bash
+#!/bin/bash
+# scripts/validate_dependencies.sh
+
+FEATURE_NAME=$1
+OUTPUT_DIR="docs/30-workflows/${FEATURE_NAME}"
+
+# artifacts.jsonの依存関係検証
+node -e "
+const fs = require('fs');
+const artifacts = JSON.parse(fs.readFileSync('${OUTPUT_DIR}/artifacts.json'));
+
+// 循環依存チェック
+function hasCycle(deps) {
+  const visited = new Set();
+  const stack = new Set();
+
+  function dfs(node) {
+    if (stack.has(node)) return true;
+    if (visited.has(node)) return false;
+
+    visited.add(node);
+    stack.add(node);
+
+    const neighbors = deps[node] || [];
+    for (const neighbor of neighbors) {
+      if (dfs(neighbor)) return true;
+    }
+
+    stack.delete(node);
+    return false;
+  }
+
+  for (const node of Object.keys(deps)) {
+    if (dfs(node)) return true;
+  }
+  return false;
+}
+
+if (hasCycle(artifacts.dependencies)) {
+  console.error('Error: Circular dependency detected!');
+  process.exit(1);
+}
+
+console.log('Dependencies validated: No circular dependencies');
+"
+```
+
+---
+
+## 6. 依存関係ドキュメント
+
+### 6.1 正常フロー
+
+```
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7 → Phase 8 → Phase 9 → Phase 10 → Phase 11 → Phase 12 → Phase 13
+```
+
+### 6.2 修正ループ（レビューゲート）
+
+#### Phase 3（設計レビュー）での戻り
+
+| 判定  | 戻り先  | 理由     |
+| ----- | ------- | -------- |
+| MAJOR | Phase 1 | 要件問題 |
+| MAJOR | Phase 2 | 設計問題 |
+
+#### Phase 10（最終レビュー）での戻り
+
+| 判定     | 戻り先  | 理由       |
+| -------- | ------- | ---------- |
+| MAJOR    | Phase 5 | 実装問題   |
+| MAJOR    | Phase 4 | テスト問題 |
+| CRITICAL | Phase 1 | 根本的問題 |
+
+### 6.3 カバレッジループ
+
+#### Phase 7（テストカバレッジ確認）での戻り
+
+| 条件             | 戻り先  | 理由             |
+| ---------------- | ------- | ---------------- |
+| カバレッジ未達成 | Phase 6 | テスト追加が必要 |

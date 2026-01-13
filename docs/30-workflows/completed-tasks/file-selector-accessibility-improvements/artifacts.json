@@ -1,0 +1,246 @@
+{
+  "taskId": "FILE-SEL-A11Y-001",
+  "taskName": "FileSelector アクセシビリティ改善（WCAG 2.1 AA準拠）",
+  "createdAt": "2026-01-13",
+  "updatedAt": "2026-01-14",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "現状分析レポート",
+          "path": "outputs/phase-1/current-state-analysis.md",
+          "status": "pending"
+        },
+        {
+          "name": "機能要件定義書",
+          "path": "outputs/phase-1/functional-requirements.md",
+          "status": "pending"
+        },
+        {
+          "name": "受け入れ基準一覧",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "pending"
+        },
+        {
+          "name": "スコープ定義書",
+          "path": "outputs/phase-1/scope-definition.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "useFocusTrap設計書",
+          "path": "outputs/phase-2/use-focus-trap-design.md",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorModal設計書",
+          "path": "outputs/phase-2/file-selector-modal-design.md",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorTrigger設計書",
+          "path": "outputs/phase-2/file-selector-trigger-design.md",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorFileList設計書",
+          "path": "outputs/phase-2/file-selector-file-list-design.md",
+          "status": "pending"
+        },
+        {
+          "name": "コンポーネント連携設計書",
+          "path": "outputs/phase-2/component-integration-design.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-results.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "useFocusTrapテスト",
+          "path": "apps/desktop/src/renderer/hooks/__tests__/useFocusTrap.test.ts",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorModalテスト更新",
+          "path": "apps/desktop/src/renderer/components/organisms/FileSelector/__tests__/FileSelectorModal.test.tsx",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorTriggerテスト更新",
+          "path": "apps/desktop/src/renderer/components/organisms/FileSelector/__tests__/FileSelectorTrigger.test.tsx",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorFileListテスト更新",
+          "path": "apps/desktop/src/renderer/components/organisms/FileSelector/__tests__/FileSelectorFileList.test.tsx",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "useFocusTrapフック",
+          "path": "apps/desktop/src/renderer/hooks/useFocusTrap.ts",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorModal更新",
+          "path": "apps/desktop/src/renderer/components/organisms/FileSelector/FileSelectorModal.tsx",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorTrigger更新",
+          "path": "apps/desktop/src/renderer/components/organisms/FileSelector/FileSelectorTrigger.tsx",
+          "status": "pending"
+        },
+        {
+          "name": "FileSelectorFileList更新",
+          "path": "apps/desktop/src/renderer/components/organisms/FileSelector/FileSelectorFileList.tsx",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡張",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "エッジケーステスト",
+          "path": "outputs/phase-6/edge-case-tests.md",
+          "status": "pending"
+        },
+        {
+          "name": "統合テスト",
+          "path": "outputs/phase-6/integration-tests.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ検証",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "リファクタリングレポート",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-assurance-report.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-results.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "キーボードナビゲーションテスト結果",
+          "path": "outputs/phase-11/keyboard-test-results.md",
+          "status": "pending"
+        },
+        {
+          "name": "VoiceOverテスト結果",
+          "path": "outputs/phase-11/voiceover-test-results.md",
+          "status": "pending"
+        },
+        {
+          "name": "NVDAテスト結果",
+          "path": "outputs/phase-11/nvda-test-results.md",
+          "status": "pending"
+        },
+        {
+          "name": "フォーカス可視化テスト結果",
+          "path": "outputs/phase-11/focus-visibility-results.md",
+          "status": "pending"
+        },
+        {
+          "name": "手動テスト結果サマリー",
+          "path": "outputs/phase-11/manual-test-summary.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "pending"
+        },
+        {
+          "name": "ドキュメント更新ログ",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "status": "pending"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "specification_complete",
+      "artifacts": [
+        {
+          "name": "プルリクエスト",
+          "path": "outputs/phase-13/pr-details.md",
+          "status": "pending"
+        }
+      ]
+    }
+  }
+}

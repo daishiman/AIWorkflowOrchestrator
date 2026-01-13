@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Slide output directory settings feature for presentation-slide-generator skill
+  - Configure slide output directory from settings UI
+  - OS standard directory selection dialog
+  - Auto-create directory option
+  - Settings persistence (survives app restart)
+  - Secure IPC communication with sender validation
+  - Path traversal attack prevention
+  - Comprehensive test coverage (156 tests, 94.30% line coverage)
 - `GraphSearchStrategy`: Knowledge Graph-based search strategy for HybridRAG system
   - Local search (entity-based): Find entities similar to the query
   - Global search (community summary-based): High-level topic summaries

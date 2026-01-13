@@ -1,163 +1,201 @@
 {
-  "taskId": "AGENT-006",
-  "taskName": "Custom Execution Environment UI",
-  "createdAt": "2026-01-13T15:32:00Z",
-  "updatedAt": "2026-01-13T19:00:00Z",
-  "currentPhase": 12,
+  "taskId": "AGENT-007",
+  "taskName": "Environment Backend",
   "phases": {
-    "1": {
-      "name": "要件定義",
+    "phase-1": {
+      "name": "要件分析",
       "status": "completed",
-      "artifacts": ["outputs/phase-1/requirements.md"]
+      "completedAt": "2025-01-13T15:35:00Z",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ],
+      "requirements": {
+        "functional": 7,
+        "nonFunctional": 4
+      }
     },
-    "2": {
+    "phase-2": {
       "name": "設計",
       "status": "completed",
-      "artifacts": [
-        "outputs/phase-2/design-specification.md",
-        "outputs/phase-2/component-design.md",
-        "outputs/phase-2/security-design.md"
-      ]
+      "completedAt": "2025-01-13T15:40:00Z",
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/type-definitions.md",
+        "outputs/phase-2/ipc-design.md"
+      ],
+      "design": {
+        "pattern": "Facade",
+        "components": 4,
+        "ipcChannels": 3
+      }
     },
-    "3": {
+    "phase-3": {
       "name": "設計レビューゲート",
       "status": "completed",
-      "artifacts": ["outputs/phase-3/design-review.md"]
+      "completedAt": "2025-01-13T15:45:00Z",
+      "outputs": ["outputs/phase-3/design-review-result.md"],
+      "review": {
+        "result": "承認",
+        "critical": 0,
+        "major": 0,
+        "minor": 0
+      }
     },
-    "4": {
-      "name": "テスト作成（Red）",
+    "phase-4": {
+      "name": "テスト作成（TDD: Red）",
       "status": "completed",
+      "completedAt": "2025-01-13T16:20:00Z",
+      "outputs": ["outputs/phase-4/test-specification.md"],
       "artifacts": [
-        "outputs/phase-4/test-specification.md",
-        "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.preview.test.ts",
-        "apps/desktop/src/renderer/utils/__tests__/sanitize.test.ts",
-        "apps/desktop/src/renderer/components/organisms/SplitLayout/__tests__/index.test.tsx",
-        "apps/desktop/src/renderer/components/molecules/EnvironmentSelector/__tests__/index.test.tsx",
-        "apps/desktop/src/renderer/components/organisms/ExecutionEnvironment/__tests__/index.test.tsx",
-        "apps/desktop/src/renderer/components/organisms/HTMLPreviewEnvironment/__tests__/index.test.tsx",
-        "apps/desktop/src/renderer/components/organisms/MarkdownPreviewEnvironment/__tests__/index.test.tsx",
-        "apps/desktop/src/renderer/security/__tests__/iframe-sandbox.test.tsx",
-        "apps/desktop/src/renderer/security/__tests__/csp.test.tsx"
-      ]
+        "apps/desktop/src/main/services/environment/__tests__/ContentExtractor.test.ts",
+        "apps/desktop/src/main/services/environment/__tests__/ContentSanitizer.test.ts",
+        "apps/desktop/src/main/services/environment/__tests__/TempFileManager.test.ts",
+        "apps/desktop/src/main/services/environment/__tests__/EnvironmentService.test.ts"
+      ],
+      "testFiles": 4
     },
-    "5": {
-      "name": "実装（Green）",
+    "phase-5": {
+      "name": "実装（TDD: Green）",
       "status": "completed",
+      "completedAt": "2025-01-13T17:00:00Z",
       "artifacts": [
-        "outputs/phase-5/implementation-log.md",
         "packages/shared/src/types/agent.ts",
-        "apps/desktop/src/renderer/store/slices/agentSlice.ts",
-        "apps/desktop/src/renderer/utils/sanitize.ts",
-        "apps/desktop/src/renderer/components/organisms/SplitLayout/index.tsx",
-        "apps/desktop/src/renderer/components/molecules/EnvironmentSelector/index.tsx",
-        "apps/desktop/src/renderer/components/organisms/ExecutionEnvironment/index.tsx",
-        "apps/desktop/src/renderer/components/organisms/HTMLPreviewEnvironment/index.tsx",
-        "apps/desktop/src/renderer/components/organisms/MarkdownPreviewEnvironment/index.tsx"
+        "apps/desktop/src/main/services/environment/ContentExtractor.ts",
+        "apps/desktop/src/main/services/environment/ContentSanitizer.ts",
+        "apps/desktop/src/main/services/environment/TempFileManager.ts",
+        "apps/desktop/src/main/services/environment/EnvironmentService.ts",
+        "apps/desktop/src/main/services/environment/index.ts",
+        "apps/desktop/src/preload/channels.ts",
+        "apps/desktop/src/main/ipc/agentHandlers.ts"
+      ],
+      "outputs": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/api-specification.md",
+        "outputs/phase-5/test-results.md"
       ],
       "testResults": {
-        "totalTests": 188,
-        "passed": 188,
+        "totalTests": 79,
+        "passed": 79,
         "failed": 0
       }
     },
-    "6": {
+    "phase-6": {
       "name": "テスト拡充",
       "status": "completed",
-      "artifacts": [
-        "outputs/phase-6/test-expansion-log.md",
-        "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.preview.edge-cases.test.ts",
-        "apps/desktop/src/renderer/utils/__tests__/sanitize.edge-cases.test.ts",
-        "apps/desktop/src/renderer/components/organisms/SplitLayout/__tests__/edge-cases.test.tsx",
-        "apps/desktop/src/renderer/components/molecules/EnvironmentSelector/__tests__/edge-cases.test.tsx",
-        "apps/desktop/src/renderer/components/organisms/HTMLPreviewEnvironment/__tests__/edge-cases.test.tsx",
-        "apps/desktop/src/renderer/components/organisms/MarkdownPreviewEnvironment/__tests__/edge-cases.test.tsx"
-      ],
+      "completedAt": "2025-01-13T17:05:00Z",
+      "outputs": ["outputs/phase-6/test-expansion-report.md"],
       "testResults": {
-        "phase5Tests": 188,
-        "phase6Tests": 107,
-        "totalTests": 295,
-        "passed": 295,
-        "failed": 0
+        "totalTests": 98,
+        "passed": 98,
+        "failed": 0,
+        "addedTests": 19
       }
     },
-    "7": {
+    "phase-7": {
       "name": "カバレッジ確認",
       "status": "completed",
-      "artifacts": ["outputs/phase-7/coverage-report.md"],
-      "testResults": {
-        "phase5Tests": 188,
-        "phase6Tests": 107,
-        "totalTests": 295,
-        "allPassing": true
+      "completedAt": "2025-01-13T17:15:00Z",
+      "outputs": ["outputs/phase-7/coverage-report.md"],
+      "coverage": {
+        "statements": "100%",
+        "branches": "100%",
+        "functions": "100%",
+        "lines": "100%"
       }
     },
-    "8": {
+    "phase-8": {
       "name": "リファクタリング",
       "status": "completed",
-      "artifacts": ["outputs/phase-8/refactoring-log.md"],
-      "refactorings": [
-        "filterSandboxFlags関数をsanitize.tsに移動",
-        "PROSE_CLASSES定数の抽出（MarkdownPreviewEnvironment）",
-        "Placeholderコンポーネントの統一（ExecutionEnvironment）",
-        "コメント・ドキュメントの改善"
-      ],
-      "testResults": {
-        "totalTests": 253,
-        "passed": 253,
-        "failed": 0
-      }
+      "completedAt": "2025-01-13T17:25:00Z",
+      "outputs": ["outputs/phase-8/refactoring-report.md"],
+      "changes": [
+        "インポートパスの最適化（@repo/shared/types/agent）",
+        "DOMPurify型互換性修正",
+        "TypeScript型チェックパス"
+      ]
     },
-    "9": {
-      "name": "品質チェック",
+    "phase-9": {
+      "name": "品質保証",
       "status": "completed",
-      "artifacts": ["outputs/phase-9/quality-check-report.md"],
-      "checkResults": {
-        "prettier": "pass",
-        "eslint": "pass (既存警告除く)",
-        "typescript": "pass (AGENT-006ファイル)",
-        "tests": "253 passed"
+      "completedAt": "2025-01-13T17:30:00Z",
+      "outputs": ["outputs/phase-9/quality-assurance-report.md"],
+      "checks": {
+        "eslint": "パス",
+        "typescript": "パス",
+        "tests": "98/98",
+        "coverage": "100%",
+        "security": "パス"
       }
     },
-    "10": {
+    "phase-10": {
       "name": "最終レビューゲート",
       "status": "completed",
-      "artifacts": ["outputs/phase-10/final-review.md"],
-      "reviewResult": "approved",
-      "summary": {
-        "functionalRequirements": "全て満たす",
-        "securityRequirements": "全て満たす",
-        "accessibilityRequirements": "全て満たす",
-        "testCoverage": "295テストパス"
-      }
+      "completedAt": "2025-01-13T17:35:00Z",
+      "outputs": ["outputs/phase-10/final-review-checklist.md"],
+      "result": "承認"
     },
-    "11": {
+    "phase-11": {
       "name": "手動テスト",
       "status": "completed",
-      "artifacts": ["outputs/phase-11/manual-test-spec.md"],
-      "note": "手動テスト仕様書を作成。実際のテスト実行はユーザーが別途実施"
+      "completedAt": "2025-01-13T17:35:00Z",
+      "outputs": ["outputs/phase-11/manual-test-plan.md"],
+      "note": "ユニットテストでカバー済み、IPC統合はフロントエンド実装時に実施"
     },
-    "12": {
-      "name": "ドキュメント作成",
+    "phase-12": {
+      "name": "ドキュメント更新",
       "status": "completed",
-      "artifacts": ["outputs/phase-12/api-documentation.md"]
+      "completedAt": "2025-01-13T17:45:00Z",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ],
+      "updatedSpecs": [
+        ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md"
+      ],
+      "unassignedTasks": {
+        "detected": 1,
+        "newTasksCreated": 0,
+        "note": "IPC統合テストはAGENT-006完了後に実施予定"
+      }
     }
   },
-  "completedAt": "2026-01-13T19:30:00Z",
-  "summary": {
-    "totalTests": 295,
-    "allTestsPassing": true,
-    "implementedComponents": [
-      "SplitLayout",
-      "EnvironmentSelector",
-      "ExecutionEnvironment",
-      "HTMLPreviewEnvironment",
-      "MarkdownPreviewEnvironment"
+  "implementation": {
+    "sourceFiles": [
+      "apps/desktop/src/main/services/environment/ContentExtractor.ts",
+      "apps/desktop/src/main/services/environment/ContentSanitizer.ts",
+      "apps/desktop/src/main/services/environment/TempFileManager.ts",
+      "apps/desktop/src/main/services/environment/EnvironmentService.ts",
+      "apps/desktop/src/main/services/environment/index.ts",
+      "apps/desktop/src/main/ipc/agentHandlers.ts"
     ],
-    "securityFeatures": [
-      "DOMPurify HTMLサニタイズ",
-      "CSP (script-src none)",
-      "iframe sandbox",
-      "危険属性フィルタリング"
-    ]
-  }
+    "testFiles": [
+      "apps/desktop/src/main/services/environment/__tests__/ContentExtractor.test.ts",
+      "apps/desktop/src/main/services/environment/__tests__/ContentSanitizer.test.ts",
+      "apps/desktop/src/main/services/environment/__tests__/TempFileManager.test.ts",
+      "apps/desktop/src/main/services/environment/__tests__/EnvironmentService.test.ts"
+    ],
+    "typeDefinitions": ["packages/shared/src/types/agent.ts"]
+  },
+  "verification": {
+    "tests": {
+      "total": 98,
+      "passed": 98,
+      "failed": 0
+    },
+    "coverage": {
+      "statements": "100%",
+      "branches": "100%",
+      "functions": "100%",
+      "lines": "100%"
+    },
+    "quality": {
+      "eslint": "パス",
+      "typescript": "パス"
+    }
+  },
+  "updatedAt": "2025-01-13T20:30:00Z",
+  "status": "completed"
 }

@@ -1240,6 +1240,30 @@ export interface CommunityAPI {
   search: (query: string) => Promise<CommunitySearchResponse>;
 }
 
+// ===== Slide Settings operations =====
+
+import type {
+  SlideSettings,
+  DirectoryValidationResult,
+  SlideSettingsAPI,
+  SlideSettingsGetResponse,
+  SlideSettingsGetDirectoryResponse,
+  SlideSettingsSetDirectoryResponse,
+  SlideSettingsSelectDirectoryResponse,
+  SlideSettingsValidateDirectoryResponse,
+} from "@repo/shared/types";
+
+export type {
+  SlideSettings,
+  DirectoryValidationResult,
+  SlideSettingsAPI,
+  SlideSettingsGetResponse,
+  SlideSettingsGetDirectoryResponse,
+  SlideSettingsSetDirectoryResponse,
+  SlideSettingsSelectDirectoryResponse,
+  SlideSettingsValidateDirectoryResponse,
+};
+
 // Global type declaration
 declare global {
   interface Window {
@@ -1247,6 +1271,7 @@ declare global {
     slideApi: SlideApi;
     agentAPI: AgentExecutionAPI;
     agentSDKAPI: AgentSDKAPI;
+    slideSettingsAPI: SlideSettingsAPI;
   }
 }
 

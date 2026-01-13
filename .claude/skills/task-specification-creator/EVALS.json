@@ -1,0 +1,38 @@
+{
+  "skillName": "task-specification-creator",
+  "version": "2.0.0",
+  "currentLevel": 1,
+  "metrics": {
+    "totalUsageCount": 0,
+    "successCount": 0,
+    "failureCount": 0,
+    "successRate": 0,
+    "averageDuration": 0,
+    "lastEvaluated": null
+  },
+  "levelHistory": [],
+  "patterns": {
+    "commonErrors": [],
+    "slowPhases": [],
+    "frequentAgents": []
+  },
+  "phaseMetrics": {
+    "decompose-task": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
+    "identify-scope": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
+    "design-phases": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
+    "generate-task-specs": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
+    "output-phase-files": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
+    "update-dependencies": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
+    "generate-unassigned-task": { "successRate": 0, "avgDuration": 0, "usageCount": 0 }
+  },
+  "levelCriteria": {
+    "level2": {
+      "usageCount": 10,
+      "successRate": 0.8
+    },
+    "level3": {
+      "usageCount": 50,
+      "successRate": 0.9
+    }
+  }
+}

@@ -1,6 +1,46 @@
-# task-specification-creator - 使用ログ
+# task-specification-creator - Usage Logs
 
-このファイルはスキルの使用履歴とフィードバックを記録します。
+> **Self-Improvement Cycle**
+> このファイルにはスキルの使用記録が追記されます。
+> 定期的にEVALS.jsonのメトリクスが更新され、改善提案の基礎データとなります。
+> - 記録スクリプト: scripts/log-usage.mjs
+> - メトリクスファイル: EVALS.json
+> - 参照ガイド: references/self-improvement-cycle.md
+
+---
+
+## ログ形式
+
+```markdown
+## [TIMESTAMP]
+
+- **Agent**: 実行したエージェント名
+- **Phase**: 実行フェーズ
+- **Result**: ✓ 成功 / ✗ 失敗
+- **Duration**: 実行時間（ms）
+- **Notes**: 補足メモ
+
+---
+```
+
+---
+
+## 使用方法
+
+```bash
+# 使用記録を追加
+node scripts/log-usage.mjs \
+  --result success \
+  --phase "Phase 4" \
+  --agent "generate-task-specs" \
+  --notes "仕様書生成完了"
+```
+
+---
+
+## Logs
+
+<!-- ログエントリーはここから下に追記 -->
 
 ---
 
@@ -149,6 +189,79 @@
 
 ### 次のアクション
 - [ ] Phase 6のテスト拡充基準の詳細化を検討
+
+---
+
+## 2026-01-14 - slide-directory-settings タスク完了
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: task-feat-slide-directory-settings-002
+- タスク名: スライド出力ディレクトリ設定機能
+- Phase: 1-12（13は別途）
+- 実行者: Claude Code
+
+### 結果
+- ステータス: success
+- 記録日時: 2026-01-14
+
+### 発見事項
+- **良かった点**: Phase 1-12の全フェーズを正常に実行完了
+- **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
+- **良かった点**: セキュリティ要件（パストラバーサル防止、sender検証）がPhase 3で確実に検証された
+- **良かった点**: Phase 12でのaiworkflow-requirements更新（security-api-electron.md）が正常に実行
+- **改善提案（低優先度）**: タスク完了時の`unassigned-task → completed-tasks`移動とステータス更新を手順化するとよい
+
+### 成果
+- Phase 1-12を完了
+- テストカバレッジ: Line 94.30%（156テスト）
+- 作成ドキュメント:
+  - 技術ドキュメント: docs/technical/slide-settings.md
+  - ユーザーガイド: docs/user-guide/slide-settings.md
+  - APIリファレンス: docs/api/slide-settings-api.md
+  - CHANGELOG更新
+- aiworkflow-requirements更新:
+  - security-api-electron.md にslideSettingsAPI実装例を追加
+
+### IPCセキュリティ実装
+- SLIDE_SETTINGS_CHANNELSによるホワイトリスト方式
+- validateIpcSender()によるsender検証
+- detectPathTraversal()によるパストラバーサル防止（32テストケース）
+- Unicode正規化対応
+
+### 次のアクション
+- [x] Phase 12成果物の完全化（完了）
+- [x] aiworkflow-requirements更新（完了）
+- [x] completed-tasks移動とステータス更新（完了）
+- [x] スキル改善: unassigned-task-guidelines.mdにタスク完了ワークフロー追加（完了）
+- [ ] Phase 13 PR作成（ユーザー指示待ち）
+
+---
+
+## 2026-01-14 - skill-creator改善（task-specification-creator）
+
+### コンテキスト
+- スキル: task-specification-creator
+- モード: update（skill-creator経由）
+- 実行者: Claude Code
+
+### 結果
+- ステータス: success
+- 記録日時: 2026-01-14
+
+### 発見事項
+- **改善提案の実装**: slide-directory-settings完了後のフィードバックに基づき改善
+- **追加内容**: タスク完了時のワークフロー（unassigned-task → completed-tasks移動とステータス更新）を手順化
+
+### 変更内容
+| ファイル | 変更種別 | 内容 |
+|----------|----------|------|
+| references/unassigned-task-guidelines.md | add | 「タスク完了時のワークフロー」セクション追加（約60行） |
+| SKILL.md | modify | 変更履歴にv6.1.0を追加 |
+
+### 次のアクション
+- [x] unassigned-task-guidelines.md更新（完了）
+- [x] SKILL.md変更履歴更新（完了）
 
 ---
 

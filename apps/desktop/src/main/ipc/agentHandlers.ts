@@ -18,6 +18,8 @@ import type {
   PermissionResponse,
   PermissionRules,
 } from "@repo/shared";
+import type { EnvironmentPreviewContent } from "@repo/shared/types/agent";
+import type { EnvironmentService } from "../services/environment";
 
 // シングルトンのExecutionManager
 let executionManager: ExecutionManager | null = null;
@@ -223,4 +225,75 @@ export function unregisterAgentExecutionHandlers(): void {
  */
 export function getExecutionManager(): ExecutionManager | null {
   return executionManager;
+}
+
+// ============================================
+// Environment Backend Handlers (AGENT-007)
+// ============================================
+
+/**
+ * Environment Backend用IPCハンドラーを登録する
+ * @param environmentService EnvironmentServiceインスタンス
+ */
+export function registerEnvironmentHandlers(
+  environmentService: EnvironmentService,
+): void {
+  // agent:extract-content - コンテンツ抽出・サニタイズ
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_EXTRACT_CONTENT,
+    async (
+      _event: IpcMainInvokeEvent,
+      args: { text: string; executionId: string },
+    ): Promise<EnvironmentPreviewContent> => {
+      // 引数バリデーション
+      if (typeof args?.text !== "string") {
+        throw { code: "VALIDATION_ERROR", message: "text must be a string" };
+      }
+      if (typeof args?.executionId !== "string" || !args.executionId) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "executionId must be a non-empty string",
+        };
+      }
+
+      return environmentService.extractAndSanitize(args.text, args.executionId);
+    },
+  );
+
+  // agent:get-preview-content - プレビューコンテンツ取得
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_GET_PREVIEW_CONTENT,
+    async (
+      _event: IpcMainInvokeEvent,
+      args: { executionId: string },
+    ): Promise<EnvironmentPreviewContent | null> => {
+      // 引数バリデーション
+      if (typeof args?.executionId !== "string") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "executionId must be a string",
+        };
+      }
+
+      return environmentService.getPreviewContent(args.executionId);
+    },
+  );
+
+  // agent:cleanup-temp-files - 一時ファイルクリーンアップ
+  ipcMain.handle(
+    IPC_CHANNELS.AGENT_CLEANUP_TEMP_FILES,
+    async (): Promise<boolean> => {
+      await environmentService.cleanupTempFiles();
+      return true;
+    },
+  );
+}
+
+/**
+ * Environment Backend用IPCハンドラーを解除する
+ */
+export function unregisterEnvironmentHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_EXTRACT_CONTENT);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_GET_PREVIEW_CONTENT);
+  ipcMain.removeHandler(IPC_CHANNELS.AGENT_CLEANUP_TEMP_FILES);
 }

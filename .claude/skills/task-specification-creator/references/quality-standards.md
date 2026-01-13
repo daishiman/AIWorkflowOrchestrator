@@ -1,5 +1,11 @@
 # タスク仕様書 品質基準
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: タスク仕様書生成・レビュー時（generate-task-specs Task実行時）
+> - 読み込み条件: 生成したPhase仕様書の品質検証が必要なとき
+> - 関連スキーマ: schemas/phase-spec.json
+> - 関連スクリプト: scripts/validate-schema.mjs
+
 ## 概要
 
 タスク仕様書が満たすべき品質基準を定義する。

@@ -1,0 +1,441 @@
+{
+  "feature": "slide-directory-settings",
+  "taskId": "task-feat-slide-directory-settings-002",
+  "created": "2026-01-13T16:15:52Z",
+  "lastUpdated": "2026-01-13T16:15:52Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "機能要件・非機能要件の定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準（Gherkin形式）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/ui-requirements.md",
+          "description": "UI要件定義"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/component-design.md",
+          "description": "コンポーネント設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ipc-design.md",
+          "description": "IPC通信設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/schema-design.md",
+          "description": "データスキーマ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/data-flow-diagram.md",
+          "description": "データフロー図"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/traceability-matrix.md",
+          "description": "要件トレーサビリティマトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/security-review.md",
+          "description": "セキュリティレビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-verdict.md",
+          "description": "設計レビュー判定結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成（Red）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/settings/__tests__/slideSettingsStore.test.ts",
+          "description": "設定ストアユニットテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/infrastructure/ipc/__tests__/slideSettingsHandlers.test.ts",
+          "description": "IPCハンドラーユニットテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/settings/SlideDirectorySettings/__tests__/SlideDirectorySettings.test.tsx",
+          "description": "UIコンポーネントテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/hooks/__tests__/useSlideSettings.test.ts",
+          "description": "カスタムフックテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/__tests__/integration/slideSettings.integration.test.ts",
+          "description": "統合テスト"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装（Green）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/settings/slideSettingsStore.ts",
+          "description": "設定ストア実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/infrastructure/ipc/slideSettingsHandlers.ts",
+          "description": "IPCハンドラー実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/preload/slideSettingsApi.ts",
+          "description": "Preload API実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/settings/SlideDirectorySettings/index.tsx",
+          "description": "UIコンポーネント実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/hooks/useSlideSettings.ts",
+          "description": "カスタムフック実装"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/types/slideSettings.ts",
+          "description": "型定義"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/settings/__tests__/slideSettingsStore.edge.test.ts",
+          "description": "エッジケーステスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/infrastructure/ipc/__tests__/slideSettingsHandlers.error.test.ts",
+          "description": "異常系テスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/settings/SlideDirectorySettings/__tests__/SlideDirectorySettings.extended.test.tsx",
+          "description": "UI追加テスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/__tests__/integration/slideSettings.extended.integration.test.ts",
+          "description": "統合テスト拡充"
+        }
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/unit-coverage-report.md",
+          "description": "ユニットテストカバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/integration-test-report.md",
+          "description": "統合テスト実行結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/integration-coverage-report.md",
+          "description": "統合テストカバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/gate-verdict.md",
+          "description": "カバレッジゲート判定結果"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/static-analysis-report.md",
+          "description": "静的解析レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-check-report.md",
+          "description": "セキュリティチェックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/dependency-audit-report.md",
+          "description": "依存関係監査レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/code-quality-report.md",
+          "description": "コード品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-verdict.md",
+          "description": "品質判定結果"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/requirements-verification.md",
+          "description": "要件充足確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/design-implementation-review.md",
+          "description": "設計・実装整合性レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/test-summary.md",
+          "description": "テスト結果サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/integration-review.md",
+          "description": "統合テスト観点レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-verdict.md",
+          "description": "最終レビュー判定結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/dev-build-test.md",
+          "description": "開発ビルドテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/error-case-test.md",
+          "description": "エラーケーステスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-ux-review.md",
+          "description": "UI/UXレビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/cross-platform-test.md",
+          "description": "クロスプラットフォームテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-verdict.md",
+          "description": "手動テスト判定結果"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "docs/technical/slide-settings.md",
+          "description": "技術ドキュメント"
+        },
+        {
+          "type": "document",
+          "path": "docs/user-guide/slide-settings.md",
+          "description": "ユーザーガイド"
+        },
+        {
+          "type": "document",
+          "path": "docs/api/slide-settings-api.md",
+          "description": "APIリファレンス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/technical-doc.md",
+          "description": "技術ドキュメント確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/user-guide.md",
+          "description": "ユーザーガイド確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/api-reference.md",
+          "description": "APIリファレンス確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/changelog-entry.md",
+          "description": "CHANGELOG追加内容"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-checklist.md",
+          "description": "ドキュメント完了チェック"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/commit-status.md",
+          "description": "コミット状況"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/branch-status.md",
+          "description": "ブランチ状況"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-description.md",
+          "description": "PR説明文"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-created.md",
+          "description": "PR作成結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-final-status.md",
+          "description": "PR最終ステータス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/task-completion-report.md",
+          "description": "タスク完了レポート"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "codeArtifacts": {
+    "main": [
+      "apps/desktop/src/main/settings/slideSettingsStore.ts",
+      "apps/desktop/src/main/infrastructure/ipc/slideSettingsHandlers.ts",
+      "apps/desktop/src/preload/slideSettingsApi.ts"
+    ],
+    "renderer": [
+      "apps/desktop/src/renderer/components/settings/SlideDirectorySettings/index.tsx",
+      "apps/desktop/src/renderer/hooks/useSlideSettings.ts"
+    ],
+    "shared": ["packages/shared/src/types/slideSettings.ts"],
+    "tests": [
+      "apps/desktop/src/main/settings/__tests__/slideSettingsStore.test.ts",
+      "apps/desktop/src/main/settings/__tests__/slideSettingsStore.edge.test.ts",
+      "apps/desktop/src/main/infrastructure/ipc/__tests__/slideSettingsHandlers.test.ts",
+      "apps/desktop/src/main/infrastructure/ipc/__tests__/slideSettingsHandlers.error.test.ts",
+      "apps/desktop/src/renderer/components/settings/SlideDirectorySettings/__tests__/SlideDirectorySettings.test.tsx",
+      "apps/desktop/src/renderer/components/settings/SlideDirectorySettings/__tests__/SlideDirectorySettings.extended.test.tsx",
+      "apps/desktop/src/renderer/hooks/__tests__/useSlideSettings.test.ts",
+      "apps/desktop/src/__tests__/integration/slideSettings.integration.test.ts",
+      "apps/desktop/src/__tests__/integration/slideSettings.extended.integration.test.ts"
+    ]
+  },
+  "ipcChannels": [
+    "slideSettings:getDirectory",
+    "slideSettings:setDirectory",
+    "slideSettings:selectDirectory",
+    "slideSettings:validateDirectory",
+    "slideSettings:getAllSettings"
+  ]
+}

@@ -1,5 +1,10 @@
 # システム仕様更新ワークフロー
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase 12（ドキュメント更新）でシステム仕様変更が発生した場合
+> - 読み込み条件: aiworkflow-requirementsスキルへの仕様反映が必要なとき
+> - 関連スキル: aiworkflow-requirements
+
 タスク完了時、システム仕様に変更が必要な場合は `aiworkflow-requirements` スキルを更新する。
 
 ## 更新トリガー

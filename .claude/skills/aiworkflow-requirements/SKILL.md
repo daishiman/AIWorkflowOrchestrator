@@ -57,7 +57,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ### 仕様ファイル一覧
 
-**48ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
+**49ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
 
 | トピック         | ファイル数 |
 | ---------------- | ---------- |
@@ -66,7 +66,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 | インターフェース | 7          |
 | API設計          | 3          |
 | データベース     | 3          |
-| UI/UX            | 5          |
+| UI/UX            | 6          |
 | セキュリティ     | 3          |
 | 技術スタック     | 3          |
 | Claude Code      | 6          |
@@ -138,6 +138,8 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                              |
 | ------- | ---------- | ---------------------------------------------------- |
+| 6.10.0  | 2026-01-14 | ui-ux-settings.md新規追加: スライド出力ディレクトリ設定機能のUI/UX仕様・IPC API仕様・セキュリティ要件（slideSettingsAPI） |
+| 6.9.0   | 2026-01-13 | Knowledge Graph Store実装完了: interfaces-rag-knowledge-graph-store.md v1.0.1更新、実装詳細追加（Entity/Relation CRUD、グラフ探索、バッチ操作）、カバレッジ86.98%達成 |
 | 6.8.0   | 2026-01-13 | AgentSDKPage Postrelease Testing仕様追加: interfaces-agent-sdk.mdに約150行追加（AGENT-005-POST） |
 | 6.7.0   | 2026-01-12 | 未タスク指示書3件作成（renderer-build-fix、history-gui-manual-test、error-i18n-support）、ui-ux-history-panel.md v1.6.0更新 |
 | 6.6.1   | 2026-01-12 | history-service-db-integration実装内容追加: architecture-file-conversion.md、api-internal-conversion.mdにElectron統合セクション追加 |
