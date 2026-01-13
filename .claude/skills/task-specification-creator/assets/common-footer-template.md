@@ -1,5 +1,11 @@
 # 共通フッターテンプレート
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase仕様書生成時（generate-task-specs Task実行時）
+> - 読み込み条件: Phase仕様書のフッター部分を生成するとき
+> - 使用スキーマ: schemas/phase-spec.json
+> - 組み合わせ: common-header-template.md, phase-spec-template.md
+
 Phase仕様書の共通フッター部分を定義する。
 
 ---

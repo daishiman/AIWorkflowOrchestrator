@@ -79,6 +79,7 @@ import type {
   PaginationOptions,
   LogFilterOptions,
 } from "../renderer/components/history/types";
+import type { SlideSettingsAPI } from "./types";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -392,6 +393,18 @@ const agentSDKAPI: AgentSDKAPI = {
   },
 };
 
+// Slide Settings API for slide output directory configuration
+const slideSettingsAPI: SlideSettingsAPI = {
+  getDirectory: () => safeInvoke(IPC_CHANNELS.SLIDE_SETTINGS_GET_DIRECTORY),
+  setDirectory: (dirPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_SETTINGS_SET_DIRECTORY, dirPath),
+  selectDirectory: () =>
+    safeInvoke(IPC_CHANNELS.SLIDE_SETTINGS_SELECT_DIRECTORY),
+  validateDirectory: (dirPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_SETTINGS_VALIDATE_DIRECTORY, dirPath),
+  getAllSettings: () => safeInvoke(IPC_CHANNELS.SLIDE_SETTINGS_GET_ALL),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
@@ -400,6 +413,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("historyAPI", historyAPI);
     contextBridge.exposeInMainWorld("agentAPI", agentAPI);
     contextBridge.exposeInMainWorld("agentSDKAPI", agentSDKAPI);
+    contextBridge.exposeInMainWorld("slideSettingsAPI", slideSettingsAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -410,4 +424,7 @@ if (process.contextIsolated) {
   (window as unknown as { historyAPI: HistoryAPI }).historyAPI = historyAPI;
   (window as unknown as { agentAPI: AgentExecutionAPI }).agentAPI = agentAPI;
   (window as unknown as { agentSDKAPI: AgentSDKAPI }).agentSDKAPI = agentSDKAPI;
+  (
+    window as unknown as { slideSettingsAPI: SlideSettingsAPI }
+  ).slideSettingsAPI = slideSettingsAPI;
 }

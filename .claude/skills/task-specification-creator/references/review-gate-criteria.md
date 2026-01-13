@@ -1,5 +1,11 @@
 # レビューゲート判定基準
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase 3（設計レビュー）およびPhase 10（最終レビュー）実行時
+> - 読み込み条件: レビュー判定（PASS/MINOR/MAJOR/CRITICAL）と戻り先決定が必要なとき
+> - 関連エージェント: agents/generate-unassigned-task.md
+> - 関連スキーマ: schemas/unassigned-task.json
+
 レビューゲート（Phase 3: 設計レビュー、Phase 10: 最終レビュー）での判定基準と戻り先ロジックを定義する。
 
 ---

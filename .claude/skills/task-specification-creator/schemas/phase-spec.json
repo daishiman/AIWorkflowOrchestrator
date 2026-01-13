@@ -1,0 +1,187 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "phase-spec.json",
+  "title": "Phase Specification",
+  "description": "Phase仕様書を定義するスキーマ",
+  "type": "object",
+  "required": ["phaseNumber", "phaseName", "purpose", "tasks", "outputs", "completionCriteria"],
+  "properties": {
+    "phaseNumber": {
+      "type": "integer",
+      "description": "Phase番号",
+      "minimum": 1,
+      "maximum": 13
+    },
+    "phaseName": {
+      "type": "string",
+      "description": "Phase名称",
+      "enum": [
+        "要件定義",
+        "設計",
+        "設計レビューゲート",
+        "テスト作成",
+        "実装",
+        "テスト拡充",
+        "テストカバレッジ確認",
+        "リファクタリング",
+        "品質保証",
+        "最終レビューゲート",
+        "手動テスト検証",
+        "ドキュメント更新",
+        "PR作成"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "description": "Phaseカテゴリ",
+      "enum": ["要件", "設計", "ゲート", "TDD-Red", "TDD-Green", "品質", "TDD-Refactor", "検証", "文書化", "完了"]
+    },
+    "featureName": {
+      "type": "string",
+      "description": "機能名（ケバブケース）",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "このPhaseの目的",
+      "minLength": 10
+    },
+    "background": {
+      "type": "string",
+      "description": "背景・コンテキスト"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "実行タスク一覧",
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose", "steps"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "タスク名"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "タスクの目的"
+          },
+          "steps": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "実行手順",
+            "minItems": 1
+          },
+          "expectedOutputs": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "期待される成果物"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "references": {
+      "type": "array",
+      "description": "参照資料",
+      "items": {
+        "type": "object",
+        "required": ["name", "path"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "資料名"
+          },
+          "path": {
+            "type": "string",
+            "description": "パス"
+          },
+          "description": {
+            "type": "string",
+            "description": "説明"
+          }
+        }
+      }
+    },
+    "integrationTestActions": {
+      "type": "string",
+      "description": "統合テスト連携アクション（Phase 1-11は必須）"
+    },
+    "outputs": {
+      "type": "array",
+      "description": "成果物定義",
+      "items": {
+        "type": "object",
+        "required": ["name", "path"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "成果物名"
+          },
+          "path": {
+            "type": "string",
+            "description": "出力パス"
+          },
+          "description": {
+            "type": "string",
+            "description": "説明"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["document", "code", "test"],
+            "description": "成果物タイプ"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "completionCriteria": {
+      "type": "array",
+      "description": "完了条件（チェックリスト形式）",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "reviewGate": {
+      "type": "object",
+      "description": "レビューゲート設定（Phase 3, 10のみ）",
+      "properties": {
+        "criteria": {
+          "type": "object",
+          "properties": {
+            "pass": { "type": "string" },
+            "minor": { "type": "string" },
+            "major": { "type": "string" },
+            "critical": { "type": "string" }
+          }
+        },
+        "returnTargets": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        }
+      }
+    },
+    "tddPhase": {
+      "type": "object",
+      "description": "TDDフェーズ設定（Phase 4, 5, 8のみ）",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["red", "green", "refactor"]
+        },
+        "testCommand": {
+          "type": "string"
+        }
+      }
+    },
+    "prevPhase": {
+      "type": "integer",
+      "description": "前提Phase番号",
+      "minimum": 0
+    },
+    "nextPhase": {
+      "type": "integer",
+      "description": "後続Phase番号",
+      "maximum": 14
+    }
+  },
+  "additionalProperties": false
+}

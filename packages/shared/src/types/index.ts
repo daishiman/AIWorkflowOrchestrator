@@ -45,6 +45,21 @@ export type {
 
 export { AGENT_DEFAULTS, DANGEROUS_PATTERNS } from "./agent-execution";
 
+// スライド設定型定義
+export type {
+  SlideSettings,
+  DirectoryValidationResult,
+  ValidationResult,
+  SlideSettingsAPI,
+  SlideSettingsGetResponse,
+  SlideSettingsGetDirectoryResponse,
+  SlideSettingsSetDirectoryResponse,
+  SlideSettingsSelectDirectoryResponse,
+  SlideSettingsValidateDirectoryResponse,
+} from "./slideSettings";
+
+export { DEFAULT_SLIDE_SETTINGS } from "./slideSettings";
+
 // ファイル選択型定義
 export type {
   FileExtension,

@@ -1,5 +1,10 @@
 # Phase別テンプレートリファレンス
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase仕様書生成時（generate-task-specs Task実行時）
+> - 読み込み条件: Phase構造をMarkdownに変換する必要があるとき
+> - 関連スキーマ: schemas/phase-spec.json
+
 各Phaseで生成されるドキュメントのテンプレート構造を定義する。
 
 ---

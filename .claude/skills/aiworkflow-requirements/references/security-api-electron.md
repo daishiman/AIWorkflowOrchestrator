@@ -184,6 +184,57 @@ contextBridge.exposeInMainWorld("historyAPI", {
 
 **関連タスク**: history-preload-setup（2026-01-13完了）
 
+### 実装例: slideSettingsAPI
+
+**実装場所**:
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- preload: `apps/desktop/src/preload/index.ts`
+- Store: `apps/desktop/src/main/settings/slideSettingsStore.ts`
+- ハンドラー: `apps/desktop/src/main/ipc/slideSettingsHandlers.ts`
+
+**チャンネルホワイトリスト方式**:
+
+```typescript
+// apps/desktop/src/preload/channels.ts
+export const SLIDE_SETTINGS_CHANNELS = {
+  GET_DIRECTORY: "slideSettings:getDirectory",
+  SET_DIRECTORY: "slideSettings:setDirectory",
+  SELECT_DIRECTORY: "slideSettings:selectDirectory",
+  VALIDATE_DIRECTORY: "slideSettings:validateDirectory",
+  GET_ALL: "slideSettings:getAll",
+} as const;
+```
+
+**パストラバーサル防止の実装**:
+
+```typescript
+// apps/desktop/src/main/settings/slideSettingsStore.ts
+const TRAVERSAL_PATTERNS = ["..", "%2e%2e", "%2e.", ".%2e", "..%c0%af", "\0"];
+
+function detectPathTraversal(inputPath: string): boolean {
+  const normalized = inputPath.normalize("NFC");
+  const decoded = decodeURIComponent(normalized);
+  return TRAVERSAL_PATTERNS.some(
+    (pattern) =>
+      decoded.includes(pattern) || normalized.includes(pattern)
+  );
+}
+```
+
+**IPCセキュリティ要件**:
+
+| 要件               | 実装                              | 確認方法                   |
+| ------------------ | --------------------------------- | -------------------------- |
+| ホワイトリスト     | `SLIDE_SETTINGS_CHANNELS`定数    | 定義外チャンネルはエラー   |
+| sender検証         | `validateIpcSender()`            | DevTools/外部からの拒否    |
+| パストラバーサル   | `detectPathTraversal()`          | 32テストケースで検証       |
+| 書き込み権限       | `fs.accessSync(W_OK)`            | 権限なしパスでエラー       |
+| Unicode正規化      | `normalize("NFC")`               | Unicode攻撃パターン検出    |
+
+**テストカバレッジ**: 156テスト（94.30% Line Coverage）
+
+**関連タスク**: slide-directory-settings（2026-01-14完了）
+
 ### スキル管理セキュリティ
 
 **実装場所**: `apps/desktop/src/main/services/skill/SkillScanner.ts`

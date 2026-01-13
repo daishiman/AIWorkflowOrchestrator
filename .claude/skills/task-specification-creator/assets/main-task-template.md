@@ -1,5 +1,11 @@
 # メインタスク仕様書テンプレート
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: ワークフロー初期化時（init-artifacts.mjs実行後）
+> - 読み込み条件: index.mdメインタスク仕様書を生成するとき
+> - 使用スキーマ: schemas/task-definition.json, schemas/artifact-definition.json
+> - 出力先: docs/30-workflows/{{FEATURE_NAME}}/index.md
+
 このテンプレートは、Phase 1からPhase 13までの全フェーズを含むタスク実行仕様書を生成するためのもの。
 
 ---
