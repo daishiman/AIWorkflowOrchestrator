@@ -1,0 +1,245 @@
+{
+  "taskId": "fix-macos-build-ci",
+  "title": "GitHub Actions macOS ビルドエラー修正",
+  "description": "GitHub Actions CI で macOS (Apple Silicon) ビルド時の hdiutil エラーを修正",
+  "status": "in_progress",
+  "createdAt": "2026-01-13T09:30:00.000Z",
+  "lastUpdated": "2026-01-13T14:00:00.000Z",
+  "relatedIssues": ["#212", "#230"],
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-13T11:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/problem-analysis.md",
+          "description": "問題分析レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/solution-options.md",
+          "description": "解決策オプション一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-13T11:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/solution-selection.md",
+          "description": "解決策選定レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/modification-design.md",
+          "description": "修正設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/impact-analysis.md",
+          "description": "影響範囲分析書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-strategy.md",
+          "description": "テスト戦略書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-13T11:45:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-13T12:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-scenarios.md",
+          "description": "テストシナリオ一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/ci-verification-scripts.md",
+          "description": "CI検証スクリプト設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-design.md",
+          "description": "統合テスト設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-plan.md",
+          "description": "テスト計画書"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-13T12:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "apps/desktop/electron-builder.yml",
+          "description": "修正済みelectron-builder設定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/local-build-result.md",
+          "description": "ローカルビルド検証結果"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-13T13:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/ci-execution-result.md",
+          "description": "CI実行結果レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/artifact-verification.md",
+          "description": "成果物検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/integration-test-result.md",
+          "description": "統合テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-test-result.md",
+          "description": "回帰テスト結果"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-13T13:15:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-verification-result.md",
+          "description": "カバレッジ検証結果"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-13T13:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-result.md",
+          "description": "リファクタリング結果"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-13T13:45:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-assurance-result.md",
+          "description": "品質保証結果"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-13T13:50:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-13T13:55:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト検証結果"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-13T14:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part1概念 + Part2技術詳細）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "description": "ドキュメント更新記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "specification",
+          "path": ".claude/skills/aiworkflow-requirements/references/deployment-electron.md",
+          "description": "システム仕様書（CI制限事項追加）"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  }
+}

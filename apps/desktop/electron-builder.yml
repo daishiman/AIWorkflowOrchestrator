@@ -34,10 +34,6 @@ mac:
         CFBundleURLName: com.aiworkflow.auth
         CFBundleTypeRole: Viewer
   target:
-    - target: dmg
-      arch:
-        - x64
-        - arm64
     - target: zip
       arch:
         - x64
@@ -89,7 +85,6 @@ linux:
   # カスタムプロトコル aiworkflow:// を登録
   mimeTypes:
     - x-scheme-handler/aiworkflow
-
 # ===================
 # Auto-Update (GitHub Releases)
 # ===================
