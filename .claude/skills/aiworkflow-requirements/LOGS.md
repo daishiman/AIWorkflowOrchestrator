@@ -247,4 +247,49 @@
 
 ---
 
+## 2026-01-14: AGENT-SDK-DEP-FIX pnpm依存解決ルール追加
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | AGENT-SDK-DEP-FIX                                                                              |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | architecture-monorepo.md、technology-devops.md、interfaces-agent-sdk.md                        |
+| 結果         | success                                                                                        |
+| 備考         | pnpm厳格モード（node-linker=isolated）における依存関係宣言ルールとベストプラクティスを追加     |
+
+### 更新詳細
+
+- **更新**: `references/architecture-monorepo.md`
+  - 「pnpm 依存解決ルール」セクション追加（約60行）
+  - .npmrc設定（node-linker=isolated）
+  - 厳格モードの特徴テーブル（明示的依存のみ許可、幽霊依存の防止、シンボリックリンク、再現性の保証）
+  - 「直接importには直接宣言が必要」ルール（ASCIIダイアグラム付き）
+  - workspace:プロトコルとの関係説明
+  - テスト時と実行時の違いテーブル
+
+- **更新**: `references/technology-devops.md`
+  - 「pnpm 依存解決ベストプラクティス」セクション追加（約40行）
+  - 新ライブラリ使用時チェックリスト
+  - よくある問題と解決策テーブル（ERR_MODULE_NOT_FOUND、テスト通過・実行時エラー等）
+  - pnpm install後の検証コマンド
+
+- **更新**: `references/interfaces-agent-sdk.md`
+  - 「依存関係解決」セクション追加（約50行）
+  - packages/sharedへのSDK依存宣言必須説明
+  - シナリオ別結果テーブル
+  - トラブルシューティング（ERR_MODULE_NOT_FOUNDエラー解決手順）
+
+### 背景
+
+packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk をimportしているが、packages/shared/package.jsonに依存宣言がなかったためランタイムエラーが発生。pnpm厳格モードでは宣言なしの依存（幽霊依存）へのアクセスがブロックされる。テストはvitestのモック/エイリアスで通過していたため発見が遅れた。
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------- |
+| タスク仕様書   | `docs/30-workflows/agent-sdk-dependency-fix/index.md`                                   |
+| 実装ガイド     | `docs/30-workflows/agent-sdk-dependency-fix/outputs/phase-12/implementation-guide.md`   |
+
+---
+
 （ログエントリはここに追記されます）

@@ -273,6 +273,9 @@ importers:
 
   packages/shared:
     dependencies:
+      "@anthropic-ai/claude-agent-sdk":
+        specifier: ^0.2.5
+        version: 0.2.5(zod@4.3.5)
       "@libsql/client":
         specifier: ^0.15.15
         version: 0.15.15
