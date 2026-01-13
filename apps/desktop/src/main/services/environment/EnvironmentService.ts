@@ -3,7 +3,7 @@
  * @module environment
  */
 
-import type { PreviewContent } from "@repo/shared/types/agent";
+import type { EnvironmentPreviewContent } from "@repo/shared/types/agent";
 import { ContentExtractor } from "./ContentExtractor";
 import { ContentSanitizer } from "./ContentSanitizer";
 import { TempFileManager } from "./TempFileManager";
@@ -22,7 +22,8 @@ export class EnvironmentService {
   private readonly tempFileManager: TempFileManager;
 
   /** プレビューキャッシュ */
-  private readonly previewCache: Map<string, PreviewContent> = new Map();
+  private readonly previewCache: Map<string, EnvironmentPreviewContent> =
+    new Map();
 
   constructor() {
     this.extractor = new ContentExtractor();
@@ -46,7 +47,7 @@ export class EnvironmentService {
   async extractAndSanitize(
     text: string,
     executionId: string,
-  ): Promise<PreviewContent> {
+  ): Promise<EnvironmentPreviewContent> {
     // コードブロック抽出
     const extractedContents = this.extractor.extractCodeBlocks(text);
 
@@ -78,7 +79,7 @@ export class EnvironmentService {
     }
 
     // プレビューコンテンツ作成
-    const previewContent: PreviewContent = {
+    const previewContent: EnvironmentPreviewContent = {
       executionId,
       contents: sanitizedContents,
       tempFilePath,
@@ -96,7 +97,7 @@ export class EnvironmentService {
    * @param executionId - 実行ID
    * @returns プレビューコンテンツ、またはnull
    */
-  getPreviewContent(executionId: string): PreviewContent | null {
+  getPreviewContent(executionId: string): EnvironmentPreviewContent | null {
     if (!executionId) {
       return null;
     }

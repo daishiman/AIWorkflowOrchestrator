@@ -203,9 +203,9 @@ export interface SanitizedContent {
 }
 
 /**
- * プレビューコンテンツ
+ * 環境バックエンドプレビューコンテンツ (AGENT-007)
  */
-export interface PreviewContent {
+export interface EnvironmentPreviewContent {
   /** 実行ID */
   executionId: string;
   /** サニタイズ済みコンテンツ配列 */

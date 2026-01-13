@@ -18,7 +18,7 @@ import type {
   PermissionResponse,
   PermissionRules,
 } from "@repo/shared";
-import type { PreviewContent } from "@repo/shared/types/agent";
+import type { EnvironmentPreviewContent } from "@repo/shared/types/agent";
 import type { EnvironmentService } from "../services/environment";
 
 // シングルトンのExecutionManager
@@ -244,7 +244,7 @@ export function registerEnvironmentHandlers(
     async (
       _event: IpcMainInvokeEvent,
       args: { text: string; executionId: string },
-    ): Promise<PreviewContent> => {
+    ): Promise<EnvironmentPreviewContent> => {
       // 引数バリデーション
       if (typeof args?.text !== "string") {
         throw { code: "VALIDATION_ERROR", message: "text must be a string" };
@@ -266,7 +266,7 @@ export function registerEnvironmentHandlers(
     async (
       _event: IpcMainInvokeEvent,
       args: { executionId: string },
-    ): Promise<PreviewContent | null> => {
+    ): Promise<EnvironmentPreviewContent | null> => {
       // 引数バリデーション
       if (typeof args?.executionId !== "string") {
         throw {

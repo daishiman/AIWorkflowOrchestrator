@@ -25,7 +25,12 @@ export type {
 } from "./agent";
 
 // Environment Backend型定義 (AGENT-007)
-export type { ContentType, ExtractedContent, SanitizedContent } from "./agent";
+export type {
+  ContentType,
+  ExtractedContent,
+  SanitizedContent,
+  EnvironmentPreviewContent,
+} from "./agent";
 
 // プレビュー環境型定義 (AGENT-006)
 export type {
