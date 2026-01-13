@@ -16,13 +16,16 @@ import { registerSearchHandlers } from "./searchHandlers";
 import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
 import { registerLLMHandlers } from "../handlers/llm";
 import { registerHistoryHandlers } from "./historyHandlers";
-import { createHistoryService } from "../services/HistoryService";
+import { createHistoryServiceWithDI } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
   createProfileCache,
   createApiKeyStorage,
+  createStubSharedHistoryService,
+  createStubLogRepository,
+  createStubLogger,
 } from "../infrastructure";
 
 /**
@@ -68,8 +71,15 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   const apiKeyStorage = createApiKeyStorage();
   registerApiKeyHandlers(mainWindow, apiKeyStorage);
 
-  // Register History handlers
-  const historyService = createHistoryService();
+  // Register History handlers (using stubs until full DB integration)
+  const sharedHistoryService = createStubSharedHistoryService();
+  const logRepository = createStubLogRepository();
+  const historyLogger = createStubLogger();
+  const historyService = createHistoryServiceWithDI(
+    sharedHistoryService,
+    logRepository,
+    historyLogger,
+  );
   registerHistoryHandlers(mainWindow, historyService);
 
   // Register Agent Execution handlers (AGENT-005)

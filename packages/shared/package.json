@@ -54,8 +54,8 @@
       "import": "./dist/src/types/replace.js"
     },
     "./types/rag": {
-      "types": "./dist/types/rag/index.d.ts",
-      "import": "./dist/types/rag/index.js"
+      "types": "./dist/src/types/rag/index.d.ts",
+      "import": "./dist/src/types/rag/index.js"
     },
     "./agent": {
       "types": "./dist/src/agent/index.d.ts",
@@ -77,6 +77,10 @@
       "types": "./dist/src/services/history/types.d.ts",
       "import": "./dist/src/services/history/types.js"
     },
+    "./services/history/history-service": {
+      "types": "./dist/src/services/history/history-service.d.ts",
+      "import": "./dist/src/services/history/history-service.js"
+    },
     "./types/rag/result": {
       "types": "./dist/src/types/rag/result.d.ts",
       "import": "./dist/src/types/rag/result.js"
@@ -85,14 +89,18 @@
       "types": "./dist/src/services/logging/types.d.ts",
       "import": "./dist/src/services/logging/types.js"
     },
+    "./services/logging/conversion-logger": {
+      "types": "./dist/src/services/logging/conversion-logger.d.ts",
+      "import": "./dist/src/services/logging/conversion-logger.js"
+    },
     "./types/agent": {
       "types": "./dist/src/types/agent.d.ts",
       "import": "./dist/src/types/agent.js"
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "dev": "tsc --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -123,6 +131,7 @@
     "@types/turndown": "^5.0.5",
     "@vitest/coverage-v8": "^2.1.9",
     "drizzle-kit": "^0.31.8",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
