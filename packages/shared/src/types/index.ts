@@ -15,8 +15,35 @@ export * from "./llm-metadata";
 // スキル管理型定義
 export * from "./skill";
 
-// エージェント実行型定義
-export * from "./agent";
+// エージェント実行型定義 (AGENT-004)
+export type {
+  AgentMessage,
+  AgentExecutionState,
+  AgentStartRequest,
+  AgentStreamPayload,
+  AgentStatusPayload,
+} from "./agent";
+
+// Agent Execution型定義 (AGENT-005)
+export type {
+  PermissionMode,
+  AgentExecutionRequest,
+  AgentStreamMessageType,
+  AgentStreamMessage,
+  ExecutionStatusType,
+  AgentExecutionStatus,
+  PermissionRequest,
+  PermissionResponse,
+  PermissionRule,
+  PermissionRules,
+  AgentStartResult,
+  AgentStopRequest,
+  AgentPermissionResRequest,
+  HookInput,
+  HookOutput,
+} from "./agent-execution";
+
+export { AGENT_DEFAULTS, DANGEROUS_PATTERNS } from "./agent-execution";
 
 // ファイル選択型定義
 export type {

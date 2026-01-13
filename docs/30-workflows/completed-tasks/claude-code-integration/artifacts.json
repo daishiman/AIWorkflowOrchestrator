@@ -1,0 +1,185 @@
+{
+  "taskId": "AGENT-005",
+  "taskName": "claude-code-integration",
+  "description": "Claude Agent SDK統合 - @anthropic-ai/claude-agent-sdkのquery() APIをElectronアプリに統合",
+  "status": "completed",
+  "createdAt": "2026-01-12",
+  "updatedAt": "2026-01-12",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specification": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specification": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/type-definitions.md",
+        "outputs/phase-2/sequence-diagram.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specification": "phase-3-design-review.md",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "specification": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md",
+        "apps/desktop/src/main/services/agent/__tests__/HooksFactory.test.ts",
+        "apps/desktop/src/main/services/agent/__tests__/AgentExecutor.test.ts",
+        "apps/desktop/src/main/services/agent/__tests__/ExecutionManager.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/agentHandlers.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "specification": "phase-5-implementation.md",
+      "outputs": [
+        "outputs/phase-5/implementation-summary.md",
+        "packages/shared/src/types/agent-execution.ts",
+        "apps/desktop/src/main/services/agent/HooksFactory.ts",
+        "apps/desktop/src/main/services/agent/PermissionRules.ts",
+        "apps/desktop/src/main/services/agent/AgentExecutor.ts",
+        "apps/desktop/src/main/services/agent/ExecutionManager.ts",
+        "apps/desktop/src/main/services/agent/index.ts",
+        "apps/desktop/src/main/ipc/agentHandlers.ts"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specification": "phase-6-test-expansion.md",
+      "outputs": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md",
+        "apps/desktop/src/main/services/agent/__tests__/integration.test.ts"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specification": "phase-7-coverage-check.md",
+      "outputs": [
+        "outputs/phase-7/coverage-achievement.md",
+        "apps/desktop/src/main/ipc/__tests__/agentHandlers.test.ts"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "specification": "phase-8-refactoring.md",
+      "outputs": [
+        "outputs/phase-8/refactoring-summary.md",
+        "outputs/phase-8/code-quality-report.md",
+        "apps/desktop/src/main/services/agent/AgentExecutor.ts"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "specification": "phase-9-quality.md",
+      "outputs": [
+        "outputs/phase-9/quality-verification-report.md",
+        "outputs/phase-9/security-checklist.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "specification": "phase-10-final-review.md",
+      "outputs": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/release-checklist.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "specification": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/bug-report.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント作成",
+      "status": "completed",
+      "specification": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        ".claude/skills/claude-agent-sdk/SKILL.md",
+        "docs/30-workflows/unassigned-task/task-agent-05-postrelease-sdk-testing.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "specification": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "SKILL-003",
+      "name": "スキル管理機能",
+      "status": "completed"
+    }
+  ],
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md",
+      ".claude/skills/aiworkflow-requirements/references/security-api-electron.md",
+      ".claude/skills/aiworkflow-requirements/references/security-input-validation.md",
+      ".claude/skills/aiworkflow-requirements/references/security-implementation.md",
+      ".claude/skills/aiworkflow-requirements/references/quality-requirements.md"
+    ],
+    "originalTask": "docs/30-workflows/unassigned-task/task-agent-05-claude-code-integration.md"
+  },
+  "testCoverage": {
+    "unit": {
+      "lineMinimum": 80,
+      "lineRecommended": 90,
+      "branchMinimum": 60,
+      "branchRecommended": 70,
+      "functionMinimum": 80,
+      "functionRecommended": 90
+    },
+    "integration": {
+      "apiEndpoints": 100,
+      "moduleInterfaces": 100,
+      "normalScenarios": 100,
+      "errorScenarios": 80
+    }
+  }
+}
