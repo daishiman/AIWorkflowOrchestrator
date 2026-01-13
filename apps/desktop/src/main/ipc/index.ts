@@ -18,6 +18,7 @@ import { registerLLMHandlers } from "../handlers/llm";
 import { registerHistoryHandlers } from "./historyHandlers";
 import { createHistoryService } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
+import { registerCommunityHandlers } from "./communityHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -41,6 +42,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   registerSearchHandlers();
   registerFileSelectionHandlers();
   registerLLMHandlers();
+  registerCommunityHandlers();
 
   // Register handlers that need window reference
   registerWindowHandlers(mainWindow);

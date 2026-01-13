@@ -936,6 +936,9 @@ export interface ElectronAPI {
       filters?: Array<{ name: string; extensions: string[] }>;
     }) => Promise<{ canceled: boolean; filePath?: string }>;
   };
+
+  // Community API
+  community: CommunityAPI;
 }
 
 // ===== Search operations =====
@@ -1185,6 +1188,56 @@ export interface SlideApi {
   onStructureChange: (callback: (path: string) => void) => () => void;
   onSyncStatusChange: (callback: (status: SyncStatus) => void) => () => void;
   onExecutionProgress: (callback: (progress: number) => void) => () => void;
+}
+
+// ===== Community operations =====
+
+import type {
+  Community,
+  CommunitySummary,
+  StoredEntity,
+  CommunityId,
+} from "@repo/shared";
+
+export type { Community, CommunitySummary, StoredEntity, CommunityId };
+
+// Result type for IPC responses (consistent with test mocks)
+export interface CommunityResult<T> {
+  ok: boolean;
+  value?: T;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface CommunityGetAllResponse extends CommunityResult<
+  readonly Community[]
+> {}
+
+export interface CommunityGetByLevelResponse extends CommunityResult<
+  readonly Community[]
+> {}
+
+export interface CommunityGetByIdResponse extends CommunityResult<Community> {}
+
+export interface CommunityGetMembersResponse extends CommunityResult<
+  readonly StoredEntity[]
+> {}
+
+export interface CommunityGetSummaryResponse extends CommunityResult<CommunitySummary> {}
+
+export interface CommunitySearchResponse extends CommunityResult<
+  readonly Community[]
+> {}
+
+export interface CommunityAPI {
+  getAll: () => Promise<CommunityGetAllResponse>;
+  getByLevel: (level: number) => Promise<CommunityGetByLevelResponse>;
+  getById: (id: CommunityId) => Promise<CommunityGetByIdResponse>;
+  getMembers: (id: CommunityId) => Promise<CommunityGetMembersResponse>;
+  getSummary: (id: CommunityId) => Promise<CommunityGetSummaryResponse>;
+  search: (query: string) => Promise<CommunitySearchResponse>;
 }
 
 // Global type declaration

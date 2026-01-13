@@ -174,6 +174,14 @@ export const IPC_CHANNELS = {
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
   HISTORY_GET_CONVERSION_LOGS: "history:getConversionLogs",
   HISTORY_RESTORE_VERSION: "history:restoreVersion",
+
+  // Community operations
+  COMMUNITY_GET_ALL: "community:getAll",
+  COMMUNITY_GET_BY_LEVEL: "community:getByLevel",
+  COMMUNITY_GET_BY_ID: "community:getById",
+  COMMUNITY_GET_MEMBERS: "community:getMembers",
+  COMMUNITY_GET_SUMMARY: "community:getSummary",
+  COMMUNITY_SEARCH: "community:search",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -299,6 +307,13 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
   IPC_CHANNELS.HISTORY_GET_CONVERSION_LOGS,
   IPC_CHANNELS.HISTORY_RESTORE_VERSION,
+  // Community channels
+  IPC_CHANNELS.COMMUNITY_GET_ALL,
+  IPC_CHANNELS.COMMUNITY_GET_BY_LEVEL,
+  IPC_CHANNELS.COMMUNITY_GET_BY_ID,
+  IPC_CHANNELS.COMMUNITY_GET_MEMBERS,
+  IPC_CHANNELS.COMMUNITY_GET_SUMMARY,
+  IPC_CHANNELS.COMMUNITY_SEARCH,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
