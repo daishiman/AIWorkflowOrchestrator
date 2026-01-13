@@ -6,6 +6,42 @@
 import type { Skill } from "./skill";
 
 /**
+ * 実行環境タイプ
+ */
+export type EnvironmentType =
+  | "none" // プレビューなし
+  | "html" // HTMLプレビュー
+  | "markdown" // Markdownプレビュー
+  | "terminal" // ターミナル（将来）
+  | "code"; // コード実行（将来）
+
+/**
+ * プレビュー環境設定
+ */
+export interface PreviewEnvironmentConfig {
+  /** 環境タイプ */
+  type: EnvironmentType;
+  /** 自動更新 */
+  autoRefresh: boolean;
+  /** 更新デバウンス（ms） */
+  refreshDebounce: number;
+  /** sandboxフラグ */
+  sandboxFlags?: string[];
+}
+
+/**
+ * プレビューコンテンツ
+ */
+export interface PreviewContent {
+  /** コンテンツタイプ */
+  type: EnvironmentType;
+  /** コンテンツ本体 */
+  content: string;
+  /** タイムスタンプ */
+  timestamp: Date;
+}
+
+/**
  * エージェント実行ステータス
  */
 export type AgentExecutionStatus =
@@ -119,4 +155,63 @@ export interface AgentStatusPayload {
   status: AgentExecutionStatus;
   /** エラーメッセージ（エラー時のみ） */
   error?: string;
+}
+
+// ============================================
+// Environment Backend Types
+// ============================================
+
+/**
+ * コンテンツタイプ
+ */
+export type ContentType = "html" | "markdown" | "css" | "javascript" | "text";
+
+/**
+ * 抽出されたコンテンツ
+ */
+export interface ExtractedContent {
+  /** コンテンツID */
+  id: string;
+  /** コンテンツタイプ */
+  type: ContentType;
+  /** コンテンツ本体 */
+  content: string;
+  /** 言語（コードブロックの言語指定） */
+  language?: string;
+  /** 抽出順序 */
+  order: number;
+  /** 抽出日時 */
+  extractedAt: Date;
+}
+
+/**
+ * サニタイズされたコンテンツ
+ */
+export interface SanitizedContent {
+  /** コンテンツID */
+  id: string;
+  /** コンテンツタイプ */
+  type: ContentType;
+  /** オリジナルコンテンツ */
+  originalContent: string;
+  /** サニタイズ済みコンテンツ */
+  sanitizedContent: string;
+  /** 除去された要素 */
+  removedElements: string[];
+  /** サニタイズ日時 */
+  sanitizedAt: Date;
+}
+
+/**
+ * 環境バックエンドプレビューコンテンツ (AGENT-007)
+ */
+export interface EnvironmentPreviewContent {
+  /** 実行ID */
+  executionId: string;
+  /** サニタイズ済みコンテンツ配列 */
+  contents: SanitizedContent[];
+  /** 一時ファイルパス（存在する場合） */
+  tempFilePath?: string;
+  /** 作成日時 */
+  createdAt: Date;
 }

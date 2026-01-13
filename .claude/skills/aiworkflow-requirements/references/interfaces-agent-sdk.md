@@ -51,6 +51,53 @@ Renderer ProcessからMain ProcessへのIPC通信でAgent機能を提供し、�
 
 ---
 
+## 依存関係解決
+
+### 必須: packages/shared への SDK 依存宣言
+
+Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`) を使用する場合、**import するパッケージ自身の `package.json` に依存を宣言する必要があります**。
+
+**packages/shared/package.json**:
+
+```json
+{
+  "name": "@repo/shared",
+  "dependencies": {
+    "zod": "^3.23.8",
+    "@anthropic-ai/claude-agent-sdk": "^0.2.5"  // 必須
+  }
+}
+```
+
+### なぜ必要か
+
+pnpm の厳格モード（`node-linker=isolated`）では、`package.json` に宣言されていない依存へのアクセスがブロックされます。
+
+| シナリオ                             | 結果                         |
+| ------------------------------------ | ---------------------------- |
+| `apps/desktop` のみに SDK 依存を宣言 | テストPASS、ランタイムエラー |
+| `packages/shared` にも SDK 依存を宣言 | テストPASS、ランタイムPASS   |
+
+### トラブルシューティング
+
+**エラー**: `ERR_MODULE_NOT_FOUND: Cannot find package '@anthropic-ai/claude-agent-sdk'`
+
+**原因**: SDK を import しているパッケージ（`packages/shared`）に依存宣言がない
+
+**解決策**:
+
+```bash
+# packages/shared に SDK 依存を追加
+pnpm --filter @repo/shared add @anthropic-ai/claude-agent-sdk
+
+# ロックファイル更新
+pnpm install
+```
+
+> 詳細: architecture-monorepo.md「pnpm 依存解決ルール」、technology-devops.md「pnpm 依存解決ベストプラクティス」
+
+---
+
 ## Preload API（window.agentAPI）
 
 ### query
@@ -970,6 +1017,60 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 | `rememberPermissionChoice` | `toolName: string, granted: boolean` | 選択記憶               |
 | `clearMessages`            | -                                    | メッセージクリア       |
 | `resetExecutionState`      | -                                    | 状態リセット           |
+
+---
+
+### Preview State Management（AGENT-006）
+
+AGENT-006で追加されたプレビュー環境用の状態管理。
+
+#### Preview State型
+
+| プロパティ          | 型                      | 説明               |
+| ------------------- | ----------------------- | ------------------ |
+| `previewContent`    | `PreviewContent \| null` | プレビューコンテンツ |
+| `selectedEnvironment` | `EnvironmentType`      | 選択中の環境       |
+| `splitRatio`        | `number`                | 分割比率 (0-100)   |
+
+#### Preview Actions
+
+| アクション              | 引数                             | 説明               |
+| ----------------------- | -------------------------------- | ------------------ |
+| `setPreviewContent`     | `content: PreviewContent \| null` | コンテンツ設定     |
+| `setSelectedEnvironment` | `type: EnvironmentType`         | 環境タイプ設定     |
+| `setSplitRatio`         | `ratio: number`                  | 分割比率設定       |
+| `clearPreview`          | -                                | プレビュークリア   |
+
+#### EnvironmentType
+
+```typescript
+type EnvironmentType = 'none' | 'html' | 'markdown' | 'terminal' | 'code';
+```
+
+| 値         | 説明                           | 実装状態 |
+| ---------- | ------------------------------ | -------- |
+| `none`     | プレビューなし（デフォルト）   | ✅       |
+| `html`     | HTMLプレビュー                 | ✅       |
+| `markdown` | Markdownプレビュー             | ✅       |
+| `terminal` | ターミナル（将来実装）         | 未実装   |
+| `code`     | コード実行環境（将来実装）     | 未実装   |
+
+#### PreviewContent
+
+```typescript
+interface PreviewContent {
+  type: EnvironmentType;
+  content: string;
+  timestamp: Date;
+}
+```
+
+#### 関連ドキュメント（Preview State）
+
+| ドキュメント   | パス                                                             |
+| -------------- | ---------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/custom-environment-ui/outputs/phase-12/implementation-guide.md` |
+| APIドキュメント | `docs/30-workflows/custom-environment-ui/outputs/phase-12/api-documentation.md` |
 
 ---
 

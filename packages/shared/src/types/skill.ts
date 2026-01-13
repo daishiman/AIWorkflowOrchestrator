@@ -3,6 +3,8 @@
  * @module skill
  */
 
+import type { EnvironmentType } from "./agent";
+
 /**
  * アンカー（参照文献）情報
  */
@@ -18,11 +20,20 @@ export interface Anchor {
 }
 
 /**
+ * スキル環境設定（Skill.environment用）
+ * noneは含まない（スキルは必ず環境タイプを持つ）
+ */
+export type SkillEnvironmentType = Exclude<EnvironmentType, "none">;
+
+/**
  * 環境設定
  */
 export interface EnvironmentConfig {
-  type: "html" | "markdown" | "code";
+  /** 環境タイプ（none以外） */
+  type: SkillEnvironmentType;
+  /** 自動更新 */
   autoRefresh?: boolean;
+  /** 更新デバウンス（ms） */
   debounce?: number;
 }
 

@@ -162,6 +162,11 @@ export const IPC_CHANNELS = {
   AGENT_QUERY: "agent:query",
   AGENT_MESSAGE: "agent:message",
 
+  // Agent Environment operations (AGENT-007)
+  AGENT_EXTRACT_CONTENT: "agent:extract-content",
+  AGENT_GET_PREVIEW_CONTENT: "agent:get-preview-content",
+  AGENT_CLEANUP_TEMP_FILES: "agent:cleanup-temp-files",
+
   // Skill management operations
   SKILL_LIST_AVAILABLE: "skill:list-available",
   SKILL_LIST_IMPORTED: "skill:list-imported",
@@ -295,6 +300,10 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_RESUME_SESSION,
   IPC_CHANNELS.AGENT_DESTROY_SESSION,
   IPC_CHANNELS.AGENT_QUERY,
+  // Agent Environment channels (AGENT-007)
+  IPC_CHANNELS.AGENT_EXTRACT_CONTENT,
+  IPC_CHANNELS.AGENT_GET_PREVIEW_CONTENT,
+  IPC_CHANNELS.AGENT_CLEANUP_TEMP_FILES,
   // Skill management channels
   IPC_CHANNELS.SKILL_LIST_AVAILABLE,
   IPC_CHANNELS.SKILL_LIST_IMPORTED,

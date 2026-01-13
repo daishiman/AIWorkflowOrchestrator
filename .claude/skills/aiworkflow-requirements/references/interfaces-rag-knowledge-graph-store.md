@@ -206,6 +206,81 @@ if (result.isOk()) {
 
 ---
 
+## 実装ステータス
+
+### 実装完了機能（2026-01-13）
+
+| 機能カテゴリ | メソッド | 状態 | 備考 |
+|-------------|---------|------|------|
+| Entity CRUD | upsertEntity | ✅ 完了 | 名前正規化・重複マージ対応 |
+| Entity CRUD | getEntity | ✅ 完了 | IDベース検索 |
+| Entity CRUD | getEntityByName | ✅ 完了 | 正規化名で検索 |
+| Entity CRUD | findEntities | ✅ 完了 | 条件検索（type, minConfidence等） |
+| Entity CRUD | deleteEntity | ✅ 完了 | CASCADE削除対応 |
+| Relation CRUD | addRelation | ✅ 完了 | 証拠必須・重複時証拠追加 |
+| Relation CRUD | getRelation | ✅ 完了 | Evidence JOIN |
+| Relation CRUD | getRelations | ✅ 完了 | エンティティID検索 |
+| Relation CRUD | findRelations | ✅ 完了 | 条件検索 |
+| Relation CRUD | deleteRelation | ✅ 完了 | Evidence CASCADE |
+| グラフ探索 | traverse | ✅ 完了 | BFSアルゴリズム |
+| グラフ探索 | findShortestPath | ✅ 完了 | 双方向BFS |
+| グラフ探索 | getNeighbors | ✅ 完了 | 深さ指定可 |
+| バッチ操作 | bulkUpsertEntities | ✅ 完了 | 逐次処理 |
+| バッチ操作 | bulkAddRelations | ✅ 完了 | 逐次処理 |
+| 統計 | getStats | ✅ 完了 | COUNT集計 |
+| 類似検索 | findSimilarEntities | ⚠️ スタブ | DiskANN統合後に実装 |
+
+### 使用例
+
+```typescript
+import { createKnowledgeGraphStore } from "@repo/shared/services/graph";
+import { db } from "@repo/shared/db";
+
+// ストア作成
+const store = createKnowledgeGraphStore(db);
+
+// Entity追加（upsert）
+const entityResult = await store.upsertEntity({
+  name: "TypeScript",
+  type: "programming_language",
+  description: "JavaScript with types",
+  confidence: 0.95,
+});
+
+if (entityResult.isOk()) {
+  const entity = entityResult.value;
+  console.log(`Created: ${entity.id}`);
+}
+
+// Relation追加（証拠必須）
+const relationResult = await store.addRelation({
+  sourceEntityId: entity1.id,
+  targetEntityId: entity2.id,
+  relationType: "uses",
+  confidence: 0.9,
+  evidence: [{
+    chunkId: "chunk-123" as ChunkId,
+    text: "TypeScript uses JavaScript runtime",
+    confidence: 0.9,
+  }],
+});
+
+// グラフ探索（BFS）
+const traverseResult = await store.traverse(startEntityId, {
+  maxDepth: 3,
+  direction: "outgoing",
+  relationTypes: ["uses", "depends_on"],
+});
+
+// 最短経路探索
+const pathResult = await store.findShortestPath(entityA.id, entityB.id);
+if (pathResult.isOk() && pathResult.value) {
+  console.log(`Path: ${pathResult.value.join(" -> ")}`);
+}
+```
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                | 説明                                 |
@@ -221,3 +296,4 @@ if (result.isOk()) {
 | 日付       | バージョン | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
 | 2026-01-09 | 1.0.0      | 初版作成（CONV-08-01タスク完了に伴い）         |
+| 2026-01-13 | 1.1.0      | 実装ステータス・使用例セクション追加、カバレッジ86.98%達成 |
