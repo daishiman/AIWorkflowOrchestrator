@@ -156,3 +156,62 @@ export interface AgentStatusPayload {
   /** エラーメッセージ（エラー時のみ） */
   error?: string;
 }
+
+// ============================================
+// Environment Backend Types
+// ============================================
+
+/**
+ * コンテンツタイプ
+ */
+export type ContentType = "html" | "markdown" | "css" | "javascript" | "text";
+
+/**
+ * 抽出されたコンテンツ
+ */
+export interface ExtractedContent {
+  /** コンテンツID */
+  id: string;
+  /** コンテンツタイプ */
+  type: ContentType;
+  /** コンテンツ本体 */
+  content: string;
+  /** 言語（コードブロックの言語指定） */
+  language?: string;
+  /** 抽出順序 */
+  order: number;
+  /** 抽出日時 */
+  extractedAt: Date;
+}
+
+/**
+ * サニタイズされたコンテンツ
+ */
+export interface SanitizedContent {
+  /** コンテンツID */
+  id: string;
+  /** コンテンツタイプ */
+  type: ContentType;
+  /** オリジナルコンテンツ */
+  originalContent: string;
+  /** サニタイズ済みコンテンツ */
+  sanitizedContent: string;
+  /** 除去された要素 */
+  removedElements: string[];
+  /** サニタイズ日時 */
+  sanitizedAt: Date;
+}
+
+/**
+ * 環境バックエンドプレビューコンテンツ (AGENT-007)
+ */
+export interface EnvironmentPreviewContent {
+  /** 実行ID */
+  executionId: string;
+  /** サニタイズ済みコンテンツ配列 */
+  contents: SanitizedContent[];
+  /** 一時ファイルパス（存在する場合） */
+  tempFilePath?: string;
+  /** 作成日時 */
+  createdAt: Date;
+}
