@@ -1,0 +1,100 @@
+{
+  "taskId": "CONV-08-01",
+  "taskName": "knowledge-graph-store-implementation",
+  "featureName": "task-knowledge-graph-store",
+  "createdAt": "2026-01-13T00:00:00Z",
+  "lastUpdated": "2026-01-13T00:00:00Z",
+  "status": "not_started",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "not_started",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "required": [
+      {
+        "taskId": "CONV-04-05",
+        "taskName": "Knowledge Graphテーブル群実装",
+        "status": "completed"
+      },
+      {
+        "taskId": "CONV-04-06",
+        "taskName": "Knowledge Graphマイグレーション",
+        "status": "pending"
+      }
+    ]
+  },
+  "outputs": {
+    "code": [
+      "packages/shared/src/services/graph/entity-store.ts",
+      "packages/shared/src/services/graph/relation-store.ts",
+      "packages/shared/src/services/graph/community-store.ts",
+      "packages/shared/src/services/graph/relation-evidence-store.ts",
+      "packages/shared/src/services/graph/graph-query-service.ts"
+    ],
+    "tests": ["packages/shared/src/services/graph/__tests__/*.test.ts"],
+    "documents": ["outputs/phase-12/implementation-guide.md"]
+  }
+}
