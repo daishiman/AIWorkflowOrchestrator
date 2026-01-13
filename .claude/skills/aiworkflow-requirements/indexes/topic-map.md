@@ -312,8 +312,10 @@ node scripts/list-specs.mjs --topics
 | インターフェース定義 | L139 |
 | エラー型 | L176 |
 | 実装ガイドライン | L187 |
-| 関連ドキュメント | L209 |
-| 変更履歴 | L219 |
+| 実装ステータス | L209 |
+| 使用例 | L233 |
+| 関連ドキュメント | L284 |
+| 変更履歴 | L294 |
 
 ### references/interfaces-rag-search.md
 
