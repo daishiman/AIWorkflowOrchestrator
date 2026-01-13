@@ -620,7 +620,36 @@ interface PaginationOptions {
 | history-ui-integration | UI統合 | CONV-05-02 | **完了**（スタブ接続） | preload/IPC/ページ統合 |
 | history-ipc-handlers | IPCハンドラー | history-ui-integration | **完了** | 4チャンネル実装 |
 | history-service-db-integration | DB統合 | CONV-05-02 | **完了** | DB統合済み、カバレッジ92%+ |
+| history-preload-setup | preload API品質検証 | history-ui-integration | **完了** | 28テスト、カバレッジ100% |
 | CONV-05-03 | UIコンポーネント | CONV-05-02 | **未着手** | 4コンポーネント＋4フック |
+
+### タスク: history-preload-setup（2026-01-13完了）
+
+| 項目       | 内容                                                |
+|------------|-----------------------------------------------------|
+| タスクID   | task-req-history-preload-001                        |
+| 完了日     | 2026-01-13                                          |
+| ステータス | **完了**                                            |
+| テスト数   | 28                                                  |
+| カバレッジ | 100% (channels.ts)                                  |
+| ドキュメント | `docs/30-workflows/history-preload-setup/`        |
+
+#### 成果物
+
+- preload/index.ts: historyAPI実装（既存実装の品質検証）
+- preload/channels.ts: HISTORY_CHANNELSホワイトリスト登録
+- テストファイル: `apps/desktop/src/preload/__tests__/historyAPI.test.ts` (28テスト)
+- 実装ガイド: `outputs/phase-12/implementation-guide.md` (Part 1: 概念的説明 + Part 2: 技術的詳細)
+
+#### セキュリティ確認
+
+| 項目 | 確認結果 |
+|------|----------|
+| contextIsolation | true設定確認済み |
+| nodeIntegration | false設定確認済み |
+| sandbox | true設定確認済み |
+| チャンネルホワイトリスト | HISTORY_CHANNELS全て登録済み |
+| safeInvoke使用 | ipcRenderer.invoke直接使用なし |
 
 ### 残課題
 
@@ -654,6 +683,7 @@ interface PaginationOptions {
 
 | Version | Date       | Changes                      |
 | ------- | ---------- | ---------------------------- |
+| 1.7.0   | 2026-01-13 | history-preload-setup完了（28テスト、カバレッジ100%、セキュリティ確認完了） |
 | 1.6.0   | 2026-01-12 | 未タスク指示書作成完了（renderer-build-fix、history-gui-manual-test、error-i18n-support） |
 | 1.5.0   | 2026-01-12 | history-service-db-integration完了（DB統合済み、全テスト成功、カバレッジ92%+達成、残課題更新） |
 | 1.4.0   | 2026-01-12 | タスク依存関係一覧追加（CONV-05-01/02/03、統合タスク状態の正確な反映） |

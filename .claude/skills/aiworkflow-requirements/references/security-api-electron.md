@@ -128,6 +128,62 @@
 - ファイルシステムへの無制限アクセス
 - シェルコマンドの無制限実行
 
+### 実装例: historyAPI
+
+**実装場所**:
+- チャンネル定義: `apps/desktop/src/main/infrastructure/ipc/channels.ts`
+- preload: `apps/desktop/src/preload/index.ts`
+- 型定義: `apps/desktop/src/renderer/components/history/types.ts`
+
+**チャンネルホワイトリスト方式**:
+
+```typescript
+// apps/desktop/src/main/infrastructure/ipc/channels.ts
+export const HISTORY_CHANNELS = {
+  GET_FILE_HISTORY: "history:getFileHistory",
+  GET_VERSION_DETAIL: "history:getVersionDetail",
+  GET_CONVERSION_LOGS: "history:getConversionLogs",
+  RESTORE_VERSION: "history:restoreVersion",
+} as const;
+```
+
+**safeInvoke ラッパーによる安全な呼び出し**:
+
+```typescript
+// apps/desktop/src/preload/index.ts
+const createSafeInvoke = <T>(channel: string) => {
+  return (...args: unknown[]): Promise<T> => {
+    return ipcRenderer.invoke(channel, ...args);
+  };
+};
+
+contextBridge.exposeInMainWorld("historyAPI", {
+  getFileHistory: createSafeInvoke<Result<PaginatedResult<VersionHistoryItem>>>(
+    HISTORY_CHANNELS.GET_FILE_HISTORY
+  ),
+  getVersionDetail: createSafeInvoke<Result<VersionDetail>>(
+    HISTORY_CHANNELS.GET_VERSION_DETAIL
+  ),
+  getConversionLogs: createSafeInvoke<Result<PaginatedResult<ConversionLog>>>(
+    HISTORY_CHANNELS.GET_CONVERSION_LOGS
+  ),
+  restoreVersion: createSafeInvoke<Result<VersionHistoryItem>>(
+    HISTORY_CHANNELS.RESTORE_VERSION
+  ),
+});
+```
+
+**IPCセキュリティ要件**:
+
+| 要件 | 実装 | 確認方法 |
+|------|------|----------|
+| ホワイトリスト | `HISTORY_CHANNELS`定数で管理 | 定義外チャンネルはエラー |
+| 型安全性 | Result<T>型で統一 | TypeScript型チェック |
+| サンドボックス分離 | contextBridgeで公開 | contextIsolation=true |
+| 引数検証 | Main側ハンドラーで実施 | バリデーションテスト |
+
+**関連タスク**: history-preload-setup（2026-01-13完了）
+
 ### スキル管理セキュリティ
 
 **実装場所**: `apps/desktop/src/main/services/skill/SkillScanner.ts`
