@@ -10,15 +10,29 @@
 
 ## 目的
 
-全Phase完了後の最終成果物として、Pull Requestを作成する。変更内容を整理し、レビュアーが理解しやすいPR説明文を作成する。
+変更をコミットし、ユーザーの明示的な許可を得てからPull Requestを作成し、CIを確認する。
+
+## ⚠️ PR作成に関する重要な注意【必須確認】
+
+**PR作成は自動実行しない。必ずユーザーの明示的な許可を得てから実行すること。**
+
+| 禁止事項                                     | 理由                                           |
+| -------------------------------------------- | ---------------------------------------------- |
+| 勝手にPRを作成する                           | レビュー前の変更がリモートに反映されてしまう   |
+| ユーザー確認なしで`/ai:diff-to-pr`を実行する | 意図しないブランチやコミットが作成される可能性 |
+| ローカル確認をスキップする                   | 動作確認されていないコードがPRに含まれる       |
+
+---
 
 ## 実行タスク
 
-- **変更サマリ作成**: 実装内容の概要整理
-- **PR説明文作成**: 変更内容・テスト結果・影響範囲
-- **レビュー依頼**: 適切なレビュアーのアサイン
-- **CI確認**: 自動テスト・Lintの通過確認
-- **マージ準備**: コンフリクト解消・リベース
+- **ローカル動作確認依頼**: ユーザーにローカルでの動作確認を依頼
+- **変更サマリー提示**: 変更内容のサマリーを提示しPR作成の許可を確認
+- **PR作成**: ユーザーの許可後に`/ai:diff-to-pr`を実行
+- **CI確認**: CIが通過したことを確認
+- **タスク完了処理**: completed-tasksへの移動
+
+---
 
 ## 参照資料
 
@@ -32,6 +46,98 @@
 | 8-9   | リファクタリング・品質保証 | コード品質セクション |
 | 10-11 | レビュー・マニュアルテスト | 検証結果セクション   |
 | 12    | ドキュメント               | ドキュメント変更     |
+
+---
+
+## ローカル確認チェックリスト【PR作成前に必須】
+
+PR作成前に以下を**必ず**確認すること:
+
+| #   | 確認項目                       | コマンド例                                               | 結果 |
+| --- | ------------------------------ | -------------------------------------------------------- | ---- |
+| 1   | ビルドが成功する               | `pnpm build`                                             | □    |
+| 2   | 全テストがパスする             | `pnpm --filter @repo/shared test:run src/services/graph` | □    |
+| 3   | 型チェックがパスする           | `pnpm --filter @repo/shared typecheck`                   | □    |
+| 4   | Lintエラーがない               | `pnpm --filter @repo/shared lint`                        | □    |
+| 5   | 実際の動作確認（該当する場合） | 手動での動作テスト                                       | □    |
+
+---
+
+## 実行手順
+
+### 1. ユーザーにローカル動作確認を依頼【必須】
+
+PR作成前に、ユーザーにローカル環境での動作確認を依頼する。
+
+```
+以下のコマンドでローカル動作を確認してください:
+
+pnpm build
+pnpm --filter @repo/shared test:run src/services/graph
+pnpm --filter @repo/shared typecheck
+pnpm --filter @repo/shared lint
+
+問題がなければ、PR作成を進めてよいかご確認ください。
+```
+
+### 2. 変更サマリーの提示と許可確認【必須】
+
+変更内容のサマリーを提示し、PRを作成してよいかユーザーに確認する。
+
+**重要**: ユーザーから明示的な許可を得るまでPR作成を実行しないこと。
+
+### 3. `/ai:diff-to-pr` を実行
+
+ユーザーの許可を得た後、PR作成を実行する。
+
+```
+/ai:diff-to-pr
+```
+
+このスキルが実行する内容:
+
+1. 変更差分の確認
+2. コミットメッセージ生成
+3. PR作成
+4. CI結果確認
+
+### 4. CI確認
+
+```bash
+# CI状況確認
+gh pr checks
+
+# 失敗時はログ確認・修正
+gh pr checks --watch
+```
+
+### 5. フォールバック（必要時）
+
+`/ai:diff-to-pr` が使えない場合は、git/gh CLIで手動対応する:
+
+```bash
+# 変更ファイル一覧
+git diff --name-only main
+
+# コミット
+git add .
+git commit -m "feat(graph): Knowledge Graph Store 実装
+
+- EntityStore: エンティティのCRUD操作
+- RelationStore: 関係の管理と証拠追跡
+- CommunityStore: コミュニティの階層管理
+- GraphQueryService: グラフ探索・最短経路検索
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+
+# プッシュ
+git push origin HEAD
+
+# PR作成
+gh pr create --title "feat: Knowledge Graph Store 実装" --body-file .github/PULL_REQUEST_TEMPLATE.md
+```
+
+---
 
 ## PRテンプレート
 
@@ -94,10 +200,6 @@ Knowledge Graph Store の実装を追加します。エンティティ・関係�
 - [x] GraphQueryService操作確認
 - [x] エラーメッセージ品質確認
 
-## Screenshots / Demos
-
-（該当する場合）
-
 ## Checklist
 
 - [x] コードがプロジェクトのスタイルガイドに準拠している
@@ -113,6 +215,8 @@ Knowledge Graph Store の実装を追加します。エンティティ・関係�
 🤖 Generated with [Claude Code](https://claude.ai/claude-code)
 ```
 
+---
+
 ## 統合テスト連携【必須】
 
 PR作成前の最終確認:
@@ -125,63 +229,53 @@ PR作成前の最終確認:
 | コンフリクトなし | mainとの差分が解消済み | {{RESULT}} |
 | レビュアー設定   | 適切な人がアサイン     | {{RESULT}} |
 
-## 実行手順
+---
 
-### 1. 変更内容の確認
+## タスク完了処理【必須】
 
-```bash
-# 変更ファイル一覧
-git diff --name-only main
+**PRが作成され、CIが通過した後、タスクディレクトリを完了タスクフォルダに移動する。**
 
-# 変更統計
-git diff --stat main
-
-# コミット履歴
-git log --oneline main..HEAD
-```
-
-### 2. 最新mainとの同期
+### 移動手順
 
 ```bash
-# mainを最新化
-git fetch origin main
+# 1. タスクディレクトリをcompleted-tasksに移動
+mv docs/30-workflows/task-knowledge-graph-store/ docs/30-workflows/completed-tasks/
 
-# リベース（または マージ）
-git rebase origin/main
+# 2. 移動を確認
+ls docs/30-workflows/completed-tasks/ | grep task-knowledge-graph-store
 
-# コンフリクト解消（該当時）
+# 3. （該当時）未タスク指示書の削除
+rm docs/30-workflows/unassigned-task/task-knowledge-graph-store.md
+
+# 4. 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): task-knowledge-graph-storeをcompleted-tasksに移動"
+git push
 ```
 
-### 3. PR作成
+### artifacts.json最終更新
 
-```bash
-# プッシュ
-git push origin HEAD
-
-# PR作成（GitHub CLI使用時）
-gh pr create --title "feat: Knowledge Graph Store 実装" --body-file .github/PULL_REQUEST_TEMPLATE.md
+```json
+{
+  "status": "completed",
+  "completedAt": "{{ISO_TIMESTAMP}}",
+  "phases": {
+    "13": {
+      "status": "completed",
+      "completedAt": "{{ISO_TIMESTAMP}}",
+      "artifacts": [
+        {
+          "type": "pr",
+          "path": "{{PR_URL}}",
+          "description": "Pull Request"
+        }
+      ]
+    }
+  }
+}
 ```
 
-### 4. CI確認
-
-```bash
-# CI状況確認
-gh pr checks
-
-# 失敗時はログ確認・修正
-```
-
-## PR説明文チェックリスト
-
-| 項目       | 確認内容                             | 判定 |
-| ---------- | ------------------------------------ | ---- |
-| Summary    | 変更概要が明確                       | □    |
-| 関連Issue  | 関連Issueがリンクされている          | □    |
-| Changes    | 変更ファイルがリストされている       | □    |
-| Test Plan  | テスト結果が記載されている           | □    |
-| カバレッジ | カバレッジ情報が記載されている       | □    |
-| Checklist  | チェックリストが完了している         | □    |
-| レビュアー | 適切なレビュアーがアサインされている | □    |
+---
 
 ## 成果物
 
@@ -190,33 +284,42 @@ gh pr checks
 | PRリンク   | `outputs/phase-13/pr-link.md`        | 作成したPR |
 | 変更サマリ | `outputs/phase-13/change-summary.md` | 変更概要   |
 
+---
+
 ## 完了条件
 
-- [ ] 全Phase（1-12）が完了している
-- [ ] 変更がmainにリベース済み
-- [ ] CIが全て成功している
-- [ ] PR説明文が作成されている
-- [ ] レビュアーがアサインされている
-- [ ] コンフリクトがない
-- [ ] PRリンクが記録されている
-- [ ] **本Phase内の全タスクを100%実行完了**
+| #   | 項目                                                     | 必須 |
+| --- | -------------------------------------------------------- | ---- |
+| 1   | **ローカルでビルド・テスト・型チェック・Lintが全てパス** | ✅   |
+| 2   | **ユーザーにPR作成の許可を確認済み**                     | ✅   |
+| 3   | PRが作成されている                                       | ✅   |
+| 4   | CIが全て通過している                                     | ✅   |
+| 5   | タスクディレクトリが `completed-tasks/` に移動済み       | ✅   |
+| 6   | `artifacts.json` の `status` が `"completed"`            | ✅   |
+| 7   | （該当時）未タスク指示書が削除済み                       | 条件 |
+| 8   | **本Phase内の全タスクを100%完了**                        | ✅   |
+
+---
 
 ## サブタスク管理
 
 Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認（全Phase成果物）
-2. 変更内容の確認
-3. mainとの同期（リベース/マージ）
-4. コンフリクト解消（該当時）
-5. PR説明文の作成
-6. PRの作成
-7. CIの確認
-8. レビュアーのアサイン
-9. 成果物の作成・配置
-10. 完了条件の検証
+2. ローカル動作確認（ビルド/テスト/型/Lint）
+3. ユーザーにPR作成許可を確認
+4. 変更内容の確認・サマリー作成
+5. mainとの同期（リベース/マージ）
+6. コンフリクト解消（該当時）
+7. `/ai:diff-to-pr` 実行またはPR手動作成
+8. CIの確認
+9. タスクディレクトリの移動（completed-tasks/へ）
+10. artifacts.json最終更新
+11. 完了条件の検証
 
 **重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+---
 
 ## タスク100%実行確認【必須】
 
@@ -224,7 +327,9 @@ Phase完了前に以下を確認:
 
 - [ ] 本Phase内の全タスクを100%実行完了
 - [ ] PRが作成されている
-- [ ] artifacts.jsonが更新されている
+- [ ] CIが全て成功している
+- [ ] タスクディレクトリがcompleted-tasksに移動済み
+- [ ] artifacts.jsonのstatusがcompletedに更新されている
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
@@ -232,13 +337,14 @@ Phase完了前に以下を確認:
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.mjs docs/30-workflows/task-knowledge-graph-store --phase 13
 ```
 
-## タスク完了
+---
 
-このPhaseでタスク仕様書に基づく全実装が完了します。PRがマージされれば、task-knowledge-graph-storeタスクは完了となります。
+## 次のPhase
+
+なし（ワークフロー完了）
 
 ### 完了後のアクション
 
 1. PRレビュー対応
 2. マージ
-3. タスクステータス更新（completed）
-4. 関連Issueのクローズ
+3. 関連Issueのクローズ

@@ -10,19 +10,19 @@
 
 ## 目的
 
-実装完了後のドキュメント整備として、API リファレンス・使用例・READMEを更新する。開発者が容易に理解・使用できるドキュメントを提供する。
+実装した内容をシステム要件ドキュメントに反映し、技術的な理解を促進するドキュメントを作成し、未完了タスクを検出・記録する。
 
 ## 実行タスク
 
-- **README更新**: 概要・インストール・基本使用法
-- **APIリファレンス**: 各Store/ServiceのAPI仕様
-- **使用例**: 一般的なユースケースのコード例
-- **型定義ドキュメント**: エクスポートされた型の説明
-- **移行ガイド**: 既存コードからの移行手順（該当時）
+- **技術ドキュメント作成**: 実装ガイドの作成（Phase 12-1）
+- **システムドキュメント更新**: aiworkflow-requirements等の更新（Phase 12-2）
+- **未タスク検出**: 残課題の検出と記録（Phase 12-3）
 
 ## 参照資料
 
 ### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
 
 | 参照資料                               | パス                                                                                        | 内容          |
 | -------------------------------------- | ------------------------------------------------------------------------------------------- | ------------- |
@@ -35,222 +35,192 @@
 | マニュアルテスト結果 | `outputs/phase-11/manual-test-result.md` | Phase 11成果物 |
 | 実装コード           | `packages/shared/src/services/graph/`    | Phase 5成果物  |
 
-## ドキュメント構成
+---
 
-### 1. README.md
+## Phase 12-1: 実装ガイド作成【必須】
 
-```markdown
-# Knowledge Graph Store
+**2パート構成**の実装ガイドを作成する:
 
-## 概要
+| パート | 対象読者         | 内容                                  |
+| ------ | ---------------- | ------------------------------------- |
+| Part 1 | 初学者・非技術者 | 概念的な説明（中学生でもわかる版）    |
+| Part 2 | 開発者・技術者   | 技術的な詳細（スキーマ・API・使用例） |
 
-Knowledge Graph Storeは、エンティティ・関係・コミュニティを管理するためのStore実装です。
+### Part 1: 概念的説明
 
-## 主な機能
+#### ドキュメント要件
 
-- EntityStore: エンティティのCRUD操作
-- RelationStore: 関係の管理と証拠追跡
-- CommunityStore: コミュニティの階層管理
-- GraphQueryService: グラフ探索・最短経路
+| セクション         | 必須 | 内容                                     |
+| ------------------ | ---- | ---------------------------------------- |
+| 概念的な説明       | ✅   | 中学生にもわかる比喩・例え話を使った説明 |
+| 全体アーキテクチャ | ✅   | ASCII図解付きのレイヤー構造説明          |
+| 用語集             | ✅   | 専門用語の読み方・意味・コンテキスト     |
 
-## インストール
-
-\`\`\`bash
-pnpm add @repo/shared
-\`\`\`
-
-## 基本使用法
-
-\`\`\`typescript
-import { createKnowledgeGraphStore } from '@repo/shared/services/graph';
-
-const store = createKnowledgeGraphStore(db);
-
-// エンティティの追加
-const result = await store.addEntity({
-name: 'John Doe',
-type: 'person',
-description: 'A software engineer',
-});
-
-if (result.isOk()) {
-console.log('Created entity:', result.value);
-}
-\`\`\`
-
-## API Reference
-
-[詳細はAPI Referenceを参照](./docs/api-reference.md)
-```
-
-### 2. APIリファレンス
-
-各Store/Serviceのメソッドを文書化:
-
-| Store/Service     | ドキュメント内容                         |
-| ----------------- | ---------------------------------------- |
-| EntityStore       | addEntity, getEntity, updateEntity, etc. |
-| RelationStore     | addRelation, getRelation, etc.           |
-| CommunityStore    | create, findByLevel, addMember, etc.     |
-| GraphQueryService | traverse, findShortestPath, etc.         |
-
-### 3. 使用例
+#### 例: Knowledge Graphの概念説明
 
 ```markdown
-## 使用例
+## Knowledge Graphとは？
 
-### エンティティの作成と検索
+**友達の輪を想像してみてください。**
 
-\`\`\`typescript
-// エンティティを作成
-const entity = await store.addEntity({
-name: 'TypeScript',
-type: 'technology',
-aliases: ['TS'],
-});
+- あなたは「人」です（Entity = エンティティ）
+- あなたと友達の「つながり」が関係（Relation）です
+- 同じクラブに入っている仲間は「グループ」（Community）です
 
-// 名前で検索
-const found = await store.getEntityByName('typescript');
-\`\`\`
-
-### 関係の作成
-
-\`\`\`typescript
-// 証拠付きで関係を作成
-const relation = await store.addRelation({
-sourceEntityId: entity1.id,
-targetEntityId: entity2.id,
-relationType: 'uses',
-evidence: {
-sourceDocumentId: 'doc-1',
-excerpt: 'The project uses TypeScript...',
-confidence: 0.95,
-},
-});
-\`\`\`
-
-### グラフ探索
-
-\`\`\`typescript
-// BFSトラバーサル
-const result = await store.traverse(startEntityId, {
-maxDepth: 3,
-relationTypes: ['uses', 'depends_on'],
-});
-
-// 最短経路
-const path = await store.findShortestPath(entityA, entityB);
-\`\`\`
+Knowledge Graphは、こういった「人やもの」と「つながり」を
+コンピュータが理解できる形で保存する仕組みです。
 ```
 
-### 4. 型定義ドキュメント
+### Part 2: 技術的詳細
 
-| 型              | 説明                     |
-| --------------- | ------------------------ |
-| EntityId        | エンティティの一意識別子 |
-| RelationId      | 関係の一意識別子         |
-| CommunityId     | コミュニティの一意識別子 |
-| StoredEntity    | 永続化されたエンティティ |
-| StoredRelation  | 永続化された関係         |
-| TraversalResult | グラフ探索の結果         |
-| Result<T, E>    | 成功/失敗を表す型        |
+| セクション       | 必須 | 内容                                |
+| ---------------- | ---- | ----------------------------------- |
+| データベース設計 | 条件 | テーブル定義 + なぜこの設計にしたか |
+| 各層の実装詳細   | ✅   | コード例 + 設計意図の説明           |
+| API仕様          | ✅   | 各メソッドのシグネチャと使用例      |
+
+#### 記述原則
+
+1. **Why-first（なぜ優先）**: 「何をしたか」より「なぜそうしたか」を重視
+2. **対比説明**: 「悪い例」と「良い例」を並べて違いを明確化
+3. **図解活用**: ASCII図でアーキテクチャ・データフロー・関係性を可視化
+4. **コード注釈**: コードスニペットには必ず日本語コメントで意図を補足
+5. **読み方併記**: 英語の専門用語にはカタカナ読みを付記
+
+---
+
+## Phase 12-2: システムドキュメント更新
+
+### 更新対象
+
+| 対象         | パス                                                 | 更新条件     |
+| ------------ | ---------------------------------------------------- | ------------ |
+| 要件定義     | `docs/00-requirements/` 配下                         | 新機能追加時 |
+| システム仕様 | `.claude/skills/aiworkflow-requirements/references/` | 実装変更時   |
+
+### 更新原則
+
+1. **整合性の確保**: 既存セクションと同等の詳細レベルで記述
+2. **Single Source of Truth**: 概要のみ記載し、詳細は実装コードを参照
+3. **構造の一貫性**: 既存フォーマットに従った記述形式
+
+### データベース変更時の必須対応
+
+| 更新対象ファイル             | 必須更新内容                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------- |
+| `database-schema.md`         | テーブル一覧のステータス更新 **+** 詳細セクション追加（カラム・インデックス） |
+| `database-implementation.md` | 実装詳細（既に詳細がある場合は確認のみ）                                      |
+
+### 更新確認チェックリスト
+
+| #   | 確認項目                                         | 判定 |
+| --- | ------------------------------------------------ | ---- |
+| 1   | interfaces-rag-knowledge-graph-store.md が最新か | □    |
+| 2   | database-schema.md が実装と一致しているか        | □    |
+| 3   | 新規追加したAPIがシステム仕様に記載されているか  | □    |
+| 4   | 型定義の変更がドキュメントに反映されているか     | □    |
+
+---
+
+## Phase 12-3: 未タスク検出【必須】
+
+### 検出ソース
+
+| #   | ソース                 | 確認項目                      | Grepパターン例                                                          |
+| --- | ---------------------- | ----------------------------- | ----------------------------------------------------------------------- |
+| 1   | Phase 3レビュー結果    | MINOR判定の指摘事項           | `outputs/phase-3/`                                                      |
+| 2   | Phase 10レビュー結果   | MINOR判定の指摘事項           | `outputs/phase-10/`                                                     |
+| 3   | Phase 11手動テスト結果 | スコープ外の発見事項          | `outputs/phase-11/`                                                     |
+| 4   | 各Phase成果物          | 「将来対応」「TODO」「FIXME」 | `grep -r "TODO\|FIXME\|将来対応" outputs/`                              |
+| 5   | コードベース           | TODO/FIXME/HACK/XXXコメント   | `grep -rn "TODO\|FIXME\|HACK\|XXX" packages/shared/src/services/graph/` |
+
+### 検出手順
+
+```bash
+# 1. Phase成果物からの検出
+grep -r "TODO\|FIXME\|将来対応\|MINOR" outputs/
+
+# 2. コードベースからの検出
+grep -rn "TODO\|FIXME\|HACK\|XXX" packages/shared/src/services/graph/
+
+# 3. レビュー結果の確認
+cat outputs/phase-3/design-review-result.md | grep -A 5 "MINOR"
+cat outputs/phase-10/final-review-result.md | grep -A 5 "MINOR"
+```
+
+### 未タスク指示書作成（該当時）
+
+検出された未タスクに対して、`docs/30-workflows/unassigned-task/` に指示書を作成する。
+
+---
 
 ## 統合テスト連携【必須】
 
 ドキュメント品質チェックリスト:
 
-| チェック項目    | 確認内容                           | 結果       |
-| --------------- | ---------------------------------- | ---------- |
-| README          | 概要・インストール・基本使用法     | {{RESULT}} |
-| APIリファレンス | 全公開メソッドが文書化されている   | {{RESULT}} |
-| 使用例          | 主要ユースケースがカバーされている | {{RESULT}} |
-| 型定義          | エクスポート型が説明されている     | {{RESULT}} |
-| コード例        | コード例が動作する                 | {{RESULT}} |
+| チェック項目     | 確認内容                      | 結果       |
+| ---------------- | ----------------------------- | ---------- |
+| 実装ガイドPart 1 | 概念的説明が作成されている    | {{RESULT}} |
+| 実装ガイドPart 2 | 技術的詳細が作成されている    | {{RESULT}} |
+| システム仕様更新 | aiworkflow-requirementsが最新 | {{RESULT}} |
+| 未タスク検出     | 検出レポートが出力されている  | {{RESULT}} |
+| コード例動作確認 | サンプルコードが動作する      | {{RESULT}} |
 
-## 実行手順
-
-### 1. 既存ドキュメントの確認
-
-```bash
-# 既存READMEの確認
-cat packages/shared/src/services/graph/README.md
-
-# 型定義の確認
-cat packages/shared/src/services/graph/types.ts
-```
-
-### 2. ドキュメント作成
-
-1. README.mdの作成または更新
-2. APIリファレンスの作成
-3. 使用例の追加
-4. JSDocコメントの確認・追加
-
-### 3. ドキュメント検証
-
-```bash
-# コード例の動作確認
-pnpm --filter @repo/shared test:run src/services/graph/__tests__/examples.test.ts
-
-# リンク切れチェック（該当する場合）
-npx markdown-link-check README.md
-```
-
-## ドキュメントチェックリスト
-
-| 項目            | 確認内容                         | 判定 |
-| --------------- | -------------------------------- | ---- |
-| 概要            | 機能概要が明確に記述されている   | □    |
-| インストール    | インストール手順が記載されている | □    |
-| 基本使用法      | 最小限の使用例が示されている     | □    |
-| APIリファレンス | 全公開メソッドが文書化されている | □    |
-| パラメータ説明  | 各パラメータの説明がある         | □    |
-| 戻り値説明      | 戻り値の型と内容が説明されている | □    |
-| エラーケース    | 発生しうるエラーが説明されている | □    |
-| 使用例          | 実際に動作するコード例がある     | □    |
-| 型定義          | エクスポート型が説明されている   | □    |
+---
 
 ## 成果物
 
-| 成果物          | パス                                           | 説明         |
-| --------------- | ---------------------------------------------- | ------------ |
-| README          | `packages/shared/src/services/graph/README.md` | 概要・使用法 |
-| APIリファレンス | `outputs/phase-12/api-reference.md`            | API詳細仕様  |
-| 使用例          | `outputs/phase-12/usage-examples.md`           | コード例集   |
+| 成果物               | パス                                           | 必須 | 説明                      |
+| -------------------- | ---------------------------------------------- | ---- | ------------------------- |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`     | ✅   | 概念的+技術的ドキュメント |
+| ドキュメント更新履歴 | `outputs/phase-12/documentation-update-log.md` | ✅   | 更新履歴                  |
+| 未タスク検出レポート | `outputs/phase-12/unassigned-task-report.md`   | ✅   | 検出結果（なしでも出力）  |
+| 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`       | 条件 | 検出時のみ作成            |
+| README               | `packages/shared/src/services/graph/README.md` | ✅   | 概要・使用法              |
+
+---
 
 ## 完了条件
 
+- [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
+- [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
+- [ ] 関連ドキュメント（aiworkflow-requirements）が更新されている
+- [ ] **未タスク検出レポートが出力されている**【必須】
+- [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] READMEが作成/更新されている
-- [ ] 全公開APIが文書化されている
-- [ ] 主要ユースケースの使用例がある
 - [ ] コード例が実際に動作する
-- [ ] 型定義が説明されている
-- [ ] ドキュメントチェックリストを満たしている
+- [ ] artifacts.jsonが更新されている
 - [ ] **本Phase内の全タスクを100%実行完了**
+
+---
 
 ## サブタスク管理
 
 Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認
-2. 既存ドキュメントの確認
-3. README作成/更新
-4. APIリファレンス作成
-5. 使用例作成
-6. 型定義ドキュメント作成
-7. JSDocコメント確認・追加
-8. コード例の動作確認
-9. 成果物の作成・配置
-10. 完了条件の検証
+2. 実装ガイドPart 1（概念的説明）作成
+3. 実装ガイドPart 2（技術的詳細）作成
+4. システムドキュメント更新確認
+5. aiworkflow-requirements更新（該当時）
+6. 未タスク検出（全ソースをスキャン）
+7. 未タスク指示書作成（該当時）
+8. README作成/更新
+9. コード例の動作確認
+10. 成果物の作成・配置
+11. 完了条件の検証
 
 **重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+---
 
 ## タスク100%実行確認【必須】
 
 Phase完了前に以下を確認:
 
 - [ ] 本Phase内の全タスクを100%実行完了
-- [ ] ドキュメントが出力されている
+- [ ] 実装ガイド（Part 1 + Part 2）が出力されている
+- [ ] 未タスク検出レポートが出力されている
 - [ ] artifacts.jsonが更新されている
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
