@@ -1,0 +1,145 @@
+{
+  "taskId": "CONV-07-04",
+  "taskName": "グラフ検索戦略",
+  "featureName": "graph-search-strategy",
+  "status": "completed",
+  "createdAt": "2026-01-12T23:32:00Z",
+  "lastUpdated": "2026-01-13T01:12:00Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/domain-model.md",
+        "outputs/phase-2/data-flow.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test.md",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "artifacts": ["outputs/phase-5/implementation-report.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-enhancement.md",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality.md",
+      "artifacts": [
+        "outputs/phase-9/performance-test.md",
+        "outputs/phase-9/security-review.md",
+        "outputs/phase-9/reliability-test.md",
+        "outputs/phase-9/quality-summary.md"
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/traceability-matrix.md"
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/scenario-test.md",
+        "outputs/phase-11/manual-test-checklist.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "docs/api/graph-search-strategy.md",
+        "docs/guides/graph-search-usage.md",
+        "CHANGELOG.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "spec_created",
+      "specFile": "phase-13-pr.md",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "required": ["CONV-08-01", "CONV-08-02", "CONV-08-03"],
+    "blockedBy": []
+  },
+  "codeArtifacts": [
+    {
+      "path": "packages/shared/src/services/search/strategies/graph-search-strategy.ts",
+      "description": "GraphSearchStrategy実装",
+      "status": "created"
+    },
+    {
+      "path": "packages/shared/src/services/search/strategies/__tests__/graph-search-strategy.test.ts",
+      "description": "ユニットテスト",
+      "status": "created"
+    },
+    {
+      "path": "packages/shared/src/services/search/strategies/__tests__/graph-search-strategy.integration.test.ts",
+      "description": "統合テスト",
+      "status": "created"
+    }
+  ]
+}

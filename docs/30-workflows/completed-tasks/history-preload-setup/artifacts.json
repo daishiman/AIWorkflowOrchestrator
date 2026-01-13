@@ -1,0 +1,158 @@
+{
+  "taskId": "task-req-history-preload-001",
+  "taskName": "history-preload-setup",
+  "createdAt": "2026-01-12T00:00:00Z",
+  "lastUpdated": "2026-01-13T00:00:00Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/api-design.md",
+        "outputs/phase-2/type-definition.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "apps/desktop/src/preload/__tests__/historyAPI.test.ts"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": ["outputs/phase-5/implementation-status.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "apps/desktop/src/preload/__tests__/historyAPI.test.ts"
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": ["outputs/phase-7/coverage-verification.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": ["outputs/phase-9/quality-assurance.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "startedAt": "2026-01-13T00:00:00Z",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "skipped",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": [],
+      "skipReason": "ユーザー指示によりスキップ"
+    }
+  },
+  "dependencies": {
+    "parent": "task-req-history-integration-001",
+    "prerequisites": [
+      "task-req-history-ipc-001",
+      "history-service-db-integration"
+    ]
+  },
+  "deliverables": {
+    "code": [
+      {
+        "type": "preload",
+        "path": "apps/desktop/src/preload/index.ts",
+        "description": "historyAPI公開（実装済み）"
+      },
+      {
+        "type": "type-definition",
+        "path": "apps/desktop/src/renderer/components/history/types.ts",
+        "description": "Window型拡張定義（実装済み）"
+      }
+    ],
+    "tests": [
+      {
+        "type": "unit",
+        "path": "apps/desktop/src/preload/__tests__/historyAPI.test.ts",
+        "description": "preload APIテスト"
+      }
+    ],
+    "documentation": [
+      {
+        "type": "implementation-guide",
+        "path": "outputs/phase-12/implementation-guide.md",
+        "description": "実装ガイド"
+      }
+    ]
+  },
+  "notes": {
+    "existingImplementation": "historyAPIは history-ui-integration タスク（2026-01-11完了）で既に実装済み。本タスクは品質確認とドキュメント整備を目的とする。"
+  }
+}

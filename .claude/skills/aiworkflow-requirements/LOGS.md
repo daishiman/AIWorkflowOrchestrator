@@ -161,4 +161,81 @@
 
 ---
 
+## 2026-01-12: AGENT-005 Claude Agent SDK統合
+
+| 項目         | 内容                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| タスクID     | AGENT-005                                                                                  |
+| 操作         | update-spec                                                                                |
+| 対象ファイル | interfaces-agent-sdk.md、topic-map.md                                                      |
+| 結果         | success                                                                                    |
+| 備考         | Claude Agent SDK統合（query() API、Hooks、Permission Control）の型定義・IPC仕様追加       |
+
+### 更新詳細
+
+- **更新**: `references/interfaces-agent-sdk.md`
+  - Agent Execution Types (AGENT-005) セクション追加（約150行）
+  - AgentExecutionRequest / AgentStreamMessage / AgentExecutionStatus 型定義
+  - PermissionRequest / PermissionResponse / PermissionRules 型定義
+  - AGENT_DEFAULTS / DANGEROUS_PATTERNS 定数
+  - Agent実行用IPCチャンネル（8チャンネル）
+  - 関連ドキュメントリンク
+
+- **更新**: `indexes/topic-map.md`
+  - interfaces-agent-sdk.mdセクションにAGENT-005関連エントリ追加
+  - Skill Dashboard型定義（AGENT-002）エントリ追加
+  - ModifierSkill（スライド逆同期機能）エントリ追加
+
+### 関連ドキュメント
+
+| ドキュメント         | パス                                                                             |
+| -------------------- | -------------------------------------------------------------------------------- |
+| 実装ガイド           | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` |
+| 型定義ソース         | `packages/shared/src/types/agent-execution.ts`                                   |
+| claude-agent-sdkスキル | `.claude/skills/claude-agent-sdk/SKILL.md`                                     |
+
+### インデックス再生成
+
+- **ファイル数**: 83ファイル
+- **キーワード数**: 664キーワード
+- **コマンド**: `node scripts/generate-index.mjs`
+
+---
+
+## [実行日時: 2026-01-13T01:30:00.000Z]
+
+- Task: CONV-07-04 GraphSearchStrategy仕様追加
+- 結果: success
+- フィードバック: GraphSearchStrategy仕様追加: interfaces-rag-search.md（lines 305-369）
+
+### 更新詳細
+
+- **更新**: `references/interfaces-rag-search.md`（v6.7.0）
+  - GraphSearchStrategyセクション追加（65行）
+  - インターフェース定義（search, getMetrics, name）
+  - クエリタイプ（local/global/relationship）
+  - GraphSearchOptionsオプション定義
+  - 依存インターフェース（IKnowledgeGraphStore, IEmbeddingProvider, ICommunitySummarizer）
+  - スコアリング計算式
+  - 定数一覧
+  - テスト品質（69テスト、94.54%カバレッジ）
+
+---
+
+## [実行日時: 2026-01-13T01:35:00.000Z]
+
+- Task: skill-creator による aiworkflow-requirements スキル改善
+- 結果: success
+- フィードバック: update-spec.md 明確性改善（3/5 → 5/5 目標）
+
+### 改善詳細
+
+- **更新**: `agents/update-spec.md`
+  - 「適切に記録する」 → 「変更履歴テーブルに日付・バージョン・変更内容を記録する」
+  - 「必要に応じて更新」 → 「見出し変更時のみ更新」
+  - 曖昧な表現を具体的な基準に置換
+
+---
+
+
 （ログエントリはここに追記されます）
