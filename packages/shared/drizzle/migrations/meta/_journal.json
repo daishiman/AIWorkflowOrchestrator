@@ -22,6 +22,13 @@
       "when": 1766715202411,
       "tag": "0002_short_norrin_radd",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1768231456794,
+      "tag": "0003_spotty_callisto",
+      "breakpoints": true
     }
   ]
 }
