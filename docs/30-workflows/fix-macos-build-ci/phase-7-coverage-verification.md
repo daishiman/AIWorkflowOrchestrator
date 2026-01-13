@@ -86,6 +86,14 @@ CI/CD修正の品質を保証するため、テストカバレッジの達成状
 | Phase 6成果物 | `outputs/phase-6/`             | テスト拡充結果 |
 | テスト計画書  | `outputs/phase-4/test-plan.md` | テスト方法     |
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料             | パス                                                                       | 内容                 |
+| -------------------- | -------------------------------------------------------------------------- | -------------------- |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | コードサイニング要件 |
+
 ---
 
 ## 成果物

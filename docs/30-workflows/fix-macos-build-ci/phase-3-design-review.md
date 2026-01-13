@@ -103,6 +103,14 @@ CI修正は本番環境に直接影響するため、実装前に設計の妥当
 | Phase 2成果物          | `outputs/phase-2/`                                                             | 設計書   |
 | レビューゲート判定基準 | `.claude/skills/task-specification-creator/references/review-gate-criteria.md` | 判定基準 |
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料             | パス                                                                       | 内容                 |
+| -------------------- | -------------------------------------------------------------------------- | -------------------- |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | コードサイニング要件 |
+
 ---
 
 ## 成果物

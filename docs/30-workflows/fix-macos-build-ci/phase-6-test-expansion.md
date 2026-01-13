@@ -106,6 +106,14 @@ CI/CD修正の検証には、実際のCIパイプラインでの動作確認が�
 | 実装サマリー     | `outputs/phase-5/implementation-summary.md`  | 変更内容       |
 | 統合テスト設計書 | `outputs/phase-4/integration-test-design.md` | 統合テスト定義 |
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料             | パス                                                                       | 内容                 |
+| -------------------- | -------------------------------------------------------------------------- | -------------------- |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | コードサイニング要件 |
+
 ---
 
 ## 成果物

@@ -34,6 +34,13 @@ ENV/
 dist/
 build/
 
+# Electron build assets (exception to build/ ignore rule)
+!apps/desktop/build/
+apps/desktop/build/*
+!apps/desktop/build/entitlements.mac.plist
+!apps/desktop/build/*.icns
+!apps/desktop/build/*.ico
+
 # Logs
 logs/
 *.log

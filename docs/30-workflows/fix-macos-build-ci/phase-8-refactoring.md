@@ -103,6 +103,14 @@
 | Phase 7成果物 | `outputs/phase-7/`                          | カバレッジ確認結果 |
 | 実装サマリー  | `outputs/phase-5/implementation-summary.md` | 変更内容           |
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料             | パス                                                                       | 内容                 |
+| -------------------- | -------------------------------------------------------------------------- | -------------------- |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | コードサイニング要件 |
+
 ---
 
 ## 成果物

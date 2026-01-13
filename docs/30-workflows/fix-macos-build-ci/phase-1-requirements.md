@@ -16,11 +16,20 @@
 
 ## 目的
 
-GitHub Actions CI で macOS ビルドが失敗する問題の要件を明確化し、受け入れ基準を定義する。
+GitHub Actions CI で macOS ビルドが失敗する問題（entitlements.mac.plist不足）の要件を明確化し、受け入れ基準を定義する。
 
 ## 背景
 
-GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッケージングが失敗している。エラーメッセージ `hdiutil: create failed - Device not configured` は、CI環境での仮想化制限に起因すると考えられる。
+GitHub Actions の macOS runner (macos-14) で Electron アプリのコードサイニング時に `entitlements.mac.plist` ファイルが見つからずエラーが発生している。
+
+**エラーメッセージ**:
+
+```
+⨯ Command failed: codesign --sign - --force --timestamp --options runtime
+  --entitlements build/entitlements.mac.plist
+  /path/to/app.asar.unpacked/node_modules/@anthropic-ai/claude-agent-sdk/vendor/ripgrep/arm64-darwin/rg
+build/entitlements.mac.plist: cannot read entitlement data
+```
 
 ---
 
@@ -35,9 +44,18 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 **実行手順**:
 
 1. GitHub Actions のビルドログを詳細に分析する
-2. `hdiutil` エラーの発生箇所を特定する
-3. `dmg-builder` パッケージのバージョンと既知の問題を調査する
-4. GitHub Actions macos-14 runner の制限事項を確認する
+2. `codesign` エラーの発生箇所を特定する
+3. `electron-builder.yml` の entitlements 設定を確認する
+4. `apps/desktop/build/` ディレクトリの存在を確認する
+
+**分析結果**:
+
+| 項目           | 状況                                                                          |
+| -------------- | ----------------------------------------------------------------------------- |
+| エラー発生箇所 | codesign コマンド実行時                                                       |
+| 設定ファイル   | `electron-builder.yml` で `entitlements: build/entitlements.mac.plist` が設定 |
+| ファイル存在   | `apps/desktop/build/entitlements.mac.plist` が存在しない                      |
+| 原因           | 設定で参照されているファイルが未作成                                          |
 
 **期待される成果物**:
 
@@ -45,17 +63,22 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 
 ---
 
-### タスク2: 解決策の選択肢を列挙
+### タスク2: 解決策の特定
 
-**目的**: 実行可能な解決策を洗い出す
+**目的**: 問題解決のための方法を明確にする
 
 **実行手順**:
 
-1. DMG生成をスキップしてZIPのみにする案
-2. dmg-builderの設定を調整する案
-3. 別のDMG生成ツールを使用する案
-4. ビルドマトリックスでDMG生成を分離する案
-5. 各案のメリット・デメリットを整理する
+1. entitlements.mac.plistファイルを新規作成する
+2. macOS Hardened Runtimeに必要なentitlementsを定義する
+3. electron-builder.ymlの既存設定との整合性を確認する
+
+**解決策**:
+
+| オプション      | 内容                                               | 採用                         |
+| --------------- | -------------------------------------------------- | ---------------------------- |
+| A: ファイル作成 | `apps/desktop/build/entitlements.mac.plist` を作成 | ✅                           |
+| B: 設定変更     | electron-builder.ymlからentitlements設定を削除     | ❌（Hardened Runtimeに必要） |
 
 **期待される成果物**:
 
@@ -67,15 +90,21 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 
 **目的**: 修正の要件と受け入れ基準を明確化する
 
-**実行手順**:
+**機能要件（FR）**:
 
-1. 機能要件を定義する
-   - CIビルドが成功すること
-   - 配布可能な成果物が生成されること
-2. 非機能要件を定義する
-   - ビルド時間の許容範囲
-   - 成果物のサイズ制限
-3. 受け入れ基準を定義する
+| ID    | 要件                                                           | 優先度 |
+| ----- | -------------------------------------------------------------- | ------ |
+| FR-01 | `apps/desktop/build/entitlements.mac.plist` ファイルを作成する | 高     |
+| FR-02 | entitlementsにmacOS Hardened Runtime必須権限を定義する         | 高     |
+| FR-03 | GitHub Actions CI でmacOSビルドが成功すること                  | 高     |
+
+**非機能要件（NFR）**:
+
+| ID     | 要件                                               | 優先度 |
+| ------ | -------------------------------------------------- | ------ |
+| NFR-01 | electron-builder.yml設定との互換性を維持する       | 高     |
+| NFR-02 | ローカル環境でもビルドが成功すること               | 中     |
+| NFR-03 | 必要最小限のentitlementsのみを付与する（最小権限） | 高     |
 
 **期待される成果物**:
 
@@ -83,15 +112,41 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 
 ---
 
-### タスク4: スコープ定義
+### タスク4: 受け入れ基準の定義
+
+**目的**: 検証可能な基準を定義する
+
+| ID   | 受け入れ基準                                       | 検証方法             |
+| ---- | -------------------------------------------------- | -------------------- |
+| AC-1 | `apps/desktop/build/entitlements.mac.plist` が存在 | ファイル確認         |
+| AC-2 | plistファイルが有効なXML形式                       | xmllint検証          |
+| AC-3 | GitHub Actions `build-electron.yml` が成功         | CI実行確認           |
+| AC-4 | ビルド成果物（.zip）が生成される                   | アーティファクト確認 |
+| AC-5 | 生成されたアプリがmacOSで起動できる                | 手動テスト           |
+
+**期待される成果物**:
+
+- 受け入れ基準書（`outputs/phase-1/acceptance-criteria.md`）
+
+---
+
+### タスク5: スコープ定義
 
 **目的**: 修正対象と対象外を明確にする
 
-**実行手順**:
+**対象範囲**:
 
-1. 修正対象ファイルを特定する
-2. 修正対象外（スコープ外）を明記する
-3. 前提条件と制約を整理する
+| 対象         | 説明                                        |
+| ------------ | ------------------------------------------- |
+| 新規ファイル | `apps/desktop/build/entitlements.mac.plist` |
+
+**対象外**:
+
+| 対象外                   | 理由                     |
+| ------------------------ | ------------------------ |
+| electron-builder.yml変更 | 既存設定は正しい         |
+| build-electron.yml変更   | ワークフロー自体は正しい |
+| コードサイニング証明書   | 別タスクで対応予定       |
 
 **期待される成果物**:
 
@@ -103,10 +158,18 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 
 | 参照資料             | パス                                                                       | 内容                    |
 | -------------------- | -------------------------------------------------------------------------- | ----------------------- |
-| デプロイメント仕様   | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | Electronリリースの仕様  |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | Electronリリースの仕様  |
 | GitHub Actions仕様   | `.claude/skills/aiworkflow-requirements/references/deployment-gha.md`      | CI/CDパイプラインの仕様 |
 | ビルドワークフロー   | `.github/workflows/build-electron.yml`                                     | 現在のビルド設定        |
 | electron-builder設定 | `apps/desktop/electron-builder.yml`                                        | パッケージング設定      |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料             | パス                                                                       | 内容                      |
+| -------------------- | -------------------------------------------------------------------------- | ------------------------- |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | macOSコードサイニング要件 |
 
 ---
 
@@ -117,6 +180,7 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 | 問題分析レポート | `outputs/phase-1/problem-analysis.md`        | エラーの詳細分析   |
 | 解決策オプション | `outputs/phase-1/solution-options.md`        | 解決策の選択肢一覧 |
 | 要件定義書       | `outputs/phase-1/requirements-definition.md` | 要件と受け入れ基準 |
+| 受け入れ基準書   | `outputs/phase-1/acceptance-criteria.md`     | AC定義             |
 | スコープ定義書   | `outputs/phase-1/scope-definition.md`        | 対象範囲の定義     |
 
 ---
@@ -127,7 +191,7 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 
 - [ ] CI/CDパイプラインの正常動作を要件に明記
 - [ ] ビルド成果物の検証方法を要件に含める
-- [ ] GitHub Actions と electron-builder の接続要件を確認
+- [ ] GitHub Actions ↔ electron-builder ↔ codesign の接続要件を確認
 
 ---
 
@@ -136,8 +200,8 @@ GitHub Actions の macOS runner (macos-14) で Electron アプリの DMG パッ�
 - [ ] 問題分析レポートが作成されている
 - [ ] 解決策オプションが列挙されている
 - [ ] 要件定義書が作成されている
-- [ ] スコープ定義書が作成されている
 - [ ] 受け入れ基準が明確に定義されている
+- [ ] スコープ定義書が作成されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ---
