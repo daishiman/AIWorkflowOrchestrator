@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: "html",
 
   // E2E環境用のグローバルセットアップ（認証モック初期化）
-  globalSetup: require.resolve("./e2e/global-setup"),
+  globalSetup: "./e2e/global-setup.ts",
 
   use: {
     // Electron アプリのテスト用 base URL（5173が使用中の場合5174）

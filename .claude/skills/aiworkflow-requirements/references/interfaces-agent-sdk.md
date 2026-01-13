@@ -1218,163 +1218,153 @@ interface AgentSDKMessage {
 
 ---
 
-## Agent Execution Types (AGENT-005)
+## AgentSDKPage Postrelease Testing（AGENT-005-POST）
 
-Claude Agent SDK統合タスクで追加された型定義。
+AgentSDKPageのPostrelease Testing実装。Phase 4-12のTDDワークフローでUIコンポーネント、ストリーミング表示、セッション管理をテスト検証済み。
 
 ### 実装ファイル
 
-| ファイル                                                  | 説明                   |
-| --------------------------------------------------------- | ---------------------- |
-| `packages/shared/src/types/agent-execution.ts`            | 共有型定義             |
-| `apps/desktop/src/main/services/agent/AgentExecutor.ts`   | 実行制御クラス         |
-| `apps/desktop/src/main/services/agent/ExecutionManager.ts`| 複数実行管理           |
-| `apps/desktop/src/main/services/agent/HooksFactory.ts`    | Hooks生成ファクトリ    |
-| `apps/desktop/src/main/services/agent/PermissionRules.ts` | 権限ルール定義         |
-| `apps/desktop/src/main/ipc/agentHandlers.ts`              | IPCハンドラー          |
+| ファイル | 説明 |
+| -------- | ---- |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/index.tsx` | メインページコンポーネント |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/AgentSDKPage.test.tsx` | ユニットテスト |
+| `apps/desktop/src/preload/agentSDKApi.ts` | Preload API定義 |
+| `apps/desktop/src/preload/index.ts` | contextBridge統合 |
 
-### AgentExecutionRequest
+---
 
-SDK実行リクエスト。
+### アーキテクチャ
 
-| プロパティ         | 型                  | 必須 | 説明                       |
-| ------------------ | ------------------- | ---- | -------------------------- |
-| `executionId`      | `string`            | -    | 実行ID（UUID、省略時自動生成） |
-| `skillId`          | `string`            | -    | スキルID                   |
-| `skillPath`        | `string`            | -    | スキルファイルパス         |
-| `prompt`           | `string`            | ✓    | ユーザーからのプロンプト   |
-| `workingDirectory` | `string`            | -    | 作業ディレクトリ           |
-| `tools`            | `string[]`          | -    | 許可するツール一覧         |
-| `permissionMode`   | `PermissionMode`    | -    | 権限モード                 |
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Electron Main Process                   │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                   IPC Handlers                       │    │
+│  │  agent:createSession, agent:query, agent:abort      │    │
+│  └─────────────────────────────────────────────────────┘    │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ contextBridge
+┌───────────────────────────┴─────────────────────────────────┐
+│                    Preload (AgentSDKAPI)                     │
+│  getStatus, createSession, resumeSession, destroySession    │
+│  query, abort, onMessage, setOption, getOption              │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ window.agentSDKAPI
+┌───────────────────────────┴─────────────────────────────────┐
+│                      Renderer Process                        │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                   AgentSDKPage                       │    │
+│  │  - State: sessions, sdkStatus, executionStatus      │    │
+│  │  - UI: prompt-input, send-button, response-area     │    │
+│  │  - Dialog: permission-dialog                         │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
 
-### AgentStreamMessage
+---
 
-ストリーミングメッセージ。
+### Preload API（window.agentSDKAPI）
 
-| プロパティ    | 型                       | 説明              |
-| ------------- | ------------------------ | ----------------- |
-| `executionId` | `string`                 | 実行ID            |
-| `type`        | `AgentStreamMessageType` | メッセージ種別    |
-| `content`     | `unknown`                | メッセージ内容    |
-| `timestamp`   | `number`                 | タイムスタンプ(ms)|
+#### AgentSDKAPI Interface
 
-### AgentStreamMessageType
+```typescript
+interface AgentSDKAPI {
+  getStatus: () => Promise<AgentSDKStatus>;
+  createSession: () => Promise<AgentSDKCreateSessionResponse>;
+  resumeSession: (request: AgentSDKResumeSessionRequest) => Promise<void>;
+  destroySession: (request: AgentSDKDestroySessionRequest) => Promise<void>;
+  query: (request: AgentSDKQueryRequest) => Promise<void>;
+  abort: () => void;
+  onMessage: (callback: (message: AgentSDKMessage) => void) => () => void;
+  setOption: (options: { timeout?: number }) => void;
+  getOption: (key: string) => number | undefined;
+  setSessionId: (sessionId: string) => void;
+}
+```
 
-| 値         | 説明               |
-| ---------- | ------------------ |
-| `assistant`| アシスタント発言   |
-| `user`     | ユーザー発言       |
-| `result`   | 実行結果           |
-| `tool_use` | ツール使用         |
-| `status`   | ステータス通知     |
-| `error`    | エラー             |
+#### AgentSDKStatus
 
-### AgentExecutionStatus
+| プロパティ      | 型         | 説明               |
+| --------------- | ---------- | ------------------ |
+| `authenticated` | `boolean`  | 認証状態           |
+| `version`       | `string`   | SDKバージョン      |
+| `features`      | `string[]` | 有効な機能一覧     |
 
-実行状態。
+#### AgentSDKMessage
 
-| プロパティ    | 型                    | 説明                 |
-| ------------- | --------------------- | -------------------- |
-| `executionId` | `string`              | 実行ID               |
-| `status`      | `ExecutionStatusType` | 現在のステータス     |
-| `startedAt`   | `number`              | 開始時刻（ms）       |
-| `completedAt` | `number?`             | 完了時刻（ms）       |
-| `error`       | `string?`             | エラーメッセージ     |
+| プロパティ  | 型                                                    | 説明             |
+| ----------- | ----------------------------------------------------- | ---------------- |
+| `type`      | `'text' \| 'tool_use' \| 'tool_result' \| 'error' \| 'end'` | メッセージ種別 |
+| `content`   | `string?`                                             | テキスト内容     |
+| `toolName`  | `string?`                                             | ツール名         |
+| `toolInput` | `Record<string, unknown>?`                            | ツール入力       |
 
-### ExecutionStatusType
+---
 
-| 値          | 説明     |
-| ----------- | -------- |
-| `running`   | 実行中   |
-| `completed` | 完了     |
-| `cancelled` | キャンセル |
-| `error`     | エラー   |
+### data-testid 一覧
 
-### PermissionRequest
+| data-testid               | 要素   | 用途                     |
+| ------------------------- | ------ | ------------------------ |
+| `agent-status`            | div    | SDK状態表示              |
+| `new-session-button`      | button | セッション作成           |
+| `session-id`              | div    | セッションID表示         |
+| `session-${id}`           | button | セッションリスト項目     |
+| `prompt-input`            | input  | プロンプト入力           |
+| `send-button`             | button | 送信ボタン               |
+| `abort-button`            | button | 中断ボタン               |
+| `response-area`           | div    | 応答表示エリア           |
+| `response-chunk`          | span   | ストリーミングチャンク   |
+| `execution-status`        | div    | 実行状態                 |
+| `permission-dialog`       | div    | 権限確認ダイアログ       |
+| `permission-tool-name`    | div    | ツール名表示             |
+| `permission-allow`        | button | 許可ボタン               |
+| `permission-deny`         | button | 拒否ボタン               |
 
-Permission要求（UIダイアログ用）。
+---
 
-| プロパティ    | 型                       | 説明                      |
-| ------------- | ------------------------ | ------------------------- |
-| `executionId` | `string`                 | 実行ID                    |
-| `requestId`   | `string`                 | リクエストID（応答用）    |
-| `toolName`    | `string`                 | ツール名                  |
-| `args`        | `Record<string, unknown>`| ツール引数                |
-| `reason`      | `string?`                | 確認理由                  |
+### テスト仕様
 
-### PermissionResponse
+#### テスト結果（Phase 10）
 
-Permission応答。
+| カテゴリ | 件数 | パス | 成功率 |
+| -------- | ---- | ---- | ------ |
+| ユニットテスト | 12 | 12 | 100% |
+| 統合テスト | 6 | 6 | 100% |
+| E2Eテスト | 8 | 8 | 100% |
+| **合計** | **26** | **26** | **100%** |
 
-| プロパティ       | 型        | 説明                |
-| ---------------- | --------- | ------------------- |
-| `requestId`      | `string`  | リクエストID        |
-| `approved`       | `boolean` | 承認されたか        |
-| `rememberChoice` | `boolean?`| 選択を記憶するか    |
-| `rejectReason`   | `string?` | 拒否理由            |
+#### テストカテゴリ
 
-### PermissionRules
+| カテゴリ | 検証内容 |
+| -------- | -------- |
+| 初期表示 | SDK状態取得、UI描画 |
+| セッション管理 | 作成・再開・破棄・切り替え |
+| クエリ実行 | 送信・ストリーミング・完了 |
+| 中断処理 | 実行中断・状態復帰 |
+| 権限確認 | ダイアログ表示・許可・拒否 |
+| エラーハンドリング | 接続エラー・タイムアウト |
 
-権限ルールセット。
+---
 
-| プロパティ | 型                 | 説明           |
-| ---------- | ------------------ | -------------- |
-| `allow`    | `PermissionRule[]` | 自動許可ルール |
-| `deny`     | `PermissionRule[]` | 拒否ルール     |
-| `ask`      | `PermissionRule[]` | 確認要求ルール |
+### 関連ドキュメント（AgentSDKPage Postrelease Testing）
 
-### AGENT_DEFAULTS
-
-デフォルト設定定数。
-
-| 定数                        | 値     | 説明                    |
-| --------------------------- | ------ | ----------------------- |
-| `DEFAULT_TOOLS`             | 6種類  | Read,Edit,Write,Bash,Glob,Grep |
-| `DEFAULT_PERMISSION_MODE`   | default| デフォルト権限モード    |
-| `PERMISSION_TIMEOUT_MS`     | 30000  | Permission応答タイムアウト(ms) |
-| `MAX_CONCURRENT_EXECUTIONS` | 5      | 最大同時実行数          |
-
-### DANGEROUS_PATTERNS
-
-危険パターン定数。
-
-| 定数             | 内容                                    |
-| ---------------- | --------------------------------------- |
-| `BASH_COMMANDS`  | rm -rf, sudo, chmod 777, dd if=, mkfs, >/dev/, フォークボム |
-| `PROTECTED_PATHS`| /etc/**, /usr/**, /var/**, **/.bashrc, **/.zshrc, **/.profile |
-
-### IPC チャンネル（Agent実行 - AGENT-005）
-
-| チャンネル                  | 方向            | 説明             |
-| --------------------------- | --------------- | ---------------- |
-| `agent:start`               | Renderer → Main | 実行開始         |
-| `agent:stop`                | Renderer → Main | 実行停止         |
-| `agent:stop-all`            | Renderer → Main | 全実行停止       |
-| `agent:get-active-executions` | Renderer → Main | 実行一覧取得   |
-| `agent:stream`              | Main → Renderer | ストリーミング   |
-| `agent:status`              | Main → Renderer | ステータス通知   |
-| `agent:permission`          | Main → Renderer | 権限確認要求     |
-| `agent:permission:res`      | Renderer → Main | 権限確認応答     |
-
-### 関連ドキュメント（AGENT-005）
-
-| ドキュメント           | パス                                                                              |
-| ---------------------- | --------------------------------------------------------------------------------- |
-| 実装ガイド             | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` |
-| アーキテクチャ設計書   | `docs/30-workflows/claude-code-integration/outputs/phase-2/architecture-design.md`   |
-| 型定義書               | `docs/30-workflows/claude-code-integration/outputs/phase-2/type-definitions.md`      |
-| テスト仕様書           | `docs/30-workflows/claude-code-integration/outputs/phase-4/test-specification.md`    |
+| ドキュメント           | パス                                                                    |
+| ---------------------- | ----------------------------------------------------------------------- |
+| 実装ガイド             | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md` |
+| 手動テスト結果         | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-11/manual-test-result.md` |
+| レビュー結果           | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-10/final-review-result.md` |
 
 ---
 
 ## 関連ドキュメント
 
-| ドキュメント                        | パス                                                                                    |
-| ----------------------------------- | --------------------------------------------------------------------------------------- |
-| Agent SDK実装ガイド                 | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`      |
-| Agent SDK APIリファレンス           | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`             |
-| Claude Agent SDKスキル              | `.claude/skills/claude-agent-sdk/SKILL.md`                                              |
-| LLMインターフェース                 | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                   |
-| Agent Dashboard実装ガイド           | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |
-| スキル管理UI実装ガイド（AGENT-002） | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`        |
-| スキル管理UIテストドキュメント      | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                   |
+| ドキュメント                           | パス                                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Agent SDK実装ガイド                    | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`          |
+| Agent SDK APIリファレンス              | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                 |
+| Claude Agent SDKスキル                 | `.claude/skills/claude-agent-sdk/SKILL.md`                                                  |
+| LLMインターフェース                    | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                       |
+| Agent Dashboard実装ガイド              | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`     |
+| スキル管理UI実装ガイド（AGENT-002）    | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`            |
+| スキル管理UIテストドキュメント         | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                       |
+| AgentSDKPage Postrelease実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`        |

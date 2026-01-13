@@ -1,0 +1,226 @@
+{
+  "taskId": "CONV-04-06",
+  "taskName": "knowledge-graph-migration",
+  "createdAt": "2026-01-12T00:00:00Z",
+  "lastUpdated": "2026-01-13T00:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "機能・非機能要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-document.md",
+          "description": "マイグレーション設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/dependency-diagram.md",
+          "description": "スキーマ依存関係図"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS判定）"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-design.md",
+          "description": "統合テスト設計書"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/migration.integration.test.ts",
+          "description": "マイグレーション統合テスト（20テストケース）"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/drizzle/migrations/0003_spotty_callisto.sql",
+          "description": "Knowledge Graphマイグレーション（6テーブル）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-report.md",
+          "description": "実装レポート（TDD Green確認）"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジ分析レポート（100%達成）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/integration-test.md",
+          "description": "統合テスト結果（35テスト全パス）"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/db/schema/graph/__tests__/migration.integration.test.ts",
+          "description": "拡充済み統合テスト（20→35テスト）"
+        }
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gate.md",
+          "description": "カバレッジゲート判定結果（PASS）"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート（品質良好・変更不要）"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート（全ゲートPASS）"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review.md",
+          "description": "最終レビュー結果（PASS判定）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/artifact-checklist.md",
+          "description": "成果物一覧チェックリスト"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テスト結果レポート（全シナリオPASS）"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-13T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（概念説明 + 技術詳細）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "description": "ドキュメント更新記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート（検出0件）"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "predecessor": "CONV-04-05",
+    "successor": "CONV-08-01"
+  },
+  "codeArtifacts": {
+    "migrations": "packages/shared/src/db/migrations/",
+    "tests": "packages/shared/src/db/**/*.test.ts"
+  }
+}
