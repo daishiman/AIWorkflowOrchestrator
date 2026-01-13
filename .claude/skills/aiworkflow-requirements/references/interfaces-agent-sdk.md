@@ -51,6 +51,53 @@ Renderer ProcessからMain ProcessへのIPC通信でAgent機能を提供し、�
 
 ---
 
+## 依存関係解決
+
+### 必須: packages/shared への SDK 依存宣言
+
+Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`) を使用する場合、**import するパッケージ自身の `package.json` に依存を宣言する必要があります**。
+
+**packages/shared/package.json**:
+
+```json
+{
+  "name": "@repo/shared",
+  "dependencies": {
+    "zod": "^3.23.8",
+    "@anthropic-ai/claude-agent-sdk": "^0.2.5"  // 必須
+  }
+}
+```
+
+### なぜ必要か
+
+pnpm の厳格モード（`node-linker=isolated`）では、`package.json` に宣言されていない依存へのアクセスがブロックされます。
+
+| シナリオ                             | 結果                         |
+| ------------------------------------ | ---------------------------- |
+| `apps/desktop` のみに SDK 依存を宣言 | テストPASS、ランタイムエラー |
+| `packages/shared` にも SDK 依存を宣言 | テストPASS、ランタイムPASS   |
+
+### トラブルシューティング
+
+**エラー**: `ERR_MODULE_NOT_FOUND: Cannot find package '@anthropic-ai/claude-agent-sdk'`
+
+**原因**: SDK を import しているパッケージ（`packages/shared`）に依存宣言がない
+
+**解決策**:
+
+```bash
+# packages/shared に SDK 依存を追加
+pnpm --filter @repo/shared add @anthropic-ai/claude-agent-sdk
+
+# ロックファイル更新
+pnpm install
+```
+
+> 詳細: architecture-monorepo.md「pnpm 依存解決ルール」、technology-devops.md「pnpm 依存解決ベストプラクティス」
+
+---
+
 ## Preload API（window.agentAPI）
 
 ### query
