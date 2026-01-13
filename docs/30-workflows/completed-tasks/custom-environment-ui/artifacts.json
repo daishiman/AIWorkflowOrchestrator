@@ -1,0 +1,212 @@
+{
+  "taskId": "AGENT-006",
+  "taskName": "Custom Execution Environment UI",
+  "createdAt": "2026-01-13",
+  "status": "in-progress",
+  "currentPhase": 5,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "specFile": "phase-1-requirements.md",
+      "status": "completed",
+      "completedAt": "2026-01-13",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "specFile": "phase-2-design.md",
+      "status": "completed",
+      "completedAt": "2026-01-13",
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/component-design.md",
+        "outputs/phase-2/security-design.md",
+        "outputs/phase-2/type-definitions.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "specFile": "phase-3-design-review.md",
+      "status": "completed",
+      "completedAt": "2026-01-13",
+      "outputs": [
+        "outputs/phase-3/review-checklist.md",
+        "outputs/phase-3/issues-found.md",
+        "outputs/phase-3/modification-log.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（Red）",
+      "specFile": "phase-4-test-creation.md",
+      "status": "completed",
+      "completedAt": "2026-01-13",
+      "outputs": [
+        "outputs/phase-4/unit-tests/",
+        "outputs/phase-4/integration-tests/",
+        "outputs/phase-4/security-tests/",
+        "outputs/phase-4/test-plan.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（Green）",
+      "specFile": "phase-5-implementation.md",
+      "status": "specification-ready",
+      "outputs": ["outputs/phase-5/implementation-log.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "specFile": "phase-6-test-expansion.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-6/edge-case-tests/",
+        "outputs/phase-6/error-handling-tests/",
+        "outputs/phase-6/security-tests/",
+        "outputs/phase-6/coverage-report.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "specFile": "phase-7-coverage-check.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-7/coverage-report.html",
+        "outputs/phase-7/gap-analysis.md",
+        "outputs/phase-7/additional-tests.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "specFile": "phase-8-refactoring.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/custom-hooks/",
+        "outputs/phase-8/performance-report.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質チェック",
+      "specFile": "phase-9-quality.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-9/lint-report.md",
+        "outputs/phase-9/typecheck-report.md",
+        "outputs/phase-9/security-report.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "specFile": "phase-10-final-review.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-10/final-checklist.md",
+        "outputs/phase-10/acceptance-results.md",
+        "outputs/phase-10/integration-results.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "specFile": "phase-11-manual-test.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-11/manual-test-results.md",
+        "outputs/phase-11/bug-reports.md",
+        "outputs/phase-11/screenshots/"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント作成",
+      "specFile": "phase-12-documentation.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-12/component-api.md",
+        "outputs/phase-12/type-reference.md",
+        "outputs/phase-12/skill-environment-guide.md",
+        "outputs/phase-12/security-documentation.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "specFile": "phase-13-pr-creation.md",
+      "status": "specification-ready",
+      "outputs": [
+        "outputs/phase-13/pr-url.md",
+        "outputs/phase-13/commit-log.md",
+        "outputs/phase-13/completion-report.md"
+      ]
+    }
+  ],
+  "dependencies": ["AGENT-004", "AGENT-005"],
+  "components": [
+    {
+      "name": "SplitLayout",
+      "type": "organism",
+      "path": "apps/desktop/src/renderer/components/organisms/SplitLayout/"
+    },
+    {
+      "name": "EnvironmentSelector",
+      "type": "molecule",
+      "path": "apps/desktop/src/renderer/components/molecules/EnvironmentSelector/"
+    },
+    {
+      "name": "ExecutionEnvironment",
+      "type": "organism",
+      "path": "apps/desktop/src/renderer/components/organisms/ExecutionEnvironment/"
+    },
+    {
+      "name": "HTMLPreviewEnvironment",
+      "type": "organism",
+      "path": "apps/desktop/src/renderer/components/organisms/HTMLPreviewEnvironment/"
+    },
+    {
+      "name": "MarkdownPreviewEnvironment",
+      "type": "organism",
+      "path": "apps/desktop/src/renderer/components/organisms/MarkdownPreviewEnvironment/"
+    }
+  ],
+  "types": [
+    {
+      "name": "EnvironmentType",
+      "path": "packages/shared/src/types/agent.ts"
+    },
+    {
+      "name": "EnvironmentConfig",
+      "path": "packages/shared/src/types/agent.ts"
+    },
+    {
+      "name": "PreviewContent",
+      "path": "packages/shared/src/types/agent.ts"
+    }
+  ],
+  "security": {
+    "iframeSandbox": "allow-same-origin",
+    "csp": {
+      "script-src": "'none'",
+      "connect-src": "'none'",
+      "form-action": "'none'"
+    },
+    "sanitization": "DOMPurify"
+  },
+  "coverageTargets": {
+    "line": 80,
+    "branch": 60,
+    "function": 80
+  }
+}

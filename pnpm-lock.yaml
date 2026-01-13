@@ -131,9 +131,16 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+<<<<<<< HEAD
       dagre:
         specifier: ^0.8.5
         version: 0.8.5
+||||||| 38bd100b
+=======
+      dompurify:
+        specifier: ^3.3.1
+        version: 3.3.1
+>>>>>>> origin/main
       drizzle-orm:
         specifier: ^0.39.0
         version: 0.39.3(@libsql/client@0.15.15)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.5.0)
@@ -152,6 +159,9 @@ importers:
       lucide-react:
         specifier: ^0.556.0
         version: 0.556.0(react@18.3.1)
+      marked:
+        specifier: ^17.0.1
+        version: 17.0.1
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -201,9 +211,16 @@ importers:
       "@types/better-sqlite3":
         specifier: ^7.6.13
         version: 7.6.13
+<<<<<<< HEAD
       "@types/dagre":
         specifier: ^0.7.53
         version: 0.7.53
+||||||| 38bd100b
+=======
+      "@types/dompurify":
+        specifier: ^3.2.0
+        version: 3.2.0
+>>>>>>> origin/main
       "@types/jest-axe":
         specifier: ^3.5.9
         version: 3.5.9
@@ -2982,6 +2999,13 @@ packages:
         integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==,
       }
 
+  "@types/dompurify@3.2.0":
+    resolution:
+      {
+        integrity: sha512-Fgg31wv9QbLDA0SpTOXO3MaxySc4DKGLi8sna4/Utjo4r3ZRPdCt4UQee8BWr+Q5z21yifghREPJGYaEOEIACg==,
+      }
+    deprecated: This is a stub types definition. dompurify provides its own type definitions, so you do not need this installed.
+
   "@types/estree-jsx@1.0.5":
     resolution:
       {
@@ -3144,6 +3168,12 @@ packages:
     resolution:
       {
         integrity: sha512-xMAgYwceFhRA2zY+XbEA7mxYbA093wdiW8Vu6gZPGWy9cmOyU9XesH1tNcEWsKFd5Vzrqx5T3D38PWx1FIIXkA==,
+      }
+
+  "@types/trusted-types@2.0.7":
+    resolution:
+      {
+        integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==,
       }
 
   "@types/turndown@5.0.6":
@@ -4884,6 +4914,12 @@ packages:
     resolution:
       {
         integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==,
+      }
+
+  dompurify@3.3.1:
+    resolution:
+      {
+        integrity: sha512-qkdCKzLNtrgPFP1Vo+98FRzJnBRGe4ffyCea9IwHB1fyxPOeNTHpLKYGd4Uk9xvNoH0ZoOjwZxNptyMwqrId1Q==,
       }
 
   dot-prop@10.1.0:
@@ -7064,6 +7100,14 @@ packages:
       {
         integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==,
       }
+
+  marked@17.0.1:
+    resolution:
+      {
+        integrity: sha512-boeBdiS0ghpWcSwoNm/jJBwdpFaMnZWRzjA6SkUMYb40SVaN1x7mmfGKp0jvexGcx+7y2La5zRZsYFZI6Qpypg==,
+      }
+    engines: { node: ">= 20" }
+    hasBin: true
 
   matcher@3.0.0:
     resolution:
@@ -11582,6 +11626,10 @@ snapshots:
     dependencies:
       "@types/ms": 2.1.0
 
+  "@types/dompurify@3.2.0":
+    dependencies:
+      dompurify: 3.3.1
+
   "@types/estree-jsx@1.0.5":
     dependencies:
       "@types/estree": 1.0.8
@@ -11674,6 +11722,9 @@ snapshots:
   "@types/stack-utils@2.0.3": {}
 
   "@types/statuses@2.0.6": {}
+
+  "@types/trusted-types@2.0.7":
+    optional: true
 
   "@types/turndown@5.0.6": {}
 
@@ -12910,6 +12961,10 @@ snapshots:
   dom-accessibility-api@0.5.16: {}
 
   dom-accessibility-api@0.6.3: {}
+
+  dompurify@3.3.1:
+    optionalDependencies:
+      "@types/trusted-types": 2.0.7
 
   dot-prop@10.1.0:
     dependencies:
@@ -14566,6 +14621,8 @@ snapshots:
       - supports-color
 
   markdown-table@3.0.4: {}
+
+  marked@17.0.1: {}
 
   matcher@3.0.0:
     dependencies:

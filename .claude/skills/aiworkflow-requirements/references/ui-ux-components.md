@@ -643,3 +643,92 @@ interface CommunityAPI {
 | 最終レビュー | `docs/30-workflows/community-visualization-ui/outputs/phase-10/final-review.md` |
 
 ---
+
+## Custom Execution Environment UI コンポーネント（AGENT-006）
+
+エージェント実行結果をリアルタイムでプレビューするためのUIコンポーネント群。
+HTML、Markdownのプレビューに対応し、3層セキュリティ防御を実装。
+
+### コンポーネント階層
+
+```
+AgentExecutionView (views)
+├── SplitLayout (organisms)
+│   ├── leftPanel
+│   │   └── AgentChatInterface (既存)
+│   ├── Divider
+│   └── rightPanel
+│       └── ExecutionEnvironment (organisms)
+│           ├── EnvironmentSelector (molecules)
+│           └── HTMLPreviewEnvironment / MarkdownPreviewEnvironment
+```
+
+### コンポーネント仕様
+
+| コンポーネント             | 種類     | 責務                              |
+| -------------------------- | -------- | --------------------------------- |
+| SplitLayout                | organism | 左右分割レイアウト、ドラッグ調整  |
+| EnvironmentSelector        | molecule | 環境タイプ選択ドロップダウン      |
+| ExecutionEnvironment       | organism | 環境タイプに応じたプレビュー切替  |
+| HTMLPreviewEnvironment     | organism | sandbox iframe内でHTMLを安全表示  |
+| MarkdownPreviewEnvironment | organism | Markdownをレンダリング表示        |
+
+### ファイル配置
+
+| コンポーネント             | パス                                                                    |
+| -------------------------- | ----------------------------------------------------------------------- |
+| SplitLayout                | `apps/desktop/src/renderer/components/organisms/SplitLayout/`           |
+| EnvironmentSelector        | `apps/desktop/src/renderer/components/molecules/EnvironmentSelector/`   |
+| ExecutionEnvironment       | `apps/desktop/src/renderer/components/organisms/ExecutionEnvironment/`  |
+| HTMLPreviewEnvironment     | `apps/desktop/src/renderer/components/organisms/HTMLPreviewEnvironment/`|
+| MarkdownPreviewEnvironment | `apps/desktop/src/renderer/components/organisms/MarkdownPreviewEnvironment/` |
+| sanitize.ts                | `apps/desktop/src/renderer/utils/sanitize.ts`                           |
+
+### SplitLayout Props
+
+| Prop            | 型                      | 必須 | デフォルト | 説明               |
+| --------------- | ----------------------- | ---- | ---------- | ------------------ |
+| leftPanel       | `React.ReactNode`       | ✓    | -          | 左パネルコンテンツ |
+| rightPanel      | `React.ReactNode`       | ✓    | -          | 右パネルコンテンツ |
+| initialRatio    | `number`                | -    | 50         | 初期分割比率 (%)   |
+| minRatio        | `number`                | -    | 20         | 最小比率 (%)       |
+| maxRatio        | `number`                | -    | 80         | 最大比率 (%)       |
+| onRatioChange   | `(ratio: number) => void` | -  | -          | 比率変更コールバック |
+| showRightPanel  | `boolean`               | -    | true       | 右パネル表示       |
+| className       | `string`                | -    | -          | カスタムクラス     |
+
+### SplitLayout キーボード操作
+
+| キー       | 動作             |
+| ---------- | ---------------- |
+| ArrowLeft  | 左パネルを5%縮小 |
+| ArrowRight | 左パネルを5%拡大 |
+| Home       | 最小比率に設定   |
+| End        | 最大比率に設定   |
+
+### セキュリティ（3層防御）
+
+| レイヤー | 実装                   | 防御対象                         |
+| -------- | ---------------------- | -------------------------------- |
+| Layer 1  | DOMPurify HTMLサニタイズ | scriptタグ、イベントハンドラ除去 |
+| Layer 2  | CSP（script-src 'none'） | インラインスクリプト防止         |
+| Layer 3  | iframe sandbox         | スクリプト実行、ポップアップ禁止 |
+
+### アクセシビリティ
+
+| 要件               | 実装                                   |
+| ------------------ | -------------------------------------- |
+| キーボードナビ     | Dividerにtabindex=0、矢印キー対応      |
+| スクリーンリーダー | aria-label、aria-valuemin/max/now属性  |
+| フォーカス管理     | フォーカスリング表示                   |
+| 色コントラスト     | WCAG 2.1 AA 4.5:1以上                  |
+
+### 関連ドキュメント（AGENT-006）
+
+| ドキュメント   | パス                                                             |
+| -------------- | ---------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/custom-environment-ui/outputs/phase-12/implementation-guide.md` |
+| APIドキュメント | `docs/30-workflows/custom-environment-ui/outputs/phase-12/api-documentation.md` |
+| セキュリティ設計 | `docs/30-workflows/custom-environment-ui/outputs/phase-2/security-design.md` |
+
+---

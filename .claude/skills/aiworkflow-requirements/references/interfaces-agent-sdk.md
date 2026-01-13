@@ -973,6 +973,60 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 ---
 
+### Preview State Management（AGENT-006）
+
+AGENT-006で追加されたプレビュー環境用の状態管理。
+
+#### Preview State型
+
+| プロパティ          | 型                      | 説明               |
+| ------------------- | ----------------------- | ------------------ |
+| `previewContent`    | `PreviewContent \| null` | プレビューコンテンツ |
+| `selectedEnvironment` | `EnvironmentType`      | 選択中の環境       |
+| `splitRatio`        | `number`                | 分割比率 (0-100)   |
+
+#### Preview Actions
+
+| アクション              | 引数                             | 説明               |
+| ----------------------- | -------------------------------- | ------------------ |
+| `setPreviewContent`     | `content: PreviewContent \| null` | コンテンツ設定     |
+| `setSelectedEnvironment` | `type: EnvironmentType`         | 環境タイプ設定     |
+| `setSplitRatio`         | `ratio: number`                  | 分割比率設定       |
+| `clearPreview`          | -                                | プレビュークリア   |
+
+#### EnvironmentType
+
+```typescript
+type EnvironmentType = 'none' | 'html' | 'markdown' | 'terminal' | 'code';
+```
+
+| 値         | 説明                           | 実装状態 |
+| ---------- | ------------------------------ | -------- |
+| `none`     | プレビューなし（デフォルト）   | ✅       |
+| `html`     | HTMLプレビュー                 | ✅       |
+| `markdown` | Markdownプレビュー             | ✅       |
+| `terminal` | ターミナル（将来実装）         | 未実装   |
+| `code`     | コード実行環境（将来実装）     | 未実装   |
+
+#### PreviewContent
+
+```typescript
+interface PreviewContent {
+  type: EnvironmentType;
+  content: string;
+  timestamp: Date;
+}
+```
+
+#### 関連ドキュメント（Preview State）
+
+| ドキュメント   | パス                                                             |
+| -------------- | ---------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/custom-environment-ui/outputs/phase-12/implementation-guide.md` |
+| APIドキュメント | `docs/30-workflows/custom-environment-ui/outputs/phase-12/api-documentation.md` |
+
+---
+
 ### IPC チャンネル（Agent Execution）
 
 | チャンネル             | 方向            | 説明                 |
