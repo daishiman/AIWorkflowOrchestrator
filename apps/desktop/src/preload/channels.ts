@@ -179,6 +179,13 @@ export const IPC_CHANNELS = {
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
   HISTORY_GET_CONVERSION_LOGS: "history:getConversionLogs",
   HISTORY_RESTORE_VERSION: "history:restoreVersion",
+
+  // Slide Settings operations
+  SLIDE_SETTINGS_GET_DIRECTORY: "slideSettings:getDirectory",
+  SLIDE_SETTINGS_SET_DIRECTORY: "slideSettings:setDirectory",
+  SLIDE_SETTINGS_SELECT_DIRECTORY: "slideSettings:selectDirectory",
+  SLIDE_SETTINGS_VALIDATE_DIRECTORY: "slideSettings:validateDirectory",
+  SLIDE_SETTINGS_GET_ALL: "slideSettings:getAllSettings",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -308,6 +315,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
   IPC_CHANNELS.HISTORY_GET_CONVERSION_LOGS,
   IPC_CHANNELS.HISTORY_RESTORE_VERSION,
+  // Slide Settings channels
+  IPC_CHANNELS.SLIDE_SETTINGS_GET_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_SET_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_SELECT_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_VALIDATE_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_GET_ALL,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

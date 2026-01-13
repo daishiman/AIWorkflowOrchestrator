@@ -605,6 +605,20 @@ node scripts/list-specs.mjs --topics
 | エラー状態 | L177 |
 | パフォーマンス考慮事項 | L188 |
 
+### references/ui-ux-settings.md
+
+| セクション | 行 |
+|------------|----|
+| 概要 | L8 |
+| 設定画面アーキテクチャ | L15 |
+| スライド出力ディレクトリ設定 | L51 |
+| 設定永続化 | L119 |
+| IPC API仕様 | L140 |
+| セキュリティ要件 | L162 |
+| テスト要件 | L177 |
+| 関連ドキュメント | L200 |
+| 実装ファイル | L208 |
+
 ### references/ui-ux-system-prompt.md
 
 | セクション | 行 |

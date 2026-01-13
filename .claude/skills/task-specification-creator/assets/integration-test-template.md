@@ -1,5 +1,10 @@
 # 統合テストテンプレート
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase 1〜11仕様書生成時（generate-task-specs Task実行時）
+> - 読み込み条件: 統合テスト連携セクションを仕様書に追加するとき
+> - 適用Phase: Phase 1〜11（Phase 12, 13は対象外）
+
 Phase 1〜11で必須となる統合テスト連携セクションのテンプレートを定義する。
 
 ---
