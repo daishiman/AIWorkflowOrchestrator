@@ -15,6 +15,19 @@
 | Windows | `.exe`, `.msi`      | GitHub Releases |
 | Linux   | `.AppImage`, `.deb` | GitHub Releases |
 
+### CI環境での制限事項（2026-01-13追加）
+
+| 環境               | macOS形式 | 備考                                       |
+| ------------------ | --------- | ------------------------------------------ |
+| ローカル開発       | DMG + ZIP | 全形式利用可能                             |
+| GitHub Actions CI  | ZIP のみ  | macos-14 runner で hdiutil 使用不可        |
+| リリースビルド     | DMG + ZIP | self-hosted runner または手動ビルドで対応  |
+
+**技術的理由**:
+- GitHub Actions の macos-14 runner（Apple Silicon）は仮想化環境
+- `hdiutil create` コマンドが `Device not configured` エラーで失敗
+- 解決策: CI では ZIP のみ生成、DMG はリリース時に別途対応
+
 ---
 
 ## リリースフロー
