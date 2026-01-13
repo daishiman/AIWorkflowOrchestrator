@@ -6,6 +6,42 @@
 import type { Skill } from "./skill";
 
 /**
+ * 実行環境タイプ
+ */
+export type EnvironmentType =
+  | "none" // プレビューなし
+  | "html" // HTMLプレビュー
+  | "markdown" // Markdownプレビュー
+  | "terminal" // ターミナル（将来）
+  | "code"; // コード実行（将来）
+
+/**
+ * プレビュー環境設定
+ */
+export interface PreviewEnvironmentConfig {
+  /** 環境タイプ */
+  type: EnvironmentType;
+  /** 自動更新 */
+  autoRefresh: boolean;
+  /** 更新デバウンス（ms） */
+  refreshDebounce: number;
+  /** sandboxフラグ */
+  sandboxFlags?: string[];
+}
+
+/**
+ * プレビューコンテンツ
+ */
+export interface PreviewContent {
+  /** コンテンツタイプ */
+  type: EnvironmentType;
+  /** コンテンツ本体 */
+  content: string;
+  /** タイムスタンプ */
+  timestamp: Date;
+}
+
+/**
  * エージェント実行ステータス
  */
 export type AgentExecutionStatus =

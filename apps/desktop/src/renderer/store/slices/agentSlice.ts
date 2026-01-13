@@ -6,6 +6,8 @@ import type {
   PermissionRequest,
   PermissionResponse,
   AgentExecutionState,
+  EnvironmentType,
+  PreviewContent,
 } from "@repo/shared/types/agent";
 
 // Re-export for backward compatibility
@@ -50,6 +52,14 @@ export interface AgentState {
   isLoading: boolean;
   /** エラーメッセージ */
   error: string | null;
+
+  // プレビュー関連 (AGENT-006)
+  /** プレビューコンテンツ */
+  previewContent: PreviewContent | null;
+  /** 選択中の環境タイプ */
+  selectedEnvironment: EnvironmentType;
+  /** 分割比率 (0-100) */
+  splitRatio: number;
 }
 
 /**
@@ -130,6 +140,16 @@ export interface AgentActions {
   setError: (error: string | null) => void;
   /** 状態をリセット */
   resetAgentState: () => void;
+
+  // プレビュー操作 (AGENT-006)
+  /** プレビューコンテンツを設定 */
+  setPreviewContent: (content: PreviewContent | null) => void;
+  /** 環境タイプを設定 */
+  setSelectedEnvironment: (type: EnvironmentType) => void;
+  /** 分割比率を設定 */
+  setSplitRatio: (ratio: number) => void;
+  /** プレビューをクリア */
+  clearPreview: () => void;
 }
 
 /**
@@ -172,6 +192,11 @@ const initialAgentState: AgentState = {
   // 共通状態
   isLoading: false,
   error: null,
+
+  // プレビュー関連 (AGENT-006)
+  previewContent: null,
+  selectedEnvironment: "none",
+  splitRatio: 50,
 };
 
 /**
@@ -397,4 +422,18 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   setError: (error) => set({ error }),
 
   resetAgentState: () => set(initialAgentState),
+
+  // プレビュー操作 (AGENT-006)
+  setPreviewContent: (content) => set({ previewContent: content }),
+
+  setSelectedEnvironment: (type) => set({ selectedEnvironment: type }),
+
+  setSplitRatio: (ratio) =>
+    set({ splitRatio: Math.max(0, Math.min(100, ratio)) }),
+
+  clearPreview: () =>
+    set({
+      previewContent: null,
+      selectedEnvironment: "none",
+    }),
 });
