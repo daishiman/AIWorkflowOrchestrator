@@ -186,9 +186,27 @@
 
 ## 使用例
 
+### インポート方法
+
+```typescript
+// 型のインポート（推奨：バレルファイルから）
+import type {
+  CommunitySummary,
+  CommunitySummarizationOptions,
+  CommunitySummarizationResult,
+} from "@repo/shared/services/graph";
+
+// 値のインポート（エラー型、enum）
+import {
+  CommunitySummarizationErrorCode,
+  CommunitySummarizationError,
+} from "@repo/shared/services/graph";
+```
+
 ### 基本的なコミュニティ要約
 
 ```typescript
+import type { CommunitySummarizationResult } from "@repo/shared/services/graph";
 import { CommunitySummarizer } from "@repo/shared/services/graph";
 
 const summarizer = new CommunitySummarizer(
@@ -289,6 +307,7 @@ if (searchResult.success) {
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                       |
-| ---------- | ---------- | ---------------------------------------------- |
-| 2026-01-11 | 1.0.0      | 初版作成（CONV-08-03タスク完了に伴い）         |
+| 日付       | バージョン | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-13 | 1.1.0      | バレルファイルからのインポート例追加（SHARED-TYPE-EXPORT-01完了） |
+| 2026-01-11 | 1.0.0      | 初版作成（CONV-08-03タスク完了に伴い）                 |

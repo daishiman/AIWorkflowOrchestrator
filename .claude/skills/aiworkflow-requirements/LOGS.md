@@ -237,5 +237,46 @@
 
 ---
 
+## 2026-01-13: services/graph型エクスポートパターン文書化
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | SHARED-TYPE-EXPORT-01                                                                             |
+| 操作         | update-spec                                                                                       |
+| 対象ファイル | architecture-monorepo.md, interfaces-rag-community-detection.md, interfaces-rag-community-summarization.md |
+| 結果         | success                                                                                           |
+| 備考         | バレルファイルによる型エクスポートパターンの文書化（27項目: 22型、2 enum、2クラス、1関数）       |
+
+### 更新詳細
+
+- **更新**: `references/architecture-monorepo.md`
+  - レイヤー定義表に「グラフサービス」行を追加
+  - 「型エクスポートパターン」セクション新設（75行）
+    - バレルファイル戦略の説明
+    - services/graphエクスポート構造のコード例
+    - エクスポート一覧表（型/enum/class/関数）
+    - 使用例（import type / import）
+    - 下位互換性の説明
+
+- **更新**: `references/interfaces-rag-community-detection.md`（v1.1.0 → v1.2.0）
+  - 「インポート方法」セクション追加
+  - バレルファイルからの推奨インポートパターン例
+  - 変更履歴にエントリ追加
+
+- **更新**: `references/interfaces-rag-community-summarization.md`（v1.0.0 → v1.1.0）
+  - 「インポート方法」セクション追加
+  - バレルファイルからの推奨インポートパターン例
+  - 変更履歴にエントリ追加
+
+### 関連実装
+
+| 項目                    | パス                                              |
+| ----------------------- | ------------------------------------------------- |
+| バレルファイル          | `packages/shared/src/services/graph/index.ts`     |
+| 手動テスト              | `packages/shared/src/services/graph/__tests__/manual-import-test.ts` |
+| タスク仕様書            | `docs/30-workflows/shared-type-export-01/`        |
+
+---
+
 
 （ログエントリはここに追記されます）
