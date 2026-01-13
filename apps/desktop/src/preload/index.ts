@@ -66,6 +66,13 @@ import type {
   AgentStatusPayload,
   AgentPermissionRequest,
   AgentPermissionResponse,
+  AgentSDKAPI,
+  AgentSDKStatus,
+  AgentSDKCreateSessionResponse,
+  AgentSDKResumeSessionRequest,
+  AgentSDKDestroySessionRequest,
+  AgentSDKQueryRequest,
+  AgentSDKMessage,
 } from "./types";
 import type {
   HistoryAPI,
@@ -345,6 +352,46 @@ const agentAPI: AgentExecutionAPI = {
     ),
 };
 
+// Agent SDK API for E2E testing page
+const agentSDKOptions: { timeout: number } = { timeout: 30000 };
+let _currentSessionId: string | null = null;
+
+const agentSDKAPI: AgentSDKAPI = {
+  getStatus: () => safeInvoke<AgentSDKStatus>(IPC_CHANNELS.AGENT_GET_STATUS),
+  createSession: () =>
+    safeInvoke<AgentSDKCreateSessionResponse>(
+      IPC_CHANNELS.AGENT_CREATE_SESSION,
+    ),
+  resumeSession: (request: AgentSDKResumeSessionRequest) =>
+    safeInvoke(IPC_CHANNELS.AGENT_RESUME_SESSION, request),
+  destroySession: (request: AgentSDKDestroySessionRequest) =>
+    safeInvoke(IPC_CHANNELS.AGENT_DESTROY_SESSION, request),
+  query: (request: AgentSDKQueryRequest) =>
+    safeInvoke(IPC_CHANNELS.AGENT_QUERY, {
+      ...request,
+      options: { ...request.options, timeout: agentSDKOptions.timeout },
+    }),
+  abort: () => {
+    ipcRenderer.send("agent:abort");
+  },
+  onMessage: (callback: (message: AgentSDKMessage) => void) =>
+    safeOn<AgentSDKMessage>(IPC_CHANNELS.AGENT_MESSAGE, callback),
+  setOption: (options: { timeout?: number }) => {
+    if (options.timeout !== undefined) {
+      agentSDKOptions.timeout = options.timeout;
+    }
+  },
+  getOption: (key: string) => {
+    if (key === "timeout") {
+      return agentSDKOptions.timeout;
+    }
+    return undefined;
+  },
+  setSessionId: (sessionId: string) => {
+    _currentSessionId = sessionId;
+  },
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
@@ -352,6 +399,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("slideApi", slideApi);
     contextBridge.exposeInMainWorld("historyAPI", historyAPI);
     contextBridge.exposeInMainWorld("agentAPI", agentAPI);
+    contextBridge.exposeInMainWorld("agentSDKAPI", agentSDKAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -361,4 +409,5 @@ if (process.contextIsolated) {
   (window as unknown as { slideApi: SlideApi }).slideApi = slideApi;
   (window as unknown as { historyAPI: HistoryAPI }).historyAPI = historyAPI;
   (window as unknown as { agentAPI: AgentExecutionAPI }).agentAPI = agentAPI;
+  (window as unknown as { agentSDKAPI: AgentSDKAPI }).agentSDKAPI = agentSDKAPI;
 }

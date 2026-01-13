@@ -12,6 +12,7 @@ import { SettingsView } from "./views/SettingsView";
 import { AgentView } from "./views/AgentView";
 import { ChatHistoryView } from "./views/ChatHistoryView";
 import { HistoryPage } from "./pages/HistoryPage";
+import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import type { ViewType } from "./components/organisms/AppDock";
 
@@ -82,6 +83,15 @@ function App(): JSX.Element {
     <BrowserRouter>
       <AuthGuard>
         <Routes>
+          {/* Agent SDK E2E Test Page */}
+          <Route
+            path="/agent"
+            element={
+              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
+                <AgentSDKPage />
+              </div>
+            }
+          />
           {/* チャット履歴詳細ページ（URLルーティング） */}
           <Route
             path="/chat/history/:sessionId"

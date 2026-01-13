@@ -1081,6 +1081,144 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 ---
 
+## AgentSDKPage Postrelease Testing（AGENT-005-POST）
+
+AgentSDKPageのPostrelease Testing実装。Phase 4-12のTDDワークフローでUIコンポーネント、ストリーミング表示、セッション管理をテスト検証済み。
+
+### 実装ファイル
+
+| ファイル | 説明 |
+| -------- | ---- |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/index.tsx` | メインページコンポーネント |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/AgentSDKPage.test.tsx` | ユニットテスト |
+| `apps/desktop/src/preload/agentSDKApi.ts` | Preload API定義 |
+| `apps/desktop/src/preload/index.ts` | contextBridge統合 |
+
+---
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Electron Main Process                   │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                   IPC Handlers                       │    │
+│  │  agent:createSession, agent:query, agent:abort      │    │
+│  └─────────────────────────────────────────────────────┘    │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ contextBridge
+┌───────────────────────────┴─────────────────────────────────┐
+│                    Preload (AgentSDKAPI)                     │
+│  getStatus, createSession, resumeSession, destroySession    │
+│  query, abort, onMessage, setOption, getOption              │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ window.agentSDKAPI
+┌───────────────────────────┴─────────────────────────────────┐
+│                      Renderer Process                        │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                   AgentSDKPage                       │    │
+│  │  - State: sessions, sdkStatus, executionStatus      │    │
+│  │  - UI: prompt-input, send-button, response-area     │    │
+│  │  - Dialog: permission-dialog                         │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Preload API（window.agentSDKAPI）
+
+#### AgentSDKAPI Interface
+
+```typescript
+interface AgentSDKAPI {
+  getStatus: () => Promise<AgentSDKStatus>;
+  createSession: () => Promise<AgentSDKCreateSessionResponse>;
+  resumeSession: (request: AgentSDKResumeSessionRequest) => Promise<void>;
+  destroySession: (request: AgentSDKDestroySessionRequest) => Promise<void>;
+  query: (request: AgentSDKQueryRequest) => Promise<void>;
+  abort: () => void;
+  onMessage: (callback: (message: AgentSDKMessage) => void) => () => void;
+  setOption: (options: { timeout?: number }) => void;
+  getOption: (key: string) => number | undefined;
+  setSessionId: (sessionId: string) => void;
+}
+```
+
+#### AgentSDKStatus
+
+| プロパティ      | 型         | 説明               |
+| --------------- | ---------- | ------------------ |
+| `authenticated` | `boolean`  | 認証状態           |
+| `version`       | `string`   | SDKバージョン      |
+| `features`      | `string[]` | 有効な機能一覧     |
+
+#### AgentSDKMessage
+
+| プロパティ  | 型                                                    | 説明             |
+| ----------- | ----------------------------------------------------- | ---------------- |
+| `type`      | `'text' \| 'tool_use' \| 'tool_result' \| 'error' \| 'end'` | メッセージ種別 |
+| `content`   | `string?`                                             | テキスト内容     |
+| `toolName`  | `string?`                                             | ツール名         |
+| `toolInput` | `Record<string, unknown>?`                            | ツール入力       |
+
+---
+
+### data-testid 一覧
+
+| data-testid               | 要素   | 用途                     |
+| ------------------------- | ------ | ------------------------ |
+| `agent-status`            | div    | SDK状態表示              |
+| `new-session-button`      | button | セッション作成           |
+| `session-id`              | div    | セッションID表示         |
+| `session-${id}`           | button | セッションリスト項目     |
+| `prompt-input`            | input  | プロンプト入力           |
+| `send-button`             | button | 送信ボタン               |
+| `abort-button`            | button | 中断ボタン               |
+| `response-area`           | div    | 応答表示エリア           |
+| `response-chunk`          | span   | ストリーミングチャンク   |
+| `execution-status`        | div    | 実行状態                 |
+| `permission-dialog`       | div    | 権限確認ダイアログ       |
+| `permission-tool-name`    | div    | ツール名表示             |
+| `permission-allow`        | button | 許可ボタン               |
+| `permission-deny`         | button | 拒否ボタン               |
+
+---
+
+### テスト仕様
+
+#### テスト結果（Phase 10）
+
+| カテゴリ | 件数 | パス | 成功率 |
+| -------- | ---- | ---- | ------ |
+| ユニットテスト | 12 | 12 | 100% |
+| 統合テスト | 6 | 6 | 100% |
+| E2Eテスト | 8 | 8 | 100% |
+| **合計** | **26** | **26** | **100%** |
+
+#### テストカテゴリ
+
+| カテゴリ | 検証内容 |
+| -------- | -------- |
+| 初期表示 | SDK状態取得、UI描画 |
+| セッション管理 | 作成・再開・破棄・切り替え |
+| クエリ実行 | 送信・ストリーミング・完了 |
+| 中断処理 | 実行中断・状態復帰 |
+| 権限確認 | ダイアログ表示・許可・拒否 |
+| エラーハンドリング | 接続エラー・タイムアウト |
+
+---
+
+### 関連ドキュメント（AgentSDKPage Postrelease Testing）
+
+| ドキュメント           | パス                                                                    |
+| ---------------------- | ----------------------------------------------------------------------- |
+| 実装ガイド             | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md` |
+| 手動テスト結果         | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-11/manual-test-result.md` |
+| レビュー結果           | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-10/final-review-result.md` |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                    | パス                                                                             |
@@ -1092,3 +1230,4 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 | Agent Dashboard実装ガイド       | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |
 | スキル管理UI実装ガイド（AGENT-002） | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md` |
 | スキル管理UIテストドキュメント  | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`            |
+| AgentSDKPage Postrelease実装ガイド | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md` |

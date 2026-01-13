@@ -145,6 +145,13 @@ export const IPC_CHANNELS = {
   AGENT_PERMISSION_REQUEST: "agent:permission-request",
   AGENT_PERMISSION_RESPOND: "agent:permission-respond",
 
+  // Agent SDK Session operations
+  AGENT_CREATE_SESSION: "agent:createSession",
+  AGENT_RESUME_SESSION: "agent:resumeSession",
+  AGENT_DESTROY_SESSION: "agent:destroySession",
+  AGENT_QUERY: "agent:query",
+  AGENT_MESSAGE: "agent:message",
+
   // Skill management operations
   SKILL_LIST_AVAILABLE: "skill:list-available",
   SKILL_LIST_IMPORTED: "skill:list-imported",
@@ -260,6 +267,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_ABORT,
   IPC_CHANNELS.AGENT_GET_STATUS,
   IPC_CHANNELS.AGENT_PERMISSION_RESPOND,
+  // Agent SDK Session channels
+  IPC_CHANNELS.AGENT_CREATE_SESSION,
+  IPC_CHANNELS.AGENT_RESUME_SESSION,
+  IPC_CHANNELS.AGENT_DESTROY_SESSION,
+  IPC_CHANNELS.AGENT_QUERY,
   // Skill management channels
   IPC_CHANNELS.SKILL_LIST_AVAILABLE,
   IPC_CHANNELS.SKILL_LIST_IMPORTED,
@@ -297,4 +309,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_STREAM_END,
   IPC_CHANNELS.AGENT_STREAM_ERROR,
   IPC_CHANNELS.AGENT_PERMISSION_REQUEST,
+  // Agent SDK Message channel
+  IPC_CHANNELS.AGENT_MESSAGE,
 ];
