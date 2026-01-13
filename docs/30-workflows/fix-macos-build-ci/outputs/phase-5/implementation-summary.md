@@ -1,173 +1,153 @@
 # 実装サマリー
 
+## 作成日
+
+2026-01-13
+
 ## 概要
 
-macOS CI ビルドエラーを修正するための実装を完了した。
+macOS CIビルドエラー（`cannot read entitlement data`）を修正するための実装内容をまとめる。
 
 ---
 
 ## 変更ファイル一覧
 
-| ファイル                               | 変更種別 | 変更行数 |
-| -------------------------------------- | -------- | -------- |
-| `apps/desktop/electron-builder.yml`    | 修正     | -4行     |
-| `.github/workflows/build-electron.yml` | 変更なし | 0        |
+| ファイル                                    | 変更種別 | 変更内容                                     |
+| ------------------------------------------- | -------- | -------------------------------------------- |
+| `apps/desktop/build/entitlements.mac.plist` | 新規作成 | macOS Hardened Runtime用entitlementsファイル |
 
 ---
 
 ## 変更内容詳細
 
-### apps/desktop/electron-builder.yml
+### 新規作成: entitlements.mac.plist
 
-#### Before
+**パス**: `apps/desktop/build/entitlements.mac.plist`
 
-```yaml
-mac:
-  # ... 省略 ...
-  target:
-    - target: dmg
-      arch:
-        - x64
-        - arm64
-    - target: zip
-      arch:
-        - x64
-        - arm64
+**内容**:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- JIT compilation for V8/Electron -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <!-- Unsigned executable memory for V8/Electron -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+</dict>
+</plist>
 ```
-
-#### After
-
-```yaml
-mac:
-  # ... 省略 ...
-  target:
-    - target: zip
-      arch:
-        - x64
-        - arm64
-```
-
-#### 変更箇所
-
-- `mac.target` セクションから DMG ターゲットを削除
-- ZIP ターゲットのみを残す
-- アーキテクチャ設定（x64, arm64）は維持
 
 ---
 
 ## 変更理由
 
-### 技術的理由
+### 問題の原因
 
-1. **hdiutil の制限回避**:
+`electron-builder.yml` で以下の設定が定義されていた:
 
-   - GitHub Actions の macos-14 runner では、`hdiutil create` コマンドが失敗する
-   - エラー: `hdiutil: create failed - Device not configured`
-   - 仮想化環境の制限により、DMG イメージの作成が不可能
+```yaml
+mac:
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+```
 
-2. **最小限の変更**:
+しかし、参照先の `build/entitlements.mac.plist` ファイルが存在しなかったため、codesign実行時に以下のエラーが発生:
 
-   - 4行の削除のみで問題を解決
-   - 他の設定には影響なし
+```
+build/entitlements.mac.plist: cannot read entitlement data
+```
 
-3. **互換性維持**:
-   - ZIP は macOS で標準的な配布形式
-   - ユーザーは ZIP からアプリをインストール可能
+### 解決策
 
-### ビジネス上の理由
-
-1. **CI/CD パイプラインの正常化**:
-
-   - PR時のビルド検証が可能になる
-   - 継続的インテグレーションが機能する
-
-2. **開発効率の向上**:
-   - ビルドエラーによる開発ブロックを解消
+参照先のファイルを作成し、Electron/V8アプリケーションに必要な最小限のentitlements権限を定義した。
 
 ---
 
-## 変更しなかったファイル
+## 採用した権限
 
-### .github/workflows/build-electron.yml
+| 権限キー                                                 | 値     | 理由                                   |
+| -------------------------------------------------------- | ------ | -------------------------------------- |
+| `com.apple.security.cs.allow-jit`                        | `true` | V8 JITコンパイルに必須                 |
+| `com.apple.security.cs.allow-unsigned-executable-memory` | `true` | V8 JITコード（未署名メモリ）実行に必須 |
 
-**理由**: 変更不要
+### 最小権限原則
 
-現在の設定:
+- 分析対象: 11権限
+- 採用: 2権限（18%）
+- 不採用: 9権限
 
-```yaml
-- name: Upload artifact
-  uses: actions/upload-artifact@v4
-  with:
-    name: electron-macos-arm64
-    path: |
-      apps/desktop/dist/*.dmg
-      apps/desktop/dist/*.zip
-    if-no-files-found: warn
-```
+---
 
-- `*.zip` がパスに含まれているため、ZIP のみでも正常動作
-- `if-no-files-found: warn` により、DMG がなくてもエラーにならない
+## 影響範囲
+
+### 影響あり
+
+| 対象                 | 影響                                 |
+| -------------------- | ------------------------------------ |
+| macOS CI ビルド      | エラー解消、ビルド成功               |
+| macOS ローカルビルド | 同様にエラー解消                     |
+| アプリ署名           | ad-hoc署名にentitlementsが適用される |
+
+### 影響なし
+
+| 対象                 | 理由                             |
+| -------------------- | -------------------------------- |
+| Windows/Linuxビルド  | entitlementsはmacOS専用          |
+| electron-builder.yml | 設定は変更していない             |
+| .github/workflows/   | ワークフロー定義は変更していない |
+| アプリ機能           | entitlementsは署名設定のみに影響 |
 
 ---
 
 ## 注意点・制約
 
-### 制約事項
+### 1. ファイルパス
 
-| 制約           | 内容                                              | 影響度 |
-| -------------- | ------------------------------------------------- | ------ |
-| DMG 非生成     | macOS 向けの DMG インストーラーが生成されなくなる | 低     |
-| ローカルも同様 | ローカルビルドでも ZIP のみ生成                   | 低     |
+`electron-builder.yml` の設定と一致する必要がある:
 
-### 緩和策
-
-1. **DMG 設定の保持**: `dmg` セクションは削除せず残す
-
-   - 将来のリリースワークフローで再有効化可能
-
-2. **ZIP での配布**:
-   - macOS ユーザーは ZIP から直接アプリをインストール可能
-   - Homebrew などのパッケージマネージャーも ZIP を使用
-
-### ロールバック方法
-
-変更を元に戻す場合:
-
-```yaml
-# mac.target に以下を追加
-- target: dmg
-  arch:
-    - x64
-    - arm64
+```
+electron-builder.yml からの相対パス: build/entitlements.mac.plist
 ```
 
-**注意**: ロールバックすると CI 環境で再度エラーが発生する
+### 2. 署名方式
+
+現在の設定は ad-hoc 署名（`CSC_IDENTITY_AUTO_DISCOVERY=false`）:
+
+- Apple Developer ID なしでビルド可能
+- 公証（Notarization）は行われない
+- Gatekeeper で初回起動時に警告が出る可能性あり
+
+### 3. 将来的な考慮
+
+Mac App Store 配布時は追加のentitlementsが必要になる可能性:
+
+- `com.apple.security.app-sandbox`
+- `com.apple.security.network.client`
+- 等
 
 ---
 
 ## 検証結果
 
-### 設定検証
-
-| 項目                    | 結果  | 備考            |
-| ----------------------- | ----- | --------------- |
-| YAML 構文               | ✅ OK | Lint 通過       |
-| electron-builder 互換性 | ✅ OK | v26.0.0 対応    |
-| アーキテクチャ設定      | ✅ OK | x64, arm64 維持 |
-
-### CI検証（Phase 6以降で実施）
-
-| 項目                 | ステータス | 備考               |
-| -------------------- | ---------- | ------------------ |
-| CIビルド成功         | 未検証     | Phase 6 で確認予定 |
-| アーティファクト生成 | 未検証     | Phase 6 で確認予定 |
+| 検証項目       | 結果   |
+| -------------- | ------ |
+| plist構文      | OK     |
+| ローカルビルド | 成功   |
+| エラー解消     | 確認済 |
+| 成果物生成     | 確認済 |
 
 ---
 
 ## 完了確認
 
-- [x] electron-builder設定が修正されている
-- [x] 変更内容が設計書通りである
-- [x] 変更理由が文書化されている
-- [x] 注意点・制約が文書化されている
-- [x] ロールバック方法が文書化されている
+- [x] entitlements.mac.plist を作成した
+- [x] plist構文が有効であることを確認した
+- [x] ローカルビルドが成功することを確認した
+- [x] `cannot read entitlement data` エラーが解消されたことを確認した
+- [x] 変更理由と影響範囲を文書化した
+- [x] 注意点・制約を記録した

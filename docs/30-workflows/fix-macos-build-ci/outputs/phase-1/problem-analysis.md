@@ -1,15 +1,22 @@
 # 問題分析レポート
 
+## 作成日
+
+2026-01-13
+
 ## 概要
 
-GitHub Actions CI で macOS ビルドが `hdiutil: create failed - Device not configured` エラーで失敗する。
+GitHub Actions CI で macOS ビルドが `entitlements.mac.plist: cannot read entitlement data` エラーで失敗する。
 
 ## エラー詳細
 
 ### エラーメッセージ
 
 ```
-hdiutil: create failed - Device not configured
+⨯ Command failed: codesign --sign - --force --timestamp --options runtime
+  --entitlements build/entitlements.mac.plist
+  /path/to/app.asar.unpacked/node_modules/@anthropic-ai/claude-agent-sdk/vendor/ripgrep/arm64-darwin/rg
+build/entitlements.mac.plist: cannot read entitlement data
 ```
 
 ### 発生箇所
@@ -24,29 +31,39 @@ hdiutil: create failed - Device not configured
 
 ```
 1. electron-builder 実行
-2. DMG生成フェーズ開始
-3. dmg-builder が hdiutil create を呼び出し
-4. hdiutil が Device not configured エラーで失敗
-5. ビルド全体が失敗
+2. macOSビルド開始
+3. Hardened Runtime設定でcodesignが呼び出される
+4. codesignが --entitlements build/entitlements.mac.plist を参照
+5. ファイルが存在しないためエラー発生
+6. ビルド全体が失敗
 ```
 
 ## 根本原因分析
 
-### 1. hdiutil の制限
+### 1. 設定と実体の不一致
 
-`hdiutil` コマンドは macOS の仮想化環境（GitHub Actions の macos-14 runner）で制限がある。特に DMG イメージの作成には `/dev/disk*` デバイスへのアクセスが必要だが、CI 環境ではこのアクセスが制限されている場合がある。
+`electron-builder.yml` で以下の設定がある:
 
-### 2. GitHub Actions macos-14 runner の特性
+```yaml
+mac:
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+```
 
-- macos-14 は Apple Silicon (M1/M2) ベースの runner
-- 仮想化レイヤーが追加されている
-- `hdiutil create` の一部機能が制限されている可能性
+しかし、参照されている `apps/desktop/build/entitlements.mac.plist` ファイルが存在しない。
 
-### 3. electron-builder v26 の DMG 生成
+### 2. macOS Hardened Runtime の要件
 
-- electron-builder v26.0.0 を使用
-- `dmg-builder` パッケージが DMG 生成を担当
-- デフォルトで `hdiutil create` を使用
+- macOS 10.14以降、公証（Notarization）にはHardened Runtimeが必須
+- Hardened Runtimeを有効にする場合、entitlementsファイルが必要
+- ElectronアプリはJITコンパイルを使用するため、特定の権限が必要
+
+### 3. electron-builder の動作
+
+- `hardenedRuntime: true` が設定されている場合、codesignに `--options runtime` が追加される
+- `entitlements` が設定されている場合、codesignに `--entitlements <path>` が追加される
+- ファイルが存在しないとcodesignがエラーを返す
 
 ## 現在の設定
 
@@ -54,57 +71,52 @@ hdiutil: create failed - Device not configured
 
 ```yaml
 mac:
+  category: public.app-category.productivity
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
   target:
-    - target: dmg
-      arch:
-        - x64
-        - arm64
     - target: zip
       arch:
         - x64
         - arm64
+```
 
-dmg:
-  contents:
-    - x: 130
-      y: 220
-    - x: 410
-      y: 220
-      type: link
-      path: /Applications
+### ファイル存在確認
+
+```bash
+$ ls -la apps/desktop/build/
+# entitlements.mac.plist は存在しない
 ```
 
 ### 影響範囲
 
 | 項目                         | 影響                               |
 | ---------------------------- | ---------------------------------- |
-| macOS (Apple Silicon) ビルド | 失敗                               |
+| macOS (Apple Silicon) ビルド | 失敗（entitlementsファイル不足）   |
 | macOS (Intel) ビルド         | 無効化中（同様の問題が予想される） |
 | Windows ビルド               | 無効化中（影響なし）               |
 | Linux ビルド                 | 無効化中（影響なし）               |
-| ローカルビルド               | 影響なし（実機では動作する）       |
+| ローカルビルド               | 失敗（同様にentitlementsが必要）   |
 
-## 既知の問題調査
+## 必要なentitlements
 
-### GitHub Issues
+Electron/V8のJITコンパイルに必要な最小限の権限:
 
-- electron-builder の GitHub Issues で同様の報告あり
-- GitHub Actions の macos-14 runner で DMG 生成に問題がある報告多数
-- 回避策として ZIP のみの生成が推奨されている
-
-### 関連技術情報
-
-- hdiutil は macOS のディスクイメージユーティリティ
-- CI 環境では `/dev/disk*` デバイスへのアクセスが制限
-- 仮想化環境では DMG 作成に必要な権限が不足する場合がある
+| 権限                                                     | 目的                           |
+| -------------------------------------------------------- | ------------------------------ |
+| `com.apple.security.cs.allow-jit`                        | JITコンパイルを許可            |
+| `com.apple.security.cs.allow-unsigned-executable-memory` | 署名なしの実行可能メモリを許可 |
 
 ## 結論
 
-GitHub Actions の macos-14 runner における仮想化制限により、`hdiutil create` コマンドが正常に動作しない。これは GitHub Actions 側の制限であり、electron-builder の設定変更で回避する必要がある。
+`electron-builder.yml` で参照されている `entitlements.mac.plist` ファイルが存在しないことがビルドエラーの根本原因。このファイルを作成し、Electron/V8のJIT動作に必要な最小限の権限を定義する必要がある。
 
 ## 完了確認
 
 - [x] GitHub Actions のビルドログを詳細に分析した
-- [x] `hdiutil` エラーの発生箇所を特定した
-- [x] `dmg-builder` パッケージのバージョンと既知の問題を調査した
-- [x] GitHub Actions macos-14 runner の制限事項を確認した
+- [x] `codesign` エラーの発生箇所を特定した
+- [x] `electron-builder.yml` の entitlements 設定を確認した
+- [x] `apps/desktop/build/` ディレクトリの状況を確認した

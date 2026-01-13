@@ -16,7 +16,7 @@
 
 ## 目的
 
-修正が正しく動作することを検証するためのテストを作成する（TDD: Red状態）。
+`entitlements.mac.plist` ファイル作成による修正が正しく動作することを検証するためのテストを作成する（TDD: Red状態）。
 
 ## 背景
 
@@ -35,13 +35,24 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 **実行手順**:
 
 1. 正常系テストシナリオを定義
+   - entitlements.mac.plistファイルが存在する
+   - plistファイルの構文が有効である
    - CIビルドが成功する
-   - 成果物（ZIP/DMG）が生成される
-   - アーティファクトがアップロードされる
+   - 成果物（.zip）が生成される
 2. 異常系テストシナリオを定義
-   - ビルド失敗時の挙動
-   - 成果物生成失敗時の挙動
+   - ファイルが存在しない場合のエラー
+   - 構文エラーがある場合のエラー
 3. エッジケースを定義
+   - 空のentitlementsファイル
+
+**テストシナリオ**:
+
+| ID   | シナリオ                         | 期待結果        | 検証方法       |
+| ---- | -------------------------------- | --------------- | -------------- |
+| T-01 | entitlements.mac.plistが存在する | ファイルが存在  | `test -f`      |
+| T-02 | plist構文が有効                  | plutil -lint OK | `plutil -lint` |
+| T-03 | CIビルドが成功                   | exit code 0     | GitHub Actions |
+| T-04 | .zipファイルが生成される         | ファイルが存在  | `ls *.zip`     |
 
 **期待される成果物**:
 
@@ -55,9 +66,39 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 
 **実行手順**:
 
-1. ローカルでCIワークフローを模擬するスクリプトを設計
-2. 成果物の存在チェックスクリプトを設計
-3. ビルドログの解析スクリプトを設計（必要な場合）
+1. plistファイル存在チェック
+
+```bash
+#!/bin/bash
+# plist-check.sh
+if [ -f "apps/desktop/build/entitlements.mac.plist" ]; then
+    echo "✅ entitlements.mac.plist exists"
+else
+    echo "❌ entitlements.mac.plist not found"
+    exit 1
+fi
+```
+
+2. plist構文検証
+
+```bash
+#!/bin/bash
+# plist-validate.sh
+plutil -lint apps/desktop/build/entitlements.mac.plist
+```
+
+3. ビルド成果物確認
+
+```bash
+#!/bin/bash
+# build-check.sh
+if ls apps/desktop/dist/*.zip 1> /dev/null 2>&1; then
+    echo "✅ ZIP files found"
+else
+    echo "❌ No ZIP files found"
+    exit 1
+fi
+```
 
 **期待される成果物**:
 
@@ -71,9 +112,18 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 
 **実行手順**:
 
-1. GitHub Actions ↔ electron-builder の連携テスト定義
+1. entitlements ↔ electron-builder ↔ codesign の連携テスト定義
 2. ビルド成果物の整合性テスト定義
 3. アーティファクトアップロードのテスト定義
+
+**統合テストシナリオ**:
+
+| シナリオ             | 接続点                                    | 検証内容                     |
+| -------------------- | ----------------------------------------- | ---------------------------- |
+| entitlements読み込み | electron-builder → entitlements.mac.plist | ファイルが正しく読み込まれる |
+| codesign実行         | electron-builder → codesign               | エラーなしで完了             |
+| 成果物生成           | electron-builder → dist/                  | .zipファイルが生成される     |
+| アーティファクト     | GitHub Actions → artifacts                | アップロード成功             |
 
 **期待される成果物**:
 
@@ -92,6 +142,22 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 3. 成功/失敗の判定基準を定義
 4. テストデータ（あれば）を準備
 
+**テスト実行環境**:
+
+| 環境              | 対象                  | 備考              |
+| ----------------- | --------------------- | ----------------- |
+| ローカル（macOS） | plist検証、ビルド検証 | Apple Silicon推奨 |
+| GitHub Actions    | CI検証                | macos-14 runner   |
+
+**成功/失敗判定基準**:
+
+| テスト         | 成功条件                    |
+| -------------- | --------------------------- |
+| plist構文      | `plutil -lint` がOKを返す   |
+| ローカルビルド | `package:mac` が成功        |
+| CI             | `build-electron.yml` が成功 |
+| 成果物         | `.zip` ファイルが存在       |
+
 **期待される成果物**:
 
 - テスト計画書（`outputs/phase-4/test-plan.md`）
@@ -105,6 +171,14 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 | Phase 2設計書       | `outputs/phase-2/`                 | 修正設計の詳細   |
 | Phase 3レビュー結果 | `outputs/phase-3/`                 | レビュー指摘事項 |
 | テスト戦略書        | `outputs/phase-2/test-strategy.md` | テスト戦略       |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料             | パス                                                                       | 内容       |
+| -------------------- | -------------------------------------------------------------------------- | ---------- |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | ビルド要件 |
 
 ---
 
@@ -125,16 +199,16 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 
 - [ ] 統合テストシナリオが全カテゴリで定義されている
 - [ ] CI/CDパイプラインの統合テストが含まれている
-- [ ] GitHub Actions の動作テストが定義されている
+- [ ] entitlements ↔ codesign の連携テストが定義されている
 
 ### 統合テストシナリオカテゴリ
 
 | シナリオカテゴリ   | 検証内容                                       |
 | ------------------ | ---------------------------------------------- |
-| CI接続テスト       | GitHub Actions ワークフローの実行確認          |
+| ファイル存在テスト | entitlements.mac.plistファイルの存在確認       |
+| 構文検証テスト     | plistファイルのXML構文検証                     |
 | ビルドフローテスト | 依存関係インストール → ビルド → パッケージング |
-| 成果物生成テスト   | ZIP/DMGファイルの生成確認                      |
-| エラーハンドリング | ビルド失敗時の挙動確認                         |
+| 成果物生成テスト   | .zipファイルの生成確認                         |
 
 ---
 
@@ -147,7 +221,6 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 - [ ] 受け入れ基準ごとにテストシナリオが定義されている
 - [ ] 統合テストシナリオが全カテゴリで定義されている
 - [ ] すべてのテストが失敗状態（Red）であることを確認
-- [ ] テストカバレッジ目標が設定されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ---
@@ -166,14 +239,17 @@ CI/CDの修正は、テストによる検証が重要。修正前にテスト基
 ### TDD サイクル確認
 
 ```bash
+# 現在の状態確認（entitlements.mac.plistが存在しないことを確認）
+test -f apps/desktop/build/entitlements.mac.plist && echo "exists" || echo "not exists"
+
 # CI検証（修正前は失敗することを確認）
-gh workflow run build-electron.yml
-gh run list --workflow=build-electron.yml --limit=1
+# GitHub Actionsのログで "build/entitlements.mac.plist: cannot read entitlement data" エラーを確認
 ```
 
 **確認項目**:
 
-- [ ] 現在のCIビルドが失敗することを確認（Red状態）
+- [ ] `apps/desktop/build/entitlements.mac.plist` が存在しないことを確認（Red状態）
+- [ ] CIビルドが「cannot read entitlement data」エラーで失敗することを確認
 
 ---
 

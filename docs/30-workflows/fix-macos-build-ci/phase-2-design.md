@@ -16,11 +16,11 @@
 
 ## 目的
 
-Phase 1で定義した要件に基づき、具体的な修正設計を行う。
+Phase 1で定義した要件に基づき、`entitlements.mac.plist` ファイルの詳細設計を行う。
 
 ## 背景
 
-macOS CI ビルドの修正には複数のアプローチが考えられる。選択した解決策に対して詳細な設計を行い、実装可能な状態にする。
+macOS Hardened Runtimeを使用するElectronアプリには、適切なentitlements（権限）を定義したplistファイルが必要。electron-builder.ymlで参照されている `build/entitlements.mac.plist` を設計する。
 
 ---
 
@@ -28,56 +28,96 @@ macOS CI ビルドの修正には複数のアプローチが考えられる。�
 
 > 以下のタスクを順番に実行してください。
 
-### タスク1: 解決策の選定
+### タスク1: entitlements.mac.plist の構造設計
 
-**目的**: Phase 1で列挙した解決策から最適なものを選定する
+**目的**: plistファイルのXML構造を設計する
 
 **実行手順**:
 
-1. 各解決策の実現可能性を評価する
-2. 実装コスト（時間・複雑さ）を比較する
-3. リスクと影響範囲を評価する
-4. 最適な解決策を選定し、理由を文書化する
+1. Apple plistファイル形式を確認する
+2. Electron/V8に必要なentitlementsを調査する
+3. 最小権限原則に基づいて必要な権限を選定する
+
+**設計仕様**:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- JIT compilation for V8/Electron -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <!-- Unsigned executable memory for V8/Electron -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+</dict>
+</plist>
+```
 
 **期待される成果物**:
 
-- 解決策選定レポート（`outputs/phase-2/solution-selection.md`）
+- plist構造設計書（`outputs/phase-2/plist-structure-design.md`）
 
 ---
 
-### タスク2: 修正設計の作成
+### タスク2: Entitlements権限分析
 
-**目的**: 選定した解決策の詳細設計を作成する
+**目的**: 必要な権限を分析し、最小権限原則を適用する
 
-**実行手順**:
+**権限分析表**:
 
-1. 修正対象ファイルの変更内容を設計する
-   - `.github/workflows/build-electron.yml` の変更点
-   - `apps/desktop/electron-builder.yml` の変更点（必要な場合）
-2. 設定変更の詳細を記述する
-3. 新規追加するコードやスクリプトがあれば設計する
-4. 設定値の根拠を明記する
+| Entitlement                                                | 説明                 | 必要性             | 採用 |
+| ---------------------------------------------------------- | -------------------- | ------------------ | ---- |
+| `com.apple.security.cs.allow-jit`                          | JITコンパイル許可    | 必須（V8エンジン） | ✅   |
+| `com.apple.security.cs.allow-unsigned-executable-memory`   | 未署名実行メモリ許可 | 必須（V8 JIT）     | ✅   |
+| `com.apple.security.cs.disable-library-validation`         | ライブラリ検証無効化 | オプション         | ❌   |
+| `com.apple.security.automation.apple-events`               | Apple Events自動化   | オプション         | ❌   |
+| `com.apple.security.cs.disable-executable-page-protection` | 実行ページ保護無効化 | オプション         | ❌   |
+
+**設計根拠**:
+
+| 採用権限                         | 根拠                                                 |
+| -------------------------------- | ---------------------------------------------------- |
+| allow-jit                        | Electron/V8エンジンはJITコンパイルを使用するため必須 |
+| allow-unsigned-executable-memory | V8のJITコンパイル済みコードの実行に必須              |
 
 **期待される成果物**:
 
-- 修正設計書（`outputs/phase-2/modification-design.md`）
+- 権限分析書（`outputs/phase-2/entitlements-analysis.md`）
 
 ---
 
-### タスク3: 影響範囲の分析
+### タスク3: ファイル配置設計
 
-**目的**: 修正による影響範囲を特定する
+**目的**: ファイルの配置場所とビルド設定との整合性を確認する
 
-**実行手順**:
+**配置設計**:
 
-1. 修正がローカルビルドに与える影響を確認
-2. 修正が他のCI/CDワークフローに与える影響を確認
-3. 修正がリリースフローに与える影響を確認
-4. 後方互換性の確認
+```
+apps/desktop/
+├── build/
+│   └── entitlements.mac.plist    ← 新規作成
+├── electron-builder.yml          ← 既存（変更不要）
+└── ...
+```
+
+**electron-builder.yml との整合性確認**:
+
+現在の設定（変更不要）:
+
+```yaml
+mac:
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+```
+
+→ `build/entitlements.mac.plist` は `apps/desktop/` からの相対パスとして解釈される。
 
 **期待される成果物**:
 
-- 影響範囲分析書（`outputs/phase-2/impact-analysis.md`）
+- 配置設計書（`outputs/phase-2/file-placement-design.md`）
 
 ---
 
@@ -85,12 +125,20 @@ macOS CI ビルドの修正には複数のアプローチが考えられる。�
 
 **目的**: 修正を検証するためのテスト戦略を設計する
 
-**実行手順**:
+**テスト戦略**:
 
-1. CI環境でのテスト方法を設計する
-2. ローカル環境でのテスト方法を設計する
-3. 成功/失敗の判定基準を定義する
-4. ロールバック手順を設計する
+| テスト種別     | 内容                                   | 検証方法                                  |
+| -------------- | -------------------------------------- | ----------------------------------------- |
+| 構文検証       | plistファイルがXML/plist形式として有効 | `plutil -lint`                            |
+| ローカルビルド | macOSでのローカルビルド成功            | `pnpm --filter @repo/desktop package:mac` |
+| CI検証         | GitHub Actionsでのビルド成功           | PRでCI実行                                |
+| 成果物確認     | .zipファイルが生成される               | アーティファクト確認                      |
+
+**ロールバック手順**:
+
+1. `apps/desktop/build/entitlements.mac.plist` を削除
+2. electron-builder.ymlからentitlements設定を削除（必要に応じて）
+3. CIを再実行
 
 **期待される成果物**:
 
@@ -100,22 +148,30 @@ macOS CI ビルドの修正には複数のアプローチが考えられる。�
 
 ## 参照資料
 
-| 参照資料           | パス                                                                       | 内容                       |
-| ------------------ | -------------------------------------------------------------------------- | -------------------------- |
-| Phase 1成果物      | `outputs/phase-1/`                                                         | 要件定義と解決策オプション |
-| デプロイメント仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | Electronリリースの仕様     |
-| GitHub Actions仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-gha.md`      | CI/CDパイプラインの仕様    |
+| 参照資料             | パス                                                                       | 内容                       |
+| -------------------- | -------------------------------------------------------------------------- | -------------------------- |
+| Phase 1成果物        | `outputs/phase-1/`                                                         | 要件定義と解決策オプション |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | Electronリリースの仕様     |
+| electron-builder設定 | `apps/desktop/electron-builder.yml`                                        | 現在のビルド設定           |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料             | パス                                                                       | 内容                 |
+| -------------------- | -------------------------------------------------------------------------- | -------------------- |
+| Electronデプロイ仕様 | `.claude/skills/aiworkflow-requirements/references/deployment-electron.md` | コードサイニング要件 |
 
 ---
 
 ## 成果物
 
-| 成果物             | パス                                     | 内容               |
-| ------------------ | ---------------------------------------- | ------------------ |
-| 解決策選定レポート | `outputs/phase-2/solution-selection.md`  | 選定理由と根拠     |
-| 修正設計書         | `outputs/phase-2/modification-design.md` | 具体的な変更内容   |
-| 影響範囲分析書     | `outputs/phase-2/impact-analysis.md`     | 影響範囲と対策     |
-| テスト戦略書       | `outputs/phase-2/test-strategy.md`       | 検証方法と判定基準 |
+| 成果物          | パス                                        | 内容               |
+| --------------- | ------------------------------------------- | ------------------ |
+| plist構造設計書 | `outputs/phase-2/plist-structure-design.md` | XML構造設計        |
+| 権限分析書      | `outputs/phase-2/entitlements-analysis.md`  | 権限選定理由       |
+| 配置設計書      | `outputs/phase-2/file-placement-design.md`  | ファイル配置設計   |
+| テスト戦略書    | `outputs/phase-2/test-strategy.md`          | 検証方法と判定基準 |
 
 ---
 
@@ -124,16 +180,16 @@ macOS CI ビルドの修正には複数のアプローチが考えられる。�
 ### Phase 2での統合テスト連携アクション
 
 - [ ] CI/CDパイプラインの接続点を設計に反映
-- [ ] GitHub Actions ↔ electron-builder の連携を設計に明記
+- [ ] electron-builder ↔ codesign ↔ entitlements の連携を設計に明記
 - [ ] ビルド成果物の検証方法を設計に含める
 
 ---
 
 ## 完了条件
 
-- [ ] 解決策が選定され、選定理由が文書化されている
-- [ ] 修正設計書が作成されている
-- [ ] 影響範囲分析が完了している
+- [ ] plist構造が設計されている
+- [ ] 権限分析が完了し、採用権限が決定されている
+- [ ] ファイル配置が設計されている
 - [ ] テスト戦略が設計されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 

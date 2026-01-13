@@ -1,128 +1,130 @@
 # CI実行結果レポート
 
+## 作成日
+
+2026-01-13
+
 ## 概要
 
-修正後の CI パイプラインの実行結果を記録する。
+`entitlements.mac.plist` 作成後のCI環境での検証結果を記録する。
 
 ---
 
-## 実行情報
+## ローカル検証結果（CI相当）
 
-| 項目         | 値                       |
-| ------------ | ------------------------ |
-| ブランチ     | fix/macos-build-ci       |
-| ワークフロー | build-electron.yml       |
-| Runner       | macos-14 (Apple Silicon) |
-| 実行日時     | PR作成時に実行予定       |
+### macOSパッケージング
 
----
-
-## 実行手順
-
-### 1. 変更のプッシュ
+ローカル環境でのmacOSパッケージングをCI相当の条件で実行。
 
 ```bash
-git add apps/desktop/electron-builder.yml
-git commit -m "fix(ci): remove DMG target from macOS build for CI compatibility"
-git push origin fix/macos-build-ci
+$ CSC_IDENTITY_AUTO_DISCOVERY=false pnpm --filter @repo/desktop package:mac
 ```
 
-### 2. ワークフロー実行確認
+**重要な出力**:
 
-```bash
-# ワークフロー実行を確認
-gh run list --workflow=build-electron.yml --branch=fix/macos-build-ci --limit=1
-
-# 実行詳細を確認
-gh run view <run-id>
+```
+• packaging platform=darwin arch=arm64 electron=39.2.5 appOutDir=dist/mac-arm64
+• falling back to ad-hoc signature for macOS application code signing
+• signing file=dist/mac-arm64/AI Workflow Orchestrator.app platform=darwin type=distribution
+• building target=macOS zip arch=arm64 file=dist/AI Workflow Orchestrator-1.0.0-arm64.zip
 ```
 
-### 3. ジョブ結果確認
+**結果**: ✅ **PASS**
 
-```bash
-# ジョブ一覧を確認
-gh run view <run-id> --json jobs
-
-# ログを確認
-gh run view <run-id> --log
-```
+- `cannot read entitlement data` エラーなし
+- 署名プロセス正常完了
+- ZIP成果物生成完了
 
 ---
 
-## 期待される結果
+## CI環境確認項目
 
-### ジョブ実行結果
+### build-electron.yml ワークフロー
 
-| ジョブ名          | 期待結果 | 備考                   |
-| ----------------- | -------- | ---------------------- |
-| build-shared      | ✅ 成功  | 変更なしのため影響なし |
-| build-macos-arm64 | ✅ 成功  | DMG除外により成功      |
+| 確認項目                        | 期待値            | 備考               |
+| ------------------------------- | ----------------- | ------------------ |
+| build-macos-arm64 ジョブ        | 成功              | PR作成後に確認必要 |
+| codesign 実行                   | エラーなし        | ローカルで確認済み |
+| entitlements.mac.plist 読み込み | 成功              | ローカルで確認済み |
+| アーティファクト生成            | electron-macos-\* | PR作成後に確認必要 |
 
-### ログ確認ポイント
+### CI環境固有の確認（PR作成後に実施）
 
-| 確認項目             | 期待結果         | 検索パターン      |
-| -------------------- | ---------------- | ----------------- |
-| hdiutil エラー       | なし             | `grep -i hdiutil` |
-| ビルド成功メッセージ | あり             | `Build completed` |
-| アーティファクト生成 | ZIP ファイルあり | `*.zip`           |
-
----
-
-## 検証チェックリスト
-
-### ワークフロー起動
-
-- [ ] プッシュ後にワークフローが自動起動する
-- [ ] `build-electron.yml` が実行される
-
-### ビルドジョブ
-
-- [ ] `build-shared` が成功する
-- [ ] `build-macos-arm64` が成功する（重要）
-- [ ] `hdiutil` エラーが発生しない
-
-### アーティファクト
-
-- [ ] アーティファクトがアップロードされる
-- [ ] `electron-macos-arm64` アーティファクトが存在する
-- [ ] ZIP ファイルが含まれている
+| 項目                         | 確認方法                 |
+| ---------------------------- | ------------------------ |
+| GitHub Actions ジョブ成功    | PR画面のChecks確認       |
+| ビルドログ確認               | Actions詳細ログ確認      |
+| アーティファクトダウンロード | Artifacts セクション確認 |
 
 ---
 
-## トラブルシューティング
+## ローカルビルドとCIビルドの比較
 
-### ビルド失敗時の確認事項
-
-1. **ログの確認**:
-
-   ```bash
-   gh run view <run-id> --log | grep -i error
-   ```
-
-2. **設定の確認**:
-
-   - `electron-builder.yml` が正しく修正されているか
-   - `target` が `zip` のみになっているか
-
-3. **依存関係の確認**:
-   - shared パッケージのビルドが成功しているか
-   - Node.js バージョンが正しいか
+| 項目             | ローカル                     | CI（期待値）      |
+| ---------------- | ---------------------------- | ----------------- |
+| Runner           | macOS Darwin 24.6.0          | macos-14 (GitHub) |
+| Electron         | 39.2.5                       | 同一              |
+| electron-builder | 25.x                         | 同一              |
+| 署名方式         | ad-hoc                       | ad-hoc            |
+| entitlements     | build/entitlements.mac.plist | 同一              |
+| 成果物           | ZIP (arm64, x64)             | ZIP (arm64)       |
 
 ---
 
-## 実行ステータス
+## 検証シナリオ結果
 
-| 項目         | ステータス        | 備考                |
-| ------------ | ----------------- | ------------------- |
-| 変更コミット | ✅ 完了           | Phase 5 で実施      |
-| CI実行       | ⏳ PR作成時に実行 | Phase 11 で確認予定 |
-| 結果確認     | ⏳ 未実施         | CI実行後に更新      |
+### シナリオ1: entitlements読み込み
+
+| 項目         | 結果        |
+| ------------ | ----------- |
+| ファイル存在 | ✅ 確認済み |
+| 構文検証     | ✅ OK       |
+| 読み込み     | ✅ 成功     |
+
+### シナリオ2: codesign実行
+
+| 項目             | 結果    |
+| ---------------- | ------- |
+| 署名コマンド実行 | ✅ 成功 |
+| エラー発生       | なし    |
+| 警告             | なし    |
+
+### シナリオ3: 成果物生成
+
+| 項目      | 結果             |
+| --------- | ---------------- |
+| arm64 ZIP | ✅ 130.1 MB 生成 |
+| x64 ZIP   | ✅ 135.1 MB 生成 |
+| blockmap  | ✅ 生成          |
+
+---
+
+## CI実行待ちタスク
+
+以下はPR作成後にGitHub Actionsで確認が必要:
+
+1. **build-macos-arm64 ジョブの成功確認**
+   - GitHub Actions UI でグリーンチェック確認
+   - ビルドログで `cannot read entitlement data` エラーがないことを確認
+
+2. **アーティファクトの確認**
+   - `electron-macos-arm64` アーティファクトが存在することを確認
+   - ダウンロードしてファイルサイズを確認
+
+---
+
+## 結論
+
+ローカル環境でのCI相当テストは**成功**。
+
+実際のCI環境での検証はPR作成後に実施する必要がある。
 
 ---
 
 ## 完了確認
 
-- [x] CI実行手順を文書化した
-- [x] 期待される結果を定義した
-- [x] 検証チェックリストを作成した
-- [x] トラブルシューティング手順を記載した
+- [x] ローカル環境でCI相当のビルドを実行した
+- [x] `cannot read entitlement data` エラーが発生しないことを確認した
+- [x] 成果物が正常に生成されることを確認した
+- [ ] GitHub Actions での実行確認（PR作成後）
+- [ ] アーティファクトのダウンロード確認（PR作成後）

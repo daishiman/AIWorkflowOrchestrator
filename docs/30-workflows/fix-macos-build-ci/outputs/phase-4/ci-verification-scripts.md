@@ -1,229 +1,248 @@
 # CI検証スクリプト設計書
 
+## 作成日
+
+2026-01-13
+
 ## 概要
 
-CIビルドの成功を検証するためのスクリプト設計。
+CIビルドの成功を検証するためのスクリプト設計を定義する。
 
 ---
 
-## 1. ローカル模擬スクリプト
+## スクリプト一覧
 
-### 目的
+### 1. plistファイル存在チェック
 
-CI環境のビルドプロセスをローカルで模擬し、事前検証を行う。
-
-### スクリプト設計
+**目的**: entitlements.mac.plistファイルの存在を確認
 
 ```bash
 #!/bin/bash
-# scripts/verify-macos-build.sh
+# plist-check.sh
+# 使用方法: ./scripts/plist-check.sh
 
-set -e
+PLIST_PATH="apps/desktop/build/entitlements.mac.plist"
 
-echo "=== macOS ビルド検証スクリプト ==="
-
-# 1. 依存関係インストール
-echo "Step 1: 依存関係インストール"
-pnpm install
-
-# 2. shared パッケージビルド
-echo "Step 2: shared パッケージビルド"
-pnpm --filter @repo/shared build
-
-# 3. desktop アプリビルド
-echo "Step 3: desktop アプリビルド"
-pnpm --filter @repo/desktop build
-
-# 4. macOS パッケージング
-echo "Step 4: macOS パッケージング"
-pnpm --filter @repo/desktop package:mac
-
-# 5. 成果物確認
-echo "Step 5: 成果物確認"
-ls -la apps/desktop/dist/*.zip
-
-echo "=== ビルド検証完了 ==="
+if [ -f "$PLIST_PATH" ]; then
+    echo "✅ entitlements.mac.plist exists"
+    exit 0
+else
+    echo "❌ entitlements.mac.plist not found"
+    echo "   Expected path: $PLIST_PATH"
+    exit 1
+fi
 ```
 
-### 実行方法
-
-```bash
-chmod +x scripts/verify-macos-build.sh
-./scripts/verify-macos-build.sh
-```
+**テストケース**:
+| 状態 | 期待結果 | Exit Code |
+| -------------------- | -------- | --------- |
+| ファイルが存在する | 成功 | 0 |
+| ファイルが存在しない | 失敗 | 1 |
 
 ---
 
-## 2. 成果物存在チェックスクリプト
+### 2. plist構文検証
 
-### 目的
-
-ビルド後に必要な成果物が生成されているか確認する。
-
-### スクリプト設計
+**目的**: plistファイルがXML構文として有効であることを確認
 
 ```bash
 #!/bin/bash
-# scripts/check-artifacts.sh
+# plist-validate.sh
+# 使用方法: ./scripts/plist-validate.sh
 
-DIST_DIR="apps/desktop/dist"
-EXPECTED_FILES=("*.zip")
+PLIST_PATH="apps/desktop/build/entitlements.mac.plist"
 
-echo "=== 成果物チェック ==="
-
-# ディレクトリ存在確認
-if [ ! -d "$DIST_DIR" ]; then
-    echo "ERROR: dist ディレクトリが存在しません"
+# ファイル存在チェック
+if [ ! -f "$PLIST_PATH" ]; then
+    echo "❌ File not found: $PLIST_PATH"
     exit 1
 fi
 
-# ZIPファイル存在確認
-ZIP_COUNT=$(find "$DIST_DIR" -name "*.zip" | wc -l)
-if [ "$ZIP_COUNT" -eq 0 ]; then
-    echo "ERROR: ZIPファイルが生成されていません"
+# 構文検証
+if plutil -lint "$PLIST_PATH"; then
+    echo "✅ plist syntax is valid"
+    exit 0
+else
+    echo "❌ plist syntax validation failed"
+    exit 1
+fi
+```
+
+**テストケース**:
+| 状態 | 期待結果 | Exit Code |
+| ------------------ | -------------------- | --------- |
+| 有効なplist構文 | OK | 0 |
+| 無効なplist構文 | Syntax error message | 非0 |
+| ファイルが存在しない | File not found | 1 |
+
+---
+
+### 3. 権限内容検証
+
+**目的**: 必須のentitlements権限が含まれていることを確認
+
+```bash
+#!/bin/bash
+# plist-content-check.sh
+# 使用方法: ./scripts/plist-content-check.sh
+
+PLIST_PATH="apps/desktop/build/entitlements.mac.plist"
+
+# ファイル存在チェック
+if [ ! -f "$PLIST_PATH" ]; then
+    echo "❌ File not found: $PLIST_PATH"
     exit 1
 fi
 
-# ファイルサイズ確認（10MB以上）
-for zip in "$DIST_DIR"/*.zip; do
-    SIZE=$(stat -f%z "$zip" 2>/dev/null || stat -c%s "$zip")
-    if [ "$SIZE" -lt 10000000 ]; then
-        echo "WARNING: $zip のサイズが小さい可能性があります ($SIZE bytes)"
+# 必須権限のチェック
+REQUIRED_KEYS=(
+    "com.apple.security.cs.allow-jit"
+    "com.apple.security.cs.allow-unsigned-executable-memory"
+)
+
+MISSING_KEYS=()
+
+for key in "${REQUIRED_KEYS[@]}"; do
+    if /usr/libexec/PlistBuddy -c "Print :$key" "$PLIST_PATH" 2>/dev/null | grep -q "true"; then
+        echo "✅ $key = true"
     else
-        echo "OK: $zip ($SIZE bytes)"
+        echo "❌ $key is missing or not true"
+        MISSING_KEYS+=("$key")
     fi
 done
 
-echo "=== チェック完了: $ZIP_COUNT 個のZIPファイルを確認 ==="
-```
-
-### 成功基準
-
-| 項目           | 基準                             |
-| -------------- | -------------------------------- |
-| ZIPファイル数  | 1以上                            |
-| ファイルサイズ | 10MB以上                         |
-| ファイル名形式 | `*-arm64.zip` または `*-x64.zip` |
-
----
-
-## 3. ビルドログ解析スクリプト
-
-### 目的
-
-CIビルドログからエラーや警告を検出する。
-
-### スクリプト設計
-
-```bash
-#!/bin/bash
-# scripts/analyze-build-log.sh
-
-LOG_FILE="$1"
-
-if [ -z "$LOG_FILE" ]; then
-    echo "Usage: $0 <log-file>"
+if [ ${#MISSING_KEYS[@]} -eq 0 ]; then
+    echo ""
+    echo "✅ All required entitlements are present"
+    exit 0
+else
+    echo ""
+    echo "❌ Missing entitlements: ${MISSING_KEYS[*]}"
     exit 1
 fi
-
-echo "=== ビルドログ解析 ==="
-
-# hdiutil エラーチェック
-if grep -q "hdiutil" "$LOG_FILE"; then
-    echo "WARNING: hdiutil 関連のログが検出されました"
-    grep "hdiutil" "$LOG_FILE"
-fi
-
-# エラーチェック
-ERROR_COUNT=$(grep -c "error" "$LOG_FILE" || true)
-if [ "$ERROR_COUNT" -gt 0 ]; then
-    echo "ERROR: $ERROR_COUNT 件のエラーが検出されました"
-    grep "error" "$LOG_FILE"
-fi
-
-# 成功メッセージ確認
-if grep -q "Build completed" "$LOG_FILE"; then
-    echo "OK: ビルドが完了しています"
-fi
-
-echo "=== 解析完了 ==="
 ```
+
+**テストケース**:
+| 状態 | 期待結果 | Exit Code |
+| ---------------------- | -------- | --------- |
+| 両方の権限が存在 | 成功 | 0 |
+| 1つの権限が欠落 | 失敗 | 1 |
+| 両方の権限が欠落 | 失敗 | 1 |
 
 ---
 
-## 4. CI実行検証コマンド
+### 4. ビルド成果物確認
 
-### GitHub CLI を使用した検証
-
-```bash
-# 最新のワークフロー実行を確認
-gh run list --workflow=build-electron.yml --limit=5
-
-# 特定の実行の詳細を確認
-gh run view <run-id>
-
-# ログをダウンロード
-gh run download <run-id> --dir ./ci-logs
-
-# アーティファクトを確認
-gh run view <run-id> --json artifacts
-```
-
-### 検証チェックリスト
-
-| 項目                 | コマンド                            | 期待結果   |
-| -------------------- | ----------------------------------- | ---------- |
-| ワークフロー起動     | `gh run list`                       | 実行が開始 |
-| macOSジョブ成功      | `gh run view <id>`                  | 緑チェック |
-| アーティファクト存在 | `gh run view <id> --json artifacts` | 1件以上    |
-| hdiutilエラーなし    | ログ確認                            | エラーなし |
-
----
-
-## 5. 自動検証スクリプト（統合）
-
-### スクリプト設計
+**目的**: ビルド後に.zipファイルが生成されていることを確認
 
 ```bash
 #!/bin/bash
-# scripts/full-verification.sh
+# build-check.sh
+# 使用方法: ./scripts/build-check.sh
 
-set -e
+DIST_PATH="apps/desktop/dist"
 
-echo "========================================"
-echo "macOS CI ビルド完全検証"
-echo "========================================"
+if ls "$DIST_PATH"/*.zip 1> /dev/null 2>&1; then
+    echo "✅ ZIP files found:"
+    ls -la "$DIST_PATH"/*.zip
+    exit 0
+else
+    echo "❌ No ZIP files found in $DIST_PATH"
+    exit 1
+fi
+```
 
-# ローカルビルド検証
-./scripts/verify-macos-build.sh
+**テストケース**:
+| 状態 | 期待結果 | Exit Code |
+| -------------------- | -------------- | --------- |
+| .zipファイルが存在 | ファイル一覧 | 0 |
+| .zipファイルがない | No ZIP files | 1 |
 
-# 成果物チェック
-./scripts/check-artifacts.sh
+---
 
-echo "========================================"
-echo "全検証完了"
-echo "========================================"
+### 5. 統合検証スクリプト
+
+**目的**: 全ての検証を一括実行
+
+```bash
+#!/bin/bash
+# verify-all.sh
+# 使用方法: ./scripts/verify-all.sh
+
+SCRIPT_DIR="$(dirname "$0")"
+FAILED=0
+
+echo "=== entitlements.mac.plist 検証 ==="
+echo ""
+
+# 1. 存在チェック
+echo "--- 1. ファイル存在チェック ---"
+"$SCRIPT_DIR/plist-check.sh" || FAILED=1
+echo ""
+
+# 2. 構文検証
+echo "--- 2. 構文検証 ---"
+"$SCRIPT_DIR/plist-validate.sh" || FAILED=1
+echo ""
+
+# 3. 権限内容検証
+echo "--- 3. 権限内容検証 ---"
+"$SCRIPT_DIR/plist-content-check.sh" || FAILED=1
+echo ""
+
+# 結果サマリー
+echo "=== 検証結果 ==="
+if [ $FAILED -eq 0 ]; then
+    echo "✅ All verifications passed"
+    exit 0
+else
+    echo "❌ Some verifications failed"
+    exit 1
+fi
 ```
 
 ---
 
-## 実装ステータス
+## CI統合
 
-| スクリプト            | ステータス | 備考                     |
-| --------------------- | ---------- | ------------------------ |
-| verify-macos-build.sh | 設計完了   | Phase 5で実装判断        |
-| check-artifacts.sh    | 設計完了   | Phase 5で実装判断        |
-| analyze-build-log.sh  | 設計完了   | CI検証で必要に応じて使用 |
-| full-verification.sh  | 設計完了   | Phase 5で実装判断        |
+### GitHub Actionsでの使用
 
-**注**: 今回の修正は設定ファイルの変更のみであり、実際のスクリプト実装は任意。
-検証は手動またはCIの実行結果で行う。
+```yaml
+# .github/workflows/build-electron.yml への統合案
+# （参考: 実際の変更は不要）
+
+- name: Verify entitlements
+  if: matrix.os == 'macos-14'
+  run: |
+    plutil -lint apps/desktop/build/entitlements.mac.plist
+```
+
+---
+
+## 実行方法
+
+### ローカル実行
+
+```bash
+# 個別実行
+plutil -lint apps/desktop/build/entitlements.mac.plist
+
+# 権限確認
+/usr/libexec/PlistBuddy -c "Print" apps/desktop/build/entitlements.mac.plist
+```
+
+### CI実行
+
+CIでは `build-electron.yml` の既存フローで自動検証される。
+electron-builder が entitlements ファイルを読み込み、codesign に渡す。
 
 ---
 
 ## 完了確認
 
-- [x] ローカル模擬スクリプトを設計した
-- [x] 成果物チェックスクリプトを設計した
-- [x] ビルドログ解析スクリプトを設計した
-- [x] 検証手順を定義した
+- [x] plistファイル存在チェックスクリプトを設計した
+- [x] plist構文検証スクリプトを設計した
+- [x] 権限内容検証スクリプトを設計した
+- [x] ビルド成果物確認スクリプトを設計した
+- [x] 統合検証スクリプトを設計した
+- [x] CI統合方法を記載した

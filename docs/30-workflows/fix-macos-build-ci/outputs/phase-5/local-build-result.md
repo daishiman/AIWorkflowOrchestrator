@@ -1,144 +1,168 @@
 # ローカルビルド検証結果
 
+## 作成日
+
+2026-01-13
+
 ## 概要
 
-修正後の `electron-builder.yml` がローカル環境で正常に動作することを確認する。
+`entitlements.mac.plist` 作成後のローカルビルド検証結果を記録する。
 
 ---
 
 ## 検証環境
 
-| 項目             | 値      |
-| ---------------- | ------- |
-| OS               | macOS   |
-| Node.js          | v22.x   |
-| pnpm             | 最新版  |
-| electron-builder | v26.0.0 |
+| 項目             | 内容                  |
+| ---------------- | --------------------- |
+| OS               | macOS (Darwin 24.6.0) |
+| アーキテクチャ   | Apple Silicon (arm64) |
+| Node.js          | v22.x                 |
+| pnpm             | v10.x                 |
+| Electron         | v39.2.5               |
+| electron-builder | v25.x                 |
 
 ---
 
-## 検証手順
+## ビルド実行結果
 
-### ステップ1: 依存関係インストール
-
-```bash
-pnpm install
-```
-
-### ステップ2: shared パッケージビルド
+### Step 1: 依存関係のビルド
 
 ```bash
-pnpm --filter @repo/shared build
+$ pnpm --filter @repo/shared build
+> @repo/shared@1.0.0 build
+> tsc -p tsconfig.json
 ```
 
-### ステップ3: desktop アプリビルド
+**判定: ✅ PASS**
+
+### Step 2: デスクトップアプリのビルド
 
 ```bash
-pnpm --filter @repo/desktop build
+$ pnpm --filter @repo/desktop build
+> electron-vite build
+
+vite v6.4.1 building SSR bundle for production...
+✓ 60 modules transformed.
+out/main/index.js  221.06 kB
+✓ built in 473ms
+
+vite v6.4.1 building SSR bundle for production...
+✓ 2 modules transformed.
+out/preload/index.js  19.15 kB
+✓ built in 15ms
+
+vite v6.4.1 building for production...
+✓ 1839 modules transformed.
+out/renderer/index.html                   0.51 kB
+out/renderer/assets/index-Bxt2iou5.css   74.36 kB
+out/renderer/assets/index-D6UJWS8k.js   867.23 kB
+✓ built in 1.76s
 ```
 
-### ステップ4: macOS パッケージング
+**判定: ✅ PASS**
+
+### Step 3: macOSパッケージング
 
 ```bash
-pnpm --filter @repo/desktop package:mac
+$ CSC_IDENTITY_AUTO_DISCOVERY=false pnpm --filter @repo/desktop package:mac
+
+• packaging platform=darwin arch=arm64 electron=39.2.5 appOutDir=dist/mac-arm64
+• falling back to ad-hoc signature for macOS application code signing
+• signing file=dist/mac-arm64/AI Workflow Orchestrator.app platform=darwin type=distribution identityName=- identityHash=none
+• building target=macOS zip arch=arm64 file=dist/AI Workflow Orchestrator-1.0.0-arm64.zip
 ```
 
-### ステップ5: 成果物確認
+**重要**: `cannot read entitlement data` エラーは発生しなかった ✅
+
+**判定: ✅ PASS**
+
+### Step 4: 成果物確認
 
 ```bash
-ls -la apps/desktop/dist/*.zip
+$ ls -la apps/desktop/dist/*.zip
+
+-rw-r--r-- 1 dm staff 136430970 Jan 13 14:13 AI Workflow Orchestrator-1.0.0-arm64.zip
+-rw-r--r-- 1 dm staff 141696999 Jan 13 14:12 AI Workflow Orchestrator-1.0.0-x64.zip
 ```
+
+| ファイル                                 | サイズ   | 判定 |
+| ---------------------------------------- | -------- | ---- |
+| AI Workflow Orchestrator-1.0.0-arm64.zip | 130.1 MB | ✅   |
+| AI Workflow Orchestrator-1.0.0-x64.zip   | 135.1 MB | ✅   |
+
+**判定: ✅ PASS**
 
 ---
 
-## 期待される結果
+## 重要な確認事項
 
-| ステップ             | 期待結果                             |
-| -------------------- | ------------------------------------ |
-| 依存関係インストール | エラーなく完了                       |
-| shared ビルド        | エラーなく完了                       |
-| desktop ビルド       | エラーなく完了                       |
-| macOS パッケージング | **ZIP ファイルのみ生成**（DMG なし） |
-| 成果物確認           | 2つの ZIP ファイルが存在             |
+### 1. entitlementsエラーの解消
 
-### 期待される成果物
+**修正前（Phase 4 Red状態）**:
 
 ```
-apps/desktop/dist/
-├── AI Workflow Orchestrator-1.0.0-arm64.zip
-└── AI Workflow Orchestrator-1.0.0-x64.zip
+build/entitlements.mac.plist: cannot read entitlement data
 ```
+
+**修正後（Phase 5 Green状態）**:
+
+```
+• falling back to ad-hoc signature for macOS application code signing
+• signing file=dist/mac-arm64/AI Workflow Orchestrator.app
+```
+
+→ エラーなしで署名完了 ✅
+
+### 2. entitlements適用の確認
+
+署名時に entitlements.mac.plist が正しく読み込まれた証拠:
+
+- `signing` ステップが成功
+- `cannot read entitlement data` エラーが発生しない
+- .zip ファイルが正常に生成
 
 ---
 
-## 検証ステータス
+## 警告メッセージについて
 
-| 項目               | ステータス | 備考                          |
-| ------------------ | ---------- | ----------------------------- |
-| 設定変更確認       | ✅ 完了    | electron-builder.yml 修正済み |
-| YAML構文検証       | ✅ 完了    | Lint 通過                     |
-| ローカルビルド実行 | ⏳ 保留    | CI検証で代替                  |
+ビルドログに表示される以下の警告は無害:
 
----
-
-## 検証方法の選択
-
-### 選択: CI環境での検証を優先
-
-**理由**:
-
-1. **CI環境が本来の問題箇所**:
-
-   - 問題は CI 環境固有（hdiutil の制限）
-   - ローカル環境では DMG が生成可能
-
-2. **効率性**:
-
-   - ローカルビルドは時間がかかる
-   - CI での検証が最も効率的
-
-3. **Phase 6-7 での検証**:
-   - テスト拡充フェーズで CI ビルドを実行
-   - 実際の環境で動作確認
-
-### ローカル検証が必要な場合
-
-以下の場合はローカル検証を推奨:
-
-1. CI でビルドが失敗した場合
-2. 設定の詳細を確認したい場合
-3. デバッグが必要な場合
-
----
-
-## CI検証への移行
-
-### Phase 6 で実行する検証
-
-1. ブランチをプッシュ
-2. GitHub Actions ワークフロー起動を確認
-3. `build-macos-arm64` ジョブの成功を確認
-4. アーティファクトのアップロードを確認
-
-### 検証コマンド
-
-```bash
-# 変更をプッシュ
-git add apps/desktop/electron-builder.yml
-git commit -m "fix(ci): remove DMG target from macOS build for CI compatibility"
-git push origin fix/macos-build-ci
-
-# CI 実行を確認
-gh run list --workflow=build-electron.yml --limit=1
-gh run view <run-id>
 ```
+• Failed to read package.json for @img/sharp-win32-x64
+• Failed to read package.json for @libsql/linux-x64-gnu
+```
+
+**理由**: これらはプラットフォーム固有のネイティブモジュールで、macOS環境では存在しないため警告が出るが、ビルドには影響しない。
+
+---
+
+## 総合判定
+
+| 検証項目               | 結果     |
+| ---------------------- | -------- |
+| 依存関係ビルド         | PASS     |
+| アプリビルド           | PASS     |
+| macOSパッケージング    | PASS     |
+| entitlementsエラーなし | PASS     |
+| ZIP成果物生成          | PASS     |
+| **総合**               | **PASS** |
+
+---
+
+## TDD状態確認
+
+| 状態       | 説明                                               |
+| ---------- | -------------------------------------------------- |
+| Phase 4 前 | Red - `entitlements.mac.plist` が存在しない        |
+| Phase 5 後 | **Green** - ビルド成功、エラーなし、成果物生成完了 |
 
 ---
 
 ## 完了確認
 
-- [x] 検証環境を定義した
-- [x] 検証手順を文書化した
-- [x] 期待される結果を定義した
-- [x] 検証方法の選択理由を文書化した
-- [x] CI検証への移行手順を定義した
+- [x] 依存関係のビルドが成功した
+- [x] デスクトップアプリのビルドが成功した
+- [x] macOSパッケージングが成功した
+- [x] `cannot read entitlement data` エラーが発生しないことを確認した
+- [x] .zipファイルが生成されたことを確認した
+- [x] TDD Red → Green の移行を確認した

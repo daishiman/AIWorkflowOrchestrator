@@ -1,207 +1,213 @@
 # テスト計画書
 
+## 作成日
+
+2026-01-13
+
 ## 概要
 
-macOS CI ビルド修正のテスト実行計画を定義する。
+`entitlements.mac.plist` ファイル作成後のテスト実行計画を定義する。
 
 ---
 
 ## テスト実行環境
 
-### ローカル環境
-
-| 項目             | 値      |
-| ---------------- | ------- |
-| OS               | macOS   |
-| Node.js          | v22.x   |
-| pnpm             | 最新版  |
-| electron-builder | v26.0.0 |
-
-### CI環境
-
-| 項目    | 値                                         |
-| ------- | ------------------------------------------ |
-| Runner  | macos-14 (Apple Silicon)                   |
-| Node.js | v22                                        |
-| pnpm    | 最新版                                     |
-| 署名    | 無効（CSC_IDENTITY_AUTO_DISCOVERY: false） |
+| 環境              | 対象テスト                   | 備考                       |
+| ----------------- | ---------------------------- | -------------------------- |
+| ローカル（macOS） | plist検証、ローカルビルド    | Apple Silicon（arm64）推奨 |
+| GitHub Actions    | CI検証、アーティファクト生成 | macos-14 runner（arm64）   |
+| 実機（macOS）     | 手動テスト、アプリ起動確認   | macOS 11.0以上             |
 
 ---
 
 ## テスト実行手順
 
-### Phase 4: 現状確認（Red状態）
+### Phase 5後（実装完了後）
 
-**目的**: 修正前のCIが失敗することを確認する
-
-1. 現在の `fix/macos-build-ci` ブランチをプッシュ
-2. GitHub Actions のワークフローが起動
-3. `build-macos-arm64` ジョブが **失敗** することを確認
-4. エラーメッセージに `hdiutil` が含まれることを確認
-
-**確認コマンド**:
+#### Step 1: plistファイル検証
 
 ```bash
-# 最新のCI実行を確認
-gh run list --workflow=build-electron.yml --branch=fix/macos-build-ci --limit=1
+# 1.1 ファイル存在確認
+test -f apps/desktop/build/entitlements.mac.plist && echo "✅ PASS" || echo "❌ FAIL"
 
-# 実行詳細を確認
-gh run view <run-id>
+# 1.2 構文検証
+plutil -lint apps/desktop/build/entitlements.mac.plist
 
-# ログを確認
-gh run view <run-id> --log | grep -i hdiutil
+# 1.3 権限内容確認
+plutil -p apps/desktop/build/entitlements.mac.plist
 ```
 
-**期待結果**: CI失敗、hdiutilエラーあり
+**成功条件**:
 
----
+- ファイルが存在する
+- `plutil -lint` が "OK" を返す
+- 2つの必須権限が含まれている
 
-### Phase 5: 実装後確認（Green状態）
-
-**目的**: 修正後のCIが成功することを確認する
-
-1. `electron-builder.yml` を修正
-2. 変更をコミット・プッシュ
-3. GitHub Actions のワークフローが起動
-4. `build-macos-arm64` ジョブが **成功** することを確認
-5. アーティファクトがアップロードされることを確認
-
-**確認コマンド**:
+#### Step 2: ローカルビルド検証
 
 ```bash
-# 変更をプッシュ
-git add apps/desktop/electron-builder.yml
-git commit -m "fix: remove DMG target from macOS build for CI compatibility"
-git push origin fix/macos-build-ci
-
-# CI実行を確認
-gh run list --workflow=build-electron.yml --limit=1
-gh run view <run-id>
-
-# アーティファクト確認
-gh run view <run-id> --json artifacts
-```
-
-**期待結果**: CI成功、アーティファクトあり
-
----
-
-### Phase 11: 手動テスト
-
-**目的**: 最終的な動作確認を行う
-
-1. ローカルでビルドを実行
-2. CI成果物をダウンロード
-3. ZIPファイルの内容を確認
-4. アプリが起動することを確認（可能な場合）
-
-**確認コマンド**:
-
-```bash
-# ローカルビルド
-pnpm install
+# 2.1 依存パッケージのビルド
 pnpm --filter @repo/shared build
+
+# 2.2 デスクトップアプリのビルド
 pnpm --filter @repo/desktop build
-pnpm --filter @repo/desktop package:mac
 
-# 成果物確認
-ls -la apps/desktop/dist/*.zip
+# 2.3 パッケージング（署名なし）
+CSC_IDENTITY_AUTO_DISCOVERY=false pnpm --filter @repo/desktop package:mac
 
-# CI成果物ダウンロード
-gh run download <run-id> --name electron-macos-arm64
-
-# ZIPの中身確認
-unzip -l *.zip | head -20
+# 2.4 成果物確認
+ls apps/desktop/dist/*.zip
 ```
 
+**成功条件**:
+
+- 全てのコマンドがexit 0で終了
+- `*.zip` ファイルが生成されている
+- "cannot read entitlement data" エラーが発生しない
+
+### Phase 6後（CI検証）
+
+#### Step 3: CI検証
+
+1. 修正をブランチにコミット
+2. PRを作成またはプッシュ
+3. GitHub Actions `build-electron.yml` の実行を確認
+
+**確認項目**:
+| 項目 | 確認方法 | 成功条件 |
+| --------------------------- | ------------------------------ | ------------------------------ |
+| build-macos-arm64 ジョブ | GitHub Actions UI | ジョブがグリーン |
+| エラーログなし | ジョブログ確認 | "cannot read entitlement data" がない |
+| アーティファクト | GitHub Actions Artifacts | electron-macos-arm64 が存在 |
+
+### Phase 11後（手動テスト）
+
+#### Step 4: 手動テスト
+
+1. GitHub Actions のアーティファクトをダウンロード
+2. ZIPファイルを展開
+3. アプリケーションを起動
+4. 正常に起動することを確認
+
+**確認項目**:
+| 項目 | 確認方法 | 成功条件 |
+| ---------------------- | ------------------ | ----------------------------- |
+| アプリ起動 | ダブルクリック | メインウィンドウが表示される |
+| Gatekeeperブロック | 起動時の警告確認 | 警告なしで起動、または許可後起動 |
+| JIT動作 | 機能テスト | JavaScript処理が正常に動作 |
+
 ---
 
-## 成功/失敗の判定基準
+## 成功/失敗判定基準
 
-### 成功条件（全て必須）
+### 全体成功条件
 
-| #   | 条件                                 | 検証方法             |
-| --- | ------------------------------------ | -------------------- |
-| 1   | CIビルドが成功                       | GitHub Actions UI    |
-| 2   | hdiutilエラーが発生しない            | ログ検索             |
-| 3   | ZIPファイルが生成される              | アーティファクト確認 |
-| 4   | アーティファクトがアップロードされる | Summary確認          |
-| 5   | ローカルビルドが成功                 | 手動実行             |
+| テスト種別     | 成功条件                                   | 判定方法         |
+| -------------- | ------------------------------------------ | ---------------- |
+| plist構文      | `plutil -lint` がOKを返す                  | コマンド実行     |
+| ローカルビルド | `package:mac` が成功、.zip生成             | コマンド実行     |
+| CI             | `build-electron.yml` の macOS ジョブが成功 | GitHub Actions   |
+| 成果物         | `.zip` ファイルが存在、ダウンロード可能    | アーティファクト |
+| 手動テスト     | アプリが正常に起動、基本機能が動作         | 実機確認         |
 
-### 失敗条件
+### 失敗時の対応
 
-| #   | 条件                             | 対応                         |
-| --- | -------------------------------- | ---------------------------- |
-| 1   | hdiutilエラーが発生              | 設定を再確認                 |
-| 2   | CIビルドが失敗                   | ログを分析、設計を見直し     |
-| 3   | 成果物が生成されない             | target設定を確認             |
-| 4   | アーティファクトアップロード失敗 | ワークフローのパス設定を確認 |
+| 失敗パターン       | 対応アクション     |
+| ------------------ | ------------------ |
+| plist構文エラー    | ファイル内容を修正 |
+| ローカルビルド失敗 | 権限設定を見直す   |
+| CI失敗（3回以上）  | ロールバックを検討 |
+| アプリ起動しない   | 権限設定を見直す   |
 
 ---
 
-## テストカバレッジ目標
+## テスト実行タイムライン
 
-### ユニットテスト（該当なし）
-
-今回の修正は設定ファイルの変更のみであり、コードレベルのユニットテストは該当しない。
-
-### 統合テスト
-
-| 項目                     | 目標 |
-| ------------------------ | ---- |
-| CI接続テスト             | 100% |
-| ビルドフローテスト       | 100% |
-| 成果物生成テスト         | 100% |
-| アーティファクトテスト   | 100% |
-| エラーハンドリングテスト | 80%+ |
-
-### E2Eテスト
-
-| 項目               | 目標 |
-| ------------------ | ---- |
-| CI実行〜成果物確認 | 100% |
+```
+Phase 5 完了（実装）
+    │
+    ▼
+┌────────────────────────────────┐
+│ Step 1: plist検証              │ ← 即時実行
+│ - ファイル存在                 │
+│ - 構文検証                     │
+│ - 権限内容確認                 │
+└────────────────────────────────┘
+    │
+    ▼
+┌────────────────────────────────┐
+│ Step 2: ローカルビルド         │ ← ローカル環境
+│ - 依存ビルド                   │
+│ - アプリビルド                 │
+│ - パッケージング               │
+└────────────────────────────────┘
+    │
+    ▼
+Phase 6 完了（テスト拡充）
+    │
+    ▼
+┌────────────────────────────────┐
+│ Step 3: CI検証                 │ ← PRプッシュ後
+│ - GitHub Actions実行           │
+│ - ジョブ成功確認               │
+│ - アーティファクト確認         │
+└────────────────────────────────┘
+    │
+    ▼
+Phase 11（手動テスト）
+    │
+    ▼
+┌────────────────────────────────┐
+│ Step 4: 手動テスト             │ ← 実機確認
+│ - アーティファクトダウンロード │
+│ - アプリ起動確認               │
+│ - 基本動作確認                 │
+└────────────────────────────────┘
+```
 
 ---
 
 ## テストデータ
 
-今回の修正ではテストデータは不要。
-検証対象は設定ファイルとCIパイプラインの動作。
+### entitlements.mac.plist（期待される内容）
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+</dict>
+</plist>
+```
 
 ---
 
-## テストスケジュール
+## ロールバック手順
 
-| Phase | テスト内容            | 実行タイミング |
-| ----- | --------------------- | -------------- |
-| 4     | Red状態確認           | Phase 4完了時  |
-| 5     | 実装後のGreen状態確認 | 実装後         |
-| 6     | テスト拡充            | Phase 5完了後  |
-| 7     | カバレッジ確認        | Phase 6完了後  |
-| 11    | 手動テスト            | Phase 10完了後 |
-
----
-
-## Red状態確認（TDD）
-
-### 現状のCI状態
-
-`hdiutil` エラーにより CI が失敗している状態を確認済み（Issue #212）。
-
-**エラーメッセージ**:
-
-```
-hdiutil: create failed - Device not configured
-```
-
-### 確認方法
+### Phase 5後の失敗時
 
 ```bash
-# 既存の失敗したCIログを確認
-gh run list --workflow=build-electron.yml --status=failure --limit=5
+# ファイルを削除
+rm apps/desktop/build/entitlements.mac.plist
+
+# 変更を破棄
+git checkout -- apps/desktop/build/
 ```
 
-**ステータス**: Red状態確認済み（Issue #212, #230 で報告）
+### CI失敗が継続する場合
+
+```bash
+# 1. ブランチを削除してやり直し
+git checkout main
+git branch -D task/fix-macos-build-ci
+
+# 2. 新しいブランチで再実装
+git checkout -b task/fix-macos-build-ci-v2
+```
 
 ---
 
@@ -210,5 +216,6 @@ gh run list --workflow=build-electron.yml --status=failure --limit=5
 - [x] テスト実行環境を定義した
 - [x] テスト実行手順を定義した
 - [x] 成功/失敗の判定基準を定義した
-- [x] テストカバレッジ目標が設定されている
-- [x] Red状態（修正前の失敗状態）を確認した
+- [x] テストデータを準備した
+- [x] ロールバック手順を定義した
+- [x] テスト実行タイムラインを明記した

@@ -324,14 +324,14 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 
 ### 実装ファイル
 
-| ファイル | 説明 |
-| -------- | ---- |
-| `packages/shared/src/types/skill.ts` | Skill型定義（共有） |
-| `apps/desktop/src/renderer/store/slices/agentSlice.ts` | Zustand状態管理 |
-| `apps/desktop/src/renderer/views/AgentView/index.tsx` | メインビュー |
-| `apps/desktop/src/renderer/views/AgentView/components/` | UIコンポーネント群 |
-| `apps/desktop/src/main/skill/skill-handler.ts` | Main Process IPCハンドラー |
-| `apps/desktop/src/preload/skillApi.ts` | Preload API |
+| ファイル                                                | 説明                       |
+| ------------------------------------------------------- | -------------------------- |
+| `packages/shared/src/types/skill.ts`                    | Skill型定義（共有）        |
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts`  | Zustand状態管理            |
+| `apps/desktop/src/renderer/views/AgentView/index.tsx`   | メインビュー               |
+| `apps/desktop/src/renderer/views/AgentView/components/` | UIコンポーネント群         |
+| `apps/desktop/src/main/skill/skill-handler.ts`          | Main Process IPCハンドラー |
+| `apps/desktop/src/preload/skillApi.ts`                  | Preload API                |
 
 ---
 
@@ -384,16 +384,16 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 
 スキルの基本情報を表す。
 
-| プロパティ    | 型              | 必須 | 説明                   |
-| ------------- | --------------- | ---- | ---------------------- |
-| `id`          | `string`        | ✓    | 一意識別子             |
-| `name`        | `string`        | ✓    | スキル名               |
-| `slug`        | `string`        | ✓    | URLスラッグ            |
-| `description` | `string`        | ✓    | 説明文                 |
-| `path`        | `string`        | ✓    | スキルファイルパス     |
-| `triggers`    | `string[]`      | ✓    | トリガーキーワード     |
-| `anchors`     | `Anchor[]`      | ✓    | アンカー情報           |
-| `category`    | `SkillCategory` | -    | カテゴリ（任意）       |
+| プロパティ    | 型              | 必須 | 説明               |
+| ------------- | --------------- | ---- | ------------------ |
+| `id`          | `string`        | ✓    | 一意識別子         |
+| `name`        | `string`        | ✓    | スキル名           |
+| `slug`        | `string`        | ✓    | URLスラッグ        |
+| `description` | `string`        | ✓    | 説明文             |
+| `path`        | `string`        | ✓    | スキルファイルパス |
+| `triggers`    | `string[]`      | ✓    | トリガーキーワード |
+| `anchors`     | `Anchor[]`      | ✓    | アンカー情報       |
+| `category`    | `SkillCategory` | -    | カテゴリ（任意）   |
 
 ```typescript
 // packages/shared/src/types/skill.ts
@@ -413,11 +413,11 @@ export interface Skill {
 
 スキルのアンカー情報（参照文献と適用方法）。
 
-| プロパティ    | 型       | 必須 | 説明               |
-| ------------- | -------- | ---- | ------------------ |
-| `source`      | `string` | ✓    | 参照元（書籍等）   |
-| `application` | `string` | ✓    | 適用方法           |
-| `purpose`     | `string` | ✓    | 目的               |
+| プロパティ    | 型       | 必須 | 説明             |
+| ------------- | -------- | ---- | ---------------- |
+| `source`      | `string` | ✓    | 参照元（書籍等） |
+| `application` | `string` | ✓    | 適用方法         |
+| `purpose`     | `string` | ✓    | 目的             |
 
 ```typescript
 export interface Anchor {
@@ -431,34 +431,34 @@ export interface Anchor {
 
 スキルのカテゴリを表す列挙型。
 
-| 値            | 説明                   |
-| ------------- | ---------------------- |
-| `development` | 開発関連               |
-| `testing`     | テスト関連             |
-| `documentation` | ドキュメント関連     |
-| `workflow`    | ワークフロー関連       |
-| `other`       | その他                 |
+| 値              | 説明             |
+| --------------- | ---------------- |
+| `development`   | 開発関連         |
+| `testing`       | テスト関連       |
+| `documentation` | ドキュメント関連 |
+| `workflow`      | ワークフロー関連 |
+| `other`         | その他           |
 
 ```typescript
 export type SkillCategory =
-  | 'development'
-  | 'testing'
-  | 'documentation'
-  | 'workflow'
-  | 'other';
+  | "development"
+  | "testing"
+  | "documentation"
+  | "workflow"
+  | "other";
 ```
 
 #### AgentExecutionStatus型
 
 エージェント実行状態を表す列挙型。
 
-| 値          | 説明                   |
-| ----------- | ---------------------- |
-| `idle`      | 待機中                 |
-| `executing` | 実行中                 |
-| `completed` | 完了                   |
-| `error`     | エラー                 |
-| `aborted`   | 中断                   |
+| 値          | 説明   |
+| ----------- | ------ |
+| `idle`      | 待機中 |
+| `executing` | 実行中 |
+| `completed` | 完了   |
+| `error`     | エラー |
+| `aborted`   | 中断   |
 
 ---
 
@@ -468,55 +468,55 @@ Zustand Sliceパターンで実装された状態管理。
 
 #### AgentState型
 
-| プロパティ           | 型                      | 説明               |
-| -------------------- | ----------------------- | ------------------ |
-| `skills`             | `Skill[]`               | インポート済みスキル一覧 |
-| `availableSkills`    | `Skill[]`               | 利用可能なスキル一覧 |
-| `importedSkillIds`   | `string[]`              | インポート済みスキルID |
-| `selectedSkill`      | `Skill \| null`         | 選択中のスキル     |
-| `skillFilter`        | `string`                | 検索フィルター文字列 |
-| `skillCategory`      | `SkillCategory \| null` | カテゴリフィルター |
+| プロパティ           | 型                      | 説明                         |
+| -------------------- | ----------------------- | ---------------------------- |
+| `skills`             | `Skill[]`               | インポート済みスキル一覧     |
+| `availableSkills`    | `Skill[]`               | 利用可能なスキル一覧         |
+| `importedSkillIds`   | `string[]`              | インポート済みスキルID       |
+| `selectedSkill`      | `Skill \| null`         | 選択中のスキル               |
+| `skillFilter`        | `string`                | 検索フィルター文字列         |
+| `skillCategory`      | `SkillCategory \| null` | カテゴリフィルター           |
 | `isImportDialogOpen` | `boolean`               | インポートダイアログ表示状態 |
-| `toastMessage`       | `ToastMessage \| null`  | トースト通知       |
-| `executionStatus`    | `AgentExecutionStatus`  | 実行状態           |
-| `currentExecutionId` | `string \| null`        | 実行ID             |
-| `executionOutput`    | `string[]`              | 実行出力           |
-| `isLoading`          | `boolean`               | ローディング状態   |
-| `error`              | `string \| null`        | エラーメッセージ   |
+| `toastMessage`       | `ToastMessage \| null`  | トースト通知                 |
+| `executionStatus`    | `AgentExecutionStatus`  | 実行状態                     |
+| `currentExecutionId` | `string \| null`        | 実行ID                       |
+| `executionOutput`    | `string[]`              | 実行出力                     |
+| `isLoading`          | `boolean`               | ローディング状態             |
+| `error`              | `string \| null`        | エラーメッセージ             |
 
 #### AgentActions型
 
-| アクション             | 引数                           | 説明                 |
-| ---------------------- | ------------------------------ | -------------------- |
-| `setSkills`            | `skills: Skill[]`              | スキル一覧設定       |
-| `setAvailableSkills`   | `skills: Skill[]`              | 利用可能スキル設定   |
-| `setImportedSkillIds`  | `ids: string[]`                | インポート済みID設定 |
-| `selectSkill`          | `skill: Skill \| null`         | スキル選択           |
-| `setSkillFilter`       | `filter: string`               | フィルター設定       |
-| `setSkillCategory`     | `category: SkillCategory \| null` | カテゴリ設定      |
-| `openImportDialog`     | -                              | インポートダイアログ開 |
-| `closeImportDialog`    | -                              | インポートダイアログ閉 |
-| `showToast`            | `message: ToastMessage`        | トースト表示         |
-| `clearToast`           | -                              | トーストクリア       |
-| `setExecutionStatus`   | `status: AgentExecutionStatus` | 実行状態設定         |
-| `setCurrentExecutionId` | `id: string \| null`          | 実行ID設定           |
-| `appendOutput`         | `output: string`               | 出力追加             |
-| `clearExecution`       | -                              | 実行クリア           |
-| `setLoading`           | `isLoading: boolean`           | ローディング設定     |
-| `setError`             | `error: string \| null`        | エラー設定           |
-| `resetAgentState`      | -                              | 状態リセット         |
+| アクション              | 引数                              | 説明                   |
+| ----------------------- | --------------------------------- | ---------------------- |
+| `setSkills`             | `skills: Skill[]`                 | スキル一覧設定         |
+| `setAvailableSkills`    | `skills: Skill[]`                 | 利用可能スキル設定     |
+| `setImportedSkillIds`   | `ids: string[]`                   | インポート済みID設定   |
+| `selectSkill`           | `skill: Skill \| null`            | スキル選択             |
+| `setSkillFilter`        | `filter: string`                  | フィルター設定         |
+| `setSkillCategory`      | `category: SkillCategory \| null` | カテゴリ設定           |
+| `openImportDialog`      | -                                 | インポートダイアログ開 |
+| `closeImportDialog`     | -                                 | インポートダイアログ閉 |
+| `showToast`             | `message: ToastMessage`           | トースト表示           |
+| `clearToast`            | -                                 | トーストクリア         |
+| `setExecutionStatus`    | `status: AgentExecutionStatus`    | 実行状態設定           |
+| `setCurrentExecutionId` | `id: string \| null`              | 実行ID設定             |
+| `appendOutput`          | `output: string`                  | 出力追加               |
+| `clearExecution`        | -                                 | 実行クリア             |
+| `setLoading`            | `isLoading: boolean`              | ローディング設定       |
+| `setError`              | `error: string \| null`           | エラー設定             |
+| `resetAgentState`       | -                                 | 状態リセット           |
 
 ---
 
 ### IPC チャンネル（スキル管理）
 
-| チャンネル          | 方向            | 説明                     | 戻り値                  |
-| ------------------- | --------------- | ------------------------ | ----------------------- |
-| `skill:list`        | Renderer → Main | インポート済みスキル取得 | `APIResponse<Skill[]>`  |
-| `skill:available`   | Renderer → Main | 利用可能スキル取得       | `APIResponse<Skill[]>`  |
-| `skill:import`      | Renderer → Main | スキルインポート         | `APIResponse<void>`     |
-| `skill:remove`      | Renderer → Main | スキル削除               | `APIResponse<void>`     |
-| `skill:detail`      | Renderer → Main | スキル詳細取得           | `APIResponse<Skill>`    |
+| チャンネル        | 方向            | 説明                     | 戻り値                 |
+| ----------------- | --------------- | ------------------------ | ---------------------- |
+| `skill:list`      | Renderer → Main | インポート済みスキル取得 | `APIResponse<Skill[]>` |
+| `skill:available` | Renderer → Main | 利用可能スキル取得       | `APIResponse<Skill[]>` |
+| `skill:import`    | Renderer → Main | スキルインポート         | `APIResponse<void>`    |
+| `skill:remove`    | Renderer → Main | スキル削除               | `APIResponse<void>`    |
+| `skill:detail`    | Renderer → Main | スキル詳細取得           | `APIResponse<Skill>`   |
 
 #### APIResponse型
 
@@ -548,9 +548,9 @@ interface APIResponse<T> {
 
 スキルをインポートする。
 
-| パラメータ | 型       | 必須 | 説明       |
-| ---------- | -------- | ---- | ---------- |
-| `skillId`  | `string` | ✓    | スキルID   |
+| パラメータ | 型       | 必須 | 説明     |
+| ---------- | -------- | ---- | -------- |
+| `skillId`  | `string` | ✓    | スキルID |
 
 **戻り値**: `Promise<APIResponse<void>>`
 
@@ -558,9 +558,9 @@ interface APIResponse<T> {
 
 スキルを削除する。
 
-| パラメータ | 型       | 必須 | 説明       |
-| ---------- | -------- | ---- | ---------- |
-| `skillId`  | `string` | ✓    | スキルID   |
+| パラメータ | 型       | 必須 | 説明     |
+| ---------- | -------- | ---- | -------- |
+| `skillId`  | `string` | ✓    | スキルID |
 
 **戻り値**: `Promise<APIResponse<void>>`
 
@@ -568,9 +568,9 @@ interface APIResponse<T> {
 
 スキルの詳細情報を取得する。
 
-| パラメータ | 型       | 必須 | 説明       |
-| ---------- | -------- | ---- | ---------- |
-| `skillId`  | `string` | ✓    | スキルID   |
+| パラメータ | 型       | 必須 | 説明     |
+| ---------- | -------- | ---- | -------- |
+| `skillId`  | `string` | ✓    | スキルID |
 
 **戻り値**: `Promise<APIResponse<Skill>>`
 
@@ -594,24 +594,24 @@ AgentView
 
 #### コンポーネント仕様
 
-| コンポーネント       | ファイル                          | 責務                     |
-| -------------------- | --------------------------------- | ------------------------ |
-| `AgentView`          | `views/AgentView/index.tsx`       | メインビュー、状態管理   |
-| `SkillList`          | `components/SkillList.tsx`        | スキル一覧表示           |
-| `SkillCard`          | `components/SkillCard.tsx`        | スキルカード表示         |
-| `SkillDetailPanel`   | `components/SkillDetailPanel.tsx` | スキル詳細パネル         |
-| `SkillImportDialog`  | `components/SkillImportDialog.tsx`| インポートダイアログ     |
-| `SkillSearchBar`     | `components/SkillSearchBar.tsx`   | 検索バー                 |
-| `SkillCategoryFilter`| `components/SkillCategoryFilter.tsx` | カテゴリフィルター    |
+| コンポーネント        | ファイル                             | 責務                   |
+| --------------------- | ------------------------------------ | ---------------------- |
+| `AgentView`           | `views/AgentView/index.tsx`          | メインビュー、状態管理 |
+| `SkillList`           | `components/SkillList.tsx`           | スキル一覧表示         |
+| `SkillCard`           | `components/SkillCard.tsx`           | スキルカード表示       |
+| `SkillDetailPanel`    | `components/SkillDetailPanel.tsx`    | スキル詳細パネル       |
+| `SkillImportDialog`   | `components/SkillImportDialog.tsx`   | インポートダイアログ   |
+| `SkillSearchBar`      | `components/SkillSearchBar.tsx`      | 検索バー               |
+| `SkillCategoryFilter` | `components/SkillCategoryFilter.tsx` | カテゴリフィルター     |
 
 #### アクセシビリティ要件
 
-| 要件             | 実装                                |
-| ---------------- | ----------------------------------- |
-| キーボードナビ   | Tab/Enter/Escで操作可能             |
-| スクリーンリーダー | aria-label、role属性設定          |
-| フォーカス管理   | ダイアログ開閉時のフォーカス制御    |
-| セマンティック   | header/main/aside/regionロール使用 |
+| 要件               | 実装                               |
+| ------------------ | ---------------------------------- |
+| キーボードナビ     | Tab/Enter/Escで操作可能            |
+| スクリーンリーダー | aria-label、role属性設定           |
+| フォーカス管理     | ダイアログ開閉時のフォーカス制御   |
+| セマンティック     | header/main/aside/regionロール使用 |
 
 ---
 
@@ -629,9 +629,9 @@ AgentView
 
 #### テストファイル
 
-| ファイル                             | テスト種別       |
-| ------------------------------------ | ---------------- |
-| `AgentView.test.tsx`                 | ユニットテスト   |
+| ファイル                               | テスト種別     |
+| -------------------------------------- | -------------- |
+| `AgentView.test.tsx`                   | ユニットテスト |
 | `SkillManagement.integration.test.tsx` | 統合テスト     |
 
 #### 検証シナリオ
@@ -699,9 +699,9 @@ AgentView
 ```typescript
 // ModifierSkill入力
 interface ModifierSkillInput {
-  html: string;           // Reveal.js HTML
+  html: string; // Reveal.js HTML
   currentStructure: string; // 現在のstructure.md
-  projectPath: string;    // プロジェクトパス
+  projectPath: string; // プロジェクトパス
 }
 
 // ModifierSkill出力
@@ -712,16 +712,16 @@ interface ModifierSkillOutput {
 
 // 変更情報
 interface StructureChange {
-  type: 'add' | 'remove' | 'modify';
+  type: "add" | "remove" | "modify";
   section: string;
   description: string;
 }
 
 // 同期状態
-type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
+type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
 // 同期方向
-type SyncDirection = 'forward' | 'reverse';
+type SyncDirection = "forward" | "reverse";
 ```
 
 ### 無限ループ防止（changeContextMap）
@@ -742,21 +742,21 @@ interface ChangeContext {
 
 ### IPC チャンネル（スライド同期）
 
-| チャンネル             | 方向            | 説明                   |
-| ---------------------- | --------------- | ---------------------- |
-| `slide:sync-status`    | Main → Renderer | 同期状態通知           |
-| `slide:sync-progress`  | Main → Renderer | 同期進捗通知           |
-| `slide:reverse-sync`   | Renderer → Main | 逆同期手動トリガー     |
-| `slide:sync-error`     | Main → Renderer | 同期エラー通知         |
+| チャンネル            | 方向            | 説明               |
+| --------------------- | --------------- | ------------------ |
+| `slide:sync-status`   | Main → Renderer | 同期状態通知       |
+| `slide:sync-progress` | Main → Renderer | 同期進捗通知       |
+| `slide:reverse-sync`  | Renderer → Main | 逆同期手動トリガー |
+| `slide:sync-error`    | Main → Renderer | 同期エラー通知     |
 
 ### 設定定数
 
-| 定数                    | 値      | 説明                         |
-| ----------------------- | ------- | ---------------------------- |
-| `SYNC_TIMEOUT`          | `30000` | 同期処理タイムアウト (ms)    |
-| `CHANGE_CONTEXT_TTL`    | `1000`  | 変更コンテキスト有効期間 (ms) |
-| `DEBOUNCE_DELAY`        | `300`   | ファイル変更debounce (ms)    |
-| `AWAIT_WRITE_FINISH`    | `300`   | 書き込み完了待機 (ms)        |
+| 定数                 | 値      | 説明                          |
+| -------------------- | ------- | ----------------------------- |
+| `SYNC_TIMEOUT`       | `30000` | 同期処理タイムアウト (ms)     |
+| `CHANGE_CONTEXT_TTL` | `1000`  | 変更コンテキスト有効期間 (ms) |
+| `DEBOUNCE_DELAY`     | `300`   | ファイル変更debounce (ms)     |
+| `AWAIT_WRITE_FINISH` | `300`   | 書き込み完了待機 (ms)         |
 
 ### 実装状態
 
@@ -770,11 +770,11 @@ interface ChangeContext {
 
 ### 関連ドキュメント（スライド逆同期）
 
-| ドキュメント     | パス                                                              |
-| ---------------- | ----------------------------------------------------------------- |
-| 実装ガイド       | `docs/30-workflows/slide-reverse-sync/outputs/phase-12/implementation-guide.md` |
-| API仕様          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/api-specification.md` |
-| IPC設計          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md` |
+| ドキュメント | パス                                                                            |
+| ------------ | ------------------------------------------------------------------------------- |
+| 実装ガイド   | `docs/30-workflows/slide-reverse-sync/outputs/phase-12/implementation-guide.md` |
+| API仕様      | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/api-specification.md`     |
+| IPC設計      | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md`            |
 
 ---
 
@@ -785,18 +785,18 @@ AGENT-004タスクで実装されたAgent実行UI機能の完全な仕様を定�
 
 ### 実装ファイル
 
-| ファイル | 説明 |
-| -------- | ---- |
-| `packages/shared/src/types/agent.ts` | Agent Execution UI型定義（共有） |
-| `apps/desktop/src/renderer/store/slices/agentSlice.ts` | Zustand状態管理（Agent Execution拡張） |
-| `apps/desktop/src/renderer/views/AgentExecutionView/` | メインビュー |
-| `apps/desktop/src/renderer/components/organisms/PermissionDialog/` | 権限確認ダイアログ |
-| `apps/desktop/src/renderer/components/organisms/AgentChatInterface/` | チャットインターフェース |
-| `apps/desktop/src/renderer/components/molecules/AgentMessageInput/` | メッセージ入力 |
-| `apps/desktop/src/renderer/components/molecules/AgentExecutionControls/` | 実行制御ボタン |
-| `apps/desktop/src/renderer/utils/agentApi.ts` | IPCヘルパー関数 |
-| `apps/desktop/src/preload/channels.ts` | IPCチャンネル定義 |
-| `apps/desktop/src/preload/index.ts` | Preload API |
+| ファイル                                                                 | 説明                                   |
+| ------------------------------------------------------------------------ | -------------------------------------- |
+| `packages/shared/src/types/agent.ts`                                     | Agent Execution UI型定義（共有）       |
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts`                   | Zustand状態管理（Agent Execution拡張） |
+| `apps/desktop/src/renderer/views/AgentExecutionView/`                    | メインビュー                           |
+| `apps/desktop/src/renderer/components/organisms/PermissionDialog/`       | 権限確認ダイアログ                     |
+| `apps/desktop/src/renderer/components/organisms/AgentChatInterface/`     | チャットインターフェース               |
+| `apps/desktop/src/renderer/components/molecules/AgentMessageInput/`      | メッセージ入力                         |
+| `apps/desktop/src/renderer/components/molecules/AgentExecutionControls/` | 実行制御ボタン                         |
+| `apps/desktop/src/renderer/utils/agentApi.ts`                            | IPCヘルパー関数                        |
+| `apps/desktop/src/preload/channels.ts`                                   | IPCチャンネル定義                      |
+| `apps/desktop/src/preload/index.ts`                                      | Preload API                            |
 
 ---
 
@@ -865,36 +865,36 @@ AGENT-004タスクで実装されたAgent実行UI機能の完全な仕様を定�
 ```typescript
 // packages/shared/src/types/agent.ts
 export type AgentExecutionStatus =
-  | 'idle'
-  | 'executing'
-  | 'streaming'
-  | 'awaiting_permission'
-  | 'completed'
-  | 'cancelled'
-  | 'error';
+  | "idle"
+  | "executing"
+  | "streaming"
+  | "awaiting_permission"
+  | "completed"
+  | "cancelled"
+  | "error";
 ```
 
 #### AgentMessage型
 
 チャットインターフェースに表示されるメッセージ。
 
-| プロパティ    | 型                               | 必須 | 説明                   |
-| ------------- | -------------------------------- | ---- | ---------------------- |
-| `id`          | `string`                         | ✓    | メッセージの一意識別子 |
-| `role`        | `'user' \| 'assistant' \| 'system'` | ✓  | メッセージの送信者     |
-| `content`     | `string`                         | ✓    | メッセージ内容         |
-| `timestamp`   | `Date`                           | ✓    | 送信日時               |
-| `isStreaming` | `boolean`                        | -    | ストリーミング中フラグ |
-| `type`        | `'text' \| 'error' \| 'tool_use'` | -   | メッセージタイプ       |
+| プロパティ    | 型                                  | 必須 | 説明                   |
+| ------------- | ----------------------------------- | ---- | ---------------------- |
+| `id`          | `string`                            | ✓    | メッセージの一意識別子 |
+| `role`        | `'user' \| 'assistant' \| 'system'` | ✓    | メッセージの送信者     |
+| `content`     | `string`                            | ✓    | メッセージ内容         |
+| `timestamp`   | `Date`                              | ✓    | 送信日時               |
+| `isStreaming` | `boolean`                           | -    | ストリーミング中フラグ |
+| `type`        | `'text' \| 'error' \| 'tool_use'`   | -    | メッセージタイプ       |
 
 ```typescript
 export interface AgentMessage {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
   isStreaming?: boolean;
-  type?: 'text' | 'error' | 'tool_use';
+  type?: "text" | "error" | "tool_use";
 }
 ```
 
@@ -902,13 +902,13 @@ export interface AgentMessage {
 
 ツール使用の権限確認リクエスト。
 
-| プロパティ    | 型                       | 必須 | 説明                   |
-| ------------- | ------------------------ | ---- | ---------------------- |
-| `executionId` | `string`                 | ✓    | 実行ID                 |
-| `requestId`   | `string`                 | ✓    | リクエストID           |
-| `toolName`    | `string`                 | ✓    | ツール名               |
-| `args`        | `Record<string, unknown>` | ✓   | ツール引数             |
-| `reason`      | `string`                 | -    | リクエスト理由         |
+| プロパティ    | 型                        | 必須 | 説明           |
+| ------------- | ------------------------- | ---- | -------------- |
+| `executionId` | `string`                  | ✓    | 実行ID         |
+| `requestId`   | `string`                  | ✓    | リクエストID   |
+| `toolName`    | `string`                  | ✓    | ツール名       |
+| `args`        | `Record<string, unknown>` | ✓    | ツール引数     |
+| `reason`      | `string`                  | -    | リクエスト理由 |
 
 ```typescript
 export interface PermissionRequest {
@@ -924,11 +924,11 @@ export interface PermissionRequest {
 
 ツール使用の権限確認レスポンス。
 
-| プロパティ   | 型        | 必須 | 説明               |
-| ------------ | --------- | ---- | ------------------ |
-| `requestId`  | `string`  | ✓    | リクエストID       |
-| `granted`    | `boolean` | ✓    | 許可されたか       |
-| `remember`   | `boolean` | -    | 選択を記憶するか   |
+| プロパティ  | 型        | 必須 | 説明             |
+| ----------- | --------- | ---- | ---------------- |
+| `requestId` | `string`  | ✓    | リクエストID     |
+| `granted`   | `boolean` | ✓    | 許可されたか     |
+| `remember`  | `boolean` | -    | 選択を記憶するか |
 
 ```typescript
 export interface PermissionResponse {
@@ -946,64 +946,64 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 #### AgentExecutionState型
 
-| プロパティ                  | 型                                   | 説明                   |
-| --------------------------- | ------------------------------------ | ---------------------- |
-| `status`                    | `AgentExecutionStatus`               | 実行状態               |
-| `currentSkill`              | `Skill \| null`                      | 現在のスキル           |
-| `messages`                  | `AgentMessage[]`                     | メッセージ履歴         |
-| `currentStreamingContent`   | `string`                             | ストリーミング中テキスト |
-| `error`                     | `string \| null`                     | エラーメッセージ       |
-| `pendingPermission`         | `PermissionRequest \| null`          | 待機中の権限要求       |
-| `rememberedChoices`         | `Record<string, boolean>`            | 記憶された選択         |
+| プロパティ                | 型                          | 説明                     |
+| ------------------------- | --------------------------- | ------------------------ |
+| `status`                  | `AgentExecutionStatus`      | 実行状態                 |
+| `currentSkill`            | `Skill \| null`             | 現在のスキル             |
+| `messages`                | `AgentMessage[]`            | メッセージ履歴           |
+| `currentStreamingContent` | `string`                    | ストリーミング中テキスト |
+| `error`                   | `string \| null`            | エラーメッセージ         |
+| `pendingPermission`       | `PermissionRequest \| null` | 待機中の権限要求         |
+| `rememberedChoices`       | `Record<string, boolean>`   | 記憶された選択           |
 
 #### Agent Execution Actions
 
-| アクション                | 引数                                | 説明                     |
-| ------------------------- | ----------------------------------- | ------------------------ |
-| `setExecutionStatus`      | `status: AgentExecutionStatus`      | 実行状態設定             |
-| `setCurrentSkill`         | `skill: Skill \| null`              | 現在のスキル設定         |
-| `addMessage`              | `message: AgentMessage`             | メッセージ追加           |
-| `appendStreamingContent`  | `content: string`                   | ストリーミング追記       |
-| `finalizeStreamingMessage`| -                                   | ストリーミング完了処理   |
-| `setError`                | `error: string \| null`             | エラー設定               |
-| `setPendingPermission`    | `request: PermissionRequest \| null`| 権限要求設定             |
-| `rememberPermissionChoice`| `toolName: string, granted: boolean`| 選択記憶                 |
-| `clearMessages`           | -                                   | メッセージクリア         |
-| `resetExecutionState`     | -                                   | 状態リセット             |
+| アクション                 | 引数                                 | 説明                   |
+| -------------------------- | ------------------------------------ | ---------------------- |
+| `setExecutionStatus`       | `status: AgentExecutionStatus`       | 実行状態設定           |
+| `setCurrentSkill`          | `skill: Skill \| null`               | 現在のスキル設定       |
+| `addMessage`               | `message: AgentMessage`              | メッセージ追加         |
+| `appendStreamingContent`   | `content: string`                    | ストリーミング追記     |
+| `finalizeStreamingMessage` | -                                    | ストリーミング完了処理 |
+| `setError`                 | `error: string \| null`              | エラー設定             |
+| `setPendingPermission`     | `request: PermissionRequest \| null` | 権限要求設定           |
+| `rememberPermissionChoice` | `toolName: string, granted: boolean` | 選択記憶               |
+| `clearMessages`            | -                                    | メッセージクリア       |
+| `resetExecutionState`      | -                                    | 状態リセット           |
 
 ---
 
 ### IPC チャンネル（Agent Execution）
 
-| チャンネル              | 方向            | 説明                     |
-| ----------------------- | --------------- | ------------------------ |
-| `agent:start`           | Renderer → Main | エージェント実行開始     |
-| `agent:stop`            | Renderer → Main | エージェント実行停止     |
-| `agent:stream`          | Main → Renderer | ストリーミング出力       |
-| `agent:complete`        | Main → Renderer | 実行完了通知             |
-| `agent:error`           | Main → Renderer | エラー通知               |
-| `agent:permission`      | Main → Renderer | 権限確認要求             |
-| `agent:permission:res`  | Renderer → Main | 権限確認応答             |
+| チャンネル             | 方向            | 説明                 |
+| ---------------------- | --------------- | -------------------- |
+| `agent:start`          | Renderer → Main | エージェント実行開始 |
+| `agent:stop`           | Renderer → Main | エージェント実行停止 |
+| `agent:stream`         | Main → Renderer | ストリーミング出力   |
+| `agent:complete`       | Main → Renderer | 実行完了通知         |
+| `agent:error`          | Main → Renderer | エラー通知           |
+| `agent:permission`     | Main → Renderer | 権限確認要求         |
+| `agent:permission:res` | Renderer → Main | 権限確認応答         |
 
 #### agent:start ペイロード
 
-| フィールド | 型       | 説明           |
-| ---------- | -------- | -------------- |
-| `skillId`  | `string` | 実行スキルID   |
-| `prompt`   | `string` | ユーザー入力   |
+| フィールド | 型       | 説明         |
+| ---------- | -------- | ------------ |
+| `skillId`  | `string` | 実行スキルID |
+| `prompt`   | `string` | ユーザー入力 |
 
 #### agent:stream ペイロード
 
-| フィールド    | 型       | 説明               |
-| ------------- | -------- | ------------------ |
-| `executionId` | `string` | 実行ID             |
-| `delta`       | `string` | 差分テキスト       |
-| `content`     | `string` | 累積テキスト       |
+| フィールド    | 型       | 説明         |
+| ------------- | -------- | ------------ |
+| `executionId` | `string` | 実行ID       |
+| `delta`       | `string` | 差分テキスト |
+| `content`     | `string` | 累積テキスト |
 
 #### agent:permission ペイロード
 
-| フィールド | 型                  | 説明             |
-| ---------- | ------------------- | ---------------- |
+| フィールド | 型                  | 説明               |
+| ---------- | ------------------- | ------------------ |
 | `request`  | `PermissionRequest` | 権限確認リクエスト |
 
 ---
@@ -1014,10 +1014,10 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 エージェント実行を開始する。
 
-| パラメータ | 型       | 必須 | 説明         |
-| ---------- | -------- | ---- | ------------ |
-| `skillId`  | `string` | ✓    | スキルID     |
-| `prompt`   | `string` | ✓    | プロンプト   |
+| パラメータ | 型       | 必須 | 説明       |
+| ---------- | -------- | ---- | ---------- |
+| `skillId`  | `string` | ✓    | スキルID   |
+| `prompt`   | `string` | ✓    | プロンプト |
 
 **戻り値**: `Promise<{ executionId: string }>`
 
@@ -1031,9 +1031,9 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 権限確認に応答する。
 
-| パラメータ | 型                   | 必須 | 説明           |
-| ---------- | -------------------- | ---- | -------------- |
-| `response` | `PermissionResponse` | ✓    | 権限確認応答   |
+| パラメータ | 型                   | 必須 | 説明         |
+| ---------- | -------------------- | ---- | ------------ |
+| `response` | `PermissionResponse` | ✓    | 権限確認応答 |
 
 **戻り値**: `Promise<void>`
 
@@ -1041,9 +1041,9 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 ストリーミング出力のコールバックを登録する。
 
-| パラメータ | 型                                            | 必須 | 説明             |
-| ---------- | --------------------------------------------- | ---- | ---------------- |
-| `callback` | `(data: { delta: string; content: string }) => void` | ✓ | コールバック関数 |
+| パラメータ | 型                                                   | 必須 | 説明             |
+| ---------- | ---------------------------------------------------- | ---- | ---------------- |
+| `callback` | `(data: { delta: string; content: string }) => void` | ✓    | コールバック関数 |
 
 **戻り値**: `() => void` - 購読解除関数
 
@@ -1051,9 +1051,9 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 権限確認要求のコールバックを登録する。
 
-| パラメータ | 型                                          | 必須 | 説明             |
-| ---------- | ------------------------------------------- | ---- | ---------------- |
-| `callback` | `(request: PermissionRequest) => void`      | ✓    | コールバック関数 |
+| パラメータ | 型                                     | 必須 | 説明             |
+| ---------- | -------------------------------------- | ---- | ---------------- |
+| `callback` | `(request: PermissionRequest) => void` | ✓    | コールバック関数 |
 
 **戻り値**: `() => void` - 購読解除関数
 
@@ -1061,23 +1061,160 @@ AGENT-004で追加されたAgent Execution UI用の状態管理。
 
 ### アクセシビリティ要件（AGENT-004）
 
-| 要件                 | 実装                                              |
-| -------------------- | ------------------------------------------------- |
-| キーボードナビ       | Tab/Shift+Tab/Enter/Escapeで操作可能              |
-| スクリーンリーダー   | aria-label, aria-live, role属性設定               |
-| フォーカス管理       | PermissionDialogのフォーカストラップ              |
-| 色コントラスト       | WCAG 2.1 AA 4.5:1以上                             |
-| ライブリージョン     | ストリーミング出力にaria-live="polite"            |
+| 要件               | 実装                                   |
+| ------------------ | -------------------------------------- |
+| キーボードナビ     | Tab/Shift+Tab/Enter/Escapeで操作可能   |
+| スクリーンリーダー | aria-label, aria-live, role属性設定    |
+| フォーカス管理     | PermissionDialogのフォーカストラップ   |
+| 色コントラスト     | WCAG 2.1 AA 4.5:1以上                  |
+| ライブリージョン   | ストリーミング出力にaria-live="polite" |
 
 ---
 
 ### 関連ドキュメント（Agent Execution UI）
 
-| ドキュメント                     | パス                                                                              |
-| -------------------------------- | --------------------------------------------------------------------------------- |
-| Agent Execution UI実装ガイド     | `docs/30-workflows/agent-execution-ui/outputs/phase-12/implementation-guide.md`   |
-| Agent Execution UI設計書         | `docs/30-workflows/agent-execution-ui/outputs/phase-2/architecture-design.md`     |
-| Agent Execution UIテスト仕様     | `docs/30-workflows/agent-execution-ui/outputs/phase-4/test-specification.md`      |
+| ドキュメント                 | パス                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| Agent Execution UI実装ガイド | `docs/30-workflows/agent-execution-ui/outputs/phase-12/implementation-guide.md` |
+| Agent Execution UI設計書     | `docs/30-workflows/agent-execution-ui/outputs/phase-2/architecture-design.md`   |
+| Agent Execution UIテスト仕様 | `docs/30-workflows/agent-execution-ui/outputs/phase-4/test-specification.md`    |
+
+---
+
+## AgentSDKPage（ポストリリーステスト検証UI）
+
+AGENT-004実装後のポストリリーステストで作成されたAgent SDK統合テスト用UIページ。
+ストリーミング応答、セッション管理、権限確認ダイアログの動作検証に使用する。
+
+### 実装ファイル
+
+| ファイル                                                                       | 説明                               |
+| ------------------------------------------------------------------------------ | ---------------------------------- |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/index.tsx`                       | AgentSDKPageメインコンポーネント   |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/__tests__/AgentSDKPage.test.tsx` | ユニットテスト（29テスト）         |
+| `apps/desktop/e2e/agent-sdk-integration.spec.ts`                               | E2E統合テスト（20テスト）          |
+| `apps/desktop/e2e/agent-performance.spec.ts`                                   | パフォーマンステスト（4テスト）    |
+| `apps/desktop/e2e/agent-network-resilience.spec.ts`                            | ネットワーク障害テスト（18テスト） |
+| `apps/desktop/scripts/long-running-test.mjs`                                   | 安定性テストスクリプト             |
+
+---
+
+### アーキテクチャ（AgentSDKPage）
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Electron Main Process                   │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                   IPC Handlers                       │    │
+│  │  agent:createSession, agent:query, agent:abort      │    │
+│  └─────────────────────────────────────────────────────┘    │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ contextBridge
+┌───────────────────────────┴─────────────────────────────────┐
+│                    Preload (AgentSDKAPI)                     │
+│  getStatus, createSession, resumeSession, destroySession    │
+│  query, abort, onMessage, setOption, getOption              │
+└───────────────────────────┬─────────────────────────────────┘
+                            │ window.agentSDKAPI
+┌───────────────────────────┴─────────────────────────────────┐
+│                      Renderer Process                        │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                   AgentSDKPage                       │    │
+│  │  - State: sessions, sdkStatus, executionStatus      │    │
+│  │  - UI: prompt-input, send-button, response-area     │    │
+│  │  - Dialog: permission-dialog                         │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Preload API（window.agentSDKAPI）
+
+テスト用に拡張されたAgentSDKAPI仕様。
+
+```typescript
+interface AgentSDKAPI {
+  getStatus: () => Promise<AgentSDKStatus>;
+  createSession: () => Promise<AgentSDKCreateSessionResponse>;
+  resumeSession: (request: AgentSDKResumeSessionRequest) => Promise<void>;
+  destroySession: (request: AgentSDKDestroySessionRequest) => Promise<void>;
+  query: (request: AgentSDKQueryRequest) => Promise<void>;
+  abort: () => void;
+  onMessage: (callback: (message: AgentSDKMessage) => void) => () => void;
+  setOption: (options: { timeout?: number }) => void;
+  getOption: (key: string) => number | undefined;
+  setSessionId: (sessionId: string) => void;
+}
+```
+
+#### AgentSDKStatus
+
+```typescript
+interface AgentSDKStatus {
+  authenticated: boolean;
+  version: string;
+  features: string[];
+}
+```
+
+#### AgentSDKMessage
+
+```typescript
+interface AgentSDKMessage {
+  type: "text" | "tool_use" | "tool_result" | "error" | "end";
+  content?: string;
+  toolName?: string;
+  toolInput?: Record<string, unknown>;
+}
+```
+
+---
+
+### data-testid一覧（AgentSDKPage）
+
+| data-testid               | 要素   | 用途                     |
+| ------------------------- | ------ | ------------------------ |
+| `agent-status`            | div    | SDK状態表示              |
+| `new-session-button`      | button | セッション作成           |
+| `session-id`              | div    | セッションID表示         |
+| `session-${id}`           | button | セッションリスト項目     |
+| `prompt-input`            | input  | プロンプト入力           |
+| `send-button`             | button | 送信ボタン               |
+| `abort-button`            | button | 中断ボタン               |
+| `response-area`           | div    | 応答表示エリア           |
+| `response-chunk`          | span   | ストリーミングチャンク   |
+| `execution-status`        | div    | 実行状態                 |
+| `permission-dialog`       | div    | 権限確認ダイアログ       |
+| `permission-tool-name`    | div    | ツール名表示             |
+| `permission-allow-button` | button | 許可ボタン               |
+| `permission-deny-button`  | button | 拒否ボタン               |
+| `error-message`           | div    | エラーメッセージ         |
+| `validation-error`        | div    | バリデーションエラー     |
+| `offline-indicator`       | div    | オフラインインジケーター |
+| `destroy-session-button`  | button | セッション破棄           |
+
+---
+
+### テスト統計
+
+| テスト種類           | テスト数    | カバレッジ   |
+| -------------------- | ----------- | ------------ |
+| E2Eテスト            | 42          | -            |
+| ユニットテスト       | 29          | Lines 72.06% |
+| パフォーマンステスト | 4           | -            |
+| 安定性テスト         | 1スクリプト | -            |
+
+---
+
+### 関連ドキュメント（ポストリリーステスト）
+
+| ドキュメント     | パス                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| 実装ガイド       | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md` |
+| テスト仕様書     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-4/test-specification.md`    |
+| 最終レビュー結果 | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-10/final-review-result.md`  |
+| 手動テスト結果   | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-11/manual-test-result.md`   |
 
 ---
 
@@ -1232,12 +1369,12 @@ Permission応答。
 
 ## 関連ドキュメント
 
-| ドキュメント                    | パス                                                                             |
-| ------------------------------- | -------------------------------------------------------------------------------- |
-| Agent SDK実装ガイド             | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` |
-| Agent SDK APIリファレンス       | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`      |
-| Claude Agent SDKスキル          | `.claude/skills/claude-agent-sdk/SKILL.md`                                      |
-| LLMインターフェース             | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`            |
-| Agent Dashboard実装ガイド       | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |
-| スキル管理UI実装ガイド（AGENT-002） | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md` |
-| スキル管理UIテストドキュメント  | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`            |
+| ドキュメント                        | パス                                                                                    |
+| ----------------------------------- | --------------------------------------------------------------------------------------- |
+| Agent SDK実装ガイド                 | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`      |
+| Agent SDK APIリファレンス           | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`             |
+| Claude Agent SDKスキル              | `.claude/skills/claude-agent-sdk/SKILL.md`                                              |
+| LLMインターフェース                 | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                   |
+| Agent Dashboard実装ガイド           | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |
+| スキル管理UI実装ガイド（AGENT-002） | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`        |
+| スキル管理UIテストドキュメント      | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                   |
