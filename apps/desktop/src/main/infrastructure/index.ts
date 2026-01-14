@@ -28,3 +28,9 @@ export {
   clearApiKeyStore,
   resetApiKeyStore,
 } from "./apiKeyStorage";
+
+export {
+  createStubLogger,
+  createStubSharedHistoryService,
+  createStubLogRepository,
+} from "./historyStubs";
