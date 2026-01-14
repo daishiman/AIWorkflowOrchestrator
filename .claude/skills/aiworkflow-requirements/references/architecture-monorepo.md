@@ -16,6 +16,7 @@
 | **ドメインサービス** | **packages/shared/src/services/** | **ファイル変換等のドメインロジック**   | **shared/types/rag のみ**          | **Web + Desktop** |
 | 共通UI               | packages/shared/ui/               | UIコンポーネント、Design Tokens        | shared/core のみ                   | Web + Desktop     |
 | 共通インフラ         | packages/shared/infrastructure/   | DB、AI、Discord等の共通サービス        | shared/core のみ                   | Web + Desktop     |
+| **グラフサービス**   | **packages/shared/src/services/graph/** | **Knowledge Graph、Community検出** | **shared/types/rag のみ**          | **Web + Desktop** |
 | 機能プラグイン       | apps/web/features/                | 機能ごとのビジネスロジック             | shared/\*                          | Web専用           |
 | Web API層            | apps/web/app/                     | HTTPエンドポイント、Next.js App Router | すべて                             | Web専用           |
 | Desktop Main         | apps/desktop/src/main/            | システムAPI、IPC、ウィンドウ管理       | shared/infrastructure, shared/core | Desktop専用       |
@@ -120,5 +121,82 @@ node-linker=isolated
 | 変更容易性   | 1箇所の変更が両プラットフォームに反映                         |
 | 独立デプロイ | Web（Railway）とDesktop（GitHub Releases）を独立して管理      |
 | テスト効率   | 共通コンポーネントのテストを一度だけ実装                      |
+
+---
+
+## 型エクスポートパターン
+
+### バレルファイル戦略
+
+サービス単位で`index.ts`を作成し、外部公開する型と値を一元管理する。
+
+**実装場所**: `packages/shared/src/services/{service}/index.ts`
+
+### services/graph エクスポート構造
+
+```typescript
+// packages/shared/src/services/graph/index.ts
+
+/**
+ * @module @repo/shared/services/graph
+ * @description Knowledge Graphサービスの公開インターフェース
+ */
+
+// 型のエクスポート（export type）- コンパイル後は消える
+export type { StoredEntity, ExtractedEntity, EntityMention } from "./types";
+export type { StoredRelation, ExtractedRelation, RelationEvidence } from "./types";
+export type { GraphNode, GraphPath, GraphTraversalResult, GraphStats, GraphEdge } from "./types";
+export type {
+  Community,
+  CommunitySummary,
+  CommunityStructure,
+  CommunityDetectionOptions,
+  CommunityDetectionResult,
+  CommunityDetectionStats,
+  CommunitySummarizationOptions,
+  CommunitySummarizationResult,
+} from "./types";
+export type { EntityQuery, TraversalOptions, RelationQueryOptions } from "./types";
+
+// 値のエクスポート（export）- ランタイムに存在
+export { CommunityErrorCode, CommunityDetectionError } from "./types";
+export { CommunitySummarizationErrorCode, CommunitySummarizationError } from "./types";
+export { normalizeEntityName } from "./types";
+```
+
+### エクスポート一覧
+
+| カテゴリ      | 項目数 | エクスポート形式    | 例                               |
+| ------------- | ------ | ------------------- | -------------------------------- |
+| インターフェース | 22    | `export type { }`   | Community, StoredEntity          |
+| 列挙型 (enum)   | 2     | `export { }`        | CommunityErrorCode               |
+| クラス (class)  | 2     | `export { }`        | CommunityDetectionError          |
+| 関数           | 1     | `export { }`        | normalizeEntityName              |
+
+### 使用例
+
+```typescript
+// 型のインポート
+import type {
+  Community,
+  CommunitySummary,
+  StoredEntity,
+} from "@repo/shared/services/graph";
+
+// 値のインポート
+import {
+  CommunityErrorCode,
+  CommunityDetectionError,
+  normalizeEntityName,
+} from "@repo/shared/services/graph";
+```
+
+### 下位互換性
+
+| インポートパス                              | 状態        |
+| ------------------------------------------- | ----------- |
+| `from "./types"` (services/graph内部)       | ✅ 継続動作 |
+| `from "../graph/types"` (他サービス)        | ✅ 継続動作 |
+| `from "@repo/shared/services/graph"` (新規) | ✅ 新規追加 |
 
 ---

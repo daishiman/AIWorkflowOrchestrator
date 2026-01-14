@@ -1,0 +1,88 @@
+{
+  "taskId": "SHARED-TYPE-EXPORT-02",
+  "taskName": "@repo/shared Community型エクスポート（メインindex）",
+  "status": "pending",
+  "createdAt": "2026-01-14T00:00:00.000Z",
+  "lastUpdated": "2026-01-14T00:00:00.000Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "skipped",
+      "skipReason": "型エクスポートのみのため省略",
+      "artifacts": []
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "skipped",
+      "skipReason": "型エクスポートのみのため省略",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "skipped",
+      "skipReason": "型エクスポートのみのため省略",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "upstream": ["SHARED-TYPE-EXPORT-01"],
+    "downstream": ["SHARED-TYPE-EXPORT-03"]
+  },
+  "metadata": {
+    "category": "refactoring",
+    "priority": "high",
+    "estimatedSize": "small",
+    "discoveredFrom": "Phase 12 (CONV-08-05)",
+    "discoveredDate": "2026-01-13"
+  }
+}

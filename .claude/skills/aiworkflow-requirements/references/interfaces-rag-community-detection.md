@@ -192,9 +192,30 @@
 
 ## 使用例
 
+### インポート方法
+
+```typescript
+// 型のインポート（推奨：バレルファイルから）
+import type {
+  Community,
+  CommunitySummary,
+  CommunityDetectionOptions,
+  CommunityDetectionResult,
+  CommunityStructure,
+} from "@repo/shared/services/graph";
+
+// 値のインポート（エラー型、enum、関数）
+import {
+  CommunityErrorCode,
+  CommunityDetectionError,
+  normalizeEntityName,
+} from "@repo/shared/services/graph";
+```
+
 ### 基本的なコミュニティ検出
 
 ```typescript
+import type { CommunityDetectionResult } from "@repo/shared/services/graph";
 import { CommunityDetector } from "@repo/shared/services/graph";
 
 const detector = new CommunityDetector(
@@ -263,7 +284,8 @@ const level0Communities = await detector.getCommunitiesByLevel(0);
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                             |
-| ---------- | ---------- | ---------------------------------------------------- |
-| 2026-01-11 | 1.1.0      | コミュニティ要約仕様への参照追加（CONV-08-03完了）   |
-| 2026-01-10 | 1.0.0      | 初版作成（CONV-08-02タスク完了に伴い）               |
+| 日付       | バージョン | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-13 | 1.2.0      | バレルファイルからのインポート例追加（SHARED-TYPE-EXPORT-01完了） |
+| 2026-01-11 | 1.1.0      | コミュニティ要約仕様への参照追加（CONV-08-03完了）     |
+| 2026-01-10 | 1.0.0      | 初版作成（CONV-08-02タスク完了に伴い）                 |

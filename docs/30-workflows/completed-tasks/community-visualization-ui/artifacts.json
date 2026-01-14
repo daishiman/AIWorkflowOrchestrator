@@ -1,0 +1,120 @@
+{
+  "taskId": "CONV-08-05",
+  "featureName": "community-visualization-ui",
+  "displayName": "コミュニティ構造可視化UI",
+  "status": "not_started",
+  "createdAt": "2026-01-13T15:33:07.000Z",
+  "updatedAt": "2026-01-13T15:33:07.000Z",
+  "completedAt": null,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "dependencies": [
+    {
+      "taskId": "CONV-08-02",
+      "name": "Leidenコミュニティ検出実装",
+      "required": true
+    },
+    {
+      "taskId": "CONV-08-03",
+      "name": "コミュニティ要約生成",
+      "required": true
+    }
+  ],
+  "metadata": {
+    "priority": "中",
+    "scale": "中規模",
+    "estimatedPhases": 13,
+    "branch": "task/conv-08-05-community-visualization-ui"
+  }
+}

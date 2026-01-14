@@ -79,7 +79,7 @@ import type {
   PaginationOptions,
   LogFilterOptions,
 } from "../renderer/components/history/types";
-import type { SlideSettingsAPI } from "./types";
+import type { CommunityAPI, CommunityId, SlideSettingsAPI } from "./types";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -301,6 +301,20 @@ const electronAPI: ElectronAPI = {
       filters?: Array<{ name: string; extensions: string[] }>;
     }) => safeInvoke("dialog:showSaveDialog", options),
   },
+
+  // Community APIs
+  community: {
+    getAll: () => safeInvoke(IPC_CHANNELS.COMMUNITY_GET_ALL),
+    getByLevel: (level: number) =>
+      safeInvoke(IPC_CHANNELS.COMMUNITY_GET_BY_LEVEL, level),
+    getById: (id: CommunityId) =>
+      safeInvoke(IPC_CHANNELS.COMMUNITY_GET_BY_ID, id),
+    getMembers: (id: CommunityId) =>
+      safeInvoke(IPC_CHANNELS.COMMUNITY_GET_MEMBERS, id),
+    getSummary: (id: CommunityId) =>
+      safeInvoke(IPC_CHANNELS.COMMUNITY_GET_SUMMARY, id),
+    search: (query: string) => safeInvoke(IPC_CHANNELS.COMMUNITY_SEARCH, query),
+  } as CommunityAPI,
 };
 
 // Slide API for slide dependency management

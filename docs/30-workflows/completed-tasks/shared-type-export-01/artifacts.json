@@ -1,0 +1,301 @@
+{
+  "taskId": "SHARED-TYPE-EXPORT-01",
+  "taskName": "@repo/shared Community型エクスポート（Part 1: 型整理）",
+  "status": "in_progress",
+  "createdAt": "2026-01-13T00:00:00.000Z",
+  "lastUpdated": "2026-01-13T17:45:00.000Z",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-13T15:45:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/type-inventory.md",
+          "description": "エクスポート対象型一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/dependency-analysis.md",
+          "description": "型の依存関係分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-13T15:50:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/existing-patterns.md",
+          "description": "既存バレルファイルパターン分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/export-structure-design.md",
+          "description": "エクスポート構造設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/impact-analysis.md",
+          "description": "影響分析書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-13T16:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/requirements-review.md",
+          "description": "要件の妥当性検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review.md",
+          "description": "設計の妥当性検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-verdict.md",
+          "description": "レビュー最終判定"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-13T16:15:00.000Z",
+      "artifacts": [
+        {
+          "type": "test",
+          "path": "packages/shared/src/services/graph/__tests__/type-exports.test.ts",
+          "description": "型エクスポートユニットテスト"
+        },
+        {
+          "type": "test",
+          "path": "packages/shared/src/services/graph/__tests__/type-check.ts",
+          "description": "型チェック検証ファイル"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-state-report.md",
+          "description": "Red状態確認レポート"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-13T16:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/graph/index.ts",
+          "description": "バレルファイル（型エクスポート）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/green-state-report.md",
+          "description": "Green状態確認レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/existing-tests-report.md",
+          "description": "既存テスト確認レポート"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-13T16:45:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-achievement.md",
+          "description": "カバレッジ達成レポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-13T17:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/unit-coverage-verification.md",
+          "description": "ユニットテストカバレッジ検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/integration-test-results.md",
+          "description": "統合テスト結果レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/gate-verdict.md",
+          "description": "ゲート判定結果"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-13T17:15:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/quality-review.md",
+          "description": "コード品質レビュー結果"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/services/graph/index.ts",
+          "description": "リファクタリング後のindex.ts"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactor-verification.md",
+          "description": "リファクタリング検証結果"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-13T17:20:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/typecheck-results.md",
+          "description": "TypeScript型チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/lint-results.md",
+          "description": "ESLint静的解析結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/test-results.md",
+          "description": "テスト実行結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/build-results.md",
+          "description": "ビルド確認結果"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-13T17:25:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/requirements-fulfillment.md",
+          "description": "要件充足確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/design-compliance.md",
+          "description": "設計準拠確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/quality-compliance.md",
+          "description": "品質基準確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-verdict.md",
+          "description": "最終判定結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-13T17:35:00.000Z",
+      "artifacts": [
+        {
+          "type": "test",
+          "path": "packages/shared/src/services/graph/__tests__/manual-import-test.ts",
+          "description": "手動インポート検証ファイル"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/import-verification.md",
+          "description": "インポート検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ide-completion.md",
+          "description": "IDE補完検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/compatibility-check.md",
+          "description": "互換性確認レポート"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-13T17:45:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "description": "ドキュメント更新記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/related-tasks-status.md",
+          "description": "関連タスク状態"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "artifacts": []
+    }
+  },
+  "metadata": {
+    "sourceTask": "docs/30-workflows/unassigned-task/task-shared-community-types-export-01.md",
+    "priority": "high",
+    "estimatedSize": "small",
+    "category": "refactoring",
+    "targetPackage": "@repo/shared",
+    "relatedTasks": ["SHARED-TYPE-EXPORT-02", "SHARED-TYPE-EXPORT-03"]
+  }
+}

@@ -508,6 +508,142 @@ AgentExecutionView (views)
 
 ---
 
+## Community Visualization UI コンポーネント（CONV-08-05）
+
+コミュニティ構造を可視化するUIコンポーネント群。グラフベースのコミュニティ表示、フィルタリング、検索、詳細表示などの機能を提供する。
+
+### コンポーネント階層
+
+```
+CommunityVisualization (templates)
+├── CommunityFilter (organisms)
+│   ├── レベル選択ドロップダウン
+│   └── 検索入力
+├── CommunityGraph (organisms)
+│   ├── SVGベースのグラフ描画
+│   ├── ノード（コミュニティ）
+│   └── エッジ（親子関係）
+└── CommunityDetailPanel (organisms)
+    ├── 基本情報（ID、レベル、サイズ）
+    ├── 要約テキスト
+    ├── キーワードリスト
+    └── メンバーエンティティリスト
+```
+
+### コンポーネント仕様
+
+#### CommunityVisualization
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/components/community/templates/CommunityVisualization/` |
+| 責務 | 全体レイアウト、状態管理、コンポーネント統合 |
+| Props | `className?: string` |
+
+**レイアウト構造**
+
+```
+┌─────────────────────────────────────┐
+│    フィルターバー（レベル・検索）    │
+├───────────────────────┬─────────────┤
+│                       │             │
+│    グラフエリア        │  詳細パネル  │
+│  （ズーム/パン対応）   │（選択時表示）│
+│                       │             │
+└───────────────────────┴─────────────┘
+```
+
+#### CommunityGraph
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/components/community/organisms/CommunityGraph/` |
+| 責務 | SVGベースのグラフ描画、ズーム/パン、ノード選択 |
+| Props | `communities`, `selectedId`, `highlightedIds`, `onSelect`, `onZoomChange` |
+
+**機能**
+
+| 機能 | 説明 |
+| ---- | ---- |
+| 階層レイアウト | dagreアルゴリズムによるレベル別配置 |
+| ズーム/パン | マウスホイール、ドラッグ操作 |
+| ノード選択 | クリックで選択、詳細パネル表示 |
+| ハイライト | 検索結果マッチノードの強調表示 |
+| キーボード操作 | Tab/Enter/Escapeでナビゲーション |
+
+#### CommunityDetailPanel
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/components/community/organisms/CommunityDetailPanel/` |
+| 責務 | 選択コミュニティの詳細情報表示 |
+| Props | `community`, `summary`, `members`, `isLoading`, `onClose` |
+
+**表示内容**
+
+| セクション | 内容 |
+| ---------- | ---- |
+| ヘッダー | コミュニティID、レベル、サイズ |
+| 要約 | CommunitySummaryのテキスト |
+| キーワード | タグ形式で表示 |
+| 主要エンティティ | 重要度順リスト |
+| センチメント | ポジティブ/ニュートラル/ネガティブ |
+| メンバー | エンティティリスト（スクロール可能） |
+
+#### CommunityFilter
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/components/community/organisms/CommunityFilter/` |
+| 責務 | レベルフィルタリング、検索機能 |
+| Props | `levels`, `selectedLevel`, `searchQuery`, `totalCount`, `filteredCount`, `onChange` |
+
+**機能**
+
+| 機能 | 説明 |
+| ---- | ---- |
+| レベル選択 | ドロップダウンで階層レベル絞り込み |
+| キーワード検索 | デバウンス付きテキスト入力 |
+| カウント表示 | フィルター結果件数表示 |
+| クリア | Escapeキーまたはクリアボタン |
+
+### IPC API
+
+```typescript
+interface CommunityAPI {
+  getAll(): Promise<Result<Community[]>>;
+  getByLevel(level: number): Promise<Result<Community[]>>;
+  getSummary(communityId: CommunityId): Promise<Result<CommunitySummary | null>>;
+  getMembers(communityId: CommunityId): Promise<Result<StoredEntity[]>>;
+  search(query: string): Promise<Result<Community[]>>;
+}
+```
+
+### 使用ライブラリ
+
+| ライブラリ | バージョン | 用途 |
+| ---------- | ---------- | ---- |
+| dagre | ^0.8.5 | 階層グラフレイアウトアルゴリズム |
+
+### アクセシビリティ（WCAG 2.1 AA）
+
+| 要件 | 実装方法 |
+| ---- | -------- |
+| キーボードナビゲーション | Tab順序、Enter/Escapeでの操作 |
+| スクリーンリーダー | aria-label、role属性の適切な設定 |
+| フォーカス管理 | パネル開閉時のフォーカス移動 |
+| 色コントラスト | 4.5:1以上のコントラスト比確保 |
+
+### 関連ドキュメント
+
+| ドキュメント | パス |
+| ------------ | ---- |
+| 実装ガイド | `docs/30-workflows/community-visualization-ui/outputs/phase-12/implementation-guide.md` |
+| コンポーネント設計書 | `docs/30-workflows/community-visualization-ui/outputs/phase-2/component-design.md` |
+| 最終レビュー | `docs/30-workflows/community-visualization-ui/outputs/phase-10/final-review.md` |
+
+---
+
 ## Custom Execution Environment UI コンポーネント（AGENT-006）
 
 エージェント実行結果をリアルタイムでプレビューするためのUIコンポーネント群。
