@@ -13,11 +13,11 @@
        ↓
 2. 再利用可能なスキルコンテンツを計画する
        ↓
-3. スキルを初期化する（init_skill.mjs）
+3. スキルを初期化する（init_skill.js）
        ↓
 4. スキルを編集する（リソース実装 + SKILL.md 作成）
        ↓
-5. スキルを検証する（quick_validate.mjs）
+5. スキルを検証する（quick_validate.js）
        ↓
 6. 実際の使用に基づいてイテレーション
 ```
@@ -52,7 +52,7 @@
 
 | パターン             | 問題                         | 解決策                                       |
 | -------------------- | ---------------------------- | -------------------------------------------- |
-| コード重複           | 同じコードを毎回書き直す     | `scripts/{{script-name}}.mjs` にスクリプト化 |
+| コード重複           | 同じコードを毎回書き直す     | `scripts/{{script-name}}.js` にスクリプト化 |
 | ボイラープレート重複 | 同じテンプレートを毎回作成   | `assets/{{template-name}}/` に素材化         |
 | 知識再発見           | 同じ情報を毎回調査           | `references/{{reference-name}}.md` に参照化  |
 | 原則適用             | 同じ判断基準を毎回思い出す   | `references` に書籍参照として知識体系を圧縮  |
@@ -65,10 +65,10 @@
 
 ## Step 3: スキルを初期化する
 
-新規スキルを作成する場合、常に `init_skill.mjs` を実行：
+新規スキルを作成する場合、常に `init_skill.js` を実行：
 
 ```bash
-node scripts/init_skill.mjs <skill-name> --path .claude/skills --resources agents,references
+node scripts/init_skill.js <skill-name> --path .claude/skills --resources agents,references
 ```
 
 **注記**: `--resources` は構造設計書で選定したリソースに合わせる。
@@ -111,7 +111,7 @@ allowed-tools:
 ## Step 5: スキルを検証する
 
 ```bash
-node scripts/quick_validate.mjs .claude/skills/<skill-name>
+node scripts/quick_validate.js .claude/skills/<skill-name>
 ```
 
 ---
@@ -124,7 +124,7 @@ node scripts/quick_validate.mjs .claude/skills/<skill-name>
 | 2        | 苦戦や非効率に気づく                                  |
 | 3        | SKILL.md またはバンドルリソースをどう更新すべきか特定 |
 | 4        | 変更を実装して再テスト                                |
-| 5        | `scripts/log_usage.mjs` でフィードバックを記録        |
+| 5        | `scripts/log_usage.js` でフィードバックを記録        |
 
 ---
 

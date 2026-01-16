@@ -6,7 +6,7 @@
  * ワークフロー設計JSONが有効かを検証します。
  *
  * 使用例:
- *   node scripts/validate_workflow.mjs --input .tmp/workflow.json
+ *   node scripts/validate_workflow.js --input .tmp/workflow.json
  *
  * 終了コード:
  *   0: 検証成功
@@ -34,7 +34,7 @@ function showHelp() {
 ワークフロー検証スクリプト
 
 Usage:
-  node validate_workflow.mjs --input <workflow-json> [options]
+  node validate_workflow.js --input <workflow-json> [options]
 
 Options:
   --input <path>   ワークフローJSONファイルのパス（必須）
@@ -50,8 +50,8 @@ Validation checks:
   - 全タスクがいずれかのフェーズに属している
 
 Examples:
-  node scripts/validate_workflow.mjs --input .tmp/workflow.json
-  node scripts/validate_workflow.mjs --input .tmp/workflow.json --verbose
+  node scripts/validate_workflow.js --input .tmp/workflow.json
+  node scripts/validate_workflow.js --input .tmp/workflow.json --verbose
 `);
 }
 

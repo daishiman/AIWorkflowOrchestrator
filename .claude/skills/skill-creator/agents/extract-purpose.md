@@ -132,7 +132,7 @@ Eric Evansのドメイン駆動設計の考え方を応用し、ユーザー要�
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/purpose.json --schema schemas/purpose.json
+node scripts/validate_schema.js --input .tmp/purpose.json --schema schemas/purpose.json
 ```
 
 検証が失敗した場合は、エラーメッセージに従って修正し再出力する。

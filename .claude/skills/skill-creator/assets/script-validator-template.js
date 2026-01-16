@@ -27,7 +27,7 @@ function showHelp() {
 Validator script template
 
 Usage:
-  node validate.mjs --file <path> [options]
+  node validate.js --file <path> [options]
 
 Options:
   --file <path>       Target file to validate (required)

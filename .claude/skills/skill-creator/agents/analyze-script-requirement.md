@@ -95,7 +95,7 @@
 
 | 成果物名 | 受領先 | 内容 |
 | -------- | ------ | ---- |
-| script-requirement.json | detect_runtime.mjs → design-script | 要件定義 |
+| script-requirement.json | detect_runtime.js → design-script | 要件定義 |
 
 #### 出力スキーマ（schemas/script-definition.json準拠）
 
@@ -135,7 +135,7 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs \
+node scripts/validate_schema.js \
   --input .tmp/script-requirement.json \
   --schema schemas/script-definition.json
 ```
@@ -145,7 +145,7 @@ node scripts/validate_schema.mjs \
 出力後、以下のスクリプトで自動的にランタイムを判定する（Script Task - 100%精度）:
 
 ```bash
-node scripts/detect_runtime.mjs \
+node scripts/detect_runtime.js \
   --requirement .tmp/script-requirement.json \
   --output .tmp/runtime-config.json
 ```

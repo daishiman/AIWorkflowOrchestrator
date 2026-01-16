@@ -59,7 +59,7 @@
     },
     "command": {
       "type": "string",
-      "description": "実行コマンド（例: node scripts/fetch.mjs）"
+      "description": "実行コマンド（例: node scripts/fetch.js）"
     },
     "args": {
       "type": "array",

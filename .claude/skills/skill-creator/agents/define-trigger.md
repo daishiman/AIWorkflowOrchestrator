@@ -103,5 +103,5 @@ descriptionがスキルの主要なトリガーメカニズムであることを
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/trigger.json --schema schemas/trigger.json
+node scripts/validate_schema.js --input .tmp/trigger.json --schema schemas/trigger.json
 ```

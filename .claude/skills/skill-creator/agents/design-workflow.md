@@ -149,5 +149,5 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_workflow.mjs --input .tmp/workflow.json
+node scripts/validate_workflow.js --input .tmp/workflow.json
 ```

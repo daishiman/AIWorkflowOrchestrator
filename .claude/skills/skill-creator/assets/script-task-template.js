@@ -27,7 +27,7 @@ function showHelp() {
 Task script template
 
 Usage:
-  node task_script.mjs --input <path> [options]
+  node task_script.js --input <path> [options]
 
 Options:
   --input <path>   Input file or directory (required)

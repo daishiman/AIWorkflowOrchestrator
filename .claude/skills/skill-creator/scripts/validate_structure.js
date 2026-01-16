@@ -6,7 +6,7 @@
  * 18-skills.md §6.6 および §8.1 に準拠した検証を行います。
  *
  * 使用例:
- *   node quick_validate.mjs .claude/skills/my-skill
+ *   node quick_validate.js .claude/skills/my-skill
  *
  * 終了コード:
  *   0: 成功（すべての検証をパス）
@@ -30,7 +30,7 @@ function showHelp() {
 スキル構造検証スクリプト (18-skills.md §6.6 準拠)
 
 Usage:
-  node quick_validate.mjs <skill-path> [options]
+  node quick_validate.js <skill-path> [options]
 
 Arguments:
   <skill-path>    検証するスキルのパス
@@ -51,8 +51,8 @@ Validation checks (§8.1):
   - agents/*.md が Task仕様書テンプレに準拠
 
 Examples:
-  node quick_validate.mjs .claude/skills/my-skill
-  node quick_validate.mjs .claude/skills/my-skill --verbose
+  node quick_validate.js .claude/skills/my-skill
+  node quick_validate.js .claude/skills/my-skill --verbose
   `);
 }
 

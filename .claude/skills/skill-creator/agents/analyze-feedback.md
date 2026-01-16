@@ -52,7 +52,7 @@
 
 | ステップ | アクション | 担当 |
 | -------- | ---------- | ---- |
-| 1 | collect_feedback.mjs を実行 | Script |
+| 1 | collect_feedback.js を実行 | Script |
 | 2 | メトリクスサマリを受け取る | Script→LLM |
 | 3 | エラーパターンを解釈 | LLM |
 | 4 | 遅延フェーズの原因を推測 | LLM |
@@ -64,7 +64,7 @@
 
 | 項目 | 基準 |
 | ---- | ---- |
-| スクリプトでデータ収集したか | collect_feedback.mjs 実行済み |
+| スクリプトでデータ収集したか | collect_feedback.js 実行済み |
 | メトリクスが正確か | スクリプト出力を使用 |
 | パターンが特定されているか | エラー/遅延/未使用 |
 | 提案が具体的か | 対象・方法が明確 |
@@ -87,7 +87,7 @@
 
 | データ名 | 提供元 | 検証ルール |
 | -------- | ------ | ---------- |
-| feedback-data.json | collect_feedback.mjs | Script出力 |
+| feedback-data.json | collect_feedback.js | Script出力 |
 
 ### 5.2 出力
 
@@ -135,7 +135,7 @@
 LLM呼び出し前に必ず実行：
 
 ```bash
-node scripts/collect_feedback.mjs \
+node scripts/collect_feedback.js \
   --skill-path .claude/skills/my-skill \
   --output .tmp/feedback-data.json \
   --verbose
@@ -145,7 +145,7 @@ node scripts/collect_feedback.mjs \
 
 ```bash
 # 分析結果検証（Script Task）
-node scripts/validate_schema.mjs \
+node scripts/validate_schema.js \
   --input .tmp/feedback-analysis.json \
   --schema schemas/feedback-record.json
 

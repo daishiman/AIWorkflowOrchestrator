@@ -242,9 +242,9 @@ generate-output
 
 | スクリプト                 | 機能         |
 | -------------------------- | ------------ |
-| `scripts/{{script-1}}.mjs` | {{実行スクリプトの機能}} |
-| `scripts/{{validator-1}}.mjs` | {{検証スクリプトの機能}} |
-| `scripts/{{script-N}}.mjs` | {{機能説明}} |
+| `scripts/{{script-1}}.js` | {{実行スクリプトの機能}} |
+| `scripts/{{validator-1}}.js` | {{検証スクリプトの機能}} |
+| `scripts/{{script-N}}.js` | {{機能説明}} |
 
 ### references/（詳細知識）
 
@@ -261,8 +261,8 @@ generate-output
 | `assets/{{asset-N}}` | {{用途}} |
 
 **テンプレート例**:
-- `assets/script-task-template.mjs`
-- `assets/script-validator-template.mjs`
+- `assets/script-task-template.js`
+- `assets/script-validator-template.js`
 ```
 
 ---
@@ -284,7 +284,7 @@ generate-output
 | 参照対象   | 相対パス形式                       |
 | ---------- | ---------------------------------- |
 | Task仕様書 | `agents/{{task-name}}.md`          |
-| スクリプト | `scripts/{{script-name}}.mjs`      |
+| スクリプト | `scripts/{{script-name}}.js`      |
 | 参照資料   | `references/{{reference-name}}.md` |
 | アセット   | `assets/{{asset-name}}`            |
 

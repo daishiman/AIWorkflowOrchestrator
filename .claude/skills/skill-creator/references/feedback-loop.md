@@ -24,9 +24,9 @@
 
 ---
 
-## 7.3 標準ログスクリプト: log_usage.mjs
+## 7.3 標準ログスクリプト: log_usage.js
 
-**ファイル**: `scripts/log_usage.mjs`
+**ファイル**: `scripts/log_usage.js`
 
 ### 責務
 
@@ -48,7 +48,7 @@
 ### 使用形式
 
 ```bash
-node scripts/log_usage.mjs \
+node scripts/log_usage.js \
   --result {{success|failure}} \
   --phase "{{phase-name}}" \
   --agent "{{agent-name}}"
@@ -59,7 +59,7 @@ node scripts/log_usage.mjs \
 **成功時**:
 
 ```bash
-node scripts/log_usage.mjs \
+node scripts/log_usage.js \
   --result success \
   --phase "Phase 4" \
   --agent "skill-creator"
@@ -68,7 +68,7 @@ node scripts/log_usage.mjs \
 **失敗時（ノート付き）**:
 
 ```bash
-node scripts/log_usage.mjs \
+node scripts/log_usage.js \
   --result failure \
   --phase "Phase 3" \
   --notes "検証エラー: name フィールドが不正"

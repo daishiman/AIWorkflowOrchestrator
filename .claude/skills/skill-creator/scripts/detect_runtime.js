@@ -6,7 +6,7 @@
  * 決定論的なルールに基づいて判定（LLM不要）。
  *
  * 使用方法:
- *   node scripts/detect_runtime.mjs --requirement <path> --output <path>
+ *   node scripts/detect_runtime.js --requirement <path> --output <path>
  *
  * 終了コード:
  *   0: 成功
@@ -92,7 +92,7 @@ function showHelp() {
 ランタイム判定スクリプト
 
 Usage:
-  node detect_runtime.mjs --requirement <path> [--output <path>]
+  node detect_runtime.js --requirement <path> [--output <path>]
 
 Options:
   --requirement <path>  スクリプト要件JSONファイルパス（必須）
@@ -193,7 +193,7 @@ function getRuntimeSettings(runtime) {
   const settings = {
     node: {
       shebang: "#!/usr/bin/env node",
-      extension: ".mjs",
+      extension: ".js",
       moduleSystem: "esm",
       packageManager: "pnpm",
     },

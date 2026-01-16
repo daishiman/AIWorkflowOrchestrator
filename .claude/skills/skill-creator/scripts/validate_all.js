@@ -4,11 +4,11 @@
  * 全体検証スクリプト
  *
  * スキルディレクトリの全体構造とファイルを検証します。
- * validate_structure.mjs、validate_links.mjs、validate_schema.mjsを統合した包括的な検証。
+ * validate_structure.js、validate_links.js、validate_schema.jsを統合した包括的な検証。
  *
  * 使用例:
- *   node scripts/validate_all.mjs .claude/skills/my-skill
- *   node scripts/validate_all.mjs .claude/skills/my-skill --fix
+ *   node scripts/validate_all.js .claude/skills/my-skill
+ *   node scripts/validate_all.js .claude/skills/my-skill --fix
  *
  * 終了コード:
  *   0: 検証成功
@@ -40,7 +40,7 @@ function showHelp() {
 全体検証スクリプト
 
 Usage:
-  node validate_all.mjs <skill-path> [options]
+  node validate_all.js <skill-path> [options]
 
 Options:
   --fix              自動修正可能な問題を修正

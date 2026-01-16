@@ -112,7 +112,7 @@
 
 | 成果物名           | 受領先              | 内容                         |
 | ------------------ | ------------------- | ---------------------------- |
-| 改善設計JSON       | generate_prompt.mjs | 改善点リスト、改善後の内容   |
+| 改善設計JSON       | generate_prompt.js | 改善点リスト、改善後の内容   |
 
 #### 出力スキーマ
 
@@ -142,7 +142,7 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/prompt-improvement.json --schema schemas/prompt-improvement.json
+node scripts/validate_schema.js --input .tmp/prompt-improvement.json --schema schemas/prompt-improvement.json
 ```
 
 検証が失敗した場合は、エラーメッセージに従って修正し再出力する。

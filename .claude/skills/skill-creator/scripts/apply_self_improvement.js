@@ -6,7 +6,7 @@
  * 決定論的な処理（LLM不要）。
  *
  * 使用方法:
- *   node scripts/apply_self_improvement.mjs --plan <path> [options]
+ *   node scripts/apply_self_improvement.js --plan <path> [options]
  *
  * 終了コード:
  *   0: 成功
@@ -36,7 +36,7 @@ function showHelp() {
 自己改善適用スクリプト
 
 Usage:
-  node apply_self_improvement.mjs --plan <path> [options]
+  node apply_self_improvement.js --plan <path> [options]
 
 Options:
   --plan <path>     改善計画JSONファイルパス（必須）

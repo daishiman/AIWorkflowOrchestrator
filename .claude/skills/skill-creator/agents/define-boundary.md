@@ -108,5 +108,5 @@ Clean ArchitectureとDDDの境界コンテキストの考え方を応用し、
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/boundary.json --schema schemas/boundary.json
+node scripts/validate_schema.js --input .tmp/boundary.json --schema schemas/boundary.json
 ```
