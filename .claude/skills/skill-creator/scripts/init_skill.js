@@ -6,8 +6,8 @@
  * 18-skills.md §6.4 に準拠したスキルディレクトリを初期化します。
  *
  * 使用例:
- *   node init_skill.mjs my-new-skill --path .claude/skills
- *   node init_skill.mjs my-new-skill --path .claude/skills --resources agents,references
+ *   node init_skill.js my-new-skill --path .claude/skills
+ *   node init_skill.js my-new-skill --path .claude/skills --resources agents,references
  *
  * 終了コード:
  *   0: 成功
@@ -32,7 +32,7 @@ function showHelp() {
 スキル初期化スクリプト (18-skills.md §6.4 準拠)
 
 Usage:
-  node init_skill.mjs <skill-name> [options]
+  node init_skill.js <skill-name> [options]
 
 Arguments:
   <skill-name>    スキル名（ハイフンケース、最大64文字）
@@ -45,16 +45,16 @@ Options:
   -h, --help      このヘルプを表示
 
 Examples:
-  node init_skill.mjs my-new-skill
-  node init_skill.mjs my-new-skill --path .claude/skills
-  node init_skill.mjs my-new-skill --resources agents,references
+  node init_skill.js my-new-skill
+  node init_skill.js my-new-skill --path .claude/skills
+  node init_skill.js my-new-skill --resources agents,references
 
 Created structure (selected resources only):
   <skill-name>/
   ├── SKILL.md          # メインファイル（TODO付きテンプレート）
   ├── agents/           # Task仕様書ディレクトリ（任意）
   ├── scripts/          # スクリプトディレクトリ（任意）
-  │   └── log_usage.mjs # フィードバック記録スクリプト（scripts指定時のみ）
+  │   └── log_usage.js # フィードバック記録スクリプト（scripts指定時のみ）
   ├── references/       # 参照資料ディレクトリ（任意）
   └── assets/           # アセットディレクトリ（任意）
   `);
@@ -124,7 +124,7 @@ function createSkillTemplate(skillName, resources, includeLogUsage) {
   if (resources.includes("scripts")) {
     const scriptLines = [];
     if (includeLogUsage) {
-      scriptLines.push("- `scripts/log_usage.mjs`: フィードバック記録");
+      scriptLines.push("- `scripts/log_usage.js`: フィードバック記録");
     }
     scriptLines.push("- TODO: 必要なスクリプトを追加");
     resourceSections.push(`### scripts/
@@ -231,7 +231,7 @@ const EXIT_ARGS_ERROR = 2;
 
 function showHelp() {
   console.log(\`
-Usage: node log_usage.mjs [options]
+Usage: node log_usage.js [options]
 
 Options:
   --result <success|failure>  実行結果（必須）
@@ -377,9 +377,9 @@ async function main() {
     );
 
     if (includeLogUsage) {
-      // log_usage.mjs 作成
+      // log_usage.js 作成
       writeFileSync(
-        join(skillDir, "scripts", "log_usage.mjs"),
+        join(skillDir, "scripts", "log_usage.js"),
         createLogUsageScript(),
         "utf-8",
       );
@@ -390,7 +390,7 @@ async function main() {
       createdItems.push(`${join(skillDir, dir)}/`);
     }
     if (includeLogUsage) {
-      createdItems.push(join(skillDir, "scripts", "log_usage.mjs"));
+      createdItems.push(join(skillDir, "scripts", "log_usage.js"));
     }
 
     const nextSteps = ["SKILL.md の TODO を編集"];
@@ -400,7 +400,7 @@ async function main() {
     if (resources.includes("references")) {
       nextSteps.push("必要に応じて references/*.md を作成");
     }
-    nextSteps.push("quick_validate.mjs で検証");
+    nextSteps.push("quick_validate.js で検証");
 
     console.log(`✓ スキルを初期化しました: ${skillDir}`);
     console.log(`

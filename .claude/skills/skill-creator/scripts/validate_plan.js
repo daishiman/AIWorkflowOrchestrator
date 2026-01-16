@@ -6,7 +6,7 @@
  * 構造計画JSONが有効かを検証します。
  *
  * 使用例:
- *   node scripts/validate_plan.mjs --input .tmp/structure-plan.json
+ *   node scripts/validate_plan.js --input .tmp/structure-plan.json
  *
  * 終了コード:
  *   0: 検証成功
@@ -34,7 +34,7 @@ function showHelp() {
 構造計画検証スクリプト
 
 Usage:
-  node validate_plan.mjs --input <plan-json> [options]
+  node validate_plan.js --input <plan-json> [options]
 
 Options:
   --input <path>   構造計画JSONファイルのパス（必須）
@@ -50,8 +50,8 @@ Validation checks:
   - 重複するファイルパスがない
 
 Examples:
-  node scripts/validate_plan.mjs --input .tmp/structure-plan.json
-  node scripts/validate_plan.mjs --input .tmp/structure-plan.json --verbose
+  node scripts/validate_plan.js --input .tmp/structure-plan.json
+  node scripts/validate_plan.js --input .tmp/structure-plan.json --verbose
 `);
 }
 

@@ -6,8 +6,8 @@
  * スキルのdescriptionをskill_list.mdに追記/更新します。
  *
  * 使用例:
- *   node update_skill_list.mjs --skill-path .claude/skills/my-skill
- *   node update_skill_list.mjs --skill-path .claude/skills/my-skill --dry-run
+ *   node update_skill_list.js --skill-path .claude/skills/my-skill
+ *   node update_skill_list.js --skill-path .claude/skills/my-skill --dry-run
  *
  * 終了コード:
  *   0: 成功
@@ -35,7 +35,7 @@ function showHelp() {
 スキルリスト更新スクリプト
 
 Usage:
-  node update_skill_list.mjs --skill-path <path> [options]
+  node update_skill_list.js --skill-path <path> [options]
 
 Options:
   --skill-path <path>     スキルディレクトリのパス（必須）
@@ -44,8 +44,8 @@ Options:
   -h, --help              このヘルプを表示
 
 Examples:
-  node update_skill_list.mjs --skill-path .claude/skills/my-skill
-  node update_skill_list.mjs --skill-path .claude/skills/my-skill --dry-run
+  node update_skill_list.js --skill-path .claude/skills/my-skill
+  node update_skill_list.js --skill-path .claude/skills/my-skill --dry-run
 `);
 }
 

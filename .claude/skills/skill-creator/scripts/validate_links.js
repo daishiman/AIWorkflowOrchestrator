@@ -6,7 +6,7 @@
  * SKILL.mdおよびagents/*.md内のリンクが正しいファイルを参照しているかを検証します。
  *
  * 使用例:
- *   node scripts/validate_links.mjs .claude/skills/my-skill
+ *   node scripts/validate_links.js .claude/skills/my-skill
  *
  * 終了コード:
  *   0: 検証成功
@@ -30,7 +30,7 @@ function showHelp() {
 リンク検証スクリプト
 
 Usage:
-  node validate_links.mjs <skill-path> [options]
+  node validate_links.js <skill-path> [options]
 
 Arguments:
   <skill-path>    検証するスキルのパス（必須）
@@ -47,8 +47,8 @@ Validation checks:
   - schemas/内のファイルがSKILL.mdからリンクされている
 
 Examples:
-  node scripts/validate_links.mjs .claude/skills/my-skill
-  node scripts/validate_links.mjs .claude/skills/my-skill --verbose
+  node scripts/validate_links.js .claude/skills/my-skill
+  node scripts/validate_links.js .claude/skills/my-skill --verbose
 `);
 }
 
@@ -155,9 +155,9 @@ function validateLinks(skillPath, verbose = false) {
   // scripts/内のファイルがリンクされているか確認
   const scriptsPath = join(skillPath, "scripts");
   if (existsSync(scriptsPath) && statSync(scriptsPath).isDirectory()) {
-    const scriptFiles = readdirSync(scriptsPath).filter((f) => f.endsWith(".mjs"));
+    const scriptFiles = readdirSync(scriptsPath).filter((f) => f.endsWith(".js"));
     for (const scriptFile of scriptFiles) {
-      // scripts/はSKILL.md内で`scripts/xxx.mjs`形式で参照されることが多い
+      // scripts/はSKILL.md内で`scripts/xxx.js`形式で参照されることが多い
       if (!skillMdContent.includes(scriptFile)) {
         warnings.push(`scripts/${scriptFile}がSKILL.mdで言及されていません`);
       } else {

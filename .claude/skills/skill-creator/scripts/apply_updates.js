@@ -6,8 +6,8 @@
  * 更新計画JSONに基づいてスキルファイルを更新します。
  *
  * 使用例:
- *   node scripts/apply_updates.mjs --plan .tmp/update-plan.json
- *   node scripts/apply_updates.mjs --plan .tmp/update-plan.json --dry-run
+ *   node scripts/apply_updates.js --plan .tmp/update-plan.json
+ *   node scripts/apply_updates.js --plan .tmp/update-plan.json --dry-run
  *
  * 終了コード:
  *   0: 成功
@@ -42,7 +42,7 @@ function showHelp() {
 更新適用スクリプト
 
 Usage:
-  node apply_updates.mjs --plan <json-file> [options]
+  node apply_updates.js --plan <json-file> [options]
 
 Options:
   --plan <file>     更新計画JSONファイル（必須）

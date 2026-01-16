@@ -96,7 +96,7 @@
 
 | 成果物名 | 受領先 | 内容 |
 | -------- | ------ | ---- |
-| variable-design.json | generate_dynamic_code.mjs | 変数定義 |
+| variable-design.json | generate_dynamic_code.js | 変数定義 |
 
 #### 出力スキーマ（schemas/variable-definition.json準拠）
 
@@ -125,7 +125,7 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs \
+node scripts/validate_schema.js \
   --input .tmp/variable-design.json \
   --schema schemas/variable-definition.json
 ```
@@ -134,10 +134,10 @@ node scripts/validate_schema.mjs \
 
 ```bash
 # 変数展開
-node scripts/generate_dynamic_code.mjs \
-  --template assets/xxx-template.mjs \
+node scripts/generate_dynamic_code.js \
+  --template assets/xxx-template.js \
   --variables .tmp/variable-design.json \
-  --output scripts/generated-script.mjs
+  --output scripts/generated-script.js
 ```
 
 ---

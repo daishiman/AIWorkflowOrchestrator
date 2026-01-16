@@ -6,7 +6,7 @@
  * 入力JSONがスキーマに準拠しているかを検証します。
  *
  * 使用例:
- *   node scripts/validate_schema.mjs --input .tmp/purpose.json --schema schemas/purpose.json
+ *   node scripts/validate_schema.js --input .tmp/purpose.json --schema schemas/purpose.json
  *
  * 終了コード:
  *   0: 検証成功
@@ -34,7 +34,7 @@ function showHelp() {
 JSONスキーマ検証スクリプト
 
 Usage:
-  node validate_schema.mjs --input <json-path> --schema <schema-path>
+  node validate_schema.js --input <json-path> --schema <schema-path>
 
 Options:
   --input <path>   検証するJSONファイルのパス（必須）
@@ -43,8 +43,8 @@ Options:
   -h, --help       このヘルプを表示
 
 Examples:
-  node scripts/validate_schema.mjs --input .tmp/purpose.json --schema schemas/purpose.json
-  node scripts/validate_schema.mjs --input output.json --schema schemas/trigger.json --verbose
+  node scripts/validate_schema.js --input .tmp/purpose.json --schema schemas/purpose.json
+  node scripts/validate_schema.js --input output.json --schema schemas/trigger.json --verbose
 `);
 }
 

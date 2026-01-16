@@ -6,8 +6,8 @@
  * ユーザー要求からスキルクリエイターの実行モードを判定します。
  *
  * 使用例:
- *   node scripts/detect_mode.mjs --request "新しいスキルを作成"
- *   node scripts/detect_mode.mjs --request "skill-creatorを更新" --skill-path .claude/skills/skill-creator
+ *   node scripts/detect_mode.js --request "新しいスキルを作成"
+ *   node scripts/detect_mode.js --request "skill-creatorを更新" --skill-path .claude/skills/skill-creator
  *
  * 終了コード:
  *   0: 成功
@@ -48,7 +48,7 @@ function showHelp() {
 モード判定スクリプト
 
 Usage:
-  node detect_mode.mjs --request <text> [options]
+  node detect_mode.js --request <text> [options]
 
 Options:
   --request <text>     ユーザー要求文（必須）
@@ -62,8 +62,8 @@ Modes:
   improve-prompt  プロンプト（agents/*.md）の改善
 
 Examples:
-  node scripts/detect_mode.mjs --request "新しいスキルを作成"
-  node scripts/detect_mode.mjs --request "skill-creatorのプロンプトを改善" --skill-path .claude/skills/skill-creator
+  node scripts/detect_mode.js --request "新しいスキルを作成"
+  node scripts/detect_mode.js --request "skill-creatorのプロンプトを改善" --skill-path .claude/skills/skill-creator
 `);
 }
 

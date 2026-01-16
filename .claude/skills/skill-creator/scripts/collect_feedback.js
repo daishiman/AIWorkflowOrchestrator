@@ -6,7 +6,7 @@
  * 決定論的な処理（LLM不要）。
  *
  * 使用方法:
- *   node scripts/collect_feedback.mjs --skill-path <path> --output <path>
+ *   node scripts/collect_feedback.js --skill-path <path> --output <path>
  *
  * 終了コード:
  *   0: 成功
@@ -28,7 +28,7 @@ function showHelp() {
 フィードバック収集スクリプト
 
 Usage:
-  node collect_feedback.mjs --skill-path <path> [--output <path>]
+  node collect_feedback.js --skill-path <path> [--output <path>]
 
 Options:
   --skill-path <path>  スキルディレクトリパス（必須）

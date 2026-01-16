@@ -6,8 +6,8 @@
  * agents/*.mdファイルを分析し、改善点を特定します。
  *
  * 使用例:
- *   node scripts/analyze_prompt.mjs --input agents/analyze-request.md
- *   node scripts/analyze_prompt.mjs --skill-path .claude/skills/skill-creator
+ *   node scripts/analyze_prompt.js --input agents/analyze-request.md
+ *   node scripts/analyze_prompt.js --skill-path .claude/skills/skill-creator
  *
  * 終了コード:
  *   0: 成功
@@ -52,8 +52,8 @@ function showHelp() {
 プロンプト分析スクリプト
 
 Usage:
-  node analyze_prompt.mjs --input <file> [options]
-  node analyze_prompt.mjs --skill-path <path> [options]
+  node analyze_prompt.js --input <file> [options]
+  node analyze_prompt.js --skill-path <path> [options]
 
 Options:
   --input <file>       単一のagents/*.mdファイルを分析

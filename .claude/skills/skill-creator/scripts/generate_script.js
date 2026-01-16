@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * scripts/*.mjs生成スクリプト
+ * scripts/*.js生成スクリプト
  *
- * Script定義JSONからscripts/*.mjsを生成します。
+ * Script定義JSONからscripts/*.jsを生成します。
  *
  * 使用例:
- *   node scripts/generate_script.mjs --def .tmp/scripts/validate.json --output .claude/skills/my-skill/scripts/validate.mjs
+ *   node scripts/generate_script.js --def .tmp/scripts/validate.json --output .claude/skills/my-skill/scripts/validate.js
  *
  * 終了コード:
  *   0: 成功
@@ -27,14 +27,14 @@ const EXIT_VALIDATION_FAILED = 4;
 
 function showHelp() {
   console.log(`
-scripts/*.mjs生成スクリプト
+scripts/*.js生成スクリプト
 
 Usage:
-  node generate_script.mjs --def <def-json> --output <output-path>
+  node generate_script.js --def <def-json> --output <output-path>
 
 Options:
   --def <path>     Script定義JSONファイルのパス（必須）
-  --output <path>  出力先scripts/*.mjsのパス（必須）
+  --output <path>  出力先scripts/*.jsのパス（必須）
   --type <type>    スクリプトタイプ: task, validator, generator（デフォルト: task）
   -h, --help       このヘルプを表示
 
@@ -54,7 +54,7 @@ Script JSON形式:
   }
 
 Examples:
-  node scripts/generate_script.mjs --def .tmp/scripts/validate.json --output scripts/validate.mjs
+  node scripts/generate_script.js --def .tmp/scripts/validate.json --output scripts/validate.js
 `);
 }
 
@@ -96,7 +96,7 @@ function generateTaskScript(def) {
  * ${description}
  *
  * 使用例:
- *   node scripts/${name}.mjs ${requiredArgs.map((a) => `${a.name} <value>`).join(" ")}
+ *   node scripts/${name}.js ${requiredArgs.map((a) => `${a.name} <value>`).join(" ")}
  *
  * 終了コード:
 ${exitCodesDoc}
@@ -116,7 +116,7 @@ function showHelp() {
 ${description}
 
 Usage:
-  node ${name}.mjs ${requiredArgs.map((a) => `${a.name} <value>`).join(" ")} [options]
+  node ${name}.js ${requiredArgs.map((a) => `${a.name} <value>`).join(" ")} [options]
 
 Options:
 ${argsDoc}
@@ -170,7 +170,7 @@ function generateValidatorScript(def) {
  * ${description}
  *
  * 使用例:
- *   node scripts/${name}.mjs --input <path>
+ *   node scripts/${name}.js --input <path>
  *
  * 終了コード:
  *   0: 検証成功
@@ -194,7 +194,7 @@ function showHelp() {
 ${description}
 
 Usage:
-  node ${name}.mjs --input <path> [options]
+  node ${name}.js --input <path> [options]
 
 Options:
   --input <path>   検証対象のパス（必須）
@@ -286,7 +286,7 @@ function generateGeneratorScript(def) {
  * ${description}
  *
  * 使用例:
- *   node scripts/${name}.mjs --input <path> --output <path>
+ *   node scripts/${name}.js --input <path> --output <path>
  *
  * 終了コード:
  *   0: 成功
@@ -308,7 +308,7 @@ function showHelp() {
 ${description}
 
 Usage:
-  node ${name}.mjs --input <path> --output <path> [options]
+  node ${name}.js --input <path> --output <path> [options]
 
 Options:
   --input <path>   入力ファイルのパス（必須）

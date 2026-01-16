@@ -29,7 +29,7 @@
 
 | 責務       | 成果物                  |
 | ---------- | ----------------------- |
-| コード生成 | scripts/*.{mjs,py,sh,ts} |
+| コード生成 | scripts/*.{js,py,sh,ts} |
 
 ---
 
@@ -79,7 +79,7 @@
 | ---- | ---- |
 | テンプレート準拠 | assets/base-*.ext の構造を維持 |
 | 変数展開はLLM | {{var}} の内容決定はLLM |
-| 最終展開はScript | generate_dynamic_code.mjs で100%正確に展開 |
+| 最終展開はScript | generate_dynamic_code.js で100%正確に展開 |
 | 具体例禁止 | コード例はテンプレートに含めない |
 | 指示形式 | 「AIへの指示:」コメントで実装方針を示す |
 
@@ -99,16 +99,16 @@
 
 | 成果物名 | 受領先 | 内容 |
 | -------- | ------ | ---- |
-| script-template.{ext} | generate_dynamic_code.mjs | {{変数}}を含むコード |
+| script-template.{ext} | generate_dynamic_code.js | {{変数}}を含むコード |
 
 #### 出力形式
 
 出力は{{変数}}プレースホルダーを含むテンプレートコード。
-最終的な変数展開は `generate_dynamic_code.mjs` が行う（Script Task - 100%精度）。
+最終的な変数展開は `generate_dynamic_code.js` が行う（Script Task - 100%精度）。
 
 **Node.js (ESM):**
 ```
-assets/base-node.mjs を基に、{{変数}} を設計に従って配置
+assets/base-node.js を基に、{{変数}} を設計に従って配置
 ```
 
 **Python:**
@@ -130,15 +130,15 @@ assets/base-typescript.ts を基に、{{変数}} を設計に従って配置
 
 ```bash
 # テンプレート変数の展開
-node scripts/generate_dynamic_code.mjs \
-  --template .tmp/script-template.mjs \
+node scripts/generate_dynamic_code.js \
+  --template .tmp/script-template.js \
   --variables .tmp/variable-design.json \
-  --output scripts/my-script.mjs \
+  --output scripts/my-script.js \
   --strict
 
 # 構文チェック
 # Node.js:
-node --check scripts/my-script.mjs
+node --check scripts/my-script.js
 
 # Python:
 python -m py_compile scripts/my_script.py

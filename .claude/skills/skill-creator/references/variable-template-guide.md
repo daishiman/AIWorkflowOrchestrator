@@ -335,7 +335,7 @@ function toKebabCase(str) {
 ### 5.1 スクリプト生成時
 
 ```javascript
-// generate_dynamic_code.mjs での使用例
+// generate_dynamic_code.js での使用例
 import { readFileSync, writeFileSync } from "fs";
 
 function generateScript(templatePath, outputPath, variables) {
@@ -346,8 +346,8 @@ function generateScript(templatePath, outputPath, variables) {
 
 // 使用
 generateScript(
-  "assets/api-client-node.mjs",
-  "scripts/fetch-data.mjs",
+  "assets/api-client-node.js",
+  "scripts/fetch-data.js",
   {
     skillName: "data-fetcher",
     apiUrl: "https://api.example.com",
@@ -360,7 +360,7 @@ generateScript(
 ### 5.2 SKILL.md生成時
 
 ```javascript
-// generate_skill_md.mjs での使用例
+// generate_skill_md.js での使用例
 const skillTemplate = `
 # {{skillName | pascalCase}}
 

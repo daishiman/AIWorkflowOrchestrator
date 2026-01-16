@@ -41,7 +41,7 @@
 - Webhook送信
 - OAuth認証フロー
 
-**テンプレート**: `assets/api-client-node.mjs`, `assets/api-client-python.py`
+**テンプレート**: `assets/api-client-node.js`, `assets/api-client-python.py`
 
 ### 1.2 webhook
 
@@ -57,7 +57,7 @@
 - Slack/Discord通知
 - CI/CDトリガー
 
-**テンプレート**: `assets/webhook-node.mjs`, `assets/webhook-python.py`
+**テンプレート**: `assets/webhook-node.js`, `assets/webhook-python.py`
 
 ### 1.3 scraper
 
@@ -73,7 +73,7 @@
 - 定期的な情報収集
 - コンテンツ監視
 
-**テンプレート**: `assets/scraper-python.py`, `assets/scraper-node.mjs`
+**テンプレート**: `assets/scraper-python.py`, `assets/scraper-node.js`
 
 ---
 
@@ -92,7 +92,7 @@
 - データフォーマット統一
 - ログパース
 
-**テンプレート**: `assets/parser-node.mjs`, `assets/parser-python.py`
+**テンプレート**: `assets/parser-node.js`, `assets/parser-python.py`
 
 ### 2.2 transformer
 
@@ -107,7 +107,7 @@
 - データマイグレーション
 - ETL処理
 
-**テンプレート**: `assets/transformer-node.mjs`, `assets/transformer-python.py`
+**テンプレート**: `assets/transformer-node.js`, `assets/transformer-python.py`
 
 ### 2.3 aggregator
 
@@ -122,7 +122,7 @@
 - メトリクス集計
 - 分析データ準備
 
-**テンプレート**: `assets/aggregator-python.py`, `assets/aggregator-node.mjs`
+**テンプレート**: `assets/aggregator-python.py`, `assets/aggregator-node.js`
 
 ### 2.4 file-processor
 
@@ -137,7 +137,7 @@
 - ファイル一括処理
 - バックアップ
 
-**テンプレート**: `assets/file-processor-bash.sh`, `assets/file-processor-node.mjs`
+**テンプレート**: `assets/file-processor-bash.sh`, `assets/file-processor-node.js`
 
 ---
 
@@ -157,7 +157,7 @@
 - スキーママイグレーション
 - データシーディング
 
-**テンプレート**: `assets/database-node.mjs`, `assets/database-python.py`
+**テンプレート**: `assets/database-node.js`, `assets/database-python.py`
 
 ### 3.2 cache
 
@@ -173,7 +173,7 @@
 - セッション管理
 - レート制限
 
-**テンプレート**: `assets/cache-node.mjs`, `assets/cache-python.py`
+**テンプレート**: `assets/cache-node.js`, `assets/cache-python.py`
 
 ### 3.3 queue
 
@@ -189,7 +189,7 @@
 - イベント発行
 - ワーカー処理
 
-**テンプレート**: `assets/queue-node.mjs`, `assets/queue-python.py`
+**テンプレート**: `assets/queue-node.js`, `assets/queue-python.py`
 
 ---
 
@@ -208,7 +208,7 @@
 - コミット・プッシュ
 - PR作成
 
-**テンプレート**: `assets/git-ops-bash.sh`, `assets/git-ops-node.mjs`
+**テンプレート**: `assets/git-ops-bash.sh`, `assets/git-ops-node.js`
 
 ### 4.2 test-runner
 
@@ -223,7 +223,7 @@
 - 統合テスト
 - カバレッジ収集
 
-**テンプレート**: `assets/test-runner-node.mjs`, `assets/test-runner-python.py`
+**テンプレート**: `assets/test-runner-node.js`, `assets/test-runner-python.py`
 
 ### 4.3 linter
 
@@ -238,7 +238,7 @@
 - 自動修正
 - CI統合
 
-**テンプレート**: `assets/linter-node.mjs`, `assets/linter-bash.sh`
+**テンプレート**: `assets/linter-node.js`, `assets/linter-bash.sh`
 
 ### 4.4 formatter
 
@@ -253,7 +253,7 @@
 - 一括フォーマット
 - pre-commitフック
 
-**テンプレート**: `assets/formatter-node.mjs`, `assets/formatter-bash.sh`
+**テンプレート**: `assets/formatter-node.js`, `assets/formatter-bash.sh`
 
 ### 4.5 builder
 
@@ -268,7 +268,7 @@
 - バンドル作成
 - アセット最適化
 
-**テンプレート**: `assets/builder-node.mjs`, `assets/builder-bash.sh`
+**テンプレート**: `assets/builder-node.js`, `assets/builder-bash.sh`
 
 ### 4.6 deployer
 
@@ -284,7 +284,7 @@
 - CDN更新
 - 環境切り替え
 
-**テンプレート**: `assets/deployer-bash.sh`, `assets/deployer-node.mjs`
+**テンプレート**: `assets/deployer-bash.sh`, `assets/deployer-node.js`
 
 ---
 
@@ -334,7 +334,7 @@
 - メトリクス収集
 - アラート発報
 
-**テンプレート**: `assets/monitor-node.mjs`, `assets/monitor-python.py`
+**テンプレート**: `assets/monitor-node.js`, `assets/monitor-python.py`
 
 ---
 
@@ -354,7 +354,7 @@
 - AI API統合
 - プロンプト実行
 
-**テンプレート**: `assets/ai-tool-bash.sh`, `assets/ai-tool-node.mjs`
+**テンプレート**: `assets/ai-tool-bash.sh`, `assets/ai-tool-node.js`
 
 ### 6.2 mcp-bridge
 
@@ -369,7 +369,7 @@
 - カスタムMCPサーバー構築
 - ツール統合
 
-**テンプレート**: `assets/mcp-bridge-node.mjs`
+**テンプレート**: `assets/mcp-bridge-node.js`
 
 ---
 
@@ -389,7 +389,7 @@
 - メール送信
 - Discord/Teamsメッセージ
 
-**テンプレート**: `assets/notification-node.mjs`, `assets/notification-python.py`
+**テンプレート**: `assets/notification-node.js`, `assets/notification-python.py`
 
 ### 7.2 shell
 
@@ -419,7 +419,7 @@
 - 特殊要件対応
 - プロトタイピング
 
-**テンプレート**: `assets/universal-node.mjs`, `assets/universal-python.py`, `assets/universal-bash.sh`
+**テンプレート**: `assets/universal-node.js`, `assets/universal-python.py`, `assets/universal-bash.sh`
 
 ---
 

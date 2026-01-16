@@ -6,7 +6,7 @@
  * {{スクリプトの目的と機能説明}}
  *
  * 使用例:
- *   node scripts/{{script-name}}.mjs --input <file> [options]
+ *   node scripts/{{script-name}}.js --input <file> [options]
  *
  * 終了コード:
  *   0: 成功
@@ -37,7 +37,7 @@ function showHelp() {
 {{スクリプト名}}
 
 Usage:
-  node {{script-name}}.mjs --input <file> [options]
+  node {{script-name}}.js --input <file> [options]
 
 Options:
   --input <file>    入力ファイルパス（必須）
@@ -47,8 +47,8 @@ Options:
   -h, --help        このヘルプを表示
 
 Examples:
-  node scripts/{{script-name}}.mjs --input data.json
-  node scripts/{{script-name}}.mjs --input data.json --output result.md
+  node scripts/{{script-name}}.js --input data.json
+  node scripts/{{script-name}}.js --input data.json --output result.md
 `);
 }
 

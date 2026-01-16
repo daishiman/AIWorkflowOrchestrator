@@ -11,7 +11,7 @@
 | チェック項目                                      | 検証方法                                         |
 | ------------------------------------------------- | ------------------------------------------------ |
 | SKILL.md が 500 行以内                            | `wc -l SKILL.md`                                 |
-| YAML frontmatter が有効                           | quick_validate.mjs                               |
+| YAML frontmatter が有効                           | quick_validate.js                               |
 | name がハイフンケース（最大64文字）               | 正規表現で検証                                   |
 | description が 1024 文字以内                      | 文字数カウント                                   |
 | description に Anchors と Trigger が含まれる      | 文字列検索                                       |
@@ -47,18 +47,18 @@
 ### 構造検証
 
 ```bash
-node scripts/quick_validate.mjs .claude/skills/<skill-name>
+node scripts/quick_validate.js .claude/skills/<skill-name>
 ```
 
 ### 詳細検証（verbose モード）
 
 ```bash
-node scripts/quick_validate.mjs .claude/skills/<skill-name> --verbose
+node scripts/quick_validate.js .claude/skills/<skill-name> --verbose
 ```
 
 ---
 
-## 8.4 quick_validate.mjs の検証項目
+## 8.4 quick_validate.js の検証項目
 
 | 検証項目                     | エラー/警告 | 説明                                       |
 | ---------------------------- | ----------- | ------------------------------------------ |

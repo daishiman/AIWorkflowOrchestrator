@@ -104,5 +104,5 @@ Claudeが学習済みの枠組みや一次資料を短い参照行として配�
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/anchors.json --schema schemas/anchors.json
+node scripts/validate_schema.js --input .tmp/anchors.json --schema schemas/anchors.json
 ```

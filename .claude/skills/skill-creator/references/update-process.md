@@ -85,25 +85,25 @@ Phase 4: フィードバック（Script Task）
 
 | 対象                                   | 使用モード     | 使用スクリプト   |
 | -------------------------------------- | -------------- | ---------------- |
-| 誤字修正、説明文の改善、参照書籍の追加 | update         | apply_updates.mjs |
+| 誤字修正、説明文の改善、参照書籍の追加 | update         | apply_updates.js |
 
 ### Type B: 構造更新（中リスク）
 
 | 対象                                             | 使用モード     | 使用スクリプト          |
 | ------------------------------------------------ | -------------- | ----------------------- |
-| セクション追加、ワークフロー変更、スクリプト追加 | update         | apply_updates.mjs --backup |
+| セクション追加、ワークフロー変更、スクリプト追加 | update         | apply_updates.js --backup |
 
 ### Type C: プロンプト改善（中リスク）
 
 | 対象                                   | 使用モード     | 使用スクリプト        |
 | -------------------------------------- | -------------- | --------------------- |
-| agents/*.mdの明確化、具体化、効率化    | improve-prompt | analyze_prompt.mjs    |
+| agents/*.mdの明確化、具体化、効率化    | improve-prompt | analyze_prompt.js    |
 
 ### Type D: 破壊的更新（高リスク）
 
 | 対象                                                | 使用モード | 使用スクリプト            |
 | --------------------------------------------------- | ---------- | ------------------------- |
-| name変更、description大幅変更、ディレクトリ構造変更 | update     | apply_updates.mjs --backup |
+| name変更、description大幅変更、ディレクトリ構造変更 | update     | apply_updates.js --backup |
 
 ---
 
@@ -111,11 +111,11 @@ Phase 4: フィードバック（Script Task）
 
 | スクリプト            | 用途                     | モード           |
 | --------------------- | ------------------------ | ---------------- |
-| `detect_mode.mjs`     | モード判定               | 全モード         |
-| `analyze_prompt.mjs`  | プロンプト分析           | improve-prompt   |
-| `apply_updates.mjs`   | 更新適用                 | update, improve  |
-| `validate_all.mjs`    | 全体検証                 | 全モード         |
-| `log_usage.mjs`       | フィードバック記録       | 全モード         |
+| `detect_mode.js`     | モード判定               | 全モード         |
+| `analyze_prompt.js`  | プロンプト分析           | improve-prompt   |
+| `apply_updates.js`   | 更新適用                 | update, improve  |
+| `validate_all.js`    | 全体検証                 | 全モード         |
+| `log_usage.js`       | フィードバック記録       | 全モード         |
 
 ---
 
@@ -125,35 +125,35 @@ Phase 4: フィードバック（Script Task）
 
 ```bash
 # 1. モード判定
-node scripts/detect_mode.mjs --request "スキルを更新" --skill-path .claude/skills/my-skill
+node scripts/detect_mode.js --request "スキルを更新" --skill-path .claude/skills/my-skill
 
 # 2. 更新適用（dry-run）
-node scripts/apply_updates.mjs --plan .tmp/update-plan.json --dry-run
+node scripts/apply_updates.js --plan .tmp/update-plan.json --dry-run
 
 # 3. 更新適用（実行）
-node scripts/apply_updates.mjs --plan .tmp/update-plan.json --backup
+node scripts/apply_updates.js --plan .tmp/update-plan.json --backup
 
 # 4. 検証
-node scripts/validate_all.mjs .claude/skills/my-skill
+node scripts/validate_all.js .claude/skills/my-skill
 
 # 5. フィードバック記録
-node scripts/log_usage.mjs --result success --phase update
+node scripts/log_usage.js --result success --phase update
 ```
 
 ### improve-prompt モード
 
 ```bash
 # 1. プロンプト分析
-node scripts/analyze_prompt.mjs --skill-path .claude/skills/my-skill --verbose
+node scripts/analyze_prompt.js --skill-path .claude/skills/my-skill --verbose
 
 # 2. 改善計画確認
 cat .tmp/prompt-analysis.json
 
 # 3. 更新適用（LLMが生成した改善をapply）
-node scripts/apply_updates.mjs --plan .tmp/update-plan.json --backup
+node scripts/apply_updates.js --plan .tmp/update-plan.json --backup
 
 # 4. 検証
-node scripts/validate_all.mjs .claude/skills/my-skill
+node scripts/validate_all.js .claude/skills/my-skill
 ```
 
 ---

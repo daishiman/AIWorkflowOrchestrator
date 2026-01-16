@@ -6,7 +6,7 @@
  * 構造計画JSONからSKILL.mdを生成します。
  *
  * 使用例:
- *   node scripts/generate_skill_md.mjs --plan .tmp/structure-plan.json --output .claude/skills/my-skill/SKILL.md
+ *   node scripts/generate_skill_md.js --plan .tmp/structure-plan.json --output .claude/skills/my-skill/SKILL.md
  *
  * 終了コード:
  *   0: 成功
@@ -34,7 +34,7 @@ function showHelp() {
 SKILL.md生成スクリプト
 
 Usage:
-  node generate_skill_md.mjs --plan <plan-json> --output <output-path>
+  node generate_skill_md.js --plan <plan-json> --output <output-path>
 
 Options:
   --plan <path>    構造計画JSONファイルのパス（必須）
@@ -43,7 +43,7 @@ Options:
   -h, --help       このヘルプを表示
 
 Examples:
-  node scripts/generate_skill_md.mjs --plan .tmp/structure-plan.json --output .claude/skills/my-skill/SKILL.md
+  node scripts/generate_skill_md.js --plan .tmp/structure-plan.json --output .claude/skills/my-skill/SKILL.md
 `);
 }
 
@@ -94,7 +94,7 @@ function generateSkillMd(plan) {
     : "| TODO | TODO | TODO | TODO | - |";
 
   const scriptTaskTable = scriptTasks.length > 0
-    ? scriptTasks.map((t) => `| \`${t.name}.mjs\` | ${t.responsibility} | ${t.input || "-"} | ${t.output || "-"} | 0:成功 |`).join("\n")
+    ? scriptTasks.map((t) => `| \`${t.name}.js\` | ${t.responsibility} | ${t.input || "-"} | ${t.output || "-"} | 0:成功 |`).join("\n")
     : "| TODO | TODO | TODO | TODO | 0:成功 |";
 
   // agents/テーブル生成

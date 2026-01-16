@@ -73,7 +73,7 @@
 | ---------------- | ------------------------------------ |
 | SKILL.md         | 概要、ワークフロー、参照の変更       |
 | agents/*.md      | Task仕様の変更、責務の追加/削除      |
-| scripts/*.mjs    | 処理ロジックの変更、新規スクリプト   |
+| scripts/*.js    | 処理ロジックの変更、新規スクリプト   |
 | schemas/*.json   | 入出力形式の変更                     |
 | references/*.md  | 詳細知識の追加/更新                  |
 | assets/*         | テンプレートの変更                   |
@@ -93,7 +93,7 @@
 | ------------------ | ------------------------------------ |
 | 段階的更新         | 一度に大きな変更を行わない           |
 | 依存順序遵守       | 依存先を先に更新                     |
-| 検証ステップ必須   | 各更新後にvalidate_structure.mjsを実行 |
+| 検証ステップ必須   | 各更新後にvalidate_structure.jsを実行 |
 | スキーマ準拠       | 出力はschemas/update-plan.json準拠   |
 
 ---
@@ -111,7 +111,7 @@
 
 | 成果物名       | 受領先              | 内容                       |
 | -------------- | ------------------- | -------------------------- |
-| 更新計画JSON   | apply_updates.mjs   | 更新対象、順序、内容       |
+| 更新計画JSON   | apply_updates.js   | 更新対象、順序、内容       |
 
 #### 出力テンプレート
 
@@ -140,7 +140,7 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/update-plan.json --schema schemas/update-plan.json
+node scripts/validate_schema.js --input .tmp/update-plan.json --schema schemas/update-plan.json
 ```
 
 検証が失敗した場合は、エラーメッセージに従って修正し再出力する。

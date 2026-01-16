@@ -17,7 +17,7 @@
 スキル実行
     │
     ▼
-[実行結果記録] ← log_usage.mjs
+[実行結果記録] ← log_usage.js
     │
     ▼
 [メトリクス更新] ← EVALS.json
@@ -29,10 +29,10 @@
 [改善提案生成] ← design-self-improvement (LLM)
     │
     ▼
-[改善適用] ← apply_self_improvement.mjs
+[改善適用] ← apply_self_improvement.js
     │
     ▼
-[検証] ← validate_all.mjs
+[検証] ← validate_all.js
     │
     ▼
 改善完了（ホットリロード）
@@ -44,18 +44,18 @@
 
 ### 2.1 実行結果の記録
 
-**スクリプト**: `scripts/log_usage.mjs`
+**スクリプト**: `scripts/log_usage.js`
 
 ```bash
 # 成功時
-node scripts/log_usage.mjs \
+node scripts/log_usage.js \
   --result success \
   --phase "Phase 4" \
   --duration 1234 \
   --notes "正常完了"
 
 # 失敗時
-node scripts/log_usage.mjs \
+node scripts/log_usage.js \
   --result failure \
   --phase "Phase 3" \
   --error "ValidationError" \
@@ -166,7 +166,7 @@ node scripts/log_usage.mjs \
     },
     {
       "id": "sug-002",
-      "target": "scripts/validate_schema.mjs",
+      "target": "scripts/validate_schema.js",
       "type": "code",
       "priority": "medium",
       "reason": "検証エラーメッセージが不明確",
@@ -204,17 +204,17 @@ node scripts/log_usage.mjs \
 
 ```bash
 # dry-run（変更確認のみ）
-node scripts/apply_self_improvement.mjs \
+node scripts/apply_self_improvement.js \
   --suggestions .tmp/suggestions.json \
   --dry-run
 
 # 自動適用可能なもののみ適用
-node scripts/apply_self_improvement.mjs \
+node scripts/apply_self_improvement.js \
   --suggestions .tmp/suggestions.json \
   --auto-only
 
 # 全て適用（レビュー済み前提）
-node scripts/apply_self_improvement.mjs \
+node scripts/apply_self_improvement.js \
   --suggestions .tmp/suggestions.json \
   --all \
   --backup
@@ -249,7 +249,7 @@ node scripts/apply_self_improvement.mjs \
 
 ## 7. 実装例
 
-### 7.1 collect_feedback.mjs
+### 7.1 collect_feedback.js
 
 ```javascript
 #!/usr/bin/env node
@@ -305,13 +305,13 @@ function calculateMetrics(logs) {
 
 ```bash
 # フィードバック収集
-node scripts/collect_feedback.mjs --skill-path .claude/skills/my-skill
+node scripts/collect_feedback.js --skill-path .claude/skills/my-skill
 
 # LLM分析（analyze-feedback.md参照）
 # → 改善提案JSON出力
 
 # 改善適用
-node scripts/apply_self_improvement.mjs \
+node scripts/apply_self_improvement.js \
   --suggestions .tmp/suggestions.json \
   --backup
 ```
@@ -343,5 +343,5 @@ node scripts/apply_self_improvement.mjs \
 
 - **エージェント**: See [agents/analyze-feedback.md](../agents/analyze-feedback.md)
 - **エージェント**: See [agents/design-self-improvement.md](../agents/design-self-improvement.md)
-- **スクリプト**: See [scripts/collect_feedback.mjs](../scripts/collect_feedback.mjs)
+- **スクリプト**: See [scripts/collect_feedback.js](../scripts/collect_feedback.js)
 - **スキーマ**: See [schemas/feedback-record.json](../schemas/feedback-record.json)

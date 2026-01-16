@@ -92,7 +92,7 @@
 | データ名 | 提供元 | 検証ルール |
 | -------- | ------ | ---------- |
 | script-requirement.json | analyze-script-requirement | スキーマ準拠 |
-| runtime-config.json | detect_runtime.mjs | スキーマ準拠 |
+| runtime-config.json | detect_runtime.js | スキーマ準拠 |
 | type-{type}.md | assets/ | タイプ固有指示 |
 
 ### 5.2 出力
@@ -157,7 +157,7 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs \
+node scripts/validate_schema.js \
   --input .tmp/script-design.json \
   --schema schemas/script-definition.json
 ```

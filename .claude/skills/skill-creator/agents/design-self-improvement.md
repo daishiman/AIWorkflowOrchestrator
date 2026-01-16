@@ -97,7 +97,7 @@
 
 | 成果物名 | 受領先 | 内容 |
 | -------- | ------ | ---- |
-| improvement-plan.json | apply_self_improvement.mjs | 改善計画 |
+| improvement-plan.json | apply_self_improvement.js | 改善計画 |
 
 #### 出力スキーマ（schemas/update-plan.json準拠）
 
@@ -142,23 +142,23 @@
 
 ```bash
 # 計画検証
-node scripts/validate_schema.mjs \
+node scripts/validate_schema.js \
   --input .tmp/improvement-plan.json \
   --schema schemas/update-plan.json
 
 # dry-run
-node scripts/apply_self_improvement.mjs \
+node scripts/apply_self_improvement.js \
   --plan .tmp/improvement-plan.json \
   --dry-run
 
 # 自動適用可能なもののみ適用
-node scripts/apply_self_improvement.mjs \
+node scripts/apply_self_improvement.js \
   --plan .tmp/improvement-plan.json \
   --auto-only \
   --backup
 
 # 全体検証
-node scripts/validate_all.mjs .claude/skills/my-skill
+node scripts/validate_all.js .claude/skills/my-skill
 ```
 
 ---

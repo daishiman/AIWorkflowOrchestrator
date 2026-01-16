@@ -25,7 +25,7 @@
     },
     "fileExtension": {
       "type": "string",
-      "enum": [".mjs", ".cjs", ".js", ".py", ".sh", ".ts"],
+      "enum": [".js", ".cjs", ".js", ".py", ".sh", ".ts"],
       "description": "ファイル拡張子"
     },
     "shebang": {
@@ -82,7 +82,7 @@
       "then": {
         "properties": {
           "shebang": { "default": "#!/usr/bin/env node" },
-          "fileExtension": { "default": ".mjs" },
+          "fileExtension": { "default": ".js" },
           "moduleSystem": { "default": "esm" }
         }
       }

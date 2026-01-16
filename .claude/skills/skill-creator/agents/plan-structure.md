@@ -51,7 +51,7 @@ Clean Architectureの原則を応用し、スキルのフォルダ構造とフ�
 | -------- | --------------------------------------------------------- |
 | 1        | ワークフロー設計JSONを読み込む                            |
 | 2        | LLM Taskごとにagents/*.mdの必要性を判断                   |
-| 3        | Script Taskごとにscripts/*.mjsの必要性を判断              |
+| 3        | Script Taskごとにscripts/*.jsの必要性を判断              |
 | 4        | スキーマ定義が必要ならschemas/*.jsonを計画                |
 | 5        | 詳細知識が必要ならreferences/*.mdを計画                   |
 | 6        | テンプレートが必要ならassets/を計画                       |
@@ -101,7 +101,7 @@ Clean Architectureの原則を応用し、スキルのフォルダ構造とフ�
 
 | 成果物名     | 受領先              | 内容                               |
 | ------------ | ------------------- | ---------------------------------- |
-| 構造計画JSON | generate_skill_md.mjs | フォルダ構造、ファイル一覧       |
+| 構造計画JSON | generate_skill_md.js | フォルダ構造、ファイル一覧       |
 
 #### 出力テンプレート
 
@@ -143,7 +143,7 @@ Clean Architectureの原則を応用し、スキルのフォルダ構造とフ�
       "executionPattern": "{{seq|par|cond|loop|agg}}"
     },
     {
-      "path": "scripts/{{script-name}}.mjs",
+      "path": "scripts/{{script-name}}.js",
       "type": "script",
       "responsibility": "{{単一責務}}"
     },
@@ -164,5 +164,5 @@ Clean Architectureの原則を応用し、スキルのフォルダ構造とフ�
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_plan.mjs --input .tmp/structure-plan.json
+node scripts/validate_plan.js --input .tmp/structure-plan.json
 ```

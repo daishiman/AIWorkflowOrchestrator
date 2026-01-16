@@ -6,7 +6,7 @@
  * Task定義JSONからagents/*.mdを生成します。
  *
  * 使用例:
- *   node scripts/generate_agent.mjs --task .tmp/tasks/analyze.json --output .claude/skills/my-skill/agents/analyze.md
+ *   node scripts/generate_agent.js --task .tmp/tasks/analyze.json --output .claude/skills/my-skill/agents/analyze.md
  *
  * 終了コード:
  *   0: 成功
@@ -30,7 +30,7 @@ function showHelp() {
 agents/*.md生成スクリプト
 
 Usage:
-  node generate_agent.mjs --task <task-json> --output <output-path>
+  node generate_agent.js --task <task-json> --output <output-path>
 
 Options:
   --task <path>    Task定義JSONファイルのパス（必須）
@@ -55,7 +55,7 @@ Task JSON形式:
   }
 
 Examples:
-  node scripts/generate_agent.mjs --task .tmp/tasks/analyze.json --output agents/analyze.md
+  node scripts/generate_agent.js --task .tmp/tasks/analyze.json --output agents/analyze.md
 `);
 }
 

@@ -7,7 +7,7 @@
  * エージェントの最終Phaseで呼び出されることを想定しています。
  *
  * 使用例:
- *   node log_usage.mjs --result success --phase "Phase 4" --agent "skill-creator"
+ *   node log_usage.js --result success --phase "Phase 4" --agent "skill-creator"
  *
  * 終了コード:
  *   0: 成功
@@ -31,7 +31,7 @@ function showHelp() {
 スキル使用記録スクリプト (18-skills.md §7.3 準拠)
 
 Usage:
-  node log_usage.mjs [options]
+  node log_usage.js [options]
 
 Options:
   --result <success|failure>  実行結果（必須）
@@ -41,9 +41,9 @@ Options:
   -h, --help                  このヘルプを表示
 
 Examples:
-  node log_usage.mjs --result success
-  node log_usage.mjs --result failure --phase "Phase 3" --notes "検証エラー"
-  node log_usage.mjs --result success --phase "Phase 4" --agent "skill-creator"
+  node log_usage.js --result success
+  node log_usage.js --result failure --phase "Phase 3" --notes "検証エラー"
+  node log_usage.js --result success --phase "Phase 4" --agent "skill-creator"
 
 Files updated:
   - LOGS.md: 実行記録を追記

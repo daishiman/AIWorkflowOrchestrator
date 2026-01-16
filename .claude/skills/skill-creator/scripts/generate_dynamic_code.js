@@ -6,7 +6,7 @@
  * LLMによる設計結果をスクリプトで確実に展開する。
  *
  * 使用方法:
- *   node scripts/generate_dynamic_code.mjs --template <path> --variables <path> --output <path>
+ *   node scripts/generate_dynamic_code.js --template <path> --variables <path> --output <path>
  *
  * 終了コード:
  *   0: 成功
@@ -30,7 +30,7 @@ function showHelp() {
 動的コード生成スクリプト
 
 Usage:
-  node generate_dynamic_code.mjs --template <path> --variables <path> --output <path>
+  node generate_dynamic_code.js --template <path> --variables <path> --output <path>
 
 Options:
   --template <path>   テンプレートファイルパス（必須）
