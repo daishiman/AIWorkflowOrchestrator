@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "artifact-definition.json",
+  "title": "Artifact Definition",
+  "description": "成果物レジストリ（artifacts.json）のスキーマ",
+  "type": "object",
+  "required": ["feature", "created", "lastUpdated", "phases"],
+  "properties": {
+    "feature": {
+      "type": "string",
+      "description": "機能名（ケバブケース）",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "作成日時（ISO 8601）"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "最終更新日時（ISO 8601）"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["in_progress", "completed", "on_hold"],
+      "description": "ワークフロー全体のステータス"
+    },
+    "phases": {
+      "type": "object",
+      "description": "Phase別の成果物と状態",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "object",
+          "required": ["status"],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["pending", "in_progress", "completed", "skipped"],
+              "description": "Phaseステータス"
+            },
+            "startedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "開始日時"
+            },
+            "completedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "完了日時"
+            },
+            "artifacts": {
+              "type": "array",
+              "description": "成果物一覧",
+              "items": {
+                "type": "object",
+                "required": ["type", "path"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["document", "code", "test", "config"],
+                    "description": "成果物タイプ"
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "成果物パス"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "成果物説明"
+                  }
+                }
+              }
+            },
+            "notes": {
+              "type": "string",
+              "description": "備考・引き継ぎ事項"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependencies": {
+      "type": "object",
+      "description": "Phase間の依存関係マップ",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "追加メタデータ",
+      "properties": {
+        "taskType": {
+          "type": "string",
+          "enum": ["feat", "fix", "refactor", "docs", "test", "chore"]
+        },
+        "estimatedPhases": {
+          "type": "integer",
+          "description": "予定Phase数"
+        },
+        "actualPhases": {
+          "type": "integer",
+          "description": "実行Phase数"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

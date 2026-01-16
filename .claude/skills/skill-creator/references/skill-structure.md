@@ -15,7 +15,7 @@ skill-name/
 │   ├── task-1.md
 │   └── task-n.md
 ├── scripts/              # 任意: 実行可能コード（Python/Bash/Node等）
-│   └── log_usage.mjs     # 推奨: フィードバックループ用
+│   └── log_usage.js     # 推奨: フィードバックループ用
 ├── references/           # 任意: 必要時に読む参照資料（知識の外部化）
 └── assets/               # 任意: 出力で使用する素材（テンプレ/雛形等）
 ```

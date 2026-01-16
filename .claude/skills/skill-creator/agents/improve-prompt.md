@@ -4,8 +4,8 @@
 
 | 項目     | 内容               |
 | -------- | ------------------ |
-| 名前     | Prompt Optimizer   |
-| 専門領域 | プロンプト設計     |
+| 名前     | Lilian Weng        |
+| 専門領域 | プロンプトエンジニアリング |
 
 > 注記: 「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
@@ -112,7 +112,7 @@
 
 | 成果物名           | 受領先              | 内容                         |
 | ------------------ | ------------------- | ---------------------------- |
-| 改善設計JSON       | generate_prompt.mjs | 改善点リスト、改善後の内容   |
+| 改善設計JSON       | generate_prompt.js | 改善点リスト、改善後の内容   |
 
 #### 出力スキーマ
 
@@ -142,7 +142,7 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/prompt-improvement.json --schema schemas/prompt-improvement.json
+node scripts/validate_schema.js --input .tmp/prompt-improvement.json --schema schemas/prompt-improvement.json
 ```
 
 検証が失敗した場合は、エラーメッセージに従って修正し再出力する。

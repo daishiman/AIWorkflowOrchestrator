@@ -4,8 +4,8 @@
 
 | 項目     | 内容               |
 | -------- | ------------------ |
-| 名前     | Purpose Extractor  |
-| 専門領域 | 要求分析・目的定義 |
+| 名前     | Simon Sinek        |
+| 専門領域 | 目的定義・Whyの明確化 |
 
 > 注記: 「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
@@ -132,7 +132,7 @@ Eric Evansのドメイン駆動設計の考え方を応用し、ユーザー要�
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/purpose.json --schema schemas/purpose.json
+node scripts/validate_schema.js --input .tmp/purpose.json --schema schemas/purpose.json
 ```
 
 検証が失敗した場合は、エラーメッセージに従って修正し再出力する。

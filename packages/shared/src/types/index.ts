@@ -24,6 +24,14 @@ export type {
   AgentStatusPayload,
 } from "./agent";
 
+// Environment Backend型定義 (AGENT-007)
+export type {
+  ContentType,
+  ExtractedContent,
+  SanitizedContent,
+  EnvironmentPreviewContent,
+} from "./agent";
+
 // プレビュー環境型定義 (AGENT-006)
 export type {
   EnvironmentType,
@@ -51,6 +59,21 @@ export type {
 } from "./agent-execution";
 
 export { AGENT_DEFAULTS, DANGEROUS_PATTERNS } from "./agent-execution";
+
+// スライド設定型定義
+export type {
+  SlideSettings,
+  DirectoryValidationResult,
+  ValidationResult,
+  SlideSettingsAPI,
+  SlideSettingsGetResponse,
+  SlideSettingsGetDirectoryResponse,
+  SlideSettingsSetDirectoryResponse,
+  SlideSettingsSelectDirectoryResponse,
+  SlideSettingsValidateDirectoryResponse,
+} from "./slideSettings";
+
+export { DEFAULT_SLIDE_SETTINGS } from "./slideSettings";
 
 // ファイル選択型定義
 export type {

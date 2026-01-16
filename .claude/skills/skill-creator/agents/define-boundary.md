@@ -4,8 +4,8 @@
 
 | 項目     | 内容              |
 | -------- | ----------------- |
-| 名前     | Boundary Definer  |
-| 専門領域 | 機能境界設計      |
+| 名前     | Vaughn Vernon     |
+| 専門領域 | 境界コンテキスト・DDD |
 
 > 注記: 「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
@@ -108,5 +108,5 @@ Clean ArchitectureとDDDの境界コンテキストの考え方を応用し、
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/boundary.json --schema schemas/boundary.json
+node scripts/validate_schema.js --input .tmp/boundary.json --schema schemas/boundary.json
 ```

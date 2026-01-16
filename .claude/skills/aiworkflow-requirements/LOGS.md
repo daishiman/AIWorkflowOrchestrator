@@ -237,5 +237,100 @@
 
 ---
 
+## 2026-01-13: services/graph型エクスポートパターン文書化
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | SHARED-TYPE-EXPORT-01                                                                             |
+| 操作         | update-spec                                                                                       |
+| 対象ファイル | architecture-monorepo.md, interfaces-rag-community-detection.md, interfaces-rag-community-summarization.md |
+| 結果         | success                                                                                           |
+| 備考         | バレルファイルによる型エクスポートパターンの文書化（27項目: 22型、2 enum、2クラス、1関数）       |
+
+### 更新詳細
+
+- **更新**: `references/architecture-monorepo.md`
+  - レイヤー定義表に「グラフサービス」行を追加
+  - 「型エクスポートパターン」セクション新設（75行）
+    - バレルファイル戦略の説明
+    - services/graphエクスポート構造のコード例
+    - エクスポート一覧表（型/enum/class/関数）
+    - 使用例（import type / import）
+    - 下位互換性の説明
+
+- **更新**: `references/interfaces-rag-community-detection.md`（v1.1.0 → v1.2.0）
+  - 「インポート方法」セクション追加
+  - バレルファイルからの推奨インポートパターン例
+  - 変更履歴にエントリ追加
+
+- **更新**: `references/interfaces-rag-community-summarization.md`（v1.0.0 → v1.1.0）
+  - 「インポート方法」セクション追加
+  - バレルファイルからの推奨インポートパターン例
+  - 変更履歴にエントリ追加
+
+### 関連実装
+
+| 項目                    | パス                                              |
+| ----------------------- | ------------------------------------------------- |
+| バレルファイル          | `packages/shared/src/services/graph/index.ts`     |
+| 手動テスト              | `packages/shared/src/services/graph/__tests__/manual-import-test.ts` |
+| タスク仕様書            | `docs/30-workflows/shared-type-export-01/`        |
+
+---
+
+
+
+## [実行日時: 2026-01-13T08:30:32.142Z]
+
+- Task: Knowledge Graph Store実装詳細追加
+- 結果: success
+- フィードバック: なし
+
+---
+
+## 2026-01-14: AGENT-SDK-DEP-FIX pnpm依存解決ルール追加
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | AGENT-SDK-DEP-FIX                                                                              |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | architecture-monorepo.md、technology-devops.md、interfaces-agent-sdk.md                        |
+| 結果         | success                                                                                        |
+| 備考         | pnpm厳格モード（node-linker=isolated）における依存関係宣言ルールとベストプラクティスを追加     |
+
+### 更新詳細
+
+- **更新**: `references/architecture-monorepo.md`
+  - 「pnpm 依存解決ルール」セクション追加（約60行）
+  - .npmrc設定（node-linker=isolated）
+  - 厳格モードの特徴テーブル（明示的依存のみ許可、幽霊依存の防止、シンボリックリンク、再現性の保証）
+  - 「直接importには直接宣言が必要」ルール（ASCIIダイアグラム付き）
+  - workspace:プロトコルとの関係説明
+  - テスト時と実行時の違いテーブル
+
+- **更新**: `references/technology-devops.md`
+  - 「pnpm 依存解決ベストプラクティス」セクション追加（約40行）
+  - 新ライブラリ使用時チェックリスト
+  - よくある問題と解決策テーブル（ERR_MODULE_NOT_FOUND、テスト通過・実行時エラー等）
+  - pnpm install後の検証コマンド
+
+- **更新**: `references/interfaces-agent-sdk.md`
+  - 「依存関係解決」セクション追加（約50行）
+  - packages/sharedへのSDK依存宣言必須説明
+  - シナリオ別結果テーブル
+  - トラブルシューティング（ERR_MODULE_NOT_FOUNDエラー解決手順）
+
+### 背景
+
+packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk をimportしているが、packages/shared/package.jsonに依存宣言がなかったためランタイムエラーが発生。pnpm厳格モードでは宣言なしの依存（幽霊依存）へのアクセスがブロックされる。テストはvitestのモック/エイリアスで通過していたため発見が遅れた。
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------- |
+| タスク仕様書   | `docs/30-workflows/agent-sdk-dependency-fix/index.md`                                   |
+| 実装ガイド     | `docs/30-workflows/agent-sdk-dependency-fix/outputs/phase-12/implementation-guide.md`   |
+
+---
 
 （ログエントリはここに追記されます）

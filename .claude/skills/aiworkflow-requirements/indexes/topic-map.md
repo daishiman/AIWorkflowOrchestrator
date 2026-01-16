@@ -312,8 +312,10 @@ node scripts/list-specs.mjs --topics
 | インターフェース定義 | L139 |
 | エラー型 | L176 |
 | 実装ガイドライン | L187 |
-| 関連ドキュメント | L209 |
-| 変更履歴 | L219 |
+| 実装ステータス | L209 |
+| 使用例 | L233 |
+| 関連ドキュメント | L284 |
+| 変更履歴 | L294 |
 
 ### references/interfaces-rag-search.md
 
@@ -602,6 +604,20 @@ node scripts/list-specs.mjs --topics
 | アクセシビリティ対応 | L163 |
 | エラー状態 | L177 |
 | パフォーマンス考慮事項 | L188 |
+
+### references/ui-ux-settings.md
+
+| セクション | 行 |
+|------------|----|
+| 概要 | L8 |
+| 設定画面アーキテクチャ | L15 |
+| スライド出力ディレクトリ設定 | L51 |
+| 設定永続化 | L119 |
+| IPC API仕様 | L140 |
+| セキュリティ要件 | L162 |
+| テスト要件 | L177 |
+| 関連ドキュメント | L200 |
+| 実装ファイル | L208 |
 
 ### references/ui-ux-system-prompt.md
 

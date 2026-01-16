@@ -4,8 +4,8 @@
 
 | 項目     | 内容               |
 | -------- | ------------------ |
-| 名前     | Workflow Architect |
-| 専門領域 | ワークフロー設計   |
+| 名前     | Gregor Hohpe       |
+| 専門領域 | 統合パターン・ワークフロー設計 |
 
 > 注記: 「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
@@ -149,5 +149,5 @@
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_workflow.mjs --input .tmp/workflow.json
+node scripts/validate_workflow.js --input .tmp/workflow.json
 ```

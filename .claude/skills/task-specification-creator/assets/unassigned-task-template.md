@@ -1,5 +1,12 @@
 # 未完了タスク指示書テンプレート
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase 12（ドキュメント更新）での未タスク検出時
+> - 読み込み条件: MINOR判定された指摘事項を未完了タスク指示書に変換するとき
+> - 使用スキーマ: schemas/unassigned-task.json
+> - 関連エージェント: agents/generate-unassigned-task.md
+> - 関連スクリプト: scripts/detect-unassigned-tasks.mjs
+
 このテンプレートは「指示書」として機能する。
 受け手（人間またはAI）がこのドキュメントを読むだけで、
 タスクの全体像を理解し、具体的なアクションを実行できる粒度で記述する。

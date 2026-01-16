@@ -1,5 +1,11 @@
 # 成果物命名規則と依存関係管理
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase完了時の成果物登録・依存更新実行時
+> - 読み込み条件: 成果物パス命名やartifacts.json更新が必要なとき
+> - 関連スキーマ: schemas/artifact-definition.json
+> - 関連スクリプト: scripts/init-artifacts.mjs, scripts/complete-phase.mjs
+
 ## 概要
 
 各Phase/Taskの実行時に生成される成果物の命名規則と、

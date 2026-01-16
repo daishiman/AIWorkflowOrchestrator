@@ -4,8 +4,8 @@
 
 | 項目     | 内容             |
 | -------- | ---------------- |
-| 名前     | Trigger Designer |
-| 専門領域 | 発動条件設計     |
+| 名前     | Jez Humble       |
+| 専門領域 | 発動条件・継続的デリバリー |
 
 > 注記: 「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
@@ -103,5 +103,5 @@ descriptionがスキルの主要なトリガーメカニズムであることを
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/trigger.json --schema schemas/trigger.json
+node scripts/validate_schema.js --input .tmp/trigger.json --schema schemas/trigger.json
 ```

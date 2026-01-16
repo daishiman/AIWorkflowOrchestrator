@@ -6,13 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  render,
-  screen,
-  waitFor,
-  fireEvent,
-  act,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CommunityVisualization } from "../components/community/templates/CommunityVisualization";
 import type {
@@ -100,14 +94,32 @@ const mockMembers: StoredEntity[] = [
   {
     id: "entity-1" as EntityId,
     name: "GPT-4",
-    type: "AI",
+    normalizedName: "gpt-4",
+    type: "concept",
     description: "OpenAIの大規模言語モデル",
+    aliases: [],
+    embedding: null,
+    chunkIds: [],
+    mentionCount: 1,
+    importance: 0.8,
+    attributes: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: "entity-2" as EntityId,
     name: "BERT",
-    type: "AI",
+    normalizedName: "bert",
+    type: "concept",
     description: "Googleの自然言語処理モデル",
+    aliases: [],
+    embedding: null,
+    chunkIds: [],
+    mentionCount: 1,
+    importance: 0.7,
+    attributes: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 
@@ -163,8 +175,7 @@ describe("Community Visualization 統合テスト", () => {
       });
     });
 
-    // TODO: CONV-08-06 でステート同期のテストを修正
-    // 統合テスト環境でのノード選択ステート更新に問題があるためスキップ
+    // TODO: テストがUIコンポーネントの実装と不一致 - CommunityGraph側の修正が必要
     it.skip("IPC経由でコミュニティ詳細が取得できる", async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
 
@@ -224,8 +235,7 @@ describe("Community Visualization 統合テスト", () => {
   });
 
   describe("データフローテスト", () => {
-    // TODO: CONV-08-06 でステート同期のテストを修正
-    // 統合テスト環境でのノード選択ステート更新に問題があるためスキップ
+    // TODO: テストがUIコンポーネントの実装と不一致 - 詳細パネル表示ロジックの修正が必要
     it.skip("コミュニティ選択→詳細パネル表示のフローが動作する", async () => {
       const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
 
@@ -365,8 +375,7 @@ describe("Community Visualization 統合テスト", () => {
       });
     });
 
-    // TODO: CONV-08-06 でリトライ機能を実装後にスキップ解除
-    // リトライボタンが未実装のためスキップ
+    // TODO: テストがUIコンポーネントの実装と不一致 - 再試行ボタンの実装が必要
     it.skip("リトライ機能が動作する", async () => {
       // 最初はエラー
       mockElectronAPI.community.getAll
@@ -474,12 +483,9 @@ describe("Community Visualization 統合テスト", () => {
       expect(levelSelect).toHaveValue("0");
     });
 
-    // TODO: CONV-08-06 でステート同期のテストを修正
-    // このテストは統合テスト環境でのステート更新タイミングに問題があるため一時的にスキップ
-    // 単体テスト（CommunityGraph.test.tsx）では同等のテストがパスしている
+    // TODO: テストがUIコンポーネントの実装と不一致 - selectedクラスの適用が必要
     it.skip("選択状態がグラフと詳細パネルで同期される", async () => {
-      // このテストはfake timersの影響を受けるため、real timersを使用
-      vi.useRealTimers();
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
 
       render(<CommunityVisualization />);
 
@@ -489,16 +495,13 @@ describe("Community Visualization 統合テスト", () => {
         ).toBeInTheDocument();
       });
 
-      // ノードを選択（SVG要素にはfireEventを使用、actでラップ）
+      // ノードを選択
       const node = screen.getByTestId("community-node-community-1");
-      await act(async () => {
-        fireEvent.click(node);
-      });
+      await user.click(node);
 
       await waitFor(() => {
-        // グラフでノードが選択状態（再レンダリング後に再クエリ）
-        const selectedNode = screen.getByTestId("community-node-community-1");
-        expect(selectedNode).toHaveClass("selected");
+        // グラフでノードが選択状態
+        expect(node).toHaveClass("selected");
 
         // 詳細パネルに同じコミュニティが表示
         expect(screen.getByText("community-1")).toBeInTheDocument();
@@ -512,19 +515,13 @@ describe("Community Visualization 統合テスト", () => {
       });
 
       const node2 = screen.getByTestId("community-node-community-2");
-      await act(async () => {
-        fireEvent.click(node2);
-      });
+      await user.click(node2);
 
       await waitFor(() => {
-        // 前のノードは選択解除（再レンダリング後に再クエリ）
-        const previousNode = screen.getByTestId("community-node-community-1");
-        expect(previousNode).not.toHaveClass("selected");
-        // 新しいノードが選択状態（再レンダリング後に再クエリ）
-        const newSelectedNode = screen.getByTestId(
-          "community-node-community-2",
-        );
-        expect(newSelectedNode).toHaveClass("selected");
+        // 前のノードは選択解除
+        expect(node).not.toHaveClass("selected");
+        // 新しいノードが選択状態
+        expect(node2).toHaveClass("selected");
       });
     });
 

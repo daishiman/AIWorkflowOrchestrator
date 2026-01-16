@@ -40,7 +40,7 @@
 
 | ファイル種別 | 命名規則                                                  |
 | ------------ | --------------------------------------------------------- |
-| スクリプト   | `{{verb}}_{{target}}.py` または `{{verb}}_{{target}}.mjs` |
+| スクリプト   | `{{verb}}_{{target}}.py` または `{{verb}}_{{target}}.js` |
 | 参照資料     | `{{topic}}.md` または `{{domain}}.md`                     |
 | アセット     | `{{purpose}}.{{ext}}` または `{{asset-name}}/`            |
 
@@ -48,9 +48,9 @@
 
 | ファイル名              | 説明               |
 | ----------------------- | ------------------ |
-| `init_skill.mjs`        | 初期化スクリプト   |
+| `init_skill.js`        | 初期化スクリプト   |
 | `validate_structure.py` | 構造検証スクリプト |
-| `log_usage.mjs`         | 使用記録スクリプト |
+| `log_usage.js`         | 使用記録スクリプト |
 
 **参照資料例**:
 
@@ -78,7 +78,7 @@
 
 | 参照対象   | パス形式                 |
 | ---------- | ------------------------ |
-| スクリプト | `scripts/{{file}}.mjs`   |
+| スクリプト | `scripts/{{file}}.js`   |
 | 参照資料   | `references/{{file}}.md` |
 | アセット   | `assets/{{file}}`        |
 | Task仕様書 | `agents/{{file}}.md`     |
@@ -93,8 +93,8 @@
 
 ## Scripts
 
-- `scripts/{{script-1}}.mjs`: {{スクリプト1の説明}}
-- `scripts/{{script-n}}.mjs`: {{スクリプトNの説明}}
+- `scripts/{{script-1}}.js`: {{スクリプト1の説明}}
+- `scripts/{{script-n}}.js`: {{スクリプトNの説明}}
 
 ## Tasks
 
@@ -140,7 +140,7 @@ See [references/spec-overview.md](references/spec-overview.md)
 
 <!-- ✓ スクリプト参照 -->
 
-`scripts/init_skill.mjs`: スキルディレクトリ初期化
+`scripts/init_skill.js`: スキルディレクトリ初期化
 ```
 
 ---

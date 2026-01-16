@@ -162,6 +162,11 @@ export const IPC_CHANNELS = {
   AGENT_QUERY: "agent:query",
   AGENT_MESSAGE: "agent:message",
 
+  // Agent Environment operations (AGENT-007)
+  AGENT_EXTRACT_CONTENT: "agent:extract-content",
+  AGENT_GET_PREVIEW_CONTENT: "agent:get-preview-content",
+  AGENT_CLEANUP_TEMP_FILES: "agent:cleanup-temp-files",
+
   // Skill management operations
   SKILL_LIST_AVAILABLE: "skill:list-available",
   SKILL_LIST_IMPORTED: "skill:list-imported",
@@ -182,6 +187,13 @@ export const IPC_CHANNELS = {
   COMMUNITY_GET_MEMBERS: "community:getMembers",
   COMMUNITY_GET_SUMMARY: "community:getSummary",
   COMMUNITY_SEARCH: "community:search",
+
+  // Slide Settings operations
+  SLIDE_SETTINGS_GET_DIRECTORY: "slideSettings:getDirectory",
+  SLIDE_SETTINGS_SET_DIRECTORY: "slideSettings:setDirectory",
+  SLIDE_SETTINGS_SELECT_DIRECTORY: "slideSettings:selectDirectory",
+  SLIDE_SETTINGS_VALIDATE_DIRECTORY: "slideSettings:validateDirectory",
+  SLIDE_SETTINGS_GET_ALL: "slideSettings:getAllSettings",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -296,6 +308,10 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_RESUME_SESSION,
   IPC_CHANNELS.AGENT_DESTROY_SESSION,
   IPC_CHANNELS.AGENT_QUERY,
+  // Agent Environment channels (AGENT-007)
+  IPC_CHANNELS.AGENT_EXTRACT_CONTENT,
+  IPC_CHANNELS.AGENT_GET_PREVIEW_CONTENT,
+  IPC_CHANNELS.AGENT_CLEANUP_TEMP_FILES,
   // Skill management channels
   IPC_CHANNELS.SKILL_LIST_AVAILABLE,
   IPC_CHANNELS.SKILL_LIST_IMPORTED,
@@ -314,6 +330,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.COMMUNITY_GET_MEMBERS,
   IPC_CHANNELS.COMMUNITY_GET_SUMMARY,
   IPC_CHANNELS.COMMUNITY_SEARCH,
+  // Slide Settings channels
+  IPC_CHANNELS.SLIDE_SETTINGS_GET_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_SET_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_SELECT_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_VALIDATE_DIRECTORY,
+  IPC_CHANNELS.SLIDE_SETTINGS_GET_ALL,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

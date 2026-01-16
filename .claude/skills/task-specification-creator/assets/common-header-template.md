@@ -1,5 +1,11 @@
 # 共通ヘッダーテンプレート
 
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase仕様書生成時（generate-task-specs Task実行時）
+> - 読み込み条件: Phase仕様書のヘッダー部分を生成するとき
+> - 使用スキーマ: schemas/phase-spec.json
+> - 組み合わせ: common-footer-template.md, phase-spec-template.md
+
 Phase仕様書の共通ヘッダー部分を定義する。
 
 ---

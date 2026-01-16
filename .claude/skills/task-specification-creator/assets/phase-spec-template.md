@@ -1,3 +1,14 @@
+# Phase仕様書テンプレート
+
+> **Progressive Disclosure**
+> - 読み込みタイミング: Phase仕様書生成時（generate-task-specs Task実行時）
+> - 読み込み条件: 各Phaseの詳細仕様書を生成するとき
+> - 使用スキーマ: schemas/phase-spec.json
+> - 構文: Handlebars（{{#each}}, {{#if}} など）
+> - 組み合わせ: common-header-template.md, common-footer-template.md
+
+---
+
 # Phase {{PHASE_NUMBER}}: {{PHASE_NAME}} - タスク仕様書
 
 ## メタ情報

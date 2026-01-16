@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "task-definition.json",
+  "title": "Task Definition",
+  "description": "タスク分解結果を定義するスキーマ",
+  "type": "object",
+  "required": ["id", "name", "purpose", "type", "tasks"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "タスクの一意識別子",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "description": "タスク名（日本語可）",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "purpose": {
+      "type": "string",
+      "description": "タスクの目的・背景",
+      "minLength": 10
+    },
+    "type": {
+      "type": "string",
+      "description": "タスク種別",
+      "enum": ["feat", "fix", "refactor", "docs", "test", "chore"]
+    },
+    "scope": {
+      "type": "object",
+      "description": "スコープ定義",
+      "properties": {
+        "includes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "含む項目"
+        },
+        "excludes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "含まない項目"
+        }
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "前提条件"
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "制約条件"
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "受け入れ基準",
+      "minItems": 1
+    },
+    "tasks": {
+      "type": "array",
+      "description": "分解されたサブタスク",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "responsibility"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "サブタスクID",
+            "pattern": "^T-\\d{2}-\\d+$"
+          },
+          "name": {
+            "type": "string",
+            "description": "サブタスク名"
+          },
+          "responsibility": {
+            "type": "string",
+            "description": "責務"
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "依存するサブタスクID"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["high", "medium", "low"],
+            "description": "優先度"
+          }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

@@ -4,8 +4,8 @@
 
 | 項目     | 内容            |
 | -------- | --------------- |
-| 名前     | Anchor Selector |
-| 専門領域 | 知識圧縮設計    |
+| 名前     | Andy Hunt       |
+| 専門領域 | 実践的知識管理  |
 
 > 注記: 「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
@@ -104,5 +104,5 @@ Claudeが学習済みの枠組みや一次資料を短い参照行として配�
 ### 5.3 出力検証
 
 ```bash
-node scripts/validate_schema.mjs --input .tmp/anchors.json --schema schemas/anchors.json
+node scripts/validate_schema.js --input .tmp/anchors.json --schema schemas/anchors.json
 ```
