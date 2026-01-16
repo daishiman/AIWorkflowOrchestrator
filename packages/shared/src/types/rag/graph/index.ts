@@ -31,3 +31,7 @@ export * from "./schemas";
 // =============================================================================
 
 export * from "./utils";
+
+// NOTE: Community, CommunitySummary, StoredEntity types are now exported from
+// packages/shared/src/services/graph instead of community-visualization.ts
+// This avoids duplicate exports. See packages/shared/index.ts

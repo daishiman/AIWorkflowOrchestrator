@@ -138,3 +138,9 @@ export {
   type ErrorCodeSchema,
   type RAGErrorSchema,
 } from "./schemas";
+
+// =============================================================================
+// Graph型 - Knowledge Graph / Community
+// =============================================================================
+
+export * from "./graph";
