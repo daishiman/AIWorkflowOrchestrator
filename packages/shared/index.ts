@@ -1,6 +1,21 @@
 // Types
 export * from "./types";
 
+// Community visualization types (CONV-08-05)
+export type {
+  Community,
+  CommunitySummary,
+  StoredEntity,
+} from "./src/types/rag/graph/community-visualization";
+
+// Branded types for Community (CommunityId, EntityId)
+export type {
+  CommunityId,
+  EntityId,
+  ChunkId,
+  FileId,
+} from "./src/types/rag/branded";
+
 // Skill types from src/types
 export * from "./src/types/skill";
 
