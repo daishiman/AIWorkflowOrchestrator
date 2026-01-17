@@ -48,6 +48,60 @@ cp .claude/skills/aiworkflow-requirements/assets/spec-template.md \
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 ```
 
+## タスク完了ステータス更新（Phase 11/12完了時）
+
+手動テストや検証タスク完了時は、システム仕様書に**タスク完了セクション**を追加する。
+
+### 追加セクションテンプレート
+
+```markdown
+### タスク: {{TASK_NAME}}（{{COMPLETION_DATE}}完了）
+
+| 項目       | 内容                                                |
+|------------|-----------------------------------------------------|
+| タスクID   | {{TASK_ID}}                                         |
+| 完了日     | {{COMPLETION_DATE}}                                 |
+| ステータス | **完了**                                            |
+| テスト数   | {{AUTO_TEST_COUNT}}（自動テスト）+ {{MANUAL_TEST_COUNT}}（手動テスト項目） |
+| 発見課題   | {{ISSUE_COUNT}}件                                   |
+| ドキュメント | `docs/30-workflows/{{TASK_NAME}}/`                |
+
+#### テスト結果サマリー
+
+| カテゴリ | テスト数 | PASS | FAIL |
+|----------|----------|------|------|
+| 機能テスト | {{N}} | {{N}} | {{N}} |
+| エラーハンドリング | {{N}} | {{N}} | {{N}} |
+| アクセシビリティ | {{N}} | {{N}} | {{N}} |
+| 統合テスト連携 | {{N}} | {{N}} | {{N}} |
+
+#### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| テスト結果レポート | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-11/manual-test-result.md` |
+| 発見課題リスト | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-11/discovered-issues.md` |
+| 実装ガイド | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-12/implementation-guide.md` |
+```
+
+### 変更履歴更新
+
+仕様書の`## 変更履歴`セクションに以下の形式で追記:
+
+```markdown
+| {{NEXT_VERSION}} | {{DATE}} | {{TASK_NAME}}完了（手動テスト{{N}}項目全PASS、自動テスト{{N}}件全PASS、発見課題{{N}}件） |
+```
+
+### 残課題更新
+
+該当タスクが「残課題」にある場合、取り消し線で完了をマーク:
+
+```markdown
+| ~~{{TASK_NAME}}~~ | ~~{{依存タスク}}~~ | ~~{{優先度}}~~ | ~~{{未タスク指示書}}~~ ✅ **完了** |
+```
+
+---
+
 ## 参照リソース
 
 | リソース         | パス                                                                   |
