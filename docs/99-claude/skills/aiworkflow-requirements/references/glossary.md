@@ -131,19 +131,19 @@
 
 ## インフラ用語
 
-| 用語           | 定義                                                     |
-| -------------- | -------------------------------------------------------- |
-| Railway        | 本システムのホスティング環境。PaaS                       |
-| Nixpacks       | Railway のビルダー。自動でビルド設定を検出               |
-| GitHub Actions | CI/CD パイプライン。テスト、ビルド、デプロイを自動化     |
+| 用語           | 定義                                                                                |
+| -------------- | ----------------------------------------------------------------------------------- |
+| Railway        | 本システムのホスティング環境。PaaS                                                  |
+| Nixpacks       | Railway のビルダー。自動でビルド設定を検出                                          |
+| GitHub Actions | CI/CD パイプライン。テスト、ビルド、デプロイを自動化                                |
 | Codecov        | コードカバレッジ可視化サービス。PRにカバレッジ差分をコメント（実装済み 2026-01-05） |
-| Code Coverage  | コードカバレッジ。テストがコードのどれだけをカバーしているかを示す指標。閾値80% |
-| lcov           | カバレッジレポートの標準フォーマット。Codecovとの連携に使用 |
-| PM2            | Node.js プロセスマネージャー。Local Agent の管理に使用   |
-| 構造化ログ     | JSON 形式のログ。request_id、workflow_id、user_id を含む |
-| 一時ストレージ | Railway の /tmp ディレクトリ。再デプロイ時に削除される   |
-| ヘルスチェック | システムの稼働状態を確認するエンドポイント               |
-| レート制限     | API の呼び出し回数を制限する仕組み                       |
+| Code Coverage  | コードカバレッジ。テストがコードのどれだけをカバーしているかを示す指標。閾値80%     |
+| lcov           | カバレッジレポートの標準フォーマット。Codecovとの連携に使用                         |
+| PM2            | Node.js プロセスマネージャー。Local Agent の管理に使用                              |
+| 構造化ログ     | JSON 形式のログ。request_id、workflow_id、user_id を含む                            |
+| 一時ストレージ | Railway の /tmp ディレクトリ。再デプロイ時に削除される                              |
+| ヘルスチェック | システムの稼働状態を確認するエンドポイント                                          |
+| レート制限     | API の呼び出し回数を制限する仕組み                                                  |
 
 ## AI 用語
 
@@ -171,23 +171,23 @@
 
 ### Knowledge Graph
 
-| 用語             | 定義                                                                                   |
-| ---------------- | -------------------------------------------------------------------------------------- |
-| Knowledge Graph  | 知識をグラフ構造（ノードとエッジ）で表現したデータ。エンティティ間の関係性を保持       |
-| Entity           | Knowledge Graphのノード（頂点）。人物、組織、技術、概念等を表現                        |
-| Relation         | Knowledge Graphのエッジ（辺）。エンティティ間の関係性を表現                            |
-| Community        | 意味的に関連するエンティティ群のクラスター。Leiden Algorithmで検出                     |
-| Normalized Name  | エンティティ名を正規化した形式。重複排除・検索性向上に使用                             |
-| Evidence         | 関係の証拠となるチャンク情報。出典の透明性を保証                                       |
-| Self-loop        | ノードが自分自身に接続する辺。Knowledge Graphでは禁止                                  |
-| Bidirectional    | 双方向の関係。related_to、concurrent_with等                                            |
-| Graph Density    | グラフの密度。エッジ数と最大可能エッジ数の比率                                         |
-| PageRank             | グラフのノード重要度を計算するアルゴリズム。本システムでは簡易版（接続数ベース）を使用 |
-| Leiden Algorithm     | コミュニティ検出アルゴリズム。階層的クラスタリングが可能                               |
-| Knowledge Graph Store| Knowledge Graphの永続化・操作を担うサービス。17メソッドのCRUD操作を提供                |
-| StoredEntity         | データベースに永続化されたエンティティ。EntityIdで識別                                 |
-| StoredRelation       | データベースに永続化された関係。RelationIdで識別、evidence_count含む                   |
-| RelationEvidence     | 関係の証拠情報。chunk_id、excerpt、confidenceを保持                                    |
+| 用語                  | 定義                                                                                   |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| Knowledge Graph       | 知識をグラフ構造（ノードとエッジ）で表現したデータ。エンティティ間の関係性を保持       |
+| Entity                | Knowledge Graphのノード（頂点）。人物、組織、技術、概念等を表現                        |
+| Relation              | Knowledge Graphのエッジ（辺）。エンティティ間の関係性を表現                            |
+| Community             | 意味的に関連するエンティティ群のクラスター。Leiden Algorithmで検出                     |
+| Normalized Name       | エンティティ名を正規化した形式。重複排除・検索性向上に使用                             |
+| Evidence              | 関係の証拠となるチャンク情報。出典の透明性を保証                                       |
+| Self-loop             | ノードが自分自身に接続する辺。Knowledge Graphでは禁止                                  |
+| Bidirectional         | 双方向の関係。related_to、concurrent_with等                                            |
+| Graph Density         | グラフの密度。エッジ数と最大可能エッジ数の比率                                         |
+| PageRank              | グラフのノード重要度を計算するアルゴリズム。本システムでは簡易版（接続数ベース）を使用 |
+| Leiden Algorithm      | コミュニティ検出アルゴリズム。階層的クラスタリングが可能                               |
+| Knowledge Graph Store | Knowledge Graphの永続化・操作を担うサービス。17メソッドのCRUD操作を提供                |
+| StoredEntity          | データベースに永続化されたエンティティ。EntityIdで識別                                 |
+| StoredRelation        | データベースに永続化された関係。RelationIdで識別、evidence_count含む                   |
+| RelationEvidence      | 関係の証拠情報。chunk_id、excerpt、confidenceを保持                                    |
 
 ### ベクトル演算・データ構造
 

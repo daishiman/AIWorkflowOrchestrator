@@ -268,7 +268,9 @@ async function main() {
   } catch (error) {
     console.error(`Error: ${error.message}`);
     if (error.status === 404) {
-      console.error("Repository not found. Check owner/repo and token permissions.");
+      console.error(
+        "Repository not found. Check owner/repo and token permissions.",
+      );
     } else if (error.status === 403) {
       console.error("Permission denied. Check token has actions scope.");
     }

@@ -1,6 +1,7 @@
 # cURL例テンプレート
 
 ## 例示対象
+
 - {{endpoint}}
 
 ## cURL

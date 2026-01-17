@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling swagger ui tasks.
 
 ### 必要な知識
+
 - 対象領域: Swagger UI / ReDocなどのインタラクティブAPIドキュメントツールの設定と統合を専門とするスキル。
 - 主要概念: CI/CD パイプライン統合ガイド / GitHub Actions / Swagger UI + ReDoc両方生成 / 基本セットアップ / CDN方式（最もシンプル）
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/swagger-config.json`
 - 参照テンプレート: `templates/swagger-ui-nextjs.tsx`
 
 ### 参照書籍
+
 - 『RESTful Web APIs』（Leonard Richardson）: リソース設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/swagger-config.json`: このレベルでは参照のみ
 - `templates/swagger-ui-nextjs.tsx`: このレベルでは参照のみ
 

@@ -113,7 +113,9 @@ function main() {
     `Found ${findings.length} oversized class lists (>= ${threshold}).`,
   );
   findings.forEach((item, index) => {
-    console.error(`- [${index + 1}] count=${item.count} sample="${item.sample}..."`);
+    console.error(
+      `- [${index + 1}] count=${item.count} sample="${item.sample}..."`,
+    );
   });
   process.exit(EXIT_VALIDATION_FAILED);
 }

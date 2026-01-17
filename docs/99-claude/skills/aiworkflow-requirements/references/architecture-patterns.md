@@ -87,58 +87,58 @@
 
 **必須ファイル構成**:
 
-| ファイル             | 役割                        |
-| -------------------- | --------------------------- |
-| `{name}Slice.ts`     | Slice定義（状態+アクション）|
-| `__tests__/{name}Slice.test.ts` | ユニットテスト    |
+| ファイル                        | 役割                         |
+| ------------------------------- | ---------------------------- |
+| `{name}Slice.ts`                | Slice定義（状態+アクション） |
+| `__tests__/{name}Slice.test.ts` | ユニットテスト               |
 
 **Slice定義パターン**:
 
-| 要素             | 説明                       |
-| ---------------- | -------------------------- |
-| `{Name}State`    | 状態のインターフェース     |
-| `{Name}Actions`  | アクションのインターフェース |
-| `{Name}Slice`    | State + Actions の統合型   |
-| `initial{Name}State` | 初期状態オブジェクト   |
-| `create{Name}Slice` | StateCreator関数        |
+| 要素                 | 説明                         |
+| -------------------- | ---------------------------- |
+| `{Name}State`        | 状態のインターフェース       |
+| `{Name}Actions`      | アクションのインターフェース |
+| `{Name}Slice`        | State + Actions の統合型     |
+| `initial{Name}State` | 初期状態オブジェクト         |
+| `create{Name}Slice`  | StateCreator関数             |
 
 ### 既存Slice一覧
 
-| Slice名      | 責務                       | 実装ファイル                    |
-| ------------ | -------------------------- | ------------------------------- |
-| `uiSlice`    | UI状態（currentView等）    | `store/slices/uiSlice.ts`       |
-| `authSlice`  | 認証状態                   | `store/slices/authSlice.ts`     |
-| `chatSlice`  | チャット状態               | `store/slices/chatSlice.ts`     |
-| `agentSlice` | エージェント・スキル管理   | `store/slices/agentSlice.ts`    |
+| Slice名      | 責務                     | 実装ファイル                 |
+| ------------ | ------------------------ | ---------------------------- |
+| `uiSlice`    | UI状態（currentView等）  | `store/slices/uiSlice.ts`    |
+| `authSlice`  | 認証状態                 | `store/slices/authSlice.ts`  |
+| `chatSlice`  | チャット状態             | `store/slices/chatSlice.ts`  |
+| `agentSlice` | エージェント・スキル管理 | `store/slices/agentSlice.ts` |
 
 ### agentSlice詳細
 
 **状態定義**:
 
-| プロパティ         | 型                      | 説明               |
-| ------------------ | ----------------------- | ------------------ |
-| `skills`           | `Skill[]`               | スキル一覧         |
-| `selectedSkill`    | `Skill \| null`         | 選択中のスキル     |
-| `skillFilter`      | `string`                | フィルター文字列   |
-| `skillCategory`    | `string \| null`        | カテゴリフィルター |
-| `executionStatus`  | `AgentExecutionStatus`  | 実行状態           |
-| `currentExecutionId` | `string \| null`      | 実行ID             |
-| `executionOutput`  | `string[]`              | 実行出力           |
-| `isLoading`        | `boolean`               | ローディング状態   |
-| `error`            | `string \| null`        | エラーメッセージ   |
+| プロパティ           | 型                     | 説明               |
+| -------------------- | ---------------------- | ------------------ |
+| `skills`             | `Skill[]`              | スキル一覧         |
+| `selectedSkill`      | `Skill \| null`        | 選択中のスキル     |
+| `skillFilter`        | `string`               | フィルター文字列   |
+| `skillCategory`      | `string \| null`       | カテゴリフィルター |
+| `executionStatus`    | `AgentExecutionStatus` | 実行状態           |
+| `currentExecutionId` | `string \| null`       | 実行ID             |
+| `executionOutput`    | `string[]`             | 実行出力           |
+| `isLoading`          | `boolean`              | ローディング状態   |
+| `error`              | `string \| null`       | エラーメッセージ   |
 
 **アクション定義**:
 
-| アクション           | 引数                     | 説明               |
-| -------------------- | ------------------------ | ------------------ |
-| `setSkills`          | `skills: Skill[]`        | スキル一覧設定     |
-| `selectSkill`        | `skill: Skill \| null`   | スキル選択         |
-| `setSkillFilter`     | `filter: string`         | フィルター設定     |
-| `setSkillCategory`   | `category: string \| null` | カテゴリ設定     |
-| `setExecutionStatus` | `status: AgentExecutionStatus` | 実行状態設定 |
-| `appendOutput`       | `output: string`         | 出力追加           |
-| `clearExecution`     | -                        | 実行クリア         |
-| `resetAgentState`    | -                        | 状態リセット       |
+| アクション           | 引数                           | 説明           |
+| -------------------- | ------------------------------ | -------------- |
+| `setSkills`          | `skills: Skill[]`              | スキル一覧設定 |
+| `selectSkill`        | `skill: Skill \| null`         | スキル選択     |
+| `setSkillFilter`     | `filter: string`               | フィルター設定 |
+| `setSkillCategory`   | `category: string \| null`     | カテゴリ設定   |
+| `setExecutionStatus` | `status: AgentExecutionStatus` | 実行状態設定   |
+| `appendOutput`       | `output: string`               | 出力追加       |
+| `clearExecution`     | -                              | 実行クリア     |
+| `resetAgentState`    | -                              | 状態リセット   |
 
 ### 新規Slice追加手順
 

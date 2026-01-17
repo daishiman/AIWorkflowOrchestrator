@@ -44,7 +44,8 @@
   /* -----------------------------------------------------------------
      基本設定
      ----------------------------------------------------------------- */
-  body, html {
+  body,
+  html {
     background: white !important;
     overflow: visible !important;
     height: auto !important;
@@ -76,8 +77,8 @@
     page-break-inside: avoid !important;
     padding: 15px !important;
     margin: 0 !important;
-    background: #FAFAFA !important;
-    border: 1px solid #DDD !important;
+    background: #fafafa !important;
+    border: 1px solid #ddd !important;
     border-radius: 8px !important;
     box-sizing: border-box !important;
     position: relative !important;
@@ -172,9 +173,15 @@
     width: 100% !important;
     visibility: visible !important;
   }
-  .grid-container.grid-2 { grid-template-columns: repeat(2, 1fr) !important; }
-  .grid-container.grid-3 { grid-template-columns: repeat(3, 1fr) !important; }
-  .grid-container.grid-4 { grid-template-columns: repeat(4, 1fr) !important; }
+  .grid-container.grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid-container.grid-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .grid-container.grid-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
 
   .stats-container {
     display: flex !important;
@@ -214,10 +221,23 @@
   /* -----------------------------------------------------------------
      全子要素の表示保証
      ----------------------------------------------------------------- */
-  .agenda-item, .list-item, .compare-item, .flow-step, .flow-arrow,
-  .grid-card, .stat-item, .pyramid-level, .highlight-item, .process-step,
-  .process-arrow, .timeline-item, .timeline-content, .table-wrapper,
-  .compare-vs, .message-icon, .icon-wrapper {
+  .agenda-item,
+  .list-item,
+  .compare-item,
+  .flow-step,
+  .flow-arrow,
+  .grid-card,
+  .stat-item,
+  .pyramid-level,
+  .highlight-item,
+  .process-step,
+  .process-arrow,
+  .timeline-item,
+  .timeline-content,
+  .table-wrapper,
+  .compare-vs,
+  .message-icon,
+  .icon-wrapper {
     visibility: visible !important;
     opacity: 1 !important;
     transform: none !important;
@@ -310,7 +330,8 @@
     text-align: center !important;
   }
 
-  .process-arrow, .flow-arrow {
+  .process-arrow,
+  .flow-arrow {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -327,11 +348,25 @@
   /* -----------------------------------------------------------------
      全スライドタイプの基本設定
      ----------------------------------------------------------------- */
-  .slide-title, .slide-message, .slide-list, .slide-compare,
-  .slide-flow, .slide-timeline, .slide-table, .slide-agenda,
-  .slide-section, .slide-stats, .slide-quote, .slide-image,
-  .slide-diagram, .slide-chart, .slide-grid, .slide-pyramid,
-  .slide-highlight, .slide-process, .slide-hero {
+  .slide-title,
+  .slide-message,
+  .slide-list,
+  .slide-compare,
+  .slide-flow,
+  .slide-timeline,
+  .slide-table,
+  .slide-agenda,
+  .slide-section,
+  .slide-stats,
+  .slide-quote,
+  .slide-image,
+  .slide-diagram,
+  .slide-chart,
+  .slide-grid,
+  .slide-pyramid,
+  .slide-highlight,
+  .slide-process,
+  .slide-hero {
     transform: none !important;
     width: 100% !important;
     height: auto !important;
@@ -357,21 +392,42 @@
     right: 15px !important;
     font-size: 9pt !important;
     color: #888 !important;
-    font-family: 'Noto Sans JP', sans-serif !important;
+    font-family: "Noto Sans JP", sans-serif !important;
   }
 
   /* -----------------------------------------------------------------
      フォントサイズ縮小（印刷用）
      ----------------------------------------------------------------- */
-  .main-title { font-size: 2rem !important; }
-  .sub-title { font-size: 1rem !important; }
-  .section-title { font-size: 1.8rem !important; }
-  .list-title, .flow-title, .compare-title, .table-title,
-  .agenda-title, .stats-title, .grid-title, .pyramid-title,
-  .highlight-title, .process-title { font-size: 1.3rem !important; }
-  .main-message { font-size: 1.5rem !important; }
-  .sub-message { font-size: 0.9rem !important; }
-  .stat-value { font-size: 2rem !important; }
+  .main-title {
+    font-size: 2rem !important;
+  }
+  .sub-title {
+    font-size: 1rem !important;
+  }
+  .section-title {
+    font-size: 1.8rem !important;
+  }
+  .list-title,
+  .flow-title,
+  .compare-title,
+  .table-title,
+  .agenda-title,
+  .stats-title,
+  .grid-title,
+  .pyramid-title,
+  .highlight-title,
+  .process-title {
+    font-size: 1.3rem !important;
+  }
+  .main-message {
+    font-size: 1.5rem !important;
+  }
+  .sub-message {
+    font-size: 0.9rem !important;
+  }
+  .stat-value {
+    font-size: 2rem !important;
+  }
 
   /* -----------------------------------------------------------------
      アイコンサイズ縮小
@@ -428,32 +484,59 @@
   .grid-card,
   .highlight-item,
   .process-step {
-    background: #F5F5F5 !important;
-    border: 1px solid #DDD !important;
+    background: #f5f5f5 !important;
+    border: 1px solid #ddd !important;
   }
 
   /* -----------------------------------------------------------------
      テキスト色変換（ライト → ダーク）
      ----------------------------------------------------------------- */
-  h1, h2, h3, h4, h5, h6,
-  p, span, li, td, th,
-  .main-title, .sub-title,
-  .main-message, .sub-message,
-  .list-title, .list-item span,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  li,
+  td,
+  th,
+  .main-title,
+  .sub-title,
+  .main-message,
+  .sub-message,
+  .list-title,
+  .list-item span,
   .compare-title,
-  .flow-title, .flow-step span,
-  .timeline-title, .timeline-content h4, .timeline-content p,
+  .flow-title,
+  .flow-step span,
+  .timeline-title,
+  .timeline-content h4,
+  .timeline-content p,
   .table-title,
-  .agenda-title, .agenda-text,
-  .section-title, .section-subtitle, .section-number,
-  .stats-title, .stat-label,
-  .grid-title, .grid-card h3, .grid-card p,
-  .pyramid-title, .pyramid-level span,
-  .highlight-title, .highlight-item h3, .highlight-item p,
-  .process-title, .process-step span,
-  .hero-title, .hero-subtitle, .hero-thanks {
-    color: #1F1F28 !important;
-    -webkit-text-fill-color: #1F1F28 !important;
+  .agenda-title,
+  .agenda-text,
+  .section-title,
+  .section-subtitle,
+  .section-number,
+  .stats-title,
+  .stat-label,
+  .grid-title,
+  .grid-card h3,
+  .grid-card p,
+  .pyramid-title,
+  .pyramid-level span,
+  .highlight-title,
+  .highlight-item h3,
+  .highlight-item p,
+  .process-title,
+  .process-step span,
+  .hero-title,
+  .hero-subtitle,
+  .hero-thanks {
+    color: #1f1f28 !important;
+    -webkit-text-fill-color: #1f1f28 !important;
   }
 
   /* 統計値のグラデーションテキストを単色に */
@@ -461,13 +544,17 @@
     background: none !important;
     -webkit-background-clip: unset !important;
     background-clip: unset !important;
-    -webkit-text-fill-color: #7E9CD8 !important;
-    color: #7E9CD8 !important;
+    -webkit-text-fill-color: #7e9cd8 !important;
+    color: #7e9cd8 !important;
   }
 
   /* 補足テキスト */
-  .text-note, .text-caption, .text-small,
-  .sub-title, .sub-message, .contact {
+  .text-note,
+  .text-caption,
+  .text-small,
+  .sub-title,
+  .sub-message,
+  .contact {
     color: #666666 !important;
     -webkit-text-fill-color: #666666 !important;
   }
@@ -475,30 +562,66 @@
   /* -----------------------------------------------------------------
      アクセントカラー（維持）
      ----------------------------------------------------------------- */
-  .highlight, .accent-yellow { color: #DCA561 !important; -webkit-text-fill-color: #DCA561 !important; }
-  .highlight-pink, .accent-pink { color: #D27E99 !important; -webkit-text-fill-color: #D27E99 !important; }
-  .highlight-aqua, .accent-aqua { color: #7AA89F !important; -webkit-text-fill-color: #7AA89F !important; }
-  .accent-blue { color: #7E9CD8 !important; -webkit-text-fill-color: #7E9CD8 !important; }
-  .accent-violet { color: #957FB8 !important; -webkit-text-fill-color: #957FB8 !important; }
+  .highlight,
+  .accent-yellow {
+    color: #dca561 !important;
+    -webkit-text-fill-color: #dca561 !important;
+  }
+  .highlight-pink,
+  .accent-pink {
+    color: #d27e99 !important;
+    -webkit-text-fill-color: #d27e99 !important;
+  }
+  .highlight-aqua,
+  .accent-aqua {
+    color: #7aa89f !important;
+    -webkit-text-fill-color: #7aa89f !important;
+  }
+  .accent-blue {
+    color: #7e9cd8 !important;
+    -webkit-text-fill-color: #7e9cd8 !important;
+  }
+  .accent-violet {
+    color: #957fb8 !important;
+    -webkit-text-fill-color: #957fb8 !important;
+  }
 
   /* -----------------------------------------------------------------
      アイコン色
      ----------------------------------------------------------------- */
-  i.fa, i.fas, i.far, i.fab,
-  .icon, [class*="fa-"] {
-    color: #54546D !important;
+  i.fa,
+  i.fas,
+  i.far,
+  i.fab,
+  .icon,
+  [class*="fa-"] {
+    color: #54546d !important;
   }
 
   .icon-wrapper i,
-  .title-icon, .section-icon, .message-icon i,
-  .list-item i, .flow-step i, .stat-item i,
-  .grid-card i, .hero-icon {
-    color: #7E9CD8 !important;
+  .title-icon,
+  .section-icon,
+  .message-icon i,
+  .list-item i,
+  .flow-step i,
+  .stat-item i,
+  .grid-card i,
+  .hero-icon {
+    color: #7e9cd8 !important;
   }
 
-  .icon-wrapper.accent-pink i, .card-pink i { color: #D27E99 !important; }
-  .icon-wrapper.accent-aqua i, .card-aqua i { color: #7AA89F !important; }
-  .icon-wrapper.accent-yellow i, .card-yellow i { color: #DCA561 !important; }
+  .icon-wrapper.accent-pink i,
+  .card-pink i {
+    color: #d27e99 !important;
+  }
+  .icon-wrapper.accent-aqua i,
+  .card-aqua i {
+    color: #7aa89f !important;
+  }
+  .icon-wrapper.accent-yellow i,
+  .card-yellow i {
+    color: #dca561 !important;
+  }
 
   /* -----------------------------------------------------------------
      テーブル
@@ -509,58 +632,62 @@
   }
 
   th {
-    background: #E8E8E8 !important;
-    color: #1F1F28 !important;
-    border: 1px solid #CCC !important;
+    background: #e8e8e8 !important;
+    color: #1f1f28 !important;
+    border: 1px solid #ccc !important;
   }
 
   td {
     background: white !important;
-    color: #1F1F28 !important;
-    border: 1px solid #DDD !important;
+    color: #1f1f28 !important;
+    border: 1px solid #ddd !important;
   }
 
   tr:nth-child(even) td {
-    background: #F5F5F5 !important;
+    background: #f5f5f5 !important;
   }
 
   /* -----------------------------------------------------------------
      フロー・タイムライン要素
      ----------------------------------------------------------------- */
   .flow-arrow {
-    color: #DCA561 !important;
+    color: #dca561 !important;
   }
 
   .timeline-line {
-    background: #7E9CD8 !important;
+    background: #7e9cd8 !important;
   }
 
   .timeline-dot {
-    background: #7E9CD8 !important;
+    background: #7e9cd8 !important;
     border-color: white !important;
   }
 
-  .step-number, .agenda-number, .process-number {
-    background: #7E9CD8 !important;
+  .step-number,
+  .agenda-number,
+  .process-number {
+    background: #7e9cd8 !important;
     color: white !important;
   }
 
   /* -----------------------------------------------------------------
      比較スライド
      ----------------------------------------------------------------- */
-  .compare-item.left, .compare-item.before {
-    border-top-color: #D27E99 !important;
+  .compare-item.left,
+  .compare-item.before {
+    border-top-color: #d27e99 !important;
   }
 
-  .compare-item.right, .compare-item.after {
-    border-top-color: #7AA89F !important;
+  .compare-item.right,
+  .compare-item.after {
+    border-top-color: #7aa89f !important;
   }
 
   /* -----------------------------------------------------------------
      図解（ピラミッド等）
      ----------------------------------------------------------------- */
   .pyramid-level:nth-child(1) {
-    background: #7E9CD8 !important;
+    background: #7e9cd8 !important;
   }
 
   .pyramid-level:nth-child(1) span {
@@ -571,8 +698,9 @@
   /* -----------------------------------------------------------------
      その他の要素
      ----------------------------------------------------------------- */
-  .section-divider, .hero-badge {
-    background: linear-gradient(90deg, #7E9CD8, #D27E99) !important;
+  .section-divider,
+  .hero-badge {
+    background: linear-gradient(90deg, #7e9cd8, #d27e99) !important;
     print-color-adjust: exact !important;
     -webkit-print-color-adjust: exact !important;
   }

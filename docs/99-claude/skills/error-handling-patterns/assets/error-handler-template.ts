@@ -5,11 +5,11 @@
 
 // エラータイプの定義
 export enum ErrorCategory {
-  VALIDATION = 'VALIDATION',
-  BUSINESS = 'BUSINESS',
-  EXTERNAL = 'EXTERNAL',
-  INFRASTRUCTURE = 'INFRASTRUCTURE',
-  INTERNAL = 'INTERNAL',
+  VALIDATION = "VALIDATION",
+  BUSINESS = "BUSINESS",
+  EXTERNAL = "EXTERNAL",
+  INFRASTRUCTURE = "INFRASTRUCTURE",
+  INTERNAL = "INTERNAL",
 }
 
 // ベースエラークラス
@@ -19,10 +19,10 @@ export class AppError extends Error {
     public readonly category: ErrorCategory,
     public readonly message: string,
     public readonly cause?: Error,
-    public readonly context?: Record<string, unknown>
+    public readonly context?: Record<string, unknown>,
   ) {
     super(message);
-    this.name = 'AppError';
+    this.name = "AppError";
     Error.captureStackTrace(this, this.constructor);
   }
 
@@ -47,21 +47,29 @@ export class AppError extends Error {
 export class ValidationError extends AppError {
   constructor(message: string, context?: Record<string, unknown>) {
     super(1000, ErrorCategory.VALIDATION, message, undefined, context);
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
   }
 }
 
 export class BusinessError extends AppError {
-  constructor(code: number, message: string, context?: Record<string, unknown>) {
+  constructor(
+    code: number,
+    message: string,
+    context?: Record<string, unknown>,
+  ) {
     super(code, ErrorCategory.BUSINESS, message, undefined, context);
-    this.name = 'BusinessError';
+    this.name = "BusinessError";
   }
 }
 
 export class ExternalServiceError extends AppError {
-  constructor(message: string, cause?: Error, context?: Record<string, unknown>) {
+  constructor(
+    message: string,
+    cause?: Error,
+    context?: Record<string, unknown>,
+  ) {
     super(3000, ErrorCategory.EXTERNAL, message, cause, context);
-    this.name = 'ExternalServiceError';
+    this.name = "ExternalServiceError";
   }
 }
 
@@ -75,15 +83,15 @@ export function handleError(error: unknown): AppError {
     return new AppError(
       5000,
       ErrorCategory.INTERNAL,
-      'An unexpected error occurred',
-      error
+      "An unexpected error occurred",
+      error,
     );
   }
 
   return new AppError(
     5001,
     ErrorCategory.INTERNAL,
-    'An unknown error occurred'
+    "An unknown error occurred",
   );
 }
 

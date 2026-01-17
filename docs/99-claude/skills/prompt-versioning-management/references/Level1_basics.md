@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling prompt versioning management tasks.
 
 ### 必要な知識
+
 - 対象領域: プロンプトのライフサイクル管理を専門とするスキル。 バージョン管理、デプロイ戦略、ロールバック、変更追跡により、 本番環境で安全かつ効率的なプロンプト運用を実現します。
 - 主要概念: デプロイパターン / デプロイ戦略の選択 / Blue-Green デプロイ / ロールバック手順 / 戦略の種類
 - 実務指針: プロンプトを本番環境にデプロイする時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: ロールバック戦略を設計する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/changelog-template.md`
 - 参照テンプレート: `templates/deployment-checklist.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/changelog-template.md`: このレベルでは参照のみ
 - `templates/deployment-checklist.md`: このレベルでは参照のみ
 

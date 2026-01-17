@@ -51,6 +51,7 @@ allowed-tools:
 3. 境界設計と依存方向のルールを決める
 
 **Task**:
+
 - `agents/pattern-selection.md`
 - `agents/boundary-design.md`
 
@@ -68,12 +69,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| コンテキスト分析 | 目的・制約の整理 | 現状構造、制約 | コンテキスト要約 | `references/requirements-index.md` | Phase 1 |
-| パターン選定 | パターン比較と選定 | コンテキスト要約 | パターン比較レポート | `assets/pattern-comparison.md` | Phase 2 前半 |
-| 境界設計 | 境界と依存方向の設計 | パターン比較レポート | 境界設計メモ | `references/hexagonal-architecture.md` | Phase 2 後半 |
-| 準拠レビュー | 実装準拠と改善点整理 | 対象コード | 準拠評価レポート | `scripts/evaluate-pattern-compliance.mjs` | Phase 3 |
+| Task             | 役割                 | 入力                 | 出力                 | 参照先                                    | 実行タイミング |
+| ---------------- | -------------------- | -------------------- | -------------------- | ----------------------------------------- | -------------- |
+| コンテキスト分析 | 目的・制約の整理     | 現状構造、制約       | コンテキスト要約     | `references/requirements-index.md`        | Phase 1        |
+| パターン選定     | パターン比較と選定   | コンテキスト要約     | パターン比較レポート | `assets/pattern-comparison.md`            | Phase 2 前半   |
+| 境界設計         | 境界と依存方向の設計 | パターン比較レポート | 境界設計メモ         | `references/hexagonal-architecture.md`    | Phase 2 後半   |
+| 準拠レビュー     | 実装準拠と改善点整理 | 対象コード           | 準拠評価レポート     | `scripts/evaluate-pattern-compliance.mjs` | Phase 3        |
 
 ## ベストプラクティス
 
@@ -118,7 +119,7 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                              |
-| ------- | ---------- | ---------------------------------------------------- |
+| Version | Date       | Changes                                            |
+| ------- | ---------- | -------------------------------------------------- |
 | 2.0.0   | 2025-12-31 | 18-skills.md準拠、Task仕様追加、scripts/assets整備 |
-| 1.0.0   | 2025-12-24 | 初版作成                                             |
+| 1.0.0   | 2025-12-24 | 初版作成                                           |

@@ -14,27 +14,33 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: エージェントアーキテクチャパターンカタログ / パターン1: オーケストレーター・ワーカー / 構造 / ローカルエージェント仕様 / Agent Architecture Patterns / リソース構造
 - 実務指針: 新しいエージェントのアーキテクチャを設計する時 / マルチエージェントシステムの構造を決定する時 / エージェント間の協調パターンを選択する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/pattern-catalog.md`: 4つのアーキテクチャパターン（オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシン）の詳細カタログと選択ガイド（把握する知識: エージェントアーキテクチャパターンカタログ / パターン1: オーケストレーター・ワーカー / 構造）
 - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: ローカルエージェント仕様）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Agent Architecture Patterns / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-architecture.mjs`: アーキテクチャ検証スクリプト (Node.js)
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/orchestrator-worker-template.md`: オーケストレーター・ワーカーテンプレート
 - `templates/pipeline-template.md`: パイプラインテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

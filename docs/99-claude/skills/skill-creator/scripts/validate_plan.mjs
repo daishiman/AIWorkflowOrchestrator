@@ -75,7 +75,9 @@ function validatePlan(plan) {
   } else {
     // スキル名の形式検証
     if (plan.skillName.length > 64) {
-      errors.push(`skillNameが64文字を超えています: ${plan.skillName.length}文字`);
+      errors.push(
+        `skillNameが64文字を超えています: ${plan.skillName.length}文字`,
+      );
     }
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(plan.skillName)) {
       errors.push(`skillNameがハイフンケースではありません: ${plan.skillName}`);
@@ -112,7 +114,14 @@ function validatePlan(plan) {
 
   // ファイルパスの検証
   const filePaths = new Set();
-  const validTypes = ["skill-md", "agent", "script", "reference", "asset", "schema"];
+  const validTypes = [
+    "skill-md",
+    "agent",
+    "script",
+    "reference",
+    "asset",
+    "schema",
+  ];
   const validPatterns = ["seq", "par", "cond", "loop", "agg"];
 
   for (const file of files) {
@@ -137,7 +146,9 @@ function validatePlan(plan) {
 
     // タイプの検証
     if (!file.type || !validTypes.includes(file.type)) {
-      errors.push(`${file.path}: typeが不正です（${validTypes.join(", ")}のいずれか）`);
+      errors.push(
+        `${file.path}: typeが不正です（${validTypes.join(", ")}のいずれか）`,
+      );
     }
 
     // 責務の検証
@@ -148,31 +159,65 @@ function validatePlan(plan) {
     // agentの場合、executionPatternの検証
     if (file.type === "agent" && file.executionPattern) {
       if (!validPatterns.includes(file.executionPattern)) {
-        warnings.push(`${file.path}: executionPatternが不正です（${validPatterns.join(", ")}のいずれか）`);
+        warnings.push(
+          `${file.path}: executionPatternが不正です（${validPatterns.join(", ")}のいずれか）`,
+        );
       }
     }
 
     // ディレクトリとの整合性
     const fileDir = file.path.split("/")[0];
-    if (fileDir === "agents" && directories.agents && !directories.agents.required) {
-      warnings.push(`${file.path}: agents/は必要なしと設定されていますがファイルが定義されています`);
+    if (
+      fileDir === "agents" &&
+      directories.agents &&
+      !directories.agents.required
+    ) {
+      warnings.push(
+        `${file.path}: agents/は必要なしと設定されていますがファイルが定義されています`,
+      );
     }
-    if (fileDir === "scripts" && directories.scripts && !directories.scripts.required) {
-      warnings.push(`${file.path}: scripts/は必要なしと設定されていますがファイルが定義されています`);
+    if (
+      fileDir === "scripts" &&
+      directories.scripts &&
+      !directories.scripts.required
+    ) {
+      warnings.push(
+        `${file.path}: scripts/は必要なしと設定されていますがファイルが定義されています`,
+      );
     }
-    if (fileDir === "references" && directories.references && !directories.references.required) {
-      warnings.push(`${file.path}: references/は必要なしと設定されていますがファイルが定義されています`);
+    if (
+      fileDir === "references" &&
+      directories.references &&
+      !directories.references.required
+    ) {
+      warnings.push(
+        `${file.path}: references/は必要なしと設定されていますがファイルが定義されています`,
+      );
     }
-    if (fileDir === "assets" && directories.assets && !directories.assets.required) {
-      warnings.push(`${file.path}: assets/は必要なしと設定されていますがファイルが定義されています`);
+    if (
+      fileDir === "assets" &&
+      directories.assets &&
+      !directories.assets.required
+    ) {
+      warnings.push(
+        `${file.path}: assets/は必要なしと設定されていますがファイルが定義されています`,
+      );
     }
-    if (fileDir === "schemas" && directories.schemas && !directories.schemas.required) {
-      warnings.push(`${file.path}: schemas/は必要なしと設定されていますがファイルが定義されています`);
+    if (
+      fileDir === "schemas" &&
+      directories.schemas &&
+      !directories.schemas.required
+    ) {
+      warnings.push(
+        `${file.path}: schemas/は必要なしと設定されていますがファイルが定義されています`,
+      );
     }
   }
 
   // SKILL.mdが含まれているか
-  const hasSkillMd = files.some((f) => f.path === "SKILL.md" || f.type === "skill-md");
+  const hasSkillMd = files.some(
+    (f) => f.path === "SKILL.md" || f.type === "skill-md",
+  );
   if (!hasSkillMd) {
     errors.push("SKILL.md（type: skill-md）がファイル一覧に含まれていません");
   }

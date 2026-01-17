@@ -274,17 +274,17 @@ Electronデスクトップアプリでは、IPC通信でスキル管理・エー
 
 **チャンネル一覧**:
 
-| チャネル               | 方向            | 用途               | Request                     | Response                |
-| ---------------------- | --------------- | ------------------ | --------------------------- | ----------------------- |
-| `agent:get-skills`     | Renderer → Main | スキル一覧取得     | なし                        | `{ skills: Skill[] }`   |
-| `agent:get-skill-detail` | Renderer → Main | スキル詳細取得   | `{ skillId: string }`       | `{ skill: SkillDetail }`|
-| `agent:execute`        | Renderer → Main | エージェント実行   | `ExecuteRequest`            | `{ executionId: string }` |
-| `agent:abort`          | Renderer → Main | 実行中断           | `{ executionId: string }`   | `{ success: boolean }`  |
-| `agent:get-status`     | Renderer → Main | ステータス取得     | なし                        | `GetStatusResponse`     |
-| `agent:status-changed` | Main → Renderer | ステータス変更通知 | -                           | `StatusChangedEvent`    |
-| `agent:stream-chunk`   | Main → Renderer | 出力ストリーム     | -                           | `StreamChunkEvent`      |
-| `agent:stream-end`     | Main → Renderer | ストリーム終了     | -                           | `StreamEndEvent`        |
-| `agent:stream-error`   | Main → Renderer | エラー通知         | -                           | `StreamErrorEvent`      |
+| チャネル                 | 方向            | 用途               | Request                   | Response                  |
+| ------------------------ | --------------- | ------------------ | ------------------------- | ------------------------- |
+| `agent:get-skills`       | Renderer → Main | スキル一覧取得     | なし                      | `{ skills: Skill[] }`     |
+| `agent:get-skill-detail` | Renderer → Main | スキル詳細取得     | `{ skillId: string }`     | `{ skill: SkillDetail }`  |
+| `agent:execute`          | Renderer → Main | エージェント実行   | `ExecuteRequest`          | `{ executionId: string }` |
+| `agent:abort`            | Renderer → Main | 実行中断           | `{ executionId: string }` | `{ success: boolean }`    |
+| `agent:get-status`       | Renderer → Main | ステータス取得     | なし                      | `GetStatusResponse`       |
+| `agent:status-changed`   | Main → Renderer | ステータス変更通知 | -                         | `StatusChangedEvent`      |
+| `agent:stream-chunk`     | Main → Renderer | 出力ストリーム     | -                         | `StreamChunkEvent`        |
+| `agent:stream-end`       | Main → Renderer | ストリーム終了     | -                         | `StreamEndEvent`          |
+| `agent:stream-error`     | Main → Renderer | エラー通知         | -                         | `StreamErrorEvent`        |
 
 **型定義**:
 
@@ -298,33 +298,33 @@ Electronデスクトップアプリでは、IPC通信でスキル管理・エー
 
 **Skill型**:
 
-| プロパティ    | 型         | 説明                   |
-| ------------- | ---------- | ---------------------- |
-| `id`          | `string`   | 一意識別子             |
-| `name`        | `string`   | スキル名               |
-| `description` | `string`   | 説明文                 |
-| `path`        | `string`   | スキルファイルパス     |
-| `triggers`    | `string[]` | トリガーキーワード     |
-| `category`    | `string?`  | カテゴリ（任意）       |
+| プロパティ    | 型         | 説明               |
+| ------------- | ---------- | ------------------ |
+| `id`          | `string`   | 一意識別子         |
+| `name`        | `string`   | スキル名           |
+| `description` | `string`   | 説明文             |
+| `path`        | `string`   | スキルファイルパス |
+| `triggers`    | `string[]` | トリガーキーワード |
+| `category`    | `string?`  | カテゴリ（任意）   |
 
 **Anchor型**:
 
-| プロパティ    | 型       | 説明               |
-| ------------- | -------- | ------------------ |
-| `source`      | `string` | 参照元（書籍等）   |
-| `application` | `string` | 適用方法           |
-| `purpose`     | `string` | 目的               |
+| プロパティ    | 型       | 説明             |
+| ------------- | -------- | ---------------- |
+| `source`      | `string` | 参照元（書籍等） |
+| `application` | `string` | 適用方法         |
+| `purpose`     | `string` | 目的             |
 
 **実装状況**:
 
-| 項目                 | 状態   | タスク    |
-| -------------------- | ------ | --------- |
-| チャネル定数定義     | 完了   | AGENT-001 |
-| ホワイトリスト追加   | 完了   | AGENT-001 |
-| Zustand agentSlice   | 完了   | AGENT-001 |
-| AgentView UI         | 完了   | AGENT-001 |
-| IPCハンドラー実装    | 未実装 | AGENT-005 |
-| Preload API実装      | 未実装 | AGENT-002 |
+| 項目               | 状態   | タスク    |
+| ------------------ | ------ | --------- |
+| チャネル定数定義   | 完了   | AGENT-001 |
+| ホワイトリスト追加 | 完了   | AGENT-001 |
+| Zustand agentSlice | 完了   | AGENT-001 |
+| AgentView UI       | 完了   | AGENT-001 |
+| IPCハンドラー実装  | 未実装 | AGENT-005 |
+| Preload API実装    | 未実装 | AGENT-002 |
 
 ---
 
@@ -403,23 +403,23 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ### チャンネル一覧
 
-| チャネル               | 方向            | 用途                 | Payload                              |
-| ---------------------- | --------------- | -------------------- | ------------------------------------ |
-| `slide:sync-status`    | Main → Renderer | 同期状態通知         | `{ status: SyncStatus, direction: SyncDirection }` |
-| `slide:sync-progress`  | Main → Renderer | 同期進捗通知         | `{ percent: number, message: string }` |
-| `slide:reverse-sync`   | Renderer → Main | 逆同期手動トリガー   | `{ projectPath: string }`            |
-| `slide:sync-error`     | Main → Renderer | 同期エラー通知       | `{ code: string, message: string }`  |
-| `slide:watch-start`    | Renderer → Main | ファイル監視開始     | `{ projectPath: string }`            |
-| `slide:watch-stop`     | Renderer → Main | ファイル監視停止     | `{ projectPath: string }`            |
+| チャネル              | 方向            | 用途               | Payload                                            |
+| --------------------- | --------------- | ------------------ | -------------------------------------------------- |
+| `slide:sync-status`   | Main → Renderer | 同期状態通知       | `{ status: SyncStatus, direction: SyncDirection }` |
+| `slide:sync-progress` | Main → Renderer | 同期進捗通知       | `{ percent: number, message: string }`             |
+| `slide:reverse-sync`  | Renderer → Main | 逆同期手動トリガー | `{ projectPath: string }`                          |
+| `slide:sync-error`    | Main → Renderer | 同期エラー通知     | `{ code: string, message: string }`                |
+| `slide:watch-start`   | Renderer → Main | ファイル監視開始   | `{ projectPath: string }`                          |
+| `slide:watch-stop`    | Renderer → Main | ファイル監視停止   | `{ projectPath: string }`                          |
 
 ### 型定義
 
 ```typescript
 // 同期状態
-type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
+type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
 // 同期方向
-type SyncDirection = 'forward' | 'reverse';
+type SyncDirection = "forward" | "reverse";
 
 // 同期状態通知ペイロード
 interface SyncStatusPayload {
@@ -436,7 +436,7 @@ interface SyncProgressPayload {
 
 // 同期エラーペイロード
 interface SyncErrorPayload {
-  code: 'AGENT_ERROR' | 'FILE_ERROR' | 'TIMEOUT' | 'VALIDATION_ERROR';
+  code: "AGENT_ERROR" | "FILE_ERROR" | "TIMEOUT" | "VALIDATION_ERROR";
   message: string;
   details?: unknown;
 }
@@ -458,26 +458,26 @@ interface SyncErrorPayload {
 
 ### エラーコード
 
-| コード             | 説明                       | 対処                           |
-| ------------------ | -------------------------- | ------------------------------ |
-| `AGENT_ERROR`      | Agent SDK呼び出し失敗      | API接続確認、リトライ          |
-| `FILE_ERROR`       | ファイル読み書き失敗       | パーミッション確認             |
-| `TIMEOUT`          | 同期タイムアウト（30秒）   | 処理の再試行                   |
-| `VALIDATION_ERROR` | レスポンス形式不正         | Agent出力確認                  |
+| コード             | 説明                     | 対処                  |
+| ------------------ | ------------------------ | --------------------- |
+| `AGENT_ERROR`      | Agent SDK呼び出し失敗    | API接続確認、リトライ |
+| `FILE_ERROR`       | ファイル読み書き失敗     | パーミッション確認    |
+| `TIMEOUT`          | 同期タイムアウト（30秒） | 処理の再試行          |
+| `VALIDATION_ERROR` | レスポンス形式不正       | Agent出力確認         |
 
 ### 実装状態
 
-| コンポーネント | 状態                 | 備考                           |
-| -------------- | -------------------- | ------------------------------ |
-| IPCチャンネル  | 設計完了             | SDK統合時に実装                |
-| 同期ロジック   | 実装完了             | シミュレーション環境で動作確認 |
-| エラー通知     | 実装完了             | 全エラーコード対応済み         |
+| コンポーネント | 状態     | 備考                           |
+| -------------- | -------- | ------------------------------ |
+| IPCチャンネル  | 設計完了 | SDK統合時に実装                |
+| 同期ロジック   | 実装完了 | シミュレーション環境で動作確認 |
+| エラー通知     | 実装完了 | 全エラーコード対応済み         |
 
 ### 関連ドキュメント
 
-| ドキュメント         | パス                                                                         |
-| -------------------- | ---------------------------------------------------------------------------- |
-| IPC設計詳細          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md`         |
+| ドキュメント              | パス                                                                        |
+| ------------------------- | --------------------------------------------------------------------------- |
+| IPC設計詳細               | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md`        |
 | Agent SDKインターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md` |
 
 ---
@@ -658,7 +658,10 @@ NERサービスは`IEntityExtractor`インターフェースを通じて利用�
 **基本使用例**:
 
 ```typescript
-import { RuleBasedEntityExtractor, LLMEntityExtractor } from "@repo/shared/services/extraction";
+import {
+  RuleBasedEntityExtractor,
+  LLMEntityExtractor,
+} from "@repo/shared/services/extraction";
 
 // ルールベース抽出器（高速・フォールバック用）
 const ruleExtractor = new RuleBasedEntityExtractor();
@@ -669,7 +672,7 @@ const llmExtractor = new LLMEntityExtractor(llmProvider);
 // 単一チャンクから抽出
 const result = await extractor.extract(chunk, {
   types: ["technology", "organization"],
-  minConfidence: 0.7
+  minConfidence: 0.7,
 });
 
 // バッチ抽出
@@ -681,33 +684,34 @@ const mergedEntities = extractor.mergeEntities(batchResult.data.results);
 
 ### IEntityExtractor インターフェース
 
-| メソッド        | 説明                               | 戻り値                            |
-| --------------- | ---------------------------------- | --------------------------------- |
-| `extract()`     | 単一チャンクからエンティティ抽出   | `Result<ExtractionResult, Error>` |
-| `extractBatch()`| 複数チャンクからバッチ抽出         | `Result<BatchExtractionResult, Error>` |
-| `mergeEntities()`| 抽出結果のマージ（重複除去）      | `ExtractedEntity[]`               |
+| メソッド          | 説明                             | 戻り値                                 |
+| ----------------- | -------------------------------- | -------------------------------------- |
+| `extract()`       | 単一チャンクからエンティティ抽出 | `Result<ExtractionResult, Error>`      |
+| `extractBatch()`  | 複数チャンクからバッチ抽出       | `Result<BatchExtractionResult, Error>` |
+| `mergeEntities()` | 抽出結果のマージ（重複除去）     | `ExtractedEntity[]`                    |
 
 ### EntityExtractionOptions
 
-| オプション           | 型        | デフォルト | 説明                        |
-| -------------------- | --------- | ---------- | --------------------------- |
-| types                | string[]  | 全タイプ   | 抽出対象のエンティティタイプ |
-| minConfidence        | number    | 0.5        | 最小信頼度閾値              |
-| maxEntitiesPerChunk  | number    | 20         | チャンクあたり最大抽出数    |
-| minNameLength        | number    | 2          | 最小名前長                  |
-| generateDescriptions | boolean   | true       | 説明生成（LLMのみ）         |
-| useLLM               | boolean   | true       | LLM使用フラグ               |
+| オプション           | 型       | デフォルト | 説明                         |
+| -------------------- | -------- | ---------- | ---------------------------- |
+| types                | string[] | 全タイプ   | 抽出対象のエンティティタイプ |
+| minConfidence        | number   | 0.5        | 最小信頼度閾値               |
+| maxEntitiesPerChunk  | number   | 20         | チャンクあたり最大抽出数     |
+| minNameLength        | number   | 2          | 最小名前長                   |
+| generateDescriptions | boolean  | true       | 説明生成（LLMのみ）          |
+| useLLM               | boolean  | true       | LLM使用フラグ                |
 
 ### 将来的なREST API（予定）
 
 将来的にREST APIとして公開する場合の設計案:
 
-| メソッド | パス                              | 説明                       | 認証 |
-| -------- | --------------------------------- | -------------------------- | ---- |
+| メソッド | パス                              | 説明                         | 認証 |
+| -------- | --------------------------------- | ---------------------------- | ---- |
 | POST     | /api/v1/extraction/entities       | テキストからエンティティ抽出 | 必要 |
-| POST     | /api/v1/extraction/entities/batch | バッチエンティティ抽出     | 必要 |
+| POST     | /api/v1/extraction/entities/batch | バッチエンティティ抽出       | 必要 |
 
 **リクエスト例（POST /api/v1/extraction/entities）**:
+
 ```json
 {
   "content": "TypeScriptはMicrosoftが開発した言語です",
@@ -719,6 +723,7 @@ const mergedEntities = extractor.mergeEntities(batchResult.data.results);
 ```
 
 **レスポンス例**:
+
 ```json
 {
   "entities": [
@@ -743,10 +748,10 @@ const mergedEntities = extractor.mergeEntities(batchResult.data.results);
 
 ### エラーハンドリング
 
-| エラークラス       | 説明                     | 対処                         |
-| ------------------ | ------------------------ | ---------------------------- |
-| `LLMProviderError` | LLM API呼び出し失敗      | ルールベースにフォールバック |
-| `JsonParseError`   | LLMレスポンスのJSON不正  | ルールベースにフォールバック |
-| `ValidationError`  | 入力バリデーション失敗   | エラーメッセージを返却       |
+| エラークラス       | 説明                    | 対処                         |
+| ------------------ | ----------------------- | ---------------------------- |
+| `LLMProviderError` | LLM API呼び出し失敗     | ルールベースにフォールバック |
+| `JsonParseError`   | LLMレスポンスのJSON不正 | ルールベースにフォールバック |
+| `ValidationError`  | 入力バリデーション失敗  | エラーメッセージを返却       |
 
 ---

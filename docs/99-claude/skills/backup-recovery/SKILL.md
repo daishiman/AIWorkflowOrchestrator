@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # backup-recovery
 
 ## 概要
@@ -78,13 +79,13 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-recovery-requirements | Phase 1開始時 | システム概要 | 要件サマリ、依存一覧 |
-| define-rpo-rto | Phase 2開始時 | 要件サマリ | RPO/RTO表 |
-| design-backup-strategy | Phase 2開始時 | RPO/RTO表 | バックアップ戦略 |
-| create-recovery-runbook | Phase 3開始時 | 戦略メモ | 復旧ランブック |
-| validate-recovery-readiness | Phase 4開始時 | ランブック | 検証レポート |
+| Task                          | 起動タイミング | 入力         | 出力                 |
+| ----------------------------- | -------------- | ------------ | -------------------- |
+| analyze-recovery-requirements | Phase 1開始時  | システム概要 | 要件サマリ、依存一覧 |
+| define-rpo-rto                | Phase 2開始時  | 要件サマリ   | RPO/RTO表            |
+| design-backup-strategy        | Phase 2開始時  | RPO/RTO表    | バックアップ戦略     |
+| create-recovery-runbook       | Phase 3開始時  | 戦略メモ     | 復旧ランブック       |
+| validate-recovery-readiness   | Phase 4開始時  | ランブック   | 検証レポート         |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -92,60 +93,60 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| RPO/RTOを数値で明示する | 目標が曖昧になるのを防ぐ |
-| 多層バックアップを前提にする | 復旧手段が増える |
-| ランブックを更新し続ける | 復旧手順の劣化を防ぐ |
-| 定期検証を実施する | 復旧可能性を維持できる |
+| 推奨事項                     | 理由                     |
+| ---------------------------- | ------------------------ |
+| RPO/RTOを数値で明示する      | 目標が曖昧になるのを防ぐ |
+| 多層バックアップを前提にする | 復旧手段が増える         |
+| ランブックを更新し続ける     | 復旧手順の劣化を防ぐ     |
+| 定期検証を実施する           | 復旧可能性を維持できる   |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 検証を省略する | 復旧失敗のリスクが高い |
-| RPO/RTOを口頭で共有する | 誤解が起きる |
-| ランブックを放置する | 手順が陳腐化する |
-| DR計画を未承認のまま運用 | 責任が不明確になる |
+| 禁止事項                 | 問題点                 |
+| ------------------------ | ---------------------- |
+| 検証を省略する           | 復旧失敗のリスクが高い |
+| RPO/RTOを口頭で共有する  | 誤解が起きる           |
+| ランブックを放置する     | 手順が陳腐化する       |
+| DR計画を未承認のまま運用 | 責任が不明確になる     |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/verify-backup.mjs` | バックアップ検証 |
-| `scripts/validate-skill.mjs` | スキル構造検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                   | 機能                         |
+| ---------------------------- | ---------------------------- |
+| `scripts/verify-backup.mjs`  | バックアップ検証             |
+| `scripts/validate-skill.mjs` | スキル構造検証               |
+| `scripts/log_usage.mjs`      | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 目標設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | ランブック作成時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
-| バックアップ戦略 | [references/backup-strategy-layers.md](references/backup-strategy-layers.md) | 戦略設計時 |
-| DR計画 | [references/disaster-recovery-planning.md](references/disaster-recovery-planning.md) | 設計時 |
-| 復旧手順 | [references/recovery-procedures.md](references/recovery-procedures.md) | 検証時 |
-| RPO/RTO設計 | [references/rpo-rto-design.md](references/rpo-rto-design.md) | 目標設計時 |
-| Turso運用 | [references/turso-backup-guide.md](references/turso-backup-guide.md) | Turso利用時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース         | パス                                                                                 | 読込条件         |
+| ---------------- | ------------------------------------------------------------------------------------ | ---------------- |
+| レベル1 基礎     | [references/Level1_basics.md](references/Level1_basics.md)                           | 要件整理時       |
+| レベル2 実務     | [references/Level2_intermediate.md](references/Level2_intermediate.md)               | 目標設計時       |
+| レベル3 応用     | [references/Level3_advanced.md](references/Level3_advanced.md)                       | ランブック作成時 |
+| レベル4 専門     | [references/Level4_expert.md](references/Level4_expert.md)                           | 検証時           |
+| バックアップ戦略 | [references/backup-strategy-layers.md](references/backup-strategy-layers.md)         | 戦略設計時       |
+| DR計画           | [references/disaster-recovery-planning.md](references/disaster-recovery-planning.md) | 設計時           |
+| 復旧手順         | [references/recovery-procedures.md](references/recovery-procedures.md)               | 検証時           |
+| RPO/RTO設計      | [references/rpo-rto-design.md](references/rpo-rto-design.md)                         | 目標設計時       |
+| Turso運用        | [references/turso-backup-guide.md](references/turso-backup-guide.md)                 | Turso利用時      |
+| 要求仕様索引     | [references/requirements-index.md](references/requirements-index.md)                 | 仕様確認時       |
+| 旧スキル         | [references/legacy-skill.md](references/legacy-skill.md)                             | 互換確認時       |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/backup-policy-template.md` | バックアップポリシー |
-| `assets/recovery-runbook-template.md` | 復旧ランブック |
-| `assets/recovery-validation-checklist.md` | 検証チェックリスト |
+| アセット                                  | 用途                 |
+| ----------------------------------------- | -------------------- |
+| `assets/backup-policy-template.md`        | バックアップポリシー |
+| `assets/recovery-runbook-template.md`     | 復旧ランブック       |
+| `assets/recovery-validation-checklist.md` | 検証チェックリスト   |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

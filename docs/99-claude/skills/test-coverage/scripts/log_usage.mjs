@@ -4,12 +4,12 @@
  * スキル使用ログ
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
+import { existsSync, readFileSync, writeFileSync } from "fs";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SKILL_DIR = resolve(__dirname, '..');
+const SKILL_DIR = resolve(__dirname, "..");
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -35,45 +35,45 @@ function getArg(args, name) {
 
 function ensureLogsFile(path) {
   if (!existsSync(path)) {
-    writeFileSync(path, '# 実行ログ\n\n', 'utf-8');
+    writeFileSync(path, "# 実行ログ\n\n", "utf-8");
   }
 }
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
-  const result = getArg(args, '--result');
-  const phase = getArg(args, '--phase') || 'unknown';
-  const artifact = getArg(args, '--artifact') || 'n/a';
-  const notes = getArg(args, '--notes') || '';
+  const result = getArg(args, "--result");
+  const phase = getArg(args, "--phase") || "unknown";
+  const artifact = getArg(args, "--artifact") || "n/a";
+  const notes = getArg(args, "--notes") || "";
 
-  if (!result || !['success', 'failure'].includes(result)) {
-    console.error('Error: --result must be success or failure');
+  if (!result || !["success", "failure"].includes(result)) {
+    console.error("Error: --result must be success or failure");
     process.exit(EXIT_ARGS_ERROR);
   }
 
-  const logsPath = resolve(SKILL_DIR, 'LOGS.md');
+  const logsPath = resolve(SKILL_DIR, "LOGS.md");
   ensureLogsFile(logsPath);
 
   const timestamp = new Date().toISOString();
   const entry = [
-    '## 実行記録',
+    "## 実行記録",
     `- 日時: ${timestamp}`,
     `- Phase: ${phase}`,
     `- 結果: ${result}`,
     `- 成果物: ${artifact}`,
-    `- メモ: ${notes || 'なし'}`,
-    '',
-  ].join('\n');
+    `- メモ: ${notes || "なし"}`,
+    "",
+  ].join("\n");
 
   try {
-    const content = readFileSync(logsPath, 'utf-8');
-    writeFileSync(logsPath, `${entry}\n${content}`, 'utf-8');
-    console.log('✓ log appended');
+    const content = readFileSync(logsPath, "utf-8");
+    writeFileSync(logsPath, `${entry}\n${content}`, "utf-8");
+    console.log("✓ log appended");
     process.exit(EXIT_SUCCESS);
   } catch (err) {
     console.error(`Error: failed to update LOGS.md: ${err.message}`);
@@ -82,6 +82,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(err?.message || 'Unknown error');
+  console.error(err?.message || "Unknown error");
   process.exit(EXIT_ERROR);
 });

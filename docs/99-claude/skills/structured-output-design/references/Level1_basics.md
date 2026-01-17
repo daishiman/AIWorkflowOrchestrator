@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling structured output design tasks.
 
 ### 必要な知識
+
 - 対象領域: AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod、
 - 主要概念: Function Calling 設計ガイド / 基本構造 / 関数定義 / JSON Schema 設計パターン / 基本パターン
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/json-schema-template.json`
 - 参照テンプレート: `templates/zod-schema-template.ts`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/json-schema-template.json`: このレベルでは参照のみ
 - `templates/zod-schema-template.ts`: このレベルでは参照のみ
 

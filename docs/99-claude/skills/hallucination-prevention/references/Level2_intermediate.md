@@ -14,26 +14,32 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: パラメータ調整ガイド / 主要パラメータ / Temperature / プロンプトレベル防御 / 基本原則 / 防御パターン
 - 実務指針: 事実に基づく出力が必要な時 / AIの誤情報を防ぎたい時 / 信頼性の高い出力が求められる時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/parameter-tuning.md`: parameter-tuning の詳細ガイド（把握する知識: パラメータ調整ガイド / 主要パラメータ / Temperature）
 - `resources/prompt-level-defense.md`: prompt-level-defense の詳細ガイド（把握する知識: プロンプトレベル防御 / 基本原則 / 防御パターン）
 - `resources/verification-mechanisms.md`: verification-mechanisms の詳細ガイド（把握する知識: 検証メカニズム / 検証タイプ / 1. 構造検証）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Hallucination Prevention / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/verification-checklist.md`: verification-checklist のチェックリスト
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

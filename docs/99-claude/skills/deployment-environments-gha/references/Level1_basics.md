@@ -14,27 +14,34 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when implementing .claude/skills/deployment-environments-gha/SKILL.md patterns or solving related problems.
 
 ### 必要な知識
+
 - 対象領域: GitHub Actions の environments を設計し、承認フローと保護ルールを安全に運用するスキル。
 - 主要概念: Approval Workflows / 承認フローの基本 / 承認が必要になるタイミング / Environment Configuration / 環境の作成
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - アセットの必須項目を満たしている
 - 主要アセット: `assets/deployment-workflow.yaml`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要アセット
+
 - `assets/deployment-workflow.yaml`: このレベルでは参照のみ
 
 ## 実践手順

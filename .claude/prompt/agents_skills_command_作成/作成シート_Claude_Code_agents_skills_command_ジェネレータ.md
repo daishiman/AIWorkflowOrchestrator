@@ -2477,11 +2477,11 @@ metrics:
 
 ### 依存スキル
 
-| スキル名                    | 参照タイミング | 参照方法                | 必須/推奨 |
-| --------------------------- | -------------- | ----------------------- | --------- |
-| clean-architecture-patterns | Phase 1, 2     | `cat .../SKILL.md`      | 必須      |
-| .claude/skills/solid-principles/SKILL.md            | Phase 2        | `cat .../SKILL.md`      | 必須      |
-| refactoring-patterns        | Phase 3        | `cat .../resources/...` | 推奨      |
+| スキル名                                 | 参照タイミング | 参照方法                | 必須/推奨 |
+| ---------------------------------------- | -------------- | ----------------------- | --------- |
+| clean-architecture-patterns              | Phase 1, 2     | `cat .../SKILL.md`      | 必須      |
+| .claude/skills/solid-principles/SKILL.md | Phase 2        | `cat .../SKILL.md`      | 必須      |
+| refactoring-patterns                     | Phase 3        | `cat .../resources/...` | 推奨      |
 
 ### 使用コマンド
 

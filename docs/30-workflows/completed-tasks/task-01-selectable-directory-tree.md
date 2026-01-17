@@ -14,7 +14,7 @@
 | 発見元           | Phase 1: 設計（file-selector-integration） |
 | 発見日           | 2025-12-16                                 |
 | 更新日           | 2025-12-17                                 |
-| 発見エージェント | .claude/agents/arch-police.md                               |
+| 発見エージェント | .claude/agents/arch-police.md              |
 | 前提タスク       | file-selector-integration（完了済み）      |
 
 ---

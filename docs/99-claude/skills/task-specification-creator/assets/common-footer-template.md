@@ -6,18 +6,18 @@ Phase仕様書の共通フッター部分を定義する。
 
 ## 変数一覧
 
-| 変数名 | 説明 | 例 |
-| ------ | ---- | -- |
-| `{{PHASE_NUMBER}}` | Phase番号（1-13） | `4` |
-| `{{FEATURE_NAME}}` | 機能名（ケバブケース） | `search-replace-ui` |
-| `{{NEXT_PHASE}}` | 次のPhase番号 | `5` |
-| `{{NEXT_PHASE_NAME}}` | 次のPhase名称 | `実装` |
+| 変数名                | 説明                   | 例                  |
+| --------------------- | ---------------------- | ------------------- |
+| `{{PHASE_NUMBER}}`    | Phase番号（1-13）      | `4`                 |
+| `{{FEATURE_NAME}}`    | 機能名（ケバブケース） | `search-replace-ui` |
+| `{{NEXT_PHASE}}`      | 次のPhase番号          | `5`                 |
+| `{{NEXT_PHASE_NAME}}` | 次のPhase名称          | `実装`              |
 
 ---
 
 ## テンプレート
 
-```markdown
+````markdown
 ---
 
 ## サブタスク管理
@@ -48,6 +48,7 @@ Phase完了前に以下を確認:
 # Phase完了時の検証コマンド
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.mjs docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
+````
 
 ---
 
@@ -60,8 +61,8 @@ Phase完了後、以下を記録してください:
 
 ### 使用スキル
 
-| スキル | 結果 | 備考 |
-| ------ | ---- | ---- |
+| スキル         | 結果                        | 備考                        |
+| -------------- | --------------------------- | --------------------------- |
 | {{SKILL_NAME}} | {{success/failure/partial}} | {{SKILL_USAGE_DESCRIPTION}} |
 
 ### 発見事項
@@ -82,6 +83,7 @@ Phase完了後、以下を記録してください:
 Phase {{NEXT_PHASE}}: {{NEXT_PHASE_NAME}}
 
 `docs/30-workflows/{{FEATURE_NAME}}/phase-{{NEXT_PHASE}}-*.md`
+
 ```
 
 ---
@@ -98,3 +100,4 @@ Phase {{NEXT_PHASE}}: {{NEXT_PHASE_NAME}}
 
 - Phase 13は最終Phaseのため、「次のPhase」セクションは「なし（ワークフロー完了）」とする
 - スキルフィードバック記録は必須。省略するとスキル品質改善が困難になる
+```

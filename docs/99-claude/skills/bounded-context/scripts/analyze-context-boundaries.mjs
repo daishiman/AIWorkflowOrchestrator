@@ -357,11 +357,7 @@ async function main() {
   console.log(`分析対象: ${options.target}`);
   console.log("ディレクトリ構造を分析中...");
 
-  const analysis = await analyzeDirectory(
-    options.target,
-    0,
-    options.maxDepth,
-  );
+  const analysis = await analyzeDirectory(options.target, 0, options.maxDepth);
 
   const candidates = extractContextCandidates(analysis);
   const sharedCandidates = detectSharedKernelCandidates(analysis);

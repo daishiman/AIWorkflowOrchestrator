@@ -14,27 +14,33 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: CVE評価ガイド / CVE (Common Vulnerabilities and Exposures) / CVSS (Common Vulnerability Scoring System) / セキュリティガイドライン / Dependency Security Scanning / 1. スキャンツールの選択
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/cve-evaluation-guide.md`: cve-evaluation-guide のガイド（把握する知識: CVE評価ガイド / CVE (Common Vulnerabilities and Exposures) / CVSS (Common Vulnerability Scoring System)）
 - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: セキュリティガイドライン）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Dependency Security Scanning / 1. スキャンツールの選択 / Node.js/JavaScript）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/run-dependency-scan.mjs`: 依存関係scanを実行するスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### アセット運用
+
 - `assets/scan-requirements-template.md`: 要件整理テンプレート
 - `assets/dependency-audit-report-template.md`: 監査レポートテンプレート
 - `assets/remediation-plan-template.md`: 修正計画テンプレート
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

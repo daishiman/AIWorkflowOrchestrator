@@ -143,8 +143,8 @@ CI/CD要件の分析と優先順位付け
 
 #### 活用スキル
 
-| スキル名                               | 活用方法                      |
-| -------------------------------------- | ----------------------------- |
+| スキル名                                                       | 活用方法                      |
+| -------------------------------------------------------------- | ----------------------------- |
 | .claude/skills/requirements-engineering/SKILL.md               | CI/CDの機能・非機能要件の整理 |
 | .claude/skills/functional-non-functional-requirements/SKILL.md | 品質基準の定義                |
 
@@ -201,8 +201,8 @@ CIにおける品質基準とゲート構成の設計
 
 #### 活用スキル
 
-| スキル名                   | 活用方法                 |
-| -------------------------- | ------------------------ |
+| スキル名                                           | 活用方法                 |
+| -------------------------------------------------- | ------------------------ |
 | .claude/skills/github-actions-expressions/SKILL.md | ワークフロー条件式の設計 |
 | .claude/skills/conditional-execution-gha/SKILL.md  | 品質ゲートの条件分岐設計 |
 | .claude/skills/parallel-jobs-gha/SKILL.md          | ジョブ並列実行の最適化   |
@@ -257,8 +257,8 @@ CDワークフローのアーキテクチャ設計
 
 #### 活用スキル
 
-| スキル名                    | 活用方法             |
-| --------------------------- | -------------------- |
+| スキル名                                            | 活用方法             |
+| --------------------------------------------------- | -------------------- |
 | .claude/skills/deployment-environments-gha/SKILL.md | 本番環境デプロイ設計 |
 | .claude/skills/reusable-workflows/SKILL.md          | 共通処理の再利用設計 |
 | .claude/skills/caching-strategies-gha/SKILL.md      | ビルドキャッシュ戦略 |
@@ -313,8 +313,8 @@ docs/00-requirements/12-deployment.mdにDiscord通知要件が定義されてい
 
 #### 活用スキル
 
-| スキル名                     | 活用方法                            |
-| ---------------------------- | ----------------------------------- |
+| スキル名                                             | 活用方法                            |
+| ---------------------------------------------------- | ----------------------------------- |
 | .claude/skills/notification-integration-gha/SKILL.md | GitHub Actions通知連携              |
 | .claude/skills/http-best-practices/SKILL.md          | Webhook呼び出しのベストプラクティス |
 
@@ -370,8 +370,8 @@ CIワークフローの検証計画とテストスクリプト作成
 
 #### 活用スキル
 
-| スキル名                 | 活用方法                 |
-| ------------------------ | ------------------------ |
+| スキル名                                         | 活用方法                 |
+| ------------------------------------------------ | ------------------------ |
 | .claude/skills/tdd-principles/SKILL.md           | テストファースト設計     |
 | .claude/skills/test-data-management/SKILL.md     | テストデータの管理       |
 | .claude/skills/github-actions-debugging/SKILL.md | ワークフローデバッグ手法 |
@@ -439,8 +439,8 @@ CIワークフローの品質ゲート強化
 
 #### 活用スキル
 
-| スキル名                   | 活用方法             |
-| -------------------------- | -------------------- |
+| スキル名                                           | 活用方法             |
+| -------------------------------------------------- | -------------------- |
 | .claude/skills/github-actions-expressions/SKILL.md | 条件式の実装         |
 | .claude/skills/caching-strategies-gha/SKILL.md     | pnpmキャッシュ最適化 |
 | .claude/skills/cost-optimization-gha/SKILL.md      | 実行時間最適化       |
@@ -503,8 +503,8 @@ WebアプリCDワークフローの実装
 
 #### 活用スキル
 
-| スキル名                    | 活用方法             |
-| --------------------------- | -------------------- |
+| スキル名                                            | 活用方法             |
+| --------------------------------------------------- | -------------------- |
 | .claude/skills/deployment-environments-gha/SKILL.md | 本番環境デプロイ実装 |
 | .claude/skills/infrastructure-as-code/SKILL.md      | Railway設定管理      |
 
@@ -568,8 +568,8 @@ Discord Webhook通知機能の実装
 
 #### 活用スキル
 
-| スキル名                     | 活用方法             |
-| ---------------------------- | -------------------- |
+| スキル名                                             | 活用方法             |
+| ---------------------------------------------------- | -------------------- |
 | .claude/skills/notification-integration-gha/SKILL.md | 通知ワークフロー実装 |
 | .claude/skills/api-client-patterns/SKILL.md          | Webhook呼び出し実装  |
 
@@ -635,8 +635,8 @@ CI/CDワークフローの重複を排除し、実行時間を最適化する。
 
 #### 活用スキル
 
-| スキル名               | 活用方法               |
-| ---------------------- | ---------------------- |
+| スキル名                                       | 活用方法               |
+| ---------------------------------------------- | ---------------------- |
 | .claude/skills/reusable-workflows/SKILL.md     | 共通ワークフローの抽出 |
 | .claude/skills/caching-strategies-gha/SKILL.md | キャッシュ戦略の最適化 |
 | .claude/skills/cost-optimization-gha/SKILL.md  | 実行時間削減           |
@@ -703,9 +703,9 @@ pnpm lint && pnpm typecheck && pnpm test
 
 #### 活用スキル
 
-| スキル名              | 活用方法           |
-| --------------------- | ------------------ |
-| e2e-test-patterns     | 統合テストパターン |
+| スキル名                                      | 活用方法           |
+| --------------------------------------------- | ------------------ |
+| e2e-test-patterns                             | 統合テストパターン |
 | .claude/skills/flaky-test-prevention/SKILL.md | 安定したテスト設計 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -759,9 +759,9 @@ RAILWAY_TOKEN、DISCORD_WEBHOOK_URL等のシークレットが
 
 #### 活用スキル
 
-| スキル名                      | 活用方法                             |
-| ----------------------------- | ------------------------------------ |
-| secret-management             | シークレット管理のベストプラクティス |
+| スキル名                                              | 活用方法                             |
+| ----------------------------------------------------- | ------------------------------------ |
+| secret-management                                     | シークレット管理のベストプラクティス |
 | .claude/skills/security-configuration-review/SKILL.md | 設定のセキュリティレビュー           |
 
 - **参照**: `.claude/skills/skill_list.md`

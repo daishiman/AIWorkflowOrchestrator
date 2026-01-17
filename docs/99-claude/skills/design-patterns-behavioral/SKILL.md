@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # design-patterns-behavioral
 
 ## 概要
@@ -78,12 +79,12 @@ GoFの行動パターンを用いて、責務分散・通信設計・検証を�
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-pattern-requirements | Phase 1開始時 | 課題/制約 | パターン候補、要件メモ |
-| design-pattern-application | Phase 2開始時 | 要件メモ | 選定結果、設計方針 |
-| implement-pattern-solution | Phase 3開始時 | 設計方針 | 実装方針メモ、構成案 |
-| validate-pattern-usage | Phase 4開始時 | 実装方針メモ | 検証レポート、改善提案 |
+| Task                         | 起動タイミング | 入力         | 出力                   |
+| ---------------------------- | -------------- | ------------ | ---------------------- |
+| analyze-pattern-requirements | Phase 1開始時  | 課題/制約    | パターン候補、要件メモ |
+| design-pattern-application   | Phase 2開始時  | 要件メモ     | 選定結果、設計方針     |
+| implement-pattern-solution   | Phase 3開始時  | 設計方針     | 実装方針メモ、構成案   |
+| validate-pattern-usage       | Phase 4開始時  | 実装方針メモ | 検証レポート、改善提案 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,63 +92,63 @@ GoFの行動パターンを用いて、責務分散・通信設計・検証を�
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
+| 推奨事項                   | 理由                     |
+| -------------------------- | ------------------------ |
 | パターン選定理由を明記する | 変更時の判断が明確になる |
-| 責務境界を明文化する | 依存が過剰になるのを防ぐ |
-| 検証結果を記録する | 改善が継続する |
+| 責務境界を明文化する       | 依存が過剰になるのを防ぐ |
+| 検証結果を記録する         | 改善が継続する           |
 | 既存設計との整合を確認する | 不整合による複雑化を防ぐ |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 目的が曖昧なまま適用 | 過剰設計になる |
-| 似た責務の重複 | 読みにくくなる |
-| 検証を省略する | 目的未達のまま残る |
+| 禁止事項             | 問題点             |
+| -------------------- | ------------------ |
+| 目的が曖昧なまま適用 | 過剰設計になる     |
+| 似た責務の重複       | 読みにくくなる     |
+| 検証を省略する       | 目的未達のまま残る |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-pattern-usage.mjs` | パターン適用の検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                           | 機能                         |
+| ------------------------------------ | ---------------------------- |
+| `scripts/validate-pattern-usage.mjs` | パターン適用の検証           |
+| `scripts/log_usage.mjs`              | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs`         | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
-| パターン選定 | [references/pattern-selection-guide.md](references/pattern-selection-guide.md) | 選定時 |
-| Chain of Responsibility | [references/chain-of-responsibility-pattern.md](references/chain-of-responsibility-pattern.md) | 適用時 |
-| Command | [references/command-pattern.md](references/command-pattern.md) | 適用時 |
-| Observer | [references/observer-pattern.md](references/observer-pattern.md) | 適用時 |
-| State | [references/state-pattern.md](references/state-pattern.md) | 適用時 |
-| Strategy | [references/strategy-pattern.md](references/strategy-pattern.md) | 適用時 |
-| Template Method | [references/template-method-pattern.md](references/template-method-pattern.md) | 適用時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース                | パス                                                                                           | 読込条件   |
+| ----------------------- | ---------------------------------------------------------------------------------------------- | ---------- |
+| レベル1 基礎            | [references/Level1_basics.md](references/Level1_basics.md)                                     | 要件整理時 |
+| レベル2 実務            | [references/Level2_intermediate.md](references/Level2_intermediate.md)                         | 設計時     |
+| レベル3 応用            | [references/Level3_advanced.md](references/Level3_advanced.md)                                 | 実装時     |
+| レベル4 専門            | [references/Level4_expert.md](references/Level4_expert.md)                                     | 改善時     |
+| パターン選定            | [references/pattern-selection-guide.md](references/pattern-selection-guide.md)                 | 選定時     |
+| Chain of Responsibility | [references/chain-of-responsibility-pattern.md](references/chain-of-responsibility-pattern.md) | 適用時     |
+| Command                 | [references/command-pattern.md](references/command-pattern.md)                                 | 適用時     |
+| Observer                | [references/observer-pattern.md](references/observer-pattern.md)                               | 適用時     |
+| State                   | [references/state-pattern.md](references/state-pattern.md)                                     | 適用時     |
+| Strategy                | [references/strategy-pattern.md](references/strategy-pattern.md)                               | 適用時     |
+| Template Method         | [references/template-method-pattern.md](references/template-method-pattern.md)                 | 適用時     |
+| 要求仕様索引            | [references/requirements-index.md](references/requirements-index.md)                           | 仕様確認時 |
+| 旧スキル                | [references/legacy-skill.md](references/legacy-skill.md)                                       | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/pattern-requirements-template.md` | 要件整理テンプレート |
-| `assets/pattern-selection-checklist.md` | 選定チェックリスト |
-| `assets/pattern-evaluation-template.md` | 検証テンプレート |
-| `assets/strategy-implementation.md` | Strategy実装テンプレート |
+| アセット                                   | 用途                            |
+| ------------------------------------------ | ------------------------------- |
+| `assets/pattern-requirements-template.md`  | 要件整理テンプレート            |
+| `assets/pattern-selection-checklist.md`    | 選定チェックリスト              |
+| `assets/pattern-evaluation-template.md`    | 検証テンプレート                |
+| `assets/strategy-implementation.md`        | Strategy実装テンプレート        |
 | `assets/template-method-implementation.md` | Template Method実装テンプレート |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

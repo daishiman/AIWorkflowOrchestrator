@@ -8,12 +8,12 @@
 
 ## 期待API
 
-| 観点 | 期待内容 |
-| --- | --- |
-| Props |  |
-| Slots |  |
-| Context |  |
-| Accessibility |  |
+| 観点          | 期待内容 |
+| ------------- | -------- |
+| Props         |          |
+| Slots         |          |
+| Context       |          |
+| Accessibility |          |
 
 ## 制約
 

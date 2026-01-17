@@ -11,12 +11,12 @@
 
 ## API一覧
 
-| API | ファイル | 説明 |
-|-----|----------|------|
-| ConversionService API | [api-internal-conversion.md](./api-internal-conversion.md) | RAG変換システムの内部サービスAPI |
-| チャンク検索API | [api-internal-chunk-search.md](./api-internal-chunk-search.md) | FTS5全文検索機能のチャンク検索 |
-| Embedding Generation API | [api-internal-embedding.md](./api-internal-embedding.md) | 埋め込みベクトル生成API |
-| Search Service API | [api-internal-search.md](./api-internal-search.md) | テキスト検索・置換機能API |
+| API                      | ファイル                                                       | 説明                             |
+| ------------------------ | -------------------------------------------------------------- | -------------------------------- |
+| ConversionService API    | [api-internal-conversion.md](./api-internal-conversion.md)     | RAG変換システムの内部サービスAPI |
+| チャンク検索API          | [api-internal-chunk-search.md](./api-internal-chunk-search.md) | FTS5全文検索機能のチャンク検索   |
+| Embedding Generation API | [api-internal-embedding.md](./api-internal-embedding.md)       | 埋め込みベクトル生成API          |
+| Search Service API       | [api-internal-search.md](./api-internal-search.md)             | テキスト検索・置換機能API        |
 
 ## 各APIの概要
 

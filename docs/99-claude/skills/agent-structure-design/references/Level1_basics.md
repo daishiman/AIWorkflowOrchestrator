@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling agent structure design tasks.
 
 ### 必要な知識
+
 - 対象領域: Claude Codeエージェントの構造設計を専門とするスキル。
 - 主要概念: 完全なテンプレート / 必須ルール / 2. フルパス形式 / ローカルエージェント仕様 / タスク実行仕様書生成ガイド
 - 実務指針: 新しいエージェントのYAML Frontmatterを設計する時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: システムプロンプト本文の構造を決定する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/agent-template.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/agent-template.md`: このレベルでは参照のみ
 
 ## 実践手順

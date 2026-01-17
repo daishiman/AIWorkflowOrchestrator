@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling factory patterns tasks.
 
 ### 必要な知識
+
 - 対象領域: GoFのFactory系パターンを専門とするスキル。 Erich Gammaの『Design Patterns』に基づき、 オブジェクト生成の柔軟性と拡張性を提供する設計パターンを提供します。
 - 主要概念: Abstract Factory パターン / パターン構造 / 基本実装 / Builder パターン / Factory Method パターン
 - 実務指針: IWorkflowExecutorの動的生成が必要な時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: 複雑なExecutorの段階的構築が必要な時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/builder-template.md`
 - 参照テンプレート: `templates/factory-method-template.md`
 
 ### 参照書籍
+
 - 『Design Patterns』（Erich Gamma et al.）: 設計パターン
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/builder-template.md`: このレベルでは参照のみ
 - `templates/factory-method-template.md`: このレベルでは参照のみ
 

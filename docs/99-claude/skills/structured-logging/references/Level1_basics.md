@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling structured logging tasks.
 
 ### 必要な知識
+
 - 対象領域: 構造化ログシステム設計の専門スキル。JSON形式ログ、ログレベル階層、
 - 主要概念: ログレベル使用ガイド / ログレベル階層 / DEBUG / ログスキーマ設計ガイド / 基本スキーマ構造
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/log-format-examples.json`
 - 参照テンプレート: `templates/logger-template.ts`
 
 ### 参照書籍
+
 - 『Observability Engineering』（Charity Majors）: ログ設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/log-format-examples.json`: このレベルでは参照のみ
 - `templates/logger-template.ts`: このレベルでは参照のみ
 

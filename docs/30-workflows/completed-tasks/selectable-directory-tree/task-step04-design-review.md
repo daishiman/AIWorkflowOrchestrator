@@ -2,12 +2,12 @@
 
 ## メタ情報
 
-| 項目         | 内容                                                             |
-| ------------ | ---------------------------------------------------------------- |
-| タスクID     | T-02-1                                                           |
-| レビュー日   | 2025-12-18                                                       |
-| レビュアー   | .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/ui-designer.md                         |
-| レビュー対象 | T-00-1（要件定義）、T-01-1（アルゴリズム設計）、T-01-2（UI設計） |
+| 項目         | 内容                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------- |
+| タスクID     | T-02-1                                                                                      |
+| レビュー日   | 2025-12-18                                                                                  |
+| レビュアー   | .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/ui-designer.md |
+| レビュー対象 | T-00-1（要件定義）、T-01-1（アルゴリズム設計）、T-01-2（UI設計）                            |
 
 ---
 
@@ -23,11 +23,11 @@
 
 ### 1.2 レビュー対象ドキュメント
 
-| ドキュメント       | パス                            | 作成エージェント |
-| ------------------ | ------------------------------- | ---------------- |
-| 要件定義書         | task-step01-requirements.md     | .claude/agents/req-analyst.md     |
-| アルゴリズム設計書 | task-step02-algorithm-design.md | .claude/agents/arch-police.md     |
-| UI設計書           | task-step03-ui-design.md        | .claude/agents/ui-designer.md     |
+| ドキュメント       | パス                            | 作成エージェント              |
+| ------------------ | ------------------------------- | ----------------------------- |
+| 要件定義書         | task-step01-requirements.md     | .claude/agents/req-analyst.md |
+| アルゴリズム設計書 | task-step02-algorithm-design.md | .claude/agents/arch-police.md |
+| UI設計書           | task-step03-ui-design.md        | .claude/agents/ui-designer.md |
 
 ---
 
@@ -39,12 +39,12 @@
 
 全体として設計品質は高いが、以下のMINOR指摘事項が検出されました。
 
-| レビュー観点                         | 判定     | MAJOR   | MINOR   | INFO    |
-| ------------------------------------ | -------- | ------- | ------- | ------- |
+| レビュー観点                                          | 判定     | MAJOR   | MINOR   | INFO    |
+| ----------------------------------------------------- | -------- | ------- | ------- | ------- |
 | 要件充足性（.claude/agents/req-analyst.md）           | PASS     | 0件     | 1件     | 2件     |
 | アーキテクチャ整合性（.claude/agents/arch-police.md） | PASS     | 0件     | 2件     | 1件     |
 | UI/UX設計（.claude/agents/ui-designer.md）            | PASS     | 0件     | 1件     | 1件     |
-| **合計**                             | **PASS** | **0件** | **4件** | **4件** |
+| **合計**                                              | **PASS** | **0件** | **4件** | **4件** |
 
 ---
 
@@ -489,6 +489,6 @@ Scenario: maxSelection制限に達した状態でフォルダを選択する
 
 ## 9. 更新履歴
 
-| バージョン | 日付       | 更新者                                   | 更新内容 |
-| ---------- | ---------- | ---------------------------------------- | -------- |
+| バージョン | 日付       | 更新者                                                                                      | 更新内容 |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------- | -------- |
 | 1.0.0      | 2025-12-18 | .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/ui-designer.md | 初版作成 |

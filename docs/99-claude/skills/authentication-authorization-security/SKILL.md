@@ -53,6 +53,7 @@ allowed-tools:
 4. `references/password-hashing-guide.md` でパスワード方針を決定
 
 **Task**:
+
 - `agents/select-auth-flows.md`
 - `agents/design-access-controls.md`
 
@@ -71,12 +72,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| 要件整理 | 目的・脅威の整理 | 要件情報 | コンテキスト要約 | `references/Level1_basics.md` | Phase 1 |
-| フロー選定 | OAuth/JWT戦略選定 | コンテキスト要約 | フロー選定メモ | `references/oauth2-flow-comparison.md` | Phase 2 前半 |
-| 権限設計 | アクセス制御とパスワード方針 | フロー選定メモ | 権限設計メモ | `references/access-control-models.md` | Phase 2 後半 |
-| 検証レビュー | スクリプト検証と改善整理 | 対象コード | 検証レポート | `scripts/check-token-security.mjs` | Phase 3 |
+| Task         | 役割                         | 入力             | 出力             | 参照先                                 | 実行タイミング |
+| ------------ | ---------------------------- | ---------------- | ---------------- | -------------------------------------- | -------------- |
+| 要件整理     | 目的・脅威の整理             | 要件情報         | コンテキスト要約 | `references/Level1_basics.md`          | Phase 1        |
+| フロー選定   | OAuth/JWT戦略選定            | コンテキスト要約 | フロー選定メモ   | `references/oauth2-flow-comparison.md` | Phase 2 前半   |
+| 権限設計     | アクセス制御とパスワード方針 | フロー選定メモ   | 権限設計メモ     | `references/access-control-models.md`  | Phase 2 後半   |
+| 検証レビュー | スクリプト検証と改善整理     | 対象コード       | 検証レポート     | `scripts/check-token-security.mjs`     | Phase 3        |
 
 ## ベストプラクティス
 
@@ -127,8 +128,8 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様準拠、Task仕様ナビ追加              |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備 |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様準拠、Task仕様ナビ追加   |
+| 1.0.0   | 2025-12-24 | 初版作成                                 |

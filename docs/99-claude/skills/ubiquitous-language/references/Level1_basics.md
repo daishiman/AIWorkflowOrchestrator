@@ -14,27 +14,34 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling ubiquitous language tasks.
 
 ### 必要な知識
+
 - 対象領域: ドメイン駆動設計におけるユビキタス言語の確立と適用を専門とするスキル。
 - 主要概念: 用語集の維持管理 / 用語集の構成要素 / 必須項目 / コードの命名規則 / 基本原則
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/domain-glossary-template.md`
 
 ### 参照書籍
+
 - 『Domain-Driven Design』（Eric Evans）: ドメインモデル
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/domain-glossary-template.md`: このレベルでは参照のみ
 
 ## 実践手順

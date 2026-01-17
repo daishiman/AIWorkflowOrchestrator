@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Abstract Factory パターン / パターン構造 / 基本実装 / Builder パターン / Factory Method パターン / Registry Factory パターン
 - 実務指針: IWorkflowExecutorの動的生成が必要な時 / 設定ベースのオブジェクト生成を実装する時 / 複雑なExecutorの段階的構築が必要な時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/abstract-factory.md`: abstract-factory の詳細ガイド（把握する知識: Abstract Factory パターン / パターン構造 / 基本実装）
 - `resources/builder-pattern.md`: builder-pattern の詳細ガイド（把握する知識: Builder パターン / パターン構造 / 基本実装）
 - `resources/factory-method.md`: factory-method の詳細ガイド（把握する知識: Factory Method パターン / パターン構造 / 基本実装）
@@ -28,15 +31,18 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Factory Patterns / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/generate-factory.mjs`: factoryを生成するスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/builder-template.md`: builder-template のテンプレート
 - `templates/factory-method-template.md`: factory-method-template のテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

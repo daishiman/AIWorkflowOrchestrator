@@ -74,19 +74,27 @@ async function main() {
 
   try {
     const content = readFileSync(filePath, "utf-8");
-    const missing = REQUIRED_HEADINGS.filter((heading) => !content.includes(heading));
+    const missing = REQUIRED_HEADINGS.filter(
+      (heading) => !content.includes(heading),
+    );
 
     if (missing.length > 0) {
-      console.error(`Validation failed: missing headings: ${missing.join(", ")}`);
+      console.error(
+        `Validation failed: missing headings: ${missing.join(", ")}`,
+      );
       process.exit(EXIT_VALIDATION_FAILED);
     }
 
     if (content.includes("{{")) {
-      console.error("Validation failed: unresolved template placeholders found");
+      console.error(
+        "Validation failed: unresolved template placeholders found",
+      );
       process.exit(EXIT_VALIDATION_FAILED);
     }
 
-    console.log("✓ Validation passed: required headings and placeholders checked");
+    console.log(
+      "✓ Validation passed: required headings and placeholders checked",
+    );
     process.exit(EXIT_SUCCESS);
   } catch (err) {
     console.error(`Error: ${err.message}`);

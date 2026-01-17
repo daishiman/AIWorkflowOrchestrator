@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # docker-best-practices
 
 ## 概要
@@ -78,12 +79,12 @@ Dockerfile最適化からセキュリティ強化、ローカル開発環境の�
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-docker-requirements | Phase 1開始時 | 目的/制約 | 要件メモ、対象範囲 |
-| design-dockerfile-plan | Phase 2開始時 | 要件メモ | Dockerfile設計、最適化方針 |
-| implement-container-setup | Phase 3開始時 | 設計方針 | 実装方針、環境構成 |
-| validate-image-quality | Phase 4開始時 | 実装方針 | 検証レポート、改善提案 |
+| Task                        | 起動タイミング | 入力      | 出力                       |
+| --------------------------- | -------------- | --------- | -------------------------- |
+| analyze-docker-requirements | Phase 1開始時  | 目的/制約 | 要件メモ、対象範囲         |
+| design-dockerfile-plan      | Phase 2開始時  | 要件メモ  | Dockerfile設計、最適化方針 |
+| implement-container-setup   | Phase 3開始時  | 設計方針  | 実装方針、環境構成         |
+| validate-image-quality      | Phase 4開始時  | 実装方針  | 検証レポート、改善提案     |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,60 +92,60 @@ Dockerfile最適化からセキュリティ強化、ローカル開発環境の�
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
+| 推奨事項                   | 理由                 |
+| -------------------------- | -------------------- |
 | マルチステージビルドを使う | イメージを小さくする |
-| 非root実行を徹底する | セキュリティを高める |
-| キャッシュを活用する | ビルド時間を短縮する |
-| 検証結果を記録する | 改善が継続する |
+| 非root実行を徹底する       | セキュリティを高める |
+| キャッシュを活用する       | ビルド時間を短縮する |
+| 検証結果を記録する         | 改善が継続する       |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 不要ファイルを含める | イメージが肥大化する |
-| セキュリティ検証を省略 | リスクが増える |
-| 目的外のツール導入 | 運用が複雑化する |
+| 禁止事項               | 問題点               |
+| ---------------------- | -------------------- |
+| 不要ファイルを含める   | イメージが肥大化する |
+| セキュリティ検証を省略 | リスクが増える       |
+| 目的外のツール導入     | 運用が複雑化する     |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/analyze-image.mjs` | イメージ分析 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                   | 機能                         |
+| ---------------------------- | ---------------------------- |
+| `scripts/analyze-image.mjs`  | イメージ分析                 |
+| `scripts/log_usage.mjs`      | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
-| Dockerfile最適化 | [references/dockerfile-optimization.md](references/dockerfile-optimization.md) | 設計時 |
-| イメージセキュリティ | [references/image-security.md](references/image-security.md) | 実装時 |
-| マルチステージ | [references/multi-stage-builds.md](references/multi-stage-builds.md) | 設計時 |
-| ローカル開発 | [references/local-development.md](references/local-development.md) | 環境整備時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース             | パス                                                                           | 読込条件   |
+| -------------------- | ------------------------------------------------------------------------------ | ---------- |
+| レベル1 基礎         | [references/Level1_basics.md](references/Level1_basics.md)                     | 要件整理時 |
+| レベル2 実務         | [references/Level2_intermediate.md](references/Level2_intermediate.md)         | 設計時     |
+| レベル3 応用         | [references/Level3_advanced.md](references/Level3_advanced.md)                 | 実装時     |
+| レベル4 専門         | [references/Level4_expert.md](references/Level4_expert.md)                     | 改善時     |
+| Dockerfile最適化     | [references/dockerfile-optimization.md](references/dockerfile-optimization.md) | 設計時     |
+| イメージセキュリティ | [references/image-security.md](references/image-security.md)                   | 実装時     |
+| マルチステージ       | [references/multi-stage-builds.md](references/multi-stage-builds.md)           | 設計時     |
+| ローカル開発         | [references/local-development.md](references/local-development.md)             | 環境整備時 |
+| 要求仕様索引         | [references/requirements-index.md](references/requirements-index.md)           | 仕様確認時 |
+| 旧スキル             | [references/legacy-skill.md](references/legacy-skill.md)                       | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/docker-requirements-template.md` | 要件整理テンプレート |
-| `assets/dockerfile-review-checklist.md` | Dockerfileチェック |
-| `assets/image-evaluation-template.md` | 検証テンプレート |
+| アセット                                       | 用途                   |
+| ---------------------------------------------- | ---------------------- |
+| `assets/docker-requirements-template.md`       | 要件整理テンプレート   |
+| `assets/dockerfile-review-checklist.md`        | Dockerfileチェック     |
+| `assets/image-evaluation-template.md`          | 検証テンプレート       |
 | `assets/nodejs-dockerfile-template.dockerfile` | Dockerfileテンプレート |
-| `assets/docker-compose-template.yml` | Composeテンプレート |
+| `assets/docker-compose-template.yml`           | Composeテンプレート    |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

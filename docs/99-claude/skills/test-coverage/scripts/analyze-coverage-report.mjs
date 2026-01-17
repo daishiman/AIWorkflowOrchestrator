@@ -4,7 +4,7 @@
  * カバレッジレポート解析
  */
 
-import { readFileSync, statSync } from 'fs';
+import { readFileSync, statSync } from "fs";
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -52,29 +52,35 @@ function toNumber(value, label) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
-  const filePath = getArg(args, '--file');
+  const filePath = getArg(args, "--file");
   if (!filePath) {
-    console.error('Error: --file is required');
+    console.error("Error: --file is required");
     process.exit(EXIT_ARGS_ERROR);
   }
 
   assertFile(filePath);
 
-  const minLines = toNumber(getArg(args, '--min-lines'), 'min-lines');
-  const minBranches = toNumber(getArg(args, '--min-branches'), 'min-branches');
-  const minFunctions = toNumber(getArg(args, '--min-functions'), 'min-functions');
-  const minStatements = toNumber(getArg(args, '--min-statements'), 'min-statements');
+  const minLines = toNumber(getArg(args, "--min-lines"), "min-lines");
+  const minBranches = toNumber(getArg(args, "--min-branches"), "min-branches");
+  const minFunctions = toNumber(
+    getArg(args, "--min-functions"),
+    "min-functions",
+  );
+  const minStatements = toNumber(
+    getArg(args, "--min-statements"),
+    "min-statements",
+  );
 
   let report;
   try {
-    report = JSON.parse(readFileSync(filePath, 'utf-8'));
+    report = JSON.parse(readFileSync(filePath, "utf-8"));
   } catch {
-    console.error('Error: invalid JSON');
+    console.error("Error: invalid JSON");
     process.exit(EXIT_VALIDATION_ERROR);
   }
 
@@ -86,7 +92,7 @@ async function main() {
     statements: total.statements?.pct ?? 0,
   };
 
-  console.log('Coverage summary:');
+  console.log("Coverage summary:");
   console.log(`- Line: ${metrics.lines}`);
   console.log(`- Branch: ${metrics.branches}`);
   console.log(`- Function: ${metrics.functions}`);
@@ -94,20 +100,23 @@ async function main() {
 
   const failures = [];
   if (metrics.lines < minLines) failures.push(`lines < ${minLines}`);
-  if (metrics.branches < minBranches) failures.push(`branches < ${minBranches}`);
-  if (metrics.functions < minFunctions) failures.push(`functions < ${minFunctions}`);
-  if (metrics.statements < minStatements) failures.push(`statements < ${minStatements}`);
+  if (metrics.branches < minBranches)
+    failures.push(`branches < ${minBranches}`);
+  if (metrics.functions < minFunctions)
+    failures.push(`functions < ${minFunctions}`);
+  if (metrics.statements < minStatements)
+    failures.push(`statements < ${minStatements}`);
 
   if (failures.length > 0) {
-    console.error(`Error: thresholds not met: ${failures.join(', ')}`);
+    console.error(`Error: thresholds not met: ${failures.join(", ")}`);
     process.exit(EXIT_VALIDATION_ERROR);
   }
 
-  console.log('✓ coverage thresholds met');
+  console.log("✓ coverage thresholds met");
   process.exit(EXIT_SUCCESS);
 }
 
 main().catch((err) => {
-  console.error(err?.message || 'Unknown error');
+  console.error(err?.message || "Unknown error");
   process.exit(EXIT_ERROR);
 });

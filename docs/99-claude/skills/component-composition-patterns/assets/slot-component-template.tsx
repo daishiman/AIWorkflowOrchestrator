@@ -11,7 +11,11 @@ type SlotRootProps = {
   children: ReactNode;
 };
 
-export function SlotRoot({ asChild = false, className, children }: SlotRootProps) {
+export function SlotRoot({
+  asChild = false,
+  className,
+  children,
+}: SlotRootProps) {
   const Component: any = asChild ? SlotChild : "div";
   return <Component className={className}>{children}</Component>;
 }

@@ -69,11 +69,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| slog-001-requirements | Phase 1開始時 | システム概要、監視目的 | ログ要件メモ |
-| slog-002-schema-design | Phase 2開始時 | ログ要件メモ、既存ログ例 | ログスキーマ |
-| slog-003-implementation-review | Phase 3開始時 | ログスキーマ、ログ出力例 | 実装検証レポート |
+| Task                           | 起動タイミング | 入力                     | 出力             |
+| ------------------------------ | -------------- | ------------------------ | ---------------- |
+| slog-001-requirements          | Phase 1開始時  | システム概要、監視目的   | ログ要件メモ     |
+| slog-002-schema-design         | Phase 2開始時  | ログ要件メモ、既存ログ例 | ログスキーマ     |
+| slog-003-implementation-review | Phase 3開始時  | ログスキーマ、ログ出力例 | 実装検証レポート |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 **注記**: Task名は目的に合わせて定義する
@@ -84,21 +84,21 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| JSON形式で統一する | 検索と集計が容易になる |
-| 必須フィールドを固定化する | 分析の一貫性が保てる |
-| PIIを分類してマスキングする | セキュリティ事故を防ぐ |
-| ログレベルの基準を定義する | 重要度の優先順位が明確になる |
+| 推奨事項                    | 理由                         |
+| --------------------------- | ---------------------------- |
+| JSON形式で統一する          | 検索と集計が容易になる       |
+| 必須フィールドを固定化する  | 分析の一貫性が保てる         |
+| PIIを分類してマスキングする | セキュリティ事故を防ぐ       |
+| ログレベルの基準を定義する  | 重要度の優先順位が明確になる |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| プレーンテキストのみのログ | 解析が難しくなる |
-| INFOの乱用 | ノイズが増えて監視精度が下がる |
-| PIIの生ログ出力 | セキュリティリスクが高まる |
-| スキーマ変更の未記録 | 監視ルールが破綻する |
+| 禁止事項                   | 問題点                         |
+| -------------------------- | ------------------------------ |
+| プレーンテキストのみのログ | 解析が難しくなる               |
+| INFOの乱用                 | ノイズが増えて監視精度が下がる |
+| PIIの生ログ出力            | セキュリティリスクが高まる     |
+| スキーマ変更の未記録       | 監視ルールが破綻する           |
 
 ---
 
@@ -106,27 +106,27 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-log-format.mjs` | ログ形式の検証 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
-| `scripts/log_usage.mjs` | 使用記録の保存 |
+| スクリプト                        | 機能             |
+| --------------------------------- | ---------------- |
+| `scripts/validate-log-format.mjs` | ログ形式の検証   |
+| `scripts/validate-skill.mjs`      | スキル構造の検証 |
+| `scripts/log_usage.mjs`           | 使用記録の保存   |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| 基礎指針 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| 実務指針 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実装計画時 |
-| 応用指針 | [references/Level3_advanced.md](references/Level3_advanced.md) | 運用設計時 |
-| 専門指針 | [references/Level4_expert.md](references/Level4_expert.md) | 高度な最適化時 |
-| レベル設計 | [references/log-level-guide.md](references/log-level-guide.md) | ログレベル定義時 |
-| スキーマ設計 | [references/log-schema-design.md](references/log-schema-design.md) | スキーマ設計時 |
+| リソース      | パス                                                                     | 読込条件         |
+| ------------- | ------------------------------------------------------------------------ | ---------------- |
+| 基礎指針      | [references/Level1_basics.md](references/Level1_basics.md)               | 要件整理時       |
+| 実務指針      | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | 実装計画時       |
+| 応用指針      | [references/Level3_advanced.md](references/Level3_advanced.md)           | 運用設計時       |
+| 専門指針      | [references/Level4_expert.md](references/Level4_expert.md)               | 高度な最適化時   |
+| レベル設計    | [references/log-level-guide.md](references/log-level-guide.md)           | ログレベル定義時 |
+| スキーマ設計  | [references/log-schema-design.md](references/log-schema-design.md)       | スキーマ設計時   |
 | PIIマスキング | [references/pii-masking-patterns.md](references/pii-masking-patterns.md) | マスキング設計時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/log-format-examples.json` | ログ形式の例 |
-| `assets/logger-template.ts` | ロガー実装テンプレート |
+| アセット                          | 用途                   |
+| --------------------------------- | ---------------------- |
+| `assets/log-format-examples.json` | ログ形式の例           |
+| `assets/logger-template.ts`       | ロガー実装テンプレート |

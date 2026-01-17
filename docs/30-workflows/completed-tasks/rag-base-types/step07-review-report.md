@@ -9,11 +9,11 @@
 
 ## エグゼクティブサマリー
 
-| レビュー観点       | 担当エージェント | 判定      |
-| ------------------ | ---------------- | --------- |
-| コード品質         | `.claude/agents/code-quality.md`  | **MINOR** |
-| アーキテクチャ遵守 | `.claude/agents/arch-police.md`   | **PASS**  |
-| テスト品質         | `.claude/agents/unit-tester.md`   | **MINOR** |
+| レビュー観点       | 担当エージェント                 | 判定      |
+| ------------------ | -------------------------------- | --------- |
+| コード品質         | `.claude/agents/code-quality.md` | **MINOR** |
+| アーキテクチャ遵守 | `.claude/agents/arch-police.md`  | **PASS**  |
+| テスト品質         | `.claude/agents/unit-tester.md`  | **MINOR** |
 
 **総合判定**: ✅ **PASS** - 全レビュー観点でPASSまたはMINOR判定
 

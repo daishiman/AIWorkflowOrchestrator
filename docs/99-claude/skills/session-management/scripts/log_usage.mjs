@@ -7,23 +7,23 @@
  *   node scripts/log_usage.mjs --result failure --reason "エラー詳細"
  */
 
-import { appendFileSync } from 'fs';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import { appendFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const LOGS_PATH = join(__dirname, '..', 'LOGS.md');
+const LOGS_PATH = join(__dirname, "..", "LOGS.md");
 
 function parseArgs(args) {
-  const result = { result: null, reason: '' };
+  const result = { result: null, reason: "" };
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--result' && args[i + 1]) {
+    if (args[i] === "--result" && args[i + 1]) {
       result.result = args[i + 1];
       i++;
-    } else if (args[i] === '--reason' && args[i + 1]) {
+    } else if (args[i] === "--reason" && args[i + 1]) {
       result.reason = args[i + 1];
       i++;
-    } else if (args[i] === '-h' || args[i] === '--help') {
+    } else if (args[i] === "-h" || args[i] === "--help") {
       console.log(`
 Usage: node log_usage.mjs --result <success|failure> [--reason <reason>]
 
@@ -41,8 +41,10 @@ Options:
 function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  if (!args.result || !['success', 'failure'].includes(args.result)) {
-    console.error('Error: --result は success または failure を指定してください');
+  if (!args.result || !["success", "failure"].includes(args.result)) {
+    console.error(
+      "Error: --result は success または failure を指定してください",
+    );
     process.exit(2);
   }
 
@@ -51,7 +53,7 @@ function main() {
 ## ${timestamp}
 - スキル: session-management
 - 結果: ${args.result}
-${args.reason ? `- 理由: ${args.reason}` : ''}
+${args.reason ? `- 理由: ${args.reason}` : ""}
 `;
 
   try {

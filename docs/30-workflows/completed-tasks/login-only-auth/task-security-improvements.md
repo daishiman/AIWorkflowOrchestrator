@@ -290,8 +290,8 @@ apps/desktop/src/main/security/
 
 ### 6.1 検証項目
 
-| 項目               | 検証方法             | 担当エージェント   |
-| ------------------ | -------------------- | ------------------ |
+| 項目               | 検証方法             | 担当エージェント                    |
+| ------------------ | -------------------- | ----------------------------------- |
 | CSP設定            | DevTools Console確認 | .claude/agents/electron-security.md |
 | 入力バリデーション | 単体テスト           | .claude/agents/unit-tester.md       |
 | IPC検証            | 統合テスト           | .claude/agents/e2e-tester.md        |

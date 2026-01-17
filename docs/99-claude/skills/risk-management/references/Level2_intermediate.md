@@ -13,28 +13,34 @@ references/・scripts/・assets/ の活用を前提とする。
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: リスク分析フレームワーク、確率・影響度マトリクス、EMV
 - 実務指針: プロジェクト開始時の評価、スプリント計画時の見直し
 
 ### 判断基準と検証観点
+
 - 回避事項: 注意点を確認せずに評価を進めること
 
 ### 参照資料運用
+
 - `references/risk-analysis-framework.md`: 評価基準とマトリクス設計
 - `references/risk-analysis.md`: 分析手法と評価の詳細
 - `references/risk-identification-guide.md`: 識別セッション準備と手順
 - `references/risk-identification.md`: 識別手法の詳細
 
 ### スクリプト運用
+
 - `scripts/calculate-risk-score.mjs`: リスクスコア/EMV計算
 - `scripts/log_usage.mjs`: 使用ログの追記
 - `scripts/validate-skill.mjs`: スキル構造検証
 
 ### テンプレート運用
+
 - `assets/risk-register-template.md`: 詳細版リスクレジスター
 - `assets/risk-register.md`: 簡易版レジスター
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

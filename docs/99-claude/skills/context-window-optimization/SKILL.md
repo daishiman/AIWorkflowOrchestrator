@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # context-window-optimization
 
 ## 概要
@@ -78,12 +79,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-context-window-requirements | Phase 1開始時 | 目的/制約 | トークン予算メモ、情報棚卸し | 
-| design-context-window-strategy | Phase 2開始時 | トークン予算メモ | 最適化戦略書、優先順位表 | 
-| implement-context-window-compression | Phase 3開始時 | 最適化戦略書 | 圧縮サマリ、削除/保持一覧 |
-| validate-context-window-usage | Phase 4開始時 | 圧縮サマリ | 検証レポート、ログ更新内容 |
+| Task                                 | 起動タイミング | 入力             | 出力                         |
+| ------------------------------------ | -------------- | ---------------- | ---------------------------- |
+| analyze-context-window-requirements  | Phase 1開始時  | 目的/制約        | トークン予算メモ、情報棚卸し |
+| design-context-window-strategy       | Phase 2開始時  | トークン予算メモ | 最適化戦略書、優先順位表     |
+| implement-context-window-compression | Phase 3開始時  | 最適化戦略書     | 圧縮サマリ、削除/保持一覧    |
+| validate-context-window-usage        | Phase 4開始時  | 圧縮サマリ       | 検証レポート、ログ更新内容   |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,55 +92,55 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 計測から開始する | 客観的な削減判断を行うため |
-| 優先順位を明文化する | 必須情報を守るため |
-| 圧縮ルールを統一する | 再現性を高めるため |
-| テンプレートを使う | 出力の一貫性を保つため |
+| 推奨事項             | 理由                       |
+| -------------------- | -------------------------- |
+| 計測から開始する     | 客観的な削減判断を行うため |
+| 優先順位を明文化する | 必須情報を守るため         |
+| 圧縮ルールを統一する | 再現性を高めるため         |
+| テンプレートを使う   | 出力の一貫性を保つため     |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 計測せずに削減する | 影響範囲が判断できない |
-| 必須情報の削除 | 品質の劣化を招く |
-| 圧縮理由を記録しない | 再現性が失われる |
+| 禁止事項             | 問題点                 |
+| -------------------- | ---------------------- |
+| 計測せずに削減する   | 影響範囲が判断できない |
+| 必須情報の削除       | 品質の劣化を招く       |
+| 圧縮理由を記録しない | 再現性が失われる       |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                   | 機能                         |
+| ---------------------------- | ---------------------------- |
+| `scripts/validate-skill.mjs` | スキル構造の検証             |
+| `scripts/log_usage.mjs`      | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 戦略設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 圧縮実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証改善時 |
-| トークン計測 | [references/token-counting-guide.md](references/token-counting-guide.md) | 予算見積もり時 |
-| 優先順位付け | [references/context-prioritization.md](references/context-prioritization.md) | 重要度分類時 |
-| 圧縮技法 | [references/compression-techniques.md](references/compression-techniques.md) | 圧縮実装時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース     | パス                                                                         | 読込条件       |
+| ------------ | ---------------------------------------------------------------------------- | -------------- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md)                   | 初回整理時     |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md)       | 戦略設計時     |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md)               | 圧縮実装時     |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md)                   | 検証改善時     |
+| トークン計測 | [references/token-counting-guide.md](references/token-counting-guide.md)     | 予算見積もり時 |
+| 優先順位付け | [references/context-prioritization.md](references/context-prioritization.md) | 重要度分類時   |
+| 圧縮技法     | [references/compression-techniques.md](references/compression-techniques.md) | 圧縮実装時     |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md)         | 仕様確認時     |
+| 旧スキル     | [references/legacy-skill.md](references/legacy-skill.md)                     | 互換確認時     |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                                 | 用途                               |
+| ---------------------------------------- | ---------------------------------- |
 | `assets/context-window-plan-template.md` | トークン予算と方針整理テンプレート |
-| `assets/context-priority-matrix.md` | 優先順位付けマトリクス |
+| `assets/context-priority-matrix.md`      | 優先順位付けマトリクス             |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

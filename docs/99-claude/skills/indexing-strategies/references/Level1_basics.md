@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling indexing strategies tasks.
 
 ### 必要な知識
+
 - 対象領域: SQLiteにおけるインデックス設計戦略の専門知識。 B-Treeインデックス、部分インデックス、式インデックス、カバリングインデックスの特性と選択基準を提供。 専門分野:
 - 主要概念: SQLite インデックス最適化技法 / 内部構造 / サポートする演算子 / データベース設計（Turso + Drizzle ORM） / インデックスタイプ選択ガイド
 - 実務指針: 新規テーブルのインデックス設計時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: インデックス追加・削除の判断時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/index-design-checklist.md`
 
 ### 参照書籍
+
 - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/index-design-checklist.md`: このレベルでは参照のみ
 
 ## 実践手順

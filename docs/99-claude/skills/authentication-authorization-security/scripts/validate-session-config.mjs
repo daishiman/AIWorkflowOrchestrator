@@ -333,9 +333,7 @@ if (args.includes("-h") || args.includes("--help")) {
 }
 
 if (args.length !== 1) {
-  console.error(
-    `${colors.red}Error: target file is required${colors.reset}`,
-  );
+  console.error(`${colors.red}Error: target file is required${colors.reset}`);
   showHelp();
   process.exit(EXIT_ARGS_ERROR);
 }

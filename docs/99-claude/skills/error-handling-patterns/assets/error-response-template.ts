@@ -26,7 +26,7 @@ export function createErrorResponse(
   code: number,
   message: string,
   details?: Record<string, unknown>,
-  requestId?: string
+  requestId?: string,
 ): ErrorResponse {
   return {
     success: false,
@@ -50,19 +50,19 @@ export function createSuccessResponse<T>(data: T): SuccessResponse<T> {
 
 // ユーザー向けメッセージマッピング
 export const userFriendlyMessages: Record<number, string> = {
-  1000: 'The provided data is invalid. Please check your input and try again.',
-  1001: 'Required information is missing. Please fill in all required fields.',
-  2000: 'You do not have permission to perform this action.',
-  2001: 'The requested resource was not found.',
-  2002: 'This resource already exists.',
-  3000: 'An external service is temporarily unavailable. Please try again later.',
-  3001: 'Request limit exceeded. Please wait a moment before trying again.',
-  4000: 'A database error occurred. Please try again later.',
-  5000: 'An unexpected error occurred. Our team has been notified.',
+  1000: "The provided data is invalid. Please check your input and try again.",
+  1001: "Required information is missing. Please fill in all required fields.",
+  2000: "You do not have permission to perform this action.",
+  2001: "The requested resource was not found.",
+  2002: "This resource already exists.",
+  3000: "An external service is temporarily unavailable. Please try again later.",
+  3001: "Request limit exceeded. Please wait a moment before trying again.",
+  4000: "A database error occurred. Please try again later.",
+  5000: "An unexpected error occurred. Our team has been notified.",
 };
 
 export function getUserFriendlyMessage(code: number): string {
-  return userFriendlyMessages[code] ?? 'An error occurred. Please try again.';
+  return userFriendlyMessages[code] ?? "An error occurred. Please try again.";
 }
 
 // HTTPステータスコードマッピング

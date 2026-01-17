@@ -128,7 +128,9 @@ function validateWorkflow(workflow) {
 
   // タスク名の一意性
   const taskNames = tasks.map((t) => t.name);
-  const duplicates = taskNames.filter((name, index) => taskNames.indexOf(name) !== index);
+  const duplicates = taskNames.filter(
+    (name, index) => taskNames.indexOf(name) !== index,
+  );
   if (duplicates.length > 0) {
     errors.push(`重複するタスク名: ${[...new Set(duplicates)].join(", ")}`);
   }
@@ -146,7 +148,10 @@ function validateWorkflow(workflow) {
     if (!task.responsibility) {
       warnings.push(`${task.name}: responsibilityが未定義です`);
     }
-    if (!task.executionPattern || !["seq", "par", "cond", "loop", "agg"].includes(task.executionPattern)) {
+    if (
+      !task.executionPattern ||
+      !["seq", "par", "cond", "loop", "agg"].includes(task.executionPattern)
+    ) {
       warnings.push(`${task.name}: executionPatternが不正または未定義です`);
     }
 
@@ -180,7 +185,9 @@ function validateWorkflow(workflow) {
     }
     for (const taskName of phase.tasks) {
       if (!taskNameSet.has(taskName)) {
-        errors.push(`${phase.name}: 存在しないタスクがフェーズに含まれています: ${taskName}`);
+        errors.push(
+          `${phase.name}: 存在しないタスクがフェーズに含まれています: ${taskName}`,
+        );
       }
       allPhaseTasks.add(taskName);
     }
@@ -200,16 +207,22 @@ function validateWorkflow(workflow) {
         warnings.push("並列グループにnameが未定義です");
       }
       if (!group.tasks || !Array.isArray(group.tasks)) {
-        errors.push(`${group.name || "unknown"}: 並列グループにtasksが必須です`);
+        errors.push(
+          `${group.name || "unknown"}: 並列グループにtasksが必須です`,
+        );
         continue;
       }
       for (const taskName of group.tasks) {
         if (!taskNameSet.has(taskName)) {
-          errors.push(`${group.name}: 存在しないタスクが並列グループに含まれています: ${taskName}`);
+          errors.push(
+            `${group.name}: 存在しないタスクが並列グループに含まれています: ${taskName}`,
+          );
         }
       }
       if (group.syncPoint && !taskNameSet.has(group.syncPoint)) {
-        errors.push(`${group.name}: syncPointが存在しないタスクを参照: ${group.syncPoint}`);
+        errors.push(
+          `${group.name}: syncPointが存在しないタスクを参照: ${group.syncPoint}`,
+        );
       }
     }
   }

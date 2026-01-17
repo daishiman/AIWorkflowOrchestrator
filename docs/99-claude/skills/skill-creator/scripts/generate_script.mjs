@@ -71,24 +71,39 @@ function resolvePath(p) {
 function generateTaskScript(def) {
   const name = def.name || "task-script";
   const description = def.description || "タスク実行スクリプト";
-  const args = def.args || [{ name: "--input", required: true, description: "入力" }];
+  const args = def.args || [
+    { name: "--input", required: true, description: "入力" },
+  ];
 
   const requiredArgs = args.filter((a) => a.required);
   const optionalArgs = args.filter((a) => !a.required);
 
-  const argsDoc = args.map((a) => `  ${a.name.padEnd(15)} ${a.description}${a.required ? "（必須）" : ""}`).join("\n");
-  const exitCodesDoc = (def.exitCodes || [
-    { code: 0, meaning: "成功" },
-    { code: 1, meaning: "一般的なエラー" },
-    { code: 2, meaning: "引数エラー" },
-  ]).map((e) => `  ${e.code}: ${e.meaning}`).join("\n");
+  const argsDoc = args
+    .map(
+      (a) =>
+        `  ${a.name.padEnd(15)} ${a.description}${a.required ? "（必須）" : ""}`,
+    )
+    .join("\n");
+  const exitCodesDoc = (
+    def.exitCodes || [
+      { code: 0, meaning: "成功" },
+      { code: 1, meaning: "一般的なエラー" },
+      { code: 2, meaning: "引数エラー" },
+    ]
+  )
+    .map((e) => `  ${e.code}: ${e.meaning}`)
+    .join("\n");
 
-  const argChecks = requiredArgs.map((a) => `
+  const argChecks = requiredArgs
+    .map(
+      (a) => `
   const ${a.name.replace("--", "").replace(/-/g, "_")} = getArg(args, "${a.name}");
   if (!${a.name.replace("--", "").replace(/-/g, "_")}) {
     console.error("Error: ${a.name} は必須です");
     process.exit(EXIT_ARGS_ERROR);
-  }`).join("\n");
+  }`,
+    )
+    .join("\n");
 
   return `#!/usr/bin/env node
 
@@ -439,7 +454,9 @@ async function main() {
     }
 
     writeFileSync(resolvedOutput, content, "utf-8");
-    console.log(`✓ scripts/${basename(resolvedOutput)}を生成しました (type: ${type})`);
+    console.log(
+      `✓ scripts/${basename(resolvedOutput)}を生成しました (type: ${type})`,
+    );
     process.exit(EXIT_SUCCESS);
   } catch (err) {
     if (err instanceof SyntaxError) {

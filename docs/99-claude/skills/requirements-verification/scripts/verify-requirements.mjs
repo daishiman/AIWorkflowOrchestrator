@@ -88,7 +88,11 @@ function analyze(content) {
       withId += ids.length;
     }
 
-    if (/\bGiven\b/i.test(line) && /\bWhen\b/i.test(line) && /\bThen\b/i.test(line)) {
+    if (
+      /\bGiven\b/i.test(line) &&
+      /\bWhen\b/i.test(line) &&
+      /\bThen\b/i.test(line)
+    ) {
       withAcceptance += 1;
     }
 
@@ -107,11 +111,18 @@ function analyze(content) {
   });
 
   const lineCount = lines.length || 1;
-  const clarity = Math.max(0, Math.round((1 - ambiguousCount / lineCount) * 100));
-  const completeness = total > 0 ? Math.round((withAcceptance / total) * 100) : 0;
+  const clarity = Math.max(
+    0,
+    Math.round((1 - ambiguousCount / lineCount) * 100),
+  );
+  const completeness =
+    total > 0 ? Math.round((withAcceptance / total) * 100) : 0;
   const consistency = 100;
-  const verifiability = total > 0 ? Math.round((withAcceptance / total) * 100) : 0;
-  const quality = Math.round((clarity + completeness + consistency + verifiability) / 4);
+  const verifiability =
+    total > 0 ? Math.round((withAcceptance / total) * 100) : 0;
+  const quality = Math.round(
+    (clarity + completeness + consistency + verifiability) / 4,
+  );
 
   return {
     metrics: {
@@ -135,7 +146,9 @@ function outputText(result) {
   console.log("=".repeat(72));
   console.log(`\n総要件数: ${result.metrics.total}`);
   console.log(`ID付き要件: ${result.metrics.withId}/${result.metrics.total}`);
-  console.log(`受け入れ基準あり: ${result.metrics.withAcceptance}/${result.metrics.total}`);
+  console.log(
+    `受け入れ基準あり: ${result.metrics.withAcceptance}/${result.metrics.total}`,
+  );
   console.log("\n品質メトリクス:");
   console.log(`  明確性: ${result.clarity}%`);
   console.log(`  完全性: ${result.completeness}%`);

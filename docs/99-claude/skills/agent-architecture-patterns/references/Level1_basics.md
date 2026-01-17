@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling agent architecture patterns tasks.
 
 ### 必要な知識
+
 - 対象領域: マービン・ミンスキーの『心の社会』に基づくエージェントアーキテクチャパターンと 設計原則を専門とするスキル。単一責任の原則、創発的複雑性、階層的組織化により、 効果的なマルチエージェントシステムを設計します。
 - 主要概念: エージェントアーキテクチャパターンカタログ / パターン1: オーケストレーター・ワーカー / 構造 / ローカルエージェント仕様 / Agent Architecture Patterns
 - 実務指針: 新しいエージェントのアーキテクチャを設計する時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: エージェント間の協調パターンを選択する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/orchestrator-worker-template.md`
 - 参照テンプレート: `templates/pipeline-template.md`
 
 ### 参照書籍
+
 - 『Clean Architecture』（Robert C. Martin）: 依存関係ルール
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/orchestrator-worker-template.md`: このレベルでは参照のみ
 - `templates/pipeline-template.md`: このレベルでは参照のみ
 

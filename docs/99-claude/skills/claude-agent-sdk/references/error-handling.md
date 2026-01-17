@@ -111,10 +111,7 @@ SDKは429エラー（レート制限）発生時に指数バックオフで自�
 ### 手動リトライ実装
 
 ```typescript
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  maxRetries = 5,
-): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 5): Promise<T> {
   let lastError: Error;
 
   for (let i = 0; i < maxRetries; i++) {
@@ -285,7 +282,9 @@ class AgentConnection {
         return;
       } catch (error) {
         this.retryCount++;
-        console.log(`Connection failed, retry ${this.retryCount}/${this.maxRetries}`);
+        console.log(
+          `Connection failed, retry ${this.retryCount}/${this.maxRetries}`,
+        );
 
         if (this.retryCount >= this.maxRetries) {
           throw error;

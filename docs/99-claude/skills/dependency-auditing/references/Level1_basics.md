@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling dependency auditing tasks.
 
 ### 必要な知識
+
 - 対象領域: セキュリティ脆弱性の検出、評価、対応戦略を専門とするスキル。 CVE/GHSA識別子の理解、重大度評価（CVSS）、修正優先度の決定方法論を提供します。 専門分野:
 - 主要概念: CI/CD統合パターン / GitHub Actions統合 / Dependabot設定 / CVSS重大度評価ガイド / CVSSスコアの構成要素
 - 実務指針: 依存関係のセキュリティ監査を実施する時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: セキュリティパッチの適用優先度を決定する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - アセットの必須項目を満たしている
 - 主要アセット: `assets/vulnerability-assessment-template.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要アセット
+
 - `assets/vulnerability-assessment-template.md`: このレベルでは参照のみ
 
 ## 実践手順

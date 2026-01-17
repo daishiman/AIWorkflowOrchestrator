@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling structured writing tasks.
 
 ### 必要な知識
+
 - 対象領域: DITA、トピックベースライティング、モジュール構造設計に基づく構造化ライティングの専門スキル。
 - 主要概念: コンテンツ再利用 / 再利用のレベル / レベル1: テキストスニペット / DITA原則 / 基本原則
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/concept-topic.md`
 - 参照テンプレート: `templates/reference-topic.md`
 
 ### 参照書籍
+
 - 『Software Requirements』（Karl Wiegers）: 要求分析
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/concept-topic.md`: このレベルでは参照のみ
 - `templates/reference-topic.md`: このレベルでは参照のみ
 

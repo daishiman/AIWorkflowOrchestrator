@@ -92,11 +92,11 @@ BrowserWindow管理、ネイティブUI要素の活用、フレームレスウ�
 
 ### references/（詳細知識）
 
-| リソース       | パス                                                                       | 用途                        |
-| -------------- | -------------------------------------------------------------------------- | --------------------------- |
-| ネイティブUI   | See [references/native-ui.md](references/native-ui.md)                     | メニュー・ダイアログ        |
-| ウィンドウ管理 | See [references/window-management.md](references/window-management.md)     | BrowserWindow詳細           |
-| エディタ統合   | See [references/editor-integration.md](references/editor-integration.md)   | EditorInstance・検索統合    |
+| リソース       | パス                                                                     | 用途                     |
+| -------------- | ------------------------------------------------------------------------ | ------------------------ |
+| ネイティブUI   | See [references/native-ui.md](references/native-ui.md)                   | メニュー・ダイアログ     |
+| ウィンドウ管理 | See [references/window-management.md](references/window-management.md)   | BrowserWindow詳細        |
+| エディタ統合   | See [references/editor-integration.md](references/editor-integration.md) | EditorInstance・検索統合 |
 
 ### scripts/（決定論的処理）
 
@@ -191,11 +191,11 @@ CONV-05-03（履歴/ログ表示UIコンポーネント）で適用したIPC通�
 
 Electron IPC通信において、以下のエラー状況に対応するための統一的なパターン。
 
-| エラー種別 | 原因 | 対応 |
-|-----------|------|------|
-| API未利用可能 | preload未設定、contextBridge未公開 | 明示的なエラーメッセージ |
-| IPC通信失敗 | チャンネル未登録、タイムアウト | 再試行機能付きエラー表示 |
-| データ取得失敗 | DBエラー、ファイル不在 | Result型でエラー情報を伝播 |
+| エラー種別     | 原因                               | 対応                       |
+| -------------- | ---------------------------------- | -------------------------- |
+| API未利用可能  | preload未設定、contextBridge未公開 | 明示的なエラーメッセージ   |
+| IPC通信失敗    | チャンネル未登録、タイムアウト     | 再試行機能付きエラー表示   |
+| データ取得失敗 | DBエラー、ファイル不在             | Result型でエラー情報を伝播 |
 
 #### Result型パターン
 
@@ -257,16 +257,14 @@ function useVersionHistory(fileId: string) {
 ```tsx
 function ErrorDisplay({
   message,
-  onRetry
+  onRetry,
 }: {
   message: string;
   onRetry: () => void;
 }) {
   return (
     <div role="alert" className="rounded-lg bg-red-50 p-4 text-center">
-      <p className="mb-3 text-red-700">
-        エラーが発生しました: {message}
-      </p>
+      <p className="mb-3 text-red-700">エラーが発生しました: {message}</p>
       <button
         type="button"
         onClick={onRetry}
@@ -291,13 +289,16 @@ TypeScriptでwindowオブジェクトの拡張を型安全に行う。
 ```typescript
 // types.tsで型を定義
 interface HistoryAPI {
-  getFileHistory(fileId: string, options?: PaginationOptions): Promise<Result<PaginatedResult>>;
+  getFileHistory(
+    fileId: string,
+    options?: PaginationOptions,
+  ): Promise<Result<PaginatedResult>>;
   // ...
 }
 
 declare global {
   interface Window {
-    historyAPI?: HistoryAPI;  // ?でオプショナルに
+    historyAPI?: HistoryAPI; // ?でオプショナルに
   }
 }
 
@@ -309,27 +310,28 @@ if (window.historyAPI) {
 
 #### エラー種別の分類
 
-| エラークラス | 表示メッセージ | 再試行 |
-|-------------|---------------|--------|
-| NetworkError | 「通信エラーが発生しました」 | 可 |
-| NotFoundError | 「データが見つかりません」 | 不可 |
-| RestoreError | 「復元に失敗しました」 | 可 |
-| DBError | 「データベースエラーが発生しました」 | 可 |
+| エラークラス  | 表示メッセージ                       | 再試行 |
+| ------------- | ------------------------------------ | ------ |
+| NetworkError  | 「通信エラーが発生しました」         | 可     |
+| NotFoundError | 「データが見つかりません」           | 不可   |
+| RestoreError  | 「復元に失敗しました」               | 可     |
+| DBError       | 「データベースエラーが発生しました」 | 可     |
 
 #### 実装詳細
 
 詳細は以下を参照：
+
 - 実装例: `apps/desktop/src/renderer/hooks/useVersionHistory.ts`
 - 型定義: `apps/desktop/src/renderer/components/history/types.ts`
 - 仕様書: `.claude/skills/aiworkflow-requirements/references/ui-ux-history-panel.md`
 
 ## 変更履歴
 
-| Version | Date       | Changes                                       |
-| ------- | ---------- | --------------------------------------------- |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
 | 2.4.0   | 2026-01-10 | IPC通信エラーハンドリングパターン追加（CONV-05-03） |
-| 2.3.0   | 2026-01-06 | validate-skill.mjs追加                        |
-| 2.2.0   | 2026-01-06 | editor-integration.md追加、skill-creator準拠  |
-| 2.1.0   | 2026-01-06 | EditorView検索統合パターン追加                |
-| 2.0.0   | 2026-01-01 | 18-skills.md仕様完全準拠、構造最適化          |
-| 1.0.0   | 2025-12-31 | 初版作成                                      |
+| 2.3.0   | 2026-01-06 | validate-skill.mjs追加                              |
+| 2.2.0   | 2026-01-06 | editor-integration.md追加、skill-creator準拠        |
+| 2.1.0   | 2026-01-06 | EditorView検索統合パターン追加                      |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様完全準拠、構造最適化                |
+| 1.0.0   | 2025-12-31 | 初版作成                                            |

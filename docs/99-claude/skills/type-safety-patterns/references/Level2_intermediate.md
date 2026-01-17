@@ -14,12 +14,15 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Discriminated Unions パターン / 基本概念 / Discriminated Union とは / ジェネリクスパターン / 基本的なジェネリクス / 関数ジェネリクス
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/discriminated-union-patterns.md`: Discriminated Union Patternsリソース（把握する知識: Discriminated Unions パターン / 基本概念 / Discriminated Union とは）
 - `resources/generics-patterns.md`: Generics Patternsリソース（把握する知識: ジェネリクスパターン / 基本的なジェネリクス / 関数ジェネリクス）
 - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: コアインターフェース仕様）
@@ -28,14 +31,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Type Safety Patterns / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/check-type-safety.mjs`: Check Type Safetyスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/type-safe-patterns.ts`: Type Safe Patternsテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

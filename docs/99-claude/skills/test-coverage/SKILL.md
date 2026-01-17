@@ -71,11 +71,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task             | 起動タイミング | 入力                   | 出力                   |
-| ---------------- | -------------- | ---------------------- | ---------------------- |
-| analyze-coverage | Phase 1開始時  | カバレッジレポート     | カバレッジ分析結果     |
-| prioritize-gaps  | Phase 2開始時  | カバレッジ分析結果     | 優先度付きギャップ表   |
-| plan-improvements| Phase 3開始時  | 優先度付きギャップ表   | 改善計画               |
+| Task              | 起動タイミング | 入力                 | 出力                 |
+| ----------------- | -------------- | -------------------- | -------------------- |
+| analyze-coverage  | Phase 1開始時  | カバレッジレポート   | カバレッジ分析結果   |
+| prioritize-gaps   | Phase 2開始時  | カバレッジ分析結果   | 優先度付きギャップ表 |
+| plan-improvements | Phase 3開始時  | 優先度付きギャップ表 | 改善計画             |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -85,19 +85,19 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項                         | 理由                               |
-| -------------------------------- | ---------------------------------- |
-| リスクベースで優先順位を決める   | 影響度の高い改善から着手できる     |
-| 複数の指標を確認する             | 偏った評価を避ける                 |
-| 段階的な改善計画にする           | 実行可能性が高まる                 |
+| 推奨事項                       | 理由                           |
+| ------------------------------ | ------------------------------ |
+| リスクベースで優先順位を決める | 影響度の高い改善から着手できる |
+| 複数の指標を確認する           | 偏った評価を避ける             |
+| 段階的な改善計画にする         | 実行可能性が高まる             |
 
 ### 避けるべきこと
 
-| 禁止事項                     | 問題点                             |
-| ---------------------------- | ---------------------------------- |
-| 数値目標だけを追う           | テスト品質が低下する               |
-| 低優先度領域に集中する       | リスク低減につながらない           |
-| 計測を省略する               | 改善効果が測れない                 |
+| 禁止事項               | 問題点                   |
+| ---------------------- | ------------------------ |
+| 数値目標だけを追う     | テスト品質が低下する     |
+| 低優先度領域に集中する | リスク低減につながらない |
+| 計測を省略する         | 改善効果が測れない       |
 
 ---
 
@@ -105,29 +105,29 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト                               | 機能                         |
-| ---------------------------------------- | ---------------------------- |
-| `scripts/analyze-coverage-report.mjs`    | カバレッジレポート解析       |
-| `scripts/validate-coverage-plan.mjs`     | 改善計画テンプレート検証     |
-| `scripts/log_usage.mjs`                  | 使用記録をLOGS.mdに記録する  |
+| スクリプト                            | 機能                        |
+| ------------------------------------- | --------------------------- |
+| `scripts/analyze-coverage-report.mjs` | カバレッジレポート解析      |
+| `scripts/validate-coverage-plan.mjs`  | 改善計画テンプレート検証    |
+| `scripts/log_usage.mjs`               | 使用記録をLOGS.mdに記録する |
 
 ### references/（詳細知識）
 
-| リソース          | パス                                                     | 読込条件     |
-| ----------------- | -------------------------------------------------------- | ------------ |
-| 基礎              | [references/Level1_basics.md](references/Level1_basics.md) | 初回利用時   |
-| ギャップ分析      | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 |
-| 高度計測          | [references/Level3_advanced.md](references/Level3_advanced.md) | 高難度対応 |
-| 継続運用          | [references/Level4_expert.md](references/Level4_expert.md) | 運用時 |
-| リスク評価        | [references/risk-assessment.md](references/risk-assessment.md) | Phase 2 |
-| メトリクス定義    | [references/coverage-metrics.md](references/coverage-metrics.md) | Phase 1 |
+| リソース       | パス                                                                   | 読込条件   |
+| -------------- | ---------------------------------------------------------------------- | ---------- |
+| 基礎           | [references/Level1_basics.md](references/Level1_basics.md)             | 初回利用時 |
+| ギャップ分析   | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2    |
+| 高度計測       | [references/Level3_advanced.md](references/Level3_advanced.md)         | 高難度対応 |
+| 継続運用       | [references/Level4_expert.md](references/Level4_expert.md)             | 運用時     |
+| リスク評価     | [references/risk-assessment.md](references/risk-assessment.md)         | Phase 2    |
+| メトリクス定義 | [references/coverage-metrics.md](references/coverage-metrics.md)       | Phase 1    |
 
 ### assets/（テンプレート）
 
-| アセット                                 | 用途                       |
-| ---------------------------------------- | -------------------------- |
-| `assets/coverage-analysis-template.md`   | カバレッジ分析テンプレート |
-| `assets/coverage-improvement-plan.md`    | 改善計画テンプレート       |
+| アセット                               | 用途                       |
+| -------------------------------------- | -------------------------- |
+| `assets/coverage-analysis-template.md` | カバレッジ分析テンプレート |
+| `assets/coverage-improvement-plan.md`  | 改善計画テンプレート       |
 
 ---
 
@@ -137,12 +137,12 @@ allowed-tools:
 
 カバレッジをCI/CDパイプラインに統合し、品質ゲートとして機能させる方法:
 
-| 設定項目     | 推奨値 | 理由                                   |
-| ------------ | ------ | -------------------------------------- |
-| project閾値  | 80%    | 業界標準、現実的な達成目標             |
-| patch閾値    | 80%    | 新規コードの品質を維持                 |
-| threshold    | 1%     | カバレッジ計算の誤差を考慮             |
-| carryforward | true   | モノレポでパッケージ別追跡             |
+| 設定項目     | 推奨値 | 理由                       |
+| ------------ | ------ | -------------------------- |
+| project閾値  | 80%    | 業界標準、現実的な達成目標 |
+| patch閾値    | 80%    | 新規コードの品質を維持     |
+| threshold    | 1%     | カバレッジ計算の誤差を考慮 |
+| carryforward | true   | モノレポでパッケージ別追跡 |
 
 **関連スキル**: `github-actions-syntax` (patterns.md パターン9参照)
 
@@ -154,4 +154,3 @@ allowed-tools:
 | ------- | ---------- | ---------------------------------------------------- |
 | 1.1.0   | 2026-01-05 | CI/CD連携セクション追加、Codecov統合ガイドライン追加 |
 | 1.0.0   | 2026-01-02 | 初版（18-skills.md仕様準拠）                         |
-

@@ -34,6 +34,7 @@ allowed-tools:
 **目的**: 適切な暗号化鍵生成方法とパラメータを決定
 
 **アクション**:
+
 1. 用途に応じた鍵タイプを選択（対称/非対称）
 2. 鍵長と暗号アルゴリズムを決定
 3. 鍵生成環境のセキュリティ要件を確認
@@ -46,6 +47,7 @@ allowed-tools:
 **目的**: 鍵ローテーションの頻度と手順を策定
 
 **アクション**:
+
 1. ローテーション間隔を決定（リスク評価に基づく）
 2. ローテーション手順を文書化
 3. 旧鍵の移行期間を設定
@@ -58,6 +60,7 @@ allowed-tools:
 **目的**: 鍵漏洩や廃棄時の失効手順を確立
 
 **アクション**:
+
 1. 失効トリガー条件を定義
 2. 緊急失効手順を策定
 3. 失効通知プロセスを確立
@@ -67,11 +70,11 @@ allowed-tools:
 
 ## Task仕様（ナビゲーション）
 
-| Task | 起動タイミング | 入力 | 出力 |
-|------|----------------|------|------|
-| key-generation-strategy | 鍵生成設計時 | 暗号化要件 | 鍵生成戦略書 |
-| rotation-policy | ローテーション設計時 | 鍵生成戦略書 | ローテーションポリシー |
-| revocation-process | 失効設計時 | ローテーションポリシー | 失効手順書 |
+| Task                    | 起動タイミング       | 入力                   | 出力                   |
+| ----------------------- | -------------------- | ---------------------- | ---------------------- |
+| key-generation-strategy | 鍵生成設計時         | 暗号化要件             | 鍵生成戦略書           |
+| rotation-policy         | ローテーション設計時 | 鍵生成戦略書           | ローテーションポリシー |
+| revocation-process      | 失効設計時           | ローテーションポリシー | 失効手順書             |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
@@ -100,34 +103,34 @@ allowed-tools:
 
 ### agents/（Task仕様書）
 
-| Task | パス | 用途 |
-|------|------|------|
-| 鍵生成戦略 | See [agents/key-generation-strategy.md](agents/key-generation-strategy.md) | アルゴリズム・鍵長選定 |
-| ローテーション | See [agents/rotation-policy.md](agents/rotation-policy.md) | 定期更新設計 |
-| 失効プロセス | See [agents/revocation-process.md](agents/revocation-process.md) | 緊急対応・廃棄 |
+| Task           | パス                                                                       | 用途                   |
+| -------------- | -------------------------------------------------------------------------- | ---------------------- |
+| 鍵生成戦略     | See [agents/key-generation-strategy.md](agents/key-generation-strategy.md) | アルゴリズム・鍵長選定 |
+| ローテーション | See [agents/rotation-policy.md](agents/rotation-policy.md)                 | 定期更新設計           |
+| 失効プロセス   | See [agents/revocation-process.md](agents/revocation-process.md)           | 緊急対応・廃棄         |
 
 ### references/（詳細知識）
 
-| リソース | パス | 用途 |
-|----------|------|------|
+| リソース           | パス                                                                       | 用途               |
+| ------------------ | -------------------------------------------------------------------------- | ------------------ |
 | ローテーション手順 | See [references/rotation-procedures.md](references/rotation-procedures.md) | ローテーション詳細 |
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 用途 | 使用例 |
-|------------|------|--------|
-| `generate-keys.mjs` | 鍵生成 | `node scripts/generate-keys.mjs --algorithm AES --size 256` |
-| `log_usage.mjs` | 使用ログ記録 | `node scripts/log_usage.mjs --result success` |
+| スクリプト          | 用途         | 使用例                                                      |
+| ------------------- | ------------ | ----------------------------------------------------------- |
+| `generate-keys.mjs` | 鍵生成       | `node scripts/generate-keys.mjs --algorithm AES --size 256` |
+| `log_usage.mjs`     | 使用ログ記録 | `node scripts/log_usage.mjs --result success`               |
 
 ### assets/（テンプレート）
 
-| テンプレート | 用途 |
-|--------------|------|
+| テンプレート             | 用途                           |
+| ------------------------ | ------------------------------ |
 | `key-policy-template.md` | 鍵管理ポリシー文書テンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.0.0 | 2026-01-01 | 18-skills.md仕様完全準拠、agents追加、構造最適化 |
-| 1.0.0 | 2025-12-24 | 初版作成 |
+| Version | Date       | Changes                                          |
+| ------- | ---------- | ------------------------------------------------ |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様完全準拠、agents追加、構造最適化 |
+| 1.0.0   | 2025-12-24 | 初版作成                                         |

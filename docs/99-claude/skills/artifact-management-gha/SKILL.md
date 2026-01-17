@@ -52,6 +52,7 @@ GitHub Actions ワークフロー内で成果物を管理するための設計�
 4. `references/retention-optimization.md` で保持期間を決定
 
 **Task**:
+
 - `agents/design-artifact-flow.md`
 - `agents/implement-artifact-steps.md`
 
@@ -69,12 +70,12 @@ GitHub Actions ワークフロー内で成果物を管理するための設計�
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| 利用パターン整理 | 目的と制約の整理 | ワークフロー要件 | 利用パターン要約 | `references/Level1_basics.md` | Phase 1 |
-| フロー設計 | upload/downloadの設計 | 利用パターン要約 | フロー設計メモ | `assets/artifact-workflow.yaml` | Phase 2 前半 |
-| 実装手順整理 | 設定手順の明確化 | フロー設計メモ | 実装チェックリスト | `references/upload-artifact.md` | Phase 2 後半 |
-| 保持最適化 | 保持期間と削除戦略 | 実装チェックリスト | 最適化メモ | `references/retention-optimization.md` | Phase 3 |
+| Task             | 役割                  | 入力               | 出力               | 参照先                                 | 実行タイミング |
+| ---------------- | --------------------- | ------------------ | ------------------ | -------------------------------------- | -------------- |
+| 利用パターン整理 | 目的と制約の整理      | ワークフロー要件   | 利用パターン要約   | `references/Level1_basics.md`          | Phase 1        |
+| フロー設計       | upload/downloadの設計 | 利用パターン要約   | フロー設計メモ     | `assets/artifact-workflow.yaml`        | Phase 2 前半   |
+| 実装手順整理     | 設定手順の明確化      | フロー設計メモ     | 実装チェックリスト | `references/upload-artifact.md`        | Phase 2 後半   |
+| 保持最適化       | 保持期間と削除戦略    | 実装チェックリスト | 最適化メモ         | `references/retention-optimization.md` | Phase 3        |
 
 ## ベストプラクティス
 
@@ -118,8 +119,8 @@ GitHub Actions ワークフロー内で成果物を管理するための設計�
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 1.0.1   | 2025-12-31 | 18-skills.md 仕様に準拠し、Task仕様ナビ追加         |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                     |
+| ------- | ---------- | ------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備    |
+| 1.0.1   | 2025-12-31 | 18-skills.md 仕様に準拠し、Task仕様ナビ追加 |
+| 1.0.0   | 2025-12-24 | 初版作成                                    |

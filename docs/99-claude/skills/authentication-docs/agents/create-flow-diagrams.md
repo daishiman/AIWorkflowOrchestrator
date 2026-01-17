@@ -97,7 +97,7 @@ OAuthフローの図解を作成する。
 - 受領先: 手順作成タスク
 - 出力テンプレート:
 
-  ```markdown
+  ````markdown
   ## OAuthフロー図
 
   ```mermaid
@@ -113,6 +113,10 @@ OAuthフローの図解を作成する。
     AuthServer->>Client: アクセストークン
     Client->>ResourceServer: APIリクエスト
   ```
+  ````
+
+  ```
+
   ```
 
 - 内容:

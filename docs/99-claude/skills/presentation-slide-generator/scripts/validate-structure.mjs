@@ -29,30 +29,30 @@ const EXIT_VALIDATION_FAILED = 4;
 const VALID_SLIDE_TYPES = {
   // === 基本タイプ（15種）===
   // 英語 → 日本語マッピング
-  "title": "タイトル",
-  "agenda": "アジェンダ",
-  "section": "セクション",
-  "message": "メッセージ",
-  "list": "リスト",
-  "compare": "比較",
-  "flow": "フロー",
-  "timeline": "タイムライン",
-  "table": "テーブル",
-  "stats": "統計",
-  "chart": "チャート",
-  "diagram": "図解",
-  "quote": "引用",
-  "image": "画像",
+  title: "タイトル",
+  agenda: "アジェンダ",
+  section: "セクション",
+  message: "メッセージ",
+  list: "リスト",
+  compare: "比較",
+  flow: "フロー",
+  timeline: "タイムライン",
+  table: "テーブル",
+  stats: "統計",
+  chart: "チャート",
+  diagram: "図解",
+  quote: "引用",
+  image: "画像",
   "full-image": "フルイメージ",
   // === 拡張タイプ（8種）===
-  "pyramid": "ピラミッド",
-  "circle": "サークル",
-  "grid": "グリッド",
-  "highlight": "ハイライト",
+  pyramid: "ピラミッド",
+  circle: "サークル",
+  grid: "グリッド",
+  highlight: "ハイライト",
   "icon-grid": "アイコングリッド",
-  "process": "プロセス",
+  process: "プロセス",
   "quote-extended": "引用拡張",
-  "hero": "ヒーロー"
+  hero: "ヒーロー",
 };
 
 // 日本語タイプ名も有効
@@ -154,8 +154,8 @@ function validateStructure(data) {
         if (!isValidEnglish && !isValidJapanese) {
           errors.push(
             `スライド${slideNum}: type "${slide.type}" は無効です。\n` +
-            `  有効な英語タイプ: ${VALID_ENGLISH_TYPES.join(", ")}\n` +
-            `  有効な日本語タイプ: ${VALID_JAPANESE_TYPES.join(", ")}`
+              `  有効な英語タイプ: ${VALID_ENGLISH_TYPES.join(", ")}\n` +
+              `  有効な日本語タイプ: ${VALID_JAPANESE_TYPES.join(", ")}`,
           );
         }
       }
@@ -164,7 +164,9 @@ function validateStructure(data) {
       if (!slide.message) {
         errors.push(`スライド${slideNum}: message が欠落しています`);
       } else if (typeof slide.message !== "string") {
-        errors.push(`スライド${slideNum}: message は文字列である必要があります`);
+        errors.push(
+          `スライド${slideNum}: message は文字列である必要があります`,
+        );
       }
 
       // icon検証
@@ -175,7 +177,7 @@ function validateStructure(data) {
       } else if (!ICON_PATTERN.test(slide.icon)) {
         errors.push(
           `スライド${slideNum}: icon "${slide.icon}" は無効な形式です。` +
-          `"fa-xxx" 形式で指定してください`
+            `"fa-xxx" 形式で指定してください`,
         );
       }
     });
@@ -201,7 +203,9 @@ async function readInput(filePath) {
 
     // 非対話モードかチェック
     if (process.stdin.isTTY) {
-      reject(new Error("ファイルパスを指定するか、標準入力からJSONを渡してください"));
+      reject(
+        new Error("ファイルパスを指定するか、標準入力からJSONを渡してください"),
+      );
       return;
     }
 
@@ -260,7 +264,7 @@ async function main() {
 
   console.log(`✓ 検証成功: ${data.slides.length}枚のスライド`);
   console.log(`  タイトル: ${data.title}`);
-  console.log(`  スライドタイプ: ${data.slides.map(s => s.type).join(", ")}`);
+  console.log(`  スライドタイプ: ${data.slides.map((s) => s.type).join(", ")}`);
 
   process.exit(EXIT_SUCCESS);
 }

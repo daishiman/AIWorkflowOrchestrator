@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Adapter Pattern for API Clients / いつ使うか / 適用条件 / Anti-Corruption Layer (腐敗防止層) / なぜ必要か / 外部システムの「腐敗」とは
 - 実務指針: 外部APIクライアントを設計する時 / 外部データを内部ドメインモデルに変換する時 / 腐敗防止層の境界を設計する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/adapter-pattern.md`: Adapter Pattern for API Clients（把握する知識: Adapter Pattern for API Clients / いつ使うか / 適用条件）
 - `resources/anti-corruption-layer.md`: Anti-Corruption Layer (腐敗防止層)（把握する知識: Anti-Corruption Layer (腐敗防止層) / なぜ必要か / 外部システムの「腐敗」とは）
 - `resources/data-transformer-patterns.md`: Data Transformer Patterns（把握する知識: Data Transformer Patterns / 基本パターン / 1. シンプル変換）
@@ -29,15 +32,18 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: API Client Patterns / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-api-client.mjs`: API Client Structure Validator
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/api-client-template.ts`: API Client Template
 - `templates/transformer-template.ts`: Data Transformer Template
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

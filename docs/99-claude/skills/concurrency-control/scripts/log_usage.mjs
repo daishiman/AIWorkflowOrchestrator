@@ -130,7 +130,9 @@ async function main() {
   const notes = getArg(args, "--notes") || "";
 
   if (!result || !["success", "failure"].includes(result)) {
-    console.error("Error: --result は success または failure を指定してください");
+    console.error(
+      "Error: --result は success または failure を指定してください",
+    );
     process.exit(EXIT_ARGS_ERROR);
   }
 

@@ -14,27 +14,34 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - 条件付き実行の導入や見直しに着手する時点で適用する
 
 ### 必要な知識
+
 - 対象領域: GitHub Actions の条件付き実行とイベントフィルタリング
 - 主要概念: if 条件 / status functions / event filters / ブランチ・パス制御
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: 条件式の影響範囲を整理せずに実装することを避ける
 
 ### 成果物の最小要件
+
 - 目的・前提・判断根拠・次のアクションが明記されている
 - 主要テンプレート: `assets/conditional-workflow.yaml`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `assets/conditional-workflow.yaml`: このレベルでは参照のみ
 
 ## 実践手順

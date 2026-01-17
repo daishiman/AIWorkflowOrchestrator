@@ -27,6 +27,7 @@ export default defineConfig({
     "src/services/logging/types.ts",
     "src/services/logging/conversion-logger.ts",
     "src/slide/index.ts",
+    "src/claude-cli/index.ts",
     "utils/index.ts",
   ],
   format: ["esm"],

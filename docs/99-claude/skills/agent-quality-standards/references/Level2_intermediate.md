@@ -14,26 +14,32 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Quality Metrics / 品質の5つのカテゴリ / 1. 構造品質（Structural Quality） / タスク実行仕様書生成ガイド / Claude Code 3層アーキテクチャ設計仕様書 / Agent Quality Standards
 - 実務指針: エージェントの完了条件を設計する時 / 品質メトリクスを定義する時 / エラーハンドリング戦略を設計する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/quality-metrics.md`: Quality Metrics（把握する知識: Quality Metrics / 品質の5つのカテゴリ / 1. 構造品質（Structural Quality））
 - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: タスク実行仕様書生成ガイド / Claude Code 3層アーキテクチャ設計仕様書）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Agent Quality Standards / リソース構造 / すべきこと）
 
 ### スクリプト運用
+
 - `scripts/calculate-quality-score.mjs`: calculate-quality-score.mjs
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/quality-checklist-template.md`: Quality Checklist Template
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

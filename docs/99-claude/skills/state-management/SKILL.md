@@ -82,12 +82,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| sm-001-requirements-analysis | Phase 1開始時 | 機能一覧、状態の例 | 状態整理表 |
-| sm-002-library-selection | Phase 2開始時 | 状態整理表、技術スタック | 選定レポート |
-| sm-003-state-architecture | Phase 3開始時 | 状態整理表、選定レポート | 状態構造設計書 |
-| sm-004-validation-and-debugging | Phase 4開始時 | 状態構造設計書、API仕様 | 非同期・検証計画 |
+| Task                            | 起動タイミング | 入力                     | 出力             |
+| ------------------------------- | -------------- | ------------------------ | ---------------- |
+| sm-001-requirements-analysis    | Phase 1開始時  | 機能一覧、状態の例       | 状態整理表       |
+| sm-002-library-selection        | Phase 2開始時  | 状態整理表、技術スタック | 選定レポート     |
+| sm-003-state-architecture       | Phase 3開始時  | 状態整理表、選定レポート | 状態構造設計書   |
+| sm-004-validation-and-debugging | Phase 4開始時  | 状態構造設計書、API仕様  | 非同期・検証計画 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 **注記**: Task名は目的に合わせて定義する
@@ -98,21 +98,21 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 状態のスコープを明確化する | 責務分離と保守性が高まる |
-| 派生状態は計算で済ませる | 重複と不整合を防げる |
+| 推奨事項                     | 理由                                |
+| ---------------------------- | ----------------------------------- |
+| 状態のスコープを明確化する   | 責務分離と保守性が高まる            |
+| 派生状態は計算で済ませる     | 重複と不整合を防げる                |
 | 非同期状態はstatusで管理する | ローディング/失敗の判断が容易になる |
-| 選定理由を文書化する | チーム合意と運用が安定する |
+| 選定理由を文書化する         | チーム合意と運用が安定する          |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項                     | 問題点                               |
+| ---------------------------- | ------------------------------------ |
 | すべてをグローバル状態化する | 影響範囲が広がりデバッグが困難になる |
-| 状態の重複管理 | データ不整合を生む |
-| 非同期状態の失敗を放置する | UI劣化と障害調査の難化につながる |
-| 選定理由の欠落 | チーム内の方針がぶれる |
+| 状態の重複管理               | データ不整合を生む                   |
+| 非同期状態の失敗を放置する   | UI劣化と障害調査の難化につながる     |
+| 選定理由の欠落               | チーム内の方針がぶれる               |
 
 ---
 
@@ -120,27 +120,27 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
+| スクリプト                   | 機能             |
+| ---------------------------- | ---------------- |
 | `scripts/validate-skill.mjs` | スキル構造の検証 |
-| `scripts/log_usage.mjs` | 使用記録の保存 |
+| `scripts/log_usage.mjs`      | 使用記録の保存   |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| 状態基礎 | [references/foundations.md](references/foundations.md) | 状態整理の開始時 |
-| ライブラリ選定 | [references/library-selection.md](references/library-selection.md) | 選定基準整理時 |
-| 状態構造設計 | [references/state-architecture.md](references/state-architecture.md) | スキーマ設計時 |
-| 非同期状態 | [references/async-state.md](references/async-state.md) | 非同期設計時 |
-| テストとデバッグ | [references/testing-debugging.md](references/testing-debugging.md) | 検証計画時 |
+| リソース         | パス                                                                 | 読込条件         |
+| ---------------- | -------------------------------------------------------------------- | ---------------- |
+| 状態基礎         | [references/foundations.md](references/foundations.md)               | 状態整理の開始時 |
+| ライブラリ選定   | [references/library-selection.md](references/library-selection.md)   | 選定基準整理時   |
+| 状態構造設計     | [references/state-architecture.md](references/state-architecture.md) | スキーマ設計時   |
+| 非同期状態       | [references/async-state.md](references/async-state.md)               | 非同期設計時     |
+| テストとデバッグ | [references/testing-debugging.md](references/testing-debugging.md)   | 検証計画時       |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/state-structure-template.ts` | 状態スキーマ雛形 |
-| `assets/store-setup-template.ts` | ストア初期化雛形 |
-| `assets/async-state-template.ts` | 非同期状態雛形 |
-| `assets/state-test-template.ts` | テスト雛形 |
-| `assets/documentation-template.md` | 設計判断の記録テンプレート |
+| アセット                             | 用途                       |
+| ------------------------------------ | -------------------------- |
+| `assets/state-structure-template.ts` | 状態スキーマ雛形           |
+| `assets/store-setup-template.ts`     | ストア初期化雛形           |
+| `assets/async-state-template.ts`     | 非同期状態雛形             |
+| `assets/state-test-template.ts`      | テスト雛形                 |
+| `assets/documentation-template.md`   | 設計判断の記録テンプレート |

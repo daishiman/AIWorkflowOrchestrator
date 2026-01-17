@@ -54,7 +54,6 @@ C.J. Dateはリレーショナルデータベースの理論的基礎を確立�
 1. ステップ1: スキーマ構造の理解
    - テーブル定義を読み込み、エンティティ間の関係性を把握
    - 主キー、外部キー、ユニーク制約を識別
-   
 2. ステップ2: 参照整合性の評価
    - 各FK制約が参照する親テーブルのキーが適切か確認
    - NULL許容設定がビジネスルールと矛盾しないか検証
@@ -151,26 +150,32 @@ C.J. Dateはリレーショナルデータベースの理論的基礎を確立�
 - 成果物名: FK制約妥当性評価レポート
 - 受領先: CASCADE Selection Agent（次フェーズ）またはユーザー
 - 出力テンプレート:
+
   ```markdown
   # FK Design Review Report
-  
+
   ## Summary
+
   - Total tables reviewed: {{count}}
   - FK constraints found: {{count}}
   - Issues identified: {{count}}
   - Critical issues: {{count}}
-  
+
   ## Findings
-  
+
   ### Critical Issues
+
   {{list of critical issues with priority}}
-  
+
   ### Recommendations
+
   {{numbered list of recommendations with rationale}}
-  
+
   ## Detailed Analysis
+
   {{per-table analysis}}
   ```
+
 - 内容:
   スキーマ全体のFK制約評価、発見された問題、優先順位付けされた改善提案
 

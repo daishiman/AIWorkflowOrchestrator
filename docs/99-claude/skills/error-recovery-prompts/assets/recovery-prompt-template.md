@@ -72,13 +72,13 @@
 
 ## カスタマイズ変数
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{service-name}}` | サービス名 | "データベース" |
-| `{{error-code}}` | エラーコード | "NET-001" |
-| `{{field-name}}` | フィールド名 | "メールアドレス" |
-| `{{error-message}}` | 具体的なエラー | "形式が正しくありません" |
-| `{{example}}` | 正しい入力例 | "user@example.com" |
-| `{{recovery-time}}` | 復旧予定時刻 | "15:00頃" |
-| `{{permission-name}}` | 必要な権限 | "編集権限" |
-| `{{admin-contact}}` | 管理者連絡先 | "admin@company.com" |
+| 変数                  | 説明           | 例                       |
+| --------------------- | -------------- | ------------------------ |
+| `{{service-name}}`    | サービス名     | "データベース"           |
+| `{{error-code}}`      | エラーコード   | "NET-001"                |
+| `{{field-name}}`      | フィールド名   | "メールアドレス"         |
+| `{{error-message}}`   | 具体的なエラー | "形式が正しくありません" |
+| `{{example}}`         | 正しい入力例   | "user@example.com"       |
+| `{{recovery-time}}`   | 復旧予定時刻   | "15:00頃"                |
+| `{{permission-name}}` | 必要な権限     | "編集権限"               |
+| `{{admin-contact}}`   | 管理者連絡先   | "admin@company.com"      |

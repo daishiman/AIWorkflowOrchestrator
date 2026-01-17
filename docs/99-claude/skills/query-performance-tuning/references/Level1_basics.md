@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling query performance tuning tasks.
 
 ### 必要な知識
+
 - 対象領域: SQLiteクエリパフォーマンス最適化の専門スキル。 EXPLAIN QUERY PLAN分析、インデックス戦略、クエリリライト、 実行計画の読み解きを通じて、データベースパフォーマンスを向上させます。
 - 主要概念: EXPLAIN QUERY PLANガイド / 基本構文 / オプション一覧 / インデックス戦略ガイド / インデックスの基本
 - 実務指針: クエリが遅いと報告された時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: 実行計画を分析する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/performance-report-template.md`
 
 ### 参照書籍
+
 - 『High Performance Browser Networking』（Ilya Grigorik）: パフォーマンス測定
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/performance-report-template.md`: このレベルでは参照のみ
 
 ## 実践手順

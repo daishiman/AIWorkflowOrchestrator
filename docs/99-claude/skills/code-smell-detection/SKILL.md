@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # code-smell-detection
 
 ## 概要
@@ -66,11 +67,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-smell-scope | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、参照一覧 |
-| design-smell-remediation | Phase 2開始時 | 検出結果 | 優先度付きスメル一覧、改善方針 |
-| validate-smell-report | Phase 3開始時 | レポート草案 | 確定レポート、ログ更新内容 |
+| Task                     | 起動タイミング | 入力                | 出力                           |
+| ------------------------ | -------------- | ------------------- | ------------------------------ |
+| analyze-smell-scope      | Phase 1開始時  | 対象コード/検出対象 | 対象範囲メモ、参照一覧         |
+| design-smell-remediation | Phase 2開始時  | 検出結果            | 優先度付きスメル一覧、改善方針 |
+| validate-smell-report    | Phase 3開始時  | レポート草案        | 確定レポート、ログ更新内容     |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -78,59 +79,59 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| スメル定義を統一して検出する | 判定ブレを防ぐため |
-| 改善優先度を明記する | 対応順が明確になる |
-| レポートを更新する | 改善活動の継続に必要 |
+| 推奨事項                     | 理由                 |
+| ---------------------------- | -------------------- |
+| スメル定義を統一して検出する | 判定ブレを防ぐため   |
+| 改善優先度を明記する         | 対応順が明確になる   |
+| レポートを更新する           | 改善活動の継続に必要 |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| スメルの定義を曖昧にする | 誤検出が増える |
-| 影響度を評価しない | 重要度が判断できない |
-| レポートなしで改善する | 追跡が困難になる |
+| 禁止事項                 | 問題点               |
+| ------------------------ | -------------------- |
+| スメルの定義を曖昧にする | 誤検出が増える       |
+| 影響度を評価しない       | 重要度が判断できない |
+| レポートなしで改善する   | 追跡が困難になる     |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/detect-code-smells.mjs` | コードスメル検出 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                       | 機能                         |
+| -------------------------------- | ---------------------------- |
+| `scripts/detect-code-smells.mjs` | コードスメル検出             |
+| `scripts/log_usage.mjs`          | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs`     | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出準備時 |
-| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細分析時 |
-| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| リソース                     | パス                                                                               | 読込条件         |
+| ---------------------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| Level1 基礎                  | [references/Level1_basics.md](references/Level1_basics.md)                         | 初回整理時       |
+| Level2 実務                  | [references/Level2_intermediate.md](references/Level2_intermediate.md)             | 検出準備時       |
+| Level3 応用                  | [references/Level3_advanced.md](references/Level3_advanced.md)                     | 詳細分析時       |
+| Level4 専門                  | [references/Level4_expert.md](references/Level4_expert.md)                         | 改善ループ時     |
 | アーキテクチャアンチパターン | [references/architecture-antipatterns.md](references/architecture-antipatterns.md) | 構造問題の分析時 |
-| クラススメル | [references/class-smells.md](references/class-smells.md) | クラス分析時 |
-| メソッドスメル | [references/method-smells.md](references/method-smells.md) | メソッド分析時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| クラススメル                 | [references/class-smells.md](references/class-smells.md)                           | クラス分析時     |
+| メソッドスメル               | [references/method-smells.md](references/method-smells.md)                         | メソッド分析時   |
+| 旧スキル                     | [references/legacy-skill.md](references/legacy-skill.md)                           | 互換確認時       |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                      | 用途               |
+| ----------------------------- | ------------------ |
 | `assets/code-smell-report.md` | スメル検出レポート |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
+| ファイル     | 目的                       |
+| ------------ | -------------------------- |
 | `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
+| `LOGS.md`    | 実行ログの蓄積             |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                       |
-| ------- | ---------- | --------------------------------------------- |
-| 1.1.0   | 2026-01-06 | class-smells.mdにGod Component検出事例追加    |
-| 1.0.0   | 2025-12-31 | 初版作成                                      |
+| Version | Date       | Changes                                    |
+| ------- | ---------- | ------------------------------------------ |
+| 1.1.0   | 2026-01-06 | class-smells.mdにGod Component検出事例追加 |
+| 1.0.0   | 2025-12-31 | 初版作成                                   |

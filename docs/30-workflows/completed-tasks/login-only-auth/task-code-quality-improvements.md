@@ -350,12 +350,12 @@ apps/desktop/src/renderer/components/AuthGuard/
 
 ### 6.1 検証項目
 
-| 項目               | 検証方法             | 担当エージェント |
-| ------------------ | -------------------- | ---------------- |
-| JSDoc品質          | コードレビュー       | .claude/agents/code-quality.md    |
-| Error Boundary動作 | 単体テスト           | .claude/agents/unit-tester.md     |
-| 型安全性           | TypeScript厳密モード | .claude/agents/code-quality.md    |
-| エラーメッセージ   | UIレビュー           | .claude/agents/ui-designer.md     |
+| 項目               | 検証方法             | 担当エージェント               |
+| ------------------ | -------------------- | ------------------------------ |
+| JSDoc品質          | コードレビュー       | .claude/agents/code-quality.md |
+| Error Boundary動作 | 単体テスト           | .claude/agents/unit-tester.md  |
+| 型安全性           | TypeScript厳密モード | .claude/agents/code-quality.md |
+| エラーメッセージ   | UIレビュー           | .claude/agents/ui-designer.md  |
 
 ### 6.2 コード品質レビュー
 

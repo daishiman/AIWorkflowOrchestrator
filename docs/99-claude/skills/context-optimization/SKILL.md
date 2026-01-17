@@ -19,6 +19,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # context-optimization
 
 ## 概要
@@ -77,12 +78,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-context-requirements | Phase 1開始時 | 目的/制約 | 要件整理メモ、優先順位一覧 |
-| design-context-strategy | Phase 2開始時 | 要件整理メモ | 最適化戦略書、出力指針 |
-| implement-context-compression | Phase 3開始時 | 最適化戦略書 | 圧縮サマリ、重要情報一覧 |
-| validate-context-usage | Phase 4開始時 | 圧縮サマリ | 検証レポート、ログ更新内容 |
+| Task                          | 起動タイミング | 入力         | 出力                       |
+| ----------------------------- | -------------- | ------------ | -------------------------- |
+| analyze-context-requirements  | Phase 1開始時  | 目的/制約    | 要件整理メモ、優先順位一覧 |
+| design-context-strategy       | Phase 2開始時  | 要件整理メモ | 最適化戦略書、出力指針     |
+| implement-context-compression | Phase 3開始時  | 最適化戦略書 | 圧縮サマリ、重要情報一覧   |
+| validate-context-usage        | Phase 4開始時  | 圧縮サマリ   | 検証レポート、ログ更新内容 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -90,57 +91,57 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 優先順位を明文化する | 必須情報を守るため |
-| 参照順序を設計する | 遅延読み込みを活かすため |
-| 圧縮ルールを統一する | 再現性を高めるため |
-| テンプレートを参照する | 出力の一貫性を保つため |
+| 推奨事項               | 理由                     |
+| ---------------------- | ------------------------ |
+| 優先順位を明文化する   | 必須情報を守るため       |
+| 参照順序を設計する     | 遅延読み込みを活かすため |
+| 圧縮ルールを統一する   | 再現性を高めるため       |
+| テンプレートを参照する | 出力の一貫性を保つため   |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項               | 問題点               |
+| ---------------------- | -------------------- |
 | 全文を無条件に読み込む | トークン消費が増える |
-| 省略理由を記載しない | 判断根拠が失われる |
-| 検証なしで更新する | 効果が確認できない |
+| 省略理由を記載しない   | 判断根拠が失われる   |
+| 検証なしで更新する     | 効果が確認できない   |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/estimate-tokens.mjs` | トークン見積もり |
-| `scripts/estimate-tokens.sh` | 簡易見積もり |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                    | 機能                         |
+| ----------------------------- | ---------------------------- |
+| `scripts/estimate-tokens.mjs` | トークン見積もり             |
+| `scripts/estimate-tokens.sh`  | 簡易見積もり                 |
+| `scripts/validate-skill.mjs`  | スキル構造の検証             |
+| `scripts/log_usage.mjs`       | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
-| 圧縮テクニック | [references/compression-techniques.md](references/compression-techniques.md) | 圧縮時 |
-| インデックス設計 | [references/index-driven-design.md](references/index-driven-design.md) | 参照設計時 |
-| 遅延読み込み | [references/lazy-loading-patterns.md](references/lazy-loading-patterns.md) | 省略方針検討時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
-| 仕様概要 | [references/18-skills-spec-summary.md](references/18-skills-spec-summary.md) | 仕様確認時 |
-| 構造ガイド | [references/skill-structure-guide.md](references/skill-structure-guide.md) | 構造確認時 |
+| リソース         | パス                                                                         | 読込条件       |
+| ---------------- | ---------------------------------------------------------------------------- | -------------- |
+| レベル1 基礎     | [references/Level1_basics.md](references/Level1_basics.md)                   | 初回整理時     |
+| レベル2 実務     | [references/Level2_intermediate.md](references/Level2_intermediate.md)       | 設計時         |
+| レベル3 応用     | [references/Level3_advanced.md](references/Level3_advanced.md)               | 詳細設計時     |
+| レベル4 専門     | [references/Level4_expert.md](references/Level4_expert.md)                   | 改善ループ時   |
+| 圧縮テクニック   | [references/compression-techniques.md](references/compression-techniques.md) | 圧縮時         |
+| インデックス設計 | [references/index-driven-design.md](references/index-driven-design.md)       | 参照設計時     |
+| 遅延読み込み     | [references/lazy-loading-patterns.md](references/lazy-loading-patterns.md)   | 省略方針検討時 |
+| 旧スキル         | [references/legacy-skill.md](references/legacy-skill.md)                     | 互換確認時     |
+| 仕様概要         | [references/18-skills-spec-summary.md](references/18-skills-spec-summary.md) | 仕様確認時     |
+| 構造ガイド       | [references/skill-structure-guide.md](references/skill-structure-guide.md)   | 構造確認時     |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                             | 用途                         |
+| ------------------------------------ | ---------------------------- |
 | `assets/context-summary-template.md` | コンテキスト整理テンプレート |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

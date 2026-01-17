@@ -12,17 +12,21 @@ Progressive Disclosure とトークン最適化を意識し、必要な情報だ
 ## 詳細ガイド
 
 ### Progressive Disclosure 設計
+
 - まずレベル1/2で要点を確認し、必要に応じて詳細参照へ拡張する
 - 説明量が過剰な場合は要約を作り、必要箇所のみ参照する
 
 ### トークン最適化
+
 - 目的に直結しない情報は後回しにする
 - 参照回数が多い資料は要点メモを作成して再利用する
 
 ### 判断基準
+
 - 検証が必要な場合は参照系スクリプトを優先する
 
 ### スクリプト分類
+
 - 参照系: `scripts/validate-skill.mjs`
 - 実行系: `scripts/calculate-risk-score.mjs`, `scripts/log_usage.mjs`
 

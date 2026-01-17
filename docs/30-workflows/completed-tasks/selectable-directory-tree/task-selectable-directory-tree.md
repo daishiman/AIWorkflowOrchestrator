@@ -24,7 +24,7 @@
 | 発見元           | Phase 1: 設計（file-selector-integration） |
 | 発見日           | 2025-12-16                                 |
 | 更新日           | 2025-12-18                                 |
-| 発見エージェント | .claude/agents/arch-police.md                               |
+| 発見エージェント | .claude/agents/arch-police.md              |
 
 ---
 
@@ -164,8 +164,8 @@ WorkspaceFileSelectorはファイル個別選択が可能だが、フォルダ�
 
 #### 活用スキル
 
-| スキル名                               | 活用方法                                           |
-| -------------------------------------- | -------------------------------------------------- |
+| スキル名                                                       | 活用方法                                           |
+| -------------------------------------------------------------- | -------------------------------------------------- |
 | .claude/skills/requirements-engineering/SKILL.md               | 機能要件・非機能要件の構造化定義、MoSCoW優先度付け |
 | .claude/skills/acceptance-criteria-writing/SKILL.md            | Given-When-Then形式での受け入れ基準明確化          |
 | .claude/skills/functional-non-functional-requirements/SKILL.md | FR/NFR分類、測定可能な目標定義                     |
@@ -227,8 +227,8 @@ toggleFolder関数とgetSelectionState関数のアルゴリズムを設計し、
 
 #### 活用スキル
 
-| スキル名                      | 活用方法                                     |
-| ----------------------------- | -------------------------------------------- |
+| スキル名                                              | 活用方法                                     |
+| ----------------------------------------------------- | -------------------------------------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | 依存関係ルール遵守、レイヤー構造の適切な配置 |
 | .claude/skills/refactoring-techniques/SKILL.md        | 既存コードとの統合、重複排除                 |
 | .claude/skills/solid-principles/SKILL.md              | SRP（単一責務原則）に基づいた関数設計        |
@@ -288,8 +288,8 @@ toggleFolder関数とgetSelectionState関数のアルゴリズムを設計し、
 
 #### 活用スキル
 
-| スキル名                   | 活用方法                                          |
-| -------------------------- | ------------------------------------------------- |
+| スキル名                                           | 活用方法                                          |
+| -------------------------------------------------- | ------------------------------------------------- |
 | .claude/skills/accessibility-wcag/SKILL.md         | WCAG 2.1 AA準拠、ARIAパターン、キーボード操作対応 |
 | .claude/skills/apple-hig-guidelines/SKILL.md       | macOS HIG準拠のチェックボックスデザイン           |
 | .claude/skills/design-system-architecture/SKILL.md | デザイントークン活用、一貫性のある視覚表現        |
@@ -331,8 +331,8 @@ toggleFolder関数とgetSelectionState関数のアルゴリズムを設計し、
 
 #### レビュー参加エージェント
 
-| エージェント | レビュー観点         | 選定理由                                                         |
-| ------------ | -------------------- | ---------------------------------------------------------------- |
+| エージェント                  | レビュー観点         | 選定理由                                                         |
+| ----------------------------- | -------------------- | ---------------------------------------------------------------- |
 | .claude/agents/req-analyst.md | 要件充足性           | 要件が明確かつ検証可能か、スコープが適切に定義されているか       |
 | .claude/agents/arch-police.md | アーキテクチャ整合性 | 既存useWorkspaceFileSelectionとの依存関係、レイヤー違反の有無    |
 | .claude/agents/ui-designer.md | UI/UX設計            | アクセシビリティ考慮、デザインシステムとの整合性、ユーザビリティ |
@@ -423,8 +423,8 @@ toggleFolder関数のテストケース作成（一括選択・一括解除・�
 
 #### 活用スキル
 
-| スキル名                | 活用方法                                                     |
-| ----------------------- | ------------------------------------------------------------ |
+| スキル名                                        | 活用方法                                                     |
+| ----------------------------------------------- | ------------------------------------------------------------ |
 | .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクル、テストファースト                 |
 | .claude/skills/boundary-value-analysis/SKILL.md | エッジケース網羅（空フォルダ、ネストフォルダ、大量ファイル） |
 | .claude/skills/test-doubles/SKILL.md            | モック・スタブの適切な使い分け                               |
@@ -492,8 +492,8 @@ getSelectionState関数のテストケース作成（3つの選択状態の判�
 
 #### 活用スキル
 
-| スキル名                | 活用方法                                             |
-| ----------------------- | ---------------------------------------------------- |
+| スキル名                                        | 活用方法                                             |
+| ----------------------------------------------- | ---------------------------------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | テストファースト、小さなステップでの実装             |
 | .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト（0ファイル、1ファイル、全ファイル選択） |
 | .claude/skills/test-naming-conventions/SKILL.md | Should形式での明確なテスト名                         |
@@ -563,8 +563,8 @@ toggleFolder関数とgetAllFilesInFolderヘルパー関数の実装。
 
 #### 活用スキル
 
-| スキル名               | 活用方法                                  |
-| ---------------------- | ----------------------------------------- |
+| スキル名                                       | 活用方法                                  |
+| ---------------------------------------------- | ----------------------------------------- |
 | .claude/skills/tdd-red-green-refactor/SKILL.md | Greenフェーズの実装、最小限のコードで実装 |
 | .claude/skills/clean-code-practices/SKILL.md   | 意味のある命名、小さな関数、DRY原則       |
 | .claude/skills/react-hooks-advanced/SKILL.md   | useCallbackの適切な使用、依存配列の管理   |
@@ -632,8 +632,8 @@ getSelectionState関数の実装。
 
 #### 活用スキル
 
-| スキル名               | 活用方法                           |
-| ---------------------- | ---------------------------------- |
+| スキル名                                       | 活用方法                           |
+| ---------------------------------------------- | ---------------------------------- |
 | .claude/skills/tdd-red-green-refactor/SKILL.md | Greenフェーズの実装                |
 | .claude/skills/clean-code-practices/SKILL.md   | 早期リターン、可読性の高い条件分岐 |
 | .claude/skills/react-hooks-advanced/SKILL.md   | useCallbackの依存配列最適化        |
@@ -701,8 +701,8 @@ SelectableFileTreeItemコンポーネントにindeterminate状態のチェック
 
 #### 活用スキル
 
-| スキル名             | 活用方法                                   |
-| -------------------- | ------------------------------------------ |
+| スキル名                                     | 活用方法                                   |
+| -------------------------------------------- | ------------------------------------------ |
 | .claude/skills/accessibility-wcag/SKILL.md   | ARIA属性（aria-checked="mixed"）の実装     |
 | .claude/skills/react-hooks-advanced/SKILL.md | useRefによるDOM操作、useEffectの適切な使用 |
 | .claude/skills/apple-hig-guidelines/SKILL.md | macOS HIG準拠のチェックボックスデザイン    |
@@ -773,8 +773,8 @@ TDDのRefactorフェーズとして、テストが通っている状態でコー
 
 #### 活用スキル
 
-| スキル名                       | 活用方法                                     |
-| ------------------------------ | -------------------------------------------- |
+| スキル名                                               | 活用方法                                     |
+| ------------------------------------------------------ | -------------------------------------------- |
 | .claude/skills/refactoring-techniques/SKILL.md         | Extract Method、変数名改善、Magic Number排除 |
 | .claude/skills/clean-code-practices/SKILL.md           | 意味のある命名、関数の単一責務化             |
 | .claude/skills/performance-optimization-react/SKILL.md | setState呼び出し最適化、メモ化の確認         |
@@ -844,8 +844,8 @@ pnpm --filter @repo/desktop test:run WorkspaceFileSelector
 
 #### 活用スキル
 
-| スキル名             | 活用方法                                   |
-| -------------------- | ------------------------------------------ |
+| スキル名                                     | 活用方法                                   |
+| -------------------------------------------- | ------------------------------------------ |
 | .claude/skills/vitest-advanced/SKILL.md      | カバレッジレポート分析、未カバー箇所の特定 |
 | .claude/skills/eslint-configuration/SKILL.md | Lintルール遵守確認                         |
 | .claude/skills/static-analysis/SKILL.md      | コード品質メトリクス測定                   |
@@ -914,8 +914,8 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 #### レビュー参加エージェント
 
-| エージェント  | レビュー観点       | 選定理由                                                       |
-| ------------- | ------------------ | -------------------------------------------------------------- |
+| エージェント                   | レビュー観点       | 選定理由                                                       |
+| ------------------------------ | ------------------ | -------------------------------------------------------------- |
 | .claude/agents/code-quality.md | コード品質         | コーディング規約準拠、可読性・保守性、エラーハンドリング適切性 |
 | .claude/agents/arch-police.md  | アーキテクチャ遵守 | クリーンアーキテクチャ遵守、SOLID原則準拠                      |
 | .claude/agents/unit-tester.md  | テスト品質         | テストカバレッジ十分性、境界値テスト網羅、テスト可読性         |

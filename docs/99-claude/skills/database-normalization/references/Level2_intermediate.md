@@ -14,28 +14,34 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 正規形の階層構造 / 定義 / 違反パターンと解決策 / アーキテクチャ設計 / データベース設計（Turso + Drizzle ORM） / 核心概念
 - 実務指針: 新規テーブル設計時の正規化レベル決定 / 既存スキーマの正規化レベル評価 / パフォーマンス問題の原因が正規化レベルにある可能性がある場合
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/normalization-levels-detail.md`: normalization-levels-detail の詳細ガイド（把握する知識: 正規形の階層構造 / 定義 / 違反パターンと解決策）
 - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: アーキテクチャ設計 / データベース設計（Turso + Drizzle ORM））
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: 核心概念 / 正規化の目的 / 正規化の段階）
 
 ### スクリプト運用
+
 - `scripts/analyze-normalization.mjs`: normalizationを分析するスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### アセット運用
+
 - `assets/normalization-assessment-template.md`: 要件整理テンプレート
 - `assets/denormalization-decision-template.md`: 非正規化判断テンプレート
 - `assets/normalization-review-checklist.md`: 検証チェックリスト
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

@@ -38,11 +38,11 @@ CLOSED (正常) → [失敗閾値超過] → OPEN (遮断)
 
 ## 推奨設定
 
-| パラメータ | 値 | 説明 |
-|-----------|-----|------|
-| failureThreshold | 5 | OPEN移行までの失敗回数 |
-| resetTimeoutMs | 60000 | HALF_OPEN移行までの待機時間 |
-| successThreshold | 2 | CLOSED移行までの成功回数 |
+| パラメータ       | 値    | 説明                        |
+| ---------------- | ----- | --------------------------- |
+| failureThreshold | 5     | OPEN移行までの失敗回数      |
+| resetTimeoutMs   | 60000 | HALF_OPEN移行までの待機時間 |
+| successThreshold | 2     | CLOSED移行までの成功回数    |
 
 ## フォールバック戦略
 

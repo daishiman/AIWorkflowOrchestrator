@@ -15,14 +15,14 @@ docs/30-workflows/unassigned-task/{{ファイル名}}.md
 
 ## ファイル命名規則
 
-| タスク種別       | 命名パターン                           | 例                                  |
-| ---------------- | -------------------------------------- | ----------------------------------- |
-| 要件系           | `requirements-{{FEATURE_AREA}}.md`     | `requirements-auth-improvements.md` |
-| 改善系           | `task-{{IMPROVEMENT_AREA}}-improvements.md` | `task-ui-improvements.md`      |
-| バグ修正         | `task-{{FEATURE_NAME}}-bugfix.md`      | `task-auth-session-bugfix.md`       |
-| リファクタリング | `task-{{TARGET}}-refactoring.md`       | `task-api-layer-refactoring.md`     |
-| セキュリティ     | `task-{{TARGET}}-security.md`          | `task-auth-security.md`             |
-| パフォーマンス   | `task-{{TARGET}}-performance.md`       | `task-search-performance.md`        |
+| タスク種別       | 命名パターン                                | 例                                  |
+| ---------------- | ------------------------------------------- | ----------------------------------- |
+| 要件系           | `requirements-{{FEATURE_AREA}}.md`          | `requirements-auth-improvements.md` |
+| 改善系           | `task-{{IMPROVEMENT_AREA}}-improvements.md` | `task-ui-improvements.md`           |
+| バグ修正         | `task-{{FEATURE_NAME}}-bugfix.md`           | `task-auth-session-bugfix.md`       |
+| リファクタリング | `task-{{TARGET}}-refactoring.md`            | `task-api-layer-refactoring.md`     |
+| セキュリティ     | `task-{{TARGET}}-security.md`               | `task-auth-security.md`             |
+| パフォーマンス   | `task-{{TARGET}}-performance.md`            | `task-search-performance.md`        |
 
 ---
 
@@ -42,7 +42,7 @@ docs/30-workflows/unassigned-task/{{ファイル名}}.md
 | 優先度       | {{高/中/低}}                                                        |
 | 見積もり規模 | {{大規模/中規模/小規模}}                                            |
 | ステータス   | 未実施                                                              |
-| 発見元       | {{発見元フェーズ: Phase 10/Phase 11/Phase 12/その他}}                       |
+| 発見元       | {{発見元フェーズ: Phase 10/Phase 11/Phase 12/その他}}               |
 | 発見日       | {{YYYY-MM-DD}}                                                      |
 
 ---
@@ -119,14 +119,15 @@ docs/30-workflows/unassigned-task/{{ファイル名}}.md
 
 #### 使用スキル
 
-| スキル名 | パス | 選定理由 |
-|---------|------|---------|
+| スキル名       | パス                                     | 選定理由                       |
+| -------------- | ---------------------------------------- | ------------------------------ |
 | {{SKILL_NAME}} | `.claude/skills/{{SKILL_NAME}}/SKILL.md` | {{選定理由（Trigger/Anchor）}} |
 
 **実行方法**:
-
 ```
+
 各スキルのSKILL.mdを読み込み、スキルを参照して実行
+
 ```
 
 - **参照**: `.claude/skills/` 配下のスキル一覧, スキルリスト`.claude/skills/skill-list.md`

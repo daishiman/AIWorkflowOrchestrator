@@ -9,15 +9,15 @@
 
 ## 実装クラス一覧
 
-| 実装クラス         | サポートMIME                                      | 優先度 | 主要機能                             | 実装状況  |
-| ------------------ | ------------------------------------------------- | ------ | ------------------------------------ | --------- |
-| HTMLConverter      | text/html                                         | 10     | HTML→Markdown、script/style除去      | 実装済 |
-| MarkdownConverter  | text/markdown, text/x-markdown                    | 10     | 見出し・リンク・コードブロック抽出   | 実装済 |
-| CodeConverter      | text/x-typescript, text/javascript, text/x-python | 10     | 関数・クラス・インポート抽出         | 実装済 |
-| YAMLConverter      | application/x-yaml, text/yaml, text/x-yaml        | 10     | 構造解析、トップレベルキー抽出       | 実装済 |
-| CSVConverter       | text/csv, text/tab-separated-values               | 5      | CSV/TSV→テーブル、区切り文字自動検出 | 実装済 |
-| JSONConverter      | application/json                                  | 5      | JSON→構造化Markdown、ネスト対応      | 実装済 |
-| PlainTextConverter | text/plain                                        | 0      | BOM除去、改行コード正規化            | 未実装 |
+| 実装クラス         | サポートMIME                                      | 優先度 | 主要機能                             | 実装状況 |
+| ------------------ | ------------------------------------------------- | ------ | ------------------------------------ | -------- |
+| HTMLConverter      | text/html                                         | 10     | HTML→Markdown、script/style除去      | 実装済   |
+| MarkdownConverter  | text/markdown, text/x-markdown                    | 10     | 見出し・リンク・コードブロック抽出   | 実装済   |
+| CodeConverter      | text/x-typescript, text/javascript, text/x-python | 10     | 関数・クラス・インポート抽出         | 実装済   |
+| YAMLConverter      | application/x-yaml, text/yaml, text/x-yaml        | 10     | 構造解析、トップレベルキー抽出       | 実装済   |
+| CSVConverter       | text/csv, text/tab-separated-values               | 5      | CSV/TSV→テーブル、区切り文字自動検出 | 実装済   |
+| JSONConverter      | application/json                                  | 5      | JSON→構造化Markdown、ネスト対応      | 実装済   |
+| PlainTextConverter | text/plain                                        | 0      | BOM除去、改行コード正規化            | 未実装   |
 
 ---
 

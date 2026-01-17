@@ -26,7 +26,11 @@ interface UseFormResult<T> {
   touched: Partial<Record<keyof T, boolean>>;
   isSubmitting: boolean;
   isValid: boolean;
-  handleChange: (field: keyof T) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleChange: (
+    field: keyof T,
+  ) => (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => void;
   handleBlur: (field: keyof T) => () => void;
   handleSubmit: (e: FormEvent) => Promise<void>;
   setFieldValue: (field: keyof T, value: T[keyof T]) => void;
@@ -87,7 +91,11 @@ export function useForm<T extends Record<string, unknown>>(
 
   const handleChange = useCallback(
     (field: keyof T) =>
-      (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      (
+        e: ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >,
+      ) => {
         const value =
           e.target.type === "checkbox"
             ? (e.target as HTMLInputElement).checked

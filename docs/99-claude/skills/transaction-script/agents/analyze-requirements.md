@@ -152,11 +152,13 @@ Martin Fowlerは『Patterns of Enterprise Application Architecture (PofEAA)』�
 - 成果物名: 参照リソースリスト（任意）
 - 受領先: 実装者
 - 出力テンプレート:
+
   ```markdown
   ## 関連リソース
 
   - references/{{relevant-reference}}.md
   - assets/{{relevant-template}}.md
   ```
+
 - 内容:
   実装時に参照すべきリソースへのポインタ

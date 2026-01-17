@@ -14,12 +14,11 @@
 
 ```tsx
 // 推奨
-["users", "list", { status: "active" }]
-["user", userId]
+["users", "list", { status: "active" }][("user", userId)];
 
 // 非推奨
-"users-active"
-"user" + userId
+("users-active");
+"user" + userId;
 ```
 
 ## 運用指針

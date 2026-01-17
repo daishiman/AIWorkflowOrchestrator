@@ -162,6 +162,7 @@ Railwayプロジェクトの railway.json を設計し、ビルドプロセス�
 - 成果物名: 検証要件
 - 受領先: Railway Validator
 - 出力テンプレート:
+
   ```markdown
   ## Railway構成の検証項目
 
@@ -171,5 +172,6 @@ Railwayプロジェクトの railway.json を設計し、ビルドプロセス�
   - [ ] ヘルスチェックが正しく応答するか
   - [ ] Tursoデータベースに接続できるか
   ```
+
 - 内容:
   validate-env.mjs やデプロイ後の検証で確認すべき項目

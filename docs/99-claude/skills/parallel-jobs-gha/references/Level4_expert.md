@@ -14,6 +14,7 @@ GitHub Actionsの並列ジョブ実行とジョブ依存関係管理のスキル
 ## 詳細ガイド
 
 ### フィードバックループ
+
 - `EVALS.json`: 評価観点の定義
 - `CHANGELOG.md`: 変更履歴の記録
 - `LOGS.md`: 運用ログの蓄積
@@ -22,10 +23,12 @@ GitHub Actionsの並列ジョブ実行とジョブ依存関係管理のスキル
 - `scripts/visualize-deps.mjs`: ワークフロー内ジョブ依存関係をMermaid形式で可視化
 
 ### 改善に必要な知識
+
 - 評価結果とログを照合し、改善ポイントを特定する
 - 変更が必要な resources/・templates/・scripts/ を特定する
 
 ### 評価と記録
+
 - 実行結果を LOGS.md に残し、評価観点を EVALS.json に反映する
 
 ## 実践手順

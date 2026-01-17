@@ -43,15 +43,15 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ## Task仕様ナビ
 
-| Task               | 責務           | 起動タイミング                       | 入力         | 出力             |
-| ------------------ | -------------- | ------------------------------------ | ------------ | ---------------- |
-| search-spec        | 仕様検索       | 仕様確認が必要な時                   | キーワード   | ファイルパス一覧 |
-| browse-index       | 全体像把握     | 構造理解が必要な時                   | なし         | トピック構造     |
-| read-reference     | 仕様参照       | 詳細確認が必要な時                   | ファイルパス | 仕様内容         |
-| create-spec        | 新規作成       | 新機能追加時                         | 要件         | 新規仕様ファイル |
-| update-spec        | 既存更新       | 仕様変更時                           | 変更内容     | 更新済みファイル |
-| update-index       | インデックス化 | 見出し変更後                         | references/  | indexes/         |
-| validate-structure | 構造検証       | 週次/リリース前                      | 全体         | 検証レポート     |
+| Task               | 責務           | 起動タイミング     | 入力         | 出力             |
+| ------------------ | -------------- | ------------------ | ------------ | ---------------- |
+| search-spec        | 仕様検索       | 仕様確認が必要な時 | キーワード   | ファイルパス一覧 |
+| browse-index       | 全体像把握     | 構造理解が必要な時 | なし         | トピック構造     |
+| read-reference     | 仕様参照       | 詳細確認が必要な時 | ファイルパス | 仕様内容         |
+| create-spec        | 新規作成       | 新機能追加時       | 要件         | 新規仕様ファイル |
+| update-spec        | 既存更新       | 仕様変更時         | 変更内容     | 更新済みファイル |
+| update-index       | インデックス化 | 見出し変更後       | references/  | indexes/         |
+| validate-structure | 構造検証       | 週次/リリース前    | 全体         | 検証レポート     |
 
 ## リソース参照
 
@@ -76,13 +76,13 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ### scripts/
 
-| スクリプト               | 用途               | 使用例                                       |
-| ------------------------ | ------------------ | -------------------------------------------- |
-| `search-spec.mjs`        | キーワード検索     | `node scripts/search-spec.mjs "認証" -C 5`   |
-| `list-specs.mjs`         | ファイル一覧       | `node scripts/list-specs.mjs --topics`       |
-| `generate-index.mjs`     | インデックス再生成 | `node scripts/generate-index.mjs`            |
-| `validate-structure.mjs` | 構造検証           | `node scripts/validate-structure.mjs`        |
-| `log_usage.mjs`          | 使用状況記録       | `node scripts/log_usage.mjs --result success`|
+| スクリプト               | 用途               | 使用例                                        |
+| ------------------------ | ------------------ | --------------------------------------------- |
+| `search-spec.mjs`        | キーワード検索     | `node scripts/search-spec.mjs "認証" -C 5`    |
+| `list-specs.mjs`         | ファイル一覧       | `node scripts/list-specs.mjs --topics`        |
+| `generate-index.mjs`     | インデックス再生成 | `node scripts/generate-index.mjs`             |
+| `validate-structure.mjs` | 構造検証           | `node scripts/validate-structure.mjs`         |
+| `log_usage.mjs`          | 使用状況記録       | `node scripts/log_usage.mjs --result success` |
 
 ### agents/
 
@@ -113,10 +113,10 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ### 運用ファイル
 
-| ファイル      | 用途                                   |
-| ------------- | -------------------------------------- |
-| `EVALS.json`  | スキルレベル・メトリクス管理           |
-| `LOGS.md`     | 使用履歴・フィードバック記録           |
+| ファイル     | 用途                         |
+| ------------ | ---------------------------- |
+| `EVALS.json` | スキルレベル・メトリクス管理 |
+| `LOGS.md`    | 使用履歴・フィードバック記録 |
 
 ## ベストプラクティス
 
@@ -136,11 +136,11 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ## 変更履歴
 
-| Version | Date       | Changes                                              |
-| ------- | ---------- | ---------------------------------------------------- |
+| Version | Date       | Changes                                                                                                                               |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | 6.2.0   | 2026-01-10 | コミュニティ検出（Leiden）仕様追加: interfaces-rag-community-detection.md新規、interfaces-rag.md/architecture-rag.md/topic-map.md更新 |
-| 6.1.0   | 2026-01-06 | 500行超過ファイル分割（9ファイル→インデックス化）、70ファイル構成に拡張 |
-| 6.0.0   | 2026-01-06 | skill-creator準拠: agents/をTask仕様書テンプレート化、EVALS.json/LOGS.md/log_usage.mjs追加 |
-| 5.0.0   | 2026-01-04 | SKILL.md軽量化、詳細をindexes/references/へ分離      |
-| 4.0.0   | 2026-01-03 | kebab-case化、大ファイル分割、47ファイル構成         |
-| 3.0.0   | 2026-01-03 | 仕様正本化、検索中心に再設計                         |
+| 6.1.0   | 2026-01-06 | 500行超過ファイル分割（9ファイル→インデックス化）、70ファイル構成に拡張                                                               |
+| 6.0.0   | 2026-01-06 | skill-creator準拠: agents/をTask仕様書テンプレート化、EVALS.json/LOGS.md/log_usage.mjs追加                                            |
+| 5.0.0   | 2026-01-04 | SKILL.md軽量化、詳細をindexes/references/へ分離                                                                                       |
+| 4.0.0   | 2026-01-03 | kebab-case化、大ファイル分割、47ファイル構成                                                                                          |
+| 3.0.0   | 2026-01-03 | 仕様正本化、検索中心に再設計                                                                                                          |

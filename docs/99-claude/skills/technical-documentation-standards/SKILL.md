@@ -70,11 +70,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task             | 起動タイミング | 入力             | 出力                 |
-| ---------------- | -------------- | ---------------- | -------------------- |
-| define-standard  | Phase 1開始時  | 文書目的         | 文書標準定義         |
-| apply-template   | Phase 2開始時  | 文書標準定義     | 初期文書ドラフト     |
-| verify-document  | Phase 3開始時  | 初期文書ドラフト | 品質レビュー報告     |
+| Task            | 起動タイミング | 入力             | 出力             |
+| --------------- | -------------- | ---------------- | ---------------- |
+| define-standard | Phase 1開始時  | 文書目的         | 文書標準定義     |
+| apply-template  | Phase 2開始時  | 文書標準定義     | 初期文書ドラフト |
+| verify-document | Phase 3開始時  | 初期文書ドラフト | 品質レビュー報告 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -84,19 +84,19 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項                         | 理由                               |
-| -------------------------------- | ---------------------------------- |
-| 目的と対象読者を明確にする       | 文書の粒度が揃う                   |
-| テンプレートを使って構成を統一   | 品質のばらつきを抑える             |
-| DRY違反を定期的に検出する         | 保守性が高まる                     |
+| 推奨事項                       | 理由                   |
+| ------------------------------ | ---------------------- |
+| 目的と対象読者を明確にする     | 文書の粒度が揃う       |
+| テンプレートを使って構成を統一 | 品質のばらつきを抑える |
+| DRY違反を定期的に検出する      | 保守性が高まる         |
 
 ### 避けるべきこと
 
-| 禁止事項                     | 問題点                             |
-| ---------------------------- | ---------------------------------- |
-| 標準を定義せずに文書化する   | ばらつきが大きくなる               |
-| テンプレートを無視する       | 再利用性が低下する                 |
-| 検証を省略する               | 品質低下に気づきにくい             |
+| 禁止事項                   | 問題点                 |
+| -------------------------- | ---------------------- |
+| 標準を定義せずに文書化する | ばらつきが大きくなる   |
+| テンプレートを無視する     | 再利用性が低下する     |
+| 検証を省略する             | 品質低下に気づきにくい |
 
 ---
 
@@ -104,30 +104,29 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト                               | 機能                         |
-| ---------------------------------------- | ---------------------------- |
-| `scripts/validate-doc-structure.mjs`     | 文書構造を検証する           |
-| `scripts/check-dry-violations.mjs`       | DRY違反を検出する            |
-| `scripts/log_usage.mjs`                  | 使用記録をLOGS.mdに記録する  |
+| スクリプト                           | 機能                        |
+| ------------------------------------ | --------------------------- |
+| `scripts/validate-doc-structure.mjs` | 文書構造を検証する          |
+| `scripts/check-dry-violations.mjs`   | DRY違反を検出する           |
+| `scripts/log_usage.mjs`              | 使用記録をLOGS.mdに記録する |
 
 ### references/（詳細知識）
 
-| リソース            | パス                                                     | 読込条件     |
-| ------------------- | -------------------------------------------------------- | ------------ |
-| 基礎                | [references/Level1_basics.md](references/Level1_basics.md) | 初回利用時   |
-| 実務                | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実務適用時 |
-| 高度設計            | [references/Level3_advanced.md](references/Level3_advanced.md) | 品質改善時 |
-| エキスパート        | [references/Level4_expert.md](references/Level4_expert.md) | 組織適用時 |
-| IEEE 830概要        | [references/ieee-830-overview.md](references/ieee-830-overview.md) | Phase 1 |
-| Doc as Code         | [references/doc-as-code.md](references/doc-as-code.md) | Phase 2 |
-| DRY適用             | [references/dry-for-documentation.md](references/dry-for-documentation.md) | Phase 2 |
-| 明確性チェック      | [references/clarity-checklist.md](references/clarity-checklist.md) | Phase 3 |
-| 検証パターン        | [references/verification-patterns.md](references/verification-patterns.md) | Phase 3 |
+| リソース       | パス                                                                       | 読込条件   |
+| -------------- | -------------------------------------------------------------------------- | ---------- |
+| 基礎           | [references/Level1_basics.md](references/Level1_basics.md)                 | 初回利用時 |
+| 実務           | [references/Level2_intermediate.md](references/Level2_intermediate.md)     | 実務適用時 |
+| 高度設計       | [references/Level3_advanced.md](references/Level3_advanced.md)             | 品質改善時 |
+| エキスパート   | [references/Level4_expert.md](references/Level4_expert.md)                 | 組織適用時 |
+| IEEE 830概要   | [references/ieee-830-overview.md](references/ieee-830-overview.md)         | Phase 1    |
+| Doc as Code    | [references/doc-as-code.md](references/doc-as-code.md)                     | Phase 2    |
+| DRY適用        | [references/dry-for-documentation.md](references/dry-for-documentation.md) | Phase 2    |
+| 明確性チェック | [references/clarity-checklist.md](references/clarity-checklist.md)         | Phase 3    |
+| 検証パターン   | [references/verification-patterns.md](references/verification-patterns.md) | Phase 3    |
 
 ### assets/（テンプレート）
 
-| アセット                             | 用途                       |
-| ------------------------------------ | -------------------------- |
-| `assets/srs-template.md`             | SRS作成テンプレート        |
+| アセット                              | 用途                         |
+| ------------------------------------- | ---------------------------- |
+| `assets/srs-template.md`              | SRS作成テンプレート          |
 | `assets/document-review-checklist.md` | 文書レビューのチェックリスト |
-

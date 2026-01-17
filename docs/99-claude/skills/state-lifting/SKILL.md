@@ -145,20 +145,20 @@ analyze-requirements → design-state-placement → implement-lifting → evalua
 
 ### assets/（テンプレート）
 
-| アセット                         | 用途                           |
-| -------------------------------- | ------------------------------ |
-| `compound-component-template.md` | Compound Component概要・索引   |
-| `select-template.md`             | Selectコンポーネント           |
-| `accordion-template.md`          | アコーディオンコンポーネント   |
-| `tabs-template.md`               | タブコンポーネント             |
-| `modal-template.md`              | モーダルコンポーネント         |
-| `context-provider-template.md`   | Context Providerテンプレート   |
+| アセット                         | 用途                         |
+| -------------------------------- | ---------------------------- |
+| `compound-component-template.md` | Compound Component概要・索引 |
+| `select-template.md`             | Selectコンポーネント         |
+| `accordion-template.md`          | アコーディオンコンポーネント |
+| `tabs-template.md`               | タブコンポーネント           |
+| `modal-template.md`              | モーダルコンポーネント       |
+| `context-provider-template.md`   | Context Providerテンプレート |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                        |
-| ------- | ---------- | ---------------------------------------------- |
-| 2.2.0   | 2026-01-06 | compound-component-template分割、実装事例追加  |
-| 2.1.0   | 2026-01-03 | 18-skills.md仕様に完全準拠、構造整理           |
-| 2.0.0   | 2026-01-02 | ワークフロー再編                               |
-| 1.0.0   | 2025-12-28 | 初版作成                                       |
+| Version | Date       | Changes                                       |
+| ------- | ---------- | --------------------------------------------- |
+| 2.2.0   | 2026-01-06 | compound-component-template分割、実装事例追加 |
+| 2.1.0   | 2026-01-03 | 18-skills.md仕様に完全準拠、構造整理          |
+| 2.0.0   | 2026-01-02 | ワークフロー再編                              |
+| 1.0.0   | 2025-12-28 | 初版作成                                      |

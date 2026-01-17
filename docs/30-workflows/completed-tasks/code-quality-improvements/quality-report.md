@@ -90,8 +90,8 @@ Tests       1143 passed (1143)
 
 ### Phase 1.5: 設計レビューゲート
 
-| 観点                 | エージェント    | 結果 |
-| -------------------- | --------------- | ---- |
+| 観点                 | エージェント                     | 結果 |
+| -------------------- | -------------------------------- | ---- |
 | 要件充足性           | .claude/agents/req-analyst.md    | PASS |
 | アーキテクチャ整合性 | .claude/agents/arch-police.md    | PASS |
 | ドメインモデル妥当性 | .claude/agents/domain-modeler.md | PASS |
@@ -101,8 +101,8 @@ Tests       1143 passed (1143)
 
 ### Phase 5.5: 最終レビューゲート
 
-| 観点               | エージェント  | 結果 |
-| ------------------ | ------------- | ---- |
+| 観点               | エージェント                   | 結果 |
+| ------------------ | ------------------------------ | ---- |
 | コード品質         | .claude/agents/code-quality.md | PASS |
 | アーキテクチャ遵守 | .claude/agents/arch-police.md  | PASS |
 | テスト品質         | .claude/agents/unit-tester.md  | PASS |

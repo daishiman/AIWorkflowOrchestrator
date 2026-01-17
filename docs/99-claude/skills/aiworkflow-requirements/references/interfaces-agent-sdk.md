@@ -327,80 +327,80 @@ Agent Dashboard機能で使用する型定義。Claude Agent SDKとは独立し�
 
 スキルの基本情報を表す。
 
-| プロパティ    | 型         | 必須 | 説明                   |
-| ------------- | ---------- | ---- | ---------------------- |
-| `id`          | `string`   | ✓    | 一意識別子             |
-| `name`        | `string`   | ✓    | スキル名               |
-| `description` | `string`   | ✓    | 説明文                 |
-| `path`        | `string`   | ✓    | スキルファイルパス     |
-| `triggers`    | `string[]` | ✓    | トリガーキーワード     |
-| `category`    | `string`   | -    | カテゴリ（任意）       |
+| プロパティ    | 型         | 必須 | 説明               |
+| ------------- | ---------- | ---- | ------------------ |
+| `id`          | `string`   | ✓    | 一意識別子         |
+| `name`        | `string`   | ✓    | スキル名           |
+| `description` | `string`   | ✓    | 説明文             |
+| `path`        | `string`   | ✓    | スキルファイルパス |
+| `triggers`    | `string[]` | ✓    | トリガーキーワード |
+| `category`    | `string`   | -    | カテゴリ（任意）   |
 
 ### SkillDetail型
 
 スキルの詳細情報（Skillを継承）。
 
-| プロパティ      | 型         | 必須 | 説明                   |
-| --------------- | ---------- | ---- | ---------------------- |
-| `anchors`       | `Anchor[]` | ✓    | アンカー情報           |
-| `workflow`      | `string`   | -    | ワークフロー定義       |
-| `bestPractices` | `string[]` | -    | ベストプラクティス     |
+| プロパティ      | 型         | 必須 | 説明               |
+| --------------- | ---------- | ---- | ------------------ |
+| `anchors`       | `Anchor[]` | ✓    | アンカー情報       |
+| `workflow`      | `string`   | -    | ワークフロー定義   |
+| `bestPractices` | `string[]` | -    | ベストプラクティス |
 
 ### Anchor型
 
 スキルのアンカー情報（参照文献と適用方法）。
 
-| プロパティ    | 型       | 必須 | 説明               |
-| ------------- | -------- | ---- | ------------------ |
-| `source`      | `string` | ✓    | 参照元（書籍等）   |
-| `application` | `string` | ✓    | 適用方法           |
-| `purpose`     | `string` | ✓    | 目的               |
+| プロパティ    | 型       | 必須 | 説明             |
+| ------------- | -------- | ---- | ---------------- |
+| `source`      | `string` | ✓    | 参照元（書籍等） |
+| `application` | `string` | ✓    | 適用方法         |
+| `purpose`     | `string` | ✓    | 目的             |
 
 ### AgentExecutionStatus型
 
 エージェント実行状態を表す列挙型。
 
-| 値          | 説明                   |
-| ----------- | ---------------------- |
-| `idle`      | 待機中                 |
-| `executing` | 実行中                 |
-| `completed` | 完了                   |
-| `error`     | エラー                 |
-| `aborted`   | 中断                   |
+| 値          | 説明   |
+| ----------- | ------ |
+| `idle`      | 待機中 |
+| `executing` | 実行中 |
+| `completed` | 完了   |
+| `error`     | エラー |
+| `aborted`   | 中断   |
 
 ### AgentState型
 
 Zustand agentSliceの状態インターフェース。
 
-| プロパティ           | 型                      | 説明               |
-| -------------------- | ----------------------- | ------------------ |
-| `skills`             | `Skill[]`               | スキル一覧         |
-| `selectedSkill`      | `Skill \| null`         | 選択中のスキル     |
-| `skillFilter`        | `string`                | フィルター文字列   |
-| `skillCategory`      | `string \| null`        | カテゴリフィルター |
-| `executionStatus`    | `AgentExecutionStatus`  | 実行状態           |
-| `currentExecutionId` | `string \| null`        | 実行ID             |
-| `executionOutput`    | `string[]`              | 実行出力           |
-| `isLoading`          | `boolean`               | ローディング状態   |
-| `error`              | `string \| null`        | エラーメッセージ   |
+| プロパティ           | 型                     | 説明               |
+| -------------------- | ---------------------- | ------------------ |
+| `skills`             | `Skill[]`              | スキル一覧         |
+| `selectedSkill`      | `Skill \| null`        | 選択中のスキル     |
+| `skillFilter`        | `string`               | フィルター文字列   |
+| `skillCategory`      | `string \| null`       | カテゴリフィルター |
+| `executionStatus`    | `AgentExecutionStatus` | 実行状態           |
+| `currentExecutionId` | `string \| null`       | 実行ID             |
+| `executionOutput`    | `string[]`             | 実行出力           |
+| `isLoading`          | `boolean`              | ローディング状態   |
+| `error`              | `string \| null`       | エラーメッセージ   |
 
 ### AgentActions型
 
 Zustand agentSliceのアクションインターフェース。
 
-| アクション           | 引数                           | 説明             |
-| -------------------- | ------------------------------ | ---------------- |
-| `setSkills`          | `skills: Skill[]`              | スキル一覧設定   |
-| `selectSkill`        | `skill: Skill \| null`         | スキル選択       |
-| `setSkillFilter`     | `filter: string`               | フィルター設定   |
-| `setSkillCategory`   | `category: string \| null`     | カテゴリ設定     |
-| `setExecutionStatus` | `status: AgentExecutionStatus` | 実行状態設定     |
-| `setCurrentExecutionId` | `id: string \| null`        | 実行ID設定       |
-| `appendOutput`       | `output: string`               | 出力追加         |
-| `clearExecution`     | -                              | 実行クリア       |
-| `setLoading`         | `isLoading: boolean`           | ローディング設定 |
-| `setError`           | `error: string \| null`        | エラー設定       |
-| `resetAgentState`    | -                              | 状態リセット     |
+| アクション              | 引数                           | 説明             |
+| ----------------------- | ------------------------------ | ---------------- |
+| `setSkills`             | `skills: Skill[]`              | スキル一覧設定   |
+| `selectSkill`           | `skill: Skill \| null`         | スキル選択       |
+| `setSkillFilter`        | `filter: string`               | フィルター設定   |
+| `setSkillCategory`      | `category: string \| null`     | カテゴリ設定     |
+| `setExecutionStatus`    | `status: AgentExecutionStatus` | 実行状態設定     |
+| `setCurrentExecutionId` | `id: string \| null`           | 実行ID設定       |
+| `appendOutput`          | `output: string`               | 出力追加         |
+| `clearExecution`        | -                              | 実行クリア       |
+| `setLoading`            | `isLoading: boolean`           | ローディング設定 |
+| `setError`              | `error: string \| null`        | エラー設定       |
+| `resetAgentState`       | -                              | 状態リセット     |
 
 ---
 
@@ -459,9 +459,9 @@ Zustand agentSliceのアクションインターフェース。
 ```typescript
 // ModifierSkill入力
 interface ModifierSkillInput {
-  html: string;           // Reveal.js HTML
+  html: string; // Reveal.js HTML
   currentStructure: string; // 現在のstructure.md
-  projectPath: string;    // プロジェクトパス
+  projectPath: string; // プロジェクトパス
 }
 
 // ModifierSkill出力
@@ -472,16 +472,16 @@ interface ModifierSkillOutput {
 
 // 変更情報
 interface StructureChange {
-  type: 'add' | 'remove' | 'modify';
+  type: "add" | "remove" | "modify";
   section: string;
   description: string;
 }
 
 // 同期状態
-type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
+type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
 // 同期方向
-type SyncDirection = 'forward' | 'reverse';
+type SyncDirection = "forward" | "reverse";
 ```
 
 ### 無限ループ防止（changeContextMap）
@@ -502,21 +502,21 @@ interface ChangeContext {
 
 ### IPC チャンネル（スライド同期）
 
-| チャンネル             | 方向            | 説明                   |
-| ---------------------- | --------------- | ---------------------- |
-| `slide:sync-status`    | Main → Renderer | 同期状態通知           |
-| `slide:sync-progress`  | Main → Renderer | 同期進捗通知           |
-| `slide:reverse-sync`   | Renderer → Main | 逆同期手動トリガー     |
-| `slide:sync-error`     | Main → Renderer | 同期エラー通知         |
+| チャンネル            | 方向            | 説明               |
+| --------------------- | --------------- | ------------------ |
+| `slide:sync-status`   | Main → Renderer | 同期状態通知       |
+| `slide:sync-progress` | Main → Renderer | 同期進捗通知       |
+| `slide:reverse-sync`  | Renderer → Main | 逆同期手動トリガー |
+| `slide:sync-error`    | Main → Renderer | 同期エラー通知     |
 
 ### 設定定数
 
-| 定数                    | 値      | 説明                         |
-| ----------------------- | ------- | ---------------------------- |
-| `SYNC_TIMEOUT`          | `30000` | 同期処理タイムアウト (ms)    |
-| `CHANGE_CONTEXT_TTL`    | `1000`  | 変更コンテキスト有効期間 (ms) |
-| `DEBOUNCE_DELAY`        | `300`   | ファイル変更debounce (ms)    |
-| `AWAIT_WRITE_FINISH`    | `300`   | 書き込み完了待機 (ms)        |
+| 定数                 | 値      | 説明                          |
+| -------------------- | ------- | ----------------------------- |
+| `SYNC_TIMEOUT`       | `30000` | 同期処理タイムアウト (ms)     |
+| `CHANGE_CONTEXT_TTL` | `1000`  | 変更コンテキスト有効期間 (ms) |
+| `DEBOUNCE_DELAY`     | `300`   | ファイル変更debounce (ms)     |
+| `AWAIT_WRITE_FINISH` | `300`   | 書き込み完了待機 (ms)         |
 
 ### 実装状態
 
@@ -530,19 +530,20 @@ interface ChangeContext {
 
 ### 関連ドキュメント（スライド逆同期）
 
-| ドキュメント     | パス                                                              |
-| ---------------- | ----------------------------------------------------------------- |
-| 実装ガイド       | `docs/30-workflows/slide-reverse-sync/outputs/phase-12/implementation-guide.md` |
-| API仕様          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/api-specification.md` |
-| IPC設計          | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md` |
+| ドキュメント | パス                                                                            |
+| ------------ | ------------------------------------------------------------------------------- |
+| 実装ガイド   | `docs/30-workflows/slide-reverse-sync/outputs/phase-12/implementation-guide.md` |
+| API仕様      | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/api-specification.md`     |
+| IPC設計      | `docs/30-workflows/slide-reverse-sync/outputs/phase-2/ipc-design.md`            |
 
 ---
+
 ## 関連ドキュメント
 
-| ドキュメント         | パス                                                                             |
-| -------------------- | -------------------------------------------------------------------------------- |
-| 実装ガイド           | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` |
-| APIリファレンス      | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`      |
-| Claude Agent SDKスキル | `.claude/skills/claude-agent-sdk/SKILL.md`                                      |
-| LLMインターフェース  | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`            |
+| ドキュメント              | パス                                                                                    |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| 実装ガイド                | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`      |
+| APIリファレンス           | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`             |
+| Claude Agent SDKスキル    | `.claude/skills/claude-agent-sdk/SKILL.md`                                              |
+| LLMインターフェース       | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                   |
 | Skill Dashboard実装ガイド | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md` |

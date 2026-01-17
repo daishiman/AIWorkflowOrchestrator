@@ -5,9 +5,10 @@
 **用途**: 非同期リクエスト-レスポンス通信
 
 **実装**:
+
 ```typescript
 // Main
-ipcMain.handle('channel', async (event, request) => {
+ipcMain.handle("channel", async (event, request) => {
   return { success: true, data: result };
 });
 
@@ -16,6 +17,7 @@ const response = await window.electronAPI.invoke(request);
 ```
 
 **適用場面**:
+
 - CRUD操作
 - ファイルI/O
 - 外部API呼び出し
@@ -30,17 +32,19 @@ const response = await window.electronAPI.invoke(request);
 **用途**: 単方向イベント送信
 
 **実装**:
+
 ```typescript
 // Renderer
-window.electronAPI.send('channel', data);
+window.electronAPI.send("channel", data);
 
 // Main
-ipcMain.on('channel', (event, data) => {
+ipcMain.on("channel", (event, data) => {
   // レスポンスなし
 });
 ```
 
 **適用場面**:
+
 - ログ送信
 - アナリティクス
 - バックグラウンドタスク
@@ -55,13 +59,14 @@ ipcMain.on('channel', (event, data) => {
 **用途**: Main→Rendererへのリアルタイム通知
 
 **実装**:
+
 ```typescript
 // Preload
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld("electronAPI", {
   onEvent: (callback) => {
     const listener = (_, data) => callback(data);
-    ipcRenderer.on('channel', listener);
-    return () => ipcRenderer.removeListener('channel', listener);
+    ipcRenderer.on("channel", listener);
+    return () => ipcRenderer.removeListener("channel", listener);
   },
 });
 
@@ -74,6 +79,7 @@ unsubscribe();
 ```
 
 **適用場面**:
+
 - プログレス通知
 - リアルタイム更新
 - システムイベント
@@ -88,6 +94,7 @@ unsubscribe();
 **用途**: 複数Renderer間の状態同期
 
 **実装**:
+
 ```typescript
 // Main (State Store)
 class StateStore {
@@ -97,14 +104,15 @@ class StateStore {
     this.broadcast();
   }
   broadcast() {
-    BrowserWindow.getAllWindows().forEach(w => {
-      w.webContents.send('state:update', this.state);
+    BrowserWindow.getAllWindows().forEach((w) => {
+      w.webContents.send("state:update", this.state);
     });
   }
 }
 ```
 
 **適用場面**:
+
 - マルチウィンドウアプリ
 - グローバル設定
 - ユーザーセッション
@@ -119,15 +127,17 @@ class StateStore {
 **用途**: 大量データの段階的送信
 
 **実装**:
+
 ```typescript
 // Main
 for await (const chunk of dataStream) {
-  window.webContents.send('data:chunk', chunk);
+  window.webContents.send("data:chunk", chunk);
 }
-window.webContents.send('data:end');
+window.webContents.send("data:end");
 ```
 
 **適用場面**:
+
 - ファイル読み込み
 - ログストリーミング
 - データベースカーソル
@@ -142,6 +152,7 @@ window.webContents.send('data:end');
 **用途**: 複数リクエストのバッチ処理
 
 **実装**:
+
 ```typescript
 class BatchProcessor {
   private queue = [];
@@ -157,6 +168,7 @@ class BatchProcessor {
 ```
 
 **適用場面**:
+
 - 大量データ送信
 - アナリティクスイベント
 - ログ収集
@@ -168,12 +180,12 @@ class BatchProcessor {
 
 ## パターン選択ガイド
 
-| 要件                   | 推奨パターン                |
-| ---------------------- | --------------------------- |
-| レスポンスが必要       | Request-Response            |
-| レスポンス不要         | Fire-and-Forget             |
-| リアルタイム通知       | Event Subscription          |
-| 複数ウィンドウ同期     | State Synchronization       |
-| 大量データ             | Stream or Batch Processing  |
-| ファイル操作           | Request-Response + Stream   |
-| アナリティクス         | Fire-and-Forget or Batch    |
+| 要件               | 推奨パターン               |
+| ------------------ | -------------------------- |
+| レスポンスが必要   | Request-Response           |
+| レスポンス不要     | Fire-and-Forget            |
+| リアルタイム通知   | Event Subscription         |
+| 複数ウィンドウ同期 | State Synchronization      |
+| 大量データ         | Stream or Batch Processing |
+| ファイル操作       | Request-Response + Stream  |
+| アナリティクス     | Fire-and-Forget or Batch   |

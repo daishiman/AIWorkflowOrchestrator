@@ -238,8 +238,8 @@ pnpm --filter @repo/desktop build
 
 #### 活用スキル
 
-| スキル名               | 活用方法                                           |
-| ---------------------- | -------------------------------------------------- |
+| スキル名                                       | 活用方法                                           |
+| ---------------------------------------------- | -------------------------------------------------- |
 | .claude/skills/accessibility-wcag/SKILL.md     | ARIA属性・キーボード操作のアクセシビリティ要件定義 |
 | .claude/skills/progressive-disclosure/SKILL.md | 情報の段階的開示（ホバー→詳細表示）の設計          |
 
@@ -288,8 +288,8 @@ pnpm --filter @repo/desktop build
 
 #### 活用スキル
 
-| スキル名              | 活用方法                                   |
-| --------------------- | ------------------------------------------ |
+| スキル名                                      | 活用方法                                   |
+| --------------------------------------------- | ------------------------------------------ |
 | .claude/skills/custom-hooks-patterns/SKILL.md | useTooltipカスタムフックの設計             |
 | .claude/skills/type-safety-patterns/SKILL.md  | TypeScript型定義の設計（Props、State）     |
 | .claude/skills/accessibility-wcag/SKILL.md    | ARIA属性の設計（role, aria-describedby等） |
@@ -323,8 +323,8 @@ pnpm --filter @repo/desktop build
 
 #### レビュー参加エージェント
 
-| エージェント     | レビュー観点         | 選定理由                                   |
-| ---------------- | -------------------- | ------------------------------------------ |
+| エージェント                      | レビュー観点         | 選定理由                                   |
+| --------------------------------- | -------------------- | ------------------------------------------ |
 | .claude/agents/ui-designer.md     | UI/UX設計の妥当性    | コンポーネント設計・ユーザビリティの専門家 |
 | .claude/agents/frontend-tester.md | テスタビリティ       | テスト容易性の確認                         |
 | .claude/agents/arch-police.md     | アーキテクチャ整合性 | 既存UIコンポーネントとの整合性確認         |
@@ -403,8 +403,8 @@ pnpm --filter @repo/desktop build
 
 #### 活用スキル
 
-| スキル名                | 活用方法                      |
-| ----------------------- | ----------------------------- |
+| スキル名                                        | 活用方法                      |
+| ----------------------------------------------- | ----------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | TDDサイクルに基づくテスト設計 |
 | .claude/skills/test-doubles/SKILL.md            | モック・スタブの活用          |
 | .claude/skills/boundary-value-analysis/SKILL.md | 境界値テストケース設計        |
@@ -468,8 +468,8 @@ pnpm --filter @repo/desktop test
 
 #### 活用スキル
 
-| スキル名           | 活用方法                     |
-| ------------------ | ---------------------------- |
+| スキル名                                   | 活用方法                     |
+| ------------------------------------------ | ---------------------------- |
 | .claude/skills/playwright-testing/SKILL.md | E2Eテストシナリオ設計・実装  |
 | .claude/skills/accessibility-wcag/SKILL.md | アクセシビリティテストケース |
 
@@ -531,8 +531,8 @@ pnpm --filter @repo/desktop test:e2e
 
 #### 活用スキル
 
-| スキル名              | 活用方法             |
-| --------------------- | -------------------- |
+| スキル名                                      | 活用方法             |
+| --------------------------------------------- | -------------------- |
 | .claude/skills/custom-hooks-patterns/SKILL.md | useTooltipフック実装 |
 | .claude/skills/state-lifting/SKILL.md         | ツールチップ状態管理 |
 | .claude/skills/accessibility-wcag/SKILL.md    | ARIA属性実装         |
@@ -600,8 +600,8 @@ pnpm --filter @repo/desktop test
 
 #### 活用スキル
 
-| スキル名             | 活用方法           |
-| -------------------- | ------------------ |
+| スキル名                                     | 活用方法           |
+| -------------------------------------------- | ------------------ |
 | .claude/skills/type-safety-patterns/SKILL.md | ファイル情報型定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -715,8 +715,8 @@ pnpm --filter @repo/desktop test:e2e
 
 #### 活用スキル
 
-| スキル名               | 活用方法                                 |
-| ---------------------- | ---------------------------------------- |
+| スキル名                                       | 活用方法                                 |
+| ---------------------------------------------- | ---------------------------------------- |
 | .claude/skills/clean-code-practices/SKILL.md   | 命名改善・重複排除                       |
 | .claude/skills/refactoring-techniques/SKILL.md | Extract Function等のリファクタリング技法 |
 
@@ -773,8 +773,8 @@ pnpm --filter @repo/desktop test
 
 #### 活用スキル
 
-| スキル名             | 活用方法                 |
-| -------------------- | ------------------------ |
+| スキル名                                     | 活用方法                 |
+| -------------------------------------------- | ------------------------ |
 | .claude/skills/code-smell-detection/SKILL.md | コード臭の検出           |
 | .claude/skills/accessibility-wcag/SKILL.md   | アクセシビリティ基準確認 |
 
@@ -819,8 +819,8 @@ pnpm --filter @repo/desktop test
 
 #### レビュー参加エージェント
 
-| エージェント     | レビュー観点 | 選定理由                               |
-| ---------------- | ------------ | -------------------------------------- |
+| エージェント                      | レビュー観点 | 選定理由                               |
+| --------------------------------- | ------------ | -------------------------------------- |
 | .claude/agents/code-quality.md    | コード品質   | 可読性・保守性の最終確認               |
 | .claude/agents/ui-designer.md     | UI/UX実装    | デザイン実装の妥当性確認               |
 | .claude/agents/frontend-tester.md | テスト品質   | テストカバレッジ・テストケースの妥当性 |

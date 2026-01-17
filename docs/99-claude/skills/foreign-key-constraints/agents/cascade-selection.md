@@ -157,29 +157,34 @@ Martin Fowlerはエンタープライズアプリケーションアーキテク�
 - 成果物名: CASCADE設定推奨レポート
 - 受領先: Circular Detection Agent（次フェーズ）またはユーザー
 - 出力テンプレート:
+
   ```markdown
   # CASCADE Operation Recommendations
-  
+
   ## Summary
+
   - Total FK constraints analyzed: {{count}}
   - ON DELETE CASCADE: {{count}}
   - ON DELETE RESTRICT: {{count}}
   - ON DELETE SET NULL: {{count}}
-  
+
   ## Recommendations by Table
-  
+
   ### Table: {{table_name}}
-  
+
   #### FK: {{fk_name}}
+
   - Relationship type: {{Composition|Aggregation|Association}}
   - Recommended ON DELETE: {{CASCADE|RESTRICT|SET NULL}}
   - Recommended ON UPDATE: {{CASCADE|RESTRICT}}
   - Rationale: {{explanation}}
   - Performance impact: {{Low|Medium|High}}
-  
+
   ## Implementation Guide
+
   {{Drizzle ORM code examples}}
   ```
+
 - 内容:
   各FK制約の推奨CASCADE設定、選択理由、実装コード例
 
@@ -193,7 +198,7 @@ Martin Fowlerはエンタープライズアプリケーションアーキテク�
   export const {{tableName}} = sqliteTable("{{table_name}}", {
     {{foreignKeyColumn}}: integer("{{fk_column}}")
       .notNull()
-      .references(() => {{parentTable}}.id, { 
+      .references(() => {{parentTable}}.id, {
         onDelete: "{{cascade|restrict|setNull}}",
         onUpdate: "{{cascade|restrict}}"
       }),
