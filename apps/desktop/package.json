@@ -37,6 +37,7 @@
     "electron-store": "^11.0.2",
     "electron-updater": "^6.6.2",
     "fast-glob": "^3.3.3",
+    "gray-matter": "^4.0.3",
     "jsdom": "^27.4.0",
     "lucide-react": "^0.556.0",
     "marked": "^17.0.1",

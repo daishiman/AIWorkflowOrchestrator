@@ -1,0 +1,100 @@
+{
+  "workflow": "claude-code-cli-integration",
+  "version": "1.0.0",
+  "updatedAt": "2026-01-17T00:00:00Z",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements-definition.md"]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/ipc-api-specification.md",
+        "outputs/phase-2/security-design.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-specification.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/main/claude-cli/ProcessManager.ts",
+        "apps/desktop/src/main/claude-cli/SessionManager.ts",
+        "apps/desktop/src/main/claude-cli/SkillScanner.ts",
+        "apps/desktop/src/main/claude-cli/ClaudeCliManager.ts",
+        "apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "apps/desktop/src/main/claude-cli/index.ts"
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/test-enrichment-report.md",
+        "apps/desktop/src/main/claude-cli/__tests__/process-manager.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/session-manager.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/skill-scanner.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/ipc-handler.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/edge-cases.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/error-handling.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/integration.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/security.test.ts",
+        "apps/desktop/src/main/claude-cli/__tests__/claude-cli-manager.test.ts"
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-judgment.md"
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/code-analysis-report.md",
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/architecture-conformance.md"
+      ]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/requirements-traceability.md",
+        "outputs/phase-10/review-issues.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-results.md",
+        "outputs/phase-11/bug-reports.md",
+        "outputs/phase-11/ux-improvements.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/documentation-update-log.md"
+      ]
+    },
+    "phase-13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  }
+}
