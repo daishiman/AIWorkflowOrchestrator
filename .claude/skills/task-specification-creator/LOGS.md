@@ -3,7 +3,7 @@
 > **Self-Improvement Cycle**
 > このファイルにはスキルの使用記録が追記されます。
 > 定期的にEVALS.jsonのメトリクスが更新され、改善提案の基礎データとなります。
-> - 記録スクリプト: scripts/log-usage.mjs
+> - 記録スクリプト: scripts/log-usage.js
 > - メトリクスファイル: EVALS.json
 > - 参照ガイド: references/self-improvement-cycle.md
 
@@ -29,7 +29,7 @@
 
 ```bash
 # 使用記録を追加
-node scripts/log-usage.mjs \
+node scripts/log-usage.js \
   --result success \
   --phase "Phase 4" \
   --agent "generate-task-specs" \
