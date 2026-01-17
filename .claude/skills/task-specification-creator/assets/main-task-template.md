@@ -1,7 +1,7 @@
 # メインタスク仕様書テンプレート
 
 > **Progressive Disclosure**
-> - 読み込みタイミング: ワークフロー初期化時（init-artifacts.mjs実行後）
+> - 読み込みタイミング: ワークフロー初期化時（init-artifacts.js実行後）
 > - 読み込み条件: index.mdメインタスク仕様書を生成するとき
 > - 使用スキーマ: schemas/task-definition.json, schemas/artifact-definition.json
 > - 出力先: docs/30-workflows/{{FEATURE_NAME}}/index.md
@@ -228,10 +228,10 @@ graph TD
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.mjs docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 
 # Phase完了・成果物登録
-node .claude/skills/task-specification-creator/scripts/complete-phase.mjs \
+node .claude/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}} --artifacts "..."
 ```
 

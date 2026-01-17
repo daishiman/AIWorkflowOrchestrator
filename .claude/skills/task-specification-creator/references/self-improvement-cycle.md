@@ -3,7 +3,7 @@
 > **Progressive Disclosure**
 > - 読み込みタイミング: フィードバック分析時、スキル改善時
 > - 読み込み条件: 使用ログの分析・メトリクス評価が必要なとき
-> - 関連ファイル: LOGS.md, EVALS.json, scripts/log-usage.mjs
+> - 関連ファイル: LOGS.md, EVALS.json, scripts/log-usage.js
 
 ---
 
@@ -20,7 +20,7 @@ task-specification-creatorスキルが自己のパフォーマンスを分析し
 タスク仕様書生成
     │
     ▼
-[実行結果記録] ← log-usage.mjs
+[実行結果記録] ← log-usage.js
     │
     ▼
 [メトリクス更新] ← EVALS.json
@@ -44,11 +44,11 @@ task-specification-creatorスキルが自己のパフォーマンスを分析し
 
 ### 2.1 実行結果の記録
 
-**スクリプト**: `scripts/log-usage.mjs`
+**スクリプト**: `scripts/log-usage.js`
 
 ```bash
 # 成功時
-node scripts/log-usage.mjs \
+node scripts/log-usage.js \
   --result success \
   --phase "Phase 4" \
   --agent "generate-task-specs" \
@@ -56,7 +56,7 @@ node scripts/log-usage.mjs \
   --notes "仕様書13件生成完了"
 
 # 失敗時
-node scripts/log-usage.mjs \
+node scripts/log-usage.js \
   --result failure \
   --phase "Phase 3" \
   --agent "design-phases" \
@@ -200,5 +200,5 @@ node scripts/log-usage.mjs \
 
 - **ログファイル**: See [LOGS.md](../LOGS.md)
 - **メトリクス**: See [EVALS.json](../EVALS.json)
-- **記録スクリプト**: See [scripts/log-usage.mjs](../scripts/log-usage.mjs)
+- **記録スクリプト**: See [scripts/log-usage.js](../scripts/log-usage.js)
 - **改善スキル**: skill-creator
