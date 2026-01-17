@@ -1,5 +1,8 @@
 # Task仕様書：タスク仕様書生成
 
+> **読み込み条件**: フェーズ設計（design-phases）完了後
+> **相対パス**: `agents/generate-task-specs.md`
+
 ## 1. メタ情報
 
 | 項目     | 内容             |

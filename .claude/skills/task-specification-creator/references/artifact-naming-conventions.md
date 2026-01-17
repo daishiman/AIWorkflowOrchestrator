@@ -4,7 +4,7 @@
 > - 読み込みタイミング: Phase完了時の成果物登録・依存更新実行時
 > - 読み込み条件: 成果物パス命名やartifacts.json更新が必要なとき
 > - 関連スキーマ: schemas/artifact-definition.json
-> - 関連スクリプト: scripts/init-artifacts.mjs, scripts/complete-phase.mjs
+> - 関連スクリプト: scripts/init-artifacts.js, scripts/complete-phase.js, scripts/validate-phase-output.js
 
 ## 概要
 
@@ -218,32 +218,31 @@ Phase N 実行完了
 
 ## 4. 更新スクリプト使用方法
 
-### 4.1 成果物登録
+### 4.1 Phase完了処理（成果物登録＋依存更新を一括実行）
 
 ```bash
-node scripts/register-artifact.mjs \
-  --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
-  --phase 1 \
-  --type "document" \
-  --path "outputs/phase-1/requirements-definition.md" \
-  --description "要件定義書"
-```
-
-### 4.2 依存タスク更新
-
-```bash
-node scripts/update-dependencies.mjs \
-  --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
-  --phase 1
-```
-
-### 4.3 Phase完了処理（登録＋依存更新を一括実行）
-
-```bash
-node scripts/complete-phase.mjs \
+# scripts/complete-phase.js を使用（推奨）
+node .claude/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1 \
   --artifacts "outputs/phase-1/requirements-definition.md:要件定義書,outputs/phase-1/acceptance-criteria.md:受け入れ基準"
+```
+
+### 4.2 ワークフロー初期化
+
+```bash
+# 新規ワークフロー作成時に artifacts.json を初期化
+node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
+  --workflow "docs/30-workflows/{{FEATURE_NAME}}"
+```
+
+### 4.3 Phase出力検証
+
+```bash
+# Phase出力の検証
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  "docs/30-workflows/{{FEATURE_NAME}}" \
+  --phase 1
 ```
 
 ---

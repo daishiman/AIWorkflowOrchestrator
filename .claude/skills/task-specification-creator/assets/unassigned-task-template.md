@@ -5,7 +5,7 @@
 > - 読み込み条件: MINOR判定された指摘事項を未完了タスク指示書に変換するとき
 > - 使用スキーマ: schemas/unassigned-task.json
 > - 関連エージェント: agents/generate-unassigned-task.md
-> - 関連スクリプト: scripts/detect-unassigned-tasks.mjs
+> - 関連スクリプト: scripts/detect-unassigned-tasks.js
 
 このテンプレートは「指示書」として機能する。
 受け手（人間またはAI）がこのドキュメントを読むだけで、
