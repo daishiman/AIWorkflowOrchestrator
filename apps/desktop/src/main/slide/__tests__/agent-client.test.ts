@@ -11,14 +11,18 @@ import {
   type ModifierAgentAPI,
 } from "../agent-client";
 
+// vi.hoistedで制御可能なモック関数を作成
+const { mockCreate } = vi.hoisted(() => {
+  return {
+    mockCreate: vi.fn(),
+  };
+});
+
 // Claude Agent SDKのモック
 vi.mock("@anthropic-ai/sdk", () => ({
   default: vi.fn().mockImplementation(() => ({
     messages: {
-      create: vi.fn().mockResolvedValue({
-        content: [{ type: "text", text: JSON.stringify({ changes: [] }) }],
-        usage: { input_tokens: 100, output_tokens: 50 },
-      }),
+      create: mockCreate,
     },
   })),
 }));
@@ -51,6 +55,12 @@ describe("AgentClient", () => {
     process.env = { ...originalEnv, ANTHROPIC_API_KEY: "test-api-key" };
     resetAgentAPI();
     agentAPI = getAgentAPI();
+    // デフォルトのモック動作：即座に成功を返す
+    mockCreate.mockReset();
+    mockCreate.mockResolvedValue({
+      content: [{ type: "text", text: JSON.stringify({ changes: [] }) }],
+      usage: { input_tokens: 100, output_tokens: 50 },
+    });
   });
 
   afterEach(() => {
@@ -115,18 +125,65 @@ describe("AgentClient", () => {
     });
 
     it("AC-04: should reject with timeout error after 30 seconds", async () => {
+      // タイムアウトをテストするため、モックがAbortSignalを待つように設定
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          // AbortSignalがabortされるまで待機
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+          });
+        },
+      );
+
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         options: { timeout: 30000 },
       });
 
-      // 30秒以上経過させる
-      await vi.advanceTimersByTimeAsync(31000);
-
-      await expect(queryPromise).rejects.toThrow("Request timeout");
+      // タイマー進行と拒否を並列に待機
+      await Promise.all([
+        vi.advanceTimersByTimeAsync(31000),
+        expect(queryPromise).rejects.toThrow("Request timeout"),
+      ]);
     });
 
     it("AC-05: should reject with abort error when aborted", async () => {
+      // AbortSignalを待つモック（すでにabortされている場合は即座にreject）
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              // すでにabortされている場合は即座にreject
+              if (signal.aborted) {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+                return;
+              }
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+          });
+        },
+      );
+
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         options: { timeout: 30000 },
@@ -135,8 +192,7 @@ describe("AgentClient", () => {
       // クエリ実行中に中断
       agentAPI.abort();
 
-      await vi.advanceTimersByTimeAsync(1000);
-
+      // 拒否を待機
       await expect(queryPromise).rejects.toThrow("Aborted");
     });
 
@@ -177,20 +233,65 @@ describe("AgentClient", () => {
     });
 
     it("AC-08: should use default timeout of 30000ms if not specified", async () => {
+      // タイムアウトをテストするため、モックがAbortSignalを待つように設定
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+          });
+        },
+      );
+
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         // timeout not specified
       });
 
-      // 31秒経過でタイムアウト
-      await vi.advanceTimersByTimeAsync(31000);
-
-      await expect(queryPromise).rejects.toThrow("Request timeout");
+      // タイマー進行と拒否を並列に待機
+      await Promise.all([
+        vi.advanceTimersByTimeAsync(31000),
+        expect(queryPromise).rejects.toThrow("Request timeout"),
+      ]);
     });
   });
 
   describe("abort", () => {
     it("AC-09: should trigger AbortController signal", async () => {
+      // AbortSignalを待つモック（すでにabortされている場合は即座にreject）
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              if (signal.aborted) {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+                return;
+              }
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+          });
+        },
+      );
+
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         options: { timeout: 30000 },
@@ -198,12 +299,35 @@ describe("AgentClient", () => {
 
       agentAPI.abort();
 
-      await vi.advanceTimersByTimeAsync(1000);
-
       await expect(queryPromise).rejects.toThrow("Aborted");
     });
 
     it("AC-10: should set status to idle after abort", async () => {
+      // AbortSignalを待つモック（すでにabortされている場合は即座にreject）
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              if (signal.aborted) {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+                return;
+              }
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+          });
+        },
+      );
+
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         options: { timeout: 30000 },
@@ -215,8 +339,8 @@ describe("AgentClient", () => {
 
       expect(agentAPI.getStatus()).toBe("idle");
 
-      await vi.advanceTimersByTimeAsync(1000);
-      await queryPromise.catch(() => {}); // エラーを無視
+      // エラーを適切に処理
+      await queryPromise.catch(() => {});
     });
 
     it("AC-11: should not throw when called without active query", () => {
@@ -245,19 +369,35 @@ describe("AgentClient", () => {
     });
 
     it("AC-14: should return 'error' after failed query", async () => {
+      // タイムアウトをテストするため、モックがAbortSignalを待つように設定
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+          });
+        },
+      );
+
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         options: { timeout: 30000 },
       });
 
-      // タイムアウトさせる
-      await vi.advanceTimersByTimeAsync(31000);
-
-      try {
-        await queryPromise;
-      } catch {
-        // エラーを無視
-      }
+      // タイマー進行と拒否を並列に待機（エラーは無視）
+      await Promise.all([
+        vi.advanceTimersByTimeAsync(31000),
+        queryPromise.catch(() => {}),
+      ]);
 
       expect(agentAPI.getStatus()).toBe("error");
     });
@@ -556,15 +696,35 @@ describe("AgentClient", () => {
     });
 
     it("AC-24: should handle minimum timeout (1ms)", async () => {
+      // タイムアウトをテストするため、モックがAbortSignalを待つように設定
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+          });
+        },
+      );
+
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         options: { timeout: 1 },
       });
 
-      // 最小タイムアウトでも正しく動作する
-      await vi.advanceTimersByTimeAsync(100);
-
-      await expect(queryPromise).rejects.toThrow("Request timeout");
+      // タイマー進行と拒否を並列に待機
+      await Promise.all([
+        vi.advanceTimersByTimeAsync(100),
+        expect(queryPromise).rejects.toThrow("Request timeout"),
+      ]);
     });
   });
 
@@ -683,22 +843,45 @@ describe("AgentClient", () => {
           options: { timeout: 30000 },
         });
 
-        await vi.advanceTimersByTimeAsync(1000);
-
-        // モックがAPIキーをバイパスするため、成功する可能性がある
-        // 実際のSDK統合後はエラーになるはず
-        try {
-          const response = await queryPromise;
-          expect(response).toBeDefined();
-        } catch (error) {
-          expect(error).toBeInstanceOf(Error);
-          expect((error as Error).message).toContain("API key");
-        }
+        // APIキーが設定されていないためエラーになる
+        await expect(queryPromise).rejects.toThrow("API key not configured");
       });
     });
 
     describe("concurrent execution edge cases", () => {
       it("EDGE-AC-09: should handle rapid abort/query cycles", async () => {
+        // AbortSignalを待つモック（abort時に即座にrejectするように）
+        mockCreate.mockImplementation(
+          async (
+            _params: unknown,
+            options?: { signal?: AbortSignal },
+          ): Promise<unknown> => {
+            return new Promise((resolve, reject) => {
+              const signal = options?.signal;
+              if (signal) {
+                if (signal.aborted) {
+                  const error = new Error("Aborted");
+                  error.name = "AbortError";
+                  reject(error);
+                  return;
+                }
+                signal.addEventListener("abort", () => {
+                  const error = new Error("Aborted");
+                  error.name = "AbortError";
+                  reject(error);
+                });
+              }
+              // タイマー経過後に解決
+              setTimeout(() => {
+                resolve({
+                  content: [{ type: "text", text: "{}" }],
+                  usage: { input_tokens: 10, output_tokens: 10 },
+                });
+              }, 1000);
+            });
+          },
+        );
+
         for (let i = 0; i < 5; i++) {
           const queryPromise = agentAPI.query({
             prompt: `Test prompt ${i}`,
@@ -707,21 +890,47 @@ describe("AgentClient", () => {
 
           agentAPI.abort();
 
-          await vi.advanceTimersByTimeAsync(100);
-
+          // プロミスの解決を待つ
           try {
             await queryPromise;
           } catch {
             // abort後のエラーは無視
           }
+
+          await vi.advanceTimersByTimeAsync(100);
         }
 
         // 最終状態がidleであることを確認
         expect(agentAPI.getStatus()).toBe("idle");
       });
 
-      it("EDGE-AC-10: should handle multiple abort calls", () => {
-        agentAPI.query({
+      it("EDGE-AC-10: should handle multiple abort calls", async () => {
+        // AbortSignalを待つモック（すでにabortされている場合は即座にreject）
+        mockCreate.mockImplementation(
+          async (
+            _params: unknown,
+            options?: { signal?: AbortSignal },
+          ): Promise<unknown> => {
+            return new Promise((resolve, reject) => {
+              const signal = options?.signal;
+              if (signal) {
+                if (signal.aborted) {
+                  const error = new Error("Aborted");
+                  error.name = "AbortError";
+                  reject(error);
+                  return;
+                }
+                signal.addEventListener("abort", () => {
+                  const error = new Error("Aborted");
+                  error.name = "AbortError";
+                  reject(error);
+                });
+              }
+            });
+          },
+        );
+
+        const queryPromise = agentAPI.query({
           prompt: "Test prompt",
           options: { timeout: 30000 },
         });
@@ -732,6 +941,9 @@ describe("AgentClient", () => {
         agentAPI.abort();
 
         expect(agentAPI.getStatus()).toBe("idle");
+
+        // クエリが拒否されることを確認
+        await expect(queryPromise).rejects.toThrow("Aborted");
       });
     });
 
@@ -750,17 +962,15 @@ describe("AgentClient", () => {
           options: { timeout: 30000 },
         });
 
-        await vi.advanceTimersByTimeAsync(1000);
+        // クエリを並列に待機（エラーは無視）
+        await Promise.all([
+          vi.advanceTimersByTimeAsync(1000),
+          queryPromise.catch(() => {}),
+        ]);
 
-        // エラーリスナーがあっても他のリスナーは呼ばれる可能性がある
-        try {
-          await queryPromise;
-        } catch {
-          // エラーを無視
-        }
-
-        // テストは成功すること自体が重要
-        expect(true).toBe(true);
+        // 両方のリスナーが呼ばれる（エラーリスナーのエラーは実装側でキャッチ）
+        expect(errorListener).toHaveBeenCalled();
+        expect(normalListener).toHaveBeenCalled();
       });
 
       it("EDGE-AC-12: should handle unsubscribe during message processing", async () => {

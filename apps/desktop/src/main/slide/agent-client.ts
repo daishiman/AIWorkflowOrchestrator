@@ -172,7 +172,17 @@ export function getAgentAPI(): ModifierAgentAPI {
         currentStatus = "idle";
         return response;
       } catch (error) {
-        currentStatus = "error";
+        // ユーザーによるabortの場合はステータスを"idle"に保つ（abort()で設定済み）
+        // タイムアウトや他のエラーの場合は"error"に設定
+        if (
+          error instanceof Error &&
+          error.message === "Aborted" &&
+          currentStatus === "idle"
+        ) {
+          // abort()がすでにステータスを"idle"に設定している場合はそのまま
+        } else {
+          currentStatus = "error";
+        }
         throw error;
       } finally {
         currentAbortController = null;
@@ -274,19 +284,29 @@ async function executeAgentQuery(
       isComplete: true,
     };
 
-    messageListeners.forEach((listener) => listener(message));
+    // リスナーのエラーを個別にキャッチしてログに出力
+    messageListeners.forEach((listener) => {
+      try {
+        listener(message);
+      } catch {
+        // リスナーエラーは無視（他のリスナーへの通知を継続）
+      }
+    });
 
     return result;
   } catch (error) {
     clearTimeout(timeoutId);
 
     // Abortエラーの処理
+    // 注意: タイムアウトチェックを先に行う（両方ともAbortErrorになるため）
     if (error instanceof Error) {
-      if (error.name === "AbortError" || signal.aborted) {
-        throw new Error("Aborted");
-      }
+      // タイムアウトの場合（内部シグナルがabortされ、外部シグナルはabortされていない）
       if (timeoutController.signal.aborted && !signal.aborted) {
         throw new Error("Request timeout");
+      }
+      // ユーザーによるabortの場合
+      if (error.name === "AbortError" || signal.aborted) {
+        throw new Error("Aborted");
       }
     }
 

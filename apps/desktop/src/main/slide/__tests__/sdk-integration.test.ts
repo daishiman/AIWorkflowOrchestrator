@@ -68,14 +68,18 @@ vi.mock("electron-store", () => ({
   })),
 }));
 
+// vi.hoistedで制御可能なモック関数を作成
+const { mockCreate } = vi.hoisted(() => {
+  return {
+    mockCreate: vi.fn(),
+  };
+});
+
 // Anthropic SDKのモック
 vi.mock("@anthropic-ai/sdk", () => ({
   default: vi.fn().mockImplementation(() => ({
     messages: {
-      create: vi.fn().mockResolvedValue({
-        content: [{ type: "text", text: JSON.stringify({ changes: [] }) }],
-        usage: { input_tokens: 100, output_tokens: 50 },
-      }),
+      create: mockCreate,
     },
   })),
 }));
@@ -97,6 +101,13 @@ describe("SDK Integration Tests", () => {
     process.env = { ...originalEnv, ANTHROPIC_API_KEY: "test-api-key" };
     resetAgentAPI();
     executor = createSkillExecutor();
+
+    // デフォルトのモック動作：即座に成功を返す
+    mockCreate.mockReset();
+    mockCreate.mockResolvedValue({
+      content: [{ type: "text", text: JSON.stringify({ changes: [] }) }],
+      usage: { input_tokens: 100, output_tokens: 50 },
+    });
   });
 
   afterEach(() => {
@@ -202,6 +213,26 @@ describe("SDK Integration Tests", () => {
       // AgentClientレベルのテストのため、SkillExecutorは使用しない
       const _projectPath = createTestProjectPath("timeout");
 
+      // タイムアウトをテストするため、モックがAbortSignalを待つように設定
+      mockCreate.mockImplementation(
+        async (
+          _params: unknown,
+          options?: { signal?: AbortSignal },
+        ): Promise<unknown> => {
+          return new Promise((resolve, reject) => {
+            const signal = options?.signal;
+            if (signal) {
+              signal.addEventListener("abort", () => {
+                const error = new Error("Aborted");
+                error.name = "AbortError";
+                reject(error);
+              });
+            }
+            // 決してresolveしない - タイムアウトを待つ
+          });
+        },
+      );
+
       // タイムアウトをテスト（AgentClientレベル）
       const agentAPI = getAgentAPI();
       const queryPromise = agentAPI.query({
@@ -209,10 +240,11 @@ describe("SDK Integration Tests", () => {
         options: { timeout: 30000 },
       });
 
-      // 31秒経過させる
-      await vi.advanceTimersByTimeAsync(31000);
-
-      await expect(queryPromise).rejects.toThrow("Request timeout");
+      // タイマー進行と拒否を並列に待機
+      await Promise.all([
+        vi.advanceTimersByTimeAsync(31000),
+        expect(queryPromise).rejects.toThrow("Request timeout"),
+      ]);
     });
   });
 
@@ -740,13 +772,13 @@ describe("SDK Integration Tests", () => {
         const executor1 = createSkillExecutor();
         const executor2 = createSkillExecutor();
 
-        // 同時に実行（別インスタンスなので問題ない）
+        // 順次実行（AgentAPIはシングルトンのため並行実行不可）
         const promise1 = executor1.execute("html", projectPath);
-        const promise2 = executor2.execute("structure", projectPath);
-
         await vi.advanceTimersByTimeAsync(1000);
-
         const result1 = await promise1;
+
+        const promise2 = executor2.execute("structure", projectPath);
+        await vi.advanceTimersByTimeAsync(1000);
         const result2 = await promise2;
 
         expect(result1.success).toBe(true);
