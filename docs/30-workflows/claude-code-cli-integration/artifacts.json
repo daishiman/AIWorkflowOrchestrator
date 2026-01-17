@@ -1,0 +1,401 @@
+{
+  "workflowId": "task-20260116-claude-code-cli-integration",
+  "name": "claude-code-cli-integration",
+  "description": "Claude Code CLI統合による.claude/skillsスキル実行機能",
+  "status": "未実施",
+  "createdAt": "2026-01-16",
+  "updatedAt": "2026-01-16",
+  "totalPhases": 13,
+  "completedPhases": 0,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "未実施",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1/",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "未作成"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "未作成"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "status": "未作成"
+        },
+        {
+          "name": "CLI調査レポート",
+          "path": "outputs/phase-1/cli-investigation-report.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "未実施",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2/",
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計",
+          "path": "outputs/phase-2/architecture-design.md",
+          "status": "未作成"
+        },
+        {
+          "name": "IPC API仕様",
+          "path": "outputs/phase-2/ipc-api-specification.md",
+          "status": "未作成"
+        },
+        {
+          "name": "型定義設計",
+          "path": "outputs/phase-2/type-definitions.md",
+          "status": "未作成"
+        },
+        {
+          "name": "シーケンス図",
+          "path": "outputs/phase-2/sequence-diagrams.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "未実施",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3/",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "status": "未作成"
+        },
+        {
+          "name": "指摘事項",
+          "path": "outputs/phase-3/review-issues.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "未実施",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4/",
+      "artifacts": [
+        {
+          "name": "CLIプロセス管理テスト",
+          "path": "apps/desktop/src/main/claude-cli/__tests__/cli-process-manager.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "IPC通信テスト",
+          "path": "apps/desktop/src/main/claude-cli/__tests__/ipc-handler.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "スキル実行テスト",
+          "path": "apps/desktop/src/main/claude-cli/__tests__/skill-executor.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "セッション管理テスト",
+          "path": "apps/desktop/src/main/claude-cli/__tests__/session-manager.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "統合テストシナリオ",
+          "path": "outputs/phase-4/integration-test-scenarios.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "未実施",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5/",
+      "artifacts": [
+        {
+          "name": "共有型定義",
+          "path": "packages/shared/src/claude-cli/",
+          "status": "未作成"
+        },
+        {
+          "name": "CLIプロセス管理",
+          "path": "apps/desktop/src/main/claude-cli/",
+          "status": "未作成"
+        },
+        {
+          "name": "Preload API",
+          "path": "apps/desktop/src/preload/claudeCliApi.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "実装レポート",
+          "path": "outputs/phase-5/implementation-report.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "未実施",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6/",
+      "artifacts": [
+        {
+          "name": "エッジケーステスト",
+          "path": "*/__tests__/*-edge-cases.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "異常系テスト",
+          "path": "*/__tests__/*-error-handling.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "統合テスト",
+          "path": "*/__tests__/*-integration.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "セキュリティテスト",
+          "path": "*/__tests__/*-security.test.ts",
+          "status": "未作成"
+        },
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-6/coverage-report.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "未実施",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7/",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "未作成"
+        },
+        {
+          "name": "判定結果",
+          "path": "outputs/phase-7/coverage-judgment.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "未実施",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8/",
+      "artifacts": [
+        {
+          "name": "コード分析レポート",
+          "path": "outputs/phase-8/code-analysis-report.md",
+          "status": "未作成"
+        },
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "未作成"
+        },
+        {
+          "name": "アーキテクチャ確認",
+          "path": "outputs/phase-8/architecture-conformance.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "未実施",
+      "specFile": "phase-9-quality.md",
+      "outputDir": "outputs/phase-9/",
+      "artifacts": [
+        {
+          "name": "静的解析結果",
+          "path": "outputs/phase-9/static-analysis-report.md",
+          "status": "未作成"
+        },
+        {
+          "name": "テスト結果",
+          "path": "outputs/phase-9/test-execution-report.md",
+          "status": "未作成"
+        },
+        {
+          "name": "セキュリティ結果",
+          "path": "outputs/phase-9/security-check-report.md",
+          "status": "未作成"
+        },
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-assurance-report.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "未実施",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10/",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "未作成"
+        },
+        {
+          "name": "トレーサビリティ",
+          "path": "outputs/phase-10/requirements-traceability.md",
+          "status": "未作成"
+        },
+        {
+          "name": "指摘事項",
+          "path": "outputs/phase-10/review-issues.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "未実施",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11/",
+      "artifacts": [
+        {
+          "name": "テスト実行結果",
+          "path": "outputs/phase-11/manual-test-results.md",
+          "status": "未作成"
+        },
+        {
+          "name": "不具合報告",
+          "path": "outputs/phase-11/bug-reports.md",
+          "status": "未作成"
+        },
+        {
+          "name": "UX改善提案",
+          "path": "outputs/phase-11/ux-improvements.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "未実施",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12/",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "未作成",
+          "required": true,
+          "description": "概念的説明（Part 1）+ 技術的詳細（Part 2）"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-update-log.md",
+          "status": "未作成",
+          "required": true
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "status": "未作成",
+          "required": true,
+          "description": "検出結果（なしでも出力）"
+        },
+        {
+          "name": "未完了タスク指示書",
+          "path": "docs/30-workflows/unassigned-task/*.md",
+          "status": "未作成",
+          "required": false,
+          "description": "検出時のみ作成"
+        },
+        {
+          "name": "API仕様書（最終版）",
+          "path": "outputs/phase-12/api-specification-final.md",
+          "status": "未作成"
+        },
+        {
+          "name": "型定義ドキュメント（最終版）",
+          "path": "outputs/phase-12/type-definitions-final.md",
+          "status": "未作成"
+        },
+        {
+          "name": "使用例ドキュメント",
+          "path": "outputs/phase-12/usage-examples.md",
+          "status": "未作成"
+        },
+        {
+          "name": "トラブルシューティング",
+          "path": "outputs/phase-12/troubleshooting-guide.md",
+          "status": "未作成"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "未実施",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13/",
+      "artifacts": [
+        {
+          "name": "最終確認チェックリスト",
+          "path": "outputs/phase-13/final-checklist.md",
+          "status": "未作成"
+        },
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "未作成",
+          "description": "PR URL等"
+        },
+        {
+          "name": "CI結果",
+          "path": "outputs/phase-13/ci-results.md",
+          "status": "未作成"
+        }
+      ],
+      "notes": [
+        "ユーザーにローカル動作確認を依頼【必須】",
+        "変更サマリーの提示と許可確認【必須】",
+        "タスクディレクトリをcompleted-tasksに移動【必須】"
+      ]
+    }
+  ],
+  "references": {
+    "originalTask": "docs/30-workflows/unassigned-task/requirements-claude-code-cli-integration.md",
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md",
+      ".claude/skills/aiworkflow-requirements/references/api-endpoints.md",
+      ".claude/skills/aiworkflow-requirements/references/security-api-electron.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md"
+    ]
+  }
+}

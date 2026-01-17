@@ -194,6 +194,18 @@ export const IPC_CHANNELS = {
   SLIDE_SETTINGS_SELECT_DIRECTORY: "slideSettings:selectDirectory",
   SLIDE_SETTINGS_VALIDATE_DIRECTORY: "slideSettings:validateDirectory",
   SLIDE_SETTINGS_GET_ALL: "slideSettings:getAllSettings",
+
+  // Claude CLI operations
+  CLAUDE_CLI_CHECK_INSTALLATION: "claude-cli:check-installation",
+  CLAUDE_CLI_LIST_SKILLS: "claude-cli:list-skills",
+  CLAUDE_CLI_GET_SKILL_DETAIL: "claude-cli:get-skill-detail",
+  CLAUDE_CLI_EXECUTE_SCRIPT: "claude-cli:execute-script",
+  CLAUDE_CLI_TERMINATE_SESSION: "claude-cli:terminate-session",
+  CLAUDE_CLI_LIST_SESSIONS: "claude-cli:list-sessions",
+  CLAUDE_CLI_GET_SESSION: "claude-cli:get-session",
+  // Claude CLI streaming events (main -> renderer)
+  CLAUDE_CLI_SESSION_OUTPUT: "claude-cli:session-output",
+  CLAUDE_CLI_SESSION_STATUS: "claude-cli:session-status",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -336,6 +348,14 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SLIDE_SETTINGS_SELECT_DIRECTORY,
   IPC_CHANNELS.SLIDE_SETTINGS_VALIDATE_DIRECTORY,
   IPC_CHANNELS.SLIDE_SETTINGS_GET_ALL,
+  // Claude CLI channels
+  IPC_CHANNELS.CLAUDE_CLI_CHECK_INSTALLATION,
+  IPC_CHANNELS.CLAUDE_CLI_LIST_SKILLS,
+  IPC_CHANNELS.CLAUDE_CLI_GET_SKILL_DETAIL,
+  IPC_CHANNELS.CLAUDE_CLI_EXECUTE_SCRIPT,
+  IPC_CHANNELS.CLAUDE_CLI_TERMINATE_SESSION,
+  IPC_CHANNELS.CLAUDE_CLI_LIST_SESSIONS,
+  IPC_CHANNELS.CLAUDE_CLI_GET_SESSION,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -368,4 +388,7 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_EXECUTION_PERMISSION,
   // Agent SDK Message channel (AGENT-005-POSTRELEASE)
   IPC_CHANNELS.AGENT_MESSAGE,
+  // Claude CLI streaming channels
+  IPC_CHANNELS.CLAUDE_CLI_SESSION_OUTPUT,
+  IPC_CHANNELS.CLAUDE_CLI_SESSION_STATUS,
 ];

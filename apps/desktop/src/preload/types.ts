@@ -1264,6 +1264,78 @@ export type {
   SlideSettingsValidateDirectoryResponse,
 };
 
+// ===== Claude CLI operations =====
+
+import type {
+  CliInstallationStatus,
+  ScanResult as ClaudeCliScanResult,
+  ClaudeCliSkillDetail,
+  SessionSummary as ClaudeCliSessionSummary,
+  SessionDetail as ClaudeCliSessionDetail,
+  ListSkillsRequest as ClaudeCliListSkillsRequest,
+  GetSkillDetailRequest as ClaudeCliGetSkillDetailRequest,
+  ExecuteScriptRequest as ClaudeCliExecuteScriptRequest,
+  ExecuteScriptResponse as ClaudeCliExecuteScriptResponse,
+  TerminateSessionRequest as ClaudeCliTerminateSessionRequest,
+  TerminateSessionResponse as ClaudeCliTerminateSessionResponse,
+  GetSessionRequest as ClaudeCliGetSessionRequest,
+  Result as ClaudeCliResult,
+} from "@repo/shared";
+
+export type {
+  CliInstallationStatus,
+  ClaudeCliScanResult,
+  ClaudeCliSkillDetail,
+  ClaudeCliSessionSummary,
+  ClaudeCliSessionDetail,
+  ClaudeCliListSkillsRequest,
+  ClaudeCliGetSkillDetailRequest,
+  ClaudeCliExecuteScriptRequest,
+  ClaudeCliExecuteScriptResponse,
+  ClaudeCliTerminateSessionRequest,
+  ClaudeCliTerminateSessionResponse,
+  ClaudeCliGetSessionRequest,
+  ClaudeCliResult,
+};
+
+export interface ClaudeCliSessionOutputEvent {
+  sessionId: string;
+  type: "stdout" | "stderr";
+  content: string;
+}
+
+export interface ClaudeCliSessionStatusEvent {
+  sessionId: string;
+  oldStatus?: string;
+  newStatus: string;
+}
+
+export interface ClaudeCliAPI {
+  checkInstallation: () => Promise<ClaudeCliResult<CliInstallationStatus>>;
+  listSkills: (
+    request?: ClaudeCliListSkillsRequest,
+  ) => Promise<ClaudeCliResult<ClaudeCliScanResult>>;
+  getSkillDetail: (
+    request: ClaudeCliGetSkillDetailRequest,
+  ) => Promise<ClaudeCliResult<ClaudeCliSkillDetail>>;
+  executeScript: (
+    request: ClaudeCliExecuteScriptRequest,
+  ) => Promise<ClaudeCliResult<ClaudeCliExecuteScriptResponse>>;
+  terminateSession: (
+    request: ClaudeCliTerminateSessionRequest,
+  ) => Promise<ClaudeCliResult<ClaudeCliTerminateSessionResponse>>;
+  listSessions: () => Promise<ClaudeCliResult<ClaudeCliSessionSummary[]>>;
+  getSession: (
+    request: ClaudeCliGetSessionRequest,
+  ) => Promise<ClaudeCliResult<ClaudeCliSessionDetail>>;
+  onSessionOutput: (
+    callback: (event: ClaudeCliSessionOutputEvent) => void,
+  ) => () => void;
+  onSessionStatus: (
+    callback: (event: ClaudeCliSessionStatusEvent) => void,
+  ) => () => void;
+}
+
 // Global type declaration
 declare global {
   interface Window {
@@ -1272,6 +1344,7 @@ declare global {
     agentAPI: AgentExecutionAPI;
     agentSDKAPI: AgentSDKAPI;
     slideSettingsAPI: SlideSettingsAPI;
+    claudeCliAPI: ClaudeCliAPI;
   }
 }
 
