@@ -30,21 +30,37 @@ Phase 12で作成・更新したドキュメントの履歴を記録します。
 
 ## システムドキュメント更新
 
-### 更新対象の確認
+### 更新対象
 
-以下のシステムドキュメントは本タスクのスコープでは更新不要と判断しました。
+以下のシステムドキュメントを更新しました（2026-01-17 追加更新）。
 
-| ドキュメント             | パス                                                 | 更新理由                     | 判断                                             |
-| ------------------------ | ---------------------------------------------------- | ---------------------------- | ------------------------------------------------ |
-| interfaces-agent-sdk.md  | `.claude/skills/aiworkflow-requirements/references/` | Claude CLI統合セクション追加 | 概要のみで十分、詳細はworkflow内ドキュメント参照 |
-| architecture-patterns.md | `.claude/skills/aiworkflow-requirements/references/` | CLI連携パターン追加          | 同上                                             |
-| security-api-electron.md | `.claude/skills/aiworkflow-requirements/references/` | CLI関連セキュリティ要件追加  | 同上                                             |
+| ドキュメント             | パス                                                 | 更新内容                                    |
+| ------------------------ | ---------------------------------------------------- | ------------------------------------------- |
+| interfaces-agent-sdk.md  | `.claude/skills/aiworkflow-requirements/references/` | Claude CLI統合セクション追加（IPC、型定義） |
+| architecture-patterns.md | `.claude/skills/aiworkflow-requirements/references/` | Claude Code CLI連携パターン追加             |
+| security-api-electron.md | `.claude/skills/aiworkflow-requirements/references/` | Claude Code CLI連携セキュリティ要件追加     |
 
-**理由**:
+**更新内容詳細**:
 
-- Single Source of Truthの原則に従い、詳細は`docs/30-workflows/claude-code-cli-integration/`内のドキュメントに集約
-- システム仕様ドキュメントには概要・参照先のみ記載
-- 本タスクは「API層のみの実装」であり、フル統合時に更新予定
+- **interfaces-agent-sdk.md**: Claude CLI統合のIPC仕様、型定義、設定定数、関連ドキュメントリンクを追加
+- **architecture-patterns.md**: ClaudeCliManager Facadeパターン、コンポーネント構成、データフロー、EventEmitter設計を追加
+- **security-api-electron.md**: コマンドインジェクション防止、パストラバーサル防止、Zodスキーマ検証、リソース制限、プロセス終了保証を追加
+
+### 未タスク配置
+
+以下の未タスクをMIDASC形式で配置しました。
+
+| ファイル                                                                     | タスクID           | 内容                           | 優先度 |
+| ---------------------------------------------------------------------------- | ------------------ | ------------------------------ | ------ |
+| `docs/30-workflows/unassigned-task/task-claude-cli-renderer-api.md`          | UNASSIGNED-CLI-001 | Renderer API実装               | 高     |
+| `docs/30-workflows/unassigned-task/task-imp-claude-cli-abort-ui.md`          | UNASSIGNED-CLI-002 | スキル実行中断UI               | 中     |
+| `docs/30-workflows/unassigned-task/task-imp-claude-cli-progress-feedback.md` | UNASSIGNED-CLI-003 | 実行中フィードバック表示       | 中     |
+| `docs/30-workflows/unassigned-task/task-imp-claude-cli-retry-ux.md`          | UNASSIGNED-CLI-004 | キャンセル・再試行UX           | 中     |
+| `docs/30-workflows/unassigned-task/task-perf-claude-cli-large-output.md`     | UNASSIGNED-CLI-005 | 大量出力パフォーマンス確認     | 低     |
+| `docs/30-workflows/unassigned-task/task-perf-claude-cli-concurrent-load.md`  | UNASSIGNED-CLI-006 | 10セッション同時実行負荷テスト | 低     |
+| `docs/30-workflows/unassigned-task/task-ref-claude-cli-jsdoc.md`             | UNASSIGNED-CLI-007 | JSDoc/TSDoc補完                | 低     |
+| `docs/30-workflows/unassigned-task/task-ref-claude-cli-coverage.md`          | UNASSIGNED-CLI-008 | カバレッジ改善                 | 低     |
+| `docs/30-workflows/unassigned-task/task-sec-claude-cli-deps-update.md`       | UNASSIGNED-CLI-009 | dev依存関係脆弱性更新          | 低     |
 
 ## ドキュメント品質確認
 
