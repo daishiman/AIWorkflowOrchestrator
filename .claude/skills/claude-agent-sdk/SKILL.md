@@ -1,17 +1,18 @@
 ---
 name: claude-agent-sdk
 description: |
-  Claude Agent SDK（@anthropic-ai/claude-agent-sdk）を使用したエージェント統合の実装を専門とするスキル。
-  query() API、Hooksシステム、Permission Control、Electron統合、ストリーミング処理を支援します。
+  Claude Agent SDK（@anthropic-ai/claude-agent-sdk）および直接Anthropic SDK（@anthropic-ai/sdk）を使用したエージェント統合の実装を専門とするスキル。
+  query() API、Hooksシステム、Permission Control、Electron統合、ストリーミング処理、Direct SDKパターンを支援します。
 
   Anchors:
   • Claude Agent SDK Official Docs / 適用: SDK API、Hooks、Permissions / 目的: 公式パターンに準拠した実装
+  • Anthropic SDK (@anthropic-ai/sdk) / 適用: Direct SDK呼び出し / 目的: シンプルなMain Process統合
   • Electron IPC Best Practices / 適用: Main-Renderer間通信 / 目的: セキュアなプロセス間通信
   • TypeScript Handbook / 適用: 型定義、ジェネリクス / 目的: 型安全なSDK統合
 
   Trigger:
-  Claude Agent SDKを使用したエージェント機能実装、query() APIストリーミング処理、Hooksシステム実装、Electron統合、Permission Control設計、MCP統合を行う場合に使用。
-  claude-agent-sdk, query API, PreToolUse, PostToolUse, PermissionRequest, Electron IPC, MCP, ストリーミング, 権限制御
+  Claude Agent SDKを使用したエージェント機能実装、query() APIストリーミング処理、Hooksシステム実装、Electron統合、Permission Control設計、MCP統合、Direct SDK統合を行う場合に使用。
+  claude-agent-sdk, query API, PreToolUse, PostToolUse, PermissionRequest, Electron IPC, MCP, ストリーミング, 権限制御, @anthropic-ai/sdk, Direct SDK
 
 allowed-tools:
   - Read
@@ -95,6 +96,101 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | エラーハンドリング       | AbortSignal、タイムアウト、リトライ  | Phase 2        | error-handling.md                              |
 | MCP統合                  | MCPサーバーとの連携                  | Phase 2, 3     | mcp-integration.md                             |
 | セキュリティ設計         | サンドボックス、ホスティング         | Phase 2, 3     | security-sandboxing.md                         |
+
+## パターン選択ガイド
+
+### claude-agent-sdk vs 直接SDK使用
+
+| 要件 | claude-agent-sdk | 直接SDK (`@anthropic-ai/sdk`) |
+|------|-----------------|------------------------------|
+| Hooks (PreToolUse等) | ✅ 必要 | ❌ 不要 |
+| Permission Control | ✅ 必要 | ❌ 不要 |
+| ストリーミングUI | ✅ 複雑 | ⚪ シンプル |
+| Main Process専用 | ⚪ 可能 | ✅ 推奨 |
+| バッチ処理 | ⚪ 可能 | ✅ 推奨 |
+
+**推奨**:
+- **対話型エージェント** → `@anthropic-ai/claude-agent-sdk`
+- **バックグラウンド処理/バッチ** → `@anthropic-ai/sdk` 直接使用
+
+### Direct Anthropic SDK Pattern
+
+Main Processでシンプルなクエリを実行する場合のパターン。
+
+```typescript
+import Anthropic from "@anthropic-ai/sdk";
+import { safeStorage } from "electron";
+import Store from "electron-store";
+
+// APIキー管理（safeStorage + 環境変数フォールバック）
+async function getApiKey(): Promise<string> {
+  const store = new Store<{ anthropic_api_key?: string }>();
+  const encrypted = store.get("anthropic_api_key");
+
+  if (encrypted && safeStorage.isEncryptionAvailable()) {
+    return safeStorage.decryptString(Buffer.from(encrypted, "base64"));
+  }
+
+  const envKey = process.env.ANTHROPIC_API_KEY;
+  if (envKey) return envKey;
+
+  throw new Error("API key not configured");
+}
+
+// 直接SDK呼び出し
+async function executeQuery(
+  prompt: string,
+  systemPrompt?: string,
+  timeout = 30000
+): Promise<string> {
+  const client = new Anthropic({ apiKey: await getApiKey() });
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await client.messages.create(
+      {
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 8192,
+        ...(systemPrompt ? { system: systemPrompt } : {}),
+        messages: [{ role: "user", content: prompt }],
+      },
+      { signal: controller.signal }
+    );
+
+    const textContent = response.content.find(b => b.type === "text");
+    return textContent?.type === "text" ? textContent.text : "";
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+```
+
+📖 実装参照: `apps/desktop/src/main/slide/agent-client.ts`
+
+### SkillExecutor Pattern
+
+フェーズベースのスキル実行パターン。進捗コールバック、キャンセル機能を含む。
+
+```typescript
+interface SkillExecutor {
+  execute(phase: SkillPhase, projectPath: string): Promise<SkillExecutionResult>;
+  cancel(): void;
+  onProgress(callback: (progress: number) => void): void;
+  isExecuting(): boolean;
+}
+
+// スキルフェーズマッピング
+const skillMap: Record<SkillPhase, string> = {
+  hearing: "hearing-facilitator",
+  structure: "structure-designer",
+  html: "html-generator",
+  modifier: "slide-modifier",
+};
+```
+
+📖 実装参照: `apps/desktop/src/main/slide/skill-executor.ts`
 
 ## ベストプラクティス
 
@@ -224,6 +320,14 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 | 手動テスト結果       | `docs/30-workflows/claude-code-integration/outputs/phase-11/`                | 手動検証結果            |
 | 実装ガイド           | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` | 概念・技術詳細 |
 
+### Slide Agent SDK統合実装成果物（Direct SDK Pattern参照）
+
+| ドキュメント         | パス                                                                         | 説明                        |
+| -------------------- | ---------------------------------------------------------------------------- | --------------------------- |
+| 実装ガイド           | `docs/30-workflows/slide-agent-sdk-integration/outputs/phase-12/implementation-guide.md` | Direct SDKパターン詳細 |
+| CHANGELOGエントリ    | `docs/30-workflows/slide-agent-sdk-integration/outputs/phase-12/changelog-entry.md` | リリースノート |
+| システム仕様         | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`  | SDK統合システム仕様（更新済み） |
+
 ### 実装ファイル
 
 | ファイル           | パス                                                           | 説明                   |
@@ -235,10 +339,19 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 | ExecutionManager   | `apps/desktop/src/main/services/agent/ExecutionManager.ts`     | 複数実行管理           |
 | IPCハンドラー      | `apps/desktop/src/main/ipc/agentHandlers.ts`                   | IPC通信処理            |
 
+### Slide SDK統合実装ファイル（Direct SDK Pattern）
+
+| ファイル           | パス                                                           | 説明                            |
+| ------------------ | -------------------------------------------------------------- | ------------------------------- |
+| AgentClient        | `apps/desktop/src/main/slide/agent-client.ts`                  | Direct SDK呼び出し、シングルトン |
+| SkillExecutor      | `apps/desktop/src/main/slide/skill-executor.ts`                | フェーズマッピング、進捗コールバック |
+| 型定義             | `packages/shared/src/types/slide.ts`                           | SkillPhase, SkillExecutionResult |
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                    |
 | ------- | ---------- | ---------------------------------------------------------- |
+| 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加 |
 | 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正        |
 | 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携             |
 | 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加                 |

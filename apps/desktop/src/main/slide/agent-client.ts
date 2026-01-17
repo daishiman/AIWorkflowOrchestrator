@@ -6,6 +6,10 @@
  * Electron preload経由ではなく、直接IPCハンドラーを使用する。
  */
 
+import Anthropic from "@anthropic-ai/sdk";
+import { safeStorage } from "electron";
+import Store from "electron-store";
+
 /**
  * SDKメッセージタイプ（Main Process用ローカル定義）
  */
@@ -90,9 +94,43 @@ let currentStatus: AgentInternalStatus = "idle";
 let currentAbortController: AbortController | null = null;
 
 /**
- * 収集したメッセージ内容（Agent SDK統合時に使用予定）
+ * Electron Store for API key storage
  */
-const _collectedContent = "";
+const store = new Store<{ anthropic_api_key?: string }>();
+
+/**
+ * SDK設定定数
+ */
+const SDK_CONFIG = {
+  model: "claude-sonnet-4-20250514" as const,
+  maxTokens: 8192,
+} as const;
+
+/**
+ * APIキーを取得する
+ * safeStorageから暗号化されたキーを取得するか、環境変数にフォールバック
+ * @returns APIキー文字列
+ * @throws API key not configuredエラー
+ */
+async function getApiKey(): Promise<string> {
+  // Electron safeStorageから取得を試行
+  const encrypted = store.get("anthropic_api_key");
+  if (encrypted && safeStorage.isEncryptionAvailable()) {
+    try {
+      return safeStorage.decryptString(Buffer.from(encrypted, "base64"));
+    } catch {
+      // 復号に失敗した場合は環境変数にフォールバック
+    }
+  }
+
+  // 環境変数フォールバック（開発時）
+  const envKey = process.env.ANTHROPIC_API_KEY;
+  if (envKey) {
+    return envKey;
+  }
+
+  throw new Error("API key not configured");
+}
 
 /**
  * Agent APIを取得する
@@ -113,7 +151,6 @@ export function getAgentAPI(): ModifierAgentAPI {
 
       currentStatus = "running";
       currentAbortController = new AbortController();
-      // Note: _collectedContent はAgent SDK統合時にストリーミング応答収集に使用
 
       const timeout = options.options?.timeout ?? 30000;
 
@@ -177,65 +214,86 @@ async function executeAgentQuery(
   timeout: number,
   signal: AbortSignal,
 ): Promise<ModifierAgentQueryResponse> {
-  return new Promise((resolve, reject) => {
-    // タイムアウト処理
-    const timeoutId = setTimeout(() => {
-      reject(new Error("Request timeout"));
-    }, timeout);
+  // タイムアウト用のAbortController
+  const timeoutController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    timeoutController.abort();
+  }, timeout);
 
-    // Abort処理
-    signal.addEventListener("abort", () => {
-      clearTimeout(timeoutId);
-      reject(new Error("Aborted"));
-    });
+  // 外部シグナルとタイムアウトをリンク
+  const abortHandler = () => {
+    clearTimeout(timeoutId);
+    timeoutController.abort();
+  };
+  signal.addEventListener("abort", abortHandler);
 
-    // TODO: Agent SDK統合後に実際のAPI呼び出しを実装
-    // 現在はシミュレーション実装
-    //
-    // 実際の実装では以下のようになる:
-    // const client = new Anthropic({ apiKey: getApiKey() });
-    // const response = await client.messages.create({
-    //   model: "claude-sonnet-4-20250514",
-    //   max_tokens: 8192,
-    //   system: systemPrompt,
-    //   messages: [{ role: "user", content: prompt }],
-    // });
+  try {
+    // APIキーを取得
+    const apiKey = await getApiKey();
 
-    // シミュレーション: 1秒後に応答
-    setTimeout(() => {
-      clearTimeout(timeoutId);
+    // Anthropicクライアントを初期化
+    const client = new Anthropic({ apiKey });
 
-      if (signal.aborted) {
-        reject(new Error("Aborted"));
-        return;
+    // SDK呼び出し
+    const response = await client.messages.create(
+      {
+        model: SDK_CONFIG.model,
+        max_tokens: SDK_CONFIG.maxTokens,
+        ...(systemPrompt ? { system: systemPrompt } : {}),
+        messages: [{ role: "user", content: prompt }],
+      },
+      { signal: timeoutController.signal },
+    );
+
+    clearTimeout(timeoutId);
+
+    // 外部シグナルがabortされた場合
+    if (signal.aborted) {
+      throw new Error("Aborted");
+    }
+
+    // レスポンスからテキストコンテンツを抽出
+    const textContent = response.content.find((block) => block.type === "text");
+    const content =
+      textContent && textContent.type === "text" ? textContent.text : "";
+
+    const result: ModifierAgentQueryResponse = {
+      content,
+      usage: {
+        inputTokens: response.usage.input_tokens,
+        outputTokens: response.usage.output_tokens,
+      },
+    };
+
+    // メッセージリスナーに通知
+    const message: SDKMessage = {
+      id: crypto.randomUUID(),
+      type: "complete",
+      content: result.content,
+      timestamp: Date.now(),
+      isComplete: true,
+    };
+
+    messageListeners.forEach((listener) => listener(message));
+
+    return result;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    // Abortエラーの処理
+    if (error instanceof Error) {
+      if (error.name === "AbortError" || signal.aborted) {
+        throw new Error("Aborted");
       }
+      if (timeoutController.signal.aborted && !signal.aborted) {
+        throw new Error("Request timeout");
+      }
+    }
 
-      // シミュレーションレスポンス
-      // 実際のAgent SDKからは適切なJSON形式で返ってくる
-      const simulatedResponse: ModifierAgentQueryResponse = {
-        content: JSON.stringify({
-          changes: [],
-        }),
-        usage: {
-          inputTokens: 100,
-          outputTokens: 50,
-        },
-      };
-
-      // メッセージリスナーに通知
-      const message: SDKMessage = {
-        id: crypto.randomUUID(),
-        type: "complete",
-        content: simulatedResponse.content,
-        timestamp: Date.now(),
-        isComplete: true,
-      };
-
-      messageListeners.forEach((listener) => listener(message));
-
-      resolve(simulatedResponse);
-    }, 1000);
-  });
+    throw error;
+  } finally {
+    signal.removeEventListener("abort", abortHandler);
+  }
 }
 
 /**
@@ -246,5 +304,4 @@ export function resetAgentAPI(): void {
   currentStatus = "idle";
   currentAbortController = null;
   messageListeners.clear();
-  // Note: _collectedContent のリセットはAgent SDK統合時に追加
 }

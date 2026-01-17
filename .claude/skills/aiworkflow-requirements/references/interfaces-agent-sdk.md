@@ -807,13 +807,32 @@ interface ChangeContext {
 
 ### 実装状態
 
-| コンポーネント | 状態                 | 備考                           |
-| -------------- | -------------------- | ------------------------------ |
-| ModifierSkill  | シミュレーション実装 | Agent SDK統合後に実SDK呼び出し |
-| AgentClient    | シミュレーション実装 | Agent SDK統合後に実API連携     |
-| SyncManager    | 完了                 | 双方向同期ロジック実装済み     |
-| FileWatcher    | 完了                 | chokidarベース監視実装済み     |
-| SkillExecutor  | 完了                 | オーケストレーション実装済み   |
+| コンポーネント | 状態   | 備考                                                  |
+| -------------- | ------ | ----------------------------------------------------- |
+| ModifierSkill  | 完了   | Claude Agent SDK統合済み（実SDK呼び出し）             |
+| AgentClient    | 完了   | Anthropic SDK直接呼び出し（@anthropic-ai/sdk使用）    |
+| SkillExecutor  | 完了   | スキルフェーズマッピング・進捗コールバック・キャンセル |
+| SyncManager    | 完了   | 双方向同期ロジック実装済み                            |
+| FileWatcher    | 完了   | chokidarベース監視実装済み                            |
+
+#### SDK統合詳細（2026-01-17更新）
+
+| 項目               | 内容                       |
+| ------------------ | -------------------------- |
+| Model              | claude-sonnet-4-20250514   |
+| Max Tokens         | 8192                       |
+| Timeout            | 30000ms                    |
+| APIキー管理        | Electron safeStorage暗号化 |
+| 環境変数フォールバック | ANTHROPIC_API_KEY（開発用）|
+
+#### スキルフェーズマッピング
+
+| SkillPhase | スキル名            |
+| ---------- | ------------------- |
+| hearing    | hearing-facilitator |
+| structure  | structure-designer  |
+| html       | html-generator      |
+| modifier   | slide-modifier      |
 
 ### 関連ドキュメント（スライド逆同期）
 

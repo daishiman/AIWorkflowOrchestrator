@@ -4,7 +4,12 @@
  * @module main/slide/skill-executor
  */
 
-import type { SkillPhase, SkillExecutionResult } from "@repo/shared";
+import type {
+  SkillPhase,
+  SkillExecutionResult,
+  StructureChange,
+} from "@repo/shared";
+import { getAgentAPI } from "./agent-client";
 
 /**
  * スキル実行器インターフェース
@@ -35,6 +40,63 @@ const getSkillName = (phase: SkillPhase): string => {
   };
   return skillMap[phase];
 };
+
+/**
+ * スキルフェーズ用のプロンプトを生成する
+ */
+const generateSkillPrompt = (
+  phase: SkillPhase,
+  projectPath: string,
+): string => {
+  const prompts: Record<SkillPhase, string> = {
+    hearing: `プロジェクトパス: ${projectPath}\n\nプレゼンテーションの要件をヒアリングし、構造化してください。`,
+    structure: `プロジェクトパス: ${projectPath}\n\nヒアリング結果を基に、スライドの構造を設計してください。`,
+    html: `プロジェクトパス: ${projectPath}\n\n構造定義を基に、Reveal.js HTMLスライドを生成してください。`,
+    modifier: `プロジェクトパス: ${projectPath}\n\nHTMLスライドの変更を解析し、構造定義を更新してください。変更内容をJSON形式で返してください。`,
+  };
+  return prompts[phase];
+};
+
+/**
+ * スキルフェーズ用のシステムプロンプトを取得する
+ */
+const getSystemPromptForPhase = (phase: SkillPhase): string => {
+  const systemPrompts: Record<SkillPhase, string> = {
+    hearing:
+      "あなたはプレゼンテーション要件のヒアリングを行うファシリテーターです。",
+    structure: "あなたはプレゼンテーション構造を設計するデザイナーです。",
+    html: "あなたはReveal.jsを使用したHTMLスライドを生成するジェネレーターです。",
+    modifier:
+      "あなたはHTMLスライドの変更を解析し、構造定義との同期を行うモディファイアです。",
+  };
+  return systemPrompts[phase];
+};
+
+/**
+ * スキルレスポンスをパースする
+ */
+const parseSkillResponse = (
+  phase: SkillPhase,
+  content: string,
+): { output: string; changes?: StructureChange[] } => {
+  if (phase === "modifier") {
+    try {
+      const parsed = JSON.parse(content) as { changes?: StructureChange[] };
+      return {
+        output: content,
+        changes: parsed.changes || [],
+      };
+    } catch {
+      return { output: content, changes: [] };
+    }
+  }
+  return { output: content };
+};
+
+/**
+ * SDK実行タイムアウト（ミリ秒）
+ */
+const SDK_TIMEOUT = 30000;
 
 /**
  * スキル実行器を作成する
@@ -75,6 +137,10 @@ export const createSkillExecutor = (): SkillExecutor => {
         // スキル名を取得
         const skillName = getSkillName(phase);
 
+        // プロンプトを生成
+        const prompt = generateSkillPrompt(phase, projectPath);
+        const systemPrompt = getSystemPromptForPhase(phase);
+
         emitProgress(25);
 
         // キャンセルチェック
@@ -84,27 +150,23 @@ export const createSkillExecutor = (): SkillExecutor => {
 
         emitProgress(50);
 
-        // TODO: Claude Agent SDK統合後に実装
-        // 現在はシミュレーション
-        // const result = await executeWithAgentSDK(skillName, projectPath, abortController.signal);
-
-        // スキル実行のシミュレーション（Agent SDK統合まで）
-        await new Promise<void>((resolve, reject) => {
-          const timeout = setTimeout(() => {
-            resolve();
-          }, 1000);
-
-          // キャンセル時のクリーンアップ
-          abortController?.signal.addEventListener("abort", () => {
-            clearTimeout(timeout);
-            reject(new Error("Cancelled"));
-          });
+        // Agent SDKを使用してスキルを実行
+        const agentAPI = getAgentAPI();
+        const response = await agentAPI.query({
+          prompt,
+          options: {
+            systemPrompt,
+            timeout: SDK_TIMEOUT,
+          },
         });
 
         // キャンセルチェック
         if (cancelled) {
           throw new Error("Cancelled");
         }
+
+        // レスポンスをパース
+        const parsed = parseSkillResponse(phase, response.content);
 
         emitProgress(100);
 
@@ -115,9 +177,9 @@ export const createSkillExecutor = (): SkillExecutor => {
             success: true,
             output: `Skill ${skillName} executed successfully`,
             duration: Date.now() - startTime,
-            changes: [], // 変更リスト（シミュレーションでは空）
+            changes: parsed.changes || [],
             direction: "reverse" as const,
-            projectPath, // コンテキスト情報
+            projectPath,
           };
         }
 

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.2.5",
+    "@anthropic-ai/sdk": "^0.71.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@repo/shared": "workspace:*",
     "@supabase/supabase-js": "^2.86.2",
