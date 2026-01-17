@@ -1,0 +1,139 @@
+{
+  "taskId": "task-req-history-manual-test-001",
+  "taskName": "history-manual-testing",
+  "createdAt": "2026-01-16T23:25:00Z",
+  "updatedAt": "2026-01-17T00:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "startedAt": "2026-01-17T00:00:00Z",
+      "completedAt": "2026-01-17T00:00:00Z",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "startedAt": "2026-01-17T00:10:00Z",
+      "completedAt": "2026-01-17T00:30:00Z",
+      "artifacts": [
+        {
+          "name": "テスト結果レポート",
+          "path": "outputs/phase-11/manual-test-result.md"
+        },
+        {
+          "name": "発見課題リスト",
+          "path": "outputs/phase-11/discovered-issues.md"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "startedAt": "2026-01-17T00:30:00Z",
+      "completedAt": "2026-01-17T00:45:00Z",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-update-log.md"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-report.md"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "expectedArtifacts": {
+    "phase-1": [
+      {
+        "name": "要件定義書",
+        "path": "outputs/phase-1/requirements-definition.md",
+        "required": true
+      },
+      {
+        "name": "スコープ定義",
+        "path": "outputs/phase-1/scope-definition.md",
+        "required": true
+      }
+    ],
+    "phase-11": [
+      {
+        "name": "テスト結果レポート",
+        "path": "outputs/phase-11/manual-test-result.md",
+        "required": true
+      },
+      {
+        "name": "発見課題リスト",
+        "path": "outputs/phase-11/discovered-issues.md",
+        "required": true
+      }
+    ],
+    "phase-12": [
+      {
+        "name": "実装ガイド",
+        "path": "outputs/phase-12/implementation-guide.md",
+        "required": true
+      },
+      {
+        "name": "ドキュメント更新履歴",
+        "path": "outputs/phase-12/documentation-update-log.md",
+        "required": true
+      },
+      {
+        "name": "未タスク検出レポート",
+        "path": "outputs/phase-12/unassigned-task-report.md",
+        "required": true
+      }
+    ],
+    "phase-13": [
+      {
+        "name": "PR情報",
+        "path": "outputs/phase-13/pr-info.md",
+        "required": true
+      }
+    ]
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/ui-ux-history-panel.md",
+      ".claude/skills/aiworkflow-requirements/references/ui-ux-advanced.md"
+    ],
+    "relatedTasks": [
+      "task-req-history-integration-001",
+      "task-req-history-preload-001",
+      "task-req-history-ipc-001",
+      "history-service-db-integration"
+    ],
+    "sourceTask": "docs/30-workflows/unassigned-task/task-history-manual-testing.md"
+  },
+  "metadata": {
+    "category": "要件（手動テスト検証）",
+    "targetFeature": "履歴/ログ表示UI",
+    "priority": "中",
+    "scale": "小規模（S）",
+    "discoveredFrom": "Phase 11（手動テスト検証）",
+    "discoveredAt": "2026-01-10"
+  }
+}
