@@ -15,7 +15,9 @@ const getArg = (name) => {
 };
 
 if (args.includes("-h") || args.includes("--help")) {
-  console.log(`Usage: node log_usage.mjs --result <success|failure> [--phase <name>] [--notes <text>]`);
+  console.log(
+    `Usage: node log_usage.mjs --result <success|failure> [--phase <name>] [--notes <text>]`,
+  );
   process.exit(0);
 }
 

@@ -81,7 +81,11 @@ async function main() {
       );
       writeFileSync(logsPath, updatedLogs, "utf-8");
     } else {
-      writeFileSync(logsPath, `# 実行ログ\n${logEntry}\n（ログエントリはここに追記されます）`, "utf-8");
+      writeFileSync(
+        logsPath,
+        `# 実行ログ\n${logEntry}\n（ログエントリはここに追記されます）`,
+        "utf-8",
+      );
     }
     console.log(`✓ LOGS.md に記録を追記しました`);
   } catch (err) {
@@ -94,7 +98,9 @@ async function main() {
 
   try {
     if (!existsSync(evalsPath)) {
-      console.log("⚠ EVALS.json が見つかりません。メトリクス更新をスキップします。");
+      console.log(
+        "⚠ EVALS.json が見つかりません。メトリクス更新をスキップします。",
+      );
       process.exit(EXIT_SUCCESS);
     }
 

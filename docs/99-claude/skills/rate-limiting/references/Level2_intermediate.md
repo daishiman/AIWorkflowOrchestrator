@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Rate Limiting Algorithms（レート制限アルゴリズム） / アルゴリズム比較 / Token Bucket / Client-Side Rate Limit Handling（クライアント側のレート制限対応） / レート制限レスポンスの理解 / 標準ヘッダー
 - 実務指針: APIのRate Limiting設計時 / DoS/DDoS攻撃対策の実装時 / 外部APIクライアントの実装時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/algorithms.md`: Rate Limiting Algorithms（レート制限アルゴリズム）（把握する知識: Rate Limiting Algorithms（レート制限アルゴリズム） / アルゴリズム比較 / Token Bucket）
 - `resources/client-handling.md`: Client-Side Rate Limit Handling（クライアント側のレート制限対応）（把握する知識: Client-Side Rate Limit Handling（クライアント側のレート制限対応） / レート制限レスポンスの理解 / 標準ヘッダー）
 - `resources/quota-management.md`: Quota Management（クォータ管理）（把握する知識: Quota Management（クォータ管理） / クォータ vs レート制限 / クォータ設計）
@@ -29,14 +32,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Rate Limiting / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/simulate-rate-limit.mjs`: Rate Limit Simulation Tool
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/rate-limiter-template.ts`: Rate Limiter Template
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

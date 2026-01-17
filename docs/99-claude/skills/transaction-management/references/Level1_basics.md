@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling transaction management tasks.
 
 ### 必要な知識
+
 - 対象領域: ACID特性を保証するトランザクション設計と実装を専門とするスキル。
 - 主要概念: Atomicity（原子性） / 定義 / 重要性 / トランザクションモード比較表 / 1. BEGIN DEFERRED（デフォルト）
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/transaction-design-checklist.md`
 - 参照テンプレート: `templates/transaction-design-template.md`
 
 ### 参照書籍
+
 - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/transaction-design-checklist.md`: このレベルでは参照のみ
 - `templates/transaction-design-template.md`: このレベルでは参照のみ
 

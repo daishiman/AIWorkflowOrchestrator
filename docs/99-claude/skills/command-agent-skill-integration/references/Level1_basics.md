@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - 統合設計の初期整理時に使用する。
 
 ### 必要な知識
+
 - 対象領域: コマンド、エージェント、スキルの統合を専門とするスキル。 三位一体の概念、コマンド→エージェント起動パターン、コマンド→スキル参照パターン、 複合ワークフローの設計を提供します。
 - 主要概念: Command → Agent統合パターン / 基本概念 / なぜコマンドからエージェントを起動するのか？ / 明示的参照構文 / Step N: Load Best Practices
 - 実務指針: コマンドからエージェントを起動したい時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: Command-Agent-Skillの協調ワークフローを設計する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `assets/agent-invocation-template.md`
 - 参照テンプレート: `assets/composite-workflow-template.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `assets/agent-invocation-template.md`: このレベルでは参照のみ
 - `assets/composite-workflow-template.md`: このレベルでは参照のみ
 

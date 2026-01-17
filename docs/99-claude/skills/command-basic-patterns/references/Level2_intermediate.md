@@ -14,25 +14,31 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: パターン選択ガイド / 決定フローチャート / パターン1: シンプル指示型 / Command Basic Patterns / リソース構造 / リソース種別
 - 実務指針: コマンドの複雑度に応じたパターンを選択する時 / 既存コマンドのパターンを理解したい時 / ワークフローの構造化方法を知りたい時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/pattern-selection-guide.md`: 基本パターン選択ガイド（把握する知識: パターン選択ガイド / 決定フローチャート / パターン1: シンプル指示型）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Basic Patterns / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-patterns.mjs`: パターン検証スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/step-by-step-template.md`: ステップバイステップコマンドテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

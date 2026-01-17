@@ -65,7 +65,11 @@ function extractMarkdownLinks(content) {
   while ((match = linkRegex.exec(content)) !== null) {
     const path = match[2];
     // 外部URLは除外
-    if (!path.startsWith("http://") && !path.startsWith("https://") && !path.startsWith("#")) {
+    if (
+      !path.startsWith("http://") &&
+      !path.startsWith("https://") &&
+      !path.startsWith("#")
+    ) {
       links.push(path);
     }
   }
@@ -127,11 +131,15 @@ function validateLinks(skillPath, verbose = false) {
   // references/内のファイルがリンクされているか確認
   const referencesPath = join(skillPath, "references");
   if (existsSync(referencesPath) && statSync(referencesPath).isDirectory()) {
-    const refFiles = readdirSync(referencesPath).filter((f) => f.endsWith(".md"));
+    const refFiles = readdirSync(referencesPath).filter((f) =>
+      f.endsWith(".md"),
+    );
     for (const refFile of refFiles) {
       const refLink = `references/${refFile}`;
       if (!skillMdContent.includes(refLink)) {
-        warnings.push(`references/${refFile}がSKILL.mdからリンクされていません`);
+        warnings.push(
+          `references/${refFile}がSKILL.mdからリンクされていません`,
+        );
       } else {
         passed.push(`references/${refFile}がSKILL.mdからリンクされている`);
       }
@@ -141,11 +149,15 @@ function validateLinks(skillPath, verbose = false) {
   // schemas/内のファイルがリンクされているか確認
   const schemasPath = join(skillPath, "schemas");
   if (existsSync(schemasPath) && statSync(schemasPath).isDirectory()) {
-    const schemaFiles = readdirSync(schemasPath).filter((f) => f.endsWith(".json"));
+    const schemaFiles = readdirSync(schemasPath).filter((f) =>
+      f.endsWith(".json"),
+    );
     for (const schemaFile of schemaFiles) {
       const schemaLink = `schemas/${schemaFile}`;
       if (!skillMdContent.includes(schemaLink)) {
-        warnings.push(`schemas/${schemaFile}がSKILL.mdからリンクされていません`);
+        warnings.push(
+          `schemas/${schemaFile}がSKILL.mdからリンクされていません`,
+        );
       } else {
         passed.push(`schemas/${schemaFile}がSKILL.mdからリンクされている`);
       }
@@ -155,7 +167,9 @@ function validateLinks(skillPath, verbose = false) {
   // scripts/内のファイルがリンクされているか確認
   const scriptsPath = join(skillPath, "scripts");
   if (existsSync(scriptsPath) && statSync(scriptsPath).isDirectory()) {
-    const scriptFiles = readdirSync(scriptsPath).filter((f) => f.endsWith(".mjs"));
+    const scriptFiles = readdirSync(scriptsPath).filter((f) =>
+      f.endsWith(".mjs"),
+    );
     for (const scriptFile of scriptFiles) {
       // scripts/はSKILL.md内で`scripts/xxx.mjs`形式で参照されることが多い
       if (!skillMdContent.includes(scriptFile)) {
@@ -209,11 +223,15 @@ async function main() {
   if (errors.length > 0) {
     console.log("\n✗ エラー:");
     errors.forEach((e) => console.log(`  - ${e}`));
-    console.log(`\n結果: ✗ 検証失敗 (${passed.length}パス, ${errors.length}エラー, ${warnings.length}警告)`);
+    console.log(
+      `\n結果: ✗ 検証失敗 (${passed.length}パス, ${errors.length}エラー, ${warnings.length}警告)`,
+    );
     process.exit(EXIT_VALIDATION_FAILED);
   }
 
-  console.log(`\n結果: ✓ 検証成功 (${passed.length}パス, ${errors.length}エラー, ${warnings.length}警告)`);
+  console.log(
+    `\n結果: ✓ 検証成功 (${passed.length}パス, ${errors.length}エラー, ${warnings.length}警告)`,
+  );
   process.exit(EXIT_SUCCESS);
 }
 

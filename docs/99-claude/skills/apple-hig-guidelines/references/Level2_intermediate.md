@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: VoiceOver / 基本要素 / Traits一覧 / HIG App Icons 仕様書 / アイコンサイズ一覧 / iOS / iPadOS
 - 実務指針: iOSネイティブアプリのUI設計時 / Apple Design Systemに準拠したUIを作成する時 / モバイルファーストのUIを設計する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/accessibility-specs.md`: HIG アクセシビリティ詳細仕様（把握する知識: VoiceOver / 基本要素 / Traits一覧）
 - `resources/app-icons-specifications.md`: HIG App Icons 仕様書（把握する知識: HIG App Icons 仕様書 / アイコンサイズ一覧 / iOS / iPadOS）
 - `resources/component-states.md`: HIG コンポーネント状態定義（把握する知識: HIG コンポーネント状態定義 / 状態一覧 / 基本状態）
@@ -38,14 +41,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Apple Human Interface Guidelines / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/check-hig-compliance.mjs`: Apple HIG準拠チェックスクリプト v1.2.0
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/hig-design-checklist.md`: Apple HIG設計チェックリスト v1.2.0
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

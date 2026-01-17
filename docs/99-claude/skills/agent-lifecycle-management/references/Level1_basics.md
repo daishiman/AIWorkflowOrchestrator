@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when designing agent lifecycle or versioning strategies.
 
 ### 必要な知識
+
 - 対象領域: エージェントライフサイクル管理を専門とするスキル。 起動、実行、状態管理、終了、バージョニング、メンテナンスにより、 エージェントの継続的な品質を保証します。
 - 主要概念: エージェント設計の基本フロー / .claude/skills/agent-architecture-patterns/SKILL.mdを参照するタイミング / .claude/skills/agent-structure-design/SKILL.mdを参照するタイミング / ローカルエージェント仕様 / Versioning Guide
 - 実務指針: エージェントのライフサイクルを設計する時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: メンテナンス計画を策定する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/lifecycle-template.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/lifecycle-template.md`: このレベルでは参照のみ
 
 ## 実践手順

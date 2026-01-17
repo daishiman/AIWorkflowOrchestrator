@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 基本構造 / 必須ルール / 2. フルパス形式 / コミットメントメカニズム設計ガイド / コミットメントメカニズムの本質 / 解決: コミットメントの強制
 - 実務指針: スキルのYAML Frontmatter（特にdescription）を設計する時 / トークン使用量を最小化する必要がある時 / スキルの自動発動率を向上させる時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/agent-dependency-format-guide.md`: agent-dependency-format-guide のガイド（把握する知識: 基本構造 / 必須ルール / 2. フルパス形式）
 - `resources/commitment-mechanism.md`: コミットメントメカニズム設計ガイド（把握する知識: コミットメントメカニズム設計ガイド / コミットメントメカニズムの本質 / 解決: コミットメントの強制）
 - `resources/metadata-design.md`: メタデータ設計ガイド（把握する知識: メタデータ設計ガイド / YAML Frontmatter の構成要素 / 必須要素）
@@ -30,14 +33,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Progressive Disclosure / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/calculate-token-usage.mjs`: Token Usage Calculator for Claude Code Skills
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/skill-metadata-template.yaml`: skill-metadata-template設定ファイル
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

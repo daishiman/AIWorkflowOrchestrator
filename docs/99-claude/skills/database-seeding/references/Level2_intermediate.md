@@ -14,29 +14,35 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: データ生成テクニック / Faker.jsの活用 / 基本的な使い方 / 環境分離ガイド / 環境の種類 / 環境定義
 - 実務指針: 新規プロジェクトの初期データを設計する時 / 開発環境のテストデータを生成する時 / テスト用フィクスチャを作成する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/data-generation.md`: data-generation の詳細ガイド（把握する知識: データ生成テクニック / Faker.jsの活用 / 基本的な使い方）
 - `references/environment-separation.md`: environment-separation の詳細ガイド（把握する知識: 環境分離ガイド / 環境の種類 / 環境定義）
 - `references/seed-strategies.md`: seed-strategies の詳細ガイド（把握する知識: シード戦略パターン / シードの分類 / 1. マスターシード（Master Seed））
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Database Seeding / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/seed-runner.mjs`: runnerをシードするスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### アセット運用
+
 - `assets/seeding-requirements-template.md`: 要件整理テンプレート
 - `assets/seed-file-template.ts`: seed-file-template のテンプレート
 - `assets/seeding-validation-checklist.md`: 検証チェックリスト
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

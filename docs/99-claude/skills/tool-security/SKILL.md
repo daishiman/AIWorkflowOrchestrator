@@ -70,11 +70,11 @@ MCPツールやAPI統合におけるセキュリティ設計を支援するス�
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
+| Task                      | 起動タイミング | 入力                    | 出力         |
+| ------------------------- | -------------- | ----------------------- | ------------ |
 | security-surface-analysis | Phase 1 開始時 | ツール構成/データフロー | 脅威整理メモ |
-| security-control-design | Phase 2 開始時 | 脅威整理/要件 | 制御設計書 |
-| security-validation | Phase 3 開始時 | 設定/監査ログ | 検証レポート |
+| security-control-design   | Phase 2 開始時 | 脅威整理/要件           | 制御設計書   |
+| security-validation       | Phase 3 開始時 | 設定/監査ログ           | 検証レポート |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -84,20 +84,20 @@ MCPツールやAPI統合におけるセキュリティ設計を支援するス�
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 攻撃面と保護対象を明確にする | 優先順位を誤らないため |
-| 設定テンプレートを統一する | 運用ミスを減らすため |
-| 検証スクリプトで確認する | 設定ミスを早期検出するため |
-| 鍵とログの管理方針を明文化する | 監査性を確保するため |
+| 推奨事項                       | 理由                       |
+| ------------------------------ | -------------------------- |
+| 攻撃面と保護対象を明確にする   | 優先順位を誤らないため     |
+| 設定テンプレートを統一する     | 運用ミスを減らすため       |
+| 検証スクリプトで確認する       | 設定ミスを早期検出するため |
+| 鍵とログの管理方針を明文化する | 監査性を確保するため       |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 影響範囲を確認せずに権限を付与する | 攻撃面が拡大する |
-| 検証を省略して設定を反映する | 設定ミスが残る |
-| ログを残さない | 監査や原因追跡が困難になる |
+| 禁止事項                           | 問題点                     |
+| ---------------------------------- | -------------------------- |
+| 影響範囲を確認せずに権限を付与する | 攻撃面が拡大する           |
+| 検証を省略して設定を反映する       | 設定ミスが残る             |
+| ログを残さない                     | 監査や原因追跡が困難になる |
 
 ---
 
@@ -105,35 +105,35 @@ MCPツールやAPI統合におけるセキュリティ設計を支援するス�
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/check-env-vars.mjs` | 環境変数の安全性を点検する |
-| `scripts/validate-security-config.mjs` | セキュリティ設定を検証する |
-| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
-| `scripts/log_usage.mjs` | 実行記録を保存する |
+| スクリプト                             | 機能                             |
+| -------------------------------------- | -------------------------------- |
+| `scripts/check-env-vars.mjs`           | 環境変数の安全性を点検する       |
+| `scripts/validate-security-config.mjs` | セキュリティ設定を検証する       |
+| `scripts/validate-skill.mjs`           | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs`                | 実行記録を保存する               |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
-| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
-| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 監査時に参照 |
-| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 高度化時に参照 |
-| APIキー管理 | [references/api-key-management.md](references/api-key-management.md) | 認証設計時に参照 |
-| 入力検証 | [references/input-validation-guide.md](references/input-validation-guide.md) | 制御設計時に参照 |
-| 権限パターン | [references/permission-patterns.md](references/permission-patterns.md) | 制御設計時に参照 |
+| リソース     | パス                                                                         | 読込条件         |
+| ------------ | ---------------------------------------------------------------------------- | ---------------- |
+| 基礎概念     | [references/Level1_basics.md](references/Level1_basics.md)                   | Phase 1 で参照   |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md)       | Phase 2 で参照   |
+| 応用戦略     | [references/Level3_advanced.md](references/Level3_advanced.md)               | 監査時に参照     |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md)                   | 高度化時に参照   |
+| APIキー管理  | [references/api-key-management.md](references/api-key-management.md)         | 認証設計時に参照 |
+| 入力検証     | [references/input-validation-guide.md](references/input-validation-guide.md) | 制御設計時に参照 |
+| 権限パターン | [references/permission-patterns.md](references/permission-patterns.md)       | 制御設計時に参照 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                               | 用途                         |
+| -------------------------------------- | ---------------------------- |
 | `assets/security-config-template.json` | セキュリティ設定テンプレート |
-| `assets/audit-log-schema.json` | 監査ログのスキーマ |
+| `assets/audit-log-schema.json`         | 監査ログのスキーマ           |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 2.0.0 | 2026-01-02 | Frontmatter再設計、Task仕様と検証フローを刷新 |
-| 1.0.1 | 2025-12-24 | 初期バージョン |
+| Version | Date       | Changes                                       |
+| ------- | ---------- | --------------------------------------------- |
+| 2.0.0   | 2026-01-02 | Frontmatter再設計、Task仕様と検証フローを刷新 |
+| 1.0.1   | 2025-12-24 | 初期バージョン                                |

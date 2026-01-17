@@ -73,11 +73,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| data-requirement-mapping | Phase 1 開始時 | テスト目的/対象 | テストデータ要件定義 |
-| fixture-strategy-design | Phase 2 開始時 | 要件定義/制約 | フィクスチャ設計書 |
-| cleanup-validation | Phase 3 開始時 | 生成データ/実行結果 | クリーンアップ検証レポート |
+| Task                     | 起動タイミング | 入力                | 出力                       |
+| ------------------------ | -------------- | ------------------- | -------------------------- |
+| data-requirement-mapping | Phase 1 開始時 | テスト目的/対象     | テストデータ要件定義       |
+| fixture-strategy-design  | Phase 2 開始時 | 要件定義/制約       | フィクスチャ設計書         |
+| cleanup-validation       | Phase 3 開始時 | 生成データ/実行結果 | クリーンアップ検証レポート |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -87,20 +87,20 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| テスト目的とデータ境界を最初に定義する | 生成範囲の過不足を防ぐため |
-| 一意性の担保方法を固定する | 並列実行時の衝突を避けるため |
-| シーディング順序を明記する | 依存関係の破綻を防ぐため |
-| クリーンアップを自動化する | 再現性と安定運用のため |
+| 推奨事項                               | 理由                         |
+| -------------------------------------- | ---------------------------- |
+| テスト目的とデータ境界を最初に定義する | 生成範囲の過不足を防ぐため   |
+| 一意性の担保方法を固定する             | 並列実行時の衝突を避けるため |
+| シーディング順序を明記する             | 依存関係の破綻を防ぐため     |
+| クリーンアップを自動化する             | 再現性と安定運用のため       |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 本番データを直接使用する | セキュリティと再現性のリスク |
-| グローバル共有データに依存する | テストの独立性が崩れる |
-| クリーンアップ確認を省略する | 後続テストの汚染につながる |
+| 禁止事項                       | 問題点                       |
+| ------------------------------ | ---------------------------- |
+| 本番データを直接使用する       | セキュリティと再現性のリスク |
+| グローバル共有データに依存する | テストの独立性が崩れる       |
+| クリーンアップ確認を省略する   | 後続テストの汚染につながる   |
 
 ---
 
@@ -108,34 +108,34 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/generate-test-data.mjs` | テストデータを生成する |
-| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
-| `scripts/log_usage.mjs` | 実行記録を保存する |
+| スクリプト                       | 機能                             |
+| -------------------------------- | -------------------------------- |
+| `scripts/generate-test-data.mjs` | テストデータを生成する           |
+| `scripts/validate-skill.mjs`     | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs`          | 実行記録を保存する               |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
-| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
-| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
-| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
-| クリーンアップ | [references/cleanup-patterns.md](references/cleanup-patterns.md) | Phase 3 で参照 |
-| データ分離 | [references/data-isolation-techniques.md](references/data-isolation-techniques.md) | Phase 1 で参照 |
-| シーディング | [references/seeding-strategies.md](references/seeding-strategies.md) | Phase 2 で参照 |
+| リソース       | パス                                                                               | 読込条件           |
+| -------------- | ---------------------------------------------------------------------------------- | ------------------ |
+| 基礎概念       | [references/Level1_basics.md](references/Level1_basics.md)                         | Phase 1 で参照     |
+| 実務パターン   | [references/Level2_intermediate.md](references/Level2_intermediate.md)             | Phase 2 で参照     |
+| 応用戦略       | [references/Level3_advanced.md](references/Level3_advanced.md)                     | 高度化時に参照     |
+| エキスパート   | [references/Level4_expert.md](references/Level4_expert.md)                         | 大規模対応時に参照 |
+| クリーンアップ | [references/cleanup-patterns.md](references/cleanup-patterns.md)                   | Phase 3 で参照     |
+| データ分離     | [references/data-isolation-techniques.md](references/data-isolation-techniques.md) | Phase 1 で参照     |
+| シーディング   | [references/seeding-strategies.md](references/seeding-strategies.md)               | Phase 2 で参照     |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                     | 用途                   |
+| ---------------------------- | ---------------------- |
 | `assets/fixture-template.ts` | フィクスチャ実装の雛形 |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 3.0.0 | 2026-01-02 | スキル構造を刷新し、Task仕様と検証フローを再設計 |
-| 2.0.0 | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ整備 |
-| 1.0.0 | 2025-12-24 | 初期バージョン |
+| Version | Date       | Changes                                          |
+| ------- | ---------- | ------------------------------------------------ |
+| 3.0.0   | 2026-01-02 | スキル構造を刷新し、Task仕様と検証フローを再設計 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ整備       |
+| 1.0.0   | 2025-12-24 | 初期バージョン                                   |

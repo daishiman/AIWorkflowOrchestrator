@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling database monitoring tasks.
 
 ### 必要な知識
+
 - 対象領域: Database Reliability Engineeringに基づくデータベース監視と可観測性の専門スキル。 SQLite/Turso統計情報、スロークエリログ、接続数監視、 ディスク使用量、レプリケーション遅延などの運用メトリクスを提供します。
 - 主要概念: アラート設計戦略 / アラート設計原則 / 1. アクション可能性 / 健全性メトリクスと閾値設計 / 主要監視メトリクス
 - 実務指針: 本番DBの健全性を監視する時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: アラート設定を構築する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - アセットの必須項目を満たしている
 - 主要アセット: `assets/alert-rules-template.md`
 - 参照アセット: `assets/monitoring-dashboard-template.md`
 
 ### 参照書籍
+
 - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要アセット
+
 - `assets/alert-rules-template.md`: このレベルでは参照のみ
 - `assets/monitoring-dashboard-template.md`: このレベルでは参照のみ
 

@@ -12,6 +12,7 @@ description: |
   Use when determining command placement, resolving command priority conflicts, or migrating commands between project/user/MCP layers.
   command placement, priority resolution, namespace design, project vs user commands, MCP integration
 ---
+
 # command-placement-priority
 
 ## 概要
@@ -58,11 +59,11 @@ description: |
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-placement-requirements | Phase 1開始時 | 配置対象/制約 | 要件整理メモ、配置候補 |
-| design-placement-strategy | Phase 2開始時 | 要件整理メモ | 配置方針、優先順位ルール |
-| validate-placement | Phase 3開始時 | 配置方針 | 検証レポート、改善方針 |
+| Task                           | 起動タイミング | 入力          | 出力                     |
+| ------------------------------ | -------------- | ------------- | ------------------------ |
+| analyze-placement-requirements | Phase 1開始時  | 配置対象/制約 | 要件整理メモ、配置候補   |
+| design-placement-strategy      | Phase 2開始時  | 要件整理メモ  | 配置方針、優先順位ルール |
+| validate-placement             | Phase 3開始時  | 配置方針      | 検証レポート、改善方針   |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -70,55 +71,55 @@ description: |
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 配置目的と対象を明確にする | 誤配置を防ぐため |
+| 推奨事項                   | 理由                         |
+| -------------------------- | ---------------------------- |
+| 配置目的と対象を明確にする | 誤配置を防ぐため             |
 | 優先順位ルールを明文化する | 競合時の判断が容易になるため |
-| 移行手順を記録する | 変更の再現性が保てるため |
+| 移行手順を記録する         | 変更の再現性が保てるため     |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 配置基準を曖昧にする | 競合が増える |
+| 禁止事項               | 問題点             |
+| ---------------------- | ------------------ |
+| 配置基準を曖昧にする   | 競合が増える       |
 | 例外ルールを記録しない | 運用が不安定になる |
-| 記録を残さない | 改善が続かない |
+| 記録を残さない         | 改善が続かない     |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-placement.mjs` | 配置方針検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                       | 機能                         |
+| -------------------------------- | ---------------------------- |
+| `scripts/validate-placement.mjs` | 配置方針検証                 |
+| `scripts/log_usage.mjs`          | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs`     | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 配置設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
-| 配置オプション | [references/placement-options.md](references/placement-options.md) | 配置判断時 |
-| 優先順位 | [references/priority-resolution.md](references/priority-resolution.md) | 競合解決時 |
-| 名前空間 | [references/namespace-strategies.md](references/namespace-strategies.md) | 名前空間設計時 |
-| 移行ガイド | [references/migration-guide.md](references/migration-guide.md) | 移行設計時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース       | パス                                                                     | 読込条件       |
+| -------------- | ------------------------------------------------------------------------ | -------------- |
+| レベル1 基礎   | [references/Level1_basics.md](references/Level1_basics.md)               | 初回整理時     |
+| レベル2 実務   | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | 配置設計時     |
+| レベル3 応用   | [references/Level3_advanced.md](references/Level3_advanced.md)           | 詳細設計時     |
+| レベル4 専門   | [references/Level4_expert.md](references/Level4_expert.md)               | 改善ループ時   |
+| 配置オプション | [references/placement-options.md](references/placement-options.md)       | 配置判断時     |
+| 優先順位       | [references/priority-resolution.md](references/priority-resolution.md)   | 競合解決時     |
+| 名前空間       | [references/namespace-strategies.md](references/namespace-strategies.md) | 名前空間設計時 |
+| 移行ガイド     | [references/migration-guide.md](references/migration-guide.md)           | 移行設計時     |
+| 旧スキル       | [references/legacy-skill.md](references/legacy-skill.md)                 | 互換確認時     |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                             | 用途                             |
+| ------------------------------------ | -------------------------------- |
 | `assets/project-command-template.md` | プロジェクトコマンドテンプレート |
-| `assets/user-command-template.md` | ユーザーコマンドテンプレート |
+| `assets/user-command-template.md`    | ユーザーコマンドテンプレート     |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

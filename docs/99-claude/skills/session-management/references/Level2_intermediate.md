@@ -14,26 +14,32 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 必須属性 / HttpOnly属性 / Secure属性 / セッション戦略の比較分析 / 評価軸 / JWT-based Session
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/cookie-attributes-guide.md`: Cookie Attributes Guideリソース（把握する知識: 必須属性 / HttpOnly属性 / Secure属性）
 - `resources/session-strategy-comparison.md`: Session Strategy Comparisonリソース（把握する知識: セッション戦略の比較分析 / 評価軸 / JWT-based Session）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Session Management / セッション戦略の比較 / 1. JWT-based Session（ステートレス））
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-session-config.mjs`: Validate Session Configスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/database-session-template.ts`: Database Sessionテンプレート
 - `templates/jwt-session-template.ts`: Jwt Sessionテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

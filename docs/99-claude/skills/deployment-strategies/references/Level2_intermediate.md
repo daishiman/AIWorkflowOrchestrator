@@ -14,13 +14,16 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Blue-Green デプロイ / 概念 / 特徴 / ヘルスチェック設計 / ヘルスチェックの種類 / 1. Liveness Check（生存確認）
 - 実務指針: デプロイ戦略を選択・設計する時 / ロールバック手順を定義する時 / 本番デプロイのリスクを最小化したい時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/deployment-patterns.md`: deployment-patterns のパターン集（把握する知識: Blue-Green デプロイ / 概念 / 特徴）
 - `references/health-checks.md`: health-checks の詳細ガイド（把握する知識: ヘルスチェック設計 / ヘルスチェックの種類 / 1. Liveness Check（生存確認））
 - `references/railway-deployment.md`: railway-deployment の詳細ガイド（把握する知識: デプロイフロー / 自動デプロイ / ゼロダウンタイムの仕組み）
@@ -29,11 +32,13 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Deployment Strategies / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/health-check.mjs`: ヘルスを検証するスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### アセット運用
+
 - `assets/deployment-runbook.md`: deployment-runbook のテンプレート
 - `assets/health-endpoint-template.ts`: health-endpoint-template のテンプレート
 - `assets/rollback-checklist.md`: rollback-checklist のチェックリスト
@@ -41,6 +46,7 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 - `assets/deployment-strategy-template.md`: 戦略整理テンプレート
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

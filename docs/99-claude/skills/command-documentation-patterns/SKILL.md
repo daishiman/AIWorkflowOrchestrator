@@ -11,6 +11,7 @@ description: |
   Use when documenting commands, creating usage examples, or designing troubleshooting sections for command workflows.
   command documentation, usage examples, troubleshooting, self-documenting structure
 ---
+
 # command-documentation-patterns
 
 ## 概要
@@ -57,11 +58,11 @@ description: |
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-documentation-requirements | Phase 1開始時 | 対象コマンド/読者 | 要件整理メモ、章構成案 |
-| design-documentation-structure | Phase 2開始時 | 要件整理メモ | ドキュメント設計案、テンプレ適用案 |
-| validate-documentation | Phase 3開始時 | ドキュメント設計案 | 検証レポート、改善方針 |
+| Task                               | 起動タイミング | 入力               | 出力                               |
+| ---------------------------------- | -------------- | ------------------ | ---------------------------------- |
+| analyze-documentation-requirements | Phase 1開始時  | 対象コマンド/読者  | 要件整理メモ、章構成案             |
+| design-documentation-structure     | Phase 2開始時  | 要件整理メモ       | ドキュメント設計案、テンプレ適用案 |
+| validate-documentation             | Phase 3開始時  | ドキュメント設計案 | 検証レポート、改善方針             |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -69,52 +70,52 @@ description: |
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 読者像を明確にする | 説明粒度が合うため |
-| 例と手順を並記する | 利用時の迷いが減るため |
-| 検証スクリプトで完全性を確認する | 抜け漏れを防ぐため |
+| 推奨事項                         | 理由                   |
+| -------------------------------- | ---------------------- |
+| 読者像を明確にする               | 説明粒度が合うため     |
+| 例と手順を並記する               | 利用時の迷いが減るため |
+| 検証スクリプトで完全性を確認する | 抜け漏れを防ぐため     |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項           | 問題点         |
+| ------------------ | -------------- |
 | 章構成を曖昧にする | 読みづらくなる |
-| 例を省略する | 利用者が迷う |
-| 記録を残さない | 改善が続かない |
+| 例を省略する       | 利用者が迷う   |
+| 記録を残さない     | 改善が続かない |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-docs.mjs` | ドキュメント完全性検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                   | 機能                         |
+| ---------------------------- | ---------------------------- |
+| `scripts/validate-docs.mjs`  | ドキュメント完全性検証       |
+| `scripts/log_usage.mjs`      | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| リソース           | パス                                                                   | 読込条件     |
+| ------------------ | ---------------------------------------------------------------------- | ------------ |
+| レベル1 基礎       | [references/Level1_basics.md](references/Level1_basics.md)             | 初回整理時   |
+| レベル2 実務       | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時       |
+| レベル3 応用       | [references/Level3_advanced.md](references/Level3_advanced.md)         | 詳細設計時   |
+| レベル4 専門       | [references/Level4_expert.md](references/Level4_expert.md)             | 改善ループ時 |
 | ドキュメントガイド | [references/documentation-guide.md](references/documentation-guide.md) | 章構成設計時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| 要求仕様索引       | [references/requirements-index.md](references/requirements-index.md)   | 要件参照時   |
+| 旧スキル           | [references/legacy-skill.md](references/legacy-skill.md)               | 互換確認時   |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                          | 用途                             |
+| --------------------------------- | -------------------------------- |
 | `assets/command-documentation.md` | コマンドドキュメントテンプレート |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

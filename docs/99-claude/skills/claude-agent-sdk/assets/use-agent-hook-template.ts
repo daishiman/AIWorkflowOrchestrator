@@ -67,12 +67,21 @@ declare global {
   interface Window {
     electronAPI: {
       agent: {
-        start: (config: AgentStartConfig) => Promise<{ success: boolean; error?: string }>;
+        start: (
+          config: AgentStartConfig,
+        ) => Promise<{ success: boolean; error?: string }>;
         stop: () => Promise<{ success: boolean }>;
-        sendMessage: (message: string) => Promise<{ success: boolean; error?: string }>;
-        respondToPermission: (response: { requestId: string; approved: boolean }) => void;
+        sendMessage: (
+          message: string,
+        ) => Promise<{ success: boolean; error?: string }>;
+        respondToPermission: (response: {
+          requestId: string;
+          approved: boolean;
+        }) => void;
         onStream: (callback: (message: StreamMessage) => void) => () => void;
-        onPermission: (callback: (request: PermissionRequest) => void) => () => void;
+        onPermission: (
+          callback: (request: PermissionRequest) => void,
+        ) => () => void;
         onStatus: (callback: (status: StatusUpdate) => void) => () => void;
       };
     };

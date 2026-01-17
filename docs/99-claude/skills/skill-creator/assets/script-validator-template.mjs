@@ -76,7 +76,9 @@ async function main() {
   const minChars = parseIntArg(getArg(args, "--min-chars"), "--min-chars");
 
   if (maxChars == null && minChars == null) {
-    console.error("Error: provide at least one constraint (--max-chars or --min-chars)");
+    console.error(
+      "Error: provide at least one constraint (--max-chars or --min-chars)",
+    );
     process.exit(EXIT_ARGS_ERROR);
   }
 
@@ -91,12 +93,16 @@ async function main() {
     const length = content.length;
 
     if (maxChars != null && length > maxChars) {
-      console.error(`Validation failed: length ${length} exceeds max ${maxChars}`);
+      console.error(
+        `Validation failed: length ${length} exceeds max ${maxChars}`,
+      );
       process.exit(EXIT_VALIDATION_FAILED);
     }
 
     if (minChars != null && length < minChars) {
-      console.error(`Validation failed: length ${length} is below min ${minChars}`);
+      console.error(
+        `Validation failed: length ${length} is below min ${minChars}`,
+      );
       process.exit(EXIT_VALIDATION_FAILED);
     }
 

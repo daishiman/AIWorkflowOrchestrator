@@ -16,8 +16,8 @@
 
 ### 1.1 レビュー実施体制
 
-| 役割           | エージェント     | レビュー観点           |
-| -------------- | ---------------- | ---------------------- |
+| 役割           | エージェント                      | レビュー観点           |
+| -------------- | --------------------------------- | ---------------------- |
 | アーキテクチャ | .claude/agents/arch-police.md     | アーキテクチャ整合性   |
 | UI/UX設計      | .claude/agents/ui-designer.md     | アクセシビリティ・UX   |
 | テスト         | .claude/agents/frontend-tester.md | テスト容易性・品質保証 |
@@ -316,12 +316,12 @@ Element.prototype.getBoundingClientRect = vi.fn(() => ({
 
 ## 8. レビュー承認
 
-| 役割           | エージェント           | 判定      | 日付           | 署名  |
-| -------------- | ---------------------- | --------- | -------------- | ----- |
-| アーキテクチャ | .claude/agents/arch-police.md           | PASS      | 2025-12-20     | ✓     |
-| UI/UX設計      | .claude/agents/ui-designer.md           | MINOR     | 2025-12-20     | ✓     |
-| テスト         | .claude/agents/frontend-tester.md       | PASS      | 2025-12-20     | ✓     |
-| **総合判定**   | **Design Review Gate** | **MINOR** | **2025-12-20** | **✓** |
+| 役割           | エージェント                      | 判定      | 日付           | 署名  |
+| -------------- | --------------------------------- | --------- | -------------- | ----- |
+| アーキテクチャ | .claude/agents/arch-police.md     | PASS      | 2025-12-20     | ✓     |
+| UI/UX設計      | .claude/agents/ui-designer.md     | MINOR     | 2025-12-20     | ✓     |
+| テスト         | .claude/agents/frontend-tester.md | PASS      | 2025-12-20     | ✓     |
+| **総合判定**   | **Design Review Gate**            | **MINOR** | **2025-12-20** | **✓** |
 
 ---
 

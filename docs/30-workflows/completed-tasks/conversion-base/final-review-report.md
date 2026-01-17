@@ -2,12 +2,12 @@
 
 ## レビュー概要
 
-| 項目                     | 内容                                                    |
-| ------------------------ | ------------------------------------------------------- |
-| レビュー日               | 2025-12-21                                              |
-| 対象フェーズ             | Phase 6（品質保証）完了後                               |
+| 項目                     | 内容                                                                                                                        |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| レビュー日               | 2025-12-21                                                                                                                  |
+| 対象フェーズ             | Phase 6（品質保証）完了後                                                                                                   |
 | レビュー参加エージェント | .claude/agents/code-quality.md, .claude/agents/arch-police.md, .claude/agents/unit-tester.md, .claude/agents/sec-auditor.md |
-| 対象モジュール           | packages/shared/src/services/conversion/                |
+| 対象モジュール           | packages/shared/src/services/conversion/                                                                                    |
 
 ---
 
@@ -15,12 +15,12 @@
 
 ### ✅ **PASS - Phase 8（手動テスト）へ進行可能**
 
-| レビュー観点       | 担当エージェント | 判定        |
-| ------------------ | ---------------- | ----------- |
-| コード品質         | .claude/agents/code-quality.md    | ✅ **PASS** |
-| アーキテクチャ遵守 | .claude/agents/arch-police.md     | ✅ **PASS** |
-| テスト品質         | .claude/agents/unit-tester.md     | ✅ **PASS** |
-| セキュリティ       | .claude/agents/sec-auditor.md     | ✅ **PASS** |
+| レビュー観点       | 担当エージェント               | 判定        |
+| ------------------ | ------------------------------ | ----------- |
+| コード品質         | .claude/agents/code-quality.md | ✅ **PASS** |
+| アーキテクチャ遵守 | .claude/agents/arch-police.md  | ✅ **PASS** |
+| テスト品質         | .claude/agents/unit-tester.md  | ✅ **PASS** |
+| セキュリティ       | .claude/agents/sec-auditor.md  | ✅ **PASS** |
 
 **最終判定**: **すべての観点でPASS** ✅
 

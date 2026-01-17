@@ -29,10 +29,10 @@ type HookCallback = (
 ) => Promise<HookJSONOutput>;
 
 interface HookJSONOutput {
-  proceed?: boolean;     // 処理続行フラグ
-  message?: string;      // フィードバックメッセージ
-  error?: string;        // エラーメッセージ
-  data?: Record<string, unknown>;  // 追加データ
+  proceed?: boolean; // 処理続行フラグ
+  message?: string; // フィードバックメッセージ
+  error?: string; // エラーメッセージ
+  data?: Record<string, unknown>; // 追加データ
 }
 ```
 
@@ -76,7 +76,8 @@ const options: Options = {
       console.log(`[${new Date().toISOString()}] Tool: ${input.toolName}`);
 
       // 統計情報を更新
-      toolUsageStats[input.toolName] = (toolUsageStats[input.toolName] || 0) + 1;
+      toolUsageStats[input.toolName] =
+        (toolUsageStats[input.toolName] || 0) + 1;
 
       return {};
     },

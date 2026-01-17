@@ -29,18 +29,43 @@ const EXIT_ARGS_ERROR = 2;
 // モード判定のキーワード
 const MODE_KEYWORDS = {
   create: [
-    "作成", "新規", "新しい", "create", "new", "implement", "add skill",
-    "スキルを作る", "スキルを作成"
+    "作成",
+    "新規",
+    "新しい",
+    "create",
+    "new",
+    "implement",
+    "add skill",
+    "スキルを作る",
+    "スキルを作成",
   ],
   update: [
-    "更新", "修正", "変更", "改善", "refactor", "update", "modify", "change",
-    "アップデート", "リファクタ", "構造を変更", "機能を追加", "機能を変更"
+    "更新",
+    "修正",
+    "変更",
+    "改善",
+    "refactor",
+    "update",
+    "modify",
+    "change",
+    "アップデート",
+    "リファクタ",
+    "構造を変更",
+    "機能を追加",
+    "機能を変更",
   ],
   "improve-prompt": [
-    "プロンプト改善", "プロンプト最適化", "agents/を改善", "Task仕様書を",
-    "improve prompt", "optimize prompt", "agents改善", "プロンプトを改善",
-    "プロンプトの改善", "プロンプトを最適化"
-  ]
+    "プロンプト改善",
+    "プロンプト最適化",
+    "agents/を改善",
+    "Task仕様書を",
+    "improve prompt",
+    "optimize prompt",
+    "agents改善",
+    "プロンプトを改善",
+    "プロンプトの改善",
+    "プロンプトを最適化",
+  ],
 };
 
 function showHelp() {
@@ -79,7 +104,7 @@ function detectMode(request) {
   const scores = {
     create: 0,
     update: 0,
-    "improve-prompt": 0
+    "improve-prompt": 0,
   };
 
   for (const [mode, keywords] of Object.entries(MODE_KEYWORDS)) {
@@ -112,10 +137,10 @@ function detectMode(request) {
       .filter(([mode]) => scores[mode] > 0)
       .reduce((acc, [mode, keywords]) => {
         acc[mode] = keywords.filter((kw) =>
-          lowerRequest.includes(kw.toLowerCase())
+          lowerRequest.includes(kw.toLowerCase()),
         );
         return acc;
-      }, {})
+      }, {}),
   };
 }
 
@@ -158,9 +183,11 @@ async function main() {
     detection.confidence !== "low"
   ) {
     console.warn(
-      `⚠ モード "${detection.mode}" が検出されましたが、スキルパスが指定されていないか存在しません`
+      `⚠ モード "${detection.mode}" が検出されましたが、スキルパスが指定されていないか存在しません`,
     );
-    console.warn("  --skill-path オプションで既存スキルのパスを指定してください");
+    console.warn(
+      "  --skill-path オプションで既存スキルのパスを指定してください",
+    );
   }
 
   // 結果JSON
@@ -173,9 +200,9 @@ async function main() {
     skillName,
     detection: {
       scores: detection.scores,
-      matchedKeywords: detection.matchedKeywords
+      matchedKeywords: detection.matchedKeywords,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   // 出力ディレクトリ作成
@@ -186,7 +213,11 @@ async function main() {
   }
 
   // 結果を出力
-  writeFileSync(resolve(process.cwd(), outputPath), JSON.stringify(result, null, 2), "utf-8");
+  writeFileSync(
+    resolve(process.cwd(), outputPath),
+    JSON.stringify(result, null, 2),
+    "utf-8",
+  );
 
   console.log(`✓ モード判定完了: ${detection.mode}`);
   console.log(`  信頼度: ${detection.confidence}`);

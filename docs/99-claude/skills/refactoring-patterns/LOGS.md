@@ -15,12 +15,12 @@
 
 ### 適用したパターン
 
-| パターン              | 適用箇所                   | 効果                   |
-| --------------------- | -------------------------- | ---------------------- |
-| Extract Hook          | editorInstanceRef          | 80行のロジックを分離   |
-| Extract Hook          | workspaceSearchProvider    | 60行のロジックを分離   |
-| Extract Hook          | キーボードショートカット   | 70行のロジックを分離   |
-| Single Responsibility | EditorView全体             | 責務の明確化           |
+| パターン              | 適用箇所                 | 効果                 |
+| --------------------- | ------------------------ | -------------------- |
+| Extract Hook          | editorInstanceRef        | 80行のロジックを分離 |
+| Extract Hook          | workspaceSearchProvider  | 60行のロジックを分離 |
+| Extract Hook          | キーボードショートカット | 70行のロジックを分離 |
+| Single Responsibility | EditorView全体           | 責務の明確化         |
 
 ### 成果
 
@@ -33,20 +33,22 @@
 ## 2026-01-07 - タスク実行フィードバック
 
 ### コンテキスト
+
 - スキル: refactoring-patterns
 - Phase: 8
 - 実行者: Claude Code (task-specification-creator)
 
 ### 結果
+
 - ステータス: success
 - 記録日時: 2026-01-07T23:59:15.038Z
 
 ### 発見事項
+
 - **メモ**: CONV-06-05: コード品質確認、変更不要判定
 
-
-
 ### 次のアクション
+
 - [ ] (なし)
 
 ---

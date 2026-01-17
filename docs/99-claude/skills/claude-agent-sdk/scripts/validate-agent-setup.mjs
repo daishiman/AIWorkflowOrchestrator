@@ -47,11 +47,7 @@ const REQUIRED_IPC_CHANNELS = [
   "agent:status",
 ];
 
-const REQUIRED_SECURITY_PATTERNS = [
-  "rm -rf",
-  "sudo",
-  "chmod",
-];
+const REQUIRED_SECURITY_PATTERNS = ["rm -rf", "sudo", "chmod"];
 
 // ============================================================================
 // Utilities
@@ -133,11 +129,15 @@ function checkDependencies() {
     };
 
     if (deps["@anthropic-ai/claude-agent-sdk"]) {
-      success(`@anthropic-ai/claude-agent-sdk: ${deps["@anthropic-ai/claude-agent-sdk"]}`);
+      success(
+        `@anthropic-ai/claude-agent-sdk: ${deps["@anthropic-ai/claude-agent-sdk"]}`,
+      );
       return true;
     } else {
       error("@anthropic-ai/claude-agent-sdk not found in dependencies");
-      info("Run: pnpm --filter @repo/desktop add @anthropic-ai/claude-agent-sdk");
+      info(
+        "Run: pnpm --filter @repo/desktop add @anthropic-ai/claude-agent-sdk",
+      );
       return false;
     }
   } catch (err) {
@@ -151,7 +151,7 @@ function checkIPCAlignment() {
 
   const mainHandlerPath = join(
     PROJECT_ROOT,
-    "apps/desktop/src/main/ipc/agentHandlers.ts"
+    "apps/desktop/src/main/ipc/agentHandlers.ts",
   );
   const preloadPath = join(PROJECT_ROOT, "apps/desktop/src/preload/index.ts");
 
@@ -201,7 +201,7 @@ function checkSecurity() {
 
   const mainHandlerPath = join(
     PROJECT_ROOT,
-    "apps/desktop/src/main/ipc/agentHandlers.ts"
+    "apps/desktop/src/main/ipc/agentHandlers.ts",
   );
 
   if (!existsSync(mainHandlerPath)) {
@@ -311,9 +311,7 @@ function main() {
   log("🔍 Claude Agent SDK Setup Validation", colors.blue);
   log(`   Project: ${PROJECT_ROOT}`, colors.dim);
 
-  const runAll =
-    args.length === 0 ||
-    args.includes("--check-all");
+  const runAll = args.length === 0 || args.includes("--check-all");
 
   const results = {};
 

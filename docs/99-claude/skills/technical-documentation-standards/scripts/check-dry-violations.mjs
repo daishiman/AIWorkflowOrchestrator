@@ -4,8 +4,8 @@
  * DRY違反検出スクリプト
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, relative } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, relative } from "path";
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -35,9 +35,9 @@ function getAllMarkdownFiles(dir, files = []) {
   for (const entry of entries) {
     const fullPath = join(dir, entry);
     const stat = statSync(fullPath);
-    if (stat.isDirectory() && !entry.startsWith('.')) {
+    if (stat.isDirectory() && !entry.startsWith(".")) {
       getAllMarkdownFiles(fullPath, files);
-    } else if (entry.endsWith('.md')) {
+    } else if (entry.endsWith(".md")) {
       files.push(fullPath);
     }
   }
@@ -48,8 +48,8 @@ function extractPhrases(content, minLength) {
   const phrases = [];
   const lines = content.split(/\r?\n/);
   for (const line of lines) {
-    if (line.startsWith('```') || line.startsWith('    ')) continue;
-    if (line.startsWith('#')) continue;
+    if (line.startsWith("```") || line.startsWith("    ")) continue;
+    if (line.startsWith("#")) continue;
     const trimmed = line.trim();
     if (trimmed.length >= minLength) {
       phrases.push(trimmed);
@@ -60,27 +60,27 @@ function extractPhrases(content, minLength) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
-  const dir = getArg(args, '--dir');
-  const minLengthArg = getArg(args, '--min-length');
-  const minOccurrencesArg = getArg(args, '--min-occurrences');
+  const dir = getArg(args, "--dir");
+  const minLengthArg = getArg(args, "--min-length");
+  const minOccurrencesArg = getArg(args, "--min-occurrences");
   const minLength = minLengthArg ? Number(minLengthArg) : 20;
   const minOccurrences = minOccurrencesArg ? Number(minOccurrencesArg) : 2;
 
   if (!dir) {
-    console.error('Error: --dir is required');
+    console.error("Error: --dir is required");
     process.exit(EXIT_ARGS_ERROR);
   }
   if (Number.isNaN(minLength) || minLength <= 0) {
-    console.error('Error: --min-length must be a positive number');
+    console.error("Error: --min-length must be a positive number");
     process.exit(EXIT_ARGS_ERROR);
   }
   if (Number.isNaN(minOccurrences) || minOccurrences <= 1) {
-    console.error('Error: --min-occurrences must be greater than 1');
+    console.error("Error: --min-occurrences must be greater than 1");
     process.exit(EXIT_ARGS_ERROR);
   }
 
@@ -94,7 +94,7 @@ async function main() {
 
   const phraseLocations = new Map();
   for (const file of files) {
-    const content = readFileSync(file, 'utf-8');
+    const content = readFileSync(file, "utf-8");
     const phrases = extractPhrases(content, minLength);
     const relativePath = relative(dir, file);
     for (const phrase of phrases) {
@@ -116,7 +116,7 @@ async function main() {
   }
 
   if (duplicates.length === 0) {
-    console.log('✓ no dry violations found');
+    console.log("✓ no dry violations found");
     process.exit(EXIT_SUCCESS);
   }
 
@@ -131,6 +131,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(err?.message || 'Unknown error');
+  console.error(err?.message || "Unknown error");
   process.exit(EXIT_ERROR);
 });

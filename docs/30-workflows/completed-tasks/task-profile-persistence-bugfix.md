@@ -161,8 +161,8 @@ profile/avatar更新時に両データソースが同期されることを検証
 
 ##### 活用スキル
 
-| スキル名       | 活用方法                      |
-| -------------- | ----------------------------- |
+| スキル名                               | 活用方法                      |
+| -------------------------------------- | ----------------------------- |
 | .claude/skills/test-doubles/SKILL.md   | Supabase クライアントのモック |
 | .claude/skills/tdd-principles/SKILL.md | Red-Green-Refactorサイクル    |
 

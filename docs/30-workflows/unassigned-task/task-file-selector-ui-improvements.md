@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                    |
 | 発見元           | Phase 7-1 UI/UXレビュー                   |
 | 発見日           | 2024-12-17                                |
-| 発見エージェント | .claude/agents/ui-designer.md                              |
+| 発見エージェント | .claude/agents/ui-designer.md             |
 
 ---
 

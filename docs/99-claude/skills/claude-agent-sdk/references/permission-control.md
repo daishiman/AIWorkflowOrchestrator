@@ -35,10 +35,10 @@ PostToolUse Hook
 
 ```typescript
 type PermissionMode =
-  | "auto"      // すべて自動承認
-  | "ask"       // すべて確認
-  | "deny"      // すべて拒否
-  | "default";  // デフォルト（ツールごとの設定に従う）
+  | "auto" // すべて自動承認
+  | "ask" // すべて確認
+  | "deny" // すべて拒否
+  | "default"; // デフォルト（ツールごとの設定に従う）
 ```
 
 ### 使用例
@@ -57,15 +57,15 @@ const options: Options = {
 
 ```typescript
 interface PermissionRules {
-  allow?: ToolPermissionRule[];  // 許可ルール
-  deny?: ToolPermissionRule[];   // 拒否ルール
-  ask?: ToolPermissionRule[];    // 確認ルール
+  allow?: ToolPermissionRule[]; // 許可ルール
+  deny?: ToolPermissionRule[]; // 拒否ルール
+  ask?: ToolPermissionRule[]; // 確認ルール
 }
 
 interface ToolPermissionRule {
-  tool: string | string[];       // ツール名またはパターン
-  paths?: string[];              // 対象パス（オプション）
-  commands?: string[];           // 対象コマンド（オプション）
+  tool: string | string[]; // ツール名またはパターン
+  paths?: string[]; // 対象パス（オプション）
+  commands?: string[]; // 対象コマンド（オプション）
 }
 ```
 
@@ -87,10 +87,7 @@ const options: Options = {
       { tool: "Write", paths: ["/etc/**", "/usr/**"] },
     ],
     // 編集系は確認
-    ask: [
-      { tool: "Write" },
-      { tool: "Edit" },
-    ],
+    ask: [{ tool: "Write" }, { tool: "Edit" }],
   },
 };
 ```
@@ -173,11 +170,7 @@ allow_dangerously_skip_permissions: true;
 const options: Options = {
   // deny-all から開始
   permissions: {
-    deny: [
-      { tool: "Bash" },
-      { tool: "Write" },
-      { tool: "Edit" },
-    ],
+    deny: [{ tool: "Bash" }, { tool: "Write" }, { tool: "Edit" }],
     // 必要なもののみ許可
     allow: [
       { tool: "Read", paths: ["/project/src/**"] },
@@ -185,9 +178,7 @@ const options: Options = {
       { tool: "Glob" },
     ],
     // 明示的な確認が必要な操作
-    ask: [
-      { tool: "Edit", paths: ["/project/src/**"] },
-    ],
+    ask: [{ tool: "Edit", paths: ["/project/src/**"] }],
   },
 };
 ```
@@ -234,9 +225,7 @@ const options: Options = {
         ],
       },
     ],
-    ask: [
-      { tool: "Bash", commands: ["git push", "npm publish"] },
-    ],
+    ask: [{ tool: "Bash", commands: ["git push", "npm publish"] }],
   },
 };
 ```
@@ -245,14 +234,14 @@ const options: Options = {
 
 ## セキュリティチェックリスト
 
-| 項目                     | 推奨設定                               |
-| ------------------------ | -------------------------------------- |
-| デフォルトモード         | "ask" または "deny"                    |
-| ファイルアクセス         | プロジェクトディレクトリに制限         |
-| 危険コマンド             | deny ルールでブロック                  |
-| 機密操作                 | ask ルールで明示的確認                 |
-| 本番環境                 | bypassPermissions を使用しない         |
-| ロギング                 | 権限チェック結果をログに記録           |
+| 項目             | 推奨設定                       |
+| ---------------- | ------------------------------ |
+| デフォルトモード | "ask" または "deny"            |
+| ファイルアクセス | プロジェクトディレクトリに制限 |
+| 危険コマンド     | deny ルールでブロック          |
+| 機密操作         | ask ルールで明示的確認         |
+| 本番環境         | bypassPermissions を使用しない |
+| ロギング         | 権限チェック結果をログに記録   |
 
 ---
 

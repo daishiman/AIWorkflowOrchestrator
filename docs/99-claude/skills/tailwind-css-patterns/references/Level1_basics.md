@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling tailwind css patterns tasks.
 
 ### 必要な知識
+
 - 対象領域: Tailwind CSSを活用した効率的で保守性の高いスタイリングパターンの専門知識。 Class Variance Authority (CVA)、Tailwind Merge、レスポンシブデザイン、 ダークモード対応の実装パターンを提供します。
 - 主要概念: 基本使用法 / インストール / 基本構造 / ダークモード実装ガイド / 実装方法
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/component-variants-template.tsx`
 - 参照テンプレート: `templates/tailwind-config-template.js`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/component-variants-template.tsx`: このレベルでは参照のみ
 - `templates/tailwind-config-template.js`: このレベルでは参照のみ
 

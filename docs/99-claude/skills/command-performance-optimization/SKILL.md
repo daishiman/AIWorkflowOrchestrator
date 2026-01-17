@@ -13,6 +13,7 @@ description: |
   Use when optimizing command performance, reducing token usage, or designing parallel execution flows and model selection.
   command performance, token optimization, parallel execution, model selection
 ---
+
 # command-performance-optimization
 
 ## 概要
@@ -59,11 +60,11 @@ description: |
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-performance-requirements | Phase 1開始時 | 対象/課題 | 要件整理メモ、目標一覧 |
-| design-performance-optimization | Phase 2開始時 | 要件整理メモ | 最適化方針、計測手順 |
-| validate-performance-optimization | Phase 3開始時 | 最適化方針 | 検証レポート、改善方針 |
+| Task                              | 起動タイミング | 入力         | 出力                   |
+| --------------------------------- | -------------- | ------------ | ---------------------- |
+| analyze-performance-requirements  | Phase 1開始時  | 対象/課題    | 要件整理メモ、目標一覧 |
+| design-performance-optimization   | Phase 2開始時  | 要件整理メモ | 最適化方針、計測手順   |
+| validate-performance-optimization | Phase 3開始時  | 最適化方針   | 検証レポート、改善方針 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -71,55 +72,55 @@ description: |
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
+| 推奨事項                   | 理由                       |
+| -------------------------- | -------------------------- |
 | 目標と計測指標を明確にする | 改善の評価が容易になるため |
-| 低コストな改善から着手する | 効果が早く出るため |
-| 検証と記録を実施する | 改善が継続できるため |
+| 低コストな改善から着手する | 効果が早く出るため         |
+| 検証と記録を実施する       | 改善が継続できるため       |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項             | 問題点             |
+| -------------------- | ------------------ |
 | 目標不在で最適化する | 効果が不明確になる |
-| 並列化を乱用する | 複雑度が増える |
-| 記録を残さない | 改善が続かない |
+| 並列化を乱用する     | 複雑度が増える     |
+| 記録を残さない       | 改善が続かない     |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/analyze-performance.mjs` | パフォーマンス分析 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                        | 機能                         |
+| --------------------------------- | ---------------------------- |
+| `scripts/analyze-performance.mjs` | パフォーマンス分析           |
+| `scripts/log_usage.mjs`           | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs`      | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
-| トークン最適化 | [references/token-optimization.md](references/token-optimization.md) | 圧縮検討時 |
-| 並列実行 | [references/parallel-execution.md](references/parallel-execution.md) | 並列設計時 |
-| モデル選択 | [references/model-selection.md](references/model-selection.md) | モデル選定時 |
-| 実行速度 | [references/execution-speed.md](references/execution-speed.md) | 速度改善時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース       | パス                                                                   | 読込条件     |
+| -------------- | ---------------------------------------------------------------------- | ------------ |
+| レベル1 基礎   | [references/Level1_basics.md](references/Level1_basics.md)             | 初回整理時   |
+| レベル2 実務   | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時       |
+| レベル3 応用   | [references/Level3_advanced.md](references/Level3_advanced.md)         | 詳細設計時   |
+| レベル4 専門   | [references/Level4_expert.md](references/Level4_expert.md)             | 改善ループ時 |
+| トークン最適化 | [references/token-optimization.md](references/token-optimization.md)   | 圧縮検討時   |
+| 並列実行       | [references/parallel-execution.md](references/parallel-execution.md)   | 並列設計時   |
+| モデル選択     | [references/model-selection.md](references/model-selection.md)         | モデル選定時 |
+| 実行速度       | [references/execution-speed.md](references/execution-speed.md)         | 速度改善時   |
+| 旧スキル       | [references/legacy-skill.md](references/legacy-skill.md)               | 互換確認時   |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/optimized-command-template.md` | 最適化コマンドテンプレート |
-| `assets/parallel-execution-template.md` | 並列実行テンプレート |
+| アセット                                | 用途                       |
+| --------------------------------------- | -------------------------- |
+| `assets/optimized-command-template.md`  | 最適化コマンドテンプレート |
+| `assets/parallel-execution-template.md` | 並列実行テンプレート       |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

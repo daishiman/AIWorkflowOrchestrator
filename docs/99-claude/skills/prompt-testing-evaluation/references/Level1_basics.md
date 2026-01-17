@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling prompt testing evaluation tasks.
 
 ### 必要な知識
+
 - 対象領域: プロンプトのテスト、評価、反復改善を専門とするスキル。 A/Bテスト、評価メトリクス、自動化されたプロンプト品質保証により、 本番環境で信頼性の高いプロンプトを実現します。
 - 主要概念: A/Bテストガイド / A/Bテストの基礎 / いつA/Bテストを行うか / 自動評価手法 / 自動評価の種類
 - 実務指針: プロンプトの品質を定量的に評価したい時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: プロンプトの継続的改善サイクルを確立したい時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/evaluation-rubric.md`
 - 参照テンプレート: `templates/test-case-template.md`
 
 ### 参照書籍
+
 - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/evaluation-rubric.md`: このレベルでは参照のみ
 - `templates/test-case-template.md`: このレベルでは参照のみ
 

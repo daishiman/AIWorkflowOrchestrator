@@ -176,8 +176,8 @@ pnpm run package
 
 #### 活用スキル
 
-| スキル名           | 活用方法                     |
-| ------------------ | ---------------------------- |
+| スキル名                                   | 活用方法                     |
+| ------------------------------------------ | ---------------------------- |
 | .claude/skills/electron-packaging/SKILL.md | electron-builderによるビルド |
 
 - **参照**: `.claude/skills/skill_list.md`

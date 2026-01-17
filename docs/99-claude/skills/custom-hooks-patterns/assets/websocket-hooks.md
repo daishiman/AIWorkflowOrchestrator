@@ -82,7 +82,16 @@ export function useWebSocket<T = unknown>(
     wsRef.current.onerror = (event) => {
       onError?.(event);
     };
-  }, [url, onOpen, onClose, onMessage, onError, reconnect, reconnectInterval, reconnectAttempts]);
+  }, [
+    url,
+    onOpen,
+    onClose,
+    onMessage,
+    onError,
+    reconnect,
+    reconnectInterval,
+    reconnectAttempts,
+  ]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimerRef.current) {

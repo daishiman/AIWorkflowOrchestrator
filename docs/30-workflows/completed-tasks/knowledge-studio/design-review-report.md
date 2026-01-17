@@ -7,13 +7,13 @@
 
 ## 総合評価
 
-| レビュー担当                             | 評価                 | Critical | High   | Medium | Low    |
-| ---------------------------------------- | -------------------- | -------- | ------ | ------ | ------ |
+| レビュー担当                                              | 評価                 | Critical | High   | Medium | Low    |
+| --------------------------------------------------------- | -------------------- | -------- | ------ | ------ | ------ |
 | .claude/agents/req-analyst.md（要件アナリスト）           | CONDITIONAL_PASS     | -        | 3      | 5      | 4      |
 | .claude/agents/arch-police.md（アーキテクチャ警察）       | CONDITIONAL_PASS     | -        | 3      | 5      | 4      |
 | .claude/agents/electron-security.md（セキュリティ専門家） | CONDITIONAL_PASS     | 2        | 4      | 3      | 2      |
 | .claude/agents/ui-designer.md（UI/UXデザイナー）          | CONDITIONAL_PASS     | -        | 3      | 6      | 4      |
-| **総合**                                 | **CONDITIONAL_PASS** | **2**    | **13** | **19** | **14** |
+| **総合**                                                  | **CONDITIONAL_PASS** | **2**    | **13** | **19** | **14** |
 
 ### 判定基準
 

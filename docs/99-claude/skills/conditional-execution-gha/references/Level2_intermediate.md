@@ -14,26 +14,32 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: イベントフィルタリング / ブランチ・パス制御 / status functions / success() / always() / failure()
 - 実務指針: 条件付き実行で不要なジョブを抑制する時 / 失敗時のクリーンアップや通知を実装する時 / ブランチ別の実行制御を行う時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/event-filtering.md`: event filtering の詳細ガイド（把握する知識: イベントフィルタリング / ブランチ・パス制御）
 - `references/if-conditions.md`: if 条件の詳細ガイド（把握する知識: status functions / success() / always() / failure()）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Conditional Execution / 状態関数 / 一般的なifパターン）
 
 ### スクリプト運用
+
 - `scripts/analyze-conditions.mjs`: 条件式を分析するスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/conditional-workflow.yaml`: 条件付き実行テンプレート
 
 ### 成果物要件
+
 - 条件分岐の意図と影響範囲が明確である
 
 ## 実践手順

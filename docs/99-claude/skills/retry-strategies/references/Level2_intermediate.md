@@ -14,12 +14,15 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Bulkhead Pattern（バルクヘッドパターン） / なぜ必要か / 問題: リソース共有による障害連鎖 / Circuit Breaker（サーキットブレーカー） / 状態遷移 / Closed（閉じた状態 = 正常）
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/bulkhead-pattern.md`: Bulkhead Patternリソース（把握する知識: Bulkhead Pattern（バルクヘッドパターン） / なぜ必要か / 問題: リソース共有による障害連鎖）
 - `resources/circuit-breaker.md`: Circuit Breakerリソース（把握する知識: Circuit Breaker（サーキットブレーカー） / 状態遷移 / Closed（閉じた状態 = 正常））
 - `resources/exponential-backoff.md`: Exponential Backoffリソース（把握する知識: Exponential Backoff（指数バックオフ） / 基本原則 / なぜ指数バックオフが必要か）
@@ -28,15 +31,18 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Retry Strategies / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/analyze-retry-config.mjs`: Analyze Retry Configスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/circuit-breaker-template.ts`: Circuit Breakerテンプレート
 - `templates/retry-wrapper-template.ts`: Retry Wrapperテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

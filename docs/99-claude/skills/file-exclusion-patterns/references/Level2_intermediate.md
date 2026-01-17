@@ -14,24 +14,30 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 標準除外パターンカタログ / カテゴリ別パターン一覧 / 1. パッケージマネージャー / File Exclusion Patterns / 核心概念 / Glob Patternの基本
 - 実務指針: ファイル監視の除外パターンを設計する時 / .gitignoreからパターンを抽出・変換する時 / 一時ファイル・システムファイルを除外したい時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/standard-patterns.md`: standard-patterns のパターン集（把握する知識: 標準除外パターンカタログ / カテゴリ別パターン一覧 / 1. パッケージマネージャー）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: File Exclusion Patterns / 核心概念 / Glob Patternの基本）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/pattern-builder.ts`: pattern-builder のテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

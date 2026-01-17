@@ -67,10 +67,10 @@ error.tsx、not-found.tsx、global-error.tsxを使用したエラー境界とリ
 
 ## Task仕様（ナビゲーション）
 
-| Task | 起動タイミング | 入力 | 出力 |
-|------|----------------|------|------|
-| analyze-error-requirements | 要件分析時 | ルート構造 | エラーページ要件書 |
-| implement-error-pages | 実装時 | エラーページ要件書 | エラーページファイル群 |
+| Task                       | 起動タイミング | 入力               | 出力                   |
+| -------------------------- | -------------- | ------------------ | ---------------------- |
+| analyze-error-requirements | 要件分析時     | ルート構造         | エラーページ要件書     |
+| implement-error-pages      | 実装時         | エラーページ要件書 | エラーページファイル群 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
@@ -94,38 +94,38 @@ error.tsx、not-found.tsx、global-error.tsxを使用したエラー境界とリ
 
 ### agents/（Task仕様書）
 
-| Task | パス | 用途 |
-|------|------|------|
+| Task     | パス                                                                             | 用途                 |
+| -------- | -------------------------------------------------------------------------------- | -------------------- |
 | 要件分析 | See [agents/analyze-error-requirements.md](agents/analyze-error-requirements.md) | エラーページ要件整理 |
-| 実装 | See [agents/implement-error-pages.md](agents/implement-error-pages.md) | エラーページ実装 |
+| 実装     | See [agents/implement-error-pages.md](agents/implement-error-pages.md)           | エラーページ実装     |
 
 ### references/（詳細知識）
 
-| リソース | パス | 用途 |
-|----------|------|------|
-| error.tsxガイド | See [references/error-tsx-guide.md](references/error-tsx-guide.md) | error.tsx実装パターン |
-| not-foundガイド | See [references/not-found-guide.md](references/not-found-guide.md) | not-found.tsx実装パターン |
-| global-errorガイド | See [references/global-error-guide.md](references/global-error-guide.md) | global-error.tsx実装 |
-| loading.tsxガイド | See [references/loading-tsx-guide.md](references/loading-tsx-guide.md) | loading.tsx実装パターン |
+| リソース           | パス                                                                     | 用途                      |
+| ------------------ | ------------------------------------------------------------------------ | ------------------------- |
+| error.tsxガイド    | See [references/error-tsx-guide.md](references/error-tsx-guide.md)       | error.tsx実装パターン     |
+| not-foundガイド    | See [references/not-found-guide.md](references/not-found-guide.md)       | not-found.tsx実装パターン |
+| global-errorガイド | See [references/global-error-guide.md](references/global-error-guide.md) | global-error.tsx実装      |
+| loading.tsxガイド  | See [references/loading-tsx-guide.md](references/loading-tsx-guide.md)   | loading.tsx実装パターン   |
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 用途 | 使用例 |
-|------------|------|--------|
-| `check-error-handling.mjs` | エラーハンドリング検証 | `node scripts/check-error-handling.mjs --help` |
-| `log_usage.mjs` | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
+| スクリプト                 | 用途                   | 使用例                                                          |
+| -------------------------- | ---------------------- | --------------------------------------------------------------- |
+| `check-error-handling.mjs` | エラーハンドリング検証 | `node scripts/check-error-handling.mjs --help`                  |
+| `log_usage.mjs`            | フィードバック記録     | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
 
 ### assets/（テンプレート）
 
-| テンプレート | 用途 |
-|--------------|------|
-| `error-page-template.md` | error.tsxテンプレート |
-| `not-found-template.md` | not-found.tsxテンプレート |
+| テンプレート             | 用途                      |
+| ------------------------ | ------------------------- |
+| `error-page-template.md` | error.tsxテンプレート     |
+| `not-found-template.md`  | not-found.tsxテンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.1.0 | 2026-01-01 | agents追加、18-skills.md仕様完全準拠 |
-| 2.0.0 | 2026-01-01 | 18-skills.md仕様完全準拠、Level1-4削除 |
-| 1.0.0 | 2025-12-24 | 初版作成 |
+| Version | Date       | Changes                                |
+| ------- | ---------- | -------------------------------------- |
+| 2.1.0   | 2026-01-01 | agents追加、18-skills.md仕様完全準拠   |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様完全準拠、Level1-4削除 |
+| 1.0.0   | 2025-12-24 | 初版作成                               |

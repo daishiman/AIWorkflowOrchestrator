@@ -82,12 +82,9 @@ const DEFAULT_TOOLS = ["Read", "Edit", "Write", "Bash", "Glob", "Grep"];
 
 export function setupAgentHandlers(mainWindow: BrowserWindow): void {
   // Agent Start
-  ipcMain.handle(
-    "agent:start",
-    async (_event, config: AgentStartConfig) => {
-      return handleAgentStart(mainWindow, config);
-    },
-  );
+  ipcMain.handle("agent:start", async (_event, config: AgentStartConfig) => {
+    return handleAgentStart(mainWindow, config);
+  });
 
   // Agent Stop
   ipcMain.handle("agent:stop", async () => {
@@ -100,12 +97,9 @@ export function setupAgentHandlers(mainWindow: BrowserWindow): void {
   });
 
   // Permission Response
-  ipcMain.on(
-    "agent:permission:res",
-    (_event, response: PermissionResponse) => {
-      handlePermissionResponse(response);
-    },
-  );
+  ipcMain.on("agent:permission:res", (_event, response: PermissionResponse) => {
+    handlePermissionResponse(response);
+  });
 }
 
 // ============================================================================
@@ -128,11 +122,7 @@ async function handleAgentStart(
     tools: config.tools || DEFAULT_TOOLS,
     permissionMode: "default",
     permissions: {
-      allow: [
-        { tool: "Read" },
-        { tool: "Glob" },
-        { tool: "Grep" },
-      ],
+      allow: [{ tool: "Read" }, { tool: "Glob" }, { tool: "Grep" }],
       ask: APPROVAL_REQUIRED_TOOLS.map((tool) => ({ tool })),
     },
     hooks: createHooks(mainWindow),
@@ -165,9 +155,10 @@ function handleAgentStop(): { success: boolean } {
   return { success: true };
 }
 
-function handleAgentMessage(
-  message: string,
-): { success: boolean; error?: string } {
+function handleAgentMessage(message: string): {
+  success: boolean;
+  error?: string;
+} {
   if (!currentConversation) {
     return { success: false, error: "No active conversation" };
   }

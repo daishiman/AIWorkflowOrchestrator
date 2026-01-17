@@ -21,7 +21,7 @@
 | ステータス       | 未着手                               |
 | 発見元           | ユーザー要望                         |
 | 発見日           | 2025-12-12                           |
-| 発見エージェント | .claude/agents/product-manager.md                     |
+| 発見エージェント | .claude/agents/product-manager.md    |
 
 ---
 
@@ -153,8 +153,8 @@ graph TD
 
 #### 活用スキル
 
-| スキル名             | 活用方法                     |
-| -------------------- | ---------------------------- |
+| スキル名                                     | 活用方法                     |
+| -------------------------------------------- | ---------------------------- |
 | .claude/skills/accessibility-wcag/SKILL.md   | キーボードナビゲーション要件 |
 | .claude/skills/apple-hig-guidelines/SKILL.md | デスクトップUI規約確認       |
 
@@ -198,8 +198,8 @@ graph TD
 
 #### 活用スキル
 
-| スキル名             | 活用方法         |
-| -------------------- | ---------------- |
+| スキル名                                     | 活用方法         |
+| -------------------------------------------- | ---------------- |
 | .claude/skills/state-lifting/SKILL.md        | 状態管理設計     |
 | .claude/skills/type-safety-patterns/SKILL.md | TypeScript型定義 |
 
@@ -241,8 +241,8 @@ UIコンポーネントの設計のみを担当。
 
 #### 活用スキル
 
-| スキル名                       | 活用方法           |
-| ------------------------------ | ------------------ |
+| スキル名                                               | 活用方法           |
+| ------------------------------------------------------ | ------------------ |
 | .claude/skills/component-composition-patterns/SKILL.md | コンポーネント設計 |
 | .claude/skills/electron-ui-patterns/SKILL.md           | デスクトップUI設計 |
 

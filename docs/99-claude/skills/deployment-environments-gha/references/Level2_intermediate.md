@@ -14,29 +14,35 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Approval Workflows / 承認フローの基本 / 承認が必要になるタイミング / Environment Configuration / 環境の作成 / Repository Settings での設定
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/approval-workflows.md`: 承認者設定、待機タイマー、デプロイゲートの実装パターン（把握する知識: Approval Workflows / 承認フローの基本 / 承認が必要になるタイミング）
 - `references/environment-config.md`: 環境設定、保護ルール、シークレット管理の詳細ガイド（把握する知識: Environment Configuration / 環境の作成 / Repository Settings での設定）
 - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: デプロイメント (Deployment)）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: 使用タイミング / テンプレート使用 / スクリプト実行）
 
 ### スクリプト運用
+
 - `scripts/check-environment.mjs`: 環境ステータスと設定を確認する診断スクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### アセット運用
+
 - `assets/environment-setup-checklist.md`: 環境設定チェックリスト
 - `assets/approval-workflow-template.md`: 承認フロー設計テンプレート
 - `assets/secrets-plan-template.md`: シークレット計画テンプレート
 - `assets/deployment-workflow.yaml`: 段階的デプロイサンプル
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

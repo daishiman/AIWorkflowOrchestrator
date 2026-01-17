@@ -291,7 +291,9 @@ class CacheSizeEstimator {
     const textPercent = (textSize / this.totalSize) * 100;
 
     if (textPercent > 50) {
-      console.log("  • High percentage of text files - good compression expected");
+      console.log(
+        "  • High percentage of text files - good compression expected",
+      );
     }
 
     console.log("\n" + "=".repeat(60) + "\n");

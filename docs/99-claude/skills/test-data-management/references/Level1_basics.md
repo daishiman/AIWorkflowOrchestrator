@@ -14,30 +14,38 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling test data management tasks.
 
 ### 必要な知識
+
 - 対象領域: E2Eテストのためのテストデータ管理戦略。
 - 主要概念: テストデータクリーンアップパターン / 目次 / クリーンアップの重要性 / データ分離技術 / データ分離の必要性
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `assets/fixture-template.ts`
 
 ### 参照書籍
+
 - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `assets/fixture-template.ts`: このレベルでは参照のみ
 
 ### ワークフロー対応
+
 - Phase 1 の要件整理では、対象エンティティと分離境界の定義を重視する
 
 ## 実践手順

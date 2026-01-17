@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling retry strategies tasks.
 
 ### 必要な知識
+
 - 対象領域: 外部APIの一時的障害に対するリトライ戦略とサーキットブレーカーパターンを専門とするスキル。
 - 主要概念: Bulkhead Pattern（バルクヘッドパターン） / なぜ必要か / 問題: リソース共有による障害連鎖 / Circuit Breaker（サーキットブレーカー） / 状態遷移
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/circuit-breaker-template.ts`
 - 参照テンプレート: `templates/retry-wrapper-template.ts`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/circuit-breaker-template.ts`: このレベルでは参照のみ
 - `templates/retry-wrapper-template.ts`: このレベルでは参照のみ
 

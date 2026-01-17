@@ -10,8 +10,8 @@
 
 ### 1.1 参加エージェント
 
-| エージェント       | 役割                 | 判定   |
-| ------------------ | -------------------- | ------ |
+| エージェント                        | 役割                 | 判定   |
+| ----------------------------------- | -------------------- | ------ |
 | .claude/agents/sec-auditor.md       | セキュリティ設計     | (未完) |
 | .claude/agents/auth-specialist.md   | 認証フローの妥当性   | MAJOR  |
 | .claude/agents/electron-security.md | Electronセキュリティ | MAJOR  |
@@ -394,12 +394,12 @@
 
 ### 6.2 エージェント判定の再評価
 
-| エージェント       | 初期判定 | 実装確認後 | 最終判定 |
-| ------------------ | -------- | ---------- | -------- |
+| エージェント                        | 初期判定 | 実装確認後 | 最終判定 |
+| ----------------------------------- | -------- | ---------- | -------- |
 | .claude/agents/auth-specialist.md   | MAJOR    | MINOR      | MINOR    |
 | .claude/agents/electron-security.md | MAJOR    | MINOR      | MINOR    |
 | .claude/agents/arch-police.md       | PASS     | PASS       | PASS     |
-| **総合判定**       | MAJOR    | MINOR      | **PASS** |
+| **総合判定**                        | MAJOR    | MINOR      | **PASS** |
 
 **再評価理由**:
 

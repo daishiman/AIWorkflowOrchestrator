@@ -69,11 +69,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task                   | 起動タイミング | 入力                         | 出力                               |
-| ---------------------- | -------------- | ---------------------------- | ---------------------------------- |
-| assess-failure-profile | Phase 1開始時  | 依存関係と障害情報           | 障害特性プロファイル               |
-| design-retry-policy    | Phase 2開始時  | 障害特性プロファイル         | リトライ/耐障害ポリシー設計書       |
-| validate-rollout       | Phase 3開始時  | 実装コードと設定             | 検証レポート・運用設計ドラフト     |
+| Task                   | 起動タイミング | 入力                 | 出力                           |
+| ---------------------- | -------------- | -------------------- | ------------------------------ |
+| assess-failure-profile | Phase 1開始時  | 依存関係と障害情報   | 障害特性プロファイル           |
+| design-retry-policy    | Phase 2開始時  | 障害特性プロファイル | リトライ/耐障害ポリシー設計書  |
+| validate-rollout       | Phase 3開始時  | 実装コードと設定     | 検証レポート・運用設計ドラフト |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -81,58 +81,58 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項                           | 理由                                       |
-| ---------------------------------- | ------------------------------------------ |
-| 失敗モードを恒久/一時で分類する    | 不要な再試行を避け、成功率を上げる         |
-| リトライ予算と上限を明示する       | 雪崩障害と過剰負荷を防ぐ                   |
-| 指数バックオフにジッターを入れる   | 同時リトライによる負荷集中を避ける         |
-| しきい値は計測値に基づいて設計する | 障害の検知精度と復旧速度を両立する         |
-| タイムアウトをSLAに合わせて設計する | 失敗検知の遅延と待ち過ぎを防ぐ             |
+| 推奨事項                            | 理由                               |
+| ----------------------------------- | ---------------------------------- |
+| 失敗モードを恒久/一時で分類する     | 不要な再試行を避け、成功率を上げる |
+| リトライ予算と上限を明示する        | 雪崩障害と過剰負荷を防ぐ           |
+| 指数バックオフにジッターを入れる    | 同時リトライによる負荷集中を避ける |
+| しきい値は計測値に基づいて設計する  | 障害の検知精度と復旧速度を両立する |
+| タイムアウトをSLAに合わせて設計する | 失敗検知の遅延と待ち過ぎを防ぐ     |
 
 ### 避けるべきこと
 
-| 禁止事項                             | 問題点                                   |
-| ------------------------------------ | ---------------------------------------- |
-| 無限リトライや過度な再試行            | 依存先の障害を拡大させる                 |
-| 固定間隔リトライのみの設計            | サンダリングハードを誘発する             |
-| エラー種別を区別しない一律リトライ    | 永続障害で無駄な負荷をかける             |
-| タイムアウトを未設定のまま運用        | 障害検知が遅れ、回復判断ができない       |
-| Circuit Breakerを導入せず外部依存を増やす | 障害の連鎖と復旧遅延を招く           |
+| 禁止事項                                  | 問題点                             |
+| ----------------------------------------- | ---------------------------------- |
+| 無限リトライや過度な再試行                | 依存先の障害を拡大させる           |
+| 固定間隔リトライのみの設計                | サンダリングハードを誘発する       |
+| エラー種別を区別しない一律リトライ        | 永続障害で無駄な負荷をかける       |
+| タイムアウトを未設定のまま運用            | 障害検知が遅れ、回復判断ができない |
+| Circuit Breakerを導入せず外部依存を増やす | 障害の連鎖と復旧遅延を招く         |
 
 ## リソース参照
 
 ### references/（詳細知識）
 
-| リソース                     | パス                                                                     | 読込条件                     |
-| ---------------------------- | ------------------------------------------------------------------------ | ---------------------------- |
-| 基礎知識                     | [references/Level1_basics.md](references/Level1_basics.md)               | Phase 1の整理時              |
-| 実務判断の整理               | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | Phase 2の設計時              |
-| 応用パターン                 | [references/Level3_advanced.md](references/Level3_advanced.md)           | 複雑なケース検討時           |
-| エッジケース                 | [references/Level4_expert.md](references/Level4_expert.md)               | 例外条件の調整時             |
-| Exponential Backoff          | [references/exponential-backoff.md](references/exponential-backoff.md)   | バックオフ設計時             |
-| Circuit Breaker              | [references/circuit-breaker.md](references/circuit-breaker.md)           | しきい値設計時               |
-| Bulkhead Pattern             | [references/bulkhead-pattern.md](references/bulkhead-pattern.md)         | 隔離戦略検討時               |
-| Timeout Strategies           | [references/timeout-strategies.md](references/timeout-strategies.md)     | タイムアウト設計時           |
+| リソース            | パス                                                                   | 読込条件           |
+| ------------------- | ---------------------------------------------------------------------- | ------------------ |
+| 基礎知識            | [references/Level1_basics.md](references/Level1_basics.md)             | Phase 1の整理時    |
+| 実務判断の整理      | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2の設計時    |
+| 応用パターン        | [references/Level3_advanced.md](references/Level3_advanced.md)         | 複雑なケース検討時 |
+| エッジケース        | [references/Level4_expert.md](references/Level4_expert.md)             | 例外条件の調整時   |
+| Exponential Backoff | [references/exponential-backoff.md](references/exponential-backoff.md) | バックオフ設計時   |
+| Circuit Breaker     | [references/circuit-breaker.md](references/circuit-breaker.md)         | しきい値設計時     |
+| Bulkhead Pattern    | [references/bulkhead-pattern.md](references/bulkhead-pattern.md)       | 隔離戦略検討時     |
+| Timeout Strategies  | [references/timeout-strategies.md](references/timeout-strategies.md)   | タイムアウト設計時 |
 
 ### scripts/（決定論的処理）
 
-| スクリプト                           | 機能                                     |
-| ------------------------------------ | ---------------------------------------- |
-| `scripts/analyze-retry-config.mjs`   | リトライ/CB/タイムアウト設定の静的分析   |
-| `scripts/validate-skill.mjs`         | スキル構造と参照リンクの検証             |
-| `scripts/log_usage.mjs`              | スキル使用ログの記録                     |
+| スクリプト                         | 機能                                   |
+| ---------------------------------- | -------------------------------------- |
+| `scripts/analyze-retry-config.mjs` | リトライ/CB/タイムアウト設定の静的分析 |
+| `scripts/validate-skill.mjs`       | スキル構造と参照リンクの検証           |
+| `scripts/log_usage.mjs`            | スキル使用ログの記録                   |
 
 ### assets/（テンプレート）
 
-| アセット                               | 用途                                 |
-| -------------------------------------- | ------------------------------------ |
-| `assets/circuit-breaker-template.ts`   | Circuit Breaker実装の雛形            |
-| `assets/retry-wrapper-template.ts`     | リトライラッパーの再利用テンプレート  |
+| アセット                             | 用途                                 |
+| ------------------------------------ | ------------------------------------ |
+| `assets/circuit-breaker-template.ts` | Circuit Breaker実装の雛形            |
+| `assets/retry-wrapper-template.ts`   | リトライラッパーの再利用テンプレート |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                           |
-| ------- | ---------- | ----------------------------------------------------------------- |
-| 2.0.0   | 2026-01-02 | 18-skills.md仕様に合わせて再設計、Task仕様書追加、構成を整理       |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に合わせてagents/とEVALSを追加                    |
-| 1.0.0   | 2025-12-24 | 仕様整合と必要成果物の追加                                        |
+| Version | Date       | Changes                                                      |
+| ------- | ---------- | ------------------------------------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に合わせて再設計、Task仕様書追加、構成を整理 |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様に合わせてagents/とEVALSを追加               |
+| 1.0.0   | 2025-12-24 | 仕様整合と必要成果物の追加                                   |

@@ -18,7 +18,12 @@
     },
     "analysisResults": {
       "type": "object",
-      "required": ["structureScore", "clarityScore", "reproducibilityScore", "efficiencyScore"],
+      "required": [
+        "structureScore",
+        "clarityScore",
+        "reproducibilityScore",
+        "efficiencyScore"
+      ],
       "properties": {
         "structureScore": {
           "type": "integer",

@@ -13,6 +13,7 @@ description: |
   Use when running SAST, defining detection rules, auditing injection vulnerabilities, or documenting static analysis findings.
   static analysis, SAST, SQL injection, XSS, command injection, security review
 ---
+
 # code-static-analysis-security
 
 ## 概要
@@ -59,11 +60,11 @@ description: |
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-sast-requirements | Phase 1開始時 | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |
-| design-detection-rules | Phase 2開始時 | 検出観点一覧 | ルール設計、設定方針 |
-| validate-sast-findings | Phase 3開始時 | 検出結果 | 検証レポート、改善方針 |
+| Task                      | 起動タイミング | 入力                | 出力                       |
+| ------------------------- | -------------- | ------------------- | -------------------------- |
+| analyze-sast-requirements | Phase 1開始時  | 対象コード/検出対象 | 対象範囲メモ、検出観点一覧 |
+| design-detection-rules    | Phase 2開始時  | 検出観点一覧        | ルール設計、設定方針       |
+| validate-sast-findings    | Phase 3開始時  | 検出結果            | 検証レポート、改善方針     |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -71,51 +72,51 @@ description: |
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 検出対象を明確にする | 誤検出を抑えるため |
-| ルールを段階的に調整する | 運用負荷を下げるため |
-| 検出結果を記録する | 改善サイクルを回すため |
+| 推奨事項                 | 理由                   |
+| ------------------------ | ---------------------- |
+| 検出対象を明確にする     | 誤検出を抑えるため     |
+| ルールを段階的に調整する | 運用負荷を下げるため   |
+| 検出結果を記録する       | 改善サイクルを回すため |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項                 | 問題点             |
+| ------------------------ | ------------------ |
 | ルールなしでスキャンする | 結果が不安定になる |
-| 重大度を評価しない | 優先度が不明になる |
-| 記録を残さない | 改善が継続できない |
+| 重大度を評価しない       | 優先度が不明になる |
+| 記録を残さない           | 改善が継続できない |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                       | 機能                         |
+| -------------------------------- | ---------------------------- |
+| `scripts/scan-sql-injection.mjs` | SQLインジェクション検出      |
+| `scripts/log_usage.mjs`          | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs`     | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時 |
-| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細検討時 |
-| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
-| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md) | ルール設計時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース     | パス                                                                   | 読込条件     |
+| ------------ | ---------------------------------------------------------------------- | ------------ |
+| Level1 基礎  | [references/Level1_basics.md](references/Level1_basics.md)             | 初回整理時   |
+| Level2 実務  | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出設計時   |
+| Level3 応用  | [references/Level3_advanced.md](references/Level3_advanced.md)         | 詳細検討時   |
+| Level4 専門  | [references/Level4_expert.md](references/Level4_expert.md)             | 改善ループ時 |
+| 検出パターン | [references/injection-patterns.md](references/injection-patterns.md)   | ルール設計時 |
+| 旧スキル     | [references/legacy-skill.md](references/legacy-skill.md)               | 互換確認時   |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                           | 用途                 |
+| ---------------------------------- | -------------------- |
 | `assets/sast-config-template.json` | SAST設定テンプレート |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

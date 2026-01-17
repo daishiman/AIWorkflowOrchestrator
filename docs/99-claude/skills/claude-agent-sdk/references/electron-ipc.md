@@ -48,7 +48,11 @@
 
 ```typescript
 // apps/desktop/src/main/ipc/agentHandlers.ts
-import { query, type Options, type HookInput } from "@anthropic-ai/claude-agent-sdk";
+import {
+  query,
+  type Options,
+  type HookInput,
+} from "@anthropic-ai/claude-agent-sdk";
 import { ipcMain, BrowserWindow } from "electron";
 
 let currentConversation: ReturnType<typeof query> | null = null;
@@ -348,21 +352,21 @@ export function useAgent() {
 
 ### Main Process
 
-| 項目                 | 推奨設定                          |
-| -------------------- | --------------------------------- |
-| APIキー管理          | Electron SafeStorageで暗号化保存  |
-| ファイルアクセス     | プロジェクトディレクトリに制限    |
-| コマンド実行         | 危険パターンをPreToolUseでブロック |
-| IPC通信              | 入力バリデーション必須            |
+| 項目             | 推奨設定                           |
+| ---------------- | ---------------------------------- |
+| APIキー管理      | Electron SafeStorageで暗号化保存   |
+| ファイルアクセス | プロジェクトディレクトリに制限     |
+| コマンド実行     | 危険パターンをPreToolUseでブロック |
+| IPC通信          | 入力バリデーション必須             |
 
 ### Renderer Process
 
-| 項目               | 推奨設定                       |
-| ------------------ | ------------------------------ |
-| 権限ダイアログ     | 操作内容を明示的に表示         |
-| タイムアウト       | 無応答時は自動拒否             |
-| エラー表示         | 機密情報を含めない             |
-| 状態管理           | 不整合を防ぐためuseRefを活用   |
+| 項目           | 推奨設定                     |
+| -------------- | ---------------------------- |
+| 権限ダイアログ | 操作内容を明示的に表示       |
+| タイムアウト   | 無応答時は自動拒否           |
+| エラー表示     | 機密情報を含めない           |
+| 状態管理       | 不整合を防ぐためuseRefを活用 |
 
 ---
 

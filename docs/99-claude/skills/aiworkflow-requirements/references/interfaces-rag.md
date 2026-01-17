@@ -11,13 +11,13 @@ RAGパイプライン実装で使用する共通型定義とインターフェ�
 
 ## ドキュメント構成
 
-| ドキュメント | ファイル | 説明 |
-|-------------|----------|------|
-| FileSelection API | [interfaces-rag-file-selection.md](./interfaces-rag-file-selection.md) | IPC通信インターフェース、セキュリティ機能 |
-| チャンク・埋め込み型 | [interfaces-rag-chunk-embedding.md](./interfaces-rag-chunk-embedding.md) | チャンク分割戦略、埋め込みプロバイダー |
-| 検索クエリ・結果型 | [interfaces-rag-search.md](./interfaces-rag-search.md) | HybridRAG検索、RRF、CRAG評価 |
-| Knowledge Graph Store | [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md) | ナレッジグラフの永続化・操作 |
-| Community Detection | [interfaces-rag-community-detection.md](./interfaces-rag-community-detection.md) | Leidenアルゴリズム、コミュニティ検出 |
+| ドキュメント          | ファイル                                                                             | 説明                                      |
+| --------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------- |
+| FileSelection API     | [interfaces-rag-file-selection.md](./interfaces-rag-file-selection.md)               | IPC通信インターフェース、セキュリティ機能 |
+| チャンク・埋め込み型  | [interfaces-rag-chunk-embedding.md](./interfaces-rag-chunk-embedding.md)             | チャンク分割戦略、埋め込みプロバイダー    |
+| 検索クエリ・結果型    | [interfaces-rag-search.md](./interfaces-rag-search.md)                               | HybridRAG検索、RRF、CRAG評価              |
+| Knowledge Graph Store | [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md) | ナレッジグラフの永続化・操作              |
+| Community Detection   | [interfaces-rag-community-detection.md](./interfaces-rag-community-detection.md)     | Leidenアルゴリズム、コミュニティ検出      |
 
 ---
 
@@ -80,24 +80,24 @@ RAGパイプライン実装で使用する共通型定義とインターフェ�
 
 基底Repositoryクラス。全てのRepositoryが継承し、共通CRUD操作を提供する。
 
-| メソッド          | 戻り値                                       | 説明                         |
-| ----------------- | -------------------------------------------- | ---------------------------- |
-| findById(id)      | Result<TSelect \| null, RAGError>            | IDでエンティティを取得       |
-| findAll(params?)  | Result<PaginatedResult<TSelect>, RAGError>   | 全レコード（ページネーション付き） |
-| create(data)      | Result<TSelect, RAGError>                    | 新規エンティティを作成       |
-| createMany(data[])| Result<TSelect[], RAGError>                  | 一括作成                     |
-| update(id, data)  | Result<TSelect, RAGError>                    | エンティティを更新           |
-| delete(id)        | Result<void, RAGError>                       | エンティティを削除           |
-| exists(id)        | Result<boolean, RAGError>                    | 存在確認                     |
-| count()           | Result<number, RAGError>                     | 件数取得                     |
+| メソッド           | 戻り値                                     | 説明                               |
+| ------------------ | ------------------------------------------ | ---------------------------------- |
+| findById(id)       | Result<TSelect \| null, RAGError>          | IDでエンティティを取得             |
+| findAll(params?)   | Result<PaginatedResult<TSelect>, RAGError> | 全レコード（ページネーション付き） |
+| create(data)       | Result<TSelect, RAGError>                  | 新規エンティティを作成             |
+| createMany(data[]) | Result<TSelect[], RAGError>                | 一括作成                           |
+| update(id, data)   | Result<TSelect, RAGError>                  | エンティティを更新                 |
+| delete(id)         | Result<void, RAGError>                     | エンティティを削除                 |
+| exists(id)         | Result<boolean, RAGError>                  | 存在確認                           |
+| count()            | Result<number, RAGError>                   | 件数取得                           |
 
 #### 具体Repository
 
-| Repository       | 対象テーブル | Branded Type | 固有メソッド                          |
-| ---------------- | ------------ | ------------ | ------------------------------------- |
-| FileRepository   | files        | FileId       | findByHash, findByPath, softDelete    |
+| Repository       | 対象テーブル | Branded Type | 固有メソッド                               |
+| ---------------- | ------------ | ------------ | ------------------------------------------ |
+| FileRepository   | files        | FileId       | findByHash, findByPath, softDelete         |
 | ChunkRepository  | chunks       | ChunkId      | findByFileId, deleteByFileId, findAdjacent |
-| EntityRepository | entities     | EntityId     | upsert, searchByName, findTopByImportance |
+| EntityRepository | entities     | EntityId     | upsert, searchByName, findTopByImportance  |
 
 #### ファクトリ関数
 
@@ -128,23 +128,23 @@ const chunks = await repos.chunks.findByFileId(fileId);
 
 ### FileEntity型
 
-| プロパティ   | 型           | 説明                       |
-| ------------ | ------------ | -------------------------- |
-| id           | FileId       | ファイルの一意識別子       |
-| name         | string       | ファイル名（1-255文字）    |
-| path         | string       | ファイルパス               |
-| mimeType     | FileType     | MIMEタイプ                 |
-| category     | FileCategory | カテゴリ                   |
-| size         | number       | ファイルサイズ（10MB上限） |
-| hash         | string       | SHA-256ハッシュ            |
+| プロパティ | 型           | 説明                       |
+| ---------- | ------------ | -------------------------- |
+| id         | FileId       | ファイルの一意識別子       |
+| name       | string       | ファイル名（1-255文字）    |
+| path       | string       | ファイルパス               |
+| mimeType   | FileType     | MIMEタイプ                 |
+| category   | FileCategory | カテゴリ                   |
+| size       | number       | ファイルサイズ（10MB上限） |
+| hash       | string       | SHA-256ハッシュ            |
 
 ### サポートファイルタイプ
 
-| カテゴリ       | MIMEタイプ例                     | 用途               |
-| -------------- | -------------------------------- | ------------------ |
-| テキスト系     | text/plain, text/markdown        | ドキュメント       |
-| コード系       | text/typescript, application/json | ソースコード       |
-| ドキュメント系 | application/pdf                  | PDF、Office文書    |
+| カテゴリ       | MIMEタイプ例                      | 用途            |
+| -------------- | --------------------------------- | --------------- |
+| テキスト系     | text/plain, text/markdown         | ドキュメント    |
+| コード系       | text/typescript, application/json | ソースコード    |
+| ドキュメント系 | application/pdf                   | PDF、Office文書 |
 
 ---
 
@@ -166,13 +166,13 @@ const chunks = await repos.chunks.findByFileId(fileId);
 
 ## 設計原則
 
-| 原則           | 説明                                   |
-| -------------- | -------------------------------------- |
-| 型安全性       | Branded TypesによるID型の厳格化        |
-| DRY原則        | 共有定数の一元管理                     |
-| 不変性         | readonly修飾子による値の変更防止       |
+| 原則           | 説明                                      |
+| -------------- | ----------------------------------------- |
+| 型安全性       | Branded TypesによるID型の厳格化           |
+| DRY原則        | 共有定数の一元管理                        |
+| 不変性         | readonly修飾子による値の変更防止          |
 | バリデーション | Zodスキーマによるランタイムバリデーション |
-| テスト容易性   | 純粋関数による高いテスタビリティ       |
+| テスト容易性   | 純粋関数による高いテスタビリティ          |
 
 ### エンティティ抽出サービス (NER)
 
@@ -202,50 +202,50 @@ ExtractedEntity[] → (後続処理で) → EntityEntity (Knowledge Graph)
 
 **IEntityExtractor**: エンティティ抽出の抽象インターフェース
 
-| メソッド       | 説明                             |
-| -------------- | -------------------------------- |
-| extract()      | 単一チャンクからエンティティ抽出 |
-| extractBatch() | 複数チャンクからバッチ抽出       |
-| mergeEntities()| 抽出結果のマージ（重複除去）     |
+| メソッド        | 説明                             |
+| --------------- | -------------------------------- |
+| extract()       | 単一チャンクからエンティティ抽出 |
+| extractBatch()  | 複数チャンクからバッチ抽出       |
+| mergeEntities() | 抽出結果のマージ（重複除去）     |
 
 **ILLMProvider**: LLM通信の抽象インターフェース（依存性注入用）
 
-| プロパティ/メソッド | 説明                    |
-| ------------------- | ----------------------- |
-| modelId             | 使用モデルID            |
+| プロパティ/メソッド | 説明                     |
+| ------------------- | ------------------------ |
+| modelId             | 使用モデルID             |
 | generate()          | プロンプト送信・応答取得 |
 
 #### 抽出オプション (EntityExtractionOptions)
 
-| オプション            | 型        | デフォルト | 説明                       |
-| --------------------- | --------- | ---------- | -------------------------- |
-| types                 | string[]  | 全52タイプ | 抽出対象のエンティティタイプ |
-| minConfidence         | number    | 0.5        | 最小信頼度閾値             |
-| maxEntitiesPerChunk   | number    | 20         | チャンクあたり最大抽出数   |
-| minNameLength         | number    | 2          | 最小名前長                 |
-| generateDescriptions  | boolean   | true       | 説明生成（LLMのみ）        |
-| useLLM                | boolean   | true       | LLM使用フラグ              |
+| オプション           | 型       | デフォルト | 説明                         |
+| -------------------- | -------- | ---------- | ---------------------------- |
+| types                | string[] | 全52タイプ | 抽出対象のエンティティタイプ |
+| minConfidence        | number   | 0.5        | 最小信頼度閾値               |
+| maxEntitiesPerChunk  | number   | 20         | チャンクあたり最大抽出数     |
+| minNameLength        | number   | 2          | 最小名前長                   |
+| generateDescriptions | boolean  | true       | 説明生成（LLMのみ）          |
+| useLLM               | boolean  | true       | LLM使用フラグ                |
 
 #### 抽出結果型 (ExtractedEntity)
 
-| プロパティ     | 型         | 説明                       |
-| -------------- | ---------- | -------------------------- |
-| name           | string     | エンティティ名（原形）     |
-| normalizedName | string     | 正規化名（小文字・空白正規化）|
-| type           | EntityType | エンティティタイプ（52種類）|
-| confidence     | number     | 信頼度スコア（0.0〜1.0）   |
-| description    | string?    | 説明文（LLM生成時のみ）    |
-| aliases        | string[]   | 別名・エイリアス           |
-| mentions       | Mention[]  | テキスト内出現情報         |
+| プロパティ     | 型         | 説明                           |
+| -------------- | ---------- | ------------------------------ |
+| name           | string     | エンティティ名（原形）         |
+| normalizedName | string     | 正規化名（小文字・空白正規化） |
+| type           | EntityType | エンティティタイプ（52種類）   |
+| confidence     | number     | 信頼度スコア（0.0〜1.0）       |
+| description    | string?    | 説明文（LLM生成時のみ）        |
+| aliases        | string[]   | 別名・エイリアス               |
+| mentions       | Mention[]  | テキスト内出現情報             |
 
 #### Mention型（出現情報）
 
-| プロパティ     | 型     | 説明                           |
-| -------------- | ------ | ------------------------------ |
-| chunkId        | string | 出現チャンクID                 |
-| startPosition  | number | 開始位置（文字オフセット）     |
-| endPosition    | number | 終了位置（文字オフセット）     |
-| context        | string | 前後コンテキスト（最大200文字）|
+| プロパティ    | 型     | 説明                            |
+| ------------- | ------ | ------------------------------- |
+| chunkId       | string | 出現チャンクID                  |
+| startPosition | number | 開始位置（文字オフセット）      |
+| endPosition   | number | 終了位置（文字オフセット）      |
+| context       | string | 前後コンテキスト（最大200文字） |
 
 #### 抽出器実装
 
@@ -264,28 +264,28 @@ ExtractedEntity[] → (後続処理で) → EntityEntity (Knowledge Graph)
 
 #### パターンカテゴリ（RuleBased）
 
-| カテゴリ   | 検出例                                | 信頼度 |
-| ---------- | ------------------------------------- | ------ |
-| 技術名     | TypeScript, React, PostgreSQL, Docker | 0.85-0.9 |
-| 組織名     | Google, Microsoft, OpenAI             | 0.9    |
-| 日付       | 2024-01-15, 2024年1月15日, 2024/01/15 | 0.9-0.95 |
+| カテゴリ | 検出例                                | 信頼度   |
+| -------- | ------------------------------------- | -------- |
+| 技術名   | TypeScript, React, PostgreSQL, Docker | 0.85-0.9 |
+| 組織名   | Google, Microsoft, OpenAI             | 0.9      |
+| 日付     | 2024-01-15, 2024年1月15日, 2024/01/15 | 0.9-0.95 |
 
 #### エラー型
 
-| エラークラス       | 説明                     |
-| ------------------ | ------------------------ |
-| LLMProviderError   | LLM API呼び出し失敗      |
-| JsonParseError     | LLMレスポンスのJSON不正  |
+| エラークラス     | 説明                    |
+| ---------------- | ----------------------- |
+| LLMProviderError | LLM API呼び出し失敗     |
+| JsonParseError   | LLMレスポンスのJSON不正 |
 
 #### ユーティリティ関数
 
-| 関数              | 説明                           |
-| ----------------- | ------------------------------ |
-| normalizeEntityName | 名前正規化（小文字・空白処理）|
-| escapeRegex       | 正規表現特殊文字エスケープ     |
-| mergeOptions      | オプションとデフォルトのマージ |
-| findMentionsInText | テキスト内出現位置検出         |
-| deduplicateEntities | 重複エンティティのマージ     |
+| 関数                | 説明                           |
+| ------------------- | ------------------------------ |
+| normalizeEntityName | 名前正規化（小文字・空白処理） |
+| escapeRegex         | 正規表現特殊文字エスケープ     |
+| mergeOptions        | オプションとデフォルトのマージ |
+| findMentionsInText  | テキスト内出現位置検出         |
+| deduplicateEntities | 重複エンティティのマージ       |
 
 **テスト品質**: 69テストケース、97.78%カバレッジ達成
 
@@ -319,72 +319,72 @@ ExtractedRelation[] → (後続処理で) → RelationEntity (Knowledge Graph Ed
 
 **IRelationExtractor**: 関係抽出の抽象インターフェース
 
-| メソッド        | 説明                                   |
-| --------------- | -------------------------------------- |
-| extract()       | 単一チャンクからエンティティ間関係抽出 |
-| extractBatch()  | 複数チャンクからバッチ抽出             |
-| mergeRelations()| 抽出結果のマージ（重複除去・統合）     |
+| メソッド         | 説明                                   |
+| ---------------- | -------------------------------------- |
+| extract()        | 単一チャンクからエンティティ間関係抽出 |
+| extractBatch()   | 複数チャンクからバッチ抽出             |
+| mergeRelations() | 抽出結果のマージ（重複除去・統合）     |
 
 #### 抽出オプション (RelationExtractionOptions)
 
-| オプション            | 型             | デフォルト | 説明                           |
-| --------------------- | -------------- | ---------- | ------------------------------ |
-| minConfidence         | number         | 0.5        | 最小信頼度閾値                 |
-| allowedRelationTypes  | RelationType[] | 全15タイプ | 抽出対象の関係タイプ制限       |
-| temperature           | number         | 0.1        | LLMの温度パラメータ            |
-| maxTokens             | number         | 2000       | 最大トークン数                 |
+| オプション           | 型             | デフォルト | 説明                     |
+| -------------------- | -------------- | ---------- | ------------------------ |
+| minConfidence        | number         | 0.5        | 最小信頼度閾値           |
+| allowedRelationTypes | RelationType[] | 全15タイプ | 抽出対象の関係タイプ制限 |
+| temperature          | number         | 0.1        | LLMの温度パラメータ      |
+| maxTokens            | number         | 2000       | 最大トークン数           |
 
 #### 抽出結果型 (ExtractedRelation)
 
-| プロパティ     | 型                | 説明                                 |
-| -------------- | ----------------- | ------------------------------------ |
-| sourceEntity   | string            | 関係の起点エンティティ名             |
-| targetEntity   | string            | 関係の終点エンティティ名             |
-| relationType   | RelationType      | 関係タイプ（15種類）                 |
-| description    | string?           | 関係の説明文（LLM生成）              |
-| evidence       | RelationEvidence[]| 根拠情報（必須1件以上）              |
-| confidence     | number            | 信頼度スコア（0.0〜1.0）             |
-| bidirectional  | boolean           | 双方向関係フラグ                     |
-| attributes     | Record<string, unknown>? | カスタム属性（拡張用）         |
+| プロパティ    | 型                       | 説明                     |
+| ------------- | ------------------------ | ------------------------ |
+| sourceEntity  | string                   | 関係の起点エンティティ名 |
+| targetEntity  | string                   | 関係の終点エンティティ名 |
+| relationType  | RelationType             | 関係タイプ（15種類）     |
+| description   | string?                  | 関係の説明文（LLM生成）  |
+| evidence      | RelationEvidence[]       | 根拠情報（必須1件以上）  |
+| confidence    | number                   | 信頼度スコア（0.0〜1.0） |
+| bidirectional | boolean                  | 双方向関係フラグ         |
+| attributes    | Record<string, unknown>? | カスタム属性（拡張用）   |
 
 #### 関係タイプ (RelationType) - 15種類
 
-| タイプ            | カテゴリ     | 説明                     | 例                              |
-| ----------------- | ------------ | ------------------------ | ------------------------------- |
-| belongs_to        | 所属関係     | 組織への所属             | 山田→A社                        |
-| related_to        | 汎用関係     | 一般的な関連             | AI→機械学習                     |
-| causes            | 因果関係     | 原因-結果                | バグ→エラー                     |
-| depends_on        | 依存関係     | 技術的依存               | React→JavaScript                |
-| created_by        | 作成関係     | 作成者-成果物            | TypeScript→Microsoft            |
-| uses              | 使用関係     | 使用-被使用              | Next.js→React                   |
-| part_of           | 包含関係     | 部分-全体                | 章→本                           |
-| located_in        | 位置関係     | 場所-所在                | Google→カリフォルニア           |
-| succeeds          | 時系列関係   | 後継-先行                | Python 3→Python 2               |
-| precedes          | 時系列関係   | 先行-後継                | HTML→HTML5                      |
-| competes_with     | 競合関係     | 競合関係                 | React→Vue                       |
-| collaborates_with | 協力関係     | 協力・提携               | OpenAI→Microsoft                |
-| implements        | 実装関係     | インターフェース-実装    | Express→HTTPサーバー            |
-| extends           | 拡張関係     | 拡張元-拡張先            | TypeScript→JavaScript           |
-| other             | その他       | 分類困難な関係           | -                               |
+| タイプ            | カテゴリ   | 説明                  | 例                    |
+| ----------------- | ---------- | --------------------- | --------------------- |
+| belongs_to        | 所属関係   | 組織への所属          | 山田→A社              |
+| related_to        | 汎用関係   | 一般的な関連          | AI→機械学習           |
+| causes            | 因果関係   | 原因-結果             | バグ→エラー           |
+| depends_on        | 依存関係   | 技術的依存            | React→JavaScript      |
+| created_by        | 作成関係   | 作成者-成果物         | TypeScript→Microsoft  |
+| uses              | 使用関係   | 使用-被使用           | Next.js→React         |
+| part_of           | 包含関係   | 部分-全体             | 章→本                 |
+| located_in        | 位置関係   | 場所-所在             | Google→カリフォルニア |
+| succeeds          | 時系列関係 | 後継-先行             | Python 3→Python 2     |
+| precedes          | 時系列関係 | 先行-後継             | HTML→HTML5            |
+| competes_with     | 競合関係   | 競合関係              | React→Vue             |
+| collaborates_with | 協力関係   | 協力・提携            | OpenAI→Microsoft      |
+| implements        | 実装関係   | インターフェース-実装 | Express→HTTPサーバー  |
+| extends           | 拡張関係   | 拡張元-拡張先         | TypeScript→JavaScript |
+| other             | その他     | 分類困難な関係        | -                     |
 
 #### RelationEvidence型（根拠情報）
 
-| プロパティ     | 型     | 説明                           |
-| -------------- | ------ | ------------------------------ |
-| chunkId        | string | 出現チャンクID                 |
-| text           | string | 根拠テキスト                   |
-| startPosition  | number | 開始位置（文字オフセット）     |
-| endPosition    | number | 終了位置（文字オフセット）     |
+| プロパティ    | 型     | 説明                       |
+| ------------- | ------ | -------------------------- |
+| chunkId       | string | 出現チャンクID             |
+| text          | string | 根拠テキスト               |
+| startPosition | number | 開始位置（文字オフセット） |
+| endPosition   | number | 終了位置（文字オフセット） |
 
 #### エラー型
 
-| エラーコード        | 説明                     |
-| ------------------- | ------------------------ |
-| LLM_API_ERROR       | LLM API呼び出し失敗      |
-| PARSE_ERROR         | LLMレスポンスのJSON不正  |
-| VALIDATION_ERROR    | Zodスキーマバリデーション失敗 |
-| TIMEOUT             | タイムアウト             |
-| RATE_LIMITED        | レート制限超過           |
+| エラーコード     | 説明                          |
+| ---------------- | ----------------------------- |
+| LLM_API_ERROR    | LLM API呼び出し失敗           |
+| PARSE_ERROR      | LLMレスポンスのJSON不正       |
+| VALIDATION_ERROR | Zodスキーマバリデーション失敗 |
+| TIMEOUT          | タイムアウト                  |
+| RATE_LIMITED     | レート制限超過                |
 
 **参照**: `docs/30-workflows/CONV-06-05-relation-extraction/outputs/phase-12/implementation-guide.md` - 詳細な設計・実装ドキュメント
 

@@ -70,11 +70,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| permission-requirements | Phase 1 開始時 | ツール一覧/目的 | 権限要件メモ |
-| permission-policy-design | Phase 2 開始時 | 要件/制約 | 権限ポリシー |
-| permission-audit-ops | Phase 3 開始時 | 監査ログ/設定 | 監査レポート |
+| Task                     | 起動タイミング | 入力            | 出力         |
+| ------------------------ | -------------- | --------------- | ------------ |
+| permission-requirements  | Phase 1 開始時 | ツール一覧/目的 | 権限要件メモ |
+| permission-policy-design | Phase 2 開始時 | 要件/制約       | 権限ポリシー |
+| permission-audit-ops     | Phase 3 開始時 | 監査ログ/設定   | 監査レポート |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -84,20 +84,20 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 最小権限の原則を適用する | リスクを抑えるため |
-| 権限変更の理由を記録する | 監査性を高めるため |
-| 定期的な権限レビューを実施する | 逸脱を防ぐため |
-| 権限テンプレートを統一する | 運用コストを下げるため |
+| 推奨事項                       | 理由                   |
+| ------------------------------ | ---------------------- |
+| 最小権限の原則を適用する       | リスクを抑えるため     |
+| 権限変更の理由を記録する       | 監査性を高めるため     |
+| 定期的な権限レビューを実施する | 逸脱を防ぐため         |
+| 権限テンプレートを統一する     | 運用コストを下げるため |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 管理者権限の乱用 | セキュリティ事故につながる |
-| ログを記録しない | 監査不能になる |
-| 権限変更の履歴を残さない | 原因追跡が難しくなる |
+| 禁止事項                 | 問題点                     |
+| ------------------------ | -------------------------- |
+| 管理者権限の乱用         | セキュリティ事故につながる |
+| ログを記録しない         | 監査不能になる             |
+| 権限変更の履歴を残さない | 原因追跡が難しくなる       |
 
 ---
 
@@ -105,31 +105,31 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/analyze-permissions.mjs` | 権限構成を分析する |
-| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
-| `scripts/log_usage.mjs` | 実行記録を保存する |
+| スクリプト                        | 機能                             |
+| --------------------------------- | -------------------------------- |
+| `scripts/analyze-permissions.mjs` | 権限構成を分析する               |
+| `scripts/validate-skill.mjs`      | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs`           | 実行記録を保存する               |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
-| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
-| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 監査時に参照 |
-| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模運用時に参照 |
-| 権限マトリクス | [references/tool-selection-matrix.md](references/tool-selection-matrix.md) | 設計時に参照 |
+| リソース       | パス                                                                       | 読込条件           |
+| -------------- | -------------------------------------------------------------------------- | ------------------ |
+| 基礎概念       | [references/Level1_basics.md](references/Level1_basics.md)                 | Phase 1 で参照     |
+| 実務パターン   | [references/Level2_intermediate.md](references/Level2_intermediate.md)     | Phase 2 で参照     |
+| 応用戦略       | [references/Level3_advanced.md](references/Level3_advanced.md)             | 監査時に参照       |
+| エキスパート   | [references/Level4_expert.md](references/Level4_expert.md)                 | 大規模運用時に参照 |
+| 権限マトリクス | [references/tool-selection-matrix.md](references/tool-selection-matrix.md) | 設計時に参照       |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                          | 用途                       |
+| --------------------------------- | -------------------------- |
 | `assets/permission-template.yaml` | 権限ポリシーのテンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 2.0.0 | 2026-01-02 | Task仕様と監査フローを再設計し、参照を整理 |
-| 1.0.0 | 2025-12-31 | 初期バージョン |
+| Version | Date       | Changes                                    |
+| ------- | ---------- | ------------------------------------------ |
+| 2.0.0   | 2026-01-02 | Task仕様と監査フローを再設計し、参照を整理 |
+| 1.0.0   | 2025-12-31 | 初期バージョン                             |

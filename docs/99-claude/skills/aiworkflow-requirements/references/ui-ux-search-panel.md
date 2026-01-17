@@ -220,11 +220,11 @@ apps/desktop/src/features/search/
 
 EditorViewからの検索機能呼び出しは、以下のカスタムフックで抽象化する：
 
-| フック                      | 責務                                   | 配置                           |
-| --------------------------- | -------------------------------------- | ------------------------------ |
-| useEditorInstance           | EditorInstanceアダプター               | EditorView/hooks/              |
-| useWorkspaceSearch          | ワークスペース検索プロバイダ           | EditorView/hooks/              |
-| useSearchKeyboardShortcuts  | キーボードショートカット管理           | EditorView/hooks/              |
+| フック                     | 責務                         | 配置              |
+| -------------------------- | ---------------------------- | ----------------- |
+| useEditorInstance          | EditorInstanceアダプター     | EditorView/hooks/ |
+| useWorkspaceSearch         | ワークスペース検索プロバイダ | EditorView/hooks/ |
+| useSearchKeyboardShortcuts | キーボードショートカット管理 | EditorView/hooks/ |
 
 ### EditorInstanceインターフェース
 
@@ -238,7 +238,12 @@ interface EditorInstance {
   scrollToLine: (line: number, column?: number) => void;
   getCursorPosition: () => { line: number; column: number };
   setCursorPosition: (line: number, column: number) => void;
-  replaceText: (line: number, column: number, length: number, replacement: string) => void;
+  replaceText: (
+    line: number,
+    column: number,
+    length: number,
+    replacement: string,
+  ) => void;
   replaceAllText: (matches: SearchMatch[], replacement: string) => void;
   focus: () => void;
 }

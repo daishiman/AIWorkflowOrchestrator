@@ -14,26 +14,32 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 組み合わせ可能性の原則 / 原則 / 設計パターン / 単一責任原則（SRP） / 良い例 / Command Best Practices
 - 実務指針: コマンド設計の原則を確認したい時 / 既存コマンドをリファクタリングする時 / 保守性の高いコマンドを設計する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/composability-principle.md`: 合成可能性原則の適用（把握する知識: 組み合わせ可能性の原則 / 原則 / 設計パターン）
 - `references/single-responsibility-principle.md`: 1コマンド=1責任の原則、複数責任検出基準（「〜と〜」「異なるタイミング実行」）とリファクタリング手法（把握する知識: 単一責任原則（SRP） / 原則 / 良い例）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Best Practices / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/check-best-practices.mjs`: ベストプラクティス検証スクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/best-practice-checklist.md`: ベストプラクティスチェックリスト
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

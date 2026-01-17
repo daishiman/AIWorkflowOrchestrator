@@ -51,6 +51,7 @@ allowed-tools:
 3. 必要に応じて `references/deep-principle-guide.md` を参照
 
 **Task**:
+
 - `agents/refine-backlog-items.md`
 - `agents/prioritize-backlog.md`
 
@@ -68,12 +69,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| 現状整理 | 目的・制約の整理 | 既存バックログ | コンテキスト要約 | `references/Level1_basics.md` | Phase 1 |
-| リファインメント | ストーリー整備 | コンテキスト要約 | 更新ストーリー | `assets/user-story-template.md` | Phase 2 前半 |
-| 優先順位付け | 価値/依存の整理 | 更新ストーリー | 優先順位メモ | `references/Level2_intermediate.md` | Phase 2 後半 |
-| 健全性検証 | 分析と改善提案 | バックログ | 検証レポート | `scripts/analyze-backlog.mjs` | Phase 3 |
+| Task             | 役割             | 入力             | 出力             | 参照先                              | 実行タイミング |
+| ---------------- | ---------------- | ---------------- | ---------------- | ----------------------------------- | -------------- |
+| 現状整理         | 目的・制約の整理 | 既存バックログ   | コンテキスト要約 | `references/Level1_basics.md`       | Phase 1        |
+| リファインメント | ストーリー整備   | コンテキスト要約 | 更新ストーリー   | `assets/user-story-template.md`     | Phase 2 前半   |
+| 優先順位付け     | 価値/依存の整理  | 更新ストーリー   | 優先順位メモ     | `references/Level2_intermediate.md` | Phase 2 後半   |
+| 健全性検証       | 分析と改善提案   | バックログ       | 検証レポート     | `scripts/analyze-backlog.mjs`       | Phase 3        |
 
 ## ベストプラクティス
 
@@ -114,8 +115,8 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠               |
+| 1.0.0   | 2025-12-24 | 初版作成                                 |

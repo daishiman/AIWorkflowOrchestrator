@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling ambiguity elimination tasks.
 
 ### 必要な知識
+
 - 対象領域: 曖昧性検出と除去スキル。定性的・不明確な表現を具体的・測定可能な要件に変換します。
 - 主要概念: 曖昧性パターンガイド / パターン1: 量的曖昧性（Quantitative Ambiguity） / パフォーマンス要件の明確化 / 曖昧性パターン検出・除去ガイド / 5つの曖昧性パターン
 - 実務指針: 要件に「速い」「多い」「適切に」などの曖昧な表現がある時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: 「など」「等」で範囲が不明確な時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/clarification-checklist.md`
 - 参照テンプレート: `templates/clarification-template.md`
 
 ### 参照書籍
+
 - 『Don't Make Me Think』（Steve Krug）: ユーザビリティ
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/clarification-checklist.md`: このレベルでは参照のみ
 - `templates/clarification-template.md`: このレベルでは参照のみ
 

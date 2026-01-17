@@ -62,30 +62,30 @@
 
 ### 4.2 チェックリスト
 
-| 項目 | 基準 |
-|------|------|
-| **16:9アスペクト比が設定されているか** | **aspect-ratio: 16/9 が.slide-areaと.slider__itemに適用** |
-| **slide-area要素があるか** | **.slider内に.slide-areaが存在** |
-| DOCTYPE宣言があるか | HTML5形式 |
-| CDNが正しいか | GSAP 3.12.2, FontAwesome 6.5.1（または Bootstrap Icons / Material Symbols）, Noto Sans JP |
-| 全スライドが含まれているか | 構成案の全スライドがHTMLに反映 |
-| アニメーションが実装されているか | スライドタイプ別のenter/leaveが定義 |
-| ナビゲーションが動作するか | キーボード、ボタン、ドットナビ対応 |
-| 外部ファイル参照がないか | CDN以外の外部ファイル参照がない |
-| Kanagawaテーマが適用されているか | CSS変数が正しく使用されている |
-| 構造化データが出力されているか | structure.md がindex.htmlと同階層に存在 |
-| デプロイガイドが出力されているか | deploy-guide.md がindex.htmlと同階層に存在 |
+| 項目                                   | 基準                                                                                      |
+| -------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **16:9アスペクト比が設定されているか** | **aspect-ratio: 16/9 が.slide-areaと.slider\_\_itemに適用**                               |
+| **slide-area要素があるか**             | **.slider内に.slide-areaが存在**                                                          |
+| DOCTYPE宣言があるか                    | HTML5形式                                                                                 |
+| CDNが正しいか                          | GSAP 3.12.2, FontAwesome 6.5.1（または Bootstrap Icons / Material Symbols）, Noto Sans JP |
+| 全スライドが含まれているか             | 構成案の全スライドがHTMLに反映                                                            |
+| アニメーションが実装されているか       | スライドタイプ別のenter/leaveが定義                                                       |
+| ナビゲーションが動作するか             | キーボード、ボタン、ドットナビ対応                                                        |
+| 外部ファイル参照がないか               | CDN以外の外部ファイル参照がない                                                           |
+| Kanagawaテーマが適用されているか       | CSS変数が正しく使用されている                                                             |
+| 構造化データが出力されているか         | structure.md がindex.htmlと同階層に存在                                                   |
+| デプロイガイドが出力されているか       | deploy-guide.md がindex.htmlと同階層に存在                                                |
 
 ### 4.3 ビジネスルール（制約）
 
-| 制約項目 | 内容 |
-|----------|------|
-| **16:9アスペクト比** | **全スライド必須（最重要）** |
-| 1ファイル形式 | 外部ファイル参照なし（CDN除く） |
-| CDN使用 | GSAP, FontAwesome, Google Fontsのみ |
-| テーマ準拠 | Kanagawaカラーパレット使用必須 |
-| アニメーション必須 | 全スライドにenter/leaveアニメーション |
-| レスポンシブ | 16:9を維持しつつビューポート対応 |
+| 制約項目             | 内容                                  |
+| -------------------- | ------------------------------------- |
+| **16:9アスペクト比** | **全スライド必須（最重要）**          |
+| 1ファイル形式        | 外部ファイル参照なし（CDN除く）       |
+| CDN使用              | GSAP, FontAwesome, Google Fontsのみ   |
+| テーマ準拠           | Kanagawaカラーパレット使用必須        |
+| アニメーション必須   | 全スライドにenter/leaveアニメーション |
+| レスポンシブ         | 16:9を維持しつつビューポート対応      |
 
 ### 4.4 16:9アスペクト比（必須制約）
 
@@ -105,7 +105,8 @@
 
 ```html
 <div class="slider" id="slider">
-  <div class="slide-area">  <!-- 16:9を強制するコンテナ -->
+  <div class="slide-area">
+    <!-- 16:9を強制するコンテナ -->
     <div class="slider__container">
       <!-- スライドHTML -->
     </div>
@@ -140,7 +141,9 @@
 スライド幅計算は`.slide-area`の幅を使用：
 
 ```javascript
-this.slideWidth = this.slideArea ? this.slideArea.offsetWidth : window.innerWidth;
+this.slideWidth = this.slideArea
+  ? this.slideArea.offsetWidth
+  : window.innerWidth;
 ```
 
 ### 4.5 index.html ⇔ structure.md 整合性維持（重要）
@@ -158,17 +161,18 @@ this.slideWidth = this.slideArea ? this.slideArea.offsetWidth : window.innerWidt
 
 #### 必須同期項目
 
-| HTMLの変更 | structure.mdに反映すべき内容 |
-|-----------|---------------------------|
-| テキスト変更 | 該当スライドのメッセージ/コンテンツ |
-| タイプ変更 | スライドタイプ、アニメーション |
-| アイコン変更 | 使用アイコン情報 |
-| レイアウト調整 | 調整内容をメモに記録 |
-| スライド追加/削除 | スライド一覧を全更新 |
+| HTMLの変更        | structure.mdに反映すべき内容        |
+| ----------------- | ----------------------------------- |
+| テキスト変更      | 該当スライドのメッセージ/コンテンツ |
+| タイプ変更        | スライドタイプ、アニメーション      |
+| アイコン変更      | 使用アイコン情報                    |
+| レイアウト調整    | 調整内容をメモに記録                |
+| スライド追加/削除 | スライド一覧を全更新                |
 
 #### 非同期による問題
 
 両ファイルが整合していない場合：
+
 - 次回の修正時に意図しない結果になる
 - 構成変更時にstructure.mdから正しく再生成できない
 - 修正履歴が不正確になり、変更追跡が困難になる
@@ -181,35 +185,36 @@ this.slideWidth = this.slideArea ? this.slideArea.offsetWidth : window.innerWidt
 
 #### 入力1: スライド構成案
 
-| 項目 | 内容 |
-|------|------|
-| データ名 | スライド構成案 |
-| 提供元 | structure-designer Task |
-| 検証ルール | スライド一覧、各スライド詳細が含まれていること |
-| 拒否すべき入力 | ユーザー未承認の構成案 |
-| 欠損時処理 | structure-designer Taskに再要求 |
+| 項目           | 内容                                           |
+| -------------- | ---------------------------------------------- |
+| データ名       | スライド構成案                                 |
+| 提供元         | structure-designer Task                        |
+| 検証ルール     | スライド一覧、各スライド詳細が含まれていること |
+| 拒否すべき入力 | ユーザー未承認の構成案                         |
+| 欠損時処理     | structure-designer Taskに再要求                |
 
 ### 5.2 出力
 
 #### 成果物1: HTMLプレゼン資料
 
-| 項目 | 内容 |
-|------|------|
-| 成果物名 | HTMLプレゼン資料 |
-| 受領先 | ユーザー |
-| 出力先 | 05_Project/スライド/slide-YYYY-MM-DD-{タイトル}/index.html |
+| 項目     | 内容                                                       |
+| -------- | ---------------------------------------------------------- |
+| 成果物名 | HTMLプレゼン資料                                           |
+| 受領先   | ユーザー                                                   |
+| 出力先   | 05_Project/スライド/slide-YYYY-MM-DD-{タイトル}/index.html |
 
 #### 成果物2: 構造化データ
 
-| 項目 | 内容 |
-|------|------|
-| 成果物名 | 構造化データ（structure.md） |
-| 受領先 | ユーザー |
-| 出力先 | 05_Project/スライド/slide-YYYY-MM-DD-{タイトル}/structure.md |
-| テンプレート | assets/structure-template.md |
-| 用途 | スライドの改善・修正作業の基礎情報 |
+| 項目         | 内容                                                         |
+| ------------ | ------------------------------------------------------------ |
+| 成果物名     | 構造化データ（structure.md）                                 |
+| 受領先       | ユーザー                                                     |
+| 出力先       | 05_Project/スライド/slide-YYYY-MM-DD-{タイトル}/structure.md |
+| テンプレート | assets/structure-template.md                                 |
+| 用途         | スライドの改善・修正作業の基礎情報                           |
 
 **structure.md に含まれる情報**:
+
 - メタ情報（タイトル、目的、対象者、発表時間、生成日時）
 - スライド一覧（タイプ、メッセージ、アイコン、アニメーション）
 - 各スライド詳細（コンテンツ全文、図解構造、使用カラー）
@@ -218,13 +223,13 @@ this.slideWidth = this.slideArea ? this.slideArea.offsetWidth : window.innerWidt
 
 #### 成果物3: デプロイガイド
 
-| 項目 | 内容 |
-|------|------|
-| 成果物名 | デプロイガイド（deploy-guide.md） |
-| 受領先 | ユーザー |
-| 出力先 | 05_Project/スライド/slide-YYYY-MM-DD-{タイトル}/deploy-guide.md |
-| 参照元 | assets/gas-deploy-guide.md |
-| 用途 | スライドのGASデプロイ手順（同梱ドキュメント） |
+| 項目     | 内容                                                            |
+| -------- | --------------------------------------------------------------- |
+| 成果物名 | デプロイガイド（deploy-guide.md）                               |
+| 受領先   | ユーザー                                                        |
+| 出力先   | 05_Project/スライド/slide-YYYY-MM-DD-{タイトル}/deploy-guide.md |
+| 参照元   | assets/gas-deploy-guide.md                                      |
+| 用途     | スライドのGASデプロイ手順（同梱ドキュメント）                   |
 
 ---
 
@@ -235,6 +240,7 @@ HTML生成後、必ず視覚検証を実施すること。
 ### 検証手順
 
 1. **スクリーンショット撮影**
+
    ```bash
    node scripts/verify-slides.mjs ./index.html ./screenshots
    ```
@@ -247,13 +253,13 @@ HTML生成後、必ず視覚検証を実施すること。
 
 3. **問題発見時の修正**
 
-   | 問題 | 修正方法 |
-   |------|----------|
-   | テキスト切れ | `max-width`拡大、`font-size`をCSS変数に変更 |
-   | 不自然な改行 | テキスト簡略化、`<br>`タグ明示挿入 |
-   | 統計値切れ | `--fs-heading`使用、`white-space: nowrap`追加 |
-   | 画像切れ | `max-width`/`max-height`調整、`object-fit: contain` |
-   | フロー改行 | テキスト短縮、`max-width`拡大（280px推奨） |
+   | 問題         | 修正方法                                            |
+   | ------------ | --------------------------------------------------- |
+   | テキスト切れ | `max-width`拡大、`font-size`をCSS変数に変更         |
+   | 不自然な改行 | テキスト簡略化、`<br>`タグ明示挿入                  |
+   | 統計値切れ   | `--fs-heading`使用、`white-space: nowrap`追加       |
+   | 画像切れ     | `max-width`/`max-height`調整、`object-fit: contain` |
+   | フロー改行   | テキスト短縮、`max-width`拡大（280px推奨）          |
 
 4. **修正確認**
    - 修正後、再度スクリーンショットを撮影
@@ -262,34 +268,46 @@ HTML生成後、必ず視覚検証を実施すること。
 ### よくある問題パターンと対処
 
 **統計スライド（slide-stats）**
+
 ```css
 /* NG: 大きすぎるフォント */
-.stat-value { font-size: var(--fs-title); }
+.stat-value {
+  font-size: var(--fs-title);
+}
 
 /* OK: 適切なサイズ */
 .stat-value {
   font-size: var(--fs-heading);
   white-space: nowrap;
 }
-.stat-item { max-width: 350px; }
+.stat-item {
+  max-width: 350px;
+}
 ```
 
 **フロースライド（slide-flow）**
+
 ```css
 /* NG: 狭すぎる */
-.flow-step { max-width: 220px; }
+.flow-step {
+  max-width: 220px;
+}
 
 /* OK: 十分な幅 */
-.flow-step { max-width: 280px; min-width: 180px; }
+.flow-step {
+  max-width: 280px;
+  min-width: 180px;
+}
 ```
 
 **タイトルスライド**
+
 ```html
 <!-- NG: 自動改行で不自然な位置で切れる -->
 <h1>ChatGPTを"使える"に変える！</h1>
 
 <!-- OK: 意味的な位置で明示改行 -->
-<h1>ChatGPTを<br>"使える"に変える！</h1>
+<h1>ChatGPTを<br />"使える"に変える！</h1>
 ```
 
 ---
@@ -304,14 +322,26 @@ HTML生成後、必ず視覚検証を実施すること。
 
 <!-- アイコン（以下から1つ選択、デフォルト: FontAwesome） -->
 <!-- FontAwesome 6 Free（推奨） -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
 <!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+/>
 <!-- Material Symbols -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+/>
 
 <!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<link
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 ### 6.1.1 アイコンライブラリ別実装
@@ -322,11 +352,11 @@ HTML生成後、必ず視覚検証を実施すること。
 <i class="fa-solid fa-robot slide-icon"></i>
 
 <style>
-.slide-icon {
-  font-size: 3rem;
-  color: var(--wave-blue);
-  text-shadow: 0 0 10px rgba(126, 156, 216, 0.3);
-}
+  .slide-icon {
+    font-size: 3rem;
+    color: var(--wave-blue);
+    text-shadow: 0 0 10px rgba(126, 156, 216, 0.3);
+  }
 </style>
 ```
 
@@ -336,10 +366,10 @@ HTML生成後、必ず視覚検証を実施すること。
 <i class="bi bi-robot slide-icon"></i>
 
 <style>
-.slide-icon.bi {
-  font-size: 3rem;
-  color: var(--wave-blue);
-}
+  .slide-icon.bi {
+    font-size: 3rem;
+    color: var(--wave-blue);
+  }
 </style>
 ```
 
@@ -349,10 +379,10 @@ HTML生成後、必ず視覚検証を実施すること。
 <span class="material-symbols-outlined slide-icon">smart_toy</span>
 
 <style>
-.material-symbols-outlined.slide-icon {
-  font-size: 48px;
-  color: var(--wave-blue);
-}
+  .material-symbols-outlined.slide-icon {
+    font-size: 48px;
+    color: var(--wave-blue);
+  }
 </style>
 ```
 
@@ -361,27 +391,33 @@ HTML生成後、必ず視覚検証を実施すること。
 ```html
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{タイトル}}</title>
-  {{CDN}}
-  <style>{{CSS}}</style>
-</head>
-<body>
-  <div class="progress-bar"><div class="progress" id="progress"></div></div>
-  <div class="slider" id="slider">
-    <div class="slider__container">
-      {{スライドHTML}}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{タイトル}}</title>
+    {{CDN}}
+    <style>
+      {{CSS}}
+    </style>
+  </head>
+  <body>
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+    <div class="slider" id="slider">
+      <div class="slider__container">{{スライドHTML}}</div>
     </div>
-  </div>
-  <ul class="slider-navigation" id="navigation"></ul>
-  <div class="slider-controls">
-    <button id="prev"><i class="fas fa-chevron-left"></i></button>
-    <button id="next"><i class="fas fa-chevron-right"></i></button>
-  </div>
-  <script>{{JavaScript}}</script>
-</body>
+    <ul class="slider-navigation" id="navigation"></ul>
+    <div class="slider-controls">
+      <button id="prev"><i class="fas fa-chevron-left"></i></button>
+      <button id="next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <script>
+      {
+        {
+          JavaScript;
+        }
+      }
+    </script>
+  </body>
 </html>
 ```
 
@@ -400,17 +436,17 @@ HTML生成後、必ず視覚検証を実施すること。
 
 ## 7. 参照リソース
 
-| リソース | パス | 用途 |
-|----------|------|------|
-| テーマ・スタイル | references/theme-style.md | CSS変数・カラーパレット・共通スタイル |
-| スライドコンポーネント | references/slide-components.md | 23種スライドタイプのHTML/CSS/アニメーション |
-| アイコン | references/icons.md | 18カテゴリのアイコンマッピング・ライブラリ使用法 |
-| 構成戦略 | references/strategy.md | BSEC構成・相手分析・ボリューム設計 |
-| ライティングルール | references/writing-rules.md | タイトル・メッセージ・箇条書き |
-| レイアウト・ビジュアル | references/layout-visual.md | 分割パターン・余白・統一感 |
-| HTMLテンプレート | assets/slide-template.html | 完全なHTMLテンプレート |
-| 構造化データテンプレート | assets/structure-template.md | structure.md のテンプレート |
-| デプロイガイド | assets/gas-deploy-guide.md | GASデプロイ手順 |
+| リソース                 | パス                           | 用途                                             |
+| ------------------------ | ------------------------------ | ------------------------------------------------ |
+| テーマ・スタイル         | references/theme-style.md      | CSS変数・カラーパレット・共通スタイル            |
+| スライドコンポーネント   | references/slide-components.md | 23種スライドタイプのHTML/CSS/アニメーション      |
+| アイコン                 | references/icons.md            | 18カテゴリのアイコンマッピング・ライブラリ使用法 |
+| 構成戦略                 | references/strategy.md         | BSEC構成・相手分析・ボリューム設計               |
+| ライティングルール       | references/writing-rules.md    | タイトル・メッセージ・箇条書き                   |
+| レイアウト・ビジュアル   | references/layout-visual.md    | 分割パターン・余白・統一感                       |
+| HTMLテンプレート         | assets/slide-template.html     | 完全なHTMLテンプレート                           |
+| 構造化データテンプレート | assets/structure-template.md   | structure.md のテンプレート                      |
+| デプロイガイド           | assets/gas-deploy-guide.md     | GASデプロイ手順                                  |
 
 ---
 
@@ -418,12 +454,12 @@ HTML生成後、必ず視覚検証を実施すること。
 
 生成したHTMLの操作方法：
 
-| 操作 | 方法 |
-|------|------|
-| 次のスライド | →キー / スペースキー / 右ボタン |
-| 前のスライド | ←キー / 左ボタン |
-| スライドジャンプ | 下部ドットをクリック |
-| PDF出力 | Ctrl+P (Windows) / Cmd+P (Mac) |
+| 操作             | 方法                            |
+| ---------------- | ------------------------------- |
+| 次のスライド     | →キー / スペースキー / 右ボタン |
+| 前のスライド     | ←キー / 左ボタン                |
+| スライドジャンプ | 下部ドットをクリック            |
+| PDF出力          | Ctrl+P (Windows) / Cmd+P (Mac)  |
 
 ---
 
@@ -434,6 +470,7 @@ HTML生成後、必ず視覚検証を実施すること。
 生成したHTMLプレゼンテーションを印刷/PDF出力可能な形式にする。
 
 **レイアウト仕様**:
+
 - **用紙**: A4横向き
 - **1ページ1スライド**: page-break-after で自動改ページ
 - **スライド領域**: 70%（左側）- 比率維持スケーリングでレイアウト崩れ防止
@@ -442,15 +479,16 @@ HTML生成後、必ず視覚検証を実施すること。
 - **カラー変換**: ダークテーマ → ライトテーマ（印刷用）
 
 **PDF出力ボタンについて**:
+
 - プレゼン中に目立たないよう、画面上のボタンは**非表示**
 - ユーザーはキーボードショートカットで印刷ダイアログを開く
 
 ### 9.2 必要ファイル
 
-| ファイル | 責務 |
-|----------|------|
-| `assets/print-styles.css` | 印刷用CSS（@media print） |
-| `references/print-layout.md` | 印刷レイアウト詳細仕様 |
+| ファイル                     | 責務                      |
+| ---------------------------- | ------------------------- |
+| `assets/print-styles.css`    | 印刷用CSS（@media print） |
+| `references/print-layout.md` | 印刷レイアウト詳細仕様    |
 
 ### 9.3 実装手順
 
@@ -478,7 +516,10 @@ HTML生成後、必ず視覚検証を実施すること。
   }
 
   /* 非表示要素 */
-  .progress-bar, .slider-navigation, .slider-controls, .slide-number {
+  .progress-bar,
+  .slider-navigation,
+  .slider-controls,
+  .slide-number {
     display: none !important;
   }
 
@@ -488,7 +529,7 @@ HTML生成後、必ず視覚検証を実施すること。
     min-height: 170mm !important;
     page-break-after: always !important;
     padding: 15px !important;
-    background: #FAFAFA !important;
+    background: #fafafa !important;
     position: relative !important;
   }
 
@@ -502,8 +543,12 @@ HTML生成後、必ず視覚検証を実施すること。
   }
 
   /* スライド番号（CSS counter使用） */
-  body { counter-reset: slide-counter; }
-  .slider__item { counter-increment: slide-counter; }
+  body {
+    counter-reset: slide-counter;
+  }
+  .slider__item {
+    counter-increment: slide-counter;
+  }
   .slider__item::before {
     content: counter(slide-counter) " / {{総スライド数}}";
     position: absolute !important;
@@ -514,37 +559,49 @@ HTML生成後、必ず視覚検証を実施すること。
   }
 
   /* フォントサイズ縮小 */
-  .main-title { font-size: 2rem !important; }
-  .section-title { font-size: 1.8rem !important; }
-  .main-message { font-size: 1.5rem !important; }
+  .main-title {
+    font-size: 2rem !important;
+  }
+  .section-title {
+    font-size: 1.8rem !important;
+  }
+  .main-message {
+    font-size: 1.5rem !important;
+  }
 
   /* テキスト色変換（ダーク→ライト） */
-  h1, h2, h3, p, span { color: #1F1F28 !important; }
+  h1,
+  h2,
+  h3,
+  p,
+  span {
+    color: #1f1f28 !important;
+  }
 }
 ```
 
 ### 9.5 チェックリスト
 
-| 項目 | 基準 |
-|------|------|
-| 画面スライド番号があるか | 右下に表示、JavaScriptで更新 |
-| @media printがあるか | 印刷用CSSがインライン埋め込み済み |
-| A4横向きか | @page { size: A4 landscape; } |
-| 1スライド1ページか | page-break-after: always |
-| 印刷スライド番号があるか | CSS counter で右下に表示 |
-| コンテンツが全表示か | overflow: visible, transform: none |
-| ライトテーマになるか | 背景白、テキスト黒に変換 |
+| 項目                     | 基準                               |
+| ------------------------ | ---------------------------------- |
+| 画面スライド番号があるか | 右下に表示、JavaScriptで更新       |
+| @media printがあるか     | 印刷用CSSがインライン埋め込み済み  |
+| A4横向きか               | @page { size: A4 landscape; }      |
+| 1スライド1ページか       | page-break-after: always           |
+| 印刷スライド番号があるか | CSS counter で右下に表示           |
+| コンテンツが全表示か     | overflow: visible, transform: none |
+| ライトテーマになるか     | 背景白、テキスト黒に変換           |
 
 ### 9.6 ユーザーへの案内
 
 PDF出力時の印刷設定ガイド（Chrome推奨）：
 
-| 設定項目 | 値 |
-|---------|-----|
-| 送信先 | PDFに保存 |
-| レイアウト | 横 |
-| 用紙サイズ | A4 |
-| 余白 | なし |
+| 設定項目           | 値             |
+| ------------------ | -------------- |
+| 送信先             | PDFに保存      |
+| レイアウト         | 横             |
+| 用紙サイズ         | A4             |
+| 余白               | なし           |
 | 背景のグラフィック | ✓ 有効（重要） |
 
 **操作方法**: `Cmd+P` (Mac) または `Ctrl+P` (Windows) で印刷ダイアログを開く

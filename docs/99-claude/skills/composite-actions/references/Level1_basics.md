@@ -14,27 +14,34 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Composite Action の設計や作成に着手する時点で適用する
 
 ### 必要な知識
+
 - 対象領域: Composite Actions の設計と実装
 - 主要概念: action.yml 基本構造 / 必須フィールド / 入力設計 / 単一責任の原則
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - 目的・前提・判断根拠・次のアクションが明記されている
 - 主要テンプレート: `assets/composite-action/action.yml`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `assets/composite-action/action.yml`: このレベルでは参照のみ
 
 ## 実践手順

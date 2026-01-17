@@ -14,23 +14,28 @@ Progressive Disclosure 設計とトークン最適化の実践方法を整理し
 ## 詳細ガイド
 
 ### Progressive Disclosure 設計
+
 - まず Level1/Level2 で要点だけを確認し、必要に応じて詳細リソースへ拡張する
 - 説明量が過剰な場合は要約を作り、必要な箇所のみを参照する
 
 ### トークン最適化
+
 - 目的に直結しない情報は後回しにし、必須項目を優先して読み込む
 - 参照回数が多い資料は要点メモを作って再利用する
 
 ### 高度知識の扱い
+
 - `resources/discriminated-union-patterns.md`: Discriminated Union Patternsリソース（把握する知識: Discriminated Unions パターン / 基本概念 / Discriminated Union とは）
 - `resources/generics-patterns.md`: Generics Patternsリソース（把握する知識: ジェネリクスパターン / 基本的なジェネリクス / 関数ジェネリクス）
 - `resources/type-guard-patterns.md`: Type Guard Patternsリソース（把握する知識: 型ガードパターン / 組み込み型ガード / typeof 型ガード）
 
 ### 判断基準
+
 - 詳細な判断が必要なときのみ高度リソースを読み込む
 - 検証が必要な場合は参照系スクリプトを優先する
 
 ### スクリプト分類
+
 - 参照系: `scripts/check-type-safety.mjs`, `scripts/validate-skill.mjs`
 - その他: `scripts/log_usage.mjs`
 - テンプレートは出力一貫性の維持に活用する

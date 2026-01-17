@@ -4,15 +4,15 @@
  */
 
 export enum CircuitState {
-  CLOSED = 'CLOSED',     // 正常動作
-  OPEN = 'OPEN',         // 遮断状態
-  HALF_OPEN = 'HALF_OPEN' // 試行状態
+  CLOSED = "CLOSED", // 正常動作
+  OPEN = "OPEN", // 遮断状態
+  HALF_OPEN = "HALF_OPEN", // 試行状態
 }
 
 export interface CircuitBreakerConfig {
-  failureThreshold: number;    // 開放までの失敗回数
-  resetTimeoutMs: number;      // 半開放までの待機時間
-  successThreshold: number;    // 閉鎖までの成功回数
+  failureThreshold: number; // 開放までの失敗回数
+  resetTimeoutMs: number; // 半開放までの待機時間
+  successThreshold: number; // 閉鎖までの成功回数
 }
 
 export const defaultCircuitConfig: CircuitBreakerConfig = {
@@ -31,11 +31,14 @@ export class CircuitBreaker {
 
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     if (this.state === CircuitState.OPEN) {
-      if (Date.now() - (this.lastFailureTime ?? 0) >= this.config.resetTimeoutMs) {
+      if (
+        Date.now() - (this.lastFailureTime ?? 0) >=
+        this.config.resetTimeoutMs
+      ) {
         this.state = CircuitState.HALF_OPEN;
         this.successes = 0;
       } else {
-        throw new Error('Circuit is OPEN - request blocked');
+        throw new Error("Circuit is OPEN - request blocked");
       }
     }
 
@@ -64,7 +67,7 @@ export class CircuitBreaker {
   private onFailure(): void {
     this.failures++;
     this.lastFailureTime = Date.now();
-    
+
     if (this.state === CircuitState.HALF_OPEN) {
       this.state = CircuitState.OPEN;
     } else if (this.failures >= this.config.failureThreshold) {

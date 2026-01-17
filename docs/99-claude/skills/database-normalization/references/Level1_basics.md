@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling database normalization tasks.
 
 ### 必要な知識
+
 - 対象領域: C.J.デイトの『データベース実践講義』に基づくリレーショナルデータベース正規化理論。 第1〜5正規形の段階的適用と、パフォーマンス要件に基づく意図的な非正規化の判断基準を提供。 専門分野:
 - 主要概念: 正規形の階層構造 / 定義 / 違反パターンと解決策 / アーキテクチャ設計 / データベース設計（Turso + Drizzle ORM）
 - 実務指針: 新規テーブル設計時の正規化レベル決定
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: パフォーマンス問題の原因が正規化レベルにある可能性がある場合
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - アセットの必須項目を満たしている
 - 主要アセット: `assets/denormalization-decision-template.md`
 
 ### 参照書籍
+
 - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要アセット
+
 - `assets/denormalization-decision-template.md`: このレベルでは参照のみ
 
 ## 実践手順

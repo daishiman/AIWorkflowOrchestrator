@@ -102,7 +102,7 @@ function process(input, options) {
   const result = {
     success: true,
     data: input,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   return result;
@@ -143,7 +143,9 @@ async function main() {
 
     if (verbose) {
       console.log(`入力: ${inputPath}`);
-      console.log(`データ: ${JSON.stringify(inputData, null, 2).substring(0, 200)}...`);
+      console.log(
+        `データ: ${JSON.stringify(inputData, null, 2).substring(0, 200)}...`,
+      );
     }
 
     // テンプレート読み込み（指定時）

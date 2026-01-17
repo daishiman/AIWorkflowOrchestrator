@@ -16,7 +16,13 @@
  *   3: ファイル不在
  */
 
-import { readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync } from "fs";
+import {
+  readFileSync,
+  existsSync,
+  readdirSync,
+  writeFileSync,
+  mkdirSync,
+} from "fs";
 import { resolve, dirname, join, basename } from "path";
 import { fileURLToPath } from "url";
 
@@ -33,7 +39,7 @@ const REQUIRED_SECTIONS = [
   "プロフィール",
   "知識ベース",
   "実行仕様",
-  "インターフェース"
+  "インターフェース",
 ];
 
 // 曖昧な表現パターン
@@ -84,7 +90,7 @@ function analyzeStructure(content) {
     // セクション番号付きパターンも許容
     const patterns = [
       new RegExp(`^##\\s*\\d*\\.?\\s*${section}`, "m"),
-      new RegExp(`^##\\s*${section}`, "m")
+      new RegExp(`^##\\s*${section}`, "m"),
     ];
     const found = patterns.some((p) => p.test(content));
     if (found) {
@@ -94,7 +100,9 @@ function analyzeStructure(content) {
     }
   }
 
-  const score = Math.round((foundSections.length / REQUIRED_SECTIONS.length) * 5);
+  const score = Math.round(
+    (foundSections.length / REQUIRED_SECTIONS.length) * 5,
+  );
   return { foundSections, missingSections, score };
 }
 
@@ -108,7 +116,7 @@ function analyzeClarity(content) {
         type: "ambiguous",
         issue,
         count: matches.length,
-        pattern: pattern.source
+        pattern: pattern.source,
       });
     }
   }
@@ -128,13 +136,18 @@ function analyzeReproducibility(content) {
   }
 
   // ステップ番号付きテーブルの確認
-  const hasStepTable = /\|\s*ステップ\s*\|/i.test(content) || /\|\s*\d+\s*\|/i.test(content);
+  const hasStepTable =
+    /\|\s*ステップ\s*\|/i.test(content) || /\|\s*\d+\s*\|/i.test(content);
   if (!hasStepTable) {
-    issues.push({ type: "missing", issue: "ステップ番号付きの思考プロセステーブルがない" });
+    issues.push({
+      type: "missing",
+      issue: "ステップ番号付きの思考プロセステーブルがない",
+    });
   }
 
   // 出力テンプレートの確認
-  const hasOutputTemplate = /出力テンプレート/i.test(content) || /```(json|markdown)/i.test(content);
+  const hasOutputTemplate =
+    /出力テンプレート/i.test(content) || /```(json|markdown)/i.test(content);
   if (!hasOutputTemplate) {
     issues.push({ type: "missing", issue: "出力テンプレートがない" });
   }
@@ -155,33 +168,44 @@ function analyzeEfficiency(content) {
 
   // 行数チェック
   if (lines.length > 200) {
-    issues.push({ type: "verbose", issue: `行数が多い (${lines.length}行)`, severity: "warning" });
+    issues.push({
+      type: "verbose",
+      issue: `行数が多い (${lines.length}行)`,
+      severity: "warning",
+    });
   }
 
   // 長い段落の検出
   const paragraphs = content.split(/\n\n+/);
-  const longParagraphs = paragraphs.filter((p) => p.length > 500 && !p.startsWith("```"));
+  const longParagraphs = paragraphs.filter(
+    (p) => p.length > 500 && !p.startsWith("```"),
+  );
   if (longParagraphs.length > 0) {
     issues.push({
       type: "verbose",
       issue: `長い段落が${longParagraphs.length}個ある（表形式への変換を推奨）`,
-      severity: "suggestion"
+      severity: "suggestion",
     });
   }
 
   // 重複の検出（簡易）
   const uniqueLines = new Set(lines.filter((l) => l.trim().length > 20));
-  const duplicateRate = 1 - uniqueLines.size / lines.filter((l) => l.trim().length > 20).length;
+  const duplicateRate =
+    1 - uniqueLines.size / lines.filter((l) => l.trim().length > 20).length;
   if (duplicateRate > 0.1) {
     issues.push({
       type: "duplicate",
       issue: `重複率が高い (${Math.round(duplicateRate * 100)}%)`,
-      severity: "warning"
+      severity: "warning",
     });
   }
 
   const score = Math.max(1, 5 - issues.length);
-  return { issues, score, metrics: { lineCount: lines.length, uniqueRate: 1 - duplicateRate } };
+  return {
+    issues,
+    score,
+    metrics: { lineCount: lines.length, uniqueRate: 1 - duplicateRate },
+  };
 }
 
 function analyzeFile(filePath) {
@@ -194,7 +218,11 @@ function analyzeFile(filePath) {
   const efficiency = analyzeEfficiency(content);
 
   const overallScore = Math.round(
-    (structure.score + clarity.score + reproducibility.score + efficiency.score) / 4
+    (structure.score +
+      clarity.score +
+      reproducibility.score +
+      efficiency.score) /
+      4,
   );
 
   return {
@@ -205,36 +233,36 @@ function analyzeFile(filePath) {
       clarity: clarity.score,
       reproducibility: reproducibility.score,
       efficiency: efficiency.score,
-      overall: overallScore
+      overall: overallScore,
     },
     analysis: {
       structure,
       clarity,
       reproducibility,
-      efficiency
+      efficiency,
     },
     improvements: [
       ...structure.missingSections.map((s) => ({
         type: "structure",
         priority: "high",
-        suggestion: `セクション「${s}」を追加`
+        suggestion: `セクション「${s}」を追加`,
       })),
       ...clarity.issues.map((i) => ({
         type: "clarity",
         priority: "medium",
-        suggestion: `${i.issue} (${i.count}箇所)`
+        suggestion: `${i.issue} (${i.count}箇所)`,
       })),
       ...reproducibility.issues.map((i) => ({
         type: "reproducibility",
         priority: i.type === "missing" ? "high" : "medium",
-        suggestion: i.issue
+        suggestion: i.issue,
       })),
       ...efficiency.issues.map((i) => ({
         type: "efficiency",
         priority: i.severity === "warning" ? "medium" : "low",
-        suggestion: i.issue
-      }))
-    ]
+        suggestion: i.issue,
+      })),
+    ],
   };
 }
 
@@ -291,23 +319,52 @@ async function main() {
   const summary = {
     totalFiles: results.length,
     averageScores: {
-      structure: Math.round(results.reduce((sum, r) => sum + r.scores.structure, 0) / results.length * 10) / 10,
-      clarity: Math.round(results.reduce((sum, r) => sum + r.scores.clarity, 0) / results.length * 10) / 10,
-      reproducibility: Math.round(results.reduce((sum, r) => sum + r.scores.reproducibility, 0) / results.length * 10) / 10,
-      efficiency: Math.round(results.reduce((sum, r) => sum + r.scores.efficiency, 0) / results.length * 10) / 10,
-      overall: Math.round(results.reduce((sum, r) => sum + r.scores.overall, 0) / results.length * 10) / 10
+      structure:
+        Math.round(
+          (results.reduce((sum, r) => sum + r.scores.structure, 0) /
+            results.length) *
+            10,
+        ) / 10,
+      clarity:
+        Math.round(
+          (results.reduce((sum, r) => sum + r.scores.clarity, 0) /
+            results.length) *
+            10,
+        ) / 10,
+      reproducibility:
+        Math.round(
+          (results.reduce((sum, r) => sum + r.scores.reproducibility, 0) /
+            results.length) *
+            10,
+        ) / 10,
+      efficiency:
+        Math.round(
+          (results.reduce((sum, r) => sum + r.scores.efficiency, 0) /
+            results.length) *
+            10,
+        ) / 10,
+      overall:
+        Math.round(
+          (results.reduce((sum, r) => sum + r.scores.overall, 0) /
+            results.length) *
+            10,
+        ) / 10,
     },
-    totalImprovements: results.reduce((sum, r) => sum + r.improvements.length, 0),
+    totalImprovements: results.reduce(
+      (sum, r) => sum + r.improvements.length,
+      0,
+    ),
     highPriorityCount: results.reduce(
-      (sum, r) => sum + r.improvements.filter((i) => i.priority === "high").length,
-      0
-    )
+      (sum, r) =>
+        sum + r.improvements.filter((i) => i.priority === "high").length,
+      0,
+    ),
   };
 
   const output = {
     timestamp: new Date().toISOString(),
     summary,
-    results
+    results,
   };
 
   // 出力ディレクトリ作成
@@ -317,20 +374,30 @@ async function main() {
   }
 
   // 結果を出力
-  writeFileSync(resolve(process.cwd(), outputPath), JSON.stringify(output, null, 2), "utf-8");
+  writeFileSync(
+    resolve(process.cwd(), outputPath),
+    JSON.stringify(output, null, 2),
+    "utf-8",
+  );
 
   console.log(`✓ プロンプト分析完了`);
   console.log(`  分析ファイル数: ${summary.totalFiles}`);
   console.log(`  平均スコア: ${summary.averageScores.overall}/5`);
-  console.log(`  改善提案数: ${summary.totalImprovements} (高優先度: ${summary.highPriorityCount})`);
+  console.log(
+    `  改善提案数: ${summary.totalImprovements} (高優先度: ${summary.highPriorityCount})`,
+  );
   console.log(`  出力: ${outputPath}`);
 
   if (verbose) {
     console.log("\n--- 詳細スコア ---");
     for (const r of results) {
       console.log(`\n${r.file}:`);
-      console.log(`  構造: ${r.scores.structure}/5, 明確性: ${r.scores.clarity}/5`);
-      console.log(`  再現性: ${r.scores.reproducibility}/5, 効率性: ${r.scores.efficiency}/5`);
+      console.log(
+        `  構造: ${r.scores.structure}/5, 明確性: ${r.scores.clarity}/5`,
+      );
+      console.log(
+        `  再現性: ${r.scores.reproducibility}/5, 効率性: ${r.scores.efficiency}/5`,
+      );
       if (r.improvements.length > 0) {
         console.log(`  改善点:`);
         for (const imp of r.improvements.slice(0, 3)) {

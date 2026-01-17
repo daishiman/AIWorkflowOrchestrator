@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # data-transformation
 
 ## 概要
@@ -78,12 +79,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-transformation-requirements | Phase 1開始時 | 入出力情報 | 要件メモ、制約一覧 |
-| design-transformation-architecture | Phase 2開始時 | 要件メモ | マッピング設計、フロー定義 |
-| implement-transformation-pipeline | Phase 3開始時 | 設計方針 | 実装メモ、変更点 |
-| validate-transformation-quality | Phase 4開始時 | 実装メモ | 検証レポート、改善提案 |
+| Task                                | 起動タイミング | 入力       | 出力                       |
+| ----------------------------------- | -------------- | ---------- | -------------------------- |
+| analyze-transformation-requirements | Phase 1開始時  | 入出力情報 | 要件メモ、制約一覧         |
+| design-transformation-architecture  | Phase 2開始時  | 要件メモ   | マッピング設計、フロー定義 |
+| implement-transformation-pipeline   | Phase 3開始時  | 設計方針   | 実装メモ、変更点           |
+| validate-transformation-quality     | Phase 4開始時  | 実装メモ   | 検証レポート、改善提案     |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,57 +92,57 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 入出力スキーマを明確にする | 変換の整合性を保つ |
-| 検証ポイントを定義する | 早期検知につながる |
-| 変換ステップを分割する | 再利用と保守性が高まる |
-| ログとメトリクスを残す | 運用改善に役立つ |
+| 推奨事項                   | 理由                   |
+| -------------------------- | ---------------------- |
+| 入出力スキーマを明確にする | 変換の整合性を保つ     |
+| 検証ポイントを定義する     | 早期検知につながる     |
+| 変換ステップを分割する     | 再利用と保守性が高まる |
+| ログとメトリクスを残す     | 運用改善に役立つ       |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| スキーマ無しの変換 | データ破損リスク |
-| 例外処理の欠落 | 失敗時の影響が大きい |
-| 変更履歴の未記録 | 再現性が失われる |
+| 禁止事項           | 問題点               |
+| ------------------ | -------------------- |
+| スキーマ無しの変換 | データ破損リスク     |
+| 例外処理の欠落     | 失敗時の影響が大きい |
+| 変更履歴の未記録   | 再現性が失われる     |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/analyze-transformations.mjs` | 変換ポイントの分析 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                            | 機能                         |
+| ------------------------------------- | ---------------------------- |
+| `scripts/analyze-transformations.mjs` | 変換ポイントの分析           |
+| `scripts/validate-skill.mjs`          | スキル構造の検証             |
+| `scripts/log_usage.mjs`               | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
-| スキーママッピング | [references/schema-mapping-guide.md](references/schema-mapping-guide.md) | 設計時 |
-| ETL設計 | [references/etl-design-patterns.md](references/etl-design-patterns.md) | 設計時 |
-| 品質評価 | [references/data-quality-metrics.md](references/data-quality-metrics.md) | 検証時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース           | パス                                                                     | 読込条件   |
+| ------------------ | ------------------------------------------------------------------------ | ---------- |
+| レベル1 基礎       | [references/Level1_basics.md](references/Level1_basics.md)               | 要件整理時 |
+| レベル2 実務       | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | 設計時     |
+| レベル3 応用       | [references/Level3_advanced.md](references/Level3_advanced.md)           | 実装時     |
+| レベル4 専門       | [references/Level4_expert.md](references/Level4_expert.md)               | 検証時     |
+| スキーママッピング | [references/schema-mapping-guide.md](references/schema-mapping-guide.md) | 設計時     |
+| ETL設計            | [references/etl-design-patterns.md](references/etl-design-patterns.md)   | 設計時     |
+| 品質評価           | [references/data-quality-metrics.md](references/data-quality-metrics.md) | 検証時     |
+| 要求仕様索引       | [references/requirements-index.md](references/requirements-index.md)     | 仕様確認時 |
+| 旧スキル           | [references/legacy-skill.md](references/legacy-skill.md)                 | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/etl-pipeline-template.md` | パイプライン設計テンプレート |
-| `assets/schema-mapping-template.md` | スキーママッピング整理 |
-| `assets/transformation-validation-checklist.md` | 検証チェックリスト |
+| アセット                                        | 用途                         |
+| ----------------------------------------------- | ---------------------------- |
+| `assets/etl-pipeline-template.md`               | パイプライン設計テンプレート |
+| `assets/schema-mapping-template.md`             | スキーママッピング整理       |
+| `assets/transformation-validation-checklist.md` | 検証チェックリスト           |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

@@ -58,7 +58,10 @@ function resolvePath(p) {
 }
 
 function capitalize(str) {
-  return str.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return str
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 function generateSkillMd(plan) {
@@ -70,62 +73,117 @@ function generateSkillMd(plan) {
 
   // Frontmatter生成
   const anchors = workflow.anchors || [];
-  const trigger = workflow.trigger || { description: "TODO: 発動条件", keywords: ["TODO"] };
+  const trigger = workflow.trigger || {
+    description: "TODO: 発動条件",
+    keywords: ["TODO"],
+  };
 
-  const anchorLines = anchors.length > 0
-    ? anchors.map((a) => `  • ${a.name} / 適用: ${a.application} / 目的: ${a.purpose}`).join("\n")
-    : "  • TODO: アンカー名 / 適用: 適用範囲 / 目的: 目的";
+  const anchorLines =
+    anchors.length > 0
+      ? anchors
+          .map(
+            (a) =>
+              `  • ${a.name} / 適用: ${a.application} / 目的: ${a.purpose}`,
+          )
+          .join("\n")
+      : "  • TODO: アンカー名 / 適用: 適用範囲 / 目的: 目的";
 
-  const triggerLine = trigger.description + "\n  " + (trigger.keywords || []).join(", ");
+  const triggerLine =
+    trigger.description + "\n  " + (trigger.keywords || []).join(", ");
 
   // ワークフロー図生成
   const phases = workflow.phases || [];
-  const workflowDiagram = phases.length > 0
-    ? phases.map((p, i) => `Phase ${i + 1}: ${p.name}\n${p.tasks.map((t) => `  - ${t}`).join("\n")}`).join("\n\n")
-    : "TODO: ワークフローを定義";
+  const workflowDiagram =
+    phases.length > 0
+      ? phases
+          .map(
+            (p, i) =>
+              `Phase ${i + 1}: ${p.name}\n${p.tasks.map((t) => `  - ${t}`).join("\n")}`,
+          )
+          .join("\n\n")
+      : "TODO: ワークフローを定義";
 
   // Task一覧生成
   const tasks = workflow.tasks || [];
   const llmTasks = tasks.filter((t) => t.type === "llm");
   const scriptTasks = tasks.filter((t) => t.type === "script");
 
-  const llmTaskTable = llmTasks.length > 0
-    ? llmTasks.map((t) => `| ${t.name} | ${t.responsibility} | ${t.input || "-"} | ${t.output || "-"} | ${t.validationScript || "-"} |`).join("\n")
-    : "| TODO | TODO | TODO | TODO | - |";
+  const llmTaskTable =
+    llmTasks.length > 0
+      ? llmTasks
+          .map(
+            (t) =>
+              `| ${t.name} | ${t.responsibility} | ${t.input || "-"} | ${t.output || "-"} | ${t.validationScript || "-"} |`,
+          )
+          .join("\n")
+      : "| TODO | TODO | TODO | TODO | - |";
 
-  const scriptTaskTable = scriptTasks.length > 0
-    ? scriptTasks.map((t) => `| \`${t.name}.mjs\` | ${t.responsibility} | ${t.input || "-"} | ${t.output || "-"} | 0:成功 |`).join("\n")
-    : "| TODO | TODO | TODO | TODO | 0:成功 |";
+  const scriptTaskTable =
+    scriptTasks.length > 0
+      ? scriptTasks
+          .map(
+            (t) =>
+              `| \`${t.name}.mjs\` | ${t.responsibility} | ${t.input || "-"} | ${t.output || "-"} | 0:成功 |`,
+          )
+          .join("\n")
+      : "| TODO | TODO | TODO | TODO | 0:成功 |";
 
   // agents/テーブル生成
   const agentFiles = files.filter((f) => f.type === "agent");
-  const agentTable = agentFiles.length > 0
-    ? agentFiles.map((f) => `| ${basename(f.path, ".md")} | [${f.path}](${f.path}) | ${f.responsibility} |`).join("\n")
-    : "";
+  const agentTable =
+    agentFiles.length > 0
+      ? agentFiles
+          .map(
+            (f) =>
+              `| ${basename(f.path, ".md")} | [${f.path}](${f.path}) | ${f.responsibility} |`,
+          )
+          .join("\n")
+      : "";
 
   // scripts/テーブル生成
   const scriptFiles = files.filter((f) => f.type === "script");
-  const scriptTable = scriptFiles.length > 0
-    ? scriptFiles.map((f) => `| \`${basename(f.path)}\` | ${f.responsibility} | \`node ${f.path}\` |`).join("\n")
-    : "";
+  const scriptTable =
+    scriptFiles.length > 0
+      ? scriptFiles
+          .map(
+            (f) =>
+              `| \`${basename(f.path)}\` | ${f.responsibility} | \`node ${f.path}\` |`,
+          )
+          .join("\n")
+      : "";
 
   // references/テーブル生成
   const refFiles = files.filter((f) => f.type === "reference");
-  const refTable = refFiles.length > 0
-    ? refFiles.map((f) => `| ${basename(f.path, ".md")} | [${f.path}](${f.path}) | ${f.responsibility} |`).join("\n")
-    : "";
+  const refTable =
+    refFiles.length > 0
+      ? refFiles
+          .map(
+            (f) =>
+              `| ${basename(f.path, ".md")} | [${f.path}](${f.path}) | ${f.responsibility} |`,
+          )
+          .join("\n")
+      : "";
 
   // assets/テーブル生成
   const assetFiles = files.filter((f) => f.type === "asset");
-  const assetTable = assetFiles.length > 0
-    ? assetFiles.map((f) => `| \`${basename(f.path)}\` | ${f.responsibility} |`).join("\n")
-    : "";
+  const assetTable =
+    assetFiles.length > 0
+      ? assetFiles
+          .map((f) => `| \`${basename(f.path)}\` | ${f.responsibility} |`)
+          .join("\n")
+      : "";
 
   // schemas/テーブル生成
   const schemaFiles = files.filter((f) => f.type === "schema");
-  const schemaTable = schemaFiles.length > 0
-    ? schemaFiles.map((f) => `| ${basename(f.path, ".json")} | [${f.path}](${f.path}) | ${f.responsibility} |`).join("\n")
-    : "";
+  const schemaTable =
+    schemaFiles.length > 0
+      ? schemaFiles
+          .map(
+            (f) =>
+              `| ${basename(f.path, ".json")} | [${f.path}](${f.path}) | ${f.responsibility} |`,
+          )
+          .join("\n")
+      : "";
 
   const content = `---
 name: ${skillName}
@@ -191,41 +249,61 @@ ${scriptTaskTable}
 | 複数責務を1タスクに詰め込む | 再実行・デバッグが困難に |
 
 ## リソース参照
-${scriptTable ? `
+${
+  scriptTable
+    ? `
 ### scripts/（決定論的処理）
 
 | スクリプト | 機能 | 使用例 |
 |------------|------|--------|
 ${scriptTable}
-` : ""}
-${agentTable ? `
+`
+    : ""
+}
+${
+  agentTable
+    ? `
 ### agents/（LLM Task仕様）
 
 | Task | パス | 責務 |
 |------|------|------|
 ${agentTable}
-` : ""}
-${schemaTable ? `
+`
+    : ""
+}
+${
+  schemaTable
+    ? `
 ### schemas/（入出力スキーマ）
 
 | スキーマ | パス | 用途 |
 |----------|------|------|
 ${schemaTable}
-` : ""}
-${assetTable ? `
+`
+    : ""
+}
+${
+  assetTable
+    ? `
 ### assets/（テンプレート）
 
 | テンプレート | 用途 |
 |--------------|------|
 ${assetTable}
-` : ""}
-${refTable ? `
+`
+    : ""
+}
+${
+  refTable
+    ? `
 ### references/（詳細知識）
 
 | リソース | パス | 読込条件 |
 |----------|------|----------|
 ${refTable}
-` : ""}
+`
+    : ""
+}
 
 ## 変更履歴
 

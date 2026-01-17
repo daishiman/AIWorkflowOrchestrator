@@ -14,25 +14,31 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: エラーハンドリングパターン / パターン1: 早期バリデーション / Validation / Command Error Handling / リソース構造 / リソース種別
 - 実務指針: 堅牢なエラー処理を実装する時 / ロールバック機能が必要な時 / ユーザー確認を統合する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/error-patterns.md`: エラーハンドリングパターン集（把握する知識: エラーハンドリングパターン / パターン1: 早期バリデーション / Validation）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Error Handling / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-error-handling.mjs`: エラーハンドリング検証スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/command-with-error-handling.md`: エラーハンドリング付きコマンドテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

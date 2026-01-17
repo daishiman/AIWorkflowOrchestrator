@@ -31,13 +31,13 @@ export interface EditorInstance {
     line: number,
     column: number,
     length: number,
-    replacement: string
+    replacement: string,
   ) => void;
 
   /** 複数マッチを一括置換 */
   replaceAllText: (
     matches: Array<{ line: number; column: number; length: number }>,
-    replacement: string
+    replacement: string,
   ) => void;
 
   /** エディタにフォーカス */
@@ -53,12 +53,12 @@ export interface EditorInstance {
 export function createTextAreaEditorInstance(
   textAreaRef: React.RefObject<HTMLTextAreaElement>,
   contentRef: React.MutableRefObject<string>,
-  setContent: (content: string) => void
+  setContent: (content: string) => void,
 ): EditorInstance {
   const calculateCharPosition = (
     content: string,
     line: number,
-    column: number
+    column: number,
   ): number => {
     const lines = content.split("\n");
     let position = 0;
@@ -70,7 +70,7 @@ export function createTextAreaEditorInstance(
 
   const calculateLineColumn = (
     content: string,
-    position: number
+    position: number,
   ): { line: number; column: number } => {
     const lines = content.substring(0, position).split("\n");
     return {
@@ -120,7 +120,11 @@ export function createTextAreaEditorInstance(
 
       let newContent = contentRef.current;
       for (const match of sortedMatches) {
-        const start = calculateCharPosition(newContent, match.line, match.column);
+        const start = calculateCharPosition(
+          newContent,
+          match.line,
+          match.column,
+        );
         newContent =
           newContent.slice(0, start) +
           replacement +
@@ -198,7 +202,7 @@ Electron IPC経由のワークスペース検索を抽象化。
 export type WorkspaceSearchProvider = (
   workspacePath: string,
   query: string,
-  options: SearchOptions
+  options: SearchOptions,
 ) => AsyncGenerator<FileSearchResult, void, unknown>;
 
 // フック実装
@@ -259,7 +263,7 @@ interface UseSearchKeyboardShortcutsOptions {
 }
 
 export function useSearchKeyboardShortcuts(
-  options: UseSearchKeyboardShortcutsOptions
+  options: UseSearchKeyboardShortcutsOptions,
 ) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -329,7 +333,7 @@ describe("useEditorInstance", () => {
         textAreaRef: { current: document.createElement("textarea") },
         editorContent: "test",
         setEditorContent: vi.fn(),
-      })
+      }),
     );
 
     expect(result.current.editorInstanceRef.current).toBeDefined();
@@ -347,9 +351,7 @@ vi.mock("@/preload", () => ({
     search: {
       executeWorkspace: vi.fn().mockResolvedValue({
         success: true,
-        results: [
-          { file: "test.ts", line: 1, column: 1, match: "test" },
-        ],
+        results: [{ file: "test.ts", line: 1, column: 1, match: "test" }],
       }),
     },
   },

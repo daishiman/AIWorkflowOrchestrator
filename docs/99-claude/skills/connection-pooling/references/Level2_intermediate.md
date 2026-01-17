@@ -14,26 +14,32 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: プールサイズ / タイムアウト / リトライ / バックオフ / サーバーレス接続制御 / Turso Embedded Replicas
 
 ### 判断基準と検証観点
+
 - 回避事項: 接続エラーや枯渇パターンを無視しない
 
 ### リソース運用
+
 - `references/pool-sizing-guide.md`: プールサイジングの指針（把握する知識: 接続数見積もり / 同時実行 / 制限値）
 - `references/serverless-connections.md`: サーバーレス接続管理（把握する知識: コールドスタート対策 / 接続上限 / 再利用戦略）
 - `references/error-handling.md`: 接続エラー対応（把握する知識: リトライ / タイムアウト / バックオフ）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: 接続プール設定 / チューニング / 運用注意点）
 
 ### スクリプト運用
+
 - `scripts/check-connections.mjs`: 接続設定検証スクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/drizzle-config-template.ts`: 接続プール設定テンプレート
 
 ### 成果物要件
+
 - 設定の意図と監視指標が明確である
 
 ## 実践手順

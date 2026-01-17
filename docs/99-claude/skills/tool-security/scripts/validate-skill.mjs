@@ -52,7 +52,9 @@ const referenceFiles = [
 ];
 
 function showHelp() {
-  console.log(`\nUsage: node scripts/validate-skill.mjs [options]\n\nOptions:\n  -h, --help    Show this help message\n`);
+  console.log(
+    `\nUsage: node scripts/validate-skill.mjs [options]\n\nOptions:\n  -h, --help    Show this help message\n`,
+  );
 }
 
 function getLineCount(content) {

@@ -12,15 +12,18 @@
 ## 詳細ガイド
 
 ### フィードバックループ
+
 - `LOGS.md`: 運用ログ（`scripts/log_usage.mjs` が自動生成/追記）
 - `scripts/log_usage.mjs`: 使用記録の追記
 - `scripts/validate-skill.mjs`: スキル構造検証
 
 ### 改善に必要な観点
+
 - 評価結果とログを照合し、改善ポイントを特定する
 - 変更が必要な references/・assets/・scripts/ を特定する
 
 ### 評価と記録
+
 - 実行結果を LOGS.md に残し、改善履歴を関係者に共有する
 
 ## 実践手順

@@ -14,27 +14,33 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 5W1Hフレームワーク / 6つの観点 / 1. Who（誰が） / 質問タイプガイド / 質問タイプの分類 / 1. オープン質問（Open-ended Questions）
 - 実務指針: ユーザーから要望をヒアリングする時 / 曖昧な要求を明確化する時 / 隠れたニーズを発見する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/5w1h-framework.md`: Why/Who/What/When/Where/Howによる網羅的要件理解手法（把握する知識: 5W1Hフレームワーク / 6つの観点 / 1. Who（誰が））
 - `resources/question-types.md`: 7種類の質問タイプ（オープン/クローズド/深堀り/仮説検証/シナリオ/比較/反転）と使い分け（把握する知識: 質問タイプガイド / 質問タイプの分類 / 1. オープン質問（Open-ended Questions））
 - `resources/why-analysis.md`: 5回のWhy繰り返しによる根本ニーズ発見手法（把握する知識: Why分析（なぜなぜ分析） / 基本原則 / 5回のWhyルール）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Interview Techniques / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/prepare-interview.mjs`: ヒアリング準備チェックリストと質問セット自動生成
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/interview-guide.md`: インタビュー実施ガイドとフロー制御テンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

@@ -76,12 +76,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task                                                                         | 用途           | 入力             | 出力               |
-| ---------------------------------------------------------------------------- | -------------- | ---------------- | ------------------ |
-| [agents/requirements-analysis.md](agents/requirements-analysis.md)           | 要件分析       | フォーム仕様     | 検証要件定義       |
-| [agents/schema-definition.md](agents/schema-definition.md)                   | スキーマ定義   | 検証要件         | Zodスキーマ        |
-| [agents/validation-implementation.md](agents/validation-implementation.md)   | 実装           | スキーマ         | フォームコード     |
-| [agents/testing.md](agents/testing.md)                                       | テスト         | 実装コード       | テストスイート     |
+| Task                                                                       | 用途         | 入力         | 出力           |
+| -------------------------------------------------------------------------- | ------------ | ------------ | -------------- |
+| [agents/requirements-analysis.md](agents/requirements-analysis.md)         | 要件分析     | フォーム仕様 | 検証要件定義   |
+| [agents/schema-definition.md](agents/schema-definition.md)                 | スキーマ定義 | 検証要件     | Zodスキーマ    |
+| [agents/validation-implementation.md](agents/validation-implementation.md) | 実装         | スキーマ     | フォームコード |
+| [agents/testing.md](agents/testing.md)                                     | テスト       | 実装コード   | テストスイート |
 
 ## ベストプラクティス
 
@@ -104,30 +104,30 @@ allowed-tools:
 
 ### references/（詳細知識）
 
-| リソース       | パス                                           | 内容                   |
-| -------------- | ---------------------------------------------- | ---------------------- |
-| 基本概念       | [references/basics.md](references/basics.md)   | バリデーション層・種類 |
-| 実装パターン   | [references/patterns.md](references/patterns.md) | Zod/RHF統合・テスト    |
+| リソース     | パス                                             | 内容                   |
+| ------------ | ------------------------------------------------ | ---------------------- |
+| 基本概念     | [references/basics.md](references/basics.md)     | バリデーション層・種類 |
+| 実装パターン | [references/patterns.md](references/patterns.md) | Zod/RHF統合・テスト    |
 
 ### assets/（テンプレート）
 
-| テンプレート                         | 用途                       |
-| ------------------------------------ | -------------------------- |
-| zod-schema-template.ts               | Zodスキーマ定義            |
-| react-hook-form-integration-template.tsx | RHF統合フォーム         |
-| server-validation-template.ts        | サーバー側検証             |
-| validation-requirements-template.md  | 要件定義テンプレート       |
+| テンプレート                             | 用途                 |
+| ---------------------------------------- | -------------------- |
+| zod-schema-template.ts                   | Zodスキーマ定義      |
+| react-hook-form-integration-template.tsx | RHF統合フォーム      |
+| server-validation-template.ts            | サーバー側検証       |
+| validation-requirements-template.md      | 要件定義テンプレート |
 
 ### scripts/（記録）
 
-| スクリプト    | 用途     | 使用例                                     |
-| ------------- | -------- | ------------------------------------------ |
+| スクリプト    | 用途     | 使用例                                        |
+| ------------- | -------- | --------------------------------------------- |
 | log_usage.mjs | 利用記録 | `node scripts/log_usage.mjs --result success` |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                  |
-| ------- | ---------- | -------------------------------------------------------- |
+| Version | Date       | Changes                                                      |
+| ------- | ---------- | ------------------------------------------------------------ |
 | 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。frontmatter修正、references/刷新 |
-| 1.1.0   | 2025-12-31 | Trigger追加、Task仕様ナビ追加                            |
-| 1.0.0   | 2025-12-24 | 初版作成                                                 |
+| 1.1.0   | 2025-12-31 | Trigger追加、Task仕様ナビ追加                                |
+| 1.0.0   | 2025-12-24 | 初版作成                                                     |

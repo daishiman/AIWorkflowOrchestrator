@@ -11,6 +11,7 @@
 **すべてのスライドは16:9アスペクト比を厳守すること。**
 
 これにより以下を保証する：
+
 - プロジェクター/ディスプレイでの正しい表示
 - PDF出力時の一貫したレイアウト
 - 異なるウィンドウサイズでも崩れないデザイン
@@ -77,21 +78,21 @@
 
 ### 実装チェックリスト
 
-| 項目 | 確認方法 |
-|------|----------|
-| aspect-ratio: 16/9 が設定されているか | .slider__containerと.slider__itemを確認 |
-| ビューポート変更時も崩れないか | ブラウザをリサイズして確認 |
-| コンテンツがはみ出していないか | 各スライドで視覚確認 |
-| 上下左右に均等な余白があるか | 黒帯（レターボックス）が表示されるか確認 |
+| 項目                                  | 確認方法                                 |
+| ------------------------------------- | ---------------------------------------- |
+| aspect-ratio: 16/9 が設定されているか | .slider**containerと.slider**itemを確認  |
+| ビューポート変更時も崩れないか        | ブラウザをリサイズして確認               |
+| コンテンツがはみ出していないか        | 各スライドで視覚確認                     |
+| 上下左右に均等な余白があるか          | 黒帯（レターボックス）が表示されるか確認 |
 
 ### よくある問題と対処
 
-| 問題 | 原因 | 解決策 |
-|------|------|--------|
-| 縦長ウィンドウでスライドが切れる | height: 100%のみで制約なし | aspect-ratio: 16/9 を追加 |
-| 横長ウィンドウで間延びする | width: 100vwで固定 | max-width: calc(100vh * 16/9) を使用 |
-| コンテンツが枠外に出る | overflow設定なし | overflow: hidden を追加 |
-| PDF出力でずれる | 印刷時のサイズ計算問題 | @media print で固定サイズ指定 |
+| 問題                             | 原因                       | 解決策                                |
+| -------------------------------- | -------------------------- | ------------------------------------- |
+| 縦長ウィンドウでスライドが切れる | height: 100%のみで制約なし | aspect-ratio: 16/9 を追加             |
+| 横長ウィンドウで間延びする       | width: 100vwで固定         | max-width: calc(100vh \* 16/9) を使用 |
+| コンテンツが枠外に出る           | overflow設定なし           | overflow: hidden を追加               |
+| PDF出力でずれる                  | 印刷時のサイズ計算問題     | @media print で固定サイズ指定         |
 
 ---
 
@@ -99,30 +100,30 @@
 
 ### メインカラー
 
-| 変数名 | カラーコード | 用途 |
-|--------|-------------|------|
-| `--bg-dark` | #1F1F28 | 背景（メイン） |
-| `--bg-dim` | #2A2A37 | 背景（サブ） |
-| `--bg-card` | #363646 | カード背景 |
-| `--fg` | #DCD7BA | テキスト（メイン） |
-| `--fg-dim` | #727169 | テキスト（サブ） |
+| 変数名      | カラーコード | 用途               |
+| ----------- | ------------ | ------------------ |
+| `--bg-dark` | #1F1F28      | 背景（メイン）     |
+| `--bg-dim`  | #2A2A37      | 背景（サブ）       |
+| `--bg-card` | #363646      | カード背景         |
+| `--fg`      | #DCD7BA      | テキスト（メイン） |
+| `--fg-dim`  | #727169      | テキスト（サブ）   |
 
 ### アクセントカラー
 
-| 変数名 | カラーコード | 用途 |
-|--------|-------------|------|
-| `--wave-blue` | #7E9CD8 | メインアクセント・リンク |
-| `--spring-violet` | #9CABCA | アクセント（紫） |
-| `--sakura-pink` | #D27E99 | 警告・課題・Before |
-| `--wave-aqua` | #7AA89F | 成功・解決策・After |
-| `--autumn-yellow` | #DCA561 | 強調・数字 |
+| 変数名            | カラーコード | 用途                     |
+| ----------------- | ------------ | ------------------------ |
+| `--wave-blue`     | #7E9CD8      | メインアクセント・リンク |
+| `--spring-violet` | #9CABCA      | アクセント（紫）         |
+| `--sakura-pink`   | #D27E99      | 警告・課題・Before       |
+| `--wave-aqua`     | #7AA89F      | 成功・解決策・After      |
+| `--autumn-yellow` | #DCA561      | 強調・数字               |
 
 ### 補助カラー
 
-| 変数名 | カラーコード | 用途 |
-|--------|-------------|------|
-| `--sumi-ink` | #363646 | ボーダー・区切り |
-| `--fuji-gray` | #54546D | 補助色・ホバー |
+| 変数名        | カラーコード | 用途             |
+| ------------- | ------------ | ---------------- |
+| `--sumi-ink`  | #363646      | ボーダー・区切り |
+| `--fuji-gray` | #54546D      | 補助色・ホバー   |
 
 ---
 
@@ -130,14 +131,14 @@
 
 ### 意味に応じた色選択
 
-| 意味 | 推奨カラー | CSS変数 |
-|------|-----------|---------|
-| 重要・メイン | 青 | `--wave-blue` |
-| 課題・問題・Before | ピンク | `--sakura-pink` |
-| 解決・成功・After | 青緑 | `--wave-aqua` |
-| 強調・数字・警告 | 黄 | `--autumn-yellow` |
-| 補足・サブ | 紫 | `--spring-violet` |
-| 背景・カード | 暗灰 | `--bg-dim` |
+| 意味               | 推奨カラー | CSS変数           |
+| ------------------ | ---------- | ----------------- |
+| 重要・メイン       | 青         | `--wave-blue`     |
+| 課題・問題・Before | ピンク     | `--sakura-pink`   |
+| 解決・成功・After  | 青緑       | `--wave-aqua`     |
+| 強調・数字・警告   | 黄         | `--autumn-yellow` |
+| 補足・サブ         | 紫         | `--spring-violet` |
+| 背景・カード       | 暗灰       | `--bg-dim`        |
 
 ### 比較スライドの色
 
@@ -168,18 +169,18 @@
 ```css
 :root {
   /* カラーパレット */
-  --bg-dark: #1F1F28;
-  --bg-dim: #2A2A37;
+  --bg-dark: #1f1f28;
+  --bg-dim: #2a2a37;
   --bg-card: #363646;
-  --fg: #DCD7BA;
+  --fg: #dcd7ba;
   --fg-dim: #727169;
-  --wave-blue: #7E9CD8;
-  --spring-violet: #9CABCA;
-  --sakura-pink: #D27E99;
-  --wave-aqua: #7AA89F;
-  --autumn-yellow: #DCA561;
+  --wave-blue: #7e9cd8;
+  --spring-violet: #9cabca;
+  --sakura-pink: #d27e99;
+  --wave-aqua: #7aa89f;
+  --autumn-yellow: #dca561;
   --sumi-ink: #363646;
-  --fuji-gray: #54546D;
+  --fuji-gray: #54546d;
 
   /* フォントサイズスケール */
   --font-scale: 1.3;
@@ -204,15 +205,15 @@
 
 ## 4. フォントサイズ一覧
 
-| 用途 | CSS変数 | 基準値 |
-|------|---------|--------|
-| タイトル | `var(--fs-title)` | 5rem × scale |
-| サブタイトル | `var(--fs-subtitle)` | 2.5rem × scale |
-| 見出し | `var(--fs-heading)` | 3rem × scale |
-| 小見出し | `var(--fs-subheading)` | 2rem × scale |
-| 本文 | `var(--fs-body)` | 1.5rem × scale |
-| 大きめ本文 | `var(--fs-body-lg)` | 1.8rem × scale |
-| 小さめ文字 | `var(--fs-small)` | 1.2rem × scale |
+| 用途         | CSS変数                | 基準値         |
+| ------------ | ---------------------- | -------------- |
+| タイトル     | `var(--fs-title)`      | 5rem × scale   |
+| サブタイトル | `var(--fs-subtitle)`   | 2.5rem × scale |
+| 見出し       | `var(--fs-heading)`    | 3rem × scale   |
+| 小見出し     | `var(--fs-subheading)` | 2rem × scale   |
+| 本文         | `var(--fs-body)`       | 1.5rem × scale |
+| 大きめ本文   | `var(--fs-body-lg)`    | 1.8rem × scale |
+| 小さめ文字   | `var(--fs-small)`      | 1.2rem × scale |
 
 ---
 
@@ -221,15 +222,18 @@
 ### リセット・基本設定
 
 ```css
-*, *:after, *:before {
+*,
+*:after,
+*:before {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body, html {
+body,
+html {
   height: 100%;
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: "Noto Sans JP", sans-serif;
   background: var(--bg-dark);
   color: var(--fg);
   overflow: hidden;
@@ -291,10 +295,18 @@ body, html {
 }
 
 /* アクセントカラー */
-.icon-wrapper.accent-pink i { color: var(--sakura-pink); }
-.icon-wrapper.accent-aqua i { color: var(--wave-aqua); }
-.icon-wrapper.accent-yellow i { color: var(--autumn-yellow); }
-.icon-wrapper.accent-violet i { color: var(--spring-violet); }
+.icon-wrapper.accent-pink i {
+  color: var(--sakura-pink);
+}
+.icon-wrapper.accent-aqua i {
+  color: var(--wave-aqua);
+}
+.icon-wrapper.accent-yellow i {
+  color: var(--autumn-yellow);
+}
+.icon-wrapper.accent-violet i {
+  color: var(--spring-violet);
+}
 ```
 
 ---
@@ -401,21 +413,21 @@ GSAPアニメーションは**高速・スムーズ**を基本とする。
 
 ```javascript
 // メインスライド遷移（左右移動）
-duration: 0.25
-ease: 'power3.inOut'
+duration: 0.25;
+ease: "power3.inOut";
 
 // enterアニメーション開始タイミング
-'-=0.15'  // 遷移と並行して開始
+("-=0.15"); // 遷移と並行して開始
 ```
 
 ### 要素アニメーション推奨値
 
-| 要素タイプ | duration | stagger | 備考 |
-|-----------|----------|---------|------|
-| タイトル | 0.25-0.3s | - | アイコンは0.3-0.4s |
-| リストアイテム | 0.2s | 0.05s | 要素が多い場合はstaggerを短く |
-| カード・パネル | 0.3s | 0.08s | 同時出現は同一duration |
-| フェードイン | 0.2s | 0.03-0.05s | leave時はさらに短く |
+| 要素タイプ     | duration  | stagger    | 備考                          |
+| -------------- | --------- | ---------- | ----------------------------- |
+| タイトル       | 0.25-0.3s | -          | アイコンは0.3-0.4s            |
+| リストアイテム | 0.2s      | 0.05s      | 要素が多い場合はstaggerを短く |
+| カード・パネル | 0.3s      | 0.08s      | 同時出現は同一duration        |
+| フェードイン   | 0.2s      | 0.03-0.05s | leave時はさらに短く           |
 
 ### leaveアニメーション
 
@@ -432,12 +444,12 @@ leave: {
 
 ```javascript
 // 遅すぎる（ユーザーがストレスを感じる）
-duration: 0.6  // NG
-stagger: 0.15  // NG（要素が多いと遅い）
+duration: 0.6; // NG
+stagger: 0.15; // NG（要素が多いと遅い）
 
 // 推奨
-duration: 0.25-0.3
-stagger: 0.05-0.08
+duration: 0.25 - 0.3;
+stagger: 0.05 - 0.08;
 ```
 
 ---
@@ -446,11 +458,11 @@ stagger: 0.05-0.08
 
 ### テキスト関連
 
-| クラス | 用途 |
-|--------|------|
-| `.text-note` | 注釈・補足テキスト（グレー） |
-| `.text-emphasis` | 強調テキスト |
-| `.highlight` | ハイライト（黄色） |
+| クラス           | 用途                         |
+| ---------------- | ---------------------------- |
+| `.text-note`     | 注釈・補足テキスト（グレー） |
+| `.text-emphasis` | 強調テキスト                 |
+| `.highlight`     | ハイライト（黄色）           |
 
 ### 実装例
 

@@ -78,12 +78,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| コンテキスト特定 | 境界候補整理 | ドメイン情報 | 候補メモ | `references/context-identification.md` | Phase 1 |
-| コンテキストマップ | 関係整理 | 候補メモ | コンテキストマップ | `assets/context-map-template.md` | Phase 2 |
-| 統合設計 | 連携方式整理 | コンテキストマップ | 統合方針 | `references/integration-strategies.md` | Phase 3 |
-| 検証 | 境界妥当性確認 | 統合方針 | 検証メモ | `references/Level4_expert.md` | Phase 4 |
+| Task               | 役割           | 入力               | 出力               | 参照先                                 | 実行タイミング |
+| ------------------ | -------------- | ------------------ | ------------------ | -------------------------------------- | -------------- |
+| コンテキスト特定   | 境界候補整理   | ドメイン情報       | 候補メモ           | `references/context-identification.md` | Phase 1        |
+| コンテキストマップ | 関係整理       | 候補メモ           | コンテキストマップ | `assets/context-map-template.md`       | Phase 2        |
+| 統合設計           | 連携方式整理   | コンテキストマップ | 統合方針           | `references/integration-strategies.md` | Phase 3        |
+| 検証               | 境界妥当性確認 | 統合方針           | 検証メモ           | `references/Level4_expert.md`          | Phase 4        |
 
 ## ベストプラクティス
 
@@ -125,8 +125,8 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠               |
+| 1.0.0   | 2025-12-24 | 初版作成                                 |

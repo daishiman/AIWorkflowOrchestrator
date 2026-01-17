@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling agent dependency design tasks.
 
 ### 必要な知識
+
 - 対象領域: エージェント依存関係とインターフェース設計を専門とするスキル。 スキル参照、コマンド連携、エージェント間協調のプロトコルを定義し、 循環依存を防ぎながら効果的なマルチエージェントシステムを構築します。
 - 主要概念: Dependency Patterns / 依存関係の種類 / 2. エージェント依存（Agent Dependency） / Agent Dependency Design / リソース構造
 - 実務指針: エージェントがスキルを参照する必要がある時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: 依存関係の循環を検出・解消する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/handoff-protocol-template.json`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/handoff-protocol-template.json`: このレベルでは参照のみ
 
 ## 実践手順

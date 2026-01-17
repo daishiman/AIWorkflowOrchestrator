@@ -14,13 +14,16 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: キャッシュ戦略 / キャッシュの基本原則 / なぜキャッシュが重要か / GitHub Actions構文リファレンス / プルリクエストトリガー / プッシュトリガー
 - 実務指針: GitHub Actionsワークフローを新規作成・最適化する時 / CI/CDパイプラインの品質ゲートを設計する時 / ビルド・テストの並列化による高速化が必要な時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/caching-strategies.md`: pnpm/pnpm/yarn依存関係キャッシュ、Next.js/Turboビルドキャッシュの実装パターンと10GB制限対策（把握する知識: キャッシュ戦略 / キャッシュの基本原則 / なぜキャッシュが重要か）
 - `references/github-actions-syntax.md`: GitHub Actions構文リファレンス（把握する知識: GitHub Actions構文リファレンス / プルリクエストトリガー / プッシュトリガー）
 - `references/parallelization.md`: 並列化とマトリクスビルド（把握する知識: 並列化とマトリクスビルド / 並列化の原則 / なぜ並列化が重要か）
@@ -30,16 +33,19 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: CI/CD Pipelines / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 - `scripts/validate-workflow.mjs`: GitHub Actions Workflow Validator
 
 ### テンプレート運用
+
 - `assets/ci-workflow-template.yml`: CI Workflow Template
 - `assets/deploy-workflow-template.yml`: Deploy Workflow Template
 - `assets/reusable-workflow-template.yml`: Reusable Workflow Template
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

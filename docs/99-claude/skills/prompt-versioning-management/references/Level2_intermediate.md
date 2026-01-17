@@ -14,27 +14,33 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: デプロイパターン / デプロイ戦略の選択 / Blue-Green デプロイ / ロールバック手順 / 戦略の種類 / ロールバックトリガー
 - 実務指針: プロンプトを本番環境にデプロイする時 / プロンプトの変更履歴を管理する時 / ロールバック戦略を設計する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/deployment-patterns.md`: Blue-Green、Canary、Feature Flagなどのデプロイ戦略と実装手順（把握する知識: デプロイパターン / デプロイ戦略の選択 / Blue-Green デプロイ）
 - `resources/rollback-procedures.md`: 即座・段階的ロールバック手順とフォールバック設計パターン（把握する知識: ロールバック手順 / 戦略の種類 / ロールバックトリガー）
 - `resources/versioning-strategies.md`: セマンティックバージョニング、変更分類、依存関係管理の詳細（把握する知識: バージョニング戦略 / バージョン形式 / 各桁の意味）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: バージョニング基礎 / セマンティックバージョニング（プロンプト版） / 変更分類）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/changelog-template.md`: 変更ログテンプレート
 - `templates/deployment-checklist.md`: デプロイチェックリスト
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

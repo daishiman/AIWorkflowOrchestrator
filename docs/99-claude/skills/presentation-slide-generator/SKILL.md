@@ -37,7 +37,8 @@ allowed-tools:
 
 ```html
 <div class="slider" id="slider">
-  <div class="slide-area">  <!-- 16:9強制コンテナ -->
+  <div class="slide-area">
+    <!-- 16:9強制コンテナ -->
     <div class="slider__container">
       <!-- スライドHTML -->
     </div>
@@ -59,6 +60,7 @@ node scripts/verify-slides.mjs ./index.html --check-ratio
 **目的**: プレゼン作成に必要な情報を漏れなく収集
 
 **アクション**:
+
 1. タイトル・目的・対象者・発表時間を確認
 2. キーメッセージを特定
 3. コンテンツ素材（テキスト/箇条書き/データ）を受領
@@ -72,6 +74,7 @@ node scripts/verify-slides.mjs ./index.html --check-ratio
 **目的**: 情報を最適なスライドタイプに分解し、**完全な構造化データを先に出力**する
 
 **アクション**:
+
 1. 情報を1メッセージ単位に分解
 2. 各情報のスライドタイプを判定（15種から選択）
 3. 各スライドのアイコンを選定
@@ -92,6 +95,7 @@ node scripts/verify-slides.mjs ./index.html --check-ratio
 **前提条件**: Phase 2でstructure.mdが出力され、ユーザー承認を取得していること
 
 **アクション**:
+
 1. structure.mdを読み込み
 2. Kanagawaテーマ定義を適用
 3. スライドタイプ別テンプレートを生成
@@ -108,6 +112,7 @@ node scripts/verify-slides.mjs ./index.html --check-ratio
 **目的**: 生成したスライドのレイアウト問題を自動検出・修正
 
 **アクション**:
+
 1. `scripts/verify-slides.mjs` でスクリーンショット撮影
 2. 各スライドの問題を視覚的に確認:
    - テキスト切れ（カード・ボックス内でオーバーフロー）
@@ -120,18 +125,19 @@ node scripts/verify-slides.mjs ./index.html --check-ratio
 4. 全スライド問題なしを確認後、GASデプロイ手順を案内
 
 **検証スクリプト使用例**:
+
 ```bash
 node scripts/verify-slides.mjs ./index.html ./screenshots
 ```
 
 **よくある問題と対処法**:
 
-| 問題 | 原因 | 対処法 |
-|------|------|--------|
-| テキスト切れ | カード幅不足 | `max-width`拡大、`font-size`縮小 |
-| 不自然な改行 | 固定幅内での自動改行 | テキスト簡略化、`<br>`明示挿入 |
-| 統計値切れ | 大きなフォントサイズ | `--fs-heading`使用、`white-space: nowrap` |
-| 画像切れ | コンテナサイズ不足 | `max-width`/`max-height`調整 |
+| 問題         | 原因                 | 対処法                                    |
+| ------------ | -------------------- | ----------------------------------------- |
+| テキスト切れ | カード幅不足         | `max-width`拡大、`font-size`縮小          |
+| 不自然な改行 | 固定幅内での自動改行 | テキスト簡略化、`<br>`明示挿入            |
+| 統計値切れ   | 大きなフォントサイズ | `--fs-heading`使用、`white-space: nowrap` |
+| 画像切れ     | コンテナサイズ不足   | `max-width`/`max-height`調整              |
 
 **Task**: `agents/html-generator.md` を参照（検証セクション）
 
@@ -140,6 +146,7 @@ node scripts/verify-slides.mjs ./index.html ./screenshots
 **目的**: 既存スライドの改善・修正を効率的に実施
 
 **アクション**:
+
 1. 既存structure.mdを読み込み
 2. ユーザー修正要求を分析
 3. 影響範囲と修正内容を設計
@@ -158,6 +165,7 @@ node scripts/verify-slides.mjs ./index.html ./screenshots
 **発動条件**: ユーザーがPDF出力、印刷用、配布用を要求した場合
 
 **アクション**:
+
 1. ブラウザで印刷プレビューを開く（Cmd/Ctrl + P）
 2. 「PDFとして保存」を選択
 3. 印刷設定で「背景のグラフィック」を有効化
@@ -167,13 +175,13 @@ node scripts/verify-slides.mjs ./index.html ./screenshots
 
 ## Task仕様（ナビゲーション）
 
-| Task | 起動タイミング | 入力 | 出力 |
-|------|---------------|------|------|
-| hearing-facilitator | Phase 1開始時 | ユーザー初期入力 | ヒアリング結果 |
-| structure-designer | Phase 2開始時 | ヒアリング結果 | structure.md（構造化データ） |
-| html-generator | Phase 3開始時（構成案承認後） | structure.md | HTMLファイル + デプロイ手順 |
-| visual-verification | Phase 3.5（HTML生成後自動実行） | index.html | スクリーンショット + 修正済HTML |
-| slide-modifier | Phase 4開始時（既存スライド修正時） | structure.md + 修正要求 | 更新されたHTML + structure.md |
+| Task                | 起動タイミング                      | 入力                    | 出力                            |
+| ------------------- | ----------------------------------- | ----------------------- | ------------------------------- |
+| hearing-facilitator | Phase 1開始時                       | ユーザー初期入力        | ヒアリング結果                  |
+| structure-designer  | Phase 2開始時                       | ヒアリング結果          | structure.md（構造化データ）    |
+| html-generator      | Phase 3開始時（構成案承認後）       | structure.md            | HTMLファイル + デプロイ手順     |
+| visual-verification | Phase 3.5（HTML生成後自動実行）     | index.html              | スクリーンショット + 修正済HTML |
+| slide-modifier      | Phase 4開始時（既存スライド修正時） | structure.md + 修正要求 | 更新されたHTML + structure.md   |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
@@ -181,36 +189,36 @@ node scripts/verify-slides.mjs ./index.html ./screenshots
 
 ### 基本タイプ（15種）
 
-| タイプ | 用途 | アニメーション特徴 |
-|--------|------|-------------------|
-| タイトル | 冒頭のタイトルスライド | scale + rotation |
-| アジェンダ | 発表全体のアジェンダ表示 | stagger x軸移動 |
-| セクション | 各セクションの冒頭見出し | scale + y軸移動 |
-| メッセージ | 1つの主張・結論 | y軸移動 + fade |
-| リスト | アイコン付き箇条書き | stagger x軸移動 |
-| 比較 | 2-4項目の対比表示 | 左右から同時出現 |
-| フロー | ステップ・プロセス図解 | stagger scale + 矢印アニメ |
-| タイムライン | 時系列表示 | stagger y軸 + ラインdraw |
-| テーブル | データ表形式 | 行ごとstagger fade |
-| 統計 | 大きな数字を強調表示 | scale + グラデーション |
-| チャート | 棒グラフ・円グラフ | scaleY + rotation |
-| 図解 | サークル・ピラミッド型 | stagger scale |
-| 引用 | 印象的な引用文 | y軸移動 + fade |
-| 画像 | 画像+テキスト（左右配置） | x軸移動 + stagger |
-| フルイメージ | 全画面背景画像 | y軸移動 + fade |
+| タイプ       | 用途                      | アニメーション特徴         |
+| ------------ | ------------------------- | -------------------------- |
+| タイトル     | 冒頭のタイトルスライド    | scale + rotation           |
+| アジェンダ   | 発表全体のアジェンダ表示  | stagger x軸移動            |
+| セクション   | 各セクションの冒頭見出し  | scale + y軸移動            |
+| メッセージ   | 1つの主張・結論           | y軸移動 + fade             |
+| リスト       | アイコン付き箇条書き      | stagger x軸移動            |
+| 比較         | 2-4項目の対比表示         | 左右から同時出現           |
+| フロー       | ステップ・プロセス図解    | stagger scale + 矢印アニメ |
+| タイムライン | 時系列表示                | stagger y軸 + ラインdraw   |
+| テーブル     | データ表形式              | 行ごとstagger fade         |
+| 統計         | 大きな数字を強調表示      | scale + グラデーション     |
+| チャート     | 棒グラフ・円グラフ        | scaleY + rotation          |
+| 図解         | サークル・ピラミッド型    | stagger scale              |
+| 引用         | 印象的な引用文            | y軸移動 + fade             |
+| 画像         | 画像+テキスト（左右配置） | x軸移動 + stagger          |
+| フルイメージ | 全画面背景画像            | y軸移動 + fade             |
 
 ### 拡張タイプ（8種）
 
-| タイプ | クラス名 | 用途 | アニメーション特徴 |
-|--------|---------|------|-------------------|
-| ピラミッド | `slide-pyramid` | 階層構造（上→下に広がる） | scaleX展開 |
-| サークル | `slide-circle` | 中心+周辺要素の関係 | 中心→周辺順にscale |
-| グリッド | `slide-grid` | 2x2〜4x4カードレイアウト | stagger scale + y移動 |
-| ハイライト | `slide-highlight` | 1つの重要値/メッセージ強調 | scale + グラデーション |
-| アイコングリッド | `slide-icon-grid` | アイコン主体の一覧表示 | stagger rotation + scale |
-| プロセス（縦） | `slide-process` | 縦方向ステップ表示 | stagger x移動 |
-| 引用（拡張） | `slide-quote` | 引用文+著者情報 | mark rotation + y移動 |
-| ヒーロー | `slide-hero` | グラデーション背景+CTA | badge→title→cta順 |
+| タイプ           | クラス名          | 用途                       | アニメーション特徴       |
+| ---------------- | ----------------- | -------------------------- | ------------------------ |
+| ピラミッド       | `slide-pyramid`   | 階層構造（上→下に広がる）  | scaleX展開               |
+| サークル         | `slide-circle`    | 中心+周辺要素の関係        | 中心→周辺順にscale       |
+| グリッド         | `slide-grid`      | 2x2〜4x4カードレイアウト   | stagger scale + y移動    |
+| ハイライト       | `slide-highlight` | 1つの重要値/メッセージ強調 | scale + グラデーション   |
+| アイコングリッド | `slide-icon-grid` | アイコン主体の一覧表示     | stagger rotation + scale |
+| プロセス（縦）   | `slide-process`   | 縦方向ステップ表示         | stagger x移動            |
+| 引用（拡張）     | `slide-quote`     | 引用文+著者情報            | mark rotation + y移動    |
+| ヒーロー         | `slide-hero`      | グラデーション背景+CTA     | badge→title→cta順        |
 
 **詳細仕様**: See [references/slide-components.md](references/slide-components.md)
 
@@ -220,20 +228,21 @@ node scripts/verify-slides.mjs ./index.html ./screenshots
 
 ### ホバーエフェクト
 
-| 対象要素 | エフェクト | 用途 |
-|---------|----------|------|
-| リストアイテム | 右移動 + 拡大 + 影 | 項目への注目 |
-| 比較カード | 上移動 + 拡大 + 影 | カード選択の視覚化 |
-| フローステップ | 拡大 + 背景変化 + 影 | ステップへの注目 |
-| テーブル行 | 背景ハイライト + テキスト色変化 | 行選択の視覚化 |
-| 統計カード | 上移動 + 拡大 + 影 + 値スケール | 数値への注目 |
-| アイコン | 拡大 + 回転 + 色変化 | アイコンへの注目 |
+| 対象要素       | エフェクト                      | 用途               |
+| -------------- | ------------------------------- | ------------------ |
+| リストアイテム | 右移動 + 拡大 + 影              | 項目への注目       |
+| 比較カード     | 上移動 + 拡大 + 影              | カード選択の視覚化 |
+| フローステップ | 拡大 + 背景変化 + 影            | ステップへの注目   |
+| テーブル行     | 背景ハイライト + テキスト色変化 | 行選択の視覚化     |
+| 統計カード     | 上移動 + 拡大 + 影 + 値スケール | 数値への注目       |
+| アイコン       | 拡大 + 回転 + 色変化            | アイコンへの注目   |
 
 ### ツールチップ
 
 要素にマウスを合わせると補足情報を表示。
 
 **使用方法**:
+
 ```html
 <div class="stat-item has-tooltip" data-tooltip="補足説明テキスト">
   <span class="stat-value">60万円</span>
@@ -241,6 +250,7 @@ node scripts/verify-slides.mjs ./index.html ./screenshots
 ```
 
 **バリエーション**:
+
 - `has-tooltip` - 上向きツールチップ（デフォルト）
 - `has-tooltip has-tooltip-bottom` - 下向きツールチップ
 
@@ -289,17 +299,18 @@ structure.md 修正 → ユーザー承認 → index.html 再生成
 
 **必須**: インラインスタイルでfont-sizeを指定せず、CSS変数を使用する
 
-| 用途 | CSS変数 | 説明 |
-|------|---------|------|
-| タイトル | `var(--fs-title)` | メインタイトル用 |
-| サブタイトル | `var(--fs-subtitle)` | 副題用 |
-| 見出し | `var(--fs-heading)` | スライドタイトル用 |
-| 小見出し | `var(--fs-subheading)` | セクション内見出し用 |
-| 本文 | `var(--fs-body)` | 通常テキスト用 |
-| 大きめ本文 | `var(--fs-body-lg)` | 強調テキスト用 |
-| 小さめ文字 | `var(--fs-small)` | 補足・注釈用 |
+| 用途         | CSS変数                | 説明                 |
+| ------------ | ---------------------- | -------------------- |
+| タイトル     | `var(--fs-title)`      | メインタイトル用     |
+| サブタイトル | `var(--fs-subtitle)`   | 副題用               |
+| 見出し       | `var(--fs-heading)`    | スライドタイトル用   |
+| 小見出し     | `var(--fs-subheading)` | セクション内見出し用 |
+| 本文         | `var(--fs-body)`       | 通常テキスト用       |
+| 大きめ本文   | `var(--fs-body-lg)`    | 強調テキスト用       |
+| 小さめ文字   | `var(--fs-small)`      | 補足・注釈用         |
 
 **ユーティリティクラス**:
+
 - `.text-note` - 注釈・補足テキスト（グレー色付き）
 - `.text-emphasis` - 強調テキスト
 - `.text-caption` - キャプション・説明文
@@ -309,57 +320,61 @@ structure.md 修正 → ユーザー承認 → index.html 再生成
 **原則**: 1行が長くなりすぎないよう、意味の切れ目で`<br>`タグを挿入
 
 **改行すべき箇所**:
+
 1. 20文字を超える文章の意味的な区切り
 2. 読点「、」の後（文脈に応じて）
 3. 括弧で囲まれた説明の前後
 4. 強調（`<strong>`）の前後で区切りが自然な場合
 
 **例**:
+
 ```html
 <!-- NG: 長すぎて変な位置で自動改行される -->
 <span>テンプレートを使えば、こんなに楽に高品質な文書が作れるを体感する</span>
 
 <!-- OK: 意味の切れ目で明示的に改行 -->
-<span>テンプレートを使えば、<br>こんなに楽に高品質な文書が作れるを体感する</span>
+<span
+  >テンプレートを使えば、<br />こんなに楽に高品質な文書が作れるを体感する</span
+>
 ```
 
 ### 配置（アラインメント）
 
-| スライドタイプ | テキスト配置 | 理由 |
-|--------------|-------------|------|
-| タイトル | 中央揃え | インパクト重視 |
-| メッセージ | 中央揃え | 1メッセージの強調 |
-| リスト | 左揃え | 読みやすさ |
-| 比較 | 各パネル内左揃え | 比較のしやすさ |
-| フロー | 中央揃え | ステップの視認性 |
-| テーブル | 左揃え | データの読みやすさ |
-| セクション | 中央揃え | 区切りの明確化 |
+| スライドタイプ | テキスト配置     | 理由               |
+| -------------- | ---------------- | ------------------ |
+| タイトル       | 中央揃え         | インパクト重視     |
+| メッセージ     | 中央揃え         | 1メッセージの強調  |
+| リスト         | 左揃え           | 読みやすさ         |
+| 比較           | 各パネル内左揃え | 比較のしやすさ     |
+| フロー         | 中央揃え         | ステップの視認性   |
+| テーブル       | 左揃え           | データの読みやすさ |
+| セクション     | 中央揃え         | 区切りの明確化     |
 
 ## リソース参照
 
 ### references/（責務別ガイドライン）
 
-| リソース | パス | 責務 |
-|----------|------|------|
-| 構成戦略 | See [references/strategy.md](references/strategy.md) | 相手分析・目的設定・BSEC構成・ボリューム設計 |
-| ライティング | See [references/writing-rules.md](references/writing-rules.md) | タイトル・メッセージ・箇条書き・文章表現 |
-| レイアウト・ビジュアル | See [references/layout-visual.md](references/layout-visual.md) | レイアウト法則・分割パターン・図形・矢印・余白・統一感 |
-| 図解・グラフ | See [references/diagram-chart.md](references/diagram-chart.md) | 14種の図解タイプ・グラフ選択・データ可視化 |
-| スライドコンポーネント | See [references/slide-components.md](references/slide-components.md) | 全23種のスライドタイプ・CSS・HTMLテンプレート・ホバーエフェクト・アニメーション |
-| テーマ・スタイル | See [references/theme-style.md](references/theme-style.md) | カラーパレット・CSS変数・共通スタイル・アニメーション速度 |
-| アイコン | See [references/icons.md](references/icons.md) | アイコンライブラリ・マッピングテーブル・使用方法 |
-| 印刷レイアウト | See [references/print-layout.md](references/print-layout.md) | PDF出力・印刷用CSS・シンプル方式 |
-| LLM/Script責務分離 | See [references/llm-script-separation.md](references/llm-script-separation.md) | 決定論的処理と創造的処理の分離 |
+| リソース               | パス                                                                           | 責務                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| 構成戦略               | See [references/strategy.md](references/strategy.md)                           | 相手分析・目的設定・BSEC構成・ボリューム設計                                    |
+| ライティング           | See [references/writing-rules.md](references/writing-rules.md)                 | タイトル・メッセージ・箇条書き・文章表現                                        |
+| レイアウト・ビジュアル | See [references/layout-visual.md](references/layout-visual.md)                 | レイアウト法則・分割パターン・図形・矢印・余白・統一感                          |
+| 図解・グラフ           | See [references/diagram-chart.md](references/diagram-chart.md)                 | 14種の図解タイプ・グラフ選択・データ可視化                                      |
+| スライドコンポーネント | See [references/slide-components.md](references/slide-components.md)           | 全23種のスライドタイプ・CSS・HTMLテンプレート・ホバーエフェクト・アニメーション |
+| テーマ・スタイル       | See [references/theme-style.md](references/theme-style.md)                     | カラーパレット・CSS変数・共通スタイル・アニメーション速度                       |
+| アイコン               | See [references/icons.md](references/icons.md)                                 | アイコンライブラリ・マッピングテーブル・使用方法                                |
+| 印刷レイアウト         | See [references/print-layout.md](references/print-layout.md)                   | PDF出力・印刷用CSS・シンプル方式                                                |
+| LLM/Script責務分離     | See [references/llm-script-separation.md](references/llm-script-separation.md) | 決定論的処理と創造的処理の分離                                                  |
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 用途 | 使用例 |
-|-----------|------|--------|
-| `verify-slides.mjs` | スライド検証 | `node scripts/verify-slides.mjs ./index.html` |
-| `verify-slides.mjs --cleanup` | スクリーンショット削除 | `node scripts/verify-slides.mjs ./index.html --cleanup` |
-| `verify-slides.mjs --auto-cleanup` | 検証後自動削除 | `node scripts/verify-slides.mjs ./index.html --auto-cleanup` |
-| `validate-structure.mjs` | 構成案検証（23種対応） | `node scripts/validate-structure.mjs structure.json` |
-| `log_usage.mjs` | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+| スクリプト                         | 用途                   | 使用例                                                       |
+| ---------------------------------- | ---------------------- | ------------------------------------------------------------ |
+| `verify-slides.mjs`                | スライド検証           | `node scripts/verify-slides.mjs ./index.html`                |
+| `verify-slides.mjs --cleanup`      | スクリーンショット削除 | `node scripts/verify-slides.mjs ./index.html --cleanup`      |
+| `verify-slides.mjs --auto-cleanup` | 検証後自動削除         | `node scripts/verify-slides.mjs ./index.html --auto-cleanup` |
+| `validate-structure.mjs`           | 構成案検証（23種対応） | `node scripts/validate-structure.mjs structure.json`         |
+| `log_usage.mjs`                    | フィードバック記録     | `node scripts/log_usage.mjs --result success`                |
 
 ## LLM/Script 責務分離
 
@@ -369,10 +384,10 @@ structure.md 修正 → ユーザー承認 → index.html 再生成
 
 ### assets/（テンプレート）
 
-| テンプレート | 用途 |
-|-------------|------|
+| テンプレート          | 用途                   |
+| --------------------- | ---------------------- |
 | `slide-template.html` | 完全なHTMLテンプレート |
-| `gas-deploy-guide.md` | GASデプロイ手順書 |
+| `gas-deploy-guide.md` | GASデプロイ手順書      |
 
 ## 出力ディレクトリ構成
 
@@ -448,13 +463,13 @@ Existing structure.md + Modification Request → Phase 4 (slide-modifier)
 
 ### 同期ルール
 
-| HTMLの変更 | structure.mdに反映すべき内容 |
-|-----------|---------------------------|
-| テキスト変更 | 該当スライドのメッセージ/コンテンツ |
-| タイプ変更 | スライドタイプ、アニメーション |
-| アイコン変更 | 使用アイコン情報 |
-| レイアウト調整 | 調整内容をスライド詳細に記録 |
-| スライド追加/削除 | スライド一覧を全更新 |
+| HTMLの変更        | structure.mdに反映すべき内容        |
+| ----------------- | ----------------------------------- |
+| テキスト変更      | 該当スライドのメッセージ/コンテンツ |
+| タイプ変更        | スライドタイプ、アニメーション      |
+| アイコン変更      | 使用アイコン情報                    |
+| レイアウト調整    | 調整内容をスライド詳細に記録        |
+| スライド追加/削除 | スライド一覧を全更新                |
 
 ### 同期タイミング
 
@@ -466,20 +481,20 @@ Existing structure.md + Modification Request → Phase 4 (slide-modifier)
 
 ## 変更履歴
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.5.0 | 2026-01-07 | **整合性維持ルール強化**: index.html⇔structure.md同期必須をワークフロー図とSKILL.mdに明示追加、同期ルール・タイミング詳細化 |
-| 2.4.0 | 2026-01-07 | **16:9アスペクト比の厳格化**: slide-area要素追加、CSS変数による16:9強制、verify-slides.mjsに--check-ratioオプション追加、全ドキュメント更新 |
-| 2.3.0 | 2026-01-04 | 印刷CSS刷新（シンプル方式採用、コンテンツ消失問題修正）、print-layout.md更新、LLM/Script責務分離をreferences/に外部化、SKILL.md 500行以内に最適化 |
-| 2.2.0 | 2026-01-03 | LLM/Script責務分離セクション追加、validate-structure.mjs 23種対応、icons.md 18カテゴリ拡張、slide-components.md ホバー詳細追加、agents参照先統一 |
-| 2.1.0 | 2026-01-03 | リファレンス再構成（責務別7ファイルに統合）：strategy.md（構成戦略）、writing-rules.md（ライティング）、layout-visual.md（レイアウト）、diagram-chart.md（14種図解・グラフ）、slide-components.md（スライドタイプ統合）、theme-style.md（テーマ）、icons.md（アイコン） |
-| 2.0.0 | 2026-01-03 | ホバーエフェクト・ツールチップ追加、拡張スライドタイプ8種追加（ピラミッド、サークル、グリッド等）、スクリーンショット削除機能追加 |
-| 1.8.0 | 2026-01-03 | Phase 3.5（視覚検証）追加、verify-slides.mjsスクリプト追加 |
-| 1.7.0 | 2026-01-03 | テキストレイアウトガイドライン追加（フォントCSS変数化、改行位置、配置ルール） |
-| 1.6.0 | 2026-01-03 | ワークフロー変更：構造化データを先に出力→ユーザー確認→HTML生成の順に変更 |
-| 1.5.0 | 2026-01-02 | 追加スライドタイプ（統計、チャート、図解、引用、画像、フルイメージ）、画像対応 |
-| 1.4.0 | 2026-01-02 | アジェンダ・セクションヘッダースライド追加、デプロイガイド同梱出力 |
-| 1.3.0 | 2026-01-02 | Phase 4（改善・修正フロー）を追加、slide-modifier.md新規作成 |
-| 1.2.0 | 2026-01-02 | 構造化データ（structure.md）出力を追加 |
-| 1.1.0 | 2026-01-02 | Flaticon API言及を削除、無料CDNライブラリに統一 |
-| 1.0.0 | 2026-01-02 | 初版作成 |
+| Version | Date       | Changes                                                                                                                                                                                                                                                                 |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.5.0   | 2026-01-07 | **整合性維持ルール強化**: index.html⇔structure.md同期必須をワークフロー図とSKILL.mdに明示追加、同期ルール・タイミング詳細化                                                                                                                                             |
+| 2.4.0   | 2026-01-07 | **16:9アスペクト比の厳格化**: slide-area要素追加、CSS変数による16:9強制、verify-slides.mjsに--check-ratioオプション追加、全ドキュメント更新                                                                                                                             |
+| 2.3.0   | 2026-01-04 | 印刷CSS刷新（シンプル方式採用、コンテンツ消失問題修正）、print-layout.md更新、LLM/Script責務分離をreferences/に外部化、SKILL.md 500行以内に最適化                                                                                                                       |
+| 2.2.0   | 2026-01-03 | LLM/Script責務分離セクション追加、validate-structure.mjs 23種対応、icons.md 18カテゴリ拡張、slide-components.md ホバー詳細追加、agents参照先統一                                                                                                                        |
+| 2.1.0   | 2026-01-03 | リファレンス再構成（責務別7ファイルに統合）：strategy.md（構成戦略）、writing-rules.md（ライティング）、layout-visual.md（レイアウト）、diagram-chart.md（14種図解・グラフ）、slide-components.md（スライドタイプ統合）、theme-style.md（テーマ）、icons.md（アイコン） |
+| 2.0.0   | 2026-01-03 | ホバーエフェクト・ツールチップ追加、拡張スライドタイプ8種追加（ピラミッド、サークル、グリッド等）、スクリーンショット削除機能追加                                                                                                                                       |
+| 1.8.0   | 2026-01-03 | Phase 3.5（視覚検証）追加、verify-slides.mjsスクリプト追加                                                                                                                                                                                                              |
+| 1.7.0   | 2026-01-03 | テキストレイアウトガイドライン追加（フォントCSS変数化、改行位置、配置ルール）                                                                                                                                                                                           |
+| 1.6.0   | 2026-01-03 | ワークフロー変更：構造化データを先に出力→ユーザー確認→HTML生成の順に変更                                                                                                                                                                                                |
+| 1.5.0   | 2026-01-02 | 追加スライドタイプ（統計、チャート、図解、引用、画像、フルイメージ）、画像対応                                                                                                                                                                                          |
+| 1.4.0   | 2026-01-02 | アジェンダ・セクションヘッダースライド追加、デプロイガイド同梱出力                                                                                                                                                                                                      |
+| 1.3.0   | 2026-01-02 | Phase 4（改善・修正フロー）を追加、slide-modifier.md新規作成                                                                                                                                                                                                            |
+| 1.2.0   | 2026-01-02 | 構造化データ（structure.md）出力を追加                                                                                                                                                                                                                                  |
+| 1.1.0   | 2026-01-02 | Flaticon API言及を削除、無料CDNライブラリに統一                                                                                                                                                                                                                         |
+| 1.0.0   | 2026-01-02 | 初版作成                                                                                                                                                                                                                                                                |

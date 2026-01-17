@@ -213,35 +213,37 @@ RAGシステムの類似度検索基盤として実装。
 
 ### embeddingsテーブル
 
-| カラム              | 型        | 制約                       | 説明               |
-| ------------------- | --------- | -------------------------- | ------------------ |
-| id                  | TEXT      | PRIMARY KEY                | 埋め込みID（UUID） |
-| chunk_id            | TEXT      | UNIQUE, FK→chunks(id)      | チャンク参照       |
-| vector              | BLOB      | NOT NULL                   | Float32Arrayバイナリ |
-| model_id            | TEXT      | NOT NULL                   | 埋め込みモデルID   |
-| dimensions          | INTEGER   | NOT NULL                   | ベクトル次元数     |
-| normalized_magnitude| REAL      | NOT NULL                   | 正規化済みマグニチュード |
-| created_at          | INTEGER   | DEFAULT unixepoch()        | 作成日時           |
-| updated_at          | INTEGER   | DEFAULT unixepoch()        | 更新日時           |
+| カラム               | 型      | 制約                  | 説明                     |
+| -------------------- | ------- | --------------------- | ------------------------ |
+| id                   | TEXT    | PRIMARY KEY           | 埋め込みID（UUID）       |
+| chunk_id             | TEXT    | UNIQUE, FK→chunks(id) | チャンク参照             |
+| vector               | BLOB    | NOT NULL              | Float32Arrayバイナリ     |
+| model_id             | TEXT    | NOT NULL              | 埋め込みモデルID         |
+| dimensions           | INTEGER | NOT NULL              | ベクトル次元数           |
+| normalized_magnitude | REAL    | NOT NULL              | 正規化済みマグニチュード |
+| created_at           | INTEGER | DEFAULT unixepoch()   | 作成日時                 |
+| updated_at           | INTEGER | DEFAULT unixepoch()   | 更新日時                 |
 
 **インデックス**:
+
 - `embeddings_chunk_id_idx`: UNIQUE（高速ルックアップ）
 - `embeddings_model_id_idx`: モデル別集計用
 - `embeddings_vector_idx`: DiskANNベクトルインデックス
 
 ### ベクトル検索関数
 
-| 関数                | 距離メトリクス | 用途                  |
-| ------------------- | -------------- | --------------------- |
-| searchByVector      | コサイン類似度 | セマンティック検索    |
-| searchByVectorL2    | ユークリッド距離 | 空間的な類似検索    |
-| searchByVectorDot   | 内積           | 正規化ベクトル向け    |
+| 関数              | 距離メトリクス   | 用途               |
+| ----------------- | ---------------- | ------------------ |
+| searchByVector    | コサイン類似度   | セマンティック検索 |
+| searchByVectorL2  | ユークリッド距離 | 空間的な類似検索   |
+| searchByVectorDot | 内積             | 正規化ベクトル向け |
 
 ### Float32Array ⇔ BLOB 変換
 
 ベクトルデータはFloat32Array形式でアプリケーション層で扱い、データベースにはBLOB（バイナリ）形式で保存する。変換はゼロコピー操作で効率的に行われる。
 
 **変換制約**:
+
 - 空のベクトルは禁止（要素数が1以上であること）
 - BLOBのバイト長は4の倍数であること（Float32は4バイト単位）
 - 変換時にNaN、Infinity、-Infinityが含まれていないことを検証
@@ -252,11 +254,11 @@ RAGシステムの類似度検索基盤として実装。
 
 ### パフォーマンス目標
 
-| データ規模   | 検索時間目標 | インデックス |
-| ------------ | ------------ | ------------ |
-| < 10,000件   | < 50ms       | 任意         |
-| 10,000-100,000件 | < 100ms  | 推奨         |
-| > 100,000件  | < 200ms      | 必須         |
+| データ規模       | 検索時間目標 | インデックス |
+| ---------------- | ------------ | ------------ |
+| < 10,000件       | < 50ms       | 任意         |
+| 10,000-100,000件 | < 100ms      | 推奨         |
+| > 100,000件      | < 200ms      | 必須         |
 
 ---
 
@@ -273,23 +275,24 @@ Entity-Relation-Communityモデルに基づき、文書から抽出されたエ�
 
 Knowledge Graphのノード（頂点）を格納するテーブル。
 
-| カラム             | 型      | 制約                  | 説明                        |
-| ------------------ | ------- | --------------------- | --------------------------- |
-| id                 | TEXT    | PRIMARY KEY           | エンティティID（UUID）      |
-| name               | TEXT    | NOT NULL              | エンティティ名（元の形式）  |
-| normalized_name    | TEXT    | NOT NULL              | 正規化されたエンティティ名  |
-| type               | TEXT    | NOT NULL              | エンティティタイプ（52種類）|
-| description        | TEXT    | NULL                  | エンティティの説明          |
-| aliases            | TEXT    | NOT NULL DEFAULT '[]' | 別名（JSON配列）            |
-| embedding          | BLOB    | NULL                  | ベクトル埋め込み            |
-| embedding_model_id | TEXT    | NULL                  | 埋め込みモデルID            |
-| importance         | REAL    | NOT NULL DEFAULT 0.5  | 重要度スコア（0.0〜1.0）    |
-| mention_count      | INTEGER | NOT NULL DEFAULT 1    | 出現回数                    |
-| metadata           | TEXT    | NULL                  | 追加メタデータ（JSON）      |
-| created_at         | INTEGER | DEFAULT unixepoch()   | 作成日時（Unix epoch）      |
-| updated_at         | INTEGER | DEFAULT unixepoch()   | 更新日時（Unix epoch）      |
+| カラム             | 型      | 制約                  | 説明                         |
+| ------------------ | ------- | --------------------- | ---------------------------- |
+| id                 | TEXT    | PRIMARY KEY           | エンティティID（UUID）       |
+| name               | TEXT    | NOT NULL              | エンティティ名（元の形式）   |
+| normalized_name    | TEXT    | NOT NULL              | 正規化されたエンティティ名   |
+| type               | TEXT    | NOT NULL              | エンティティタイプ（52種類） |
+| description        | TEXT    | NULL                  | エンティティの説明           |
+| aliases            | TEXT    | NOT NULL DEFAULT '[]' | 別名（JSON配列）             |
+| embedding          | BLOB    | NULL                  | ベクトル埋め込み             |
+| embedding_model_id | TEXT    | NULL                  | 埋め込みモデルID             |
+| importance         | REAL    | NOT NULL DEFAULT 0.5  | 重要度スコア（0.0〜1.0）     |
+| mention_count      | INTEGER | NOT NULL DEFAULT 1    | 出現回数                     |
+| metadata           | TEXT    | NULL                  | 追加メタデータ（JSON）       |
+| created_at         | INTEGER | DEFAULT unixepoch()   | 作成日時（Unix epoch）       |
+| updated_at         | INTEGER | DEFAULT unixepoch()   | 更新日時（Unix epoch）       |
 
 **インデックス**:
+
 - `entities_normalized_name_idx`: 正規化名検索用
 - `entities_type_idx`: タイプ別検索用
 - `entities_importance_idx`: 重要度順ソート用
@@ -297,19 +300,19 @@ Knowledge Graphのノード（頂点）を格納するテーブル。
 
 **エンティティタイプ（52種類）**:
 
-| カテゴリ     | タイプ                                                              |
-| ------------ | ------------------------------------------------------------------- |
-| 人物・組織   | `person`, `organization`, `company`, `team`, `department`           |
-| 場所         | `location`, `country`, `city`, `region`, `building`, `address`      |
-| 時間         | `date`, `time`, `datetime`, `period`, `duration`                    |
-| 技術         | `technology`, `framework`, `library`, `tool`, `platform`            |
-| コード       | `api`, `endpoint`, `function`, `method`, `class`, `interface`, `module`, `package`, `variable`, `constant` |
-| ドキュメント | `document`, `file`, `section`, `chapter`, `paragraph`               |
-| データ       | `database`, `table`, `column`, `schema`, `index`, `query`           |
-| 概念         | `concept`, `pattern`, `principle`, `methodology`, `architecture`    |
-| プロダクト   | `product`, `service`, `feature`, `version`, `release`               |
-| イベント     | `event`, `meeting`, `milestone`, `deadline`                         |
-| フォールバック | `other`                                                           |
+| カテゴリ       | タイプ                                                                                                     |
+| -------------- | ---------------------------------------------------------------------------------------------------------- |
+| 人物・組織     | `person`, `organization`, `company`, `team`, `department`                                                  |
+| 場所           | `location`, `country`, `city`, `region`, `building`, `address`                                             |
+| 時間           | `date`, `time`, `datetime`, `period`, `duration`                                                           |
+| 技術           | `technology`, `framework`, `library`, `tool`, `platform`                                                   |
+| コード         | `api`, `endpoint`, `function`, `method`, `class`, `interface`, `module`, `package`, `variable`, `constant` |
+| ドキュメント   | `document`, `file`, `section`, `chapter`, `paragraph`                                                      |
+| データ         | `database`, `table`, `column`, `schema`, `index`, `query`                                                  |
+| 概念           | `concept`, `pattern`, `principle`, `methodology`, `architecture`                                           |
+| プロダクト     | `product`, `service`, `feature`, `version`, `release`                                                      |
+| イベント       | `event`, `meeting`, `milestone`, `deadline`                                                                |
+| フォールバック | `other`                                                                                                    |
 
 **詳細仕様**: [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md)
 
@@ -317,21 +320,22 @@ Knowledge Graphのノード（頂点）を格納するテーブル。
 
 Knowledge Graphのエッジ（辺）を格納するテーブル。
 
-| カラム         | 型      | 制約                      | 説明                      |
-| -------------- | ------- | ------------------------- | ------------------------- |
-| id             | TEXT    | PRIMARY KEY               | 関係ID（UUID）            |
-| source_id      | TEXT    | FK→entities(id) CASCADE   | 始点エンティティID        |
-| target_id      | TEXT    | FK→entities(id) CASCADE   | 終点エンティティID        |
-| type           | TEXT    | NOT NULL                  | 関係タイプ（15種類）      |
-| description    | TEXT    | NULL                      | 関係の説明                |
-| weight         | REAL    | NOT NULL DEFAULT 0.5      | 関係の強さ（0.0〜1.0）    |
-| bidirectional  | INTEGER | NOT NULL DEFAULT 0        | 双方向関係フラグ          |
-| evidence_count | INTEGER | NOT NULL DEFAULT 1        | 証拠数（裏付けチャンク数）|
-| metadata       | TEXT    | NULL                      | 追加メタデータ（JSON）    |
-| created_at     | INTEGER | DEFAULT unixepoch()       | 作成日時                  |
-| updated_at     | INTEGER | DEFAULT unixepoch()       | 更新日時                  |
+| カラム         | 型      | 制約                    | 説明                       |
+| -------------- | ------- | ----------------------- | -------------------------- |
+| id             | TEXT    | PRIMARY KEY             | 関係ID（UUID）             |
+| source_id      | TEXT    | FK→entities(id) CASCADE | 始点エンティティID         |
+| target_id      | TEXT    | FK→entities(id) CASCADE | 終点エンティティID         |
+| type           | TEXT    | NOT NULL                | 関係タイプ（15種類）       |
+| description    | TEXT    | NULL                    | 関係の説明                 |
+| weight         | REAL    | NOT NULL DEFAULT 0.5    | 関係の強さ（0.0〜1.0）     |
+| bidirectional  | INTEGER | NOT NULL DEFAULT 0      | 双方向関係フラグ           |
+| evidence_count | INTEGER | NOT NULL DEFAULT 1      | 証拠数（裏付けチャンク数） |
+| metadata       | TEXT    | NULL                    | 追加メタデータ（JSON）     |
+| created_at     | INTEGER | DEFAULT unixepoch()     | 作成日時                   |
+| updated_at     | INTEGER | DEFAULT unixepoch()     | 更新日時                   |
 
 **インデックス**:
+
 - `relations_source_id_idx`: 始点エンティティ検索用
 - `relations_target_id_idx`: 終点エンティティ検索用
 - `relations_type_idx`: タイプ別検索用
@@ -340,13 +344,13 @@ Knowledge Graphのエッジ（辺）を格納するテーブル。
 
 **関係タイプ（15種類）**:
 
-| カテゴリ   | タイプ                                              |
-| ---------- | --------------------------------------------------- |
-| 一般       | `related_to`, `part_of`, `has_part`, `belongs_to`   |
-| コード     | `uses`, `implements`, `extends`, `depends_on`       |
-| 参照       | `references`, `defines`                             |
-| 階層       | `contains`, `contained_by`                          |
-| 時間       | `precedes`, `follows`, `created_by`                 |
+| カテゴリ | タイプ                                            |
+| -------- | ------------------------------------------------- |
+| 一般     | `related_to`, `part_of`, `has_part`, `belongs_to` |
+| コード   | `uses`, `implements`, `extends`, `depends_on`     |
+| 参照     | `references`, `defines`                           |
+| 階層     | `contains`, `contained_by`                        |
+| 時間     | `precedes`, `follows`, `created_by`               |
 
 **詳細仕様**: [interfaces-rag-knowledge-graph-store.md](./interfaces-rag-knowledge-graph-store.md)
 
@@ -356,16 +360,17 @@ Knowledge Graphのエッジ（辺）を格納するテーブル。
 
 関係の出典チャンク情報を格納する中間テーブル。
 
-| カラム      | 型      | 制約                     | 説明                    |
-| ----------- | ------- | ------------------------ | ----------------------- |
-| relation_id | TEXT    | PK, FK→relations CASCADE | 関係ID                  |
-| chunk_id    | TEXT    | PK, FK→chunks CASCADE    | チャンクID              |
-| excerpt     | TEXT    | NOT NULL                 | 証拠テキスト抜粋        |
-| confidence  | REAL    | NOT NULL DEFAULT 0.5     | 信頼度（0.0〜1.0）      |
-| created_at  | INTEGER | DEFAULT unixepoch()      | 作成日時                |
-| updated_at  | INTEGER | DEFAULT unixepoch()      | 更新日時                |
+| カラム      | 型      | 制約                     | 説明               |
+| ----------- | ------- | ------------------------ | ------------------ |
+| relation_id | TEXT    | PK, FK→relations CASCADE | 関係ID             |
+| chunk_id    | TEXT    | PK, FK→chunks CASCADE    | チャンクID         |
+| excerpt     | TEXT    | NOT NULL                 | 証拠テキスト抜粋   |
+| confidence  | REAL    | NOT NULL DEFAULT 0.5     | 信頼度（0.0〜1.0） |
+| created_at  | INTEGER | DEFAULT unixepoch()      | 作成日時           |
+| updated_at  | INTEGER | DEFAULT unixepoch()      | 更新日時           |
 
 **インデックス**:
+
 - `relation_evidence_relation_id_idx`: 関係別検索用
 - `relation_evidence_chunk_id_idx`: チャンク別検索用
 
@@ -373,20 +378,21 @@ Knowledge Graphのエッジ（辺）を格納するテーブル。
 
 Leiden Algorithmによるコミュニティクラスターを格納するテーブル。
 
-| カラム             | 型      | 制約                    | 説明                      |
-| ------------------ | ------- | ----------------------- | ------------------------- |
-| id                 | TEXT    | PRIMARY KEY             | コミュニティID（UUID）    |
-| level              | INTEGER | NOT NULL DEFAULT 0      | 階層レベル（0=ルート）    |
-| parent_id          | TEXT    | FK→communities SET NULL | 親コミュニティID          |
-| name               | TEXT    | NOT NULL                | コミュニティ名（LLM生成） |
-| summary            | TEXT    | NOT NULL                | コミュニティ要約（LLM生成）|
-| member_count       | INTEGER | NOT NULL DEFAULT 0      | メンバー数                |
-| embedding          | BLOB    | NULL                    | ベクトル埋め込み          |
-| embedding_model_id | TEXT    | NULL                    | 埋め込みモデルID          |
-| created_at         | INTEGER | DEFAULT unixepoch()     | 作成日時                  |
-| updated_at         | INTEGER | DEFAULT unixepoch()     | 更新日時                  |
+| カラム             | 型      | 制約                    | 説明                        |
+| ------------------ | ------- | ----------------------- | --------------------------- |
+| id                 | TEXT    | PRIMARY KEY             | コミュニティID（UUID）      |
+| level              | INTEGER | NOT NULL DEFAULT 0      | 階層レベル（0=ルート）      |
+| parent_id          | TEXT    | FK→communities SET NULL | 親コミュニティID            |
+| name               | TEXT    | NOT NULL                | コミュニティ名（LLM生成）   |
+| summary            | TEXT    | NOT NULL                | コミュニティ要約（LLM生成） |
+| member_count       | INTEGER | NOT NULL DEFAULT 0      | メンバー数                  |
+| embedding          | BLOB    | NULL                    | ベクトル埋め込み            |
+| embedding_model_id | TEXT    | NULL                    | 埋め込みモデルID            |
+| created_at         | INTEGER | DEFAULT unixepoch()     | 作成日時                    |
+| updated_at         | INTEGER | DEFAULT unixepoch()     | 更新日時                    |
 
 **インデックス**:
+
 - `communities_level_idx`: 階層レベル別検索用
 - `communities_parent_id_idx`: 親コミュニティ検索用
 
@@ -394,12 +400,13 @@ Leiden Algorithmによるコミュニティクラスターを格納するテー�
 
 エンティティとコミュニティの多対多関係を格納する中間テーブル。
 
-| カラム       | 型   | 制約                       | 説明             |
-| ------------ | ---- | -------------------------- | ---------------- |
-| entity_id    | TEXT | PK, FK→entities CASCADE    | エンティティID   |
-| community_id | TEXT | PK, FK→communities CASCADE | コミュニティID   |
+| カラム       | 型   | 制約                       | 説明           |
+| ------------ | ---- | -------------------------- | -------------- |
+| entity_id    | TEXT | PK, FK→entities CASCADE    | エンティティID |
+| community_id | TEXT | PK, FK→communities CASCADE | コミュニティID |
 
 **インデックス**:
+
 - `entity_communities_entity_id_idx`: エンティティ別検索用
 - `entity_communities_community_id_idx`: コミュニティ別検索用
 
@@ -407,23 +414,25 @@ Leiden Algorithmによるコミュニティクラスターを格納するテー�
 
 チャンク内のエンティティ出現情報を格納する中間テーブル。
 
-| カラム        | 型      | 制約                    | 説明                         |
-| ------------- | ------- | ----------------------- | ---------------------------- |
-| chunk_id      | TEXT    | PK, FK→chunks CASCADE   | チャンクID                   |
-| entity_id     | TEXT    | PK, FK→entities CASCADE | エンティティID               |
-| mention_count | INTEGER | NOT NULL DEFAULT 1      | チャンク内出現回数           |
-| positions     | TEXT    | NOT NULL DEFAULT '[]'   | 出現位置（JSON配列）         |
+| カラム        | 型      | 制約                    | 説明                 |
+| ------------- | ------- | ----------------------- | -------------------- |
+| chunk_id      | TEXT    | PK, FK→chunks CASCADE   | チャンクID           |
+| entity_id     | TEXT    | PK, FK→entities CASCADE | エンティティID       |
+| mention_count | INTEGER | NOT NULL DEFAULT 1      | チャンク内出現回数   |
+| positions     | TEXT    | NOT NULL DEFAULT '[]'   | 出現位置（JSON配列） |
 
 **positions JSON形式**:
+
 ```typescript
 interface EntityPosition {
-  startChar: number;    // 開始文字位置
-  endChar: number;      // 終了文字位置
-  surfaceForm: string;  // 表層形（実際のテキスト表記）
+  startChar: number; // 開始文字位置
+  endChar: number; // 終了文字位置
+  surfaceForm: string; // 表層形（実際のテキスト表記）
 }
 ```
 
 **インデックス**:
+
 - `chunk_entities_chunk_id_idx`: チャンク別検索用
 - `chunk_entities_entity_id_idx`: エンティティ別検索用
 
@@ -434,7 +443,7 @@ interface EntityPosition {
 | リレーション                 | 定義内容                                  |
 | ---------------------------- | ----------------------------------------- |
 | entitiesRelations            | エンティティ→関係・コミュニティ・チャンク |
-| graphRelationsTableRelations | 関係→始点/終点エンティティ・証拠         |
+| graphRelationsTableRelations | 関係→始点/終点エンティティ・証拠          |
 | relationEvidenceRelations    | 証拠→関係・チャンク                       |
 | communitiesRelations         | コミュニティ→親子・メンバー               |
 | entityCommunitiesRelations   | 中間テーブル→エンティティ・コミュニティ   |

@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <title>Swagger UI</title>
-    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css"
+    />
   </head>
   <body>
     <div id="swagger-ui"></div>
@@ -18,7 +21,7 @@
           docExpansion: "none",
           persistAuthorization: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-          layout: "StandaloneLayout"
+          layout: "StandaloneLayout",
         });
         window.ui = ui;
       };

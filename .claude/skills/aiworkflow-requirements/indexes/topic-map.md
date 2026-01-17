@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-12
+> 自動生成: 2026-01-17
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -118,19 +118,21 @@ node scripts/list-specs.mjs --topics
 | 品質指標 | L263 |
 | 新規コンバーター追加手順 | L272 |
 | コンバーター優先度ガイドライン | L282 |
-| パフォーマンス要件 | L291 |
 
 ### references/architecture-monorepo.md
 
 | セクション | 行 |
 |------------|----|\n| モノレポアーキテクチャ | L8 |
+| 型エクスポートパターン | L127 |
 
 ### references/architecture-patterns.md
 
 | セクション | 行 |
 |------------|----|\n| 機能追加パターン | L8 |
-| Zustand Sliceパターン（Desktop） | L75 |
-| スキル管理サービス（Desktop Main Process） | L169 |
+| Environment Backend サービス（Desktop Main Process） | L75 |
+| Zustand Sliceパターン（Desktop） | L139 |
+| スキル管理サービス（Desktop Main Process） | L233 |
+| IPC Handler Registration Pattern（Desktop Main Process） | L318 |
 
 ### references/architecture-rag.md
 
@@ -156,14 +158,14 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | アーキテクチャ | L25 |
-| Preload API（window.agentAPI） | L54 |
-| 型定義 | L125 |
-| エラー型 | L171 |
-| IPC チャンネル | L199 |
-| Zodスキーマ | L213 |
-| 設定定数 | L248 |
-| React Hook（useAgent） | L260 |
-| セッション管理 | L285 |
+| 依存関係解決 | L54 |
+| Preload API（window.agentAPI） | L101 |
+| 型定義 | L172 |
+| エラー型 | L218 |
+| IPC チャンネル | L246 |
+| Zodスキーマ | L260 |
+| 設定定数 | L295 |
+| React Hook（useAgent） | L307 |
 
 ### references/interfaces-auth.md
 
@@ -261,9 +263,9 @@ node scripts/list-specs.mjs --topics
 | 型定義 | L132 |
 | エラー型 | L181 |
 | 使用例 | L193 |
-| 実装ガイドライン | L229 |
-| 関連ドキュメント | L252 |
-| 変更履歴 | L264 |
+| 実装ガイドライン | L250 |
+| 関連ドキュメント | L273 |
+| 変更履歴 | L285 |
 
 ### references/interfaces-rag-community-summarization.md
 
@@ -275,9 +277,9 @@ node scripts/list-specs.mjs --topics
 | 型定義 | L128 |
 | エラー型 | L175 |
 | 使用例 | L187 |
-| 実装ガイドライン | L248 |
-| 関連ドキュメント | L279 |
-| 変更履歴 | L290 |
+| 実装ガイドライン | L266 |
+| 関連ドキュメント | L297 |
+| 変更履歴 | L308 |
 
 ### references/interfaces-rag-file-selection.md
 
@@ -313,7 +315,6 @@ node scripts/list-specs.mjs --topics
 | エラー型 | L176 |
 | 実装ガイドライン | L187 |
 | 実装ステータス | L209 |
-| 使用例 | L233 |
 | 関連ドキュメント | L284 |
 | 変更履歴 | L294 |
 
@@ -470,9 +471,10 @@ node scripts/list-specs.mjs --topics
 | ユーザー関連テーブル | L77 |
 | チャット関連テーブル | L111 |
 | RAG関連テーブル | L147 |
-| 変換処理関連テーブル | L189 |
-| インデックス設計 | L248 |
-| 関連ドキュメント | L285 |
+| Knowledge Graph関連テーブル | L189 |
+| 変換処理関連テーブル | L323 |
+| インデックス設計 | L382 |
+| 関連ドキュメント | L441 |
 
 ---
 
@@ -496,6 +498,8 @@ node scripts/list-specs.mjs --topics
 | インタラクション設計 | L106 |
 | アクセシビリティ（WCAG 2.1 AA準拠） | L196 |
 | Agent Execution UI コンポーネント（AGENT-004） | L257 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L511 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L647 |
 
 ### references/ui-ux-design-system.md
 
@@ -608,8 +612,7 @@ node scripts/list-specs.mjs --topics
 ### references/ui-ux-settings.md
 
 | セクション | 行 |
-|------------|----|
-| 概要 | L8 |
+|------------|----|\n| 概要 | L8 |
 | 設定画面アーキテクチャ | L15 |
 | スライド出力ディレクトリ設定 | L51 |
 | 設定永続化 | L119 |
@@ -618,6 +621,7 @@ node scripts/list-specs.mjs --topics
 | テスト要件 | L177 |
 | 関連ドキュメント | L200 |
 | 実装ファイル | L208 |
+| バージョン履歴 | L221 |
 
 ### references/ui-ux-system-prompt.md
 
@@ -645,7 +649,7 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| API セキュリティ | L10 |
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
-| 関連ドキュメント | L188 |
+| 関連ドキュメント | L295 |
 
 ### references/security-implementation.md
 
@@ -710,11 +714,11 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| 概要 | L6 |
 | パッケージ構成詳細 | L54 |
 | 依存関係管理戦略 | L189 |
-| 無料枠の活用ガイド | L258 |
-| CI/CDツール選定 | L291 |
-| 学習リソースとコミュニティ | L369 |
-| マイグレーション計画 | L395 |
-| 関連ドキュメント | L416 |
+| 無料枠の活用ガイド | L295 |
+| CI/CDツール選定 | L328 |
+| 学習リソースとコミュニティ | L406 |
+| マイグレーション計画 | L432 |
+| 関連ドキュメント | L453 |
 
 ---
 
@@ -855,13 +859,13 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| ビルドターゲット | L10 |
-| リリースフロー | L20 |
-| リリースチェックリスト | L32 |
-| 自動更新（electron-updater） | L45 |
-| コードサイニング | L72 |
-| デプロイチェックリスト | L96 |
-| データベースマイグレーションのロールバック | L147 |
-| 関連ドキュメント | L173 |
+| リリースフロー | L33 |
+| リリースチェックリスト | L45 |
+| 自動更新（electron-updater） | L58 |
+| コードサイニング | L85 |
+| デプロイチェックリスト | L109 |
+| データベースマイグレーションのロールバック | L160 |
+| 関連ドキュメント | L186 |
 
 ### references/deployment-gha.md
 

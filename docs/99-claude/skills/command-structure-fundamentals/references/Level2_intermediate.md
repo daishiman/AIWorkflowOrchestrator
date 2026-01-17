@@ -14,26 +14,32 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: タスク実行仕様書生成ガイド / Claude Code 3層アーキテクチャ設計仕様書 / YAML Frontmatter リファレンス / 必須フィールド / description / Command Structure Fundamentals
 - 実務指針: 新しいコマンドの基本構造を設計する時 / YAML Frontmatterの各フィールドの意味と使い方を理解する時 / コマンドファイルの最小構成を知りたい時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: タスク実行仕様書生成ガイド / Claude Code 3層アーキテクチャ設計仕様書）
 - `references/yaml-frontmatter-reference.md`: YAMLフロントマター完全リファレンス（把握する知識: YAML Frontmatter リファレンス / 必須フィールド / description）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Structure Fundamentals / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-command.mjs`: コマンド構造検証スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/minimal-command.md`: 最小構成コマンドテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

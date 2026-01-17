@@ -100,13 +100,13 @@ allowed-tools:
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase実行中 |
-| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 複雑な状況時 |
-| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 大規模プロジェクト時 |
-| Plain Language | [references/plain-language-guide.md](references/plain-language-guide.md) | Phase 3実行時 |
+| リソース       | パス                                                                     | 読込条件             |
+| -------------- | ------------------------------------------------------------------------ | -------------------- |
+| Level1 基礎    | [references/Level1_basics.md](references/Level1_basics.md)               | 初回整理時           |
+| Level2 実務    | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | Phase実行中          |
+| Level3 応用    | [references/Level3_advanced.md](references/Level3_advanced.md)           | 複雑な状況時         |
+| Level4 専門    | [references/Level4_expert.md](references/Level4_expert.md)               | 大規模プロジェクト時 |
+| Plain Language | [references/plain-language-guide.md](references/plain-language-guide.md) | Phase 3実行時        |
 
 ### スクリプト（scripts/）
 

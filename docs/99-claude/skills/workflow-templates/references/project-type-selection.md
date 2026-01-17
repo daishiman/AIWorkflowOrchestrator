@@ -4,16 +4,16 @@
 
 ## 選択マトリックス
 
-| プロジェクトタイプ  | テンプレート               | キャッシング        | テストコマンド      | ビルド成果物      |
-| ------------------- | -------------------------- | ------------------- | ------------------- | ----------------- |
-| **Node.js (pnpm)**  | `nodejs-template.yaml`     | `~/.pnpm`           | `pnpm test`         | `dist/`, `build/` |
-| **Node.js (pnpm)**  | `nodejs-template.yaml`     | `~/.pnpm-store`     | `pnpm test`         | `dist/`, `build/` |
-| **Node.js (yarn)**  | `nodejs-template.yaml`     | `~/.yarn`           | `yarn test`         | `dist/`, `build/` |
-| **Python (pip)**    | `ci-template.yaml`         | `~/.cache/pip`      | `pytest`            | `dist/`, `*.whl`  |
-| **Python (poetry)** | `ci-template.yaml`         | `~/.cache/pypoetry` | `poetry run pytest` | `dist/`           |
-| **Go**              | `ci-template.yaml`         | `~/go/pkg/mod`      | `go test ./...`     | バイナリファイル  |
-| **Rust**            | `ci-template.yaml`         | `~/.cargo`          | `cargo test`        | `target/release/` |
-| **Docker**          | `docker-template.yaml`     | Docker layer cache  | -                   | イメージ          |
+| プロジェクトタイプ  | テンプレート                                       | キャッシング        | テストコマンド      | ビルド成果物      |
+| ------------------- | -------------------------------------------------- | ------------------- | ------------------- | ----------------- |
+| **Node.js (pnpm)**  | `nodejs-template.yaml`                             | `~/.pnpm`           | `pnpm test`         | `dist/`, `build/` |
+| **Node.js (pnpm)**  | `nodejs-template.yaml`                             | `~/.pnpm-store`     | `pnpm test`         | `dist/`, `build/` |
+| **Node.js (yarn)**  | `nodejs-template.yaml`                             | `~/.yarn`           | `yarn test`         | `dist/`, `build/` |
+| **Python (pip)**    | `ci-template.yaml`                                 | `~/.cache/pip`      | `pytest`            | `dist/`, `*.whl`  |
+| **Python (poetry)** | `ci-template.yaml`                                 | `~/.cache/pypoetry` | `poetry run pytest` | `dist/`           |
+| **Go**              | `ci-template.yaml`                                 | `~/go/pkg/mod`      | `go test ./...`     | バイナリファイル  |
+| **Rust**            | `ci-template.yaml`                                 | `~/.cargo`          | `cargo test`        | `target/release/` |
+| **Docker**          | `docker-template.yaml`                             | Docker layer cache  | -                   | イメージ          |
 | **Mono-repo**       | カスタム + `.claude/skills/matrix-builds/SKILL.md` | プロジェクト別      | 複数                | 複数              |
 
 ---

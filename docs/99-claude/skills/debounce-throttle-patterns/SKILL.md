@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # debounce-throttle-patterns
 
 ## 概要
@@ -77,12 +78,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-event-requirements | Phase 1開始時 | イベント情報 | 要件メモ、制約一覧 |
-| design-pattern-strategy | Phase 2開始時 | 要件メモ | パターン設計、パラメータ案 |
-| implement-patterns | Phase 3開始時 | 設計メモ | 実装差分、影響範囲 |
-| validate-pattern-performance | Phase 4開始時 | 実装差分 | 検証レポート、改善提案 |
+| Task                         | 起動タイミング | 入力         | 出力                       |
+| ---------------------------- | -------------- | ------------ | -------------------------- |
+| analyze-event-requirements   | Phase 1開始時  | イベント情報 | 要件メモ、制約一覧         |
+| design-pattern-strategy      | Phase 2開始時  | 要件メモ     | パターン設計、パラメータ案 |
+| implement-patterns           | Phase 3開始時  | 設計メモ     | 実装差分、影響範囲         |
+| validate-pattern-performance | Phase 4開始時  | 実装差分     | 検証レポート、改善提案     |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -90,55 +91,55 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
+| 推奨事項                     | 理由                     |
+| ---------------------------- | ------------------------ |
 | イベントの目的を先に整理する | パターン選定が明確になる |
-| パラメータ根拠を記録する | 再調整が容易になる |
-| 実装後に測定する | 期待効果を確認できる |
-| 影響範囲を明示する | 回帰を防止できる |
+| パラメータ根拠を記録する     | 再調整が容易になる       |
+| 実装後に測定する             | 期待効果を確認できる     |
+| 影響範囲を明示する           | 回帰を防止できる         |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 一律でパターン適用 | UX劣化を招く |
-| 根拠なしの間隔設定 | 調整できない |
-| 測定を省略する | 効果が不明になる |
-| 記録を残さない | 改善が継続できない |
+| 禁止事項           | 問題点             |
+| ------------------ | ------------------ |
+| 一律でパターン適用 | UX劣化を招く       |
+| 根拠なしの間隔設定 | 調整できない       |
+| 測定を省略する     | 効果が不明になる   |
+| 記録を残さない     | 改善が継続できない |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-skill.mjs` | スキル構造検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                   | 機能                         |
+| ---------------------------- | ---------------------------- |
+| `scripts/validate-skill.mjs` | スキル構造検証               |
+| `scripts/log_usage.mjs`      | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
-| 実装パターン | [references/implementation-patterns.md](references/implementation-patterns.md) | 設計時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース     | パス                                                                           | 読込条件   |
+| ------------ | ------------------------------------------------------------------------------ | ---------- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md)                     | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md)         | 設計時     |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md)                 | 実装時     |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md)                     | 検証時     |
+| 実装パターン | [references/implementation-patterns.md](references/implementation-patterns.md) | 設計時     |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md)           | 仕様確認時 |
+| 旧スキル     | [references/legacy-skill.md](references/legacy-skill.md)                       | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/debounce-throttle.ts` | 実装テンプレート |
-| `assets/pattern-selection-checklist.md` | パターン選定チェックリスト |
-| `assets/performance-measurement-template.md` | 測定テンプレート |
+| アセット                                     | 用途                       |
+| -------------------------------------------- | -------------------------- |
+| `assets/debounce-throttle.ts`                | 実装テンプレート           |
+| `assets/pattern-selection-checklist.md`      | パターン選定チェックリスト |
+| `assets/performance-measurement-template.md` | 測定テンプレート           |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

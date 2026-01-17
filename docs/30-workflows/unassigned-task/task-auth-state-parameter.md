@@ -2,18 +2,18 @@
 
 ## メタ情報
 
-| 項目             | 内容                                |
-| ---------------- | ----------------------------------- |
-| タスクID         | DEBT-SEC-001                        |
-| タスク名         | State parameter検証実装（CSRF対策） |
-| 分類             | セキュリティ                        |
-| 対象機能         | OAuth認証（Desktop）                |
-| 優先度           | 中                                  |
-| 見積もり規模     | 小規模                              |
-| ステータス       | 未実施                              |
-| 発見元           | Phase 7（最終レビューゲート）       |
-| 発見日           | 2025-12-22                          |
-| 発見エージェント | .claude/agents/sec-auditor.md, .claude/agents/electron-security.md    |
+| 項目             | 内容                                                               |
+| ---------------- | ------------------------------------------------------------------ |
+| タスクID         | DEBT-SEC-001                                                       |
+| タスク名         | State parameter検証実装（CSRF対策）                                |
+| 分類             | セキュリティ                                                       |
+| 対象機能         | OAuth認証（Desktop）                                               |
+| 優先度           | 中                                                                 |
+| 見積もり規模     | 小規模                                                             |
+| ステータス       | 未実施                                                             |
+| 発見元           | Phase 7（最終レビューゲート）                                      |
+| 発見日           | 2025-12-22                                                         |
+| 発見エージェント | .claude/agents/sec-auditor.md, .claude/agents/electron-security.md |
 
 ---
 
@@ -196,8 +196,8 @@ State parameter生成・検証ロジックを実装し、単体テストでRed�
 
 #### 活用スキル
 
-| スキル名             | 活用方法                                    |
-| -------------------- | ------------------------------------------- |
+| スキル名                                     | 活用方法                                    |
+| -------------------------------------------- | ------------------------------------------- |
 | .claude/skills/tdd-principles/SKILL.md       | TDD Red-Green-Refactorサイクルの実践        |
 | .claude/skills/clean-code-practices/SKILL.md | 高品質なStateManagerコードの作成            |
 | .claude/skills/test-doubles/SKILL.md         | Vitest vi.useFakeTimers()でタイムテスト実施 |
@@ -257,8 +257,8 @@ OAuth認証開始時にStateManagerを使用してstateパラメータを生成�
 
 #### 活用スキル
 
-| スキル名     | 活用方法                           |
-| ------------ | ---------------------------------- |
+| スキル名                             | 活用方法                           |
+| ------------------------------------ | ---------------------------------- |
 | .claude/skills/oauth2-flows/SKILL.md | OAuth 2.0フローへのstate追加の実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -308,8 +308,8 @@ OAuth認証開始時にStateManagerを使用してstateパラメータを生成�
 
 #### 活用スキル
 
-| スキル名             | 活用方法                             |
-| -------------------- | ------------------------------------ |
+| スキル名                                     | 活用方法                             |
+| -------------------------------------------- | ------------------------------------ |
 | .claude/skills/oauth2-flows/SKILL.md         | OAuth 2.0コールバック処理のstate検証 |
 | .claude/skills/clean-code-practices/SKILL.md | エラーハンドリングの適切な実装       |
 

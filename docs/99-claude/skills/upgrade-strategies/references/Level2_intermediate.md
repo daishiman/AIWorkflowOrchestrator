@@ -14,12 +14,15 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 自動化パターン / Dependabot設定 / 基本設定 / ロールバック手順 / ロールバックの種類 / 1. 即時ロールバック（開発環境）
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/automation-patterns.md`: Automation Patternsリソース（把握する知識: 自動化パターン / Dependabot設定 / 基本設定）
 - `resources/rollback-procedures.md`: Rollback Proceduresリソース（把握する知識: ロールバック手順 / ロールバックの種類 / 1. 即時ロールバック（開発環境））
 - `resources/strategy-selection-guide.md`: Strategy Selection Guideリソース（把握する知識: 戦略選択ガイド / 戦略選択マトリックス / 更新タイプ × 条件）
@@ -27,14 +30,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Upgrade Strategies / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/check-upgrades.mjs`: Check Upgradesスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/upgrade-plan-template.md`: Upgrade Planテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

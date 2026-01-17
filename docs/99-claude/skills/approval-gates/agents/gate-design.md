@@ -101,19 +101,24 @@
   # Approval Gate Specification
 
   ## Gate Overview
+
   - Purpose: {目的}
   - Scope: {対象}
   - Risk Tier: {低/中/高}
 
   ## Approval Roles
+
   - Required approvers: {役割}
   - Escalation path: {経路}
 
   ## Gate Conditions
+
   ### Automated Checks
+
   - {検証項目}
 
   ### Manual Reviews
+
   - {レビュー項目}
   ```
 

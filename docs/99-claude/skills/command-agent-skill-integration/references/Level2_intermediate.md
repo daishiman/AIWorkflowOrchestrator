@@ -14,13 +14,16 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Command → Agent統合パターン / 基本概念 / なぜコマンドからエージェントを起動するのか？ / 明示的参照構文 / Step N: Load Best Practices / 三位一体統合の価値
 - 実務指針: コマンドからエージェントを起動したい時 / コマンド内でスキルを参照したい時 / Command-Agent-Skillの協調ワークフローを設計する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/command-to-agent-patterns.md`: コマンドからエージェント呼び出しパターン（把握する知識: Command → Agent統合パターン / 基本概念 / なぜコマンドからエージェントを起動するのか？）
 - `references/command-to-skill-patterns.md`: コマンドからスキル参照パターン（把握する知識: 基本概念 / 明示的参照構文 / Step N: Load Best Practices）
 - `references/composite-workflows.md`: 複合ワークフロー設計（把握する知識: 三位一体統合の価値 / 完全統合がもたらすもの / 構造）
@@ -28,16 +31,19 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: リソース構造 / リソース種別 / いつ使うか）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-integration.mjs`: エージェント参照・スキル参照・連携パターンの正確性検証とTrinity Architectureの統合チェック
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/agent-invocation-template.md`: エージェント起動テンプレート
 - `assets/composite-workflow-template.md`: 複合ワークフローテンプレート
 - `assets/skill-reference-template.md`: スキル参照テンプレート
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

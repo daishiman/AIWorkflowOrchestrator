@@ -14,25 +14,31 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: テンプレート統合参照ガイド / テンプレートカテゴリ / エージェントテンプレート / Template Variable Guide / 変数の記法 / 基本形式
 - 実務指針: 新しいエージェントタイプのテンプレートを作成する時 / 既存エージェントを汎用化する時 / エージェント量産のための標準化が必要な時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/template-reference-guide.md`: テンプレート参照ガイド（11個のテンプレート一覧とPhase別活用法）（把握する知識: テンプレート統合参照ガイド / テンプレートカテゴリ / エージェントテンプレート）
 - `resources/template-variable-guide.md`: 変数化ガイド（{{variable}}形式の設計と使用法）（把握する知識: Template Variable Guide / 変数の記法 / 基本形式）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Agent Template Patterns / リソース構造 / すべきこと）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/unified-agent-template.md`: 統一エージェントテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

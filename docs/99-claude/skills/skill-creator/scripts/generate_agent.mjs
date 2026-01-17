@@ -77,39 +77,60 @@ function generateAgentMd(task) {
   const purpose = task.purpose || "TODO: 目的を記述";
 
   // 責務テーブル
-  const responsibilities = task.responsibilities || [{ task: "TODO", output: "TODO" }];
-  const respTable = responsibilities.map((r) => `| ${r.task} | ${r.output} |`).join("\n");
+  const responsibilities = task.responsibilities || [
+    { task: "TODO", output: "TODO" },
+  ];
+  const respTable = responsibilities
+    .map((r) => `| ${r.task} | ${r.output} |`)
+    .join("\n");
 
   // 参考文献テーブル
   const references = task.references || [];
-  const refTable = references.length > 0
-    ? references.map((r) => `| ${r.name} | ${r.application} |`).join("\n")
-    : "| TODO: 書籍/ドキュメント | TODO: 適用方法 |";
+  const refTable =
+    references.length > 0
+      ? references.map((r) => `| ${r.name} | ${r.application} |`).join("\n")
+      : "| TODO: 書籍/ドキュメント | TODO: 適用方法 |";
 
   // 思考プロセステーブル
   const steps = task.steps || [{ step: 1, action: "TODO: アクションを記述" }];
   const stepsTable = steps.map((s) => `| ${s.step} | ${s.action} |`).join("\n");
 
   // チェックリストテーブル
-  const checklist = task.checklist || [{ item: "出力検証", criteria: "すべての必須項目が含まれている" }];
-  const checkTable = checklist.map((c) => `| ${c.item} | ${c.criteria} |`).join("\n");
+  const checklist = task.checklist || [
+    { item: "出力検証", criteria: "すべての必須項目が含まれている" },
+  ];
+  const checkTable = checklist
+    .map((c) => `| ${c.item} | ${c.criteria} |`)
+    .join("\n");
 
   // 制約テーブル
   const constraints = task.constraints || [];
-  const constraintTable = constraints.length > 0
-    ? constraints.map((c) => `| ${c.name} | ${c.description} |`).join("\n")
-    : "| 単一責務 | このTaskは1つの責務のみを担う |";
+  const constraintTable =
+    constraints.length > 0
+      ? constraints.map((c) => `| ${c.name} | ${c.description} |`).join("\n")
+      : "| 単一責務 | このTaskは1つの責務のみを担う |";
 
   // 入力テーブル
-  const input = task.input || { name: "TODO", source: "TODO", validation: "TODO", onMissing: "TODO" };
+  const input = task.input || {
+    name: "TODO",
+    source: "TODO",
+    validation: "TODO",
+    onMissing: "TODO",
+  };
   const inputRow = `| ${input.name} | ${input.source} | ${input.validation} | ${input.onMissing} |`;
 
   // 出力テーブル
-  const output = task.output || { name: "TODO", destination: "TODO", content: "TODO" };
+  const output = task.output || {
+    name: "TODO",
+    destination: "TODO",
+    content: "TODO",
+  };
   const outputRow = `| ${output.name} | ${output.destination} | ${output.content} |`;
 
   // 出力テンプレート
-  const outputTemplate = task.outputTemplate || `{
+  const outputTemplate =
+    task.outputTemplate ||
+    `{
   "taskName": "${name}",
   "result": "TODO"
 }`;

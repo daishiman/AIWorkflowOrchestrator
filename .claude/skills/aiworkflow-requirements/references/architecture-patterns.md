@@ -411,3 +411,87 @@ Main Process (Electron)
 - claude-code-cli-integration（2026-01-17完了）
 
 ---
+
+## IPC Handler Registration Pattern（Desktop Main Process）
+
+### 概要
+
+Electron IPCハンドラーはメインプロセスで一元的に登録される。
+全てのIPCハンドラーは `apps/desktop/src/main/ipc/index.ts` の `registerAllIpcHandlers` 関数から呼び出される必要がある。
+
+**実装場所**: `apps/desktop/src/main/ipc/index.ts`
+
+### 登録パターン
+
+IPCハンドラーの登録には3つのパターンがある:
+
+| パターン | 引数 | 使用例 |
+|---------|------|--------|
+| Pattern 1: mainWindow + store | `mainWindow`, `store` | `registerChatHandlers`, `registerAuthHandlers` |
+| Pattern 2: storeのみ | `store` | `registerSlideHandlers` |
+| Pattern 3: mainWindow + service | `mainWindow`, `service` | `registerSkillHandlers`, `registerAgentHandlers` |
+
+### SkillHandlers登録例（Pattern 3）
+
+```typescript
+// apps/desktop/src/main/ipc/index.ts
+
+// 1. インポート
+import { registerSkillHandlers } from "./skillHandlers";
+import {
+  SkillScanner,
+  SkillParser,
+  SkillImportManager,
+  SkillService,
+} from "../services/skill";
+import Store from "electron-store";
+import path from "path";
+import { app } from "electron";
+
+// 2. registerAllIpcHandlers 関数内で依存関係をインスタンス化
+export const registerAllIpcHandlers = (
+  mainWindow: BrowserWindow,
+  store: Store,
+): void => {
+  // ... 他のハンドラー登録 ...
+
+  // Register Skill Management handlers (SKILL-IPC-001)
+  const skillBasePath = path.join(app.getPath("userData"), ".claude", "skills");
+  const skillStore = new Store({ name: "skills" });
+  const skillScanner = new SkillScanner(skillBasePath);
+  const skillParser = new SkillParser();
+  const skillImportManager = new SkillImportManager(skillStore);
+  const skillService = new SkillService(
+    skillScanner,
+    skillParser,
+    skillImportManager,
+  );
+  registerSkillHandlers(mainWindow, skillService);
+};
+```
+
+### 新規IPCハンドラー追加手順
+
+1. **ハンドラーファイル作成**: `apps/desktop/src/main/ipc/{name}Handlers.ts`
+2. **サービス作成（必要な場合）**: `apps/desktop/src/main/services/{name}/`
+3. **index.tsに登録追加**: `registerAllIpcHandlers` 関数内で呼び出し
+4. **テスト作成**: ハンドラーとサービスのユニットテスト
+
+### セキュリティ要件
+
+全てのIPCハンドラーは `validateIpcSender` を使用してsender検証を行うこと:
+
+```typescript
+import { validateIpcSender } from "../security/ipcSecurity";
+
+ipcMain.handle("channel:action", async (event, args) => {
+  validateIpcSender(event, mainWindow);
+  // ... handler logic ...
+});
+```
+
+### 関連タスク
+
+- **SKILL-IPC-001**: `registerSkillHandlers` が `registerAllIpcHandlers` から呼び出されていなかったバグを修正（2026-01-16完了）
+
+---

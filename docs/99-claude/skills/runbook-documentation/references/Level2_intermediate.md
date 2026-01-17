@@ -75,7 +75,7 @@ flowchart TD
 
 ### 3.1 ステップ構造
 
-````markdown
+`````markdown
 ### Step N: {{ステップタイトル}}
 
 **目的**: {{このステップで達成すること}}
@@ -96,6 +96,8 @@ flowchart TD
 **注意事項**:
 - {{注意点}}
 ````
+`````
+
 ````
 
 ### 3.2 コマンド記述ルール
@@ -182,3 +184,4 @@ flowchart TD
 - **前のレベル**: See [Level1_basics.md](Level1_basics.md)
 - **次のレベル**: See [Level3_advanced.md](Level3_advanced.md)
 - **パターン集**: See [runbook-patterns.md](runbook-patterns.md)
+````

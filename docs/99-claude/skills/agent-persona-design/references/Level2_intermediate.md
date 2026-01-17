@@ -14,24 +14,30 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Expert Modeling Guide / Expert Modeling vs Role-Based Design / Expert Modeling（推奨） / Agent Persona Design / すべきこと / 避けるべきこと
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/expert-modeling-guide.md`: 専門家モデリングガイド（把握する知識: Expert Modeling Guide / Expert Modeling vs Role-Based Design / Expert Modeling（推奨））
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Agent Persona Design / すべきこと / 避けるべきこと）
 
 ### スクリプト運用
+
 - `scripts/analyze-persona.mjs`: ペルソナ分析スクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動レベルアップスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/persona-template.md`: ペルソナ設計テンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # custom-hooks-patterns
 
 ## 概要
@@ -78,12 +79,12 @@ Reactカスタムフックの抽出基準・設計パターン・合成パター
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-hook-opportunity | Phase 1開始時 | 既存ロジック | 抽出候補メモ、判断理由 |
-| design-hook-composition | Phase 2開始時 | 抽出候補メモ | フック設計書、API方針 |
-| implement-custom-hook | Phase 3開始時 | フック設計書 | 実装メモ、変更内容 |
-| validate-hook-quality | Phase 4開始時 | 実装メモ | レビューレポート、改善提案 |
+| Task                     | 起動タイミング | 入力         | 出力                       |
+| ------------------------ | -------------- | ------------ | -------------------------- |
+| analyze-hook-opportunity | Phase 1開始時  | 既存ロジック | 抽出候補メモ、判断理由     |
+| design-hook-composition  | Phase 2開始時  | 抽出候補メモ | フック設計書、API方針      |
+| implement-custom-hook    | Phase 3開始時  | フック設計書 | 実装メモ、変更内容         |
+| validate-hook-quality    | Phase 4開始時  | 実装メモ     | レビューレポート、改善提案 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,76 +92,76 @@ Reactカスタムフックの抽出基準・設計パターン・合成パター
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 抽出基準を明確にする | 責務が曖昧にならない |
-| フックAPIを小さくする | 再利用性が高まる |
+| 推奨事項               | 理由                 |
+| ---------------------- | -------------------- |
+| 抽出基準を明確にする   | 責務が曖昧にならない |
+| フックAPIを小さくする  | 再利用性が高まる     |
 | 合成パターンを採用する | 依存関係が整理される |
-| テスト観点を明文化する | 回帰防止になる |
+| テスト観点を明文化する | 回帰防止になる       |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 目的のない抽出 | 依存が増える |
-| 巨大なフック | 保守性が落ちる |
-| 副作用の隠蔽 | 予期しない挙動になる |
+| 禁止事項         | 問題点               |
+| ---------------- | -------------------- |
+| 目的のない抽出   | 依存が増える         |
+| 巨大なフック     | 保守性が落ちる       |
+| 副作用の隠蔽     | 予期しない挙動になる |
 | テストなしの導入 | 品質劣化の原因になる |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/analyze-hook-candidates.mjs` | 抽出候補の分析 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                            | 機能                         |
+| ------------------------------------- | ---------------------------- |
+| `scripts/analyze-hook-candidates.mjs` | 抽出候補の分析               |
+| `scripts/validate-skill.mjs`          | スキル構造の検証             |
+| `scripts/log_usage.mjs`               | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
-| 抽出基準 | [references/extraction-criteria.md](references/extraction-criteria.md) | Phase 1 |
-| 設計パターン | [references/design-patterns.md](references/design-patterns.md) | Phase 2 |
-| 合成パターン | [references/composition-patterns.md](references/composition-patterns.md) | Phase 2 |
-| テスト戦略 | [references/testing-strategies.md](references/testing-strategies.md) | Phase 4 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース     | パス                                                                     | 読込条件   |
+| ------------ | ------------------------------------------------------------------------ | ---------- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md)               | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | 設計時     |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md)           | 実装時     |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md)               | 検証時     |
+| 抽出基準     | [references/extraction-criteria.md](references/extraction-criteria.md)   | Phase 1    |
+| 設計パターン | [references/design-patterns.md](references/design-patterns.md)           | Phase 2    |
+| 合成パターン | [references/composition-patterns.md](references/composition-patterns.md) | Phase 2    |
+| テスト戦略   | [references/testing-strategies.md](references/testing-strategies.md)     | Phase 4    |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md)     | 仕様確認時 |
+| 旧スキル     | [references/legacy-skill.md](references/legacy-skill.md)                 | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/basic-hooks-template.md` | 基本フックテンプレート（インデックス） |
-| `assets/basic-state-hooks.md` | 状態管理フック（useToggle, useCounter, useInput） |
-| `assets/side-effect-hooks.md` | 副作用フック（useDebounce, useInterval, useTimeout） |
-| `assets/event-hooks.md` | イベントフック（useEventListener, useClickOutside） |
-| `assets/browser-api-hooks.md` | ブラウザAPIフック（useLocalStorage, useMediaQuery） |
-| `assets/utility-hooks.md` | ユーティリティフック（usePrevious, useMounted） |
-| `assets/advanced-hooks-template.md` | 高度フックテンプレート（インデックス） |
-| `assets/data-fetch-hooks.md` | データフェッチフック（useFetch, useAsync） |
-| `assets/form-hooks.md` | フォームフック（useForm） |
-| `assets/advanced-state-hooks.md` | 高度状態管理フック（useReducerWithMiddleware, useUndoRedo） |
-| `assets/websocket-hooks.md` | WebSocketフック（useWebSocket） |
-| `assets/hook-review-checklist.md` | レビュー観点チェック |
-| `assets/hook-api-contract-template.md` | API設計テンプレート |
+| アセット                               | 用途                                                        |
+| -------------------------------------- | ----------------------------------------------------------- |
+| `assets/basic-hooks-template.md`       | 基本フックテンプレート（インデックス）                      |
+| `assets/basic-state-hooks.md`          | 状態管理フック（useToggle, useCounter, useInput）           |
+| `assets/side-effect-hooks.md`          | 副作用フック（useDebounce, useInterval, useTimeout）        |
+| `assets/event-hooks.md`                | イベントフック（useEventListener, useClickOutside）         |
+| `assets/browser-api-hooks.md`          | ブラウザAPIフック（useLocalStorage, useMediaQuery）         |
+| `assets/utility-hooks.md`              | ユーティリティフック（usePrevious, useMounted）             |
+| `assets/advanced-hooks-template.md`    | 高度フックテンプレート（インデックス）                      |
+| `assets/data-fetch-hooks.md`           | データフェッチフック（useFetch, useAsync）                  |
+| `assets/form-hooks.md`                 | フォームフック（useForm）                                   |
+| `assets/advanced-state-hooks.md`       | 高度状態管理フック（useReducerWithMiddleware, useUndoRedo） |
+| `assets/websocket-hooks.md`            | WebSocketフック（useWebSocket）                             |
+| `assets/hook-review-checklist.md`      | レビュー観点チェック                                        |
+| `assets/hook-api-contract-template.md` | API設計テンプレート                                         |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
+| ファイル     | 目的                       |
+| ------------ | -------------------------- |
 | `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
+| `LOGS.md`    | 実行ログの蓄積             |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                      |
-| ------- | ---------- | -------------------------------------------- |
+| Version | Date       | Changes                                            |
+| ------- | ---------- | -------------------------------------------------- |
 | 1.2.0   | 2026-01-06 | assets分割（500行制限対応）、9カテゴリファイル作成 |
-| 1.1.0   | 2026-01-06 | extraction-criteria.md実装事例追加           |
-| 1.0.0   | 2026-01-01 | 初版作成                                     |
+| 1.1.0   | 2026-01-06 | extraction-criteria.md実装事例追加                 |
+| 1.0.0   | 2026-01-01 | 初版作成                                           |
