@@ -45,6 +45,8 @@ jobs:
 
       - name: Build shared package
         run: pnpm --filter @repo/shared build
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
 
       - name: Build desktop app
         run: pnpm --filter @repo/desktop build
