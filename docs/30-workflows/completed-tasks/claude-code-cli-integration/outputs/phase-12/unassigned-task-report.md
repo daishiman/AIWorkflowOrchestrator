@@ -95,22 +95,22 @@ grep -rn "TODO\|FIXME\|HACK\|XXX" apps/desktop/src/main/claude-cli/
 
 ### カテゴリ: UI実装時
 
-| ID     | 課題                                | 推奨優先度 |
-| ------ | ----------------------------------- | ---------- |
-| FUT-01 | preload.tsでのcontextBridge API公開 | 高         |
-| FUT-02 | スキル実行中断UIの実装              | 中         |
-| FUT-03 | 実行中フィードバック表示            | 中         |
-| FUT-04 | キャンセル・再試行UXの実装          | 中         |
-| FUT-05 | 大量出力時のパフォーマンス確認      | 低         |
-| FUT-06 | 10セッション同時実行の負荷テスト    | 低         |
+| ID     | 課題                                | 推奨優先度 | MIDASC形式タスク                                                             |
+| ------ | ----------------------------------- | ---------- | ---------------------------------------------------------------------------- |
+| FUT-01 | preload.tsでのcontextBridge API公開 | 高         | `docs/30-workflows/unassigned-task/task-claude-cli-renderer-api.md`          |
+| FUT-02 | スキル実行中断UIの実装              | 中         | `docs/30-workflows/unassigned-task/task-imp-claude-cli-abort-ui.md`          |
+| FUT-03 | 実行中フィードバック表示            | 中         | `docs/30-workflows/unassigned-task/task-imp-claude-cli-progress-feedback.md` |
+| FUT-04 | キャンセル・再試行UXの実装          | 中         | `docs/30-workflows/unassigned-task/task-imp-claude-cli-retry-ux.md`          |
+| FUT-05 | 大量出力時のパフォーマンス確認      | 低         | `docs/30-workflows/unassigned-task/task-perf-claude-cli-large-output.md`     |
+| FUT-06 | 10セッション同時実行の負荷テスト    | 低         | `docs/30-workflows/unassigned-task/task-perf-claude-cli-concurrent-load.md`  |
 
 ### カテゴリ: 保守フェーズ
 
-| ID       | 課題                                      | 推奨優先度 |
-| -------- | ----------------------------------------- | ---------- |
-| MAINT-01 | JSDoc/TSDoc補完                           | 低         |
-| MAINT-02 | ClaudeCliManagerカバレッジ改善（64%→80%） | 低         |
-| MAINT-03 | dev依存関係の脆弱性更新                   | 低         |
+| ID       | 課題                                      | 推奨優先度 | MIDASC形式タスク                                                       |
+| -------- | ----------------------------------------- | ---------- | ---------------------------------------------------------------------- |
+| MAINT-01 | JSDoc/TSDoc補完                           | 低         | `docs/30-workflows/unassigned-task/task-ref-claude-cli-jsdoc.md`       |
+| MAINT-02 | ClaudeCliManagerカバレッジ改善（64%→80%） | 低         | `docs/30-workflows/unassigned-task/task-ref-claude-cli-coverage.md`    |
+| MAINT-03 | dev依存関係の脆弱性更新                   | 低         | `docs/30-workflows/unassigned-task/task-sec-claude-cli-deps-update.md` |
 
 ---
 
