@@ -1,4 +1,7 @@
-import { BrowserWindow, nativeTheme } from "electron";
+import { BrowserWindow, nativeTheme, app, ipcMain, net } from "electron";
+import path from "path";
+import Store from "electron-store";
+import { IPC_CHANNELS } from "../../preload/channels";
 import { registerFileHandlers } from "./fileHandlers";
 import { registerStoreHandlers } from "./storeHandlers";
 import { registerDashboardHandlers } from "./dashboardHandlers";
@@ -19,6 +22,13 @@ import { registerHistoryHandlers } from "./historyHandlers";
 import { createHistoryServiceWithDI } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
+import { registerSkillHandlers } from "./skillHandlers";
+import {
+  SkillScanner,
+  SkillParser,
+  SkillImportManager,
+  SkillService,
+} from "../services/skill";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -67,6 +77,8 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     console.warn(
       "[IPC] Auth, profile, and avatar handlers not registered - Supabase not configured",
     );
+    // Register fallback handlers when Supabase is not configured
+    registerAuthFallbackHandlers();
   }
 
   // Register API Key handlers (always available - local storage only)
@@ -86,6 +98,55 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
 
   // Register Agent Execution handlers (AGENT-005)
   registerAgentExecutionHandlers(mainWindow);
+
+  // Register Skill Management handlers (SKILL-IPC-001)
+  const skillBasePath = path.join(app.getPath("userData"), ".claude", "skills");
+  const skillStore = new Store({ name: "skills" });
+  const skillScanner = new SkillScanner(skillBasePath);
+  const skillParser = new SkillParser();
+  const skillImportManager = new SkillImportManager(skillStore);
+  const skillService = new SkillService(
+    skillScanner,
+    skillParser,
+    skillImportManager,
+  );
+  registerSkillHandlers(mainWindow, skillService);
+}
+
+/**
+ * Register fallback auth handlers when Supabase is not configured
+ * These handlers return appropriate "not configured" responses
+ */
+function registerAuthFallbackHandlers(): void {
+  const notConfiguredResponse = {
+    success: false,
+    error: {
+      code: "AUTH_NOT_CONFIGURED",
+      message:
+        "Authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.",
+    },
+  };
+
+  // auth:login - Return not configured error
+  ipcMain.handle(IPC_CHANNELS.AUTH_LOGIN, async () => notConfiguredResponse);
+
+  // auth:logout - Return not configured error
+  ipcMain.handle(IPC_CHANNELS.AUTH_LOGOUT, async () => notConfiguredResponse);
+
+  // auth:get-session - Return null session (not authenticated)
+  ipcMain.handle(IPC_CHANNELS.AUTH_GET_SESSION, async () => ({
+    success: true,
+    data: null,
+  }));
+
+  // auth:refresh - Return not configured error
+  ipcMain.handle(IPC_CHANNELS.AUTH_REFRESH, async () => notConfiguredResponse);
+
+  // auth:check-online - Return online status (this doesn't need Supabase)
+  ipcMain.handle(IPC_CHANNELS.AUTH_CHECK_ONLINE, async () => ({
+    success: true,
+    data: { online: net.isOnline() },
+  }));
 }
 
 // Re-export for menu actions

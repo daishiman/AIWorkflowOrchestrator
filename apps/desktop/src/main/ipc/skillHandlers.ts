@@ -37,7 +37,18 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      return skillService.scanAvailableSkills(args?.forceRefresh);
+      try {
+        const result = await skillService.scanAvailableSkills(
+          args?.forceRefresh,
+        );
+        return { success: true, data: result.skills };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error ? error.message : "スキャンに失敗しました",
+        };
+      }
     },
   );
 
@@ -53,7 +64,16 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      return skillService.getImportedSkills();
+      try {
+        const skills = await skillService.getImportedSkills();
+        return { success: true, data: skills };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error ? error.message : "スキル取得に失敗しました",
+        };
+      }
     },
   );
 
@@ -107,9 +127,21 @@ export function registerSkillHandlers(
         throw toIPCValidationError(validation);
       }
       if (typeof args?.skillId !== "string") {
-        throw { code: "VALIDATION_ERROR", message: "skillId must be a string" };
+        return { success: false, error: "skillId must be a string" };
       }
-      return skillService.getSkillById(args.skillId);
+      try {
+        const skill = await skillService.getSkillById(args.skillId);
+        if (skill) {
+          return { success: true, data: skill };
+        }
+        return { success: false, error: "スキルが見つかりません" };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error ? error.message : "スキル取得に失敗しました",
+        };
+      }
     },
   );
 }

@@ -49,7 +49,22 @@ export class SkillScanner {
       }
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-        throw new Error(`Base path does not exist: ${this.basePath}`);
+        // ベースパスが存在しない場合は自動作成して空の配列を返す
+        console.log(
+          `[SkillScanner] Base path does not exist: ${this.basePath}. Creating directory...`,
+        );
+        try {
+          await fs.mkdir(this.basePath, { recursive: true });
+          console.log(
+            `[SkillScanner] Created skills directory: ${this.basePath}`,
+          );
+        } catch (mkdirError) {
+          console.error(
+            `[SkillScanner] Failed to create skills directory: ${this.basePath}`,
+            mkdirError,
+          );
+        }
+        return [];
       }
       throw error;
     }
