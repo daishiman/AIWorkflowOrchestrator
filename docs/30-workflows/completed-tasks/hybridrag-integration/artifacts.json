@@ -1,0 +1,144 @@
+{
+  "$schema": "../../.claude/skills/task-specification-creator/schemas/artifact-definition.json",
+  "taskId": "CONV-07-07",
+  "taskName": "hybridrag-integration",
+  "createdAt": "2026-01-17T21:10:00Z",
+  "updatedAt": "2026-01-17T23:00:00Z",
+  "status": "in_progress",
+  "currentPhase": 12,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-17T21:15:00Z",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-17T21:20:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/interface-design.md",
+        "outputs/phase-2/factory-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-17T21:25:00Z",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-17T21:35:00Z",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md",
+        "packages/shared/src/services/search/__tests__/hybrid-rag-engine.test.ts",
+        "packages/shared/src/services/search/__tests__/hybrid-rag-engine.integration.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-17T22:30:00Z",
+      "artifacts": [
+        "packages/shared/src/services/search/hybrid-rag-engine.ts",
+        "packages/shared/src/services/search/hybrid-rag-factory.ts"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-17T22:35:00Z",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-17T22:40:00Z",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-17T22:45:00Z",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-17T22:48:00Z",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-17T22:50:00Z",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-01-17T22:55:00Z",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-17T23:00:00Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  ],
+  "dependencies": {
+    "parentTask": "CONV-07",
+    "dependsOn": [
+      "CONV-07-01",
+      "CONV-07-02",
+      "CONV-07-03",
+      "CONV-07-04",
+      "CONV-07-05",
+      "CONV-07-06"
+    ]
+  },
+  "expectedArtifacts": {
+    "code": [
+      "packages/shared/src/services/search/hybrid-rag-engine.ts",
+      "packages/shared/src/services/search/hybrid-rag-factory.ts"
+    ],
+    "tests": [
+      "packages/shared/src/services/search/__tests__/hybrid-rag-engine.test.ts"
+    ],
+    "exports": ["packages/shared/src/services/search/index.ts"],
+    "docs": ["outputs/phase-12/implementation-guide.md"]
+  }
+}
