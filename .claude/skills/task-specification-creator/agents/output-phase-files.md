@@ -1,5 +1,9 @@
 # Task仕様書：Phaseファイル出力
 
+> **読み込み条件**: タスク仕様書生成（generate-task-specs）完了後
+> **相対パス**: `agents/output-phase-files.md`
+> **実行パターン**: update-dependenciesと並列実行可能
+
 ## 1. メタ情報
 
 | 項目     | 内容                |
@@ -194,7 +198,7 @@ echo "Directories created successfully"
 ### 6.2 artifacts.json初期化スクリプト
 
 ```javascript
-// scripts/init_artifacts.mjs
+// scripts/init_artifacts.js
 import fs from 'fs';
 import path from 'path';
 
