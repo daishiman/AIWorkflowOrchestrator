@@ -552,10 +552,161 @@ type CorrectionAction =
 
 ---
 
+## HybridRAG統合エンジン
+
+4ステージパイプラインを統合した検索エンジン。Keyword/Semantic/Graph検索を並列実行し、RRF統合→Reranking→CRAG補正を行う。
+
+**実装場所**: `packages/shared/src/services/search/hybrid-rag-engine.ts`
+
+### HybridRAGEngineクラス
+
+| メソッド | 戻り値                                    | 説明                     |
+| -------- | ----------------------------------------- | ------------------------ |
+| search() | Promise<Result<HybridRAGResponse, Error>> | HybridRAG検索を実行      |
+
+**コンストラクタ**:
+
+```typescript
+constructor(
+  queryClassifier: IQueryClassifier,
+  searchStrategies: {
+    keyword: ISearchStrategy;
+    semantic: ISearchStrategy;
+    graph: ISearchStrategy;
+  },
+  fusion: IFusionStrategy,
+  reranker: IReranker,
+  crag: ICorrectiveRAG | null,
+  options?: HybridRAGOptions
+)
+```
+
+### HybridRAGResponse
+
+| プロパティ       | 型                    | 説明                               |
+| ---------------- | --------------------- | ---------------------------------- |
+| results          | HybridRAGResult[]     | 最終検索結果                       |
+| metadata         | object                | パイプライン実行メタデータ         |
+| augmentedContext | string \| undefined   | CRAGによる補強コンテキスト         |
+
+**metadata**:
+
+| プロパティ     | 型                    | 説明                               |
+| -------------- | --------------------- | ---------------------------------- |
+| queryType      | QueryType             | クエリタイプ                       |
+| searchWeights  | SearchWeights         | 検索戦略の重み                     |
+| pipelineStages | PipelineStageResult[] | 各ステージの実行結果               |
+| totalDuration  | number                | 全体処理時間（ミリ秒）             |
+| cragAction     | RelevanceAction?      | CRAGの評価アクション               |
+
+### HybridRAGResult
+
+| プロパティ | 型                     | 説明                               |
+| ---------- | ---------------------- | ---------------------------------- |
+| chunkId    | ChunkId                | チャンクID                         |
+| content    | string                 | コンテンツ本文                     |
+| score      | number                 | 総合スコア（0.0-1.0）              |
+| sources    | SourceInfo[]           | ソース情報（検索戦略、ランク、スコア） |
+| metadata   | Record<string, unknown>| メタデータ                         |
+
+### PipelineStageResult
+
+| プロパティ  | 型     | 説明                               |
+| ----------- | ------ | ---------------------------------- |
+| stage       | string | ステージ名                         |
+| duration    | number | 実行時間（ミリ秒）                 |
+| inputCount  | number | 入力件数                           |
+| outputCount | number | 出力件数                           |
+
+**stage 値**: `"query_classification"` | `"triple_search"` | `"rrf_fusion"` | `"reranking"` | `"crag"`
+
+### SearchOptions（HybridRAG）
+
+| プロパティ            | 型      | デフォルト | 説明                           |
+| --------------------- | ------- | ---------- | ------------------------------ |
+| enableCRAG            | boolean | undefined  | CRAGを有効にするか             |
+| searchLimitMultiplier | number  | 3          | 各戦略の結果数倍率             |
+| vectorThreshold       | number  | undefined  | ベクトル検索の類似度閾値       |
+| graphDepth            | number  | undefined  | グラフ検索のトラバーサル深度   |
+
+### HybridRAGOptions
+
+| プロパティ        | 型      | デフォルト | 説明                           |
+| ----------------- | ------- | ---------- | ------------------------------ |
+| defaultEnableCRAG | boolean | true       | デフォルトでCRAGを有効化       |
+| timeout           | number  | undefined  | タイムアウト（ミリ秒）         |
+
+### 定数
+
+| 定数名                        | 値  | 説明                           |
+| ----------------------------- | --- | ------------------------------ |
+| DEFAULT_LIMIT                 | 10  | デフォルト検索結果数           |
+| MAX_LIMIT                     | 100 | 最大検索結果数                 |
+| DEFAULT_SEARCH_LIMIT_MULTIPLIER | 3 | デフォルト結果数倍率           |
+
+---
+
+## HybridRAGFactory
+
+HybridRAGEngineのファクトリクラス。設定に基づいて適切なコンポーネントを組み立てる。
+
+**実装場所**: `packages/shared/src/services/search/hybrid-rag-factory.ts`
+
+### ファクトリメソッド
+
+| メソッド           | 状態   | 説明                                 |
+| ------------------ | ------ | ------------------------------------ |
+| createFull()       | 未実装 | フル機能エンジン（LLMベース、CRAG有効） |
+| createLite()       | 未実装 | 軽量版エンジン（ルールベース、CRAG無効） |
+| createForTesting() | 実装済 | テスト用エンジン（モック注入）        |
+
+### FullHybridRAGConfig
+
+| プロパティ        | 型                  | 必須 | 説明                           |
+| ----------------- | ------------------- | ---- | ------------------------------ |
+| db                | DrizzleClient       | ✅   | データベースクライアント       |
+| embeddingProvider | IEmbeddingProvider  | ✅   | 埋め込みプロバイダー           |
+| graphStore        | IKnowledgeGraphStore| ✅   | Knowledge Graphストア          |
+| llmClient         | ILLMClient          | ✅   | LLMクライアント                |
+| rerankerType      | string              | ✅   | "cohere" \| "voyage" \| "llm" \| "none" |
+| enableCRAG        | boolean             |      | CRAG有効化                     |
+| webSearcher       | IWebSearcher        |      | Web検索プロバイダー            |
+
+### LiteHybridRAGConfig
+
+| プロパティ        | 型                  | 必須 | 説明                           |
+| ----------------- | ------------------- | ---- | ------------------------------ |
+| db                | DrizzleClient       | ✅   | データベースクライアント       |
+| embeddingProvider | IEmbeddingProvider  | ✅   | 埋め込みプロバイダー           |
+| graphStore        | IKnowledgeGraphStore| ✅   | Knowledge Graphストア          |
+
+### TestMocks
+
+| プロパティ       | 型              | 必須 | 説明                           |
+| ---------------- | --------------- | ---- | ------------------------------ |
+| queryClassifier  | IQueryClassifier| ✅   | クエリ分類器モック             |
+| keywordStrategy  | ISearchStrategy | ✅   | キーワード検索モック           |
+| semanticStrategy | ISearchStrategy | ✅   | セマンティック検索モック       |
+| graphStrategy    | ISearchStrategy | ✅   | グラフ検索モック               |
+| fusion           | IFusionStrategy |      | Fusionモック（デフォルト: RRFFusion） |
+| reranker         | IReranker       |      | Rerankerモック（デフォルト: NoOpReranker） |
+| crag             | ICorrectiveRAG  |      | CRAGモック                     |
+| options          | HybridRAGOptions|      | エンジンオプション             |
+
+### テスト品質
+
+- **39テストケース**（単体23 + 統合16）
+- **94.32% Line Coverage**, **91.66% Branch Coverage**, **100% Function Coverage**
+
+**詳細参照**: `docs/30-workflows/hybridrag-integration/outputs/phase-12/implementation-guide.md`
+
+---
+
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| 2026-01-17 | 6.9.0      | HybridRAGEngine、HybridRAGFactory セクション追加   |
 | 2026-01-17 | 6.8.0      | Corrective RAG詳細セクション追加                   |
 | 2026-01-13 | 6.7.0      | GraphSearchStrategy詳細セクション追加              |
 | 2026-01-12 | 6.6.0      | VectorSearchStrategy・CachedVectorSearchStrategy追加 |
