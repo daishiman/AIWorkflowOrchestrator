@@ -651,6 +651,52 @@ interface PaginationOptions {
 | チャンネルホワイトリスト | HISTORY_CHANNELS全て登録済み |
 | safeInvoke使用 | ipcRenderer.invoke直接使用なし |
 
+### タスク: history-manual-testing（2026-01-17完了）
+
+| 項目       | 内容                                                |
+|------------|-----------------------------------------------------|
+| タスクID   | task-req-history-manual-test-001                    |
+| 完了日     | 2026-01-17                                          |
+| ステータス | **完了**                                            |
+| テスト数   | 190（自動テスト）+ 24（手動テスト項目）             |
+| 発見課題   | 0件                                                 |
+| ドキュメント | `docs/30-workflows/history-manual-testing/`       |
+
+#### 手動テスト結果
+
+| カテゴリ | テスト数 | PASS | FAIL |
+|----------|----------|------|------|
+| 機能テスト（正常系） | 11 | 11 | 0 |
+| エラーハンドリング | 4 | 4 | 0 |
+| アクセシビリティ | 4 | 4 | 0 |
+| 統合テスト連携 | 5 | 5 | 0 |
+
+#### 自動テストカバレッジ（history関連190件）
+
+| テストファイル | テスト数 | ステータス |
+|---------------|----------|-----------|
+| historyHandlers.test.ts | 22 | PASS |
+| HistoryService.integration.test.ts | 31 | PASS |
+| historyAPI.test.ts | 28 | PASS |
+| VersionHistory.test.tsx | 22 | PASS |
+| VersionDetail.test.tsx | 20 | PASS |
+| ConversionLogs.test.tsx | 19 | PASS |
+| RestoreDialog.test.tsx | 12 | PASS |
+| useVersionHistory.test.ts | 10 | PASS |
+| useVersionDetail.test.ts | 8 | PASS |
+| HistoryPage.test.tsx | 18 | PASS |
+| **合計** | **190** | **全テスト成功** |
+
+#### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 要件定義書 | `docs/30-workflows/history-manual-testing/outputs/phase-1/requirements-definition.md` |
+| テスト結果レポート | `docs/30-workflows/history-manual-testing/outputs/phase-11/manual-test-result.md` |
+| 発見課題リスト | `docs/30-workflows/history-manual-testing/outputs/phase-11/discovered-issues.md` |
+| 実装ガイド | `docs/30-workflows/history-manual-testing/outputs/phase-12/implementation-guide.md` |
+| 未タスク検出レポート | `docs/30-workflows/history-manual-testing/outputs/phase-12/unassigned-task-report.md` |
+
 ### 残課題
 
 | 課題 | 依存タスク | 優先度 | 未タスク指示書 |
@@ -658,7 +704,7 @@ interface PaginationOptions {
 | UIコンポーネント実装 | CONV-05-02, ~~history-service-db-integration~~ | 中 | CONV-05-03 |
 | validateDOMNesting警告修正 | CONV-05-03 | 低 | - |
 | Rendererビルド問題修正 | なし | 高 | task-renderer-build-fix.md ✅ |
-| GUI手動テスト実施 | Rendererビルド修正 | 中 | task-history-gui-manual-test.md ✅ |
+| ~~GUI手動テスト実施~~ | ~~Rendererビルド修正~~ | ~~中~~ | ~~task-history-gui-manual-test.md~~ ✅ **完了** |
 | エラーメッセージ国際化対応 | なし | 低 | task-error-i18n-support.md ✅ |
 
 未タスク指示書の配置先: `docs/30-workflows/unassigned-task/`
@@ -683,6 +729,7 @@ interface PaginationOptions {
 
 | Version | Date       | Changes                      |
 | ------- | ---------- | ---------------------------- |
+| 1.8.0   | 2026-01-17 | history-manual-testing完了（手動テスト24項目全PASS、自動テスト190件全PASS、発見課題0件） |
 | 1.7.0   | 2026-01-13 | history-preload-setup完了（28テスト、カバレッジ100%、セキュリティ確認完了） |
 | 1.6.0   | 2026-01-12 | 未タスク指示書作成完了（renderer-build-fix、history-gui-manual-test、error-i18n-support） |
 | 1.5.0   | 2026-01-12 | history-service-db-integration完了（DB統合済み、全テスト成功、カバレッジ92%+達成、残課題更新） |
