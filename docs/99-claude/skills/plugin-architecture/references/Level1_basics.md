@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling plugin architecture tasks.
 
 ### 必要な知識
+
 - 対象領域: 動的な機能拡張を可能にするプラグインアーキテクチャの設計を専門とするスキル。 レジストリパターン、動的ロード、依存性注入を活用し、 機能追加時の既存コード修正を不要にする拡張性の高いシステム設計を提供します。
 - 主要概念: Dependency Injection（依存性注入） / 注入パターン / 1. Constructor Injection（コンストラクタ注入） / Dynamic Loading（動的ロード） / ロード方式
 - 実務指針: ワークフローエンジンのプラグインシステムを構築する時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: 疎結合なモジュール設計が必要な時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/plugin-implementation.md`
 - 参照テンプレート: `templates/registry-implementation.md`
 
 ### 参照書籍
+
 - 『Clean Architecture』（Robert C. Martin）: 依存関係ルール
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/plugin-implementation.md`: このレベルでは参照のみ
 - `templates/registry-implementation.md`: このレベルでは参照のみ
 

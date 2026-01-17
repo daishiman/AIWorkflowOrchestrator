@@ -12,6 +12,7 @@ description: |
   Use when defining command naming conventions, reviewing naming consistency, or designing namespace structures.
   command naming, kebab-case, verb-based naming, namespace design, discoverability
 ---
+
 # command-naming-conventions
 
 ## 概要
@@ -58,11 +59,11 @@ description: |
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-naming-requirements | Phase 1開始時 | 命名対象/制約 | 要件整理メモ、命名候補 |
-| design-naming-conventions | Phase 2開始時 | 要件整理メモ | 命名ルール、例外方針 |
-| validate-naming-conventions | Phase 3開始時 | 命名ルール | 検証レポート、改善方針 |
+| Task                        | 起動タイミング | 入力          | 出力                   |
+| --------------------------- | -------------- | ------------- | ---------------------- |
+| analyze-naming-requirements | Phase 1開始時  | 命名対象/制約 | 要件整理メモ、命名候補 |
+| design-naming-conventions   | Phase 2開始時  | 要件整理メモ  | 命名ルール、例外方針   |
+| validate-naming-conventions | Phase 3開始時  | 命名ルール    | 検証レポート、改善方針 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -70,52 +71,52 @@ description: |
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 命名の意図を明確にする | 誤解を減らすため |
-| 既存命名との整合を確認する | 一貫性を保つため |
-| 例外ルールを記録する | 変更時の混乱を防ぐため |
+| 推奨事項                   | 理由                   |
+| -------------------------- | ---------------------- |
+| 命名の意図を明確にする     | 誤解を減らすため       |
+| 既存命名との整合を確認する | 一貫性を保つため       |
+| 例外ルールを記録する       | 変更時の混乱を防ぐため |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項           | 問題点               |
+| ------------------ | -------------------- |
 | ルールを曖昧にする | 命名のばらつきが出る |
 | チェックを省略する | 意図しない命名になる |
-| 記録を残さない | 改善が続かない |
+| 記録を残さない     | 改善が続かない       |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-naming.mjs` | 命名規則検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                    | 機能                         |
+| ----------------------------- | ---------------------------- |
+| `scripts/validate-naming.mjs` | 命名規則検証                 |
+| `scripts/log_usage.mjs`       | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs`  | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 命名設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
-| 命名ルール | [references/naming-rules.md](references/naming-rules.md) | ルール確認時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース     | パス                                                                   | 読込条件     |
+| ------------ | ---------------------------------------------------------------------- | ------------ |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md)             | 初回整理時   |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 命名設計時   |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md)         | 詳細設計時   |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md)             | 改善ループ時 |
+| 命名ルール   | [references/naming-rules.md](references/naming-rules.md)               | ルール確認時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md)   | 要件参照時   |
+| 旧スキル     | [references/legacy-skill.md](references/legacy-skill.md)               | 互換確認時   |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                     | 用途               |
+| ---------------------------- | ------------------ |
 | `assets/naming-checklist.md` | 命名チェックリスト |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

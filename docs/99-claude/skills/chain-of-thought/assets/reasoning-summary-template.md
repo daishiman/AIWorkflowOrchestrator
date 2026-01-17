@@ -13,10 +13,10 @@
 
 ## 3. Options Considered
 
-| Option | Summary | Trade-offs | Decision |
-| --- | --- | --- | --- |
-| A | {summary} | {tradeoffs} | {chosen_or_rejected} |
-| B | {summary} | {tradeoffs} | {chosen_or_rejected} |
+| Option | Summary   | Trade-offs  | Decision             |
+| ------ | --------- | ----------- | -------------------- |
+| A      | {summary} | {tradeoffs} | {chosen_or_rejected} |
+| B      | {summary} | {tradeoffs} | {chosen_or_rejected} |
 
 ## 4. Chosen Approach
 

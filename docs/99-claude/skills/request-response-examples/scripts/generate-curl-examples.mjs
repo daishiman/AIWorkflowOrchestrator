@@ -135,7 +135,8 @@ function generateCurlCommand(baseUrl, path, method, operation) {
 }
 
 function generateMarkdownDocs(spec, baseUrlOverride) {
-  const baseUrl = baseUrlOverride || spec.servers?.[0]?.url || "https://api.example.com";
+  const baseUrl =
+    baseUrlOverride || spec.servers?.[0]?.url || "https://api.example.com";
   const date = new Date().toISOString().split("T")[0];
   let markdown = "# API cURL コマンド例\n\n";
   markdown += `**Base URL:** \`${baseUrl}\`\n\n`;
@@ -166,7 +167,11 @@ function generateMarkdownDocs(spec, baseUrlOverride) {
             const example = response.content["application/json"].example;
             markdown += "### レスポンス例\n\n";
             markdown += "```json\n";
-            markdown += JSON.stringify(example || { message: "Success" }, null, 2);
+            markdown += JSON.stringify(
+              example || { message: "Success" },
+              null,
+              2,
+            );
             markdown += "\n```\n\n";
           }
         }

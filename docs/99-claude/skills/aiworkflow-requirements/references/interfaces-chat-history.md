@@ -22,16 +22,16 @@
 
 ### chat_sessionsテーブル
 
-| カラム        | 型      | 制約             | 説明                  |
-| ------------- | ------- | ---------------- | --------------------- |
-| id            | TEXT    | PRIMARY KEY      | セッションID（UUID）  |
-| user_id       | TEXT    | NOT NULL         | ユーザーID            |
-| title         | TEXT    | NOT NULL         | セッションタイトル    |
-| preview       | TEXT    | DEFAULT ''       | プレビュー（先頭30文字） |
-| is_favorite   | INTEGER | DEFAULT 0        | お気に入りフラグ      |
-| is_pinned     | INTEGER | DEFAULT 0        | ピン留めフラグ        |
-| created_at    | INTEGER | DEFAULT unixepoch() | 作成日時           |
-| updated_at    | INTEGER | DEFAULT unixepoch() | 更新日時           |
+| カラム      | 型      | 制約                | 説明                     |
+| ----------- | ------- | ------------------- | ------------------------ |
+| id          | TEXT    | PRIMARY KEY         | セッションID（UUID）     |
+| user_id     | TEXT    | NOT NULL            | ユーザーID               |
+| title       | TEXT    | NOT NULL            | セッションタイトル       |
+| preview     | TEXT    | DEFAULT ''          | プレビュー（先頭30文字） |
+| is_favorite | INTEGER | DEFAULT 0           | お気に入りフラグ         |
+| is_pinned   | INTEGER | DEFAULT 0           | ピン留めフラグ           |
+| created_at  | INTEGER | DEFAULT unixepoch() | 作成日時                 |
+| updated_at  | INTEGER | DEFAULT unixepoch() | 更新日時                 |
 
 **インデックス**:
 
@@ -44,17 +44,17 @@
 
 ### chat_messagesテーブル
 
-| カラム          | 型      | 制約                           | 説明                     |
-| --------------- | ------- | ------------------------------ | ------------------------ |
-| id              | TEXT    | PRIMARY KEY                    | メッセージID（UUID）     |
-| session_id      | TEXT    | NOT NULL, FK→chat_sessions(id) | セッションID参照         |
-| role            | TEXT    | NOT NULL                       | 'user' \| 'assistant'    |
-| content         | TEXT    | NOT NULL                       | メッセージ内容           |
-| message_index   | INTEGER | NOT NULL                       | セッション内の順序番号   |
-| llm_model_id    | TEXT    |                                | LLMモデルID（assistant時）|
-| llm_provider    | TEXT    |                                | LLMプロバイダー（assistant時）|
-| llm_metadata    | TEXT    |                                | LLMメタデータJSON        |
-| created_at      | INTEGER | DEFAULT unixepoch()            | 作成日時                 |
+| カラム        | 型      | 制約                           | 説明                           |
+| ------------- | ------- | ------------------------------ | ------------------------------ |
+| id            | TEXT    | PRIMARY KEY                    | メッセージID（UUID）           |
+| session_id    | TEXT    | NOT NULL, FK→chat_sessions(id) | セッションID参照               |
+| role          | TEXT    | NOT NULL                       | 'user' \| 'assistant'          |
+| content       | TEXT    | NOT NULL                       | メッセージ内容                 |
+| message_index | INTEGER | NOT NULL                       | セッション内の順序番号         |
+| llm_model_id  | TEXT    |                                | LLMモデルID（assistant時）     |
+| llm_provider  | TEXT    |                                | LLMプロバイダー（assistant時） |
+| llm_metadata  | TEXT    |                                | LLMメタデータJSON              |
+| created_at    | INTEGER | DEFAULT unixepoch()            | 作成日時                       |
 
 **インデックス**:
 
@@ -71,44 +71,44 @@
 
 チャットセッションエンティティ型。
 
-| フィールド | 型      | 説明                     |
-| ---------- | ------- | ------------------------ |
-| id         | string  | セッションID（UUID）     |
-| userId     | string  | ユーザーID               |
-| title      | string  | セッションタイトル       |
-| preview    | string  | プレビュー文字列         |
-| isFavorite | boolean | お気に入りフラグ         |
-| isPinned   | boolean | ピン留めフラグ           |
-| createdAt  | Date    | 作成日時                 |
-| updatedAt  | Date    | 更新日時                 |
+| フィールド | 型      | 説明                 |
+| ---------- | ------- | -------------------- |
+| id         | string  | セッションID（UUID） |
+| userId     | string  | ユーザーID           |
+| title      | string  | セッションタイトル   |
+| preview    | string  | プレビュー文字列     |
+| isFavorite | boolean | お気に入りフラグ     |
+| isPinned   | boolean | ピン留めフラグ       |
+| createdAt  | Date    | 作成日時             |
+| updatedAt  | Date    | 更新日時             |
 
 ### ChatMessage
 
 チャットメッセージエンティティ型。
 
-| フィールド     | 型                       | 説明                          |
-| -------------- | ------------------------ | ----------------------------- |
-| id             | string                   | メッセージID（UUID）          |
-| sessionId      | string                   | セッションID                  |
-| role           | 'user' \| 'assistant'    | メッセージ送信者              |
-| content        | string                   | メッセージ内容                |
-| messageIndex   | number                   | セッション内の順序番号        |
-| llmModelId     | string \| null           | LLMモデルID（assistant時）    |
-| llmProvider    | string \| null           | LLMプロバイダー（assistant時）|
-| llmMetadata    | Record<string, unknown> \| null | LLMメタデータ          |
-| createdAt      | Date                     | 作成日時                      |
+| フィールド   | 型                              | 説明                           |
+| ------------ | ------------------------------- | ------------------------------ |
+| id           | string                          | メッセージID（UUID）           |
+| sessionId    | string                          | セッションID                   |
+| role         | 'user' \| 'assistant'           | メッセージ送信者               |
+| content      | string                          | メッセージ内容                 |
+| messageIndex | number                          | セッション内の順序番号         |
+| llmModelId   | string \| null                  | LLMモデルID（assistant時）     |
+| llmProvider  | string \| null                  | LLMプロバイダー（assistant時） |
+| llmMetadata  | Record<string, unknown> \| null | LLMメタデータ                  |
+| createdAt    | Date                            | 作成日時                       |
 
 ### LLMMetadata
 
 LLMメタデータ型（assistant応答時に保存）。
 
-| フィールド      | 型      | 説明                   |
-| --------------- | ------- | ---------------------- |
-| promptTokens    | number  | 入力トークン数（任意） |
-| completionTokens| number  | 出力トークン数（任意） |
-| totalTokens     | number  | 合計トークン数（任意） |
-| finishReason    | string  | 終了理由（任意）       |
-| responseTime    | number  | 応答時間ms（任意）     |
+| フィールド       | 型     | 説明                   |
+| ---------------- | ------ | ---------------------- |
+| promptTokens     | number | 入力トークン数（任意） |
+| completionTokens | number | 出力トークン数（任意） |
+| totalTokens      | number | 合計トークン数（任意） |
+| finishReason     | string | 終了理由（任意）       |
+| responseTime     | number | 応答時間ms（任意）     |
 
 ---
 
@@ -118,30 +118,30 @@ LLMメタデータ型（assistant応答時に保存）。
 
 セッション管理のRepositoryインターフェース。
 
-| メソッド           | 引数                              | 戻り値                   | 説明                     |
-| ------------------ | --------------------------------- | ------------------------ | ------------------------ |
-| create             | CreateSessionInput                | ChatSession              | セッション作成           |
-| findById           | id: string                        | ChatSession \| null      | ID検索                   |
-| findByUserId       | userId: string, options           | ChatSession[]            | ユーザー別一覧取得       |
-| update             | id: string, UpdateSessionInput    | ChatSession              | セッション更新           |
-| delete             | id: string                        | void                     | セッション削除           |
-| searchByKeyword    | userId: string, keyword: string   | ChatSession[]            | キーワード検索           |
-| getPinnedSessions  | userId: string                    | ChatSession[]            | ピン留め一覧取得         |
-| countPinnedSessions| userId: string                    | number                   | ピン留め数カウント       |
+| メソッド            | 引数                            | 戻り値              | 説明               |
+| ------------------- | ------------------------------- | ------------------- | ------------------ |
+| create              | CreateSessionInput              | ChatSession         | セッション作成     |
+| findById            | id: string                      | ChatSession \| null | ID検索             |
+| findByUserId        | userId: string, options         | ChatSession[]       | ユーザー別一覧取得 |
+| update              | id: string, UpdateSessionInput  | ChatSession         | セッション更新     |
+| delete              | id: string                      | void                | セッション削除     |
+| searchByKeyword     | userId: string, keyword: string | ChatSession[]       | キーワード検索     |
+| getPinnedSessions   | userId: string                  | ChatSession[]       | ピン留め一覧取得   |
+| countPinnedSessions | userId: string                  | number              | ピン留め数カウント |
 
 ### IChatMessageRepository
 
 メッセージ管理のRepositoryインターフェース。
 
-| メソッド             | 引数                            | 戻り値          | 説明                   |
-| -------------------- | ------------------------------- | --------------- | ---------------------- |
-| create               | CreateMessageInput              | ChatMessage     | メッセージ作成         |
-| findById             | id: string                      | ChatMessage \| null | ID検索             |
-| findBySessionId      | sessionId: string, options      | ChatMessage[]   | セッション別取得       |
-| delete               | id: string                      | void            | メッセージ削除         |
-| deleteBySessionId    | sessionId: string               | void            | セッション内全削除     |
-| searchByContent      | sessionId: string, query: string| ChatMessage[]   | 内容検索               |
-| getNextMessageIndex  | sessionId: string               | number          | 次の順序番号取得       |
+| メソッド            | 引数                             | 戻り値              | 説明               |
+| ------------------- | -------------------------------- | ------------------- | ------------------ |
+| create              | CreateMessageInput               | ChatMessage         | メッセージ作成     |
+| findById            | id: string                       | ChatMessage \| null | ID検索             |
+| findBySessionId     | sessionId: string, options       | ChatMessage[]       | セッション別取得   |
+| delete              | id: string                       | void                | メッセージ削除     |
+| deleteBySessionId   | sessionId: string                | void                | セッション内全削除 |
+| searchByContent     | sessionId: string, query: string | ChatMessage[]       | 内容検索           |
+| getNextMessageIndex | sessionId: string                | number              | 次の順序番号取得   |
 
 ---
 
@@ -151,20 +151,20 @@ LLMメタデータ型（assistant応答時に保存）。
 
 チャット履歴統合サービス。Repository層を統合し、ビジネスロジックを提供。
 
-| メソッド               | 引数                                 | 戻り値               | 説明                     |
-| ---------------------- | ------------------------------------ | -------------------- | ------------------------ |
-| createSession          | userId: string, title?: string       | ChatSession          | セッション作成           |
-| getSession             | sessionId: string                    | ChatSessionWithMessages | セッション詳細取得     |
-| getSessions            | userId: string, options              | ChatSession[]        | セッション一覧           |
-| deleteSession          | sessionId: string                    | void                 | セッション削除           |
-| addUserMessage         | sessionId: string, content: string   | ChatMessage          | ユーザーメッセージ追加   |
-| addAssistantMessage    | sessionId: string, content, metadata | ChatMessage          | アシスタントメッセージ追加|
-| searchSessions         | userId: string, keyword: string      | ChatSession[]        | キーワード検索           |
-| updateSessionTitle     | sessionId: string, title: string     | ChatSession          | タイトル更新             |
-| toggleFavorite         | sessionId: string                    | ChatSession          | お気に入り切替           |
-| togglePinned           | sessionId: string                    | ChatSession          | ピン留め切替             |
-| exportAsMarkdown       | sessionId: string                    | string               | Markdownエクスポート     |
-| exportAsJson           | sessionId: string                    | string               | JSONエクスポート         |
+| メソッド            | 引数                                 | 戻り値                  | 説明                       |
+| ------------------- | ------------------------------------ | ----------------------- | -------------------------- |
+| createSession       | userId: string, title?: string       | ChatSession             | セッション作成             |
+| getSession          | sessionId: string                    | ChatSessionWithMessages | セッション詳細取得         |
+| getSessions         | userId: string, options              | ChatSession[]           | セッション一覧             |
+| deleteSession       | sessionId: string                    | void                    | セッション削除             |
+| addUserMessage      | sessionId: string, content: string   | ChatMessage             | ユーザーメッセージ追加     |
+| addAssistantMessage | sessionId: string, content, metadata | ChatMessage             | アシスタントメッセージ追加 |
+| searchSessions      | userId: string, keyword: string      | ChatSession[]           | キーワード検索             |
+| updateSessionTitle  | sessionId: string, title: string     | ChatSession             | タイトル更新               |
+| toggleFavorite      | sessionId: string                    | ChatSession             | お気に入り切替             |
+| togglePinned        | sessionId: string                    | ChatSession             | ピン留め切替               |
+| exportAsMarkdown    | sessionId: string                    | string                  | Markdownエクスポート       |
+| exportAsJson        | sessionId: string                    | string                  | JSONエクスポート           |
 
 ---
 
@@ -172,20 +172,20 @@ LLMメタデータ型（assistant応答時に保存）。
 
 ### セッション管理
 
-| ルールID       | 内容                                         | 検証場所      |
-| -------------- | -------------------------------------------- | ------------- |
-| BR-SESSION-001 | タイトル未指定時は「新しいチャット」を自動生成 | Service層     |
-| BR-SESSION-002 | ピン留めは最大10件まで                       | Service層     |
-| BR-SESSION-003 | プレビューは最初のメッセージから30文字を生成 | Service層     |
-| BR-SESSION-004 | タイトルは3-100文字                          | Repository層  |
+| ルールID       | 内容                                           | 検証場所     |
+| -------------- | ---------------------------------------------- | ------------ |
+| BR-SESSION-001 | タイトル未指定時は「新しいチャット」を自動生成 | Service層    |
+| BR-SESSION-002 | ピン留めは最大10件まで                         | Service層    |
+| BR-SESSION-003 | プレビューは最初のメッセージから30文字を生成   | Service層    |
+| BR-SESSION-004 | タイトルは3-100文字                            | Repository層 |
 
 ### メッセージ管理
 
-| ルールID       | 内容                                         | 検証場所      |
-| -------------- | -------------------------------------------- | ------------- |
-| BR-MESSAGE-001 | message_indexはセッション内で自動採番        | Repository層  |
-| BR-MESSAGE-002 | assistant応答時はLLMメタデータ必須           | Service層     |
-| BR-MESSAGE-003 | メッセージ追加時はセッションのupdatedAtを更新| Service層     |
+| ルールID       | 内容                                          | 検証場所     |
+| -------------- | --------------------------------------------- | ------------ |
+| BR-MESSAGE-001 | message_indexはセッション内で自動採番         | Repository層 |
+| BR-MESSAGE-002 | assistant応答時はLLMメタデータ必須            | Service層    |
+| BR-MESSAGE-003 | メッセージ追加時はセッションのupdatedAtを更新 | Service層    |
 
 ---
 

@@ -23,7 +23,8 @@ const EXIT_VALIDATION_ERROR = 4;
 
 const REQUIRED_FILES = ["SKILL.md"];
 const REQUIRED_DIRS = ["agents", "assets", "references", "scripts"];
-const REQUIRED_SKILL_LIST_ENTRY = ".claude/skills/skill-creation-workflow/SKILL.md";
+const REQUIRED_SKILL_LIST_ENTRY =
+  ".claude/skills/skill-creation-workflow/SKILL.md";
 
 function showHelp() {
   console.log(`

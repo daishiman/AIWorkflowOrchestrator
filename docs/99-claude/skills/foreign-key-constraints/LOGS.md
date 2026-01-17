@@ -20,7 +20,7 @@
 - **Result**: Success
 - **Agent**: N/A
 - **Duration**: N/A
-- **Notes**: 
+- **Notes**:
   - Skill structure aligned with 18-skills.md specification
   - Created 4 Task specifications in agents/
   - Added EVALS.json and LOGS.md
@@ -47,7 +47,7 @@ Each execution should be logged using the following format:
 - **Result**: [Success|Failure]
 - **Agent**: [Task name from agents/]
 - **Duration**: [X minutes]
-- **Notes**: 
+- **Notes**:
   - [Key observations]
   - [Challenges encountered]
   - [Solutions applied]
@@ -99,12 +99,12 @@ Updated automatically by `scripts/log_usage.mjs`. See `EVALS.json` for detailed 
 
 ### Phase Performance
 
-| Phase | Executions | Success | Failure | Success Rate |
-|-------|------------|---------|---------|--------------|
-| Phase 1: Design Review | 0 | 0 | 0 | N/A |
-| Phase 2: CASCADE Selection | 0 | 0 | 0 | N/A |
-| Phase 3: Circular Detection | 0 | 0 | 0 | N/A |
-| Phase 4: Soft Delete Integration | 0 | 0 | 0 | N/A |
+| Phase                            | Executions | Success | Failure | Success Rate |
+| -------------------------------- | ---------- | ------- | ------- | ------------ |
+| Phase 1: Design Review           | 0          | 0       | 0       | N/A          |
+| Phase 2: CASCADE Selection       | 0          | 0       | 0       | N/A          |
+| Phase 3: Circular Detection      | 0          | 0       | 0       | N/A          |
+| Phase 4: Soft Delete Integration | 0          | 0       | 0       | N/A          |
 
 ### Quality Metrics
 
@@ -119,14 +119,16 @@ Updated automatically by `scripts/log_usage.mjs`. See `EVALS.json` for detailed 
 ## Level Progression History
 
 ### Level 1 (Current)
+
 - **Achieved**: 2025-12-31
 - **Description**: 基本的なFK制約設計
 - **Requirements**: Initial setup
 - **Status**: Active
 
 ### Level 2 Target
+
 - **Description**: CASCADE動作の適切な選択
-- **Requirements**: 
+- **Requirements**:
   - 10+ total executions
   - 80%+ success rate
   - Phases 1 & 2 mastered
@@ -134,6 +136,7 @@ Updated automatically by `scripts/log_usage.mjs`. See `EVALS.json` for detailed 
 - **Progress**: 0/10 executions
 
 ### Level 3 Target
+
 - **Description**: 循環参照の検出と解消
 - **Requirements**:
   - 25+ total executions
@@ -143,6 +146,7 @@ Updated automatically by `scripts/log_usage.mjs`. See `EVALS.json` for detailed 
 - **Progress**: 0/25 executions
 
 ### Level 4 Target
+
 - **Description**: ソフトデリート統合の完全な理解
 - **Requirements**:
   - 50+ total executions
@@ -204,7 +208,7 @@ Updated automatically by `scripts/log_usage.mjs`. See `EVALS.json` for detailed 
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.0.0 | 2025-12-31 | Initial LOGS.md creation following 18-skills.md spec |
-| 1.0.0 | 2025-12-24 | Legacy version (no structured logging) |
+| Version | Date       | Changes                                              |
+| ------- | ---------- | ---------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | Initial LOGS.md creation following 18-skills.md spec |
+| 1.0.0   | 2025-12-24 | Legacy version (no structured logging)               |

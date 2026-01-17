@@ -1,0 +1,27 @@
+{
+  "taskId": "SKILL-IPC-001",
+  "taskName": "skill-ipc-handlers-registration",
+  "createdAt": "2026-01-16T00:00:00.000Z",
+  "status": "not_started",
+  "phases": {
+    "phase-1": { "status": "not_started", "artifacts": [] },
+    "phase-2": { "status": "not_started", "artifacts": [] },
+    "phase-3": { "status": "not_started", "artifacts": [] },
+    "phase-4": { "status": "not_started", "artifacts": [] },
+    "phase-5": { "status": "not_started", "artifacts": [] },
+    "phase-6": { "status": "not_started", "artifacts": [] },
+    "phase-7": { "status": "not_started", "artifacts": [] },
+    "phase-8": { "status": "not_started", "artifacts": [] },
+    "phase-9": { "status": "not_started", "artifacts": [] },
+    "phase-10": { "status": "not_started", "artifacts": [] },
+    "phase-11": { "status": "not_started", "artifacts": [] },
+    "phase-12": { "status": "not_started", "artifacts": [] },
+    "phase-13": { "status": "not_started", "artifacts": [] }
+  },
+  "references": {
+    "existingSpec": "docs/30-workflows/unassigned-task/task-skill-handlers-registration-bugfix.md",
+    "skillHandlers": "apps/desktop/src/main/ipc/skillHandlers.ts",
+    "ipcIndex": "apps/desktop/src/main/ipc/index.ts",
+    "skillService": "apps/desktop/src/main/services/skill/SkillService.ts"
+  }
+}

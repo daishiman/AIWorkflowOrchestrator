@@ -7,13 +7,13 @@
 
 ## カテゴリ一覧
 
-| カテゴリ | ファイル | 主なフック |
-| --- | --- | --- |
-| 状態管理 | [basic-state-hooks.md](basic-state-hooks.md) | useToggle, useCounter, useInput |
-| 副作用 | [side-effect-hooks.md](side-effect-hooks.md) | useDebounce, useInterval, useTimeout |
-| イベント | [event-hooks.md](event-hooks.md) | useEventListener, useClickOutside |
-| ブラウザAPI | [browser-api-hooks.md](browser-api-hooks.md) | useLocalStorage, useMediaQuery |
-| ユーティリティ | [utility-hooks.md](utility-hooks.md) | usePrevious, useMounted |
+| カテゴリ       | ファイル                                     | 主なフック                           |
+| -------------- | -------------------------------------------- | ------------------------------------ |
+| 状態管理       | [basic-state-hooks.md](basic-state-hooks.md) | useToggle, useCounter, useInput      |
+| 副作用         | [side-effect-hooks.md](side-effect-hooks.md) | useDebounce, useInterval, useTimeout |
+| イベント       | [event-hooks.md](event-hooks.md)             | useEventListener, useClickOutside    |
+| ブラウザAPI    | [browser-api-hooks.md](browser-api-hooks.md) | useLocalStorage, useMediaQuery       |
+| ユーティリティ | [utility-hooks.md](utility-hooks.md)         | usePrevious, useMounted              |
 
 ## 状態管理フック
 
@@ -32,7 +32,10 @@ const [isOpen, toggle, setIsOpen] = useToggle(false);
 カウンター状態を管理するフック。min/max/step対応。
 
 ```typescript
-const { count, increment, decrement, reset, set } = useCounter(0, { min: 0, max: 10 });
+const { count, increment, decrement, reset, set } = useCounter(0, {
+  min: 0,
+  max: 10,
+});
 ```
 
 詳細: [basic-state-hooks.md](basic-state-hooks.md)
@@ -65,7 +68,7 @@ const debouncedQuery = useDebounce(searchTerm, 300);
 インターバルを管理するフック。nullで停止可能。
 
 ```typescript
-useInterval(() => setCount(c => c + 1), isRunning ? 1000 : null);
+useInterval(() => setCount((c) => c + 1), isRunning ? 1000 : null);
 ```
 
 詳細: [side-effect-hooks.md](side-effect-hooks.md)
@@ -87,8 +90,8 @@ const clear = useTimeout(() => setVisible(false), 3000);
 イベントリスナーを管理するフック。クリーンアップ自動化。
 
 ```typescript
-useEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
+useEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
 });
 ```
 
@@ -111,7 +114,7 @@ const ref = useClickOutside<HTMLDivElement>(() => setIsOpen(false));
 ローカルストレージと同期する状態を管理するフック。
 
 ```typescript
-const [theme, setTheme, removeTheme] = useLocalStorage('theme', 'light');
+const [theme, setTheme, removeTheme] = useLocalStorage("theme", "light");
 ```
 
 詳細: [browser-api-hooks.md](browser-api-hooks.md)
@@ -121,7 +124,7 @@ const [theme, setTheme, removeTheme] = useLocalStorage('theme', 'light');
 メディアクエリの状態を監視するフック。
 
 ```typescript
-const isMobile = useMediaQuery('(max-width: 768px)');
+const isMobile = useMediaQuery("(max-width: 768px)");
 ```
 
 詳細: [browser-api-hooks.md](browser-api-hooks.md)
@@ -151,17 +154,17 @@ if (isMounted()) setData(data);
 
 ## 選択ガイド
 
-| ユースケース | 推奨フック |
-| --- | --- |
-| モーダル開閉 | useToggle |
-| 数量選択 | useCounter |
-| フォーム入力 | useInput |
-| 検索入力 | useDebounce |
-| ポーリング | useInterval |
-| 一時表示 | useTimeout |
+| ユースケース             | 推奨フック       |
+| ------------------------ | ---------------- |
+| モーダル開閉             | useToggle        |
+| 数量選択                 | useCounter       |
+| フォーム入力             | useInput         |
+| 検索入力                 | useDebounce      |
+| ポーリング               | useInterval      |
+| 一時表示                 | useTimeout       |
 | キーボードショートカット | useEventListener |
-| ドロップダウン閉じる | useClickOutside |
-| 設定の永続化 | useLocalStorage |
-| レスポンシブ対応 | useMediaQuery |
-| 変化検出 | usePrevious |
-| 非同期安全 | useMounted |
+| ドロップダウン閉じる     | useClickOutside  |
+| 設定の永続化             | useLocalStorage  |
+| レスポンシブ対応         | useMediaQuery    |
+| 変化検出                 | usePrevious      |
+| 非同期安全               | useMounted       |

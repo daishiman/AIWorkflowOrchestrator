@@ -14,28 +14,34 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: A/Bテストガイド / A/Bテストの基礎 / いつA/Bテストを行うか / 自動評価手法 / 自動評価の種類 / 1. ルールベース評価
 - 実務指針: プロンプトの品質を定量的に評価したい時 / 複数のプロンプト候補を比較したい時 / プロンプトの継続的改善サイクルを確立したい時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/ab-testing-guide.md`: プロンプトA/Bテスト設計（サンプルサイズ、メトリクス、成功基準）（把握する知識: A/Bテストガイド / A/Bテストの基礎 / いつA/Bテストを行うか）
 - `resources/automated-evaluation.md`: LLM-as-a-Judge、自動スコアリング、回帰テスト自動化手法（把握する知識: 自動評価手法 / 自動評価の種類 / 1. ルールベース評価）
 - `resources/evaluation-metrics.md`: 精度、一貫性、完全性、レイテンシ、コスト等の定量評価指標（把握する知識: 評価メトリクス / メトリクス分類 / 1. 品質メトリクス）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Prompt Testing & Evaluation / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/prompt-evaluator.mjs`: Prompt Evaluator Script
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/evaluation-rubric.md`: 評価ルーブリックテンプレート
 - `templates/test-case-template.md`: テストケーステンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

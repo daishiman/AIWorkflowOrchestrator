@@ -14,22 +14,27 @@ Progressive Disclosure 設計とトークン最適化の実践方法を整理し
 ## 詳細ガイド
 
 ### Progressive Disclosure 設計
+
 - まず Level1/Level2 で要点だけを確認し、必要に応じて詳細リソースへ拡張する
 - 説明量が過剰な場合は要約を作り、必要な箇所のみを参照する
 
 ### トークン最適化
+
 - 目的に直結しない情報は後回しにし、必須項目を優先して読み込む
 - 参照回数が多い資料は要点メモを作って再利用する
 
 ### 高度知識の扱い
+
 - `resources/ambiguity-patterns-guide.md`: ambiguity-patterns-guide のパターン集（把握する知識: 曖昧性パターンガイド / パターン1: 量的曖昧性（Quantitative Ambiguity） / パフォーマンス要件の明確化）
 - `resources/ambiguity-patterns.md`: 5つの曖昧性パターンの詳細な検出・除去手法と実践例（300行超）（把握する知識: 曖昧性パターン検出・除去ガイド / 5つの曖昧性パターン / パターン1: 量的曖昧性（Quantitative Ambiguity））
 
 ### 判断基準
+
 - 詳細な判断が必要なときのみ高度リソースを読み込む
 - 検証が必要な場合は参照系スクリプトを優先する
 
 ### スクリプト分類
+
 - 参照系: `scripts/validate-skill.mjs`
 - その他: `scripts/detect-ambiguity.mjs`, `scripts/log_usage.mjs`
 - テンプレートは出力一貫性の維持に活用する

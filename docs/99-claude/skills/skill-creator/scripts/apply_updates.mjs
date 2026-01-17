@@ -24,7 +24,7 @@ import {
   mkdirSync,
   unlinkSync,
   renameSync,
-  copyFileSync
+  copyFileSync,
 } from "fs";
 import { resolve, dirname, join, basename } from "path";
 import { fileURLToPath } from "url";
@@ -92,7 +92,7 @@ function applyUpdate(update, skillPath, options) {
     category: update.category,
     success: false,
     message: "",
-    backupPath: null
+    backupPath: null,
   };
 
   const filePath = join(skillPath, update.file);
@@ -249,7 +249,9 @@ async function main() {
   }
 
   if (!plan.skillPath || !plan.updates || !Array.isArray(plan.updates)) {
-    console.error("Error: 計画JSONの形式が不正です（skillPath, updates が必須）");
+    console.error(
+      "Error: 計画JSONの形式が不正です（skillPath, updates が必須）",
+    );
     process.exit(EXIT_ARGS_ERROR);
   }
 
@@ -257,7 +259,9 @@ async function main() {
   const backupDir = join(plan.skillPath, ".backup");
 
   // 更新を順序通りに適用
-  const sortedUpdates = [...plan.updates].sort((a, b) => (a.order || 0) - (b.order || 0));
+  const sortedUpdates = [...plan.updates].sort(
+    (a, b) => (a.order || 0) - (b.order || 0),
+  );
   const results = [];
 
   console.log(dryRun ? "=== DRY-RUN モード ===" : "=== 更新適用開始 ===");
@@ -267,11 +271,17 @@ async function main() {
   console.log("");
 
   for (const update of sortedUpdates) {
-    const result = applyUpdate(update, plan.skillPath, { dryRun, backup, backupDir });
+    const result = applyUpdate(update, plan.skillPath, {
+      dryRun,
+      backup,
+      backupDir,
+    });
     results.push(result);
 
     const icon = result.success ? "✓" : "✗";
-    console.log(`${icon} [${update.order || "-"}] ${update.file}: ${result.message}`);
+    console.log(
+      `${icon} [${update.order || "-"}] ${update.file}: ${result.message}`,
+    );
   }
 
   // 結果集計
@@ -285,9 +295,9 @@ async function main() {
     summary: {
       total: results.length,
       success: successCount,
-      failed: failCount
+      failed: failCount,
     },
-    results
+    results,
   };
 
   // 出力ディレクトリ作成
@@ -297,7 +307,11 @@ async function main() {
   }
 
   // 結果を出力
-  writeFileSync(resolve(process.cwd(), outputPath), JSON.stringify(output, null, 2), "utf-8");
+  writeFileSync(
+    resolve(process.cwd(), outputPath),
+    JSON.stringify(output, null, 2),
+    "utf-8",
+  );
 
   console.log("");
   console.log("=== 完了 ===");

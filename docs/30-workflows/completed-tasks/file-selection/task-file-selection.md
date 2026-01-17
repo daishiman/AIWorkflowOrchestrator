@@ -11,18 +11,18 @@ Electron IPCによるネイティブダイアログ呼び出し、ファイル�
 
 ## メタ情報
 
-| 項目             | 内容                 |
-| ---------------- | -------------------- |
-| タスクID         | CONV-01              |
-| タスク名         | ファイル選択機能     |
-| 分類             | 新規機能             |
-| 対象機能         | ファイル変換システム |
-| 優先度           | 高                   |
-| 見積もり規模     | 中規模               |
-| ステータス       | 未実施               |
-| 発見元           | 初期要件定義         |
-| 発見日           | 2025-12-15           |
-| 発見エージェント | .claude/agents/req-analyst.md         |
+| 項目             | 内容                          |
+| ---------------- | ----------------------------- |
+| タスクID         | CONV-01                       |
+| タスク名         | ファイル選択機能              |
+| 分類             | 新規機能                      |
+| 対象機能         | ファイル変換システム          |
+| 優先度           | 高                            |
+| 見積もり規模     | 中規模                        |
+| ステータス       | 未実施                        |
+| 発見元           | 初期要件定義                  |
+| 発見日           | 2025-12-15                    |
+| 発見エージェント | .claude/agents/req-analyst.md |
 
 ---
 
@@ -163,8 +163,8 @@ graph TD
 
 #### 活用スキル
 
-| スキル名                               | 活用方法                         |
-| -------------------------------------- | -------------------------------- |
+| スキル名                                                       | 活用方法                         |
+| -------------------------------------------------------------- | -------------------------------- |
 | .claude/skills/functional-non-functional-requirements/SKILL.md | 機能要件・非機能要件の分類と整理 |
 | .claude/skills/use-case-modeling/SKILL.md                      | ユーザー視点でのユースケース特定 |
 | .claude/skills/acceptance-criteria-writing/SKILL.md            | 受け入れ基準の明確化             |
@@ -225,8 +225,8 @@ Electronアプリケーションでのファイル操作は、セキュリティ
 
 #### 活用スキル
 
-| スキル名                               | 活用方法                    |
-| -------------------------------------- | --------------------------- |
+| スキル名                                                       | 活用方法                    |
+| -------------------------------------------------------------- | --------------------------- |
 | .claude/skills/functional-non-functional-requirements/SKILL.md | NFR分類と測定可能な目標定義 |
 | .claude/skills/electron-security-hardening/SKILL.md            | Electronセキュリティ要件    |
 
@@ -287,8 +287,8 @@ TypeScriptの型安全性を最大限活用し、ファイル情報の構造を�
 
 #### 活用スキル
 
-| スキル名             | 活用方法                       |
-| -------------------- | ------------------------------ |
+| スキル名                                     | 活用方法                       |
+| -------------------------------------------- | ------------------------------ |
 | .claude/skills/zod-validation/SKILL.md       | Zodスキーマによる型定義        |
 | .claude/skills/type-safety-patterns/SKILL.md | TypeScript厳格モードでの型設計 |
 
@@ -347,8 +347,8 @@ IPC通信の設計（チャネル名、リクエスト/レスポンス形式）
 
 #### 活用スキル
 
-| スキル名                    | 活用方法                           |
-| --------------------------- | ---------------------------------- |
+| スキル名                                            | 活用方法                           |
+| --------------------------------------------------- | ---------------------------------- |
 | .claude/skills/electron-architecture/SKILL.md       | Main/Renderer分離、IPC通信パターン |
 | .claude/skills/electron-security-hardening/SKILL.md | contextBridge、CSP設定             |
 
@@ -407,8 +407,8 @@ Zustandストアの設計（状態、アクション、セレクタ）
 
 #### 活用スキル
 
-| スキル名                 | 活用方法                         |
-| ------------------------ | -------------------------------- |
+| スキル名                                         | 活用方法                         |
+| ------------------------------------------------ | -------------------------------- |
 | .claude/skills/data-fetching-strategies/SKILL.md | 非同期データフェッチ戦略         |
 | .claude/skills/custom-hooks-patterns/SKILL.md    | カスタムフックによるロジック分離 |
 
@@ -466,8 +466,8 @@ FileSelectorコンポーネントのUI/UX設計
 
 #### 活用スキル
 
-| スキル名                       | 活用方法                     |
-| ------------------------------ | ---------------------------- |
+| スキル名                                               | 活用方法                     |
+| ------------------------------------------------------ | ---------------------------- |
 | .claude/skills/component-composition-patterns/SKILL.md | Composition パターンでの設計 |
 | .claude/skills/accessibility-wcag/SKILL.md             | WCAG準拠のアクセシビリティ   |
 | .claude/skills/tailwind-css-patterns/SKILL.md          | Tailwind CSSでのスタイリング |
@@ -509,8 +509,8 @@ FileSelectorコンポーネントのUI/UX設計
 
 #### レビュー参加エージェント
 
-| エージェント       | レビュー観点          | 選定理由                               |
-| ------------------ | --------------------- | -------------------------------------- |
+| エージェント                        | レビュー観点          | 選定理由                               |
+| ----------------------------------- | --------------------- | -------------------------------------- |
 | .claude/agents/arch-police.md       | アーキテクチャ整合性  | クリーンアーキテクチャ準拠の検証       |
 | .claude/agents/electron-security.md | Electron セキュリティ | IPC通信のセキュリティ検証              |
 | .claude/agents/ui-designer.md       | UI/UX設計             | アクセシビリティ・ユーザビリティの検証 |
@@ -598,8 +598,8 @@ TDDの原則に従い、実装前にテストを作成することで、期待�
 
 #### 活用スキル
 
-| スキル名                | 活用方法                   |
-| ----------------------- | -------------------------- |
+| スキル名                                        | 活用方法                   |
+| ----------------------------------------------- | -------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクル |
 | .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト               |
 
@@ -664,8 +664,8 @@ IPCハンドラのユニットテスト作成
 
 #### 活用スキル
 
-| スキル名        | 活用方法                      |
-| --------------- | ----------------------------- |
+| スキル名                                | 活用方法                      |
+| --------------------------------------- | ----------------------------- |
 | .claude/skills/test-doubles/SKILL.md    | Electron dialog APIのモック化 |
 | .claude/skills/vitest-advanced/SKILL.md | Vitestでの非同期テスト        |
 
@@ -731,8 +731,8 @@ Zustandストアのユニットテスト作成
 
 #### 活用スキル
 
-| スキル名       | 活用方法           |
-| -------------- | ------------------ |
+| スキル名                               | 活用方法           |
+| -------------------------------------- | ------------------ |
 | .claude/skills/tdd-principles/SKILL.md | 状態遷移のテスト   |
 | .claude/skills/test-doubles/SKILL.md   | ストアの分離テスト |
 
@@ -798,8 +798,8 @@ FileSelectorのコンポーネントテスト作成
 
 #### 活用スキル
 
-| スキル名           | 活用方法                     |
-| ------------------ | ---------------------------- |
+| スキル名                                   | 活用方法                     |
+| ------------------------------------------ | ---------------------------- |
 | .claude/skills/playwright-testing/SKILL.md | コンポーネントテストパターン |
 | .claude/skills/test-doubles/SKILL.md       | IPCモック化                  |
 | .claude/skills/accessibility-wcag/SKILL.md | アクセシビリティテスト       |
@@ -869,8 +869,8 @@ TDDのGreenフェーズとして、テストを通すための最小限の実装
 
 #### 活用スキル
 
-| スキル名             | 活用方法        |
-| -------------------- | --------------- |
+| スキル名                                     | 活用方法        |
+| -------------------------------------------- | --------------- |
 | .claude/skills/zod-validation/SKILL.md       | Zodスキーマ実装 |
 | .claude/skills/type-safety-patterns/SKILL.md | 型安全な実装    |
 
@@ -936,8 +936,8 @@ IPCハンドラの実装
 
 #### 活用スキル
 
-| スキル名                    | 活用方法               |
-| --------------------------- | ---------------------- |
+| スキル名                                            | 活用方法               |
+| --------------------------------------------------- | ---------------------- |
 | .claude/skills/electron-ui-patterns/SKILL.md        | ダイアログ実装パターン |
 | .claude/skills/electron-security-hardening/SKILL.md | IPC通信のセキュリティ  |
 
@@ -1003,8 +1003,8 @@ Zustandストアの実装
 
 #### 活用スキル
 
-| スキル名              | 活用方法           |
-| --------------------- | ------------------ |
+| スキル名                                      | 活用方法           |
+| --------------------------------------------- | ------------------ |
 | .claude/skills/custom-hooks-patterns/SKILL.md | カスタムフック実装 |
 | .claude/skills/state-lifting/SKILL.md         | 状態の適切な配置   |
 
@@ -1070,8 +1070,8 @@ FileSelectorコンポーネントの実装
 
 #### 活用スキル
 
-| スキル名                       | 活用方法                 |
-| ------------------------------ | ------------------------ |
+| スキル名                                               | 活用方法                 |
+| ------------------------------------------------------ | ------------------------ |
 | .claude/skills/component-composition-patterns/SKILL.md | Compositionパターン実装  |
 | .claude/skills/accessibility-wcag/SKILL.md             | ARIA属性の実装           |
 | .claude/skills/tailwind-css-patterns/SKILL.md          | Tailwindでのスタイリング |
@@ -1142,8 +1142,8 @@ TDDのRefactorフェーズとして、テストが通る状態を維持しなが
 
 #### 活用スキル
 
-| スキル名               | 活用方法             |
-| ---------------------- | -------------------- |
+| スキル名                                       | 活用方法             |
+| ---------------------------------------------- | -------------------- |
 | .claude/skills/refactoring-techniques/SKILL.md | リファクタリング手法 |
 | .claude/skills/clean-code-practices/SKILL.md   | クリーンコード原則   |
 
@@ -1215,8 +1215,8 @@ pnpm --filter @repo/shared test:run
 
 #### 活用スキル
 
-| スキル名             | 活用方法 |
-| -------------------- | -------- |
+| スキル名                                     | 活用方法 |
+| -------------------------------------------- | -------- |
 | .claude/skills/eslint-configuration/SKILL.md | Lint検証 |
 | .claude/skills/static-analysis/SKILL.md      | 静的解析 |
 
@@ -1279,10 +1279,10 @@ pnpm --filter @repo/shared test:run
 
 #### 活用スキル
 
-| スキル名                   | 活用方法               |
-| -------------------------- | ---------------------- |
-| .claude/skills/architectural-patterns/SKILL.md     | アーキテクチャ準拠確認 |
-| code-review-best-practices | レビューチェックリスト |
+| スキル名                                       | 活用方法               |
+| ---------------------------------------------- | ---------------------- |
+| .claude/skills/architectural-patterns/SKILL.md | アーキテクチャ準拠確認 |
+| code-review-best-practices                     | レビューチェックリスト |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1341,8 +1341,8 @@ pnpm --filter @repo/shared test:run
 
 #### 活用スキル
 
-| スキル名           | 活用方法             |
-| ------------------ | -------------------- |
+| スキル名                                   | 活用方法             |
+| ------------------------------------------ | -------------------- |
 | .claude/skills/playwright-testing/SKILL.md | E2Eテスト実行        |
 | .claude/skills/accessibility-wcag/SKILL.md | アクセシビリティ確認 |
 
@@ -1417,8 +1417,8 @@ pnpm --filter @repo/shared test:run
 
 #### 活用スキル
 
-| スキル名                         | 活用方法         |
-| -------------------------------- | ---------------- |
+| スキル名                                                 | 活用方法         |
+| -------------------------------------------------------- | ---------------- |
 | .claude/skills/api-documentation-best-practices/SKILL.md | API仕様書作成    |
 | .claude/skills/markdown-advanced-syntax/SKILL.md         | ドキュメント記述 |
 

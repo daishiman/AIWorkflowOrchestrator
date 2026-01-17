@@ -221,7 +221,7 @@ const CHANGE_CONTEXT_TTL = 1000;
 // 無限ループ防止の実装例
 function shouldTriggerSync(
   filePath: string,
-  direction: "forward" | "reverse"
+  direction: "forward" | "reverse",
 ): boolean {
   const context = changeContextMap.get(filePath);
   const now = Date.now();
@@ -265,11 +265,11 @@ setInterval(() => {
 
 **設計ポイント**:
 
-| 項目       | 推奨値     | 説明                           |
-| ---------- | ---------- | ------------------------------ |
-| TTL        | 1000ms     | 同期処理完了を待つ十分な時間   |
-| クリーンアップ間隔 | TTLと同値 | メモリリーク防止               |
-| 方向追跡   | 必須       | 逆方向の変更を識別するために必要 |
+| 項目               | 推奨値    | 説明                             |
+| ------------------ | --------- | -------------------------------- |
+| TTL                | 1000ms    | 同期処理完了を待つ十分な時間     |
+| クリーンアップ間隔 | TTLと同値 | メモリリーク防止                 |
+| 方向追跡           | 必須      | 逆方向の変更を識別するために必要 |
 
 ## 終了条件パターン
 

@@ -14,27 +14,34 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling use case modeling tasks.
 
 ### 必要な知識
+
 - 対象領域: ユースケース駆動の要件分析スキル。ユーザーとシステムの対話を構造化し、
 - 主要概念: アクター識別ガイド / アクターの種類 / 1. プライマリアクター（Primary Actor） / ユースケースシナリオパターン / シナリオの種類
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/use-case-template.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/use-case-template.md`: このレベルでは参照のみ
 
 ## 実践手順

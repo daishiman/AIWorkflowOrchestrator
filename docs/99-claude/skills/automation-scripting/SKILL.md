@@ -51,6 +51,7 @@ allowed-tools:
 3. ログとエラー処理を設計する
 
 **Task**:
+
 - `agents/design-automation-script.md`
 - `agents/implement-automation-script.md`
 
@@ -68,12 +69,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| コンテキスト整理 | 目的と制約の整理 | 要件情報 | 目的メモ | `references/Level1_basics.md` | Phase 1 |
-| 設計 | 冪等性・エラー設計 | 目的メモ | 設計メモ | `references/Level2_intermediate.md` | Phase 2 前半 |
-| 実装 | スクリプト実装 | 設計メモ | 実装結果 | `assets/script-template.sh` | Phase 2 後半 |
-| 検証 | 動作検証と改善 | 実装結果 | 検証レポート | `references/Level3_advanced.md` | Phase 3 |
+| Task             | 役割               | 入力     | 出力         | 参照先                              | 実行タイミング |
+| ---------------- | ------------------ | -------- | ------------ | ----------------------------------- | -------------- |
+| コンテキスト整理 | 目的と制約の整理   | 要件情報 | 目的メモ     | `references/Level1_basics.md`       | Phase 1        |
+| 設計             | 冪等性・エラー設計 | 目的メモ | 設計メモ     | `references/Level2_intermediate.md` | Phase 2 前半   |
+| 実装             | スクリプト実装     | 設計メモ | 実装結果     | `assets/script-template.sh`         | Phase 2 後半   |
+| 検証             | 動作検証と改善     | 実装結果 | 検証レポート | `references/Level3_advanced.md`     | Phase 3        |
 
 ## ベストプラクティス
 
@@ -112,8 +113,8 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、assets追加            |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠                              |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                 |
+| ------- | ---------- | --------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、assets追加 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠                  |
+| 1.0.0   | 2025-12-24 | 初版作成                                |

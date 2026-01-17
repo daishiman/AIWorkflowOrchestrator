@@ -14,12 +14,15 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: コンテンツ再利用 / 再利用のレベル / レベル1: テキストスニペット / DITA原則 / 基本原則 / 1. トピックベース
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/content-reuse.md`: Content Reuseリソース（把握する知識: コンテンツ再利用 / 再利用のレベル / レベル1: テキストスニペット）
 - `resources/dita-principles.md`: Dita Principlesリソース（把握する知識: DITA原則 / 基本原則 / 1. トピックベース）
 - `resources/information-architecture.md`: Information Architectureリソース（把握する知識: 情報アーキテクチャ / 設計原則 / 1. ユーザー中心）
@@ -29,16 +32,19 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Structured Writing / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/analyze-structure.mjs`: Analyze Structureスクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/concept-topic.md`: Concept Topicテンプレート
 - `templates/reference-topic.md`: Reference Topicテンプレート
 - `templates/task-topic.md`: Task Topicテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

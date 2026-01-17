@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling troubleshooting guides tasks.
 
 ### 必要な知識
+
 - 対象領域: 問題解決を効率化するトラブルシューティングガイドの設計スキル。
 - 主要概念: 問題分類ガイド / 問題分類の階層 / 第1階層: 問題タイプ / 問題解決パターンの体系化 / 診断フロー設計原則
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/diagnosis-flow-template.md`
 - 参照テンプレート: `templates/error-explanation-template.md`
 
 ### 参照書籍
+
 - 『Don't Make Me Think』（Steve Krug）: ユーザビリティ
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/diagnosis-flow-template.md`: このレベルでは参照のみ
 - `templates/error-explanation-template.md`: このレベルでは参照のみ
 

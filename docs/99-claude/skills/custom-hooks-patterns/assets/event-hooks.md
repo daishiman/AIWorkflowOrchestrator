@@ -20,7 +20,9 @@ import { useEffect, useRef } from "react";
 export function useEventListener<K extends keyof WindowEventMap>(
   eventName: K,
   handler: (event: WindowEventMap[K]) => void,
-  element: Window | HTMLElement | null = typeof window !== "undefined" ? window : null,
+  element: Window | HTMLElement | null = typeof window !== "undefined"
+    ? window
+    : null,
   options?: AddEventListenerOptions,
 ) {
   const savedHandler = useRef(handler);

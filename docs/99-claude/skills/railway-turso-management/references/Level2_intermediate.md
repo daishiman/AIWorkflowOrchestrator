@@ -14,26 +14,32 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Secrets vs Variables / Secrets（機密情報） / Variables（非機密設定） / Secrets(機密情報) / Variables(非機密設定) / デプロイメント (Deployment)
 - 実務指針: RailwayプロジェクトのSecret管理を設計する時 / Railway環境グループを設定する時 / Turso integrationを設定する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/railway-secrets-guide.md`: railway-secrets-guide のガイド（把握する知識: Secrets vs Variables / Secrets（機密情報） / Variables（非機密設定））
 - `resources/railway-turso-guide.md`: Railway Turso 詳細ガイド（把握する知識: Secrets vs Variables / Secrets(機密情報) / Variables(非機密設定)）
 - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: デプロイメント (Deployment)）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Railway Turso Database Management / Railway Secrets vs Variables / Secrets(機密情報)）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - テンプレートはありません
 
 ### 成果物要件
+
 - 判断根拠と次のアクションが明確な成果物を作る
 
 ## 実践手順

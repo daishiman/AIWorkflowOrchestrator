@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # design-system-architecture
 
 ## 概要
@@ -78,12 +79,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-design-system-requirements | Phase 1開始時 | 要件/制約 | スコープ整理、制約メモ |
-| design-token-architecture | Phase 2開始時 | スコープ整理 | トークン設計、階層方針 |
-| implement-system-guidelines | Phase 3開始時 | 設計方針 | 規約/同期方針 |
-| validate-system-consistency | Phase 4開始時 | 規約/同期方針 | 検証レポート、改善提案 |
+| Task                               | 起動タイミング | 入力          | 出力                   |
+| ---------------------------------- | -------------- | ------------- | ---------------------- |
+| analyze-design-system-requirements | Phase 1開始時  | 要件/制約     | スコープ整理、制約メモ |
+| design-token-architecture          | Phase 2開始時  | スコープ整理  | トークン設計、階層方針 |
+| implement-system-guidelines        | Phase 3開始時  | 設計方針      | 規約/同期方針          |
+| validate-system-consistency        | Phase 4開始時  | 規約/同期方針 | 検証レポート、改善提案 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,60 +92,60 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| トークンの責務を分離する | 再利用性が高まる |
+| 推奨事項                     | 理由                 |
+| ---------------------------- | -------------------- |
+| トークンの責務を分離する     | 再利用性が高まる     |
 | 規約と同期ルールを明文化する | 運用の一貫性が保てる |
-| 検証結果を記録する | 改善が継続する |
-| 要件整合を定期確認する | 不整合を防ぐ |
+| 検証結果を記録する           | 改善が継続する       |
+| 要件整合を定期確認する       | 不整合を防ぐ         |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 暫定トークンの乱立 | 整合性が崩れる |
-| 規約未整備のまま運用 | 同期失敗が増える |
-| 検証を省略する | 品質低下につながる |
+| 禁止事項             | 問題点             |
+| -------------------- | ------------------ |
+| 暫定トークンの乱立   | 整合性が崩れる     |
+| 規約未整備のまま運用 | 同期失敗が増える   |
+| 検証を省略する       | 品質低下につながる |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/validate-tokens.mjs` | トークン検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| スクリプト                    | 機能                         |
+| ----------------------------- | ---------------------------- |
+| `scripts/validate-tokens.mjs` | トークン検証                 |
+| `scripts/log_usage.mjs`       | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs`  | スキル構造の検証             |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 規約設計時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
-| コンポーネント階層 | [references/component-hierarchy.md](references/component-hierarchy.md) | 階層設計時 |
-| トークン設計 | [references/design-tokens-guide.md](references/design-tokens-guide.md) | トークン設計時 |
-| 同期設計 | [references/figma-code-sync.md](references/figma-code-sync.md) | 同期設計時 |
-| 命名規約 | [references/naming-conventions.md](references/naming-conventions.md) | 規約設計時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース           | パス                                                                   | 読込条件       |
+| ------------------ | ---------------------------------------------------------------------- | -------------- |
+| レベル1 基礎       | [references/Level1_basics.md](references/Level1_basics.md)             | 要件整理時     |
+| レベル2 実務       | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時         |
+| レベル3 応用       | [references/Level3_advanced.md](references/Level3_advanced.md)         | 規約設計時     |
+| レベル4 専門       | [references/Level4_expert.md](references/Level4_expert.md)             | 改善時         |
+| コンポーネント階層 | [references/component-hierarchy.md](references/component-hierarchy.md) | 階層設計時     |
+| トークン設計       | [references/design-tokens-guide.md](references/design-tokens-guide.md) | トークン設計時 |
+| 同期設計           | [references/figma-code-sync.md](references/figma-code-sync.md)         | 同期設計時     |
+| 命名規約           | [references/naming-conventions.md](references/naming-conventions.md)   | 規約設計時     |
+| 要求仕様索引       | [references/requirements-index.md](references/requirements-index.md)   | 仕様確認時     |
+| 旧スキル           | [references/legacy-skill.md](references/legacy-skill.md)               | 互換確認時     |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/design-system-requirements-template.md` | 要件整理テンプレート |
-| `assets/token-audit-checklist.md` | トークン設計チェック |
-| `assets/sync-strategy-template.md` | 同期方針テンプレート |
-| `assets/component-spec-template.md` | コンポーネント仕様テンプレート |
-| `assets/design-tokens-template.json` | トークン定義テンプレート |
+| アセット                                        | 用途                           |
+| ----------------------------------------------- | ------------------------------ |
+| `assets/design-system-requirements-template.md` | 要件整理テンプレート           |
+| `assets/token-audit-checklist.md`               | トークン設計チェック           |
+| `assets/sync-strategy-template.md`              | 同期方針テンプレート           |
+| `assets/component-spec-template.md`             | コンポーネント仕様テンプレート |
+| `assets/design-tokens-template.json`            | トークン定義テンプレート       |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

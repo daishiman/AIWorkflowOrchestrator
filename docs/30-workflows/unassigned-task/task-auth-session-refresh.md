@@ -178,8 +178,8 @@ Phase 4: 手動テスト
 
 #### 活用スキル
 
-| スキル名             | 活用方法                           |
-| -------------------- | ---------------------------------- |
+| スキル名                                     | 活用方法                           |
+| -------------------------------------------- | ---------------------------------- |
 | .claude/skills/tdd-principles/SKILL.md       | TDD Red-Green-Refactorサイクル実践 |
 | .claude/skills/clean-code-practices/SKILL.md | 高品質なサービス実装               |
 | .claude/skills/test-doubles/SKILL.md         | Vitest vi.useFakeTimers()活用      |
@@ -233,8 +233,8 @@ Phase 4: 手動テスト
 
 #### 活用スキル
 
-| スキル名      | 活用方法                          |
-| ------------- | --------------------------------- |
+| スキル名                              | 活用方法                          |
+| ------------------------------------- | --------------------------------- |
 | .claude/skills/state-lifting/SKILL.md | Zustand状態管理とIPC連携          |
 | .claude/skills/oauth2-flows/SKILL.md  | OAuth 2.0トークンリフレッシュ実装 |
 

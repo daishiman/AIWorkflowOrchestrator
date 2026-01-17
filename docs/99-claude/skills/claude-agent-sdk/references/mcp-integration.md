@@ -56,13 +56,13 @@ const options: Options = {
 
 ## 公式MCPサーバー
 
-| サーバー名   | パッケージ                              | 用途                       |
-| ------------ | --------------------------------------- | -------------------------- |
-| Filesystem   | @modelcontextprotocol/server-filesystem | ファイルシステムアクセス   |
-| GitHub       | @modelcontextprotocol/server-github     | GitHubリポジトリ操作       |
-| PostgreSQL   | @modelcontextprotocol/server-postgres   | PostgreSQLデータベース     |
+| サーバー名   | パッケージ                                | 用途                     |
+| ------------ | ----------------------------------------- | ------------------------ |
+| Filesystem   | @modelcontextprotocol/server-filesystem   | ファイルシステムアクセス |
+| GitHub       | @modelcontextprotocol/server-github       | GitHubリポジトリ操作     |
+| PostgreSQL   | @modelcontextprotocol/server-postgres     | PostgreSQLデータベース   |
 | Brave Search | @modelcontextprotocol/server-brave-search | Web検索                  |
-| Memory       | @modelcontextprotocol/server-memory     | 永続的なメモリストア       |
+| Memory       | @modelcontextprotocol/server-memory       | 永続的なメモリストア     |
 
 ---
 
@@ -179,12 +179,12 @@ const options: Options = {
 
 ### 認証情報の管理
 
-| 項目                 | 推奨設定                          |
-| -------------------- | --------------------------------- |
-| APIキー              | 環境変数で管理                    |
-| OAuthトークン        | セキュアストレージを使用          |
-| データベース接続文字列 | シークレットマネージャーを使用  |
-| アクセス権限         | 最小権限の原則を適用              |
+| 項目                   | 推奨設定                       |
+| ---------------------- | ------------------------------ |
+| APIキー                | 環境変数で管理                 |
+| OAuthトークン          | セキュアストレージを使用       |
+| データベース接続文字列 | シークレットマネージャーを使用 |
+| アクセス権限           | 最小権限の原則を適用           |
 
 ### エンタープライズ対応
 
@@ -268,11 +268,11 @@ gh auth status
 
 ## 公式ドキュメント
 
-| ドキュメント       | URL                                                      |
-| ------------------ | -------------------------------------------------------- |
-| MCP統合            | https://platform.claude.com/docs/en/agent-sdk/mcp        |
-| MCP仕様            | https://modelcontextprotocol.io                          |
-| MCP SDKリポジトリ  | https://github.com/modelcontextprotocol/sdk              |
+| ドキュメント      | URL                                               |
+| ----------------- | ------------------------------------------------- |
+| MCP統合           | https://platform.claude.com/docs/en/agent-sdk/mcp |
+| MCP仕様           | https://modelcontextprotocol.io                   |
+| MCP SDKリポジトリ | https://github.com/modelcontextprotocol/sdk       |
 
 ---
 

@@ -158,17 +158,20 @@ FK制約による依存関係グラフを分析し、循環参照を検出する
 - 成果物名: 循環参照検出レポート
 - 受領先: Soft Delete Integration Agent（次フェーズ）またはユーザー
 - 出力テンプレート:
+
   ```markdown
   # Circular Reference Detection Report
-  
+
   ## Summary
+
   - Total circular references detected: {{count}}
   - Type A (Acceptable): {{count}}
   - Type B (Must Fix): {{count}}
-  
+
   ## Detected Cycles
-  
+
   ### Cycle 1: {{table1}} → {{table2}} → {{table1}}
+
   - Type: {{A|B}}
   - Risk level: {{Critical|High|Medium|Low}}
   - FK constraints involved:
@@ -177,10 +180,12 @@ FK制約による依存関係グラフを分析し、循環参照を検出する
   - Analysis: {{explanation}}
   - Recommended action: {{解消策}}
   - Priority: {{Critical|High|Medium}}
-  
+
   ## Resolution Strategies
+
   {{prioritized list of recommended actions}}
   ```
+
 - 内容:
   検出されたすべての循環、分類、リスク評価、解消策
 

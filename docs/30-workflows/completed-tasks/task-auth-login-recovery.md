@@ -250,8 +250,8 @@ Phase 9: ドキュメント更新（1サブタスク）
 
 ##### 活用スキル
 
-| スキル名                               | 活用方法                      |
-| -------------------------------------- | ----------------------------- |
+| スキル名                                                       | 活用方法                      |
+| -------------------------------------------------------------- | ----------------------------- |
 | .claude/skills/functional-non-functional-requirements/SKILL.md | 機能要件・非機能要件の明確化  |
 | .claude/skills/acceptance-criteria-writing/SKILL.md            | 受け入れ基準の定義            |
 | .claude/skills/oauth2-flows/SKILL.md                           | OAuth 2.0認証フローの要件確認 |
@@ -348,8 +348,8 @@ ls -la apps/desktop/src/renderer/components/AuthGuard/
 
 ##### 活用スキル
 
-| スキル名               | 活用方法              |
-| ---------------------- | --------------------- |
+| スキル名                                       | 活用方法              |
+| ---------------------------------------------- | --------------------- |
 | .claude/skills/git-hooks-concepts/SKILL.md     | Gitワークツリーの理解 |
 | .claude/skills/infrastructure-as-code/SKILL.md | 開発環境の構築        |
 
@@ -409,8 +409,8 @@ AuthGuard の動作確認と、OAuth認証フローが正常に動作するた�
 
 ##### 活用スキル
 
-| スキル名               | 活用方法                     |
-| ---------------------- | ---------------------------- |
+| スキル名                                       | 活用方法                     |
+| ---------------------------------------------- | ---------------------------- |
 | .claude/skills/oauth2-flows/SKILL.md           | OAuth認証フローの設計        |
 | .claude/skills/electron-packaging/SKILL.md     | カスタムプロトコルの実装設計 |
 | .claude/skills/architectural-patterns/SKILL.md | アーキテクチャ整合性の確保   |
@@ -452,8 +452,8 @@ AuthGuard の動作確認と、OAuth認証フローが正常に動作するた�
 
 ##### レビュー参加エージェント
 
-| エージェント       | レビュー観点         | 選定理由                                  |
-| ------------------ | -------------------- | ----------------------------------------- |
+| エージェント                        | レビュー観点         | 選定理由                                  |
+| ----------------------------------- | -------------------- | ----------------------------------------- |
 | .claude/agents/sec-auditor.md       | セキュリティ設計     | 認証セキュリティの専門家                  |
 | .claude/agents/auth-specialist.md   | 認証フローの妥当性   | OAuth認証の専門家                         |
 | .claude/agents/electron-security.md | Electronセキュリティ | カスタムプロトコル・IPC通信のセキュリティ |
@@ -552,8 +552,8 @@ AuthGuardとOAuth認証の回帰テストを作成し、Red状態を確認する
 
 ##### 活用スキル
 
-| スキル名                | 活用方法                   |
-| ----------------------- | -------------------------- |
+| スキル名                                        | 活用方法                   |
+| ----------------------------------------------- | -------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | TDDサイクルの実践          |
 | .claude/skills/test-doubles/SKILL.md            | モック・スタブの適切な使用 |
 | .claude/skills/boundary-value-analysis/SKILL.md | 境界値テストケースの作成   |
@@ -639,8 +639,8 @@ AuthGuardとOAuth認証の復旧実装を行い、テストを成功させる。
 
 ##### 活用スキル
 
-| スキル名              | 活用方法                 |
-| --------------------- | ------------------------ |
+| スキル名                                      | 活用方法                 |
+| --------------------------------------------- | ------------------------ |
 | .claude/skills/oauth2-flows/SKILL.md          | OAuth認証フローの実装    |
 | .claude/skills/electron-packaging/SKILL.md    | カスタムプロトコルの実装 |
 | .claude/skills/error-boundary/SKILL.md        | エラーハンドリングの実装 |
@@ -742,8 +742,8 @@ pnpm --filter @repo/desktop test:run
 
 ##### 活用スキル
 
-| スキル名               | 活用方法                       |
-| ---------------------- | ------------------------------ |
+| スキル名                                       | 活用方法                       |
+| ---------------------------------------------- | ------------------------------ |
 | .claude/skills/clean-code-practices/SKILL.md   | クリーンコード原則の適用       |
 | .claude/skills/refactoring-techniques/SKILL.md | リファクタリングパターンの適用 |
 | .claude/skills/solid-principles/SKILL.md       | SOLID原則の確保                |
@@ -813,8 +813,8 @@ pnpm --filter @repo/desktop test:run
 
 ##### 活用スキル
 
-| スキル名                     | 活用方法                 |
-| ---------------------------- | ------------------------ |
+| スキル名                                             | 活用方法                 |
+| ---------------------------------------------------- | ------------------------ |
 | .claude/skills/tdd-principles/SKILL.md               | TDD品質基準の確認        |
 | .claude/skills/dependency-security-scanning/SKILL.md | 脆弱性スキャン           |
 | .claude/skills/code-style-guides/SKILL.md            | コード品質メトリクス確認 |
@@ -877,8 +877,8 @@ pnpm --filter @repo/desktop test:run
 
 ##### レビュー参加エージェント
 
-| エージェント       | レビュー観点               | 選定理由                         |
-| ------------------ | -------------------------- | -------------------------------- |
+| エージェント                        | レビュー観点               | 選定理由                         |
+| ----------------------------------- | -------------------------- | -------------------------------- |
 | .claude/agents/code-quality.md      | コード品質                 | Clean Code原則の確認             |
 | .claude/agents/auth-specialist.md   | 認証実装の妥当性           | OAuth実装パターンの確認          |
 | .claude/agents/sec-auditor.md       | セキュリティ実装           | 脆弱性・セキュアコーディング確認 |

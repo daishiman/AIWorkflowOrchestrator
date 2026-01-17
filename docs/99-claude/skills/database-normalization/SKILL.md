@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # database-normalization
 
 ## 概要
@@ -78,12 +79,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-normalization-requirements | Phase 1開始時 | スキーマ情報 | 要件メモ、対象範囲 |
-| design-normalization-plan | Phase 2開始時 | 要件メモ | 正規化設計、非正規化判断 |
-| implement-normalization-changes | Phase 3開始時 | 設計メモ | 実装差分、影響一覧 |
-| validate-normalization-quality | Phase 4開始時 | 実装差分 | 検証レポート、改善提案 |
+| Task                               | 起動タイミング | 入力         | 出力                     |
+| ---------------------------------- | -------------- | ------------ | ------------------------ |
+| analyze-normalization-requirements | Phase 1開始時  | スキーマ情報 | 要件メモ、対象範囲       |
+| design-normalization-plan          | Phase 2開始時  | 要件メモ     | 正規化設計、非正規化判断 |
+| implement-normalization-changes    | Phase 3開始時  | 設計メモ     | 実装差分、影響一覧       |
+| validate-normalization-quality     | Phase 4開始時  | 実装差分     | 検証レポート、改善提案   |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,55 +92,55 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 正規形を段階的に評価する | 影響範囲を最小化できる |
-| 非正規化判断を文書化する | 保守と監査が容易になる |
-| 変更の影響を明示する | レビューがしやすい |
-| 検証チェックを必ず実施する | 不整合を防止できる |
+| 推奨事項                   | 理由                   |
+| -------------------------- | ---------------------- |
+| 正規形を段階的に評価する   | 影響範囲を最小化できる |
+| 非正規化判断を文書化する   | 保守と監査が容易になる |
+| 変更の影響を明示する       | レビューがしやすい     |
+| 検証チェックを必ず実施する | 不整合を防止できる     |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項                 | 問題点               |
+| ------------------------ | -------------------- |
 | 正規形を飛ばして設計する | 不整合が発生しやすい |
-| 非正規化の根拠を残さない | 追跡不能になる |
-| 影響範囲を確認しない | 破壊的変更のリスク |
-| 検証を省略する | 品質低下につながる |
+| 非正規化の根拠を残さない | 追跡不能になる       |
+| 影響範囲を確認しない     | 破壊的変更のリスク   |
+| 検証を省略する           | 品質低下につながる   |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/analyze-normalization.mjs` | 正規化分析 |
-| `scripts/validate-skill.mjs` | スキル構造検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                          | 機能                         |
+| ----------------------------------- | ---------------------------- |
+| `scripts/analyze-normalization.mjs` | 正規化分析                   |
+| `scripts/validate-skill.mjs`        | スキル構造検証               |
+| `scripts/log_usage.mjs`             | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
-| 正規形詳細 | [references/normalization-levels-detail.md](references/normalization-levels-detail.md) | 設計時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース     | パス                                                                                   | 読込条件   |
+| ------------ | -------------------------------------------------------------------------------------- | ---------- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md)                             | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md)                 | 設計時     |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md)                         | 実装時     |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md)                             | 検証時     |
+| 正規形詳細   | [references/normalization-levels-detail.md](references/normalization-levels-detail.md) | 設計時     |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md)                   | 仕様確認時 |
+| 旧スキル     | [references/legacy-skill.md](references/legacy-skill.md)                               | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                                      | 用途                 |
+| --------------------------------------------- | -------------------- |
 | `assets/normalization-assessment-template.md` | 要件整理テンプレート |
-| `assets/denormalization-decision-template.md` | 非正規化判断記録 |
-| `assets/normalization-review-checklist.md` | 検証チェックリスト |
+| `assets/denormalization-decision-template.md` | 非正規化判断記録     |
+| `assets/normalization-review-checklist.md`    | 検証チェックリスト   |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                   |
-| ------- | ---------- | --------------------------------------------------------- |
+| Version | Date       | Changes                                                    |
+| ------- | ---------- | ---------------------------------------------------------- |
 | 2.0.0   | 2026-01-04 | 18-skills.md仕様完全準拠版に再構築、運用ファイル形式を統一 |
-| 1.0.0   | 2025-12-24 | 初版作成                                                  |
+| 1.0.0   | 2025-12-24 | 初版作成                                                   |

@@ -15,8 +15,8 @@
 
 ### 1.1 レビュー参加エージェント
 
-| エージェント  | レビュー観点               | 判定結果    |
-| ------------- | -------------------------- | ----------- |
+| エージェント                   | レビュー観点               | 判定結果    |
+| ------------------------------ | -------------------------- | ----------- |
 | .claude/agents/arch-police.md  | アーキテクチャ整合性       | MINOR       |
 | .claude/agents/db-architect.md | データベース設計           | MINOR/MAJOR |
 | .claude/agents/sec-auditor.md  | プライバシー・セキュリティ | MINOR/MAJOR |
@@ -269,8 +269,8 @@ try {
 
 ### 7.3 承認
 
-| 役割          | 判定                        | 日時       |
-| ------------- | --------------------------- | ---------- |
+| 役割                           | 判定                        | 日時       |
+| ------------------------------ | --------------------------- | ---------- |
 | .claude/agents/arch-police.md  | APPROVED (with minor fixes) | 2025-12-10 |
 | .claude/agents/db-architect.md | APPROVED (with major fix)   | 2025-12-10 |
 | .claude/agents/sec-auditor.md  | APPROVED (with major fix)   | 2025-12-10 |

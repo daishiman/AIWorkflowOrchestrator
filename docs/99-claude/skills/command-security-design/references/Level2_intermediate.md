@@ -14,25 +14,31 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: セキュリティガイドライン / allowed-tools でツール制限 / disable-model-invocation / Command Security Design / リソース構造 / リソース種別
 - 実務指針: 破壊的な操作を行うコマンドを作成する時 / ツール使用を制限したい時 / 機密情報の誤コミットを防ぐチェックを実装する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/security-guidelines.md`: セキュリティガイドライン（把握する知識: セキュリティガイドライン / allowed-tools でツール制限 / disable-model-invocation）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Security Design / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/audit-security.mjs`: セキュリティ監査スクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/secure-command.md`: セキュアコマンドテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

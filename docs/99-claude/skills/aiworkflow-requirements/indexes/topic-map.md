@@ -11,12 +11,14 @@
 ## 検索方法
 
 ### コマンド検索
+
 ```bash
 node scripts/search-spec.mjs "<キーワード>"
 node scripts/search-spec.mjs "認証" -C 5
 ```
 
 ### トピック一覧
+
 ```bash
 node scripts/list-specs.mjs --topics
 ```
@@ -727,8 +729,8 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 目的 | L10 |
 | agents/ の位置づけ（誤解防止） | L17 |
-| agents/*.md 標準フォーマット（必須テンプレ） | L26 |
-| agents/*.md テンプレ（Markdown見出しで構造化） | L43 |
+| agents/_.md 標準フォーマット（必須テンプレ） | L26 |
+| agents/_.md テンプレ（Markdown見出しで構造化） | L43 |
 | メタ情報 | L50 |
 | プロフィール | L58 |
 | 知識ベース | L74 |
@@ -950,4 +952,3 @@ node scripts/list-specs.mjs --topics
 | 関連ドキュメント | L131 |
 
 ---
-

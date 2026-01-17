@@ -14,6 +14,7 @@ Railway Database管理スキル。Railway環境グループ、Variables vs Secre
 ## 詳細ガイド
 
 ### フィードバックループ
+
 - `EVALS.json`: 評価観点の定義
 - `CHANGELOG.md`: 変更履歴の記録
 - `LOGS.md`: 運用ログの蓄積
@@ -21,10 +22,12 @@ Railway Database管理スキル。Railway環境グループ、Variables vs Secre
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### 改善に必要な知識
+
 - 評価結果とログを照合し、改善ポイントを特定する
 - 変更が必要な resources/・templates/・scripts/ を特定する
 
 ### 評価と記録
+
 - 実行結果を LOGS.md に残し、評価観点を EVALS.json に反映する
 
 ## 実践手順

@@ -71,11 +71,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task             | 起動タイミング | 入力             | 出力                 |
-| ---------------- | -------------- | ---------------- | -------------------- |
-| test-design      | Phase 1開始時  | 要求・仕様       | テストチャーター     |
-| red-green-cycle  | Phase 2開始時  | テストチャーター | サイクルログ         |
-| refactor-review  | Phase 3開始時  | サイクルログ     | 改善レビュー         |
+| Task            | 起動タイミング | 入力             | 出力             |
+| --------------- | -------------- | ---------------- | ---------------- |
+| test-design     | Phase 1開始時  | 要求・仕様       | テストチャーター |
+| red-green-cycle | Phase 2開始時  | テストチャーター | サイクルログ     |
+| refactor-review | Phase 3開始時  | サイクルログ     | 改善レビュー     |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -85,20 +85,20 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項                         | 理由                               |
-| -------------------------------- | ---------------------------------- |
-| 失敗理由が明確なテストを書く     | Redの品質が向上する                |
-| 1テスト1振る舞いを維持する       | テストの意図が明確になる           |
-| 最小実装を徹底する               | 余計な設計を避けられる             |
-| Refactorを毎サイクルで行う       | 設計品質を保ちやすい               |
+| 推奨事項                     | 理由                     |
+| ---------------------------- | ------------------------ |
+| 失敗理由が明確なテストを書く | Redの品質が向上する      |
+| 1テスト1振る舞いを維持する   | テストの意図が明確になる |
+| 最小実装を徹底する           | 余計な設計を避けられる   |
+| Refactorを毎サイクルで行う   | 設計品質を保ちやすい     |
 
 ### 避けるべきこと
 
-| 禁止事項                     | 問題点                             |
-| ---------------------------- | ---------------------------------- |
-| テスト後付けで実装を進める   | TDDの意図が失われる               |
-| 大きな変更を一度に行う       | 失敗原因の特定が困難になる         |
-| リファクタを後回しにする     | 技術的負債が蓄積する               |
+| 禁止事項                   | 問題点                     |
+| -------------------------- | -------------------------- |
+| テスト後付けで実装を進める | TDDの意図が失われる        |
+| 大きな変更を一度に行う     | 失敗原因の特定が困難になる |
+| リファクタを後回しにする   | 技術的負債が蓄積する       |
 
 ---
 
@@ -106,30 +106,29 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト                         | 機能                         |
-| ---------------------------------- | ---------------------------- |
-| `scripts/validate-tdd-plan.mjs`    | セッション計画を検証する     |
-| `scripts/tdd-cycle-validator.mjs`  | テストファイルを検証する     |
-| `scripts/log_usage.mjs`            | 使用記録をLOGS.mdに記録する  |
+| スクリプト                        | 機能                        |
+| --------------------------------- | --------------------------- |
+| `scripts/validate-tdd-plan.mjs`   | セッション計画を検証する    |
+| `scripts/tdd-cycle-validator.mjs` | テストファイルを検証する    |
+| `scripts/log_usage.mjs`           | 使用記録をLOGS.mdに記録する |
 
 ### references/（詳細知識）
 
-| リソース              | パス                                                     | 読込条件     |
-| --------------------- | -------------------------------------------------------- | ------------ |
-| 基礎                  | [references/Level1_basics.md](references/Level1_basics.md) | 初回利用時   |
-| 実務パターン          | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実務適用時   |
-| 設計強化              | [references/Level3_advanced.md](references/Level3_advanced.md) | 設計改善時   |
-| エキスパート          | [references/Level4_expert.md](references/Level4_expert.md) | 高難度対応時 |
-| テストファースト原則  | [references/test-first-principles.md](references/test-first-principles.md) | Phase 1      |
-| Red-Green-Refactor    | [references/red-green-refactor.md](references/red-green-refactor.md) | Phase 2      |
-| 小さなステップ        | [references/small-steps.md](references/small-steps.md) | 全フェーズ   |
-| 設計の創発            | [references/design-emergence.md](references/design-emergence.md) | Phase 3      |
-| レガシー戦略          | [references/legacy-code-strategies.md](references/legacy-code-strategies.md) | レガシー対応 |
+| リソース             | パス                                                                         | 読込条件     |
+| -------------------- | ---------------------------------------------------------------------------- | ------------ |
+| 基礎                 | [references/Level1_basics.md](references/Level1_basics.md)                   | 初回利用時   |
+| 実務パターン         | [references/Level2_intermediate.md](references/Level2_intermediate.md)       | 実務適用時   |
+| 設計強化             | [references/Level3_advanced.md](references/Level3_advanced.md)               | 設計改善時   |
+| エキスパート         | [references/Level4_expert.md](references/Level4_expert.md)                   | 高難度対応時 |
+| テストファースト原則 | [references/test-first-principles.md](references/test-first-principles.md)   | Phase 1      |
+| Red-Green-Refactor   | [references/red-green-refactor.md](references/red-green-refactor.md)         | Phase 2      |
+| 小さなステップ       | [references/small-steps.md](references/small-steps.md)                       | 全フェーズ   |
+| 設計の創発           | [references/design-emergence.md](references/design-emergence.md)             | Phase 3      |
+| レガシー戦略         | [references/legacy-code-strategies.md](references/legacy-code-strategies.md) | レガシー対応 |
 
 ### assets/（テンプレート）
 
-| アセット                                | 用途                       |
-| --------------------------------------- | -------------------------- |
-| `assets/tdd-session-template.md`        | TDDセッション計画          |
-| `assets/test-charter-template.md`       | テスト設計チャーター       |
-
+| アセット                          | 用途                 |
+| --------------------------------- | -------------------- |
+| `assets/tdd-session-template.md`  | TDDセッション計画    |
+| `assets/test-charter-template.md` | テスト設計チャーター |

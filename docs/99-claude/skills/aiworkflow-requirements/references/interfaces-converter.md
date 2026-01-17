@@ -14,10 +14,10 @@
 
 ## ドキュメント構成
 
-| ドキュメント | ファイル | 説明 |
-|-------------|----------|------|
+| ドキュメント   | ファイル                                                                             | 説明                               |
+| -------------- | ------------------------------------------------------------------------------------ | ---------------------------------- |
 | 実装クラス詳細 | [interfaces-converter-implementations.md](./interfaces-converter-implementations.md) | 各コンバーターの使用例とメタデータ |
-| 拡張ガイド | [interfaces-converter-extension.md](./interfaces-converter-extension.md) | 新規コンバーター実装パターン |
+| 拡張ガイド     | [interfaces-converter-extension.md](./interfaces-converter-extension.md)             | 新規コンバーター実装パターン       |
 
 ---
 
@@ -57,13 +57,13 @@ if (result.success) {
 
 | 実装クラス         | サポートMIME                                      | 優先度 | 実装状況 |
 | ------------------ | ------------------------------------------------- | ------ | -------- |
-| HTMLConverter      | text/html                                         | 10     | 実装済 |
-| MarkdownConverter  | text/markdown, text/x-markdown                    | 10     | 実装済 |
-| CodeConverter      | text/x-typescript, text/javascript, text/x-python | 10     | 実装済 |
-| YAMLConverter      | application/x-yaml, text/yaml, text/x-yaml        | 10     | 実装済 |
-| CSVConverter       | text/csv, text/tab-separated-values               | 5      | 実装済 |
-| JSONConverter      | application/json                                  | 5      | 実装済 |
-| PlainTextConverter | text/plain                                        | 0      | 未実装 |
+| HTMLConverter      | text/html                                         | 10     | 実装済   |
+| MarkdownConverter  | text/markdown, text/x-markdown                    | 10     | 実装済   |
+| CodeConverter      | text/x-typescript, text/javascript, text/x-python | 10     | 実装済   |
+| YAMLConverter      | application/x-yaml, text/yaml, text/x-yaml        | 10     | 実装済   |
+| CSVConverter       | text/csv, text/tab-separated-values               | 5      | 実装済   |
+| JSONConverter      | application/json                                  | 5      | 実装済   |
+| PlainTextConverter | text/plain                                        | 0      | 未実装   |
 
 詳細な使用例は [interfaces-converter-implementations.md](./interfaces-converter-implementations.md) を参照。
 
@@ -78,20 +78,20 @@ if (result.success) {
 
 ### 必須メソッド
 
-| メソッド | 戻り値 | 説明 |
-| -------- | ------ | ---- |
-| `info(fileId, message, metadata?)` | `void` | INFOレベルログ記録 |
-| `warn(fileId, message, metadata?)` | `void` | WARNレベルログ記録 |
-| `error(fileId, message, error?, metadata?)` | `void` | ERRORレベルログ記録 |
-| `flush()` | `Promise<void>` | バッファを強制フラッシュ |
-| `dispose()` | `void` | リソース解放 |
+| メソッド                                    | 戻り値          | 説明                     |
+| ------------------------------------------- | --------------- | ------------------------ |
+| `info(fileId, message, metadata?)`          | `void`          | INFOレベルログ記録       |
+| `warn(fileId, message, metadata?)`          | `void`          | WARNレベルログ記録       |
+| `error(fileId, message, error?, metadata?)` | `void`          | ERRORレベルログ記録      |
+| `flush()`                                   | `Promise<void>` | バッファを強制フラッシュ |
+| `dispose()`                                 | `void`          | リソース解放             |
 
 ### 設定オプション
 
-| オプション | 型 | デフォルト | 説明 |
-| ---------- | -- | ---------- | ---- |
-| `bufferSize` | `number` | 100 | バッファサイズ（件数） |
-| `flushIntervalMs` | `number` | 5000 | 自動フラッシュ間隔（ミリ秒） |
+| オプション        | 型       | デフォルト | 説明                         |
+| ----------------- | -------- | ---------- | ---------------------------- |
+| `bufferSize`      | `number` | 100        | バッファサイズ（件数）       |
+| `flushIntervalMs` | `number` | 5000       | 自動フラッシュ間隔（ミリ秒） |
 
 ### 使用例
 
@@ -117,8 +117,8 @@ logger.dispose();
 
 ログ永続化用リポジトリインターフェース（DIP適用）。
 
-| メソッド | 戻り値 | 説明 |
-| -------- | ------ | ---- |
+| メソッド              | 戻り値          | 説明             |
+| --------------------- | --------------- | ---------------- |
 | `bulkInsert(entries)` | `Promise<void>` | バッチインサート |
 
 > **実装予定**: CONV-05-02 (LogRepository実装タスク)
@@ -134,14 +134,14 @@ logger.dispose();
 
 ### 必須メソッド
 
-| メソッド | 戻り値 | 説明 |
-| -------- | ------ | ---- |
-| `getFileHistory(fileId, options?)` | `Promise<Result<PaginatedResult<VersionHistoryItem>, Error>>` | 履歴一覧取得（ページネーション対応） |
-| `getVersionDetail(conversionId)` | `Promise<Result<VersionHistoryItem, Error>>` | 特定バージョン詳細取得 |
-| `getVersionDiff(idA, idB)` | `Promise<Result<VersionDiff, Error>>` | バージョン間差分取得 |
-| `restoreToVersion(fileId, conversionId)` | `Promise<Result<VersionHistoryItem, Error>>` | 過去バージョンへ復元 |
-| `getLatestVersion(fileId)` | `Promise<Result<VersionHistoryItem | null, Error>>` | 最新バージョン取得 |
-| `getVersionCount(fileId)` | `Promise<Result<number, Error>>` | バージョン数取得 |
+| メソッド                                 | 戻り値                                                        | 説明                                 |
+| ---------------------------------------- | ------------------------------------------------------------- | ------------------------------------ | ------------------ |
+| `getFileHistory(fileId, options?)`       | `Promise<Result<PaginatedResult<VersionHistoryItem>, Error>>` | 履歴一覧取得（ページネーション対応） |
+| `getVersionDetail(conversionId)`         | `Promise<Result<VersionHistoryItem, Error>>`                  | 特定バージョン詳細取得               |
+| `getVersionDiff(idA, idB)`               | `Promise<Result<VersionDiff, Error>>`                         | バージョン間差分取得                 |
+| `restoreToVersion(fileId, conversionId)` | `Promise<Result<VersionHistoryItem, Error>>`                  | 過去バージョンへ復元                 |
+| `getLatestVersion(fileId)`               | `Promise<Result<VersionHistoryItem                            | null, Error>>`                       | 最新バージョン取得 |
+| `getVersionCount(fileId)`                | `Promise<Result<number, Error>>`                              | バージョン数取得                     |
 
 ### 使用例
 
@@ -152,7 +152,7 @@ const historyService = createHistoryService(repository, logger);
 
 // 履歴一覧取得
 const result = await historyService.getFileHistory("file-123", {
-  pagination: { limit: 10, offset: 0 }
+  pagination: { limit: 10, offset: 0 },
 });
 
 // バージョン復元
@@ -161,12 +161,12 @@ const restored = await historyService.restoreToVersion("file-123", "conv-456");
 
 ### 関連型定義
 
-| 型 | 説明 |
-| -- | ---- |
+| 型                   | 説明                                                                |
+| -------------------- | ------------------------------------------------------------------- |
 | `VersionHistoryItem` | バージョン履歴の1件分（conversionId, fileId, version, createdAt等） |
-| `VersionDiff` | バージョン間差分（sizeChange, metadataChanges, contentChanged） |
-| `HistoryOptions` | フィルタ・ページネーションオプション |
-| `PaginatedResult<T>` | ページネーション結果（items, total, hasMore） |
+| `VersionDiff`        | バージョン間差分（sizeChange, metadataChanges, contentChanged）     |
+| `HistoryOptions`     | フィルタ・ページネーションオプション                                |
+| `PaginatedResult<T>` | ページネーション結果（items, total, hasMore）                       |
 
 ---
 
@@ -178,12 +178,12 @@ const restored = await historyService.restoreToVersion("file-123", "conv-456");
 
 ### 必須メソッド
 
-| メソッド | 戻り値 | 説明 |
-| -------- | ------ | ---- |
+| メソッド                         | 戻り値                                 | 説明                   |
+| -------------------------------- | -------------------------------------- | ---------------------- | ------------ |
 | `findByFileId(fileId, options?)` | `Promise<Result<Conversion[], Error>>` | ファイル単位で履歴取得 |
-| `findById(conversionId)` | `Promise<Result<Conversion | null, Error>>` | ID指定で取得 |
-| `create(data)` | `Promise<Result<Conversion, Error>>` | 新規作成 |
-| `countByFileId(fileId)` | `Promise<Result<number, Error>>` | 件数カウント |
+| `findById(conversionId)`         | `Promise<Result<Conversion             | null, Error>>`         | ID指定で取得 |
+| `create(data)`                   | `Promise<Result<Conversion, Error>>`   | 新規作成               |
+| `countByFileId(fileId)`          | `Promise<Result<number, Error>>`       | 件数カウント           |
 
 ---
 

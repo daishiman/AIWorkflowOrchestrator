@@ -14,26 +14,32 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: ドキュメンテーションガイド / 自己文書化構造 / Purpose / Claude Code 3層アーキテクチャ設計仕様書 / Command Documentation Patterns / リソース構造
 - 実務指針: コマンドのドキュメントを作成する時 / 使用例を充実させたい時 / トラブルシューティングセクションを追加する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/documentation-guide.md`: セルフドキュメンティング構造とMarkdownセクション構成ガイド（把握する知識: ドキュメンテーションガイド / 自己文書化構造 / Purpose）
 - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: Claude Code 3層アーキテクチャ設計仕様書）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Documentation Patterns / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-docs.mjs`: コマンドドキュメントの完全性検証スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/command-documentation.md`: description/argument-hint/allowed-toolsを含むコマンドテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

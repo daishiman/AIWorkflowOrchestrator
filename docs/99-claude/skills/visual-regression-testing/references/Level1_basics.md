@@ -14,27 +14,34 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling visual regression testing tasks.
 
 ### 必要な知識
+
 - 対象領域: 視覚的回帰テストの実装技術。
 - 主要概念: スクリーンショット撮影戦略 / 目次 / スクリーンショット撮影の種類 / 視覚的回帰テストの原則 / 1. 意図的な変更のみを検出
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/visual-test-template.ts`
 
 ### 参照書籍
+
 - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/visual-test-template.ts`: このレベルでは参照のみ
 
 ## 実践手順

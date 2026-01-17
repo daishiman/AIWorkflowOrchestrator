@@ -14,27 +14,34 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling type safety patterns tasks.
 
 ### 必要な知識
+
 - 対象領域: TypeScript厳格モードによる型安全性設計を専門とするスキル。
 - 主要概念: Discriminated Unions パターン / 基本概念 / Discriminated Union とは / ジェネリクスパターン / 基本的なジェネリクス
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/type-safe-patterns.ts`
 
 ### 参照書籍
+
 - 『Effective TypeScript』（Dan Vanderkam）: 型設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/type-safe-patterns.ts`: このレベルでは参照のみ
 
 ## 実践手順

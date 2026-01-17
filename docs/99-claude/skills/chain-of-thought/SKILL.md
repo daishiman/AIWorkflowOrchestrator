@@ -78,12 +78,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| 問題整理 | 目的/制約整理 | 課題情報 | 前提メモ | `references/Level1_basics.md` | Phase 1 |
-| 論点分解 | 論点/順序整理 | 前提メモ | 論点アウトライン | `references/Level2_intermediate.md` | Phase 2 |
-| 根拠整理 | 判断理由の要約 | 論点アウトライン | 根拠サマリー | `assets/reasoning-summary-template.md` | Phase 3 |
-| 検証 | 一貫性チェック | 根拠サマリー | 検証メモ | `references/Level4_expert.md` | Phase 4 |
+| Task     | 役割           | 入力             | 出力             | 参照先                                 | 実行タイミング |
+| -------- | -------------- | ---------------- | ---------------- | -------------------------------------- | -------------- |
+| 問題整理 | 目的/制約整理  | 課題情報         | 前提メモ         | `references/Level1_basics.md`          | Phase 1        |
+| 論点分解 | 論点/順序整理  | 前提メモ         | 論点アウトライン | `references/Level2_intermediate.md`    | Phase 2        |
+| 根拠整理 | 判断理由の要約 | 論点アウトライン | 根拠サマリー     | `assets/reasoning-summary-template.md` | Phase 3        |
+| 検証     | 一貫性チェック | 根拠サマリー     | 検証メモ         | `references/Level4_expert.md`          | Phase 4        |
 
 ## ベストプラクティス
 
@@ -121,8 +121,8 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠               |
+| 1.0.0   | 2025-12-24 | 初版作成                                 |

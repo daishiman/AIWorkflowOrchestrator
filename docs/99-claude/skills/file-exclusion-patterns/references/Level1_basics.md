@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling file exclusion patterns tasks.
 
 ### 必要な知識
+
 - 対象領域: ファイル監視システムにおける効率的な除外パターン設計の専門知識。 .gitignore互換のglob pattern、プラットフォーム固有の一時ファイル除外、 パフォーマンス最適化のための早期除外戦略を提供。
 - 主要概念: 標準除外パターンカタログ / カテゴリ別パターン一覧 / 1. パッケージマネージャー / File Exclusion Patterns / 核心概念
 - 実務指針: ファイル監視の除外パターンを設計する時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: 一時ファイル・システムファイルを除外したい時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/pattern-builder.ts`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/pattern-builder.ts`: このレベルでは参照のみ
 
 ## 実践手順

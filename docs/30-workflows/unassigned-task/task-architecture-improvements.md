@@ -385,12 +385,12 @@ export * from "./AuthGuard";
 
 ### 5.1 検証項目
 
-| 項目                   | 検証方法       | 担当エージェント |
-| ---------------------- | -------------- | ---------------- |
-| Atomic Design準拠      | コードレビュー | .claude/agents/arch-police.md     |
-| コンポーネント依存関係 | 依存グラフ確認 | .claude/agents/arch-police.md     |
-| 再利用性               | 使用箇所の確認 | .claude/agents/code-quality.md    |
-| テスト通過             | 自動テスト     | .claude/agents/unit-tester.md     |
+| 項目                   | 検証方法       | 担当エージェント               |
+| ---------------------- | -------------- | ------------------------------ |
+| Atomic Design準拠      | コードレビュー | .claude/agents/arch-police.md  |
+| コンポーネント依存関係 | 依存グラフ確認 | .claude/agents/arch-police.md  |
+| 再利用性               | 使用箇所の確認 | .claude/agents/code-quality.md |
+| テスト通過             | 自動テスト     | .claude/agents/unit-tester.md  |
 
 ### 5.2 アーキテクチャレビュー
 

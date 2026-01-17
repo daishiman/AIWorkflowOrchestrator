@@ -109,7 +109,8 @@ function main() {
   const allowedKeys = Array.isArray(schema.allowedKeys)
     ? schema.allowedKeys
     : null;
-  const types = schema.types && typeof schema.types === "object" ? schema.types : {};
+  const types =
+    schema.types && typeof schema.types === "object" ? schema.types : {};
 
   for (const key of required) {
     if (!(key in output)) {
@@ -129,7 +130,9 @@ function main() {
     if (!(key in output)) continue;
     const actualType = typeOf(output[key]);
     if (actualType !== expectedType) {
-      errors.push(`Type mismatch for ${key}: expected ${expectedType}, got ${actualType}`);
+      errors.push(
+        `Type mismatch for ${key}: expected ${expectedType}, got ${actualType}`,
+      );
     }
   }
 

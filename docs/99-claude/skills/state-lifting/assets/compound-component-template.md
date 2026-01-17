@@ -7,12 +7,12 @@ HTMLの`<select>`と`<option>`のような関係を実現する。
 
 ## テンプレート一覧
 
-| テンプレート | パス | 用途 |
-|-------------|------|------|
-| Select | [select-template.md](select-template.md) | ドロップダウン選択UI |
-| Accordion | [accordion-template.md](accordion-template.md) | 折りたたみ式セクション |
-| Tabs | [tabs-template.md](tabs-template.md) | タブ切り替えUI |
-| Modal | [modal-template.md](modal-template.md) | モーダルダイアログ |
+| テンプレート | パス                                           | 用途                   |
+| ------------ | ---------------------------------------------- | ---------------------- |
+| Select       | [select-template.md](select-template.md)       | ドロップダウン選択UI   |
+| Accordion    | [accordion-template.md](accordion-template.md) | 折りたたみ式セクション |
+| Tabs         | [tabs-template.md](tabs-template.md)           | タブ切り替えUI         |
+| Modal        | [modal-template.md](modal-template.md)         | モーダルダイアログ     |
 
 ## パターンの共通構造
 
@@ -31,9 +31,9 @@ HTMLの`<select>`と`<option>`のような関係を実現する。
 
 ## 使用判断基準
 
-| 条件 | コンパウンドパターン適用 |
-|------|------------------------|
-| 関連UI要素が3つ以上 | 推奨 |
-| 暗黙的な状態共有が必要 | 推奨 |
-| 柔軟なレイアウトが必要 | 推奨 |
-| 単純な親子関係のみ | 不要（通常のprops渡しで十分） |
+| 条件                   | コンパウンドパターン適用      |
+| ---------------------- | ----------------------------- |
+| 関連UI要素が3つ以上    | 推奨                          |
+| 暗黙的な状態共有が必要 | 推奨                          |
+| 柔軟なレイアウトが必要 | 推奨                          |
+| 単純な親子関係のみ     | 不要（通常のprops渡しで十分） |

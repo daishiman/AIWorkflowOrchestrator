@@ -13,9 +13,9 @@
 
 ## ドキュメント構成
 
-| ドキュメント | ファイル | 説明 |
-|-------------|----------|------|
-| Agent仕様詳細 | [claude-code-agents-spec.md](./claude-code-agents-spec.md) | YAML Frontmatter、description規則、本文構造、命名規則 |
+| ドキュメント       | ファイル                                                           | 説明                                                        |
+| ------------------ | ------------------------------------------------------------------ | ----------------------------------------------------------- |
+| Agent仕様詳細      | [claude-code-agents-spec.md](./claude-code-agents-spec.md)         | YAML Frontmatter、description規則、本文構造、命名規則       |
 | ワークフロー・協調 | [claude-code-agents-workflow.md](./claude-code-agents-workflow.md) | Phaseテンプレート、ツール権限、エージェント間協調、状態管理 |
 
 ---

@@ -1,0 +1,151 @@
+{
+  "taskId": "CONV-07-06",
+  "taskName": "Corrective RAG",
+  "featureName": "corrective-rag",
+  "createdAt": "2026-01-16",
+  "status": "in-progress",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "requirements-definition.md",
+        "acceptance-criteria.md",
+        "scope-definition.md"
+      ],
+      "completedAt": "2026-01-16"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": ["architecture-design.md", "interface-design.md"],
+      "completedAt": "2026-01-16"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": ["design-review-result.md"],
+      "completedAt": "2026-01-16"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "artifacts": [
+        "test-specification.md",
+        "test-cases.md",
+        "integration-test-design.md",
+        "test-red-results.md"
+      ],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "artifacts": ["test-green-results.md"],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "artifacts": ["coverage-report.md", "integration-test.md"],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": ["coverage-final.md", "integration-check.md"],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": ["refactoring-log.md", "code-quality.md"],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "specFile": "phase-9-quality.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": ["quality-report.md", "performance.md", "security-check.md"],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": ["final-review-result.md"],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "artifacts": ["manual-test-result.md", "issues.md"],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        "implementation-guide.md",
+        "documentation-update-log.md",
+        "unassigned-task-report.md"
+      ],
+      "completedAt": "2026-01-17"
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": ["pr-info.md", "change-summary.md"]
+    }
+  ],
+  "implementationLocation": "packages/shared/src/services/search/crag/",
+  "dependencies": ["CONV-07-05"],
+  "parentTask": "CONV-07",
+  "references": {
+    "sourceTask": "docs/30-workflows/unassigned-task/task-07-06-corrective-rag.md",
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-rag-search.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-rag.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-core.md",
+      ".claude/skills/aiworkflow-requirements/references/error-handling.md",
+      ".claude/skills/aiworkflow-requirements/references/quality-requirements.md"
+    ]
+  }
+}

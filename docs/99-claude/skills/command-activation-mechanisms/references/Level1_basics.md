@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - 起動メカニズムの初期整理時に使用する。
 
 ### 必要な知識
+
 - 対象領域: コマンドの起動メカニズムを専門とするスキル。 ユーザー明示起動、モデル自動起動（SlashCommand Tool）、Extended Thinkingトリガー、 実行フローの完全図解を提供します。
 - 主要概念: 実行フロー図解 / ユーザー明示起動フロー / SlashCommand Tool起動フロー / Extended Thinking トリガー / トリガーキーワード
 - 実務指針: SlashCommand Toolによる自動起動を理解したい時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: コマンド実行フローを設計する時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `assets/auto-invocation-template.md`
 - 参照テンプレート: `assets/extended-thinking-template.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `assets/auto-invocation-template.md`: このレベルでは参照のみ
 - `assets/extended-thinking-template.md`: このレベルでは参照のみ
 

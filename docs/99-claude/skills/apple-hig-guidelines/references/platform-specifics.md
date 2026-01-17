@@ -38,7 +38,6 @@
 
 ---
 
-
 ## プラットフォーム比較表
 
 | 特性           | iOS      | iPadOS            | macOS                 | watchOS      | visionOS          |

@@ -67,13 +67,13 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task名             | ファイル                           | 役割                                 | 入力                        | 出力                           | 実行タイミング |
-| ------------------ | ---------------------------------- | ------------------------------------ | --------------------------- | ------------------------------ | -------------- |
-| 要件分析           | `agents/requirements-analysis.md`  | 要件の構造と背景を把握               | 要件ドキュメント            | 分析レポート                   | Phase 1        |
-| 一貫性確認         | `agents/consistency-checker.md`    | 要件間の矛盾・重複を検出             | 要件セット + ルール         | 矛盾リスト                     | Phase 2        |
-| 完全性検証         | `agents/completeness-validator.md` | 欠落/曖昧な要件を特定                | 要件セット + チェックリスト | 欠落項目リスト                 | Phase 2        |
-| 実現可能性評価     | `agents/feasibility-assessor.md`   | 技術/コスト/期間の実現可能性を判定   | 要件セット + 制約           | リスク評価                     | Phase 2        |
-| 改善提案           | `agents/improvement-suggester.md`  | 検出課題に対する改善案を作成         | 検証結果                    | 改善提案書                     | Phase 3        |
+| Task名         | ファイル                           | 役割                               | 入力                        | 出力           | 実行タイミング |
+| -------------- | ---------------------------------- | ---------------------------------- | --------------------------- | -------------- | -------------- |
+| 要件分析       | `agents/requirements-analysis.md`  | 要件の構造と背景を把握             | 要件ドキュメント            | 分析レポート   | Phase 1        |
+| 一貫性確認     | `agents/consistency-checker.md`    | 要件間の矛盾・重複を検出           | 要件セット + ルール         | 矛盾リスト     | Phase 2        |
+| 完全性検証     | `agents/completeness-validator.md` | 欠落/曖昧な要件を特定              | 要件セット + チェックリスト | 欠落項目リスト | Phase 2        |
+| 実現可能性評価 | `agents/feasibility-assessor.md`   | 技術/コスト/期間の実現可能性を判定 | 要件セット + 制約           | リスク評価     | Phase 2        |
+| 改善提案       | `agents/improvement-suggester.md`  | 検出課題に対する改善案を作成       | 検証結果                    | 改善提案書     | Phase 3        |
 
 ## ベストプラクティス
 
@@ -104,23 +104,23 @@ allowed-tools:
 
 ### assets/（テンプレート）
 
-| テンプレート                            | 用途                 |
-| --------------------------------------- | -------------------- |
-| `verification-checklist.md`             | 検証チェックリスト   |
-| `verification-report-template.md`       | 検証報告書テンプレート |
+| テンプレート                      | 用途                   |
+| --------------------------------- | ---------------------- |
+| `verification-checklist.md`       | 検証チェックリスト     |
+| `verification-report-template.md` | 検証報告書テンプレート |
 
 ### scripts/（決定論的処理）
 
-| スクリプト                        | 用途                         | 使用例                                                          |
-| --------------------------------- | ---------------------------- | --------------------------------------------------------------- |
-| `verify-requirements.mjs`         | 要件ファイルの品質検証       | `node scripts/verify-requirements.mjs requirements.md`          |
-| `validate-skill.mjs`              | スキル構造の自己検証         | `node scripts/validate-skill.mjs`                               |
-| `log_usage.mjs`                   | 実行記録                     | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
+| スクリプト                | 用途                   | 使用例                                                          |
+| ------------------------- | ---------------------- | --------------------------------------------------------------- |
+| `verify-requirements.mjs` | 要件ファイルの品質検証 | `node scripts/verify-requirements.mjs requirements.md`          |
+| `validate-skill.mjs`      | スキル構造の自己検証   | `node scripts/validate-skill.mjs`                               |
+| `log_usage.mjs`           | 実行記録               | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                |
-| ------- | ---------- | ---------------------------------------------------------------------- |
-| 2.0.0   | 2026-01-02 | agents/assets/references/scriptsを再構成、要件検証スキルに復帰         |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様へ準拠、Task仕様ナビ追加、Anchors・Trigger統合         |
-| 0.9.0   | 2025-12-24 | 初版リリース                                                           |
+| Version | Date       | Changes                                                        |
+| ------- | ---------- | -------------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | agents/assets/references/scriptsを再構成、要件検証スキルに復帰 |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様へ準拠、Task仕様ナビ追加、Anchors・Trigger統合 |
+| 0.9.0   | 2025-12-24 | 初版リリース                                                   |

@@ -197,8 +197,8 @@ graph TD
 
 #### 活用スキル
 
-| スキル名                                   | 活用方法                                                     |
-| ------------------------------------------ | ------------------------------------------------------------ |
+| スキル名                                                           | 活用方法                                                     |
+| ------------------------------------------------------------------ | ------------------------------------------------------------ |
 | **.claude/skills/requirements-engineering/SKILL.md**               | Karl Wiegers方法論に基づく要件分類・優先順位付け             |
 | **.claude/skills/functional-non-functional-requirements/SKILL.md** | 機能要件（チャンク分割）と非機能要件（パフォーマンス）の分離 |
 | **.claude/skills/acceptance-criteria-writing/SKILL.md**            | Given-When-Then形式での受け入れ基準定義                      |
@@ -266,8 +266,8 @@ graph TD
 
 #### 活用スキル
 
-| スキル名                 | 活用方法                                    |
-| ------------------------ | ------------------------------------------- |
+| スキル名                                         | 活用方法                                    |
+| ------------------------------------------------ | ------------------------------------------- |
 | **.claude/skills/type-safety-patterns/SKILL.md** | Branded Types活用、Discriminated Unions設計 |
 | **.claude/skills/clean-code-practices/SKILL.md** | 意味のある命名、型の再利用性確保            |
 | **.claude/skills/domain-driven-design/SKILL.md** | ドメインモデル設計、ユビキタス言語の適用    |
@@ -332,8 +332,8 @@ Zodスキーマの設計と仕様を確定する。
 
 #### 活用スキル
 
-| スキル名                 | 活用方法                                    |
-| ------------------------ | ------------------------------------------- |
+| スキル名                                         | 活用方法                                    |
+| ------------------------------------------------ | ------------------------------------------- |
 | **.claude/skills/zod-validation/SKILL.md**       | Zod 3.xスキーマ定義、カスタムバリデーション |
 | **.claude/skills/type-safety-patterns/SKILL.md** | 型推論、型ガード、Discriminated Unions      |
 | **.claude/skills/input-sanitization/SKILL.md**   | エスケープ処理、XSS対策（文字列フィールド） |
@@ -397,8 +397,8 @@ Zodスキーマの設計と仕様を確定する。
 
 #### 活用スキル
 
-| スキル名                   | 活用方法                                |
-| -------------------------- | --------------------------------------- |
+| スキル名                                           | 活用方法                                |
+| -------------------------------------------------- | --------------------------------------- |
 | **.claude/skills/clean-code-practices/SKILL.md**   | 小さな関数、意味のある命名、DRY原則     |
 | **.claude/skills/refactoring-techniques/SKILL.md** | Extract Method、Replace Temp with Query |
 | **.claude/skills/test-doubles/SKILL.md**           | Mock/Stub設計（外部依存のモック化）     |
@@ -441,8 +441,8 @@ Shift Left原則に基づき、設計段階で問題を検出することで、�
 
 #### レビュー参加エージェント
 
-| エージェント | レビュー観点          | 選定理由                                       |
-| ------------ | --------------------- | ---------------------------------------------- |
+| エージェント                  | レビュー観点          | 選定理由                                       |
+| ----------------------------- | --------------------- | ---------------------------------------------- |
 | .claude/agents/arch-police.md | アーキテクチャ整合性  | Clean Architecture遵守、依存関係逆転の原則確認 |
 | .claude/agents/schema-def.md  | 型安全性・Zodスキーマ | 型の一貫性、Zodスキーマの厳密性確認            |
 | .claude/agents/logic-dev.md   | ロジック正確性        | ベクトル操作ロジックの数学的正確性確認         |
@@ -536,8 +536,8 @@ types.tsに対する単体テストを作成する。
 
 #### 活用スキル
 
-| スキル名                    | 活用方法                                        |
-| --------------------------- | ----------------------------------------------- |
+| スキル名                                            | 活用方法                                        |
+| --------------------------------------------------- | ----------------------------------------------- |
 | **.claude/skills/tdd-principles/SKILL.md**          | Red-Green-Refactorサイクル、テストファースト    |
 | **.claude/skills/boundary-value-analysis/SKILL.md** | 境界値テスト（min/max値）、エッジケース網羅     |
 | **.claude/skills/test-naming-conventions/SKILL.md** | Should形式、Given-When-Then、Arrange-Act-Assert |
@@ -606,8 +606,8 @@ schemas.tsに対する単体テストを作成する。
 
 #### 活用スキーム
 
-| スキル名                    | 活用方法                                        |
-| --------------------------- | ----------------------------------------------- |
+| スキル名                                            | 活用方法                                        |
+| --------------------------------------------------- | ----------------------------------------------- |
 | **.claude/skills/tdd-principles/SKILL.md**          | Red-Green-Refactorサイクル                      |
 | **.claude/skills/boundary-value-analysis/SKILL.md** | 境界値テスト（min/max値、文字列長、配列要素数） |
 | **.claude/skills/test-doubles/SKILL.md**            | モック不要（純粋なバリデーションテスト）        |
@@ -677,8 +677,8 @@ utils.tsに対する単体テストを作成する。
 
 #### 活用スキル
 
-| スキル名                    | 活用方法                                         |
-| --------------------------- | ------------------------------------------------ |
+| スキル名                                            | 活用方法                                         |
+| --------------------------------------------------- | ------------------------------------------------ |
 | **.claude/skills/tdd-principles/SKILL.md**          | Red-Green-Refactorサイクル                       |
 | **.claude/skills/boundary-value-analysis/SKILL.md** | ゼロベクトル、正規化済みベクトル等のエッジケース |
 | **.claude/skills/test-doubles/SKILL.md**            | Buffer等のNodeJS API依存のモック化               |
@@ -752,8 +752,8 @@ types.tsの実装。
 
 #### 活用スキル
 
-| スキル名                   | 活用方法                            |
-| -------------------------- | ----------------------------------- |
+| スキル名                                           | 活用方法                            |
+| -------------------------------------------------- | ----------------------------------- |
 | **.claude/skills/type-safety-patterns/SKILL.md**   | Branded Types、Discriminated Unions |
 | **.claude/skills/clean-code-practices/SKILL.md**   | 意味のある命名、型の再利用性        |
 | **.claude/skills/tdd-red-green-refactor/SKILL.md** | テスト駆動開発サイクル              |
@@ -824,8 +824,8 @@ schemas.tsの実装。
 
 #### 活用スキル
 
-| スキル名                   | 活用方法                                    |
-| -------------------------- | ------------------------------------------- |
+| スキル名                                           | 活用方法                                    |
+| -------------------------------------------------- | ------------------------------------------- |
 | **.claude/skills/zod-validation/SKILL.md**         | Zod 3.xスキーマ定義、カスタムバリデーション |
 | **.claude/skills/type-safety-patterns/SKILL.md**   | 型推論、型ガード                            |
 | **.claude/skills/tdd-red-green-refactor/SKILL.md** | テスト駆動開発サイクル                      |
@@ -894,8 +894,8 @@ utils.tsの実装。
 
 #### 活用スキル
 
-| スキル名                   | 活用方法                            |
-| -------------------------- | ----------------------------------- |
+| スキル名                                           | 活用方法                            |
+| -------------------------------------------------- | ----------------------------------- |
 | **.claude/skills/clean-code-practices/SKILL.md**   | 小さな関数、意味のある命名、DRY原則 |
 | **.claude/skills/refactoring-techniques/SKILL.md** | Extract Method                      |
 | **.claude/skills/tdd-red-green-refactor/SKILL.md** | テスト駆動開発サイクル              |
@@ -965,8 +965,8 @@ index.tsの実装。
 
 #### 活用スキル
 
-| スキル名                 | 活用方法                |
-| ------------------------ | ----------------------- |
+| スキル名                                         | 活用方法                |
+| ------------------------------------------------ | ----------------------- |
 | **.claude/skills/clean-code-practices/SKILL.md** | 明確な責務分離、DRY原則 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -1032,8 +1032,8 @@ types.ts、schemas.ts、utils.tsのリファクタリング。
 
 #### 活用スキル
 
-| スキル名                   | 活用方法                                   |
-| -------------------------- | ------------------------------------------ |
+| スキル名                                           | 活用方法                                   |
+| -------------------------------------------------- | ------------------------------------------ |
 | **.claude/skills/refactoring-techniques/SKILL.md** | Extract Method、Replace Temp with Query    |
 | **.claude/skills/clean-code-practices/SKILL.md**   | 意味のある命名、小さな関数、DRY原則        |
 | **.claude/skills/tdd-red-green-refactor/SKILL.md** | リファクタリング後もテストが継続成功を確認 |
@@ -1104,8 +1104,8 @@ pnpm --filter @repo/shared test:run
 
 #### 活用スキル
 
-| スキル名            | 活用方法                               |
-| ------------------- | -------------------------------------- |
+| スキル名                                    | 活用方法                               |
+| ------------------------------------------- | -------------------------------------- |
 | **.claude/skills/vitest-advanced/SKILL.md** | カバレッジ設定、カバレッジレポート分析 |
 | **.claude/skills/tdd-principles/SKILL.md**  | テスト駆動開発のベストプラクティス     |
 
@@ -1163,8 +1163,8 @@ Lint・型チェックの実行。
 
 #### 活用スキル
 
-| スキル名                 | 活用方法                         |
-| ------------------------ | -------------------------------- |
+| スキル名                                         | 活用方法                         |
+| ------------------------------------------------ | -------------------------------- |
 | **.claude/skills/eslint-configuration/SKILL.md** | ESLintルール適用、自動修正       |
 | **.claude/skills/prettier-integration/SKILL.md** | Prettier統合、コードフォーマット |
 | **.claude/skills/type-safety-patterns/SKILL.md** | TypeScript厳格モード、型推論     |
@@ -1228,8 +1228,8 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 #### レビュー参加エージェント
 
-| エージェント  | レビュー観点       | 選定理由                                 |
-| ------------- | ------------------ | ---------------------------------------- |
+| エージェント                   | レビュー観点       | 選定理由                                 |
+| ------------------------------ | ------------------ | ---------------------------------------- |
 | .claude/agents/code-quality.md | コード品質         | コーディング規約、可読性、保守性の確認   |
 | .claude/agents/arch-police.md  | アーキテクチャ遵守 | Clean Architecture遵守、SOLID原則準拠    |
 | .claude/agents/unit-tester.md  | テスト品質         | テストカバレッジ、テストケース設計の確認 |

@@ -20,8 +20,8 @@
 
 ## レビュー参加エージェント
 
-| エージェント         | レビュー観点         | 判定  |
-| -------------------- | -------------------- | ----- |
+| エージェント                          | レビュー観点         | 判定  |
+| ------------------------------------- | -------------------- | ----- |
 | `.claude/agents/arch-police.md`       | アーキテクチャ整合性 | MINOR |
 | `.claude/agents/electron-security.md` | セキュリティ設計     | MINOR |
 | `.claude/agents/sec-auditor.md`       | 脆弱性リスク         | MINOR |
@@ -253,9 +253,9 @@ Phase 2では以下のテスト作成タスクを実施:
 
 ## 署名
 
-| 役割               | 担当              | 日時       |
-| ------------------ | ----------------- | ---------- |
-| 設計者             | Claude Code       | 2025-12-09 |
+| 役割                                | 担当              | 日時       |
+| ----------------------------------- | ----------------- | ---------- |
+| 設計者                              | Claude Code       | 2025-12-09 |
 | .claude/agents/arch-police.md       | Claude Code Agent | 2025-12-09 |
 | .claude/agents/electron-security.md | Claude Code Agent | 2025-12-09 |
 | .claude/agents/sec-auditor.md       | Claude Code Agent | 2025-12-09 |

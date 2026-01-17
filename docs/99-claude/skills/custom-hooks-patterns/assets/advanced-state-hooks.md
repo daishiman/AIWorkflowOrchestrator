@@ -57,7 +57,12 @@ export const loggerMiddleware: Middleware<unknown, unknown> =
 export const thunkMiddleware: Middleware<unknown, unknown> =
   (getState, dispatch) => (next) => (action) => {
     if (typeof action === "function") {
-      return (action as (dispatch: typeof dispatch, getState: typeof getState) => unknown)(dispatch, getState);
+      return (
+        action as (
+          dispatch: typeof dispatch,
+          getState: typeof getState,
+        ) => unknown
+      )(dispatch, getState);
     }
     return next(action);
   };

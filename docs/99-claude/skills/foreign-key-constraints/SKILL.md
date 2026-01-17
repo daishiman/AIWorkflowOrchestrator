@@ -75,12 +75,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task                                                                     | 用途             | 入力               | 出力                   |
-| ------------------------------------------------------------------------ | ---------------- | ------------------ | ---------------------- |
-| [agents/design-review.md](agents/design-review.md)                       | 設計レビュー     | スキーマ定義       | 妥当性評価レポート     |
-| [agents/cascade-selection.md](agents/cascade-selection.md)               | CASCADE選択      | 関係性・要件       | 推奨CASCADE設定        |
-| [agents/circular-detection.md](agents/circular-detection.md)             | 循環参照検出     | FK依存グラフ       | 循環リスト・解消策     |
-| [agents/soft-delete-integration.md](agents/soft-delete-integration.md)   | ソフトデリート統合 | 削除ポリシー       | 実装パターン           |
+| Task                                                                   | 用途               | 入力         | 出力               |
+| ---------------------------------------------------------------------- | ------------------ | ------------ | ------------------ |
+| [agents/design-review.md](agents/design-review.md)                     | 設計レビュー       | スキーマ定義 | 妥当性評価レポート |
+| [agents/cascade-selection.md](agents/cascade-selection.md)             | CASCADE選択        | 関係性・要件 | 推奨CASCADE設定    |
+| [agents/circular-detection.md](agents/circular-detection.md)           | 循環参照検出       | FK依存グラフ | 循環リスト・解消策 |
+| [agents/soft-delete-integration.md](agents/soft-delete-integration.md) | ソフトデリート統合 | 削除ポリシー | 実装パターン       |
 
 ## ベストプラクティス
 
@@ -102,27 +102,27 @@ allowed-tools:
 
 ### references/（詳細知識）
 
-| リソース         | パス                                                     | 内容                       |
-| ---------------- | -------------------------------------------------------- | -------------------------- |
-| CASCADEパターン  | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |
+| リソース        | パス                                                             | 内容                            |
+| --------------- | ---------------------------------------------------------------- | ------------------------------- |
+| CASCADEパターン | [references/cascade-patterns.md](references/cascade-patterns.md) | 各CASCADE動作のパターン・実装例 |
 
 ### scripts/（検証・記録）
 
-| スクリプト             | 用途         | 使用例                                                  |
-| ---------------------- | ------------ | ------------------------------------------------------- |
-| check-fk-integrity.mjs | 整合性検証   | `node scripts/check-fk-integrity.mjs --schema <dir>`   |
-| log_usage.mjs          | 利用記録     | `node scripts/log_usage.mjs --result success`          |
+| スクリプト             | 用途       | 使用例                                               |
+| ---------------------- | ---------- | ---------------------------------------------------- |
+| check-fk-integrity.mjs | 整合性検証 | `node scripts/check-fk-integrity.mjs --schema <dir>` |
+| log_usage.mjs          | 利用記録   | `node scripts/log_usage.mjs --result success`        |
 
 ### assets/（テンプレート）
 
-| テンプレート         | 用途                   |
-| -------------------- | ---------------------- |
+| テンプレート           | 用途                 |
+| ---------------------- | -------------------- |
 | fk-design-checklist.md | FK設計チェックリスト |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                  |
-| ------- | ---------- | -------------------------------------------------------- |
-| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化      |
-| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                               |
-| 1.0.0   | 2025-12-24 | 初版作成                                                 |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。references/整理・簡素化 |
+| 2.0.0   | 2025-12-31 | Task-basedワークフロー追加                          |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

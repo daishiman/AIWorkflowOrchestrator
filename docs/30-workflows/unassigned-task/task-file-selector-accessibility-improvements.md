@@ -13,7 +13,7 @@
 | ステータス       | 未実施                             |
 | 発見元           | Phase 7-2 アクセシビリティレビュー |
 | 発見日           | 2024-12-17                         |
-| 発見エージェント | .claude/agents/ui-designer.md                       |
+| 発見エージェント | .claude/agents/ui-designer.md      |
 
 ---
 
@@ -153,8 +153,8 @@ WCAG 2.1 AA準拠を検証するテストを作成する。
 
 #### 活用スキル
 
-| スキル名           | 活用方法                 |
-| ------------------ | ------------------------ |
+| スキル名                                   | 活用方法                 |
+| ------------------------------------------ | ------------------------ |
 | .claude/skills/accessibility-wcag/SKILL.md | WCAG準拠テストケース設計 |
 | .claude/skills/test-doubles/SKILL.md       | モック作成               |
 
@@ -205,8 +205,8 @@ pnpm --filter @repo/desktop test:run -- accessibility.test.tsx
 
 #### 活用スキル
 
-| スキル名              | 活用方法               |
-| --------------------- | ---------------------- |
+| スキル名                                      | 活用方法               |
+| --------------------------------------------- | ---------------------- |
 | .claude/skills/accessibility-wcag/SKILL.md    | WCAG 2.4.3準拠実装     |
 | .claude/skills/custom-hooks-patterns/SKILL.md | フォーカストラップhook |
 

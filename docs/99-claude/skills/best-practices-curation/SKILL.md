@@ -77,12 +77,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| スコープ整理 | 収集対象の定義 | テーマ/目的 | スコープメモ | `references/Level1_basics.md` | Phase 1 |
-| 品質評価 | 情報源評価 | 情報源リスト | 評価スコア | `references/quality-scoring.md` | Phase 2 |
-| 統合 | 重複排除と統合 | 評価スコア | 統合メモ | `references/integration-strategies.md` | Phase 3 |
-| 検証 | 更新の妥当性確認 | 統合メモ | 検証メモ | `references/Level4_expert.md` | Phase 4 |
+| Task         | 役割             | 入力         | 出力         | 参照先                                 | 実行タイミング |
+| ------------ | ---------------- | ------------ | ------------ | -------------------------------------- | -------------- |
+| スコープ整理 | 収集対象の定義   | テーマ/目的  | スコープメモ | `references/Level1_basics.md`          | Phase 1        |
+| 品質評価     | 情報源評価       | 情報源リスト | 評価スコア   | `references/quality-scoring.md`        | Phase 2        |
+| 統合         | 重複排除と統合   | 評価スコア   | 統合メモ     | `references/integration-strategies.md` | Phase 3        |
+| 検証         | 更新の妥当性確認 | 統合メモ     | 検証メモ     | `references/Level4_expert.md`          | Phase 4        |
 
 ## ベストプラクティス
 
@@ -123,8 +123,8 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠               |
+| 1.0.0   | 2025-12-24 | 初版作成                                 |

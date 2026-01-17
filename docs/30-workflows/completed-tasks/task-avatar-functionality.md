@@ -516,8 +516,8 @@ pnpm --filter @repo/desktop test:run
 
 #### レビュー参加エージェント
 
-| エージェント    | レビュー観点     |
-| --------------- | ---------------- |
+| エージェント                     | レビュー観点     |
+| -------------------------------- | ---------------- |
 | `.claude/agents/code-quality.md` | コード品質       |
 | `.claude/agents/sec-auditor.md`  | セキュリティ     |
 | `.claude/agents/unit-tester.md`  | テスト品質       |

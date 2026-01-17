@@ -14,15 +14,15 @@
 
 ## 主要コンポーネント
 
-| コンポーネント | 責務 |
-|----------------|------|
-| `IConverter` | 変換処理のインターフェース定義 |
-| `BaseConverter` | 共通変換処理の抽象基底クラス（Template Methodパターン） |
+| コンポーネント      | 責務                                                     |
+| ------------------- | -------------------------------------------------------- |
+| `IConverter`        | 変換処理のインターフェース定義                           |
+| `BaseConverter`     | 共通変換処理の抽象基底クラス（Template Methodパターン）  |
 | `ConverterRegistry` | 利用可能なコンバーターの管理と選択（Repositoryパターン） |
-| `ConversionService` | 変換処理の統括（タイムアウト・同時実行制御） |
-| `MetadataExtractor` | テキストからのメタデータ抽出 |
-| `ConversionLogger` | 変換処理のログ記録（バッファリング対応） |
-| `HistoryService` | 変換履歴のバージョン管理（履歴取得・差分比較・復元） |
+| `ConversionService` | 変換処理の統括（タイムアウト・同時実行制御）             |
+| `MetadataExtractor` | テキストからのメタデータ抽出                             |
+| `ConversionLogger`  | 変換処理のログ記録（バッファリング対応）                 |
+| `HistoryService`    | 変換履歴のバージョン管理（履歴取得・差分比較・復元）     |
 
 ## ログ記録サービス（ConversionLogger）
 
@@ -33,13 +33,13 @@
 
 ### 主要機能
 
-| 機能 | 説明 |
-|------|------|
-| INFOログ | 正常な処理の記録（開始、完了、進捗） |
-| WARNログ | 注意が必要な状況（パフォーマンス警告等） |
-| ERRORログ | エラー発生時の記録（スタックトレース保存） |
-| バッファリング | メモリバッファによる効率的なDB書き込み |
-| 自動フラッシュ | サイズベース・時間ベースの自動書き込み |
+| 機能           | 説明                                       |
+| -------------- | ------------------------------------------ |
+| INFOログ       | 正常な処理の記録（開始、完了、進捗）       |
+| WARNログ       | 注意が必要な状況（パフォーマンス警告等）   |
+| ERRORログ      | エラー発生時の記録（スタックトレース保存） |
+| バッファリング | メモリバッファによる効率的なDB書き込み     |
+| 自動フラッシュ | サイズベース・時間ベースの自動書き込み     |
 
 ### アーキテクチャ
 
@@ -56,18 +56,18 @@ ConversionLogger → buffer[] → ILogRepository → Database
 
 ### 設定オプション
 
-| オプション | デフォルト | 説明 |
-|------------|------------|------|
-| bufferSize | 100 | バッファサイズ（件数） |
-| flushIntervalMs | 5000 | 自動フラッシュ間隔（ミリ秒） |
+| オプション      | デフォルト | 説明                         |
+| --------------- | ---------- | ---------------------------- |
+| bufferSize      | 100        | バッファサイズ（件数）       |
+| flushIntervalMs | 5000       | 自動フラッシュ間隔（ミリ秒） |
 
 ### 品質指標
 
-| 指標 | 実績 |
-|------|------|
-| テストカバレッジ（Line） | 96.69% |
-| テストカバレッジ（Branch） | 94.59% |
-| テスト数 | 22ケース |
+| 指標                       | 実績     |
+| -------------------------- | -------- |
+| テストカバレッジ（Line）   | 96.69%   |
+| テストカバレッジ（Branch） | 94.59%   |
+| テスト数                   | 22ケース |
 
 ## 履歴管理サービス（HistoryService）
 
@@ -78,14 +78,14 @@ ConversionLogger → buffer[] → ILogRepository → Database
 
 ### 主要機能
 
-| 機能 | 説明 |
-|------|------|
-| 履歴一覧取得 | ファイル単位のバージョン履歴をページネーション付きで取得 |
-| バージョン詳細取得 | 特定バージョンの詳細情報を取得 |
-| 差分比較 | 2つのバージョン間のサイズ・メタデータ・コンテンツ変更を比較 |
-| バージョン復元 | 過去バージョンの状態に新規変換として復元 |
-| 最新バージョン取得 | ファイルの最新変換結果を取得 |
-| バージョン数取得 | ファイルの総バージョン数をカウント |
+| 機能               | 説明                                                        |
+| ------------------ | ----------------------------------------------------------- |
+| 履歴一覧取得       | ファイル単位のバージョン履歴をページネーション付きで取得    |
+| バージョン詳細取得 | 特定バージョンの詳細情報を取得                              |
+| 差分比較           | 2つのバージョン間のサイズ・メタデータ・コンテンツ変更を比較 |
+| バージョン復元     | 過去バージョンの状態に新規変換として復元                    |
+| 最新バージョン取得 | ファイルの最新変換結果を取得                                |
+| バージョン数取得   | ファイルの総バージョン数をカウント                          |
 
 ### アーキテクチャ
 
@@ -102,43 +102,43 @@ HistoryService → ConversionRepository → Database (conversions table)
 
 ### 設計パターン
 
-| パターン | 適用箇所 | 目的 |
-|----------|----------|------|
-| Repository | `ConversionRepository` | データアクセス抽象化 |
-| Result Type | 全メソッド戻り値 | 明示的エラーハンドリング |
-| Dependency Injection | コンストラクタ | テスタビリティ向上 |
+| パターン             | 適用箇所               | 目的                     |
+| -------------------- | ---------------------- | ------------------------ |
+| Repository           | `ConversionRepository` | データアクセス抽象化     |
+| Result Type          | 全メソッド戻り値       | 明示的エラーハンドリング |
+| Dependency Injection | コンストラクタ         | テスタビリティ向上       |
 
 ### 品質指標
 
-| 指標 | 実績 |
-|------|------|
-| テストカバレッジ（Line） | 100% |
-| テストカバレッジ（Branch） | 100% |
-| テスト数 | 41ケース |
+| 指標                       | 実績     |
+| -------------------------- | -------- |
+| テストカバレッジ（Line）   | 100%     |
+| テストカバレッジ（Branch） | 100%     |
+| テスト数                   | 41ケース |
 
 ## アーキテクチャパターン
 
-| パターン | 適用箇所 | 目的 |
-|----------|----------|------|
-| Template Method | `BaseConverter.convert()` | 変換フローの標準化 |
-| Repository | `ConverterRegistry`, `ConversionRepository` | コンバーター/変換履歴管理の抽象化 |
-| Factory | `createConverterInput()`, `createHistoryService()` | 型安全なオブジェクト生成 |
-| Singleton | `globalConverterRegistry` | グローバルインスタンス提供 |
-| Result Type | `HistoryService` | 明示的エラーハンドリング |
+| パターン        | 適用箇所                                           | 目的                              |
+| --------------- | -------------------------------------------------- | --------------------------------- |
+| Template Method | `BaseConverter.convert()`                          | 変換フローの標準化                |
+| Repository      | `ConverterRegistry`, `ConversionRepository`        | コンバーター/変換履歴管理の抽象化 |
+| Factory         | `createConverterInput()`, `createHistoryService()` | 型安全なオブジェクト生成          |
+| Singleton       | `globalConverterRegistry`                          | グローバルインスタンス提供        |
+| Result Type     | `HistoryService`                                   | 明示的エラーハンドリング          |
 
 ## 実装済みコンバーター
 
 **実装場所**: `packages/shared/src/services/conversion/converters/`
 
-| コンバーター | サポートMIME | 優先度 | 実装状況 |
-|--------------|--------------|--------|----------|
-| HTMLConverter | text/html | 10 | ✅ 実装済 |
-| MarkdownConverter | text/markdown, text/x-markdown | 10 | ✅ 実装済 |
-| CodeConverter | text/x-typescript, text/javascript, text/x-python | 10 | ✅ 実装済 |
-| YAMLConverter | application/x-yaml, text/yaml, text/x-yaml | 10 | ✅ 実装済 |
-| CSVConverter | text/csv, text/tab-separated-values | 5 | ✅ 実装済 |
-| JSONConverter | application/json | 5 | ✅ 実装済 |
-| PlainTextConverter | text/plain | 0 | ⏸️ 未実装 |
+| コンバーター       | サポートMIME                                      | 優先度 | 実装状況  |
+| ------------------ | ------------------------------------------------- | ------ | --------- |
+| HTMLConverter      | text/html                                         | 10     | ✅ 実装済 |
+| MarkdownConverter  | text/markdown, text/x-markdown                    | 10     | ✅ 実装済 |
+| CodeConverter      | text/x-typescript, text/javascript, text/x-python | 10     | ✅ 実装済 |
+| YAMLConverter      | application/x-yaml, text/yaml, text/x-yaml        | 10     | ✅ 実装済 |
+| CSVConverter       | text/csv, text/tab-separated-values               | 5      | ✅ 実装済 |
+| JSONConverter      | application/json                                  | 5      | ✅ 実装済 |
+| PlainTextConverter | text/plain                                        | 0      | ⏸️ 未実装 |
 
 ### HTMLConverter
 
@@ -166,12 +166,12 @@ YAML正規化、構造解析、トップレベルキー抽出、インデント�
 
 ## 品質指標
 
-| 指標 | 実績 |
-|------|------|
-| テストカバレッジ | 100% |
-| テスト数 | 201ケース |
-| 実装行数 | 2,400行 |
-| ドキュメント | 19件 |
+| 指標             | 実績      |
+| ---------------- | --------- |
+| テストカバレッジ | 100%      |
+| テスト数         | 201ケース |
+| 実装行数         | 2,400行   |
+| ドキュメント     | 19件      |
 
 ## 新規コンバーター追加手順
 
@@ -185,51 +185,51 @@ YAML正規化、構造解析、トップレベルキー抽出、インデント�
 
 ## コンバーター優先度ガイドライン
 
-| 優先度 | 用途 | 例 |
-|--------|------|------|
-| 10 | 専用コンバーター（形式固有の処理） | Markdown, Code, YAML, HTML |
-| 5-9 | 汎用的な構造化データ | JSON (5), CSV (5) |
-| 1-4 | フォールバック | （将来の拡張用） |
-| 0 | デフォルトハンドラー | PlainText |
+| 優先度 | 用途                               | 例                         |
+| ------ | ---------------------------------- | -------------------------- |
+| 10     | 専用コンバーター（形式固有の処理） | Markdown, Code, YAML, HTML |
+| 5-9    | 汎用的な構造化データ               | JSON (5), CSV (5)          |
+| 1-4    | フォールバック                     | （将来の拡張用）           |
+| 0      | デフォルトハンドラー               | PlainText                  |
 
 ## パフォーマンス要件
 
-| ファイルサイズ | 目標処理時間 | 実測値 | 状態 |
-|----------------|--------------|--------|------|
-| < 10KB | < 50ms | 3-12ms | ✅ 達成 |
-| 10KB - 100KB | < 200ms | 50-100ms | ✅ 達成 |
-| 100KB - 1MB | < 1s | 400ms | ✅ 達成 |
-| 1MB - 10MB | < 5s | 未検証 | ⚠️ 要検証 |
-| > 10MB | < 30s | 未検証 | ⚠️ 要検証 |
+| ファイルサイズ | 目標処理時間 | 実測値   | 状態      |
+| -------------- | ------------ | -------- | --------- |
+| < 10KB         | < 50ms       | 3-12ms   | ✅ 達成   |
+| 10KB - 100KB   | < 200ms      | 50-100ms | ✅ 達成   |
+| 100KB - 1MB    | < 1s         | 400ms    | ✅ 達成   |
+| 1MB - 10MB     | < 5s         | 未検証   | ⚠️ 要検証 |
+| > 10MB         | < 30s        | 未検証   | ⚠️ 要検証 |
 
 ## 既知の制限事項
 
-| 項目 | 内容 | 影響範囲 |
-|------|------|----------|
-| 正規表現ベース解析 | ASTを使用しない | CodeConverter |
-| 言語検出閾値 | 日本語100文字以上で判定 | MarkdownConverter |
-| 大容量ファイル | 10MB超未検証 | 全コンバーター |
-| 同期処理 | ストリーミング未対応 | ConversionService |
+| 項目               | 内容                    | 影響範囲          |
+| ------------------ | ----------------------- | ----------------- |
+| 正規表現ベース解析 | ASTを使用しない         | CodeConverter     |
+| 言語検出閾値       | 日本語100文字以上で判定 | MarkdownConverter |
+| 大容量ファイル     | 10MB超未検証            | 全コンバーター    |
+| 同期処理           | ストリーミング未対応    | ConversionService |
 
 ## 技術的負債
 
-| ID | 内容 | 優先度 | 見積工数 |
-|----|------|--------|----------|
-| CONV-DEBT-001 | PlainTextConverter未実装 | Medium | 4h |
-| CONV-DEBT-002 | AST-basedコード解析への移行 | Low | 16h |
-| CONV-DEBT-003 | 大容量ファイル対応（ストリーミング） | Low | 12h |
-| CONV-DEBT-004 | 正規表現タイムアウト実装（ReDoS対策） | Low | 4h |
+| ID            | 内容                                  | 優先度 | 見積工数 |
+| ------------- | ------------------------------------- | ------ | -------- |
+| CONV-DEBT-001 | PlainTextConverter未実装              | Medium | 4h       |
+| CONV-DEBT-002 | AST-basedコード解析への移行           | Low    | 16h      |
+| CONV-DEBT-003 | 大容量ファイル対応（ストリーミング）  | Low    | 12h      |
+| CONV-DEBT-004 | 正規表現タイムアウト実装（ReDoS対策） | Low    | 4h       |
 
 ## 将来の拡張ポイント
 
 **追加予定のコンバーター**:
 
-| コンバーター | 対応形式 | 優先度 | 見積工数 |
-|--------------|----------|--------|----------|
-| PDFConverter | application/pdf | 10 | 24h |
-| DocxConverter | application/vnd.openxmlformats | 8 | 16h |
-| ExcelConverter | application/vnd.ms-excel | 8 | 16h |
-| XMLConverter | application/xml | 7 | 8h |
+| コンバーター   | 対応形式                       | 優先度 | 見積工数 |
+| -------------- | ------------------------------ | ------ | -------- |
+| PDFConverter   | application/pdf                | 10     | 24h      |
+| DocxConverter  | application/vnd.openxmlformats | 8      | 16h      |
+| ExcelConverter | application/vnd.ms-excel       | 8      | 16h      |
+| XMLConverter   | application/xml                | 7      | 8h       |
 
 **機能拡張候補**:
 

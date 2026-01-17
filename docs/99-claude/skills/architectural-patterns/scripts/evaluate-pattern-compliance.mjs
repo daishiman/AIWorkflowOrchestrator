@@ -185,7 +185,8 @@ function checkViolations(analysis, patternKey, baseDir) {
       const targetLayer = resolveTargetLayer(file, imp, baseDir) || "unknown";
 
       for (const rule of patternRules) {
-        const fromMatches = file.layer === rule.from || rule.from.endsWith("/*");
+        const fromMatches =
+          file.layer === rule.from || rule.from.endsWith("/*");
         if (!fromMatches) continue;
 
         const targetMatches = rule.to.some((t) => {

@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # dependency-auditing
 
 ## 概要
@@ -78,12 +79,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-audit-requirements | Phase 1開始時 | 監査範囲 | 要件メモ、制約一覧 |
-| vulnerability-detection | Phase 2開始時 | リポジトリ情報 | 脆弱性一覧、検出結果 |
-| risk-assessment | Phase 3開始時 | 脆弱性一覧 | 優先度付き評価 |
-| remediation-planning | Phase 4開始時 | 評価結果 | 修正計画、運用メモ |
+| Task                       | 起動タイミング | 入力           | 出力                 |
+| -------------------------- | -------------- | -------------- | -------------------- |
+| analyze-audit-requirements | Phase 1開始時  | 監査範囲       | 要件メモ、制約一覧   |
+| vulnerability-detection    | Phase 2開始時  | リポジトリ情報 | 脆弱性一覧、検出結果 |
+| risk-assessment            | Phase 3開始時  | 脆弱性一覧     | 優先度付き評価       |
+| remediation-planning       | Phase 4開始時  | 評価結果       | 修正計画、運用メモ   |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,59 +92,59 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 監査範囲を明示する | 漏れを防げる |
+| 推奨事項           | 理由               |
+| ------------------ | ------------------ |
+| 監査範囲を明示する | 漏れを防げる       |
 | CVSS評価を記録する | 優先度が明確になる |
-| 修正計画を整理する | 実行が容易になる |
-| 自動化を組み込む | 継続監査ができる |
+| 修正計画を整理する | 実行が容易になる   |
+| 自動化を組み込む   | 継続監査ができる   |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 監査結果を放置する | リスクが残る |
-| 優先度なしで対応する | リソースが散る |
-| 修正根拠を残さない | 追跡が困難 |
-| 自動化を省略する | 監査が継続しない |
+| 禁止事項             | 問題点           |
+| -------------------- | ---------------- |
+| 監査結果を放置する   | リスクが残る     |
+| 優先度なしで対応する | リソースが散る   |
+| 修正根拠を残さない   | 追跡が困難       |
+| 自動化を省略する     | 監査が継続しない |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/security-audit.mjs` | 依存監査 |
-| `scripts/validate-skill.mjs` | スキル構造検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                   | 機能                         |
+| ---------------------------- | ---------------------------- |
+| `scripts/security-audit.mjs` | 依存監査                     |
+| `scripts/validate-skill.mjs` | スキル構造検証               |
+| `scripts/log_usage.mjs`      | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 検出時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 評価時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 運用時 |
-| 脆弱性検出 | [references/vulnerability-detection.md](references/vulnerability-detection.md) | 検出時 |
-| CVSS評価 | [references/cvss-scoring-guide.md](references/cvss-scoring-guide.md) | 評価時 |
-| 修正戦略 | [references/remediation-strategies.md](references/remediation-strategies.md) | 計画時 |
-| CI/CD統合 | [references/ci-cd-integration.md](references/ci-cd-integration.md) | 自動化時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース     | パス                                                                           | 読込条件   |
+| ------------ | ------------------------------------------------------------------------------ | ---------- |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md)                     | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md)         | 検出時     |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md)                 | 評価時     |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md)                     | 運用時     |
+| 脆弱性検出   | [references/vulnerability-detection.md](references/vulnerability-detection.md) | 検出時     |
+| CVSS評価     | [references/cvss-scoring-guide.md](references/cvss-scoring-guide.md)           | 評価時     |
+| 修正戦略     | [references/remediation-strategies.md](references/remediation-strategies.md)   | 計画時     |
+| CI/CD統合    | [references/ci-cd-integration.md](references/ci-cd-integration.md)             | 自動化時   |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md)           | 仕様確認時 |
+| 旧スキル     | [references/legacy-skill.md](references/legacy-skill.md)                       | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/audit-checklist.md` | 監査チェックリスト |
+| アセット                                      | 用途                   |
+| --------------------------------------------- | ---------------------- |
+| `assets/audit-checklist.md`                   | 監査チェックリスト     |
 | `assets/vulnerability-assessment-template.md` | 脆弱性評価テンプレート |
-| `assets/remediation-plan-template.md` | 修正計画テンプレート |
+| `assets/remediation-plan-template.md`         | 修正計画テンプレート   |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

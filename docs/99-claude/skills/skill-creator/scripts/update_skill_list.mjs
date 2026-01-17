@@ -115,7 +115,11 @@ function extractSummary(description) {
   for (const line of lines) {
     const trimmed = line.trim();
     // Anchors:やTrigger:で終了
-    if (trimmed.startsWith("Anchors:") || trimmed.startsWith("Trigger:") || trimmed.startsWith("•")) {
+    if (
+      trimmed.startsWith("Anchors:") ||
+      trimmed.startsWith("Trigger:") ||
+      trimmed.startsWith("•")
+    ) {
       break;
     }
     if (trimmed) {
@@ -143,7 +147,10 @@ function updateSkillList(skillListContent, skillName, skillPath, summary) {
   // 既存のエントリを検索
   let existingLineIndex = -1;
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i].includes(skillMdPath) || lines[i].includes(skillName + "/SKILL.md")) {
+    if (
+      lines[i].includes(skillMdPath) ||
+      lines[i].includes(skillName + "/SKILL.md")
+    ) {
       existingLineIndex = i;
       break;
     }
@@ -158,7 +165,7 @@ function updateSkillList(skillListContent, skillName, skillPath, summary) {
     return {
       content: lines.join("\n"),
       action: "updated",
-      line: existingLineIndex + 1
+      line: existingLineIndex + 1,
     };
   } else {
     // 追加位置を探す（「未分類」セクションまたはファイル末尾）
@@ -166,7 +173,10 @@ function updateSkillList(skillListContent, skillName, skillPath, summary) {
 
     // 「未分類」または「Uncategorized」セクションを探す
     for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes("未分類") || lines[i].toLowerCase().includes("uncategorized")) {
+      if (
+        lines[i].includes("未分類") ||
+        lines[i].toLowerCase().includes("uncategorized")
+      ) {
         // テーブルヘッダーの後を探す
         for (let j = i + 1; j < lines.length; j++) {
           if (lines[j].startsWith("|") && lines[j].includes("---")) {
@@ -191,7 +201,7 @@ ${newRow}
       return {
         content: skillListContent + uncategorizedSection,
         action: "added (new section)",
-        line: lines.length + 5
+        line: lines.length + 5,
       };
     }
 
@@ -200,7 +210,7 @@ ${newRow}
     return {
       content: lines.join("\n"),
       action: "added",
-      line: insertIndex + 1
+      line: insertIndex + 1,
     };
   }
 }
@@ -215,7 +225,7 @@ function updateLastModified(content, skillName) {
   if (lastUpdateRegex.test(content)) {
     return content.replace(
       lastUpdateRegex,
-      `最終更新日: ${today} (${skillName}更新)`
+      `最終更新日: ${today} (${skillName}更新)`,
     );
   }
 
@@ -259,7 +269,9 @@ async function main() {
   // skill_list.mdの解決
   const resolvedSkillListPath = resolve(process.cwd(), skillListPath);
   if (!existsSync(resolvedSkillListPath)) {
-    console.error(`Error: skill_list.mdが存在しません: ${resolvedSkillListPath}`);
+    console.error(
+      `Error: skill_list.mdが存在しません: ${resolvedSkillListPath}`,
+    );
     process.exit(EXIT_FILE_NOT_FOUND);
   }
 
@@ -287,7 +299,12 @@ async function main() {
   const skillListContent = readFileSync(resolvedSkillListPath, "utf-8");
 
   // 更新
-  const result = updateSkillList(skillListContent, skillName, skillPath, summary);
+  const result = updateSkillList(
+    skillListContent,
+    skillName,
+    skillPath,
+    summary,
+  );
   const finalContent = updateLastModified(result.content, skillName);
 
   console.log(`アクション: ${result.action}`);
@@ -296,7 +313,9 @@ async function main() {
   if (dryRun) {
     console.log("\n[DRY-RUN] 以下の行が追加/更新されます:");
     const skillMdLink = `**.claude/skills/${skillName}/SKILL.md**`;
-    console.log(`| ${skillMdLink} | \`.claude/skills/${skillName}/SKILL.md\` | ${summary} |`);
+    console.log(
+      `| ${skillMdLink} | \`.claude/skills/${skillName}/SKILL.md\` | ${summary} |`,
+    );
     process.exit(EXIT_SUCCESS);
   }
 

@@ -9,7 +9,13 @@
  *   3: file not found
  */
 
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "fs";
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from "fs";
 import { join, resolve } from "path";
 
 const EXIT_SUCCESS = 0;
@@ -157,7 +163,9 @@ function analyzeClasses(classes) {
 function detectIssues(classes, analysis) {
   const issues = [];
 
-  const spacingClasses = classes.filter((c) => /^(p|m)[xytblr]?-(\d|\[)/.test(c));
+  const spacingClasses = classes.filter((c) =>
+    /^(p|m)[xytblr]?-(\d|\[)/.test(c),
+  );
   if (spacingClasses.length > 10) {
     issues.push({
       type: "warning",
@@ -203,7 +211,11 @@ function processDirectory(dirPath) {
     const filePath = join(dirPath, file);
     const stat = statSync(filePath);
 
-    if (stat.isDirectory() && !file.startsWith(".") && file !== "node_modules") {
+    if (
+      stat.isDirectory() &&
+      !file.startsWith(".") &&
+      file !== "node_modules"
+    ) {
       allClasses = allClasses.concat(processDirectory(filePath));
     } else if (/\.(tsx?|jsx?|vue|svelte)$/.test(file)) {
       const content = readFileSync(filePath, "utf-8");

@@ -11,7 +11,14 @@
     },
     "pattern": {
       "type": "string",
-      "enum": ["sequential", "parallel", "conditional", "loop", "phase-based", "combined"],
+      "enum": [
+        "sequential",
+        "parallel",
+        "conditional",
+        "loop",
+        "phase-based",
+        "combined"
+      ],
       "description": "主要なワークフローパターン"
     },
     "tasks": {

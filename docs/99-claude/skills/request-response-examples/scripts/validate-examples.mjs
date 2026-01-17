@@ -83,12 +83,15 @@ async function main() {
     }
 
     if (content.includes("{{")) {
-      console.error("Validation failed: unresolved template placeholders found");
+      console.error(
+        "Validation failed: unresolved template placeholders found",
+      );
       process.exit(EXIT_VALIDATION_FAILED);
     }
 
     const missingFields = REQUIRED_ERROR_FIELDS.filter(
-      (field) => !content.includes(`"${field}"`) && !content.includes(`${field}:`),
+      (field) =>
+        !content.includes(`"${field}"`) && !content.includes(`${field}:`),
     );
     if (missingFields.length > 0) {
       console.error(

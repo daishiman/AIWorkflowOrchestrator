@@ -23,23 +23,25 @@
  *   node scripts/verify-slides.mjs ./index.html --check-ratio
  */
 
-import { execSync } from 'child_process';
-import { existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'fs';
-import { dirname, join, basename } from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from "child_process";
+import { existsSync, mkdirSync, readdirSync, rmSync, statSync } from "fs";
+import { dirname, join, basename } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // コマンドライン引数のパース
 const args = process.argv.slice(2);
-const flags = args.filter(a => a.startsWith('--'));
-const positionalArgs = args.filter(a => !a.startsWith('--'));
+const flags = args.filter((a) => a.startsWith("--"));
+const positionalArgs = args.filter((a) => !a.startsWith("--"));
 
-const cleanupOnly = flags.includes('--cleanup');
-const autoCleanup = flags.includes('--auto-cleanup');
-const checkRatioOnly = flags.includes('--check-ratio');
+const cleanupOnly = flags.includes("--cleanup");
+const autoCleanup = flags.includes("--auto-cleanup");
+const checkRatioOnly = flags.includes("--check-ratio");
 const htmlPath = positionalArgs[0];
-const outputDir = positionalArgs[1] || (htmlPath ? join(dirname(htmlPath), 'screenshots') : null);
+const outputDir =
+  positionalArgs[1] ||
+  (htmlPath ? join(dirname(htmlPath), "screenshots") : null);
 
 // 16:9基準解像度
 const VIEWPORT_WIDTH = 1920;
@@ -47,7 +49,7 @@ const VIEWPORT_HEIGHT = 1080;
 const ASPECT_RATIO = 16 / 9;
 
 // ヘルプ表示
-if (flags.includes('--help') || flags.includes('-h')) {
+if (flags.includes("--help") || flags.includes("-h")) {
   console.log(`
 スライド検証スクリプト（16:9対応版）
 
@@ -81,11 +83,11 @@ if (flags.includes('--help') || flags.includes('-h')) {
  */
 function cleanupScreenshots(dir) {
   if (!dir) {
-    console.error('❌ 削除対象のディレクトリが指定されていません');
+    console.error("❌ 削除対象のディレクトリが指定されていません");
     return false;
   }
 
-  const absoluteDir = dir.startsWith('/') ? dir : join(process.cwd(), dir);
+  const absoluteDir = dir.startsWith("/") ? dir : join(process.cwd(), dir);
 
   if (!existsSync(absoluteDir)) {
     console.log(`⚠️  ディレクトリが存在しません: ${absoluteDir}`);
@@ -93,15 +95,17 @@ function cleanupScreenshots(dir) {
   }
 
   try {
-    const files = readdirSync(absoluteDir).filter(f => f.endsWith('.png'));
+    const files = readdirSync(absoluteDir).filter((f) => f.endsWith(".png"));
 
     if (files.length === 0) {
-      console.log(`📁 削除対象のスクリーンショットがありません: ${absoluteDir}`);
+      console.log(
+        `📁 削除対象のスクリーンショットがありません: ${absoluteDir}`,
+      );
       return true;
     }
 
     // スクリーンショットファイルを削除
-    files.forEach(file => {
+    files.forEach((file) => {
       const filePath = join(absoluteDir, file);
       rmSync(filePath);
     });
@@ -127,7 +131,9 @@ function cleanupScreenshots(dir) {
  */
 function checkAspectRatio(htmlPath) {
   if (!htmlPath) {
-    console.error('Usage: node verify-slides.mjs <html-file-path> --check-ratio');
+    console.error(
+      "Usage: node verify-slides.mjs <html-file-path> --check-ratio",
+    );
     process.exit(1);
   }
 
@@ -136,9 +142,11 @@ function checkAspectRatio(htmlPath) {
     process.exit(1);
   }
 
-  const absoluteHtmlPath = htmlPath.startsWith('/') ? htmlPath : join(process.cwd(), htmlPath);
+  const absoluteHtmlPath = htmlPath.startsWith("/")
+    ? htmlPath
+    : join(process.cwd(), htmlPath);
 
-  console.log('📐 16:9アスペクト比を検証中...');
+  console.log("📐 16:9アスペクト比を検証中...");
   console.log(`   HTML: ${absoluteHtmlPath}`);
   console.log(`   基準解像度: ${VIEWPORT_WIDTH}x${VIEWPORT_HEIGHT} (16:9)`);
 
@@ -212,8 +220,8 @@ except Exception as e:
 
   try {
     execSync(`python3 -c '${pythonScript.replace(/'/g, "\\'")}'`, {
-      stdio: 'inherit',
-      timeout: 60000
+      stdio: "inherit",
+      timeout: 60000,
     });
     return true;
   } catch (error) {
@@ -226,8 +234,10 @@ except Exception as e:
  */
 function captureScreenshots(htmlPath, outputDir) {
   if (!htmlPath) {
-    console.error('Usage: node verify-slides.mjs <html-file-path> [output-dir]');
-    console.error('Example: node verify-slides.mjs ./index.html ./screenshots');
+    console.error(
+      "Usage: node verify-slides.mjs <html-file-path> [output-dir]",
+    );
+    console.error("Example: node verify-slides.mjs ./index.html ./screenshots");
     process.exit(1);
   }
 
@@ -237,15 +247,19 @@ function captureScreenshots(htmlPath, outputDir) {
   }
 
   // 絶対パスに変換
-  const absoluteHtmlPath = htmlPath.startsWith('/') ? htmlPath : join(process.cwd(), htmlPath);
-  const absoluteOutputDir = outputDir.startsWith('/') ? outputDir : join(process.cwd(), outputDir);
+  const absoluteHtmlPath = htmlPath.startsWith("/")
+    ? htmlPath
+    : join(process.cwd(), htmlPath);
+  const absoluteOutputDir = outputDir.startsWith("/")
+    ? outputDir
+    : join(process.cwd(), outputDir);
 
   // 出力ディレクトリ作成
   if (!existsSync(absoluteOutputDir)) {
     mkdirSync(absoluteOutputDir, { recursive: true });
   }
 
-  console.log('🔍 スライド検証を開始（16:9モード）...');
+  console.log("🔍 スライド検証を開始（16:9モード）...");
   console.log(`   HTML: ${absoluteHtmlPath}`);
   console.log(`   出力: ${absoluteOutputDir}`);
   console.log(`   ビューポート: ${VIEWPORT_WIDTH}x${VIEWPORT_HEIGHT} (16:9)`);
@@ -323,19 +337,21 @@ except Exception as e:
 
   try {
     execSync(`python3 -c '${pythonScript.replace(/'/g, "\\'")}'`, {
-      stdio: 'inherit',
-      timeout: 300000 // 5分タイムアウト
+      stdio: "inherit",
+      timeout: 300000, // 5分タイムアウト
     });
 
     // スクリーンショット数を確認
-    const screenshots = readdirSync(absoluteOutputDir).filter(f => f.endsWith('.png'));
+    const screenshots = readdirSync(absoluteOutputDir).filter((f) =>
+      f.endsWith(".png"),
+    );
     console.log(`\n📁 ${screenshots.length}枚のスクリーンショットを保存`);
 
     return true;
   } catch (error) {
-    console.error('スクリーンショット撮影に失敗しました');
-    console.error('Playwrightがインストールされているか確認してください:');
-    console.error('  pip install playwright && playwright install chromium');
+    console.error("スクリーンショット撮影に失敗しました");
+    console.error("Playwrightがインストールされているか確認してください:");
+    console.error("  pip install playwright && playwright install chromium");
     return false;
   }
 }
@@ -343,13 +359,14 @@ except Exception as e:
 // メイン処理
 if (cleanupOnly) {
   // 削除のみモード
-  console.log('🗑️  スクリーンショット削除モード');
-  const targetDir = outputDir || (htmlPath ? join(dirname(htmlPath), 'screenshots') : null);
+  console.log("🗑️  スクリーンショット削除モード");
+  const targetDir =
+    outputDir || (htmlPath ? join(dirname(htmlPath), "screenshots") : null);
   const success = cleanupScreenshots(targetDir);
   process.exit(success ? 0 : 1);
 } else if (checkRatioOnly) {
   // 16:9検証のみモード
-  console.log('📐 16:9アスペクト比検証モード');
+  console.log("📐 16:9アスペクト比検証モード");
   const success = checkAspectRatio(htmlPath);
   process.exit(success ? 0 : 1);
 } else {
@@ -358,22 +375,22 @@ if (cleanupOnly) {
 
   if (success && autoCleanup) {
     // 自動削除モード
-    console.log('\n⏳ 3秒後にスクリーンショットを自動削除します...');
-    console.log('   （中断するには Ctrl+C）\n');
+    console.log("\n⏳ 3秒後にスクリーンショットを自動削除します...");
+    console.log("   （中断するには Ctrl+C）\n");
 
     setTimeout(() => {
       cleanupScreenshots(outputDir);
-      console.log('\n✨ 検証と削除が完了しました');
+      console.log("\n✨ 検証と削除が完了しました");
     }, 3000);
   } else if (success) {
     // 通常モード: 削除方法を案内
-    console.log('\n💡 次のステップ:');
-    console.log('   1. スクリーンショットを確認してレイアウト問題を特定');
-    console.log('   2. 問題のあるスライドのHTMLを修正');
-    console.log('   3. 再度このスクリプトを実行して検証');
-    console.log('\n📐 16:9アスペクト比のみを検証する場合:');
+    console.log("\n💡 次のステップ:");
+    console.log("   1. スクリーンショットを確認してレイアウト問題を特定");
+    console.log("   2. 問題のあるスライドのHTMLを修正");
+    console.log("   3. 再度このスクリプトを実行して検証");
+    console.log("\n📐 16:9アスペクト比のみを検証する場合:");
     console.log(`   node verify-slides.mjs ${htmlPath} --check-ratio`);
-    console.log('\n🗑️  確認完了後、以下のコマンドでスクリーンショットを削除:');
+    console.log("\n🗑️  確認完了後、以下のコマンドでスクリーンショットを削除:");
     console.log(`   node verify-slides.mjs ${htmlPath} --cleanup`);
   } else {
     process.exit(1);

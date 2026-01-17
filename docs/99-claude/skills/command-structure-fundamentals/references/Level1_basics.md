@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - コマンド構造の初期整理時に使用する。
 
 ### 必要な知識
+
 - 対象領域: Claude Codeスラッシュコマンドの基本構造を専門とするスキル。 YAML Frontmatter（description、argument-hint、allowed-tools、model、disable-model-invocation） と本文パターン、ファイル構造の理解を提供します。
 - 主要概念: タスク実行仕様書生成ガイド / Claude Code 3層アーキテクチャ設計仕様書 / YAML Frontmatter リファレンス / 必須フィールド / description
 - 実務指針: 新しいコマンドの基本構造を設計する時
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: コマンドファイルの最小構成を知りたい時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `assets/minimal-command.md`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `assets/minimal-command.md`: このレベルでは参照のみ
 
 ## 実践手順

@@ -77,12 +77,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Phase   | Task                          | 入力                               | 出力                                     | リソース                                                  |
-| ------- | ----------------------------- | ---------------------------------- | ---------------------------------------- | --------------------------------------------------------- |
-| Phase 1 | scope-stakeholder-alignment   | 依頼背景、既存資料                 | スコープ定義、ステークホルダーマップ     | agents/scope-stakeholder-alignment.md                    |
-| Phase 2 | requirements-elicitation      | ステークホルダー一覧、前提条件     | 要件候補リスト、未確定事項               | agents/requirements-elicitation.md                       |
-| Phase 3 | requirements-specification    | 要件候補リスト、制約条件           | 要件定義書、要件ID一覧                   | agents/requirements-specification.md                     |
-| Phase 4 | requirements-quality-review   | 要件定義書、レビュー観点           | 品質レビュー結果、修正一覧               | agents/requirements-quality-review.md                    |
+| Phase   | Task                        | 入力                           | 出力                                 | リソース                              |
+| ------- | --------------------------- | ------------------------------ | ------------------------------------ | ------------------------------------- |
+| Phase 1 | scope-stakeholder-alignment | 依頼背景、既存資料             | スコープ定義、ステークホルダーマップ | agents/scope-stakeholder-alignment.md |
+| Phase 2 | requirements-elicitation    | ステークホルダー一覧、前提条件 | 要件候補リスト、未確定事項           | agents/requirements-elicitation.md    |
+| Phase 3 | requirements-specification  | 要件候補リスト、制約条件       | 要件定義書、要件ID一覧               | agents/requirements-specification.md  |
+| Phase 4 | requirements-quality-review | 要件定義書、レビュー観点       | 品質レビュー結果、修正一覧           | agents/requirements-quality-review.md |
 
 ## ベストプラクティス
 
@@ -131,7 +131,7 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                 |
-| ------- | ---------- | --------------------------------------------------------------------------------------- |
+| Version | Date       | Changes                                                                            |
+| ------- | ---------- | ---------------------------------------------------------------------------------- |
 | 1.1.0   | 2026-01-02 | ワークフロー再設計、Task仕様ナビ追加、agents作成、参照パス整備、検証スクリプト更新 |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいた完全改定、Task仕様ナビの追加、Anchors/Triggerの統合           |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいた完全改定、Task仕様ナビの追加、Anchors/Triggerの統合      |

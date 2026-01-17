@@ -2,13 +2,13 @@
 
 ## パッケージ情報
 
-| 項目             | 内容                                    |
-| ---------------- | --------------------------------------- |
-| パッケージ名     | `@anthropic-ai/claude-agent-sdk`        |
-| 旧名             | `@anthropic-ai/claude-code`             |
-| 最新バージョン   | 0.1.73+                                 |
-| インストール     | `pnpm add @anthropic-ai/claude-agent-sdk` |
-| リリース日       | 2025年9月29日                           |
+| 項目           | 内容                                      |
+| -------------- | ----------------------------------------- |
+| パッケージ名   | `@anthropic-ai/claude-agent-sdk`          |
+| 旧名           | `@anthropic-ai/claude-code`               |
+| 最新バージョン | 0.1.73+                                   |
+| インストール   | `pnpm add @anthropic-ai/claude-agent-sdk` |
+| リリース日     | 2025年9月29日                             |
 
 ## SDK履歴
 
@@ -19,7 +19,11 @@ Claude Agent SDKは元々「Claude Code SDK」として開発された。Claude 
 ## query() 基本構文
 
 ```typescript
-import { query, type SDKMessage, type Options } from "@anthropic-ai/claude-agent-sdk";
+import {
+  query,
+  type SDKMessage,
+  type Options,
+} from "@anthropic-ai/claude-agent-sdk";
 
 function query({
   prompt,
@@ -126,8 +130,8 @@ type SDKPartialAssistantMessage = {
 
 ```typescript
 type ToolConfig =
-  | string[]                              // 許可リスト
-  | { type: "preset"; preset: string }    // プリセット
+  | string[] // 許可リスト
+  | { type: "preset"; preset: string } // プリセット
   | { type: "custom"; tools: ToolDef[] }; // カスタム定義
 ```
 
@@ -227,10 +231,10 @@ for await (const msg of result) {
 
 ```typescript
 type PermissionMode =
-  | "auto"      // すべて自動承認
-  | "ask"       // すべて確認
-  | "deny"      // すべて拒否
-  | "default";  // デフォルト（ツールごとの設定に従う）
+  | "auto" // すべて自動承認
+  | "ask" // すべて確認
+  | "deny" // すべて拒否
+  | "default"; // デフォルト（ツールごとの設定に従う）
 ```
 
 ### 使用例

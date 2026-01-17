@@ -15,9 +15,9 @@ Claude Code Skills のフォルダ構造、SKILL.md仕様、各ディレクト�
 
 ## ドキュメント構成
 
-| ドキュメント | ファイル | 説明 |
-|-------------|----------|------|
-| agents/ディレクトリ仕様 | [claude-code-skills-agents.md](./claude-code-skills-agents.md) | Task仕様書のテンプレート、入出力定義 |
+| ドキュメント             | ファイル                                                             | 説明                                                       |
+| ------------------------ | -------------------------------------------------------------------- | ---------------------------------------------------------- |
+| agents/ディレクトリ仕様  | [claude-code-skills-agents.md](./claude-code-skills-agents.md)       | Task仕様書のテンプレート、入出力定義                       |
 | リソースディレクトリ仕様 | [claude-code-skills-resources.md](./claude-code-skills-resources.md) | scripts/, references/, assets/, ワークフロー・出力パターン |
 
 ---

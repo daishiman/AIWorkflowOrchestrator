@@ -70,11 +70,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-|------|----------------|------|------|
-| analyze-errors | Phase 1開始時 | システム仕様・要件 | エラーシナリオ分析 |
-| implement-error-handling | Phase 2開始時 | エラーシナリオ分析 | エラーハンドリング実装 |
-| validate-error-handling | Phase 3開始時 | エラーハンドリング実装 | 検証結果レポート |
+| Task                     | 起動タイミング | 入力                   | 出力                   |
+| ------------------------ | -------------- | ---------------------- | ---------------------- |
+| analyze-errors           | Phase 1開始時  | システム仕様・要件     | エラーシナリオ分析     |
+| implement-error-handling | Phase 2開始時  | エラーシナリオ分析     | エラーハンドリング実装 |
+| validate-error-handling  | Phase 3開始時  | エラーハンドリング実装 | 検証結果レポート       |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -99,52 +99,52 @@ allowed-tools:
 
 ## エラー分類早見表
 
-| カテゴリ | エラーコード | リトライ | HTTPステータス |
-|----------|--------------|----------|----------------|
-| Validation | 1000-1999 | 不可 | 400/422 |
-| Business | 2000-2999 | 不可 | 403/404/409 |
-| External | 3000-3999 | 可能 | 502/503/504 |
-| Infrastructure | 4000-4999 | 可能 | 500/503 |
-| Internal | 5000-5999 | 不可 | 500 |
+| カテゴリ       | エラーコード | リトライ | HTTPステータス |
+| -------------- | ------------ | -------- | -------------- |
+| Validation     | 1000-1999    | 不可     | 400/422        |
+| Business       | 2000-2999    | 不可     | 403/404/409    |
+| External       | 3000-3999    | 可能     | 502/503/504    |
+| Infrastructure | 4000-4999    | 可能     | 500/503        |
+| Internal       | 5000-5999    | 不可     | 500            |
 
 ## リソース参照
 
 ### agents/（Task仕様書）
 
-| Task | パス | 用途 |
-|------|------|------|
-| エラー分析 | See [agents/analyze-errors.md](agents/analyze-errors.md) | エラーシナリオ分析 |
-| 実装 | See [agents/implement-error-handling.md](agents/implement-error-handling.md) | エラーハンドリング実装 |
-| 検証 | See [agents/validate-error-handling.md](agents/validate-error-handling.md) | 動作検証 |
+| Task       | パス                                                                         | 用途                   |
+| ---------- | ---------------------------------------------------------------------------- | ---------------------- |
+| エラー分析 | See [agents/analyze-errors.md](agents/analyze-errors.md)                     | エラーシナリオ分析     |
+| 実装       | See [agents/implement-error-handling.md](agents/implement-error-handling.md) | エラーハンドリング実装 |
+| 検証       | See [agents/validate-error-handling.md](agents/validate-error-handling.md)   | 動作検証               |
 
 ### references/（詳細知識）
 
-| リソース | パス | 用途 |
-|----------|------|------|
-| エラー分類 | See [references/error-classification.md](references/error-classification.md) | エラーカテゴリと判定 |
-| リトライ戦略 | See [references/retry-strategies.md](references/retry-strategies.md) | 指数バックオフ・ジッター |
-| サーキットブレーカー | See [references/circuit-breaker.md](references/circuit-breaker.md) | 状態遷移・設定 |
-| メッセージ設計 | See [references/error-messages.md](references/error-messages.md) | ユーザー向けメッセージ |
+| リソース             | パス                                                                         | 用途                     |
+| -------------------- | ---------------------------------------------------------------------------- | ------------------------ |
+| エラー分類           | See [references/error-classification.md](references/error-classification.md) | エラーカテゴリと判定     |
+| リトライ戦略         | See [references/retry-strategies.md](references/retry-strategies.md)         | 指数バックオフ・ジッター |
+| サーキットブレーカー | See [references/circuit-breaker.md](references/circuit-breaker.md)           | 状態遷移・設定           |
+| メッセージ設計       | See [references/error-messages.md](references/error-messages.md)             | ユーザー向けメッセージ   |
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 用途 | 使用例 |
-|------------|------|--------|
-| `validate-error-handling.mjs` | エラーハンドリング検証 | `node scripts/validate-error-handling.mjs` |
-| `log_usage.mjs` | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+| スクリプト                    | 用途                   | 使用例                                        |
+| ----------------------------- | ---------------------- | --------------------------------------------- |
+| `validate-error-handling.mjs` | エラーハンドリング検証 | `node scripts/validate-error-handling.mjs`    |
+| `log_usage.mjs`               | フィードバック記録     | `node scripts/log_usage.mjs --result success` |
 
 ### assets/（テンプレート）
 
-| テンプレート | 用途 |
-|--------------|------|
-| `error-handler-template.ts` | エラーハンドラー実装 |
-| `retry-policy-template.ts` | リトライポリシー設定 |
+| テンプレート                  | 用途                     |
+| ----------------------------- | ------------------------ |
+| `error-handler-template.ts`   | エラーハンドラー実装     |
+| `retry-policy-template.ts`    | リトライポリシー設定     |
 | `circuit-breaker-template.ts` | サーキットブレーカー設定 |
-| `error-response-template.ts` | エラーレスポンス形式 |
+| `error-response-template.ts`  | エラーレスポンス形式     |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.0.0 | 2026-01-01 | references統合、assets追加、18-skills.md仕様完全準拠 |
-| 1.0.0 | 2025-12-31 | 初版作成 |
+| Version | Date       | Changes                                              |
+| ------- | ---------- | ---------------------------------------------------- |
+| 2.0.0   | 2026-01-01 | references統合、assets追加、18-skills.md仕様完全準拠 |
+| 1.0.0   | 2025-12-31 | 初版作成                                             |

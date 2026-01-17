@@ -14,30 +14,38 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling tool permission management tasks.
 
 ### 必要な知識
+
 - 対象領域: ツール権限管理とセキュリティ制御を専門とするスキル。
 - 主要概念: Tool Selection Matrix / ツールカテゴリ / 1. 読み取り専用ツール / Tool Permission Management / リソース読み取り
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `assets/permission-template.yaml`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `assets/permission-template.yaml`: このレベルでは参照のみ
 
 ### ワークフロー対応
+
 - Phase 1 では権限の目的と禁止事項を明確化する
 
 ## 実践手順

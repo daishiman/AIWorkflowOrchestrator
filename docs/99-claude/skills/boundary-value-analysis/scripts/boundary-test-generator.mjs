@@ -18,12 +18,18 @@ function showHelp() {
   console.log("境界値テストケース生成ツール\n");
   console.log("Usage:");
   console.log("  node boundary-test-generator.mjs --range <min> <max>");
-  console.log("  node boundary-test-generator.mjs --type string --maxLength <n>");
+  console.log(
+    "  node boundary-test-generator.mjs --type string --maxLength <n>",
+  );
   console.log("  node boundary-test-generator.mjs --type array --maxSize <n>");
-  console.log("  node boundary-test-generator.mjs --type date --from <date> --to <date>");
+  console.log(
+    "  node boundary-test-generator.mjs --type date --from <date> --to <date>",
+  );
   console.log("\nExamples:");
   console.log("  node boundary-test-generator.mjs --range 1 100");
-  console.log("  node boundary-test-generator.mjs --type string --maxLength 255");
+  console.log(
+    "  node boundary-test-generator.mjs --type string --maxLength 255",
+  );
 }
 
 function parseArgs(args) {
@@ -283,10 +289,7 @@ function main() {
   let result;
 
   if (options.mode === "range") {
-    result = generateBoundaryValues.range(
-      options.range.min,
-      options.range.max,
-    );
+    result = generateBoundaryValues.range(options.range.min, options.range.max);
   } else if (options.mode === "type") {
     if (options.type === "string" && options.maxLength) {
       result = generateBoundaryValues.string(options.maxLength);

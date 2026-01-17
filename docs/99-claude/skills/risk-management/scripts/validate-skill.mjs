@@ -101,7 +101,9 @@ function validateAgents(errors, passes) {
     return;
   }
 
-  const agentFiles = readdirSync(agentsPath).filter((file) => file.endsWith(".md"));
+  const agentFiles = readdirSync(agentsPath).filter((file) =>
+    file.endsWith(".md"),
+  );
   if (agentFiles.length === 0) {
     errors.push("agents/ has no task files");
     return;
@@ -109,7 +111,9 @@ function validateAgents(errors, passes) {
 
   for (const file of agentFiles) {
     const content = readFileSync(join(agentsPath, file), "utf-8");
-    const missing = requiredAgentSections.filter((section) => !content.includes(section));
+    const missing = requiredAgentSections.filter(
+      (section) => !content.includes(section),
+    );
     if (missing.length > 0) {
       errors.push(`agents/${file} missing sections: ${missing.join(", ")}`);
     } else {

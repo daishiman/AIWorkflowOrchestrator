@@ -326,16 +326,19 @@ EditorViewから検索パネル（SearchPanel、WorkspaceSearchPanel）へ以下
 #### 検討したパターン
 
 **パターン1: Props経由の直接渡し**
+
 - EditorView → SearchPanel にpropsで直接渡す
 - シンプルで追跡しやすい
 - 階層が深くなるとProp Drilling問題が発生
 
 **パターン2: Context API**
+
 - SearchContextを作成し、どの階層からもアクセス可能に
 - 深い階層での利用に適する
 - 過度に使うと依存関係が不明瞭に
 
 **パターン3: カスタムフック + Props組み合わせ**
+
 - フックでロジックをカプセル化し、結果のみをpropsで渡す
 - ロジックとデータの分離が明確
 - テスト時にフックのモック差し替えが容易
@@ -345,6 +348,7 @@ EditorViewから検索パネル（SearchPanel、WorkspaceSearchPanel）へ以下
 パターン3（カスタムフック + Props組み合わせ）を採用した。
 
 **理由**:
+
 - 検索パネルはEditorViewの直接の子コンポーネントであり、階層は2層のみ
 - Contextを導入するほどの深さではなく、過剰な抽象化を避けた
 - フックでIPC通信やエディタ操作のロジックをカプセル化することで、EditorView自体はシンプルに保てる

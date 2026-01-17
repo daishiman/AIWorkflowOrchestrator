@@ -18,7 +18,14 @@
  *   4: 検証失敗
  */
 
-import { readFileSync, existsSync, readdirSync, statSync, writeFileSync, mkdirSync } from "fs";
+import {
+  readFileSync,
+  existsSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+  mkdirSync,
+} from "fs";
 import { resolve, dirname, join, basename, extname } from "path";
 import { fileURLToPath } from "url";
 
@@ -68,14 +75,22 @@ function validateStructure(skillPath) {
   // 必須ファイルの確認
   for (const file of REQUIRED_FILES) {
     if (!existsSync(join(skillPath, file))) {
-      errors.push({ type: "missing", file, message: `必須ファイルが存在しません: ${file}` });
+      errors.push({
+        type: "missing",
+        file,
+        message: `必須ファイルが存在しません: ${file}`,
+      });
     }
   }
 
   // 禁止ファイルの確認
   for (const file of FORBIDDEN_FILES) {
     if (existsSync(join(skillPath, file))) {
-      errors.push({ type: "forbidden", file, message: `禁止ファイルが存在します: ${file}` });
+      errors.push({
+        type: "forbidden",
+        file,
+        message: `禁止ファイルが存在します: ${file}`,
+      });
     }
   }
 
@@ -89,7 +104,11 @@ function validateStructure(skillPath) {
       existingDirs.push(dir);
       const files = readdirSync(dirPath).filter((f) => !f.startsWith("."));
       if (files.length === 0) {
-        warnings.push({ type: "empty", dir, message: `空のディレクトリ: ${dir}` });
+        warnings.push({
+          type: "empty",
+          dir,
+          message: `空のディレクトリ: ${dir}`,
+        });
         emptyDirs.push(dir);
       }
     }
@@ -101,7 +120,7 @@ function validateStructure(skillPath) {
     errors.push({
       type: "naming",
       file: skillPath,
-      message: `スキル名がハイフンケースではありません: ${skillName}`
+      message: `スキル名がハイフンケースではありません: ${skillName}`,
     });
   }
 
@@ -114,7 +133,10 @@ function validateSkillMd(skillPath) {
   const skillMdPath = join(skillPath, "SKILL.md");
 
   if (!existsSync(skillMdPath)) {
-    return { errors: [{ type: "missing", message: "SKILL.mdが存在しません" }], warnings };
+    return {
+      errors: [{ type: "missing", message: "SKILL.mdが存在しません" }],
+      warnings,
+    };
   }
 
   const content = readFileSync(skillMdPath, "utf-8");
@@ -124,60 +146,80 @@ function validateSkillMd(skillPath) {
   if (lines.length > 500) {
     errors.push({
       type: "size",
-      message: `SKILL.mdが500行を超えています: ${lines.length}行`
+      message: `SKILL.mdが500行を超えています: ${lines.length}行`,
     });
   } else if (lines.length > 400) {
     warnings.push({
       type: "size",
-      message: `SKILL.mdが400行を超えています: ${lines.length}行（500行上限に注意）`
+      message: `SKILL.mdが400行を超えています: ${lines.length}行（500行上限に注意）`,
     });
   }
 
   // frontmatter検証
   if (!content.startsWith("---")) {
-    errors.push({ type: "frontmatter", message: "frontmatterが存在しません（---で始まる）" });
+    errors.push({
+      type: "frontmatter",
+      message: "frontmatterが存在しません（---で始まる）",
+    });
   } else {
     const frontmatterEnd = content.indexOf("---", 3);
     if (frontmatterEnd === -1) {
-      errors.push({ type: "frontmatter", message: "frontmatterが閉じられていません" });
+      errors.push({
+        type: "frontmatter",
+        message: "frontmatterが閉じられていません",
+      });
     } else {
       const frontmatter = content.substring(3, frontmatterEnd);
 
       // name検証
       if (!/name:\s*[a-z0-9-]+/.test(frontmatter)) {
-        errors.push({ type: "frontmatter", message: "name フィールドがありません" });
+        errors.push({
+          type: "frontmatter",
+          message: "name フィールドがありません",
+        });
       }
 
       // description検証
       if (!/description:/.test(frontmatter)) {
-        errors.push({ type: "frontmatter", message: "description フィールドがありません" });
+        errors.push({
+          type: "frontmatter",
+          message: "description フィールドがありません",
+        });
       }
 
       // Markdown禁止検証（description内）
-      const descMatch = frontmatter.match(/description:\s*\|?\s*([\s\S]*?)(?=\n[a-z-]+:|$)/);
+      const descMatch = frontmatter.match(
+        /description:\s*\|?\s*([\s\S]*?)(?=\n[a-z-]+:|$)/,
+      );
       if (descMatch) {
         const desc = descMatch[1];
         if (/\[.*?\]\(.*?\)/.test(desc)) {
           errors.push({
             type: "frontmatter",
-            message: "description内にMarkdownリンクが含まれています（禁止）"
+            message: "description内にMarkdownリンクが含まれています（禁止）",
           });
         }
       }
 
       // Anchors検証
       if (!/Anchors:/.test(frontmatter)) {
-        warnings.push({ type: "frontmatter", message: "Anchors セクションがありません" });
+        warnings.push({
+          type: "frontmatter",
+          message: "Anchors セクションがありません",
+        });
       } else {
         // Anchorsセクションのみを抽出（Trigger:またはallowed-tools:まで）
-        const anchorsMatch = frontmatter.match(/Anchors:([\s\S]*?)(?=Trigger:|allowed-tools:|$)/);
+        const anchorsMatch = frontmatter.match(
+          /Anchors:([\s\S]*?)(?=Trigger:|allowed-tools:|$)/,
+        );
         if (anchorsMatch) {
           const anchorsSection = anchorsMatch[1];
           // Anchorsセクション内で行頭の - または * をチェック
           if (/^\s*[-*]\s+/m.test(anchorsSection)) {
             errors.push({
               type: "frontmatter",
-              message: "Anchorsに「-」「*」が使用されています（「•」を使用してください）"
+              message:
+                "Anchorsに「-」「*」が使用されています（「•」を使用してください）",
             });
           }
         }
@@ -185,7 +227,10 @@ function validateSkillMd(skillPath) {
 
       // Trigger検証
       if (!/Trigger:/.test(frontmatter)) {
-        warnings.push({ type: "frontmatter", message: "Trigger セクションがありません" });
+        warnings.push({
+          type: "frontmatter",
+          message: "Trigger セクションがありません",
+        });
       }
     }
   }
@@ -224,7 +269,7 @@ function validateLinks(skillPath) {
         type: "broken_link",
         link: linkPath,
         text: linkText,
-        message: `リンク先が存在しません: ${linkPath}`
+        message: `リンク先が存在しません: ${linkPath}`,
       });
     }
   }
@@ -239,7 +284,7 @@ function validateLinks(skillPath) {
         warnings.push({
           type: "unreferenced",
           file: linkPath,
-          message: `SKILL.mdから参照されていません: ${linkPath}`
+          message: `SKILL.mdから参照されていません: ${linkPath}`,
         });
       }
     }
@@ -264,16 +309,22 @@ function validateAgents(skillPath) {
     const content = readFileSync(filePath, "utf-8");
 
     // 5セクション構造の簡易チェック
-    const requiredSections = ["メタ情報", "プロフィール", "知識ベース", "実行仕様", "インターフェース"];
+    const requiredSections = [
+      "メタ情報",
+      "プロフィール",
+      "知識ベース",
+      "実行仕様",
+      "インターフェース",
+    ];
     const missingSections = requiredSections.filter(
-      (s) => !new RegExp(`##\\s*\\d*\\.?\\s*${s}`, "m").test(content)
+      (s) => !new RegExp(`##\\s*\\d*\\.?\\s*${s}`, "m").test(content),
     );
 
     if (missingSections.length > 0) {
       warnings.push({
         type: "structure",
         file: `agents/${file}`,
-        message: `5セクション構造が不完全: 不足=${missingSections.join(", ")}`
+        message: `5セクション構造が不完全: 不足=${missingSections.join(", ")}`,
       });
     }
   }
@@ -320,19 +371,21 @@ async function main() {
     ...structureResult.errors,
     ...skillMdResult.errors,
     ...linksResult.errors,
-    ...agentsResult.errors
+    ...agentsResult.errors,
   ];
 
   const allWarnings = [
     ...structureResult.warnings,
     ...skillMdResult.warnings,
     ...linksResult.warnings,
-    ...agentsResult.warnings
+    ...agentsResult.warnings,
   ];
 
   // 結果表示
   console.log("--- 構造検証 ---");
-  console.log(`  ディレクトリ: ${structureResult.existingDirs.join(", ") || "なし"}`);
+  console.log(
+    `  ディレクトリ: ${structureResult.existingDirs.join(", ") || "なし"}`,
+  );
   if (structureResult.emptyDirs.length > 0) {
     console.log(`  空ディレクトリ: ${structureResult.emptyDirs.join(", ")}`);
   }
@@ -368,16 +421,16 @@ async function main() {
     summary: {
       errors: allErrors.length,
       warnings: allWarnings.length,
-      passed: allErrors.length === 0
+      passed: allErrors.length === 0,
     },
     details: {
       structure: structureResult,
       skillMd: skillMdResult,
       links: linksResult,
-      agents: agentsResult
+      agents: agentsResult,
     },
     errors: allErrors,
-    warnings: allWarnings
+    warnings: allWarnings,
   };
 
   // 出力ディレクトリ作成
@@ -387,7 +440,11 @@ async function main() {
   }
 
   // 結果を出力
-  writeFileSync(resolve(process.cwd(), outputPath), JSON.stringify(output, null, 2), "utf-8");
+  writeFileSync(
+    resolve(process.cwd(), outputPath),
+    JSON.stringify(output, null, 2),
+    "utf-8",
+  );
 
   console.log("");
   console.log("=== 結果 ===");

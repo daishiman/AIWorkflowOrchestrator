@@ -14,13 +14,16 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 実行フロー図解 / ユーザー明示起動フロー / SlashCommand Tool起動フロー / Extended Thinking トリガー / トリガーキーワード / 明示的トリガー
 - 実務指針: SlashCommand Toolによる自動起動を理解したい時 / Extended Thinkingを活用したい時 / コマンド実行フローを設計する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/execution-flow-diagrams.md`: コマンド実行フロー図解（把握する知識: 実行フロー図解 / ユーザー明示起動フロー / SlashCommand Tool起動フロー）
 - `references/extended-thinking-triggers.md`: Extended Thinkingトリガー設計（把握する知識: Extended Thinking トリガー / トリガーキーワード / 明示的トリガー）
 - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: タスク実行仕様書生成ガイド / Claude Code 3層アーキテクチャ設計仕様書）
@@ -29,15 +32,18 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Activation Mechanisms / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-activation.mjs`: 起動メカニズム検証スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/auto-invocation-template.md`: 自動起動コマンドテンプレート
 - `assets/extended-thinking-template.md`: Extended Thinking活用テンプレート
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

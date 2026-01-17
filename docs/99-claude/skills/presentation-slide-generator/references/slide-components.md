@@ -8,28 +8,28 @@
 
 ### 基本スライド（7種）
 
-| タイプ | クラス名 | 用途 |
-|--------|---------|------|
-| タイトル | `slide-title` | 表紙・セクション見出し |
-| メッセージ | `slide-message` | 1メッセージを強調 |
-| リスト | `slide-list` | 並列要素の列挙 |
-| 比較 | `slide-compare` | Before/After・対比 |
-| フロー | `slide-flow` | 横方向プロセス |
-| タイムライン | `slide-timeline` | 時系列・履歴 |
-| テーブル | `slide-table` | 詳細情報の表 |
+| タイプ       | クラス名         | 用途                   |
+| ------------ | ---------------- | ---------------------- |
+| タイトル     | `slide-title`    | 表紙・セクション見出し |
+| メッセージ   | `slide-message`  | 1メッセージを強調      |
+| リスト       | `slide-list`     | 並列要素の列挙         |
+| 比較         | `slide-compare`  | Before/After・対比     |
+| フロー       | `slide-flow`     | 横方向プロセス         |
+| タイムライン | `slide-timeline` | 時系列・履歴           |
+| テーブル     | `slide-table`    | 詳細情報の表           |
 
 ### 拡張スライド（8種）
 
-| タイプ | クラス名 | 用途 |
-|--------|---------|------|
-| ピラミッド | `slide-pyramid` | 階層構造・優先度 |
-| サークル | `slide-circle` | 中心と周辺の関係 |
-| グリッド | `slide-grid` | カード形式の一覧 |
-| ハイライト | `slide-highlight` | 重要な数値/メッセージ |
-| アイコングリッド | `slide-icon-grid` | アイコン主体の一覧 |
-| プロセス | `slide-process` | 縦方向ステップ |
-| 引用 | `slide-quote` | 引用文・権威付け |
-| ヒーロー | `slide-hero` | インパクト見出し |
+| タイプ           | クラス名          | 用途                  |
+| ---------------- | ----------------- | --------------------- |
+| ピラミッド       | `slide-pyramid`   | 階層構造・優先度      |
+| サークル         | `slide-circle`    | 中心と周辺の関係      |
+| グリッド         | `slide-grid`      | カード形式の一覧      |
+| ハイライト       | `slide-highlight` | 重要な数値/メッセージ |
+| アイコングリッド | `slide-icon-grid` | アイコン主体の一覧    |
+| プロセス         | `slide-process`   | 縦方向ステップ        |
+| 引用             | `slide-quote`     | 引用文・権威付け      |
+| ヒーロー         | `slide-hero`      | インパクト見出し      |
 
 ---
 
@@ -521,7 +521,9 @@
   padding: 1.5rem 2rem;
   border-radius: 8px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-pyramid .pyramid-level:hover {
@@ -530,10 +532,27 @@
 }
 
 /* レベル別スタイル */
-.slide-pyramid .pyramid-level-1 { width: 30%; background: var(--sakura-pink); color: var(--bg-dark); font-weight: 700; }
-.slide-pyramid .pyramid-level-2 { width: 50%; background: var(--autumn-yellow); color: var(--bg-dark); }
-.slide-pyramid .pyramid-level-3 { width: 70%; background: var(--wave-aqua); color: var(--bg-dark); }
-.slide-pyramid .pyramid-level-4 { width: 90%; background: var(--wave-blue); color: var(--bg-dark); }
+.slide-pyramid .pyramid-level-1 {
+  width: 30%;
+  background: var(--sakura-pink);
+  color: var(--bg-dark);
+  font-weight: 700;
+}
+.slide-pyramid .pyramid-level-2 {
+  width: 50%;
+  background: var(--autumn-yellow);
+  color: var(--bg-dark);
+}
+.slide-pyramid .pyramid-level-3 {
+  width: 70%;
+  background: var(--wave-aqua);
+  color: var(--bg-dark);
+}
+.slide-pyramid .pyramid-level-4 {
+  width: 90%;
+  background: var(--wave-blue);
+  color: var(--bg-dark);
+}
 ```
 
 ```html
@@ -541,7 +560,10 @@
   <div class="slider__content">
     <h2 class="pyramid-title"><i class="fas {{アイコン}}"></i> {{タイトル}}</h2>
     <div class="pyramid-container">
-      <div class="pyramid-level pyramid-level-1 has-tooltip" data-tooltip="{{説明1}}">
+      <div
+        class="pyramid-level pyramid-level-1 has-tooltip"
+        data-tooltip="{{説明1}}"
+      >
         <i class="fas {{アイコン1}}"></i>
         <span>{{テキスト1}}</span>
       </div>
@@ -592,7 +614,9 @@
   color: var(--bg-dark);
   font-weight: 700;
   z-index: 10;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-circle .circle-center:hover {
@@ -612,7 +636,10 @@
   justify-content: center;
   text-align: center;
   border: 3px solid var(--wave-blue);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .slide-circle .circle-item:hover {
@@ -622,12 +649,32 @@
 }
 
 /* 位置（6要素の場合） */
-.slide-circle .circle-item:nth-child(2) { top: 0; left: 50%; transform: translateX(-50%); }
-.slide-circle .circle-item:nth-child(3) { top: 25%; right: 5%; }
-.slide-circle .circle-item:nth-child(4) { bottom: 25%; right: 5%; }
-.slide-circle .circle-item:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%); }
-.slide-circle .circle-item:nth-child(6) { bottom: 25%; left: 5%; }
-.slide-circle .circle-item:nth-child(7) { top: 25%; left: 5%; }
+.slide-circle .circle-item:nth-child(2) {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.slide-circle .circle-item:nth-child(3) {
+  top: 25%;
+  right: 5%;
+}
+.slide-circle .circle-item:nth-child(4) {
+  bottom: 25%;
+  right: 5%;
+}
+.slide-circle .circle-item:nth-child(5) {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.slide-circle .circle-item:nth-child(6) {
+  bottom: 25%;
+  left: 5%;
+}
+.slide-circle .circle-item:nth-child(7) {
+  top: 25%;
+  left: 5%;
+}
 ```
 
 ```html
@@ -673,9 +720,15 @@
 }
 
 /* グリッド列数バリエーション */
-.slide-grid .grid-container.grid-2 { grid-template-columns: repeat(2, 280px); }
-.slide-grid .grid-container.grid-3 { grid-template-columns: repeat(3, 250px); }
-.slide-grid .grid-container.grid-4 { grid-template-columns: repeat(4, 200px); }
+.slide-grid .grid-container.grid-2 {
+  grid-template-columns: repeat(2, 280px);
+}
+.slide-grid .grid-container.grid-3 {
+  grid-template-columns: repeat(3, 250px);
+}
+.slide-grid .grid-container.grid-4 {
+  grid-template-columns: repeat(4, 200px);
+}
 
 .slide-grid .grid-card {
   background: var(--bg-dim);
@@ -683,7 +736,10 @@
   border-radius: 16px;
   text-align: center;
   border: 2px solid transparent;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .slide-grid .grid-card:hover {
@@ -693,12 +749,24 @@
 }
 
 /* カラーバリエーション */
-.slide-grid .grid-card.card-pink { border-top: 4px solid var(--sakura-pink); }
-.slide-grid .grid-card.card-pink i { color: var(--sakura-pink); }
-.slide-grid .grid-card.card-aqua { border-top: 4px solid var(--wave-aqua); }
-.slide-grid .grid-card.card-aqua i { color: var(--wave-aqua); }
-.slide-grid .grid-card.card-yellow { border-top: 4px solid var(--autumn-yellow); }
-.slide-grid .grid-card.card-yellow i { color: var(--autumn-yellow); }
+.slide-grid .grid-card.card-pink {
+  border-top: 4px solid var(--sakura-pink);
+}
+.slide-grid .grid-card.card-pink i {
+  color: var(--sakura-pink);
+}
+.slide-grid .grid-card.card-aqua {
+  border-top: 4px solid var(--wave-aqua);
+}
+.slide-grid .grid-card.card-aqua i {
+  color: var(--wave-aqua);
+}
+.slide-grid .grid-card.card-yellow {
+  border-top: 4px solid var(--autumn-yellow);
+}
+.slide-grid .grid-card.card-yellow i {
+  color: var(--autumn-yellow);
+}
 ```
 
 ```html
@@ -739,7 +807,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-highlight .highlight-icon:hover {
@@ -819,7 +889,9 @@
   padding: 1.5rem;
   background: var(--bg-dim);
   border-radius: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-icon-grid .icon-grid-item:hover {
@@ -830,7 +902,9 @@
 .slide-icon-grid .icon-grid-item i {
   font-size: 2.5rem;
   color: var(--wave-blue);
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
 }
 
 .slide-icon-grid .icon-grid-item:hover i {
@@ -842,7 +916,9 @@
 ```html
 <div class="slider__item slide-icon-grid">
   <div class="slider__content">
-    <h2 class="icon-grid-title"><i class="fas {{アイコン}}"></i> {{タイトル}}</h2>
+    <h2 class="icon-grid-title">
+      <i class="fas {{アイコン}}"></i> {{タイトル}}
+    </h2>
     <div class="icon-grid-container">
       <div class="icon-grid-item has-tooltip" data-tooltip="{{説明1}}">
         <i class="fas {{アイコン1}}"></i>
@@ -888,7 +964,9 @@
   padding: 1.5rem;
   background: var(--bg-dim);
   border-radius: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-process .process-step:hover {
@@ -1026,10 +1104,14 @@
 }
 
 .slide-hero::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(31, 31, 40, 0.9), rgba(42, 42, 55, 0.8));
+  background: linear-gradient(
+    135deg,
+    rgba(31, 31, 40, 0.9),
+    rgba(42, 42, 55, 0.8)
+  );
   z-index: 1;
 }
 
@@ -1082,7 +1164,9 @@
   border-radius: 8px;
   font-weight: 700;
   font-size: var(--fs-body);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   border: none;
   cursor: pointer;
 }
@@ -1130,7 +1214,9 @@
 ```css
 /* 基本ホバー - 拡大 + 影 */
 .hoverable {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   cursor: pointer;
 }
 
@@ -1141,7 +1227,9 @@
 
 /* 控えめホバー - 小さめの拡大 */
 .hoverable-subtle {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .hoverable-subtle:hover {
@@ -1151,7 +1239,10 @@
 
 /* 強調ホバー - ボーダーハイライト */
 .hoverable-highlight {
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
   border: 2px solid transparent;
 }
 
@@ -1163,7 +1254,9 @@
 
 /* グロー効果 */
 .hoverable-glow {
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
 }
 
 .hoverable-glow:hover {
@@ -1177,7 +1270,10 @@
 ```css
 /* リストアイテムカード */
 .slide-list .list-item {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-left-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-left-color 0.3s ease;
 }
 
 .slide-list .list-item:hover {
@@ -1188,7 +1284,9 @@
 
 /* 比較カード */
 .slide-compare .compare-item {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-compare .compare-item:hover {
@@ -1198,7 +1296,10 @@
 
 /* フローステップ */
 .slide-flow .flow-step {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease;
 }
 
 .slide-flow .flow-step:hover {
@@ -1209,7 +1310,9 @@
 
 /* タイムラインアイテム */
 .slide-timeline .timeline-content {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-timeline .timeline-content:hover {
@@ -1219,7 +1322,9 @@
 
 /* 統計カード */
 .slide-stats .stat-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .slide-stats .stat-card:hover {
@@ -1229,7 +1334,10 @@
 
 /* グリッドカード */
 .slide-grid .grid-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .slide-grid .grid-card:hover {
@@ -1244,7 +1352,10 @@
 ```css
 /* アイコンラッパー */
 .icon-wrapper {
-  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .icon-wrapper:hover {
@@ -1259,7 +1370,10 @@
 
 /* アイコン単体 */
 .hoverable-icon {
-  transition: transform 0.3s ease, color 0.3s ease, filter 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease,
+    filter 0.3s ease;
 }
 
 .hoverable-icon:hover {
@@ -1276,8 +1390,13 @@
 
 /* パルスアイコン */
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .hoverable-icon-pulse:hover {
@@ -1290,7 +1409,10 @@
 ```css
 /* 大きな数値 */
 .stat-value {
-  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease,
+    text-shadow 0.3s ease;
 }
 
 .stat-card:hover .stat-value {
@@ -1323,7 +1445,9 @@
 ```css
 /* テーブル行 */
 .slide-table tbody tr {
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .slide-table tbody tr:hover {
@@ -1378,7 +1502,9 @@
   text-align: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
   z-index: 1000;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
   border: 1px solid var(--fuji-gray);
@@ -1387,7 +1513,7 @@
 
 /* ツールチップ矢印 */
 .has-tooltip::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: calc(100% + 2px);
   left: 50%;
@@ -1446,16 +1572,17 @@
 
 ### 4.7 使用ガイドライン
 
-| 要素タイプ | 推奨クラス | 備考 |
-|-----------|-----------|------|
-| リストアイテム | `hoverable` | 左移動 + 拡大 |
-| カード | `hoverable` + `has-tooltip` | 補足情報付き |
-| フローステップ | `hoverable-highlight` | ボーダーハイライト |
-| 統計カード | `hoverable` + `has-tooltip` | 詳細説明付き |
-| アイコン | `hoverable-icon` | 拡大 + 色変化 |
-| テーブル行 | 自動適用 | CSS定義済み |
+| 要素タイプ     | 推奨クラス                  | 備考               |
+| -------------- | --------------------------- | ------------------ |
+| リストアイテム | `hoverable`                 | 左移動 + 拡大      |
+| カード         | `hoverable` + `has-tooltip` | 補足情報付き       |
+| フローステップ | `hoverable-highlight`       | ボーダーハイライト |
+| 統計カード     | `hoverable` + `has-tooltip` | 詳細説明付き       |
+| アイコン       | `hoverable-icon`            | 拡大 + 色変化      |
+| テーブル行     | 自動適用                    | CSS定義済み        |
 
 **注意事項**:
+
 1. 過度な使用を避ける - 全要素にホバーを付けると煩雑
 2. 意味のある情報を - ツールチップには有用な補足情報を入れる
 3. モバイル考慮 - タッチデバイスではホバーが機能しない

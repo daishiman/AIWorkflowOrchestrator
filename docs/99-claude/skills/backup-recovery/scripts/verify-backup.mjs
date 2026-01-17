@@ -59,7 +59,9 @@ function checkTursoCli() {
     return true;
   } catch {
     console.log("Turso CLI が見つかりません");
-    console.log("インストール: curl -sSfL https://get.tur.so/install.sh | bash");
+    console.log(
+      "インストール: curl -sSfL https://get.tur.so/install.sh | bash",
+    );
     return false;
   }
 }
@@ -101,7 +103,9 @@ function verifyDatabases() {
 
     databases.forEach((db) => {
       const status = db.is_schema ? "schema" : "db";
-      console.log(`- ${db.Name} (${status}, Region: ${db.primaryRegion || "N/A"})`);
+      console.log(
+        `- ${db.Name} (${status}, Region: ${db.primaryRegion || "N/A"})`,
+      );
     });
 
     return databases;
@@ -193,7 +197,9 @@ function generateFullReport(defaultDb) {
         report.recommendations.push("バックアップ用DBの作成を推奨します");
       }
 
-      const mainDb = report.checks.databases.find((db) => db.Name === defaultDb);
+      const mainDb = report.checks.databases.find(
+        (db) => db.Name === defaultDb,
+      );
       if (mainDb) {
         report.checks.snapshots = verifySnapshots(defaultDb);
 

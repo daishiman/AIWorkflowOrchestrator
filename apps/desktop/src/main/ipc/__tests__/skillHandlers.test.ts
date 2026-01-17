@@ -63,6 +63,12 @@ interface IPCError {
   details?: unknown;
 }
 
+interface OperationResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
 // === Mocks ===
 
 // Mock SkillService
@@ -234,7 +240,10 @@ describe("skillHandlers", () => {
 
       // Then: skillService.scanAvailableSkillsが呼び出される
       expect(mockSkillService.scanAvailableSkills).toHaveBeenCalled();
-      expect((result as SkillScanResult).skills).toHaveLength(1);
+      // Now returns OperationResult format: { success: true, data: [...] }
+      const opResult = result as OperationResult<Skill[]>;
+      expect(opResult.success).toBe(true);
+      expect(opResult.data).toHaveLength(1);
     });
 
     it("SH-LA-02: should pass forceRefresh option", async () => {
@@ -300,7 +309,10 @@ describe("skillHandlers", () => {
 
       // Then: skillService.getImportedSkillsが呼び出される
       expect(mockSkillService.getImportedSkills).toHaveBeenCalled();
-      expect(result as Skill[]).toHaveLength(1);
+      // Now returns OperationResult format: { success: true, data: [...] }
+      const opResult = result as OperationResult<Skill[]>;
+      expect(opResult.success).toBe(true);
+      expect(opResult.data).toHaveLength(1);
     });
 
     it("SH-LI-02: should return empty array when no skills imported", async () => {
@@ -314,8 +326,10 @@ describe("skillHandlers", () => {
       // When: ハンドラーを呼び出す
       const result = await handler({});
 
-      // Then: 空配列が返される
-      expect(result).toEqual([]);
+      // Then: OperationResultで空配列が返される
+      const opResult = result as OperationResult<Skill[]>;
+      expect(opResult.success).toBe(true);
+      expect(opResult.data).toEqual([]);
     });
   });
 
@@ -540,10 +554,13 @@ describe("skillHandlers", () => {
 
       // Then: skillService.getSkillByIdがskillIdで呼び出される
       expect(mockSkillService.getSkillById).toHaveBeenCalledWith("skill-1");
-      expect((result as Skill).name).toBe("Detail Skill");
+      // Now returns OperationResult format: { success: true, data: skill }
+      const opResult = result as OperationResult<Skill>;
+      expect(opResult.success).toBe(true);
+      expect(opResult.data?.name).toBe("Detail Skill");
     });
 
-    it("SH-GD-02: should return null for unknown skillId", async () => {
+    it("SH-GD-02: should return error for unknown skillId", async () => {
       mockSkillService.getSkillById.mockResolvedValue(null);
 
       const handler = handlers.get(SKILL_CHANNELS.GET_DETAIL);
@@ -554,8 +571,10 @@ describe("skillHandlers", () => {
       // When: 存在しないskillIdで呼び出す
       const result = await handler({}, { skillId: "nonexistent" });
 
-      // Then: nullが返される
-      expect(result).toBeNull();
+      // Then: OperationResultでエラーが返される
+      const opResult = result as OperationResult<Skill>;
+      expect(opResult.success).toBe(false);
+      expect(opResult.error).toBeDefined();
     });
 
     it("SH-GD-03: should validate skillId", async () => {

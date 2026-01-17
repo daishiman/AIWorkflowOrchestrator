@@ -156,7 +156,9 @@ function validateSkill(skillDir) {
   }
 
   if (description.length > 1024) {
-    console.error(`Description exceeds 1024 characters (${description.length})`);
+    console.error(
+      `Description exceeds 1024 characters (${description.length})`,
+    );
     process.exit(EXIT_VALIDATION_ERROR);
   }
 

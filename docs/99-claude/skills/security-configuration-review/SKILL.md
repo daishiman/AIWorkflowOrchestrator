@@ -65,14 +65,14 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task                       | 対応リソース                          | 主な検査項目                         | 推奨スクリプト               |
-| -------------------------- | ------------------------------------- | ------------------------------------ | ---------------------------- |
+| Task                       | 対応リソース                           | 主な検査項目                         | 推奨スクリプト               |
+| -------------------------- | -------------------------------------- | ------------------------------------ | ---------------------------- |
 | セキュリティヘッダー監査   | `references/security-headers-guide.md` | CSP, X-Frame-Options, HSTS 等        | `check-security-headers.mjs` |
-| CORS設定レビュー           | `assets/cors-config-template.js`   | オリジン検証, メソッド制限, 認証情報 | -                            |
+| CORS設定レビュー           | `assets/cors-config-template.js`       | オリジン検証, メソッド制限, 認証情報 | -                            |
 | 認証・認可監査             | `references/Level2_intermediate.md`    | JWT トークン, Session 管理, RBAC     | -                            |
 | 依存パッケージ脆弱性確認   | `references/requirements-index.md`     | CVE, ライセンス要件                  | -                            |
-| セキュリティチェックリスト | `assets/security-checklist.md`     | OWASP Top 10, CWE 対応               | -                            |
-| Helmet設定最適化           | `assets/helmet-config-template.js` | ミドルウェア構成, ベストプラクティス | -                            |
+| セキュリティチェックリスト | `assets/security-checklist.md`         | OWASP Top 10, CWE 対応               | -                            |
+| Helmet設定最適化           | `assets/helmet-config-template.js`     | ミドルウェア構成, ベストプラクティス | -                            |
 | コンプライアンス確認       | `references/Level3_advanced.md`        | GDPR, PCI-DSS, SOC2                  | -                            |
 | 脅威モデル分析             | `references/Level4_expert.md`          | 攻撃面, リスク評価, 優先度付け       | -                            |
 
@@ -100,8 +100,8 @@ allowed-tools:
 
 ### 📖 References（参考文献と学習リソース）
 
-| カテゴリ       | リソース                              | 説明                                       |
-| -------------- | ------------------------------------- | ------------------------------------------ |
+| カテゴリ       | リソース                               | 説明                                       |
+| -------------- | -------------------------------------- | ------------------------------------------ |
 | **基礎知識**   | `references/Level1_basics.md`          | セキュリティ設定の基本概念とチェックリスト |
 | **実務ガイド** | `references/Level2_intermediate.md`    | 実践的なセキュリティ監査手順               |
 | **応用技法**   | `references/Level3_advanced.md`        | 高度な脅威モデリングとリスク評価           |
@@ -119,8 +119,8 @@ allowed-tools:
 
 ### 📋 Templates（テンプレート集）
 
-| テンプレート                | 用途                           | 参照パス                              |
-| --------------------------- | ------------------------------ | ------------------------------------- |
+| テンプレート                | 用途                           | 参照パス                           |
+| --------------------------- | ------------------------------ | ---------------------------------- |
 | `cors-config-template.js`   | CORS設定の実装例               | `assets/cors-config-template.js`   |
 | `helmet-config-template.js` | Helmet ミドルウェア設定例      | `assets/helmet-config-template.js` |
 | `security-checklist.md`     | セキュリティ監査チェックリスト | `assets/security-checklist.md`     |

@@ -126,7 +126,9 @@ async function main() {
   const notes = getArg(args, "--notes") || "";
 
   if (!result || !["success", "failure"].includes(result)) {
-    console.error("Error: --result は success または failure を指定してください");
+    console.error(
+      "Error: --result は success または failure を指定してください",
+    );
     process.exit(EXIT_ARGS_ERROR);
   }
 
@@ -165,8 +167,7 @@ async function main() {
 
     const successRate =
       evalsData.metrics.total_usage_count > 0
-        ? evalsData.metrics.success_count /
-          evalsData.metrics.total_usage_count
+        ? evalsData.metrics.success_count / evalsData.metrics.total_usage_count
         : 0;
 
     console.log(

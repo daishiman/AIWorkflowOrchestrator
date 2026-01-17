@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # deployment-strategies
 
 ## 概要
@@ -78,12 +79,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-deployment-requirements | Phase 1開始時 | 要件 | 要件メモ、制約一覧 |
-| design-deployment-strategy | Phase 2開始時 | 要件メモ | デプロイ戦略、ロールバック方針 |
-| implement-deployment-plan | Phase 3開始時 | 戦略メモ | 準備メモ、検証項目 |
-| validate-deployment-readiness | Phase 4開始時 | 準備メモ | 検証レポート、改善提案 |
+| Task                            | 起動タイミング | 入力     | 出力                           |
+| ------------------------------- | -------------- | -------- | ------------------------------ |
+| analyze-deployment-requirements | Phase 1開始時  | 要件     | 要件メモ、制約一覧             |
+| design-deployment-strategy      | Phase 2開始時  | 要件メモ | デプロイ戦略、ロールバック方針 |
+| implement-deployment-plan       | Phase 3開始時  | 戦略メモ | 準備メモ、検証項目             |
+| validate-deployment-readiness   | Phase 4開始時  | 準備メモ | 検証レポート、改善提案         |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,61 +92,61 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| パターン選定理由を記録する | 追跡が容易になる |
-| ロールバック手順を明文化 | 障害対応が早くなる |
-| 検証項目を明確化 | リスクを減らせる |
-| 監視指標を整理する | 影響評価ができる |
+| 推奨事項                   | 理由               |
+| -------------------------- | ------------------ |
+| パターン選定理由を記録する | 追跡が容易になる   |
+| ロールバック手順を明文化   | 障害対応が早くなる |
+| 検証項目を明確化           | リスクを減らせる   |
+| 監視指標を整理する         | 影響評価ができる   |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項                   | 問題点             |
+| -------------------------- | ------------------ |
 | パターン選定を感覚で決める | リスク判断が不明確 |
-| 検証を省略する | 障害検知が遅れる |
-| ロールバック未定義 | 復旧が難しくなる |
-| 記録を残さない | 改善が継続しない |
+| 検証を省略する             | 障害検知が遅れる   |
+| ロールバック未定義         | 復旧が難しくなる   |
+| 記録を残さない             | 改善が継続しない   |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/health-check.mjs` | ヘルスチェック |
-| `scripts/validate-skill.mjs` | スキル構造検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                   | 機能                         |
+| ---------------------------- | ---------------------------- |
+| `scripts/health-check.mjs`   | ヘルスチェック               |
+| `scripts/validate-skill.mjs` | スキル構造検証               |
+| `scripts/log_usage.mjs`      | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 戦略設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
-| デプロイパターン | [references/deployment-patterns.md](references/deployment-patterns.md) | 選定時 |
-| ヘルスチェック | [references/health-checks.md](references/health-checks.md) | 検証時 |
-| ロールバック | [references/rollback-strategies.md](references/rollback-strategies.md) | 復旧計画時 |
-| Railway運用 | [references/railway-deployment.md](references/railway-deployment.md) | Railway利用時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース         | パス                                                                   | 読込条件      |
+| ---------------- | ---------------------------------------------------------------------- | ------------- |
+| レベル1 基礎     | [references/Level1_basics.md](references/Level1_basics.md)             | 要件整理時    |
+| レベル2 実務     | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 戦略設計時    |
+| レベル3 応用     | [references/Level3_advanced.md](references/Level3_advanced.md)         | 実装時        |
+| レベル4 専門     | [references/Level4_expert.md](references/Level4_expert.md)             | 検証時        |
+| デプロイパターン | [references/deployment-patterns.md](references/deployment-patterns.md) | 選定時        |
+| ヘルスチェック   | [references/health-checks.md](references/health-checks.md)             | 検証時        |
+| ロールバック     | [references/rollback-strategies.md](references/rollback-strategies.md) | 復旧計画時    |
+| Railway運用      | [references/railway-deployment.md](references/railway-deployment.md)   | Railway利用時 |
+| 要求仕様索引     | [references/requirements-index.md](references/requirements-index.md)   | 仕様確認時    |
+| 旧スキル         | [references/legacy-skill.md](references/legacy-skill.md)               | 互換確認時    |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/deployment-runbook.md` | デプロイ手順 |
-| `assets/rollback-checklist.md` | ロールバック確認 |
-| `assets/health-endpoint-template.ts` | ヘルスチェック実装 |
-| `assets/smoke-test-template.ts` | スモークテスト |
+| アセット                                 | 用途                 |
+| ---------------------------------------- | -------------------- |
+| `assets/deployment-runbook.md`           | デプロイ手順         |
+| `assets/rollback-checklist.md`           | ロールバック確認     |
+| `assets/health-endpoint-template.ts`     | ヘルスチェック実装   |
+| `assets/smoke-test-template.ts`          | スモークテスト       |
 | `assets/deployment-strategy-template.md` | 戦略整理テンプレート |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |

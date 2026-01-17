@@ -99,15 +99,15 @@ allowed-tools:
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
-| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細分析時 |
-| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
-| パターン概要 | [references/pattern-overview.md](references/pattern-overview.md) | 構造・実装・適用条件確認時 |
-| Executor Pattern | [references/executor-pattern.md](references/executor-pattern.md) | Executor実装時 |
-| Domain Model比較 | [references/domain-model-comparison.md](references/domain-model-comparison.md) | 代替パターン検討時 |
+| リソース         | パス                                                                           | 読込条件                   |
+| ---------------- | ------------------------------------------------------------------------------ | -------------------------- |
+| Level1 基礎      | [references/Level1_basics.md](references/Level1_basics.md)                     | 初回整理時                 |
+| Level2 実務      | [references/Level2_intermediate.md](references/Level2_intermediate.md)         | 設計時                     |
+| Level3 応用      | [references/Level3_advanced.md](references/Level3_advanced.md)                 | 詳細分析時                 |
+| Level4 専門      | [references/Level4_expert.md](references/Level4_expert.md)                     | 改善ループ時               |
+| パターン概要     | [references/pattern-overview.md](references/pattern-overview.md)               | 構造・実装・適用条件確認時 |
+| Executor Pattern | [references/executor-pattern.md](references/executor-pattern.md)               | Executor実装時             |
+| Domain Model比較 | [references/domain-model-comparison.md](references/domain-model-comparison.md) | 代替パターン検討時         |
 
 ### scripts/（決定論的処理）
 

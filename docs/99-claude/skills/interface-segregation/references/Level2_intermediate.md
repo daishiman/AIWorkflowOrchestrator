@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 肥大化インターフェースの検出（Fat Interface Detection） / 検出指標 / 1. 定量的指標 / インターフェースの組み合わせ（Interface Composition） / 組み合わせパターン / パターン1: 直接実装（Direct Implementation）
 - 実務指針: IWorkflowExecutorのようなコアインターフェースを設計する時 / 既存インターフェースの肥大化を検出した時 / 複数のクライアントが異なる機能を必要とする時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/fat-interface-detection.md`: 空実装/例外スロー/条件付き実装による肥大化検出手法（把握する知識: 肥大化インターフェースの検出（Fat Interface Detection） / 検出指標 / 1. 定量的指標）
 - `resources/interface-composition.md`: allOf/extends/mixinによる小インターフェース組み合わせパターン（把握する知識: インターフェースの組み合わせ（Interface Composition） / 組み合わせパターン / パターン1: 直接実装（Direct Implementation））
 - `resources/isp-principles.md`: クライアント固有インターフェース分離とSOLID準拠設計（把握する知識: ISP原則（Interface Segregation Principle） / 定義 / ISPの本質）
@@ -29,14 +32,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Interface Segregation Principle (ISP) / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/analyze-interface.mjs`: インターフェース凝集性とISP違反の自動検出
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/segregated-interface-template.md`: コア+拡張インターフェース分離設計テンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

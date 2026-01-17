@@ -13,7 +13,7 @@
 | ステータス       | 未実施                          |
 | 発見元           | HybridRAGアーキテクチャ設計     |
 | 発見日           | 2025-12-15                      |
-| 発見エージェント | .claude/agents/logic-dev.md                      |
+| 発見エージェント | .claude/agents/logic-dev.md     |
 
 ---
 

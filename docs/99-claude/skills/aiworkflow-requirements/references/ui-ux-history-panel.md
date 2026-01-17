@@ -17,22 +17,22 @@
 
 ### コンポーネント
 
-| ファイル | パス | 責務 |
-|----------|------|------|
-| VersionHistory.tsx | apps/desktop/src/renderer/components/history/ | バージョン履歴一覧の表示 |
-| VersionDetail.tsx | apps/desktop/src/renderer/components/history/ | 選択バージョンの詳細表示 |
-| ConversionLogs.tsx | apps/desktop/src/renderer/components/history/ | 変換ログの一覧・フィルタ表示 |
-| RestoreDialog.tsx | apps/desktop/src/renderer/components/history/ | バージョン復元の確認ダイアログ |
-| types.ts | apps/desktop/src/renderer/components/history/ | 型定義 |
+| ファイル           | パス                                          | 責務                           |
+| ------------------ | --------------------------------------------- | ------------------------------ |
+| VersionHistory.tsx | apps/desktop/src/renderer/components/history/ | バージョン履歴一覧の表示       |
+| VersionDetail.tsx  | apps/desktop/src/renderer/components/history/ | 選択バージョンの詳細表示       |
+| ConversionLogs.tsx | apps/desktop/src/renderer/components/history/ | 変換ログの一覧・フィルタ表示   |
+| RestoreDialog.tsx  | apps/desktop/src/renderer/components/history/ | バージョン復元の確認ダイアログ |
+| types.ts           | apps/desktop/src/renderer/components/history/ | 型定義                         |
 
 ### カスタムフック
 
-| ファイル | パス | 責務 |
-|----------|------|------|
+| ファイル             | パス                             | 責務                                   |
+| -------------------- | -------------------------------- | -------------------------------------- |
 | useVersionHistory.ts | apps/desktop/src/renderer/hooks/ | バージョン履歴の取得・ページネーション |
-| useVersionDetail.ts | apps/desktop/src/renderer/hooks/ | バージョン詳細の取得 |
-| useConversionLogs.ts | apps/desktop/src/renderer/hooks/ | 変換ログの取得・フィルタ |
-| useRestore.ts | apps/desktop/src/renderer/hooks/ | バージョン復元処理 |
+| useVersionDetail.ts  | apps/desktop/src/renderer/hooks/ | バージョン詳細の取得                   |
+| useConversionLogs.ts | apps/desktop/src/renderer/hooks/ | 変換ログの取得・フィルタ               |
+| useRestore.ts        | apps/desktop/src/renderer/hooks/ | バージョン復元処理                     |
 
 ---
 
@@ -230,12 +230,12 @@ function useRestore(): UseRestoreReturn;
 
 ### 状態管理パターン
 
-| パターン         | 説明                                   |
-| ---------------- | -------------------------------------- |
-| 状態コロケーション | フック内で状態を完結管理               |
-| ローディング状態 | isLoading フラグで処理中を表現         |
-| エラー状態       | error オブジェクトでエラー情報を保持   |
-| ページネーション | hasMore/loadMore パターンで追加読み込み |
+| パターン           | 説明                                    |
+| ------------------ | --------------------------------------- |
+| 状態コロケーション | フック内で状態を完結管理                |
+| ローディング状態   | isLoading フラグで処理中を表現          |
+| エラー状態         | error オブジェクトでエラー情報を保持    |
+| ページネーション   | hasMore/loadMore パターンで追加読み込み |
 
 ---
 
@@ -351,21 +351,21 @@ interface HistoryAPI {
 
 ### レイアウト
 
-| パネル       | 配置     | サイズ         |
-| ------------ | -------- | -------------- |
-| 履歴一覧     | 左サイド | 幅1/3（柔軟）  |
-| 詳細パネル   | メイン   | 幅2/3（柔軟）  |
-| 復元ダイアログ | オーバーレイ | 中央配置    |
+| パネル         | 配置         | サイズ        |
+| -------------- | ------------ | ------------- |
+| 履歴一覧       | 左サイド     | 幅1/3（柔軟） |
+| 詳細パネル     | メイン       | 幅2/3（柔軟） |
+| 復元ダイアログ | オーバーレイ | 中央配置      |
 
 ### 表示要素
 
-| 要素             | 表示内容                        |
-| ---------------- | ------------------------------- |
-| バージョン番号   | v1, v2, v3...（新しい順）       |
-| 作成日時         | YYYY/MM/DD HH:mm形式            |
-| ファイルサイズ   | 人間可読形式（KB, MB）          |
-| 現在バージョン   | 「現在」バッジで識別            |
-| ログレベル       | info/warn/error/debugのバッジ   |
+| 要素           | 表示内容                      |
+| -------------- | ----------------------------- |
+| バージョン番号 | v1, v2, v3...（新しい順）     |
+| 作成日時       | YYYY/MM/DD HH:mm形式          |
+| ファイルサイズ | 人間可読形式（KB, MB）        |
+| 現在バージョン | 「現在」バッジで識別          |
+| ログレベル     | info/warn/error/debugのバッジ |
 
 ### ユーティリティ関数
 
@@ -396,24 +396,24 @@ function formatSize(bytes: number): string {
 
 ### WCAG 2.1 AA準拠
 
-| 要件                 | 実装方針                              |
-| -------------------- | ------------------------------------- |
+| 要件                     | 実装方針                              |
+| ------------------------ | ------------------------------------- |
 | キーボードナビゲーション | Tab, Enter, Space, Escapeで全操作可能 |
-| スクリーンリーダー   | 適切なrole/aria属性を設定             |
-| フォーカス管理       | ダイアログ表示時はフォーカストラップ  |
-| 色に頼らない情報     | アイコン+テキストで状態を表現         |
+| スクリーンリーダー       | 適切なrole/aria属性を設定             |
+| フォーカス管理           | ダイアログ表示時はフォーカストラップ  |
+| 色に頼らない情報         | アイコン+テキストで状態を表現         |
 
 ### ARIA属性
 
-| コンポーネント | 属性                               |
-| -------------- | ---------------------------------- |
-| VersionHistory | role="list"                        |
-| VersionHistoryItem | role="listitem", aria-label    |
-| RestoreDialog  | role="dialog", aria-modal="true"   |
-| ConversionLogs | role="list"                        |
-| LogEntry       | role="listitem"                    |
-| LoadingSkeleton | role="status", aria-label="読み込み中" |
-| ErrorDisplay   | role="alert"                       |
+| コンポーネント     | 属性                                   |
+| ------------------ | -------------------------------------- |
+| VersionHistory     | role="list"                            |
+| VersionHistoryItem | role="listitem", aria-label            |
+| RestoreDialog      | role="dialog", aria-modal="true"       |
+| ConversionLogs     | role="list"                            |
+| LogEntry           | role="listitem"                        |
+| LoadingSkeleton    | role="status", aria-label="読み込み中" |
+| ErrorDisplay       | role="alert"                           |
 
 ### 実装例
 
@@ -441,30 +441,38 @@ function formatSize(bytes: number): string {
 
 ### エラー種別
 
-| エラー種別     | 表示メッセージ                     |
-| -------------- | ---------------------------------- |
-| NetworkError   | 「通信エラーが発生しました」       |
-| NotFoundError  | 「データが見つかりません」         |
-| RestoreError   | 「復元に失敗しました」             |
-| DBError        | 「データベースエラーが発生しました」|
-| API未利用可能  | 「History API not available」      |
+| エラー種別    | 表示メッセージ                       |
+| ------------- | ------------------------------------ |
+| NetworkError  | 「通信エラーが発生しました」         |
+| NotFoundError | 「データが見つかりません」           |
+| RestoreError  | 「復元に失敗しました」               |
+| DBError       | 「データベースエラーが発生しました」 |
+| API未利用可能 | 「History API not available」        |
 
 ### エラー表示パターン
 
-| 状態           | 表示方法                        |
-| -------------- | ------------------------------- |
-| 初期取得失敗   | 全体エラーメッセージ+再試行ボタン |
-| 追加読み込み失敗 | インラインエラー+再試行ボタン   |
-| 復元失敗       | ダイアログ内エラー表示          |
+| 状態             | 表示方法                          |
+| ---------------- | --------------------------------- |
+| 初期取得失敗     | 全体エラーメッセージ+再試行ボタン |
+| 追加読み込み失敗 | インラインエラー+再試行ボタン     |
+| 復元失敗         | ダイアログ内エラー表示            |
 
 ### 実装例
 
 ```tsx
-function ErrorDisplay({ message, onRetry }: { message: string; onRetry: () => void }) {
+function ErrorDisplay({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
   return (
     <div role="alert" className="rounded-lg bg-red-50 p-4 text-center">
       <p className="mb-3 text-red-700">エラーが発生しました: {message}</p>
-      <button type="button" onClick={onRetry} className="...">再試行</button>
+      <button type="button" onClick={onRetry} className="...">
+        再試行
+      </button>
     </div>
   );
 }
@@ -485,11 +493,11 @@ function ErrorDisplay({ message, onRetry }: { message: string; onRetry: () => vo
 
 ### 最適化戦略
 
-| 戦略             | 適用場面                  |
-| ---------------- | ------------------------- |
-| ページネーション | 20件ずつ段階的読み込み    |
+| 戦略             | 適用場面                        |
+| ---------------- | ------------------------------- |
+| ページネーション | 20件ずつ段階的読み込み          |
 | メモ化           | useMemo/useCallbackで再計算防止 |
-| 仮想スクロール   | 将来対応（大量データ時）  |
+| 仮想スクロール   | 将来対応（大量データ時）        |
 
 ### ページネーション設定
 
@@ -510,23 +518,23 @@ interface PaginationOptions {
 
 ### 達成済みカバレッジ
 
-| カテゴリ | カバレッジ |
-|----------|-----------|
-| コンポーネント | 94.43% |
-| フック | 94.43% |
+| カテゴリ       | カバレッジ |
+| -------------- | ---------- |
+| コンポーネント | 94.43%     |
+| フック         | 94.43%     |
 
 ### テストファイル
 
-| ファイル | パス |
-|----------|------|
-| VersionHistory.test.tsx | apps/desktop/src/renderer/components/history/__tests__/ |
-| VersionDetail.test.tsx | apps/desktop/src/renderer/components/history/__tests__/ |
-| ConversionLogs.test.tsx | apps/desktop/src/renderer/components/history/__tests__/ |
-| RestoreDialog.test.tsx | apps/desktop/src/renderer/components/history/__tests__/ |
-| useVersionHistory.test.ts | apps/desktop/src/renderer/hooks/__tests__/ |
-| useVersionDetail.test.ts | apps/desktop/src/renderer/hooks/__tests__/ |
-| useConversionLogs.test.ts | apps/desktop/src/renderer/hooks/__tests__/ |
-| useRestore.test.ts | apps/desktop/src/renderer/hooks/__tests__/ |
+| ファイル                  | パス                                                    |
+| ------------------------- | ------------------------------------------------------- |
+| VersionHistory.test.tsx   | apps/desktop/src/renderer/components/history/**tests**/ |
+| VersionDetail.test.tsx    | apps/desktop/src/renderer/components/history/**tests**/ |
+| ConversionLogs.test.tsx   | apps/desktop/src/renderer/components/history/**tests**/ |
+| RestoreDialog.test.tsx    | apps/desktop/src/renderer/components/history/**tests**/ |
+| useVersionHistory.test.ts | apps/desktop/src/renderer/hooks/**tests**/              |
+| useVersionDetail.test.ts  | apps/desktop/src/renderer/hooks/**tests**/              |
+| useConversionLogs.test.ts | apps/desktop/src/renderer/hooks/**tests**/              |
+| useRestore.test.ts        | apps/desktop/src/renderer/hooks/**tests**/              |
 
 ---
 
@@ -550,21 +558,21 @@ interface PaginationOptions {
 
 ## 関連ドキュメント
 
-| ドキュメント     | パス                              |
-| ---------------- | --------------------------------- |
-| コンポーネント設計 | ui-ux-components.md             |
-| パネルUI設計     | ui-ux-panels.md                   |
-| デザインシステム | ui-ux-design-system.md            |
-| アクセシビリティ | ui-ux-advanced.md                 |
-| ファイル変換アーキテクチャ | architecture-file-conversion.md |
-| 実装ガイド | docs/30-workflows/history-ui-components/outputs/phase-12/implementation-guide.md |
-| 統合ガイド | docs/30-workflows/history-ui-components/outputs/phase-12/integration-guide.md |
+| ドキュメント               | パス                                                                             |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| コンポーネント設計         | ui-ux-components.md                                                              |
+| パネルUI設計               | ui-ux-panels.md                                                                  |
+| デザインシステム           | ui-ux-design-system.md                                                           |
+| アクセシビリティ           | ui-ux-advanced.md                                                                |
+| ファイル変換アーキテクチャ | architecture-file-conversion.md                                                  |
+| 実装ガイド                 | docs/30-workflows/history-ui-components/outputs/phase-12/implementation-guide.md |
+| 統合ガイド                 | docs/30-workflows/history-ui-components/outputs/phase-12/integration-guide.md    |
 
 ---
 
 ## 変更履歴
 
-| Version | Date       | Changes                      |
-| ------- | ---------- | ---------------------------- |
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
 | 1.1.0   | 2026-01-10 | 実装詳細・型定義・テスト情報を追加 |
-| 1.0.0   | 2026-01-10 | CONV-05-03で初版作成         |
+| 1.0.0   | 2026-01-10 | CONV-05-03で初版作成               |

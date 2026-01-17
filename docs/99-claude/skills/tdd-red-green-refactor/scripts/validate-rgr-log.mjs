@@ -4,12 +4,12 @@
  * RGRログ検証スクリプト
  */
 
-import { readFileSync, statSync } from 'fs';
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, statSync } from "fs";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SKILL_DIR = resolve(__dirname, '..');
+const SKILL_DIR = resolve(__dirname, "..");
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -17,11 +17,7 @@ const EXIT_ARGS_ERROR = 2;
 const EXIT_FILE_MISSING = 3;
 const EXIT_VALIDATION_ERROR = 4;
 
-const REQUIRED_HEADINGS = [
-  '## 対象',
-  '## サイクル記録',
-  '## 注意点',
-];
+const REQUIRED_HEADINGS = ["## 対象", "## サイクル記録", "## 注意点"];
 
 function showHelp() {
   console.log(`
@@ -51,7 +47,7 @@ function extractSection(lines, heading) {
   const startIndex = lines.findIndex((line) => line.trim() === heading);
   if (startIndex === -1) return [];
   const nextIndex = lines.findIndex(
-    (line, idx) => idx > startIndex && line.startsWith('## '),
+    (line, idx) => idx > startIndex && line.startsWith("## "),
   );
   const endIndex = nextIndex === -1 ? lines.length : nextIndex;
   return lines.slice(startIndex + 1, endIndex);
@@ -59,41 +55,45 @@ function extractSection(lines, heading) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
-  const filePath = getArg(args, '--file');
+  const filePath = getArg(args, "--file");
   if (!filePath) {
-    console.error('Error: --file is required');
+    console.error("Error: --file is required");
     process.exit(EXIT_ARGS_ERROR);
   }
 
   const resolvedPath = resolve(SKILL_DIR, filePath);
   assertFile(resolvedPath);
 
-  const content = readFileSync(resolvedPath, 'utf-8');
+  const content = readFileSync(resolvedPath, "utf-8");
   const lines = content.split(/\r?\n/);
 
-  const missing = REQUIRED_HEADINGS.filter((heading) => !content.includes(heading));
+  const missing = REQUIRED_HEADINGS.filter(
+    (heading) => !content.includes(heading),
+  );
   if (missing.length > 0) {
-    console.error(`Error: missing headings: ${missing.join(', ')}`);
+    console.error(`Error: missing headings: ${missing.join(", ")}`);
     process.exit(EXIT_VALIDATION_ERROR);
   }
 
-  const cycles = extractSection(lines, '## サイクル記録');
-  const cycleCount = cycles.filter((line) => /^\|\s*\d+\s*\|/.test(line)).length;
+  const cycles = extractSection(lines, "## サイクル記録");
+  const cycleCount = cycles.filter((line) =>
+    /^\|\s*\d+\s*\|/.test(line),
+  ).length;
   if (cycleCount === 0) {
-    console.error('Error: no cycle entries found');
+    console.error("Error: no cycle entries found");
     process.exit(EXIT_VALIDATION_ERROR);
   }
 
-  console.log('✓ rgr log looks valid');
+  console.log("✓ rgr log looks valid");
   process.exit(EXIT_SUCCESS);
 }
 
 main().catch((err) => {
-  console.error(err?.message || 'Unknown error');
+  console.error(err?.message || "Unknown error");
   process.exit(EXIT_ERROR);
 });

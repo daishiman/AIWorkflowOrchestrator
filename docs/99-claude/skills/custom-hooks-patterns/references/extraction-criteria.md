@@ -304,18 +304,21 @@ EditorViewコンポーネントは、エディタ表示・検索機能・キー�
 #### 抽出したフックと責務
 
 **useEditorInstance**
+
 - 責務: エディタ操作の抽象化（TextArea/Monaco/CodeMirrorを統一APIで操作）
 - 抽出理由: エディタ実装が変わっても呼び出し側のコードを変更不要にするため
 - 主な機能: getContent、scrollToLine、replaceText、replaceAllText、focus
 - 将来のMonaco Editor対応時にアダプター差し替えのみで対応可能
 
 **useWorkspaceSearch**
+
 - 責務: Electron IPC経由のワークスペース検索プロバイダー提供
 - 抽出理由: IPC通信の詳細をEditorViewから隠蔽し、テスト時にモック注入可能にするため
 - 主な機能: AsyncGeneratorでファイル単位の検索結果をストリーミング返却
 - 検索パネルに依存性注入することでテスト容易性を確保
 
 **useSearchKeyboardShortcuts**
+
 - 責務: 検索関連のキーボードショートカット管理
 - 抽出理由: イベントハンドリングの複雑さを分離し、ショートカット追加・変更を容易にするため
 - 対応ショートカット: Cmd+F（ファイル内検索）、Cmd+Shift+F（ワークスペース検索）、Cmd+P（ファイル名検索）、F3（次の結果）、Escape（パネル閉じる）

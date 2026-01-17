@@ -14,12 +14,15 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: ログレベル使用ガイド / ログレベル階層 / DEBUG / ログスキーマ設計ガイド / 基本スキーマ構造 / 必須フィールド（全ログ共通）
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/log-level-guide.md`: Log Level Guideリソース（把握する知識: ログレベル使用ガイド / ログレベル階層 / DEBUG）
 - `resources/log-schema-design.md`: Log Schema Designリソース（把握する知識: ログスキーマ設計ガイド / 基本スキーマ構造 / 必須フィールド（全ログ共通））
 - `resources/pii-masking-patterns.md`: Pii Masking Patternsリソース（把握する知識: PIIマスキングパターン / PII（個人識別情報）の定義 / 高リスクPII）
@@ -27,15 +30,18 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Structured Logging - 構造化ロギング設計 / 核心概念 / 1. 構造化ログの本質）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-log-format.mjs`: Validate Log Formatスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/log-format-examples.json`: Log Format Examplesテンプレート
 - `templates/logger-template.ts`: Loggerテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

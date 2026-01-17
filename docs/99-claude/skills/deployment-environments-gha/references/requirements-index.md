@@ -7,14 +7,14 @@ docs/00-requirements 配下の要求仕様を参照するための索引。
 
 ## 対象ドキュメント
 
-| パス | 目的/範囲 | 読み取り指示 |
-| --- | --- | --- |
-| `docs/00-requirements/12-deployment.md` | デプロイ要件 | 環境要件を確認 |
-| `docs/00-requirements/17-security-guidelines.md` | セキュリティ | シークレット運用を確認 |
-| `docs/00-requirements/02-non-functional-requirements.md` | 非機能要件 | 可用性/運用要件を確認 |
-| `docs/00-requirements/18-skills.md` | スキル構造仕様 | 作成ルールを遵守する |
+| パス                                                     | 目的/範囲        | 読み取り指示             |
+| -------------------------------------------------------- | ---------------- | ------------------------ |
+| `docs/00-requirements/12-deployment.md`                  | デプロイ要件     | 環境要件を確認           |
+| `docs/00-requirements/17-security-guidelines.md`         | セキュリティ     | シークレット運用を確認   |
+| `docs/00-requirements/02-non-functional-requirements.md` | 非機能要件       | 可用性/運用要件を確認    |
+| `docs/00-requirements/18-skills.md`                      | スキル構造仕様   | 作成ルールを遵守する     |
 | `docs/00-requirements/14-task-workflow-specification.md` | ワークフロー仕様 | タスク分割の整合性を確認 |
-| `docs/00-requirements/99-glossary.md` | 用語定義 | 用語の統一に利用 |
+| `docs/00-requirements/99-glossary.md`                    | 用語定義         | 用語の統一に利用         |
 
 ## 更新ルール
 

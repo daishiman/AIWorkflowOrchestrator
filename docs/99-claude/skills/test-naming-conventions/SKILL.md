@@ -70,11 +70,11 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| naming-requirements | Phase 1 開始時 | プロジェクト情報 | 命名要件メモ |
-| naming-pattern-design | Phase 2 開始時 | 命名要件/制約 | 命名規則ガイド |
-| naming-enforcement-review | Phase 3 開始時 | チェック結果/レビュー | 改善レポート |
+| Task                      | 起動タイミング | 入力                  | 出力           |
+| ------------------------- | -------------- | --------------------- | -------------- |
+| naming-requirements       | Phase 1 開始時 | プロジェクト情報      | 命名要件メモ   |
+| naming-pattern-design     | Phase 2 開始時 | 命名要件/制約         | 命名規則ガイド |
+| naming-enforcement-review | Phase 3 開始時 | チェック結果/レビュー | 改善レポート   |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -84,20 +84,20 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 命名の目的と対象範囲を先に定義する | 規則の過不足を防ぐため |
-| describe/it の階層を固定する | 役割が明確になるため |
+| 推奨事項                           | 理由                     |
+| ---------------------------------- | ------------------------ |
+| 命名の目的と対象範囲を先に定義する | 規則の過不足を防ぐため   |
+| describe/it の階層を固定する       | 役割が明確になるため     |
 | テンプレートで運用ルールを共有する | チーム合意を維持するため |
-| 自動チェックで逸脱を検知する | 継続的な品質維持のため |
+| 自動チェックで逸脱を検知する       | 継続的な品質維持のため   |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
+| 禁止事項               | 問題点                 |
+| ---------------------- | ---------------------- |
 | 曖昧な動詞や主語を使う | テスト意図が伝わらない |
-| 過度に長いテスト名 | 可読性が低下する |
-| ファイル命名が不統一 | 探索性が下がる |
+| 過度に長いテスト名     | 可読性が低下する       |
+| ファイル命名が不統一   | 探索性が下がる         |
 
 ---
 
@@ -105,33 +105,33 @@ allowed-tools:
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/test-name-linter.mjs` | 命名規則の逸脱を検出する |
-| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
-| `scripts/log_usage.mjs` | 実行記録を保存する |
+| スクリプト                     | 機能                             |
+| ------------------------------ | -------------------------------- |
+| `scripts/test-name-linter.mjs` | 命名規則の逸脱を検出する         |
+| `scripts/validate-skill.mjs`   | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs`        | 実行記録を保存する               |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
-| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
-| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
-| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
-| 命名パターン | [references/naming-patterns.md](references/naming-patterns.md) | Phase 2 で参照 |
-| describe 構造 | [references/describe-structure.md](references/describe-structure.md) | Phase 2 で参照 |
-| ファイル構成 | [references/file-organization.md](references/file-organization.md) | Phase 2 で参照 |
+| リソース      | パス                                                                   | 読込条件           |
+| ------------- | ---------------------------------------------------------------------- | ------------------ |
+| 基礎概念      | [references/Level1_basics.md](references/Level1_basics.md)             | Phase 1 で参照     |
+| 実務パターン  | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照     |
+| 応用戦略      | [references/Level3_advanced.md](references/Level3_advanced.md)         | 高度化時に参照     |
+| エキスパート  | [references/Level4_expert.md](references/Level4_expert.md)             | 大規模対応時に参照 |
+| 命名パターン  | [references/naming-patterns.md](references/naming-patterns.md)         | Phase 2 で参照     |
+| describe 構造 | [references/describe-structure.md](references/describe-structure.md)   | Phase 2 で参照     |
+| ファイル構成  | [references/file-organization.md](references/file-organization.md)     | Phase 2 で参照     |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
+| アセット                 | 用途                         |
+| ------------------------ | ---------------------------- |
 | `assets/naming-guide.md` | 命名規則ガイドのテンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 2.0.0 | 2026-01-02 | Task仕様と検証フローを再設計し、参照を整理 |
-| 1.0.0 | 2025-12-24 | 初期バージョン |
+| Version | Date       | Changes                                    |
+| ------- | ---------- | ------------------------------------------ |
+| 2.0.0   | 2026-01-02 | Task仕様と検証フローを再設計し、参照を整理 |
+| 1.0.0   | 2025-12-24 | 初期バージョン                             |

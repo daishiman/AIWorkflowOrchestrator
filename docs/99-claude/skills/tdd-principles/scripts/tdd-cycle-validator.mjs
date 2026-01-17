@@ -6,8 +6,8 @@
  * テストファイルの構造を解析し、TDDの基本品質をチェックする。
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { basename } from 'path';
+import { readFileSync, existsSync } from "fs";
+import { basename } from "path";
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -37,14 +37,14 @@ function fail(message) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
-  const filePath = getArg(args, '--file');
+  const filePath = getArg(args, "--file");
   if (!filePath) {
-    console.error('Error: --file is required');
+    console.error("Error: --file is required");
     process.exit(EXIT_ARGS_ERROR);
   }
 
@@ -53,34 +53,36 @@ async function main() {
     process.exit(EXIT_FILE_MISSING);
   }
 
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
   const warnings = [];
 
   const hasTests = /describe|it|test/.test(content);
   if (!hasTests) {
-    fail('test blocks not found');
+    fail("test blocks not found");
   }
 
   const testBlocks = content.match(/(?:it|test)\s*\(['"`][^'"`]+['"`]/g) || [];
   if (testBlocks.length === 0) {
-    fail('no test cases found');
+    fail("no test cases found");
   }
 
   const testNames = testBlocks.map((block) => {
     const match = block.match(/['"`]([^'"`]+)['"`]/);
-    return match ? match[1] : '';
+    return match ? match[1] : "";
   });
 
-  const goodNames = testNames.filter(
-    (name) => /should|when|given|returns|throws/.test(name),
+  const goodNames = testNames.filter((name) =>
+    /should|when|given|returns|throws/.test(name),
   );
   if (goodNames.length < Math.ceil(testNames.length / 2)) {
-    warnings.push('test names are not descriptive enough');
+    warnings.push("test names are not descriptive enough");
   }
 
-  const hasAssertions = /expect\(|assert\.|toBe|toEqual|toHaveBeenCalled/.test(content);
+  const hasAssertions = /expect\(|assert\.|toBe|toEqual|toHaveBeenCalled/.test(
+    content,
+  );
   if (!hasAssertions) {
-    fail('assertions not found');
+    fail("assertions not found");
   }
 
   const hasMocks = /vi\.fn|vi\.mock|vi\.spyOn|jest\.fn|jest\.mock|sinon/.test(
@@ -91,18 +93,18 @@ async function main() {
       content.match(/vi\.fn|vi\.mock|vi\.spyOn|jest\.fn|jest\.mock/g) || []
     ).length;
     if (mockCount > 10) {
-      warnings.push('too many mocks detected');
+      warnings.push("too many mocks detected");
     }
   }
 
   const fileName = basename(filePath);
-  if (!fileName.includes('.test.') && !fileName.includes('.spec.')) {
-    warnings.push('file name should include .test. or .spec.');
+  if (!fileName.includes(".test.") && !fileName.includes(".spec.")) {
+    warnings.push("file name should include .test. or .spec.");
   }
 
-  console.log('✓ tdd cycle validation passed');
+  console.log("✓ tdd cycle validation passed");
   if (warnings.length > 0) {
-    console.log('Warnings:');
+    console.log("Warnings:");
     warnings.forEach((warning) => console.log(`- ${warning}`));
   }
 
@@ -110,6 +112,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(err?.message || 'Unknown error');
+  console.error(err?.message || "Unknown error");
   process.exit(EXIT_ERROR);
 });

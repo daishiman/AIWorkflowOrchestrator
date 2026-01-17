@@ -115,56 +115,56 @@ LLMモデル情報型。
 
 LLMプロバイダーの完全な型定義。
 
-| フィールド       | 型             | 必須 | 説明                     |
-| ---------------- | -------------- | ---- | ------------------------ |
-| id               | LLMProviderId  | ✓    | プロバイダーID           |
-| name             | string         | ✓    | プロバイダー名（表示用） |
-| description      | string         | -    | 説明文                   |
-| iconUrl          | string         | -    | アイコンURL              |
-| models           | LLMModel[]     | ✓    | 利用可能なモデル一覧     |
-| isAvailable      | boolean        | ✓    | 利用可能フラグ           |
-| apiKeyConfigured | boolean        | ✓    | APIキー設定済みフラグ    |
+| フィールド       | 型            | 必須 | 説明                     |
+| ---------------- | ------------- | ---- | ------------------------ |
+| id               | LLMProviderId | ✓    | プロバイダーID           |
+| name             | string        | ✓    | プロバイダー名（表示用） |
+| description      | string        | -    | 説明文                   |
+| iconUrl          | string        | -    | アイコンURL              |
+| models           | LLMModel[]    | ✓    | 利用可能なモデル一覧     |
+| isAvailable      | boolean       | ✓    | 利用可能フラグ           |
+| apiKeyConfigured | boolean       | ✓    | APIキー設定済みフラグ    |
 
 #### LLMModelSchema
 
 LLMモデル情報の型定義。
 
-| フィールド  | 型      | 必須 | 説明                 |
-| ----------- | ------- | ---- | -------------------- |
-| id          | string  | ✓    | モデルID             |
-| name        | string  | ✓    | モデル名（表示用）   |
-| description | string  | -    | 説明文               |
-| maxTokens   | number  | ✓    | 最大トークン数       |
-| isDefault   | boolean | ✓    | デフォルトモデルか   |
+| フィールド  | 型      | 必須 | 説明               |
+| ----------- | ------- | ---- | ------------------ |
+| id          | string  | ✓    | モデルID           |
+| name        | string  | ✓    | モデル名（表示用） |
+| description | string  | -    | 説明文             |
+| maxTokens   | number  | ✓    | 最大トークン数     |
+| isDefault   | boolean | ✓    | デフォルトモデルか |
 
 #### LLMChatRequestSchema
 
 チャットリクエストの型定義。
 
-| フィールド   | 型           | 必須 | 説明                        |
-| ------------ | ------------ | ---- | --------------------------- |
-| messages     | LLMMessage[] | ✓    | メッセージ配列              |
-| modelId      | string       | ✓    | 使用するモデルID            |
-| systemPrompt | string       | -    | システムプロンプト          |
-| temperature  | number       | -    | 温度パラメータ（0-2）       |
-| maxTokens    | number       | -    | 最大出力トークン数          |
-| stream       | boolean      | -    | ストリーミング有効フラグ    |
+| フィールド   | 型           | 必須 | 説明                     |
+| ------------ | ------------ | ---- | ------------------------ |
+| messages     | LLMMessage[] | ✓    | メッセージ配列           |
+| modelId      | string       | ✓    | 使用するモデルID         |
+| systemPrompt | string       | -    | システムプロンプト       |
+| temperature  | number       | -    | 温度パラメータ（0-2）    |
+| maxTokens    | number       | -    | 最大出力トークン数       |
+| stream       | boolean      | -    | ストリーミング有効フラグ |
 
 #### LLMChatResponseSchema
 
 チャットレスポンスの型定義（Discriminated Union）。
 
 **成功時**:
-| フィールド | 型              | 説明           |
+| フィールド | 型 | 説明 |
 | ---------- | --------------- | -------------- |
-| success    | true (literal)  | 成功フラグ     |
-| data       | LLMResponseData | レスポンスデータ |
+| success | true (literal) | 成功フラグ |
+| data | LLMResponseData | レスポンスデータ |
 
 **失敗時**:
-| フィールド | 型              | 説明       |
+| フィールド | 型 | 説明 |
 | ---------- | --------------- | ---------- |
-| success    | false (literal) | 失敗フラグ |
-| error      | LLMError        | エラー情報 |
+| success | false (literal) | 失敗フラグ |
+| error | LLMError | エラー情報 |
 
 #### LLMErrorSchema
 
@@ -186,31 +186,31 @@ LLMモデル情報の型定義。
 
 ヘルスチェック結果の型定義。
 
-| フィールド  | 型               | 必須 | 説明               |
-| ----------- | ---------------- | ---- | ------------------ |
-| providerId  | LLMProviderId    | ✓    | プロバイダーID     |
-| status      | healthy/degraded/unhealthy | ✓ | 接続状態     |
-| latencyMs   | number           | -    | レイテンシ（ms）   |
-| checkedAt   | string (ISO8601) | ✓    | チェック日時       |
-| errorMessage| string           | -    | エラーメッセージ   |
+| フィールド   | 型                         | 必須 | 説明             |
+| ------------ | -------------------------- | ---- | ---------------- |
+| providerId   | LLMProviderId              | ✓    | プロバイダーID   |
+| status       | healthy/degraded/unhealthy | ✓    | 接続状態         |
+| latencyMs    | number                     | -    | レイテンシ（ms） |
+| checkedAt    | string (ISO8601)           | ✓    | チェック日時     |
+| errorMessage | string                     | -    | エラーメッセージ |
 
 ### バリデーション関数
 
-| 関数名                  | 説明                               |
-| ----------------------- | ---------------------------------- |
-| validateChatRequest     | リクエストを検証（エラー時throw）  |
-| validateChatResponse    | レスポンスを検証（エラー時throw）  |
-| safeParseChatRequest    | リクエストを安全にパース           |
-| safeParseChatResponse   | レスポンスを安全にパース           |
+| 関数名                | 説明                              |
+| --------------------- | --------------------------------- |
+| validateChatRequest   | リクエストを検証（エラー時throw） |
+| validateChatResponse  | レスポンスを検証（エラー時throw） |
+| safeParseChatRequest  | リクエストを安全にパース          |
+| safeParseChatResponse | レスポンスを安全にパース          |
 
 ### IPC通信
 
-| チャンネル           | メソッド | 入力             | 出力                    | 説明                   |
-| -------------------- | -------- | ---------------- | ----------------------- | ---------------------- |
-| llm:get-providers    | invoke   | なし             | LLMProvider[]           | プロバイダー一覧取得   |
-| llm:check-health     | invoke   | LLMProviderId    | HealthCheckResult       | ヘルスチェック実行     |
-| llm:send-chat        | invoke   | LLMChatRequest   | LLMChatResponse         | チャット送信           |
-| llm:stream-chat      | send/on  | LLMChatRequest   | LLMStreamChunk (連続)   | ストリーミングチャット |
+| チャンネル        | メソッド | 入力           | 出力                  | 説明                   |
+| ----------------- | -------- | -------------- | --------------------- | ---------------------- |
+| llm:get-providers | invoke   | なし           | LLMProvider[]         | プロバイダー一覧取得   |
+| llm:check-health  | invoke   | LLMProviderId  | HealthCheckResult     | ヘルスチェック実行     |
+| llm:send-chat     | invoke   | LLMChatRequest | LLMChatResponse       | チャット送信           |
+| llm:stream-chat   | send/on  | LLMChatRequest | LLMStreamChunk (連続) | ストリーミングチャット |
 
 ### LLMアダプター実装
 
@@ -221,21 +221,21 @@ LLMモデル情報の型定義。
 
 #### 対応プロバイダー
 
-| プロバイダー | アダプター | 主要モデル |
-| ------------ | ---------- | ---------- |
-| OpenAI | OpenAIAdapter | GPT-4o, GPT-4-turbo, GPT-3.5-turbo |
-| Anthropic | AnthropicAdapter | Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku |
-| Google | GoogleAdapter | Gemini 1.5 Pro, Gemini 2.0 Flash |
-| xAI | xAIAdapter | Grok-2, Grok-2-mini |
+| プロバイダー | アダプター       | 主要モデル                                       |
+| ------------ | ---------------- | ------------------------------------------------ |
+| OpenAI       | OpenAIAdapter    | GPT-4o, GPT-4-turbo, GPT-3.5-turbo               |
+| Anthropic    | AnthropicAdapter | Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku |
+| Google       | GoogleAdapter    | Gemini 1.5 Pro, Gemini 2.0 Flash                 |
+| xAI          | xAIAdapter       | Grok-2, Grok-2-mini                              |
 
 #### UIコンポーネント
 
-| コンポーネント | 責務 | パス |
-| -------------- | ---- | ---- |
-| ProviderSelector | プロバイダー選択UI | `components/llm/ProviderSelector.tsx` |
-| ModelSelector | モデル選択UI | `components/llm/ModelSelector.tsx` |
-| HealthIndicator | 接続状態インジケーター | `components/llm/HealthIndicator.tsx` |
-| LLMSelectorPanel | 統合パネル | `components/llm/LLMSelectorPanel.tsx` |
+| コンポーネント   | 責務                   | パス                                  |
+| ---------------- | ---------------------- | ------------------------------------- |
+| ProviderSelector | プロバイダー選択UI     | `components/llm/ProviderSelector.tsx` |
+| ModelSelector    | モデル選択UI           | `components/llm/ModelSelector.tsx`    |
+| HealthIndicator  | 接続状態インジケーター | `components/llm/HealthIndicator.tsx`  |
+| LLMSelectorPanel | 統合パネル             | `components/llm/LLMSelectorPanel.tsx` |
 
 #### アーキテクチャパターン
 

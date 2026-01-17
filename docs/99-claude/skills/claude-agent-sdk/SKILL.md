@@ -86,15 +86,15 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 
 ## Task仕様ナビ
 
-| Task                     | 概要                                 | 対応する Phase | リソース                                       |
-| ------------------------ | ------------------------------------ | -------------- | ---------------------------------------------- |
-| query() API基本実装      | ストリーミングメッセージ処理の基本   | Phase 1, 2     | query-api.md, agent-handler-template.ts        |
-| Hooks実装                | PreToolUse/PostToolUse/Permission    | Phase 2        | hooks-system.md                                |
-| Permission Control設計   | 権限ルールの設計と実装               | Phase 1, 2     | permission-control.md                          |
-| Electron IPC統合         | Main-Renderer間のAgent通信           | Phase 2        | electron-ipc.md                                |
-| エラーハンドリング       | AbortSignal、タイムアウト、リトライ  | Phase 2        | error-handling.md                              |
-| MCP統合                  | MCPサーバーとの連携                  | Phase 2, 3     | mcp-integration.md                             |
-| セキュリティ設計         | サンドボックス、ホスティング         | Phase 2, 3     | security-sandboxing.md                         |
+| Task                   | 概要                                | 対応する Phase | リソース                                |
+| ---------------------- | ----------------------------------- | -------------- | --------------------------------------- |
+| query() API基本実装    | ストリーミングメッセージ処理の基本  | Phase 1, 2     | query-api.md, agent-handler-template.ts |
+| Hooks実装              | PreToolUse/PostToolUse/Permission   | Phase 2        | hooks-system.md                         |
+| Permission Control設計 | 権限ルールの設計と実装              | Phase 1, 2     | permission-control.md                   |
+| Electron IPC統合       | Main-Renderer間のAgent通信          | Phase 2        | electron-ipc.md                         |
+| エラーハンドリング     | AbortSignal、タイムアウト、リトライ | Phase 2        | error-handling.md                       |
+| MCP統合                | MCPサーバーとの連携                 | Phase 2, 3     | mcp-integration.md                      |
+| セキュリティ設計       | サンドボックス、ホスティング        | Phase 2, 3     | security-sandboxing.md                  |
 
 ## ベストプラクティス
 
@@ -149,7 +149,10 @@ const options = {
   hooks: {
     PreToolUse: async (input, toolUseID, { signal }) => {
       if (input.toolName === "Bash" && input.args.command?.includes("rm -rf")) {
-        return { proceed: false, message: "危険なコマンドは許可されていません" };
+        return {
+          proceed: false,
+          message: "危険なコマンドは許可されていません",
+        };
       }
       return { proceed: true };
     },
@@ -206,16 +209,16 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 ## 関連ドキュメント
 
-| ドキュメント               | パス                                                                         | 説明                                |
-| -------------------------- | ---------------------------------------------------------------------------- | ----------------------------------- |
-| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md` | 統合システム設計仕様（型定義、IPC） |
-| APIリファレンス            | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`  | 公開API詳細リファレンス             |
-| 実装ガイド                 | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド      |
+| ドキュメント                  | パス                                                                               | 説明                                |
+| ----------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------- |
+| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`        | 統合システム設計仕様（型定義、IPC） |
+| APIリファレンス               | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`        | 公開API詳細リファレンス             |
+| 実装ガイド                    | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド            |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                               |
-| ------- | ---------- | ----------------------------------------------------- |
-| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携        |
-| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加            |
-| 1.0.0   | 2026-01-08 | 初期バージョン作成                                    |
+| Version | Date       | Changes                                        |
+| ------- | ---------- | ---------------------------------------------- |
+| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携 |
+| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加     |
+| 1.0.0   | 2026-01-08 | 初期バージョン作成                             |

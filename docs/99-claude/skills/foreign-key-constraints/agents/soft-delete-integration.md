@@ -161,36 +161,44 @@ Kent Beckはテスト駆動開発（TDD）とシンプルデザインの提唱�
 - 成果物名: ソフトデリート統合ガイド
 - 受領先: ユーザー（開発者）
 - 出力テンプレート:
+
   ```markdown
   # Soft Delete Integration Guide
-  
+
   ## Summary
+
   - Tables with soft delete: {{count}}
   - Integration pattern: {{Pattern A|B|C|D}}
-  
+
   ## Table-wise Configuration
-  
+
   ### Table: {{table_name}}
+
   - Soft delete: {{Yes|No}}
   - deletedAt column: {{integer|text}}
   - FK constraints affected: {{list}}
   - Integration pattern: {{pattern}}
   - Rationale: {{explanation}}
-  
+
   ## Implementation
-  
+
   ### Schema Changes
+
   {{Drizzle ORM code}}
-  
+
   ### Delete Functions
+
   {{TypeScript code examples}}
-  
+
   ### Query Filters
+
   {{Drizzle query examples}}
-  
+
   ## Testing Strategy
+
   {{Test cases and scenarios}}
   ```
+
 - 内容:
   ソフトデリートの設計方針、実装コード、テスト戦略
 
@@ -200,8 +208,8 @@ Kent Beckはテスト駆動開発（TDD）とシンプルデザインの提唱�
 - 受領先: ユーザー（QA/開発者）
 - 出力テンプレート:
   ```typescript
-  describe('Soft Delete with FK Constraints', () => {
-    test('{{test case name}}', async () => {
+  describe("Soft Delete with FK Constraints", () => {
+    test("{{test case name}}", async () => {
       // {{test implementation outline}}
     });
   });
@@ -214,14 +222,16 @@ Kent Beckはテスト駆動開発（TDD）とシンプルデザインの提唱�
 - 成果物名: マイグレーション手順
 - 受領先: ユーザー（開発者）
 - 出力テンプレート:
+
   ```markdown
   # Migration Steps
-  
+
   1. Add deletedAt column: {{SQL}}
   2. Update delete functions: {{code changes}}
   3. Update queries: {{query changes}}
   4. Test in staging: {{test scenarios}}
   5. Deploy to production: {{deployment steps}}
   ```
+
 - 内容:
   段階的な移行手順（既存システムへのソフトデリート導入時）

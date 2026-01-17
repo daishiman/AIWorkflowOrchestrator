@@ -79,7 +79,19 @@ import type {
   PaginationOptions,
   LogFilterOptions,
 } from "../renderer/components/history/types";
-import type { CommunityAPI, CommunityId, SlideSettingsAPI } from "./types";
+import type {
+  CommunityAPI,
+  CommunityId,
+  SlideSettingsAPI,
+  ClaudeCliAPI,
+  ClaudeCliSessionOutputEvent,
+  ClaudeCliSessionStatusEvent,
+  ClaudeCliListSkillsRequest,
+  ClaudeCliGetSkillDetailRequest,
+  ClaudeCliExecuteScriptRequest,
+  ClaudeCliTerminateSessionRequest,
+  ClaudeCliGetSessionRequest,
+} from "./types";
 
 // Type-safe invoke wrapper
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -419,6 +431,33 @@ const slideSettingsAPI: SlideSettingsAPI = {
   getAllSettings: () => safeInvoke(IPC_CHANNELS.SLIDE_SETTINGS_GET_ALL),
 };
 
+// Claude CLI API for Claude Code CLI integration
+const claudeCliAPI: ClaudeCliAPI = {
+  checkInstallation: () =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_CHECK_INSTALLATION),
+  listSkills: (request?: ClaudeCliListSkillsRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_LIST_SKILLS, request || {}),
+  getSkillDetail: (request: ClaudeCliGetSkillDetailRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_GET_SKILL_DETAIL, request),
+  executeScript: (request: ClaudeCliExecuteScriptRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_EXECUTE_SCRIPT, request),
+  terminateSession: (request: ClaudeCliTerminateSessionRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_TERMINATE_SESSION, request),
+  listSessions: () => safeInvoke(IPC_CHANNELS.CLAUDE_CLI_LIST_SESSIONS),
+  getSession: (request: ClaudeCliGetSessionRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_GET_SESSION, request),
+  onSessionOutput: (callback: (event: ClaudeCliSessionOutputEvent) => void) =>
+    safeOn<ClaudeCliSessionOutputEvent>(
+      IPC_CHANNELS.CLAUDE_CLI_SESSION_OUTPUT,
+      callback,
+    ),
+  onSessionStatus: (callback: (event: ClaudeCliSessionStatusEvent) => void) =>
+    safeOn<ClaudeCliSessionStatusEvent>(
+      IPC_CHANNELS.CLAUDE_CLI_SESSION_STATUS,
+      callback,
+    ),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
@@ -428,6 +467,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("agentAPI", agentAPI);
     contextBridge.exposeInMainWorld("agentSDKAPI", agentSDKAPI);
     contextBridge.exposeInMainWorld("slideSettingsAPI", slideSettingsAPI);
+    contextBridge.exposeInMainWorld("claudeCliAPI", claudeCliAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -441,4 +481,6 @@ if (process.contextIsolated) {
   (
     window as unknown as { slideSettingsAPI: SlideSettingsAPI }
   ).slideSettingsAPI = slideSettingsAPI;
+  (window as unknown as { claudeCliAPI: ClaudeCliAPI }).claudeCliAPI =
+    claudeCliAPI;
 }

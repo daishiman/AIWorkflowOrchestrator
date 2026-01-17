@@ -178,8 +178,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 活用スキル
 
-| スキル名                       | 活用方法                |
-| ------------------------------ | ----------------------- |
+| スキル名                                               | 活用方法                |
+| ------------------------------------------------------ | ----------------------- |
 | .claude/skills/design-system-architecture/SKILL.md     | デザインシステム準拠    |
 | .claude/skills/component-composition-patterns/SKILL.md | Compositionパターン活用 |
 | .claude/skills/accessibility-wcag/SKILL.md             | WCAG準拠設計            |
@@ -206,8 +206,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### レビュー参加エージェント
 
-| エージェント     | レビュー観点       | 選定理由           |
-| ---------------- | ------------------ | ------------------ |
+| エージェント                      | レビュー観点       | 選定理由           |
+| --------------------------------- | ------------------ | ------------------ |
 | .claude/agents/ui-designer.md     | UI/UX品質          | ユーザビリティ確認 |
 | .claude/agents/arch-police.md     | コンポーネント設計 | 設計原則遵守       |
 | .claude/agents/frontend-tester.md | テスタビリティ     | テスト可能性確認   |
@@ -244,8 +244,8 @@ Phase 0: 要件定義 → Phase 1: 設計 → Phase 1.5: 設計レビュー
 
 ##### 活用スキル
 
-| スキル名             | 活用方法               |
-| -------------------- | ---------------------- |
+| スキル名                                     | 活用方法               |
+| -------------------------------------------- | ---------------------- |
 | .claude/skills/playwright-testing/SKILL.md   | インタラクションテスト |
 | .claude/skills/test-data-management/SKILL.md | テストデータ準備       |
 
@@ -459,8 +459,8 @@ pnpm --filter @repo/desktop test:run AvatarEditor
 
 ##### レビュー参加エージェント
 
-| エージェント  | レビュー観点 | 選定理由   |
-| ------------- | ------------ | ---------- |
+| エージェント                   | レビュー観点 | 選定理由   |
+| ------------------------------ | ------------ | ---------- |
 | .claude/agents/ui-designer.md  | UI/UX品質    | 最終UI確認 |
 | .claude/agents/code-quality.md | コード品質   | 保守性確認 |
 

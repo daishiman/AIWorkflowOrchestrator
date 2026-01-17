@@ -14,28 +14,35 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when designing agent personas or selecting expert models.
 
 ### 必要な知識
+
 - 対象領域: エージェントペルソナ設計を専門とするスキル。実在する専門家の思想をエージェントに移植します。
 - 主要概念: Expert Modeling Guide / Expert Modeling vs Role-Based Design / Expert Modeling（推奨） / Agent Persona Design / すべきこと
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/persona-template.md`
 
 ### 参照書籍
+
 - 『The Society of Mind（心の社会）』（Marvin Minsky）: 小さなエージェント群による知性実現
 - 『Thinking, Fast and Slow（ファスト&スロー）』（Daniel Kahneman）: 専門家の思考パターンモデリング
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/persona-template.md`: このレベルでは参照のみ
 
 ## 実践手順

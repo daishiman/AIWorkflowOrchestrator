@@ -14,29 +14,35 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: Style Guide Customization Patterns / カスタマイズの原則 / 1. ベース継承 + オーバーライド / Style Guide Migration Strategies / 移行の必要性 / 移行が必要なケース
 - 実務指針: プロジェクトのスタイルガイドを選択する時 / 既存コードパターンに基づいてスタイルを決定する時 / チーム規約とスタイルガイドを整合させる時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/customization-patterns.md`: スタイルガイドのカスタマイズパターン（把握する知識: Style Guide Customization Patterns / カスタマイズの原則 / 1. ベース継承 + オーバーライド）
 - `references/migration-strategies.md`: スタイルガイド移行戦略（把握する知識: Style Guide Migration Strategies / 移行の必要性 / 移行が必要なケース）
 - `references/style-guide-comparison.md`: 主要スタイルガイド(Airbnb、Google、Standard)の比較（把握する知識: Code Style Guide Comparison / 主要3スタイルガイド比較 / 1. Airbnb JavaScript Style Guide）
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: 主要スタイルガイド / 1. Airbnb JavaScript Style Guide / 2. Google JavaScript Style Guide）
 
 ### スクリプト運用
+
 - `scripts/detect-style.mjs`: プロジェクトのコードスタイル自動検出スクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### アセット運用
+
 - `assets/airbnb-base.json`: Airbnbスタイルベース設定
 - `assets/google.json`: Googleスタイル設定
 - `assets/standard.json`: Standardスタイル設定
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

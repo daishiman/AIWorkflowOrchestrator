@@ -1476,6 +1476,128 @@ interface AgentSDKAPI {
 
 ---
 
+---
+
+## Claude Code CLI統合
+
+### 概要
+
+ElectronデスクトップアプリにおけるClaude Code CLI統合のインターフェース仕様。
+Main ProcessからClaude Code CLIをchild_process.spawnで起動し、スキル実行・セッション管理・ストリーミング出力を提供する。
+
+**実装ファイル**:
+
+- `apps/desktop/src/main/claude-cli/ClaudeCliManager.ts` - ファサードAPI
+- `apps/desktop/src/main/claude-cli/ProcessManager.ts` - プロセス管理
+- `apps/desktop/src/main/claude-cli/SessionManager.ts` - セッション管理
+- `apps/desktop/src/main/claude-cli/SkillScanner.ts` - スキルスキャン
+- `apps/desktop/src/main/claude-cli/ipc-handler.ts` - IPCハンドラ
+- `packages/shared/src/claude-cli/types.ts` - 共有型定義
+- `packages/shared/src/claude-cli/schemas.ts` - Zodスキーマ
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Electron Application                     │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────────┐    IPC     ┌─────────────────────────┐ │
+│  │    Renderer     │◄──────────►│         Main            │ │
+│  │    Process      │            │        Process          │ │
+│  │                 │            │                         │ │
+│  │  ┌───────────┐  │            │  ┌───────────────────┐  │ │
+│  │  │ React UI  │  │            │  │ ClaudeCliManager  │  │ │
+│  │  └───────────┘  │            │  │    (Facade)       │  │ │
+│  │                 │            │  └─────────┬─────────┘  │ │
+│  └─────────────────┘            │            │            │ │
+│                                 │    ┌───────┴───────┐    │ │
+│                                 │    │               │    │ │
+│                                 │  ┌─▼─┐         ┌───▼──┐ │ │
+│                                 │  │SM │         │  SS  │ │ │
+│                                 │  └─┬─┘         └──────┘ │ │
+│                                 │    │                    │ │
+│                                 │  ┌─▼─┐                  │ │
+│                                 │  │PM │                  │ │
+│                                 │  └───┘                  │ │
+│                                 └─────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │ Claude Code CLI │
+                           └─────────────────┘
+
+SM: SessionManager  SS: SkillScanner  PM: ProcessManager
+```
+
+### IPC チャンネル（Claude CLI）
+
+| チャンネル                       | 方向            | 説明                   |
+| -------------------------------- | --------------- | ---------------------- |
+| `claude-cli:check-installation`  | Renderer → Main | CLI存在確認            |
+| `claude-cli:list-skills`         | Renderer → Main | スキル一覧取得         |
+| `claude-cli:get-skill-detail`    | Renderer → Main | スキル詳細取得         |
+| `claude-cli:execute-script`      | Renderer → Main | スクリプト実行         |
+| `claude-cli:terminate-session`   | Renderer → Main | セッション終了         |
+| `claude-cli:list-sessions`       | Renderer → Main | セッション一覧取得     |
+| `claude-cli:get-session`         | Renderer → Main | セッション詳細取得     |
+| `claude-cli:session-output`      | Main → Renderer | ストリーミング出力     |
+| `claude-cli:session-status`      | Main → Renderer | セッション状態変更通知 |
+
+### 型定義（Claude CLI）
+
+#### ClaudeCliResult<T>
+
+共通レスポンス型（Result Pattern）。
+
+```typescript
+type ClaudeCliResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: { code: ClaudeCliErrorCode; message: string } };
+```
+
+#### ClaudeCliErrorCode
+
+| コード                 | 説明               |
+| ---------------------- | ------------------ |
+| `VALIDATION_ERROR`     | バリデーション失敗 |
+| `SCAN_FAILED`          | スキャン失敗       |
+| `SKILL_NOT_FOUND`      | スキル未発見       |
+| `EXECUTION_FAILED`     | 実行失敗           |
+| `SESSION_NOT_FOUND`    | セッション未発見   |
+| `TERMINATION_FAILED`   | 終了失敗           |
+| `IPC_VALIDATION_ERROR` | IPC検証失敗        |
+
+#### SessionStatus
+
+| 値           | 説明         |
+| ------------ | ------------ |
+| `pending`    | 待機中       |
+| `running`    | 実行中       |
+| `completed`  | 完了         |
+| `failed`     | 失敗         |
+| `terminated` | 終了（中断） |
+
+### 設定定数（Claude CLI）
+
+| 定数                | 値      | 説明                        |
+| ------------------- | ------- | --------------------------- |
+| `MAX_SESSIONS`      | `10`    | 最大同時セッション数        |
+| `DEFAULT_TIMEOUT`   | `30分`  | デフォルトタイムアウト      |
+| `OUTPUT_BUFFER_MAX` | `100MB` | 出力バッファ最大サイズ      |
+
+### 関連ドキュメント（Claude CLI統合）
+
+| ドキュメント   | パス                                                                            |
+| -------------- | ------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/claude-code-cli-integration/outputs/phase-12/implementation-guide.md` |
+| 要件定義       | `docs/30-workflows/claude-code-cli-integration/outputs/phase-1/requirements-definition.md` |
+| アーキテクチャ | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/architecture-design.md` |
+| IPC API仕様    | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/ipc-api-specification.md` |
+| セキュリティ   | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/security-design.md` |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                           | パス                                                                                        |

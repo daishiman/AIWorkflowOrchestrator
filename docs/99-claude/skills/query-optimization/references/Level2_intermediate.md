@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 実行計画分析手法 / 実行計画とは / SQLite: EXPLAIN QUERY PLAN / EXPLAIN QUERY PLAN 完全ガイド / 基本構文 / 使用例
 - 実務指針: クエリパフォーマンスが低下している時 / N+1問題を検出・解消する時 / 複雑なJOINクエリを最適化する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/execution-plan-analysis.md`: EXPLAIN QUERY PLANの読み方、スキャン方法、JOIN方法、問題パターン検出（把握する知識: 実行計画分析手法 / 実行計画とは / SQLite: EXPLAIN QUERY PLAN）
 - `resources/explain-analyze-guide.md`: EXPLAIN QUERY PLAN 完全ガイド（把握する知識: EXPLAIN QUERY PLAN 完全ガイド / 基本構文 / 使用例）
 - `resources/fetch-strategies.md`: Eager/Lazy/明示的フェッチの使い分けとSELECT句最適化手法（把握する知識: フェッチ戦略ガイド / フェッチ戦略の種類 / 1. Eager Loading（即時読み込み））
@@ -30,15 +33,18 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Query Optimization / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/detect-n-plus-one.mjs`: N+1問題検出スクリプト
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/optimization-checklist.md`: クエリ最適化チェックリスト
 - `templates/query-optimization-checklist.md`: クエリ最適化チェックリスト
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

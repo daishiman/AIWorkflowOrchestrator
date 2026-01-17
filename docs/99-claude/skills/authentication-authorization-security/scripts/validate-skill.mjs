@@ -65,7 +65,9 @@ async function main() {
   }
 
   const verbose = args.includes("--verbose");
-  const unknownArgs = args.filter((arg) => arg.startsWith("-") && arg !== "--verbose");
+  const unknownArgs = args.filter(
+    (arg) => arg.startsWith("-") && arg !== "--verbose",
+  );
   if (unknownArgs.length > 0) {
     console.error(`Error: Unknown options: ${unknownArgs.join(", ")}`);
     process.exit(EXIT_ARGS_ERROR);

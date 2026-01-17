@@ -70,7 +70,8 @@ function validateType(value, type) {
   if (type === "integer") return Number.isInteger(value);
   if (type === "boolean") return typeof value === "boolean";
   if (type === "array") return Array.isArray(value);
-  if (type === "object") return typeof value === "object" && value !== null && !Array.isArray(value);
+  if (type === "object")
+    return typeof value === "object" && value !== null && !Array.isArray(value);
   if (type === "null") return value === null;
   return true;
 }
@@ -83,41 +84,55 @@ function validateSchema(data, schema, path = "") {
     const types = Array.isArray(schema.type) ? schema.type : [schema.type];
     const isValid = types.some((t) => validateType(data, t));
     if (!isValid) {
-      errors.push(`${path || "root"}: 型が不正です。期待: ${types.join("|")}, 実際: ${typeof data}`);
+      errors.push(
+        `${path || "root"}: 型が不正です。期待: ${types.join("|")}, 実際: ${typeof data}`,
+      );
       return errors;
     }
   }
 
   // enum検証
   if (schema.enum && !schema.enum.includes(data)) {
-    errors.push(`${path || "root"}: 値が許可されていません。許可値: ${schema.enum.join(", ")}`);
+    errors.push(
+      `${path || "root"}: 値が許可されていません。許可値: ${schema.enum.join(", ")}`,
+    );
   }
 
   // pattern検証（文字列のみ）
   if (schema.pattern && typeof data === "string") {
     const regex = new RegExp(schema.pattern);
     if (!regex.test(data)) {
-      errors.push(`${path || "root"}: パターンに一致しません。パターン: ${schema.pattern}`);
+      errors.push(
+        `${path || "root"}: パターンに一致しません。パターン: ${schema.pattern}`,
+      );
     }
   }
 
   // minLength/maxLength検証（文字列のみ）
   if (typeof data === "string") {
     if (schema.minLength !== undefined && data.length < schema.minLength) {
-      errors.push(`${path || "root"}: 文字数が最小値未満です。最小: ${schema.minLength}, 実際: ${data.length}`);
+      errors.push(
+        `${path || "root"}: 文字数が最小値未満です。最小: ${schema.minLength}, 実際: ${data.length}`,
+      );
     }
     if (schema.maxLength !== undefined && data.length > schema.maxLength) {
-      errors.push(`${path || "root"}: 文字数が最大値超過です。最大: ${schema.maxLength}, 実際: ${data.length}`);
+      errors.push(
+        `${path || "root"}: 文字数が最大値超過です。最大: ${schema.maxLength}, 実際: ${data.length}`,
+      );
     }
   }
 
   // minItems/maxItems検証（配列のみ）
   if (Array.isArray(data)) {
     if (schema.minItems !== undefined && data.length < schema.minItems) {
-      errors.push(`${path || "root"}: 要素数が最小値未満です。最小: ${schema.minItems}, 実際: ${data.length}`);
+      errors.push(
+        `${path || "root"}: 要素数が最小値未満です。最小: ${schema.minItems}, 実際: ${data.length}`,
+      );
     }
     if (schema.maxItems !== undefined && data.length > schema.maxItems) {
-      errors.push(`${path || "root"}: 要素数が最大値超過です。最大: ${schema.maxItems}, 実際: ${data.length}`);
+      errors.push(
+        `${path || "root"}: 要素数が最大値超過です。最大: ${schema.maxItems}, 実際: ${data.length}`,
+      );
     }
 
     // items検証
@@ -134,7 +149,9 @@ function validateSchema(data, schema, path = "") {
     if (schema.required) {
       for (const reqProp of schema.required) {
         if (!(reqProp in data)) {
-          errors.push(`${path || "root"}: 必須プロパティが不足しています: ${reqProp}`);
+          errors.push(
+            `${path || "root"}: 必須プロパティが不足しています: ${reqProp}`,
+          );
         }
       }
     }
@@ -143,7 +160,13 @@ function validateSchema(data, schema, path = "") {
     if (schema.properties) {
       for (const [propName, propSchema] of Object.entries(schema.properties)) {
         if (propName in data) {
-          errors.push(...validateSchema(data[propName], propSchema, `${path}.${propName}`));
+          errors.push(
+            ...validateSchema(
+              data[propName],
+              propSchema,
+              `${path}.${propName}`,
+            ),
+          );
         }
       }
     }
@@ -153,7 +176,9 @@ function validateSchema(data, schema, path = "") {
       const allowedProps = new Set(Object.keys(schema.properties));
       for (const propName of Object.keys(data)) {
         if (!allowedProps.has(propName)) {
-          errors.push(`${path || "root"}: 許可されていないプロパティです: ${propName}`);
+          errors.push(
+            `${path || "root"}: 許可されていないプロパティです: ${propName}`,
+          );
         }
       }
     }
@@ -207,7 +232,9 @@ async function main() {
       console.log(`✓ 検証成功: ${inputPath}`);
       if (verbose) {
         console.log(`  スキーマ: ${schemaPath}`);
-        console.log(`  データ: ${JSON.stringify(data, null, 2).substring(0, 200)}...`);
+        console.log(
+          `  データ: ${JSON.stringify(data, null, 2).substring(0, 200)}...`,
+        );
       }
       process.exit(EXIT_SUCCESS);
     } else {

@@ -11,7 +11,12 @@
     },
     "summary": {
       "type": "object",
-      "required": ["totalFiles", "averageScores", "totalImprovements", "highPriorityCount"],
+      "required": [
+        "totalFiles",
+        "averageScores",
+        "totalImprovements",
+        "highPriorityCount"
+      ],
       "properties": {
         "totalFiles": {
           "type": "integer",
@@ -59,7 +64,11 @@
             "properties": {
               "structure": { "type": "integer", "minimum": 1, "maximum": 5 },
               "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
-              "reproducibility": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "reproducibility": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
               "efficiency": { "type": "integer", "minimum": 1, "maximum": 5 },
               "overall": { "type": "integer", "minimum": 1, "maximum": 5 }
             }
@@ -76,7 +85,12 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "enum": ["structure", "clarity", "reproducibility", "efficiency"]
+                  "enum": [
+                    "structure",
+                    "clarity",
+                    "reproducibility",
+                    "efficiency"
+                  ]
                 },
                 "priority": {
                   "type": "string",

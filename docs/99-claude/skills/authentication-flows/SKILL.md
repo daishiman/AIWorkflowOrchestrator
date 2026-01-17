@@ -51,6 +51,7 @@ allowed-tools:
 3. `assets/jwt-service-template.ts` / `assets/oauth2-client-template.ts` を参照
 
 **Task**:
+
 - `agents/select-auth-method.md`
 - `agents/design-token-strategy.md`
 
@@ -68,12 +69,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| 要件整理 | 目的・制約の整理 | 要件情報 | 要件メモ | `references/Level1_basics.md` | Phase 1 |
-| 方式選定 | 認証方式の選定 | 要件メモ | 選定メモ | `references/api-key.md` | Phase 2 前半 |
-| トークン設計 | 署名と有効期限の設計 | 選定メモ | 設計メモ | `references/jwt.md` | Phase 2 後半 |
-| 検証レビュー | 設定の検証 | 設定ファイル | 検証結果 | `scripts/validate-auth-config.mjs` | Phase 3 |
+| Task         | 役割                 | 入力         | 出力     | 参照先                             | 実行タイミング |
+| ------------ | -------------------- | ------------ | -------- | ---------------------------------- | -------------- |
+| 要件整理     | 目的・制約の整理     | 要件情報     | 要件メモ | `references/Level1_basics.md`      | Phase 1        |
+| 方式選定     | 認証方式の選定       | 要件メモ     | 選定メモ | `references/api-key.md`            | Phase 2 前半   |
+| トークン設計 | 署名と有効期限の設計 | 選定メモ     | 設計メモ | `references/jwt.md`                | Phase 2 後半   |
+| 検証レビュー | 設定の検証           | 設定ファイル | 検証結果 | `scripts/validate-auth-config.mjs` | Phase 3        |
 
 ## ベストプラクティス
 
@@ -118,8 +119,8 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠               |
+| 1.0.0   | 2025-12-24 | 初版作成                                 |

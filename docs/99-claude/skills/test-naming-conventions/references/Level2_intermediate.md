@@ -14,12 +14,15 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: describe構造 / 基本構造 / クラス/モジュール → メソッド → シナリオ / ファイル構成 / ファイル命名規則 / 基本パターン
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/describe-structure.md`: Describe Structureリソース（把握する知識: describe構造 / 基本構造 / クラス/モジュール → メソッド → シナリオ）
 - `resources/file-organization.md`: File Organizationリソース（把握する知識: ファイル構成 / ファイル命名規則 / 基本パターン）
 - `resources/naming-patterns.md`: Naming Patternsリソース（把握する知識: 命名パターン一覧 / Should形式 / 基本構文）
@@ -27,14 +30,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Test Naming Conventions / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/test-name-linter.mjs`: Test Name Linterスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/naming-guide.md`: Naming Guideテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

@@ -314,3 +314,184 @@ Main Process (Electron)
 - ストレージキー: `importedSkillIds`
 
 ---
+
+## Claude Code CLI連携パターン（Desktop Main Process）
+
+### 概要
+
+Claude Code CLI連携はElectronのMain Processで動作し、`claude`コマンド（CLIツール）をchild_process.spawnで起動してスキル実行・セッション管理・ストリーミング出力を提供する。Facadeパターンを採用し、外部からは単一のManagerインターフェースを提供する。
+
+**実装場所**: `apps/desktop/src/main/claude-cli/`
+
+### コンポーネント構成
+
+```
+Main Process (Electron)
+├── ClaudeCliManager (Facade - エントリポイント)
+│   ├── ProcessManager (プロセス生成・監視・終了)
+│   ├── SessionManager (セッションライフサイクル管理)
+│   └── SkillScanner (スキルディレクトリスキャン)
+└── IPC Handlers (Renderer通信)
+    └── ipc-handler.ts
+```
+
+### ファイル構成
+
+| ファイル                | 責務                          |
+| ----------------------- | ----------------------------- |
+| `ProcessManager.ts`     | 子プロセス生成・監視・終了    |
+| `SessionManager.ts`     | セッションライフサイクル管理  |
+| `SkillScanner.ts`       | スキルディレクトリスキャン    |
+| `ClaudeCliManager.ts`   | Facadeサービス（外部API）     |
+| `ipc-handler.ts`        | IPCハンドラ                   |
+| `index.ts`              | エクスポート                  |
+
+### 型定義
+
+| 型名                    | 定義場所                               | 説明                     |
+| ----------------------- | -------------------------------------- | ------------------------ |
+| `ClaudeCliResult<T>`    | `packages/shared/src/claude-cli/types.ts` | Result Pattern型       |
+| `SessionStatus`         | `packages/shared/src/claude-cli/types.ts` | セッション状態         |
+| `ClaudeCliSkill`        | `packages/shared/src/claude-cli/types.ts` | スキル情報             |
+| `SessionSummary`        | `packages/shared/src/claude-cli/types.ts` | セッション概要         |
+| `OutputEvent`           | `packages/shared/src/claude-cli/types.ts` | 出力イベント           |
+
+### IPC APIチャネル
+
+| チャネル                         | 引数                       | 戻り値                               | 説明               |
+| -------------------------------- | -------------------------- | ------------------------------------ | ------------------ |
+| `claude-cli:check-installation`  | なし                       | `ClaudeCliResult<CliInstallationStatus>` | CLI存在確認      |
+| `claude-cli:list-skills`         | `ListSkillsRequest`        | `ClaudeCliResult<ScanResult>`        | スキル一覧取得     |
+| `claude-cli:get-skill-detail`    | `GetSkillDetailRequest`    | `ClaudeCliResult<ClaudeCliSkillDetail>` | スキル詳細取得  |
+| `claude-cli:execute-script`      | `ExecuteScriptRequest`     | `ClaudeCliResult<ExecuteScriptResponse>` | スクリプト実行  |
+| `claude-cli:terminate-session`   | `TerminateSessionRequest`  | `ClaudeCliResult<TerminateSessionResponse>` | セッション終了 |
+| `claude-cli:list-sessions`       | なし                       | `ClaudeCliResult<SessionSummary[]>`  | セッション一覧     |
+| `claude-cli:get-session`         | `GetSessionRequest`        | `ClaudeCliResult<SessionDetail>`     | セッション詳細     |
+
+### データフロー
+
+```
+1. Renderer → IPC Channel → Main Process
+2. Main Process → ClaudeCliManager → ProcessManager/SessionManager/SkillScanner
+3. 結果/ストリーミング → IPC Channel → Renderer
+```
+
+### ClaudeCliManager（Facade）API
+
+| メソッド              | 引数                         | 戻り値                                    | 説明               |
+| --------------------- | ---------------------------- | ----------------------------------------- | ------------------ |
+| `checkInstallation`   | -                            | `Promise<ClaudeCliResult<...>>`           | CLI存在確認        |
+| `listSkills`          | `ListSkillsRequest`          | `Promise<ClaudeCliResult<ScanResult>>`    | スキル一覧         |
+| `getSkillDetail`      | `GetSkillDetailRequest`      | `Promise<ClaudeCliResult<...>>`           | スキル詳細         |
+| `executeScript`       | `ExecuteScriptRequest`       | `Promise<ClaudeCliResult<...>>`           | スクリプト実行     |
+| `terminateSession`    | `TerminateSessionRequest`    | `Promise<ClaudeCliResult<...>>`           | セッション終了     |
+| `listSessions`        | -                            | `Promise<ClaudeCliResult<...>>`           | セッション一覧     |
+| `getSession`          | `GetSessionRequest`          | `Promise<ClaudeCliResult<...>>`           | セッション詳細     |
+| `shutdown`            | -                            | `Promise<void>`                           | シャットダウン     |
+
+### イベント駆動（EventEmitter）
+
+| イベント          | ペイロード                  | 説明                   |
+| ----------------- | --------------------------- | ---------------------- |
+| `sessionCreated`  | `{ sessionId, skillName }`  | セッション作成時       |
+| `sessionDestroyed`| `{ sessionId }`             | セッション破棄時       |
+| `statusChanged`   | `{ sessionId, oldStatus, newStatus }` | 状態変更時   |
+| `output`          | `{ sessionId, type, content, timestamp }` | 出力発生時 |
+
+### 設計原則
+
+- **Facadeパターン**: ClaudeCliManagerが外部との唯一のインターフェース
+- **Result Pattern**: 全APIがClaudeCliResult<T>を返却
+- **EventEmitter**: ストリーミング出力とセッション状態変更の通知
+- **セッション分離**: 各セッションは独立したプロセスで実行
+- **リソース制限**: 最大10セッションまで同時実行可能
+
+### 関連タスク
+
+- claude-code-cli-integration（2026-01-17完了）
+
+---
+
+## IPC Handler Registration Pattern（Desktop Main Process）
+
+### 概要
+
+Electron IPCハンドラーはメインプロセスで一元的に登録される。
+全てのIPCハンドラーは `apps/desktop/src/main/ipc/index.ts` の `registerAllIpcHandlers` 関数から呼び出される必要がある。
+
+**実装場所**: `apps/desktop/src/main/ipc/index.ts`
+
+### 登録パターン
+
+IPCハンドラーの登録には3つのパターンがある:
+
+| パターン | 引数 | 使用例 |
+|---------|------|--------|
+| Pattern 1: mainWindow + store | `mainWindow`, `store` | `registerChatHandlers`, `registerAuthHandlers` |
+| Pattern 2: storeのみ | `store` | `registerSlideHandlers` |
+| Pattern 3: mainWindow + service | `mainWindow`, `service` | `registerSkillHandlers`, `registerAgentHandlers` |
+
+### SkillHandlers登録例（Pattern 3）
+
+```typescript
+// apps/desktop/src/main/ipc/index.ts
+
+// 1. インポート
+import { registerSkillHandlers } from "./skillHandlers";
+import {
+  SkillScanner,
+  SkillParser,
+  SkillImportManager,
+  SkillService,
+} from "../services/skill";
+import Store from "electron-store";
+import path from "path";
+import { app } from "electron";
+
+// 2. registerAllIpcHandlers 関数内で依存関係をインスタンス化
+export const registerAllIpcHandlers = (
+  mainWindow: BrowserWindow,
+  store: Store,
+): void => {
+  // ... 他のハンドラー登録 ...
+
+  // Register Skill Management handlers (SKILL-IPC-001)
+  const skillBasePath = path.join(app.getPath("userData"), ".claude", "skills");
+  const skillStore = new Store({ name: "skills" });
+  const skillScanner = new SkillScanner(skillBasePath);
+  const skillParser = new SkillParser();
+  const skillImportManager = new SkillImportManager(skillStore);
+  const skillService = new SkillService(
+    skillScanner,
+    skillParser,
+    skillImportManager,
+  );
+  registerSkillHandlers(mainWindow, skillService);
+};
+```
+
+### 新規IPCハンドラー追加手順
+
+1. **ハンドラーファイル作成**: `apps/desktop/src/main/ipc/{name}Handlers.ts`
+2. **サービス作成（必要な場合）**: `apps/desktop/src/main/services/{name}/`
+3. **index.tsに登録追加**: `registerAllIpcHandlers` 関数内で呼び出し
+4. **テスト作成**: ハンドラーとサービスのユニットテスト
+
+### セキュリティ要件
+
+全てのIPCハンドラーは `validateIpcSender` を使用してsender検証を行うこと:
+
+```typescript
+import { validateIpcSender } from "../security/ipcSecurity";
+
+ipcMain.handle("channel:action", async (event, args) => {
+  validateIpcSender(event, mainWindow);
+  // ... handler logic ...
+});
+```
+
+### 関連タスク
+
+- **SKILL-IPC-001**: `registerSkillHandlers` が `registerAllIpcHandlers` から呼び出されていなかったバグを修正（2026-01-16完了）
+
+---

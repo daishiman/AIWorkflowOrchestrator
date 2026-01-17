@@ -52,6 +52,7 @@ allowed-tools:
 4. `assets/auth-quickstart.md` をベースに手順を作成
 
 **Task**:
+
 - `agents/create-flow-diagrams.md`
 - `agents/write-quickstart.md`
 
@@ -69,12 +70,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
-| --- | --- | --- | --- | --- | --- |
-| 範囲定義 | 対象フローの整理 | 要件情報 | スコープメモ | `references/Level1_basics.md` | Phase 1 |
-| 図解作成 | OAuthフロー図作成 | スコープメモ | Mermaid図 | `assets/oauth2-diagrams.md` | Phase 2 前半 |
-| 手順作成 | クイックスタート作成 | 図解/要件 | ガイド本文 | `assets/auth-quickstart.md` | Phase 2 後半 |
-| セキュリティレビュー | 注意点の整理 | ガイド本文 | セキュリティ注意点 | `references/security-best-practices.md` | Phase 3 |
+| Task                 | 役割                 | 入力         | 出力               | 参照先                                  | 実行タイミング |
+| -------------------- | -------------------- | ------------ | ------------------ | --------------------------------------- | -------------- |
+| 範囲定義             | 対象フローの整理     | 要件情報     | スコープメモ       | `references/Level1_basics.md`           | Phase 1        |
+| 図解作成             | OAuthフロー図作成    | スコープメモ | Mermaid図          | `assets/oauth2-diagrams.md`             | Phase 2 前半   |
+| 手順作成             | クイックスタート作成 | 図解/要件    | ガイド本文         | `assets/auth-quickstart.md`             | Phase 2 後半   |
+| セキュリティレビュー | 注意点の整理         | ガイド本文   | セキュリティ注意点 | `references/security-best-practices.md` | Phase 3        |
 
 ## ベストプラクティス
 
@@ -118,7 +119,7 @@ allowed-tools:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
-| 1.0.0   | 2025-12-24 | 初版作成                                            |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備 |
+| 1.0.0   | 2025-12-24 | 初版作成                                 |

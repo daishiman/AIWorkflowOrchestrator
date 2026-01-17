@@ -73,16 +73,21 @@ function main() {
   const hasUrls = Array.isArray(config.urls) && config.urls.length > 0;
 
   if (!hasUrl && !hasUrls) {
-    console.error("Validation failed: config must include url or non-empty urls");
+    console.error(
+      "Validation failed: config must include url or non-empty urls",
+    );
     process.exit(EXIT_VALIDATION_FAILED);
   }
 
   if (hasUrls) {
     const invalid = config.urls.filter(
-      (entry) => !entry || typeof entry.url !== "string" || entry.url.length === 0,
+      (entry) =>
+        !entry || typeof entry.url !== "string" || entry.url.length === 0,
     );
     if (invalid.length > 0) {
-      console.error("Validation failed: each urls entry must include a string url");
+      console.error(
+        "Validation failed: each urls entry must include a string url",
+      );
       process.exit(EXIT_VALIDATION_FAILED);
     }
   }

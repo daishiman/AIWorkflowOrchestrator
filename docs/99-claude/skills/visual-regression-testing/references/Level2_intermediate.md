@@ -14,25 +14,31 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: スクリーンショット撮影戦略 / 目次 / スクリーンショット撮影の種類 / 視覚的回帰テストの原則 / 1. 意図的な変更のみを検出 / 核心概念
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/screenshot-strategies.md`: Screenshot Strategiesリソース（把握する知識: スクリーンショット撮影戦略 / 目次 / スクリーンショット撮影の種類）
 - `resources/visual-testing-best-practices.md`: Visual Testing Best Practicesリソース（把握する知識: 目次 / 視覚的回帰テストの原則 / 1. 意図的な変更のみを検出）
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: 核心概念 / 1. スクリーンショット比較 / 2. 動的コンテンツの除外）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/update-baseline-screenshots.mjs`: Update Baseline Screenshotsスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/visual-test-template.ts`: Visual Testテンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

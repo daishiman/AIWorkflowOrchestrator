@@ -19,7 +19,13 @@ const EXIT_ARGS_ERROR = 2;
 const EXIT_FILE_NOT_FOUND = 3;
 const EXIT_VALIDATION_FAILED = 4;
 
-const REQUIRED_HEADINGS = ["目的", "フォーマット", "フィールド定義", "互換性", "サンプル"];
+const REQUIRED_HEADINGS = [
+  "目的",
+  "フォーマット",
+  "フィールド定義",
+  "互換性",
+  "サンプル",
+];
 
 function showHelp() {
   console.log(`

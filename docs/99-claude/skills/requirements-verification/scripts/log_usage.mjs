@@ -55,7 +55,10 @@ async function main() {
   const notes = getArg(args, "--notes") || "";
 
   if (!result || !["success", "failure"].includes(result)) {
-    fail("Error: --result は success または failure を指定してください", EXIT_ARGS_ERROR);
+    fail(
+      "Error: --result は success または failure を指定してください",
+      EXIT_ARGS_ERROR,
+    );
   }
 
   const timestamp = new Date().toISOString();
@@ -74,7 +77,9 @@ async function main() {
 
 ---
 `;
-    const updatedLogs = logsContent.includes("（ログエントリはここに追記されます）")
+    const updatedLogs = logsContent.includes(
+      "（ログエントリはここに追記されます）",
+    )
       ? logsContent.replace(
           "（ログエントリはここに追記されます）",
           `${logEntry}\n（ログエントリはここに追記されます）`,

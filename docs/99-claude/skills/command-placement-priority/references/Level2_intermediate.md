@@ -14,13 +14,16 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: 配置変更ガイド / ユーザー → プロジェクト / プロジェクト → ユーザー / 名前空間戦略 / 基本構造 / 命名パターン
 - 実務指針: コマンドをどこに配置するか決定する時 / 同名コマンドの優先順位を理解したい時 / 名前空間を活用したい時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/migration-guide.md`: ユーザー→プロジェクト移行とプロジェクト→ユーザーカスタマイズ手順（把握する知識: 配置変更ガイド / ユーザー → プロジェクト / プロジェクト → ユーザー）
 - `references/namespace-strategies.md`: フラット/階層構造と機能別/ツール別/ワークフロー別名前空間設計（把握する知識: 名前空間戦略 / 基本構造 / 命名パターン）
 - `references/placement-options.md`: プロジェクト/ユーザー/MCPプロンプトの3つの配置場所の選択基準（把握する知識: コマンド配置オプション / 3つの配置場所 / 1. プロジェクトコマンド）
@@ -28,15 +31,18 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Command Placement & Priority / リソース構造 / リソース種別）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-placement.mjs`: コマンド配置の適切性検証と優先順位競合・名前空間重複の検出スクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `assets/project-command-template.md`: チーム共有コマンド作成のテンプレート（.claude/commands/）
 - `assets/user-command-template.md`: 個人用コマンド作成のテンプレート（~/.claude/commands/）
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

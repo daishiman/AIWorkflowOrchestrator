@@ -14,8 +14,8 @@
 
 ## レビュー結果サマリー
 
-| エージェント       | 観点                 |   判定   | スコア |
-| ------------------ | -------------------- | :------: | :----: |
+| エージェント                        | 観点                 |   判定   | スコア |
+| ----------------------------------- | -------------------- | :------: | :----: |
 | .claude/agents/electron-security.md | Electronセキュリティ | **PASS** | 9.6/10 |
 | .claude/agents/sec-auditor.md       | OWASP Top 10対応     | **PASS** | 10/10  |
 | .claude/agents/code-quality.md      | コード品質           | **PASS** | 97/100 |
@@ -208,8 +208,8 @@
 
 ## MINOR改善推奨事項まとめ
 
-| 優先度 | 項目                    | 担当               |
-| :----: | ----------------------- | ------------------ |
+| 優先度 | 項目                    | 担当                                |
+| :----: | ----------------------- | ----------------------------------- |
 |   中   | macOSでのsandbox明示化  | .claude/agents/electron-security.md |
 |   中   | CSP違反レポーティング   | .claude/agents/electron-security.md |
 |   低   | IPC境界値テスト追加     | .claude/agents/unit-tester.md       |

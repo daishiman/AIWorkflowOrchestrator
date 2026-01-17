@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                       |
 | 発見元           | Phase 7（最終レビューゲート）- E2Eテスト実行 |
 | 発見日           | 2025-12-23                                   |
-| 発見エージェント | .claude/agents/e2e-tester.md                                  |
+| 発見エージェント | .claude/agents/e2e-tester.md                 |
 
 ---
 
@@ -232,8 +232,8 @@ API仕様の定義のみ。実装は行わない。
 
 #### 活用スキル
 
-| スキル名                  | 活用方法                               |
-| ------------------------- | -------------------------------------- |
+| スキル名                                          | 活用方法                               |
+| ------------------------------------------------- | -------------------------------------- |
 | .claude/skills/openapi-specification/SKILL.md     | OpenAPI 3.x形式でエンドポイント定義    |
 | .claude/skills/request-response-examples/SKILL.md | サンプルリクエスト/レスポンスの作成    |
 | .claude/skills/zod-validation/SKILL.md            | リクエスト/レスポンスのZodスキーマ定義 |
@@ -329,8 +329,8 @@ TDD原則に基づき、実装前にテストを作成し、仕様を明確化�
 
 #### 活用スキル
 
-| スキル名                | 活用方法                               |
-| ----------------------- | -------------------------------------- |
+| スキル名                                        | 活用方法                               |
+| ----------------------------------------------- | -------------------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクルの実践       |
 | .claude/skills/boundary-value-analysis/SKILL.md | メッセージ数、トークン数の境界値テスト |
 | .claude/skills/test-naming-conventions/SKILL.md | Given-When-Then形式のテストケース命名  |
@@ -410,8 +410,8 @@ UI実装前にテストを作成し、期待される動作を明確化する。
 
 #### 活用スキル
 
-| スキル名                | 活用方法                         |
-| ----------------------- | -------------------------------- |
+| スキル名                                        | 活用方法                         |
+| ----------------------------------------------- | -------------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | テストファースト開発             |
 | .claude/skills/accessibility-wcag/SKILL.md      | アクセシビリティテストケース設計 |
 | .claude/skills/test-naming-conventions/SKILL.md | 明確なテストケース命名           |
@@ -494,8 +494,8 @@ TDDサイクルのGreen段階。テストを通すための最小限の実装を
 
 #### 活用スキル
 
-| スキル名               | 活用方法                         |
-| ---------------------- | -------------------------------- |
+| スキル名                                       | 活用方法                         |
+| ---------------------------------------------- | -------------------------------- |
 | .claude/skills/tdd-red-green-refactor/SKILL.md | テストを通すための最小限実装     |
 | .claude/skills/clean-code-practices/SKILL.md   | 意味のある命名、小さな関数       |
 | .claude/skills/zod-validation/SKILL.md         | リクエストバリデーション         |
@@ -617,8 +617,8 @@ TDDサイクルのGreen段階。APIが完成したので、フロントエンド
 
 #### 活用スキル
 
-| スキル名                       | 活用方法                                        |
-| ------------------------------ | ----------------------------------------------- |
+| スキル名                                               | 活用方法                                        |
+| ------------------------------------------------------ | ----------------------------------------------- |
 | .claude/skills/component-composition-patterns/SKILL.md | Controlled Component パターン                   |
 | .claude/skills/accessibility-wcag/SKILL.md             | aria-label、role、キーボード操作                |
 | .claude/skills/apple-hig-guidelines/SKILL.md           | Apple HIG準拠のデザイン                         |
@@ -753,8 +753,8 @@ Green状態達成後、コードの可読性・パフォーマンス・型安全
 
 #### 活用スキル
 
-| スキル名                       | 活用方法                                      |
-| ------------------------------ | --------------------------------------------- |
+| スキル名                                               | 活用方法                                      |
+| ------------------------------------------------------ | --------------------------------------------- |
 | .claude/skills/refactoring-techniques/SKILL.md         | Extract Method、Simplify Conditional パターン |
 | .claude/skills/clean-code-practices/SKILL.md           | 意味のある命名、小さな関数                    |
 | .claude/skills/type-safety-patterns/SKILL.md           | 型推論最大化                                  |
@@ -843,8 +843,8 @@ E2Eテスト実行と結果検証のみ。
 
 #### 活用スキル
 
-| スキル名              | 活用方法                            |
-| --------------------- | ----------------------------------- |
+| スキル名                                      | 活用方法                            |
+| --------------------------------------------- | ----------------------------------- |
 | .claude/skills/playwright-testing/SKILL.md    | Playwrightセレクタ戦略、waitFor戦略 |
 | .claude/skills/flaky-test-prevention/SKILL.md | 非決定性排除、明示的待機            |
 | .claude/skills/api-mocking/SKILL.md           | プレビューAPIモック設定確認         |

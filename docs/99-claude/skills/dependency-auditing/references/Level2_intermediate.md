@@ -14,13 +14,16 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: CI/CD統合パターン / GitHub Actions統合 / Dependabot設定 / CVSS重大度評価ガイド / CVSSスコアの構成要素 / Base Metrics（基本評価基準）
 - 実務指針: 依存関係のセキュリティ監査を実施する時 / 脆弱性レポートを評価する時 / セキュリティパッチの適用優先度を決定する時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `references/ci-cd-integration.md`: ci-cd-integration の詳細ガイド（把握する知識: CI/CD統合パターン / GitHub Actions統合 / Dependabot設定）
 - `references/cvss-scoring-guide.md`: cvss-scoring-guide のガイド（把握する知識: CVSS重大度評価ガイド / CVSSスコアの構成要素 / Base Metrics（基本評価基準））
 - `references/remediation-strategies.md`: remediation-strategies の詳細ガイド（把握する知識: 脆弱性修正戦略 / 修正オプションの種類 / 1. パッケージのアップグレード）
@@ -29,16 +32,19 @@ references/・scripts/・assets/ の活用を前提とした運用を整理し�
 - `references/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: Dependency Auditing / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/security-audit.mjs`: セキュリティを監査するスクリプト
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### アセット運用
+
 - `assets/audit-checklist.md`: 監査チェックリスト
 - `assets/vulnerability-assessment-template.md`: 脆弱性評価テンプレート
 - `assets/remediation-plan-template.md`: 修正計画テンプレート
 
 ### 成果物要件
+
 - アセットの構成・必須項目を反映する
 
 ## 実践手順

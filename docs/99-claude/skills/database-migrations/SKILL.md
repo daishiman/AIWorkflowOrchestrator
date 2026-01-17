@@ -20,6 +20,7 @@ allowed-tools:
   - Glob
   - Grep
 ---
+
 # database-migrations
 
 ## 概要
@@ -78,12 +79,12 @@ allowed-tools:
 
 ## Task仕様ナビ
 
-| Task | 起動タイミング | 入力 | 出力 |
-| --- | --- | --- | --- |
-| analyze-migration-requirements | Phase 1開始時 | 変更要件 | 要件メモ、影響一覧 |
-| design-migration-architecture | Phase 2開始時 | 要件メモ | マイグレーション計画、ロールバック方針 |
-| implement-migration-plan | Phase 3開始時 | 計画書 | 実装メモ、検証結果 |
-| validate-migration-quality | Phase 4開始時 | 実装メモ | 検証レポート、改善提案 |
+| Task                           | 起動タイミング | 入力     | 出力                                   |
+| ------------------------------ | -------------- | -------- | -------------------------------------- |
+| analyze-migration-requirements | Phase 1開始時  | 変更要件 | 要件メモ、影響一覧                     |
+| design-migration-architecture  | Phase 2開始時  | 要件メモ | マイグレーション計画、ロールバック方針 |
+| implement-migration-plan       | Phase 3開始時  | 計画書   | 実装メモ、検証結果                     |
+| validate-migration-quality     | Phase 4開始時  | 実装メモ | 検証レポート、改善提案                 |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,61 +92,61 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項 | 理由 |
-| --- | --- |
-| 変更対象を分割する | リスクを小さくする |
-| 移行期間を設ける | 互換性を維持する |
-| ロールバック手順を用意する | 復旧を確実にする |
-| 事前検証を自動化する | 人為ミスを減らす |
+| 推奨事項                   | 理由               |
+| -------------------------- | ------------------ |
+| 変更対象を分割する         | リスクを小さくする |
+| 移行期間を設ける           | 互換性を維持する   |
+| ロールバック手順を用意する | 復旧を確実にする   |
+| 事前検証を自動化する       | 人為ミスを減らす   |
 
 ### 避けるべきこと
 
-| 禁止事項 | 問題点 |
-| --- | --- |
-| 一括変更 | 失敗時の影響が大きい |
-| 互換性無視 | サービス停止につながる |
-| ロールバック不備 | 復旧不能になる |
+| 禁止事項         | 問題点                 |
+| ---------------- | ---------------------- |
+| 一括変更         | 失敗時の影響が大きい   |
+| 互換性無視       | サービス停止につながる |
+| ロールバック不備 | 復旧不能になる         |
 
 ## リソース参照
 
 ### scripts/（決定論的処理）
 
-| スクリプト | 機能 |
-| --- | --- |
-| `scripts/check-migration-safety.mjs` | 安全性チェック |
-| `scripts/generate-rollback.mjs` | ロールバック案の生成 |
-| `scripts/validate-skill.mjs` | スキル構造の検証 |
-| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| スクリプト                           | 機能                         |
+| ------------------------------------ | ---------------------------- |
+| `scripts/check-migration-safety.mjs` | 安全性チェック               |
+| `scripts/generate-rollback.mjs`      | ロールバック案の生成         |
+| `scripts/validate-skill.mjs`         | スキル構造の検証             |
+| `scripts/log_usage.mjs`              | 使用記録と評価メトリクス更新 |
 
 ### references/（詳細知識）
 
-| リソース | パス | 読込条件 |
-| --- | --- | --- |
-| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
-| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
-| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
-| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
-| Drizzle Kit | [references/drizzle-kit-commands.md](references/drizzle-kit-commands.md) | 生成時 |
-| 変更パターン | [references/schema-change-patterns.md](references/schema-change-patterns.md) | 設計時 |
-| 移行戦略 | [references/migration-strategies.md](references/migration-strategies.md) | 設計時 |
-| ロールバック | [references/rollback-procedures.md](references/rollback-procedures.md) | 検証時 |
-| ゼロダウンタイム | [references/zero-downtime-patterns.md](references/zero-downtime-patterns.md) | 本番適用時 |
-| 移行期間 | [references/transition-period-patterns.md](references/transition-period-patterns.md) | 移行設計時 |
-| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
-| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| リソース         | パス                                                                                 | 読込条件   |
+| ---------------- | ------------------------------------------------------------------------------------ | ---------- |
+| レベル1 基礎     | [references/Level1_basics.md](references/Level1_basics.md)                           | 要件整理時 |
+| レベル2 実務     | [references/Level2_intermediate.md](references/Level2_intermediate.md)               | 設計時     |
+| レベル3 応用     | [references/Level3_advanced.md](references/Level3_advanced.md)                       | 実装時     |
+| レベル4 専門     | [references/Level4_expert.md](references/Level4_expert.md)                           | 検証時     |
+| Drizzle Kit      | [references/drizzle-kit-commands.md](references/drizzle-kit-commands.md)             | 生成時     |
+| 変更パターン     | [references/schema-change-patterns.md](references/schema-change-patterns.md)         | 設計時     |
+| 移行戦略         | [references/migration-strategies.md](references/migration-strategies.md)             | 設計時     |
+| ロールバック     | [references/rollback-procedures.md](references/rollback-procedures.md)               | 検証時     |
+| ゼロダウンタイム | [references/zero-downtime-patterns.md](references/zero-downtime-patterns.md)         | 本番適用時 |
+| 移行期間         | [references/transition-period-patterns.md](references/transition-period-patterns.md) | 移行設計時 |
+| 要求仕様索引     | [references/requirements-index.md](references/requirements-index.md)                 | 仕様確認時 |
+| 旧スキル         | [references/legacy-skill.md](references/legacy-skill.md)                             | 互換確認時 |
 
 ### assets/（テンプレート・素材）
 
-| アセット | 用途 |
-| --- | --- |
-| `assets/migration-plan-template.md` | 計画テンプレート |
-| `assets/migration-checklist.md` | 検証チェックリスト |
-| `assets/rollback-plan-template.md` | ロールバック計画テンプレート |
+| アセット                            | 用途                         |
+| ----------------------------------- | ---------------------------- |
+| `assets/migration-plan-template.md` | 計画テンプレート             |
+| `assets/migration-checklist.md`     | 検証チェックリスト           |
+| `assets/rollback-plan-template.md`  | ロールバック計画テンプレート |
 
 ### 運用ファイル
 
-| ファイル | 目的 |
-| --- | --- |
-| `EVALS.json` | レベル評価・メトリクス管理 |
-| `LOGS.md` | 実行ログの蓄積 |
-| `CHANGELOG.md` | 改善履歴の記録 |
+| ファイル       | 目的                       |
+| -------------- | -------------------------- |
+| `EVALS.json`   | レベル評価・メトリクス管理 |
+| `LOGS.md`      | 実行ログの蓄積             |
+| `CHANGELOG.md` | 改善履歴の記録             |
