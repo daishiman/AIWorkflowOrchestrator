@@ -334,6 +334,19 @@ node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.j
 | 8 | リファクタリング時の仕様準拠確認 | ✅ |
 | 12 | 仕様変更時のドキュメント更新 | ✅ |
 
+## システム仕様更新ガイドライン
+
+Phase 12でシステム仕様の更新が必要かを判断する際は、以下を参照:
+
+📖 **[spec-update-workflow.md](references/spec-update-workflow.md)**: 更新判断基準・フローチャート
+
+| 更新が必要な場合 | 更新が不要な場合 |
+|------------------|------------------|
+| 新規インターフェース/型追加 | 内部実装の詳細変更のみ |
+| 既存インターフェース変更 | リファクタリング（インターフェース不変） |
+| 新規定数/設定値追加 | バグ修正（仕様変更なし） |
+| 外部連携インターフェース追加 | テスト追加のみ |
+
 ## 仕様書への記載形式
 
 各Phaseドキュメントの「参照資料」セクションに以下を**必ず**含める:
@@ -434,7 +447,8 @@ node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.j
 
 | Version | Date | Changes |
 |---------|------|---------|
-| **7.1.0** | **2026-01-17** | **Phase 5「全体整合性検証」追加: verify-all-specs.js（自動13ファイル一括検証）、verify-specs.md（LLM品質検証）、verification-report.json追加** |
+| **7.2.0** | **2026-01-17** | **Phase 12-2システム仕様更新ガイダンス強化: spec-update-workflow.mdに更新判断基準・フローチャート追加、aiworkflow-requirements更新タイミング明確化** |
+| 7.1.0 | 2026-01-17 | Phase 5「全体整合性検証」追加: verify-all-specs.js（自動13ファイル一括検証）、verify-specs.md（LLM品質検証）、verification-report.json追加 |
 | 7.0.0 | 2026-01-17 | skill-creator v5.3準拠リファクタリング: Progressive Disclosure完全化、スクリプト拡張子.js統一、リソースマップ整理 |
 | 6.1.0 | 2026-01-14 | タスク完了ワークフロー追加: unassigned-task→completed-tasks移動・ステータス更新 |
 | 6.0.0 | 2026-01-13 | skill-creator最新仕様準拠リファクタリング: Script First原則明確化、Progressive Disclosure完全対応、schemas/追加、Self-Improvement基盤追加 |
