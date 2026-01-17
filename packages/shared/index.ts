@@ -4,6 +4,9 @@ export * from "./types";
 // Skill types from src/types
 export * from "./src/types/skill";
 
+// Claude CLI types
+export * from "./src/claude-cli";
+
 // Agent Execution types (AGENT-005)
 export * from "./src/types/agent-execution";
 

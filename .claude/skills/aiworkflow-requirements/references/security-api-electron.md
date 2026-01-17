@@ -292,6 +292,102 @@ private validatePath(targetPath: string): void {
 
 ---
 
+### Claude Code CLI連携セキュリティ
+
+**実装場所**: `apps/desktop/src/main/claude-cli/`
+
+Claude Code CLI連携機能では、外部プロセス実行に関する追加のセキュリティ対策を実装する。
+
+**コマンドインジェクション防止**:
+
+| チェック項目               | 実装                                   | 対応                 |
+| -------------------------- | -------------------------------------- | -------------------- |
+| シェル経由実行禁止         | `spawn(cmd, args, { shell: false })`   | インジェクション防止 |
+| 引数の直接渡し             | 配列形式で引数渡し                     | 文字列連結回避       |
+| 環境変数の制限             | 必要な変数のみ渡す                     | 情報漏洩防止         |
+
+```typescript
+// 安全な実装パターン
+spawn("node", [scriptPath, "--arg", value], {
+  shell: false,        // シェル経由実行を禁止
+  cwd: workingDir,
+  env: filteredEnv,    // 必要な環境変数のみ
+});
+```
+
+**パストラバーサル防止（SkillScanner）**:
+
+| チェック項目         | 実装                                   | エラーコード            |
+| -------------------- | -------------------------------------- | ----------------------- |
+| パス正規化           | `path.normalize()` + `path.resolve()` | -                       |
+| ベースパス検証       | `startsWith(basePath)`                | PATH_TRAVERSAL_DETECTED |
+| `../` パターン検出   | 相対パスの上位参照を拒否              | PATH_TRAVERSAL_DETECTED |
+| スクリプトパス検証   | スキルディレクトリ内に限定            | INVALID_SCRIPT_PATH     |
+
+```typescript
+// スキルパス検証パターン
+function validateSkillPath(skillPath: string, basePath: string): void {
+  const normalized = path.normalize(skillPath);
+  const resolved = path.resolve(basePath, normalized);
+
+  if (!resolved.startsWith(basePath) || skillPath.includes("..")) {
+    throw new Error("Invalid skill path");
+  }
+}
+```
+
+**IPC sender検証**:
+
+全てのClaude CLI IPCハンドラは`validateIpcSender`を使用して呼び出し元を検証する。
+
+| チャネル                       | 検証項目                            |
+| ------------------------------ | ----------------------------------- |
+| `claude-cli:check-installation`| sender検証                          |
+| `claude-cli:list-skills`       | sender検証 + リクエストZod検証      |
+| `claude-cli:get-skill-detail`  | sender検証 + skillName検証          |
+| `claude-cli:execute-script`    | sender検証 + パス検証 + Zod検証     |
+| `claude-cli:terminate-session` | sender検証 + sessionId検証          |
+| `claude-cli:list-sessions`     | sender検証                          |
+| `claude-cli:get-session`       | sender検証 + sessionId検証          |
+
+**Zodスキーマによる入力検証**:
+
+```typescript
+// 実行リクエストのZodスキーマ
+const executeScriptRequestSchema = z.object({
+  skillName: z.string().min(1).max(100),
+  scriptName: z.string().min(1).max(100).regex(/^[a-zA-Z0-9_.-]+$/),
+  args: z.array(z.string().max(1000)).max(50).optional(),
+  cwd: z.string().max(500).optional(),
+  timeoutMs: z.number().positive().max(3600000).optional(),
+});
+```
+
+**リソース制限**:
+
+| 項目                  | 制限値      | 説明                         |
+| --------------------- | ----------- | ---------------------------- |
+| 最大同時セッション数  | 10          | DoS防止                      |
+| デフォルトタイムアウト | 30分        | プロセスハング防止           |
+| 出力バッファ最大サイズ | 100MB       | メモリ枯渇防止               |
+| 最大引数数            | 50          | コマンドライン長制限         |
+| 引数最大長            | 1000文字    | バッファオーバーフロー防止   |
+
+**プロセス終了保証**:
+
+| 状況               | 対応                                     |
+| ------------------ | ---------------------------------------- |
+| 正常終了           | exitコードを記録                         |
+| タイムアウト       | SIGTERM送信 → 3秒待機 → SIGKILL         |
+| 明示的終了要求     | SIGTERM送信 → graceful/force選択可       |
+| アプリケーション終了 | 全子プロセスを確実に終了                |
+
+**セキュリティテストカバレッジ**: 240テスト中25テストがセキュリティ関連
+
+**関連タスク**: claude-code-cli-integration（2026-01-17完了）
+
+---
+
 ## 関連ドキュメント
 
 - [セキュリティ実装概要](./security-implementation.md)
