@@ -121,7 +121,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.mjs docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
 
 ## 次のPhase
@@ -1093,4 +1093,4 @@ git push
 3. 実行タスクセクションに該当するタスクを列挙
 4. 参照資料に前Phaseの成果物を追加
 5. ファイルを `docs/30-workflows/{{FEATURE_NAME}}/` に出力
-6. Phase完了後、`complete-phase.mjs` で成果物を登録
+6. Phase完了後、`complete-phase.js` で成果物を登録

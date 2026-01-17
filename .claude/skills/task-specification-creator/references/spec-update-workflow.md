@@ -30,7 +30,7 @@ aiworkflow-requirements/references/{{該当ファイル}}.md を編集
     ↓
 インデックス再生成
     ↓
-node .claude/skills/aiworkflow-requirements/scripts/generate-index.mjs
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
     ↓
 変更履歴に追記（aiworkflow-requirements/SKILL.md は不要、自動反映）
 ```
@@ -45,7 +45,7 @@ cp .claude/skills/aiworkflow-requirements/assets/spec-template.md \
 # 2. 内容を記述（spec-guidelines.md参照）
 
 # 3. インデックス再生成
-node .claude/skills/aiworkflow-requirements/scripts/generate-index.mjs
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 ```
 
 ## 参照リソース

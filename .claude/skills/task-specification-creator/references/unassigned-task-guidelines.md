@@ -4,7 +4,7 @@
 > - 読み込みタイミング: Phase 12（ドキュメント）での未タスク検出時
 > - 読み込み条件: 未完了タスク指示書の品質チェックが必要なとき
 > - 関連スキーマ: schemas/unassigned-task.json
-> - 関連スクリプト: scripts/detect-unassigned-tasks.mjs
+> - 関連スクリプト: scripts/detect-unassigned-tasks.js
 
 ## 概要
 
