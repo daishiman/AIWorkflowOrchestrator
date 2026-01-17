@@ -1,5 +1,8 @@
 # Task仕様書：スコープ特定
 
+> **読み込み条件**: タスク分解（decompose-task）完了後
+> **相対パス**: `agents/identify-scope.md`
+
 ## 1. メタ情報
 
 | 項目     | 内容             |

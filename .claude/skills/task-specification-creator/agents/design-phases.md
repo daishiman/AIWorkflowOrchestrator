@@ -1,5 +1,8 @@
 # Task仕様書：フェーズ設計
 
+> **読み込み条件**: スコープ特定（identify-scope）完了後
+> **相対パス**: `agents/design-phases.md`
+
 ## 1. メタ情報
 
 | 項目     | 内容             |
