@@ -1598,6 +1598,224 @@ type ClaudeCliResult<T> =
 
 ---
 
+## Session Persistence（セッション永続化）
+
+Agent SDKのセッション履歴をelectron-storeを使用してローカルに永続化する機能。アプリケーション再起動後も過去のセッションを参照・再開できる。
+
+### 実装ファイル
+
+| ファイル                            | パス                                                | 説明                       |
+| ----------------------------------- | --------------------------------------------------- | -------------------------- |
+| SessionStorage.ts                   | `apps/desktop/src/main/services/session/`           | electron-storeラッパー     |
+| SessionPersistenceService.ts        | `apps/desktop/src/main/services/session/`           | ビジネスロジック           |
+| session-persistence-handler.ts      | `apps/desktop/src/main/ipc/`                        | IPCハンドラー              |
+
+---
+
+### アーキテクチャ（Session Persistence）
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Renderer Process                        │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │               AgentSDKPage                           │   │
+│  │  - セッション一覧表示                                │   │
+│  │  - セッション選択・作成・削除                        │   │
+│  └────────────────────────┬────────────────────────────┘   │
+│                           │ IPC                             │
+└───────────────────────────┼─────────────────────────────────┘
+                            │
+┌───────────────────────────┼─────────────────────────────────┐
+│                     Main Process                            │
+│                           │                                 │
+│  ┌────────────────────────▼────────────────────────────┐   │
+│  │         session-persistence-handler                  │   │
+│  │  - IPC チャンネル登録                                │   │
+│  │  - リクエスト→サービス呼び出し                       │   │
+│  └────────────────────────┬────────────────────────────┘   │
+│                           │                                 │
+│  ┌────────────────────────▼────────────────────────────┐   │
+│  │           SessionPersistenceService                  │   │
+│  │  - ビジネスロジック                                  │   │
+│  │  - Zodバリデーション                                 │   │
+│  │  - LRU削除                                           │   │
+│  └────────────────────────┬────────────────────────────┘   │
+│                           │                                 │
+│  ┌────────────────────────▼────────────────────────────┐   │
+│  │               SessionStorage                         │   │
+│  │  - electron-store ラッパー                           │   │
+│  └────────────────────────┬────────────────────────────┘   │
+│                           │                                 │
+│                           ▼                                 │
+│               ┌──────────────────────┐                     │
+│               │   electron-store     │                     │
+│               │   (JSONファイル)     │                     │
+│               └──────────────────────┘                     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 型定義（Session Persistence）
+
+#### PersistedSession
+
+永続化されたセッション情報。
+
+| プロパティ       | 型        | 必須 | 説明               |
+| ---------------- | --------- | ---- | ------------------ |
+| `id`             | `string`  | ✓    | UUID               |
+| `createdAt`      | `number`  | ✓    | 作成タイムスタンプ |
+| `lastAccessedAt` | `number`  | ✓    | 最終アクセス日時   |
+| `isActive`       | `boolean` | ✓    | アクティブ状態     |
+| `messageCount`   | `number`  | ✓    | メッセージ数       |
+| `title`          | `string`  | -    | セッションタイトル |
+
+```typescript
+interface PersistedSession {
+  id: string;
+  createdAt: number;
+  lastAccessedAt: number;
+  isActive: boolean;
+  messageCount: number;
+  title?: string;
+}
+```
+
+#### PersistedMessage
+
+永続化されたメッセージ情報。
+
+| プロパティ  | 型                          | 必須 | 説明           |
+| ----------- | --------------------------- | ---- | -------------- |
+| `id`        | `string`                    | ✓    | UUID           |
+| `sessionId` | `string`                    | ✓    | 所属セッションID |
+| `role`      | `'user' \| 'assistant'`     | ✓    | メッセージ種別 |
+| `content`   | `string`                    | ✓    | メッセージ内容 |
+| `timestamp` | `number`                    | ✓    | タイムスタンプ |
+
+```typescript
+interface PersistedMessage {
+  id: string;
+  sessionId: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: number;
+}
+```
+
+#### StorageStats
+
+ストレージ統計情報。
+
+| プロパティ      | 型       | 説明               |
+| --------------- | -------- | ------------------ |
+| `totalSessions` | `number` | 総セッション数     |
+| `totalMessages` | `number` | 総メッセージ数     |
+| `usedSize`      | `number` | 使用サイズ (bytes) |
+| `maxSize`       | `number` | 最大サイズ (bytes) |
+| `usageRatio`    | `number` | 使用率 (0-1)       |
+
+#### CleanupResult
+
+LRU削除の結果。
+
+| プロパティ          | 型         | 説明               |
+| ------------------- | ---------- | ------------------ |
+| `deletedSessions`   | `number`   | 削除セッション数   |
+| `deletedMessages`   | `number`   | 削除メッセージ数   |
+| `freedSize`         | `number`   | 解放サイズ (bytes) |
+| `deletedSessionIds` | `string[]` | 削除セッションID   |
+
+#### SessionPersistenceConfig
+
+永続化設定。
+
+| プロパティ             | 型        | デフォルト | 説明                     |
+| ---------------------- | --------- | ---------- | ------------------------ |
+| `maxSessions`          | `number`  | `100`      | 最大セッション数         |
+| `maxStorageSize`       | `number`  | `50MB`     | 最大ストレージサイズ     |
+| `maxMessagesPerSession`| `number`  | `1000`     | セッションあたり最大メッセージ |
+| `enableAutoBackup`     | `boolean` | `true`     | 自動バックアップ         |
+| `backupRetentionCount` | `number`  | `3`        | バックアップ保持数       |
+| `lruWarningThreshold`  | `number`  | `0.9`      | LRU警告閾値              |
+
+#### IPCResponse<T>
+
+IPC共通レスポンス型。
+
+```typescript
+type IPCResponse<T> =
+  | { success: true; data: T }
+  | { success: false; error: { code: string; message: string } };
+```
+
+---
+
+### IPC チャンネル（Session Persistence）
+
+| チャンネル                     | 方向            | 説明               | レスポンス                     |
+| ------------------------------ | --------------- | ------------------ | ------------------------------ |
+| `session:persist:load`         | Renderer → Main | セッション一覧取得 | `IPCResponse<PersistedSession[]>` |
+| `session:persist:save`         | Renderer → Main | セッション保存     | `IPCResponse<PersistedSession>`   |
+| `session:persist:delete`       | Renderer → Main | セッション削除     | `IPCResponse<void>`               |
+| `session:persist:update`       | Renderer → Main | セッション更新     | `IPCResponse<PersistedSession>`   |
+| `session:persist:loadMessages` | Renderer → Main | メッセージ取得     | `IPCResponse<PersistedMessage[]>` |
+| `session:persist:saveMessage`  | Renderer → Main | メッセージ保存     | `IPCResponse<PersistedMessage>`   |
+| `session:persist:clearAll`     | Renderer → Main | 全データ削除       | `IPCResponse<void>`               |
+| `session:persist:getStats`     | Renderer → Main | 統計情報取得       | `IPCResponse<StorageStats>`       |
+| `session:persist:cleanup`      | Renderer → Main | LRU削除実行        | `IPCResponse<CleanupResult>`      |
+
+---
+
+### エラーコード（Session Persistence）
+
+| コード                | 説明                         |
+| --------------------- | ---------------------------- |
+| `VALIDATION_ERROR`    | 入力データバリデーション失敗 |
+| `SESSION_NOT_FOUND`   | セッションが見つからない     |
+| `STORAGE_READ_ERROR`  | ストレージ読み取りエラー     |
+| `STORAGE_WRITE_ERROR` | ストレージ書き込みエラー     |
+| `INTERNAL_ERROR`      | 予期しないエラー             |
+
+---
+
+### ストレージファイル
+
+#### 保存場所
+
+| OS      | パス                                                          |
+| ------- | ------------------------------------------------------------- |
+| macOS   | `~/Library/Application Support/AIWorkflowOrchestrator/agent-sessions.json` |
+| Windows | `%APPDATA%/AIWorkflowOrchestrator/agent-sessions.json`        |
+| Linux   | `~/.config/AIWorkflowOrchestrator/agent-sessions.json`        |
+
+#### ファイル構造
+
+```json
+{
+  "sessions": [PersistedSession[]],
+  "messages": { "sessionId": [PersistedMessage[]] },
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": 1234567890,
+    "totalSize": 1234
+  }
+}
+```
+
+---
+
+### 関連ドキュメント（Session Persistence）
+
+| ドキュメント   | パス                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| 実装ガイド     | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md` |
+| 設計仕様       | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-2/`                        |
+| テスト仕様     | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-4/test-plan.md`            |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                           | パス                                                                                        |
@@ -1610,3 +1828,4 @@ type ClaudeCliResult<T> =
 | スキル管理UI実装ガイド（AGENT-002）    | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`            |
 | スキル管理UIテストドキュメント         | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                       |
 | AgentSDKPage Postrelease実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`        |
+| Session Persistence実装ガイド          | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`  |
