@@ -46,3 +46,21 @@ export type {
   SearchStrategy,
   QueryMetadata,
 } from "./graphrag-query-service";
+
+// HybridRAG Engine (CONV-07-07)
+export { HybridRAGEngine } from "./hybrid-rag-engine";
+export type {
+  HybridRAGOptions,
+  SearchOptions,
+  HybridRAGResponse,
+  HybridRAGResult,
+  PipelineStageResult,
+} from "./hybrid-rag-engine";
+
+// HybridRAG Factory (CONV-07-07)
+export { HybridRAGFactory } from "./hybrid-rag-factory";
+export type {
+  FullHybridRAGConfig,
+  LiteHybridRAGConfig,
+  TestMocks,
+} from "./hybrid-rag-factory";
