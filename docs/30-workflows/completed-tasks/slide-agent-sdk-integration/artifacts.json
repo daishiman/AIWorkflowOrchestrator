@@ -1,0 +1,198 @@
+{
+  "taskId": "slide-agent-sdk-integration",
+  "taskName": "スライドエージェントSDK統合",
+  "createdAt": "2026-01-16",
+  "status": "specification-complete",
+  "totalPhases": 13,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "specFile": "phase-1-requirements.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "specFile": "phase-2-design.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/api-design.md",
+        "outputs/phase-2/sequence-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "specFile": "phase-3-design-review.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "specFile": "phase-4-test-creation.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md"
+      ],
+      "codeOutputs": [
+        "apps/desktop/src/main/slide/__tests__/skill-executor.test.ts",
+        "apps/desktop/src/main/slide/__tests__/agent-client.test.ts",
+        "apps/desktop/src/main/slide/__tests__/sdk-integration.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "specFile": "phase-5-implementation.md",
+      "status": "pending",
+      "outputs": [],
+      "codeOutputs": [
+        "apps/desktop/src/main/slide/skill-executor.ts",
+        "apps/desktop/src/main/slide/agent-client.ts"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "specFile": "phase-6-test-expansion.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "specFile": "phase-7-coverage-check.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "specFile": "phase-8-refactoring.md",
+      "status": "pending",
+      "outputs": [],
+      "codeOutputs": [
+        "apps/desktop/src/main/slide/skill-executor.ts",
+        "apps/desktop/src/main/slide/agent-client.ts"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "specFile": "phase-9-quality.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-9/quality-report.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "specFile": "phase-10-final-review.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "specFile": "phase-11-manual-test.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-11/manual-test-result.md"]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "specFile": "phase-12-documentation.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-update-log.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/changelog-entry.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "specFile": "phase-13-pr-creation.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-13/pr-info.md"]
+    }
+  ],
+  "requirements": {
+    "functional": [
+      "FR-01: SDK呼び出しでスキル実行",
+      "FR-02: 実API呼び出し（シミュレーション置換）",
+      "FR-03: スキルフェーズマッピング",
+      "FR-04: projectPathコンテキスト",
+      "FR-05: 進捗コールバック",
+      "FR-06: キャンセル機能（AbortController）",
+      "FR-07: ModifierSkill動作"
+    ],
+    "nonFunctional": [
+      "NFR-01: 30秒タイムアウト",
+      "NFR-02: APIキー暗号化（safeStorage）",
+      "NFR-03: エラーメッセージ表示",
+      "NFR-04: メモリリーク防止"
+    ]
+  },
+  "targetFiles": [
+    {
+      "path": "apps/desktop/src/main/slide/skill-executor.ts",
+      "description": "スキル実行のSDK統合",
+      "todoLines": [87, 88, 89]
+    },
+    {
+      "path": "apps/desktop/src/main/slide/agent-client.ts",
+      "description": "ModifierSkillのSDK統合",
+      "todoLines": [192]
+    }
+  ],
+  "dependencies": {
+    "packages": ["@anthropic-ai/claude-agent-sdk"],
+    "apis": ["Anthropic API"],
+    "internalModules": ["safeStorage", "IPC", "Electron Main Process"]
+  },
+  "coverageTargets": {
+    "unit": {
+      "line": "80%",
+      "branch": "60%",
+      "function": "80%"
+    },
+    "integration": {
+      "apiEndpoint": "100%",
+      "moduleInterface": "100%",
+      "normalScenario": "100%",
+      "errorScenario": "80%",
+      "externalConnection": "100%"
+    }
+  },
+  "references": [
+    {
+      "name": "Agent SDK仕様",
+      "path": ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md"
+    },
+    {
+      "name": "スライドアーキテクチャ",
+      "path": ".claude/skills/aiworkflow-requirements/references/architecture-slide.md"
+    },
+    {
+      "name": "元タスク定義",
+      "path": "docs/30-workflows/unassigned-task/task-imp-slide-agent-sdk-integration-001.md"
+    }
+  ]
+}

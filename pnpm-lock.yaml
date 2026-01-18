@@ -110,6 +110,9 @@ importers:
       "@anthropic-ai/claude-agent-sdk":
         specifier: ^0.2.5
         version: 0.2.5(zod@4.3.5)
+      "@anthropic-ai/sdk":
+        specifier: ^0.71.2
+        version: 0.71.2(zod@4.3.5)
       "@electron-toolkit/utils":
         specifier: ^4.0.0
         version: 4.0.0(electron@39.2.7)
@@ -394,6 +397,18 @@ packages:
     engines: { node: ">=18.0.0" }
     peerDependencies:
       zod: ^4.0.0
+
+  "@anthropic-ai/sdk@0.71.2":
+    resolution:
+      {
+        integrity: sha512-TGNDEUuEstk/DKu0/TflXAEt+p+p/WhTlFzEnoosvbaDU2LTjm42igSdlL0VijrKpWejtOKxX0b8A7uc+XiSAQ==,
+      }
+    hasBin: true
+    peerDependencies:
+      zod: ^3.25.0 || ^4.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
 
   "@asamuzakjp/css-color@4.1.1":
     resolution:
@@ -6919,6 +6934,13 @@ packages:
         integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==,
       }
 
+  json-schema-to-ts@3.1.1:
+    resolution:
+      {
+        integrity: sha512-+DWg8jCJG2TEnpy7kOm/7/AxaYoaRbjVB4LFZLySZlWn8exGs3A4OLJR966cVvU26N7X9TWxl+Jsw7dzAqKT6g==,
+      }
+    engines: { node: ">=16" }
+
   json-schema-traverse@0.4.1:
     resolution:
       {
@@ -9619,6 +9641,12 @@ packages:
         integrity: sha512-95Pu1QXQvruGEhv62XCMO3Mm90GscOCClvrIUwCM0PYOXK3kaF3l3sIHxx71ThJfcbM2O5Au6SO3AWCSEfW4mQ==,
       }
 
+  ts-algebra@2.0.0:
+    resolution:
+      {
+        integrity: sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==,
+      }
+
   ts-api-utils@2.4.0:
     resolution:
       {
@@ -10423,6 +10451,12 @@ snapshots:
       "@img/sharp-linuxmusl-arm64": 0.33.5
       "@img/sharp-linuxmusl-x64": 0.33.5
       "@img/sharp-win32-x64": 0.33.5
+
+  "@anthropic-ai/sdk@0.71.2(zod@4.3.5)":
+    dependencies:
+      json-schema-to-ts: 3.1.1
+    optionalDependencies:
+      zod: 4.3.5
 
   "@asamuzakjp/css-color@4.1.1":
     dependencies:
@@ -14677,6 +14711,11 @@ snapshots:
 
   json-buffer@3.0.1: {}
 
+  json-schema-to-ts@3.1.1:
+    dependencies:
+      "@babel/runtime": 7.28.4
+      ts-algebra: 2.0.0
+
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
@@ -16625,6 +16664,8 @@ snapshots:
   truncate-utf8-bytes@1.0.2:
     dependencies:
       utf8-byte-length: 1.0.5
+
+  ts-algebra@2.0.0: {}
 
   ts-api-utils@2.4.0(typescript@5.9.3):
     dependencies:

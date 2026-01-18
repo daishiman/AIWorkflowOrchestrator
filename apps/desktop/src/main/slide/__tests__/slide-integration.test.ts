@@ -6,6 +6,43 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
+// electron-storeのモック（agent-clientがインポートする前にモック）
+vi.mock("electron-store", () => ({
+  default: vi.fn().mockImplementation(() => ({
+    get: vi.fn().mockReturnValue(undefined),
+    set: vi.fn(),
+    delete: vi.fn(),
+  })),
+}));
+
+// Electron safeStorageのモック
+vi.mock("electron", () => ({
+  safeStorage: {
+    isEncryptionAvailable: vi.fn().mockReturnValue(true),
+    encryptString: vi.fn((str: string) => Buffer.from(str).toString("base64")),
+    decryptString: vi.fn((buffer: Buffer) => buffer.toString()),
+  },
+}));
+
+// vi.hoistedで制御可能なモック関数を作成
+const { mockCreate, mockAnthropicConstructor } = vi.hoisted(() => {
+  const create = vi.fn();
+  const constructor = vi.fn().mockImplementation(() => ({
+    messages: {
+      create,
+    },
+  }));
+  return {
+    mockCreate: create,
+    mockAnthropicConstructor: constructor,
+  };
+});
+
+// Anthropic SDKのモック
+vi.mock("@anthropic-ai/sdk", () => ({
+  default: mockAnthropicConstructor,
+}));
+
 // vi.hoisted で変数を定義してモック内で使用可能にする
 const { mockWatchInstance, mockCheckDependency, mockBothFilesExist } =
   vi.hoisted(() => {
@@ -58,22 +95,33 @@ import chokidar from "chokidar";
 import { createSlideWatcher } from "../file-watcher";
 import { createSkillExecutor } from "../skill-executor";
 import { createSyncManager } from "../sync-manager";
+import { resetAgentAPI } from "../agent-client";
 
 describe("Slide Integration Tests", () => {
   const testProjectPath = "/test/project";
+  const originalEnv = process.env;
 
   beforeEach(() => {
-    vi.clearAllMocks();
     vi.useFakeTimers();
+    // 環境変数をモック
+    process.env = { ...originalEnv, ANTHROPIC_API_KEY: "test-api-key" };
+    // Agent APIをリセット
+    resetAgentAPI();
     mockBothFilesExist.mockResolvedValue(true);
     mockCheckDependency.mockResolvedValue(true);
     // chokidarのモックを再設定
     vi.mocked(chokidar.watch).mockReturnValue(mockWatchInstance as never);
+    // デフォルトのAnthropicモック動作：即座に成功を返す
+    mockCreate.mockReset();
+    mockCreate.mockResolvedValue({
+      content: [{ type: "text", text: JSON.stringify({ changes: [] }) }],
+      usage: { input_tokens: 100, output_tokens: 50 },
+    });
   });
 
   afterEach(() => {
     vi.useRealTimers();
-    vi.resetAllMocks();
+    process.env = originalEnv;
   });
 
   describe("File Watcher + Skill Executor Integration", () => {
