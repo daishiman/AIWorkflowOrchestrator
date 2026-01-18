@@ -495,3 +495,205 @@ ipcMain.handle("channel:action", async (event, args) => {
 - **SKILL-IPC-001**: `registerSkillHandlers` が `registerAllIpcHandlers` から呼び出されていなかったバグを修正（2026-01-16完了）
 
 ---
+
+## Claude CLI Renderer API（Preload API）
+
+### 概要
+
+Claude CLI Renderer APIはElectronのPreloadスクリプトで提供され、Renderer Process（UI）からMain ProcessのClaude CLI機能を安全に呼び出すためのAPIインターフェースを提供する。`contextBridge`経由で`window.claudeCliAPI`として公開される。
+
+**実装場所**: `apps/desktop/src/preload/index.ts`
+
+### コンポーネント構成
+
+```
+Renderer Process (UI)
+    │
+    ▼ window.claudeCliAPI
+Preload Script (contextBridge)
+├── safeInvoke (ホワイトリスト検証付きIPC呼び出し)
+├── safeOn (ホワイトリスト検証付きイベント購読)
+└── claudeCliAPI オブジェクト
+    │
+    ▼ IPC Channels
+Main Process
+└── ClaudeCliManager (Facade)
+```
+
+### ファイル構成
+
+| ファイル                              | 責務                           |
+| ------------------------------------- | ------------------------------ |
+| `preload/index.ts`                    | claudeCliAPIオブジェクト定義   |
+| `preload/channels.ts`                 | IPCチャンネル名定数定義        |
+| `preload/types.ts`                    | ClaudeCliAPI型定義             |
+| `main/claude-cli/ipc-handler.ts`      | Main Process側IPCハンドラ      |
+
+### API定義
+
+| メソッド              | 引数                           | 戻り値                                    | 説明               |
+| --------------------- | ------------------------------ | ----------------------------------------- | ------------------ |
+| `checkInstallation()` | なし                           | `Promise<ClaudeCliResult<CliInstallationStatus>>` | CLI存在確認  |
+| `listSkills()`        | `ClaudeCliListSkillsRequest?`  | `Promise<ClaudeCliResult<ScanResult>>`    | スキル一覧取得     |
+| `getSkillDetail()`    | `ClaudeCliGetSkillDetailRequest`| `Promise<ClaudeCliResult<SkillManifest>>` | スキル詳細取得     |
+| `executeScript()`     | `ClaudeCliExecuteScriptRequest`| `Promise<ClaudeCliResult<ExecuteResult>>` | スクリプト実行     |
+| `terminateSession()`  | `ClaudeCliTerminateSessionRequest`| `Promise<ClaudeCliResult<void>>`       | セッション終了     |
+| `listSessions()`      | なし                           | `Promise<ClaudeCliResult<Session[]>>`     | セッション一覧     |
+| `getSession()`        | `ClaudeCliGetSessionRequest`   | `Promise<ClaudeCliResult<Session\|null>>` | セッション詳細     |
+| `onSessionOutput()`   | `(event: OutputEvent) => void` | `() => void`                              | 出力イベント購読   |
+| `onSessionStatus()`   | `(event: StatusEvent) => void` | `() => void`                              | 状態イベント購読   |
+
+### IPCチャンネル定義
+
+```typescript
+// apps/desktop/src/preload/channels.ts
+export const IPC_CHANNELS = {
+  CLAUDE_CLI_CHECK_INSTALLATION: "claude-cli:check-installation",
+  CLAUDE_CLI_LIST_SKILLS: "claude-cli:list-skills",
+  CLAUDE_CLI_GET_SKILL_DETAIL: "claude-cli:get-skill-detail",
+  CLAUDE_CLI_EXECUTE_SCRIPT: "claude-cli:execute-script",
+  CLAUDE_CLI_TERMINATE_SESSION: "claude-cli:terminate-session",
+  CLAUDE_CLI_LIST_SESSIONS: "claude-cli:list-sessions",
+  CLAUDE_CLI_GET_SESSION: "claude-cli:get-session",
+  CLAUDE_CLI_SESSION_OUTPUT: "claude-cli:session-output",
+  CLAUDE_CLI_SESSION_STATUS: "claude-cli:session-status",
+} as const;
+```
+
+### ホワイトリストパターン
+
+```typescript
+// apps/desktop/src/preload/channels.ts
+export const ALLOWED_INVOKE_CHANNELS = [
+  IPC_CHANNELS.CLAUDE_CLI_CHECK_INSTALLATION,
+  IPC_CHANNELS.CLAUDE_CLI_LIST_SKILLS,
+  IPC_CHANNELS.CLAUDE_CLI_GET_SKILL_DETAIL,
+  IPC_CHANNELS.CLAUDE_CLI_EXECUTE_SCRIPT,
+  IPC_CHANNELS.CLAUDE_CLI_TERMINATE_SESSION,
+  IPC_CHANNELS.CLAUDE_CLI_LIST_SESSIONS,
+  IPC_CHANNELS.CLAUDE_CLI_GET_SESSION,
+  // ... 他のチャンネル
+];
+
+export const ALLOWED_ON_CHANNELS = [
+  IPC_CHANNELS.CLAUDE_CLI_SESSION_OUTPUT,
+  IPC_CHANNELS.CLAUDE_CLI_SESSION_STATUS,
+  // ... 他のチャンネル
+];
+```
+
+### safeInvoke/safeOnセキュリティパターン
+
+```typescript
+// apps/desktop/src/preload/index.ts
+function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
+  if (!ALLOWED_INVOKE_CHANNELS.includes(channel)) {
+    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
+  }
+  return ipcRenderer.invoke(channel, ...args);
+}
+
+function safeOn<T>(channel: string, callback: (data: T) => void): () => void {
+  if (!ALLOWED_ON_CHANNELS.includes(channel)) {
+    console.error(`Channel ${channel} is not allowed`);
+    return () => {};
+  }
+  const handler = (_event: IpcRendererEvent, data: T) => callback(data);
+  ipcRenderer.on(channel, handler);
+  return () => ipcRenderer.removeListener(channel, handler);
+}
+```
+
+### 実装パターン
+
+```typescript
+// apps/desktop/src/preload/index.ts
+const claudeCliAPI: ClaudeCliAPI = {
+  checkInstallation: () =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_CHECK_INSTALLATION),
+  listSkills: (request?: ClaudeCliListSkillsRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_LIST_SKILLS, request || {}),
+  getSkillDetail: (request: ClaudeCliGetSkillDetailRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_GET_SKILL_DETAIL, request),
+  executeScript: (request: ClaudeCliExecuteScriptRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_EXECUTE_SCRIPT, request),
+  terminateSession: (request: ClaudeCliTerminateSessionRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_TERMINATE_SESSION, request),
+  listSessions: () => safeInvoke(IPC_CHANNELS.CLAUDE_CLI_LIST_SESSIONS),
+  getSession: (request: ClaudeCliGetSessionRequest) =>
+    safeInvoke(IPC_CHANNELS.CLAUDE_CLI_GET_SESSION, request),
+  onSessionOutput: (callback: (event: ClaudeCliSessionOutputEvent) => void) =>
+    safeOn<ClaudeCliSessionOutputEvent>(
+      IPC_CHANNELS.CLAUDE_CLI_SESSION_OUTPUT,
+      callback,
+    ),
+  onSessionStatus: (callback: (event: ClaudeCliSessionStatusEvent) => void) =>
+    safeOn<ClaudeCliSessionStatusEvent>(
+      IPC_CHANNELS.CLAUDE_CLI_SESSION_STATUS,
+      callback,
+    ),
+};
+
+// contextBridge経由で公開
+contextBridge.exposeInMainWorld("claudeCliAPI", claudeCliAPI);
+```
+
+### セキュリティ要件
+
+| 要件               | 実装                              | 確認方法                    |
+| ------------------ | --------------------------------- | --------------------------- |
+| ホワイトリスト     | ALLOWED_INVOKE/ON_CHANNELS        | 定義外チャンネルはエラー    |
+| contextIsolation   | `contextBridge.exposeInMainWorld` | BrowserWindow設定で有効     |
+| 型安全性           | ClaudeCliResult<T>型              | TypeScript型チェック        |
+| メモリリーク防止   | unsubscribe関数パターン           | イベント購読解除機能        |
+
+### データフロー
+
+```
+1. Renderer (UI) → window.claudeCliAPI.{method}()
+2. Preload → safeInvoke/safeOn (ホワイトリスト検証)
+3. Preload → ipcRenderer.invoke/on (IPC呼び出し)
+4. Main Process → ClaudeCliManager (実処理)
+5. Main Process → ipcMain.handle (レスポンス)
+6. Preload → Promise解決/イベントコールバック
+7. Renderer (UI) → 結果受け取り
+```
+
+### 使用例
+
+```typescript
+// Renderer Process (React Component)
+const checkCliStatus = async () => {
+  const result = await window.claudeCliAPI.checkInstallation();
+  if (result.success) {
+    console.log(`CLI installed: ${result.data.installed}`);
+  }
+};
+
+// ストリーミング出力の購読
+useEffect(() => {
+  const unsubscribe = window.claudeCliAPI.onSessionOutput((event) => {
+    console.log(`[${event.sessionId}] ${event.type}: ${event.content}`);
+  });
+  return () => unsubscribe(); // クリーンアップ
+}, []);
+```
+
+### テスト
+
+| テストカテゴリ             | テスト数 | 状態 |
+| -------------------------- | -------- | ---- |
+| チャンネル定義             | 10       | ✅   |
+| ホワイトリスト登録         | 9        | ✅   |
+| safeInvokeセキュリティ     | 7        | ✅   |
+| safeOnセキュリティ         | 2        | ✅   |
+| エラーハンドリング         | 4        | ✅   |
+| ストリーミングイベント     | 8        | ✅   |
+| 統合テストシナリオ         | 5        | ✅   |
+| **合計**                   | **74**   | ✅   |
+
+### 関連タスク
+
+- **claude-cli-renderer-api**: Renderer API実装・検証・ドキュメント化（2026-01-17完了）
+
+---

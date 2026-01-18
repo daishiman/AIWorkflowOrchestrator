@@ -1,0 +1,306 @@
+{
+  "workflow": {
+    "name": "agent-sdk-session-persistence",
+    "displayName": "Agent SDK セッション永続化",
+    "description": "Agent SDK セッションをelectron-storeで永続化し、アプリ再起動後も復元可能にする機能",
+    "status": "not_started",
+    "createdAt": "2026-01-17",
+    "updatedAt": "2026-01-17"
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements.md"
+        },
+        {
+          "name": "ユースケース図",
+          "path": "outputs/phase-1/use-case-diagram.md"
+        },
+        {
+          "name": "非機能要件",
+          "path": "outputs/phase-1/non-functional-requirements.md"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "アーキテクチャ設計書",
+          "path": "outputs/phase-2/architecture-design.md"
+        },
+        {
+          "name": "IPC設計書",
+          "path": "outputs/phase-2/ipc-design.md"
+        },
+        {
+          "name": "型定義設計書",
+          "path": "outputs/phase-2/type-definitions.md"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "file": "phase-3-design-review.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "テスト成功確認",
+          "path": "outputs/phase-5/test-green-status.md"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "エッジケーステスト",
+          "path": "outputs/phase-6/edge-case-tests.md"
+        },
+        {
+          "name": "異常系テスト",
+          "path": "outputs/phase-6/error-handling-tests.md"
+        },
+        {
+          "name": "統合テスト",
+          "path": "outputs/phase-6/integration-tests.md"
+        },
+        {
+          "name": "テスト拡充結果",
+          "path": "outputs/phase-6/test-expansion-result.md"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage-check.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md"
+        },
+        {
+          "name": "ギャップ分析",
+          "path": "outputs/phase-7/coverage-gap-analysis.md"
+        },
+        {
+          "name": "統合テスト結果",
+          "path": "outputs/phase-7/integration-test-result.md"
+        },
+        {
+          "name": "ゲート判定結果",
+          "path": "outputs/phase-7/gate-result.md"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "コード品質分析",
+          "path": "outputs/phase-8/code-analysis.md"
+        },
+        {
+          "name": "リファクタリングログ",
+          "path": "outputs/phase-8/refactoring-log.md"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "file": "phase-9-quality.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "ESLint結果",
+          "path": "outputs/phase-9/eslint-result.md"
+        },
+        {
+          "name": "TypeScript結果",
+          "path": "outputs/phase-9/typecheck-result.md"
+        },
+        {
+          "name": "セキュリティ結果",
+          "path": "outputs/phase-9/security-check.md"
+        },
+        {
+          "name": "パフォーマンス結果",
+          "path": "outputs/phase-9/performance-check.md"
+        },
+        {
+          "name": "テスト結果",
+          "path": "outputs/phase-9/final-test-result.md"
+        },
+        {
+          "name": "品質サマリー",
+          "path": "outputs/phase-9/quality-summary.md"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "file": "phase-10-final-review.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "要件充足確認",
+          "path": "outputs/phase-10/requirements-check.md"
+        },
+        {
+          "name": "設計準拠確認",
+          "path": "outputs/phase-10/design-compliance.md"
+        },
+        {
+          "name": "成果物完全性",
+          "path": "outputs/phase-10/artifacts-completeness.md"
+        },
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "file": "phase-11-manual-test.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md"
+        },
+        {
+          "name": "発見課題",
+          "path": "outputs/phase-11/discovered-issues.md"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "file": "phase-12-documentation.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "name": "ドキュメント変更履歴",
+          "path": "outputs/phase-12/document-changelog.md"
+        },
+        {
+          "name": "未タスクレポート",
+          "path": "outputs/phase-12/unassigned-task-report.md"
+        },
+        {
+          "name": "仕様更新ログ",
+          "path": "outputs/phase-12/spec-update-log.md"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "not_started",
+      "outputs": [
+        {
+          "name": "ローカル確認結果",
+          "path": "outputs/phase-13/local-check-result.md"
+        },
+        {
+          "name": "CI結果",
+          "path": "outputs/phase-13/ci-result.md"
+        },
+        {
+          "name": "完了報告",
+          "path": "outputs/phase-13/completion-report.md"
+        }
+      ]
+    }
+  ],
+  "references": {
+    "systemSpecs": [
+      {
+        "name": "Agent SDKインターフェース",
+        "path": ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md"
+      },
+      {
+        "name": "品質要件",
+        "path": ".claude/skills/aiworkflow-requirements/references/quality-requirements.md"
+      },
+      {
+        "name": "テスト戦略",
+        "path": ".claude/skills/aiworkflow-requirements/references/testing-strategy.md"
+      },
+      {
+        "name": "セキュリティ原則",
+        "path": ".claude/skills/aiworkflow-requirements/references/security-principles.md"
+      }
+    ],
+    "existingCode": [
+      {
+        "name": "IPCハンドラーパターン",
+        "path": "apps/desktop/src/main/ipc/"
+      },
+      {
+        "name": "セッションサービス",
+        "path": "apps/desktop/src/main/services/session/"
+      }
+    ]
+  },
+  "testCoverage": {
+    "targets": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "current": null
+  }
+}
