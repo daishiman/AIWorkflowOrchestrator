@@ -388,6 +388,88 @@ const executeScriptRequestSchema = z.object({
 
 ---
 
+### Claude CLI Renderer API セキュリティ（Preload）
+
+**実装場所**: `apps/desktop/src/preload/index.ts`
+
+Renderer ProcessからClaude CLI機能にアクセスするためのPreload APIにおけるセキュリティ実装。
+
+**ホワイトリストパターン**:
+
+すべてのIPC呼び出しは`safeInvoke`/`safeOn`関数でラップされ、ホワイトリスト検証を行う。
+
+| 機能               | 実装                                   | 効果                       |
+| ------------------ | -------------------------------------- | -------------------------- |
+| チャンネルホワイトリスト | `ALLOWED_INVOKE_CHANNELS`配列     | 未許可チャンネルを拒否     |
+| イベントホワイトリスト   | `ALLOWED_ON_CHANNELS`配列         | 未許可イベントを拒否       |
+| contextBridge      | `exposeInMainWorld`                    | window直接割り当て禁止     |
+| 型安全性           | TypeScript + ClaudeCliResult<T>        | 型チェックによる安全性     |
+
+**safeInvokeセキュリティチェック**:
+
+```typescript
+function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
+  if (!ALLOWED_INVOKE_CHANNELS.includes(channel)) {
+    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
+  }
+  return ipcRenderer.invoke(channel, ...args);
+}
+```
+
+| チェック項目           | 実装                           | エラー時の挙動           |
+| ---------------------- | ------------------------------ | ------------------------ |
+| チャンネル存在確認     | `ALLOWED_INVOKE_CHANNELS.includes()` | Promise.reject       |
+| エラーメッセージ       | チャンネル名を含む             | デバッグ可能             |
+| 型安全性               | ジェネリクス<T>使用            | 戻り値型保証             |
+
+**safeOnセキュリティチェック**:
+
+```typescript
+function safeOn<T>(channel: string, callback: (data: T) => void): () => void {
+  if (!ALLOWED_ON_CHANNELS.includes(channel)) {
+    console.error(`Channel ${channel} is not allowed`);
+    return () => {};
+  }
+  const handler = (_event: IpcRendererEvent, data: T) => callback(data);
+  ipcRenderer.on(channel, handler);
+  return () => ipcRenderer.removeListener(channel, handler);
+}
+```
+
+| チェック項目           | 実装                           | エラー時の挙動           |
+| ---------------------- | ------------------------------ | ------------------------ |
+| チャンネル存在確認     | `ALLOWED_ON_CHANNELS.includes()` | console.error + no-op   |
+| メモリリーク防止       | unsubscribe関数返却            | リスナー解除可能         |
+| 安全なフォールバック   | 空関数返却                     | エラー時もクラッシュしない |
+
+**IPCチャンネルセキュリティ**:
+
+| チャンネル                        | 検証項目                     |
+| --------------------------------- | ---------------------------- |
+| `claude-cli:check-installation`   | ホワイトリスト検証           |
+| `claude-cli:list-skills`          | ホワイトリスト検証           |
+| `claude-cli:get-skill-detail`     | ホワイトリスト検証           |
+| `claude-cli:execute-script`       | ホワイトリスト検証           |
+| `claude-cli:terminate-session`    | ホワイトリスト検証           |
+| `claude-cli:list-sessions`        | ホワイトリスト検証           |
+| `claude-cli:get-session`          | ホワイトリスト検証           |
+| `claude-cli:session-output`       | イベントホワイトリスト検証   |
+| `claude-cli:session-status`       | イベントホワイトリスト検証   |
+
+**テストカバレッジ**:
+
+| テストカテゴリ             | テスト数 | セキュリティ関連 |
+| -------------------------- | -------- | ---------------- |
+| safeInvokeセキュリティ     | 7        | ✅               |
+| safeOnセキュリティ         | 2        | ✅               |
+| ホワイトリスト登録         | 9        | ✅               |
+| セキュリティテスト         | 4        | ✅               |
+| **合計**                   | **22**   | ✅               |
+
+**関連タスク**: claude-cli-renderer-api（2026-01-17完了）
+
+---
+
 ## 関連ドキュメント
 
 - [セキュリティ実装概要](./security-implementation.md)
