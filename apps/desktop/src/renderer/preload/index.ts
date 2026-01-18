@@ -57,20 +57,18 @@ export const skillAPI: SkillAPI = {
 
   import: async (skillIds: string[]) => {
     if (hasElectronAPI(window)) {
-      return window.electronAPI.invoke<OperationResult<void>>(
-        "skill:import",
+      return window.electronAPI.invoke<OperationResult<void>>("skill:import", {
         skillIds,
-      );
+      });
     }
     return { success: true };
   },
 
   remove: async (skillId: string) => {
     if (hasElectronAPI(window)) {
-      return window.electronAPI.invoke<OperationResult<void>>(
-        "skill:remove",
+      return window.electronAPI.invoke<OperationResult<void>>("skill:remove", {
         skillId,
-      );
+      });
     }
     return { success: true };
   },
@@ -79,7 +77,7 @@ export const skillAPI: SkillAPI = {
     if (hasElectronAPI(window)) {
       return window.electronAPI.invoke<OperationResult<Skill>>(
         "skill:get-detail",
-        skillId,
+        { skillId },
       );
     }
     return { success: false, error: "Skill not found" };

@@ -1,4 +1,4 @@
-import { BrowserWindow, nativeTheme, app, ipcMain, net } from "electron";
+import { BrowserWindow, nativeTheme, ipcMain, net } from "electron";
 import path from "path";
 import Store from "electron-store";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -23,6 +23,7 @@ import { createHistoryServiceWithDI } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
 import { registerSkillHandlers } from "./skillHandlers";
+import { registerClaudeCliHandlers } from "../claude-cli";
 import {
   SkillScanner,
   SkillParser,
@@ -100,7 +101,9 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   registerAgentExecutionHandlers(mainWindow);
 
   // Register Skill Management handlers (SKILL-IPC-001)
-  const skillBasePath = path.join(app.getPath("userData"), ".claude", "skills");
+  // Use home directory for skills (where Claude CLI stores them)
+  const homeDir = process.env.HOME || process.env.USERPROFILE || "";
+  const skillBasePath = path.join(homeDir, ".claude", "skills");
   const skillStore = new Store({ name: "skills" });
   const skillScanner = new SkillScanner(skillBasePath);
   const skillParser = new SkillParser();
@@ -111,6 +114,9 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     skillImportManager,
   );
   registerSkillHandlers(mainWindow, skillService);
+
+  // Register Claude CLI handlers (for skill discovery via Claude CLI)
+  registerClaudeCliHandlers(mainWindow);
 }
 
 /**
