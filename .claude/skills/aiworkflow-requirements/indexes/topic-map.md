@@ -132,7 +132,9 @@ node scripts/list-specs.mjs --topics
 | Environment Backend サービス（Desktop Main Process） | L75 |
 | Zustand Sliceパターン（Desktop） | L139 |
 | スキル管理サービス（Desktop Main Process） | L233 |
-| IPC Handler Registration Pattern（Desktop Main Process） | L318 |
+| Claude Code CLI連携パターン（Desktop Main Process） | L318 |
+| IPC Handler Registration Pattern（Desktop Main Process） | L415 |
+| Claude CLI Renderer API（Preload API） | L499 |
 
 ### references/architecture-rag.md
 
@@ -649,7 +651,9 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| API セキュリティ | L10 |
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
-| 関連ドキュメント | L295 |
+| Claude Code CLI連携セキュリティ | L295 |
+| Claude CLI Renderer API セキュリティ（Preload） | L391 |
+| 関連ドキュメント | L473 |
 
 ### references/security-implementation.md
 

@@ -333,4 +333,60 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## 2026-01-17: Claude CLI Renderer API仕様追加
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | claude-cli-renderer-api                                                                        |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | architecture-patterns.md、security-api-electron.md、topic-map.md                               |
+| 結果         | success                                                                                        |
+| 備考         | Preload API（window.claudeCliAPI）のアーキテクチャ・セキュリティ仕様追加                       |
+
+### 更新詳細
+
+- **更新**: `references/architecture-patterns.md`
+  - 「Claude CLI Renderer API（Preload API）」セクション追加（約200行）
+  - コンポーネント構成図（Renderer → Preload → Main）
+  - ファイル構成（preload/index.ts, channels.ts, types.ts）
+  - API定義（9メソッド: 7 invoke + 2 event）
+  - IPCチャンネル定義（9チャンネル）
+  - ホワイトリストパターン（ALLOWED_INVOKE/ON_CHANNELS）
+  - safeInvoke/safeOnセキュリティパターン
+  - 実装パターン（claudeCliAPIオブジェクト定義）
+  - セキュリティ要件テーブル
+  - データフロー（7ステップ）
+  - 使用例（async/await、useEffect）
+  - テストカバレッジ（74テスト）
+
+- **更新**: `references/security-api-electron.md`
+  - 「Claude CLI Renderer API セキュリティ（Preload）」セクション追加（約80行）
+  - ホワイトリストパターン実装
+  - safeInvokeセキュリティチェック
+  - safeOnセキュリティチェック
+  - IPCチャンネルセキュリティ（9チャンネル）
+  - テストカバレッジ（22セキュリティテスト）
+
+- **更新**: `indexes/topic-map.md`
+  - architecture-patterns.mdセクションにClaude CLI Renderer APIエントリ追加
+  - security-api-electron.mdセクションにPreloadセキュリティエントリ追加
+
+### 関連ドキュメント
+
+| ドキュメント    | パス                                                                                         |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| 実装ガイド      | `docs/30-workflows/claude-cli-renderer-api/outputs/phase-12/implementation-guide.md`         |
+| テストファイル  | `apps/desktop/src/preload/__tests__/claudeCliApi.test.ts`                                    |
+| 実装ファイル    | `apps/desktop/src/preload/index.ts`（lines 435-459）                                         |
+
+### テスト品質
+
+| 項目           | 値     |
+| -------------- | ------ |
+| テスト総数     | 74     |
+| カバレッジ     | 100%   |
+| セキュリティ関連 | 22   |
+
+---
+
 （ログエントリはここに追記されます）
