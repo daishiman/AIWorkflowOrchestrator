@@ -43,6 +43,12 @@ export {
   queryRequestSchema,
   resumeSessionRequestSchema,
   destroySessionRequestSchema,
+  // Session Persistence Schemas
+  persistedSessionSchema,
+  persistedMessageSchema,
+  storageMetadataSchema,
+  sessionStorageSchemaSchema,
+  sessionPersistenceConfigSchema,
 } from "./validation";
 export type {
   QueryOptionsInput,
@@ -53,6 +59,17 @@ export type {
   ResumeSessionRequestOutput,
   DestroySessionRequestInput,
   DestroySessionRequestOutput,
+  // Session Persistence Types
+  PersistedSessionInput,
+  PersistedSessionOutput,
+  PersistedMessageInput,
+  PersistedMessageOutput,
+  StorageMetadataInput,
+  StorageMetadataOutput,
+  SessionStorageSchemaInput,
+  SessionStorageSchemaOutput,
+  SessionPersistenceConfigInput,
+  SessionPersistenceConfigOutput,
 } from "./validation";
 
 // Session Manager

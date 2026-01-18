@@ -79,3 +79,87 @@ export type DestroySessionRequestInput = z.input<
 export type DestroySessionRequestOutput = z.output<
   typeof destroySessionRequestSchema
 >;
+
+// ============================================
+// Session Persistence Schemas
+// ============================================
+
+/**
+ * PersistedSession スキーマ
+ */
+export const persistedSessionSchema = z.object({
+  id: z.string().uuid(),
+  createdAt: z.number().int().positive(),
+  lastAccessedAt: z.number().int().positive(),
+  isActive: z.boolean(),
+  messageCount: z.number().int().nonnegative(),
+  title: z.string().max(200).optional(),
+});
+
+export type PersistedSessionInput = z.input<typeof persistedSessionSchema>;
+export type PersistedSessionOutput = z.output<typeof persistedSessionSchema>;
+
+/**
+ * PersistedMessage スキーマ
+ */
+export const persistedMessageSchema = z.object({
+  id: z.string().uuid(),
+  sessionId: z.string().uuid(),
+  role: z.enum(["user", "assistant"]),
+  content: z.string().max(100000), // 100KB制限
+  timestamp: z.number().int().positive(),
+});
+
+export type PersistedMessageInput = z.input<typeof persistedMessageSchema>;
+export type PersistedMessageOutput = z.output<typeof persistedMessageSchema>;
+
+/**
+ * StorageMetadata スキーマ
+ */
+export const storageMetadataSchema = z.object({
+  version: z.string().regex(/^\d+\.\d+\.\d+$/), // semver format
+  lastUpdated: z.number().int().positive(),
+  totalSize: z.number().int().nonnegative(),
+});
+
+export type StorageMetadataInput = z.input<typeof storageMetadataSchema>;
+export type StorageMetadataOutput = z.output<typeof storageMetadataSchema>;
+
+/**
+ * SessionStorageSchema スキーマ
+ */
+export const sessionStorageSchemaSchema = z.object({
+  sessions: z.array(persistedSessionSchema),
+  messages: z.record(z.string().uuid(), z.array(persistedMessageSchema)),
+  metadata: storageMetadataSchema,
+});
+
+export type SessionStorageSchemaInput = z.input<
+  typeof sessionStorageSchemaSchema
+>;
+export type SessionStorageSchemaOutput = z.output<
+  typeof sessionStorageSchemaSchema
+>;
+
+/**
+ * SessionPersistenceConfig スキーマ
+ */
+export const sessionPersistenceConfigSchema = z.object({
+  maxSessions: z.number().int().positive().max(1000),
+  maxStorageSize: z
+    .number()
+    .int()
+    .positive()
+    .max(200 * 1024 * 1024), // max 200MB
+  maxMessagesPerSession: z.number().int().positive().max(10000),
+  enableAutoBackup: z.boolean(),
+  backupRetentionCount: z.number().int().positive().max(10),
+  lruWarningThreshold: z.number().min(0.5).max(1.0),
+});
+
+export type SessionPersistenceConfigInput = z.input<
+  typeof sessionPersistenceConfigSchema
+>;
+export type SessionPersistenceConfigOutput = z.output<
+  typeof sessionPersistenceConfigSchema
+>;
