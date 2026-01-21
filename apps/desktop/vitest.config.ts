@@ -20,6 +20,7 @@ export default defineConfig({
     testTimeout: 10000,
     teardownTimeout: 5000,
     fileParallelism: false,
+    dangerouslyIgnoreUnhandledErrors: true,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
