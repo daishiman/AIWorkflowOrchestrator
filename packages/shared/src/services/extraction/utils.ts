@@ -52,6 +52,11 @@ export function findMentionsInText(
   content: string,
   chunkId: string,
 ): Mention[] {
+  // 空文字列や空白のみの場合は空配列を返す（無限ループ防止）
+  if (!entityName || entityName.trim() === "") {
+    return [];
+  }
+
   const mentions: Mention[] = [];
   const escapedName = escapeRegex(entityName);
   const regex = new RegExp(escapedName, "gi");
