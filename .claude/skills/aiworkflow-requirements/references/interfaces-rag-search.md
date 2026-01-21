@@ -172,53 +172,134 @@ CRAG（Corrective RAG）評価スコア
 
 ---
 
-## キーワード検索戦略
+## キーワード検索戦略（FTS5/BM25）
 
-SQLite FTS5とBM25アルゴリズムを使用したキーワード検索戦略。
+SQLite FTS5（Full-Text Search 5）とBM25ランキングアルゴリズムを使用したキーワード検索戦略。
 
-**実装場所**: `packages/shared/src/services/search/keyword-search-strategy.ts`
+**実装場所**: `packages/shared/src/services/search/strategies/keyword-search-strategy.ts`
 
 ### IKeywordSearchStrategy
 
-| メソッド            | 説明                                       |
-| ------------------- | ------------------------------------------ |
-| search()            | SearchQueryを受けてキーワード検索を実行    |
-| searchNear()        | 近接検索（NEAR演算子）を実行               |
-| getStrategyName()   | 戦略名を返す（"keyword"）                  |
-| getMetrics()        | StrategyMetricを返す                       |
-| normalizeScore()    | BM25スコアをシグモイド関数で0-1に正規化    |
-| buildFTS5Query()    | テキストからFTS5クエリ文字列を生成         |
-| toSearchResultItem()| FTS検索結果をSearchResultItemに変換        |
+| メソッド             | 戻り値                                     | 説明                                    |
+| -------------------- | ------------------------------------------ | --------------------------------------- |
+| search()             | Promise<Result<SearchResultItem[], Error>> | SearchQueryを受けてキーワード検索を実行 |
+| searchNear()         | Promise<Result<SearchResultItem[], Error>> | 近接検索（NEAR演算子）を実行            |
+| getStrategyName()    | "keyword"                                  | 戦略名を返す                            |
+| getMetrics()         | StrategyMetric                             | 検索メトリクス取得                      |
+| normalizeScore()     | number                                     | BM25スコアをシグモイド関数で0-1に正規化 |
+| buildFTS5Query()     | string                                     | テキストからFTS5クエリ文字列を生成      |
+| toSearchResultItem() | SearchResultItem                           | FTS検索結果をSearchResultItemに変換     |
 
 ### KeywordSearchError
 
-| type        | 説明                         |
-| ----------- | ---------------------------- |
-| validation  | クエリ長超過、無効形式       |
-| database    | DB接続エラー、クエリ実行失敗 |
-| timeout     | 検索タイムアウト（10秒超過） |
+```typescript
+type KeywordSearchErrorType = "validation" | "database" | "timeout";
+
+interface KeywordSearchError {
+  type: KeywordSearchErrorType;
+  message: string;
+  cause?: Error;
+}
+```
+
+| type       | 説明                         | 対処                         |
+| ---------- | ---------------------------- | ---------------------------- |
+| validation | クエリ長超過、無効形式       | クエリ修正を促す             |
+| database   | DB接続エラー、クエリ実行失敗 | リトライまたはフォールバック |
+| timeout    | 検索タイムアウト（10秒超過） | 結果を切り捨てて返す         |
 
 ### 定数
 
-| 定数名              | 値    | 説明                           |
-| ------------------- | ----- | ------------------------------ |
-| MAX_QUERY_LENGTH    | 1000  | クエリ最大文字数               |
-| DEFAULT_SCALE_FACTOR| 0.5   | BM25スコア正規化のスケール係数 |
-| SEARCH_TIMEOUT_MS   | 10000 | 検索タイムアウト（ミリ秒）     |
+| 定数名               | 値    | 説明                           |
+| -------------------- | ----- | ------------------------------ |
+| MAX_QUERY_LENGTH     | 1000  | クエリ最大文字数               |
+| DEFAULT_SCALE_FACTOR | 0.5   | BM25スコア正規化のスケール係数 |
+| SEARCH_TIMEOUT_MS    | 10000 | 検索タイムアウト（ミリ秒）     |
 
 ### 検索モード
 
-| モード  | 判定条件                    | 検索関数                 |
-| ------- | --------------------------- | ------------------------ |
-| keyword | 通常クエリ                  | searchChunksByKeyword()  |
-| phrase  | ダブルクォートで囲まれた文字列 | searchChunksByPhrase()   |
-| near    | searchNear()メソッド呼び出し | searchChunksByNear()     |
+| モード  | 判定条件                       | 検索関数                | FTS5クエリ例          |
+| ------- | ------------------------------ | ----------------------- | --------------------- |
+| keyword | 通常クエリ                     | searchChunksByKeyword() | `term1 term2 term3`   |
+| phrase  | ダブルクォートで囲まれた文字列 | searchChunksByPhrase()  | `"exact phrase"`      |
+| near    | searchNear()メソッド呼び出し   | searchChunksByNear()    | `term1 NEAR/10 term2` |
 
-**テスト品質**: 35テストケース、93.39%カバレッジ達成
+### FTS5テーブル構造
 
-**参照**: `docs/30-workflows/keyword-search-fts5/` - 詳細な設計・実装ドキュメント
+```sql
+CREATE VIRTUAL TABLE chunks_fts USING fts5(
+  content,
+  tokenize = 'unicode61 remove_diacritics 2',
+  content_rowid = chunk_id
+);
+```
 
----
+### FTS5クエリパターン
+
+```sql
+-- キーワード検索
+SELECT rowid, bm25(chunks_fts) as score
+FROM chunks_fts
+WHERE chunks_fts MATCH ?
+ORDER BY score
+LIMIT ?;
+
+-- フレーズ検索
+SELECT rowid, bm25(chunks_fts) as score
+FROM chunks_fts
+WHERE chunks_fts MATCH '"exact phrase"'
+ORDER BY score;
+
+-- 近接検索（NEARオペレータ）
+SELECT rowid, bm25(chunks_fts) as score
+FROM chunks_fts
+WHERE chunks_fts MATCH 'term1 NEAR/10 term2'
+ORDER BY score;
+```
+
+### BM25スコア正規化
+
+```typescript
+function normalizeScore(bm25Score: number, scaleFactor = 0.5): number {
+  // シグモイド関数で0-1に正規化
+  return 1 / (1 + Math.exp(-scaleFactor * bm25Score));
+}
+```
+
+### データフロー
+
+```
+SearchQuery → validateQuery() → validation error
+      ↓
+buildFTS5Query()
+      ↓
+executeFTS5Search() → database error / timeout
+      ↓
+FTS5Result[]
+      ↓
+normalizeScore() (each result)
+      ↓
+toSearchResultItem() (each result)
+      ↓
+SearchResultItem[]
+```
+
+### 非機能要件
+
+| 項目         | 要件                               |
+| ------------ | ---------------------------------- |
+| 検索速度     | 単一クエリ100ms以下                |
+| タイムアウト | 10秒（SEARCH_TIMEOUT_MS）          |
+| クエリ長上限 | 1000文字（MAX_QUERY_LENGTH）       |
+| スコア正規化 | シグモイド関数（scale factor 0.5） |
+| 並列処理     | バッチ検索での並列実行対応         |
+
+### テスト品質
+
+- **35テストケース**
+- **93.39% Line Coverage**
+
+**詳細参照**: `docs/30-workflows/CONV-07-02-keyword-search-fts5/` - 設計・実装ドキュメント
 
 ---
 
@@ -239,11 +320,11 @@ libSQL/TursoのDiskANNベクトルインデックスを使用したセマンテ�
 
 ### VectorSearchStrategyインターフェース
 
-| メソッド      | 戻り値                                     | 説明                     |
-| ------------- | ------------------------------------------ | ------------------------ |
-| search()      | Promise<Result<SearchResultItem[], Error>> | ベクトル検索実行         |
-| getMetrics()  | StrategyMetric                             | 検索メトリクス取得       |
-| name          | "semantic"                                 | 戦略名（readonly）       |
+| メソッド     | 戻り値                                     | 説明               |
+| ------------ | ------------------------------------------ | ------------------ |
+| search()     | Promise<Result<SearchResultItem[], Error>> | ベクトル検索実行   |
+| getMetrics() | StrategyMetric                             | 検索メトリクス取得 |
+| name         | "semantic"                                 | 戦略名（readonly） |
 
 ### Result型
 
@@ -265,33 +346,33 @@ class Err<E> {
 
 ### フィルタ対応
 
-| フィルタ       | VectorSearchStrategy | 説明                     |
-| -------------- | -------------------- | ------------------------ |
-| fileIds        | ✅ 対応              | 特定ファイルに限定       |
-| minRelevance   | ✅ 対応              | 最低類似度閾値（0-1）    |
-| limit          | ✅ 対応              | 最大結果数（1-100）      |
-| dateRange      | ❌ 未対応            | 将来対応予定             |
-| fileTypes      | ❌ 未対応            | 将来対応予定             |
-| workspaceIds   | ❌ 未対応            | 将来対応予定             |
+| フィルタ     | VectorSearchStrategy | 説明                  |
+| ------------ | -------------------- | --------------------- |
+| fileIds      | ✅ 対応              | 特定ファイルに限定    |
+| minRelevance | ✅ 対応              | 最低類似度閾値（0-1） |
+| limit        | ✅ 対応              | 最大結果数（1-100）   |
+| dateRange    | ❌ 未対応            | 将来対応予定          |
+| fileTypes    | ❌ 未対応            | 将来対応予定          |
+| workspaceIds | ❌ 未対応            | 将来対応予定          |
 
 ### 定数
 
-| 定数名              | 値    | 説明                      |
-| ------------------- | ----- | ------------------------- |
-| MAX_QUERY_LENGTH    | 1000  | クエリ最大文字数          |
-| MIN_LIMIT           | 1     | 最小取得件数              |
-| MAX_LIMIT           | 100   | 最大取得件数              |
-| DEFAULT_LIMIT       | 10    | デフォルト取得件数        |
-| DEFAULT_MIN_RELEVANCE | 0   | デフォルト最低類似度      |
+| 定数名                | 値   | 説明                 |
+| --------------------- | ---- | -------------------- |
+| MAX_QUERY_LENGTH      | 1000 | クエリ最大文字数     |
+| MIN_LIMIT             | 1    | 最小取得件数         |
+| MAX_LIMIT             | 100  | 最大取得件数         |
+| DEFAULT_LIMIT         | 10   | デフォルト取得件数   |
+| DEFAULT_MIN_RELEVANCE | 0    | デフォルト最低類似度 |
 
 ### CachedVectorSearchStrategy
 
 埋め込みキャッシュを使用した高速化版。
 
-| 設定項目       | デフォルト値 | 説明                     |
-| -------------- | ------------ | ------------------------ |
-| ttlMs          | 300000 (5分) | キャッシュ有効期間       |
-| maxSize        | 1000         | 最大キャッシュエントリ数 |
+| 設定項目 | デフォルト値 | 説明                     |
+| -------- | ------------ | ------------------------ |
+| ttlMs    | 300000 (5分) | キャッシュ有効期間       |
+| maxSize  | 1000         | 最大キャッシュエントリ数 |
 
 ### テスト品質
 
@@ -310,56 +391,56 @@ Knowledge Graphを活用したエンティティベース・コミュニティ�
 
 ### GraphSearchStrategyインターフェース
 
-| メソッド     | 戻り値                                     | 説明                     |
-| ------------ | ------------------------------------------ | ------------------------ |
-| search()     | Promise<Result<SearchResultItem[], Error>> | グラフ検索実行           |
-| getMetrics() | StrategyMetric                             | 検索メトリクス取得       |
-| name         | "graph"                                    | 戦略名（readonly）       |
+| メソッド     | 戻り値                                     | 説明               |
+| ------------ | ------------------------------------------ | ------------------ |
+| search()     | Promise<Result<SearchResultItem[], Error>> | グラフ検索実行     |
+| getMetrics() | StrategyMetric                             | 検索メトリクス取得 |
+| name         | "graph"                                    | 戦略名（readonly） |
 
 ### クエリタイプ
 
-| queryType    | 説明                                       | フォールバック           |
-| ------------ | ------------------------------------------ | ------------------------ |
-| local        | エンティティベースの詳細検索（デフォルト） | -                        |
-| global       | コミュニティサマリベースの俯瞰検索         | localSearch              |
+| queryType    | 説明                                       | フォールバック            |
+| ------------ | ------------------------------------------ | ------------------------- |
+| local        | エンティティベースの詳細検索（デフォルト） | -                         |
+| global       | コミュニティサマリベースの俯瞰検索         | localSearch               |
 | relationship | エンティティ間のパス・関係検索             | 1エンティティ→localSearch |
 
 ### GraphSearchOptions
 
-| オプション         | 型       | デフォルト | 説明                           |
-| ------------------ | -------- | ---------- | ------------------------------ |
+| オプション         | 型       | デフォルト | 説明                                    |
+| ------------------ | -------- | ---------- | --------------------------------------- |
 | queryType          | string   | "local"    | 検索タイプ（local/global/relationship） |
-| entityThreshold    | number   | 0.5        | エンティティ類似度閾値（0-1） |
-| communityThreshold | number   | -          | コミュニティ類似度閾値（0-1） |
-| traversalDepth     | number   | 3          | トラバーサル深度（1-5）        |
-| relationTypes      | string[] | -          | 関係タイプフィルタ             |
+| entityThreshold    | number   | 0.5        | エンティティ類似度閾値（0-1）           |
+| communityThreshold | number   | -          | コミュニティ類似度閾値（0-1）           |
+| traversalDepth     | number   | 3          | トラバーサル深度（1-5）                 |
+| relationTypes      | string[] | -          | 関係タイプフィルタ                      |
 
 ### 依存インターフェース
 
-| インターフェース       | 必須 | 説明                           |
-| ---------------------- | ---- | ------------------------------ |
-| IKnowledgeGraphStore   | ✅   | Knowledge Graphストレージ      |
-| IEmbeddingProvider     | ✅   | 埋め込み生成プロバイダー       |
-| ICommunitySummarizer   |      | コミュニティサマリ検索         |
+| インターフェース     | 必須 | 説明                      |
+| -------------------- | ---- | ------------------------- |
+| IKnowledgeGraphStore | ✅   | Knowledge Graphストレージ |
+| IEmbeddingProvider   | ✅   | 埋め込み生成プロバイダー  |
+| ICommunitySummarizer |      | コミュニティサマリ検索    |
 
 ### スコアリング
 
-| 検索タイプ   | 計算式                                                       |
-| ------------ | ------------------------------------------------------------ |
-| local        | `entitySimilarity × 0.6 + chunkRelevance × 0.4`             |
-| relationship | `(1 / (1 + distance)) × 0.5 + chunkRelevance × 0.5`         |
-| global       | `summary.confidence`（コミュニティサマリの信頼度）          |
+| 検索タイプ   | 計算式                                              |
+| ------------ | --------------------------------------------------- |
+| local        | `entitySimilarity × 0.6 + chunkRelevance × 0.4`     |
+| relationship | `(1 / (1 + distance)) × 0.5 + chunkRelevance × 0.5` |
+| global       | `summary.confidence`（コミュニティサマリの信頼度）  |
 
 ### 定数
 
-| 定数名                   | 値   | 説明                      |
-| ------------------------ | ---- | ------------------------- |
-| MAX_QUERY_LENGTH         | 1000 | クエリ最大文字数          |
-| MIN_LIMIT                | 1    | 最小取得件数              |
-| MAX_LIMIT                | 100  | 最大取得件数              |
-| DEFAULT_ENTITY_THRESHOLD | 0.5  | デフォルト類似度閾値      |
+| 定数名                   | 値   | 説明                       |
+| ------------------------ | ---- | -------------------------- |
+| MAX_QUERY_LENGTH         | 1000 | クエリ最大文字数           |
+| MIN_LIMIT                | 1    | 最小取得件数               |
+| MAX_LIMIT                | 100  | 最大取得件数               |
+| DEFAULT_ENTITY_THRESHOLD | 0.5  | デフォルト類似度閾値       |
 | DEFAULT_TRAVERSAL_DEPTH  | 3    | デフォルトトラバーサル深度 |
-| MAX_TRAVERSAL_DEPTH      | 5    | 最大トラバーサル深度      |
+| MAX_TRAVERSAL_DEPTH      | 5    | 最大トラバーサル深度       |
 
 ### テスト品質
 
@@ -395,17 +476,17 @@ Knowledge Graphを活用したエンティティベース・コミュニティ�
 
 関連性評価器
 
-| メソッド   | 戻り値                                        | 説明                     |
-| ---------- | --------------------------------------------- | ------------------------ |
+| メソッド   | 戻り値                                      | 説明                     |
+| ---------- | ------------------------------------------- | ------------------------ |
 | evaluate() | Promise<Result<RelevanceEvaluation, Error>> | 検索結果全体の関連性評価 |
 
 #### ICorrectiveRAG
 
 Corrective RAGプロセッサ
 
-| メソッド  | 戻り値                                 | 説明                   |
-| --------- | -------------------------------------- | ---------------------- |
-| process() | Promise<Result<CRAGResult, Error>>   | 検索結果を評価・補正   |
+| メソッド  | 戻り値                             | 説明                 |
+| --------- | ---------------------------------- | -------------------- |
+| process() | Promise<Result<CRAGResult, Error>> | 検索結果を評価・補正 |
 
 ### 型定義
 
@@ -417,35 +498,35 @@ type RelevanceAction = "correct" | "incorrect" | "ambiguous";
 
 #### RelevanceEvaluation
 
-| プロパティ       | 型                | 説明                               |
-| ---------------- | ----------------- | ---------------------------------- |
-| overallScore     | number            | 全体スコア（0.0-1.0）加重平均      |
-| action           | RelevanceAction   | 評価アクション                     |
-| individualScores | IndividualScore[] | 各結果の個別スコア                 |
-| reasoning        | string            | 評価の推論理由                     |
+| プロパティ       | 型                | 説明                          |
+| ---------------- | ----------------- | ----------------------------- |
+| overallScore     | number            | 全体スコア（0.0-1.0）加重平均 |
+| action           | RelevanceAction   | 評価アクション                |
+| individualScores | IndividualScore[] | 各結果の個別スコア            |
+| reasoning        | string            | 評価の推論理由                |
 
 #### IndividualScore
 
-| プロパティ | 型      | 説明                   |
-| ---------- | ------- | ---------------------- |
-| chunkId    | ChunkId | チャンクID             |
-| score      | number  | 関連性スコア（0.0-1.0）|
-| reason     | string  | スコアの理由           |
+| プロパティ | 型      | 説明                    |
+| ---------- | ------- | ----------------------- |
+| chunkId    | ChunkId | チャンクID              |
+| score      | number  | 関連性スコア（0.0-1.0） |
+| reason     | string  | スコアの理由            |
 
 #### CRAGResult
 
-| プロパティ       | 型                  | 説明                             |
-| ---------------- | ------------------- | -------------------------------- |
-| results          | FusedSearchResult[] | 補正後の検索結果                 |
-| evaluation       | object              | 評価情報（下記参照）             |
-| augmentedContext | string \| undefined | Web検索による補強コンテキスト    |
+| プロパティ       | 型                  | 説明                          |
+| ---------------- | ------------------- | ----------------------------- |
+| results          | FusedSearchResult[] | 補正後の検索結果              |
+| evaluation       | object              | 評価情報（下記参照）          |
+| augmentedContext | string \| undefined | Web検索による補強コンテキスト |
 
 **evaluation**:
-| プロパティ     | 型                 | 説明                   |
+| プロパティ | 型 | 説明 |
 | -------------- | ------------------ | ---------------------- |
-| relevanceScore | number             | 関連性スコア           |
-| action         | RelevanceAction    | 実行されたアクション   |
-| corrections    | CorrectionAction[] | 実行された補正アクション |
+| relevanceScore | number | 関連性スコア |
+| action | RelevanceAction | 実行されたアクション |
+| corrections | CorrectionAction[] | 実行された補正アクション |
 
 #### CorrectionAction
 
@@ -462,85 +543,85 @@ type CorrectionAction =
 
 #### EvaluatorOptions
 
-| プロパティ         | 型     | デフォルト | 説明                       |
-| ------------------ | ------ | ---------- | -------------------------- |
-| maxEvaluate        | number | 5          | 評価する最大結果数         |
-| correctThreshold   | number | 0.7        | correct判定の閾値          |
-| incorrectThreshold | number | 0.3        | incorrect判定の閾値        |
+| プロパティ         | 型     | デフォルト | 説明                |
+| ------------------ | ------ | ---------- | ------------------- |
+| maxEvaluate        | number | 5          | 評価する最大結果数  |
+| correctThreshold   | number | 0.7        | correct判定の閾値   |
+| incorrectThreshold | number | 0.3        | incorrect判定の閾値 |
 
 #### CRAGOptions
 
-| プロパティ               | 型      | デフォルト | 説明                         |
-| ------------------------ | ------- | ---------- | ---------------------------- |
-| enableWebSearch          | boolean | false      | Web検索補強を有効化          |
-| enableRefinement         | boolean | false      | Knowledge Refinement有効化   |
-| ambiguousFilterThreshold | number  | 0.4        | Ambiguous時のフィルタ閾値    |
-| minResultsBeforeWebSearch| number  | 3          | Web検索前の最小結果数        |
-| webSearchLimit           | number  | 5          | Web検索結果数上限            |
+| プロパティ                | 型      | デフォルト | 説明                       |
+| ------------------------- | ------- | ---------- | -------------------------- |
+| enableWebSearch           | boolean | false      | Web検索補強を有効化        |
+| enableRefinement          | boolean | false      | Knowledge Refinement有効化 |
+| ambiguousFilterThreshold  | number  | 0.4        | Ambiguous時のフィルタ閾値  |
+| minResultsBeforeWebSearch | number  | 3          | Web検索前の最小結果数      |
+| webSearchLimit            | number  | 5          | Web検索結果数上限          |
 
 ### 外部依存インターフェース
 
 #### ILLMClient
 
-| メソッド   | 戻り値                          | 説明                 |
-| ---------- | ------------------------------- | -------------------- |
+| メソッド   | 戻り値                         | 説明                 |
+| ---------- | ------------------------------ | -------------------- |
 | complete() | Promise<Result<string, Error>> | プロンプト補完を生成 |
 
 **complete()パラメータ**:
-| パラメータ  | 型     | 説明                 |
+| パラメータ | 型 | 説明 |
 | ----------- | ------ | -------------------- |
-| prompt      | string | プロンプト           |
-| maxTokens   | number | 最大トークン数       |
-| temperature | number | 生成温度             |
+| prompt | string | プロンプト |
+| maxTokens | number | 最大トークン数 |
+| temperature | number | 生成温度 |
 
 #### IWebSearcher
 
-| メソッド | 戻り値                                    | 説明           |
-| -------- | ----------------------------------------- | -------------- |
-| search() | Promise<Result<WebSearchResult[], Error>> | Web検索を実行  |
+| メソッド | 戻り値                                    | 説明          |
+| -------- | ----------------------------------------- | ------------- |
+| search() | Promise<Result<WebSearchResult[], Error>> | Web検索を実行 |
 
 #### WebSearchResult
 
-| プロパティ | 型     | 説明           |
-| ---------- | ------ | -------------- |
-| title      | string | 結果のタイトル |
-| url        | string | 結果のURL      |
+| プロパティ | 型     | 説明             |
+| ---------- | ------ | ---------------- |
+| title      | string | 結果のタイトル   |
+| url        | string | 結果のURL        |
 | snippet    | string | 結果のスニペット |
 
 ### 定数
 
 #### CRAG_DEFAULTS
 
-| 定数名                     | 値    | 説明                     |
-| -------------------------- | ----- | ------------------------ |
-| MAX_EVALUATE               | 5     | 評価する最大結果数       |
-| CORRECT_THRESHOLD          | 0.7   | correct判定の閾値        |
-| INCORRECT_THRESHOLD        | 0.3   | incorrect判定の閾値      |
-| AMBIGUOUS_FILTER_THRESHOLD | 0.4   | Ambiguous時フィルタ閾値  |
-| MIN_RESULTS_BEFORE_WEB_SEARCH | 3  | Web検索前の最小結果数    |
-| WEB_SEARCH_LIMIT           | 5     | Web検索結果数上限        |
-| EVALUATION_TIMEOUT_MS      | 10000 | LLM評価タイムアウト(ms)  |
-| MAX_TOKENS                 | 500   | LLM評価の最大トークン数  |
-| TEMPERATURE                | 0     | LLM評価の温度            |
+| 定数名                        | 値    | 説明                    |
+| ----------------------------- | ----- | ----------------------- |
+| MAX_EVALUATE                  | 5     | 評価する最大結果数      |
+| CORRECT_THRESHOLD             | 0.7   | correct判定の閾値       |
+| INCORRECT_THRESHOLD           | 0.3   | incorrect判定の閾値     |
+| AMBIGUOUS_FILTER_THRESHOLD    | 0.4   | Ambiguous時フィルタ閾値 |
+| MIN_RESULTS_BEFORE_WEB_SEARCH | 3     | Web検索前の最小結果数   |
+| WEB_SEARCH_LIMIT              | 5     | Web検索結果数上限       |
+| EVALUATION_TIMEOUT_MS         | 10000 | LLM評価タイムアウト(ms) |
+| MAX_TOKENS                    | 500   | LLM評価の最大トークン数 |
+| TEMPERATURE                   | 0     | LLM評価の温度           |
 
 ### 型ガード
 
-| 関数名               | 説明                           |
-| -------------------- | ------------------------------ |
-| isCRAGResultCorrect  | CRAGResultがcorrect判定か      |
-| isCRAGResultIncorrect| CRAGResultがincorrect判定か    |
-| isCRAGResultAmbiguous| CRAGResultがambiguous判定か    |
-| isKeepAction         | CorrectionActionがkeepか       |
-| isDiscardAction      | CorrectionActionがdiscardか    |
-| isWebSearchAction    | CorrectionActionがweb_searchか |
+| 関数名                | 説明                           |
+| --------------------- | ------------------------------ |
+| isCRAGResultCorrect   | CRAGResultがcorrect判定か      |
+| isCRAGResultIncorrect | CRAGResultがincorrect判定か    |
+| isCRAGResultAmbiguous | CRAGResultがambiguous判定か    |
+| isKeepAction          | CorrectionActionがkeepか       |
+| isDiscardAction       | CorrectionActionがdiscardか    |
+| isWebSearchAction     | CorrectionActionがweb_searchか |
 
 ### アクション決定ロジック
 
-| 条件                 | アクション   | 処理                             |
-| -------------------- | ------------ | -------------------------------- |
-| overallScore ≥ 0.7   | correct      | 結果をそのまま使用（Refineオプション） |
-| overallScore ≤ 0.3   | incorrect    | 結果を破棄、Web検索で補強        |
-| 0.3 < score < 0.7    | ambiguous    | 低スコア結果をフィルタ+Refine    |
+| 条件               | アクション | 処理                                   |
+| ------------------ | ---------- | -------------------------------------- |
+| overallScore ≥ 0.7 | correct    | 結果をそのまま使用（Refineオプション） |
+| overallScore ≤ 0.3 | incorrect  | 結果を破棄、Web検索で補強              |
+| 0.3 < score < 0.7  | ambiguous  | 低スコア結果をフィルタ+Refine          |
 
 ### テスト品質
 
@@ -560,9 +641,9 @@ type CorrectionAction =
 
 ### HybridRAGEngineクラス
 
-| メソッド | 戻り値                                    | 説明                     |
-| -------- | ----------------------------------------- | ------------------------ |
-| search() | Promise<Result<HybridRAGResponse, Error>> | HybridRAG検索を実行      |
+| メソッド | 戻り値                                    | 説明                |
+| -------- | ----------------------------------------- | ------------------- |
+| search() | Promise<Result<HybridRAGResponse, Error>> | HybridRAG検索を実行 |
 
 **コンストラクタ**:
 
@@ -583,66 +664,66 @@ constructor(
 
 ### HybridRAGResponse
 
-| プロパティ       | 型                    | 説明                               |
-| ---------------- | --------------------- | ---------------------------------- |
-| results          | HybridRAGResult[]     | 最終検索結果                       |
-| metadata         | object                | パイプライン実行メタデータ         |
-| augmentedContext | string \| undefined   | CRAGによる補強コンテキスト         |
+| プロパティ       | 型                  | 説明                       |
+| ---------------- | ------------------- | -------------------------- |
+| results          | HybridRAGResult[]   | 最終検索結果               |
+| metadata         | object              | パイプライン実行メタデータ |
+| augmentedContext | string \| undefined | CRAGによる補強コンテキスト |
 
 **metadata**:
 
-| プロパティ     | 型                    | 説明                               |
-| -------------- | --------------------- | ---------------------------------- |
-| queryType      | QueryType             | クエリタイプ                       |
-| searchWeights  | SearchWeights         | 検索戦略の重み                     |
-| pipelineStages | PipelineStageResult[] | 各ステージの実行結果               |
-| totalDuration  | number                | 全体処理時間（ミリ秒）             |
-| cragAction     | RelevanceAction?      | CRAGの評価アクション               |
+| プロパティ     | 型                    | 説明                   |
+| -------------- | --------------------- | ---------------------- |
+| queryType      | QueryType             | クエリタイプ           |
+| searchWeights  | SearchWeights         | 検索戦略の重み         |
+| pipelineStages | PipelineStageResult[] | 各ステージの実行結果   |
+| totalDuration  | number                | 全体処理時間（ミリ秒） |
+| cragAction     | RelevanceAction?      | CRAGの評価アクション   |
 
 ### HybridRAGResult
 
-| プロパティ | 型                     | 説明                               |
-| ---------- | ---------------------- | ---------------------------------- |
-| chunkId    | ChunkId                | チャンクID                         |
-| content    | string                 | コンテンツ本文                     |
-| score      | number                 | 総合スコア（0.0-1.0）              |
-| sources    | SourceInfo[]           | ソース情報（検索戦略、ランク、スコア） |
-| metadata   | Record<string, unknown>| メタデータ                         |
+| プロパティ | 型                      | 説明                                   |
+| ---------- | ----------------------- | -------------------------------------- |
+| chunkId    | ChunkId                 | チャンクID                             |
+| content    | string                  | コンテンツ本文                         |
+| score      | number                  | 総合スコア（0.0-1.0）                  |
+| sources    | SourceInfo[]            | ソース情報（検索戦略、ランク、スコア） |
+| metadata   | Record<string, unknown> | メタデータ                             |
 
 ### PipelineStageResult
 
-| プロパティ  | 型     | 説明                               |
-| ----------- | ------ | ---------------------------------- |
-| stage       | string | ステージ名                         |
-| duration    | number | 実行時間（ミリ秒）                 |
-| inputCount  | number | 入力件数                           |
-| outputCount | number | 出力件数                           |
+| プロパティ  | 型     | 説明               |
+| ----------- | ------ | ------------------ |
+| stage       | string | ステージ名         |
+| duration    | number | 実行時間（ミリ秒） |
+| inputCount  | number | 入力件数           |
+| outputCount | number | 出力件数           |
 
 **stage 値**: `"query_classification"` | `"triple_search"` | `"rrf_fusion"` | `"reranking"` | `"crag"`
 
 ### SearchOptions（HybridRAG）
 
-| プロパティ            | 型      | デフォルト | 説明                           |
-| --------------------- | ------- | ---------- | ------------------------------ |
-| enableCRAG            | boolean | undefined  | CRAGを有効にするか             |
-| searchLimitMultiplier | number  | 3          | 各戦略の結果数倍率             |
-| vectorThreshold       | number  | undefined  | ベクトル検索の類似度閾値       |
-| graphDepth            | number  | undefined  | グラフ検索のトラバーサル深度   |
+| プロパティ            | 型      | デフォルト | 説明                         |
+| --------------------- | ------- | ---------- | ---------------------------- |
+| enableCRAG            | boolean | undefined  | CRAGを有効にするか           |
+| searchLimitMultiplier | number  | 3          | 各戦略の結果数倍率           |
+| vectorThreshold       | number  | undefined  | ベクトル検索の類似度閾値     |
+| graphDepth            | number  | undefined  | グラフ検索のトラバーサル深度 |
 
 ### HybridRAGOptions
 
-| プロパティ        | 型      | デフォルト | 説明                           |
-| ----------------- | ------- | ---------- | ------------------------------ |
-| defaultEnableCRAG | boolean | true       | デフォルトでCRAGを有効化       |
-| timeout           | number  | undefined  | タイムアウト（ミリ秒）         |
+| プロパティ        | 型      | デフォルト | 説明                     |
+| ----------------- | ------- | ---------- | ------------------------ |
+| defaultEnableCRAG | boolean | true       | デフォルトでCRAGを有効化 |
+| timeout           | number  | undefined  | タイムアウト（ミリ秒）   |
 
 ### 定数
 
-| 定数名                        | 値  | 説明                           |
-| ----------------------------- | --- | ------------------------------ |
-| DEFAULT_LIMIT                 | 10  | デフォルト検索結果数           |
-| MAX_LIMIT                     | 100 | 最大検索結果数                 |
-| DEFAULT_SEARCH_LIMIT_MULTIPLIER | 3 | デフォルト結果数倍率           |
+| 定数名                          | 値  | 説明                 |
+| ------------------------------- | --- | -------------------- |
+| DEFAULT_LIMIT                   | 10  | デフォルト検索結果数 |
+| MAX_LIMIT                       | 100 | 最大検索結果数       |
+| DEFAULT_SEARCH_LIMIT_MULTIPLIER | 3   | デフォルト結果数倍率 |
 
 ---
 
@@ -654,44 +735,44 @@ HybridRAGEngineのファクトリクラス。設定に基づいて適切なコ�
 
 ### ファクトリメソッド
 
-| メソッド           | 状態   | 説明                                 |
-| ------------------ | ------ | ------------------------------------ |
-| createFull()       | 未実装 | フル機能エンジン（LLMベース、CRAG有効） |
+| メソッド           | 状態   | 説明                                     |
+| ------------------ | ------ | ---------------------------------------- |
+| createFull()       | 未実装 | フル機能エンジン（LLMベース、CRAG有効）  |
 | createLite()       | 未実装 | 軽量版エンジン（ルールベース、CRAG無効） |
-| createForTesting() | 実装済 | テスト用エンジン（モック注入）        |
+| createForTesting() | 実装済 | テスト用エンジン（モック注入）           |
 
 ### FullHybridRAGConfig
 
-| プロパティ        | 型                  | 必須 | 説明                           |
-| ----------------- | ------------------- | ---- | ------------------------------ |
-| db                | DrizzleClient       | ✅   | データベースクライアント       |
-| embeddingProvider | IEmbeddingProvider  | ✅   | 埋め込みプロバイダー           |
-| graphStore        | IKnowledgeGraphStore| ✅   | Knowledge Graphストア          |
-| llmClient         | ILLMClient          | ✅   | LLMクライアント                |
-| rerankerType      | string              | ✅   | "cohere" \| "voyage" \| "llm" \| "none" |
-| enableCRAG        | boolean             |      | CRAG有効化                     |
-| webSearcher       | IWebSearcher        |      | Web検索プロバイダー            |
+| プロパティ        | 型                   | 必須 | 説明                                    |
+| ----------------- | -------------------- | ---- | --------------------------------------- |
+| db                | DrizzleClient        | ✅   | データベースクライアント                |
+| embeddingProvider | IEmbeddingProvider   | ✅   | 埋め込みプロバイダー                    |
+| graphStore        | IKnowledgeGraphStore | ✅   | Knowledge Graphストア                   |
+| llmClient         | ILLMClient           | ✅   | LLMクライアント                         |
+| rerankerType      | string               | ✅   | "cohere" \| "voyage" \| "llm" \| "none" |
+| enableCRAG        | boolean              |      | CRAG有効化                              |
+| webSearcher       | IWebSearcher         |      | Web検索プロバイダー                     |
 
 ### LiteHybridRAGConfig
 
-| プロパティ        | 型                  | 必須 | 説明                           |
-| ----------------- | ------------------- | ---- | ------------------------------ |
-| db                | DrizzleClient       | ✅   | データベースクライアント       |
-| embeddingProvider | IEmbeddingProvider  | ✅   | 埋め込みプロバイダー           |
-| graphStore        | IKnowledgeGraphStore| ✅   | Knowledge Graphストア          |
+| プロパティ        | 型                   | 必須 | 説明                     |
+| ----------------- | -------------------- | ---- | ------------------------ |
+| db                | DrizzleClient        | ✅   | データベースクライアント |
+| embeddingProvider | IEmbeddingProvider   | ✅   | 埋め込みプロバイダー     |
+| graphStore        | IKnowledgeGraphStore | ✅   | Knowledge Graphストア    |
 
 ### TestMocks
 
-| プロパティ       | 型              | 必須 | 説明                           |
-| ---------------- | --------------- | ---- | ------------------------------ |
-| queryClassifier  | IQueryClassifier| ✅   | クエリ分類器モック             |
-| keywordStrategy  | ISearchStrategy | ✅   | キーワード検索モック           |
-| semanticStrategy | ISearchStrategy | ✅   | セマンティック検索モック       |
-| graphStrategy    | ISearchStrategy | ✅   | グラフ検索モック               |
-| fusion           | IFusionStrategy |      | Fusionモック（デフォルト: RRFFusion） |
-| reranker         | IReranker       |      | Rerankerモック（デフォルト: NoOpReranker） |
-| crag             | ICorrectiveRAG  |      | CRAGモック                     |
-| options          | HybridRAGOptions|      | エンジンオプション             |
+| プロパティ       | 型               | 必須 | 説明                                       |
+| ---------------- | ---------------- | ---- | ------------------------------------------ |
+| queryClassifier  | IQueryClassifier | ✅   | クエリ分類器モック                         |
+| keywordStrategy  | ISearchStrategy  | ✅   | キーワード検索モック                       |
+| semanticStrategy | ISearchStrategy  | ✅   | セマンティック検索モック                   |
+| graphStrategy    | ISearchStrategy  | ✅   | グラフ検索モック                           |
+| fusion           | IFusionStrategy  |      | Fusionモック（デフォルト: RRFFusion）      |
+| reranker         | IReranker        |      | Rerankerモック（デフォルト: NoOpReranker） |
+| crag             | ICorrectiveRAG   |      | CRAGモック                                 |
+| options          | HybridRAGOptions |      | エンジンオプション                         |
 
 ### テスト品質
 
@@ -704,14 +785,15 @@ HybridRAGEngineのファクトリクラス。設定に基づいて適切なコ�
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                           |
-| ---------- | ---------- | -------------------------------------------------- |
-| 2026-01-17 | 6.9.0      | HybridRAGEngine、HybridRAGFactory セクション追加   |
-| 2026-01-17 | 6.8.0      | Corrective RAG詳細セクション追加                   |
-| 2026-01-13 | 6.7.0      | GraphSearchStrategy詳細セクション追加              |
-| 2026-01-12 | 6.6.0      | VectorSearchStrategy・CachedVectorSearchStrategy追加 |
-| 2026-01-11 | 6.5.0      | KeywordSearchStrategyセクション追加                |
-| 2026-01-10 | 6.0.0      | HybridRAGSearcherインターフェース詳細化            |
+| 日付       | バージョン | 変更内容                                                                                 |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------- |
+| 2026-01-19 | 6.10.0     | キーワード検索戦略詳細化: FTS5テーブル構造、クエリパターン、BM25正規化、データフロー追加 |
+| 2026-01-17 | 6.9.0      | HybridRAGEngine、HybridRAGFactory セクション追加                                         |
+| 2026-01-17 | 6.8.0      | Corrective RAG詳細セクション追加                                                         |
+| 2026-01-13 | 6.7.0      | GraphSearchStrategy詳細セクション追加                                                    |
+| 2026-01-12 | 6.6.0      | VectorSearchStrategy・CachedVectorSearchStrategy追加                                     |
+| 2026-01-11 | 6.5.0      | KeywordSearchStrategyセクション追加                                                      |
+| 2026-01-10 | 6.0.0      | HybridRAGSearcherインターフェース詳細化                                                  |
 
 ---
 

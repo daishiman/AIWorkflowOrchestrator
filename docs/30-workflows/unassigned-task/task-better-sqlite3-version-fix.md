@@ -500,6 +500,7 @@ GitHub ActionsのNode.jsバージョンが.nvmrcと一致していることを�
 **.github/workflows/\*.yml**のNode.jsバージョンを統一:
 
 ```yaml
+issue_number: 288
 jobs:
   test:
     runs-on: ubuntu-latest
