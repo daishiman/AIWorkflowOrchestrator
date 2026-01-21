@@ -186,6 +186,7 @@ pnpm --filter @repo/shared add voyageai
 **Step 1**: Docker Compose設定追加
 
 ```yaml
+issue_number: 308
 services:
   bge-m3:
     image: michaelfeil/infinity:latest

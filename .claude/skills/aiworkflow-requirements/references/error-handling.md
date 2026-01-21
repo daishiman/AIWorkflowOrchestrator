@@ -31,13 +31,14 @@
 
 **Business Error (2000-2999)**:
 
-| コード   | 名称               | 説明                   |
-| -------- | ------------------ | ---------------------- |
-| ERR_2001 | RESOURCE_NOT_FOUND | リソースが存在しない   |
-| ERR_2002 | PERMISSION_DENIED  | アクセス権限がない     |
-| ERR_2003 | DUPLICATE_RESOURCE | 重複するリソースが存在 |
-| ERR_2004 | INVALID_STATE      | 操作が現在の状態で不正 |
-| ERR_2005 | QUOTA_EXCEEDED     | 利用上限を超過         |
+| コード   | 名称               | 説明                                   |
+| -------- | ------------------ | -------------------------------------- |
+| ERR_2001 | RESOURCE_NOT_FOUND | リソースが存在しない                   |
+| ERR_2002 | PERMISSION_DENIED  | アクセス権限がない                     |
+| ERR_2003 | DUPLICATE_RESOURCE | 重複するリソースが存在                 |
+| ERR_2004 | INVALID_STATE      | 操作が現在の状態で不正                 |
+| ERR_2005 | QUOTA_EXCEEDED     | 利用上限を超過                         |
+| ERR_2006 | UNAUTHORIZED       | リソースアクセス権限なし（認可エラー） |
 
 **External Service Error (3000-3999)**:
 
@@ -164,6 +165,87 @@ createRAGError(ErrorCodes.TIMEOUT, `Conversion timeout after 60000ms`, {
   timeout: 60000,
 });
 ```
+
+---
+
+## 認可エラー（UnauthorizedError）
+
+OWASP A01:2021 Broken Access Control 対策として実装された認可エラー。
+
+**実装ファイル**: `packages/shared/src/features/chat-history/errors.ts`
+
+### クラス定義
+
+```typescript
+export const UNAUTHORIZED_ERROR_MESSAGE =
+  "Access denied: You do not have permission to access this resource" as const;
+
+export const RESOURCE_TYPE = {
+  SESSION: "session",
+} as const;
+
+export class UnauthorizedError extends Error {
+  public readonly name = "UnauthorizedError" as const;
+  public readonly code = "UNAUTHORIZED" as const;
+  public readonly statusCode = 403 as const;
+
+  constructor(
+    message: string = UNAUTHORIZED_ERROR_MESSAGE,
+    public readonly resourceType?: string,
+    public readonly resourceId?: string,
+  ) {
+    super(message);
+    Object.setPrototypeOf(this, UnauthorizedError.prototype);
+  }
+}
+```
+
+### 型ガード関数
+
+```typescript
+export function isUnauthorizedError(
+  error: unknown,
+): error is UnauthorizedError {
+  return (
+    error instanceof Error &&
+    error.name === "UnauthorizedError" &&
+    "code" in error &&
+    (error as UnauthorizedError).code === "UNAUTHORIZED"
+  );
+}
+```
+
+### 使用例
+
+```typescript
+// セッション所有者検証
+private async verifySessionOwnership(
+  sessionId: string,
+  requestUserId: string,
+): Promise<ChatSession> {
+  const session = await this.sessionRepository.findById(sessionId);
+
+  // セッションが存在しない場合も同じエラーを返す（情報漏洩防止）
+  if (!session || session.userId !== requestUserId) {
+    throw new UnauthorizedError(
+      UNAUTHORIZED_ERROR_MESSAGE,
+      RESOURCE_TYPE.SESSION,
+      sessionId,
+    );
+  }
+
+  return session;
+}
+```
+
+### セキュリティ原則
+
+| 原則         | 実装                                             |
+| ------------ | ------------------------------------------------ |
+| Fail-Secure  | 検証失敗時は必ずエラーをスロー                   |
+| 情報漏洩防止 | 存在チェックと認可チェックで同一エラーメッセージ |
+| 最小権限     | リソースへのアクセスは所有者のみ                 |
+| 一貫性       | 全メソッドで同じ検証パターンを使用               |
 
 ---
 
