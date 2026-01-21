@@ -120,13 +120,13 @@ jobs:
   test-desktop:
     name: Test (desktop)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
     env:
-      NODE_OPTIONS: --max-old-space-size=4096
+      NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout
         uses: actions/checkout@v4

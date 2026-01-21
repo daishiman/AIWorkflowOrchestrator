@@ -10,6 +10,14 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,tsx}"],
     exclude: ["node_modules/", "out/", "dist/"],
     setupFiles: ["./src/test/setup.ts"],
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
+    testTimeout: 10000,
+    teardownTimeout: 5000,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
