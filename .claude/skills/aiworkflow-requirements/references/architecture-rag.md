@@ -163,6 +163,7 @@ libSQLのDiskANNベクトルインデックスを活用した高速な近似最�
 セマンティック検索基盤として、チャンクの埋め込みベクトルを効率的に検索。
 
 **実装場所**:
+
 - スキーマ: `packages/shared/src/db/schema/embeddings.ts`
 - インデックス管理: `packages/shared/src/db/schema/vector-index.ts`
 - 検索クエリ: `packages/shared/src/db/queries/vector-search.ts`
@@ -191,40 +192,40 @@ libSQLのDiskANNベクトルインデックスを活用した高速な近似最�
 
 ### 距離メトリクス
 
-| メトリクス      | libSQL関数           | 特性                            | 用途               |
-| --------------- | -------------------- | ------------------------------- | ------------------ |
-| コサイン類似度  | vector_distance_cos  | 方向の類似性を測定（0〜2）      | テキスト埋め込み   |
-| ユークリッド距離| vector_distance_l2   | ユークリッド空間での距離（0〜∞）| 空間データ         |
-| 内積            | vector_dot           | 内積値（-∞〜∞）                 | 正規化ベクトル向け |
+| メトリクス       | libSQL関数          | 特性                             | 用途               |
+| ---------------- | ------------------- | -------------------------------- | ------------------ |
+| コサイン類似度   | vector_distance_cos | 方向の類似性を測定（0〜2）       | テキスト埋め込み   |
+| ユークリッド距離 | vector_distance_l2  | ユークリッド空間での距離（0〜∞） | 空間データ         |
+| 内積             | vector_dot          | 内積値（-∞〜∞）                  | 正規化ベクトル向け |
 
 ### 類似度計算
 
-| メトリクス      | 距離→類似度変換           | 範囲     |
-| --------------- | ------------------------- | -------- |
-| コサイン類似度  | `similarity = 1 - distance / 2` | 0.0〜1.0 |
-| ユークリッド距離| `similarity = 1 / (1 + distance)` | 0.0〜1.0 |
-| 内積            | `similarity = (dotProduct + 1) / 2` | 0.0〜1.0 |
+| メトリクス       | 距離→類似度変換                     | 範囲     |
+| ---------------- | ----------------------------------- | -------- |
+| コサイン類似度   | `similarity = 1 - distance / 2`     | 0.0〜1.0 |
+| ユークリッド距離 | `similarity = 1 / (1 + distance)`   | 0.0〜1.0 |
+| 内積             | `similarity = (dotProduct + 1) / 2` | 0.0〜1.0 |
 
 ### ベクトルインデックス設定
 
 ```typescript
 interface VectorIndexConfig {
-  name: string;              // インデックス名
-  dimensions: number;        // ベクトル次元数 (512/768/1024/1536/3072)
-  metric: 'cosine' | 'l2' | 'dot';  // 距離メトリクス
-  maxElements?: number;      // 最大要素数 (default: 1,000,000)
-  efConstruction?: number;   // 構築時パラメータ (default: 200)
-  efSearch?: number;         // 検索時パラメータ (default: 100)
+  name: string; // インデックス名
+  dimensions: number; // ベクトル次元数 (512/768/1024/1536/3072)
+  metric: "cosine" | "l2" | "dot"; // 距離メトリクス
+  maxElements?: number; // 最大要素数 (default: 1,000,000)
+  efConstruction?: number; // 構築時パラメータ (default: 200)
+  efSearch?: number; // 検索時パラメータ (default: 100)
 }
 ```
 
 ### プリセット設定
 
-| プリセット           | 次元数 | メトリクス | 用途                    |
-| -------------------- | ------ | ---------- | ----------------------- |
-| openai_small         | 1536   | cosine     | text-embedding-3-small  |
-| openai_large         | 3072   | cosine     | text-embedding-3-large  |
-| cohere_multilingual  | 1024   | cosine     | embed-multilingual-v3.0 |
+| プリセット          | 次元数 | メトリクス | 用途                    |
+| ------------------- | ------ | ---------- | ----------------------- |
+| openai_small        | 1536   | cosine     | text-embedding-3-small  |
+| openai_large        | 3072   | cosine     | text-embedding-3-large  |
+| cohere_multilingual | 1024   | cosine     | embed-multilingual-v3.0 |
 
 ### データフロー
 
@@ -490,43 +491,50 @@ RAGパイプラインにおいて、ドキュメントから構造化情報を�
 
 ### 抽出方式
 
-| 方式       | 実装クラス             | 特性                              |
-| ---------- | ---------------------- | --------------------------------- |
-| LLMベース  | LLMEntityExtractor     | 高精度、未知エンティティ対応      |
+| 方式         | 実装クラス               | 特性                                   |
+| ------------ | ------------------------ | -------------------------------------- |
+| LLMベース    | LLMEntityExtractor       | 高精度、未知エンティティ対応           |
 | ルールベース | RuleBasedEntityExtractor | 高速、パターンマッチ、フォールバック用 |
 
 ### ExtractedEntity → EntityEntity 変換
 
 NERサービスの出力（ExtractedEntity）は、Knowledge Graph永続化時にEntityEntityに変換される。
 
-| ExtractedEntity     | EntityEntity        | 変換ロジック                    |
-| ------------------- | ------------------- | ------------------------------- |
-| name                | name                | そのまま                        |
-| normalizedName      | normalizedName      | そのまま                        |
-| type                | type                | EntityType enum にマッピング    |
-| confidence          | importance          | 初期重要度として使用             |
-| description         | description         | そのまま（LLM生成時のみ）       |
-| aliases             | aliases             | JSON配列として格納              |
-| mentions            | → chunk_entities    | 位置情報を中間テーブルへ保存    |
+| ExtractedEntity | EntityEntity     | 変換ロジック                 |
+| --------------- | ---------------- | ---------------------------- |
+| name            | name             | そのまま                     |
+| normalizedName  | normalizedName   | そのまま                     |
+| type            | type             | EntityType enum にマッピング |
+| confidence      | importance       | 初期重要度として使用         |
+| description     | description      | そのまま（LLM生成時のみ）    |
+| aliases         | aliases          | JSON配列として格納           |
+| mentions        | → chunk_entities | 位置情報を中間テーブルへ保存 |
 
 ### 実装ファイル
 
-| 種別           | パス                                                   |
-| -------------- | ------------------------------------------------------ |
-| サービス       | `packages/shared/src/services/extraction/`             |
-| LLM抽出器      | `packages/shared/src/services/extraction/entity-extractor.ts` |
-| ルール抽出器   | `packages/shared/src/services/extraction/rule-based-extractor.ts` |
-| 型定義         | `packages/shared/src/services/extraction/types.ts`     |
-| プロンプト     | `packages/shared/src/services/extraction/prompts/`     |
-| テスト         | `packages/shared/src/services/extraction/__tests__/`   |
+| 種別         | パス                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| サービス     | `packages/shared/src/services/extraction/`                        |
+| LLM抽出器    | `packages/shared/src/services/extraction/entity-extractor.ts`     |
+| ルール抽出器 | `packages/shared/src/services/extraction/rule-based-extractor.ts` |
+| 型定義       | `packages/shared/src/services/extraction/types.ts`                |
+| プロンプト   | `packages/shared/src/services/extraction/prompts/`                |
+| テスト       | `packages/shared/src/services/extraction/__tests__/`              |
 
 ### 関連スキーマ
 
-| テーブル        | 役割                                | 参照                                 |
-| --------------- | ----------------------------------- | ------------------------------------ |
-| entities        | エンティティ本体（ノード）          | `db/schema/graph/entities.ts`        |
-| chunk_entities  | チャンクとエンティティの関連付け    | `db/schema/graph/chunk-entities.ts`  |
-| graph_relations | エンティティ間の関係（エッジ）      | `db/schema/graph/relations.ts`       |
+| テーブル        | 役割                             | 参照                                |
+| --------------- | -------------------------------- | ----------------------------------- |
+| entities        | エンティティ本体（ノード）       | `db/schema/graph/entities.ts`       |
+| chunk_entities  | チャンクとエンティティの関連付け | `db/schema/graph/chunk-entities.ts` |
+| graph_relations | エンティティ間の関係（エッジ）   | `db/schema/graph/relations.ts`      |
+
+### テスト品質
+
+- **224テストケース**（単体 + 統合 + E2E）
+- **97.1% Line Coverage**, **96.8% Quality Score**
+
+**詳細参照**: `docs/30-workflows/CONV-06-04-entity-extraction-ner/outputs/phase-12/implementation-guide.md`
 
 ---
 
@@ -588,55 +596,55 @@ GraphRAGにおいて、グラフ全体の構造を把握し、質問に対する
 
 **ICommunityDetector**: コミュニティ検出サービスの抽象インターフェース
 
-| メソッド                      | 説明                                 |
-| ----------------------------- | ------------------------------------ |
-| detect()                      | グラフからコミュニティを検出         |
-| saveResults()                 | 検出結果をDBに永続化                 |
-| getCommunitiesForEntity()     | エンティティの所属コミュニティ取得   |
-| getCommunitiesByLevel()       | レベル別コミュニティ取得             |
-| getCommunityMembers()         | コミュニティのメンバー取得           |
+| メソッド                  | 説明                               |
+| ------------------------- | ---------------------------------- |
+| detect()                  | グラフからコミュニティを検出       |
+| saveResults()             | 検出結果をDBに永続化               |
+| getCommunitiesForEntity() | エンティティの所属コミュニティ取得 |
+| getCommunitiesByLevel()   | レベル別コミュニティ取得           |
+| getCommunityMembers()     | コミュニティのメンバー取得         |
 
 **ICommunityRepository**: コミュニティ永続化の抽象インターフェース
 
-| メソッド                      | 説明                                 |
-| ----------------------------- | ------------------------------------ |
-| insert() / insertMany()       | コミュニティ挿入                     |
-| findById() / findByEntityId() | コミュニティ検索                     |
-| findByLevel()                 | レベル別検索                         |
-| deleteAll()                   | 全削除（再検出時）                   |
-| addEntityCommunityMapping()   | エンティティ-コミュニティマッピング  |
+| メソッド                      | 説明                                |
+| ----------------------------- | ----------------------------------- |
+| insert() / insertMany()       | コミュニティ挿入                    |
+| findById() / findByEntityId() | コミュニティ検索                    |
+| findByLevel()                 | レベル別検索                        |
+| deleteAll()                   | 全削除（再検出時）                  |
+| addEntityCommunityMapping()   | エンティティ-コミュニティマッピング |
 
 ### Community型
 
-| プロパティ         | 型            | 説明                           |
-| ------------------ | ------------- | ------------------------------ |
-| id                 | CommunityId   | コミュニティ一意識別子         |
-| level              | number        | 階層レベル（0が最下層）        |
-| memberEntityIds    | EntityId[]    | 直接メンバーエンティティID     |
-| parentCommunityId  | CommunityId?  | 親コミュニティID               |
-| childCommunityIds  | CommunityId[] | 子コミュニティID               |
-| size               | number        | コミュニティサイズ             |
-| modularity         | number        | モジュラリティ貢献             |
+| プロパティ        | 型            | 説明                       |
+| ----------------- | ------------- | -------------------------- |
+| id                | CommunityId   | コミュニティ一意識別子     |
+| level             | number        | 階層レベル（0が最下層）    |
+| memberEntityIds   | EntityId[]    | 直接メンバーエンティティID |
+| parentCommunityId | CommunityId?  | 親コミュニティID           |
+| childCommunityIds | CommunityId[] | 子コミュニティID           |
+| size              | number        | コミュニティサイズ         |
+| modularity        | number        | モジュラリティ貢献         |
 
 ### 検出オプション (CommunityDetectionOptions)
 
-| オプション         | デフォルト | 説明                           |
-| ------------------ | ---------- | ------------------------------ |
-| resolution         | 1.0        | 解像度（大→小コミュニティ多）  |
-| maxLevels          | 3          | 最大階層レベル数               |
-| minCommunitySize   | 2          | 最小コミュニティサイズ         |
-| maxIterations      | 100        | 最大イテレーション数           |
-| seed               | undefined  | 乱数シード（再現性用）         |
+| オプション       | デフォルト | 説明                          |
+| ---------------- | ---------- | ----------------------------- |
+| resolution       | 1.0        | 解像度（大→小コミュニティ多） |
+| maxLevels        | 3          | 最大階層レベル数              |
+| minCommunitySize | 2          | 最小コミュニティサイズ        |
+| maxIterations    | 100        | 最大イテレーション数          |
+| seed             | undefined  | 乱数シード（再現性用）        |
 
 ### 実装ファイル
 
-| 種別           | パス                                                         |
-| -------------- | ------------------------------------------------------------ |
-| アルゴリズム   | `packages/shared/src/services/graph/leiden-algorithm.ts`     |
-| サービス       | `packages/shared/src/services/graph/community-detector.ts`   |
-| インターフェース | `packages/shared/src/services/graph/interfaces/`            |
-| 型定義         | `packages/shared/src/services/graph/types.ts`                |
-| テスト         | `packages/shared/src/services/graph/__tests__/`              |
+| 種別             | パス                                                       |
+| ---------------- | ---------------------------------------------------------- |
+| アルゴリズム     | `packages/shared/src/services/graph/leiden-algorithm.ts`   |
+| サービス         | `packages/shared/src/services/graph/community-detector.ts` |
+| インターフェース | `packages/shared/src/services/graph/interfaces/`           |
+| 型定義           | `packages/shared/src/services/graph/types.ts`              |
+| テスト           | `packages/shared/src/services/graph/__tests__/`            |
 
 ### テスト品質
 
@@ -682,37 +690,37 @@ ISearchStrategyインターフェースを実装し、HybridRAGのTriple Search�
 
 ### 主要クラス
 
-| クラス                     | 責務                                 |
-| -------------------------- | ------------------------------------ |
-| VectorSearchStrategy       | ISearchStrategy実装、ベクトル検索    |
-| CachedVectorSearchStrategy | 埋め込みキャッシュ付きの検索         |
+| クラス                     | 責務                              |
+| -------------------------- | --------------------------------- |
+| VectorSearchStrategy       | ISearchStrategy実装、ベクトル検索 |
+| CachedVectorSearchStrategy | 埋め込みキャッシュ付きの検索      |
 
 ### ISearchStrategyインターフェース準拠
 
-| メソッド      | 戻り値                                | 説明                           |
-| ------------- | ------------------------------------- | ------------------------------ |
-| search()      | Promise<Result<SearchResultItem[], Error>> | ベクトル検索実行         |
-| getMetrics()  | StrategyMetric                        | 検索メトリクス取得             |
-| name          | "semantic"                            | 戦略名                         |
+| メソッド     | 戻り値                                     | 説明               |
+| ------------ | ------------------------------------------ | ------------------ |
+| search()     | Promise<Result<SearchResultItem[], Error>> | ベクトル検索実行   |
+| getMetrics() | StrategyMetric                             | 検索メトリクス取得 |
+| name         | "semantic"                                 | 戦略名             |
 
 ### フィルタ対応状況
 
-| フィルタ       | 状態   | 説明                           |
-| -------------- | ------ | ------------------------------ |
-| fileIds        | 実装済 | 特定ファイルに限定             |
-| minRelevance   | 実装済 | 最低類似度閾値                 |
-| limit          | 実装済 | 最大結果数（1-100）            |
-| dateRange      | 未実装 | 将来対応予定                   |
-| fileTypes      | 未実装 | 将来対応予定                   |
-| workspaceIds   | 未実装 | 将来対応予定                   |
+| フィルタ     | 状態   | 説明                |
+| ------------ | ------ | ------------------- |
+| fileIds      | 実装済 | 特定ファイルに限定  |
+| minRelevance | 実装済 | 最低類似度閾値      |
+| limit        | 実装済 | 最大結果数（1-100） |
+| dateRange    | 未実装 | 将来対応予定        |
+| fileTypes    | 未実装 | 将来対応予定        |
+| workspaceIds | 未実装 | 将来対応予定        |
 
 ### キャッシュ戦略
 
-| 設定項目       | デフォルト値 | 説明                           |
-| -------------- | ------------ | ------------------------------ |
-| TTL            | 5分          | キャッシュ有効期間             |
-| maxSize        | 1000エントリ | 最大キャッシュエントリ数       |
-| アルゴリズム   | LRU          | 最も使われていないものを削除   |
+| 設定項目     | デフォルト値 | 説明                         |
+| ------------ | ------------ | ---------------------------- |
+| TTL          | 5分          | キャッシュ有効期間           |
+| maxSize      | 1000エントリ | 最大キャッシュエントリ数     |
+| アルゴリズム | LRU          | 最も使われていないものを削除 |
 
 ### テスト品質
 
@@ -755,36 +763,36 @@ ICommunitySummarizer.searchSummaries()と連携し、関連するコミュニテ
 
 **IGraphRAGQueryService**: GraphRAGクエリサービスの抽象インターフェース
 
-| メソッド                      | 説明                                 |
-| ----------------------------- | ------------------------------------ |
-| query()                       | クエリ実行・回答生成                 |
+| メソッド | 説明                 |
+| -------- | -------------------- |
+| query()  | クエリ実行・回答生成 |
 
 **GraphRAGQueryOptions**: クエリオプション
 
-| オプション             | デフォルト | 説明                           |
-| ---------------------- | ---------- | ------------------------------ |
-| limit                  | 10         | 最大検索結果数（1-20）         |
-| communityLevel         | -          | コミュニティ階層レベル（0-5）  |
-| confidenceThreshold    | 0.5        | confidence閾値（0-1）          |
-| enableCommunitySummary | true       | コミュニティ要約検索を有効化   |
+| オプション             | デフォルト | 説明                          |
+| ---------------------- | ---------- | ----------------------------- |
+| limit                  | 10         | 最大検索結果数（1-20）        |
+| communityLevel         | -          | コミュニティ階層レベル（0-5） |
+| confidenceThreshold    | 0.5        | confidence閾値（0-1）         |
+| enableCommunitySummary | true       | コミュニティ要約検索を有効化  |
 
 ### 依存関係
 
-| 依存サービス         | 用途                                 |
-| -------------------- | ------------------------------------ |
-| IQueryClassifier     | クエリタイプ分類                     |
-| ICommunitySummarizer | コミュニティ要約検索                 |
-| IEmbeddingProvider   | 埋め込み生成                         |
-| ILLMProvider         | 回答テキスト生成                     |
+| 依存サービス         | 用途                 |
+| -------------------- | -------------------- |
+| IQueryClassifier     | クエリタイプ分類     |
+| ICommunitySummarizer | コミュニティ要約検索 |
+| IEmbeddingProvider   | 埋め込み生成         |
+| ILLMProvider         | 回答テキスト生成     |
 
 ### 実装ファイル
 
-| 種別           | パス                                                                 |
-| -------------- | -------------------------------------------------------------------- |
-| サービス       | `packages/shared/src/services/search/graphrag-query-service.ts`      |
-| 型定義         | `packages/shared/src/services/search/graphrag-query-service.ts`      |
-| テスト         | `packages/shared/src/services/search/__tests__/graphrag-query-service.test.ts` |
-| 統合テスト     | `packages/shared/src/services/search/__tests__/graphrag-query-service.integration.test.ts` |
+| 種別       | パス                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| サービス   | `packages/shared/src/services/search/graphrag-query-service.ts`                            |
+| 型定義     | `packages/shared/src/services/search/graphrag-query-service.ts`                            |
+| テスト     | `packages/shared/src/services/search/__tests__/graphrag-query-service.test.ts`             |
+| 統合テスト | `packages/shared/src/services/search/__tests__/graphrag-query-service.integration.test.ts` |
 
 ### テスト品質
 
@@ -919,11 +927,11 @@ HybridRAGは、複数の検索戦略を組み合わせて最適な検索結果�
 
 設定に基づいてHybridRAGEngineを生成するファクトリクラス。
 
-| メソッド           | 用途                              | 状態   |
-| ------------------ | --------------------------------- | ------ |
-| createFull()       | フル機能版（LLM分類、CRAG有効）   | 未実装 |
-| createLite()       | 軽量版（ルールベース、CRAG無効）  | 未実装 |
-| createForTesting() | テスト用（モック注入可能）        | 実装済 |
+| メソッド           | 用途                             | 状態   |
+| ------------------ | -------------------------------- | ------ |
+| createFull()       | フル機能版（LLM分類、CRAG有効）  | 未実装 |
+| createLite()       | 軽量版（ルールベース、CRAG無効） | 未実装 |
+| createForTesting() | テスト用（モック注入可能）       | 実装済 |
 
 **NOTE**: createFull()とcreateLite()は依存モジュール（LLMQueryClassifier, VectorSearchStrategy等）完成後に実装予定。
 

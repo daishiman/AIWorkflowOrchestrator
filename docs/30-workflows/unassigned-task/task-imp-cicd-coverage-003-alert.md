@@ -153,6 +153,7 @@ mainブランチのカバレッジが閾値を下回った場合、または低�
 #### 方法B: GitHub Actions設定
 
 ```yaml
+issue_number: 335
 # .github/workflows/coverage-alert.yml
 name: Coverage Alert
 
