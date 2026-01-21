@@ -7,6 +7,7 @@ description: |
   1. リモートmain同期・コンフリクト解消
   2. 品質検証（typecheck, lint, test）
   3. 差分分析・ブランチ作成・コミット
+  3.5. タスク仕様書 → Issue同期（未同期チェック）
   4. PR本文生成・PR作成
   5. 補足コメント投稿
   6. CI/CD完了確認
@@ -49,10 +50,11 @@ PRマージはユーザーがGitHub UIで手動実行します。
 2. **コンフリクト解消**（発生時）
 3. **品質検証**（typecheck, lint, test）
 4. 差分分析 → ブランチ作成・コミット
-5. PR本文を生成してPR作成
-6. PR作成後、追加の補足コメントを投稿
-7. CI/CDステータス確認
-8. CI完了後、ユーザーに「GitHub UIでマージ可能です」と報告
+5. **タスク仕様書 → Issue同期**（未同期仕様書をGitHub Issueに反映）
+6. PR本文を生成してPR作成
+7. PR作成後、追加の補足コメントを投稿
+8. CI/CDステータス確認
+9. CI完了後、ユーザーに「GitHub UIでマージ可能です」と報告
 
 ### ユーザーの役割
 
@@ -181,6 +183,31 @@ Conventional Commits タイプ:
 - `test` - テスト
 - `chore` - その他（依存関係更新等）
 - `ci` - CI/CD
+
+---
+
+### Phase 3.5: タスク仕様書 → Issue同期【推奨】
+
+**PR作成前に、未同期のタスク仕様書に対してGitHub Issueを作成する。**
+
+```bash
+# 未同期タスク仕様書を検出してIssue作成
+node ~/.claude/skills/github-issue-manager/scripts/sync_new_issues.js
+
+# 確認のみ（ドライラン）
+# node ~/.claude/skills/github-issue-manager/scripts/sync_new_issues.js --dry-run
+```
+
+**目的**:
+- `git merge`、`git stash pop`等でClaude Code Hookが発火しないケースに対応
+- PR作成前にタスク仕様書とGitHub Issueの整合性を確保
+
+**新規Issueが作成された場合**:
+```bash
+# Issue番号が仕様書に書き戻されるので、それもコミットに含める
+git add docs/30-workflows/unassigned-task/
+git commit --amend --no-edit
+```
 
 ---
 
@@ -387,6 +414,12 @@ git stash pop
 └─────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────┐
+│ Phase 3.5: タスク仕様書 → Issue同期【推奨】             │
+│   node sync_new_issues.js                               │
+│   ※未同期仕様書があればIssue作成                        │
+└─────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────┐
 │ Phase 4-5: PR作成・コメント追加                         │
 │   git push && gh pr create                              │
 │   gh pr comment                                         │
@@ -417,4 +450,5 @@ git stash pop
 
 | 日付 | 変更内容 |
 |------|----------|
+| 2026-01-21 | Phase 3.5（タスク仕様書→Issue同期）を追加。git merge/stash後の未同期仕様書に対応 |
 | 2026-01-14 | Phase 0（リモート同期）、Phase 1（品質検証）を追加。コミット前にmain同期とテスト実行を必須化 |

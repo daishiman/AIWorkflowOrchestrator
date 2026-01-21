@@ -18,6 +18,11 @@ import type { ChatMessage } from "../../types/chat-message.js";
 import type { LlmMetadata } from "../../types/llm-metadata.js";
 import { DateFormatter } from "./date-formatter.js";
 import { PREVIEW_MAX_LENGTH, PREVIEW_ELLIPSIS } from "./constants.js";
+import {
+  UnauthorizedError,
+  UNAUTHORIZED_ERROR_MESSAGE,
+  RESOURCE_TYPE,
+} from "./errors.js";
 
 /**
  * セッション作成オプション
@@ -83,13 +88,34 @@ export class ChatHistoryService {
   }
 
   /**
-   * IDでセッションを取得する
+   * IDでセッションを取得する（認可チェック付き）
    *
    * @param id セッションID
+   * @param requestUserId リクエストユーザーID
    * @returns セッション（存在しない場合はnull）
+   * @throws {UnauthorizedError} リクエストユーザーが所有者でない場合
    */
-  async getSession(id: string): Promise<ChatSession | null> {
-    return this.sessionRepository.findById(id);
+  async getSession(
+    id: string,
+    requestUserId: string,
+  ): Promise<ChatSession | null> {
+    const session = await this.sessionRepository.findById(id);
+
+    // セッションが存在しない場合はnullを返す（既存の挙動維持）
+    if (!session) {
+      return null;
+    }
+
+    // 所有者検証
+    if (session.userId !== requestUserId) {
+      throw new UnauthorizedError(
+        UNAUTHORIZED_ERROR_MESSAGE,
+        RESOURCE_TYPE.SESSION,
+        id,
+      );
+    }
+
+    return session;
   }
 
   /**
@@ -103,15 +129,20 @@ export class ChatHistoryService {
   }
 
   /**
-   * セッションを削除する（FR-003）
+   * セッションを削除する（FR-003）（認可チェック付き）
    *
    * ソフトデリート(論理削除)ではCASCADE DELETEが動作しないため、
    * メッセージを先に削除してからセッションを削除する。
    *
    * @param id セッションID
+   * @param requestUserId リクエストユーザーID
    * @returns 削除成功の場合true
+   * @throws {UnauthorizedError} リクエストユーザーが所有者でない場合
    */
-  async deleteSession(id: string): Promise<boolean> {
+  async deleteSession(id: string, requestUserId: string): Promise<boolean> {
+    // 認可チェック
+    await this.verifySessionOwnership(id, requestUserId);
+
     // セッションに関連するメッセージを全て削除
     const messages = await this.messageRepository.findBySessionId(id);
     for (const message of messages) {
@@ -123,13 +154,22 @@ export class ChatHistoryService {
   }
 
   /**
-   * セッションを更新する（FR-013, FR-014）
+   * セッションを更新する（FR-013, FR-014）（認可チェック付き）
    *
    * @param id セッションID
+   * @param requestUserId リクエストユーザーID
    * @param data 更新データ
    * @returns 更新成功の場合true
+   * @throws {UnauthorizedError} リクエストユーザーが所有者でない場合
    */
-  async updateSession(id: string, data: UpdateChatSession): Promise<boolean> {
+  async updateSession(
+    id: string,
+    requestUserId: string,
+    data: UpdateChatSession,
+  ): Promise<boolean> {
+    // 認可チェック
+    await this.verifySessionOwnership(id, requestUserId);
+
     return this.sessionRepository.update(id, {
       ...data,
       updatedAt: new Date().toISOString(),
@@ -219,17 +259,21 @@ export class ChatHistoryService {
   }
 
   /**
-   * セッションをMarkdown形式でエクスポートする（FR-010）
+   * セッションをMarkdown形式でエクスポートする（FR-010）（認可チェック付き）
    *
    * @param sessionId セッションID
+   * @param requestUserId リクエストユーザーID
    * @param options エクスポートオプション
    * @returns Markdown文字列
+   * @throws {UnauthorizedError} リクエストユーザーが所有者でない場合
    */
   async exportToMarkdown(
     sessionId: string,
+    requestUserId: string,
     options?: ExportOptions,
   ): Promise<string> {
-    const session = await this.validateSession(sessionId);
+    // 認可チェック付きのセッション検証
+    const session = await this.verifySessionOwnership(sessionId, requestUserId);
     const messages = await this.messageRepository.findBySessionId(sessionId);
     const includeMetadata = options?.includeMetadata ?? false;
 
@@ -245,17 +289,21 @@ export class ChatHistoryService {
   }
 
   /**
-   * セッションをJSON形式でエクスポートする（FR-011）
+   * セッションをJSON形式でエクスポートする（FR-011）（認可チェック付き）
    *
    * @param sessionId セッションID
+   * @param requestUserId リクエストユーザーID
    * @param options エクスポートオプション
    * @returns JSON文字列
+   * @throws {UnauthorizedError} リクエストユーザーが所有者でない場合
    */
   async exportToJson(
     sessionId: string,
+    requestUserId: string,
     _options?: ExportOptions,
   ): Promise<string> {
-    const session = await this.validateSession(sessionId);
+    // 認可チェック付きのセッション検証
+    const session = await this.verifySessionOwnership(sessionId, requestUserId);
     const messages = await this.messageRepository.findBySessionId(sessionId);
 
     const exportData = {
@@ -460,5 +508,47 @@ export class ChatHistoryService {
       }
       return total;
     }, 0);
+  }
+
+  /**
+   * セッションの所有者を検証する（認可チェック）
+   *
+   * セッションの存在確認と所有者検証を一括で行う。
+   * セキュリティ原則:
+   * - Fail-Secure: 検証失敗時は必ずエラーを投げる
+   * - 情報漏洩防止: セッションの存在有無を推測させないエラーメッセージ
+   *
+   * @param sessionId - 検証対象のセッションID
+   * @param requestUserId - リクエストを行ったユーザーのID
+   * @returns 検証済みのセッション
+   * @throws {UnauthorizedError} セッションが存在しない場合、または所有者でない場合
+   *
+   * @internal
+   */
+  private async verifySessionOwnership(
+    sessionId: string,
+    requestUserId: string,
+  ): Promise<ChatSession> {
+    const session = await this.sessionRepository.findById(sessionId);
+
+    // セッションが存在しない場合も同じエラーを返す（情報漏洩防止）
+    if (!session) {
+      throw new UnauthorizedError(
+        UNAUTHORIZED_ERROR_MESSAGE,
+        RESOURCE_TYPE.SESSION,
+        sessionId,
+      );
+    }
+
+    // 所有者検証
+    if (session.userId !== requestUserId) {
+      throw new UnauthorizedError(
+        UNAUTHORIZED_ERROR_MESSAGE,
+        RESOURCE_TYPE.SESSION,
+        sessionId,
+      );
+    }
+
+    return session;
   }
 }
