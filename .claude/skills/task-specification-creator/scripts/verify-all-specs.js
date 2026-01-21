@@ -210,7 +210,9 @@ function verifyStructure(phaseNum, content) {
   }
 
   // 完了条件がチェックリスト形式か確認
-  const completionSection = content.match(/##\s*完了条件[\s\S]*?(?=\n##|$)/);
+  const completionSection = content.match(
+    /##\s*完了条件[\s\S]*?(?=\n##(?!#)|$)/
+  );
   if (completionSection) {
     if (!completionSection[0].includes("- [ ]")) {
       issues.push({
@@ -243,7 +245,9 @@ function verifyQuality(phaseNum, content) {
   }
 
   // 完了条件の検証可能性チェック（簡易）
-  const completionSection = content.match(/##\s*完了条件[\s\S]*?(?=\n##|$)/);
+  const completionSection = content.match(
+    /##\s*完了条件[\s\S]*?(?=\n##(?!#)|$)/
+  );
   if (completionSection) {
     const badPatterns = [
       "十分に",
@@ -273,7 +277,7 @@ function verifyConsistency(phaseNum, content, workflowDir) {
   const dependencies = PHASE_DEPENDENCIES[phaseNum] || [];
 
   // 参照資料セクションの確認
-  const refSection = content.match(/##\s*参照資料[\s\S]*?(?=\n##|$)/);
+  const refSection = content.match(/##\s*参照資料[\s\S]*?(?=\n##(?!#)|$)/);
   if (refSection && dependencies.length > 0) {
     // 依存Phaseの成果物が参照されているか
     for (const depPhase of dependencies) {

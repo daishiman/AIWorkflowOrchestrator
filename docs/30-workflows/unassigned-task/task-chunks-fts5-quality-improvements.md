@@ -2,6 +2,12 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 294
+```
+
+## メタ情報
+
 | 項目         | 内容                                  |
 | ------------ | ------------------------------------- |
 | タスクID     | task-chunks-fts5-quality-improvements |

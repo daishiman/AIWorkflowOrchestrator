@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-17T03:30:37.325Z",
-  "totalKeywords": 702,
+  "generated": "2026-01-19T08:13:37.594Z",
+  "totalKeywords": 727,
   "keywords": {
     "API": [
       "api-core.md",
@@ -10,6 +10,7 @@
       "api-internal-embedding.md",
       "api-internal-search.md",
       "api-internal.md",
+      "architecture-patterns.md",
       "interfaces-agent-sdk.md",
       "interfaces-converter-implementations.md",
       "interfaces-rag-file-selection.md",
@@ -133,11 +134,13 @@
     ],
     "エンティティ抽出サービス": [
       "api-endpoints.md",
-      "architecture-rag.md"
+      "architecture-rag.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "NER": [
       "api-endpoints.md",
-      "architecture-rag.md"
+      "architecture-rag.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "チャンク検索": [
       "api-internal-chunk-search.md"
@@ -150,6 +153,7 @@
       "architecture-rag.md",
       "database-schema.md",
       "glossary.md",
+      "interfaces-rag-search.md",
       "interfaces-rag.md"
     ],
     "全文検索": [
@@ -239,7 +243,8 @@
       "interfaces-llm.md"
     ],
     "主要インターフェース": [
-      "api-internal-embedding.md"
+      "api-internal-embedding.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "エラーコード": [
       "api-internal-embedding.md",
@@ -305,6 +310,7 @@
       "interfaces-rag-chunk-embedding.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-entity-extraction.md",
       "interfaces-rag-file-selection.md",
       "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
@@ -437,6 +443,7 @@
     ],
     "統合": [
       "architecture-file-conversion.md",
+      "interfaces-agent-sdk.md",
       "technology-backend.md"
     ],
     "history": [
@@ -524,6 +531,27 @@
     "スキル管理サービス": [
       "architecture-patterns.md"
     ],
+    "Claude": [
+      "architecture-patterns.md",
+      "claude-code-agents.md",
+      "claude-code-commands.md",
+      "claude-code-overview.md",
+      "interfaces-agent-sdk.md"
+    ],
+    "Code": [
+      "architecture-patterns.md",
+      "claude-code-agents.md",
+      "claude-code-commands.md",
+      "claude-code-overview.md",
+      "interfaces-agent-sdk.md"
+    ],
+    "CLI": [
+      "architecture-patterns.md",
+      "interfaces-agent-sdk.md"
+    ],
+    "連携パターン": [
+      "architecture-patterns.md"
+    ],
     "Handler": [
       "architecture-patterns.md"
     ],
@@ -533,6 +561,13 @@
     "Pattern": [
       "architecture-patterns.md",
       "ui-ux-portal-patterns.md"
+    ],
+    "Renderer": [
+      "architecture-patterns.md"
+    ],
+    "Preload": [
+      "architecture-patterns.md",
+      "interfaces-agent-sdk.md"
     ],
     "Knowledge": [
       "architecture-rag.md",
@@ -555,6 +590,7 @@
       "interfaces-llm.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-entity-extraction.md",
       "interfaces-rag-graphrag-query.md"
     ],
     "実装": [
@@ -604,6 +640,13 @@
     "クエリサービス": [
       "architecture-rag.md",
       "interfaces-rag-graphrag-query.md"
+    ],
+    "HybridRAG": [
+      "architecture-rag.md",
+      "interfaces-rag-search.md"
+    ],
+    "統合パイプライン": [
+      "architecture-rag.md"
     ],
     "Agent": [
       "claude-code-agents-spec.md",
@@ -727,6 +770,7 @@
       "claude-code-agents-workflow.md",
       "database-implementation.md",
       "discord-bot.md",
+      "interfaces-rag-entity-extraction.md",
       "local-agent.md",
       "plugin-development.md",
       "ui-ux-history-panel.md",
@@ -736,17 +780,6 @@
       "claude-code-agents-workflow.md",
       "claude-code-commands.md",
       "claude-code-skills-process.md"
-    ],
-    "Claude": [
-      "claude-code-agents.md",
-      "claude-code-commands.md",
-      "claude-code-overview.md",
-      "interfaces-agent-sdk.md"
-    ],
-    "Code": [
-      "claude-code-agents.md",
-      "claude-code-commands.md",
-      "claude-code-overview.md"
     ],
     "層仕様書": [
       "claude-code-agents.md",
@@ -802,6 +835,7 @@
       "claude-code-overview.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
+      "interfaces-rag-entity-extraction.md",
       "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag-search.md",
@@ -880,6 +914,7 @@
       "interfaces-chat-history.md",
       "interfaces-converter.md",
       "interfaces-core.md",
+      "interfaces-rag-entity-extraction.md",
       "interfaces-workflow.md"
     ],
     "Skill": [
@@ -1328,6 +1363,12 @@
     "エラー分類": [
       "error-handling.md"
     ],
+    "認可エラー": [
+      "error-handling.md"
+    ],
+    "UnauthorizedError": [
+      "error-handling.md"
+    ],
     "リトライ戦略": [
       "error-handling.md"
     ],
@@ -1439,9 +1480,6 @@
     "ロックファイル更新": [
       "interfaces-agent-sdk.md"
     ],
-    "Preload": [
-      "interfaces-agent-sdk.md"
-    ],
     "window": [
       "interfaces-agent-sdk.md"
     ],
@@ -1462,10 +1500,12 @@
     ],
     "Zod": [
       "interfaces-agent-sdk.md",
+      "interfaces-rag-entity-extraction.md",
       "security-input-validation.md"
     ],
     "スキーマ": [
-      "interfaces-agent-sdk.md"
+      "interfaces-agent-sdk.md",
+      "interfaces-rag-entity-extraction.md"
     ],
     "設定定数": [
       "interfaces-agent-sdk.md"
@@ -1514,6 +1554,15 @@
     "POST": [
       "interfaces-agent-sdk.md"
     ],
+    "Session": [
+      "interfaces-agent-sdk.md"
+    ],
+    "Persistence": [
+      "interfaces-agent-sdk.md"
+    ],
+    "セッション永続化": [
+      "interfaces-agent-sdk.md"
+    ],
     "認証・プロフィール型定義": [
       "interfaces-auth.md"
     ],
@@ -1534,6 +1583,12 @@
       "interfaces-core.md"
     ],
     "サービスインターフェース": [
+      "interfaces-chat-history.md"
+    ],
+    "認可": [
+      "interfaces-chat-history.md"
+    ],
+    "Authorization": [
       "interfaces-chat-history.md"
     ],
     "ビジネスルール": [
@@ -1705,6 +1760,27 @@
     "コミュニティ要約インターフェース仕様": [
       "interfaces-rag-community-summarization.md"
     ],
+    "実装クラス": [
+      "interfaces-rag-entity-extraction.md"
+    ],
+    "エンティティタイプ": [
+      "interfaces-rag-entity-extraction.md"
+    ],
+    "種類・": [
+      "interfaces-rag-entity-extraction.md"
+    ],
+    "カテゴリ": [
+      "interfaces-rag-entity-extraction.md"
+    ],
+    "パフォーマンス特性": [
+      "interfaces-rag-entity-extraction.md"
+    ],
+    "テスト用ユーティリティ": [
+      "interfaces-rag-entity-extraction.md"
+    ],
+    "テスト品質": [
+      "interfaces-rag-entity-extraction.md"
+    ],
     "FileSelection": [
       "interfaces-rag-file-selection.md"
     ],
@@ -1745,6 +1821,12 @@
     "キーワード検索戦略": [
       "interfaces-rag-search.md"
     ],
+    "FTS": [
+      "interfaces-rag-search.md"
+    ],
+    "BM": [
+      "interfaces-rag-search.md"
+    ],
     "ベクトル検索戦略": [
       "interfaces-rag-search.md"
     ],
@@ -1752,6 +1834,18 @@
       "interfaces-rag-search.md"
     ],
     "GraphSearchStrategy": [
+      "interfaces-rag-search.md"
+    ],
+    "Corrective": [
+      "interfaces-rag-search.md"
+    ],
+    "CRAG": [
+      "interfaces-rag-search.md"
+    ],
+    "統合エンジン": [
+      "interfaces-rag-search.md"
+    ],
+    "HybridRAGFactory": [
       "interfaces-rag-search.md"
     ],
     "・ファイル選択": [
