@@ -425,6 +425,7 @@ GitHub ActionsでE2Eテストを自動実行する。
 1. GitHub Actionsワークフローを作成/更新:
 
    ```yaml
+   issue_number: 401
    # .github/workflows/e2e-tests.yml
    name: E2E Tests
 
