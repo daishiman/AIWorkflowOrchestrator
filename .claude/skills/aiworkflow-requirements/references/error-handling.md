@@ -68,6 +68,66 @@
 | ERR_5002 | NOT_IMPLEMENTED     | 未実装機能 |
 | ERR_5003 | CONFIGURATION_ERROR | 設定エラー |
 
+### 認可エラー（UnauthorizedError）
+
+OWASP A01:2021 Broken Access Control 対策として実装された認可エラー。
+
+**実装ファイル**: `packages/shared/src/features/chat-history/errors.ts`
+
+**クラス定義**:
+
+```typescript
+export const UNAUTHORIZED_ERROR_MESSAGE =
+  "Access denied: You do not have permission to access this resource" as const;
+
+export const RESOURCE_TYPE = {
+  SESSION: "session",
+} as const;
+
+export class UnauthorizedError extends Error {
+  public readonly name = "UnauthorizedError" as const;
+  public readonly code = "UNAUTHORIZED" as const;
+  public readonly statusCode = 403 as const;
+
+  constructor(
+    message: string = UNAUTHORIZED_ERROR_MESSAGE,
+    public readonly resourceType?: string,
+    public readonly resourceId?: string,
+  ) {
+    super(message);
+    Object.setPrototypeOf(this, UnauthorizedError.prototype);
+  }
+}
+
+export function isUnauthorizedError(error: unknown): error is UnauthorizedError {
+  return error instanceof UnauthorizedError;
+}
+```
+
+**セキュリティ原則**:
+
+| 原則         | 実装                                           |
+| ------------ | ---------------------------------------------- |
+| Fail-Secure  | 検証失敗時は必ずエラーをスロー                 |
+| 情報漏洩防止 | 存在しないリソースと認可失敗で同一メッセージ   |
+| 最小権限     | リソースへのアクセスは所有者のみ               |
+
+**使用例**:
+
+```typescript
+try {
+  const session = await chatHistoryService.getSession(sessionId, requestUserId);
+} catch (error) {
+  if (isUnauthorizedError(error)) {
+    // 認可エラー処理（HTTP 403）
+    return Response.json({ error: error.message }, { status: error.statusCode });
+  }
+  throw error;
+}
+```
+
+---
+
 ### RAG固有エラーコード
 
 RAGパイプライン実装で使用するエラーコード。
