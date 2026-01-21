@@ -64,7 +64,7 @@ Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`) を使用する場合、**im
   "name": "@repo/shared",
   "dependencies": {
     "zod": "^3.23.8",
-    "@anthropic-ai/claude-agent-sdk": "^0.2.5"  // 必須
+    "@anthropic-ai/claude-agent-sdk": "^0.2.5" // 必須
   }
 }
 ```
@@ -73,9 +73,9 @@ Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`) を使用する場合、**im
 
 pnpm の厳格モード（`node-linker=isolated`）では、`package.json` に宣言されていない依存へのアクセスがブロックされます。
 
-| シナリオ                             | 結果                         |
-| ------------------------------------ | ---------------------------- |
-| `apps/desktop` のみに SDK 依存を宣言 | テストPASS、ランタイムエラー |
+| シナリオ                              | 結果                         |
+| ------------------------------------- | ---------------------------- |
+| `apps/desktop` のみに SDK 依存を宣言  | テストPASS、ランタイムエラー |
 | `packages/shared` にも SDK 依存を宣言 | テストPASS、ランタイムPASS   |
 
 ### トラブルシューティング
@@ -557,13 +557,23 @@ Zustand Sliceパターンで実装された状態管理。
 
 ### IPC チャンネル（スキル管理）
 
-| チャンネル        | 方向            | 説明                     | 戻り値                 |
-| ----------------- | --------------- | ------------------------ | ---------------------- |
-| `skill:list`      | Renderer → Main | インポート済みスキル取得 | `APIResponse<Skill[]>` |
-| `skill:available` | Renderer → Main | 利用可能スキル取得       | `APIResponse<Skill[]>` |
-| `skill:import`    | Renderer → Main | スキルインポート         | `APIResponse<void>`    |
-| `skill:remove`    | Renderer → Main | スキル削除               | `APIResponse<void>`    |
-| `skill:detail`    | Renderer → Main | スキル詳細取得           | `APIResponse<Skill>`   |
+| チャンネル        | 方向            | 説明                     | 戻り値                            |
+| ----------------- | --------------- | ------------------------ | --------------------------------- |
+| `skill:list`      | Renderer → Main | インポート済みスキル取得 | `APIResponse<Skill[]>`            |
+| `skill:available` | Renderer → Main | 利用可能スキル取得       | `APIResponse<Skill[]>`            |
+| `skill:import`    | Renderer → Main | スキルインポート         | `APIResponse<void>`               |
+| `skill:remove`    | Renderer → Main | スキル削除               | `APIResponse<void>`               |
+| `skill:detail`    | Renderer → Main | スキル詳細取得           | `APIResponse<Skill>`              |
+| `skill:execute`   | Renderer → Main | スキル実行               | `OperationResult<SkillRunResult>` |
+
+#### skill:execute リクエスト形式
+
+```typescript
+interface SkillExecuteRequest {
+  skillId: string; // 実行するスキルのID
+  params?: Record<string, unknown>; // オプションパラメータ（将来拡張用）
+}
+```
 
 #### APIResponse型
 
@@ -572,6 +582,41 @@ interface APIResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
+}
+```
+
+#### OperationResult型
+
+スキル実行など、成功/失敗を明確に区別する操作結果型。
+
+```typescript
+type OperationResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: string };
+```
+
+#### SkillRunResult型
+
+スキル実行の結果を表す型。
+
+| プロパティ    | 型                      | 必須 | 説明                       |
+| ------------- | ----------------------- | ---- | -------------------------- |
+| `executionId` | `string`                | ✓    | 実行ID（UUID）             |
+| `status`      | `'success' \| 'failed'` | ✓    | 実行ステータス             |
+| `output`      | `string`                | -    | 実行出力（成功時）         |
+| `error`       | `string`                | -    | エラーメッセージ（失敗時） |
+| `startedAt`   | `Date`                  | ✓    | 実行開始時刻               |
+| `completedAt` | `Date`                  | ✓    | 実行完了時刻               |
+
+```typescript
+// packages/shared/src/types/skill.ts
+export interface SkillRunResult {
+  executionId: string;
+  status: "success" | "failed";
+  output?: string;
+  error?: string;
+  startedAt: Date;
+  completedAt: Date;
 }
 ```
 
@@ -620,6 +665,47 @@ interface APIResponse<T> {
 | `skillId`  | `string` | ✓    | スキルID |
 
 **戻り値**: `Promise<APIResponse<Skill>>`
+
+#### execute
+
+スキルを実行する。
+
+| パラメータ | 型                        | 必須 | 説明                               |
+| ---------- | ------------------------- | ---- | ---------------------------------- |
+| `skillId`  | `string`                  | ✓    | 実行するスキルのID                 |
+| `params`   | `Record<string, unknown>` | -    | オプションパラメータ（将来拡張用） |
+
+**戻り値**: `Promise<OperationResult<SkillRunResult>>`
+
+**エラーケース**:
+
+| エラーメッセージ                   | 原因                           |
+| ---------------------------------- | ------------------------------ |
+| `skillId must be a string`         | skillIdが文字列でない/空文字   |
+| `スキルが見つかりません`           | 指定されたskillIdが存在しない  |
+| `スキルがインポートされていません` | スキルがインポートされていない |
+
+**使用例**:
+
+```typescript
+const result = await skillAPI.execute("skill-id-123");
+if (result.success) {
+  console.log("実行完了:", result.data.output);
+} else {
+  console.error("実行失敗:", result.error);
+}
+```
+
+**実装ファイル**:
+
+- Preload API: `apps/desktop/src/renderer/preload/index.ts`
+- IPC Handler: `apps/desktop/src/main/ipc/skillHandlers.ts`
+- Service: `apps/desktop/src/main/services/skill/SkillService.ts`
+
+**セキュリティ**:
+
+- IPCハンドラーで `validateIpcSender` によるsender検証を実施
+- skillIdの入力バリデーション（空文字・非文字列のチェック）
 
 ---
 
@@ -807,23 +893,23 @@ interface ChangeContext {
 
 ### 実装状態
 
-| コンポーネント | 状態   | 備考                                                  |
-| -------------- | ------ | ----------------------------------------------------- |
-| ModifierSkill  | 完了   | Claude Agent SDK統合済み（実SDK呼び出し）             |
-| AgentClient    | 完了   | Anthropic SDK直接呼び出し（@anthropic-ai/sdk使用）    |
-| SkillExecutor  | 完了   | スキルフェーズマッピング・進捗コールバック・キャンセル |
-| SyncManager    | 完了   | 双方向同期ロジック実装済み                            |
-| FileWatcher    | 完了   | chokidarベース監視実装済み                            |
+| コンポーネント | 状態 | 備考                                                   |
+| -------------- | ---- | ------------------------------------------------------ |
+| ModifierSkill  | 完了 | Claude Agent SDK統合済み（実SDK呼び出し）              |
+| AgentClient    | 完了 | Anthropic SDK直接呼び出し（@anthropic-ai/sdk使用）     |
+| SkillExecutor  | 完了 | スキルフェーズマッピング・進捗コールバック・キャンセル |
+| SyncManager    | 完了 | 双方向同期ロジック実装済み                             |
+| FileWatcher    | 完了 | chokidarベース監視実装済み                             |
 
 #### SDK統合詳細（2026-01-17更新）
 
-| 項目               | 内容                       |
-| ------------------ | -------------------------- |
-| Model              | claude-sonnet-4-20250514   |
-| Max Tokens         | 8192                       |
-| Timeout            | 30000ms                    |
-| APIキー管理        | Electron safeStorage暗号化 |
-| 環境変数フォールバック | ANTHROPIC_API_KEY（開発用）|
+| 項目                   | 内容                        |
+| ---------------------- | --------------------------- |
+| Model                  | claude-sonnet-4-20250514    |
+| Max Tokens             | 8192                        |
+| Timeout                | 30000ms                     |
+| APIキー管理            | Electron safeStorage暗号化  |
+| 環境変数フォールバック | ANTHROPIC_API_KEY（開発用） |
 
 #### スキルフェーズマッピング
 
@@ -1045,34 +1131,34 @@ AGENT-006で追加されたプレビュー環境用の状態管理。
 
 #### Preview State型
 
-| プロパティ          | 型                      | 説明               |
-| ------------------- | ----------------------- | ------------------ |
-| `previewContent`    | `PreviewContent \| null` | プレビューコンテンツ |
-| `selectedEnvironment` | `EnvironmentType`      | 選択中の環境       |
-| `splitRatio`        | `number`                | 分割比率 (0-100)   |
+| プロパティ            | 型                       | 説明                 |
+| --------------------- | ------------------------ | -------------------- |
+| `previewContent`      | `PreviewContent \| null` | プレビューコンテンツ |
+| `selectedEnvironment` | `EnvironmentType`        | 選択中の環境         |
+| `splitRatio`          | `number`                 | 分割比率 (0-100)     |
 
 #### Preview Actions
 
-| アクション              | 引数                             | 説明               |
-| ----------------------- | -------------------------------- | ------------------ |
-| `setPreviewContent`     | `content: PreviewContent \| null` | コンテンツ設定     |
-| `setSelectedEnvironment` | `type: EnvironmentType`         | 環境タイプ設定     |
-| `setSplitRatio`         | `ratio: number`                  | 分割比率設定       |
-| `clearPreview`          | -                                | プレビュークリア   |
+| アクション               | 引数                              | 説明             |
+| ------------------------ | --------------------------------- | ---------------- |
+| `setPreviewContent`      | `content: PreviewContent \| null` | コンテンツ設定   |
+| `setSelectedEnvironment` | `type: EnvironmentType`           | 環境タイプ設定   |
+| `setSplitRatio`          | `ratio: number`                   | 分割比率設定     |
+| `clearPreview`           | -                                 | プレビュークリア |
 
 #### EnvironmentType
 
 ```typescript
-type EnvironmentType = 'none' | 'html' | 'markdown' | 'terminal' | 'code';
+type EnvironmentType = "none" | "html" | "markdown" | "terminal" | "code";
 ```
 
-| 値         | 説明                           | 実装状態 |
-| ---------- | ------------------------------ | -------- |
-| `none`     | プレビューなし（デフォルト）   | ✅       |
-| `html`     | HTMLプレビュー                 | ✅       |
-| `markdown` | Markdownプレビュー             | ✅       |
-| `terminal` | ターミナル（将来実装）         | 未実装   |
-| `code`     | コード実行環境（将来実装）     | 未実装   |
+| 値         | 説明                         | 実装状態 |
+| ---------- | ---------------------------- | -------- |
+| `none`     | プレビューなし（デフォルト） | ✅       |
+| `html`     | HTMLプレビュー               | ✅       |
+| `markdown` | Markdownプレビュー           | ✅       |
+| `terminal` | ターミナル（将来実装）       | 未実装   |
+| `code`     | コード実行環境（将来実装）   | 未実装   |
 
 #### PreviewContent
 
@@ -1086,10 +1172,10 @@ interface PreviewContent {
 
 #### 関連ドキュメント（Preview State）
 
-| ドキュメント   | パス                                                             |
-| -------------- | ---------------------------------------------------------------- |
-| 実装ガイド     | `docs/30-workflows/custom-environment-ui/outputs/phase-12/implementation-guide.md` |
-| APIドキュメント | `docs/30-workflows/custom-environment-ui/outputs/phase-12/api-documentation.md` |
+| ドキュメント    | パス                                                                               |
+| --------------- | ---------------------------------------------------------------------------------- |
+| 実装ガイド      | `docs/30-workflows/custom-environment-ui/outputs/phase-12/implementation-guide.md` |
+| APIドキュメント | `docs/30-workflows/custom-environment-ui/outputs/phase-12/api-documentation.md`    |
 
 ---
 
@@ -1344,12 +1430,12 @@ AgentSDKPageのPostrelease Testing実装。Phase 4-12のTDDワークフローで
 
 ### 実装ファイル
 
-| ファイル | 説明 |
-| -------- | ---- |
-| `apps/desktop/src/renderer/pages/AgentSDKPage/index.tsx` | メインページコンポーネント |
-| `apps/desktop/src/renderer/pages/AgentSDKPage/AgentSDKPage.test.tsx` | ユニットテスト |
-| `apps/desktop/src/preload/agentSDKApi.ts` | Preload API定義 |
-| `apps/desktop/src/preload/index.ts` | contextBridge統合 |
+| ファイル                                                             | 説明                       |
+| -------------------------------------------------------------------- | -------------------------- |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/index.tsx`             | メインページコンポーネント |
+| `apps/desktop/src/renderer/pages/AgentSDKPage/AgentSDKPage.test.tsx` | ユニットテスト             |
+| `apps/desktop/src/preload/agentSDKApi.ts`                            | Preload API定義            |
+| `apps/desktop/src/preload/index.ts`                                  | contextBridge統合          |
 
 ---
 
@@ -1404,41 +1490,41 @@ interface AgentSDKAPI {
 
 #### AgentSDKStatus
 
-| プロパティ      | 型         | 説明               |
-| --------------- | ---------- | ------------------ |
-| `authenticated` | `boolean`  | 認証状態           |
-| `version`       | `string`   | SDKバージョン      |
-| `features`      | `string[]` | 有効な機能一覧     |
+| プロパティ      | 型         | 説明           |
+| --------------- | ---------- | -------------- |
+| `authenticated` | `boolean`  | 認証状態       |
+| `version`       | `string`   | SDKバージョン  |
+| `features`      | `string[]` | 有効な機能一覧 |
 
 #### AgentSDKMessage
 
-| プロパティ  | 型                                                    | 説明             |
-| ----------- | ----------------------------------------------------- | ---------------- |
+| プロパティ  | 型                                                          | 説明           |
+| ----------- | ----------------------------------------------------------- | -------------- |
 | `type`      | `'text' \| 'tool_use' \| 'tool_result' \| 'error' \| 'end'` | メッセージ種別 |
-| `content`   | `string?`                                             | テキスト内容     |
-| `toolName`  | `string?`                                             | ツール名         |
-| `toolInput` | `Record<string, unknown>?`                            | ツール入力       |
+| `content`   | `string?`                                                   | テキスト内容   |
+| `toolName`  | `string?`                                                   | ツール名       |
+| `toolInput` | `Record<string, unknown>?`                                  | ツール入力     |
 
 ---
 
 ### data-testid 一覧
 
-| data-testid               | 要素   | 用途                     |
-| ------------------------- | ------ | ------------------------ |
-| `agent-status`            | div    | SDK状態表示              |
-| `new-session-button`      | button | セッション作成           |
-| `session-id`              | div    | セッションID表示         |
-| `session-${id}`           | button | セッションリスト項目     |
-| `prompt-input`            | input  | プロンプト入力           |
-| `send-button`             | button | 送信ボタン               |
-| `abort-button`            | button | 中断ボタン               |
-| `response-area`           | div    | 応答表示エリア           |
-| `response-chunk`          | span   | ストリーミングチャンク   |
-| `execution-status`        | div    | 実行状態                 |
-| `permission-dialog`       | div    | 権限確認ダイアログ       |
-| `permission-tool-name`    | div    | ツール名表示             |
-| `permission-allow`        | button | 許可ボタン               |
-| `permission-deny`         | button | 拒否ボタン               |
+| data-testid            | 要素   | 用途                   |
+| ---------------------- | ------ | ---------------------- |
+| `agent-status`         | div    | SDK状態表示            |
+| `new-session-button`   | button | セッション作成         |
+| `session-id`           | div    | セッションID表示       |
+| `session-${id}`        | button | セッションリスト項目   |
+| `prompt-input`         | input  | プロンプト入力         |
+| `send-button`          | button | 送信ボタン             |
+| `abort-button`         | button | 中断ボタン             |
+| `response-area`        | div    | 応答表示エリア         |
+| `response-chunk`       | span   | ストリーミングチャンク |
+| `execution-status`     | div    | 実行状態               |
+| `permission-dialog`    | div    | 権限確認ダイアログ     |
+| `permission-tool-name` | div    | ツール名表示           |
+| `permission-allow`     | button | 許可ボタン             |
+| `permission-deny`      | button | 拒否ボタン             |
 
 ---
 
@@ -1446,33 +1532,33 @@ interface AgentSDKAPI {
 
 #### テスト結果（Phase 10）
 
-| カテゴリ | 件数 | パス | 成功率 |
-| -------- | ---- | ---- | ------ |
-| ユニットテスト | 12 | 12 | 100% |
-| 統合テスト | 6 | 6 | 100% |
-| E2Eテスト | 8 | 8 | 100% |
-| **合計** | **26** | **26** | **100%** |
+| カテゴリ       | 件数   | パス   | 成功率   |
+| -------------- | ------ | ------ | -------- |
+| ユニットテスト | 12     | 12     | 100%     |
+| 統合テスト     | 6      | 6      | 100%     |
+| E2Eテスト      | 8      | 8      | 100%     |
+| **合計**       | **26** | **26** | **100%** |
 
 #### テストカテゴリ
 
-| カテゴリ | 検証内容 |
-| -------- | -------- |
-| 初期表示 | SDK状態取得、UI描画 |
-| セッション管理 | 作成・再開・破棄・切り替え |
-| クエリ実行 | 送信・ストリーミング・完了 |
-| 中断処理 | 実行中断・状態復帰 |
-| 権限確認 | ダイアログ表示・許可・拒否 |
-| エラーハンドリング | 接続エラー・タイムアウト |
+| カテゴリ           | 検証内容                   |
+| ------------------ | -------------------------- |
+| 初期表示           | SDK状態取得、UI描画        |
+| セッション管理     | 作成・再開・破棄・切り替え |
+| クエリ実行         | 送信・ストリーミング・完了 |
+| 中断処理           | 実行中断・状態復帰         |
+| 権限確認           | ダイアログ表示・許可・拒否 |
+| エラーハンドリング | 接続エラー・タイムアウト   |
 
 ---
 
 ### 関連ドキュメント（AgentSDKPage Postrelease Testing）
 
-| ドキュメント           | パス                                                                    |
-| ---------------------- | ----------------------------------------------------------------------- |
-| 実装ガイド             | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md` |
-| 手動テスト結果         | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-11/manual-test-result.md` |
-| レビュー結果           | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-10/final-review-result.md` |
+| ドキュメント   | パス                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------ |
+| 実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md` |
+| 手動テスト結果 | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-11/manual-test-result.md`   |
+| レビュー結果   | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-10/final-review-result.md`  |
 
 ---
 
@@ -1532,17 +1618,17 @@ SM: SessionManager  SS: SkillScanner  PM: ProcessManager
 
 ### IPC チャンネル（Claude CLI）
 
-| チャンネル                       | 方向            | 説明                   |
-| -------------------------------- | --------------- | ---------------------- |
-| `claude-cli:check-installation`  | Renderer → Main | CLI存在確認            |
-| `claude-cli:list-skills`         | Renderer → Main | スキル一覧取得         |
-| `claude-cli:get-skill-detail`    | Renderer → Main | スキル詳細取得         |
-| `claude-cli:execute-script`      | Renderer → Main | スクリプト実行         |
-| `claude-cli:terminate-session`   | Renderer → Main | セッション終了         |
-| `claude-cli:list-sessions`       | Renderer → Main | セッション一覧取得     |
-| `claude-cli:get-session`         | Renderer → Main | セッション詳細取得     |
-| `claude-cli:session-output`      | Main → Renderer | ストリーミング出力     |
-| `claude-cli:session-status`      | Main → Renderer | セッション状態変更通知 |
+| チャンネル                      | 方向            | 説明                   |
+| ------------------------------- | --------------- | ---------------------- |
+| `claude-cli:check-installation` | Renderer → Main | CLI存在確認            |
+| `claude-cli:list-skills`        | Renderer → Main | スキル一覧取得         |
+| `claude-cli:get-skill-detail`   | Renderer → Main | スキル詳細取得         |
+| `claude-cli:execute-script`     | Renderer → Main | スクリプト実行         |
+| `claude-cli:terminate-session`  | Renderer → Main | セッション終了         |
+| `claude-cli:list-sessions`      | Renderer → Main | セッション一覧取得     |
+| `claude-cli:get-session`        | Renderer → Main | セッション詳細取得     |
+| `claude-cli:session-output`     | Main → Renderer | ストリーミング出力     |
+| `claude-cli:session-status`     | Main → Renderer | セッション状態変更通知 |
 
 ### 型定義（Claude CLI）
 
@@ -1580,21 +1666,21 @@ type ClaudeCliResult<T> =
 
 ### 設定定数（Claude CLI）
 
-| 定数                | 値      | 説明                        |
-| ------------------- | ------- | --------------------------- |
-| `MAX_SESSIONS`      | `10`    | 最大同時セッション数        |
-| `DEFAULT_TIMEOUT`   | `30分`  | デフォルトタイムアウト      |
-| `OUTPUT_BUFFER_MAX` | `100MB` | 出力バッファ最大サイズ      |
+| 定数                | 値      | 説明                   |
+| ------------------- | ------- | ---------------------- |
+| `MAX_SESSIONS`      | `10`    | 最大同時セッション数   |
+| `DEFAULT_TIMEOUT`   | `30分`  | デフォルトタイムアウト |
+| `OUTPUT_BUFFER_MAX` | `100MB` | 出力バッファ最大サイズ |
 
 ### 関連ドキュメント（Claude CLI統合）
 
-| ドキュメント   | パス                                                                            |
-| -------------- | ------------------------------------------------------------------------------- |
-| 実装ガイド     | `docs/30-workflows/claude-code-cli-integration/outputs/phase-12/implementation-guide.md` |
+| ドキュメント   | パス                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| 実装ガイド     | `docs/30-workflows/claude-code-cli-integration/outputs/phase-12/implementation-guide.md`   |
 | 要件定義       | `docs/30-workflows/claude-code-cli-integration/outputs/phase-1/requirements-definition.md` |
-| アーキテクチャ | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/architecture-design.md` |
-| IPC API仕様    | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/ipc-api-specification.md` |
-| セキュリティ   | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/security-design.md` |
+| アーキテクチャ | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/architecture-design.md`     |
+| IPC API仕様    | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/ipc-api-specification.md`   |
+| セキュリティ   | `docs/30-workflows/claude-code-cli-integration/outputs/phase-2/security-design.md`         |
 
 ---
 
@@ -1604,11 +1690,11 @@ Agent SDKのセッション履歴をelectron-storeを使用してローカルに
 
 ### 実装ファイル
 
-| ファイル                            | パス                                                | 説明                       |
-| ----------------------------------- | --------------------------------------------------- | -------------------------- |
-| SessionStorage.ts                   | `apps/desktop/src/main/services/session/`           | electron-storeラッパー     |
-| SessionPersistenceService.ts        | `apps/desktop/src/main/services/session/`           | ビジネスロジック           |
-| session-persistence-handler.ts      | `apps/desktop/src/main/ipc/`                        | IPCハンドラー              |
+| ファイル                       | パス                                      | 説明                   |
+| ------------------------------ | ----------------------------------------- | ---------------------- |
+| SessionStorage.ts              | `apps/desktop/src/main/services/session/` | electron-storeラッパー |
+| SessionPersistenceService.ts   | `apps/desktop/src/main/services/session/` | ビジネスロジック       |
+| session-persistence-handler.ts | `apps/desktop/src/main/ipc/`              | IPCハンドラー          |
 
 ---
 
@@ -1686,19 +1772,19 @@ interface PersistedSession {
 
 永続化されたメッセージ情報。
 
-| プロパティ  | 型                          | 必須 | 説明           |
-| ----------- | --------------------------- | ---- | -------------- |
-| `id`        | `string`                    | ✓    | UUID           |
-| `sessionId` | `string`                    | ✓    | 所属セッションID |
-| `role`      | `'user' \| 'assistant'`     | ✓    | メッセージ種別 |
-| `content`   | `string`                    | ✓    | メッセージ内容 |
-| `timestamp` | `number`                    | ✓    | タイムスタンプ |
+| プロパティ  | 型                      | 必須 | 説明             |
+| ----------- | ----------------------- | ---- | ---------------- |
+| `id`        | `string`                | ✓    | UUID             |
+| `sessionId` | `string`                | ✓    | 所属セッションID |
+| `role`      | `'user' \| 'assistant'` | ✓    | メッセージ種別   |
+| `content`   | `string`                | ✓    | メッセージ内容   |
+| `timestamp` | `number`                | ✓    | タイムスタンプ   |
 
 ```typescript
 interface PersistedMessage {
   id: string;
   sessionId: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: number;
 }
@@ -1731,14 +1817,14 @@ LRU削除の結果。
 
 永続化設定。
 
-| プロパティ             | 型        | デフォルト | 説明                     |
-| ---------------------- | --------- | ---------- | ------------------------ |
-| `maxSessions`          | `number`  | `100`      | 最大セッション数         |
-| `maxStorageSize`       | `number`  | `50MB`     | 最大ストレージサイズ     |
-| `maxMessagesPerSession`| `number`  | `1000`     | セッションあたり最大メッセージ |
-| `enableAutoBackup`     | `boolean` | `true`     | 自動バックアップ         |
-| `backupRetentionCount` | `number`  | `3`        | バックアップ保持数       |
-| `lruWarningThreshold`  | `number`  | `0.9`      | LRU警告閾値              |
+| プロパティ              | 型        | デフォルト | 説明                           |
+| ----------------------- | --------- | ---------- | ------------------------------ |
+| `maxSessions`           | `number`  | `100`      | 最大セッション数               |
+| `maxStorageSize`        | `number`  | `50MB`     | 最大ストレージサイズ           |
+| `maxMessagesPerSession` | `number`  | `1000`     | セッションあたり最大メッセージ |
+| `enableAutoBackup`      | `boolean` | `true`     | 自動バックアップ               |
+| `backupRetentionCount`  | `number`  | `3`        | バックアップ保持数             |
+| `lruWarningThreshold`   | `number`  | `0.9`      | LRU警告閾値                    |
 
 #### IPCResponse<T>
 
@@ -1754,8 +1840,8 @@ type IPCResponse<T> =
 
 ### IPC チャンネル（Session Persistence）
 
-| チャンネル                     | 方向            | 説明               | レスポンス                     |
-| ------------------------------ | --------------- | ------------------ | ------------------------------ |
+| チャンネル                     | 方向            | 説明               | レスポンス                        |
+| ------------------------------ | --------------- | ------------------ | --------------------------------- |
 | `session:persist:load`         | Renderer → Main | セッション一覧取得 | `IPCResponse<PersistedSession[]>` |
 | `session:persist:save`         | Renderer → Main | セッション保存     | `IPCResponse<PersistedSession>`   |
 | `session:persist:delete`       | Renderer → Main | セッション削除     | `IPCResponse<void>`               |
@@ -1784,11 +1870,11 @@ type IPCResponse<T> =
 
 #### 保存場所
 
-| OS      | パス                                                          |
-| ------- | ------------------------------------------------------------- |
+| OS      | パス                                                                       |
+| ------- | -------------------------------------------------------------------------- |
 | macOS   | `~/Library/Application Support/AIWorkflowOrchestrator/agent-sessions.json` |
-| Windows | `%APPDATA%/AIWorkflowOrchestrator/agent-sessions.json`        |
-| Linux   | `~/.config/AIWorkflowOrchestrator/agent-sessions.json`        |
+| Windows | `%APPDATA%/AIWorkflowOrchestrator/agent-sessions.json`                     |
+| Linux   | `~/.config/AIWorkflowOrchestrator/agent-sessions.json`                     |
 
 #### ファイル構造
 
@@ -1808,24 +1894,25 @@ type IPCResponse<T> =
 
 ### 関連ドキュメント（Session Persistence）
 
-| ドキュメント   | パス                                                                                       |
-| -------------- | ------------------------------------------------------------------------------------------ |
-| 実装ガイド     | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md` |
-| 設計仕様       | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-2/`                        |
-| テスト仕様     | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-4/test-plan.md`            |
+| ドキュメント | パス                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| 実装ガイド   | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md` |
+| 設計仕様     | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-2/`                         |
+| テスト仕様   | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-4/test-plan.md`             |
 
 ---
 
 ## 関連ドキュメント
 
-| ドキュメント                           | パス                                                                                        |
-| -------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Agent SDK実装ガイド                    | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`          |
-| Agent SDK APIリファレンス              | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                 |
-| Claude Agent SDKスキル                 | `.claude/skills/claude-agent-sdk/SKILL.md`                                                  |
-| LLMインターフェース                    | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                       |
-| Agent Dashboard実装ガイド              | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`     |
-| スキル管理UI実装ガイド（AGENT-002）    | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`            |
-| スキル管理UIテストドキュメント         | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                       |
-| AgentSDKPage Postrelease実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`        |
-| Session Persistence実装ガイド          | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`  |
+| ドキュメント                        | パス                                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| Agent SDK実装ガイド                 | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`          |
+| Agent SDK APIリファレンス           | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                 |
+| Claude Agent SDKスキル              | `.claude/skills/claude-agent-sdk/SKILL.md`                                                  |
+| LLMインターフェース                 | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                       |
+| Agent Dashboard実装ガイド           | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`     |
+| スキル管理UI実装ガイド（AGENT-002） | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`            |
+| スキル管理UIテストドキュメント      | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                       |
+| スキル実行機能実装ガイド            | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md` |
+| AgentSDKPage Postrelease実装ガイド  | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`        |
+| Session Persistence実装ガイド       | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`  |
