@@ -86,12 +86,12 @@ jobs:
       - name: Run typecheck
         run: pnpm typecheck
 
-  test:
-    name: Test
+  test-shared:
+    name: Test (shared)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     env:
-      NODE_OPTIONS: --max-old-space-size=8192
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -117,8 +117,40 @@ jobs:
       - name: Run shared package tests
         run: pnpm --filter @repo/shared test:run
 
-      - name: Run desktop app tests
-        run: pnpm --filter @repo/desktop test:run
+  test-desktop:
+    name: Test (desktop)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Configure git to use HTTPS instead of SSH
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @repo/shared build
+
+      - name: Run desktop app tests (shard ${{ matrix.shard }}/2)
+        run: pnpm --filter @repo/desktop test:run -- --shard=${{ matrix.shard }}/2
 
   security:
     name: Security Audit
@@ -152,11 +184,11 @@ jobs:
   coverage:
     name: Coverage Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: [test]
+    timeout-minutes: 20
+    needs: [test-shared, test-desktop]
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     env:
-      NODE_OPTIONS: --max-old-space-size=8192
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -196,7 +228,7 @@ jobs:
     name: Build Check
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [lint, typecheck, test]
+    needs: [lint, typecheck, test-shared, test-desktop]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
