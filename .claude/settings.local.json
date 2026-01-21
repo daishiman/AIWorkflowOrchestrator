@@ -124,6 +124,11 @@
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/dangerous-command-check.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/pre-delete-spec.sh",
+            "timeout": 10
           }
         ]
       }
@@ -140,17 +145,32 @@
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-lint.sh",
-            "timeout": 30
+            "timeout": 45
           },
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/type-check.sh",
-            "timeout": 60
+            "timeout": 90
           },
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-test.sh",
-            "timeout": 120
+            "timeout": 180
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-create-issue.sh",
+            "timeout": 60
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/post-delete-spec.sh",
+            "timeout": 60
           }
         ]
       },

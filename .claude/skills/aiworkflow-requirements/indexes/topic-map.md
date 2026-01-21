@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-17
+> 自動生成: 2026-01-19
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -141,13 +141,14 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| Knowledge Graph型定義（RAG実装） | L8 |
 | DiskANNベクトル検索アーキテクチャ | L158 |
-| オフライン・同期アーキテクチャ | L247 |
-| Desktop状態管理 | L278 |
-| クエリ分類器 | L415 |
-| エンティティ抽出サービス (NER) | L459 |
-| コミュニティ検出サービス (Leiden Algorithm) | L533 |
-| VectorSearchStrategy（セマンティック検索） | L650 |
-| GraphRAGクエリサービス | L726 |
+| オフライン・同期アーキテクチャ | L248 |
+| Desktop状態管理 | L279 |
+| クエリ分類器 | L416 |
+| エンティティ抽出サービス (NER) | L460 |
+| コミュニティ検出サービス (Leiden Algorithm) | L541 |
+| VectorSearchStrategy（セマンティック検索） | L658 |
+| GraphRAGクエリサービス | L734 |
+| HybridRAG統合パイプライン | L806 |
 
 ---
 
@@ -183,11 +184,11 @@ node scripts/list-specs.mjs --topics
 | ドメインエンティティ型定義 | L68 |
 | Repositoryインターフェース | L115 |
 | サービスインターフェース | L148 |
-| ビジネスルール | L171 |
-| エクスポート形式 | L192 |
-| User | L203 |
-| Assistant | L207 |
-| 品質メトリクス | L244 |
+| 認可（Authorization） | L175 |
+| ビジネスルール | L228 |
+| エクスポート形式 | L250 |
+| User | L261 |
+| Assistant | L265 |
 
 ### references/interfaces-converter-extension.md
 
@@ -283,6 +284,20 @@ node scripts/list-specs.mjs --topics
 | 関連ドキュメント | L297 |
 | 変更履歴 | L308 |
 
+### references/interfaces-rag-entity-extraction.md
+
+| セクション | 行 |
+|------------|----|\n| 主要インターフェース | L16 |
+| 実装クラス | L66 |
+| 型定義（Zodスキーマ） | L116 |
+| エンティティタイプ（52種類・10カテゴリ） | L170 |
+| エラーハンドリング | L187 |
+| パフォーマンス特性 | L221 |
+| テスト用ユーティリティ | L250 |
+| テスト品質 | L275 |
+| 変更履歴 | L285 |
+| 関連ドキュメント | L293 |
+
 ### references/interfaces-rag-file-selection.md
 
 | セクション | 行 |
@@ -331,21 +346,21 @@ node scripts/list-specs.mjs --topics
 | 型ガード | L131 |
 | バリデーション | L141 |
 | クエリ分類器 | L155 |
-| キーワード検索戦略 | L175 |
-| ベクトル検索戦略（VectorSearchStrategy） | L225 |
+| キーワード検索戦略（FTS5/BM25） | L175 |
+| ベクトル検索戦略（VectorSearchStrategy） | L306 |
 
 ### references/interfaces-rag.md
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L12 |
-| Branded Types | L24 |
-| RAGエラー型 | L47 |
-| 共通インターフェース | L68 |
-| ファイル・変換ドメイン型 | L125 |
-| Knowledge Graph型 | L151 |
-| 設計原則 | L167 |
-| 関連ドキュメント | L393 |
+| Branded Types | L25 |
+| RAGエラー型 | L48 |
+| 共通インターフェース | L69 |
+| ファイル・変換ドメイン型 | L126 |
+| Knowledge Graph型 | L152 |
+| 設計原則 | L168 |
+| 関連ドキュメント | L394 |
 
 ### references/interfaces-workflow.md
 
@@ -651,8 +666,6 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| API セキュリティ | L10 |
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
-| Claude Code CLI連携セキュリティ | L295 |
-| Claude CLI Renderer API セキュリティ（Preload） | L391 |
 | 関連ドキュメント | L473 |
 
 ### references/security-implementation.md
@@ -950,13 +963,14 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| エラー分類 | L8 |
-| リトライ戦略 | L170 |
-| サーキットブレーカー（将来対応） | L212 |
-| エラーレスポンス形式 | L240 |
-| エラーログ出力 | L271 |
-| ユーザー向けエラーメッセージ | L308 |
-| エラーハンドリングの実装指針 | L331 |
-| 関連ドキュメント | L361 |
+| 認可エラー（UnauthorizedError） | L171 |
+| リトライ戦略 | L252 |
+| サーキットブレーカー（将来対応） | L294 |
+| エラーレスポンス形式 | L322 |
+| エラーログ出力 | L353 |
+| ユーザー向けエラーメッセージ | L390 |
+| エラーハンドリングの実装指針 | L413 |
+| 関連ドキュメント | L443 |
 
 ### references/local-agent.md
 

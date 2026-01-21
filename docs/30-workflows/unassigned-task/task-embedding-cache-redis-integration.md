@@ -203,6 +203,7 @@ Redisコンテナをdocker-composeに追加
 #### 実行手順
 
 ```yaml
+issue_number: 311
 services:
   redis:
     image: redis:7-alpine
