@@ -13,11 +13,13 @@ export default defineConfig({
     pool: "forks",
     poolOptions: {
       forks: {
-        singleFork: true,
+        maxForks: 2,
+        isolate: true,
       },
     },
     testTimeout: 10000,
     teardownTimeout: 5000,
+    fileParallelism: false,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
