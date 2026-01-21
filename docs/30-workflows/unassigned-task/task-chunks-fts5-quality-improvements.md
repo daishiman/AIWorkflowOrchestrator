@@ -340,6 +340,16 @@ pnpm --filter @repo/shared test:integration
 - [manual-test-report-chunks-fts5.md](../rag-conversion-system/manual-test-report-chunks-fts5.md) - 手動テストレポート
 - [README.md](../rag-conversion-system/README.md) - chunks FTS5実装サマリー
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料           | パス                                                                         | 内容                                                |
+| ------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------- |
+| RAG検索仕様        | `.claude/skills/aiworkflow-requirements/references/interfaces-rag-search.md` | KeywordSearchStrategy、FTS5テーブル構造、BM25正規化 |
+| RAGアーキテクチャ  | `.claude/skills/aiworkflow-requirements/references/architecture-rag.md`      | HybridRAG検索エンジン設計                           |
+| エラーハンドリング | `.claude/skills/aiworkflow-requirements/references/error-handling.md`        | エラーコード体系、多言語対応方針                    |
+
 ### 参考資料
 
 - [Vitest公式ドキュメント](https://vitest.dev/)
