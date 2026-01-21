@@ -90,6 +90,8 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -150,9 +152,11 @@ jobs:
   coverage:
     name: Coverage Check
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     needs: [test]
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - name: Checkout
         uses: actions/checkout@v4
