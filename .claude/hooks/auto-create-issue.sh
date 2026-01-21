@@ -10,8 +10,17 @@
 # 動作:
 # - 新規ファイル: Issueを作成し、issue_number を仕様書に書き戻す
 # - 既存ファイル（issue_number あり）: Issueを更新
+#
+# 環境変数:
+#   CLAUDE_SKIP_ISSUE_SYNC=1   - このフックをスキップ
+#   CLAUDE_ISSUE_TIMEOUT       - タイムアウト秒数（デフォルト: 30）
 
 set -e
+
+# Issue同期をスキップするオプション
+if [[ "${CLAUDE_SKIP_ISSUE_SYNC:-}" == "1" ]]; then
+  exit 0
+fi
 
 # 環境変数から対象ファイルパスを取得
 FILE_PATH="${CLAUDE_FILE_PATH:-}"
@@ -45,8 +54,11 @@ if [ ! -f "$CREATE_SCRIPT" ]; then
   exit 0
 fi
 
-# gh CLIの認証状態を確認
-if ! gh auth status &>/dev/null; then
+# タイムアウト設定（デフォルト30秒）
+TIMEOUT_SEC="${CLAUDE_ISSUE_TIMEOUT:-30}"
+
+# gh CLIの認証状態を確認（タイムアウト5秒）
+if ! timeout 5 gh auth status &>/dev/null; then
   echo "⚠ gh CLIが認証されていません。Issue同期をスキップします。" >&2
   exit 0
 fi
@@ -63,10 +75,14 @@ echo "📝 タスク仕様書を検出: $RELATIVE_PATH"
 echo "🔄 GitHub Issue ${ACTION}中..."
 
 cd "$CLAUDE_PROJECT_DIR"
-if node "$CREATE_SCRIPT" --spec "$RELATIVE_PATH" 2>/dev/null; then
+if timeout "$TIMEOUT_SEC" node "$CREATE_SCRIPT" --spec "$RELATIVE_PATH" 2>/dev/null; then
   echo "✅ GitHub Issue ${ACTION}完了"
 else
-  echo "⚠ Issue ${ACTION}をスキップ（失敗）" >&2
+  if [[ $? -eq 124 ]]; then
+    echo "⏱️ Issue ${ACTION}がタイムアウトしました（${TIMEOUT_SEC}秒）" >&2
+  else
+    echo "⚠ Issue ${ACTION}をスキップ（失敗）" >&2
+  fi
 fi
 
 exit 0

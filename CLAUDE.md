@@ -71,6 +71,7 @@ pnpm --filter @repo/desktop dev
 - **auto-lint.sh**: ESLintによる自動修正
 - **type-check.sh**: TypeScript型チェック
 - **auto-test.sh**: 関連テストの自動実行
+- **auto-create-issue.sh**: タスク仕様書からGitHub Issue自動作成
 
 ### セキュリティ（PreToolUse）
 
@@ -80,10 +81,32 @@ pnpm --filter @repo/desktop dev
 ### 通知（Stop）
 
 - **notify-completion.sh**: 処理完了時の音声・デスクトップ通知
+- **requirements-sync.sh**: 要件仕様の同期
 
 ### セッション（SessionStart）
 
 - **session-init.sh**: セッション開始時の環境確認
+
+### フック制御用環境変数
+
+重いフックをスキップしたい場合は、以下の環境変数を設定してください：
+
+```bash
+# 重いフック（type-check, auto-test）をスキップ
+export CLAUDE_SKIP_HEAVY_HOOKS=1
+
+# 個別にスキップ
+export CLAUDE_SKIP_FORMAT=1      # Prettierをスキップ
+export CLAUDE_SKIP_LINT=1        # ESLintをスキップ
+export CLAUDE_SKIP_ISSUE_SYNC=1  # Issue同期をスキップ
+
+# タイムアウト調整（秒）
+export CLAUDE_FORMAT_TIMEOUT=10
+export CLAUDE_LINT_TIMEOUT=15
+export CLAUDE_TYPECHECK_TIMEOUT=30
+export CLAUDE_TEST_TIMEOUT=60
+export CLAUDE_ISSUE_TIMEOUT=30
+```
 
 ## 開発ガイドライン
 
