@@ -131,7 +131,7 @@ describe("ChatHistoryService", () => {
       });
 
       // Act
-      const session = await service.getSession(created.id);
+      const session = await service.getSession(created.id, "user-001");
 
       // Assert
       expect(session).toBeDefined();
@@ -141,7 +141,7 @@ describe("ChatHistoryService", () => {
 
     it("存在しないセッションはnullを返す", async () => {
       // Act
-      const session = await service.getSession("non-existent");
+      const session = await service.getSession("non-existent", "user-001");
 
       // Assert
       expect(session).toBeNull();
@@ -184,11 +184,11 @@ describe("ChatHistoryService", () => {
       const session = await service.createSession("user-001");
 
       // Act
-      const result = await service.deleteSession(session.id);
+      const result = await service.deleteSession(session.id, "user-001");
 
       // Assert
       expect(result).toBe(true);
-      const found = await service.getSession(session.id);
+      const found = await service.getSession(session.id, "user-001");
       expect(found).toBeNull();
     });
 
@@ -198,7 +198,7 @@ describe("ChatHistoryService", () => {
       await service.addUserMessage(session.id, "テストメッセージ");
 
       // Act
-      await service.deleteSession(session.id);
+      await service.deleteSession(session.id, "user-001");
 
       // Assert
       const messages = await messageRepository.findBySessionId(session.id);
@@ -231,7 +231,7 @@ describe("ChatHistoryService", () => {
       await service.addUserMessage(session.id, "メッセージ2");
 
       // Assert
-      const updated = await service.getSession(session.id);
+      const updated = await service.getSession(session.id, "user-001");
       expect(updated?.messageCount).toBe(2);
     });
 
@@ -243,7 +243,7 @@ describe("ChatHistoryService", () => {
       await service.addUserMessage(session.id, "これは最後のメッセージです");
 
       // Assert
-      const updated = await service.getSession(session.id);
+      const updated = await service.getSession(session.id, "user-001");
       expect(updated?.lastMessagePreview).toBe("これは最後のメッセージです");
     });
   });
@@ -336,7 +336,9 @@ describe("ChatHistoryService", () => {
         title: "Session 1",
       });
       await service.createSession("user-001", { title: "Session 2" });
-      await service.updateSession(session1.id, { isFavorite: true });
+      await service.updateSession(session1.id, "user-001", {
+        isFavorite: true,
+      });
 
       // Act
       const results = await service.searchSessions("user-001", {
@@ -355,10 +357,12 @@ describe("ChatHistoryService", () => {
       const session = await service.createSession("user-001");
 
       // Act
-      await service.updateSession(session.id, { title: "更新後のタイトル" });
+      await service.updateSession(session.id, "user-001", {
+        title: "更新後のタイトル",
+      });
 
       // Assert
-      const updated = await service.getSession(session.id);
+      const updated = await service.getSession(session.id, "user-001");
       expect(updated?.title).toBe("更新後のタイトル");
     });
 
@@ -367,10 +371,10 @@ describe("ChatHistoryService", () => {
       const session = await service.createSession("user-001");
 
       // Act
-      await service.updateSession(session.id, { isFavorite: true });
+      await service.updateSession(session.id, "user-001", { isFavorite: true });
 
       // Assert
-      const updated = await service.getSession(session.id);
+      const updated = await service.getSession(session.id, "user-001");
       expect(updated?.isFavorite).toBe(true);
     });
   });
@@ -392,7 +396,7 @@ describe("ChatHistoryService", () => {
       );
 
       // Act
-      const markdown = await service.exportToMarkdown(session.id);
+      const markdown = await service.exportToMarkdown(session.id, "user-001");
 
       // Assert
       expect(markdown).toContain("# React開発の質問");
@@ -414,7 +418,7 @@ describe("ChatHistoryService", () => {
       });
 
       // Act
-      const markdown = await service.exportToMarkdown(session.id, {
+      const markdown = await service.exportToMarkdown(session.id, "user-001", {
         includeMetadata: true,
       });
 
@@ -433,7 +437,7 @@ describe("ChatHistoryService", () => {
       await service.addUserMessage(session.id, "テストメッセージ");
 
       // Act
-      const json = await service.exportToJson(session.id);
+      const json = await service.exportToJson(session.id, "user-001");
       const parsed = JSON.parse(json);
 
       // Assert
