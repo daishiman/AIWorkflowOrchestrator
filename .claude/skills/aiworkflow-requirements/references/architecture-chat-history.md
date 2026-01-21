@@ -1,0 +1,297 @@
+# チャット履歴機能 - アーキテクチャ仕様
+
+> 本ドキュメントは統合システム設計仕様書の一部です。
+> 管理: .claude/skills/aiworkflow-requirements/
+> 更新日: 2026-01-19
+> 関連タスク: ARCH-001 Clean Architecture Refactoring
+
+---
+
+## 概要
+
+チャット履歴機能はClean Architecture準拠の4層アーキテクチャで実装されている。
+アーキテクチャ準拠率100%を達成し、Domain層の純粋性を維持している。
+
+---
+
+## レイヤー構成
+
+```
+┌─────────────────────────────────────────────────┐
+│                    UI Layer                      │
+│          (React Components, Context, Hooks)      │
+└──────────────────────┬──────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────┐
+│               Application Layer                  │
+│               (Use Cases, DTOs)                  │
+└──────────────────────┬──────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────┐
+│                 Domain Layer                     │
+│    (Entities, Value Objects, Repository IF)      │
+└──────────────────────┬──────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────┐
+│             Infrastructure Layer                 │
+│          (Drizzle Repositories, Mappers)         │
+└─────────────────────────────────────────────────┘
+```
+
+---
+
+## 依存関係ルール
+
+| レイヤー       | 依存先                  | 備考                     |
+| -------------- | ----------------------- | ------------------------ |
+| Domain         | なし                    | 純粋なビジネスロジック   |
+| Application    | Domain                  | Use CaseがDomainを使用   |
+| Infrastructure | Domain, Application     | 実装がインターフェース依存 |
+| UI             | Application, Domain     | DTOとUse Caseを使用      |
+
+**重要**: 依存は常に内側（Domain）に向かう。Domainは何にも依存しない。
+
+---
+
+## ディレクトリ構成
+
+```
+packages/shared/src/
+├── core/
+│   ├── Result.ts              # Result<T, E>型
+│   └── errors/
+│       ├── index.ts           # エラー型エクスポート
+│       ├── AppError.ts        # 基底エラークラス
+│       ├── DomainError.ts     # ドメインエラー（abstract）
+│       └── UseCaseError.ts    # Use Caseエラー
+│
+└── features/chat-history/
+    ├── domain/
+    │   ├── entities/
+    │   │   ├── ChatSession.ts       # セッションエンティティ
+    │   │   └── ChatMessage.ts       # メッセージエンティティ
+    │   ├── value-objects/
+    │   │   ├── ChatSessionId.ts     # セッションID
+    │   │   ├── ChatSessionTitle.ts  # セッションタイトル
+    │   │   ├── UserId.ts            # ユーザーID
+    │   │   ├── ChatMessageId.ts     # メッセージID
+    │   │   ├── MessageContent.ts    # メッセージ内容
+    │   │   └── MessageRole.ts       # メッセージ役割
+    │   └── repositories/
+    │       ├── IChatSessionRepository.ts  # セッションリポジトリIF
+    │       └── IChatMessageRepository.ts  # メッセージリポジトリIF
+    │
+    ├── application/
+    │   ├── dto/
+    │   │   └── index.ts             # DTOs定義
+    │   ├── use-cases/
+    │   │   ├── CreateChatSessionUseCase.ts
+    │   │   ├── AddUserMessageUseCase.ts
+    │   │   ├── AddAssistantMessageUseCase.ts
+    │   │   ├── TogglePinnedUseCase.ts
+    │   │   └── SearchSessionsUseCase.ts
+    │   └── transformers.ts          # DTO変換
+    │
+    └── infrastructure/
+        └── persistence/
+            ├── mappers/
+            │   ├── ChatSessionMapper.ts   # セッション変換
+            │   └── ChatMessageMapper.ts   # メッセージ変換
+            └── records/
+                └── index.ts               # DB Record型
+```
+
+---
+
+## Domain Layer
+
+### エンティティ
+
+#### ChatSession
+
+| プロパティ | 型                  | 説明               |
+| ---------- | ------------------- | ------------------ |
+| id         | ChatSessionId       | セッションID       |
+| userId     | UserId              | ユーザーID         |
+| title      | ChatSessionTitle    | セッションタイトル |
+| messages   | ChatMessage[]       | メッセージリスト   |
+| isPinned   | boolean             | ピン留めフラグ     |
+| isFavorite | boolean             | お気に入りフラグ   |
+| pinOrder   | number \| null      | ピン留め順序       |
+| createdAt  | Date                | 作成日時           |
+| updatedAt  | Date                | 更新日時           |
+
+**ファクトリメソッド**:
+- `create(params)`: 新規作成（バリデーション付き）
+- `reconstitute(params)`: DB復元（バリデーションなし）
+
+**ビジネスメソッド**:
+- `addMessage(message)`: メッセージ追加
+- `updateTitle(title)`: タイトル更新
+- `togglePinned()`: ピン留めトグル（上限10件チェック）
+- `toggleFavorite()`: お気に入りトグル
+- `getPreview()`: プレビュー文字列取得
+
+#### ChatMessage
+
+| プロパティ | 型              | 説明           |
+| ---------- | --------------- | -------------- |
+| id         | ChatMessageId   | メッセージID   |
+| sessionId  | ChatSessionId   | セッションID   |
+| role       | MessageRole     | 役割           |
+| content    | MessageContent  | 内容           |
+| createdAt  | Date            | 作成日時       |
+
+### 値オブジェクト
+
+| 値オブジェクト     | バリデーション           | 備考           |
+| ------------------ | ------------------------ | -------------- |
+| ChatSessionId      | UUID形式                 | generate()で新規生成 |
+| ChatSessionTitle   | 3-255文字、空文字不可    |                |
+| UserId             | UUID形式                 |                |
+| ChatMessageId      | UUID形式                 | generate()で新規生成 |
+| MessageContent     | 空文字不可、1-100000文字 |                |
+| MessageRole        | "user" \| "assistant"    |                |
+
+### リポジトリインターフェース
+
+#### IChatSessionRepository
+
+```typescript
+interface IChatSessionRepository {
+  findById(id: ChatSessionId): Promise<ChatSession | null>;
+  findByUserId(userId: UserId): Promise<ChatSession[]>;
+  findPinnedByUserId(userId: UserId): Promise<ChatSession[]>;
+  save(session: ChatSession): Promise<Result<void, RepositoryError>>;
+  delete(id: ChatSessionId): Promise<Result<void, RepositoryError>>;
+  search(query: SearchQuery): Promise<SearchResult>;
+  countPinnedByUserId(userId: UserId): Promise<number>;
+}
+```
+
+#### IChatMessageRepository
+
+```typescript
+interface IChatMessageRepository {
+  findById(id: ChatMessageId): Promise<ChatMessage | null>;
+  findBySessionId(sessionId: ChatSessionId): Promise<ChatMessage[]>;
+  save(message: ChatMessage): Promise<Result<void, RepositoryError>>;
+  delete(id: ChatMessageId): Promise<Result<void, RepositoryError>>;
+}
+```
+
+---
+
+## Application Layer
+
+### Use Cases
+
+| Use Case                   | 入力                      | 出力            | 責務                   |
+| -------------------------- | ------------------------- | --------------- | ---------------------- |
+| CreateChatSessionUseCase   | userId, title?            | ChatSessionDTO  | 新規セッション作成     |
+| AddUserMessageUseCase      | sessionId, content        | ChatMessageDTO  | ユーザーメッセージ追加 |
+| AddAssistantMessageUseCase | sessionId, content        | ChatMessageDTO  | AIメッセージ追加       |
+| TogglePinnedUseCase        | sessionId                 | ChatSessionDTO  | ピン留めトグル         |
+| SearchSessionsUseCase      | userId, query, pagination | SearchResultDTO | セッション検索         |
+
+### DTOs
+
+- **ChatSessionDTO**: セッション情報の転送オブジェクト
+- **ChatMessageDTO**: メッセージ情報の転送オブジェクト
+- **SearchResultDTO**: 検索結果の転送オブジェクト
+
+---
+
+## Infrastructure Layer
+
+### Mappers
+
+| Mapper             | 変換メソッド              | 説明                  |
+| ------------------ | ------------------------- | --------------------- |
+| ChatSessionMapper  | toDomain(record)          | DB Record → Entity    |
+|                    | toPersistence(entity)     | Entity → DB Record    |
+|                    | toDTO(entity)             | Entity → DTO          |
+| ChatMessageMapper  | toDomain(record)          | DB Record → Entity    |
+|                    | toPersistence(entity)     | Entity → DB Record    |
+|                    | toDTO(entity)             | Entity → DTO          |
+
+---
+
+## エラーハンドリング
+
+### Result型
+
+```typescript
+type Result<T, E> = Ok<T> | Err<E>;
+```
+
+全てのUse Caseは `Result<T, UseCaseError>` を返却する。
+
+### エラー階層
+
+```
+AppError (abstract)
+├── DomainError (abstract)
+│   ├── ValidationError
+│   ├── BusinessRuleError
+│   └── InvalidIdError
+└── UseCaseError
+    ├── code: string
+    ├── statusCode: number
+    └── data?: Record<string, unknown>
+```
+
+---
+
+## ビジネスルール
+
+| ルールID         | 内容                           | 検証場所     |
+| ---------------- | ------------------------------ | ------------ |
+| BR-SESSION-001   | タイトル3-255文字              | Value Object |
+| BR-SESSION-002   | ピン留め上限10件               | Entity       |
+| BR-MSG-001       | roleはuser/assistantのみ       | Value Object |
+| BR-MSG-002       | contentは空不可                | Value Object |
+
+---
+
+## 品質指標
+
+| 指標                 | 目標  | 達成値  |
+| -------------------- | ----- | ------- |
+| アーキテクチャ準拠率 | 100%  | 100%    |
+| Line Coverage        | ≥80%  | 84.1%   |
+| Branch Coverage      | ≥60%  | 93.57%  |
+| Function Coverage    | ≥80%  | 90.23%  |
+| テスト数             | -     | 129     |
+| 型エラー             | 0件   | 0件     |
+| Lintエラー           | 0件   | 0件     |
+
+---
+
+## 設計原則
+
+### SOLID原則の適用
+
+| 原則                  | 適用箇所                                 |
+| --------------------- | ---------------------------------------- |
+| Single Responsibility | 各Use Caseが単一ユースケースを担当       |
+| Open/Closed           | 新機能追加時はUse Case追加で対応         |
+| Liskov Substitution   | InMemory/Drizzle Repositoryが置換可能    |
+| Interface Segregation | SessionとMessageでRepository分離         |
+| Dependency Inversion  | 抽象（Interface）への依存を実現          |
+
+### その他のパターン
+
+- **Rich Domain Model**: ビジネスロジックをエンティティ内にカプセル化
+- **Factory Method**: create/reconstituteによるオブジェクト生成
+- **Repository Pattern**: 永続化の抽象化
+- **Mapper Pattern**: 層間のデータ変換
+
+---
+
+## 関連ドキュメント
+
+- [API仕様](./api-chat-history.md) - Use Case API詳細
+- [インターフェース仕様](./interfaces-chat-history.md) - 型定義・DB仕様
+- [アーキテクチャパターン](./architecture-patterns.md) - 全体パターン
+- [設計ドキュメント](../../../docs/30-workflows/clean-architecture-refactoring/outputs/phase-2/) - Phase 2成果物

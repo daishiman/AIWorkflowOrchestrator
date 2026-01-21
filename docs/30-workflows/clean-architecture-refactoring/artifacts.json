@@ -1,0 +1,188 @@
+{
+  "taskId": "ARCH-001",
+  "taskName": "チャット履歴機能のClean Architecture準拠リファクタリング",
+  "featureName": "clean-architecture-refactoring",
+  "createdAt": "2026-01-18T00:00:00.000Z",
+  "updatedAt": "2026-01-18T22:30:00.000Z",
+  "status": "ready",
+  "specificationStatus": "completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/current-architecture-analysis.md",
+        "outputs/phase-1/dependency-graph.md",
+        "outputs/phase-1/architecture-requirements.md",
+        "outputs/phase-1/migration-strategy.md",
+        "outputs/phase-1/rollback-plan.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ],
+      "completedAt": "2026-01-18T22:35:00.000Z"
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/domain-entities-design.md",
+        "outputs/phase-2/value-objects-design.md",
+        "outputs/phase-2/use-cases-design.md",
+        "outputs/phase-2/repository-interfaces-design.md",
+        "outputs/phase-2/infrastructure-design.md",
+        "outputs/phase-2/di-context-design.md",
+        "outputs/phase-2/result-type-design.md",
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/adr-001-clean-architecture-adoption.md"
+      ],
+      "completedAt": "2026-01-18T23:00:00.000Z"
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputs": ["outputs/phase-3/design-review-report.md"],
+      "completedAt": "2026-01-18T23:10:00.000Z"
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-execution-report.md",
+        "packages/shared/src/core/__tests__/Result.test.ts",
+        "packages/shared/src/features/chat-history/domain/entities/__tests__/ChatSession.test.ts",
+        "packages/shared/src/features/chat-history/domain/entities/__tests__/ChatMessage.test.ts",
+        "packages/shared/src/features/chat-history/domain/value-objects/__tests__/ChatSessionId.test.ts",
+        "packages/shared/src/features/chat-history/domain/value-objects/__tests__/ChatSessionTitle.test.ts",
+        "packages/shared/src/features/chat-history/domain/value-objects/__tests__/MessageContent.test.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/__tests__/CreateChatSessionUseCase.test.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/__tests__/AddUserMessageUseCase.test.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/__tests__/AddAssistantMessageUseCase.test.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/__tests__/SearchSessionsUseCase.test.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/__tests__/TogglePinnedUseCase.test.ts",
+        "packages/shared/src/features/chat-history/infrastructure/persistence/mappers/__tests__/ChatSessionMapper.test.ts",
+        "packages/shared/src/features/chat-history/infrastructure/persistence/mappers/__tests__/ChatMessageMapper.test.ts"
+      ],
+      "completedAt": "2026-01-18T23:30:00.000Z"
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "specFile": "phase-9-quality.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "specFile": "phase-10-final-review.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": [],
+      "completedAt": null
+    }
+  },
+  "artifacts": {
+    "domain": {
+      "entities": [
+        "packages/shared/src/features/chat-history/domain/ChatSession.ts",
+        "packages/shared/src/features/chat-history/domain/ChatMessage.ts"
+      ],
+      "valueObjects": [
+        "packages/shared/src/features/chat-history/domain/value-objects/ChatSessionId.ts",
+        "packages/shared/src/features/chat-history/domain/value-objects/ChatSessionTitle.ts",
+        "packages/shared/src/features/chat-history/domain/value-objects/MessageContent.ts"
+      ],
+      "repositories": [
+        "packages/shared/src/features/chat-history/domain/repositories/IChatSessionRepository.ts",
+        "packages/shared/src/features/chat-history/domain/repositories/IChatMessageRepository.ts"
+      ]
+    },
+    "application": {
+      "useCases": [
+        "packages/shared/src/features/chat-history/application/use-cases/CreateChatSessionUseCase.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/AddMessageUseCase.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/SearchSessionsUseCase.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/ExportSessionUseCase.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/UpdateSessionUseCase.ts",
+        "packages/shared/src/features/chat-history/application/use-cases/DeleteSessionUseCase.ts"
+      ],
+      "dto": [
+        "packages/shared/src/features/chat-history/application/dto/ChatSessionDTO.ts",
+        "packages/shared/src/features/chat-history/application/dto/ChatMessageDTO.ts"
+      ]
+    },
+    "infrastructure": {
+      "persistence": [
+        "packages/shared/src/infrastructure/persistence/drizzle/DrizzleChatSessionRepository.ts",
+        "packages/shared/src/infrastructure/persistence/drizzle/DrizzleChatMessageRepository.ts"
+      ],
+      "mappers": [
+        "packages/shared/src/infrastructure/persistence/mappers/ChatSessionMapper.ts",
+        "packages/shared/src/infrastructure/persistence/mappers/ChatMessageMapper.ts"
+      ]
+    },
+    "core": ["packages/shared/src/core/Result.ts"],
+    "ui": [
+      "apps/desktop/src/contexts/ChatHistoryContext.tsx",
+      "apps/desktop/src/hooks/useChatHistory.ts"
+    ],
+    "documentation": [
+      "docs/30-workflows/clean-architecture-refactoring/outputs/phase-2/architecture-design.md",
+      "docs/30-workflows/clean-architecture-refactoring/outputs/phase-2/adr-001-clean-architecture-adoption.md"
+    ]
+  },
+  "dependencies": {
+    "packages/shared": ["@repo/shared"],
+    "apps/desktop": ["@repo/desktop"]
+  }
+}
