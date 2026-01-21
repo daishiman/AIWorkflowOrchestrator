@@ -232,17 +232,32 @@ function extractMetadataFromTable(content) {
  */
 function normalizeKey(key) {
   const keyMap = {
+    // 日本語キー
     タスクID: "taskId",
     タスク名: "taskName",
     分類: "category",
     対象機能: "targetFeature",
     優先度: "priority",
     見積もり規模: "scale",
+    規模: "scale",
     ステータス: "status",
     発見元: "sourcePhase",
     発見日: "createdDate",
+    作成日: "createdDate",
     依存タスク: "dependencies",
     仕様書: "specPath",
+    仕様書パス: "specPath",
+    // 英語キー
+    Priority: "priority",
+    Scale: "scale",
+    Category: "category",
+    Status: "status",
+    "Task ID": "taskId",
+    "Task Name": "taskName",
+    "Target Feature": "targetFeature",
+    "Created Date": "createdDate",
+    Dependencies: "dependencies",
+    "Spec Path": "specPath",
   };
 
   return keyMap[key] || null;

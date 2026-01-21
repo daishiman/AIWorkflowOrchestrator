@@ -35,15 +35,16 @@ GitHub Issueを`gh` CLIで操作し、タスク仕様書との双方向連携を
 
 ## モード一覧
 
-| モード     | 用途                      | スクリプト         |
-| ---------- | ------------------------- | ------------------ |
-| **sync**   | GitHub↔ローカル同期       | `sync_issues.js`   |
-| **create** | 仕様書→Issue作成          | `create_issue.js`  |
-| **select** | 最適Issue選択             | `select_issue.js`  |
-| **list**   | Issue一覧（フィルタ対応） | `list_issues.js`   |
-| **update** | Issue更新                 | `update_issue.js`  |
-| **close**  | Issueクローズ             | `close_issue.js`   |
-| **relink** | Issue↔仕様書再リンク      | `relink_issues.js` |
+| モード     | 用途                       | スクリプト             |
+| ---------- | -------------------------- | ---------------------- |
+| **sync**   | GitHub↔ローカル同期        | `sync_issues.js`       |
+| **create** | 仕様書→Issue作成           | `create_issue.js`      |
+| **select** | 最適Issue選択              | `select_issue.js`      |
+| **list**   | Issue一覧（フィルタ対応）  | `list_issues.js`       |
+| **update** | Issue更新                  | `update_issue.js`      |
+| **close**  | Issueクローズ              | `close_issue.js`       |
+| **relink** | Issue↔仕様書再リンク       | `relink_issues.js`     |
+| **label**  | 全Issueにラベル一括付与    | `label_all_issues.js`  |
 
 ---
 
@@ -191,6 +192,18 @@ node .claude/skills/github-issue-manager/scripts/cleanup_orphaned.js --close   #
 node .claude/skills/github-issue-manager/scripts/cleanup_orphaned.js --dry-run # 変更内容を表示
 ```
 
+## label: 全Issueにラベル一括付与
+
+オープン中の全Issueにメタ情報（優先度・規模・分類・ステータス）からラベルを付与。
+
+```bash
+node .claude/skills/github-issue-manager/scripts/label_all_issues.js           # 全Issueにラベル付与
+node .claude/skills/github-issue-manager/scripts/label_all_issues.js --dry-run # 変更内容を確認
+node .claude/skills/github-issue-manager/scripts/label_all_issues.js --force   # 既存ラベルを上書き
+```
+
+**注意**: Issue作成時(`create_issue.js`)は自動でラベル付与されます。このコマンドは既存Issueの一括ラベル付与に使用。
+
 ---
 
 # Part 3: スコアリング＆ラベル
@@ -219,19 +232,20 @@ node .claude/skills/github-issue-manager/scripts/cleanup_orphaned.js --dry-run #
 
 ## scripts/
 
-| Script                | 用途                         |
-| --------------------- | ---------------------------- |
-| `sync_issues.js`      | GitHub↔ローカル同期          |
-| `create_issue.js`     | 仕様書→Issue作成             |
-| `select_issue.js`     | 最適Issue選択+スコアリング   |
-| `list_issues.js`      | Issue一覧（ローカル優先）    |
-| `update_issue.js`     | Issue更新（ローカル+GitHub） |
-| `close_issue.js`      | Issueクローズ                |
-| `relink_issues.js`    | Issue↔仕様書再リンク         |
-| `cleanup_orphaned.js` | 孤立Issue検出・クローズ      |
-| `init_labels.js`      | ラベル初期化                 |
-| `utils.js`            | 共通ユーティリティ           |
-| `log_usage.js`        | 使用ログ記録                 |
+| Script                 | 用途                         |
+| ---------------------- | ---------------------------- |
+| `sync_issues.js`       | GitHub↔ローカル同期          |
+| `create_issue.js`      | 仕様書→Issue作成             |
+| `select_issue.js`      | 最適Issue選択+スコアリング   |
+| `list_issues.js`       | Issue一覧（ローカル優先）    |
+| `update_issue.js`      | Issue更新（ローカル+GitHub） |
+| `close_issue.js`       | Issueクローズ                |
+| `relink_issues.js`     | Issue↔仕様書再リンク         |
+| `cleanup_orphaned.js`  | 孤立Issue検出・クローズ      |
+| `label_all_issues.js`  | 全Issueラベル一括付与        |
+| `init_labels.js`       | ラベル初期化                 |
+| `utils.js`             | 共通ユーティリティ           |
+| `log_usage.js`         | 使用ログ記録                 |
 
 ## agents/
 
@@ -274,11 +288,12 @@ dependencies: []
 
 ## 変更履歴
 
-| Version   | Date           | Changes                                                 |
-| --------- | -------------- | ------------------------------------------------------- |
-| **1.5.0** | **2026-01-21** | **削除時自動クローズ、孤立Issue検出、再リンク機能追加** |
-| 1.4.0     | 2026-01-21     | 双方向同期（仕様書↔Issue）、issue_number書戻            |
-| 1.3.0     | 2026-01-21     | YAML形式メタ情報、自動Issue作成Hook追加                 |
-| 1.2.0     | 2026-01-21     | SKILL.md最適化（394→200行、49%削減）                    |
-| 1.1.0     | 2026-01-21     | ローカル同期機能追加                                    |
-| 1.0.0     | 2026-01-21     | 初版作成                                                |
+| Version   | Date           | Changes                                                   |
+| --------- | -------------- | --------------------------------------------------------- |
+| **1.6.0** | **2026-01-21** | **全Issueラベル一括付与機能追加（label_all_issues.js）**  |
+| 1.5.0     | 2026-01-21     | 削除時自動クローズ、孤立Issue検出、再リンク機能追加       |
+| 1.4.0     | 2026-01-21     | 双方向同期（仕様書↔Issue）、issue_number書戻              |
+| 1.3.0     | 2026-01-21     | YAML形式メタ情報、自動Issue作成Hook追加                   |
+| 1.2.0     | 2026-01-21     | SKILL.md最適化（394→200行、49%削減）                      |
+| 1.1.0     | 2026-01-21     | ローカル同期機能追加                                      |
+| 1.0.0     | 2026-01-21     | 初版作成                                                  |
