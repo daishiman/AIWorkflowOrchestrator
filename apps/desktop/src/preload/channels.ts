@@ -173,6 +173,7 @@ export const IPC_CHANNELS = {
   SKILL_IMPORT: "skill:import",
   SKILL_REMOVE: "skill:remove",
   SKILL_GET_DETAIL: "skill:get-detail",
+  SKILL_EXECUTE: "skill:execute",
 
   // History operations
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
@@ -330,6 +331,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_IMPORT,
   IPC_CHANNELS.SKILL_REMOVE,
   IPC_CHANNELS.SKILL_GET_DETAIL,
+  IPC_CHANNELS.SKILL_EXECUTE,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,

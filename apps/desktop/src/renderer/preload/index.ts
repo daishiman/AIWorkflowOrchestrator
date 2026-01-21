@@ -3,7 +3,11 @@
  * Provides typed access to IPC APIs exposed by the preload script
  */
 
-import type { Skill, OperationResult } from "@repo/shared/types/skill";
+import type {
+  Skill,
+  OperationResult,
+  SkillRunResult,
+} from "@repo/shared/types/skill";
 
 /**
  * Skill API for managing skills via IPC
@@ -19,6 +23,11 @@ export interface SkillAPI {
   remove: (skillId: string) => Promise<OperationResult<void>>;
   /** Get skill detail by ID */
   getDetail: (skillId: string) => Promise<OperationResult<Skill>>;
+  /** Execute a skill by ID with optional parameters */
+  execute: (
+    skillId: string,
+    params?: Record<string, unknown>,
+  ) => Promise<OperationResult<SkillRunResult>>;
 }
 
 /**
@@ -47,11 +56,17 @@ export const skillAPI: SkillAPI = {
   },
 
   listImported: async () => {
+    console.log("[skillAPI][DEBUG] listImported called");
+    console.log("[skillAPI][DEBUG] hasElectronAPI:", hasElectronAPI(window));
     if (hasElectronAPI(window)) {
-      return window.electronAPI.invoke<OperationResult<Skill[]>>(
+      console.log("[skillAPI][DEBUG] Invoking skill:list-imported via IPC...");
+      const result = await window.electronAPI.invoke<OperationResult<Skill[]>>(
         "skill:list-imported",
       );
+      console.log("[skillAPI][DEBUG] IPC result received:", result);
+      return result;
     }
+    console.log("[skillAPI][DEBUG] No electronAPI, returning empty array");
     return { success: true, data: [] };
   },
 
@@ -81,5 +96,15 @@ export const skillAPI: SkillAPI = {
       );
     }
     return { success: false, error: "Skill not found" };
+  },
+
+  execute: async (skillId: string, params?: Record<string, unknown>) => {
+    if (hasElectronAPI(window)) {
+      return window.electronAPI.invoke<OperationResult<SkillRunResult>>(
+        "skill:execute",
+        params !== undefined ? { skillId, params } : { skillId },
+      );
+    }
+    return { success: false, error: "Electron API not available" };
   },
 };

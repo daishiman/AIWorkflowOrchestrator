@@ -557,14 +557,14 @@ Zustand Sliceパターンで実装された状態管理。
 
 ### IPC チャンネル（スキル管理）
 
-| チャンネル        | 方向            | 説明                     | 戻り値                            |
-| ----------------- | --------------- | ------------------------ | --------------------------------- |
-| `skill:list`      | Renderer → Main | インポート済みスキル取得 | `APIResponse<Skill[]>`            |
-| `skill:available` | Renderer → Main | 利用可能スキル取得       | `APIResponse<Skill[]>`            |
-| `skill:import`    | Renderer → Main | スキルインポート         | `APIResponse<void>`               |
-| `skill:remove`    | Renderer → Main | スキル削除               | `APIResponse<void>`               |
-| `skill:detail`    | Renderer → Main | スキル詳細取得           | `APIResponse<Skill>`              |
-| `skill:execute`   | Renderer → Main | スキル実行               | `OperationResult<SkillRunResult>` |
+| チャンネル             | 方向            | 説明                     | 戻り値                            |
+| ---------------------- | --------------- | ------------------------ | --------------------------------- |
+| `skill:list-imported`  | Renderer → Main | インポート済みスキル取得 | `OperationResult<Skill[]>`        |
+| `skill:list-available` | Renderer → Main | 利用可能スキル取得       | `OperationResult<Skill[]>`        |
+| `skill:import`         | Renderer → Main | スキルインポート         | `OperationResult<void>`           |
+| `skill:remove`         | Renderer → Main | スキル削除               | `OperationResult<void>`           |
+| `skill:get-detail`     | Renderer → Main | スキル詳細取得           | `OperationResult<Skill>`          |
+| `skill:execute`        | Renderer → Main | スキル実行               | `OperationResult<SkillRunResult>` |
 
 #### skill:execute リクエスト形式
 
@@ -575,25 +575,20 @@ interface SkillExecuteRequest {
 }
 ```
 
-#### APIResponse型
+#### OperationResult型
+
+スキル管理APIの統一戻り値型。成功/失敗を明確に区別する。
 
 ```typescript
-interface APIResponse<T> {
+// packages/shared/src/types/skill.ts
+interface OperationResult<T = void> {
   success: boolean;
   data?: T;
   error?: string;
 }
 ```
 
-#### OperationResult型
-
-スキル実行など、成功/失敗を明確に区別する操作結果型。
-
-```typescript
-type OperationResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string };
-```
+**Note**: 全スキル管理IPCチャンネルで`OperationResult`型を使用。
 
 #### SkillRunResult型
 
@@ -628,23 +623,23 @@ export interface SkillRunResult {
 
 インポート済みのスキル一覧を取得する。
 
-**戻り値**: `Promise<APIResponse<Skill[]>>`
+**戻り値**: `Promise<OperationResult<Skill[]>>`
 
 #### listAvailable
 
 利用可能なスキル一覧を取得する。
 
-**戻り値**: `Promise<APIResponse<Skill[]>>`
+**戻り値**: `Promise<OperationResult<Skill[]>>`
 
 #### import
 
 スキルをインポートする。
 
-| パラメータ | 型       | 必須 | 説明     |
-| ---------- | -------- | ---- | -------- |
-| `skillId`  | `string` | ✓    | スキルID |
+| パラメータ | 型         | 必須 | 説明             |
+| ---------- | ---------- | ---- | ---------------- |
+| `skillIds` | `string[]` | ✓    | スキルIDの配列   |
 
-**戻り値**: `Promise<APIResponse<void>>`
+**戻り値**: `Promise<OperationResult<void>>`
 
 #### remove
 
@@ -654,7 +649,7 @@ export interface SkillRunResult {
 | ---------- | -------- | ---- | -------- |
 | `skillId`  | `string` | ✓    | スキルID |
 
-**戻り値**: `Promise<APIResponse<void>>`
+**戻り値**: `Promise<OperationResult<void>>`
 
 #### getDetail
 
@@ -664,7 +659,7 @@ export interface SkillRunResult {
 | ---------- | -------- | ---- | -------- |
 | `skillId`  | `string` | ✓    | スキルID |
 
-**戻り値**: `Promise<APIResponse<Skill>>`
+**戻り値**: `Promise<OperationResult<Skill>>`
 
 #### execute
 
