@@ -24,7 +24,7 @@ allowed-tools:
 
 ## 概要
 
-AIWorkflowOrchestratorプロジェクトの全仕様（70ファイル・約17,000行）を管理するスキル。
+AIWorkflowOrchestratorプロジェクトの全仕様（85ファイル・約20,000行）を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
 ## ワークフロー
@@ -57,20 +57,20 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ### 仕様ファイル一覧
 
-**49ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
+**85ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
 
 | トピック         | ファイル数 |
 | ---------------- | ---------- |
 | 概要・品質       | 4          |
-| アーキテクチャ   | 6          |
-| インターフェース | 7          |
-| API設計          | 3          |
-| データベース     | 3          |
-| UI/UX            | 6          |
-| セキュリティ     | 3          |
+| アーキテクチャ   | 7          |
+| インターフェース | 18         |
+| API設計          | 7          |
+| データベース     | 4          |
+| UI/UX            | 13         |
+| セキュリティ     | 5          |
 | 技術スタック     | 3          |
-| Claude Code      | 6          |
-| その他           | 9          |
+| Claude Code      | 10         |
+| その他           | 14         |
 
 **注記**: 18-skills.md（Skill層仕様書）は `skill-creator` スキルで管理。
 
@@ -138,6 +138,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                             |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.16.0  | 2026-01-21 | 統計更新: ファイル数85、行数約20,000行に更新。CONV-06-04（NER）/CONV-07-02（FTS5）完了反映                                                                                                          |
 | 6.15.0  | 2026-01-19 | NER仕様独立化&FTS5詳細化: interfaces-rag-entity-extraction.md新規作成、interfaces-rag-search.md FTS5/BM25詳細追加（テーブル構造、クエリパターン、データフロー）、85ファイル構成に拡張               |
 | 6.14.0  | 2026-01-19 | スキル実行機能追加: interfaces-agent-sdk.mdに`skill:execute`IPC/`skillAPI.execute`/`SkillRunResult`型/`OperationResult`型追加、関連ドキュメントリンク追加                                           |
 | 6.13.0  | 2026-01-19 | CONV-06-04完了: エンティティ抽出サービス(NER) Phase 12完了。interfaces-rag.md/architecture-rag.md更新（224テスト、97.1%カバレッジ、96.8%品質スコア）                                                |

@@ -379,6 +379,16 @@ Phase 5: レポート作成と判定
 - [final-review-chunks-fts5.md](../rag-conversion-system/final-review-chunks-fts5.md) - 最終レビューレポート
 - [README.md](../rag-conversion-system/README.md) - chunks FTS5実装サマリー
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料          | パス                                                                         | 内容                                                |
+| ----------------- | ---------------------------------------------------------------------------- | --------------------------------------------------- |
+| RAG検索仕様       | `.claude/skills/aiworkflow-requirements/references/interfaces-rag-search.md` | KeywordSearchStrategy、FTS5テーブル構造、BM25正規化 |
+| RAGアーキテクチャ | `.claude/skills/aiworkflow-requirements/references/architecture-rag.md`      | HybridRAG検索エンジン設計                           |
+| 非機能要件        | `.claude/skills/aiworkflow-requirements/references/interfaces-rag-search.md` | 検索速度要件、タイムアウト設定                      |
+
 ### 参考資料
 
 - [SQLite FTS5公式ドキュメント](https://www.sqlite.org/fts5.html)

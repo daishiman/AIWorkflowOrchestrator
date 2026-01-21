@@ -1,0 +1,163 @@
+{
+  "taskId": "CONV-06-04",
+  "taskName": "エンティティ抽出サービス（NER）",
+  "version": "1.0.0",
+  "createdAt": "2026-01-18",
+  "updatedAt": "2026-01-18",
+  "status": "pending",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-1/functional-requirements.md",
+        "outputs/phase-1/non-functional-requirements.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/interface-design.md",
+        "outputs/phase-2/data-flow-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-3/design-review-checklist.md",
+        "outputs/phase-3/design-review-result.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（Red）",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-4/test-design.md",
+        "packages/shared/src/services/extraction/__tests__/entity-extractor.test.ts",
+        "packages/shared/src/services/extraction/__tests__/entity-extractor.integration.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（Green）",
+      "status": "pending",
+      "outputs": [
+        "packages/shared/src/services/extraction/types.ts",
+        "packages/shared/src/services/extraction/IEntityExtractor.ts",
+        "packages/shared/src/services/extraction/LLMEntityExtractor.ts",
+        "packages/shared/src/services/extraction/RuleBasedEntityExtractor.ts",
+        "packages/shared/src/services/extraction/EntityExtractorFactory.ts",
+        "packages/shared/src/services/extraction/index.ts",
+        "outputs/phase-5/test-result.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "outputs": [
+        "packages/shared/src/services/extraction/__tests__/entity-extractor.performance.test.ts"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-analysis.md",
+        "outputs/phase-7/integration-test-result.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-8/refactoring-targets.md",
+        "outputs/phase-8/test-result-after-refactoring.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-9/static-analysis-report.md",
+        "outputs/phase-9/security-check-report.md",
+        "outputs/phase-9/performance-report.md",
+        "outputs/phase-9/quality-summary.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-10/requirements-verification.md",
+        "outputs/phase-10/design-verification.md",
+        "outputs/phase-10/quality-verification.md",
+        "outputs/phase-10/final-review-decision.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-11/manual-test-basic.md",
+        "outputs/phase-11/manual-test-japanese.md",
+        "outputs/phase-11/manual-test-error-handling.md",
+        "outputs/phase-11/manual-test-performance.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント作成",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-12/api-specification.md",
+        "outputs/phase-12/architecture-update.md",
+        "outputs/phase-12/configuration-guide.md",
+        "outputs/phase-12/changelog-entry.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成・マージ",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-13/pr-description.md",
+        "outputs/phase-13/ci-result.md"
+      ]
+    }
+  ],
+  "dependencies": {
+    "upstream": [
+      "CONV-05: Chunking Service",
+      "CONV-06-01: Knowledge Graph Store"
+    ],
+    "downstream": [
+      "CONV-07-02: Keyword Search Strategy",
+      "CONV-08: HybridRAG Query Engine"
+    ]
+  },
+  "interfaces": {
+    "main": "IEntityExtractor",
+    "implementations": ["LLMEntityExtractor", "RuleBasedEntityExtractor"],
+    "factory": "EntityExtractorFactory"
+  },
+  "testCommands": {
+    "unit": "pnpm --filter @repo/shared test -- --testPathPattern=\"extraction\"",
+    "integration": "pnpm --filter @repo/shared test -- --testPathPattern=\"extraction.integration\"",
+    "coverage": "pnpm --filter @repo/shared test -- --coverage --testPathPattern=\"extraction\""
+  }
+}

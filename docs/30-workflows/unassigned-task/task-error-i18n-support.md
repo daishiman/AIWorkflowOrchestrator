@@ -377,10 +377,12 @@ pnpm typecheck
 
 > 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
 
-| 参照資料       | パス                                                                                | 内容                 |
-| -------------- | ----------------------------------------------------------------------------------- | -------------------- |
-| 内部API仕様    | `.claude/skills/aiworkflow-requirements/references/api-internal-conversion.md`      | エラーメッセージ仕様 |
-| アーキテクチャ | `.claude/skills/aiworkflow-requirements/references/architecture-file-conversion.md` | HistoryService設計   |
+| 参照資料                | パス                                                                                    | 内容                                 |
+| ----------------------- | --------------------------------------------------------------------------------------- | ------------------------------------ |
+| 内部API仕様             | `.claude/skills/aiworkflow-requirements/references/api-internal-conversion.md`          | エラーメッセージ仕様                 |
+| アーキテクチャ          | `.claude/skills/aiworkflow-requirements/references/architecture-file-conversion.md`     | HistoryService設計                   |
+| エラーハンドリング仕様  | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                   | エラーコード体系、多言語対応方針     |
+| NERインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-rag-entity-extraction.md` | NERエラーコード（LLM_TIMEOUT等）参照 |
 
 ### 参考資料
 
