@@ -150,7 +150,15 @@ jobs:
         run: pnpm --filter @repo/shared build
 
       - name: Run desktop app tests (shard ${{ matrix.shard }}/8)
-        run: pnpm --filter @repo/desktop test:run -- --shard=${{ matrix.shard }}/8
+        run: pnpm --filter @repo/desktop test:run -- --shard=${{ matrix.shard }}/8 --coverage
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-coverage-${{ matrix.shard }}
+          path: apps/desktop/coverage/
+          retention-days: 1
 
   security:
     name: Security Audit
@@ -179,48 +187,28 @@ jobs:
         run: pnpm audit --audit-level=high
         continue-on-error: true
 
-  # カバレッジ計測とCodecov連携
-  # PRまたはmainブランチへのpush時のみ実行
+  # カバレッジをCodecovにアップロード
+  # テストは各ジョブで実行済み、ここではアーティファクトをマージしてアップロードのみ
   coverage:
-    name: Coverage Check
+    name: Upload Coverage
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     needs: [test-shared, test-desktop]
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
-    env:
-      NODE_OPTIONS: --max-old-space-size=4096
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - name: Download desktop coverage artifacts
+        uses: actions/download-artifact@v4
         with:
-          node-version: "22"
-          cache: "pnpm"
-
-      - name: Configure git to use HTTPS instead of SSH
-        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build shared package
-        run: pnpm --filter @repo/shared build
-
-      - name: Run tests with coverage
-        run: pnpm test:coverage
+          pattern: desktop-coverage-*
+          path: coverage/desktop
+          merge-multiple: true
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/shared/coverage/lcov.info,./apps/desktop/coverage/lcov.info
-          flags: shared,desktop
-          # CODECOV_TOKEN未設定時はスキップ（トークン設定後にtrueに変更）
+          directory: coverage/
+          flags: desktop
           fail_ci_if_error: false
           verbose: true
 
