@@ -39,8 +39,8 @@ fi
 # プロジェクトルートを取得
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
-# タイムアウト設定（デフォルト30秒）
-TIMEOUT_SEC="${CLAUDE_TYPECHECK_TIMEOUT:-30}"
+# タイムアウト設定（デフォルト60秒）
+TIMEOUT_SEC="${CLAUDE_TYPECHECK_TIMEOUT:-60}"
 
 # tsconfig.jsonが存在する場合のみ実行
 if [[ -f "$PROJECT_DIR/tsconfig.json" ]]; then

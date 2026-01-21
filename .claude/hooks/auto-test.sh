@@ -35,8 +35,8 @@ fi
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT_DIR" 2>/dev/null || exit 0
 
-# タイムアウト設定（デフォルト60秒）
-TIMEOUT_SEC="${CLAUDE_TEST_TIMEOUT:-60}"
+# タイムアウト設定（デフォルト120秒）
+TIMEOUT_SEC="${CLAUDE_TEST_TIMEOUT:-120}"
 
 # TypeScript/JavaScriptファイルのみ対象
 case "$FILE_PATH" in

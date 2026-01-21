@@ -140,27 +140,27 @@
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-format.sh",
-            "timeout": 15
+            "timeout": 30
           },
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-lint.sh",
-            "timeout": 20
+            "timeout": 45
           },
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/type-check.sh",
-            "timeout": 35
+            "timeout": 90
           },
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-test.sh",
-            "timeout": 65
+            "timeout": 180
           },
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-create-issue.sh",
-            "timeout": 35
+            "timeout": 60
           }
         ]
       },

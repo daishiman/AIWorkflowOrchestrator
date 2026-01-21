@@ -100,12 +100,12 @@ export CLAUDE_SKIP_FORMAT=1      # Prettierをスキップ
 export CLAUDE_SKIP_LINT=1        # ESLintをスキップ
 export CLAUDE_SKIP_ISSUE_SYNC=1  # Issue同期をスキップ
 
-# タイムアウト調整（秒）
-export CLAUDE_FORMAT_TIMEOUT=10
-export CLAUDE_LINT_TIMEOUT=15
-export CLAUDE_TYPECHECK_TIMEOUT=30
-export CLAUDE_TEST_TIMEOUT=60
-export CLAUDE_ISSUE_TIMEOUT=30
+# タイムアウト調整（秒、デフォルト値）
+export CLAUDE_FORMAT_TIMEOUT=20      # Prettier
+export CLAUDE_LINT_TIMEOUT=30        # ESLint
+export CLAUDE_TYPECHECK_TIMEOUT=60   # TypeScript型チェック
+export CLAUDE_TEST_TIMEOUT=120       # Vitest/Jest
+export CLAUDE_ISSUE_TIMEOUT=45       # GitHub Issue同期
 ```
 
 ## 開発ガイドライン

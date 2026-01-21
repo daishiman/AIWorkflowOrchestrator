@@ -34,8 +34,8 @@ fi
 # プロジェクトルートを取得
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
-# タイムアウト設定（デフォルト15秒）
-TIMEOUT_SEC="${CLAUDE_LINT_TIMEOUT:-15}"
+# タイムアウト設定（デフォルト30秒）
+TIMEOUT_SEC="${CLAUDE_LINT_TIMEOUT:-30}"
 
 # ファイルの拡張子に基づいてLinterを実行
 case "$FILE_PATH" in

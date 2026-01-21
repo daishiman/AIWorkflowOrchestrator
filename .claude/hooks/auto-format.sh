@@ -34,8 +34,8 @@ fi
 # プロジェクトルートを取得
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
-# タイムアウト設定（デフォルト10秒）
-TIMEOUT_SEC="${CLAUDE_FORMAT_TIMEOUT:-10}"
+# タイムアウト設定（デフォルト20秒）
+TIMEOUT_SEC="${CLAUDE_FORMAT_TIMEOUT:-20}"
 
 # pnpmでPrettierを実行（タイムアウト付き）
 run_prettier() {

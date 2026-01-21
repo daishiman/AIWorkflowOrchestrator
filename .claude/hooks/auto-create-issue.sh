@@ -54,8 +54,8 @@ if [ ! -f "$CREATE_SCRIPT" ]; then
   exit 0
 fi
 
-# タイムアウト設定（デフォルト30秒）
-TIMEOUT_SEC="${CLAUDE_ISSUE_TIMEOUT:-30}"
+# タイムアウト設定（デフォルト45秒）
+TIMEOUT_SEC="${CLAUDE_ISSUE_TIMEOUT:-45}"
 
 # gh CLIの認証状態を確認（タイムアウト5秒）
 if ! timeout 5 gh auth status &>/dev/null; then
