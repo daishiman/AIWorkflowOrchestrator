@@ -56,18 +56,37 @@ export function registerSkillHandlers(
   ipcMain.handle(
     IPC_CHANNELS.SKILL_LIST_IMPORTED,
     async (event: IpcMainInvokeEvent) => {
+      console.log("[skillHandlers][DEBUG] skill:list-imported - START");
       const validation = validateIpcSender(
         event,
         IPC_CHANNELS.SKILL_LIST_IMPORTED,
         { getAllowedWindows: () => [mainWindow] },
       );
       if (!validation.valid) {
+        console.log(
+          "[skillHandlers][DEBUG] skill:list-imported - validation FAILED",
+        );
         throw toIPCValidationError(validation);
       }
+      console.log(
+        "[skillHandlers][DEBUG] skill:list-imported - validation PASSED",
+      );
       try {
+        console.log(
+          "[skillHandlers][DEBUG] Calling skillService.getImportedSkills()...",
+        );
         const skills = await skillService.getImportedSkills();
+        console.log(
+          "[skillHandlers][DEBUG] getImportedSkills result:",
+          skills?.length,
+          "skills",
+        );
         return { success: true, data: skills };
       } catch (error) {
+        console.error(
+          "[skillHandlers][DEBUG] skill:list-imported ERROR:",
+          error,
+        );
         return {
           success: false,
           error:
@@ -144,6 +163,38 @@ export function registerSkillHandlers(
       }
     },
   );
+
+  // skill:execute - スキルを実行
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_EXECUTE,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { skillId: string; params?: Record<string, unknown> },
+    ) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_EXECUTE, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillId !== "string" || args.skillId === "") {
+        return { success: false, error: "skillId must be a string" };
+      }
+      try {
+        const result = await skillService.executeSkill(
+          args.skillId,
+          args.params,
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error ? error.message : "スキル実行に失敗しました",
+        };
+      }
+    },
+  );
 }
 
 /**
@@ -155,4 +206,5 @@ export function unregisterSkillHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_REMOVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_DETAIL);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_EXECUTE);
 }

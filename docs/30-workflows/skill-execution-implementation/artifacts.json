@@ -1,0 +1,136 @@
+{
+  "taskId": "SKILL-EXEC-001",
+  "taskName": "skill-execution-implementation",
+  "featureName": "skill-execution-implementation",
+  "category": "機能実装",
+  "priority": "高",
+  "status": "未実施",
+  "createdAt": "2026-01-18",
+  "updatedAt": "2026-01-18",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "未実施",
+      "specFile": "phase-1-requirements.md",
+      "outputs": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "未実施",
+      "specFile": "phase-2-design.md",
+      "outputs": []
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "未実施",
+      "specFile": "phase-3-design-review.md",
+      "outputs": []
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "未実施",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": []
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "未実施",
+      "specFile": "phase-5-implementation.md",
+      "outputs": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "未実施",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": []
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "未実施",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": []
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "未実施",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": []
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "未実施",
+      "specFile": "phase-9-quality.md",
+      "outputs": []
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "未実施",
+      "specFile": "phase-10-final-review.md",
+      "outputs": []
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "未実施",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": []
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "未実施",
+      "specFile": "phase-12-documentation.md",
+      "outputs": []
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "未実施",
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  },
+  "targetFiles": [
+    "apps/desktop/src/renderer/preload/index.ts",
+    "apps/desktop/src/preload/channels.ts",
+    "apps/desktop/src/main/ipc/skillHandlers.ts",
+    "apps/desktop/src/main/services/skill/SkillService.ts",
+    "apps/desktop/src/renderer/views/AgentView/index.tsx"
+  ],
+  "references": {
+    "ipcPattern": ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md",
+    "securityGuide": ".claude/skills/aiworkflow-requirements/references/security-implementation.md"
+  },
+  "acceptanceCriteria": [
+    "Agent画面でスキルを選択し「実行」ボタンをクリックできる",
+    "実行中はローディングインジケータが表示される",
+    "実行成功時に「スキルを実行しました」トーストが表示される",
+    "実行失敗時にエラーメッセージがトーストで表示される",
+    "全ての新規テストがパスする",
+    "型チェックがパスする",
+    "ESLintエラーがない"
+  ],
+  "rootCauseAnalysis": {
+    "primaryCause": "スキル実行機能が未実装",
+    "issues": [
+      {
+        "id": "RC-001",
+        "description": "AgentView.handleExecuteがTODOコメントのみで未実装",
+        "file": "apps/desktop/src/renderer/views/AgentView/index.tsx",
+        "line": "186-189"
+      },
+      {
+        "id": "RC-002",
+        "description": "skillAPIにexecuteメソッドが存在しない",
+        "file": "apps/desktop/src/renderer/preload/index.ts"
+      },
+      {
+        "id": "RC-003",
+        "description": "SKILL_EXECUTE IPCチャンネルが未定義",
+        "file": "apps/desktop/src/preload/channels.ts"
+      },
+      {
+        "id": "RC-004",
+        "description": "SkillServiceにexecuteSkillメソッドがない",
+        "file": "apps/desktop/src/main/services/skill/SkillService.ts"
+      }
+    ]
+  }
+}

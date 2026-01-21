@@ -146,7 +146,15 @@ describe("SessionPersistenceService", () => {
       await service.saveSession(session);
 
       const sessions = await service.loadSessions();
-      expect(sessions).toContainEqual(session);
+      // lastAccessedAt may be updated during save, so compare other fields
+      expect(sessions).toHaveLength(1);
+      expect(sessions[0]).toMatchObject({
+        id: session.id,
+        title: session.title,
+        createdAt: session.createdAt,
+        isActive: session.isActive,
+        messageCount: session.messageCount,
+      });
     });
 
     it("should update lastAccessedAt when saving", async () => {

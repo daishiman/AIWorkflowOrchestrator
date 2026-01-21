@@ -184,3 +184,21 @@ export interface RemoveResult {
   /** 実際に削除されたか */
   removed: boolean;
 }
+
+/**
+ * スキル実行結果
+ */
+export interface SkillRunResult {
+  /** 実行ID（UUID） */
+  executionId: string;
+  /** 実行ステータス */
+  status: "success" | "failed";
+  /** 出力内容（成功時） */
+  output?: string;
+  /** エラーメッセージ（失敗時） */
+  error?: string;
+  /** 開始日時 */
+  startedAt: Date;
+  /** 完了日時 */
+  completedAt: Date;
+}

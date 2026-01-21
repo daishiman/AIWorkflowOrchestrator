@@ -1,4 +1,10 @@
-import React, { useEffect, useCallback, useState, useMemo } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  useState,
+  useMemo,
+  useRef,
+} from "react";
 import clsx from "clsx";
 import { useAppStore } from "../../store";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
@@ -82,6 +88,11 @@ const Toast: React.FC<{
  * エージェント機能の管理と実行を行うビュー
  */
 export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
+  // Debug: render counter
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  console.log("[AgentView][DEBUG] Render #", renderCount.current);
+
   // Store state
   const isLoading = useAppStore((state) => state.isLoading);
   const error = useAppStore((state) => state.error);
@@ -133,25 +144,34 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
 
   // Fetch imported skills on mount
   const fetchSkills = useCallback(async () => {
+    console.log("[AgentView][DEBUG] fetchSkills called - START");
+    console.log("[AgentView][DEBUG] Current isLoading:", isLoading);
     setLoading(true);
     setError(null);
     try {
+      console.log("[AgentView][DEBUG] Calling skillAPI.listImported()...");
       const result = await skillAPI.listImported();
+      console.log("[AgentView][DEBUG] skillAPI.listImported() result:", result);
       if (result.success && result.data) {
+        console.log("[AgentView][DEBUG] Setting skills:", result.data.length);
         setSkills(result.data);
       } else {
         throw new Error(result.error || "スキルの取得に失敗しました");
       }
     } catch (err) {
+      console.error("[AgentView][DEBUG] Error in fetchSkills:", err);
       setError(
         err instanceof Error
           ? `エラーが発生しました: ${err.message}`
           : "エラーが発生しました",
       );
     } finally {
+      console.log(
+        "[AgentView][DEBUG] fetchSkills - FINALLY (setLoading false)",
+      );
       setLoading(false);
     }
-  }, [setSkills, setLoading, setError]);
+  }, [setSkills, setLoading, setError, isLoading]);
 
   // Fetch available skills for import dialog
   const fetchAvailableSkills = useCallback(async () => {
@@ -167,6 +187,9 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   }, [setAvailableSkills]);
 
   useEffect(() => {
+    console.log(
+      "[AgentView][DEBUG] useEffect triggered - fetchSkills reference changed",
+    );
     fetchSkills();
   }, [fetchSkills]);
 
@@ -183,10 +206,26 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
     [selectSkill],
   );
 
-  const handleExecute = useCallback((skill: Skill) => {
-    // TODO: Implement skill execution
-    console.log("Execute skill:", skill.name);
-  }, []);
+  const handleExecute = useCallback(
+    async (skill: Skill) => {
+      try {
+        const result = await skillAPI.execute(skill.id);
+        if (result.success && result.data) {
+          showToast("success", `${skill.name} を実行しました`);
+        } else {
+          throw new Error(result.error || "スキル実行に失敗しました");
+        }
+      } catch (err) {
+        showToast(
+          "error",
+          err instanceof Error
+            ? `スキル実行に失敗しました: ${err.message}`
+            : "スキル実行に失敗しました",
+        );
+      }
+    },
+    [showToast],
+  );
 
   const handleDelete = useCallback(
     async (skill: Skill) => {

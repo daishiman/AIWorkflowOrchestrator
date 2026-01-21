@@ -138,6 +138,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                             |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.17.0  | 2026-01-21 | スキル管理IPC整合性修正: interfaces-agent-sdk.mdのIPCチャンネル名を実装に合わせて更新（`skill:list`→`skill:list-imported`等）、戻り値型を`OperationResult`に統一                                    |
 | 6.16.0  | 2026-01-21 | 統計更新: ファイル数85、行数約20,000行に更新。CONV-06-04（NER）/CONV-07-02（FTS5）完了反映                                                                                                          |
 | 6.15.0  | 2026-01-19 | NER仕様独立化&FTS5詳細化: interfaces-rag-entity-extraction.md新規作成、interfaces-rag-search.md FTS5/BM25詳細追加（テーブル構造、クエリパターン、データフロー）、85ファイル構成に拡張               |
 | 6.14.0  | 2026-01-19 | スキル実行機能追加: interfaces-agent-sdk.mdに`skill:execute`IPC/`skillAPI.execute`/`SkillRunResult`型/`OperationResult`型追加、関連ドキュメントリンク追加                                           |

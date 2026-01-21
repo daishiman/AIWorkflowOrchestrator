@@ -1,8 +1,24 @@
 // Types
 export * from "./types";
 
-// Skill types from src/types
-export * from "./src/types/skill";
+// Skill types (src/types/skillから明示的エクスポート)
+export type {
+  Anchor,
+  SkillEnvironmentType,
+  EnvironmentConfig,
+  SkillCategory,
+  Skill,
+  SkillDetail,
+  SkillImportConfig,
+  OperationResult,
+  SkillScanError,
+  SkillScanResult,
+  ImportResult,
+  RemoveResult,
+  SkillRunResult,
+} from "./src/types/skill";
+
+export { SKILL_CATEGORIES } from "./src/types/skill";
 
 // Claude CLI types
 export * from "./src/claude-cli";
