@@ -301,8 +301,150 @@ function EditorView() {
 
 ---
 
+## 実装詳細（TASK-SEARCH-INTEGRATE-001）
+
+### ファイル構成
+
+```
+apps/desktop/src/features/search/
+├── adapters/
+│   └── TextAreaEditorAdapter.ts    # EditorInstance アダプター実装
+├── utils/
+│   ├── executeSearch.ts            # 検索ロジックユーティリティ
+│   ├── highlightUtils.tsx          # ハイライトユーティリティ
+│   └── index.ts                    # バレルエクスポート
+├── components/
+│   ├── SearchPanel.tsx             # ファイル内検索パネル
+│   └── WorkspaceSearchPanel.tsx    # ワークスペース検索パネル
+├── stores/
+│   └── useSearchStore.ts           # Zustand検索状態管理
+└── __tests__/                      # テストファイル（275テスト）
+```
+
+### TextAreaEditorAdapter
+
+EditorInstanceインターフェースのTextArea実装:
+
+```typescript
+class TextAreaEditorAdapter implements EditorInstance {
+  constructor(
+    textareaRef: React.RefObject<HTMLTextAreaElement>,
+    onHighlightsChange?: (highlights: Highlight[]) => void,
+  );
+
+  // コンテンツ操作
+  getContent(): string;
+  setContent(content: string): void;
+  insertText(text: string, position?: number): void;
+
+  // 選択・カーソル
+  getSelection(): { start: number; end: number };
+  setSelection(start: number, end: number): void;
+  getCursorPosition(): number;
+  setCursorPosition(position: number): void;
+
+  // ハイライト
+  setHighlights(highlights: Highlight[]): void;
+  clearHighlights(): void;
+
+  // スクロール・フォーカス
+  scrollToLine(line: number, column?: number): void;
+  focus(): void;
+}
+```
+
+### executeSearch ユーティリティ
+
+検索ロジックをコンポーネントから分離:
+
+```typescript
+interface SearchOptions {
+  caseSensitive: boolean;
+  wholeWord: boolean;
+  regex: boolean;
+}
+
+interface SearchResult {
+  matches: SearchMatch[];
+  error: string | null;  // 正規表現エラー等
+}
+
+function executeSearch(
+  content: string,
+  query: string,
+  options: SearchOptions,
+): SearchResult;
+```
+
+### EditorView統合フック
+
+| フック                        | 責務                         | 配置                          |
+| ----------------------------- | ---------------------------- | ----------------------------- |
+| `useEditorInstance`           | EditorInstanceアダプター生成 | EditorView/hooks/             |
+| `useWorkspaceSearch`          | ワークスペース検索プロバイダ | EditorView/hooks/             |
+| `useSearchKeyboardShortcuts`  | キーボードショートカット管理 | EditorView/hooks/             |
+
+### 品質指標
+
+| 指標              | 値     |
+| ----------------- | ------ |
+| テスト合計数      | 275    |
+| Line Coverage     | 97.08% |
+| Branch Coverage   | 90.13% |
+| Function Coverage | 92%    |
+
+---
+
 ## 関連ドキュメント
 
 - [パネル・セレクターUI/UXガイドライン](./ui-ux-panels.md)
 - [Search Service API](./api-internal-search.md)
 - [アクセシビリティガイドライン](./accessibility.md)
+- [実装ガイド](../../../docs/30-workflows/search-panel-integration/outputs/phase-12/implementation-guide.md)
+
+---
+
+## 完了タスク
+
+- [x] Phase 5 検索パネル実装の EditorView 統合（TASK-SEARCH-INTEGRATE-001） - 2026-01-22
+
+---
+
+## 未タスク（将来の改善候補）
+
+以下のタスクは TASK-SEARCH-INTEGRATE-001 完了時に検出された改善候補です。
+
+| タスクID                         | 概要                           | 優先度 | サイズ | 仕様書                                                                      |
+| -------------------------------- | ------------------------------ | ------ | ------ | --------------------------------------------------------------------------- |
+| TASK-SEARCH-REGEX-ERROR-UI-001   | 正規表現エラーのUI表示改善     | 低     | S      | [task-search-panel-regex-error-ui.md](../../../docs/30-workflows/unassigned-task/task-search-panel-regex-error-ui.md) |
+| TASK-SEARCH-HISTORY-001          | 検索履歴機能                   | 低     | M      | [task-search-panel-history.md](../../../docs/30-workflows/unassigned-task/task-search-panel-history.md) |
+| TASK-SEARCH-FILE-NAV-001         | 検索結果ファイル間ナビゲーション | 低     | M      | [task-search-panel-file-navigation.md](../../../docs/30-workflows/unassigned-task/task-search-panel-file-navigation.md) |
+
+### 改善候補の詳細
+
+#### 1. 正規表現エラーのUI表示改善（TASK-SEARCH-REGEX-ERROR-UI-001）
+
+**現状**: 無効な正規表現パターン入力時、内部でエラーハンドリングされるが「結果なし」と表示
+
+**改善案**:
+- エラーメッセージをUIに表示
+- `executeSearch.ts` の `error` フィールドを活用（Phase 8 リファクタリングで対応済み）
+- `aria-live` でエラー通知
+
+#### 2. 検索履歴機能（TASK-SEARCH-HISTORY-001）
+
+**現状**: 検索クエリはセッション間で保持されない
+
+**改善案**:
+- 過去の検索クエリを最大20件保存
+- ドロップダウンから履歴選択
+- localStorage/IndexedDBで永続化
+
+#### 3. 検索結果ファイル間ナビゲーション（TASK-SEARCH-FILE-NAV-001）
+
+**現状**: ワークスペース検索結果間の移動はマウスクリックが必要
+
+**改善案**:
+- F3/Shift+F3 で次/前の検索結果へ移動
+- ファイル境界を跨いで連続的に移動
+- 現在位置インジケーター表示（例: 3/15）

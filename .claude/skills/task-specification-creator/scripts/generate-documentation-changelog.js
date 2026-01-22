@@ -56,11 +56,18 @@ const documents = [];
 for (const [phase, data] of Object.entries(artifacts.phases || {})) {
   if (data.artifacts) {
     for (const artifact of data.artifacts) {
-      documents.push({
-        name: artifact.description || basename(artifact.path),
-        path: artifact.path,
-        phase: phase,
-      });
+      // artifacts は文字列配列またはオブジェクト配列の両方に対応
+      const artifactPath = typeof artifact === "string" ? artifact : artifact.path;
+      const artifactName =
+        typeof artifact === "string" ? basename(artifact) : artifact.description || basename(artifact.path);
+
+      if (artifactPath) {
+        documents.push({
+          name: artifactName,
+          path: artifactPath,
+          phase: phase,
+        });
+      }
     }
   }
 }
