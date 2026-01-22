@@ -1,0 +1,205 @@
+{
+  "task": {
+    "id": "system-prompt-database-persistence",
+    "name": "システムプロンプトのデータベース永続化",
+    "description": "システムプロンプトテンプレートをelectron-storeからTursoデータベースに移行し、マルチデバイス対応・オフライン動作を実現する",
+    "createdAt": "2026-01-22",
+    "status": "specification-completed"
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "specFile": "phase-1-requirements.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-1/requirements-functional.md",
+        "outputs/phase-1/requirements-non-functional.md",
+        "outputs/phase-1/requirements-dataflow.md",
+        "outputs/phase-1/requirements-acceptance.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "specFile": "phase-2-design.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-2/database-schema-design.md",
+        "outputs/phase-2/repository-interface-design.md",
+        "outputs/phase-2/migration-design.md",
+        "outputs/phase-2/slice-update-design.md",
+        "outputs/phase-2/ipc-handler-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "specFile": "phase-3-design-review.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-3/requirements-coverage-review.md",
+        "outputs/phase-3/design-consistency-review.md",
+        "outputs/phase-3/feasibility-review.md",
+        "outputs/phase-3/integration-test-review.md",
+        "outputs/phase-3/review-judgment.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "specFile": "phase-4-test-creation.md",
+      "status": "pending",
+      "outputs": [
+        "packages/shared/src/repositories/__tests__/system-prompt-repository.test.ts",
+        "apps/desktop/src/renderer/store/slices/__tests__/systemPromptTemplateSlice.test.ts",
+        "apps/desktop/src/main/migration/__tests__/electronStoreMigration.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/systemPromptHandlers.test.ts",
+        "packages/shared/src/repositories/__tests__/system-prompt-repository.integration.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "specFile": "phase-5-implementation.md",
+      "status": "pending",
+      "outputs": [
+        "packages/shared/src/db/schema/systemPrompt.ts",
+        "packages/shared/drizzle/migrations/*.sql",
+        "packages/shared/src/repositories/types/system-prompt.ts",
+        "packages/shared/src/repositories/system-prompt-repository.ts",
+        "apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "apps/desktop/src/preload/index.ts",
+        "apps/desktop/src/renderer/store/slices/systemPromptTemplateSlice.ts",
+        "apps/desktop/src/main/migration/electronStoreMigration.ts"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "specFile": "phase-6-test-expansion.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-6/coverage-report.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "specFile": "phase-7-coverage-check.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-7/unit-coverage-result.md",
+        "outputs/phase-7/integration-coverage-result.md",
+        "outputs/phase-7/coverage-gap-analysis.md",
+        "outputs/phase-7/coverage-judgment.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "specFile": "phase-8-refactoring.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/test-results-after-refactor.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質確認",
+      "specFile": "phase-9-quality.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-9/typecheck-result.md",
+        "outputs/phase-9/lint-result.md",
+        "outputs/phase-9/format-result.md",
+        "outputs/phase-9/security-scan-result.md",
+        "outputs/phase-9/quality-metrics.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "specFile": "phase-10-final-review.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-10/implementation-verification.md",
+        "outputs/phase-10/coverage-final-verification.md",
+        "outputs/phase-10/quality-final-verification.md",
+        "outputs/phase-10/design-conformance.md",
+        "outputs/phase-10/final-judgment.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "specFile": "phase-11-manual-test.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-11/crud-manual-test.md",
+        "outputs/phase-11/preset-protection-test.md",
+        "outputs/phase-11/offline-test.md",
+        "outputs/phase-11/migration-test.md",
+        "outputs/phase-11/error-handling-test.md",
+        "outputs/phase-11/ui-ux-test.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "specFile": "phase-12-documentation.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-checklist.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "specFile": "phase-13-pr-creation.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-13/commit-summary.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-description.md",
+        "outputs/phase-13/final-verification.md",
+        "outputs/phase-13/pr-creation-result.md"
+      ]
+    }
+  ],
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/database-schema.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md",
+      ".claude/skills/aiworkflow-requirements/references/ui-ux-system-prompt.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-chat-history.md",
+      ".claude/skills/aiworkflow-requirements/references/error-handling.md",
+      ".claude/skills/aiworkflow-requirements/references/quality-requirements.md"
+    ],
+    "originalTask": "docs/30-workflows/unassigned-task/task-system-prompt-database-persistence.md"
+  },
+  "coverageTargets": {
+    "unit": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "integration": {
+      "crudOperations": 100,
+      "moduleInterfaces": 100,
+      "normalScenarios": 100,
+      "errorScenarios": 80,
+      "migration": 100
+    }
+  },
+  "technicalStack": {
+    "database": "Turso (libSQL)",
+    "orm": "Drizzle ORM",
+    "offlineSupport": "Embedded Replicas",
+    "stateManagement": "Zustand Slice",
+    "ipc": "Electron IPC",
+    "migration": "electron-store → Turso"
+  }
+}

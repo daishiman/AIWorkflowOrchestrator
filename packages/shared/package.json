@@ -96,6 +96,10 @@
     "./types/agent": {
       "types": "./dist/src/types/agent.d.ts",
       "import": "./dist/src/types/agent.js"
+    },
+    "./repositories": {
+      "types": "./dist/src/repositories/index.d.ts",
+      "import": "./dist/src/repositories/index.js"
     }
   },
   "scripts": {

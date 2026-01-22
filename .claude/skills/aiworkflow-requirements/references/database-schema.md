@@ -22,6 +22,7 @@ Turso統一アーキテクチャにおけるテーブル設計とインデック
 | api_keys | APIキー管理 | 設計済み |
 | audit_logs | 監査ログ | 設計済み |
 | sync_metadata | 同期メタデータ | 設計済み |
+| system_prompt_templates | システムプロンプトテンプレート | ✅ 実装済み |
 | chat_sessions | チャットセッション | ✅ 実装済み |
 | chat_messages | チャットメッセージ | ✅ 実装済み |
 | files | RAGファイルメタデータ | ✅ 実装済み |
@@ -107,6 +108,43 @@ Turso統一アーキテクチャにおけるテーブル設計とインデック
 | last_used_at | TEXT | YES | 最終使用日時 |
 | revoked_at | TEXT | YES | 無効化日時 |
 | created_at | TEXT | NO | 作成日時 |
+
+## システムプロンプト関連テーブル
+
+> **実装**: `packages/shared/src/repositories/system-prompt-repository.ts`
+> **マイグレーション**: `apps/desktop/src/main/migration/electron-store-migration.ts`
+> **タスク**: TASK-CHAT-SYSPROMPT-DB-001（2026-01-22完了）
+
+### system_prompt_templates（システムプロンプトテンプレート）
+
+ユーザーのシステムプロンプトテンプレートを永続化。プリセットテンプレートとカスタムテンプレートを管理し、オフライン対応とクラウド同期を実現。
+
+| カラム | 型 | NULL | 説明 |
+|--------|------|------|------|
+| id | TEXT | NO | UUID主キー（v4形式） |
+| user_id | TEXT | NO | 所有者のユーザーID |
+| name | TEXT | NO | テンプレート名（1-50文字） |
+| content | TEXT | NO | プロンプト内容（1-4000文字） |
+| is_preset | INTEGER | NO | プリセットフラグ（0=カスタム, 1=プリセット） |
+| created_at | TEXT | NO | 作成日時（ISO8601形式） |
+| updated_at | TEXT | NO | 更新日時（ISO8601形式） |
+
+**インデックス**:
+
+| インデックス | カラム | 用途 |
+|--------------|--------|------|
+| system_prompt_templates_user_id_idx | user_id | ユーザー別テンプレート取得 |
+| system_prompt_templates_name_idx | name | 名前検索 |
+| system_prompt_templates_is_preset_idx | is_preset | プリセットフィルタ |
+| system_prompt_templates_user_name_unq | user_id, name | 名前重複防止（UNIQUE） |
+
+**制約**:
+
+- PRIMARY KEY (id): UUID形式の一意識別子
+- NOT NULL (user_id, name, content): 必須項目
+- UNIQUE (user_id, name): 同一ユーザー内で名前の重複を禁止
+
+---
 
 ## チャット関連テーブル
 
@@ -443,3 +481,14 @@ GraphRAG基盤となるKnowledge Graphを構成する6テーブル群。エン�
 - [データベースアーキテクチャ](./database-architecture.md)
 - [データベース実装](./database-implementation.md)
 - [コアインターフェース](./interfaces-converter.md)
+- [システムプロンプトインターフェース](./interfaces-system-prompt.md)
+- [チャット履歴インターフェース](./interfaces-chat-history.md)
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                               |
+| ---------- | ---------- | -------------------------------------- |
+| 1.1.0      | 2026-01-22 | system_prompt_templates テーブル追加   |
+| 1.0.0      | -          | 初版作成                               |
