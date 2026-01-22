@@ -104,7 +104,15 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Use home directory for skills (where Claude CLI stores them)
   const homeDir = process.env.HOME || process.env.USERPROFILE || "";
   const skillBasePath = path.join(homeDir, ".claude", "skills");
-  const skillStore = new Store({ name: "skills" });
+  interface SkillStoreSchema {
+    importedSkillIds: string[];
+  }
+  const skillStore = new Store<SkillStoreSchema>({
+    name: "skills",
+    defaults: {
+      importedSkillIds: [],
+    },
+  });
   const skillScanner = new SkillScanner(skillBasePath);
   const skillParser = new SkillParser();
   const skillImportManager = new SkillImportManager(skillStore);

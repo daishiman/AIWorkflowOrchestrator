@@ -253,16 +253,17 @@ Phase N+1 へ
 
 ## scripts/ （決定論的処理 - 100%精度）
 
-| Script                       | 読み込み条件                  | 用途                                        |
-| ---------------------------- | ----------------------------- | ------------------------------------------- |
-| `detect-mode.js`             | 開始時                        | create/update/execute/detect-unassigned判定 |
-| `validate-phase-output.js`   | 各Phase完了時                 | Phase出力ファイル検証                       |
-| `complete-phase.js`          | 各Phase完了時                 | Phase完了・成果物登録・依存更新             |
-| `init-artifacts.js`          | create時                      | ワークフローディレクトリ初期化              |
-| `verify-all-specs.js`        | **Phase 5全体検証時（自動）** | **13ファイル一括検証・レポート生成**        |
-| `detect-unassigned-tasks.js` | Phase 12実行時                | TODO/FIXME検出                              |
-| `validate-schema.js`         | スキーマ検証時                | JSON Schema検証                             |
-| `log-usage.js`               | 全モード完了時                | 使用ログ記録                                |
+| Script                             | 読み込み条件                  | 用途                                        |
+| ---------------------------------- | ----------------------------- | ------------------------------------------- |
+| `detect-mode.js`                   | 開始時                        | create/update/execute/detect-unassigned判定 |
+| `validate-phase-output.js`         | 各Phase完了時                 | Phase出力ファイル検証                       |
+| `complete-phase.js`                | 各Phase完了時                 | Phase完了・成果物登録・依存更新             |
+| `init-artifacts.js`                | create時                      | ワークフローディレクトリ初期化              |
+| `verify-all-specs.js`              | **Phase 5全体検証時（自動）** | **13ファイル一括検証・レポート生成**        |
+| `detect-unassigned-tasks.js`       | Phase 12実行時                | TODO/FIXME検出                              |
+| `generate-documentation-changelog.js` | **Phase 12 Task 3実行時**  | **documentation-changelog.md自動生成**      |
+| `validate-schema.js`               | スキーマ検証時                | JSON Schema検証                             |
+| `log-usage.js`                     | 全モード完了時                | 使用ログ記録                                |
 
 ---
 
@@ -506,8 +507,19 @@ Phase 12でシステム仕様の更新が必要かを判断する際は、以下
 **Task 2: システム仕様書更新**（aiworkflow-requirements）【重要】
 
 - 📖 **必須**: `references/spec-update-workflow.md` を読み込む
-- 更新判断基準に基づき該当ファイルを特定
-- 以下のチェックリストを実行し、該当項目を更新:
+
+**⚠️ 2ステップで実行:**
+
+**Step 1: タスク完了記録（必須 - 全タスク共通）**
+```
+□ 該当する仕様書に「## 完了タスク」セクションを追加
+□ 「## 関連ドキュメント」に実装ガイドリンクを追加
+```
+
+**Step 2: システム仕様更新（条件付き）**
+- 更新判断基準に基づき更新要否を判断
+- 不要の場合: documentation-changelog.mdに「更新なし」を明記
+- 必要な場合: 以下のチェックリストを実行
   ```
   □ メソッドシグネチャ変更 → interfaces-*.md
   □ 新規エラークラス追加 → error-handling.md
@@ -515,12 +527,19 @@ Phase 12でシステム仕様の更新が必要かを判断する際は、以下
   □ 認可/認証ロジック → interfaces-*.md / security-*.md
   □ 新規定数/設定値 → 該当interfaces-*.md
   □ DBスキーマ変更 → database-*.md
+  □ 更新したファイルの変更履歴にバージョン追記
   ```
-- 更新したファイルの変更履歴セクションにバージョン追記
 
 **Task 3: ドキュメント更新履歴作成**
 
-- 作成・更新したファイル一覧（システム仕様更新も含む）
+- 自動生成スクリプトを使用（推奨）:
+  ```bash
+  node .claude/skills/task-specification-creator/scripts/generate-documentation-changelog.js \
+    --workflow docs/30-workflows/{{FEATURE_NAME}}
+  ```
+- 生成後、手動で以下を補完:
+  - システム仕様更新内容または「更新なし」の判断根拠
+  - ソースコード変更の概要
 
 **Task 4: 未タスク検出レポート作成**（0件でも出力必須）
 
@@ -552,7 +571,8 @@ Phase 12でシステム仕様の更新が必要かを判断する際は、以下
 
 | Version   | Date           | Changes                                                                                                                                          |
 | --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **7.4.0** | **2026-01-18** | **Phase 12 Task 2強化: システム仕様更新チェックリスト追加、変更タイプ別マッピング追加、更新漏れ防止ガイダンス強化**                              |
+| **7.5.0** | **2026-01-22** | **Phase 12改善: Task 2を2ステップ化（タスク完了記録必須＋仕様更新条件付き）、Task 3自動生成スクリプト追加、spec-update-workflow.md明確化**       |
+| 7.4.0     | 2026-01-18     | Phase 12 Task 2強化: システム仕様更新チェックリスト追加、変更タイプ別マッピング追加、更新漏れ防止ガイダンス強化                                  |
 | 7.3.0     | 2026-01-17     | Phase 12-2システム仕様更新ガイダンス強化: spec-update-workflow.mdに更新判断基準・フローチャート追加、aiworkflow-requirements更新タイミング明確化 |
 | 7.2.0     | 2026-01-17     | Phase 11/12実行ガイダンス追加: テスト結果レポート形式、未タスク検出レポート形式（0件含む）、システム仕様書更新手順                               |
 | 7.1.0     | 2026-01-17     | Phase 5「全体整合性検証」追加: verify-all-specs.js（自動13ファイル一括検証）、verify-specs.md（LLM品質検証）、verification-report.json追加       |

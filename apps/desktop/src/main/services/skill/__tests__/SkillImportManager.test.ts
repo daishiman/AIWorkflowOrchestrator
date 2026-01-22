@@ -391,6 +391,51 @@ describe("SkillImportManager", () => {
   });
 
   // ===========================================================================
+  // Persistence tests (Phase 4: SKILL-IMPORT-PERSIST-001)
+  // ===========================================================================
+
+  describe("Persistence", () => {
+    it("SIM-P-01: should persist and restore imported skills across instances", async () => {
+      // Arrange - Simulating store persistence
+      const storedData: string[] = [];
+      mockStore.get.mockImplementation(() => [...storedData]);
+      mockStore.set.mockImplementation((_key, value) => {
+        storedData.length = 0;
+        storedData.push(...(value as string[]));
+      });
+
+      // Act - First instance: import
+      const module = await import("../SkillImportManager");
+      const manager1 = new module.SkillImportManager(mockStore as never);
+      await manager1.importSkills(["skill-1", "skill-2"]);
+
+      // Act - Second instance: should have the imported skills
+      const manager2 = new module.SkillImportManager(mockStore as never);
+
+      // Assert
+      expect(manager2.getImportedSkillIds()).toHaveLength(2);
+      expect(manager2.getImportedSkillIds()).toContain("skill-1");
+      expect(manager2.getImportedSkillIds()).toContain("skill-2");
+    });
+
+    it("SIM-P-02: should use correct store key for persistence", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue([]);
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act
+      await testManager.importSkills(["skill-1"]);
+
+      // Assert
+      expect(mockStore.set).toHaveBeenCalledWith(
+        "importedSkillIds",
+        expect.any(Array),
+      );
+    });
+  });
+
+  // ===========================================================================
   // isImported tests
   // ===========================================================================
 
@@ -441,6 +486,149 @@ describe("SkillImportManager", () => {
 
       // Then: falseが返される
       expect(result).toBe(false);
+    });
+  });
+
+  // ===========================================================================
+  // Edge Cases tests (Phase 6: Task 1)
+  // ===========================================================================
+
+  describe("Edge Cases", () => {
+    it("SIM-EC-01: should handle empty skill array import", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue([]);
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act
+      await testManager.importSkills([]);
+
+      // Assert
+      expect(mockStore.set).not.toHaveBeenCalled();
+    });
+
+    it("SIM-EC-02: should handle duplicate skill imports", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue(["skill-1"]);
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act
+      await testManager.importSkills(["skill-1", "skill-2"]);
+
+      // Assert
+      expect(testManager.getImportedSkillIds()).toContain("skill-1");
+      expect(testManager.getImportedSkillIds()).toContain("skill-2");
+      // skill-1 should not be duplicated
+      const ids = testManager.getImportedSkillIds();
+      expect(ids.filter((id) => id === "skill-1").length).toBe(1);
+    });
+
+    it("SIM-EC-03: should handle special characters in skill IDs", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue([]);
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act
+      await testManager.importSkills(["skill/with/slash", "skill-with-dash"]);
+
+      // Assert
+      expect(testManager.getImportedSkillIds()).toContain("skill/with/slash");
+      expect(testManager.getImportedSkillIds()).toContain("skill-with-dash");
+    });
+  });
+
+  // ===========================================================================
+  // Remove Additional tests (Phase 6: Task 2)
+  // ===========================================================================
+
+  describe("Remove - Additional", () => {
+    it("SIM-RM-01: should remove skill and persist", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue(["skill-1", "skill-2"]);
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act
+      await testManager.removeSkill("skill-1");
+
+      // Assert
+      expect(testManager.getImportedSkillIds()).not.toContain("skill-1");
+      expect(mockStore.set).toHaveBeenCalledWith("importedSkillIds", [
+        "skill-2",
+      ]);
+    });
+
+    it("SIM-RM-02: should handle removing non-existent skill gracefully", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue(["skill-1"]);
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act
+      await testManager.removeSkill("non-existent");
+
+      // Assert
+      expect(testManager.getImportedSkillIds()).toEqual(["skill-1"]);
+    });
+
+    it("SIM-RM-03: should persist empty array when last skill is removed", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue(["skill-1"]);
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act
+      await testManager.removeSkill("skill-1");
+
+      // Assert
+      expect(testManager.getImportedSkillIds()).toEqual([]);
+      expect(mockStore.set).toHaveBeenCalledWith("importedSkillIds", []);
+    });
+  });
+
+  // ===========================================================================
+  // Store Error Handling tests (Phase 6: Task 3)
+  // ===========================================================================
+
+  describe("Store Error Handling", () => {
+    it("SIM-SEH-01: should handle store.set errors gracefully", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue([]);
+      mockStore.set.mockImplementation(() => {
+        throw new Error("Store write error");
+      });
+      const module = await import("../SkillImportManager");
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Act & Assert - should not throw
+      await expect(
+        testManager.importSkills(["skill-1"]),
+      ).resolves.not.toThrow();
+    });
+
+    it("SIM-SEH-02: should handle corrupted store data", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue("invalid-data");
+      const module = await import("../SkillImportManager");
+
+      // Act & Assert - should not throw
+      expect(
+        () => new module.SkillImportManager(mockStore as never),
+      ).not.toThrow();
+    });
+
+    it("SIM-SEH-03: should handle null store value", async () => {
+      // Arrange
+      mockStore.get.mockReturnValue(null);
+      const module = await import("../SkillImportManager");
+
+      // Act
+      const testManager = new module.SkillImportManager(mockStore as never);
+
+      // Assert
+      expect(testManager.getImportedSkillIds()).toEqual([]);
     });
   });
 });
