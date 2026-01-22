@@ -1,0 +1,176 @@
+{
+  "workflow": {
+    "id": "drizzle-repository-implementation",
+    "name": "Drizzle Repository実装",
+    "description": "IChatSessionRepository・IChatMessageRepositoryのDrizzle ORM実装",
+    "createdAt": "2026-01-22",
+    "relatedIssue": "#400",
+    "sourceTask": "docs/30-workflows/unassigned-task/task-drizzle-repository-implementation.md"
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "specFile": "phase-1-requirements.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-1/functional-requirements.md",
+        "outputs/phase-1/non-functional-requirements.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "specFile": "phase-2-design.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-2/drizzle-chat-session-repository-design.md",
+        "outputs/phase-2/drizzle-chat-message-repository-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "specFile": "phase-3-design-review.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD Red）",
+      "specFile": "phase-4-test-creation.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-4/test-creation-result.md"]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD Green）",
+      "specFile": "phase-5-implementation.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-5/implementation-result.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "specFile": "phase-6-test-expansion.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-6/test-expansion-result.md",
+        "outputs/phase-6/integration-test-setup.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "specFile": "phase-7-coverage-check.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-7/coverage-initial-report.md",
+        "outputs/phase-7/coverage-gap-analysis.md",
+        "outputs/phase-7/coverage-final-report.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD Refactor）",
+      "specFile": "phase-8-refactoring.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-8/refactoring-candidates.md",
+        "outputs/phase-8/refactoring-result.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "specFile": "phase-9-quality.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-9/static-analysis-result.md",
+        "outputs/phase-9/security-check-result.md",
+        "outputs/phase-9/performance-test-result.md",
+        "outputs/phase-9/code-review-checklist.md",
+        "outputs/phase-9/quality-metrics.md",
+        "outputs/phase-9/quality-assurance-result.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "specFile": "phase-10-final-review.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-10/requirements-fulfillment.md",
+        "outputs/phase-10/design-consistency.md",
+        "outputs/phase-10/test-quality-review.md",
+        "outputs/phase-10/artifact-checklist.md",
+        "outputs/phase-10/risk-issue-final.md",
+        "outputs/phase-10/final-review-result.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "specFile": "phase-11-manual-test.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-11/file-db-test-result.md",
+        "outputs/phase-11/error-scenario-test-result.md",
+        "outputs/phase-11/performance-manual-test.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "specFile": "phase-12-documentation.md",
+      "status": "pending",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/document-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成・CI確認",
+      "specFile": "phase-13-pr-creation.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-13/completion-report.md"]
+    }
+  ],
+  "implementationTargets": [
+    {
+      "name": "DrizzleChatSessionRepository",
+      "path": "packages/shared/src/infrastructure/repositories/chat-history/DrizzleChatSessionRepository.ts",
+      "interface": "IChatSessionRepository"
+    },
+    {
+      "name": "DrizzleChatMessageRepository",
+      "path": "packages/shared/src/infrastructure/repositories/chat-history/DrizzleChatMessageRepository.ts",
+      "interface": "IChatMessageRepository"
+    }
+  ],
+  "testTargets": [
+    {
+      "name": "DrizzleChatSessionRepository.test.ts",
+      "path": "packages/shared/src/infrastructure/repositories/chat-history/__tests__/DrizzleChatSessionRepository.test.ts"
+    },
+    {
+      "name": "DrizzleChatMessageRepository.test.ts",
+      "path": "packages/shared/src/infrastructure/repositories/chat-history/__tests__/DrizzleChatMessageRepository.test.ts"
+    }
+  ],
+  "qualityGates": {
+    "testCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "staticAnalysis": {
+      "typeErrors": 0,
+      "lintErrors": 0
+    }
+  }
+}

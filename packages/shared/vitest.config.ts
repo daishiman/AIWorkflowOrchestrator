@@ -46,6 +46,7 @@ export default defineConfig({
         "src/db/migrate.ts",
         "src/repositories/**",
         "src/features/chat-history/**",
+        "!src/features/chat-history/infrastructure/persistence/*.ts", // Drizzle Repositoryを含める
 
         // ユーティリティ（未テスト）
         "utils/**",

@@ -171,11 +171,20 @@ pnpm vitest run packages/shared/src/services/graph/__tests__/ --grep "findSimila
 
 ## 8. 参照情報
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                | パス                                                                                        | 内容                       |
+| ----------------------- | ------------------------------------------------------------------------------------------- | -------------------------- |
+| Knowledge Graph Store   | `.claude/skills/aiworkflow-requirements/references/interfaces-rag-knowledge-graph-store.md` | ストアインターフェース仕様 |
+| RAG検索インターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-rag-search.md`                | 類似検索API仕様            |
+| Embeddingパイプライン   | `.claude/skills/aiworkflow-requirements/references/architecture-embedding-pipeline.md`      | ベクトル埋め込み設計       |
+
 ### 関連ドキュメント
 
 - `packages/shared/src/services/graph/knowledge-graph-store.ts:355` - 現在のスタブ実装
 - `docs/30-workflows/unassigned-task/task-07-03-vector-search-diskann.md` - DiskANN統合タスク
-- `.claude/skills/aiworkflow-requirements/references/interfaces-rag-knowledge-graph-store.md` - Knowledge Graph Store仕様
 
 ---
 

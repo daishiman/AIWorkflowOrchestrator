@@ -110,7 +110,9 @@ docs/30-workflows/{{FEATURE_NAME}}/
 | 9     | 品質レポート         | `quality-report.md`           |
 | 10    | 最終レビュー結果     | `final-review-result.md`      |
 | 11    | 手動テスト結果       | `manual-test-result.md`       |
+| 12    | 実装ガイド           | `implementation-guide.md`     |
 | 12    | ドキュメント更新記録 | `documentation-update-log.md` |
+| 12    | 未タスク検出レポート | `unassigned-task-report.md`   |
 | 13    | PR情報               | `pr-info.md`                  |
 
 ---
