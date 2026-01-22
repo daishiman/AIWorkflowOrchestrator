@@ -405,3 +405,21 @@
 - **Notes**: SKILL.md最適化: 521→420行に削減（19.4%減）、Part 0.5をexecution-mode-guide.mdへ分離、scripts/テーブルをscript-commands.mdへ統合
 
 ---
+
+## [2026-01-22T03:39:13.826Z]
+
+- **Agent**: unknown
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+- **Notes**: shared-type-export-01完了。成果物名の不一致パターン検出: 仕様書の成果物名と実際の生成ファイル名が異なる傾向あり。改善提案: Phase仕様書に成果物ファイル名のバリデーションパターンを追加
+
+---
+
+## [2026-01-22T04:37:32.013Z]
+
+- **Agent**: unknown
+- **Phase**: unknown
+- **Result**: ✓ 成功
+- **Notes**: SHARED-TYPE-EXPORT-01ワークフローからの改善分析完了。task-specification-creatorのartifact-naming-conventions.md更新、patterns.md追記
+
+---

@@ -241,6 +241,15 @@ git push
 
 ## 7. 参照情報
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                      | パス                                                                                      | 内容                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------- | ---------------------- |
+| モノレポアーキテクチャ        | `.claude/skills/aiworkflow-requirements/references/architecture-monorepo.md`              | 型エクスポートパターン |
+| Community検出インターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-rag-community-detection.md` | Community型定義        |
+
 ### 関連コマンド
 
 ```bash
@@ -259,8 +268,8 @@ pnpm build
 
 ### 関連タスク
 
-| タスクID              | 内容               |
-| --------------------- | ------------------ |
-| SHARED-TYPE-EXPORT-01 | 型整理             |
-| SHARED-TYPE-EXPORT-02 | メインエクスポート |
-| CONV-08-05            | 元タスク           |
+| タスクID              | 内容               | ステータス |
+| --------------------- | ------------------ | ---------- |
+| SHARED-TYPE-EXPORT-01 | 型整理（Part 1）   | 完了       |
+| SHARED-TYPE-EXPORT-02 | メインエクスポート | 未実施     |
+| CONV-08-05            | 元タスク           | -          |

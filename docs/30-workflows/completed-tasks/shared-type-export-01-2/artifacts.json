@@ -1,0 +1,129 @@
+{
+  "taskId": "SHARED-TYPE-EXPORT-01",
+  "taskName": "@repo/shared Community型エクスポート（型整理）",
+  "featureName": "shared-type-export-01",
+  "category": "リファクタリング",
+  "priority": "高",
+  "scale": "小規模",
+  "status": "未実施",
+  "issueNumber": 371,
+  "createdAt": "2026-01-22",
+  "updatedAt": "2026-01-22",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "未実施",
+      "specFile": "phase-1-requirements.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "未実施",
+      "specFile": "phase-2-design.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "未実施",
+      "specFile": "phase-3-design-review.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "未実施",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "未実施",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "未実施",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "未実施",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "未実施",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "未実施",
+      "specFile": "phase-9-quality.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "未実施",
+      "specFile": "phase-10-final-review.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "未実施",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "未実施",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [],
+      "completedAt": null
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "未実施",
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": [],
+      "completedAt": null
+    }
+  },
+  "targetFiles": [
+    {
+      "path": "packages/shared/src/services/graph/types.ts",
+      "description": "型定義元ファイル（確認対象）"
+    },
+    {
+      "path": "packages/shared/src/services/graph/index.ts",
+      "description": "バレルファイル（更新対象）"
+    }
+  ],
+  "dependencies": {
+    "upstream": [],
+    "downstream": ["SHARED-TYPE-EXPORT-02", "SHARED-TYPE-EXPORT-03"]
+  },
+  "references": [
+    {
+      "name": "モノレポアーキテクチャ",
+      "path": ".claude/skills/aiworkflow-requirements/references/architecture-monorepo.md"
+    },
+    {
+      "name": "コミュニティ検出インターフェース",
+      "path": ".claude/skills/aiworkflow-requirements/references/interfaces-rag-community-detection.md"
+    }
+  ]
+}
