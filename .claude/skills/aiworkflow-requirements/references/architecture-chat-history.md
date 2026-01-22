@@ -2,7 +2,7 @@
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
-> 更新日: 2026-01-19
+> 更新日: 2026-01-22
 > 関連タスク: ARCH-001 Clean Architecture Refactoring
 
 ---
@@ -94,11 +94,19 @@ packages/shared/src/
     │
     └── infrastructure/
         └── persistence/
+            ├── DrizzleChatSessionRepository.ts  # セッションリポジトリ実装
+            ├── DrizzleChatMessageRepository.ts  # メッセージリポジトリ実装
+            ├── index.ts                         # エクスポート
             ├── mappers/
-            │   ├── ChatSessionMapper.ts   # セッション変換
-            │   └── ChatMessageMapper.ts   # メッセージ変換
-            └── records/
-                └── index.ts               # DB Record型
+            │   ├── ChatSessionMapper.ts         # セッション変換
+            │   └── ChatMessageMapper.ts         # メッセージ変換
+            ├── records/
+            │   └── index.ts                     # DB Record型
+            └── __tests__/
+                ├── DrizzleChatSessionRepository.test.ts
+                ├── DrizzleChatMessageRepository.test.ts
+                └── helpers/
+                    └── test-db.ts               # テストDB初期化
 ```
 
 ---
@@ -204,6 +212,48 @@ interface IChatMessageRepository {
 
 ## Infrastructure Layer
 
+### Drizzle Repositories
+
+SQLiteデータベースへの永続化を担当するリポジトリ実装。
+
+#### DrizzleChatSessionRepository
+
+`IChatSessionRepository`の具体実装。
+
+| メソッド | 説明 |
+| -------- | ---- |
+| findById(id) | IDでセッションを取得（deletedAt考慮） |
+| findByUserId(userId, limit, offset) | ユーザーのセッション一覧（ページネーション） |
+| findPinned(userId) | ピン留めセッション一覧（pinOrder順） |
+| search(criteria) | 条件検索（keyword, isFavorite, isPinned） |
+| save(session) | 保存（upsert） |
+| delete(id) | 物理削除 |
+| exists(id) | 存在確認 |
+| countPinned(userId) | ピン留め数カウント |
+
+#### DrizzleChatMessageRepository
+
+`IChatMessageRepository`の具体実装。
+
+| メソッド | 説明 |
+| -------- | ---- |
+| findById(id) | IDでメッセージを取得 |
+| findBySessionId(sessionId, limit, offset) | セッションのメッセージ一覧 |
+| findLatestBySessionId(sessionId) | 最新メッセージ取得 |
+| countBySessionId(sessionId) | メッセージ数カウント |
+| save(message) | 保存（upsert） |
+| saveMany(messages) | 一括保存 |
+| delete(id) | 物理削除 |
+| deleteBySessionId(sessionId) | セッション内全削除 |
+
+#### エラーハンドリング
+
+すべてのDBエラーは`DatabaseError`にラップされる。
+
+```typescript
+throw new DatabaseError("セッションの取得に失敗しました", originalError);
+```
+
 ### Mappers
 
 | Mapper             | 変換メソッド              | 説明                  |
@@ -262,7 +312,7 @@ AppError (abstract)
 | Line Coverage        | ≥80%  | 84.1%   |
 | Branch Coverage      | ≥60%  | 93.57%  |
 | Function Coverage    | ≥80%  | 90.23%  |
-| テスト数             | -     | 129     |
+| テスト数             | -     | 119     |
 | 型エラー             | 0件   | 0件     |
 | Lintエラー           | 0件   | 0件     |
 
@@ -295,3 +345,12 @@ AppError (abstract)
 - [インターフェース仕様](./interfaces-chat-history.md) - 型定義・DB仕様
 - [アーキテクチャパターン](./architecture-patterns.md) - 全体パターン
 - [設計ドキュメント](../../../docs/30-workflows/clean-architecture-refactoring/outputs/phase-2/) - Phase 2成果物
+
+---
+
+## 変更履歴
+
+| Version | Date       | Changes                                |
+| ------- | ---------- | -------------------------------------- |
+| 1.1.0   | 2026-01-22 | Drizzle Repository実装を追加           |
+| 1.0.0   | 2026-01-19 | 初版作成（Clean Architecture移行完了） |
