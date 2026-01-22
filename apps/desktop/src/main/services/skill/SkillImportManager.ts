@@ -4,18 +4,30 @@
  * @see docs/30-workflows/agent-003-skill-management-backend/outputs/phase-2/class-design.md
  */
 import type { ImportResult, RemoveResult } from "@repo/shared";
-import type ElectronStore from "electron-store";
 
 const STORE_KEY = "importedSkillIds";
 
+/**
+ * electron-store互換のストアインターフェース
+ */
+interface SkillStore {
+  get(key: string, defaultValue: string[]): string[];
+  set(key: string, value: string[]): void;
+}
+
 export class SkillImportManager {
   private importedIds: Set<string>;
-  private store: ElectronStore;
+  private store: SkillStore;
 
-  constructor(store: ElectronStore) {
+  constructor(store: SkillStore) {
     this.store = store;
-    const stored = this.store.get(STORE_KEY, []) as string[];
-    this.importedIds = new Set(stored);
+    try {
+      const stored = this.store.get(STORE_KEY, []) as string[];
+      this.importedIds = new Set(stored);
+    } catch (error) {
+      console.error("[SkillImportManager] Failed to load from store:", error);
+      this.importedIds = new Set();
+    }
   }
 
   /**
@@ -78,6 +90,10 @@ export class SkillImportManager {
    * インポート状態をストアに永続化する
    */
   private persist(): void {
-    this.store.set(STORE_KEY, Array.from(this.importedIds));
+    try {
+      this.store.set(STORE_KEY, Array.from(this.importedIds));
+    } catch (error) {
+      console.error("[SkillImportManager] Failed to persist:", error);
+    }
   }
 }
