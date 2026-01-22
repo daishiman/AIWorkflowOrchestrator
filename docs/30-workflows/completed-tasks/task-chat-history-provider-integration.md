@@ -8,19 +8,22 @@ issue_number: 428
 
 ## メタ情報
 
-| 項目         | 内容                                 |
-| ------------ | ------------------------------------ |
-| タスクID     | UT-007                               |
-| タスク名     | ChatHistoryProvider App Integration  |
-| 分類         | 実装                                 |
-| 対象機能     | チャット履歴機能（chat-history）     |
-| 優先度       | 高                                   |
-| 見積もり規模 | 小規模                               |
-| ステータス   | 未実施                               |
-| 発見元       | Phase 12（UT-006完了後の後続タスク） |
-| 発見日       | 2026-01-22                           |
-| 関連タスク   | UT-006 React Context DI実装          |
-| 依存タスク   | UT-006 React Context DI実装（完了）  |
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | UT-007                                                                                         |
+| タスク名     | ChatHistoryProvider App Integration                                                            |
+| 分類         | 実装                                                                                           |
+| 対象機能     | チャット履歴機能（chat-history）                                                               |
+| 優先度       | 高                                                                                             |
+| 見積もり規模 | 小規模                                                                                         |
+| ステータス   | **完了** ✅                                                                                    |
+| 完了日       | 2026-01-22                                                                                     |
+| 発見元       | Phase 12（UT-006完了後の後続タスク）                                                           |
+| 発見日       | 2026-01-22                                                                                     |
+| 関連タスク   | UT-006 React Context DI実装                                                                    |
+| 依存タスク   | UT-006 React Context DI実装（完了）                                                            |
+| ワークフロー | `docs/30-workflows/chat-history-provider-integration/`                                         |
+| 実装ガイド   | `docs/30-workflows/chat-history-provider-integration/outputs/phase-12/implementation-guide.md` |
 
 ---
 
@@ -272,20 +275,21 @@ DB接続確認と初期化状態の管理を実装する。
 
 ### 機能要件
 
-- [ ] ChatHistoryProviderがApp.tsxでラップされている
-- [ ] DrizzleリポジトリがProviderに注入されている
-- [ ] useChatHistoryが任意のコンポーネントで使用可能
-- [ ] isReadyフラグが正しく動作する
+- [x] ChatHistoryProviderがApp.tsxでラップされている
+- [x] DrizzleリポジトリがProviderに注入されている
+- [x] useChatHistoryが任意のコンポーネントで使用可能
+- [x] isReadyフラグが正しく動作する
 
 ### 品質要件
 
-- [ ] 型エラー 0件
-- [ ] Lintエラー 0件
-- [ ] 統合テストパス
+- [x] 型エラー 0件
+- [x] Lintエラー 0件
+- [x] 統合テストパス（97/97テスト）
 
 ### ドキュメント要件
 
-- [ ] 使用例がコメントに含まれている
+- [x] 使用例がコメントに含まれている
+- [x] 実装ガイド作成済み
 
 ---
 
