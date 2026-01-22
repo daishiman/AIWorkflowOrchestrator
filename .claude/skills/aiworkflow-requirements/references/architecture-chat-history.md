@@ -2,8 +2,8 @@
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
-> 更新日: 2026-01-19
-> 関連タスク: ARCH-001 Clean Architecture Refactoring
+> 更新日: 2026-01-22
+> 関連タスク: ARCH-001 Clean Architecture Refactoring, UT-006 React Context DI実装
 
 ---
 
@@ -99,6 +99,51 @@ packages/shared/src/
             │   └── ChatMessageMapper.ts   # メッセージ変換
             └── records/
                 └── index.ts               # DB Record型
+```
+
+---
+
+## UI Layer
+
+### React Context DI
+
+チャット履歴機能のPresentation層におけるDependency Injectionパターン。
+
+| コンポーネント          | パス                                                      | 責務                                |
+| ----------------------- | --------------------------------------------------------- | ----------------------------------- |
+| ChatHistoryContext      | apps/desktop/src/features/chat-history/context/           | Context型定義（5種Use Cases+isReady）|
+| ChatHistoryProvider     | apps/desktop/src/features/chat-history/context/           | Use CasesのDI Provider              |
+| useChatHistory          | apps/desktop/src/features/chat-history/hooks/             | Context取得Hook                     |
+| MockChatHistoryProvider | apps/desktop/src/features/chat-history/context/__mocks__/ | テスト用MockProvider                |
+
+#### ChatHistoryContextValue
+
+```typescript
+interface ChatHistoryContextValue {
+  createSession: CreateChatSessionUseCase;
+  addUserMessage: AddUserMessageUseCase;
+  addAssistantMessage: AddAssistantMessageUseCase;
+  togglePinned: TogglePinnedUseCase;
+  searchSessions: SearchSessionsUseCase;
+  isReady: boolean;
+}
+```
+
+#### 使用パターン
+
+```tsx
+// 本番環境
+<ChatHistoryProvider
+  sessionRepository={drizzleSessionRepo}
+  messageRepository={drizzleMessageRepo}
+>
+  <App />
+</ChatHistoryProvider>
+
+// テスト環境
+<MockChatHistoryProvider overrides={{ createSession: mockUseCase }}>
+  <ComponentUnderTest />
+</MockChatHistoryProvider>
 ```
 
 ---
