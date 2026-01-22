@@ -138,7 +138,8 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                             |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.18.0  | 2026-01-22 | React Context DI追加（UT-006完了）: architecture-chat-history.mdにUI Layerセクション追加（ChatHistoryContext/Provider/useChatHistory/MockProvider）、topic-map.md更新、8アーキテクチャファイル構成 |
+| 6.19.0  | 2026-01-22 | React Context DI追加（UT-006完了）: architecture-chat-history.mdにUI Layerセクション追加（ChatHistoryContext/Provider/useChatHistory/MockProvider）、topic-map.md更新、8アーキテクチャファイル構成 |
+| 6.18.0  | 2026-01-22 | Drizzle Repository実装追加: architecture-chat-history.md更新（DrizzleChatSessionRepository/DrizzleChatMessageRepository、エラーハンドリング、テスト構成）                                           |
 | 6.17.0  | 2026-01-21 | スキル管理IPC整合性修正: interfaces-agent-sdk.mdのIPCチャンネル名を実装に合わせて更新（`skill:list`→`skill:list-imported`等）、戻り値型を`OperationResult`に統一                                    |
 | 6.16.0  | 2026-01-21 | 統計更新: ファイル数85、行数約20,000行に更新。CONV-06-04（NER）/CONV-07-02（FTS5）完了反映                                                                                                          |
 | 6.15.0  | 2026-01-19 | NER仕様独立化&FTS5詳細化: interfaces-rag-entity-extraction.md新規作成、interfaces-rag-search.md FTS5/BM25詳細追加（テーブル構造、クエリパターン、データフロー）、85ファイル構成に拡張               |

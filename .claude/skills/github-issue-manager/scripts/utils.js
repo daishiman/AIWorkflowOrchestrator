@@ -6,7 +6,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { execSync, spawn } = require("child_process");
+const { execSync, spawnSync } = require("child_process");
 
 // ================================
 // 定数定義
@@ -58,20 +58,29 @@ const SCORE_WEIGHTS = {
  * @returns {string} 実行結果
  */
 function execGh(args, options = {}) {
-  const cmd = `gh ${args.join(" ")}`;
-  try {
-    const result = execSync(cmd, {
-      encoding: "utf-8",
-      maxBuffer: 10 * 1024 * 1024,
-      ...options,
-    });
-    return result.trim();
-  } catch (error) {
-    if (error.stderr) {
-      console.error(`gh CLI error: ${error.stderr}`);
+  // spawnSyncを使用して引数を配列として渡す（シェルエスケープ不要）
+  const result = spawnSync("gh", args, {
+    encoding: "utf-8",
+    maxBuffer: 10 * 1024 * 1024,
+    ...options,
+  });
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  if (result.status !== 0) {
+    const error = new Error(
+      `gh command failed with exit code ${result.status}`,
+    );
+    error.stderr = result.stderr;
+    if (result.stderr) {
+      console.error(`gh CLI error: ${result.stderr}`);
     }
     throw error;
   }
+
+  return (result.stdout || "").trim();
 }
 
 /**

@@ -3,12 +3,12 @@
   "version": "2.0.0",
   "currentLevel": 1,
   "metrics": {
-    "totalUsageCount": 0,
-    "successCount": 0,
+    "totalUsageCount": 1,
+    "successCount": 1,
     "failureCount": 0,
-    "successRate": 0,
+    "successRate": 1,
     "averageDuration": 0,
-    "lastEvaluated": null
+    "lastEvaluated": "2026-01-22T04:34:10.121Z"
   },
   "levelHistory": [],
   "patterns": {
@@ -17,13 +17,41 @@
     "frequentAgents": []
   },
   "phaseMetrics": {
-    "decompose-task": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
-    "identify-scope": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
-    "design-phases": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
-    "generate-task-specs": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
-    "output-phase-files": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
-    "update-dependencies": { "successRate": 0, "avgDuration": 0, "usageCount": 0 },
-    "generate-unassigned-task": { "successRate": 0, "avgDuration": 0, "usageCount": 0 }
+    "decompose-task": {
+      "successRate": 0,
+      "avgDuration": 0,
+      "usageCount": 0
+    },
+    "identify-scope": {
+      "successRate": 0,
+      "avgDuration": 0,
+      "usageCount": 0
+    },
+    "design-phases": {
+      "successRate": 0,
+      "avgDuration": 0,
+      "usageCount": 0
+    },
+    "generate-task-specs": {
+      "successRate": 0,
+      "avgDuration": 0,
+      "usageCount": 0
+    },
+    "output-phase-files": {
+      "successRate": 0,
+      "avgDuration": 0,
+      "usageCount": 0
+    },
+    "update-dependencies": {
+      "successRate": 0,
+      "avgDuration": 0,
+      "usageCount": 0
+    },
+    "generate-unassigned-task": {
+      "successRate": 0,
+      "avgDuration": 0,
+      "usageCount": 0
+    }
   },
   "levelCriteria": {
     "level2": {

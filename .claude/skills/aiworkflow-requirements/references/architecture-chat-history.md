@@ -42,12 +42,12 @@
 
 ## 依存関係ルール
 
-| レイヤー       | 依存先                  | 備考                     |
-| -------------- | ----------------------- | ------------------------ |
-| Domain         | なし                    | 純粋なビジネスロジック   |
-| Application    | Domain                  | Use CaseがDomainを使用   |
-| Infrastructure | Domain, Application     | 実装がインターフェース依存 |
-| UI             | Application, Domain     | DTOとUse Caseを使用      |
+| レイヤー       | 依存先              | 備考                       |
+| -------------- | ------------------- | -------------------------- |
+| Domain         | なし                | 純粋なビジネスロジック     |
+| Application    | Domain              | Use CaseがDomainを使用     |
+| Infrastructure | Domain, Application | 実装がインターフェース依存 |
+| UI             | Application, Domain | DTOとUse Caseを使用        |
 
 **重要**: 依存は常に内側（Domain）に向かう。Domainは何にも依存しない。
 
@@ -162,23 +162,25 @@ interface ChatHistoryContextValue {
 
 #### ChatSession
 
-| プロパティ | 型                  | 説明               |
-| ---------- | ------------------- | ------------------ |
-| id         | ChatSessionId       | セッションID       |
-| userId     | UserId              | ユーザーID         |
-| title      | ChatSessionTitle    | セッションタイトル |
-| messages   | ChatMessage[]       | メッセージリスト   |
-| isPinned   | boolean             | ピン留めフラグ     |
-| isFavorite | boolean             | お気に入りフラグ   |
-| pinOrder   | number \| null      | ピン留め順序       |
-| createdAt  | Date                | 作成日時           |
-| updatedAt  | Date                | 更新日時           |
+| プロパティ | 型               | 説明               |
+| ---------- | ---------------- | ------------------ |
+| id         | ChatSessionId    | セッションID       |
+| userId     | UserId           | ユーザーID         |
+| title      | ChatSessionTitle | セッションタイトル |
+| messages   | ChatMessage[]    | メッセージリスト   |
+| isPinned   | boolean          | ピン留めフラグ     |
+| isFavorite | boolean          | お気に入りフラグ   |
+| pinOrder   | number \| null   | ピン留め順序       |
+| createdAt  | Date             | 作成日時           |
+| updatedAt  | Date             | 更新日時           |
 
 **ファクトリメソッド**:
+
 - `create(params)`: 新規作成（バリデーション付き）
 - `reconstitute(params)`: DB復元（バリデーションなし）
 
 **ビジネスメソッド**:
+
 - `addMessage(message)`: メッセージ追加
 - `updateTitle(title)`: タイトル更新
 - `togglePinned()`: ピン留めトグル（上限10件チェック）
@@ -187,24 +189,24 @@ interface ChatHistoryContextValue {
 
 #### ChatMessage
 
-| プロパティ | 型              | 説明           |
-| ---------- | --------------- | -------------- |
-| id         | ChatMessageId   | メッセージID   |
-| sessionId  | ChatSessionId   | セッションID   |
-| role       | MessageRole     | 役割           |
-| content    | MessageContent  | 内容           |
-| createdAt  | Date            | 作成日時       |
+| プロパティ | 型             | 説明         |
+| ---------- | -------------- | ------------ |
+| id         | ChatMessageId  | メッセージID |
+| sessionId  | ChatSessionId  | セッションID |
+| role       | MessageRole    | 役割         |
+| content    | MessageContent | 内容         |
+| createdAt  | Date           | 作成日時     |
 
 ### 値オブジェクト
 
-| 値オブジェクト     | バリデーション           | 備考           |
-| ------------------ | ------------------------ | -------------- |
-| ChatSessionId      | UUID形式                 | generate()で新規生成 |
-| ChatSessionTitle   | 3-255文字、空文字不可    |                |
-| UserId             | UUID形式                 |                |
-| ChatMessageId      | UUID形式                 | generate()で新規生成 |
-| MessageContent     | 空文字不可、1-100000文字 |                |
-| MessageRole        | "user" \| "assistant"    |                |
+| 値オブジェクト   | バリデーション           | 備考                 |
+| ---------------- | ------------------------ | -------------------- |
+| ChatSessionId    | UUID形式                 | generate()で新規生成 |
+| ChatSessionTitle | 3-255文字、空文字不可    |                      |
+| UserId           | UUID形式                 |                      |
+| ChatMessageId    | UUID形式                 | generate()で新規生成 |
+| MessageContent   | 空文字不可、1-100000文字 |                      |
+| MessageRole      | "user" \| "assistant"    |                      |
 
 ### リポジトリインターフェース
 
@@ -265,31 +267,31 @@ SQLiteデータベースへの永続化を担当するリポジトリ実装。
 
 `IChatSessionRepository`の具体実装。
 
-| メソッド | 説明 |
-| -------- | ---- |
-| findById(id) | IDでセッションを取得（deletedAt考慮） |
+| メソッド                            | 説明                                         |
+| ----------------------------------- | -------------------------------------------- |
+| findById(id)                        | IDでセッションを取得（deletedAt考慮）        |
 | findByUserId(userId, limit, offset) | ユーザーのセッション一覧（ページネーション） |
-| findPinned(userId) | ピン留めセッション一覧（pinOrder順） |
-| search(criteria) | 条件検索（keyword, isFavorite, isPinned） |
-| save(session) | 保存（upsert） |
-| delete(id) | 物理削除 |
-| exists(id) | 存在確認 |
-| countPinned(userId) | ピン留め数カウント |
+| findPinned(userId)                  | ピン留めセッション一覧（pinOrder順）         |
+| search(criteria)                    | 条件検索（keyword, isFavorite, isPinned）    |
+| save(session)                       | 保存（upsert）                               |
+| delete(id)                          | 物理削除                                     |
+| exists(id)                          | 存在確認                                     |
+| countPinned(userId)                 | ピン留め数カウント                           |
 
 #### DrizzleChatMessageRepository
 
 `IChatMessageRepository`の具体実装。
 
-| メソッド | 説明 |
-| -------- | ---- |
-| findById(id) | IDでメッセージを取得 |
+| メソッド                                  | 説明                       |
+| ----------------------------------------- | -------------------------- |
+| findById(id)                              | IDでメッセージを取得       |
 | findBySessionId(sessionId, limit, offset) | セッションのメッセージ一覧 |
-| findLatestBySessionId(sessionId) | 最新メッセージ取得 |
-| countBySessionId(sessionId) | メッセージ数カウント |
-| save(message) | 保存（upsert） |
-| saveMany(messages) | 一括保存 |
-| delete(id) | 物理削除 |
-| deleteBySessionId(sessionId) | セッション内全削除 |
+| findLatestBySessionId(sessionId)          | 最新メッセージ取得         |
+| countBySessionId(sessionId)               | メッセージ数カウント       |
+| save(message)                             | 保存（upsert）             |
+| saveMany(messages)                        | 一括保存                   |
+| delete(id)                                | 物理削除                   |
+| deleteBySessionId(sessionId)              | セッション内全削除         |
 
 #### エラーハンドリング
 
@@ -298,17 +300,16 @@ SQLiteデータベースへの永続化を担当するリポジトリ実装。
 ```typescript
 throw new DatabaseError("セッションの取得に失敗しました", originalError);
 ```
-
 ### Mappers
 
-| Mapper             | 変換メソッド              | 説明                  |
-| ------------------ | ------------------------- | --------------------- |
-| ChatSessionMapper  | toDomain(record)          | DB Record → Entity    |
-|                    | toPersistence(entity)     | Entity → DB Record    |
-|                    | toDTO(entity)             | Entity → DTO          |
-| ChatMessageMapper  | toDomain(record)          | DB Record → Entity    |
-|                    | toPersistence(entity)     | Entity → DB Record    |
-|                    | toDTO(entity)             | Entity → DTO          |
+| Mapper            | 変換メソッド          | 説明               |
+| ----------------- | --------------------- | ------------------ |
+| ChatSessionMapper | toDomain(record)      | DB Record → Entity |
+|                   | toPersistence(entity) | Entity → DB Record |
+|                   | toDTO(entity)         | Entity → DTO       |
+| ChatMessageMapper | toDomain(record)      | DB Record → Entity |
+|                   | toPersistence(entity) | Entity → DB Record |
+|                   | toDTO(entity)         | Entity → DTO       |
 
 ---
 
@@ -340,26 +341,26 @@ AppError (abstract)
 
 ## ビジネスルール
 
-| ルールID         | 内容                           | 検証場所     |
-| ---------------- | ------------------------------ | ------------ |
-| BR-SESSION-001   | タイトル3-255文字              | Value Object |
-| BR-SESSION-002   | ピン留め上限10件               | Entity       |
-| BR-MSG-001       | roleはuser/assistantのみ       | Value Object |
-| BR-MSG-002       | contentは空不可                | Value Object |
+| ルールID       | 内容                     | 検証場所     |
+| -------------- | ------------------------ | ------------ |
+| BR-SESSION-001 | タイトル3-255文字        | Value Object |
+| BR-SESSION-002 | ピン留め上限10件         | Entity       |
+| BR-MSG-001     | roleはuser/assistantのみ | Value Object |
+| BR-MSG-002     | contentは空不可          | Value Object |
 
 ---
 
 ## 品質指標
 
-| 指標                 | 目標  | 達成値  |
-| -------------------- | ----- | ------- |
-| アーキテクチャ準拠率 | 100%  | 100%    |
-| Line Coverage        | ≥80%  | 84.1%   |
-| Branch Coverage      | ≥60%  | 93.57%  |
-| Function Coverage    | ≥80%  | 90.23%  |
-| テスト数             | -     | 119     |
-| 型エラー             | 0件   | 0件     |
-| Lintエラー           | 0件   | 0件     |
+| 指標                 | 目標  | 達成値 |
+| -------------------- | ----- | ------ |
+| アーキテクチャ準拠率 | 100%  | 100%   |
+| Line Coverage        | ≥80%  | 84.1%  |
+| Branch Coverage      | ≥60%  | 93.57% |
+| Function Coverage    | ≥80%  | 90.23% |
+| テスト数             | -     | 119    |
+| 型エラー             | 0件   | 0件    |
+| Lintエラー           | 0件   | 0件    |
 
 ---
 
@@ -367,13 +368,13 @@ AppError (abstract)
 
 ### SOLID原則の適用
 
-| 原則                  | 適用箇所                                 |
-| --------------------- | ---------------------------------------- |
-| Single Responsibility | 各Use Caseが単一ユースケースを担当       |
-| Open/Closed           | 新機能追加時はUse Case追加で対応         |
-| Liskov Substitution   | InMemory/Drizzle Repositoryが置換可能    |
-| Interface Segregation | SessionとMessageでRepository分離         |
-| Dependency Inversion  | 抽象（Interface）への依存を実現          |
+| 原則                  | 適用箇所                              |
+| --------------------- | ------------------------------------- |
+| Single Responsibility | 各Use Caseが単一ユースケースを担当    |
+| Open/Closed           | 新機能追加時はUse Case追加で対応      |
+| Liskov Substitution   | InMemory/Drizzle Repositoryが置換可能 |
+| Interface Segregation | SessionとMessageでRepository分離      |
+| Dependency Inversion  | 抽象（Interface）への依存を実現       |
 
 ### その他のパターン
 
