@@ -770,6 +770,66 @@ AgentView
 4. **削除フロー**: 選択→確認→API→一覧更新
 5. **エラーリトライ**: API失敗→エラー表示→再試行→成功
 
+#### 統合テストファイル詳細
+
+| ファイル | テスト数 | テスト対象 |
+| -------- | -------- | ---------- |
+| `SkillImportManager.integration.test.ts` | 15 | ストア永続化・スキルID管理 |
+| `skillHandlers.integration.test.ts` | 8 | IPCハンドラ・Main Process連携 |
+
+---
+
+### SkillImportManager 仕様
+
+#### 概要
+
+インポートされたスキルIDを管理し、`electron-store`経由で永続化するサービスクラス。
+
+**実装ファイル**:
+
+- Service: `apps/desktop/src/main/services/skill/SkillImportManager.ts`
+- Test: `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.integration.test.ts`
+
+#### SkillStore インターフェース
+
+```typescript
+/**
+ * electron-store互換のストアインターフェース
+ * テスト時にモック可能な抽象化レイヤー
+ */
+interface SkillStore {
+  get(key: string, defaultValue: string[]): string[];
+  set(key: string, value: string[]): void;
+  path?: string; // デバッグログ用（オプション）
+}
+```
+
+#### デバッグログ仕様
+
+| タイミング | ログ内容 | 目的 |
+| ---------- | -------- | ---- |
+| コンストラクタ | `[SkillImportManager] Initialized with store path: ${path}` | ストアパス確認 |
+| addImportedId | `[SkillImportManager] Adding skill ID: ${skillId}` | インポート操作追跡 |
+| removeImportedId | `[SkillImportManager] Removing skill ID: ${skillId}` | 削除操作追跡 |
+| getImportedIds | `[SkillImportManager] Current imported IDs: ${ids.join(', ')}` | 状態確認 |
+
+#### API
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| -------- | ---- | ------ | ---- |
+| `addImportedId` | `skillId: string` | `void` | スキルIDを追加（重複チェック付き） |
+| `removeImportedId` | `skillId: string` | `void` | スキルIDを削除 |
+| `getImportedIds` | - | `string[]` | 全スキルIDを取得 |
+| `hasImportedId` | `skillId: string` | `boolean` | 存在チェック |
+
+#### ストレージ仕様
+
+| 項目 | 値 |
+| ---- | -- |
+| ストアキー | `importedSkillIds` |
+| ファイルパス | `~/Library/Application Support/@repo/desktop/skills.json` |
+| データ形式 | `{ "importedSkillIds": ["skill-1", "skill-2", ...] }` |
+
 ---
 
 ## ModifierSkill（スライド逆同期機能）
@@ -1941,6 +2001,47 @@ type IPCResponse<T> =
 | `apps/desktop/src/main/services/skill/SkillImportManager.ts` | 修正     |
 | `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.test.ts` | 追加     |
 
+### タスク: skill-import-store-persistence（2026-01-22完了）
+
+| 項目         | 内容                                               |
+| ------------ | -------------------------------------------------- |
+| タスクID     | SKILL-STORE-001                                    |
+| 完了日       | 2026-01-22                                         |
+| ステータス   | **完了**                                           |
+| テスト数     | 144（自動テスト: 28ユニット + 23統合 + 93その他）  |
+| 発見課題     | 0件                                                |
+| ドキュメント | `docs/30-workflows/skill-import-store-persistence/`|
+
+#### 問題
+
+`skill:list-imported` APIがインポート後も0件を返す問題。28件のユニットテストはPASSしていたが、統合テストがなく実環境での動作が未検証だった。
+
+#### 根本原因
+
+モックベースのユニットテストのみでは実際のelectron-storeとの連携が検証できていなかった。
+
+#### 修正内容
+
+1. 実際のelectron-storeを使用した統合テスト23件を追加
+2. デバッグログを追加（ストアパス、読み込み/書き込み時のデータ）
+3. SkillStoreインターフェースにpath属性を追加
+
+#### テストカバレッジ
+
+| メトリクス        | 達成値 |
+| ----------------- | ------ |
+| Line Coverage     | 97.36% |
+| Branch Coverage   | 92.85% |
+| Function Coverage | 100%   |
+
+#### 変更ファイル
+
+| ファイル                                                       | 変更種別 |
+| -------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/services/skill/SkillImportManager.ts`   | 修正     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.integration.test.ts` | 新規 |
+| `apps/desktop/src/main/ipc/__tests__/skillHandlers.integration.test.ts` | 新規 |
+
 ---
 
 ## 残課題（未タスク）
@@ -1968,6 +2069,7 @@ type IPCResponse<T> =
 | AgentSDKPage Postrelease実装ガイド  | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`        |
 | Session Persistence実装ガイド       | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`  |
 | スキルインポート永続化バグ修正      | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md` |
+| スキルインポートストア永続化問題修正 | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md` |
 
 ---
 
@@ -1978,3 +2080,4 @@ type IPCResponse<T> =
 | 1.0.0      | 2026-01-15 | 初版作成                                                          |
 | 1.1.0      | 2026-01-22 | skill-import-persistence-bugfix完了記録追加                       |
 | 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、E2Eテストタスク登録             |
+| 1.3.0      | 2026-01-22 | skill-import-store-persistence完了記録追加（統合テスト23件追加、発見課題0件） |
