@@ -1,0 +1,136 @@
+{
+  "taskId": "SKILL-IMPORT-PERSIST-001",
+  "taskName": "スキルインポート永続化不具合修正",
+  "taskType": "bugfix",
+  "status": "pending",
+  "createdAt": "2026-01-22T01:17:32.000Z",
+  "updatedAt": "2026-01-22T01:17:32.000Z",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "file": "phase-01-requirements.md",
+      "outputs": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "file": "phase-02-design.md",
+      "outputs": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "file": "phase-03-design-review-gate.md",
+      "outputs": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "pending",
+      "file": "phase-04-test-creation.md",
+      "outputs": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "pending",
+      "file": "phase-05-implementation.md",
+      "outputs": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "file": "phase-06-test-expansion.md",
+      "outputs": []
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "file": "phase-07-coverage-verification.md",
+      "outputs": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "file": "phase-08-refactoring.md",
+      "outputs": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "file": "phase-09-quality-assurance.md",
+      "outputs": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "file": "phase-10-final-review-gate.md",
+      "outputs": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "pending",
+      "file": "phase-11-manual-testing.md",
+      "outputs": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "file": "phase-12-documentation.md",
+      "outputs": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "file": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  ],
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md",
+      ".claude/skills/aiworkflow-requirements/references/error-handling.md"
+    ],
+    "sourceFiles": [
+      "apps/desktop/src/main/services/skill/SkillImportManager.ts",
+      "apps/desktop/src/main/services/skill/SkillService.ts",
+      "apps/desktop/src/main/ipc/index.ts",
+      "apps/desktop/src/main/ipc/skillHandlers.ts"
+    ],
+    "testFiles": [
+      "apps/desktop/src/main/services/skill/__tests__/SkillImportManager.test.ts"
+    ]
+  },
+  "expectedOutputs": {
+    "phase01": ["outputs/phase-01/investigation-report.md"],
+    "phase02": ["outputs/phase-02/design-document.md"],
+    "phase03": ["outputs/phase-03/review-result.md"],
+    "phase04": ["outputs/phase-04/test-results.md"],
+    "phase07": ["outputs/phase-07/coverage-report.md"],
+    "phase09": ["outputs/phase-09/qa-report.md"],
+    "phase10": ["outputs/phase-10/final-review-result.md"],
+    "phase11": [
+      "outputs/phase-11/manual-test-result.md",
+      "outputs/phase-11/discovered-issues.md"
+    ],
+    "phase12": [
+      "outputs/phase-12/implementation-guide.md",
+      "outputs/phase-12/documentation-changelog.md",
+      "outputs/phase-12/unassigned-tasks-report.md"
+    ],
+    "phase13": ["outputs/phase-13/completion-report.md"]
+  }
+}

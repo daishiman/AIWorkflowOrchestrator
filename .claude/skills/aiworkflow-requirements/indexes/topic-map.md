@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-21
+> 自動生成: 2026-01-22
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -85,6 +85,20 @@ node scripts/list-specs.mjs --topics
 | セキュリティアーキテクチャ | L125 |
 | RAGパイプラインアーキテクチャ | L164 |
 | 関連ドキュメント | L281 |
+
+### references/architecture-chat-history.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| レイヤー構成 | L17 |
+| 依存関係ルール | L43 |
+| ディレクトリ構成 | L56 |
+| Domain Layer | L106 |
+| Application Layer | L185 |
+| Infrastructure Layer | L205 |
+| エラーハンドリング | L220 |
+| ビジネスルール | L246 |
+| 品質指標 | L257 |
 
 ### references/architecture-database.md
 
@@ -372,6 +386,17 @@ node scripts/list-specs.mjs --topics
 ## API設計
 
 **関連キーワード**: REST, エンドポイント, 認証, レート制限, IPC
+
+### references/api-chat-history.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| Use Cases | L17 |
+| DTOs | L297 |
+| リポジトリインターフェース | L340 |
+| エラーハンドリングパターン | L369 |
+| 将来の拡張 | L415 |
+| 関連ドキュメント | L429 |
 
 ### references/api-core.md
 
@@ -963,14 +988,14 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| エラー分類 | L8 |
-| 認可エラー（UnauthorizedError） | L171 |
-| リトライ戦略 | L252 |
-| サーキットブレーカー（将来対応） | L294 |
-| エラーレスポンス形式 | L322 |
-| エラーログ出力 | L353 |
-| ユーザー向けエラーメッセージ | L390 |
-| エラーハンドリングの実装指針 | L413 |
-| 関連ドキュメント | L443 |
+| 認可エラー（UnauthorizedError） | L231 |
+| リトライ戦略 | L312 |
+| サーキットブレーカー（将来対応） | L354 |
+| エラーレスポンス形式 | L382 |
+| エラーログ出力 | L413 |
+| ユーザー向けエラーメッセージ | L450 |
+| エラーハンドリングの実装指針 | L473 |
+| 関連ドキュメント | L503 |
 
 ### references/local-agent.md
 
@@ -1035,7 +1060,10 @@ node scripts/list-specs.mjs --topics
 | 品質ゲート（概要） | L71 |
 | 出力テンプレート | L82 |
 | 実行時のコマンド・エージェント・スキル | L107 |
-| 関連ドキュメント | L131 |
+| 完了タスク | L131 |
+| 残課題（未タスク） | L167 |
+| 関連ドキュメント | L184 |
+| 変更履歴 | L194 |
 
 ---
 

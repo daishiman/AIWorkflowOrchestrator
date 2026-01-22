@@ -1897,6 +1897,62 @@ type IPCResponse<T> =
 
 ---
 
+## 完了タスク
+
+### タスク: skill-import-persistence-bugfix（2026-01-22完了）
+
+| 項目         | 内容                                                        |
+| ------------ | ----------------------------------------------------------- |
+| タスクID     | SKILL-IMPORT-PERSIST-001                                    |
+| 完了日       | 2026-01-22                                                  |
+| ステータス   | **完了**                                                    |
+| テスト数     | 28（自動テスト）+ 7（手動テスト項目）                       |
+| 発見課題     | 0件                                                         |
+| ドキュメント | `docs/30-workflows/skill-import-persistence-bugfix/`        |
+
+#### 問題
+
+`skill:list-imported` APIがアプリ再起動後に常に空配列を返していた。
+
+#### 根本原因
+
+`ipc/index.ts`で`electron-store`初期化時に`defaults`オプションが未設定だった。
+
+#### 修正内容
+
+1. `electron-store`に`defaults`設定を追加
+2. `SkillImportManager`に`SkillStore`型インターフェースを追加
+3. エラーハンドリングを追加
+
+#### テストカバレッジ
+
+| メトリクス | 達成値  |
+| ---------- | ------- |
+| Lines      | 95.31%  |
+| Functions  | 100%    |
+| Branches   | 92.3%   |
+| Statements | 95.31%  |
+
+#### 変更ファイル
+
+| ファイル                                          | 変更種別 |
+| ------------------------------------------------- | -------- |
+| `apps/desktop/src/main/ipc/index.ts`              | 修正     |
+| `apps/desktop/src/main/services/skill/SkillImportManager.ts` | 修正     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.test.ts` | 追加     |
+
+---
+
+## 残課題（未タスク）
+
+| タスクID      | タスク名                  | 優先度 | 発見元                             | タスク仕様書                                                         |
+| ------------- | ------------------------- | ------ | ---------------------------------- | -------------------------------------------------------------------- |
+| SKILL-E2E-001 | スキルインポートE2Eテスト | 中     | Phase 11（手動テスト検証）推奨事項 | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md` |
+
+> **補足**: 上記タスクはユニットテスト（28件）で動作検証済みだが、実Electron環境でのE2Eテストは未実施。優先度「中」のため、他の優先度「高」タスク完了後に実施可能。
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                        | パス                                                                                        |
@@ -1911,3 +1967,14 @@ type IPCResponse<T> =
 | スキル実行機能実装ガイド            | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md` |
 | AgentSDKPage Postrelease実装ガイド  | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`        |
 | Session Persistence実装ガイド       | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`  |
+| スキルインポート永続化バグ修正      | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md` |
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                          |
+| ---------- | ---------- | ----------------------------------------------------------------- |
+| 1.0.0      | 2026-01-15 | 初版作成                                                          |
+| 1.1.0      | 2026-01-22 | skill-import-persistence-bugfix完了記録追加                       |
+| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、E2Eテストタスク登録             |
