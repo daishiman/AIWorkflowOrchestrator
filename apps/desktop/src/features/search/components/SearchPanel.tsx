@@ -13,62 +13,8 @@ import React, {
   useState,
 } from "react";
 import type { SearchPanelProps, SearchMatch } from "../types";
-import { createHighlights } from "../utils";
+import { createHighlights, executeSearch } from "../utils";
 import { SearchOptionButtons } from "./SearchOptionButtons";
-
-/**
- * 検索を実行してマッチを取得
- */
-function executeSearch(
-  content: string,
-  query: string,
-  options: { caseSensitive: boolean; regex: boolean; wholeWord: boolean },
-): SearchMatch[] {
-  if (!query) return [];
-
-  try {
-    let pattern: RegExp;
-
-    if (options.regex) {
-      const flags = options.caseSensitive ? "g" : "gi";
-      pattern = new RegExp(query, flags);
-    } else {
-      let escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      if (options.wholeWord) {
-        escapedQuery = `\\b${escapedQuery}\\b`;
-      }
-      const flags = options.caseSensitive ? "g" : "gi";
-      pattern = new RegExp(escapedQuery, flags);
-    }
-
-    const lines = content.split("\n");
-    const matches: SearchMatch[] = [];
-
-    lines.forEach((lineText, lineIndex) => {
-      let match: RegExpExecArray | null;
-      pattern.lastIndex = 0;
-
-      while ((match = pattern.exec(lineText)) !== null) {
-        matches.push({
-          line: lineIndex + 1,
-          column: match.index + 1,
-          length: match[0].length,
-          text: match[0],
-          lineText,
-        });
-
-        // 無限ループ防止
-        if (match.index === pattern.lastIndex) {
-          pattern.lastIndex++;
-        }
-      }
-    });
-
-    return matches;
-  } catch {
-    return [];
-  }
-}
 
 export function SearchPanel({
   isOpen,
@@ -108,7 +54,20 @@ export function SearchPanel({
 
     try {
       const content = editorRef.current.getContent();
-      const matches = executeSearch(content, searchQuery, options);
+      const { matches, error: searchError } = executeSearch(
+        content,
+        searchQuery,
+        options,
+      );
+
+      // エラーがあればエラー状態を設定
+      if (searchError) {
+        setError(searchError);
+        setResults([]);
+        editorRef.current.setHighlights([]);
+        return;
+      }
+
       setResults(matches);
       setCurrentIndex(matches.length > 0 ? 0 : -1);
 
@@ -127,13 +86,11 @@ export function SearchPanel({
         editorRef.current.scrollToLine(matches[0].line, matches[0].column);
       }
     } catch {
-      if (regex) {
-        setError("無効な正規表現です");
-      }
+      // エディタエラー時は空の結果
       setResults([]);
-      editorRef.current.setHighlights([]);
+      editorRef.current?.setHighlights([]);
     }
-  }, [searchQuery, options, editorRef, regex]);
+  }, [searchQuery, options, editorRef]);
 
   // 初期検索テキスト設定時（手動検索のみ、自動検索は行わない）
   useEffect(() => {
@@ -228,6 +185,9 @@ export function SearchPanel({
         e.preventDefault();
         if (e.altKey && showReplaceMode) {
           handleReplaceAll();
+        } else if (!searchQuery) {
+          // 空クエリの場合は検索を実行（ハイライトクリア）
+          performSearch();
         } else if (results.length > 0) {
           // 結果がある場合は次/前の結果へ
           if (e.shiftKey) {
@@ -250,6 +210,7 @@ export function SearchPanel({
       showReplaceMode,
       results.length,
       performSearch,
+      searchQuery,
     ],
   );
 
