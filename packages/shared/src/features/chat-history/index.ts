@@ -143,7 +143,10 @@ export type {
 // =============================================================================
 // Infrastructure Layer - Drizzle Repositories
 // =============================================================================
-export {
-  DrizzleChatSessionRepository,
-  DrizzleChatMessageRepository,
-} from "./infrastructure/persistence/index.js";
+// Note: DrizzleChatSessionRepository, DrizzleChatMessageRepository はNode.js専用のため
+// Renderer側でのビルドエラーを避けるため、ここからはエクスポートしない。
+// Main Process側では ./infrastructure/persistence/index.js から直接インポートすること。
+//
+// 直接インポート例:
+// import { DrizzleChatSessionRepository, DrizzleChatMessageRepository }
+//   from "@repo/shared/src/features/chat-history/infrastructure/persistence";
