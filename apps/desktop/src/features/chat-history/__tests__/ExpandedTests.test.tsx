@@ -14,7 +14,7 @@ import type {
 import { ChatHistoryProvider } from "../context/ChatHistoryProvider";
 import { useChatHistory } from "../hooks/useChatHistory";
 import {
-  createChatHistoryRepositories,
+  setChatHistoryRepositories,
   getChatHistoryRepositories,
   isRepositoriesInitialized,
   resetRepositories,
@@ -75,8 +75,11 @@ describe("Phase 6: Expanded Tests", () => {
     });
 
     it("should handle multiple reset calls gracefully", () => {
-      const mockDb = { select: vi.fn() };
-      createChatHistoryRepositories(mockDb);
+      const mockRepos = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
+      setChatHistoryRepositories(mockRepos);
       expect(isRepositoriesInitialized()).toBe(true);
 
       resetRepositories();
@@ -89,15 +92,25 @@ describe("Phase 6: Expanded Tests", () => {
       expect(isRepositoriesInitialized()).toBe(false);
     });
 
-    it("should maintain singleton pattern on repeated initialization", () => {
-      const mockDb1 = { select: vi.fn(), id: 1 };
-      const mockDb2 = { select: vi.fn(), id: 2 };
+    it("should update repositories when setChatHistoryRepositories is called", () => {
+      const mockRepos1 = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
+      const mockRepos2 = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
 
-      const repos1 = createChatHistoryRepositories(mockDb1);
-      const repos2 = createChatHistoryRepositories(mockDb2);
+      setChatHistoryRepositories(mockRepos1);
+      const repos1 = getChatHistoryRepositories();
 
-      // 同じインスタンスが返される
-      expect(repos1).toBe(repos2);
+      setChatHistoryRepositories(mockRepos2);
+      const repos2 = getChatHistoryRepositories();
+
+      // 新しいリポジトリで上書きされる
+      expect(repos2).toBe(mockRepos2);
+      expect(repos1).not.toBe(repos2);
     });
   });
 
