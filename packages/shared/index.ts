@@ -138,3 +138,29 @@ export * from "./utils";
 
 // Slide
 export * from "./src/slide";
+
+// =============================================================================
+// Chat History Feature
+// =============================================================================
+
+/**
+ * Chat History - Use Cases
+ * チャット履歴機能のユースケースクラス
+ */
+export {
+  CreateChatSessionUseCase,
+  AddUserMessageUseCase,
+  AddAssistantMessageUseCase,
+  SearchSessionsUseCase,
+  TogglePinnedUseCase,
+} from "./src/features/chat-history";
+
+/**
+ * Chat History - Repository Interfaces
+ * DI用リポジトリインターフェース
+ */
+export type {
+  IChatSessionRepository,
+  IChatMessageRepository,
+  ChatSessionSearchCriteria,
+} from "./src/features/chat-history";
