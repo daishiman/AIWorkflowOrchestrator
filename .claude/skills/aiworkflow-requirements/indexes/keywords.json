@@ -1,8 +1,18 @@
 {
-  "generated": "2026-01-21T12:27:00.630Z",
-  "totalKeywords": 727,
+  "generated": "2026-01-22T05:33:04.045Z",
+  "totalKeywords": 745,
   "keywords": {
+    "チャット履歴": [
+      "api-chat-history.md"
+    ],
+    "Use": [
+      "api-chat-history.md"
+    ],
+    "Case": [
+      "api-chat-history.md"
+    ],
     "API": [
+      "api-chat-history.md",
       "api-core.md",
       "api-endpoints.md",
       "api-internal-chunk-search.md",
@@ -17,6 +27,134 @@
       "security-api-electron.md",
       "ui-ux-forms.md",
       "ui-ux-settings.md"
+    ],
+    "仕様": [
+      "api-chat-history.md",
+      "api-internal.md",
+      "claude-code-agents-workflow.md",
+      "claude-code-commands.md",
+      "claude-code-skills-process.md",
+      "claude-code-skills-structure.md",
+      "discord-bot.md",
+      "ui-ux-history-panel.md",
+      "ui-ux-settings.md"
+    ],
+    "概要": [
+      "api-chat-history.md",
+      "api-internal-chunk-search.md",
+      "api-internal-search.md",
+      "api-internal.md",
+      "architecture-chat-history.md",
+      "architecture-embedding-pipeline.md",
+      "architecture-file-conversion.md",
+      "claude-code-agents.md",
+      "claude-code-commands.md",
+      "claude-code-overview.md",
+      "claude-code-skills-overview.md",
+      "claude-code-skills-structure.md",
+      "database-schema.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-chat-history.md",
+      "interfaces-converter-implementations.md",
+      "interfaces-converter.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-graphrag-query.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "interfaces-rag.md",
+      "security-implementation.md",
+      "task-workflow.md",
+      "technology-backend.md",
+      "technology-core.md",
+      "technology-devops.md",
+      "ui-ux-advanced.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-history-panel.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "Cases": [
+      "api-chat-history.md"
+    ],
+    "DTOs": [
+      "api-chat-history.md"
+    ],
+    "リポジトリインターフェース": [
+      "api-chat-history.md"
+    ],
+    "エラーハンドリングパターン": [
+      "api-chat-history.md"
+    ],
+    "将来の拡張": [
+      "api-chat-history.md"
+    ],
+    "関連ドキュメント": [
+      "api-chat-history.md",
+      "api-internal-search.md",
+      "api-internal.md",
+      "architecture-auth-security.md",
+      "architecture-chat-history.md",
+      "architecture-embedding-pipeline.md",
+      "architecture-file-conversion.md",
+      "claude-code-agents-spec.md",
+      "claude-code-agents-workflow.md",
+      "claude-code-agents.md",
+      "claude-code-skills-agents.md",
+      "claude-code-skills-resources.md",
+      "claude-code-skills-structure.md",
+      "database-architecture.md",
+      "database-operations.md",
+      "database-schema.md",
+      "deployment-electron.md",
+      "deployment-gha.md",
+      "deployment-railway.md",
+      "deployment.md",
+      "directory-structure.md",
+      "discord-bot.md",
+      "environment-variables.md",
+      "error-handling.md",
+      "glossary.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-chat-history.md",
+      "interfaces-converter-extension.md",
+      "interfaces-converter-implementations.md",
+      "interfaces-converter.md",
+      "interfaces-llm.md",
+      "interfaces-rag-chunk-embedding.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-entity-extraction.md",
+      "interfaces-rag-file-selection.md",
+      "interfaces-rag-graphrag-query.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "interfaces-rag-search.md",
+      "interfaces-rag.md",
+      "local-agent.md",
+      "overview.md",
+      "plugin-development.md",
+      "quality-requirements.md",
+      "security-api-electron.md",
+      "security-implementation.md",
+      "security-input-validation.md",
+      "security-operations.md",
+      "task-workflow-rules.md",
+      "task-workflow.md",
+      "technology-devops.md",
+      "ui-ux-advanced.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-history-panel.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md",
+      "ui-ux-system-prompt.md"
     ],
     "設計原則・認証・レート制限": [
       "api-core.md"
@@ -159,43 +297,6 @@
     "全文検索": [
       "api-internal-chunk-search.md"
     ],
-    "概要": [
-      "api-internal-chunk-search.md",
-      "api-internal-search.md",
-      "api-internal.md",
-      "architecture-embedding-pipeline.md",
-      "architecture-file-conversion.md",
-      "claude-code-agents.md",
-      "claude-code-commands.md",
-      "claude-code-overview.md",
-      "claude-code-skills-overview.md",
-      "claude-code-skills-structure.md",
-      "database-schema.md",
-      "interfaces-agent-sdk.md",
-      "interfaces-chat-history.md",
-      "interfaces-converter-implementations.md",
-      "interfaces-converter.md",
-      "interfaces-rag-community-detection.md",
-      "interfaces-rag-community-summarization.md",
-      "interfaces-rag-graphrag-query.md",
-      "interfaces-rag-knowledge-graph-store.md",
-      "interfaces-rag.md",
-      "security-implementation.md",
-      "task-workflow.md",
-      "technology-backend.md",
-      "technology-core.md",
-      "technology-devops.md",
-      "ui-ux-advanced.md",
-      "ui-ux-file-selector.md",
-      "ui-ux-history-panel.md",
-      "ui-ux-llm-selector.md",
-      "ui-ux-navigation.md",
-      "ui-ux-panels.md",
-      "ui-ux-portal-patterns.md",
-      "ui-ux-search-panel.md",
-      "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
-    ],
     "検索エンドポイント": [
       "api-internal-chunk-search.md"
     ],
@@ -277,79 +378,8 @@
     "デフォルト除外パターン": [
       "api-internal-search.md"
     ],
-    "関連ドキュメント": [
-      "api-internal-search.md",
-      "api-internal.md",
-      "architecture-auth-security.md",
-      "architecture-embedding-pipeline.md",
-      "architecture-file-conversion.md",
-      "claude-code-agents-spec.md",
-      "claude-code-agents-workflow.md",
-      "claude-code-agents.md",
-      "claude-code-skills-agents.md",
-      "claude-code-skills-resources.md",
-      "claude-code-skills-structure.md",
-      "database-architecture.md",
-      "database-operations.md",
-      "database-schema.md",
-      "deployment-electron.md",
-      "deployment-gha.md",
-      "deployment-railway.md",
-      "deployment.md",
-      "directory-structure.md",
-      "discord-bot.md",
-      "environment-variables.md",
-      "error-handling.md",
-      "glossary.md",
-      "interfaces-agent-sdk.md",
-      "interfaces-chat-history.md",
-      "interfaces-converter-extension.md",
-      "interfaces-converter-implementations.md",
-      "interfaces-converter.md",
-      "interfaces-llm.md",
-      "interfaces-rag-chunk-embedding.md",
-      "interfaces-rag-community-detection.md",
-      "interfaces-rag-community-summarization.md",
-      "interfaces-rag-entity-extraction.md",
-      "interfaces-rag-file-selection.md",
-      "interfaces-rag-graphrag-query.md",
-      "interfaces-rag-knowledge-graph-store.md",
-      "interfaces-rag-search.md",
-      "interfaces-rag.md",
-      "local-agent.md",
-      "overview.md",
-      "plugin-development.md",
-      "quality-requirements.md",
-      "security-api-electron.md",
-      "security-implementation.md",
-      "security-input-validation.md",
-      "security-operations.md",
-      "task-workflow-rules.md",
-      "task-workflow.md",
-      "technology-devops.md",
-      "ui-ux-advanced.md",
-      "ui-ux-file-selector.md",
-      "ui-ux-history-panel.md",
-      "ui-ux-llm-selector.md",
-      "ui-ux-navigation.md",
-      "ui-ux-panels.md",
-      "ui-ux-portal-patterns.md",
-      "ui-ux-search-panel.md",
-      "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
-    ],
     "内部": [
       "api-internal.md"
-    ],
-    "仕様": [
-      "api-internal.md",
-      "claude-code-agents-workflow.md",
-      "claude-code-commands.md",
-      "claude-code-skills-process.md",
-      "claude-code-skills-structure.md",
-      "discord-bot.md",
-      "ui-ux-history-panel.md",
-      "ui-ux-settings.md"
     ],
     "一覧": [
       "api-internal.md"
@@ -378,6 +408,59 @@
     ],
     "パイプラインアーキテクチャ": [
       "architecture-auth-security.md"
+    ],
+    "チャット履歴機能": [
+      "architecture-chat-history.md"
+    ],
+    "アーキテクチャ仕様": [
+      "architecture-chat-history.md"
+    ],
+    "レイヤー構成": [
+      "architecture-chat-history.md"
+    ],
+    "依存関係ルール": [
+      "architecture-chat-history.md",
+      "directory-structure.md"
+    ],
+    "ディレクトリ構成": [
+      "architecture-chat-history.md",
+      "database-architecture.md"
+    ],
+    "Domain": [
+      "architecture-chat-history.md"
+    ],
+    "Layer": [
+      "architecture-chat-history.md"
+    ],
+    "Application": [
+      "architecture-chat-history.md"
+    ],
+    "Infrastructure": [
+      "architecture-chat-history.md"
+    ],
+    "エラーハンドリング": [
+      "architecture-chat-history.md",
+      "claude-code-agents-workflow.md",
+      "database-implementation.md",
+      "discord-bot.md",
+      "interfaces-rag-entity-extraction.md",
+      "local-agent.md",
+      "plugin-development.md",
+      "ui-ux-history-panel.md",
+      "ui-ux-llm-selector.md"
+    ],
+    "ビジネスルール": [
+      "architecture-chat-history.md",
+      "interfaces-chat-history.md"
+    ],
+    "品質指標": [
+      "architecture-chat-history.md",
+      "architecture-file-conversion.md"
+    ],
+    "設計原則": [
+      "architecture-chat-history.md",
+      "database-architecture.md",
+      "interfaces-rag.md"
     ],
     "データベース": [
       "architecture-database.md"
@@ -462,9 +545,6 @@
       "architecture-file-conversion.md"
     ],
     "実装済みコンバーター": [
-      "architecture-file-conversion.md"
-    ],
-    "品質指標": [
       "architecture-file-conversion.md"
     ],
     "新規コンバーター追加手順": [
@@ -766,16 +846,6 @@
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md"
     ],
-    "エラーハンドリング": [
-      "claude-code-agents-workflow.md",
-      "database-implementation.md",
-      "discord-bot.md",
-      "interfaces-rag-entity-extraction.md",
-      "local-agent.md",
-      "plugin-development.md",
-      "ui-ux-history-panel.md",
-      "ui-ux-llm-selector.md"
-    ],
     "品質基準": [
       "claude-code-agents-workflow.md",
       "claude-code-commands.md",
@@ -833,12 +903,14 @@
     "変更履歴": [
       "claude-code-commands.md",
       "claude-code-overview.md",
+      "interfaces-agent-sdk.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
       "interfaces-rag-entity-extraction.md",
       "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag-search.md",
+      "task-workflow.md",
       "ui-ux-history-panel.md"
     ],
     "層アーキテクチャ設計仕様書": [
@@ -1034,14 +1106,7 @@
     "アーキテクチャ概要": [
       "database-architecture.md"
     ],
-    "設計原則": [
-      "database-architecture.md",
-      "interfaces-rag.md"
-    ],
     "環境別接続設定": [
-      "database-architecture.md"
-    ],
-    "ディレクトリ構成": [
       "database-architecture.md"
     ],
     "基盤モジュール": [
@@ -1290,9 +1355,6 @@
       "directory-structure.md"
     ],
     "構造の選択理由": [
-      "directory-structure.md"
-    ],
-    "依存関係ルール": [
       "directory-structure.md"
     ],
     "pnpm": [
@@ -1563,6 +1625,18 @@
     "セッション永続化": [
       "interfaces-agent-sdk.md"
     ],
+    "完了タスク": [
+      "interfaces-agent-sdk.md",
+      "task-workflow.md"
+    ],
+    "残課題": [
+      "interfaces-agent-sdk.md",
+      "task-workflow.md"
+    ],
+    "未タスク": [
+      "interfaces-agent-sdk.md",
+      "task-workflow.md"
+    ],
     "認証・プロフィール型定義": [
       "interfaces-auth.md"
     ],
@@ -1589,9 +1663,6 @@
       "interfaces-chat-history.md"
     ],
     "Authorization": [
-      "interfaces-chat-history.md"
-    ],
-    "ビジネスルール": [
       "interfaces-chat-history.md"
     ],
     "エクスポート形式": [

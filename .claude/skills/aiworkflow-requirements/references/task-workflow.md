@@ -128,9 +128,73 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 ---
 
+## 完了タスク
+
+### タスク: task-specification-creator Phase 12改善（2026-01-22完了）
+
+| 項目         | 内容                                             |
+| ------------ | ------------------------------------------------ |
+| タスクID     | TSC-PHASE12-IMPROVE-001                          |
+| 完了日       | 2026-01-22                                       |
+| ステータス   | **完了**                                         |
+| 対象スキル   | `.claude/skills/task-specification-creator/`     |
+| バージョン   | v7.5.0                                           |
+
+#### 改善内容
+
+1. **Phase 12 Task 2の2ステップ化**
+   - Step 1: タスク完了記録（必須 - 全タスク共通）
+   - Step 2: システム仕様更新（条件付き）
+
+2. **documentation-changelog.md自動生成スクリプト追加**
+   - `scripts/generate-documentation-changelog.js` 新規作成
+   - artifacts.jsonとgit diffから自動生成
+
+3. **spec-update-workflow.md明確化**
+   - 2種類の更新アクション（完了記録 vs 仕様更新）を明確に分離
+   - 判断フローチャートを全体フローに更新
+
+#### 成果物
+
+| 成果物                          | パス                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| SKILL.md（更新）                | `.claude/skills/task-specification-creator/SKILL.md`                    |
+| spec-update-workflow.md（更新） | `.claude/skills/task-specification-creator/references/spec-update-workflow.md` |
+| 自動生成スクリプト（新規）      | `.claude/skills/task-specification-creator/scripts/generate-documentation-changelog.js` |
+
+---
+
+## 残課題（未タスク）
+
+以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
+
+| タスクID          | タスク名                     | 優先度 | 発見元                                | タスク仕様書                                                        |
+| ----------------- | ---------------------------- | ------ | ------------------------------------- | ------------------------------------------------------------------- |
+| SKILL-E2E-001     | スキルインポートE2Eテスト    | 中     | Phase 11（手動テスト検証）推奨事項    | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md` |
+| TSC-AUTOMATION-001 | Phase 12自動化スクリプト拡充 | 低     | skill-import-persistence-bugfix実施時 | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md` |
+
+### 未タスク管理ルール
+
+- 未タスクは `docs/30-workflows/unassigned-task/` に配置
+- タスク完了時は取り消し線でマークし、完了タスクセクションに移動
+- 優先度「高」のタスクから順に実施
+
+---
+
 ## 関連ドキュメント
 
 - [プロジェクト概要](./overview.md)
 - [非機能要件](./quality-requirements.md)
 - [アーキテクチャ設計](./architecture-overview.md)
 - [プラグイン開発手順](./plugin-development.md)
+- [task-specification-creator SKILL.md](../../task-specification-creator/SKILL.md)
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                                 |
+| ---------- | ---------- | ------------------------------------------------------------------------ |
+| 1.0.0      | 2026-01-20 | 初版作成                                                                 |
+| 1.1.0      | 2026-01-22 | task-specification-creator Phase 12改善完了記録追加                      |
+| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、未タスク2件（E2Eテスト、自動化拡充）登録 |
