@@ -1,0 +1,118 @@
+{
+  "taskId": "UT-007",
+  "taskName": "ChatHistoryProvider App Integration",
+  "githubIssue": 428,
+  "createdAt": "2026-01-22",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-1/functional-requirements.md",
+        "outputs/phase-1/non-functional-requirements.md",
+        "outputs/phase-1/constraints.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-2/detailed-design.md",
+        "outputs/phase-2/integration-test-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-3/traceability-matrix.md",
+        "outputs/phase-3/architecture-review.md",
+        "outputs/phase-3/integration-test-review.md",
+        "outputs/phase-3/risk-assessment.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-4/test-list.md",
+        "outputs/phase-4/test-execution-result.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "未実施",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-6/edge-case-test-list.md",
+        "outputs/phase-6/test-expansion-result.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "未実施",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "未実施",
+      "artifacts": ["outputs/phase-8/refactoring-result.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "未実施",
+      "artifacts": ["outputs/phase-9/quality-summary.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-10/requirements-verification.md",
+        "outputs/phase-10/design-conformance.md",
+        "outputs/phase-10/code-quality-final.md",
+        "outputs/phase-10/integration-test-final.md",
+        "outputs/phase-10/final-gate-decision.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-tasks-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "未実施",
+      "artifacts": ["outputs/phase-13/completion-summary.md"]
+    }
+  ]
+}

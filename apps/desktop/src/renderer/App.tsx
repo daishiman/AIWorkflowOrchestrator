@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAppStore, useCurrentView, useResponsiveMode } from "./store";
 import { AuthGuard } from "./components/AuthGuard";
+import { ChatHistoryProvider } from "@/features/chat-history/context";
+import { getChatHistoryRepositories } from "@/features/chat-history/repositories";
 import { AppDock } from "./components/organisms/AppDock";
 import { DynamicIsland } from "./components/molecules/DynamicIsland";
 import { DashboardView } from "./views/DashboardView";
@@ -79,102 +81,130 @@ function App(): JSX.Element {
 
   const isDesktop = responsiveMode === "desktop";
 
+  // ChatHistory Repositoriesを取得（初期化済みの場合のみ）
+  // 注: 実際のアプリでは、main processでcreateChatHistoryRepositories(db)を呼び出してから使用する
+  let chatHistoryRepositories: ReturnType<
+    typeof getChatHistoryRepositories
+  > | null = null;
+  try {
+    chatHistoryRepositories = getChatHistoryRepositories();
+  } catch {
+    // リポジトリ未初期化の場合は無視（開発時やテスト時のフォールバック）
+  }
+
+  // ChatHistoryProviderでラップ（リポジトリが利用可能な場合）
+  const renderWithChatHistory = (content: React.ReactNode) => {
+    if (chatHistoryRepositories) {
+      return (
+        <ChatHistoryProvider
+          sessionRepository={chatHistoryRepositories.sessionRepository}
+          messageRepository={chatHistoryRepositories.messageRepository}
+        >
+          {content}
+        </ChatHistoryProvider>
+      );
+    }
+    return content;
+  };
+
   return (
     <BrowserRouter>
-      <AuthGuard>
-        <Routes>
-          {/* Agent SDK E2E Test Page */}
-          <Route
-            path="/agent"
-            element={
-              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
-                <AgentSDKPage />
-              </div>
-            }
-          />
-          {/* チャット履歴詳細ページ（URLルーティング） */}
-          <Route
-            path="/chat/history/:sessionId"
-            element={
-              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
-                <ChatHistoryView />
-              </div>
-            }
-          />
-          {/* チャット履歴一覧ページ（セッション未選択時） */}
-          <Route
-            path="/chat/history"
-            element={
-              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex items-center justify-center">
-                <div className="text-center text-hig-text-secondary">
-                  <p className="mb-2">セッションが選択されていません</p>
-                  <button
-                    type="button"
-                    disabled
-                    aria-label="エクスポート"
-                    className="rounded-hig-sm bg-hig-bg-tertiary px-4 py-2 text-sm text-hig-text-tertiary cursor-not-allowed"
-                  >
-                    エクスポート
-                  </button>
+      {renderWithChatHistory(
+        <AuthGuard>
+          <Routes>
+            {/* Agent SDK E2E Test Page */}
+            <Route
+              path="/agent"
+              element={
+                <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
+                  <AgentSDKPage />
                 </div>
-              </div>
-            }
-          />
-          {/* バージョン履歴ページ */}
-          <Route
-            path="/history/:fileId"
-            element={
-              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
-                <HistoryPage />
-              </div>
-            }
-          />
-          {/* 既存のビューベースUI（デフォルト） */}
-          <Route
-            path="*"
-            element={
-              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
-                {/* App Dock - Left side on desktop, bottom on mobile */}
-                {isDesktop ? (
-                  <AppDock
-                    currentView={currentView}
-                    onViewChange={handleViewChange}
-                    mode="desktop"
-                  />
-                ) : null}
-
-                {/* Main Content Area */}
-                <div className="flex-1 flex flex-col overflow-hidden">
-                  {/* Dynamic Island */}
-                  <div className="flex justify-center pt-4 pb-2">
-                    <DynamicIsland
-                      status={dynamicIsland.status}
-                      message={dynamicIsland.message}
-                      visible={dynamicIsland.visible}
-                    />
+              }
+            />
+            {/* チャット履歴詳細ページ（URLルーティング） */}
+            <Route
+              path="/chat/history/:sessionId"
+              element={
+                <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
+                  <ChatHistoryView />
+                </div>
+              }
+            />
+            {/* チャット履歴一覧ページ（セッション未選択時） */}
+            <Route
+              path="/chat/history"
+              element={
+                <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex items-center justify-center">
+                  <div className="text-center text-hig-text-secondary">
+                    <p className="mb-2">セッションが選択されていません</p>
+                    <button
+                      type="button"
+                      disabled
+                      aria-label="エクスポート"
+                      className="rounded-hig-sm bg-hig-bg-tertiary px-4 py-2 text-sm text-hig-text-tertiary cursor-not-allowed"
+                    >
+                      エクスポート
+                    </button>
                   </div>
-
-                  {/* View Content */}
-                  <main className="flex-1 overflow-auto p-6">
-                    {renderView()}
-                  </main>
                 </div>
-
-                {/* Mobile Bottom Navigation */}
-                {!isDesktop ? (
-                  <div className="fixed bottom-0 left-0 right-0">
+              }
+            />
+            {/* バージョン履歴ページ */}
+            <Route
+              path="/history/:fileId"
+              element={
+                <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
+                  <HistoryPage />
+                </div>
+              }
+            />
+            {/* 既存のビューベースUI（デフォルト） */}
+            <Route
+              path="*"
+              element={
+                <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
+                  {/* App Dock - Left side on desktop, bottom on mobile */}
+                  {isDesktop ? (
                     <AppDock
                       currentView={currentView}
                       onViewChange={handleViewChange}
-                      mode="mobile"
+                      mode="desktop"
                     />
+                  ) : null}
+
+                  {/* Main Content Area */}
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    {/* Dynamic Island */}
+                    <div className="flex justify-center pt-4 pb-2">
+                      <DynamicIsland
+                        status={dynamicIsland.status}
+                        message={dynamicIsland.message}
+                        visible={dynamicIsland.visible}
+                      />
+                    </div>
+
+                    {/* View Content */}
+                    <main className="flex-1 overflow-auto p-6">
+                      {renderView()}
+                    </main>
                   </div>
-                ) : null}
-              </div>
-            }
-          />
-        </Routes>
-      </AuthGuard>
+
+                  {/* Mobile Bottom Navigation */}
+                  {!isDesktop ? (
+                    <div className="fixed bottom-0 left-0 right-0">
+                      <AppDock
+                        currentView={currentView}
+                        onViewChange={handleViewChange}
+                        mode="mobile"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              }
+            />
+          </Routes>
+        </AuthGuard>,
+      )}
     </BrowserRouter>
   );
 }

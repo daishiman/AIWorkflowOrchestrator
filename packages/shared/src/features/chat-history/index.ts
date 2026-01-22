@@ -139,3 +139,11 @@ export type {
   ChatSessionRecord,
   ChatMessageRecord,
 } from "./infrastructure/persistence/mappers/index.js";
+
+// =============================================================================
+// Infrastructure Layer - Drizzle Repositories
+// =============================================================================
+export {
+  DrizzleChatSessionRepository,
+  DrizzleChatMessageRepository,
+} from "./infrastructure/persistence/index.js";

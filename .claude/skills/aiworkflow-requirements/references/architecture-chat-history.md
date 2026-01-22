@@ -123,6 +123,7 @@ packages/shared/src/
 | ChatHistoryProvider     | apps/desktop/src/features/chat-history/context/           | Use CasesのDI Provider              |
 | useChatHistory          | apps/desktop/src/features/chat-history/hooks/             | Context取得Hook                     |
 | MockChatHistoryProvider | apps/desktop/src/features/chat-history/context/__mocks__/ | テスト用MockProvider                |
+| repositoriesファクトリー | apps/desktop/src/features/chat-history/repositories/      | Repository DIシングルトン            |
 
 #### ChatHistoryContextValue
 
@@ -137,16 +138,60 @@ interface ChatHistoryContextValue {
 }
 ```
 
+#### Repository Factory（シングルトンDI）
+
+```typescript
+// repositories/index.ts
+import { createChatHistoryRepositories, getChatHistoryRepositories } from './index';
+
+// Main Processで初期化（1回のみ）
+createChatHistoryRepositories(drizzleDb);
+
+// Renderer Processで取得
+const { sessionRepository, messageRepository } = getChatHistoryRepositories();
+```
+
+| 関数                          | 説明                              |
+| ----------------------------- | --------------------------------- |
+| createChatHistoryRepositories | リポジトリ初期化（Main Process）  |
+| getChatHistoryRepositories    | リポジトリ取得（Renderer Process）|
+| isRepositoriesInitialized     | 初期化済み確認                    |
+| resetRepositories             | リセット（テスト用）              |
+
+#### App.tsx統合パターン
+
+```tsx
+// apps/desktop/src/renderer/App.tsx
+import { ChatHistoryProvider } from '@/features/chat-history/context';
+import { getChatHistoryRepositories } from '@/features/chat-history/repositories';
+
+function App() {
+  const { sessionRepository, messageRepository } = getChatHistoryRepositories();
+
+  return (
+    <ChatHistoryProvider
+      sessionRepository={sessionRepository}
+      messageRepository={messageRepository}
+    >
+      <AuthGuard>
+        <Routes>
+          {/* 全ルートでuseChatHistory()が使用可能 */}
+        </Routes>
+      </AuthGuard>
+    </ChatHistoryProvider>
+  );
+}
+```
+
 #### 使用パターン
 
 ```tsx
-// 本番環境
-<ChatHistoryProvider
-  sessionRepository={drizzleSessionRepo}
-  messageRepository={drizzleMessageRepo}
->
-  <App />
-</ChatHistoryProvider>
+// 本番環境（App.tsx統合済み）
+// 任意のコンポーネントでuseChatHistory()を呼び出し可能
+function ChatComponent() {
+  const { createSession, addUserMessage, isReady } = useChatHistory();
+  // ...
+}
 
 // テスト環境
 <MockChatHistoryProvider overrides={{ createSession: mockUseCase }}>
@@ -391,12 +436,46 @@ AppError (abstract)
 - [インターフェース仕様](./interfaces-chat-history.md) - 型定義・DB仕様
 - [アーキテクチャパターン](./architecture-patterns.md) - 全体パターン
 - [設計ドキュメント](../../../docs/30-workflows/clean-architecture-refactoring/outputs/phase-2/) - Phase 2成果物
+- [Provider統合実装ガイド](../../../docs/30-workflows/chat-history-provider-integration/outputs/phase-12/implementation-guide.md) - App.tsx統合実装ガイド
+
+---
+
+## 完了タスク
+
+### タスク: chat-history-provider-integration（2026-01-22完了）
+
+| 項目         | 内容                                                               |
+| ------------ | ------------------------------------------------------------------ |
+| タスクID     | UT-007                                                             |
+| 完了日       | 2026-01-22                                                         |
+| ステータス   | **完了**                                                           |
+| テスト数     | 97（自動テスト）+ 10（手動テスト項目）                             |
+| 発見課題     | 0件（重大な課題なし）                                              |
+| ドキュメント | `docs/30-workflows/chat-history-provider-integration/`             |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 機能テスト         | 5        | 5    | 0    |
+| エラーハンドリング | 2        | 2    | 0    |
+| アクセシビリティ   | 3        | 3    | 0    |
+| 自動テスト         | 97       | 97   | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/chat-history-provider-integration/outputs/phase-11/manual-test-result.md` |
+| 実装ガイド         | `docs/30-workflows/chat-history-provider-integration/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/chat-history-provider-integration/outputs/phase-12/documentation-changelog.md` |
 
 ---
 
 ## 変更履歴
 
-| Version | Date       | Changes                                |
-| ------- | ---------- | -------------------------------------- |
-| 1.1.0   | 2026-01-22 | Drizzle Repository実装を追加           |
-| 1.0.0   | 2026-01-19 | 初版作成（Clean Architecture移行完了） |
+| Version | Date       | Changes                                                                 |
+| ------- | ---------- | ----------------------------------------------------------------------- |
+| 1.2.0   | 2026-01-22 | App.tsx統合パターン・Repository Factory追加、UT-007完了記録追加          |
+| 1.1.0   | 2026-01-22 | Drizzle Repository実装を追加                                             |
+| 1.0.0   | 2026-01-19 | 初版作成（Clean Architecture移行完了）                                   |

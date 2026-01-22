@@ -164,3 +164,12 @@ export type {
   IChatMessageRepository,
   ChatSessionSearchCriteria,
 } from "./src/features/chat-history";
+
+/**
+ * Chat History - Drizzle Repositories
+ * Infrastructure層のDrizzle ORM実装
+ */
+export {
+  DrizzleChatSessionRepository,
+  DrizzleChatMessageRepository,
+} from "./src/features/chat-history";
