@@ -32,11 +32,38 @@
 - **適用条件**: Progressive Disclosure対象の詳細情報が肥大化した場合
 - **発見日**: 2026-01-20
 
+### Phase仕様書の成果物名厳密化
+- **状況**: Phase 12実行時に仕様書と異なるファイル名で成果物を生成
+- **アプローチ**:
+  - Phase仕様書の成果物セクションにファイル名パターンを明記
+  - 実行前に成果物一覧を確認するチェックリストを追加
+- **結果**: 仕様書どおりの成果物が生成され、検証が容易に
+- **適用条件**: Phase実行時、特に複数成果物を持つPhase
+- **発見日**: 2026-01-22
+- **関連タスク**: SHARED-TYPE-EXPORT-01
+
+### スキル間ドキュメント整合性の定期確認
+- **状況**: task-specification-creatorのSKILL.mdとreferences/artifact-naming-conventions.mdでPhase 12成果物リストが不整合
+- **アプローチ**:
+  - SKILL.mdの成果物定義を正とし、references/を同期
+  - 改善作業時に関連ドキュメントの整合性を確認
+- **結果**: artifact-naming-conventions.mdにPhase 12の3成果物（implementation-guide.md, documentation-update-log.md, unassigned-task-report.md）を追加
+- **適用条件**: スキル改善時、バージョンアップ時
+- **発見日**: 2026-01-22
+- **関連タスク**: SHARED-TYPE-EXPORT-01
+
 ---
 
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
+
+### 成果物名の暗黙的解釈
+- **状況**: Phase 12で`implementation-guide.md`を`documentation.md`として生成
+- **問題**: 仕様書との不整合、後続処理でのファイル参照エラー
+- **原因**: 仕様書の成果物名を正確に確認せず暗黙的に命名
+- **教訓**: Phase仕様書の「成果物」セクションを必ず確認し、ファイル名を厳密に一致させる
+- **発見日**: 2026-01-22
 
 ### 全リソース一括読み込み
 - **状況**: スキル実行開始時に全ファイルを読み込んだ
