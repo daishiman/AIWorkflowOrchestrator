@@ -1,5 +1,9 @@
 # HybridRAGFactory createFull/createLite 実装タスク
 
+```yaml
+issue_number: 432
+```
+
 ## タスク情報
 
 | 項目       | 内容                                            |

@@ -301,3 +301,12 @@ node scripts/log-usage.js \
 - [x] unassigned-taskステータス更新（完了）
 
 ---
+
+## [2026-01-22T04:34:10.114Z]
+
+- **Agent**: unknown
+- **Phase**: detect-unassigned
+- **Result**: ✓ 成功
+- **Notes**: Drizzle Repository実装から3件の未タスクを検出・仕様書作成
+
+---
