@@ -1,0 +1,225 @@
+{
+  "taskId": "UT-006",
+  "taskName": "React Context DI実装",
+  "featureName": "react-context-di",
+  "createdAt": "2026-01-22T00:00:00.000Z",
+  "updatedAt": "2026-01-22T00:00:00.000Z",
+  "status": "ready",
+  "specificationStatus": "completed",
+  "issueNumber": 402,
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "specFile": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/prerequisites-check.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/functional-requirements.md",
+        "outputs/phase-1/artifacts-list.md",
+        "outputs/phase-1/requirements-report.md"
+      ],
+      "completedAt": null
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "specFile": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/context-type-design.md",
+        "outputs/phase-2/provider-design.md",
+        "outputs/phase-2/hook-design.md",
+        "outputs/phase-2/mock-provider-design.md",
+        "outputs/phase-2/interface-compatibility.md",
+        "outputs/phase-2/design-document.md"
+      ],
+      "completedAt": null
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "specFile": "phase-3-design-review.md",
+      "outputs": [
+        "outputs/phase-3/requirements-review.md",
+        "outputs/phase-3/architecture-review.md",
+        "outputs/phase-3/type-safety-review.md",
+        "outputs/phase-3/testability-review.md",
+        "outputs/phase-3/design-review-verdict.md"
+      ],
+      "completedAt": null
+    },
+    "phase-4": {
+      "name": "テスト作成（TDD Red）",
+      "status": "pending",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-setup.md",
+        "outputs/phase-4/test-creation-report.md",
+        "outputs/phase-4/red-phase-result.md"
+      ],
+      "completedAt": null
+    },
+    "phase-5": {
+      "name": "実装（TDD Green）",
+      "status": "pending",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [
+        "outputs/phase-5/directory-creation.md",
+        "outputs/phase-5/implementation-report.md",
+        "outputs/phase-5/green-phase-result.md"
+      ],
+      "completedAt": null
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": [
+        "outputs/phase-6/edge-case-tests.md",
+        "outputs/phase-6/error-handling-tests.md",
+        "outputs/phase-6/integration-tests.md",
+        "outputs/phase-6/mock-extension-tests.md",
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/test-expansion-report.md"
+      ],
+      "completedAt": null
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": [
+        "outputs/phase-7/coverage-measurement.md",
+        "outputs/phase-7/coverage-judgment.md",
+        "outputs/phase-7/integration-test-result.md",
+        "outputs/phase-7/all-tests-result.md",
+        "outputs/phase-7/uncovered-analysis.md",
+        "outputs/phase-7/coverage-gate-verdict.md"
+      ],
+      "completedAt": null
+    },
+    "phase-8": {
+      "name": "リファクタリング（TDD Refactor）",
+      "status": "pending",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": [
+        "outputs/phase-8/quality-analysis.md",
+        "outputs/phase-8/naming-review.md",
+        "outputs/phase-8/duplication-review.md",
+        "outputs/phase-8/performance-review.md",
+        "outputs/phase-8/jsdoc-review.md",
+        "outputs/phase-8/refactoring-result.md"
+      ],
+      "completedAt": null
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "specFile": "phase-9-quality.md",
+      "outputs": [
+        "outputs/phase-9/typecheck-result.md",
+        "outputs/phase-9/lint-result.md",
+        "outputs/phase-9/format-result.md",
+        "outputs/phase-9/security-check.md",
+        "outputs/phase-9/test-result.md",
+        "outputs/phase-9/quality-report.md"
+      ],
+      "completedAt": null
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "specFile": "phase-10-final-review.md",
+      "outputs": [
+        "outputs/phase-10/requirements-fulfillment.md",
+        "outputs/phase-10/design-conformance.md",
+        "outputs/phase-10/system-spec-conformance.md",
+        "outputs/phase-10/quality-metrics.md",
+        "outputs/phase-10/final-verdict.md"
+      ],
+      "completedAt": null
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/automated-test-result.md",
+        "outputs/phase-11/functional-test-result.md",
+        "outputs/phase-11/error-handling-test-result.md",
+        "outputs/phase-11/integration-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-result.md"
+      ],
+      "completedAt": null
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-log.md",
+        "outputs/phase-12/document-changelog.md",
+        "outputs/phase-12/unassigned-tasks-report.md"
+      ],
+      "completedAt": null
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": [
+        "outputs/phase-13/pre-commit-check.md",
+        "outputs/phase-13/diff-summary.md",
+        "outputs/phase-13/pr-creation-result.md",
+        "outputs/phase-13/ci-result.md",
+        "outputs/phase-13/merge-ready-report.md"
+      ],
+      "completedAt": null
+    }
+  },
+  "artifacts": {
+    "context": [
+      "apps/desktop/src/features/chat-history/context/ChatHistoryContext.tsx",
+      "apps/desktop/src/features/chat-history/context/ChatHistoryProvider.tsx",
+      "apps/desktop/src/features/chat-history/context/index.ts"
+    ],
+    "hooks": [
+      "apps/desktop/src/features/chat-history/hooks/useChatHistory.ts",
+      "apps/desktop/src/features/chat-history/hooks/index.ts"
+    ],
+    "mocks": [
+      "apps/desktop/src/features/chat-history/context/__mocks__/MockChatHistoryProvider.tsx"
+    ],
+    "tests": [
+      "apps/desktop/src/features/chat-history/context/__tests__/ChatHistoryContext.test.tsx",
+      "apps/desktop/src/features/chat-history/hooks/__tests__/useChatHistory.test.ts",
+      "apps/desktop/src/features/chat-history/__tests__/ChatHistoryIntegration.test.tsx"
+    ],
+    "documentation": [
+      "docs/30-workflows/react-context-di/outputs/phase-12/implementation-guide.md"
+    ]
+  },
+  "dependencies": {
+    "shared": ["@repo/shared"],
+    "desktop": ["@repo/desktop"]
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/architecture-chat-history.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-chat-history.md"
+    ],
+    "useCases": [
+      "packages/shared/src/features/chat-history/application/use-cases/CreateChatSessionUseCase.ts",
+      "packages/shared/src/features/chat-history/application/use-cases/AddUserMessageUseCase.ts",
+      "packages/shared/src/features/chat-history/application/use-cases/AddAssistantMessageUseCase.ts",
+      "packages/shared/src/features/chat-history/application/use-cases/TogglePinnedUseCase.ts",
+      "packages/shared/src/features/chat-history/application/use-cases/SearchSessionsUseCase.ts"
+    ],
+    "repositories": [
+      "packages/shared/src/features/chat-history/domain/repositories/IChatSessionRepository.ts",
+      "packages/shared/src/features/chat-history/domain/repositories/IChatMessageRepository.ts"
+    ]
+  }
+}

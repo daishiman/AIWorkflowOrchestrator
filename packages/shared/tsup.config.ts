@@ -29,6 +29,7 @@ export default defineConfig({
     "src/slide/index.ts",
     "src/claude-cli/index.ts",
     "utils/index.ts",
+    "src/features/chat-history/index.ts",
   ],
   format: ["esm"],
   dts: true,

@@ -76,7 +76,7 @@ node scripts/list-specs.mjs --topics
 
 ## アーキテクチャ
 
-**関連キーワード**: モノレポ, レイヤー, Clean Architecture, RAG, Knowledge Graph
+**関連キーワード**: モノレポ, レイヤー, Clean Architecture, RAG, Knowledge Graph, React Context DI
 
 ### references/architecture-auth-security.md
 
@@ -163,6 +163,23 @@ node scripts/list-specs.mjs --topics
 | VectorSearchStrategy（セマンティック検索） | L658 |
 | GraphRAGクエリサービス | L734 |
 | HybridRAG統合パイプライン | L806 |
+
+### references/architecture-chat-history.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| レイヤー構成 | L17 |
+| 依存関係ルール | L43 |
+| ディレクトリ構成 | L56 |
+| UI Layer（React Context DI） | L106 |
+| Domain Layer | L151 |
+| Application Layer | L230 |
+| Infrastructure Layer | L250 |
+| エラーハンドリング | L265 |
+| ビジネスルール | L292 |
+| 品質指標 | L302 |
+| 設計原則 | L316 |
+| 関連ドキュメント | L337 |
 
 ---
 
