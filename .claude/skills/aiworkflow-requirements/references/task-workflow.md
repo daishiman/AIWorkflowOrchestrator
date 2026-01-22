@@ -31,10 +31,10 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 ## ドキュメント構成
 
-| ドキュメント | ファイル | 説明 |
-|-------------|----------|------|
-| フェーズ定義 | [task-workflow-phases.md](./task-workflow-phases.md) | Phase 0〜6の詳細定義とテンプレート |
-| ルール・選定基準 | [task-workflow-rules.md](./task-workflow-rules.md) | 品質ゲート、コマンド・エージェント・スキル選定 |
+| ドキュメント     | ファイル                                             | 説明                                           |
+| ---------------- | ---------------------------------------------------- | ---------------------------------------------- |
+| フェーズ定義     | [task-workflow-phases.md](./task-workflow-phases.md) | Phase 0〜6の詳細定義とテンプレート             |
+| ルール・選定基準 | [task-workflow-rules.md](./task-workflow-rules.md)   | 品質ゲート、コマンド・エージェント・スキル選定 |
 
 ---
 
@@ -42,15 +42,15 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 すべてのタスクは以下のフェーズ構造に従う。詳細は [task-workflow-phases.md](./task-workflow-phases.md) を参照。
 
-| フェーズ | ID接頭辞 | 目的 |
-|----------|----------|------|
-| Phase 0: 要件定義 | `T-00` | タスクの目的、スコープ、受け入れ基準を明文化 |
-| Phase 1: 設計 | `T-01` | 要件を実現可能な構造に落とし込む |
-| Phase 2: テスト作成 (TDD: Red) | `T-02` | 期待される動作を検証するテストを先行作成 |
-| Phase 3: 実装 (TDD: Green) | `T-03` | テストを通すための最小限の実装 |
-| Phase 4: リファクタリング (TDD: Refactor) | `T-04` | 動作を変えずにコード品質を改善 |
-| Phase 5: 品質保証 | `T-05` | 定義された品質基準をすべて満たすことを検証 |
-| Phase 6: ドキュメント更新 | `T-06` | 実装内容をシステム要件ドキュメントに反映 |
+| フェーズ                                  | ID接頭辞 | 目的                                         |
+| ----------------------------------------- | -------- | -------------------------------------------- |
+| Phase 0: 要件定義                         | `T-00`   | タスクの目的、スコープ、受け入れ基準を明文化 |
+| Phase 1: 設計                             | `T-01`   | 要件を実現可能な構造に落とし込む             |
+| Phase 2: テスト作成 (TDD: Red)            | `T-02`   | 期待される動作を検証するテストを先行作成     |
+| Phase 3: 実装 (TDD: Green)                | `T-03`   | テストを通すための最小限の実装               |
+| Phase 4: リファクタリング (TDD: Refactor) | `T-04`   | 動作を変えずにコード品質を改善               |
+| Phase 5: 品質保証                         | `T-05`   | 定義された品質基準をすべて満たすことを検証   |
+| Phase 6: ドキュメント更新                 | `T-06`   | 実装内容をシステム要件ドキュメントに反映     |
 
 ### フェーズ遷移図
 
@@ -130,15 +130,49 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 ## 完了タスク
 
+### タスク: task-specification-creator Phase 12テンプレート強化（2026-01-22完了）
+
+| 項目       | 内容                                         |
+| ---------- | -------------------------------------------- |
+| タスクID   | TSC-PHASE12-IMPROVE-002                      |
+| 完了日     | 2026-01-22                                   |
+| ステータス | **完了**                                     |
+| 対象スキル | `.claude/skills/task-specification-creator/` |
+| バージョン | v7.6.0                                       |
+
+#### 改善内容
+
+1. **Phase 12-2セクション強化**
+   - `spec-update-workflow.md`への参照リンク追加
+   - 2ステップ実行プロセスの明示化（Step 1: 完了記録、Step 2: 仕様更新）
+   - 判断基準テーブルをテンプレート内に埋め込み
+
+2. **完了条件チェックリストの明示化**
+   - Phase 12-2の3ステップを個別チェック項目として追加
+   - 見落とし防止のため`【Phase 12-2 Step 1】`等のプレフィックス付与
+
+3. **フォールバック手順セクション追加**
+   - スクリプト不在時の代替手順を明記
+   - `generate-documentation-changelog.js`等の手動実行ガイド
+
+#### 成果物
+
+| 成果物                     | パス                                                                      |
+| -------------------------- | ------------------------------------------------------------------------- |
+| phase-templates.md（更新） | `.claude/skills/task-specification-creator/references/phase-templates.md` |
+| SKILL.md（更新）           | `.claude/skills/task-specification-creator/SKILL.md`                      |
+
+---
+
 ### タスク: task-specification-creator Phase 12改善（2026-01-22完了）
 
-| 項目         | 内容                                             |
-| ------------ | ------------------------------------------------ |
-| タスクID     | TSC-PHASE12-IMPROVE-001                          |
-| 完了日       | 2026-01-22                                       |
-| ステータス   | **完了**                                         |
-| 対象スキル   | `.claude/skills/task-specification-creator/`     |
-| バージョン   | v7.5.0                                           |
+| 項目       | 内容                                         |
+| ---------- | -------------------------------------------- |
+| タスクID   | TSC-PHASE12-IMPROVE-001                      |
+| 完了日     | 2026-01-22                                   |
+| ステータス | **完了**                                     |
+| 対象スキル | `.claude/skills/task-specification-creator/` |
+| バージョン | v7.5.0                                       |
 
 #### 改善内容
 
@@ -156,10 +190,10 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 #### 成果物
 
-| 成果物                          | パス                                                                    |
-| ------------------------------- | ----------------------------------------------------------------------- |
-| SKILL.md（更新）                | `.claude/skills/task-specification-creator/SKILL.md`                    |
-| spec-update-workflow.md（更新） | `.claude/skills/task-specification-creator/references/spec-update-workflow.md` |
+| 成果物                          | パス                                                                                    |
+| ------------------------------- | --------------------------------------------------------------------------------------- |
+| SKILL.md（更新）                | `.claude/skills/task-specification-creator/SKILL.md`                                    |
+| spec-update-workflow.md（更新） | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`          |
 | 自動生成スクリプト（新規）      | `.claude/skills/task-specification-creator/scripts/generate-documentation-changelog.js` |
 
 ---
@@ -168,10 +202,12 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 
-| タスクID          | タスク名                     | 優先度 | 発見元                                | タスク仕様書                                                        |
-| ----------------- | ---------------------------- | ------ | ------------------------------------- | ------------------------------------------------------------------- |
-| SKILL-E2E-001     | スキルインポートE2Eテスト    | 中     | Phase 11（手動テスト検証）推奨事項    | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md` |
-| TSC-AUTOMATION-001 | Phase 12自動化スクリプト拡充 | 低     | skill-import-persistence-bugfix実施時 | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md` |
+| タスクID           | タスク名                          | 優先度 | 発見元                                          | タスク仕様書                                                                 |
+| ------------------ | --------------------------------- | ------ | ----------------------------------------------- | ---------------------------------------------------------------------------- |
+| SKILL-E2E-001      | スキルインポートE2Eテスト         | 中     | Phase 11（手動テスト検証）推奨事項              | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`         |
+| TSC-AUTOMATION-001 | Phase 12自動化スクリプト拡充      | 低     | skill-import-persistence-bugfix実施時           | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md`   |
+| UT-008             | Chat History UI Components        | 中     | Phase 12（UT-006完了後の後続タスク）            | `docs/30-workflows/unassigned-task/task-chat-history-ui-components.md`       |
+| UT-009             | Chat History Additional Use Cases | 中     | Phase 12（api-chat-history.md 未実装Use Cases） | `docs/30-workflows/unassigned-task/task-chat-history-additional-usecases.md` |
 
 ### 未タスク管理ルール
 
@@ -193,8 +229,10 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                 |
-| ---------- | ---------- | ------------------------------------------------------------------------ |
-| 1.0.0      | 2026-01-20 | 初版作成                                                                 |
-| 1.1.0      | 2026-01-22 | task-specification-creator Phase 12改善完了記録追加                      |
-| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、未タスク2件（E2Eテスト、自動化拡充）登録 |
+| バージョン | 日付       | 変更内容                                                                                  |
+| ---------- | ---------- | ----------------------------------------------------------------------------------------- |
+| 1.0.0      | 2026-01-20 | 初版作成                                                                                  |
+| 1.1.0      | 2026-01-22 | task-specification-creator Phase 12改善完了記録追加                                       |
+| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、未タスク2件（E2Eテスト、自動化拡充）登録                |
+| 1.3.0      | 2026-01-22 | task-specification-creator v7.6.0完了記録追加（Phase 12テンプレート強化）                 |
+| 1.4.0      | 2026-01-22 | 未タスク追加: UT-008 Chat History UI Components, UT-009 Chat History Additional Use Cases |
