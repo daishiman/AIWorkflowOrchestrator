@@ -13,6 +13,7 @@ const STORE_KEY = "importedSkillIds";
 interface SkillStore {
   get(key: string, defaultValue: string[]): string[];
   set(key: string, value: string[]): void;
+  path?: string;
 }
 
 export class SkillImportManager {
@@ -21,8 +22,19 @@ export class SkillImportManager {
 
   constructor(store: SkillStore) {
     this.store = store;
+
+    // デバッグログ: ストアパスの出力（テスト環境以外）
+    if (process.env.NODE_ENV !== "test") {
+      console.log("[SkillImportManager] Store path:", store.path ?? "unknown");
+    }
+
     try {
       const stored = this.store.get(STORE_KEY, []) as string[];
+      console.log(
+        "[SkillImportManager] Loaded imported IDs:",
+        stored.length,
+        "items",
+      );
       this.importedIds = new Set(stored);
     } catch (error) {
       console.error("[SkillImportManager] Failed to load from store:", error);
@@ -34,6 +46,7 @@ export class SkillImportManager {
    * スキルをインポートする
    */
   async importSkills(skillIds: string[]): Promise<ImportResult> {
+    console.log("[SkillImportManager] importSkills called with:", skillIds);
     const errors: string[] = [];
     let importedCount = 0;
 
@@ -48,6 +61,11 @@ export class SkillImportManager {
       this.persist();
     }
 
+    console.log(
+      "[SkillImportManager] importSkills result:",
+      importedCount,
+      "new imports",
+    );
     return {
       success: errors.length === 0,
       importedCount,
@@ -59,6 +77,7 @@ export class SkillImportManager {
    * スキルを削除する
    */
   async removeSkill(skillId: string): Promise<RemoveResult> {
+    console.log("[SkillImportManager] removeSkill called with:", skillId);
     const removed = this.importedIds.has(skillId);
 
     if (removed) {
@@ -66,6 +85,7 @@ export class SkillImportManager {
       this.persist();
     }
 
+    console.log("[SkillImportManager] removeSkill result:", removed);
     return {
       success: true,
       removed,
@@ -91,7 +111,10 @@ export class SkillImportManager {
    */
   private persist(): void {
     try {
-      this.store.set(STORE_KEY, Array.from(this.importedIds));
+      const data = Array.from(this.importedIds);
+      console.log("[SkillImportManager] Persisting:", data.length, "items");
+      this.store.set(STORE_KEY, data);
+      console.log("[SkillImportManager] Persist successful");
     } catch (error) {
       console.error("[SkillImportManager] Failed to persist:", error);
     }

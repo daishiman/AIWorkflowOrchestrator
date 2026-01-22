@@ -26,7 +26,7 @@ issue_number: 416
 
 ### 1.1 背景
 
-skill-import-persistence-bugfixタスクでスキルインポート永続化のバグ修正を行った。ユニットテスト（28件）でロジックの正常性は検証済みだが、実際のElectron環境でのE2Eテストは未実施。
+skill-import-store-persistenceタスク（SKILL-STORE-001）でスキルインポート永続化のデバッグログ追加・統合テスト整備を行った。ユニットテスト28件+統合テスト23件でロジックの正常性は検証済みだが、実際のElectron GUI環境でのE2Eテストは未実施。
 
 ### 1.2 問題点・課題
 
@@ -210,9 +210,14 @@ pnpm playwright test e2e/skill-import-persistence.spec.ts
 
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料                  | パス                                                                        | 内容             |
-| ------------------------- | --------------------------------------------------------------------------- | ---------------- |
-| Agent SDKインターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md` | skill:\* IPC仕様 |
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                     | パス                                                                                                        | 内容                                   |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| Agent SDKインターフェース    | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`                                 | skill:\* IPC仕様                       |
+| SkillImportManager仕様       | 同上（「SkillImportManager 仕様」セクション）                                                               | SkillStore interface、デバッグログ仕様 |
+| 統合テスト戦略               | 同上（「統合テスト戦略」セクション）                                                                        | 統合テストファイル詳細（23件）         |
+| skill-import-store実装ガイド | `docs/30-workflows/completed-tasks/skill-import-store-persistence/outputs/phase-12/implementation-guide.md` | 実装詳細（Part 1 + Part 2）            |
 
 ---
 
@@ -227,5 +232,6 @@ pnpm playwright test e2e/skill-import-persistence.spec.ts
 
 ### 補足事項
 
-- 本タスクはskill-import-persistence-bugfixの品質向上のための追加タスク
+- 本タスクはskill-import-store-persistence（SKILL-STORE-001）の品質向上のための追加タスク
+- 発見元タスクは2026-01-22に完了（`docs/30-workflows/completed-tasks/skill-import-store-persistence/`）
 - 優先度「中」のため、他の優先度「高」タスクの後に実施可能

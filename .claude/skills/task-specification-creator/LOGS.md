@@ -310,3 +310,57 @@ node scripts/log-usage.js \
 - **Notes**: Drizzle Repository実装から3件の未タスクを検出・仕様書作成
 
 ---
+
+## 2026-01-22 - スクリプトバグ修正（generate-documentation-changelog.js）
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: SKILL-STORE-001
+- タスク名: スキルインポート ストア永続化問題調査・修正
+- Phase: 12（ドキュメント更新）
+- 実行者: Claude Code (skill-creator)
+
+### 結果
+- ステータス: success（バグ修正完了）
+- 記録日時: 2026-01-22
+
+### 発見事項
+- **問題**: generate-documentation-changelog.jsでartifacts.jsonからドキュメント一覧を抽出する際にTypeError発生
+- **原因**: スクリプトは`artifact.path`と`artifact.description`のオブジェクト形式のみを想定
+- **実態**: artifacts.jsonでは文字列配列形式（`["outputs/phase-01/requirements.md"]`）を使用
+- **エラー**: `TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined`
+
+### 修正内容
+| ファイル | 変更種別 | 内容 |
+|----------|----------|------|
+| scripts/generate-documentation-changelog.js | fix | artifacts配列の文字列/オブジェクト両形式対応 |
+
+### 修正コード
+```javascript
+// 修正前
+documents.push({
+  name: artifact.description || basename(artifact.path),
+  path: artifact.path,
+  phase: phase,
+});
+
+// 修正後
+const artifactPath = typeof artifact === "string" ? artifact : artifact.path;
+const artifactName =
+  typeof artifact === "string" ? basename(artifact) : artifact.description || basename(artifact.path);
+
+if (artifactPath) {
+  documents.push({
+    name: artifactName,
+    path: artifactPath,
+    phase: phase,
+  });
+}
+```
+
+### 次のアクション
+- [x] バグ修正完了
+- [x] documentation-changelog.mdに修正内容を記録
+- [x] LOGS.mdにフィードバック記録
+
+---

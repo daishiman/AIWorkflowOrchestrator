@@ -423,3 +423,21 @@
 - **Notes**: SHARED-TYPE-EXPORT-01ワークフローからの改善分析完了。task-specification-creatorのartifact-naming-conventions.md更新、patterns.md追記
 
 ---
+
+## [2026-01-22T13:33:08.802Z]
+
+- **Agent**: unknown
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+- **Notes**: generate-documentation-changelog.jsのバグ修正完了: artifacts配列の文字列/オブジェクト両対応
+
+---
+
+## [2026-01-22T13:40:32.940Z]
+
+- **Agent**: unknown
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+- **Notes**: generate-documentation-changelog.jsバグ修正: artifacts配列の文字列/オブジェクト両形式対応
+
+---
