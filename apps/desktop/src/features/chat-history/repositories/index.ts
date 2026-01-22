@@ -1,17 +1,16 @@
 /**
  * Chat History リポジトリファクトリー
  *
- * DrizzleリポジトリをChatHistoryProviderに注入するためのファクトリーモジュール。
- * シングルトンパターンでリポジトリインスタンスを管理する。
+ * Note: DrizzleリポジトリはNode.js専用のため、Renderer側では使用できない。
+ * Chat History機能はIPC経由でMain Processと連携する形で後続タスクで実装予定。
+ * See: UT-009 (Chat History Additional Use Cases)
  *
  * @module features/chat-history/repositories
  */
 
-import {
-  DrizzleChatSessionRepository,
-  DrizzleChatMessageRepository,
-  type IChatSessionRepository,
-  type IChatMessageRepository,
+import type {
+  IChatSessionRepository,
+  IChatMessageRepository,
 } from "@repo/shared";
 
 /**
@@ -26,38 +25,29 @@ export interface ChatHistoryRepositories {
 let repositories: ChatHistoryRepositories | null = null;
 
 /**
- * Chat Historyリポジトリを作成する
+ * Chat Historyリポジトリを設定する
  *
- * DrizzleDBインスタンスを受け取り、リポジトリを生成してシングルトンとして保持する。
- * 既に初期化済みの場合は、既存のインスタンスを返す。
+ * Main Processから初期化されたリポジトリを受け取り、シングルトンとして保持する。
+ * Renderer側ではIPC経由でMain Processからリポジトリを受け取る形で使用する。
  *
- * @param db - Drizzle ORMのデータベースインスタンス
- * @returns セッションリポジトリとメッセージリポジトリのオブジェクト
+ * Note: 現在の実装では未使用。UT-009でIPC連携を実装予定。
+ *
+ * @param repos - セッションリポジトリとメッセージリポジトリのオブジェクト
  */
-export function createChatHistoryRepositories(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  db: any,
-): ChatHistoryRepositories {
-  if (repositories) {
-    return repositories;
-  }
-
-  repositories = {
-    sessionRepository: new DrizzleChatSessionRepository(db),
-    messageRepository: new DrizzleChatMessageRepository(db),
-  };
-
-  return repositories;
+export function setChatHistoryRepositories(
+  repos: ChatHistoryRepositories,
+): void {
+  repositories = repos;
 }
 
 /**
  * 初期化済みのリポジトリを取得する
  *
- * createChatHistoryRepositoriesで初期化されたリポジトリを返す。
- * 初期化されていない場合はエラーをスローする。
+ * setChatHistoryRepositoriesで設定されたリポジトリを返す。
+ * 設定されていない場合はエラーをスローする。
  *
  * @returns セッションリポジトリとメッセージリポジトリのオブジェクト
- * @throws Error リポジトリが初期化されていない場合
+ * @throws Error リポジトリが設定されていない場合
  */
 export function getChatHistoryRepositories(): ChatHistoryRepositories {
   if (!repositories) {
