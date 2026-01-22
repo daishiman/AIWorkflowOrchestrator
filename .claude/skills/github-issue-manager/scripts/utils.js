@@ -141,11 +141,47 @@ function extractMetadata(content) {
   // 1. まずYAMLコードブロックを試行
   const yamlMetadata = extractMetadataFromYaml(content);
   if (Object.keys(yamlMetadata).length > 0) {
+    // YAMLにtaskNameがない場合、タイトル行から補完
+    if (!yamlMetadata.taskName) {
+      const titleName = extractTaskNameFromTitle(content);
+      if (titleName) {
+        yamlMetadata.taskName = titleName;
+      }
+    }
     return yamlMetadata;
   }
 
   // 2. フォールバック: Markdownテーブルから抽出
-  return extractMetadataFromTable(content);
+  const tableMetadata = extractMetadataFromTable(content);
+
+  // taskNameがない場合、タイトル行から補完
+  if (!tableMetadata.taskName) {
+    const titleName = extractTaskNameFromTitle(content);
+    if (titleName) {
+      tableMetadata.taskName = titleName;
+    }
+  }
+
+  return tableMetadata;
+}
+
+/**
+ * タイトル行からタスク名を抽出
+ * @param {string} content - Markdownコンテンツ
+ * @returns {string|null} タスク名
+ */
+function extractTaskNameFromTitle(content) {
+  // "# タスク名 - サフィックス" または "# タスク名" の形式を検出
+  const titleMatch = content.match(/^#\s+(.+?)(?:\s*[-–—]\s*.+)?$/m);
+  if (titleMatch) {
+    let title = titleMatch[1].trim();
+    // 「未タスク指示書:」などのプレフィックスを除去
+    title = title.replace(/^未タスク指示書[：:]\s*/i, "");
+    title = title.replace(/^タスク指示書[：:]\s*/i, "");
+    title = title.replace(/^タスク仕様書[：:]\s*/i, "");
+    return title;
+  }
+  return null;
 }
 
 /**
@@ -205,10 +241,20 @@ function extractMetadataFromYaml(content) {
 function extractMetadataFromTable(content) {
   const metadata = {};
 
-  // メタ情報セクションを検出
-  const metaSection = content.match(
+  // メタ情報セクションを検出（複数のセクション名に対応）
+  const sectionPatterns = [
     /## メタ情報\s*\n([\s\S]*?)(?=\n---|\n## |$)/,
-  );
+    /## タスク概要\s*\n([\s\S]*?)(?=\n---|\n## |$)/,
+    /## タスク情報\s*\n([\s\S]*?)(?=\n---|\n## |$)/,
+    /## 基本情報\s*\n([\s\S]*?)(?=\n---|\n## |$)/,
+  ];
+
+  let metaSection = null;
+  for (const pattern of sectionPatterns) {
+    metaSection = content.match(pattern);
+    if (metaSection) break;
+  }
+
   if (!metaSection) {
     return metadata;
   }
@@ -248,6 +294,7 @@ function normalizeKey(key) {
     対象機能: "targetFeature",
     優先度: "priority",
     見積もり規模: "scale",
+    見積もり: "scale",
     規模: "scale",
     ステータス: "status",
     発見元: "sourcePhase",
