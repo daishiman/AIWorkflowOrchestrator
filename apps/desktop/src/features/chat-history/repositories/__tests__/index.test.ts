@@ -1,29 +1,49 @@
 /**
  * リポジトリファクトリーテスト
  *
- * Phase 4: タスク1 - TDD Red Phase
- * リポジトリファクトリーの動作を検証する
+ * setChatHistoryRepositories / getChatHistoryRepositories の動作を検証する
+ *
+ * Note: DrizzleリポジトリはNode.js専用のため、Renderer側では使用できない。
+ * このテストはRenderer側のリポジトリ管理API（set/get/reset）のみをテストする。
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import type {
+  IChatSessionRepository,
+  IChatMessageRepository,
+} from "@repo/shared";
 
-// 注意: このインポートは実装前なのでエラーになる（Red状態）
-// Phase 5で実装後にパスする
 import {
-  createChatHistoryRepositories,
+  setChatHistoryRepositories,
   getChatHistoryRepositories,
   isRepositoriesInitialized,
   resetRepositories,
 } from "../index";
 
-// モックDB
-function createMockDb() {
+// モックリポジトリの作成
+function createMockSessionRepository(): IChatSessionRepository {
   return {
-    select: vi.fn(),
-    insert: vi.fn(),
-    update: vi.fn(),
+    findById: vi.fn(),
+    findByUserId: vi.fn(),
+    findPinned: vi.fn(),
+    search: vi.fn(),
+    save: vi.fn().mockResolvedValue(undefined),
     delete: vi.fn(),
-    transaction: vi.fn(),
+    exists: vi.fn(),
+    countPinned: vi.fn().mockResolvedValue(0),
+  };
+}
+
+function createMockMessageRepository(): IChatMessageRepository {
+  return {
+    findById: vi.fn(),
+    findBySessionId: vi.fn(),
+    findLatestBySessionId: vi.fn(),
+    countBySessionId: vi.fn(),
+    save: vi.fn().mockResolvedValue(undefined),
+    saveMany: vi.fn(),
+    delete: vi.fn(),
+    deleteBySessionId: vi.fn(),
   };
 }
 
@@ -33,38 +53,57 @@ describe("Repository Factory", () => {
     resetRepositories();
   });
 
-  describe("createChatHistoryRepositories", () => {
-    it("should create session repository", () => {
-      const mockDb = createMockDb();
+  describe("setChatHistoryRepositories", () => {
+    it("should set session repository", () => {
+      const mockRepos = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
 
-      const repos = createChatHistoryRepositories(mockDb);
+      setChatHistoryRepositories(mockRepos);
+      const repos = getChatHistoryRepositories();
 
-      expect(repos.sessionRepository).toBeDefined();
+      expect(repos.sessionRepository).toBe(mockRepos.sessionRepository);
     });
 
-    it("should create message repository", () => {
-      const mockDb = createMockDb();
+    it("should set message repository", () => {
+      const mockRepos = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
 
-      const repos = createChatHistoryRepositories(mockDb);
+      setChatHistoryRepositories(mockRepos);
+      const repos = getChatHistoryRepositories();
 
-      expect(repos.messageRepository).toBeDefined();
+      expect(repos.messageRepository).toBe(mockRepos.messageRepository);
     });
 
-    it("should return same instance when called multiple times (singleton)", () => {
-      const mockDb = createMockDb();
+    it("should overwrite repositories when called multiple times", () => {
+      const mockRepos1 = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
+      const mockRepos2 = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
 
-      const repos1 = createChatHistoryRepositories(mockDb);
-      const repos2 = createChatHistoryRepositories(mockDb);
+      setChatHistoryRepositories(mockRepos1);
+      setChatHistoryRepositories(mockRepos2);
+      const repos = getChatHistoryRepositories();
 
-      expect(repos1.sessionRepository).toBe(repos2.sessionRepository);
-      expect(repos1.messageRepository).toBe(repos2.messageRepository);
+      expect(repos.sessionRepository).toBe(mockRepos2.sessionRepository);
+      expect(repos.messageRepository).toBe(mockRepos2.messageRepository);
     });
   });
 
   describe("getChatHistoryRepositories", () => {
     it("should return repositories after initialization", () => {
-      const mockDb = createMockDb();
-      createChatHistoryRepositories(mockDb);
+      const mockRepos = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
+      setChatHistoryRepositories(mockRepos);
 
       const repos = getChatHistoryRepositories();
 
@@ -85,8 +124,11 @@ describe("Repository Factory", () => {
     });
 
     it("should return true after initialization", () => {
-      const mockDb = createMockDb();
-      createChatHistoryRepositories(mockDb);
+      const mockRepos = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
+      setChatHistoryRepositories(mockRepos);
 
       expect(isRepositoriesInitialized()).toBe(true);
     });
@@ -94,8 +136,11 @@ describe("Repository Factory", () => {
 
   describe("resetRepositories", () => {
     it("should reset initialization state", () => {
-      const mockDb = createMockDb();
-      createChatHistoryRepositories(mockDb);
+      const mockRepos = {
+        sessionRepository: createMockSessionRepository(),
+        messageRepository: createMockMessageRepository(),
+      };
+      setChatHistoryRepositories(mockRepos);
       expect(isRepositoriesInitialized()).toBe(true);
 
       resetRepositories();
