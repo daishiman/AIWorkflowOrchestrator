@@ -697,3 +697,83 @@ useEffect(() => {
 - **claude-cli-renderer-api**: Renderer API実装・検証・ドキュメント化（2026-01-17完了）
 
 ---
+
+## chatEditSlice（Workspace Chat Edit状態管理）
+
+### 概要
+
+AIによるコード編集機能の状態管理Slice。ファイルコンテキスト、LLM生成結果、差分プレビューのUI状態を管理する。
+
+**実装場所**: `apps/desktop/src/renderer/features/workspace-chat-edit/store/`
+
+### 状態定義
+
+| プロパティ         | 型                | 説明                     |
+| ------------------ | ----------------- | ------------------------ |
+| `fileContexts`     | `FileContext[]`   | 添付ファイル一覧         |
+| `activeContextId`  | `string \| null`  | アクティブなコンテキストID |
+| `generatedResults` | `GeneratedResult[]`| 生成結果一覧            |
+| `currentResultId`  | `string \| null`  | 現在表示中の結果ID       |
+| `isLoading`        | `boolean`         | ローディング中           |
+| `isDiffPreviewOpen`| `boolean`         | 差分プレビュー表示中     |
+| `error`            | `string \| null`  | エラーメッセージ         |
+| `isDragging`       | `boolean`         | ドラッグ中               |
+
+### アクション定義
+
+| アクション           | 引数                              | 説明                   |
+| -------------------- | --------------------------------- | ---------------------- |
+| `addFileContext`     | `Omit<FileContext, 'id'\|'addedAt'>` | ファイルコンテキスト追加 |
+| `removeFileContext`  | `id: string`                      | コンテキスト削除       |
+| `clearAllContexts`   | -                                 | 全クリア               |
+| `setActiveContext`   | `id: string \| null`              | アクティブ設定         |
+| `setGeneratedResult` | `result: GeneratedResult`         | 生成結果設定           |
+| `approveResult`      | `resultId: string`                | 適用                   |
+| `rejectResult`       | `resultId: string`                | 却下                   |
+| `clearResults`       | -                                 | 結果クリア             |
+| `openDiffPreview`    | `resultId: string`                | プレビュー表示         |
+| `closeDiffPreview`   | -                                 | プレビュー非表示       |
+| `setLoading`         | `loading: boolean`                | ローディング設定       |
+| `setError`           | `error: string \| null`           | エラー設定             |
+| `setDragging`        | `dragging: boolean`               | ドラッグ状態設定       |
+| `reset`              | -                                 | 状態リセット           |
+
+### 関連Hooks
+
+| Hook名           | 責務                       |
+| ---------------- | -------------------------- |
+| `useFileContext` | ファイルコンテキスト管理   |
+| `useDiffApply`   | 差分計算・適用ロジック     |
+
+### 実装パターン
+
+- **Helper関数分離**: 複雑なロジックをSlice外部に分離（`computeLCS`, `generateDiffHunks`等）
+- **バリデーション内蔵**: `addFileContext`で`MAX_FILE_CONTEXTS`, `MAX_FILE_SIZE`チェック
+- **Optional Chainingによる安全性**: `state.chatEdit?.fileContexts ?? []`パターン
+
+### Store統合（予定）
+
+```typescript
+// apps/desktop/src/renderer/store/index.ts
+import { createChatEditSlice, ChatEditSlice } from '@/renderer/features/workspace-chat-edit';
+
+interface AppStore extends ChatEditSlice {
+  // 他のSlice...
+}
+
+export const useStore = create<AppStore>()((set, get) => ({
+  ...createChatEditSlice(set, get),
+  // 他のSlice...
+}));
+```
+
+### 品質メトリクス
+
+- テストカバレッジ: Line 69.23%, Branch 89.74%, Function 95%
+- 全122件の自動テスト成功
+
+### 関連タスク
+
+- workspace-chat-edit（2026-01-23完了：コアロジック）
+
+---
