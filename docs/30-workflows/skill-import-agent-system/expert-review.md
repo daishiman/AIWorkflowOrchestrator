@@ -651,56 +651,61 @@ Tier 3（将来機能）は仕様書から削除し、以下に置き換える:
 
 ### 5.2 優先度付きアクションアイテム
 
-#### P0: 即時対応（Tier 3削除）
+#### ~~P0: 即時対応（Tier 3削除）~~ → 保留
 
-```diff
-- ## 🔮 Tier 3: 将来（7タスク）
--
-- > 高度なスキル管理機能（優先度: 低）
--
-- | ID      | タイトル                      |
-- | ------- | ----------------------------- |
-- | TASK-9D | スキルチェーン機能            |
-- | TASK-9E | スキルフォーク・派生機能      |
-- | TASK-9F | スキル共有・インポート機能    |
-- | TASK-9G | スキルスケジュール実行機能    |
-- | TASK-9H | スキルデバッグモード          |
-- | TASK-9I | スキルドキュメント生成機能    |
-- | TASK-9J | スキル使用統計・分析機能      |
+> **決定**: Tier 3は将来の参照用として維持。実装しなければYAGNI違反にはならない。
 
-+ ## 将来の拡張可能性
-+
-+ 以下の拡張ポイントを設計に組み込む:
-+ - SkillExecutor: カスタム実行戦略のフック
-+ - PermissionResolver: カスタム権限ルール
-+ - IPC: 追加チャネル用インターフェース
-+
-+ 具体的な機能は需要に基づいて設計する。
-```
-
-#### P1: 高優先度（値オブジェクト導入）
+#### P1: 高優先度（値オブジェクト導入） ✅ 実装済み
 
 ```typescript
-// 追加ファイル: packages/shared/src/domain/value-objects/
-export { SkillName } from "./SkillName";
-export { SkillPath } from "./SkillPath";
-export { ToolSet } from "./ToolSet";
-export { ExecutionId } from "./ExecutionId";
+// specification.md §5.0.1 に追加
+// packages/shared/src/domain/value-objects/
+export { SkillName } from "./SkillName"; // ✅ スキル名の型安全性
+export { SkillPath } from "./SkillPath"; // ✅ パスのバリデーション
+export { ToolSet } from "./ToolSet"; // ✅ 許可ツールの集合
+export { ExecutionId } from "./ExecutionId"; // ✅ 実行IDのUUID検証
 ```
 
-#### P2: 中優先度（Data Clumps解消）
+#### P2: 中優先度（Data Clumps解消） ✅ 実装済み
 
 ```typescript
-// SkillAssetsクラスの導入
-// SkillMetadataのリファクタリング
+// specification.md §5.0.2 に追加
+// packages/shared/src/domain/SkillAssets.ts
+export class SkillAssets {
+  // agents, references, scripts, assets, schemas, indexes を統合管理
+  getByCategory(category: AssetCategory): SkillSubResource[];
+  getAllResources(): SkillSubResource[];
+  getTotalSize(): number;
+  getCategoryCounts(): Record<AssetCategory, number>;
+}
 ```
 
-#### P3: 低優先度（ユースケース層の明示化）
+#### P3: 低優先度（ユースケース層の明示化） ✅ 実装済み
 
 ```typescript
+// specification.md §5.0.3 に追加
 // apps/desktop/src/main/application/use-cases/
-// ImportSkillUseCase.ts
-// ExecuteSkillUseCase.ts
+
+// インターフェース定義
+export interface ISkillScanner { ... }
+export interface ISkillRepository { ... }
+export interface ISkillValidator { ... }
+
+// ユースケース実装
+export class ImportSkillUseCase { ... }  // ✅ スキルインポート
+export class ExecuteSkillUseCase { ... } // ✅ スキル実行
+```
+
+#### P4: エラー型定義 ✅ 実装済み
+
+```typescript
+// specification.md §5.0.4 に追加
+export class DomainError extends Error { ... }
+export class InvalidSkillNameError extends DomainError { ... }
+export class InvalidSkillPathError extends DomainError { ... }
+export class InvalidExecutionIdError extends DomainError { ... }
+export class SkillNotFoundError extends DomainError { ... }
+export class SkillNotActiveError extends DomainError { ... }
 ```
 
 ### 5.3 設計原則チェックリスト

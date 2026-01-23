@@ -1648,7 +1648,461 @@ function useSkillExecution() {
 
 ## 5. バックエンド詳細仕様
 
+### 5.0 ドメイン層設計（DDD/クリーンアーキテクチャ準拠）
+
+> **設計原則**: Eric Evans (DDD)、Robert C. Martin (Clean Architecture) の原則に基づく
+
+#### 5.0.1 値オブジェクト（Value Objects）
+
+```typescript
+// packages/shared/src/domain/value-objects/SkillName.ts
+
+/**
+ * スキル名を表す値オブジェクト
+ * - 不変（イミュータブル）
+ * - 同値性による比較
+ * - バリデーションをカプセル化
+ */
+export class SkillName {
+  private constructor(private readonly value: string) {}
+
+  static create(value: string): SkillName {
+    if (!SkillName.isValid(value)) {
+      throw new InvalidSkillNameError(value);
+    }
+    return new SkillName(value);
+  }
+
+  static isValid(value: string): boolean {
+    // 小文字英数字とハイフンのみ、1-50文字
+    return /^[a-z0-9][a-z0-9-]{0,48}[a-z0-9]?$/.test(value);
+  }
+
+  equals(other: SkillName): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+
+  toDisplayName(): string {
+    // "presentation-slide-generator" → "Presentation Slide Generator"
+    return this.value
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  }
+}
+
+// packages/shared/src/domain/value-objects/SkillPath.ts
+
+/**
+ * スキルのファイルシステムパスを表す値オブジェクト
+ */
+export class SkillPath {
+  private constructor(private readonly value: string) {}
+
+  static create(value: string): SkillPath {
+    if (!SkillPath.isValid(value)) {
+      throw new InvalidSkillPathError(value);
+    }
+    return new SkillPath(value);
+  }
+
+  static isValid(value: string): boolean {
+    // .claude/skills/ を含み、親ディレクトリ参照がない
+    return value.includes(".claude/skills/") && !value.includes("..");
+  }
+
+  getSkillName(): SkillName {
+    const parts = this.value.split("/").filter(Boolean);
+    const skillDir = parts[parts.length - 1];
+    return SkillName.create(skillDir);
+  }
+
+  getParentPath(): string {
+    return this.value.substring(0, this.value.lastIndexOf("/"));
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+
+// packages/shared/src/domain/value-objects/ToolSet.ts
+
+/**
+ * 許可ツールの集合を表す値オブジェクト
+ */
+export class ToolSet {
+  private static readonly VALID_TOOLS = [
+    "Read",
+    "Write",
+    "Edit",
+    "Bash",
+    "Glob",
+    "Grep",
+    "Task",
+    "WebSearch",
+    "WebFetch",
+    "TodoWrite",
+    "NotebookEdit",
+  ] as const;
+
+  private constructor(private readonly tools: ReadonlySet<string>) {}
+
+  static create(tools: string[]): ToolSet {
+    const validatedTools = tools.filter((t) => ToolSet.isValidTool(t));
+    return new ToolSet(new Set(validatedTools));
+  }
+
+  static empty(): ToolSet {
+    return new ToolSet(new Set());
+  }
+
+  static isValidTool(tool: string): boolean {
+    return ToolSet.VALID_TOOLS.includes(
+      tool as (typeof ToolSet.VALID_TOOLS)[number],
+    );
+  }
+
+  contains(tool: string): boolean {
+    return this.tools.has(tool);
+  }
+
+  isSubsetOf(other: ToolSet): boolean {
+    return [...this.tools].every((t) => other.contains(t));
+  }
+
+  toArray(): string[] {
+    return [...this.tools];
+  }
+
+  get size(): number {
+    return this.tools.size;
+  }
+
+  /**
+   * 危険度の高いツールを含むかどうか
+   */
+  hasHighRiskTools(): boolean {
+    const highRiskTools = ["Bash", "Write", "Edit"];
+    return highRiskTools.some((t) => this.tools.has(t));
+  }
+}
+
+// packages/shared/src/domain/value-objects/ExecutionId.ts
+
+/**
+ * 実行IDを表す値オブジェクト
+ */
+export class ExecutionId {
+  private constructor(private readonly value: string) {}
+
+  static generate(): ExecutionId {
+    return new ExecutionId(crypto.randomUUID());
+  }
+
+  static fromString(value: string): ExecutionId {
+    if (!ExecutionId.isValid(value)) {
+      throw new InvalidExecutionIdError(value);
+    }
+    return new ExecutionId(value);
+  }
+
+  static isValid(value: string): boolean {
+    // UUID v4 形式
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    );
+  }
+
+  equals(other: ExecutionId): boolean {
+    return this.value === other.value;
+  }
+
+  toString(): string {
+    return this.value;
+  }
+}
+```
+
+#### 5.0.2 SkillAssets（Data Clumps解消）
+
+```typescript
+// packages/shared/src/domain/SkillAssets.ts
+
+/**
+ * スキルのアセット（サブリソース）を統合管理するクラス
+ * Martin Fowler "Extract Class" リファクタリングにより Data Clumps を解消
+ */
+export type AssetCategory =
+  | "agents"
+  | "references"
+  | "scripts"
+  | "assets"
+  | "schemas"
+  | "indexes";
+
+export class SkillAssets {
+  private readonly resources: Map<AssetCategory, SkillSubResource[]>;
+
+  constructor(data: {
+    agents?: SkillSubResource[];
+    references?: SkillSubResource[];
+    scripts?: SkillSubResource[];
+    assets?: SkillSubResource[];
+    schemas?: SkillSubResource[];
+    indexes?: SkillSubResource[];
+  }) {
+    this.resources = new Map([
+      ["agents", data.agents ?? []],
+      ["references", data.references ?? []],
+      ["scripts", data.scripts ?? []],
+      ["assets", data.assets ?? []],
+      ["schemas", data.schemas ?? []],
+      ["indexes", data.indexes ?? []],
+    ]);
+  }
+
+  static readonly CATEGORIES: AssetCategory[] = [
+    "agents",
+    "references",
+    "scripts",
+    "assets",
+    "schemas",
+    "indexes",
+  ];
+
+  getByCategory(category: AssetCategory): SkillSubResource[] {
+    return this.resources.get(category) ?? [];
+  }
+
+  getAllResources(): SkillSubResource[] {
+    return [...this.resources.values()].flat();
+  }
+
+  getTotalSize(): number {
+    return this.getAllResources().reduce((sum, r) => sum + r.size, 0);
+  }
+
+  getTotalCount(): number {
+    return this.getAllResources().length;
+  }
+
+  hasCategory(category: AssetCategory): boolean {
+    return (this.resources.get(category)?.length ?? 0) > 0;
+  }
+
+  getCategoryCounts(): Record<AssetCategory, number> {
+    const counts = {} as Record<AssetCategory, number>;
+    for (const category of SkillAssets.CATEGORIES) {
+      counts[category] = this.resources.get(category)?.length ?? 0;
+    }
+    return counts;
+  }
+
+  toJSON(): Record<AssetCategory, SkillSubResource[]> {
+    const result = {} as Record<AssetCategory, SkillSubResource[]>;
+    for (const [key, value] of this.resources) {
+      result[key] = value;
+    }
+    return result;
+  }
+}
+```
+
+#### 5.0.3 ユースケース層（Application Layer）
+
+```typescript
+// apps/desktop/src/main/application/use-cases/ImportSkillUseCase.ts
+
+/**
+ * スキルインポートのユースケース
+ * Robert C. Martin "Clean Architecture" のユースケース層
+ */
+export interface ISkillScanner {
+  scan(path: string): Promise<SkillMetadata>;
+  scanAll(basePath: string): Promise<SkillMetadata[]>;
+}
+
+export interface ISkillRepository {
+  findByName(name: SkillName): Promise<ImportedSkill | null>;
+  save(skill: ImportedSkill): Promise<void>;
+  delete(name: SkillName): Promise<void>;
+  findAll(): Promise<ImportedSkill[]>;
+}
+
+export interface ISkillValidator {
+  validate(metadata: SkillMetadata): ValidationResult;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: ValidationError[];
+  warnings: ValidationWarning[];
+}
+
+export class ImportSkillUseCase {
+  constructor(
+    private readonly scanner: ISkillScanner,
+    private readonly repository: ISkillRepository,
+    private readonly validator: ISkillValidator,
+  ) {}
+
+  async execute(path: string): Promise<ImportResult> {
+    // 1. スキルをスキャン
+    const metadata = await this.scanner.scan(path);
+
+    // 2. バリデーション
+    const validation = this.validator.validate(metadata);
+    if (!validation.isValid) {
+      return {
+        success: false,
+        errors: validation.errors,
+      };
+    }
+
+    // 3. 既存チェック
+    const skillName = SkillName.create(metadata.name);
+    const existing = await this.repository.findByName(skillName);
+    if (existing) {
+      return {
+        success: false,
+        errors: [
+          {
+            code: "ALREADY_EXISTS",
+            message: `スキル "${metadata.name}" は既にインポートされています`,
+          },
+        ],
+      };
+    }
+
+    // 4. インポート済みスキルを作成
+    const importedSkill: ImportedSkill = {
+      ...metadata,
+      importedAt: new Date(),
+      status: "active",
+    };
+
+    // 5. 保存
+    await this.repository.save(importedSkill);
+
+    return {
+      success: true,
+      skill: importedSkill,
+      warnings: validation.warnings,
+    };
+  }
+}
+
+// apps/desktop/src/main/application/use-cases/ExecuteSkillUseCase.ts
+
+export interface ISkillExecutor {
+  execute(
+    skill: ImportedSkill,
+    prompt: string,
+    options: ExecutionOptions,
+  ): AsyncGenerator<SkillStreamMessage>;
+}
+
+export interface IPermissionResolver {
+  resolvePermissions(
+    skill: ImportedSkill,
+    toolName: string,
+    args: unknown,
+  ): Promise<PermissionDecision>;
+}
+
+export class ExecuteSkillUseCase {
+  constructor(
+    private readonly repository: ISkillRepository,
+    private readonly executor: ISkillExecutor,
+    private readonly permissionResolver: IPermissionResolver,
+  ) {}
+
+  async *execute(
+    request: SkillExecutionRequest,
+  ): AsyncGenerator<SkillStreamMessage> {
+    // 1. スキルを取得
+    const skillName = SkillName.create(request.skillName);
+    const skill = await this.repository.findByName(skillName);
+
+    if (!skill) {
+      throw new SkillNotFoundError(request.skillName);
+    }
+
+    if (skill.status !== "active") {
+      throw new SkillNotActiveError(request.skillName);
+    }
+
+    // 2. 実行オプションを構築
+    const options: ExecutionOptions = {
+      workingDirectory: request.workingDirectory,
+      permissionResolver: this.permissionResolver,
+    };
+
+    // 3. 実行（ストリーミング）
+    yield* this.executor.execute(skill, request.prompt, options);
+  }
+}
+```
+
+#### 5.0.4 エラー型定義
+
+```typescript
+// packages/shared/src/domain/errors/index.ts
+
+export class DomainError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+  ) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class InvalidSkillNameError extends DomainError {
+  constructor(value: string) {
+    super(
+      `無効なスキル名: "${value}"。小文字英数字とハイフンのみ、1-50文字で指定してください`,
+      "INVALID_SKILL_NAME",
+    );
+  }
+}
+
+export class InvalidSkillPathError extends DomainError {
+  constructor(value: string) {
+    super(`無効なスキルパス: "${value}"`, "INVALID_SKILL_PATH");
+  }
+}
+
+export class InvalidExecutionIdError extends DomainError {
+  constructor(value: string) {
+    super(`無効な実行ID: "${value}"`, "INVALID_EXECUTION_ID");
+  }
+}
+
+export class SkillNotFoundError extends DomainError {
+  constructor(skillName: string) {
+    super(`スキル "${skillName}" が見つかりません`, "SKILL_NOT_FOUND");
+  }
+}
+
+export class SkillNotActiveError extends DomainError {
+  constructor(skillName: string) {
+    super(`スキル "${skillName}" は無効化されています`, "SKILL_NOT_ACTIVE");
+  }
+}
+```
+
+---
+
 ### 5.1 型定義
+
+> **注**: 以下の型定義は後方互換性のために維持。新規実装では §5.0 の値オブジェクトを優先使用。
 
 ```typescript
 // packages/shared/src/types/skill.ts
