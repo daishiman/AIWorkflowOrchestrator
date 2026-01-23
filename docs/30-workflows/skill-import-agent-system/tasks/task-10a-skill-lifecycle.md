@@ -6,7 +6,7 @@ phase: 10
 depends_on: [TASK-9A, TASK-9B, TASK-9C]
 parallel_with: []
 blocks: []
-status: pending
+status: split
 priority: critical
 estimated_complexity: xlarge
 tags: [frontend, backend, integration, skill-management, final]
@@ -34,6 +34,19 @@ artifacts:
 ---
 
 # スキルライフサイクル管理統合
+
+> **⚠️ このタスクは分割されました**
+>
+> 実行粒度を細かくするため、以下のサブタスクに分割されています：
+>
+> - [TASK-10A-A: SkillManagementPanel](./task-10a-a-management-panel.md) - スキル一覧・管理パネル
+> - [TASK-10A-B: SkillAnalysisView](./task-10a-b-analysis-view.md) - 分析結果表示・改善適用UI
+> - [TASK-10A-C: SkillCreateWizard](./task-10a-c-create-wizard.md) - 新規スキル作成ウィザード
+> - [TASK-10A-D: 統合（Slice/IPC/ChatPanel）](./task-10a-d-integration.md) - 全機能の統合
+>
+> 以下は参照用の元仕様です。
+
+---
 
 ## 概要
 

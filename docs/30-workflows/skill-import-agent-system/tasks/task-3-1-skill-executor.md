@@ -6,13 +6,25 @@ phase: 3
 depends_on: [TASK-2A, TASK-2C]
 parallel_with: [TASK-3-2]
 blocks: [TASK-4-2]
-status: pending
+status: split
 priority: high
 estimated_complexity: large
 tags: [backend, main-process, service, sdk-integration]
 ---
 
 # SkillExecutor 実装
+
+> **⚠️ このタスクは分割されました**
+>
+> 実行粒度を細かくするため、以下のサブタスクに分割されています：
+>
+> - [TASK-3-1-A: SDK query()基本実装](./task-3-1-a-sdk-query.md) - SkillExecutorクラスの基本構造
+> - [TASK-3-1-B: Hooks実装](./task-3-1-b-hooks.md) - PreToolUse/PostToolUseフック
+> - [TASK-3-1-C: PermissionRequest Hook](./task-3-1-c-permission-request.md) - 権限確認UI連携
+>
+> 以下は参照用の元仕様です。
+
+---
 
 ## 概要
 

@@ -6,13 +6,27 @@ phase: 8
 depends_on: [TASK-4-1, TASK-4-2, TASK-5-1, TASK-7D]
 parallel_with: [TASK-8A, TASK-8B]
 blocks: []
-status: pending
+status: split
 priority: high
 estimated_complexity: large
 tags: [test, integration-test, e2e, ipc]
 ---
 
 # 統合テスト
+
+> **⚠️ このタスクは分割されました**
+>
+> 実行粒度を細かくするため、以下のサブタスクに分割されています：
+>
+> - [TASK-8C-A: IPC統合テスト](./task-8c-a-ipc-integration.md) - 12個のIPCテストケース
+> - [TASK-8C-B: E2Eスキル選択テスト](./task-8c-b-e2e-selection.md) - スキル選択フローのE2E
+> - [TASK-8C-C: E2Eインポート・実行テスト](./task-8c-c-e2e-import-execute.md) - インポート・実行フローのE2E
+> - [TASK-8C-D: E2E権限ダイアログテスト](./task-8c-d-e2e-permission.md) - 権限ダイアログのE2E
+> - [TASK-8C-E: テストフィクスチャ](./task-8c-e-fixtures.md) - 共通テストフィクスチャ
+>
+> 以下は参照用の元仕様です。
+
+---
 
 ## 概要
 

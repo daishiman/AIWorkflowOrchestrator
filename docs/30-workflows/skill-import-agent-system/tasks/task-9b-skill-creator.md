@@ -6,7 +6,7 @@ phase: 9
 depends_on: [TASK-7D, TASK-8C]
 parallel_with: [TASK-9A, TASK-9C]
 blocks: [TASK-10A]
-status: pending
+status: split
 priority: critical
 estimated_complexity: xlarge
 tags: [backend, main, skill-management, meta-skill, claude-agent-sdk]
@@ -36,6 +36,22 @@ artifacts:
 ---
 
 # skill-creator スキル実装
+
+> **⚠️ このタスクは分割されました**
+>
+> 実行粒度を細かくするため、以下のサブタスクに分割されています：
+>
+> - [TASK-9B-A: SKILL.md定義](./task-9b-a-skill-md.md) - スキルの基本定義ファイル
+> - [TASK-9B-B: hearing-facilitatorエージェント](./task-9b-b-hearing-agent.md) - 要件ヒアリングエージェント
+> - [TASK-9B-C: task-generatorエージェント](./task-9b-c-task-generator.md) - タスク仕様書生成エージェント
+> - [TASK-9B-D: code-generatorエージェント](./task-9b-d-code-generator.md) - コード生成エージェント
+> - [TASK-9B-E: validatorエージェント](./task-9b-e-validator.md) - 検証エージェント
+> - [TASK-9B-F: 参照資料](./task-9b-f-references.md) - テンプレート・構造・パターン
+> - [TASK-9B-G: SkillCreatorService](./task-9b-g-service.md) - バックエンドサービス
+>
+> 以下は参照用の元仕様です。
+
+---
 
 ## 概要
 

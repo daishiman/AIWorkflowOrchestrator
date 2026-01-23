@@ -6,7 +6,7 @@ phase: 9
 depends_on: [TASK-7D, TASK-8C]
 parallel_with: [TASK-9B, TASK-9C]
 blocks: [TASK-10A]
-status: pending
+status: split
 priority: high
 estimated_complexity: large
 tags: [frontend, renderer, ui, skill-management, editor]
@@ -34,6 +34,18 @@ artifacts:
 ---
 
 # スキルエディター機能
+
+> **⚠️ このタスクは分割されました**
+>
+> 実行粒度を細かくするため、以下のサブタスクに分割されています：
+>
+> - [TASK-9A-A: SkillFileManager](./task-9a-a-file-manager.md) - バックアップ・リストア機能付きファイル管理
+> - [TASK-9A-B: ファイル編集IPC](./task-9a-b-ipc-file-handlers.md) - ファイル編集用IPCハンドラー
+> - [TASK-9A-C: SkillEditor UI](./task-9a-c-skill-editor-ui.md) - エディターUIコンポーネント
+>
+> 以下は参照用の元仕様です。
+
+---
 
 ## 概要
 

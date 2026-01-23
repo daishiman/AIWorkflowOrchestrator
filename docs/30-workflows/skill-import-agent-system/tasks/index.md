@@ -8,8 +8,8 @@
 
 | ティア              | 内容                          | タスク数 | 目的                             |
 | ------------------- | ----------------------------- | -------- | -------------------------------- |
-| 🎯 **Tier 1: MVP**  | 基本機能（Phase 1-8）         | 17       | スキル実行・インポート・権限管理 |
-| 🚀 **Tier 2: 拡張** | スキル管理（Phase 9A-C, 10A） | 4        | 作成・編集・改善                 |
+| 🎯 **Tier 1: MVP**  | 基本機能（Phase 1-8）         | 24       | スキル実行・インポート・権限管理 |
+| 🚀 **Tier 2: 拡張** | スキル管理（Phase 9A-C, 10A） | 17       | 作成・編集・改善                 |
 | 🔮 **Tier 3: 将来** | 高度な機能（Phase 9D-J）      | 7        | チェーン・共有・統計             |
 
 **推奨実行順序**: Tier 1 完了 → Tier 2 → Tier 3（オプション）
@@ -31,59 +31,68 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 ## 依存関係グラフ（簡略版）
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  🎯 Tier 1: MVP（リリース必須）                                      │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  [1-1 型定義] ──┬── [2A Scanner] ──┐                               │
-│                ├── [2B Store]    ──┼── [3-1 Executor] ──┐          │
-│                └── [2C Security] ──┘   [3-2 Permission] ──┤         │
-│                                                          ▼          │
-│                         [4-1 IPC定義] ──── [4-2 IPCハンドラ]        │
-│                                                  │                  │
-│                                                  ▼                  │
-│                                           [5-1 SkillAPI]            │
-│                                                  │                  │
-│                                                  ▼                  │
-│                                           [6-1 SkillSlice]          │
-│                                           ┌──────┼──────┐           │
-│                                           ▼      ▼      ▼           │
-│                                    [7A Selector][7B Import][7C Perm]│
-│                                           └──────┬──────┘           │
-│                                                  ▼                  │
-│                                      [7D ChatPanel統合]             │
-│                                           ┌──────┼──────┐           │
-│                                           ▼      ▼      ▼           │
-│                                    [8A Unit][8B Component][8C E2E]  │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  🎯 Tier 1: MVP（リリース必須）                                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  [1-1 型定義] ──┬── [2A Scanner] ──┐                                       │
+│                ├── [2B Store]    ──┼── [3-1-A SDK] ─┬─ [3-1-B Hooks]       │
+│                └── [2C Security] ──┘                └─ [3-1-C Permission]   │
+│                                     [3-2 Permission Resolver]               │
+│                                                  │                          │
+│                         [4-1 IPC定義] ──── [4-2 IPCハンドラ]                │
+│                                                  │                          │
+│                                                  ▼                          │
+│                                           [5-1 SkillAPI]                    │
+│                                                  │                          │
+│                                                  ▼                          │
+│                                           [6-1 SkillSlice]                  │
+│                                           ┌──────┼──────┐                   │
+│                                           ▼      ▼      ▼                   │
+│                                    [7A Selector][7B Import][7C Perm]        │
+│                                           └──────┬──────┘                   │
+│                                                  ▼                          │
+│                                      [7D ChatPanel統合]                     │
+│                                   ┌──────────┼──────────┐                   │
+│                                   ▼          ▼          ▼                   │
+│                             [8A Unit] [8B Component] [8C-A~E E2E]           │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
                                       │
                                       ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  🚀 Tier 2: 拡張（推奨）                                             │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│               [9A Editor]  [9B skill-creator]  [9C Improver]        │
-│                     └──────────────┬───────────────┘                │
-│                                    ▼                                │
-│                         [10A LifecyclePanel]                        │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  🚀 Tier 2: 拡張（推奨）                                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  [9A-A FileManager] ─┬─ [9A-B IPC] ─── [9A-C Editor UI]                    │
+│                      │                                                      │
+│  [9B-A SKILL.md] ────┼─ [9B-B~F Agents/Refs] ─── [9B-G Service]            │
+│                      │                                                      │
+│  [9C Improver]  ─────┘                                                      │
+│                                                                             │
+│           └──────────────────────┬──────────────────────┘                   │
+│                                  ▼                                          │
+│         [10A-A ManagementPanel] [10A-B Analysis] [10A-C Wizard]             │
+│                        └──────────────┬──────────────┘                      │
+│                                       ▼                                     │
+│                              [10A-D Integration]                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
                                       │
                                       ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  🔮 Tier 3: 将来（オプション）                                       │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  [9D Chain] [9E Fork] [9F Share] [9G Schedule]                      │
-│  [9H Debug] [9I Docs] [9J Analytics]                                │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  🔮 Tier 3: 将来（オプション）                                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  [9D Chain] [9E Fork] [9F Share] [9G Schedule]                              │
+│  [9H Debug] [9I Docs] [9J Analytics]                                        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🎯 Tier 1: MVP（17タスク）
+## 🎯 Tier 1: MVP（24タスク）
 
 > スキルのインポート・実行・権限管理の基本機能
 
@@ -101,19 +110,21 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 | TASK-2B | [SkillImportStore](./task-2b-skill-import-store.md) | 1-1  | medium | pending    |
 | TASK-2C | [SecurityPatterns](./task-2c-security-patterns.md)  | 1-1  | small  | pending    |
 
-### Phase 3: 実行エンジン（並列可）
+### Phase 3: 実行エンジン
 
-| ID       | タイトル                                                | 依存       | 複雑度 | ステータス |
-| -------- | ------------------------------------------------------- | ---------- | ------ | ---------- |
-| TASK-3-1 | [SkillExecutor](./task-3-1-skill-executor.md)           | 2A, 2B, 2C | large  | pending    |
-| TASK-3-2 | [PermissionResolver](./task-3-2-permission-resolver.md) | 2A, 2B, 2C | small  | pending    |
+| ID         | タイトル                                                     | 依存       | 複雑度 | ステータス |
+| ---------- | ------------------------------------------------------------ | ---------- | ------ | ---------- |
+| TASK-3-1-A | [SDK query()基本実装](./task-3-1-a-sdk-query.md)             | 2A, 2B, 2C | medium | pending    |
+| TASK-3-1-B | [Hooks実装](./task-3-1-b-hooks.md)                           | 3-1-A      | medium | pending    |
+| TASK-3-1-C | [PermissionRequest Hook](./task-3-1-c-permission-request.md) | 3-1-A      | medium | pending    |
+| TASK-3-2   | [PermissionResolver](./task-3-2-permission-resolver.md)      | 2A, 2B, 2C | small  | pending    |
 
 ### Phase 4: IPC層
 
-| ID       | タイトル                                      | 依存     | 複雑度 | ステータス |
-| -------- | --------------------------------------------- | -------- | ------ | ---------- |
-| TASK-4-1 | [IPCチャネル定義](./task-4-1-ipc-channels.md) | 3-1, 3-2 | small  | pending    |
-| TASK-4-2 | [IPCハンドラー](./task-4-2-ipc-handlers.md)   | 4-1      | medium | pending    |
+| ID       | タイトル                                      | 依存         | 複雑度 | ステータス |
+| -------- | --------------------------------------------- | ------------ | ------ | ---------- |
+| TASK-4-1 | [IPCチャネル定義](./task-4-1-ipc-channels.md) | 3-1-A~C, 3-2 | small  | pending    |
+| TASK-4-2 | [IPCハンドラー](./task-4-2-ipc-handlers.md)   | 4-1          | medium | pending    |
 
 ### Phase 5: Preload API
 
@@ -136,26 +147,58 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 | TASK-7C | [PermissionDialog](./task-7c-permission-dialog.md)    | 6-1        | medium | pending    |
 | TASK-7D | [ChatPanel統合](./task-7d-chat-panel-integration.md)  | 7A, 7B, 7C | medium | pending    |
 
-### Phase 8: テスト（並列可）
+### Phase 8: テスト
 
-| ID      | タイトル                                             | 依存                  | 複雑度 | ステータス |
-| ------- | ---------------------------------------------------- | --------------------- | ------ | ---------- |
-| TASK-8A | [単体テスト](./task-8a-unit-tests.md)                | 2A, 2B, 3-1, 3-2, 6-1 | medium | pending    |
-| TASK-8B | [コンポーネントテスト](./task-8b-component-tests.md) | 7A, 7B, 7C, 7D        | medium | pending    |
-| TASK-8C | [統合テスト](./task-8c-integration-tests.md)         | 4-1, 4-2, 5-1, 7D     | large  | pending    |
+| ID        | タイトル                                                       | 依存                      | 複雑度 | ステータス |
+| --------- | -------------------------------------------------------------- | ------------------------- | ------ | ---------- |
+| TASK-8A   | [単体テスト](./task-8a-unit-tests.md)                          | 2A, 2B, 3-1-A~C, 3-2, 6-1 | medium | pending    |
+| TASK-8B   | [コンポーネントテスト](./task-8b-component-tests.md)           | 7A, 7B, 7C, 7D            | medium | pending    |
+| TASK-8C-A | [IPC統合テスト](./task-8c-a-ipc-integration.md)                | 4-1, 4-2                  | medium | pending    |
+| TASK-8C-B | [E2Eスキル選択テスト](./task-8c-b-e2e-selection.md)            | 7D, 8C-A                  | medium | pending    |
+| TASK-8C-C | [E2Eインポート・実行テスト](./task-8c-c-e2e-import-execute.md) | 7D, 8C-A                  | medium | pending    |
+| TASK-8C-D | [E2E権限ダイアログテスト](./task-8c-d-e2e-permission.md)       | 7D, 8C-A                  | medium | pending    |
+| TASK-8C-E | [テストフィクスチャ](./task-8c-e-fixtures.md)                  | -                         | small  | pending    |
 
 ---
 
-## 🚀 Tier 2: 拡張（4タスク）
+## 🚀 Tier 2: 拡張（17タスク）
 
 > スキルの作成・編集・改善・ライフサイクル管理
 
-| ID       | タイトル                                               | 依存       | 複雑度 | ステータス |
-| -------- | ------------------------------------------------------ | ---------- | ------ | ---------- |
-| TASK-9A  | [SkillEditor](./task-9a-skill-editor.md)               | Tier 1完了 | large  | pending    |
-| TASK-9B  | [skill-creator メタスキル](./task-9b-skill-creator.md) | Tier 1完了 | xlarge | pending    |
-| TASK-9C  | [SkillImprover](./task-9c-skill-improver.md)           | Tier 1完了 | large  | pending    |
-| TASK-10A | [ライフサイクル管理UI](./task-10a-skill-lifecycle.md)  | 9A, 9B, 9C | xlarge | pending    |
+### Phase 9A: SkillEditor
+
+| ID        | タイトル                                            | 依存       | 複雑度 | ステータス |
+| --------- | --------------------------------------------------- | ---------- | ------ | ---------- |
+| TASK-9A-A | [SkillFileManager](./task-9a-a-file-manager.md)     | Tier 1完了 | medium | pending    |
+| TASK-9A-B | [ファイル編集IPC](./task-9a-b-ipc-file-handlers.md) | 9A-A       | small  | pending    |
+| TASK-9A-C | [SkillEditor UI](./task-9a-c-skill-editor-ui.md)    | 9A-B       | medium | pending    |
+
+### Phase 9B: skill-creator メタスキル
+
+| ID        | タイトル                                                        | 依存       | 複雑度 | ステータス |
+| --------- | --------------------------------------------------------------- | ---------- | ------ | ---------- |
+| TASK-9B-A | [SKILL.md定義](./task-9b-a-skill-md.md)                         | Tier 1完了 | small  | pending    |
+| TASK-9B-B | [hearing-facilitatorエージェント](./task-9b-b-hearing-agent.md) | 9B-A       | medium | pending    |
+| TASK-9B-C | [task-generatorエージェント](./task-9b-c-task-generator.md)     | 9B-A       | medium | pending    |
+| TASK-9B-D | [code-generatorエージェント](./task-9b-d-code-generator.md)     | 9B-A       | medium | pending    |
+| TASK-9B-E | [validatorエージェント](./task-9b-e-validator.md)               | 9B-A       | medium | pending    |
+| TASK-9B-F | [参照資料](./task-9b-f-references.md)                           | 9B-A       | small  | pending    |
+| TASK-9B-G | [SkillCreatorService](./task-9b-g-service.md)                   | 9B-B~F     | medium | pending    |
+
+### Phase 9C: SkillImprover
+
+| ID      | タイトル                                     | 依存       | 複雑度 | ステータス |
+| ------- | -------------------------------------------- | ---------- | ------ | ---------- |
+| TASK-9C | [SkillImprover](./task-9c-skill-improver.md) | Tier 1完了 | medium | pending    |
+
+### Phase 10A: ライフサイクル管理UI
+
+| ID         | タイトル                                                   | 依存       | 複雑度 | ステータス |
+| ---------- | ---------------------------------------------------------- | ---------- | ------ | ---------- |
+| TASK-10A-A | [SkillManagementPanel](./task-10a-a-management-panel.md)   | 9A, 9B, 9C | medium | pending    |
+| TASK-10A-B | [SkillAnalysisView](./task-10a-b-analysis-view.md)         | 9C         | medium | pending    |
+| TASK-10A-C | [SkillCreateWizard](./task-10a-c-create-wizard.md)         | 9B         | medium | pending    |
+| TASK-10A-D | [統合（Slice/IPC/ChatPanel）](./task-10a-d-integration.md) | 10A-A~C    | medium | pending    |
 
 ---
 
@@ -180,15 +223,24 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 **最短実行パス（Tier 1）**:
 
 ```
-1-1 → 2A → 3-1 → 4-1 → 4-2 → 5-1 → 6-1 → 7D → 8C
+1-1 → 2A → 3-1-A → 3-1-B → 4-1 → 4-2 → 5-1 → 6-1 → 7D → 8C-A → 8C-B
 ```
 
 **並列実行グループ**:
 
 1. Phase 2: 2A, 2B, 2C（同時実行可能）
-2. Phase 3: 3-1, 3-2（同時実行可能）
+2. Phase 3: 3-1-B, 3-1-C（3-1-A完了後、同時実行可能）/ 3-2は独立
 3. Phase 7: 7A, 7B, 7C（同時実行可能）
-4. Phase 8: 8A, 8B, 8C（同時実行可能）
+4. Phase 8: 8A, 8B（同時実行可能）/ 8C-B~D（8C-A完了後、同時実行可能）
+
+**最短実行パス（Tier 2）**:
+
+```
+9A-A → 9A-B → 9A-C → 10A-A
+9B-A → 9B-B~F（並列）→ 9B-G → 10A-C
+9C → 10A-B
+10A-A~C → 10A-D
+```
 
 ---
 
@@ -235,9 +287,14 @@ skill-creator execute TASK-1-1
 
 # 並列タスク実行
 skill-creator execute --parallel TASK-2A TASK-2B TASK-2C
+skill-creator execute --parallel TASK-3-1-B TASK-3-1-C  # 3-1-A完了後
+skill-creator execute --parallel TASK-9B-B TASK-9B-C TASK-9B-D TASK-9B-E TASK-9B-F
 
 # Tier 1 全タスク実行
 skill-creator execute-tier 1
+
+# Tier 2 全タスク実行
+skill-creator execute-tier 2
 
 # 進捗サマリー
 skill-creator status ./tasks/

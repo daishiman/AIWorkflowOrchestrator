@@ -5547,7 +5547,9 @@ const RETRY_CONFIG = {
 
 ### Phase 3: 実行エンジン
 
-- [ ] TASK-3-1: SkillExecutor（Claude Agent SDK統合）
+- [ ] TASK-3-1-A: SDK query()基本実装
+- [ ] TASK-3-1-B: Hooks実装（PreToolUse/PostToolUse）
+- [ ] TASK-3-1-C: PermissionRequest Hook
 - [ ] TASK-3-2: PermissionResolver（権限確認フロー）
 
 ### Phase 4: IPC層
@@ -5570,21 +5572,42 @@ const RETRY_CONFIG = {
 - [ ] TASK-7C: PermissionDialog（日本語UI）
 - [ ] TASK-7D: ChatPanel統合
 
-### Phase 8: テスト（並列実行可能）
+### Phase 8: テスト
 
 - [ ] TASK-8A: 単体テスト（Vitest）
 - [ ] TASK-8B: コンポーネントテスト（Testing Library）
-- [ ] TASK-8C: 統合テスト・E2E（Playwright）
+- [ ] TASK-8C-A: IPC統合テスト
+- [ ] TASK-8C-B: E2Eスキル選択テスト
+- [ ] TASK-8C-C: E2Eインポート・実行テスト
+- [ ] TASK-8C-D: E2E権限ダイアログテスト
+- [ ] TASK-8C-E: テストフィクスチャ
 
-### Phase 9: スキル管理拡張（並列実行可能）
+### Phase 9A: SkillEditor
 
-- [ ] TASK-9A: SkillEditor（GUI編集、バックアップ、バリデーション）
-- [ ] TASK-9B: skill-creator メタスキル（SKILL.md, agents, services）
+- [ ] TASK-9A-A: SkillFileManager
+- [ ] TASK-9A-B: ファイル編集IPC
+- [ ] TASK-9A-C: SkillEditor UI
+
+### Phase 9B: skill-creator メタスキル
+
+- [ ] TASK-9B-A: SKILL.md定義
+- [ ] TASK-9B-B: hearing-facilitatorエージェント
+- [ ] TASK-9B-C: task-generatorエージェント
+- [ ] TASK-9B-D: code-generatorエージェント
+- [ ] TASK-9B-E: validatorエージェント
+- [ ] TASK-9B-F: 参照資料
+- [ ] TASK-9B-G: SkillCreatorService
+
+### Phase 9C: SkillImprover
+
 - [ ] TASK-9C: SkillImprover（静的解析、AI分析、自動修正）
 
-### Phase 10: ライフサイクル管理
+### Phase 10A: ライフサイクル管理
 
-- [ ] TASK-10A: 統合管理UI（SkillManagementPanel, CreateWizard, AnalysisView）
+- [ ] TASK-10A-A: SkillManagementPanel
+- [ ] TASK-10A-B: SkillAnalysisView
+- [ ] TASK-10A-C: SkillCreateWizard
+- [ ] TASK-10A-D: 統合（Slice/IPC/ChatPanel）
 
 ---
 
