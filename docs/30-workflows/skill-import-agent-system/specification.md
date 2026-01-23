@@ -2098,6 +2098,1407 @@ export class SkillNotActiveError extends DomainError {
 }
 ```
 
+#### 5.0.5 ポート&アダプター（Hexagonal Architecture）
+
+> **設計原則**: Alistair Cockburn のヘキサゴナルアーキテクチャに基づく
+
+```typescript
+// apps/desktop/src/main/ports/primary/index.ts
+// プライマリポート（Driving側 - ユーザー/外部からの入力を受け付ける）
+
+/**
+ * スキルインポートポート
+ * UIやCLIからのインポート操作を抽象化
+ */
+export interface ISkillImportPort {
+  /**
+   * 利用可能なスキルをスキャン
+   */
+  scanAvailableSkills(): Promise<SkillMetadata[]>;
+
+  /**
+   * スキルをインポート
+   */
+  importSkill(path: SkillPath): Promise<ImportResult>;
+
+  /**
+   * スキルを削除
+   */
+  removeSkill(id: SkillId): Promise<void>;
+
+  /**
+   * スキルを再スキャン（更新検出）
+   */
+  rescanSkill(id: SkillId): Promise<SkillMetadata>;
+}
+
+/**
+ * スキル実行ポート
+ * スキルの実行操作を抽象化
+ */
+export interface ISkillExecutePort {
+  /**
+   * スキルを実行（ストリーミング）
+   */
+  execute(request: SkillExecutionRequest): AsyncGenerator<SkillStreamMessage>;
+
+  /**
+   * 実行をキャンセル
+   */
+  cancel(executionId: ExecutionId): Promise<void>;
+
+  /**
+   * 実行状態を取得
+   */
+  getStatus(executionId: ExecutionId): ExecutionStatus;
+
+  /**
+   * アクティブな実行一覧を取得
+   */
+  getActiveExecutions(): ExecutionInfo[];
+}
+
+/**
+ * スキルクエリポート
+ * スキルの参照操作を抽象化
+ */
+export interface ISkillQueryPort {
+  /**
+   * IDでスキルを検索
+   */
+  findById(id: SkillId): Promise<Skill | null>;
+
+  /**
+   * 名前でスキルを検索
+   */
+  findByName(name: SkillName): Promise<Skill | null>;
+
+  /**
+   * 全スキルを取得
+   */
+  findAll(): Promise<Skill[]>;
+
+  /**
+   * アクティブなスキルのみ取得
+   */
+  findActive(): Promise<Skill[]>;
+
+  /**
+   * 名前で検索（部分一致）
+   */
+  searchByName(query: string): Promise<Skill[]>;
+
+  /**
+   * タグでフィルター
+   */
+  findByTag(tag: string): Promise<Skill[]>;
+}
+```
+
+```typescript
+// apps/desktop/src/main/ports/secondary/index.ts
+// セカンダリポート（Driven側 - アプリケーションコアから外部への出力）
+
+/**
+ * Claude Agent SDK ゲートウェイ
+ * SDK呼び出しを抽象化
+ */
+export interface IAgentSDKGateway {
+  /**
+   * クエリを実行
+   */
+  query(options: AgentQueryOptions): AsyncGenerator<SDKMessage>;
+
+  /**
+   * 実行を中断
+   */
+  abort(signal: AbortSignal): void;
+
+  /**
+   * SDK接続状態を確認
+   */
+  isConnected(): boolean;
+}
+
+/**
+ * 通知ポート
+ * UI通知を抽象化
+ */
+export interface INotificationPort {
+  /**
+   * インポート完了を通知
+   */
+  notifyImportComplete(skill: Skill): void;
+
+  /**
+   * 実行開始を通知
+   */
+  notifyExecutionStart(execution: Execution): void;
+
+  /**
+   * 実行完了を通知
+   */
+  notifyExecutionComplete(result: ExecutionResult): void;
+
+  /**
+   * エラーを通知
+   */
+  notifyError(error: DomainError): void;
+
+  /**
+   * 進捗を通知
+   */
+  notifyProgress(executionId: ExecutionId, progress: number): void;
+}
+
+/**
+ * 権限ゲートウェイ
+ * 権限要求・決定を抽象化
+ */
+export interface IPermissionGateway {
+  /**
+   * 権限を要求
+   */
+  requestPermission(request: PermissionRequest): Promise<PermissionDecision>;
+
+  /**
+   * 保存済み決定を取得
+   */
+  getStoredDecisions(skillId: SkillId): Promise<PermissionDecision[]>;
+
+  /**
+   * 決定を保存
+   */
+  storeDecision(skillId: SkillId, decision: PermissionDecision): Promise<void>;
+
+  /**
+   * 決定をクリア
+   */
+  clearDecisions(skillId: SkillId): Promise<void>;
+}
+
+/**
+ * ファイルシステムポート
+ * ファイル操作を抽象化（テスタビリティ向上）
+ */
+export interface IFileSystemPort {
+  /**
+   * ディレクトリ内容を読み取り
+   */
+  readdir(path: string): Promise<string[]>;
+
+  /**
+   * ファイル内容を読み取り
+   */
+  readFile(path: string, encoding?: BufferEncoding): Promise<string>;
+
+  /**
+   * ファイル情報を取得
+   */
+  stat(path: string): Promise<FileStat>;
+
+  /**
+   * ファイル/ディレクトリの存在確認
+   */
+  exists(path: string): Promise<boolean>;
+
+  /**
+   * ディレクトリかどうか確認
+   */
+  isDirectory(path: string): Promise<boolean>;
+}
+
+/**
+ * 永続化ポート
+ * データ保存を抽象化
+ */
+export interface IPersistencePort<T> {
+  /**
+   * データを保存
+   */
+  save(key: string, data: T): Promise<void>;
+
+  /**
+   * データを取得
+   */
+  get(key: string): Promise<T | null>;
+
+  /**
+   * データを削除
+   */
+  delete(key: string): Promise<void>;
+
+  /**
+   * 全データを取得
+   */
+  getAll(): Promise<T[]>;
+
+  /**
+   * キーの存在確認
+   */
+  has(key: string): Promise<boolean>;
+}
+```
+
+```typescript
+// apps/desktop/src/main/adapters/primary/SkillIpcAdapter.ts
+// プライマリアダプター実装例
+
+export class SkillIpcAdapter {
+  constructor(
+    private readonly importPort: ISkillImportPort,
+    private readonly executePort: ISkillExecutePort,
+    private readonly queryPort: ISkillQueryPort,
+  ) {}
+
+  /**
+   * IPCハンドラーを登録
+   */
+  register(ipcMain: IpcMain): void {
+    // インポート系
+    ipcMain.handle("skill:scan", () => this.importPort.scanAvailableSkills());
+    ipcMain.handle("skill:import", (_, path: string) =>
+      this.importPort.importSkill(SkillPath.create(path)),
+    );
+    ipcMain.handle("skill:remove", (_, id: string) =>
+      this.importPort.removeSkill(SkillId.create(id)),
+    );
+
+    // クエリ系
+    ipcMain.handle("skill:getAll", () => this.queryPort.findAll());
+    ipcMain.handle("skill:getActive", () => this.queryPort.findActive());
+    ipcMain.handle("skill:getById", (_, id: string) =>
+      this.queryPort.findById(SkillId.create(id)),
+    );
+    ipcMain.handle("skill:search", (_, query: string) =>
+      this.queryPort.searchByName(query),
+    );
+
+    // 実行系（ストリーミング）
+    ipcMain.handle("skill:execute", async (event, request) => {
+      const executionId = ExecutionId.generate();
+      // ストリーミングはWebContentsを通じて送信
+      for await (const message of this.executePort.execute({
+        ...request,
+        executionId,
+      })) {
+        event.sender.send(`skill:stream:${executionId}`, message);
+      }
+      return executionId.toString();
+    });
+
+    ipcMain.handle("skill:cancel", (_, executionId: string) =>
+      this.executePort.cancel(ExecutionId.create(executionId)),
+    );
+  }
+}
+```
+
+```typescript
+// apps/desktop/src/main/adapters/secondary/NodeFileSystemAdapter.ts
+// セカンダリアダプター実装例
+
+import * as fs from "fs/promises";
+import * as path from "path";
+
+export class NodeFileSystemAdapter implements IFileSystemPort {
+  async readdir(dirPath: string): Promise<string[]> {
+    return fs.readdir(dirPath);
+  }
+
+  async readFile(
+    filePath: string,
+    encoding: BufferEncoding = "utf-8",
+  ): Promise<string> {
+    return fs.readFile(filePath, { encoding });
+  }
+
+  async stat(filePath: string): Promise<FileStat> {
+    const stats = await fs.stat(filePath);
+    return {
+      size: stats.size,
+      isDirectory: stats.isDirectory(),
+      isFile: stats.isFile(),
+      modifiedAt: stats.mtime,
+      createdAt: stats.birthtime,
+    };
+  }
+
+  async exists(filePath: string): Promise<boolean> {
+    try {
+      await fs.access(filePath);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async isDirectory(filePath: string): Promise<boolean> {
+    const stats = await fs.stat(filePath);
+    return stats.isDirectory();
+  }
+}
+```
+
+#### 5.0.6 仕様パターン（Specification Pattern）
+
+> **設計原則**: Eric Evans / Vaughn Vernon の仕様パターンに基づく
+
+```typescript
+// packages/shared/src/domain/specifications/index.ts
+
+/**
+ * 仕様パターンの基底インターフェース
+ * 複雑なビジネスルールを再利用可能なオブジェクトとして表現
+ */
+export interface Specification<T> {
+  /**
+   * 候補が仕様を満たすか判定
+   */
+  isSatisfiedBy(candidate: T): boolean;
+
+  /**
+   * AND結合
+   */
+  and(other: Specification<T>): Specification<T>;
+
+  /**
+   * OR結合
+   */
+  or(other: Specification<T>): Specification<T>;
+
+  /**
+   * NOT（否定）
+   */
+  not(): Specification<T>;
+}
+
+/**
+ * 合成仕様の基底クラス
+ */
+export abstract class CompositeSpecification<T> implements Specification<T> {
+  abstract isSatisfiedBy(candidate: T): boolean;
+
+  and(other: Specification<T>): Specification<T> {
+    return new AndSpecification(this, other);
+  }
+
+  or(other: Specification<T>): Specification<T> {
+    return new OrSpecification(this, other);
+  }
+
+  not(): Specification<T> {
+    return new NotSpecification(this);
+  }
+}
+
+class AndSpecification<T> extends CompositeSpecification<T> {
+  constructor(
+    private readonly left: Specification<T>,
+    private readonly right: Specification<T>,
+  ) {
+    super();
+  }
+
+  isSatisfiedBy(candidate: T): boolean {
+    return (
+      this.left.isSatisfiedBy(candidate) && this.right.isSatisfiedBy(candidate)
+    );
+  }
+}
+
+class OrSpecification<T> extends CompositeSpecification<T> {
+  constructor(
+    private readonly left: Specification<T>,
+    private readonly right: Specification<T>,
+  ) {
+    super();
+  }
+
+  isSatisfiedBy(candidate: T): boolean {
+    return (
+      this.left.isSatisfiedBy(candidate) || this.right.isSatisfiedBy(candidate)
+    );
+  }
+}
+
+class NotSpecification<T> extends CompositeSpecification<T> {
+  constructor(private readonly spec: Specification<T>) {
+    super();
+  }
+
+  isSatisfiedBy(candidate: T): boolean {
+    return !this.spec.isSatisfiedBy(candidate);
+  }
+}
+```
+
+```typescript
+// packages/shared/src/domain/specifications/skill-specifications.ts
+
+/**
+ * 有効なスキルパス仕様
+ */
+export class ValidSkillPathSpecification extends CompositeSpecification<string> {
+  isSatisfiedBy(path: string): boolean {
+    // .claude/skills/ を含み、親ディレクトリ参照がない
+    return (
+      path.includes(".claude/skills/") &&
+      !path.includes("..") &&
+      !path.includes("~")
+    );
+  }
+}
+
+/**
+ * 有効なスキル名仕様
+ */
+export class ValidSkillNameSpecification extends CompositeSpecification<string> {
+  private static readonly PATTERN = /^[a-z0-9][a-z0-9-]{0,48}[a-z0-9]?$/;
+
+  isSatisfiedBy(name: string): boolean {
+    return ValidSkillNameSpecification.PATTERN.test(name);
+  }
+}
+
+/**
+ * 必須ファイル存在仕様
+ */
+export class HasRequiredFilesSpecification extends CompositeSpecification<SkillMetadata> {
+  isSatisfiedBy(metadata: SkillMetadata): boolean {
+    return (
+      metadata.name !== undefined &&
+      metadata.name.length > 0 &&
+      metadata.description !== undefined &&
+      metadata.entryPoint !== undefined
+    );
+  }
+}
+
+/**
+ * 有効なツールセット仕様
+ */
+export class ValidToolSetSpecification extends CompositeSpecification<SkillMetadata> {
+  private static readonly VALID_TOOLS = new Set([
+    "Read",
+    "Write",
+    "Edit",
+    "Bash",
+    "Glob",
+    "Grep",
+    "Task",
+    "WebSearch",
+    "WebFetch",
+    "TodoWrite",
+    "NotebookEdit",
+  ]);
+
+  isSatisfiedBy(metadata: SkillMetadata): boolean {
+    if (!metadata.allowedTools || metadata.allowedTools.length === 0) {
+      return true; // 許可ツール未指定は許容
+    }
+    return metadata.allowedTools.every((tool) =>
+      ValidToolSetSpecification.VALID_TOOLS.has(tool),
+    );
+  }
+}
+
+/**
+ * 競合スキルなし仕様
+ */
+export class NoConflictingSkillSpecification extends CompositeSpecification<SkillMetadata> {
+  constructor(private readonly repository: ISkillRepository) {
+    super();
+  }
+
+  isSatisfiedBy(metadata: SkillMetadata): boolean {
+    const existing = this.repository.findByNameSync(
+      SkillName.create(metadata.name),
+    );
+    return existing === null || existing.path === metadata.path;
+  }
+}
+
+/**
+ * 高リスクツール不使用仕様
+ */
+export class NoHighRiskToolsSpecification extends CompositeSpecification<SkillMetadata> {
+  private static readonly HIGH_RISK_TOOLS = new Set(["Bash", "Write", "Edit"]);
+
+  isSatisfiedBy(metadata: SkillMetadata): boolean {
+    if (!metadata.allowedTools) return true;
+    return !metadata.allowedTools.some((tool) =>
+      NoHighRiskToolsSpecification.HIGH_RISK_TOOLS.has(tool),
+    );
+  }
+}
+
+/**
+ * インポート可能スキル仕様（複合）
+ */
+export class ImportableSkillSpecification extends CompositeSpecification<SkillMetadata> {
+  private readonly spec: Specification<SkillMetadata>;
+
+  constructor(repository: ISkillRepository) {
+    super();
+    this.spec = new HasRequiredFilesSpecification()
+      .and(new ValidToolSetSpecification())
+      .and(new NoConflictingSkillSpecification(repository));
+  }
+
+  isSatisfiedBy(metadata: SkillMetadata): boolean {
+    return this.spec.isSatisfiedBy(metadata);
+  }
+}
+
+/**
+ * 実行可能スキル仕様
+ */
+export class ExecutableSkillSpecification extends CompositeSpecification<ImportedSkill> {
+  isSatisfiedBy(skill: ImportedSkill): boolean {
+    return (
+      skill.status === "active" &&
+      skill.entryPoint !== undefined &&
+      skill.metadata !== undefined
+    );
+  }
+}
+```
+
+```typescript
+// 使用例: バリデーションでの活用
+class SkillValidator implements ISkillValidator {
+  constructor(private readonly repository: ISkillRepository) {}
+
+  validate(metadata: SkillMetadata): ValidationResult {
+    const errors: ValidationError[] = [];
+
+    // 個別仕様でチェック
+    if (!new ValidSkillNameSpecification().isSatisfiedBy(metadata.name)) {
+      errors.push(new ValidationError("name", "無効なスキル名です"));
+    }
+
+    if (!new HasRequiredFilesSpecification().isSatisfiedBy(metadata)) {
+      errors.push(
+        new ValidationError("metadata", "必須フィールドが不足しています"),
+      );
+    }
+
+    if (!new ValidToolSetSpecification().isSatisfiedBy(metadata)) {
+      errors.push(
+        new ValidationError("allowedTools", "無効なツールが含まれています"),
+      );
+    }
+
+    // 複合仕様でチェック
+    const importableSpec = new ImportableSkillSpecification(this.repository);
+    const isImportable = importableSpec.isSatisfiedBy(metadata);
+
+    return new ValidationResult(errors, isImportable && errors.length === 0);
+  }
+}
+```
+
+#### 5.0.7 CQRS（Command Query Responsibility Segregation）
+
+> **設計原則**: Greg Young の CQRS パターンに基づく（Level 1: DTO分離）
+
+```typescript
+// apps/desktop/src/main/application/commands/index.ts
+// コマンド（書き込み操作）
+
+/**
+ * コマンド基底インターフェース
+ */
+export interface Command {
+  readonly type: string;
+  readonly timestamp: Date;
+}
+
+/**
+ * コマンドハンドラー基底インターフェース
+ */
+export interface CommandHandler<T extends Command, R = void> {
+  execute(command: T): Promise<R>;
+}
+
+/**
+ * スキルインポートコマンド
+ */
+export class ImportSkillCommand implements Command {
+  readonly type = "skill.import";
+  readonly timestamp = new Date();
+
+  constructor(
+    readonly path: SkillPath,
+    readonly options?: ImportOptions,
+  ) {}
+}
+
+/**
+ * スキル削除コマンド
+ */
+export class RemoveSkillCommand implements Command {
+  readonly type = "skill.remove";
+  readonly timestamp = new Date();
+
+  constructor(readonly skillId: SkillId) {}
+}
+
+/**
+ * スキル実行コマンド
+ */
+export class ExecuteSkillCommand implements Command {
+  readonly type = "skill.execute";
+  readonly timestamp = new Date();
+
+  constructor(
+    readonly skillId: SkillId,
+    readonly prompt: string,
+    readonly options?: ExecutionOptions,
+  ) {}
+}
+
+/**
+ * 実行キャンセルコマンド
+ */
+export class CancelExecutionCommand implements Command {
+  readonly type = "skill.cancel";
+  readonly timestamp = new Date();
+
+  constructor(readonly executionId: ExecutionId) {}
+}
+
+/**
+ * スキル設定更新コマンド
+ */
+export class UpdateSkillSettingsCommand implements Command {
+  readonly type = "skill.updateSettings";
+  readonly timestamp = new Date();
+
+  constructor(
+    readonly skillId: SkillId,
+    readonly settings: Partial<SkillSettings>,
+  ) {}
+}
+
+/**
+ * スキルステータス変更コマンド
+ */
+export class ChangeSkillStatusCommand implements Command {
+  readonly type = "skill.changeStatus";
+  readonly timestamp = new Date();
+
+  constructor(
+    readonly skillId: SkillId,
+    readonly status: SkillStatus,
+  ) {}
+}
+```
+
+```typescript
+// apps/desktop/src/main/application/commands/handlers/ImportSkillCommandHandler.ts
+
+export class ImportSkillCommandHandler implements CommandHandler<
+  ImportSkillCommand,
+  ImportResult
+> {
+  constructor(
+    private readonly scanner: ISkillScanner,
+    private readonly repository: ISkillRepository,
+    private readonly validator: ISkillValidator,
+    private readonly eventPublisher: IDomainEventPublisher,
+  ) {}
+
+  async execute(command: ImportSkillCommand): Promise<ImportResult> {
+    // 1. スキルをスキャン
+    const metadata = await this.scanner.scan(command.path.toString());
+
+    // 2. バリデーション
+    const validation = this.validator.validate(metadata);
+    if (!validation.isValid) {
+      return ImportResult.failure(validation.errors);
+    }
+
+    // 3. ドメインオブジェクト作成
+    const skill = Skill.import(metadata);
+
+    // 4. 永続化
+    await this.repository.save(skill);
+
+    // 5. ドメインイベント発行
+    this.eventPublisher.publish(
+      new SkillImportedEvent(skill.id, skill.name, command.timestamp),
+    );
+
+    return ImportResult.success(skill);
+  }
+}
+```
+
+```typescript
+// apps/desktop/src/main/application/queries/index.ts
+// クエリ（読み取り操作）
+
+/**
+ * クエリ基底インターフェース
+ */
+export interface Query<TResult> {
+  readonly type: string;
+}
+
+/**
+ * クエリハンドラー基底インターフェース
+ */
+export interface QueryHandler<T extends Query<TResult>, TResult> {
+  execute(query: T): Promise<TResult>;
+}
+
+/**
+ * アクティブスキル一覧クエリ
+ */
+export class GetActiveSkillsQuery implements Query<SkillListItem[]> {
+  readonly type = "skill.getActive";
+}
+
+/**
+ * スキル詳細クエリ
+ */
+export class GetSkillDetailQuery implements Query<SkillDetailView | null> {
+  readonly type = "skill.getDetail";
+
+  constructor(readonly skillId: SkillId) {}
+}
+
+/**
+ * スキル検索クエリ
+ */
+export class SearchSkillsQuery implements Query<SkillListItem[]> {
+  readonly type = "skill.search";
+
+  constructor(
+    readonly searchTerm: string,
+    readonly filters?: SkillSearchFilters,
+  ) {}
+}
+
+/**
+ * 実行履歴クエリ
+ */
+export class GetExecutionHistoryQuery implements Query<ExecutionHistoryItem[]> {
+  readonly type = "skill.getExecutionHistory";
+
+  constructor(
+    readonly skillId?: SkillId,
+    readonly limit?: number,
+  ) {}
+}
+
+/**
+ * スキル統計クエリ
+ */
+export class GetSkillStatisticsQuery implements Query<SkillStatistics> {
+  readonly type = "skill.getStatistics";
+
+  constructor(readonly skillId: SkillId) {}
+}
+```
+
+```typescript
+// apps/desktop/src/main/application/queries/views/index.ts
+// 読み取り専用ビューモデル（DTO）
+
+/**
+ * スキル一覧アイテム（軽量ビュー）
+ */
+export interface SkillListItem {
+  readonly id: string;
+  readonly name: string;
+  readonly displayName: string;
+  readonly description: string;
+  readonly toolCount: number;
+  readonly status: SkillStatus;
+  readonly lastExecutedAt: Date | null;
+  readonly executionCount: number;
+  readonly isFavorite: boolean;
+}
+
+/**
+ * スキル詳細ビュー
+ */
+export interface SkillDetailView {
+  readonly id: string;
+  readonly name: string;
+  readonly displayName: string;
+  readonly description: string;
+  readonly path: string;
+  readonly version: string | null;
+  readonly author: string | null;
+  readonly allowedTools: string[];
+  readonly status: SkillStatus;
+  readonly settings: SkillSettings;
+  readonly assets: SkillAssetsView;
+  readonly statistics: SkillStatisticsView;
+  readonly importedAt: Date;
+  readonly updatedAt: Date;
+}
+
+/**
+ * スキルアセットビュー
+ */
+export interface SkillAssetsView {
+  readonly agentCount: number;
+  readonly referenceCount: number;
+  readonly scriptCount: number;
+  readonly totalSize: number;
+  readonly categories: Record<string, number>;
+}
+
+/**
+ * スキル統計ビュー
+ */
+export interface SkillStatisticsView {
+  readonly executionCount: number;
+  readonly successRate: number;
+  readonly averageDuration: number;
+  readonly lastExecutedAt: Date | null;
+  readonly totalTokensUsed: number;
+}
+
+/**
+ * 実行履歴アイテム
+ */
+export interface ExecutionHistoryItem {
+  readonly id: string;
+  readonly skillId: string;
+  readonly skillName: string;
+  readonly prompt: string;
+  readonly status: ExecutionStatus;
+  readonly startedAt: Date;
+  readonly completedAt: Date | null;
+  readonly duration: number | null;
+  readonly tokensUsed: number | null;
+  readonly errorMessage: string | null;
+}
+
+/**
+ * スキル検索フィルター
+ */
+export interface SkillSearchFilters {
+  readonly status?: SkillStatus;
+  readonly hasHighRiskTools?: boolean;
+  readonly tags?: string[];
+  readonly minExecutionCount?: number;
+}
+```
+
+```typescript
+// apps/desktop/src/main/application/queries/handlers/GetActiveSkillsQueryHandler.ts
+
+export class GetActiveSkillsQueryHandler implements QueryHandler<
+  GetActiveSkillsQuery,
+  SkillListItem[]
+> {
+  constructor(private readonly readRepository: ISkillReadRepository) {}
+
+  async execute(_query: GetActiveSkillsQuery): Promise<SkillListItem[]> {
+    // 読み取り専用リポジトリから最適化されたビューを取得
+    return this.readRepository.getActiveSkillListItems();
+  }
+}
+
+/**
+ * 読み取り専用リポジトリインターフェース
+ * 書き込みリポジトリとは別に最適化されたクエリを提供
+ */
+export interface ISkillReadRepository {
+  getActiveSkillListItems(): Promise<SkillListItem[]>;
+  getSkillDetailView(id: SkillId): Promise<SkillDetailView | null>;
+  searchSkills(
+    term: string,
+    filters?: SkillSearchFilters,
+  ): Promise<SkillListItem[]>;
+  getExecutionHistory(
+    skillId?: SkillId,
+    limit?: number,
+  ): Promise<ExecutionHistoryItem[]>;
+  getStatistics(skillId: SkillId): Promise<SkillStatisticsView>;
+}
+```
+
+#### 5.0.8 テスタビリティ（Seams, Stubs, Mocks）
+
+> **設計原則**: Michael Feathers のレガシーコード改善手法に基づく
+
+```typescript
+// apps/desktop/src/main/testing/stubs/InMemorySkillRepository.ts
+// テスト用スタブ実装
+
+/**
+ * インメモリスキルリポジトリ
+ * 単体テスト用のスタブ実装
+ */
+export class InMemorySkillRepository implements ISkillRepository {
+  private skills: Map<string, Skill> = new Map();
+
+  async findById(id: SkillId): Promise<Skill | null> {
+    return this.skills.get(id.toString()) ?? null;
+  }
+
+  async findByName(name: SkillName): Promise<Skill | null> {
+    for (const skill of this.skills.values()) {
+      if (skill.name.equals(name)) {
+        return skill;
+      }
+    }
+    return null;
+  }
+
+  findByNameSync(name: SkillName): Skill | null {
+    for (const skill of this.skills.values()) {
+      if (skill.name.equals(name)) {
+        return skill;
+      }
+    }
+    return null;
+  }
+
+  async findAll(): Promise<Skill[]> {
+    return Array.from(this.skills.values());
+  }
+
+  async findActive(): Promise<Skill[]> {
+    return Array.from(this.skills.values()).filter(
+      (skill) => skill.status === "active",
+    );
+  }
+
+  async save(skill: Skill): Promise<void> {
+    this.skills.set(skill.id.toString(), skill);
+  }
+
+  async delete(id: SkillId): Promise<void> {
+    this.skills.delete(id.toString());
+  }
+
+  // テストヘルパーメソッド
+  clear(): void {
+    this.skills.clear();
+  }
+
+  seedWith(skills: Skill[]): void {
+    skills.forEach((s) => this.skills.set(s.id.toString(), s));
+  }
+
+  getAll(): Skill[] {
+    return Array.from(this.skills.values());
+  }
+
+  count(): number {
+    return this.skills.size;
+  }
+}
+```
+
+```typescript
+// apps/desktop/src/main/testing/stubs/StubFileSystem.ts
+
+/**
+ * スタブファイルシステム
+ * ファイルシステム操作をシミュレート
+ */
+export class StubFileSystem implements IFileSystemPort {
+  private files: Map<string, string> = new Map();
+  private directories: Set<string> = new Set();
+  private stats: Map<string, FileStat> = new Map();
+
+  // セットアップメソッド
+  addFile(path: string, content: string, stat?: Partial<FileStat>): void {
+    this.files.set(path, content);
+    this.stats.set(path, {
+      size: content.length,
+      isDirectory: false,
+      isFile: true,
+      modifiedAt: new Date(),
+      createdAt: new Date(),
+      ...stat,
+    });
+  }
+
+  addDirectory(path: string): void {
+    this.directories.add(path);
+    this.stats.set(path, {
+      size: 0,
+      isDirectory: true,
+      isFile: false,
+      modifiedAt: new Date(),
+      createdAt: new Date(),
+    });
+  }
+
+  // IFileSystemPort実装
+  async readdir(path: string): Promise<string[]> {
+    const entries: string[] = [];
+    const prefix = path.endsWith("/") ? path : path + "/";
+
+    for (const filePath of this.files.keys()) {
+      if (filePath.startsWith(prefix)) {
+        const relativePath = filePath.substring(prefix.length);
+        const firstSegment = relativePath.split("/")[0];
+        if (!entries.includes(firstSegment)) {
+          entries.push(firstSegment);
+        }
+      }
+    }
+
+    for (const dirPath of this.directories) {
+      if (dirPath.startsWith(prefix)) {
+        const relativePath = dirPath.substring(prefix.length);
+        const firstSegment = relativePath.split("/")[0];
+        if (!entries.includes(firstSegment)) {
+          entries.push(firstSegment);
+        }
+      }
+    }
+
+    return entries;
+  }
+
+  async readFile(path: string): Promise<string> {
+    const content = this.files.get(path);
+    if (content === undefined) {
+      throw new Error(`ENOENT: no such file or directory, open '${path}'`);
+    }
+    return content;
+  }
+
+  async stat(path: string): Promise<FileStat> {
+    const stat = this.stats.get(path);
+    if (!stat) {
+      throw new Error(`ENOENT: no such file or directory, stat '${path}'`);
+    }
+    return stat;
+  }
+
+  async exists(path: string): Promise<boolean> {
+    return this.files.has(path) || this.directories.has(path);
+  }
+
+  async isDirectory(path: string): Promise<boolean> {
+    return this.directories.has(path);
+  }
+
+  // テストヘルパー
+  clear(): void {
+    this.files.clear();
+    this.directories.clear();
+    this.stats.clear();
+  }
+}
+```
+
+```typescript
+// apps/desktop/src/main/testing/mocks/MockSkillScanner.ts
+
+/**
+ * モックスキルスキャナー
+ * スキャン結果を制御可能
+ */
+export class MockSkillScanner implements ISkillScanner {
+  private results: Map<string, SkillMetadata> = new Map();
+  private errors: Map<string, Error> = new Map();
+  private scanCount = 0;
+
+  // セットアップメソッド
+  willReturn(path: string, metadata: SkillMetadata): void {
+    this.results.set(path, metadata);
+  }
+
+  willThrow(path: string, error: Error): void {
+    this.errors.set(path, error);
+  }
+
+  willReturnDefault(metadata: SkillMetadata): void {
+    this.results.set("*", metadata);
+  }
+
+  // ISkillScanner実装
+  async scan(path: string): Promise<SkillMetadata> {
+    this.scanCount++;
+
+    const error = this.errors.get(path);
+    if (error) {
+      throw error;
+    }
+
+    const result = this.results.get(path) ?? this.results.get("*");
+    if (!result) {
+      throw new Error(`No mock result configured for path: ${path}`);
+    }
+
+    return result;
+  }
+
+  // 検証メソッド
+  getScanCount(): number {
+    return this.scanCount;
+  }
+
+  wasScannedWith(path: string): boolean {
+    // 実際の呼び出しを記録する場合はここで確認
+    return this.results.has(path) || this.results.has("*");
+  }
+
+  reset(): void {
+    this.results.clear();
+    this.errors.clear();
+    this.scanCount = 0;
+  }
+}
+```
+
+```typescript
+// apps/desktop/src/main/testing/mocks/MockEventPublisher.ts
+
+/**
+ * モックイベントパブリッシャー
+ * 発行されたイベントを記録
+ */
+export class MockEventPublisher implements IDomainEventPublisher {
+  private publishedEvents: DomainEvent[] = [];
+  private handlers: Map<string, ((event: DomainEvent) => void)[]> = new Map();
+
+  publish(event: DomainEvent): void {
+    this.publishedEvents.push(event);
+
+    const eventHandlers = this.handlers.get(event.eventType);
+    if (eventHandlers) {
+      eventHandlers.forEach((handler) => handler(event));
+    }
+  }
+
+  subscribe<T extends DomainEvent>(
+    eventType: string,
+    handler: (event: T) => void,
+  ): void {
+    const existing = this.handlers.get(eventType) ?? [];
+    existing.push(handler as (event: DomainEvent) => void);
+    this.handlers.set(eventType, existing);
+  }
+
+  // 検証メソッド
+  getPublishedEvents(): DomainEvent[] {
+    return [...this.publishedEvents];
+  }
+
+  getPublishedEventsOfType<T extends DomainEvent>(type: string): T[] {
+    return this.publishedEvents.filter((e) => e.eventType === type) as T[];
+  }
+
+  wasPublished(eventType: string): boolean {
+    return this.publishedEvents.some((e) => e.eventType === eventType);
+  }
+
+  getPublishCount(): number {
+    return this.publishedEvents.length;
+  }
+
+  clear(): void {
+    this.publishedEvents = [];
+  }
+}
+```
+
+```typescript
+// apps/desktop/src/main/testing/fixtures/SkillFixtures.ts
+
+/**
+ * テスト用フィクスチャ
+ */
+export class SkillFixtures {
+  static validMetadata(overrides?: Partial<SkillMetadata>): SkillMetadata {
+    return {
+      name: "test-skill",
+      description: "A test skill for unit testing",
+      version: "1.0.0",
+      author: "Test Author",
+      allowedTools: ["Read", "Write"],
+      entryPoint: "SKILL.md",
+      path: "/home/user/.claude/skills/test-skill",
+      agents: [],
+      references: [],
+      scripts: [],
+      assets: [],
+      schemas: [],
+      indexes: [],
+      otherFiles: [],
+      ...overrides,
+    };
+  }
+
+  static invalidMetadata(): SkillMetadata {
+    return {
+      name: "Invalid Name With Spaces", // 無効
+      description: "",
+      allowedTools: ["InvalidTool"],
+      entryPoint: undefined as unknown as string,
+      path: "/invalid/path",
+      agents: [],
+      references: [],
+      scripts: [],
+      assets: [],
+      schemas: [],
+      indexes: [],
+      otherFiles: [],
+    };
+  }
+
+  static activeSkill(overrides?: Partial<ImportedSkill>): ImportedSkill {
+    return {
+      id: SkillId.generate().toString(),
+      name: "active-skill",
+      displayName: "Active Skill",
+      status: "active",
+      importedAt: new Date().toISOString(),
+      metadata: this.validMetadata(),
+      settings: {
+        autoApprovePermissions: false,
+        maxExecutionTime: 300000,
+      },
+      ...overrides,
+    };
+  }
+
+  static disabledSkill(): ImportedSkill {
+    return this.activeSkill({
+      name: "disabled-skill",
+      displayName: "Disabled Skill",
+      status: "disabled",
+    });
+  }
+}
+```
+
+```typescript
+// テスト例: ユースケースのテスト
+
+describe("ImportSkillUseCase", () => {
+  let useCase: ImportSkillUseCase;
+  let repository: InMemorySkillRepository;
+  let scanner: MockSkillScanner;
+  let eventPublisher: MockEventPublisher;
+  let validator: SkillValidator;
+
+  beforeEach(() => {
+    repository = new InMemorySkillRepository();
+    scanner = new MockSkillScanner();
+    eventPublisher = new MockEventPublisher();
+    validator = new SkillValidator(repository);
+    useCase = new ImportSkillUseCase(
+      scanner,
+      repository,
+      validator,
+      eventPublisher,
+    );
+  });
+
+  afterEach(() => {
+    repository.clear();
+    scanner.reset();
+    eventPublisher.clear();
+  });
+
+  describe("execute", () => {
+    it("should import valid skill successfully", async () => {
+      // Arrange
+      const metadata = SkillFixtures.validMetadata();
+      scanner.willReturn("/path/to/skill", metadata);
+
+      // Act
+      const result = await useCase.execute(
+        new ImportSkillCommand(SkillPath.create("/path/to/skill")),
+      );
+
+      // Assert
+      expect(result.isSuccess).toBe(true);
+      expect(repository.count()).toBe(1);
+      expect(eventPublisher.wasPublished("skill.imported")).toBe(true);
+    });
+
+    it("should reject invalid skill name", async () => {
+      // Arrange
+      const metadata = SkillFixtures.invalidMetadata();
+      scanner.willReturn("/path/to/skill", metadata);
+
+      // Act
+      const result = await useCase.execute(
+        new ImportSkillCommand(SkillPath.create("/path/to/skill")),
+      );
+
+      // Assert
+      expect(result.isSuccess).toBe(false);
+      expect(result.errors).toContainEqual(
+        expect.objectContaining({ field: "name" }),
+      );
+      expect(repository.count()).toBe(0);
+      expect(eventPublisher.wasPublished("skill.imported")).toBe(false);
+    });
+
+    it("should prevent duplicate skill import", async () => {
+      // Arrange
+      const metadata = SkillFixtures.validMetadata();
+      scanner.willReturn("/path/to/skill", metadata);
+      repository.seedWith([
+        Skill.import(metadata), // 既存スキル
+      ]);
+
+      // Act
+      const result = await useCase.execute(
+        new ImportSkillCommand(SkillPath.create("/path/to/skill")),
+      );
+
+      // Assert
+      expect(result.isSuccess).toBe(false);
+      expect(repository.count()).toBe(1); // 増えていない
+    });
+  });
+});
+
+describe("SkillScanner with StubFileSystem", () => {
+  let scanner: SkillScanner;
+  let fileSystem: StubFileSystem;
+
+  beforeEach(() => {
+    fileSystem = new StubFileSystem();
+    scanner = new SkillScanner(fileSystem);
+  });
+
+  it("should parse SKILL.md correctly", async () => {
+    // Arrange
+    fileSystem.addDirectory("/home/user/.claude/skills/my-skill");
+    fileSystem.addFile(
+      "/home/user/.claude/skills/my-skill/SKILL.md",
+      `---
+name: my-skill
+description: A sample skill
+allowed-tools: [Read, Write]
+---
+# My Skill
+This is the entry point.
+`,
+    );
+
+    // Act
+    const result = await scanner.scan("/home/user/.claude/skills/my-skill");
+
+    // Assert
+    expect(result.name).toBe("my-skill");
+    expect(result.description).toBe("A sample skill");
+    expect(result.allowedTools).toEqual(["Read", "Write"]);
+  });
+});
+```
+
 ---
 
 ### 5.1 型定義

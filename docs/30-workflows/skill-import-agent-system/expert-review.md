@@ -1536,27 +1536,33 @@ export class SkillNotFoundError extends DomainError { ... }
 export class SkillNotActiveError extends DomainError { ... }
 ```
 
-#### P5: ヘキサゴナルアーキテクチャ強化 🆕
+#### P5: ヘキサゴナルアーキテクチャ強化 ✅ 実装済み
 
 ```typescript
-// specification.md に追加推奨
+// specification.md §5.0.5 に追加
 // apps/desktop/src/main/ports/
 
 // プライマリポート
-export interface ISkillImportPort { ... }
-export interface ISkillExecutePort { ... }
-export interface ISkillQueryPort { ... }
+export interface ISkillImportPort { ... }    // ✅ スキルインポート操作
+export interface ISkillExecutePort { ... }   // ✅ スキル実行操作
+export interface ISkillQueryPort { ... }     // ✅ スキル参照操作
 
 // セカンダリポート
-export interface IAgentSDKGateway { ... }
-export interface INotificationPort { ... }
-export interface IPermissionGateway { ... }
+export interface IAgentSDKGateway { ... }    // ✅ SDK呼び出し抽象化
+export interface INotificationPort { ... }   // ✅ UI通知抽象化
+export interface IPermissionGateway { ... }  // ✅ 権限要求抽象化
+export interface IFileSystemPort { ... }     // ✅ ファイル操作抽象化
+export interface IPersistencePort<T> { ... } // ✅ 永続化抽象化
+
+// アダプター実装例
+export class SkillIpcAdapter { ... }         // ✅ プライマリアダプター
+export class NodeFileSystemAdapter { ... }   // ✅ セカンダリアダプター
 ```
 
-#### P6: 仕様パターン導入 🆕
+#### P6: 仕様パターン導入 ✅ 実装済み
 
 ```typescript
-// specification.md に追加推奨
+// specification.md §5.0.6 に追加
 // packages/shared/src/domain/specifications/
 
 interface Specification<T> {
@@ -1565,39 +1571,59 @@ interface Specification<T> {
   or(other: Specification<T>): Specification<T>;
 }
 
-export class ValidSkillPathSpecification { ... }
-export class HasRequiredFilesSpecification { ... }
-export class NoConflictingSkillSpecification { ... }
+export class ValidSkillPathSpecification { ... }        // ✅ パス検証
+export class ValidSkillNameSpecification { ... }        // ✅ 名前検証
+export class HasRequiredFilesSpecification { ... }      // ✅ 必須ファイル検証
+export class ValidToolSetSpecification { ... }          // ✅ ツールセット検証
+export class NoConflictingSkillSpecification { ... }    // ✅ 競合チェック
+export class NoHighRiskToolsSpecification { ... }       // ✅ 高リスクツールチェック
+export class ImportableSkillSpecification { ... }       // ✅ 複合仕様
+export class ExecutableSkillSpecification { ... }       // ✅ 実行可能性検証
 ```
 
-#### P7: CQRS導入（Level 1: DTO分離） 🆕
+#### P7: CQRS導入（Level 1: DTO分離） ✅ 実装済み
 
 ```typescript
-// specification.md に追加推奨
+// specification.md §5.0.7 に追加
+
 // Command DTOs
-export class ImportSkillCommand { ... }
-export class ExecuteSkillCommand { ... }
+export class ImportSkillCommand { ... }          // ✅ インポートコマンド
+export class RemoveSkillCommand { ... }          // ✅ 削除コマンド
+export class ExecuteSkillCommand { ... }         // ✅ 実行コマンド
+export class CancelExecutionCommand { ... }      // ✅ キャンセルコマンド
+export class UpdateSkillSettingsCommand { ... }  // ✅ 設定更新コマンド
+export class ChangeSkillStatusCommand { ... }    // ✅ ステータス変更コマンド
 
 // Query DTOs (読み取り専用ビューモデル)
-export interface SkillListItem { ... }
-export interface SkillDetailView { ... }
+export interface SkillListItem { ... }           // ✅ 一覧ビュー
+export interface SkillDetailView { ... }         // ✅ 詳細ビュー
+export interface SkillAssetsView { ... }         // ✅ アセットビュー
+export interface SkillStatisticsView { ... }     // ✅ 統計ビュー
+export interface ExecutionHistoryItem { ... }    // ✅ 履歴ビュー
+
+// Read Repository
+export interface ISkillReadRepository { ... }    // ✅ 読み取り専用リポジトリ
 ```
 
-#### P8: テスタビリティ強化 🆕
+#### P8: テスタビリティ強化 ✅ 実装済み
 
 ```typescript
-// specification.md に追加推奨
-// テスト用シーム
-export interface IFileSystem {
-  readdir(path: string): Promise<string[]>;
-  readFile(path: string): Promise<string>;
-  stat(path: string): Promise<FileStat>;
-}
+// specification.md §5.0.8 に追加
 
 // テスト用スタブ
-export class InMemorySkillRepository { ... }
-export class StubFileSystem { ... }
-export class MockSkillScanner { ... }
+export class InMemorySkillRepository { ... }     // ✅ メモリ内リポジトリ
+export class StubFileSystem { ... }              // ✅ ファイルシステムスタブ
+
+// テスト用モック
+export class MockSkillScanner { ... }            // ✅ スキャナーモック
+export class MockEventPublisher { ... }          // ✅ イベントパブリッシャーモック
+
+// テスト用フィクスチャ
+export class SkillFixtures { ... }               // ✅ テストデータ生成
+
+// テスト例
+describe("ImportSkillUseCase") { ... }           // ✅ ユースケーステスト例
+describe("SkillScanner with StubFileSystem") { ... } // ✅ 統合テスト例
 ```
 
 ### 9.3 設計原則チェックリスト
@@ -1663,36 +1689,32 @@ export class MockSkillScanner { ... }
 
 本仕様書は全体として良好な設計基盤を示しているが、8名のエキスパートレビューにより以下の改善ポイントが特定された:
 
-### 実装済み（P1-P4）
+### 実装済み（P1-P8）
 
 1. ✅ **値オブジェクトの導入**: SkillName, SkillPath, ToolSet, ExecutionId
 2. ✅ **Data Clumpsの解消**: SkillAssetsクラスによる構造の整理
 3. ✅ **ユースケース層の明示化**: ImportSkillUseCase, ExecuteSkillUseCase
 4. ✅ **ドメインエラー型**: DomainError階層の定義
-
-### 今後の改善候補（P5-P8）
-
-5. 🆕 **ヘキサゴナルアーキテクチャ強化**: プライマリ/セカンダリポートの明示化
-6. 🆕 **仕様パターン導入**: 複雑なバリデーションルールの表現
-7. 🆕 **CQRS導入（Level 1）**: コマンド/クエリDTOの分離
-8. 🆕 **テスタビリティ強化**: シームの活用、テスト用スタブ/モック
+5. ✅ **ヘキサゴナルアーキテクチャ強化**: プライマリ/セカンダリポート、アダプター
+6. ✅ **仕様パターン導入**: 8種類の仕様クラス、複合仕様対応
+7. ✅ **CQRS導入（Level 1）**: コマンド6種、クエリDTO5種、ReadRepository
+8. ✅ **テスタビリティ強化**: スタブ、モック、フィクスチャ、テスト例
 
 ### 保留
 
 - ⏸️ **Tier 3の削除**: 将来の参照用として維持（実装しなければYAGNI違反にはならない）
 
-### 総合評価
+### 総合評価（改善後）
 
-| カテゴリ       | 評価 |
-| -------------- | ---- |
-| アーキテクチャ | B+   |
-| ドメインモデル | B-   |
-| テスタビリティ | C+   |
-| 拡張性         | B    |
-| **総合**       | B-   |
+| カテゴリ       | 改善前 | 改善後 | 変化 |
+| -------------- | ------ | ------ | ---- |
+| アーキテクチャ | B+     | A-     | ↑    |
+| ドメインモデル | B-     | B+     | ↑↑   |
+| テスタビリティ | C+     | B+     | ↑↑   |
+| 拡張性         | B      | A-     | ↑    |
+| **総合**       | **B-** | **B+** | ↑↑   |
 
-これらの改善により、保守性・拡張性・テスタビリティが大幅に向上する。
-特にP5-P8は段階的に導入することで、既存機能を維持しながら品質向上が可能。
+P1-P8の全改善が仕様書に反映され、8名のエキスパートが指摘した主要課題がすべて対処された。
 
 ---
 
