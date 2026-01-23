@@ -91,6 +91,12 @@ import type {
   ClaudeCliExecuteScriptRequest,
   ClaudeCliTerminateSessionRequest,
   ClaudeCliGetSessionRequest,
+  SystemPromptAPI,
+  SystemPromptListRequest,
+  SystemPromptGetRequest,
+  SystemPromptCreateRequest,
+  SystemPromptUpdateRequest,
+  SystemPromptDeleteRequest,
 } from "./types";
 
 // Type-safe invoke wrapper
@@ -431,6 +437,22 @@ const slideSettingsAPI: SlideSettingsAPI = {
   getAllSettings: () => safeInvoke(IPC_CHANNELS.SLIDE_SETTINGS_GET_ALL),
 };
 
+// System Prompt API for system prompt template management
+const systemPromptAPI: SystemPromptAPI = {
+  list: (request: SystemPromptListRequest) =>
+    safeInvoke(IPC_CHANNELS.SYSTEM_PROMPT_LIST, request),
+  get: (request: SystemPromptGetRequest) =>
+    safeInvoke(IPC_CHANNELS.SYSTEM_PROMPT_GET, request),
+  create: (request: SystemPromptCreateRequest) =>
+    safeInvoke(IPC_CHANNELS.SYSTEM_PROMPT_CREATE, request),
+  update: (request: SystemPromptUpdateRequest) =>
+    safeInvoke(IPC_CHANNELS.SYSTEM_PROMPT_UPDATE, request),
+  delete: (request: SystemPromptDeleteRequest) =>
+    safeInvoke(IPC_CHANNELS.SYSTEM_PROMPT_DELETE, request),
+  migrate: () => safeInvoke(IPC_CHANNELS.SYSTEM_PROMPT_MIGRATE),
+  getPresets: () => safeInvoke(IPC_CHANNELS.SYSTEM_PROMPT_GET_PRESETS),
+};
+
 // Claude CLI API for Claude Code CLI integration
 const claudeCliAPI: ClaudeCliAPI = {
   checkInstallation: () =>
@@ -468,6 +490,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("agentSDKAPI", agentSDKAPI);
     contextBridge.exposeInMainWorld("slideSettingsAPI", slideSettingsAPI);
     contextBridge.exposeInMainWorld("claudeCliAPI", claudeCliAPI);
+    contextBridge.exposeInMainWorld("systemPromptAPI", systemPromptAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -483,4 +506,6 @@ if (process.contextIsolated) {
   ).slideSettingsAPI = slideSettingsAPI;
   (window as unknown as { claudeCliAPI: ClaudeCliAPI }).claudeCliAPI =
     claudeCliAPI;
+  (window as unknown as { systemPromptAPI: SystemPromptAPI }).systemPromptAPI =
+    systemPromptAPI;
 }
