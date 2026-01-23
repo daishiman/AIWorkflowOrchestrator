@@ -199,4 +199,79 @@ import {
 | `from "../graph/types"` (他サービス)        | ✅ 継続動作 |
 | `from "@repo/shared/services/graph"` (新規) | ✅ 新規追加 |
 
+### メインエントリポイント再エクスポート
+
+`@repo/shared` パッケージのメインエントリポイント（`packages/shared/src/index.ts`）から、重要な型を再エクスポートする。
+
+**実装場所**: `packages/shared/src/index.ts`
+
+```typescript
+// packages/shared/src/index.ts
+
+// Graph Services - Community Detection Types
+export type {
+  Community,
+  CommunitySummary,
+  CommunityStructure,
+  CommunityDetectionOptions,
+  CommunityDetectionResult,
+  CommunityDetectionStats,
+  CommunitySummarizationOptions,
+  CommunitySummarizationResult,
+} from "./services/graph";
+
+export {
+  CommunityErrorCode,
+  CommunityDetectionError,
+  CommunitySummarizationErrorCode,
+  CommunitySummarizationError,
+} from "./services/graph";
+```
+
+**インポート方法の比較**:
+
+| パターン | インポートパス | 用途 |
+| -------- | -------------- | ---- |
+| バレルファイル経由 | `from "@repo/shared/services/graph"` | 完全修飾パス、明示的な依存表現 |
+| メインエントリ経由 | `from "@repo/shared"` | 簡潔、一般的な使用パターン |
+
+**推奨**:
+- 内部サービス間: バレルファイル経由（`@repo/shared/services/graph`）
+- 外部アプリ（desktop, web）: メインエントリ経由（`@repo/shared`）
+
 ---
+
+## 完了タスク
+
+| タスクID              | タスク名                       | 完了日     | 概要                                           |
+| --------------------- | ------------------------------ | ---------- | ---------------------------------------------- |
+| SHARED-TYPE-EXPORT-01 | Community型定義整理            | 2026-01-22 | 型定義の整理とバレルファイルからのエクスポート |
+| SHARED-TYPE-EXPORT-02 | メインエントリへのエクスポート | 2026-01-22 | `@repo/shared` メインindex.tsへの型再エクスポート |
+| SHARED-TYPE-EXPORT-03 | Community型エクスポート検証    | 2026-01-23 | Part 1/Part 2実装の動作検証と品質確認          |
+| AGENT-SDK-DEP-FIX     | Agent SDK依存関係修正          | 2026-01-20 | pnpm厳格モード対応、幽霊依存の解消             |
+
+---
+
+## 関連ドキュメント
+
+| ドキュメント                             | 説明                               |
+| ---------------------------------------- | ---------------------------------- |
+| interfaces-rag-community-detection.md    | コミュニティ検出インターフェース仕様 |
+| interfaces-rag-community-summarization.md | コミュニティ要約インターフェース仕様 |
+
+### 実装ガイド
+
+| ドキュメント                                               | 説明                               |
+| ---------------------------------------------------------- | ---------------------------------- |
+| `docs/30-workflows/shared-type-export-03-verification/outputs/phase-12/implementation-guide.md` | Community型インポートガイド |
+
+---
+
+## 変更履歴
+
+| 日付       | バージョン | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-23 | 1.3.0      | メインエントリポイント再エクスポートパターン追加、完了タスク/関連ドキュメント追加（SHARED-TYPE-EXPORT-03完了） |
+| 2026-01-22 | 1.2.0      | 型エクスポートパターンセクション追加（SHARED-TYPE-EXPORT-01/02完了） |
+| 2026-01-20 | 1.1.0      | pnpm依存解決ルール追加（AGENT-SDK-DEP-FIX対応）        |
+| 2026-01-10 | 1.0.0      | 初版作成                                               |

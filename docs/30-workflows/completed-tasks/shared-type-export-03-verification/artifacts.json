@@ -1,0 +1,114 @@
+{
+  "taskId": "SHARED-TYPE-EXPORT-03",
+  "featureName": "shared-type-export-03-verification",
+  "createdAt": "2026-01-23",
+  "status": "phase-12-completed",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/verification-scope.md",
+        "outputs/phase-1/verification-criteria.md",
+        "outputs/phase-1/prerequisites-checklist.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/verification-sequence.md",
+        "outputs/phase-2/error-resolution-plan.md",
+        "outputs/phase-2/modification-scope.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/dependency-check-result.md",
+        "outputs/phase-3/export-verification.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/verification-commands.md",
+        "outputs/phase-4/verification-script.sh",
+        "outputs/phase-4/error-criteria.md"
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/initial-verification.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/related-packages-check.md",
+        "outputs/phase-6/import-verification.md",
+        "outputs/phase-6/backward-compatibility-check.md"
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/export-coverage.md",
+        "outputs/phase-7/consumer-coverage.md",
+        "outputs/phase-7/integration-verification.md"
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/unused-code-detection.md",
+        "outputs/phase-8/cleanup-record.md",
+        "outputs/phase-8/post-cleanup-verification.md"
+      ]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/static-analysis.md",
+        "outputs/phase-9/dependency-verification.md",
+        "outputs/phase-9/build-verification.md"
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/completion-checklist.md",
+        "outputs/phase-10/verification-summary.md",
+        "outputs/phase-10/gate-decision.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/build-verification.md",
+        "outputs/phase-11/typecheck-verification.md",
+        "outputs/phase-11/push-verification.md",
+        "outputs/phase-11/verification-report.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-record.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    "phase-13": { "status": "pending", "artifacts": [] }
+  },
+  "dependencies": {
+    "SHARED-TYPE-EXPORT-01": "completed",
+    "SHARED-TYPE-EXPORT-02": "required"
+  },
+  "metadata": {
+    "issueNumber": 373,
+    "category": "refactoring",
+    "targetPackages": ["@repo/shared", "@repo/desktop"],
+    "priority": "high",
+    "scale": "small"
+  }
+}
