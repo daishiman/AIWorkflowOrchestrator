@@ -25,7 +25,7 @@ skill-creator スキルの SKILL.md を作成する。
 
 ## 出力
 
-- `~/.claude/skills/skill-creator/SKILL.md`
+- `~/.aiworkflow/skills/skill-creator/SKILL.md`
 
 ## 実装詳細
 
@@ -89,9 +89,9 @@ REST API/Webhook連携スキルを生成します。
 
 ## ファイル
 
-| 操作 | パス                                      |
-| ---- | ----------------------------------------- |
-| 作成 | `~/.claude/skills/skill-creator/SKILL.md` |
+| 操作 | パス                                          |
+| ---- | --------------------------------------------- |
+| 作成 | `~/.aiworkflow/skills/skill-creator/SKILL.md` |
 
 ## 完了条件
 

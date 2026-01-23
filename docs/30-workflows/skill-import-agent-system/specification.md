@@ -4,11 +4,12 @@
 
 ### 1.1 目的
 
-`.claude/skills/` 配下のスキルをスキャンし、**配下の全情報（agents/, references/, scripts/等）を取得**してシステムにインポートする機能を提供する。
+`~/.aiworkflow/skills/`（アプリ独自）および `~/.claude/skills/`（Claude Code CLI、読み取り専用）配下のスキルをスキャンし、**配下の全情報（agents/, references/, scripts/等）を取得**してシステムにインポートする機能を提供する。スキルごとにチャット履歴と成果物を `~/.aiworkflow/` 配下に保存する。
 
 ### 1.2 背景
 
-- 現在、`.claude/skills/` 配下に複数のスキルが存在（6種類）
+- Claude Code CLI の標準スキルが `~/.claude/skills/` に存在
+- AIWorkflowOrchestrator独自のスキルは `~/.aiworkflow/skills/` に保存
 - **既存のAgentView/AgentExecutionView**がスキル管理・実行UIとして存在
 - 既存のインポート機能はスキルの基本情報のみ取得しており、配下の詳細情報が不足
 - スキルディレクトリの全構造（サブエージェント、参照資料等）を取得する必要がある
@@ -196,7 +197,12 @@
                                ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    File System                                      │
-│  ~/.claude/skills/                                                  │
+│  ~/.aiworkflow/                                                     │
+│  ├── skills/              ← アプリ独自スキル（読み書き）            │
+│  ├── conversations/       ← スキルごとのチャット履歴                │
+│  └── artifacts/           ← 生成した成果物                          │
+│                                                                     │
+│  ~/.claude/skills/        ← Claude CLI スキル（読み取り専用）       │
 │  ├── presentation-slide-generator/                                  │
 │  │   ├── SKILL.md                  ← メタデータ・プロンプト         │
 │  │   ├── agents/                   ← サブエージェント定義           │
@@ -4547,14 +4553,18 @@ import * as yaml from "yaml";
 
 /**
  * スキルスキャナー
- * ~/.claude/skills/ 配下のスキルを検出し、全情報を取得
+ * ~/.aiworkflow/skills/ および ~/.claude/skills/ 配下のスキルを検出し、全情報を取得
  */
 export class SkillScanner {
-  private skillsDir: string;
+  private aiworkflowDir: string;
+  private claudeDir: string;
 
-  constructor(skillsDir?: string) {
-    this.skillsDir =
-      skillsDir || path.join(process.env.HOME!, ".claude", "skills");
+  constructor(options?: { aiworkflowDir?: string; claudeDir?: string }) {
+    this.aiworkflowDir =
+      options?.aiworkflowDir ||
+      path.join(process.env.HOME!, ".aiworkflow", "skills");
+    this.claudeDir =
+      options?.claudeDir || path.join(process.env.HOME!, ".claude", "skills");
   }
 
   /**
@@ -5958,7 +5968,7 @@ ${requirements}
 上記の要求に基づいて、新しいスキルを作成してください。
 
 1. スキル名を決定（英語、ケバブケース）
-2. ~/.claude/skills/{skill-name}/ ディレクトリを作成
+2. ~/.aiworkflow/skills/{skill-name}/ ディレクトリを作成
 3. SKILL.md を作成（frontmatter + 本文）
 4. 必要に応じて agents/, references/, scripts/ を作成
 5. 作成完了を報告`;
@@ -6402,7 +6412,7 @@ export function SkillCreateWizard() {
          │
          ▼
 ┌──────────────────┐
-│  完成したスキル   │  ~/.claude/skills/chat-history-export/
+│  完成したスキル   │  ~/.aiworkflow/skills/chat-history-export/
 │                  │  ├── SKILL.md
 │                  │  ├── agents/
 │                  │  └── references/

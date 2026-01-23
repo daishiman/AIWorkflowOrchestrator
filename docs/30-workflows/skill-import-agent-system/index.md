@@ -2,7 +2,7 @@
 
 ## 概要
 
-`~/.claude/skills/` 配下のスキルをスキャンし、配下の全情報（agents/, references/, scripts/等）を取得してシステムにインポートする機能。
+`~/.aiworkflow/skills/`（アプリ独自）および `~/.claude/skills/`（Claude Code CLI、読み取り専用）配下のスキルをスキャンし、配下の全情報（agents/, references/, scripts/等）を取得してシステムにインポートする機能。スキルごとにチャット履歴と成果物を保存する。
 
 ## ドキュメント構成
 
@@ -352,6 +352,9 @@ Tier 3 (将来):     7タスク
 
 ## 関連リソース
 
-- 既存スキル: `~/.claude/skills/`
+- アプリ独自スキル: `~/.aiworkflow/skills/`
+- Claude CLIスキル: `~/.claude/skills/`（読み取り専用）
+- チャット履歴: `~/.aiworkflow/conversations/`
+- 成果物: `~/.aiworkflow/artifacts/`
 - 参照実装: `apps/desktop/src/main/services/agent/AgentExecutor.ts`
 - SDK: `@anthropic-ai/claude-agent-sdk`
