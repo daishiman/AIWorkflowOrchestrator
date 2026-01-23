@@ -1,5 +1,20 @@
 # 検索パネル UI/UX 改善タスク
 
+## メタ情報
+
+```yaml
+issue_number: 457
+task_id: UI-SEARCH-001
+task_name: 検索パネル UI/UX 改善
+category: 改善
+target_feature: 検索・置換パネル
+priority: 中
+scale: 中規模
+status: 未実施
+created_date: 2026-01-21
+dependencies: []
+```
+
 ## 概要
 
 検索・置換機能のUI/UXを`.claude/skills/aiworkflow-requirements/references/ui-ux-panels.md`の仕様に合わせて改善する。
