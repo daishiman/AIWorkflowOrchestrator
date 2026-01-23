@@ -424,6 +424,120 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 
 ---
 
+## Workspace Chat Edit 型定義（Desktop IPC）
+
+> **実装**: `apps/desktop/src/renderer/features/workspace-chat-edit/`
+> **詳細設計**: `docs/30-workflows/workspace-chat-edit/outputs/phase-12/implementation-guide.md`
+
+### 概要
+
+AIアシスタントと連携してコードを編集する機能の型定義。ファイルコンテキストを添付してLLMにリクエストを送信し、差分ベースで変更を適用する。
+
+### エンティティ型定義
+
+#### FileContext
+
+添付ファイルコンテキスト型。
+
+| フィールド | 型             | 必須 | 説明                     |
+| ---------- | -------------- | ---- | ------------------------ |
+| id         | string         | ✓    | UUID v4                  |
+| filePath   | string         | ✓    | 絶対パス                 |
+| fileName   | string         | ✓    | 表示用ファイル名         |
+| content    | string         | ✓    | ファイル内容             |
+| selection  | TextSelection  | -    | 選択範囲（オプション）   |
+| language   | string         | ✓    | プログラミング言語       |
+| addedAt    | Date           | ✓    | 添付日時                 |
+| fileSize   | number         | ✓    | バイト数                 |
+
+#### TextSelection
+
+テキスト選択範囲型。
+
+| フィールド    | 型      | 説明               |
+| ------------- | ------- | ------------------ |
+| startLine     | number  | 開始行（1始まり）  |
+| startColumn   | number  | 開始列（1始まり）  |
+| endLine       | number  | 終了行（1始まり）  |
+| endColumn     | number  | 終了列（1始まり）  |
+| selectedText  | string  | 選択テキスト       |
+
+#### EditCommand
+
+編集コマンド型。
+
+| フィールド      | 型                | 必須 | 説明                |
+| --------------- | ----------------- | ---- | ------------------- |
+| type            | EditCommandType   | ✓    | コマンドタイプ      |
+| targetContextId | string            | ✓    | 対象コンテキストID  |
+| instruction     | string            | -    | カスタム指示        |
+| options         | EditCommandOptions| -    | オプション          |
+
+#### EditCommandType（列挙型）
+
+編集コマンドタイプ。continue（続きを書く）、refactor（リファクタリング）、generate-test（テスト生成）、add-comment（コメント追加）、custom（カスタム）の5種類。
+
+#### GeneratedResult
+
+LLM生成結果型。
+
+| フィールド       | 型            | 必須 | 説明                      |
+| ---------------- | ------------- | ---- | ------------------------- |
+| id               | string        | ✓    | 結果ID                    |
+| contextId        | string        | ✓    | 対象コンテキストID        |
+| originalContent  | string        | ✓    | 元のコンテンツ            |
+| generatedContent | string        | ✓    | 生成されたコンテンツ      |
+| diffHunks        | DiffHunk[]    | ✓    | 差分                      |
+| status           | ResultStatus  | ✓    | pending/approved/rejected |
+| createdAt        | Date          | ✓    | 作成日時                  |
+| targetFilePath   | string        | ✓    | 対象ファイルパス          |
+| command          | EditCommand   | ✓    | 実行したコマンド          |
+| llmMetadata      | LLMMetadata   | -    | LLMメタ情報               |
+
+#### DiffHunk
+
+差分ハンク型。
+
+| フィールド        | 型          | 説明             |
+| ----------------- | ----------- | ---------------- |
+| type              | DiffHunkType| add/remove/modify|
+| originalStartLine | number      | 元の開始行       |
+| originalEndLine   | number      | 元の終了行       |
+| newStartLine      | number      | 新しい開始行     |
+| newEndLine        | number      | 新しい終了行     |
+| originalLines     | string[]    | 元の行           |
+| newLines          | string[]    | 新しい行         |
+
+### IPC通信（予定）
+
+| チャンネル                    | 方向          | 入力                     | 出力                      |
+| ----------------------------- | ------------- | ------------------------ | ------------------------- |
+| `chat-edit:read-file`         | Renderer→Main | filePath                 | FileReadResult            |
+| `chat-edit:write-file`        | Renderer→Main | filePath, content        | FileWriteResult           |
+| `chat-edit:get-selection`     | Renderer→Main | -                        | TextSelection \| null     |
+| `chat-edit:send-with-context` | Renderer→Main | SendWithContextRequest   | SendWithContextResponse   |
+
+### 定数
+
+| 定数名            | 値       | 説明                   |
+| ----------------- | -------- | ---------------------- |
+| MAX_FILE_CONTEXTS | 10       | 最大ファイルコンテキスト数 |
+| MAX_FILE_SIZE     | 10MB     | ファイルサイズ上限     |
+| MAX_CONTEXT_SIZE  | 100KB    | コンテキスト合計上限   |
+
+### 品質メトリクス
+
+- テストカバレッジ: Line 69.23%, Branch 89.74%, Function 95%
+- 全122件の自動テスト成功
+
+### 関連タスク
+
+- workspace-chat-edit（2026-01-23完了：コアロジック）
+- workspace-chat-edit-ui-components（未実施）
+- workspace-chat-edit-main-process（未実施）
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)

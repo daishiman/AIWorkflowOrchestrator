@@ -24,7 +24,7 @@ allowed-tools:
 
 ## 概要
 
-AIWorkflowOrchestratorプロジェクトの全仕様（86ファイル・約20,000行）を管理するスキル。
+AIWorkflowOrchestratorプロジェクトの全仕様（87ファイル・約21,000行）を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
 ## ワークフロー
@@ -138,6 +138,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                             |
 | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.20.0  | 2026-01-23 | Workspace Chat Edit追加: interfaces-llm.md（FileContext/EditCommand/GeneratedResult型）、architecture-patterns.md（chatEditSliceパターン）、api-endpoints.md（chat-edit IPCチャネル4種）追加、87ファイル構成 |
 | 6.19.0  | 2026-01-22 | React Context DI追加（UT-006完了）: architecture-chat-history.mdにUI Layerセクション追加（ChatHistoryContext/Provider/useChatHistory/MockProvider）、topic-map.md更新、8アーキテクチャファイル構成 |
 | 6.18.0  | 2026-01-22 | Drizzle Repository実装追加: architecture-chat-history.md更新（DrizzleChatSessionRepository/DrizzleChatMessageRepository、エラーハンドリング、テスト構成）                                           |
 | 6.17.0  | 2026-01-21 | スキル管理IPC整合性修正: interfaces-agent-sdk.mdのIPCチャンネル名を実装に合わせて更新（`skill:list`→`skill:list-imported`等）、戻り値型を`OperationResult`に統一                                    |
