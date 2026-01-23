@@ -253,17 +253,17 @@ Phase N+1 へ
 
 ## scripts/ （決定論的処理 - 100%精度）
 
-| Script                             | 読み込み条件                  | 用途                                        |
-| ---------------------------------- | ----------------------------- | ------------------------------------------- |
-| `detect-mode.js`                   | 開始時                        | create/update/execute/detect-unassigned判定 |
-| `validate-phase-output.js`         | 各Phase完了時                 | Phase出力ファイル検証                       |
-| `complete-phase.js`                | 各Phase完了時                 | Phase完了・成果物登録・依存更新             |
-| `init-artifacts.js`                | create時                      | ワークフローディレクトリ初期化              |
-| `verify-all-specs.js`              | **Phase 5全体検証時（自動）** | **13ファイル一括検証・レポート生成**        |
-| `detect-unassigned-tasks.js`       | Phase 12実行時                | TODO/FIXME検出                              |
-| `generate-documentation-changelog.js` | **Phase 12 Task 3実行時**  | **documentation-changelog.md自動生成**      |
-| `validate-schema.js`               | スキーマ検証時                | JSON Schema検証                             |
-| `log-usage.js`                     | 全モード完了時                | 使用ログ記録                                |
+| Script                                | 読み込み条件                  | 用途                                        |
+| ------------------------------------- | ----------------------------- | ------------------------------------------- |
+| `detect-mode.js`                      | 開始時                        | create/update/execute/detect-unassigned判定 |
+| `validate-phase-output.js`            | 各Phase完了時                 | Phase出力ファイル検証                       |
+| `complete-phase.js`                   | 各Phase完了時                 | Phase完了・成果物登録・依存更新             |
+| `init-artifacts.js`                   | create時                      | ワークフローディレクトリ初期化              |
+| `verify-all-specs.js`                 | **Phase 5全体検証時（自動）** | **13ファイル一括検証・レポート生成**        |
+| `detect-unassigned-tasks.js`          | Phase 12実行時                | TODO/FIXME検出                              |
+| `generate-documentation-changelog.js` | **Phase 12 Task 3実行時**     | **documentation-changelog.md自動生成**      |
+| `validate-schema.js`                  | スキーマ検証時                | JSON Schema検証                             |
+| `log-usage.js`                        | 全モード完了時                | 使用ログ記録                                |
 
 ---
 
@@ -511,12 +511,14 @@ Phase 12でシステム仕様の更新が必要かを判断する際は、以下
 **⚠️ 2ステップで実行:**
 
 **Step 1: タスク完了記録（必須 - 全タスク共通）**
+
 ```
 □ 該当する仕様書に「## 完了タスク」セクションを追加
 □ 「## 関連ドキュメント」に実装ガイドリンクを追加
 ```
 
 **Step 2: システム仕様更新（条件付き）**
+
 - 更新判断基準に基づき更新要否を判断
 - 不要の場合: documentation-changelog.mdに「更新なし」を明記
 - 必要な場合: 以下のチェックリストを実行
@@ -569,18 +571,19 @@ Phase 12でシステム仕様の更新が必要かを判断する際は、以下
 
 ## 変更履歴
 
-| Version   | Date           | Changes                                                                                                                                          |
-| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **7.5.0** | **2026-01-22** | **Phase 12改善: Task 2を2ステップ化（タスク完了記録必須＋仕様更新条件付き）、Task 3自動生成スクリプト追加、spec-update-workflow.md明確化**       |
-| 7.4.0     | 2026-01-18     | Phase 12 Task 2強化: システム仕様更新チェックリスト追加、変更タイプ別マッピング追加、更新漏れ防止ガイダンス強化                                  |
-| 7.3.0     | 2026-01-17     | Phase 12-2システム仕様更新ガイダンス強化: spec-update-workflow.mdに更新判断基準・フローチャート追加、aiworkflow-requirements更新タイミング明確化 |
-| 7.2.0     | 2026-01-17     | Phase 11/12実行ガイダンス追加: テスト結果レポート形式、未タスク検出レポート形式（0件含む）、システム仕様書更新手順                               |
-| 7.1.0     | 2026-01-17     | Phase 5「全体整合性検証」追加: verify-all-specs.js（自動13ファイル一括検証）、verify-specs.md（LLM品質検証）、verification-report.json追加       |
-| 7.0.0     | 2026-01-17     | skill-creator v5.3準拠リファクタリング: Progressive Disclosure完全化、スクリプト拡張子.js統一、リソースマップ整理                                |
-| 6.1.0     | 2026-01-14     | タスク完了ワークフロー追加: unassigned-task→completed-tasks移動・ステータス更新                                                                  |
-| 6.0.0     | 2026-01-13     | skill-creator最新仕様準拠リファクタリング: Script First原則明確化、Progressive Disclosure完全対応、schemas/追加、Self-Improvement基盤追加        |
-| 5.1.0     | 2026-01-13     | Phase 12-2システムドキュメント更新を強化                                                                                                         |
-| 5.0.0     | 2026-01-10     | スキル選定機能削除、シンプル化                                                                                                                   |
-| 4.0.0     | 2026-01-06     | Git Worktree削除、結合テストカバレッジ基準追加                                                                                                   |
-| 3.1.0     | 2026-01-07     | Phase 6追加（テスト拡充）、統合テスト連携必須化                                                                                                  |
-| 3.0.0     | 2026-01-06     | Phase再構成（1-13）、/ai:diff-to-pr統合                                                                                                          |
+| Version   | Date           | Changes                                                                                                                                                  |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **7.6.0** | **2026-01-22** | **Phase 12テンプレート強化: 完了条件にPhase 12-2の3ステップチェックリスト追加、フォールバック手順セクション追加、spec-update-workflow.md参照リンク追加** |
+| 7.5.0     | 2026-01-22     | Phase 12改善: Task 2を2ステップ化（タスク完了記録必須＋仕様更新条件付き）、Task 3自動生成スクリプト追加、spec-update-workflow.md明確化                   |
+| 7.4.0     | 2026-01-18     | Phase 12 Task 2強化: システム仕様更新チェックリスト追加、変更タイプ別マッピング追加、更新漏れ防止ガイダンス強化                                          |
+| 7.3.0     | 2026-01-17     | Phase 12-2システム仕様更新ガイダンス強化: spec-update-workflow.mdに更新判断基準・フローチャート追加、aiworkflow-requirements更新タイミング明確化         |
+| 7.2.0     | 2026-01-17     | Phase 11/12実行ガイダンス追加: テスト結果レポート形式、未タスク検出レポート形式（0件含む）、システム仕様書更新手順                                       |
+| 7.1.0     | 2026-01-17     | Phase 5「全体整合性検証」追加: verify-all-specs.js（自動13ファイル一括検証）、verify-specs.md（LLM品質検証）、verification-report.json追加               |
+| 7.0.0     | 2026-01-17     | skill-creator v5.3準拠リファクタリング: Progressive Disclosure完全化、スクリプト拡張子.js統一、リソースマップ整理                                        |
+| 6.1.0     | 2026-01-14     | タスク完了ワークフロー追加: unassigned-task→completed-tasks移動・ステータス更新                                                                          |
+| 6.0.0     | 2026-01-13     | skill-creator最新仕様準拠リファクタリング: Script First原則明確化、Progressive Disclosure完全対応、schemas/追加、Self-Improvement基盤追加                |
+| 5.1.0     | 2026-01-13     | Phase 12-2システムドキュメント更新を強化                                                                                                                 |
+| 5.0.0     | 2026-01-10     | スキル選定機能削除、シンプル化                                                                                                                           |
+| 4.0.0     | 2026-01-06     | Git Worktree削除、結合テストカバレッジ基準追加                                                                                                           |
+| 3.1.0     | 2026-01-07     | Phase 6追加（テスト拡充）、統合テスト連携必須化                                                                                                          |
+| 3.0.0     | 2026-01-06     | Phase再構成（1-13）、/ai:diff-to-pr統合                                                                                                                  |
