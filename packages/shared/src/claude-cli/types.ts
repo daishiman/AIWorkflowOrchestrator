@@ -83,9 +83,10 @@ export interface SessionFilter {
 // =============================================================================
 
 /**
- * Skill metadata (scan result)
+ * Skill metadata (scan result) for Claude CLI
+ * Note: Named ClaudeCliSkillMetadata to avoid conflict with SkillMetadata in types/skill.ts (§5.1)
  */
-export interface SkillMetadata {
+export interface ClaudeCliSkillMetadata {
   name: string;
   path: string;
   description: string;
@@ -101,7 +102,7 @@ export interface SkillMetadata {
  * Skill detail for Claude CLI (full information including content)
  * Note: Named ClaudeCliSkillDetail to avoid conflict with existing SkillDetail in types/skill.ts
  */
-export interface ClaudeCliSkillDetail extends SkillMetadata {
+export interface ClaudeCliSkillDetail extends ClaudeCliSkillMetadata {
   content: string;
   scripts?: ScriptInfo[];
   references?: string[];
@@ -120,7 +121,7 @@ export interface ScriptInfo {
  * Scan result from skill scanner
  */
 export interface ScanResult {
-  skills: SkillMetadata[];
+  skills: ClaudeCliSkillMetadata[];
   errors: ScanError[];
   scannedAt: number;
 }

@@ -202,3 +202,304 @@ export interface SkillRunResult {
   /** 完了日時 */
   completedAt: Date;
 }
+
+// ========================================
+// Section: スキルメタデータ（§5.1）
+// @see specification.md §5.1 Type Definitions
+// ========================================
+
+/**
+ * スキルディレクトリ直下のその他のファイル
+ * @see specification.md §5.1 SkillOtherFile
+ */
+export interface SkillOtherFile {
+  /** ファイル名 */
+  filename: string;
+
+  /** ファイルタイプ */
+  type: "evals" | "logs" | "package" | "other";
+
+  /** ファイルサイズ（バイト） */
+  size: number;
+}
+
+/**
+ * スキル配下のサブリソース
+ * @see specification.md §5.1 SkillSubResource
+ */
+export interface SkillSubResource {
+  /** ファイル名 */
+  filename: string;
+
+  /** 相対パス */
+  relativePath: string;
+
+  /** 説明（ファイルから抽出、なければファイル名） */
+  description?: string;
+
+  /** ファイルサイズ（バイト） */
+  size: number;
+}
+
+/**
+ * スキルメタデータ（SKILL.md frontmatter）
+ * 配下の全情報を含む
+ * @see specification.md §5.1 SkillMetadata
+ */
+export interface SkillMetadata {
+  /** スキル識別子（ディレクトリ名と一致） */
+  name: string;
+
+  /** スキル説明（トリガー条件含む） */
+  description: string;
+
+  /** 許可ツール */
+  allowedTools?: string[];
+
+  /** スキルディレクトリパス */
+  path: string;
+
+  /** 最終更新日時 */
+  updatedAt: Date;
+
+  /** agents/ 配下のファイル一覧 */
+  agents: SkillSubResource[];
+
+  /** references/ 配下のファイル一覧 */
+  references: SkillSubResource[];
+
+  /** scripts/ 配下のファイル一覧 */
+  scripts: SkillSubResource[];
+
+  /** assets/ 配下のファイル一覧 */
+  assets: SkillSubResource[];
+
+  /** schemas/ 配下のファイル一覧（JSONスキーマ定義） */
+  schemas: SkillSubResource[];
+
+  /** indexes/ 配下のファイル一覧（キーワードインデックス） */
+  indexes: SkillSubResource[];
+
+  /** その他のファイル一覧（EVALS.json, LOGS.md, package.json等） */
+  otherFiles: SkillOtherFile[];
+}
+
+/**
+ * インポート済みスキル
+ */
+export interface ImportedSkill extends SkillMetadata {
+  /** インポート日時 */
+  importedAt: Date;
+
+  /** インポートステータス */
+  status: "active" | "disabled";
+
+  /** SKILL.md 本文（キャッシュ） */
+  content?: string;
+}
+
+// ========================================
+// Section: 実行関連（§5.1）
+// @see specification.md §5.1 Execution Types
+// ========================================
+
+/**
+ * スキル実行リクエスト（Renderer → Main）
+ * ※ executionIdはMain側で生成
+ */
+export interface SkillExecutionRequest {
+  /** 使用するスキル名 */
+  skillName: string;
+
+  /** ユーザープロンプト */
+  prompt: string;
+
+  /** 作業ディレクトリ（省略時はデフォルト） */
+  workingDirectory?: string;
+}
+
+/**
+ * スキル実行レスポンス（Main → Renderer）
+ */
+export interface SkillExecutionResponse {
+  /** 実行ID（UUID、Main側で生成） */
+  executionId: string;
+
+  /** 開始成功かどうか */
+  success: boolean;
+
+  /** エラーメッセージ（失敗時） */
+  error?: string;
+}
+
+/**
+ * スキル実行ステータス
+ */
+export type SkillExecutionStatus =
+  | "idle"
+  | "running"
+  | "permission_pending"
+  | "completed"
+  | "cancelled"
+  | "error";
+
+// ========================================
+// Section: ストリーミングメッセージ（§5.1）
+// @see specification.md §5.1 Streaming Message Types
+// ========================================
+
+/**
+ * ストリーミングメッセージ種別
+ */
+export type SkillStreamMessageType =
+  | "assistant"
+  | "tool_use"
+  | "tool_result"
+  | "status"
+  | "error";
+
+/**
+ * アシスタントメッセージ内容
+ */
+export interface AssistantMessageContent {
+  /** テキスト内容 */
+  text: string;
+
+  /** 部分メッセージかどうか */
+  isPartial?: boolean;
+}
+
+/**
+ * ツール使用メッセージ内容
+ */
+export interface ToolUseMessageContent {
+  /** ツール名 */
+  toolName: string;
+
+  /** ツール引数 */
+  args: Record<string, unknown>;
+
+  /** ツール使用ID */
+  toolUseId: string;
+}
+
+/**
+ * ツール結果メッセージ内容
+ */
+export interface ToolResultMessageContent {
+  /** ツール使用ID */
+  toolUseId: string;
+
+  /** 成功したかどうか */
+  success: boolean;
+
+  /** 結果内容 */
+  result?: unknown;
+
+  /** エラーメッセージ */
+  error?: string;
+}
+
+/**
+ * ステータスメッセージ内容
+ */
+export interface StatusMessageContent {
+  /** ステータス種別 */
+  status: "started" | "tool_executing" | "tool_completed" | "completed";
+
+  /** 追加情報 */
+  detail?: string;
+}
+
+/**
+ * エラーメッセージ内容
+ */
+export interface ErrorMessageContent {
+  /** エラーコード */
+  code: "sdk_error" | "permission_denied" | "timeout" | "network" | "unknown";
+
+  /** エラーメッセージ */
+  message: string;
+
+  /** リトライ可能かどうか */
+  retryable: boolean;
+}
+
+/**
+ * ストリーミングメッセージ（型安全版 - Discriminated Union）
+ * typeプロパティで型を判別可能
+ * @see specification.md §5.1 SkillStreamMessage
+ */
+export type SkillStreamMessage =
+  | {
+      executionId: string;
+      type: "assistant";
+      content: AssistantMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "tool_use";
+      content: ToolUseMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "tool_result";
+      content: ToolResultMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "status";
+      content: StatusMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "error";
+      content: ErrorMessageContent;
+      timestamp: number;
+    };
+
+// ========================================
+// Section: 権限確認（§5.1）
+// @see specification.md §5.1 Permission Types
+// ========================================
+
+/**
+ * スキル実行時の権限確認リクエスト（Main → Renderer）
+ */
+export interface SkillPermissionRequest {
+  /** 実行ID */
+  executionId: string;
+
+  /** リクエストID（応答のマッチング用） */
+  requestId: string;
+
+  /** ツール名 */
+  toolName: string;
+
+  /** ツール引数 */
+  args: Record<string, unknown>;
+
+  /** 確認を求める理由（オプション） */
+  reason?: string;
+}
+
+/**
+ * スキル実行時の権限確認レスポンス（Renderer → Main）
+ */
+export interface SkillPermissionResponse {
+  /** リクエストID（リクエストとのマッチング用） */
+  requestId: string;
+
+  /** 承認されたかどうか */
+  approved: boolean;
+
+  /** この選択を記憶するか（オプション） */
+  rememberChoice?: boolean;
+
+  /** 拒否理由（オプション） */
+  rejectReason?: string;
+}

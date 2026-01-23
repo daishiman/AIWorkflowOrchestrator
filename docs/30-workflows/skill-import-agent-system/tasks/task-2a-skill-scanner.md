@@ -16,12 +16,20 @@ tags: [backend, main-process, service]
 
 ## 概要
 
-`~/.claude/skills/` 配下のスキルディレクトリをスキャンし、SKILL.md と配下の全サブディレクトリ情報を取得するサービスクラスを実装する。
+スキルディレクトリをスキャンし、SKILL.md と配下の全サブディレクトリ情報を取得するサービスクラスを実装する。
+
+## スキャン対象ディレクトリ
+
+| パス                    | 読み書き         | 説明                          |
+| ----------------------- | ---------------- | ----------------------------- |
+| `~/.aiworkflow/skills/` | 読み書き可能     | アプリ独自のスキル格納先      |
+| `~/.claude/skills/`     | **読み取り専用** | Claude CLI スキル（参照のみ） |
 
 ## 入力
 
 - TASK-1-1 で作成した型定義（`SkillMetadata`, `SkillSubResource`, `SkillOtherFile`）
-- `~/.claude/skills/` ディレクトリ構造
+- `~/.aiworkflow/skills/` ディレクトリ構造（主要）
+- `~/.claude/skills/` ディレクトリ構造（参照用）
 
 ## 出力
 
@@ -113,6 +121,9 @@ pnpm --filter @repo/desktop add yaml
 ## 完了条件
 
 - [ ] `SkillScanner` クラスが実装されている
+- [ ] `~/.aiworkflow/` が存在しない場合は自動作成される
+- [ ] `~/.aiworkflow/skills/` と `~/.claude/skills/` の両方をスキャンできる
+- [ ] `~/.claude/skills/` のスキルには `readonly: true` フラグが設定される
 - [ ] `scanAll()` が全スキルのメタデータを返す
 - [ ] 6つのサブディレクトリ（agents, references, scripts, assets, schemas, indexes）がスキャンされる
 - [ ] `SKILL.md` の Frontmatter が正しくパースされる
@@ -158,4 +169,5 @@ describe("SkillScanner", () => {
 ## 参考資料
 
 - [specification.md - 5.6 SkillScanner実装仕様](../specification.md)
-- 既存スキル: `~/.claude/skills/presentation-slide-generator/`
+- アプリ独自スキル: `~/.aiworkflow/skills/`
+- Claude CLI スキル（参照用）: `~/.claude/skills/presentation-slide-generator/`

@@ -58,7 +58,7 @@
 
 1. Claude Code本体と同様のアプローチ
 2. スキル追加時の手動設定が不要
-3. `~/.claude/skills/` の標準パスを使用
+3. `~/.aiworkflow/skills/`（アプリ独自）と `~/.claude/skills/`（読み取り専用）の2パスをスキャン
 4. SKILL.md frontmatterから必要な情報を取得可能
 
 ### 2.3 スキャンタイミング
@@ -67,11 +67,29 @@
 [アプリ起動時]
     │
     ▼ SkillScanner.scan()
+    ├─ ~/.aiworkflow/skills/ (読み書き)
+    └─ ~/.claude/skills/ (読み取り専用)
 [メモリにキャッシュ]
     │
     ▼ ファイル変更監視 (chokidar)
+    ├─ ~/.aiworkflow/skills/ のみ監視
 [変更検知時に再スキャン]
 ```
+
+### 2.4 スキル保存場所の分離
+
+**決定事項**: アプリ独自のスキル保存場所を設ける
+
+| 場所                    | 用途                             | アクセス                       |
+| ----------------------- | -------------------------------- | ------------------------------ |
+| `~/.claude/skills/`     | Claude Code CLI標準スキル        | 読み取り専用（インポート可能） |
+| `~/.aiworkflow/skills/` | AIWorkflowOrchestrator独自スキル | 読み書き可能                   |
+
+理由:
+
+1. Claude Code CLIのスキルと混在を防止
+2. アプリ独自のスキル管理を可能に
+3. 将来のWebアプリ化時のDB移行を容易に
 
 ---
 
@@ -93,8 +111,103 @@
 
 1. 既存の設定管理と統一
 2. インポート情報は単純なKey-Value
-3. アプリ設定と同じ場所に保存
+3. `~/.aiworkflow/config/` に保存
 4. 暗号化オプションあり（将来の認証情報保存用）
+
+---
+
+## 3.5 スキル関連データの保存場所
+
+### 3.5.1 ディレクトリ構造
+
+```
+~/.aiworkflow/
+├── skills/                       # アプリで作成したスキル
+│   └── {skill-name}/
+│       ├── SKILL.md
+│       ├── agents/
+│       ├── references/
+│       └── scripts/
+│
+├── conversations/                # スキルごとのチャット履歴
+│   └── {skill-name}/
+│       ├── {conversation-id}.json
+│       └── ...
+│
+├── artifacts/                    # 生成した成果物
+│   └── {skill-name}/
+│       └── {conversation-id}/
+│           └── output.html
+│
+└── config/                       # electron-store保存先
+    └── skill-imports.json
+```
+
+### 3.5.2 チャット履歴の構造
+
+```typescript
+interface SkillConversation {
+  id: string;
+  skillName: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: ConversationMessage[];
+  metadata: {
+    totalTokens: number;
+    toolsUsed: string[];
+    artifacts?: ArtifactReference[];
+  };
+}
+```
+
+### 3.5.3 将来のDB対応
+
+**現状（Phase 1）**: ファイルシステム + electron-store
+
+- スキルファイル: `~/.aiworkflow/skills/`
+- チャット履歴: `~/.aiworkflow/conversations/` (JSON)
+- 設定: `electron-store`
+
+**将来（Phase 2 - Web対応時）**: DB導入を検討
+
+- SQLite → PostgreSQL移行可能な設計
+- 認証追加
+- Object Storage（成果物保存用）
+
+> **注意**: DB導入は将来対応として保留。現状はファイルベースで実装する。
+
+### 3.5.4 ディレクトリの自動作成
+
+アプリ起動時に `~/.aiworkflow` およびサブディレクトリが存在しない場合は自動作成する。
+
+```typescript
+// アプリ起動時の初期化処理
+async function ensureAppDirectories(): Promise<void> {
+  const baseDir = path.join(os.homedir(), ".aiworkflow");
+
+  const directories = [
+    baseDir,
+    path.join(baseDir, "skills"),
+    path.join(baseDir, "conversations"),
+    path.join(baseDir, "artifacts"),
+    path.join(baseDir, "config"),
+  ];
+
+  for (const dir of directories) {
+    await fs.mkdir(dir, { recursive: true });
+  }
+}
+```
+
+**実行タイミング**:
+
+- Electronアプリの `app.whenReady()` 時
+- SkillScanner初回実行時（フォールバック）
+
+**エラーハンドリング**:
+
+- 作成失敗時はエラーログを出力し、ユーザーに通知
+- 権限不足の場合は手動作成を案内
 
 ---
 
@@ -250,7 +363,7 @@ function isDangerousCommand(command: string): boolean {
 const skillCache = new Map<string, SkillMetadata>();
 
 // ファイル変更時のみ再スキャン
-const watcher = chokidar.watch("~/.claude/skills/**/SKILL.md");
+const watcher = chokidar.watch("~/.aiworkflow/skills/**/SKILL.md");
 watcher.on("change", (path) => {
   invalidateCache(path);
 });
@@ -559,10 +672,10 @@ interface SkillLifecycleState {
 └────────┬─────────┘     └──────────────────────────────────────┘
          │
          ▼
-┌──────────────────┐
-│  完成したスキル   │
-│  ~/.claude/skills/│
-└────────┬─────────┘
+┌──────────────────────┐
+│  完成したスキル       │
+│  ~/.aiworkflow/skills/│
+└────────┬─────────────┘
          │
          ▼ (このスキルが次の要求を処理)
 ┌──────────────────┐

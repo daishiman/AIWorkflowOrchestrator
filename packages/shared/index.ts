@@ -3,6 +3,7 @@ export * from "./types";
 
 // Skill types (src/types/skillから明示的エクスポート)
 export type {
+  // 既存型
   Anchor,
   SkillEnvironmentType,
   EnvironmentConfig,
@@ -16,6 +17,26 @@ export type {
   ImportResult,
   RemoveResult,
   SkillRunResult,
+  // スキルメタデータ（§5.1）
+  SkillOtherFile,
+  SkillSubResource,
+  SkillMetadata,
+  ImportedSkill,
+  // 実行関連（§5.1）
+  SkillExecutionRequest,
+  SkillExecutionResponse,
+  SkillExecutionStatus,
+  // ストリーミングメッセージ（§5.1）
+  SkillStreamMessageType,
+  AssistantMessageContent,
+  ToolUseMessageContent,
+  ToolResultMessageContent,
+  StatusMessageContent,
+  ErrorMessageContent,
+  SkillStreamMessage,
+  // 権限確認（§5.1）
+  SkillPermissionRequest,
+  SkillPermissionResponse,
 } from "./src/types/skill";
 
 export { SKILL_CATEGORIES } from "./src/types/skill";

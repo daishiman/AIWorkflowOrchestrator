@@ -20,7 +20,7 @@ tags: [backend, skill, agent]
 
 ## 出力
 
-- `~/.claude/skills/skill-creator/agents/hearing-facilitator.md`
+- `~/.aiworkflow/skills/skill-creator/agents/hearing-facilitator.md`
 
 ## 実装詳細
 
@@ -82,7 +82,7 @@ skill_requirements:
 
 | 操作 | パス                                                        |
 | ---- | ----------------------------------------------------------- |
-| 作成 | `~/.claude/skills/skill-creator/agents/hearing-facilitator.md` |
+| 作成 | `~/.aiworkflow/skills/skill-creator/agents/hearing-facilitator.md` |
 
 ## 完了条件
 
