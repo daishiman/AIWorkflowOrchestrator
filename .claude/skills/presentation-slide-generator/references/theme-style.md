@@ -321,6 +321,91 @@ body, html {
 
 ---
 
+## 7.5. アジェンダインジケーター（デフォルト機能）
+
+左上に固定表示され、現在のセクションをハイライト。クリックで該当スライドにジャンプ。
+
+```css
+.agenda-indicator {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  z-index: 100;
+  background: var(--bg-dim);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  border: 1px solid var(--fuji-gray);
+}
+
+.agenda-indicator-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--fg-dim);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.agenda-indicator-item:hover {
+  background: var(--bg-card);
+  color: var(--fg);
+}
+
+.agenda-indicator-item.active {
+  color: var(--wave-blue);
+  font-weight: 600;
+  background: rgba(126, 156, 216, 0.15);
+}
+
+.agenda-indicator-item .agenda-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fuji-gray);
+}
+
+.agenda-indicator-item.active .agenda-dot {
+  background: var(--wave-blue);
+}
+```
+
+### HTML構造
+
+```html
+<div class="agenda-indicator" id="agendaIndicator">
+  <a class="agenda-indicator-item" data-section="intro" data-slide="0">
+    <span class="agenda-dot"></span>
+    <span class="agenda-label">イントロ</span>
+  </a>
+  <a class="agenda-indicator-item" data-section="problem" data-slide="3">
+    <span class="agenda-dot"></span>
+    <span class="agenda-label">課題</span>
+  </a>
+  <!-- セクションごとに追加 -->
+</div>
+```
+
+### JavaScript（セクション定義）
+
+```javascript
+const sections = [
+  { id: 'intro', start: 0, end: 2 },
+  { id: 'problem', start: 3, end: 4 },
+  { id: 'solution', start: 5, end: 7 },
+  { id: 'conclusion', start: 8, end: 11 }
+];
+```
+
+---
+
 ## 8. ナビゲーション
 
 ```css

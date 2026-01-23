@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "slide-definition.json",
+  "title": "Slide Definition",
+  "description": "個別スライドの定義スキーマ",
+  "type": "object",
+  "required": ["type", "title"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "スライドタイプ（23種）",
+      "enum": [
+        "slide-title", "slide-agenda", "slide-section", "slide-message",
+        "slide-list", "slide-compare", "slide-flow", "slide-timeline",
+        "slide-table", "slide-stats", "slide-chart", "slide-diagram",
+        "slide-quote", "slide-image", "slide-full-image",
+        "slide-pyramid", "slide-circle", "slide-grid", "slide-highlight",
+        "slide-icon-grid", "slide-process", "slide-quote-extended", "slide-hero"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "description": "スライドタイトル"
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "サブタイトル（任意）"
+    },
+    "content": {
+      "type": "object",
+      "description": "スライドタイプ固有コンテンツ"
+    },
+    "notes": {
+      "type": "string",
+      "description": "発表者ノート（任意）"
+    },
+    "animation": {
+      "type": "object",
+      "description": "カスタムアニメーション設定（任意）",
+      "properties": {
+        "enter": { "type": "string" },
+        "leave": { "type": "string" },
+        "duration": { "type": "number" }
+      }
+    }
+  }
+}

@@ -3,42 +3,59 @@
 ## 概要
 
 プレゼンテーションスライドを配布資料用PDFとして出力するための印刷レイアウト仕様。
-シンプル方式を採用し、フルスクリーンのスライドをそのまま1ページ1スライドで印刷する。
+**A4横向き印刷を最優先**とし、すべての要素が確実にA4内に収まることを保証する。
+フォントサイズはpt単位、寸法はmm単位で固定し、100%スケールで正確に印刷される。
 
 ---
 
-## レイアウト構成
+## 16:9 on A4 設計原則（最重要）
+
+### 計算根拠
+
+```
+A4横向き: 297mm × 210mm
+ページマージン: 8mm（上下左右）
+印刷可能領域: 281mm × 194mm
+
+16:9比率でwidth=281mmの場合:
+height = 281 × (9/16) = 158mm
+
+縦方向余白: (194 - 158) / 2 = 18mm（上下均等配置）
+```
 
 ### ページレイアウト
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        A4 横向き                            │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│                   スライドコンテンツ                         │
-│                       (100%)                                │
-│                                                             │
-│   ・フルページ表示（メモ欄なし）                              │
-│   ・明るい背景 (#FAFAFA)                                    │
-│   ・テキストは黒 (#1F1F28)                                  │
-│   ・フォントサイズ縮小で視認性確保                            │
-│   ・レイアウト崩れなし                                       │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│                   スライド番号 / 全体枚数                     │
-└─────────────────────────────────────────────────────────────┘
+┌───────────────────── A4横 297mm ─────────────────────┐
+│ 8mm                                             8mm │
+│ ┌─────────────── 印刷領域 281mm ───────────────┐    │
+│ │                    18mm                      │    │
+│ │  ┌─────────── 16:9スライド ───────────┐      │    │
+│ │  │                                    │      │    │
+│ │  │         281mm × 158mm              │      │210mm
+│ │  │                                    │      │    │
+│ │  │    ・アスペクト比 16:9 厳守         │      │    │
+│ │  │    ・100%スケールで正確に印刷       │      │    │
+│ │  │                                    │      │    │
+│ │  └────────────────────────────────────┘      │    │
+│ │                    18mm                      │    │
+│ └──────────────────────────────────────────────┘    │
+│ 8mm                                             8mm │
+└─────────────────────────────────────────────────────┘
 ```
 
-### 寸法
+### 寸法（デフォルト値）
 
-| 項目 | 値 |
-|------|-----|
-| ページサイズ | A4横 (297mm × 210mm) |
-| マージン | 8mm (上下左右) |
-| スライド領域 | 100%（フルページ） |
-| 最小高さ | 170mm |
-| 区切り線 | 1px solid #DDD |
+| 項目 | 値 | 備考 |
+|------|-----|------|
+| ページサイズ | A4横 (297mm × 210mm) | @page size: A4 landscape |
+| ページマージン | 8mm (上下左右) | @page margin: 8mm |
+| 印刷可能領域 | 281mm × 194mm | 297-16, 210-16 |
+| **スライド幅** | **281mm** | 印刷領域フル幅 |
+| **スライド高さ** | **158mm** | 281 × 9/16 |
+| **アスペクト比** | **16:9** | 厳守 |
+| 縦余白（上下各） | 18mm | (194-158)/2 で中央配置 |
+| 区切り線 | 1px solid #DDD | スライド境界 |
 
 ### シンプル方式（推奨）
 
@@ -69,9 +86,14 @@
 
 ### 基本設定
 
+**設計原則**:
+- フォントサイズは**pt単位**（画面解像度に依存しない固定値）
+- 寸法は**mm単位**（印刷時の正確な物理サイズ）
+- 100%スケールでの正確な印刷を保証
+
 ```css
 @media print {
-  /* ページ設定 */
+  /* ページ設定 - A4横向き固定 */
   @page {
     size: A4 landscape;
     margin: 8mm;
@@ -81,7 +103,8 @@
   .progress-bar,
   .slider-navigation,
   .slider-controls,
-  .slide-number {
+  .slide-number,
+  .agenda-indicator {
     display: none !important;
   }
 
@@ -90,6 +113,7 @@
     background: white !important;
     overflow: visible !important;
     height: auto !important;
+    font-size: 12pt !important;  /* pt単位で固定 */
   }
 
   .slider {
@@ -104,50 +128,52 @@
 }
 ```
 
-### スライドコンテナ（Flexbox/Grid維持方式）
+### スライドコンテナ（16:9固定 + mm単位）
 
-**重要**: `.slider__item` は `display: flex` を使用して中央揃えを維持する。
-各コンテナは元の `display` モード（flex/grid）を維持し、全子要素に `visibility: visible` を設定する。
+**重要**: `.slider__item` は **16:9アスペクト比を固定**し、**mm単位**で寸法を指定。
+A4横向き印刷で100%スケール出力に対応。
 
 ```css
 @media print {
-  /* スライドアイテム（flexで中央揃え維持） */
+  /* 16:9スライドアイテム - A4横に最適化（mm単位） */
   .slider__item {
-    display: flex !important;           /* 重要: blockではなくflex */
+    display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    min-width: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 170mm !important;
-    page-break-after: always !important;
-    page-break-inside: avoid !important;
-    padding: 15px !important;
-    margin: 0 !important;
-    background: #FAFAFA !important;
+    /* 16:9固定サイズ（A4横の印刷領域に最適化） */
+    width: 281mm !important;
+    height: 158mm !important;
+    aspect-ratio: 16 / 9 !important;
+    /* 中央配置（縦余白18mm） */
+    margin: 18mm auto !important;
+    padding: 8mm !important;  /* mm単位 */
+    background: white !important;
     border: 1px solid #DDD !important;
-    border-radius: 8px !important;
+    border-radius: 2mm !important;  /* mm単位 */
     box-sizing: border-box !important;
     position: relative !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    overflow: hidden !important;
   }
 
   .slider__item:last-child {
     page-break-after: auto !important;
   }
 
-  /* スライドコンテンツ - 全表示（display維持） */
+  /* スライドコンテンツ - 最大サイズを明示（mm単位） */
   .slider__content {
     visibility: visible !important;
     opacity: 1 !important;
     transform: none !important;
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 265mm !important;   /* コンテンツ領域幅 */
     height: auto !important;
-    padding: 20px !important;
+    max-height: 142mm !important;  /* コンテンツ領域高さ */
+    padding: 0 !important;
     box-sizing: border-box !important;
-    overflow: visible !important;
-    /* display: 元のスタイルを維持（下記で個別指定） */
+    overflow: hidden !important;   /* はみ出し防止 */
   }
 
   /* 各スライドタイプのdisplay維持 */
@@ -281,39 +307,148 @@
 
 **注**: `{{総スライド数}}` はHTML生成時に実際のスライド数に置換する。
 
-### フォントサイズ縮小（印刷用）
+### フォントサイズ（pt単位固定）
+
+**重要**: 印刷時は**pt単位**を使用し、画面解像度に依存しない固定サイズを指定。
 
 ```css
 @media print {
-  /* タイトル系 */
-  .main-title { font-size: 2rem !important; }
-  .sub-title { font-size: 1rem !important; }
-  .section-title { font-size: 1.8rem !important; }
+  /* タイトル系（pt単位） */
+  .main-title { font-size: 28pt !important; }
+  .sub-title { font-size: 14pt !important; }
+  .section-title { font-size: 24pt !important; }
 
-  /* 見出し系 */
+  /* 見出し系（pt単位） */
   .list-title, .flow-title, .compare-title, .table-title,
   .agenda-title, .stats-title, .grid-title, .pyramid-title,
-  .highlight-title, .process-title { font-size: 1.3rem !important; }
+  .highlight-title, .process-title { font-size: 18pt !important; }
 
-  /* メッセージ系 */
-  .main-message { font-size: 1.5rem !important; }
-  .sub-message { font-size: 0.9rem !important; }
+  /* メッセージ系（pt単位） */
+  .main-message { font-size: 20pt !important; }
+  .sub-message { font-size: 12pt !important; }
 
-  /* 統計値 */
-  .stat-value { font-size: 2rem !important; }
+  /* 統計値（pt単位） */
+  .stat-value { font-size: 28pt !important; }
 
-  /* アイコンサイズ縮小 */
+  /* 本文・説明（pt単位） */
+  .list-item span,
+  .flow-step span,
+  .compare-item p,
+  .agenda-text { font-size: 11pt !important; }
+
+  /* アイコンサイズ（mm単位） */
   .icon-wrapper {
-    width: 50px !important;
-    height: 50px !important;
+    width: 12mm !important;
+    height: 12mm !important;
   }
 
   .icon-wrapper i {
-    font-size: 1.5rem !important;
+    font-size: 16pt !important;
   }
 
   .title-icon {
-    font-size: 2.5rem !important;
+    font-size: 32pt !important;
+  }
+}
+```
+
+### スライドタイプ別サイズ指定（mm単位）
+
+各スライドタイプの要素サイズをmm単位で固定し、確実にA4内に収まるよう設計。
+
+```css
+@media print {
+  /* アジェンダスライド */
+  .slide-agenda .agenda-container {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 4mm !important;
+    max-width: 250mm !important;
+  }
+
+  .slide-agenda .agenda-item {
+    padding: 4mm !important;
+    min-height: 25mm !important;
+    max-height: 35mm !important;
+  }
+
+  /* 比較スライド */
+  .slide-compare .compare-container {
+    display: flex !important;
+    gap: 6mm !important;
+    max-width: 260mm !important;
+  }
+
+  .slide-compare .compare-item {
+    flex: 1 !important;
+    max-width: 120mm !important;
+    padding: 5mm !important;
+  }
+
+  /* リストスライド（横3列） */
+  .slide-list .list-container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 4mm !important;
+    max-width: 260mm !important;
+  }
+
+  .slide-list .list-item {
+    flex: 1 !important;
+    min-width: 70mm !important;
+    max-width: 85mm !important;
+    padding: 4mm !important;
+  }
+
+  /* フロースライド（横4ステップ） */
+  .slide-flow .flow-container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 2mm !important;
+    max-width: 265mm !important;
+  }
+
+  .slide-flow .flow-step {
+    min-width: 50mm !important;
+    max-width: 58mm !important;
+    padding: 4mm !important;
+  }
+
+  .slide-flow .flow-arrow {
+    font-size: 14pt !important;
+    min-width: 6mm !important;
+  }
+
+  /* サイクル図（絶対配置） */
+  .slide-diagram .cycle-diagram {
+    position: relative !important;
+    width: 90mm !important;
+    height: 90mm !important;
+    margin: 0 auto !important;
+  }
+
+  .slide-diagram .cycle-node {
+    position: absolute !important;
+    width: 22mm !important;
+    height: 22mm !important;
+    border-radius: 50% !important;
+    padding: 2mm !important;
+  }
+
+  /* サイクルノード位置（絶対配置） */
+  .slide-diagram .cycle-node:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+  .slide-diagram .cycle-node:nth-child(2) { top: 25%; right: 0; }
+  .slide-diagram .cycle-node:nth-child(3) { bottom: 0; right: 15%; }
+  .slide-diagram .cycle-node:nth-child(4) { bottom: 0; left: 15%; }
+  .slide-diagram .cycle-node:nth-child(5) { top: 25%; left: 0; }
+
+  /* ヒーロースライド */
+  .slide-hero .slider__content {
+    max-width: 240mm !important;
+    text-align: center !important;
   }
 }
 ```
@@ -530,6 +665,8 @@
 
 | 問題 | 原因 | 解決策 |
 |------|------|--------|
+| **表紙・メッセージが消える** | **GSAPがvisibility:hiddenを設定** | **各スライドタイプ別に`visibility: visible !important`を明示設定** |
+| **特定スライドのみ消える** | **スライドタイプ別CSSルール欠落** | **全23種のスライドタイプに対しdisplay/visibilityを設定** |
 | コンテンツが消える | `visibility: hidden` | 全子要素に `visibility: visible !important` を追加 |
 | コンテンツが消える | `overflow: hidden` | `overflow: visible` に変更 |
 | コンテンツが消える | `transform: scale()` | `transform: none` に変更 |
@@ -541,6 +678,30 @@
 | 文字が切れる | フォントサイズ | CSSの`font-size`を調整 |
 | 改ページ位置がずれる | コンテンツ量 | `page-break-inside: avoid`を確認 |
 | アニメーション残留 | GSAPスタイル | `transform: none !important` を追加 |
+
+### 重要：GSAPアニメーションとの競合
+
+GSAPは画面表示用に `.slider__content { visibility: hidden }` をデフォルト設定する。
+印刷時にこれが残るため、**各スライドタイプ別に明示的にvisibilityを上書きする必要がある**。
+
+```css
+/* 必須: 各スライドタイプ別の可視化 */
+.slide-title .slider__content,
+.slide-message .slider__content,
+.slide-section .slider__content,
+.slide-hero .slider__content,
+.slide-quote .slider__content {
+  visibility: visible !important;
+  display: flex !important;
+}
+
+/* 必須: 全子要素の可視化 */
+.slider__item *,
+.slider__content * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+```
 
 ---
 
@@ -579,6 +740,8 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **3.1.0** | **2026-01-23** | **GSAP競合対策**: 各スライドタイプ別に`visibility: visible`を明示設定、全子要素の可視化ルール追加、トラブルシューティング強化 |
+| 3.0.0 | 2026-01-23 | A4ファースト設計に全面改訂: pt単位フォント、mm単位寸法、スライドタイプ別サイズ指定、サイクル図絶対配置対応 |
 | 2.1.0 | 2026-01-04 | Flexbox/Grid維持方式に変更：`.slider__item`をflex表示に、コンテナごとの明示的display設定、全子要素のvisibility保証追加 |
 | 2.0.0 | 2026-01-04 | シンプル方式に全面変更（transform: scale廃止、overflow: visible採用）、メモ欄削除 |
 | 1.1.0 | 2026-01-03 | 比率維持スケーリング方式に変更（65%→70%/35%→30%）、レイアウト崩れ防止 |

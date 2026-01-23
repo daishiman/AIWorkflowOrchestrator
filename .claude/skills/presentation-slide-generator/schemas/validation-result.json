@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "validation-result.json",
+  "title": "Validation Result",
+  "description": "スライド検証結果のスキーマ",
+  "type": "object",
+  "required": ["valid", "timestamp"],
+  "properties": {
+    "valid": {
+      "type": "boolean",
+      "description": "検証成功フラグ"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "検証実行日時"
+    },
+    "file": {
+      "type": "string",
+      "description": "検証対象ファイル"
+    },
+    "checks": {
+      "type": "object",
+      "properties": {
+        "aspectRatio": {
+          "type": "object",
+          "properties": {
+            "passed": { "type": "boolean" },
+            "expected": { "type": "string", "default": "16:9" },
+            "actual": { "type": "string" }
+          }
+        },
+        "slideCount": {
+          "type": "object",
+          "properties": {
+            "passed": { "type": "boolean" },
+            "count": { "type": "integer" }
+          }
+        },
+        "themeConsistency": {
+          "type": "object",
+          "properties": {
+            "passed": { "type": "boolean" },
+            "theme": { "type": "string", "enum": ["light", "dark"] }
+          }
+        },
+        "agendaIndicator": {
+          "type": "object",
+          "properties": {
+            "passed": { "type": "boolean" },
+            "enabled": { "type": "boolean" }
+          }
+        },
+        "printLayout": {
+          "type": "object",
+          "properties": {
+            "passed": { "type": "boolean" },
+            "format": { "type": "string" }
+          }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "slide": { "type": "integer" }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "slide": { "type": "integer" }
+        }
+      }
+    }
+  }
+}

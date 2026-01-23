@@ -241,6 +241,58 @@
     }
 
     /* =================================================================
+       アジェンダインジケーター（左上固定）
+       ================================================================= */
+    .agenda-indicator {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      z-index: 100;
+      background: var(--bg-dim);
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+      border: 1px solid var(--fuji-gray);
+    }
+    .agenda-indicator-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--fg-dim);
+      font-size: 0.85rem;
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .agenda-indicator-item:hover {
+      background: var(--bg-card);
+      color: var(--fg);
+    }
+    .agenda-indicator-item.active {
+      color: var(--wave-blue);
+      font-weight: 600;
+      background: rgba(126, 156, 216, 0.15);
+    }
+    .agenda-indicator-item .agenda-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--fuji-gray);
+      flex-shrink: 0;
+    }
+    .agenda-indicator-item.active .agenda-dot {
+      background: var(--wave-blue);
+    }
+    .agenda-indicator-item .agenda-label {
+      white-space: nowrap;
+    }
+
+    /* =================================================================
        コントロール
        ================================================================= */
     .slider-controls {
@@ -1211,8 +1263,15 @@
        印刷用スタイル（PDF出力）
        全ページ印刷対応 - Ctrl+P / Cmd+P で全スライドをPDF出力
        ================================================================= */
+    /* =================================================================
+       印刷用スタイル - 16:9 on A4横 (100%スケール対応)
+
+       計算根拠:
+       - A4横 印刷可能領域: 281mm × 194mm (8mm余白)
+       - 16:9スライド: 281mm × 158mm
+       - 縦余白: 18mm（上下均等配置）
+       ================================================================= */
     @media print {
-      /* ページ設定 */
       @page {
         size: A4 landscape;
         margin: 8mm;
@@ -1222,68 +1281,66 @@
       .progress-bar,
       .slider-navigation,
       .slider-controls,
-      .slide-number {
+      .slide-number,
+      .agenda-indicator {
         display: none !important;
       }
 
-      /* ボディ・HTML設定 */
       body, html {
         background: white !important;
         overflow: visible !important;
         height: auto !important;
       }
 
-      /* スライダー設定 */
       .slider {
         width: 100% !important;
         height: auto !important;
         overflow: visible !important;
         display: block !important;
+        background: white !important;
       }
 
-      /* スライドエリア - 重要: overflow: visible で全スライド表示 */
       .slide-area {
         width: 100% !important;
         height: auto !important;
         overflow: visible !important;
         box-shadow: none !important;
-        aspect-ratio: auto !important;
       }
 
-      /* スライドコンテナ - 重要: flexからblockに変更して縦並びに */
       .slider__container {
         display: block !important;
         transform: none !important;
         width: 100% !important;
       }
 
-      /* スライドアイテム（各ページ） */
+      /* 16:9スライドアイテム - A4横に最適化 */
       .slider__item {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        min-width: auto !important;
-        width: 100% !important;
-        height: auto !important;
-        min-height: 170mm !important;
-        page-break-after: always !important;
-        page-break-inside: avoid !important;
-        padding: 15px !important;
-        margin: 0 !important;
-        background: #FAFAFA !important;
+        /* 16:9固定サイズ */
+        width: 281mm !important;
+        height: 158mm !important;
+        aspect-ratio: 16 / 9 !important;
+        /* 中央配置 */
+        margin: 18mm auto !important;
+        padding: 10mm !important;
+        background: white !important;
         border: 1px solid #DDD !important;
-        border-radius: 8px !important;
+        border-radius: 4px !important;
         box-sizing: border-box !important;
         position: relative !important;
-        aspect-ratio: auto !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        overflow: hidden !important;
       }
 
       .slider__item:last-child {
         page-break-after: auto !important;
       }
 
-      /* スライドコンテンツ */
+      /* スライドコンテンツ - 16:9内に収める */
       .slider__content {
         visibility: visible !important;
         opacity: 1 !important;
@@ -1291,6 +1348,7 @@
         width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
+        max-height: 100% !important;
         padding: 20px !important;
         box-sizing: border-box !important;
         overflow: visible !important;
@@ -1500,6 +1558,12 @@
   <!-- 進捗バー -->
   <div class="progress-bar">
     <div class="progress" id="progress"></div>
+  </div>
+
+  <!-- アジェンダインジケーター（左上固定・クリックでジャンプ）
+       セクション定義は{{AGENDA_SECTIONS}}プレースホルダーで設定 -->
+  <div class="agenda-indicator" id="agendaIndicator">
+    {{AGENDA_INDICATOR_ITEMS}}
   </div>
 
   <!-- スライダー（16:9アスペクト比を厳守） -->
@@ -2311,12 +2375,35 @@
         const progress = ((this.index + 1) / this.items.length) * 100;
         document.getElementById('progress').style.width = progress + '%';
         document.getElementById('slideNumber').textContent = (this.index + 1) + ' / ' + this.items.length;
+        this.updateAgendaIndicator();
+      }
+
+      // アジェンダインジケーター更新
+      // セクション定義: {{AGENDA_SECTIONS}} で設定
+      updateAgendaIndicator() {
+        const sections = {{AGENDA_SECTIONS}};
+        const currentSection = sections.find(s => this.index >= s.start && this.index <= s.end);
+        document.querySelectorAll('.agenda-indicator-item').forEach(item => {
+          item.classList.toggle('active', item.dataset.section === currentSection?.id);
+        });
+      }
+
+      // アジェンダインジケータークリックイベント
+      bindAgendaEvents() {
+        document.querySelectorAll('.agenda-indicator-item').forEach(item => {
+          item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const slideIndex = parseInt(item.dataset.slide, 10);
+            this.move(slideIndex);
+          });
+        });
       }
     }
 
     // 初期化
     document.addEventListener('DOMContentLoaded', () => {
-      new TweenSlider('#slider');
+      const slider = new TweenSlider('#slider');
+      slider.bindAgendaEvents();
     });
   </script>
 </body>

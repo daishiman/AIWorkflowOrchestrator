@@ -277,3 +277,92 @@ STEP1 ──▶ STEP2 ──▶ STEP3
 - [ ] ページ番号があるか
 - [ ] パンくずリストがあるか（必要に応じて）
 - [ ] セクション目次があるか
+
+---
+
+## 10. カードレイアウト最適化
+
+### タイトル改行防止
+
+カード内のタイトル（h4）は**一行で表示**されるべき。改行が入ると視認性が低下する。
+
+```css
+/* タイトルは改行しない */
+.list-item h4,
+.flow-step h4,
+.grid-card h3 {
+  white-space: nowrap;
+}
+
+/* 説明文は改行を許可 */
+.list-item span,
+.flow-step span {
+  white-space: normal;
+  line-height: 1.4;
+}
+```
+
+### カード幅とフォントサイズのバランス
+
+| 項目 | 推奨値 | 注意点 |
+|------|--------|--------|
+| カード最小幅 | 280px (list), 180px (flow) | タイトルが一行で収まる幅 |
+| カード最大幅 | 380px (list), 220px (flow) | 横並び時のバランス |
+| タイトルフォント | 1.2-1.4rem × font-scale | 大きすぎると改行発生 |
+| 説明文フォント | 0.9-1.1rem × font-scale | 可読性を確保 |
+| カード内gap | 0.5-0.8rem | 要素間の適切な間隔 |
+| カードpadding | 1.2-1.8rem | 余白とのバランス |
+
+### 画面表示用CSS例
+
+```css
+/* リストスライド - カード幅・フォントサイズ最適化 */
+.slide-list .list-container {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.slide-list .list-item {
+  flex: 1;
+  min-width: 280px;
+  max-width: 380px;
+  padding: 1.8rem 1.5rem;
+  gap: 0.8rem;
+}
+
+.slide-list .list-item h4 {
+  font-size: calc(1.4rem * var(--font-scale));
+  white-space: nowrap;  /* 改行防止 */
+}
+
+.slide-list .list-item span {
+  font-size: calc(1.1rem * var(--font-scale));
+  line-height: 1.5;
+}
+```
+
+### 印刷用CSS例
+
+```css
+@media print {
+  .slide-list .list-item h4 {
+    font-size: 11pt !important;
+    white-space: nowrap !important;
+  }
+
+  .slide-list .list-item span {
+    font-size: 9pt !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;
+  }
+}
+```
+
+### チェックリスト
+
+- [ ] カードのタイトルが一行で収まっているか
+- [ ] 3カラム/4カラムで横並びになっているか
+- [ ] フォントサイズが大きすぎないか
+- [ ] カード間のgapが適切か
+- [ ] 印刷時も同様に最適化されているか
