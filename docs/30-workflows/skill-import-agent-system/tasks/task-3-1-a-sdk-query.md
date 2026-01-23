@@ -212,4 +212,6 @@ describe("SkillExecutor - 基本機能", () => {
 
 ## 参考資料
 
-- SDK Reference: `~/.claude/skills/claude-agent-sdk/references/query-api.md`
+- SDK Reference（以下の両パスをスキャン）:
+  - `~/.aiworkflow/skills/claude-agent-sdk/references/query-api.md` （アプリ独自、読み書き）
+  - `~/.claude/skills/claude-agent-sdk/references/query-api.md` （Claude CLI、読み取り専用）

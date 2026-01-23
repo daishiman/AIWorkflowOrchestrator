@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-22
+> 自動生成: 2026-01-23
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -76,7 +76,7 @@ node scripts/list-specs.mjs --topics
 
 ## アーキテクチャ
 
-**関連キーワード**: モノレポ, レイヤー, Clean Architecture, RAG, Knowledge Graph, React Context DI
+**関連キーワード**: モノレポ, レイヤー, Clean Architecture, RAG, Knowledge Graph
 
 ### references/architecture-auth-security.md
 
@@ -93,12 +93,12 @@ node scripts/list-specs.mjs --topics
 | レイヤー構成 | L17 |
 | 依存関係ルール | L43 |
 | ディレクトリ構成 | L56 |
-| Domain Layer | L106 |
-| Application Layer | L185 |
-| Infrastructure Layer | L205 |
-| エラーハンドリング | L220 |
-| ビジネスルール | L246 |
-| 品質指標 | L257 |
+| UI Layer | L114 |
+| Domain Layer | L204 |
+| Application Layer | L285 |
+| Infrastructure Layer | L305 |
+| エラーハンドリング | L361 |
+| ビジネスルール | L387 |
 
 ### references/architecture-database.md
 
@@ -163,23 +163,6 @@ node scripts/list-specs.mjs --topics
 | VectorSearchStrategy（セマンティック検索） | L658 |
 | GraphRAGクエリサービス | L734 |
 | HybridRAG統合パイプライン | L806 |
-
-### references/architecture-chat-history.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L10 |
-| レイヤー構成 | L17 |
-| 依存関係ルール | L43 |
-| ディレクトリ構成 | L56 |
-| UI Layer（React Context DI） | L106 |
-| Domain Layer | L151 |
-| Application Layer | L230 |
-| Infrastructure Layer | L250 |
-| エラーハンドリング | L265 |
-| ビジネスルール | L292 |
-| 品質指標 | L302 |
-| 設計原則 | L316 |
-| 関連ドキュメント | L337 |
 
 ---
 
@@ -393,6 +376,20 @@ node scripts/list-specs.mjs --topics
 | 設計原則 | L168 |
 | 関連ドキュメント | L394 |
 
+### references/interfaces-system-prompt.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| Repository インターフェース | L17 |
+| エンティティ型定義 | L122 |
+| IPC チャネル仕様 | L169 |
+| エラーコード体系 | L193 |
+| バリデーションルール | L210 |
+| セキュリティ仕様 | L232 |
+| データ永続化 | L251 |
+| マイグレーション仕様 | L268 |
+| 完了タスク | L290 |
+
 ### references/interfaces-workflow.md
 
 | セクション | 行 |
@@ -526,14 +523,14 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | テーブル一覧 | L13 |
-| ワークフロー関連テーブル | L38 |
-| ユーザー関連テーブル | L77 |
-| チャット関連テーブル | L111 |
-| RAG関連テーブル | L147 |
-| Knowledge Graph関連テーブル | L189 |
-| 変換処理関連テーブル | L323 |
-| インデックス設計 | L382 |
-| 関連ドキュメント | L441 |
+| ワークフロー関連テーブル | L39 |
+| ユーザー関連テーブル | L78 |
+| システムプロンプト関連テーブル | L112 |
+| チャット関連テーブル | L149 |
+| RAG関連テーブル | L185 |
+| Knowledge Graph関連テーブル | L227 |
+| 変換処理関連テーブル | L361 |
+| インデックス設計 | L420 |
 
 ---
 
@@ -1078,9 +1075,9 @@ node scripts/list-specs.mjs --topics
 | 出力テンプレート | L82 |
 | 実行時のコマンド・エージェント・スキル | L107 |
 | 完了タスク | L131 |
-| 残課題（未タスク） | L167 |
-| 関連ドキュメント | L184 |
-| 変更履歴 | L194 |
+| 残課題（未タスク） | L201 |
+| 関連ドキュメント | L220 |
+| 変更履歴 | L230 |
 
 ---
 

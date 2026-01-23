@@ -133,8 +133,11 @@ Phase 10: ライフサイクル管理
 
 **完了条件**:
 
+- [ ] `~/.aiworkflow/skills/`（読み書き）と `~/.claude/skills/`（読み取り専用）の両方をスキャン
+- [ ] `~/.aiworkflow/` ディレクトリが存在しない場合は自動作成
 - [ ] 6つのサブディレクトリ（agents, references, scripts, assets, schemas, indexes）をスキャン
 - [ ] SKILL.md からメタデータを抽出
+- [ ] スキルのソース（aiworkflow/claude）を識別
 - [ ] 単体テスト作成・通過
 
 ### タスク 2B: SkillImportStore 実装
@@ -487,7 +490,9 @@ interface SkillAPI {
 
 ### タスク 9B: skill-creator メタスキル実装
 
-**ファイル**: `~/.claude/skills/skill-creator/`
+**ファイル**: `~/.aiworkflow/skills/skill-creator/`
+
+> 注: Claude Code CLIのskill-creatorとは別に、AIWorkflowOrchestrator独自のskill-creatorを作成する
 
 **実装内容**:
 
@@ -718,6 +723,7 @@ interface SkillStoreSchema {
 
 interface ImportedSkillData {
   name: string;
+  source: "aiworkflow" | "claude"; // スキルのソースを識別
   importedAt: string; // ISO文字列
   status: "active" | "disabled";
   lastUsedAt?: string; // ISO文字列
@@ -909,7 +915,9 @@ const ALLOWED_TOOLS_WHITELIST = [
 
 ## Appendix D: 利用可能スキル一覧
 
-現在 `~/.claude/skills/` 配下に存在するスキル（6種類）:
+### D.1 Claude Code CLI スキル（読み取り専用インポート）
+
+`~/.claude/skills/` 配下に存在するスキル:
 
 | スキル名                     | 説明                 | Allowed Tools           |
 | ---------------------------- | -------------------- | ----------------------- |
@@ -919,6 +927,14 @@ const ALLOWED_TOOLS_WHITELIST = [
 | presentation-slide-generator | HTMLスライド生成     | Read, Write, Edit, Bash |
 | skill-creator                | スキル作成支援       | -                       |
 | task-specification-creator   | タスク仕様書作成     | -                       |
+
+### D.2 AIWorkflowOrchestrator スキル
+
+`~/.aiworkflow/skills/` 配下に保存されるスキル（アプリで作成・管理）:
+
+| スキル名                   | 説明 | 備考                     |
+| -------------------------- | ---- | ------------------------ |
+| (ユーザーが作成したスキル) | -    | アプリ内で作成・編集可能 |
 
 ---
 
