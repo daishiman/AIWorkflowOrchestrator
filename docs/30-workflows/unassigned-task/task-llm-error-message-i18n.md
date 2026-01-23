@@ -1,0 +1,261 @@
+# LLMエラーメッセージの国際化 - タスク指示書
+
+## メタ情報
+
+```yaml
+issue_number: 464
+```
+
+## メタ情報
+
+| 項目         | 内容                                      |
+| ------------ | ----------------------------------------- |
+| タスクID     | UT-LLM-I18N-001                           |
+| タスク名     | LLMエラーメッセージの国際化               |
+| 分類         | 改善                                      |
+| 対象機能     | LLM API統合 / エラーハンドリング          |
+| 優先度       | 低                                        |
+| 見積もり規模 | 小規模                                    |
+| ステータス   | 未実施                                    |
+| 発見元       | Phase 12（システムプロンプトLLM API統合） |
+| 発見日       | 2026-01-23                                |
+
+---
+
+## 1. なぜこのタスクが必要か（Why）
+
+### 1.1 背景
+
+現在のLLMエラーメッセージは`aiHandlers.ts`の`convertLLMErrorToMessage`関数に日本語でハードコードされている。システム仕様書（interfaces-llm.md）にはエラーコードと日本語メッセージのマッピングが定義されているが、多言語対応のための国際化機構は未実装。
+
+### 1.2 問題点・課題
+
+1. **言語固定**: 日本語以外のユーザーが理解しにくい
+2. **保守性**: メッセージ変更にコード修正が必要
+3. **一貫性**: エラーメッセージの管理が分散
+
+### 1.3 放置した場合の影響
+
+- 海外ユーザーへの展開が困難
+- エラーメッセージの一貫した管理ができない
+- A/Bテストや文言改善の柔軟性が低下
+
+---
+
+## 2. 何を達成するか（What）
+
+### 2.1 目的
+
+LLMエラーメッセージを国際化（i18n）対応し、ユーザーの言語設定に応じたメッセージを表示する。
+
+### 2.2 最終ゴール
+
+1. エラーメッセージがi18nリソースファイルから読み込まれる
+2. 日本語・英語の2言語がサポートされる
+3. 言語切り替えでエラーメッセージが変更される
+4. 新しいエラーメッセージの追加が容易
+
+### 2.3 スコープ
+
+#### 含むもの
+
+- LLMエラーメッセージのi18n化
+- 日本語・英語の翻訳リソース
+- `convertLLMErrorToMessage`のi18n対応
+
+#### 含まないもの
+
+- UI全体の国際化（別タスク）
+- 3言語以上のサポート
+- 動的な言語切り替えUI
+
+### 2.4 成果物
+
+| 成果物             | 説明                                                       |
+| ------------------ | ---------------------------------------------------------- |
+| 翻訳リソース       | `locales/ja/llm-errors.json`, `locales/en/llm-errors.json` |
+| i18nユーティリティ | エラーメッセージ取得関数                                   |
+| 更新済みハンドラー | `convertLLMErrorToMessage`（更新）                         |
+| テストコード       | ユニット・統合テスト                                       |
+| 実装ガイド         | Phase 12成果物                                             |
+
+---
+
+## 3. どのように実行するか（How）
+
+### 3.1 前提条件
+
+- システムプロンプトLLM API統合が完了している
+- `convertLLMErrorToMessage`関数が存在する
+
+### 3.2 依存タスク
+
+| タスクID                    | タスク名                      | ステータス |
+| --------------------------- | ----------------------------- | ---------- |
+| TASK-CHAT-SYSPROMPT-LLM-001 | システムプロンプトLLM API統合 | 完了       |
+
+### 3.3 必要な知識
+
+1. **i18n ライブラリ**: i18next または類似のライブラリ
+2. **TypeScript**: 型安全なi18n実装
+3. **Electron**: メイン・レンダラープロセスでのi18n
+
+### 3.4 推奨アプローチ
+
+1. **i18next の採用**: Reactエコシステムで広く使用
+2. **リソースファイル形式**: JSON（ネストなしのフラット構造）
+3. **キー命名規則**: `llm.error.{ERROR_CODE}`
+
+---
+
+## 4. 実行手順
+
+### Phase構成
+
+| Phase | 名称         | 目的                       |
+| ----- | ------------ | -------------------------- |
+| 1     | 要件定義     | i18n方式の決定             |
+| 2     | 設計         | リソース構造・API設計      |
+| 3     | 環境構築     | i18nライブラリ導入         |
+| 4-7   | TDD実装      | テスト駆動開発             |
+| 8-11  | 品質保証     | レビュー・リファクタリング |
+| 12    | ドキュメント | 実装ガイド作成             |
+| 13    | クロージング | 完了確認                   |
+
+### Phase 4-5: TDD実装
+
+#### 目的
+
+i18nエラーメッセージ機能の実装
+
+#### 手順
+
+1. 翻訳リソースファイルの作成
+
+   ```json
+   // locales/ja/llm-errors.json
+   {
+     "llm.error.API_KEY_MISSING": "APIキーが設定されていません。設定画面でAPIキーを登録してください。",
+     "llm.error.API_KEY_INVALID": "APIキーが無効です。正しいAPIキーを設定してください。",
+     "llm.error.NETWORK_ERROR": "ネットワークエラーが発生しました。接続を確認してください。",
+     "llm.error.TIMEOUT": "リクエストがタイムアウトしました。再度お試しください。",
+     "llm.error.RATE_LIMIT": "レート制限に達しました。しばらく待ってから再度お試しください。",
+     "llm.error.CONTEXT_LENGTH_EXCEEDED": "メッセージが長すぎます。短くして再度お試しください。",
+     "llm.error.CONTENT_FILTER": "コンテンツフィルターによりブロックされました。",
+     "llm.error.MODEL_NOT_FOUND": "指定されたモデルが見つかりません。",
+     "llm.error.SERVICE_UNAVAILABLE": "サービスが一時的に利用できません。しばらく待ってから再度お試しください。",
+     "llm.error.UNKNOWN": "エラーが発生しました。"
+   }
+   ```
+
+   ```json
+   // locales/en/llm-errors.json
+   {
+     "llm.error.API_KEY_MISSING": "API key is not configured. Please set your API key in settings.",
+     "llm.error.API_KEY_INVALID": "API key is invalid. Please check and update your API key.",
+     "llm.error.NETWORK_ERROR": "Network error occurred. Please check your connection.",
+     "llm.error.TIMEOUT": "Request timed out. Please try again.",
+     "llm.error.RATE_LIMIT": "Rate limit reached. Please wait and try again later.",
+     "llm.error.CONTEXT_LENGTH_EXCEEDED": "Message is too long. Please shorten and try again.",
+     "llm.error.CONTENT_FILTER": "Content blocked by content filter.",
+     "llm.error.MODEL_NOT_FOUND": "Specified model not found.",
+     "llm.error.SERVICE_UNAVAILABLE": "Service temporarily unavailable. Please try again later.",
+     "llm.error.UNKNOWN": "An error occurred."
+   }
+   ```
+
+2. i18nユーティリティの実装
+3. `convertLLMErrorToMessage`のi18n対応
+4. 言語設定の取得・適用
+
+#### 成果物
+
+- `apps/desktop/locales/ja/llm-errors.json`
+- `apps/desktop/locales/en/llm-errors.json`
+- `apps/desktop/src/main/utils/i18n.ts`
+- `apps/desktop/src/main/ipc/aiHandlers.ts`（更新）
+
+#### 完了条件
+
+- [ ] 日本語エラーメッセージが表示される
+- [ ] 英語エラーメッセージが表示される
+- [ ] 言語切り替えで適切なメッセージが表示
+
+---
+
+## 5. 完了条件チェックリスト
+
+### 機能要件
+
+- [ ] 10種類のLLMエラーコードが日本語でi18n化
+- [ ] 10種類のLLMエラーコードが英語でi18n化
+- [ ] 未知のエラーコードでフォールバックメッセージが表示
+- [ ] システム言語設定に応じた言語が自動選択
+
+### 品質要件
+
+- [ ] テストカバレッジ: Line 90%以上
+- [ ] 全テストがPASS
+- [ ] TypeScript型エラーなし
+
+### ドキュメント要件
+
+- [ ] 翻訳リソースの追加方法ドキュメント
+- [ ] 実装ガイド作成（Phase 12）
+- [ ] システム仕様書更新
+
+---
+
+## 6. 検証方法
+
+### テストケース
+
+| カテゴリ | テスト内容                     |
+| -------- | ------------------------------ |
+| ユニット | 各エラーコードのメッセージ取得 |
+| 統合     | 言語切り替え→エラー表示        |
+| 境界     | 未知のエラーコード、欠落キー   |
+
+### 検証手順
+
+1. 日本語設定でLLMエラーを発生させる → 日本語メッセージ表示
+2. 英語設定に切り替えてLLMエラーを発生させる → 英語メッセージ表示
+3. 翻訳キーが欠落している場合 → フォールバックメッセージ表示
+
+---
+
+## 7. リスクと対策
+
+| リスク         | 影響度 | 発生確率 | 対策                               |
+| -------------- | ------ | -------- | ---------------------------------- |
+| 翻訳の品質     | 低     | 中       | ネイティブチェック、用語集の整備   |
+| キーの欠落     | 中     | 低       | フォールバック機構、CIでのキー検証 |
+| パフォーマンス | 低     | 低       | リソースのキャッシュ               |
+
+---
+
+## 8. 参照情報
+
+### 関連ドキュメント
+
+- [interfaces-llm.md](.claude/skills/aiworkflow-requirements/references/interfaces-llm.md) - エラーコードとメッセージのマッピング
+- [システムプロンプトLLM API統合実装ガイド](../completed-tasks/system-prompt-llm-api/outputs/phase-12/implementation-guide.md)
+
+### 参考資料
+
+- [i18next Documentation](https://www.i18next.com/)
+- [react-i18next](https://react.i18next.com/)
+
+---
+
+## 9. 備考
+
+### 発見経緯
+
+システムプロンプトLLM API統合（TASK-CHAT-SYSPROMPT-LLM-001）のPhase 12未タスク検出で、将来タスク候補として特定。
+
+### 補足事項
+
+- 現在のエラーメッセージは`convertLLMErrorToMessage`関数に日本語で定義済み
+- システム仕様書の「エラーハンドリング」セクションに10種類のエラーコードが定義
+- 将来的にはUI全体の国際化と統合

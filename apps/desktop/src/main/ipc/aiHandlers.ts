@@ -7,6 +7,10 @@ import type {
   AIIndexRequest,
   AIIndexResponse,
 } from "../../preload/types";
+import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
+import { buildMessages } from "../utils/buildMessages";
+import { getSelectedLLMConfig } from "./llmConfigProvider";
+import type { LLMError } from "@repo/shared/types/llm/schemas";
 
 // Mock conversation storage
 const conversations = new Map<string, string[]>();
@@ -14,6 +18,43 @@ const conversations = new Map<string, string[]>();
 // Generate unique conversation ID
 function generateConversationId(): string {
   return `conv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * LLMエラーをユーザー向けメッセージに変換
+ */
+function convertLLMErrorToMessage(error: LLMError): string {
+  const errorMessages: Record<string, string> = {
+    API_KEY_MISSING:
+      "APIキーが設定されていません。設定画面でAPIキーを登録してください。",
+    API_KEY_INVALID: "APIキーが無効です。正しいAPIキーを設定してください。",
+    NETWORK_ERROR: "ネットワークエラーが発生しました。接続を確認してください。",
+    TIMEOUT: "リクエストがタイムアウトしました。再度お試しください。",
+    RATE_LIMIT:
+      "レート制限に達しました。しばらく待ってから再度お試しください。",
+    CONTEXT_LENGTH_EXCEEDED:
+      "メッセージが長すぎます。短くして再度お試しください。",
+    CONTENT_FILTER: "コンテンツフィルターによりブロックされました。",
+    MODEL_NOT_FOUND: "指定されたモデルが見つかりません。",
+    SERVICE_UNAVAILABLE:
+      "サービスが一時的に利用できません。しばらく待ってから再度お試しください。",
+    UNKNOWN: "エラーが発生しました。",
+  };
+
+  return errorMessages[error.code] ?? error.message;
+}
+
+/**
+ * エラーがLLMErrorかどうかを判定
+ */
+function isLLMError(error: unknown): error is LLMError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    "message" in error &&
+    "retryable" in error
+  );
 }
 
 export function registerAIHandlers(): void {
@@ -31,48 +72,55 @@ export function registerAIHandlers(): void {
         }
         conversations.get(conversationId)?.push(request.message);
 
-        // Log system prompt if provided (for debugging)
-        if (request.systemPrompt) {
-          console.log(
-            `[AI_CHAT] System prompt provided (${request.systemPrompt.length} chars)`,
-          );
+        // Get selected LLM configuration
+        const llmConfig = await getSelectedLLMConfig();
+        if (!llmConfig) {
+          return {
+            success: false,
+            error:
+              "LLMプロバイダーが選択されていません。設定画面でプロバイダーを選択してください。",
+          };
         }
 
-        // TODO: Replace with actual AI API call
-        // When implementing real LLM integration, include systemPrompt:
-        // const apiResponse = await callLLMAPI({
-        //   messages: [
-        //     ...(request.systemPrompt ? [{ role: 'system', content: request.systemPrompt }] : []),
-        //     { role: 'user', content: request.message }
-        //   ],
-        //   ragEnabled: request.ragEnabled,
-        // });
+        // Build messages with system prompt
+        const messages = buildMessages(request.message, request.systemPrompt);
 
-        // For now, return a mock response
-        const mockResponses = [
-          "ご質問ありがとうございます。ナレッジベースを検索しています...",
-          "関連するドキュメントが見つかりました。詳細をお伝えします。",
-          "その情報については、設計ドキュメントに詳しく記載されています。",
-          "追加の質問があればお気軽にどうぞ。",
-        ];
+        // Get adapter for selected provider
+        const adapter = await LLMAdapterFactory.getAdapter(
+          llmConfig.providerId,
+        );
 
-        const responseIndex = Math.floor(Math.random() * mockResponses.length);
-        const aiMessage = mockResponses[responseIndex];
+        // Send chat request to LLM
+        const response = await adapter.sendChat({
+          messages,
+          modelId: llmConfig.modelId,
+          providerId: llmConfig.providerId,
+        });
 
         return {
           success: true,
           data: {
-            message: aiMessage,
+            message: response.content,
             conversationId,
-            ragSources: request.ragEnabled
-              ? ["docs/design.md", "docs/api.md"]
-              : undefined,
+            ragSources: request.ragEnabled ? [] : undefined,
           },
         };
       } catch (error) {
+        // Handle LLM-specific errors
+        if (isLLMError(error)) {
+          return {
+            success: false,
+            error: convertLLMErrorToMessage(error),
+          };
+        }
+
+        // Handle generic errors (including API key not found)
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: errorMessage,
         };
       }
     },
