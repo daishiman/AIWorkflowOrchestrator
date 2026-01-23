@@ -424,6 +424,207 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 
 ---
 
+## システムプロンプト LLM API統合
+
+> **実装**: `apps/desktop/src/main/utils/buildMessages.ts`, `apps/desktop/src/main/ipc/llmConfigProvider.ts`
+> **IPCハンドラー**: `apps/desktop/src/main/ipc/aiHandlers.ts`
+> **詳細設計**: `docs/30-workflows/completed-tasks/system-prompt-llm-api/outputs/phase-12/implementation-guide.md`
+
+### 概要
+
+チャットUIからシステムプロンプト付きでLLM APIを呼び出す機能。既存のLLMAdapterFactoryを活用し、4つのプロバイダー（OpenAI、Anthropic、Google、xAI）でシステムプロンプトを適用したAPI呼び出しを実現。
+
+### 型定義
+
+#### SelectedLLMConfig
+
+選択されたLLM設定の型定義。
+
+| フィールド | 型            | 必須 | 説明             |
+| ---------- | ------------- | ---- | ---------------- |
+| providerId | LLMProviderId | ✓    | プロバイダーID   |
+| modelId    | string        | ✓    | モデルID         |
+
+### 関数シグネチャ
+
+#### buildMessages
+
+ユーザーメッセージとシステムプロンプトからLLMメッセージ配列を構築する。
+
+```typescript
+function buildMessages(
+  userMessage: string,
+  systemPrompt?: string
+): LLMMessage[];
+```
+
+**動作仕様**:
+- `systemPrompt`が存在し空白以外の文字を含む場合、`role: "system"`として最初に配置
+- `userMessage`は常に`role: "user"`として追加
+- 返却される配列は`[systemMessage?, userMessage]`の順序
+
+#### getSelectedLLMConfig
+
+選択されたLLM設定を取得する。
+
+```typescript
+async function getSelectedLLMConfig(): Promise<SelectedLLMConfig | null>;
+```
+
+**デフォルト値**:
+- providerId: "openai"
+- modelId: "gpt-4o"
+
+### エラーハンドリング
+
+LLMErrorを日本語メッセージに変換するヘルパー関数を提供。
+
+| エラーコード            | 日本語メッセージ                                                       |
+| ----------------------- | ---------------------------------------------------------------------- |
+| API_KEY_MISSING         | APIキーが設定されていません。設定画面でAPIキーを登録してください。     |
+| API_KEY_INVALID         | APIキーが無効です。正しいAPIキーを設定してください。                   |
+| NETWORK_ERROR           | ネットワークエラーが発生しました。接続を確認してください。             |
+| TIMEOUT                 | リクエストがタイムアウトしました。再度お試しください。                 |
+| RATE_LIMIT              | レート制限に達しました。しばらく待ってから再度お試しください。         |
+| CONTEXT_LENGTH_EXCEEDED | メッセージが長すぎます。短くして再度お試しください。                   |
+| CONTENT_FILTER          | コンテンツフィルターによりブロックされました。                         |
+| MODEL_NOT_FOUND         | 指定されたモデルが見つかりません。                                     |
+| SERVICE_UNAVAILABLE     | サービスが一時的に利用できません。しばらく待ってから再度お試しください。|
+| UNKNOWN                 | エラーが発生しました。                                                 |
+
+### 品質メトリクス
+
+- テストカバレッジ: Line 95%+, Branch 80%+, Function 100%
+- 全54件の自動テスト成功（buildMessages: 24件、aiHandlers.llm: 30件）
+
+---
+
+## Workspace Chat Edit 型定義（Desktop IPC）
+
+> **実装**: `apps/desktop/src/renderer/features/workspace-chat-edit/`
+> **詳細設計**: `docs/30-workflows/workspace-chat-edit/outputs/phase-12/implementation-guide.md`
+
+### 概要
+
+AIアシスタントと連携してコードを編集する機能の型定義。ファイルコンテキストを添付してLLMにリクエストを送信し、差分ベースで変更を適用する。
+
+### エンティティ型定義
+
+#### FileContext
+
+添付ファイルコンテキスト型。
+
+| フィールド | 型             | 必須 | 説明                     |
+| ---------- | -------------- | ---- | ------------------------ |
+| id         | string         | ✓    | UUID v4                  |
+| filePath   | string         | ✓    | 絶対パス                 |
+| fileName   | string         | ✓    | 表示用ファイル名         |
+| content    | string         | ✓    | ファイル内容             |
+| selection  | TextSelection  | -    | 選択範囲（オプション）   |
+| language   | string         | ✓    | プログラミング言語       |
+| addedAt    | Date           | ✓    | 添付日時                 |
+| fileSize   | number         | ✓    | バイト数                 |
+
+#### TextSelection
+
+テキスト選択範囲型。
+
+| フィールド    | 型      | 説明               |
+| ------------- | ------- | ------------------ |
+| startLine     | number  | 開始行（1始まり）  |
+| startColumn   | number  | 開始列（1始まり）  |
+| endLine       | number  | 終了行（1始まり）  |
+| endColumn     | number  | 終了列（1始まり）  |
+| selectedText  | string  | 選択テキスト       |
+
+#### EditCommand
+
+編集コマンド型。
+
+| フィールド      | 型                | 必須 | 説明                |
+| --------------- | ----------------- | ---- | ------------------- |
+| type            | EditCommandType   | ✓    | コマンドタイプ      |
+| targetContextId | string            | ✓    | 対象コンテキストID  |
+| instruction     | string            | -    | カスタム指示        |
+| options         | EditCommandOptions| -    | オプション          |
+
+#### EditCommandType（列挙型）
+
+編集コマンドタイプ。continue（続きを書く）、refactor（リファクタリング）、generate-test（テスト生成）、add-comment（コメント追加）、custom（カスタム）の5種類。
+
+#### GeneratedResult
+
+LLM生成結果型。
+
+| フィールド       | 型            | 必須 | 説明                      |
+| ---------------- | ------------- | ---- | ------------------------- |
+| id               | string        | ✓    | 結果ID                    |
+| contextId        | string        | ✓    | 対象コンテキストID        |
+| originalContent  | string        | ✓    | 元のコンテンツ            |
+| generatedContent | string        | ✓    | 生成されたコンテンツ      |
+| diffHunks        | DiffHunk[]    | ✓    | 差分                      |
+| status           | ResultStatus  | ✓    | pending/approved/rejected |
+| createdAt        | Date          | ✓    | 作成日時                  |
+| targetFilePath   | string        | ✓    | 対象ファイルパス          |
+| command          | EditCommand   | ✓    | 実行したコマンド          |
+| llmMetadata      | LLMMetadata   | -    | LLMメタ情報               |
+
+#### DiffHunk
+
+差分ハンク型。
+
+| フィールド        | 型          | 説明             |
+| ----------------- | ----------- | ---------------- |
+| type              | DiffHunkType| add/remove/modify|
+| originalStartLine | number      | 元の開始行       |
+| originalEndLine   | number      | 元の終了行       |
+| newStartLine      | number      | 新しい開始行     |
+| newEndLine        | number      | 新しい終了行     |
+| originalLines     | string[]    | 元の行           |
+| newLines          | string[]    | 新しい行         |
+
+### IPC通信（予定）
+
+| チャンネル                    | 方向          | 入力                     | 出力                      |
+| ----------------------------- | ------------- | ------------------------ | ------------------------- |
+| `chat-edit:read-file`         | Renderer→Main | filePath                 | FileReadResult            |
+| `chat-edit:write-file`        | Renderer→Main | filePath, content        | FileWriteResult           |
+| `chat-edit:get-selection`     | Renderer→Main | -                        | TextSelection \| null     |
+| `chat-edit:send-with-context` | Renderer→Main | SendWithContextRequest   | SendWithContextResponse   |
+
+### 定数
+
+| 定数名            | 値       | 説明                   |
+| ----------------- | -------- | ---------------------- |
+| MAX_FILE_CONTEXTS | 10       | 最大ファイルコンテキスト数 |
+| MAX_FILE_SIZE     | 10MB     | ファイルサイズ上限     |
+| MAX_CONTEXT_SIZE  | 100KB    | コンテキスト合計上限   |
+
+### 品質メトリクス
+
+- テストカバレッジ: Line 69.23%, Branch 89.74%, Function 95%
+- 全122件の自動テスト成功
+
+### 関連タスク
+
+- workspace-chat-edit（2026-01-23完了：コアロジック）
+- workspace-chat-edit-ui-components（未実施）
+- workspace-chat-edit-main-process（未実施）
+
+---
+
+## 完了タスク
+
+### TASK-CHAT-SYSPROMPT-LLM-001（2026-01-23完了）
+
+- システムプロンプトのLLM API統合
+- buildMessages関数実装（36行）
+- llmConfigProvider実装（53行）
+- aiHandlers AI_CHATハンドラー更新
+- テスト54件作成（全件PASS）
+- 4プロバイダー対応（OpenAI、Anthropic、Google、xAI）
+
+---
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)
@@ -431,3 +632,4 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 - [プラグイン開発手順](./11-plugin-development.md)
 - [ローカルエージェント仕様](./09-local-agent.md)
 - [セキュリティガイドライン](./17-security-guidelines.md)
+- [システムプロンプトLLM API統合 実装ガイド](../../../docs/30-workflows/completed-tasks/system-prompt-llm-api/outputs/phase-12/implementation-guide.md)

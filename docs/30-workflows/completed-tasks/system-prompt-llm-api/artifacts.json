@@ -1,0 +1,120 @@
+{
+  "taskId": "TASK-CHAT-SYSPROMPT-LLM-001",
+  "taskName": "システムプロンプトのLLM API統合",
+  "featureName": "system-prompt-llm-api",
+  "issueNumber": 376,
+  "branch": "task-system-prompt-llm-api-integration",
+  "createdAt": "2026-01-23",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/interface-design.md",
+        "outputs/phase-2/integration-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "apps/desktop/src/main/utils/__tests__/buildMessages.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/aiHandlers.llm.test.ts"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-5/implementation-report.md",
+        "apps/desktop/src/main/utils/buildMessages.ts",
+        "apps/desktop/src/main/ipc/llmConfigProvider.ts",
+        "apps/desktop/src/main/ipc/aiHandlers.ts (updated)"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": ["outputs/phase-7/gate-result.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-8/code-smell-report.md",
+        "outputs/phase-8/refactoring-log.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "outputs": []
+    }
+  },
+  "currentPhase": null,
+  "completedAt": "2026-01-23"
+}

@@ -1,0 +1,191 @@
+{
+  "workflow": "workspace-chat-edit",
+  "issue": "#384",
+  "createdAt": "2026-01-23",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/domain-model.md",
+        "outputs/phase-2/ipc-api-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-3-design-review.md",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md",
+        "outputs/phase-4/test-list.md",
+        "outputs/phase-4/red-result.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [
+        "outputs/phase-5/implementation-log.md",
+        "outputs/phase-5/green-result.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md",
+        "outputs/phase-7/gate-result.md"
+      ],
+      "gateResult": "CONDITIONAL_PASS"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": ["outputs/phase-8/refactoring-log.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-9-quality.md",
+      "outputs": ["outputs/phase-9/quality-report.md"],
+      "gateResult": "CONDITIONAL_PASS"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/final-review-result.md"],
+      "gateResult": "MINOR"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ],
+      "gateResult": "CONDITIONAL_PASS"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-23",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ],
+      "systemSpecUpdates": [
+        ".claude/skills/aiworkflow-requirements/references/interfaces-llm.md",
+        ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md",
+        ".claude/skills/aiworkflow-requirements/references/api-endpoints.md",
+        ".claude/skills/aiworkflow-requirements/SKILL.md",
+        ".claude/skills/aiworkflow-requirements/indexes/topic-map.md"
+      ],
+      "unassignedTaskFiles": [
+        "docs/30-workflows/unassigned-task/task-workspace-chat-edit-ui-components.md",
+        "docs/30-workflows/unassigned-task/task-workspace-chat-edit-main-process.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": [
+        "outputs/phase-13/pr-link.md",
+        "outputs/phase-13/change-summary.md"
+      ]
+    }
+  ],
+  "domainModel": {
+    "entities": [
+      "FileContext",
+      "TextSelection",
+      "EditCommand",
+      "GeneratedResult",
+      "DiffHunk"
+    ],
+    "ipcChannels": [
+      "chat-edit:read-file",
+      "chat-edit:write-file",
+      "chat-edit:get-selection",
+      "chat-edit:send-with-context"
+    ],
+    "zustandSlice": "chatEditSlice",
+    "components": [
+      "FileContextBadge",
+      "DiffPreview",
+      "ApplyControls",
+      "ChatEditPanel"
+    ]
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/ui-ux-components.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-llm.md",
+      ".claude/skills/aiworkflow-requirements/references/security-api-electron.md",
+      ".claude/skills/aiworkflow-requirements/references/quality-requirements.md"
+    ],
+    "originalTask": "docs/30-workflows/unassigned-task/task-workspace-chat-edit.md"
+  }
+}
