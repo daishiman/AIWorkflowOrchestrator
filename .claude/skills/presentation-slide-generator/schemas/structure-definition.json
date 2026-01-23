@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "structure-definition.json",
+  "title": "Slide Structure Definition",
+  "description": "プレゼンテーション構成（structure.md）の検証スキーマ",
+  "type": "object",
+  "required": ["title", "slides"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "プレゼンテーションタイトル"
+    },
+    "subtitle": {
+      "type": "string",
+      "description": "サブタイトル（任意）"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["light", "dark"],
+      "default": "light",
+      "description": "テーマ（デフォルト: light）"
+    },
+    "agendaIndicator": {
+      "type": "boolean",
+      "default": true,
+      "description": "アジェンダインジケーター表示（デフォルト: true）"
+    },
+    "printFormat": {
+      "type": "string",
+      "enum": ["A4-landscape-16:9", "A4-portrait", "custom"],
+      "default": "A4-landscape-16:9",
+      "description": "印刷フォーマット（デフォルト: A4横16:9）"
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/slide"
+      }
+    },
+    "sections": {
+      "type": "array",
+      "description": "アジェンダインジケーター用セクション定義",
+      "items": {
+        "$ref": "#/$defs/section"
+      }
+    }
+  },
+  "$defs": {
+    "slide": {
+      "type": "object",
+      "required": ["index", "type", "title"],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "slide-title", "slide-agenda", "slide-section", "slide-message",
+            "slide-list", "slide-compare", "slide-flow", "slide-timeline",
+            "slide-table", "slide-stats", "slide-chart", "slide-diagram",
+            "slide-quote", "slide-image", "slide-full-image",
+            "slide-pyramid", "slide-circle", "slide-grid", "slide-highlight",
+            "slide-icon-grid", "slide-process", "slide-quote-extended", "slide-hero"
+          ]
+        },
+        "title": { "type": "string" },
+        "content": { "type": "object" }
+      }
+    },
+    "section": {
+      "type": "object",
+      "required": ["id", "label", "start", "end"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

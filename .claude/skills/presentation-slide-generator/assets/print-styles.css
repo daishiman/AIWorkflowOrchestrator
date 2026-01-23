@@ -1,440 +1,635 @@
 /* =================================================================
-   印刷用スタイル（PDF出力）
+   印刷用スタイル - A4横 16:9 (100%スケール・印刷優先設計)
 
-   責務: プレゼンテーションスライドを印刷/PDF出力用に変換
+   責務: プレゼンテーションスライドをA4横向き印刷に最適化
 
-   レイアウト:
-   - A4横向き
-   - 1ページ1スライド
-   - ダークテーマ → ライトテーマに自動変換
-   - Flexbox/Grid維持方式: 元のレイアウトを保持
+   設計原則:
+   - A4横向き印刷を最優先（281mm × 158mm スライド）
+   - すべての要素がA4内に収まることを保証
+   - 100%スケールで正確に印刷
+   - pt単位でフォントサイズを固定
+
+   計算根拠:
+   - A4横: 297mm × 210mm
+   - ページマージン: 8mm（上下左右）
+   - 印刷可能領域: 281mm × 194mm
+   - 16:9スライド: 281mm × 158mm (281 × 9/16)
+   - 縦余白: 18mm（上下均等配置）
 
    使用方法:
    - Cmd+P (Mac) / Ctrl+P (Windows) で印刷ダイアログを開く
+   - 印刷設定: 倍率=100%, 余白=なし, 背景グラフィック=有効
    - HTMLファイルの<style>タグ内にインライン埋め込み
 
    重要:
-   - .slider__itemはflex表示を維持（中央揃えのため）
-   - 各コンテナは元のdisplayモード（flex/grid）を維持
-   - 全子要素にvisibility: visibleを設定
+   - フォントサイズはpt単位で固定（画面表示に依存しない）
+   - コンテナサイズはmm単位で固定
+   - flexbox/gridレイアウトは維持しつつ、印刷サイズに最適化
    ================================================================= */
 
-/* =================================================================
-   印刷メディアクエリ
-   ================================================================= */
 @media print {
-  /* -----------------------------------------------------------------
-     ページ設定
-     ----------------------------------------------------------------- */
   @page {
     size: A4 landscape;
     margin: 8mm;
   }
 
-  /* -----------------------------------------------------------------
+  /* =================================================================
      非表示要素
-     ----------------------------------------------------------------- */
+     ================================================================= */
   .progress-bar,
   .slider-navigation,
   .slider-controls,
-  .slide-number {
+  .slide-number,
+  .agenda-indicator {
     display: none !important;
   }
 
-  /* -----------------------------------------------------------------
-     基本設定
-     ----------------------------------------------------------------- */
+  /* =================================================================
+     基本レイアウト
+     ================================================================= */
   body, html {
-    background: white !important;
-    overflow: visible !important;
     height: auto !important;
+    overflow: visible !important;
+    background: white !important;
   }
 
   .slider {
-    overflow: visible !important;
+    display: block !important;
+    width: 100% !important;
     height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  .slide-area {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-shadow: none !important;
   }
 
   .slider__container {
     display: block !important;
     transform: none !important;
+    width: 100% !important;
   }
 
-  /* -----------------------------------------------------------------
-     スライドアイテム（flexで中央揃え維持）
-     ----------------------------------------------------------------- */
+  /* =================================================================
+     スライド枠 - 281mm × 158mm 固定
+     ================================================================= */
   .slider__item {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    min-width: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 170mm !important;
-    page-break-after: always !important;
-    page-break-inside: avoid !important;
-    padding: 15px !important;
-    margin: 0 !important;
-    background: #FAFAFA !important;
-    border: 1px solid #DDD !important;
-    border-radius: 8px !important;
+    width: 281mm !important;
+    height: 158mm !important;
+    margin: 18mm auto !important;
+    padding: 8mm !important;
+    background: white !important;
+    border: 0.5pt solid #CCC !important;
     box-sizing: border-box !important;
     position: relative !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    overflow: hidden !important;
   }
 
   .slider__item:last-child {
     page-break-after: auto !important;
   }
 
-  /* -----------------------------------------------------------------
-     スライドコンテンツ - 全表示（display維持）
-     ----------------------------------------------------------------- */
+  /* =================================================================
+     コンテンツエリア - 265mm × 142mm 最大
+     重要: visibility: visible を各スライドタイプに明示的に設定
+     GSAPアニメーションがvisibility: hiddenをデフォルト設定するため
+     ================================================================= */
   .slider__content {
     visibility: visible !important;
     opacity: 1 !important;
     transform: none !important;
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 265mm !important;
     height: auto !important;
-    padding: 20px !important;
+    max-height: 142mm !important;
+    padding: 0 !important;
     box-sizing: border-box !important;
     overflow: visible !important;
-    /* display: 元のスタイルを維持（下記で個別指定） */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
-  /* -----------------------------------------------------------------
-     各スライドタイプのdisplay維持
-     ----------------------------------------------------------------- */
-  .slide-title .slider__content,
-  .slide-message .slider__content {
-    display: block !important;
+  /* タイトルスライド - 中央寄せ */
+  .slide-title .slider__content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
     text-align: center !important;
+    visibility: visible !important;
   }
 
+  /* メッセージスライド - 中央寄せ */
+  .slide-message .slider__content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    visibility: visible !important;
+  }
+
+  /* セクションスライド - 中央寄せ */
+  .slide-section .slider__content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    visibility: visible !important;
+  }
+
+  /* ヒーロースライド - 中央寄せ */
+  .slide-hero .slider__content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    visibility: visible !important;
+  }
+
+  /* 引用スライド - 中央寄せ */
+  .slide-quote .slider__content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    visibility: visible !important;
+  }
+
+  /* コンテナ型スライド - 上寄せ */
   .slide-agenda .slider__content,
   .slide-list .slider__content,
   .slide-compare .slider__content,
   .slide-flow .slider__content,
+  .slide-diagram .slider__content,
+  .slide-timeline .slider__content,
+  .slide-table .slider__content,
   .slide-stats .slider__content,
   .slide-grid .slider__content,
   .slide-pyramid .slider__content,
   .slide-highlight .slider__content,
   .slide-process .slider__content,
-  .slide-section .slider__content,
-  .slide-hero .slider__content {
+  .slide-chart .slider__content,
+  .slide-image .slider__content {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-  }
-
-  /* -----------------------------------------------------------------
-     コンテナのレイアウト維持
-     ----------------------------------------------------------------- */
-  .agenda-container {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.8rem !important;
-    width: 100% !important;
+    justify-content: flex-start !important;
     visibility: visible !important;
   }
 
-  .list-container {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 1rem !important;
-    justify-content: center !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-
-  .compare-container {
-    display: flex !important;
-    gap: 1.5rem !important;
-    justify-content: center !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-
-  .flow-container {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 0.5rem !important;
-    flex-wrap: wrap !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-
-  .grid-container {
-    display: grid !important;
-    gap: 1rem !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-  .grid-container.grid-2 { grid-template-columns: repeat(2, 1fr) !important; }
-  .grid-container.grid-3 { grid-template-columns: repeat(3, 1fr) !important; }
-  .grid-container.grid-4 { grid-template-columns: repeat(4, 1fr) !important; }
-
-  .stats-container {
-    display: flex !important;
-    gap: 1.5rem !important;
-    justify-content: center !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-
-  .pyramid-container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-
-  .highlight-container {
-    display: flex !important;
-    gap: 1.5rem !important;
-    justify-content: center !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-
-  .process-container {
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-    gap: 0.3rem !important;
-    flex-wrap: wrap !important;
-    width: 100% !important;
-    visibility: visible !important;
-  }
-
-  /* -----------------------------------------------------------------
-     全子要素の表示保証
-     ----------------------------------------------------------------- */
-  .agenda-item, .list-item, .compare-item, .flow-step, .flow-arrow,
-  .grid-card, .stat-item, .pyramid-level, .highlight-item, .process-step,
-  .process-arrow, .timeline-item, .timeline-content, .table-wrapper,
-  .compare-vs, .message-icon, .icon-wrapper {
+  /* 全子要素の可視化 - 最重要 */
+  .slider__item *,
+  .slider__content * {
     visibility: visible !important;
     opacity: 1 !important;
-    transform: none !important;
   }
 
-  /* -----------------------------------------------------------------
-     子要素のdisplay維持
-     ----------------------------------------------------------------- */
-  .agenda-item {
+  /* =================================================================
+     印刷用フォントサイズ（pt単位・A4最適化）
+     ================================================================= */
+  /* タイトル系 */
+  .main-title { font-size: 28pt !important; margin-bottom: 3mm !important; }
+  .sub-title { font-size: 14pt !important; }
+  .section-title { font-size: 24pt !important; margin-bottom: 2mm !important; }
+  .section-subtitle { font-size: 12pt !important; max-width: 200mm !important; }
+  .section-number { font-size: 10pt !important; }
+  .section-icon { font-size: 36pt !important; margin-bottom: 3mm !important; }
+  .section-divider { width: 30mm !important; height: 1mm !important; margin: 3mm 0 !important; }
+  .title-icon { font-size: 48pt !important; margin-bottom: 4mm !important; }
+
+  /* 見出し系 */
+  .list-title,
+  .flow-title,
+  .compare-title,
+  .agenda-title,
+  .diagram-title,
+  .table-title,
+  .stats-title,
+  .grid-title,
+  .pyramid-title,
+  .highlight-title,
+  .process-title {
+    font-size: 16pt !important;
+    margin-bottom: 4mm !important;
+  }
+
+  /* メッセージ系 */
+  .main-message { font-size: 20pt !important; line-height: 1.3 !important; }
+  .sub-message { font-size: 11pt !important; margin-top: 3mm !important; max-width: 220mm !important; }
+
+  /* ヒーロー系 */
+  .hero-title { font-size: 26pt !important; }
+  .hero-subtitle { font-size: 12pt !important; }
+  .hero-message { font-size: 11pt !important; }
+
+  /* アイコン系 */
+  .message-icon { width: 20mm !important; height: 20mm !important; margin-bottom: 4mm !important; }
+  .message-icon i { font-size: 28pt !important; }
+  .icon-wrapper { width: 12mm !important; height: 12mm !important; }
+  .icon-wrapper i { font-size: 16pt !important; }
+
+  /* =================================================================
+     アジェンダスライド（印刷用）
+     ================================================================= */
+  .slide-agenda .slider__content {
+    gap: 4mm !important;
+  }
+
+  .slide-agenda .agenda-container {
+    gap: 2mm !important;
+    max-width: 220mm !important;
+  }
+
+  .slide-agenda .agenda-item {
+    padding: 2.5mm 4mm !important;
+    gap: 3mm !important;
+    border-radius: 2mm !important;
+  }
+
+  .slide-agenda .agenda-number {
+    width: 8mm !important;
+    height: 8mm !important;
+    font-size: 11pt !important;
+  }
+
+  .slide-agenda .agenda-item i {
+    font-size: 12pt !important;
+    width: 8mm !important;
+  }
+
+  .slide-agenda .agenda-text {
+    font-size: 11pt !important;
+  }
+
+  /* =================================================================
+     比較スライド（印刷用）
+     ================================================================= */
+  .slide-compare .slider__content {
+    gap: 4mm !important;
+  }
+
+  .slide-compare .compare-container {
+    gap: 4mm !important;
+  }
+
+  .slide-compare .compare-item {
+    max-width: 115mm !important;
+    padding: 4mm !important;
+    border-radius: 3mm !important;
+    border-top-width: 1mm !important;
+  }
+
+  .slide-compare .compare-item i {
+    font-size: 20pt !important;
+    margin-bottom: 2mm !important;
+  }
+
+  .slide-compare .compare-item h3 {
+    font-size: 12pt !important;
+    margin-bottom: 2mm !important;
+  }
+
+  .slide-compare .compare-item .value {
+    font-size: 14pt !important;
+    margin-bottom: 2mm !important;
+  }
+
+  .slide-compare .compare-item li {
+    font-size: 10pt !important;
+    margin-bottom: 1.5mm !important;
+    padding-left: 3mm !important;
+  }
+
+  .slide-compare .compare-item li::before {
+    width: 1.5mm !important;
+    height: 1.5mm !important;
+    top: 1.5mm !important;
+  }
+
+  .slide-compare .compare-vs {
+    font-size: 14pt !important;
+  }
+
+  /* =================================================================
+     リストスライド（印刷用 - 3カラム横並び）
+     ================================================================= */
+  .slide-list .slider__content {
+    gap: 3mm !important;
+  }
+
+  .slide-list .list-container {
     display: flex !important;
-    align-items: center !important;
-    gap: 0.8rem !important;
-    padding: 0.8rem 1rem !important;
+    flex-direction: row !important;
+    gap: 4mm !important;
+    max-width: 265mm !important;
   }
 
-  .list-item {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 0.8rem !important;
-    flex: 1 1 calc(48% - 0.5rem) !important;
-    max-width: calc(50% - 0.5rem) !important;
-    min-width: 250px !important;
-    padding: 1rem !important;
-  }
-
-  .compare-item {
+  .slide-list .list-item {
     flex: 1 !important;
-    max-width: 45% !important;
-    padding: 1.5rem !important;
-    text-align: center !important;
+    max-width: 85mm !important;
+    padding: 4mm !important;
+    border-radius: 2mm !important;
+    border-top-width: 1mm !important;
+    gap: 2mm !important;
   }
 
-  .flow-step {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 0.8rem !important;
-    min-width: 100px !important;
-    max-width: 150px !important;
-    text-align: center !important;
+  .slide-list .list-item i {
+    font-size: 18pt !important;
   }
 
-  .grid-card {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 1rem !important;
-    text-align: center !important;
+  .slide-list .list-item h4 {
+    font-size: 11pt !important;
+    white-space: nowrap !important;  /* タイトル改行防止 */
   }
 
-  .stat-item {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 1rem !important;
-    text-align: center !important;
-    flex: 1 !important;
-    max-width: 200px !important;
-  }
-
-  .pyramid-level {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0.8rem 1.5rem !important;
-    text-align: center !important;
-  }
-
-  .highlight-item {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 1rem !important;
-    text-align: center !important;
-    flex: 1 !important;
-  }
-
-  .process-step {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.3rem !important;
-    padding: 0.6rem !important;
-    min-width: 80px !important;
-    max-width: 120px !important;
-    text-align: center !important;
-  }
-
-  .process-arrow, .flow-arrow {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 1rem !important;
-  }
-
-  .compare-vs {
-    display: flex !important;
-    align-items: center !important;
-    font-size: 1.2rem !important;
-    padding: 0 0.5rem !important;
-  }
-
-  /* -----------------------------------------------------------------
-     全スライドタイプの基本設定
-     ----------------------------------------------------------------- */
-  .slide-title, .slide-message, .slide-list, .slide-compare,
-  .slide-flow, .slide-timeline, .slide-table, .slide-agenda,
-  .slide-section, .slide-stats, .slide-quote, .slide-image,
-  .slide-diagram, .slide-chart, .slide-grid, .slide-pyramid,
-  .slide-highlight, .slide-process, .slide-hero {
-    transform: none !important;
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  /* -----------------------------------------------------------------
-     スライド番号（CSS counter使用）
-     ※ {{総スライド数}} はHTML生成時に実際の数に置換
-     ----------------------------------------------------------------- */
-  body {
-    counter-reset: slide-counter;
-  }
-
-  .slider__item {
-    counter-increment: slide-counter;
-  }
-
-  .slider__item::before {
-    content: counter(slide-counter) " / {{総スライド数}}";
-    position: absolute !important;
-    bottom: 10px !important;
-    right: 15px !important;
+  .slide-list .list-item span {
     font-size: 9pt !important;
-    color: #888 !important;
-    font-family: 'Noto Sans JP', sans-serif !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;  /* 説明文は改行許可 */
   }
 
-  /* -----------------------------------------------------------------
-     フォントサイズ縮小（印刷用）
-     ----------------------------------------------------------------- */
-  .main-title { font-size: 2rem !important; }
-  .sub-title { font-size: 1rem !important; }
-  .section-title { font-size: 1.8rem !important; }
-  .list-title, .flow-title, .compare-title, .table-title,
-  .agenda-title, .stats-title, .grid-title, .pyramid-title,
-  .highlight-title, .process-title { font-size: 1.3rem !important; }
-  .main-message { font-size: 1.5rem !important; }
-  .sub-message { font-size: 0.9rem !important; }
-  .stat-value { font-size: 2rem !important; }
-
-  /* -----------------------------------------------------------------
-     アイコンサイズ縮小
-     ----------------------------------------------------------------- */
-  .icon-wrapper {
-    width: 50px !important;
-    height: 50px !important;
+  /* =================================================================
+     フロースライド（印刷用 - 4ステップ横並び）
+     ================================================================= */
+  .slide-flow .slider__content {
+    gap: 4mm !important;
   }
 
-  .icon-wrapper i {
-    font-size: 1.5rem !important;
+  .slide-flow .flow-container {
+    gap: 2mm !important;
+    flex-wrap: nowrap !important;
+    max-width: 265mm !important;
   }
 
-  .title-icon {
-    font-size: 2.5rem !important;
+  .slide-flow .flow-step {
+    min-width: 50mm !important;
+    max-width: 58mm !important;
+    padding: 3mm !important;
+    border-radius: 2mm !important;
+    gap: 1.5mm !important;
+    border-top-width: 1mm !important;
   }
 
-  /* -----------------------------------------------------------------
-     背景色変換（ダーク → ライト）
-     ----------------------------------------------------------------- */
-  .slider__item,
-  .slide-title,
-  .slide-message,
-  .slide-list,
-  .slide-compare,
-  .slide-flow,
-  .slide-timeline,
-  .slide-table,
-  .slide-agenda,
-  .slide-section,
-  .slide-stats,
-  .slide-quote,
-  .slide-image,
-  .slide-diagram,
-  .slide-chart,
-  .slide-grid,
-  .slide-pyramid,
-  .slide-highlight,
-  .slide-process,
-  .slide-hero {
-    background: white !important;
+  .slide-flow .flow-step .step-number {
+    width: 7mm !important;
+    height: 7mm !important;
+    font-size: 9pt !important;
   }
 
-  /* カード・アイテムの背景 */
+  .slide-flow .flow-step i {
+    font-size: 14pt !important;
+    margin: 1mm 0 !important;
+  }
+
+  .slide-flow .flow-step h4 {
+    font-size: 10pt !important;
+    white-space: nowrap !important;  /* タイトル改行防止 */
+  }
+
+  .slide-flow .flow-step span {
+    font-size: 8pt !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;  /* 説明文は改行許可 */
+  }
+
+  .slide-flow .flow-arrow {
+    font-size: 12pt !important;
+  }
+
+  .slide-flow .flow-arrow i {
+    font-size: 10pt !important;
+  }
+
+  /* =================================================================
+     図解スライド - サイクル図（印刷用・相対配置）
+     ================================================================= */
+  .slide-diagram .slider__content {
+    gap: 3mm !important;
+  }
+
+  .slide-diagram .diagram-container {
+    gap: 6mm !important;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+
+  .slide-diagram .cycle-diagram {
+    width: 90mm !important;
+    height: 90mm !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+  }
+
+  .slide-diagram .cycle-center {
+    width: 28mm !important;
+    height: 28mm !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .slide-diagram .cycle-center i {
+    font-size: 14pt !important;
+    margin-bottom: 1mm !important;
+  }
+
+  .slide-diagram .cycle-center span {
+    font-size: 8pt !important;
+  }
+
+  .slide-diagram .cycle-node {
+    width: 22mm !important;
+    height: 22mm !important;
+    position: absolute !important;
+    border-width: 0.5mm !important;
+  }
+
+  .slide-diagram .cycle-node i {
+    font-size: 10pt !important;
+    margin-bottom: 0.5mm !important;
+  }
+
+  .slide-diagram .cycle-node span {
+    font-size: 7pt !important;
+    white-space: nowrap !important;
+  }
+
+  /* 4ノードの配置（上・右・下・左） */
+  .slide-diagram .cycle-node:nth-child(2) {
+    top: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .slide-diagram .cycle-node:nth-child(3) {
+    top: 50% !important;
+    right: 0 !important;
+    left: auto !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .slide-diagram .cycle-node:nth-child(4) {
+    bottom: 0 !important;
+    top: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .slide-diagram .cycle-node:nth-child(5) {
+    top: 50% !important;
+    left: 0 !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .slide-diagram .diagram-text {
+    max-width: 140mm !important;
+  }
+
+  .slide-diagram .diagram-text h3 {
+    font-size: 12pt !important;
+    margin-bottom: 3mm !important;
+  }
+
+  .slide-diagram .diagram-text li {
+    font-size: 10pt !important;
+    margin-bottom: 2mm !important;
+    padding-left: 4mm !important;
+  }
+
+  .slide-diagram .diagram-text li::before {
+    font-size: 8pt !important;
+  }
+
+  /* =================================================================
+     ヒーロースライド（印刷用）
+     ================================================================= */
+  .slide-hero .hero-icon {
+    width: 30mm !important;
+    height: 30mm !important;
+    margin-bottom: 3mm !important;
+  }
+
+  .slide-hero .hero-icon i {
+    font-size: 24pt !important;
+  }
+
+  /* =================================================================
+     統計スライド（印刷用）
+     ================================================================= */
+  .slide-stats .stats-container {
+    gap: 4mm !important;
+  }
+
+  .slide-stats .stat-item {
+    max-width: 60mm !important;
+    padding: 4mm !important;
+  }
+
+  .slide-stats .stat-value {
+    font-size: 24pt !important;
+  }
+
+  .slide-stats .stat-label {
+    font-size: 10pt !important;
+  }
+
+  /* =================================================================
+     グリッドスライド（印刷用）
+     ================================================================= */
+  .slide-grid .grid-container {
+    gap: 3mm !important;
+  }
+
+  .slide-grid .grid-card {
+    padding: 3mm !important;
+    border-radius: 2mm !important;
+  }
+
+  .slide-grid .grid-card i {
+    font-size: 16pt !important;
+  }
+
+  .slide-grid .grid-card h3 {
+    font-size: 10pt !important;
+  }
+
+  .slide-grid .grid-card p {
+    font-size: 8pt !important;
+  }
+
+  /* =================================================================
+     タイムラインスライド（印刷用）
+     ================================================================= */
+  .slide-timeline .timeline-container {
+    gap: 2mm !important;
+  }
+
+  .slide-timeline .timeline-item {
+    gap: 2mm !important;
+  }
+
+  .slide-timeline .timeline-content {
+    padding: 3mm !important;
+    border-radius: 2mm !important;
+  }
+
+  .slide-timeline .timeline-content h4 {
+    font-size: 10pt !important;
+  }
+
+  .slide-timeline .timeline-content p {
+    font-size: 9pt !important;
+  }
+
+  /* =================================================================
+     共通カード背景・ボーダー
+     ================================================================= */
   .list-item,
   .compare-item,
   .flow-step,
-  .timeline-content,
   .agenda-item,
-  .stat-item,
-  .diagram-node,
-  .pyramid-level,
+  .cycle-node,
   .icon-wrapper,
   .grid-card,
+  .stat-item,
+  .timeline-content,
+  .pyramid-level,
   .highlight-item,
   .process-step {
-    background: #F5F5F5 !important;
-    border: 1px solid #DDD !important;
+    background: #F7F7F7 !important;
+    border: 0.3pt solid #DDD !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* -----------------------------------------------------------------
-     テキスト色変換（ライト → ダーク）
-     ----------------------------------------------------------------- */
+  .cycle-center,
+  .step-number,
+  .agenda-number,
+  .process-number {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* =================================================================
+     テキスト色変換（印刷用）
+     ================================================================= */
   h1, h2, h3, h4, h5, h6,
   p, span, li, td, th,
   .main-title, .sub-title,
@@ -451,129 +646,35 @@
   .pyramid-title, .pyramid-level span,
   .highlight-title, .highlight-item h3, .highlight-item p,
   .process-title, .process-step span,
-  .hero-title, .hero-subtitle, .hero-thanks {
-    color: #1F1F28 !important;
-    -webkit-text-fill-color: #1F1F28 !important;
-  }
-
-  /* 統計値のグラデーションテキストを単色に */
-  .stat-value {
-    background: none !important;
-    -webkit-background-clip: unset !important;
-    background-clip: unset !important;
-    -webkit-text-fill-color: #7E9CD8 !important;
-    color: #7E9CD8 !important;
+  .hero-title, .hero-subtitle {
+    color: #2D2D2D !important;
+    -webkit-text-fill-color: #2D2D2D !important;
   }
 
   /* 補足テキスト */
   .text-note, .text-caption, .text-small,
-  .sub-title, .sub-message, .contact {
-    color: #666666 !important;
-    -webkit-text-fill-color: #666666 !important;
+  .sub-title, .sub-message {
+    color: #5C5C5C !important;
+    -webkit-text-fill-color: #5C5C5C !important;
   }
 
-  /* -----------------------------------------------------------------
-     アクセントカラー（維持）
-     ----------------------------------------------------------------- */
-  .highlight, .accent-yellow { color: #DCA561 !important; -webkit-text-fill-color: #DCA561 !important; }
-  .highlight-pink, .accent-pink { color: #D27E99 !important; -webkit-text-fill-color: #D27E99 !important; }
-  .highlight-aqua, .accent-aqua { color: #7AA89F !important; -webkit-text-fill-color: #7AA89F !important; }
-  .accent-blue { color: #7E9CD8 !important; -webkit-text-fill-color: #7E9CD8 !important; }
-  .accent-violet { color: #957FB8 !important; -webkit-text-fill-color: #957FB8 !important; }
-
-  /* -----------------------------------------------------------------
-     アイコン色
-     ----------------------------------------------------------------- */
-  i.fa, i.fas, i.far, i.fab,
-  .icon, [class*="fa-"] {
-    color: #54546D !important;
+  /* =================================================================
+     スライド番号（CSS counter使用）
+     ================================================================= */
+  body {
+    counter-reset: slide-counter;
   }
 
-  .icon-wrapper i,
-  .title-icon, .section-icon, .message-icon i,
-  .list-item i, .flow-step i, .stat-item i,
-  .grid-card i, .hero-icon {
-    color: #7E9CD8 !important;
+  .slider__item {
+    counter-increment: slide-counter;
   }
 
-  .icon-wrapper.accent-pink i, .card-pink i { color: #D27E99 !important; }
-  .icon-wrapper.accent-aqua i, .card-aqua i { color: #7AA89F !important; }
-  .icon-wrapper.accent-yellow i, .card-yellow i { color: #DCA561 !important; }
-
-  /* -----------------------------------------------------------------
-     テーブル
-     ----------------------------------------------------------------- */
-  table {
-    border-collapse: collapse !important;
-    width: 100% !important;
-  }
-
-  th {
-    background: #E8E8E8 !important;
-    color: #1F1F28 !important;
-    border: 1px solid #CCC !important;
-  }
-
-  td {
-    background: white !important;
-    color: #1F1F28 !important;
-    border: 1px solid #DDD !important;
-  }
-
-  tr:nth-child(even) td {
-    background: #F5F5F5 !important;
-  }
-
-  /* -----------------------------------------------------------------
-     フロー・タイムライン要素
-     ----------------------------------------------------------------- */
-  .flow-arrow {
-    color: #DCA561 !important;
-  }
-
-  .timeline-line {
-    background: #7E9CD8 !important;
-  }
-
-  .timeline-dot {
-    background: #7E9CD8 !important;
-    border-color: white !important;
-  }
-
-  .step-number, .agenda-number, .process-number {
-    background: #7E9CD8 !important;
-    color: white !important;
-  }
-
-  /* -----------------------------------------------------------------
-     比較スライド
-     ----------------------------------------------------------------- */
-  .compare-item.left, .compare-item.before {
-    border-top-color: #D27E99 !important;
-  }
-
-  .compare-item.right, .compare-item.after {
-    border-top-color: #7AA89F !important;
-  }
-
-  /* -----------------------------------------------------------------
-     図解（ピラミッド等）
-     ----------------------------------------------------------------- */
-  .pyramid-level:nth-child(1) {
-    background: #7E9CD8 !important;
-  }
-
-  .pyramid-level:nth-child(1) span {
-    color: white !important;
-    -webkit-text-fill-color: white !important;
-  }
-
-  /* -----------------------------------------------------------------
-     その他の要素
-     ----------------------------------------------------------------- */
-  .section-divider, .hero-badge {
-    background: linear-gradient(90deg, #7E9CD8, #D27E99) !important;
-    print-color-adjust: exact !important;
-    -webkit-print-color-adjust: exact !important;
+  .slider__item::before {
+    content: counter(slide-counter) " / {{総スライド数}}";
+    position: absolute !important;
+    bottom: 2mm !important;
+    right: 3mm !important;
+    font-size: 8pt !important;
+    color: #888 !important;
   }
 }
