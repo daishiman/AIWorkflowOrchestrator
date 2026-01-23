@@ -3,19 +3,10 @@
 ## メタ情報
 
 ```yaml
-issue_number: 455
-task_id: UT-009
-task_name: Chat History Additional Use Cases
-category: 実装
-target_feature: チャット履歴機能（chat-history）
-priority: 中
-scale: 中規模
-status: 未実施
-created_date: 2026-01-22
-dependencies: ["UT-007"]
+issue_number: null
 ```
 
-## メタ情報（テーブル形式）
+## メタ情報
 
 | 項目         | 内容                                                                   |
 | ------------ | ---------------------------------------------------------------------- |

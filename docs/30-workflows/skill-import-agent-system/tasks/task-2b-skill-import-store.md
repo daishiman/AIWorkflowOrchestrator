@@ -19,6 +19,14 @@ tags: [backend, main-process, persistence]
 インポート済みスキルの情報を `electron-store` で永続化するストアを実装する。
 スキーマバージョン管理とマイグレーション機能を含む。
 
+## 保存先ディレクトリ
+
+electron-store の設定ファイルは `~/.aiworkflow/config/` 配下に保存される。
+
+| 保存先                                    | 説明                     |
+| ----------------------------------------- | ------------------------ |
+| `~/.aiworkflow/config/skill-imports.json` | インポート済みスキル情報 |
+
 ## 入力
 
 - TASK-1-1 で作成した型定義
