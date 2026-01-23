@@ -1,5 +1,20 @@
 # Workspace Manager 改善タスク
 
+## メタ情報
+
+```yaml
+issue_number: 458
+task_id: WS-IMP-001
+task_name: Workspace Manager 改善タスク
+category: 改善
+target_feature: Workspace Manager
+priority: 中
+scale: 中規模
+status: 未実施
+created_date: 2025-12-11
+dependencies: []
+```
+
 ## 概要
 
 **作成日時**: 2025-12-11
