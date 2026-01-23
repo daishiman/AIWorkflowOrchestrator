@@ -1336,6 +1336,90 @@ export interface ClaudeCliAPI {
   ) => () => void;
 }
 
+// ===== System Prompt Template operations =====
+
+export interface SystemPromptTemplate {
+  id: string;
+  userId: string;
+  name: string;
+  content: string;
+  isPreset: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface SystemPromptListRequest {
+  userId: string;
+  options?: {
+    includePresets?: boolean;
+    sortBy?: "name" | "createdAt" | "updatedAt";
+    sortOrder?: "asc" | "desc";
+  };
+}
+
+export interface SystemPromptGetRequest {
+  id: string;
+}
+
+export interface SystemPromptCreateRequest {
+  userId: string;
+  data: {
+    name: string;
+    content: string;
+  };
+}
+
+export interface SystemPromptUpdateRequest {
+  id: string;
+  userId: string;
+  data: {
+    name?: string;
+    content?: string;
+  };
+}
+
+export interface SystemPromptDeleteRequest {
+  id: string;
+  userId: string;
+}
+
+export interface SystemPromptMigrationResult {
+  migratedCount: number;
+  skippedCount: number;
+  failedCount: number;
+  errors: Array<{ name: string; reason: string }>;
+}
+
+export interface SystemPromptResult<T> {
+  success: boolean;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+    details?: unknown;
+  };
+}
+
+export interface SystemPromptAPI {
+  list: (
+    request: SystemPromptListRequest,
+  ) => Promise<SystemPromptResult<SystemPromptTemplate[]>>;
+  get: (
+    request: SystemPromptGetRequest,
+  ) => Promise<SystemPromptResult<SystemPromptTemplate>>;
+  create: (
+    request: SystemPromptCreateRequest,
+  ) => Promise<SystemPromptResult<SystemPromptTemplate>>;
+  update: (
+    request: SystemPromptUpdateRequest,
+  ) => Promise<SystemPromptResult<SystemPromptTemplate>>;
+  delete: (
+    request: SystemPromptDeleteRequest,
+  ) => Promise<SystemPromptResult<void>>;
+  migrate: () => Promise<SystemPromptResult<SystemPromptMigrationResult>>;
+  getPresets: () => Promise<SystemPromptResult<SystemPromptTemplate[]>>;
+}
+
 // Global type declaration
 declare global {
   interface Window {
@@ -1345,6 +1429,7 @@ declare global {
     agentSDKAPI: AgentSDKAPI;
     slideSettingsAPI: SlideSettingsAPI;
     claudeCliAPI: ClaudeCliAPI;
+    systemPromptAPI: SystemPromptAPI;
   }
 }
 

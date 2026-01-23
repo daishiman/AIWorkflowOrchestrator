@@ -207,6 +207,15 @@ export const IPC_CHANNELS = {
   // Claude CLI streaming events (main -> renderer)
   CLAUDE_CLI_SESSION_OUTPUT: "claude-cli:session-output",
   CLAUDE_CLI_SESSION_STATUS: "claude-cli:session-status",
+
+  // System Prompt Template operations
+  SYSTEM_PROMPT_LIST: "system-prompt:list",
+  SYSTEM_PROMPT_GET: "system-prompt:get",
+  SYSTEM_PROMPT_CREATE: "system-prompt:create",
+  SYSTEM_PROMPT_UPDATE: "system-prompt:update",
+  SYSTEM_PROMPT_DELETE: "system-prompt:delete",
+  SYSTEM_PROMPT_MIGRATE: "system-prompt:migrate",
+  SYSTEM_PROMPT_GET_PRESETS: "system-prompt:get-presets",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -358,6 +367,14 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.CLAUDE_CLI_TERMINATE_SESSION,
   IPC_CHANNELS.CLAUDE_CLI_LIST_SESSIONS,
   IPC_CHANNELS.CLAUDE_CLI_GET_SESSION,
+  // System Prompt Template channels
+  IPC_CHANNELS.SYSTEM_PROMPT_LIST,
+  IPC_CHANNELS.SYSTEM_PROMPT_GET,
+  IPC_CHANNELS.SYSTEM_PROMPT_CREATE,
+  IPC_CHANNELS.SYSTEM_PROMPT_UPDATE,
+  IPC_CHANNELS.SYSTEM_PROMPT_DELETE,
+  IPC_CHANNELS.SYSTEM_PROMPT_MIGRATE,
+  IPC_CHANNELS.SYSTEM_PROMPT_GET_PRESETS,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

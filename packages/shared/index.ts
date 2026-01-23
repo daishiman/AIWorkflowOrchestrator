@@ -164,3 +164,7 @@ export type {
   IChatMessageRepository,
   ChatSessionSearchCriteria,
 } from "./src/features/chat-history";
+
+// Note: DrizzleChatSessionRepository, DrizzleChatMessageRepository はNode.js専用のため
+// Renderer側でのビルドエラーを避けるため、ここからはエクスポートしない。
+// Main Process側では packages/shared/src/features/chat-history から直接インポートすること。

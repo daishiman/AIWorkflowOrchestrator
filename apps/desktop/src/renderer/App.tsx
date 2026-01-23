@@ -16,6 +16,10 @@ import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import type { ViewType } from "./components/organisms/AppDock";
 
+// Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
+// Chat History機能はIPC経由でMain Processと連携する形で後続タスクで実装予定
+// See: UT-009 (Chat History Additional Use Cases)
+
 function App(): JSX.Element {
   // 🔧 デバッグ用: 初回起動時にストレージをクリア（TODO: テスト完了後に削除）
   useEffect(() => {
