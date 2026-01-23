@@ -1,5 +1,20 @@
 # アーキテクチャ改善タスク仕様書
 
+## メタ情報
+
+```yaml
+issue_number: 456
+task_id: ARCH-IMP-001
+task_name: login-only-auth アーキテクチャ改善
+category: リファクタリング
+target_feature: 認証画面（AuthView/AuthGuard/AccountSection）
+priority: 低
+scale: 小規模
+status: 未実施
+created_date: 2026-01-21
+dependencies: []
+```
+
 ## タスク概要
 
 | 項目       | 内容                                                                |
