@@ -20,7 +20,7 @@ tags: [backend, skill, agent]
 
 ## 出力
 
-- `~/.claude/skills/skill-creator/agents/validator.md`
+- `~/.aiworkflow/skills/skill-creator/agents/validator.md`
 
 ## 実装詳細
 
@@ -104,7 +104,7 @@ async function validateTask(taskSpec): Promise<ValidationResult> {
 
 | 操作 | パス                                               |
 | ---- | -------------------------------------------------- |
-| 作成 | `~/.claude/skills/skill-creator/agents/validator.md` |
+| 作成 | `~/.aiworkflow/skills/skill-creator/agents/validator.md` |
 
 ## 完了条件
 

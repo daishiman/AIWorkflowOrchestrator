@@ -281,4 +281,6 @@ describe("SkillExecutor - Hooks", () => {
 
 ## 参考資料
 
-- SDK Reference: `~/.claude/skills/claude-agent-sdk/references/hooks-system.md`
+- SDK Reference（以下の両パスをスキャン）:
+  - `~/.aiworkflow/skills/claude-agent-sdk/references/hooks-system.md` （アプリ独自、読み書き）
+  - `~/.claude/skills/claude-agent-sdk/references/hooks-system.md` （Claude CLI、読み取り専用）

@@ -20,9 +20,9 @@ skill-creator で使用する参照資料を作成する。
 
 ## 出力
 
-- `~/.claude/skills/skill-creator/references/task-template.md`
-- `~/.claude/skills/skill-creator/references/skill-structure.md`
-- `~/.claude/skills/skill-creator/references/api-patterns.md`
+- `~/.aiworkflow/skills/skill-creator/references/task-template.md`
+- `~/.aiworkflow/skills/skill-creator/references/skill-structure.md`
+- `~/.aiworkflow/skills/skill-creator/references/api-patterns.md`
 
 ## 実装詳細
 
@@ -147,9 +147,9 @@ try {
 
 | 操作 | パス                                                          |
 | ---- | ------------------------------------------------------------- |
-| 作成 | `~/.claude/skills/skill-creator/references/task-template.md`  |
-| 作成 | `~/.claude/skills/skill-creator/references/skill-structure.md` |
-| 作成 | `~/.claude/skills/skill-creator/references/api-patterns.md`    |
+| 作成 | `~/.aiworkflow/skills/skill-creator/references/task-template.md`  |
+| 作成 | `~/.aiworkflow/skills/skill-creator/references/skill-structure.md` |
+| 作成 | `~/.aiworkflow/skills/skill-creator/references/api-patterns.md`    |
 
 ## 完了条件
 

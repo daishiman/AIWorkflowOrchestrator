@@ -24,12 +24,12 @@ verification:
 
 artifacts:
   creates:
-    - ~/.claude/skills/skill-creator/SKILL.md
-    - ~/.claude/skills/skill-creator/agents/task-generator.md
-    - ~/.claude/skills/skill-creator/agents/code-generator.md
-    - ~/.claude/skills/skill-creator/agents/validator.md
-    - ~/.claude/skills/skill-creator/references/task-template.md
-    - ~/.claude/skills/skill-creator/references/skill-structure.md
+    - ~/.aiworkflow/skills/skill-creator/SKILL.md
+    - ~/.aiworkflow/skills/skill-creator/agents/task-generator.md
+    - ~/.aiworkflow/skills/skill-creator/agents/code-generator.md
+    - ~/.aiworkflow/skills/skill-creator/agents/validator.md
+    - ~/.aiworkflow/skills/skill-creator/references/task-template.md
+    - ~/.aiworkflow/skills/skill-creator/references/skill-structure.md
     - apps/desktop/src/main/services/skill/SkillCreatorService.ts
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
@@ -114,7 +114,7 @@ artifacts:
 **操作**:
 
 ```markdown
-## <!-- ~/.claude/skills/skill-creator/SKILL.md -->
+## <!-- ~/.aiworkflow/skills/skill-creator/SKILL.md -->
 
 allowed_tools:
 
@@ -430,7 +430,7 @@ REST API/Webhook連携スキルを生成します。
 **操作**:
 
 ```markdown
-<!-- ~/.claude/skills/skill-creator/agents/task-generator.md -->
+<!-- ~/.aiworkflow/skills/skill-creator/agents/task-generator.md -->
 
 # タスク仕様書生成エージェント
 
@@ -561,7 +561,7 @@ function generateTaskSpec(
 
 **操作**:
 ```markdown
-<!-- ~/.claude/skills/skill-creator/agents/code-generator.md -->
+<!-- ~/.aiworkflow/skills/skill-creator/agents/code-generator.md -->
 
 # コード生成エージェント
 
@@ -689,7 +689,7 @@ async function generateCode(taskSpec: TaskSpec): Promise<GeneratedCode> {
 
 **操作**:
 ```markdown
-<!-- ~/.claude/skills/skill-creator/agents/validator.md -->
+<!-- ~/.aiworkflow/skills/skill-creator/agents/validator.md -->
 
 # 検証エージェント
 
@@ -1050,7 +1050,7 @@ export class SkillCreatorService {
 
 ### 必須条件
 
-- [ ] skill-creator スキルが ~/.claude/skills/ に作成される
+- [ ] skill-creator スキルが ~/.aiworkflow/skills/ に作成される
 - [ ] `/skill-creator create` で新規スキルが生成できる
 - [ ] `/skill-creator improve` で既存スキルが改善できる
 - [ ] `/skill-creator execute` でタスク仕様書が実行できる
@@ -1062,7 +1062,7 @@ export class SkillCreatorService {
 
 ```bash
 # スキル存在確認
-ls -la ~/.claude/skills/skill-creator/
+ls -la ~/.aiworkflow/skills/skill-creator/
 
 # 型チェック
 pnpm --filter @repo/desktop typecheck
@@ -1085,7 +1085,7 @@ pnpm --filter @repo/desktop test -- --grep "SkillCreator"
 
 ```bash
 # 生成したスキルを削除
-rm -rf ~/.claude/skills/{skill-name}
+rm -rf ~/.aiworkflow/skills/{skill-name}
 
 # 生成したタスク仕様書を削除
 rm -rf docs/30-workflows/{skill-name}

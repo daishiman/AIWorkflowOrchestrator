@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-22T05:33:04.045Z",
-  "totalKeywords": 745,
+  "generated": "2026-01-23T14:09:42.144Z",
+  "totalKeywords": 760,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -62,6 +62,7 @@
       "interfaces-rag-graphrag-query.md",
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag.md",
+      "interfaces-system-prompt.md",
       "security-implementation.md",
       "task-workflow.md",
       "technology-backend.md",
@@ -134,6 +135,7 @@
       "interfaces-rag-knowledge-graph-store.md",
       "interfaces-rag-search.md",
       "interfaces-rag.md",
+      "interfaces-system-prompt.md",
       "local-agent.md",
       "overview.md",
       "plugin-development.md",
@@ -216,6 +218,7 @@
       "interfaces-agent-sdk.md",
       "interfaces-llm.md",
       "interfaces-rag-file-selection.md",
+      "interfaces-system-prompt.md",
       "ui-ux-settings.md"
     ],
     "認証・プロフィール": [
@@ -426,10 +429,29 @@
       "architecture-chat-history.md",
       "database-architecture.md"
     ],
-    "Domain": [
-      "architecture-chat-history.md"
+    "UI": [
+      "architecture-chat-history.md",
+      "glossary.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-rag-file-selection.md",
+      "ui-ux-advanced.md",
+      "ui-ux-components.md",
+      "ui-ux-design-system.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-forms.md",
+      "ui-ux-history-panel.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md",
+      "ui-ux-system-prompt.md"
     ],
     "Layer": [
+      "architecture-chat-history.md"
+    ],
+    "Domain": [
       "architecture-chat-history.md"
     ],
     "Application": [
@@ -461,6 +483,29 @@
       "architecture-chat-history.md",
       "database-architecture.md",
       "interfaces-rag.md"
+    ],
+    "完了タスク": [
+      "architecture-chat-history.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-system-prompt.md",
+      "task-workflow.md",
+      "ui-ux-search-panel.md"
+    ],
+    "変更履歴": [
+      "architecture-chat-history.md",
+      "claude-code-commands.md",
+      "claude-code-overview.md",
+      "database-schema.md",
+      "interfaces-agent-sdk.md",
+      "interfaces-rag-community-detection.md",
+      "interfaces-rag-community-summarization.md",
+      "interfaces-rag-entity-extraction.md",
+      "interfaces-rag-graphrag-query.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "interfaces-rag-search.md",
+      "interfaces-system-prompt.md",
+      "task-workflow.md",
+      "ui-ux-history-panel.md"
     ],
     "データベース": [
       "architecture-database.md"
@@ -900,19 +945,6 @@
       "claude-code-overview.md",
       "claude-code-skills-process.md"
     ],
-    "変更履歴": [
-      "claude-code-commands.md",
-      "claude-code-overview.md",
-      "interfaces-agent-sdk.md",
-      "interfaces-rag-community-detection.md",
-      "interfaces-rag-community-summarization.md",
-      "interfaces-rag-entity-extraction.md",
-      "interfaces-rag-graphrag-query.md",
-      "interfaces-rag-knowledge-graph-store.md",
-      "interfaces-rag-search.md",
-      "task-workflow.md",
-      "ui-ux-history-panel.md"
-    ],
     "層アーキテクチャ設計仕様書": [
       "claude-code-overview.md"
     ],
@@ -987,6 +1019,7 @@
       "interfaces-converter.md",
       "interfaces-core.md",
       "interfaces-rag-entity-extraction.md",
+      "interfaces-system-prompt.md",
       "interfaces-workflow.md"
     ],
     "Skill": [
@@ -1172,6 +1205,9 @@
       "database-schema.md"
     ],
     "ユーザー関連テーブル": [
+      "database-schema.md"
+    ],
+    "システムプロンプト関連テーブル": [
       "database-schema.md"
     ],
     "チャット関連テーブル": [
@@ -1473,24 +1509,6 @@
     "インターフェース用語": [
       "glossary.md"
     ],
-    "UI": [
-      "glossary.md",
-      "interfaces-agent-sdk.md",
-      "interfaces-rag-file-selection.md",
-      "ui-ux-advanced.md",
-      "ui-ux-components.md",
-      "ui-ux-design-system.md",
-      "ui-ux-file-selector.md",
-      "ui-ux-forms.md",
-      "ui-ux-history-panel.md",
-      "ui-ux-llm-selector.md",
-      "ui-ux-navigation.md",
-      "ui-ux-panels.md",
-      "ui-ux-portal-patterns.md",
-      "ui-ux-search-panel.md",
-      "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
-    ],
     "デザイン用語": [
       "glossary.md"
     ],
@@ -1625,9 +1643,15 @@
     "セッション永続化": [
       "interfaces-agent-sdk.md"
     ],
-    "完了タスク": [
+    "Import": [
+      "interfaces-agent-sdk.md"
+    ],
+    "System": [
+      "interfaces-agent-sdk.md"
+    ],
+    "TASK": [
       "interfaces-agent-sdk.md",
-      "task-workflow.md"
+      "ui-ux-search-panel.md"
     ],
     "残課題": [
       "interfaces-agent-sdk.md",
@@ -1635,7 +1659,8 @@
     ],
     "未タスク": [
       "interfaces-agent-sdk.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "ui-ux-search-panel.md"
     ],
     "認証・プロフィール型定義": [
       "interfaces-auth.md"
@@ -1654,7 +1679,8 @@
     ],
     "Repository": [
       "interfaces-chat-history.md",
-      "interfaces-core.md"
+      "interfaces-core.md",
+      "interfaces-system-prompt.md"
     ],
     "サービスインターフェース": [
       "interfaces-chat-history.md"
@@ -1933,6 +1959,31 @@
     ],
     "ファイル・変換ドメイン型": [
       "interfaces-rag.md"
+    ],
+    "システムプロンプトインターフェース仕様": [
+      "interfaces-system-prompt.md"
+    ],
+    "エンティティ型定義": [
+      "interfaces-system-prompt.md"
+    ],
+    "チャネル仕様": [
+      "interfaces-system-prompt.md"
+    ],
+    "エラーコード体系": [
+      "interfaces-system-prompt.md"
+    ],
+    "バリデーションルール": [
+      "interfaces-system-prompt.md"
+    ],
+    "セキュリティ仕様": [
+      "interfaces-system-prompt.md"
+    ],
+    "データ永続化": [
+      "interfaces-system-prompt.md",
+      "ui-ux-system-prompt.md"
+    ],
+    "マイグレーション仕様": [
+      "interfaces-system-prompt.md"
     ],
     "IWorkflowExecutor": [
       "interfaces-workflow.md",
@@ -2597,6 +2648,18 @@
     "実装アーキテクチャ": [
       "ui-ux-search-panel.md"
     ],
+    "実装詳細": [
+      "ui-ux-search-panel.md"
+    ],
+    "SEARCH": [
+      "ui-ux-search-panel.md"
+    ],
+    "INTEGRATE": [
+      "ui-ux-search-panel.md"
+    ],
+    "将来の改善候補": [
+      "ui-ux-search-panel.md"
+    ],
     "設定画面": [
       "ui-ux-settings.md"
     ],
@@ -2640,9 +2703,6 @@
       "ui-ux-system-prompt.md"
     ],
     "連携仕様": [
-      "ui-ux-system-prompt.md"
-    ],
-    "データ永続化": [
       "ui-ux-system-prompt.md"
     ],
     "テスト実装": [

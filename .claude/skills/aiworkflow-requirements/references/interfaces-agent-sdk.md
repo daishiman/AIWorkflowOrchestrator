@@ -1957,7 +1957,292 @@ type IPCResponse<T> =
 
 ---
 
+## Skill Import Agent System 型定義（TASK-1-1）
+
+TASK-1-1で実装された16の共通型定義。specification.md §5.1に基づく。
+
+### 概要
+
+| カテゴリ         | 型数 | 説明                                       |
+| ---------------- | ---- | ------------------------------------------ |
+| スキルメタデータ | 4    | スキルの基本情報・構造を表す型             |
+| 実行関連         | 3    | スキル実行のリクエスト/レスポンス/ステータス |
+| ストリーミング   | 7    | 実行中のリアルタイムメッセージ型           |
+| 権限確認         | 2    | 実行時の権限確認フロー型                   |
+
+### スキルメタデータ型
+
+#### SkillOtherFile
+
+スキルディレクトリ直下のその他のファイル。
+
+```typescript
+interface SkillOtherFile {
+  filename: string;
+  type: "evals" | "logs" | "package" | "other";
+  size: number;
+}
+```
+
+#### SkillSubResource
+
+スキル配下のサブリソース（agents/, references/, scripts/ 等）。
+
+```typescript
+interface SkillSubResource {
+  filename: string;
+  relativePath: string;
+  description?: string;
+  size: number;
+}
+```
+
+#### SkillMetadata
+
+スキルメタデータ（SKILL.md frontmatter + ディレクトリ構造）。
+
+```typescript
+interface SkillMetadata {
+  name: string;              // スキル識別子
+  description: string;       // スキル説明
+  allowedTools?: string[];   // 許可ツール
+  path: string;              // ディレクトリパス
+  updatedAt: Date;           // 最終更新日時
+  agents: SkillSubResource[];
+  references: SkillSubResource[];
+  scripts: SkillSubResource[];
+  assets: SkillSubResource[];
+  schemas: SkillSubResource[];
+  indexes: SkillSubResource[];
+  otherFiles: SkillOtherFile[];
+}
+```
+
+#### ImportedSkill
+
+インポート済みスキル（SkillMetadataを継承）。
+
+```typescript
+interface ImportedSkill extends SkillMetadata {
+  importedAt: Date;
+  status: "active" | "disabled";
+  content?: string;  // SKILL.md本文キャッシュ
+}
+```
+
+### 実行関連型
+
+#### SkillExecutionRequest
+
+スキル実行リクエスト（Renderer → Main）。
+
+```typescript
+interface SkillExecutionRequest {
+  skillName: string;
+  prompt: string;
+  workingDirectory?: string;
+}
+```
+
+#### SkillExecutionResponse
+
+スキル実行レスポンス（Main → Renderer）。
+
+```typescript
+interface SkillExecutionResponse {
+  executionId: string;  // UUID、Main側で生成
+  success: boolean;
+  error?: string;
+}
+```
+
+#### SkillExecutionStatus
+
+スキル実行ステータス。
+
+```typescript
+type SkillExecutionStatus =
+  | "idle"
+  | "running"
+  | "permission_pending"
+  | "completed"
+  | "cancelled"
+  | "error";
+```
+
+### ストリーミングメッセージ型
+
+#### SkillStreamMessageType
+
+メッセージ種別の列挙型。
+
+```typescript
+type SkillStreamMessageType =
+  | "assistant"
+  | "tool_use"
+  | "tool_result"
+  | "status"
+  | "error";
+```
+
+#### AssistantMessageContent
+
+```typescript
+interface AssistantMessageContent {
+  text: string;
+  isPartial?: boolean;
+}
+```
+
+#### ToolUseMessageContent
+
+```typescript
+interface ToolUseMessageContent {
+  toolName: string;
+  args: Record<string, unknown>;
+  toolUseId: string;
+}
+```
+
+#### ToolResultMessageContent
+
+```typescript
+interface ToolResultMessageContent {
+  toolUseId: string;
+  success: boolean;
+  result?: unknown;
+  error?: string;
+}
+```
+
+#### StatusMessageContent
+
+```typescript
+interface StatusMessageContent {
+  status: "started" | "tool_executing" | "tool_completed" | "completed";
+  detail?: string;
+}
+```
+
+#### ErrorMessageContent
+
+```typescript
+interface ErrorMessageContent {
+  code: "sdk_error" | "permission_denied" | "timeout" | "network" | "unknown";
+  message: string;
+  retryable: boolean;
+}
+```
+
+#### SkillStreamMessage（Discriminated Union）
+
+型安全なストリーミングメッセージ。typeプロパティで型判別可能。
+
+```typescript
+type SkillStreamMessage =
+  | { executionId: string; type: "assistant"; content: AssistantMessageContent; timestamp: number; }
+  | { executionId: string; type: "tool_use"; content: ToolUseMessageContent; timestamp: number; }
+  | { executionId: string; type: "tool_result"; content: ToolResultMessageContent; timestamp: number; }
+  | { executionId: string; type: "status"; content: StatusMessageContent; timestamp: number; }
+  | { executionId: string; type: "error"; content: ErrorMessageContent; timestamp: number; };
+```
+
+### 権限確認型
+
+#### SkillPermissionRequest
+
+権限確認リクエスト（Main → Renderer）。
+
+```typescript
+interface SkillPermissionRequest {
+  executionId: string;
+  requestId: string;
+  toolName: string;
+  args: Record<string, unknown>;
+  reason?: string;
+}
+```
+
+#### SkillPermissionResponse
+
+権限確認レスポンス（Renderer → Main）。
+
+```typescript
+interface SkillPermissionResponse {
+  requestId: string;
+  approved: boolean;
+  rememberChoice?: boolean;
+  rejectReason?: string;
+}
+```
+
+### 使用方法
+
+```typescript
+import type {
+  SkillMetadata,
+  SkillSubResource,
+  SkillOtherFile,
+  ImportedSkill,
+  SkillExecutionRequest,
+  SkillExecutionResponse,
+  SkillExecutionStatus,
+  SkillStreamMessage,
+  SkillStreamMessageType,
+  AssistantMessageContent,
+  ToolUseMessageContent,
+  ToolResultMessageContent,
+  StatusMessageContent,
+  ErrorMessageContent,
+  SkillPermissionRequest,
+  SkillPermissionResponse,
+} from "@repo/shared";
+```
+
+### 関連ドキュメント（TASK-1-1）
+
+| ドキュメント       | パス                                                                           |
+| ------------------ | ------------------------------------------------------------------------------ |
+| タスク完了サマリー | `docs/30-workflows/task-1-1-type-definitions/outputs/task-completion-summary.md` |
+| 実装ファイル       | `packages/shared/src/types/skill.ts`                                           |
+| テストファイル     | `packages/shared/src/types/__tests__/skill-import.test.ts`                     |
+| 仕様書             | `docs/30-workflows/skill-import-agent-system/specification.md` §5.1            |
+
+---
+
 ## 完了タスク
+
+### タスク: skill-import-type-definitions（TASK-1-1、2026-01-23完了）
+
+| 項目         | 内容                                                   |
+| ------------ | ------------------------------------------------------ |
+| タスクID     | TASK-1-1                                               |
+| 完了日       | 2026-01-23                                             |
+| ステータス   | **完了**                                               |
+| テスト数     | 59（23 + 36）                                          |
+| 発見課題     | 0件                                                    |
+| ドキュメント | `docs/30-workflows/task-1-1-type-definitions/`         |
+
+#### 実装内容
+
+specification.md §5.1に定義された16の共通型を`packages/shared/src/types/skill.ts`に追加。
+
+#### 解決した問題
+
+`claude-cli/types.ts`の`SkillMetadata`と新規型の名前衝突を、既存パターンに従い`ClaudeCliSkillMetadata`にリネームして解決。
+
+#### 品質基準
+
+| 基準              | 結果 |
+| ----------------- | ---- |
+| TypeScript strict | PASS |
+| ESLint            | PASS |
+| Prettier          | PASS |
+| any型の使用       | 0件  |
+| @ts-ignore        | 0件  |
+| JSDocカバレッジ   | 100% |
+
+---
 
 ### タスク: skill-import-persistence-bugfix（2026-01-22完了）
 
@@ -2042,6 +2327,64 @@ type IPCResponse<T> =
 | `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.integration.test.ts` | 新規 |
 | `apps/desktop/src/main/ipc/__tests__/skillHandlers.integration.test.ts` | 新規 |
 
+### タスク: skill-import-type-definitions（2026-01-23完了）
+
+| 項目         | 内容                                               |
+| ------------ | -------------------------------------------------- |
+| タスクID     | TASK-1-1                                           |
+| 完了日       | 2026-01-23                                         |
+| ステータス   | **完了**                                           |
+| テスト数     | 59（自動テスト: 36ユニット + 23インポート）        |
+| 発見課題     | 0件                                                |
+| ドキュメント | `docs/30-workflows/task-1-1-type-definitions/`     |
+
+#### 概要
+
+specification.md §5.1に定義されたスキルインポートシステム用の共通型定義（16型）を`packages/shared`に実装。
+
+#### 実装内容
+
+| カテゴリ         | 型名                     | 用途                               |
+| ---------------- | ------------------------ | ---------------------------------- |
+| スキルメタデータ | SkillMetadata            | スキルの基本情報（frontmatter）    |
+|                  | SkillSubResource         | サブリソースファイル情報           |
+|                  | SkillOtherFile           | その他のファイル情報               |
+|                  | ImportedSkill            | インポート済みスキル情報           |
+| 実行関連         | SkillExecutionRequest    | スキル実行リクエスト               |
+|                  | SkillExecutionResponse   | スキル実行レスポンス               |
+|                  | SkillExecutionStatus     | 実行ステータス（pending等）        |
+| ストリーミング   | SkillStreamMessageType   | メッセージタイプ（リテラル型）     |
+|                  | SkillStreamMessage       | ストリーミングメッセージ（DU）     |
+|                  | AssistantMessageContent  | アシスタントメッセージ内容         |
+|                  | ToolUseMessageContent    | ツール使用メッセージ内容           |
+|                  | ToolResultMessageContent | ツール結果メッセージ内容           |
+|                  | StatusMessageContent     | ステータスメッセージ内容           |
+|                  | ErrorMessageContent      | エラーメッセージ内容               |
+| 権限確認         | SkillPermissionRequest   | 権限確認リクエスト                 |
+|                  | SkillPermissionResponse  | 権限確認レスポンス                 |
+
+#### 品質基準
+
+| 基準              | 結果 |
+| ----------------- | ---- |
+| TypeScript strict | PASS |
+| ESLint            | PASS |
+| Prettier          | PASS |
+| any型の使用       | 0件  |
+| @ts-ignore        | 0件  |
+| JSDocカバレッジ   | 100% |
+
+#### 変更ファイル
+
+| ファイル                                                   | 変更種別 |
+| ---------------------------------------------------------- | -------- |
+| `packages/shared/src/types/skill.ts`                       | 更新     |
+| `packages/shared/index.ts`                                 | 更新     |
+| `packages/shared/src/claude-cli/types.ts`                  | 更新     |
+| `apps/desktop/src/main/claude-cli/SkillScanner.ts`         | 更新     |
+| `packages/shared/src/types/__tests__/skill-import.test.ts` | 新規     |
+| `packages/shared/src/types/__tests__/manual-dx-test.ts`    | 新規     |
+
 ---
 
 ## 残課題（未タスク）
@@ -2070,6 +2413,7 @@ type IPCResponse<T> =
 | Session Persistence実装ガイド       | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`  |
 | スキルインポート永続化バグ修正      | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md` |
 | スキルインポートストア永続化問題修正 | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md` |
+| スキルインポート共通型定義（TASK-1-1） | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md` |
 
 ---
 
@@ -2081,3 +2425,5 @@ type IPCResponse<T> =
 | 1.1.0      | 2026-01-22 | skill-import-persistence-bugfix完了記録追加                       |
 | 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、E2Eテストタスク登録             |
 | 1.3.0      | 2026-01-22 | skill-import-store-persistence完了記録追加（統合テスト23件追加、発見課題0件） |
+| 1.4.0      | 2026-01-23 | TASK-1-1（スキルインポート共通型定義）完了記録追加（16型、59テスト） |
+| 1.5.0      | 2026-01-23 | TASK-1-1 型定義セクション追加（16型の詳細仕様） |
