@@ -1,6 +1,6 @@
 {
   "skill_name": "aiworkflow-requirements",
-  "current_level": 2,
+  "current_level": 3,
   "levels": {
     "1": {
       "name": "Novice",
@@ -23,7 +23,7 @@
     "3": {
       "name": "Expert",
       "description": "大規模仕様管理とインデックス最適化",
-      "unlocked": false,
+      "unlocked": true,
       "requirements": {
         "min_usage_count": 20,
         "min_success_rate": 0.8
@@ -40,10 +40,10 @@
     }
   },
   "metrics": {
-    "total_usage_count": 19,
-    "success_count": 19,
+    "total_usage_count": 20,
+    "success_count": 20,
     "failure_count": 0,
     "average_satisfaction": 4.5,
-    "last_evaluated": "2026-01-22T13:47:58.498Z"
+    "last_evaluated": "2026-01-24T03:43:19.280Z"
   }
 }

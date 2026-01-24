@@ -1420,6 +1420,29 @@ export interface SystemPromptAPI {
   getPresets: () => Promise<SystemPromptResult<SystemPromptTemplate[]>>;
 }
 
+// ===== Conversation operations =====
+
+export type {
+  ConversationAPI,
+  ConversationSummary,
+  Conversation,
+  Message,
+  ConversationListRequest,
+  ConversationGetRequest,
+  ConversationCreateRequest,
+  ConversationUpdateRequest,
+  ConversationDeleteRequest,
+  ConversationAddMessageRequest,
+  ConversationSearchRequest,
+  ConversationListResponse,
+  ConversationGetResponse,
+  ConversationCreateResponse,
+  ConversationUpdateResponse,
+  ConversationDeleteResponse,
+  ConversationAddMessageResponse,
+  ConversationSearchResponse,
+} from "../shared/types/conversation";
+
 // Global type declaration
 declare global {
   interface Window {
@@ -1430,6 +1453,7 @@ declare global {
     slideSettingsAPI: SlideSettingsAPI;
     claudeCliAPI: ClaudeCliAPI;
     systemPromptAPI: SystemPromptAPI;
+    conversationAPI: import("../shared/types/conversation").ConversationAPI;
   }
 }
 

@@ -1,0 +1,142 @@
+{
+  "taskId": "UT-LLM-HISTORY-001",
+  "taskName": "llm-conversation-history-persistence",
+  "issueNumber": 463,
+  "createdAt": "2026-01-24T00:00:00Z",
+  "updatedAt": "2026-01-24T11:15:00Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements.md"]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/schema-design.md",
+        "outputs/phase-2/architecture.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/gate-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-list.md"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-report.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md",
+        "outputs/phase-7/gate-result.md"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/code-quality-report.md"
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "skipped",
+      "artifacts": [],
+      "note": "ユーザー指示によりスキップ"
+    }
+  },
+  "dependencies": {
+    "tasks": [
+      {
+        "taskId": "TASK-CHAT-SYSPROMPT-LLM-001",
+        "taskName": "システムプロンプトLLM API統合",
+        "status": "completed"
+      }
+    ],
+    "specifications": [
+      "interfaces-llm.md",
+      "database-schema.md",
+      "architecture-database.md"
+    ]
+  },
+  "codeArtifacts": [
+    {
+      "path": "apps/desktop/src/main/repositories/conversationRepository.ts",
+      "lines": 457,
+      "tests": 75
+    },
+    {
+      "path": "apps/desktop/src/main/ipc/conversationHandlers.ts",
+      "lines": 243,
+      "tests": 39
+    },
+    {
+      "path": "apps/desktop/src/shared/types/conversation.ts",
+      "lines": 234,
+      "tests": 0
+    },
+    {
+      "path": "apps/desktop/src/preload/channels.ts",
+      "linesAdded": 20,
+      "tests": 0
+    }
+  ],
+  "testSummary": {
+    "total": 114,
+    "passed": 114,
+    "failed": 0,
+    "coverage": {
+      "line": 100,
+      "branch": 100,
+      "function": 100
+    }
+  }
+}
