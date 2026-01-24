@@ -24,7 +24,7 @@ allowed-tools:
 
 ## 概要
 
-AIWorkflowOrchestratorプロジェクトの全仕様（89ファイル・約22,000行）を管理するスキル。
+AIWorkflowOrchestratorプロジェクトの全仕様（88ファイル・約22,000行）を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
 ## ワークフロー
@@ -57,14 +57,14 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ### 仕様ファイル一覧
 
-**85ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
+**88ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
 
 | トピック         | ファイル数 |
 | ---------------- | ---------- |
 | 概要・品質       | 4          |
 | アーキテクチャ   | 8          |
-| インターフェース | 18         |
-| API設計          | 7          |
+| インターフェース | 19         |
+| API設計          | 8          |
 | データベース     | 4          |
 | UI/UX            | 13         |
 | セキュリティ     | 5          |
@@ -146,7 +146,8 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                              |
 | ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.21.0  | 2026-01-23 | Workspace Chat Edit追加: interfaces-llm.md（FileContext/EditCommand/GeneratedResult型）、architecture-patterns.md（chatEditSliceパターン）、api-endpoints.md（chat-edit IPCチャネル4種）追加、89ファイル構成 |
+| 6.22.0  | 2026-01-24 | TASK-2B SkillImportStore追加: interfaces-agent-sdk.mdに「SkillImportStore（TASK-2B）」セクション新設（スキーマ・API・セキュリティ・テスト仕様詳細約230行）、SkillImportManagerとの差分表追加 |
+| 6.21.0  | 2026-01-23 | Workspace Chat Edit追加: interfaces-llm.md（FileContext/EditCommand/GeneratedResult型）、architecture-patterns.md（chatEditSliceパターン）、api-endpoints.md（chat-edit IPCチャネル4種）追加、88ファイル構成 |
 | 6.20.0  | 2026-01-23 | TASK-1-1型定義追加: interfaces-agent-sdk.mdに「Skill Import Agent System 型定義（TASK-1-1）」セクション新設（16型詳細仕様）、連携スキル参照追加、88ファイル構成に拡張                                  |
 | 6.19.0  | 2026-01-22 | React Context DI追加（UT-006完了）: architecture-chat-history.mdにUI Layerセクション追加（ChatHistoryContext/Provider/useChatHistory/MockProvider）、topic-map.md更新、8アーキテクチャファイル構成    |
 | 6.18.0  | 2026-01-22 | Drizzle Repository実装追加: architecture-chat-history.md更新（DrizzleChatSessionRepository/DrizzleChatMessageRepository、エラーハンドリング、テスト構成）                                           |
