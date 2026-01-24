@@ -832,6 +832,237 @@ interface SkillStore {
 
 ---
 
+## SkillImportStore（TASK-2B）
+
+### 概要
+
+インポートしたスキルの情報を永続化するストアサービス。electron-storeを使用してアプリケーション再起動後もデータを保持する。SkillImportManagerとは異なり、スキルメタデータ・設定・権限・キャッシュを包括的に管理する。
+
+**実装ファイル**:
+
+- Store: `apps/desktop/src/main/settings/skillImportStore.ts`
+- Test: `apps/desktop/src/main/settings/__tests__/skillImportStore.test.ts`
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  Renderer Process                           │
+│  (React UI)                                                 │
+└─────────────────────────────────────────────────────────────┘
+                         │ IPC (TASK-2C)
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Main Process                              │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │            IPC Handler (TASK-2C)                     │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                         │                                   │
+│                         ▼                                   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │              SkillImportStore                        │   │
+│  │  - getImported() / addImport() / removeImport()      │   │
+│  │  - getSettings() / updateSettings()                  │   │
+│  │  - rememberPermission() / getRememberedPermission()  │   │
+│  │  - setCache() / getCache() / invalidateCache()       │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                         │                                   │
+│                         ▼                                   │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │              electron-store                          │   │
+│  │  ~/.aiworkflow/config/skill-imports.json             │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### スキーマ定義
+
+```typescript
+interface SkillStoreSchema {
+  schemaVersion: number;
+  importedSkills: Record<string, ImportedSkillData>;
+  skillSettings: Record<string, SkillSettings>;
+  lastScanAt?: string;
+  skillCache?: Record<string, SkillCacheEntry>;
+}
+
+interface ImportedSkillData {
+  name: string;
+  importedAt: string; // ISO 8601
+  status: "active" | "disabled";
+  lastUsedAt?: string;
+}
+
+interface SkillSettings {
+  autoApproveReadOnly: boolean;
+  rememberPermissions: boolean;
+  rememberedPermissions: Record<string, "allow" | "deny">;
+}
+
+interface SkillCacheEntry {
+  metadata: SkillMetadata;
+  cachedAt: string;
+  ttl: number;
+}
+```
+
+### API リファレンス
+
+#### インポート管理
+
+| メソッド       | シグネチャ                     | 説明                   |
+| -------------- | ------------------------------ | ---------------------- |
+| getImported    | `(): ImportedSkillData[]`      | 全インポート済みスキル |
+| addImport      | `(skillName: string): void`    | スキルをインポート     |
+| removeImport   | `(skillName: string): void`    | スキルを削除（冪等）   |
+| exists         | `(skillName: string): boolean` | 存在確認               |
+| updateLastUsed | `(skillName: string): void`    | 最終使用日時を更新     |
+
+#### 設定管理
+
+| メソッド       | シグネチャ                                          | 説明     |
+| -------------- | --------------------------------------------------- | -------- |
+| getSettings    | `(skillName: string): SkillSettings`                | 設定取得 |
+| updateSettings | `(skillName: string, settings: Partial<...>): void` | 設定更新 |
+
+#### 権限管理
+
+| メソッド                | シグネチャ                                              | 説明       |
+| ----------------------- | ------------------------------------------------------- | ---------- |
+| rememberPermission      | `(skillName, toolName, decision): void`                 | 権限を記憶 |
+| getRememberedPermission | `(skillName, toolName): "allow" \| "deny" \| undefined` | 権限を取得 |
+
+#### キャッシュ管理
+
+| メソッド        | シグネチャ                                      | 説明             |
+| --------------- | ----------------------------------------------- | ---------------- |
+| setCache        | `(skillName: string, metadata: ...): void`      | キャッシュ設定   |
+| getCache        | `(skillName: string): SkillCacheEntry \| undef` | キャッシュ取得   |
+| invalidateCache | `(skillName?: string): void`                    | キャッシュ無効化 |
+
+#### ユーティリティ
+
+| メソッド           | シグネチャ                   | 説明                       |
+| ------------------ | ---------------------------- | -------------------------- |
+| reset              | `(): void`                   | データを初期状態にリセット |
+| migrateFromVersion | `(version: number): boolean` | スキーママイグレーション   |
+
+### ストレージ仕様
+
+| 項目             | 値                                       |
+| ---------------- | ---------------------------------------- |
+| ストア名         | `skill-imports`                          |
+| ファイルパス     | `~/.aiworkflow/config/skill-imports.json` |
+| スキーマバージョン | 1                                       |
+| 暗号化           | なし（機密データを含まない）             |
+
+### バリデーション
+
+```typescript
+// スキル名バリデーション（SEC-01対応）
+const SKILL_NAME_PATTERN = /^[a-zA-Z0-9_-]{1,128}$/;
+
+function validateSkillName(name: string): void {
+  if (!SKILL_NAME_PATTERN.test(name)) {
+    // エラーメッセージには最初の20文字のみ表示
+    const truncated = name.length > 20 ? name.slice(0, 20) + "..." : name;
+    throw new SkillStoreError(
+      SKILL_STORE_ERRORS.INVALID_SKILL_NAME,
+      `Invalid skill name: ${truncated}`
+    );
+  }
+}
+```
+
+### エラーコード
+
+| コード              | 説明                   |
+| ------------------- | ---------------------- |
+| INVALID_SKILL_NAME  | スキル名が不正         |
+| SKILL_NOT_FOUND     | スキルが見つからない   |
+| STORE_ACCESS_ERROR  | ストアアクセスエラー   |
+| MIGRATION_ERROR     | マイグレーション失敗   |
+
+### セキュリティ（SEC-01）
+
+| 対策           | 実装                               |
+| -------------- | ---------------------------------- |
+| 入力値切り捨て | エラーメッセージは最初の20文字のみ |
+| ホワイトリスト | スキル名は英数字・_・-のみ許可     |
+| パス制限       | 設定ディレクトリ外へのアクセス不可 |
+
+### デフォルト設定
+
+```typescript
+const DEFAULT_SKILL_SETTINGS: SkillSettings = {
+  autoApproveReadOnly: false,
+  rememberPermissions: true,
+  rememberedPermissions: {},
+};
+
+const DEFAULT_CACHE_TTL = 3600000; // 1時間
+```
+
+### 使用例
+
+```typescript
+import { getSkillImportStore } from "./skillImportStore";
+
+// シングルトンインスタンスを取得
+const store = getSkillImportStore();
+
+// スキルをインポート
+store.addImport("my-skill");
+
+// 設定を更新
+store.updateSettings("my-skill", {
+  autoApproveReadOnly: false,
+});
+
+// 権限を記憶
+store.rememberPermission("my-skill", "Read", "allow");
+
+// 記憶した権限を確認
+const decision = store.getRememberedPermission("my-skill", "Read");
+if (decision === "allow") {
+  // 自動承認
+}
+```
+
+### テスト仕様
+
+| カテゴリ           | テスト数 | カバレッジ |
+| ------------------ | -------- | ---------- |
+| インポート管理     | 11       | 100%       |
+| 設定管理           | 8        | 100%       |
+| 権限管理           | 15       | 100%       |
+| キャッシュ管理     | 14       | 100%       |
+| マイグレーション   | 11       | 100%       |
+| **合計**           | **59**   | **~95%**   |
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                         |
+| -------------- | ---------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
+| 要件仕様書     | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-1/requirements-specification.md` |
+| API設計書      | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-2/api-design.md` |
+| テストファイル | `apps/desktop/src/main/settings/__tests__/skillImportStore.test.ts`          |
+
+### SkillImportManager との違い
+
+| 観点         | SkillImportManager                     | SkillImportStore                           |
+| ------------ | -------------------------------------- | ------------------------------------------ |
+| 責務         | スキルID一覧のみ管理                   | メタデータ・設定・権限・キャッシュを包括管理 |
+| 実装パス     | `services/skill/`                      | `settings/`                                |
+| データ構造   | `string[]`（ID配列）                   | `Record<string, ImportedSkillData>`        |
+| 設定管理     | なし                                   | あり（SkillSettings）                      |
+| 権限記憶     | なし                                   | あり（rememberedPermissions）              |
+| キャッシュ   | なし                                   | あり（SkillCacheEntry）                    |
+| 後続タスク   | -                                      | TASK-2C（IPC Handler）で公開               |
+
+---
+
 ## ModifierSkill（スライド逆同期機能）
 
 ### 概要
@@ -2380,6 +2611,61 @@ specification.md §5.1に定義された16の共通型を`packages/shared/src/ty
 | `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.integration.test.ts` | 新規     |
 | `apps/desktop/src/main/ipc/__tests__/skillHandlers.integration.test.ts`                 | 新規     |
 
+### タスク: skill-import-store（TASK-2B、2026-01-24完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | TASK-2B                                                              |
+| 完了日       | 2026-01-24                                                           |
+| ステータス   | **完了**                                                             |
+| テスト数     | 59（自動テスト）                                                     |
+| 発見課題     | 0件                                                                  |
+| ドキュメント | `docs/30-workflows/task-2b-skill-import-store/`                      |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 機能テスト         | 11       | 11   | 0    |
+| 永続化テスト       | 4        | 4    | 0    |
+| エラーハンドリング | 4        | 4    | 0    |
+| 権限管理テスト     | 15       | 15   | 0    |
+| キャッシュテスト   | 14       | 14   | 0    |
+| マイグレーション   | 11       | 11   | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                         |
+| ------------------ | ---------------------------------------------------------------------------- |
+| 実装ファイル       | `apps/desktop/src/main/settings/skillImportStore.ts`                         |
+| テストファイル     | `apps/desktop/src/main/settings/__tests__/skillImportStore.test.ts`          |
+| テスト結果レポート | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-11/`             |
+| 実装ガイド         | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
+
+#### 実装内容
+
+インポートしたスキルの情報を永続化するskillImportStoreを実装。電子ストア（electron-store）を使用してアプリ再起動後もデータを保持。
+
+| 機能カテゴリ | メソッド数 | 概要                           |
+| ------------ | ---------- | ------------------------------ |
+| インポート管理 | 5        | getImported, addImport, removeImport, exists, updateLastUsed |
+| 設定管理     | 2          | getSettings, updateSettings    |
+| 権限管理     | 2          | rememberPermission, getRememberedPermission |
+| キャッシュ管理 | 3        | setCache, getCache, invalidateCache |
+| ユーティリティ | 2        | reset, migrateFromVersion      |
+
+#### 品質基準
+
+| 基準              | 結果 |
+| ----------------- | ---- |
+| TypeScript strict | PASS |
+| ESLint            | PASS |
+| Prettier          | PASS |
+| テストカバレッジ  | ~95% |
+| セキュリティ      | SEC-01対応済み（入力値20文字切り捨て） |
+
+---
+
 ### タスク: skill-import-type-definitions（2026-01-23完了）
 
 | 項目         | 内容                                           |
@@ -2579,23 +2865,24 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 ## 関連ドキュメント
 
-| ドキュメント                           | パス                                                                                         |
-| -------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Agent SDK実装ガイド                    | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`           |
-| Agent SDK APIリファレンス              | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                  |
-| Claude Agent SDKスキル                 | `.claude/skills/claude-agent-sdk/SKILL.md`                                                   |
-| LLMインターフェース                    | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                        |
-| Agent Dashboard実装ガイド              | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`      |
-| スキル管理UI実装ガイド（AGENT-002）    | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`             |
-| スキル管理UIテストドキュメント         | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                        |
-| スキル実行機能実装ガイド               | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md`  |
-| AgentSDKPage Postrelease実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`         |
-| Session Persistence実装ガイド          | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`   |
-| スキルインポート永続化バグ修正         | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md` |
-| スキルインポートストア永続化問題修正   | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md`  |
-| スキルインポート共通型定義（TASK-1-1） | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md`       |
-| SkillScanner実装ガイド（TASK-2A）      | `docs/30-workflows/TASK-2A/outputs/phase-12/implementation-guide.md`                         |
-| セキュリティパターン定義（TASK-2C）    | `docs/30-workflows/task-2c-security-patterns/outputs/phase-12-implementation-guide.md`       |
+| ドキュメント                           | パス                                                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Agent SDK実装ガイド                    | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`                      |
+| Agent SDK APIリファレンス              | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                             |
+| Claude Agent SDKスキル                 | `.claude/skills/claude-agent-sdk/SKILL.md`                                                              |
+| LLMインターフェース                    | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                                   |
+| Agent Dashboard実装ガイド              | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`                 |
+| スキル管理UI実装ガイド（AGENT-002）    | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`                        |
+| スキル管理UIテストドキュメント         | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                                   |
+| スキル実行機能実装ガイド               | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md`             |
+| AgentSDKPage Postrelease実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`                    |
+| Session Persistence実装ガイド          | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`              |
+| スキルインポート永続化バグ修正         | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md`            |
+| スキルインポートストア永続化問題修正   | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md`             |
+| スキルインポート共通型定義（TASK-1-1） | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md`                  |
+| SkillScanner実装ガイド（TASK-2A）      | `docs/30-workflows/TASK-2A/outputs/phase-12/implementation-guide.md`                                    |
+| SkillImportStore実装ガイド（TASK-2B）  | `docs/30-workflows/completed-tasks/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
+| セキュリティパターン定義（TASK-2C）    | `docs/30-workflows/completed-tasks/task-2c-security-patterns/outputs/phase-12-implementation-guide.md`  |
 
 ---
 
@@ -2610,4 +2897,5 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 | 1.4.0      | 2026-01-23 | TASK-1-1（スキルインポート共通型定義）完了記録追加（16型、59テスト）                                                  |
 | 1.5.0      | 2026-01-23 | TASK-1-1 型定義セクション追加（16型の詳細仕様）                                                                       |
 | 1.6.0      | 2026-01-24 | TASK-2A（SkillScanner実装）完了記録追加、ScannedSkillMetadata/SkillScannerOptions型追加（49テスト、カバレッジ82.69%） |
-| 1.7.0      | 2026-01-24 | TASK-2C（セキュリティパターン定義）完了記録追加（102テスト、24危険パターン、25保護パス）                              |
+| 1.7.0      | 2026-01-24 | TASK-2B（SkillImportStore）完了記録追加（59テスト、SEC-01対応、~95%カバレッジ）                                       |
+| 1.8.0      | 2026-01-24 | TASK-2C（セキュリティパターン定義）完了記録追加（102テスト、24危険パターン、25保護パス）                              |
