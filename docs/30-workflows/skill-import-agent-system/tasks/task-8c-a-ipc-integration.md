@@ -242,3 +242,32 @@ describe("Skill IPC Integration", () => {
 10. skill:abort - 実行中止
 11. skill:respondToPermission - 権限応答転送
 12. skill:rescan - 再スキャン
+
+## TASK-2Bからの改善提案
+
+### IMP-002: SkillImportStore IPC統合テストの追加
+
+| 項目   | 内容                                                                   |
+| ------ | ---------------------------------------------------------------------- |
+| 優先度 | 中                                                                     |
+| 発見元 | TASK-2B Phase 11                                                       |
+| 内容   | SkillImportStore の設定管理・権限管理・キャッシュ機能の IPC 統合テスト |
+
+#### 追加テストケース
+
+| #   | チャネル                 | テストケース         |
+| --- | ------------------------ | -------------------- |
+| 13  | skill:settings:get       | 設定取得成功         |
+| 14  | skill:settings:get       | 存在しないスキル     |
+| 15  | skill:settings:update    | 設定更新成功         |
+| 16  | skill:settings:update    | バリデーションエラー |
+| 17  | skill:permissions:get    | 権限取得成功         |
+| 18  | skill:permissions:grant  | 権限付与成功         |
+| 19  | skill:permissions:revoke | 権限取消成功         |
+| 20  | skill:cache:get          | キャッシュ取得成功   |
+| 21  | skill:cache:set          | キャッシュ設定成功   |
+| 22  | skill:cache:invalidate   | キャッシュ無効化成功 |
+
+#### 参照仕様
+
+- [interfaces-agent-sdk.md - SkillImportStore（TASK-2B）](/.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md) - スキーマ・API仕様詳細
