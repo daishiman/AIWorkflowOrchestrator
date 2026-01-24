@@ -374,6 +374,15 @@ if (artifactPath) {
 
 ---
 
+## [2026-01-24T03:52:53.543Z]
+
+- **Agent**: unknown
+- **Phase**: detect-unassigned
+- **Result**: ✓ 成功
+- **Notes**: 未タスク仕様書更新: task-conversation-history-ui-implementation.md - システム仕様（aiworkflow-requirements）参照セクション追加
+
+---
+
 ## 2026-01-24 - TASK-2C セキュリティパターン定義完了
 
 ### コンテキスト
@@ -406,7 +415,7 @@ if (artifactPath) {
 ### aiworkflow-requirements更新
 - interfaces-agent-sdk.md にTASK-2C完了記録を追加
 - 関連ドキュメントにセキュリティパターン定義を追加
-- 変更履歴にv1.6.0を追加
+- 変更履歴にv1.7.0を追加
 
 ### 次のアクション
 - [x] Phase 12成果物の完全化（完了）

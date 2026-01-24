@@ -97,7 +97,9 @@
 
 ## 1. Kanagawaカラーパレット
 
-### メインカラー
+### 1.1 Wave（Dark）テーマ
+
+#### メインカラー
 
 | 変数名 | カラーコード | 用途 |
 |--------|-------------|------|
@@ -107,7 +109,7 @@
 | `--fg` | #DCD7BA | テキスト（メイン） |
 | `--fg-dim` | #727169 | テキスト（サブ） |
 
-### アクセントカラー
+#### アクセントカラー
 
 | 変数名 | カラーコード | 用途 |
 |--------|-------------|------|
@@ -117,12 +119,84 @@
 | `--wave-aqua` | #7AA89F | 成功・解決策・After |
 | `--autumn-yellow` | #DCA561 | 強調・数字 |
 
-### 補助カラー
+#### 補助カラー
 
 | 変数名 | カラーコード | 用途 |
 |--------|-------------|------|
 | `--sumi-ink` | #363646 | ボーダー・区切り |
 | `--fuji-gray` | #54546D | 補助色・ホバー |
+
+### 1.2 Lotus（Light）テーマ
+
+公式kanagawa.nvimのLotusテーマに基づくライトモード。
+
+#### メインカラー
+
+| 変数名 | カラーコード | Lotus名 | 用途 |
+|--------|-------------|---------|------|
+| `--bg-dark` | #f2ecbc | lotusWhite3 | 背景（メイン） |
+| `--bg-dim` | #e5ddb0 | lotusWhite2 | 背景（サブ） |
+| `--bg-card` | #dcd5ac | lotusWhite1 | カード背景 |
+| `--fg` | #43436c | lotusInk2 | テキスト（メイン） |
+| `--fg-dim` | #716e61 | lotusGray2 | テキスト（サブ） |
+
+#### アクセントカラー
+
+| 変数名 | カラーコード | Lotus名 | 用途 |
+|--------|-------------|---------|------|
+| `--wave-blue` | #4d699b | lotusBlue4 | メインアクセント・リンク |
+| `--spring-violet` | #624c83 | lotusViolet4 | アクセント（紫） |
+| `--sakura-pink` | #b35b79 | lotusPink | 警告・課題・Before |
+| `--wave-aqua` | #597b75 | lotusAqua | 成功・解決策・After |
+| `--autumn-yellow` | #de9800 | lotusYellow3 | 強調・数字 |
+
+#### 補助カラー
+
+| 変数名 | カラーコード | Lotus名 | 用途 |
+|--------|-------------|---------|------|
+| `--sumi-ink` | #d5cea3 | lotusWhite0 | ボーダー・区切り |
+| `--fuji-gray` | #8a8980 | lotusGray3 | 補助色・ホバー |
+
+#### Lotus追加カラー（拡張用）
+
+| Lotus名 | カラーコード | 用途例 |
+|---------|-------------|--------|
+| lotusRed | #c84053 | エラー・警告 |
+| lotusGreen | #6f894e | 成功・完了 |
+| lotusOrange | #cc6d00 | 注意・オレンジアクセント |
+| lotusBlue5 | #5d57a3 | 紫寄りの青 |
+
+### 1.3 Lotus White（デフォルト推奨）
+
+Lotusのアクセントカラーを維持しつつ、黄味のないニュートラルな白背景。
+**プレゼンテーション用のデフォルトテーマとして推奨。**
+
+#### メインカラー
+
+| 変数名 | カラーコード | 用途 |
+|--------|-------------|------|
+| `--bg-dark` | #fafafa | 背景（ほぼ白） |
+| `--bg-dim` | #f0f0f2 | 背景（薄いグレー） |
+| `--bg-card` | #e8e8ec | カード背景 |
+| `--fg` | #43436c | テキスト（メイン） |
+| `--fg-dim` | #716e61 | テキスト（サブ） |
+
+#### アクセントカラー（Lotusと共通）
+
+| 変数名 | カラーコード | 用途 |
+|--------|-------------|------|
+| `--wave-blue` | #4d699b | メインアクセント・リンク |
+| `--spring-violet` | #624c83 | アクセント（紫） |
+| `--sakura-pink` | #b35b79 | 警告・課題・Before |
+| `--wave-aqua` | #597b75 | 成功・解決策・After |
+| `--autumn-yellow` | #de9800 | 強調・数字 |
+
+#### 補助カラー
+
+| 変数名 | カラーコード | 用途 |
+|--------|-------------|------|
+| `--sumi-ink` | #e0e0e4 | ボーダー・区切り |
+| `--fuji-gray` | #8a8a90 | 補助色・ホバー |
 
 ---
 
@@ -163,11 +237,11 @@
 
 ## 3. CSS変数定義
 
-### 完全な変数リスト
+### 3.1 Wave（Dark）完全な変数リスト
 
 ```css
 :root {
-  /* カラーパレット */
+  /* Wave（Dark）カラーパレット */
   --bg-dark: #1F1F28;
   --bg-dim: #2A2A37;
   --bg-card: #363646;
@@ -185,6 +259,76 @@
   --font-scale: 1.3;
 
   /* 計算されたフォントサイズ */
+  --fs-title: calc(5rem * var(--font-scale));
+  --fs-subtitle: calc(2.5rem * var(--font-scale));
+  --fs-heading: calc(3rem * var(--font-scale));
+  --fs-subheading: calc(2rem * var(--font-scale));
+  --fs-body: calc(1.5rem * var(--font-scale));
+  --fs-body-lg: calc(1.8rem * var(--font-scale));
+  --fs-small: calc(1.2rem * var(--font-scale));
+  --fs-icon-lg: calc(6rem * var(--font-scale));
+  --fs-icon-md: calc(3rem * var(--font-scale));
+  --fs-icon-sm: calc(2rem * var(--font-scale));
+}
+```
+
+### 3.2 Lotus（Light）完全な変数リスト
+
+```css
+:root {
+  /* Kanagawa Lotus（公式Light）カラーパレット */
+  --bg-dark: #f2ecbc;      /* lotusWhite3 */
+  --bg-dim: #e5ddb0;       /* lotusWhite2 */
+  --bg-card: #dcd5ac;      /* lotusWhite1 */
+  --fg: #43436c;           /* lotusInk2 */
+  --fg-dim: #716e61;       /* lotusGray2 */
+  --wave-blue: #4d699b;    /* lotusBlue4 */
+  --spring-violet: #624c83; /* lotusViolet4 */
+  --sakura-pink: #b35b79;  /* lotusPink */
+  --wave-aqua: #597b75;    /* lotusAqua */
+  --autumn-yellow: #de9800; /* lotusYellow3 */
+  --sumi-ink: #d5cea3;     /* lotusWhite0 */
+  --fuji-gray: #8a8980;    /* lotusGray3 */
+
+  /* フォントサイズスケール（共通） */
+  --font-scale: 1.3;
+
+  /* 計算されたフォントサイズ（共通） */
+  --fs-title: calc(5rem * var(--font-scale));
+  --fs-subtitle: calc(2.5rem * var(--font-scale));
+  --fs-heading: calc(3rem * var(--font-scale));
+  --fs-subheading: calc(2rem * var(--font-scale));
+  --fs-body: calc(1.5rem * var(--font-scale));
+  --fs-body-lg: calc(1.8rem * var(--font-scale));
+  --fs-small: calc(1.2rem * var(--font-scale));
+  --fs-icon-lg: calc(6rem * var(--font-scale));
+  --fs-icon-md: calc(3rem * var(--font-scale));
+  --fs-icon-sm: calc(2rem * var(--font-scale));
+}
+```
+
+### 3.3 Lotus White（デフォルト推奨）完全な変数リスト
+
+```css
+:root {
+  /* Kanagawa Lotus White - 白背景カスタム版（デフォルト） */
+  --bg-dark: #fafafa;      /* ほぼ白（ニュートラル） */
+  --bg-dim: #f0f0f2;       /* 薄いグレー（青み） */
+  --bg-card: #e8e8ec;      /* カード背景（青み） */
+  --fg: #43436c;           /* lotusInk2 */
+  --fg-dim: #716e61;       /* lotusGray2 */
+  --wave-blue: #4d699b;    /* lotusBlue4 */
+  --spring-violet: #624c83; /* lotusViolet4 */
+  --sakura-pink: #b35b79;  /* lotusPink */
+  --wave-aqua: #597b75;    /* lotusAqua */
+  --autumn-yellow: #de9800; /* lotusYellow3 */
+  --sumi-ink: #e0e0e4;     /* ニュートラルグレー */
+  --fuji-gray: #8a8a90;    /* ニュートラルグレー */
+
+  /* フォントサイズスケール（共通） */
+  --font-scale: 1.3;
+
+  /* 計算されたフォントサイズ（共通） */
   --fs-title: calc(5rem * var(--font-scale));
   --fs-subtitle: calc(2.5rem * var(--font-scale));
   --fs-heading: calc(3rem * var(--font-scale));
