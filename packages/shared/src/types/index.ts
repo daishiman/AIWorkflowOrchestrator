@@ -60,6 +60,21 @@ export type {
 
 export { AGENT_DEFAULTS, DANGEROUS_PATTERNS } from "./agent-execution";
 
+// スキル実行型定義 (TASK-3-1-A)
+export type {
+  ExecutionState,
+  SkillExecutionRequest,
+  SkillExecutionResponse,
+  ExecutionInfo,
+  SkillStreamMessageType,
+  SkillStreamMessage,
+  SkillExecutionErrorCode,
+  SkillExecutionError,
+  ExecutionContext,
+} from "./skill-execution";
+
+export { SKILL_EXECUTION_DEFAULTS } from "./skill-execution";
+
 // スライド設定型定義
 export type {
   SlideSettings,

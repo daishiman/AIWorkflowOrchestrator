@@ -2494,6 +2494,289 @@ import type {
 
 ---
 
+## SkillExecutor 型定義（TASK-3-1-A）
+
+Claude Agent SDK の `query()` API を使用してスキルを実行し、ストリーミングレスポンスを Renderer Process に配信する実行エンジン。
+
+### 概要
+
+| 項目         | 内容                                         |
+| ------------ | -------------------------------------------- |
+| 実装ファイル | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
+| 型定義       | `packages/shared/src/types/skill-execution.ts` |
+| IPC チャンネル | `skill:stream` (Main → Renderer)           |
+| SDK 依存     | `@anthropic-ai/claude-agent-sdk`             |
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Renderer Process                         │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │                   React UI                               │ │
+│  │              onSkillStream listener                      │ │
+│  └──────────────────────┬──────────────────────────────────┘ │
+└─────────────────────────┼───────────────────────────────────┘
+                          │ IPC (skill:stream)
+┌─────────────────────────┼───────────────────────────────────┐
+│                   Main Process                               │
+│  ┌──────────────────────┴──────────────────────────────────┐ │
+│  │                  SkillExecutor                           │ │
+│  │   - execute()      スキル実行開始                        │ │
+│  │   - abort()        実行中断                              │ │
+│  │   - getActiveExecutions() アクティブ実行一覧             │ │
+│  │   - getExecutionStatus()  実行状態取得                   │ │
+│  └──────────────────────┬──────────────────────────────────┘ │
+│                          │                                   │
+│  ┌──────────────────────┴──────────────────────────────────┐ │
+│  │              Claude Agent SDK                            │ │
+│  │              query().stream()                            │ │
+│  └──────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 型定義
+
+#### ExecutionState
+
+実行状態を表す列挙型。
+
+| 値          | 説明         |
+| ----------- | ------------ |
+| `pending`   | 実行待ち     |
+| `running`   | 実行中       |
+| `completed` | 完了         |
+| `aborted`   | ユーザー中断 |
+| `error`     | エラー発生   |
+
+```typescript
+type ExecutionState = "pending" | "running" | "completed" | "aborted" | "error";
+```
+
+#### SkillExecutionRequest
+
+スキル実行リクエスト（Renderer → Main）。
+
+| プロパティ  | 型       | 必須 | 説明                       |
+| ----------- | -------- | ---- | -------------------------- |
+| `prompt`    | `string` | ✓    | 実行プロンプト             |
+| `skillId`   | `string` | ✓    | スキルID                   |
+| `timeout`   | `number` | -    | タイムアウト (ms)          |
+| `sessionId` | `string` | -    | セッションID（会話継続用） |
+
+```typescript
+interface SkillExecutionRequest {
+  prompt: string;
+  skillId: string;
+  timeout?: number;
+  sessionId?: string;
+}
+```
+
+#### SkillExecutionResponse
+
+スキル実行レスポンス（Main → Renderer）。
+
+| プロパティ    | 型                    | 必須 | 説明                       |
+| ------------- | --------------------- | ---- | -------------------------- |
+| `executionId` | `string`              | ✓    | 実行ID（UUID）             |
+| `success`     | `boolean`             | ✓    | 成功/失敗フラグ            |
+| `error`       | `SkillExecutionError` | -    | エラー情報（失敗時）       |
+
+```typescript
+interface SkillExecutionResponse {
+  executionId: string;
+  success: boolean;
+  error?: SkillExecutionError;
+}
+```
+
+#### SkillStreamMessage
+
+ストリーミングメッセージ（Main → Renderer）。
+
+| プロパティ    | 型                       | 必須 | 説明                   |
+| ------------- | ------------------------ | ---- | ---------------------- |
+| `executionId` | `string`                 | ✓    | 実行ID                 |
+| `id`          | `string`                 | ✓    | メッセージID（UUID）   |
+| `type`        | `SkillStreamMessageType` | ✓    | メッセージ種別         |
+| `content`     | `string`                 | ✓    | メッセージ内容         |
+| `timestamp`   | `number`                 | ✓    | タイムスタンプ         |
+| `isComplete`  | `boolean`                | ✓    | 完了フラグ             |
+
+```typescript
+interface SkillStreamMessage {
+  executionId: string;
+  id: string;
+  type: SkillStreamMessageType;
+  content: string;
+  timestamp: number;
+  isComplete: boolean;
+}
+```
+
+#### SkillStreamMessageType
+
+ストリーミングメッセージの種別。
+
+| 値         | 説明               |
+| ---------- | ------------------ |
+| `text`     | テキストメッセージ |
+| `tool_use` | ツール使用         |
+| `error`    | エラーメッセージ   |
+| `complete` | 完了通知           |
+
+```typescript
+type SkillStreamMessageType = "text" | "tool_use" | "error" | "complete";
+```
+
+#### SkillExecutionError
+
+実行エラー情報。
+
+| プロパティ | 型                        | 必須 | 説明           |
+| ---------- | ------------------------- | ---- | -------------- |
+| `code`     | `SkillExecutionErrorCode` | ✓    | エラーコード   |
+| `message`  | `string`                  | ✓    | エラーメッセージ |
+| `details`  | `unknown`                 | -    | 詳細情報       |
+
+```typescript
+interface SkillExecutionError {
+  code: SkillExecutionErrorCode;
+  message: string;
+  details?: unknown;
+}
+```
+
+#### SkillExecutionErrorCode
+
+エラーコード一覧。
+
+| コード                    | 説明                   |
+| ------------------------- | ---------------------- |
+| `MAX_CONCURRENT_EXCEEDED` | 同時実行数超過         |
+| `ABORTED`                 | ユーザーによる中断     |
+| `TIMEOUT`                 | タイムアウト           |
+| `EXECUTION_FAILED`        | 実行失敗               |
+
+```typescript
+type SkillExecutionErrorCode =
+  | "MAX_CONCURRENT_EXCEEDED"
+  | "ABORTED"
+  | "TIMEOUT"
+  | "EXECUTION_FAILED";
+```
+
+#### ExecutionInfo
+
+実行情報（状態確認用）。
+
+| プロパティ    | 型             | 必須 | 説明               |
+| ------------- | -------------- | ---- | ------------------ |
+| `id`          | `string`       | ✓    | 実行ID             |
+| `skillId`     | `string`       | ✓    | スキルID           |
+| `state`       | `ExecutionState` | ✓  | 実行状態           |
+| `startedAt`   | `number`       | ✓    | 開始タイムスタンプ |
+| `completedAt` | `number`       | -    | 完了タイムスタンプ |
+
+```typescript
+interface ExecutionInfo {
+  id: string;
+  skillId: string;
+  state: ExecutionState;
+  startedAt: number;
+  completedAt?: number;
+}
+```
+
+#### ExecutionContext
+
+実行コンテキスト（内部管理用）。
+
+```typescript
+interface ExecutionContext {
+  id: string;
+  skillId: string;
+  abortController: AbortController;
+  state: ExecutionState;
+  startedAt: number;
+  completedAt?: number;
+}
+```
+
+### API リファレンス
+
+#### SkillExecutor クラス
+
+| メソッド              | シグネチャ                                                     | 説明                 |
+| --------------------- | -------------------------------------------------------------- | -------------------- |
+| `execute`             | `(request, skill) => Promise<SkillExecutionResponse>`          | スキル実行           |
+| `abort`               | `(executionId: string) => boolean`                             | 実行中断             |
+| `getActiveExecutions` | `() => ExecutionInfo[]`                                        | アクティブ実行一覧   |
+| `getExecutionStatus`  | `(executionId: string) => ExecutionInfo \| undefined`          | 実行状態取得         |
+
+### IPC チャンネル（SkillExecutor）
+
+| チャンネル     | 方向            | 説明                 |
+| -------------- | --------------- | -------------------- |
+| `skill:stream` | Main → Renderer | ストリーミング配信   |
+
+### 設定定数
+
+| 定数                       | 値      | 説明                        |
+| -------------------------- | ------- | --------------------------- |
+| `DEFAULT_TOOLS`            | 5ツール | Read, Edit, Bash, Glob, Grep |
+| `DEFAULT_TIMEOUT_MS`       | `30000` | デフォルトタイムアウト (ms) |
+| `MAX_CONCURRENT_EXECUTIONS`| `5`     | 最大同時実行数              |
+| `HISTORY_RETENTION_MS`     | `60000` | 履歴保持期間 (ms)           |
+
+```typescript
+export const SKILL_EXECUTION_DEFAULTS = {
+  TIMEOUT_MS: 30000,
+  MAX_CONCURRENT: 5,
+  HISTORY_RETENTION_MS: 60000,
+} as const;
+```
+
+### 使用例
+
+```typescript
+import { SkillExecutor } from "@repo/desktop/main/services/skill";
+import type { SkillMetadata, SkillExecutionRequest } from "@repo/shared";
+
+// 初期化
+const executor = new SkillExecutor(mainWindow);
+
+// スキル実行
+const request: SkillExecutionRequest = {
+  prompt: "Create a new file called hello.ts",
+  skillId: "task-specification-creator",
+};
+
+const response = await executor.execute(request, skillMetadata);
+
+if (response.success) {
+  console.log("Execution started:", response.executionId);
+} else {
+  console.error("Execution failed:", response.error?.message);
+}
+
+// 実行中断
+const aborted = executor.abort(response.executionId);
+```
+
+### 関連ドキュメント（TASK-3-1-A）
+
+| ドキュメント     | パス                                                                              |
+| ---------------- | --------------------------------------------------------------------------------- |
+| タスク仕様書     | `docs/30-workflows/TASK-3-1-A-sdk-query/`                                         |
+| 実装ファイル     | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                           |
+| 型定義ファイル   | `packages/shared/src/types/skill-execution.ts`                                    |
+| テストファイル   | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts`            |
+| 統合テスト       | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.integration.test.ts`|
+
+---
+
 ## 完了タスク
 
 ### タスク: skill-import-type-definitions（TASK-1-1、2026-01-23完了）
@@ -2853,6 +3136,66 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 ---
 
+### タスク: skill-executor-sdk-query（TASK-3-1-A、2026-01-25完了）
+
+| 項目         | 内容                                                   |
+| ------------ | ------------------------------------------------------ |
+| タスクID     | TASK-3-1-A                                             |
+| 完了日       | 2026-01-25                                             |
+| ステータス   | **完了**                                               |
+| テスト数     | ユニットテスト + 統合テスト（SDK モック使用）          |
+| 発見課題     | 0件                                                    |
+| ドキュメント | `docs/30-workflows/TASK-3-1-A-sdk-query/`              |
+
+#### 概要
+
+Claude Agent SDK の `query()` API を使用してスキルを実行し、ストリーミングレスポンスを Renderer Process に配信する `SkillExecutor` クラスを実装。
+
+#### 実装内容
+
+| 項目           | 内容                                                    |
+| -------------- | ------------------------------------------------------- |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
+| 型定義ファイル | `packages/shared/src/types/skill-execution.ts`          |
+| コード行数     | 約525行                                                 |
+| 新規型定義     | 9型（ExecutionState, SkillExecutionRequest, etc.）      |
+| 主要メソッド   | `execute()`, `abort()`, `getActiveExecutions()`, `getExecutionStatus()` |
+
+#### 機能
+
+| 機能                     | 説明                                           |
+| ------------------------ | ---------------------------------------------- |
+| SDK query() 統合         | Claude Agent SDK の query() API 呼び出し       |
+| ストリーミング処理       | AsyncIterable を使用したストリーミングメッセージ処理 |
+| 同時実行数制限           | 最大5件の同時実行をサポート                    |
+| 中断機能                 | AbortController を使用した実行中断             |
+| IPC ストリーミング配信   | `skill:stream` チャンネルで Renderer に配信    |
+| エラーハンドリング       | タイムアウト、中断、実行エラーの分類処理       |
+| 履歴保持                 | 完了後60秒間の履歴保持（LRU方式）              |
+
+#### 品質基準
+
+| 基準              | 結果 |
+| ----------------- | ---- |
+| TypeScript strict | PASS |
+| ESLint            | PASS |
+| Prettier          | PASS |
+| any型の使用       | 0件  |
+| @ts-ignore        | 0件  |
+
+#### 変更ファイル
+
+| ファイル                                                                       | 変更種別 |
+| ------------------------------------------------------------------------------ | -------- |
+| `apps/desktop/src/main/services/skill/SkillExecutor.ts`                        | 新規     |
+| `packages/shared/src/types/skill-execution.ts`                                 | 新規     |
+| `packages/shared/src/types/index.ts`                                           | 更新     |
+| `apps/desktop/src/main/services/skill/index.ts`                                | 更新     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts`         | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.integration.test.ts` | 新規 |
+
+---
+
 ## 残課題（未タスク）
 
 | タスクID      | タスク名                  | 優先度 | 発見元                             | タスク仕様書                                                         |
@@ -2883,6 +3226,7 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 | SkillScanner実装ガイド（TASK-2A）      | `docs/30-workflows/TASK-2A/outputs/phase-12/implementation-guide.md`                                    |
 | SkillImportStore実装ガイド（TASK-2B）  | `docs/30-workflows/completed-tasks/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
 | セキュリティパターン定義（TASK-2C）    | `docs/30-workflows/completed-tasks/task-2c-security-patterns/outputs/phase-12-implementation-guide.md`  |
+| SkillExecutor実装ガイド（TASK-3-1-A）  | `docs/30-workflows/TASK-3-1-A-sdk-query/outputs/phase-12/implementation-guide.md`                       |
 
 ---
 
@@ -2899,3 +3243,4 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 | 1.6.0      | 2026-01-24 | TASK-2A（SkillScanner実装）完了記録追加、ScannedSkillMetadata/SkillScannerOptions型追加（49テスト、カバレッジ82.69%） |
 | 1.7.0      | 2026-01-24 | TASK-2B（SkillImportStore）完了記録追加（59テスト、SEC-01対応、~95%カバレッジ）                                       |
 | 1.8.0      | 2026-01-24 | TASK-2C（セキュリティパターン定義）完了記録追加（102テスト、24危険パターン、25保護パス）                              |
+| 1.9.0      | 2026-01-25 | TASK-3-1-A（SkillExecutor SDK query()基本実装）完了記録追加（9型定義、execute/abort/ストリーミング実装）              |

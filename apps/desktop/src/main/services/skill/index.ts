@@ -12,3 +12,4 @@ export {
 export { SkillParser } from "./SkillParser";
 export { SkillImportManager } from "./SkillImportManager";
 export { SkillService } from "./SkillService";
+export { SkillExecutor } from "./SkillExecutor";
