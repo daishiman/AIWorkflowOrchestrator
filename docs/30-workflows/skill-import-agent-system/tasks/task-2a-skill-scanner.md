@@ -166,8 +166,39 @@ describe("SkillScanner", () => {
 
 テスト用のスキルディレクトリ構造を `__fixtures__/` に作成
 
+## TASK-2Bからの改善提案
+
+### IMP-001: lastScanAt フィールドの使用
+
+| 項目   | 内容                                                                                               |
+| ------ | -------------------------------------------------------------------------------------------------- |
+| 優先度 | 低                                                                                                 |
+| 発見元 | TASK-2B Phase 11                                                                                   |
+| 内容   | SkillImportStore.lastScanAt フィールドを使用して、スキャン日時を記録し、差分スキャンの最適化に活用 |
+
+#### 実装方針
+
+```typescript
+// SkillScanner.scanAll() 完了時に lastScanAt を更新
+async scanAll(): Promise<SkillMetadata[]> {
+  const results = await this.internalScanAll();
+
+  // SkillImportStore に lastScanAt を記録
+  skillImportStore.set('lastScanAt', new Date().toISOString());
+
+  return results;
+}
+
+// 差分スキャン最適化（将来）
+async scanDiff(): Promise<SkillMetadata[]> {
+  const lastScan = skillImportStore.get('lastScanAt');
+  // lastScan 以降に変更されたスキルのみをスキャン
+}
+```
+
 ## 参考資料
 
 - [specification.md - 5.6 SkillScanner実装仕様](../specification.md)
+- [interfaces-agent-sdk.md - SkillImportStore（TASK-2B）](.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md) - スキーマ・API仕様
 - アプリ独自スキル: `~/.aiworkflow/skills/`
 - Claude CLI スキル（参照用）: `~/.claude/skills/presentation-slide-generator/`
