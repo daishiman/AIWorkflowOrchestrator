@@ -146,6 +146,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                              |
 | ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.22.0  | 2026-01-24 | スキル実行セキュリティ追加（TASK-2C完了）: security-skill-execution.md新規作成（危険コマンド24パターン、保護パス25、許可ツール11）、security-implementation.mdにリンク追加、90ファイル構成 |
 | 6.21.0  | 2026-01-23 | Workspace Chat Edit追加: interfaces-llm.md（FileContext/EditCommand/GeneratedResult型）、architecture-patterns.md（chatEditSliceパターン）、api-endpoints.md（chat-edit IPCチャネル4種）追加、89ファイル構成 |
 | 6.20.0  | 2026-01-23 | TASK-1-1型定義追加: interfaces-agent-sdk.mdに「Skill Import Agent System 型定義（TASK-1-1）」セクション新設（16型詳細仕様）、連携スキル参照追加、88ファイル構成に拡張                                  |
 | 6.19.0  | 2026-01-22 | React Context DI追加（UT-006完了）: architecture-chat-history.mdにUI Layerセクション追加（ChatHistoryContext/Provider/useChatHistory/MockProvider）、topic-map.md更新、8アーキテクチャファイル構成    |

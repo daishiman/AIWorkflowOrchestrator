@@ -2385,6 +2385,82 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 | `packages/shared/src/types/__tests__/skill-import.test.ts` | 新規     |
 | `packages/shared/src/types/__tests__/manual-dx-test.ts`    | 新規     |
 
+### タスク: security-patterns（TASK-2C、2026-01-24完了）
+
+| 項目         | 内容                                                      |
+| ------------ | --------------------------------------------------------- |
+| タスクID     | TASK-2C                                                   |
+| 完了日       | 2026-01-24                                                |
+| ステータス   | **完了**                                                  |
+| テスト数     | 102（自動テスト: 89ユニット + 13インポート検証）          |
+| 発見課題     | 0件                                                       |
+| ドキュメント | `docs/30-workflows/task-2c-security-patterns/`            |
+
+#### 概要
+
+スキル実行時のセキュリティ検証に必要な危険パターン定義・保護パス定義・ツールホワイトリストを`packages/shared/constants`に実装。
+
+#### 実装内容
+
+| カテゴリ         | エクスポート名          | 用途                             |
+| ---------------- | ----------------------- | -------------------------------- |
+| 危険パターン定数 | DANGEROUS_PATTERNS      | 危険コマンド・保護パスの定義     |
+|                  | ALLOWED_TOOLS_WHITELIST | 許可ツールリスト（11ツール）     |
+| 検証関数         | isDangerousCommand      | 危険コマンド判定（単語境界対応） |
+|                  | isProtectedPath         | 保護パス判定（Glob対応）         |
+|                  | matchGlobPattern        | Globパターンマッチ（**,*,~対応） |
+| ツール検証関数   | validateAllowedTools    | ツールリスト検証                 |
+|                  | filterAllowedTools      | 許可ツールフィルタ               |
+| 型定義           | AllowedTool             | 許可ツール型（リテラル型）       |
+
+#### セキュリティパターン詳細
+
+**DANGEROUS_PATTERNS.BASH_COMMANDS（24パターン）**:
+
+| カテゴリ         | パターン例                            |
+| ---------------- | ------------------------------------- |
+| 破壊的コマンド   | `rm -rf`, `rm -r`, `dd if=`, `mkfs`   |
+| 権限昇格         | `sudo`, `su -`, `su `                 |
+| シェル操作       | `chmod 777`, `chown root`             |
+| コマンド置換     | `$(`, `` ` ``                         |
+| 危険なシェル起動 | `/bin/sh`, `bash -c`                  |
+| 評価・実行       | `eval `, `exec `, `source `           |
+| スケジューラ     | `crontab`, `at `                      |
+| フォークボム     | `:(){ :|:& };:`                       |
+
+**DANGEROUS_PATTERNS.PROTECTED_PATHS（25パターン）**:
+
+| カテゴリ             | パターン例                       |
+| -------------------- | -------------------------------- |
+| システムディレクトリ | `/etc/**`, `/usr/**`, `/var/**`  |
+| シェル設定ファイル   | `**/.bashrc`, `**/.zshrc`        |
+| 認証・鍵ファイル     | `~/.ssh/**`, `~/.gnupg/**`       |
+| クラウド認証情報     | `~/.aws/**`, `~/.kube/**`        |
+| アプリケーション認証 | `**/.env`, `**/credentials.json` |
+
+#### 品質基準
+
+| 基準                  | 結果   |
+| --------------------- | ------ |
+| Line Coverage         | 98.4%  |
+| Branch Coverage       | 95.45% |
+| Function Coverage     | 100%   |
+| TypeScript strict     | PASS   |
+| ESLint                | PASS   |
+| Prettier              | PASS   |
+| any型の使用           | 0件    |
+
+#### 変更ファイル
+
+| ファイル                                                        | 変更種別 |
+| --------------------------------------------------------------- | -------- |
+| `packages/shared/src/constants/security.ts`                     | 新規     |
+| `packages/shared/src/constants/index.ts`                        | 新規     |
+| `packages/shared/package.json`                                  | 更新     |
+| `packages/shared/tsup.config.ts`                                | 更新     |
+| `packages/shared/src/constants/__tests__/security.test.ts`      | 新規     |
+| `packages/shared/src/constants/__tests__/manual-import.test.ts` | 新規     |
+
 ---
 
 ## 残課題（未タスク）
@@ -2414,6 +2490,7 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 | スキルインポート永続化バグ修正      | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md` |
 | スキルインポートストア永続化問題修正 | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md` |
 | スキルインポート共通型定義（TASK-1-1） | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md` |
+| セキュリティパターン定義（TASK-2C） | `docs/30-workflows/task-2c-security-patterns/outputs/phase-12-implementation-guide.md` |
 
 ---
 
@@ -2427,3 +2504,4 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 | 1.3.0      | 2026-01-22 | skill-import-store-persistence完了記録追加（統合テスト23件追加、発見課題0件） |
 | 1.4.0      | 2026-01-23 | TASK-1-1（スキルインポート共通型定義）完了記録追加（16型、59テスト） |
 | 1.5.0      | 2026-01-23 | TASK-1-1 型定義セクション追加（16型の詳細仕様） |
+| 1.6.0      | 2026-01-24 | TASK-2C（セキュリティパターン定義）完了記録追加（102テスト、24危険パターン、25保護パス） |
