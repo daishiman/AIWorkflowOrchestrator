@@ -146,8 +146,9 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                                          |
 | ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.25.0  | 2026-01-24 | UT-LLM-HISTORY-001完了: interfaces-llm.md（Conversation/Message型、IPC契約7種）、architecture-patterns.md（会話履歴永続化パターン〜100行）追加。114テスト・100%カバレッジ達成                                    |
-| 6.24.0  | 2026-01-24 | TASK-2B SkillImportStore追加: interfaces-agent-sdk.mdに「SkillImportStore（TASK-2B）」セクション新設（スキーマ・API・セキュリティ・テスト仕様詳細約230行）、SkillImportManagerとの差分表追加                     |
+| 6.26.0  | 2026-01-24 | UT-LLM-HISTORY-001完了: interfaces-llm.md（Conversation/Message型、IPC契約7種）、architecture-patterns.md（会話履歴永続化パターン〜100行）追加。114テスト・100%カバレッジ達成                                    |
+| 6.25.0  | 2026-01-24 | TASK-2B SkillImportStore追加: interfaces-agent-sdk.mdに「SkillImportStore（TASK-2B）」セクション新設（スキーマ・API・セキュリティ・テスト仕様詳細約230行）、SkillImportManagerとの差分表追加                     |
+| 6.24.0  | 2026-01-24 | スキル実行セキュリティ追加（TASK-2C完了）: security-skill-execution.md新規作成（危険コマンド24パターン、保護パス25、許可ツール11）、security-implementation.mdにリンク追加、91ファイル構成                       |
 | 6.23.0  | 2026-01-24 | SkillScanner将来改善ロードマップ追加: architecture-patterns.md（3件の未タスク仕様書記録：キャッシュ/増分スキャン/ページネーション、想定追加型定義）                                                              |
 | 6.22.0  | 2026-01-24 | TASK-2A（SkillScanner実装）完了: interfaces-agent-sdk.md（ScannedSkillMetadata/SkillScannerOptions型、完了記録）、architecture-patterns.md（SkillScannerサブセクション追加：API/定数/セキュリティ/データフロー） |
 | 6.21.0  | 2026-01-23 | Workspace Chat Edit追加: interfaces-llm.md（FileContext/EditCommand/GeneratedResult型）、architecture-patterns.md（chatEditSliceパターン）、api-endpoints.md（chat-edit IPCチャネル4種）追加、89ファイル構成     |
