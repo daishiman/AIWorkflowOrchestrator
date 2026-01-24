@@ -348,7 +348,9 @@ describe("LLM IPC Handlers", () => {
       ).mockResolvedValue(mockAdapter);
 
       // When: Stream chat
-      const mockEvent = { sender: { send: vi.fn() } };
+      const mockEvent = {
+        sender: { send: vi.fn(), isDestroyed: vi.fn().mockReturnValue(false) },
+      };
       await handleStreamChat(mockEvent as never, validRequest);
 
       // Then: Chunks emitted
@@ -373,7 +375,9 @@ describe("LLM IPC Handlers", () => {
       ).mockResolvedValue(mockAdapter);
 
       // When: Stream chat
-      const mockEvent = { sender: { send: vi.fn() } };
+      const mockEvent = {
+        sender: { send: vi.fn(), isDestroyed: vi.fn().mockReturnValue(false) },
+      };
       await handleStreamChat(mockEvent as never, validRequest);
 
       // Then: End event emitted
@@ -396,7 +400,9 @@ describe("LLM IPC Handlers", () => {
       ).mockResolvedValue(mockAdapter);
 
       // When: Stream chat
-      const mockEvent = { sender: { send: vi.fn() } };
+      const mockEvent = {
+        sender: { send: vi.fn(), isDestroyed: vi.fn().mockReturnValue(false) },
+      };
       await handleStreamChat(mockEvent as never, validRequest);
 
       // Then: Error event emitted
