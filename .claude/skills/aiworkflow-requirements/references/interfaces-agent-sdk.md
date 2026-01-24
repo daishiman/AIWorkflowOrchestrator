@@ -635,9 +635,9 @@ export interface SkillRunResult {
 
 スキルをインポートする。
 
-| パラメータ | 型         | 必須 | 説明             |
-| ---------- | ---------- | ---- | ---------------- |
-| `skillIds` | `string[]` | ✓    | スキルIDの配列   |
+| パラメータ | 型         | 必須 | 説明           |
+| ---------- | ---------- | ---- | -------------- |
+| `skillIds` | `string[]` | ✓    | スキルIDの配列 |
 
 **戻り値**: `Promise<OperationResult<void>>`
 
@@ -772,10 +772,10 @@ AgentView
 
 #### 統合テストファイル詳細
 
-| ファイル | テスト数 | テスト対象 |
-| -------- | -------- | ---------- |
-| `SkillImportManager.integration.test.ts` | 15 | ストア永続化・スキルID管理 |
-| `skillHandlers.integration.test.ts` | 8 | IPCハンドラ・Main Process連携 |
+| ファイル                                 | テスト数 | テスト対象                    |
+| ---------------------------------------- | -------- | ----------------------------- |
+| `SkillImportManager.integration.test.ts` | 15       | ストア永続化・スキルID管理    |
+| `skillHandlers.integration.test.ts`      | 8        | IPCハンドラ・Main Process連携 |
 
 ---
 
@@ -806,29 +806,29 @@ interface SkillStore {
 
 #### デバッグログ仕様
 
-| タイミング | ログ内容 | 目的 |
-| ---------- | -------- | ---- |
-| コンストラクタ | `[SkillImportManager] Initialized with store path: ${path}` | ストアパス確認 |
-| addImportedId | `[SkillImportManager] Adding skill ID: ${skillId}` | インポート操作追跡 |
-| removeImportedId | `[SkillImportManager] Removing skill ID: ${skillId}` | 削除操作追跡 |
-| getImportedIds | `[SkillImportManager] Current imported IDs: ${ids.join(', ')}` | 状態確認 |
+| タイミング       | ログ内容                                                       | 目的               |
+| ---------------- | -------------------------------------------------------------- | ------------------ |
+| コンストラクタ   | `[SkillImportManager] Initialized with store path: ${path}`    | ストアパス確認     |
+| addImportedId    | `[SkillImportManager] Adding skill ID: ${skillId}`             | インポート操作追跡 |
+| removeImportedId | `[SkillImportManager] Removing skill ID: ${skillId}`           | 削除操作追跡       |
+| getImportedIds   | `[SkillImportManager] Current imported IDs: ${ids.join(', ')}` | 状態確認           |
 
 #### API
 
-| メソッド | 引数 | 戻り値 | 説明 |
-| -------- | ---- | ------ | ---- |
-| `addImportedId` | `skillId: string` | `void` | スキルIDを追加（重複チェック付き） |
-| `removeImportedId` | `skillId: string` | `void` | スキルIDを削除 |
-| `getImportedIds` | - | `string[]` | 全スキルIDを取得 |
-| `hasImportedId` | `skillId: string` | `boolean` | 存在チェック |
+| メソッド           | 引数              | 戻り値     | 説明                               |
+| ------------------ | ----------------- | ---------- | ---------------------------------- |
+| `addImportedId`    | `skillId: string` | `void`     | スキルIDを追加（重複チェック付き） |
+| `removeImportedId` | `skillId: string` | `void`     | スキルIDを削除                     |
+| `getImportedIds`   | -                 | `string[]` | 全スキルIDを取得                   |
+| `hasImportedId`    | `skillId: string` | `boolean`  | 存在チェック                       |
 
 #### ストレージ仕様
 
-| 項目 | 値 |
-| ---- | -- |
-| ストアキー | `importedSkillIds` |
+| 項目         | 値                                                        |
+| ------------ | --------------------------------------------------------- |
+| ストアキー   | `importedSkillIds`                                        |
 | ファイルパス | `~/Library/Application Support/@repo/desktop/skills.json` |
-| データ形式 | `{ "importedSkillIds": ["skill-1", "skill-2", ...] }` |
+| データ形式   | `{ "importedSkillIds": ["skill-1", "skill-2", ...] }`     |
 
 ---
 
@@ -1963,12 +1963,12 @@ TASK-1-1で実装された16の共通型定義。specification.md §5.1に基づ
 
 ### 概要
 
-| カテゴリ         | 型数 | 説明                                       |
-| ---------------- | ---- | ------------------------------------------ |
-| スキルメタデータ | 4    | スキルの基本情報・構造を表す型             |
+| カテゴリ         | 型数 | 説明                                         |
+| ---------------- | ---- | -------------------------------------------- |
+| スキルメタデータ | 4    | スキルの基本情報・構造を表す型               |
 | 実行関連         | 3    | スキル実行のリクエスト/レスポンス/ステータス |
-| ストリーミング   | 7    | 実行中のリアルタイムメッセージ型           |
-| 権限確認         | 2    | 実行時の権限確認フロー型                   |
+| ストリーミング   | 7    | 実行中のリアルタイムメッセージ型             |
+| 権限確認         | 2    | 実行時の権限確認フロー型                     |
 
 ### スキルメタデータ型
 
@@ -2003,11 +2003,11 @@ interface SkillSubResource {
 
 ```typescript
 interface SkillMetadata {
-  name: string;              // スキル識別子
-  description: string;       // スキル説明
-  allowedTools?: string[];   // 許可ツール
-  path: string;              // ディレクトリパス
-  updatedAt: Date;           // 最終更新日時
+  name: string; // スキル識別子
+  description: string; // スキル説明
+  allowedTools?: string[]; // 許可ツール
+  path: string; // ディレクトリパス
+  updatedAt: Date; // 最終更新日時
   agents: SkillSubResource[];
   references: SkillSubResource[];
   scripts: SkillSubResource[];
@@ -2026,7 +2026,35 @@ interface SkillMetadata {
 interface ImportedSkill extends SkillMetadata {
   importedAt: Date;
   status: "active" | "disabled";
-  content?: string;  // SKILL.md本文キャッシュ
+  content?: string; // SKILL.md本文キャッシュ
+}
+```
+
+#### ScannedSkillMetadata
+
+スキャンされたスキルメタデータ（SkillMetadataを継承、readonlyフラグ付き）。
+
+> **追加**: TASK-2A（SkillScanner実装、2026-01-24完了）
+
+```typescript
+interface ScannedSkillMetadata extends SkillMetadata {
+  /** 読み取り専用フラグ（~/.claude/skills/ からのスキルは true） */
+  readonly: boolean;
+}
+```
+
+#### SkillScannerOptions
+
+SkillScannerコンストラクタオプション。
+
+> **追加**: TASK-2A（SkillScanner実装、2026-01-24完了）
+
+```typescript
+interface SkillScannerOptions {
+  /** ~/.aiworkflow/skills/ に相当するディレクトリパス */
+  aiworkflowSkillsDir?: string;
+  /** ~/.claude/skills/ に相当するディレクトリパス */
+  claudeSkillsDir?: string;
 }
 ```
 
@@ -2050,7 +2078,7 @@ interface SkillExecutionRequest {
 
 ```typescript
 interface SkillExecutionResponse {
-  executionId: string;  // UUID、Main側で生成
+  executionId: string; // UUID、Main側で生成
   success: boolean;
   error?: string;
 }
@@ -2140,11 +2168,36 @@ interface ErrorMessageContent {
 
 ```typescript
 type SkillStreamMessage =
-  | { executionId: string; type: "assistant"; content: AssistantMessageContent; timestamp: number; }
-  | { executionId: string; type: "tool_use"; content: ToolUseMessageContent; timestamp: number; }
-  | { executionId: string; type: "tool_result"; content: ToolResultMessageContent; timestamp: number; }
-  | { executionId: string; type: "status"; content: StatusMessageContent; timestamp: number; }
-  | { executionId: string; type: "error"; content: ErrorMessageContent; timestamp: number; };
+  | {
+      executionId: string;
+      type: "assistant";
+      content: AssistantMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "tool_use";
+      content: ToolUseMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "tool_result";
+      content: ToolResultMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "status";
+      content: StatusMessageContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "error";
+      content: ErrorMessageContent;
+      timestamp: number;
+    };
 ```
 
 ### 権限確認型
@@ -2201,12 +2254,12 @@ import type {
 
 ### 関連ドキュメント（TASK-1-1）
 
-| ドキュメント       | パス                                                                           |
-| ------------------ | ------------------------------------------------------------------------------ |
+| ドキュメント       | パス                                                                             |
+| ------------------ | -------------------------------------------------------------------------------- |
 | タスク完了サマリー | `docs/30-workflows/task-1-1-type-definitions/outputs/task-completion-summary.md` |
-| 実装ファイル       | `packages/shared/src/types/skill.ts`                                           |
-| テストファイル     | `packages/shared/src/types/__tests__/skill-import.test.ts`                     |
-| 仕様書             | `docs/30-workflows/skill-import-agent-system/specification.md` §5.1            |
+| 実装ファイル       | `packages/shared/src/types/skill.ts`                                             |
+| テストファイル     | `packages/shared/src/types/__tests__/skill-import.test.ts`                       |
+| 仕様書             | `docs/30-workflows/skill-import-agent-system/specification.md` §5.1              |
 
 ---
 
@@ -2214,14 +2267,14 @@ import type {
 
 ### タスク: skill-import-type-definitions（TASK-1-1、2026-01-23完了）
 
-| 項目         | 内容                                                   |
-| ------------ | ------------------------------------------------------ |
-| タスクID     | TASK-1-1                                               |
-| 完了日       | 2026-01-23                                             |
-| ステータス   | **完了**                                               |
-| テスト数     | 59（23 + 36）                                          |
-| 発見課題     | 0件                                                    |
-| ドキュメント | `docs/30-workflows/task-1-1-type-definitions/`         |
+| 項目         | 内容                                           |
+| ------------ | ---------------------------------------------- |
+| タスクID     | TASK-1-1                                       |
+| 完了日       | 2026-01-23                                     |
+| ステータス   | **完了**                                       |
+| テスト数     | 59（23 + 36）                                  |
+| 発見課題     | 0件                                            |
+| ドキュメント | `docs/30-workflows/task-1-1-type-definitions/` |
 
 #### 実装内容
 
@@ -2246,14 +2299,14 @@ specification.md §5.1に定義された16の共通型を`packages/shared/src/ty
 
 ### タスク: skill-import-persistence-bugfix（2026-01-22完了）
 
-| 項目         | 内容                                                        |
-| ------------ | ----------------------------------------------------------- |
-| タスクID     | SKILL-IMPORT-PERSIST-001                                    |
-| 完了日       | 2026-01-22                                                  |
-| ステータス   | **完了**                                                    |
-| テスト数     | 28（自動テスト）+ 7（手動テスト項目）                       |
-| 発見課題     | 0件                                                         |
-| ドキュメント | `docs/30-workflows/skill-import-persistence-bugfix/`        |
+| 項目         | 内容                                                 |
+| ------------ | ---------------------------------------------------- |
+| タスクID     | SKILL-IMPORT-PERSIST-001                             |
+| 完了日       | 2026-01-22                                           |
+| ステータス   | **完了**                                             |
+| テスト数     | 28（自動テスト）+ 7（手動テスト項目）                |
+| 発見課題     | 0件                                                  |
+| ドキュメント | `docs/30-workflows/skill-import-persistence-bugfix/` |
 
 #### 問題
 
@@ -2271,31 +2324,31 @@ specification.md §5.1に定義された16の共通型を`packages/shared/src/ty
 
 #### テストカバレッジ
 
-| メトリクス | 達成値  |
-| ---------- | ------- |
-| Lines      | 95.31%  |
-| Functions  | 100%    |
-| Branches   | 92.3%   |
-| Statements | 95.31%  |
+| メトリクス | 達成値 |
+| ---------- | ------ |
+| Lines      | 95.31% |
+| Functions  | 100%   |
+| Branches   | 92.3%  |
+| Statements | 95.31% |
 
 #### 変更ファイル
 
-| ファイル                                          | 変更種別 |
-| ------------------------------------------------- | -------- |
-| `apps/desktop/src/main/ipc/index.ts`              | 修正     |
-| `apps/desktop/src/main/services/skill/SkillImportManager.ts` | 修正     |
+| ファイル                                                                    | 変更種別 |
+| --------------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/ipc/index.ts`                                        | 修正     |
+| `apps/desktop/src/main/services/skill/SkillImportManager.ts`                | 修正     |
 | `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.test.ts` | 追加     |
 
 ### タスク: skill-import-store-persistence（2026-01-22完了）
 
-| 項目         | 内容                                               |
-| ------------ | -------------------------------------------------- |
-| タスクID     | SKILL-STORE-001                                    |
-| 完了日       | 2026-01-22                                         |
-| ステータス   | **完了**                                           |
-| テスト数     | 144（自動テスト: 28ユニット + 23統合 + 93その他）  |
-| 発見課題     | 0件                                                |
-| ドキュメント | `docs/30-workflows/skill-import-store-persistence/`|
+| 項目         | 内容                                                |
+| ------------ | --------------------------------------------------- |
+| タスクID     | SKILL-STORE-001                                     |
+| 完了日       | 2026-01-22                                          |
+| ステータス   | **完了**                                            |
+| テスト数     | 144（自動テスト: 28ユニット + 23統合 + 93その他）   |
+| 発見課題     | 0件                                                 |
+| ドキュメント | `docs/30-workflows/skill-import-store-persistence/` |
 
 #### 問題
 
@@ -2321,22 +2374,22 @@ specification.md §5.1に定義された16の共通型を`packages/shared/src/ty
 
 #### 変更ファイル
 
-| ファイル                                                       | 変更種別 |
-| -------------------------------------------------------------- | -------- |
-| `apps/desktop/src/main/services/skill/SkillImportManager.ts`   | 修正     |
-| `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.integration.test.ts` | 新規 |
-| `apps/desktop/src/main/ipc/__tests__/skillHandlers.integration.test.ts` | 新規 |
+| ファイル                                                                                | 変更種別 |
+| --------------------------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/services/skill/SkillImportManager.ts`                            | 修正     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillImportManager.integration.test.ts` | 新規     |
+| `apps/desktop/src/main/ipc/__tests__/skillHandlers.integration.test.ts`                 | 新規     |
 
 ### タスク: skill-import-type-definitions（2026-01-23完了）
 
-| 項目         | 内容                                               |
-| ------------ | -------------------------------------------------- |
-| タスクID     | TASK-1-1                                           |
-| 完了日       | 2026-01-23                                         |
-| ステータス   | **完了**                                           |
-| テスト数     | 59（自動テスト: 36ユニット + 23インポート）        |
-| 発見課題     | 0件                                                |
-| ドキュメント | `docs/30-workflows/task-1-1-type-definitions/`     |
+| 項目         | 内容                                           |
+| ------------ | ---------------------------------------------- |
+| タスクID     | TASK-1-1                                       |
+| 完了日       | 2026-01-23                                     |
+| ステータス   | **完了**                                       |
+| テスト数     | 59（自動テスト: 36ユニット + 23インポート）    |
+| 発見課題     | 0件                                            |
+| ドキュメント | `docs/30-workflows/task-1-1-type-definitions/` |
 
 #### 概要
 
@@ -2344,24 +2397,24 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 #### 実装内容
 
-| カテゴリ         | 型名                     | 用途                               |
-| ---------------- | ------------------------ | ---------------------------------- |
-| スキルメタデータ | SkillMetadata            | スキルの基本情報（frontmatter）    |
-|                  | SkillSubResource         | サブリソースファイル情報           |
-|                  | SkillOtherFile           | その他のファイル情報               |
-|                  | ImportedSkill            | インポート済みスキル情報           |
-| 実行関連         | SkillExecutionRequest    | スキル実行リクエスト               |
-|                  | SkillExecutionResponse   | スキル実行レスポンス               |
-|                  | SkillExecutionStatus     | 実行ステータス（pending等）        |
-| ストリーミング   | SkillStreamMessageType   | メッセージタイプ（リテラル型）     |
-|                  | SkillStreamMessage       | ストリーミングメッセージ（DU）     |
-|                  | AssistantMessageContent  | アシスタントメッセージ内容         |
-|                  | ToolUseMessageContent    | ツール使用メッセージ内容           |
-|                  | ToolResultMessageContent | ツール結果メッセージ内容           |
-|                  | StatusMessageContent     | ステータスメッセージ内容           |
-|                  | ErrorMessageContent      | エラーメッセージ内容               |
-| 権限確認         | SkillPermissionRequest   | 権限確認リクエスト                 |
-|                  | SkillPermissionResponse  | 権限確認レスポンス                 |
+| カテゴリ         | 型名                     | 用途                            |
+| ---------------- | ------------------------ | ------------------------------- |
+| スキルメタデータ | SkillMetadata            | スキルの基本情報（frontmatter） |
+|                  | SkillSubResource         | サブリソースファイル情報        |
+|                  | SkillOtherFile           | その他のファイル情報            |
+|                  | ImportedSkill            | インポート済みスキル情報        |
+| 実行関連         | SkillExecutionRequest    | スキル実行リクエスト            |
+|                  | SkillExecutionResponse   | スキル実行レスポンス            |
+|                  | SkillExecutionStatus     | 実行ステータス（pending等）     |
+| ストリーミング   | SkillStreamMessageType   | メッセージタイプ（リテラル型）  |
+|                  | SkillStreamMessage       | ストリーミングメッセージ（DU）  |
+|                  | AssistantMessageContent  | アシスタントメッセージ内容      |
+|                  | ToolUseMessageContent    | ツール使用メッセージ内容        |
+|                  | ToolResultMessageContent | ツール結果メッセージ内容        |
+|                  | StatusMessageContent     | ステータスメッセージ内容        |
+|                  | ErrorMessageContent      | エラーメッセージ内容            |
+| 権限確認         | SkillPermissionRequest   | 権限確認リクエスト              |
+|                  | SkillPermissionResponse  | 権限確認レスポンス              |
 
 #### 品質基準
 
@@ -2387,6 +2440,57 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 ---
 
+### タスク: skill-scanner-implementation（TASK-2A、2026-01-24完了）
+
+| 項目         | 内容                                          |
+| ------------ | --------------------------------------------- |
+| タスクID     | TASK-2A                                       |
+| 完了日       | 2026-01-24                                    |
+| ステータス   | **完了**                                      |
+| テスト数     | 49（自動テスト）+ 13（手動テスト項目）        |
+| 発見課題     | 1件（ISS-01: 未使用型定義、重要度: 低、受容） |
+| ドキュメント | `docs/30-workflows/TASK-2A/`                  |
+
+#### 概要
+
+スキルディレクトリをスキャンしてメタデータを取得する`SkillScanner`クラスを実装。2つのディレクトリ（`~/.aiworkflow/skills/`と`~/.claude/skills/`）をサポートし、readonlyフラグで区別。
+
+#### 実装内容
+
+| 項目         | 内容                                                   |
+| ------------ | ------------------------------------------------------ |
+| 実装ファイル | `apps/desktop/src/main/services/skill/SkillScanner.ts` |
+| コード行数   | 520行                                                  |
+| 新規型定義   | `ScannedSkillMetadata`, `SkillScannerOptions`          |
+| 主要メソッド | `scanAll()`, `scanDirectory()` (Legacy)                |
+
+#### テストカバレッジ
+
+| メトリクス        | 目標 | 達成値 |
+| ----------------- | ---- | ------ |
+| Line Coverage     | 80%  | 82.69% |
+| Branch Coverage   | 60%  | 83.56% |
+| Function Coverage | 80%  | 100%   |
+
+#### セキュリティ対策
+
+| 対策                     | 実装内容                                   |
+| ------------------------ | ------------------------------------------ |
+| パストラバーサル防止     | `..` や `/` を含むディレクトリ名を拒否     |
+| シンボリックリンク検証   | ベースパス外を指すシンボリックリンクを拒否 |
+| 隠しディレクトリスキップ | `.` で始まるディレクトリをスキップ         |
+
+#### 変更ファイル
+
+| ファイル                                                                    | 変更種別 |
+| --------------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/services/skill/SkillScanner.ts`                      | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillScanner.test.ts`       | 新規     |
+| `apps/desktop/src/main/services/skill/__manual-tests__/scan-real-skills.ts` | 新規     |
+| `apps/desktop/src/main/services/skill/index.ts`                             | 更新     |
+
+---
+
 ## 残課題（未タスク）
 
 | タスクID      | タスク名                  | 優先度 | 発見元                             | タスク仕様書                                                         |
@@ -2399,31 +2503,33 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 ## 関連ドキュメント
 
-| ドキュメント                        | パス                                                                                        |
-| ----------------------------------- | ------------------------------------------------------------------------------------------- |
-| Agent SDK実装ガイド                 | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`          |
-| Agent SDK APIリファレンス           | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                 |
-| Claude Agent SDKスキル              | `.claude/skills/claude-agent-sdk/SKILL.md`                                                  |
-| LLMインターフェース                 | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                       |
-| Agent Dashboard実装ガイド           | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`     |
-| スキル管理UI実装ガイド（AGENT-002） | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`            |
-| スキル管理UIテストドキュメント      | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                       |
-| スキル実行機能実装ガイド            | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md` |
-| AgentSDKPage Postrelease実装ガイド  | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`        |
-| Session Persistence実装ガイド       | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`  |
-| スキルインポート永続化バグ修正      | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md` |
-| スキルインポートストア永続化問題修正 | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md` |
-| スキルインポート共通型定義（TASK-1-1） | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md` |
+| ドキュメント                           | パス                                                                                         |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Agent SDK実装ガイド                    | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`           |
+| Agent SDK APIリファレンス              | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                  |
+| Claude Agent SDKスキル                 | `.claude/skills/claude-agent-sdk/SKILL.md`                                                   |
+| LLMインターフェース                    | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                        |
+| Agent Dashboard実装ガイド              | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`      |
+| スキル管理UI実装ガイド（AGENT-002）    | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`             |
+| スキル管理UIテストドキュメント         | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                        |
+| スキル実行機能実装ガイド               | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md`  |
+| AgentSDKPage Postrelease実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`         |
+| Session Persistence実装ガイド          | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`   |
+| スキルインポート永続化バグ修正         | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md` |
+| スキルインポートストア永続化問題修正   | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md`  |
+| スキルインポート共通型定義（TASK-1-1） | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md`       |
+| SkillScanner実装ガイド（TASK-2A）      | `docs/30-workflows/TASK-2A/outputs/phase-12/implementation-guide.md`                         |
 
 ---
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                          |
-| ---------- | ---------- | ----------------------------------------------------------------- |
-| 1.0.0      | 2026-01-15 | 初版作成                                                          |
-| 1.1.0      | 2026-01-22 | skill-import-persistence-bugfix完了記録追加                       |
-| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、E2Eテストタスク登録             |
-| 1.3.0      | 2026-01-22 | skill-import-store-persistence完了記録追加（統合テスト23件追加、発見課題0件） |
-| 1.4.0      | 2026-01-23 | TASK-1-1（スキルインポート共通型定義）完了記録追加（16型、59テスト） |
-| 1.5.0      | 2026-01-23 | TASK-1-1 型定義セクション追加（16型の詳細仕様） |
+| バージョン | 日付       | 変更内容                                                                                                              |
+| ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| 1.0.0      | 2026-01-15 | 初版作成                                                                                                              |
+| 1.1.0      | 2026-01-22 | skill-import-persistence-bugfix完了記録追加                                                                           |
+| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、E2Eテストタスク登録                                                                 |
+| 1.3.0      | 2026-01-22 | skill-import-store-persistence完了記録追加（統合テスト23件追加、発見課題0件）                                         |
+| 1.4.0      | 2026-01-23 | TASK-1-1（スキルインポート共通型定義）完了記録追加（16型、59テスト）                                                  |
+| 1.5.0      | 2026-01-23 | TASK-1-1 型定義セクション追加（16型の詳細仕様）                                                                       |
+| 1.6.0      | 2026-01-24 | TASK-2A（SkillScanner実装）完了記録追加、ScannedSkillMetadata/SkillScannerOptions型追加（49テスト、カバレッジ82.69%） |

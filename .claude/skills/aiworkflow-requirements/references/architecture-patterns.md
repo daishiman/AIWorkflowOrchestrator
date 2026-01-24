@@ -94,35 +94,36 @@ Main Process (Electron)
 
 ### ファイル構成
 
-| ファイル | 責務 |
-|---------|------|
-| `ContentExtractor.ts` | Markdownからコードブロック抽出 |
-| `ContentSanitizer.ts` | DOMPurifyによるXSS対策 |
-| `TempFileManager.ts` | 一時ファイル作成・管理・削除 |
-| `EnvironmentService.ts` | Facadeサービス（外部API） |
-| `index.ts` | エクスポート |
-| `agentHandlers.ts` | IPCハンドラ（ipc/配下） |
+| ファイル                | 責務                           |
+| ----------------------- | ------------------------------ |
+| `ContentExtractor.ts`   | Markdownからコードブロック抽出 |
+| `ContentSanitizer.ts`   | DOMPurifyによるXSS対策         |
+| `TempFileManager.ts`    | 一時ファイル作成・管理・削除   |
+| `EnvironmentService.ts` | Facadeサービス（外部API）      |
+| `index.ts`              | エクスポート                   |
+| `agentHandlers.ts`      | IPCハンドラ（ipc/配下）        |
 
 ### 型定義
 
-| 型名 | 定義場所 | 説明 |
-|-----|---------|------|
-| `ContentType` | `packages/shared/src/types/agent.ts` | サポートするコンテンツタイプ |
-| `ExtractedContent` | `packages/shared/src/types/agent.ts` | 抽出されたコンテンツ |
-| `SanitizedContent` | `packages/shared/src/types/agent.ts` | サニタイズ済みコンテンツ |
-| `PreviewContent` | `packages/shared/src/types/agent.ts` | プレビュー用コンテンツ |
+| 型名               | 定義場所                             | 説明                         |
+| ------------------ | ------------------------------------ | ---------------------------- |
+| `ContentType`      | `packages/shared/src/types/agent.ts` | サポートするコンテンツタイプ |
+| `ExtractedContent` | `packages/shared/src/types/agent.ts` | 抽出されたコンテンツ         |
+| `SanitizedContent` | `packages/shared/src/types/agent.ts` | サニタイズ済みコンテンツ     |
+| `PreviewContent`   | `packages/shared/src/types/agent.ts` | プレビュー用コンテンツ       |
 
 ### IPC APIチャネル
 
-| チャネル | 引数 | 戻り値 | 説明 |
-|---------|------|--------|------|
-| `agent:extract-content` | `text: string` | `PreviewContent` | テキストからコンテンツ抽出・サニタイズ |
-| `agent:get-preview` | `executionId: string` | `PreviewContent \| null` | プレビュー用コンテンツ取得 |
-| `agent:cleanup-temp` | なし | `void` | 一時ファイルクリーンアップ |
+| チャネル                | 引数                  | 戻り値                   | 説明                                   |
+| ----------------------- | --------------------- | ------------------------ | -------------------------------------- |
+| `agent:extract-content` | `text: string`        | `PreviewContent`         | テキストからコンテンツ抽出・サニタイズ |
+| `agent:get-preview`     | `executionId: string` | `PreviewContent \| null` | プレビュー用コンテンツ取得             |
+| `agent:cleanup-temp`    | なし                  | `void`                   | 一時ファイルクリーンアップ             |
 
 ### セキュリティ対策
 
 **XSS防止（ContentSanitizer）**:
+
 - scriptタグ除去
 - iframeタグ除去
 - イベントハンドラ除去（onclick, onerror, onload等）
@@ -130,6 +131,7 @@ Main Process (Electron)
 - data:プロトコル制限
 
 **ファイルセキュリティ（TempFileManager）**:
+
 - ファイルパーミッション: 0o600（オーナーのみ）
 - UUIDベースファイル名（推測不可）
 - 自動クリーンアップ機構
@@ -151,58 +153,58 @@ Main Process (Electron)
 
 **必須ファイル構成**:
 
-| ファイル             | 役割                        |
-| -------------------- | --------------------------- |
-| `{name}Slice.ts`     | Slice定義（状態+アクション）|
-| `__tests__/{name}Slice.test.ts` | ユニットテスト    |
+| ファイル                        | 役割                         |
+| ------------------------------- | ---------------------------- |
+| `{name}Slice.ts`                | Slice定義（状態+アクション） |
+| `__tests__/{name}Slice.test.ts` | ユニットテスト               |
 
 **Slice定義パターン**:
 
-| 要素             | 説明                       |
-| ---------------- | -------------------------- |
-| `{Name}State`    | 状態のインターフェース     |
-| `{Name}Actions`  | アクションのインターフェース |
-| `{Name}Slice`    | State + Actions の統合型   |
-| `initial{Name}State` | 初期状態オブジェクト   |
-| `create{Name}Slice` | StateCreator関数        |
+| 要素                 | 説明                         |
+| -------------------- | ---------------------------- |
+| `{Name}State`        | 状態のインターフェース       |
+| `{Name}Actions`      | アクションのインターフェース |
+| `{Name}Slice`        | State + Actions の統合型     |
+| `initial{Name}State` | 初期状態オブジェクト         |
+| `create{Name}Slice`  | StateCreator関数             |
 
 ### 既存Slice一覧
 
-| Slice名      | 責務                       | 実装ファイル                    |
-| ------------ | -------------------------- | ------------------------------- |
-| `uiSlice`    | UI状態（currentView等）    | `store/slices/uiSlice.ts`       |
-| `authSlice`  | 認証状態                   | `store/slices/authSlice.ts`     |
-| `chatSlice`  | チャット状態               | `store/slices/chatSlice.ts`     |
-| `agentSlice` | エージェント・スキル管理   | `store/slices/agentSlice.ts`    |
+| Slice名      | 責務                     | 実装ファイル                 |
+| ------------ | ------------------------ | ---------------------------- |
+| `uiSlice`    | UI状態（currentView等）  | `store/slices/uiSlice.ts`    |
+| `authSlice`  | 認証状態                 | `store/slices/authSlice.ts`  |
+| `chatSlice`  | チャット状態             | `store/slices/chatSlice.ts`  |
+| `agentSlice` | エージェント・スキル管理 | `store/slices/agentSlice.ts` |
 
 ### agentSlice詳細
 
 **状態定義**:
 
-| プロパティ         | 型                      | 説明               |
-| ------------------ | ----------------------- | ------------------ |
-| `skills`           | `Skill[]`               | スキル一覧         |
-| `selectedSkill`    | `Skill \| null`         | 選択中のスキル     |
-| `skillFilter`      | `string`                | フィルター文字列   |
-| `skillCategory`    | `string \| null`        | カテゴリフィルター |
-| `executionStatus`  | `AgentExecutionStatus`  | 実行状態           |
-| `currentExecutionId` | `string \| null`      | 実行ID             |
-| `executionOutput`  | `string[]`              | 実行出力           |
-| `isLoading`        | `boolean`               | ローディング状態   |
-| `error`            | `string \| null`        | エラーメッセージ   |
+| プロパティ           | 型                     | 説明               |
+| -------------------- | ---------------------- | ------------------ |
+| `skills`             | `Skill[]`              | スキル一覧         |
+| `selectedSkill`      | `Skill \| null`        | 選択中のスキル     |
+| `skillFilter`        | `string`               | フィルター文字列   |
+| `skillCategory`      | `string \| null`       | カテゴリフィルター |
+| `executionStatus`    | `AgentExecutionStatus` | 実行状態           |
+| `currentExecutionId` | `string \| null`       | 実行ID             |
+| `executionOutput`    | `string[]`             | 実行出力           |
+| `isLoading`          | `boolean`              | ローディング状態   |
+| `error`              | `string \| null`       | エラーメッセージ   |
 
 **アクション定義**:
 
-| アクション           | 引数                     | 説明               |
-| -------------------- | ------------------------ | ------------------ |
-| `setSkills`          | `skills: Skill[]`        | スキル一覧設定     |
-| `selectSkill`        | `skill: Skill \| null`   | スキル選択         |
-| `setSkillFilter`     | `filter: string`         | フィルター設定     |
-| `setSkillCategory`   | `category: string \| null` | カテゴリ設定     |
-| `setExecutionStatus` | `status: AgentExecutionStatus` | 実行状態設定 |
-| `appendOutput`       | `output: string`         | 出力追加           |
-| `clearExecution`     | -                        | 実行クリア         |
-| `resetAgentState`    | -                        | 状態リセット       |
+| アクション           | 引数                           | 説明           |
+| -------------------- | ------------------------------ | -------------- |
+| `setSkills`          | `skills: Skill[]`              | スキル一覧設定 |
+| `selectSkill`        | `skill: Skill \| null`         | スキル選択     |
+| `setSkillFilter`     | `filter: string`               | フィルター設定 |
+| `setSkillCategory`   | `category: string \| null`     | カテゴリ設定   |
+| `setExecutionStatus` | `status: AgentExecutionStatus` | 実行状態設定   |
+| `appendOutput`       | `output: string`               | 出力追加       |
+| `clearExecution`     | -                              | 実行クリア     |
+| `resetAgentState`    | -                              | 状態リセット   |
 
 ### 新規Slice追加手順
 
@@ -252,35 +254,148 @@ Main Process (Electron)
 
 ### ファイル構成
 
-| ファイル                 | 責務                           |
-| ------------------------ | ------------------------------ |
-| `SkillScanner.ts`        | ディレクトリスキャン・パス検証 |
-| `SkillParser.ts`         | SKILL.md解析・構造化           |
-| `SkillImportManager.ts`  | インポート状態管理・永続化     |
-| `SkillService.ts`        | Facadeサービス（外部API）      |
-| `index.ts`               | エクスポート                   |
-| `skillHandlers.ts`       | IPCハンドラ（ipc/配下）        |
+| ファイル                | 責務                           |
+| ----------------------- | ------------------------------ |
+| `SkillScanner.ts`       | ディレクトリスキャン・パス検証 |
+| `SkillParser.ts`        | SKILL.md解析・構造化           |
+| `SkillImportManager.ts` | インポート状態管理・永続化     |
+| `SkillService.ts`       | Facadeサービス（外部API）      |
+| `index.ts`              | エクスポート                   |
+| `skillHandlers.ts`      | IPCハンドラ（ipc/配下）        |
 
 ### 型定義
 
-| 型名                | 定義場所                           | 説明                     |
-| ------------------- | ---------------------------------- | ------------------------ |
-| `Skill`             | `packages/shared/src/types/skill.ts` | スキル情報               |
-| `Anchor`            | `packages/shared/src/types/skill.ts` | 知識のアンカー           |
-| `EnvironmentConfig` | `packages/shared/src/types/skill.ts` | 環境設定                 |
-| `SkillScanResult`   | `packages/shared/src/types/skill.ts` | スキャン結果             |
-| `ImportResult`      | `packages/shared/src/types/skill.ts` | インポート結果           |
-| `RemoveResult`      | `packages/shared/src/types/skill.ts` | 削除結果                 |
+| 型名                   | 定義場所                                 | 説明                         |
+| ---------------------- | ---------------------------------------- | ---------------------------- |
+| `Skill`                | `packages/shared/src/types/skill.ts`     | スキル情報                   |
+| `SkillMetadata`        | `packages/shared/src/types/skill.ts`     | スキルメタデータ             |
+| `ScannedSkillMetadata` | `apps/desktop/.../skill/SkillScanner.ts` | スキャン結果（readonly付き） |
+| `SkillScannerOptions`  | `apps/desktop/.../skill/SkillScanner.ts` | ScannerコンストラクタOption  |
+| `SkillSubResource`     | `packages/shared/src/types/skill.ts`     | サブリソース情報             |
+| `SkillOtherFile`       | `packages/shared/src/types/skill.ts`     | その他ファイル情報           |
+| `Anchor`               | `packages/shared/src/types/skill.ts`     | 知識のアンカー               |
+| `EnvironmentConfig`    | `packages/shared/src/types/skill.ts`     | 環境設定                     |
+| `SkillScanResult`      | `packages/shared/src/types/skill.ts`     | スキャン結果                 |
+| `ImportResult`         | `packages/shared/src/types/skill.ts`     | インポート結果               |
+| `RemoveResult`         | `packages/shared/src/types/skill.ts`     | 削除結果                     |
+
+### SkillScanner（TASK-2A実装）
+
+> **実装完了**: 2026-01-24（TASK-2A）
+> **参照**: [interfaces-agent-sdk.md](interfaces-agent-sdk.md) の ScannedSkillMetadata/SkillScannerOptions
+
+スキルディレクトリをスキャンしてメタデータを取得するサービスクラス。
+
+#### スキャン対象ディレクトリ
+
+| ディレクトリ            | readonly | 説明                               |
+| ----------------------- | -------- | ---------------------------------- |
+| `~/.aiworkflow/skills/` | `false`  | 編集可能なカスタムスキル           |
+| `~/.claude/skills/`     | `true`   | 読み取り専用のClaude CLI標準スキル |
+
+#### SkillScanner API
+
+| メソッド          | 引数 | 戻り値                            | 説明                      |
+| ----------------- | ---- | --------------------------------- | ------------------------- |
+| `scanAll()`       | -    | `Promise<ScannedSkillMetadata[]>` | 全スキルをスキャン        |
+| `scanDirectory()` | -    | `Promise<string[]>`               | [Legacy] ディレクトリ一覧 |
+
+#### サブディレクトリ定数
+
+```typescript
+const SUB_DIRECTORIES = [
+  "agents", // エージェント定義
+  "references", // 参照ドキュメント
+  "scripts", // スクリプトファイル
+  "assets", // アセットファイル
+  "schemas", // JSONスキーマ
+  "indexes", // インデックスファイル
+] as const;
+```
+
+#### その他ファイル定数
+
+```typescript
+const OTHER_FILES = [
+  { filename: "EVALS.json", type: "evals" },
+  { filename: "LOGS.md", type: "logs" },
+  { filename: "package.json", type: "package" },
+] as const;
+```
+
+#### セキュリティ対策
+
+| 対策                     | 実装                                       |
+| ------------------------ | ------------------------------------------ |
+| パストラバーサル防止     | `..` `/` を含むディレクトリ名を拒否        |
+| シンボリックリンク検証   | ベースパス外を指すシンボリックリンクを拒否 |
+| 隠しディレクトリスキップ | `.` で始まるディレクトリを除外             |
+
+#### データフロー
+
+```
+SkillScanner.scanAll()
+    ├── ensureAiworkflowDir()        # ~/.aiworkflow/skills/ を確保
+    ├── scanSkillDirectory(aiworkflow, false)  # 並列実行
+    └── scanSkillDirectory(claude, true)       # 並列実行
+            │
+            ├── fs.readdir()
+            ├── セキュリティ検証
+            └── parseSkill()
+                    ├── fs.readFile(SKILL.md)
+                    ├── parseFrontmatter()
+                    ├── scanAllSubDirectories()   # 並列
+                    └── scanOtherFiles()          # 並列
+```
+
+#### 将来改善ロードマップ
+
+> **記録日**: 2026-01-24（TASK-2A Phase 12）
+> **未タスク仕様書配置先**: `docs/30-workflows/unassigned-task/`
+
+以下の改善は未タスク仕様書として正式に文書化済み。全て優先度「低」。
+
+| 改善項目         | タスクID                         | 概要                           | 提案API                                              |
+| ---------------- | -------------------------------- | ------------------------------ | ---------------------------------------------------- |
+| キャッシュ機能   | task-perf-skillscanner-cache-001 | TTLベースのメモリキャッシュ    | `cacheTtlMs`, `invalidateCache()`                    |
+| 増分スキャン     | task-perf-skillscanner-incr-001  | chokidarによるファイル変更監視 | `startWatching()`, `stopWatching()`, `skill:changed` |
+| ページネーション | task-perf-skillscanner-page-001  | 大量スキル（1000+）対応        | `scanAllPaginated()`, `getSkillCount()`              |
+
+**想定追加型**（実装時に `packages/shared/src/types/skill.ts` へ追加）:
+
+```typescript
+// キャッシュ機能
+interface SkillScannerOptions {
+  cacheTtlMs?: number; // デフォルト: 300000 (5分)
+}
+
+// 増分スキャン
+interface SkillChangeEvent {
+  type: "added" | "modified" | "removed";
+  skillPath: string;
+  skillName: string;
+  timestamp: number;
+}
+
+// ページネーション
+interface PaginatedSkillResult {
+  items: ScannedSkillMetadata[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+```
 
 ### IPC APIチャネル
 
-| チャネル              | 引数                | 戻り値             | 説明                     |
-| --------------------- | ------------------- | ------------------ | ------------------------ |
-| `skill:list-available`| `basePath: string`  | `Skill[]`          | スキルスキャン           |
-| `skill:list-imported` | なし                | `Skill[]`          | インポート済み取得       |
-| `skill:import`        | `skillIds: string[]`| `ImportResult`     | スキルインポート         |
-| `skill:remove`        | `skillId: string`   | `RemoveResult`     | インポート解除           |
-| `skill:get-detail`    | `skillId: string`   | `Skill \| null`    | スキル詳細取得           |
+| チャネル               | 引数                 | 戻り値          | 説明               |
+| ---------------------- | -------------------- | --------------- | ------------------ |
+| `skill:list-available` | `basePath: string`   | `Skill[]`       | スキルスキャン     |
+| `skill:list-imported`  | なし                 | `Skill[]`       | インポート済み取得 |
+| `skill:import`         | `skillIds: string[]` | `ImportResult`  | スキルインポート   |
+| `skill:remove`         | `skillId: string`    | `RemoveResult`  | インポート解除     |
+| `skill:get-detail`     | `skillId: string`    | `Skill \| null` | スキル詳細取得     |
 
 ### データフロー
 
@@ -292,14 +407,14 @@ Main Process (Electron)
 
 ### SkillService（Facade）API
 
-| メソッド              | 引数                | 戻り値               | 説明               |
-| --------------------- | ------------------- | -------------------- | ------------------ |
-| `scanAvailableSkills` | `basePath: string`  | `Promise<Skill[]>`   | スキルスキャン     |
-| `getImportedSkills`   | -                   | `Promise<Skill[]>`   | インポート済み取得 |
-| `importSkills`        | `skillIds: string[]`| `Promise<ImportResult>` | インポート     |
-| `removeSkill`         | `skillId: string`   | `Promise<RemoveResult>` | 削除           |
-| `getSkillById`        | `skillId: string`   | `Promise<Skill \| null>` | 詳細取得     |
-| `clearCache`          | -                   | `void`               | キャッシュクリア   |
+| メソッド              | 引数                 | 戻り値                   | 説明               |
+| --------------------- | -------------------- | ------------------------ | ------------------ |
+| `scanAvailableSkills` | `basePath: string`   | `Promise<Skill[]>`       | スキルスキャン     |
+| `getImportedSkills`   | -                    | `Promise<Skill[]>`       | インポート済み取得 |
+| `importSkills`        | `skillIds: string[]` | `Promise<ImportResult>`  | インポート         |
+| `removeSkill`         | `skillId: string`    | `Promise<RemoveResult>`  | 削除               |
+| `getSkillById`        | `skillId: string`    | `Promise<Skill \| null>` | 詳細取得           |
+| `clearCache`          | -                    | `void`                   | キャッシュクリア   |
 
 ### キャッシュ機構
 
@@ -337,36 +452,36 @@ Main Process (Electron)
 
 ### ファイル構成
 
-| ファイル                | 責務                          |
-| ----------------------- | ----------------------------- |
-| `ProcessManager.ts`     | 子プロセス生成・監視・終了    |
-| `SessionManager.ts`     | セッションライフサイクル管理  |
-| `SkillScanner.ts`       | スキルディレクトリスキャン    |
-| `ClaudeCliManager.ts`   | Facadeサービス（外部API）     |
-| `ipc-handler.ts`        | IPCハンドラ                   |
-| `index.ts`              | エクスポート                  |
+| ファイル              | 責務                         |
+| --------------------- | ---------------------------- |
+| `ProcessManager.ts`   | 子プロセス生成・監視・終了   |
+| `SessionManager.ts`   | セッションライフサイクル管理 |
+| `SkillScanner.ts`     | スキルディレクトリスキャン   |
+| `ClaudeCliManager.ts` | Facadeサービス（外部API）    |
+| `ipc-handler.ts`      | IPCハンドラ                  |
+| `index.ts`            | エクスポート                 |
 
 ### 型定義
 
-| 型名                    | 定義場所                               | 説明                     |
-| ----------------------- | -------------------------------------- | ------------------------ |
-| `ClaudeCliResult<T>`    | `packages/shared/src/claude-cli/types.ts` | Result Pattern型       |
-| `SessionStatus`         | `packages/shared/src/claude-cli/types.ts` | セッション状態         |
-| `ClaudeCliSkill`        | `packages/shared/src/claude-cli/types.ts` | スキル情報             |
-| `SessionSummary`        | `packages/shared/src/claude-cli/types.ts` | セッション概要         |
-| `OutputEvent`           | `packages/shared/src/claude-cli/types.ts` | 出力イベント           |
+| 型名                 | 定義場所                                  | 説明             |
+| -------------------- | ----------------------------------------- | ---------------- |
+| `ClaudeCliResult<T>` | `packages/shared/src/claude-cli/types.ts` | Result Pattern型 |
+| `SessionStatus`      | `packages/shared/src/claude-cli/types.ts` | セッション状態   |
+| `ClaudeCliSkill`     | `packages/shared/src/claude-cli/types.ts` | スキル情報       |
+| `SessionSummary`     | `packages/shared/src/claude-cli/types.ts` | セッション概要   |
+| `OutputEvent`        | `packages/shared/src/claude-cli/types.ts` | 出力イベント     |
 
 ### IPC APIチャネル
 
-| チャネル                         | 引数                       | 戻り値                               | 説明               |
-| -------------------------------- | -------------------------- | ------------------------------------ | ------------------ |
-| `claude-cli:check-installation`  | なし                       | `ClaudeCliResult<CliInstallationStatus>` | CLI存在確認      |
-| `claude-cli:list-skills`         | `ListSkillsRequest`        | `ClaudeCliResult<ScanResult>`        | スキル一覧取得     |
-| `claude-cli:get-skill-detail`    | `GetSkillDetailRequest`    | `ClaudeCliResult<ClaudeCliSkillDetail>` | スキル詳細取得  |
-| `claude-cli:execute-script`      | `ExecuteScriptRequest`     | `ClaudeCliResult<ExecuteScriptResponse>` | スクリプト実行  |
-| `claude-cli:terminate-session`   | `TerminateSessionRequest`  | `ClaudeCliResult<TerminateSessionResponse>` | セッション終了 |
-| `claude-cli:list-sessions`       | なし                       | `ClaudeCliResult<SessionSummary[]>`  | セッション一覧     |
-| `claude-cli:get-session`         | `GetSessionRequest`        | `ClaudeCliResult<SessionDetail>`     | セッション詳細     |
+| チャネル                        | 引数                      | 戻り値                                      | 説明           |
+| ------------------------------- | ------------------------- | ------------------------------------------- | -------------- |
+| `claude-cli:check-installation` | なし                      | `ClaudeCliResult<CliInstallationStatus>`    | CLI存在確認    |
+| `claude-cli:list-skills`        | `ListSkillsRequest`       | `ClaudeCliResult<ScanResult>`               | スキル一覧取得 |
+| `claude-cli:get-skill-detail`   | `GetSkillDetailRequest`   | `ClaudeCliResult<ClaudeCliSkillDetail>`     | スキル詳細取得 |
+| `claude-cli:execute-script`     | `ExecuteScriptRequest`    | `ClaudeCliResult<ExecuteScriptResponse>`    | スクリプト実行 |
+| `claude-cli:terminate-session`  | `TerminateSessionRequest` | `ClaudeCliResult<TerminateSessionResponse>` | セッション終了 |
+| `claude-cli:list-sessions`      | なし                      | `ClaudeCliResult<SessionSummary[]>`         | セッション一覧 |
+| `claude-cli:get-session`        | `GetSessionRequest`       | `ClaudeCliResult<SessionDetail>`            | セッション詳細 |
 
 ### データフロー
 
@@ -378,25 +493,25 @@ Main Process (Electron)
 
 ### ClaudeCliManager（Facade）API
 
-| メソッド              | 引数                         | 戻り値                                    | 説明               |
-| --------------------- | ---------------------------- | ----------------------------------------- | ------------------ |
-| `checkInstallation`   | -                            | `Promise<ClaudeCliResult<...>>`           | CLI存在確認        |
-| `listSkills`          | `ListSkillsRequest`          | `Promise<ClaudeCliResult<ScanResult>>`    | スキル一覧         |
-| `getSkillDetail`      | `GetSkillDetailRequest`      | `Promise<ClaudeCliResult<...>>`           | スキル詳細         |
-| `executeScript`       | `ExecuteScriptRequest`       | `Promise<ClaudeCliResult<...>>`           | スクリプト実行     |
-| `terminateSession`    | `TerminateSessionRequest`    | `Promise<ClaudeCliResult<...>>`           | セッション終了     |
-| `listSessions`        | -                            | `Promise<ClaudeCliResult<...>>`           | セッション一覧     |
-| `getSession`          | `GetSessionRequest`          | `Promise<ClaudeCliResult<...>>`           | セッション詳細     |
-| `shutdown`            | -                            | `Promise<void>`                           | シャットダウン     |
+| メソッド            | 引数                      | 戻り値                                 | 説明           |
+| ------------------- | ------------------------- | -------------------------------------- | -------------- |
+| `checkInstallation` | -                         | `Promise<ClaudeCliResult<...>>`        | CLI存在確認    |
+| `listSkills`        | `ListSkillsRequest`       | `Promise<ClaudeCliResult<ScanResult>>` | スキル一覧     |
+| `getSkillDetail`    | `GetSkillDetailRequest`   | `Promise<ClaudeCliResult<...>>`        | スキル詳細     |
+| `executeScript`     | `ExecuteScriptRequest`    | `Promise<ClaudeCliResult<...>>`        | スクリプト実行 |
+| `terminateSession`  | `TerminateSessionRequest` | `Promise<ClaudeCliResult<...>>`        | セッション終了 |
+| `listSessions`      | -                         | `Promise<ClaudeCliResult<...>>`        | セッション一覧 |
+| `getSession`        | `GetSessionRequest`       | `Promise<ClaudeCliResult<...>>`        | セッション詳細 |
+| `shutdown`          | -                         | `Promise<void>`                        | シャットダウン |
 
 ### イベント駆動（EventEmitter）
 
-| イベント          | ペイロード                  | 説明                   |
-| ----------------- | --------------------------- | ---------------------- |
-| `sessionCreated`  | `{ sessionId, skillName }`  | セッション作成時       |
-| `sessionDestroyed`| `{ sessionId }`             | セッション破棄時       |
-| `statusChanged`   | `{ sessionId, oldStatus, newStatus }` | 状態変更時   |
-| `output`          | `{ sessionId, type, content, timestamp }` | 出力発生時 |
+| イベント           | ペイロード                                | 説明             |
+| ------------------ | ----------------------------------------- | ---------------- |
+| `sessionCreated`   | `{ sessionId, skillName }`                | セッション作成時 |
+| `sessionDestroyed` | `{ sessionId }`                           | セッション破棄時 |
+| `statusChanged`    | `{ sessionId, oldStatus, newStatus }`     | 状態変更時       |
+| `output`           | `{ sessionId, type, content, timestamp }` | 出力発生時       |
 
 ### 設計原則
 
@@ -425,10 +540,10 @@ Electron IPCハンドラーはメインプロセスで一元的に登録され�
 
 IPCハンドラーの登録には3つのパターンがある:
 
-| パターン | 引数 | 使用例 |
-|---------|------|--------|
-| Pattern 1: mainWindow + store | `mainWindow`, `store` | `registerChatHandlers`, `registerAuthHandlers` |
-| Pattern 2: storeのみ | `store` | `registerSlideHandlers` |
+| パターン                        | 引数                    | 使用例                                           |
+| ------------------------------- | ----------------------- | ------------------------------------------------ |
+| Pattern 1: mainWindow + store   | `mainWindow`, `store`   | `registerChatHandlers`, `registerAuthHandlers`   |
+| Pattern 2: storeのみ            | `store`                 | `registerSlideHandlers`                          |
 | Pattern 3: mainWindow + service | `mainWindow`, `service` | `registerSkillHandlers`, `registerAgentHandlers` |
 
 ### SkillHandlers登録例（Pattern 3）
@@ -522,26 +637,26 @@ Main Process
 
 ### ファイル構成
 
-| ファイル                              | 責務                           |
-| ------------------------------------- | ------------------------------ |
-| `preload/index.ts`                    | claudeCliAPIオブジェクト定義   |
-| `preload/channels.ts`                 | IPCチャンネル名定数定義        |
-| `preload/types.ts`                    | ClaudeCliAPI型定義             |
-| `main/claude-cli/ipc-handler.ts`      | Main Process側IPCハンドラ      |
+| ファイル                         | 責務                         |
+| -------------------------------- | ---------------------------- |
+| `preload/index.ts`               | claudeCliAPIオブジェクト定義 |
+| `preload/channels.ts`            | IPCチャンネル名定数定義      |
+| `preload/types.ts`               | ClaudeCliAPI型定義           |
+| `main/claude-cli/ipc-handler.ts` | Main Process側IPCハンドラ    |
 
 ### API定義
 
-| メソッド              | 引数                           | 戻り値                                    | 説明               |
-| --------------------- | ------------------------------ | ----------------------------------------- | ------------------ |
-| `checkInstallation()` | なし                           | `Promise<ClaudeCliResult<CliInstallationStatus>>` | CLI存在確認  |
-| `listSkills()`        | `ClaudeCliListSkillsRequest?`  | `Promise<ClaudeCliResult<ScanResult>>`    | スキル一覧取得     |
-| `getSkillDetail()`    | `ClaudeCliGetSkillDetailRequest`| `Promise<ClaudeCliResult<SkillManifest>>` | スキル詳細取得     |
-| `executeScript()`     | `ClaudeCliExecuteScriptRequest`| `Promise<ClaudeCliResult<ExecuteResult>>` | スクリプト実行     |
-| `terminateSession()`  | `ClaudeCliTerminateSessionRequest`| `Promise<ClaudeCliResult<void>>`       | セッション終了     |
-| `listSessions()`      | なし                           | `Promise<ClaudeCliResult<Session[]>>`     | セッション一覧     |
-| `getSession()`        | `ClaudeCliGetSessionRequest`   | `Promise<ClaudeCliResult<Session\|null>>` | セッション詳細     |
-| `onSessionOutput()`   | `(event: OutputEvent) => void` | `() => void`                              | 出力イベント購読   |
-| `onSessionStatus()`   | `(event: StatusEvent) => void` | `() => void`                              | 状態イベント購読   |
+| メソッド              | 引数                               | 戻り値                                            | 説明             |
+| --------------------- | ---------------------------------- | ------------------------------------------------- | ---------------- |
+| `checkInstallation()` | なし                               | `Promise<ClaudeCliResult<CliInstallationStatus>>` | CLI存在確認      |
+| `listSkills()`        | `ClaudeCliListSkillsRequest?`      | `Promise<ClaudeCliResult<ScanResult>>`            | スキル一覧取得   |
+| `getSkillDetail()`    | `ClaudeCliGetSkillDetailRequest`   | `Promise<ClaudeCliResult<SkillManifest>>`         | スキル詳細取得   |
+| `executeScript()`     | `ClaudeCliExecuteScriptRequest`    | `Promise<ClaudeCliResult<ExecuteResult>>`         | スクリプト実行   |
+| `terminateSession()`  | `ClaudeCliTerminateSessionRequest` | `Promise<ClaudeCliResult<void>>`                  | セッション終了   |
+| `listSessions()`      | なし                               | `Promise<ClaudeCliResult<Session[]>>`             | セッション一覧   |
+| `getSession()`        | `ClaudeCliGetSessionRequest`       | `Promise<ClaudeCliResult<Session\|null>>`         | セッション詳細   |
+| `onSessionOutput()`   | `(event: OutputEvent) => void`     | `() => void`                                      | 出力イベント購読 |
+| `onSessionStatus()`   | `(event: StatusEvent) => void`     | `() => void`                                      | 状態イベント購読 |
 
 ### IPCチャンネル定義
 
@@ -640,12 +755,12 @@ contextBridge.exposeInMainWorld("claudeCliAPI", claudeCliAPI);
 
 ### セキュリティ要件
 
-| 要件               | 実装                              | 確認方法                    |
-| ------------------ | --------------------------------- | --------------------------- |
-| ホワイトリスト     | ALLOWED_INVOKE/ON_CHANNELS        | 定義外チャンネルはエラー    |
-| contextIsolation   | `contextBridge.exposeInMainWorld` | BrowserWindow設定で有効     |
-| 型安全性           | ClaudeCliResult<T>型              | TypeScript型チェック        |
-| メモリリーク防止   | unsubscribe関数パターン           | イベント購読解除機能        |
+| 要件             | 実装                              | 確認方法                 |
+| ---------------- | --------------------------------- | ------------------------ |
+| ホワイトリスト   | ALLOWED_INVOKE/ON_CHANNELS        | 定義外チャンネルはエラー |
+| contextIsolation | `contextBridge.exposeInMainWorld` | BrowserWindow設定で有効  |
+| 型安全性         | ClaudeCliResult<T>型              | TypeScript型チェック     |
+| メモリリーク防止 | unsubscribe関数パターン           | イベント購読解除機能     |
 
 ### データフロー
 
@@ -681,16 +796,16 @@ useEffect(() => {
 
 ### テスト
 
-| テストカテゴリ             | テスト数 | 状態 |
-| -------------------------- | -------- | ---- |
-| チャンネル定義             | 10       | ✅   |
-| ホワイトリスト登録         | 9        | ✅   |
-| safeInvokeセキュリティ     | 7        | ✅   |
-| safeOnセキュリティ         | 2        | ✅   |
-| エラーハンドリング         | 4        | ✅   |
-| ストリーミングイベント     | 8        | ✅   |
-| 統合テストシナリオ         | 5        | ✅   |
-| **合計**                   | **74**   | ✅   |
+| テストカテゴリ         | テスト数 | 状態 |
+| ---------------------- | -------- | ---- |
+| チャンネル定義         | 10       | ✅   |
+| ホワイトリスト登録     | 9        | ✅   |
+| safeInvokeセキュリティ | 7        | ✅   |
+| safeOnセキュリティ     | 2        | ✅   |
+| エラーハンドリング     | 4        | ✅   |
+| ストリーミングイベント | 8        | ✅   |
+| 統合テストシナリオ     | 5        | ✅   |
+| **合計**               | **74**   | ✅   |
 
 ### 関連タスク
 
@@ -708,42 +823,42 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 
 ### 状態定義
 
-| プロパティ         | 型                | 説明                     |
-| ------------------ | ----------------- | ------------------------ |
-| `fileContexts`     | `FileContext[]`   | 添付ファイル一覧         |
-| `activeContextId`  | `string \| null`  | アクティブなコンテキストID |
-| `generatedResults` | `GeneratedResult[]`| 生成結果一覧            |
-| `currentResultId`  | `string \| null`  | 現在表示中の結果ID       |
-| `isLoading`        | `boolean`         | ローディング中           |
-| `isDiffPreviewOpen`| `boolean`         | 差分プレビュー表示中     |
-| `error`            | `string \| null`  | エラーメッセージ         |
-| `isDragging`       | `boolean`         | ドラッグ中               |
+| プロパティ          | 型                  | 説明                       |
+| ------------------- | ------------------- | -------------------------- |
+| `fileContexts`      | `FileContext[]`     | 添付ファイル一覧           |
+| `activeContextId`   | `string \| null`    | アクティブなコンテキストID |
+| `generatedResults`  | `GeneratedResult[]` | 生成結果一覧               |
+| `currentResultId`   | `string \| null`    | 現在表示中の結果ID         |
+| `isLoading`         | `boolean`           | ローディング中             |
+| `isDiffPreviewOpen` | `boolean`           | 差分プレビュー表示中       |
+| `error`             | `string \| null`    | エラーメッセージ           |
+| `isDragging`        | `boolean`           | ドラッグ中                 |
 
 ### アクション定義
 
-| アクション           | 引数                              | 説明                   |
-| -------------------- | --------------------------------- | ---------------------- |
+| アクション           | 引数                                 | 説明                     |
+| -------------------- | ------------------------------------ | ------------------------ |
 | `addFileContext`     | `Omit<FileContext, 'id'\|'addedAt'>` | ファイルコンテキスト追加 |
-| `removeFileContext`  | `id: string`                      | コンテキスト削除       |
-| `clearAllContexts`   | -                                 | 全クリア               |
-| `setActiveContext`   | `id: string \| null`              | アクティブ設定         |
-| `setGeneratedResult` | `result: GeneratedResult`         | 生成結果設定           |
-| `approveResult`      | `resultId: string`                | 適用                   |
-| `rejectResult`       | `resultId: string`                | 却下                   |
-| `clearResults`       | -                                 | 結果クリア             |
-| `openDiffPreview`    | `resultId: string`                | プレビュー表示         |
-| `closeDiffPreview`   | -                                 | プレビュー非表示       |
-| `setLoading`         | `loading: boolean`                | ローディング設定       |
-| `setError`           | `error: string \| null`           | エラー設定             |
-| `setDragging`        | `dragging: boolean`               | ドラッグ状態設定       |
-| `reset`              | -                                 | 状態リセット           |
+| `removeFileContext`  | `id: string`                         | コンテキスト削除         |
+| `clearAllContexts`   | -                                    | 全クリア                 |
+| `setActiveContext`   | `id: string \| null`                 | アクティブ設定           |
+| `setGeneratedResult` | `result: GeneratedResult`            | 生成結果設定             |
+| `approveResult`      | `resultId: string`                   | 適用                     |
+| `rejectResult`       | `resultId: string`                   | 却下                     |
+| `clearResults`       | -                                    | 結果クリア               |
+| `openDiffPreview`    | `resultId: string`                   | プレビュー表示           |
+| `closeDiffPreview`   | -                                    | プレビュー非表示         |
+| `setLoading`         | `loading: boolean`                   | ローディング設定         |
+| `setError`           | `error: string \| null`              | エラー設定               |
+| `setDragging`        | `dragging: boolean`                  | ドラッグ状態設定         |
+| `reset`              | -                                    | 状態リセット             |
 
 ### 関連Hooks
 
-| Hook名           | 責務                       |
-| ---------------- | -------------------------- |
-| `useFileContext` | ファイルコンテキスト管理   |
-| `useDiffApply`   | 差分計算・適用ロジック     |
+| Hook名           | 責務                     |
+| ---------------- | ------------------------ |
+| `useFileContext` | ファイルコンテキスト管理 |
+| `useDiffApply`   | 差分計算・適用ロジック   |
 
 ### 実装パターン
 
@@ -755,7 +870,10 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 
 ```typescript
 // apps/desktop/src/renderer/store/index.ts
-import { createChatEditSlice, ChatEditSlice } from '@/renderer/features/workspace-chat-edit';
+import {
+  createChatEditSlice,
+  ChatEditSlice,
+} from "@/renderer/features/workspace-chat-edit";
 
 interface AppStore extends ChatEditSlice {
   // 他のSlice...

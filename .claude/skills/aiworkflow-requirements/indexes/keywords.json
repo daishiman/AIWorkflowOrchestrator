@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-23T14:09:42.144Z",
-  "totalKeywords": 760,
+  "generated": "2026-01-24T06:24:49.514Z",
+  "totalKeywords": 764,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -23,6 +23,7 @@
       "architecture-patterns.md",
       "interfaces-agent-sdk.md",
       "interfaces-converter-implementations.md",
+      "interfaces-llm.md",
       "interfaces-rag-file-selection.md",
       "security-api-electron.md",
       "ui-ux-forms.md",
@@ -487,6 +488,7 @@
     "完了タスク": [
       "architecture-chat-history.md",
       "interfaces-agent-sdk.md",
+      "interfaces-llm.md",
       "interfaces-system-prompt.md",
       "task-workflow.md",
       "ui-ux-search-panel.md"
@@ -572,6 +574,7 @@
     "統合": [
       "architecture-file-conversion.md",
       "interfaces-agent-sdk.md",
+      "interfaces-llm.md",
       "technology-backend.md"
     ],
     "history": [
@@ -694,6 +697,28 @@
       "architecture-patterns.md",
       "interfaces-agent-sdk.md"
     ],
+    "chatEditSlice": [
+      "architecture-patterns.md"
+    ],
+    "Workspace": [
+      "architecture-patterns.md",
+      "interfaces-llm.md"
+    ],
+    "Chat": [
+      "architecture-patterns.md",
+      "interfaces-llm.md",
+      "ui-ux-llm-selector.md"
+    ],
+    "Edit": [
+      "architecture-patterns.md",
+      "interfaces-llm.md"
+    ],
+    "状態管理": [
+      "architecture-patterns.md",
+      "architecture-rag.md",
+      "claude-code-agents-workflow.md",
+      "ui-ux-llm-selector.md"
+    ],
     "Knowledge": [
       "architecture-rag.md",
       "database-implementation.md",
@@ -731,11 +756,6 @@
     ],
     "オフライン・同期アーキテクチャ": [
       "architecture-rag.md"
-    ],
-    "状態管理": [
-      "architecture-rag.md",
-      "claude-code-agents-workflow.md",
-      "ui-ux-llm-selector.md"
     ],
     "クエリ分類器": [
       "architecture-rag.md",
@@ -1810,6 +1830,9 @@
       "interfaces-llm.md",
       "ui-ux-llm-selector.md"
     ],
+    "システムプロンプト": [
+      "interfaces-llm.md"
+    ],
     "チャンク・埋め込み型定義": [
       "interfaces-rag-chunk-embedding.md"
     ],
@@ -2510,9 +2533,6 @@
       "ui-ux-history-panel.md"
     ],
     "選択機能": [
-      "ui-ux-llm-selector.md"
-    ],
-    "Chat": [
       "ui-ux-llm-selector.md"
     ],
     "構成": [
