@@ -1,0 +1,86 @@
+{
+  "taskId": "TASK-2B",
+  "taskName": "SkillImportStore 実装",
+  "createdAt": "2026-01-24T09:52:00.000Z",
+  "updatedAt": "2026-01-24T09:52:00.000Z",
+  "currentPhase": 0,
+  "status": "not_started",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "requires": ["TASK-1-1"],
+    "parallelWith": ["TASK-2A", "TASK-2C"],
+    "blocks": ["TASK-4-2"]
+  },
+  "metadata": {
+    "tier": 1,
+    "priority": "high",
+    "complexity": "medium",
+    "tags": ["backend", "main-process", "persistence"]
+  }
+}

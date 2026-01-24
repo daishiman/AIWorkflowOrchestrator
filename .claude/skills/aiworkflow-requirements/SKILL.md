@@ -24,7 +24,7 @@ allowed-tools:
 
 ## 概要
 
-AIWorkflowOrchestratorプロジェクトの全仕様（89ファイル・約22,000行）を管理するスキル。
+AIWorkflowOrchestratorプロジェクトの全仕様（88ファイル・約22,000行）を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
 ## ワークフロー
@@ -57,14 +57,14 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ### 仕様ファイル一覧
 
-**85ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
+**88ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
 
 | トピック         | ファイル数 |
 | ---------------- | ---------- |
 | 概要・品質       | 4          |
 | アーキテクチャ   | 8          |
-| インターフェース | 18         |
-| API設計          | 7          |
+| インターフェース | 19         |
+| API設計          | 8          |
 | データベース     | 4          |
 | UI/UX            | 13         |
 | セキュリティ     | 5          |
@@ -146,7 +146,8 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                                          |
 | ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.24.0  | 2026-01-24 | UT-LLM-HISTORY-001完了: interfaces-llm.md（Conversation/Message型、IPC契約7種）、architecture-patterns.md（会話履歴永続化パターン〜100行）追加。114テスト・100%カバレッジ達成                                    |
+| 6.25.0  | 2026-01-24 | UT-LLM-HISTORY-001完了: interfaces-llm.md（Conversation/Message型、IPC契約7種）、architecture-patterns.md（会話履歴永続化パターン〜100行）追加。114テスト・100%カバレッジ達成                                    |
+| 6.24.0  | 2026-01-24 | TASK-2B SkillImportStore追加: interfaces-agent-sdk.mdに「SkillImportStore（TASK-2B）」セクション新設（スキーマ・API・セキュリティ・テスト仕様詳細約230行）、SkillImportManagerとの差分表追加                     |
 | 6.23.0  | 2026-01-24 | SkillScanner将来改善ロードマップ追加: architecture-patterns.md（3件の未タスク仕様書記録：キャッシュ/増分スキャン/ページネーション、想定追加型定義）                                                              |
 | 6.22.0  | 2026-01-24 | TASK-2A（SkillScanner実装）完了: interfaces-agent-sdk.md（ScannedSkillMetadata/SkillScannerOptions型、完了記録）、architecture-patterns.md（SkillScannerサブセクション追加：API/定数/セキュリティ/データフロー） |
 | 6.21.0  | 2026-01-23 | Workspace Chat Edit追加: interfaces-llm.md（FileContext/EditCommand/GeneratedResult型）、architecture-patterns.md（chatEditSliceパターン）、api-endpoints.md（chat-edit IPCチャネル4種）追加、89ファイル構成     |
