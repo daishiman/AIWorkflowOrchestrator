@@ -3,7 +3,7 @@ id: TASK-3-1-B
 tier: 1
 title: Hooks実装（PreToolUse/PostToolUse）
 phase: 3
-depends_on: [TASK-3-1-A]
+depends_on: [TASK-3-1-A, TASK-2C]
 parallel_with: []
 blocks: [TASK-3-1-C]
 status: pending
@@ -22,7 +22,14 @@ Claude Agent SDK の Hooks システムを使用して、ツール実行前後�
 ## 入力
 
 - TASK-3-1-A で作成した SkillExecutor 基本構造
-- TASK-2C のセキュリティパターン
+- TASK-2C のセキュリティパターン（`@repo/shared/constants` からインポート）
+
+## システム仕様参照
+
+| 参照資料                  | パス                                                                            | 内容                        |
+| ------------------------- | ------------------------------------------------------------------------------- | --------------------------- |
+| セキュリティパターン定義  | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md` | 危険パターン・保護パス・API |
+| Agent SDKインターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`     | TASK-2C完了記録・Hooks仕様  |
 
 ## 出力
 
@@ -35,7 +42,8 @@ Claude Agent SDK の Hooks システムを使用して、ツール実行前後�
 ```typescript
 // apps/desktop/src/main/services/skill/SkillExecutor.ts に追加
 
-import { isDangerousCommand, isProtectedPath } from "./SecurityPatterns";
+// TASK-2C で実装されたセキュリティパターンをインポート
+import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
 
 // 既存のクラスに追加
 export class SkillExecutor {

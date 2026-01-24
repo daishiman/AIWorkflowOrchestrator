@@ -3,10 +3,20 @@
 ## メタ情報
 
 ```yaml
-issue_number: null
+issue_number: 482
+task_id: UT-009
+task_name: Chat History Additional Use Cases
+category: 実装
+target_feature: チャット履歴機能（chat-history）
+priority: 中
+scale: 中規模
+status: 未実施
+source_phase: Phase 12
+created_date: 2026-01-22
+dependencies: [UT-007]
 ```
 
-## メタ情報
+## メタ情報（参考）
 
 | 項目         | 内容                                                                   |
 | ------------ | ---------------------------------------------------------------------- |

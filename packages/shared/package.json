@@ -100,6 +100,10 @@
     "./repositories": {
       "types": "./dist/src/repositories/index.d.ts",
       "import": "./dist/src/repositories/index.js"
+    },
+    "./constants": {
+      "types": "./dist/src/constants/index.d.ts",
+      "import": "./dist/src/constants/index.js"
     }
   },
   "scripts": {
