@@ -31,6 +31,10 @@ import {
 } from "./slices/systemPromptTemplateSlice";
 import { createLLMSlice, type LLMSlice } from "./slices/llmSlice";
 import { createAgentSlice, type AgentSlice } from "./slices/agentSlice";
+import {
+  createChatEditSlice,
+  type ChatEditSlice,
+} from "../features/workspace-chat-edit/store/chatEditSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -45,7 +49,8 @@ export type AppStore = NavigationSlice &
   FileSelectionSlice &
   SystemPromptTemplateSlice &
   LLMSlice &
-  AgentSlice;
+  AgentSlice &
+  ChatEditSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -98,6 +103,7 @@ export const useAppStore = create<AppStore>()(
         ...createSystemPromptTemplateSlice(...args),
         ...createLLMSlice(...args),
         ...createAgentSlice(...args),
+        ...createChatEditSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
