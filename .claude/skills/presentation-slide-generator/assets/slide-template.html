@@ -1417,9 +1417,54 @@
       }
 
       /* 全子要素の表示保証 */
+      .slider__content,
+      .slider__content * {
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      /* 全スライドタイプ要素の表示保証 */
       .agenda-item, .list-item, .compare-item, .flow-step, .flow-arrow,
       .stat-item, .timeline-item, .timeline-content,
-      .compare-vs, .message-icon, .icon-wrapper {
+      .compare-vs, .message-icon, .icon-wrapper,
+      /* circle */
+      .circle-container, .circle-center, .circle-item,
+      .circle-icon, .circle-label, .circle-description,
+      /* timeline */
+      .timeline-container, .timeline-line, .timeline-dot,
+      .timeline-date, .timeline-title, .timeline-desc,
+      /* pyramid */
+      .pyramid-container, .pyramid-level, .pyramid-text,
+      /* quote */
+      .quote-container, .quote-mark, .quote-text, .quote-author,
+      /* process */
+      .process-container, .process-step, .process-arrow,
+      .process-icon, .process-title, .process-desc,
+      /* grid */
+      .grid-container, .grid-card, .grid-icon,
+      .grid-title, .grid-text,
+      /* icon-grid */
+      .icon-grid-container, .icon-grid-item,
+      .icon-grid-icon, .icon-grid-text,
+      /* hero */
+      .hero-container, .hero-badge, .hero-title,
+      .hero-subtitle, .hero-stats, .hero-stat,
+      .hero-stat-value, .hero-stat-label,
+      /* highlight */
+      .highlight-icon, .highlight-value,
+      .highlight-label, .highlight-description,
+      /* fabe */
+      .fabe-container, .fabe-card, .fabe-icon,
+      .fabe-label, .fabe-title, .fabe-content,
+      /* matrix */
+      .matrix-container, .matrix-cell, .matrix-header,
+      .matrix-label, .matrix-content,
+      /* table */
+      .table-container, table, thead, tbody, tr, th, td,
+      /* その他共通要素 */
+      .main-title, .sub-title, .section-title,
+      .main-message, .sub-message, .title-icon {
         visibility: visible !important;
         opacity: 1 !important;
         transform: none !important;
@@ -2283,6 +2328,36 @@
           this.slideWidth = this.slideArea ? this.slideArea.offsetWidth : window.innerWidth;
           gsap.set(this.container, { x: -this.index * this.slideWidth });
         });
+
+        // スワイプ対応（デフォルト有効）
+        this.bindSwipeEvents();
+      }
+
+      // スワイプイベント（タッチデバイス対応）
+      bindSwipeEvents() {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        const minSwipeDistance = 50;
+        const target = this.slideArea || this.slider;
+
+        target.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+          touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        target.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const touchEndY = e.changedTouches[0].screenY;
+          const diffX = touchStartX - touchEndX;
+          const diffY = Math.abs(touchStartY - touchEndY);
+
+          // 横方向のスワイプのみ反応（縦スクロールを妨げない）
+          if (Math.abs(diffX) > minSwipeDistance && Math.abs(diffX) > diffY) {
+            if (diffX > 0) this.moveToNext();  // 左スワイプ → 次へ
+            else this.moveToPrev();            // 右スワイプ → 前へ
+          }
+        }, { passive: true });
       }
 
       makeActive(index) {
@@ -2360,15 +2435,15 @@
       }
 
       moveToNext() {
-        if (this.index < this.items.length - 1) {
-          this.move(this.index + 1);
-        }
+        // ループ: 最後のスライドで次へ押すと最初に戻る（デフォルト有効）
+        const nextIndex = (this.index + 1) % this.items.length;
+        this.move(nextIndex);
       }
 
       moveToPrev() {
-        if (this.index > 0) {
-          this.move(this.index - 1);
-        }
+        // ループ: 最初のスライドで前へ押すと最後に行く（デフォルト有効）
+        const prevIndex = (this.index - 1 + this.items.length) % this.items.length;
+        this.move(prevIndex);
       }
 
       updateProgress() {
