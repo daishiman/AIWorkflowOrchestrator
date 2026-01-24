@@ -914,9 +914,10 @@ export interface ElectronAPI {
     getProviders: () => Promise<LLMProvider[]>;
     checkHealth: (providerId: LLMProviderId) => Promise<HealthCheckResult>;
     sendChat: (request: LLMChatRequest) => Promise<LLMChatResponse>;
-    streamChat: (request: LLMChatRequest) => Promise<string>;
+    streamChat: (request: LLMChatRequest) => Promise<{ requestId: string }>;
+    cancelStream: (requestId: string) => Promise<{ success: boolean }>;
     onStreamChunk: (callback: (chunk: LLMStreamChunk) => void) => () => void;
-    onStreamEnd: (callback: (streamId: string) => void) => () => void;
+    onStreamEnd: (callback: () => void) => () => void;
     onStreamError: (callback: (error: LLMError) => void) => () => void;
   };
 

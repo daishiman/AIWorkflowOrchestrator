@@ -120,6 +120,7 @@ export const IPC_CHANNELS = {
   LLM_STREAM_CHUNK: "llm:stream-chunk",
   LLM_STREAM_END: "llm:stream-end",
   LLM_STREAM_ERROR: "llm:stream-error",
+  LLM_STREAM_CANCEL: "llm:stream-cancel",
 
   // Slide operations
   SLIDE_EXECUTE_PHASE: "slide:executePhase",
@@ -314,6 +315,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.LLM_CHECK_HEALTH,
   IPC_CHANNELS.LLM_SEND_CHAT,
   IPC_CHANNELS.LLM_STREAM_CHAT,
+  IPC_CHANNELS.LLM_STREAM_CANCEL,
   // Slide channels
   IPC_CHANNELS.SLIDE_EXECUTE_PHASE,
   IPC_CHANNELS.SLIDE_START_WATCHING,

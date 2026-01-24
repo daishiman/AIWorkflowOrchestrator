@@ -4,6 +4,7 @@
  * @feature chat-multi-llm-switching
  */
 
+import { randomUUID } from "crypto";
 import { ipcMain, IpcMainInvokeEvent } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
@@ -17,6 +18,12 @@ import type {
   LLMError,
   LLMErrorCode,
 } from "@repo/shared/types/llm/schemas";
+
+/**
+ * アクティブなストリームセッションを管理
+ * key: requestId, value: AbortController
+ */
+const activeStreams = new Map<string, AbortController>();
 
 /**
  * プロバイダー設定（静的定義）
@@ -122,6 +129,11 @@ export function registerLLMHandlers(): void {
       handleSendChat(request),
   );
   ipcMain.handle(IPC_CHANNELS.LLM_STREAM_CHAT, handleStreamChat);
+  ipcMain.handle(
+    IPC_CHANNELS.LLM_STREAM_CANCEL,
+    (_event: IpcMainInvokeEvent, params: { requestId: string }) =>
+      handleStreamCancel(params),
+  );
 }
 
 /**
@@ -233,35 +245,92 @@ export async function handleSendChat(
 }
 
 /**
+ * ストリーミングチャットレスポンス型
+ */
+export interface StreamChatResponse {
+  requestId: string;
+}
+
+/**
  * ストリーミングチャット
  */
 export async function handleStreamChat(
   event: IpcMainInvokeEvent,
   request: LLMChatRequestInput,
-): Promise<void> {
+): Promise<StreamChatResponse> {
+  // Generate unique request ID
+  const requestId = randomUUID();
+
+  // Create AbortController for cancellation
+  const abortController = new AbortController();
+  activeStreams.set(requestId, abortController);
+
+  // Helper to safely send events (check isDestroyed)
+  const safeSend = (channel: string, data?: unknown) => {
+    if (!event.sender.isDestroyed()) {
+      if (data !== undefined) {
+        event.sender.send(channel, data);
+      } else {
+        event.sender.send(channel);
+      }
+    }
+  };
+
   try {
-    // Get provider ID from request or infer from model
+    // Validate request
+    if (!request.messages || request.messages.length === 0) {
+      safeSend(IPC_CHANNELS.LLM_STREAM_ERROR, {
+        code: "VALIDATION_ERROR",
+        message: "Messages cannot be empty",
+        retryable: false,
+      });
+      return { requestId };
+    }
+
+    // Check for API key
     const providerId = request.providerId ?? inferProviderId(request.modelId);
 
     if (!providerId) {
-      event.sender.send(IPC_CHANNELS.LLM_STREAM_ERROR, {
+      safeSend(IPC_CHANNELS.LLM_STREAM_ERROR, {
         code: "MODEL_NOT_FOUND",
         message: "Cannot determine provider",
         retryable: false,
       });
-      return;
+      return { requestId };
     }
 
-    // Get adapter and stream chat
+    const apiKey = await SecureStorage.getApiKey(providerId);
+    if (!apiKey) {
+      safeSend(IPC_CHANNELS.LLM_STREAM_ERROR, {
+        code: "API_KEY_MISSING",
+        message: `API key not found for provider: ${providerId}`,
+        retryable: false,
+      });
+      return { requestId };
+    }
+
+    // Get adapter and stream chat with abort signal
     const adapter = await LLMAdapterFactory.getAdapter(providerId);
-    const stream = adapter.streamChat(request);
+    const stream = adapter.streamChat(request, abortController.signal);
 
     for await (const chunk of stream) {
-      event.sender.send(IPC_CHANNELS.LLM_STREAM_CHUNK, chunk);
+      // Check if cancelled
+      if (abortController.signal.aborted) {
+        break;
+      }
+      safeSend(IPC_CHANNELS.LLM_STREAM_CHUNK, chunk);
     }
 
-    event.sender.send(IPC_CHANNELS.LLM_STREAM_END);
+    // Send end event if not aborted
+    if (!abortController.signal.aborted) {
+      safeSend(IPC_CHANNELS.LLM_STREAM_END);
+    }
   } catch (error) {
+    // Don't send error if it was an abort
+    if (abortController.signal.aborted) {
+      return { requestId };
+    }
+
     const llmError = isLLMError(error)
       ? error
       : createLLMError(
@@ -270,8 +339,31 @@ export async function handleStreamChat(
           true,
         );
 
-    event.sender.send(IPC_CHANNELS.LLM_STREAM_ERROR, llmError);
+    safeSend(IPC_CHANNELS.LLM_STREAM_ERROR, llmError);
+  } finally {
+    // Clean up the active stream
+    activeStreams.delete(requestId);
   }
+
+  return { requestId };
+}
+
+/**
+ * ストリームキャンセル
+ */
+export function handleStreamCancel(params: { requestId: string }): {
+  success: boolean;
+} {
+  const { requestId } = params;
+  const controller = activeStreams.get(requestId);
+
+  if (controller) {
+    controller.abort();
+    activeStreams.delete(requestId);
+    return { success: true };
+  }
+
+  return { success: false };
 }
 
 // Helper functions

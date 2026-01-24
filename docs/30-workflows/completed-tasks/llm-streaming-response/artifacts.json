@@ -1,0 +1,91 @@
+{
+  "taskId": "UT-LLM-STREAM-001",
+  "taskName": "llm-streaming-response",
+  "featureName": "LLMストリーミングレスポンス",
+  "createdDate": "2026-01-23",
+  "status": "未実施",
+  "githubIssue": 465,
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "未実施",
+      "artifacts": []
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "未実施",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "required": [
+      {
+        "taskId": "TASK-CHAT-SYSPROMPT-LLM-001",
+        "name": "システムプロンプトLLM API統合",
+        "status": "完了"
+      }
+    ]
+  },
+  "metadata": {
+    "category": "改善",
+    "targetFeature": "LLM API統合",
+    "priority": "高",
+    "scale": "中規模",
+    "sourcePhase": "Phase 12（システムプロンプトLLM API統合）"
+  }
+}

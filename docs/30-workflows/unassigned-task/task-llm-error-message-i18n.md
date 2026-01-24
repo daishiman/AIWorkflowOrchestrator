@@ -3,22 +3,25 @@
 ## メタ情報
 
 ```yaml
+task_id: UT-LLM-I18N-001
+task_name: LLMエラーメッセージの国際化
+category: 改善
+target_feature: LLM API統合 / エラーハンドリング
+priority: 低
+scale: 小規模
+status: 未実施
+source_phase: Phase 12（システムプロンプトLLM API統合）
+created_date: 2026-01-23
+dependencies: []
 issue_number: 464
+spec_path: docs/30-workflows/unassigned-task/task-llm-error-message-i18n.md
 ```
 
-## メタ情報
-
-| 項目         | 内容                                      |
-| ------------ | ----------------------------------------- |
-| タスクID     | UT-LLM-I18N-001                           |
-| タスク名     | LLMエラーメッセージの国際化               |
-| 分類         | 改善                                      |
-| 対象機能     | LLM API統合 / エラーハンドリング          |
-| 優先度       | 低                                        |
-| 見積もり規模 | 小規模                                    |
-| ステータス   | 未実施                                    |
-| 発見元       | Phase 12（システムプロンプトLLM API統合） |
-| 発見日       | 2026-01-23                                |
+| 項目       | 内容   |
+| ---------- | ------ |
+| 優先度     | 低     |
+| 規模       | 小規模 |
+| ステータス | 未実施 |
 
 ---
 
@@ -131,39 +134,6 @@ i18nエラーメッセージ機能の実装
 #### 手順
 
 1. 翻訳リソースファイルの作成
-
-   ```json
-   // locales/ja/llm-errors.json
-   {
-     "llm.error.API_KEY_MISSING": "APIキーが設定されていません。設定画面でAPIキーを登録してください。",
-     "llm.error.API_KEY_INVALID": "APIキーが無効です。正しいAPIキーを設定してください。",
-     "llm.error.NETWORK_ERROR": "ネットワークエラーが発生しました。接続を確認してください。",
-     "llm.error.TIMEOUT": "リクエストがタイムアウトしました。再度お試しください。",
-     "llm.error.RATE_LIMIT": "レート制限に達しました。しばらく待ってから再度お試しください。",
-     "llm.error.CONTEXT_LENGTH_EXCEEDED": "メッセージが長すぎます。短くして再度お試しください。",
-     "llm.error.CONTENT_FILTER": "コンテンツフィルターによりブロックされました。",
-     "llm.error.MODEL_NOT_FOUND": "指定されたモデルが見つかりません。",
-     "llm.error.SERVICE_UNAVAILABLE": "サービスが一時的に利用できません。しばらく待ってから再度お試しください。",
-     "llm.error.UNKNOWN": "エラーが発生しました。"
-   }
-   ```
-
-   ```json
-   // locales/en/llm-errors.json
-   {
-     "llm.error.API_KEY_MISSING": "API key is not configured. Please set your API key in settings.",
-     "llm.error.API_KEY_INVALID": "API key is invalid. Please check and update your API key.",
-     "llm.error.NETWORK_ERROR": "Network error occurred. Please check your connection.",
-     "llm.error.TIMEOUT": "Request timed out. Please try again.",
-     "llm.error.RATE_LIMIT": "Rate limit reached. Please wait and try again later.",
-     "llm.error.CONTEXT_LENGTH_EXCEEDED": "Message is too long. Please shorten and try again.",
-     "llm.error.CONTENT_FILTER": "Content blocked by content filter.",
-     "llm.error.MODEL_NOT_FOUND": "Specified model not found.",
-     "llm.error.SERVICE_UNAVAILABLE": "Service temporarily unavailable. Please try again later.",
-     "llm.error.UNKNOWN": "An error occurred."
-   }
-   ```
-
 2. i18nユーティリティの実装
 3. `convertLLMErrorToMessage`のi18n対応
 4. 言語設定の取得・適用
@@ -239,7 +209,6 @@ i18nエラーメッセージ機能の実装
 ### 関連ドキュメント
 
 - [interfaces-llm.md](.claude/skills/aiworkflow-requirements/references/interfaces-llm.md) - エラーコードとメッセージのマッピング
-- [システムプロンプトLLM API統合実装ガイド](../completed-tasks/system-prompt-llm-api/outputs/phase-12/implementation-guide.md)
 
 ### 参考資料
 
@@ -259,3 +228,12 @@ i18nエラーメッセージ機能の実装
 - 現在のエラーメッセージは`convertLLMErrorToMessage`関数に日本語で定義済み
 - システム仕様書の「エラーハンドリング」セクションに10種類のエラーコードが定義
 - 将来的にはUI全体の国際化と統合
+
+---
+
+## 変更履歴
+
+| Version | Date       | Changes                   |
+| ------- | ---------- | ------------------------- |
+| 1.0.0   | 2026-01-23 | 初版作成                  |
+| 1.0.1   | 2026-01-24 | 仕様書復元、Issue再リンク |

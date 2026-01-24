@@ -120,27 +120,36 @@ export class AnthropicAdapter extends BaseLLMAdapter {
 
   /**
    * ストリーミングチャット
+   * @param request チャットリクエスト
+   * @param signal オプションのAbortSignal（キャンセル用）
    */
-  async *streamChat(request: LLMChatRequestInput): AsyncGenerator<StreamChunk> {
-    const stream = this.fetchSSE(`${this.baseUrl}/messages`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": this.config.apiKey,
-        "anthropic-version": this.apiVersion,
+  async *streamChat(
+    request: LLMChatRequestInput,
+    signal?: AbortSignal,
+  ): AsyncGenerator<StreamChunk> {
+    const stream = this.fetchSSE(
+      `${this.baseUrl}/messages`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": this.config.apiKey,
+          "anthropic-version": this.apiVersion,
+        },
+        body: JSON.stringify({
+          model: request.modelId,
+          system: request.systemPrompt,
+          messages: request.messages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+          max_tokens: request.maxTokens ?? 4096,
+          temperature: request.temperature,
+          stream: true,
+        }),
       },
-      body: JSON.stringify({
-        model: request.modelId,
-        system: request.systemPrompt,
-        messages: request.messages.map((m) => ({
-          role: m.role,
-          content: m.content,
-        })),
-        max_tokens: request.maxTokens ?? 4096,
-        temperature: request.temperature,
-        stream: true,
-      }),
-    });
+      signal,
+    );
 
     let chunkIndex = 0;
 

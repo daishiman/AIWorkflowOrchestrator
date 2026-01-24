@@ -94,8 +94,13 @@ export class GoogleAdapter extends BaseLLMAdapter {
 
   /**
    * ストリーミングチャット
+   * @param request チャットリクエスト
+   * @param signal オプションのAbortSignal（キャンセル用）
    */
-  async *streamChat(request: LLMChatRequestInput): AsyncGenerator<StreamChunk> {
+  async *streamChat(
+    request: LLMChatRequestInput,
+    signal?: AbortSignal,
+  ): AsyncGenerator<StreamChunk> {
     const stream = this.fetchSSE(
       `${this.baseUrl}/models/${request.modelId}:streamGenerateContent?key=${this.config.apiKey}&alt=sse`,
       {
@@ -111,6 +116,7 @@ export class GoogleAdapter extends BaseLLMAdapter {
           },
         }),
       },
+      signal,
     );
 
     let chunkIndex = 0;

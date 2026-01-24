@@ -64,12 +64,28 @@ async function callLLMAPI(
 // Types
 // ============================================
 
+/**
+ * ストリーミングエラー情報
+ */
+export interface StreamingError {
+  code: string;
+  message: string;
+  retryable: boolean;
+}
+
 export interface ChatSlice {
   // State
   chatMessages: ChatMessage[];
   chatInput: string;
   isSending: boolean;
   ragConnectionStatus: RagConnectionStatus;
+
+  // Streaming State
+  isStreaming: boolean;
+  streamingContent: string;
+  currentStreamId: string | null;
+  streamingMessageId: string | null;
+  streamingError: StreamingError | null;
 
   // System Prompt State
   systemPrompt: string;
@@ -84,6 +100,13 @@ export interface ChatSlice {
   setRagConnectionStatus: (status: RagConnectionStatus) => void;
   clearMessages: () => void;
   sendMessage: (message: string) => Promise<void>;
+
+  // Streaming Actions
+  startStreaming: (requestId: string) => void;
+  appendStreamChunk: (content: string) => void;
+  endStreaming: () => void;
+  cancelStreaming: () => void;
+  setStreamingError: (error: StreamingError) => void;
 
   // System Prompt Actions
   setSystemPrompt: (prompt: string) => void;
@@ -109,6 +132,13 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
   chatInput: "",
   isSending: false,
   ragConnectionStatus: "disconnected",
+
+  // Streaming Initial State
+  isStreaming: false,
+  streamingContent: "",
+  currentStreamId: null,
+  streamingMessageId: null,
+  streamingError: null,
 
   // System Prompt Initial State
   systemPrompt: "",
@@ -173,6 +203,85 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
     } else {
       set({ isSending: false });
     }
+  },
+
+  // Streaming Actions
+  startStreaming: (requestId: string) => {
+    // Create a placeholder streaming message
+    const streamingMessageId = `streaming-${Date.now()}`;
+    const streamingMessage: ChatMessage = {
+      id: streamingMessageId,
+      role: "assistant",
+      content: "",
+      timestamp: new Date(),
+      isStreaming: true,
+    };
+
+    set((state) => ({
+      isStreaming: true,
+      streamingContent: "",
+      currentStreamId: requestId,
+      streamingMessageId,
+      streamingError: null,
+      chatMessages: [...state.chatMessages, streamingMessage],
+    }));
+  },
+
+  appendStreamChunk: (content: string) => {
+    const state = get();
+    const newContent = state.streamingContent + content;
+
+    set((state) => ({
+      streamingContent: newContent,
+      chatMessages: state.chatMessages.map((msg) =>
+        msg.id === state.streamingMessageId
+          ? { ...msg, content: newContent }
+          : msg,
+      ),
+    }));
+  },
+
+  endStreaming: () => {
+    set((state) => ({
+      isStreaming: false,
+      currentStreamId: null,
+      chatMessages: state.chatMessages.map((msg) =>
+        msg.id === state.streamingMessageId
+          ? { ...msg, isStreaming: false }
+          : msg,
+      ),
+    }));
+  },
+
+  cancelStreaming: () => {
+    // Optionally remove incomplete message or keep it
+    set((state) => ({
+      isStreaming: false,
+      currentStreamId: null,
+      streamingContent: "",
+      chatMessages: state.chatMessages.map((msg) =>
+        msg.id === state.streamingMessageId
+          ? {
+              ...msg,
+              isStreaming: false,
+              content: msg.content + " [キャンセル]",
+            }
+          : msg,
+      ),
+    }));
+  },
+
+  setStreamingError: (error) => {
+    set((state) => ({
+      isStreaming: false,
+      currentStreamId: null,
+      streamingError: error,
+      chatMessages: state.chatMessages.map((msg) =>
+        msg.id === state.streamingMessageId
+          ? { ...msg, isStreaming: false }
+          : msg,
+      ),
+    }));
   },
 
   // System Prompt Actions
