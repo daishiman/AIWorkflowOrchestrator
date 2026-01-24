@@ -432,4 +432,47 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## [実行日時: 2026-01-24T11:30:00.000Z]
+
+- Task: UT-LLM-HISTORY-001 会話履歴永続化システム仕様更新
+- 結果: success
+- フィードバック: 会話履歴永続化実装のシステム仕様更新完了
+
+### 更新詳細
+
+- **更新**: `references/interfaces-llm.md`
+  - 「完了タスク」セクションにUT-LLM-HISTORY-001追加
+  - テスト結果サマリー表、実装サマリー表、成果物リスト、IPCチャンネル定義を記載
+  - 変更履歴にv6.x.x追記
+
+- **更新**: `references/architecture-patterns.md`
+  - 「会話履歴永続化パターン（Desktop Main Process）」セクション追加（約100行）
+  - ConversationRepository API定義
+  - IPC APIチャンネル定義（7チャンネル）
+  - 型定義テーブル（8型）
+  - データフロー図
+  - セキュリティ対策（IPC sender検証、ホワイトリスト、SQLインジェクション防止）
+  - 品質メトリクス（114テスト、カバレッジ100%）
+
+- **更新**: `references/database-schema.md`
+  - 変更履歴にv1.2.0追記（chat_sessions/chat_messages Repository/IPC実装完了）
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/llm-conversation-history-persistence/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書   | `docs/30-workflows/llm-conversation-history-persistence/` |
+
+---
+
+
+## [実行日時: 2026-01-24T03:43:19.280Z]
+
+- Task: unknown
+- 結果: success
+- フィードバック: v6.22.0リリース: UT-LLM-HISTORY-001会話履歴永続化実装のシステム仕様更新完了
+
+---
+
 （ログエントリはここに追記されます）

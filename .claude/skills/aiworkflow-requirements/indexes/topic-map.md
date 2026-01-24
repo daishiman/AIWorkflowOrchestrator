@@ -144,12 +144,13 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 機能追加パターン | L8 |
 | Environment Backend サービス（Desktop Main Process） | L75 |
-| Zustand Sliceパターン（Desktop） | L141 |
-| スキル管理サービス（Desktop Main Process） | L235 |
-| Claude Code CLI連携パターン（Desktop Main Process） | L433 |
-| IPC Handler Registration Pattern（Desktop Main Process） | L530 |
-| Claude CLI Renderer API（Preload API） | L614 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L816 |
+| Zustand Sliceパターン（Desktop） | L139 |
+| スキル管理サービス（Desktop Main Process） | L233 |
+| Claude Code CLI連携パターン（Desktop Main Process） | L318 |
+| IPC Handler Registration Pattern（Desktop Main Process） | L415 |
+| Claude CLI Renderer API（Preload API） | L499 |
+| 会話履歴永続化パターン（Desktop Main Process） | L701 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L801 |
 
 ### references/architecture-rag.md
 
@@ -259,7 +260,7 @@ node scripts/list-specs.mjs --topics
 | システムプロンプト LLM API統合 | L427 |
 | Workspace Chat Edit 型定義（Desktop IPC） | L502 |
 | 完了タスク | L616 |
-| 関連ドキュメント | L628 |
+| 関連ドキュメント | L677 |
 
 ### references/interfaces-rag-chunk-embedding.md
 
