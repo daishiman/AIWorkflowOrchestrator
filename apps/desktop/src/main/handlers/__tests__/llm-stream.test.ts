@@ -169,10 +169,7 @@ describe("LLM Stream IPC Handlers", () => {
       await handleStreamChat(mockEvent as never, validRequest);
 
       // Then: End event should be emitted
-      expect(mockEvent.sender.send).toHaveBeenCalledWith(
-        "llm:stream-end",
-        undefined,
-      );
+      expect(mockEvent.sender.send).toHaveBeenCalledWith("llm:stream-end");
     });
   });
 
@@ -473,10 +470,7 @@ describe("LLM Stream IPC Handlers", () => {
               delta: { content: `Hello from ${providerId}` },
             }),
           );
-          expect(mockEvent.sender.send).toHaveBeenCalledWith(
-            "llm:stream-end",
-            undefined,
-          );
+          expect(mockEvent.sender.send).toHaveBeenCalledWith("llm:stream-end");
         });
       });
     }
