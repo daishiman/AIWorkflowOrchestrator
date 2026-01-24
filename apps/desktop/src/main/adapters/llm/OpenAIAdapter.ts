@@ -117,22 +117,31 @@ export class OpenAIAdapter extends BaseLLMAdapter {
 
   /**
    * ストリーミングチャット
+   * @param request チャットリクエスト
+   * @param signal オプションのAbortSignal（キャンセル用）
    */
-  async *streamChat(request: LLMChatRequestInput): AsyncGenerator<StreamChunk> {
-    const stream = this.fetchSSE(`${this.baseUrl}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.config.apiKey}`,
+  async *streamChat(
+    request: LLMChatRequestInput,
+    signal?: AbortSignal,
+  ): AsyncGenerator<StreamChunk> {
+    const stream = this.fetchSSE(
+      `${this.baseUrl}/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.config.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: request.modelId,
+          messages: this.formatMessages(request),
+          temperature: request.temperature,
+          max_tokens: request.maxTokens,
+          stream: true,
+        }),
       },
-      body: JSON.stringify({
-        model: request.modelId,
-        messages: this.formatMessages(request),
-        temperature: request.temperature,
-        max_tokens: request.maxTokens,
-        stream: true,
-      }),
-    });
+      signal,
+    );
 
     for await (const data of stream) {
       try {

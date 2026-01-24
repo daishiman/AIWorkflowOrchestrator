@@ -293,11 +293,15 @@ const electronAPI: ElectronAPI = {
     sendChat: (request: LLMChatRequest) =>
       safeInvoke(IPC_CHANNELS.LLM_SEND_CHAT, request),
     streamChat: (request: LLMChatRequest) =>
-      safeInvoke(IPC_CHANNELS.LLM_STREAM_CHAT, request),
+      safeInvoke<{ requestId: string }>(IPC_CHANNELS.LLM_STREAM_CHAT, request),
+    cancelStream: (requestId: string) =>
+      safeInvoke<{ success: boolean }>(IPC_CHANNELS.LLM_STREAM_CANCEL, {
+        requestId,
+      }),
     onStreamChunk: (callback: (chunk: LLMStreamChunk) => void) =>
       safeOn<LLMStreamChunk>(IPC_CHANNELS.LLM_STREAM_CHUNK, callback),
-    onStreamEnd: (callback: (streamId: string) => void) =>
-      safeOn<string>(IPC_CHANNELS.LLM_STREAM_END, callback),
+    onStreamEnd: (callback: () => void) =>
+      safeOn(IPC_CHANNELS.LLM_STREAM_END, callback),
     onStreamError: (callback: (error: LLMError) => void) =>
       safeOn<LLMError>(IPC_CHANNELS.LLM_STREAM_ERROR, callback),
   },

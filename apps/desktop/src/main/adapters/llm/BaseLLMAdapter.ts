@@ -42,6 +42,7 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
   abstract sendChat(request: LLMChatRequestInput): Promise<AdapterChatResponse>;
   abstract streamChat(
     request: LLMChatRequestInput,
+    signal?: AbortSignal,
   ): AsyncGenerator<StreamChunk>;
   abstract checkHealth(): Promise<HealthCheckResult>;
 
@@ -99,16 +100,30 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
 
   /**
    * SSEストリーム処理
+   * @param url - リクエストURL
+   * @param options - fetch オプション
+   * @param externalSignal - 外部からのAbortSignal（キャンセル用）
    */
   protected async *fetchSSE(
     url: string,
     options: RequestInit,
+    externalSignal?: AbortSignal,
   ): AsyncGenerator<string> {
     const controller = new AbortController();
     const timeoutId = setTimeout(
       () => controller.abort(),
       this.config.timeout * 2, // ストリームは長めに
     );
+
+    // 外部シグナルとの連携（キャンセル伝播）
+    const abortHandler = () => controller.abort();
+    if (externalSignal) {
+      if (externalSignal.aborted) {
+        controller.abort();
+      } else {
+        externalSignal.addEventListener("abort", abortHandler);
+      }
+    }
 
     try {
       const response = await fetch(url, {
@@ -149,6 +164,10 @@ export abstract class BaseLLMAdapter implements ILLMAdapter {
       }
     } finally {
       clearTimeout(timeoutId);
+      // 外部シグナルのリスナーをクリーンアップ
+      if (externalSignal) {
+        externalSignal.removeEventListener("abort", abortHandler);
+      }
     }
   }
 

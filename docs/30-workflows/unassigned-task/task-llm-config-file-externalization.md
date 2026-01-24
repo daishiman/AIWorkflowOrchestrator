@@ -3,22 +3,25 @@
 ## メタ情報
 
 ```yaml
+task_id: UT-LLM-CONFIG-001
+task_name: LLM設定のファイル外部化
+category: 改善
+target_feature: LLM API統合 / 設定管理
+priority: 中
+scale: 小規模
+status: 未実施
+source_phase: Phase 12（システムプロンプトLLM API統合）
+created_date: 2026-01-23
+dependencies: []
 issue_number: 462
+spec_path: docs/30-workflows/unassigned-task/task-llm-config-file-externalization.md
 ```
 
-## メタ情報
-
-| 項目         | 内容                                      |
-| ------------ | ----------------------------------------- |
-| タスクID     | UT-LLM-CONFIG-001                         |
-| タスク名     | LLM設定のファイル外部化                   |
-| 分類         | 改善                                      |
-| 対象機能     | LLM API統合 / 設定管理                    |
-| 優先度       | 中                                        |
-| 見積もり規模 | 小規模                                    |
-| ステータス   | 未実施                                    |
-| 発見元       | Phase 12（システムプロンプトLLM API統合） |
-| 発見日       | 2026-01-23                                |
+| 項目       | 内容   |
+| ---------- | ------ |
+| 優先度     | 中     |
+| 規模       | 小規模 |
+| ステータス | 未実施 |
 
 ---
 
@@ -236,7 +239,6 @@ LLM設定を外部ファイル（JSON/YAML）に移行し、コード変更な�
 ### 関連ドキュメント
 
 - [interfaces-llm.md](.claude/skills/aiworkflow-requirements/references/interfaces-llm.md) - デフォルト値の定義
-- [システムプロンプトLLM API統合実装ガイド](../completed-tasks/system-prompt-llm-api/outputs/phase-12/implementation-guide.md)
 
 ### 参考資料
 
@@ -256,3 +258,12 @@ LLM設定を外部ファイル（JSON/YAML）に移行し、コード変更な�
 - `getSelectedLLMConfig()`のデフォルト値（openai/gpt-4o）が対象
 - 将来的にはUIからの設定編集機能と連携
 - 12-factor appの設定外部化原則に準拠
+
+---
+
+## 変更履歴
+
+| Version | Date       | Changes                   |
+| ------- | ---------- | ------------------------- |
+| 1.0.0   | 2026-01-23 | 初版作成                  |
+| 1.0.1   | 2026-01-24 | 仕様書復元、Issue再リンク |

@@ -94,9 +94,13 @@ export interface ILLMAdapter {
   /**
    * ストリーミングチャット
    * @param request チャットリクエスト
+   * @param signal オプションのAbortSignal（キャンセル用）
    * @yields ストリームチャンク
    */
-  streamChat(request: LLMChatRequestInput): AsyncGenerator<StreamChunk>;
+  streamChat(
+    request: LLMChatRequestInput,
+    signal?: AbortSignal,
+  ): AsyncGenerator<StreamChunk>;
 
   /**
    * ヘルスチェック

@@ -3,22 +3,25 @@
 ## メタ情報
 
 ```yaml
+task_id: UT-LLM-HISTORY-001
+task_name: 会話履歴の永続化
+category: 改善
+target_feature: LLM API統合 / チャット機能
+priority: 高
+scale: 中規模
+status: 未実施
+source_phase: Phase 12（システムプロンプトLLM API統合）
+created_date: 2026-01-23
+dependencies: []
 issue_number: 463
+spec_path: docs/30-workflows/unassigned-task/task-llm-conversation-history-persistence.md
 ```
 
-## メタ情報
-
-| 項目         | 内容                                      |
-| ------------ | ----------------------------------------- |
-| タスクID     | UT-LLM-HISTORY-001                        |
-| タスク名     | 会話履歴の永続化                          |
-| 分類         | 改善                                      |
-| 対象機能     | LLM API統合 / チャット機能                |
-| 優先度       | 高                                        |
-| 見積もり規模 | 中規模                                    |
-| ステータス   | 未実施                                    |
-| 発見元       | Phase 12（システムプロンプトLLM API統合） |
-| 発見日       | 2026-01-23                                |
+| 項目       | 内容   |
+| ---------- | ------ |
+| 優先度     | 高     |
+| 規模       | 中規模 |
+| ステータス | 未実施 |
 
 ---
 
@@ -267,7 +270,6 @@ Repository層とIPC層の実装
 ### 関連ドキュメント
 
 - [interfaces-llm.md](.claude/skills/aiworkflow-requirements/references/interfaces-llm.md) - `AIChatRequest.conversationId`
-- [システムプロンプトLLM API統合実装ガイド](../completed-tasks/system-prompt-llm-api/outputs/phase-12/implementation-guide.md)
 
 ### 参考資料
 
@@ -287,3 +289,12 @@ Repository層とIPC層の実装
 - `AIChatRequest.conversationId`は既に型定義済み
 - ChatHistoryProvider（TASK-CHAT-HISTORY-PROVIDER）との統合を考慮
 - 将来的なクラウド同期を見据えた設計を推奨
+
+---
+
+## 変更履歴
+
+| Version | Date       | Changes                   |
+| ------- | ---------- | ------------------------- |
+| 1.0.0   | 2026-01-23 | 初版作成                  |
+| 1.0.1   | 2026-01-24 | 仕様書復元、Issue再リンク |
