@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-23
+> 自動生成: 2026-01-24
 > 生成コマンド: node scripts/generate-index.mjs
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -144,12 +144,12 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 機能追加パターン | L8 |
 | Environment Backend サービス（Desktop Main Process） | L75 |
-| Zustand Sliceパターン（Desktop） | L139 |
-| chatEditSlice（Workspace Chat Edit） | L205 |
-| スキル管理サービス（Desktop Main Process） | L290 |
-| Claude Code CLI連携パターン（Desktop Main Process） | L375 |
-| IPC Handler Registration Pattern（Desktop Main Process） | L472 |
-| Claude CLI Renderer API（Preload API） | L556 |
+| Zustand Sliceパターン（Desktop） | L141 |
+| スキル管理サービス（Desktop Main Process） | L235 |
+| Claude Code CLI連携パターン（Desktop Main Process） | L433 |
+| IPC Handler Registration Pattern（Desktop Main Process） | L530 |
+| Claude CLI Renderer API（Preload API） | L614 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L816 |
 
 ### references/architecture-rag.md
 
@@ -256,8 +256,10 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| LLM チャット関連型定義（Desktop IPC） | L8 |
 | Multi-LLM Provider Switching 型定義 | L102 |
 | Embedding Generation 型定義 | L275 |
-| Workspace Chat Edit 型定義 | L432 |
-| 関連ドキュメント | L550 |
+| システムプロンプト LLM API統合 | L427 |
+| Workspace Chat Edit 型定義（Desktop IPC） | L502 |
+| 完了タスク | L616 |
+| 関連ドキュメント | L628 |
 
 ### references/interfaces-rag-chunk-embedding.md
 
@@ -432,13 +434,11 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| エンドポイント一覧 | L8 |
 | Desktop IPC API（認証・プロフィール） | L126 |
-| Workspace Chat Edit IPC チャネル | L331 |
-| AI/チャット IPC チャネル | L439 |
-| Slide IPC API（スライド同期） | L498 |
-| エンドポイント命名規則 | L592 |
-| Electron IPC API設計 | L613 |
-| AIプロバイダーAPI連携 | L720 |
-| エンティティ抽出サービス (NER) | L753 |
+| Slide IPC API（スライド同期） | L499 |
+| エンドポイント命名規則 | L593 |
+| Electron IPC API設計 | L614 |
+| AIプロバイダーAPI連携 | L721 |
+| エンティティ抽出サービス (NER) | L754 |
 
 ### references/api-internal-chunk-search.md
 

@@ -373,3 +373,12 @@ if (artifactPath) {
 - **Notes**: システムプロンプトLLM API統合タスク完了: 全13フェーズ仕様書準拠、54テストPASS、artifacts.json正常更新、システム仕様書更新完了
 
 ---
+
+## [2026-01-24T03:52:53.543Z]
+
+- **Agent**: unknown
+- **Phase**: detect-unassigned
+- **Result**: ✓ 成功
+- **Notes**: 未タスク仕様書更新: task-conversation-history-ui-implementation.md - システム仕様（aiworkflow-requirements）参照セクション追加
+
+---
