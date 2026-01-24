@@ -20,7 +20,7 @@ tags: [backend, skill, agent]
 
 ## 出力
 
-- `~/.claude/skills/skill-creator/agents/code-generator.md`
+- `~/.aiworkflow/skills/skill-creator/agents/code-generator.md`
 
 ## 実装詳細
 
@@ -106,9 +106,9 @@ Step解析 → ツール特定 → 操作内容抽出
 
 ## ファイル
 
-| 操作 | パス                                                      |
-| ---- | --------------------------------------------------------- |
-| 作成 | `~/.claude/skills/skill-creator/agents/code-generator.md` |
+| 操作 | パス                                                          |
+| ---- | ------------------------------------------------------------- |
+| 作成 | `~/.aiworkflow/skills/skill-creator/agents/code-generator.md` |
 
 ## 完了条件
 

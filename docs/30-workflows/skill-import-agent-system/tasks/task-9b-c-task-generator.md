@@ -20,7 +20,7 @@ tags: [backend, skill, agent]
 
 ## 出力
 
-- `~/.claude/skills/skill-creator/agents/task-generator.md`
+- `~/.aiworkflow/skills/skill-creator/agents/task-generator.md`
 
 ## 実装詳細
 
@@ -91,7 +91,7 @@ tags: [{ タグリスト }]
 
 | 操作 | パス                                                    |
 | ---- | ------------------------------------------------------- |
-| 作成 | `~/.claude/skills/skill-creator/agents/task-generator.md` |
+| 作成 | `~/.aiworkflow/skills/skill-creator/agents/task-generator.md` |
 
 ## 完了条件
 

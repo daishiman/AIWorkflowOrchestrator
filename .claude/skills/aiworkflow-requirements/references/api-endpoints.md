@@ -328,6 +328,114 @@ Electronデスクトップアプリでは、IPC通信でスキル管理・エー
 
 ---
 
+### Workspace Chat Edit IPC チャネル
+
+Electronデスクトップアプリでは、IPC通信でワークスペースチャット編集機能を提供する。
+AIによるコード編集支援（ファイルコンテキスト付きチャット、差分生成・適用）を実現する。
+
+**実装ファイル**:
+
+- 型定義: `apps/desktop/src/renderer/features/workspace-chat-edit/types/index.ts`
+- Slice: `apps/desktop/src/renderer/features/workspace-chat-edit/store/chatEditSlice.ts`
+- Hooks: `apps/desktop/src/renderer/features/workspace-chat-edit/hooks/`
+- テスト: `apps/desktop/src/renderer/features/workspace-chat-edit/__tests__/`
+
+**チャンネル一覧**:
+
+| チャネル                   | 方向            | 用途                     | Request                                           | Response                         |
+| -------------------------- | --------------- | ------------------------ | ------------------------------------------------- | -------------------------------- |
+| `chat-edit:read-file`      | Renderer → Main | ファイル内容読み込み     | `{ filePath: string }`                            | `IPCResponse<FileContext>`       |
+| `chat-edit:write-file`     | Renderer → Main | ファイル書き込み         | `{ filePath: string, content: string }`           | `IPCResponse<void>`              |
+| `chat-edit:get-selection`  | Renderer → Main | エディタ選択範囲取得     | なし                                              | `IPCResponse<TextSelection>`     |
+| `chat-edit:send-with-context` | Renderer → Main | コンテキスト付きチャット | `{ contexts: FileContext[], command: EditCommand }` | `IPCResponse<GeneratedResult>` |
+
+**型定義**:
+
+```typescript
+// ファイルコンテキスト（最大10件）
+interface FileContext {
+  id: string;
+  filePath: string;
+  fileName: string;
+  content: string;
+  language: string;
+  selection?: TextSelection;
+  addedAt: number;
+}
+
+// テキスト選択範囲
+interface TextSelection {
+  startLine: number;
+  endLine: number;
+  startColumn: number;
+  endColumn: number;
+  selectedText: string;
+}
+
+// 編集コマンド
+interface EditCommand {
+  instruction: string;
+  targetFiles: string[];
+  mode: 'generate' | 'edit' | 'refactor';
+}
+
+// 生成結果
+interface GeneratedResult {
+  id: string;
+  originalContent: string;
+  generatedContent: string;
+  diff: DiffHunk[];
+  status: 'pending' | 'applied' | 'rejected';
+  createdAt: number;
+}
+
+// 差分ハンク
+interface DiffHunk {
+  oldStart: number;
+  oldLines: number;
+  newStart: number;
+  newLines: number;
+  lines: string[];
+}
+```
+
+**定数**:
+
+| 定数名            | 値      | 説明                       |
+| ----------------- | ------- | -------------------------- |
+| MAX_FILE_CONTEXTS | 10      | 最大添付ファイル数         |
+| MAX_FILE_SIZE     | 10MB    | ファイルサイズ上限         |
+| MAX_CONTEXT_SIZE  | 100KB   | コンテキストサイズ上限     |
+
+**関連Hooks**:
+
+| Hook名           | 責務                               |
+| ---------------- | ---------------------------------- |
+| useFileContext   | ファイルコンテキスト管理（追加/削除/バリデーション） |
+| useDiffApply     | 差分適用ロジック（LCS、適用/却下/Undo）            |
+
+**実装状況**:
+
+| 項目               | 状態     | 備考                              |
+| ------------------ | -------- | --------------------------------- |
+| 型定義             | 完了     | types/index.ts                    |
+| chatEditSlice      | 完了     | Zustand状態管理                   |
+| useFileContext     | 完了     | ファイルコンテキストHook          |
+| useDiffApply       | 完了     | 差分適用Hook                      |
+| UIコンポーネント   | 未実装   | 別タスク（task-workspace-chat-edit-ui-components） |
+| Main Processサービス | 未実装 | 別タスク（task-workspace-chat-edit-main-process） |
+| IPCハンドラー      | 未実装   | Main Processサービスと同時実装    |
+
+**関連ドキュメント**:
+
+| ドキュメント         | パス                                                               |
+| -------------------- | ------------------------------------------------------------------ |
+| 設計書               | `docs/30-workflows/workspace-chat-edit/outputs/phase-2/`           |
+| テスト仕様           | `docs/30-workflows/workspace-chat-edit/outputs/phase-4/`           |
+| 実装ガイド           | `docs/30-workflows/workspace-chat-edit/outputs/phase-12/implementation-guide.md` |
+
+---
+
 ### AI/チャット IPC チャネル
 
 Electronデスクトップアプリでは、IPC通信でAIチャット機能とLLM選択機能を提供する。

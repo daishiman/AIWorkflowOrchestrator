@@ -9,7 +9,7 @@ import { readdir, readFile, stat, access } from "fs/promises";
 import { join, resolve, normalize, relative } from "path";
 import grayMatter from "gray-matter";
 import type {
-  SkillMetadata,
+  ClaudeCliSkillMetadata,
   ScanResult,
   ClaudeCliSkillDetail,
   FilterCriteria,
@@ -62,7 +62,7 @@ export class SkillScanner {
       return this.cache;
     }
 
-    const skills: SkillMetadata[] = [];
+    const skills: ClaudeCliSkillMetadata[] = [];
     const errors: ScanError[] = [];
     const scannedAt = Date.now();
 
@@ -125,7 +125,7 @@ export class SkillScanner {
   /**
    * Filter skills based on criteria
    */
-  filter(criteria: FilterCriteria): SkillMetadata[] {
+  filter(criteria: FilterCriteria): ClaudeCliSkillMetadata[] {
     if (!this.cache) {
       throw new Error("Scan must be performed before filtering");
     }
@@ -277,7 +277,7 @@ export class SkillScanner {
   private async parseSkillDirectory(
     skillName: string,
     skillPath: string,
-  ): Promise<SkillMetadata | null> {
+  ): Promise<ClaudeCliSkillMetadata | null> {
     const skillMdPath = join(skillPath, "SKILL.md");
 
     // Check if SKILL.md exists

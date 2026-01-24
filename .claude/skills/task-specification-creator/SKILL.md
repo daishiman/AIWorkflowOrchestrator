@@ -262,7 +262,6 @@ Phase N+1 へ
 | `verify-all-specs.js`                 | **Phase 5全体検証時（自動）** | **13ファイル一括検証・レポート生成**        |
 | `detect-unassigned-tasks.js`          | Phase 12実行時                | TODO/FIXME検出                              |
 | `generate-documentation-changelog.js` | **Phase 12 Task 3実行時**     | **documentation-changelog.md自動生成**      |
-| `validate-phase12-step1.js`           | **Phase 12 Task 2完了時**     | **Step 1必須項目の自動検証**                |
 | `validate-schema.js`                  | スキーマ検証時                | JSON Schema検証                             |
 | `log-usage.js`                        | 全モード完了時                | 使用ログ記録                                |
 
@@ -318,23 +317,6 @@ node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.j
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --sources "packages/,apps/"
 ```
-
-## Phase 12 Step 1 検証【必須】
-
-```bash
-# Phase 12 Task 12-2 Step 1の必須項目検証（Script Task - 100%精度）
-node .claude/skills/task-specification-creator/scripts/validate-phase12-step1.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --spec .claude/skills/aiworkflow-requirements/references/{{TARGET_SPEC}}.md \
-  --task-id {{TASK_ID}}
-```
-
-**検証項目**:
-- 「完了タスク」セクションの追加
-- 「関連ドキュメント」への実装ガイドリンク追加
-- 「変更履歴」へのバージョン追記
-
-**重要**: Step 1は**全タスクで必須**。検証タスクでも必ず実行すること。
 
 ---
 
@@ -528,21 +510,11 @@ Phase 12でシステム仕様の更新が必要かを判断する際は、以下
 
 **⚠️ 2ステップで実行:**
 
-**Step 1: タスク完了記録（必須 - 全タスク共通）【検証タスクでも必須】**
+**Step 1: タスク完了記録（必須 - 全タスク共通）**
 
 ```
 □ 該当する仕様書に「## 完了タスク」セクションを追加
 □ 「## 関連ドキュメント」に実装ガイドリンクを追加
-□ 「## 変更履歴」にバージョンを追記
-```
-
-**Step 1 完了確認コマンド（推奨）:**
-
-```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase12-step1.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --spec .claude/skills/aiworkflow-requirements/references/{{TARGET_SPEC}}.md \
-  --task-id {{TASK_ID}}
 ```
 
 **Step 2: システム仕様更新（条件付き）**
@@ -601,7 +573,8 @@ node .claude/skills/task-specification-creator/scripts/validate-phase12-step1.js
 
 | Version   | Date           | Changes                                                                                                                                                  |
 | --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **7.7.0** | **2026-01-23** | **Phase 12 Step 1検証強化: validate-phase12-step1.js追加、Step 1必須性を「検証タスクでも必須」と明記、検証コマンド使用例追加**                           |
+| **7.8.0** | **2026-01-23** | **update-system-specs.md標準フォーマット化: 5セクション構造化（メタ情報/プロフィール/知識ベース/実行仕様/インターフェース）、思考プロセステーブル追加、patterns.md新規作成** |
+| 7.7.0     | 2026-01-23     | Phase 12 Step 1検証強化: validate-phase12-step1.js追加、Step 1必須性を「検証タスクでも必須」と明記、検証コマンド使用例追加                           |
 | 7.6.0     | 2026-01-22     | Phase 12テンプレート強化: 完了条件にPhase 12-2の3ステップチェックリスト追加、フォールバック手順セクション追加、spec-update-workflow.md参照リンク追加     |
 | 7.5.0     | 2026-01-22     | Phase 12改善: Task 2を2ステップ化（タスク完了記録必須＋仕様更新条件付き）、Task 3自動生成スクリプト追加、spec-update-workflow.md明確化                   |
 | 7.4.0     | 2026-01-18     | Phase 12 Task 2強化: システム仕様更新チェックリスト追加、変更タイプ別マッピング追加、更新漏れ防止ガイダンス強化                                          |

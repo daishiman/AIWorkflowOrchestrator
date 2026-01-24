@@ -1,0 +1,128 @@
+{
+  "taskId": "TASK-1-1",
+  "title": "共通型定義の作成",
+  "createdAt": "2026-01-23T21:02:31Z",
+  "status": "pending",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "file": "phase-1-requirements.md",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "file": "phase-2-design.md",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "file": "phase-3-design-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "pending",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        {
+          "path": "packages/shared/src/types/__tests__/skill.test.ts",
+          "description": "型テストファイル"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "pending",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        {
+          "path": "packages/shared/src/types/skill.ts",
+          "description": "型定義ファイル（更新）"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "file": "phase-6-test-enhancement.md",
+      "artifacts": [
+        {
+          "path": "packages/shared/src/types/__tests__/skill-import.test.ts",
+          "description": "インポートテストファイル"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "file": "phase-7-test-coverage.md",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "file": "phase-8-refactoring.md",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "file": "phase-10-final-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "pending",
+      "file": "phase-11-manual-testing.md",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "file": "phase-12-documentation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "dependencies": [],
+  "blocks": ["TASK-2A", "TASK-2B", "TASK-2C"],
+  "references": [
+    {
+      "path": "docs/30-workflows/skill-import-agent-system/specification.md",
+      "section": "§5.1"
+    },
+    {
+      "path": ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md"
+    },
+    {
+      "path": ".claude/skills/aiworkflow-requirements/references/error-handling.md"
+    }
+  ]
+}
