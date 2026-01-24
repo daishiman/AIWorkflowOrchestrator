@@ -813,6 +813,106 @@ useEffect(() => {
 
 ---
 
+## 会話履歴永続化パターン（Desktop Main Process）
+
+### 概要
+
+会話履歴永続化はElectronのMain Processで動作し、SQLite（better-sqlite3）を使用して会話・メッセージをローカルに保存する。Repository Patternを採用し、IPC Handlersを通じてRenderer Processからのアクセスを提供する。
+
+**実装場所**: `apps/desktop/src/main/repositories/conversationRepository.ts`
+
+### コンポーネント構成
+
+```
+Main Process (Electron)
+├── ConversationRepository (Repository層 - データアクセス)
+│   ├── create (会話作成)
+│   ├── findById (ID検索)
+│   ├── findAll (一覧取得・ページネーション)
+│   ├── update (更新)
+│   ├── delete (削除・カスケード)
+│   ├── addMessage (メッセージ追加)
+│   └── search (キーワード検索)
+└── IPC Handlers (Renderer通信)
+    └── conversationHandlers.ts
+```
+
+### ファイル構成
+
+| ファイル                      | 責務                           |
+| ----------------------------- | ------------------------------ |
+| `conversationRepository.ts`   | Repository実装（457行）        |
+| `conversationHandlers.ts`     | IPCハンドラ（243行）           |
+| `conversation.ts`（shared）   | 型定義（234行）                |
+| `channels.ts`（preload）      | IPCチャンネル定義              |
+
+### 型定義
+
+| 型名                 | 定義場所                                    | 説明                     |
+| -------------------- | ------------------------------------------- | ------------------------ |
+| `Conversation`       | `shared/types/conversation.ts`              | 会話エンティティ         |
+| `ConversationSummary`| `shared/types/conversation.ts`              | 一覧表示用サマリー       |
+| `Message`            | `shared/types/conversation.ts`              | メッセージエンティティ   |
+| `CreateConversationInput` | `shared/types/conversation.ts`         | 会話作成入力             |
+| `UpdateConversationInput` | `shared/types/conversation.ts`         | 会話更新入力             |
+| `AddMessageInput`    | `shared/types/conversation.ts`              | メッセージ追加入力       |
+| `ListConversationsOptions` | `shared/types/conversation.ts`        | 一覧取得オプション       |
+| `PaginatedResult<T>` | `shared/types/conversation.ts`              | ページネーション結果     |
+
+### IPC APIチャンネル
+
+| チャンネル               | 引数                      | 戻り値                        | 説明               |
+| ------------------------ | ------------------------- | ----------------------------- | ------------------ |
+| `conversation:create`    | `CreateConversationInput` | `Conversation`                | 会話作成           |
+| `conversation:get`       | `id: string`              | `Conversation \| null`        | 会話取得           |
+| `conversation:list`      | `ListConversationsOptions`| `PaginatedResult<ConversationSummary>` | 一覧取得  |
+| `conversation:update`    | `id, UpdateConversationInput` | `Conversation`            | 会話更新           |
+| `conversation:delete`    | `id: string`              | `void`                        | 会話削除           |
+| `conversation:addMessage`| `id, AddMessageInput`     | `Message`                     | メッセージ追加     |
+| `conversation:search`    | `query: string, options`  | `PaginatedResult<ConversationSummary>` | 検索     |
+
+### データフロー
+
+```
+1. Renderer → IPC Channel → Main Process
+2. Main Process → conversationHandlers → ConversationRepository
+3. ConversationRepository → better-sqlite3 → SQLite
+4. 結果 → IPC Channel → Renderer
+```
+
+### ConversationRepository API
+
+| メソッド        | 引数                          | 戻り値                              | 説明               |
+| --------------- | ----------------------------- | ----------------------------------- | ------------------ |
+| `create`        | `CreateConversationInput`     | `Conversation`                      | 会話作成           |
+| `findById`      | `id: string`                  | `Conversation \| null`              | ID検索             |
+| `findAll`       | `ListConversationsOptions`    | `PaginatedResult<ConversationSummary>` | 一覧取得        |
+| `update`        | `id, UpdateConversationInput` | `Conversation`                      | 更新               |
+| `delete`        | `id: string`                  | `void`                              | 削除               |
+| `addMessage`    | `conversationId, AddMessageInput` | `Message`                       | メッセージ追加     |
+| `search`        | `query: string, options`      | `PaginatedResult<ConversationSummary>` | 検索            |
+
+### セキュリティ対策
+
+- **IPC sender検証**: `validateIpcSender(event, mainWindow)`による送信元検証
+- **ホワイトリストチャンネル**: 許可されたチャンネルのみ処理
+- **SQLインジェクション防止**: パラメータバインディング使用
+
+### 品質メトリクス
+
+| 項目           | 値     |
+| -------------- | ------ |
+| テスト総数     | 114    |
+| カバレッジ（Line） | 100% |
+| カバレッジ（Branch）| 100% |
+| カバレッジ（Function）| 100% |
+
+### 関連タスク
+
+- **UT-LLM-HISTORY-001**: 会話履歴永続化バックエンド実装（2026-01-24完了）
+
+---
+
 ## chatEditSlice（Workspace Chat Edit状態管理）
 
 ### 概要

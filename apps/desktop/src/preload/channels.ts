@@ -217,6 +217,15 @@ export const IPC_CHANNELS = {
   SYSTEM_PROMPT_DELETE: "system-prompt:delete",
   SYSTEM_PROMPT_MIGRATE: "system-prompt:migrate",
   SYSTEM_PROMPT_GET_PRESETS: "system-prompt:get-presets",
+
+  // Conversation operations
+  CONVERSATION_LIST: "conversation:list",
+  CONVERSATION_GET: "conversation:get",
+  CONVERSATION_CREATE: "conversation:create",
+  CONVERSATION_UPDATE: "conversation:update",
+  CONVERSATION_DELETE: "conversation:delete",
+  CONVERSATION_ADD_MESSAGE: "conversation:addMessage",
+  CONVERSATION_SEARCH: "conversation:search",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -377,6 +386,14 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SYSTEM_PROMPT_DELETE,
   IPC_CHANNELS.SYSTEM_PROMPT_MIGRATE,
   IPC_CHANNELS.SYSTEM_PROMPT_GET_PRESETS,
+  // Conversation channels
+  IPC_CHANNELS.CONVERSATION_LIST,
+  IPC_CHANNELS.CONVERSATION_GET,
+  IPC_CHANNELS.CONVERSATION_CREATE,
+  IPC_CHANNELS.CONVERSATION_UPDATE,
+  IPC_CHANNELS.CONVERSATION_DELETE,
+  IPC_CHANNELS.CONVERSATION_ADD_MESSAGE,
+  IPC_CHANNELS.CONVERSATION_SEARCH,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

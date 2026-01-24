@@ -17,6 +17,7 @@
 |-------------|----------|------|
 | 入力バリデーション・ファイル変換 | [security-input-validation.md](./security-input-validation.md) | バリデーション原則、SQL/XSS対策、Zodスキーマ、ファイル変換セキュリティ |
 | API・Electronセキュリティ | [security-api-electron.md](./security-api-electron.md) | 認証・認可、レート制限、CORS、Electron設定、IPC通信 |
+| スキル実行セキュリティ | [security-skill-execution.md](./security-skill-execution.md) | 危険コマンドパターン、保護パス、許可ツールホワイトリスト |
 
 ---
 

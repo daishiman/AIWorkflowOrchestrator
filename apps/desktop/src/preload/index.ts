@@ -484,6 +484,35 @@ const claudeCliAPI: ClaudeCliAPI = {
     ),
 };
 
+// Conversation API for conversation history persistence
+import type {
+  ConversationAPI,
+  ConversationListRequest,
+  ConversationGetRequest,
+  ConversationCreateRequest,
+  ConversationUpdateRequest,
+  ConversationDeleteRequest,
+  ConversationAddMessageRequest,
+  ConversationSearchRequest,
+} from "../shared/types/conversation";
+
+const conversationAPI: ConversationAPI = {
+  list: (request: ConversationListRequest) =>
+    safeInvoke(IPC_CHANNELS.CONVERSATION_LIST, request),
+  get: (request: ConversationGetRequest) =>
+    safeInvoke(IPC_CHANNELS.CONVERSATION_GET, request),
+  create: (request: ConversationCreateRequest) =>
+    safeInvoke(IPC_CHANNELS.CONVERSATION_CREATE, request),
+  update: (request: ConversationUpdateRequest) =>
+    safeInvoke(IPC_CHANNELS.CONVERSATION_UPDATE, request),
+  delete: (request: ConversationDeleteRequest) =>
+    safeInvoke(IPC_CHANNELS.CONVERSATION_DELETE, request),
+  addMessage: (request: ConversationAddMessageRequest) =>
+    safeInvoke(IPC_CHANNELS.CONVERSATION_ADD_MESSAGE, request),
+  search: (request: ConversationSearchRequest) =>
+    safeInvoke(IPC_CHANNELS.CONVERSATION_SEARCH, request),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
@@ -495,6 +524,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("slideSettingsAPI", slideSettingsAPI);
     contextBridge.exposeInMainWorld("claudeCliAPI", claudeCliAPI);
     contextBridge.exposeInMainWorld("systemPromptAPI", systemPromptAPI);
+    contextBridge.exposeInMainWorld("conversationAPI", conversationAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -512,4 +542,6 @@ if (process.contextIsolated) {
     claudeCliAPI;
   (window as unknown as { systemPromptAPI: SystemPromptAPI }).systemPromptAPI =
     systemPromptAPI;
+  (window as unknown as { conversationAPI: ConversationAPI }).conversationAPI =
+    conversationAPI;
 }

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-24T06:24:49.514Z",
-  "totalKeywords": 764,
+  "generated": "2026-01-24T03:43:01.854Z",
+  "totalKeywords": 765,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -696,6 +696,9 @@
     "Preload": [
       "architecture-patterns.md",
       "interfaces-agent-sdk.md"
+    ],
+    "会話履歴永続化パターン": [
+      "architecture-patterns.md"
     ],
     "chatEditSlice": [
       "architecture-patterns.md"

@@ -583,6 +583,55 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 | 発見課題リスト     | `docs/30-workflows/llm-streaming-response/outputs/phase-11/discovered-issues.md`       |
 | 実装ガイド         | `docs/30-workflows/llm-streaming-response/outputs/phase-12/implementation-guide.md`    |
 
+### UT-LLM-HISTORY-001（2026-01-24完了）
+
+| 項目         | 内容                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| タスクID     | UT-LLM-HISTORY-001                                                                        |
+| 完了日       | 2026-01-24                                                                                |
+| ステータス   | **完了**                                                                                  |
+| テスト数     | 114（自動テスト）+ 12（手動テスト項目）                                                   |
+| 発見課題     | 4件（全てスコープ外のUI実装タスク）                                                       |
+| ドキュメント | `docs/30-workflows/llm-conversation-history-persistence/`                                 |
+
+#### 実装サマリー
+
+| 成果物                    | 行数 | テスト数 |
+| ------------------------- | ---- | -------- |
+| ConversationRepository    | 457  | 75       |
+| conversationHandlers IPC  | 243  | 39       |
+| 共有型定義 conversation.ts| 234  | 0        |
+| IPCチャンネル channels.ts | +20  | 0        |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| Repository層       | 75       | 75   | 0    |
+| IPC Handlers層     | 39       | 39   | 0    |
+| カバレッジ         | Line 100% | Branch 100% | Function 100% |
+
+#### 成果物
+
+| 成果物             | パス                                                                                                |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| 要件定義           | `docs/30-workflows/llm-conversation-history-persistence/outputs/phase-1/requirements.md`            |
+| テスト結果レポート | `docs/30-workflows/llm-conversation-history-persistence/outputs/phase-11/manual-test-result.md`     |
+| 発見課題リスト     | `docs/30-workflows/llm-conversation-history-persistence/outputs/phase-11/discovered-issues.md`      |
+| 実装ガイド         | `docs/30-workflows/llm-conversation-history-persistence/outputs/phase-12/implementation-guide.md`   |
+
+#### 関連IPCチャンネル
+
+| チャンネル               | 方向          | 説明                 |
+| ------------------------ | ------------- | -------------------- |
+| `conversation:create`    | Renderer→Main | 会話作成             |
+| `conversation:get`       | Renderer→Main | 会話取得             |
+| `conversation:list`      | Renderer→Main | 一覧取得（ページネーション対応） |
+| `conversation:update`    | Renderer→Main | 会話更新             |
+| `conversation:delete`    | Renderer→Main | 会話削除             |
+| `conversation:addMessage`| Renderer→Main | メッセージ追加       |
+| `conversation:search`    | Renderer→Main | キーワード検索       |
+
 ---
 
 ## 関連ドキュメント
@@ -593,6 +642,8 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 - [ローカルエージェント仕様](./09-local-agent.md)
 - [セキュリティガイドライン](./17-security-guidelines.md)
 - [LLMストリーミングレスポンス実装ガイド](../../../docs/30-workflows/llm-streaming-response/outputs/phase-12/implementation-guide.md)
+- [システムプロンプトLLM API統合 実装ガイド](../../../docs/30-workflows/completed-tasks/system-prompt-llm-api/outputs/phase-12/implementation-guide.md)
+- [会話履歴永続化 実装ガイド](../../../docs/30-workflows/llm-conversation-history-persistence/outputs/phase-12/implementation-guide.md)
 
 ---
 
