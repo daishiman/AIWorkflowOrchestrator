@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 480
+issue_number: 469
 ```
 
 ## メタ情報
