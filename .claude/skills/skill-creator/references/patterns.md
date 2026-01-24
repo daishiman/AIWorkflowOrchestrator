@@ -35,6 +35,17 @@
 - **適用条件**: Progressive Disclosure対象の詳細情報が肥大化した場合
 - **発見日**: 2026-01-20
 
+### 大規模DRYリファクタリング
+
+- **状況**: SKILL.md 481行、interview-user.md 398行と肥大化
+- **アプローチ**:
+  - SKILL.md: 詳細ワークフローをreferencesに委譲、エントリポイントと参照のみに
+  - orchestration-guide.md: 実行モデル重複をworkflow-patterns.mdへの参照に
+  - interview-user.md: 質問テンプレートをinterview-guide.mdへの参照に
+- **結果**: SKILL.md 69%削減（481→149行）、interview-user.md 52%削減（398→191行）
+- **適用条件**: 300行超のファイルで詳細とサマリーが混在している場合
+- **発見日**: 2026-01-24
+
 ### Phase仕様書の成果物名厳密化
 
 - **状況**: Phase 12実行時に仕様書と異なるファイル名で成果物を生成
@@ -73,7 +84,7 @@
 
 - **状況**: Phase 12 Task 2でシステム仕様書更新が必要
 - **アプローチ**:
-  - 該当するinterfaces-*.mdに「完了タスク」セクションを追加
+  - 該当するinterfaces-\*.mdに「完了タスク」セクションを追加
   - タスクID、概要、実装日、主要成果を記録
   - 「関連ドキュメント」に実装ガイドリンクを追加
 - **結果**: タスク完了の追跡可能性が向上、後続開発者が実装履歴を把握可能
@@ -93,6 +104,31 @@
 - **適用条件**: Phase 12実行時、特に複数サブタスクを持つPhase
 - **発見日**: 2026-01-22
 - **関連タスク**: UT-007 ChatHistoryProvider App Integration
+
+### Phase 12 Step 1 検証スクリプトによる自動化
+
+- **状況**: Phase 12 Step 1（必須タスク完了記録）が正しく実行されたか手動確認が困難
+- **アプローチ**:
+  - `validate-phase12-step1.js` スクリプトを作成し、必須要件を自動検証
+  - 検証項目: 完了タスクセクション、実装ガイドリンク、変更履歴エントリ
+  - SKILL.mdに検証コマンドを追加し、Phase 12完了前に実行を促す
+- **結果**: 必須要件の漏れを自動検出、Phase 12完了前に問題を発見可能
+- **適用条件**: Phase 12 Task 12-2 実行時、システム仕様書更新後の検証
+- **発見日**: 2026-01-23
+- **関連タスク**: SHARED-TYPE-EXPORT-03
+- **検証コマンド**: `node .claude/skills/task-specification-creator/scripts/validate-phase12-step1.js --workflow <dir> --spec <file>`
+
+### 複数システム仕様書への横断的更新
+
+- **状況**: 単一タスクが複数の仕様書に関連する場合の更新漏れ
+- **アプローチ**:
+  - 関連仕様書を事前にリストアップ（例: interfaces-rag-community-detection.md + architecture-monorepo.md）
+  - 各仕様書に対して Phase 12 Step 1 検証スクリプトを実行
+  - spec-update-record.md に全更新対象を明記
+- **結果**: 関連する全仕様書に一貫した完了タスク記録と実装ガイドリンクを追加
+- **適用条件**: アーキテクチャ横断的な実装タスク、型エクスポート/インポートパターン変更時
+- **発見日**: 2026-01-23
+- **関連タスク**: SHARED-TYPE-EXPORT-03
 
 ---
 
@@ -142,6 +178,28 @@
 - **対策**: `typeof artifact === "string" ? artifact : artifact.path` で両形式に対応
 - **発見日**: 2026-01-22
 - **関連タスク**: skill-import-store-persistence (SKILL-STORE-001)
+
+### 「検証タスク」でのPhase 12 Step 1省略
+
+- **状況**: SHARED-TYPE-EXPORT-03（検証タスク）でPhase 12 Step 1を「検証タスクなので更新不要」と判断し省略
+- **問題**: spec-update-record.mdに「更新不要」と記載したが、Step 1は必須要件だった
+- **原因**: Step 1（タスク完了記録：必須）とStep 2（インターフェース仕様更新：条件付き）の区別を誤認
+- **教訓**: Phase 12 Step 1（完了タスクセクション追加、実装ガイドリンク追加、変更履歴追記）は**検証タスクでも必須**
+- **対策**:
+  - task-specification-creator SKILL.mdに「【検証タスクでも必須】」警告を追加
+  - validate-phase12-step1.js検証スクリプトで自動チェック
+- **発見日**: 2026-01-23
+- **関連タスク**: SHARED-TYPE-EXPORT-03
+
+### ES Module互換性の確認漏れ
+
+- **状況**: 新規スクリプト（validate-phase12-step1.js）作成時にCommonJS構文（require）を使用
+- **問題**: プロジェクトがES Module（"type": "module"）設定のため実行時エラー
+- **原因**: package.jsonの"type"フィールドを確認せずスクリプト作成
+- **教訓**: 新規スクリプト作成時は必ずプロジェクトのモジュール形式を確認し、ES Module形式（import/export）を使用
+- **対策**: スクリプト作成前に `package.json` の `"type"` フィールドをチェック
+- **発見日**: 2026-01-23
+- **関連タスク**: SHARED-TYPE-EXPORT-03
 
 ---
 
