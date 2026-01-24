@@ -144,12 +144,12 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 機能追加パターン | L8 |
 | Environment Backend サービス（Desktop Main Process） | L75 |
-| Zustand Sliceパターン（Desktop） | L139 |
-| スキル管理サービス（Desktop Main Process） | L233 |
-| Claude Code CLI連携パターン（Desktop Main Process） | L318 |
-| IPC Handler Registration Pattern（Desktop Main Process） | L415 |
-| Claude CLI Renderer API（Preload API） | L499 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L701 |
+| Zustand Sliceパターン（Desktop） | L141 |
+| スキル管理サービス（Desktop Main Process） | L235 |
+| Claude Code CLI連携パターン（Desktop Main Process） | L433 |
+| IPC Handler Registration Pattern（Desktop Main Process） | L530 |
+| Claude CLI Renderer API（Preload API） | L614 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L816 |
 
 ### references/architecture-rag.md
 

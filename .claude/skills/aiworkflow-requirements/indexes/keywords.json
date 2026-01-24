@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-24T06:38:55.796Z",
-  "totalKeywords": 765,
+  "generated": "2026-01-24T06:24:49.514Z",
+  "totalKeywords": 764,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1629,13 +1629,6 @@
       "interfaces-agent-sdk.md",
       "ui-ux-components.md"
     ],
-    "SkillImportStore": [
-      "interfaces-agent-sdk.md"
-    ],
-    "TASK": [
-      "interfaces-agent-sdk.md",
-      "ui-ux-search-panel.md"
-    ],
     "ModifierSkill": [
       "interfaces-agent-sdk.md"
     ],
@@ -1675,6 +1668,10 @@
     ],
     "System": [
       "interfaces-agent-sdk.md"
+    ],
+    "TASK": [
+      "interfaces-agent-sdk.md",
+      "ui-ux-search-panel.md"
     ],
     "残課題": [
       "interfaces-agent-sdk.md",
