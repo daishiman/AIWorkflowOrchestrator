@@ -268,7 +268,11 @@ export async function handleStreamChat(
   // Helper to safely send events (check isDestroyed)
   const safeSend = (channel: string, data?: unknown) => {
     if (!event.sender.isDestroyed()) {
-      event.sender.send(channel, data);
+      if (data !== undefined) {
+        event.sender.send(channel, data);
+      } else {
+        event.sender.send(channel);
+      }
     }
   };
 
