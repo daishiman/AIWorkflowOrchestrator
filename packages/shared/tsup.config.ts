@@ -31,6 +31,7 @@ export default defineConfig({
     "utils/index.ts",
     "src/features/chat-history/index.ts",
     "src/repositories/index.ts",
+    "src/constants/index.ts",
   ],
   format: ["esm"],
   dts: true,

@@ -2,6 +2,22 @@
 
 ## メタ情報
 
+```yaml
+task_id: UT-003
+task_name: E2Eテスト追加（チャット履歴）
+category: テスト
+target_feature: チャット履歴機能（chat-history）
+priority: 中
+scale: 中規模
+status: 待機中
+source_phase: Phase 11
+created_date: 2026-01-19
+dependencies: [UT-005, UT-006]
+issue_number: 483
+```
+
+## メタ情報（参考）
+
 | 項目         | 内容                                    |
 | ------------ | --------------------------------------- |
 | タスクID     | UT-003                                  |
