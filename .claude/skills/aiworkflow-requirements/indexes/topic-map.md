@@ -781,7 +781,10 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| API セキュリティ | L10 |
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
-| 関連ドキュメント | L550 |
+| スキルインポートIPCチャネル（TASK-4-1） | L284 |
+| 完了タスク | L601 |
+| 関連ドキュメント | L592 |
+| 変更履歴 | L612 |
 
 ### references/security-implementation.md
 

@@ -564,4 +564,70 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## 2026-01-25: TASK-4-1 IPCチャネル定義
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-4-1                                                                                       |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | security-api-electron.md                                                                       |
+| 結果         | success                                                                                        |
+| 備考         | スキルインポートIPCチャネル8件追加、完了タスクセクション追加                                   |
+
+### 更新詳細
+
+- **更新**: `references/security-api-electron.md`（v1.5.0 → v1.6.0）
+  - 「スキルインポートIPCチャネル（TASK-4-1）」セクション追加（約45行）
+  - チャネル定義コード例（8チャネル）
+  - ホワイトリスト登録テーブル（ALLOWED_INVOKE_CHANNELS: 5件、ALLOWED_ON_CHANNELS: 3件）
+  - チャネル通信方向テーブル（R→M/M→R）
+  - テストカバレッジ情報（60テスト）
+  - 「完了タスク」セクションにTASK-4-1追加
+  - 「関連ドキュメント」に実装ガイドリンク追加
+  - 変更履歴にv1.6.0エントリ追加
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-4-1-ipc-channels/outputs/phase-12/implementation-guide.md`      |
+| タスク仕様書   | `docs/30-workflows/TASK-4-1-ipc-channels/`                                              |
+| テストファイル | `apps/desktop/src/preload/__tests__/channels.skill-import.test.ts`                      |
+
+### テスト品質
+
+| 項目           | 値     |
+| -------------- | ------ |
+| テスト総数     | 60     |
+| カバレッジ     | 100%   |
+| セキュリティ関連 | 全60  |
+
+---
+
+## 2026-01-26: TASK-4-1 topic-map.md更新（補完）
+
+| 項目         | 内容                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| タスクID     | TASK-4-1                                                          |
+| 操作         | update-index                                                      |
+| 対象ファイル | indexes/topic-map.md                                              |
+| 結果         | success                                                           |
+| 備考         | security-api-electron.mdセクションにTASK-4-1関連エントリを追加    |
+
+### 更新詳細
+
+- **更新**: `indexes/topic-map.md`
+  - `security-api-electron.md`セクションに以下を追加:
+    - 「スキルインポートIPCチャネル（TASK-4-1）」| L284
+    - 「完了タスク」| L601
+    - 「関連ドキュメント」| L592（行番号更新）
+    - 「変更履歴」| L612
+
+### 改善経緯
+
+- Phase 12完了条件に`topic-map.md更新`が明記されていなかったため漏れが発生
+- `task-specification-creator/references/phase-templates.md`を改善し、今後は漏れを防止
+
+---
+
 （ログエントリはここに追記されます）
