@@ -1,14 +1,14 @@
 {
   "skillName": "task-specification-creator",
   "version": "2.0.0",
-  "currentLevel": 1,
+  "currentLevel": 2,
   "metrics": {
-    "totalUsageCount": 3,
-    "successCount": 3,
+    "totalUsageCount": 16,
+    "successCount": 16,
     "failureCount": 0,
     "successRate": 1,
     "averageDuration": 0,
-    "lastEvaluated": "2026-01-24T03:52:53.549Z"
+    "lastEvaluated": "2026-01-25T00:00:00.000Z"
   },
   "levelHistory": [],
   "patterns": {
