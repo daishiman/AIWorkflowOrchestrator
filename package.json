@@ -19,7 +19,7 @@
     "typecheck": "pnpm --filter @repo/shared typecheck && pnpm --filter @repo/desktop typecheck",
     "clean": "pnpm -r exec rm -rf dist out node_modules/.vite",
     "prepare": "husky",
-    "postinstall": "pnpm rebuild better-sqlite3 || true"
+    "postinstall": "bash scripts/setup-native-modules.sh || pnpm rebuild better-sqlite3 || true"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
