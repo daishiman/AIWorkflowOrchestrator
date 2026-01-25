@@ -428,6 +428,96 @@ interface PaginatedSkillResult {
 - アプリ再起動後もインポート状態を維持
 - ストレージキー: `importedSkillIds`
 
+### PermissionResolver（TASK-3-1-C実装）
+
+> **実装完了**: 2026-01-25（TASK-3-1-C）
+> **参照**: [interfaces-agent-sdk.md](interfaces-agent-sdk.md) の PermissionRequest/PermissionResponse型
+> **実装ガイド**: [permission-request-hook.md](../../../docs/guides/permission-request-hook.md)
+
+権限リクエストの非同期待機と解決を管理するクラス。Claude Agent SDK の PermissionRequest Hook を実装。
+
+#### コンポーネント構成
+
+```
+Main Process (Electron)
+├── SkillExecutor (スキル実行エンジン)
+│   ├── sendPermissionRequest()    # IPC経由で権限リクエスト送信
+│   ├── handlePermissionResponse() # IPC経由で権限応答受信
+│   ├── sanitizeArgs()             # 機密情報サニタイズ
+│   └── getPermissionReason()      # 理由文生成
+└── PermissionResolver (権限解決管理)
+    ├── waitForResponse()          # Promise待機
+    ├── resolveRequest()           # 応答解決
+    ├── cancelRequest()            # 個別キャンセル
+    └── cancelAllRequests()        # 全キャンセル
+```
+
+#### PermissionResolver API
+
+| メソッド            | 引数                                 | 戻り値                        | 説明           |
+| ------------------- | ------------------------------------ | ----------------------------- | -------------- |
+| `waitForResponse`   | `requestId, signal?, timeoutMs?`     | `Promise<PermissionResponse>` | 権限応答を待機 |
+| `resolveRequest`    | `response: PermissionResponse`       | `void`                        | 権限応答を解決 |
+| `cancelRequest`     | `requestId: string, reason?: string` | `void`                        | 個別キャンセル |
+| `cancelAllRequests` | `reason?: string`                    | `void`                        | 全キャンセル   |
+
+#### IPC チャネル
+
+| チャネル                    | 方向            | データ型             | 説明           |
+| --------------------------- | --------------- | -------------------- | -------------- |
+| `skill:permission:request`  | Main → Renderer | `PermissionRequest`  | 権限リクエスト |
+| `skill:permission:response` | Renderer → Main | `PermissionResponse` | 権限応答       |
+
+#### 機密キーサニタイズ（14パターン）
+
+```typescript
+const SENSITIVE_KEY_PATTERNS = [
+  "password",
+  "passwd",
+  "pwd",
+  "secret",
+  "token",
+  "bearer",
+  "key",
+  "apikey",
+  "api_key",
+  "credential",
+  "auth",
+  "access_token",
+  "refresh_token",
+  "private_key",
+];
+```
+
+#### 定数
+
+| 定数                            | 値    | 説明                   |
+| ------------------------------- | ----- | ---------------------- |
+| `PERMISSION_REQUEST_TIMEOUT_MS` | 30000 | タイムアウト（ミリ秒） |
+| `MAX_ARG_LENGTH`                | 500   | 引数表示最大長         |
+
+#### データフロー
+
+```
+スキル実行時:
+1. SkillExecutor.executeSkill()
+   └── PermissionRequest Hook発火
+       └── sendPermissionRequest()
+           ├── sanitizeArgs()           # 機密情報除去
+           ├── getPermissionReason()    # 理由文生成
+           └── IPC送信 (skill:permission:request)
+
+2. Renderer Process
+   └── PermissionDialog表示
+       └── ユーザー選択（許可/拒否）
+           └── IPC送信 (skill:permission:response)
+
+3. Main Process
+   └── handlePermissionResponse()
+       └── PermissionResolver.resolveRequest()
+           └── Promise解決 → SkillExecutor続行/中止
+```
+
 ---
 
 ## Claude Code CLI連携パターン（Desktop Main Process）
@@ -839,37 +929,37 @@ Main Process (Electron)
 
 ### ファイル構成
 
-| ファイル                      | 責務                           |
-| ----------------------------- | ------------------------------ |
-| `conversationRepository.ts`   | Repository実装（457行）        |
-| `conversationHandlers.ts`     | IPCハンドラ（243行）           |
-| `conversation.ts`（shared）   | 型定義（234行）                |
-| `channels.ts`（preload）      | IPCチャンネル定義              |
+| ファイル                    | 責務                    |
+| --------------------------- | ----------------------- |
+| `conversationRepository.ts` | Repository実装（457行） |
+| `conversationHandlers.ts`   | IPCハンドラ（243行）    |
+| `conversation.ts`（shared） | 型定義（234行）         |
+| `channels.ts`（preload）    | IPCチャンネル定義       |
 
 ### 型定義
 
-| 型名                 | 定義場所                                    | 説明                     |
-| -------------------- | ------------------------------------------- | ------------------------ |
-| `Conversation`       | `shared/types/conversation.ts`              | 会話エンティティ         |
-| `ConversationSummary`| `shared/types/conversation.ts`              | 一覧表示用サマリー       |
-| `Message`            | `shared/types/conversation.ts`              | メッセージエンティティ   |
-| `CreateConversationInput` | `shared/types/conversation.ts`         | 会話作成入力             |
-| `UpdateConversationInput` | `shared/types/conversation.ts`         | 会話更新入力             |
-| `AddMessageInput`    | `shared/types/conversation.ts`              | メッセージ追加入力       |
-| `ListConversationsOptions` | `shared/types/conversation.ts`        | 一覧取得オプション       |
-| `PaginatedResult<T>` | `shared/types/conversation.ts`              | ページネーション結果     |
+| 型名                       | 定義場所                       | 説明                   |
+| -------------------------- | ------------------------------ | ---------------------- |
+| `Conversation`             | `shared/types/conversation.ts` | 会話エンティティ       |
+| `ConversationSummary`      | `shared/types/conversation.ts` | 一覧表示用サマリー     |
+| `Message`                  | `shared/types/conversation.ts` | メッセージエンティティ |
+| `CreateConversationInput`  | `shared/types/conversation.ts` | 会話作成入力           |
+| `UpdateConversationInput`  | `shared/types/conversation.ts` | 会話更新入力           |
+| `AddMessageInput`          | `shared/types/conversation.ts` | メッセージ追加入力     |
+| `ListConversationsOptions` | `shared/types/conversation.ts` | 一覧取得オプション     |
+| `PaginatedResult<T>`       | `shared/types/conversation.ts` | ページネーション結果   |
 
 ### IPC APIチャンネル
 
-| チャンネル               | 引数                      | 戻り値                        | 説明               |
-| ------------------------ | ------------------------- | ----------------------------- | ------------------ |
-| `conversation:create`    | `CreateConversationInput` | `Conversation`                | 会話作成           |
-| `conversation:get`       | `id: string`              | `Conversation \| null`        | 会話取得           |
-| `conversation:list`      | `ListConversationsOptions`| `PaginatedResult<ConversationSummary>` | 一覧取得  |
-| `conversation:update`    | `id, UpdateConversationInput` | `Conversation`            | 会話更新           |
-| `conversation:delete`    | `id: string`              | `void`                        | 会話削除           |
-| `conversation:addMessage`| `id, AddMessageInput`     | `Message`                     | メッセージ追加     |
-| `conversation:search`    | `query: string, options`  | `PaginatedResult<ConversationSummary>` | 検索     |
+| チャンネル                | 引数                          | 戻り値                                 | 説明           |
+| ------------------------- | ----------------------------- | -------------------------------------- | -------------- |
+| `conversation:create`     | `CreateConversationInput`     | `Conversation`                         | 会話作成       |
+| `conversation:get`        | `id: string`                  | `Conversation \| null`                 | 会話取得       |
+| `conversation:list`       | `ListConversationsOptions`    | `PaginatedResult<ConversationSummary>` | 一覧取得       |
+| `conversation:update`     | `id, UpdateConversationInput` | `Conversation`                         | 会話更新       |
+| `conversation:delete`     | `id: string`                  | `void`                                 | 会話削除       |
+| `conversation:addMessage` | `id, AddMessageInput`         | `Message`                              | メッセージ追加 |
+| `conversation:search`     | `query: string, options`      | `PaginatedResult<ConversationSummary>` | 検索           |
 
 ### データフロー
 
@@ -882,15 +972,15 @@ Main Process (Electron)
 
 ### ConversationRepository API
 
-| メソッド        | 引数                          | 戻り値                              | 説明               |
-| --------------- | ----------------------------- | ----------------------------------- | ------------------ |
-| `create`        | `CreateConversationInput`     | `Conversation`                      | 会話作成           |
-| `findById`      | `id: string`                  | `Conversation \| null`              | ID検索             |
-| `findAll`       | `ListConversationsOptions`    | `PaginatedResult<ConversationSummary>` | 一覧取得        |
-| `update`        | `id, UpdateConversationInput` | `Conversation`                      | 更新               |
-| `delete`        | `id: string`                  | `void`                              | 削除               |
-| `addMessage`    | `conversationId, AddMessageInput` | `Message`                       | メッセージ追加     |
-| `search`        | `query: string, options`      | `PaginatedResult<ConversationSummary>` | 検索            |
+| メソッド     | 引数                              | 戻り値                                 | 説明           |
+| ------------ | --------------------------------- | -------------------------------------- | -------------- |
+| `create`     | `CreateConversationInput`         | `Conversation`                         | 会話作成       |
+| `findById`   | `id: string`                      | `Conversation \| null`                 | ID検索         |
+| `findAll`    | `ListConversationsOptions`        | `PaginatedResult<ConversationSummary>` | 一覧取得       |
+| `update`     | `id, UpdateConversationInput`     | `Conversation`                         | 更新           |
+| `delete`     | `id: string`                      | `void`                                 | 削除           |
+| `addMessage` | `conversationId, AddMessageInput` | `Message`                              | メッセージ追加 |
+| `search`     | `query: string, options`          | `PaginatedResult<ConversationSummary>` | 検索           |
 
 ### セキュリティ対策
 
@@ -900,12 +990,12 @@ Main Process (Electron)
 
 ### 品質メトリクス
 
-| 項目           | 値     |
-| -------------- | ------ |
-| テスト総数     | 114    |
-| カバレッジ（Line） | 100% |
-| カバレッジ（Branch）| 100% |
-| カバレッジ（Function）| 100% |
+| 項目                   | 値   |
+| ---------------------- | ---- |
+| テスト総数             | 114  |
+| カバレッジ（Line）     | 100% |
+| カバレッジ（Branch）   | 100% |
+| カバレッジ（Function） | 100% |
 
 ### 関連タスク
 
@@ -1062,11 +1152,11 @@ const EDITOR_OPTIONS: monaco.editor.IDiffEditorOptions = {
 
 ### Props定義
 
-| Prop       | 型                    | 必須 | 説明             |
-| ---------- | --------------------- | ---- | ---------------- |
-| `original` | `string`              | ✅   | 変更前コード     |
-| `modified` | `string`              | ✅   | 変更後コード     |
-| `language` | `string \| undefined` |      | 言語（自動検出） |
+| Prop       | 型                    | 必須 | 説明                    |
+| ---------- | --------------------- | ---- | ----------------------- |
+| `original` | `string`              | ✅   | 変更前コード            |
+| `modified` | `string`              | ✅   | 変更後コード            |
+| `language` | `string \| undefined` |      | 言語（自動検出）        |
 | `height`   | `string \| number`    |      | 高さ（デフォルト400px） |
 
 ### 言語自動検出パターン
@@ -1093,12 +1183,12 @@ const detectLanguage = (fileName: string): string => {
 
 ### アクセシビリティ対応
 
-| 要件           | 実装                                        |
-| -------------- | ------------------------------------------- |
-| キーボード操作 | Monaco内蔵（Ctrl+G ジャンプ、Ctrl+F 検索）  |
-| フォーカス管理 | モーダル開閉時にフォーカストラップ          |
-| スクリーンリーダー | aria-label="差分エディタ"              |
-| 色コントラスト | vs-darkテーマ（WCAG 2.1 AA準拠）            |
+| 要件               | 実装                                       |
+| ------------------ | ------------------------------------------ |
+| キーボード操作     | Monaco内蔵（Ctrl+G ジャンプ、Ctrl+F 検索） |
+| フォーカス管理     | モーダル開閉時にフォーカストラップ         |
+| スクリーンリーダー | aria-label="差分エディタ"                  |
+| 色コントラスト     | vs-darkテーマ（WCAG 2.1 AA準拠）           |
 
 ### モーダル統合パターン（DiffPreview）
 
@@ -1198,8 +1288,8 @@ describe("DiffEditor", () => {
 
 ### 変更履歴
 
-| Version | Date       | Changes                              |
-| ------- | ---------- | ------------------------------------ |
-| 1.0.0   | 2026-01-25 | Monaco Diff Editor統合パターン追加   |
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
+| 1.0.0   | 2026-01-25 | Monaco Diff Editor統合パターン追加 |
 
 ---

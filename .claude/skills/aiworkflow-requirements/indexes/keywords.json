@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-25T06:09:19.101Z",
-  "totalKeywords": 777,
+  "generated": "2026-01-25T11:00:36.651Z",
+  "totalKeywords": 791,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -497,6 +497,7 @@
       "interfaces-llm.md",
       "interfaces-system-prompt.md",
       "task-workflow.md",
+      "ui-ux-components.md",
       "ui-ux-search-panel.md"
     ],
     "変更履歴": [
@@ -715,20 +716,35 @@
       "architecture-patterns.md"
     ],
     "Workspace": [
-      "architecture-patterns.md"
+      "architecture-patterns.md",
+      "interfaces-llm.md"
     ],
     "Chat": [
       "architecture-patterns.md",
+      "interfaces-llm.md",
       "ui-ux-llm-selector.md"
     ],
     "Edit": [
-      "architecture-patterns.md"
+      "architecture-patterns.md",
+      "interfaces-llm.md"
     ],
     "状態管理": [
       "architecture-patterns.md",
       "architecture-rag.md",
       "claude-code-agents-workflow.md",
       "ui-ux-llm-selector.md"
+    ],
+    "Monaco": [
+      "architecture-patterns.md"
+    ],
+    "Diff": [
+      "architecture-patterns.md"
+    ],
+    "Editor": [
+      "architecture-patterns.md"
+    ],
+    "統合パターン": [
+      "architecture-patterns.md"
     ],
     "Knowledge": [
       "architecture-rag.md",
@@ -1431,7 +1447,8 @@
     ],
     "workspace": [
       "directory-structure.md",
-      "technology-core.md"
+      "technology-core.md",
+      "ui-ux-components.md"
     ],
     "Discord": [
       "discord-bot.md"
@@ -1689,6 +1706,9 @@
     "System": [
       "interfaces-agent-sdk.md"
     ],
+    "SkillExecutor": [
+      "interfaces-agent-sdk.md"
+    ],
     "残課題": [
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
@@ -1720,7 +1740,8 @@
       "interfaces-system-prompt.md"
     ],
     "サービスインターフェース": [
-      "interfaces-chat-history.md"
+      "interfaces-chat-history.md",
+      "interfaces-llm.md"
     ],
     "認可": [
       "interfaces-chat-history.md"
@@ -1873,6 +1894,21 @@
       "ui-ux-llm-selector.md"
     ],
     "ストリーミングレスポンス仕様": [
+      "interfaces-llm.md"
+    ],
+    "ファイル": [
+      "interfaces-llm.md"
+    ],
+    "path": [
+      "interfaces-llm.md"
+    ],
+    "to": [
+      "interfaces-llm.md"
+    ],
+    "file": [
+      "interfaces-llm.md"
+    ],
+    "ts": [
       "interfaces-llm.md"
     ],
     "チャンク・埋め込み型定義": [
@@ -2485,6 +2521,18 @@
       "ui-ux-components.md"
     ],
     "Custom": [
+      "ui-ux-components.md"
+    ],
+    "chat": [
+      "ui-ux-components.md"
+    ],
+    "edit": [
+      "ui-ux-components.md"
+    ],
+    "ui": [
+      "ui-ux-components.md"
+    ],
+    "Issue": [
       "ui-ux-components.md"
     ],
     "デザインシステム": [
