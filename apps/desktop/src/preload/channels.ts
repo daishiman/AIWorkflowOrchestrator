@@ -175,6 +175,9 @@ export const IPC_CHANNELS = {
   SKILL_REMOVE: "skill:remove",
   SKILL_GET_DETAIL: "skill:get-detail",
   SKILL_EXECUTE: "skill:execute",
+  SKILL_STREAM: "skill:stream",
+  SKILL_ABORT: "skill:abort",
+  SKILL_GET_STATUS: "skill:get-status",
 
   // History operations
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
@@ -358,6 +361,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_REMOVE,
   IPC_CHANNELS.SKILL_GET_DETAIL,
   IPC_CHANNELS.SKILL_EXECUTE,
+  IPC_CHANNELS.SKILL_ABORT,
+  IPC_CHANNELS.SKILL_GET_STATUS,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
@@ -440,4 +445,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   // Claude CLI streaming channels
   IPC_CHANNELS.CLAUDE_CLI_SESSION_OUTPUT,
   IPC_CHANNELS.CLAUDE_CLI_SESSION_STATUS,
+  // Skill streaming channels
+  IPC_CHANNELS.SKILL_STREAM,
 ];

@@ -8,10 +8,14 @@
 import { ipcMain, IpcMainInvokeEvent, BrowserWindow } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { SkillService } from "../services/skill/SkillService";
+import { SkillExecutor } from "../services/skill/SkillExecutor";
 import {
   validateIpcSender,
   toIPCValidationError,
 } from "../infrastructure/security/ipc-validator";
+
+// Module-level SkillExecutor instance for abort/getExecutionStatus
+let _skillExecutorInstance: SkillExecutor | null = null;
 
 /**
  * スキル管理IPCハンドラーを登録する
@@ -22,6 +26,8 @@ export function registerSkillHandlers(
   mainWindow: BrowserWindow,
   skillService: SkillService,
 ): void {
+  // Initialize SkillExecutor instance
+  _skillExecutorInstance = new SkillExecutor(mainWindow);
   // skill:list-available - 利用可能なスキルをスキャン
   ipcMain.handle(
     IPC_CHANNELS.SKILL_LIST_AVAILABLE,
@@ -195,16 +201,63 @@ export function registerSkillHandlers(
       }
     },
   );
+
+  // skill:abort - スキル実行の中断
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_ABORT,
+    async (event: IpcMainInvokeEvent, executionId: string) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_ABORT, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof executionId !== "string" || executionId === "") {
+        return false;
+      }
+      if (!_skillExecutorInstance) {
+        return false;
+      }
+      return _skillExecutorInstance.abort(executionId);
+    },
+  );
+
+  // skill:get-status - 実行状態の取得
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_GET_STATUS,
+    async (event: IpcMainInvokeEvent, executionId: string) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_GET_STATUS,
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof executionId !== "string" || executionId === "") {
+        return null;
+      }
+      if (!_skillExecutorInstance) {
+        return null;
+      }
+      return _skillExecutorInstance.getExecutionStatus(executionId) ?? null;
+    },
+  );
 }
 
 /**
  * スキル管理IPCハンドラーを解除する
  */
 export function unregisterSkillHandlers(): void {
+  _skillExecutorInstance = null;
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_LIST_AVAILABLE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_LIST_IMPORTED);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_REMOVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_DETAIL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_EXECUTE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_ABORT);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_STATUS);
 }

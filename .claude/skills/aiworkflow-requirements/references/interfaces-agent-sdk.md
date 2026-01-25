@@ -2928,7 +2928,7 @@ try {
 | メモリリーク防止       | 全てのケースでタイマーがクリアされる              |
 | 並行処理               | 複数リクエストを同時に管理可能（Map による O(1)） |
 
-### 関連ドキュメント（TASK-3-2）
+### 関連ドキュメント（TASK-3-2 PermissionResolver）
 
 | ドキュメント   | パス                                                                    |
 | -------------- | ----------------------------------------------------------------------- |
@@ -2938,7 +2938,158 @@ try {
 
 ---
 
+## SkillExecutor IPC統合（TASK-3-2）
+
+TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processにリアルタイムでストリーミング表示するためのIPC統合。
+
+### 概要
+
+| 項目 | 内容 |
+| ---- | ---- |
+| タスクID | TASK-3-2 |
+| 完了日 | 2026-01-25 |
+| ステータス | **完了** |
+| テスト数 | 138件（37 + 38 + 40 + 23） |
+| 発見課題 | 0件 |
+| ドキュメント | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
+
+### 実装内容
+
+#### Preload API（skillAPI）
+
+```typescript
+interface SkillAPI {
+  execute: (request: SkillExecutionRequest) => Promise<SkillExecutionResponse>;
+  onStream: (callback: (message: SkillStreamMessage) => void) => () => void;
+  abort: (executionId: string) => Promise<boolean>;
+  getExecutionStatus: (executionId: string) => Promise<ExecutionInfo | null>;
+}
+```
+
+| メソッド | 用途 |
+| -------- | ---- |
+| execute | スキル実行開始、executionIdを返す |
+| onStream | ストリームメッセージのリスナー登録 |
+| abort | 実行中のスキルを中断 |
+| getExecutionStatus | 実行状態を照会 |
+
+#### IPCチャンネル
+
+| チャンネル | 方向 | 用途 |
+| ---------- | ---- | ---- |
+| skill:execute | Renderer → Main | 実行開始 |
+| skill:stream | Main → Renderer | メッセージストリーム |
+| skill:abort | Renderer → Main | 実行中断 |
+| skill:get-status | Renderer → Main | ステータス照会 |
+
+#### React Hook（useSkillExecution）
+
+```typescript
+function useSkillExecution(skillId: string): UseSkillExecutionReturn;
+
+interface UseSkillExecutionReturn {
+  messages: SkillStreamMessage[];
+  status: ExecutionStatus;
+  executionId: string | null;
+  error: SkillExecutionError | null;
+  isAborting: boolean;
+  execute: (prompt: string) => Promise<SkillExecutionResponse | null>;
+  abort: () => Promise<void>;
+  reset: () => void;
+}
+
+type ExecutionStatus = "idle" | "running" | "completed" | "error" | "aborted";
+```
+
+#### UIコンポーネント（SkillStreamDisplay）
+
+| Prop | 型 | 説明 |
+| ---- | --- | ---- |
+| skillId | string | 実行対象スキルID |
+| initialPrompt | string? | 初期プロンプト |
+| autoExecute | boolean? | 自動実行フラグ |
+| onComplete | () => void | 完了コールバック |
+| onError | (error) => void | エラーコールバック |
+| onStatusChange | (status) => void | ステータス変更コールバック |
+| height | string \| number | 高さ |
+| className | string? | カスタムクラス |
+
+### 実装ファイル
+
+| ファイル | 行数 | 用途 |
+| -------- | ---- | ---- |
+| `apps/desktop/src/preload/skill-api.ts` | 101 | Preload API |
+| `apps/desktop/src/renderer/hooks/useSkillExecution.ts` | 198 | React Hook |
+| `apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx` | 223 | UIコンポーネント |
+
+### テストカバレッジ
+
+| メトリクス | 達成値 |
+| ---------- | ------ |
+| Line | 95.09% |
+| Branch | 88.46% |
+| Function | 100% |
+| Total Index | 283.55% |
+
+### 関連ドキュメント（TASK-3-2 IPC統合）
+
+| ドキュメント | パス |
+| ------------ | ---- |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
+| 実装ガイド | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
+| UIコンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md` |
+
+---
+
 ## 完了タスク
+
+### タスク: skillexecutor-ipc-integration（TASK-3-2、2026-01-25完了）
+
+| 項目         | 内容                                                       |
+| ------------ | ---------------------------------------------------------- |
+| タスクID     | TASK-3-2                                                   |
+| 完了日       | 2026-01-25                                                 |
+| ステータス   | **完了**                                                   |
+| テスト数     | 138（自動テスト）+ 12（手動テスト項目）                    |
+| 発見課題     | 0件                                                        |
+| ドキュメント | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/`|
+
+#### 実装内容
+
+- Preload API拡張（skillAPI.execute, onStream, abort, getExecutionStatus）
+- React Hook（useSkillExecution）
+- UIコンポーネント（SkillStreamDisplay）
+- アクセシビリティ対応（WCAG 2.1 AA準拠）
+
+#### 品質基準
+
+| 基準 | 結果 |
+| ---- | ---- |
+| TypeScript strict | PASS |
+| ESLint | PASS |
+| Prettier | PASS |
+| Line Coverage | 95.09% |
+| Branch Coverage | 88.46% |
+| Function Coverage | 100% |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 機能テスト         | 5        | 5    | 0    |
+| エラーハンドリング | 3        | 3    | 0    |
+| アクセシビリティ   | 4        | 4    | 0    |
+| 自動テスト（統合） | 138      | 138  | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-11/manual-test-result.md`  |
+| 発見課題リスト     | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-11/discovered-issues.md`   |
+| 実装ガイド         | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
+
+---
 
 ### タスク: skill-import-type-definitions（TASK-1-1、2026-01-23完了）
 
@@ -3544,6 +3695,7 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 | SkillExecutor実装ガイド（TASK-3-1-A）  | `docs/30-workflows/TASK-3-1-A-sdk-query/outputs/phase-12/implementation-guide.md`                       |
 | Hooks実装ガイド（TASK-3-1-B）          | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md`                           |
 | PermissionResolver実装ガイド（TASK-3-2） | `docs/30-workflows/TASK-3-2-permission-resolver/outputs/phase-12/implementation-guide.md`             |
+| SkillExecutor IPC統合実装ガイド（TASK-3-2） | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
 
 ---
 
@@ -3565,3 +3717,4 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 | 1.11.0     | 2026-01-25 | TASK-3-1-B型定義詳細追加（ErrorCategory、HooksStreamMessage、PreToolUseResult、メソッドシグネチャ、セキュリティ関数） |
 | 1.12.0     | 2026-01-25 | TASK-3-2（PermissionResolver実装）完了記録追加（42テスト、100%カバレッジ、タイムアウト/AbortSignal対応）              |
 | 1.13.0     | 2026-01-25 | PermissionResolver型定義セクション追加（アーキテクチャ図、API仕様、使用例、エラーメッセージ定義）                     |
+| 2.0.0      | 2026-01-25 | TASK-3-2（SkillExecutor IPC統合）完了記録追加（skillAPI, useSkillExecution, SkillStreamDisplay、138テスト）           |

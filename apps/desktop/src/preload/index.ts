@@ -496,6 +496,8 @@ import type {
   ConversationSearchRequest,
 } from "../shared/types/conversation";
 
+import { skillAPI, type SkillAPI } from "./skill-api";
+
 const conversationAPI: ConversationAPI = {
   list: (request: ConversationListRequest) =>
     safeInvoke(IPC_CHANNELS.CONVERSATION_LIST, request),
@@ -525,6 +527,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("claudeCliAPI", claudeCliAPI);
     contextBridge.exposeInMainWorld("systemPromptAPI", systemPromptAPI);
     contextBridge.exposeInMainWorld("conversationAPI", conversationAPI);
+    contextBridge.exposeInMainWorld("skillAPI", skillAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -544,4 +547,5 @@ if (process.contextIsolated) {
     systemPromptAPI;
   (window as unknown as { conversationAPI: ConversationAPI }).conversationAPI =
     conversationAPI;
+  (window as unknown as { skillAPI: SkillAPI }).skillAPI = skillAPI;
 }
