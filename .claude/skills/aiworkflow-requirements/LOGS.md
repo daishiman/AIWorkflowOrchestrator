@@ -484,4 +484,45 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## 2026-01-25: Hooks実装（TASK-3-1-B）
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-3-1-B                                                                                     |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | interfaces-agent-sdk.md、topic-map.md                                                          |
+| 結果         | success                                                                                        |
+| 備考         | PreToolUse/PostToolUse Hooks実装、73テスト、94.59%カバレッジ達成                               |
+
+### 更新詳細
+
+- **更新**: `references/interfaces-agent-sdk.md`（v1.9.0 → v1.10.0）
+  - 「タスク: skill-executor-hooks（TASK-3-1-B）」完了タスクセクション追加（約55行）
+  - 実装サマリー表（コード180行追加、6新規型）
+  - 機能一覧（Hooks生成、エラー分類、リトライ可能性判定、IPC配信）
+  - テスト結果（73テスト、94.59%カバレッジ）
+  - 主要メソッド（createHooks、categorizeError、isRetryable）
+  - 実装ガイドリンク追加
+  - 変更履歴にv1.10.0エントリ追加
+
+- **更新**: `indexes/topic-map.md`
+  - interfaces-agent-sdk.mdセクションに「Hooks実装（TASK-3-1-B）」エントリ追加（L3199）
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md`           |
+| タスク仕様書   | `docs/30-workflows/task-3-1-b-hooks/`                                                   |
+
+### テスト品質
+
+| 項目           | 値       |
+| -------------- | -------- |
+| テスト総数     | 73       |
+| カバレッジ     | 94.59%   |
+| 新規テスト     | 73       |
+
+---
+
 （ログエントリはここに追記されます）

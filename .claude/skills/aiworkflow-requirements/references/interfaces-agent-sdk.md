@@ -3196,6 +3196,98 @@ Claude Agent SDK の `query()` API を使用してスキルを実行し、スト
 
 ---
 
+### タスク: skill-executor-hooks（TASK-3-1-B、2026-01-25完了）
+
+| 項目         | 内容                                                   |
+| ------------ | ------------------------------------------------------ |
+| タスクID     | TASK-3-1-B                                             |
+| 完了日       | 2026-01-25                                             |
+| ステータス   | **完了**                                               |
+| テスト数     | 73件（hooks: 40, error: 28, performance: 5）           |
+| 発見課題     | 0件                                                    |
+| ドキュメント | `docs/30-workflows/task-3-1-b-hooks/`                  |
+
+#### 概要
+
+Claude Agent SDK の Hooks システム（PreToolUse/PostToolUse）を SkillExecutor に実装。セキュリティチェック、ツール実行通知、エラーハンドリングを提供。
+
+#### 実装内容
+
+| 項目           | 内容                                                    |
+| -------------- | ------------------------------------------------------- |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
+| コード追加行数 | 約180行（Hooks関連）                                    |
+| 新規型定義     | 6型（HooksStreamMessage、ErrorCategory、etc.）          |
+| 主要メソッド   | `createHooks()`, `categorizeError()`, `isRetryable()`   |
+
+#### 機能
+
+| 機能                     | 説明                                                   |
+| ------------------------ | ------------------------------------------------------ |
+| 危険コマンドブロック     | isDangerousCommand によるBashコマンドセキュリティチェック |
+| 保護パスブロック         | isProtectedPath による書き込み保護                     |
+| ツール実行通知           | tool_use/tool_result/statusメッセージをIPCで配信       |
+| エラーカテゴリ判定       | sdk_error/permission_denied/timeout/network/unknown    |
+| リトライ可能性判定       | network/timeout エラーはリトライ可能と判定             |
+
+#### 型定義
+
+```typescript
+/** エラーカテゴリ */
+type ErrorCategory =
+  | "sdk_error"        // Claude Agent SDK内部エラー
+  | "permission_denied" // 権限拒否（危険コマンド、保護パス）
+  | "timeout"          // タイムアウト（AbortError含む）
+  | "network"          // ネットワークエラー
+  | "unknown";         // その他のエラー
+
+/** Hooksストリームメッセージ（Discriminated Union） */
+type HooksStreamMessage =
+  | { executionId: string; type: "tool_use"; content: ToolUseContent; timestamp: number }
+  | { executionId: string; type: "tool_result"; content: ToolResultContent; timestamp: number }
+  | { executionId: string; type: "status"; content: StatusContent; timestamp: number }
+  | { executionId: string; type: "error"; content: ErrorContent; timestamp: number };
+
+/** PreToolUse結果 */
+type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
+```
+
+#### メソッドシグネチャ
+
+| メソッド | シグネチャ | 説明 |
+| -------- | ---------- | ---- |
+| `createHooks` | `(executionId: string) => { PreToolUse, PostToolUse }` | Hooksオブジェクト生成 |
+| `categorizeError` | `(error: unknown) => ErrorCategory` | エラーカテゴリ判定 |
+| `isRetryable` | `(error: unknown) => boolean` | リトライ可能性判定 |
+
+#### セキュリティチェック関数（@repo/shared）
+
+| 関数 | 用途 | ブロック例 |
+| ---- | ---- | ---------- |
+| `isDangerousCommand(cmd: string)` | 危険Bashコマンド検出 | `rm -rf /`, `sudo`, `chmod 777` |
+| `isProtectedPath(path: string)` | 保護パス検出 | `/etc/passwd`, `~/.ssh/` |
+
+#### 品質基準
+
+| 基準               | 結果    |
+| ------------------ | ------- |
+| TypeScript strict  | PASS    |
+| ESLint             | PASS    |
+| Prettier           | PASS    |
+| Branch Coverage    | 94.59%  |
+| パフォーマンス     | < 10ms  |
+
+#### 変更ファイル
+
+| ファイル                                                                       | 変更種別 |
+| ------------------------------------------------------------------------------ | -------- |
+| `apps/desktop/src/main/services/skill/SkillExecutor.ts`                        | 更新     |
+| `apps/desktop/src/main/services/skill/__tests__/hooks.test.ts`                 | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/error.test.ts`                 | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/performance.test.ts`           | 新規     |
+
+---
+
 ## 残課題（未タスク）
 
 | タスクID      | タスク名                  | 優先度 | 発見元                             | タスク仕様書                                                         |
@@ -3227,6 +3319,7 @@ Claude Agent SDK の `query()` API を使用してスキルを実行し、スト
 | SkillImportStore実装ガイド（TASK-2B）  | `docs/30-workflows/completed-tasks/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
 | セキュリティパターン定義（TASK-2C）    | `docs/30-workflows/completed-tasks/task-2c-security-patterns/outputs/phase-12-implementation-guide.md`  |
 | SkillExecutor実装ガイド（TASK-3-1-A）  | `docs/30-workflows/TASK-3-1-A-sdk-query/outputs/phase-12/implementation-guide.md`                       |
+| Hooks実装ガイド（TASK-3-1-B）          | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md`                           |
 
 ---
 
@@ -3244,3 +3337,5 @@ Claude Agent SDK の `query()` API を使用してスキルを実行し、スト
 | 1.7.0      | 2026-01-24 | TASK-2B（SkillImportStore）完了記録追加（59テスト、SEC-01対応、~95%カバレッジ）                                       |
 | 1.8.0      | 2026-01-24 | TASK-2C（セキュリティパターン定義）完了記録追加（102テスト、24危険パターン、25保護パス）                              |
 | 1.9.0      | 2026-01-25 | TASK-3-1-A（SkillExecutor SDK query()基本実装）完了記録追加（9型定義、execute/abort/ストリーミング実装）              |
+| 1.10.0     | 2026-01-25 | TASK-3-1-B（Hooks実装）完了記録追加（73テスト、createHooks/categorizeError/isRetryable実装、94.59%カバレッジ）        |
+| 1.11.0     | 2026-01-25 | TASK-3-1-B型定義詳細追加（ErrorCategory、HooksStreamMessage、PreToolUseResult、メソッドシグネチャ、セキュリティ関数） |

@@ -91,9 +91,10 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | ------------------------ | ------------------------------------ | -------------- | ---------------------------------------------- |
 | query() API基本実装      | ストリーミングメッセージ処理の基本   | Phase 1, 2     | query-api.md, agent-handler-template.ts        |
 | Hooks実装                | PreToolUse/PostToolUse/Permission    | Phase 2        | hooks-system.md                                |
+| Hooks Factory            | createHooks, セキュリティチェック    | Phase 2        | hooks-system.md（TASK-3-1-B）                  |
 | Permission Control設計   | 権限ルールの設計と実装               | Phase 1, 2     | permission-control.md                          |
 | Electron IPC統合         | Main-Renderer間のAgent通信           | Phase 2        | electron-ipc.md                                |
-| エラーハンドリング       | AbortSignal、タイムアウト、リトライ  | Phase 2        | error-handling.md                              |
+| エラーハンドリング       | AbortSignal、タイムアウト、リトライ  | Phase 2        | error-handling.md, hooks-system.md             |
 | MCP統合                  | MCPサーバーとの連携                  | Phase 2, 3     | mcp-integration.md                             |
 | セキュリティ設計         | サンドボックス、ホスティング         | Phase 2, 3     | security-sandboxing.md                         |
 
@@ -347,10 +348,26 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 | SkillExecutor      | `apps/desktop/src/main/slide/skill-executor.ts`                | フェーズマッピング、進捗コールバック |
 | 型定義             | `packages/shared/src/types/slide.ts`                           | SkillPhase, SkillExecutionResult |
 
+### TASK-3-1-B Hooks実装成果物
+
+| ドキュメント       | パス                                                                         | 説明                            |
+| ------------------ | ---------------------------------------------------------------------------- | ------------------------------- |
+| 実装ガイド         | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md` | createHooks, エラーハンドリング |
+| テスト仕様         | `apps/desktop/src/main/services/skill/__tests__/hooks.test.ts`               | PreToolUse/PostToolUseテスト    |
+| エラーテスト       | `apps/desktop/src/main/services/skill/__tests__/error.test.ts`               | categorizeError/isRetryable     |
+| システム仕様       | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`  | 型定義、メソッドシグネチャ      |
+
+### TASK-3-1-B実装ファイル
+
+| ファイル           | パス                                                           | 説明                                    |
+| ------------------ | -------------------------------------------------------------- | --------------------------------------- |
+| SkillExecutor      | `apps/desktop/src/main/services/skill/SkillExecutor.ts`        | createHooks, categorizeError, isRetryable |
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                    |
 | ------- | ---------- | ---------------------------------------------------------- |
+| 2.4.0   | 2026-01-25 | TASK-3-1-B Hooks実装パターン追加（createHooks, categorizeError, isRetryable, セキュリティチェック関数） |
 | 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加 |
 | 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正        |
 | 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携             |
