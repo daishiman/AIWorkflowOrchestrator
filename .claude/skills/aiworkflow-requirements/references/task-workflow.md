@@ -202,12 +202,14 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 
-| タスクID           | タスク名                          | 優先度 | 発見元                                          | タスク仕様書                                                                 |
-| ------------------ | --------------------------------- | ------ | ----------------------------------------------- | ---------------------------------------------------------------------------- |
-| SKILL-E2E-001      | スキルインポートE2Eテスト         | 中     | Phase 11（手動テスト検証）推奨事項              | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`         |
-| TSC-AUTOMATION-001 | Phase 12自動化スクリプト拡充      | 低     | skill-import-persistence-bugfix実施時           | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md`   |
-| UT-008             | Chat History UI Components        | 中     | Phase 12（UT-006完了後の後続タスク）            | `docs/30-workflows/unassigned-task/task-chat-history-ui-components.md`       |
-| UT-009             | Chat History Additional Use Cases | 中     | Phase 12（api-chat-history.md 未実装Use Cases） | `docs/30-workflows/unassigned-task/task-chat-history-additional-usecases.md` |
+| タスクID             | タスク名                           | 優先度 | 発見元                                          | タスク仕様書                                                                    |
+| -------------------- | ---------------------------------- | ------ | ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| TASK-3-1-B           | SkillExecutor IPC Handler統合      | 高     | TASK-3-1-A完了時（blocks）                      | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md` |
+| TASK-SKILL-PERF-TEST | SkillExecutor パフォーマンステスト | 低     | TASK-3-1-A Phase 11推奨事項                     | `docs/30-workflows/unassigned-task/task-skillexecutor-performance-testing.md`   |
+| SKILL-E2E-001        | スキルインポートE2Eテスト          | 中     | Phase 11（手動テスト検証）推奨事項              | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`            |
+| TSC-AUTOMATION-001   | Phase 12自動化スクリプト拡充       | 低     | skill-import-persistence-bugfix実施時           | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md`      |
+| UT-008               | Chat History UI Components         | 中     | Phase 12（UT-006完了後の後続タスク）            | `docs/30-workflows/unassigned-task/task-chat-history-ui-components.md`          |
+| UT-009               | Chat History Additional Use Cases  | 中     | Phase 12（api-chat-history.md 未実装Use Cases） | `docs/30-workflows/unassigned-task/task-chat-history-additional-usecases.md`    |
 
 ### 未タスク管理ルール
 
@@ -236,3 +238,4 @@ docs/30-workflows/{{機能名}}/task-step{{N}}-{{機能名}}.md
 | 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、未タスク2件（E2Eテスト、自動化拡充）登録                |
 | 1.3.0      | 2026-01-22 | task-specification-creator v7.6.0完了記録追加（Phase 12テンプレート強化）                 |
 | 1.4.0      | 2026-01-22 | 未タスク追加: UT-008 Chat History UI Components, UT-009 Chat History Additional Use Cases |
+| 1.5.0      | 2026-01-25 | 未タスク追加: TASK-3-1-B (IPC Handler統合), TASK-SKILL-PERF-TEST (パフォーマンステスト)   |

@@ -138,9 +138,22 @@ async function extractHeadings(filePath) {
     const content = await readFile(filePath, "utf-8");
     const lines = content.split("\n");
     const headings = [];
+    let inCodeBlock = false;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
+
+      // コードブロックの開始/終了を追跡
+      if (line.startsWith("```")) {
+        inCodeBlock = !inCodeBlock;
+        continue;
+      }
+
+      // コードブロック内の見出しはスキップ
+      if (inCodeBlock) {
+        continue;
+      }
+
       if (line.startsWith("## ")) {
         headings.push({
           level: 2,
@@ -227,7 +240,8 @@ node scripts/list-specs.mjs --topics
       if (headings.length > 0) {
         md += "| セクション | 行 |\n";
         md += "|------------|----|\\n";
-        for (const h of headings.filter((h) => h.level === 2).slice(0, 10)) {
+        // 最大20セクションまで表示（大規模ファイル対応）
+        for (const h of headings.filter((h) => h.level === 2).slice(0, 20)) {
           md += `| ${h.text} | L${h.line} |\n`;
         }
         md += "\n";

@@ -12,10 +12,10 @@
 
 Phase 12では以下の**2種類の更新アクション**があります。混同に注意してください。
 
-| アクション               | 必須 | 条件                             | 更新内容                 |
-| ------------------------ | ---- | -------------------------------- | ------------------------ |
-| **タスク完了記録の追加** | ✅   | **全タスクで必須**               | 完了セクションを仕様書に追加 |
-| システム仕様の更新       | △    | インターフェース変更がある場合のみ | 仕様内容の変更           |
+| アクション               | 必須 | 条件                               | 更新内容                     |
+| ------------------------ | ---- | ---------------------------------- | ---------------------------- |
+| **タスク完了記録の追加** | ✅   | **全タスクで必須**                 | 完了セクションを仕様書に追加 |
+| システム仕様の更新       | △    | インターフェース変更がある場合のみ | 仕様内容の変更               |
 
 ### 判断フローチャート（全体）
 
@@ -91,6 +91,53 @@ Phase 12 Task 2 開始
 | セキュリティ       | `references/security-*.md`                |
 | エラーハンドリング | `references/error-handling.md`            |
 | 新機能（要件追加） | 該当するreferences/ファイルまたは新規作成 |
+
+### ⚠️ 重要: 機能キーワードから仕様ファイルへのマッピング
+
+**タスク名やファイル名に含まれるキーワード**で正しい仕様ファイルを特定する。
+
+| 機能キーワード                                     | 正しい仕様ファイル                             | 注意点                                          |
+| -------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------- |
+| `conversation-history`, `chat-history`, `会話履歴` | `interfaces-chat-history.md`                   | ❌ `ui-ux-history-panel.md`はファイル変換履歴用 |
+| `file-conversion`, `converter`, `ファイル変換`     | `interfaces-converter.md`                      | UI側は`ui-ux-history-panel.md`                  |
+| `llm`, `streaming`, `LLM連携`                      | `interfaces-llm.md`                            | -                                               |
+| `auth`, `authentication`, `認証`                   | `interfaces-auth.md`                           | セキュリティ実装は`security-*.md`               |
+| `rag`, `retrieval`, `search`, `検索`               | `interfaces-rag.md`または`interfaces-rag-*.md` | 機能により細分化                                |
+| `skill`, `agent-sdk`, `スキル`                     | `interfaces-agent-sdk.md`                      | -                                               |
+| `system-prompt`, `システムプロンプト`              | `interfaces-system-prompt.md`                  | UI側は`ui-ux-system-prompt.md`                  |
+| `database`, `schema`, `DB`                         | `database-schema.md`                           | 実装詳細は`database-*.md`                       |
+| `security`, `セキュリティ`                         | `security-*.md`                                | 機能により細分化                                |
+| `api`, `endpoint`, `エンドポイント`                | `api-*.md`                                     | 機能により細分化                                |
+
+### 仕様ファイル特定フローチャート
+
+```
+[タスク名/機能名を確認]
+    ↓
+[キーワード抽出]
+  例: "conversation-history-ui-implementation"
+      → キーワード: "conversation", "history", "ui"
+    ↓
+[キーワードマッピング表で対象ファイル候補を特定]
+  "conversation-history" → interfaces-chat-history.md
+    ↓
+[候補ファイルの内容を確認]
+  ⚠️ ui-ux-history-panel.md の内容を確認
+     → "ファイル変換履歴" → 不一致 → 除外
+  ✅ interfaces-chat-history.md の内容を確認
+     → "会話履歴" → 一致 → 採用
+    ↓
+[正しいファイルに更新]
+```
+
+### 混同しやすい仕様ファイルの対照表
+
+| 混同しやすい組み合わせ         | 用途の違い                                                      |
+| ------------------------------ | --------------------------------------------------------------- |
+| `ui-ux-history-panel.md`       | **ファイル変換履歴**（ConversionLogs, VersionHistory, Restore） |
+| `interfaces-chat-history.md`   | **会話履歴**（Conversation, Message, ChatSession）              |
+| `architecture-chat-history.md` | **会話履歴のアーキテクチャ設計**                                |
+| `api-chat-history.md`          | **会話履歴APIエンドポイント**                                   |
 
 ### 具体的更新項目チェックリスト
 
