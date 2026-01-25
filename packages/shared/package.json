@@ -104,6 +104,10 @@
     "./constants": {
       "types": "./dist/src/constants/index.d.ts",
       "import": "./dist/src/constants/index.js"
+    },
+    "./src/ipc/channels": {
+      "types": "./dist/src/ipc/channels.d.ts",
+      "import": "./dist/src/ipc/channels.js"
     }
   },
   "scripts": {

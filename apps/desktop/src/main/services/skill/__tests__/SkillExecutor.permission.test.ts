@@ -139,7 +139,6 @@ describe("SkillExecutor - PermissionRequest Hook", () => {
       expect(mockPermissionResolver.waitForResponse).toHaveBeenCalledWith(
         expect.any(String), // requestId
         undefined, // AbortSignal
-        30000, // タイムアウト 30秒
       );
     });
 
@@ -163,7 +162,6 @@ describe("SkillExecutor - PermissionRequest Hook", () => {
       expect(mockPermissionResolver.waitForResponse).toHaveBeenCalledWith(
         expect.any(String),
         abortController.signal,
-        30000,
       );
     });
   });
@@ -1071,7 +1069,6 @@ describe("SkillExecutor - Integration Tests (Phase 6)", () => {
       expect(mockPermissionResolver.waitForResponse).toHaveBeenCalledWith(
         capturedRequestId,
         undefined,
-        30000,
       );
     });
 
@@ -1245,7 +1242,6 @@ describe("SkillExecutor - Integration Tests (Phase 6)", () => {
       expect(mockPermissionResolver.waitForResponse).toHaveBeenCalledWith(
         expect.any(String),
         undefined,
-        30000,
       );
 
       // 5. 結果が正しく返されることを確認

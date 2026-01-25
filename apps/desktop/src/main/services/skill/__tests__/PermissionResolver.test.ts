@@ -1,11 +1,14 @@
 /**
  * PermissionResolver Unit Tests
  *
- * TASK-3-1-C: PermissionRequest Hook 統合
- * Phase 6: テスト拡充 - PermissionResolver の直接テスト
+ * TASK-3-2: PermissionResolver 実装
+ * Phase 4: テスト作成（TDD: Red）
+ *
+ * 権限確認リクエストの待機・解決を管理するクラスのテスト
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type { SkillPermissionResponse } from "@repo/shared";
 import { PermissionResolver } from "../PermissionResolver";
 
 describe("PermissionResolver", () => {
@@ -13,349 +16,668 @@ describe("PermissionResolver", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
-    resolver = new PermissionResolver(30000); // 30秒タイムアウト
+    resolver = new PermissionResolver();
   });
 
   afterEach(() => {
-    vi.useRealTimers();
+    // クリーンアップ: 保留中のリクエストをすべてキャンセル
     resolver.cancelAll();
+    vi.useRealTimers();
   });
 
-  // =================================================================
-  // 基本機能テスト
-  // =================================================================
+  describe("constructor", () => {
+    it("should use default timeout of 300000ms (5 minutes)", async () => {
+      const requestId = "test-default-timeout";
 
-  describe("基本機能", () => {
-    it("should resolve request when response is received", async () => {
-      const requestId = "test-request-123";
+      const waitPromise = resolver.waitForResponse(requestId);
 
-      // 待機開始
-      const responsePromise = resolver.waitForResponse(requestId);
-
-      // 応答を送信
-      resolver.resolveRequest({
-        requestId,
-        approved: true,
-      });
-
-      // 待機が解決される
-      const response = await responsePromise;
-      expect(response.approved).toBe(true);
-      expect(response.requestId).toBe(requestId);
-    });
-
-    it("should reject request with rejectReason", async () => {
-      const requestId = "test-request-456";
-
-      const responsePromise = resolver.waitForResponse(requestId);
-
-      resolver.resolveRequest({
-        requestId,
-        approved: false,
-        rejectReason: "ユーザーにより拒否されました",
-      });
-
-      const response = await responsePromise;
-      expect(response.approved).toBe(false);
-      expect(response.rejectReason).toBe("ユーザーにより拒否されました");
-    });
-
-    it("should pass rememberChoice flag", async () => {
-      const requestId = "test-request-789";
-
-      const responsePromise = resolver.waitForResponse(requestId);
-
-      resolver.resolveRequest({
-        requestId,
-        approved: true,
-        rememberChoice: true,
-      });
-
-      const response = await responsePromise;
-      expect(response.rememberChoice).toBe(true);
-    });
-
-    it("should track pending count correctly", () => {
-      expect(resolver.pendingCount).toBe(0);
-
-      void resolver.waitForResponse("req-1");
+      // 4分59秒経過 - まだタイムアウトしない
+      vi.advanceTimersByTime(299999);
       expect(resolver.pendingCount).toBe(1);
 
-      void resolver.waitForResponse("req-2");
-      expect(resolver.pendingCount).toBe(2);
+      // 5分経過 - タイムアウト
+      vi.advanceTimersByTime(1);
 
-      resolver.resolveRequest({ requestId: "req-1", approved: true });
-      expect(resolver.pendingCount).toBe(1);
-
-      resolver.resolveRequest({ requestId: "req-2", approved: false });
+      await expect(waitPromise).rejects.toThrow("timed out");
       expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should use custom timeout when provided", async () => {
+      const customResolver = new PermissionResolver(1000); // 1秒
+      const requestId = "test-custom-timeout";
+
+      const waitPromise = customResolver.waitForResponse(requestId);
+
+      // 999ms経過 - まだタイムアウトしない
+      vi.advanceTimersByTime(999);
+      expect(customResolver.pendingCount).toBe(1);
+
+      // 1秒経過 - タイムアウト
+      vi.advanceTimersByTime(1);
+
+      await expect(waitPromise).rejects.toThrow("timed out");
+      expect(customResolver.pendingCount).toBe(0);
     });
   });
 
-  // =================================================================
-  // タイムアウトテスト
-  // =================================================================
-
-  describe("タイムアウト", () => {
-    it("should reject on timeout", async () => {
-      const requestId = "timeout-test";
-      const timeout = 1000;
-
-      const responsePromise = resolver.waitForResponse(
+  describe("waitForResponse", () => {
+    it("should resolve when resolveRequest is called", async () => {
+      const requestId = "test-request-1";
+      const response: SkillPermissionResponse = {
         requestId,
-        undefined,
-        timeout,
-      );
+        approved: true,
+        rememberChoice: false,
+      };
 
-      // タイムアウトまで進める
-      vi.advanceTimersByTime(timeout + 100);
+      const waitPromise = resolver.waitForResponse(requestId);
+      expect(resolver.pendingCount).toBe(1);
 
-      await expect(responsePromise).rejects.toThrow(
+      // 非同期でレスポンスを送信
+      queueMicrotask(() => {
+        resolver.resolveRequest(response);
+      });
+
+      const result = await waitPromise;
+      expect(result).toEqual(response);
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should timeout after default timeout", async () => {
+      const requestId = "test-request-timeout";
+
+      const waitPromise = resolver.waitForResponse(requestId);
+
+      // 5分経過
+      vi.advanceTimersByTime(300000);
+
+      await expect(waitPromise).rejects.toThrow(
         `Permission request timed out: ${requestId}`,
       );
-    });
-
-    it("should use default timeout when not specified", async () => {
-      const requestId = "default-timeout-test";
-
-      const responsePromise = resolver.waitForResponse(requestId);
-
-      // デフォルトタイムアウト（30秒）まで進める
-      vi.advanceTimersByTime(30001);
-
-      await expect(responsePromise).rejects.toThrow("timed out");
-    });
-
-    it("should clear pending on timeout", async () => {
-      const requestId = "timeout-clear-test";
-
-      expect(resolver.pendingCount).toBe(0);
-
-      const responsePromise = resolver.waitForResponse(
-        requestId,
-        undefined,
-        1000,
-      );
-      expect(resolver.pendingCount).toBe(1);
-
-      vi.advanceTimersByTime(1001);
-
-      try {
-        await responsePromise;
-      } catch {
-        // Expected
-      }
-
       expect(resolver.pendingCount).toBe(0);
     });
-  });
 
-  // =================================================================
-  // AbortSignalテスト
-  // =================================================================
+    it("should include requestId in timeout error message", async () => {
+      const requestId = "unique-request-id-12345";
 
-  describe("AbortSignal", () => {
+      const waitPromise = resolver.waitForResponse(requestId);
+      vi.advanceTimersByTime(300000);
+
+      await expect(waitPromise).rejects.toThrow(requestId);
+    });
+
     it("should reject when signal is aborted", async () => {
-      const requestId = "abort-test";
-      const abortController = new AbortController();
+      const requestId = "test-request-abort";
+      const controller = new AbortController();
 
-      const responsePromise = resolver.waitForResponse(
+      const waitPromise = resolver.waitForResponse(
         requestId,
-        abortController.signal,
-      );
-
-      // 中断
-      abortController.abort();
-
-      await expect(responsePromise).rejects.toThrow(
-        `Permission request aborted: ${requestId}`,
-      );
-    });
-
-    it("should reject immediately if signal is already aborted", async () => {
-      const requestId = "pre-abort-test";
-      const abortController = new AbortController();
-      abortController.abort(); // 事前に中断
-
-      const responsePromise = resolver.waitForResponse(
-        requestId,
-        abortController.signal,
-      );
-
-      await expect(responsePromise).rejects.toThrow(
-        `Permission request aborted: ${requestId}`,
-      );
-
-      // 保留中に追加されないことを確認
-      expect(resolver.pendingCount).toBe(0);
-    });
-
-    it("should clear pending on abort", async () => {
-      const requestId = "abort-clear-test";
-      const abortController = new AbortController();
-
-      expect(resolver.pendingCount).toBe(0);
-
-      const responsePromise = resolver.waitForResponse(
-        requestId,
-        abortController.signal,
+        controller.signal,
       );
       expect(resolver.pendingCount).toBe(1);
 
-      abortController.abort();
+      controller.abort();
 
-      try {
-        await responsePromise;
-      } catch {
-        // Expected
-      }
+      await expect(waitPromise).rejects.toThrow(
+        `Permission request aborted: ${requestId}`,
+      );
+      expect(resolver.pendingCount).toBe(0);
+    });
 
+    it("should reject immediately when signal is already aborted", async () => {
+      const requestId = "test-pre-aborted";
+      const controller = new AbortController();
+      controller.abort();
+
+      const waitPromise = resolver.waitForResponse(
+        requestId,
+        controller.signal,
+      );
+
+      await expect(waitPromise).rejects.toThrow("aborted");
+    });
+
+    it("should handle multiple concurrent requests independently", async () => {
+      const requestId1 = "concurrent-1";
+      const requestId2 = "concurrent-2";
+
+      const waitPromise1 = resolver.waitForResponse(requestId1);
+      const waitPromise2 = resolver.waitForResponse(requestId2);
+      expect(resolver.pendingCount).toBe(2);
+
+      // 最初のリクエストのみ解決
+      const response1: SkillPermissionResponse = {
+        requestId: requestId1,
+        approved: true,
+      };
+      resolver.resolveRequest(response1);
+
+      const result1 = await waitPromise1;
+      expect(result1.approved).toBe(true);
+      expect(resolver.pendingCount).toBe(1);
+
+      // 2番目のリクエストはまだ待機中
+      const response2: SkillPermissionResponse = {
+        requestId: requestId2,
+        approved: false,
+      };
+      resolver.resolveRequest(response2);
+
+      const result2 = await waitPromise2;
+      expect(result2.approved).toBe(false);
       expect(resolver.pendingCount).toBe(0);
     });
   });
 
-  // =================================================================
-  // キャンセルテスト
-  // =================================================================
+  describe("resolveRequest", () => {
+    it("should resolve pending request with correct response", async () => {
+      const requestId = "test-resolve";
+      const response: SkillPermissionResponse = {
+        requestId,
+        approved: false,
+        rejectReason: "User denied",
+      };
 
-  describe("キャンセル", () => {
-    it("should cancel specific request", async () => {
-      const requestId = "cancel-test";
+      const waitPromise = resolver.waitForResponse(requestId);
+      resolver.resolveRequest(response);
 
-      const responsePromise = resolver.waitForResponse(requestId);
-
-      resolver.cancelRequest(requestId, "キャンセルされました");
-
-      await expect(responsePromise).rejects.toThrow("キャンセルされました");
+      const result = await waitPromise;
+      expect(result.approved).toBe(false);
+      expect(result.rejectReason).toBe("User denied");
     });
 
-    it("should use default message when no reason provided", async () => {
-      const requestId = "cancel-default-test";
+    it("should do nothing for unknown requestId", () => {
+      const response: SkillPermissionResponse = {
+        requestId: "unknown-id",
+        approved: true,
+      };
 
-      const responsePromise = resolver.waitForResponse(requestId);
+      // 例外が発生しないことを確認
+      expect(() => {
+        resolver.resolveRequest(response);
+      }).not.toThrow();
+      expect(resolver.pendingCount).toBe(0);
+    });
 
+    it("should clear timeout when resolved", async () => {
+      const requestId = "test-clear-timeout";
+      const response: SkillPermissionResponse = {
+        requestId,
+        approved: true,
+      };
+
+      const waitPromise = resolver.waitForResponse(requestId);
+      resolver.resolveRequest(response);
+
+      await waitPromise;
+
+      // タイムアウト後もエラーにならない（タイマーがクリアされている）
+      vi.advanceTimersByTime(300000);
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should not resolve the same request twice", async () => {
+      const requestId = "test-double-resolve";
+      const response1: SkillPermissionResponse = {
+        requestId,
+        approved: true,
+      };
+      const response2: SkillPermissionResponse = {
+        requestId,
+        approved: false,
+      };
+
+      const waitPromise = resolver.waitForResponse(requestId);
+      resolver.resolveRequest(response1);
+
+      const result = await waitPromise;
+      expect(result.approved).toBe(true);
+
+      // 2回目の解決は何もしない（エラーにならない）
+      expect(() => {
+        resolver.resolveRequest(response2);
+      }).not.toThrow();
+    });
+  });
+
+  describe("cancelRequest", () => {
+    it("should reject pending request with reason", async () => {
+      const requestId = "test-cancel";
+
+      const waitPromise = resolver.waitForResponse(requestId);
+      resolver.cancelRequest(requestId, "User cancelled");
+
+      await expect(waitPromise).rejects.toThrow("User cancelled");
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should use default message when reason is not provided", async () => {
+      const requestId = "test-cancel-default";
+
+      const waitPromise = resolver.waitForResponse(requestId);
       resolver.cancelRequest(requestId);
 
-      await expect(responsePromise).rejects.toThrow(
-        `Permission request cancelled: ${requestId}`,
+      await expect(waitPromise).rejects.toThrow(
+        `Request cancelled: ${requestId}`,
       );
     });
 
+    it("should do nothing for unknown requestId", () => {
+      expect(() => {
+        resolver.cancelRequest("unknown-id");
+      }).not.toThrow();
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should clear timeout when cancelled", async () => {
+      const requestId = "test-cancel-timeout";
+
+      const waitPromise = resolver.waitForResponse(requestId);
+      resolver.cancelRequest(requestId);
+
+      await expect(waitPromise).rejects.toThrow();
+
+      // タイムアウト後も追加のエラーが発生しない
+      vi.advanceTimersByTime(300000);
+      expect(resolver.pendingCount).toBe(0);
+    });
+  });
+
+  describe("cancelAll", () => {
     it("should cancel all pending requests", async () => {
-      const promises = [
-        resolver.waitForResponse("cancel-all-1"),
-        resolver.waitForResponse("cancel-all-2"),
-        resolver.waitForResponse("cancel-all-3"),
-      ];
+      const requestId1 = "cancel-all-1";
+      const requestId2 = "cancel-all-2";
+      const requestId3 = "cancel-all-3";
+
+      const waitPromise1 = resolver.waitForResponse(requestId1);
+      const waitPromise2 = resolver.waitForResponse(requestId2);
+      const waitPromise3 = resolver.waitForResponse(requestId3);
 
       expect(resolver.pendingCount).toBe(3);
 
       resolver.cancelAll();
 
+      await expect(waitPromise1).rejects.toThrow();
+      await expect(waitPromise2).rejects.toThrow();
+      await expect(waitPromise3).rejects.toThrow();
       expect(resolver.pendingCount).toBe(0);
+    });
 
-      // 全てが拒否されることを確認
-      for (const promise of promises) {
-        await expect(promise).rejects.toThrow("cancelled");
-      }
+    it("should work when no pending requests", () => {
+      expect(resolver.pendingCount).toBe(0);
+      expect(() => {
+        resolver.cancelAll();
+      }).not.toThrow();
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should clear all timeouts", async () => {
+      const p1 = resolver.waitForResponse("cancel-timeout-1");
+      const p2 = resolver.waitForResponse("cancel-timeout-2");
+
+      resolver.cancelAll();
+
+      // Promiseをハンドル（Unhandled Rejection防止）
+      await expect(p1).rejects.toThrow("cancelled");
+      await expect(p2).rejects.toThrow("cancelled");
+
+      // タイムアウト後も追加のエラーが発生しない
+      vi.advanceTimersByTime(300000);
+      expect(resolver.pendingCount).toBe(0);
     });
   });
 
-  // =================================================================
-  // エッジケーステスト
-  // =================================================================
-
-  describe("エッジケース", () => {
-    it("should ignore resolve for non-existent request", () => {
-      // 存在しないリクエストIDで呼び出してもエラーにならない
-      expect(() => {
-        resolver.resolveRequest({
-          requestId: "non-existent",
-          approved: true,
-        });
-      }).not.toThrow();
+  describe("pendingCount", () => {
+    it("should return 0 initially", () => {
+      expect(resolver.pendingCount).toBe(0);
     });
 
-    it("should ignore cancel for non-existent request", () => {
-      expect(() => {
-        resolver.cancelRequest("non-existent");
-      }).not.toThrow();
+    it("should return correct count after adding requests", async () => {
+      const p1 = resolver.waitForResponse("count-1");
+      expect(resolver.pendingCount).toBe(1);
+
+      const p2 = resolver.waitForResponse("count-2");
+      expect(resolver.pendingCount).toBe(2);
+
+      const p3 = resolver.waitForResponse("count-3");
+      expect(resolver.pendingCount).toBe(3);
+
+      // クリーンアップ（Unhandled Rejection防止）
+      resolver.cancelAll();
+      await expect(p1).rejects.toThrow();
+      await expect(p2).rejects.toThrow();
+      await expect(p3).rejects.toThrow();
     });
 
-    it("should handle multiple resolves for same request", async () => {
-      const requestId = "double-resolve-test";
+    it("should decrease when request is resolved", async () => {
+      const requestId = "count-resolve";
+      const waitPromise = resolver.waitForResponse(requestId);
+      expect(resolver.pendingCount).toBe(1);
 
-      const responsePromise = resolver.waitForResponse(requestId);
-
-      // 最初の解決
       resolver.resolveRequest({
         requestId,
         approved: true,
       });
 
-      const response = await responsePromise;
-      expect(response.approved).toBe(true);
-
-      // 2回目の解決は無視される
-      expect(() => {
-        resolver.resolveRequest({
-          requestId,
-          approved: false,
-        });
-      }).not.toThrow();
+      await waitPromise;
+      expect(resolver.pendingCount).toBe(0);
     });
 
-    it("should handle concurrent requests independently", async () => {
-      const promises = [
-        resolver.waitForResponse("concurrent-1"),
-        resolver.waitForResponse("concurrent-2"),
-        resolver.waitForResponse("concurrent-3"),
-      ];
+    it("should decrease when request is cancelled", async () => {
+      const requestId = "count-cancel";
+      const waitPromise = resolver.waitForResponse(requestId);
+      expect(resolver.pendingCount).toBe(1);
 
-      // 順番を変えて解決
-      resolver.resolveRequest({ requestId: "concurrent-2", approved: false });
-      resolver.resolveRequest({ requestId: "concurrent-3", approved: true });
-      resolver.resolveRequest({ requestId: "concurrent-1", approved: true });
+      resolver.cancelRequest(requestId);
 
-      const results = await Promise.all(promises);
+      await expect(waitPromise).rejects.toThrow("cancelled");
+      expect(resolver.pendingCount).toBe(0);
+    });
 
-      expect(results[0].approved).toBe(true);
-      expect(results[1].approved).toBe(false);
-      expect(results[2].approved).toBe(true);
+    it("should decrease when request times out", async () => {
+      const waitPromise = resolver.waitForResponse("count-timeout");
+      expect(resolver.pendingCount).toBe(1);
+
+      vi.advanceTimersByTime(300000);
+
+      await expect(waitPromise).rejects.toThrow("timed out");
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should return 0 after cancelAll", async () => {
+      const p1 = resolver.waitForResponse("count-all-1");
+      const p2 = resolver.waitForResponse("count-all-2");
+      expect(resolver.pendingCount).toBe(2);
+
+      resolver.cancelAll();
+
+      await expect(p1).rejects.toThrow("cancelled");
+      await expect(p2).rejects.toThrow("cancelled");
+      expect(resolver.pendingCount).toBe(0);
     });
   });
 
-  // =================================================================
-  // コンストラクタテスト
-  // =================================================================
+  describe("memory management", () => {
+    it("should clean up resources after resolve", async () => {
+      const requestId = "memory-resolve";
+      const waitPromise = resolver.waitForResponse(requestId);
 
-  describe("コンストラクタ", () => {
-    it("should use custom default timeout", async () => {
-      const customResolver = new PermissionResolver(5000);
-      const requestId = "custom-timeout-test";
+      resolver.resolveRequest({ requestId, approved: true });
+      await waitPromise;
 
-      const responsePromise = customResolver.waitForResponse(requestId);
-
-      // カスタムタイムアウト（5秒）まで進める
-      vi.advanceTimersByTime(5001);
-
-      await expect(responsePromise).rejects.toThrow("timed out");
-
-      customResolver.cancelAll();
+      // リソースがクリーンアップされている
+      expect(resolver.pendingCount).toBe(0);
     });
 
-    it("should use default timeout of 300000ms when not specified", async () => {
-      const defaultResolver = new PermissionResolver();
-      const requestId = "default-300s-test";
+    it("should clean up resources after timeout", async () => {
+      const waitPromise = resolver.waitForResponse("memory-timeout");
 
-      const responsePromise = defaultResolver.waitForResponse(requestId);
+      vi.advanceTimersByTime(300000);
 
-      // 5分（300秒）より少し進める
-      vi.advanceTimersByTime(300001);
+      // タイムアウトでrejectされることを確認（Unhandled Rejection防止）
+      await expect(waitPromise).rejects.toThrow("timed out");
+      expect(resolver.pendingCount).toBe(0);
+    });
 
-      await expect(responsePromise).rejects.toThrow("timed out");
+    it("should clean up resources after abort", async () => {
+      const controller = new AbortController();
+      const waitPromise = resolver.waitForResponse(
+        "memory-abort",
+        controller.signal,
+      );
 
-      defaultResolver.cancelAll();
+      controller.abort();
+
+      // abortでrejectされることを確認（Unhandled Rejection防止）
+      await expect(waitPromise).rejects.toThrow("aborted");
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should clean up resources after cancel", async () => {
+      const waitPromise = resolver.waitForResponse("memory-cancel");
+      resolver.cancelRequest("memory-cancel");
+
+      // cancelでrejectされることを確認（Unhandled Rejection防止）
+      await expect(waitPromise).rejects.toThrow("cancelled");
+      expect(resolver.pendingCount).toBe(0);
+    });
+  });
+});
+
+/**
+ * Phase 6: テスト拡充 - エッジケースと並行処理テスト
+ */
+describe("PermissionResolver - Edge Cases", () => {
+  let resolver: PermissionResolver;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    resolver = new PermissionResolver();
+  });
+
+  afterEach(() => {
+    resolver.cancelAll();
+    vi.useRealTimers();
+  });
+
+  describe("duplicate requestId handling", () => {
+    it("should handle same requestId called twice (Map overwrite)", async () => {
+      const requestId = "dup-request-1";
+
+      // 最初のリクエスト
+      const promise1 = resolver.waitForResponse(requestId);
+
+      // 同じ requestId で2回目を呼ぶ（上書き）
+      const promise2 = resolver.waitForResponse(requestId);
+
+      expect(resolver.pendingCount).toBe(1); // Map なので1つ
+
+      // 解決
+      resolver.resolveRequest({
+        requestId,
+        approved: true,
+      });
+
+      // 後から登録した promise2 が解決される
+      await expect(promise2).resolves.toEqual({
+        requestId,
+        approved: true,
+      });
+
+      // promise1 はタイムアウトまで待機（クリーンアップ）
+      vi.advanceTimersByTime(300000);
+      await expect(promise1).rejects.toThrow("timed out");
+    });
+
+    it("should allow new waitForResponse after resolve", async () => {
+      const requestId = "reuse-request-1";
+
+      // 1回目
+      const promise1 = resolver.waitForResponse(requestId);
+      resolver.resolveRequest({ requestId, approved: true });
+      await promise1;
+
+      // 2回目（同じ requestId）
+      const promise2 = resolver.waitForResponse(requestId);
+      expect(resolver.pendingCount).toBe(1);
+
+      resolver.resolveRequest({ requestId, approved: false });
+      const result = await promise2;
+      expect(result.approved).toBe(false);
+    });
+  });
+
+  describe("extreme timeout values", () => {
+    it("should handle zero timeout", async () => {
+      const zeroTimeoutResolver = new PermissionResolver(0);
+      const requestId = "zero-timeout-1";
+
+      const promise = zeroTimeoutResolver.waitForResponse(requestId);
+
+      vi.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow("timed out");
+    });
+
+    it("should handle very short timeout (1ms)", async () => {
+      const shortResolver = new PermissionResolver(1);
+      const requestId = "short-timeout-1";
+
+      const promise = shortResolver.waitForResponse(requestId);
+
+      vi.advanceTimersByTime(1);
+
+      await expect(promise).rejects.toThrow("timed out");
+    });
+  });
+
+  describe("concurrent requests", () => {
+    it("should handle multiple concurrent requests", async () => {
+      const requests = ["req-a", "req-b", "req-c", "req-d", "req-e"];
+      const promises = requests.map((id) => resolver.waitForResponse(id));
+
+      expect(resolver.pendingCount).toBe(5);
+
+      // 順番に解決
+      for (const id of requests) {
+        resolver.resolveRequest({ requestId: id, approved: true });
+      }
+
+      const results = await Promise.all(promises);
+      expect(results.every((r) => r.approved)).toBe(true);
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should cancel only specified requests", async () => {
+      const promise1 = resolver.waitForResponse("keep-1");
+      const promise2 = resolver.waitForResponse("cancel-1");
+      const promise3 = resolver.waitForResponse("keep-2");
+
+      expect(resolver.pendingCount).toBe(3);
+
+      resolver.cancelRequest("cancel-1");
+
+      await expect(promise2).rejects.toThrow("cancelled");
+      expect(resolver.pendingCount).toBe(2);
+
+      // 残りを解決
+      resolver.resolveRequest({ requestId: "keep-1", approved: true });
+      resolver.resolveRequest({ requestId: "keep-2", approved: true });
+
+      await expect(promise1).resolves.toBeDefined();
+      await expect(promise3).resolves.toBeDefined();
+    });
+
+    it("should resolve requests in any order", async () => {
+      const promise1 = resolver.waitForResponse("order-1");
+      const promise2 = resolver.waitForResponse("order-2");
+      const promise3 = resolver.waitForResponse("order-3");
+
+      // 順番を変えて解決
+      resolver.resolveRequest({ requestId: "order-3", approved: true });
+      resolver.resolveRequest({ requestId: "order-1", approved: false });
+      resolver.resolveRequest({ requestId: "order-2", approved: true });
+
+      const [r1, r2, r3] = await Promise.all([promise1, promise2, promise3]);
+
+      expect(r1.approved).toBe(false);
+      expect(r2.approved).toBe(true);
+      expect(r3.approved).toBe(true);
+    });
+  });
+
+  describe("extended memory management", () => {
+    it("should not leak timers after resolve", async () => {
+      const requestId = "timer-test-1";
+      const promise = resolver.waitForResponse(requestId);
+
+      resolver.resolveRequest({ requestId, approved: true });
+      await promise;
+
+      // タイムアウト時間経過後もエラーにならない
+      vi.advanceTimersByTime(300000);
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should not leak timers after cancel", async () => {
+      const requestId = "timer-test-2";
+      const promise = resolver.waitForResponse(requestId);
+
+      resolver.cancelRequest(requestId);
+      await expect(promise).rejects.toThrow("cancelled");
+
+      // タイムアウト時間経過後も追加エラーにならない
+      vi.advanceTimersByTime(300000);
+      expect(resolver.pendingCount).toBe(0);
+    });
+
+    it("should handle many requests without leaking", async () => {
+      const requestCount = 100;
+      const promises: Promise<SkillPermissionResponse>[] = [];
+
+      // 多数のリクエストを作成
+      for (let i = 0; i < requestCount; i++) {
+        promises.push(resolver.waitForResponse(`batch-${i}`));
+      }
+
+      expect(resolver.pendingCount).toBe(requestCount);
+
+      // 全てキャンセル
+      resolver.cancelAll();
+
+      // 全Promiseのrejectを待機（Unhandled Rejection防止）
+      for (const p of promises) {
+        await expect(p).rejects.toThrow("cancelled");
+      }
+
+      expect(resolver.pendingCount).toBe(0);
+    });
+  });
+
+  describe("AbortSignal edge cases", () => {
+    it("should handle already aborted signal", async () => {
+      const controller = new AbortController();
+      controller.abort(); // 事前に abort
+
+      const promise = resolver.waitForResponse("pre-abort", controller.signal);
+
+      await expect(promise).rejects.toThrow("aborted");
+    });
+
+    it("should not affect other requests when one is aborted", async () => {
+      const controller = new AbortController();
+
+      const promise1 = resolver.waitForResponse(
+        "abort-test-1",
+        controller.signal,
+      );
+      const promise2 = resolver.waitForResponse("abort-test-2");
+
+      controller.abort();
+
+      await expect(promise1).rejects.toThrow("aborted");
+      expect(resolver.pendingCount).toBe(1);
+
+      resolver.resolveRequest({ requestId: "abort-test-2", approved: true });
+      await expect(promise2).resolves.toBeDefined();
+    });
+
+    it("should handle multiple requests with same AbortController", async () => {
+      const controller = new AbortController();
+
+      const promise1 = resolver.waitForResponse(
+        "multi-abort-1",
+        controller.signal,
+      );
+      const promise2 = resolver.waitForResponse(
+        "multi-abort-2",
+        controller.signal,
+      );
+
+      controller.abort();
+
+      await expect(promise1).rejects.toThrow("aborted");
+      await expect(promise2).rejects.toThrow("aborted");
+      expect(resolver.pendingCount).toBe(0);
     });
   });
 });
