@@ -3,7 +3,7 @@
   "taskName": "Renderer側権限ダイアログUI実装",
   "githubIssue": 509,
   "branch": "feature/task-3-1-d-permission-dialog-ui",
-  "status": "specification-complete",
+  "status": "pr-ready",
   "createdAt": "2026-01-25",
   "phases": [
     {
@@ -210,7 +210,19 @@
       "phase": 13,
       "name": "PR作成",
       "file": "phase-13-pr-creation.md",
-      "status": "pending"
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": [
+        "outputs/phase-13/pr-url.md",
+        "outputs/phase-13/completion-report.md"
+      ],
+      "prResult": {
+        "commitHash": "ce5e02f2",
+        "branchPushed": true,
+        "prCreated": false,
+        "prCreationMode": "manual",
+        "status": "READY"
+      }
     }
   ],
   "deliverables": {
