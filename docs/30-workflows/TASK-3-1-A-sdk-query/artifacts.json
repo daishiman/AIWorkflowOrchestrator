@@ -1,0 +1,134 @@
+{
+  "taskId": "TASK-3-1-A",
+  "taskName": "SDK query() 基本実装",
+  "createdAt": "2026-01-24T00:00:00Z",
+  "completedAt": "2026-01-25T14:00:00Z",
+  "status": "completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-25T00:30:00Z",
+      "artifacts": ["outputs/phase-1/requirements-definition.md"]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-25T01:00:00Z",
+      "artifacts": ["outputs/phase-2/architecture-design.md"]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-25T01:30:00Z",
+      "artifacts": ["outputs/phase-3/review-result.md"],
+      "result": "PASS"
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-25T02:00:00Z",
+      "artifacts": ["outputs/phase-4/test-list.md"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-25T02:30:00Z",
+      "artifacts": [
+        "apps/desktop/src/main/services/skill/SkillExecutor.ts",
+        "apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-25T13:00:00Z",
+      "artifacts": [
+        "outputs/phase-6/additional-tests.md",
+        "outputs/phase-6/coverage-report.md"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-25T13:15:00Z",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md"
+      ],
+      "result": "PASS",
+      "coverage": {
+        "line": 95.83,
+        "branch": 86.95,
+        "function": 100
+      }
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-25T13:30:00Z",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-25T13:45:00Z",
+      "artifacts": ["outputs/phase-9/quality-report.md"],
+      "result": "PASS"
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-25T13:50:00Z",
+      "artifacts": ["outputs/phase-10/final-review-result.md"],
+      "result": "PASS"
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-01-25T13:55:00Z",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ],
+      "result": "PASS",
+      "discoveredIssues": 0
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-25T14:00:00Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ],
+      "unassignedTasks": 0
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "completed",
+      "completedAt": "2026-01-25T14:40:00Z",
+      "artifacts": [
+        "https://github.com/daishiman/AIWorkflowOrchestrator/pull/492"
+      ],
+      "prUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/492"
+    }
+  },
+  "dependencies": {
+    "dependsOn": ["TASK-2A", "TASK-2C"],
+    "blocks": ["TASK-3-1-B"]
+  },
+  "metadata": {
+    "tier": 1,
+    "priority": "high",
+    "estimatedComplexity": "medium",
+    "tags": ["backend", "main-process", "service", "sdk-integration"]
+  },
+  "testResults": {
+    "totalTests": 62,
+    "passed": 62,
+    "failed": 0,
+    "duration": "~2s"
+  }
+}
