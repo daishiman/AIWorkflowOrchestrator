@@ -226,6 +226,12 @@ export const IPC_CHANNELS = {
   CONVERSATION_DELETE: "conversation:delete",
   CONVERSATION_ADD_MESSAGE: "conversation:addMessage",
   CONVERSATION_SEARCH: "conversation:search",
+
+  // Chat Edit operations
+  CHAT_EDIT_READ_FILE: "chat-edit:read-file",
+  CHAT_EDIT_WRITE_FILE: "chat-edit:write-file",
+  CHAT_EDIT_GET_SELECTION: "chat-edit:get-selection",
+  CHAT_EDIT_SEND_WITH_CONTEXT: "chat-edit:send-with-context",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -394,6 +400,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.CONVERSATION_DELETE,
   IPC_CHANNELS.CONVERSATION_ADD_MESSAGE,
   IPC_CHANNELS.CONVERSATION_SEARCH,
+  // Chat Edit channels
+  IPC_CHANNELS.CHAT_EDIT_READ_FILE,
+  IPC_CHANNELS.CHAT_EDIT_WRITE_FILE,
+  IPC_CHANNELS.CHAT_EDIT_GET_SELECTION,
+  IPC_CHANNELS.CHAT_EDIT_SEND_WITH_CONTEXT,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

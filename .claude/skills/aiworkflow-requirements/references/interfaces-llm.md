@@ -552,7 +552,252 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 
 ---
 
+## Workspace Chat Edit サービスインターフェース
+
+> **実装**: `apps/desktop/src/main/services/chat-edit/`
+> **IPCハンドラー**: `apps/desktop/src/main/ipc/chatEditHandlers.ts`
+> **テスト**: `apps/desktop/src/main/services/chat-edit/__tests__/`
+> **詳細ガイド**: `docs/30-workflows/workspace-chat-edit-main-process/outputs/phase-12/implementation-guide.md`
+
+### 概要
+
+AIによるコード編集支援機能のMain Process側サービス。ファイルI/O、コンテキスト構築、LLM統合を担当する。
+
+### FileService
+
+ファイル読み書きと言語検出を担当するサービス。
+
+#### インターフェース
+
+```typescript
+interface IFileService {
+  readFile(filePath: string): Promise<FileReadResult>;
+  writeFile(
+    filePath: string,
+    content: string,
+    options?: FileWriteOptions
+  ): Promise<FileWriteResult>;
+  detectLanguage(filePath: string): string;
+  createBackup(filePath: string): Promise<string>;
+}
+```
+
+#### 型定義
+
+| 型名             | 説明                               |
+| ---------------- | ---------------------------------- |
+| FileReadResult   | ファイル読み取り結果（success/error/content/language/fileSize） |
+| FileWriteResult  | ファイル書き込み結果（success/error/backupPath） |
+| FileWriteOptions | 書き込みオプション（createBackup） |
+| FileReadError    | 読み取りエラー（code/message）     |
+| FileWriteError   | 書き込みエラー（code/message）     |
+
+#### エラーコード
+
+| コード            | 説明                       | Retryable |
+| ----------------- | -------------------------- | --------- |
+| FILE_NOT_FOUND    | ファイルが存在しない       | No        |
+| TOO_LARGE         | ファイルサイズ超過（10MB） | No        |
+| PERMISSION_DENIED | 読み書き権限なし           | No        |
+| INVALID_PATH      | 無効なパス・パストラバーサル検出 | No   |
+
+#### 定数
+
+| 定数名        | 値     | 説明             |
+| ------------- | ------ | ---------------- |
+| MAX_FILE_SIZE | 10MB   | ファイルサイズ上限 |
+
+### ContextBuilder
+
+LLM向けコンテキスト文字列の構築を担当するサービス。
+
+#### インターフェース
+
+```typescript
+interface IContextBuilder {
+  build(contexts: FileContextInput[]): string;
+  calculateSize(contexts: FileContextInput[]): number;
+  validateSize(contexts: FileContextInput[]): boolean;
+}
+```
+
+#### 型定義
+
+| 型名             | 説明                               |
+| ---------------- | ---------------------------------- |
+| FileContextInput | ファイルコンテキスト入力（filePath/content/selection/language） |
+
+#### 定数
+
+| 定数名           | 値     | 説明                   |
+| ---------------- | ------ | ---------------------- |
+| MAX_CONTEXT_SIZE | 100KB  | コンテキストサイズ上限 |
+| MAX_FILE_CONTEXTS| 10     | 最大添付ファイル数     |
+
+#### コンテキスト出力形式
+
+```markdown
+## ファイル: path/to/file.ts
+言語: typescript
+行数: 100
+
+### 選択範囲（10-20行目）
+```typescript
+// 選択されたコード
+```
+
+### 全体コンテンツ
+```typescript
+// ファイル全体
+```
+```
+
+### ChatEditService
+
+LLM統合のFacadeサービス。プロンプト構築とレスポンス解析を担当。
+
+#### インターフェース
+
+```typescript
+interface IChatEditService {
+  sendWithContext(
+    request: SendWithContextRequest
+  ): Promise<SendWithContextResponse>;
+  buildPrompt(command: EditCommand, context: string): string;
+  parseResponse(
+    response: string,
+    command: EditCommand,
+    originalContent: string,
+    filePath: string
+  ): GeneratedResult;
+}
+```
+
+#### 型定義
+
+| 型名                    | 説明                               |
+| ----------------------- | ---------------------------------- |
+| SendWithContextRequest  | リクエスト（contexts/command/message/options） |
+| SendWithContextResponse | レスポンス（success/result/error） |
+| EditCommand             | 編集コマンド（type/targetContextId/instruction） |
+| GeneratedResult         | 生成結果（id/originalContent/generatedContent/diffHunks/status） |
+| DiffHunk                | 差分ハンク（oldStart/oldLines/newStart/newLines/lines） |
+
+#### EditCommand.type
+
+| 値            | 説明                     |
+| ------------- | ------------------------ |
+| continue      | コードの続きを生成       |
+| refactor      | リファクタリング         |
+| generate-test | テストコード生成         |
+| add-comment   | コメント追加             |
+| custom        | カスタム指示（instruction使用） |
+
+#### エラーコード
+
+| コード            | 説明                       | Retryable |
+| ----------------- | -------------------------- | --------- |
+| CONTEXT_TOO_LARGE | コンテキストサイズ超過     | No        |
+| INVALID_COMMAND   | 無効なコマンドタイプ       | No        |
+| LLM_ERROR         | LLM APIエラー              | Yes       |
+| TIMEOUT           | タイムアウト               | Yes       |
+| RATE_LIMIT        | レート制限                 | Yes       |
+
+### IPCチャンネル
+
+| チャネル                    | 方向            | Request                        | Response                    |
+| --------------------------- | --------------- | ------------------------------ | --------------------------- |
+| `chat-edit:read-file`       | Renderer → Main | `{ filePath: string }`         | `IPCResponse<FileReadResult>` |
+| `chat-edit:write-file`      | Renderer → Main | `{ filePath, content }`        | `IPCResponse<FileWriteResult>` |
+| `chat-edit:get-selection`   | Renderer → Main | なし                           | `IPCResponse<TextSelection>` |
+| `chat-edit:send-with-context` | Renderer → Main | `SendWithContextRequest`     | `IPCResponse<GeneratedResult>` |
+
+### セキュリティ
+
+#### IPC Sender検証
+
+すべてのハンドラで`validateIpcSender`を使用してリクエスト元を検証。
+
+```typescript
+const validation = validateIpcSender(
+  event.sender,
+  event.senderFrame,
+  "chat-edit:read-file"
+);
+if (!validation.valid) {
+  throw toIPCValidationError(validation);
+}
+```
+
+#### パストラバーサル防止
+
+```typescript
+import { detectTraversal, validateFilePath } from "./utils/PathValidator";
+
+if (detectTraversal(filePath)) {
+  return { success: false, error: { code: "INVALID_PATH", message: "Path traversal detected" } };
+}
+```
+
+### ディレクトリ構成
+
+```
+apps/desktop/src/main/services/chat-edit/
+├── __tests__/
+│   ├── ChatEditService.test.ts
+│   ├── ChatEditService.edge.test.ts
+│   ├── ContextBuilder.test.ts
+│   ├── ContextBuilder.edge.test.ts
+│   ├── FileService.test.ts
+│   ├── FileService.edge.test.ts
+│   └── integration.test.ts
+├── utils/
+│   ├── PathValidator.ts
+│   ├── ErrorMapper.ts
+│   └── index.ts
+├── ChatEditService.ts
+├── ContextBuilder.ts
+├── FileService.ts
+├── prompts.ts
+├── types.ts
+└── index.ts
+```
+
+### 品質メトリクス
+
+| 指標              | 値       |
+| ----------------- | -------- |
+| Line Coverage     | 92.55%   |
+| Branch Coverage   | 92.85%   |
+| 自動テスト        | 164件    |
+| 手動テスト項目    | 23件     |
+
+---
+
 ## 完了タスク
+
+### Workspace Chat Edit Main Process（TASK-WCE-MAIN-001）- 2026-01-25完了
+
+| 項目         | 内容                                                           |
+| ------------ | -------------------------------------------------------------- |
+| タスクID     | TASK-WCE-MAIN-001                                              |
+| Issue        | #469                                                           |
+| 完了日       | 2026-01-25                                                     |
+| ステータス   | **完了**                                                       |
+| 実装内容     | FileService, ContextBuilder, ChatEditService, chatEditHandlers |
+| テスト数     | 164（自動）+ 23（手動検証項目）                                |
+| カバレッジ   | Line 92.55%, Branch 92.85%                                     |
+| ドキュメント | `docs/30-workflows/workspace-chat-edit-main-process/`          |
+
+#### 成果物
+
+| 成果物             | パス                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| 実装ガイド         | `docs/30-workflows/workspace-chat-edit-main-process/outputs/phase-12/implementation-guide.md` |
+| テスト結果レポート | `docs/30-workflows/workspace-chat-edit-main-process/outputs/phase-11/manual-test-result.md`   |
+| QAレポート         | `docs/30-workflows/workspace-chat-edit-main-process/outputs/phase-9/qa-report.md`             |
+
+---
 
 **タスク: LLMストリーミングレスポンス（UT-LLM-STREAM-001）** - 2026-01-24完了
 
@@ -651,5 +896,6 @@ Embedding生成プロバイダーの共通インターフェース。モデルID
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
+| 1.2.0   | 2026-01-25 | Workspace Chat Edit サービスインターフェース追加（FileService, ContextBuilder, ChatEditService） |
 | 1.1.0   | 2026-01-24 | LLMストリーミングレスポンス仕様セクション追加（SSEフロー、型定義、キャンセル機構、アクセシビリティ） |
 | 1.0.0   | 2026-01-24 | LLMストリーミングレスポンス完了（手動テスト19項目全PASS、自動テスト129件全PASS、発見課題0件） |
