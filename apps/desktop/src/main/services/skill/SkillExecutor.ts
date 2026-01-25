@@ -13,6 +13,11 @@ import { v4 as uuidv4 } from "uuid";
 import type { BrowserWindow } from "electron";
 import type { Skill } from "@repo/shared";
 import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
+import { SKILL_CHANNELS } from "@repo/shared";
+import {
+  PermissionResolver,
+  type PermissionResponse,
+} from "./PermissionResolver";
 
 // =================================================================
 // SkillExecutor専用の型定義
@@ -195,6 +200,27 @@ const MAX_CONCURRENT_EXECUTIONS = 5;
 /** 履歴保持期間（ミリ秒）- クリーンアップまでの待機時間 */
 const HISTORY_RETENTION_MS = 60000;
 
+/** 機密情報として除去するキーのパターン */
+const SENSITIVE_KEY_PATTERNS = [
+  "password",
+  "passwd",
+  "pwd",
+  "secret",
+  "token",
+  "bearer",
+  "key",
+  "apikey",
+  "api_key",
+  "credential",
+  "auth",
+  "access_token",
+  "refresh_token",
+  "private_key",
+] as const;
+
+/** 権限リクエストのデフォルトタイムアウト（ミリ秒） */
+const PERMISSION_REQUEST_TIMEOUT_MS = 30000;
+
 // =================================================================
 // SDK型定義（実際のSDKから取得）
 // =================================================================
@@ -243,9 +269,11 @@ export class SkillExecutor {
   private activeExecutions: Map<string, ExecutionContext> = new Map();
   private readonly maxConcurrentExecutions: number = MAX_CONCURRENT_EXECUTIONS;
   private readonly defaultTimeout: number = DEFAULT_TIMEOUT_MS;
+  private permissionResolver: PermissionResolver;
 
   constructor(mainWindow: BrowserWindow) {
     this.mainWindow = mainWindow;
+    this.permissionResolver = new PermissionResolver();
   }
 
   /**
@@ -881,5 +909,213 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
       }
     }
     return false;
+  }
+
+  // =================================================================
+  // Permission Request 関連メソッド（TASK-3-1-C）
+  // =================================================================
+
+  /**
+   * 引数をサニタイズする
+   *
+   * 機密情報を除去し、長文を省略する。
+   * Renderer に送信される権限リクエストの引数に使用。
+   *
+   * @param args - サニタイズ対象の引数
+   * @param depth - 現在の再帰深度（内部用）
+   * @returns サニタイズされた引数
+   */
+  sanitizeArgs(
+    args: Record<string, unknown>,
+    depth: number = 0,
+  ): Record<string, unknown> {
+    // 深度制限（循環参照対策）
+    const MAX_DEPTH = 10;
+    if (depth >= MAX_DEPTH) {
+      return { _truncated: "[深度制限超過]" };
+    }
+
+    const sanitized: Record<string, unknown> = {};
+
+    for (const [key, value] of Object.entries(args)) {
+      // 機密キーの除去（大文字小文字を区別しない）
+      const keyLower = key.toLowerCase();
+      if (SENSITIVE_KEY_PATTERNS.some((k) => keyLower.includes(k))) {
+        sanitized[key] = "[REDACTED]";
+        continue;
+      }
+
+      // null/undefined はそのまま
+      if (value === null || value === undefined) {
+        sanitized[key] = value;
+        continue;
+      }
+
+      // 文字列の長文省略
+      if (typeof value === "string") {
+        if (value.length > 500) {
+          const omittedCount = value.length - 500;
+          sanitized[key] =
+            `${value.substring(0, 500)}...[省略: ${omittedCount}文字]`;
+        } else {
+          sanitized[key] = value;
+        }
+        continue;
+      }
+
+      // 配列の処理
+      if (Array.isArray(value)) {
+        sanitized[key] = value.map((item) => {
+          if (typeof item === "object" && item !== null) {
+            return this.sanitizeArgs(
+              item as Record<string, unknown>,
+              depth + 1,
+            );
+          }
+          return item;
+        });
+        continue;
+      }
+
+      // オブジェクトの再帰処理
+      if (typeof value === "object") {
+        sanitized[key] = this.sanitizeArgs(
+          value as Record<string, unknown>,
+          depth + 1,
+        );
+        continue;
+      }
+
+      // その他（数値、真偽値など）はそのまま
+      sanitized[key] = value;
+    }
+
+    return sanitized;
+  }
+
+  /**
+   * 権限リクエストの理由を生成する
+   *
+   * ツール名と引数から、ユーザーに分かりやすい日本語の理由文を生成。
+   *
+   * @param toolName - ツール名
+   * @param args - ツール引数
+   * @returns 理由文字列
+   */
+  getPermissionReason(toolName: string, args: Record<string, unknown>): string {
+    const MAX_REASON_LENGTH = 150;
+
+    switch (toolName) {
+      case "Bash": {
+        const command = (args.command as string) || "";
+        if (!command) {
+          return "Bash コマンドを実行";
+        }
+        const truncated =
+          command.length > 100 ? `${command.substring(0, 100)}...` : command;
+        const reason = `コマンドを実行: ${truncated}`;
+        return reason.length > MAX_REASON_LENGTH
+          ? `${reason.substring(0, MAX_REASON_LENGTH)}...`
+          : reason;
+      }
+
+      case "Write": {
+        const path = (args.file_path as string) || (args.path as string) || "";
+        return `ファイルを作成: ${path}`;
+      }
+
+      case "Edit": {
+        const path = (args.file_path as string) || (args.path as string) || "";
+        return `ファイルを編集: ${path}`;
+      }
+
+      case "Read": {
+        const path = (args.file_path as string) || (args.path as string) || "";
+        return `ファイルを読み取り: ${path}`;
+      }
+
+      case "Glob": {
+        const pattern = (args.pattern as string) || "";
+        return `ファイルを検索: ${pattern}`;
+      }
+
+      case "Grep": {
+        const pattern = (args.pattern as string) || "";
+        return `テキストを検索: ${pattern}`;
+      }
+
+      case "Task": {
+        const desc = (args.description as string) || "";
+        const truncated =
+          desc.length > 50 ? `${desc.substring(0, 50)}...` : desc;
+        return `サブタスクを実行: ${truncated}`;
+      }
+
+      default:
+        return `${toolName} を実行`;
+    }
+  }
+
+  /**
+   * 権限応答を処理する
+   *
+   * Renderer から IPC 経由で受け取った権限応答を PermissionResolver に渡す。
+   *
+   * @param requestId - リクエストID
+   * @param approved - 承認されたか
+   * @param rememberChoice - 選択を記憶するか（オプション）
+   * @param rejectReason - 拒否理由（オプション）
+   */
+  handlePermissionResponse(
+    requestId: string,
+    approved: boolean,
+    rememberChoice?: boolean,
+    rejectReason?: string,
+  ): void {
+    this.permissionResolver.resolveRequest({
+      requestId,
+      approved,
+      rememberChoice,
+      rejectReason,
+    });
+  }
+
+  /**
+   * 権限リクエストを送信し、応答を待機する
+   *
+   * @param executionId - 実行ID
+   * @param toolName - ツール名
+   * @param args - ツール引数
+   * @param signal - AbortSignal
+   * @returns 権限応答
+   */
+  async sendPermissionRequest(
+    executionId: string,
+    toolName: string,
+    args: Record<string, unknown>,
+    signal?: AbortSignal,
+  ): Promise<PermissionResponse> {
+    const requestId = uuidv4();
+
+    // Renderer に権限リクエストを送信
+    if (!this.mainWindow.isDestroyed()) {
+      this.mainWindow.webContents.send(
+        SKILL_CHANNELS.SKILL_PERMISSION_REQUEST,
+        {
+          executionId,
+          requestId,
+          toolName,
+          args: this.sanitizeArgs(args),
+          reason: this.getPermissionReason(toolName, args),
+        },
+      );
+    }
+
+    // 応答を待機
+    return this.permissionResolver.waitForResponse(
+      requestId,
+      signal,
+      PERMISSION_REQUEST_TIMEOUT_MS,
+    );
   }
 }
