@@ -1,0 +1,38 @@
+{
+  "taskId": "TASK-3-2",
+  "title": "PermissionResolver 実装",
+  "createdAt": "2026-01-25",
+  "currentPhase": 0,
+  "phases": {
+    "1": { "status": "pending", "artifacts": [] },
+    "2": { "status": "pending", "artifacts": [] },
+    "3": { "status": "pending", "artifacts": [] },
+    "4": { "status": "pending", "artifacts": [] },
+    "5": { "status": "pending", "artifacts": [] },
+    "6": { "status": "pending", "artifacts": [] },
+    "7": { "status": "pending", "artifacts": [] },
+    "8": { "status": "pending", "artifacts": [] },
+    "9": { "status": "pending", "artifacts": [] },
+    "10": { "status": "pending", "artifacts": [] },
+    "11": { "status": "pending", "artifacts": [] },
+    "12": { "status": "pending", "artifacts": [] },
+    "13": { "status": "pending", "artifacts": [] }
+  },
+  "outputFiles": [
+    {
+      "path": "apps/desktop/src/main/services/skill/PermissionResolver.ts",
+      "status": "pending",
+      "description": "PermissionResolver クラス本体"
+    },
+    {
+      "path": "apps/desktop/src/main/services/skill/__tests__/PermissionResolver.test.ts",
+      "status": "pending",
+      "description": "単体テストファイル"
+    },
+    {
+      "path": "apps/desktop/src/main/services/skill/index.ts",
+      "status": "pending",
+      "description": "エクスポート追加（修正）"
+    }
+  ]
+}
