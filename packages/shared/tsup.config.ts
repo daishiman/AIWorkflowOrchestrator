@@ -15,6 +15,7 @@ export default defineConfig({
     "schemas/auth.ts",
     "src/types/index.ts",
     "src/types/skill.ts",
+    "src/types/skill-execution.ts",
     "src/types/replace.ts",
     "src/types/agent.ts",
     "src/types/agent-execution.ts",

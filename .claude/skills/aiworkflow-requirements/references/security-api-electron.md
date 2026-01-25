@@ -470,6 +470,83 @@ function safeOn<T>(channel: string, callback: (data: T) => void): () => void {
 
 ---
 
+### Skill Execution Preload API セキュリティ
+
+**実装場所**: `apps/desktop/src/preload/skill-api.ts`
+
+Renderer ProcessからSkillExecutor機能にアクセスするためのPreload APIにおけるセキュリティ実装。
+
+**ホワイトリストパターン**:
+
+Claude CLI Renderer APIと同様に、すべてのIPC呼び出しは`safeInvoke`/`safeOn`関数でラップされ、ホワイトリスト検証を行う。
+
+| 機能                   | 実装                               | 効果                       |
+| ---------------------- | ---------------------------------- | -------------------------- |
+| チャンネルホワイトリスト | `SKILL_INVOKE_CHANNELS`配列      | 未許可チャンネルを拒否     |
+| イベントホワイトリスト   | `SKILL_ON_CHANNELS`配列          | 未許可イベントを拒否       |
+| contextBridge          | `exposeInMainWorld('skillApi')`  | window直接割り当て禁止     |
+| 型安全性               | TypeScript + SkillStreamChunk型  | 型チェックによる安全性     |
+
+**IPCチャンネルセキュリティ**:
+
+| チャンネル         | 方向                | 検証項目                               |
+| ------------------ | ------------------- | -------------------------------------- |
+| `skill:execute`    | Renderer → Main     | ホワイトリスト検証、スキル名検証       |
+| `skill:abort`      | Renderer → Main     | ホワイトリスト検証、セッションID検証   |
+| `skill:get-status` | Renderer → Main     | ホワイトリスト検証、セッションID検証   |
+| `skill:stream`     | Main → Renderer     | イベントホワイトリスト検証、chunk型検証 |
+
+**スキル実行セキュリティレイヤー**:
+
+| レイヤー           | 検証内容                                 | 実装箇所                 |
+| ------------------ | ---------------------------------------- | ------------------------ |
+| Preload API        | チャンネルホワイトリスト                 | skill-api.ts             |
+| Main Process       | スキル存在確認、実行権限                 | skill-ipc-handler.ts     |
+| SkillExecutor      | 危険パターン、禁止パス、許可ツール       | security-skill-execution |
+
+**ストリーミングセキュリティ**:
+
+```typescript
+// skill:stream イベントの型検証
+interface SkillStreamChunk {
+  sessionId: string;
+  type: 'output' | 'status' | 'error' | 'complete';
+  data: unknown;
+  timestamp: number;
+}
+```
+
+| チェック項目         | 実装                               | エラー時の挙動             |
+| -------------------- | ---------------------------------- | -------------------------- |
+| セッションID検証     | UUIDv4形式チェック                 | ストリームを無視           |
+| チャンク型検証       | type属性の列挙値チェック           | unknownとして処理          |
+| タイムスタンプ検証   | 数値型チェック                     | 現在時刻を使用             |
+
+**React Hook セキュリティ統合**:
+
+`useSkillExecution` Hookは以下のセキュリティ機能を提供:
+
+| 機能               | 実装                                   | 効果                         |
+| ------------------ | -------------------------------------- | ---------------------------- |
+| 自動クリーンアップ | useEffect cleanup                      | メモリリーク防止             |
+| エラーバウンダリ   | try-catch + setError                   | UIクラッシュ防止             |
+| 中断処理           | AbortController連携                    | リソース解放保証             |
+| 状態整合性         | useRef + isExecuting状態管理           | 競合状態防止                 |
+
+**テストカバレッジ**:
+
+| テストカテゴリ             | テスト数 | セキュリティ関連 |
+| -------------------------- | -------- | ---------------- |
+| Preload API単体テスト      | 37       | ✅               |
+| useSkillExecution Hook     | 38       | ✅               |
+| SkillStreamDisplay         | 40       | ✅               |
+| 統合テスト                 | 23       | ✅               |
+| **合計**                   | **138**  | ✅               |
+
+**関連タスク**: TASK-3-2 SkillExecutor IPC Handler Integration（2026-01-25完了）
+
+---
+
 ## 関連ドキュメント
 
 - [セキュリティ実装概要](./security-implementation.md)

@@ -161,12 +161,12 @@ node scripts/list-specs.mjs --topics
 | Environment Backend サービス（Desktop Main Process） | L75 |
 | Zustand Sliceパターン（Desktop） | L141 |
 | スキル管理サービス（Desktop Main Process） | L235 |
-| Claude Code CLI連携パターン（Desktop Main Process） | L523 |
-| IPC Handler Registration Pattern（Desktop Main Process） | L620 |
-| Claude CLI Renderer API（Preload API） | L704 |
-| 会話履歴永続化パターン（Desktop Main Process） | L906 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L1006 |
-| Monaco Diff Editor統合パターン（Desktop Renderer） | L1089 |
+| Claude Code CLI連携パターン（Desktop Main Process） | L433 |
+| IPC Handler Registration Pattern（Desktop Main Process） | L530 |
+| Claude CLI Renderer API（Preload API） | L614 |
+| 会話履歴永続化パターン（Desktop Main Process） | L816 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L916 |
+| Monaco Diff Editor統合パターン（Desktop Renderer） | L999 |
 
 ### references/architecture-rag.md
 
@@ -203,14 +203,14 @@ node scripts/list-specs.mjs --topics
 | React Hook（useAgent） | L307 |
 | セッション管理 | L332 |
 | Skill Dashboard 型定義（AGENT-002） | L367 |
-| SkillImportStore（TASK-2B） | L865 |
-| ModifierSkill（スライド逆同期機能） | L1096 |
-| Agent Execution UI 型定義（AGENT-004） | L1249 |
-| AgentSDKPage（ポストリリーステスト検証UI） | L1606 |
-| AgentSDKPage Postrelease Testing（AGENT-005-POST） | L1743 |
-| Claude Code CLI統合 | L1883 |
-| Session Persistence（セッション永続化） | L2003 |
-| Skill Import Agent System 型定義（TASK-1-1） | L2221 |
+| SkillImportStore（TASK-2B） | L835 |
+| ModifierSkill（スライド逆同期機能） | L1066 |
+| Agent Execution UI 型定義（AGENT-004） | L1219 |
+| AgentSDKPage（ポストリリーステスト検証UI） | L1576 |
+| AgentSDKPage Postrelease Testing（AGENT-005-POST） | L1713 |
+| Claude Code CLI統合 | L1853 |
+| Session Persistence（セッション永続化） | L1973 |
+| Skill Import Agent System 型定義（TASK-1-1） | L2191 |
 | Hooks実装（TASK-3-1-B） | L3199 |
 
 ### references/interfaces-auth.md
@@ -607,7 +607,8 @@ node scripts/list-specs.mjs --topics
 | Community Visualization UI コンポーネント（CONV-08-05） | L511 |
 | Custom Execution Environment UI コンポーネント（AGENT-006） | L647 |
 | workspace-chat-edit-ui コンポーネント（Issue #468） | L736 |
-| 完了タスク | L848 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L848 |
+| 完了タスク | L957 |
 
 ### references/ui-ux-design-system.md
 
@@ -780,7 +781,7 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| API セキュリティ | L10 |
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
-| 関連ドキュメント | L473 |
+| 関連ドキュメント | L550 |
 
 ### references/security-implementation.md
 

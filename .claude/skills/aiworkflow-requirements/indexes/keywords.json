@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-25T11:00:36.651Z",
-  "totalKeywords": 791,
+  "generated": "2026-01-25T11:14:52.860Z",
+  "totalKeywords": 792,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1664,6 +1664,7 @@
     ],
     "TASK": [
       "interfaces-agent-sdk.md",
+      "ui-ux-components.md",
       "ui-ux-search-panel.md"
     ],
     "ModifierSkill": [
@@ -2533,6 +2534,9 @@
       "ui-ux-components.md"
     ],
     "Issue": [
+      "ui-ux-components.md"
+    ],
+    "SkillStreamDisplay": [
       "ui-ux-components.md"
     ],
     "デザインシステム": [

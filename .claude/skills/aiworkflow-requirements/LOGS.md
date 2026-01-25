@@ -525,4 +525,43 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## 2026-01-25: TASK-3-2 SkillExecutor IPC Handler Integration
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-3-2                                                                                       |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | security-api-electron.md                                                                       |
+| 結果         | success                                                                                        |
+| 備考         | Skill Execution Preload API セキュリティセクション追加                                         |
+
+### 更新詳細
+
+- **更新**: `references/security-api-electron.md`
+  - 「Skill Execution Preload API セキュリティ」セクション追加（約75行）
+  - IPCチャンネルセキュリティ（4チャンネル: skill:execute, skill:abort, skill:get-status, skill:stream）
+  - ホワイトリストパターン（SKILL_INVOKE_CHANNELS, SKILL_ON_CHANNELS）
+  - ストリーミングセキュリティ（SkillStreamChunk型検証）
+  - スキル実行セキュリティレイヤー（Preload API → Main Process → SkillExecutor）
+  - React Hook セキュリティ統合（useSkillExecution）
+  - テストカバレッジ（138テスト）
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                                                    |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md`     |
+| 型定義         | `apps/desktop/src/preload/skill-api.ts`                                                                 |
+| テストファイル | `apps/desktop/src/preload/__tests__/skill-api.test.ts`                                                  |
+
+### テスト品質
+
+| 項目           | 値     |
+| -------------- | ------ |
+| テスト総数     | 138    |
+| カバレッジ     | 100%   |
+| セキュリティ関連 | 全138  |
+
+---
+
 （ログエントリはここに追記されます）

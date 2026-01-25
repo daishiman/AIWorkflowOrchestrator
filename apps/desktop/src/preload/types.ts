@@ -1455,6 +1455,7 @@ declare global {
     claudeCliAPI: ClaudeCliAPI;
     systemPromptAPI: SystemPromptAPI;
     conversationAPI: import("../shared/types/conversation").ConversationAPI;
+    skillAPI: import("./skill-api").SkillAPI;
   }
 }
 

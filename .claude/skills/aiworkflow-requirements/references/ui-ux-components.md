@@ -845,10 +845,120 @@ ChatView (views)
 
 ---
 
+## SkillStreamDisplay コンポーネント（TASK-3-2）
+
+スキル実行結果をリアルタイムでストリーミング表示するUIコンポーネント。
+
+### コンポーネント階層
+
+```
+SkillStreamDisplay (organisms)
+├── StreamHeader
+│   ├── StatusBadge
+│   ├── AbortButton (running時)
+│   └── ResetButton (completed/error/aborted時)
+└── StreamContent (role="log", aria-live="polite")
+    └── MessageItem (複数, React.memo)
+```
+
+### コンポーネント仕様
+
+#### SkillStreamDisplay
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx` |
+| 責務 | スキル実行ストリームの表示、実行制御 |
+| 依存Hook | `useSkillExecution` |
+
+**Props**
+
+| Prop | 型 | 必須 | デフォルト | 説明 |
+| ---- | --- | ---- | ---------- | ---- |
+| skillId | `string` | Yes | - | 実行対象のスキルID |
+| initialPrompt | `string` | No | - | 初期プロンプト |
+| autoExecute | `boolean` | No | false | 自動実行フラグ |
+| onComplete | `() => void` | No | - | 完了時コールバック |
+| onError | `(error: SkillExecutionError) => void` | No | - | エラー時コールバック |
+| onStatusChange | `(status: string) => void` | No | - | ステータス変更コールバック |
+| height | `string \| number` | No | "auto" | コンポーネント高さ |
+| className | `string` | No | - | カスタムクラス名 |
+
+**ステータス表示**
+
+| ステータス | 日本語表示 | 色 |
+| ---------- | ---------- | --- |
+| idle | 待機中 | gray |
+| running | 実行中 | blue |
+| completed | 完了 | green |
+| error | エラー | red |
+| aborted | 中断 | red |
+
+#### useSkillExecution Hook
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/hooks/useSkillExecution.ts` |
+| 責務 | スキル実行状態管理、IPC通信 |
+
+**戻り値**
+
+| プロパティ | 型 | 説明 |
+| ---------- | --- | ---- |
+| messages | `SkillStreamMessage[]` | ストリームメッセージ一覧 |
+| status | `ExecutionStatus` | 現在のステータス |
+| executionId | `string \| null` | 現在の実行ID |
+| error | `SkillExecutionError \| null` | エラー情報 |
+| isAborting | `boolean` | 中断処理中フラグ |
+| execute | `(prompt: string) => Promise<Response>` | 実行開始関数 |
+| abort | `() => Promise<void>` | 中断関数 |
+| reset | `() => void` | リセット関数 |
+
+### IPC API（Preload）
+
+```typescript
+interface SkillAPI {
+  execute: (request: SkillExecutionRequest) => Promise<SkillExecutionResponse>;
+  onStream: (callback: (message: SkillStreamMessage) => void) => () => void;
+  abort: (executionId: string) => Promise<boolean>;
+  getExecutionStatus: (executionId: string) => Promise<ExecutionInfo | null>;
+}
+```
+
+**IPCチャンネル**
+
+| チャンネル | 方向 | 用途 |
+| ---------- | ---- | ---- |
+| skill:execute | Renderer → Main | 実行開始 |
+| skill:stream | Main → Renderer | メッセージストリーム |
+| skill:abort | Renderer → Main | 実行中断 |
+| skill:get-status | Renderer → Main | ステータス照会 |
+
+### アクセシビリティ（WCAG 2.1 AA）
+
+| 要件 | 実装方法 |
+| ---- | -------- |
+| キーボードナビゲーション | 標準ボタン要素使用 |
+| スクリーンリーダー | `role="log"`, `aria-live="polite"`, sr-only ステータス通知 |
+| フォーカス管理 | ボタンに`aria-label`設定 |
+| 色コントラスト | Tailwind CSS標準色（4.5:1以上） |
+
+### 関連ドキュメント
+
+| ドキュメント           | パス                                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| 実装ガイド             | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
+| Agent SDK仕様          | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`                    |
+| タスク仕様書           | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/`                                    |
+| 後続タスク（UX改善）   | `docs/30-workflows/unassigned-task/task-3-2-A-skill-stream-ux-improvements.md`                 |
+
+---
+
 ## 完了タスク
 
 | Issue # | 機能名 | 完了日 | 関連ドキュメント |
 | ------- | ------ | ------ | ---------------- |
+| TASK-3-2 | skillexecutor-ipc-integration | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
 | #468 | workspace-chat-edit-ui | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/` |
 
 ---
