@@ -2777,6 +2777,167 @@ const aborted = executor.abort(response.executionId);
 
 ---
 
+## PermissionResolver 型定義（TASK-3-2）
+
+スキル実行時の権限確認を管理するコンポーネント。ユーザーが許可/拒否するまで処理を待機し、タイムアウト・AbortSignal によるキャンセルをサポート。
+
+### 概要
+
+| 項目         | 内容                                                         |
+| ------------ | ------------------------------------------------------------ |
+| 実装ファイル | `apps/desktop/src/main/services/skill/PermissionResolver.ts` |
+| 依存型       | `SkillPermissionRequest`, `SkillPermissionResponse`          |
+| 使用元       | `SkillExecutor`, IPC Handlers                                |
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Main Process                             │
+│                                                              │
+│  ┌──────────────┐     ┌────────────────────┐                │
+│  │SkillExecutor │────▶│ PermissionResolver │                │
+│  └──────────────┘     └────────────────────┘                │
+│         │                      ▲                             │
+│         │                      │                             │
+│         ▼                      │                             │
+│  ┌──────────────┐     ┌────────────────────┐                │
+│  │ IPC Handler  │────▶│  resolveRequest()  │                │
+│  └──────────────┘     └────────────────────┘                │
+│         │                                                    │
+└─────────┼────────────────────────────────────────────────────┘
+          │ IPC
+          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Renderer Process                          │
+│                                                              │
+│  ┌────────────────────┐                                      │
+│  │ PermissionDialog   │  ← ユーザーが操作                    │
+│  └────────────────────┘                                      │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### フロー
+
+```
+1. SkillExecutor: 権限確認が必要なツール使用を検出
+   ↓
+2. SkillExecutor: PermissionResolver.waitForResponse(requestId) を呼び出し
+   ↓
+3. Main Process: IPC で Renderer に SkillPermissionRequest を送信
+   ↓
+4. Renderer: PermissionDialog でユーザーに確認
+   ↓
+5. ユーザー: 許可/拒否を選択
+   ↓
+6. Renderer: IPC で SkillPermissionResponse を Main に返送
+   ↓
+7. IPC Handler: PermissionResolver.resolveRequest(response) を呼び出し
+   ↓
+8. SkillExecutor: waitForResponse の Promise が解決、処理続行
+```
+
+### PermissionResolver クラス
+
+| メソッド          | シグネチャ                                                       | 説明               |
+| ----------------- | ---------------------------------------------------------------- | ------------------ |
+| `waitForResponse` | `(requestId: string, signal?: AbortSignal) => Promise<Response>` | 権限応答を待機     |
+| `resolveRequest`  | `(response: SkillPermissionResponse) => void`                    | リクエストを解決   |
+| `cancelRequest`   | `(requestId: string, reason?: string) => void`                   | リクエストをキャンセル |
+| `cancelAll`       | `() => void`                                                     | 全リクエストをキャンセル |
+| `pendingCount`    | `number` (getter)                                                | 待機中リクエスト数 |
+
+### コンストラクタ
+
+```typescript
+new PermissionResolver(defaultTimeout?: number)
+```
+
+| パラメータ       | 型     | デフォルト | 説明                       |
+| ---------------- | ------ | ---------- | -------------------------- |
+| `defaultTimeout` | number | 300000     | タイムアウト時間（ミリ秒） |
+
+### 設定定数
+
+| 定数                 | 値       | 説明                         |
+| -------------------- | -------- | ---------------------------- |
+| `DEFAULT_TIMEOUT_MS` | `300000` | デフォルトタイムアウト (5分) |
+
+### エラーメッセージ
+
+| キー             | メッセージ                                      | 発生条件             |
+| ---------------- | ----------------------------------------------- | -------------------- |
+| `TIMEOUT`        | `Permission request timed out: {requestId}`     | タイムアウト発生時   |
+| `ABORTED`        | `Permission request aborted: {requestId}`       | AbortSignal 発火時   |
+| `CANCELLED`      | `Permission request cancelled: {requestId}`     | cancelRequest 呼び出し時 |
+| `CANCELLED_ALL`  | `All permission requests cancelled`             | cancelAll 呼び出し時 |
+
+### 使用例
+
+```typescript
+import { PermissionResolver } from "@repo/desktop/main/services/skill";
+
+// 初期化（デフォルト5分タイムアウト）
+const resolver = new PermissionResolver();
+
+// カスタムタイムアウト（1分）
+const resolver = new PermissionResolver(60_000);
+
+// 権限確認を待機
+const promise = resolver.waitForResponse("request-123");
+
+// 別のコンテキスト（IPC Handler）で解決
+resolver.resolveRequest({
+  requestId: "request-123",
+  approved: true,
+});
+
+const response = await promise;
+if (response.approved) {
+  // ツール実行を続行
+} else {
+  // 実行を中止
+}
+```
+
+### AbortSignal でのキャンセル
+
+```typescript
+const controller = new AbortController();
+
+const promise = resolver.waitForResponse("request-456", controller.signal);
+
+// 別の場所でキャンセル
+controller.abort();
+
+try {
+  await promise;
+} catch (error) {
+  // Error: Permission request aborted: request-456
+}
+```
+
+### 注意事項
+
+| 項目                   | 説明                                              |
+| ---------------------- | ------------------------------------------------- |
+| タイムアウト           | 設定時間経過後は Error がスローされる             |
+| AbortSignal            | キャンセル時は即座に Error で reject              |
+| 存在しない requestId   | resolveRequest/cancelRequest はエラーを投げない   |
+| メモリリーク防止       | 全てのケースでタイマーがクリアされる              |
+| 並行処理               | 複数リクエストを同時に管理可能（Map による O(1)） |
+
+### 関連ドキュメント（TASK-3-2）
+
+| ドキュメント   | パス                                                                    |
+| -------------- | ----------------------------------------------------------------------- |
+| タスク仕様書   | `docs/30-workflows/TASK-3-2-permission-resolver/`                       |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/PermissionResolver.ts`            |
+| テストファイル | `apps/desktop/src/main/services/skill/__tests__/PermissionResolver.test.ts` |
+
+---
+
 ## 完了タスク
 
 ### タスク: skill-import-type-definitions（TASK-1-1、2026-01-23完了）
@@ -3288,6 +3449,68 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 
 ---
 
+### タスク: permission-resolver-implementation（TASK-3-2、2026-01-25完了）
+
+| 項目         | 内容                                                     |
+| ------------ | -------------------------------------------------------- |
+| タスクID     | TASK-3-2                                                 |
+| 完了日       | 2026-01-25                                               |
+| ステータス   | **完了**                                                 |
+| テスト数     | 42（ユニットテスト）                                     |
+| 発見課題     | 0件                                                      |
+| ドキュメント | `docs/30-workflows/TASK-3-2-permission-resolver/`        |
+
+#### 概要
+
+スキル実行時の権限確認を管理する `PermissionResolver` クラスを実装。ユーザーが許可/拒否するまで処理を待機し、タイムアウト・AbortSignal によるキャンセルをサポート。
+
+#### 実装内容
+
+| 項目           | 内容                                                          |
+| -------------- | ------------------------------------------------------------- |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/PermissionResolver.ts`  |
+| コード行数     | 187行                                                         |
+| 主要メソッド   | `waitForResponse()`, `resolveRequest()`, `cancelRequest()`, `cancelAll()`, `pendingCount` |
+
+#### 機能
+
+| 機能                 | 説明                                              |
+| -------------------- | ------------------------------------------------- |
+| 権限応答待機         | Promise ベースの非同期待機                        |
+| タイムアウト制御     | デフォルト5分（設定可能）                         |
+| AbortSignal 対応     | 外部からの即時キャンセル                          |
+| 複数リクエスト管理   | Map による O(1) アクセス                          |
+| 一括キャンセル       | `cancelAll()` で全リクエスト解除                  |
+| メモリリーク防止     | 全ケースでタイマークリア保証                      |
+
+#### テストカバレッジ
+
+| メトリクス        | 達成値 |
+| ----------------- | ------ |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 100%   |
+| Function Coverage | 100%   |
+
+#### 品質基準
+
+| 基準              | 結果 |
+| ----------------- | ---- |
+| TypeScript strict | PASS |
+| ESLint            | PASS |
+| Prettier          | PASS |
+| any型の使用       | 0件  |
+| @ts-ignore        | 0件  |
+
+#### 変更ファイル
+
+| ファイル                                                                    | 変更種別 |
+| --------------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/services/skill/PermissionResolver.ts`                | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/PermissionResolver.test.ts` | 新規     |
+| `apps/desktop/src/main/services/skill/index.ts`                             | 更新     |
+
+---
+
 ## 残課題（未タスク）
 
 | タスクID      | タスク名                  | 優先度 | 発見元                             | タスク仕様書                                                         |
@@ -3320,6 +3543,7 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 | セキュリティパターン定義（TASK-2C）    | `docs/30-workflows/completed-tasks/task-2c-security-patterns/outputs/phase-12-implementation-guide.md`  |
 | SkillExecutor実装ガイド（TASK-3-1-A）  | `docs/30-workflows/TASK-3-1-A-sdk-query/outputs/phase-12/implementation-guide.md`                       |
 | Hooks実装ガイド（TASK-3-1-B）          | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md`                           |
+| PermissionResolver実装ガイド（TASK-3-2） | `docs/30-workflows/TASK-3-2-permission-resolver/outputs/phase-12/implementation-guide.md`             |
 
 ---
 
@@ -3339,3 +3563,5 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 | 1.9.0      | 2026-01-25 | TASK-3-1-A（SkillExecutor SDK query()基本実装）完了記録追加（9型定義、execute/abort/ストリーミング実装）              |
 | 1.10.0     | 2026-01-25 | TASK-3-1-B（Hooks実装）完了記録追加（73テスト、createHooks/categorizeError/isRetryable実装、94.59%カバレッジ）        |
 | 1.11.0     | 2026-01-25 | TASK-3-1-B型定義詳細追加（ErrorCategory、HooksStreamMessage、PreToolUseResult、メソッドシグネチャ、セキュリティ関数） |
+| 1.12.0     | 2026-01-25 | TASK-3-2（PermissionResolver実装）完了記録追加（42テスト、100%カバレッジ、タイムアウト/AbortSignal対応）              |
+| 1.13.0     | 2026-01-25 | PermissionResolver型定義セクション追加（アーキテクチャ図、API仕様、使用例、エラーメッセージ定義）                     |
