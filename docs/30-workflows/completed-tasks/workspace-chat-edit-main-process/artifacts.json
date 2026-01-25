@@ -1,0 +1,263 @@
+{
+  "taskId": "TASK-WCE-MAIN-001",
+  "title": "Workspace Chat Edit Main Process実装",
+  "issue": "#469",
+  "branch": "feat/task-469-workspace-chat-edit-main-process",
+  "status": "pending",
+  "priority": "high",
+  "createdAt": "2026-01-24",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "document": "phase-1-requirements.md",
+      "outputs": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "document": "phase-2-design.md",
+      "outputs": []
+    },
+    {
+      "phase": 3,
+      "name": "レビューゲート",
+      "status": "pending",
+      "document": "phase-3-review-gate.md",
+      "outputs": [
+        {
+          "name": "review-checklist.md",
+          "path": "outputs/phase-3/"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "pending",
+      "document": "phase-4-test-creation.md",
+      "outputs": [
+        {
+          "name": "FileService.test.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/__tests__/"
+        },
+        {
+          "name": "ContextBuilder.test.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/__tests__/"
+        },
+        {
+          "name": "ChatEditService.test.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/__tests__/"
+        },
+        {
+          "name": "chatEditHandlers.test.ts",
+          "path": "apps/desktop/src/main/ipc/__tests__/"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "pending",
+      "document": "phase-5-implementation.md",
+      "outputs": [
+        {
+          "name": "FileService.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/"
+        },
+        {
+          "name": "ContextBuilder.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/"
+        },
+        {
+          "name": "ChatEditService.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/"
+        },
+        {
+          "name": "chatEditHandlers.ts",
+          "path": "apps/desktop/src/main/ipc/"
+        },
+        {
+          "name": "channels.ts (更新)",
+          "path": "apps/desktop/src/preload/"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "document": "phase-6-test-expansion.md",
+      "outputs": [
+        {
+          "name": "integration.test.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/__tests__/"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "document": "phase-7-coverage-check.md",
+      "outputs": [
+        {
+          "name": "coverage-report.md",
+          "path": "outputs/phase-7/"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "document": "phase-8-refactoring.md",
+      "outputs": [
+        {
+          "name": "prompts.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/"
+        },
+        {
+          "name": "PathValidator.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/utils/"
+        },
+        {
+          "name": "ErrorMapper.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/utils/"
+        },
+        {
+          "name": "ResponseParser.ts",
+          "path": "apps/desktop/src/main/services/chat-edit/utils/"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "document": "phase-9-quality-assurance.md",
+      "outputs": [
+        {
+          "name": "qa-report.md",
+          "path": "outputs/phase-9/"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "pending",
+      "document": "phase-10-final-review.md",
+      "outputs": [
+        {
+          "name": "final-review.md",
+          "path": "outputs/phase-10/"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "pending",
+      "document": "phase-11-manual-testing.md",
+      "outputs": [
+        {
+          "name": "manual-test-report.md",
+          "path": "outputs/phase-11/"
+        },
+        {
+          "name": "screenshots/",
+          "path": "outputs/phase-11/"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント作成",
+      "status": "pending",
+      "document": "phase-12-documentation.md",
+      "outputs": [
+        {
+          "name": "api-fileservice.md",
+          "path": "outputs/phase-12/"
+        },
+        {
+          "name": "api-contextbuilder.md",
+          "path": "outputs/phase-12/"
+        },
+        {
+          "name": "api-chateditservice.md",
+          "path": "outputs/phase-12/"
+        },
+        {
+          "name": "ipc-channels.md",
+          "path": "outputs/phase-12/"
+        },
+        {
+          "name": "implementation-guide.md",
+          "path": "outputs/phase-12/"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "document": "phase-13-pr-creation.md",
+      "outputs": [
+        {
+          "name": "Pull Request",
+          "path": "GitHub"
+        }
+      ]
+    }
+  ],
+  "components": [
+    {
+      "name": "FileService",
+      "description": "ファイル読み取り・書き込み・言語検出",
+      "path": "apps/desktop/src/main/services/chat-edit/FileService.ts"
+    },
+    {
+      "name": "ContextBuilder",
+      "description": "LLMプロンプト用コンテキスト構築",
+      "path": "apps/desktop/src/main/services/chat-edit/ContextBuilder.ts"
+    },
+    {
+      "name": "ChatEditService",
+      "description": "LLM統合編集機能",
+      "path": "apps/desktop/src/main/services/chat-edit/ChatEditService.ts"
+    },
+    {
+      "name": "chatEditHandlers",
+      "description": "IPCハンドラ",
+      "path": "apps/desktop/src/main/ipc/chatEditHandlers.ts"
+    }
+  ],
+  "ipcChannels": [
+    "chat-edit:read-file",
+    "chat-edit:write-file",
+    "chat-edit:get-selection",
+    "chat-edit:send-with-context"
+  ],
+  "qualityTargets": {
+    "lineCoverage": "≥ 80%",
+    "branchCoverage": "≥ 60%",
+    "functionCoverage": "≥ 80%"
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/api-endpoints.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-llm.md",
+      ".claude/skills/aiworkflow-requirements/references/security-api-electron.md",
+      ".claude/skills/aiworkflow-requirements/references/quality-requirements.md"
+    ],
+    "existingPatterns": [
+      "apps/desktop/src/main/ipc/skillHandlers.ts",
+      "apps/desktop/src/preload/channels.ts"
+    ]
+  }
+}

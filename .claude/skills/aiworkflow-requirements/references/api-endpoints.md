@@ -423,16 +423,31 @@ interface DiffHunk {
 | useFileContext     | 完了     | ファイルコンテキストHook          |
 | useDiffApply       | 完了     | 差分適用Hook                      |
 | UIコンポーネント   | 未実装   | 別タスク（task-workspace-chat-edit-ui-components） |
-| Main Processサービス | 未実装 | 別タスク（task-workspace-chat-edit-main-process） |
-| IPCハンドラー      | 未実装   | Main Processサービスと同時実装    |
+| Main Processサービス | **完了** | FileService, ContextBuilder, ChatEditService |
+| IPCハンドラー      | **完了** | chatEditHandlers.ts               |
 
 **関連ドキュメント**:
 
-| ドキュメント         | パス                                                               |
-| -------------------- | ------------------------------------------------------------------ |
-| 設計書               | `docs/30-workflows/workspace-chat-edit/outputs/phase-2/`           |
-| テスト仕様           | `docs/30-workflows/workspace-chat-edit/outputs/phase-4/`           |
-| 実装ガイド           | `docs/30-workflows/workspace-chat-edit/outputs/phase-12/implementation-guide.md` |
+| ドキュメント             | パス                                                               |
+| ------------------------ | ------------------------------------------------------------------ |
+| 設計書                   | `docs/30-workflows/workspace-chat-edit/outputs/phase-2/`           |
+| テスト仕様               | `docs/30-workflows/workspace-chat-edit/outputs/phase-4/`           |
+| 実装ガイド（Renderer）   | `docs/30-workflows/workspace-chat-edit/outputs/phase-12/implementation-guide.md` |
+| 実装ガイド（Main Process） | `docs/30-workflows/workspace-chat-edit-main-process/outputs/phase-12/implementation-guide.md` |
+
+**完了タスク**:
+
+### Workspace Chat Edit Main Process（2026-01-25完了）
+
+| 項目         | 内容                                                           |
+| ------------ | -------------------------------------------------------------- |
+| タスクID     | TASK-WCE-MAIN-001                                              |
+| Issue        | #469                                                           |
+| ステータス   | **完了**                                                       |
+| 実装内容     | FileService, ContextBuilder, ChatEditService, chatEditHandlers |
+| テスト数     | 164（自動）+ 23（手動検証項目）                                |
+| カバレッジ   | Line 92.55%, Branch 92.85%                                     |
+| ドキュメント | `docs/30-workflows/workspace-chat-edit-main-process/`          |
 
 ---
 
