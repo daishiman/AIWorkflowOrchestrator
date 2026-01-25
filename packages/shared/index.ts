@@ -189,3 +189,22 @@ export type {
 // Note: DrizzleChatSessionRepository, DrizzleChatMessageRepository はNode.js専用のため
 // Renderer側でのビルドエラーを避けるため、ここからはエクスポートしない。
 // Main Process側では packages/shared/src/features/chat-history から直接インポートすること。
+
+// =============================================================================
+// IPC Channels
+// =============================================================================
+
+/**
+ * IPC チャネル定数
+ * Electron IPC通信に使用するチャネル名の定数定義。
+ *
+ * @see packages/shared/src/ipc/channels.ts
+ */
+export {
+  CHAT_EXPORT_CHANNELS,
+  FILE_SYSTEM_CHANNELS,
+  SKILL_CHANNELS,
+  IPC_CHANNELS,
+} from "./src/ipc/channels";
+
+export type { IpcChannel, SkillChannel } from "./src/ipc/channels";
