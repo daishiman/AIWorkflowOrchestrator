@@ -146,6 +146,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                                          |
 | ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.28.0  | 2026-01-25 | TASK-3-2完了: security-api-electron.mdにSkill Execution Preload APIセキュリティセクション追加（IPCチャンネル4種、ホワイトリスト、ストリーミングセキュリティ、React Hook統合）。138テスト・100%カバレッジ          |
 | 6.27.0  | 2026-01-25 | UI-CONV-HISTORY-001完了: interfaces-chat-history.md v1.2.0更新（Renderer Process型定義、Preload API、React Hooks、UIコンポーネント構成、アクセシビリティ対応）。280テスト・98.66%カバレッジ達成                  |
 | 6.26.0  | 2026-01-24 | UT-LLM-HISTORY-001完了: interfaces-llm.md（Conversation/Message型、IPC契約7種）、architecture-patterns.md（会話履歴永続化パターン〜100行）追加。114テスト・100%カバレッジ達成                                    |
 | 6.25.0  | 2026-01-24 | TASK-2B SkillImportStore追加: interfaces-agent-sdk.mdに「SkillImportStore（TASK-2B）」セクション新設（スキーマ・API・セキュリティ・テスト仕様詳細約230行）、SkillImportManagerとの差分表追加                     |

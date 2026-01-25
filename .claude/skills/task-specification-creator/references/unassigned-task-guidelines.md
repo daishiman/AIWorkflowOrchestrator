@@ -46,7 +46,7 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 
 | 出力物 | 必須 | 配置先 |
 | --- | --- | --- |
-| 未タスク検出レポート | ✅ | `outputs/phase-12/unassigned-task-report.md` |
+| 未タスク検出レポート | ✅ | `outputs/phase-12/unassigned-task-detection.md` |
 | 未タスク指示書（該当時） | 条件 | `docs/30-workflows/unassigned-task/` |
 
 **重要**: 未タスクが検出されなかった場合でも、検出レポートに「未対応課題は検出されませんでした」と明記すること。

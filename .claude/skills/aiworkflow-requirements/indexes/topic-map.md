@@ -166,6 +166,7 @@ node scripts/list-specs.mjs --topics
 | Claude CLI Renderer API（Preload API） | L614 |
 | 会話履歴永続化パターン（Desktop Main Process） | L816 |
 | chatEditSlice（Workspace Chat Edit状態管理） | L916 |
+| Monaco Diff Editor統合パターン（Desktop Renderer） | L999 |
 
 ### references/architecture-rag.md
 
@@ -291,9 +292,10 @@ node scripts/list-specs.mjs --topics
 | Multi-LLM Provider Switching 型定義 | L102 |
 | LLM ストリーミングレスポンス仕様 | L253 |
 | Embedding Generation 型定義 | L403 |
-| 完了タスク | L555 |
-| 関連ドキュメント | L637 |
-| 変更履歴 | L650 |
+| Workspace Chat Edit サービスインターフェース | L555 |
+| 完了タスク | L777 |
+| 関連ドキュメント | L882 |
+| 変更履歴 | L895 |
 
 ### references/interfaces-rag-chunk-embedding.md
 
@@ -476,11 +478,11 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| エンドポイント一覧 | L8 |
 | Desktop IPC API（認証・プロフィール） | L126 |
-| Slide IPC API（スライド同期） | L499 |
-| エンドポイント命名規則 | L593 |
-| Electron IPC API設計 | L614 |
-| AIプロバイダーAPI連携 | L721 |
-| エンティティ抽出サービス (NER) | L754 |
+| Slide IPC API（スライド同期） | L514 |
+| エンドポイント命名規則 | L608 |
+| Electron IPC API設計 | L629 |
+| AIプロバイダーAPI連携 | L736 |
+| エンティティ抽出サービス (NER) | L769 |
 
 ### references/api-internal-chunk-search.md
 
@@ -604,6 +606,9 @@ node scripts/list-specs.mjs --topics
 | Agent Execution UI コンポーネント（AGENT-004） | L257 |
 | Community Visualization UI コンポーネント（CONV-08-05） | L511 |
 | Custom Execution Environment UI コンポーネント（AGENT-006） | L647 |
+| workspace-chat-edit-ui コンポーネント（Issue #468） | L736 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L848 |
+| 完了タスク | L957 |
 
 ### references/ui-ux-design-system.md
 
@@ -776,7 +781,7 @@ node scripts/list-specs.mjs --topics
 |------------|----|\n| API セキュリティ | L10 |
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
-| 関連ドキュメント | L473 |
+| 関連ドキュメント | L550 |
 
 ### references/security-implementation.md
 
@@ -1155,8 +1160,8 @@ node scripts/list-specs.mjs --topics
 | 実行時のコマンド・エージェント・スキル | L107 |
 | 完了タスク | L131 |
 | 残課題（未タスク） | L201 |
-| 関連ドキュメント | L220 |
-| 変更履歴 | L230 |
+| 関連ドキュメント | L222 |
+| 変更履歴 | L232 |
 
 ---
 

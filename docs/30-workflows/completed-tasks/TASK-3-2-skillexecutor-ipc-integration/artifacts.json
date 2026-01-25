@@ -1,0 +1,90 @@
+{
+  "taskId": "TASK-3-2",
+  "taskName": "SkillExecutor IPC Handler統合",
+  "createdAt": "2026-01-25T00:00:00.000Z",
+  "updatedAt": "2026-01-25T00:00:00.000Z",
+  "status": "pending",
+  "currentPhase": 0,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  ],
+  "dependencies": ["TASK-3-1-A"],
+  "githubIssue": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/496"
+}
