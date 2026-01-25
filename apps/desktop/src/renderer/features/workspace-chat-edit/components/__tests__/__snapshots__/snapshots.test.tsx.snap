@@ -1,0 +1,1001 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Snapshot Tests > ApplyControls > size=sm のスナップショット 1`] = `
+<div>
+  <div
+    aria-busy="false"
+    class="flex items-center gap-2"
+    role="group"
+  >
+    <button
+      aria-label="変更を適用"
+      class="inline-flex items-center gap-1.5 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed px-2 py-1 text-sm"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M5 13l4 4L19 7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class="sr-only"
+      >
+        適用
+      </span>
+    </button>
+    <button
+      aria-label="変更を却下"
+      class="inline-flex items-center gap-1.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed px-2 py-1 text-sm"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M6 18L18 6M6 6l12 12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class="sr-only"
+      >
+        却下
+      </span>
+    </button>
+    <span
+      class="text-sm text-red-600 dark:text-red-400"
+      role="alert"
+    >
+      適用に失敗しました
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > ApplyControls > エラー状態のスナップショット 1`] = `
+<div>
+  <div
+    aria-busy="false"
+    class="flex items-center gap-2"
+    role="group"
+  >
+    <button
+      aria-label="変更を適用"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M5 13l4 4L19 7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        適用
+      </span>
+    </button>
+    <button
+      aria-label="変更を却下"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M6 18L18 6M6 6l12 12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        却下
+      </span>
+    </button>
+    <span
+      class="text-sm text-red-600 dark:text-red-400"
+      role="alert"
+    >
+      適用に失敗しました
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > ApplyControls > デフォルト表示のスナップショット 1`] = `
+<div>
+  <div
+    aria-busy="false"
+    class="flex items-center gap-2"
+    role="group"
+  >
+    <button
+      aria-label="変更を適用"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M5 13l4 4L19 7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        適用
+      </span>
+    </button>
+    <button
+      aria-label="変更を却下"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M6 18L18 6M6 6l12 12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        却下
+      </span>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > ApplyControls > ローディング状態のスナップショット 1`] = `
+<div>
+  <div
+    aria-busy="true"
+    class="flex items-center gap-2"
+    role="group"
+  >
+    <button
+      aria-label="変更を適用"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4 animate-spin"
+        fill="none"
+        role="status"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        />
+        <path
+          class="opacity-75"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          fill="currentColor"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        適用
+      </span>
+    </button>
+    <button
+      aria-label="変更を却下"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M6 18L18 6M6 6l12 12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        却下
+      </span>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > ApplyControls > 無効化状態のスナップショット 1`] = `
+<div>
+  <div
+    aria-busy="false"
+    class="flex items-center gap-2"
+    role="group"
+  >
+    <button
+      aria-label="変更を適用"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M5 13l4 4L19 7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        適用
+      </span>
+    </button>
+    <button
+      aria-label="変更を却下"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled=""
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M6 18L18 6M6 6l12 12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+      <span
+        class=""
+      >
+        却下
+      </span>
+    </button>
+    <span
+      class="text-sm text-red-600 dark:text-red-400"
+      role="alert"
+    >
+      適用に失敗しました
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > DiffEditor > sideBySide=falseのスナップショット 1`] = `
+<div>
+  <div
+    aria-describedby="diff-editor-description"
+    aria-label="差分エディタ"
+    class="relative"
+    role="region"
+    style="height: 400px;"
+  >
+    <span
+      class="sr-only"
+      id="diff-editor-description"
+    >
+      左側に元のコード、右側に変更後のコードを表示しています
+    </span>
+    <div
+      data-testid="monaco-diff-snapshot"
+    >
+      <span
+        data-testid="original"
+      >
+        const x = 1;
+      </span>
+      <span
+        data-testid="modified"
+      >
+        const x: number = 1;
+      </span>
+      <span
+        data-testid="language"
+      >
+        typescript
+      </span>
+      <span
+        data-testid="theme"
+      >
+        vs-dark
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > DiffEditor > vs-light テーマのスナップショット 1`] = `
+<div>
+  <div
+    aria-describedby="diff-editor-description"
+    aria-label="差分エディタ"
+    class="relative"
+    role="region"
+    style="height: 400px;"
+  >
+    <span
+      class="sr-only"
+      id="diff-editor-description"
+    >
+      左側に元のコード、右側に変更後のコードを表示しています
+    </span>
+    <div
+      data-testid="monaco-diff-snapshot"
+    >
+      <span
+        data-testid="original"
+      >
+        const x = 1;
+      </span>
+      <span
+        data-testid="modified"
+      >
+        const x: number = 1;
+      </span>
+      <span
+        data-testid="language"
+      >
+        typescript
+      </span>
+      <span
+        data-testid="theme"
+      >
+        vs-light
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > DiffEditor > カスタムheightのスナップショット 1`] = `
+<div>
+  <div
+    aria-describedby="diff-editor-description"
+    aria-label="差分エディタ"
+    class="relative"
+    role="region"
+    style="height: 600px;"
+  >
+    <span
+      class="sr-only"
+      id="diff-editor-description"
+    >
+      左側に元のコード、右側に変更後のコードを表示しています
+    </span>
+    <div
+      data-testid="monaco-diff-snapshot"
+    >
+      <span
+        data-testid="original"
+      >
+        const x = 1;
+      </span>
+      <span
+        data-testid="modified"
+      >
+        const x: number = 1;
+      </span>
+      <span
+        data-testid="language"
+      >
+        typescript
+      </span>
+      <span
+        data-testid="theme"
+      >
+        vs-dark
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > DiffEditor > カスタムフォントサイズのスナップショット 1`] = `
+<div>
+  <div
+    aria-describedby="diff-editor-description"
+    aria-label="差分エディタ"
+    class="relative"
+    role="region"
+    style="height: 400px;"
+  >
+    <span
+      class="sr-only"
+      id="diff-editor-description"
+    >
+      左側に元のコード、右側に変更後のコードを表示しています
+    </span>
+    <div
+      data-testid="monaco-diff-snapshot"
+    >
+      <span
+        data-testid="original"
+      >
+        const x = 1;
+      </span>
+      <span
+        data-testid="modified"
+      >
+        const x: number = 1;
+      </span>
+      <span
+        data-testid="language"
+      >
+        typescript
+      </span>
+      <span
+        data-testid="theme"
+      >
+        vs-dark
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > DiffEditor > デフォルト表示のスナップショット 1`] = `
+<div>
+  <div
+    aria-describedby="diff-editor-description"
+    aria-label="差分エディタ"
+    class="relative"
+    role="region"
+    style="height: 400px;"
+  >
+    <span
+      class="sr-only"
+      id="diff-editor-description"
+    >
+      左側に元のコード、右側に変更後のコードを表示しています
+    </span>
+    <div
+      data-testid="monaco-diff-snapshot"
+    >
+      <span
+        data-testid="original"
+      >
+        const x = 1;
+      </span>
+      <span
+        data-testid="modified"
+      >
+        const x: number = 1;
+      </span>
+      <span
+        data-testid="language"
+      >
+        typescript
+      </span>
+      <span
+        data-testid="theme"
+      >
+        vs-dark
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > EditCommandInput > size=sm のスナップショット 1`] = `
+<div>
+  <form
+    aria-busy="false"
+    class="flex flex-col gap-3"
+    role="form"
+  >
+    <div
+      class="flex items-center gap-2"
+    >
+      <select
+        aria-label="コマンドタイプ"
+        class="flex-1 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed px-2 py-1 text-sm"
+      >
+        <option
+          value="continue"
+        >
+          続きを書く
+        </option>
+        <option
+          value="refactor"
+        >
+          リファクタリング
+        </option>
+        <option
+          value="generate-test"
+        >
+          テスト生成
+        </option>
+        <option
+          value="add-comment"
+        >
+          コメント追加
+        </option>
+        <option
+          value="custom"
+        >
+          カスタム
+        </option>
+      </select>
+    </div>
+    <button
+      aria-label="コマンドを実行"
+      class="w-full rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm"
+      type="submit"
+    >
+      送信
+    </button>
+  </form>
+</div>
+`;
+
+exports[`Snapshot Tests > EditCommandInput > カスタムタイプ選択時のスナップショット 1`] = `
+<div>
+  <form
+    aria-busy="false"
+    class="flex flex-col gap-3"
+    role="form"
+  >
+    <div
+      class="flex items-center gap-2"
+    >
+      <select
+        aria-label="コマンドタイプ"
+        class="flex-1 px-3 py-2 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <option
+          value="continue"
+        >
+          続きを書く
+        </option>
+        <option
+          value="refactor"
+        >
+          リファクタリング
+        </option>
+        <option
+          value="generate-test"
+        >
+          テスト生成
+        </option>
+        <option
+          value="add-comment"
+        >
+          コメント追加
+        </option>
+        <option
+          value="custom"
+        >
+          カスタム
+        </option>
+      </select>
+    </div>
+    <div
+      class="flex flex-col gap-1"
+    >
+      <textarea
+        aria-label="カスタム指示"
+        class="w-full px-3 py-2 rounded-md resize-none border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        maxlength="10000"
+        placeholder="カスタム指示を入力..."
+        rows="3"
+      />
+      <span
+        class="text-xs text-slate-500"
+      >
+        0
+        /10,000文字
+      </span>
+    </div>
+    <button
+      aria-label="コマンドを実行"
+      class="w-full px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+      disabled=""
+      type="submit"
+    >
+      送信
+    </button>
+  </form>
+</div>
+`;
+
+exports[`Snapshot Tests > EditCommandInput > デフォルト表示のスナップショット 1`] = `
+<div>
+  <form
+    aria-busy="false"
+    class="flex flex-col gap-3"
+    role="form"
+  >
+    <div
+      class="flex items-center gap-2"
+    >
+      <select
+        aria-label="コマンドタイプ"
+        class="flex-1 px-3 py-2 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <option
+          value="continue"
+        >
+          続きを書く
+        </option>
+        <option
+          value="refactor"
+        >
+          リファクタリング
+        </option>
+        <option
+          value="generate-test"
+        >
+          テスト生成
+        </option>
+        <option
+          value="add-comment"
+        >
+          コメント追加
+        </option>
+        <option
+          value="custom"
+        >
+          カスタム
+        </option>
+      </select>
+    </div>
+    <button
+      aria-label="コマンドを実行"
+      class="w-full px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+      type="submit"
+    >
+      送信
+    </button>
+  </form>
+</div>
+`;
+
+exports[`Snapshot Tests > EditCommandInput > ローディング状態のスナップショット 1`] = `
+<div>
+  <form
+    aria-busy="true"
+    class="flex flex-col gap-3"
+    role="form"
+  >
+    <div
+      class="flex items-center gap-2"
+    >
+      <select
+        aria-label="コマンドタイプ"
+        class="flex-1 px-3 py-2 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled=""
+      >
+        <option
+          value="continue"
+        >
+          続きを書く
+        </option>
+        <option
+          value="refactor"
+        >
+          リファクタリング
+        </option>
+        <option
+          value="generate-test"
+        >
+          テスト生成
+        </option>
+        <option
+          value="add-comment"
+        >
+          コメント追加
+        </option>
+        <option
+          value="custom"
+        >
+          カスタム
+        </option>
+      </select>
+    </div>
+    <button
+      aria-label="コマンドを実行"
+      class="w-full px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+      disabled=""
+      type="submit"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-4 h-4 animate-spin"
+        fill="none"
+        role="status"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        />
+        <path
+          class="opacity-75"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          fill="currentColor"
+        />
+      </svg>
+      送信
+    </button>
+  </form>
+</div>
+`;
+
+exports[`Snapshot Tests > EditCommandInput > 無効化状態のスナップショット 1`] = `
+<div>
+  <form
+    aria-busy="false"
+    class="flex flex-col gap-3"
+    role="form"
+  >
+    <div
+      class="flex items-center gap-2"
+    >
+      <select
+        aria-label="コマンドタイプ"
+        class="flex-1 px-3 py-2 rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled=""
+      >
+        <option
+          value="continue"
+        >
+          続きを書く
+        </option>
+        <option
+          value="refactor"
+        >
+          リファクタリング
+        </option>
+        <option
+          value="generate-test"
+        >
+          テスト生成
+        </option>
+        <option
+          value="add-comment"
+        >
+          コメント追加
+        </option>
+        <option
+          value="custom"
+        >
+          カスタム
+        </option>
+      </select>
+    </div>
+    <button
+      aria-label="コマンドを実行"
+      class="w-full px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
+      disabled=""
+      type="submit"
+    >
+      送信
+    </button>
+  </form>
+</div>
+`;
+
+exports[`Snapshot Tests > FileContextBadge > アクティブ状態のスナップショット 1`] = `
+<div>
+  <div
+    aria-selected="true"
+    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ring-2 ring-blue-500"
+    role="listitem"
+    tabindex="0"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-4 h-4 flex-shrink-0 text-slate-500"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </svg>
+    <span
+      class="truncate text-sm text-slate-700 dark:text-slate-300"
+      title="/path/to/test.ts"
+    >
+      test.ts
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > FileContextBadge > デフォルト表示のスナップショット 1`] = `
+<div>
+  <div
+    aria-selected="false"
+    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    role="listitem"
+    tabindex="0"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-4 h-4 flex-shrink-0 text-slate-500"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </svg>
+    <span
+      class="truncate text-sm text-slate-700 dark:text-slate-300"
+      title="/path/to/test.ts"
+    >
+      test.ts
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > FileContextBadge > 削除ボタン付きのスナップショット 1`] = `
+<div>
+  <div
+    aria-selected="false"
+    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    role="listitem"
+    tabindex="0"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-4 h-4 flex-shrink-0 text-slate-500"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </svg>
+    <span
+      class="truncate text-sm text-slate-700 dark:text-slate-300"
+      title="/path/to/test.ts"
+    >
+      test.ts
+    </span>
+    <button
+      aria-label="test.tsを削除"
+      class="flex-shrink-0 p-0.5 rounded hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      type="button"
+    >
+      <svg
+        aria-hidden="true"
+        class="w-3.5 h-3.5 text-slate-500 hover:text-red-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M6 18L18 6M6 6l12 12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Snapshot Tests > FileContextBadge > 長いファイル名のスナップショット 1`] = `
+<div>
+  <div
+    aria-selected="false"
+    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    role="listitem"
+    tabindex="0"
+  >
+    <svg
+      aria-hidden="true"
+      class="w-4 h-4 flex-shrink-0 text-slate-500"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </svg>
+    <span
+      class="truncate text-sm text-slate-700 dark:text-slate-300"
+      title="/path/to/test.ts"
+    >
+      very-long-filename-that-should-be-truncated.ts
+    </span>
+  </div>
+</div>
+`;
