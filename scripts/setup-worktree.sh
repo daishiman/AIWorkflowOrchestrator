@@ -12,7 +12,14 @@ echo "📋 LaunchServicesキャッシュをクリア中..."
 
 echo "✅ キャッシュクリア完了"
 
-# 2. .envシンボリックリンクを確認・作成
+# 2. ネイティブモジュールのセットアップ
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -f "$SCRIPT_DIR/setup-native-modules.sh" ]; then
+  echo "📋 ネイティブモジュールをセットアップ中..."
+  "$SCRIPT_DIR/setup-native-modules.sh"
+fi
+
+# 3. .envシンボリックリンクを確認・作成
 WORKTREE_ROOT=$(git rev-parse --show-toplevel)
 PROJECT_ROOT=$(cd "$WORKTREE_ROOT/../.." && pwd)
 
