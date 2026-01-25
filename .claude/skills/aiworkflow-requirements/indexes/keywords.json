@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-25T11:14:52.860Z",
-  "totalKeywords": 792,
+  "generated": "2026-01-25T22:55:54.790Z",
+  "totalKeywords": 797,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1710,6 +1710,9 @@
     "SkillExecutor": [
       "interfaces-agent-sdk.md"
     ],
+    "PermissionResolver": [
+      "interfaces-agent-sdk.md"
+    ],
     "残課題": [
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
@@ -1997,7 +2000,8 @@
       "interfaces-rag-file-selection.md"
     ],
     "Store": [
-      "interfaces-rag-knowledge-graph-store.md"
+      "interfaces-rag-knowledge-graph-store.md",
+      "security-skill-execution.md"
     ],
     "検索クエリ・結果型定義": [
       "interfaces-rag-search.md"
@@ -2314,6 +2318,13 @@
       "security-skill-execution.md",
       "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md"
+    ],
+    "Permission": [
+      "security-skill-execution.md",
+      "ui-ux-settings.md"
+    ],
+    "権限永続化": [
+      "security-skill-execution.md"
     ],
     "仕様書記述ガイドライン": [
       "spec-guidelines.md"
@@ -2802,6 +2813,12 @@
       "ui-ux-settings.md"
     ],
     "テスト要件": [
+      "ui-ux-settings.md"
+    ],
+    "ツール許可設定": [
+      "ui-ux-settings.md"
+    ],
+    "Settings": [
       "ui-ux-settings.md"
     ],
     "実装ファイル": [

@@ -11,12 +11,14 @@
 ## 検索方法
 
 ### コマンド検索
+
 ```bash
 node scripts/search-spec.mjs "<キーワード>"
 node scripts/search-spec.mjs "認証" -C 5
 ```
 
 ### トピック一覧
+
 ```bash
 node scripts/list-specs.mjs --topics
 ```
@@ -161,12 +163,12 @@ node scripts/list-specs.mjs --topics
 | Environment Backend サービス（Desktop Main Process） | L75 |
 | Zustand Sliceパターン（Desktop） | L141 |
 | スキル管理サービス（Desktop Main Process） | L235 |
-| Claude Code CLI連携パターン（Desktop Main Process） | L433 |
-| IPC Handler Registration Pattern（Desktop Main Process） | L530 |
-| Claude CLI Renderer API（Preload API） | L614 |
-| 会話履歴永続化パターン（Desktop Main Process） | L816 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L916 |
-| Monaco Diff Editor統合パターン（Desktop Renderer） | L999 |
+| Claude Code CLI連携パターン（Desktop Main Process） | L523 |
+| IPC Handler Registration Pattern（Desktop Main Process） | L620 |
+| Claude CLI Renderer API（Preload API） | L704 |
+| 会話履歴永続化パターン（Desktop Main Process） | L906 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L1006 |
+| Monaco Diff Editor統合パターン（Desktop Renderer） | L1089 |
 
 ### references/architecture-rag.md
 
@@ -203,15 +205,22 @@ node scripts/list-specs.mjs --topics
 | React Hook（useAgent） | L307 |
 | セッション管理 | L332 |
 | Skill Dashboard 型定義（AGENT-002） | L367 |
-| SkillImportStore（TASK-2B） | L835 |
-| ModifierSkill（スライド逆同期機能） | L1066 |
-| Agent Execution UI 型定義（AGENT-004） | L1219 |
-| AgentSDKPage（ポストリリーステスト検証UI） | L1576 |
-| AgentSDKPage Postrelease Testing（AGENT-005-POST） | L1713 |
-| Claude Code CLI統合 | L1853 |
-| Session Persistence（セッション永続化） | L1973 |
-| Skill Import Agent System 型定義（TASK-1-1） | L2191 |
-| Hooks実装（TASK-3-1-B） | L3199 |
+| SkillImportStore（TASK-2B） | L1016 |
+| ModifierSkill（スライド逆同期機能） | L1247 |
+| Agent Execution UI 型定義（AGENT-004） | L1400 |
+| AgentSDKPage（ポストリリーステスト検証UI） | L1757 |
+| AgentSDKPage Postrelease Testing（AGENT-005-POST） | L1894 |
+| Claude Code CLI統合 | L2034 |
+| Session Persistence（セッション永続化） | L2154 |
+| Skill Import Agent System 型定義（TASK-1-1） | L2372 |
+| PermissionResolver 型定義（TASK-3-2） | L2961 |
+| Hooks実装（TASK-3-1-B） | L3380 |
+| PermissionResolver IPC Handlers（TASK-4-2） | L3952 |
+| onPermission（TASK-3-1-D） | L705 |
+| respondPermission（TASK-3-1-D） | L740 |
+| Permission型定義（TASK-3-1-D） | L782 |
+| React Hooks（TASK-3-1-D） | L816 |
+| permission-dialog-ui完了（TASK-3-1-D） | L4026 |
 
 ### references/interfaces-auth.md
 
@@ -746,9 +755,10 @@ node scripts/list-specs.mjs --topics
 | IPC API仕様 | L140 |
 | セキュリティ要件 | L162 |
 | テスト要件 | L177 |
-| 関連ドキュメント | L200 |
-| 実装ファイル | L208 |
-| バージョン履歴 | L221 |
+| ツール許可設定（Permission Settings） | L200 |
+| 関連ドキュメント | L265 |
+| 実装ファイル | L274 |
+| バージョン履歴 | L291 |
 
 ### references/ui-ux-system-prompt.md
 
@@ -782,8 +792,10 @@ node scripts/list-specs.mjs --topics
 | 依存関係セキュリティ | L53 |
 | Electron セキュリティ | L78 |
 | スキルインポートIPCチャネル（TASK-4-1） | L284 |
+| Permission IPC Handler セキュリティ（TASK-4-2） | L571 |
+| useSkillPermission Hook セキュリティ（TASK-3-1-D） | L543 |
 | 完了タスク | L601 |
-| 関連ドキュメント | L592 |
+| 関連ドキュメント | L657 |
 | 変更履歴 | L612 |
 
 ### references/security-implementation.md
@@ -829,10 +841,11 @@ node scripts/list-specs.mjs --topics
 | DANGEROUS_PATTERNS | L35 |
 | ALLOWED_TOOLS_WHITELIST | L89 |
 | API リファレンス | L116 |
-| 使用例 | L193 |
-| テストカバレッジ | L240 |
-| 関連ドキュメント | L255 |
-| 変更履歴 | L264 |
+| 使用例 | L195 |
+| テストカバレッジ | L242 |
+| Permission Store（権限永続化） | L258 |
+| 関連ドキュメント | L338 |
+| 変更履歴 | L348 |
 
 ---
 
@@ -943,8 +956,8 @@ node scripts/list-specs.mjs --topics
 | セクション | 行 |
 |------------|----|\n| 目的 | L10 |
 | agents/ の位置づけ（誤解防止） | L17 |
-| agents/*.md 標準フォーマット（必須テンプレ） | L26 |
-| agents/*.md テンプレ（Markdown見出しで構造化） | L43 |
+| agents/_.md 標準フォーマット（必須テンプレ） | L26 |
+| agents/_.md テンプレ（Markdown見出しで構造化） | L43 |
 | 関連ドキュメント | L175 |
 
 ### references/claude-code-skills-overview.md
@@ -1167,4 +1180,3 @@ node scripts/list-specs.mjs --topics
 | 変更履歴 | L232 |
 
 ---
-
