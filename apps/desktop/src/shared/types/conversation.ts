@@ -39,6 +39,18 @@ export interface Conversation {
 }
 
 /**
+ * 添付ファイル
+ */
+export interface Attachment {
+  id: string;
+  type: "image" | "file" | "document";
+  url: string;
+  name: string;
+  size?: number;
+  mimeType?: string;
+}
+
+/**
  * メッセージ
  */
 export interface Message {
@@ -52,7 +64,7 @@ export interface Message {
   llmModel?: string;
   llmMetadata?: Record<string, unknown>;
   systemPrompt?: string;
-  attachments: unknown[];
+  attachments: Attachment[];
   metadata: Record<string, unknown>;
 }
 
