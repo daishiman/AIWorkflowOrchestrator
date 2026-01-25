@@ -45,11 +45,62 @@ export const FILE_SYSTEM_CHANNELS = {
 } as const;
 
 /**
+ * スキル実行関連のIPCチャネル
+ */
+export const SKILL_CHANNELS = {
+  /**
+   * スキル一覧取得
+   */
+  SKILL_LIST: "skill:list",
+
+  /**
+   * スキルインポート
+   */
+  SKILL_IMPORT: "skill:import",
+
+  /**
+   * スキル削除
+   */
+  SKILL_REMOVE: "skill:remove",
+
+  /**
+   * スキル実行
+   */
+  SKILL_EXECUTE: "skill:execute",
+
+  /**
+   * スキル実行中断
+   */
+  SKILL_ABORT: "skill:abort",
+
+  /**
+   * スキルストリーム
+   */
+  SKILL_STREAM: "skill:stream",
+
+  /**
+   * 権限リクエスト（Main → Renderer）
+   */
+  SKILL_PERMISSION_REQUEST: "skill:permission:request",
+
+  /**
+   * 権限応答（Renderer → Main）
+   */
+  SKILL_PERMISSION_RESPONSE: "skill:permission:response",
+} as const;
+
+/**
+ * スキルチャネル型
+ */
+export type SkillChannel = (typeof SKILL_CHANNELS)[keyof typeof SKILL_CHANNELS];
+
+/**
  * すべてのIPCチャネル定数
  */
 export const IPC_CHANNELS = {
   ...CHAT_EXPORT_CHANNELS,
   ...FILE_SYSTEM_CHANNELS,
+  ...SKILL_CHANNELS,
 } as const;
 
 /**
