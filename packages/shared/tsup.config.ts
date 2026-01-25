@@ -28,6 +28,7 @@ export default defineConfig({
     "src/services/logging/conversion-logger.ts",
     "src/slide/index.ts",
     "src/claude-cli/index.ts",
+    "src/ipc/channels.ts",
     "utils/index.ts",
     "src/features/chat-history/index.ts",
     "src/repositories/index.ts",

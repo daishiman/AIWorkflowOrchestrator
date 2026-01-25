@@ -11,13 +11,10 @@
 
 import { v4 as uuidv4 } from "uuid";
 import type { BrowserWindow } from "electron";
-import type { Skill } from "@repo/shared";
+import type { Skill, SkillPermissionResponse } from "@repo/shared";
 import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
-import { SKILL_CHANNELS } from "@repo/shared";
-import {
-  PermissionResolver,
-  type PermissionResponse,
-} from "./PermissionResolver";
+import { SKILL_CHANNELS } from "@repo/shared/src/ipc/channels";
+import { PermissionResolver } from "./PermissionResolver";
 
 // =================================================================
 // SkillExecutor専用の型定義
@@ -217,9 +214,6 @@ const SENSITIVE_KEY_PATTERNS = [
   "refresh_token",
   "private_key",
 ] as const;
-
-/** 権限リクエストのデフォルトタイムアウト（ミリ秒） */
-const PERMISSION_REQUEST_TIMEOUT_MS = 30000;
 
 // =================================================================
 // SDK型定義（実際のSDKから取得）
@@ -1094,7 +1088,7 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
     toolName: string,
     args: Record<string, unknown>,
     signal?: AbortSignal,
-  ): Promise<PermissionResponse> {
+  ): Promise<SkillPermissionResponse> {
     const requestId = uuidv4();
 
     // Renderer に権限リクエストを送信
@@ -1112,10 +1106,6 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
     }
 
     // 応答を待機
-    return this.permissionResolver.waitForResponse(
-      requestId,
-      signal,
-      PERMISSION_REQUEST_TIMEOUT_MS,
-    );
+    return this.permissionResolver.waitForResponse(requestId, signal);
   }
 }
