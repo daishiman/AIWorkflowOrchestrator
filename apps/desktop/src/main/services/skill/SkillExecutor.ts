@@ -2,14 +2,17 @@
  * SkillExecutor - スキル実行エンジン
  *
  * TASK-3-1-A: SDK query() 基本実装
+ * TASK-3-1-B: Hooks実装（PreToolUse/PostToolUse）
  *
  * Claude Agent SDK の query() API を使用してスキルを実行し、
  * ストリーミングレスポンスを Renderer Process に配信する。
+ * Hooksによるセキュリティチェックとツール実行通知を提供する。
  */
 
 import { v4 as uuidv4 } from "uuid";
 import type { BrowserWindow } from "electron";
 import type { Skill } from "@repo/shared";
+import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
 
 // =================================================================
 // SkillExecutor専用の型定義
@@ -94,6 +97,87 @@ export interface ExecutionContext {
 export interface SkillMetadata extends Omit<Skill, "lastModified"> {
   // Skill型から継承: id, name, slug, description, path, triggers, anchors, allowedTools, etc.
 }
+
+// =================================================================
+// TASK-3-1-B: Hooks関連の型定義
+// =================================================================
+
+/** エラーカテゴリ（FR-006） */
+export type ErrorCategory =
+  | "sdk_error"
+  | "permission_denied"
+  | "timeout"
+  | "network"
+  | "unknown";
+
+/** PreToolUse入力 */
+interface PreToolUseInput {
+  toolName: string;
+  args: Record<string, unknown>;
+}
+
+/** PostToolUse入力 */
+interface PostToolUseInput {
+  toolName: string;
+  result?: unknown;
+}
+
+/** PreToolUse結果 */
+type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
+
+/** ツール使用通知の内容 */
+interface ToolUseContent {
+  toolName: string;
+  args: Record<string, unknown>;
+  toolUseId: string;
+}
+
+/** ツール結果通知の内容 */
+interface ToolResultContent {
+  toolUseId: string;
+  success: boolean;
+  result?: unknown;
+}
+
+/** ステータス通知の内容 */
+interface StatusContent {
+  status: string;
+  detail: string;
+}
+
+/** エラー通知の内容 */
+interface ErrorContent {
+  code: ErrorCategory;
+  message: string;
+  retryable: boolean;
+}
+
+/** Hooks拡張ストリームメッセージ（tool_use/tool_result/status/error用） */
+export type HooksStreamMessage =
+  | {
+      executionId: string;
+      type: "tool_use";
+      content: ToolUseContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "tool_result";
+      content: ToolResultContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "status";
+      content: StatusContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "error";
+      content: ErrorContent;
+      timestamp: number;
+    };
 
 // =================================================================
 // Constants
@@ -592,5 +676,210 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
     setTimeout(() => {
       this.activeExecutions.delete(executionId);
     }, HISTORY_RETENTION_MS);
+  }
+
+  // =================================================================
+  // TASK-3-1-B: Hooks実装
+  // =================================================================
+
+  /** 文字列の最大表示長（truncate用） */
+  private static readonly MAX_DISPLAY_LENGTH = 50;
+
+  /**
+   * argsからファイルパスを取得するヘルパー
+   * Write/Edit ツールの両方の引数形式に対応
+   */
+  private getFilePathFromArgs(args: Record<string, unknown>): string {
+    return (args.path as string) || (args.file_path as string) || "";
+  }
+
+  /**
+   * 文字列を指定長で切り詰める
+   */
+  private truncateString(
+    str: string,
+    maxLength: number = SkillExecutor.MAX_DISPLAY_LENGTH,
+  ): string {
+    return str.length > maxLength ? `${str.substring(0, maxLength)}...` : str;
+  }
+
+  /**
+   * Hooksを作成する（FR-001〜FR-005）
+   *
+   * @param executionId - 実行ID
+   * @returns PreToolUse / PostToolUse Hooks オブジェクト
+   */
+  createHooks(executionId: string) {
+    return {
+      /**
+       * PreToolUse Hook - ツール実行前のセキュリティチェックと通知
+       *
+       * FR-001: 危険コマンドのブロック
+       * FR-002: 保護パスへの書き込みブロック
+       * FR-003: ツール実行開始通知
+       */
+      PreToolUse: async (
+        input: PreToolUseInput,
+        toolUseId: string,
+        _context: { signal: AbortSignal },
+      ): Promise<PreToolUseResult> => {
+        // FR-001: 危険コマンドチェック
+        if (input.toolName === "Bash") {
+          const command = (input.args.command as string) || "";
+          if (isDangerousCommand(command)) {
+            this.sendHooksStream({
+              executionId,
+              type: "status",
+              content: {
+                status: "tool_completed",
+                detail: `危険なコマンドをブロック: ${this.truncateString(command)}`,
+              },
+              timestamp: Date.now(),
+            });
+            return {
+              proceed: false,
+              message: `危険なコマンドをブロックしました: ${command}`,
+            };
+          }
+        }
+
+        // FR-002: 保護パスチェック
+        if (input.toolName === "Write" || input.toolName === "Edit") {
+          const filePath = this.getFilePathFromArgs(input.args);
+          if (isProtectedPath(filePath)) {
+            this.sendHooksStream({
+              executionId,
+              type: "status",
+              content: {
+                status: "tool_completed",
+                detail: `保護パスへの書き込みをブロック: ${filePath}`,
+              },
+              timestamp: Date.now(),
+            });
+            return {
+              proceed: false,
+              message: `保護されたパスへの書き込みをブロックしました: ${filePath}`,
+            };
+          }
+        }
+
+        // FR-003: ツール実行開始を通知
+        this.sendHooksStream({
+          executionId,
+          type: "tool_use",
+          content: {
+            toolName: input.toolName,
+            args: input.args,
+            toolUseId,
+          },
+          timestamp: Date.now(),
+        });
+
+        return { proceed: true };
+      },
+
+      /**
+       * PostToolUse Hook - ツール実行後の結果通知
+       *
+       * FR-004: ツール実行結果通知
+       * FR-005: ツール完了ステータス通知
+       */
+      PostToolUse: async (
+        input: PostToolUseInput,
+        toolUseId: string,
+        _context: { signal: AbortSignal },
+      ): Promise<Record<string, never>> => {
+        // FR-004: ツール結果を通知
+        this.sendHooksStream({
+          executionId,
+          type: "tool_result",
+          content: {
+            toolUseId,
+            success: true,
+            result: input.result,
+          },
+          timestamp: Date.now(),
+        });
+
+        // FR-005: 完了ステータスを通知
+        this.sendHooksStream({
+          executionId,
+          type: "status",
+          content: {
+            status: "tool_completed",
+            detail: input.toolName,
+          },
+          timestamp: Date.now(),
+        });
+
+        return {};
+      },
+    };
+  }
+
+  /**
+   * Hooks用ストリームメッセージを送信する
+   * BrowserWindowが破棄されている場合は安全にスキップする
+   */
+  private sendHooksStream(message: HooksStreamMessage): void {
+    try {
+      if (this.mainWindow.isDestroyed()) {
+        return;
+      }
+      this.mainWindow.webContents.send("skill:stream", message);
+    } catch (error) {
+      // IPC送信エラーはログ出力のみで処理を継続
+      console.error("[SkillExecutor] Failed to send hooks stream:", error);
+    }
+  }
+
+  /**
+   * エラーカテゴリを判定する（FR-006）
+   *
+   * @param error - 判定対象のエラー
+   * @returns エラーカテゴリ
+   */
+  categorizeError(error: unknown): ErrorCategory {
+    if (error instanceof Error) {
+      // AbortError = タイムアウト
+      if (error.name === "AbortError") return "timeout";
+
+      // permissionを含む = 権限エラー
+      if (error.message.toLowerCase().includes("permission"))
+        return "permission_denied";
+
+      // network/fetchを含む = ネットワークエラー
+      if (
+        error.message.toLowerCase().includes("network") ||
+        error.message.toLowerCase().includes("fetch")
+      )
+        return "network";
+
+      // SDK/APIを含む = SDKエラー
+      if (error.message.includes("SDK") || error.message.includes("API"))
+        return "sdk_error";
+    }
+
+    return "unknown";
+  }
+
+  /**
+   * リトライ可能かどうかを判定する（FR-007）
+   *
+   * @param error - 判定対象のエラー
+   * @returns リトライ可能な場合 true
+   */
+  isRetryable(error: unknown): boolean {
+    if (error instanceof Error) {
+      const message = error.message.toLowerCase();
+      if (
+        message.includes("network") ||
+        message.includes("timeout") ||
+        message.includes("econnreset")
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 }
