@@ -732,3 +732,123 @@ AgentExecutionView (views)
 | セキュリティ設計 | `docs/30-workflows/custom-environment-ui/outputs/phase-2/security-design.md` |
 
 ---
+
+## workspace-chat-edit-ui コンポーネント（Issue #468）
+
+AIアシスタントとのチャット中にファイル編集を依頼し、差分プレビュー・適用を行うためのUIコンポーネント群。
+
+### コンポーネント階層
+
+```
+ChatView (views)
+├── FileContextDropZone (organisms)
+│   └── ChatContent
+├── FileContextBadge (molecules, 複数)
+├── EditCommandInput (molecules)
+│   ├── CommandTypeSelector
+│   └── TextInput + SendButton
+└── DiffPreview (organisms, モーダル)
+    ├── DiffEditor
+    │   └── Monaco DiffEditor
+    └── ApplyControls
+```
+
+### コンポーネント仕様
+
+#### FileContextBadge
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextBadge.tsx` |
+| 責務 | 添付ファイルの表示と削除 |
+| Props | `file: FileContext`, `isSelected?: boolean`, `onRemove?: (id) => void`, `onClick?: (id) => void` |
+
+#### ApplyControls
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/ApplyControls.tsx` |
+| 責務 | 差分の適用または却下 |
+| Props | `resultId: string`, `onApplied?: () => void`, `onRejected?: () => void` |
+
+#### FileContextDropZone
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextDropZone.tsx` |
+| 責務 | ドラッグ&ドロップでのファイル添付 |
+| Props | `children: ReactNode`, `disabled?: boolean`, `onFilesDropped?: (files) => void` |
+
+#### DiffPreview
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/DiffPreview.tsx` |
+| 責務 | 差分プレビューモーダルの表示 |
+| Props | `original: string`, `modified: string`, `fileName: string`, `language?: string`, `resultId: string`, `onClose: () => void`, `onApplied?: () => void` |
+
+#### DiffEditor
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/DiffEditor.tsx` |
+| 責務 | Monaco Editorによる差分表示 |
+| Props | `original: string`, `modified: string`, `language?: string`, `height?: string | number` |
+
+#### EditCommandInput
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/EditCommandInput.tsx` |
+| 責務 | 編集コマンドの入力と送信 |
+| Props | `onSubmit: (command: EditCommand) => void`, `disabled?: boolean`, `placeholder?: string` |
+
+### 状態管理
+
+| Hook | 責務 |
+| ---- | ---- |
+| useFileContext | ファイルコンテキストの管理（添付/削除/クリア） |
+| useDiffApply | 差分適用状態の管理（適用/却下/リセット） |
+
+### バリデーション
+
+| 項目 | 制限値 |
+| ---- | ------ |
+| 最大ファイル数 | 10ファイル |
+| 最大ファイルサイズ | 10MB |
+
+### キーボード操作
+
+| キー | コンポーネント | 動作 |
+| ---- | -------------- | ---- |
+| Delete/Backspace | FileContextBadge | 選択中のバッジを削除 |
+| Ctrl+Enter | EditCommandInput | コマンド送信 |
+| Escape | DiffPreview | プレビューを閉じる |
+| Tab | DiffPreview | フォーカストラップ内を循環 |
+
+### アクセシビリティ（WCAG 2.1 AA）
+
+| 要件 | 実装方法 |
+| ---- | -------- |
+| キーボードナビゲーション | 全要素にtabIndex設定 |
+| スクリーンリーダー | aria-label、role属性の適切な設定 |
+| フォーカス管理 | DiffPreview開閉時のフォーカス移動 |
+| 色コントラスト | 4.5:1以上のコントラスト比確保 |
+
+### 関連ドキュメント
+
+| ドキュメント | パス |
+| ------------ | ---- |
+| 実装ガイド | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md` |
+| コンポーネント設計書 | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-2/component-design.md` |
+| アクセシビリティ設計 | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-2/accessibility-design.md` |
+
+---
+
+## 完了タスク
+
+| Issue # | 機能名 | 完了日 | 関連ドキュメント |
+| ------- | ------ | ------ | ---------------- |
+| #468 | workspace-chat-edit-ui | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/` |
+
+---
