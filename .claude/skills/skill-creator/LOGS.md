@@ -577,6 +577,15 @@
 
 ---
 
+## [2026-01-24T22:29:26.872Z]
+
+- **Agent**: unknown
+- **Phase**: update
+- **Result**: ✓ 成功
+- **Notes**: Issue #468 workspace-chat-edit-ui実装からMonaco Diff Editor統合パターンをaiworkflow-requirements/architecture-patterns.mdに追加
+
+---
+
 ## [2026-01-24T22:31:13.437Z]
 
 - **Agent**: unknown
