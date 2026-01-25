@@ -201,7 +201,42 @@ Phase 12 Task 2 開始
     ↓
 「## 関連ドキュメント」セクションに実装ガイドリンク追加
     ↓
+「変更履歴」にバージョン追記
+    ↓
+LOGS.md にタスク完了エントリを追加（下記参照）
+    ↓
+topic-map.md に新規セクションエントリを追加（下記参照）
+    ↓
 完了
+```
+
+#### LOGS.md 更新（必須）
+
+`.claude/skills/aiworkflow-requirements/LOGS.md` に以下の形式でエントリを追加:
+
+```markdown
+## {{DATE}}: {{TASK_NAME}}（{{TASK_ID}}）
+
+| 項目         | 内容                                       |
+| ------------ | ------------------------------------------ |
+| タスクID     | {{TASK_ID}}                                |
+| 操作         | update-spec                                |
+| 対象ファイル | {{更新したファイル一覧}}                   |
+| 結果         | success                                    |
+| 備考         | {{実装内容の概要}}                         |
+
+### 更新詳細
+
+- **更新**: `references/{{FILE}}.md`（vX.Y.Z → vX.Y.Z+1）
+  - {{追加したセクション・内容}}
+```
+
+#### topic-map.md 更新（新規セクション追加時は必須）
+
+`.claude/skills/aiworkflow-requirements/indexes/topic-map.md` の該当ファイルセクションに:
+
+```markdown
+| {{新規セクション名}}（{{TASK_ID}}） | L{{行番号}} |
 ```
 
 ### Step 2: システム仕様更新（条件付き）
