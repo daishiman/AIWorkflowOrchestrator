@@ -309,191 +309,226 @@ private async verifySessionOwnership(
 
 ---
 
-## Renderer Process用インターフェース
+## Renderer Process型定義（UI側）
 
-> 以下の型定義とAPIはRenderer Processで使用される会話履歴UI用のインターフェースです。
+### Conversation
 
-### Conversation型（UI用）
+会話エンティティ型（Renderer Process用）。
 
-Renderer Processで使用される会話型。Backend側の`ChatSession`に相当。
+| フィールド | 型                                   | 説明                |
+| ---------- | ------------------------------------ | ------------------- |
+| id         | string                               | 会話ID（UUID）      |
+| title      | string                               | 会話タイトル        |
+| messages   | Message[]                            | メッセージ配列      |
+| createdAt  | string                               | 作成日時（ISO8601） |
+| updatedAt  | string                               | 更新日時（ISO8601） |
+| metadata   | Record<string, unknown> \| undefined | メタデータ          |
 
-| フィールド | 型        | 説明               |
-| ---------- | --------- | ------------------ |
-| id         | string    | 会話ID（UUID）     |
-| title      | string    | 会話タイトル       |
-| createdAt  | string    | 作成日時（ISO8601）|
-| updatedAt  | string    | 更新日時（ISO8601）|
+### ConversationSummary
 
-### ConversationSummary型
+会話サマリー型（一覧表示用）。
 
-会話一覧用のサマリー型。
+| フィールド   | 型     | 説明                |
+| ------------ | ------ | ------------------- |
+| id           | string | 会話ID（UUID）      |
+| title        | string | 会話タイトル        |
+| preview      | string | プレビュー文字列    |
+| messageCount | number | メッセージ数        |
+| createdAt    | string | 作成日時（ISO8601） |
+| updatedAt    | string | 更新日時（ISO8601） |
 
-| フィールド   | 型        | 説明                     |
-| ------------ | --------- | ------------------------ |
-| id           | string    | 会話ID（UUID）           |
-| title        | string    | 会話タイトル             |
-| preview      | string    | プレビュー（先頭30文字） |
-| lastModified | string    | 最終更新日時（ISO8601）  |
-| messageCount | number    | メッセージ数             |
+### Message
 
-### Message型（UI用）
+メッセージ型（Renderer Process用）。
 
-Renderer Processで使用されるメッセージ型。Backend側の`ChatMessage`に相当。
+| フィールド  | 型                        | 説明                 |
+| ----------- | ------------------------- | -------------------- |
+| id          | string                    | メッセージID（UUID） |
+| role        | 'user' \| 'assistant'     | メッセージ送信者     |
+| content     | string                    | メッセージ内容       |
+| timestamp   | string                    | 送信日時（ISO8601）  |
+| attachments | Attachment[] \| undefined | 添付ファイル配列     |
 
-| フィールド  | 型                    | 説明                   |
-| ----------- | --------------------- | ---------------------- |
-| id          | string                | メッセージID（UUID）   |
-| role        | 'user' \| 'assistant' | メッセージ送信者       |
-| content     | string                | メッセージ内容         |
-| timestamp   | string                | 作成日時（ISO8601）    |
-| attachments | Attachment[] \| null  | 添付ファイル（将来用） |
+### Attachment
 
-### Attachment型
+添付ファイル型。
 
-メッセージ添付ファイル型（将来拡張用）。
-
-| フィールド | 型     | 説明               |
-| ---------- | ------ | ------------------ |
-| id         | string | 添付ファイルID     |
-| name       | string | ファイル名         |
-| type       | string | MIMEタイプ         |
-| size       | number | ファイルサイズ     |
-| url        | string | ファイルURL/パス   |
+| フィールド | 型     | 説明                 |
+| ---------- | ------ | -------------------- |
+| id         | string | 添付ファイルID       |
+| name       | string | ファイル名           |
+| type       | string | MIMEタイプ           |
+| size       | number | ファイルサイズ(byte) |
+| url        | string | ファイルURL          |
 
 ---
 
 ## Preload API（conversationAPI）
 
-Renderer ProcessからMain ProcessへのIPC通信用API。`contextBridge`経由で`window.conversationAPI`として公開。
+Renderer ProcessからMain Processへのアクセスを提供するAPI。
 
 ### ConversationAPI インターフェース
 
-| メソッド   | 引数                           | 戻り値                         | 説明               |
-| ---------- | ------------------------------ | ------------------------------ | ------------------ |
-| list       | ListConversationsRequest       | Promise<PaginatedResponse<ConversationSummary>> | 一覧取得           |
-| get        | GetConversationRequest         | Promise<Conversation>          | 詳細取得           |
-| create     | CreateConversationRequest      | Promise<Conversation>          | 新規作成           |
-| update     | UpdateConversationRequest      | Promise<Conversation>          | 更新               |
-| delete     | DeleteConversationRequest      | Promise<void>                  | 削除               |
-| addMessage | AddMessageRequest              | Promise<Message>               | メッセージ追加     |
-| search     | SearchConversationsRequest     | Promise<ConversationSummary[]> | キーワード検索     |
+| メソッド   | 引数                                       | 戻り値                          | 説明           |
+| ---------- | ------------------------------------------ | ------------------------------- | -------------- |
+| create     | input: CreateConversationInput             | Promise<Conversation>           | 会話新規作成   |
+| get        | id: string                                 | Promise<Conversation \| null>   | 会話詳細取得   |
+| list       | options?: ListConversationOptions          | Promise<ConversationListResult> | 会話一覧取得   |
+| update     | id: string, input: UpdateConversationInput | Promise<Conversation>           | 会話更新       |
+| delete     | id: string                                 | Promise<void>                   | 会話削除       |
+| addMessage | id: string, input: AddMessageInput         | Promise<Message>                | メッセージ追加 |
+| search     | query: string, options?: SearchOptions     | Promise<ConversationSummary[]>  | キーワード検索 |
 
 ### IPCチャンネル一覧
 
-| チャンネル名               | 用途             | 実装ファイル                                     |
-| -------------------------- | ---------------- | ------------------------------------------------ |
-| `conversation:list`        | 会話一覧取得     | `apps/desktop/src/main/ipc/conversationHandlers.ts` |
-| `conversation:get`         | 会話詳細取得     | `apps/desktop/src/main/ipc/conversationHandlers.ts` |
-| `conversation:create`      | 会話新規作成     | `apps/desktop/src/main/ipc/conversationHandlers.ts` |
-| `conversation:update`      | 会話更新         | `apps/desktop/src/main/ipc/conversationHandlers.ts` |
-| `conversation:delete`      | 会話削除         | `apps/desktop/src/main/ipc/conversationHandlers.ts` |
-| `conversation:addMessage`  | メッセージ追加   | `apps/desktop/src/main/ipc/conversationHandlers.ts` |
-| `conversation:search`      | キーワード検索   | `apps/desktop/src/main/ipc/conversationHandlers.ts` |
-
-### 実装パターン
-
-```typescript
-// Preload API定義（apps/desktop/src/preload/index.ts）
-const conversationAPI: ConversationAPI = {
-  list: (request) => safeInvoke(IPC_CHANNELS.CONVERSATION_LIST, request),
-  get: (request) => safeInvoke(IPC_CHANNELS.CONVERSATION_GET, request),
-  create: (request) => safeInvoke(IPC_CHANNELS.CONVERSATION_CREATE, request),
-  update: (request) => safeInvoke(IPC_CHANNELS.CONVERSATION_UPDATE, request),
-  delete: (request) => safeInvoke(IPC_CHANNELS.CONVERSATION_DELETE, request),
-  addMessage: (request) => safeInvoke(IPC_CHANNELS.CONVERSATION_ADD_MESSAGE, request),
-  search: (request) => safeInvoke(IPC_CHANNELS.CONVERSATION_SEARCH, request),
-};
-
-contextBridge.exposeInMainWorld('conversationAPI', conversationAPI);
-```
+| チャンネル名              | 用途           | Handler関数               |
+| ------------------------- | -------------- | ------------------------- |
+| `conversation:list`       | 会話一覧取得   | handleListConversations   |
+| `conversation:get`        | 会話詳細取得   | handleGetConversation     |
+| `conversation:create`     | 会話新規作成   | handleCreateConversation  |
+| `conversation:update`     | 会話更新       | handleUpdateConversation  |
+| `conversation:delete`     | 会話削除       | handleDeleteConversation  |
+| `conversation:addMessage` | メッセージ追加 | handleAddMessage          |
+| `conversation:search`     | キーワード検索 | handleSearchConversations |
 
 ---
 
 ## React Hooks
 
-会話履歴UIコンポーネントで使用するカスタムHooks。
+### useConversations
 
-| Hook名           | 用途                       | 実装ファイル                                          |
-| ---------------- | -------------------------- | ----------------------------------------------------- |
-| useConversations | 会話一覧管理               | `apps/desktop/src/renderer/hooks/useConversations.ts` |
-| useConversation  | 単一会話管理               | `apps/desktop/src/renderer/hooks/useConversation.ts`  |
-| useMessages      | メッセージ管理             | `apps/desktop/src/renderer/hooks/useMessages.ts`      |
-| usePagination    | ページネーション管理       | `apps/desktop/src/renderer/hooks/usePagination.ts`    |
+会話一覧管理Hook。
+
+| 戻り値             | 型                                        | 説明             |
+| ------------------ | ----------------------------------------- | ---------------- |
+| conversations      | ConversationSummary[]                     | 会話サマリー配列 |
+| isLoading          | boolean                                   | ローディング状態 |
+| error              | Error \| null                             | エラー状態       |
+| hasMore            | boolean                                   | 追加データ有無   |
+| loadMore           | () => Promise<void>                       | 追加読み込み     |
+| refresh            | () => Promise<void>                       | リフレッシュ     |
+| createConversation | (title?: string) => Promise<Conversation> | 新規作成         |
+| deleteConversation | (id: string) => Promise<void>             | 削除             |
+
+### useConversation
+
+会話詳細管理Hook。
+
+| 戻り値       | 型                               | 説明             |
+| ------------ | -------------------------------- | ---------------- |
+| conversation | Conversation \| null             | 会話詳細         |
+| isLoading    | boolean                          | ローディング状態 |
+| error        | Error \| null                    | エラー状態       |
+| updateTitle  | (title: string) => Promise<void> | タイトル更新     |
+| refresh      | () => Promise<void>              | リフレッシュ     |
+
+### useMessages
+
+メッセージ管理Hook。
+
+| 戻り値      | 型                                 | 説明             |
+| ----------- | ---------------------------------- | ---------------- |
+| messages    | Message[]                          | メッセージ配列   |
+| isLoading   | boolean                            | ローディング状態 |
+| isSending   | boolean                            | 送信中状態       |
+| error       | Error \| null                      | エラー状態       |
+| sendMessage | (content: string) => Promise<void> | メッセージ送信   |
+| hasMore     | boolean                            | 追加データ有無   |
+| loadMore    | () => Promise<void>                | 追加読み込み     |
 
 ---
 
-## UIコンポーネント構成
+## UIコンポーネント構成（Atomic Design）
 
-### Atomic Design分類
+### Organisms（organisms）
 
-| レベル   | コンポーネント           | 責務                     |
-| -------- | ------------------------ | ------------------------ |
-| Organism | ConversationListPanel    | 会話一覧パネル全体       |
-| Organism | ConversationDetailView   | 会話詳細ビュー全体       |
-| Molecule | ConversationListItem     | 個別会話アイテム         |
-| Molecule | ConversationSearch       | 検索コンポーネント       |
-| Molecule | ConversationHeader       | ヘッダー（タイトル編集） |
-| Molecule | MessageList              | メッセージ一覧           |
-| Molecule | MessageInput             | メッセージ入力           |
-| Atom     | MessageBubble            | メッセージ吹き出し       |
-| Atom     | NewConversationButton    | 新規作成ボタン           |
+| コンポーネント         | 責務                         | 主要Props                        |
+| ---------------------- | ---------------------------- | -------------------------------- |
+| ConversationListPanel  | 会話一覧パネル（サイドバー） | onSelectConversation, selectedId |
+| ConversationDetailView | 会話詳細ビュー全体           | conversationId                   |
 
-### 実装ファイル配置
+### Molecules（molecules）
 
-```
-apps/desktop/src/renderer/components/conversation/
-├── ConversationListPanel.tsx
-├── ConversationListItem.tsx
-├── ConversationSearch.tsx
-├── NewConversationButton.tsx
-├── ConversationDetailView.tsx
-├── ConversationHeader.tsx
-├── MessageList.tsx
-├── MessageBubble.tsx
-├── MessageInput.tsx
-└── __tests__/
-    ├── ConversationListPanel.test.tsx
-    ├── ConversationListItem.test.tsx
-    ├── ConversationSearch.test.tsx
-    ├── NewConversationButton.test.tsx
-    ├── ConversationDetailView.test.tsx
-    ├── ConversationHeader.test.tsx
-    ├── MessageList.test.tsx
-    ├── MessageBubble.test.tsx
-    ├── MessageInput.test.tsx
-    └── EdgeCases.test.tsx
-```
+| コンポーネント       | 責務                         | 主要Props                         |
+| -------------------- | ---------------------------- | --------------------------------- |
+| ConversationListItem | 個別会話アイテム             | conversation, isSelected, onClick |
+| ConversationHeader   | 会話ヘッダー（タイトル編集） | title, onTitleChange              |
+| ConversationSearch   | 検索入力                     | value, onChange, onSearch         |
+| MessageList          | メッセージ一覧               | messages, isLoading               |
+| MessageBubble        | 個別メッセージ吹き出し       | message                           |
+| MessageInput         | メッセージ入力フォーム       | onSend, disabled, isLoading       |
+
+### Atoms（atoms）
+
+| コンポーネント        | 責務             | 主要Props                  |
+| --------------------- | ---------------- | -------------------------- |
+| NewConversationButton | 新規作成ボタン   | onClick, disabled          |
+| LoadingState          | ローディング表示 | message                    |
+| ErrorDisplay          | エラー表示       | error, onRetry             |
+| EmptyState            | 空状態表示       | title, description, action |
+
+---
+
+## アクセシビリティ対応
+
+| 対応項目                 | 状況        | 実装詳細                        |
+| ------------------------ | ----------- | ------------------------------- |
+| キーボードナビゲーション | 完全対応    | Tab/Enter/Escape/Arrow keys     |
+| スクリーンリーダー       | 完全対応    | aria-label, aria-live, role属性 |
+| 色コントラスト           | WCAG AA準拠 | 4.5:1以上のコントラスト比       |
+| フォーカス管理           | 完全対応    | visible focus indicators        |
 
 ---
 
 ## 完了タスク
 
-### タスク: conversation-history-ui-implementation（2026-01-25完了）
+### UI-CONV-HISTORY-001（2026-01-25完了）
 
-| 項目         | 内容                                                                                     |
-| ------------ | ---------------------------------------------------------------------------------------- |
-| タスクID     | UI-CONV-HISTORY-001                                                                      |
-| 完了日       | 2026-01-25                                                                               |
-| ステータス   | **完了**                                                                                 |
-| テスト数     | 280（自動テスト）+ 20（手動テスト項目）                                                  |
-| 発見課題     | 1件（MINOR-001: DOMPurifyサニタイズ → 別タスクとして管理）                               |
-| ドキュメント | `docs/30-workflows/conversation-history-ui-implementation/`                              |
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | UI-CONV-HISTORY-001                                                                |
+| タスク名     | conversation-history-ui-implementation                                             |
+| 完了日       | 2026-01-25                                                                         |
+| ステータス   | **完了**                                                                           |
+| テスト数     | 280（自動テスト）                                                                  |
+| カバレッジ   | Line: 98.66%, Branch: 95.07%, Function: 100%                                       |
+| ドキュメント | `docs/30-workflows/completed-tasks/task-conversation-history-ui-implementation.md` |
 
 #### テスト結果サマリー
 
-| カテゴリ              | テスト数 | PASS | FAIL |
-| --------------------- | -------- | ---- | ---- |
-| Preload API テスト    | 22       | 22   | 0    |
-| Hooks テスト          | 49       | 49   | 0    |
-| コンポーネント テスト | 231      | 231  | 0    |
+| カテゴリ         | テスト数 | PASS | FAIL |
+| ---------------- | -------- | ---- | ---- |
+| UIコンポーネント | 231      | 231  | 0    |
+| React Hooks      | 49       | 49   | 0    |
+| **合計**         | **280**  | 280  | 0    |
 
 #### 成果物
 
-| 成果物             | パス                                                                                                 |
-| ------------------ | ---------------------------------------------------------------------------------------------------- |
-| テスト結果レポート | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-11/manual-test-result.md`    |
-| 発見課題リスト     | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-11/discovered-issues.md`     |
-| 実装ガイド         | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-12/implementation-guide.md`  |
+| 成果物             | パス                                                                                                |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-11/manual-test-result.md`   |
+| 発見課題リスト     | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-11/discovered-issues.md`    |
+| 実装ガイド         | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-12/implementation-guide.md` |
+
+### UT-LLM-HISTORY-001（2026-01-24完了）
+
+| 項目         | 内容                                                      |
+| ------------ | --------------------------------------------------------- |
+| タスクID     | UT-LLM-HISTORY-001                                        |
+| タスク名     | llm-conversation-history-persistence                      |
+| 完了日       | 2026-01-24                                                |
+| ステータス   | **完了**                                                  |
+| テスト数     | 81（自動テスト）                                          |
+| カバレッジ   | 91.43%                                                    |
+| ドキュメント | `docs/30-workflows/llm-conversation-history-persistence/` |
+
+---
+
+## 残課題
+
+| タスク名                          | 依存タスク          | 優先度 | 未タスク指示書                                                                |
+| --------------------------------- | ------------------- | ------ | ----------------------------------------------------------------------------- |
+| conversation-security-improvement | UI-CONV-HISTORY-001 | 低     | `docs/30-workflows/unassigned-task/task-conversation-security-improvement.md` |
 
 ---
 
@@ -502,13 +537,15 @@ apps/desktop/src/renderer/components/conversation/
 - [LLMインターフェース仕様](./interfaces-llm.md) - ChatMessage型（リアルタイム用）
 - [データベース実装](./database-implementation.md) - Drizzle ORM、トランザクション
 - [アーキテクチャパターン](./architecture-patterns.md) - Repository Pattern
-- [会話履歴UI実装ガイド](../../../../docs/30-workflows/conversation-history-ui-implementation/outputs/phase-12/implementation-guide.md) - UI実装詳細
+- [会話履歴UIタスク指示書](docs/30-workflows/completed-tasks/task-conversation-history-ui-implementation.md) - UI実装タスク
+- [実装ガイド](docs/30-workflows/conversation-history-ui-implementation/outputs/phase-12/implementation-guide.md) - 実装詳細
 
 ---
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                        |
-| ------- | ---------- | ------------------------------------------------------------------------------ |
-| 1.0.0   | 2026-01-24 | 初版作成（バックエンド仕様）                                                   |
-| 1.1.0   | 2026-01-25 | UI実装完了（Renderer用型定義、IPCチャンネル、Hooks、UIコンポーネント仕様追加） |
+| Version   | Date       | Changes                                                                                                                                   |
+| --------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.2.0** | 2026-01-25 | UI-CONV-HISTORY-001完了: Renderer Process型定義追加、Preload API追加、React Hooks追加、UIコンポーネント構成追加、アクセシビリティ対応追加 |
+| 1.1.0     | 2026-01-24 | UT-LLM-HISTORY-001完了: 認可チェック追加、セキュリティ原則追加                                                                            |
+| 1.0.0     | 2026-01-20 | 初版作成: チャット履歴永続化インターフェース仕様                                                                                          |
