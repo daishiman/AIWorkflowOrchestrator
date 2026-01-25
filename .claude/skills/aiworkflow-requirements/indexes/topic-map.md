@@ -210,6 +210,7 @@ node scripts/list-specs.mjs --topics
 | Claude Code CLI統合 | L1853 |
 | Session Persistence（セッション永続化） | L1973 |
 | Skill Import Agent System 型定義（TASK-1-1） | L2191 |
+| Hooks実装（TASK-3-1-B） | L3199 |
 
 ### references/interfaces-auth.md
 
