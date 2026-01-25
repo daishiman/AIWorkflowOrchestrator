@@ -242,6 +242,217 @@ const options: Options = {
 
 ---
 
+## Hooks Factory パターン（TASK-3-1-B）
+
+SkillExecutor等で再利用可能なHooks生成パターン。
+
+### createHooks メソッド
+
+```typescript
+/** エラーカテゴリ */
+type ErrorCategory =
+  | "sdk_error"        // Claude Agent SDK内部エラー
+  | "permission_denied" // 権限拒否（危険コマンド、保護パス）
+  | "timeout"          // タイムアウト（AbortError含む）
+  | "network"          // ネットワークエラー
+  | "unknown";         // その他のエラー
+
+/** Hooksストリームメッセージ（Discriminated Union） */
+type HooksStreamMessage =
+  | { executionId: string; type: "tool_use"; content: ToolUseContent; timestamp: number }
+  | { executionId: string; type: "tool_result"; content: ToolResultContent; timestamp: number }
+  | { executionId: string; type: "status"; content: StatusContent; timestamp: number }
+  | { executionId: string; type: "error"; content: ErrorContent; timestamp: number };
+
+/** PreToolUse結果 */
+type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
+
+/**
+ * Hooks オブジェクトを生成
+ * @param executionId 実行を識別するユニークID
+ * @returns PreToolUse/PostToolUse hooks
+ */
+function createHooks(executionId: string) {
+  return {
+    PreToolUse: async (
+      input: HookInput,
+      toolUseID: string | undefined,
+      { signal }: { signal: AbortSignal }
+    ): Promise<PreToolUseResult> => {
+      // 1. AbortSignalチェック
+      if (signal.aborted) {
+        return { proceed: false, message: "実行がキャンセルされました" };
+      }
+
+      // 2. セキュリティチェック
+      if (input.toolName === "Bash") {
+        const command = input.args.command as string;
+        if (isDangerousCommand(command)) {
+          return { proceed: false, message: `危険なコマンドはブロックされました: ${command}` };
+        }
+      }
+
+      if (input.toolName === "Write" || input.toolName === "Edit") {
+        const path = input.args.file_path as string;
+        if (isProtectedPath(path)) {
+          return { proceed: false, message: `保護されたパスへの書き込みはブロックされました: ${path}` };
+        }
+      }
+
+      // 3. ストリームメッセージ送信
+      emitStreamMessage({
+        executionId,
+        type: "tool_use",
+        content: { toolName: input.toolName, args: input.args },
+        timestamp: Date.now(),
+      });
+
+      return { proceed: true };
+    },
+
+    PostToolUse: async (
+      input: HookInput,
+      toolUseID: string | undefined,
+      { signal }: { signal: AbortSignal }
+    ) => {
+      // ツール実行完了を通知
+      emitStreamMessage({
+        executionId,
+        type: "tool_result",
+        content: { toolName: input.toolName, result: input.result },
+        timestamp: Date.now(),
+      });
+      return {};
+    },
+  };
+}
+```
+
+### セキュリティチェック関数
+
+```typescript
+/** 危険なコマンドパターン */
+const DANGEROUS_PATTERNS = [
+  /\brm\s+(-rf?|--recursive)\b/,
+  /\bsudo\b/,
+  /\bchmod\s+777\b/,
+  /\bdd\s+if=/,
+  /\bmkfs\b/,
+  /\b>\s*\/dev\/sd[a-z]/,
+];
+
+/** 保護パスパターン */
+const PROTECTED_PATHS = [
+  /^\/etc\//,
+  /^\/usr\//,
+  /^\/bin\//,
+  /^\/sbin\//,
+  /\.env$/,
+  /credentials\.(json|yaml|yml)$/,
+];
+
+/**
+ * 危険なコマンドかどうかを判定
+ */
+function isDangerousCommand(command: string): boolean {
+  return DANGEROUS_PATTERNS.some(pattern => pattern.test(command));
+}
+
+/**
+ * 保護されたパスかどうかを判定
+ */
+function isProtectedPath(path: string): boolean {
+  return PROTECTED_PATHS.some(pattern => pattern.test(path));
+}
+```
+
+### エラーハンドリング関数
+
+```typescript
+/**
+ * エラーをカテゴリに分類
+ */
+function categorizeError(error: unknown): ErrorCategory {
+  if (error instanceof Error) {
+    // AbortError → timeout
+    if (error.name === "AbortError") return "timeout";
+
+    // Network errors
+    if (
+      error.message.includes("fetch") ||
+      error.message.includes("network") ||
+      error.message.includes("ECONNREFUSED")
+    ) {
+      return "network";
+    }
+
+    // Permission denied
+    if (
+      error.message.includes("permission") ||
+      error.message.includes("blocked")
+    ) {
+      return "permission_denied";
+    }
+
+    // SDK errors
+    if (error.message.includes("SDK") || error.message.includes("API")) {
+      return "sdk_error";
+    }
+  }
+
+  return "unknown";
+}
+
+/**
+ * リトライ可能なエラーかどうかを判定
+ */
+function isRetryable(error: unknown): boolean {
+  const category = categorizeError(error);
+  // network と timeout のみリトライ可能
+  return category === "network" || category === "timeout";
+}
+```
+
+### 使用例（SkillExecutor）
+
+```typescript
+class SkillExecutor {
+  async execute(phase: SkillPhase, projectPath: string): Promise<SkillExecutionResult> {
+    const executionId = crypto.randomUUID();
+    const hooks = this.createHooks(executionId);
+
+    try {
+      const conversation = query({
+        prompt: this.buildPrompt(phase, projectPath),
+        options: {
+          tools: ["Read", "Edit", "Write", "Bash"],
+          hooks,
+          signal: this.abortController.signal,
+        },
+      });
+
+      for await (const message of conversation.stream()) {
+        this.handleStreamMessage(message);
+      }
+
+      return { success: true };
+    } catch (error) {
+      const category = this.categorizeError(error);
+      const retryable = this.isRetryable(error);
+
+      return {
+        success: false,
+        error: { category, message: String(error), retryable },
+      };
+    }
+  }
+}
+```
+
+📖 実装参照: `apps/desktop/src/main/services/skill/SkillExecutor.ts`
+
+---
+
 ## ベストプラクティス
 
 ### すべきこと
