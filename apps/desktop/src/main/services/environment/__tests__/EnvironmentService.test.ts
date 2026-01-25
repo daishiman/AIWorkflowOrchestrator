@@ -1,4 +1,26 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+
+// jsdomのESM互換性問題を回避するためにモック化（ContentSanitizerが依存）
+vi.mock("jsdom", () => ({
+  JSDOM: vi.fn().mockImplementation(() => ({
+    window: {
+      document: {
+        createElement: vi.fn(),
+        createDocumentFragment: vi.fn(),
+      },
+    },
+  })),
+}));
+
+// DOMPurifyをモック化（ContentSanitizerが依存）
+vi.mock("dompurify", () => {
+  const mockPurify = vi.fn((html: string) => html);
+  mockPurify.sanitize = mockPurify;
+  return {
+    default: vi.fn(() => mockPurify),
+  };
+});
+
 import { EnvironmentService } from "../EnvironmentService";
 import { ContentExtractor } from "../ContentExtractor";
 import { ContentSanitizer } from "../ContentSanitizer";

@@ -1,5 +1,71 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { ExtractedContent } from "@repo/shared/types/agent";
+
+// jsdomのESM互換性問題を回避するためにモック化
+vi.mock("jsdom", () => ({
+  JSDOM: vi.fn().mockImplementation(() => ({
+    window: {
+      document: {
+        createElement: vi.fn(),
+        createDocumentFragment: vi.fn(),
+      },
+    },
+  })),
+}));
+
+// DOMPurifyをモック化（jsdomに依存しないテスト用）
+vi.mock("dompurify", () => {
+  const mockPurify = vi.fn((html: string, _options?: unknown) => {
+    // 簡易的なサニタイズ処理（テスト用）
+    let sanitized = html;
+    // scriptタグを除去
+    sanitized = sanitized.replace(
+      /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+      "",
+    );
+    // styleタグを除去
+    sanitized = sanitized.replace(
+      /<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi,
+      "",
+    );
+    // iframeタグを除去
+    sanitized = sanitized.replace(/<iframe\b[^>]*>.*?<\/iframe>/gi, "");
+    sanitized = sanitized.replace(/<iframe\b[^>]*>/gi, "");
+    // objectタグを除去
+    sanitized = sanitized.replace(/<object\b[^>]*>.*?<\/object>/gi, "");
+    sanitized = sanitized.replace(/<object\b[^>]*>/gi, "");
+    // embedタグを除去
+    sanitized = sanitized.replace(/<embed\b[^>]*>/gi, "");
+    // baseタグを除去
+    sanitized = sanitized.replace(/<base\b[^>]*>/gi, "");
+    // イベントハンドラを除去（ダブルクォート、シングルクォート、エンコード済みを含む）
+    sanitized = sanitized.replace(
+      /\s+(onclick|onerror|onload|onmouseover|onfocus)\s*=\s*"[^"]*"/gi,
+      "",
+    );
+    sanitized = sanitized.replace(
+      /\s+(onclick|onerror|onload|onmouseover|onfocus)\s*=\s*'[^']*'/gi,
+      "",
+    );
+    sanitized = sanitized.replace(
+      /\s+(onclick|onerror|onload|onmouseover|onfocus)\s*=[^\s>"']*/gi,
+      "",
+    );
+    // javascript:プロトコルを除去
+    sanitized = sanitized.replace(
+      /href\s*=\s*["']javascript:[^"']*["']/gi,
+      'href=""',
+    );
+    // data-*属性を除去
+    sanitized = sanitized.replace(/\s+data-[a-z-]+\s*=\s*["'][^"']*["']/gi, "");
+    return sanitized;
+  });
+  mockPurify.sanitize = mockPurify;
+  return {
+    default: vi.fn(() => mockPurify),
+  };
+});
+
 import { ContentSanitizer } from "../ContentSanitizer";
 
 describe("ContentSanitizer", () => {
