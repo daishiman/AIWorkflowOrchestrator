@@ -1,0 +1,38 @@
+{
+  "workflow": {
+    "id": "TASK-3-1-C",
+    "title": "PermissionRequest Hook 統合",
+    "createdAt": "2026-01-25",
+    "status": "pending"
+  },
+  "phases": {
+    "1": { "status": "pending", "completedAt": null },
+    "2": { "status": "pending", "completedAt": null },
+    "3": { "status": "pending", "completedAt": null },
+    "4": { "status": "pending", "completedAt": null },
+    "5": { "status": "pending", "completedAt": null },
+    "6": { "status": "pending", "completedAt": null },
+    "7": { "status": "pending", "completedAt": null },
+    "8": { "status": "pending", "completedAt": null },
+    "9": { "status": "pending", "completedAt": null },
+    "10": { "status": "pending", "completedAt": null },
+    "11": { "status": "pending", "completedAt": null },
+    "12": { "status": "pending", "completedAt": null },
+    "13": { "status": "pending", "completedAt": null }
+  },
+  "artifacts": [],
+  "dependencies": {
+    "dependsOn": ["TASK-3-1-B", "TASK-3-2"],
+    "blocks": ["TASK-4-2"]
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md",
+      ".claude/skills/aiworkflow-requirements/references/security-skill-execution.md"
+    ],
+    "sdkRefs": [
+      "~/.aiworkflow/skills/claude-agent-sdk/references/permission-control.md",
+      "~/.claude/skills/claude-agent-sdk/references/permission-control.md"
+    ]
+  }
+}
