@@ -1,0 +1,112 @@
+{
+  "taskId": "UI-CONV-HISTORY-001",
+  "taskName": "conversation-history-ui-implementation",
+  "featureName": "conversation-history-ui-implementation",
+  "issueNumber": 485,
+  "createdAt": "2026-01-24T23:08:15Z",
+  "updatedAt": "2026-01-24T23:08:15Z",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "required": [
+      {
+        "taskId": "UT-LLM-HISTORY-001",
+        "name": "会話履歴永続化バックエンド",
+        "status": "completed"
+      }
+    ]
+  },
+  "expectedArtifacts": {
+    "code": [
+      "apps/desktop/src/renderer/components/conversation/ConversationListPanel.tsx",
+      "apps/desktop/src/renderer/components/conversation/ConversationListItem.tsx",
+      "apps/desktop/src/renderer/components/conversation/ConversationSearch.tsx",
+      "apps/desktop/src/renderer/components/conversation/NewConversationButton.tsx",
+      "apps/desktop/src/renderer/components/conversation/ConversationDetailView.tsx",
+      "apps/desktop/src/renderer/components/conversation/ConversationHeader.tsx",
+      "apps/desktop/src/renderer/components/conversation/MessageList.tsx",
+      "apps/desktop/src/renderer/components/conversation/MessageBubble.tsx",
+      "apps/desktop/src/renderer/components/conversation/MessageInput.tsx",
+      "apps/desktop/src/renderer/hooks/useConversations.ts",
+      "apps/desktop/src/renderer/hooks/useConversation.ts",
+      "apps/desktop/src/renderer/hooks/useMessages.ts",
+      "apps/desktop/src/preload/index.ts"
+    ],
+    "tests": [
+      "apps/desktop/src/renderer/__tests__/components/conversation/*.test.tsx",
+      "apps/desktop/src/renderer/__tests__/hooks/*.test.ts",
+      "apps/desktop/src/preload/__tests__/conversationAPI.test.ts"
+    ],
+    "documentation": [
+      "outputs/phase-1/requirements-definition.md",
+      "outputs/phase-2/design-document.md",
+      "outputs/phase-11/manual-test-result.md",
+      "outputs/phase-12/implementation-guide.md"
+    ]
+  }
+}
