@@ -281,6 +281,48 @@ private validatePath(targetPath: string): void {
 | `skill:remove`        | sender検証 + skillId検証       |
 | `skill:get-detail`    | sender検証 + skillId検証       |
 
+#### スキルインポートIPCチャネル（TASK-4-1）
+
+**実装場所**: `apps/desktop/src/preload/channels.ts`
+
+スキルインポート機能用のIPCチャネル定義（8チャネル）:
+
+```typescript
+// Skill import operations (TASK-4-1)
+SKILL_LIST: "skill:list",
+SKILL_SCAN: "skill:scan",
+SKILL_GET_IMPORTED: "skill:getImported",
+SKILL_UPDATE: "skill:update",
+SKILL_COMPLETE: "skill:complete",
+SKILL_ERROR: "skill:error",
+SKILL_PERMISSION_REQUEST: "skill:permission:request",
+SKILL_PERMISSION_RESPONSE: "skill:permission:response",
+```
+
+**ホワイトリスト登録**:
+
+| ホワイトリスト          | 登録チャネル                                                                 |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| ALLOWED_INVOKE_CHANNELS | `skill:list`, `skill:scan`, `skill:getImported`, `skill:update`, `skill:permission:response` |
+| ALLOWED_ON_CHANNELS     | `skill:complete`, `skill:error`, `skill:permission:request`                  |
+
+**チャネル通信方向**:
+
+| チャネル                    | 方向  | 用途                           |
+| --------------------------- | ----- | ------------------------------ |
+| `skill:list`                | R→M   | 利用可能なスキル一覧取得       |
+| `skill:scan`                | R→M   | スキルディレクトリスキャン     |
+| `skill:getImported`         | R→M   | インポート済みスキル一覧取得   |
+| `skill:update`              | R→M   | スキル設定更新                 |
+| `skill:complete`            | M→R   | スキル実行完了イベント         |
+| `skill:error`               | M→R   | スキルエラーイベント           |
+| `skill:permission:request`  | M→R   | 権限リクエスト（Main起点）     |
+| `skill:permission:response` | R→M   | 権限レスポンス（Renderer応答） |
+
+**テストカバレッジ**: 60テスト（channels.skill-import.test.ts）
+
+**関連タスク**: TASK-4-1 IPCチャネル定義（2026-01-25完了）
+
 ### 自動更新のセキュリティ
 
 | 項目         | 要件                         |
@@ -552,3 +594,29 @@ interface SkillStreamChunk {
 - [セキュリティ実装概要](./security-implementation.md)
 - [入力バリデーション](./security-input-validation.md)
 - [デプロイメント](./deployment.md)
+- [TASK-4-1 IPCチャネル定義 実装ガイド](../../../docs/30-workflows/TASK-4-1-ipc-channels/outputs/phase-12/implementation-guide.md)
+
+---
+
+## 完了タスク
+
+### TASK-4-1（2026-01-25完了）
+
+- スキルインポート機能用IPCチャネル定義（8チャネル）
+- ホワイトリスト登録（ALLOWED_INVOKE_CHANNELS: 5件、ALLOWED_ON_CHANNELS: 3件）
+- 型安全性確保（as const、IpcChannel型）
+- テスト60件作成（全件PASS）
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                              |
+| ---------- | ---------- | ----------------------------------------------------- |
+| 1.6.0      | 2026-01-25 | TASK-4-1完了: スキルインポートIPCチャネル8件追加      |
+| 1.5.0      | 2026-01-25 | TASK-3-2完了: Skill Execution Preload APIセキュリティ |
+| 1.4.0      | 2026-01-17 | Claude CLI Renderer APIセキュリティ追加               |
+| 1.3.0      | 2026-01-17 | Claude Code CLI連携セキュリティ追加                   |
+| 1.2.0      | 2026-01-14 | slideSettingsAPI実装例追加                            |
+| 1.1.0      | 2026-01-13 | historyAPI実装例追加                                  |
+| 1.0.0      | 2026-01-01 | 初版作成                                              |
