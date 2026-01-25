@@ -179,6 +179,10 @@ export const IPC_CHANNELS = {
   SKILL_ABORT: "skill:abort",
   SKILL_GET_STATUS: "skill:get-status",
 
+  // Skill permission operations
+  SKILL_PERMISSION_REQUEST: "skill:permission:request",
+  SKILL_PERMISSION_RESPONSE: "skill:permission:response",
+
   // History operations
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
@@ -363,6 +367,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_EXECUTE,
   IPC_CHANNELS.SKILL_ABORT,
   IPC_CHANNELS.SKILL_GET_STATUS,
+  // Skill permission channels
+  IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
@@ -447,4 +453,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.CLAUDE_CLI_SESSION_STATUS,
   // Skill streaming channels
   IPC_CHANNELS.SKILL_STREAM,
+  // Skill permission channels
+  IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
 ];

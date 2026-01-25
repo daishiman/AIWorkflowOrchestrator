@@ -1,0 +1,255 @@
+{
+  "taskId": "TASK-3-1-D",
+  "taskName": "Renderer側権限ダイアログUI実装",
+  "githubIssue": 509,
+  "branch": "feature/task-3-1-d-permission-dialog-ui",
+  "status": "specification-complete",
+  "createdAt": "2026-01-25",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "complete",
+      "completedAt": "2026-01-25",
+      "outputs": [
+        "outputs/phase-1/existing-implementation-analysis.md",
+        "outputs/phase-1/functional-requirements.md",
+        "outputs/phase-1/non-functional-requirements.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "complete",
+      "completedAt": "2026-01-25",
+      "outputs": [
+        "outputs/phase-2/skill-api-interface-design.md",
+        "outputs/phase-2/ipc-communication-design.md",
+        "outputs/phase-2/component-integration-design.md",
+        "outputs/phase-2/type-definitions-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "file": "phase-3-design-review.md",
+      "status": "complete",
+      "completedAt": "2026-01-25",
+      "outputs": [
+        "outputs/phase-3/requirements-fulfillment-check.md",
+        "outputs/phase-3/existing-implementation-alignment.md",
+        "outputs/phase-3/integration-test-review.md",
+        "outputs/phase-3/review-result.md"
+      ],
+      "reviewResult": "PASS"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD Red）",
+      "file": "phase-4-test-creation.md",
+      "status": "complete",
+      "completedAt": "2026-01-25",
+      "outputs": ["outputs/phase-4/tdd-red-confirmation.md"],
+      "testFiles": [
+        "apps/desktop/src/preload/__tests__/skill-api.permission.test.ts",
+        "apps/desktop/src/renderer/components/AgentView/__tests__/SkillStreamDisplay.permission.test.tsx"
+      ],
+      "tddRedResult": {
+        "totalTests": 52,
+        "failedTests": 31,
+        "passedTests": 21,
+        "status": "PASS"
+      }
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD Green）",
+      "file": "phase-5-implementation.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": ["outputs/phase-5/tdd-green-confirmation.md"],
+      "implementedFiles": [
+        "apps/desktop/src/preload/channels.ts",
+        "apps/desktop/src/preload/skill-api.ts",
+        "apps/desktop/src/preload/types.d.ts",
+        "apps/desktop/src/renderer/hooks/useSkillPermission.ts",
+        "apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx"
+      ],
+      "tddGreenResult": {
+        "totalTests": 92,
+        "passedTests": 92,
+        "failedTests": 0,
+        "status": "PASS"
+      }
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": ["outputs/phase-6/test-expansion-report.md"],
+      "addedTests": {
+        "skillApiPermission": 6,
+        "skillStreamDisplayPermission": 9,
+        "total": 15
+      },
+      "totalTests": 107
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage-check.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-judgment.md",
+        "outputs/phase-7/integration-test-result.md"
+      ],
+      "coverageResult": {
+        "totalTests": 124,
+        "passedTests": 124,
+        "coverageTargets": {
+          "line": "100%",
+          "branch": "100%",
+          "function": "100%"
+        },
+        "status": "PASS"
+      }
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD Refactor）",
+      "file": "phase-8-refactoring.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": ["outputs/phase-8/tdd-refactor-confirmation.md"],
+      "refactoringResult": {
+        "codeQuality": "PASS",
+        "testsAfterRefactor": 124,
+        "allTestsPassed": true,
+        "majorChanges": false,
+        "status": "PASS"
+      }
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "file": "phase-9-quality.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": [
+        "outputs/phase-9/lint-result.md",
+        "outputs/phase-9/typecheck-result.md",
+        "outputs/phase-9/security-check.md",
+        "outputs/phase-9/final-test-result.md"
+      ],
+      "qualityResult": {
+        "lintErrors": 0,
+        "typeErrors": 0,
+        "securityIssues": 0,
+        "testsPassed": 124,
+        "status": "PASS"
+      }
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "file": "phase-10-final-review.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": [
+        "outputs/phase-10/requirements-check.md",
+        "outputs/phase-10/design-compliance.md",
+        "outputs/phase-10/integration-check.md",
+        "outputs/phase-10/final-judgment.md"
+      ],
+      "reviewResult": {
+        "requirementsFulfilled": "100%",
+        "designCompliance": "100%",
+        "integrationVerified": true,
+        "status": "PASS"
+      }
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "file": "phase-11-manual-test.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": [
+        "outputs/phase-11/dialog-display-test.md",
+        "outputs/phase-11/user-operation-test.md",
+        "outputs/phase-11/accessibility-test.md",
+        "outputs/phase-11/edge-case-test.md"
+      ],
+      "manualTestResult": {
+        "checklistsCreated": true,
+        "testCases": 22,
+        "status": "PENDING_EXECUTION"
+      }
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "file": "phase-12-documentation.md",
+      "status": "complete",
+      "completedAt": "2026-01-26",
+      "outputs": [
+        "outputs/phase-12/api-documentation.md",
+        "outputs/phase-12/ipc-documentation.md",
+        "outputs/phase-12/component-documentation.md",
+        "outputs/phase-12/changelog.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "pending"
+    }
+  ],
+  "deliverables": {
+    "implementation": [
+      "apps/desktop/src/preload/channels.ts",
+      "apps/desktop/src/preload/skill-api.ts",
+      "apps/desktop/src/preload/types.d.ts",
+      "apps/desktop/src/renderer/hooks/useSkillPermission.ts",
+      "apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx"
+    ],
+    "tests": [
+      "apps/desktop/src/preload/__tests__/skill-api.permission.test.ts",
+      "apps/desktop/src/renderer/components/AgentView/__tests__/SkillStreamDisplay.permission.test.tsx"
+    ],
+    "documentation": [
+      "outputs/phase-12/api-documentation.md",
+      "outputs/phase-12/ipc-documentation.md",
+      "outputs/phase-12/component-documentation.md",
+      "outputs/phase-12/changelog.md"
+    ]
+  },
+  "dependencies": {
+    "predecessor": "TASK-3-1-C",
+    "predecessorDescription": "PermissionRequest Hook統合（Main Process側）",
+    "sharedComponents": [
+      "apps/desktop/src/renderer/components/organisms/PermissionDialog/"
+    ]
+  },
+  "ipcChannels": {
+    "new": ["SKILL_PERMISSION_REQUEST", "SKILL_PERMISSION_RESPOND"],
+    "existing": ["AGENT_PERMISSION_REQUEST", "AGENT_PERMISSION_RESPOND"]
+  },
+  "types": {
+    "new": ["SkillPermissionRequest", "SkillPermissionResponse"],
+    "existing": ["PermissionRequest", "PermissionResponse"]
+  },
+  "qualityTargets": {
+    "lineCoverage": "80%",
+    "branchCoverage": "60%",
+    "functionCoverage": "80%"
+  }
+}

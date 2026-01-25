@@ -18,6 +18,10 @@ import type {
   SkillExecutionResponse,
   ExecutionInfo,
 } from "@repo/shared/types/skill-execution";
+import type {
+  SkillPermissionRequest,
+  SkillPermissionResponse,
+} from "@repo/shared/types/skill";
 
 /**
  * SkillAPI - Skill 実行関連の Preload API インターフェース
@@ -50,6 +54,22 @@ export interface SkillAPI {
    * @returns 実行情報（見つからない場合 null）
    */
   getExecutionStatus: (executionId: string) => Promise<ExecutionInfo | null>;
+
+  /**
+   * 権限確認リクエストを受信するコールバックを登録する
+   * @param callback - リクエスト受信時のコールバック関数
+   * @returns クリーンアップ関数（リスナー解除用）
+   */
+  onPermission: (
+    callback: (request: SkillPermissionRequest) => void,
+  ) => () => void;
+
+  /**
+   * 権限確認に対して応答する
+   * @param response - 権限確認レスポンス
+   * @returns 応答成功の場合 true
+   */
+  respondPermission: (response: SkillPermissionResponse) => Promise<boolean>;
 }
 
 /**
@@ -97,4 +117,15 @@ export const skillAPI: SkillAPI = {
 
   getExecutionStatus: (executionId: string): Promise<ExecutionInfo | null> =>
     safeInvoke(IPC_CHANNELS.SKILL_GET_STATUS, executionId),
+
+  onPermission: (
+    callback: (request: SkillPermissionRequest) => void,
+  ): (() => void) =>
+    safeOn<SkillPermissionRequest>(
+      IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+      callback,
+    ),
+
+  respondPermission: (response: SkillPermissionResponse): Promise<boolean> =>
+    safeInvoke(IPC_CHANNELS.SKILL_PERMISSION_RESPONSE, response),
 };
