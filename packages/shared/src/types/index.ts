@@ -90,6 +90,13 @@ export type {
 
 export { DEFAULT_SLIDE_SETTINGS } from "./slideSettings";
 
+// Permission Store型定義 (TASK-3-1-E)
+export type {
+  AllowedToolEntry,
+  PermissionStoreSchema,
+  IPermissionStore,
+} from "./permission-store";
+
 // ファイル選択型定義
 export type {
   FileExtension,

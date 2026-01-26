@@ -714,12 +714,65 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
-
 ## [実行日時: 2026-01-26T02:09:48.407Z]
 
 - Task: 未タスク仕様書作成（task-phase12-output-validation.md）
 - 結果: success
 - フィードバック: TASK-3-1-Dフィードバックから発見したパターンに基づくPhase 12出力検証タスク作成
+
+---
+
+## 2026-01-26: rememberChoice機能永続化（TASK-3-1-E）
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-3-1-E                                                                                     |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | security-skill-execution.md、ui-ux-settings.md、interfaces-agent-sdk.md、topic-map.md          |
+| 結果         | success                                                                                        |
+| 備考         | Permission Store永続化、PermissionSettings UI、IPC API仕様追加                                 |
+
+### 更新詳細
+
+- **更新**: `references/security-skill-execution.md`（v1.0.0 → v1.1.0）
+  - 「Permission Store（権限永続化）」セクション追加（約85行）
+  - PermissionStore API定義（6メソッド）
+  - データスキーマ（PermissionStoreSchema、AllowedToolEntry）
+  - ストレージパス（macOS/Windows/Linux）
+  - セキュリティ考慮事項テーブル
+
+- **更新**: `references/ui-ux-settings.md`（v1.0.0 → v1.1.0）
+  - 「ツール許可設定（Permission Settings）」セクション追加（約60行）
+  - UIコンポーネント構成図
+  - UI仕様・アクセシビリティ要件テーブル
+  - IPC API仕様（3チャンネル）
+  - テストカバレッジ（86テスト）
+  - 実装ファイルリスト更新
+
+- **更新**: `references/interfaces-agent-sdk.md`（v2.0.0 → v2.1.0）
+  - 「タスク: remember-choice-persistence（TASK-3-1-E）」完了タスクセクション追加
+  - PermissionStore API参照テーブル
+  - IPC API定義（3チャンネル）
+  - 関連ドキュメントリンク追加
+
+- **更新**: `indexes/topic-map.md`
+  - security-skill-execution.mdセクションに「Permission Store」エントリ追加
+  - ui-ux-settings.mdセクションに「ツール許可設定」エントリ追加
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                                    |
+| -------------- | --------------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/guides/permission-store.md`                                                       |
+| タスク仕様書   | `docs/30-workflows/task-3-1-e-remember-choice-persistence/`                             |
+
+### テスト品質
+
+| 項目           | 値     |
+| -------------- | ------ |
+| テスト総数     | 86     |
+| カバレッジ     | 96%+   |
+| 新規テスト     | 86     |
 
 ---
 

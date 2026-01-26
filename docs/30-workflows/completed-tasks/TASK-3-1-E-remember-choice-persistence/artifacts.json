@@ -1,0 +1,144 @@
+{
+  "taskId": "TASK-3-1-E",
+  "taskName": "rememberChoice機能の永続化実装",
+  "featureName": "task-3-1-e-remember-choice-persistence",
+  "createdAt": "2026-01-25",
+  "updatedAt": "2026-01-25",
+  "status": "pending",
+  "currentPhase": null,
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "required": [
+      {
+        "taskId": "TASK-3-1-C",
+        "name": "PermissionRequest Hook統合",
+        "status": "completed"
+      },
+      {
+        "taskId": "TASK-3-1-D",
+        "name": "Renderer側権限ダイアログUI",
+        "status": "pending"
+      }
+    ],
+    "blocks": []
+  },
+  "outputs": {
+    "code": [
+      {
+        "name": "PermissionStore",
+        "path": "apps/desktop/src/main/services/skill/PermissionStore.ts",
+        "type": "source"
+      },
+      {
+        "name": "SkillExecutor更新",
+        "path": "apps/desktop/src/main/services/skill/SkillExecutor.ts",
+        "type": "source"
+      },
+      {
+        "name": "PermissionSettings UI",
+        "path": "apps/desktop/src/renderer/components/PermissionSettings.tsx",
+        "type": "source"
+      }
+    ],
+    "tests": [
+      {
+        "name": "PermissionStoreテスト",
+        "path": "apps/desktop/src/main/services/skill/__tests__/PermissionStore.test.ts",
+        "type": "test"
+      }
+    ],
+    "documents": []
+  }
+}

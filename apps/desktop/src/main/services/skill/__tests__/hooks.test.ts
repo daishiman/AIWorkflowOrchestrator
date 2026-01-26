@@ -17,6 +17,16 @@ vi.mock("@repo/shared/constants", () => ({
   isProtectedPath: vi.fn(),
 }));
 
+// PermissionStoreモック
+const mockPermissionStore = {
+  isToolAllowed: vi.fn().mockReturnValue(false),
+  allowTool: vi.fn(),
+  revokeTool: vi.fn(),
+  getAllowedTools: vi.fn().mockReturnValue([]),
+  getAllowedToolEntries: vi.fn().mockReturnValue([]),
+  clearAll: vi.fn(),
+};
+
 // BrowserWindowモック作成ヘルパー
 function createMockBrowserWindow(): BrowserWindow {
   return {
@@ -36,7 +46,8 @@ describe("SkillExecutor - Hooks", () => {
     vi.clearAllMocks();
     mockWindow = createMockBrowserWindow();
     mockSend = mockWindow.webContents.send as ReturnType<typeof vi.fn>;
-    executor = new SkillExecutor(mockWindow);
+    mockPermissionStore.isToolAllowed.mockReturnValue(false);
+    executor = new SkillExecutor(mockWindow, mockPermissionStore);
   });
 
   describe("PreToolUse", () => {

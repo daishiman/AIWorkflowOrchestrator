@@ -497,6 +497,7 @@ import type {
 } from "../shared/types/conversation";
 
 import { skillAPI, type SkillAPI } from "./skill-api";
+import type { PermissionAPI } from "./types";
 
 const conversationAPI: ConversationAPI = {
   list: (request: ConversationListRequest) =>
@@ -515,6 +516,14 @@ const conversationAPI: ConversationAPI = {
     safeInvoke(IPC_CHANNELS.CONVERSATION_SEARCH, request),
 };
 
+// Permission API for permission settings management (TASK-3-1-E)
+const permissionAPI: PermissionAPI = {
+  getAllowedTools: () => safeInvoke(IPC_CHANNELS.PERMISSION_GET_ALLOWED_TOOLS),
+  revokeTool: (toolName: string) =>
+    safeInvoke(IPC_CHANNELS.PERMISSION_REVOKE_TOOL, { toolName }),
+  clearAll: () => safeInvoke(IPC_CHANNELS.PERMISSION_CLEAR_ALL),
+};
+
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
@@ -528,6 +537,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("systemPromptAPI", systemPromptAPI);
     contextBridge.exposeInMainWorld("conversationAPI", conversationAPI);
     contextBridge.exposeInMainWorld("skillAPI", skillAPI);
+    contextBridge.exposeInMainWorld("permissionAPI", permissionAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -548,4 +558,6 @@ if (process.contextIsolated) {
   (window as unknown as { conversationAPI: ConversationAPI }).conversationAPI =
     conversationAPI;
   (window as unknown as { skillAPI: SkillAPI }).skillAPI = skillAPI;
+  (window as unknown as { permissionAPI: PermissionAPI }).permissionAPI =
+    permissionAPI;
 }

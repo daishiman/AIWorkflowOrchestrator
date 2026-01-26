@@ -38,6 +38,16 @@ vi.mock("uuid", () => ({
   v4: () => "test-execution-id-1234",
 }));
 
+// PermissionStoreモック
+const mockPermissionStore = {
+  isToolAllowed: vi.fn().mockReturnValue(false),
+  allowTool: vi.fn(),
+  revokeTool: vi.fn(),
+  getAllowedTools: vi.fn().mockReturnValue([]),
+  getAllowedToolEntries: vi.fn().mockReturnValue([]),
+  clearAll: vi.fn(),
+};
+
 describe("SkillExecutor", () => {
   let executor: SkillExecutor;
 
@@ -82,7 +92,10 @@ describe("SkillExecutor", () => {
     // isDestroyed を再設定
     mockMainWindow.isDestroyed = vi.fn().mockReturnValue(false);
 
-    executor = new SkillExecutor(mockMainWindow);
+    // PermissionStoreモックをリセット
+    mockPermissionStore.isToolAllowed.mockReturnValue(false);
+
+    executor = new SkillExecutor(mockMainWindow, mockPermissionStore);
   });
 
   afterEach(() => {
@@ -91,12 +104,12 @@ describe("SkillExecutor", () => {
 
   describe("constructor", () => {
     it("should create instance with BrowserWindow", () => {
-      const instance = new SkillExecutor(mockMainWindow);
+      const instance = new SkillExecutor(mockMainWindow, mockPermissionStore);
       expect(instance).toBeDefined();
     });
 
     it("should initialize with empty active executions", () => {
-      const instance = new SkillExecutor(mockMainWindow);
+      const instance = new SkillExecutor(mockMainWindow, mockPermissionStore);
       expect(instance.getActiveExecutions()).toHaveLength(0);
     });
   });
@@ -152,7 +165,10 @@ describe("SkillExecutor", () => {
     it("should reject when max concurrent executions exceeded", async () => {
       // 同時実行制限をテストするためにexecutorの内部状態を直接操作
       // 実際の5つの実行を待つ代わりに、activeExecutionsに直接エントリを追加
-      const testExecutor = new SkillExecutor(mockMainWindow);
+      const testExecutor = new SkillExecutor(
+        mockMainWindow,
+        mockPermissionStore,
+      );
 
       // 5つのダミー実行を登録してactiveExecutionsを満杯にする
       // @ts-expect-error - private property access for testing
@@ -458,7 +474,10 @@ describe("SkillExecutor", () => {
   describe("IPC communication", () => {
     it("should not send message when window is destroyed", async () => {
       mockMainWindow.isDestroyed = vi.fn().mockReturnValue(true);
-      const destroyedExecutor = new SkillExecutor(mockMainWindow);
+      const destroyedExecutor = new SkillExecutor(
+        mockMainWindow,
+        mockPermissionStore,
+      );
 
       await destroyedExecutor.execute(mockRequest, mockSkill);
 

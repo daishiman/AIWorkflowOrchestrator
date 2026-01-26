@@ -12,7 +12,7 @@ description: |
 
   Trigger:
   プロジェクト仕様の検索、アーキテクチャ確認、API設計参照、セキュリティ要件確認、テスト戦略参照を行う場合に使用。
-  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ
+  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice
 allowed-tools:
   - Read
   - Glob
@@ -146,6 +146,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                        |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.31.0  | 2026-01-26 | TASK-3-1-E完了: security-skill-execution.mdにPermission Storeセクション追加、ui-ux-settings.mdにPermissionSettings UI追加、interfaces-agent-sdk.md更新。159テスト・96%カバレッジ達成                                                                          |
 | 6.30.0  | 2026-01-26 | TASK-4-2完了: interfaces-agent-sdk.md v2.2.0更新（PermissionResolver IPC Handlers完了記録、IPCチャンネル2種、Preload API、usePermissionDialog Hook、PermissionDialog）、security-api-electron.md更新（Permission IPCセキュリティ）。93テスト・94.67%カバレッジ |
 | 6.29.0  | 2026-01-26 | TASK-3-1-D完了: interfaces-agent-sdk.md v2.3.0更新（skillAPI.onPermission/respondPermission、useSkillPermission Hook、型定義）、security-api-electron.md更新（IPC channels、テストカバレッジ）。124テスト・100%カバレッジ                                      |
 | 6.28.0  | 2026-01-25 | TASK-3-2完了: security-api-electron.mdにSkill Execution Preload APIセキュリティセクション追加（IPCチャンネル4種、ホワイトリスト、ストリーミングセキュリティ、React Hook統合）。138テスト・100%カバレッジ                                                       |

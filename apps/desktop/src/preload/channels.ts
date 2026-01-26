@@ -246,6 +246,11 @@ export const IPC_CHANNELS = {
   CHAT_EDIT_WRITE_FILE: "chat-edit:write-file",
   CHAT_EDIT_GET_SELECTION: "chat-edit:get-selection",
   CHAT_EDIT_SEND_WITH_CONTEXT: "chat-edit:send-with-context",
+
+  // Permission operations (TASK-3-1-E)
+  PERMISSION_GET_ALLOWED_TOOLS: "permission:getAllowedTools",
+  PERMISSION_REVOKE_TOOL: "permission:revokeTool",
+  PERMISSION_CLEAR_ALL: "permission:clearAll",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -428,6 +433,10 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.CHAT_EDIT_WRITE_FILE,
   IPC_CHANNELS.CHAT_EDIT_GET_SELECTION,
   IPC_CHANNELS.CHAT_EDIT_SEND_WITH_CONTEXT,
+  // Permission channels (TASK-3-1-E)
+  IPC_CHANNELS.PERMISSION_GET_ALLOWED_TOOLS,
+  IPC_CHANNELS.PERMISSION_REVOKE_TOOL,
+  IPC_CHANNELS.PERMISSION_CLEAR_ALL,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

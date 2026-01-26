@@ -263,7 +263,7 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 
 ### 概要
 
-ユーザーが「この選択を記憶する（rememberChoice）」を選択した場合のツール許可状態を永続化する機能。
+ユーザーが「この選択を記憶する（rememberChoice）」を選択した場合のツール許可状態をelectron-storeで永続化するサービスです。
 
 ### アーキテクチャ
 
@@ -276,11 +276,11 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 ┌─────────────────┐     ┌─────────────────┐
 │ isToolAllowed() │────▶│  In-Memory Map  │ ← O(1) lookup
 └────────┬────────┘     └─────────────────┘
-         │
-    ┌────┴────┐
-    │ Allowed │
-    └────┬────┘
-    ┌────▼────┐    ┌────▼────┐
+         │                      │
+    ┌────┴────┐                 ▼
+    │ Allowed │          ┌─────────────┐
+    └────┬────┘          │ electron-store │
+    ┌────▼────┐    ┌────▼────┐   └─────────────┘
     │  Yes    │    │   No    │
     └────┬────┘    └────┬────┘
          │              │
@@ -294,27 +294,27 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 
 ```typescript
 interface PermissionStoreSchema {
-  version: number; // スキーマバージョン（現在: 1）
-  allowedTools: AllowedToolEntry[];
-  updatedAt: string; // ISO 8601 timestamp
+  version: number;           // スキーマバージョン（現在: 1）
+  allowedTools: AllowedToolEntry[];  // 許可済みツール一覧
+  updatedAt: string;         // 最終更新日時（ISO 8601）
 }
 
 interface AllowedToolEntry {
-  toolName: string; // ツール識別子
-  allowedAt: string; // ISO 8601 timestamp（許可日時）
+  toolName: string;          // ツール識別子
+  allowedAt: string;         // 許可日時（ISO 8601）
 }
 ```
 
 ### API
 
-| メソッド                | 計算量 | 説明                       |
-| ----------------------- | ------ | -------------------------- |
-| isToolAllowed(tool)     | O(1)   | ツールが許可済みか判定     |
-| allowTool(tool)         | O(1)   | ツールを許可リストに追加   |
-| revokeTool(tool)        | O(1)   | ツールを許可リストから削除 |
-| getAllowedTools()       | O(n)   | 許可ツール名一覧を取得     |
-| getAllowedToolEntries() | O(n)   | 許可ツール詳細一覧を取得   |
-| clearAll()              | O(n)   | 全許可をクリア             |
+| メソッド                  | 戻り値               | 計算量 | 説明                         |
+| ------------------------- | -------------------- | ------ | ---------------------------- |
+| `isToolAllowed(tool)`     | `boolean`            | O(1)   | ツールが許可済みか判定       |
+| `allowTool(tool)`         | `void`               | O(1)   | ツールを許可リストに追加     |
+| `revokeTool(tool)`        | `boolean`            | O(1)   | ツールを許可リストから削除   |
+| `getAllowedTools()`       | `string[]`           | O(n)   | 許可ツール名一覧を取得       |
+| `getAllowedToolEntries()` | `AllowedToolEntry[]` | O(n)   | 許可ツール詳細一覧を取得     |
+| `clearAll()`              | `number`             | O(n)   | 全許可をクリア（削除数返却） |
 
 ### ストレージ
 
@@ -326,12 +326,21 @@ interface AllowedToolEntry {
 
 ### セキュリティ考慮事項
 
-| 観点         | 対策                                             |
-| ------------ | ------------------------------------------------ |
-| データ機密性 | ツール名とタイムスタンプのみ保存（機密情報なし） |
-| スキーマ検証 | 不正データは自動的にリセット                     |
-| 入力検証     | ツール名はString型に強制変換                     |
-| エラー復旧   | ファイル破損時はデフォルト値で再初期化           |
+| 項目               | 対策                                              |
+| ------------------ | ------------------------------------------------- |
+| 不正アクセス防止   | Main Process専用、IPCチャンネルでRenderer間接操作 |
+| データ機密性       | ツール名とタイムスタンプのみ保存（機密情報なし）  |
+| データ破損対策     | 読み込みエラー時はデフォルト値で初期化            |
+| 入力検証           | toolNameはALLOWED_TOOLS_WHITELISTで検証可能       |
+| シングルトン保証   | getInstance()によるインスタンス管理               |
+
+### テストカバレッジ
+
+| メトリクス        | 値     |
+| ----------------- | ------ |
+| Line Coverage     | 96%+   |
+| Function Coverage | 100%   |
+| テスト数          | 86件   |
 
 ---
 
@@ -341,13 +350,13 @@ interface AllowedToolEntry {
 - [APIセキュリティ・Electronセキュリティ](./security-api-electron.md)
 - [入力バリデーション](./security-input-validation.md)
 - [Agent SDK インターフェース](./interfaces-agent-sdk.md)
-- [設定画面 UI/UX](./ui-ux-settings.md)
+- [設定画面 UI/UX](./ui-ux-settings.md) - PermissionSettings UI
 
 ---
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                               |
-| ---------- | ---------- | -------------------------------------- |
-| 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E） |
-| 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）  |
+| バージョン | 日付       | 変更内容                                     |
+| ---------- | ---------- | -------------------------------------------- |
+| 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E）       |
+| 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）        |

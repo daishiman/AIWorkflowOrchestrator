@@ -23,6 +23,20 @@ vi.mock("../PermissionResolver", () => ({
   PermissionResolver: vi.fn(() => mockPermissionResolver),
 }));
 
+// PermissionStore モック - electron-store のエラーを防ぐ
+const mockDefaultPermissionStore = {
+  isToolAllowed: vi.fn().mockReturnValue(false),
+  allowTool: vi.fn(),
+  revokeTool: vi.fn(),
+  getAllowedTools: vi.fn().mockReturnValue([]),
+  getAllowedToolEntries: vi.fn().mockReturnValue([]),
+  clearAll: vi.fn(),
+};
+
+vi.mock("../PermissionStore", () => ({
+  PermissionStore: vi.fn(() => mockDefaultPermissionStore),
+}));
+
 // SDK モック
 vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
   query: vi.fn(() => ({
@@ -1288,6 +1302,271 @@ describe("SkillExecutor - Integration Tests (Phase 6)", () => {
           abortController.signal,
         ),
       ).rejects.toThrow("aborted");
+    });
+  });
+});
+
+// =================================================================
+// TASK-3-1-E: PermissionStore 連携テスト
+// Phase 4: テスト作成（TDD: Red）
+// =================================================================
+
+describe("SkillExecutor - PermissionStore Integration (TASK-3-1-E)", () => {
+  let executor: SkillExecutor;
+  let mockMainWindow: {
+    webContents: { send: ReturnType<typeof vi.fn> };
+    isDestroyed: ReturnType<typeof vi.fn>;
+  };
+  let mockPermissionStoreInstance: {
+    isToolAllowed: ReturnType<typeof vi.fn>;
+    allowTool: ReturnType<typeof vi.fn>;
+    revokeTool: ReturnType<typeof vi.fn>;
+    getAllowedTools: ReturnType<typeof vi.fn>;
+    getAllowedToolEntries: ReturnType<typeof vi.fn>;
+    clearAll: ReturnType<typeof vi.fn>;
+  };
+
+  beforeEach(() => {
+    mockMainWindow = {
+      webContents: { send: vi.fn() },
+      isDestroyed: vi.fn().mockReturnValue(false),
+    };
+    mockPermissionStoreInstance = {
+      isToolAllowed: vi.fn().mockReturnValue(false),
+      allowTool: vi.fn(),
+      revokeTool: vi.fn(),
+      getAllowedTools: vi.fn().mockReturnValue([]),
+      getAllowedToolEntries: vi.fn().mockReturnValue([]),
+      clearAll: vi.fn(),
+    };
+    vi.clearAllMocks();
+
+    // PermissionStore を注入して executor を作成
+    executor = new SkillExecutor(
+      mockMainWindow as unknown as BrowserWindow,
+      mockPermissionStoreInstance,
+    );
+  });
+
+  describe("自動許可（ダイアログスキップ）", () => {
+    it("許可済みツールで権限ダイアログがスキップされる", async () => {
+      // 準備: Read ツールは許可済み
+      mockPermissionStoreInstance.isToolAllowed.mockReturnValue(true);
+
+      const response = await executor.sendPermissionRequest(
+        "exec-123",
+        "Read",
+        { file_path: "/test.txt" },
+        undefined,
+      );
+
+      // 検証
+      expect(mockPermissionStoreInstance.isToolAllowed).toHaveBeenCalledWith(
+        "Read",
+      );
+      expect(response.approved).toBe(true);
+      expect(response.rememberChoice).toBe(true);
+      expect(mockMainWindow.webContents.send).not.toHaveBeenCalled(); // ダイアログは表示されない
+    });
+
+    it("未許可ツールで権限ダイアログが表示される", async () => {
+      // 準備: Bash ツールは未許可
+      mockPermissionStoreInstance.isToolAllowed.mockReturnValue(false);
+      mockPermissionResolver.waitForResponse.mockResolvedValue({
+        requestId: "test-id",
+        approved: true,
+      });
+
+      await executor.sendPermissionRequest(
+        "exec-123",
+        "Bash",
+        { command: "ls" },
+        undefined,
+      );
+
+      // 検証
+      expect(mockPermissionStoreInstance.isToolAllowed).toHaveBeenCalledWith(
+        "Bash",
+      );
+      expect(mockMainWindow.webContents.send).toHaveBeenCalled(); // ダイアログが表示される
+    });
+
+    it("自動許可時にログを出力する", async () => {
+      // 準備
+      mockPermissionStoreInstance.isToolAllowed.mockReturnValue(true);
+      const consoleSpy = vi.spyOn(console, "info");
+
+      await executor.sendPermissionRequest(
+        "exec-123",
+        "Read",
+        { file_path: "/test.txt" },
+        undefined,
+      );
+
+      // 検証: 実装では "Auto-approving tool (already allowed): Read" と出力される
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Auto-approving"),
+      );
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe("権限永続化（rememberChoice=true）", () => {
+    it("rememberChoice=trueで許可時にツールが永続化される", async () => {
+      // 準備
+      mockPermissionStoreInstance.isToolAllowed.mockReturnValue(false);
+      mockPermissionResolver.waitForResponse.mockResolvedValue({
+        requestId: "test-id",
+        approved: true,
+        rememberChoice: true,
+      });
+
+      await executor.sendPermissionRequest(
+        "exec-123",
+        "Read",
+        { file_path: "/test.txt" },
+        undefined,
+      );
+
+      // handlePermissionResponse を呼び出す
+      executor.handlePermissionResponse(
+        "test-id",
+        true,
+        true,
+        undefined,
+        "Read",
+      );
+
+      // 検証
+      expect(mockPermissionStoreInstance.allowTool).toHaveBeenCalledWith(
+        "Read",
+      );
+    });
+
+    it("rememberChoice=falseで許可時にツールが永続化されない", async () => {
+      // 準備
+      mockPermissionStoreInstance.isToolAllowed.mockReturnValue(false);
+      mockPermissionResolver.waitForResponse.mockResolvedValue({
+        requestId: "test-id",
+        approved: true,
+        rememberChoice: false,
+      });
+
+      await executor.sendPermissionRequest(
+        "exec-123",
+        "Read",
+        { file_path: "/test.txt" },
+        undefined,
+      );
+
+      // handlePermissionResponse を呼び出す
+      executor.handlePermissionResponse(
+        "test-id",
+        true,
+        false,
+        undefined,
+        "Read",
+      );
+
+      // 検証
+      expect(mockPermissionStoreInstance.allowTool).not.toHaveBeenCalled();
+    });
+
+    it("拒否時は永続化されない", async () => {
+      // 準備
+      mockPermissionStoreInstance.isToolAllowed.mockReturnValue(false);
+      mockPermissionResolver.waitForResponse.mockResolvedValue({
+        requestId: "test-id",
+        approved: false,
+        rememberChoice: true, // rememberChoice が true でも
+      });
+
+      await executor.sendPermissionRequest(
+        "exec-123",
+        "Bash",
+        { command: "rm -rf /" },
+        undefined,
+      );
+
+      // handlePermissionResponse を呼び出す
+      executor.handlePermissionResponse(
+        "test-id",
+        false,
+        true,
+        "危険なコマンド",
+        "Bash",
+      );
+
+      // 検証: 拒否なので allowTool は呼ばれない
+      expect(mockPermissionStoreInstance.allowTool).not.toHaveBeenCalled();
+    });
+
+    it("永続化時にログを出力する", async () => {
+      // 準備
+      mockPermissionStoreInstance.isToolAllowed.mockReturnValue(false);
+      const consoleSpy = vi.spyOn(console, "info");
+
+      executor.handlePermissionResponse(
+        "test-id",
+        true,
+        true,
+        undefined,
+        "Read",
+      );
+
+      // 検証: 実装では "Tool permission persisted: Read" と出力される
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining("persisted"),
+      );
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe("handlePermissionResponse with toolName", () => {
+    it("should accept toolName parameter for persistence", () => {
+      executor.handlePermissionResponse(
+        "req-id",
+        true,
+        true,
+        undefined,
+        "Glob",
+      );
+
+      // 検証
+      expect(mockPermissionStoreInstance.allowTool).toHaveBeenCalledWith(
+        "Glob",
+      );
+    });
+
+    it("should not persist when toolName is not provided", () => {
+      executor.handlePermissionResponse("req-id", true, true, undefined);
+
+      // 検証: toolName がないので永続化されない
+      expect(mockPermissionStoreInstance.allowTool).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("PermissionStore なしでの動作", () => {
+    it("PermissionStore 未注入時はデフォルトのPermissionStoreを使用する", async () => {
+      // デフォルトのPermissionStoreモックを使用してSkillExecutorを作成
+      const executorWithDefaultStore = new SkillExecutor(
+        mockMainWindow as unknown as BrowserWindow,
+      );
+
+      mockPermissionResolver.waitForResponse.mockResolvedValue({
+        requestId: "test-id",
+        approved: true,
+      });
+
+      await executorWithDefaultStore.sendPermissionRequest(
+        "exec-123",
+        "Read",
+        { file_path: "/test.txt" },
+        undefined,
+      );
+
+      // 検証: デフォルトのモックは isToolAllowed が false を返すのでダイアログが表示される
+      expect(mockMainWindow.webContents.send).toHaveBeenCalled();
     });
   });
 });

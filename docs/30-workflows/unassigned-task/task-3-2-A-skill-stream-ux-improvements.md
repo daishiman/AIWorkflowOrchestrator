@@ -1,7 +1,5 @@
 # SkillStreamDisplay UX改善 - タスク指示書
 
-## メタ情報
-
 ```yaml
 issue_number: 520
 ```

@@ -9,6 +9,36 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { BrowserWindow } from "electron";
 import { SkillExecutor } from "../SkillExecutor";
 
+// electron-store モック（PermissionStore用）
+vi.mock("electron-store", () => {
+  return {
+    default: class MockElectronStore {
+      private data: Record<string, unknown> = {
+        version: 1,
+        allowedTools: [],
+        updatedAt: new Date().toISOString(),
+      };
+      constructor() {}
+      get store() {
+        return this.data;
+      }
+      get(_key: string, defaultValue?: unknown) {
+        return defaultValue;
+      }
+      set(key: string | Record<string, unknown>, value?: unknown) {
+        if (typeof key === "string") {
+          this.data[key] = value;
+        } else {
+          Object.assign(this.data, key);
+        }
+      }
+      clear() {
+        this.data = {};
+      }
+    },
+  };
+});
+
 // BrowserWindowモック作成ヘルパー
 function createMockBrowserWindow(): BrowserWindow {
   return {

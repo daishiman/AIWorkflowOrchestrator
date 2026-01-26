@@ -28,6 +28,32 @@ interface OperationResult<T> {
 
 // === Mocks ===
 
+// Mock electron-store (required for PermissionStore in SkillExecutor)
+vi.mock("electron-store", () => {
+  return {
+    default: class MockElectronStore {
+      private data: Record<string, unknown> = {};
+      constructor() {}
+      get store() {
+        return this.data;
+      }
+      get(key: string) {
+        return this.data[key];
+      }
+      set(key: string | Record<string, unknown>, value?: unknown) {
+        if (typeof key === "object") {
+          Object.assign(this.data, key);
+        } else {
+          this.data[key] = value;
+        }
+      }
+      clear() {
+        this.data = {};
+      }
+    },
+  };
+});
+
 // Mock SkillService
 const mockSkillService = {
   scanAvailableSkills: vi.fn(),
