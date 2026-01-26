@@ -7,7 +7,7 @@
  */
 
 import { useState, useCallback, useEffect } from "react";
-import type { SkillPermissionRequest } from "@repo/shared/types/skill";
+import type { SkillPermissionRequest } from "@repo/shared";
 
 /**
  * useSkillPermission の戻り値
@@ -49,11 +49,14 @@ export function useSkillPermission(): UseSkillPermissionReturn {
   // 権限リクエストをリッスン
   useEffect(() => {
     // skillAPI が利用可能か確認
-    if (typeof window === "undefined" || !window.skillAPI?.onPermission) {
+    if (
+      typeof window === "undefined" ||
+      !window.skillAPI?.onPermissionRequest
+    ) {
       return;
     }
 
-    const cleanup = window.skillAPI.onPermission(
+    const cleanup = window.skillAPI.onPermissionRequest(
       (request: SkillPermissionRequest) => {
         setPendingPermission(request);
       },
@@ -70,7 +73,7 @@ export function useSkillPermission(): UseSkillPermissionReturn {
       if (!pendingPermission) return;
 
       window.skillAPI
-        ?.respondPermission({
+        ?.sendPermissionResponse({
           requestId: pendingPermission.requestId,
           approved: true,
           rememberChoice,
@@ -92,7 +95,7 @@ export function useSkillPermission(): UseSkillPermissionReturn {
       if (!pendingPermission) return;
 
       window.skillAPI
-        ?.respondPermission({
+        ?.sendPermissionResponse({
           requestId: pendingPermission.requestId,
           approved: false,
           rememberChoice,
