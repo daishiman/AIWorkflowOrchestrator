@@ -91,7 +91,18 @@
       "Skill",
       "mcp__context7__resolve-library-id",
       "mcp__context7__query-docs",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(for script in detect-mode.js init-artifacts.js validate-phase-output.js complete-phase.js verify-all-specs.js detect-unassigned-tasks.js generate-documentation-changelog.js validate-schema.js log-usage.js generate-index.js)",
+      "Bash(do echo \"=== $script ===\")",
+      "Bash(node .claude/skills/task-specification-creator/scripts/$script --help)",
+      "Bash(node:*)",
+      "Bash(for:*)",
+      "Bash(do if [ ! -f \"$file\" ])",
+      "Bash(then echo \"MISSING: $file\")",
+      "Bash(fi)",
+      "Bash(do if [ -f \"$file\" ])",
+      "Bash(then echo \"EXISTS: $file\")",
+      "Bash(else echo \"MISSING: $file\")"
     ],
     "deny": [],
     "ask": []

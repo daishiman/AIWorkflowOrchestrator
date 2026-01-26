@@ -1,0 +1,136 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "scope-definition.json",
+  "title": "Scope Definition",
+  "description": "identify-scopeエージェントの出力スキーマ",
+  "type": "object",
+  "required": ["scope", "prerequisites", "constraints", "acceptanceCriteria"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "関連タスクID",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "scope": {
+      "type": "object",
+      "description": "スコープ定義",
+      "required": ["includes"],
+      "properties": {
+        "includes": {
+          "type": "array",
+          "description": "含む項目",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "excludes": {
+          "type": "array",
+          "description": "含まない項目",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "description": "前提条件",
+      "items": {
+        "type": "object",
+        "required": ["condition"],
+        "properties": {
+          "condition": {
+            "type": "string",
+            "description": "前提条件"
+          },
+          "type": {
+            "type": "string",
+            "description": "条件タイプ",
+            "enum": ["technical", "business", "resource", "dependency"]
+          },
+          "status": {
+            "type": "string",
+            "description": "条件の充足状態",
+            "enum": ["met", "not-met", "unknown"]
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "constraints": {
+      "type": "array",
+      "description": "制約条件",
+      "items": {
+        "type": "object",
+        "required": ["constraint"],
+        "properties": {
+          "constraint": {
+            "type": "string",
+            "description": "制約内容"
+          },
+          "type": {
+            "type": "string",
+            "description": "制約タイプ",
+            "enum": ["technical", "business", "time", "resource", "quality"]
+          },
+          "impact": {
+            "type": "string",
+            "description": "影響度",
+            "enum": ["high", "medium", "low"]
+          }
+        }
+      }
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "description": "受け入れ基準（検証可能な形式）",
+      "items": {
+        "type": "object",
+        "required": ["criterion", "verificationMethod"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "基準ID",
+            "pattern": "^AC-\\d+$"
+          },
+          "criterion": {
+            "type": "string",
+            "description": "受け入れ基準（検証可能な形式）",
+            "minLength": 10
+          },
+          "verificationMethod": {
+            "type": "string",
+            "description": "検証方法",
+            "enum": ["automated-test", "manual-test", "code-review", "documentation-review"]
+          },
+          "priority": {
+            "type": "string",
+            "description": "優先度",
+            "enum": ["must", "should", "could"]
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "outOfScope": {
+      "type": "array",
+      "description": "明示的なスコープ外項目",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "スコープ外項目"
+          },
+          "reason": {
+            "type": "string",
+            "description": "除外理由"
+          }
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "作成日時"
+    }
+  },
+  "additionalProperties": false
+}

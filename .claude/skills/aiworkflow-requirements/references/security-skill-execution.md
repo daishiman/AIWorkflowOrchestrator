@@ -38,17 +38,17 @@ Claude Codeスキル実行時のセキュリティチェックに使用する危
 
 危険なBashコマンドのパターンリスト。PreToolUseフックでのコマンド検証に使用。
 
-| カテゴリ         | パターン                                    | リスクレベル |
-| ---------------- | ------------------------------------------- | ------------ |
+| カテゴリ         | パターン                                       | リスクレベル |
+| ---------------- | ---------------------------------------------- | ------------ | -------- | -------- |
 | 破壊的コマンド   | `rm -rf`, `rm -r`, `> /dev/`, `dd if=`, `mkfs` | Critical     |
-| 権限昇格         | `sudo`, `su -`, `su `                       | Critical     |
-| シェル操作       | `chmod 777`, `chown root`                   | High         |
-| コマンド置換     | `$(`, `` ` ``                               | High         |
-| 危険なシェル起動 | `/bin/sh`, `/bin/bash`, `bash -c`           | High         |
-| 評価・実行       | `eval `, `exec `, `source `                 | High         |
-| スケジューラ     | `crontab`, `at `                            | Medium       |
-| フォークボム     | `:(){ :|:& };:`                             | Critical     |
-| ネットワーク     | `curl | sh`, `wget | sh`                   | Critical     |
+| 権限昇格         | `sudo`, `su -`, `su `                          | Critical     |
+| シェル操作       | `chmod 777`, `chown root`                      | High         |
+| コマンド置換     | `$(`, `` ` ``                                  | High         |
+| 危険なシェル起動 | `/bin/sh`, `/bin/bash`, `bash -c`              | High         |
+| 評価・実行       | `eval `, `exec `, `source `                    | High         |
+| スケジューラ     | `crontab`, `at `                               | Medium       |
+| フォークボム     | `:(){ :                                        | :& };:`      | Critical |
+| ネットワーク     | `curl                                          | sh`, `wget   | sh`      | Critical |
 
 **検出方式**: 単語境界考慮の正規表現マッチング
 
@@ -63,18 +63,18 @@ return regex.test(command);
 
 保護すべきファイルパスのGlobパターンリスト。Write/Editツールでのパス検証に使用。
 
-| カテゴリ             | パターン                         | 保護理由               |
-| -------------------- | -------------------------------- | ---------------------- |
-| システムディレクトリ | `/etc/**`, `/usr/**`, `/var/**`  | システム設定保護       |
-| ブートディレクトリ   | `/boot/**`, `/sbin/**`, `/bin/**` | OS起動保護             |
-| シェル設定ファイル   | `**/.bashrc`, `**/.zshrc`, `**/.profile` | シェル環境保護         |
-| Git設定              | `**/.gitconfig`                  | Git認証情報保護        |
-| SSH鍵                | `~/.ssh/**`                      | SSH認証情報保護        |
-| GPG鍵                | `~/.gnupg/**`                    | 暗号鍵保護             |
-| クラウド認証情報     | `~/.aws/**`, `~/.kube/**`, `~/.gcloud/**` | クラウドアクセス保護   |
+| カテゴリ             | パターン                                      | 保護理由                |
+| -------------------- | --------------------------------------------- | ----------------------- |
+| システムディレクトリ | `/etc/**`, `/usr/**`, `/var/**`               | システム設定保護        |
+| ブートディレクトリ   | `/boot/**`, `/sbin/**`, `/bin/**`             | OS起動保護              |
+| シェル設定ファイル   | `**/.bashrc`, `**/.zshrc`, `**/.profile`      | シェル環境保護          |
+| Git設定              | `**/.gitconfig`                               | Git認証情報保護         |
+| SSH鍵                | `~/.ssh/**`                                   | SSH認証情報保護         |
+| GPG鍵                | `~/.gnupg/**`                                 | 暗号鍵保護              |
+| クラウド認証情報     | `~/.aws/**`, `~/.kube/**`, `~/.gcloud/**`     | クラウドアクセス保護    |
 | アプリケーション認証 | `**/.env`, `**/.env.*`, `**/credentials.json` | API鍵・シークレット保護 |
-| パスワードストア     | `~/.password-store/**`           | パスワード保護         |
-| npmトークン          | `**/.npmrc`                      | パッケージ公開権限保護 |
+| パスワードストア     | `~/.password-store/**`                        | パスワード保護          |
+| npmトークン          | `**/.npmrc`                                   | パッケージ公開権限保護  |
 
 **Globパターン対応**:
 
@@ -90,24 +90,24 @@ return regex.test(command);
 
 スキル実行時に許可されるツールのホワイトリスト。
 
-| ツール名   | 用途                   | リスクレベル |
-| ---------- | ---------------------- | ------------ |
-| Read       | ファイル読み取り       | Low          |
-| Write      | ファイル書き込み       | Medium       |
-| Edit       | ファイル編集           | Medium       |
-| Bash       | コマンド実行           | High         |
-| Glob       | ファイルパターン検索   | Low          |
-| Grep       | テキスト検索           | Low          |
-| LS         | ディレクトリ一覧       | Low          |
-| Task       | サブタスク実行         | Medium       |
-| WebSearch  | Web検索                | Low          |
-| WebFetch   | Webコンテンツ取得      | Medium       |
-| TodoWrite  | TODOリスト書き込み     | Low          |
+| ツール名  | 用途                 | リスクレベル |
+| --------- | -------------------- | ------------ |
+| Read      | ファイル読み取り     | Low          |
+| Write     | ファイル書き込み     | Medium       |
+| Edit      | ファイル編集         | Medium       |
+| Bash      | コマンド実行         | High         |
+| Glob      | ファイルパターン検索 | Low          |
+| Grep      | テキスト検索         | Low          |
+| LS        | ディレクトリ一覧     | Low          |
+| Task      | サブタスク実行       | Medium       |
+| WebSearch | Web検索              | Low          |
+| WebFetch  | Webコンテンツ取得    | Medium       |
+| TodoWrite | TODOリスト書き込み   | Low          |
 
 **型定義**:
 
 ```typescript
-export type AllowedTool = typeof ALLOWED_TOOLS_WHITELIST[number];
+export type AllowedTool = (typeof ALLOWED_TOOLS_WHITELIST)[number];
 // = "Read" | "Write" | "Edit" | "Bash" | "Glob" | "Grep" | "LS" | "Task" | "WebSearch" | "WebFetch" | "TodoWrite"
 ```
 
@@ -122,14 +122,15 @@ export type AllowedTool = typeof ALLOWED_TOOLS_WHITELIST[number];
 ```typescript
 import { isDangerousCommand } from "@repo/shared/constants";
 
-isDangerousCommand("rm -rf /");           // true - 破壊的コマンド
+isDangerousCommand("rm -rf /"); // true - 破壊的コマンド
 isDangerousCommand("sudo apt-get update"); // true - 権限昇格
-isDangerousCommand("ls -la");             // false - 安全
-isDangerousCommand("cat file.txt");       // false - 単語境界考慮でatを誤検出しない
-isDangerousCommand("");                   // false - 空文字列
+isDangerousCommand("ls -la"); // false - 安全
+isDangerousCommand("cat file.txt"); // false - 単語境界考慮でatを誤検出しない
+isDangerousCommand(""); // false - 空文字列
 ```
 
 **特徴**:
+
 - 単語境界を考慮（`cat`の`at`を誤検出しない）
 - 空文字列は`false`を返す
 
@@ -140,14 +141,15 @@ isDangerousCommand("");                   // false - 空文字列
 ```typescript
 import { isProtectedPath } from "@repo/shared/constants";
 
-isProtectedPath("/etc/passwd");         // true - システムファイル
-isProtectedPath("~/.ssh/id_rsa");       // true - SSH鍵
-isProtectedPath("/home/user/.bashrc");  // true - シェル設定
-isProtectedPath("/tmp/test.txt");       // false - 一時ファイル
-isProtectedPath("");                    // false - 空文字列
+isProtectedPath("/etc/passwd"); // true - システムファイル
+isProtectedPath("~/.ssh/id_rsa"); // true - SSH鍵
+isProtectedPath("/home/user/.bashrc"); // true - シェル設定
+isProtectedPath("/tmp/test.txt"); // false - 一時ファイル
+isProtectedPath(""); // false - 空文字列
 ```
 
 **特徴**:
+
 - Globパターン（`**`, `*`, `~`）をサポート
 - `~`はホームディレクトリ（`process.env.HOME`）に展開
 
@@ -158,9 +160,9 @@ isProtectedPath("");                    // false - 空文字列
 ```typescript
 import { matchGlobPattern } from "@repo/shared/constants";
 
-matchGlobPattern("/etc/passwd", "/etc/**");       // true
+matchGlobPattern("/etc/passwd", "/etc/**"); // true
 matchGlobPattern("/home/user/.bashrc", "**/.bashrc"); // true
-matchGlobPattern("/tmp/test", "/etc/**");         // false
+matchGlobPattern("/tmp/test", "/etc/**"); // false
 ```
 
 ### validateAllowedTools(tools: readonly string[]): boolean
@@ -170,9 +172,9 @@ matchGlobPattern("/tmp/test", "/etc/**");         // false
 ```typescript
 import { validateAllowedTools } from "@repo/shared/constants";
 
-validateAllowedTools(["Read", "Write"]);    // true - 全て許可
-validateAllowedTools(["Read", "Unknown"]);  // false - 未知のツール含む
-validateAllowedTools([]);                   // true - 空配列は許可
+validateAllowedTools(["Read", "Write"]); // true - 全て許可
+validateAllowedTools(["Read", "Unknown"]); // false - 未知のツール含む
+validateAllowedTools([]); // true - 空配列は許可
 ```
 
 ### filterAllowedTools(tools: readonly string[]): AllowedTool[]
@@ -228,7 +230,7 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
   if (!validateAllowedTools(skill.allowedTools)) {
     const validTools = filterAllowedTools(skill.allowedTools);
     console.warn(
-      `Invalid tools removed. Valid tools: ${validTools.join(", ")}`
+      `Invalid tools removed. Valid tools: ${validTools.join(", ")}`,
     );
     skill.allowedTools = validTools;
   }
@@ -247,6 +249,7 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 | テスト数          | 102件  |
 
 **テストファイル**:
+
 - `packages/shared/src/constants/__tests__/security.test.ts` (89テスト)
 - `packages/shared/src/constants/__tests__/manual-import.test.ts` (13テスト)
 
@@ -260,7 +263,7 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 
 ### 概要
 
-PermissionStoreは、ユーザーが「次回から確認しない」を選択した権限設定をelectron-storeで永続化するサービスです。
+ユーザーが「この選択を記憶する（rememberChoice）」を選択した場合のツール許可状態をelectron-storeで永続化するサービスです。
 
 ### アーキテクチャ
 
@@ -271,18 +274,20 @@ PermissionStoreは、ユーザーが「次回から確認しない」を選択�
          │
          ▼
 ┌─────────────────┐     ┌─────────────────┐
-│ isToolAllowed() │────▶│  PermissionStore │
+│ isToolAllowed() │────▶│  In-Memory Map  │ ← O(1) lookup
 └────────┬────────┘     └─────────────────┘
          │                      │
     ┌────┴────┐                 ▼
-    │ Allowed?│          ┌─────────────┐
+    │ Allowed │          ┌─────────────┐
     └────┬────┘          │ electron-store │
-    Yes  │  No           └─────────────┘
-         │
-         ▼
-    ┌─────────┐
-    │ Execute │
-    └─────────┘
+    ┌────▼────┐    ┌────▼────┐   └─────────────┘
+    │  Yes    │    │   No    │
+    └────┬────┘    └────┬────┘
+         │              │
+         ▼              ▼
+    ┌─────────┐    ┌─────────────┐
+    │ Execute │    │ Show Dialog │
+    └─────────┘    └─────────────┘
 ```
 
 ### データスキーマ
@@ -324,9 +329,10 @@ interface AllowedToolEntry {
 | 項目               | 対策                                              |
 | ------------------ | ------------------------------------------------- |
 | 不正アクセス防止   | Main Process専用、IPCチャンネルでRenderer間接操作 |
-| データ破損対策     | 読み込みエラー時はデフォルト値で初期化           |
-| 入力検証           | toolNameはALLOWED_TOOLS_WHITELISTで検証可能      |
-| シングルトン保証   | getInstance()によるインスタンス管理              |
+| データ機密性       | ツール名とタイムスタンプのみ保存（機密情報なし）  |
+| データ破損対策     | 読み込みエラー時はデフォルト値で初期化            |
+| 入力検証           | toolNameはALLOWED_TOOLS_WHITELISTで検証可能       |
+| シングルトン保証   | getInstance()によるインスタンス管理               |
 
 ### テストカバレッジ
 
@@ -344,13 +350,13 @@ interface AllowedToolEntry {
 - [APIセキュリティ・Electronセキュリティ](./security-api-electron.md)
 - [入力バリデーション](./security-input-validation.md)
 - [Agent SDK インターフェース](./interfaces-agent-sdk.md)
-- [設定画面UI仕様](./ui-ux-settings.md) - PermissionSettings UI
+- [設定画面 UI/UX](./ui-ux-settings.md) - PermissionSettings UI
 
 ---
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                  |
-| ---------- | ---------- | ----------------------------------------- |
-| 1.1.0      | 2026-01-26 | Permission Storeセクション追加（TASK-3-1-E） |
-| 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）     |
+| バージョン | 日付       | 変更内容                                     |
+| ---------- | ---------- | -------------------------------------------- |
+| 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E）       |
+| 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）        |
