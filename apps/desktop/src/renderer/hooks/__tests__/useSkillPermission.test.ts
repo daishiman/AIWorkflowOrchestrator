@@ -11,26 +11,26 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useSkillPermission } from "../useSkillPermission";
-import type { SkillPermissionRequest } from "@repo/shared/types/skill";
+import type { SkillPermissionRequest } from "@repo/shared";
 
 // Mock skillAPI
-const mockOnPermission = vi.fn();
-const mockRespondPermission = vi.fn();
+const mockOnPermissionRequest = vi.fn();
+const mockSendPermissionResponse = vi.fn();
 
 const mockSkillAPI = {
   execute: vi.fn(),
   onStream: vi.fn(),
   abort: vi.fn(),
   getExecutionStatus: vi.fn(),
-  onPermission: mockOnPermission,
-  respondPermission: mockRespondPermission,
+  onPermissionRequest: mockOnPermissionRequest,
+  sendPermissionResponse: mockSendPermissionResponse,
 };
 
 describe("useSkillPermission", () => {
   beforeEach(() => {
     vi.stubGlobal("skillAPI", mockSkillAPI);
-    mockOnPermission.mockReturnValue(vi.fn());
-    mockRespondPermission.mockResolvedValue(true);
+    mockOnPermissionRequest.mockReturnValue(vi.fn());
+    mockSendPermissionResponse.mockResolvedValue(true);
     vi.clearAllMocks();
   });
 
@@ -48,13 +48,15 @@ describe("useSkillPermission", () => {
     it("should register permission listener on mount", () => {
       renderHook(() => useSkillPermission());
 
-      expect(mockOnPermission).toHaveBeenCalledTimes(1);
-      expect(mockOnPermission).toHaveBeenCalledWith(expect.any(Function));
+      expect(mockOnPermissionRequest).toHaveBeenCalledTimes(1);
+      expect(mockOnPermissionRequest).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
     });
 
     it("should cleanup permission listener on unmount", () => {
       const cleanup = vi.fn();
-      mockOnPermission.mockReturnValue(cleanup);
+      mockOnPermissionRequest.mockReturnValue(cleanup);
 
       const { unmount } = renderHook(() => useSkillPermission());
       unmount();
@@ -68,11 +70,14 @@ describe("useSkillPermission", () => {
       const { result } = renderHook(() => useSkillPermission());
 
       expect(result.current.pendingPermission).toBeNull();
-      expect(mockOnPermission).not.toHaveBeenCalled();
+      expect(mockOnPermissionRequest).not.toHaveBeenCalled();
     });
 
-    it("should handle missing onPermission method", () => {
-      vi.stubGlobal("skillAPI", { ...mockSkillAPI, onPermission: undefined });
+    it("should handle missing onPermissionRequest method", () => {
+      vi.stubGlobal("skillAPI", {
+        ...mockSkillAPI,
+        onPermissionRequest: undefined,
+      });
 
       const { result } = renderHook(() => useSkillPermission());
 
@@ -84,7 +89,7 @@ describe("useSkillPermission", () => {
     it("should update pendingPermission when request is received", () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -109,7 +114,7 @@ describe("useSkillPermission", () => {
     it("should handle multiple sequential requests", () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -146,7 +151,7 @@ describe("useSkillPermission", () => {
     it("should call respondPermission with approved=true", async () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -168,7 +173,7 @@ describe("useSkillPermission", () => {
         result.current.handleApprove(false);
       });
 
-      expect(mockRespondPermission).toHaveBeenCalledWith({
+      expect(mockSendPermissionResponse).toHaveBeenCalledWith({
         requestId: "req-approve-001",
         approved: true,
         rememberChoice: false,
@@ -178,7 +183,7 @@ describe("useSkillPermission", () => {
     it("should pass rememberChoice=true when specified", async () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -198,7 +203,7 @@ describe("useSkillPermission", () => {
         result.current.handleApprove(true);
       });
 
-      expect(mockRespondPermission).toHaveBeenCalledWith({
+      expect(mockSendPermissionResponse).toHaveBeenCalledWith({
         requestId: "req-remember",
         approved: true,
         rememberChoice: true,
@@ -208,7 +213,7 @@ describe("useSkillPermission", () => {
     it("should clear pendingPermission after approval", async () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -240,18 +245,18 @@ describe("useSkillPermission", () => {
         result.current.handleApprove(false);
       });
 
-      expect(mockRespondPermission).not.toHaveBeenCalled();
+      expect(mockSendPermissionResponse).not.toHaveBeenCalled();
     });
 
     it("should handle IPC error gracefully", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
-      mockRespondPermission.mockRejectedValue(new Error("IPC failed"));
+      mockSendPermissionResponse.mockRejectedValue(new Error("IPC failed"));
 
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -286,7 +291,7 @@ describe("useSkillPermission", () => {
     it("should call respondPermission with approved=false", async () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -306,7 +311,7 @@ describe("useSkillPermission", () => {
         result.current.handleDeny(false);
       });
 
-      expect(mockRespondPermission).toHaveBeenCalledWith({
+      expect(mockSendPermissionResponse).toHaveBeenCalledWith({
         requestId: "req-deny-001",
         approved: false,
         rememberChoice: false,
@@ -316,7 +321,7 @@ describe("useSkillPermission", () => {
     it("should pass rememberChoice=true when specified", async () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -336,7 +341,7 @@ describe("useSkillPermission", () => {
         result.current.handleDeny(true);
       });
 
-      expect(mockRespondPermission).toHaveBeenCalledWith({
+      expect(mockSendPermissionResponse).toHaveBeenCalledWith({
         requestId: "req-deny-remember",
         approved: false,
         rememberChoice: true,
@@ -346,7 +351,7 @@ describe("useSkillPermission", () => {
     it("should clear pendingPermission after denial", async () => {
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
@@ -378,18 +383,18 @@ describe("useSkillPermission", () => {
         result.current.handleDeny(false);
       });
 
-      expect(mockRespondPermission).not.toHaveBeenCalled();
+      expect(mockSendPermissionResponse).not.toHaveBeenCalled();
     });
 
     it("should handle IPC error gracefully", async () => {
       const consoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => {});
-      mockRespondPermission.mockRejectedValue(new Error("IPC failed"));
+      mockSendPermissionResponse.mockRejectedValue(new Error("IPC failed"));
 
       let capturedCallback: ((request: SkillPermissionRequest) => void) | null =
         null;
-      mockOnPermission.mockImplementation((cb) => {
+      mockOnPermissionRequest.mockImplementation((cb) => {
         capturedCallback = cb;
         return vi.fn();
       });
