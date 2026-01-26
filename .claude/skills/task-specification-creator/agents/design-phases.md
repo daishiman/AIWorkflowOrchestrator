@@ -142,6 +142,9 @@ Phase 1からPhase 13までの品質パイプラインを設計する。
 ```json
 {
   "feature": "{{feature-name}}",
+  "created": "{{ISO_TIMESTAMP}}",
+  "lastUpdated": "{{ISO_TIMESTAMP}}",
+  "status": "in_progress",
   "phases": {
     "1": {
       "status": "pending",

@@ -17,8 +17,8 @@
  *   --json              JSON形式で結果を出力
  */
 
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
 // ====== 定数定義 ======
 
