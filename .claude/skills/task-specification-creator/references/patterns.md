@@ -15,11 +15,33 @@
 - **発見日**: 2026-01-24
 - **修正ファイル**: `scripts/validate-phase12-step1.js` (Line 105)
 
+### Phase 12出力要件の漏れ
+
+- **状況**: タスク仕様書（phase-12-documentation.md）作成時
+- **問題**: スキル仕様（phase-11-12-guide.md）で要求される出力ファイルがタスク仕様書に記載漏れ
+- **漏れた要件**:
+  1. `implementation-guide.md` Part 1（中学生レベル概念説明）
+  2. `documentation-changelog.md`（システム仕様書更新履歴）
+  3. `unassigned-task-report.md`（0件でも必須）
+- **原因**: タスク仕様書がスキル仕様の全要件を網羅していなかった
+- **教訓**: Phase 12タスク仕様書作成時は必ずphase-11-12-guide.mdのTask 1-4を確認
+- **発見日**: 2026-01-26
+- **関連タスク**: TASK-3-1-D
+
 ---
 
 ## 成功パターン
 
-（今後追加）
+### Phase 12出力成果物チェックリスト
+
+- **状況**: Phase 12タスク仕様書・成果物作成時
+- **確認項目**:
+  1. ✅ `implementation-guide.md` - Part 1（中学生レベル）+ Part 2（開発者向け）
+  2. ✅ `api-documentation.md` / `ipc-documentation.md` / `component-documentation.md`
+  3. ✅ `documentation-changelog.md` - システム仕様書更新判断と履歴
+  4. ✅ `unassigned-task-report.md` - 未タスク検出報告（0件でも必須）
+- **根拠**: phase-11-12-guide.md Task 1-4の完全準拠
+- **発見日**: 2026-01-26
 
 ---
 
@@ -40,6 +62,7 @@
 
 ## 変更履歴
 
-| Date       | Changes                                    |
-| ---------- | ------------------------------------------ |
-| 2026-01-24 | 初版作成、Markdown見出しパターン追加       |
+| Date       | Changes                                                         |
+| ---------- | --------------------------------------------------------------- |
+| 2026-01-26 | Phase 12出力要件漏れパターン追加、成功パターンにチェックリスト追加 |
+| 2026-01-24 | 初版作成、Markdown見出しパターン追加                            |

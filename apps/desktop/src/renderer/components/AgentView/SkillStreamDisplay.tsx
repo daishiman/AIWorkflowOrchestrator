@@ -2,12 +2,15 @@
  * SkillStreamDisplay - スキル実行ストリーム表示コンポーネント
  *
  * TASK-3-2: SkillExecutor IPC Integration
+ * TASK-3-1-D: Renderer側権限ダイアログUI実装
  *
  * @module @repo/desktop/renderer/components/AgentView/SkillStreamDisplay
  */
 
 import React, { useEffect } from "react";
 import { useSkillExecution } from "../../hooks/useSkillExecution";
+import { useSkillPermission } from "../../hooks/useSkillPermission";
+import { PermissionDialog } from "../organisms/PermissionDialog/PermissionDialog";
 import type {
   SkillStreamMessage,
   SkillExecutionError,
@@ -133,6 +136,9 @@ export function SkillStreamDisplay({
   const { messages, status, error, execute, abort, reset, isAborting } =
     useSkillExecution(skillId);
 
+  // 権限ダイアログ用フック
+  const { pendingPermission, handleApprove, handleDeny } = useSkillPermission();
+
   // ステータス変更時のコールバック
   useEffect(() => {
     if (onStatusChange) {
@@ -221,6 +227,13 @@ export function SkillStreamDisplay({
           <MessageItem key={message.id} message={message} />
         ))}
       </div>
+
+      {/* 権限確認ダイアログ */}
+      <PermissionDialog
+        request={pendingPermission}
+        onApprove={handleApprove}
+        onDeny={handleDeny}
+      />
     </div>
   );
 }
