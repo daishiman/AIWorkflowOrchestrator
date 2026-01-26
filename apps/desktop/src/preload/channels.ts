@@ -179,7 +179,14 @@ export const IPC_CHANNELS = {
   SKILL_ABORT: "skill:abort",
   SKILL_GET_STATUS: "skill:get-status",
 
-  // Skill permission operations
+  // Skill import operations (TASK-4-1)
+  SKILL_LIST: "skill:list",
+  SKILL_SCAN: "skill:scan",
+  SKILL_GET_IMPORTED: "skill:getImported",
+  SKILL_UPDATE: "skill:update",
+  SKILL_COMPLETE: "skill:complete",
+  SKILL_ERROR: "skill:error",
+  // Skill permission operations (TASK-3-1-D)
   SKILL_PERMISSION_REQUEST: "skill:permission:request",
   SKILL_PERMISSION_RESPONSE: "skill:permission:response",
 
@@ -367,7 +374,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_EXECUTE,
   IPC_CHANNELS.SKILL_ABORT,
   IPC_CHANNELS.SKILL_GET_STATUS,
-  // Skill permission channels
+  // Skill import channels (TASK-4-1)
+  IPC_CHANNELS.SKILL_LIST,
+  IPC_CHANNELS.SKILL_SCAN,
+  IPC_CHANNELS.SKILL_GET_IMPORTED,
+  IPC_CHANNELS.SKILL_UPDATE,
+  // Skill permission channels (TASK-3-1-D)
   IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
@@ -453,6 +465,9 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.CLAUDE_CLI_SESSION_STATUS,
   // Skill streaming channels
   IPC_CHANNELS.SKILL_STREAM,
-  // Skill permission channels
+  // Skill import streaming channels (TASK-4-1)
+  IPC_CHANNELS.SKILL_COMPLETE,
+  IPC_CHANNELS.SKILL_ERROR,
+  // Skill permission channels (TASK-3-1-D)
   IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
 ];
