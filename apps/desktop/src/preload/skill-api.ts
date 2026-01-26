@@ -55,7 +55,7 @@ export interface SkillAPI {
    */
   getExecutionStatus: (executionId: string) => Promise<ExecutionInfo | null>;
 
-  // === Permission API (TASK-4-2) ===
+  // === Permission API (TASK-3-1-D + TASK-4-2) ===
 
   /**
    * 権限確認リクエストを購読する
@@ -122,7 +122,7 @@ export const skillAPI: SkillAPI = {
   getExecutionStatus: (executionId: string): Promise<ExecutionInfo | null> =>
     safeInvoke(IPC_CHANNELS.SKILL_GET_STATUS, executionId),
 
-  // === Permission API (TASK-4-2) ===
+  // === Permission API (TASK-3-1-D + TASK-4-2) ===
 
   onPermissionRequest: (
     callback: (request: SkillPermissionRequest) => void,
