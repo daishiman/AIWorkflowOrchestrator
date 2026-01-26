@@ -1,0 +1,163 @@
+{
+  "taskId": "TASK-4-2",
+  "taskName": "permission-resolver-ipc-handlers",
+  "description": "PermissionResolver IPC Handlers - Main Process ↔ Renderer Process間の権限確認IPC通信実装",
+  "issueNumber": 505,
+  "branch": "task-spec/TASK-4-2-permission-resolver-ipc-handlers",
+  "createdAt": "2026-01-25",
+  "status": "in_progress",
+  "currentPhase": 0,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "pending",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "pending",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "artifacts": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "pending",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "specFile": "phase-9-quality.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "pending",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": []
+    }
+  ],
+  "dependencies": {
+    "required": ["TASK-3-2"],
+    "optional": []
+  },
+  "systemSpecs": [
+    ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md",
+    ".claude/skills/aiworkflow-requirements/references/architecture-patterns.md",
+    ".claude/skills/aiworkflow-requirements/references/security-api-electron.md"
+  ],
+  "implementationFiles": {
+    "main": [
+      "apps/desktop/src/main/ipc/permission-handlers.ts",
+      "apps/desktop/src/main/ipc/index.ts"
+    ],
+    "preload": [
+      "apps/desktop/src/preload/skill-api.ts",
+      "apps/desktop/src/preload/types.ts"
+    ],
+    "renderer": [
+      "apps/desktop/src/renderer/hooks/usePermissionDialog.ts",
+      "apps/desktop/src/renderer/components/Permission/PermissionDialog.tsx",
+      "apps/desktop/src/renderer/components/Permission/index.ts"
+    ],
+    "tests": [
+      "apps/desktop/src/main/ipc/__tests__/permission-handlers.test.ts",
+      "apps/desktop/src/preload/__tests__/skill-api.test.ts",
+      "apps/desktop/src/renderer/hooks/__tests__/usePermissionDialog.test.ts",
+      "apps/desktop/src/renderer/components/Permission/__tests__/PermissionDialog.test.tsx"
+    ]
+  },
+  "ipcChannels": [
+    {
+      "name": "skill:permission-request",
+      "direction": "Main → Renderer",
+      "purpose": "権限確認リクエストの送信"
+    },
+    {
+      "name": "skill:permission-response",
+      "direction": "Renderer → Main",
+      "purpose": "権限確認レスポンスの受信"
+    }
+  ],
+  "coverageTargets": {
+    "line": 80,
+    "branch": 60,
+    "function": 80
+  }
+}
