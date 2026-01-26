@@ -252,12 +252,99 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 
 ---
 
+## Permission Store（権限永続化）
+
+**実装タスク**: TASK-3-1-E（2026-01-26完了）
+**実装場所**: `apps/desktop/src/main/services/skill/PermissionStore.ts`
+**型定義**: `packages/shared/src/types/permission-store.ts`
+
+### 概要
+
+PermissionStoreは、ユーザーが「次回から確認しない」を選択した権限設定をelectron-storeで永続化するサービスです。
+
+### アーキテクチャ
+
+```
+┌─────────────────┐
+│  Skill Request  │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐     ┌─────────────────┐
+│ isToolAllowed() │────▶│  PermissionStore │
+└────────┬────────┘     └─────────────────┘
+         │                      │
+    ┌────┴────┐                 ▼
+    │ Allowed?│          ┌─────────────┐
+    └────┬────┘          │ electron-store │
+    Yes  │  No           └─────────────┘
+         │
+         ▼
+    ┌─────────┐
+    │ Execute │
+    └─────────┘
+```
+
+### データスキーマ
+
+```typescript
+interface PermissionStoreSchema {
+  version: number;           // スキーマバージョン（現在: 1）
+  allowedTools: AllowedToolEntry[];  // 許可済みツール一覧
+  updatedAt: string;         // 最終更新日時（ISO 8601）
+}
+
+interface AllowedToolEntry {
+  toolName: string;          // ツール識別子
+  allowedAt: string;         // 許可日時（ISO 8601）
+}
+```
+
+### API
+
+| メソッド                  | 戻り値               | 計算量 | 説明                         |
+| ------------------------- | -------------------- | ------ | ---------------------------- |
+| `isToolAllowed(tool)`     | `boolean`            | O(1)   | ツールが許可済みか判定       |
+| `allowTool(tool)`         | `void`               | O(1)   | ツールを許可リストに追加     |
+| `revokeTool(tool)`        | `boolean`            | O(1)   | ツールを許可リストから削除   |
+| `getAllowedTools()`       | `string[]`           | O(n)   | 許可ツール名一覧を取得       |
+| `getAllowedToolEntries()` | `AllowedToolEntry[]` | O(n)   | 許可ツール詳細一覧を取得     |
+| `clearAll()`              | `number`             | O(n)   | 全許可をクリア（削除数返却） |
+
+### ストレージ
+
+| OS      | パス                                                              |
+| ------- | ----------------------------------------------------------------- |
+| macOS   | ~/Library/Application Support/@repo-desktop/permission-store.json |
+| Windows | %APPDATA%/@repo-desktop/permission-store.json                     |
+| Linux   | ~/.config/@repo-desktop/permission-store.json                     |
+
+### セキュリティ考慮事項
+
+| 項目               | 対策                                              |
+| ------------------ | ------------------------------------------------- |
+| 不正アクセス防止   | Main Process専用、IPCチャンネルでRenderer間接操作 |
+| データ破損対策     | 読み込みエラー時はデフォルト値で初期化           |
+| 入力検証           | toolNameはALLOWED_TOOLS_WHITELISTで検証可能      |
+| シングルトン保証   | getInstance()によるインスタンス管理              |
+
+### テストカバレッジ
+
+| メトリクス        | 値     |
+| ----------------- | ------ |
+| Line Coverage     | 96%+   |
+| Function Coverage | 100%   |
+| テスト数          | 86件   |
+
+---
+
 ## 関連ドキュメント
 
 - [セキュリティ実装概要](./security-implementation.md)
 - [APIセキュリティ・Electronセキュリティ](./security-api-electron.md)
 - [入力バリデーション](./security-input-validation.md)
 - [Agent SDK インターフェース](./interfaces-agent-sdk.md)
+- [設定画面UI仕様](./ui-ux-settings.md) - PermissionSettings UI
 
 ---
 
@@ -265,4 +352,5 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 
 | バージョン | 日付       | 変更内容                                  |
 | ---------- | ---------- | ----------------------------------------- |
+| 1.1.0      | 2026-01-26 | Permission Storeセクション追加（TASK-3-1-E） |
 | 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）     |

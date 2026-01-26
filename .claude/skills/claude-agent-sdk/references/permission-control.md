@@ -243,6 +243,102 @@ const options: Options = {
 
 ---
 
+## 権限永続化パターン（rememberChoice）
+
+ユーザーが「次回から確認しない」を選択した権限設定を永続化するパターン。
+
+### 概要
+
+PermissionRequest Hookと連携し、`rememberChoice: true`の応答を受けた場合に設定をelectron-storeで永続化。
+
+### アーキテクチャ
+
+```
+PermissionRequest Hook
+    ↓
+PermissionResponse { allowed: true, rememberChoice: true }
+    ↓
+PermissionStore.allowTool(toolName)
+    ↓
+electron-store (JSON永続化)
+    ↓
+次回実行時: isToolAllowed() → ダイアログスキップ
+```
+
+### PermissionStore API
+
+| メソッド                  | 戻り値               | 計算量 | 説明                         |
+| ------------------------- | -------------------- | ------ | ---------------------------- |
+| `isToolAllowed(tool)`     | `boolean`            | O(1)   | ツールが許可済みか判定       |
+| `allowTool(tool)`         | `void`               | O(1)   | ツールを許可リストに追加     |
+| `revokeTool(tool)`        | `boolean`            | O(1)   | ツールを許可リストから削除   |
+| `getAllowedTools()`       | `string[]`           | O(n)   | 許可ツール名一覧を取得       |
+| `clearAll()`              | `number`             | O(n)   | 全許可をクリア               |
+
+### 実装例
+
+```typescript
+import { PermissionStore } from "./services/skill/PermissionStore";
+
+// PermissionRequest Hookでの使用
+const hooks = {
+  onPermissionRequest: async (request) => {
+    const store = PermissionStore.getInstance();
+
+    // 許可済みならダイアログスキップ
+    if (store.isToolAllowed(request.toolName)) {
+      return { allowed: true };
+    }
+
+    // ダイアログ表示
+    const response = await showPermissionDialog(request);
+
+    // rememberChoice選択時に永続化
+    if (response.allowed && response.rememberChoice) {
+      store.allowTool(request.toolName);
+    }
+
+    return response;
+  },
+};
+```
+
+### データスキーマ
+
+```typescript
+interface PermissionStoreSchema {
+  version: number;                    // スキーマバージョン
+  allowedTools: AllowedToolEntry[];   // 許可済みツール一覧
+  updatedAt: string;                  // 最終更新日時（ISO 8601）
+}
+
+interface AllowedToolEntry {
+  toolName: string;   // ツール識別子
+  allowedAt: string;  // 許可日時（ISO 8601）
+}
+```
+
+### ストレージパス
+
+| OS      | パス                                                              |
+| ------- | ----------------------------------------------------------------- |
+| macOS   | ~/Library/Application Support/@repo-desktop/permission-store.json |
+| Windows | %APPDATA%/@repo-desktop/permission-store.json                     |
+| Linux   | ~/.config/@repo-desktop/permission-store.json                     |
+
+### ベストプラクティス
+
+| すべきこと                         | 避けるべきこと                     |
+| ---------------------------------- | ---------------------------------- |
+| Main Processでのみ操作             | Renderer Processから直接アクセス   |
+| IPCハンドラー経由でRenderer連携    | 複数インスタンス生成               |
+| ALLOWED_TOOLS_WHITELISTで検証      | 任意のツール名を無検証で許可       |
+
+**実装タスク**: TASK-3-1-E（2026-01-26完了）
+**仕様詳細**: [security-skill-execution.md](/.claude/skills/aiworkflow-requirements/references/security-skill-execution.md)
+
+---
+
 ## セキュリティチェックリスト
 
 | 項目                     | 推奨設定                               |
@@ -253,6 +349,7 @@ const options: Options = {
 | 機密操作                 | ask ルールで明示的確認                 |
 | 本番環境                 | bypassPermissions を使用しない         |
 | ロギング                 | 権限チェック結果をログに記録           |
+| 権限永続化               | PermissionStoreでrememberChoice管理    |
 
 ---
 

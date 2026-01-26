@@ -363,10 +363,27 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 | ------------------ | -------------------------------------------------------------- | --------------------------------------- |
 | SkillExecutor      | `apps/desktop/src/main/services/skill/SkillExecutor.ts`        | createHooks, categorizeError, isRetryable |
 
+### TASK-3-1-E 権限永続化成果物
+
+| ドキュメント       | パス                                                                                | 説明                            |
+| ------------------ | ----------------------------------------------------------------------------------- | ------------------------------- |
+| 実装ガイド         | `docs/guides/permission-store.md`                                                    | PermissionStore API、IPC連携    |
+| システム仕様       | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`      | データスキーマ、ストレージパス  |
+| 設定UI仕様         | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                | PermissionSettings UI           |
+
+### TASK-3-1-E 実装ファイル
+
+| ファイル           | パス                                                           | 説明                                    |
+| ------------------ | -------------------------------------------------------------- | --------------------------------------- |
+| PermissionStore    | `apps/desktop/src/main/services/skill/PermissionStore.ts`      | 権限永続化ストア（electron-store）      |
+| permission-handlers | `apps/desktop/src/main/ipc/permission-handlers.ts`             | IPC handlers（getAllowedTools等）      |
+| PermissionSettings | `apps/desktop/src/renderer/components/settings/PermissionSettings/` | 設定UI                          |
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                    |
 | ------- | ---------- | ---------------------------------------------------------- |
+| 2.5.0   | 2026-01-26 | TASK-3-1-E権限永続化パターン追加（PermissionStore API、rememberChoice連携、データスキーマ） |
 | 2.4.0   | 2026-01-25 | TASK-3-1-B Hooks実装パターン追加（createHooks, categorizeError, isRetryable, セキュリティチェック関数） |
 | 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加 |
 | 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正        |

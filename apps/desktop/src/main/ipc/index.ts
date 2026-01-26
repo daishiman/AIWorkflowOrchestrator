@@ -29,7 +29,9 @@ import {
   SkillParser,
   SkillImportManager,
   SkillService,
+  PermissionStore,
 } from "../services/skill";
+import { registerPermissionStoreHandlers } from "./permission-store-handlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -122,6 +124,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     skillImportManager,
   );
   registerSkillHandlers(mainWindow, skillService);
+
+  // Register Permission Store handlers (TASK-3-1-E)
+  const permissionStore = new PermissionStore();
+  registerPermissionStoreHandlers(permissionStore);
 
   // Register Claude CLI handlers (for skill discovery via Claude CLI)
   registerClaudeCliHandlers(mainWindow);

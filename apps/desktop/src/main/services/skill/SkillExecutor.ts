@@ -3,6 +3,7 @@
  *
  * TASK-3-1-A: SDK query() 基本実装
  * TASK-3-1-B: Hooks実装（PreToolUse/PostToolUse）
+ * TASK-3-1-E: rememberChoice機能永続化（PermissionStore連携）
  *
  * Claude Agent SDK の query() API を使用してスキルを実行し、
  * ストリーミングレスポンスを Renderer Process に配信する。
@@ -11,10 +12,15 @@
 
 import { v4 as uuidv4 } from "uuid";
 import type { BrowserWindow } from "electron";
-import type { Skill, SkillPermissionResponse } from "@repo/shared";
+import type {
+  Skill,
+  SkillPermissionResponse,
+  IPermissionStore,
+} from "@repo/shared";
 import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
 import { SKILL_CHANNELS } from "@repo/shared/src/ipc/channels";
 import { PermissionResolver } from "./PermissionResolver";
+import { PermissionStore } from "./PermissionStore";
 
 // =================================================================
 // SkillExecutor専用の型定義
@@ -264,10 +270,18 @@ export class SkillExecutor {
   private readonly maxConcurrentExecutions: number = MAX_CONCURRENT_EXECUTIONS;
   private readonly defaultTimeout: number = DEFAULT_TIMEOUT_MS;
   private permissionResolver: PermissionResolver;
+  private permissionStore: IPermissionStore | null;
 
-  constructor(mainWindow: BrowserWindow) {
+  /**
+   * コンストラクタ
+   *
+   * @param mainWindow - メインウィンドウ
+   * @param permissionStore - 権限永続化ストア（オプション、DIまたはデフォルト作成）
+   */
+  constructor(mainWindow: BrowserWindow, permissionStore?: IPermissionStore) {
     this.mainWindow = mainWindow;
     this.permissionResolver = new PermissionResolver();
+    this.permissionStore = permissionStore ?? new PermissionStore();
   }
 
   /**
@@ -1054,18 +1068,27 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
    * 権限応答を処理する
    *
    * Renderer から IPC 経由で受け取った権限応答を PermissionResolver に渡す。
+   * TASK-3-1-E: rememberChoice=true かつ approved=true の場合、ツールを永続化。
    *
    * @param requestId - リクエストID
    * @param approved - 承認されたか
    * @param rememberChoice - 選択を記憶するか（オプション）
    * @param rejectReason - 拒否理由（オプション）
+   * @param toolName - ツール名（永続化用、オプション）
    */
   handlePermissionResponse(
     requestId: string,
     approved: boolean,
     rememberChoice?: boolean,
     rejectReason?: string,
+    toolName?: string,
   ): void {
+    // TASK-3-1-E: 許可を永続化
+    if (approved && rememberChoice && toolName && this.permissionStore) {
+      this.permissionStore.allowTool(toolName);
+      console.info(`[SkillExecutor] Tool permission persisted: ${toolName}`);
+    }
+
     this.permissionResolver.resolveRequest({
       requestId,
       approved,
@@ -1076,6 +1099,8 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
 
   /**
    * 権限リクエストを送信し、応答を待機する
+   *
+   * TASK-3-1-E: 許可済みツールは自動許可（ダイアログスキップ）
    *
    * @param executionId - 実行ID
    * @param toolName - ツール名
@@ -1089,6 +1114,18 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
     args: Record<string, unknown>,
     signal?: AbortSignal,
   ): Promise<SkillPermissionResponse> {
+    // TASK-3-1-E: 許可済みツールは自動許可
+    if (this.permissionStore?.isToolAllowed(toolName)) {
+      console.info(
+        `[SkillExecutor] Auto-approving tool (already allowed): ${toolName}`,
+      );
+      return {
+        requestId: uuidv4(),
+        approved: true,
+        rememberChoice: true, // 既に記憶済みなので常にtrue
+      };
+    }
+
     const requestId = uuidv4();
 
     // Renderer に権限リクエストを送信

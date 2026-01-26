@@ -47,6 +47,13 @@ export * from "./src/claude-cli";
 // Agent Execution types (AGENT-005)
 export * from "./src/types/agent-execution";
 
+// Permission Store types (TASK-3-1-E)
+export type {
+  AllowedToolEntry,
+  PermissionStoreSchema,
+  IPermissionStore,
+} from "./src/types/permission-store";
+
 // Core
 export * from "./core";
 

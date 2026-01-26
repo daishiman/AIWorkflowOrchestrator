@@ -1444,6 +1444,32 @@ export type {
   ConversationSearchResponse,
 } from "../shared/types/conversation";
 
+// ===== Permission operations (TASK-3-1-E) =====
+
+import type { AllowedToolEntry } from "@repo/shared";
+
+/**
+ * Permission API
+ * 許可済みツール管理用のAPI
+ */
+export interface PermissionAPI {
+  /** 許可済みツール一覧を取得 */
+  getAllowedTools: () => Promise<{
+    tools: AllowedToolEntry[];
+  }>;
+
+  /** ツールの許可を取り消し */
+  revokeTool: (toolName: string) => Promise<{
+    success: boolean;
+  }>;
+
+  /** 全ての許可設定をクリア */
+  clearAll: () => Promise<{
+    success: boolean;
+    clearedCount: number;
+  }>;
+}
+
 // Global type declaration
 declare global {
   interface Window {
@@ -1456,6 +1482,7 @@ declare global {
     systemPromptAPI: SystemPromptAPI;
     conversationAPI: import("../shared/types/conversation").ConversationAPI;
     skillAPI: import("./skill-api").SkillAPI;
+    permissionAPI: PermissionAPI;
   }
 }
 

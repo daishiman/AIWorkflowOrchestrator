@@ -197,9 +197,73 @@ type IPCResult<T> =
 
 ---
 
+## ツール許可設定（Permission Settings）
+
+**実装タスク**: TASK-3-1-E（2026-01-26完了）
+
+### 機能概要
+
+| 項目       | 内容                                           |
+| ---------- | ---------------------------------------------- |
+| 機能名     | ツール許可設定（Permission Settings）          |
+| 目的       | 許可済みツールの確認・取り消し機能を提供       |
+| 対象       | rememberChoice機能で許可されたツール一覧       |
+| 永続化     | PermissionStore（electron-store）              |
+
+### UIコンポーネント構成
+
+```
+PermissionSettings
+├── 許可済みツール一覧（AllowedToolList）
+│   ├── ツール名
+│   ├── 許可日時（YYYY-MM-DD HH:mm形式）
+│   └── Revokeボタン（個別取り消し）
+├── Clear Allボタン（全クリア）
+│   └── 確認ダイアログ付き
+└── 空状態表示
+    └── "許可されたツールはありません"
+```
+
+### UI仕様
+
+| 要素             | 仕様                                           |
+| ---------------- | ---------------------------------------------- |
+| ツール一覧       | リスト表示、許可日時付き                       |
+| Revokeボタン     | 各ツール横に配置、即時削除                     |
+| Clear Allボタン  | リスト下部、確認ダイアログ経由で全削除         |
+| 空状態           | 許可ツールがない場合のメッセージ表示           |
+
+### アクセシビリティ要件
+
+| 要件               | 実装                                           |
+| ------------------ | ---------------------------------------------- |
+| キーボード操作     | Tab移動、Enter/Spaceでボタン操作               |
+| スクリーンリーダー | aria-label設定、ボタンの目的を明示             |
+| フォーカス表示     | visible focus indicator                        |
+| 確認ダイアログ     | Clear All時にモーダル確認                      |
+
+### IPC API仕様
+
+| チャンネル                   | 機能           | 引数                   | 戻り値                               |
+| ---------------------------- | -------------- | ---------------------- | ------------------------------------ |
+| permission:getAllowedTools   | 許可ツール取得 | なし                   | `{ tools: AllowedToolEntry[] }`      |
+| permission:revokeTool        | 許可取消       | `{ toolName: string }` | `{ success: boolean }`               |
+| permission:clearAll          | 全クリア       | なし                   | `{ success: boolean, clearedCount }` |
+
+### テストカバレッジ
+
+| カテゴリ              | テスト数 | 内容                           |
+| --------------------- | -------- | ------------------------------ |
+| PermissionSettings UI | 17       | 表示・操作・アクセシビリティ   |
+| permission-handlers   | 22       | IPCハンドラー正常系・異常系    |
+| PermissionStore       | 47       | ユニット・統合テスト           |
+
+---
+
 ## 関連ドキュメント
 
 - [security-api-electron.md](./security-api-electron.md) - IPCセキュリティ詳細
+- [security-skill-execution.md](./security-skill-execution.md) - Permission Storeセキュリティ
 - [ui-ux-forms.md](./ui-ux-forms.md) - フォーム設計ガイドライン
 - [deployment-electron.md](./deployment-electron.md) - Electronデプロイ
 
@@ -215,6 +279,10 @@ type IPCResult<T> =
 | apps/desktop/src/preload/index.ts            | API公開                 |
 | apps/desktop/src/main/settings/slideSettingsStore.ts | 永続化ストア      |
 | apps/desktop/src/main/ipc/slideSettingsHandlers.ts | IPCハンドラー      |
+| apps/desktop/src/renderer/components/settings/PermissionSettings/ | 許可設定UI |
+| apps/desktop/src/main/services/skill/PermissionStore.ts | 権限永続化ストア |
+| apps/desktop/src/main/ipc/permission-handlers.ts | 権限IPCハンドラー |
+| packages/shared/src/types/permission-store.ts | 型定義 |
 
 ---
 
@@ -222,4 +290,5 @@ type IPCResult<T> =
 
 | Version | Date       | Changes                                              |
 | ------- | ---------- | ---------------------------------------------------- |
+| 1.1.0   | 2026-01-26 | PermissionSettings UI追加（TASK-3-1-E）              |
 | 1.0.0   | 2026-01-14 | 初版作成: スライド出力ディレクトリ設定機能           |
