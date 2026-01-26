@@ -33,5 +33,6 @@
       "type": "object",
       "description": "既存のartifacts.json内容"
     }
-  }
+  },
+  "additionalProperties": false
 }

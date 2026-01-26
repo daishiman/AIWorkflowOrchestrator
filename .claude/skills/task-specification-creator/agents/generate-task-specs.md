@@ -103,10 +103,11 @@
 
 ### 5.2 出力
 
-| 成果物名             | 受領先             | 内容              |
-| -------------------- | ------------------ | ----------------- |
-| Phase別ファイル群    | output-phase-files | 13個のphase-\*.md |
-| インデックスファイル | output-phase-files | index.md          |
+| 成果物名             | 受領先                              | 内容              |
+| -------------------- | ----------------------------------- | ----------------- |
+| Phase別ファイル群    | output-phase-files, verify-specs    | 13個のphase-\*.md |
+| インデックスファイル | output-phase-files                  | index.md          |
+| 成果物レジストリ     | update-dependencies, complete-phase | artifacts.json    |
 
 #### 出力テンプレート（各Phase）
 

@@ -92,6 +92,34 @@
 
 <!-- このPhaseで実施/更新する統合テストの観点・実行内容を記載 -->
 
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する。
+**具体的なチェック項目はAIがタスク内容に応じて判断・適用する。**
+
+| 観点 | 適用判断 | 仕様参照先 |
+| ---- | -------- | ---------- |
+| セキュリティ | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md` |
+| UI/UX | フロントエンド実装の場合 | `aiworkflow-requirements: ui-ux-*.md` |
+| アーキテクチャ | 設計・構造変更の場合 | `aiworkflow-requirements: architecture-*.md` |
+| API設計 | API実装・変更の場合 | `aiworkflow-requirements: api-*.md` |
+| データ整合性 | DB操作の場合 | `aiworkflow-requirements: database-*.md` |
+| エラーハンドリング | 例外処理が必要な場合 | `aiworkflow-requirements: error-handling.md` |
+| パフォーマンス | 性能要件がある場合 | `aiworkflow-requirements: architecture-*.md` |
+| アクセシビリティ | UI実装の場合 | `aiworkflow-requirements: ui-ux-*.md` |
+
+**Electronデスクトップアプリ観点**（本プロジェクト固有）:
+
+| 層 | 適用判断 | 仕様参照先 |
+| --- | -------- | ---------- |
+| フロントエンド（Renderer） | UI/React実装の場合 | `aiworkflow-requirements: ui-ux-*.md` |
+| バックエンド（Main） | サービス/ロジック実装の場合 | `aiworkflow-requirements: architecture-*.md` |
+| IPC通信 | Main-Renderer連携の場合 | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
+| Preload/セキュリティ | API公開の場合 | `aiworkflow-requirements: security-api-electron.md` |
+| ローカルストレージ | データ永続化の場合 | `aiworkflow-requirements: database-*.md` |
+
+📖 詳細: `references/quality-standards.md` セクション8
+
 ## 成果物
 
 | 成果物            | パス              | 説明                     |
@@ -193,6 +221,18 @@ Phase {{NEXT_PHASE}}: {{NEXT_PHASE_NAME}}
 | 認証フロー | {{AUTH_FLOW}} |
 | データフロー | {{DATA_FLOW}} |
 
+## アーキテクチャ層別要件（AIが判断）
+
+タスクの性質に応じて、以下の層別に要件を整理する：
+
+| 層 | 確認観点 |
+| --- | -------- |
+| フロントエンド（Renderer） | UI要件、状態管理要件、UX要件 |
+| バックエンド（Main） | ビジネスロジック要件、システムアクセス要件 |
+| IPC通信 | Main-Renderer間の通信要件 |
+| セキュリティ | 認証・認可、入力検証、Electronセキュリティ要件 |
+| データ | 永続化要件、データフロー要件 |
+
 ## 成果物
 
 | 成果物       | パス                                         | 説明             |
@@ -208,6 +248,7 @@ Phase {{NEXT_PHASE}}: {{NEXT_PHASE_NAME}}
 - [ ] FR/NFRが分類されている
 - [ ] ステークホルダーが特定されている
 - [ ] 接続要件（API/認証/データフロー）が明記されている
+- [ ] アーキテクチャ層別の要件が整理されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
@@ -256,6 +297,18 @@ Phase 2: 設計
 | API→DB       | {{DB_SCHEMA}}                 |
 | 外部サービス | {{EXTERNAL_SERVICE_CONTRACT}} |
 
+## アーキテクチャ層別設計（AIが判断）
+
+タスクの性質に応じて、以下の層別に設計を行う：
+
+| 層 | 設計観点 | 仕様参照先 |
+| --- | -------- | ---------- |
+| フロントエンド（Renderer） | コンポーネント設計、状態管理、UI/UX | `aiworkflow-requirements: ui-ux-*.md` |
+| バックエンド（Main） | サービス設計、ビジネスロジック | `aiworkflow-requirements: architecture-*.md` |
+| IPC通信 | チャンネル設計、型定義、契約 | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
+| Preload | contextBridge設計、API公開 | `aiworkflow-requirements: security-api-electron.md` |
+| データ | スキーマ設計、リポジトリパターン | `aiworkflow-requirements: database-*.md` |
+
 ## 成果物
 
 | 成果物         | パス                                     | 説明         |
@@ -269,6 +322,7 @@ Phase 2: 設計
 - [ ] ドメインモデルが作成されている
 - [ ] 要件との整合性が確認されている
 - [ ] 統合ポイント/契約が設計に反映されている
+- [ ] アーキテクチャ層別の設計が完了している
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
@@ -396,6 +450,18 @@ Phase 4: テスト作成（TDD: Red）
 | 認証連携テスト     | トークン取得・リフレッシュ・期限切れ処理     | `*.auth.test.ts`        |
 | 状態同期テスト     | リアルタイム更新・楽観的UI更新・ロールバック | `*.sync.test.ts`        |
 
+## アーキテクチャ層別テスト（AIが判断）
+
+タスクの性質に応じて、以下の層別にテストを作成する：
+
+| 層 | テスト観点 | テストファイル配置 |
+| --- | -------- | ------------------ |
+| Renderer Process | UIコンポーネント、状態管理、Hooks | `apps/desktop/src/renderer/**/*.test.ts` |
+| Main Process | サービス、ビジネスロジック | `apps/desktop/src/main/**/*.test.ts` |
+| IPC通信 | Main-Renderer連携、チャンネル | `*.ipc.test.ts` |
+| Preload | API公開、型安全性 | `apps/desktop/src/preload/**/*.test.ts` |
+| Shared | ユーティリティ、型定義 | `packages/shared/**/*.test.ts` |
+
 ## 成果物
 
 | 成果物             | パス                                         | 説明               |
@@ -466,6 +532,19 @@ Phase 5: 実装（TDD: Green）
 | エラーハンドリング | {{ERROR_HANDLING_IMPLEMENTATION}} |
 | 状態同期 | {{STATE_SYNC_IMPLEMENTATION}} |
 
+## アーキテクチャ層別実装（AIが判断）
+
+タスクの性質に応じて、以下の層別に実装を行う：
+
+| 層 | 実装観点 | 実装ファイル配置 | 仕様参照先 |
+| --- | -------- | ---------------- | ---------- |
+| Renderer Process | UIコンポーネント、状態管理、Hooks | `apps/desktop/src/renderer/` | `aiworkflow-requirements: ui-ux-*.md` |
+| Main Process | サービス、ビジネスロジック、システムアクセス | `apps/desktop/src/main/` | `aiworkflow-requirements: architecture-*.md` |
+| IPC通信 | チャンネルハンドラー、型定義 | `apps/desktop/src/main/ipc/`, `packages/shared/types/` | `aiworkflow-requirements: api-*.md` |
+| Preload | contextBridge、セキュアAPI公開 | `apps/desktop/src/preload/` | `aiworkflow-requirements: security-api-electron.md` |
+| Shared | ユーティリティ、型定義、定数 | `packages/shared/` | - |
+| データ層 | リポジトリ、SQLite操作 | `apps/desktop/src/main/repositories/` | `aiworkflow-requirements: database-*.md` |
+
 ## 成果物
 
 | 成果物     | パス                               | 説明     |
@@ -477,6 +556,7 @@ Phase 5: 実装（TDD: Green）
 - [ ] すべてのテストが成功状態（Green）
 - [ ] 実装が最小限に抑えられている
 - [ ] フロント/バック接続が実装されている
+- [ ] アーキテクチャ層別の実装が適切に配置されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## TDD検証
@@ -939,11 +1019,12 @@ Phase 12: ドキュメント更新
 
 - 技術ドキュメント作成: 実装ガイドの作成
 - システムドキュメント更新: aiworkflow-requirements等の更新
+- ドキュメント更新履歴作成: 変更履歴の記録
 - 未タスク検出: 残課題の検出と記録
 
 ## サブフェーズ
 
-### Phase 12-1: 実装ガイド作成【必須】
+### Task 1: 実装ガイド作成【必須】
 
 **2パート構成**の実装ガイドを作成する:
 
@@ -954,7 +1035,7 @@ Phase 12: ドキュメント更新
 
 **テンプレート**: `assets/implementation-guide-template.md`
 
-### Phase 12-2: システムドキュメント更新【必須】
+### Task 2: システムドキュメント更新【必須】
 
 > **重要**: 詳細手順は `references/spec-update-workflow.md` を参照
 
@@ -998,7 +1079,20 @@ Phase 12: ドキュメント更新
 - 更新原則: 概要のみ記載、Single Source of Truth遵守
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
 
-### Phase 12-3: 未タスク検出【必須】
+### Task 3: ドキュメント更新履歴作成【必須】
+
+ドキュメント更新履歴（documentation-changelog.md）を作成する:
+
+```bash
+# スクリプト実行
+node scripts/generate-documentation-changelog.js --workflow docs/30-workflows/{{FEATURE_NAME}}
+```
+
+**スクリプト未存在時の代替手順**:
+- 手動で `outputs/phase-12/documentation-changelog.md` を作成
+- 更新したドキュメントと変更内容を一覧化
+
+### Task 4: 未タスク検出【必須】
 
 | #   | ソース                 | 確認項目                      |
 | --- | ---------------------- | ----------------------------- |
@@ -1008,12 +1102,25 @@ Phase 12: ドキュメント更新
 | 4   | 各Phase成果物          | 「将来対応」「TODO」「FIXME」 |
 | 5   | コードベース           | TODO/FIXME/HACK/XXXコメント   |
 
+## アーキテクチャ層別ドキュメント（AIが判断）
+
+実装ガイドPart 2（技術的詳細）では、タスクの性質に応じて以下の層別にドキュメントを作成する：
+
+| 層 | ドキュメント内容 | 更新対象 |
+| --- | ---------------- | -------- |
+| Renderer Process | コンポーネント設計、状態管理、Hooks使用方法 | `ui-ux-*.md`, `interfaces-*.md` |
+| Main Process | サービス設計、ビジネスロジック、API仕様 | `architecture-*.md`, `api-*.md` |
+| IPC通信 | チャンネル定義、リクエスト/レスポンス型 | `interfaces-*.md`, `api-*.md` |
+| Preload | 公開API一覧、セキュリティ考慮事項 | `security-api-electron.md` |
+| データ層 | スキーマ定義、リポジトリパターン | `database-*.md` |
+| エラーハンドリング | エラーコード、エラーメッセージ、復旧手順 | `error-handling.md` |
+
 ## 成果物
 
 | 成果物               | パス                                           | 必須 | 説明                      |
 | -------------------- | ---------------------------------------------- | ---- | ------------------------- |
 | 実装ガイド           | `outputs/phase-12/implementation-guide.md`     | ✅   | 概念的+技術的ドキュメント |
-| ドキュメント更新履歴 | `outputs/phase-12/documentation-update-log.md` | ✅   | 更新履歴                  |
+| ドキュメント更新履歴 | `outputs/phase-12/documentation-changelog.md` | ✅   | 更新履歴                  |
 | 未タスク検出レポート | `outputs/phase-12/unassigned-task-report.md`   | ✅   | 検出結果（なしでも出力）  |
 | 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`       | 条件 | 検出時のみ作成            |
 
@@ -1021,13 +1128,14 @@ Phase 12: ドキュメント更新
 
 - [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
-- [ ] **【Phase 12-2 Step 1】システム仕様書に「完了タスク」セクションを追加した**
-- [ ] **【Phase 12-2 Step 1】関連ドキュメントセクションに実装ガイドリンクを追加した**
-- [ ] **【Phase 12-2 Step 1】変更履歴セクションにバージョンを追記した**
-- [ ] **【Phase 12-2 Step 1】aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加した**
-- [ ] **【Phase 12-2 Step 1】task-specification-creator/LOGS.mdにタスク完了記録を追加した**
-- [ ] **【Phase 12-2 Step 1】topic-map.mdに新規セクションエントリを追加した（該当する場合）**
-- [ ] **【Phase 12-2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
+- [ ] **【Task 2 Step 1】システム仕様書に「完了タスク」セクションを追加した**
+- [ ] **【Task 2 Step 1】関連ドキュメントセクションに実装ガイドリンクを追加した**
+- [ ] **【Task 2 Step 1】変更履歴セクションにバージョンを追記した**
+- [ ] **【Task 2 Step 1】aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加した**
+- [ ] **【Task 2 Step 1】task-specification-creator/LOGS.mdにタスク完了記録を追加した**
+- [ ] **【Task 2 Step 1】topic-map.mdに新規セクションエントリを追加した（該当する場合）**
+- [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
+- [ ] **アーキテクチャ層別のドキュメントが作成されている（該当する層のみ）**
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] artifacts.jsonが更新されている
@@ -1039,8 +1147,8 @@ Phase 12: ドキュメント更新
 
 | スクリプト                            | 代替手順                                                                                             |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `generate-documentation-changelog.js` | 手動でdocumentation-changelog.mdを作成（テンプレート: `assets/documentation-changelog-template.md`） |
-| `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-tasks-report.mdを作成                      |
+| `generate-documentation-changelog.js` | 手動でdocumentation-changelog.mdを作成（`outputs/phase-12/documentation-changelog.md`の形式に従う） |
+| `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-task-report.mdを作成                      |
 | `validate-phase-output.js`            | 手動で成果物の存在と完了条件を確認                                                                   |
 
 ## 次のPhase
@@ -1081,7 +1189,7 @@ Phase 13: PR作成
 | ------------ | ---------------------------------------------- | -------------- |
 | 最終レビュー | `outputs/phase-10/final-review-result.md`      | Phase 10成果物 |
 | 手動テスト   | `outputs/phase-11/manual-test-result.md`       | Phase 11成果物 |
-| ドキュメント | `outputs/phase-12/documentation-update-log.md` | Phase 12成果物 |
+| ドキュメント | `outputs/phase-12/documentation-changelog.md` | Phase 12成果物 |
 
 ## 実行手順
 

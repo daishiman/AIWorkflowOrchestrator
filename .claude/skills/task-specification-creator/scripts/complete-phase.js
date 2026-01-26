@@ -16,7 +16,7 @@
  *     --artifacts "outputs/phase-1/requirements-definition.md:要件定義書,outputs/phase-1/acceptance-criteria.md:受け入れ基準"
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from "fs";
 import { join, dirname } from "path";
 
 // Phase依存関係マップ (Phase 0〜13)
@@ -136,9 +136,8 @@ function updatePhaseReferences(
   sourcePhase,
   artifacts,
 ) {
-  // Phase MDファイルを検索
-  const fs = require("fs");
-  const files = fs.readdirSync(workflowDir);
+  // Phase MDファイルを検索（トップレベルでimport済み）
+  const files = readdirSync(workflowDir);
   const phaseFile = files.find(
     (f) => f.startsWith(`phase-${targetPhase}-`) && f.endsWith(".md"),
   );

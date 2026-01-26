@@ -578,6 +578,24 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## 2026-01-26: TASK-4-2 未タスク指示書作成
+
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | TASK-4-2-A, TASK-4-2-B                                                             |
+| 操作         | create-unassigned-task                                                             |
+| 対象ファイル | task-permission-dialog-theme-customization.md, task-permission-dialog-animation.md |
+| 結果         | success                                                                            |
+| 備考         | Phase 11将来改善候補から未タスク指示書2件を作成                                    |
+
+### 作成詳細
+
+- **TASK-4-2-A**: Permission Dialog テーマカスタマイズ対応（低優先度）
+- **TASK-4-2-B**: Permission Dialog アニメーション追加（低優先度）
+- **配置先**: `docs/30-workflows/unassigned-task/`
+
+---
+
 ## 2026-01-26: TASK-4-2 PermissionResolver IPC Handlers
 
 | 項目         | 内容                                                                  |
@@ -632,13 +650,13 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ## 2026-01-25: TASK-4-1 IPCチャネル定義
 
-| 項目         | 内容                                                                                           |
-| ------------ | ---------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-4-1                                                                                       |
-| 操作         | update-spec                                                                                    |
-| 対象ファイル | security-api-electron.md                                                                       |
-| 結果         | success                                                                                        |
-| 備考         | スキルインポートIPCチャネル8件追加、完了タスクセクション追加                                   |
+| 項目         | 内容                                                         |
+| ------------ | ------------------------------------------------------------ |
+| タスクID     | TASK-4-1                                                     |
+| 操作         | update-spec                                                  |
+| 対象ファイル | security-api-electron.md                                     |
+| 結果         | success                                                      |
+| 備考         | スキルインポートIPCチャネル8件追加、完了タスクセクション追加 |
 
 ### 更新詳細
 
@@ -654,31 +672,31 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 関連ドキュメント
 
-| ドキュメント   | パス                                                                                    |
-| -------------- | --------------------------------------------------------------------------------------- |
-| 実装ガイド     | `docs/30-workflows/TASK-4-1-ipc-channels/outputs/phase-12/implementation-guide.md`      |
-| タスク仕様書   | `docs/30-workflows/TASK-4-1-ipc-channels/`                                              |
-| テストファイル | `apps/desktop/src/preload/__tests__/channels.skill-import.test.ts`                      |
+| ドキュメント   | パス                                                                               |
+| -------------- | ---------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-4-1-ipc-channels/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書   | `docs/30-workflows/TASK-4-1-ipc-channels/`                                         |
+| テストファイル | `apps/desktop/src/preload/__tests__/channels.skill-import.test.ts`                 |
 
 ### テスト品質
 
-| 項目           | 値     |
-| -------------- | ------ |
-| テスト総数     | 60     |
-| カバレッジ     | 100%   |
-| セキュリティ関連 | 全60  |
+| 項目             | 値   |
+| ---------------- | ---- |
+| テスト総数       | 60   |
+| カバレッジ       | 100% |
+| セキュリティ関連 | 全60 |
 
 ---
 
 ## 2026-01-26: TASK-4-1 topic-map.md更新（補完）
 
-| 項目         | 内容                                                              |
-| ------------ | ----------------------------------------------------------------- |
-| タスクID     | TASK-4-1                                                          |
-| 操作         | update-index                                                      |
-| 対象ファイル | indexes/topic-map.md                                              |
-| 結果         | success                                                           |
-| 備考         | security-api-electron.mdセクションにTASK-4-1関連エントリを追加    |
+| 項目         | 内容                                                           |
+| ------------ | -------------------------------------------------------------- |
+| タスクID     | TASK-4-1                                                       |
+| 操作         | update-index                                                   |
+| 対象ファイル | indexes/topic-map.md                                           |
+| 結果         | success                                                        |
+| 備考         | security-api-electron.mdセクションにTASK-4-1関連エントリを追加 |
 
 ### 更新詳細
 

@@ -48,9 +48,9 @@ BABOK（Business Analysis Body of Knowledge）の要件スコープ定義手法�
 
 ### 3.2 スキーマ参照
 
-| スキーマ           | パス                         | 用途     |
-| ------------------ | ---------------------------- | -------- |
-| タスク定義スキーマ | schemas/task-definition.json | スコープ構造 |
+| スキーマ           | パス                         | 用途         |
+| ------------------ | ---------------------------- | ------------ |
+| スコープ定義スキーマ | schemas/scope-definition.json | スコープ定義検証 |
 
 > Progressive Disclosure: スキーマは出力検証時に読み込む
 
@@ -99,9 +99,9 @@ BABOK（Business Analysis Body of Knowledge）の要件スコープ定義手法�
 
 ### 5.2 出力
 
-| 成果物名       | 受領先        | 内容                          |
-| -------------- | ------------- | ----------------------------- |
-| スコープ定義書 | design-phases | 含む/含まない、前提、制約、AC |
+| 成果物名       | 受領先                          | 内容                          |
+| -------------- | ------------------------------- | ----------------------------- |
+| スコープ定義書 | design-phases, generate-task-specs | 含む/含まない、前提、制約、AC |
 
 #### 出力テンプレート
 
@@ -118,33 +118,37 @@ BABOK（Business Analysis Body of Knowledge）の要件スコープ定義手法�
     ]
   },
   "prerequisites": [
-    "{{前提条件1}}",
-    "{{前提条件2}}"
+    {
+      "condition": "{{前提条件1}}",
+      "type": "technical|business|resource|dependency",
+      "status": "met|not-met|unknown"
+    }
   ],
   "constraints": [
-    "{{技術的制約1}}",
-    "{{ビジネス的制約1}}"
+    {
+      "constraint": "{{制約内容}}",
+      "type": "technical|business|time|resource|quality",
+      "impact": "high|medium|low"
+    }
   ],
   "acceptanceCriteria": [
-    "{{AC1: 検証可能な形式}}",
-    "{{AC2: 検証可能な形式}}"
+    {
+      "id": "AC-1",
+      "criterion": "{{検証可能な受け入れ基準}}",
+      "verificationMethod": "automated-test|manual-test|code-review|documentation-review",
+      "priority": "must|should|could"
+    }
   ]
 }
 ```
 
 ### 5.3 出力検証
 
-スコープ定義はtask-definition.jsonのscope, prerequisites, constraints, acceptanceCriteriaに統合される。
+スコープ定義はscope-definition.jsonスキーマで検証される。
 
 ```bash
-# 統合後のスキーマ検証
-node -e "
-const schema = require('./schemas/task-definition.json');
-const Ajv = require('ajv');
-const ajv = new Ajv();
-const validate = ajv.compile(schema);
-const data = require('./.tmp/task-definition.json');
-if (!validate(data)) console.error(validate.errors);
-else console.log('Valid');
-"
+# スキーマ検証
+node .claude/skills/task-specification-creator/scripts/validate-schema.js \
+  --schema schemas/scope-definition.json \
+  --data .tmp/scope-definition.json
 ```

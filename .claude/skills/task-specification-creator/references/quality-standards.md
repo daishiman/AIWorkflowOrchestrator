@@ -195,6 +195,69 @@ Phase完了後、以下を記録:
 
 ---
 
+## 8. システム開発観点の品質基準（AIが判断）
+
+各Phaseでタスクの性質に応じて、以下の観点を確認する。
+**具体的なチェック項目はAIが判断して適用する。**
+
+### 8.1 必須観点（全Phase共通）
+
+| 観点 | 確認の方向性 | 仕様参照先 |
+| ---- | ------------ | ---------- |
+| **セキュリティ** | 認証・認可、入力検証、脆弱性対策 | `aiworkflow-requirements: security-*.md` |
+| **エラーハンドリング** | 例外処理、ユーザーフィードバック | `aiworkflow-requirements: error-handling.md` |
+| **テスタビリティ** | テスト可能な設計、モック可能性 | `aiworkflow-requirements: testing-*.md` |
+
+### 8.2 条件付き観点（タスク性質に応じてAIが判断）
+
+| 観点 | 適用条件 | 確認の方向性 | 仕様参照先 |
+| ---- | -------- | ------------ | ---------- |
+| **UI/UX** | フロントエンド実装時 | Apple HIG準拠、WCAG、レスポンシブ | `aiworkflow-requirements: ui-ux-*.md` |
+| **アーキテクチャ** | 設計・実装時 | 層分離、依存方向、パターン適用 | `aiworkflow-requirements: architecture-*.md` |
+| **API設計** | API実装時 | RESTful、型安全、契約遵守 | `aiworkflow-requirements: api-*.md` |
+| **データ整合性** | DB操作時 | トランザクション、バリデーション | `aiworkflow-requirements: database-*.md` |
+| **パフォーマンス** | 性能要件がある時 | レスポンス時間、リソース効率 | `aiworkflow-requirements: architecture-*.md` |
+| **国際化（i18n）** | 多言語対応時 | ハードコード回避、ローカライズ | - |
+| **アクセシビリティ** | UI実装時 | キーボード操作、スクリーンリーダー | `aiworkflow-requirements: ui-ux-*.md` |
+| **ロギング・監視** | 運用要件がある時 | ログ出力、メトリクス | - |
+
+### 8.3 Electronデスクトップアプリ観点（本プロジェクト固有）
+
+本プロジェクトはElectronベースのローカルデスクトップアプリのため、以下の観点を確認する：
+
+| 観点 | 確認の方向性 | 仕様参照先 |
+| ---- | ------------ | ---------- |
+| **フロントエンド（Renderer Process）** | React/状態管理、UIコンポーネント設計 | `aiworkflow-requirements: ui-ux-*.md`, `interfaces-*.md` |
+| **バックエンド（Main Process）** | Node.jsサービス、ファイルシステム操作 | `aiworkflow-requirements: architecture-*.md` |
+| **IPC通信** | Main-Renderer間通信、チャンネル設計 | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
+| **Preload Script** | contextBridge、セキュアなAPI公開 | `aiworkflow-requirements: security-*.md` |
+| **Electronセキュリティ** | contextIsolation、nodeIntegration、サンドボックス | `aiworkflow-requirements: security-api-electron.md` |
+| **ローカルストレージ** | SQLite、ファイルシステム、設定管理 | `aiworkflow-requirements: database-*.md` |
+| **アプリ配布** | electron-builder、署名、自動更新 | - |
+
+#### アーキテクチャ層の責務
+
+| 層 | 責務 | 実装場所 |
+| --- | ---- | -------- |
+| **Renderer Process** | UI表示、ユーザー操作、状態管理 | `apps/desktop/src/renderer/` |
+| **Preload Script** | Main-Renderer間のセキュアなブリッジ | `apps/desktop/src/preload/` |
+| **Main Process** | ビジネスロジック、システムリソースアクセス | `apps/desktop/src/main/` |
+| **Shared** | 型定義、ユーティリティ、定数 | `packages/shared/` |
+
+### 8.4 Phase別の重点観点
+
+| Phase | 重点観点 | 理由 |
+| ----- | -------- | ---- |
+| Phase 1（要件定義） | セキュリティ、UI/UX | 要件段階で観点を洗い出す |
+| Phase 2（設計） | アーキテクチャ、API設計、データ整合性 | 設計段階で方針を決める |
+| Phase 3（設計レビュー） | 全観点 | 実装前に多角的に検証 |
+| Phase 4-5（テスト・実装） | テスタビリティ、エラーハンドリング | 実装品質を担保 |
+| Phase 9（品質保証） | セキュリティ、パフォーマンス | 非機能要件を検証 |
+| Phase 10（最終レビュー） | 全観点 | リリース前に総合検証 |
+| Phase 11（手動テスト） | UI/UX、アクセシビリティ | ユーザー体験を検証 |
+
+---
+
 ## 品質チェックリスト
 
 タスク仕様書の最終確認用:

@@ -114,10 +114,12 @@ Robert C. Martin（Uncle Bob）は『Clean Code』の著者として、コード
 
 ### 5.1 入力
 
+**実行パターン**: generate-task-specs完了後、verify-all-specs.js実行後に実行。
+
 | データ名             | 提供元                                 | 検証ルール             |
 | -------------------- | -------------------------------------- | ---------------------- |
-| 自動検証レポート     | outputs/verification-report.md         | 存在すること           |
-| Phase仕様書（1-13）  | phase-1-*.md 〜 phase-13-*.md          | 13ファイル存在         |
+| 自動検証レポート     | verify-all-specs.js (Script Task)      | 存在すること           |
+| Phase仕様書（1-13）  | generate-task-specs (Agent)            | 13ファイル存在         |
 
 ### 5.2 出力
 

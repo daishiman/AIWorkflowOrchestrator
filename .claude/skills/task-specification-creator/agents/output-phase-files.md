@@ -132,108 +132,23 @@
 - [ ] artifacts.jsonが正しく初期化された
 ```
 
-### 5.3 出力検証（スクリプト）
+### 5.3 出力検証・初期化スクリプト
+
+**使用スクリプト**:
+
+| スクリプト | 用途 | コマンド |
+| ---------- | ---- | -------- |
+| `init-artifacts.js` | ワークフロー初期化 | `node scripts/init-artifacts.js --workflow {{PATH}}` |
+| `validate-phase-output.js` | 出力検証 | `node scripts/validate-phase-output.js {{PATH}} --phase {{N}}` |
 
 ```bash
-#!/bin/bash
-# scripts/validate_output.sh
+# ワークフロー初期化（ディレクトリ作成 + artifacts.json生成）
+node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}}
 
-FEATURE_NAME=$1
-OUTPUT_DIR="docs/30-workflows/${FEATURE_NAME}"
-
-# ディレクトリ存在確認
-if [ ! -d "$OUTPUT_DIR" ]; then
-  echo "Error: Output directory not found: $OUTPUT_DIR"
-  exit 1
-fi
-
-# ファイル数確認
-FILE_COUNT=$(ls -1 "$OUTPUT_DIR"/phase-*.md 2>/dev/null | wc -l)
-if [ "$FILE_COUNT" -ne 13 ]; then
-  echo "Error: Expected 13 phase files, found $FILE_COUNT"
-  exit 1
-fi
-
-# index.md確認
-if [ ! -f "$OUTPUT_DIR/index.md" ]; then
-  echo "Error: index.md not found"
-  exit 1
-fi
-
-# artifacts.json確認
-if [ ! -f "$OUTPUT_DIR/artifacts.json" ]; then
-  echo "Error: artifacts.json not found"
-  exit 1
-fi
-
-echo "Validation passed!"
+# 出力検証
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  docs/30-workflows/{{FEATURE_NAME}} --phase 0
 ```
 
----
-
-## 6. スクリプト実装
-
-### 6.1 ファイル出力スクリプト
-
-```bash
-#!/bin/bash
-# scripts/output_phase_files.sh
-
-FEATURE_NAME=$1
-OUTPUT_DIR="docs/30-workflows/${FEATURE_NAME}"
-OUTPUTS_DIR="${OUTPUT_DIR}/outputs"
-
-# ディレクトリ作成
-mkdir -p "$OUTPUT_DIR"
-mkdir -p "$OUTPUTS_DIR"
-
-# Phase 1-13のサブディレクトリ作成
-for i in {1..13}; do
-  mkdir -p "${OUTPUTS_DIR}/phase-${i}"
-done
-
-echo "Directories created successfully"
-```
-
-### 6.2 artifacts.json初期化スクリプト
-
-```javascript
-// scripts/init_artifacts.js
-import fs from 'fs';
-import path from 'path';
-
-const featureName = process.argv[2];
-const outputDir = `docs/30-workflows/${featureName}`;
-
-const artifacts = {
-  feature: featureName,
-  created: new Date().toISOString(),
-  lastUpdated: new Date().toISOString(),
-  status: 'in_progress',
-  phases: {},
-  dependencies: {
-    "2": ["1"], "3": ["2"], "4": ["3"], "5": ["4"],
-    "6": ["5"], "7": ["6"], "8": ["7"], "9": ["8"],
-    "10": ["9"], "11": ["10"], "12": ["11"], "13": ["12"]
-  },
-  metadata: {
-    estimatedPhases: 13,
-    actualPhases: 0
-  }
-};
-
-// Phase 1-13の初期化
-for (let i = 1; i <= 13; i++) {
-  artifacts.phases[String(i)] = {
-    status: 'pending',
-    artifacts: []
-  };
-}
-
-fs.writeFileSync(
-  path.join(outputDir, 'artifacts.json'),
-  JSON.stringify(artifacts, null, 2)
-);
-
-console.log('artifacts.json initialized');
-```
+> **Note**: インラインスクリプトは廃止。scripts/ディレクトリの既存スクリプトを使用すること。
