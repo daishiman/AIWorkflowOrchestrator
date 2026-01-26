@@ -1,0 +1,182 @@
+{
+  "taskId": "TASK-4-1",
+  "taskName": "IPCチャネル定義",
+  "createdAt": "2026-01-25T00:00:00.000Z",
+  "updatedAt": "2026-01-26T00:30:00.000Z",
+  "schemaVersion": "1.0.0",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-25T22:55:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書（機能/非機能要件、受け入れ基準）"
+        },
+        {
+          "path": "outputs/phase-1/channel-analysis.md",
+          "description": "チャネル分析レポート（重複分析、新規追加一覧）"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-25T22:58:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-2/design.md",
+          "description": "設計書（チャネル定数、型、ホワイトリスト設計）"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-25T23:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-3/review-result.md",
+          "description": "レビュー結果レポート（判定: PASS）"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-25T23:05:00.000Z",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/preload/__tests__/channels.skill-import.test.ts",
+          "description": "TASK-4-1テストファイル（TDD Red状態）"
+        },
+        {
+          "path": "outputs/phase-4/test-design.md",
+          "description": "テスト設計書"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-25T23:10:00.000Z",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/preload/channels.ts",
+          "description": "IPCチャネル定義ファイル（8チャネル追加）"
+        },
+        {
+          "path": "outputs/phase-5/implementation-report.md",
+          "description": "実装レポート（TDD Green状態確認）"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-25T23:45:00.000Z",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/preload/__tests__/channels.skill-import.test.ts",
+          "description": "拡充されたテストファイル（60テスト）"
+        },
+        {
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-25T23:50:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-7/coverage-result.md",
+          "description": "カバレッジ結果レポート（100%達成）"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-25T23:55:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート（変更不要確認）"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-26T00:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート（全項目PASS）"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-26T00:05:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果レポート（判定: PASS）"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-26T00:10:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果レポート"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-26T00:30:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（初学者向け概念説明＋開発者向け技術詳細）"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴（ソースコード変更、システム仕様更新推奨）"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未割当タスク検出レポート（検出0件）"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "targetFiles": [
+    {
+      "path": "apps/desktop/src/preload/channels.ts",
+      "operation": "modify",
+      "description": "SKILL_CHANNELS定数の追加、ホワイトリスト更新"
+    }
+  ],
+  "dependencies": {
+    "tasks": ["TASK-1-1"],
+    "packages": []
+  },
+  "blocks": ["TASK-4-2", "TASK-5-1"]
+}

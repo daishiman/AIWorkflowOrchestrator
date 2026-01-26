@@ -965,6 +965,9 @@ Phase 12: ドキュメント更新
 - [ ] 該当する仕様書に「完了タスク」セクションを追加
 - [ ] 関連ドキュメントセクションに実装ガイドリンクを追加
 - [ ] 変更履歴セクションにバージョンを追記
+- [ ] aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加
+- [ ] task-specification-creator/LOGS.mdにタスク完了記録を追加
+- [ ] topic-map.mdに新規セクションエントリを追加（該当する場合）
 
 ```markdown
 ## 完了タスク
@@ -1021,6 +1024,9 @@ Phase 12: ドキュメント更新
 - [ ] **【Phase 12-2 Step 1】システム仕様書に「完了タスク」セクションを追加した**
 - [ ] **【Phase 12-2 Step 1】関連ドキュメントセクションに実装ガイドリンクを追加した**
 - [ ] **【Phase 12-2 Step 1】変更履歴セクションにバージョンを追記した**
+- [ ] **【Phase 12-2 Step 1】aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加した**
+- [ ] **【Phase 12-2 Step 1】task-specification-creator/LOGS.mdにタスク完了記録を追加した**
+- [ ] **【Phase 12-2 Step 1】topic-map.mdに新規セクションエントリを追加した（該当する場合）**
 - [ ] **【Phase 12-2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）

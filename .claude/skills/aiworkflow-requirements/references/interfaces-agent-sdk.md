@@ -702,6 +702,187 @@ if (result.success) {
 - IPCハンドラーで `validateIpcSender` によるsender検証を実施
 - skillIdの入力バリデーション（空文字・非文字列のチェック）
 
+#### onPermission（TASK-3-1-D）
+
+> **実装完了**: 2026-01-26（TASK-3-1-D）
+
+Main ProcessからのPermission要求をリッスンするリスナーを登録する。
+
+**シグネチャ**:
+
+```typescript
+onPermission: (callback: (request: SkillPermissionRequest) => void) => () => void;
+```
+
+**引数**:
+
+| パラメータ | 型                                          | 必須 | 説明                           |
+| ---------- | ------------------------------------------- | ---- | ------------------------------ |
+| `callback` | `(request: SkillPermissionRequest) => void` | ✓    | リクエスト受信時のコールバック |
+
+**戻り値**: `() => void` - リスナー解除用クリーンアップ関数
+
+**使用例**:
+
+```typescript
+// リスナー登録
+const cleanup = window.skillAPI.onPermission((request) => {
+  console.log("Permission requested:", request.toolName);
+  console.log("Args:", request.args);
+});
+
+// クリーンアップ（コンポーネントアンマウント時）
+cleanup();
+```
+
+**実装ファイル**: `apps/desktop/src/preload/skill-api.ts`
+
+#### respondPermission（TASK-3-1-D）
+
+> **実装完了**: 2026-01-26（TASK-3-1-D）
+
+Permission要求に対してユーザーの応答を送信する。
+
+**シグネチャ**:
+
+```typescript
+respondPermission: (response: SkillPermissionResponse) => Promise<boolean>;
+```
+
+**引数**:
+
+| パラメータ | 型                        | 必須 | 説明             |
+| ---------- | ------------------------- | ---- | ---------------- |
+| `response` | `SkillPermissionResponse` | ✓    | 応答オブジェクト |
+
+**戻り値**: `Promise<boolean>` - 送信成功時`true`
+
+**使用例**:
+
+```typescript
+// 許可応答
+await window.skillAPI.respondPermission({
+  requestId: request.requestId,
+  approved: true,
+  rememberChoice: false,
+});
+
+// 拒否応答
+await window.skillAPI.respondPermission({
+  requestId: request.requestId,
+  approved: false,
+  rememberChoice: true,
+});
+```
+
+**実装ファイル**: `apps/desktop/src/preload/skill-api.ts`
+
+---
+
+### Permission型定義（TASK-3-1-D）
+
+#### SkillPermissionRequest
+
+```typescript
+interface SkillPermissionRequest {
+  /** 実行ID */
+  executionId: string;
+  /** リクエストID（応答時に使用） */
+  requestId: string;
+  /** ツール名（例: "Bash", "Write"） */
+  toolName: string;
+  /** サニタイズされた引数 */
+  args: Record<string, unknown>;
+  /** ユーザー向け理由説明（オプション） */
+  reason?: string;
+}
+```
+
+#### SkillPermissionResponse
+
+```typescript
+interface SkillPermissionResponse {
+  /** リクエストID（リクエストと紐付け） */
+  requestId: string;
+  /** 許可/拒否 */
+  approved: boolean;
+  /** 選択を記憶するか（オプション） */
+  rememberChoice?: boolean;
+}
+```
+
+---
+
+### React Hooks（TASK-3-1-D）
+
+#### useSkillPermission
+
+> **実装完了**: 2026-01-26（TASK-3-1-D）
+> **ファイル**: `apps/desktop/src/renderer/hooks/useSkillPermission.ts`
+
+Permission要求の状態管理とハンドラーを提供するカスタムフック。
+
+**シグネチャ**:
+
+```typescript
+function useSkillPermission(): {
+  pendingPermission: SkillPermissionRequest | null;
+  handleApprove: (rememberChoice: boolean) => void;
+  handleDeny: (rememberChoice: boolean) => void;
+};
+```
+
+**戻り値**:
+
+| プロパティ          | 型                                  | 説明         |
+| ------------------- | ----------------------------------- | ------------ | -------------------------------------- |
+| `pendingPermission` | `SkillPermissionRequest             | null`        | 保留中の権限リクエスト（なければnull） |
+| `handleApprove`     | `(rememberChoice: boolean) => void` | 許可ハンドラ |
+| `handleDeny`        | `(rememberChoice: boolean) => void` | 拒否ハンドラ |
+
+**ライフサイクル**:
+
+```
+1. コンポーネントマウント
+   └─ useEffect: skillAPI.onPermission() でリスナー登録
+
+2. Permission要求受信
+   └─ setPendingPermission(request)
+   └─ PermissionDialog表示
+
+3. ユーザー操作
+   ├─ 許可: handleApprove() → respondPermission({approved: true})
+   └─ 拒否: handleDeny() → respondPermission({approved: false})
+
+4. 応答送信後
+   └─ setPendingPermission(null)
+   └─ ダイアログ非表示
+
+5. コンポーネントアンマウント
+   └─ useEffect cleanup: リスナー解除
+```
+
+**使用例**:
+
+```typescript
+function SkillStreamDisplay({ skillId }: Props) {
+  const { pendingPermission, handleApprove, handleDeny } = useSkillPermission();
+
+  return (
+    <>
+      {/* 既存UI */}
+      <PermissionDialog
+        request={pendingPermission}
+        onApprove={handleApprove}
+        onDeny={handleDeny}
+      />
+    </>
+  );
+}
+```
+
+**テストファイル**: `apps/desktop/src/renderer/hooks/__tests__/useSkillPermission.test.ts`（17テスト）
+
 ---
 
 ### UIコンポーネント
@@ -949,12 +1130,12 @@ interface SkillCacheEntry {
 
 ### ストレージ仕様
 
-| 項目             | 値                                       |
-| ---------------- | ---------------------------------------- |
-| ストア名         | `skill-imports`                          |
-| ファイルパス     | `~/.aiworkflow/config/skill-imports.json` |
-| スキーマバージョン | 1                                       |
-| 暗号化           | なし（機密データを含まない）             |
+| 項目               | 値                                        |
+| ------------------ | ----------------------------------------- |
+| ストア名           | `skill-imports`                           |
+| ファイルパス       | `~/.aiworkflow/config/skill-imports.json` |
+| スキーマバージョン | 1                                         |
+| 暗号化             | なし（機密データを含まない）              |
 
 ### バリデーション
 
@@ -968,7 +1149,7 @@ function validateSkillName(name: string): void {
     const truncated = name.length > 20 ? name.slice(0, 20) + "..." : name;
     throw new SkillStoreError(
       SKILL_STORE_ERRORS.INVALID_SKILL_NAME,
-      `Invalid skill name: ${truncated}`
+      `Invalid skill name: ${truncated}`,
     );
   }
 }
@@ -976,19 +1157,19 @@ function validateSkillName(name: string): void {
 
 ### エラーコード
 
-| コード              | 説明                   |
-| ------------------- | ---------------------- |
-| INVALID_SKILL_NAME  | スキル名が不正         |
-| SKILL_NOT_FOUND     | スキルが見つからない   |
-| STORE_ACCESS_ERROR  | ストアアクセスエラー   |
-| MIGRATION_ERROR     | マイグレーション失敗   |
+| コード             | 説明                 |
+| ------------------ | -------------------- |
+| INVALID_SKILL_NAME | スキル名が不正       |
+| SKILL_NOT_FOUND    | スキルが見つからない |
+| STORE_ACCESS_ERROR | ストアアクセスエラー |
+| MIGRATION_ERROR    | マイグレーション失敗 |
 
 ### セキュリティ（SEC-01）
 
 | 対策           | 実装                               |
 | -------------- | ---------------------------------- |
 | 入力値切り捨て | エラーメッセージは最初の20文字のみ |
-| ホワイトリスト | スキル名は英数字・_・-のみ許可     |
+| ホワイトリスト | スキル名は英数字・\_・-のみ許可    |
 | パス制限       | 設定ディレクトリ外へのアクセス不可 |
 
 ### デフォルト設定
@@ -1031,35 +1212,35 @@ if (decision === "allow") {
 
 ### テスト仕様
 
-| カテゴリ           | テスト数 | カバレッジ |
-| ------------------ | -------- | ---------- |
-| インポート管理     | 11       | 100%       |
-| 設定管理           | 8        | 100%       |
-| 権限管理           | 15       | 100%       |
-| キャッシュ管理     | 14       | 100%       |
-| マイグレーション   | 11       | 100%       |
-| **合計**           | **59**   | **~95%**   |
+| カテゴリ         | テスト数 | カバレッジ |
+| ---------------- | -------- | ---------- |
+| インポート管理   | 11       | 100%       |
+| 設定管理         | 8        | 100%       |
+| 権限管理         | 15       | 100%       |
+| キャッシュ管理   | 14       | 100%       |
+| マイグレーション | 11       | 100%       |
+| **合計**         | **59**   | **~95%**   |
 
 ### 関連ドキュメント
 
-| ドキュメント   | パス                                                                         |
-| -------------- | ---------------------------------------------------------------------------- |
-| 実装ガイド     | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
+| ドキュメント   | パス                                                                                         |
+| -------------- | -------------------------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md`      |
 | 要件仕様書     | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-1/requirements-specification.md` |
-| API設計書      | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-2/api-design.md` |
-| テストファイル | `apps/desktop/src/main/settings/__tests__/skillImportStore.test.ts`          |
+| API設計書      | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-2/api-design.md`                 |
+| テストファイル | `apps/desktop/src/main/settings/__tests__/skillImportStore.test.ts`                          |
 
 ### SkillImportManager との違い
 
-| 観点         | SkillImportManager                     | SkillImportStore                           |
-| ------------ | -------------------------------------- | ------------------------------------------ |
-| 責務         | スキルID一覧のみ管理                   | メタデータ・設定・権限・キャッシュを包括管理 |
-| 実装パス     | `services/skill/`                      | `settings/`                                |
-| データ構造   | `string[]`（ID配列）                   | `Record<string, ImportedSkillData>`        |
-| 設定管理     | なし                                   | あり（SkillSettings）                      |
-| 権限記憶     | なし                                   | あり（rememberedPermissions）              |
-| キャッシュ   | なし                                   | あり（SkillCacheEntry）                    |
-| 後続タスク   | -                                      | TASK-2C（IPC Handler）で公開               |
+| 観点       | SkillImportManager   | SkillImportStore                             |
+| ---------- | -------------------- | -------------------------------------------- |
+| 責務       | スキルID一覧のみ管理 | メタデータ・設定・権限・キャッシュを包括管理 |
+| 実装パス   | `services/skill/`    | `settings/`                                  |
+| データ構造 | `string[]`（ID配列） | `Record<string, ImportedSkillData>`          |
+| 設定管理   | なし                 | あり（SkillSettings）                        |
+| 権限記憶   | なし                 | あり（rememberedPermissions）                |
+| キャッシュ | なし                 | あり（SkillCacheEntry）                      |
+| 後続タスク | -                    | TASK-2C（IPC Handler）で公開                 |
 
 ---
 
@@ -2500,12 +2681,12 @@ Claude Agent SDK の `query()` API を使用してスキルを実行し、スト
 
 ### 概要
 
-| 項目         | 内容                                         |
-| ------------ | -------------------------------------------- |
-| 実装ファイル | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
-| 型定義       | `packages/shared/src/types/skill-execution.ts` |
-| IPC チャンネル | `skill:stream` (Main → Renderer)           |
-| SDK 依存     | `@anthropic-ai/claude-agent-sdk`             |
+| 項目           | 内容                                                    |
+| -------------- | ------------------------------------------------------- |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
+| 型定義         | `packages/shared/src/types/skill-execution.ts`          |
+| IPC チャンネル | `skill:stream` (Main → Renderer)                        |
+| SDK 依存       | `@anthropic-ai/claude-agent-sdk`                        |
 
 ### アーキテクチャ
 
@@ -2577,11 +2758,11 @@ interface SkillExecutionRequest {
 
 スキル実行レスポンス（Main → Renderer）。
 
-| プロパティ    | 型                    | 必須 | 説明                       |
-| ------------- | --------------------- | ---- | -------------------------- |
-| `executionId` | `string`              | ✓    | 実行ID（UUID）             |
-| `success`     | `boolean`             | ✓    | 成功/失敗フラグ            |
-| `error`       | `SkillExecutionError` | -    | エラー情報（失敗時）       |
+| プロパティ    | 型                    | 必須 | 説明                 |
+| ------------- | --------------------- | ---- | -------------------- |
+| `executionId` | `string`              | ✓    | 実行ID（UUID）       |
+| `success`     | `boolean`             | ✓    | 成功/失敗フラグ      |
+| `error`       | `SkillExecutionError` | -    | エラー情報（失敗時） |
 
 ```typescript
 interface SkillExecutionResponse {
@@ -2595,14 +2776,14 @@ interface SkillExecutionResponse {
 
 ストリーミングメッセージ（Main → Renderer）。
 
-| プロパティ    | 型                       | 必須 | 説明                   |
-| ------------- | ------------------------ | ---- | ---------------------- |
-| `executionId` | `string`                 | ✓    | 実行ID                 |
-| `id`          | `string`                 | ✓    | メッセージID（UUID）   |
-| `type`        | `SkillStreamMessageType` | ✓    | メッセージ種別         |
-| `content`     | `string`                 | ✓    | メッセージ内容         |
-| `timestamp`   | `number`                 | ✓    | タイムスタンプ         |
-| `isComplete`  | `boolean`                | ✓    | 完了フラグ             |
+| プロパティ    | 型                       | 必須 | 説明                 |
+| ------------- | ------------------------ | ---- | -------------------- |
+| `executionId` | `string`                 | ✓    | 実行ID               |
+| `id`          | `string`                 | ✓    | メッセージID（UUID） |
+| `type`        | `SkillStreamMessageType` | ✓    | メッセージ種別       |
+| `content`     | `string`                 | ✓    | メッセージ内容       |
+| `timestamp`   | `number`                 | ✓    | タイムスタンプ       |
+| `isComplete`  | `boolean`                | ✓    | 完了フラグ           |
 
 ```typescript
 interface SkillStreamMessage {
@@ -2634,11 +2815,11 @@ type SkillStreamMessageType = "text" | "tool_use" | "error" | "complete";
 
 実行エラー情報。
 
-| プロパティ | 型                        | 必須 | 説明           |
-| ---------- | ------------------------- | ---- | -------------- |
-| `code`     | `SkillExecutionErrorCode` | ✓    | エラーコード   |
+| プロパティ | 型                        | 必須 | 説明             |
+| ---------- | ------------------------- | ---- | ---------------- |
+| `code`     | `SkillExecutionErrorCode` | ✓    | エラーコード     |
 | `message`  | `string`                  | ✓    | エラーメッセージ |
-| `details`  | `unknown`                 | -    | 詳細情報       |
+| `details`  | `unknown`                 | -    | 詳細情報         |
 
 ```typescript
 interface SkillExecutionError {
@@ -2652,12 +2833,12 @@ interface SkillExecutionError {
 
 エラーコード一覧。
 
-| コード                    | 説明                   |
-| ------------------------- | ---------------------- |
-| `MAX_CONCURRENT_EXCEEDED` | 同時実行数超過         |
-| `ABORTED`                 | ユーザーによる中断     |
-| `TIMEOUT`                 | タイムアウト           |
-| `EXECUTION_FAILED`        | 実行失敗               |
+| コード                    | 説明               |
+| ------------------------- | ------------------ |
+| `MAX_CONCURRENT_EXCEEDED` | 同時実行数超過     |
+| `ABORTED`                 | ユーザーによる中断 |
+| `TIMEOUT`                 | タイムアウト       |
+| `EXECUTION_FAILED`        | 実行失敗           |
 
 ```typescript
 type SkillExecutionErrorCode =
@@ -2671,13 +2852,13 @@ type SkillExecutionErrorCode =
 
 実行情報（状態確認用）。
 
-| プロパティ    | 型             | 必須 | 説明               |
-| ------------- | -------------- | ---- | ------------------ |
-| `id`          | `string`       | ✓    | 実行ID             |
-| `skillId`     | `string`       | ✓    | スキルID           |
-| `state`       | `ExecutionState` | ✓  | 実行状態           |
-| `startedAt`   | `number`       | ✓    | 開始タイムスタンプ |
-| `completedAt` | `number`       | -    | 完了タイムスタンプ |
+| プロパティ    | 型               | 必須 | 説明               |
+| ------------- | ---------------- | ---- | ------------------ |
+| `id`          | `string`         | ✓    | 実行ID             |
+| `skillId`     | `string`         | ✓    | スキルID           |
+| `state`       | `ExecutionState` | ✓    | 実行状態           |
+| `startedAt`   | `number`         | ✓    | 開始タイムスタンプ |
+| `completedAt` | `number`         | -    | 完了タイムスタンプ |
 
 ```typescript
 interface ExecutionInfo {
@@ -2708,27 +2889,27 @@ interface ExecutionContext {
 
 #### SkillExecutor クラス
 
-| メソッド              | シグネチャ                                                     | 説明                 |
-| --------------------- | -------------------------------------------------------------- | -------------------- |
-| `execute`             | `(request, skill) => Promise<SkillExecutionResponse>`          | スキル実行           |
-| `abort`               | `(executionId: string) => boolean`                             | 実行中断             |
-| `getActiveExecutions` | `() => ExecutionInfo[]`                                        | アクティブ実行一覧   |
-| `getExecutionStatus`  | `(executionId: string) => ExecutionInfo \| undefined`          | 実行状態取得         |
+| メソッド              | シグネチャ                                            | 説明               |
+| --------------------- | ----------------------------------------------------- | ------------------ |
+| `execute`             | `(request, skill) => Promise<SkillExecutionResponse>` | スキル実行         |
+| `abort`               | `(executionId: string) => boolean`                    | 実行中断           |
+| `getActiveExecutions` | `() => ExecutionInfo[]`                               | アクティブ実行一覧 |
+| `getExecutionStatus`  | `(executionId: string) => ExecutionInfo \| undefined` | 実行状態取得       |
 
 ### IPC チャンネル（SkillExecutor）
 
-| チャンネル     | 方向            | 説明                 |
-| -------------- | --------------- | -------------------- |
-| `skill:stream` | Main → Renderer | ストリーミング配信   |
+| チャンネル     | 方向            | 説明               |
+| -------------- | --------------- | ------------------ |
+| `skill:stream` | Main → Renderer | ストリーミング配信 |
 
 ### 設定定数
 
-| 定数                       | 値      | 説明                        |
-| -------------------------- | ------- | --------------------------- |
-| `DEFAULT_TOOLS`            | 5ツール | Read, Edit, Bash, Glob, Grep |
-| `DEFAULT_TIMEOUT_MS`       | `30000` | デフォルトタイムアウト (ms) |
-| `MAX_CONCURRENT_EXECUTIONS`| `5`     | 最大同時実行数              |
-| `HISTORY_RETENTION_MS`     | `60000` | 履歴保持期間 (ms)           |
+| 定数                        | 値      | 説明                         |
+| --------------------------- | ------- | ---------------------------- |
+| `DEFAULT_TOOLS`             | 5ツール | Read, Edit, Bash, Glob, Grep |
+| `DEFAULT_TIMEOUT_MS`        | `30000` | デフォルトタイムアウト (ms)  |
+| `MAX_CONCURRENT_EXECUTIONS` | `5`     | 最大同時実行数               |
+| `HISTORY_RETENTION_MS`      | `60000` | 履歴保持期間 (ms)            |
 
 ```typescript
 export const SKILL_EXECUTION_DEFAULTS = {
@@ -2767,13 +2948,13 @@ const aborted = executor.abort(response.executionId);
 
 ### 関連ドキュメント（TASK-3-1-A）
 
-| ドキュメント     | パス                                                                              |
-| ---------------- | --------------------------------------------------------------------------------- |
-| タスク仕様書     | `docs/30-workflows/TASK-3-1-A-sdk-query/`                                         |
-| 実装ファイル     | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                           |
-| 型定義ファイル   | `packages/shared/src/types/skill-execution.ts`                                    |
-| テストファイル   | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts`            |
-| 統合テスト       | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.integration.test.ts`|
+| ドキュメント   | パス                                                                               |
+| -------------- | ---------------------------------------------------------------------------------- |
+| タスク仕様書   | `docs/30-workflows/TASK-3-1-A-sdk-query/`                                          |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                            |
+| 型定義ファイル | `packages/shared/src/types/skill-execution.ts`                                     |
+| テストファイル | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts`             |
+| 統合テスト     | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.integration.test.ts` |
 
 ---
 
@@ -2840,13 +3021,13 @@ const aborted = executor.abort(response.executionId);
 
 ### PermissionResolver クラス
 
-| メソッド          | シグネチャ                                                       | 説明               |
-| ----------------- | ---------------------------------------------------------------- | ------------------ |
-| `waitForResponse` | `(requestId: string, signal?: AbortSignal) => Promise<Response>` | 権限応答を待機     |
-| `resolveRequest`  | `(response: SkillPermissionResponse) => void`                    | リクエストを解決   |
-| `cancelRequest`   | `(requestId: string, reason?: string) => void`                   | リクエストをキャンセル |
+| メソッド          | シグネチャ                                                       | 説明                     |
+| ----------------- | ---------------------------------------------------------------- | ------------------------ |
+| `waitForResponse` | `(requestId: string, signal?: AbortSignal) => Promise<Response>` | 権限応答を待機           |
+| `resolveRequest`  | `(response: SkillPermissionResponse) => void`                    | リクエストを解決         |
+| `cancelRequest`   | `(requestId: string, reason?: string) => void`                   | リクエストをキャンセル   |
 | `cancelAll`       | `() => void`                                                     | 全リクエストをキャンセル |
-| `pendingCount`    | `number` (getter)                                                | 待機中リクエスト数 |
+| `pendingCount`    | `number` (getter)                                                | 待機中リクエスト数       |
 
 ### コンストラクタ
 
@@ -2866,12 +3047,12 @@ new PermissionResolver(defaultTimeout?: number)
 
 ### エラーメッセージ
 
-| キー             | メッセージ                                      | 発生条件             |
-| ---------------- | ----------------------------------------------- | -------------------- |
-| `TIMEOUT`        | `Permission request timed out: {requestId}`     | タイムアウト発生時   |
-| `ABORTED`        | `Permission request aborted: {requestId}`       | AbortSignal 発火時   |
-| `CANCELLED`      | `Permission request cancelled: {requestId}`     | cancelRequest 呼び出し時 |
-| `CANCELLED_ALL`  | `All permission requests cancelled`             | cancelAll 呼び出し時 |
+| キー            | メッセージ                                  | 発生条件                 |
+| --------------- | ------------------------------------------- | ------------------------ |
+| `TIMEOUT`       | `Permission request timed out: {requestId}` | タイムアウト発生時       |
+| `ABORTED`       | `Permission request aborted: {requestId}`   | AbortSignal 発火時       |
+| `CANCELLED`     | `Permission request cancelled: {requestId}` | cancelRequest 呼び出し時 |
+| `CANCELLED_ALL` | `All permission requests cancelled`         | cancelAll 呼び出し時     |
 
 ### 使用例
 
@@ -2920,20 +3101,20 @@ try {
 
 ### 注意事項
 
-| 項目                   | 説明                                              |
-| ---------------------- | ------------------------------------------------- |
-| タイムアウト           | 設定時間経過後は Error がスローされる             |
-| AbortSignal            | キャンセル時は即座に Error で reject              |
-| 存在しない requestId   | resolveRequest/cancelRequest はエラーを投げない   |
-| メモリリーク防止       | 全てのケースでタイマーがクリアされる              |
-| 並行処理               | 複数リクエストを同時に管理可能（Map による O(1)） |
+| 項目                 | 説明                                              |
+| -------------------- | ------------------------------------------------- |
+| タイムアウト         | 設定時間経過後は Error がスローされる             |
+| AbortSignal          | キャンセル時は即座に Error で reject              |
+| 存在しない requestId | resolveRequest/cancelRequest はエラーを投げない   |
+| メモリリーク防止     | 全てのケースでタイマーがクリアされる              |
+| 並行処理             | 複数リクエストを同時に管理可能（Map による O(1)） |
 
 ### 関連ドキュメント（TASK-3-2 PermissionResolver）
 
-| ドキュメント   | パス                                                                    |
-| -------------- | ----------------------------------------------------------------------- |
-| タスク仕様書   | `docs/30-workflows/TASK-3-2-permission-resolver/`                       |
-| 実装ファイル   | `apps/desktop/src/main/services/skill/PermissionResolver.ts`            |
+| ドキュメント   | パス                                                                        |
+| -------------- | --------------------------------------------------------------------------- |
+| タスク仕様書   | `docs/30-workflows/TASK-3-2-permission-resolver/`                           |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/PermissionResolver.ts`                |
 | テストファイル | `apps/desktop/src/main/services/skill/__tests__/PermissionResolver.test.ts` |
 
 ---
@@ -2944,13 +3125,13 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 ### 概要
 
-| 項目 | 内容 |
-| ---- | ---- |
-| タスクID | TASK-3-2 |
-| 完了日 | 2026-01-25 |
-| ステータス | **完了** |
-| テスト数 | 138件（37 + 38 + 40 + 23） |
-| 発見課題 | 0件 |
+| 項目         | 内容                                                        |
+| ------------ | ----------------------------------------------------------- |
+| タスクID     | TASK-3-2                                                    |
+| 完了日       | 2026-01-25                                                  |
+| ステータス   | **完了**                                                    |
+| テスト数     | 138件（37 + 38 + 40 + 23）                                  |
+| 発見課題     | 0件                                                         |
 | ドキュメント | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
 
 ### 実装内容
@@ -2966,21 +3147,21 @@ interface SkillAPI {
 }
 ```
 
-| メソッド | 用途 |
-| -------- | ---- |
-| execute | スキル実行開始、executionIdを返す |
-| onStream | ストリームメッセージのリスナー登録 |
-| abort | 実行中のスキルを中断 |
-| getExecutionStatus | 実行状態を照会 |
+| メソッド           | 用途                               |
+| ------------------ | ---------------------------------- |
+| execute            | スキル実行開始、executionIdを返す  |
+| onStream           | ストリームメッセージのリスナー登録 |
+| abort              | 実行中のスキルを中断               |
+| getExecutionStatus | 実行状態を照会                     |
 
 #### IPCチャンネル
 
-| チャンネル | 方向 | 用途 |
-| ---------- | ---- | ---- |
-| skill:execute | Renderer → Main | 実行開始 |
-| skill:stream | Main → Renderer | メッセージストリーム |
-| skill:abort | Renderer → Main | 実行中断 |
-| skill:get-status | Renderer → Main | ステータス照会 |
+| チャンネル       | 方向            | 用途                 |
+| ---------------- | --------------- | -------------------- |
+| skill:execute    | Renderer → Main | 実行開始             |
+| skill:stream     | Main → Renderer | メッセージストリーム |
+| skill:abort      | Renderer → Main | 実行中断             |
+| skill:get-status | Renderer → Main | ステータス照会       |
 
 #### React Hook（useSkillExecution）
 
@@ -3003,41 +3184,41 @@ type ExecutionStatus = "idle" | "running" | "completed" | "error" | "aborted";
 
 #### UIコンポーネント（SkillStreamDisplay）
 
-| Prop | 型 | 説明 |
-| ---- | --- | ---- |
-| skillId | string | 実行対象スキルID |
-| initialPrompt | string? | 初期プロンプト |
-| autoExecute | boolean? | 自動実行フラグ |
-| onComplete | () => void | 完了コールバック |
-| onError | (error) => void | エラーコールバック |
+| Prop           | 型               | 説明                       |
+| -------------- | ---------------- | -------------------------- |
+| skillId        | string           | 実行対象スキルID           |
+| initialPrompt  | string?          | 初期プロンプト             |
+| autoExecute    | boolean?         | 自動実行フラグ             |
+| onComplete     | () => void       | 完了コールバック           |
+| onError        | (error) => void  | エラーコールバック         |
 | onStatusChange | (status) => void | ステータス変更コールバック |
-| height | string \| number | 高さ |
-| className | string? | カスタムクラス |
+| height         | string \| number | 高さ                       |
+| className      | string?          | カスタムクラス             |
 
 ### 実装ファイル
 
-| ファイル | 行数 | 用途 |
-| -------- | ---- | ---- |
-| `apps/desktop/src/preload/skill-api.ts` | 101 | Preload API |
-| `apps/desktop/src/renderer/hooks/useSkillExecution.ts` | 198 | React Hook |
-| `apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx` | 223 | UIコンポーネント |
+| ファイル                                                                | 行数 | 用途             |
+| ----------------------------------------------------------------------- | ---- | ---------------- |
+| `apps/desktop/src/preload/skill-api.ts`                                 | 101  | Preload API      |
+| `apps/desktop/src/renderer/hooks/useSkillExecution.ts`                  | 198  | React Hook       |
+| `apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx` | 223  | UIコンポーネント |
 
 ### テストカバレッジ
 
-| メトリクス | 達成値 |
-| ---------- | ------ |
-| Line | 95.09% |
-| Branch | 88.46% |
-| Function | 100% |
+| メトリクス  | 達成値  |
+| ----------- | ------- |
+| Line        | 95.09%  |
+| Branch      | 88.46%  |
+| Function    | 100%    |
 | Total Index | 283.55% |
 
 ### 関連ドキュメント（TASK-3-2 IPC統合）
 
-| ドキュメント | パス |
-| ------------ | ---- |
-| タスク仕様書 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
-| 実装ガイド | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
-| UIコンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md` |
+| ドキュメント         | パス                                                                                                |
+| -------------------- | --------------------------------------------------------------------------------------------------- |
+| タスク仕様書         | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/`                                         |
+| 実装ガイド           | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
+| UIコンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                             |
 
 ---
 
@@ -3045,14 +3226,14 @@ type ExecutionStatus = "idle" | "running" | "completed" | "error" | "aborted";
 
 ### タスク: skillexecutor-ipc-integration（TASK-3-2、2026-01-25完了）
 
-| 項目         | 内容                                                       |
-| ------------ | ---------------------------------------------------------- |
-| タスクID     | TASK-3-2                                                   |
-| 完了日       | 2026-01-25                                                 |
-| ステータス   | **完了**                                                   |
-| テスト数     | 138（自動テスト）+ 12（手動テスト項目）                    |
-| 発見課題     | 0件                                                        |
-| ドキュメント | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/`|
+| 項目         | 内容                                                        |
+| ------------ | ----------------------------------------------------------- |
+| タスクID     | TASK-3-2                                                    |
+| 完了日       | 2026-01-25                                                  |
+| ステータス   | **完了**                                                    |
+| テスト数     | 138（自動テスト）+ 12（手動テスト項目）                     |
+| 発見課題     | 0件                                                         |
+| ドキュメント | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
 
 #### 実装内容
 
@@ -3063,14 +3244,14 @@ type ExecutionStatus = "idle" | "running" | "completed" | "error" | "aborted";
 
 #### 品質基準
 
-| 基準 | 結果 |
-| ---- | ---- |
-| TypeScript strict | PASS |
-| ESLint | PASS |
-| Prettier | PASS |
-| Line Coverage | 95.09% |
-| Branch Coverage | 88.46% |
-| Function Coverage | 100% |
+| 基準              | 結果   |
+| ----------------- | ------ |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+| Prettier          | PASS   |
+| Line Coverage     | 95.09% |
+| Branch Coverage   | 88.46% |
+| Function Coverage | 100%   |
 
 #### テスト結果サマリー
 
@@ -3083,11 +3264,97 @@ type ExecutionStatus = "idle" | "running" | "completed" | "error" | "aborted";
 
 #### 成果物
 
-| 成果物             | パス                                                                                        |
-| ------------------ | ------------------------------------------------------------------------------------------- |
-| テスト結果レポート | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-11/manual-test-result.md`  |
-| 発見課題リスト     | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-11/discovered-issues.md`   |
+| 成果物             | パス                                                                                                |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-11/manual-test-result.md`   |
+| 発見課題リスト     | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-11/discovered-issues.md`    |
 | 実装ガイド         | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
+
+---
+
+### タスク: remember-choice-persistence（TASK-3-1-E、2026-01-26完了）
+
+| 項目         | 内容                                                        |
+| ------------ | ----------------------------------------------------------- |
+| タスクID     | TASK-3-1-E                                                  |
+| 完了日       | 2026-01-26                                                  |
+| ステータス   | **完了**                                                    |
+| テスト数     | 86（自動テスト）+ 手動テスト項目                            |
+| 発見課題     | 0件                                                         |
+| ドキュメント | `docs/30-workflows/task-3-1-e-remember-choice-persistence/` |
+
+#### 概要
+
+PermissionResponse型の`rememberChoice`フィールドを使用して、ユーザーの「次回から確認しない」選択をelectron-storeに永続化する機能を実装。設定画面から許可済みツールの管理を可能にした。
+
+#### 実装内容
+
+| 項目                 | 内容                                                                |
+| -------------------- | ------------------------------------------------------------------- |
+| 型定義ファイル       | `packages/shared/src/types/permission-store.ts`                     |
+| 永続化ストア         | `apps/desktop/src/main/services/skill/PermissionStore.ts`           |
+| IPCハンドラー        | `apps/desktop/src/main/ipc/permission-handlers.ts`                  |
+| 設定UIコンポーネント | `apps/desktop/src/renderer/components/settings/PermissionSettings/` |
+| コード行数           | 約400行                                                             |
+
+#### 型定義
+
+| カテゴリ         | 型名                  | 用途                       |
+| ---------------- | --------------------- | -------------------------- |
+| スキーマ         | PermissionStoreSchema | 永続化データのスキーマ定義 |
+|                  | AllowedToolEntry      | 許可済みツールエントリ     |
+| インターフェース | IPermissionStore      | PermissionStore公開API     |
+
+#### IPCチャンネル
+
+| チャンネル                   | 機能           | 戻り値                               |
+| ---------------------------- | -------------- | ------------------------------------ |
+| `permission:getAllowedTools` | 許可ツール取得 | `{ tools: AllowedToolEntry[] }`      |
+| `permission:revokeTool`      | 許可取消       | `{ success: boolean }`               |
+| `permission:clearAll`        | 全クリア       | `{ success: boolean, clearedCount }` |
+
+#### PermissionStore API
+
+| メソッド                  | 計算量 | 説明                       |
+| ------------------------- | ------ | -------------------------- |
+| `isToolAllowed(tool)`     | O(1)   | ツールが許可済みか判定     |
+| `allowTool(tool)`         | O(1)   | ツールを許可リストに追加   |
+| `revokeTool(tool)`        | O(1)   | ツールを許可リストから削除 |
+| `getAllowedTools()`       | O(n)   | 許可ツール名一覧を取得     |
+| `getAllowedToolEntries()` | O(n)   | 許可ツール詳細一覧を取得   |
+| `clearAll()`              | O(n)   | 全許可をクリア             |
+
+#### 品質基準
+
+| 基準              | 結果 |
+| ----------------- | ---- |
+| TypeScript strict | PASS |
+| ESLint            | PASS |
+| Prettier          | PASS |
+| Line Coverage     | 96%  |
+| Branch Coverage   | 85%+ |
+| Function Coverage | 100% |
+| any型の使用       | 0件  |
+
+#### テスト結果サマリー
+
+| カテゴリ             | テスト数 | PASS | FAIL |
+| -------------------- | -------- | ---- | ---- |
+| PermissionStore Unit | 30       | 30   | 0    |
+| PermissionStore Int  | 17       | 17   | 0    |
+| Permission Handlers  | 22       | 22   | 0    |
+| PermissionSettings   | 17       | 17   | 0    |
+
+#### 変更ファイル
+
+| ファイル                                                                     | 変更種別 |
+| ---------------------------------------------------------------------------- | -------- |
+| `packages/shared/src/types/permission-store.ts`                              | 新規     |
+| `packages/shared/index.ts`                                                   | 更新     |
+| `apps/desktop/src/main/services/skill/PermissionStore.ts`                    | 新規     |
+| `apps/desktop/src/main/ipc/permission-handlers.ts`                           | 新規     |
+| `apps/desktop/src/preload/index.ts`                                          | 更新     |
+| `apps/desktop/src/renderer/components/settings/PermissionSettings/index.tsx` | 新規     |
 
 ---
 
@@ -3208,14 +3475,14 @@ specification.md §5.1に定義された16の共通型を`packages/shared/src/ty
 
 ### タスク: skill-import-store（TASK-2B、2026-01-24完了）
 
-| 項目         | 内容                                                                 |
-| ------------ | -------------------------------------------------------------------- |
-| タスクID     | TASK-2B                                                              |
-| 完了日       | 2026-01-24                                                           |
-| ステータス   | **完了**                                                             |
-| テスト数     | 59（自動テスト）                                                     |
-| 発見課題     | 0件                                                                  |
-| ドキュメント | `docs/30-workflows/task-2b-skill-import-store/`                      |
+| 項目         | 内容                                            |
+| ------------ | ----------------------------------------------- |
+| タスクID     | TASK-2B                                         |
+| 完了日       | 2026-01-24                                      |
+| ステータス   | **完了**                                        |
+| テスト数     | 59（自動テスト）                                |
+| 発見課題     | 0件                                             |
+| ドキュメント | `docs/30-workflows/task-2b-skill-import-store/` |
 
 #### テスト結果サマリー
 
@@ -3230,33 +3497,33 @@ specification.md §5.1に定義された16の共通型を`packages/shared/src/ty
 
 #### 成果物
 
-| 成果物             | パス                                                                         |
-| ------------------ | ---------------------------------------------------------------------------- |
-| 実装ファイル       | `apps/desktop/src/main/settings/skillImportStore.ts`                         |
-| テストファイル     | `apps/desktop/src/main/settings/__tests__/skillImportStore.test.ts`          |
-| テスト結果レポート | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-11/`             |
+| 成果物             | パス                                                                                    |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| 実装ファイル       | `apps/desktop/src/main/settings/skillImportStore.ts`                                    |
+| テストファイル     | `apps/desktop/src/main/settings/__tests__/skillImportStore.test.ts`                     |
+| テスト結果レポート | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-11/`                        |
 | 実装ガイド         | `docs/30-workflows/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
 
 #### 実装内容
 
 インポートしたスキルの情報を永続化するskillImportStoreを実装。電子ストア（electron-store）を使用してアプリ再起動後もデータを保持。
 
-| 機能カテゴリ | メソッド数 | 概要                           |
-| ------------ | ---------- | ------------------------------ |
-| インポート管理 | 5        | getImported, addImport, removeImport, exists, updateLastUsed |
-| 設定管理     | 2          | getSettings, updateSettings    |
-| 権限管理     | 2          | rememberPermission, getRememberedPermission |
-| キャッシュ管理 | 3        | setCache, getCache, invalidateCache |
-| ユーティリティ | 2        | reset, migrateFromVersion      |
+| 機能カテゴリ   | メソッド数 | 概要                                                         |
+| -------------- | ---------- | ------------------------------------------------------------ |
+| インポート管理 | 5          | getImported, addImport, removeImport, exists, updateLastUsed |
+| 設定管理       | 2          | getSettings, updateSettings                                  |
+| 権限管理       | 2          | rememberPermission, getRememberedPermission                  |
+| キャッシュ管理 | 3          | setCache, getCache, invalidateCache                          |
+| ユーティリティ | 2          | reset, migrateFromVersion                                    |
 
 #### 品質基準
 
-| 基準              | 結果 |
-| ----------------- | ---- |
-| TypeScript strict | PASS |
-| ESLint            | PASS |
-| Prettier          | PASS |
-| テストカバレッジ  | ~95% |
+| 基準              | 結果                                   |
+| ----------------- | -------------------------------------- |
+| TypeScript strict | PASS                                   |
+| ESLint            | PASS                                   |
+| Prettier          | PASS                                   |
+| テストカバレッジ  | ~95%                                   |
 | セキュリティ      | SEC-01対応済み（入力値20文字切り捨て） |
 
 ---
@@ -3321,14 +3588,14 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 ### タスク: security-patterns（TASK-2C、2026-01-24完了）
 
-| 項目         | 内容                                                      |
-| ------------ | --------------------------------------------------------- |
-| タスクID     | TASK-2C                                                   |
-| 完了日       | 2026-01-24                                                |
-| ステータス   | **完了**                                                  |
-| テスト数     | 102（自動テスト: 89ユニット + 13インポート検証）          |
-| 発見課題     | 0件                                                       |
-| ドキュメント | `docs/30-workflows/task-2c-security-patterns/`            |
+| 項目         | 内容                                             |
+| ------------ | ------------------------------------------------ |
+| タスクID     | TASK-2C                                          |
+| 完了日       | 2026-01-24                                       |
+| ステータス   | **完了**                                         |
+| テスト数     | 102（自動テスト: 89ユニット + 13インポート検証） |
+| 発見課題     | 0件                                              |
+| ドキュメント | `docs/30-workflows/task-2c-security-patterns/`   |
 
 #### 概要
 
@@ -3336,31 +3603,31 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 #### 実装内容
 
-| カテゴリ         | エクスポート名          | 用途                             |
-| ---------------- | ----------------------- | -------------------------------- |
-| 危険パターン定数 | DANGEROUS_PATTERNS      | 危険コマンド・保護パスの定義     |
-|                  | ALLOWED_TOOLS_WHITELIST | 許可ツールリスト（11ツール）     |
-| 検証関数         | isDangerousCommand      | 危険コマンド判定（単語境界対応） |
-|                  | isProtectedPath         | 保護パス判定（Glob対応）         |
-|                  | matchGlobPattern        | Globパターンマッチ（**,*,~対応） |
-| ツール検証関数   | validateAllowedTools    | ツールリスト検証                 |
-|                  | filterAllowedTools      | 許可ツールフィルタ               |
-| 型定義           | AllowedTool             | 許可ツール型（リテラル型）       |
+| カテゴリ         | エクスポート名          | 用途                              |
+| ---------------- | ----------------------- | --------------------------------- |
+| 危険パターン定数 | DANGEROUS_PATTERNS      | 危険コマンド・保護パスの定義      |
+|                  | ALLOWED_TOOLS_WHITELIST | 許可ツールリスト（11ツール）      |
+| 検証関数         | isDangerousCommand      | 危険コマンド判定（単語境界対応）  |
+|                  | isProtectedPath         | 保護パス判定（Glob対応）          |
+|                  | matchGlobPattern        | Globパターンマッチ（\*_,_,~対応） |
+| ツール検証関数   | validateAllowedTools    | ツールリスト検証                  |
+|                  | filterAllowedTools      | 許可ツールフィルタ                |
+| 型定義           | AllowedTool             | 許可ツール型（リテラル型）        |
 
 #### セキュリティパターン詳細
 
 **DANGEROUS_PATTERNS.BASH_COMMANDS（24パターン）**:
 
-| カテゴリ         | パターン例                            |
-| ---------------- | ------------------------------------- |
-| 破壊的コマンド   | `rm -rf`, `rm -r`, `dd if=`, `mkfs`   |
-| 権限昇格         | `sudo`, `su -`, `su `                 |
-| シェル操作       | `chmod 777`, `chown root`             |
-| コマンド置換     | `$(`, `` ` ``                         |
-| 危険なシェル起動 | `/bin/sh`, `bash -c`                  |
-| 評価・実行       | `eval `, `exec `, `source `           |
-| スケジューラ     | `crontab`, `at `                      |
-| フォークボム     | `:(){ :|:& };:`                       |
+| カテゴリ         | パターン例                          |
+| ---------------- | ----------------------------------- | ------- |
+| 破壊的コマンド   | `rm -rf`, `rm -r`, `dd if=`, `mkfs` |
+| 権限昇格         | `sudo`, `su -`, `su `               |
+| シェル操作       | `chmod 777`, `chown root`           |
+| コマンド置換     | `$(`, `` ` ``                       |
+| 危険なシェル起動 | `/bin/sh`, `bash -c`                |
+| 評価・実行       | `eval `, `exec `, `source `         |
+| スケジューラ     | `crontab`, `at `                    |
+| フォークボム     | `:(){ :                             | :& };:` |
 
 **DANGEROUS_PATTERNS.PROTECTED_PATHS（25パターン）**:
 
@@ -3374,15 +3641,15 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 #### 品質基準
 
-| 基準                  | 結果   |
-| --------------------- | ------ |
-| Line Coverage         | 98.4%  |
-| Branch Coverage       | 95.45% |
-| Function Coverage     | 100%   |
-| TypeScript strict     | PASS   |
-| ESLint                | PASS   |
-| Prettier              | PASS   |
-| any型の使用           | 0件    |
+| 基準              | 結果   |
+| ----------------- | ------ |
+| Line Coverage     | 98.4%  |
+| Branch Coverage   | 95.45% |
+| Function Coverage | 100%   |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+| Prettier          | PASS   |
+| any型の使用       | 0件    |
 
 #### 変更ファイル
 
@@ -3450,14 +3717,14 @@ specification.md §5.1に定義されたスキルインポートシステム用�
 
 ### タスク: skill-executor-sdk-query（TASK-3-1-A、2026-01-25完了）
 
-| 項目         | 内容                                                   |
-| ------------ | ------------------------------------------------------ |
-| タスクID     | TASK-3-1-A                                             |
-| 完了日       | 2026-01-25                                             |
-| ステータス   | **完了**                                               |
-| テスト数     | ユニットテスト + 統合テスト（SDK モック使用）          |
-| 発見課題     | 0件                                                    |
-| ドキュメント | `docs/30-workflows/TASK-3-1-A-sdk-query/`              |
+| 項目         | 内容                                          |
+| ------------ | --------------------------------------------- |
+| タスクID     | TASK-3-1-A                                    |
+| 完了日       | 2026-01-25                                    |
+| ステータス   | **完了**                                      |
+| テスト数     | ユニットテスト + 統合テスト（SDK モック使用） |
+| 発見課題     | 0件                                           |
+| ドキュメント | `docs/30-workflows/TASK-3-1-A-sdk-query/`     |
 
 #### 概要
 
@@ -3465,25 +3732,25 @@ Claude Agent SDK の `query()` API を使用してスキルを実行し、スト
 
 #### 実装内容
 
-| 項目           | 内容                                                    |
-| -------------- | ------------------------------------------------------- |
-| 実装ファイル   | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
-| 型定義ファイル | `packages/shared/src/types/skill-execution.ts`          |
-| コード行数     | 約525行                                                 |
-| 新規型定義     | 9型（ExecutionState, SkillExecutionRequest, etc.）      |
+| 項目           | 内容                                                                    |
+| -------------- | ----------------------------------------------------------------------- |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                 |
+| 型定義ファイル | `packages/shared/src/types/skill-execution.ts`                          |
+| コード行数     | 約525行                                                                 |
+| 新規型定義     | 9型（ExecutionState, SkillExecutionRequest, etc.）                      |
 | 主要メソッド   | `execute()`, `abort()`, `getActiveExecutions()`, `getExecutionStatus()` |
 
 #### 機能
 
-| 機能                     | 説明                                           |
-| ------------------------ | ---------------------------------------------- |
-| SDK query() 統合         | Claude Agent SDK の query() API 呼び出し       |
-| ストリーミング処理       | AsyncIterable を使用したストリーミングメッセージ処理 |
-| 同時実行数制限           | 最大5件の同時実行をサポート                    |
-| 中断機能                 | AbortController を使用した実行中断             |
-| IPC ストリーミング配信   | `skill:stream` チャンネルで Renderer に配信    |
-| エラーハンドリング       | タイムアウト、中断、実行エラーの分類処理       |
-| 履歴保持                 | 完了後60秒間の履歴保持（LRU方式）              |
+| 機能                   | 説明                                                 |
+| ---------------------- | ---------------------------------------------------- |
+| SDK query() 統合       | Claude Agent SDK の query() API 呼び出し             |
+| ストリーミング処理     | AsyncIterable を使用したストリーミングメッセージ処理 |
+| 同時実行数制限         | 最大5件の同時実行をサポート                          |
+| 中断機能               | AbortController を使用した実行中断                   |
+| IPC ストリーミング配信 | `skill:stream` チャンネルで Renderer に配信          |
+| エラーハンドリング     | タイムアウト、中断、実行エラーの分類処理             |
+| 履歴保持               | 完了後60秒間の履歴保持（LRU方式）                    |
 
 #### 品質基準
 
@@ -3497,27 +3764,27 @@ Claude Agent SDK の `query()` API を使用してスキルを実行し、スト
 
 #### 変更ファイル
 
-| ファイル                                                                       | 変更種別 |
-| ------------------------------------------------------------------------------ | -------- |
-| `apps/desktop/src/main/services/skill/SkillExecutor.ts`                        | 新規     |
-| `packages/shared/src/types/skill-execution.ts`                                 | 新規     |
-| `packages/shared/src/types/index.ts`                                           | 更新     |
-| `apps/desktop/src/main/services/skill/index.ts`                                | 更新     |
-| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts`         | 新規     |
-| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.integration.test.ts` | 新規 |
+| ファイル                                                                           | 変更種別 |
+| ---------------------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/services/skill/SkillExecutor.ts`                            | 新規     |
+| `packages/shared/src/types/skill-execution.ts`                                     | 新規     |
+| `packages/shared/src/types/index.ts`                                               | 更新     |
+| `apps/desktop/src/main/services/skill/index.ts`                                    | 更新     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts`             | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.integration.test.ts` | 新規     |
 
 ---
 
 ### タスク: skill-executor-hooks（TASK-3-1-B、2026-01-25完了）
 
-| 項目         | 内容                                                   |
-| ------------ | ------------------------------------------------------ |
-| タスクID     | TASK-3-1-B                                             |
-| 完了日       | 2026-01-25                                             |
-| ステータス   | **完了**                                               |
-| テスト数     | 73件（hooks: 40, error: 28, performance: 5）           |
-| 発見課題     | 0件                                                    |
-| ドキュメント | `docs/30-workflows/task-3-1-b-hooks/`                  |
+| 項目         | 内容                                         |
+| ------------ | -------------------------------------------- |
+| タスクID     | TASK-3-1-B                                   |
+| 完了日       | 2026-01-25                                   |
+| ステータス   | **完了**                                     |
+| テスト数     | 73件（hooks: 40, error: 28, performance: 5） |
+| 発見課題     | 0件                                          |
+| ドキュメント | `docs/30-workflows/task-3-1-b-hooks/`        |
 
 #### 概要
 
@@ -3534,31 +3801,51 @@ Claude Agent SDK の Hooks システム（PreToolUse/PostToolUse）を SkillExec
 
 #### 機能
 
-| 機能                     | 説明                                                   |
-| ------------------------ | ------------------------------------------------------ |
-| 危険コマンドブロック     | isDangerousCommand によるBashコマンドセキュリティチェック |
-| 保護パスブロック         | isProtectedPath による書き込み保護                     |
-| ツール実行通知           | tool_use/tool_result/statusメッセージをIPCで配信       |
-| エラーカテゴリ判定       | sdk_error/permission_denied/timeout/network/unknown    |
-| リトライ可能性判定       | network/timeout エラーはリトライ可能と判定             |
+| 機能                 | 説明                                                      |
+| -------------------- | --------------------------------------------------------- |
+| 危険コマンドブロック | isDangerousCommand によるBashコマンドセキュリティチェック |
+| 保護パスブロック     | isProtectedPath による書き込み保護                        |
+| ツール実行通知       | tool_use/tool_result/statusメッセージをIPCで配信          |
+| エラーカテゴリ判定   | sdk_error/permission_denied/timeout/network/unknown       |
+| リトライ可能性判定   | network/timeout エラーはリトライ可能と判定                |
 
 #### 型定義
 
 ```typescript
 /** エラーカテゴリ */
 type ErrorCategory =
-  | "sdk_error"        // Claude Agent SDK内部エラー
+  | "sdk_error" // Claude Agent SDK内部エラー
   | "permission_denied" // 権限拒否（危険コマンド、保護パス）
-  | "timeout"          // タイムアウト（AbortError含む）
-  | "network"          // ネットワークエラー
-  | "unknown";         // その他のエラー
+  | "timeout" // タイムアウト（AbortError含む）
+  | "network" // ネットワークエラー
+  | "unknown"; // その他のエラー
 
 /** Hooksストリームメッセージ（Discriminated Union） */
 type HooksStreamMessage =
-  | { executionId: string; type: "tool_use"; content: ToolUseContent; timestamp: number }
-  | { executionId: string; type: "tool_result"; content: ToolResultContent; timestamp: number }
-  | { executionId: string; type: "status"; content: StatusContent; timestamp: number }
-  | { executionId: string; type: "error"; content: ErrorContent; timestamp: number };
+  | {
+      executionId: string;
+      type: "tool_use";
+      content: ToolUseContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "tool_result";
+      content: ToolResultContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "status";
+      content: StatusContent;
+      timestamp: number;
+    }
+  | {
+      executionId: string;
+      type: "error";
+      content: ErrorContent;
+      timestamp: number;
+    };
 
 /** PreToolUse結果 */
 type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
@@ -3566,50 +3853,50 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 
 #### メソッドシグネチャ
 
-| メソッド | シグネチャ | 説明 |
-| -------- | ---------- | ---- |
-| `createHooks` | `(executionId: string) => { PreToolUse, PostToolUse }` | Hooksオブジェクト生成 |
-| `categorizeError` | `(error: unknown) => ErrorCategory` | エラーカテゴリ判定 |
-| `isRetryable` | `(error: unknown) => boolean` | リトライ可能性判定 |
+| メソッド          | シグネチャ                                             | 説明                  |
+| ----------------- | ------------------------------------------------------ | --------------------- |
+| `createHooks`     | `(executionId: string) => { PreToolUse, PostToolUse }` | Hooksオブジェクト生成 |
+| `categorizeError` | `(error: unknown) => ErrorCategory`                    | エラーカテゴリ判定    |
+| `isRetryable`     | `(error: unknown) => boolean`                          | リトライ可能性判定    |
 
 #### セキュリティチェック関数（@repo/shared）
 
-| 関数 | 用途 | ブロック例 |
-| ---- | ---- | ---------- |
+| 関数                              | 用途                 | ブロック例                      |
+| --------------------------------- | -------------------- | ------------------------------- |
 | `isDangerousCommand(cmd: string)` | 危険Bashコマンド検出 | `rm -rf /`, `sudo`, `chmod 777` |
-| `isProtectedPath(path: string)` | 保護パス検出 | `/etc/passwd`, `~/.ssh/` |
+| `isProtectedPath(path: string)`   | 保護パス検出         | `/etc/passwd`, `~/.ssh/`        |
 
 #### 品質基準
 
-| 基準               | 結果    |
-| ------------------ | ------- |
-| TypeScript strict  | PASS    |
-| ESLint             | PASS    |
-| Prettier           | PASS    |
-| Branch Coverage    | 94.59%  |
-| パフォーマンス     | < 10ms  |
+| 基準              | 結果   |
+| ----------------- | ------ |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+| Prettier          | PASS   |
+| Branch Coverage   | 94.59% |
+| パフォーマンス    | < 10ms |
 
 #### 変更ファイル
 
-| ファイル                                                                       | 変更種別 |
-| ------------------------------------------------------------------------------ | -------- |
-| `apps/desktop/src/main/services/skill/SkillExecutor.ts`                        | 更新     |
-| `apps/desktop/src/main/services/skill/__tests__/hooks.test.ts`                 | 新規     |
-| `apps/desktop/src/main/services/skill/__tests__/error.test.ts`                 | 新規     |
-| `apps/desktop/src/main/services/skill/__tests__/performance.test.ts`           | 新規     |
+| ファイル                                                             | 変更種別 |
+| -------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/services/skill/SkillExecutor.ts`              | 更新     |
+| `apps/desktop/src/main/services/skill/__tests__/hooks.test.ts`       | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/error.test.ts`       | 新規     |
+| `apps/desktop/src/main/services/skill/__tests__/performance.test.ts` | 新規     |
 
 ---
 
 ### タスク: permission-resolver-implementation（TASK-3-2、2026-01-25完了）
 
-| 項目         | 内容                                                     |
-| ------------ | -------------------------------------------------------- |
-| タスクID     | TASK-3-2                                                 |
-| 完了日       | 2026-01-25                                               |
-| ステータス   | **完了**                                                 |
-| テスト数     | 42（ユニットテスト）                                     |
-| 発見課題     | 0件                                                      |
-| ドキュメント | `docs/30-workflows/TASK-3-2-permission-resolver/`        |
+| 項目         | 内容                                              |
+| ------------ | ------------------------------------------------- |
+| タスクID     | TASK-3-2                                          |
+| 完了日       | 2026-01-25                                        |
+| ステータス   | **完了**                                          |
+| テスト数     | 42（ユニットテスト）                              |
+| 発見課題     | 0件                                               |
+| ドキュメント | `docs/30-workflows/TASK-3-2-permission-resolver/` |
 
 #### 概要
 
@@ -3617,22 +3904,22 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 
 #### 実装内容
 
-| 項目           | 内容                                                          |
-| -------------- | ------------------------------------------------------------- |
-| 実装ファイル   | `apps/desktop/src/main/services/skill/PermissionResolver.ts`  |
-| コード行数     | 187行                                                         |
-| 主要メソッド   | `waitForResponse()`, `resolveRequest()`, `cancelRequest()`, `cancelAll()`, `pendingCount` |
+| 項目         | 内容                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| 実装ファイル | `apps/desktop/src/main/services/skill/PermissionResolver.ts`                              |
+| コード行数   | 187行                                                                                     |
+| 主要メソッド | `waitForResponse()`, `resolveRequest()`, `cancelRequest()`, `cancelAll()`, `pendingCount` |
 
 #### 機能
 
-| 機能                 | 説明                                              |
-| -------------------- | ------------------------------------------------- |
-| 権限応答待機         | Promise ベースの非同期待機                        |
-| タイムアウト制御     | デフォルト5分（設定可能）                         |
-| AbortSignal 対応     | 外部からの即時キャンセル                          |
-| 複数リクエスト管理   | Map による O(1) アクセス                          |
-| 一括キャンセル       | `cancelAll()` で全リクエスト解除                  |
-| メモリリーク防止     | 全ケースでタイマークリア保証                      |
+| 機能               | 説明                             |
+| ------------------ | -------------------------------- |
+| 権限応答待機       | Promise ベースの非同期待機       |
+| タイムアウト制御   | デフォルト5分（設定可能）        |
+| AbortSignal 対応   | 外部からの即時キャンセル         |
+| 複数リクエスト管理 | Map による O(1) アクセス         |
+| 一括キャンセル     | `cancelAll()` で全リクエスト解除 |
+| メモリリーク防止   | 全ケースでタイマークリア保証     |
 
 #### テストカバレッジ
 
@@ -3662,6 +3949,143 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 
 ---
 
+### タスク: permission-resolver-ipc-handlers（TASK-4-2、2026-01-26完了）
+
+| 項目         | 内容                                                           |
+| ------------ | -------------------------------------------------------------- |
+| タスクID     | TASK-4-2                                                       |
+| 完了日       | 2026-01-26                                                     |
+| ステータス   | **完了**                                                       |
+| テスト数     | 93（ユニットテスト + 統合テスト）                              |
+| カバレッジ   | 94.67% Line / 93.33% Branch                                    |
+| 発見課題     | 0件                                                            |
+| ドキュメント | `docs/30-workflows/TASK-4-2-permission-resolver-ipc-handlers/` |
+
+#### 概要
+
+TASK-3-1-Cで実装したPermissionResolverをRenderer ProcessのUIダイアログと連携するためのIPC通信機構を実装。Main Process ↔ Preload ↔ Renderer間の権限確認フローを完成。
+
+#### 実装内容
+
+| 項目                      | 内容                                                        |
+| ------------------------- | ----------------------------------------------------------- |
+| permission-handlers.ts    | Main Process IPC Handler（73行）                            |
+| skill-api.ts (permission) | Preload API（onPermissionRequest / sendPermissionResponse） |
+| usePermissionDialog.ts    | React Hook（125行、FIFOキュー管理、useCallback最適化）      |
+| PermissionDialog.tsx      | UIコンポーネント（202行、WCAG 2.1 AA準拠、Focus Trap実装）  |
+
+#### IPCチャンネル
+
+| チャンネル                  | 方向            | 用途                   |
+| --------------------------- | --------------- | ---------------------- |
+| `skill:permission-request`  | Main → Renderer | 権限確認リクエスト送信 |
+| `skill:permission-response` | Renderer → Main | 権限確認応答送信       |
+
+#### セキュリティ実装
+
+| 項目           | 実装内容                                             |
+| -------------- | ---------------------------------------------------- |
+| IPC sender検証 | `event.sender === mainWindow.webContents` 検証       |
+| ホワイトリスト | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS        |
+| XSS防止        | textContentによる表示、dangerouslySetInnerHTML不使用 |
+| 入力検証       | requestId / approved の型検証                        |
+
+#### アクセシビリティ（WCAG 2.1 AA準拠）
+
+| ARIA属性         | 実装                                                |
+| ---------------- | --------------------------------------------------- |
+| role             | dialog                                              |
+| aria-modal       | true                                                |
+| aria-labelledby  | 動的生成ID                                          |
+| aria-describedby | 動的生成ID                                          |
+| キーボード操作   | Escape（閉じる）、Tab（フォーカス移動）、Focus Trap |
+
+#### テストカバレッジ
+
+| テストファイル                 | テスト数 | カバレッジ |
+| ------------------------------ | -------- | ---------- |
+| permission-handlers.test.ts    | 15       | 100%       |
+| skill-api.permission.test.ts   | 12       | 100%       |
+| usePermissionDialog.test.ts    | 21       | 100%       |
+| PermissionDialog.test.tsx      | 25       | 96.66%     |
+| permission-integration.test.ts | 20       | -          |
+| **合計**                       | **93**   | -          |
+
+#### 変更ファイル
+
+| ファイル                                                               | 変更種別 |
+| ---------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/main/ipc/permission-handlers.ts`                     | 新規     |
+| `apps/desktop/src/preload/skill-api.ts`                                | 更新     |
+| `apps/desktop/src/preload/channels.ts`                                 | 更新     |
+| `apps/desktop/src/renderer/hooks/usePermissionDialog.ts`               | 新規     |
+| `apps/desktop/src/renderer/components/Permission/PermissionDialog.tsx` | 新規     |
+
+---
+
+### タスク: permission-dialog-ui（TASK-3-1-D、2026-01-26完了）
+
+| 項目         | 内容                                                    |
+| ------------ | ------------------------------------------------------- |
+| タスクID     | TASK-3-1-D                                              |
+| 完了日       | 2026-01-26                                              |
+| ステータス   | **完了**                                                |
+| テスト数     | 124（ユニットテスト84 + 統合テスト40）                  |
+| カバレッジ   | 100% Line / 100% Branch（useSkillPermission, channels） |
+| 発見課題     | 0件                                                     |
+| ドキュメント | `docs/30-workflows/TASK-3-1-D-permission-dialog-ui/`    |
+
+#### 概要
+
+TASK-3-1-C（Main Process側PermissionResolver）と連携し、Renderer側でPermission要求をハンドリングするUIを実装。skillAPIにPermission関連メソッドを追加し、SkillStreamDisplayにPermissionDialogを統合。
+
+#### 実装内容
+
+| 項目                      | 内容                                             |
+| ------------------------- | ------------------------------------------------ |
+| channels.ts               | IPCチャンネル定義追加（SKILL*PERMISSION*\*）     |
+| skill-api.ts (permission) | Preload API（onPermission / respondPermission）  |
+| useSkillPermission.ts     | React Hook（状態管理、ハンドラー提供）           |
+| SkillStreamDisplay.tsx    | PermissionDialog統合（既存コンポーネント再利用） |
+
+#### IPCチャンネル
+
+| チャンネル                  | 定数名                      | 方向            | 用途               |
+| --------------------------- | --------------------------- | --------------- | ------------------ |
+| `skill:permission:request`  | `SKILL_PERMISSION_REQUEST`  | Main → Renderer | Permission要求送信 |
+| `skill:permission:response` | `SKILL_PERMISSION_RESPONSE` | Renderer → Main | Permission応答送信 |
+
+#### セキュリティ実装
+
+| 項目                     | 実装内容                                      |
+| ------------------------ | --------------------------------------------- |
+| チャンネルホワイトリスト | ALLOWED_ON_CHANNELS / ALLOWED_INVOKE_CHANNELS |
+| safeOn / safeInvoke      | チャンネル検証を強制                          |
+| React JSX                | XSS防止（自動エスケープ）                     |
+| requestId紐付け          | リクエストとレスポンスの整合性検証            |
+
+#### テストカバレッジ
+
+| テストファイル                         | テスト数 | カバレッジ |
+| -------------------------------------- | -------- | ---------- |
+| skill-api.permission.test.ts           | 30       | 100%       |
+| useSkillPermission.test.ts             | 17       | 100%       |
+| SkillStreamDisplay.permission.test.tsx | 37       | 95.03%     |
+| 既存機能リグレッション                 | 40       | -          |
+| **合計**                               | **124**  | -          |
+
+#### 変更ファイル
+
+| ファイル                                                                | 変更種別 |
+| ----------------------------------------------------------------------- | -------- |
+| `apps/desktop/src/preload/channels.ts`                                  | 更新     |
+| `apps/desktop/src/preload/skill-api.ts`                                 | 更新     |
+| `apps/desktop/src/preload/types.d.ts`                                   | 更新     |
+| `apps/desktop/src/renderer/hooks/useSkillPermission.ts`                 | 新規     |
+| `apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx` | 更新     |
+
+---
+
 ## 残課題（未タスク）
 
 | タスクID      | タスク名                  | 優先度 | 発見元                             | タスク仕様書                                                         |
@@ -3674,28 +4098,31 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 
 ## 関連ドキュメント
 
-| ドキュメント                           | パス                                                                                                    |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Agent SDK実装ガイド                    | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`                      |
-| Agent SDK APIリファレンス              | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                             |
-| Claude Agent SDKスキル                 | `.claude/skills/claude-agent-sdk/SKILL.md`                                                              |
-| LLMインターフェース                    | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                                   |
-| Agent Dashboard実装ガイド              | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`                 |
-| スキル管理UI実装ガイド（AGENT-002）    | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`                        |
-| スキル管理UIテストドキュメント         | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                                   |
-| スキル実行機能実装ガイド               | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md`             |
-| AgentSDKPage Postrelease実装ガイド     | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`                    |
-| Session Persistence実装ガイド          | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`              |
-| スキルインポート永続化バグ修正         | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md`            |
-| スキルインポートストア永続化問題修正   | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md`             |
-| スキルインポート共通型定義（TASK-1-1） | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md`                  |
-| SkillScanner実装ガイド（TASK-2A）      | `docs/30-workflows/TASK-2A/outputs/phase-12/implementation-guide.md`                                    |
-| SkillImportStore実装ガイド（TASK-2B）  | `docs/30-workflows/completed-tasks/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
-| セキュリティパターン定義（TASK-2C）    | `docs/30-workflows/completed-tasks/task-2c-security-patterns/outputs/phase-12-implementation-guide.md`  |
-| SkillExecutor実装ガイド（TASK-3-1-A）  | `docs/30-workflows/TASK-3-1-A-sdk-query/outputs/phase-12/implementation-guide.md`                       |
-| Hooks実装ガイド（TASK-3-1-B）          | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md`                           |
-| PermissionResolver実装ガイド（TASK-3-2） | `docs/30-workflows/TASK-3-2-permission-resolver/outputs/phase-12/implementation-guide.md`             |
-| SkillExecutor IPC統合実装ガイド（TASK-3-2） | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md` |
+| ドキュメント                                          | パス                                                                                                    |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Agent SDK実装ガイド                                   | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/implementation-guide.md`                      |
+| Agent SDK APIリファレンス                             | `docs/30-workflows/agent-sdk-integration/outputs/phase-12/api-reference.md`                             |
+| Claude Agent SDKスキル                                | `.claude/skills/claude-agent-sdk/SKILL.md`                                                              |
+| LLMインターフェース                                   | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                                   |
+| Agent Dashboard実装ガイド                             | `docs/30-workflows/agent-dashboard-foundation/outputs/phase-12/implementation-guide.md`                 |
+| スキル管理UI実装ガイド（AGENT-002）                   | `docs/30-workflows/skill-management-ui/outputs/phase-12/implementation-guide.md`                        |
+| スキル管理UIテストドキュメント                        | `docs/30-workflows/skill-management-ui/outputs/phase-12/test-docs.md`                                   |
+| スキル実行機能実装ガイド                              | `docs/30-workflows/skill-execution-implementation/outputs/phase-12/implementation-guide.md`             |
+| AgentSDKPage Postrelease実装ガイド                    | `docs/30-workflows/postrelease-sdk-testing/outputs/phase-12/implementation-guide.md`                    |
+| Session Persistence実装ガイド                         | `docs/30-workflows/agent-sdk-session-persistence/outputs/phase-12/implementation-guide.md`              |
+| スキルインポート永続化バグ修正                        | `docs/30-workflows/skill-import-persistence-bugfix/outputs/phase-12/implementation-guide.md`            |
+| スキルインポートストア永続化問題修正                  | `docs/30-workflows/skill-import-store-persistence/outputs/phase-12/implementation-guide.md`             |
+| スキルインポート共通型定義（TASK-1-1）                | `docs/30-workflows/task-1-1-type-definitions/outputs/phase-12-documentation-report.md`                  |
+| SkillScanner実装ガイド（TASK-2A）                     | `docs/30-workflows/TASK-2A/outputs/phase-12/implementation-guide.md`                                    |
+| SkillImportStore実装ガイド（TASK-2B）                 | `docs/30-workflows/completed-tasks/task-2b-skill-import-store/outputs/phase-12/implementation-guide.md` |
+| セキュリティパターン定義（TASK-2C）                   | `docs/30-workflows/completed-tasks/task-2c-security-patterns/outputs/phase-12-implementation-guide.md`  |
+| SkillExecutor実装ガイド（TASK-3-1-A）                 | `docs/30-workflows/TASK-3-1-A-sdk-query/outputs/phase-12/implementation-guide.md`                       |
+| Hooks実装ガイド（TASK-3-1-B）                         | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md`                           |
+| PermissionResolver実装ガイド（TASK-3-2）              | `docs/30-workflows/TASK-3-2-permission-resolver/outputs/phase-12/implementation-guide.md`               |
+| SkillExecutor IPC統合実装ガイド（TASK-3-2）           | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/outputs/phase-12/implementation-guide.md`     |
+| PermissionStore実装ガイド（TASK-3-1-E）               | `docs/guides/permission-store.md`                                                                       |
+| PermissionResolver IPC Handlers実装ガイド（TASK-4-2） | `docs/30-workflows/TASK-4-2-permission-resolver-ipc-handlers/outputs/phase-12/implementation-guide.md`  |
+| Permission Dialog UI実装ガイド（TASK-3-1-D）          | `docs/30-workflows/TASK-3-1-D-permission-dialog-ui/outputs/phase-12/component-documentation.md`         |
 
 ---
 
@@ -3718,3 +4145,6 @@ type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
 | 1.12.0     | 2026-01-25 | TASK-3-2（PermissionResolver実装）完了記録追加（42テスト、100%カバレッジ、タイムアウト/AbortSignal対応）              |
 | 1.13.0     | 2026-01-25 | PermissionResolver型定義セクション追加（アーキテクチャ図、API仕様、使用例、エラーメッセージ定義）                     |
 | 2.0.0      | 2026-01-25 | TASK-3-2（SkillExecutor IPC統合）完了記録追加（skillAPI, useSkillExecution, SkillStreamDisplay、138テスト）           |
+| 2.1.0      | 2026-01-26 | TASK-3-1-E（rememberChoice永続化）完了記録追加（86テスト、PermissionStore、設定UI、IPCハンドラー）                    |
+| 2.2.0      | 2026-01-26 | TASK-4-2（PermissionResolver IPC Handlers）完了記録追加（93テスト、94.67%カバレッジ、WCAG 2.1 AA準拠）                |
+| 2.3.0      | 2026-01-26 | TASK-3-1-D（Permission Dialog UI）完了（124テスト、skillAPI.onPermission/respondPermission、useSkillPermission Hook） |
