@@ -203,7 +203,10 @@
         "outputs/phase-12/api-documentation.md",
         "outputs/phase-12/ipc-documentation.md",
         "outputs/phase-12/component-documentation.md",
-        "outputs/phase-12/changelog.md"
+        "outputs/phase-12/changelog.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
       ]
     },
     {
