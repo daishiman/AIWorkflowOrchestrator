@@ -234,9 +234,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| 残課題（未タスク） | L216 |
-| 関連ドキュメント | L227 |
-| 変更履歴 | L241 |
+| TASK-5-1: SkillAPI Preload実装 | L18 |
+| 残課題（未タスク） | L254 |
+| 関連ドキュメント | L265 |
+| 変更履歴 | L279 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -1011,8 +1012,9 @@ node scripts/list-specs.js --topics
 | Claude Code CLI連携セキュリティ | L109 |
 | Skill Execution Preload API セキュリティ | L170 |
 | Permission IPC Handler セキュリティ | L215 |
-| 完了タスク | L251 |
-| 関連ドキュメント | L262 |
+| SkillAPI Preload実装（TASK-5-1） | L251 |
+| 完了タスク | L321 |
+| 関連ドキュメント | L332 |
 
 ---
 

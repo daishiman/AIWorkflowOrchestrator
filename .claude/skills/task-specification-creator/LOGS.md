@@ -619,6 +619,103 @@ if (artifactPath) {
 
 ---
 
+## 2026-01-27 - Phase 12テンプレート改善（TASK-5-1フィードバック反映）
+
+### コンテキスト
+- スキル: task-specification-creator
+- 改善契機: TASK-5-1（SkillAPI Preload実装）Phase 12実行経験
+- 実行者: Claude Code (skill-creator)
+
+### 改善内容
+
+**対象ファイル**: `references/phase-templates.md`
+
+**問題点**:
+- artifacts.jsonの更新がPhase 12完了条件に記載されているが、Task 1-4に明示的なタスクとして含まれていなかった
+- complete-phase.jsの実行ガイダンスがTask 3に不足していた
+- artifacts.json手動作成時の参照先が明記されていなかった
+
+**改善箇所**:
+
+1. **Task 3タイトル変更** (line 1082)
+   - 「ドキュメント更新履歴作成」→「ドキュメント更新履歴 & artifacts.json更新」
+
+2. **complete-phase.js実行例追加** (lines 1086-1094)
+   - Step 2としてcomplete-phase.js実行コマンド例を追加
+   - artifacts.json必須項目チェックリストを追加
+
+3. **フォールバック手順拡充** (lines 1148-1153)
+   - complete-phase.jsの代替手順を追加
+   - artifacts.json参照先（TASK-4-1形式）を明記
+
+### 結果
+- ステータス: success
+- 改善完了日時: 2026-01-27
+- バージョン: v9.8.0
+
+### 期待される効果
+- Phase 12実行時のartifacts.json作成漏れ防止
+- complete-phase.jsスクリプト使用率向上
+- タスク成果物追跡の一貫性向上
+
+---
+
+## 2026-01-27 - TASK-5-1 SkillAPI Preload実装タスク完了
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: TASK-5-1
+- タスク名: SkillAPI 実装（Preload）
+- Phase: 1-12（13はユーザー指示によりスキップ）
+- 実行者: Claude Code
+
+### 結果
+- ステータス: success
+- 記録日時: 2026-01-27
+
+### 発見事項
+- **良かった点**: Phase 1-12の全フェーズを正常に実行完了
+- **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
+- **良かった点**: 既存パターン（safeInvoke/safeOn）との整合性を維持
+- **良かった点**: ホワイトリスト方式によるセキュリティ設計が適切に実装
+- **良かった点**: Phase 12でのaiworkflow-requirements更新（security-skill-ipc.md）が正常に実行
+- **良かった点**: Part 1（中学生レベル概念説明）+ Part 2（技術詳細）の2パート構成ドキュメント作成
+
+### 成果
+- Phase 1-12を完了（Phase 13 PR作成はユーザー指示によりスキップ）
+- テストカバレッジ: 67テスト全件PASS（95%+カバレッジ）
+- 作成ドキュメント:
+  - 実装ガイド（Part 1 概念的説明 + Part 2 技術的詳細）
+  - ドキュメント変更履歴
+  - 未タスク検出レポート（検出0件）
+- 実装内容:
+  - SkillAPIインターフェース定義（6メソッド）
+  - execute, onStream, abort, getExecutionStatus, onPermissionRequest, sendPermissionResponse
+  - safeInvoke/safeOnセキュリティパターン適用
+  - ALLOWED_INVOKE_CHANNELS: 4件追加
+  - ALLOWED_ON_CHANNELS: 2件追加
+  - contextBridge.exposeInMainWorld公開
+
+### aiworkflow-requirements更新
+- security-skill-ipc.md にTASK-5-1完了記録を追加
+- SkillAPI Preload実装セクションを追加（IPCチャネル定義、セキュリティ実装）
+- 変更履歴にv1.2.0を追加
+- topic-map.md更新
+
+### 未タスク検出
+- 検出数: 0件
+- すべてのテストがPASS、発見課題なし
+- Phase 3/10レビュー結果にMINOR判定なし
+- コードベースにTODO/FIXMEなし
+
+### 次のアクション
+- [x] Phase 12成果物の完全化（完了）
+- [x] aiworkflow-requirements更新（完了）
+- [x] LOGS.md記録（完了）
+- [ ] Phase 13 PR作成（ユーザー指示待ち）
+
+---
+
 ## 2026-01-25 - TASK-4-1 IPCチャネル定義タスク完了
 
 ### コンテキスト

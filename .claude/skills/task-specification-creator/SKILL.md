@@ -326,7 +326,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                  |
 | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **9.7.0** | **2026-01-26** | **第3次整合性検証修正: SKILL.mdコマンド例修正(complete-phase.js --artifacts追加、detect-unassigned-tasks.js引数修正)、phase-templates.mdファイル名typo修正、spec-update-workflow.md外部スキル拡張子修正(.js→.mjs)、generate-task-specs.md出力先追加、verify-specs.md入力元明記** |
+| **9.8.0** | **2026-01-27** | **Phase 12 Task 3改善: artifacts.json更新をTask 3に統合、complete-phase.js実行例追加、フォールバック手順にartifacts.json手動作成参照先追加（TASK-5-1フィードバック反映）** |
+| 9.7.0 | 2026-01-26 | 第3次整合性検証修正: SKILL.mdコマンド例修正(complete-phase.js --artifacts追加、detect-unassigned-tasks.js引数修正)、phase-templates.mdファイル名typo修正、spec-update-workflow.md外部スキル拡張子修正(.js→.mjs)、generate-task-specs.md出力先追加、verify-specs.md入力元明記 |
 | 9.6.0 | 2026-01-26 | 追加整合性修正: identify-scope出力先追加、verification-report.json additionalProperties追加、ファイル名documentation-changelog.md統一 |
 | 9.5.0 | 2026-01-26 | 全ファイル整合性検証: スキーマ/テンプレート不整合修正(identify-scope, design-phases)、commands.md引数仕様修正、Phase 12 4タスク構成統一、mode.json additionalProperties追加 |
 | 9.4.0 | 2026-01-26 | 整合性検証修正: identify-scope.mdスキーマ参照修正(scope-definition.json)、phase-templates.mdサブタスク命名統一(Task N)、verify-all-specs.js ESM互換性修正 |
