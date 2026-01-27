@@ -1,6 +1,9 @@
 {
-  "generated": "2026-01-26T14:57:02.010Z",
-  "totalKeywords": 943,
+
+
+  "generated": "2026-01-27T08:02:35.212Z",
+  "totalKeywords": 944,
+
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1140,6 +1143,7 @@
       "ui-ux-components.md",
       "ui-ux-design-principles.md",
       "ui-ux-design-system.md",
+      "ui-ux-feature-components.md",
       "ui-ux-forms.md",
       "ui-ux-llm-selector.md",
       "ui-ux-panels.md",
@@ -3400,6 +3404,9 @@
       "ui-ux-feature-components.md"
     ],
     "SkillStreamDisplay": [
+      "ui-ux-feature-components.md"
+    ],
+    "改善機能": [
       "ui-ux-feature-components.md"
     ],
     "全コンポーネント共通": [

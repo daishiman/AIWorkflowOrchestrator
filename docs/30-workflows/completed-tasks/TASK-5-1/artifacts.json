@@ -1,0 +1,225 @@
+{
+  "taskId": "TASK-5-1",
+  "taskName": "SkillAPI 実装（Preload）",
+  "createdAt": "2026-01-27T00:00:00.000Z",
+  "updatedAt": "2026-01-27T23:59:00.000Z",
+  "schemaVersion": "1.0.0",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-27T09:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書（機能/非機能要件）"
+        },
+        {
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準定義"
+        },
+        {
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-27T10:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計書"
+        },
+        {
+          "path": "outputs/phase-2/api-design.md",
+          "description": "API設計書（SkillAPIインターフェース6メソッド）"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-27T11:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果レポート（判定: PASS）"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-01-27T12:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/preload/__tests__/skill-api.test.ts",
+          "description": "SkillAPIテストファイル（37テスト）"
+        },
+        {
+          "path": "apps/desktop/src/preload/__tests__/skill-api.permission.test.ts",
+          "description": "権限関連テストファイル（30テスト）"
+        },
+        {
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        },
+        {
+          "path": "outputs/phase-4/integration-test-design.md",
+          "description": "統合テスト設計書"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-01-27T14:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/preload/skill-api.ts",
+          "description": "SkillAPI実装ファイル（6メソッド）"
+        },
+        {
+          "path": "apps/desktop/src/preload/channels.ts",
+          "description": "IPCチャネル定義（6チャネル追加）"
+        },
+        {
+          "path": "apps/desktop/src/preload/index.ts",
+          "description": "Preloadエントリポイント（skillAPI公開）"
+        },
+        {
+          "path": "outputs/phase-5/implementation-verification.md",
+          "description": "実装検証レポート（TDD Green、67テストPASS）"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-27T15:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-27T16:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-7/coverage-confirmation.md",
+          "description": "カバレッジ確認結果（Line 95%+, Branch 85%+, Function 100%）"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-01-27T17:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-27T18:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート（TypeScript strict, ESLint, Prettier PASS）"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-27T19:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果レポート（判定: PASS）"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-27T20:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果レポート"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-27T22:00:00.000Z",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 中学生向け概念説明、Part 2: 開発者向け技術詳細）"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴（システム仕様書更新記録）"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未割当タスク検出レポート（検出0件）"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "targetFiles": [
+    {
+      "path": "apps/desktop/src/preload/skill-api.ts",
+      "operation": "create",
+      "description": "SkillAPIインターフェース実装（6メソッド）"
+    },
+    {
+      "path": "apps/desktop/src/preload/channels.ts",
+      "operation": "modify",
+      "description": "SKILL_CHANNELS定数追加、ホワイトリスト更新（6チャネル）"
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "operation": "modify",
+      "description": "skillAPI公開（contextBridge.exposeInMainWorld）"
+    }
+  ],
+  "dependencies": {
+    "tasks": ["TASK-4-1"],
+    "packages": []
+  },
+  "blocks": [],
+  "qualityMetrics": {
+    "testCount": 67,
+    "lineCoverage": "95%+",
+    "branchCoverage": "85%+",
+    "functionCoverage": "100%",
+    "typescript": "PASS",
+    "eslint": "PASS",
+    "prettier": "PASS"
+  }
+}

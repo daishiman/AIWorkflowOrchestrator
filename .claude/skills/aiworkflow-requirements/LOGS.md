@@ -5,6 +5,75 @@
 
 ---
 
+## 2026-01-27: SkillAPI Preload実装（TASK-5-1）
+
+| 項目         | 内容                                                                        |
+| ------------ | --------------------------------------------------------------------------- |
+| タスクID     | TASK-5-1                                                                    |
+| 操作         | update-spec                                                                 |
+| 対象ファイル | references/security-skill-ipc.md, references/interfaces-agent-sdk-history.md |
+| 結果         | success                                                                     |
+| 備考         | SkillAPI Preload実装（6メソッド、safeInvoke/safeOnパターン）                 |
+
+### 更新詳細
+
+- **更新**: `references/security-skill-ipc.md`（v1.1.0 → v1.2.0）
+  - 「SkillAPI Preload実装（TASK-5-1）」セクション追加（約65行）
+  - SkillAPIインターフェース定義（execute, onStream, abort, getExecutionStatus, onPermissionRequest, sendPermissionResponse）
+  - IPCチャネル定義（6チャネル: skill:execute, skill:abort, skill:get-status, skill:stream, skill:permission:request, skill:permission:response）
+  - safeInvoke/safeOnセキュリティ検証フロー
+  - 完了タスクテーブルにTASK-5-1追加
+  - 関連ドキュメントに実装ガイドリンク追加
+
+- **更新**: `references/interfaces-agent-sdk-history.md`（v6.30.0 → v6.31.0）
+  - TASK-5-1完了タスクセクション追加
+  - 品質基準テーブル（TypeScript strict, ESLint, Prettier, Coverage）
+  - テスト結果サマリー（67テスト全PASS）
+
+- **更新**: `references/interfaces-agent-sdk.md`
+  - 変更履歴にv6.31.0エントリ追加
+
+- **更新**: `indexes/topic-map.md`
+  - security-skill-ipc.mdセクションにTASK-5-1エントリ追加
+  - interfaces-agent-sdk-history.mdセクション更新
+
+---
+
+## 2026-01-27: skill-stream-ux-improvements（TASK-3-2-A）
+
+| 項目         | 内容                                                                |
+| ------------ | ------------------------------------------------------------------- |
+| タスクID     | TASK-3-2-A                                                          |
+| 操作         | update-spec                                                         |
+| 対象ファイル | references/ui-ux-feature-components.md                              |
+| 結果         | success                                                             |
+| 備考         | SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー） |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.0.0 → v1.1.0）
+  - UX改善機能（TASK-3-2-A）セクション追加
+  - R1: ローディングアニメーション仕様
+  - R2: タイムスタンプ表示仕様（formatRelativeTime）
+  - R3: クリップボードコピー仕様
+  - MessageItem内部構造（TASK-3-2-A拡張後）
+  - テスト品質（88テスト、formatTime 100%、SkillStreamDisplay 96.9%）
+  - TASK-3-2-A完了記録追加
+  - 関連ドキュメントに実装ガイドリンク追加
+
+### 新規ファイル
+
+| ファイル           | 配置先                                                         |
+| ------------------ | -------------------------------------------------------------- |
+| formatTime.ts      | `apps/desktop/src/renderer/utils/formatTime.ts`                |
+| formatTime.test.ts | `apps/desktop/src/renderer/utils/__tests__/formatTime.test.ts` |
+
+### 関連ドキュメント
+
+- 実装ガイド: `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md`
+- タスク仕様書: `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`
+
+---
 ## 2026-01-26: permission-dialog-ui（TASK-3-1-D）
 
 | 項目         | 内容                                                                   |
@@ -776,4 +845,106 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## 2026-01-27: SkillStreamDisplay UX改善（TASK-3-2-A）
+
+| 項目         | 内容                                                    |
+| ------------ | ------------------------------------------------------- |
+| タスクID     | TASK-3-2-A                                              |
+| Issue番号    | #520                                                    |
+| 操作         | update-spec                                             |
+| 対象ファイル | ui-ux-feature-components.md                             |
+| 結果         | success                                                 |
+| 備考         | SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー機能） |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`
+  - SkillStreamDisplayセクションにUX改善機能を追加
+  - R1 LoadingSpinner（実行中表示）仕様追加
+  - R2 MessageTimestamp（相対時刻表示）仕様追加
+  - R3 CopyButton（クリップボードコピー）仕様追加
+  - 新規ユーティリティ formatRelativeTime 仕様追加
+  - 「完了タスク」セクションにTASK-3-2-A追加
+  - アクセシビリティ対応（ARIA属性、キーボード操作）仕様追加
+
+### 新規追加コンポーネント
+
+| コンポーネント   | 責務                     |
+| ---------------- | ------------------------ |
+| LoadingSpinner   | 実行中スピナー表示       |
+| MessageTimestamp | 相対時刻タイムスタンプ表示 |
+| CopyButton       | クリップボードコピー機能 |
+
+### 新規ユーティリティ
+
+| 関数               | ファイル          | 責務                   |
+| ------------------ | ----------------- | ---------------------- |
+| formatRelativeTime | formatTime.ts     | 相対時刻文字列への変換 |
+
+### テスト品質
+
+| 項目       | 値     |
+| ---------- | ------ |
+| 新規テスト | 50     |
+| カバレッジ | 100%   |
+
+### 関連ドキュメント
+
+| ドキュメント | パス                                                                                |
+| ------------ | ----------------------------------------------------------------------------------- |
+| 実装ガイド   | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`                        |
+
+---
+
+## 2026-01-27: TASK-5-1 SkillAPI Preload実装
+
+| 項目         | 内容                                                                   |
+| ------------ | ---------------------------------------------------------------------- |
+| タスクID     | TASK-5-1                                                               |
+| 操作         | update-spec                                                            |
+| 対象ファイル | security-skill-ipc.md、topic-map.md                                    |
+| 結果         | success                                                                |
+| 備考         | SkillAPI Preload実装（6メソッド、67テスト、safeInvoke/safeOnパターン） |
+
+### 更新詳細
+
+- **更新**: `references/security-skill-ipc.md`（v1.1.0 → v1.2.0）
+  - 「SkillAPI Preload実装（TASK-5-1）」セクション追加（約85行）
+  - SkillAPIインターフェース定義（6メソッド）
+  - IPCチャネル定義（6チャネル: skill:execute, skill:abort, skill:get-status, skill:stream, skill:permission:request, skill:permission:response）
+  - セキュリティ実装（safeInvoke/safeOnパターン、ホワイトリスト）
+  - 実装ファイルリスト
+  - 完了タスクセクションにTASK-5-1追加
+  - 変更履歴にv1.2.0追記
+
+- **更新**: `indexes/topic-map.md`
+  - security-skill-ipc.mdセクションに「SkillAPI Preload実装（TASK-5-1）」エントリ追加
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                        |
+| -------------- | --------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-5-1/outputs/phase-12/implementation-guide.md`       |
+| タスク仕様書   | `docs/30-workflows/TASK-5-1/`                                               |
+| テストファイル | `apps/desktop/src/preload/__tests__/skill-api.test.ts`                      |
+| 権限テスト     | `apps/desktop/src/preload/__tests__/skill-api.permission.test.ts`           |
+
+### テスト品質
+
+| 項目             | 値   |
+| ---------------- | ---- |
+| テスト総数       | 67   |
+| カバレッジ       | 95%+ |
+| セキュリティ関連 | 全67 |
+
+---
+
+## [実行日時: 2026-01-27T08:03:43.494Z]
+
+- Task: unknown
+- 結果: success
+- フィードバック: TASK-3-2-A UX改善仕様追加: ui-ux-feature-components.md v1.1.0、resource-map.md v1.3.0、SKILL.md v8.8.0更新
+
+---
 （ログエントリはここに追記されます）

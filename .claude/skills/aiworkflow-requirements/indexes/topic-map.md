@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-26
+> 自動生成: 2026-01-27
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -234,9 +234,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| 残課題（未タスク） | L216 |
-| 関連ドキュメント | L227 |
-| 変更履歴 | L241 |
+| TASK-5-1: SkillAPI Preload実装 | L18 |
+| 残課題（未タスク） | L254 |
+| 関連ドキュメント | L265 |
+| 変更履歴 | L279 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -756,10 +757,14 @@ node scripts/list-specs.js --topics
 | Custom Execution Environment UI コンポーネント（AGENT-006） | L117 |
 | workspace-chat-edit-ui コンポーネント（Issue #468） | L184 |
 | SkillStreamDisplay コンポーネント（TASK-3-2） | L274 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L363 |
-| 完了タスク | L374 |
-| 関連ドキュメント | L383 |
-| 変更履歴 | L391 |
+| UX改善機能（TASK-3-2-A） | L289 |
+| R1: LoadingSpinner（ローディングアニメーション） | L293 |
+| R2: MessageTimestamp（タイムスタンプ表示） | L304 |
+| R3: CopyButton（クリップボードコピー） | L332 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L420 |
+| 完了タスク | L431 |
+| 関連ドキュメント | L441 |
+| 変更履歴 | L449 |
 
 ### references/ui-ux-file-selector.md
 
@@ -1007,8 +1012,9 @@ node scripts/list-specs.js --topics
 | Claude Code CLI連携セキュリティ | L109 |
 | Skill Execution Preload API セキュリティ | L170 |
 | Permission IPC Handler セキュリティ | L215 |
-| 完了タスク | L251 |
-| 関連ドキュメント | L262 |
+| SkillAPI Preload実装（TASK-5-1） | L251 |
+| 完了タスク | L321 |
+| 関連ドキュメント | L332 |
 
 ---
 

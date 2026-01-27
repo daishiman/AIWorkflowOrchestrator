@@ -13,6 +13,7 @@
 | ---------- | ---------- | -------------------------------------------- |
 | v1.0.0     | 2026-01-25 | 初版作成                                     |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
 
 ---
 
@@ -248,10 +249,77 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 
 ---
 
+## SkillAPI Preload実装（TASK-5-1）
+
+**実装場所**: `apps/desktop/src/preload/skill-api.ts`
+
+スキル実行関連のPreload APIインターフェース（SkillAPI）を実装し、Renderer ProcessからMain Processへのセキュアな通信を提供する。
+
+### インターフェース定義
+
+| メソッド               | 戻り値                          | 用途                         |
+| ---------------------- | ------------------------------- | ---------------------------- |
+| execute                | Promise<SkillExecutionResponse> | スキル実行開始               |
+| onStream               | () => void                      | ストリームメッセージ受信購読 |
+| abort                  | Promise<boolean>                | 実行中断                     |
+| getExecutionStatus     | Promise<ExecutionInfo \| null>  | 実行状態取得                 |
+| onPermissionRequest    | () => void                      | 権限確認リクエスト購読       |
+| sendPermissionResponse | Promise<{ success: boolean }>   | 権限確認応答送信             |
+
+### IPCチャネル定義
+
+| チャネル                    | 方向  | 用途                   | ホワイトリスト          |
+| --------------------------- | ----- | ---------------------- | ----------------------- |
+| `skill:execute`             | R→M   | スキル実行開始         | ALLOWED_INVOKE_CHANNELS |
+| `skill:abort`               | R→M   | 実行中断               | ALLOWED_INVOKE_CHANNELS |
+| `skill:get-status`          | R→M   | 実行状態取得           | ALLOWED_INVOKE_CHANNELS |
+| `skill:stream`              | M→R   | ストリームメッセージ   | ALLOWED_ON_CHANNELS     |
+| `skill:permission:request`  | M→R   | 権限確認リクエスト     | ALLOWED_ON_CHANNELS     |
+| `skill:permission:response` | R→M   | 権限確認応答           | ALLOWED_INVOKE_CHANNELS |
+
+### セキュリティ実装
+
+| 機能                | 実装                                      | 効果                   |
+| ------------------- | ----------------------------------------- | ---------------------- |
+| safeInvoke パターン | チャネルホワイトリスト検証                | 未許可チャネルを拒否   |
+| safeOn パターン     | イベントチャネルホワイトリスト検証        | 未許可イベントを拒否   |
+| contextBridge       | `exposeInMainWorld('skillAPI', skillAPI)` | window直接割り当て禁止 |
+| クリーンアップ関数  | ipcRenderer.removeListener呼び出し        | メモリリーク防止       |
+
+**safeInvoke検証フロー**:
+
+| ステップ | 処理内容             | 条件                                      | 結果                 |
+| -------- | -------------------- | ----------------------------------------- | -------------------- |
+| 1        | チャネル検証         | ALLOWED_INVOKE_CHANNELS.includes(channel) | true: 続行           |
+| 2        | 不許可時             | 上記条件がfalse                           | Promise.reject発生   |
+| 3        | IPC呼び出し          | 検証通過後                                | ipcRenderer.invoke() |
+
+**safeOn検証フロー**:
+
+| ステップ | 処理内容             | 条件                                   | 結果               |
+| -------- | -------------------- | -------------------------------------- | ------------------ |
+| 1        | チャネル検証         | ALLOWED_ON_CHANNELS.includes(channel)  | true: 続行         |
+| 2        | 不許可時             | 上記条件がfalse                        | 空のクリーンアップ |
+| 3        | リスナー登録         | 検証通過後                             | ipcRenderer.on()   |
+| 4        | クリーンアップ関数   | 返却値                                 | removeListener呼出 |
+
+### 実装ファイル
+
+| ファイル                                               | 行数 | 内容               |
+| ------------------------------------------------------ | ---- | ------------------ |
+| `apps/desktop/src/preload/skill-api.ts`                | 144  | SkillAPI実装       |
+| `apps/desktop/src/preload/channels.ts`                 | -    | チャネル定義       |
+| `apps/desktop/src/preload/index.ts`                    | -    | contextBridge公開  |
+
+**テストカバレッジ**: 67テスト（skill-api.test.ts: 37、skill-api.permission.test.ts: 30）
+
+---
+
 ## 完了タスク
 
 | タスク | 完了日 | テスト数 |
 |--------|--------|----------|
+| TASK-5-1 SkillAPI Preload実装 | 2026-01-27 | 67 |
 | TASK-4-1 スキルインポートIPCチャネル | 2026-01-25 | 60 |
 | TASK-3-2 SkillExecutor IPC Handler | 2026-01-25 | 192 |
 | TASK-3-1-D Permission Dialog UI | 2026-01-26 | 93 |
@@ -264,3 +332,4 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 - [スキル実行セキュリティ定数](./security-skill-execution.md)
 - [APIセキュリティ](./security-api.md)
 - [Electron IPCセキュリティ](./security-electron-ipc.md)
+- [TASK-5-1 実装ガイド](../../../../docs/30-workflows/TASK-5-1/outputs/phase-12/implementation-guide.md)
