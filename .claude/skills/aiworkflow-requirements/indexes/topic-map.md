@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-26
+> 自動生成: 2026-01-27
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -756,10 +756,14 @@ node scripts/list-specs.js --topics
 | Custom Execution Environment UI コンポーネント（AGENT-006） | L117 |
 | workspace-chat-edit-ui コンポーネント（Issue #468） | L184 |
 | SkillStreamDisplay コンポーネント（TASK-3-2） | L274 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L363 |
-| 完了タスク | L374 |
-| 関連ドキュメント | L383 |
-| 変更履歴 | L391 |
+| UX改善機能（TASK-3-2-A） | L289 |
+| R1: LoadingSpinner（ローディングアニメーション） | L293 |
+| R2: MessageTimestamp（タイムスタンプ表示） | L304 |
+| R3: CopyButton（クリップボードコピー） | L332 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L420 |
+| 完了タスク | L431 |
+| 関連ドキュメント | L441 |
+| 変更履歴 | L449 |
 
 ### references/ui-ux-file-selector.md
 

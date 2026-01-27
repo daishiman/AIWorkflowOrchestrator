@@ -1,0 +1,117 @@
+{
+  "taskId": "TASK-3-2-A",
+  "taskName": "SkillStreamDisplay UX改善",
+  "issueNumber": 520,
+  "createdAt": "2026-01-27T13:03:00Z",
+  "completedAt": "2026-01-27T23:59:00Z",
+  "targetBranch": "task/TASK-3-2-A-skill-stream-ux-improvements-wt3",
+  "baseBranch": "main",
+  "phases": {
+    "phase-01": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-01/current-state-analysis.md",
+        "outputs/phase-01/requirements-specification.md"
+      ]
+    },
+    "phase-02": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-02/design-specification.md",
+        "outputs/phase-02/component-hierarchy.md"
+      ]
+    },
+    "phase-03": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-03/design-review-report.md"]
+    },
+    "phase-04": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-04/test-design.md"]
+    },
+    "phase-05": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-05/implementation-summary.md"]
+    },
+    "phase-06": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-06/test-expansion-report.md"]
+    },
+    "phase-07": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-07/coverage-report.md"]
+    },
+    "phase-08": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-08/refactoring-report.md"]
+    },
+    "phase-09": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-09/quality-assurance-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "implementedFiles": {
+    "new": [
+      "apps/desktop/src/renderer/utils/formatTime.ts",
+      "apps/desktop/src/renderer/utils/__tests__/formatTime.test.ts"
+    ],
+    "modified": [
+      "apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx",
+      "apps/desktop/src/renderer/components/AgentView/__tests__/SkillStreamDisplay.test.tsx"
+    ]
+  },
+  "systemSpecUpdates": [
+    ".claude/skills/aiworkflow-requirements/LOGS.md",
+    ".claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md",
+    ".claude/skills/aiworkflow-requirements/indexes/topic-map.md"
+  ],
+  "testResults": {
+    "newTests": 50,
+    "coverage": "100%",
+    "allPassed": true
+  },
+  "metadata": {
+    "priority": "低",
+    "estimatedSize": "小規模",
+    "category": "改善",
+    "parentTask": "TASK-3-2",
+    "improvements": [
+      "R1-ローディングアニメーション",
+      "R2-タイムスタンプ表示",
+      "R3-クリップボードコピー"
+    ]
+  }
+}

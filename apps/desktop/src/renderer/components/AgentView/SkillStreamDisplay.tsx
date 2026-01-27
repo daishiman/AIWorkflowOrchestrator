@@ -3,14 +3,19 @@
  *
  * TASK-3-2: SkillExecutor IPC Integration
  * TASK-3-1-D: Renderer側権限ダイアログUI実装
+ * TASK-3-2-A: SkillStreamDisplay UX改善
+ *   - R1: ローディングスピナー
+ *   - R2: タイムスタンプ表示
+ *   - R3: クリップボードコピー
  *
  * @module @repo/desktop/renderer/components/AgentView/SkillStreamDisplay
  */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSkillExecution } from "../../hooks/useSkillExecution";
 import { useSkillPermission } from "../../hooks/useSkillPermission";
 import { PermissionDialog } from "../organisms/PermissionDialog/PermissionDialog";
+import { formatRelativeTime } from "../../utils/formatTime";
 import type {
   SkillStreamMessage,
   SkillExecutionError,
@@ -59,8 +64,119 @@ function getStatusText(status: string): string {
 }
 
 /**
+ * R1: ローディングスピナーコンポーネント
+ */
+const LoadingSpinner = React.memo(function LoadingSpinner() {
+  return (
+    <div
+      data-testid="loading-spinner-container"
+      role="status"
+      aria-label="実行中"
+      className="flex items-center"
+    >
+      <div
+        data-testid="loading-spinner"
+        className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"
+      />
+    </div>
+  );
+});
+
+/**
+ * R3: コピーボタンコンポーネント
+ */
+const CopyButton = React.memo(function CopyButton({
+  content,
+  messageId,
+}: {
+  content: string;
+  messageId: string;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy:", error);
+    }
+  };
+
+  // Clipboard API非対応時は非表示
+  if (typeof navigator === "undefined" || !navigator.clipboard) {
+    return null;
+  }
+
+  return (
+    <div className="flex items-center gap-1">
+      <button
+        data-testid={`copy-button-${messageId}`}
+        onClick={handleCopy}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleCopy();
+          }
+        }}
+        className="copy-button opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-100 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        aria-label="メッセージをコピー"
+        tabIndex={0}
+      >
+        <svg
+          className="h-4 w-4 text-gray-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+          />
+        </svg>
+      </button>
+      {copied && (
+        <span
+          className="copy-feedback text-xs text-green-500"
+          role="status"
+          aria-live="polite"
+        >
+          コピーしました
+        </span>
+      )}
+    </div>
+  );
+});
+
+/**
+ * R2: タイムスタンプコンポーネント
+ */
+const MessageTimestamp = React.memo(function MessageTimestamp({
+  timestamp,
+  messageId,
+}: {
+  timestamp: number;
+  messageId: string;
+}) {
+  return (
+    <span
+      data-testid={`message-timestamp-${messageId}`}
+      className="text-xs text-gray-400 flex-shrink-0"
+    >
+      {formatRelativeTime(timestamp)}
+    </span>
+  );
+});
+
+/**
  * メッセージアイテムコンポーネント
  * React.memo でパフォーマンス最適化
+ *
+ * R2: タイムスタンプ表示
+ * R3: クリップボードコピー機能
  */
 const MessageItem = React.memo(function MessageItem({
   message,
@@ -90,22 +206,49 @@ const MessageItem = React.memo(function MessageItem({
     try {
       const parsed = JSON.parse(message.content);
       return (
-        <div className={`message-item ${getMessageClassName()}`}>
-          <span className="tool-name">{parsed.name}</span>
+        <div
+          className={`message-item ${getMessageClassName()} group flex justify-between items-start gap-2`}
+        >
+          <span className="tool-name flex-1">{parsed.name}</span>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <MessageTimestamp
+              timestamp={message.timestamp}
+              messageId={message.id}
+            />
+            <CopyButton content={parsed.name} messageId={message.id} />
+          </div>
         </div>
       );
     } catch {
       return (
-        <div className={`message-item ${getMessageClassName()}`}>
-          <span>{message.content}</span>
+        <div
+          className={`message-item ${getMessageClassName()} group flex justify-between items-start gap-2`}
+        >
+          <span className="flex-1">{message.content}</span>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <MessageTimestamp
+              timestamp={message.timestamp}
+              messageId={message.id}
+            />
+            <CopyButton content={message.content} messageId={message.id} />
+          </div>
         </div>
       );
     }
   }
 
   return (
-    <div className={`message-item ${getMessageClassName()}`}>
-      <span>{message.content}</span>
+    <div
+      className={`message-item ${getMessageClassName()} group flex justify-between items-start gap-2`}
+    >
+      <span className="flex-1">{message.content}</span>
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <MessageTimestamp
+          timestamp={message.timestamp}
+          messageId={message.id}
+        />
+        <CopyButton content={message.content} messageId={message.id} />
+      </div>
     </div>
   );
 });
@@ -188,6 +331,8 @@ export function SkillStreamDisplay({
         >
           {getStatusText(status)}
         </span>
+        {/* R1: ローディングスピナー */}
+        {status === "running" && <LoadingSpinner />}
         {status === "running" && (
           <button
             onClick={abort}
