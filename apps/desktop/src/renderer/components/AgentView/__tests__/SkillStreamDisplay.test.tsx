@@ -939,6 +939,19 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
 // ============================================================
 describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
   const mockWriteText = vi.fn();
+  const mockClipboard = { writeText: mockWriteText };
+
+  beforeAll(() => {
+    // グローバルnavigator.clipboardをモック
+    vi.stubGlobal("navigator", {
+      ...navigator,
+      clipboard: mockClipboard,
+    });
+  });
+
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
 
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
@@ -948,13 +961,8 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    // Setup clipboard mock for each test
+    // Reset mock for each test
     mockWriteText.mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: mockWriteText },
-      writable: true,
-      configurable: true,
-    });
   });
 
   // TC-R3-1
@@ -1159,10 +1167,9 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
     const user = userEvent.setup();
     // Setup clipboard mock for this test
     const mockWriteText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: mockWriteText },
-      writable: true,
-      configurable: true,
+    vi.stubGlobal("navigator", {
+      ...navigator,
+      clipboard: { writeText: mockWriteText },
     });
 
     mockUseSkillExecution.status = "running";
@@ -1187,6 +1194,9 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
       expect(feedback).toHaveAttribute("role", "status");
       expect(feedback).toHaveAttribute("aria-live", "polite");
     });
+
+    // Cleanup
+    vi.unstubAllGlobals();
   });
 
   // TC-A-3
@@ -1372,6 +1382,18 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
 // ============================================================
 describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
   const mockWriteText = vi.fn();
+  const mockClipboard = { writeText: mockWriteText };
+
+  beforeAll(() => {
+    vi.stubGlobal("navigator", {
+      ...navigator,
+      clipboard: mockClipboard,
+    });
+  });
+
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
 
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
@@ -1381,13 +1403,8 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    // Setup clipboard mock for each test
+    // Reset mock for each test
     mockWriteText.mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: mockWriteText },
-      writable: true,
-      configurable: true,
-    });
   });
 
   // TC-R3-8
@@ -1547,6 +1564,18 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
 // ============================================================
 describe("SkillStreamDisplay - Integration Scenarios", () => {
   const mockWriteText = vi.fn();
+  const mockClipboard = { writeText: mockWriteText };
+
+  beforeAll(() => {
+    vi.stubGlobal("navigator", {
+      ...navigator,
+      clipboard: mockClipboard,
+    });
+  });
+
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
 
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
@@ -1556,13 +1585,8 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    // Setup clipboard mock for each test
+    // Reset mock for each test
     mockWriteText.mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: mockWriteText },
-      writable: true,
-      configurable: true,
-    });
   });
 
   // TC-INT-1
