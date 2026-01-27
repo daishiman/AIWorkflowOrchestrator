@@ -15,6 +15,46 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 ## 完了タスク
 
+### TASK-5-1: SkillAPI Preload実装（2026-01-27完了）
+
+| 項目         | 内容                                                      |
+| ------------ | --------------------------------------------------------- |
+| タスクID     | TASK-5-1                                                  |
+| 完了日       | 2026-01-27                                                |
+| ステータス   | **完了**                                                  |
+| テスト数     | 67件（37 + 30）                                           |
+| 発見課題     | 0件                                                       |
+| ドキュメント | `docs/30-workflows/TASK-5-1/`                             |
+
+#### 実装内容
+
+- SkillAPIインターフェース定義（6メソッド）
+- Preload API実装（execute, onStream, abort, getExecutionStatus, onPermissionRequest, sendPermissionResponse）
+- safeInvoke/safeOnセキュリティパターン適用
+- IPCチャネル6件をホワイトリスト登録
+- contextBridge.exposeInMainWorld公開
+- クリーンアップ関数によるメモリリーク防止
+
+#### 品質基準
+
+| 基準              | 結果 |
+| ----------------- | ---- |
+| TypeScript strict | PASS |
+| ESLint            | PASS |
+| Prettier          | PASS |
+| Line Coverage     | 95%+ |
+| Branch Coverage   | 85%+ |
+| Function Coverage | 100% |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| skill-api.test.ts  | 37       | 37   | 0    |
+| skill-api.permission.test.ts | 30 | 30   | 0    |
+
+---
+
 ### TASK-3-2: skillexecutor-ipc-integration（2026-01-25完了）
 
 | 項目         | 内容                                                        |
@@ -242,6 +282,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | 日付       | バージョン | 変更内容                                |
 | ---------- | ---------- | --------------------------------------- |
+| 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装      |
 | 2026-01-26 | 6.30.0     | ファイル分割（巨大化防止）              |
 | 2026-01-26 | 6.29.0     | TASK-3-1-D完了、Permission UI実装       |
 | 2026-01-25 | 6.28.0     | TASK-3-2完了、SkillExecutor IPC統合     |
