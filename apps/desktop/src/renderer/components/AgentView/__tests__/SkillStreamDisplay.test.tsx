@@ -667,9 +667,13 @@ describe("SkillStreamDisplay - extended accessibility", () => {
     const logArea = screen.getByRole("log");
     expect(logArea).toHaveAttribute("aria-live", "polite");
 
-    // sr-only status region should exist
-    const statusRegion = screen.getByRole("status");
-    expect(statusRegion).toHaveAttribute("aria-live", "polite");
+    // sr-only status region should exist (note: multiple elements with role="status" exist)
+    const statusRegions = screen.getAllByRole("status");
+    const srOnlyStatusRegion = statusRegions.find((el) =>
+      el.classList.contains("sr-only"),
+    );
+    expect(srOnlyStatusRegion).toBeDefined();
+    expect(srOnlyStatusRegion).toHaveAttribute("aria-live", "polite");
 
     mockUseSkillExecution.status = "completed";
     rerender(<SkillStreamDisplay skillId="test-skill" />);
@@ -934,8 +938,6 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
 // 12. R3 Clipboard Copy Tests (TDD Red Phase)
 // ============================================================
 describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
-  const mockWriteText = vi.fn();
-
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
     mockUseSkillExecution.status = "running";
@@ -944,11 +946,8 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    // Mock Clipboard API
-    Object.assign(navigator, {
-      clipboard: { writeText: mockWriteText },
-    });
-    mockWriteText.mockResolvedValue(undefined);
+    // Reset global clipboard mock (setup.ts defines navigator.clipboard)
+    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
   });
 
   // TC-R3-1
@@ -989,7 +988,9 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
 
-    expect(mockWriteText).toHaveBeenCalledWith("Test message to copy");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      "Test message to copy",
+    );
   });
 
   // TC-R3-3
@@ -1090,7 +1091,7 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     copyButton.focus();
     await user.keyboard("{Enter}");
 
-    expect(mockWriteText).toHaveBeenCalledWith("Test message");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("Test message");
   });
 
   // TC-R3-7
@@ -1099,7 +1100,9 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     const consoleError = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
-    mockWriteText.mockRejectedValue(new Error("Clipboard API error"));
+    vi.mocked(navigator.clipboard.writeText).mockRejectedValue(
+      new Error("Clipboard API error"),
+    );
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
@@ -1151,10 +1154,8 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
   // TC-A-2
   it("copy feedback should be announced to screen readers", async () => {
     const user = userEvent.setup();
-    const mockWriteText = vi.fn().mockResolvedValue(undefined);
-    Object.assign(navigator, {
-      clipboard: { writeText: mockWriteText },
-    });
+    // Global clipboard mock is set up in setup.ts
+    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
 
     mockUseSkillExecution.status = "running";
     mockUseSkillExecution.messages = [
@@ -1362,8 +1363,6 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
 // 16. R3 Clipboard Copy Edge Cases (Phase 6)
 // ============================================================
 describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
-  const mockWriteText = vi.fn();
-
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
     mockUseSkillExecution.status = "running";
@@ -1372,10 +1371,8 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    Object.assign(navigator, {
-      clipboard: { writeText: mockWriteText },
-    });
-    mockWriteText.mockResolvedValue(undefined);
+    // Reset global clipboard mock (setup.ts defines navigator.clipboard)
+    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
   });
 
   // TC-R3-8
@@ -1397,7 +1394,7 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
 
-    expect(mockWriteText).toHaveBeenCalledWith("");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("");
   });
 
   // TC-R3-9
@@ -1420,7 +1417,7 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
 
-    expect(mockWriteText).toHaveBeenCalledWith(longContent);
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(longContent);
   });
 
   // TC-R3-10
@@ -1443,7 +1440,7 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
 
-    expect(mockWriteText).toHaveBeenCalledWith(specialContent);
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(specialContent);
   });
 
   // TC-R3-11
@@ -1470,7 +1467,7 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     await user.click(copyButton);
 
     // 3回呼ばれるはず
-    expect(mockWriteText).toHaveBeenCalledTimes(3);
+    expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(3);
   });
 
   // TC-R3-12
@@ -1534,8 +1531,6 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
 // 17. Integration Scenario Tests (Phase 6)
 // ============================================================
 describe("SkillStreamDisplay - Integration Scenarios", () => {
-  const mockWriteText = vi.fn();
-
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
     mockUseSkillExecution.status = "idle";
@@ -1544,10 +1539,8 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    Object.assign(navigator, {
-      clipboard: { writeText: mockWriteText },
-    });
-    mockWriteText.mockResolvedValue(undefined);
+    // Reset global clipboard mock (setup.ts defines navigator.clipboard)
+    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
   });
 
   // TC-INT-1
@@ -1600,7 +1593,9 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
 
-    expect(mockWriteText).toHaveBeenCalledWith("Running message");
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      "Running message",
+    );
   });
 
   // TC-INT-3
