@@ -277,13 +277,70 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 
 ### コンポーネント階層
 
-| コンポーネント     | 種類      | 親                 | 子要素                                                                          |
-| ------------------ | --------- | ------------------ | ------------------------------------------------------------------------------- |
-| SkillStreamDisplay | organisms | -                  | StreamHeader, StreamContent                                                     |
-| StreamHeader       | -         | SkillStreamDisplay | StatusBadge, AbortButton（running時）, ResetButton（completed/error/aborted時） |
-| StreamContent      | -         | SkillStreamDisplay | MessageItem（複数、React.memo適用）                                             |
+| コンポーネント     | 種類      | 親                 | 子要素                                                                                                       |
+| ------------------ | --------- | ------------------ | ------------------------------------------------------------------------------------------------------------ |
+| SkillStreamDisplay | organisms | -                  | StreamHeader, StreamContent                                                                                  |
+| StreamHeader       | -         | SkillStreamDisplay | StatusBadge, LoadingSpinner（running時）, AbortButton（running時）, ResetButton（completed/error/aborted時） |
+| StreamContent      | -         | SkillStreamDisplay | MessageItem（複数、React.memo適用）                                                                          |
+| MessageItem        | -         | StreamContent      | message-content, MessageTimestamp, CopyButton                                                                |
 
 StreamContentにはrole="log"およびaria-live="polite"を設定する。
+
+### UX改善機能（TASK-3-2-A）
+
+TASK-3-2-Aで追加されたUX改善機能。
+
+#### R1: LoadingSpinner（ローディングアニメーション）
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| 表示条件 | `status === "running"` |
+| 位置 | StreamHeader内、StatusBadgeの右隣 |
+| アニメーション | Tailwind CSS `animate-spin` |
+| サイズ | 16px × 16px |
+| アクセシビリティ | `role="status"` `aria-label="実行中"` |
+| data-testid | `loading-spinner-container`, `loading-spinner` |
+
+#### R2: MessageTimestamp（タイムスタンプ表示）
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| 表示位置 | MessageItem内、message-contentの右側 |
+| フォーマット | 相対時刻（「X秒前」「X分前」「X時間前」「X日前」） |
+| スタイル | `text-xs text-gray-400 flex-shrink-0` |
+| 依存関数 | `formatRelativeTime` |
+| Props | `timestamp: number`, `messageId: string` |
+
+**formatRelativeTime ユーティリティ**
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/utils/formatTime.ts` |
+| 引数 | `timestamp: number`（UNIXミリ秒）, `now?: number`（テスト用） |
+| 戻り値 | 相対時刻文字列 |
+
+出力形式:
+
+| 条件 | 出力例 |
+| ---- | ------ |
+| diff < 0 | 「たった今」 |
+| seconds < 60 | 「X秒前」 |
+| minutes < 60 | 「X分前」 |
+| hours < 24 | 「X時間前」 |
+| days >= 1 | 「X日前」 |
+
+#### R3: CopyButton（クリップボードコピー）
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| 表示条件 | Clipboard API対応時のみ（非対応時は `null` を返す） |
+| 表示位置 | MessageItem内、ホバー時に表示 |
+| スタイル | `opacity-0 group-hover:opacity-100 transition-opacity` |
+| フィードバック | 「コピーしました」を2秒間表示 |
+| キーボード操作 | `tabIndex={0}`, Enter/Space対応 |
+| アクセシビリティ | `aria-label="メッセージをコピー"`, `role="status" aria-live="polite"`（フィードバック） |
+| Props | `content: string`, `messageId: string` |
+| エラーハンドリング | コピー失敗時は `console.error` でログ出力 |
 
 ### コンポーネント仕様
 

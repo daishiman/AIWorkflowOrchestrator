@@ -845,6 +845,58 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
+## 2026-01-27: SkillStreamDisplay UX改善（TASK-3-2-A）
+
+| 項目         | 内容                                                    |
+| ------------ | ------------------------------------------------------- |
+| タスクID     | TASK-3-2-A                                              |
+| Issue番号    | #520                                                    |
+| 操作         | update-spec                                             |
+| 対象ファイル | ui-ux-feature-components.md                             |
+| 結果         | success                                                 |
+| 備考         | SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー機能） |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`
+  - SkillStreamDisplayセクションにUX改善機能を追加
+  - R1 LoadingSpinner（実行中表示）仕様追加
+  - R2 MessageTimestamp（相対時刻表示）仕様追加
+  - R3 CopyButton（クリップボードコピー）仕様追加
+  - 新規ユーティリティ formatRelativeTime 仕様追加
+  - 「完了タスク」セクションにTASK-3-2-A追加
+  - アクセシビリティ対応（ARIA属性、キーボード操作）仕様追加
+
+### 新規追加コンポーネント
+
+| コンポーネント   | 責務                     |
+| ---------------- | ------------------------ |
+| LoadingSpinner   | 実行中スピナー表示       |
+| MessageTimestamp | 相対時刻タイムスタンプ表示 |
+| CopyButton       | クリップボードコピー機能 |
+
+### 新規ユーティリティ
+
+| 関数               | ファイル          | 責務                   |
+| ------------------ | ----------------- | ---------------------- |
+| formatRelativeTime | formatTime.ts     | 相対時刻文字列への変換 |
+
+### テスト品質
+
+| 項目       | 値     |
+| ---------- | ------ |
+| 新規テスト | 50     |
+| カバレッジ | 100%   |
+
+### 関連ドキュメント
+
+| ドキュメント | パス                                                                                |
+| ------------ | ----------------------------------------------------------------------------------- |
+| 実装ガイド   | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`                        |
+
+---
+
 ## 2026-01-27: TASK-5-1 SkillAPI Preload実装
 
 | 項目         | 内容                                                                   |
