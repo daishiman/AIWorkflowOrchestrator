@@ -16,86 +16,38 @@
 
 ### 技術選定の基本原則
 
-```
-個人開発における技術選定の3原則:
+個人開発における技術選定の3原則を以下に示す。
 
-1. 学習コストの最小化
-   └─ 広く使われ、ドキュメントが充実した技術を優先
-
-2. 無料枠の最大活用
-   └─ Vercel, Turso, Railway等の無料tier内で運用可能
-
-3. 型安全性の徹底
-   └─ TypeScript strict mode + Zodによる実行時検証
-```
+| 原則               | 説明                                                   |
+| ------------------ | ------------------------------------------------------ |
+| 学習コストの最小化 | 広く使われ、ドキュメントが充実した技術を優先           |
+| 無料枠の最大活用   | Vercel、Turso、Railway等の無料tier内で運用可能         |
+| 型安全性の徹底     | TypeScript strict modeとZodによる実行時検証を組み合わせる |
 
 ### アーキテクチャ概要
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    pnpm Monorepo                            │
-├─────────────────────────────────────────────────────────────┤
-│  apps/                                                      │
-│  ├─ web/          Next.js 15 (App Router)                   │
-│  └─ desktop/      Electron + Next.js (将来対応)             │
-├─────────────────────────────────────────────────────────────┤
-│  packages/                                                  │
-│  └─ shared/       共通ロジック、型定義、ユーティリティ       │
-├─────────────────────────────────────────────────────────────┤
-│  外部サービス                                               │
-│  ├─ Turso         分散SQLite (無料: 9GB, 500Mリクエスト)    │
-│  ├─ Railway       ホスティング (従量課金)                   │
-│  └─ AI Provider   OpenAI / Anthropic / Google / xAI        │
-└─────────────────────────────────────────────────────────────┘
-```
+本プロジェクトはpnpm Monorepo構成を採用している。
 
----
+**アプリケーション層（apps/）**
 
-## 概要
+| ディレクトリ   | 技術                     | 説明               |
+| -------------- | ------------------------ | ------------------ |
+| apps/web/      | Next.js 15（App Router） | Webアプリケーション |
+| apps/desktop/  | Electron + Next.js       | 将来対応予定       |
 
-### 目的
+**パッケージ層（packages/）**
 
-本ドキュメントは、AIWorkflowOrchestratorプロジェクトで使用する技術スタックを定義し、以下を明確にする:
+| ディレクトリ     | 用途                               |
+| ---------------- | ---------------------------------- |
+| packages/shared/ | 共通ロジック、型定義、ユーティリティ |
 
-- **技術選定の理由**: なぜその技術を選んだのか
-- **バージョン管理戦略**: 互換性とアップデート方針
-- **個人開発における最適化**: コスト、学習コスト、保守性のバランス
-- **依存関係の管理方針**: 肥大化防止と最小構成の維持
+**外部サービス**
 
-### 技術選定の基本原則
-
-```
-個人開発における技術選定の3原則:
-
-1. 学習コストの最小化
-   └─ 広く使われ、ドキュメントが充実した技術を優先
-
-2. 無料枠の最大活用
-   └─ Vercel, Turso, Railway等の無料tier内で運用可能
-
-3. 型安全性の徹底
-   └─ TypeScript strict mode + Zodによる実行時検証
-```
-
-### アーキテクチャ概要
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    pnpm Monorepo                            │
-├─────────────────────────────────────────────────────────────┤
-│  apps/                                                      │
-│  ├─ web/          Next.js 15 (App Router)                   │
-│  └─ desktop/      Electron + Next.js (将来対応)             │
-├─────────────────────────────────────────────────────────────┤
-│  packages/                                                  │
-│  └─ shared/       共通ロジック、型定義、ユーティリティ       │
-├─────────────────────────────────────────────────────────────┤
-│  外部サービス                                               │
-│  ├─ Turso         分散SQLite (無料: 9GB, 500Mリクエスト)    │
-│  ├─ Railway       ホスティング (従量課金)                   │
-│  └─ AI Provider   OpenAI / Anthropic / Google / xAI        │
-└─────────────────────────────────────────────────────────────┘
-```
+| サービス     | 用途           | 無料枠                          |
+| ------------ | -------------- | ------------------------------- |
+| Turso        | 分散SQLite     | 9GB、500Mリクエスト             |
+| Railway      | ホスティング   | 従量課金                        |
+| AI Provider  | AI機能         | OpenAI / Anthropic / Google / xAI |
 
 ---
 
@@ -122,13 +74,9 @@
 | Deno   | セキュリティ、TypeScript組み込み | npm互換性、エコシステムの成熟度 |
 | Bun    | 高速起動、オールインワン         | Next.js本番互換性の不安定さ     |
 
-```bash
-# バージョン確認
-node --version  # v22.x.x
+**バージョン管理**
 
-# .nvmrcでの固定
-echo "22" > .nvmrc
-```
+バージョン確認は `node --version` コマンドで実行する（期待値: v22.x.x）。プロジェクトルートに `.nvmrc` ファイルを配置し、内容を `22` とすることでバージョンを固定する。
 
 ### pnpm
 
@@ -153,12 +101,14 @@ echo "22" > .nvmrc
 | yarn   | PnP、零インストール | 設定複雑、互換性問題 |
 | Bun    | 超高速              | pnpm workspace互換性 |
 
-```yaml
-# pnpm-workspace.yaml
-packages:
-  - "apps/*"
-  - "packages/*"
-```
+**Workspace設定**
+
+pnpm-workspace.yaml にて以下のパッケージを管理対象として定義する。
+
+| 設定項目 | 値         |
+| -------- | ---------- |
+| packages | apps/*     |
+| packages | packages/* |
 
 ---
 
@@ -197,19 +147,14 @@ packages:
 | Nuxt 3    | Vue好みの場合        | Reactエコシステムの規模        |
 | SvelteKit | バンドルサイズ最小   | 学習コスト、エコシステム       |
 
-```typescript
-// next.config.ts (Next.js 15)
-import type { NextConfig } from "next";
+**next.config.ts 設定方針**
 
-const nextConfig: NextConfig = {
-  output: "standalone", // Railway向け最適化
-  experimental: {
-    ppr: "incremental", // Partial Prerendering
-  },
-};
+| 設定項目           | 値           | 説明                                  |
+| ------------------ | ------------ | ------------------------------------- |
+| output             | standalone   | Railway向け最適化                     |
+| experimental.ppr   | incremental  | Partial Prerenderingを段階的に有効化  |
 
-export default nextConfig;
-```
+設定ファイルはNextConfig型を使用し、default exportとして定義する。
 
 ### React 19
 
@@ -228,27 +173,18 @@ export default nextConfig;
 | Actions           | フォーム       | `useActionState`, `useFormStatus` |
 | `useOptimistic`   | UI更新         | 楽観的更新                        |
 
-```tsx
-// React 19 Actions の例
-"use client";
+**React 19 Actions パターン**
 
-import { useActionState } from "react";
-import { createWorkflow } from "@/actions/workflow";
+クライアントコンポーネントにおけるフォーム処理は以下のパターンを採用する。
 
-export function WorkflowForm() {
-  const [state, formAction, isPending] = useActionState(createWorkflow, null);
-
-  return (
-    <form action={formAction}>
-      <input name="name" disabled={isPending} />
-      <button type="submit" disabled={isPending}>
-        {isPending ? "作成中..." : "作成"}
-      </button>
-      {state?.error && <p>{state.error}</p>}
-    </form>
-  );
-}
-```
+| 要素                | 説明                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| ディレクティブ      | "use client" を先頭に配置                                    |
+| フック              | useActionStateでサーバーアクションをラップ                   |
+| 状態管理            | state（結果）、formAction（アクション）、isPending（処理中フラグ）を取得 |
+| フォームaction属性  | formActionを直接バインド                                     |
+| ボタン制御          | isPendingで入力・ボタンのdisabled状態を制御                  |
+| エラー表示          | state.errorが存在する場合にエラーメッセージを表示            |
 
 ### TypeScript
 
@@ -258,26 +194,23 @@ export function WorkflowForm() {
 | 最小バージョン | `5.5.0`              |
 | 更新頻度       | マイナー更新は検証後 |
 
-**コンパイラ設定**:
+**コンパイラ設定**
 
-```jsonc
-// tsconfig.json
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "noUncheckedIndexedAccess": true, // 配列アクセスの安全性
-    "exactOptionalPropertyTypes": true, // オプショナルプロパティの厳密化
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "isolatedModules": true,
-    "skipLibCheck": true,
-  },
-}
-```
+tsconfig.jsonにおける主要なcompilerOptions設定を以下に示す。
+
+| オプション                   | 値                        | 説明                             |
+| ---------------------------- | ------------------------- | -------------------------------- |
+| target                       | ES2022                    | 出力するJavaScriptバージョン     |
+| lib                          | ES2022, DOM, DOM.Iterable | 使用するライブラリ型定義         |
+| module                       | ESNext                    | モジュールシステム               |
+| moduleResolution             | bundler                   | バンドラー向けモジュール解決     |
+| strict                       | true                      | 厳格な型チェックを有効化         |
+| noUncheckedIndexedAccess     | true                      | 配列アクセスの安全性を強化       |
+| exactOptionalPropertyTypes   | true                      | オプショナルプロパティの厳密化   |
+| noImplicitReturns            | true                      | 暗黙のreturnを禁止               |
+| noFallthroughCasesInSwitch   | true                      | switchのfall-throughを禁止       |
+| isolatedModules              | true                      | 単一ファイルトランスパイル対応   |
+| skipLibCheck                 | true                      | ライブラリ型チェックをスキップ   |
 
 ### Tailwind CSS
 
@@ -293,24 +226,21 @@ export function WorkflowForm() {
 3. **学習コスト低**: ユーティリティファーストの直感的API
 4. **Shadcn/ui互換**: コンポーネントライブラリとの親和性
 
-```typescript
-// tailwind.config.ts
-import type { Config } from "tailwindcss";
+**tailwind.config.ts 設定方針**
 
-const config: Config = {
-  content: ["./src/**/*.{ts,tsx}", "./node_modules/@repo/ui/**/*.{ts,tsx}"],
-  theme: {
-    extend: {
-      colors: {
-        primary: "hsl(var(--primary))",
-        secondary: "hsl(var(--secondary))",
-      },
-    },
-  },
-  plugins: [require("tailwindcss-animate")],
-};
+| 設定項目              | 値                                                        | 説明                     |
+| --------------------- | --------------------------------------------------------- | ------------------------ |
+| content               | ./src/**/*.{ts,tsx}, ./node_modules/@repo/ui/**/*.{ts,tsx} | スキャン対象ファイル     |
+| theme.extend.colors   | primary: hsl(var(--primary))                              | CSS変数によるカラー定義  |
+| theme.extend.colors   | secondary: hsl(var(--secondary))                          | CSS変数によるカラー定義  |
+| plugins               | tailwindcss-animate                                       | アニメーションプラグイン |
 
-export default config;
-```
+カラー定義はCSS変数（hsl形式）を使用し、ダークモード対応を容易にする。
 
 ---
+
+## 変更履歴
+
+| 日付       | バージョン | 変更内容                                                               |
+| ---------- | ---------- | ---------------------------------------------------------------------- |
+| 2025-01-26 | 1.1.0      | 仕様ガイドライン準拠: コード例を表形式・文章に変換。重複セクションを統合 |

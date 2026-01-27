@@ -1,0 +1,237 @@
+# RAGクエリパイプライン（GraphRAG・HybridRAG）
+
+> 本ドキュメントは統合システム設計仕様書の一部です。
+> 管理: .claude/skills/aiworkflow-requirements/
+>
+> **親ドキュメント**: [architecture-rag.md](./architecture-rag.md)
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                   |
+| ---------- | ---------- | ---------------------------------------------------------- |
+| v1.0.0     | 2025-01-20 | 初版作成                                                   |
+| v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換    |
+
+---
+
+## 概要
+
+RAG検索結果を統合し、最適な回答を生成するパイプライン。GraphRAGクエリサービスとHybridRAG統合パイプラインを定義。
+
+---
+
+## GraphRAGクエリサービス
+
+### 概要
+
+コミュニティ要約を活用してユーザークエリに対する包括的な回答を生成するサービス。
+ICommunitySummarizer.searchSummaries()と連携し、関連するコミュニティ要約をコンテキストとしてLLMに提供する。
+
+### RAGパイプラインにおける位置づけ
+
+GraphRAGクエリサービスは、RAGパイプラインの最終段に位置し、コミュニティ要約を活用してユーザークエリに回答を生成する。
+
+**前段処理フロー**:
+ドキュメント → 変換 → チャンキング → NER → コミュニティ検出 → コミュニティ要約 → GraphRAGクエリサービス
+
+**GraphRAGQueryService（IGraphRAGQueryService実装）**
+
+| 処理ステップ       | 説明                                       |
+| ------------------ | ------------------------------------------ |
+| validateInput()    | 入力クエリの検証                           |
+| Promise.all()      | 以下の2処理を並列実行                      |
+| - classifyQuery()  | クエリタイプの分類                         |
+| - searchWithFallback() | フォールバック付きコミュニティ要約検索 |
+| buildPrompt()      | LLM用プロンプトの構築                      |
+| llmProvider.generate() | 回答テキストの生成                     |
+
+### 主要インターフェース
+
+**IGraphRAGQueryService**: GraphRAGクエリサービスの抽象インターフェース
+
+| メソッド | 説明                 |
+| -------- | -------------------- |
+| query()  | クエリ実行・回答生成 |
+
+**GraphRAGQueryOptions**: クエリオプション
+
+| オプション             | デフォルト | 説明                          |
+| ---------------------- | ---------- | ----------------------------- |
+| limit                  | 10         | 最大検索結果数（1-20）        |
+| communityLevel         | -          | コミュニティ階層レベル（0-5） |
+| confidenceThreshold    | 0.5        | confidence閾値（0-1）         |
+| enableCommunitySummary | true       | コミュニティ要約検索を有効化  |
+
+### 依存関係
+
+| 依存サービス         | 用途                 |
+| -------------------- | -------------------- |
+| IQueryClassifier     | クエリタイプ分類     |
+| ICommunitySummarizer | コミュニティ要約検索 |
+| IEmbeddingProvider   | 埋め込み生成         |
+| ILLMProvider         | 回答テキスト生成     |
+
+### 実装ファイル
+
+| 種別       | パス                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| サービス   | `packages/shared/src/services/search/graphrag-query-service.ts`                            |
+| 型定義     | `packages/shared/src/services/search/graphrag-query-service.ts`                            |
+| テスト     | `packages/shared/src/services/search/__tests__/graphrag-query-service.test.ts`             |
+| 統合テスト | `packages/shared/src/services/search/__tests__/graphrag-query-service.integration.test.ts` |
+
+### テスト品質
+
+- **44テストケース**（単体24 + 統合20）
+- **100% Line Coverage**, **91.66% Branch Coverage**, **100% Function Coverage**
+
+**詳細参照**: [interfaces-rag-graphrag-query.md](./interfaces-rag-graphrag-query.md)
+
+---
+
+## HybridRAG統合パイプライン
+
+### 概要
+
+HybridRAGは、複数の検索戦略を組み合わせて最適な検索結果を提供する統合検索エンジン。
+4ステージパイプラインにより、各検索戦略の長所を活かした高精度な検索を実現する。
+
+**実装場所**: `packages/shared/src/services/search/hybrid-rag-engine.ts`
+
+### アーキテクチャ概要
+
+HybridRAG 4-Stage Pipelineは、クエリ分類から最終回答生成まで4つのステージで構成される。
+
+#### Stage 1: Query Classification
+
+クエリを分析し、検索戦略の重みを決定するステージ。
+
+| コンポーネント    | 出力                              |
+| ----------------- | --------------------------------- |
+| IQueryClassifier  | QueryType + SearchWeights         |
+
+#### Stage 2: Triple Search（並列実行）
+
+3つの検索戦略をPromise.allで並列実行するステージ。
+
+| 検索戦略             | 技術基盤            | 説明                   |
+| -------------------- | ------------------- | ---------------------- |
+| KeywordSearchStrategy| FTS5/BM25           | キーワードベース検索   |
+| VectorSearchStrategy | DiskANN             | ベクトル類似度検索     |
+| GraphSearchStrategy  | Knowledge Graph     | グラフ構造ベース検索   |
+
+#### Stage 3a: RRF Fusion
+
+Reciprocal Rank Fusionで3つの検索結果を統合する。スコア計算式は weight_i / (k + rank_i) の総和で算出。
+
+#### Stage 3b: Reranking
+
+CrossEncoderまたはLLMを使用してクエリと結果の関連性を再評価する。
+
+#### Stage 4: CRAG（Optional）
+
+Corrective RAGで結果品質を評価・補正する。品質に応じて3つのアクションを選択。
+
+| アクション | 動作                       |
+| ---------- | -------------------------- |
+| CORRECT    | 結果をそのまま使用         |
+| REFINE     | 低品質結果をフィルタリング |
+| AUGMENT    | Web検索で結果を補強        |
+
+#### 最終出力: HybridRAGResponse
+
+| フィールド       | 説明                         |
+| ---------------- | ---------------------------- |
+| results[]        | 検索結果の配列               |
+| metadata         | 処理メタデータ               |
+| augmentedContext | CRAG補強時の追加コンテキスト |
+
+### データフロー
+
+1. **Stage 1: Query Classification**
+   - クエリを分析し、4タイプ（local/global/relationship/hybrid）に分類
+   - タイプに応じた検索戦略の重みを決定
+
+2. **Stage 2: Triple Search（並列実行）**
+   - 3つの検索戦略をPromise.allで並列実行
+   - 各戦略は独立して動作し、部分失敗に対応
+
+3. **Stage 3a: RRF Fusion**
+   - 3つの検索結果をRRFアルゴリズムで統合
+   - 重み付きスコア計算: `score = Σ(weight_i / (k + rank_i))`
+
+4. **Stage 3b: Reranking**
+   - クエリと結果の関連性を再評価
+   - フォールバック: 失敗時はFusion結果をそのまま使用
+
+5. **Stage 4: CRAG（オプション）**
+   - 結果の品質を評価し、必要に応じて補正
+   - フォールバック: 失敗時はReranking結果をそのまま使用
+
+---
+
+## クエリタイプと検索重み
+
+| タイプ       | 特徴                 | keyword | semantic | graph |
+| ------------ | -------------------- | ------- | -------- | ----- |
+| local        | 特定情報の検索       | 0.20    | 0.60     | 0.20  |
+| global       | 全体概要の把握       | 0.10    | 0.30     | 0.60  |
+| relationship | 関係性・比較の質問   | 0.10    | 0.20     | 0.70  |
+| hybrid       | 判断困難時のバランス | 0.33    | 0.33     | 0.34  |
+
+---
+
+## フォールバック設計
+
+| シナリオ            | 動作                        |
+| ------------------- | --------------------------- |
+| 1つの検索戦略が失敗 | 残りの戦略の結果で続行      |
+| 2つの検索戦略が失敗 | 残りの1戦略の結果で続行     |
+| 全検索戦略が失敗    | エラーを返す                |
+| Rerankingが失敗     | Fusion結果をそのまま使用    |
+| CRAGが失敗          | Reranking結果をそのまま使用 |
+
+---
+
+## パフォーマンス目標
+
+| ステージ      | 目標レイテンシ                           |
+| ------------- | ---------------------------------------- |
+| Triple Search | < 200ms                                  |
+| RRF Fusion    | < 10ms                                   |
+| Reranking     | < 200ms                                  |
+| CRAG          | < 300ms                                  |
+| **合計**      | < 500ms (CRAG無効) / < 1000ms (CRAG有効) |
+
+---
+
+## HybridRAGFactory
+
+設定に基づいてHybridRAGEngineを生成するファクトリクラス。
+
+| メソッド           | 用途                             | 状態   |
+| ------------------ | -------------------------------- | ------ |
+| createFull()       | フル機能版（LLM分類、CRAG有効）  | 未実装 |
+| createLite()       | 軽量版（ルールベース、CRAG無効） | 未実装 |
+| createForTesting() | テスト用（モック注入可能）       | 実装済 |
+
+**NOTE**: createFull()とcreateLite()は依存モジュール（LLMQueryClassifier, VectorSearchStrategy等）完成後に実装予定。
+
+---
+
+## テスト品質
+
+- **39テストケース**（単体23 + 統合16）
+- **94.32% Line Coverage**, **91.66% Branch Coverage**, **100% Function Coverage**
+
+**詳細参照**: `docs/30-workflows/hybridrag-integration/outputs/phase-12/implementation-guide.md`
+
+---
+
+## 関連ドキュメント
+
+- [RAGアーキテクチャ概要](./architecture-rag.md)
+- [RAGサービス群](./rag-services.md)
+- [ベクトル検索・同期](./rag-vector-search.md)

@@ -53,41 +53,39 @@
 
 **実装場所**: `packages/shared/src/services/graph/`
 
-```
-┌────────────────────────────────────────────────────────┐
-│                   Application Layer                     │
-│  (GraphRAG Query, Community Summary Generation)         │
-└────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│              ICommunityDetector (Interface)             │
-│  - detect() コミュニティ検出                            │
-│  - saveResults() 結果永続化                             │
-│  - getCommunitiesForEntity() エンティティ→コミュニティ  │
-│  - getCommunitiesByLevel() レベル別取得                 │
-│  - getCommunityMembers() メンバー取得                   │
-└────────────────────────────────────────────────────────┘
-                           │
-          ┌────────────────┴────────────────┐
-          ▼                                 ▼
-┌───────────────────────┐    ┌───────────────────────┐
-│    LeidenAlgorithm    │    │ ICommunityRepository  │
-│    (Pure Function)    │    │    (Persistence)      │
-│  - detect()           │    │  - insert()           │
-│  - localMovePhase()   │    │  - findById()         │
-│  - refinementPhase()  │    │  - findByEntityId()   │
-│  - buildHierarchy()   │    │  - findByLevel()      │
-└───────────────────────┘    │  - deleteAll()        │
-                             └───────────────────────┘
-                                        │
-                                        ▼
-                             ┌───────────────────────┐
-                             │    SQLite Database    │
-                             │  - communities        │
-                             │  - entity_communities │
-                             └───────────────────────┘
-```
+コミュニティ検出サービスは3層構造で設計されている。Application LayerがICommunityDetectorを通じてコミュニティ検出を要求し、内部でLeidenAlgorithmとICommunityRepositoryが協調して動作する。
+
+#### レイヤー構成
+
+| レイヤー          | コンポーネント                     | 役割                                          |
+| ----------------- | ---------------------------------- | --------------------------------------------- |
+| Application Layer | GraphRAG Query, Community Summary  | コミュニティ検出の呼び出し元                  |
+| Service Layer     | ICommunityDetector                 | コミュニティ検出のメインインターフェース      |
+| Core Layer        | LeidenAlgorithm, ICommunityRepository | アルゴリズム実行と永続化                   |
+| Data Layer        | SQLite Database                    | communities, entity_communities テーブル      |
+
+#### ICommunityDetectorの責務
+
+Application LayerはICommunityDetectorインターフェースを通じて以下の操作を行う。
+
+| 操作                      | 説明                               |
+| ------------------------- | ---------------------------------- |
+| detect()                  | コミュニティ検出の実行             |
+| saveResults()             | 検出結果の永続化                   |
+| getCommunitiesForEntity() | エンティティからコミュニティを取得 |
+| getCommunitiesByLevel()   | レベル別コミュニティ取得           |
+| getCommunityMembers()     | コミュニティのメンバー取得         |
+
+#### 依存関係
+
+ICommunityDetectorは内部で2つのコンポーネントに依存する。
+
+| コンポーネント        | 種別          | 主要メソッド                                     |
+| --------------------- | ------------- | ------------------------------------------------ |
+| LeidenAlgorithm       | Pure Function | detect(), localMovePhase(), refinementPhase(), buildHierarchy() |
+| ICommunityRepository  | Persistence   | insert(), findById(), findByEntityId(), findByLevel(), deleteAll() |
+
+最終的なデータはSQLite Databaseのcommunitiesテーブルとentity_communitiesテーブルに保存される。
 
 ### Leidenアルゴリズムフロー
 
@@ -194,56 +192,64 @@
 
 ### インポート方法
 
-```typescript
-// 型のインポート（推奨：バレルファイルから）
-import type {
-  Community,
-  CommunitySummary,
-  CommunityDetectionOptions,
-  CommunityDetectionResult,
-  CommunityStructure,
-} from "@repo/shared/services/graph";
+コミュニティ検出関連の型と値は、バレルファイル `@repo/shared/services/graph` からインポートする。
 
-// 値のインポート（エラー型、enum、関数）
-import {
-  CommunityErrorCode,
-  CommunityDetectionError,
-  normalizeEntityName,
-} from "@repo/shared/services/graph";
-```
+#### 型のインポート（推奨）
+
+| インポート対象               | 種別 | 用途                         |
+| ---------------------------- | ---- | ---------------------------- |
+| Community                    | 型   | コミュニティエンティティ     |
+| CommunitySummary             | 型   | コミュニティ要約             |
+| CommunityDetectionOptions    | 型   | 検出オプション               |
+| CommunityDetectionResult     | 型   | 検出結果                     |
+| CommunityStructure           | 型   | コミュニティ構造             |
+
+#### 値のインポート
+
+| インポート対象          | 種別     | 用途                         |
+| ----------------------- | -------- | ---------------------------- |
+| CommunityErrorCode      | enum     | エラーコード定義             |
+| CommunityDetectionError | class    | エラー型                     |
+| normalizeEntityName     | function | エンティティ名の正規化       |
+
+**インポートパス**: `@repo/shared/services/graph`
 
 ### 基本的なコミュニティ検出
 
-```typescript
-import type { CommunityDetectionResult } from "@repo/shared/services/graph";
-import { CommunityDetector } from "@repo/shared/services/graph";
+コミュニティ検出は以下の手順で実行する。
 
-const detector = new CommunityDetector(
-  leidenAlgorithm,
-  graphStore,
-  communityRepo
-);
+#### 初期化
 
-// 検出実行
-const result = await detector.detect({ resolution: 1.0 });
-if (result.ok) {
-  console.log(`Found ${result.value.structure.communities.length} communities`);
-  console.log(`Modularity: ${result.value.structure.totalModularity}`);
+CommunityDetectorのインスタンス生成には3つの依存コンポーネントが必要。
 
-  // 結果を永続化
-  await detector.saveResults(result.value.structure);
-}
-```
+| 引数            | 型                     | 説明                         |
+| --------------- | ---------------------- | ---------------------------- |
+| leidenAlgorithm | ILeidenAlgorithm       | Leidenアルゴリズム実装       |
+| graphStore      | IKnowledgeGraphStore   | グラフデータストア           |
+| communityRepo   | ICommunityRepository   | コミュニティ永続化リポジトリ |
+
+#### 検出実行フロー
+
+1. `detector.detect(options)` を呼び出してコミュニティを検出
+2. Result型の `ok` プロパティで成功判定
+3. 成功時、`result.value.structure.communities` から検出コミュニティを取得
+4. `result.value.structure.totalModularity` でモジュラリティ値を確認
+5. `detector.saveResults(structure)` で結果を永続化
+
+#### detectメソッドのオプション例
+
+| オプション   | 値   | 説明                       |
+| ------------ | ---- | -------------------------- |
+| resolution   | 1.0  | 解像度パラメータ（デフォルト） |
 
 ### エンティティのコミュニティ取得
 
-```typescript
-// エンティティが属するコミュニティを取得（全階層）
-const communities = await detector.getCommunitiesForEntity(entityId);
+エンティティが属するコミュニティを取得する方法は2つある。
 
-// 特定レベルのコミュニティを取得
-const level0Communities = await detector.getCommunitiesByLevel(0);
-```
+| メソッド                              | 引数     | 説明                               |
+| ------------------------------------- | -------- | ---------------------------------- |
+| getCommunitiesForEntity(entityId)     | EntityId | 指定エンティティの全階層コミュニティ取得 |
+| getCommunitiesByLevel(level)          | number   | 特定レベル（例: 0）のコミュニティ取得    |
 
 ---
 
@@ -286,6 +292,7 @@ const level0Communities = await detector.getCommunitiesByLevel(0);
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-26 | 1.3.0      | コードブロックを表形式・文章に変換（spec-guidelines.md準拠） |
 | 2026-01-22 | 1.2.0      | バレルファイルからのインポート例追加（SHARED-TYPE-EXPORT-01完了） |
 | 2026-01-11 | 1.1.0      | コミュニティ要約仕様への参照追加（CONV-08-03完了）     |
 | 2026-01-10 | 1.0.0      | 初版作成（CONV-08-02タスク完了に伴い）                 |

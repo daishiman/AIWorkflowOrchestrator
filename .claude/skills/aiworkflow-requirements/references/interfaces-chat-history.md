@@ -188,26 +188,22 @@ LLMメタデータ型（assistant応答時に保存）。
 
 ### 認可ロジック
 
-```typescript
-// verifySessionOwnership: セッション所有者検証
-private async verifySessionOwnership(
-  sessionId: string,
-  requestUserId: string,
-): Promise<ChatSession> {
-  const session = await this.sessionRepository.findById(sessionId);
+**メソッド名**: `verifySessionOwnership`（セッション所有者検証）
 
-  // セッションが存在しない場合も同じエラーを返す（情報漏洩防止）
-  if (!session || session.userId !== requestUserId) {
-    throw new UnauthorizedError(
-      UNAUTHORIZED_ERROR_MESSAGE,
-      RESOURCE_TYPE.SESSION,
-      sessionId,
-    );
-  }
+| 項目     | 内容                             |
+| -------- | -------------------------------- |
+| 引数1    | sessionId: string（検証対象ID）  |
+| 引数2    | requestUserId: string（要求者ID）|
+| 戻り値   | ChatSession（検証成功時）        |
+| 例外     | UnauthorizedError（検証失敗時）  |
 
-  return session;
-}
-```
+**処理フロー**:
+
+1. sessionRepositoryからセッションIDでセッションを検索
+2. セッションが存在しない場合、または所有者が一致しない場合は`UnauthorizedError`をスロー
+3. 検証成功時はセッションオブジェクトを返却
+
+**セキュリティ考慮**: セッション不存在と認可失敗で同一エラーメッセージを返すことで、セッションIDの存在有無を外部に漏洩させない（情報漏洩防止）。
 
 ### セキュリティ原則
 
@@ -251,51 +247,46 @@ private async verifySessionOwnership(
 
 ### Markdown形式
 
-```markdown
-# {セッションタイトル}
+エクスポートされるMarkdownは以下の構造で出力される。
 
-作成日時: {createdAt}
+| 要素             | 内容                               | 書式                       |
+| ---------------- | ---------------------------------- | -------------------------- |
+| タイトル         | セッションタイトル                 | H1見出し                   |
+| 作成日時         | セッションの作成日時               | 本文テキスト               |
+| 区切り線         | セクション区切り                   | 水平線（---）              |
+| メッセージ見出し | 送信者（User / Assistant）         | H2見出し                   |
+| メッセージ内容   | 各メッセージの本文                 | 本文テキスト               |
 
----
-
-## User
-
-{ユーザーメッセージ内容}
-
-## Assistant
-
-{アシスタントメッセージ内容}
-
----
-```
+**出力順序**: タイトル → 作成日時 → 区切り線 → メッセージ（role見出し + 内容）の繰り返し → 区切り線
 
 ### JSON形式
 
-```json
-{
-  "session": {
-    "id": "uuid",
-    "title": "タイトル",
-    "createdAt": "ISO8601",
-    "updatedAt": "ISO8601"
-  },
-  "messages": [
-    {
-      "role": "user",
-      "content": "内容",
-      "createdAt": "ISO8601"
-    },
-    {
-      "role": "assistant",
-      "content": "内容",
-      "llmModelId": "gpt-4o",
-      "llmProvider": "openai",
-      "createdAt": "ISO8601"
-    }
-  ],
-  "exportedAt": "ISO8601"
-}
-```
+エクスポートされるJSONは以下の3つのトップレベルプロパティで構成される。
+
+**sessionオブジェクト**:
+
+| フィールド | 型     | 説明                |
+| ---------- | ------ | ------------------- |
+| id         | string | セッションID（UUID）|
+| title      | string | セッションタイトル  |
+| createdAt  | string | 作成日時（ISO8601） |
+| updatedAt  | string | 更新日時（ISO8601） |
+
+**messages配列**（各要素の構造）:
+
+| フィールド  | 型     | 必須 | 説明                              |
+| ----------- | ------ | ---- | --------------------------------- |
+| role        | string | ✅   | 'user' または 'assistant'         |
+| content     | string | ✅   | メッセージ内容                    |
+| createdAt   | string | ✅   | 送信日時（ISO8601）               |
+| llmModelId  | string | -    | LLMモデルID（assistant時のみ）    |
+| llmProvider | string | -    | LLMプロバイダー（assistant時のみ）|
+
+**メタデータ**:
+
+| フィールド | 型     | 説明                      |
+| ---------- | ------ | ------------------------- |
+| exportedAt | string | エクスポート日時（ISO8601）|
 
 ---
 
@@ -546,6 +537,7 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 
 | Version   | Date       | Changes                                                                                                                                   |
 | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.2.0** | 2026-01-25 | UI-CONV-HISTORY-001完了: Renderer Process型定義追加、Preload API追加、React Hooks追加、UIコンポーネント構成追加、アクセシビリティ対応追加 |
+| **1.3.0** | 2026-01-26 | spec-guidelines.md準拠: コードブロック（認可ロジック、エクスポート形式）を表形式・文章に変換                                              |
+| 1.2.0     | 2026-01-25 | UI-CONV-HISTORY-001完了: Renderer Process型定義追加、Preload API追加、React Hooks追加、UIコンポーネント構成追加、アクセシビリティ対応追加 |
 | 1.1.0     | 2026-01-24 | UT-LLM-HISTORY-001完了: 認可チェック追加、セキュリティ原則追加                                                                            |
 | 1.0.0     | 2026-01-20 | 初版作成: チャット履歴永続化インターフェース仕様                                                                                          |

@@ -1,7 +1,7 @@
 # 実行ログ
 
 このファイルはスキルの使用記録を蓄積します。
-`scripts/log_usage.mjs` で自動更新されます。
+`scripts/log_usage.js` で自動更新されます。
 
 ---
 
@@ -146,7 +146,7 @@
 
 - **ファイル数**: 82ファイル
 - **キーワード数**: 655キーワード
-- **コマンド**: `node scripts/generate-index.mjs`
+- **コマンド**: `node scripts/generate-index.js`
 
 ---
 
@@ -219,7 +219,7 @@
 
 - **ファイル数**: 83ファイル
 - **キーワード数**: 664キーワード
-- **コマンド**: `node scripts/generate-index.mjs`
+- **コマンド**: `node scripts/generate-index.js`
 
 ---
 
@@ -724,13 +724,13 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ## 2026-01-26: rememberChoice機能永続化（TASK-3-1-E）
 
-| 項目         | 内容                                                                                           |
-| ------------ | ---------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-3-1-E                                                                                     |
-| 操作         | update-spec                                                                                    |
-| 対象ファイル | security-skill-execution.md、ui-ux-settings.md、interfaces-agent-sdk.md、topic-map.md          |
-| 結果         | success                                                                                        |
-| 備考         | Permission Store永続化、PermissionSettings UI、IPC API仕様追加                                 |
+| 項目         | 内容                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------- |
+| タスクID     | TASK-3-1-E                                                                            |
+| 操作         | update-spec                                                                           |
+| 対象ファイル | security-skill-execution.md、ui-ux-settings.md、interfaces-agent-sdk.md、topic-map.md |
+| 結果         | success                                                                               |
+| 備考         | Permission Store永続化、PermissionSettings UI、IPC API仕様追加                        |
 
 ### 更新詳細
 
@@ -761,18 +761,18 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 関連ドキュメント
 
-| ドキュメント   | パス                                                                                    |
-| -------------- | --------------------------------------------------------------------------------------- |
-| 実装ガイド     | `docs/guides/permission-store.md`                                                       |
-| タスク仕様書   | `docs/30-workflows/task-3-1-e-remember-choice-persistence/`                             |
+| ドキュメント | パス                                                        |
+| ------------ | ----------------------------------------------------------- |
+| 実装ガイド   | `docs/guides/permission-store.md`                           |
+| タスク仕様書 | `docs/30-workflows/task-3-1-e-remember-choice-persistence/` |
 
 ### テスト品質
 
-| 項目           | 値     |
-| -------------- | ------ |
-| テスト総数     | 86     |
-| カバレッジ     | 96%+   |
-| 新規テスト     | 86     |
+| 項目       | 値   |
+| ---------- | ---- |
+| テスト総数 | 86   |
+| カバレッジ | 96%+ |
+| 新規テスト | 86   |
 
 ---
 

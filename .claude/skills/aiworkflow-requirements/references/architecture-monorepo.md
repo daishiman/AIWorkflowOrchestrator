@@ -48,9 +48,9 @@
 
 **.npmrc 設定**:
 
-```ini
-node-linker=isolated
-```
+| 設定項目    | 値         | 説明                                             |
+| ----------- | ---------- | ------------------------------------------------ |
+| node-linker | `isolated` | パッケージを分離モードで配置し、幽霊依存を防止する |
 
 **厳格モードの特徴**:
 
@@ -65,28 +65,17 @@ node-linker=isolated
 
 パッケージが外部ライブラリを直接 `import` する場合、そのパッケージ自身の `package.json` に依存を宣言する必要があります。
 
-```
-❌ 間違い（幽霊依存）
-┌───────────────────────────────────────────────────────────────┐
-│ packages/shared/                                               │
-│   ├── package.json（SDK 宣言なし）                             │
-│   └── src/agent/agent-client.ts                               │
-│         └── import SDK from "@anthropic-ai/claude-agent-sdk"  │
-│               ↓                                                │
-│         ERR_MODULE_NOT_FOUND（ランタイムエラー）               │
-└───────────────────────────────────────────────────────────────┘
+**依存宣言パターンの比較**:
 
-✅ 正しい（明示的依存）
-┌───────────────────────────────────────────────────────────────┐
-│ packages/shared/                                               │
-│   ├── package.json                                             │
-│   │     └── dependencies: "@anthropic-ai/claude-agent-sdk"    │
-│   └── src/agent/agent-client.ts                               │
-│         └── import SDK from "@anthropic-ai/claude-agent-sdk"  │
-│               ↓                                                │
-│         正常に解決                                             │
-└───────────────────────────────────────────────────────────────┘
-```
+| パターン | package.json | import文 | 結果 |
+| -------- | ------------ | -------- | ---- |
+| 幽霊依存（NG） | SDK宣言なし | `@anthropic-ai/claude-agent-sdk` を import | ERR_MODULE_NOT_FOUND（ランタイムエラー） |
+| 明示的依存（OK） | `dependencies` に SDK を宣言 | `@anthropic-ai/claude-agent-sdk` を import | 正常に解決 |
+
+**具体例（packages/shared）**:
+
+- 誤った構成: `packages/shared/package.json` に SDK を宣言せず、`src/agent/agent-client.ts` で import するとランタイムエラーが発生する
+- 正しい構成: `packages/shared/package.json` の `dependencies` に `@anthropic-ai/claude-agent-sdk` を追加し、その後で import する
 
 **workspace: プロトコルとの関係**:
 
@@ -134,35 +123,31 @@ node-linker=isolated
 
 ### services/graph エクスポート構造
 
-```typescript
-// packages/shared/src/services/graph/index.ts
+**ファイルパス**: `packages/shared/src/services/graph/index.ts`
 
-/**
- * @module @repo/shared/services/graph
- * @description Knowledge Graphサービスの公開インターフェース
- */
+**モジュール**: `@repo/shared/services/graph` - Knowledge Graphサービスの公開インターフェースを提供する。
 
-// 型のエクスポート（export type）- コンパイル後は消える
-export type { StoredEntity, ExtractedEntity, EntityMention } from "./types";
-export type { StoredRelation, ExtractedRelation, RelationEvidence } from "./types";
-export type { GraphNode, GraphPath, GraphTraversalResult, GraphStats, GraphEdge } from "./types";
-export type {
-  Community,
-  CommunitySummary,
-  CommunityStructure,
-  CommunityDetectionOptions,
-  CommunityDetectionResult,
-  CommunityDetectionStats,
-  CommunitySummarizationOptions,
-  CommunitySummarizationResult,
-} from "./types";
-export type { EntityQuery, TraversalOptions, RelationQueryOptions } from "./types";
+**型エクスポート（export type）**:
 
-// 値のエクスポート（export）- ランタイムに存在
-export { CommunityErrorCode, CommunityDetectionError } from "./types";
-export { CommunitySummarizationErrorCode, CommunitySummarizationError } from "./types";
-export { normalizeEntityName } from "./types";
-```
+コンパイル後は消える型定義。`./types` からre-exportする。
+
+| カテゴリ     | エクスポート型                                                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| Entity関連   | StoredEntity, ExtractedEntity, EntityMention                                                                                      |
+| Relation関連 | StoredRelation, ExtractedRelation, RelationEvidence                                                                               |
+| Graph関連    | GraphNode, GraphPath, GraphTraversalResult, GraphStats, GraphEdge                                                                 |
+| Community関連 | Community, CommunitySummary, CommunityStructure, CommunityDetectionOptions, CommunityDetectionResult, CommunityDetectionStats, CommunitySummarizationOptions, CommunitySummarizationResult |
+| Query関連    | EntityQuery, TraversalOptions, RelationQueryOptions                                                                               |
+
+**値エクスポート（export）**:
+
+ランタイムに存在する値。`./types` からre-exportする。
+
+| カテゴリ       | エクスポート値                                            |
+| -------------- | --------------------------------------------------------- |
+| エラーコード   | CommunityErrorCode, CommunitySummarizationErrorCode       |
+| エラークラス   | CommunityDetectionError, CommunitySummarizationError      |
+| ユーティリティ | normalizeEntityName                                       |
 
 ### エクスポート一覧
 
@@ -175,21 +160,18 @@ export { normalizeEntityName } from "./types";
 
 ### 使用例
 
-```typescript
-// 型のインポート
-import type {
-  Community,
-  CommunitySummary,
-  StoredEntity,
-} from "@repo/shared/services/graph";
+**インポートパターン**:
 
-// 値のインポート
-import {
-  CommunityErrorCode,
-  CommunityDetectionError,
-  normalizeEntityName,
-} from "@repo/shared/services/graph";
-```
+| 用途             | インポート形式   | 対象                                                        | インポート元                        |
+| ---------------- | ---------------- | ----------------------------------------------------------- | ----------------------------------- |
+| 型のインポート   | `import type { }` | Community, CommunitySummary, StoredEntity 等                | `@repo/shared/services/graph`       |
+| 値のインポート   | `import { }`      | CommunityErrorCode, CommunityDetectionError, normalizeEntityName | `@repo/shared/services/graph` |
+
+**使用上の注意**:
+
+- 型（interface, type alias）は `import type` を使用してインポートする（Tree-shaking最適化のため）
+- 値（enum, class, function）は通常の `import` を使用する
+- 両方を混在させる場合は、別々のインポート文に分けることを推奨
 
 ### 下位互換性
 
@@ -200,3 +182,10 @@ import {
 | `from "@repo/shared/services/graph"` (新規) | ✅ 新規追加 |
 
 ---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                                 |
+| ---------- | ---------- | ------------------------------------------------------------------------ |
+| v1.1.0     | 2026-01-26 | spec-guidelines準拠: 全コードブロックを表形式・文章に変換                |
+| v1.0.0     | -          | 初版作成                                                                 |

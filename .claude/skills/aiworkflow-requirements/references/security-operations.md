@@ -5,6 +5,15 @@
 
 ---
 
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
+| v1.0.0     | 2024-01-01 | 初版作成                                               |
+| v1.1.0     | 2025-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換 |
+
+---
+
 ## ログ・監査
 
 ### セキュリティログ
@@ -59,13 +68,24 @@ Electron IPC経由のファイル選択機能におけるセキュリティ対�
 
 ### 送信元検証（SEC-M1）
 
-```typescript
-function validateSender(event: Electron.IpcMainInvokeEvent): boolean {
-  const focusedWindow = BrowserWindow.getFocusedWindow();
-  if (!focusedWindow) return false;
-  return focusedWindow.webContents.id === event.sender.id;
-}
-```
+**検証ロジック概要**
+
+IPCリクエストの送信元が、現在フォーカス中のウィンドウであるかを検証する。フォーカス中のウィンドウが存在しない場合、またはリクエスト送信者のIDとフォーカス中ウィンドウのwebContents IDが一致しない場合は、リクエストを拒否する。
+
+| 検証ステップ | 条件                                     | 結果                 |
+| ------------ | ---------------------------------------- | -------------------- |
+| 1            | フォーカス中ウィンドウが存在しない       | 検証失敗（false）    |
+| 2            | 送信者IDとフォーカスウィンドウIDが不一致 | 検証失敗（false）    |
+| 3            | 送信者IDとフォーカスウィンドウIDが一致   | 検証成功（true）     |
+
+**関数仕様**
+
+| 項目       | 内容                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| 関数名     | validateSender                                                       |
+| 引数       | event（Electron.IpcMainInvokeEvent型）                               |
+| 戻り値     | boolean（検証成功時true、失敗時false）                               |
+| 使用API    | BrowserWindow.getFocusedWindow(), webContents.id                     |
 
 **目的**: 悪意のあるコードが別ウィンドウからIPCリクエストを送信することを防止
 

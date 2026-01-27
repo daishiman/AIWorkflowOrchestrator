@@ -5,6 +5,15 @@
 
 ---
 
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                           |
+| ---------- | ---------- | -------------------------------------------------- |
+| v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.0.0     | -          | 初版作成                                           |
+
+---
+
 ## 概要
 
 ファイル変換処理の共通インターフェース。すべてのコンバーター実装が準拠する。
@@ -40,16 +49,18 @@
 | `convert(input, options?)`      | `Promise<Result<ConverterOutput, RAGError>>` | ファイル変換実行   |
 | `estimateProcessingTime(input)` | `number`                                     | 推定処理時間（ms） |
 
-### 使用例
+### 使用手順
 
-```typescript
-import { globalConverterRegistry } from "@repo/shared/services/conversion";
+IConverterを使用してファイル変換を行う際の基本手順を以下に示す。
 
-const result = globalConverterRegistry.findConverter(input);
-if (result.success) {
-  const converted = await result.data.convert(input);
-}
-```
+| 手順 | 操作                                         | 説明                                               |
+| ---- | -------------------------------------------- | -------------------------------------------------- |
+| 1    | globalConverterRegistryをインポート          | `@repo/shared/services/conversion`から取得         |
+| 2    | findConverter(input)でコンバーター検索       | 入力ファイルに対応するコンバーターを自動選択       |
+| 3    | result.successで検索結果を確認               | 対応コンバーターが見つかった場合trueを返す         |
+| 4    | result.data.convert(input)で変換実行         | 非同期処理でResult型を返す                         |
+
+> **モジュールパス**: `@repo/shared/services/conversion`
 
 ---
 
@@ -93,25 +104,27 @@ if (result.success) {
 | `bufferSize` | `number` | 100 | バッファサイズ（件数） |
 | `flushIntervalMs` | `number` | 5000 | 自動フラッシュ間隔（ミリ秒） |
 
-### 使用例
+### 使用手順
 
-```typescript
-import { ConversionLogger } from "@repo/shared/services/logging";
+ConversionLoggerを使用してログを記録する際の基本手順を以下に示す。
 
-const logger = new ConversionLogger(repository, {
-  bufferSize: 100,
-  flushIntervalMs: 5000,
-});
+| 手順 | 操作                                | 説明                                               |
+| ---- | ----------------------------------- | -------------------------------------------------- |
+| 1    | ConversionLoggerをインポート        | `@repo/shared/services/logging`から取得            |
+| 2    | ConversionLoggerインスタンス生成    | repository と設定オプションを渡してインスタンス化  |
+| 3    | info/warn/errorでログ記録           | fileId, message, metadata を指定してログを記録     |
+| 4    | 終了時にflush()を呼び出し           | バッファに残ったログをDB書き込み（非同期）         |
+| 5    | dispose()でリソース解放             | タイマー停止などのクリーンアップ処理               |
 
-// ログ記録
-logger.info("file-123", "変換開始", { mimeType: "text/markdown" });
-logger.warn("file-123", "処理時間が長い", { elapsed: 5000 });
-logger.error("file-123", "変換失敗", new Error("Parse error"));
+> **モジュールパス**: `@repo/shared/services/logging`
 
-// 終了時
-await logger.flush();
-logger.dispose();
-```
+#### ログ記録メソッドの使用パターン
+
+| メソッド | 用途例                    | 引数パターン                              |
+| -------- | ------------------------- | ----------------------------------------- |
+| info     | 変換開始、完了通知        | (fileId, message, metadata)               |
+| warn     | 処理時間超過、リトライ    | (fileId, message, metadata)               |
+| error    | 変換失敗、例外発生        | (fileId, message, error, metadata)        |
 
 ### ILogRepository インターフェース
 
@@ -143,21 +156,27 @@ logger.dispose();
 | `getLatestVersion(fileId)` | `Promise<Result<VersionHistoryItem | null, Error>>` | 最新バージョン取得 |
 | `getVersionCount(fileId)` | `Promise<Result<number, Error>>` | バージョン数取得 |
 
-### 使用例
+### 使用手順
 
-```typescript
-import { createHistoryService } from "@repo/shared/services/history";
+HistoryServiceを使用して履歴管理を行う際の基本手順を以下に示す。
 
-const historyService = createHistoryService(repository, logger);
+| 手順 | 操作                                | 説明                                               |
+| ---- | ----------------------------------- | -------------------------------------------------- |
+| 1    | createHistoryServiceをインポート    | `@repo/shared/services/history`から取得            |
+| 2    | createHistoryServiceでインスタンス生成 | repository と logger を渡してサービス作成       |
+| 3    | getFileHistory で履歴一覧取得       | paginationオプションでページネーション制御可能     |
+| 4    | restoreToVersion でバージョン復元   | fileId と conversionId を指定して復元実行          |
 
-// 履歴一覧取得
-const result = await historyService.getFileHistory("file-123", {
-  pagination: { limit: 10, offset: 0 }
-});
+> **モジュールパス**: `@repo/shared/services/history`
 
-// バージョン復元
-const restored = await historyService.restoreToVersion("file-123", "conv-456");
-```
+#### 主要操作パターン
+
+| 操作             | メソッド                          | 必須引数                           |
+| ---------------- | --------------------------------- | ---------------------------------- |
+| 履歴一覧取得     | getFileHistory(fileId, options?)  | fileId（paginationはオプション）   |
+| バージョン復元   | restoreToVersion(fileId, convId)  | fileId, conversionId               |
+| 最新バージョン   | getLatestVersion(fileId)          | fileId                             |
+| バージョン差分   | getVersionDiff(idA, idB)          | 比較対象の2つのconversionId        |
 
 ### 関連型定義
 

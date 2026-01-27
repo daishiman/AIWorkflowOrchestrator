@@ -5,6 +5,15 @@
 
 ---
 
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                     |
+| ---------- | ---------- | -------------------------------------------- |
+| v1.0.0     | 2025-01-01 | 初版作成                                     |
+| v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換 |
+
+---
+
 ## 概要
 
 RAGパイプライン実装で使用する共通型定義とインターフェース。
@@ -102,13 +111,24 @@ RAGパイプライン実装で使用する共通型定義とインターフェ�
 
 #### ファクトリ関数
 
-```typescript
-import { createRepositories } from "@repo/shared/db/repositories";
+`createRepositories(db)` を使用してRepository群を一括生成する。
 
-const repos = createRepositories(db);
-const file = await repos.files.findById(fileId);
-const chunks = await repos.chunks.findByFileId(fileId);
-```
+| 操作                     | インポート元                      | 戻り値             |
+| ------------------------ | --------------------------------- | ------------------ |
+| Repository群の一括生成   | @repo/shared/db/repositories      | repos オブジェクト |
+
+**repos オブジェクトのプロパティ**:
+
+| プロパティ    | Repository型      | 用途                           |
+| ------------- | ----------------- | ------------------------------ |
+| repos.files   | FileRepository    | ファイルエンティティ操作       |
+| repos.chunks  | ChunkRepository   | チャンクエンティティ操作       |
+| repos.entities| EntityRepository  | エンティティ（グラフ）操作     |
+
+**使用例（概念）**:
+- `createRepositories(db)` でDBインスタンスからRepository群を生成
+- `repos.files.findById(fileId)` でファイルをID検索
+- `repos.chunks.findByFileId(fileId)` で特定ファイルのチャンク一覧取得
 
 **Strategy パターン**:
 
@@ -183,21 +203,20 @@ const chunks = await repos.chunks.findByFileId(fileId);
 
 #### アーキテクチャ
 
-```
-Chunk (テキスト断片)
-    │
-    ↓
-┌─────────────────────────────────────────────────┐
-│         IEntityExtractor                         │
-│  ┌─────────────────┐   ┌─────────────────┐      │
-│  │ LLMEntityExtractor│   │RuleBasedExtractor│    │
-│  │  (AIで抽出)     │   │ (パターンマッチ)│     │
-│  └─────────────────┘   └─────────────────┘      │
-└─────────────────────────────────────────────────┘
-    │
-    ↓
-ExtractedEntity[] → (後続処理で) → EntityEntity (Knowledge Graph)
-```
+**処理フロー**:
+
+| ステップ | 入力                | 処理                     | 出力                |
+| -------- | ------------------- | ------------------------ | ------------------- |
+| 1        | Chunk（テキスト断片）| IEntityExtractorへ渡す   | -                   |
+| 2        | Chunk              | 抽出器で処理             | ExtractedEntity[]   |
+| 3        | ExtractedEntity[]  | 後続処理でグラフ化       | EntityEntity        |
+
+**IEntityExtractor 実装クラス**:
+
+| 実装クラス              | 方式               | 特徴                           |
+| ----------------------- | ------------------ | ------------------------------ |
+| LLMEntityExtractor      | AIベース抽出       | 高精度、未知エンティティ検出可能 |
+| RuleBasedEntityExtractor| パターンマッチング | 高速（ミリ秒単位）、LLMフォールバック用 |
 
 #### インターフェース
 
@@ -300,21 +319,19 @@ ExtractedEntity[] → (後続処理で) → EntityEntity (Knowledge Graph)
 
 #### アーキテクチャ
 
-```
-ExtractedEntity[] (エンティティ抽出結果)
-    │
-    ↓
-┌─────────────────────────────────────────────────┐
-│         IRelationExtractor                       │
-│  ┌─────────────────────────────────────────┐    │
-│  │ LLMRelationExtractor                     │    │
-│  │  (AIで関係抽出 - 15種類の関係タイプ対応)│    │
-│  └─────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────┘
-    │
-    ↓
-ExtractedRelation[] → (後続処理で) → RelationEntity (Knowledge Graph Edge)
-```
+**処理フロー**:
+
+| ステップ | 入力                           | 処理                       | 出力                 |
+| -------- | ------------------------------ | -------------------------- | -------------------- |
+| 1        | ExtractedEntity[]（抽出結果）  | IRelationExtractorへ渡す   | -                    |
+| 2        | ExtractedEntity[]              | LLM関係抽出器で処理        | ExtractedRelation[]  |
+| 3        | ExtractedRelation[]            | 後続処理でエッジ化         | RelationEntity       |
+
+**IRelationExtractor 実装クラス**:
+
+| 実装クラス             | 方式         | 特徴                               |
+| ---------------------- | ------------ | ---------------------------------- |
+| LLMRelationExtractor   | AIベース抽出 | 15種類の関係タイプを高精度で検出   |
 
 #### インターフェース
 

@@ -52,37 +52,37 @@ Knowledge Graph StoreはRAGパイプラインにおけるナレッジグラフ�
 
 **実装場所**: `packages/shared/src/services/graph/knowledge-graph-store.ts`
 
-```
-┌────────────────────────────────────────────────────────┐
-│                   Application Layer                     │
-│  (エンティティ抽出、関係抽出、RAGパイプライン)          │
-└────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│              IKnowledgeGraphStore (Interface)           │
-│  - addEntity / getEntity / updateEntity / deleteEntity  │
-│  - addRelation / getRelation / deleteRelation           │
-│  - traverse / findShortestPath / getNeighbors           │
-│  - bulkUpsertEntities / bulkAddRelations                │
-└────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│           SQLiteKnowledgeGraphStore (実装)              │
-│  - Drizzle ORM によるデータベース操作                   │
-│  - Result<T, Error> パターンによるエラー処理            │
-└────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│                    SQLite Database                      │
-│  - entities テーブル                                    │
-│  - relations テーブル                                   │
-│  - relation_evidence テーブル                           │
-│  - chunk_entity_relations テーブル                      │
-└────────────────────────────────────────────────────────┘
-```
+#### レイヤー構成
+
+| レイヤー | 役割 | 主要コンポーネント |
+|---------|------|-------------------|
+| Application Layer | 上位アプリケーション | エンティティ抽出、関係抽出、RAGパイプライン |
+| Interface Layer | 抽象化インターフェース | IKnowledgeGraphStore |
+| Implementation Layer | 具象実装 | SQLiteKnowledgeGraphStore |
+| Persistence Layer | データ永続化 | SQLite Database |
+
+#### IKnowledgeGraphStore インターフェースメソッド群
+
+| カテゴリ | メソッド |
+|---------|---------|
+| Entity操作 | addEntity, getEntity, updateEntity, deleteEntity |
+| Relation操作 | addRelation, getRelation, deleteRelation |
+| グラフ探索 | traverse, findShortestPath, getNeighbors |
+| バッチ操作 | bulkUpsertEntities, bulkAddRelations |
+
+#### SQLiteKnowledgeGraphStore 実装詳細
+
+- Drizzle ORMによるデータベース操作
+- Result<T, Error>パターンによる明示的エラー処理
+
+#### データベーステーブル構成
+
+| テーブル名 | 用途 |
+|-----------|------|
+| entities | エンティティ（ノード）の永続化 |
+| relations | 関係（エッジ）の永続化 |
+| relation_evidence | 関係の根拠情報 |
+| chunk_entity_relations | チャンクとエンティティ・関係のマッピング |
 
 ### データ構造
 
@@ -161,15 +161,20 @@ Knowledge Graph StoreはRAGパイプラインにおけるナレッジグラフ�
 
 ### ファクトリ関数
 
-```typescript
-import { createKnowledgeGraphStore } from "@repo/shared/services/graph";
+ストアインスタンスの生成には `createKnowledgeGraphStore` ファクトリ関数を使用する。
 
-const store = createKnowledgeGraphStore(db);
-const result = await store.addEntity({ name: "TypeScript", type: "technology" });
-if (result.isOk()) {
-  console.log(result.value);
-}
-```
+| 項目 | 値 |
+|------|-----|
+| インポート元 | @repo/shared/services/graph |
+| 関数名 | createKnowledgeGraphStore |
+| 引数 | db（Drizzle ORMデータベースインスタンス） |
+| 戻り値 | IKnowledgeGraphStore実装インスタンス |
+
+**基本的な使用手順**:
+
+1. createKnowledgeGraphStoreにデータベースインスタンスを渡してストアを生成
+2. ストアのメソッド（例: addEntity）を呼び出し
+3. 戻り値のResult型をisOk()でチェックし、成功時はvalueプロパティで結果を取得
 
 ---
 
@@ -232,52 +237,56 @@ if (result.isOk()) {
 
 ### 使用例
 
-```typescript
-import { createKnowledgeGraphStore } from "@repo/shared/services/graph";
-import { db } from "@repo/shared/db";
+#### ストア初期化
 
-// ストア作成
-const store = createKnowledgeGraphStore(db);
+@repo/shared/services/graphからcreateKnowledgeGraphStoreを、@repo/shared/dbからデータベースインスタンスをインポートし、ストアを生成する。
 
-// Entity追加（upsert）
-const entityResult = await store.upsertEntity({
-  name: "TypeScript",
-  type: "programming_language",
-  description: "JavaScript with types",
-  confidence: 0.95,
-});
+#### Entity追加（upsert操作）
 
-if (entityResult.isOk()) {
-  const entity = entityResult.value;
-  console.log(`Created: ${entity.id}`);
-}
+upsertEntityメソッドにエンティティ情報を渡してエンティティを追加する。
 
-// Relation追加（証拠必須）
-const relationResult = await store.addRelation({
-  sourceEntityId: entity1.id,
-  targetEntityId: entity2.id,
-  relationType: "uses",
-  confidence: 0.9,
-  evidence: [{
-    chunkId: "chunk-123" as ChunkId,
-    text: "TypeScript uses JavaScript runtime",
-    confidence: 0.9,
-  }],
-});
+| パラメータ | 値の例 | 説明 |
+|-----------|--------|------|
+| name | "TypeScript" | エンティティ名 |
+| type | "programming_language" | エンティティタイプ（52種類から選択） |
+| description | "JavaScript with types" | 説明文（省略可） |
+| confidence | 0.95 | 信頼度スコア（0.0〜1.0） |
 
-// グラフ探索（BFS）
-const traverseResult = await store.traverse(startEntityId, {
-  maxDepth: 3,
-  direction: "outgoing",
-  relationTypes: ["uses", "depends_on"],
-});
+戻り値はResult型。isOk()がtrueの場合、value.idで作成されたエンティティIDを取得可能。
 
-// 最短経路探索
-const pathResult = await store.findShortestPath(entityA.id, entityB.id);
-if (pathResult.isOk() && pathResult.value) {
-  console.log(`Path: ${pathResult.value.join(" -> ")}`);
-}
-```
+#### Relation追加（証拠必須）
+
+addRelationメソッドで関係を追加する。evidence配列は必須（1件以上）。
+
+| パラメータ | 値の例 | 説明 |
+|-----------|--------|------|
+| sourceEntityId | entity1.id | 起点エンティティID |
+| targetEntityId | entity2.id | 終点エンティティID |
+| relationType | "uses" | 関係タイプ（15種類から選択） |
+| confidence | 0.9 | 信頼度スコア |
+| evidence | 配列（下記参照） | 根拠情報（1件以上必須） |
+
+**evidence配列の各要素**:
+
+| フィールド | 値の例 | 説明 |
+|-----------|--------|------|
+| chunkId | "chunk-123" (ChunkId型) | 根拠となるチャンクID |
+| text | "TypeScript uses JavaScript runtime" | 根拠テキスト |
+| confidence | 0.9 | この根拠の信頼度 |
+
+#### グラフ探索（BFSトラバーサル）
+
+traverseメソッドで幅優先探索を実行する。
+
+| オプション | 値の例 | 説明 |
+|-----------|--------|------|
+| maxDepth | 3 | 最大探索深度 |
+| direction | "outgoing" | 探索方向（outgoing/incoming/both） |
+| relationTypes | ["uses", "depends_on"] | フィルタする関係タイプ（省略時は全タイプ） |
+
+#### 最短経路探索
+
+findShortestPathメソッドで2つのエンティティ間の最短経路を探索する。引数は起点エンティティIDと終点エンティティID。戻り値のResult型がisOk()かつvalueがnullでない場合、EntityId配列として経路が取得可能（例: entityA → entityB → entityC の順序で格納）。
 
 ---
 
@@ -297,3 +306,4 @@ if (pathResult.isOk() && pathResult.value) {
 | ---------- | ---------- | ---------------------------------------------- |
 | 2026-01-09 | 1.0.0      | 初版作成（CONV-08-01タスク完了に伴い）         |
 | 2026-01-13 | 1.1.0      | 実装ステータス・使用例セクション追加、カバレッジ86.98%達成 |
+| 2026-01-26 | 1.2.0      | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |

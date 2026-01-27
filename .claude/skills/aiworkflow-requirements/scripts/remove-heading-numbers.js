@@ -3,7 +3,7 @@
  * 見出し番号削除スクリプト
  *
  * 用途: references/配下のMarkdownファイルから番号付き見出しを削除
- * 実行: node scripts/remove-heading-numbers.mjs [--dry-run]
+ * 実行: node scripts/remove-heading-numbers.js [--dry-run]
  *
  * 変換例:
  *   ## 1. 概要 → ## 概要

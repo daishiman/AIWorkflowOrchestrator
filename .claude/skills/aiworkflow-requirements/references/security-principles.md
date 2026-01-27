@@ -274,22 +274,23 @@ macOSのLaunchServicesキャッシュにより、削除されたworktreeのパ�
 - **Access Token**: メモリ上のみ保持（Zustand store）
 - **保存場所**: `apps/desktop/src/main/infrastructure/secureStorage.ts`
 
-**実装例**:
+**処理フロー**:
 
-```typescript
-// Refresh Tokenの暗号化保存
-if (safeStorage.isEncryptionAvailable()) {
-  const encrypted = safeStorage.encryptString(token);
-  getStore().set(REFRESH_TOKEN_KEY, encrypted.toString("base64"));
-}
+暗号化保存処理:
 
-// Refresh Tokenの復号化取得
-const encryptedBase64 = getStore().get(REFRESH_TOKEN_KEY) as string | undefined;
-if (encryptedBase64) {
-  const encrypted = Buffer.from(encryptedBase64, "base64");
-  return safeStorage.decryptString(encrypted);
-}
-```
+| ステップ | 処理内容                     | API/メソッド                                                         |
+| -------- | ---------------------------- | -------------------------------------------------------------------- |
+| 1        | 暗号化可能か確認             | `safeStorage.isEncryptionAvailable()`                                |
+| 2        | トークンを暗号化             | `safeStorage.encryptString(token)`                                   |
+| 3        | Base64エンコードして保存     | `getStore().set(REFRESH_TOKEN_KEY, encrypted.toString("base64"))`    |
+
+復号化取得処理:
+
+| ステップ | 処理内容                     | API/メソッド                                                         |
+| -------- | ---------------------------- | -------------------------------------------------------------------- |
+| 1        | Base64文字列を取得           | `getStore().get(REFRESH_TOKEN_KEY)`                                  |
+| 2        | バッファに変換               | `Buffer.from(encryptedBase64, "base64")`                             |
+| 3        | 復号化して返却               | `safeStorage.decryptString(encrypted)`                               |
 
 **暗号化利用不可時の動作**:
 
@@ -345,3 +346,10 @@ if (encryptedBase64) {
 - `apps/desktop/src/renderer/components/organisms/ApiKeysSection/` - UI
 
 ---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                       |
+| ---------- | ---------- | -------------------------------------------------------------- |
+| v1.0.0     | -          | 初版作成                                                       |
+| v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換           |

@@ -1,0 +1,229 @@
+# Agent Dashboard・Workspace Chat Edit IPC
+
+> 本ドキュメントは統合システム設計仕様書の一部です。
+> 管理: .claude/skills/aiworkflow-requirements/
+>
+> **親ドキュメント**: [api-endpoints.md](./api-endpoints.md)
+
+---
+
+## Agent Dashboard IPC チャネル
+
+Electronデスクトップアプリでは、IPC通信でスキル管理・エージェント実行機能を提供する。
+
+**実装ファイル**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- 型定義: `apps/desktop/src/renderer/store/slices/agentSlice.ts`
+- 設計書: `docs/30-workflows/agent-dashboard-foundation/outputs/phase-2/ipc-channel-design.md`
+
+### チャンネル一覧
+
+| チャネル               | 方向            | 用途               | Request                     | Response                |
+| ---------------------- | --------------- | ------------------ | --------------------------- | ----------------------- |
+| `agent:get-skills`     | Renderer → Main | スキル一覧取得     | なし                        | `{ skills: Skill[] }`   |
+| `agent:get-skill-detail` | Renderer → Main | スキル詳細取得   | `{ skillId: string }`       | `{ skill: SkillDetail }`|
+| `agent:execute`        | Renderer → Main | エージェント実行   | `ExecuteRequest`            | `{ executionId: string }` |
+| `agent:abort`          | Renderer → Main | 実行中断           | `{ executionId: string }`   | `{ success: boolean }`  |
+| `agent:get-status`     | Renderer → Main | ステータス取得     | なし                        | `GetStatusResponse`     |
+| `agent:status-changed` | Main → Renderer | ステータス変更通知 | -                           | `StatusChangedEvent`    |
+| `agent:stream-chunk`   | Main → Renderer | 出力ストリーム     | -                           | `StreamChunkEvent`      |
+| `agent:stream-end`     | Main → Renderer | ストリーム終了     | -                           | `StreamEndEvent`        |
+| `agent:stream-error`   | Main → Renderer | エラー通知         | -                           | `StreamErrorEvent`      |
+
+### 型定義
+
+| 型名           | 説明                     |
+| -------------- | ------------------------ |
+| `Skill`        | スキル基本情報           |
+| `SkillDetail`  | スキル詳細（Anchor含む） |
+| `Anchor`       | 参照文献・適用方法       |
+| `AgentState`   | Zustand状態              |
+| `AgentActions` | Zustandアクション        |
+
+### Skill型
+
+| プロパティ    | 型         | 説明                   |
+| ------------- | ---------- | ---------------------- |
+| `id`          | `string`   | 一意識別子             |
+| `name`        | `string`   | スキル名               |
+| `description` | `string`   | 説明文                 |
+| `path`        | `string`   | スキルファイルパス     |
+| `triggers`    | `string[]` | トリガーキーワード     |
+| `category`    | `string?`  | カテゴリ（任意）       |
+
+### Anchor型
+
+| プロパティ    | 型       | 説明               |
+| ------------- | -------- | ------------------ |
+| `source`      | `string` | 参照元（書籍等）   |
+| `application` | `string` | 適用方法           |
+| `purpose`     | `string` | 目的               |
+
+### 実装状況
+
+| 項目                 | 状態   | タスク    |
+| -------------------- | ------ | --------- |
+| チャネル定数定義     | 完了   | AGENT-001 |
+| ホワイトリスト追加   | 完了   | AGENT-001 |
+| Zustand agentSlice   | 完了   | AGENT-001 |
+| AgentView UI         | 完了   | AGENT-001 |
+| IPCハンドラー実装    | 未実装 | AGENT-005 |
+| Preload API実装      | 未実装 | AGENT-002 |
+
+---
+
+## Workspace Chat Edit IPC チャネル
+
+Electronデスクトップアプリでは、IPC通信でワークスペースチャット編集機能を提供する。
+AIによるコード編集支援（ファイルコンテキスト付きチャット、差分生成・適用）を実現する。
+
+**実装ファイル**:
+
+- 型定義: `apps/desktop/src/renderer/features/workspace-chat-edit/types/index.ts`
+- Slice: `apps/desktop/src/renderer/features/workspace-chat-edit/store/chatEditSlice.ts`
+- Hooks: `apps/desktop/src/renderer/features/workspace-chat-edit/hooks/`
+- テスト: `apps/desktop/src/renderer/features/workspace-chat-edit/__tests__/`
+
+### チャンネル一覧
+
+| チャネル                   | 方向            | 用途                     | Request                                           | Response                         |
+| -------------------------- | --------------- | ------------------------ | ------------------------------------------------- | -------------------------------- |
+| `chat-edit:read-file`      | Renderer → Main | ファイル内容読み込み     | `{ filePath: string }`                            | `IPCResponse<FileContext>`       |
+| `chat-edit:write-file`     | Renderer → Main | ファイル書き込み         | `{ filePath: string, content: string }`           | `IPCResponse<void>`              |
+| `chat-edit:get-selection`  | Renderer → Main | エディタ選択範囲取得     | なし                                              | `IPCResponse<TextSelection>`     |
+| `chat-edit:send-with-context` | Renderer → Main | コンテキスト付きチャット | `{ contexts: FileContext[], command: EditCommand }` | `IPCResponse<GeneratedResult>` |
+
+### 型定義
+
+#### FileContext（ファイルコンテキスト）
+
+チャット編集で参照するファイル情報を保持する。最大10件まで添付可能。
+
+| プロパティ  | 型              | 必須 | 説明                           |
+| ----------- | --------------- | ---- | ------------------------------ |
+| id          | string          | ○    | 一意識別子                     |
+| filePath    | string          | ○    | ファイルの絶対パス             |
+| fileName    | string          | ○    | ファイル名                     |
+| content     | string          | ○    | ファイル内容                   |
+| language    | string          | ○    | プログラミング言語（例: typescript） |
+| selection   | TextSelection   | -    | 選択範囲（任意）               |
+| addedAt     | number          | ○    | 追加日時（UNIXタイムスタンプ） |
+
+#### TextSelection（テキスト選択範囲）
+
+エディタ上で選択されたテキスト範囲を表現する。
+
+| プロパティ    | 型     | 必須 | 説明                 |
+| ------------- | ------ | ---- | -------------------- |
+| startLine     | number | ○    | 開始行番号           |
+| endLine       | number | ○    | 終了行番号           |
+| startColumn   | number | ○    | 開始列番号           |
+| endColumn     | number | ○    | 終了列番号           |
+| selectedText  | string | ○    | 選択されたテキスト   |
+
+#### EditCommand（編集コマンド）
+
+AIに送信する編集指示を定義する。
+
+| プロパティ   | 型       | 必須 | 説明                                     |
+| ------------ | -------- | ---- | ---------------------------------------- |
+| instruction  | string   | ○    | 編集指示テキスト                         |
+| targetFiles  | string[] | ○    | 対象ファイルパスの配列                   |
+| mode         | string   | ○    | 編集モード（generate / edit / refactor） |
+
+**mode値の説明**:
+- **generate**: 新規コード生成
+- **edit**: 既存コードの修正
+- **refactor**: リファクタリング
+
+#### GeneratedResult（生成結果）
+
+AIによるコード生成・編集の結果を保持する。
+
+| プロパティ        | 型         | 必須 | 説明                                       |
+| ----------------- | ---------- | ---- | ------------------------------------------ |
+| id                | string     | ○    | 結果の一意識別子                           |
+| originalContent   | string     | ○    | 編集前の元コンテンツ                       |
+| generatedContent  | string     | ○    | 生成されたコンテンツ                       |
+| diff              | DiffHunk[] | ○    | 差分ハンクの配列                           |
+| status            | string     | ○    | 状態（pending / applied / rejected）       |
+| createdAt         | number     | ○    | 作成日時（UNIXタイムスタンプ）             |
+
+**status値の説明**:
+- **pending**: 適用待ち
+- **applied**: 適用済み
+- **rejected**: 却下済み
+
+#### DiffHunk（差分ハンク）
+
+統一差分形式の1ブロックを表現する。
+
+| プロパティ | 型       | 必須 | 説明                       |
+| ---------- | -------- | ---- | -------------------------- |
+| oldStart   | number   | ○    | 変更前の開始行番号         |
+| oldLines   | number   | ○    | 変更前の行数               |
+| newStart   | number   | ○    | 変更後の開始行番号         |
+| newLines   | number   | ○    | 変更後の行数               |
+| lines      | string[] | ○    | 差分行の配列（+/-/空白付き）|
+
+### 定数
+
+| 定数名            | 値      | 説明                       |
+| ----------------- | ------- | -------------------------- |
+| MAX_FILE_CONTEXTS | 10      | 最大添付ファイル数         |
+| MAX_FILE_SIZE     | 10MB    | ファイルサイズ上限         |
+| MAX_CONTEXT_SIZE  | 100KB   | コンテキストサイズ上限     |
+
+### 関連Hooks
+
+| Hook名           | 責務                               |
+| ---------------- | ---------------------------------- |
+| useFileContext   | ファイルコンテキスト管理（追加/削除/バリデーション） |
+| useDiffApply     | 差分適用ロジック（LCS、適用/却下/Undo）            |
+
+### 実装状況
+
+| 項目               | 状態     | 備考                              |
+| ------------------ | -------- | --------------------------------- |
+| 型定義             | 完了     | types/index.ts                    |
+| chatEditSlice      | 完了     | Zustand状態管理                   |
+| useFileContext     | 完了     | ファイルコンテキストHook          |
+| useDiffApply       | 完了     | 差分適用Hook                      |
+| UIコンポーネント   | 未実装   | 別タスク（task-workspace-chat-edit-ui-components） |
+| Main Processサービス | **完了** | FileService, ContextBuilder, ChatEditService |
+| IPCハンドラー      | **完了** | chatEditHandlers.ts               |
+
+---
+
+## 完了タスク
+
+### Workspace Chat Edit Main Process（2026-01-25完了）
+
+| 項目         | 内容                                                           |
+| ------------ | -------------------------------------------------------------- |
+| タスクID     | TASK-WCE-MAIN-001                                              |
+| Issue        | #469                                                           |
+| ステータス   | **完了**                                                       |
+| 実装内容     | FileService, ContextBuilder, ChatEditService, chatEditHandlers |
+| テスト数     | 164（自動）+ 23（手動検証項目）                                |
+| カバレッジ   | Line 92.55%, Branch 92.85%                                     |
+| ドキュメント | `docs/30-workflows/workspace-chat-edit-main-process/`          |
+
+---
+
+## 関連ドキュメント
+
+- [APIエンドポイント概要](./api-endpoints.md)
+- [認証・プロフィールIPC](./api-ipc-auth.md)
+- [システムIPC・プロバイダーAPI](./api-ipc-system.md)
+- [LLM Workspace Chat Edit](./llm-workspace-chat-edit.md)
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                           |
+| ---------- | ---------- | -------------------------------------------------- |
+| v1.0.0     | 2026-01-25 | 初版作成                                           |
+| v1.1.0     | 2026-01-26 | TypeScriptコードブロックを表形式に変換（spec-guidelines.md準拠） |

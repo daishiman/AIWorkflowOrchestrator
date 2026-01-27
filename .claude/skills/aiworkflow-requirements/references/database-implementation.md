@@ -415,13 +415,12 @@ Leiden Algorithmによるコミュニティクラスターを格納するテー�
 | positions     | TEXT    | NOT NULL DEFAULT '[]'   | 出現位置（JSON配列）         |
 
 **positions JSON形式**:
-```typescript
-interface EntityPosition {
-  startChar: number;    // 開始文字位置
-  endChar: number;      // 終了文字位置
-  surfaceForm: string;  // 表層形（実際のテキスト表記）
-}
-```
+
+| フィールド  | 型     | 説明                             |
+| ----------- | ------ | -------------------------------- |
+| startChar   | number | 開始文字位置                     |
+| endChar     | number | 終了文字位置                     |
+| surfaceForm | string | 表層形（実際のテキスト表記）     |
 
 **インデックス**:
 - `chunk_entities_chunk_id_idx`: チャンク別検索用
@@ -497,3 +496,10 @@ interface EntityPosition {
 - 長時間のアイドル接続は定期的にリフレッシュ
 
 ---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                   |
+| ---------- | ---------- | ---------------------------------------------------------- |
+| v1.0.0     | -          | 初版作成                                                   |
+| v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換       |

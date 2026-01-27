@@ -59,7 +59,7 @@ allowed-tools:
 ```
 Phase 0-1〜0-8: インタビュー → interview-result.json
       ↓
-リソース選択: select-resources.md → resource-selection.json（165リソースから最適選定）
+リソース選択: select-resources.md → resource-selection.json（最適リソース選定）
       ↓
 Phase 1〜6: 分析 → 設計 → 構造計画 → 生成 → 検証
 ```
@@ -75,15 +75,15 @@ Phase 1〜6: 分析 → 設計 → 構造計画 → 生成 → 検証
 
 ---
 
-## リソース一覧（166）
+## リソース一覧
 
-| カテゴリ    | 数  | 詳細参照                     |
-| ----------- | --- | ---------------------------- |
-| agents/     | 31  | [resource-map.md#agents]     |
-| references/ | 31  | [resource-map.md#references] |
-| scripts/    | 28  | [resource-map.md#scripts]    |
-| assets/     | 43  | [resource-map.md#assets]     |
-| schemas/    | 33  | [resource-map.md#schemas]    |
+| カテゴリ    | 詳細参照                     |
+| ----------- | ---------------------------- |
+| agents/     | [resource-map.md#agents]     |
+| references/ | [resource-map.md#references] |
+| scripts/    | [resource-map.md#scripts]    |
+| assets/     | [resource-map.md#assets]     |
+| schemas/    | [resource-map.md#schemas]    |
 
 📖 [references/resource-map.md](.claude/skills/skill-creator/references/resource-map.md)
 

@@ -24,8 +24,31 @@ allowed-tools:
 
 ## 概要
 
-AIWorkflowOrchestratorプロジェクトの全仕様（88ファイル・約22,000行）を管理するスキル。
+AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
+
+## クイックスタート
+
+### 仕様を探す
+
+```bash
+# キーワード検索（推奨）
+node scripts/search-spec.js "認証" -C 5
+
+# または resource-map.md でタスク種別から逆引き
+```
+
+### 仕様を読む
+
+1. **まず [resource-map.md](indexes/resource-map.md) を確認** - タスク種別に応じた読み込みファイルを特定
+2. 該当ファイルを `Read` ツールで参照
+3. 詳細行番号が必要な場合は [topic-map.md](indexes/topic-map.md) を参照
+
+### 仕様を作成・更新
+
+1. `assets/` 配下の該当テンプレートを使用
+2. `references/spec-guidelines.md` の命名規則に従う
+3. 編集後は `node scripts/generate-index.js` を実行
 
 ## ワークフロー
 
@@ -57,59 +80,84 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 ### 仕様ファイル一覧
 
-**88ファイル・10トピック**: See [indexes/topic-map.md](indexes/topic-map.md)
+See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付き）
 
-| トピック         | ファイル数 |
-| ---------------- | ---------- |
-| 概要・品質       | 4          |
-| アーキテクチャ   | 8          |
-| インターフェース | 19         |
-| API設計          | 8          |
-| データベース     | 4          |
-| UI/UX            | 13         |
-| セキュリティ     | 5          |
-| 技術スタック     | 3          |
-| Claude Code      | 10         |
-| その他           | 14         |
+詳細セクション・行番号: [indexes/topic-map.md](indexes/topic-map.md)
+
+| カテゴリ         | 主要ファイル                                                         |
+| ---------------- | -------------------------------------------------------------------- |
+| 概要・品質       | overview.md, quality-requirements.md                                 |
+| アーキテクチャ   | **architecture-overview.md**, architecture-patterns.md, arch-\*.md   |
+| インターフェース | interfaces-agent-sdk.md, llm-\*.md, rag-search-\*.md                 |
+| API設計          | api-endpoints.md, api-ipc-\*.md                                      |
+| データベース     | database-schema.md, database-implementation.md                       |
+| UI/UX            | ui-ux-components.md, ui-ux-design-principles.md, ui-history-\*.md    |
+| セキュリティ     | security-principles.md, security-electron-ipc.md, security-\*.md     |
+| 技術スタック     | technology-core.md, technology-frontend.md, technology-desktop.md    |
+| Claude Code      | claude-code-overview.md, claude-code-skills-\*.md                    |
+| デプロイ・運用   | deployment.md, deployment-electron.md, environment-variables.md      |
+| ガイドライン     | spec-guidelines.md, development-guidelines.md, architecture-implementation-patterns.md, rag-\*.md |
 
 **注記**: 18-skills.md（Skill層仕様書）は `skill-creator` スキルで管理。
 
 ### scripts/
 
-| スクリプト               | 用途               | 使用例                                        |
-| ------------------------ | ------------------ | --------------------------------------------- |
-| `search-spec.mjs`        | キーワード検索     | `node scripts/search-spec.mjs "認証" -C 5`    |
-| `list-specs.mjs`         | ファイル一覧       | `node scripts/list-specs.mjs --topics`        |
-| `generate-index.mjs`     | インデックス再生成 | `node scripts/generate-index.mjs`             |
-| `validate-structure.mjs` | 構造検証           | `node scripts/validate-structure.mjs`         |
-| `log_usage.mjs`          | 使用状況記録       | `node scripts/log_usage.mjs --result success` |
+| スクリプト              | 用途                | 使用例                                        |
+| ----------------------- | ------------------- | --------------------------------------------- |
+| `search-spec.js`        | キーワード検索      | `node scripts/search-spec.js "認証" -C 5`     |
+| `list-specs.js`         | ファイル一覧        | `node scripts/list-specs.js --topics`         |
+| `generate-index.js`     | インデックス再生成  | `node scripts/generate-index.js`              |
+| `validate-structure.js` | 構造検証            | `node scripts/validate-structure.js`          |
+| `select-template.js`    | テンプレート選定    | `node scripts/select-template.js "IPC仕様"`   |
+| `split-reference.js`    | 大規模ファイル分割  | `node scripts/split-reference.js <file>`      |
+| `remove-heading-numbers.js` | 見出し番号削除  | `node scripts/remove-heading-numbers.js`      |
+| `log_usage.js`          | 使用状況記録        | `node scripts/log_usage.js --result success`  |
 
 ### agents/
 
-| エージェント       | 用途         | 対応Task           |
-| ------------------ | ------------ | ------------------ |
-| `create-spec.md`   | 新規仕様作成 | create-spec        |
-| `update-spec.md`   | 既存仕様更新 | update-spec        |
-| `validate-spec.md` | 仕様検証     | validate-structure |
+| エージェント       | 用途         | 対応Task           | 主な機能                        |
+| ------------------ | ------------ | ------------------ | ------------------------------- |
+| `create-spec.md`   | 新規仕様作成 | create-spec        | テンプレート対応、重複チェック   |
+| `update-spec.md`   | 既存仕様更新 | update-spec        | テンプレート準拠、分割ガイド    |
+| `validate-spec.md` | 仕様検証     | validate-structure | resource-map登録確認、サイズ検証 |
 
 ### indexes/
 
-| ファイル        | 内容                       |
-| --------------- | -------------------------- |
-| `topic-map.md`  | トピック別マップ（詳細）   |
-| `keywords.json` | キーワード索引（自動生成） |
+| ファイル             | 内容                                       | 用途                  |
+| -------------------- | ------------------------------------------ | --------------------- |
+| `quick-reference.md` | キー情報の即時アクセス（推奨・最初に読む） | パターン/型/IPC早見表 |
+| `resource-map.md`    | リソースマップ（読み込み条件付き）         | タスク種別→ファイル   |
+| `topic-map.md`       | トピック別マップ（セクション・行番号詳細） | セクション直接参照    |
+| `keywords.json`      | キーワード索引（自動生成）                 | スクリプト検索用      |
 
-### assets/
+> **Progressive Disclosure**: まずresource-map.mdでタスクに必要なファイルを特定し、必要なファイルのみを読み込む。
 
-| ファイル           | 用途                   |
-| ------------------ | ---------------------- |
-| `spec-template.md` | 新規仕様のテンプレート |
+### templates/
+
+新規仕様書作成時のテンプレート。`node scripts/select-template.js` で自動選定可能。
+
+| ファイル                   | 用途                           | 対象カテゴリ     |
+| -------------------------- | ------------------------------ | ---------------- |
+| `spec-template.md`         | 汎用仕様テンプレート           | 概要・品質       |
+| `interfaces-template.md`   | インターフェース仕様           | インターフェース |
+| `architecture-template.md` | アーキテクチャ仕様             | アーキテクチャ   |
+| `api-template.md`          | API設計                        | API設計          |
+| `ipc-channel-template.md`  | Electron IPC                   | IPC通信          |
+| `react-hook-template.md`   | React Hook                     | カスタムフック   |
+| `service-template.md`      | サービス層                     | ビジネスロジック |
+| `database-template.md`     | データベース仕様               | データベース     |
+| `ui-ux-template.md`        | UI/UX仕様                      | UI/UX            |
+| `security-template.md`     | セキュリティ仕様               | セキュリティ     |
+| `testing-template.md`      | テスト仕様                     | テスト戦略       |
+
+> **注記**: 詳細はtemplates/配下を直接参照。追加テンプレートが必要な場合は `agents/create-spec.md` を参照。
 
 ### references/（ガイドライン）
 
-| ファイル             | 内容                       |
-| -------------------- | -------------------------- |
-| `spec-guidelines.md` | 命名規則・記述ガイドライン |
+| ファイル                       | 内容                           |
+| ------------------------------ | ------------------------------ |
+| `spec-guidelines.md`           | 命名規則・記述ガイドライン     |
+| `spec-splitting-guidelines.md` | 大規模ファイル分割ガイドライン |
 
 ### 連携スキル
 
@@ -131,7 +179,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 ### すべきこと
 
 - キーワード検索で情報を素早く特定
-- 編集後は `node scripts/generate-index.mjs` を実行
+- 編集後は `node scripts/generate-index.js` を実行
 - 500行超過時はインデックス+サブファイル形式に手動分割
 
 ### 避けるべきこと
@@ -146,7 +194,17 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                        |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.31.0  | 2026-01-26 | TASK-3-1-E完了: security-skill-execution.mdにPermission Storeセクション追加、ui-ux-settings.mdにPermissionSettings UI追加、interfaces-agent-sdk.md更新。159テスト・96%カバレッジ達成                                                                          |
+| 8.6.0   | 2026-01-26 | **仕様ガイドライン完全準拠**: 全134ファイル（133ファイルコードブロック除去完了、spec-guidelines.md除く）のspec-guidelines.md準拠修正。82参照ファイルのTypeScript/JSON/SQL/ASCIIダイアグラムを表形式・文章に変換                                               |
+| 8.5.0   | 2026-01-26 | **仕様ガイドライン準拠修正**: architecture-overview.md/technology-desktop.md（ディレクトリ構造を表形式化）、development-guidelines.md/architecture-implementation-patterns.md（コード例を表形式・文章に変換）、templates全11種（コード例を表形式に変換）     |
+| 8.4.0   | 2026-01-26 | **実装パターン総合ガイド追加**: architecture-implementation-patterns.md新規作成（フロントエンド/バックエンド/デスクトップ/パフォーマンス/セキュリティ/テスト/アクセシビリティ実装パターン網羅）                                                                |
+| 8.3.0   | 2026-01-26 | **開発ガイドライン拡充**: development-guidelines.md v1.1.0（命名規則、デバッグガイド、リリースプロセス、バックアップ・リカバリ、環境構築ガイド追加）                                                                                                             |
+| 8.2.0   | 2026-01-26 | **UX法則・開発ガイドライン追加**: ui-ux-design-principles.mdにUXデザイン法則（Fitts, Hick, Jakob, Miller, Gestalt, Progressive Disclosure等）追加、development-guidelines.md新規作成（ロギング、キャッシング、マイグレーション、コードレビュー、i18n）          |
+| 8.1.0   | 2026-01-26 | **アーキテクチャ総論追加**: architecture-overview.md新規作成、technology-frontend.md/technology-desktop.md追加、templates/ディレクトリ新設（テンプレート11種）                                                                                                |
+| 8.0.0   | 2026-01-26 | **大規模リファクタリング**: 94→129ファイル拡張（+35分割ファイル）、resource-map.md全ファイル網羅（v1.2.0）、エージェント3件v2.1.0更新、Progressive Disclosure原則に基づくインデックス最適化                                                                    |
+| 7.2.0   | 2026-01-26 | **エージェント改善**: create-spec/update-spec/validate-spec v2.0.0更新（16テンプレート対応、select-template.js統合、quick-reference.md/resource-map.md参照追加、テンプレート準拠検証ワークフロー追加）                                                         |
+| 7.1.0   | 2026-01-26 | **追加最適化**: 16種テンプレート（ipc-channel, react-hook, service, error-handling, testing追加）、quick-reference.md新設、indexes/セクション強化                                                                                                              |
+| 7.0.0   | 2026-01-26 | **スキルリファクタリング**: 11種テンプレート追加、interfaces-agent-sdk.md分割（6ファイル）、resource-map.md新設（読み込み条件付き）、spec-splitting-guidelines.md追加、SKILL.mdクイックスタート追加。94ファイル・11カテゴリ構成に拡張                          |
+| 6.31.0  | 2026-01-26 | TASK-3-1-E完了: security-skill-execution.mdにPermission Storeセクション追加、ui-ux-settings.mdにPermissionSettings UI追加、interfaces-agent-sdk.md更新。159テスト・96%カバレッジ達成                                                                           |
 | 6.30.0  | 2026-01-26 | TASK-4-2完了: interfaces-agent-sdk.md v2.2.0更新（PermissionResolver IPC Handlers完了記録、IPCチャンネル2種、Preload API、usePermissionDialog Hook、PermissionDialog）、security-api-electron.md更新（Permission IPCセキュリティ）。93テスト・94.67%カバレッジ |
 | 6.29.0  | 2026-01-26 | TASK-3-1-D完了: interfaces-agent-sdk.md v2.3.0更新（skillAPI.onPermission/respondPermission、useSkillPermission Hook、型定義）、security-api-electron.md更新（IPC channels、テストカバレッジ）。124テスト・100%カバレッジ                                      |
 | 6.28.0  | 2026-01-25 | TASK-3-2完了: security-api-electron.mdにSkill Execution Preload APIセキュリティセクション追加（IPCチャンネル4種、ホワイトリスト、ストリーミングセキュリティ、React Hook統合）。138テスト・100%カバレッジ                                                       |
@@ -178,7 +236,7 @@ user-request → ┼                       ┼→ read-reference → apply-to-ta
 | 6.3.0   | 2026-01-11 | コミュニティ要約仕様追加: interfaces-rag-community-summarization.md新規、interfaces-rag-community-detection.md更新（v1.1.0）、topic-map.md更新                                                                                                                 |
 | 6.2.0   | 2026-01-10 | コミュニティ検出（Leiden）仕様追加: interfaces-rag-community-detection.md新規、interfaces-rag.md/architecture-rag.md/topic-map.md更新                                                                                                                          |
 | 6.1.0   | 2026-01-06 | 500行超過ファイル分割（9ファイル→インデックス化）、70ファイル構成に拡張                                                                                                                                                                                        |
-| 6.0.0   | 2026-01-06 | skill-creator準拠: agents/をTask仕様書テンプレート化、EVALS.json/LOGS.md/log_usage.mjs追加                                                                                                                                                                     |
+| 6.0.0   | 2026-01-06 | skill-creator準拠: agents/をTask仕様書テンプレート化、EVALS.json/LOGS.md/log_usage.js追加                                                                                                                                                                      |
 | 5.0.0   | 2026-01-04 | SKILL.md軽量化、詳細をindexes/references/へ分離                                                                                                                                                                                                                |
 | 4.0.0   | 2026-01-03 | kebab-case化、大ファイル分割、47ファイル構成                                                                                                                                                                                                                   |
 | 3.0.0   | 2026-01-03 | 仕様正本化、検索中心に再設計                                                                                                                                                                                                                                   |
