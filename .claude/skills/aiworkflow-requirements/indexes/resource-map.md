@@ -87,40 +87,40 @@
 
 #### 3-3. LLM・チャット
 
-| ファイル                    | 読み込み条件                                          | 主要コンテンツ                          |
-| --------------------------- | ----------------------------------------------------- | --------------------------------------- |
-| interfaces-llm.md           | LLMチャット実装全体像把握時（インデックス）           | 概要、ドキュメント構成、設計原則        |
-| llm-ipc-types.md            | LLM IPC型定義、Request/Response型確認時               | LLMChatRequest、Response型、設定型      |
-| llm-streaming.md            | ストリーミング実装、SSEレスポンス処理時               | StreamingResponse、Parser、Hooks        |
-| llm-embedding.md            | 埋め込み生成、EmbeddingProvider実装時                 | EmbeddingRequest、Provider、バッチ処理  |
-| llm-workspace-chat-edit.md  | Workspace/Chat/Edit機能、Entity/Repository定義時      | WorkspaceEntity、ChatEntity、Repository |
-| interfaces-chat-history.md  | 会話履歴機能実装、Repositoryインターフェース定義時    | Schema、Entity、Repository、IPC         |
-| interfaces-system-prompt.md | システムプロンプト管理、永続化実装時                  | Repository、Entity、IPC、バリデーション |
+| ファイル                    | 読み込み条件                                       | 主要コンテンツ                          |
+| --------------------------- | -------------------------------------------------- | --------------------------------------- |
+| interfaces-llm.md           | LLMチャット実装全体像把握時（インデックス）        | 概要、ドキュメント構成、設計原則        |
+| llm-ipc-types.md            | LLM IPC型定義、Request/Response型確認時            | LLMChatRequest、Response型、設定型      |
+| llm-streaming.md            | ストリーミング実装、SSEレスポンス処理時            | StreamingResponse、Parser、Hooks        |
+| llm-embedding.md            | 埋め込み生成、EmbeddingProvider実装時              | EmbeddingRequest、Provider、バッチ処理  |
+| llm-workspace-chat-edit.md  | Workspace/Chat/Edit機能、Entity/Repository定義時   | WorkspaceEntity、ChatEntity、Repository |
+| interfaces-chat-history.md  | 会話履歴機能実装、Repositoryインターフェース定義時 | Schema、Entity、Repository、IPC         |
+| interfaces-system-prompt.md | システムプロンプト管理、永続化実装時               | Repository、Entity、IPC、バリデーション |
 
 #### 3-4. RAG（分割ファイル構成）
 
-| ファイル                                  | 読み込み条件                                | 主要コンテンツ                        |
-| ----------------------------------------- | ------------------------------------------- | ------------------------------------- |
-| interfaces-rag.md                         | RAG全体像把握、共通型確認時                 | Branded Types、RAGエラー型、共通IF    |
-| interfaces-rag-search.md                  | 検索戦略全体像把握時（インデックス）        | 検索概要、ドキュメント構成            |
-| rag-search-types.md                       | 検索型定義、SearchQuery/Result型確認時      | SearchQuery、SearchResult、列挙型     |
-| rag-search-vector.md                      | DiskANNベクトル検索戦略実装時               | VectorSearchStrategy、キャッシュ      |
-| rag-search-graph.md                       | Knowledge Graphグラフ検索実装時             | GraphSearchStrategy、スコアリング     |
-| rag-search-crag.md                        | Corrective RAG実装、関連性評価時            | RelevanceEvaluator、CorrectionAction  |
-| rag-search-hybrid.md                      | HybridRAG統合エンジン、RRF実装時            | HybridRAGEngine、4段階パイプライン    |
-| interfaces-rag-chunk-embedding.md         | チャンク・埋め込み処理実装時                | ChunkEntity、EmbeddingEntity          |
-| interfaces-rag-entity-extraction.md       | エンティティ抽出（NER）実装時               | NERインターフェース、52エンティティ型 |
-| interfaces-rag-community-detection.md     | コミュニティ検出（Leiden）実装時            | Leiden Algorithm、Community型         |
-| interfaces-rag-community-summarization.md | コミュニティ要約実装時                      | 要約生成、Summary型                   |
-| interfaces-rag-knowledge-graph-store.md   | Knowledge Graphストア実装時                 | Entity/Relation CRUD、グラフ探索      |
-| interfaces-rag-graphrag-query.md          | GraphRAGクエリサービス実装時                | GraphRAG Query、検索戦略              |
-| interfaces-rag-file-selection.md          | ファイル選択UI実装時                        | IPC、セキュリティ、UI                 |
-| rag-search-keyword.md                     | FTS5/BM25キーワード検索実装時               | BM25スコアリング、FTS5テーブル        |
-| rag-knowledge-graph.md                    | Knowledge Graph詳細設計、Entity/Relation時  | グラフ構造、探索アルゴリズム          |
-| rag-query-pipeline.md                     | RAGクエリパイプライン設計時                 | パイプライン構成、最適化              |
-| rag-services.md                           | RAGサービス層実装時                         | サービスインターフェース              |
-| rag-vector-search.md                      | ベクトル検索詳細、DiskANN設定時             | インデックス設定、検索パラメータ      |
-| rag-desktop-state.md                      | Desktop RAG状態管理、Zustand設計時          | RAG Store、状態遷移                   |
+| ファイル                                  | 読み込み条件                               | 主要コンテンツ                        |
+| ----------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| interfaces-rag.md                         | RAG全体像把握、共通型確認時                | Branded Types、RAGエラー型、共通IF    |
+| interfaces-rag-search.md                  | 検索戦略全体像把握時（インデックス）       | 検索概要、ドキュメント構成            |
+| rag-search-types.md                       | 検索型定義、SearchQuery/Result型確認時     | SearchQuery、SearchResult、列挙型     |
+| rag-search-vector.md                      | DiskANNベクトル検索戦略実装時              | VectorSearchStrategy、キャッシュ      |
+| rag-search-graph.md                       | Knowledge Graphグラフ検索実装時            | GraphSearchStrategy、スコアリング     |
+| rag-search-crag.md                        | Corrective RAG実装、関連性評価時           | RelevanceEvaluator、CorrectionAction  |
+| rag-search-hybrid.md                      | HybridRAG統合エンジン、RRF実装時           | HybridRAGEngine、4段階パイプライン    |
+| interfaces-rag-chunk-embedding.md         | チャンク・埋め込み処理実装時               | ChunkEntity、EmbeddingEntity          |
+| interfaces-rag-entity-extraction.md       | エンティティ抽出（NER）実装時              | NERインターフェース、52エンティティ型 |
+| interfaces-rag-community-detection.md     | コミュニティ検出（Leiden）実装時           | Leiden Algorithm、Community型         |
+| interfaces-rag-community-summarization.md | コミュニティ要約実装時                     | 要約生成、Summary型                   |
+| interfaces-rag-knowledge-graph-store.md   | Knowledge Graphストア実装時                | Entity/Relation CRUD、グラフ探索      |
+| interfaces-rag-graphrag-query.md          | GraphRAGクエリサービス実装時               | GraphRAG Query、検索戦略              |
+| interfaces-rag-file-selection.md          | ファイル選択UI実装時                       | IPC、セキュリティ、UI                 |
+| rag-search-keyword.md                     | FTS5/BM25キーワード検索実装時              | BM25スコアリング、FTS5テーブル        |
+| rag-knowledge-graph.md                    | Knowledge Graph詳細設計、Entity/Relation時 | グラフ構造、探索アルゴリズム          |
+| rag-query-pipeline.md                     | RAGクエリパイプライン設計時                | パイプライン構成、最適化              |
+| rag-services.md                           | RAGサービス層実装時                        | サービスインターフェース              |
+| rag-vector-search.md                      | ベクトル検索詳細、DiskANN設定時            | インデックス設定、検索パラメータ      |
+| rag-desktop-state.md                      | Desktop RAG状態管理、Zustand設計時         | RAG Store、状態遷移                   |
 
 #### 3-5. 変換
 
@@ -157,42 +157,42 @@
 
 ### 6. UI/UX
 
-| ファイル                 | 読み込み条件                                    | 主要コンテンツ                     |
-| ------------------------ | ----------------------------------------------- | ---------------------------------- |
-| ui-ux-components.md      | コンポーネント実装、Apple HIG準拠、WCAG対応時   | 設計原則、HIG、アクセシビリティ    |
-| ui-ux-design-system.md   | Design Token確認、カラー・タイポグラフィ設定時  | Tokens、カラー、タイポグラフィ     |
-| ui-ux-history-panel.md   | 履歴パネルUI全体像把握時（インデックス）        | 概要、ドキュメント構成、テスト品質 |
-| ui-history-components.md | 履歴コンポーネント実装、Props定義確認時         | VersionHistory、Detail、Logs、Hook |
-| ui-history-data-types.md | 履歴データ型、IPC通信チャンネル定義時           | VersionHistoryItem、IPC API        |
-| ui-history-design.md     | 履歴UIデザイン、WCAG対応、エラーハンドリング時  | アクセシビリティ、エラー表示       |
-| ui-history-integration.md| 履歴機能統合、タスク依存関係確認時              | 統合手順、タスク状態               |
-| ui-ux-settings.md        | 設定画面UI実装、Permission Settings実装時       | 設定アーキテクチャ、IPC、権限設定  |
-| ui-ux-search-panel.md    | 検索パネルUI実装、ファイル/ワークスペース検索時 | タブバー、各検索パネル             |
-| ui-ux-file-selector.md   | ファイルセレクタUI実装時                        | モーダル、ドロップゾーン           |
-| ui-ux-llm-selector.md    | LLMセレクタUI実装時                             | プロバイダー切替、状態管理         |
-| ui-ux-system-prompt.md   | システムプロンプトUI実装時                      | パネル展開、テンプレート管理       |
-| ui-ux-navigation.md      | ナビゲーションUI実装、AppDock設計時             | AppDock、ChatView                  |
-| ui-ux-forms.md           | フォームUI実装、認証UI、APIキー設定UI時         | フォーム設計、認証UI               |
-| ui-ux-panels.md          | パネル共通ガイドライン確認時                    | アイコン、パネルガイドライン       |
-| ui-ux-portal-patterns.md | Portal/Stacking Context問題解決時               | Portal、WAI-ARIA Menu              |
-| ui-ux-advanced.md        | 高度なUI機能確認時（インデックス）              | ドキュメント一覧                   |
-| ui-ux-agent-execution.md | Agent実行UI詳細、進捗表示実装時                 | 実行状態、ログ表示                 |
-| ui-ux-design-principles.md | UI設計原則詳細、HIG/WCAG準拠時                | デザイン原則、ガイドライン         |
-| ui-ux-feature-components.md | 機能別コンポーネント実装時                    | 機能コンポーネント、合成パターン   |
+| ファイル                    | 読み込み条件                                     | 主要コンテンツ                         |
+| --------------------------- | ------------------------------------------------ | -------------------------------------- |
+| ui-ux-components.md         | コンポーネント実装、Apple HIG準拠、WCAG対応時    | 設計原則、HIG、アクセシビリティ        |
+| ui-ux-design-system.md      | Design Token確認、カラー・タイポグラフィ設定時   | Tokens、カラー、タイポグラフィ         |
+| ui-ux-history-panel.md      | 履歴パネルUI全体像把握時（インデックス）         | 概要、ドキュメント構成、テスト品質     |
+| ui-history-components.md    | 履歴コンポーネント実装、Props定義確認時          | VersionHistory、Detail、Logs、Hook     |
+| ui-history-data-types.md    | 履歴データ型、IPC通信チャンネル定義時            | VersionHistoryItem、IPC API            |
+| ui-history-design.md        | 履歴UIデザイン、WCAG対応、エラーハンドリング時   | アクセシビリティ、エラー表示           |
+| ui-history-integration.md   | 履歴機能統合、タスク依存関係確認時               | 統合手順、タスク状態                   |
+| ui-ux-settings.md           | 設定画面UI実装、Permission Settings実装時        | 設定アーキテクチャ、IPC、権限設定      |
+| ui-ux-search-panel.md       | 検索パネルUI実装、ファイル/ワークスペース検索時  | タブバー、各検索パネル                 |
+| ui-ux-file-selector.md      | ファイルセレクタUI実装時                         | モーダル、ドロップゾーン               |
+| ui-ux-llm-selector.md       | LLMセレクタUI実装時                              | プロバイダー切替、状態管理             |
+| ui-ux-system-prompt.md      | システムプロンプトUI実装時                       | パネル展開、テンプレート管理           |
+| ui-ux-navigation.md         | ナビゲーションUI実装、AppDock設計時              | AppDock、ChatView                      |
+| ui-ux-forms.md              | フォームUI実装、認証UI、APIキー設定UI時          | フォーム設計、認証UI                   |
+| ui-ux-panels.md             | パネル共通ガイドライン確認時                     | アイコン、パネルガイドライン           |
+| ui-ux-portal-patterns.md    | Portal/Stacking Context問題解決時                | Portal、WAI-ARIA Menu                  |
+| ui-ux-advanced.md           | 高度なUI機能確認時（インデックス）               | ドキュメント一覧                       |
+| ui-ux-agent-execution.md    | Agent実行UI詳細、進捗表示実装時                  | 実行状態、ログ表示                     |
+| ui-ux-design-principles.md  | UI設計原則詳細、HIG/WCAG準拠時                   | デザイン原則、ガイドライン             |
+| ui-ux-feature-components.md | 機能別コンポーネント実装時、UX改善（TASK-3-2-A） | 機能コンポーネント、UX改善（R1/R2/R3） |
 
 ### 7. セキュリティ
 
-| ファイル                     | 読み込み条件                                   | 主要コンテンツ                   |
-| ---------------------------- | ---------------------------------------------- | -------------------------------- |
-| security-implementation.md   | セキュリティ実装全体像把握時（インデックス）   | 構成、原則                       |
-| security-principles.md       | セキュリティ設計原則確認、認証・認可設計時     | 設計原則、認証、データ保護       |
-| security-api-electron.md     | API/IPC セキュリティ全体像把握時（インデックス）| 概要、ドキュメント構成、設定一覧 |
-| security-api.md              | API認証・認可、レート制限、CORS設計時          | 認証フロー、レート制限、依存関係 |
-| security-electron-ipc.md     | Electron IPC、CSP、BrowserWindow設定時         | contextIsolation、CSP、historyAPI|
-| security-skill-ipc.md        | スキルIPC、Claude CLI連携セキュリティ時        | CLI統合、Preload API、Permission |
-| security-input-validation.md | 入力バリデーション実装、SQLi/XSS対策時         | Zod、SQLi、XSS                   |
-| security-operations.md       | ログ・監査実装、インシデント対応フロー確認時   | ログ、ファイル選択、インシデント |
-| security-skill-execution.md  | スキル実行セキュリティ、Permission Store実装時 | 危険パターン、許可ツール、永続化 |
+| ファイル                     | 読み込み条件                                     | 主要コンテンツ                    |
+| ---------------------------- | ------------------------------------------------ | --------------------------------- |
+| security-implementation.md   | セキュリティ実装全体像把握時（インデックス）     | 構成、原則                        |
+| security-principles.md       | セキュリティ設計原則確認、認証・認可設計時       | 設計原則、認証、データ保護        |
+| security-api-electron.md     | API/IPC セキュリティ全体像把握時（インデックス） | 概要、ドキュメント構成、設定一覧  |
+| security-api.md              | API認証・認可、レート制限、CORS設計時            | 認証フロー、レート制限、依存関係  |
+| security-electron-ipc.md     | Electron IPC、CSP、BrowserWindow設定時           | contextIsolation、CSP、historyAPI |
+| security-skill-ipc.md        | スキルIPC、Claude CLI連携セキュリティ時          | CLI統合、Preload API、Permission  |
+| security-input-validation.md | 入力バリデーション実装、SQLi/XSS対策時           | Zod、SQLi、XSS                    |
+| security-operations.md       | ログ・監査実装、インシデント対応フロー確認時     | ログ、ファイル選択、インシデント  |
+| security-skill-execution.md  | スキル実行セキュリティ、Permission Store実装時   | 危険パターン、許可ツール、永続化  |
 
 ### 8. 技術スタック
 
@@ -292,8 +292,9 @@
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                                           |
-| ---------- | ---------- | ------------------------------------------------------------------ |
-| 2026-01-26 | 1.2.0      | 未登録ファイル18件追加: arch-6件、rag-6件、api-ipc-3件、ui-ux-3件  |
-| 2026-01-26 | 1.1.0      | 分割ファイル追加: llm-4件、rag-search-5件、ui-history-4件、security-3件 |
-| 2026-01-26 | 1.0.0      | 初版作成（topic-map.mdから派生）                                   |
+| 日付       | バージョン | 変更内容                                                                           |
+| ---------- | ---------- | ---------------------------------------------------------------------------------- |
+| 2026-01-27 | 1.3.0      | TASK-3-2-A UX改善追加: ui-ux-feature-components.md読み込み条件・主要コンテンツ更新 |
+| 2026-01-26 | 1.2.0      | 未登録ファイル18件追加: arch-6件、rag-6件、api-ipc-3件、ui-ux-3件                  |
+| 2026-01-26 | 1.1.0      | 分割ファイル追加: llm-4件、rag-search-5件、ui-history-4件、security-3件            |
+| 2026-01-26 | 1.0.0      | 初版作成（topic-map.mdから派生）                                                   |

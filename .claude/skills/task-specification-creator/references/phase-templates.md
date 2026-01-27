@@ -97,26 +97,26 @@
 タスクの性質に応じて、以下の観点を確認する。
 **具体的なチェック項目はAIがタスク内容に応じて判断・適用する。**
 
-| 観点 | 適用判断 | 仕様参照先 |
-| ---- | -------- | ---------- |
-| セキュリティ | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md` |
-| UI/UX | フロントエンド実装の場合 | `aiworkflow-requirements: ui-ux-*.md` |
-| アーキテクチャ | 設計・構造変更の場合 | `aiworkflow-requirements: architecture-*.md` |
-| API設計 | API実装・変更の場合 | `aiworkflow-requirements: api-*.md` |
-| データ整合性 | DB操作の場合 | `aiworkflow-requirements: database-*.md` |
-| エラーハンドリング | 例外処理が必要な場合 | `aiworkflow-requirements: error-handling.md` |
-| パフォーマンス | 性能要件がある場合 | `aiworkflow-requirements: architecture-*.md` |
-| アクセシビリティ | UI実装の場合 | `aiworkflow-requirements: ui-ux-*.md` |
+| 観点               | 適用判断                           | 仕様参照先                                   |
+| ------------------ | ---------------------------------- | -------------------------------------------- |
+| セキュリティ       | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md`     |
+| UI/UX              | フロントエンド実装の場合           | `aiworkflow-requirements: ui-ux-*.md`        |
+| アーキテクチャ     | 設計・構造変更の場合               | `aiworkflow-requirements: architecture-*.md` |
+| API設計            | API実装・変更の場合                | `aiworkflow-requirements: api-*.md`          |
+| データ整合性       | DB操作の場合                       | `aiworkflow-requirements: database-*.md`     |
+| エラーハンドリング | 例外処理が必要な場合               | `aiworkflow-requirements: error-handling.md` |
+| パフォーマンス     | 性能要件がある場合                 | `aiworkflow-requirements: architecture-*.md` |
+| アクセシビリティ   | UI実装の場合                       | `aiworkflow-requirements: ui-ux-*.md`        |
 
 **Electronデスクトップアプリ観点**（本プロジェクト固有）:
 
-| 層 | 適用判断 | 仕様参照先 |
-| --- | -------- | ---------- |
-| フロントエンド（Renderer） | UI/React実装の場合 | `aiworkflow-requirements: ui-ux-*.md` |
-| バックエンド（Main） | サービス/ロジック実装の場合 | `aiworkflow-requirements: architecture-*.md` |
-| IPC通信 | Main-Renderer連携の場合 | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
-| Preload/セキュリティ | API公開の場合 | `aiworkflow-requirements: security-api-electron.md` |
-| ローカルストレージ | データ永続化の場合 | `aiworkflow-requirements: database-*.md` |
+| 層                         | 適用判断                    | 仕様参照先                                             |
+| -------------------------- | --------------------------- | ------------------------------------------------------ |
+| フロントエンド（Renderer） | UI/React実装の場合          | `aiworkflow-requirements: ui-ux-*.md`                  |
+| バックエンド（Main）       | サービス/ロジック実装の場合 | `aiworkflow-requirements: architecture-*.md`           |
+| IPC通信                    | Main-Renderer連携の場合     | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
+| Preload/セキュリティ       | API公開の場合               | `aiworkflow-requirements: security-api-electron.md`    |
+| ローカルストレージ         | データ永続化の場合          | `aiworkflow-requirements: database-*.md`               |
 
 📖 詳細: `references/quality-standards.md` セクション8
 
@@ -301,13 +301,13 @@ Phase 2: 設計
 
 タスクの性質に応じて、以下の層別に設計を行う：
 
-| 層 | 設計観点 | 仕様参照先 |
-| --- | -------- | ---------- |
-| フロントエンド（Renderer） | コンポーネント設計、状態管理、UI/UX | `aiworkflow-requirements: ui-ux-*.md` |
-| バックエンド（Main） | サービス設計、ビジネスロジック | `aiworkflow-requirements: architecture-*.md` |
-| IPC通信 | チャンネル設計、型定義、契約 | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
-| Preload | contextBridge設計、API公開 | `aiworkflow-requirements: security-api-electron.md` |
-| データ | スキーマ設計、リポジトリパターン | `aiworkflow-requirements: database-*.md` |
+| 層                         | 設計観点                            | 仕様参照先                                             |
+| -------------------------- | ----------------------------------- | ------------------------------------------------------ |
+| フロントエンド（Renderer） | コンポーネント設計、状態管理、UI/UX | `aiworkflow-requirements: ui-ux-*.md`                  |
+| バックエンド（Main）       | サービス設計、ビジネスロジック      | `aiworkflow-requirements: architecture-*.md`           |
+| IPC通信                    | チャンネル設計、型定義、契約        | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
+| Preload                    | contextBridge設計、API公開          | `aiworkflow-requirements: security-api-electron.md`    |
+| データ                     | スキーマ設計、リポジトリパターン    | `aiworkflow-requirements: database-*.md`               |
 
 ## 成果物
 
@@ -454,13 +454,13 @@ Phase 4: テスト作成（TDD: Red）
 
 タスクの性質に応じて、以下の層別にテストを作成する：
 
-| 層 | テスト観点 | テストファイル配置 |
-| --- | -------- | ------------------ |
+| 層               | テスト観点                        | テストファイル配置                       |
+| ---------------- | --------------------------------- | ---------------------------------------- |
 | Renderer Process | UIコンポーネント、状態管理、Hooks | `apps/desktop/src/renderer/**/*.test.ts` |
-| Main Process | サービス、ビジネスロジック | `apps/desktop/src/main/**/*.test.ts` |
-| IPC通信 | Main-Renderer連携、チャンネル | `*.ipc.test.ts` |
-| Preload | API公開、型安全性 | `apps/desktop/src/preload/**/*.test.ts` |
-| Shared | ユーティリティ、型定義 | `packages/shared/**/*.test.ts` |
+| Main Process     | サービス、ビジネスロジック        | `apps/desktop/src/main/**/*.test.ts`     |
+| IPC通信          | Main-Renderer連携、チャンネル     | `*.ipc.test.ts`                          |
+| Preload          | API公開、型安全性                 | `apps/desktop/src/preload/**/*.test.ts`  |
+| Shared           | ユーティリティ、型定義            | `packages/shared/**/*.test.ts`           |
 
 ## 成果物
 
@@ -1100,6 +1100,7 @@ node scripts/complete-phase.js \
 - `qualityMetrics`セクションに品質指標が記録されていること
 
 **スクリプト未存在時の代替手順**:
+
 - 手動で `outputs/phase-12/documentation-changelog.md` を作成
 - 手動で `artifacts.json` を作成（TASK-4-1形式を参照）
 - 更新したドキュメントと変更内容を一覧化
@@ -1118,23 +1119,23 @@ node scripts/complete-phase.js \
 
 実装ガイドPart 2（技術的詳細）では、タスクの性質に応じて以下の層別にドキュメントを作成する：
 
-| 層 | ドキュメント内容 | 更新対象 |
-| --- | ---------------- | -------- |
-| Renderer Process | コンポーネント設計、状態管理、Hooks使用方法 | `ui-ux-*.md`, `interfaces-*.md` |
-| Main Process | サービス設計、ビジネスロジック、API仕様 | `architecture-*.md`, `api-*.md` |
-| IPC通信 | チャンネル定義、リクエスト/レスポンス型 | `interfaces-*.md`, `api-*.md` |
-| Preload | 公開API一覧、セキュリティ考慮事項 | `security-api-electron.md` |
-| データ層 | スキーマ定義、リポジトリパターン | `database-*.md` |
-| エラーハンドリング | エラーコード、エラーメッセージ、復旧手順 | `error-handling.md` |
+| 層                 | ドキュメント内容                            | 更新対象                        |
+| ------------------ | ------------------------------------------- | ------------------------------- |
+| Renderer Process   | コンポーネント設計、状態管理、Hooks使用方法 | `ui-ux-*.md`, `interfaces-*.md` |
+| Main Process       | サービス設計、ビジネスロジック、API仕様     | `architecture-*.md`, `api-*.md` |
+| IPC通信            | チャンネル定義、リクエスト/レスポンス型     | `interfaces-*.md`, `api-*.md`   |
+| Preload            | 公開API一覧、セキュリティ考慮事項           | `security-api-electron.md`      |
+| データ層           | スキーマ定義、リポジトリパターン            | `database-*.md`                 |
+| エラーハンドリング | エラーコード、エラーメッセージ、復旧手順    | `error-handling.md`             |
 
 ## 成果物
 
-| 成果物               | パス                                           | 必須 | 説明                      |
-| -------------------- | ---------------------------------------------- | ---- | ------------------------- |
-| 実装ガイド           | `outputs/phase-12/implementation-guide.md`     | ✅   | 概念的+技術的ドキュメント |
-| ドキュメント更新履歴 | `outputs/phase-12/documentation-changelog.md` | ✅   | 更新履歴                  |
-| 未タスク検出レポート | `outputs/phase-12/unassigned-task-report.md`   | ✅   | 検出結果（なしでも出力）  |
-| 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`       | 条件 | 検出時のみ作成            |
+| 成果物               | パス                                            | 必須 | 説明                      |
+| -------------------- | ----------------------------------------------- | ---- | ------------------------- |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`      | ✅   | 概念的+技術的ドキュメント |
+| ドキュメント更新履歴 | `outputs/phase-12/documentation-changelog.md`   | ✅   | 更新履歴                  |
+| 未タスク検出レポート | `outputs/phase-12/unassigned-task-detection.md` | ✅   | 検出結果（なしでも出力）  |
+| 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`        | 条件 | 検出時のみ作成            |
 
 ## 完了条件
 
@@ -1157,12 +1158,12 @@ node scripts/complete-phase.js \
 
 スクリプトが存在しない場合の代替手順:
 
-| スクリプト                            | 代替手順                                                                                                        |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `generate-documentation-changelog.js` | 手動でdocumentation-changelog.mdを作成（`outputs/phase-12/documentation-changelog.md`の形式に従う）            |
+| スクリプト                            | 代替手順                                                                                                             |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `generate-documentation-changelog.js` | 手動でdocumentation-changelog.mdを作成（`outputs/phase-12/documentation-changelog.md`の形式に従う）                  |
 | `complete-phase.js`                   | 手動でartifacts.jsonを作成（参照: `docs/30-workflows/completed-tasks/TASK-4-1-ipc-channels/outputs/artifacts.json`） |
-| `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-task-report.mdを作成                                 |
-| `validate-phase-output.js`            | 手動で成果物の存在と完了条件を確認                                                                              |
+| `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-task-detection.mdを作成                                    |
+| `validate-phase-output.js`            | 手動で成果物の存在と完了条件を確認                                                                                   |
 
 ## 次のPhase
 
