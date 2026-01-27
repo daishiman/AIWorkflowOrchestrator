@@ -105,6 +105,46 @@ node scripts/log-usage.js \
 
 ---
 
+## 2026-01-27 - spec-update-workflow.md改善（TASK-WCE-UI-001フィードバック反映）
+
+### コンテキスト
+- スキル: task-specification-creator
+- 改善契機: TASK-WCE-UI-001（Workspace Chat Edit UI Components）Phase 12実行経験
+- 実行者: Claude Code (skill-creator)
+
+### 改善内容
+
+**対象ファイル**: `references/spec-update-workflow.md`
+
+**問題点**:
+- Phase 12 Task 2 Step 1のLOGS.md更新において、`aiworkflow-requirements/LOGS.md`のみ記載されていた
+- `task-specification-creator/LOGS.md`の更新要件が明記されていなかった
+- phase-templates.mdでは両方のLOGS.md更新が記載されていたが、spec-update-workflow.mdでは片方のみだったため、実行時に漏れが発生
+
+**改善箇所**:
+
+1. **LOGS.md更新セクションのヘッダー変更**
+   - 「LOGS.md 更新（必須）」→「LOGS.md 更新（必須：2ファイル両方を更新）」
+   - 2つのファイルを更新する必要があることを明示
+
+2. **更新対象ファイル一覧テーブル追加**
+   - `aiworkflow-requirements/LOGS.md`: システム仕様書更新の記録
+   - `task-specification-creator/LOGS.md`: タスク仕様書スキルの使用記録
+
+3. **task-specification-creator/LOGS.md用テンプレート追加**
+   - 既存のaiworkflow-requirements用テンプレートに加え、task-specification-creator用のテンプレートを追加
+
+### 結果
+- ステータス: success
+- 改善完了日時: 2026-01-27
+- バージョン: 9.7.0 → 9.7.1
+
+### 期待される効果
+- Phase 12実行時の`task-specification-creator/LOGS.md`更新漏れ防止
+- `phase-templates.md`と`spec-update-workflow.md`間の整合性確保
+- 2つのLOGS.mdファイル更新の必要性を明確に認識可能
+
+---
 ## 2026-01-26 - Phase 12テンプレート改善（TASK-4-1フィードバック反映）
 
 ### コンテキスト
@@ -846,6 +886,58 @@ if (artifactPath) {
 - [x] aiworkflow-requirements更新（完了）
 - [x] LOGS.md記録（完了）
 - [ ] Phase 13 PR作成（ユーザー指示待ち）
+
+---
+
+## 2026-01-27 - Issue #494 workspace-chat-edit-ui (FileAttachmentButton/FileContextList) タスク完了
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: TASK-WCE-UI-001 (Issue #494)
+- タスク名: workspace-chat-edit-ui (FileAttachmentButton, FileContextList UIコンポーネント)
+- Phase: 1-12（13はユーザー指示によりスキップ）
+- 実行者: Claude Code
+
+### 結果
+- ステータス: success
+- 記録日時: 2026-01-27
+
+### 発見事項
+- **良かった点**: Phase 1-12の全フェーズを正常に実行完了
+- **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
+- **良かった点**: WCAG 2.1 AA準拠のアクセシビリティ設計が適切に実装された
+- **良かった点**: React.memo最適化による再レンダリング防止が適切に実装
+- **良かった点**: aria-currentによるlistitemロール対応が正常に実装
+- **良かった点**: Phase 12でのaiworkflow-requirements更新（ui-ux-feature-components.md）が正常に実行
+
+### 成果
+- Phase 1-12を完了（Phase 13 PR作成はユーザー指示によりスキップ）
+- テストカバレッジ: 270テストケース全PASS
+- 2コンポーネント実装:
+  - FileAttachmentButton: ファイル選択ダイアログを開き、選択されたファイルをコンテキストに追加
+  - FileContextList: 添付ファイル一覧の表示、削除・選択操作のハンドリング
+- Storybook: 25 Stories作成（FileAttachmentButton: 7, FileContextList: 9, FileContextBadge: 9）
+- 実装ガイド（Part 1 概念的説明 + Part 2 技術的詳細）作成
+
+### aiworkflow-requirements更新
+- ui-ux-feature-components.md v1.1.0
+  - workspace-chat-edit-ui コンポーネント階層更新
+  - FileAttachmentButton, FileContextList仕様追加
+  - 完了タスクセクションにIssue #494を記録
+  - 関連ドキュメントに実装ガイドリンクを追加
+- LOGS.md にTASK-WCE-UI-001完了エントリ追加
+- indexes/topic-map.md セクション行番号更新
+
+### 未タスク検出
+- 検出数: 0件
+- すべてのテストがPASS、発見課題なし
+- Phase 3/10レビュー結果にMINOR判定なし
+
+### 次のアクション
+- [x] Phase 12成果物の完全化（完了）
+- [x] aiworkflow-requirements更新（完了）
+- [x] task-specification-creator/LOGS.md記録（完了）
+- [ ] Phase 13 PR作成（ユーザー指示によりスキップ）
 
 ---
 

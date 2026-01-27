@@ -1,130 +1,92 @@
-# Phase 6: Test Expansion Report
+# Phase 6: テスト拡充レポート
 
-## Overview
+## メタ情報
 
-Phase 6 expands test coverage with edge cases, error handling, accessibility tests, and snapshot tests.
+| 項目       | 内容                         |
+| ---------- | ---------------------------- |
+| Phase      | 6                            |
+| カテゴリ   | 品質                         |
+| 前提Phase  | Phase 4-5（テスト作成/実装） |
+| ステータス | 完了                         |
 
-## Test Summary
+---
 
-| Category        | Tests Added | Total Tests |
-| --------------- | ----------- | ----------- |
-| Edge Cases      | 22          | 22          |
-| Error Cases     | 12          | 12          |
-| Snapshot Tests  | 19          | 19          |
-| **Grand Total** | **329**     | **329**     |
+## 1. 追加テストファイル
 
-## Tests Added by Component
+| ファイル                | パス                                                | テスト数 |
+| ----------------------- | --------------------------------------------------- | -------- |
+| accessibility.test.tsx  | apps/desktop/src/renderer/.../components/**tests**/ | 14       |
+| integration-ui.test.tsx | apps/desktop/src/renderer/.../components/**tests**/ | 12       |
 
-### FileContextBadge
+---
 
-**Edge Cases Added:**
+## 2. テスト結果サマリー
 
-- Long file name (100+ characters)
-- Special characters in file name
-- Japanese file name
-- Empty file path
-- onSelect undefined
-- onRemove undefined with Delete key
-
-**Snapshot Tests:**
-
-- Default display
-- With remove button
-- Active state
-- Long file name
-
-### ApplyControls
-
-**Edge Cases Added:**
-
-- applyResult failure handling
-- Consecutive clicks behavior
-- Loading state click prevention
-
-**Error Cases Added:**
-
-- File write failure error display
-- Network error display
-- Exception handling (no crash)
-- Null callbacks handling
-
-**Snapshot Tests:**
-
-- Default display
-- Loading state
-- Error state
-- Disabled state
-- Small size variant
-
-### DiffEditor
-
-**Edge Cases Added:**
-
-- Empty string diff display
-- Large file (10000 lines)
-- Original only empty
-- Modified only empty
-- Special characters content
-- Japanese content
-- Binary-like content
-- Undefined language
-
-**Snapshot Tests:**
-
-- Default display
-- Custom height
-- Side by side disabled
-- Light theme
-- Custom font size
-
-### EditCommandInput
-
-**Snapshot Tests:**
-
-- Default display
-- Custom type selected
-- Loading state
-- Disabled state
-- Small size variant
-
-## Test Results
+### 2.1 テスト実行結果
 
 ```
-Test Files  16 passed (16)
-Tests  329 passed (329)
-Duration  11.10s
+Test Files  12 passed (12)
+Tests       270 passed (270)
+Duration    14.13s
 ```
 
-## Files Created/Modified
+### 2.2 アクセシビリティテスト内訳
 
-### New Files
+| コンポーネント       | テスト項目数 |
+| -------------------- | ------------ |
+| FileAttachmentButton | 3            |
+| FileContextList      | 4            |
+| FileContextBadge     | 4            |
+| コンポーネント連携   | 2            |
+| **合計**             | 14           |
 
-- `components/__tests__/snapshots.test.tsx` - Snapshot tests (19 tests)
-- `components/__tests__/__snapshots__/snapshots.test.tsx.snap` - Snapshot data
+### 2.3 統合テスト内訳
 
-### Modified Files
+| シナリオ                 | テスト項目数 |
+| ------------------------ | ------------ |
+| ファイル添付フロー       | 2            |
+| ファイル削除フロー       | 1            |
+| ファイル選択フロー       | 1            |
+| 最大ファイル数制限       | 1            |
+| キーボードナビゲーション | 2            |
+| エラー状態               | 2            |
+| 状態同期                 | 1            |
+| **合計**                 | 12           |
 
-- `components/__tests__/FileContextBadge.test.tsx` - Added 7 edge case tests
-- `components/__tests__/ApplyControls.test.tsx` - Added 10 edge/error tests
-- `components/__tests__/DiffEditor.test.tsx` - Added 8 edge case tests
+---
 
-## Test Categories Covered
+## 3. アクセシビリティ修正
 
-- [x] Edge case tests
-- [x] Error handling tests
-- [x] Snapshot tests
-- [x] Integration tests (already comprehensive from Phase 4/5)
+### 3.1 修正内容
 
-## Accessibility Tests Note
+| 対象コンポーネント | 修正内容                                      |
+| ------------------ | --------------------------------------------- |
+| FileContextBadge   | `aria-selected` → `aria-current` に変更       |
+| FileContextList    | 空状態で `role="list"` を削除（a11y違反回避） |
 
-WCAG 2.1 AA compliance is verified through:
+### 3.2 WCAG 2.1 AA準拠確認
 
-- ARIA attribute tests (already in Phase 4)
-- Keyboard navigation tests (already in Phase 4)
-- Focus management tests (in integration tests)
+| 基準                 | 対応状況 |
+| -------------------- | -------- |
+| 1.4.3 コントラスト   | 準拠     |
+| 2.1.1 キーボード     | 準拠     |
+| 2.4.7 フォーカス可視 | 準拠     |
+| 4.1.2 名前・役割・値 | 準拠     |
 
-Additional jest-axe tests could be added in future iterations for automated accessibility validation.
+---
 
-## Next Steps
+## 4. テストカバレッジ方向性
 
-Phase 7: Coverage Check - Verify test coverage meets 80% line coverage target
+Phase 7でのカバレッジ測定に向けて:
+
+- Line Coverage ≥ 80% 目標
+- Branch Coverage ≥ 60% 目標
+
+---
+
+## 5. 完了条件チェック
+
+- [x] アクセシビリティテスト（axe-core）追加
+- [x] 統合テスト追加
+- [x] 全テストがパス（270件）
+- [x] WCAG準拠確認

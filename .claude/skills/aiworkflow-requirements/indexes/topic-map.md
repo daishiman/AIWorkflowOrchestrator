@@ -753,18 +753,19 @@ node scripts/list-specs.js --topics
 ### references/ui-ux-feature-components.md
 
 | セクション | 行 |
-|------------|----|\n| Community Visualization UI コンポーネント（CONV-08-05） | L10 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L117 |
-| workspace-chat-edit-ui コンポーネント（Issue #468） | L184 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L274 |
-| UX改善機能（TASK-3-2-A） | L289 |
-| R1: LoadingSpinner（ローディングアニメーション） | L293 |
-| R2: MessageTimestamp（タイムスタンプ表示） | L304 |
-| R3: CopyButton（クリップボードコピー） | L332 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L420 |
-| 完了タスク | L431 |
-| 関連ドキュメント | L441 |
-| 変更履歴 | L449 |
+|------------|----|\n| 概要 | L10 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L35 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L142 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L209 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L377 |
+| UX改善機能（TASK-3-2-A） | L392 |
+| R1: LoadingSpinner（ローディングアニメーション） | L396 |
+| R2: MessageTimestamp（タイムスタンプ表示） | L407 |
+| R3: CopyButton（クリップボードコピー） | L435 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L613 |
+| 完了タスク | L624 |
+| 関連ドキュメント | L647 |
+| 変更履歴 | L661 |
 
 ### references/ui-ux-file-selector.md
 

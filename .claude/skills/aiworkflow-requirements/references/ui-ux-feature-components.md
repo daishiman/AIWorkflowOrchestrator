@@ -7,6 +7,31 @@
 
 ---
 
+## 概要
+
+本ドキュメントはAIWorkflowOrchestratorの機能別UIコンポーネント群の仕様を集約する。各機能は独立したセクションとして記述され、コンポーネント階層・仕様・IPC API・テスト要件を定義する。
+
+### 収録機能一覧
+
+| 機能 | タスクID | 主要コンポーネント | 状態 |
+| ---- | -------- | ------------------ | ---- |
+| Community Visualization | CONV-08-05 | CommunityGraph, CommunityDetailPanel | 完了 |
+| Custom Execution Environment | AGENT-006 | ExecutionEnvironment, HTMLPreviewEnvironment | 完了 |
+| Workspace Chat Edit | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 |
+| Skill Stream Display | TASK-3-2 | SkillStreamDisplay, useSkillExecution | 完了 |
+
+### 共通仕様
+
+| 項目 | 基準 |
+| ---- | ---- |
+| アクセシビリティ | WCAG 2.1 AA準拠 |
+| スタイリング | Tailwind CSS + cn()ユーティリティ |
+| 状態管理 | Zustand |
+| テストフレームワーク | Vitest + React Testing Library |
+| Storybook | 全コンポーネント必須 |
+
+---
+
 ## Community Visualization UI コンポーネント（CONV-08-05）
 
 コミュニティ構造を可視化するUIコンポーネント群。グラフベースのコミュニティ表示、フィルタリング、検索、詳細表示などの機能を提供する。
@@ -181,22 +206,80 @@ HTML、Markdownのプレビューに対応し、3層セキュリティ防御を�
 
 ---
 
-## workspace-chat-edit-ui コンポーネント（Issue #468）
+## workspace-chat-edit-ui コンポーネント（Issue #468, #494）
 
 AIアシスタントとのチャット中にファイル編集を依頼し、差分プレビュー・適用を行うためのUIコンポーネント群。
 
 ### コンポーネント階層
 
-| コンポーネント      | 種類      | 親                   | 子要素                                                               |
-| ------------------- | --------- | -------------------- | -------------------------------------------------------------------- |
-| ChatView            | views     | -                    | FileContextDropZone, FileContextBadge, EditCommandInput, DiffPreview |
-| FileContextDropZone | organisms | ChatView             | ChatContent                                                          |
-| FileContextBadge    | molecules | ChatView             | なし（複数配置可）                                                   |
-| EditCommandInput    | molecules | ChatView             | CommandTypeSelector, TextInput + SendButton                          |
-| DiffPreview         | organisms | ChatView（モーダル） | DiffEditor, ApplyControls                                            |
-| DiffEditor          | -         | DiffPreview          | Monaco DiffEditor                                                    |
+| コンポーネント | 種類 | 親 | 子要素 |
+| -------------- | ---- | --- | ------ |
+| ChatView | views | - | FileContextDropZone, FileContextList, FileAttachmentButton, EditCommandInput, DiffPreview |
+| FileAttachmentButton | molecules | ChatView | なし |
+| FileContextList | organisms | ChatView | FileContextBadge（複数） |
+| FileContextDropZone | organisms | ChatView | ChatContent |
+| FileContextBadge | molecules | FileContextList | なし |
+| EditCommandInput | molecules | ChatView | CommandTypeSelector, TextInput + SendButton |
+| DiffPreview | organisms | ChatView（モーダル） | DiffEditor, ApplyControls |
+| DiffEditor | - | DiffPreview | Monaco DiffEditor |
 
 ### コンポーネント仕様
+
+#### FileAttachmentButton（Issue #494）
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileAttachmentButton.tsx` |
+| 責務 | ファイル選択ダイアログを開き、選択されたファイルをコンテキストに追加 |
+| 依存 | useFileContext, electronAPI.fileSelection |
+| Props | `onFilesSelected?`, `multiple?`, `accept?`, `maxFiles?`, `disabled?`, `className?`, `children?` |
+
+**Props詳細**
+
+| Prop | 型 | 必須 | デフォルト | 説明 |
+| ---- | --- | ---- | ---------- | ---- |
+| onFilesSelected | `(files: FileContext[]) => void` | No | - | ファイル選択時コールバック |
+| multiple | `boolean` | No | true | 複数選択許可 |
+| accept | `string[]` | No | ["*"] | 許可する拡張子 |
+| maxFiles | `number` | No | 10 | 最大ファイル数 |
+| disabled | `boolean` | No | false | 無効状態 |
+
+**機能**
+
+| 機能 | 説明 |
+| ---- | ---- |
+| ダイアログ表示 | クリックでファイル選択ダイアログを開く |
+| 最大数制限 | canAddContext: falseで自動無効化 |
+| キーボード操作 | Enter/Spaceでダイアログを開く |
+| ローディング状態 | 処理中はボタン無効化 |
+
+#### FileContextList（Issue #494）
+
+| 項目 | 仕様 |
+| ---- | ---- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextList.tsx` |
+| 責務 | 添付ファイル一覧の表示、削除・選択操作のハンドリング |
+| 依存 | useFileContext, FileContextBadge |
+| Props | `contexts?`, `onRemove?`, `onSelect?`, `selectedId?`, `emptyMessage?`, `maxHeight?`, `className?` |
+
+**Props詳細**
+
+| Prop | 型 | 必須 | デフォルト | 説明 |
+| ---- | --- | ---- | ---------- | ---- |
+| contexts | `FileContext[]` | No | (Zustandから取得) | 表示するコンテキスト |
+| onRemove | `(id: string) => void` | No | - | 削除時コールバック |
+| onSelect | `(id: string) => void` | No | - | 選択時コールバック |
+| selectedId | `string` | No | (Zustandから取得) | 選択中のID |
+| emptyMessage | `string` | No | "ファイルが添付されていません" | 空状態メッセージ |
+
+**機能**
+
+| 機能 | 説明 |
+| ---- | ---- |
+| 一覧表示 | FileContextBadgeで各ファイルを表示 |
+| 空状態表示 | ファイルなし時にメッセージ表示 |
+| スクロール | 大量ファイル時にスクロール可能 |
+| キーボードナビゲーション | Tab/Enter/Deleteで操作 |
 
 #### FileContextBadge
 
@@ -520,11 +603,12 @@ SkillStreamDisplayコンポーネントのユーザー体験を向上させる3�
 
 ## 完了タスク
 
-| Issue #    | 機能名                        | 完了日     | 関連ドキュメント                                             |
-| ---------- | ----------------------------- | ---------- | ------------------------------------------------------------ |
-| TASK-3-2-A | skill-stream-ux-improvements  | 2026-01-27 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/` |
-| TASK-3-2   | skillexecutor-ipc-integration | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/`  |
-| #468       | workspace-chat-edit-ui        | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/`                  |
+| Issue # | 機能名 | 完了日 | 関連ドキュメント |
+| ------- | ------ | ------ | ---------------- |
+| TASK-3-2-A | skill-stream-ux-improvements | 2026-01-27 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/` |
+| TASK-3-2 | skillexecutor-ipc-integration | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
+| #468 | workspace-chat-edit-ui (基盤) | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/` |
+| #494 | workspace-chat-edit-ui (FileAttachmentButton, FileContextList) | 2026-01-27 | `docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md` |
 
 ---
 
@@ -534,12 +618,15 @@ SkillStreamDisplayコンポーネントのユーザー体験を向上させる3�
 - [デザイン原則](./ui-ux-design-principles.md)
 - [Agent Execution UI](./ui-ux-agent-execution.md)
 - [SkillStreamDisplay UX改善 実装ガイド](../../../docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md)
+- [workspace-chat-edit-ui 実装ガイド](../../../docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md)
 
 ---
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                                                            |
-| ---------- | ---------- | ----------------------------------------------------------------------------------- |
-| 2026-01-27 | v1.1.0     | TASK-3-2-A: SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー）追加 |
-| 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                  |
+| 日付 | バージョン | 変更内容 |
+| ---- | ---------- | -------- |
+| 2026-01-27 | v1.2.0 | TASK-3-2-A: SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー）追加 |
+| 2026-01-27 | v1.1.1 | 構造最適化: 概要セクション追加（収録機能一覧・共通仕様テーブル） |
+| 2026-01-27 | v1.1.0 | Issue #494: FileAttachmentButton, FileContextList コンポーネント仕様追加 |
+| 2026-01-26 | v1.0.0 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |

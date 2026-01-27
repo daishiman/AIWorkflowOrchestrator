@@ -74,6 +74,59 @@
 - タスク仕様書: `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`
 
 ---
+
+## 2026-01-27: ui-ux-feature-components.md構造最適化
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | -                                                                                              |
+| 操作         | optimize-structure                                                                             |
+| 対象ファイル | references/ui-ux-feature-components.md, indexes/topic-map.md                                   |
+| 結果         | success                                                                                        |
+| 備考         | spec-guidelines準拠の概要セクション追加、topic-map行番号更新                                  |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.1.0 → v1.1.1）
+  - 概要セクション追加（収録機能一覧テーブル、共通仕様テーブル）
+  - ナビゲーション改善のためのインデックス情報追加
+  - ファイルサイズ: 456行 → 482行（適正範囲内）
+
+- **更新**: `indexes/topic-map.md`
+  - ui-ux-feature-components.mdのセクション行番号を更新
+  - 概要セクション（L10）追加
+
+---
+
+## 2026-01-27: workspace-chat-edit-ui（TASK-WCE-UI-001 / Issue #494）
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-WCE-UI-001                                                                                |
+| 操作         | update-spec                                                                                    |
+| 対象ファイル | references/ui-ux-feature-components.md                                                         |
+| 結果         | success                                                                                        |
+| 備考         | FileAttachmentButton, FileContextList UIコンポーネント実装（66テスト、25 Storybook Stories） |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.0.0 → v1.1.0）
+  - FileAttachmentButton コンポーネント仕様追加（Props、機能、キーボード操作）
+  - FileContextList コンポーネント仕様追加（Props、機能、空状態表示）
+  - 完了タスクセクションに Issue #494 追加
+  - 関連ドキュメントに実装ガイドリンク追加
+
+### 実装サマリー
+
+| 項目 | 内容 |
+| ---- | ---- |
+| コンポーネント | FileAttachmentButton.tsx, FileContextList.tsx |
+| テスト数 | 66テスト（ユニット40 + アクセシビリティ14 + 統合12） |
+| Storybook | 25 Stories（Button 7 + List 9 + Badge 9） |
+| アクセシビリティ | WCAG 2.1 AA準拠（キーボード操作、aria-label、aria-live） |
+
+---
+
 ## 2026-01-26: permission-dialog-ui（TASK-3-1-D）
 
 | 項目         | 内容                                                                   |
@@ -947,4 +1000,53 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 - フィードバック: TASK-3-2-A UX改善仕様追加: ui-ux-feature-components.md v1.1.0、resource-map.md v1.3.0、SKILL.md v8.8.0更新
 
 ---
+
+## 2026-01-27: workspace-chat-edit-ui（Issue #494）
+
+| 項目         | 内容                                                                              |
+| ------------ | --------------------------------------------------------------------------------- |
+| タスクID     | TASK-WCE-UI-001                                                                   |
+| 操作         | update-spec                                                                       |
+| 対象ファイル | ui-ux-feature-components.md                                                       |
+| 結果         | success                                                                           |
+| 備考         | FileAttachmentButton, FileContextList UIコンポーネント仕様追加（270テスト、100%） |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.0.0 → v1.1.0）
+  - workspace-chat-edit-ui コンポーネント階層更新（FileAttachmentButton, FileContextList追加）
+  - FileAttachmentButton コンポーネント仕様追加（Props詳細、機能一覧）
+  - FileContextList コンポーネント仕様追加（Props詳細、機能一覧）
+  - 完了タスクセクションにIssue #494追加
+  - 関連ドキュメントに実装ガイドリンク追加
+  - 変更履歴にv1.1.0エントリ追加
+
+### 成果物
+
+| 種別             | ファイル                                                           |
+| ---------------- | ------------------------------------------------------------------ |
+| コンポーネント   | FileAttachmentButton.tsx, FileContextList.tsx                      |
+| テスト           | FileAttachmentButton.test.tsx, FileContextList.test.tsx            |
+| アクセシビリティ | accessibility.test.tsx, integration-ui.test.tsx                    |
+| Storybook        | FileAttachmentButton.stories.tsx, FileContextList.stories.tsx      |
+| ドキュメント     | implementation-guide.md, documentation-changelog.md                |
+
+### 関連ドキュメント
+
+| ドキュメント       | パス                                                                     |
+| ------------------ | ------------------------------------------------------------------------ |
+| 実装ガイド         | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書       | `docs/30-workflows/workspace-chat-edit-ui/`                              |
+| 未タスク検出レポート | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-12/unassigned-task-detection.md` |
+
+### テスト品質
+
+| 項目       | 値   |
+| ---------- | ---- |
+| テスト総数 | 270  |
+| カバレッジ | 100% |
+| 新規テスト | 66   |
+
+---
+
 （ログエントリはここに追記されます）

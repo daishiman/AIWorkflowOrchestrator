@@ -231,9 +231,16 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 完了
 ```
 
-#### aiworkflow-requirements/LOGS.md 更新（必須）
+#### LOGS.md 更新（必須：2ファイル両方を更新）
 
-`.claude/skills/aiworkflow-requirements/LOGS.md` に以下の形式でエントリを追加:
+**⚠️ 重要**: 以下の**2つの**LOGS.mdファイルを**両方**更新する必要があります。
+
+| ファイル | 目的 |
+| -------- | ---- |
+| `.claude/skills/aiworkflow-requirements/LOGS.md` | システム仕様書更新の記録 |
+| `.claude/skills/task-specification-creator/LOGS.md` | タスク仕様書スキルの使用記録 |
+
+**1. aiworkflow-requirements/LOGS.md** に以下の形式でエントリを追加:
 
 ```markdown
 ## {{DATE}}: {{TASK_NAME}}（{{TASK_ID}}）
@@ -257,12 +264,23 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 `.claude/skills/task-specification-creator/LOGS.md` に以下の形式でエントリを追加:
 
 ```markdown
-## {{DATE}} - {{TASK_ID}} {{TASK_NAME}}完了
+## {{DATE}} - {{TASK_NAME}}（{{TASK_ID}}）タスク完了
 
+### コンテキスト
+- スキル: task-specification-creator
 - タスクID: {{TASK_ID}}
-- テストカバレッジ: {{N}}テスト全件PASS
-- 実装内容: {{実装した機能の概要}}
-- aiworkflow-requirements更新完了
+- タスク名: {{TASK_NAME}}
+- Phase: 1-12（または1-13）
+
+### 成果
+- テストカバレッジ: {{TEST_COUNT}}テスト全件PASS
+- 実装内容:
+  - {{主要な実装内容1}}
+  - {{主要な実装内容2}}
+
+### 結果
+- ステータス: success
+- 完了日時: {{DATE}}
 ```
 
 #### topic-map.md 更新（新規セクション追加時は必須）

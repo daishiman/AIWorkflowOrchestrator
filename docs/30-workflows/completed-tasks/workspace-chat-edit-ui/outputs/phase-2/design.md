@@ -7,7 +7,7 @@
 | Phase      | 2                   |
 | カテゴリ   | 設計                |
 | 前提Phase  | Phase 1（要件定義） |
-| ステータス | 未実施              |
+| ステータス | 完了                |
 
 ---
 
@@ -162,12 +162,12 @@ WCAG 2.1 AA準拠のアクセシビリティ実装設計を行う。
 
 ## 3. 完了条件
 
-- [ ] FileAttachmentButtonのPropsインターフェースが定義されている
-- [ ] FileContextListのPropsインターフェースが定義されている
-- [ ] コンポーネント階層構造が文書化されている
-- [ ] IPC呼び出しフローが設計されている
-- [ ] アクセシビリティ属性が設計されている
-- [ ] Storybook Stories構成が設計されている
+- [x] FileAttachmentButtonのPropsインターフェースが定義されている
+- [x] FileContextListのPropsインターフェースが定義されている
+- [x] コンポーネント階層構造が文書化されている
+- [x] IPC呼び出しフローが設計されている
+- [x] アクセシビリティ属性が設計されている
+- [x] Storybook Stories構成が設計されている
 
 ---
 

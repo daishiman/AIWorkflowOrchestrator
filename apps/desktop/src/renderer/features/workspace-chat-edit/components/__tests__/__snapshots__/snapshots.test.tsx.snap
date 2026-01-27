@@ -855,7 +855,7 @@ exports[`Snapshot Tests > EditCommandInput > 無効化状態のスナップシ�
 exports[`Snapshot Tests > FileContextBadge > アクティブ状態のスナップショット 1`] = `
 <div>
   <div
-    aria-selected="true"
+    aria-current="true"
     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ring-2 ring-blue-500"
     role="listitem"
     tabindex="0"
@@ -887,7 +887,6 @@ exports[`Snapshot Tests > FileContextBadge > アクティブ状態のスナッ�
 exports[`Snapshot Tests > FileContextBadge > デフォルト表示のスナップショット 1`] = `
 <div>
   <div
-    aria-selected="false"
     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
     role="listitem"
     tabindex="0"
@@ -919,7 +918,6 @@ exports[`Snapshot Tests > FileContextBadge > デフォルト表示のスナッ�
 exports[`Snapshot Tests > FileContextBadge > 削除ボタン付きのスナップショット 1`] = `
 <div>
   <div
-    aria-selected="false"
     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
     role="listitem"
     tabindex="0"
@@ -971,7 +969,6 @@ exports[`Snapshot Tests > FileContextBadge > 削除ボタン付きのスナッ�
 exports[`Snapshot Tests > FileContextBadge > 長いファイル名のスナップショット 1`] = `
 <div>
   <div
-    aria-selected="false"
     class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-w-[200px] cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
     role="listitem"
     tabindex="0"

@@ -1,187 +1,72 @@
 # Phase 8: リファクタリングレポート
 
-## Overview
+## メタ情報
 
-TDD Refactorフェーズとして、テストがグリーンの状態を維持しながらコードの品質を向上させた。
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 8                         |
+| カテゴリ   | TDD-Refactor              |
+| 前提Phase  | Phase 7（カバレッジ確認） |
+| ステータス | 完了                      |
 
-## 実施したリファクタリング
+---
 
-### タスク1: コード重複の除去
+## 1. リファクタリング対象の検討
 
-#### 作成した共通コンポーネント
+### 1.1 評価結果
 
-| コンポーネント | パス                              | 用途                     |
-| -------------- | --------------------------------- | ------------------------ |
-| Spinner        | `components/common/Spinner.tsx`   | ローディングスピナー表示 |
-| CloseIcon      | `components/common/CloseIcon.tsx` | 閉じる/削除アイコン      |
+| コンポーネント       | リファクタリング必要性 | 理由                            |
+| -------------------- | ---------------------- | ------------------------------- |
+| FileAttachmentButton | 不要                   | 設計通りの簡潔な実装            |
+| FileContextList      | 不要                   | 設計通りの実装                  |
+| FileContextBadge     | 軽微修正のみ           | aria-current への変更（完了済） |
 
-**Before**: 各コンポーネントでSVGを個別に定義（重複3箇所）
-**After**: 共通コンポーネントを使用
+### 1.2 コード品質評価
 
-#### Spinner使用箇所
+| 観点               | 評価 | 説明                         |
+| ------------------ | ---- | ---------------------------- |
+| DRY原則            | 良好 | 重複コードなし               |
+| 単一責任の原則     | 良好 | 各コンポーネントが明確な責任 |
+| 命名規則           | 良好 | 一貫した命名パターン         |
+| 型安全性           | 良好 | TypeScript strict準拠        |
+| エラーハンドリング | 良好 | try-catch + 状態管理         |
 
-| コンポーネント       | 変更前（行数） | 変更後（行数） |
-| -------------------- | -------------- | -------------- |
-| ApplyControls.tsx    | 20行           | 1行            |
-| DiffEditor.tsx       | 20行           | 1行            |
-| EditCommandInput.tsx | 17行           | 1行            |
-| **合計削減**         | **-55行**      | -              |
+---
 
-#### CloseIcon使用箇所
+## 2. 実施した変更
 
-| コンポーネント       | 変更前（行数） | 変更後（行数） |
-| -------------------- | -------------- | -------------- |
-| FileContextBadge.tsx | 14行           | 1行            |
-| ApplyControls.tsx    | 14行           | 1行            |
-| DiffPreview.tsx      | 14行           | 1行            |
-| **合計削減**         | **-39行**      | -              |
+### 2.1 アクセシビリティ改善（Phase 6で実施済み）
 
-### タスク2: 命名の改善
+| 変更箇所         | 変更前            | 変更後         | 理由                       |
+| ---------------- | ----------------- | -------------- | -------------------------- |
+| FileContextBadge | `aria-selected`   | `aria-current` | WAI-ARIA 1.2準拠           |
+| FileContextList  | 空状態でrole=list | role属性削除   | aria-required-children準拠 |
 
-既存の命名は良好であり、変更不要と判断。
+---
 
-**確認済みの命名規則**:
+## 3. コード品質チェック
 
-- Props: `onRemove`, `onApply`, `onSubmit` ✓
-- 状態: `isLoading`, `isDragging`, `isActive` ✓
-- ハンドラ: `handleClick`, `handleDrop`, `handleSubmit` ✓
-
-### タスク3: コンポーネント構造の最適化
-
-**評価結果**: 現在のコンポーネント構造は適切。
-
-| コンポーネント      | 責務                   | 判定 |
-| ------------------- | ---------------------- | ---- |
-| FileContextBadge    | ファイルバッジ表示     | ✓    |
-| ApplyControls       | 適用/却下コントロール  | ✓    |
-| FileContextDropZone | ドラッグ＆ドロップ     | ✓    |
-| DiffPreview         | 差分プレビューモーダル | ✓    |
-| DiffEditor          | Monaco差分エディタ     | ✓    |
-| EditCommandInput    | 編集コマンド入力       | ✓    |
-
-共通コンポーネントディレクトリを追加:
+### 3.1 Lintチェック
 
 ```
-components/
-├── common/           # NEW
-│   ├── Spinner.tsx
-│   ├── CloseIcon.tsx
-│   └── index.ts
-├── FileContextBadge.tsx
-├── ApplyControls.tsx
-...
+✓ ESLint: No errors
+✓ Prettier: Formatted
+✓ TypeScript: No type errors
 ```
 
-### タスク4: パフォーマンス最適化
+### 3.2 テストパス確認
 
-#### React.memo適用
-
-| コンポーネント      | 適用状況 | 理由                               |
-| ------------------- | -------- | ---------------------------------- |
-| FileContextBadge    | ✓        | 親の再レンダリング時の不要更新防止 |
-| ApplyControls       | ✓        | フォーム状態変更時の最適化         |
-| FileContextDropZone | -        | 状態管理hookを使用（効果薄）       |
-| DiffPreview         | ✓        | モーダル表示の最適化               |
-| DiffEditor          | ✓        | Monaco Editorの再初期化防止        |
-| EditCommandInput    | ✓        | フォーム入力最適化                 |
-| Spinner             | ✓        | 純粋なプレゼンテーション           |
-| CloseIcon           | ✓        | 純粋なプレゼンテーション           |
-
-#### displayName設定
-
-全てのmemo化コンポーネントにdisplayNameを設定:
-
-```typescript
-ComponentName.displayName = "ComponentName";
 ```
-
-### タスク5: 型定義の厳格化
-
-**評価結果**: 既存の型定義は厳格。`any`型の使用なし。
-
-```bash
-pnpm exec tsc --noEmit | grep workspace-chat-edit
-# → workspace-chat-editに関するエラーなし
+Test Files  12 passed (12)
+Tests       270 passed (270)
 ```
 
 ---
 
-## 変更ファイル一覧
+## 4. 完了条件チェック
 
-### 新規作成
-
-| ファイル               | 内容                       |
-| ---------------------- | -------------------------- |
-| `common/Spinner.tsx`   | 共通スピナーコンポーネント |
-| `common/CloseIcon.tsx` | 共通クローズアイコン       |
-| `common/index.ts`      | 共通コンポーネントexport   |
-
-### 修正
-
-| ファイル               | 変更内容                             |
-| ---------------------- | ------------------------------------ |
-| `FileContextBadge.tsx` | memo化, CloseIcon使用                |
-| `ApplyControls.tsx`    | memo化, Spinner/CloseIcon使用        |
-| `DiffEditor.tsx`       | memo化, Spinner使用                  |
-| `DiffPreview.tsx`      | memo化, CloseIcon使用                |
-| `EditCommandInput.tsx` | memo化, Spinner使用                  |
-| `index.ts`             | 共通コンポーネントexport追加         |
-| `__snapshots__/*.snap` | スナップショット更新（role属性追加） |
-
----
-
-## テスト結果
-
-```
-Test Files  16 passed (16)
-Tests       329 passed (329)
-Snapshots   2 updated
-```
-
-**全テストがグリーン（TDD原則維持）**
-
----
-
-## コード品質指標
-
-### Before vs After
-
-| 指標                 | Before | After | 改善 |
-| -------------------- | ------ | ----- | ---- |
-| Spinnerコード重複    | 3箇所  | 0箇所 | -3   |
-| CloseIconコード重複  | 3箇所  | 0箇所 | -3   |
-| React.memo適用       | 0      | 7     | +7   |
-| displayName設定      | 0      | 7     | +7   |
-| 共通コンポーネント数 | 0      | 2     | +2   |
-| 削減行数（推定）     | -      | ~94行 | 削減 |
-
----
-
-## Phase末端アクション
-
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] タスク1: コード重複の除去完了
-- [x] タスク2: 命名の改善（変更不要）
-- [x] タスク3: コンポーネント構造の最適化完了
-- [x] タスク4: パフォーマンス最適化完了
-- [x] タスク5: 型定義の厳格化（既に厳格）
-- [x] 全テストが成功する（Green状態維持）
-- [x] TypeScriptエラーなし
-- [x] 成果物が全て生成されている
-
----
-
-## 成果物
-
-| 成果物                   | パス                                    |
-| ------------------------ | --------------------------------------- |
-| 共通コンポーネント       | `components/common/`                    |
-| リファクタリングレポート | `outputs/phase-8/refactoring-report.md` |
-
----
-
-## 次のPhase
-
-**Phase 9: 品質保証** へ進行可能
-
-`docs/30-workflows/workspace-chat-edit-ui/phase-9-quality.md`
+- [x] コード品質の評価完了
+- [x] リファクタリング不要の判断完了
+- [x] アクセシビリティ改善完了（Phase 6で実施）
+- [x] Lint/Type チェック完了
+- [x] テスト全パス確認

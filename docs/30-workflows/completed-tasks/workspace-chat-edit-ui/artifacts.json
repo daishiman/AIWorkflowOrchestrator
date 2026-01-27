@@ -1,169 +1,162 @@
 {
-  "workflow": {
-    "name": "workspace-chat-edit-ui",
-    "issueNumber": 468,
-    "createdAt": "2026-01-24",
-    "status": "in-progress"
-  },
+  "task_id": "TASK-WCE-UI-001",
+  "issue_number": 494,
+  "title": "Workspace Chat Edit UI Components Implementation",
+  "branch": "feat/workspace-chat-edit-ui-494",
+  "created_at": "2026-01-27",
+  "status": "completed",
   "phases": [
     {
       "phase": 1,
       "name": "要件定義",
+      "category": "要件",
       "status": "completed",
       "artifacts": [
-        "outputs/phase-1/functional-requirements.md",
-        "outputs/phase-1/non-functional-requirements.md",
-        "outputs/phase-1/integration-requirements.md"
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/requirements-file-attachment-button.md",
+        "outputs/phase-1/requirements-file-context-list.md",
+        "outputs/phase-1/requirements-accessibility.md",
+        "outputs/phase-1/requirements-storybook.md"
       ]
     },
     {
       "phase": 2,
       "name": "設計",
+      "category": "設計",
       "status": "completed",
       "artifacts": [
-        "outputs/phase-2/component-design.md",
-        "outputs/phase-2/state-management-design.md",
-        "outputs/phase-2/accessibility-design.md",
-        "outputs/phase-2/monaco-integration-design.md"
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/design-file-attachment-button.md",
+        "outputs/phase-2/design-file-context-list.md",
+        "outputs/phase-2/design-accessibility.md",
+        "outputs/phase-2/design-storybook.md"
       ]
     },
     {
       "phase": 3,
       "name": "設計レビューゲート",
+      "category": "ゲート",
       "status": "completed",
       "artifacts": [
-        "outputs/phase-3/requirements-review.md",
-        "outputs/phase-3/technical-review.md",
-        "outputs/phase-3/integration-test-review.md",
-        "outputs/phase-3/review-result.md"
+        "outputs/phase-3/review-gate.md",
+        "outputs/phase-3/review-checklist.md",
+        "outputs/phase-3/spec-conformance-check.md",
+        "outputs/phase-3/review-summary.md"
       ]
     },
     {
       "phase": 4,
       "name": "テスト作成",
+      "category": "TDD-Red",
       "status": "completed",
       "artifacts": [
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/FileContextBadge.test.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/ApplyControls.test.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/FileContextDropZone.test.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/DiffPreview.test.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/DiffEditor.test.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/EditCommandInput.test.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/integration.test.tsx"
+        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/FileAttachmentButton.test.tsx",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/FileContextList.test.tsx"
       ]
     },
     {
       "phase": 5,
       "name": "実装",
+      "category": "TDD-Green",
       "status": "completed",
       "artifacts": [
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextBadge.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/ApplyControls.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextDropZone.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/DiffEditor.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/DiffPreview.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/EditCommandInput.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/index.ts",
-        "outputs/phase-5/implementation-report.md"
+        "apps/desktop/src/renderer/features/workspace-chat-edit/components/FileAttachmentButton.tsx",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextList.tsx",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/stories/FileAttachmentButton.stories.tsx",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/stories/FileContextList.stories.tsx",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/stories/FileContextBadge.stories.tsx",
+        "outputs/phase-4-5/implementation-report.md"
       ]
     },
     {
       "phase": 6,
       "name": "テスト拡充",
+      "category": "品質",
       "status": "completed",
       "artifacts": [
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/snapshots.test.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/__snapshots__/",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/accessibility.test.tsx",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/components/__tests__/integration-ui.test.tsx",
         "outputs/phase-6/test-expansion-report.md"
       ]
     },
     {
       "phase": 7,
-      "name": "カバレッジ確認",
+      "name": "テストカバレッジ確認",
+      "category": "品質",
       "status": "completed",
-      "artifacts": [
-        "outputs/phase-7/coverage-report.md",
-        "outputs/phase-7/coverage-analysis.md",
-        "outputs/phase-7/final-coverage-report.md"
-      ]
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
     },
     {
       "phase": 8,
       "name": "リファクタリング",
+      "category": "TDD-Refactor",
       "status": "completed",
-      "artifacts": [
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/common/Spinner.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/common/CloseIcon.tsx",
-        "apps/desktop/src/renderer/features/workspace-chat-edit/components/common/index.ts",
-        "outputs/phase-8/refactoring-report.md"
-      ]
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
     },
     {
       "phase": 9,
       "name": "品質保証",
+      "category": "品質",
       "status": "completed",
-      "artifacts": [
-        "outputs/phase-9/security-report.md",
-        "outputs/phase-9/performance-report.md",
-        "outputs/phase-9/quality-report.md"
-      ]
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"]
     },
     {
       "phase": 10,
       "name": "最終レビューゲート",
+      "category": "ゲート",
       "status": "completed",
-      "artifacts": [
-        "outputs/phase-10/requirements-review.md",
-        "outputs/phase-10/design-review.md",
-        "outputs/phase-10/code-quality-review.md",
-        "outputs/phase-10/integration-test-review.md",
-        "outputs/phase-10/review-result.md"
-      ]
+      "artifacts": ["outputs/phase-10/final-review-gate.md"]
     },
     {
       "phase": 11,
       "name": "手動テスト",
+      "category": "検証",
       "status": "completed",
-      "artifacts": [
-        "outputs/phase-11/functional-test-result.md",
-        "outputs/phase-11/error-handling-test-result.md",
-        "outputs/phase-11/accessibility-test-result.md",
-        "outputs/phase-11/ui-ux-test-result.md",
-        "outputs/phase-11/integration-test-result.md",
-        "outputs/phase-11/discovered-issues.md"
-      ]
+      "artifacts": ["outputs/phase-11/manual-testing-report.md"]
     },
     {
       "phase": 12,
       "name": "ドキュメント更新",
+      "category": "文書化",
       "status": "completed",
       "artifacts": [
         "outputs/phase-12/implementation-guide.md",
         "outputs/phase-12/documentation-changelog.md",
-        "outputs/phase-12/unassigned-task-report.md"
+        "outputs/phase-12/unassigned-task-detection.md"
       ]
     },
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "pending",
-      "artifacts": []
+      "category": "完了",
+      "status": "skipped",
+      "artifacts": [],
+      "note": "ユーザーの指示によりスキップ"
     }
   ],
-  "specificationFiles": [
-    "index.md",
-    "phase-1-requirements.md",
-    "phase-2-design.md",
-    "phase-3-design-review.md",
-    "phase-4-test-creation.md",
-    "phase-5-implementation.md",
-    "phase-6-test-expansion.md",
-    "phase-7-coverage-check.md",
-    "phase-8-refactoring.md",
-    "phase-9-quality.md",
-    "phase-10-final-review.md",
-    "phase-11-manual-test.md",
-    "phase-12-documentation.md",
-    "phase-13-pr-creation.md"
-  ]
+  "dependencies": {
+    "completed": [
+      "workspace-chat-edit-main-process",
+      "workspace-chat-edit-core",
+      "Issue #468 (UI基盤)"
+    ]
+  },
+  "deliverables": {
+    "components": ["FileAttachmentButton.tsx", "FileContextList.tsx"],
+    "tests": [
+      "FileAttachmentButton.test.tsx",
+      "FileContextList.test.tsx",
+      "accessibility.test.tsx",
+      "integration-ui.test.tsx"
+    ],
+    "stories": [
+      "FileAttachmentButton.stories.tsx",
+      "FileContextList.stories.tsx"
+    ],
+    "documentation": [
+      "implementation-guide.md",
+      "documentation-changelog.md",
+      "unassigned-task-detection.md"
+    ]
+  }
 }
