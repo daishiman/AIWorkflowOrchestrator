@@ -3,6 +3,13 @@
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
 
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                               |
+| ---------- | ---------- | ---------------------------------------------------------------------- |
+| v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（3箇所）    |
+| v1.0.0     | -          | 初版作成                                                               |
+
 ---
 
 ## 認証アーキテクチャ（Supabase + Electron）
@@ -28,18 +35,18 @@
 
 **詳細フロー**:
 
-```
-1. Renderer: login(provider) 呼び出し
-2. Main: Supabase OAuth URL 生成、外部ブラウザで開く
-3. ブラウザ: OAuth 認証完了
-4. Supabase: aiworkflow://auth/callback#access_token=xxx にリダイレクト
-5. Main: カスタムプロトコルでコールバック受信（app.on('open-url')）
-6. Main: URLからaccess_token/refresh_tokenを抽出
-7. Main: Refresh TokenをsafeStorage.encryptString()で暗号化
-8. Main: 暗号化トークンをelectron-storeに保存
-9. Main → Renderer: auth:state-changed イベント送信
-10. Renderer: Zustand storeの認証状態を更新
-```
+| ステップ | プロセス       | 処理内容                                            |
+| -------- | -------------- | --------------------------------------------------- |
+| 1        | Renderer       | login(provider) 呼び出し                            |
+| 2        | Main           | Supabase OAuth URL 生成、外部ブラウザで開く         |
+| 3        | ブラウザ       | OAuth 認証完了                                      |
+| 4        | Supabase       | aiworkflow://auth/callback#access_token=xxx にリダイレクト |
+| 5        | Main           | カスタムプロトコルでコールバック受信（app.on('open-url')） |
+| 6        | Main           | URLからaccess_token/refresh_tokenを抽出             |
+| 7        | Main           | Refresh TokenをsafeStorage.encryptString()で暗号化  |
+| 8        | Main           | 暗号化トークンをelectron-storeに保存                |
+| 9        | Main → Renderer | auth:state-changed イベント送信                     |
+| 10       | Renderer       | Zustand storeの認証状態を更新                       |
 
 **実装ファイル**:
 
@@ -89,14 +96,15 @@
 
 ### 認証状態遷移
 
-```mermaid
-stateDiagram-v2
-    [*] --> Checking: アプリ起動
-    Checking --> Authenticated: セッション復元成功
-    Checking --> Unauthenticated: セッションなし
-    Unauthenticated --> Authenticated: ログイン成功
-    Authenticated --> Unauthenticated: ログアウト
-```
+アプリケーション起動時から認証完了までの状態遷移は以下の通り。
+
+| 現在の状態      | トリガー           | 遷移先状態      |
+| --------------- | ------------------ | --------------- |
+| （初期状態）    | アプリ起動         | Checking        |
+| Checking        | セッション復元成功 | Authenticated   |
+| Checking        | セッションなし     | Unauthenticated |
+| Unauthenticated | ログイン成功       | Authenticated   |
+| Authenticated   | ログアウト         | Unauthenticated |
 
 **状態と表示の対応**:
 
@@ -229,11 +237,9 @@ RAGシステムのコア機能として、SQLite FTS5による高速全文検索
 
 #### スコアリング方式
 
-**BM25 + Sigmoid正規化**により0-1スケールの関連度スコアを提供：
+**BM25 + Sigmoid正規化**により0-1スケールの関連度スコアを提供する。
 
-```
-正規化スコア = 1 / (1 + exp(-scale_factor * bm25_score))
-```
+正規化スコアはSigmoid関数を用いて計算される。具体的には、BM25スコアにスケールファクターを乗じた値を負数として指数関数の引数とし、1を加算した結果の逆数を取る。これにより、生のBM25スコアを0から1の範囲に正規化する。
 
 | パラメータ   | デフォルト値 | 説明                   |
 | ------------ | ------------ | ---------------------- |

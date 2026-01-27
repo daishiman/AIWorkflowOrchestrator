@@ -52,51 +52,54 @@
 
 ### アーキテクチャ
 
-**実装場所**: `packages/shared/src/services/graph/`
+**実装場所**: packages/shared/src/services/graph/
 
-```
-┌────────────────────────────────────────────────────────┐
-│                   Application Layer                     │
-│             (GraphRAG Query Handler)                    │
-└────────────────────────────────────────────────────────┘
-                           │
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│            ICommunitySummarizer (Interface)             │
-│  - summarize() 単一コミュニティ要約                     │
-│  - summarizeAll() 全コミュニティ一括要約                │
-│  - searchSummaries() セマンティック検索                 │
-│  - updateSummary() 要約更新                             │
-└────────────────────────────────────────────────────────┘
-          │              │               │
-    ┌─────┘              │               └─────┐
-    ▼                    ▼                     ▼
-┌──────────────┐  ┌────────────────┐  ┌─────────────────┐
-│ ILLMProvider │  │IEmbeddingProvider│ │ICommunityRepository│
-│ (LLM生成)    │  │  (埋め込み生成)   │ │  (永続化)         │
-└──────────────┘  └────────────────┘  └─────────────────┘
-```
+#### レイヤー構成
+
+| レイヤー           | コンポーネント                 | 説明                                       |
+| ------------------ | ------------------------------ | ------------------------------------------ |
+| Application Layer  | GraphRAG Query Handler         | クエリ処理を担当するアプリケーション層     |
+| Service Layer      | ICommunitySummarizer           | コミュニティ要約の中核インターフェース     |
+| Provider Layer     | ILLMProvider                   | LLMによる要約文生成                        |
+| Provider Layer     | IEmbeddingProvider             | 埋め込みベクトル生成                       |
+| Repository Layer   | ICommunityRepository           | 要約データの永続化                         |
+
+#### ICommunitySummarizer メソッド一覧
+
+| メソッド           | 説明                                               |
+| ------------------ | -------------------------------------------------- |
+| summarize()        | 単一コミュニティの要約生成                         |
+| summarizeAll()     | 全コミュニティの一括要約                           |
+| searchSummaries()  | セマンティック検索による要約取得                   |
+| updateSummary()    | 既存要約の更新                                     |
 
 ### 処理フロー
 
-```
-1. summarize()
-   ├─ 子コミュニティ要約取得（useChildSummaries=true時）
-   ├─ プロンプト構築
-   ├─ LLM呼び出し
-   ├─ JSONパース・検証
-   ├─ 埋め込み生成（generateEmbedding=true時）
-   └─ DB保存
+#### summarize() 処理ステップ
 
-2. summarizeAll()
-   ├─ レベル昇順でソート（子→親）
-   ├─ 同レベル内は並列処理（maxConcurrency制限）
-   └─ 統計情報集計
+| ステップ | 処理内容                   | 条件                              |
+| -------- | -------------------------- | --------------------------------- |
+| 1        | 子コミュニティ要約取得     | useChildSummaries=true の場合     |
+| 2        | プロンプト構築             | 常時実行                          |
+| 3        | LLM呼び出し                | 常時実行                          |
+| 4        | JSONパース・検証           | 常時実行                          |
+| 5        | 埋め込み生成               | generateEmbedding=true の場合     |
+| 6        | DB保存                     | 常時実行                          |
 
-3. searchSummaries()
-   ├─ クエリの埋め込み生成
-   └─ リポジトリで類似検索
-```
+#### summarizeAll() 処理ステップ
+
+| ステップ | 処理内容                   | 備考                              |
+| -------- | -------------------------- | --------------------------------- |
+| 1        | レベル昇順でソート         | 子→親の順で処理                   |
+| 2        | 同レベル内は並列処理       | maxConcurrency制限あり            |
+| 3        | 統計情報集計               | トークン数・処理時間など          |
+
+#### searchSummaries() 処理ステップ
+
+| ステップ | 処理内容                   | 備考                              |
+| -------- | -------------------------- | --------------------------------- |
+| 1        | クエリの埋め込み生成       | IEmbeddingProvider使用            |
+| 2        | リポジトリで類似検索       | コサイン類似度による検索          |
 
 ---
 
@@ -188,78 +191,46 @@
 
 ### インポート方法
 
-```typescript
-// 型のインポート（推奨：バレルファイルから）
-import type {
-  CommunitySummary,
-  CommunitySummarizationOptions,
-  CommunitySummarizationResult,
-} from "@repo/shared/services/graph";
+型およびエラー型のインポートは、バレルファイルから行う。
 
-// 値のインポート（エラー型、enum）
-import {
-  CommunitySummarizationErrorCode,
-  CommunitySummarizationError,
-} from "@repo/shared/services/graph";
-```
+| インポート種別 | インポート対象                                                                 | インポート元                          |
+| -------------- | ------------------------------------------------------------------------------ | ------------------------------------- |
+| 型（type）     | CommunitySummary, CommunitySummarizationOptions, CommunitySummarizationResult  | @repo/shared/services/graph           |
+| 値（エラー型） | CommunitySummarizationErrorCode, CommunitySummarizationError                   | @repo/shared/services/graph           |
 
 ### 基本的なコミュニティ要約
 
-```typescript
-import type { CommunitySummarizationResult } from "@repo/shared/services/graph";
-import { CommunitySummarizer } from "@repo/shared/services/graph";
+単一コミュニティの要約生成を行うパターン。
 
-const summarizer = new CommunitySummarizer(
-  llmProvider,
-  embeddingProvider,
-  graphStore,
-  communityRepo
-);
+| ステップ | 操作                                                                   | 説明                               |
+| -------- | ---------------------------------------------------------------------- | ---------------------------------- |
+| 1        | CommunitySummarizer インスタンス作成                                   | llmProvider, embeddingProvider, graphStore, communityRepo を注入 |
+| 2        | summarize() メソッド呼び出し                                           | community, entities, relations, options を渡す |
+| 3        | Result.success 判定                                                    | 成功時は data.summary, data.keywords を使用 |
 
-// 単一コミュニティ要約
-const result = await summarizer.summarize(
-  community,
-  entities,
-  relations,
-  { summaryStyle: "concise" }
-);
-
-if (result.success) {
-  console.log(result.data.summary);
-  console.log(result.data.keywords);
-}
-```
+**オプション指定例**: summaryStyle を "concise" / "detailed" / "technical" から選択可能。
 
 ### 全コミュニティ一括要約
 
-```typescript
-// 階層順（子→親）で一括要約
-const allResult = await summarizer.summarizeAll(communityStructure, {
-  maxConcurrency: 5,
-  generateEmbedding: true,
-});
+階層順（子→親）で全コミュニティを一括要約するパターン。
 
-if (allResult.success) {
-  console.log(`Generated ${allResult.data.summaries.length} summaries`);
-  console.log(`Tokens used: ${allResult.data.totalTokensUsed}`);
-}
-```
+| ステップ | 操作                                   | 説明                               |
+| -------- | -------------------------------------- | ---------------------------------- |
+| 1        | summarizeAll() メソッド呼び出し        | communityStructure, options を渡す |
+| 2        | Result.success 判定                    | 成功時は統計情報を取得             |
+
+**取得可能な統計情報**: summaries.length（生成数）、totalTokensUsed（使用トークン数）、processingTimeMs（処理時間）。
 
 ### セマンティック検索
 
-```typescript
-// クエリで関連コミュニティを検索
-const searchResult = await summarizer.searchSummaries(
-  "機械学習とデータ分析",
-  { limit: 5 }
-);
+クエリ文字列で関連コミュニティを検索するパターン。
 
-if (searchResult.success) {
-  for (const summary of searchResult.data) {
-    console.log(`Level ${summary.level}: ${summary.summary}`);
-  }
-}
-```
+| ステップ | 操作                                   | 説明                               |
+| -------- | -------------------------------------- | ---------------------------------- |
+| 1        | searchSummaries() メソッド呼び出し     | query（検索文字列）, options を渡す |
+| 2        | Result.success 判定                    | 成功時は CommunitySummary[] を取得 |
+
+**オプション**: limit（最大結果数）、level（特定レベルのみ検索）を指定可能。
 
 ---
 
@@ -309,5 +280,6 @@ if (searchResult.success) {
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-26 | 1.2.0      | 仕様ガイドライン準拠: コード例を表形式・文章に変換     |
 | 2026-01-13 | 1.1.0      | バレルファイルからのインポート例追加（SHARED-TYPE-EXPORT-01完了） |
 | 2026-01-11 | 1.0.0      | 初版作成（CONV-08-03タスク完了に伴い）                 |

@@ -5,6 +5,15 @@
 
 ---
 
+## 変更履歴
+
+| バージョン | 日付 | 変更内容 |
+|------------|------|----------|
+| v1.0.0 | - | 初版作成 |
+| v1.1.0 | 2026-01-26 | コードブロックを表形式・文章に変換（spec-guidelines.md準拠） |
+
+---
+
 ## 採用技術と選定理由
 
 | 技術 | 役割 | 選定理由 |
@@ -16,29 +25,22 @@
 
 ## アーキテクチャ概要
 
-```
-アプリケーション層
-├── Next.js Web App（バックエンドAPI）
-├── Electron Desktop App
-└── CLI Tools
+本システムは4層構成で設計されており、全てのアプリケーションが統一されたデータアクセス層を共有する。
 
-↓ すべて同一のDrizzle ORMスキーマを使用
+### アーキテクチャ層構成
 
-Drizzle ORM Layer
-├── 型安全なクエリビルダー
-├── 統一スキーマ定義（packages/shared/infrastructure/db/）
-└── マイグレーション管理
+| 層 | コンポーネント | 説明 |
+|----|----------------|------|
+| **アプリケーション層** | Next.js Web App | バックエンドAPIを提供 |
+|  | Electron Desktop App | デスクトップクライアント |
+|  | CLI Tools | コマンドラインツール群 |
+| **ORM層** | Drizzle ORM | 型安全なクエリビルダー、統一スキーマ定義（packages/shared/infrastructure/db/）、マイグレーション管理を担当 |
+| **クライアント層** | libSQL Client | ローカルモード（file://local.db）でオフライン動作、クラウドモード（libsql://xxx.turso.io）でオンライン同期 |
+| **データベース層** | Turso Cloud DB | 本番環境のクラウドデータベース、Embedded Replicasによる自動同期 |
 
-↓
+### データフロー
 
-libSQL Client
-├── ローカルモード: file://local.db（オフライン動作）
-└── クラウドモード: libsql://xxx.turso.io（オンライン同期）
-
-↓ Embedded Replicas で自動同期
-
-Turso Cloud DB（本番環境）
-```
+全てのアプリケーションは同一のDrizzle ORMスキーマを使用し、libSQL Clientを経由してTurso Cloud DBと通信する。Embedded Replicas機能により、ローカルとクラウド間の自動同期が実現される。
 
 ## 設計原則
 
@@ -75,24 +77,33 @@ Turso Cloud DB（本番環境）
 
 ## ディレクトリ構成
 
-```
-packages/shared/
-├── src/
-│   ├── db/
-│   │   ├── schema/
-│   │   │   ├── index.ts          # スキーマエントリーポイント ✅
-│   │   │   └── chat-history.ts   # チャット履歴スキーマ ✅
-│   │   ├── env.ts                # 環境変数管理（Zod検証）✅
-│   │   ├── migrate.ts            # マイグレーション実行スクリプト ✅
-│   │   ├── utils.ts              # データベースユーティリティ関数 ✅
-│   │   └── index.ts              # クライアントエクスポート ✅
-│   ├── repositories/             # リポジトリ層
-│   ├── features/                 # 機能別サービス
-│   └── types/                    # 型定義
-├── drizzle/
-│   └── migrations/               # マイグレーションファイル
-└── drizzle.config.ts             # Drizzle設定 ✅
-```
+データベース関連ファイルは `packages/shared/` 配下に配置する。
+
+### packages/shared/src/db/ ディレクトリ
+
+| ファイル/ディレクトリ | 説明 | 実装状態 |
+|----------------------|------|----------|
+| schema/index.ts | スキーマエントリーポイント | 実装済 |
+| schema/chat-history.ts | チャット履歴スキーマ | 実装済 |
+| env.ts | 環境変数管理（Zod検証） | 実装済 |
+| migrate.ts | マイグレーション実行スクリプト | 実装済 |
+| utils.ts | データベースユーティリティ関数 | 実装済 |
+| index.ts | クライアントエクスポート | 実装済 |
+
+### packages/shared/src/ その他ディレクトリ
+
+| ディレクトリ | 説明 |
+|--------------|------|
+| repositories/ | リポジトリ層 |
+| features/ | 機能別サービス |
+| types/ | 型定義 |
+
+### packages/shared/ ルートレベル
+
+| ファイル/ディレクトリ | 説明 | 実装状態 |
+|----------------------|------|----------|
+| drizzle/migrations/ | マイグレーションファイル格納先 | - |
+| drizzle.config.ts | Drizzle設定 | 実装済 |
 
 ## 基盤モジュール
 
@@ -131,24 +142,26 @@ packages/shared/
 | `verbose` | `true` | 詳細ログ出力 |
 | `strict` | `true` | 厳密モード |
 
-**関連npmスクリプト**:
+### 関連npmスクリプト
 
-```json
-{
-  "db:generate": "drizzle-kit generate",
-  "db:migrate": "tsx src/db/migrate.ts",
-  "db:studio": "drizzle-kit studio"
-}
-```
+| スクリプト名 | 実行コマンド | 説明 |
+|-------------|-------------|------|
+| db:generate | drizzle-kit generate | マイグレーションファイル生成 |
+| db:migrate | tsx src/db/migrate.ts | マイグレーション実行 |
+| db:studio | drizzle-kit studio | Drizzle Studio起動（DBビューア） |
 
 ## 使用例
 
-```typescript
-import { db, chatSessions, chatMessages } from "@repo/shared/db";
+データベースクライアントは `@repo/shared/db` からインポートして使用する。
 
-// クエリ実行
-const sessions = await db.select().from(chatSessions);
-```
+### 基本的なクエリ実行
+
+| 操作 | 説明 |
+|------|------|
+| インポート | `@repo/shared/db` から `db`, `chatSessions`, `chatMessages` 等をインポート |
+| セッション一覧取得 | `db.select().from(chatSessions)` でチャットセッション一覧を取得 |
+
+Drizzle ORMのクエリビルダーを使用し、型安全にデータベース操作を行う。詳細な実装パターンについては、[データベース実装](./database-implementation.md)を参照。
 
 ---
 

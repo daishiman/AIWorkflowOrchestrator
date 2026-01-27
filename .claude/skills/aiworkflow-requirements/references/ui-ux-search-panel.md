@@ -201,20 +201,21 @@
 
 ### コンポーネント構成
 
-```
-apps/desktop/src/features/search/
-├── components/
-│   ├── SearchPanel.tsx           # ファイル内検索パネル
-│   └── WorkspaceSearchPanel.tsx  # ワークスペース検索パネル
-├── stores/
-│   └── useSearchStore.ts         # Zustand検索状態管理
-├── hooks/
-│   └── useSearchKeyboardShortcuts.ts  # キーボードショートカット
-├── adapters/
-│   └── TextAreaEditorAdapter.ts  # エディタアダプター
-├── types.ts                      # 型定義
-└── index.ts                      # バレルエクスポート
-```
+**ディレクトリ**: apps/desktop/src/features/search/
+
+| ディレクトリ/ファイル | 役割                           |
+| --------------------- | ------------------------------ |
+| components/           | UIコンポーネント               |
+| ├─ SearchPanel.tsx    | ファイル内検索パネル           |
+| └─ WorkspaceSearchPanel.tsx | ワークスペース検索パネル |
+| stores/               | 状態管理                       |
+| └─ useSearchStore.ts  | Zustand検索状態管理            |
+| hooks/                | カスタムフック                 |
+| └─ useSearchKeyboardShortcuts.ts | キーボードショートカット |
+| adapters/             | アダプター                     |
+| └─ TextAreaEditorAdapter.ts | エディタアダプター       |
+| types.ts              | 型定義                         |
+| index.ts              | バレルエクスポート             |
 
 ### EditorView統合フック
 
@@ -228,76 +229,81 @@ EditorViewからの検索機能呼び出しは、以下のカスタムフック�
 
 ### EditorInstanceインターフェース
 
-検索パネルとエディタの連携は、EditorInstanceインターフェースで抽象化する：
+検索パネルとエディタの連携は、EditorInstanceインターフェースで抽象化する。
 
-```typescript
-interface EditorInstance {
-  getContent: () => string;
-  setHighlights: (matches: SearchMatch[]) => void;
-  getHighlights: () => SearchMatch[];
-  scrollToLine: (line: number, column?: number) => void;
-  getCursorPosition: () => { line: number; column: number };
-  setCursorPosition: (line: number, column: number) => void;
-  replaceText: (line: number, column: number, length: number, replacement: string) => void;
-  replaceAllText: (matches: SearchMatch[], replacement: string) => void;
-  focus: () => void;
-}
-```
+**EditorInstance メソッド一覧**:
+
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| ---------- | ---- | ------ | ---- |
+| getContent | なし | string | エディタの内容を取得 |
+| setHighlights | matches: SearchMatch[] | void | 検索マッチをハイライト表示 |
+| getHighlights | なし | SearchMatch[] | 現在のハイライトを取得 |
+| scrollToLine | line: number, column?: number | void | 指定行にスクロール |
+| getCursorPosition | なし | { line: number; column: number } | カーソル位置を取得 |
+| setCursorPosition | line: number, column: number | void | カーソル位置を設定 |
+| replaceText | line: number, column: number, length: number, replacement: string | void | テキストを置換 |
+| replaceAllText | matches: SearchMatch[], replacement: string | void | 全マッチを一括置換 |
+| focus | なし | void | エディタにフォーカス |
 
 **設計理由**: TextArea、Monaco Editor、CodeMirror等の異なるエディタ実装を同一インターフェースで扱えるようにする（Adapter Pattern）。
 
 ### 検索プロバイダパターン
 
-ワークスペース検索は、依存性注入パターンで実装する：
+ワークスペース検索は、依存性注入パターンで実装する。
 
-```typescript
-type WorkspaceSearchProvider = (
-  wsPath: string,
-  query: string,
-  options: SearchProviderOptions,
-) => AsyncGenerator<FileSearchResult>;
-```
+**WorkspaceSearchProvider型の定義**:
+
+| 引数名 | 型 | 説明 |
+| ------ | -- | ---- |
+| wsPath | string | ワークスペースのパス |
+| query | string | 検索クエリ |
+| options | SearchProviderOptions | 検索オプション |
+
+| 戻り値 | 説明 |
+| ------ | ---- |
+| AsyncGenerator&lt;FileSearchResult&gt; | ファイル検索結果を非同期で返すジェネレータ |
 
 **設計理由**: テスト時にモック実装を注入可能、IPC呼び出しをEditorView側でラップ。
 
 ### 統合パターン（EditorView）
 
-```typescript
-function EditorView() {
-  // 1. エディタアダプター
-  const { editorInstanceRef } = useEditorInstance({
-    textAreaRef,
-    editorContent,
-    setEditorContent,
-  });
+EditorViewコンポーネントでの検索機能統合は、以下の4ステップで構成される。
 
-  // 2. 検索プロバイダ
-  const workspaceSearchProvider = useWorkspaceSearch();
+**統合ステップ**:
 
-  // 3. キーボードショートカット
-  useSearchKeyboardShortcuts({
-    isSearchPanelOpen,
-    searchMode,
-    selectedFilePath,
-    searchPanelRef,
-    setSearchMode,
-    setShowReplace,
-    setIsSearchPanelOpen,
-  });
+| ステップ | 処理内容 | 使用フック/コンポーネント |
+| -------- | -------- | ------------------------- |
+| 1. エディタアダプター | TextAreaRefとコンテンツを基にEditorInstanceを生成 | useEditorInstance |
+| 2. 検索プロバイダ | ワークスペース検索プロバイダを取得 | useWorkspaceSearch |
+| 3. キーボードショートカット | 検索パネルの開閉・モード切替を管理 | useSearchKeyboardShortcuts |
+| 4. 検索パネル表示 | searchModeに応じたパネルを条件付きレンダリング | SearchPanel / WorkspaceSearchPanel |
 
-  // 4. 検索パネル表示
-  return (
-    <>
-      {searchMode === "file" && (
-        <SearchPanel editorRef={editorInstanceRef} />
-      )}
-      {searchMode === "workspace" && (
-        <WorkspaceSearchPanel searchProvider={workspaceSearchProvider} />
-      )}
-    </>
-  );
-}
-```
+**useEditorInstanceの引数**:
+
+| 引数 | 説明 |
+| ---- | ---- |
+| textAreaRef | TextArea要素への参照 |
+| editorContent | 現在のエディタ内容 |
+| setEditorContent | 内容更新関数 |
+
+**useSearchKeyboardShortcutsの引数**:
+
+| 引数 | 説明 |
+| ---- | ---- |
+| isSearchPanelOpen | パネル開閉状態 |
+| searchMode | 現在の検索モード |
+| selectedFilePath | 選択中のファイルパス |
+| searchPanelRef | 検索パネルへの参照 |
+| setSearchMode | モード設定関数 |
+| setShowReplace | 置換表示設定関数 |
+| setIsSearchPanelOpen | パネル開閉設定関数 |
+
+**パネル表示条件**:
+
+| searchMode | 表示されるコンポーネント | 渡すProps |
+| ---------- | ------------------------ | --------- |
+| "file" | SearchPanel | editorRef（EditorInstance参照） |
+| "workspace" | WorkspaceSearchPanel | searchProvider（検索プロバイダ） |
 
 ---
 
@@ -305,76 +311,80 @@ function EditorView() {
 
 ### ファイル構成
 
-```
-apps/desktop/src/features/search/
-├── adapters/
-│   └── TextAreaEditorAdapter.ts    # EditorInstance アダプター実装
-├── utils/
-│   ├── executeSearch.ts            # 検索ロジックユーティリティ
-│   ├── highlightUtils.tsx          # ハイライトユーティリティ
-│   └── index.ts                    # バレルエクスポート
-├── components/
-│   ├── SearchPanel.tsx             # ファイル内検索パネル
-│   └── WorkspaceSearchPanel.tsx    # ワークスペース検索パネル
-├── stores/
-│   └── useSearchStore.ts           # Zustand検索状態管理
-└── __tests__/                      # テストファイル（275テスト）
-```
+**ディレクトリ**: apps/desktop/src/features/search/
+
+| ディレクトリ/ファイル | 役割 |
+| --------------------- | ---- |
+| adapters/ | アダプター層 |
+| └─ TextAreaEditorAdapter.ts | EditorInstance アダプター実装 |
+| utils/ | ユーティリティ |
+| ├─ executeSearch.ts | 検索ロジックユーティリティ |
+| ├─ highlightUtils.tsx | ハイライトユーティリティ |
+| └─ index.ts | バレルエクスポート |
+| components/ | UIコンポーネント |
+| ├─ SearchPanel.tsx | ファイル内検索パネル |
+| └─ WorkspaceSearchPanel.tsx | ワークスペース検索パネル |
+| stores/ | 状態管理 |
+| └─ useSearchStore.ts | Zustand検索状態管理 |
+| __tests__/ | テストファイル（275テスト） |
 
 ### TextAreaEditorAdapter
 
-EditorInstanceインターフェースのTextArea実装:
+EditorInstanceインターフェースのTextArea実装。
 
-```typescript
-class TextAreaEditorAdapter implements EditorInstance {
-  constructor(
-    textareaRef: React.RefObject<HTMLTextAreaElement>,
-    onHighlightsChange?: (highlights: Highlight[]) => void,
-  );
+**コンストラクタ**:
 
-  // コンテンツ操作
-  getContent(): string;
-  setContent(content: string): void;
-  insertText(text: string, position?: number): void;
+| 引数 | 型 | 説明 |
+| ---- | -- | ---- |
+| textareaRef | React.RefObject&lt;HTMLTextAreaElement&gt; | TextArea要素への参照 |
+| onHighlightsChange | (highlights: Highlight[]) => void（オプション） | ハイライト変更時のコールバック |
 
-  // 選択・カーソル
-  getSelection(): { start: number; end: number };
-  setSelection(start: number, end: number): void;
-  getCursorPosition(): number;
-  setCursorPosition(position: number): void;
+**メソッド一覧**:
 
-  // ハイライト
-  setHighlights(highlights: Highlight[]): void;
-  clearHighlights(): void;
-
-  // スクロール・フォーカス
-  scrollToLine(line: number, column?: number): void;
-  focus(): void;
-}
-```
+| カテゴリ | メソッド名 | 引数 | 戻り値 | 説明 |
+| -------- | ---------- | ---- | ------ | ---- |
+| コンテンツ操作 | getContent | なし | string | 内容を取得 |
+| コンテンツ操作 | setContent | content: string | void | 内容を設定 |
+| コンテンツ操作 | insertText | text: string, position?: number | void | テキストを挿入 |
+| 選択・カーソル | getSelection | なし | { start: number; end: number } | 選択範囲を取得 |
+| 選択・カーソル | setSelection | start: number, end: number | void | 選択範囲を設定 |
+| 選択・カーソル | getCursorPosition | なし | number | カーソル位置を取得 |
+| 選択・カーソル | setCursorPosition | position: number | void | カーソル位置を設定 |
+| ハイライト | setHighlights | highlights: Highlight[] | void | ハイライトを設定 |
+| ハイライト | clearHighlights | なし | void | ハイライトをクリア |
+| スクロール・フォーカス | scrollToLine | line: number, column?: number | void | 指定行にスクロール |
+| スクロール・フォーカス | focus | なし | void | フォーカスを設定 |
 
 ### executeSearch ユーティリティ
 
-検索ロジックをコンポーネントから分離:
+検索ロジックをコンポーネントから分離。
 
-```typescript
-interface SearchOptions {
-  caseSensitive: boolean;
-  wholeWord: boolean;
-  regex: boolean;
-}
+**SearchOptions（検索オプション）**:
 
-interface SearchResult {
-  matches: SearchMatch[];
-  error: string | null;  // 正規表現エラー等
-}
+| プロパティ | 型 | 説明 |
+| ---------- | -- | ---- |
+| caseSensitive | boolean | 大文字小文字を区別するか |
+| wholeWord | boolean | 単語単位で検索するか |
+| regex | boolean | 正規表現検索を有効にするか |
 
-function executeSearch(
-  content: string,
-  query: string,
-  options: SearchOptions,
-): SearchResult;
-```
+**SearchResult（検索結果）**:
+
+| プロパティ | 型 | 説明 |
+| ---------- | -- | ---- |
+| matches | SearchMatch[] | マッチした結果の配列 |
+| error | string または null | エラーメッセージ（正規表現エラー等） |
+
+**executeSearch関数**:
+
+| 引数 | 型 | 説明 |
+| ---- | -- | ---- |
+| content | string | 検索対象のコンテンツ |
+| query | string | 検索クエリ |
+| options | SearchOptions | 検索オプション |
+
+| 戻り値 | 説明 |
+| ------ | ---- |
+| SearchResult | マッチ結果とエラー情報を含むオブジェクト |
 
 ### EditorView統合フック
 
@@ -448,3 +458,11 @@ function executeSearch(
 - F3/Shift+F3 で次/前の検索結果へ移動
 - ファイル境界を跨いで連続的に移動
 - 現在位置インジケーター表示（例: 3/15）
+
+---
+
+## 変更履歴
+
+| 日付 | 変更内容 |
+| ---- | -------- |
+| 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |

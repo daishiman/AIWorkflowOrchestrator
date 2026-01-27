@@ -2,7 +2,7 @@
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
-> 更新日: 2026-01-22
+> 更新日: 2026-01-26
 > 関連タスク: ARCH-001 Clean Architecture Refactoring, UT-006 React Context DI実装
 
 ---
@@ -16,27 +16,16 @@
 
 ## レイヤー構成
 
-```
-┌─────────────────────────────────────────────────┐
-│                    UI Layer                      │
-│          (React Components, Context, Hooks)      │
-└──────────────────────┬──────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────┐
-│               Application Layer                  │
-│               (Use Cases, DTOs)                  │
-└──────────────────────┬──────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────┐
-│                 Domain Layer                     │
-│    (Entities, Value Objects, Repository IF)      │
-└──────────────────────┬──────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────┐
-│             Infrastructure Layer                 │
-│          (Drizzle Repositories, Mappers)         │
-└─────────────────────────────────────────────────┘
-```
+チャット履歴機能は以下の4層構造で構成される。依存関係は上位から下位へ一方向に向かう。
+
+| 層番号 | レイヤー名           | 構成要素                             | 説明                     |
+| ------ | -------------------- | ------------------------------------ | ------------------------ |
+| 1      | UI Layer             | React Components, Context, Hooks     | ユーザーインターフェース |
+| 2      | Application Layer    | Use Cases, DTOs                      | アプリケーションロジック |
+| 3      | Domain Layer         | Entities, Value Objects, Repository IF | ビジネスルール           |
+| 4      | Infrastructure Layer | Drizzle Repositories, Mappers        | 外部システム連携         |
+
+**依存方向**: UI → Application → Domain ← Infrastructure
 
 ---
 
@@ -55,59 +44,56 @@
 
 ## ディレクトリ構成
 
-```
-packages/shared/src/
-├── core/
-│   ├── Result.ts              # Result<T, E>型
-│   └── errors/
-│       ├── index.ts           # エラー型エクスポート
-│       ├── AppError.ts        # 基底エラークラス
-│       ├── DomainError.ts     # ドメインエラー（abstract）
-│       └── UseCaseError.ts    # Use Caseエラー
-│
-└── features/chat-history/
-    ├── domain/
-    │   ├── entities/
-    │   │   ├── ChatSession.ts       # セッションエンティティ
-    │   │   └── ChatMessage.ts       # メッセージエンティティ
-    │   ├── value-objects/
-    │   │   ├── ChatSessionId.ts     # セッションID
-    │   │   ├── ChatSessionTitle.ts  # セッションタイトル
-    │   │   ├── UserId.ts            # ユーザーID
-    │   │   ├── ChatMessageId.ts     # メッセージID
-    │   │   ├── MessageContent.ts    # メッセージ内容
-    │   │   └── MessageRole.ts       # メッセージ役割
-    │   └── repositories/
-    │       ├── IChatSessionRepository.ts  # セッションリポジトリIF
-    │       └── IChatMessageRepository.ts  # メッセージリポジトリIF
-    │
-    ├── application/
-    │   ├── dto/
-    │   │   └── index.ts             # DTOs定義
-    │   ├── use-cases/
-    │   │   ├── CreateChatSessionUseCase.ts
-    │   │   ├── AddUserMessageUseCase.ts
-    │   │   ├── AddAssistantMessageUseCase.ts
-    │   │   ├── TogglePinnedUseCase.ts
-    │   │   └── SearchSessionsUseCase.ts
-    │   └── transformers.ts          # DTO変換
-    │
-    └── infrastructure/
-        └── persistence/
-            ├── DrizzleChatSessionRepository.ts  # セッションリポジトリ実装
-            ├── DrizzleChatMessageRepository.ts  # メッセージリポジトリ実装
-            ├── index.ts                         # エクスポート
-            ├── mappers/
-            │   ├── ChatSessionMapper.ts         # セッション変換
-            │   └── ChatMessageMapper.ts         # メッセージ変換
-            ├── records/
-            │   └── index.ts                     # DB Record型
-            └── __tests__/
-                ├── DrizzleChatSessionRepository.test.ts
-                ├── DrizzleChatMessageRepository.test.ts
-                └── helpers/
-                    └── test-db.ts               # テストDB初期化
-```
+### コアモジュール（packages/shared/src/core/）
+
+| ファイル          | 説明                 |
+| ----------------- | -------------------- |
+| Result.ts         | Result型の定義 |
+| errors/index.ts   | エラー型エクスポート |
+| errors/AppError.ts | 基底エラークラス     |
+| errors/DomainError.ts | ドメインエラー（抽象） |
+| errors/UseCaseError.ts | Use Caseエラー      |
+
+### チャット履歴機能（packages/shared/src/features/chat-history/）
+
+#### Domainレイヤー
+
+| ディレクトリ/ファイル            | 説明                   |
+| -------------------------------- | ---------------------- |
+| domain/entities/ChatSession.ts   | セッションエンティティ |
+| domain/entities/ChatMessage.ts   | メッセージエンティティ |
+| domain/value-objects/ChatSessionId.ts | セッションID値オブジェクト |
+| domain/value-objects/ChatSessionTitle.ts | セッションタイトル値オブジェクト |
+| domain/value-objects/UserId.ts   | ユーザーID値オブジェクト |
+| domain/value-objects/ChatMessageId.ts | メッセージID値オブジェクト |
+| domain/value-objects/MessageContent.ts | メッセージ内容値オブジェクト |
+| domain/value-objects/MessageRole.ts | メッセージ役割値オブジェクト |
+| domain/repositories/IChatSessionRepository.ts | セッションリポジトリインターフェース |
+| domain/repositories/IChatMessageRepository.ts | メッセージリポジトリインターフェース |
+
+#### Applicationレイヤー
+
+| ディレクトリ/ファイル                    | 説明                 |
+| ---------------------------------------- | -------------------- |
+| application/dto/index.ts                 | DTOs定義             |
+| application/use-cases/CreateChatSessionUseCase.ts | セッション作成Use Case |
+| application/use-cases/AddUserMessageUseCase.ts | ユーザーメッセージ追加Use Case |
+| application/use-cases/AddAssistantMessageUseCase.ts | AIメッセージ追加Use Case |
+| application/use-cases/TogglePinnedUseCase.ts | ピン留めトグルUse Case |
+| application/use-cases/SearchSessionsUseCase.ts | セッション検索Use Case |
+| application/transformers.ts              | DTO変換              |
+
+#### Infrastructureレイヤー
+
+| ディレクトリ/ファイル                              | 説明                   |
+| -------------------------------------------------- | ---------------------- |
+| infrastructure/persistence/DrizzleChatSessionRepository.ts | セッションリポジトリ実装 |
+| infrastructure/persistence/DrizzleChatMessageRepository.ts | メッセージリポジトリ実装 |
+| infrastructure/persistence/index.ts                | エクスポート           |
+| infrastructure/persistence/mappers/ChatSessionMapper.ts | セッション変換         |
+| infrastructure/persistence/mappers/ChatMessageMapper.ts | メッセージ変換         |
+| infrastructure/persistence/records/index.ts        | DB Record型            |
+| infrastructure/persistence/__tests__/              | テストファイル群       |
 
 ---
 
@@ -127,29 +113,24 @@ packages/shared/src/
 
 #### ChatHistoryContextValue
 
-```typescript
-interface ChatHistoryContextValue {
-  createSession: CreateChatSessionUseCase;
-  addUserMessage: AddUserMessageUseCase;
-  addAssistantMessage: AddAssistantMessageUseCase;
-  togglePinned: TogglePinnedUseCase;
-  searchSessions: SearchSessionsUseCase;
-  isReady: boolean;
-}
-```
+ChatHistoryContextが提供する値オブジェクトの構成を以下に示す。
+
+| プロパティ          | 型                          | 説明                     |
+| ------------------- | --------------------------- | ------------------------ |
+| createSession       | CreateChatSessionUseCase    | セッション作成Use Case   |
+| addUserMessage      | AddUserMessageUseCase       | ユーザーメッセージ追加   |
+| addAssistantMessage | AddAssistantMessageUseCase  | AIメッセージ追加         |
+| togglePinned        | TogglePinnedUseCase         | ピン留めトグル           |
+| searchSessions      | SearchSessionsUseCase       | セッション検索           |
+| isReady             | boolean                     | 初期化完了フラグ         |
 
 #### Repository Factory（シングルトンDI）
 
-```typescript
-// repositories/index.ts
-import { createChatHistoryRepositories, getChatHistoryRepositories } from './index';
+Repository Factoryはシングルトンパターンで実装され、Main Processで一度だけ初期化される。
 
-// Main Processで初期化（1回のみ）
-createChatHistoryRepositories(drizzleDb);
-
-// Renderer Processで取得
-const { sessionRepository, messageRepository } = getChatHistoryRepositories();
-```
+**初期化フロー**:
+1. Main ProcessでcreateChatHistoryRepositories関数を呼び出し、drizzleDbインスタンスを渡して初期化
+2. Renderer ProcessでgetChatHistoryRepositories関数を呼び出し、sessionRepositoryとmessageRepositoryを取得
 
 | 関数                          | 説明                              |
 | ----------------------------- | --------------------------------- |
@@ -160,44 +141,19 @@ const { sessionRepository, messageRepository } = getChatHistoryRepositories();
 
 #### App.tsx統合パターン
 
-```tsx
-// apps/desktop/src/renderer/App.tsx
-import { ChatHistoryProvider } from '@/features/chat-history/context';
-import { getChatHistoryRepositories } from '@/features/chat-history/repositories';
+App.tsxでのChatHistoryProvider統合は以下の手順で行う。
 
-function App() {
-  const { sessionRepository, messageRepository } = getChatHistoryRepositories();
-
-  return (
-    <ChatHistoryProvider
-      sessionRepository={sessionRepository}
-      messageRepository={messageRepository}
-    >
-      <AuthGuard>
-        <Routes>
-          {/* 全ルートでuseChatHistory()が使用可能 */}
-        </Routes>
-      </AuthGuard>
-    </ChatHistoryProvider>
-  );
-}
-```
+1. ChatHistoryProviderとgetChatHistoryRepositoriesをインポート
+2. getChatHistoryRepositories関数でsessionRepositoryとmessageRepositoryを取得
+3. ChatHistoryProviderコンポーネントで両リポジトリをpropsとして渡す
+4. 子コンポーネント（AuthGuard、Routes等）をProvider内に配置
+5. 全ルートでuseChatHistory Hookが使用可能になる
 
 #### 使用パターン
 
-```tsx
-// 本番環境（App.tsx統合済み）
-// 任意のコンポーネントでuseChatHistory()を呼び出し可能
-function ChatComponent() {
-  const { createSession, addUserMessage, isReady } = useChatHistory();
-  // ...
-}
+**本番環境**: App.tsx統合済みの状態で、任意のコンポーネントからuseChatHistory Hookを呼び出し、createSession、addUserMessage、isReady等のプロパティにアクセス可能。
 
-// テスト環境
-<MockChatHistoryProvider overrides={{ createSession: mockUseCase }}>
-  <ComponentUnderTest />
-</MockChatHistoryProvider>
-```
+**テスト環境**: MockChatHistoryProviderでテスト対象コンポーネントをラップし、overrides propsで必要なUse Caseをモック化して使用。
 
 ---
 
@@ -257,28 +213,32 @@ function ChatComponent() {
 
 #### IChatSessionRepository
 
-```typescript
-interface IChatSessionRepository {
-  findById(id: ChatSessionId): Promise<ChatSession | null>;
-  findByUserId(userId: UserId): Promise<ChatSession[]>;
-  findPinnedByUserId(userId: UserId): Promise<ChatSession[]>;
-  save(session: ChatSession): Promise<Result<void, RepositoryError>>;
-  delete(id: ChatSessionId): Promise<Result<void, RepositoryError>>;
-  search(query: SearchQuery): Promise<SearchResult>;
-  countPinnedByUserId(userId: UserId): Promise<number>;
-}
-```
+IChatSessionRepositoryインターフェースが提供するメソッドを以下に示す。
+
+| メソッド               | 引数                  | 戻り値                            | 説明                   |
+| ---------------------- | --------------------- | --------------------------------- | ---------------------- |
+| findById               | id: ChatSessionId     | Promise(ChatSession \| null)      | IDでセッション取得     |
+| findByUserId           | userId: UserId        | Promise(ChatSession[])            | ユーザーのセッション一覧 |
+| findPinnedByUserId     | userId: UserId        | Promise(ChatSession[])            | ピン留めセッション一覧 |
+| save                   | session: ChatSession  | Promise(Result(void, RepositoryError)) | セッション保存         |
+| delete                 | id: ChatSessionId     | Promise(Result(void, RepositoryError)) | セッション削除         |
+| search                 | query: SearchQuery    | Promise(SearchResult)             | 条件検索               |
+| countPinnedByUserId    | userId: UserId        | Promise(number)                   | ピン留め数カウント     |
+
+※ 戻り値の括弧表記は型パラメータを示す（例: Promise(T) = Promise\<T\>）
 
 #### IChatMessageRepository
 
-```typescript
-interface IChatMessageRepository {
-  findById(id: ChatMessageId): Promise<ChatMessage | null>;
-  findBySessionId(sessionId: ChatSessionId): Promise<ChatMessage[]>;
-  save(message: ChatMessage): Promise<Result<void, RepositoryError>>;
-  delete(id: ChatMessageId): Promise<Result<void, RepositoryError>>;
-}
-```
+IChatMessageRepositoryインターフェースが提供するメソッドを以下に示す。
+
+| メソッド         | 引数                     | 戻り値                            | 説明               |
+| ---------------- | ------------------------ | --------------------------------- | ------------------ |
+| findById         | id: ChatMessageId        | Promise(ChatMessage \| null)      | IDでメッセージ取得 |
+| findBySessionId  | sessionId: ChatSessionId | Promise(ChatMessage[])            | セッション内メッセージ一覧 |
+| save             | message: ChatMessage     | Promise(Result(void, RepositoryError)) | メッセージ保存     |
+| delete           | id: ChatMessageId        | Promise(Result(void, RepositoryError)) | メッセージ削除     |
+
+※ 戻り値の括弧表記は型パラメータを示す（例: Promise(T) = Promise\<T\>）
 
 ---
 
@@ -340,11 +300,8 @@ SQLiteデータベースへの永続化を担当するリポジトリ実装。
 
 #### エラーハンドリング
 
-すべてのDBエラーは`DatabaseError`にラップされる。
+すべてのDBエラーはDatabaseErrorクラスにラップされる。DatabaseErrorは第1引数にエラーメッセージ（例: 「セッションの取得に失敗しました」）、第2引数に元のエラーオブジェクトを受け取る。
 
-```typescript
-throw new DatabaseError("セッションの取得に失敗しました", originalError);
-```
 ### Mappers
 
 | Mapper            | 変換メソッド          | 説明               |
@@ -362,25 +319,20 @@ throw new DatabaseError("セッションの取得に失敗しました", origina
 
 ### Result型
 
-```typescript
-type Result<T, E> = Ok<T> | Err<E>;
-```
-
-全てのUse Caseは `Result<T, UseCaseError>` を返却する。
+Result型は成功（Ok）または失敗（Err）を表す直和型である。全てのUse CaseはResult型（型パラメータ: T=成功値, E=UseCaseError）を返却する。
 
 ### エラー階層
 
-```
-AppError (abstract)
-├── DomainError (abstract)
-│   ├── ValidationError
-│   ├── BusinessRuleError
-│   └── InvalidIdError
-└── UseCaseError
-    ├── code: string
-    ├── statusCode: number
-    └── data?: Record<string, unknown>
-```
+エラークラスは以下の継承関係を持つ。
+
+| エラークラス      | 親クラス     | 説明                     | 主要プロパティ           |
+| ----------------- | ------------ | ------------------------ | ------------------------ |
+| AppError          | Error        | 基底エラー（抽象）       | message                  |
+| DomainError       | AppError     | ドメインエラー（抽象）   | -                        |
+| ValidationError   | DomainError  | バリデーションエラー     | -                        |
+| BusinessRuleError | DomainError  | ビジネスルール違反       | -                        |
+| InvalidIdError    | DomainError  | 不正なIDエラー           | -                        |
+| UseCaseError      | AppError     | Use Caseエラー           | code, statusCode, data?  |
 
 ---
 
@@ -476,6 +428,7 @@ AppError (abstract)
 
 | Version | Date       | Changes                                                                 |
 | ------- | ---------- | ----------------------------------------------------------------------- |
+| 1.3.0   | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換                       |
 | 1.2.0   | 2026-01-22 | App.tsx統合パターン・Repository Factory追加、UT-007完了記録追加          |
 | 1.1.0   | 2026-01-22 | Drizzle Repository実装を追加                                             |
 | 1.0.0   | 2026-01-19 | 初版作成（Clean Architecture移行完了）                                   |

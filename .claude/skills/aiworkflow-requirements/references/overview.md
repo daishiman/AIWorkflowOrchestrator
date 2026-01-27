@@ -172,7 +172,10 @@
 
 ## 関連ドキュメント
 
-- [非機能要件](./02-non-functional-requirements.md)
-- [テクノロジースタック](./03-technology-stack.md)
-- [ディレクトリ構造](./04-directory-structure.md)
-- [アーキテクチャ設計](./05-architecture.md)
+| ドキュメント             | 説明                   |
+| ------------------------ | ---------------------- |
+| quality-requirements.md  | 非機能要件・テスト戦略 |
+| technology-core.md       | 技術スタック概要       |
+| directory-structure.md   | ディレクトリ構造       |
+| architecture-monorepo.md | モノレポアーキテクチャ |
+| architecture-patterns.md | 機能追加パターン       |

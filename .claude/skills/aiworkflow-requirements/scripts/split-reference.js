@@ -5,8 +5,8 @@
  * 用途: 500行を超えるreferences/ファイルを責務別に分割
  *
  * 使用方法:
- *   node scripts/split-reference.mjs --analyze              # 分割候補を分析
- *   node scripts/split-reference.mjs --split <file> <config.json>  # 実際に分割
+ *   node scripts/split-reference.js --analyze              # 分割候補を分析
+ *   node scripts/split-reference.js --split <file> <config.json>  # 実際に分割
  *
  * config.json形式:
  *   {
@@ -105,7 +105,7 @@ async function analyzeFiles() {
   console.log("\n使用方法:");
   console.log("  1. 上記の提案を参考にconfig.jsonを作成（または調整）");
   console.log(
-    "  2. node scripts/split-reference.mjs --split <file> <config.json>",
+    "  2. node scripts/split-reference.js --split <file> <config.json>",
   );
 }
 
@@ -200,7 +200,7 @@ async function splitFile(sourceFile, configPath) {
 
   console.log("\n💡 分割後の手順:");
   console.log("  1. 元ファイルから抽出したセクションを削除");
-  console.log("  2. node scripts/generate-index.mjs でインデックス再生成");
+  console.log("  2. node scripts/generate-index.js でインデックス再生成");
   console.log("  3. SKILL.md の該当テーブルを更新");
 }
 
@@ -217,10 +217,10 @@ async function main() {
   } else {
     console.log("使用方法:");
     console.log(
-      "  node scripts/split-reference.mjs --analyze              # 分割候補を分析",
+      "  node scripts/split-reference.js --analyze              # 分割候補を分析",
     );
     console.log(
-      "  node scripts/split-reference.mjs --split <file> <config.json>  # 実際に分割",
+      "  node scripts/split-reference.js --split <file> <config.json>  # 実際に分割",
     );
   }
 }

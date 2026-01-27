@@ -3,7 +3,7 @@
  * 構造検証スクリプト
  *
  * 用途: スキル構造の整合性を検証
- * 実行: node scripts/validate-structure.mjs
+ * 実行: node scripts/validate-structure.js
  */
 
 import { readdir, readFile, stat } from "fs/promises";
@@ -147,8 +147,8 @@ async function validateStructure() {
   const scriptsDir = join(SKILL_ROOT, "scripts");
   if (await exists(scriptsDir)) {
     const scriptFiles = await readdir(scriptsDir);
-    const mjsFiles = scriptFiles.filter((f) => f.endsWith(".mjs"));
-    console.log(`   📊 ${mjsFiles.length}スクリプト: ${mjsFiles.join(", ")}`);
+    const jsFiles = scriptFiles.filter((f) => f.endsWith(".js"));
+    console.log(`   📊 ${jsFiles.length}スクリプト: ${jsFiles.join(", ")}`);
   }
 
   // 結果出力

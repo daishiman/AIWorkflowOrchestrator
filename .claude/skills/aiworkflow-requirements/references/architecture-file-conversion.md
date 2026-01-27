@@ -5,6 +5,15 @@
 
 ---
 
+## 変更履歴
+
+| バージョン | 日付 | 変更内容 |
+|------------|------|----------|
+| v1.0.0 | 初版 | 初期作成 |
+| v1.1.0 | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |
+
+---
+
 ## 概要
 
 ファイル変換基盤は、RAGシステムにおける多様なファイル形式（テキスト、Markdown、PDF等）を統一的に処理するための共通基盤を提供する。
@@ -43,11 +52,16 @@
 
 ### アーキテクチャ
 
-```
-ConversionLogger → buffer[] → ILogRepository → Database
-                    ↑
-              サイズ/時間トリガーでflush
-```
+ConversionLoggerはバッファリング機構を持つログ記録サービスである。ログはまずメモリ上のバッファ配列に蓄積され、サイズベースまたは時間ベースのトリガーによりILogRepositoryを経由してDatabaseに永続化される。
+
+| レイヤー | コンポーネント | 役割 |
+|----------|---------------|------|
+| サービス層 | ConversionLogger | ログ記録API提供、バッファ管理 |
+| バッファ層 | buffer配列 | 一時的なログ蓄積 |
+| 永続化層 | ILogRepository | DB書き込み抽象化 |
+| ストレージ層 | Database | ログの永続保存 |
+
+**フラッシュトリガー**: バッファサイズ上限到達、または設定された時間間隔経過時に自動でflush処理を実行する。
 
 ### インターフェース
 
@@ -89,11 +103,15 @@ ConversionLogger → buffer[] → ILogRepository → Database
 
 ### アーキテクチャ
 
-```
-HistoryService → ConversionRepository → Database (conversions table)
-                        ↑
-                  Result型でエラーハンドリング
-```
+HistoryServiceはConversionRepositoryを介してDatabaseのconversionsテーブルにアクセスする。全メソッドはResult型を戻り値とし、成功・失敗を明示的に扱うエラーハンドリングパターンを採用している。
+
+| レイヤー | コンポーネント | 役割 |
+|----------|---------------|------|
+| サービス層 | HistoryService | 履歴管理ビジネスロジック |
+| リポジトリ層 | ConversionRepository | データアクセス抽象化 |
+| ストレージ層 | Database (conversions table) | 変換履歴の永続保存 |
+
+**エラーハンドリング**: Result型パターンにより、例外を使用せず成功値またはエラー値を返却する。
 
 ### インターフェース
 
@@ -126,24 +144,22 @@ Electron MainプロセスのHistoryServiceがshared HistoryServiceと統合さ�
 
 ### 統合アーキテクチャ
 
-```
-┌─────────────┐    IPC    ┌─────────────────────────┐    DI    ┌─────────────────────────┐
-│  Renderer   │ ───────── │  Electron HistoryService │ ──────── │  shared HistoryService  │
-│  (React UI) │           │     (アダプター層)        │          │   (ビジネスロジック)     │
-└─────────────┘           └─────────────────────────┘          └─────────────────────────┘
-                                     │                                    │
-                                     │ DI                                 │ DI
-                                     ▼                                    ▼
-                          ┌─────────────────┐              ┌─────────────────────────┐
-                          │  LogRepository  │              │  ConversionRepository   │
-                          └─────────────────┘              └─────────────────────────┘
-                                     │                                    │
-                                     └──────────────┬─────────────────────┘
-                                                    ▼
-                                          ┌────────────────┐
-                                          │    SQLite DB   │
-                                          └────────────────┘
-```
+Electron統合は3層構造で構成される。Renderer（React UI）からのIPCリクエストはElectron HistoryService（アダプター層）で受け取り、DIによりshared HistoryService（ビジネスロジック）に委譲される。
+
+| 層 | コンポーネント | 役割 | 通信方式 |
+|----|---------------|------|----------|
+| プレゼンテーション層 | Renderer (React UI) | ユーザーインターフェース | IPC |
+| アダプター層 | Electron HistoryService | 型変換、IPC処理 | DI |
+| ビジネスロジック層 | shared HistoryService | 履歴管理ロジック | DI |
+
+**リポジトリ層の構成**:
+
+| リポジトリ | 接続先 | 用途 |
+|-----------|--------|------|
+| LogRepository | SQLite DB | ログ取得（Electron側で追加定義） |
+| ConversionRepository | SQLite DB | 変換履歴管理（shared側で定義） |
+
+全リポジトリはSQLite DBを共有ストレージとして使用する。
 
 ### アダプターパターン（型変換）
 
@@ -167,34 +183,32 @@ Electron HistoryServiceはshared型をRenderer型に変換するアダプター�
 
 ### 依存性注入
 
-```typescript
-// ファクトリ関数（本番用）
-export function createHistoryServiceWithDI(
-  sharedHistoryService: IHistoryService,
-  logRepository: LogRepository,
-  logger: IConversionLogger,
-): HistoryService {
-  return new HistoryService(sharedHistoryService, logRepository, logger);
-}
+HistoryServiceの生成には依存性注入（DI）を必須とする。ファクトリ関数を通じて依存オブジェクトを注入する設計である。
 
-// @deprecated DI必須
-export function createHistoryService(): HistoryService {
-  throw new Error("Use createHistoryServiceWithDI()");
-}
-```
+**createHistoryServiceWithDI（本番用ファクトリ関数）**:
+
+| 引数 | 型 | 説明 |
+|------|-----|------|
+| sharedHistoryService | IHistoryService | shared層の履歴管理サービス |
+| logRepository | LogRepository | ログ取得用リポジトリ |
+| logger | IConversionLogger | ログ記録サービス |
+| 戻り値 | HistoryService | 構築されたHistoryServiceインスタンス |
+
+**createHistoryService（非推奨）**: DI未使用のファクトリ関数は非推奨（deprecated）とし、呼び出し時にエラーをスローする。必ずcreateHistoryServiceWithDIを使用すること。
 
 ### LogRepositoryインターフェース
 
-shared HistoryServiceにはログ取得機能がないため、Electron側でLogRepositoryを追加定義。
+shared HistoryServiceにはログ取得機能がないため、Electron側でLogRepositoryを追加定義する。
 
-```typescript
-export interface LogRepository {
-  findByConversionId(
-    conversionId: string,
-    options?: { limit?: number; offset?: number; level?: string }
-  ): Promise<Result<PaginatedResult<ConversionLogRecord>, Error>>;
-}
-```
+**LogRepository.findByConversionIdメソッド**:
+
+| 項目 | 内容 |
+|------|------|
+| 目的 | 変換IDに紐づくログレコードを取得 |
+| 必須引数 | conversionId（文字列） |
+| オプション引数 | limit（取得件数上限）、offset（取得開始位置）、level（ログレベルフィルタ） |
+| 戻り値 | Result型でラップされたPaginatedResult（ConversionLogRecord配列とページネーション情報） |
+| エラー時 | Result型のエラー値としてErrorオブジェクトを返却 |
 
 ### 品質指標
 

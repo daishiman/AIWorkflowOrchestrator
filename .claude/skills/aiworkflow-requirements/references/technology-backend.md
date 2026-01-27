@@ -16,38 +16,29 @@
 
 ### 技術選定の基本原則
 
-```
-個人開発における技術選定の3原則:
-
-1. 学習コストの最小化
-   └─ 広く使われ、ドキュメントが充実した技術を優先
-
-2. 無料枠の最大活用
-   └─ Vercel, Turso, Railway等の無料tier内で運用可能
-
-3. 型安全性の徹底
-   └─ TypeScript strict mode + Zodによる実行時検証
-```
+| 原則               | 説明                                         | 具体例                                     |
+| ------------------ | -------------------------------------------- | ------------------------------------------ |
+| 学習コストの最小化 | 広く使われ、ドキュメントが充実した技術を優先 | React, Next.js, TypeScript等の主流技術     |
+| 無料枠の最大活用   | 無料tier内で運用可能なサービスを選定         | Vercel, Turso, Railway等                   |
+| 型安全性の徹底     | コンパイル時・実行時の両方で型を検証         | TypeScript strict mode + Zodによる実行時検証 |
 
 ### アーキテクチャ概要
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    pnpm Monorepo                            │
-├─────────────────────────────────────────────────────────────┤
-│  apps/                                                      │
-│  ├─ web/          Next.js 15 (App Router)                   │
-│  └─ desktop/      Electron + Next.js (将来対応)             │
-├─────────────────────────────────────────────────────────────┤
-│  packages/                                                  │
-│  └─ shared/       共通ロジック、型定義、ユーティリティ       │
-├─────────────────────────────────────────────────────────────┤
-│  外部サービス                                               │
-│  ├─ Turso         分散SQLite (無料: 9GB, 500Mリクエスト)    │
-│  ├─ Railway       ホスティング (従量課金)                   │
-│  └─ AI Provider   OpenAI / Anthropic / Google / xAI        │
-└─────────────────────────────────────────────────────────────┘
-```
+**モノレポ構成（pnpm）**
+
+| レイヤー     | パス           | 説明                           |
+| ------------ | -------------- | ------------------------------ |
+| apps         | apps/web/      | Next.js 15 (App Router)        |
+| apps         | apps/desktop/  | Electron + Next.js（将来対応） |
+| packages     | packages/shared/ | 共通ロジック、型定義、ユーティリティ |
+
+**外部サービス**
+
+| サービス    | 説明                               | 料金                  |
+| ----------- | ---------------------------------- | --------------------- |
+| Turso       | 分散SQLite                         | 無料: 9GB, 500Mリクエスト |
+| Railway     | ホスティング                       | 従量課金              |
+| AI Provider | OpenAI / Anthropic / Google / xAI  | プロバイダ依存        |
 
 ---
 
@@ -76,20 +67,15 @@
 | Kysely  | 型安全SQL            | ORM機能の不足                |
 | TypeORM | 機能豊富             | レガシー設計、パフォーマンス |
 
-```typescript
-// drizzle.config.ts
-import { defineConfig } from "drizzle-kit";
+**Drizzle設定ファイル（drizzle.config.ts）**
 
-export default defineConfig({
-  dialect: "turso",
-  schema: "./src/db/schema.ts",
-  out: "./drizzle",
-  dbCredentials: {
-    url: process.env.TURSO_DATABASE_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN!,
-  },
-});
-```
+| 設定項目                 | 値                          | 説明                     |
+| ------------------------ | --------------------------- | ------------------------ |
+| dialect                  | turso                       | データベース方言         |
+| schema                   | ./src/db/schema.ts          | スキーマ定義ファイルパス |
+| out                      | ./drizzle                   | マイグレーション出力先   |
+| dbCredentials.url        | 環境変数 TURSO_DATABASE_URL | TursoデータベースURL     |
+| dbCredentials.authToken  | 環境変数 TURSO_AUTH_TOKEN   | Turso認証トークン        |
 
 ### Turso (libSQL)
 
@@ -113,19 +99,18 @@ export default defineConfig({
 | Schema Migrations | 組み込みマイグレーション | drizzle-kitと併用 |
 | Multi-DB Groups   | 複数DB管理               | 環境分離          |
 
-```typescript
-// db/client.ts
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import * as schema from "./schema";
+**データベースクライアント初期化（db/client.ts）**
 
-const client = createClient({
-  url: process.env.TURSO_DATABASE_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+データベースクライアントは以下の手順で初期化する。
 
-export const db = drizzle(client, { schema });
-```
+| 手順 | 処理内容                    | 使用パッケージ           |
+| ---- | --------------------------- | ------------------------ |
+| 1    | libSQLクライアント作成      | @libsql/client           |
+| 2    | 環境変数からURL・トークン取得 | TURSO_DATABASE_URL, TURSO_AUTH_TOKEN |
+| 3    | Drizzle ORMインスタンス生成 | drizzle-orm/libsql       |
+| 4    | スキーマ定義をバインド      | ./schema                 |
+
+エクスポートされる`db`オブジェクトを通じて、型安全なクエリを実行する。
 
 ### SQLite FTS5（全文検索）
 
@@ -163,16 +148,16 @@ export const db = drizzle(client, { schema });
 
 **使用例**:
 
-```typescript
-// キーワード検索
-import { searchChunksByKeyword } from "@repo/shared/db/queries/chunks-search";
+キーワード検索の実行方法を以下に示す。
 
-const results = await searchChunksByKeyword(db, {
-  query: "TypeScript JavaScript",
-  limit: 10,
-});
-// → BM25スコアでランク付けされた検索結果
-```
+| 項目       | 値                                                    |
+| ---------- | ----------------------------------------------------- |
+| 関数名     | searchChunksByKeyword                                 |
+| 実装場所   | @repo/shared/db/queries/chunks-search                 |
+| 入力パラメータ | db（データベースインスタンス）、query（検索文字列）、limit（結果数上限） |
+| 出力       | BM25スコアでランク付けされた検索結果配列              |
+
+検索クエリにはスペース区切りで複数キーワードを指定可能（例: "TypeScript JavaScript"）。
 
 **参照ドキュメント**:
 
@@ -194,28 +179,19 @@ const results = await searchChunksByKeyword(db, {
 3. **エコシステム**: React Hook Form, tRPC対応
 4. **学習コスト低**: 直感的なAPI
 
-```typescript
-// features/xxx/schema.ts
-import { z } from "zod";
+**スキーマ定義例（features/xxx/schema.ts）**
 
-export const workflowInputSchema = z.object({
-  type: z.enum(["BLOG_OUTLINE", "DATA_ANALYSIS", "CODE_REVIEW"]),
-  payload: z.record(z.unknown()),
-  options: z
-    .object({
-      maxTokens: z.number().int().min(100).max(4000).default(1000),
-      temperature: z.number().min(0).max(2).default(0.7),
-    })
-    .optional(),
-});
+workflowInputSchemaの構造を以下に示す。
 
-export type WorkflowInput = z.infer<typeof workflowInputSchema>;
+| フィールド        | 型                                           | 制約・デフォルト                     |
+| ----------------- | -------------------------------------------- | ------------------------------------ |
+| type              | enum                                         | BLOG_OUTLINE, DATA_ANALYSIS, CODE_REVIEW のいずれか |
+| payload           | record（任意キー・任意値）                   | 必須                                 |
+| options           | object（オプショナル）                       | 省略可能                             |
+| options.maxTokens | number（整数）                               | 最小100、最大4000、デフォルト1000    |
+| options.temperature | number                                     | 最小0、最大2、デフォルト0.7          |
 
-// 実行時検証
-export function validateInput(data: unknown): WorkflowInput {
-  return workflowInputSchema.parse(data);
-}
-```
+スキーマから TypeScript 型を自動生成するには z.infer を使用する。実行時検証には parse メソッドを呼び出し、不正データの場合は例外がスローされる。
 
 ---
 
@@ -245,65 +221,52 @@ export function validateInput(data: unknown): WorkflowInput {
 | Google     | `@ai-sdk/google`    | gemini-2.0-flash  | 60リクエスト/分 |
 | xAI        | `@ai-sdk/xai`       | grok-2            | なし            |
 
-```typescript
-// shared/infrastructure/ai/provider.ts
-import { openai } from "@ai-sdk/openai";
-import { anthropic } from "@ai-sdk/anthropic";
-import { google } from "@ai-sdk/google";
-import { xai } from "@ai-sdk/xai";
-import { generateText, streamText } from "ai";
+**プロバイダ統合関数（shared/infrastructure/ai/provider.ts）**
 
-// 統一インターフェースでの使用
-export async function generateWithProvider(
-  provider: "openai" | "anthropic" | "google" | "xai",
-  prompt: string,
-) {
-  const models = {
-    openai: openai("gpt-4o-mini"),
-    anthropic: anthropic("claude-3-5-sonnet-20241022"),
-    google: google("gemini-2.0-flash-exp"),
-    xai: xai("grok-2"),
-  };
+generateWithProvider関数は、複数のAIプロバイダを統一インターフェースで利用可能にする。
 
-  return generateText({
-    model: models[provider],
-    prompt,
-  });
-}
-```
+| パラメータ | 型                                   | 説明                                 |
+| ---------- | ------------------------------------ | ------------------------------------ |
+| provider   | "openai" / "anthropic" / "google" / "xai" | 使用するAIプロバイダの指定           |
+| prompt     | string                               | 生成に使用するプロンプト文字列       |
+
+**プロバイダとモデルのマッピング**
+
+| プロバイダ | 使用モデル                    | インポート元      |
+| ---------- | ----------------------------- | ----------------- |
+| openai     | gpt-4o-mini                   | @ai-sdk/openai    |
+| anthropic  | claude-3-5-sonnet-20241022    | @ai-sdk/anthropic |
+| google     | gemini-2.0-flash-exp          | @ai-sdk/google    |
+| xai        | grok-2                        | @ai-sdk/xai       |
+
+内部では ai パッケージの generateText 関数を呼び出し、選択されたプロバイダのモデルでテキスト生成を実行する。
 
 ### Structured Output
 
-```typescript
-// 構造化出力の例
-import { generateObject } from "ai";
-import { z } from "zod";
+構造化出力は、AIの応答を型安全なオブジェクトとして取得する機能である。ai パッケージの generateObject 関数と Zod スキーマを組み合わせて使用する。
 
-const blogOutlineSchema = z.object({
-  title: z.string(),
-  sections: z.array(
-    z.object({
-      heading: z.string(),
-      keyPoints: z.array(z.string()),
-      estimatedWords: z.number(),
-    }),
-  ),
-  metadata: z.object({
-    targetAudience: z.string(),
-    tone: z.enum(["formal", "casual", "technical"]),
-  }),
-});
+**blogOutlineSchemaの構造**
 
-export async function generateBlogOutline(topic: string) {
-  const { object } = await generateObject({
-    model: openai("gpt-4o-mini"),
-    schema: blogOutlineSchema,
-    prompt: `Create a blog outline for: ${topic}`,
-  });
+| フィールド                  | 型            | 説明                         |
+| --------------------------- | ------------- | ---------------------------- |
+| title                       | string        | ブログのタイトル             |
+| sections                    | array         | セクション配列               |
+| sections[].heading          | string        | セクション見出し             |
+| sections[].keyPoints        | string[]      | 主要ポイントのリスト         |
+| sections[].estimatedWords   | number        | 推定ワード数                 |
+| metadata                    | object        | メタデータオブジェクト       |
+| metadata.targetAudience     | string        | 対象読者                     |
+| metadata.tone               | enum          | formal / casual / technical  |
 
-  return object; // 型安全: typeof blogOutlineSchema
-}
-```
+**generateBlogOutline関数**
+
+| 項目       | 値                               |
+| ---------- | -------------------------------- |
+| 入力       | topic（トピック文字列）          |
+| 使用モデル | gpt-4o-mini                      |
+| 出力       | スキーマに準拠した型安全なオブジェクト |
+
+generateObject関数はスキーマに基づいてAIの応答を検証・パースし、型安全なオブジェクトを返す。
 
 ### 埋め込みプロバイダー
 
@@ -347,13 +310,12 @@ export async function generateBlogOutline(topic: string) {
 
 #### プロバイダー選択戦略
 
-**フォールバックチェーン**:
+**フォールバックチェーン**
 
-```
-1. OpenAIProvider（第一選択）
-     ↓ エラー時
-2. Qwen3Provider（フォールバック）
-```
+| 優先順位 | プロバイダ      | 役割         | 遷移条件     |
+| -------- | --------------- | ------------ | ------------ |
+| 1        | OpenAIProvider  | 第一選択     | -            |
+| 2        | Qwen3Provider   | フォールバック | エラー発生時 |
 
 **選択基準**:
 
@@ -450,29 +412,20 @@ export async function generateBlogOutline(topic: string) {
 | Vitest     | `2.x`      | ユニット/統合テスト              |
 | Playwright | `1.49.x`   | E2Eテスト                        |
 
-```typescript
-// eslint.config.mjs (Flat Config - ESLint 9)
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
-import nextPlugin from "@next/eslint-plugin-next";
+**ESLint設定（eslint.config.mjs - Flat Config形式）**
 
-export default tseslint.config(
-  eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  {
-    plugins: {
-      "@next/next": nextPlugin,
-    },
-    rules: {
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_" },
-      ],
-      "@typescript-eslint/strict-boolean-expressions": "error",
-    },
-  },
-);
-```
+| 設定項目         | 値                               | 説明                                 |
+| ---------------- | -------------------------------- | ------------------------------------ |
+| ベース設定       | eslint.configs.recommended       | ESLint推奨ルール                     |
+| TypeScript設定   | tseslint.configs.strictTypeChecked | 型チェック付き厳格ルール             |
+| Next.jsプラグイン | @next/eslint-plugin-next         | Next.js固有のルール                  |
+
+**カスタムルール**
+
+| ルール名                                | 設定値 | オプション                      |
+| --------------------------------------- | ------ | ------------------------------- |
+| @typescript-eslint/no-unused-vars       | error  | argsIgnorePattern: "^_"（_始まりの引数を許可） |
+| @typescript-eslint/strict-boolean-expressions | error | -                               |
 
 ### オプションツール
 
@@ -483,3 +436,9 @@ export default tseslint.config(
 | Chromatic | 最新       | ビジュアルリグレッション | UI安定後       |
 
 ---
+
+## 変更履歴
+
+| 日付       | バージョン | 変更内容                                         |
+| ---------- | ---------- | ------------------------------------------------ |
+| 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |

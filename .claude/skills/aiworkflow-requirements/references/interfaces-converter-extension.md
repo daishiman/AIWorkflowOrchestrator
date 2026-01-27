@@ -13,14 +13,18 @@
 
 ## BaseConverter 継承による実装
 
-**必須実装メソッド**:
+### 必須実装メソッド
 
-```typescript
-protected abstract doConvert(
-  input: ConverterInput,
-  options: ConverterOptions
-): Promise<Result<ConverterOutput, RAGError>>;
-```
+| メソッド名 | 戻り値型 | 説明 |
+| --- | --- | --- |
+| `doConvert` | `Promise<Result<ConverterOutput, RAGError>>` | 入力を変換して結果を返す抽象メソッド |
+
+**doConvertメソッドのパラメータ**:
+
+| パラメータ | 型 | 説明 |
+| --- | --- | --- |
+| `input` | `ConverterInput` | 変換対象の入力データ |
+| `options` | `ConverterOptions` | 変換オプション設定 |
 
 **BaseConverter が提供するヘルパーメソッド**:
 
@@ -41,59 +45,44 @@ protected abstract doConvert(
 
 ## 実装の最小構成
 
-```typescript
-export class MinimalConverter extends BaseConverter {
-  readonly id = "minimal-converter";
-  readonly name = "Minimal Converter";
-  readonly supportedMimeTypes = ["text/minimal"] as const;
-  readonly priority = 5;
+### コンバータークラスの必須プロパティ
 
-  protected async doConvert(
-    input: ConverterInput,
-    options: ConverterOptions,
-  ): Promise<Result<ConverterOutput, RAGError>> {
-    try {
-      // 1. コンテンツ取得
-      const content = this.getTextContent(input);
+| プロパティ | 型 | 説明 | 例 |
+| --- | --- | --- | --- |
+| `id` | `string` | コンバーターの一意識別子 | `"minimal-converter"` |
+| `name` | `string` | 表示名 | `"Minimal Converter"` |
+| `supportedMimeTypes` | `readonly string[]` | 対応するMIMEタイプの配列 | `["text/minimal"]` |
+| `priority` | `number` | 優先度（低いほど高優先） | `5` |
 
-      // 2. 処理（ここに固有のロジック）
-      const processed = content.trim();
+### doConvertメソッドの実装手順
 
-      // 3. トリミング
-      const trimmed = this.trimContent(processed, options.maxContentLength);
+実装は以下の5段階で構成される。
 
-      // 4. メタデータ生成
-      const metadata = {
-        title: null,
-        author: null,
-        language: "en" as const,
-        wordCount: trimmed.split(/\s+/).length,
-        lineCount: trimmed.split("\n").length,
-        charCount: trimmed.length,
-        headers: [],
-        codeBlocks: 0,
-        links: [],
-      };
+| 手順 | 処理内容 | 使用メソッド/操作 |
+| --- | --- | --- |
+| 1 | コンテンツ取得 | `this.getTextContent(input)` |
+| 2 | 固有処理の実行 | コンバーター固有のロジック |
+| 3 | コンテンツのトリミング | `this.trimContent(processed, options.maxContentLength)` |
+| 4 | メタデータ生成 | ExtractedMetadataオブジェクトの構築 |
+| 5 | Result型で返却 | `ok({ convertedContent, extractedMetadata, processingTime })` |
 
-      // 5. Result型で返却
-      return ok({
-        convertedContent: trimmed,
-        extractedMetadata: metadata,
-        processingTime: 0, // BaseConverterが自動設定
-      });
-    } catch (error) {
-      return err(
-        createRAGError(
-          ErrorCodes.CONVERSION_FAILED,
-          `Conversion failed: ${error instanceof Error ? error.message : String(error)}`,
-          { converterId: this.id, fileId: input.fileId },
-          error as Error,
-        ),
-      );
-    }
-  }
-}
-```
+### 基本メタデータフィールド
+
+| フィールド | 型 | 説明 | 初期値例 |
+| --- | --- | --- | --- |
+| `title` | `string \| null` | ドキュメントタイトル | `null` |
+| `author` | `string \| null` | 作成者 | `null` |
+| `language` | `string` | 言語コード | `"en"` |
+| `wordCount` | `number` | 単語数 | 動的に計算 |
+| `lineCount` | `number` | 行数 | 動的に計算 |
+| `charCount` | `number` | 文字数 | 動的に計算 |
+| `headers` | `string[]` | ヘッダー一覧 | `[]` |
+| `codeBlocks` | `number` | コードブロック数 | `0` |
+| `links` | `string[]` | リンク一覧 | `[]` |
+
+### エラー発生時の処理
+
+エラーが発生した場合は、`createRAGError`関数を使用して`err`結果を返却する。コンテキスト情報として`converterId`と`fileId`を含める。
 
 ---
 
@@ -101,69 +90,64 @@ export class MinimalConverter extends BaseConverter {
 
 ### パターン1: custom フィールドの活用（推奨）
 
-```typescript
-const metadata = {
-  // 基本フィールド
-  title: null,
-  author: null,
-  language: "en" as const,
-  // ...
+既存のExtractedMetadata型には`custom`フィールドが用意されており、任意のカスタムデータを格納できる。
 
-  // カスタムフィールド
-  custom: {
-    customField1: "value",
-    customField2: 123,
-    customArray: ["item1", "item2"],
-  },
-};
-```
+**customフィールドの構造**:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `custom` | `Record<string, unknown>` | 任意のキー・値ペアを格納可能 |
+
+**格納可能なデータ例**:
+
+| キー例 | 値の型 | 説明 |
+| --- | --- | --- |
+| `customField1` | `string` | 文字列型のカスタムデータ |
+| `customField2` | `number` | 数値型のカスタムデータ |
+| `customArray` | `string[]` | 配列型のカスタムデータ |
 
 ### パターン2: 型定義の拡張（共通化が必要な場合）
 
-`packages/shared/src/services/conversion/types.ts` を更新:
+複数のコンバーターで共通して使用するフィールドは、型定義ファイルを更新して追加する。
 
-```typescript
-export interface ExtractedMetadata {
-  // 既存フィールド
-  title: string | null;
-  // ...
+**更新対象ファイル**: `packages/shared/src/services/conversion/types.ts`
 
-  // 新規追加フィールド
-  newCommonField?: string; // オプショナルで追加
-}
-```
+**ExtractedMetadata型への新規フィールド追加ルール**:
+
+| ルール | 説明 |
+| --- | --- |
+| オプショナルで追加 | 既存コンバーターとの互換性のため、`?`を付けてオプショナルにする |
+| 既存フィールドは変更しない | 後方互換性を維持するため、既存フィールドの型や名前は変更しない |
 
 ---
 
 ## エラーハンドリングのベストプラクティス
 
-**推奨パターン**:
+### 推奨パターンの構造
 
-```typescript
-try {
-  const content = this.getTextContent(input);
-  // ... 処理 ...
-  return ok(result);
-} catch (error) {
-  // エラーコンテキストを含める
-  return err(
-    createRAGError(
-      ErrorCodes.CONVERSION_FAILED,
-      `Failed to convert: ${error instanceof Error ? error.message : String(error)}`,
-      {
-        converterId: this.id,
-        fileId: input.fileId,
-        mimeType: input.mimeType,
-        // 追加のコンテキスト情報
-        filePath: input.filePath,
-      },
-      error as Error, // 元のエラーを cause として保持
-    ),
-  );
-}
-```
+1. try-catchでメイン処理を囲む
+2. 正常終了時は`ok(result)`を返却
+3. 異常終了時は`err(createRAGError(...))`を返却
 
-**エラーコード選択基準**:
+### createRAGErrorに渡すパラメータ
+
+| パラメータ | 説明 | 例 |
+| --- | --- | --- |
+| 第1引数: エラーコード | ErrorCodesからの定数 | `ErrorCodes.CONVERSION_FAILED` |
+| 第2引数: メッセージ | エラー詳細メッセージ | `"Failed to convert: {error.message}"` |
+| 第3引数: コンテキスト | 追加情報のオブジェクト | `{ converterId, fileId, mimeType, filePath }` |
+| 第4引数: 元エラー | causeとして保持する元のError | `error as Error` |
+
+### コンテキストに含める推奨情報
+
+| キー | 説明 | 必須/推奨 |
+| --- | --- | --- |
+| `converterId` | コンバーターID | 必須 |
+| `fileId` | 処理対象ファイルID | 必須 |
+| `mimeType` | MIMEタイプ | 推奨 |
+| `filePath` | ファイルパス | 推奨 |
+
+### エラーコード選択基準
 
 | エラーコード        | 使用場面                                         |
 | ------------------- | ------------------------------------------------ |
@@ -175,67 +159,43 @@ try {
 
 ## テストの実装パターン
 
-### 基本テスト構造
+### テストの前処理（beforeEach）
 
-```typescript
-describe("CustomConverter", () => {
-  beforeEach(() => {
-    globalConverterRegistry.clear();
-    resetRegistrationState();
-  });
+各テストの前に以下を実行して、クリーンな状態を確保する。
 
-  describe("convert", () => {
-    it("should convert valid input", async () => {
-      const converter = new CustomConverter();
-      const input = createTestInput();
+| 処理 | 説明 |
+| --- | --- |
+| `globalConverterRegistry.clear()` | レジストリをクリア |
+| `resetRegistrationState()` | 登録状態をリセット |
 
-      const result = await converter.convert(input, {});
+### 基本テストケース一覧
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.convertedContent).toBeTruthy();
-      }
-    });
+| テストケース | 入力 | 期待結果 |
+| --- | --- | --- |
+| 有効な入力の変換 | 正常なテスト入力 | `result.success`が`true`、`convertedContent`が存在 |
+| 空コンテンツの処理 | `content: ""`の入力 | `result.success`が`true`（空でもエラーにならない） |
+| maxContentLengthの尊重 | 200,000文字の入力、オプション`maxContentLength: 100000` | 出力が100,000文字以下 |
 
-    it("should handle empty content", async () => {
-      const converter = new CustomConverter();
-      const input = createTestInput({ content: "" });
+### テストヘルパー関数の設計
 
-      const result = await converter.convert(input, {});
+テスト用の入力データを生成するヘルパー関数を用意する。
 
-      expect(result.success).toBe(true);
-    });
+**関数名**: `createTestInput`
 
-    it("should respect maxContentLength", async () => {
-      const converter = new CustomConverter();
-      const input = createTestInput({ content: "A".repeat(200000) });
+**パラメータ**:
 
-      const result = await converter.convert(input, {
-        maxContentLength: 100000,
-      });
+| パラメータ | 型 | 説明 |
+| --- | --- | --- |
+| `overrides` | `Partial<ConverterInput>` | デフォルト値を上書きするオプション |
 
-      expect(result.success).toBe(true);
-      if (result.success) {
-        expect(result.data.convertedContent.length).toBeLessThanOrEqual(100000);
-      }
-    });
-  });
-});
-```
+**戻り値（ConverterInput）のデフォルト値**:
 
-### テストヘルパー関数
-
-```typescript
-function createTestInput(overrides?: Partial<ConverterInput>): ConverterInput {
-  return {
-    fileId: generateFileId(),
-    content: "test content",
-    mimeType: "text/test",
-    filePath: "/test/file.txt",
-    ...overrides,
-  };
-}
-```
+| フィールド | デフォルト値 |
+| --- | --- |
+| `fileId` | `generateFileId()`で生成 |
+| `content` | `"test content"` |
+| `mimeType` | `"text/test"` |
+| `filePath` | `"/test/file.txt"` |
 
 ---
 
@@ -244,3 +204,11 @@ function createTestInput(overrides?: Partial<ConverterInput>): ConverterInput {
 - [コンバーターインターフェース仕様](./interfaces-converter.md)
 - [コンバーター実装クラス詳細](./interfaces-converter-implementations.md)
 - [エラーハンドリング仕様](./error-handling.md)
+
+---
+
+## 変更履歴
+
+| 日付 | バージョン | 変更内容 |
+| --- | --- | --- |
+| 2025-01-26 | v1.1.0 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |

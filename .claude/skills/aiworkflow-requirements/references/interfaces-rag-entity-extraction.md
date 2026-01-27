@@ -19,47 +19,30 @@ Named Entity Recognition（NER）サービスのインターフェース仕様�
 
 エンティティ抽出の Strategy Pattern インターフェース。
 
-```typescript
-interface IEntityExtractor {
-  extract(
-    chunk: Chunk,
-    options?: EntityExtractionOptionsInput,
-  ): Promise<Result<ExtractionResult, Error>>;
-
-  extractBatch(
-    chunks: Chunk[],
-    options?: EntityExtractionOptionsInput,
-  ): Promise<Result<BatchExtractionResult, Error>>;
-
-  mergeEntities(results: ExtractionResult[]): ExtractedEntity[];
-}
-```
-
-| メソッド        | 戻り値                                        | 説明                                |
-| --------------- | --------------------------------------------- | ----------------------------------- |
-| extract()       | Promise<Result<ExtractionResult, Error>>      | 単一チャンクからエンティティ抽出    |
-| extractBatch()  | Promise<Result<BatchExtractionResult, Error>> | 複数チャンクをバッチ抽出（1-100件） |
-| mergeEntities() | ExtractedEntity[]                             | 正規化名で重複排除・マージ          |
+| メソッド        | 引数                                          | 戻り値                                        | 説明                                |
+| --------------- | --------------------------------------------- | --------------------------------------------- | ----------------------------------- |
+| extract()       | chunk: Chunk, options?: EntityExtractionOptionsInput | Promise<Result<ExtractionResult, Error>>      | 単一チャンクからエンティティ抽出    |
+| extractBatch()  | chunks: Chunk[], options?: EntityExtractionOptionsInput | Promise<Result<BatchExtractionResult, Error>> | 複数チャンクをバッチ抽出（1-100件） |
+| mergeEntities() | results: ExtractionResult[]                   | ExtractedEntity[]                             | 正規化名で重複排除・マージ          |
 
 ### ILLMProvider
 
 LLM通信の抽象化インターフェース（DI用）。
 
-```typescript
-interface ILLMProvider {
-  readonly modelId: string;
-  generate(
-    prompt: string,
-    options?: LLMGenerateOptions,
-  ): Promise<Result<LLMGenerateResult, Error>>;
-}
+**ILLMProviderメンバー**:
 
-interface LLMGenerateOptions {
-  maxTokens?: number;
-  temperature?: number;
-  responseFormat?: "text" | "json";
-}
-```
+| メンバー   | 種別       | 型・引数                                    | 戻り値                                  | 説明              |
+| ---------- | ---------- | ------------------------------------------- | --------------------------------------- | ----------------- |
+| modelId    | プロパティ | string (読み取り専用)                       | -                                       | モデル識別子      |
+| generate() | メソッド   | prompt: string, options?: LLMGenerateOptions | Promise<Result<LLMGenerateResult, Error>> | プロンプト生成処理 |
+
+**LLMGenerateOptions型**:
+
+| プロパティ     | 型                 | 説明                          |
+| -------------- | ------------------ | ----------------------------- |
+| maxTokens      | number?            | 最大トークン数                |
+| temperature    | number?            | 温度パラメータ                |
+| responseFormat | "text" \| "json"?  | レスポンス形式（テキストまたはJSON） |
 
 ---
 
@@ -76,16 +59,20 @@ interface LLMGenerateOptions {
 
 LLMベースの高精度エンティティ抽出。
 
-```typescript
-const extractor = new LLMEntityExtractor(llmProvider, {
-  fallbackExtractor: new RuleBasedEntityExtractor(),
-});
+**インスタンス生成**:
 
-const result = await extractor.extract(chunk, {
-  minConfidence: 0.7,
-  generateDescriptions: true,
-});
-```
+| 項目              | 内容                                               |
+| ----------------- | -------------------------------------------------- |
+| コンストラクタ引数1 | llmProvider: ILLMProvider                          |
+| コンストラクタ引数2 | options: { fallbackExtractor?: IEntityExtractor }  |
+| 推奨設定          | fallbackExtractorにRuleBasedEntityExtractorを指定  |
+
+**extractメソッド呼び出し例**:
+
+| オプション           | 設定例 | 説明                     |
+| -------------------- | ------ | ------------------------ |
+| minConfidence        | 0.7    | 信頼度0.7以上のみ抽出    |
+| generateDescriptions | true   | 説明文を自動生成         |
 
 **特徴**:
 
@@ -99,10 +86,7 @@ const result = await extractor.extract(chunk, {
 
 パターンマッチングによる高速抽出。
 
-```typescript
-const extractor = new RuleBasedEntityExtractor();
-const result = await extractor.extract(chunk);
-```
+**インスタンス生成**: 引数なしでコンストラクタを呼び出す。extractメソッドにchunkを渡して抽出を実行する。
 
 **特徴**:
 
@@ -188,15 +172,12 @@ const result = await extractor.extract(chunk);
 
 ### Result型パターン
 
-```typescript
-const result = await extractor.extract(chunk);
+extractメソッドはResult型を返す。isOk()メソッドで成功判定を行い、成功時はresult.value.entitiesから抽出結果を取得する。失敗時はresult.error.messageからエラー内容を取得する。
 
-if (result.isOk()) {
-  const entities = result.value.entities;
-} else {
-  console.error("Error:", result.error.message);
-}
-```
+| 状態   | 判定メソッド   | アクセス方法             | 取得内容              |
+| ------ | -------------- | ------------------------ | --------------------- |
+| 成功時 | result.isOk()  | result.value.entities    | 抽出されたエンティティ |
+| 失敗時 | result.isErr() | result.error.message     | エラーメッセージ      |
 
 ### エラーコード
 
@@ -209,12 +190,11 @@ if (result.isOk()) {
 
 ### フォールバック戦略
 
-```typescript
-// LLM失敗時は自動的にRuleBasedにフォールバック
-const llmExtractor = new LLMEntityExtractor(llmProvider, {
-  fallbackExtractor: new RuleBasedEntityExtractor(),
-});
-```
+LLMEntityExtractorのコンストラクタでfallbackExtractorオプションにRuleBasedEntityExtractorインスタンスを指定することで、LLM呼び出し失敗時に自動的にルールベース抽出へフォールバックする。
+
+| 設定項目          | 設定値                        | 効果                              |
+| ----------------- | ----------------------------- | --------------------------------- |
+| fallbackExtractor | RuleBasedEntityExtractorインスタンス | LLM失敗時に自動フォールバック     |
 
 ---
 
@@ -251,24 +231,26 @@ const llmExtractor = new LLMEntityExtractor(llmProvider, {
 
 ### モックLLMプロバイダー
 
-```typescript
-import { createMockLLMProvider } from "@repo/shared/services/extraction";
+@repo/shared/services/extractionからcreateMockLLMProviderをインポートして使用する。
 
-const mockProvider = createMockLLMProvider({
-  responses: new Map([["test prompt", '{"entities": [...]}']]),
-});
-```
+| ユーティリティ         | インポート元                           | 用途                       |
+| ---------------------- | -------------------------------------- | -------------------------- |
+| createMockLLMProvider  | @repo/shared/services/extraction       | モックプロバイダー生成     |
+
+**createMockLLMProviderオプション**:
+
+| オプション | 型                        | 説明                                   |
+| ---------- | ------------------------- | -------------------------------------- |
+| responses  | Map<string, string>       | プロンプトとレスポンスのマッピング     |
 
 ### フィクスチャ
 
-```typescript
-import {
-  createTestChunk,
-  SAMPLE_ENTITIES,
-} from "@repo/shared/services/extraction/__tests__/fixtures";
+@repo/shared/services/extraction/__tests__/fixturesからテスト用ユーティリティをインポートして使用する。
 
-const chunk = createTestChunk("TypeScriptとReactを使用しています");
-```
+| ユーティリティ   | 用途                                   |
+| ---------------- | -------------------------------------- |
+| createTestChunk  | テスト用チャンク生成（テキストを引数に渡す） |
+| SAMPLE_ENTITIES  | サンプルエンティティデータ             |
 
 ---
 
@@ -286,6 +268,7 @@ const chunk = createTestChunk("TypeScriptとReactを使用しています");
 
 | 日付       | バージョン | 変更内容                                   |
 | ---------- | ---------- | ------------------------------------------ |
+| 2026-01-26 | 1.1.0      | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 2026-01-19 | 1.0.0      | 初版作成（CONV-06-04完了に伴う仕様文書化） |
 
 ---

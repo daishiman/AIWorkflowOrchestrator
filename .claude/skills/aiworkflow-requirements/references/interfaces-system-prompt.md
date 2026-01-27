@@ -18,104 +18,80 @@
 
 ### ISystemPromptRepository
 
-```typescript
-interface ISystemPromptRepository {
-  /**
-   * ユーザーのテンプレート一覧を取得
-   * @param userId - ユーザーID
-   * @param options - 取得オプション（ページネーション、ソート）
-   * @returns テンプレート配列
-   */
-  findAllByUserId(
-    userId: string,
-    options?: FindAllOptions
-  ): Promise<SystemPromptTemplate[]>;
+システムプロンプトテンプレートの永続化操作を提供するリポジトリインターフェース。
 
-  /**
-   * IDでテンプレートを取得
-   * @param id - テンプレートID
-   * @returns テンプレートまたはnull
-   */
-  findById(id: string): Promise<SystemPromptTemplate | null>;
+#### メソッド一覧
 
-  /**
-   * プリセットテンプレート一覧を取得
-   * @returns プリセットテンプレート配列
-   */
-  findAllPresets(): Promise<SystemPromptTemplate[]>;
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| findAllByUserId | userId: string, options?: FindAllOptions | Promise<SystemPromptTemplate[]> | ユーザーのテンプレート一覧を取得 |
+| findById | id: string | Promise<SystemPromptTemplate \| null> | IDでテンプレートを取得 |
+| findAllPresets | なし | Promise<SystemPromptTemplate[]> | プリセットテンプレート一覧を取得 |
+| create | userId: string, data: CreateSystemPromptData | Promise<SystemPromptTemplate> | テンプレートを作成 |
+| update | id: string, data: UpdateSystemPromptData | Promise<SystemPromptTemplate> | テンプレートを更新 |
+| delete | id: string | Promise<void> | テンプレートを削除 |
+| isPreset | id: string | Promise<boolean> | プリセットかどうかを判定 |
+| existsByUserIdAndName | userId: string, name: string | Promise<boolean> | ユーザー内で名前が重複しているか確認 |
+| exists | id: string | Promise<boolean> | テンプレートが存在するか確認 |
 
-  /**
-   * テンプレートを作成
-   * @param userId - ユーザーID
-   * @param data - 作成データ
-   * @returns 作成されたテンプレート
-   * @throws ValidationError - バリデーション失敗時
-   * @throws DuplicateNameError - 名前重複時
-   */
-  create(
-    userId: string,
-    data: CreateSystemPromptData
-  ): Promise<SystemPromptTemplate>;
+#### メソッド詳細
 
-  /**
-   * テンプレートを更新
-   * @param id - テンプレートID
-   * @param data - 更新データ
-   * @returns 更新されたテンプレート
-   * @throws NotFoundError - テンプレート未発見時
-   * @throws PresetProtectedError - プリセット更新時
-   */
-  update(
-    id: string,
-    data: UpdateSystemPromptData
-  ): Promise<SystemPromptTemplate>;
+**findAllByUserId**
+- 説明: 指定ユーザーのテンプレート一覧を取得する
+- 引数: userId（ユーザーID）、options（取得オプション：ページネーション、ソート）
+- 戻り値: テンプレート配列
 
-  /**
-   * テンプレートを削除
-   * @param id - テンプレートID
-   * @throws NotFoundError - テンプレート未発見時
-   * @throws PresetProtectedError - プリセット削除時
-   */
-  delete(id: string): Promise<void>;
+**findById**
+- 説明: IDでテンプレートを取得する
+- 引数: id（テンプレートID）
+- 戻り値: テンプレートまたはnull
 
-  /**
-   * プリセットかどうかを判定
-   * @param id - テンプレートID
-   * @returns プリセットならtrue
-   */
-  isPreset(id: string): Promise<boolean>;
+**findAllPresets**
+- 説明: プリセットテンプレート一覧を取得する
+- 戻り値: プリセットテンプレート配列
 
-  /**
-   * ユーザー内で名前が重複しているか確認
-   * @param userId - ユーザーID
-   * @param name - テンプレート名
-   * @returns 重複していればtrue
-   */
-  existsByUserIdAndName(userId: string, name: string): Promise<boolean>;
+**create**
+- 説明: テンプレートを作成する
+- 引数: userId（ユーザーID）、data（作成データ）
+- 戻り値: 作成されたテンプレート
+- 例外: ValidationError（バリデーション失敗時）、DuplicateNameError（名前重複時）
 
-  /**
-   * テンプレートが存在するか確認
-   * @param id - テンプレートID
-   * @returns 存在すればtrue
-   */
-  exists(id: string): Promise<boolean>;
-}
-```
+**update**
+- 説明: テンプレートを更新する
+- 引数: id（テンプレートID）、data（更新データ）
+- 戻り値: 更新されたテンプレート
+- 例外: NotFoundError（テンプレート未発見時）、PresetProtectedError（プリセット更新時）
+
+**delete**
+- 説明: テンプレートを削除する
+- 引数: id（テンプレートID）
+- 例外: NotFoundError（テンプレート未発見時）、PresetProtectedError（プリセット削除時）
+
+**isPreset**
+- 説明: 指定IDがプリセットかどうかを判定する
+- 引数: id（テンプレートID）
+- 戻り値: プリセットならtrue
+
+**existsByUserIdAndName**
+- 説明: ユーザー内で名前が重複しているか確認する
+- 引数: userId（ユーザーID）、name（テンプレート名）
+- 戻り値: 重複していればtrue
+
+**exists**
+- 説明: テンプレートが存在するか確認する
+- 引数: id（テンプレートID）
+- 戻り値: 存在すればtrue
 
 ### FindAllOptions
 
-```typescript
-interface FindAllOptions {
-  /** 取得件数上限（デフォルト: 100） */
-  limit?: number;
-  /** オフセット（デフォルト: 0） */
-  offset?: number;
-  /** ソート対象カラム */
-  sortBy?: 'name' | 'createdAt' | 'updatedAt';
-  /** ソート順序 */
-  sortOrder?: 'asc' | 'desc';
-}
-```
+一覧取得時のオプション設定。
+
+| プロパティ | 型 | 必須 | デフォルト | 説明 |
+| --- | --- | --- | --- | --- |
+| limit | number | いいえ | 100 | 取得件数上限 |
+| offset | number | いいえ | 0 | オフセット |
+| sortBy | 'name' \| 'createdAt' \| 'updatedAt' | いいえ | - | ソート対象カラム |
+| sortOrder | 'asc' \| 'desc' | いいえ | - | ソート順序 |
 
 ---
 
@@ -123,46 +99,35 @@ interface FindAllOptions {
 
 ### SystemPromptTemplate
 
-```typescript
-interface SystemPromptTemplate {
-  /** UUID形式のテンプレートID */
-  id: string;
-  /** 所有者のユーザーID */
-  userId: string;
-  /** テンプレート名（1-50文字） */
-  name: string;
-  /** プロンプト内容（1-4000文字） */
-  content: string;
-  /** プリセットフラグ */
-  isPreset: boolean;
-  /** 作成日時 */
-  createdAt: Date;
-  /** 更新日時 */
-  updatedAt: Date;
-}
-```
+システムプロンプトテンプレートのエンティティ。
+
+| プロパティ | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| id | string | はい | UUID形式のテンプレートID |
+| userId | string | はい | 所有者のユーザーID |
+| name | string | はい | テンプレート名（1-50文字） |
+| content | string | はい | プロンプト内容（1-4000文字） |
+| isPreset | boolean | はい | プリセットフラグ |
+| createdAt | Date | はい | 作成日時 |
+| updatedAt | Date | はい | 更新日時 |
 
 ### CreateSystemPromptData
 
-```typescript
-interface CreateSystemPromptData {
-  /** テンプレート名（必須、1-50文字） */
-  name: string;
-  /** プロンプト内容（必須、1-4000文字） */
-  content: string;
-}
-```
+テンプレート作成時の入力データ。
+
+| プロパティ | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| name | string | はい | テンプレート名（1-50文字） |
+| content | string | はい | プロンプト内容（1-4000文字） |
 
 ### UpdateSystemPromptData
 
-```typescript
-interface UpdateSystemPromptData {
-  /** テンプレート名（任意、1-50文字） */
-  name?: string;
-  /** プロンプト内容（任意、1-4000文字） */
-  content?: string;
-}
-```
+テンプレート更新時の入力データ。
+
+| プロパティ | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| name | string | いいえ | テンプレート名（1-50文字） |
+| content | string | いいえ | プロンプト内容（1-4000文字） |
 
 ---
 
@@ -182,11 +147,22 @@ interface UpdateSystemPromptData {
 
 ### レスポンス形式
 
-```typescript
-type Result<T> =
-  | { success: true; data: T }
-  | { success: false; error: { code: string; message: string } };
-```
+IPCハンドラーの戻り値は成功/失敗を表すResult型を使用する。
+
+**成功時の構造**
+
+| プロパティ | 型 | 値 |
+| --- | --- | --- |
+| success | boolean | true |
+| data | T | 操作結果のデータ |
+
+**失敗時の構造**
+
+| プロパティ | 型 | 値 |
+| --- | --- | --- |
+| success | boolean | false |
+| error.code | string | エラーコード |
+| error.message | string | エラーメッセージ |
 
 ---
 
@@ -313,4 +289,5 @@ type Result<T> =
 
 | バージョン | 日付       | 変更内容                               |
 | ---------- | ---------- | -------------------------------------- |
+| 1.1.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 1.0.0      | 2026-01-22 | 初版作成（DB永続化実装完了）           |

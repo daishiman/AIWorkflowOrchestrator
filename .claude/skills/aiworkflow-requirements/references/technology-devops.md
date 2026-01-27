@@ -16,38 +16,38 @@
 
 ### 技術選定の基本原則
 
-```
-個人開発における技術選定の3原則:
+個人開発における技術選定の3原則を以下に示す。
 
-1. 学習コストの最小化
-   └─ 広く使われ、ドキュメントが充実した技術を優先
-
-2. 無料枠の最大活用
-   └─ Vercel, Turso, Railway等の無料tier内で運用可能
-
-3. 型安全性の徹底
-   └─ TypeScript strict mode + Zodによる実行時検証
-```
+| 原則 | 説明 | 具体例 |
+| ---- | ---- | ------ |
+| 学習コストの最小化 | 広く使われ、ドキュメントが充実した技術を優先 | React, Next.js, TypeScript |
+| 無料枠の最大活用 | 無料tier内で運用可能なサービスを選択 | Vercel, Turso, Railway |
+| 型安全性の徹底 | 静的型検査と実行時検証を組み合わせる | TypeScript strict mode + Zod |
 
 ### アーキテクチャ概要
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    pnpm Monorepo                            │
-├─────────────────────────────────────────────────────────────┤
-│  apps/                                                      │
-│  ├─ web/          Next.js 15 (App Router)                   │
-│  └─ desktop/      Electron + Next.js (将来対応)             │
-├─────────────────────────────────────────────────────────────┤
-│  packages/                                                  │
-│  └─ shared/       共通ロジック、型定義、ユーティリティ       │
-├─────────────────────────────────────────────────────────────┤
-│  外部サービス                                               │
-│  ├─ Turso         分散SQLite (無料: 9GB, 500Mリクエスト)    │
-│  ├─ Railway       ホスティング (従量課金)                   │
-│  └─ AI Provider   OpenAI / Anthropic / Google / xAI        │
-└─────────────────────────────────────────────────────────────┘
-```
+本プロジェクトはpnpm Monorepo構成を採用している。
+
+**アプリケーション層（apps/）**:
+
+| ディレクトリ | 技術 | 説明 |
+| ------------ | ---- | ---- |
+| apps/web | Next.js 15 (App Router) | Webアプリケーション |
+| apps/desktop | Electron + Next.js | デスクトップアプリケーション（将来対応） |
+
+**共有パッケージ層（packages/）**:
+
+| ディレクトリ | 説明 |
+| ------------ | ---- |
+| packages/shared | 共通ロジック、型定義、ユーティリティ |
+
+**外部サービス**:
+
+| サービス | 用途 | 無料枠 |
+| -------- | ---- | ------ |
+| Turso | 分散SQLite | 9GB、500Mリクエスト/月 |
+| Railway | ホスティング | 従量課金 |
+| AI Provider | LLM統合 | OpenAI / Anthropic / Google / xAI |
 
 ---
 
@@ -55,57 +55,40 @@
 
 ### apps/web (Next.js Webアプリ)
 
-```jsonc
-// apps/web/package.json (抜粋)
-{
-  "name": "@repo/web",
-  "dependencies": {
-    // フレームワーク
-    "next": "^15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+パッケージ名: @repo/web
 
-    // データベース
-    "@libsql/client": "^0.14.0",
-    "drizzle-orm": "^0.38.0",
+**本番依存関係（dependencies）**:
 
-    // AI
-    "ai": "^4.1.0",
-    "@ai-sdk/openai": "^1.1.0",
-    "@ai-sdk/anthropic": "^1.1.0",
-    "@ai-sdk/google": "^1.1.0",
+| カテゴリ | パッケージ | バージョン | 用途 |
+| -------- | ---------- | ---------- | ---- |
+| フレームワーク | next | ^15.1.0 | App Router対応 |
+| フレームワーク | react | ^19.0.0 | UIライブラリ |
+| フレームワーク | react-dom | ^19.0.0 | DOM描画 |
+| データベース | @libsql/client | ^0.14.0 | Tursoクライアント |
+| データベース | drizzle-orm | ^0.38.0 | ORMライブラリ |
+| AI | ai | ^4.1.0 | Vercel AI SDK |
+| AI | @ai-sdk/openai | ^1.1.0 | OpenAI統合 |
+| AI | @ai-sdk/anthropic | ^1.1.0 | Anthropic統合 |
+| AI | @ai-sdk/google | ^1.1.0 | Google AI統合 |
+| バリデーション | zod | ^3.24.0 | スキーマ検証 |
+| UI | class-variance-authority | ^0.7.0 | バリアントスタイル |
+| UI | clsx | ^2.1.0 | クラス名結合 |
+| UI | tailwind-merge | ^2.6.0 | Tailwindマージ |
+| 内部 | @repo/shared | workspace:* | 共有パッケージ |
 
-    // バリデーション
-    "zod": "^3.24.0",
+**開発依存関係（devDependencies）**:
 
-    // UI
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
-    "tailwind-merge": "^2.6.0",
-
-    // 共有パッケージ
-    "@repo/shared": "workspace:*",
-  },
-  "devDependencies": {
-    // 型定義
-    "typescript": "^5.7.0",
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
-
-    // ビルドツール
-    "drizzle-kit": "^0.30.0",
-
-    // テスト
-    "vitest": "^2.1.0",
-    "@testing-library/react": "^16.0.0",
-
-    // スタイル
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0",
-  },
-}
-```
+| カテゴリ | パッケージ | バージョン | 用途 |
+| -------- | ---------- | ---------- | ---- |
+| 型定義 | typescript | ^5.7.0 | 言語 |
+| 型定義 | @types/node | ^22.0.0 | Node.js型 |
+| 型定義 | @types/react | ^19.0.0 | React型 |
+| ビルド | drizzle-kit | ^0.30.0 | マイグレーション |
+| テスト | vitest | ^2.1.0 | テストフレームワーク |
+| テスト | @testing-library/react | ^16.0.0 | コンポーネントテスト |
+| スタイル | tailwindcss | ^3.4.0 | CSSフレームワーク |
+| スタイル | postcss | ^8.4.0 | CSS処理 |
+| スタイル | autoprefixer | ^10.4.0 | ベンダープレフィックス |
 
 ### apps/desktop (Electron)
 
@@ -146,28 +129,32 @@ Zustandを採用した理由は、シンプルなAPI、TypeScript完全対応、
 
 ### packages/shared (共有ライブラリ)
 
-```jsonc
-// packages/shared/package.json
-{
-  "name": "@repo/shared",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": "./dist/index.js",
-    "./core": "./dist/core/index.js",
-    "./infrastructure": "./dist/infrastructure/index.js",
-    "./utils": "./dist/utils/index.js",
-  },
-  "dependencies": {
-    "zod": "^3.24.0",
-  },
-  "devDependencies": {
-    "typescript": "^5.7.0",
-    "tsup": "^8.0.0",
-    "vitest": "^2.1.0",
-  },
-}
-```
+パッケージ名: @repo/shared
+
+**パッケージ設定**:
+
+| 設定項目 | 値 | 説明 |
+| -------- | -- | ---- |
+| main | ./dist/index.js | メインエントリポイント |
+| types | ./dist/index.d.ts | 型定義ファイル |
+
+**エクスポート構成**:
+
+| エクスポートパス | 実体パス |
+| ---------------- | -------- |
+| . | ./dist/index.js |
+| ./core | ./dist/core/index.js |
+| ./infrastructure | ./dist/infrastructure/index.js |
+| ./utils | ./dist/utils/index.js |
+
+**依存関係**:
+
+| パッケージ | バージョン | 種別 | 用途 |
+| ---------- | ---------- | ---- | ---- |
+| zod | ^3.24.0 | 本番 | スキーマ検証 |
+| typescript | ^5.7.0 | 開発 | 言語 |
+| tsup | ^8.0.0 | 開発 | バンドラー |
+| vitest | ^2.1.0 | 開発 | テスト |
 
 **RAG変換システムの依存関係方針**:
 
@@ -190,26 +177,33 @@ Zustandを採用した理由は、シンプルなAPI、TypeScript完全対応、
 
 ### 依存関係の分類
 
-```
-必須依存関係 (production):
-├─ next, react, react-dom     # コアフレームワーク
-├─ drizzle-orm, @libsql/client  # データベース
-├─ ai, @ai-sdk/*              # AI統合
-├─ zod                        # バリデーション
-└─ 最小限のUI (clsx, tailwind-merge)
+**必須依存関係（production）**:
 
-オプション依存関係 (段階的導入):
-├─ @radix-ui/*                # 必要なコンポーネントのみ
-├─ framer-motion              # アニメーション必要時
-├─ @tanstack/react-query      # クライアントキャッシュ必要時
-└─ zustand                    # 複雑な状態管理必要時
+| カテゴリ | パッケージ | 用途 |
+| -------- | ---------- | ---- |
+| コアフレームワーク | next, react, react-dom | アプリケーション基盤 |
+| データベース | drizzle-orm, @libsql/client | DB操作 |
+| AI統合 | ai, @ai-sdk/* | LLM連携 |
+| バリデーション | zod | スキーマ検証 |
+| UI | clsx, tailwind-merge | 最小限のスタイル |
 
-開発依存関係 (devDependencies):
-├─ typescript, @types/*       # 型システム
-├─ eslint, prettier           # コード品質
-├─ vitest, @testing-library/* # テスト
-└─ drizzle-kit                # マイグレーション
-```
+**オプション依存関係（段階的導入）**:
+
+| パッケージ | 導入タイミング |
+| ---------- | -------------- |
+| @radix-ui/* | 必要なコンポーネントのみ |
+| framer-motion | アニメーション必要時 |
+| @tanstack/react-query | クライアントキャッシュ必要時 |
+| zustand | 複雑な状態管理必要時 |
+
+**開発依存関係（devDependencies）**:
+
+| カテゴリ | パッケージ | 用途 |
+| -------- | ---------- | ---- |
+| 型システム | typescript, @types/* | 静的型付け |
+| コード品質 | eslint, prettier | リント・フォーマット |
+| テスト | vitest, @testing-library/* | ユニット・コンポーネントテスト |
+| マイグレーション | drizzle-kit | DB変更管理 |
 
 ### pnpm 依存解決ベストプラクティス
 
@@ -217,12 +211,12 @@ Zustandを採用した理由は、シンプルなAPI、TypeScript完全対応、
 
 **チェックリスト（新しい外部ライブラリ使用時）**:
 
-```
-□ import するパッケージの package.json に依存を追加したか
-□ モノレポ内で複数パッケージが同じライブラリを使う場合、各々に宣言したか
-□ バージョンは統一されているか（pnpm catalog 推奨）
-□ workspace: プロトコルは内部パッケージにのみ使用しているか
-```
+| 確認項目 | 説明 |
+| -------- | ---- |
+| 依存追加 | importするパッケージのpackage.jsonに依存を追加したか |
+| 複数宣言 | モノレポ内で複数パッケージが同じライブラリを使う場合、各々に宣言したか |
+| バージョン統一 | バージョンは統一されているか（pnpm catalog推奨） |
+| プロトコル使用 | workspace:プロトコルは内部パッケージにのみ使用しているか |
 
 **よくある問題と解決策**:
 
@@ -235,16 +229,11 @@ Zustandを採用した理由は、シンプルなAPI、TypeScript完全対応、
 
 **pnpm install 後の検証**:
 
-```bash
-# 依存ツリーの確認
-pnpm why <package-name>
-
-# 幽霊依存の検出
-pnpm dlx depcheck
-
-# ロックファイルの整合性確認
-pnpm install --frozen-lockfile
-```
+| コマンド | 説明 |
+| -------- | ---- |
+| pnpm why パッケージ名 | 依存ツリーの確認 |
+| pnpm dlx depcheck | 幽霊依存の検出 |
+| pnpm install --frozen-lockfile | ロックファイルの整合性確認 |
 
 > 参考: architecture-monorepo.md の「pnpm 依存解決ルール」セクション
 
@@ -253,42 +242,27 @@ pnpm install --frozen-lockfile
 **原則**:
 
 1. **Just-in-Time導入**: 必要になるまで追加しない
-2. **バンドルサイズ監視**: `next/bundle-analyzer` で定期確認
+2. **バンドルサイズ監視**: next/bundle-analyzerで定期確認
 3. **Tree Shaking対応**: ESM対応パッケージを優先
-4. **定期的な監査**: `pnpm audit` + `npm-check-updates`
+4. **定期的な監査**: pnpm audit + npm-check-updates
 
-```bash
-# 依存関係の監査
-pnpm audit
-pnpm outdated
+**依存関係監査コマンド**:
 
-# バンドルサイズ分析
-ANALYZE=true pnpm --filter @repo/web build
-
-# 未使用依存関係の検出
-pnpm dlx depcheck
-```
+| コマンド | 説明 |
+| -------- | ---- |
+| pnpm audit | セキュリティ監査 |
+| pnpm outdated | 古い依存関係の検出 |
+| ANALYZE=true pnpm --filter @repo/web build | バンドルサイズ分析 |
+| pnpm dlx depcheck | 未使用依存関係の検出 |
 
 ### バージョン更新戦略
 
-```yaml
-# 更新頻度とリスク評価
-immediate_update: # 即時更新
-  - security patches
-  - critical bug fixes
-
-weekly_update: # 週次確認
-  - patch versions (x.x.N)
-
-monthly_review: # 月次検証
-  - minor versions (x.N.x)
-  - 新機能確認後に更新
-
-major_migration: # 慎重な計画
-  - major versions (N.x.x)
-  - breaking changes確認
-  - テスト環境での検証必須
-```
+| 更新頻度 | 対象 | 対応内容 |
+| -------- | ---- | -------- |
+| 即時更新 | security patches、critical bug fixes | 発見次第即座に対応 |
+| 週次確認 | patch versions (x.x.N) | 毎週確認して適用 |
+| 月次検証 | minor versions (x.N.x) | 新機能確認後に更新 |
+| 慎重な計画 | major versions (N.x.x) | breaking changes確認、テスト環境での検証必須 |
 
 ---
 
@@ -306,22 +280,21 @@ major_migration: # 慎重な計画
 
 ### コスト最適化戦略
 
-```typescript
-// AI呼び出しのコスト最適化
-const costOptimizedConfig = {
-  // 開発環境: 安価なモデル
-  development: {
-    provider: "google",
-    model: "gemini-2.0-flash-exp", // 無料枠あり
-  },
-  // 本番環境: 用途別モデル選択
-  production: {
-    simple: "gpt-4o-mini", // 簡単なタスク
-    complex: "gpt-4o", // 複雑な推論
-    creative: "claude-3-5-sonnet", // 創造的タスク
-  },
-};
-```
+AI呼び出しのコストを最適化するため、環境と用途に応じてモデルを選択する。
+
+**開発環境**:
+
+| プロバイダー | モデル | 理由 |
+| ------------ | ------ | ---- |
+| Google | gemini-2.0-flash-exp | 無料枠あり |
+
+**本番環境（用途別モデル選択）**:
+
+| 用途 | モデル | 選定理由 |
+| ---- | ------ | -------- |
+| 簡単なタスク | gpt-4o-mini | コスト効率が高い |
+| 複雑な推論 | gpt-4o | 高精度な応答 |
+| 創造的タスク | claude-3-5-sonnet | 創造性に優れる |
 
 ---
 
@@ -389,17 +362,13 @@ const costOptimizedConfig = {
 
 **設定（vitest.config.ts）**:
 
-```typescript
-coverage: {
-  provider: "v8",  // v8を採用
-  reporter: ["text", "json", "html", "lcov"],  // lcovでCodecov連携
-  thresholds: {
-    lines: 80,      // 閾値80%
-    functions: 80,
-    statements: 80,
-  },
-}
-```
+| 設定項目 | 値 | 説明 |
+| -------- | -- | ---- |
+| provider | v8 | カバレッジプロバイダー |
+| reporter | text, json, html, lcov | 出力形式（lcovでCodecov連携） |
+| thresholds.lines | 80 | 行カバレッジ閾値 |
+| thresholds.functions | 80 | 関数カバレッジ閾値 |
+| thresholds.statements | 80 | ステートメントカバレッジ閾値 |
 
 ---
 
@@ -418,14 +387,15 @@ coverage: {
 
 ### コミュニティサポート
 
-```
-活発度ランキング:
-1. React / Next.js  - 非常に活発 (Stack Overflow, Discord, Reddit)
-2. TypeScript       - 非常に活発 (GitHub Discussions)
-3. Tailwind CSS     - 活発 (Discord)
-4. Drizzle ORM      - 成長中 (Discord, GitHub)
-5. Turso            - 成長中 (Discord)
-```
+活発度ランキングを以下の表に示す。
+
+| 順位 | 技術 | 活発度 | 主要プラットフォーム |
+| ---- | ---- | ------ | -------------------- |
+| 1 | React / Next.js | 非常に活発 | Stack Overflow, Discord, Reddit |
+| 2 | TypeScript | 非常に活発 | GitHub Discussions |
+| 3 | Tailwind CSS | 活発 | Discord |
+| 4 | Drizzle ORM | 成長中 | Discord, GitHub |
+| 5 | Turso | 成長中 | Discord |
 
 ---
 
@@ -455,3 +425,11 @@ coverage: {
 - [プロジェクト概要](./01-overview.md)
 - [非機能要件](./02-non-functional-requirements.md)
 - [ディレクトリ構造](./04-directory-structure.md)
+
+---
+
+## 変更履歴
+
+| 日付 | 変更内容 |
+| ---- | -------- |
+| 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |

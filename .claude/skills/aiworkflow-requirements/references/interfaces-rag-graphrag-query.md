@@ -54,44 +54,44 @@ GraphRAGクエリサービスは、コミュニティ要約を活用してユー
 
 **実装場所**: `packages/shared/src/services/search/`
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    GraphRAGQueryService                          │
-│                 (IGraphRAGQueryService実装)                      │
-├─────────────────────────────────────────────────────────────────┤
-│  query()                 │ メインエントリポイント               │
-│  validateInput()         │ 入力バリデーション                   │
-│  classifyQuery()         │ クエリ分類（並列実行）               │
-│  searchWithFallback()    │ 要約検索（フォールバック対応）       │
-│  buildPrompt()           │ LLMプロンプト構築                    │
-│  escapeForPrompt()       │ ユーザー入力エスケープ               │
-└───────────────┬─────────────────────────────────────────────────┘
-                │
-    ┌───────────┼───────────┬───────────────────┐
-    ▼           ▼           ▼                   ▼
-┌─────────┐ ┌──────────────┐ ┌────────────────┐ ┌────────────┐
-│IQuery   │ │ICommunity    │ │IEmbedding      │ │ILLMProvider│
-│Classifier│ │Summarizer   │ │Provider        │ │ .generate()│
-│.classify()│ │.searchSummaries()│              │              │
-└─────────┘ └──────────────┘ └────────────────┘ └────────────┘
-```
+#### GraphRAGQueryServiceコンポーネント
+
+GraphRAGQueryServiceはIGraphRAGQueryServiceインターフェースを実装し、以下のメソッドを提供する。
+
+| メソッド             | 役割                           |
+| -------------------- | ------------------------------ |
+| query()              | メインエントリポイント         |
+| validateInput()      | 入力バリデーション             |
+| classifyQuery()      | クエリ分類（並列実行）         |
+| searchWithFallback() | 要約検索（フォールバック対応） |
+| buildPrompt()        | LLMプロンプト構築              |
+| escapeForPrompt()    | ユーザー入力エスケープ         |
+
+#### 依存サービス
+
+GraphRAGQueryServiceは以下の4つの外部サービスに依存し、各処理を委譲する。
+
+| サービス             | メソッド         | 役割                     |
+| -------------------- | ---------------- | ------------------------ |
+| IQueryClassifier     | classify()       | クエリタイプ分類         |
+| ICommunitySummarizer | searchSummaries()| コミュニティ要約検索     |
+| IEmbeddingProvider   | (埋め込み生成)   | ベクトル埋め込み提供     |
+| ILLMProvider         | generate()       | LLMによる回答生成        |
 
 ### 処理フロー
 
-```
-1. query() エントリ
-   ├─ validateInput(): クエリ・オプションのZodバリデーション
-   │
-   ├─ Promise.all() 並列実行:
-   │   ├─ classifyQuery(): クエリタイプ分類
-   │   └─ searchWithFallback(): コミュニティ要約検索
-   │
-   ├─ filterAndTransformSummaries(): confidence閾値フィルタ
-   │
-   ├─ buildPrompt(): 要約をコンテキストとして統合
-   │
-   └─ ILLMProvider.generate(): 回答生成
-```
+query()メソッドは以下の順序で処理を実行する。
+
+| ステップ | メソッド                     | 処理内容                       | 実行方式 |
+| -------- | ---------------------------- | ------------------------------ | -------- |
+| 1        | validateInput()              | クエリ・オプションのZodバリデーション | 同期     |
+| 2a       | classifyQuery()              | クエリタイプ分類               | 並列実行 |
+| 2b       | searchWithFallback()         | コミュニティ要約検索           | 並列実行 |
+| 3        | filterAndTransformSummaries()| confidence閾値フィルタ         | 同期     |
+| 4        | buildPrompt()                | 要約をコンテキストとして統合   | 同期     |
+| 5        | ILLMProvider.generate()      | 回答生成                       | 非同期   |
+
+ステップ2a・2bはPromise.all()により並列実行され、パフォーマンスを最適化する。
 
 ### フォールバック戦略
 
@@ -186,63 +186,42 @@ GraphRAGクエリサービスのメインインターフェース。
 
 ### 基本的なクエリ実行
 
-```typescript
-import { GraphRAGQueryService } from "@repo/shared/services/search";
+GraphRAGQueryServiceのインスタンスを生成するには、GraphRAGQueryServiceDependenciesに定義された4つの依存サービス（queryClassifier, communitySummarizer, embeddingProvider, llmProvider）を注入する。インポート元は `@repo/shared/services/search` モジュール。
 
-const service = new GraphRAGQueryService({
-  queryClassifier,
-  communitySummarizer,
-  embeddingProvider,
-  llmProvider,
-});
+基本的なクエリ実行では、query()メソッドにクエリ文字列を渡す。戻り値のresult.successがtrueの場合、result.dataから以下の情報を取得できる。
 
-// 基本クエリ
-const result = await service.query("プロジェクトの概要を教えてください");
-
-if (result.success) {
-  console.log("回答:", result.data.answer);
-  console.log("参照要約数:", result.data.communitySummaries.length);
-  console.log("処理時間:", result.data.metadata.processingTimeMs, "ms");
-}
-```
+| プロパティ                           | 取得内容                 |
+| ------------------------------------ | ------------------------ |
+| result.data.answer                   | 生成された回答テキスト   |
+| result.data.communitySummaries.length| 参照した要約の件数       |
+| result.data.metadata.processingTimeMs| 処理時間（ミリ秒）       |
 
 ### オプション指定
 
-```typescript
-// 詳細オプション指定
-const result = await service.query("認証機能について詳しく教えてください", {
-  limit: 5,
-  confidenceThreshold: 0.7,
-  communityLevel: 2,
-  enableCommunitySummary: true,
-});
+query()メソッドの第2引数にGraphRAGQueryOptionsを渡すことで、検索動作をカスタマイズできる。
 
-if (result.success) {
-  for (const summary of result.data.communitySummaries) {
-    console.log(`Level ${summary.level}: ${summary.summary}`);
-    console.log(`Confidence: ${summary.confidence}`);
-  }
-}
-```
+**オプション指定例**
+
+| オプション             | 設定値 | 効果                           |
+| ---------------------- | ------ | ------------------------------ |
+| limit                  | 5      | 最大5件の要約を取得            |
+| confidenceThreshold    | 0.7    | confidence 0.7以上の要約のみ   |
+| communityLevel         | 2      | 階層レベル2のコミュニティを対象|
+| enableCommunitySummary | true   | コミュニティ要約検索を有効化   |
+
+成功時、result.data.communitySummariesをイテレートして各要約のlevel、summary、confidenceを参照できる。
 
 ### エラーハンドリング
 
-```typescript
-const result = await service.query(userQuery);
+result.successがfalseの場合、result.error.codeによりエラー種別を判定する。
 
-if (!result.success) {
-  switch (result.error.code) {
-    case "INVALID_QUERY":
-      console.error("入力エラー:", result.error.message);
-      break;
-    case "LLM_GENERATION_FAILED":
-      console.error("回答生成失敗:", result.error.message);
-      break;
-    default:
-      console.error("予期しないエラー:", result.error);
-  }
-}
-```
+| エラーコード            | 推奨対応                         |
+| ----------------------- | -------------------------------- |
+| INVALID_QUERY           | ユーザーに入力エラーを通知       |
+| LLM_GENERATION_FAILED   | 回答生成失敗をログ出力・リトライ |
+| その他                  | 予期しないエラーとしてログ出力   |
+
+いずれの場合もresult.error.messageに詳細なエラーメッセージが格納される。
 
 ---
 
@@ -294,4 +273,5 @@ if (!result.success) {
 
 | 日付       | バージョン | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| 2026-01-26 | 1.1.0      | spec-guidelines準拠: コードブロックを表形式・文章に変換 |
 | 2026-01-11 | 1.0.0      | 初版作成（CONV-08-04タスク完了に伴い）         |

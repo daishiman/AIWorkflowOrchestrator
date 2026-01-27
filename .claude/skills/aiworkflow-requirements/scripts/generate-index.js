@@ -3,7 +3,7 @@
  * インデックス生成スクリプト
  *
  * 用途: references/配下のドキュメントからトピックマップとキーワード索引を生成
- * 実行: node scripts/generate-index.mjs
+ * 実行: node scripts/generate-index.js
  *
  * 特徴:
  *   - 新規ファイルは自動的にprefix別に分類
@@ -196,7 +196,7 @@ async function generateTopicMap() {
   let md = `# トピックマップ
 
 > 自動生成: ${new Date().toISOString().split("T")[0]}
-> 生成コマンド: node scripts/generate-index.mjs
+> 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
 **新規ファイルはprefixに基づいて自動分類されます。**
@@ -207,13 +207,13 @@ async function generateTopicMap() {
 
 ### コマンド検索
 \`\`\`bash
-node scripts/search-spec.mjs "<キーワード>"
-node scripts/search-spec.mjs "認証" -C 5
+node scripts/search-spec.js "<キーワード>"
+node scripts/search-spec.js "認証" -C 5
 \`\`\`
 
 ### トピック一覧
 \`\`\`bash
-node scripts/list-specs.mjs --topics
+node scripts/list-specs.js --topics
 \`\`\`
 
 ---

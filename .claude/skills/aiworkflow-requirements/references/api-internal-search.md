@@ -25,13 +25,13 @@
 
 ### searchInFile()
 
-```typescript
-searchInFile(
-  content: string,
-  pattern: string,
-  options: SearchOptions
-): SearchMatch[]
-```
+**メソッド定義**:
+
+| 項目       | 内容                                                             |
+| ---------- | ---------------------------------------------------------------- |
+| メソッド名 | searchInFile                                                     |
+| 引数       | content (string), pattern (string), options (SearchOptions)      |
+| 戻り値     | SearchMatch[]                                                    |
 
 **機能**:
 
@@ -63,12 +63,14 @@ searchInFile(
 
 ### searchInWorkspace()
 
-```typescript
-async *searchInWorkspace(
-  pattern: string,
-  options: WorkspaceSearchOptions & { workspacePath?: string }
-): AsyncGenerator<FileSearchResult>
-```
+**メソッド定義**:
+
+| 項目       | 内容                                                                              |
+| ---------- | --------------------------------------------------------------------------------- |
+| メソッド名 | searchInWorkspace                                                                 |
+| 種別       | AsyncGenerator（非同期ジェネレータ）                                              |
+| 引数       | pattern (string), options (WorkspaceSearchOptions & { workspacePath?: string })   |
+| 戻り値     | AsyncGenerator<FileSearchResult>                                                  |
 
 **機能**:
 
@@ -97,14 +99,13 @@ async *searchInWorkspace(
 
 ### replaceInFile()
 
-```typescript
-replaceInFile(
-  content: string,
-  pattern: string,
-  replacement: string,
-  options: SearchOptions
-): ReplaceResult
-```
+**メソッド定義**:
+
+| 項目       | 内容                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------- |
+| メソッド名 | replaceInFile                                                                          |
+| 引数       | content (string), pattern (string), replacement (string), options (SearchOptions)      |
+| 戻り値     | ReplaceResult                                                                          |
 
 **機能**:
 
@@ -135,13 +136,14 @@ replaceInFile(
 
 ### replaceInWorkspace()
 
-```typescript
-async *replaceInWorkspace(
-  pattern: string,
-  replacement: string,
-  options: WorkspaceSearchOptions & { workspacePath?: string }
-): AsyncGenerator<WorkspaceReplaceResult>
-```
+**メソッド定義**:
+
+| 項目       | 内容                                                                                                |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| メソッド名 | replaceInWorkspace                                                                                  |
+| 種別       | AsyncGenerator（非同期ジェネレータ）                                                                |
+| 引数       | pattern (string), replacement (string), options (WorkspaceSearchOptions & { workspacePath?: string })|
+| 戻り値     | AsyncGenerator<WorkspaceReplaceResult>                                                              |
 
 **機能**:
 
@@ -171,9 +173,13 @@ async *replaceInWorkspace(
 
 ### cancelSearch()
 
-```typescript
-cancelSearch(): void
-```
+**メソッド定義**:
+
+| 項目       | 内容                                        |
+| ---------- | ------------------------------------------- |
+| メソッド名 | cancelSearch                                |
+| 引数       | なし                                        |
+| 戻り値     | void                                        |
 
 **機能**:
 
@@ -191,62 +197,66 @@ cancelSearch(): void
 
 ## 使用パターン
 
-**パターン1: ファイル内検索**
+### パターン1: ファイル内検索
 
-```typescript
-import { SearchService } from "@repo/shared/search";
+SearchServiceのインスタンスを生成し、searchInFileメソッドを呼び出す。
 
-const service = new SearchService();
-const matches = service.searchInFile(content, "pattern", {
-  caseSensitive: false,
-  wholeWord: false,
-  regex: false,
-});
+**手順**:
 
-for (const match of matches) {
-  console.log(`${match.line}:${match.column} - ${match.text}`);
-}
-```
+1. `@repo/shared/search` から SearchService をインポート
+2. SearchService のインスタンスを生成
+3. searchInFile メソッドに対象テキスト、検索パターン、オプションを渡して呼び出し
+4. 戻り値の SearchMatch 配列をループ処理し、各マッチの行番号・列番号・テキストを取得
 
-**パターン2: ワークスペース検索**
+**オプション設定例**:
 
-```typescript
-import { SearchService } from "@repo/shared/search";
+| オプション      | 設定値  | 説明                       |
+| --------------- | ------- | -------------------------- |
+| caseSensitive   | false   | 大文字小文字を区別しない   |
+| wholeWord       | false   | 部分一致を許可             |
+| regex           | false   | リテラル検索を使用         |
 
-const service = new SearchService();
+### パターン2: ワークスペース検索
 
-for await (const result of service.searchInWorkspace("TODO", {
-  caseSensitive: false,
-  wholeWord: false,
-  regex: false,
-  include: ["**/*.ts"],
-  exclude: ["**/node_modules/**"],
-})) {
-  console.log(`${result.filePath}: ${result.matches.length} matches`);
-}
-```
+ワークスペース全体を対象に非同期ストリーミングで検索を実行する。
 
-**パターン3: 置換プレビュー**
+**手順**:
 
-```typescript
-import { SearchService } from "@repo/shared/search";
+1. `@repo/shared/search` から SearchService をインポート
+2. SearchService のインスタンスを生成
+3. searchInWorkspace メソッドを for-await-of ループで呼び出し
+4. 各 FileSearchResult からファイルパスとマッチ数を取得
 
-const service = new SearchService();
+**オプション設定例**:
 
-for await (const result of service.replaceInWorkspace("oldFunc", "newFunc", {
-  caseSensitive: true,
-  wholeWord: true,
-  regex: false,
-  preview: true,  // ファイル変更しない
-})) {
-  if (result.success) {
-    console.log(`${result.filePath}: ${result.count} replacements`);
-    result.replacements?.forEach((r) => {
-      console.log(`  L${r.line}: ${r.originalText} → ${r.replacedText}`);
-    });
-  }
-}
-```
+| オプション      | 設定値               | 説明                               |
+| --------------- | -------------------- | ---------------------------------- |
+| caseSensitive   | false                | 大文字小文字を区別しない           |
+| wholeWord       | false                | 部分一致を許可                     |
+| regex           | false                | リテラル検索を使用                 |
+| include         | ["**/*.ts"]          | TypeScriptファイルのみ対象         |
+| exclude         | ["**/node_modules/**"]| node_modules を除外                |
+
+### パターン3: 置換プレビュー
+
+実際のファイル変更を行わず、置換結果をプレビューする。
+
+**手順**:
+
+1. `@repo/shared/search` から SearchService をインポート
+2. SearchService のインスタンスを生成
+3. replaceInWorkspace メソッドを for-await-of ループで呼び出し（preview: true）
+4. 各結果の success を確認し、成功時は置換件数と詳細を取得
+5. replacements 配列から行番号・置換前後のテキストを表示
+
+**オプション設定例**:
+
+| オプション      | 設定値  | 説明                               |
+| --------------- | ------- | ---------------------------------- |
+| caseSensitive   | true    | 大文字小文字を区別する             |
+| wholeWord       | true    | 単語単位でマッチ                   |
+| regex           | false   | リテラル検索を使用                 |
+| preview         | true    | プレビューモード（ファイル変更なし）|
 
 ## 性能特性
 
@@ -277,3 +287,11 @@ for await (const result of service.replaceInWorkspace("oldFunc", "newFunc", {
 - [コアインターフェース仕様](./interfaces-core.md)
 - [セキュリティガイドライン](./security-guidelines.md)
 - [検索・置換パネルUI設計](./ui-ux-search-panel.md)
+
+---
+
+## 変更履歴
+
+| 日付       | 変更内容                                           |
+| ---------- | -------------------------------------------------- |
+| 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |

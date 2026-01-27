@@ -5,6 +5,14 @@
 
 ---
 
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                           |
+| ---------- | ---------- | -------------------------------------------------- |
+| v6.30.0    | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+
+---
+
 ## ConversionService API
 
 RAG Conversion Systemは、HTTPエンドポイントとしてではなく、TypeScriptの内部サービスクラスとして実装されています。
@@ -23,12 +31,27 @@ RAG Conversion Systemは、HTTPエンドポイントとしてではなく、Type
 
 #### convert()
 
-```typescript
-async convert(
-  input: ConverterInput,
-  options?: ConverterOptions
-): Promise<Result<ConverterOutput, RAGError>>
-```
+**メソッドシグネチャ**:
+
+| 項目     | 内容                                                     |
+| -------- | -------------------------------------------------------- |
+| 戻り値型 | Promise\<Result\<ConverterOutput, RAGError\>\>（非同期） |
+
+**パラメータ（input）**:
+
+| プロパティ | 型                  | 必須 | 説明               |
+| ---------- | ------------------- | ---- | ------------------ |
+| fileId     | Branded型（string） | ✓    | ファイルID         |
+| content    | string \| Buffer    | ✓    | ファイルコンテンツ |
+| mimeType   | string              | ✓    | MIMEタイプ         |
+| filePath   | string              | -    | ファイルパス       |
+
+**パラメータ（options）**:
+
+| プロパティ       | 型     | 必須 | デフォルト  | 説明             |
+| ---------------- | ------ | ---- | ----------- | ---------------- |
+| maxContentLength | number | -    | 100,000文字 | 最大コンテンツ長 |
+| timeout          | number | -    | 60,000ms    | タイムアウト時間 |
 
 **機能**:
 
@@ -37,28 +60,21 @@ async convert(
 - タイムアウト管理（デフォルト: 60秒）
 - 自動コンバーター選択
 
-**パラメータ**:
-
-- `input.fileId`: ファイルID（Branded型）
-- `input.content`: ファイルコンテンツ（文字列またはBuffer）
-- `input.mimeType`: MIMEタイプ
-- `input.filePath`: ファイルパス（オプション）
-- `options.maxContentLength`: 最大コンテンツ長（デフォルト: 100,000文字）
-- `options.timeout`: タイムアウト時間（ミリ秒）
-
 **戻り値**:
 
-- 成功: `{ success: true, data: ConverterOutput }`
-- 失敗: `{ success: false, error: RAGError }`
+| 状態   | 形式                                 |
+| ------ | ------------------------------------ |
+| 成功時 | success: true, data: ConverterOutput |
+| 失敗時 | success: false, error: RAGError      |
 
 #### convertBatch()
 
-```typescript
-async convertBatch(
-  inputs: ConverterInput[],
-  options?: ConverterOptions
-): Promise<BatchConversionResult[]>
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                                                 |
+| ---------- | ---------------------------------------------------- |
+| パラメータ | inputs: ConverterInput[], options?: ConverterOptions |
+| 戻り値型   | Promise\<BatchConversionResult[]\>（非同期）         |
 
 **機能**:
 
@@ -72,9 +88,12 @@ async convertBatch(
 
 #### canConvert()
 
-```typescript
-canConvert(input: ConverterInput): boolean
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                  |
+| ---------- | --------------------- |
+| パラメータ | input: ConverterInput |
+| 戻り値型   | boolean（同期）       |
 
 **機能**:
 
@@ -83,9 +102,12 @@ canConvert(input: ConverterInput): boolean
 
 #### getSupportedMimeTypes()
 
-```typescript
-getSupportedMimeTypes(): string[]
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容             |
+| ---------- | ---------------- |
+| パラメータ | なし             |
+| 戻り値型   | string[]（同期） |
 
 **機能**:
 
@@ -95,24 +117,23 @@ getSupportedMimeTypes(): string[]
 
 **パターン1: グローバルインスタンス使用**
 
-```typescript
-import { globalConversionService } from "@repo/shared/services/conversion";
+globalConversionServiceをインポートして使用する方法。アプリケーション全体で共有されるシングルトンインスタンスを利用する。
 
-const result = await globalConversionService.convert(input);
-```
+| ステップ | 操作                                                                   |
+| -------- | ---------------------------------------------------------------------- |
+| 1        | @repo/shared/services/conversionからglobalConversionServiceをインポート |
+| 2        | service.convert(input)を呼び出し                                       |
+| 3        | Result型で結果を受け取り                                               |
 
 **パターン2: カスタム設定インスタンス**
 
-```typescript
-import { createConversionService } from "@repo/shared/services/conversion";
+createConversionService関数でカスタム設定のインスタンスを作成する方法。
 
-const service = createConversionService(customRegistry, {
-  defaultTimeout: 30000,
-  maxConcurrentConversions: 10,
-});
-
-const result = await service.convert(input);
-```
+| 設定項目                 | 説明                     | カスタム例 |
+| ------------------------ | ------------------------ | ---------- |
+| customRegistry           | カスタムコンバーター登録 | -          |
+| defaultTimeout           | タイムアウト時間         | 30000ms    |
+| maxConcurrentConversions | 最大同時実行数           | 10件       |
 
 ### エラーハンドリング
 
@@ -125,20 +146,14 @@ const result = await service.convert(input);
 | `CONVERTER_NOT_FOUND` | コンバーター未検出 | 対応するコンバーターが登録されていない |
 | `CONVERSION_FAILED`   | 変換失敗           | 個別コンバーターでのエラー             |
 
-**Result型パターン**:
+**Result型パターンの使用方法**:
 
-```typescript
-const result = await service.convert(input);
+Result型はsuccessプロパティで成功/失敗を判定する。成功時はdata、失敗時はerrorプロパティにアクセスする。
 
-if (result.success) {
-  const { convertedContent, extractedMetadata } = result.data;
-  // 成功時の処理
-} else {
-  const { code, message, context } = result.error;
-  // エラー処理
-  console.error(`[${code}] ${message}`, context);
-}
-```
+| 判定条件                | 処理内容                                                         |
+| ----------------------- | ---------------------------------------------------------------- |
+| result.success が true  | result.dataからconvertedContent, extractedMetadataを取得         |
+| result.success が false | result.errorからcode, message, contextを取得してエラー処理       |
 
 ### 性能特性
 
@@ -168,12 +183,12 @@ if (result.success) {
 
 #### getFileHistory()
 
-```typescript
-async getFileHistory(
-  fileId: string,
-  options?: HistoryOptions
-): Promise<Result<PaginatedResult<VersionHistoryItem>, Error>>
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                                                                        |
+| ---------- | --------------------------------------------------------------------------- |
+| パラメータ | fileId: string, options?: HistoryOptions                                    |
+| 戻り値型   | Promise\<Result\<PaginatedResult\<VersionHistoryItem\>, Error\>\>（非同期） |
 
 **機能**:
 
@@ -194,11 +209,12 @@ async getFileHistory(
 
 #### getVersionDetail()
 
-```typescript
-async getVersionDetail(
-  conversionId: string
-): Promise<Result<VersionHistoryItem, Error>>
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                                                     |
+| ---------- | -------------------------------------------------------- |
+| パラメータ | conversionId: string                                     |
+| 戻り値型   | Promise\<Result\<VersionHistoryItem, Error\>\>（非同期） |
 
 **機能**:
 
@@ -211,36 +227,34 @@ async getVersionDetail(
 
 #### getVersionDiff()
 
-```typescript
-async getVersionDiff(
-  conversionIdA: string,
-  conversionIdB: string
-): Promise<Result<VersionDiff, Error>>
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                                                 |
+| ---------- | ---------------------------------------------------- |
+| パラメータ | conversionIdA: string, conversionIdB: string         |
+| 戻り値型   | Promise\<Result\<VersionDiff, Error\>\>（非同期）    |
 
 **機能**:
 
 - 2つのバージョン間の差分を比較
 - サイズ変更、メタデータ変更、コンテンツ変更を検出
 
-**戻り値**:
+**戻り値（VersionDiff型）**:
 
-```typescript
-{
-  sizeChange: number;           // バイト単位の差分
-  metadataChanges: string[];    // 変更されたメタデータキー
-  contentChanged: boolean;      // 出力ハッシュの差異有無
-}
-```
+| プロパティ      | 型       | 説明                     |
+| --------------- | -------- | ------------------------ |
+| sizeChange      | number   | バイト単位の差分         |
+| metadataChanges | string[] | 変更されたメタデータキー |
+| contentChanged  | boolean  | 出力ハッシュの差異有無   |
 
 #### restoreToVersion()
 
-```typescript
-async restoreToVersion(
-  fileId: string,
-  conversionId: string
-): Promise<Result<VersionHistoryItem, Error>>
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                                                     |
+| ---------- | -------------------------------------------------------- |
+| パラメータ | fileId: string, conversionId: string                     |
+| 戻り値型   | Promise\<Result\<VersionHistoryItem, Error\>\>（非同期） |
 
 **機能**:
 
@@ -250,11 +264,12 @@ async restoreToVersion(
 
 #### getLatestVersion()
 
-```typescript
-async getLatestVersion(
-  fileId: string
-): Promise<Result<VersionHistoryItem | null, Error>>
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                                                              |
+| ---------- | ----------------------------------------------------------------- |
+| パラメータ | fileId: string                                                    |
+| 戻り値型   | Promise\<Result\<VersionHistoryItem \| null, Error\>\>（非同期）  |
 
 **機能**:
 
@@ -263,11 +278,12 @@ async getLatestVersion(
 
 #### getVersionCount()
 
-```typescript
-async getVersionCount(
-  fileId: string
-): Promise<Result<number, Error>>
-```
+**メソッドシグネチャ**:
+
+| 項目       | 内容                                        |
+| ---------- | ------------------------------------------- |
+| パラメータ | fileId: string                              |
+| 戻り値型   | Promise\<Result\<number, Error\>\>（非同期）|
 
 **機能**:
 
@@ -277,26 +293,22 @@ async getVersionCount(
 
 **パターン1: ファクトリ関数使用**
 
-```typescript
-import { createHistoryService } from "@repo/shared/services/history";
+createHistoryService関数でサービスインスタンスを作成する。依存性（repository, logger）を注入して初期化する。
 
-const service = createHistoryService(repository, logger);
-const result = await service.getFileHistory("file-123");
-```
+| ステップ | 操作                                                         |
+| -------- | ------------------------------------------------------------ |
+| 1        | @repo/shared/services/historyからcreateHistoryServiceをインポート |
+| 2        | createHistoryService(repository, logger)でインスタンス作成   |
+| 3        | service.getFileHistory(fileId)等のメソッドを呼び出し         |
 
 **パターン2: Result型パターン**
 
-```typescript
-const result = await service.getVersionDiff(idA, idB);
+Result型はsuccessプロパティで成功/失敗を判定する。差分比較の場合、成功時はsizeChange, metadataChanges, contentChangedを取得できる。
 
-if (result.success) {
-  const { sizeChange, metadataChanges, contentChanged } = result.data;
-  // 成功時の処理
-} else {
-  console.error(result.error.message);
-  // エラー処理
-}
-```
+| 判定条件                | 処理内容                                     |
+| ----------------------- | -------------------------------------------- |
+| result.success が true  | result.dataから差分情報を取得                |
+| result.success が false | result.error.messageでエラーメッセージを取得 |
 
 ### エラーハンドリング
 
@@ -334,68 +346,78 @@ Electron MainプロセスのHistoryServiceは、shared HistoryServiceとIPCを�
 
 ### アーキテクチャ
 
-```
+**データフロー**:
+
 Renderer → IPC → Electron HistoryService → shared HistoryService → DB
-                        ↓
-                  LogRepository → DB (logs)
-```
+
+並行して、Electron HistoryServiceはLogRepositoryを経由してlogsテーブルにもアクセスする。
+
+| レイヤー                | 責務                                       |
+| ----------------------- | ------------------------------------------ |
+| Renderer                | UI操作、API呼び出し                        |
+| IPC                     | プロセス間通信                             |
+| Electron HistoryService | アダプター、型変換、エラーローカライズ     |
+| shared HistoryService   | ビジネスロジック                           |
+| DB                      | データ永続化                               |
+| LogRepository           | ログデータアクセス                         |
 
 ### IPCチャンネル
 
 #### history:getFileHistory
 
-```typescript
-// Renderer側
-const result = await window.historyAPI.getFileHistory(fileId, options);
+**呼び出し方法**: window.historyAPI.getFileHistory(fileId, options)
 
-// 戻り値型
-Promise<Result<PaginatedResult<VersionHistoryItem>, Error>>
-```
+**パラメータ**:
 
-| パラメータ | 型 | 必須 | デフォルト |
-|------------|----|----|----------|
-| fileId | string | ✓ | - |
-| options.limit | number | - | 20 |
-| options.offset | number | - | 0 |
+| パラメータ     | 型     | 必須 | デフォルト |
+| -------------- | ------ | ---- | ---------- |
+| fileId         | string | ✓    | -          |
+| options.limit  | number | -    | 20         |
+| options.offset | number | -    | 0          |
+
+**戻り値型**: Promise\<Result\<PaginatedResult\<VersionHistoryItem\>, Error\>\>
 
 #### history:getVersionDetail
 
-```typescript
-// Renderer側
-const result = await window.historyAPI.getVersionDetail(conversionId);
+**呼び出し方法**: window.historyAPI.getVersionDetail(conversionId)
 
-// 戻り値型
-Promise<Result<VersionDetailData, Error>>
-```
+**パラメータ**:
 
-`VersionDetailData`はバージョン情報とログ一覧を統合した型。
+| パラメータ   | 型     | 必須 | 説明       |
+| ------------ | ------ | ---- | ---------- |
+| conversionId | string | ✓    | 変換履歴ID |
+
+**戻り値型**: Promise\<Result\<VersionDetailData, Error\>\>
+
+VersionDetailDataはバージョン情報とログ一覧を統合した型。
 
 #### history:getConversionLogs
 
-```typescript
-// Renderer側
-const result = await window.historyAPI.getConversionLogs(conversionId, options);
+**呼び出し方法**: window.historyAPI.getConversionLogs(conversionId, options)
 
-// 戻り値型
-Promise<Result<PaginatedResult<ConversionLog>, Error>>
-```
+**パラメータ**:
 
-| パラメータ | 型 | 必須 | デフォルト |
-|------------|----|----|----------|
-| conversionId | string | ✓ | - |
-| options.limit | number | - | 50 |
-| options.offset | number | - | 0 |
-| options.level | string | - | undefined |
+| パラメータ     | 型     | 必須 | デフォルト |
+| -------------- | ------ | ---- | ---------- |
+| conversionId   | string | ✓    | -          |
+| options.limit  | number | -    | 50         |
+| options.offset | number | -    | 0          |
+| options.level  | string | -    | undefined  |
+
+**戻り値型**: Promise\<Result\<PaginatedResult\<ConversionLog\>, Error\>\>
 
 #### history:restoreVersion
 
-```typescript
-// Renderer側
-const result = await window.historyAPI.restoreVersion(fileId, conversionId);
+**呼び出し方法**: window.historyAPI.restoreVersion(fileId, conversionId)
 
-// 戻り値型
-Promise<Result<VersionHistoryItem, Error>>
-```
+**パラメータ**:
+
+| パラメータ   | 型     | 必須 | 説明       |
+| ------------ | ------ | ---- | ---------- |
+| fileId       | string | ✓    | ファイルID |
+| conversionId | string | ✓    | 変換履歴ID |
+
+**戻り値型**: Promise\<Result\<VersionHistoryItem, Error\>\>
 
 ### 型変換（shared → Renderer）
 
@@ -419,23 +441,24 @@ Promise<Result<VersionHistoryItem, Error>>
 
 **パターン1: DI使用（推奨）**
 
-```typescript
-import { createHistoryServiceWithDI } from "./services/HistoryService";
+createHistoryServiceWithDI関数で依存性注入によるインスタンス作成を行う。
 
-const historyService = createHistoryServiceWithDI(
-  sharedHistoryService,
-  logRepository,
-  logger
-);
-```
+| 依存性               | 説明                           |
+| -------------------- | ------------------------------ |
+| sharedHistoryService | shared層のHistoryService       |
+| logRepository        | ログデータアクセス用リポジトリ |
+| logger               | ログ出力用インスタンス         |
 
 **パターン2: IPCハンドラー登録**
 
-```typescript
-ipcMain.handle("history:getFileHistory", async (_, fileId, options) => {
-  return historyService.getFileHistory(fileId, options);
-});
-```
+ipcMain.handleでIPCチャンネルとサービスメソッドを紐付ける。
+
+| IPCチャンネル            | 対応メソッド                    |
+| ------------------------ | ------------------------------- |
+| history:getFileHistory   | historyService.getFileHistory   |
+| history:getVersionDetail | historyService.getVersionDetail |
+| history:getConversionLogs| historyService.getConversionLogs|
+| history:restoreVersion   | historyService.restoreVersion   |
 
 ### 性能特性
 

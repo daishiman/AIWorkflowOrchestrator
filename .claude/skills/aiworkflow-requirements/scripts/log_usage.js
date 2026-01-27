@@ -20,7 +20,7 @@ const EXIT_ARGS_ERROR = 2;
 
 function showHelp() {
   console.log(`
-Usage: node log_usage.mjs [options]
+Usage: node log_usage.js [options]
 
 Options:
   --result <success|failure>  実行結果（必須）
@@ -29,8 +29,8 @@ Options:
   -h, --help                  このヘルプを表示
 
 Examples:
-  node scripts/log_usage.mjs --result success --task "search-spec"
-  node scripts/log_usage.mjs --result success --task "create-spec" --notes "新規仕様追加"
+  node scripts/log_usage.js --result success --task "search-spec"
+  node scripts/log_usage.js --result success --task "create-spec" --notes "新規仕様追加"
   `);
 }
 

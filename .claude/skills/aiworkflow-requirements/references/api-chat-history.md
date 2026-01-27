@@ -2,7 +2,7 @@
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
-> 更新日: 2026-01-19
+> 更新日: 2026-01-26
 > 関連タスク: ARCH-001 Clean Architecture Refactoring
 
 ---
@@ -22,39 +22,36 @@
 
 #### インターフェース
 
-```typescript
-class CreateChatSessionUseCase {
-  constructor(sessionRepository: IChatSessionRepository);
-
-  execute(input: CreateChatSessionInput): Promise<Result<ChatSessionDTO, UseCaseError>>;
-}
-```
+| 項目 | 説明 |
+| --- | --- |
+| クラス名 | CreateChatSessionUseCase |
+| コンストラクタ依存 | IChatSessionRepository |
+| 実行メソッド | execute(input: CreateChatSessionInput) |
+| 戻り値 | Promise<Result<ChatSessionDTO, UseCaseError>> |
 
 #### 入力
 
 | パラメータ | 型     | 必須 | 説明                        |
 | ---------- | ------ | ---- | --------------------------- |
-| userId     | string | ✅   | ユーザーID（UUID形式）      |
-| title      | string | -    | タイトル（3-255文字、省略時「新規チャット」） |
+| userId     | string | Yes   | ユーザーID（UUID形式）      |
+| title      | string | No    | タイトル（3-255文字、省略時「新規チャット」） |
 
 #### 出力
 
-**成功時**: `Ok<ChatSessionDTO>`
+成功時は `Ok<ChatSessionDTO>` を返却する。ChatSessionDTOの構造は以下のとおり。
 
-```typescript
-{
-  id: string;
-  userId: string;
-  title: string;
-  isPinned: boolean;
-  isFavorite: boolean;
-  pinOrder: number | null;
-  messageCount: number;
-  preview: string;
-  createdAt: string;  // ISO 8601
-  updatedAt: string;  // ISO 8601
-}
-```
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| id | string | セッションID |
+| userId | string | ユーザーID |
+| title | string | セッションタイトル |
+| isPinned | boolean | ピン留め状態 |
+| isFavorite | boolean | お気に入り状態 |
+| pinOrder | number または null | ピン留め順序 |
+| messageCount | number | メッセージ数 |
+| preview | string | プレビューテキスト |
+| createdAt | string | 作成日時（ISO 8601形式） |
+| updatedAt | string | 更新日時（ISO 8601形式） |
 
 #### エラー
 
@@ -64,22 +61,13 @@ class CreateChatSessionUseCase {
 | INVALID_TITLE   | タイトルが無効     | 400         |
 | REPOSITORY_ERROR| 保存に失敗         | 500         |
 
-#### 使用例
+#### 使用パターン
 
-```typescript
-const useCase = new CreateChatSessionUseCase(sessionRepository);
-
-const result = await useCase.execute({
-  userId: "550e8400-e29b-41d4-a716-446655440000",
-  title: "プロジェクト相談",
-});
-
-if (result.isOk()) {
-  console.log("Created session:", result.value.id);
-} else {
-  console.error("Error:", result.error.code, result.error.message);
-}
-```
+1. CreateChatSessionUseCaseをsessionRepositoryを渡してインスタンス化する
+2. executeメソッドにuserIdとtitle（任意）を含むオブジェクトを渡す
+3. 戻り値のResult型に対してisOk()で成功判定を行う
+4. 成功時はresult.valueでChatSessionDTOを取得
+5. 失敗時はresult.errorでエラーコードとメッセージを取得
 
 ---
 
@@ -89,37 +77,31 @@ if (result.isOk()) {
 
 #### インターフェース
 
-```typescript
-class AddUserMessageUseCase {
-  constructor(
-    sessionRepository: IChatSessionRepository,
-    messageRepository: IChatMessageRepository,
-  );
-
-  execute(input: AddUserMessageInput): Promise<Result<ChatMessageDTO, UseCaseError>>;
-}
-```
+| 項目 | 説明 |
+| --- | --- |
+| クラス名 | AddUserMessageUseCase |
+| コンストラクタ依存 | IChatSessionRepository, IChatMessageRepository |
+| 実行メソッド | execute(input: AddUserMessageInput) |
+| 戻り値 | Promise<Result<ChatMessageDTO, UseCaseError>> |
 
 #### 入力
 
 | パラメータ | 型     | 必須 | 説明                     |
 | ---------- | ------ | ---- | ------------------------ |
-| sessionId  | string | ✅   | セッションID（UUID形式） |
-| content    | string | ✅   | メッセージ内容（1-100000文字） |
+| sessionId  | string | Yes   | セッションID（UUID形式） |
+| content    | string | Yes   | メッセージ内容（1-100000文字） |
 
 #### 出力
 
-**成功時**: `Ok<ChatMessageDTO>`
+成功時は `Ok<ChatMessageDTO>` を返却する。ChatMessageDTOの構造は以下のとおり。
 
-```typescript
-{
-  id: string;
-  sessionId: string;
-  role: "user";
-  content: string;
-  createdAt: string;  // ISO 8601
-}
-```
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| id | string | メッセージID |
+| sessionId | string | セッションID |
+| role | "user" | ロール（固定値） |
+| content | string | メッセージ内容 |
+| createdAt | string | 作成日時（ISO 8601形式） |
 
 #### エラー
 
@@ -130,20 +112,12 @@ class AddUserMessageUseCase {
 | INVALID_CONTENT    | メッセージ内容が無効   | 400         |
 | REPOSITORY_ERROR   | 保存に失敗             | 500         |
 
-#### 使用例
+#### 使用パターン
 
-```typescript
-const useCase = new AddUserMessageUseCase(sessionRepository, messageRepository);
-
-const result = await useCase.execute({
-  sessionId: "session-uuid",
-  content: "Clean Architectureについて教えてください",
-});
-
-if (result.isOk()) {
-  console.log("Added message:", result.value.id);
-}
-```
+1. AddUserMessageUseCaseをsessionRepositoryとmessageRepositoryを渡してインスタンス化する
+2. executeメソッドにsessionIdとcontentを含むオブジェクトを渡す
+3. 戻り値のResult型に対してisOk()で成功判定を行う
+4. 成功時はresult.valueでChatMessageDTOを取得
 
 ---
 
@@ -153,37 +127,31 @@ if (result.isOk()) {
 
 #### インターフェース
 
-```typescript
-class AddAssistantMessageUseCase {
-  constructor(
-    sessionRepository: IChatSessionRepository,
-    messageRepository: IChatMessageRepository,
-  );
-
-  execute(input: AddAssistantMessageInput): Promise<Result<ChatMessageDTO, UseCaseError>>;
-}
-```
+| 項目 | 説明 |
+| --- | --- |
+| クラス名 | AddAssistantMessageUseCase |
+| コンストラクタ依存 | IChatSessionRepository, IChatMessageRepository |
+| 実行メソッド | execute(input: AddAssistantMessageInput) |
+| 戻り値 | Promise<Result<ChatMessageDTO, UseCaseError>> |
 
 #### 入力
 
 | パラメータ | 型     | 必須 | 説明                     |
 | ---------- | ------ | ---- | ------------------------ |
-| sessionId  | string | ✅   | セッションID（UUID形式） |
-| content    | string | ✅   | メッセージ内容（1-100000文字） |
+| sessionId  | string | Yes   | セッションID（UUID形式） |
+| content    | string | Yes   | メッセージ内容（1-100000文字） |
 
 #### 出力
 
-**成功時**: `Ok<ChatMessageDTO>`
+成功時は `Ok<ChatMessageDTO>` を返却する。ChatMessageDTOの構造は以下のとおり。
 
-```typescript
-{
-  id: string;
-  sessionId: string;
-  role: "assistant";
-  content: string;
-  createdAt: string;  // ISO 8601
-}
-```
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| id | string | メッセージID |
+| sessionId | string | セッションID |
+| role | "assistant" | ロール（固定値） |
+| content | string | メッセージ内容 |
+| createdAt | string | 作成日時（ISO 8601形式） |
 
 #### エラー
 
@@ -202,23 +170,22 @@ class AddAssistantMessageUseCase {
 
 #### インターフェース
 
-```typescript
-class TogglePinnedUseCase {
-  constructor(sessionRepository: IChatSessionRepository);
-
-  execute(input: TogglePinnedInput): Promise<Result<ChatSessionDTO, UseCaseError>>;
-}
-```
+| 項目 | 説明 |
+| --- | --- |
+| クラス名 | TogglePinnedUseCase |
+| コンストラクタ依存 | IChatSessionRepository |
+| 実行メソッド | execute(input: TogglePinnedInput) |
+| 戻り値 | Promise<Result<ChatSessionDTO, UseCaseError>> |
 
 #### 入力
 
 | パラメータ | 型     | 必須 | 説明                     |
 | ---------- | ------ | ---- | ------------------------ |
-| sessionId  | string | ✅   | セッションID（UUID形式） |
+| sessionId  | string | Yes   | セッションID（UUID形式） |
 
 #### 出力
 
-**成功時**: `Ok<ChatSessionDTO>` - 更新後のセッション情報
+成功時は `Ok<ChatSessionDTO>` を返却する（更新後のセッション情報）。
 
 #### エラー
 
@@ -234,19 +201,12 @@ class TogglePinnedUseCase {
 - ピン留めは最大10件まで（BR-SESSION-002）
 - 11件目をピン留めしようとするとエラー
 
-#### 使用例
+#### 使用パターン
 
-```typescript
-const useCase = new TogglePinnedUseCase(sessionRepository);
-
-const result = await useCase.execute({
-  sessionId: "session-uuid",
-});
-
-if (result.isErr() && result.error.code === "PINNED_LIMIT_EXCEEDED") {
-  alert("ピン留めは10件までです。他のピン留めを解除してください。");
-}
-```
+1. TogglePinnedUseCaseをsessionRepositoryを渡してインスタンス化する
+2. executeメソッドにsessionIdを含むオブジェクトを渡す
+3. 戻り値のResult型に対してisErr()でエラー判定を行う
+4. エラーコードがPINNED_LIMIT_EXCEEDEDの場合は上限超過を通知する
 
 ---
 
@@ -256,34 +216,31 @@ if (result.isErr() && result.error.code === "PINNED_LIMIT_EXCEEDED") {
 
 #### インターフェース
 
-```typescript
-class SearchSessionsUseCase {
-  constructor(sessionRepository: IChatSessionRepository);
-
-  execute(input: SearchSessionsInput): Promise<Result<SearchResultDTO, UseCaseError>>;
-}
-```
+| 項目 | 説明 |
+| --- | --- |
+| クラス名 | SearchSessionsUseCase |
+| コンストラクタ依存 | IChatSessionRepository |
+| 実行メソッド | execute(input: SearchSessionsInput) |
+| 戻り値 | Promise<Result<SearchResultDTO, UseCaseError>> |
 
 #### 入力
 
 | パラメータ | 型     | 必須 | 説明                     |
 | ---------- | ------ | ---- | ------------------------ |
-| userId     | string | ✅   | ユーザーID（UUID形式）   |
-| query      | string | ✅   | 検索クエリ               |
-| limit      | number | -    | 取得件数（デフォルト20） |
-| offset     | number | -    | オフセット（デフォルト0）|
+| userId     | string | Yes   | ユーザーID（UUID形式）   |
+| query      | string | Yes   | 検索クエリ               |
+| limit      | number | No    | 取得件数（デフォルト20） |
+| offset     | number | No    | オフセット（デフォルト0）|
 
 #### 出力
 
-**成功時**: `Ok<SearchResultDTO>`
+成功時は `Ok<SearchResultDTO>` を返却する。SearchResultDTOの構造は以下のとおり。
 
-```typescript
-{
-  sessions: ChatSessionDTO[];
-  total: number;
-  hasMore: boolean;
-}
-```
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| sessions | ChatSessionDTO[] | 検索結果のセッション配列 |
+| total | number | 総件数 |
+| hasMore | boolean | 追加データの有無 |
 
 #### エラー
 
@@ -298,42 +255,42 @@ class SearchSessionsUseCase {
 
 ### ChatSessionDTO
 
-```typescript
-interface ChatSessionDTO {
-  id: string;
-  userId: string;
-  title: string;
-  isPinned: boolean;
-  isFavorite: boolean;
-  pinOrder: number | null;
-  messageCount: number;
-  preview: string;
-  createdAt: string;  // ISO 8601
-  updatedAt: string;  // ISO 8601
-}
-```
+チャットセッションのデータ転送オブジェクト。
+
+| プロパティ | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| id | string | Yes | セッションID |
+| userId | string | Yes | ユーザーID |
+| title | string | Yes | セッションタイトル |
+| isPinned | boolean | Yes | ピン留め状態 |
+| isFavorite | boolean | Yes | お気に入り状態 |
+| pinOrder | number または null | Yes | ピン留め順序（未ピン時はnull） |
+| messageCount | number | Yes | メッセージ数 |
+| preview | string | Yes | プレビューテキスト |
+| createdAt | string | Yes | 作成日時（ISO 8601形式） |
+| updatedAt | string | Yes | 更新日時（ISO 8601形式） |
 
 ### ChatMessageDTO
 
-```typescript
-interface ChatMessageDTO {
-  id: string;
-  sessionId: string;
-  role: "user" | "assistant";
-  content: string;
-  createdAt: string;  // ISO 8601
-}
-```
+チャットメッセージのデータ転送オブジェクト。
+
+| プロパティ | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| id | string | Yes | メッセージID |
+| sessionId | string | Yes | セッションID |
+| role | "user" または "assistant" | Yes | メッセージロール |
+| content | string | Yes | メッセージ内容 |
+| createdAt | string | Yes | 作成日時（ISO 8601形式） |
 
 ### SearchResultDTO
 
-```typescript
-interface SearchResultDTO {
-  sessions: ChatSessionDTO[];
-  total: number;
-  hasMore: boolean;
-}
-```
+検索結果のデータ転送オブジェクト。
+
+| プロパティ | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| sessions | ChatSessionDTO[] | Yes | 検索結果のセッション配列 |
+| total | number | Yes | 総件数 |
+| hasMore | boolean | Yes | 追加データの有無 |
 
 ---
 
@@ -341,28 +298,28 @@ interface SearchResultDTO {
 
 ### IChatSessionRepository
 
-```typescript
-interface IChatSessionRepository {
-  findById(id: ChatSessionId): Promise<ChatSession | null>;
-  findByUserId(userId: UserId): Promise<ChatSession[]>;
-  findPinnedByUserId(userId: UserId): Promise<ChatSession[]>;
-  save(session: ChatSession): Promise<Result<void, RepositoryError>>;
-  delete(id: ChatSessionId): Promise<Result<void, RepositoryError>>;
-  search(query: SearchQuery): Promise<SearchResult>;
-  countPinnedByUserId(userId: UserId): Promise<number>;
-}
-```
+チャットセッションの永続化を担当するリポジトリインターフェース。
+
+| メソッド | パラメータ | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| findById | id: ChatSessionId | Promise<ChatSession または null> | IDでセッション取得 |
+| findByUserId | userId: UserId | Promise<ChatSession[]> | ユーザーの全セッション取得 |
+| findPinnedByUserId | userId: UserId | Promise<ChatSession[]> | ユーザーのピン留めセッション取得 |
+| save | session: ChatSession | Promise<Result<void, RepositoryError>> | セッション保存 |
+| delete | id: ChatSessionId | Promise<Result<void, RepositoryError>> | セッション削除 |
+| search | query: SearchQuery | Promise<SearchResult> | セッション検索 |
+| countPinnedByUserId | userId: UserId | Promise<number> | ピン留め数カウント |
 
 ### IChatMessageRepository
 
-```typescript
-interface IChatMessageRepository {
-  findById(id: ChatMessageId): Promise<ChatMessage | null>;
-  findBySessionId(sessionId: ChatSessionId): Promise<ChatMessage[]>;
-  save(message: ChatMessage): Promise<Result<void, RepositoryError>>;
-  delete(id: ChatMessageId): Promise<Result<void, RepositoryError>>;
-}
-```
+チャットメッセージの永続化を担当するリポジトリインターフェース。
+
+| メソッド | パラメータ | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| findById | id: ChatMessageId | Promise<ChatMessage または null> | IDでメッセージ取得 |
+| findBySessionId | sessionId: ChatSessionId | Promise<ChatMessage[]> | セッションの全メッセージ取得 |
+| save | message: ChatMessage | Promise<Result<void, RepositoryError>> | メッセージ保存 |
+| delete | id: ChatMessageId | Promise<Result<void, RepositoryError>> | メッセージ削除 |
 
 ---
 
@@ -370,45 +327,38 @@ interface IChatMessageRepository {
 
 ### Result型の使用
 
-```typescript
-// Use Case実行
-const result = await useCase.execute(input);
+Use Case実行結果はResult型で返却される。Result型には以下の3つの処理パターンがある。
 
-// パターン1: isOk/isErr
-if (result.isOk()) {
-  const data = result.value;
-} else {
-  const error = result.error;
-}
+**パターン1: isOk/isErrメソッド**
 
-// パターン2: match
-result.match({
-  ok: (data) => console.log("Success:", data),
-  err: (error) => console.error("Error:", error.code),
-});
+isOk()メソッドで成功判定を行い、成功時はvalueプロパティでデータを取得、失敗時はerrorプロパティでエラー情報を取得する。
 
-// パターン3: map/mapErr
-const dto = result
-  .map((session) => toDTO(session))
-  .mapErr((err) => new UseCaseError("TRANSFORM_ERROR", err.message));
-```
+**パターン2: matchメソッド**
+
+okハンドラとerrハンドラを含むオブジェクトを渡し、成功・失敗それぞれの処理を定義する。
+
+**パターン3: map/mapErrメソッド**
+
+mapメソッドで成功値を変換し、mapErrメソッドでエラー値を変換する。チェーン可能。
 
 ### UseCaseError構造
 
-```typescript
-class UseCaseError extends AppError {
-  readonly code: string;
-  readonly statusCode: number;
-  readonly data?: Record<string, unknown>;
+Use Caseで発生するエラーの基底クラス。AppErrorを継承する。
 
-  constructor(
-    code: string,
-    message: string,
-    statusCode = 400,
-    data?: Record<string, unknown>,
-  );
-}
-```
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| code | string | エラーコード |
+| statusCode | number | HTTPステータスコード |
+| data | Record<string, unknown> または undefined | 追加データ（任意） |
+
+コンストラクタは以下のパラメータを受け取る。
+
+| パラメータ | 型 | 必須 | デフォルト | 説明 |
+| --- | --- | --- | --- | --- |
+| code | string | Yes | - | エラーコード |
+| message | string | Yes | - | エラーメッセージ |
+| statusCode | number | No | 400 | HTTPステータスコード |
+| data | Record<string, unknown> | No | undefined | 追加データ |
 
 ---
 
@@ -423,6 +373,15 @@ class UseCaseError extends AppError {
 | DeleteSessionUseCase   | セッション削除         |
 | ExportSessionUseCase   | Markdown/JSONエクスポート |
 | GetSessionDetailUseCase| セッション詳細取得     |
+
+---
+
+## 変更履歴
+
+| 日付 | バージョン | 変更内容 |
+| --- | --- | --- |
+| 2026-01-26 | 1.1.0 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+| 2026-01-19 | 1.0.0 | 初版作成 |
 
 ---
 

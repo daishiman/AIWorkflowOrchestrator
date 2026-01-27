@@ -3,6 +3,13 @@
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
 
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                       |
+| ---------- | ---------- | -------------------------------------------------------------- |
+| v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換           |
+| v1.0.0     | -          | 初版                                                           |
+
 ---
 
 ## 環境変数の分類
@@ -386,13 +393,12 @@ GitHub ActionsのCI/CDパイプラインで使用する環境変数。
 
 **使用例（.github/workflows/ci.yml）**:
 
-```yaml
-- name: Upload coverage to Codecov
-  uses: codecov/codecov-action@v5
-  with:
-    token: ${{ secrets.CODECOV_TOKEN }}
-    fail_ci_if_error: true
-```
+| 項目               | 設定値                              |
+| ------------------ | ----------------------------------- |
+| ステップ名         | Upload coverage to Codecov          |
+| 使用アクション     | codecov/codecov-action@v5           |
+| token              | `${{ secrets.CODECOV_TOKEN }}`      |
+| fail_ci_if_error   | true                                |
 
 ---
 

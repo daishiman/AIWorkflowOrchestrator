@@ -77,30 +77,29 @@ FTS5全文検索機能を利用したチャンク検索APIの設計。将来的�
 
 ## 使用例（データベース層）
 
-現在実装済みのデータベース層APIの使用例：
+現在実装済みのデータベース層APIの使用例を以下に示す。
 
-```typescript
-// キーワード検索
-import { searchChunksByKeyword } from "@repo/shared/db/queries/chunks-search";
+**インポート元**: `@repo/shared/db/queries/chunks-search`
 
-const results = await searchChunksByKeyword(db, {
-  query: "TypeScript JavaScript",
-  limit: 10,
-  offset: 0,
-});
+### 関数呼び出しパターン
 
-// フレーズ検索
-const phraseResults = await searchChunksByPhrase(db, {
-  query: "typed superset",
-  limit: 10,
-});
+| 検索種別       | 関数名                 | 第1引数 | 第2引数                         | 戻り値                 |
+| -------------- | ---------------------- | ------- | ------------------------------- | ---------------------- |
+| キーワード検索 | searchChunksByKeyword  | db      | オプションオブジェクト          | Promise<SearchResult>  |
+| フレーズ検索   | searchChunksByPhrase   | db      | オプションオブジェクト          | Promise<SearchResult>  |
+| NEAR検索       | searchChunksByNear     | db      | キーワード配列, オプション      | Promise<SearchResult>  |
 
-// NEAR検索
-const nearResults = await searchChunksByNear(db, ["JavaScript", "library"], {
-  nearDistance: 5,
-  limit: 10,
-});
-```
+### キーワード検索の呼び出し例
+
+searchChunksByKeyword関数を使用し、dbインスタンスと検索オプションを渡す。検索オプションには query（検索文字列: "TypeScript JavaScript"）、limit（取得件数: 10）、offset（開始位置: 0）を指定する。
+
+### フレーズ検索の呼び出し例
+
+searchChunksByPhrase関数を使用し、dbインスタンスと検索オプションを渡す。検索オプションには query（完全一致フレーズ: "typed superset"）、limit（取得件数: 10）を指定する。
+
+### NEAR検索の呼び出し例
+
+searchChunksByNear関数を使用し、第2引数にキーワード配列（例: ["JavaScript", "library"]）を渡す。第3引数のオプションには nearDistance（近接距離: 5）、limit（取得件数: 10）を指定する。
 
 ## 実装ステータス
 
@@ -112,3 +111,12 @@ const nearResults = await searchChunksByNear(db, ["JavaScript", "library"], {
 | Desktop IPC層  | 未実装      | Electron IPC               |
 
 **参照実装**: `packages/shared/src/db/queries/chunks-search.ts`
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                 |
+| ---------- | ---------- | -------------------------------------------------------- |
+| v1.0.0     | -          | 初版作成                                                 |
+| v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換 |

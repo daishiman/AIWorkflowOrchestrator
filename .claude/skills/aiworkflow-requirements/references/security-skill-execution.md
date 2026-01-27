@@ -52,12 +52,15 @@ Claude Codeスキル実行時のセキュリティチェックに使用する危
 
 **検出方式**: 単語境界考慮の正規表現マッチング
 
-```typescript
-// 誤検出を防ぐ単語境界処理
-const pattern = cmd.includes(" ") ? cmd : `\\b${cmd}`;
-const regex = new RegExp(pattern);
-return regex.test(command);
-```
+**単語境界処理ロジック**:
+
+| 処理ステップ       | 説明                                                   |
+| ------------------ | ------------------------------------------------------ |
+| パターン判定       | コマンドパターンにスペースが含まれるか確認             |
+| スペース含む場合   | パターンをそのまま正規表現として使用                   |
+| スペースなしの場合 | `\b`（単語境界）をパターン先頭に付加                   |
+| マッチング実行     | 生成した正規表現でコマンド文字列をテスト               |
+| 結果               | マッチすればtrue（危険）、マッチしなければfalse（安全）|
 
 ### PROTECTED_PATHS（25パターン）
 
@@ -106,10 +109,7 @@ return regex.test(command);
 
 **型定義**:
 
-```typescript
-export type AllowedTool = (typeof ALLOWED_TOOLS_WHITELIST)[number];
-// = "Read" | "Write" | "Edit" | "Bash" | "Glob" | "Grep" | "LS" | "Task" | "WebSearch" | "WebFetch" | "TodoWrite"
-```
+AllowedTool型はALLOWED_TOOLS_WHITELISTの要素をリテラル型として定義します。結果として "Read" | "Write" | "Edit" | "Bash" | "Glob" | "Grep" | "LS" | "Task" | "WebSearch" | "WebFetch" | "TodoWrite" のユニオン型となります。
 
 ---
 
@@ -119,15 +119,15 @@ export type AllowedTool = (typeof ALLOWED_TOOLS_WHITELIST)[number];
 
 コマンド文字列に危険なパターンが含まれているか判定。
 
-```typescript
-import { isDangerousCommand } from "@repo/shared/constants";
+**動作例**:
 
-isDangerousCommand("rm -rf /"); // true - 破壊的コマンド
-isDangerousCommand("sudo apt-get update"); // true - 権限昇格
-isDangerousCommand("ls -la"); // false - 安全
-isDangerousCommand("cat file.txt"); // false - 単語境界考慮でatを誤検出しない
-isDangerousCommand(""); // false - 空文字列
-```
+| 入力コマンド            | 戻り値 | 理由                       |
+| ----------------------- | ------ | -------------------------- |
+| `rm -rf /`              | true   | 破壊的コマンド             |
+| `sudo apt-get update`   | true   | 権限昇格                   |
+| `ls -la`                | false  | 安全なコマンド             |
+| `cat file.txt`          | false  | 単語境界考慮でatを誤検出しない |
+| （空文字列）            | false  | 空文字列は安全扱い         |
 
 **特徴**:
 
@@ -138,15 +138,15 @@ isDangerousCommand(""); // false - 空文字列
 
 パスが保護対象かどうか判定。
 
-```typescript
-import { isProtectedPath } from "@repo/shared/constants";
+**動作例**:
 
-isProtectedPath("/etc/passwd"); // true - システムファイル
-isProtectedPath("~/.ssh/id_rsa"); // true - SSH鍵
-isProtectedPath("/home/user/.bashrc"); // true - シェル設定
-isProtectedPath("/tmp/test.txt"); // false - 一時ファイル
-isProtectedPath(""); // false - 空文字列
-```
+| 入力パス               | 戻り値 | 理由                 |
+| ---------------------- | ------ | -------------------- |
+| `/etc/passwd`          | true   | システムファイル     |
+| `~/.ssh/id_rsa`        | true   | SSH鍵                |
+| `/home/user/.bashrc`   | true   | シェル設定           |
+| `/tmp/test.txt`        | false  | 一時ファイル         |
+| （空文字列）           | false  | 空文字列は非保護扱い |
 
 **特徴**:
 
@@ -157,38 +157,36 @@ isProtectedPath(""); // false - 空文字列
 
 パスがGlobパターンにマッチするか判定。
 
-```typescript
-import { matchGlobPattern } from "@repo/shared/constants";
+**動作例**:
 
-matchGlobPattern("/etc/passwd", "/etc/**"); // true
-matchGlobPattern("/home/user/.bashrc", "**/.bashrc"); // true
-matchGlobPattern("/tmp/test", "/etc/**"); // false
-```
+| パス                   | パターン      | 戻り値 |
+| ---------------------- | ------------- | ------ |
+| `/etc/passwd`          | `/etc/**`     | true   |
+| `/home/user/.bashrc`   | `**/.bashrc`  | true   |
+| `/tmp/test`            | `/etc/**`     | false  |
 
 ### validateAllowedTools(tools: readonly string[]): boolean
 
 ツールリストが全て許可リストに含まれるか検証。
 
-```typescript
-import { validateAllowedTools } from "@repo/shared/constants";
+**動作例**:
 
-validateAllowedTools(["Read", "Write"]); // true - 全て許可
-validateAllowedTools(["Read", "Unknown"]); // false - 未知のツール含む
-validateAllowedTools([]); // true - 空配列は許可
-```
+| 入力ツールリスト       | 戻り値 | 理由               |
+| ---------------------- | ------ | ------------------ |
+| ["Read", "Write"]      | true   | 全て許可ツール     |
+| ["Read", "Unknown"]    | false  | 未知のツールを含む |
+| []                     | true   | 空配列は許可       |
 
 ### filterAllowedTools(tools: readonly string[]): AllowedTool[]
 
 許可されたツールのみをフィルタリング。
 
-```typescript
-import { filterAllowedTools, type AllowedTool } from "@repo/shared/constants";
+**動作例**:
 
-const result: AllowedTool[] = filterAllowedTools(["Read", "Invalid", "Write"]);
-// result = ["Read", "Write"]
-
-filterAllowedTools(["Unknown"]); // []
-```
+| 入力ツールリスト             | 戻り値            |
+| ---------------------------- | ----------------- |
+| ["Read", "Invalid", "Write"] | ["Read", "Write"] |
+| ["Unknown"]                  | []                |
 
 ---
 
@@ -196,46 +194,30 @@ filterAllowedTools(["Unknown"]); // []
 
 ### PreToolUseフックでの使用
 
-```typescript
-import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
+PreToolUseフックでは、ツール名と引数に基づいてセキュリティチェックを実行します。
 
-function preToolUseHook(toolName: string, args: Record<string, unknown>) {
-  // Bashコマンドの危険性チェック
-  if (toolName === "Bash") {
-    const command = args.command as string;
-    if (isDangerousCommand(command)) {
-      throw new Error(`Dangerous command blocked: ${command}`);
-    }
-  }
+**処理フロー**:
 
-  // ファイル操作の保護パスチェック
-  if (toolName === "Write" || toolName === "Edit") {
-    const filePath = args.file_path as string;
-    if (isProtectedPath(filePath)) {
-      throw new Error(`Protected path blocked: ${filePath}`);
-    }
-  }
-}
-```
+| ステップ | ツール名          | チェック内容                                          | ブロック条件                   |
+| -------- | ----------------- | ----------------------------------------------------- | ------------------------------ |
+| 1        | Bash              | isDangerousCommandでコマンド引数を検証                | 危険パターン検出時             |
+| 2        | Write / Edit      | isProtectedPathでファイルパス引数を検証               | 保護パス検出時                 |
+| 3        | その他            | 追加チェックなし                                      | -                              |
+
+**エラー処理**: ブロック条件に該当した場合、"Dangerous command blocked" または "Protected path blocked" エラーをスローして操作を拒否します。
 
 ### スキル定義の検証
 
-```typescript
-import {
-  validateAllowedTools,
-  filterAllowedTools,
-} from "@repo/shared/constants";
+スキル定義時のallowedTools検証処理では、validateAllowedToolsとfilterAllowedToolsを組み合わせて使用します。
 
-function validateSkillDefinition(skill: { allowedTools: string[] }) {
-  if (!validateAllowedTools(skill.allowedTools)) {
-    const validTools = filterAllowedTools(skill.allowedTools);
-    console.warn(
-      `Invalid tools removed. Valid tools: ${validTools.join(", ")}`,
-    );
-    skill.allowedTools = validTools;
-  }
-}
-```
+**処理フロー**:
+
+| ステップ | 処理内容                                         | 結果                     |
+| -------- | ------------------------------------------------ | ------------------------ |
+| 1        | validateAllowedToolsで全ツールの有効性を確認     | true: 検証完了 / false: 次へ |
+| 2        | 検証失敗時、filterAllowedToolsで有効ツールを抽出 | 有効ツールリストを取得   |
+| 3        | 警告ログ出力（無効ツールが除外された旨）         | コンソール出力           |
+| 4        | スキル定義のallowedToolsを有効ツールで上書き     | スキル定義更新           |
 
 ---
 
@@ -267,43 +249,38 @@ function validateSkillDefinition(skill: { allowedTools: string[] }) {
 
 ### アーキテクチャ
 
-```
-┌─────────────────┐
-│  Skill Request  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐     ┌─────────────────┐
-│ isToolAllowed() │────▶│  In-Memory Map  │ ← O(1) lookup
-└────────┬────────┘     └─────────────────┘
-         │                      │
-    ┌────┴────┐                 ▼
-    │ Allowed │          ┌─────────────┐
-    └────┬────┘          │ electron-store │
-    ┌────▼────┐    ┌────▼────┐   └─────────────┘
-    │  Yes    │    │   No    │
-    └────┬────┘    └────┬────┘
-         │              │
-         ▼              ▼
-    ┌─────────┐    ┌─────────────┐
-    │ Execute │    │ Show Dialog │
-    └─────────┘    └─────────────┘
-```
+**処理フロー**:
+
+| ステップ | コンポーネント        | 処理内容                                         | 計算量 |
+| -------- | --------------------- | ------------------------------------------------ | ------ |
+| 1        | Skill Request         | スキル実行リクエスト受信                         | -      |
+| 2        | isToolAllowed()       | In-Memory Mapでツール許可状態を確認              | O(1)   |
+| 3a       | （許可済みの場合）    | Execute: ツール実行へ進む                        | -      |
+| 3b       | （未許可の場合）      | Show Dialog: 許可ダイアログを表示                | -      |
+| 4        | electron-store        | 永続化層でIn-Memory Mapと同期                    | -      |
+
+**データフロー**:
+
+- Skill Request → isToolAllowed() → In-Memory Map（O(1) lookup）
+- In-Memory Map ↔ electron-store（永続化・同期）
+- isToolAllowed()の結果 → Yes: Execute / No: Show Dialog
 
 ### データスキーマ
 
-```typescript
-interface PermissionStoreSchema {
-  version: number;           // スキーマバージョン（現在: 1）
-  allowedTools: AllowedToolEntry[];  // 許可済みツール一覧
-  updatedAt: string;         // 最終更新日時（ISO 8601）
-}
+**PermissionStoreSchema**:
 
-interface AllowedToolEntry {
-  toolName: string;          // ツール識別子
-  allowedAt: string;         // 許可日時（ISO 8601）
-}
-```
+| フィールド     | 型                   | 説明                           |
+| -------------- | -------------------- | ------------------------------ |
+| version        | number               | スキーマバージョン（現在: 1）  |
+| allowedTools   | AllowedToolEntry[]   | 許可済みツール一覧             |
+| updatedAt      | string               | 最終更新日時（ISO 8601形式）   |
+
+**AllowedToolEntry**:
+
+| フィールド | 型     | 説明                       |
+| ---------- | ------ | -------------------------- |
+| toolName   | string | ツール識別子               |
+| allowedAt  | string | 許可日時（ISO 8601形式）   |
 
 ### API
 
@@ -356,7 +333,8 @@ interface AllowedToolEntry {
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                     |
-| ---------- | ---------- | -------------------------------------------- |
-| 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E）       |
-| 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）        |
+| バージョン | 日付       | 変更内容                                         |
+| ---------- | ---------- | ------------------------------------------------ |
+| 1.2.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+| 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E）           |
+| 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）            |

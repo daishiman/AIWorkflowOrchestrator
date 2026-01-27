@@ -68,64 +68,6 @@
 | ERR_5002 | NOT_IMPLEMENTED     | 未実装機能 |
 | ERR_5003 | CONFIGURATION_ERROR | 設定エラー |
 
-### 認可エラー（UnauthorizedError）
-
-OWASP A01:2021 Broken Access Control 対策として実装された認可エラー。
-
-**実装ファイル**: `packages/shared/src/features/chat-history/errors.ts`
-
-**クラス定義**:
-
-```typescript
-export const UNAUTHORIZED_ERROR_MESSAGE =
-  "Access denied: You do not have permission to access this resource" as const;
-
-export const RESOURCE_TYPE = {
-  SESSION: "session",
-} as const;
-
-export class UnauthorizedError extends Error {
-  public readonly name = "UnauthorizedError" as const;
-  public readonly code = "UNAUTHORIZED" as const;
-  public readonly statusCode = 403 as const;
-
-  constructor(
-    message: string = UNAUTHORIZED_ERROR_MESSAGE,
-    public readonly resourceType?: string,
-    public readonly resourceId?: string,
-  ) {
-    super(message);
-    Object.setPrototypeOf(this, UnauthorizedError.prototype);
-  }
-}
-
-export function isUnauthorizedError(error: unknown): error is UnauthorizedError {
-  return error instanceof UnauthorizedError;
-}
-```
-
-**セキュリティ原則**:
-
-| 原則         | 実装                                           |
-| ------------ | ---------------------------------------------- |
-| Fail-Secure  | 検証失敗時は必ずエラーをスロー                 |
-| 情報漏洩防止 | 存在しないリソースと認可失敗で同一メッセージ   |
-| 最小権限     | リソースへのアクセスは所有者のみ               |
-
-**使用例**:
-
-```typescript
-try {
-  const session = await chatHistoryService.getSession(sessionId, requestUserId);
-} catch (error) {
-  if (isUnauthorizedError(error)) {
-    // 認可エラー処理（HTTP 403）
-    return Response.json({ error: error.message }, { status: error.statusCode });
-  }
-  throw error;
-}
-```
-
 ---
 
 ### RAG固有エラーコード
@@ -176,55 +118,27 @@ RAGパイプライン実装で使用するエラーコード。
 
 **エラーコンテキスト情報**:
 
-すべてのRAGエラーは以下のコンテキスト情報を含む：
+すべてのRAGエラーは以下のコンテキスト情報を含む。
 
-```typescript
-interface RAGErrorContext {
-  converterId?: string; // エラー発生元コンバーターID
-  fileId?: string; // 処理対象ファイルID
-  mimeType?: string; // ファイルのMIMEタイプ
-  filePath?: string; // ファイルパス（オプション）
+| フィールド           | 型     | 必須 | 説明                                        |
+| -------------------- | ------ | ---- | ------------------------------------------- |
+| converterId          | string | 任意 | エラー発生元コンバーターID                  |
+| fileId               | string | 任意 | 処理対象ファイルID                          |
+| mimeType             | string | 任意 | ファイルのMIMEタイプ                        |
+| filePath             | string | 任意 | ファイルパス                                |
+| maxDepth             | number | 任意 | YAMLコンバーターのネスト深度                |
+| timeout              | number | 任意 | タイムアウト時間（ミリ秒）                  |
+| currentConversions   | number | 任意 | RESOURCE_EXHAUSTED発生時の現在の同時実行数 |
 
-  // エラー固有の追加情報
-  maxDepth?: number; // YAML: ネスト深度
-  timeout?: number; // TIMEOUT: タイムアウト時間（ms）
-  currentConversions?: number; // RESOURCE_EXHAUSTED: 現在の実行数
-}
-```
+**エラー生成パターン**:
 
-**エラー使用例**:
+エラーはcreateRAGError関数を使用して生成する。第1引数にエラーコード、第2引数にメッセージ、第3引数にコンテキスト情報、第4引数（任意）に原因となったエラーを指定する。
 
-```typescript
-// ConversionService: 同時実行数超過
-createRAGError(
-  ErrorCodes.RESOURCE_EXHAUSTED,
-  `Maximum concurrent conversions reached: 5`,
-  {
-    currentConversions: 5,
-    maxConcurrentConversions: 5,
-  },
-);
-
-// Converter: 変換失敗
-createRAGError(
-  ErrorCodes.CONVERSION_FAILED,
-  `YAML conversion failed: Invalid syntax at line 42`,
-  {
-    converterId: "yaml-converter",
-    fileId: "file-abc123",
-    mimeType: "application/x-yaml",
-    filePath: "/path/to/config.yaml",
-  },
-  originalError, // cause として元のエラーを保持
-);
-
-// Converter: タイムアウト
-createRAGError(ErrorCodes.TIMEOUT, `Conversion timeout after 60000ms`, {
-  converterId: "code-converter",
-  fileId: "file-xyz789",
-  timeout: 60000,
-});
-```
+| シナリオ         | エラーコード       | メッセージ例                                | コンテキスト例                                                      |
+| ---------------- | ------------------ | ------------------------------------------- | ------------------------------------------------------------------- |
+| 同時実行数超過   | RESOURCE_EXHAUSTED | Maximum concurrent conversions reached: 5   | currentConversions: 5, maxConcurrentConversions: 5                  |
+| YAML変換失敗     | CONVERSION_FAILED  | YAML conversion failed: Invalid syntax...   | converterId: yaml-converter, fileId, mimeType, filePath, cause設定  |
+| タイムアウト発生 | TIMEOUT            | Conversion timeout after 60000ms            | converterId: code-converter, fileId, timeout: 60000                 |
 
 ---
 
@@ -234,69 +148,53 @@ OWASP A01:2021 Broken Access Control 対策として実装された認可エラ�
 
 **実装ファイル**: `packages/shared/src/features/chat-history/errors.ts`
 
-### クラス定義
+### 定数定義
 
-```typescript
-export const UNAUTHORIZED_ERROR_MESSAGE =
-  "Access denied: You do not have permission to access this resource" as const;
+| 定数名                     | 値                                                                  | 説明                       |
+| -------------------------- | ------------------------------------------------------------------- | -------------------------- |
+| UNAUTHORIZED_ERROR_MESSAGE | Access denied: You do not have permission to access this resource   | デフォルトエラーメッセージ |
+| RESOURCE_TYPE.SESSION      | session                                                             | リソースタイプ定数         |
 
-export const RESOURCE_TYPE = {
-  SESSION: "session",
-} as const;
+### UnauthorizedErrorクラス
 
-export class UnauthorizedError extends Error {
-  public readonly name = "UnauthorizedError" as const;
-  public readonly code = "UNAUTHORIZED" as const;
-  public readonly statusCode = 403 as const;
+Errorクラスを継承した認可エラークラス。
 
-  constructor(
-    message: string = UNAUTHORIZED_ERROR_MESSAGE,
-    public readonly resourceType?: string,
-    public readonly resourceId?: string,
-  ) {
-    super(message);
-    Object.setPrototypeOf(this, UnauthorizedError.prototype);
-  }
-}
-```
+**読み取り専用プロパティ**:
+
+| プロパティ   | 型     | 値           | 説明                   |
+| ------------ | ------ | ------------ | ---------------------- |
+| name         | string | UnauthorizedError | エラー名          |
+| code         | string | UNAUTHORIZED | エラーコード           |
+| statusCode   | number | 403          | HTTPステータスコード   |
+| resourceType | string | -            | リソースタイプ（任意） |
+| resourceId   | string | -            | リソースID（任意）     |
+
+**コンストラクタ引数**:
+
+| 引数         | 型     | デフォルト値               | 説明                |
+| ------------ | ------ | -------------------------- | ------------------- |
+| message      | string | UNAUTHORIZED_ERROR_MESSAGE | エラーメッセージ    |
+| resourceType | string | undefined                  | リソースタイプ      |
+| resourceId   | string | undefined                  | リソースID          |
 
 ### 型ガード関数
 
-```typescript
-export function isUnauthorizedError(
-  error: unknown,
-): error is UnauthorizedError {
-  return (
-    error instanceof Error &&
-    error.name === "UnauthorizedError" &&
-    "code" in error &&
-    (error as UnauthorizedError).code === "UNAUTHORIZED"
-  );
-}
-```
+isUnauthorizedError関数は、エラーオブジェクトがUnauthorizedErrorかどうかを判定する。
 
-### 使用例
+**判定条件**（すべて満たす必要あり）:
+- Errorインスタンスである
+- nameプロパティが "UnauthorizedError" である
+- codeプロパティが存在し、値が "UNAUTHORIZED" である
 
-```typescript
-// セッション所有者検証
-private async verifySessionOwnership(
-  sessionId: string,
-  requestUserId: string,
-): Promise<ChatSession> {
-  const session = await this.sessionRepository.findById(sessionId);
+### 使用パターン
 
-  // セッションが存在しない場合も同じエラーを返す（情報漏洩防止）
-  if (!session || session.userId !== requestUserId) {
-    throw new UnauthorizedError(
-      UNAUTHORIZED_ERROR_MESSAGE,
-      RESOURCE_TYPE.SESSION,
-      sessionId,
-    );
-  }
+**セッション所有者検証の処理フロー**:
 
-  return session;
-}
-```
+1. sessionIdを指定してセッションをリポジトリから取得
+2. セッションが存在しない、または所有者が一致しない場合はUnauthorizedErrorをスロー
+3. 検証成功時はセッションオブジェクトを返却
+
+**重要**: セッションが存在しない場合と認可失敗の場合で同一のエラーメッセージを返すことで、リソースの存在有無を外部から判別できないようにする（情報漏洩防止）。
 
 ### セキュリティ原則
 
@@ -506,3 +404,11 @@ private async verifySessionOwnership(
 - [REST API 設計原則](./08-api-design.md)
 - [非機能要件](./02-non-functional-requirements.md)
 - [セキュリティガイドライン](./17-security-guidelines.md)
+
+---
+
+## 変更履歴
+
+| 日付       | バージョン | 変更内容                                                             |
+| ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                   |

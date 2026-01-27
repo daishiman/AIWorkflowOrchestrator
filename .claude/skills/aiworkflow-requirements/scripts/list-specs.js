@@ -3,7 +3,7 @@
  * 仕様一覧スクリプト
  *
  * 用途: references/配下のドキュメント一覧と統計を表示
- * 実行: node scripts/list-specs.mjs [options]
+ * 実行: node scripts/list-specs.js [options]
  *
  * オプション:
  *   --stats, -s     統計情報を表示
@@ -101,7 +101,7 @@ function printHelp() {
 ${colors.bright}仕様一覧スクリプト${colors.reset}
 
 ${colors.cyan}使用方法:${colors.reset}
-  node scripts/list-specs.mjs [options]
+  node scripts/list-specs.js [options]
 
 ${colors.cyan}オプション:${colors.reset}
   --stats, -s     統計情報を表示

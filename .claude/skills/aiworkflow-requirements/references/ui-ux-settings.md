@@ -16,35 +16,20 @@ Electronデスクトップアプリにおける設定画面のUI/UX仕様を定�
 
 ### レイヤー構成
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  Renderer Process                                           │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ Settings Components (React)                          │   │
-│  │ - SlideDirectorySettings.tsx                         │   │
-│  │ - useSlideSettings フック                            │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                           │ window.slideSettingsAPI         │
-└───────────────────────────┼─────────────────────────────────┘
-                            │ contextBridge
-┌───────────────────────────┼─────────────────────────────────┐
-│  Preload Script           │                                 │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ channels.ts + index.ts                               │   │
-│  │ - SLIDE_SETTINGS_CHANNELS（ホワイトリスト）         │   │
-│  │ - slideSettingsAPI 公開                              │   │
-│  └─────────────────────────────────────────────────────┘   │
-└───────────────────────────┼─────────────────────────────────┘
-                            │ IPC通信
-┌───────────────────────────┼─────────────────────────────────┐
-│  Main Process             │                                 │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ slideSettingsHandlers.ts + slideSettingsStore.ts     │   │
-│  │ - validateIpcSender() でsender検証                   │   │
-│  │ - electron-store による永続化                        │   │
-│  └─────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
+| レイヤー         | コンポーネント                         | 役割                                     |
+| ---------------- | -------------------------------------- | ---------------------------------------- |
+| Renderer Process | Settings Components (React)            | UIレンダリング                           |
+|                  | - SlideDirectorySettings.tsx           | 設定画面コンポーネント                   |
+|                  | - useSlideSettings フック              | 状態管理                                 |
+|                  | window.slideSettingsAPI                | Preloadから公開されたAPI                 |
+| Preload Script   | channels.ts + index.ts                 | IPC通信の橋渡し                          |
+|                  | - SLIDE_SETTINGS_CHANNELS              | ホワイトリストチャンネル定義             |
+|                  | - slideSettingsAPI 公開                | contextBridgeによるAPI公開               |
+| Main Process     | slideSettingsHandlers.ts               | IPCハンドラー実装                        |
+|                  | slideSettingsStore.ts                  | electron-storeによる永続化               |
+|                  | - validateIpcSender()                  | sender検証によるセキュリティ確保         |
+
+**通信フロー**: Renderer Process → contextBridge → Preload Script → IPC通信 → Main Process
 
 ---
 
@@ -61,16 +46,13 @@ Electronデスクトップアプリにおける設定画面のUI/UX仕様を定�
 
 ### UIコンポーネント構成
 
-```
-SlideDirectorySettings
-├── ディレクトリパス入力欄（読み取り専用）
-│   └── aria-label="スライド出力ディレクトリ"
-├── フォルダ選択ボタン
-│   └── OSネイティブダイアログを起動
-├── 自動作成チェックボックス
-│   └── ディレクトリが存在しない場合に自動作成
-└── エラー/成功メッセージ表示エリア
-```
+| コンポーネント                   | 役割・属性                                               |
+| -------------------------------- | -------------------------------------------------------- |
+| SlideDirectorySettings           | 親コンポーネント                                         |
+| - ディレクトリパス入力欄         | 読み取り専用、aria-label="スライド出力ディレクトリ"      |
+| - フォルダ選択ボタン             | OSネイティブダイアログを起動                             |
+| - 自動作成チェックボックス       | ディレクトリが存在しない場合に自動作成                   |
+| - エラー/成功メッセージ表示エリア | フィードバック表示                                       |
 
 ### UI仕様
 
@@ -84,16 +66,16 @@ SlideDirectorySettings
 
 ### 状態管理（useSlideSettings）
 
-```typescript
-interface UseSlideSettingsReturn {
-  settings: SlideSettings | null; // 現在の設定
-  loading: boolean; // 読み込み中フラグ
-  error: string | null; // エラーメッセージ
-  selectDirectory: () => Promise<void>; // フォルダ選択
-  setDirectory: (path: string) => Promise<void>; // 設定保存
-  validateDirectory: (path: string) => Promise<ValidationResult>; // 検証
-}
-```
+useSlideSettingsフックが返すオブジェクトの構造を以下に示す。
+
+| プロパティ        | 型                                         | 説明               |
+| ----------------- | ------------------------------------------ | ------------------ |
+| settings          | SlideSettings または null                  | 現在の設定         |
+| loading           | boolean                                    | 読み込み中フラグ   |
+| error             | string または null                         | エラーメッセージ   |
+| selectDirectory   | () => Promise\<void\>                      | フォルダ選択関数   |
+| setDirectory      | (path: string) => Promise\<void\>          | 設定保存関数       |
+| validateDirectory | (path: string) => Promise\<ValidationResult\> | パス検証関数       |
 
 ### バリデーション仕様
 
@@ -120,12 +102,12 @@ interface UseSlideSettingsReturn {
 
 ### electron-store スキーマ
 
-```typescript
-interface SlideSettings {
-  outputDirectory: string; // デフォルト: ~/Documents/Slides
-  autoCreateDirectory: boolean; // デフォルト: true
-}
-```
+SlideSettings型の構造を以下に示す。
+
+| プロパティ          | 型      | デフォルト値           | 説明                   |
+| ------------------- | ------- | ---------------------- | ---------------------- |
+| outputDirectory     | string  | ~/Documents/Slides     | 出力先ディレクトリパス |
+| autoCreateDirectory | boolean | true                   | ディレクトリ自動作成   |
 
 ### 設定ファイル配置
 
@@ -151,11 +133,15 @@ interface SlideSettings {
 
 ### IPCResult型
 
-```typescript
-type IPCResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string; message?: string };
-```
+IPCResult型は成功または失敗を表すユニオン型であり、以下の2つのパターンを持つ。
+
+| パターン | プロパティ | 型     | 説明                 |
+| -------- | ---------- | ------ | -------------------- |
+| 成功時   | success    | true   | 成功フラグ           |
+|          | data       | T      | 結果データ（型引数） |
+| 失敗時   | success    | false  | 失敗フラグ           |
+|          | error      | string | エラーコード         |
+|          | message    | string（任意） | エラーメッセージ     |
 
 ---
 
@@ -211,18 +197,18 @@ type IPCResult<T> =
 
 ### UIコンポーネント構成
 
-```
-PermissionSettings
-├── ヘッダー（h2: "Allowed Tools"）
-├── ローディングスケルトン（データ取得中）
-├── エラー表示（取得失敗時）
-├── 許可済みツールリスト
-│   ├── ツール名
-│   ├── 許可日時（Allowed: 日時）
-│   └── Revokeボタン（個別取消）
-├── 空状態表示（"No tools have been allowed yet"）
-└── Clear Allボタン（全クリア、確認ダイアログ付き）
-```
+| コンポーネント             | 役割・属性                                           |
+| -------------------------- | ---------------------------------------------------- |
+| PermissionSettings         | 親コンポーネント                                     |
+| - ヘッダー                 | h2: "Allowed Tools"                                  |
+| - ローディングスケルトン   | データ取得中に表示                                   |
+| - エラー表示               | 取得失敗時に表示                                     |
+| - 許可済みツールリスト     | ツールごとに以下を表示                               |
+|   - ツール名               | 許可されたツールの名前                               |
+|   - 許可日時               | "Allowed: 日時" 形式で表示                           |
+|   - Revokeボタン           | 個別ツールの許可取消                                 |
+| - 空状態表示               | "No tools have been allowed yet"                     |
+| - Clear Allボタン          | 全クリア（確認ダイアログ付き）                       |
 
 ### UI仕様
 
@@ -290,7 +276,8 @@ PermissionSettings
 
 ## バージョン履歴
 
-| Version | Date       | Changes                                              |
-| ------- | ---------- | ---------------------------------------------------- |
-| 1.1.0   | 2026-01-26 | PermissionSettings UI追加（TASK-3-1-E）              |
-| 1.0.0   | 2026-01-14 | 初版作成: スライド出力ディレクトリ設定機能           |
+| Version | Date       | Changes                                                    |
+| ------- | ---------- | ---------------------------------------------------------- |
+| 1.1.1   | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換         |
+| 1.1.0   | 2026-01-26 | PermissionSettings UI追加（TASK-3-1-E）                    |
+| 1.0.0   | 2026-01-14 | 初版作成: スライド出力ディレクトリ設定機能                 |

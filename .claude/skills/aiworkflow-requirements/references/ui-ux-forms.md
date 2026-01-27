@@ -139,17 +139,16 @@ OAuth認証ボタンは「ログイン」ではなく「続ける」を使用し
 
 **エラーコード定義**（`AuthErrorCode`型）
 
-```typescript
-type AuthErrorCode =
-  | "NETWORK_ERROR"
-  | "AUTH_FAILED"
-  | "TIMEOUT"
-  | "SESSION_EXPIRED"
-  | "PROVIDER_ERROR"
-  | "PROFILE_UPDATE_FAILED"
-  | "LINK_PROVIDER_FAILED"
-  | "UNKNOWN";
-```
+| エラーコード            | 意味                         |
+| ----------------------- | ---------------------------- |
+| NETWORK_ERROR           | ネットワーク接続エラー       |
+| AUTH_FAILED             | 認証失敗                     |
+| TIMEOUT                 | 接続タイムアウト             |
+| SESSION_EXPIRED         | セッション期限切れ           |
+| PROVIDER_ERROR          | 認証プロバイダー接続エラー   |
+| PROFILE_UPDATE_FAILED   | プロフィール更新失敗         |
+| LINK_PROVIDER_FAILED    | アカウント連携失敗           |
+| UNKNOWN                 | 不明なエラー                 |
 
 ### ユーザー情報表示のフォールバック
 
@@ -169,13 +168,21 @@ type AuthErrorCode =
 - `null` / `undefined` も同様に無効値として扱う
 - 論理OR演算子（`||`）を使用して空文字列も含めてフォールバックする
 
-```typescript
-// 正しい実装
-const displayName = profile?.displayName || authUser?.displayName || "User";
+**フォールバック演算子の選択基準**
 
-// 誤った実装（空文字列がフォールバックされない）
-const displayName = profile?.displayName ?? authUser?.displayName ?? "User";
-```
+| 演算子 | 動作                                   | 使用判断             |
+| ------ | -------------------------------------- | -------------------- |
+| `||`   | falsy値（空文字列、0、false等）で次へ  | 空文字列も無効扱いにしたい場合に使用 |
+| `??`   | null/undefinedのみで次へ               | 空文字列を有効値として扱いたい場合に使用 |
+
+**実装パターン比較**
+
+| パターン                                                    | 空文字列の扱い   | 推奨用途               |
+| ----------------------------------------------------------- | ---------------- | ---------------------- |
+| `profile?.displayName || authUser?.displayName || "User"`   | フォールバック   | 表示名（空文字は無効） |
+| `profile?.displayName ?? authUser?.displayName ?? "User"`   | 有効値として保持 | 明示的に空を許可する場合 |
+
+表示名のような項目では、空文字列を有効な値として扱うべきではないため、`||`演算子を使用してフォールバックを行う。
 
 **長いテキストの処理**
 
@@ -212,12 +219,16 @@ const displayName = profile?.displayName ?? authUser?.displayName ?? "User";
 - 「GitHubのアバターを使用」
 - 「Discordのアバターを使用」
 
-**動的表示ロジック**:
+**動的表示ロジック**
 
-```typescript
-// 現在使用中のアバターと異なるプロバイダーのみ表示
-linkedProviders.filter((p) => p.avatarUrl && p.avatarUrl !== currentAvatarUrl);
-```
+連携済みプロバイダー一覧（linkedProviders）に対して以下の条件でフィルタリングを行い、メニューに表示するオプションを決定する。
+
+| フィルタ条件                              | 目的                                     |
+| ----------------------------------------- | ---------------------------------------- |
+| プロバイダーにavatarUrlが存在する         | アバターがないプロバイダーを除外         |
+| avatarUrlが現在使用中のアバターURLと異なる | 既に適用中のアバターを重複表示させない   |
+
+両方の条件を満たすプロバイダーのみがアバター選択メニューに表示される。
 
 | シナリオ                                        | 表示されるオプション                      |
 | ----------------------------------------------- | ----------------------------------------- |
@@ -235,21 +246,20 @@ linkedProviders.filter((p) => p.avatarUrl && p.avatarUrl !== currentAvatarUrl);
 | 確認ダイアログ   | z-[100]   | メニューより低く、コンテンツより高い |
 | GlassPanel       | z-auto    | 通常のスタッキング順序に従う         |
 
-**Portal実装のポイント**:
+**Portal実装のポイント**
 
-```typescript
-// React Portalでdocument.body直下に描画
-createPortal(
-  <div
-    role="menu"
-    className="fixed w-48 z-[9999]"
-    style={{ top: menuPosition.top, left: menuPosition.left }}
-  >
-    {/* メニュー項目 */}
-  </div>,
-  document.body
-)
-```
+ReactのcreatePortal関数を使用して、メニュー要素をdocument.body直下にレンダリングする。
+
+| 実装要素           | 設定値・方法                                       |
+| ------------------ | -------------------------------------------------- |
+| レンダリング先     | document.body直下                                  |
+| ポジション         | `position: fixed`（ビューポート基準）              |
+| z-index            | 9999（他の要素より確実に前面に表示）               |
+| 幅                 | 48単位（Tailwindのw-48、192px相当）                |
+| 位置指定           | styleプロパティでtopとleftを動的に設定             |
+| role属性           | menu（WAI-ARIAメニューパターン準拠）               |
+
+この実装により、親要素のoverflow:hiddenやbackdrop-filterによるスタッキングコンテキストの影響を受けずにメニューを表示できる。
 
 **位置計算**:
 
@@ -358,3 +368,10 @@ createPortal(
 | メモリクリア           | モーダルクローズ時に入力値をクリア             |
 
 ---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                                                 |
+| ---------- | ---------- | ------------------------------------------------------------------------ |
+| v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換（4箇所）         |
+| v1.0.0     | -          | 初版作成                                                                 |

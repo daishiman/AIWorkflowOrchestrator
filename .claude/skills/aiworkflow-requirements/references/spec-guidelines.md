@@ -2,6 +2,30 @@
 
 > 本ドキュメントは aiworkflow-requirements スキルの記述ルールを定義する。
 
+---
+
+## テンプレート一覧
+
+新規仕様作成時は、カテゴリに応じたテンプレートを使用する。
+
+| カテゴリ         | prefix          | テンプレート             | 用途                       |
+| ---------------- | --------------- | ------------------------ | -------------------------- |
+| インターフェース | `interfaces-`   | interfaces-template.md   | 型定義、IPC、Preload API   |
+| アーキテクチャ   | `architecture-` | architecture-template.md | 設計パターン、レイヤー構成 |
+| API設計          | `api-`          | api-template.md          | REST/IPC エンドポイント    |
+| データベース     | `database-`     | database-template.md     | スキーマ、マイグレーション |
+| UI/UX            | `ui-ux-`        | ui-ux-template.md        | コンポーネント、状態管理   |
+| セキュリティ     | `security-`     | security-template.md     | 脅威モデル、対策           |
+| 技術スタック     | `technology-`   | technology-template.md   | 技術選定、バージョン管理   |
+| Claude Code      | `claude-code-`  | claude-code-template.md  | Skill/Agent/Command        |
+| デプロイ         | `deployment-`   | deployment-template.md   | CI/CD、環境構成            |
+| ワークフロー     | `workflow-`     | workflow-template.md     | フェーズ構成、トリガー     |
+| その他           | (なし)          | spec-template.md         | 汎用仕様書                 |
+
+**テンプレート配置**: `assets/` ディレクトリ
+
+---
+
 ## 命名規則
 
 ### ファイル命名
@@ -75,7 +99,7 @@
 2. **命名規則に従う**: `{prefix}-{topic}.md`
 3. **配置**: `references/` 直下
 4. **SKILL.md更新**: 不要（自動反映）
-5. **インデックス更新**: `node scripts/generate-index.mjs`
+5. **インデックス更新**: `node scripts/generate-index.js`
 
 ## ファイルサイズ管理
 
@@ -89,8 +113,8 @@
 
 ```bash
 # 分割候補を分析
-node scripts/split-reference.mjs --analyze
+node scripts/split-reference.js --analyze
 
 # 設定に基づいて分割
-node scripts/split-reference.mjs --split <file> <config.json>
+node scripts/split-reference.js --split <file> <config.json>
 ```

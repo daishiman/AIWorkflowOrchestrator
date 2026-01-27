@@ -3,7 +3,7 @@
  * 仕様検索スクリプト
  *
  * 用途: references/配下のドキュメントからキーワード検索
- * 実行: node scripts/search-spec.mjs <keyword> [options]
+ * 実行: node scripts/search-spec.js <keyword> [options]
  *
  * オプション:
  *   --context, -C <n>  前後n行を表示（デフォルト: 2）
@@ -36,7 +36,7 @@ function printHelp() {
 ${colors.bright}仕様検索スクリプト${colors.reset}
 
 ${colors.cyan}使用方法:${colors.reset}
-  node scripts/search-spec.mjs <keyword> [options]
+  node scripts/search-spec.js <keyword> [options]
 
 ${colors.cyan}オプション:${colors.reset}
   --context, -C <n>  前後n行を表示（デフォルト: 2）
@@ -46,10 +46,10 @@ ${colors.cyan}オプション:${colors.reset}
   --help, -h         ヘルプ表示
 
 ${colors.cyan}例:${colors.reset}
-  node scripts/search-spec.mjs "認証"
-  node scripts/search-spec.mjs "Turso" -C 5
-  node scripts/search-spec.mjs "API" --files-only
-  node scripts/search-spec.mjs "authentication" --case-sensitive
+  node scripts/search-spec.js "認証"
+  node scripts/search-spec.js "Turso" -C 5
+  node scripts/search-spec.js "API" --files-only
+  node scripts/search-spec.js "authentication" --case-sensitive
 `);
 }
 
@@ -123,7 +123,7 @@ async function search(options) {
     console.error(
       `${colors.red}エラー: 検索キーワードを指定してください${colors.reset}`,
     );
-    console.log("使用方法: node scripts/search-spec.mjs <keyword>");
+    console.log("使用方法: node scripts/search-spec.js <keyword>");
     process.exit(2);
   }
 
