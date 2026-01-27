@@ -947,7 +947,9 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     vi.clearAllMocks();
 
     // Reset global clipboard mock (setup.ts defines navigator.clipboard)
-    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
+    (
+      navigator.clipboard.writeText as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(undefined);
   });
 
   // TC-R3-1
@@ -1100,9 +1102,9 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     const consoleError = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
-    vi.mocked(navigator.clipboard.writeText).mockRejectedValue(
-      new Error("Clipboard API error"),
-    );
+    (
+      navigator.clipboard.writeText as ReturnType<typeof vi.fn>
+    ).mockRejectedValue(new Error("Clipboard API error"));
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
@@ -1155,7 +1157,9 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
   it("copy feedback should be announced to screen readers", async () => {
     const user = userEvent.setup();
     // Global clipboard mock is set up in setup.ts
-    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
+    (
+      navigator.clipboard.writeText as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(undefined);
 
     mockUseSkillExecution.status = "running";
     mockUseSkillExecution.messages = [
@@ -1372,7 +1376,9 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     vi.clearAllMocks();
 
     // Reset global clipboard mock (setup.ts defines navigator.clipboard)
-    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
+    (
+      navigator.clipboard.writeText as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(undefined);
   });
 
   // TC-R3-8
@@ -1540,7 +1546,9 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     vi.clearAllMocks();
 
     // Reset global clipboard mock (setup.ts defines navigator.clipboard)
-    vi.mocked(navigator.clipboard.writeText).mockResolvedValue(undefined);
+    (
+      navigator.clipboard.writeText as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(undefined);
   });
 
   // TC-INT-1
