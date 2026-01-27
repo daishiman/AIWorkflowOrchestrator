@@ -238,6 +238,9 @@ Phase 1〜11の全フェーズを確認した結果、未完了タスクは検�
 - [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
 - [ ] **【Task 2 Step 1】システム仕様書に完了タスクセクションを追加した**
+- [ ] **【Task 2 Step 1】aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加した**
+- [ ] **【Task 2 Step 1】task-specification-creator/LOGS.mdにタスク完了記録を追加した**
+- [ ] **【Task 2 Step 1】topic-map.mdに新規セクションエントリを追加した（該当する場合）**
 - [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] artifacts.jsonが更新されている
