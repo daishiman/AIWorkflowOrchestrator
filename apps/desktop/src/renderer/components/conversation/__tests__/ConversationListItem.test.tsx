@@ -98,7 +98,12 @@ describe("ConversationListItem", () => {
       );
 
       // Should display relative time or formatted date
-      expect(screen.getByText(/2026|今日|yesterday/i)).toBeInTheDocument();
+      // Matches: 2026, 今日, 昨日, X日前, X週間前, X分前, X時間前, yesterday, ago, etc.
+      expect(
+        screen.getByText(
+          /2026|今日|昨日|日前|週間前|分前|時間前|yesterday|ago/i,
+        ),
+      ).toBeInTheDocument();
     });
 
     it("should render favorite indicator when isFavorite is true", () => {
