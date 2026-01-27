@@ -74,7 +74,7 @@ export const FileContextBadge: FC<FileContextBadgeProps> = memo(
         tabIndex={0}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
-        aria-selected={isActive}
+        aria-current={isActive ? "true" : undefined}
       >
         {/* ファイルアイコン */}
         <svg

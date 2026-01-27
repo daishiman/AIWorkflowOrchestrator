@@ -25,6 +25,9 @@
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/__tests__/**",
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.ts",
+    "src/**/stories/**",
     "src/main/services/agent/AgentExecutor.ts"
   ]
 }

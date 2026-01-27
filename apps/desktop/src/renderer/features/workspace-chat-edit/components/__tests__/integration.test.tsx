@@ -464,8 +464,8 @@ describe("統合テスト", () => {
       );
 
       const badges = screen.getAllByRole("listitem");
-      expect(badges[0]).toHaveAttribute("aria-selected", "true");
-      expect(badges[1]).toHaveAttribute("aria-selected", "false");
+      expect(badges[0]).toHaveAttribute("aria-current", "true");
+      expect(badges[1]).not.toHaveAttribute("aria-current");
     });
   });
 

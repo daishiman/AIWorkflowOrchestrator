@@ -164,18 +164,18 @@ describe("FileContextBadge", () => {
       expect(badge).toHaveAttribute("tabIndex", "0");
     });
 
-    it("アクティブ状態でaria-selectedがtrueになる", () => {
+    it("アクティブ状態でaria-currentがtrueになる", () => {
       render(<FileContextBadge context={mockContext} isActive={true} />);
 
       const badge = screen.getByRole("listitem");
-      expect(badge).toHaveAttribute("aria-selected", "true");
+      expect(badge).toHaveAttribute("aria-current", "true");
     });
 
-    it("非アクティブ状態でaria-selectedがfalseになる", () => {
+    it("非アクティブ状態でaria-currentが設定されない", () => {
       render(<FileContextBadge context={mockContext} isActive={false} />);
 
       const badge = screen.getByRole("listitem");
-      expect(badge).toHaveAttribute("aria-selected", "false");
+      expect(badge).not.toHaveAttribute("aria-current");
     });
   });
 

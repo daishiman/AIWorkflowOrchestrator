@@ -6,6 +6,12 @@
 export { FileContextBadge } from "./FileContextBadge";
 export type { FileContextBadgeProps } from "./FileContextBadge";
 
+export { FileAttachmentButton } from "./FileAttachmentButton";
+export type { FileAttachmentButtonProps } from "./FileAttachmentButton";
+
+export { FileContextList } from "./FileContextList";
+export type { FileContextListProps } from "./FileContextList";
+
 export { ApplyControls } from "./ApplyControls";
 export type { ApplyControlsProps } from "./ApplyControls";
 

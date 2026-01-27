@@ -1,598 +1,238 @@
-# workspace-chat-edit-ui 実装ガイド
+# 実装ガイド: workspace-chat-edit-ui（Issue #494）
 
-## Overview
+## メタ情報
 
-workspace-chat-edit UI機能の包括的な実装ガイドです。
-
----
-
-# Part 1: 概念的説明（初学者・非技術者向け）
-
-## 機能の概要
-
-### この機能は何をするものか
-
-workspace-chat-edit-uiは、**AIアシスタントとのチャット中にファイル編集を依頼できる機能**です。
-
-ユーザーは以下の操作が可能です：
-
-1. **ファイルをドラッグ&ドロップで添付**
-2. **編集コマンドを入力して送信**
-3. **AIが提案した変更を差分プレビューで確認**
-4. **変更を適用または却下**
-
-### 使用イメージ
-
-```
-┌─────────────────────────────────────────────┐
-│  💬 AIアシスタントとのチャット画面          │
-├─────────────────────────────────────────────┤
-│                                             │
-│  📁 ファイルをここにドロップ               │
-│  ┌─────────────────────────────────────┐    │
-│  │ 📄 index.ts                         │    │
-│  │ ✕                                   │    │
-│  └─────────────────────────────────────┘    │
-│                                             │
-│  ┌─────────────────────────────────────┐    │
-│  │ edit ▼ │ コメントを追加してください  │    │
-│  └─────────────────────────────────────┘    │
-│  [送信]                                     │
-│                                             │
-└─────────────────────────────────────────────┘
-```
-
-### 差分プレビュー画面
-
-AIが変更を提案すると、差分プレビューが表示されます：
-
-```
-┌─────────────────────────────────────────────┐
-│  🔍 差分プレビュー                   [×]    │
-├─────────────────────────────────────────────┤
-│  - const hello = "world";                   │
-│  + // コメントを追加                        │
-│  + const hello = "world";                   │
-├─────────────────────────────────────────────┤
-│  追加: 2行 / 削除: 1行                      │
-├─────────────────────────────────────────────┤
-│        [却下]        [適用 ✓]               │
-└─────────────────────────────────────────────┘
-```
+| 項目     | 内容                                                 |
+| -------- | ---------------------------------------------------- |
+| タスクID | TASK-WCE-UI-001                                      |
+| Issue    | #494                                                 |
+| 完了日   | 2026-01-27                                           |
+| テスト数 | 270（全パス）                                        |
+| 機能     | FileAttachmentButton, FileContextList コンポーネント |
 
 ---
 
-## 各コンポーネントの役割と使い方
+# Part 1: 概念説明（初学者向け）
 
-### 1. FileContextDropZone（ファイルドロップ領域）
+## 1.1 この機能は何をするの？
 
-**役割**: ファイルをドラッグ&ドロップで添付する領域
+### 日常生活での例え
 
-**使い方**:
+「ファイル添付機能」は、**メールに写真を添付する**のと似ています。
 
-- ファイルをドラッグすると青い破線のオーバーレイが表示される
-- ファイルをドロップするとコンテキストとして追加される
-- 最大10ファイル、各10MBまで添付可能
+例えば、友達に旅行の写真を送りたいとき、メールアプリで「添付」ボタンを押して、写真を選んで、メールに貼り付けますよね。このアプリでも同じです。AIアシスタントにファイルの内容を見てもらいたいときに、「ファイルを添付」ボタンを押して、見てほしいファイルを選びます。
 
-### 2. FileContextBadge（ファイルバッジ）
+### この機能でできること
 
-**役割**: 添付されたファイルの表示と削除
+| 機能             | 説明                               | 例                                 |
+| ---------------- | ---------------------------------- | ---------------------------------- |
+| ファイル添付     | AIに見てほしいファイルを選ぶ       | プログラムのコードファイルを選ぶ   |
+| 添付ファイル一覧 | 選んだファイルを一覧で確認できる   | 3つ選んだら3つのバッジが表示される |
+| ファイル削除     | 間違えて選んだファイルを取り消せる | ×ボタンを押すとリストから消える    |
+| 選択状態の表示   | 今どのファイルを見ているかわかる   | 選んだファイルが青く光る           |
 
-**使い方**:
+## 1.2 なぜこの機能が必要なの？
 
-- ファイル名とアイコンが表示される
-- ×ボタンをクリックまたはDeleteキーで削除
-- 長いファイル名は省略表示される
+AIアシスタントに「このファイルを直して」とお願いするとき、**どのファイルのことか**を伝える必要があります。
 
-### 3. EditCommandInput（編集コマンド入力）
+口で説明するより、**実際のファイルを見せた方が早い**ですよね。この機能を使うと、AIアシスタントにファイルの中身を直接見せることができるので、より正確に修正してもらえます。
 
-**役割**: 編集種別の選択とコマンドテキストの入力
+## 1.3 使い方の流れ
 
-**使い方**:
+```
+1. 「ファイルを添付」ボタンをクリック
+     ↓
+2. 見てほしいファイルを選ぶ（複数選べます）
+     ↓
+3. 選んだファイルがバッジで表示される
+     ↓
+4. AIアシスタントに指示を入力して送信
+     ↓
+5. AIがファイルを見て、編集案を提案してくれる
+```
 
-- ドロップダウンで編集タイプを選択（edit/refactor/comment/format）
-- テキスト入力欄に指示を入力
-- 送信ボタンまたはCtrl+Enterで送信
+## 1.4 バッジって何？
 
-### 4. DiffPreview（差分プレビュー）
+「バッジ」は、選んだファイルを表す**小さなラベル**のことです。名札のようなものだと思ってください。
 
-**役割**: AIが提案した変更内容の表示
-
-**使い方**:
-
-- モーダルダイアログとして表示
-- 追加行は緑、削除行は赤で表示
-- 追加/削除の行数カウントを表示
-
-### 5. DiffEditor（差分エディタ）
-
-**役割**: Monaco Editorによる詳細な差分表示
-
-**使い方**:
-
-- 左側に元のコード、右側に変更後のコードを表示
-- シンタックスハイライト対応
-- スクロール同期
-
-### 6. ApplyControls（適用コントロール）
-
-**役割**: 変更の適用または却下
-
-**使い方**:
-
-- 「適用」ボタンで変更をファイルに書き込み
-- 「却下」ボタンで変更を破棄
+- ファイル名が書かれている
+- ×ボタンで削除できる
+- クリックすると選択状態になる（青く光る）
 
 ---
 
-## 全体のアーキテクチャ概要
+# Part 2: 技術詳細（開発者向け）
 
-### システム構成図
+## 2.1 アーキテクチャ概要
+
+### レイヤー構成
 
 ```
-┌──────────────────────────────────────────────────────┐
-│                  Renderer Process                     │
-├───────────────────────┬──────────────────────────────┤
-│     UIコンポーネント   │      状態管理                │
-│  ┌─────────────────┐  │  ┌─────────────────────────┐│
-│  │FileContextDropZone│─┬┼─│ useFileContext (Zustand)││
-│  │FileContextBadge │  │ │  │                        ││
-│  └─────────────────┘  │ │  │ - files: FileContext[] ││
-│                       │ │  │ - attachFile()         ││
-│  ┌─────────────────┐  │ │  │ - detachFile()         ││
-│  │ EditCommandInput │─┼─┼──│ - clearAll()           ││
-│  └─────────────────┘  │ │  └─────────────────────────┘│
-│                       │ │                            │
-│  ┌─────────────────┐  │ │  ┌─────────────────────────┐│
-│  │   DiffPreview   │─┼─┼──│ useDiffApply (Zustand)  ││
-│  │   DiffEditor    │  │ │  │                        ││
-│  │  ApplyControls  │  │ │  │ - status: 'idle'|...   ││
-│  └─────────────────┘  │ │  │ - applyResult()        ││
-│                       │ │  │ - rejectResult()       ││
-│                       │ │  └─────────────────────────┘│
-└───────────────────────┴──┴───────────────────────────┘
-                          │
-                          │ IPC
-                          ▼
-┌──────────────────────────────────────────────────────┐
-│                   Main Process                        │
-│  ┌─────────────────────────────────────────────────┐│
-│  │             File System Access                   ││
-│  │  - readFile()                                   ││
-│  │  - writeFile()                                  ││
-│  └─────────────────────────────────────────────────┘│
-└──────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│  UI Layer (Renderer Process)                    │
+│  ├── FileAttachmentButton                       │
+│  ├── FileContextList                            │
+│  └── FileContextBadge                           │
+├─────────────────────────────────────────────────┤
+│  State Layer (Zustand)                          │
+│  └── chatEditSlice (useFileContext)             │
+├─────────────────────────────────────────────────┤
+│  IPC Layer (Electron)                           │
+│  └── fileSelection.openDialog                   │
+├─────────────────────────────────────────────────┤
+│  Main Process                                   │
+│  └── dialog.showOpenDialog                      │
+└─────────────────────────────────────────────────┘
 ```
 
 ### データフロー
 
-1. ユーザーがファイルをドロップ → `useFileContext.attachFile()` → ファイル内容読み込み
-2. ユーザーがコマンドを送信 → AIがDiff生成 → `useDiffApply` で状態管理
-3. ユーザーが適用をクリック → `useDiffApply.applyResult()` → ファイル書き込み
-
----
-
-# Part 2: 技術的詳細（開発者向け）
-
-## 各コンポーネントのAPI詳細
-
-### FileContextBadge
-
-```typescript
-interface FileContextBadgeProps {
-  /** ファイルコンテキストオブジェクト */
-  file: FileContext;
-  /** 選択状態 */
-  isSelected?: boolean;
-  /** 削除ボタンクリック時のコールバック */
-  onRemove?: (fileId: string) => void;
-  /** バッジクリック時のコールバック */
-  onClick?: (fileId: string) => void;
-}
+```
+ユーザー操作 → FileAttachmentButton
+    ↓ onClick
+electronAPI.fileSelection.openDialog()
+    ↓ IPC
+Main Process: dialog.showOpenDialog()
+    ↓ filePaths
+Renderer: useFileContext.attachFile()
+    ↓ state update
+FileContextList: 再レンダリング
+    ↓
+FileContextBadge: 各ファイル表示
 ```
 
-**使用例**:
+## 2.2 コンポーネント仕様
 
-```tsx
-<FileContextBadge
-  file={{ id: "1", path: "/src/index.ts", name: "index.ts", content: "..." }}
-  isSelected={selectedFileId === "1"}
-  onRemove={(id) => detachFile(id)}
-  onClick={(id) => setSelectedFileId(id)}
-/>
-```
+### FileAttachmentButton
 
-### ApplyControls
+| 項目     | 内容                                                                                         |
+| -------- | -------------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileAttachmentButton.tsx` |
+| 責務     | ファイル選択ダイアログを開き、選択されたファイルをコンテキストに追加                         |
+| 依存     | useFileContext, electronAPI.fileSelection                                                    |
 
-```typescript
-interface ApplyControlsProps {
-  /** 結果ID（差分適用の識別子） */
-  resultId: string;
-  /** 適用完了時のコールバック */
-  onApplied?: () => void;
-  /** 却下完了時のコールバック */
-  onRejected?: () => void;
-}
-```
+**Props**
 
-**使用例**:
+| Prop            | 型                               | 必須 | デフォルト | 説明                       |
+| --------------- | -------------------------------- | ---- | ---------- | -------------------------- |
+| onFilesSelected | `(files: FileContext[]) => void` | No   | -          | ファイル選択時コールバック |
+| multiple        | `boolean`                        | No   | true       | 複数選択許可               |
+| accept          | `string[]`                       | No   | ["*"]      | 許可する拡張子             |
+| maxFiles        | `number`                         | No   | 10         | 最大ファイル数             |
+| disabled        | `boolean`                        | No   | false      | 無効状態                   |
+| className       | `string`                         | No   | -          | カスタムクラス             |
+| children        | `ReactNode`                      | No   | -          | カスタムコンテンツ         |
 
-```tsx
-<ApplyControls
-  resultId="result-123"
-  onApplied={() => {
-    closeDiffPreview();
-    showSuccessToast();
-  }}
-  onRejected={() => closeDiffPreview()}
-/>
-```
+### FileContextList
 
-### FileContextDropZone
+| 項目     | 内容                                                                                    |
+| -------- | --------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextList.tsx` |
+| 責務     | 添付ファイル一覧の表示、削除・選択操作のハンドリング                                    |
+| 依存     | useFileContext, FileContextBadge                                                        |
 
-```typescript
-interface FileContextDropZoneProps {
-  /** 子要素（ドロップ可能領域内に表示） */
-  children: React.ReactNode;
-  /** 無効化フラグ */
-  disabled?: boolean;
-  /** ファイルドロップ時のコールバック */
-  onFilesDropped?: (files: FileContext[]) => void;
-}
-```
+**Props**
 
-**使用例**:
+| Prop         | 型                     | 必須 | デフォルト                     | 説明                 |
+| ------------ | ---------------------- | ---- | ------------------------------ | -------------------- |
+| contexts     | `FileContext[]`        | No   | (Zustandから取得)              | 表示するコンテキスト |
+| onRemove     | `(id: string) => void` | No   | -                              | 削除時コールバック   |
+| onSelect     | `(id: string) => void` | No   | -                              | 選択時コールバック   |
+| selectedId   | `string`               | No   | (Zustandから取得)              | 選択中のID           |
+| emptyMessage | `string`               | No   | "ファイルが添付されていません" | 空状態メッセージ     |
+| maxHeight    | `string`               | No   | -                              | 最大高さ             |
+| className    | `string`               | No   | -                              | カスタムクラス       |
 
-```tsx
-<FileContextDropZone
-  disabled={isExecuting}
-  onFilesDropped={(files) => {
-    files.forEach((file) => attachFile(file));
-  }}
->
-  <ChatInput />
-</FileContextDropZone>
-```
-
-### DiffPreview
-
-```typescript
-interface DiffPreviewProps {
-  /** オリジナルコンテンツ */
-  original: string;
-  /** 変更後のコンテンツ */
-  modified: string;
-  /** ファイル名 */
-  fileName: string;
-  /** 言語識別子（シンタックスハイライト用） */
-  language?: string;
-  /** 結果ID */
-  resultId: string;
-  /** モーダルを閉じる時のコールバック */
-  onClose: () => void;
-  /** 適用完了時のコールバック */
-  onApplied?: () => void;
-}
-```
-
-**使用例**:
-
-```tsx
-<DiffPreview
-  original={fileContext.content}
-  modified={aiSuggestedContent}
-  fileName={fileContext.name}
-  language="typescript"
-  resultId="result-123"
-  onClose={() => setShowPreview(false)}
-  onApplied={() => refreshFileList()}
-/>
-```
-
-### DiffEditor
-
-```typescript
-interface DiffEditorProps {
-  /** オリジナルコンテンツ */
-  original: string;
-  /** 変更後のコンテンツ */
-  modified: string;
-  /** 言語識別子 */
-  language?: string;
-  /** エディタの高さ */
-  height?: string | number;
-}
-```
-
-**使用例**:
-
-```tsx
-<DiffEditor
-  original={originalCode}
-  modified={modifiedCode}
-  language="typescript"
-  height="400px"
-/>
-```
-
-### EditCommandInput
-
-```typescript
-interface EditCommandInputProps {
-  /** 送信時のコールバック */
-  onSubmit: (command: EditCommand) => void;
-  /** 無効化フラグ */
-  disabled?: boolean;
-  /** プレースホルダーテキスト */
-  placeholder?: string;
-}
-
-interface EditCommand {
-  type: "edit" | "refactor" | "comment" | "format";
-  instruction: string;
-  contexts: FileContext[];
-}
-```
-
-**使用例**:
-
-```tsx
-<EditCommandInput
-  onSubmit={(command) => {
-    sendToAgent(command);
-  }}
-  disabled={isExecuting}
-  placeholder="編集指示を入力..."
-/>
-```
-
----
-
-## 状態管理とHooks連携
+## 2.3 状態管理
 
 ### useFileContext Hook
 
 ```typescript
 interface FileContextState {
-  files: FileContext[];
+  fileContexts: FileContext[];
+  activeContextId: string | null;
+  isLoading: boolean;
   error: string | null;
-  isDragging: boolean;
-  attachFile: (file: FileContext) => Promise<void>;
-  detachFile: (fileId: string) => void;
-  clearAll: () => void;
-  setDragging: (isDragging: boolean) => void;
-  clearError: () => void;
+}
+
+interface FileContextActions {
+  attachFile: (filePath: string) => Promise<void>;
+  removeFileContext: (id: string) => void;
+  setActiveContext: (id: string | null) => void;
+  clearAllContexts: () => void;
+  canAddContext: boolean; // fileContexts.length < MAX_FILE_CONTEXTS
 }
 ```
 
-**Store定義** (`store/fileContextSlice.ts`):
+### 定数
 
-```typescript
-import { create } from "zustand";
+| 定数              | 値  | 説明                   |
+| ----------------- | --- | ---------------------- |
+| MAX_FILE_CONTEXTS | 10  | 最大添付ファイル数     |
+| MAX_FILE_SIZE     | 10  | 最大ファイルサイズ(MB) |
 
-export const useFileContext = create<FileContextState>((set, get) => ({
-  files: [],
-  error: null,
-  isDragging: false,
+## 2.4 アクセシビリティ
 
-  attachFile: async (file) => {
-    const { files } = get();
-    if (files.length >= 10) {
-      set({ error: "添付ファイル数の上限（10）に達しました" });
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      set({ error: "ファイルサイズが10MBを超えています" });
-      return;
-    }
-    set({ files: [...files, file], error: null });
-  },
+### WCAG 2.1 AA 準拠項目
 
-  detachFile: (fileId) => {
-    set((state) => ({
-      files: state.files.filter((f) => f.id !== fileId),
-    }));
-  },
+| 要件                     | 実装内容                                  |
+| ------------------------ | ----------------------------------------- |
+| キーボードナビゲーション | Tab/Enter/Space/Delete で全操作可能       |
+| フォーカス可視化         | focus:ring-2 で明確なフォーカスリング     |
+| スクリーンリーダー対応   | aria-label, aria-current 属性を適切に設定 |
+| 色コントラスト           | Tailwind CSS 標準色（4.5:1以上）          |
 
-  clearAll: () => set({ files: [], error: null }),
-  setDragging: (isDragging) => set({ isDragging }),
-  clearError: () => set({ error: null }),
-}));
-```
+### WAI-ARIA 属性
 
-### useDiffApply Hook
+| コンポーネント       | 属性                                           |
+| -------------------- | ---------------------------------------------- |
+| FileAttachmentButton | type="button", aria-label                      |
+| FileContextList      | role="list" (リスト表示時のみ)                 |
+| FileContextBadge     | role="listitem", aria-current="true/undefined" |
 
-```typescript
-interface DiffApplyState {
-  status: "idle" | "applying" | "applied" | "error";
-  error: string | null;
-  applyResult: (resultId: string) => Promise<void>;
-  rejectResult: (resultId: string) => Promise<void>;
-  reset: () => void;
-}
-```
+## 2.5 テスト構成
 
-**使用パターン**:
+### テストファイル
 
-```tsx
-function DiffPreviewContainer() {
-  const { applyResult, rejectResult, status, error } = useDiffApply();
+| ファイル                      | テスト数 | 内容                      |
+| ----------------------------- | -------- | ------------------------- |
+| FileAttachmentButton.test.tsx | 20       | ユニットテスト            |
+| FileContextList.test.tsx      | 20       | ユニットテスト            |
+| accessibility.test.tsx        | 14       | axe-core アクセシビリティ |
+| integration-ui.test.tsx       | 12       | 統合UIテスト              |
 
-  const handleApply = async () => {
-    await applyResult(resultId);
-    onApplied?.();
-  };
+### テストカバレッジ
 
-  const handleReject = async () => {
-    await rejectResult(resultId);
-    onRejected?.();
-  };
+| 項目       | 値   |
+| ---------- | ---- |
+| テスト総数 | 270  |
+| パス率     | 100% |
 
-  return (
-    <ApplyControls
-      isLoading={status === "applying"}
-      error={error}
-      onApply={handleApply}
-      onReject={handleReject}
-    />
-  );
-}
-```
+## 2.6 Storybook
+
+### Stories
+
+| ファイル                         | Stories数 | 内容          |
+| -------------------------------- | --------- | ------------- |
+| FileAttachmentButton.stories.tsx | 7         | 各状態のStory |
+| FileContextList.stories.tsx      | 9         | 各状態のStory |
+| FileContextBadge.stories.tsx     | 9         | 各状態のStory |
+
+## 2.7 エラーハンドリング
+
+| エラーケース           | ハンドリング                         |
+| ---------------------- | ------------------------------------ |
+| ダイアログキャンセル   | 何もしない（正常終了）               |
+| ファイル読み込みエラー | console.error + isLoading: false     |
+| 最大ファイル数超過     | ボタン無効化（canAddContext: false） |
 
 ---
 
-## カスタマイズ方法と拡張ポイント
+## 関連ドキュメント
 
-### テーマカスタマイズ
-
-Monaco Editorのテーマは以下で切り替え可能:
-
-```tsx
-<DiffEditor
-  original={original}
-  modified={modified}
-  options={{
-    theme: isDarkMode ? "vs-dark" : "vs",
-  }}
-/>
-```
-
-### バリデーションルールの拡張
-
-ファイルバリデーションをカスタマイズする場合:
-
-```typescript
-// store/fileContextSlice.ts
-const validateFile = (file: FileContext, config: ValidationConfig) => {
-  if (file.size > config.maxFileSize) {
-    return {
-      valid: false,
-      error: `ファイルサイズが${config.maxFileSize / 1024 / 1024}MBを超えています`,
-    };
-  }
-  if (!config.allowedExtensions.includes(file.extension)) {
-    return { valid: false, error: "許可されていないファイル形式です" };
-  }
-  return { valid: true, error: null };
-};
-```
-
-### 新しい編集コマンドタイプの追加
-
-`EditCommandInput`に新しいコマンドタイプを追加する場合:
-
-```typescript
-// types.ts
-export type EditCommandType =
-  | "edit"
-  | "refactor"
-  | "comment"
-  | "format"
-  | "translate" // 新規追加
-  | "optimize"; // 新規追加
-
-// EditCommandInput.tsx
-const commandOptions = [
-  { value: "edit", label: "編集" },
-  { value: "refactor", label: "リファクタリング" },
-  { value: "comment", label: "コメント追加" },
-  { value: "format", label: "フォーマット" },
-  { value: "translate", label: "翻訳" }, // 新規追加
-  { value: "optimize", label: "最適化" }, // 新規追加
-];
-```
-
-### DiffEditorのオプション拡張
-
-```typescript
-<DiffEditor
-  original={original}
-  modified={modified}
-  options={{
-    renderSideBySide: true,        // 横並び表示
-    originalEditable: false,       // 元コード編集不可
-    readOnly: true,                // 読み取り専用
-    minimap: { enabled: false },   // ミニマップ非表示
-    wordWrap: 'on',                // ワードラップ
-    fontSize: 14,                  // フォントサイズ
-  }}
-/>
-```
-
----
-
-## パフォーマンス最適化
-
-### React.memoの適用
-
-全コンポーネントに`React.memo`を適用済み:
-
-```typescript
-export const FileContextBadge = React.memo(function FileContextBadge(props) {
-  // ...
-});
-```
-
-### useMemo/useCallbackの使用
-
-```typescript
-// DiffPreview.tsx
-const diffStats = useMemo(() => {
-  return calculateDiffStats(original, modified);
-}, [original, modified]);
-
-// EditCommandInput.tsx
-const handleSubmit = useCallback(() => {
-  onSubmit({ type: commandType, instruction, contexts });
-}, [commandType, instruction, contexts, onSubmit]);
-```
-
-### Monaco Editorの遅延読み込み
-
-```typescript
-const DiffEditor = lazy(() => import('./DiffEditor'));
-
-// 使用時
-<Suspense fallback={<Spinner />}>
-  <DiffEditor {...props} />
-</Suspense>
-```
-
----
-
-## ファイル構造
-
-```
-apps/desktop/src/renderer/features/workspace-chat-edit/
-├── components/
-│   ├── FileContextBadge.tsx
-│   ├── ApplyControls.tsx
-│   ├── FileContextDropZone.tsx
-│   ├── DiffEditor.tsx
-│   ├── DiffPreview.tsx
-│   ├── EditCommandInput.tsx
-│   ├── index.ts
-│   ├── common/
-│   │   ├── Spinner.tsx
-│   │   ├── CloseIcon.tsx
-│   │   └── index.ts
-│   └── __tests__/
-│       ├── FileContextBadge.test.tsx
-│       ├── ApplyControls.test.tsx
-│       ├── FileContextDropZone.test.tsx
-│       ├── DiffEditor.test.tsx
-│       ├── DiffPreview.test.tsx
-│       ├── EditCommandInput.test.tsx
-│       ├── integration.test.tsx
-│       ├── snapshots.test.tsx
-│       └── __snapshots__/
-└── hooks/
-    ├── useFileContext.ts
-    └── useDiffApply.ts
-```
-
----
-
-## 作成日
-
-2026-01-25
+| ドキュメント   | パス                                                                            |
+| -------------- | ------------------------------------------------------------------------------- |
+| 要件定義       | `outputs/phase-1/requirements.md`                                               |
+| 設計書         | `outputs/phase-2/design.md`                                                     |
+| システム仕様書 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md` |
+| 状態管理仕様   | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`    |
