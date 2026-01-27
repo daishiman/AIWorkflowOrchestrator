@@ -1079,17 +1079,29 @@ Phase 12: ドキュメント更新
 - 更新原則: 概要のみ記載、Single Source of Truth遵守
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
 
-### Task 3: ドキュメント更新履歴作成【必須】
+### Task 3: ドキュメント更新履歴 & artifacts.json更新【必須】
 
-ドキュメント更新履歴（documentation-changelog.md）を作成する:
+ドキュメント更新履歴（documentation-changelog.md）を作成し、artifacts.jsonを更新する:
 
 ```bash
-# スクリプト実行
+# Step 1: ドキュメント更新履歴生成
 node scripts/generate-documentation-changelog.js --workflow docs/30-workflows/{{FEATURE_NAME}}
+
+# Step 2: Phase 12完了登録（artifacts.json更新）
+node scripts/complete-phase.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --phase 12 \
+  --artifacts "outputs/phase-12/implementation-guide.md:実装ガイド,outputs/phase-12/documentation-changelog.md:ドキュメント更新履歴,outputs/phase-12/unassigned-task-report.md:未タスク検出レポート"
 ```
+
+**artifacts.json必須項目**:
+- Phase 12のステータスが`completed`に更新されていること
+- 全Phase（1-12）の成果物パスが登録されていること
+- `qualityMetrics`セクションに品質指標が記録されていること
 
 **スクリプト未存在時の代替手順**:
 - 手動で `outputs/phase-12/documentation-changelog.md` を作成
+- 手動で `artifacts.json` を作成（TASK-4-1形式を参照）
 - 更新したドキュメントと変更内容を一覧化
 
 ### Task 4: 未タスク検出【必須】
@@ -1145,11 +1157,12 @@ node scripts/generate-documentation-changelog.js --workflow docs/30-workflows/{{
 
 スクリプトが存在しない場合の代替手順:
 
-| スクリプト                            | 代替手順                                                                                             |
-| ------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `generate-documentation-changelog.js` | 手動でdocumentation-changelog.mdを作成（`outputs/phase-12/documentation-changelog.md`の形式に従う） |
-| `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-task-report.mdを作成                      |
-| `validate-phase-output.js`            | 手動で成果物の存在と完了条件を確認                                                                   |
+| スクリプト                            | 代替手順                                                                                                        |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `generate-documentation-changelog.js` | 手動でdocumentation-changelog.mdを作成（`outputs/phase-12/documentation-changelog.md`の形式に従う）            |
+| `complete-phase.js`                   | 手動でartifacts.jsonを作成（参照: `docs/30-workflows/completed-tasks/TASK-4-1-ipc-channels/outputs/artifacts.json`） |
+| `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-task-report.mdを作成                                 |
+| `validate-phase-output.js`            | 手動で成果物の存在と完了条件を確認                                                                              |
 
 ## 次のPhase
 

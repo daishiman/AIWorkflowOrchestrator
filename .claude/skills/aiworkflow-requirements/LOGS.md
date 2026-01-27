@@ -5,6 +5,40 @@
 
 ---
 
+## 2026-01-27: SkillAPI Preload実装（TASK-5-1）
+
+| 項目         | 内容                                                                        |
+| ------------ | --------------------------------------------------------------------------- |
+| タスクID     | TASK-5-1                                                                    |
+| 操作         | update-spec                                                                 |
+| 対象ファイル | references/security-skill-ipc.md, references/interfaces-agent-sdk-history.md |
+| 結果         | success                                                                     |
+| 備考         | SkillAPI Preload実装（6メソッド、safeInvoke/safeOnパターン）                 |
+
+### 更新詳細
+
+- **更新**: `references/security-skill-ipc.md`（v1.1.0 → v1.2.0）
+  - 「SkillAPI Preload実装（TASK-5-1）」セクション追加（約65行）
+  - SkillAPIインターフェース定義（execute, onStream, abort, getExecutionStatus, onPermissionRequest, sendPermissionResponse）
+  - IPCチャネル定義（6チャネル: skill:execute, skill:abort, skill:get-status, skill:stream, skill:permission:request, skill:permission:response）
+  - safeInvoke/safeOnセキュリティ検証フロー
+  - 完了タスクテーブルにTASK-5-1追加
+  - 関連ドキュメントに実装ガイドリンク追加
+
+- **更新**: `references/interfaces-agent-sdk-history.md`（v6.30.0 → v6.31.0）
+  - TASK-5-1完了タスクセクション追加
+  - 品質基準テーブル（TypeScript strict, ESLint, Prettier, Coverage）
+  - テスト結果サマリー（67テスト全PASS）
+
+- **更新**: `references/interfaces-agent-sdk.md`
+  - 変更履歴にv6.31.0エントリ追加
+
+- **更新**: `indexes/topic-map.md`
+  - security-skill-ipc.mdセクションにTASK-5-1エントリ追加
+  - interfaces-agent-sdk-history.mdセクション更新
+
+---
+
 ## 2026-01-26: permission-dialog-ui（TASK-3-1-D）
 
 | 項目         | 内容                                                                   |
@@ -773,6 +807,49 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | テスト総数 | 86   |
 | カバレッジ | 96%+ |
 | 新規テスト | 86   |
+
+---
+
+## 2026-01-27: TASK-5-1 SkillAPI Preload実装
+
+| 項目         | 内容                                                                   |
+| ------------ | ---------------------------------------------------------------------- |
+| タスクID     | TASK-5-1                                                               |
+| 操作         | update-spec                                                            |
+| 対象ファイル | security-skill-ipc.md、topic-map.md                                    |
+| 結果         | success                                                                |
+| 備考         | SkillAPI Preload実装（6メソッド、67テスト、safeInvoke/safeOnパターン） |
+
+### 更新詳細
+
+- **更新**: `references/security-skill-ipc.md`（v1.1.0 → v1.2.0）
+  - 「SkillAPI Preload実装（TASK-5-1）」セクション追加（約85行）
+  - SkillAPIインターフェース定義（6メソッド）
+  - IPCチャネル定義（6チャネル: skill:execute, skill:abort, skill:get-status, skill:stream, skill:permission:request, skill:permission:response）
+  - セキュリティ実装（safeInvoke/safeOnパターン、ホワイトリスト）
+  - 実装ファイルリスト
+  - 完了タスクセクションにTASK-5-1追加
+  - 変更履歴にv1.2.0追記
+
+- **更新**: `indexes/topic-map.md`
+  - security-skill-ipc.mdセクションに「SkillAPI Preload実装（TASK-5-1）」エントリ追加
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                                        |
+| -------------- | --------------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-5-1/outputs/phase-12/implementation-guide.md`       |
+| タスク仕様書   | `docs/30-workflows/TASK-5-1/`                                               |
+| テストファイル | `apps/desktop/src/preload/__tests__/skill-api.test.ts`                      |
+| 権限テスト     | `apps/desktop/src/preload/__tests__/skill-api.permission.test.ts`           |
+
+### テスト品質
+
+| 項目             | 値   |
+| ---------------- | ---- |
+| テスト総数       | 67   |
+| カバレッジ       | 95%+ |
+| セキュリティ関連 | 全67 |
 
 ---
 

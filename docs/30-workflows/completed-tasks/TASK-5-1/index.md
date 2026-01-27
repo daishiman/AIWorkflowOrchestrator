@@ -9,7 +9,8 @@
 | フェーズ   | 5                        |
 | 依存タスク | TASK-4-1, TASK-4-2       |
 | ブロック   | TASK-6-1                 |
-| ステータス | pending                  |
+| ステータス | 完了                     |
+| 完了日     | 2026-01-27               |
 | 優先度     | high                     |
 | 複雑度     | medium                   |
 | タグ       | preload, renderer, api   |
@@ -65,6 +66,6 @@ Renderer プロセスから安全に IPC 通信を行うための Preload API �
 
 ## 参照資料
 
-- [元タスク仕様書](../task-5-1-skill-api.md)
-- [システム仕様書](../../specification.md)
+- [元タスク仕様書](../../skill-import-agent-system/tasks/completed-task/task-5-1-skill-api.md)
+- [システム仕様書](../../../specification.md)
 - [IPC永続化パターン](/.claude/skills/aiworkflow-requirements/references/arch-ipc-persistence.md)
