@@ -1,0 +1,116 @@
+{
+  "taskId": "TASK-3-2-D",
+  "taskName": "SkillStreamDisplay コピー履歴機能",
+  "createdAt": "2026-01-28",
+  "issueNumber": 530,
+  "status": "spec-created",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-2/component-design.md",
+        "outputs/phase-2/state-management.md",
+        "outputs/phase-2/ui-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": ["outputs/phase-6/coverage-report.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-gate.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": ["outputs/phase-13/pr-info.md"]
+    }
+  },
+  "codeArtifacts": {
+    "context": "apps/desktop/src/renderer/contexts/CopyHistoryContext.tsx",
+    "hook": "apps/desktop/src/renderer/hooks/useCopyHistory.ts",
+    "panel": "apps/desktop/src/renderer/components/AgentView/CopyHistoryPanel.tsx",
+    "tests": [
+      "apps/desktop/src/renderer/contexts/__tests__/CopyHistoryContext.test.tsx",
+      "apps/desktop/src/renderer/hooks/__tests__/useCopyHistory.test.ts",
+      "apps/desktop/src/renderer/components/AgentView/__tests__/CopyHistoryPanel.test.tsx"
+    ]
+  },
+  "dependencies": [
+    {
+      "taskId": "TASK-3-2-A",
+      "taskName": "SkillStreamDisplay UX改善",
+      "status": "completed"
+    }
+  ],
+  "qualityMetrics": {
+    "targetCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    }
+  }
+}
