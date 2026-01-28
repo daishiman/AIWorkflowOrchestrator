@@ -7,11 +7,14 @@
  *   - R1: ローディングスピナー
  *   - R2: タイムスタンプ表示
  *   - R3: クリップボードコピー
+ * TASK-3-2-B: SkillStreamDisplay i18n対応
+ *   - 多言語化対応（日本語・英語）
  *
  * @module @repo/desktop/renderer/components/AgentView/SkillStreamDisplay
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSkillExecution } from "../../hooks/useSkillExecution";
 import { useSkillPermission } from "../../hooks/useSkillPermission";
 import { PermissionDialog } from "../organisms/PermissionDialog/PermissionDialog";
@@ -44,34 +47,18 @@ export interface SkillStreamDisplayProps {
 }
 
 /**
- * ステータス表示テキストを取得
- */
-function getStatusText(status: string): string {
-  switch (status) {
-    case "idle":
-      return "待機中";
-    case "running":
-      return "実行中";
-    case "completed":
-      return "完了";
-    case "error":
-      return "エラー";
-    case "aborted":
-      return "中断";
-    default:
-      return status;
-  }
-}
-
-/**
  * R1: ローディングスピナーコンポーネント
  */
-const LoadingSpinner = React.memo(function LoadingSpinner() {
+const LoadingSpinner = React.memo(function LoadingSpinner({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <div
       data-testid="loading-spinner-container"
       role="status"
-      aria-label="実行中"
+      aria-label={ariaLabel}
       className="flex items-center"
     >
       <div
@@ -88,9 +75,13 @@ const LoadingSpinner = React.memo(function LoadingSpinner() {
 const CopyButton = React.memo(function CopyButton({
   content,
   messageId,
+  ariaLabel,
+  feedbackText,
 }: {
   content: string;
   messageId: string;
+  ariaLabel: string;
+  feedbackText: string;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -121,7 +112,7 @@ const CopyButton = React.memo(function CopyButton({
           }
         }}
         className="copy-button opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-100 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        aria-label="メッセージをコピー"
+        aria-label={ariaLabel}
         tabIndex={0}
       >
         <svg
@@ -144,7 +135,7 @@ const CopyButton = React.memo(function CopyButton({
           role="status"
           aria-live="polite"
         >
-          コピーしました
+          {feedbackText}
         </span>
       )}
     </div>
@@ -157,16 +148,18 @@ const CopyButton = React.memo(function CopyButton({
 const MessageTimestamp = React.memo(function MessageTimestamp({
   timestamp,
   messageId,
+  locale,
 }: {
   timestamp: number;
   messageId: string;
+  locale: string;
 }) {
   return (
     <span
       data-testid={`message-timestamp-${messageId}`}
       className="text-xs text-gray-400 flex-shrink-0"
     >
-      {formatRelativeTime(timestamp)}
+      {formatRelativeTime(timestamp, locale)}
     </span>
   );
 });
@@ -180,8 +173,14 @@ const MessageTimestamp = React.memo(function MessageTimestamp({
  */
 const MessageItem = React.memo(function MessageItem({
   message,
+  locale,
+  copyAriaLabel,
+  copyFeedbackText,
 }: {
   message: SkillStreamMessage;
+  locale: string;
+  copyAriaLabel: string;
+  copyFeedbackText: string;
 }) {
   const getMessageClassName = (): string => {
     switch (message.type) {
@@ -214,8 +213,14 @@ const MessageItem = React.memo(function MessageItem({
             <MessageTimestamp
               timestamp={message.timestamp}
               messageId={message.id}
+              locale={locale}
             />
-            <CopyButton content={parsed.name} messageId={message.id} />
+            <CopyButton
+              content={parsed.name}
+              messageId={message.id}
+              ariaLabel={copyAriaLabel}
+              feedbackText={copyFeedbackText}
+            />
           </div>
         </div>
       );
@@ -229,8 +234,14 @@ const MessageItem = React.memo(function MessageItem({
             <MessageTimestamp
               timestamp={message.timestamp}
               messageId={message.id}
+              locale={locale}
             />
-            <CopyButton content={message.content} messageId={message.id} />
+            <CopyButton
+              content={message.content}
+              messageId={message.id}
+              ariaLabel={copyAriaLabel}
+              feedbackText={copyFeedbackText}
+            />
           </div>
         </div>
       );
@@ -246,8 +257,14 @@ const MessageItem = React.memo(function MessageItem({
         <MessageTimestamp
           timestamp={message.timestamp}
           messageId={message.id}
+          locale={locale}
         />
-        <CopyButton content={message.content} messageId={message.id} />
+        <CopyButton
+          content={message.content}
+          messageId={message.id}
+          ariaLabel={copyAriaLabel}
+          feedbackText={copyFeedbackText}
+        />
       </div>
     </div>
   );
@@ -276,6 +293,7 @@ export function SkillStreamDisplay({
   height = "auto",
   className,
 }: SkillStreamDisplayProps) {
+  const { t, i18n } = useTranslation("skill-stream");
   const { messages, status, error, execute, abort, reset, isAborting } =
     useSkillExecution(skillId);
 
@@ -314,6 +332,18 @@ export function SkillStreamDisplay({
     height: typeof height === "number" ? `${height}px` : height,
   };
 
+  // 翻訳されたテキストを取得
+  const statusText = t(`status.${status}`);
+  const loadingAriaLabel = t("aria.loading");
+  const copyAriaLabel = t("aria.copyMessage");
+  const copyFeedbackText = t("feedback.copied");
+  const abortAriaLabel = t("aria.abortExecution");
+  const resetAriaLabel = t("aria.resetState");
+  const abortButtonText = t("button.abort");
+  const resetButtonText = t("button.reset");
+  const startPromptMessage = t("message.startPrompt");
+  const executingMessage = t("message.executing");
+
   return (
     <div
       className={`skill-stream-display ${className || ""}`}
@@ -321,7 +351,7 @@ export function SkillStreamDisplay({
     >
       {/* スクリーンリーダー用ステータス通知 */}
       <div className="sr-only" role="status" aria-live="polite">
-        {getStatusText(status)}
+        {statusText}
       </div>
 
       {/* ヘッダー: 実行状態表示 */}
@@ -329,18 +359,20 @@ export function SkillStreamDisplay({
         <span
           className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
         >
-          {getStatusText(status)}
+          {statusText}
         </span>
         {/* R1: ローディングスピナー */}
-        {status === "running" && <LoadingSpinner />}
+        {status === "running" && (
+          <LoadingSpinner ariaLabel={loadingAriaLabel} />
+        )}
         {status === "running" && (
           <button
             onClick={abort}
             disabled={isAborting}
-            aria-label="スキル実行を中断"
+            aria-label={abortAriaLabel}
             className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
           >
-            中断
+            {abortButtonText}
           </button>
         )}
         {(status === "completed" ||
@@ -348,10 +380,10 @@ export function SkillStreamDisplay({
           status === "aborted") && (
           <button
             onClick={reset}
-            aria-label="状態をリセット"
+            aria-label={resetAriaLabel}
             className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
           >
-            リセット
+            {resetButtonText}
           </button>
         )}
       </div>
@@ -363,13 +395,19 @@ export function SkillStreamDisplay({
         aria-live="polite"
       >
         {status === "idle" && messages.length === 0 && (
-          <p className="text-gray-500">スキル実行を開始してください</p>
+          <p className="text-gray-500">{startPromptMessage}</p>
         )}
         {status === "running" && messages.length === 0 && (
-          <p className="text-gray-500">実行中...</p>
+          <p className="text-gray-500">{executingMessage}</p>
         )}
         {messages.map((message) => (
-          <MessageItem key={message.id} message={message} />
+          <MessageItem
+            key={message.id}
+            message={message}
+            locale={i18n.language}
+            copyAriaLabel={copyAriaLabel}
+            copyFeedbackText={copyFeedbackText}
+          />
         ))}
       </div>
 
