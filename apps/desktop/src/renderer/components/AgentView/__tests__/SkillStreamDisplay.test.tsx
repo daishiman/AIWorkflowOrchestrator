@@ -62,6 +62,10 @@ vi.mock("../../hooks/useCopyHistory", () => ({
   useCopyHistory: () => mockUseCopyHistory,
 }));
 
+vi.mock("@/renderer/hooks/useCopyHistory", () => ({
+  useCopyHistory: () => mockUseCopyHistory,
+}));
+
 // Import component after mock setup
 import { SkillStreamDisplay } from "../SkillStreamDisplay";
 
