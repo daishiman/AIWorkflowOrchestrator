@@ -109,3 +109,72 @@ export function formatRelativeTime(
 
   return t.secondsAgo(seconds);
 }
+
+/**
+ * TASK-3-2-C: タイムスタンプ自動更新用定数
+ */
+
+/**
+ * 更新間隔定数（ミリ秒）
+ */
+export const UPDATE_INTERVALS = {
+  /** 1秒 */
+  SECOND: 1000,
+  /** 1分 */
+  MINUTE: 60 * 1000,
+  /** 1時間 */
+  HOUR: 60 * 60 * 1000,
+} as const;
+
+/**
+ * タイムスタンプに基づいて適切な更新間隔を計算
+ *
+ * - 1分未満: 1秒ごとに更新
+ * - 1分〜1時間: 1分ごとに更新
+ * - 1時間以上: 1時間ごとに更新
+ *
+ * @param timestamp - メッセージのタイムスタンプ（ミリ秒）
+ * @param now - 現在時刻（ミリ秒）
+ * @returns 更新間隔（ミリ秒）
+ *
+ * @example
+ * const interval = calculateUpdateInterval(Date.now() - 30000, Date.now());
+ * // => 1000 (1秒)
+ */
+export function calculateUpdateInterval(
+  timestamp: number,
+  now: number,
+): number {
+  const diff = now - timestamp;
+  const minutes = diff / UPDATE_INTERVALS.MINUTE;
+  const hours = minutes / 60;
+
+  if (hours >= 1) {
+    return UPDATE_INTERVALS.HOUR;
+  }
+  if (minutes >= 1) {
+    return UPDATE_INTERVALS.MINUTE;
+  }
+  return UPDATE_INTERVALS.SECOND;
+}
+
+/**
+ * メッセージリストから最短の更新間隔を計算
+ *
+ * @param timestamps - メッセージのタイムスタンプ配列
+ * @param now - 現在時刻
+ * @returns 最短の更新間隔（ミリ秒）
+ *
+ * @example
+ * const interval = calculateMinUpdateInterval([ts1, ts2, ts3], Date.now());
+ */
+export function calculateMinUpdateInterval(
+  timestamps: number[],
+  now: number,
+): number {
+  if (timestamps.length === 0) {
+    return UPDATE_INTERVALS.MINUTE; // デフォルト1分
+  }
+
+  return Math.min(...timestamps.map((ts) => calculateUpdateInterval(ts, now)));
+}

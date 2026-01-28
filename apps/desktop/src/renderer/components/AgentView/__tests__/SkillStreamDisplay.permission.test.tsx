@@ -81,6 +81,39 @@ vi.mock("../../hooks/useSkillPermission", () => ({
 // Mock window.skillAPI
 vi.stubGlobal("skillAPI", mockSkillAPI);
 
+// Mock react-i18next for i18n support
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      // Return Japanese translations for tests
+      const translations: Record<string, string> = {
+        "status.idle": "待機中",
+        "status.running": "実行中",
+        "status.completed": "完了",
+        "status.error": "エラー",
+        "status.aborted": "中断",
+        "button.abort": "中断",
+        "button.reset": "リセット",
+        "message.startPrompt": "スキル実行を開始してください",
+        "message.executing": "実行中...",
+        "aria.loading": "実行中",
+        "aria.copyMessage": "メッセージをコピー",
+        "aria.abortExecution": "スキル実行を中断",
+        "aria.resetState": "状態をリセット",
+        "feedback.copied": "コピーしました",
+      };
+      return translations[key] || key;
+    },
+    i18n: { language: "ja" },
+  }),
+}));
+
+// Mock TimestampContext for TASK-3-2-C compatibility
+vi.mock("../../contexts/TimestampContext", () => ({
+  useTimestampContext: () => Date.now(),
+  TimestampProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 // Import component after mock setup
 import { SkillStreamDisplay } from "../SkillStreamDisplay";
 

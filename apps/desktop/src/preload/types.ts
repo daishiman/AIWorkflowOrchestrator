@@ -940,6 +940,9 @@ export interface ElectronAPI {
 
   // Community API
   community: CommunityAPI;
+
+  // Skill API (TASK-6-1)
+  skill: import("./skill-api").SkillAPI;
 }
 
 // ===== Search operations =====

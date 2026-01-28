@@ -9,6 +9,8 @@
  *   - R3: クリップボードコピー
  * TASK-3-2-B: SkillStreamDisplay i18n対応
  *   - 多言語化対応（日本語・英語）
+ * TASK-3-2-C: タイムスタンプ自動更新
+ *   - TimestampContextによるバッチ更新
  *
  * @module @repo/desktop/renderer/components/AgentView/SkillStreamDisplay
  */
@@ -19,6 +21,10 @@ import { useSkillExecution } from "../../hooks/useSkillExecution";
 import { useSkillPermission } from "../../hooks/useSkillPermission";
 import { PermissionDialog } from "../organisms/PermissionDialog/PermissionDialog";
 import { formatRelativeTime } from "../../utils/formatTime";
+import {
+  useTimestampContext,
+  TimestampProvider,
+} from "../../contexts/TimestampContext";
 import type {
   SkillStreamMessage,
   SkillExecutionError,
@@ -143,7 +149,11 @@ const CopyButton = React.memo(function CopyButton({
 });
 
 /**
- * R2: タイムスタンプコンポーネント
+ * R2: タイムスタンプコンポーネント（自動更新対応）
+ *
+ * TASK-3-2-B: i18n対応（locale引数追加）
+ * TASK-3-2-C: タイムスタンプ自動更新
+ * TimestampContextから現在時刻を取得してバッチ更新
  */
 const MessageTimestamp = React.memo(function MessageTimestamp({
   timestamp,
@@ -154,12 +164,15 @@ const MessageTimestamp = React.memo(function MessageTimestamp({
   messageId: string;
   locale: string;
 }) {
+  // TimestampContextから現在時刻を取得（バッチ更新用）
+  const currentTime = useTimestampContext();
+
   return (
     <span
       data-testid={`message-timestamp-${messageId}`}
       className="text-xs text-gray-400 flex-shrink-0"
     >
-      {formatRelativeTime(timestamp, locale)}
+      {formatRelativeTime(timestamp, locale, currentTime)}
     </span>
   );
 });
@@ -345,79 +358,81 @@ export function SkillStreamDisplay({
   const executingMessage = t("message.executing");
 
   return (
-    <div
-      className={`skill-stream-display ${className || ""}`}
-      style={containerStyle}
-    >
-      {/* スクリーンリーダー用ステータス通知 */}
-      <div className="sr-only" role="status" aria-live="polite">
-        {statusText}
-      </div>
-
-      {/* ヘッダー: 実行状態表示 */}
-      <div className="stream-header flex items-center gap-2 p-2 border-b">
-        <span
-          className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
-        >
-          {statusText}
-        </span>
-        {/* R1: ローディングスピナー */}
-        {status === "running" && (
-          <LoadingSpinner ariaLabel={loadingAriaLabel} />
-        )}
-        {status === "running" && (
-          <button
-            onClick={abort}
-            disabled={isAborting}
-            aria-label={abortAriaLabel}
-            className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
-          >
-            {abortButtonText}
-          </button>
-        )}
-        {(status === "completed" ||
-          status === "error" ||
-          status === "aborted") && (
-          <button
-            onClick={reset}
-            aria-label={resetAriaLabel}
-            className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
-          >
-            {resetButtonText}
-          </button>
-        )}
-      </div>
-
-      {/* メッセージ一覧 */}
+    <TimestampProvider>
       <div
-        className="stream-content p-2 overflow-y-auto"
-        role="log"
-        aria-live="polite"
+        className={`skill-stream-display ${className || ""}`}
+        style={containerStyle}
       >
-        {status === "idle" && messages.length === 0 && (
-          <p className="text-gray-500">{startPromptMessage}</p>
-        )}
-        {status === "running" && messages.length === 0 && (
-          <p className="text-gray-500">{executingMessage}</p>
-        )}
-        {messages.map((message) => (
-          <MessageItem
-            key={message.id}
-            message={message}
-            locale={i18n.language}
-            copyAriaLabel={copyAriaLabel}
-            copyFeedbackText={copyFeedbackText}
-          />
-        ))}
-      </div>
+        {/* スクリーンリーダー用ステータス通知 */}
+        <div className="sr-only" role="status" aria-live="polite">
+          {statusText}
+        </div>
 
-      {/* 権限確認ダイアログ */}
-      <PermissionDialog
-        request={pendingPermission}
-        onApprove={handleApprove}
-        onDeny={handleDeny}
-      />
-    </div>
+        {/* ヘッダー: 実行状態表示 */}
+        <div className="stream-header flex items-center gap-2 p-2 border-b">
+          <span
+            className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
+          >
+            {statusText}
+          </span>
+          {/* R1: ローディングスピナー */}
+          {status === "running" && (
+            <LoadingSpinner ariaLabel={loadingAriaLabel} />
+          )}
+          {status === "running" && (
+            <button
+              onClick={abort}
+              disabled={isAborting}
+              aria-label={abortAriaLabel}
+              className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+            >
+              {abortButtonText}
+            </button>
+          )}
+          {(status === "completed" ||
+            status === "error" ||
+            status === "aborted") && (
+            <button
+              onClick={reset}
+              aria-label={resetAriaLabel}
+              className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              {resetButtonText}
+            </button>
+          )}
+        </div>
+
+        {/* メッセージ一覧 */}
+        <div
+          className="stream-content p-2 overflow-y-auto"
+          role="log"
+          aria-live="polite"
+        >
+          {status === "idle" && messages.length === 0 && (
+            <p className="text-gray-500">{startPromptMessage}</p>
+          )}
+          {status === "running" && messages.length === 0 && (
+            <p className="text-gray-500">{executingMessage}</p>
+          )}
+          {messages.map((message) => (
+            <MessageItem
+              key={message.id}
+              message={message}
+              locale={i18n.language}
+              copyAriaLabel={copyAriaLabel}
+              copyFeedbackText={copyFeedbackText}
+            />
+          ))}
+        </div>
+
+        {/* 権限確認ダイアログ */}
+        <PermissionDialog
+          request={pendingPermission}
+          onApprove={handleApprove}
+          onDeny={handleDeny}
+        />
+      </div>
+    </TimestampProvider>
   );
 }
 
