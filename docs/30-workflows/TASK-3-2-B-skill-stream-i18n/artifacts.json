@@ -1,0 +1,88 @@
+{
+  "taskId": "TASK-3-2-B",
+  "taskName": "SkillStreamDisplay i18n対応",
+  "githubIssue": 531,
+  "createdAt": "2026-01-28T21:15:00Z",
+  "updatedAt": "2026-01-28T21:15:00Z",
+  "status": "pending",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": [
+    {
+      "taskId": "TASK-3-2-A",
+      "status": "completed"
+    }
+  ],
+  "metadata": {
+    "priority": "low",
+    "estimatedSize": "medium",
+    "category": "improvement",
+    "targetFeature": "SkillStreamDisplay",
+    "parentTask": "TASK-3-2-A"
+  }
+}
