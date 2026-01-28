@@ -59,7 +59,7 @@ allowed-tools:
 ```
 Phase 0-1〜0-8: インタビュー → interview-result.json
       ↓
-リソース選択: select-resources.md → resource-selection.json（最適リソース選定）
+リソース選択: select-resources.md → resource-selection.json（全リソースから最適選定）
       ↓
 Phase 1〜6: 分析 → 設計 → 構造計画 → 生成 → 検証
 ```
@@ -104,14 +104,15 @@ Phase 1〜6: 分析 → 設計 → 構造計画 → 生成 → 検証
 
 ## 機能別ガイド
 
-| 機能                 | 参照先                               |
-| -------------------- | ------------------------------------ |
-| スクリプト生成       | references/script-types-catalog.md   |
-| ワークフローパターン | references/workflow-patterns.md      |
-| オーケストレーション | references/orchestration-guide.md    |
-| ドキュメント生成     | references/api-docs-standards.md     |
-| 自己改善サイクル     | references/self-improvement-cycle.md |
-| ライブラリ管理       | references/library-management.md     |
+| 機能                     | 参照先                               |
+| ------------------------ | ------------------------------------ |
+| **スクリプト/LLM分担**   | references/script-llm-patterns.md    |
+| スクリプト生成           | references/script-types-catalog.md   |
+| ワークフローパターン     | references/workflow-patterns.md      |
+| オーケストレーション     | references/orchestration-guide.md    |
+| ドキュメント生成         | references/api-docs-standards.md     |
+| 自己改善サイクル         | references/self-improvement-cycle.md |
+| ライブラリ管理           | references/library-management.md     |
 
 ---
 
@@ -140,7 +141,10 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 
 | Version   | Date           | Changes                                                                               |
 | --------- | -------------- | ------------------------------------------------------------------------------------- |
-| **7.0.1** | **2026-01-24** | **整合性修正: custom-script-design.json追加、壊れた参照5件修正、リソース数166に更新** |
+| **7.1.2** | **2026-01-28** | **ハードコード数値を削除: 動的に変わるリソース数等の具体的数値を排除**                 |
+| 7.1.1     | 2026-01-28     | script-llm-patterns.mdリファクタリング: 責務分離明確化、関連リソース整理               |
+| 7.1.0     | 2026-01-28     | スクリプト/LLMパターンガイド追加: script-llm-patterns.md                               |
+| 7.0.1     | 2026-01-24     | 整合性修正: custom-script-design.json追加、壊れた参照修正                              |
 | 7.0.0     | 2026-01-24     | リファクタリング: SKILL.md 481→130行（73%削減）、詳細をreferencesに委譲               |
 | 6.2.0     | 2026-01-24     | API推薦機能追加: recommend-integrations.md, goal-to-api-mapping.md                    |
 | 6.1.0     | 2026-01-24     | 自動リソース選択機能追加: select-resources.md                                         |
