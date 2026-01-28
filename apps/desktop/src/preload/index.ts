@@ -337,6 +337,9 @@ const electronAPI: ElectronAPI = {
       safeInvoke(IPC_CHANNELS.COMMUNITY_GET_SUMMARY, id),
     search: (query: string) => safeInvoke(IPC_CHANNELS.COMMUNITY_SEARCH, query),
   } as CommunityAPI,
+
+  // Skill API (TASK-6-1)
+  skill: skillAPI,
 };
 
 // Slide API for slide dependency management
