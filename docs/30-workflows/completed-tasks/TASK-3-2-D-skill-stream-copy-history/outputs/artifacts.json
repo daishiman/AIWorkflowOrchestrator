@@ -2,12 +2,13 @@
   "taskId": "TASK-3-2-D",
   "taskName": "SkillStreamDisplay コピー履歴機能",
   "createdAt": "2026-01-28",
+  "completedAt": "2026-01-28",
   "issueNumber": 530,
-  "status": "spec-created",
+  "status": "completed",
   "phases": {
     "phase-1": {
       "name": "要件定義",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-1/requirements-definition.md",
         "outputs/phase-1/acceptance-criteria.md",
@@ -16,7 +17,7 @@
     },
     "phase-2": {
       "name": "設計",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-2/component-design.md",
         "outputs/phase-2/state-management.md",
@@ -25,12 +26,12 @@
     },
     "phase-3": {
       "name": "設計レビューゲート",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-3/design-review-result.md"]
     },
     "phase-4": {
       "name": "テスト作成",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-4/test-specification.md",
         "outputs/phase-4/test-cases.md"
@@ -38,45 +39,42 @@
     },
     "phase-5": {
       "name": "実装",
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-report.md"]
     },
     "phase-6": {
       "name": "テスト拡充",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-6/coverage-report.md"]
     },
     "phase-7": {
       "name": "カバレッジ確認",
-      "status": "pending",
-      "artifacts": [
-        "outputs/phase-7/coverage-report.md",
-        "outputs/phase-7/coverage-gate.md"
-      ]
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-gate.md"]
     },
     "phase-8": {
       "name": "リファクタリング",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-8/refactoring-report.md"]
     },
     "phase-9": {
       "name": "品質保証",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-9/quality-report.md"]
     },
     "phase-10": {
       "name": "最終レビューゲート",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-10/final-review-result.md"]
     },
     "phase-11": {
       "name": "手動テスト検証",
-      "status": "pending",
+      "status": "completed",
       "artifacts": ["outputs/phase-11/manual-test-result.md"]
     },
     "phase-12": {
       "name": "ドキュメント更新",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-12/implementation-guide.md",
         "outputs/phase-12/documentation-changelog.md",
@@ -95,7 +93,7 @@
     "panel": "apps/desktop/src/renderer/components/AgentView/CopyHistoryPanel.tsx",
     "tests": [
       "apps/desktop/src/renderer/contexts/__tests__/CopyHistoryContext.test.tsx",
-      "apps/desktop/src/renderer/hooks/__tests__/useCopyHistory.test.ts",
+      "apps/desktop/src/renderer/hooks/__tests__/useCopyHistory.test.tsx",
       "apps/desktop/src/renderer/components/AgentView/__tests__/CopyHistoryPanel.test.tsx"
     ]
   },
@@ -107,10 +105,20 @@
     }
   ],
   "qualityMetrics": {
-    "targetCoverage": {
+    "testCount": {
+      "automated": 46,
+      "manual": 23,
+      "total": 69
+    },
+    "coverage": {
       "line": 80,
       "branch": 60,
       "function": 80
     }
-  }
+  },
+  "systemDocumentUpdates": [
+    ".claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md",
+    ".claude/skills/aiworkflow-requirements/LOGS.md",
+    ".claude/skills/task-specification-creator/LOGS.md"
+  ]
 }

@@ -144,6 +144,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | `api-template.md`          | API設計              | API設計          |
 | `ipc-channel-template.md`  | Electron IPC         | IPC通信          |
 | `react-hook-template.md`   | React Hook           | カスタムフック   |
+| `react-context-template.md`| React Context        | 状態管理         |
 | `service-template.md`      | サービス層           | ビジネスロジック |
 | `database-template.md`     | データベース仕様     | データベース     |
 | `ui-ux-template.md`        | UI/UX仕様            | UI/UX            |
@@ -194,7 +195,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version   | Date           | Changes                                                                                                                                                                                                                                                        |
 | --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **8.8.0** | **2026-01-27** | **TASK-3-2-A完了**: ui-ux-feature-components.md v1.1.0更新（UX改善機能: R1ローディングアニメーション、R2タイムスタンプ表示、R3クリップボードコピー）、resource-map.md v1.3.0更新、topic-map.md自動更新。88テスト・96.9%カバレッジ達成                          |
+| **8.9.0** | **2026-01-28** | **TASK-3-2-D完了**: ui-ux-feature-components.md v1.2.0更新（コピー履歴機能: CopyHistoryContext/Panel/useCopyHistory Hook、キーボード操作、WCAG 2.1 AA準拠）、topic-map.md自動更新、5件の未タスク仕様書作成（TASK-3-2-D-01〜05）。46テスト全PASS              |
+| 8.8.0     | 2026-01-27     | TASK-3-2-A完了: ui-ux-feature-components.md v1.1.0更新（UX改善機能: R1ローディングアニメーション、R2タイムスタンプ表示、R3クリップボードコピー）、resource-map.md v1.3.0更新、topic-map.md自動更新。88テスト・96.9%カバレッジ達成                              |
 | 8.7.0     | 2026-01-27     | TASK-5-1完了: security-skill-ipc.md v1.2.0更新（SkillAPI Preload実装記録、IPCチャネル6種、セキュリティ実装）、interfaces-agent-sdk-history.md更新（完了タスク追加）、topic-map.md更新。67テスト・95%+カバレッジ達成                                            |
 | 8.6.0     | 2026-01-26     | **仕様ガイドライン完全準拠**: 全134ファイル（133ファイルコードブロック除去完了、spec-guidelines.md除く）のspec-guidelines.md準拠修正。82参照ファイルのTypeScript/JSON/SQL/ASCIIダイアグラムを表形式・文章に変換                                                |
 | 8.5.0     | 2026-01-26     | **仕様ガイドライン準拠修正**: architecture-overview.md/technology-desktop.md（ディレクトリ構造を表形式化）、development-guidelines.md/architecture-implementation-patterns.md（コード例を表形式・文章に変換）、templates全11種（コード例を表形式に変換）       |
