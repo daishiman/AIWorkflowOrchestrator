@@ -45,6 +45,39 @@ node scripts/log-usage.js \
 
 ---
 
+## 2026-01-28 - TASK-3-2-D Phase 12完了・スキル改善
+
+### コンテキスト
+
+- **タスク**: TASK-3-2-D SkillStreamDisplay コピー履歴機能
+- **フェーズ**: Phase 12 ドキュメント更新
+
+### 実行結果
+
+- **Result**: ✓ 成功
+- **改善内容**: 未タスク検出ソースの拡充
+
+### 改善詳細
+
+| 改善項目 | 変更前 | 変更後 |
+|---------|--------|--------|
+| 検出ソース | 5ソース | 6ソース |
+| 元タスク仕様書 | 未対象 | 「スコープ外」項目を対象 |
+| Phase 11手動テスト | スコープ外発見のみ | 改善提案も対象 |
+
+### 変更ファイル
+
+- `agents/generate-unassigned-task.md`: 検出ソースチェックリスト拡充
+- `SKILL.md`: Task 4検出ソース更新、v9.11.0追加
+
+### 教訓
+
+- 元タスク仕様書で「スコープ外」として明示された項目は、将来タスク候補として価値が高い
+- Phase 11の手動テスト結果には「発見事項」だけでなく「改善提案」も含まれる
+- TASK-3-2-Dでは5件の未タスク指示書を生成（TASK-3-2-D-01〜05）
+
+---
+
 ## 2026-01-27 - TASK-3-1-B未タスク仕様書作成
 
 ### コンテキスト
@@ -1024,5 +1057,67 @@ if (artifactPath) {
 - **Phase**: update
 - **Result**: ✓ 成功
 - **Notes**: skill-creator経由改善: TASK-3-2-A成功パターン5件追加（R-ID方式、日常例え、ユーティリティ分離、未タスク変換）→ patterns.md更新、v9.9.0
+
+---
+
+## 2026-01-28 - TASK-3-2-D SkillStreamDisplay コピー履歴機能タスク完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-3-2-D
+- タスク名: SkillStreamDisplay コピー履歴機能
+- Phase: 1-12（13 PR作成はユーザー指示待ち）
+- 実行者: Claude Code
+
+### 結果
+
+- ステータス: success
+- 記録日時: 2026-01-28
+
+### 発見事項
+
+- **良かった点**: Phase 1-12の全フェーズを正常に実行完了
+- **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
+- **良かった点**: React Context APIによる状態管理が適切に実装
+- **良かった点**: WCAG 2.1 AA準拠のアクセシビリティ設計が適切に実装
+- **良かった点**: Phase 12でのaiworkflow-requirements更新（ui-ux-feature-components.md）が正常に実行
+- **良かった点**: Part 1（中学生レベル概念説明）+ Part 2（技術詳細）の2パート構成ドキュメント作成
+
+### 成果
+
+- Phase 1-12を完了（Phase 13 PR作成はユーザー指示待ち）
+- テストカバレッジ: 46テスト全件PASS（自動）+ 23テスト（手動）
+- 作成ドキュメント:
+  - 実装ガイド（Part 1 概念的説明 + Part 2 技術的詳細）
+  - ドキュメント変更履歴
+  - 未タスク検出レポート
+- 実装内容:
+  - CopyHistoryContext（状態管理）
+  - useCopyHistory Hook（Context アクセス）
+  - CopyHistoryPanel（履歴パネルUI）
+  - CopyHistoryToggle（開閉ボタン）
+  - CopyHistoryItem（個別項目、React.memo）
+
+### aiworkflow-requirements更新
+
+- ui-ux-feature-components.md にTASK-3-2-D完了記録を追加
+- コピー履歴機能セクションを追加（型定義、API、ARIA属性）
+- 関連ドキュメントに実装ガイドリンクを追加
+- 変更履歴にv1.3.0を追加
+
+### 未タスク検出
+
+- 検出数: 3件（将来改善候補）
+  - 履歴の永続化（localStorage）
+  - 履歴の検索・フィルタリング機能
+  - 履歴の自動期限切れ
+
+### 次のアクション
+
+- [x] Phase 12成果物の完全化（完了）
+- [x] aiworkflow-requirements更新（完了）
+- [x] LOGS.md記録（完了）
+- [ ] Phase 13 PR作成（ユーザー指示待ち）
 
 ---
