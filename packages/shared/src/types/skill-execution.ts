@@ -21,7 +21,9 @@ export interface SkillExecutionRequest {
   /** ユーザーの入力プロンプト */
   prompt: string;
   /** 実行対象のスキルID */
-  skillId: string;
+  skillId?: string;
+  /** 実行対象のスキル名（TASK-6-1互換性のため） */
+  skillName?: string;
   /** タイムアウト（ミリ秒、オプション） */
   timeout?: number;
   /** セッションID（会話継続用、オプション） */
