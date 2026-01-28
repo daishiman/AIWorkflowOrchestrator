@@ -108,9 +108,10 @@ describe("TimestampContext", () => {
 
     const initialTime = Number(screen.getByTestId("current-time").textContent);
 
-    // 5秒経過
+    // 5秒経過（システム時刻も更新）
     act(() => {
       vi.advanceTimersByTime(5000);
+      vi.setSystemTime(new Date("2026-01-28T12:00:05Z"));
     });
 
     // タブを再表示
@@ -122,9 +123,10 @@ describe("TimestampContext", () => {
       document.dispatchEvent(new Event("visibilitychange"));
     });
 
-    // 即座に更新（タイマー待ち無し）
+    // 次のタイマー tick を待つ（1秒後に更新される）
     act(() => {
-      vi.advanceTimersByTime(0);
+      vi.advanceTimersByTime(1000);
+      vi.setSystemTime(new Date("2026-01-28T12:00:06Z"));
     });
 
     const timeAfterVisible = Number(
