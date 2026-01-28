@@ -102,6 +102,19 @@ formatRelativeTime(timestamp: number, locale?: string, now?: number): string
 
 ---
 
+## 統合テスト連携【必須】
+
+統合ポイント/契約を設計に反映する:
+
+| 統合ポイント            | 契約定義                                                     |
+| ----------------------- | ------------------------------------------------------------ |
+| I18nextProvider配置     | App.tsx（ルートコンポーネント）でラップ                      |
+| useTranslation hook連携 | 名前空間 "skill-stream" を指定                               |
+| formatRelativeTime連携  | 第2引数でlocaleを受け取り、i18n.languageと連携               |
+| 翻訳ファイル読み込み    | `i18n/locales/{locale}/skill-stream.json` からJSONインポート |
+
+---
+
 ## 参照資料
 
 | 資料名                        | パス                                         | 説明             |
