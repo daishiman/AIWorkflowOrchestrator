@@ -1,9 +1,6 @@
 {
-
-
-  "generated": "2026-01-27T08:02:35.212Z",
-  "totalKeywords": 944,
-
+  "generated": "2026-01-28T13:53:26.807Z",
+  "totalKeywords": 946,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -108,6 +105,7 @@
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
+      "ui-ux-feature-components.md",
       "ui-ux-file-selector.md",
       "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md",
@@ -2641,6 +2639,7 @@
     "実装": [
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
+      "security-skill-ipc.md",
       "ui-ux-portal-patterns.md"
     ],
     "主要型定義": [
@@ -2996,6 +2995,9 @@
       "security-skill-ipc.md"
     ],
     "連携セキュリティ": [
+      "security-skill-ipc.md"
+    ],
+    "SkillAPI": [
       "security-skill-ipc.md"
     ],
     "仕様書記述ガイドライン": [
@@ -3407,6 +3409,9 @@
       "ui-ux-feature-components.md"
     ],
     "改善機能": [
+      "ui-ux-feature-components.md"
+    ],
+    "コピー履歴機能": [
       "ui-ux-feature-components.md"
     ],
     "全コンポーネント共通": [
