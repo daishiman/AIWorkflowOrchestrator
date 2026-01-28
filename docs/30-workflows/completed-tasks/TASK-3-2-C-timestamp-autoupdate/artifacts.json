@@ -1,0 +1,146 @@
+{
+  "$schema": "../../../.claude/skills/task-specification-creator/schemas/artifacts.json",
+  "taskId": "TASK-3-2-C",
+  "taskName": "SkillStreamDisplay タイムスタンプ自動更新",
+  "issueNumber": 533,
+  "createdAt": "2026-01-28T00:00:00Z",
+  "updatedAt": "2026-01-28T21:51:00Z",
+  "status": "completed",
+  "currentPhase": 12,
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/hooks-design.md",
+        "outputs/phase-2/sequence-diagram.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-6/coverage-report.md"]
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-7/coverage-verification.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": ["outputs/phase-11/manual-test-report.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-01-28",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "implementedFiles": {
+    "newFiles": [
+      "apps/desktop/src/renderer/hooks/useInterval.ts",
+      "apps/desktop/src/renderer/hooks/usePageVisibility.ts",
+      "apps/desktop/src/renderer/contexts/TimestampContext.tsx",
+      "apps/desktop/src/renderer/hooks/__tests__/useInterval.test.ts",
+      "apps/desktop/src/renderer/hooks/__tests__/usePageVisibility.test.ts",
+      "apps/desktop/src/renderer/contexts/__tests__/TimestampContext.test.tsx"
+    ],
+    "modifiedFiles": [
+      "apps/desktop/src/renderer/utils/formatTime.ts",
+      "apps/desktop/src/renderer/utils/__tests__/formatTime.test.ts",
+      "apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx"
+    ]
+  },
+  "systemSpecUpdates": {
+    "aiworkflow-requirements": {
+      "updatedFiles": ["references/ui-ux-feature-components.md"],
+      "version": "v1.3.0",
+      "changes": [
+        "TASK-3-2-C完了タスクテーブルに追加",
+        "関連ドキュメントに実装ガイドリンク追加",
+        "変更履歴にv1.3.0エントリ追加"
+      ],
+      "logsUpdated": true
+    },
+    "task-specification-creator": {
+      "logsUpdated": true
+    }
+  },
+  "qualityMetrics": {
+    "unitTestCoverage": {
+      "line": "100%",
+      "branch": "100%",
+      "function": "100%"
+    },
+    "integrationTestCoverage": {
+      "api": "N/A",
+      "scenario": "N/A"
+    },
+    "totalTests": "全テストPASS"
+  }
+}
