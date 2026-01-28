@@ -1,0 +1,179 @@
+{
+  "taskId": "TASK-6-1",
+  "taskName": "SkillSlice実装（Zustand）",
+  "createdAt": "2026-01-28T21:14:36.000Z",
+  "completedAt": "2026-01-28T23:59:59.000Z",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-1-requirements-review.md",
+          "description": "機能要件・非機能要件の定義"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-2-design-review.md",
+          "description": "SkillSlice詳細設計"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-3-design-gate.md",
+          "description": "設計レビューチェックリスト"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-4-test-creation.md",
+          "description": "TDD Redフェーズ・テストケース定義"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-5-implementation.md",
+          "description": "TDD Greenフェーズ・実装詳細"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-6-test-expansion.md",
+          "description": "エッジケース・統合テスト追加"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-7-coverage-check.md",
+          "description": "カバレッジ測定・改善計画"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-8-refactoring.md",
+          "description": "TDD Refactorフェーズ"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-9-quality-assurance.md",
+          "description": "品質チェック・メトリクス"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-10-final-review.md",
+          "description": "最終レビューチェックリスト"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-11-manual-testing.md",
+          "description": "手動テストシナリオ・結果"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "file": "outputs/phase-12-documentation.md",
+          "description": "実装ガイド・システム仕様更新・未タスク検出レポート"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "file": "outputs/phase-13-pr-creation.md",
+          "description": "PR作成手順・チェックリスト"
+        }
+      ]
+    }
+  },
+  "outputs": {
+    "implementation": [
+      "apps/desktop/src/renderer/store/slices/skillSlice.ts",
+      "apps/desktop/src/renderer/store/setupSkillListeners.ts",
+      "apps/desktop/src/renderer/store/index.ts"
+    ],
+    "tests": [
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.edge-cases.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.state-transition.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.ipc.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.integration.test.ts"
+    ],
+    "documentation": [
+      "docs/30-workflows/TASK-6-1/outputs/phase-12-documentation.md"
+    ],
+    "unassignedTasks": [
+      "docs/30-workflows/unassigned-task/task-skill-integration-e2e-manual-testing.md"
+    ]
+  },
+  "dependencies": {
+    "dependsOn": ["TASK-5-1"],
+    "blocks": ["TASK-7A", "TASK-7B", "TASK-7C", "TASK-7D"]
+  },
+  "qualityMetrics": {
+    "testCount": 113,
+    "coverage": {
+      "line": 100,
+      "branch": 98.21,
+      "function": 100
+    },
+    "linting": "pass",
+    "typecheck": "pass"
+  },
+  "metadata": {
+    "tier": 1,
+    "priority": "high",
+    "estimatedComplexity": "medium",
+    "actualComplexity": "medium",
+    "tags": ["frontend", "renderer", "state-management", "zustand"]
+  }
+}

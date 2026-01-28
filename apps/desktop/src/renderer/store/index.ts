@@ -35,6 +35,7 @@ import {
   createChatEditSlice,
   type ChatEditSlice,
 } from "../features/workspace-chat-edit/store/chatEditSlice";
+import { createSkillSlice, type SkillSlice } from "./slices/skillSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -50,7 +51,8 @@ export type AppStore = NavigationSlice &
   SystemPromptTemplateSlice &
   LLMSlice &
   AgentSlice &
-  ChatEditSlice;
+  ChatEditSlice &
+  SkillSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -104,6 +106,7 @@ export const useAppStore = create<AppStore>()(
         ...createLLMSlice(...args),
         ...createAgentSlice(...args),
         ...createChatEditSlice(...args),
+        ...createSkillSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -264,4 +267,35 @@ export const useLLMStore = () =>
     getSelectedProvider: state.getSelectedProvider,
     getSelectedModel: state.getSelectedModel,
     isProviderAvailable: state.isProviderAvailable,
+  }));
+
+// Skill selectors - single hook for all Skill-related state and actions
+export const useSkillStore = () =>
+  useAppStore((state) => ({
+    // 状態
+    availableSkills: state.availableSkills,
+    importedSkills: state.importedSkills,
+    selectedSkillName: state.selectedSkillName,
+    isExecuting: state.isExecuting,
+    executionId: state.executionId,
+    executionStatus: state.executionStatus,
+    streamingMessages: state.streamingMessages,
+    pendingPermission: state.pendingPermission,
+    skillError: state.skillError,
+    // ローディング状態
+    isLoadingSkills: state.isLoadingSkills,
+    isScanning: state.isScanning,
+    isImporting: state.isImporting,
+    importingSkillName: state.importingSkillName,
+    // アクション
+    fetchSkills: state.fetchSkills,
+    rescanSkills: state.rescanSkills,
+    importSkill: state.importSkill,
+    removeSkill: state.removeSkill,
+    selectSkill: state.selectSkill,
+    executeSkill: state.executeSkill,
+    abortExecution: state.abortExecution,
+    respondToPermission: state.respondToPermission,
+    clearError: state.clearError,
+    clearStreamingMessages: state.clearStreamingMessages,
   }));

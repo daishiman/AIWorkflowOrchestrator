@@ -21,6 +21,8 @@ import type {
 import type {
   SkillPermissionRequest,
   SkillPermissionResponse,
+  SkillMetadata,
+  ImportedSkill,
 } from "@repo/shared";
 
 /**
@@ -72,6 +74,65 @@ export interface SkillAPI {
    * @returns 送信結果
    */
   sendPermissionResponse: (
+    response: SkillPermissionResponse,
+  ) => Promise<{ success: boolean }>;
+
+  // === Skill Management API (TASK-7A~7D - Stubs for TASK-6-1 compatibility) ===
+
+  /**
+   * 利用可能なスキル一覧を取得（スタブ）
+   * @returns スキルメタデータ配列
+   */
+  list: () => Promise<SkillMetadata[]>;
+
+  /**
+   * インポート済みスキル一覧を取得（スタブ）
+   * @returns インポート済みスキル配列
+   */
+  getImported: () => Promise<ImportedSkill[]>;
+
+  /**
+   * スキルを再スキャン（スタブ）
+   * @returns 再スキャン後の利用可能なスキル一覧
+   */
+  rescan: () => Promise<SkillMetadata[]>;
+
+  /**
+   * スキルをインポート（スタブ）
+   * @param skillName - スキル名
+   * @returns インポート済みスキル情報
+   */
+  import: (skillName: string) => Promise<ImportedSkill>;
+
+  /**
+   * スキルを削除（スタブ）
+   * @param skillName - スキル名
+   * @returns 成功フラグ
+   */
+  remove: (skillName: string) => Promise<boolean>;
+
+  /**
+   * 完了イベントを購読（スタブ）
+   * @param callback - 完了時のコールバック
+   * @returns クリーンアップ関数
+   */
+  onComplete: (callback: (data: { executionId: string }) => void) => () => void;
+
+  /**
+   * エラーイベントを購読（スタブ）
+   * @param callback - エラー時のコールバック
+   * @returns クリーンアップ関数
+   */
+  onError: (
+    callback: (data: { executionId: string; error: string }) => void,
+  ) => () => void;
+
+  /**
+   * 権限応答を送信（sendPermissionResponseのエイリアス）
+   * @param response - 権限応答
+   * @returns 送信結果
+   */
+  respondToPermission: (
     response: SkillPermissionResponse,
   ) => Promise<{ success: boolean }>;
 }
@@ -133,6 +194,58 @@ export const skillAPI: SkillAPI = {
     ),
 
   sendPermissionResponse: (
+    response: SkillPermissionResponse,
+  ): Promise<{ success: boolean }> =>
+    safeInvoke(IPC_CHANNELS.SKILL_PERMISSION_RESPONSE, response),
+
+  // === Skill Management API (TASK-7A~7D - Stubs for TASK-6-1 compatibility) ===
+
+  list: (): Promise<SkillMetadata[]> => Promise.resolve([]), // TODO: TASK-7A で実装
+
+  getImported: (): Promise<ImportedSkill[]> => Promise.resolve([]), // TODO: TASK-7A で実装
+
+  rescan: (): Promise<SkillMetadata[]> => Promise.resolve([]), // TODO: TASK-7A で実装
+
+  import: (skillName: string): Promise<ImportedSkill> =>
+    Promise.resolve({
+      name: skillName,
+      description: "Stub imported skill",
+      path: "",
+      updatedAt: new Date(),
+      importedAt: new Date(),
+      status: "active",
+      agents: [],
+      references: [],
+      scripts: [],
+      assets: [],
+      schemas: [],
+      indexes: [],
+      otherFiles: [],
+    }), // TODO: TASK-7B で実装
+
+  remove: (_skillName: string): Promise<boolean> => Promise.resolve(true), // TODO: TASK-7A で実装
+
+  onComplete: (
+    callback: (data: { executionId: string }) => void,
+  ): (() => void) => {
+    // TODO: TASK-7D で実装
+    return safeOn<{ executionId: string }>(
+      "skill:complete" as string,
+      callback,
+    );
+  },
+
+  onError: (
+    callback: (data: { executionId: string; error: string }) => void,
+  ): (() => void) => {
+    // TODO: TASK-7D で実装
+    return safeOn<{ executionId: string; error: string }>(
+      "skill:error" as string,
+      callback,
+    );
+  },
+
+  respondToPermission: (
     response: SkillPermissionResponse,
   ): Promise<{ success: boolean }> =>
     safeInvoke(IPC_CHANNELS.SKILL_PERMISSION_RESPONSE, response),
