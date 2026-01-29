@@ -48,9 +48,9 @@ interface SkillOptionUnimportedProps {
 // ============================================
 
 /** Safe array length accessor for optional array-like properties */
-function getArrayLength(
-  obj: Record<string, unknown>,
-  key: string,
+function getArrayLength<T extends object>(
+  obj: T,
+  key: keyof T,
 ): number | undefined {
   const val = obj[key];
   return Array.isArray(val) ? val.length : undefined;
@@ -159,7 +159,7 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
     importedSkills,
     selectedSkillName,
     isScanning,
-    selectSkill,
+    selectSkillByName,
     rescanSkills,
   } = useSkillStore();
 
@@ -224,10 +224,10 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
 
   const handleSelect = useCallback(
     (name: string | null) => {
-      selectSkill(name);
+      selectSkillByName(name);
       setIsOpen(false);
     },
-    [selectSkill],
+    [selectSkillByName],
   );
 
   const handleKeyDown = useCallback(
@@ -382,14 +382,8 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
                     key={skill.name}
                     name={skill.name}
                     description={skill.description}
-                    agentCount={getArrayLength(
-                      skill as Record<string, unknown>,
-                      "agents",
-                    )}
-                    referenceCount={getArrayLength(
-                      skill as Record<string, unknown>,
-                      "references",
-                    )}
+                    agentCount={getArrayLength(skill, "agents")}
+                    referenceCount={getArrayLength(skill, "references")}
                     isSelected={selectedSkillName === skill.name}
                     isFocused={focusedIndex === idx}
                     index={idx}

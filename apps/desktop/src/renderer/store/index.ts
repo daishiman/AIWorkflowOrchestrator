@@ -293,6 +293,7 @@ export const useSkillStore = () =>
     importSkill: state.importSkill,
     removeSkill: state.removeSkill,
     selectSkill: state.selectSkill,
+    selectSkillByName: state.selectSkillByName,
     executeSkill: state.executeSkill,
     abortExecution: state.abortExecution,
     respondToPermission: state.respondToPermission,
