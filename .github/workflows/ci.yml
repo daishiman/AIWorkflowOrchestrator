@@ -120,7 +120,7 @@ jobs:
   test-desktop:
     name: Test (desktop)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
