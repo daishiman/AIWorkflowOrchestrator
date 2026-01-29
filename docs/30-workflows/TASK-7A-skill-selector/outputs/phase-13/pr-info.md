@@ -69,6 +69,10 @@ TASK-7A SkillSelector UIコンポーネントの実装を完了しました。
 - `.claude/skills/task-specification-creator/LOGS.md`
 - `.claude/skills/task-specification-creator/EVALS.json`
 
+## PR URL
+
+https://github.com/daishiman/AIWorkflowOrchestrator/pull/576
+
 ## 関連Issue
 
 - TASK-7A: SkillSelector UIコンポーネント
