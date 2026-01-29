@@ -58,6 +58,9 @@ Phase 12 Task 2において、実装内容をシステム仕様書に正確に�
 | `auth`, `authentication`, `認証`                   | `interfaces-auth.md`          | セキュリティ実装は`security-*.md`               |
 | `skill`, `agent-sdk`, `スキル`                     | `interfaces-agent-sdk.md`     | -                                               |
 | `system-prompt`, `システムプロンプト`              | `interfaces-system-prompt.md` | UI側は`ui-ux-system-prompt.md`                  |
+| `eslint`, `lint`, `next-lint`, `code-quality`      | `technology-backend.md`       | DevOps関連は`technology-devops.md`              |
+| `ci`, `ci-cd`, `devops`, `build`, `deploy`         | `technology-devops.md`        | バックエンド技術は`technology-backend.md`        |
+| `backend`, `next`, `next.js`, `framework`          | `technology-backend.md`       | -                                               |
 
 ### 3.3 変更タイプから仕様ファイルへのマッピング
 
