@@ -1,0 +1,195 @@
+{
+  "feature": "TASK-CI-FIX-001-fix-backend-lint-next16",
+  "created": "2026-01-29T00:00:00Z",
+  "lastUpdated": "2026-01-29T00:00:00Z",
+  "phases": {
+    "1": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/eslint-config-design.md",
+          "description": "ESLint設定設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/migration-plan.md",
+          "description": "next lint移行計画"
+        }
+      ]
+    },
+    "3": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-report.md",
+          "description": "設計レビューレポート"
+        }
+      ]
+    },
+    "4": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        }
+      ]
+    },
+    "5": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "apps/backend/package.json",
+          "description": "lint スクリプト更新"
+        },
+        {
+          "type": "code",
+          "path": "apps/backend/eslint.config.mjs",
+          "description": "ESLint設定更新"
+        }
+      ]
+    },
+    "6": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/additional-verification.md",
+          "description": "追加検証レポート"
+        }
+      ]
+    },
+    "7": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ確認レポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート"
+        }
+      ]
+    },
+    "9": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質保証レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-report.md",
+          "description": "最終レビューレポート"
+        }
+      ]
+    },
+    "11": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テスト結果レポート"
+        }
+      ]
+    },
+    "12": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1 / Part 2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-description.md",
+          "description": "PR説明文"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["1", "2", "3", "4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "11": ["5"],
+    "12": ["5", "10", "11"],
+    "13": ["10", "11", "12"]
+  }
+}
