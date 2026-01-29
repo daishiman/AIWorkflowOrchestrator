@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// i18n initialization (TASK-3-2-B: SkillStreamDisplay i18n対応)
+import "./i18n/config";
 import { useAppStore, useCurrentView, useResponsiveMode } from "./store";
 import { AuthGuard } from "./components/AuthGuard";
 import { AppDock } from "./components/organisms/AppDock";

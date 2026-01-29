@@ -400,8 +400,9 @@ TASK-3-2-Aで追加されたUX改善機能。
 | 項目 | 仕様 |
 | ---- | ---- |
 | ファイル | `apps/desktop/src/renderer/utils/formatTime.ts` |
-| 引数 | `timestamp: number`（UNIXミリ秒）, `now?: number`（テスト用） |
-| 戻り値 | 相対時刻文字列 |
+| 引数 | `timestamp: number`（UNIXミリ秒）, `locale?: string`（デフォルト: "ja"）, `now?: number`（テスト用） |
+| 戻り値 | 相対時刻文字列（ロケールに応じた言語） |
+| 対応言語 | 日本語（ja）、英語（en） |
 
 出力形式:
 
@@ -591,6 +592,55 @@ SkillStreamDisplayコンポーネントのユーザー体験を向上させる3�
 
 ---
 
+## i18n対応（TASK-3-2-B）
+
+SkillStreamDisplayコンポーネントの多言語対応機能。
+
+### 対応言語
+
+| 言語   | ロケールコード | フォールバック |
+| ------ | -------------- | -------------- |
+| 日本語 | ja             | -（デフォルト）|
+| 英語   | en             | ja             |
+
+### 使用ライブラリ
+
+| ライブラリ                       | バージョン | 用途                 |
+| -------------------------------- | ---------- | -------------------- |
+| i18next                          | ^23.x      | 国際化フレームワーク |
+| react-i18next                    | ^14.x      | React統合            |
+| i18next-browser-languagedetector | ^7.x       | 言語自動検出         |
+
+### 翻訳対象
+
+| カテゴリ | 対象テキスト                       |
+| -------- | ---------------------------------- |
+| status   | 待機中, 実行中, 完了, エラー, 中断 |
+| time     | たった今, X秒前, X分前, X時間前, X日前 |
+| button   | 中断, リセット                     |
+| aria     | 実行中, メッセージをコピー, etc.   |
+| feedback | コピーしました                     |
+
+### i18n設定
+
+| 項目        | パス                                         |
+| ----------- | -------------------------------------------- |
+| 設定ファイル | `apps/desktop/src/renderer/i18n/config.ts`   |
+| 型定義      | `apps/desktop/src/renderer/i18n/types.d.ts`  |
+| 日本語翻訳  | `apps/desktop/src/renderer/i18n/locales/ja/skill-stream.json` |
+| 英語翻訳    | `apps/desktop/src/renderer/i18n/locales/en/skill-stream.json` |
+
+### テスト品質（TASK-3-2-B）
+
+| ファイル                         | テスト数 | カバレッジ |
+| -------------------------------- | -------- | ---------- |
+| config.test.ts                   | 20       | 100%       |
+| formatTime.i18n.test.ts          | 30       | 100%       |
+| SkillStreamDisplay.i18n.test.tsx | 24       | 100%       |
+| 合計                             | 74       | -          |
+
+---
+
 ## コピー履歴機能（TASK-3-2-D）
 
 SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過去にコピーした内容を一覧表示し、再コピー・複数選択一括コピーを可能にする。
@@ -715,6 +765,7 @@ SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過�
 
 | Issue # | 機能名 | 完了日 | 関連ドキュメント |
 | ------- | ------ | ------ | ---------------- |
+| TASK-3-2-B | skill-stream-i18n | 2026-01-28 | `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/` |
 | TASK-3-2-D | skill-stream-copy-history | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/` |
 | TASK-3-2-A | skill-stream-ux-improvements | 2026-01-27 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/` |
 | TASK-3-2 | skillexecutor-ipc-integration | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
@@ -738,6 +789,7 @@ SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過�
 
 | 日付 | バージョン | 変更内容 |
 | ---- | ---------- | -------- |
+| 2026-01-28 | v1.4.0 | TASK-3-2-B: SkillStreamDisplay i18n対応（日本語/英語、aria-label翻訳、formatRelativeTime locale引数追加） |
 | 2026-01-28 | v1.3.0 | TASK-3-2-D: SkillStreamDisplay コピー履歴機能（CopyHistoryPanel、CopyHistoryContext、useCopyHistory）追加 |
 | 2026-01-27 | v1.2.0 | TASK-3-2-A: SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー）追加 |
 | 2026-01-27 | v1.1.1 | 構造最適化: 概要セクション追加（収録機能一覧・共通仕様テーブル） |
