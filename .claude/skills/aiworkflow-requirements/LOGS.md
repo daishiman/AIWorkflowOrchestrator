@@ -47,6 +47,43 @@
 
 ---
 
+## 2026-01-28: コピー履歴機能（TASK-3-2-D）
+
+| 項目         | 内容                                       |
+| ------------ | ------------------------------------------ |
+| タスクID     | TASK-3-2-D                                 |
+| 操作         | update-spec                                |
+| 対象ファイル | references/ui-ux-feature-components.md     |
+| 結果         | success                                    |
+| 備考         | SkillStreamDisplayコピー履歴機能完全実装   |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.1.0 → v1.2.0）
+  - 「コピー履歴機能（TASK-3-2-D）」セクション追加（約110行）
+  - コンポーネント階層（CopyHistoryProvider/Panel/Item/Toggle）
+  - CopyHistoryContext仕様（CopyHistoryEntry型、CopyHistoryContextValue）
+  - CopyHistoryPanel仕様（機能6種、定数PREVIEW_LENGTH/COPY_FEEDBACK_MS）
+  - useCopyHistory Hook仕様
+  - キーボード操作（Tab/Enter/Escape/Space）
+  - ARIA属性（dialog/listbox/option）
+  - テスト品質（46テスト全PASS）
+  - 完了タスクテーブルにTASK-3-2-D追加
+
+- **更新**: `indexes/topic-map.md`
+  - 「コピー履歴機能（TASK-3-2-D）| L594」エントリ追加
+
+### 生成された未タスク仕様書
+
+| タスクID      | ファイル                                 | 内容                   |
+| ------------- | ---------------------------------------- | ---------------------- |
+| TASK-3-2-D-01 | task-copy-history-persistence.md         | localStorage永続化     |
+| TASK-3-2-D-02 | task-copy-history-search-filter.md       | 検索・フィルタリング   |
+| TASK-3-2-D-03 | task-copy-history-auto-expire.md         | 自動期限切れ           |
+| TASK-3-2-D-04 | task-copy-history-e2e-tests.md           | E2Eテスト追加          |
+| TASK-3-2-D-05 | task-copy-history-keyboard-shortcuts.md  | キーボードショートカット |
+
+---
 ## 2026-01-27: SkillAPI Preload実装（TASK-5-1）
 
 | 項目         | 内容                                                                        |
@@ -1088,6 +1125,46 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | テスト総数 | 270  |
 | カバレッジ | 100% |
 | 新規テスト | 66   |
+
+---
+
+## 2026-01-28: TASK-3-2-D SkillStreamDisplay コピー履歴機能
+
+| 項目         | 内容                                                   |
+| ------------ | ------------------------------------------------------ |
+| タスクID     | TASK-3-2-D                                             |
+| 操作         | update-spec                                            |
+| 対象ファイル | ui-ux-feature-components.md                            |
+| 結果         | success                                                |
+| 備考         | コピー履歴機能（CopyHistoryPanel、Context、Hook）追加  |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.2.0 → v1.3.0）
+  - 収録機能一覧にSkill Stream Copy History追加
+  - 「コピー履歴機能（TASK-3-2-D）」セクション追加（約100行）
+  - CopyHistoryContext/CopyHistoryPanel/useCopyHook仕様
+  - CopyHistoryEntry型、CopyHistoryContextValue型定義
+  - キーボード操作・ARIA属性仕様
+  - テスト品質（46テスト全PASS）
+  - 完了タスクセクションにTASK-3-2-D追加
+  - 関連ドキュメントに実装ガイドリンク追加
+  - 変更履歴にv1.3.0エントリ追加
+
+### 関連ドキュメント
+
+| ドキュメント | パス                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------- |
+| 実装ガイド   | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                               |
+
+### テスト品質
+
+| 項目           | 値          |
+| -------------- | ----------- |
+| テスト総数     | 46（自動）  |
+| 手動テスト     | 23          |
+| カバレッジ     | 80%+ Line   |
 
 ---
 

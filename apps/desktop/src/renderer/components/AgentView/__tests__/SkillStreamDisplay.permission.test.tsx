@@ -78,6 +78,21 @@ vi.mock("../../hooks/useSkillPermission", () => ({
   useSkillPermission: () => mockUseSkillPermission,
 }));
 
+// Mock useCopyHistory hook (TASK-3-2-D)
+vi.mock("@/renderer/hooks/useCopyHistory", () => ({
+  useCopyHistory: () => ({
+    addToHistory: vi.fn(),
+    historyCount: 0,
+  }),
+}));
+
+vi.mock("../../hooks/useCopyHistory", () => ({
+  useCopyHistory: () => ({
+    addToHistory: vi.fn(),
+    historyCount: 0,
+  }),
+}));
+
 // Mock window.skillAPI
 vi.stubGlobal("skillAPI", mockSkillAPI);
 

@@ -43,6 +43,30 @@ vi.mock("../../hooks/useSkillExecution", () => ({
   useSkillExecution: () => mockUseSkillExecution,
 }));
 
+// Mock useCopyHistory hook
+const mockUseCopyHistory = {
+  history: [],
+  selectedIds: new Set<string>(),
+  historyCount: 0,
+  selectedCount: 0,
+  addToHistory: vi.fn(),
+  removeFromHistory: vi.fn(),
+  clearHistory: vi.fn(),
+  copyFromHistory: vi.fn(),
+  copySelectedItems: vi.fn(),
+  toggleSelection: vi.fn(),
+  clearSelection: vi.fn(),
+  selectAll: vi.fn(),
+};
+
+vi.mock("../../hooks/useCopyHistory", () => ({
+  useCopyHistory: () => mockUseCopyHistory,
+}));
+
+vi.mock("@/renderer/hooks/useCopyHistory", () => ({
+  useCopyHistory: () => mockUseCopyHistory,
+}));
+
 // Import component after mock setup
 import { SkillStreamDisplay } from "../SkillStreamDisplay";
 

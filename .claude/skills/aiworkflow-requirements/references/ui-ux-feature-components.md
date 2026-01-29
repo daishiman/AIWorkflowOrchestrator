@@ -19,6 +19,7 @@
 | Custom Execution Environment | AGENT-006 | ExecutionEnvironment, HTMLPreviewEnvironment | 完了 |
 | Workspace Chat Edit | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 |
 | Skill Stream Display | TASK-3-2 | SkillStreamDisplay, useSkillExecution | 完了 |
+| Skill Stream Copy History | TASK-3-2-D | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 |
 
 ### 共通仕様
 
@@ -640,6 +641,115 @@ SkillStreamDisplayコンポーネントの多言語対応機能。
 
 ---
 
+## コピー履歴機能（TASK-3-2-D）
+
+SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過去にコピーした内容を一覧表示し、再コピー・複数選択一括コピーを可能にする。
+
+### コンポーネント階層
+
+| コンポーネント      | 種類     | 親                 | 子要素                           |
+| ------------------- | -------- | ------------------ | -------------------------------- |
+| CopyHistoryProvider | context  | SkillStreamDisplay | history, selectedIds, methods    |
+| CopyHistoryPanel    | organism | SkillStreamDisplay | CopyHistoryItem[], ActionBar     |
+| CopyHistoryItem     | molecule | CopyHistoryPanel   | Checkbox, Preview, CopyButton    |
+| CopyHistoryToggle   | atom     | StreamHeader       | Icon, Badge                      |
+
+### コンポーネント仕様
+
+#### CopyHistoryContext
+
+| 項目     | 仕様                                                        |
+| -------- | ----------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/contexts/CopyHistoryContext.tsx` |
+| 責務     | コピー履歴の状態管理とContext提供                           |
+| 定数     | `MAX_HISTORY_SIZE = 50`                                     |
+
+**CopyHistoryEntry型**
+
+| フィールド | 型     | 説明                     |
+| ---------- | ------ | ------------------------ |
+| id         | string | 一意識別子（uuid）       |
+| content    | string | コピー内容               |
+| messageId  | string | 元メッセージID           |
+| timestamp  | number | コピー日時（UNIXミリ秒） |
+
+**CopyHistoryContextValue**
+
+| プロパティ        | 型                                         | 説明                 |
+| ----------------- | ------------------------------------------ | -------------------- |
+| history           | CopyHistoryEntry[]                         | 履歴配列             |
+| selectedIds       | Set<string>                                | 選択中のID           |
+| historyCount      | number                                     | 履歴件数             |
+| selectedCount     | number                                     | 選択件数             |
+| addToHistory      | (content, messageId) => void               | 履歴追加             |
+| copyFromHistory   | (id) => Promise<void>                      | 個別コピー           |
+| copySelectedItems | () => Promise<void>                        | 選択一括コピー       |
+| clearHistory      | () => void                                 | 履歴クリア           |
+| toggleSelection   | (id) => void                               | 選択トグル           |
+| clearSelection    | () => void                                 | 選択クリア           |
+
+#### CopyHistoryPanel
+
+| 項目     | 仕様                                                                  |
+| -------- | --------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/components/AgentView/CopyHistoryPanel.tsx` |
+| 責務     | 履歴パネルUI、ユーザー操作処理                                        |
+| Props    | `isOpen`, `onClose`, `className?`                                     |
+| 定数     | `PREVIEW_LENGTH = 100`, `COPY_FEEDBACK_MS = 2000`                     |
+
+**機能**
+
+| 機能               | 説明                               |
+| ------------------ | ---------------------------------- |
+| 履歴一覧表示       | 最大50件、新しい順に表示           |
+| プレビュー表示     | 100文字で省略、改行を空白に変換    |
+| 個別コピー         | 履歴項目からクリップボードにコピー |
+| 複数選択           | チェックボックスで選択             |
+| 一括コピー         | 選択項目を改行区切りで結合コピー   |
+| 履歴クリア         | 全履歴を削除                       |
+| パネル外クリック   | パネルを閉じる                     |
+
+#### useCopyHistory Hook
+
+| 項目     | 仕様                                                  |
+| -------- | ----------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/hooks/useCopyHistory.ts`   |
+| 責務     | CopyHistoryContext へのアクセスを提供                 |
+| 使用条件 | CopyHistoryProvider 内で使用必須                      |
+| エラー   | Provider外で使用時に Error throw                      |
+
+### キーボード操作
+
+| キー   | 機能                   |
+| ------ | ---------------------- |
+| Tab    | フォーカス移動         |
+| Enter  | 項目コピー             |
+| Escape | パネル閉じる           |
+| Space  | チェックボックストグル |
+
+### ARIA属性
+
+| 要素   | 属性                 | 値                     |
+| ------ | -------------------- | ---------------------- |
+| パネル | role                 | dialog                 |
+| パネル | aria-label           | コピー履歴             |
+| パネル | aria-modal           | true                   |
+| リスト | role                 | listbox                |
+| リスト | aria-multiselectable | true                   |
+| 項目   | role                 | option                 |
+| 項目   | aria-selected        | 選択状態に応じて       |
+
+### テスト品質（TASK-3-2-D）
+
+| ファイル                    | テスト数 | 結果    |
+| --------------------------- | -------- | ------- |
+| CopyHistoryContext.test.tsx | 18       | 全PASS  |
+| useCopyHistory.test.tsx     | 8        | 全PASS  |
+| CopyHistoryPanel.test.tsx   | 20       | 全PASS  |
+| 合計                        | 46       | 全PASS  |
+
+---
+
 ## アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA）
 
 | 要件                     | 実装方法                                            |
@@ -656,6 +766,7 @@ SkillStreamDisplayコンポーネントの多言語対応機能。
 | Issue # | 機能名 | 完了日 | 関連ドキュメント |
 | ------- | ------ | ------ | ---------------- |
 | TASK-3-2-B | skill-stream-i18n | 2026-01-28 | `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/` |
+| TASK-3-2-D | skill-stream-copy-history | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/` |
 | TASK-3-2-A | skill-stream-ux-improvements | 2026-01-27 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/` |
 | TASK-3-2 | skillexecutor-ipc-integration | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
 | #468 | workspace-chat-edit-ui (基盤) | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/` |
@@ -669,6 +780,7 @@ SkillStreamDisplayコンポーネントの多言語対応機能。
 - [デザイン原則](./ui-ux-design-principles.md)
 - [Agent Execution UI](./ui-ux-agent-execution.md)
 - [SkillStreamDisplay UX改善 実装ガイド](../../../docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md)
+- [SkillStreamDisplay コピー履歴機能 実装ガイド](../../../docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/outputs/phase-12/implementation-guide.md)
 - [workspace-chat-edit-ui 実装ガイド](../../../docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md)
 
 ---
@@ -677,7 +789,8 @@ SkillStreamDisplayコンポーネントの多言語対応機能。
 
 | 日付 | バージョン | 変更内容 |
 | ---- | ---------- | -------- |
-| 2026-01-28 | v1.3.0 | TASK-3-2-B: SkillStreamDisplay i18n対応（日本語/英語、aria-label翻訳、formatRelativeTime locale引数追加） |
+| 2026-01-28 | v1.4.0 | TASK-3-2-B: SkillStreamDisplay i18n対応（日本語/英語、aria-label翻訳、formatRelativeTime locale引数追加） |
+| 2026-01-28 | v1.3.0 | TASK-3-2-D: SkillStreamDisplay コピー履歴機能（CopyHistoryPanel、CopyHistoryContext、useCopyHistory）追加 |
 | 2026-01-27 | v1.2.0 | TASK-3-2-A: SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー）追加 |
 | 2026-01-27 | v1.1.1 | 構造最適化: 概要セクション追加（収録機能一覧・共通仕様テーブル） |
 | 2026-01-27 | v1.1.0 | Issue #494: FileAttachmentButton, FileContextList コンポーネント仕様追加 |

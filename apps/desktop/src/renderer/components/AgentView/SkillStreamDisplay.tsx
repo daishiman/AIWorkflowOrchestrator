@@ -11,6 +11,8 @@
  *   - 多言語化対応（日本語・英語）
  * TASK-3-2-C: タイムスタンプ自動更新
  *   - TimestampContextによるバッチ更新
+ * TASK-3-2-D: コピー履歴機能
+ *   - R4: コピー履歴パネル
  *
  * @module @repo/desktop/renderer/components/AgentView/SkillStreamDisplay
  */
@@ -19,7 +21,9 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSkillExecution } from "../../hooks/useSkillExecution";
 import { useSkillPermission } from "../../hooks/useSkillPermission";
+import { useCopyHistory } from "../../hooks/useCopyHistory";
 import { PermissionDialog } from "../organisms/PermissionDialog/PermissionDialog";
+import { CopyHistoryPanel, CopyHistoryToggle } from "./CopyHistoryPanel";
 import { formatRelativeTime } from "../../utils/formatTime";
 import {
   useTimestampContext,
@@ -77,17 +81,20 @@ const LoadingSpinner = React.memo(function LoadingSpinner({
 
 /**
  * R3: コピーボタンコンポーネント
+ * R4: コピー履歴連携
  */
 const CopyButton = React.memo(function CopyButton({
   content,
   messageId,
   ariaLabel,
   feedbackText,
+  onCopySuccess,
 }: {
   content: string;
   messageId: string;
   ariaLabel: string;
   feedbackText: string;
+  onCopySuccess?: (content: string, messageId: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -96,6 +103,10 @@ const CopyButton = React.memo(function CopyButton({
       await navigator.clipboard.writeText(content);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      // コピー成功時に履歴に追加
+      if (onCopySuccess) {
+        onCopySuccess(content, messageId);
+      }
     } catch (error) {
       console.error("Failed to copy:", error);
     }
@@ -183,17 +194,20 @@ const MessageTimestamp = React.memo(function MessageTimestamp({
  *
  * R2: タイムスタンプ表示
  * R3: クリップボードコピー機能
+ * R4: コピー履歴連携
  */
 const MessageItem = React.memo(function MessageItem({
   message,
   locale,
   copyAriaLabel,
   copyFeedbackText,
+  onCopySuccess,
 }: {
   message: SkillStreamMessage;
   locale: string;
   copyAriaLabel: string;
   copyFeedbackText: string;
+  onCopySuccess?: (content: string, messageId: string) => void;
 }) {
   const getMessageClassName = (): string => {
     switch (message.type) {
@@ -233,6 +247,7 @@ const MessageItem = React.memo(function MessageItem({
               messageId={message.id}
               ariaLabel={copyAriaLabel}
               feedbackText={copyFeedbackText}
+              onCopySuccess={onCopySuccess}
             />
           </div>
         </div>
@@ -254,6 +269,7 @@ const MessageItem = React.memo(function MessageItem({
               messageId={message.id}
               ariaLabel={copyAriaLabel}
               feedbackText={copyFeedbackText}
+              onCopySuccess={onCopySuccess}
             />
           </div>
         </div>
@@ -277,6 +293,7 @@ const MessageItem = React.memo(function MessageItem({
           messageId={message.id}
           ariaLabel={copyAriaLabel}
           feedbackText={copyFeedbackText}
+          onCopySuccess={onCopySuccess}
         />
       </div>
     </div>
@@ -312,6 +329,17 @@ export function SkillStreamDisplay({
 
   // 権限ダイアログ用フック
   const { pendingPermission, handleApprove, handleDeny } = useSkillPermission();
+
+  // R4: コピー履歴フック
+  const { addToHistory, historyCount } = useCopyHistory();
+
+  // R4: 履歴パネル開閉状態
+  const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
+
+  // R4: コピー成功時のハンドラ
+  const handleCopySuccess = (content: string, messageId: string) => {
+    addToHistory(content, messageId);
+  };
 
   // ステータス変更時のコールバック
   useEffect(() => {
@@ -369,37 +397,51 @@ export function SkillStreamDisplay({
         </div>
 
         {/* ヘッダー: 実行状態表示 */}
-        <div className="stream-header flex items-center gap-2 p-2 border-b">
-          <span
-            className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
-          >
-            {statusText}
-          </span>
-          {/* R1: ローディングスピナー */}
-          {status === "running" && (
-            <LoadingSpinner ariaLabel={loadingAriaLabel} />
-          )}
-          {status === "running" && (
-            <button
-              onClick={abort}
-              disabled={isAborting}
-              aria-label={abortAriaLabel}
-              className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+        <div className="stream-header flex items-center justify-between gap-2 p-2 border-b">
+          <div className="flex items-center gap-2">
+            <span
+              className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
             >
-              {abortButtonText}
-            </button>
-          )}
-          {(status === "completed" ||
-            status === "error" ||
-            status === "aborted") && (
-            <button
-              onClick={reset}
-              aria-label={resetAriaLabel}
-              className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
-            >
-              {resetButtonText}
-            </button>
-          )}
+              {statusText}
+            </span>
+            {/* R1: ローディングスピナー */}
+            {status === "running" && (
+              <LoadingSpinner ariaLabel={loadingAriaLabel} />
+            )}
+            {status === "running" && (
+              <button
+                onClick={abort}
+                disabled={isAborting}
+                aria-label={abortAriaLabel}
+                className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+              >
+                {abortButtonText}
+              </button>
+            )}
+            {(status === "completed" ||
+              status === "error" ||
+              status === "aborted") && (
+              <button
+                onClick={reset}
+                aria-label={resetAriaLabel}
+                className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+              >
+                {resetButtonText}
+              </button>
+            )}
+          </div>
+          {/* R4: コピー履歴トグル */}
+          <div className="relative">
+            <CopyHistoryToggle
+              isOpen={isHistoryPanelOpen}
+              onToggle={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}
+              historyCount={historyCount}
+            />
+            <CopyHistoryPanel
+              isOpen={isHistoryPanelOpen}
+              onClose={() => setIsHistoryPanelOpen(false)}
+            />
+          </div>
         </div>
 
         {/* メッセージ一覧 */}
@@ -421,6 +463,7 @@ export function SkillStreamDisplay({
               locale={i18n.language}
               copyAriaLabel={copyAriaLabel}
               copyFeedbackText={copyFeedbackText}
+              onCopySuccess={handleCopySuccess}
             />
           ))}
         </div>

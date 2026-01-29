@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-27
+> 自動生成: 2026-01-28
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -234,10 +234,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| TASK-5-1: SkillAPI Preload実装 | L18 |
-| 残課題（未タスク） | L254 |
-| 関連ドキュメント | L265 |
-| 変更履歴 | L279 |
+| 残課題（未タスク） | L256 |
+| 関連ドキュメント | L267 |
+| 変更履歴 | L281 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -754,18 +753,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L35 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L142 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L209 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L377 |
-| UX改善機能（TASK-3-2-A） | L392 |
-| R1: LoadingSpinner（ローディングアニメーション） | L396 |
-| R2: MessageTimestamp（タイムスタンプ表示） | L407 |
-| R3: CopyButton（クリップボードコピー） | L435 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L613 |
-| 完了タスク | L624 |
-| 関連ドキュメント | L647 |
-| 変更履歴 | L661 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L36 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L143 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L210 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L358 |
+| UX改善機能（TASK-3-2-A） | L504 |
+| コピー履歴機能（TASK-3-2-D） | L594 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L703 |
+| 完了タスク | L714 |
+| 関連ドキュメント | L726 |
+| 変更履歴 | L737 |
 
 ### references/ui-ux-file-selector.md
 
@@ -1008,14 +1005,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| スキル管理IPCセキュリティ | L19 |
-| スキルインポートIPCチャネル（TASK-4-1） | L66 |
-| Claude Code CLI連携セキュリティ | L109 |
-| Skill Execution Preload API セキュリティ | L170 |
-| Permission IPC Handler セキュリティ | L215 |
-| SkillAPI Preload実装（TASK-5-1） | L251 |
-| 完了タスク | L321 |
-| 関連ドキュメント | L332 |
+| スキル管理IPCセキュリティ | L20 |
+| スキルインポートIPCチャネル（TASK-4-1） | L67 |
+| Claude Code CLI連携セキュリティ | L110 |
+| Skill Execution Preload API セキュリティ | L171 |
+| Permission IPC Handler セキュリティ | L216 |
+| SkillAPI Preload実装（TASK-5-1） | L252 |
+| 完了タスク | L318 |
+| 関連ドキュメント | L330 |
 
 ---
 
