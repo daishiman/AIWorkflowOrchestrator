@@ -22,6 +22,7 @@ afterEach(() => {
 
 // Mock store
 const mockSelectSkill = vi.fn();
+const mockSelectSkillByName = vi.fn();
 const mockRescanSkills = vi.fn().mockResolvedValue(undefined);
 
 const defaultStoreState = {
@@ -53,6 +54,7 @@ const defaultStoreState = {
   isLoadingSkills: false,
   isScanning: false,
   selectSkill: mockSelectSkill,
+  selectSkillByName: mockSelectSkillByName,
   rescanSkills: mockRescanSkills,
 };
 
@@ -121,7 +123,7 @@ describe("SkillSelector", () => {
     );
     expect(skillAOption).toBeDefined();
     await user.click(skillAOption!);
-    expect(mockSelectSkill).toHaveBeenCalledWith("skill-a");
+    expect(mockSelectSkillByName).toHaveBeenCalledWith("skill-a");
   });
 
   // ==============================
@@ -192,7 +194,7 @@ describe("SkillSelector", () => {
       .find((opt) => opt.textContent?.includes("スキルを使用しない"));
     expect(noneOption).toBeDefined();
     await user.click(noneOption!);
-    expect(mockSelectSkill).toHaveBeenCalledWith(null);
+    expect(mockSelectSkillByName).toHaveBeenCalledWith(null);
   });
 
   // ==============================
@@ -352,7 +354,7 @@ describe("SkillSelector", () => {
     await user.keyboard("{ArrowDown}");
     // Select with Enter
     await user.keyboard("{Enter}");
-    expect(mockSelectSkill).toHaveBeenCalledWith("skill-a");
+    expect(mockSelectSkillByName).toHaveBeenCalledWith("skill-a");
   });
 
   // ============================================================
