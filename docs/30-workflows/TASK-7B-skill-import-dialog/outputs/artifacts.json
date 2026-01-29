@@ -1,0 +1,195 @@
+{
+  "taskId": "TASK-7B",
+  "taskName": "SkillImportDialog コンポーネント",
+  "createdAt": "2026-01-30T00:00:00.000Z",
+  "schemaVersion": "1.0.0",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "type": "document"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "type": "document"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "type": "document"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "コンポーネント設計",
+          "path": "outputs/phase-2/component-design.md",
+          "type": "document"
+        },
+        {
+          "name": "UI設計",
+          "path": "outputs/phase-2/ui-design.md",
+          "type": "document"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "type": "document"
+        },
+        {
+          "name": "テストケース",
+          "path": "outputs/phase-4/test-cases.md",
+          "type": "document"
+        },
+        {
+          "name": "コンポーネントテスト",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillImportDialog.test.tsx",
+          "type": "test"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "SkillImportDialog",
+          "path": "apps/desktop/src/renderer/components/skill/SkillImportDialog.tsx",
+          "type": "code"
+        },
+        {
+          "name": "index.ts更新",
+          "path": "apps/desktop/src/renderer/components/skill/index.ts",
+          "type": "code"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-6/coverage-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "type": "document"
+        }
+      ]
+    }
+  },
+  "targetFiles": [
+    "apps/desktop/src/renderer/components/skill/SkillImportDialog.tsx",
+    "apps/desktop/src/renderer/components/skill/index.ts",
+    "apps/desktop/src/renderer/components/skill/__tests__/SkillImportDialog.test.tsx"
+  ],
+  "dependencies": {
+    "dependsOn": ["TASK-6-1"],
+    "parallelWith": ["TASK-7A", "TASK-7C"],
+    "blocks": ["TASK-7D"]
+  }
+}
