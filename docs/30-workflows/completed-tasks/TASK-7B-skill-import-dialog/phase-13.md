@@ -107,6 +107,31 @@ git commit -m "docs(workflows): TASK-7B-skill-import-dialogをcompleted-tasksに
 git push
 ```
 
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. ユーザーへのローカル動作確認依頼
+2. 変更サマリーの提示と許可確認
+3. PR作成の実行
+4. CI通過確認
+5. タスクディレクトリのcompleted-tasks移動
+6. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-7B-skill-import-dialog --phase 13
+```
+
 ## 次のPhase
 
 なし（ワークフロー完了）

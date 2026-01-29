@@ -81,6 +81,32 @@
 - [ ] TASK-7Dへの影響がないことを確認
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. 要件充足性レビューの実施
+2. コード品質レビューの実施
+3. テスト品質レビューの実施
+4. TASK-7Dへの影響確認
+5. 統合テスト結果確認
+6. 成果物の作成・配置
+7. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-7B-skill-import-dialog --phase 10
+```
+
 ## 次のPhase
 
 Phase 11: 手動テスト検証

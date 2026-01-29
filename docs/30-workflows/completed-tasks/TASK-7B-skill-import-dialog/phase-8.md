@@ -96,6 +96,30 @@ pnpm --filter @repo/desktop test
 # - [ ] リファクタリング後もテストが成功することを確認
 ```
 
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. コードスメル分析の実施
+2. リファクタリング候補の特定
+3. リファクタリング実施
+4. テスト再実行とGreen確認
+5. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-7B-skill-import-dialog --phase 8
+```
+
 ## 次のPhase
 
 Phase 9: 品質保証

@@ -318,7 +318,7 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | -------- | ------------------------- | ---------- |
 | TASK-6-1 | SkillSlice実装（Zustand） | **完了**   |
 | TASK-7A  | SkillSelector             | 未着手     |
-| TASK-7B  | SkillImportDialog         | 未着手     |
+| TASK-7B  | SkillImportDialog         | **完了**   |
 | TASK-7C  | PermissionDialog          | 未着手     |
 | TASK-7D  | ChatPanel統合             | 未着手     |
 

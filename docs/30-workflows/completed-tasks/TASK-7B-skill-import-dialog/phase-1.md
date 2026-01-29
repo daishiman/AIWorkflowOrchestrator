@@ -147,6 +147,20 @@ Phase実行開始時に、以下のサブタスクを作成すること:
 5. 成果物の作成・配置
 6. 完了条件の検証
 
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-7B-skill-import-dialog --phase 1
+```
+
 ## 次のPhase
 
 Phase 2: 設計

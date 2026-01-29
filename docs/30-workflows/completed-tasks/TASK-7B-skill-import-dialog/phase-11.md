@@ -83,6 +83,33 @@
 - [ ] スコープ外の発見事項があれば記録
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. 機能テストの実施（8件）
+2. UI/UXテストの実施（4件）
+3. アクセシビリティテストの実施（4件）
+4. リグレッションテストの実施（2件）
+5. 統合テスト手動確認の実施
+6. スコープ外の発見事項の記録
+7. 成果物の作成・配置
+8. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-7B-skill-import-dialog --phase 11
+```
+
 ## 次のPhase
 
 Phase 12: ドキュメント更新

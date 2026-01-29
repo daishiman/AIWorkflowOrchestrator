@@ -294,6 +294,46 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 | {{新規セクション名}}（{{TASK_ID}}） | L{{行番号}} |
 ```
 
+### Step 1-C: 関連タスクテーブル更新（該当する場合は必須）
+
+システム仕様書（`arch-state-management.md`、`interfaces-agent-sdk.md`等）に「関連タスク」テーブルがあり、
+当該タスクが記載されている場合は、ステータスを更新する。
+
+```
+[仕様書内に「関連タスク」テーブルがあるか？]
+    ├── No → Step 2へ進む
+    └── Yes
+         ↓
+    [当該タスクがテーブルに記載されているか？]
+        ├── No → Step 2へ進む
+        └── Yes
+             ↓
+        ステータス列を「未着手」→「**完了**」に更新
+             ↓
+        documentation-changelog.md に更新ファイルを記録
+```
+
+#### 確認すべきファイル（タスク種別による）
+
+| タスク種別                 | 確認すべきファイル              |
+| -------------------------- | ------------------------------- |
+| Skill/Agent関連            | `arch-state-management.md`      |
+| IPC/Preload関連            | `security-api-electron.md`      |
+| UI/UXコンポーネント関連    | `ui-ux-components.md`           |
+| データベース関連           | `database-schema.md`            |
+
+#### 更新例
+
+```markdown
+# 変更前
+| TASK-7B  | SkillImportDialog         | 未着手   |
+
+# 変更後
+| TASK-7B  | SkillImportDialog         | **完了** |
+```
+
+---
+
 ### Step 2: システム仕様更新（条件付き）
 
 **更新判断基準に該当する場合のみ**実行。

@@ -93,6 +93,12 @@ node scripts/complete-phase.js \
   --artifacts "outputs/phase-12/implementation-guide.md:実装ガイド,outputs/phase-12/documentation-changelog.md:ドキュメント更新履歴,outputs/phase-12/unassigned-task-detection.md:未タスク検出レポート"
 ```
 
+**artifacts.json必須項目**:
+
+- Phase 12のステータスが`completed`に更新されていること
+- 全Phase（1-12）の成果物パスが登録されていること
+- `qualityMetrics`セクションに品質指標が記録されていること
+
 **スクリプト未存在時の代替手順**:
 
 - 手動で `outputs/phase-12/documentation-changelog.md` を作成
@@ -158,6 +164,33 @@ node scripts/complete-phase.js \
 | `complete-phase.js`                   | 手動でartifacts.jsonを作成（参照: `docs/30-workflows/completed-tasks/TASK-4-1-ipc-channels/outputs/artifacts.json`） |
 | `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-task-detection.mdを作成                                    |
 | `validate-phase-output.js`            | 手動で成果物の存在と完了条件を確認                                                                                   |
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. Task 1: 実装ガイド作成（Part 1 + Part 2）
+3. Task 2 Step 1: タスク完了記録
+4. Task 2 Step 2: システム仕様更新の要否判断
+5. Task 3: ドキュメント更新履歴 & artifacts.json更新
+6. Task 4: 未タスク検出
+7. 成果物の作成・配置
+8. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-7B-skill-import-dialog --phase 12
+```
 
 ## 次のPhase
 
