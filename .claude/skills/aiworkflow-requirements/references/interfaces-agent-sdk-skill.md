@@ -37,48 +37,48 @@ Skill Dashboard機能は、Electron標準の3レイヤー構成で実装され�
 
 #### レイヤー構成
 
-| レイヤー          | 責務                               | 主要コンポーネント                           |
-| ----------------- | ---------------------------------- | -------------------------------------------- |
-| Renderer Process  | UI表示・ユーザー操作の受付         | AgentView、SkillList、SkillCard等            |
-| Main Process      | ビジネスロジック・ファイルシステム | skill-handler.ts、skill-service.ts           |
-| File System       | スキルファイルの永続化             | `.claude/skills/**/*.md`                     |
+| レイヤー         | 責務                               | 主要コンポーネント                 |
+| ---------------- | ---------------------------------- | ---------------------------------- |
+| Renderer Process | UI表示・ユーザー操作の受付         | AgentView、SkillList、SkillCard等  |
+| Main Process     | ビジネスロジック・ファイルシステム | skill-handler.ts、skill-service.ts |
+| File System      | スキルファイルの永続化             | `.claude/skills/**/*.md`           |
 
 #### 通信フロー
 
-| 段階 | 送信元           | 送信先           | 通信手段                   | 説明                     |
-| ---- | ---------------- | ---------------- | -------------------------- | ------------------------ |
-| 1    | UIコンポーネント | Preload API      | 関数呼び出し               | ユーザー操作をトリガー   |
-| 2    | Preload API      | Main Process     | IPC（contextBridge経由）   | `skill:*` チャンネル使用 |
-| 3    | skill-handler    | skill-service    | 直接呼び出し               | ビジネスロジック実行     |
-| 4    | skill-service    | File System      | Node.js fs API             | スキルファイル読み書き   |
+| 段階 | 送信元           | 送信先        | 通信手段                 | 説明                     |
+| ---- | ---------------- | ------------- | ------------------------ | ------------------------ |
+| 1    | UIコンポーネント | Preload API   | 関数呼び出し             | ユーザー操作をトリガー   |
+| 2    | Preload API      | Main Process  | IPC（contextBridge経由） | `skill:*` チャンネル使用 |
+| 3    | skill-handler    | skill-service | 直接呼び出し             | ビジネスロジック実行     |
+| 4    | skill-service    | File System   | Node.js fs API           | スキルファイル読み書き   |
 
 #### Renderer Process コンポーネント
 
-| コンポーネント      | 役割                     | 配置              |
-| ------------------- | ------------------------ | ----------------- |
-| AgentView           | メインビュー・状態管理   | 常時表示          |
-| SkillSearchBar      | 検索フィルター           | ヘッダー領域      |
-| SkillCategoryFilter | カテゴリ選択             | ヘッダー領域      |
-| SkillList           | スキル一覧表示           | メイン領域        |
-| SkillCard           | 個別スキル表示           | SkillList内       |
-| SkillDetailPanel    | 選択スキルの詳細表示     | サイドパネル      |
-| SkillImportDialog   | インポートモーダル       | オーバーレイ表示  |
+| コンポーネント      | 役割                   | 配置             |
+| ------------------- | ---------------------- | ---------------- |
+| AgentView           | メインビュー・状態管理 | 常時表示         |
+| SkillSearchBar      | 検索フィルター         | ヘッダー領域     |
+| SkillCategoryFilter | カテゴリ選択           | ヘッダー領域     |
+| SkillList           | スキル一覧表示         | メイン領域       |
+| SkillCard           | 個別スキル表示         | SkillList内      |
+| SkillDetailPanel    | 選択スキルの詳細表示   | サイドパネル     |
+| SkillImportDialog   | インポートモーダル     | オーバーレイ表示 |
 
 #### Main Process コンポーネント
 
-| コンポーネント    | ファイル            | 責務                             |
-| ----------------- | ------------------- | -------------------------------- |
-| skill-handler.ts  | `main/skill/`       | `skill:*` IPCチャンネルの処理    |
-| skill-service.ts  | `main/skill/`       | スキルスキャン・解析ロジック     |
+| コンポーネント   | ファイル      | 責務                          |
+| ---------------- | ------------- | ----------------------------- |
+| skill-handler.ts | `main/skill/` | `skill:*` IPCチャンネルの処理 |
+| skill-service.ts | `main/skill/` | スキルスキャン・解析ロジック  |
 
 #### スキルファイル構成
 
 スキル定義ファイルは `.claude/skills/` ディレクトリ配下に配置される。
 
-| パターン                     | 説明               |
-| ---------------------------- | ------------------ |
-| `.claude/skills/*/SKILL.md`  | スキル定義ファイル |
-| `.claude/skills/*/agents/*.md` | エージェント定義 |
+| パターン                       | 説明               |
+| ------------------------------ | ------------------ |
+| `.claude/skills/*/SKILL.md`    | スキル定義ファイル |
+| `.claude/skills/*/agents/*.md` | エージェント定義   |
 
 ---
 
@@ -330,16 +330,16 @@ Permission要求の状態管理とハンドラーを提供するカスタムフ�
 
 AgentViewを親コンポーネントとして、各UIコンポーネントが階層構造で配置される。
 
-| 親コンポーネント | 子コンポーネント      | 表示条件       | 説明                   |
-| ---------------- | --------------------- | -------------- | ---------------------- |
-| AgentView        | Header                | 常時           | タイトルと説明文       |
-| AgentView        | SkillSearchBar        | 常時           | 検索入力フィールド     |
-| AgentView        | SkillCategoryFilter   | 常時           | カテゴリ選択ボタン群   |
-| AgentView        | SkillList             | 常時           | スキル一覧コンテナ     |
-| SkillList        | SkillCard             | 複数表示       | 個別スキルカード       |
-| AgentView        | SkillDetailPanel      | スキル選択時   | 選択スキルの詳細情報   |
-| AgentView        | SkillImportDialog     | ダイアログ表示時 | インポートモーダル   |
-| AgentView        | Toast                 | 通知時         | 操作結果の通知表示     |
+| 親コンポーネント | 子コンポーネント    | 表示条件         | 説明                 |
+| ---------------- | ------------------- | ---------------- | -------------------- |
+| AgentView        | Header              | 常時             | タイトルと説明文     |
+| AgentView        | SkillSearchBar      | 常時             | 検索入力フィールド   |
+| AgentView        | SkillCategoryFilter | 常時             | カテゴリ選択ボタン群 |
+| AgentView        | SkillList           | 常時             | スキル一覧コンテナ   |
+| SkillList        | SkillCard           | 複数表示         | 個別スキルカード     |
+| AgentView        | SkillDetailPanel    | スキル選択時     | 選択スキルの詳細情報 |
+| AgentView        | SkillImportDialog   | ダイアログ表示時 | インポートモーダル   |
+| AgentView        | Toast               | 通知時           | 操作結果の通知表示   |
 
 #### コンポーネント仕様
 
@@ -427,6 +427,98 @@ AgentViewを親コンポーネントとして、各UIコンポーネントが階
 
 ---
 
+## SkillSlice型定義（TASK-6-1）
+
+Renderer Process側のスキル機能状態管理。Zustand StateCreatorパターンで実装。
+
+### 実装ファイル
+
+| ファイル                 | パス                                                     | 説明            |
+| ------------------------ | -------------------------------------------------------- | --------------- |
+| `skillSlice.ts`          | `apps/desktop/src/renderer/store/slices/skillSlice.ts`   | Slice定義       |
+| `setupSkillListeners.ts` | `apps/desktop/src/renderer/store/setupSkillListeners.ts` | IPCリスナー設定 |
+
+### SkillSliceインターフェース
+
+SkillSliceは状態（14項目）、アクション（10項目）、内部ハンドラー（4項目）で構成される。
+
+#### 状態プロパティ
+
+| プロパティ           | 型                               | 説明                     |
+| -------------------- | -------------------------------- | ------------------------ |
+| `availableSkills`    | `SkillMetadata[]`                | 利用可能なスキル一覧     |
+| `importedSkills`     | `ImportedSkill[]`                | インポート済みスキル一覧 |
+| `selectedSkillName`  | `string \| null`                 | 選択中のスキル名         |
+| `isExecuting`        | `boolean`                        | 実行中フラグ             |
+| `executionId`        | `string \| null`                 | 現在の実行ID             |
+| `executionStatus`    | `SkillExecutionStatus \| null`   | 実行ステータス           |
+| `streamingMessages`  | `SkillStreamMessage[]`           | ストリーミングメッセージ |
+| `pendingPermission`  | `SkillPermissionRequest \| null` | 保留中の権限リクエスト   |
+| `skillError`         | `string \| null`                 | エラー情報               |
+| `isLoadingSkills`    | `boolean`                        | スキル一覧読み込み中     |
+| `isScanning`         | `boolean`                        | スキルスキャン中         |
+| `isImporting`        | `boolean`                        | スキルインポート中       |
+| `importingSkillName` | `string \| null`                 | インポート中のスキル名   |
+
+#### アクション
+
+| アクション               | シグネチャ                                        | 説明                           |
+| ------------------------ | ------------------------------------------------- | ------------------------------ |
+| `fetchSkills`            | `() => Promise<void>`                             | スキル一覧取得                 |
+| `rescanSkills`           | `() => Promise<void>`                             | スキル再スキャン               |
+| `importSkill`            | `(skillName: string) => Promise<void>`            | スキルインポート               |
+| `removeSkill`            | `(skillName: string) => Promise<void>`            | スキル削除                     |
+| `selectSkill`            | `(skillName: string \| null) => void`             | スキル選択                     |
+| `executeSkill`           | `(prompt: string) => Promise<void>`               | スキル実行                     |
+| `abortExecution`         | `() => void`                                      | 実行中断                       |
+| `respondToPermission`    | `(approved: boolean, remember?: boolean) => void` | 権限リクエスト応答             |
+| `clearError`             | `() => void`                                      | エラークリア                   |
+| `clearStreamingMessages` | `() => void`                                      | ストリーミングメッセージクリア |
+
+#### 内部ハンドラー
+
+IPCイベントを受信して状態を更新する。`_`プレフィックスは内部用を示す。
+
+| ハンドラー                 | シグネチャ                                     | 用途               |
+| -------------------------- | ---------------------------------------------- | ------------------ |
+| `_handleStreamMessage`     | `(msg: SkillStreamMessage) => void`            | ストリーム受信処理 |
+| `_handleComplete`          | `(executionId: string) => void`                | 実行完了処理       |
+| `_handleError`             | `(executionId: string, error: string) => void` | エラー処理         |
+| `_handlePermissionRequest` | `(req: SkillPermissionRequest) => void`        | 権限リクエスト受信 |
+
+### 関連型定義
+
+SkillSliceで使用する型は`packages/shared/src/types/skill.ts`で定義。
+
+| 型                       | 説明                     |
+| ------------------------ | ------------------------ |
+| `SkillMetadata`          | スキルメタデータ         |
+| `ImportedSkill`          | インポート済みスキル情報 |
+| `SkillExecutionStatus`   | 実行ステータス列挙型     |
+| `SkillStreamMessage`     | ストリーミングメッセージ |
+| `SkillPermissionRequest` | 権限リクエスト           |
+
+### セレクター
+
+useAppStoreから専用セレクターを提供。
+
+| セレクター      | 説明                                |
+| --------------- | ----------------------------------- |
+| `useSkillStore` | SkillSlice全体を取得（shallow比較） |
+
+### テストカバレッジ
+
+| カテゴリ     | テスト数 | ファイル                              |
+| ------------ | -------- | ------------------------------------- |
+| 基本機能     | 59       | `skillSlice.test.ts`                  |
+| エッジケース | 16       | `skillSlice.edge-cases.test.ts`       |
+| 状態遷移     | 17       | `skillSlice.state-transition.test.ts` |
+| IPC連携      | 14       | `skillSlice.ipc.test.ts`              |
+| 統合テスト   | 7        | `skillSlice.integration.test.ts`      |
+| **合計**     | **113**  |                                       |
+
+---
+
 ## ModifierSkill（スライド逆同期機能）
 
 ### 概要
@@ -472,7 +564,8 @@ AgentViewを親コンポーネントとして、各UIコンポーネントが階
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                           |
-| ---------- | ---------- | -------------------------------------------------- |
+| 日付       | バージョン | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加           |
 | 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠） |
-| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                    |
+| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                        |

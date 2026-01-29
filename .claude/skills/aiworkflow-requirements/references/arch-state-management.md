@@ -7,10 +7,11 @@
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                           |
-| ---------- | ---------- | -------------------------------------------------- |
-| v1.0.0     | 2026-01-23 | 初版作成                                           |
+| バージョン | 日付       | 変更内容                                          |
+| ---------- | ---------- | ------------------------------------------------- |
+| v1.2.0     | 2026-01-28 | TASK-6-1完了: skillSliceセクション追加            |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換 |
+| v1.0.0     | 2026-01-23 | 初版作成                                          |
 
 ---
 
@@ -46,12 +47,13 @@
 
 ### 既存Slice一覧
 
-| Slice名      | 責務                     | 実装ファイル                 |
-| ------------ | ------------------------ | ---------------------------- |
-| `uiSlice`    | UI状態（currentView等）  | `store/slices/uiSlice.ts`    |
-| `authSlice`  | 認証状態                 | `store/slices/authSlice.ts`  |
-| `chatSlice`  | チャット状態             | `store/slices/chatSlice.ts`  |
-| `agentSlice` | エージェント・スキル管理 | `store/slices/agentSlice.ts` |
+| Slice名      | 責務                     | 実装ファイル                 | タスク    |
+| ------------ | ------------------------ | ---------------------------- | --------- |
+| `uiSlice`    | UI状態（currentView等）  | `store/slices/uiSlice.ts`    | -         |
+| `authSlice`  | 認証状態                 | `store/slices/authSlice.ts`  | -         |
+| `chatSlice`  | チャット状態             | `store/slices/chatSlice.ts`  | -         |
+| `agentSlice` | エージェント・スキル管理 | `store/slices/agentSlice.ts` | AGENT-002 |
+| `skillSlice` | スキル実行状態管理       | `store/slices/skillSlice.ts` | TASK-6-1  |
 
 ### agentSlice詳細
 
@@ -167,10 +169,10 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 
 **必要なimport**:
 
-| インポート対象        | インポート元                               |
-| --------------------- | ------------------------------------------ |
-| `createChatEditSlice` | `@/renderer/features/workspace-chat-edit`  |
-| `ChatEditSlice`       | `@/renderer/features/workspace-chat-edit`  |
+| インポート対象        | インポート元                              |
+| --------------------- | ----------------------------------------- |
+| `createChatEditSlice` | `@/renderer/features/workspace-chat-edit` |
+| `ChatEditSlice`       | `@/renderer/features/workspace-chat-edit` |
 
 **Store統合手順**:
 
@@ -180,12 +182,12 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 
 **統合パターン**:
 
-| 要素              | 説明                                     |
-| ----------------- | ---------------------------------------- |
-| `AppStore`        | 全Sliceを統合したストア型定義            |
-| `create<AppStore>`| Zustandのcreate関数で型付きストア生成    |
-| `set, get`        | StateCreator関数に渡すコールバック       |
-| スプレッド展開    | 各Sliceを`...createXxxSlice(set, get)`で統合 |
+| 要素               | 説明                                         |
+| ------------------ | -------------------------------------------- |
+| `AppStore`         | 全Sliceを統合したストア型定義                |
+| `create<AppStore>` | Zustandのcreate関数で型付きストア生成        |
+| `set, get`         | StateCreator関数に渡すコールバック           |
+| スプレッド展開     | 各Sliceを`...createXxxSlice(set, get)`で統合 |
 
 ### 品質メトリクス
 
@@ -198,7 +200,132 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 
 ---
 
+## skillSlice（スキル実行状態管理）
+
+### 概要
+
+スキル機能の状態管理Slice。スキルのスキャン・インポート・選択・実行・権限確認の状態を一元管理する。IPCイベントを介してMain Processと連携し、ストリーミング応答や権限リクエストを処理する。
+
+**実装ファイル**:
+
+| ファイル                 | パス                                                     | 行数 | 説明                         |
+| ------------------------ | -------------------------------------------------------- | ---- | ---------------------------- |
+| `skillSlice.ts`          | `apps/desktop/src/renderer/store/slices/skillSlice.ts`   | 347  | Slice定義（状態+アクション） |
+| `setupSkillListeners.ts` | `apps/desktop/src/renderer/store/setupSkillListeners.ts` | 49   | IPCイベントリスナー設定      |
+
+**テストファイル**:
+
+| ファイル                              | テスト数 | カテゴリ     |
+| ------------------------------------- | -------- | ------------ |
+| `skillSlice.test.ts`                  | 59       | 基本機能     |
+| `skillSlice.edge-cases.test.ts`       | 16       | エッジケース |
+| `skillSlice.state-transition.test.ts` | 17       | 状態遷移     |
+| `skillSlice.ipc.test.ts`              | 14       | IPC連携      |
+| `skillSlice.integration.test.ts`      | 7        | 統合テスト   |
+
+### 状態定義（14プロパティ）
+
+| プロパティ           | 型                               | 初期値  | 説明                     |
+| -------------------- | -------------------------------- | ------- | ------------------------ |
+| `availableSkills`    | `SkillMetadata[]`                | `[]`    | 利用可能なスキル一覧     |
+| `importedSkills`     | `ImportedSkill[]`                | `[]`    | インポート済みスキル一覧 |
+| `selectedSkillName`  | `string \| null`                 | `null`  | 選択中のスキル名         |
+| `isExecuting`        | `boolean`                        | `false` | 実行中フラグ             |
+| `executionId`        | `string \| null`                 | `null`  | 現在の実行ID             |
+| `executionStatus`    | `SkillExecutionStatus \| null`   | `null`  | 実行ステータス           |
+| `streamingMessages`  | `SkillStreamMessage[]`           | `[]`    | ストリーミングメッセージ |
+| `pendingPermission`  | `SkillPermissionRequest \| null` | `null`  | 保留中の権限リクエスト   |
+| `skillError`         | `string \| null`                 | `null`  | エラー情報               |
+| `isLoadingSkills`    | `boolean`                        | `false` | スキル一覧読み込み中     |
+| `isScanning`         | `boolean`                        | `false` | スキルスキャン中         |
+| `isImporting`        | `boolean`                        | `false` | スキルインポート中       |
+| `importingSkillName` | `string \| null`                 | `null`  | インポート中のスキル名   |
+
+### アクション定義（10メソッド）
+
+| アクション               | シグネチャ                                        | 説明                           |
+| ------------------------ | ------------------------------------------------- | ------------------------------ |
+| `fetchSkills`            | `() => Promise<void>`                             | スキル一覧取得                 |
+| `rescanSkills`           | `() => Promise<void>`                             | スキル再スキャン               |
+| `importSkill`            | `(skillName: string) => Promise<void>`            | スキルインポート               |
+| `removeSkill`            | `(skillName: string) => Promise<void>`            | スキル削除                     |
+| `selectSkill`            | `(skillName: string \| null) => void`             | スキル選択                     |
+| `executeSkill`           | `(prompt: string) => Promise<void>`               | スキル実行                     |
+| `abortExecution`         | `() => void`                                      | 実行中断                       |
+| `respondToPermission`    | `(approved: boolean, remember?: boolean) => void` | 権限リクエスト応答             |
+| `clearError`             | `() => void`                                      | エラークリア                   |
+| `clearStreamingMessages` | `() => void`                                      | ストリーミングメッセージクリア |
+
+### 内部ハンドラー（4メソッド）
+
+IPCイベントを受信して状態を更新する内部ハンドラー。`setupSkillListeners.ts`から呼び出される。
+
+| ハンドラー                 | シグネチャ                                     | トリガーIPC                |
+| -------------------------- | ---------------------------------------------- | -------------------------- |
+| `_handleStreamMessage`     | `(msg: SkillStreamMessage) => void`            | `skill:stream`             |
+| `_handleComplete`          | `(executionId: string) => void`                | `skill:complete`           |
+| `_handleError`             | `(executionId: string, error: string) => void` | `skill:error`              |
+| `_handlePermissionRequest` | `(req: SkillPermissionRequest) => void`        | `skill:permission-request` |
+
+### IPCリスナー設定パターン
+
+`setupSkillListeners.ts`はアプリ初期化時に一度だけ呼び出し、クリーンアップ関数を返す。
+
+**設定タイミング**: App.tsxの`useEffect`内
+
+**クリーンアップ**: アンマウント時にリスナーを解除
+
+| リスナー              | IPCチャネル                | 対応ハンドラー             |
+| --------------------- | -------------------------- | -------------------------- |
+| `onStream`            | `skill:stream`             | `_handleStreamMessage`     |
+| `onComplete`          | `skill:complete`           | `_handleComplete`          |
+| `onError`             | `skill:error`              | `_handleError`             |
+| `onPermissionRequest` | `skill:permission-request` | `_handlePermissionRequest` |
+
+### Store統合
+
+**統合先ファイル**: `apps/desktop/src/renderer/store/index.ts`
+
+**セレクター**: `useSkillStore`
+
+| インポート対象     | インポート元          |
+| ------------------ | --------------------- |
+| `createSkillSlice` | `./slices/skillSlice` |
+| `SkillSlice`       | `./slices/skillSlice` |
+
+**統合パターン**:
+
+| 要素               | 説明                                            |
+| ------------------ | ----------------------------------------------- |
+| `AppStore`         | 全Sliceを統合したストア型定義にSkillSliceを追加 |
+| `create<AppStore>` | Zustandのcreate関数でskillSliceを展開           |
+| `useSkillStore`    | skillSlice専用セレクター（shallow比較）         |
+
+### 品質メトリクス
+
+| 指標              | 値     |
+| ----------------- | ------ |
+| テスト数          | 113    |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 98.21% |
+| Function Coverage | 100%   |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+
+### 関連タスク
+
+| タスクID | 内容                      | ステータス |
+| -------- | ------------------------- | ---------- |
+| TASK-6-1 | SkillSlice実装（Zustand） | **完了**   |
+| TASK-7A  | SkillSelector             | 未着手     |
+| TASK-7B  | SkillImportDialog         | 未着手     |
+| TASK-7C  | PermissionDialog          | 未着手     |
+| TASK-7D  | ChatPanel統合             | 未着手     |
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャパターン概要](./architecture-patterns.md)
 - [UIコンポーネントパターン](./arch-ui-components.md)
+- [スキル関連インターフェース](./interfaces-agent-sdk-skill.md)

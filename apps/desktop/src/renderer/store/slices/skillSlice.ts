@@ -270,7 +270,7 @@ export const createSkillSlice: StateCreator<SkillSlice, [], [], SkillSlice> = (
       }
 
       const response = await window.electronAPI.skill.execute({
-        skillName: selectedSkillName,
+        skillId: selectedSkillName,
         prompt,
       });
 

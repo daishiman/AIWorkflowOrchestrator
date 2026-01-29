@@ -287,6 +287,141 @@ TASK-CI-FIX-001実行中のコードベーススキャン（52件のTODOコメ�
 - TASK-3-2-Dでは5件の未タスク指示書を生成（TASK-3-2-D-01〜05）
 
 ---
+
+## 2026-01-28 - 未タスク仕様書一括作成（TASK-3-2-B Phase 12派生）
+
+### コンテキスト
+
+- **発見元タスク**: TASK-3-2-B Phase 12
+- **使用エージェント**: generate-unassigned-task.md
+- **使用テンプレート**: assets/unassigned-task-template.md
+
+### 作成された未タスク仕様書
+
+| タスクID        | ファイル名                                         | 優先度 |
+| --------------- | -------------------------------------------------- | ------ |
+| TASK-3-2-F      | task-skill-stream-test-environment-improvements.md | 高     |
+| TASK-I18N-APP   | task-i18n-app-wide-expansion.md                    | 中     |
+| TASK-I18N-LAZY  | task-i18n-bundle-optimization.md                   | 中     |
+| TASK-I18N-UI    | task-i18n-language-switcher-ui.md                  | 低     |
+| TASK-I18N-MULTI | task-i18n-multi-language-support.md                | 低     |
+
+### 配置先
+
+- `docs/30-workflows/unassigned-task/`
+
+### システム仕様書連携
+
+- 各未タスク仕様書に`aiworkflow-requirements`仕様参照を追加
+  - `ui-ux-feature-skill-stream.md`
+  - `ui-ux-settings.md`
+  - `ui-ux-design-principles.md`
+  - `development-guidelines.md`
+
+### 品質チェック
+
+- [x] Why/What/How構造準拠
+- [x] 100人中100人が同じ理解で実行可能な粒度
+- [x] 前提条件・依存タスクの明記
+- [x] 完了条件チェックリストの記載
+- [x] リスクと対策の検討
+
+---
+
+## 2026-01-28 - TASK-3-2-B Phase 12 完了（SkillStreamDisplay i18n対応）
+
+### コンテキスト
+
+- **タスクID**: TASK-3-2-B
+- **タスク名**: SkillStreamDisplay i18n対応
+- **GitHub Issue**: #531
+- **親タスク**: TASK-3-2-A
+
+### 実行結果
+
+- **Phase 1-12**: すべて完了（Phase 13 PR作成はユーザー指示によりスキップ）
+- **テスト結果**: 74テスト（70 passed, 4 skipped）
+- **カバレッジ**: 100%（line/branch/function）
+
+### 主要成果物
+
+| Phase | 成果物                                                                                       |
+| ----- | -------------------------------------------------------------------------------------------- |
+| 1     | requirements-definition.md                                                                   |
+| 2     | i18n-design.md                                                                               |
+| 3     | test-spec.md                                                                                 |
+| 4     | test-result.md                                                                               |
+| 5     | implementation-summary.md                                                                    |
+| 6     | coverage-report.md                                                                           |
+| 7     | coverage-report.md                                                                           |
+| 8     | refactoring-report.md                                                                        |
+| 9     | quality-report.md                                                                            |
+| 10    | final-review-result.md                                                                       |
+| 11    | manual-test-result.md                                                                        |
+| 12    | implementation-guide.md (Part 1/2), documentation-changelog.md, unassigned-task-detection.md |
+
+### 実装内容
+
+- **formatRelativeTime関数**: localeパラメータ追加（日英2言語対応）
+- **翻訳テーブル**: 独自実装（i18nライブラリ不使用、軽量化）
+- **複数形対応**: 英語のみcount !== 1で分岐
+
+### aiworkflow-requirements更新
+
+- ui-ux-feature-components.md v1.4.0
+  - i18n対応（TASK-3-2-B）セクション新規追加
+  - R2タイムスタンプ表示: locale引数追加
+  - 完了タスクテーブルにTASK-3-2-B追加
+  - 関連ドキュメントにi18n実装ガイドリンク追加
+- LOGS.md にTASK-3-2-B完了エントリ追加
+- indexes/topic-map.md 自動更新
+
+### 検出された未タスク
+
+| タスクID   | 内容                                         | 優先度 |
+| ---------- | -------------------------------------------- | ------ |
+| TASK-3-2-F | happy-dom環境テスト問題、Clipboard APIモック | 高     |
+| 未割当     | 翻訳ファイル遅延読み込み                     | 中     |
+| 未割当     | i18n-ally連携                                | 中     |
+| 未割当     | 言語切替UI                                   | 低     |
+
+---
+
+## 2026-01-28 - TASK-6-1 Phase 12 未タスク仕様書作成
+
+### コンテキスト
+
+- スキル: task-specification-creator (generate-unassigned-task)
+- 操作: 未タスク仕様書作成
+- 発見元: TASK-6-1 Phase 12（SkillSlice実装）
+- 実行者: Claude Code
+
+### 作成内容
+
+| ファイル                                       | 内容                           |
+| ---------------------------------------------- | ------------------------------ |
+| `task-skill-integration-e2e-manual-testing.md` | SkillSlice統合手動テスト指示書 |
+
+### 補足
+
+- TASK-6-1 Phase 12で検出された「統合手動テスト」を未タスク仕様書として作成
+- 依存タスク: TASK-6-2（Main Process IPC）、TASK-6-3（スキルUI）
+- Why/What/How品質基準に準拠
+- システム仕様書（aiworkflow-requirements）の内容を反映
+  - arch-state-management.md: skillSliceセクション
+  - interfaces-agent-sdk-skill.md: SkillSlice型定義
+
+### 検出された未タスク一覧
+
+| 検出事項                | 対応                                                 |
+| ----------------------- | ---------------------------------------------------- |
+| 統合手動テスト          | task-skill-integration-e2e-manual-testing.md作成済み |
+| ElectronAPI.skill型定義 | TASK-6で対応予定（既存タスク）                       |
+| Main Process IPC実装    | TASK-6-2で対応予定（既存タスク）                     |
+| スキルUI実装            | TASK-6-3で対応予定（既存タスク）                     |
+
+---
+
 ## 2026-01-27 - TASK-3-1-B未タスク仕様書作成
 
 ### コンテキスト
@@ -350,6 +485,7 @@ TASK-CI-FIX-001実行中のコードベーススキャン（52件のTODOコメ�
 ## 2026-01-27 - spec-update-workflow.md改善（TASK-WCE-UI-001フィードバック反映）
 
 ### コンテキスト
+
 - スキル: task-specification-creator
 - 改善契機: TASK-WCE-UI-001（Workspace Chat Edit UI Components）Phase 12実行経験
 - 実行者: Claude Code (skill-creator)
@@ -359,6 +495,7 @@ TASK-CI-FIX-001実行中のコードベーススキャン（52件のTODOコメ�
 **対象ファイル**: `references/spec-update-workflow.md`
 
 **問題点**:
+
 - Phase 12 Task 2 Step 1のLOGS.md更新において、`aiworkflow-requirements/LOGS.md`のみ記載されていた
 - `task-specification-creator/LOGS.md`の更新要件が明記されていなかった
 - phase-templates.mdでは両方のLOGS.md更新が記載されていたが、spec-update-workflow.mdでは片方のみだったため、実行時に漏れが発生
@@ -377,16 +514,19 @@ TASK-CI-FIX-001実行中のコードベーススキャン（52件のTODOコメ�
    - 既存のaiworkflow-requirements用テンプレートに加え、task-specification-creator用のテンプレートを追加
 
 ### 結果
+
 - ステータス: success
 - 改善完了日時: 2026-01-27
 - バージョン: 9.7.0 → 9.7.1
 
 ### 期待される効果
+
 - Phase 12実行時の`task-specification-creator/LOGS.md`更新漏れ防止
 - `phase-templates.md`と`spec-update-workflow.md`間の整合性確保
 - 2つのLOGS.mdファイル更新の必要性を明確に認識可能
 
 ---
+
 ## 2026-01-26 - Phase 12テンプレート改善（TASK-4-1フィードバック反映）
 
 ### コンテキスト
@@ -1037,6 +1177,7 @@ if (artifactPath) {
 ## 2026-01-27 - Phase 12テンプレート改善（TASK-5-1フィードバック反映）
 
 ### コンテキスト
+
 - スキル: task-specification-creator
 - 改善契機: TASK-5-1（SkillAPI Preload実装）Phase 12実行経験
 - 実行者: Claude Code (skill-creator)
@@ -1046,6 +1187,7 @@ if (artifactPath) {
 **対象ファイル**: `references/phase-templates.md`
 
 **問題点**:
+
 - artifacts.jsonの更新がPhase 12完了条件に記載されているが、Task 1-4に明示的なタスクとして含まれていなかった
 - complete-phase.jsの実行ガイダンスがTask 3に不足していた
 - artifacts.json手動作成時の参照先が明記されていなかった
@@ -1064,11 +1206,13 @@ if (artifactPath) {
    - artifacts.json参照先（TASK-4-1形式）を明記
 
 ### 結果
+
 - ステータス: success
 - 改善完了日時: 2026-01-27
 - バージョン: v9.8.0
 
 ### 期待される効果
+
 - Phase 12実行時のartifacts.json作成漏れ防止
 - complete-phase.jsスクリプト使用率向上
 - タスク成果物追跡の一貫性向上
@@ -1078,6 +1222,7 @@ if (artifactPath) {
 ## 2026-01-27 - TASK-5-1 SkillAPI Preload実装タスク完了
 
 ### コンテキスト
+
 - スキル: task-specification-creator
 - タスクID: TASK-5-1
 - タスク名: SkillAPI 実装（Preload）
@@ -1085,10 +1230,12 @@ if (artifactPath) {
 - 実行者: Claude Code
 
 ### 結果
+
 - ステータス: success
 - 記録日時: 2026-01-27
 
 ### 発見事項
+
 - **良かった点**: Phase 1-12の全フェーズを正常に実行完了
 - **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
 - **良かった点**: 既存パターン（safeInvoke/safeOn）との整合性を維持
@@ -1097,6 +1244,7 @@ if (artifactPath) {
 - **良かった点**: Part 1（中学生レベル概念説明）+ Part 2（技術詳細）の2パート構成ドキュメント作成
 
 ### 成果
+
 - Phase 1-12を完了（Phase 13 PR作成はユーザー指示によりスキップ）
 - テストカバレッジ: 67テスト全件PASS（95%+カバレッジ）
 - 作成ドキュメント:
@@ -1112,18 +1260,21 @@ if (artifactPath) {
   - contextBridge.exposeInMainWorld公開
 
 ### aiworkflow-requirements更新
+
 - security-skill-ipc.md にTASK-5-1完了記録を追加
 - SkillAPI Preload実装セクションを追加（IPCチャネル定義、セキュリティ実装）
 - 変更履歴にv1.2.0を追加
 - topic-map.md更新
 
 ### 未タスク検出
+
 - 検出数: 0件
 - すべてのテストがPASS、発見課題なし
 - Phase 3/10レビュー結果にMINOR判定なし
 - コードベースにTODO/FIXMEなし
 
 ### 次のアクション
+
 - [x] Phase 12成果物の完全化（完了）
 - [x] aiworkflow-requirements更新（完了）
 - [x] LOGS.md記録（完了）
@@ -1134,6 +1285,7 @@ if (artifactPath) {
 ## 2026-01-27 - Issue #494 workspace-chat-edit-ui (FileAttachmentButton/FileContextList) タスク完了
 
 ### コンテキスト
+
 - スキル: task-specification-creator
 - タスクID: TASK-WCE-UI-001 (Issue #494)
 - タスク名: workspace-chat-edit-ui (FileAttachmentButton, FileContextList UIコンポーネント)
@@ -1141,10 +1293,12 @@ if (artifactPath) {
 - 実行者: Claude Code
 
 ### 結果
+
 - ステータス: success
 - 記録日時: 2026-01-27
 
 ### 発見事項
+
 - **良かった点**: Phase 1-12の全フェーズを正常に実行完了
 - **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
 - **良かった点**: WCAG 2.1 AA準拠のアクセシビリティ設計が適切に実装された
@@ -1153,6 +1307,7 @@ if (artifactPath) {
 - **良かった点**: Phase 12でのaiworkflow-requirements更新（ui-ux-feature-components.md）が正常に実行
 
 ### 成果
+
 - Phase 1-12を完了（Phase 13 PR作成はユーザー指示によりスキップ）
 - テストカバレッジ: 270テストケース全PASS
 - 2コンポーネント実装:
@@ -1162,6 +1317,7 @@ if (artifactPath) {
 - 実装ガイド（Part 1 概念的説明 + Part 2 技術的詳細）作成
 
 ### aiworkflow-requirements更新
+
 - ui-ux-feature-components.md v1.1.0
   - workspace-chat-edit-ui コンポーネント階層更新
   - FileAttachmentButton, FileContextList仕様追加
@@ -1171,11 +1327,13 @@ if (artifactPath) {
 - indexes/topic-map.md セクション行番号更新
 
 ### 未タスク検出
+
 - 検出数: 0件
 - すべてのテストがPASS、発見課題なし
 - Phase 3/10レビュー結果にMINOR判定なし
 
 ### 次のアクション
+
 - [x] Phase 12成果物の完全化（完了）
 - [x] aiworkflow-requirements更新（完了）
 - [x] task-specification-creator/LOGS.md記録（完了）
@@ -1328,5 +1486,200 @@ if (artifactPath) {
 - [x] aiworkflow-requirements更新（完了）
 - [x] LOGS.md記録（完了）
 - [ ] Phase 13 PR作成（ユーザー指示待ち）
+
+---
+
+## 2026-01-28 - TASK-3-1-B SkillExecutor IPC Handler統合（Phase 0完了）
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-3-1-B
+- タスク名: SkillExecutor IPC Handler統合
+- GitHub Issue: #540
+- Phase: 0（重複確認）のみ - Phase 1-13はスキップ
+- 実行者: Claude Code
+
+### 結果
+
+- ステータス: success（Phase 0完了、重複確認によりスキップ）
+- 記録日時: 2026-01-28
+
+### 発見事項
+
+- **判定結果**: TASK-3-2で全機能実装済みのため、本タスクはスキップ
+- **良かった点**: Phase 0の重複確認フローが正常に機能
+- **良かった点**: 検証レポートで4つのIPCチャンネルすべての実装状況を確認
+- **良かった点**: artifacts.jsonで検証結果を追跡可能に
+
+### 成果
+
+- Phase 0完了（Phase 1-13はスキップ）
+- 作成ドキュメント:
+  - ワークフローディレクトリ: `docs/30-workflows/task-3-1-B-skillexecutor-ipc-integration/`
+  - index.md: タスク概要・Phase構成
+  - verification-report.md: TASK-3-2との重複確認レポート
+  - artifacts.json: 成果物追跡JSON
+- 検証済みIPCチャンネル:
+  - skill:execute - skillHandlers.ts:173-203
+  - skill:stream - skill-api.ts:116-117
+  - skill:abort - skillHandlers.ts:206-223
+  - skill:get-status - skillHandlers.ts:226-247
+
+### ファイル移動
+
+- `unassigned-task/task-3-1-B-...` → `completed-tasks/task-3-1-B-...`
+- ステータス: 完了（重複確認によりスキップ）
+- 完了日: 2026-01-28
+- ワークフローリンク: 追加済み
+
+### 次のアクション
+
+- [x] Phase 0検証レポート作成（完了）
+- [x] ワークフローディレクトリ作成（完了）
+- [x] artifacts.json作成（完了）
+- [x] ファイル移動（unassigned-task → completed-tasks）（完了）
+- [x] LOGS.md記録（完了）
+
+---
+
+## 2026-01-28 - TASK-6-1 SkillSlice（Zustand状態管理）タスク完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-6-1
+- タスク名: SkillSlice実装（Zustand状態管理）
+- Phase: 1-12（13はユーザー指示によりスキップ）
+- 実行者: Claude Code
+
+### 結果
+
+- ステータス: success
+- 記録日時: 2026-01-28
+
+### 発見事項
+
+- **良かった点**: Phase 1-12の全フェーズを正常に実行完了
+- **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
+- **良かった点**: 既存Sliceパターン（llmSlice.ts）との整合性を維持
+- **良かった点**: StateCreatorパターンによる型安全な実装
+- **良かった点**: IPCイベントリスナーのクリーンアップ機能実装
+- **良かった点**: Phase 12 Part 1（中学生レベル概念説明）+ Part 2（技術詳細）の2パート構成ドキュメント作成
+
+### 成果
+
+- Phase 1-12を完了（Phase 13 PR作成はユーザー指示によりスキップ）
+- テストカバレッジ: 113テスト全件PASS（100%カバレッジ）
+- 作成ドキュメント:
+  - 実装ガイド（Part 1 概念的説明 + Part 2 技術的詳細）
+  - フェーズ完了レポート12件
+  - 未タスク検出レポート（検出0件）
+- 実装内容:
+  - SkillSliceインターフェース定義（14状態 + 10アクション + 4内部ハンドラー）
+  - skillSlice.ts（347行）
+  - setupSkillListeners.ts（49行）
+  - useSkillStoreセレクター追加
+
+### aiworkflow-requirements更新
+
+- interfaces-agent-sdk-history.md にTASK-6-1完了記録を追加
+- interfaces-agent-sdk.md 変更履歴にv6.32.0を追加
+- LOGS.md にTASK-6-1完了エントリ追加
+
+### 未タスク検出
+
+- 検出数: 0件
+- すべてのテストがPASS、発見課題なし
+- Phase 3/10レビュー結果にMINOR判定なし（ElectronAPI型定義は別タスク対応予定）
+- コードベースにTODO/FIXMEなし
+
+### 次のアクション
+
+- [x] Phase 12成果物の完全化（完了）
+- [x] aiworkflow-requirements更新（完了）
+- [x] task-specification-creator/LOGS.md記録（完了）
+- [ ] Phase 13 PR作成（ユーザー指示待ち）
+
+---
+
+## [2026-01-28T13:37:11.145Z]
+
+- **Agent**: unknown
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+- **Notes**: TASK-6-1 Phase 12完了。全完了条件達成。
+
+---
+
+## 2026-01-28 - TASK-3-2-C タイムスタンプ自動更新タスク完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-3-2-C
+- タスク名: タイムスタンプ自動更新（timestamp-autoupdate）
+- Phase: 1-12（13はユーザー指示によりスキップ）
+- 実行者: Claude Code
+
+### 結果
+
+- ステータス: success
+- 記録日時: 2026-01-28
+
+### 発見事項
+
+- **良かった点**: Phase 1-12の全フェーズを正常に実行完了
+- **良かった点**: TDD Red-Green-Refactorサイクルが効果的に機能
+- **良かった点**: React Contextを使用したバッチ更新パターンが適切に実装
+- **良かった点**: Page Visibility APIによるタブ非表示時の最適化が正常に機能
+- **良かった点**: Phase 12 Part 1（中学生レベル概念説明）+ Part 2（技術詳細）の2パート構成ドキュメント作成
+- **良かった点**: 未タスク検出レポートが0件でも正しく出力
+
+### 成果
+
+- Phase 1-12を完了（Phase 13 PR作成はユーザー指示によりスキップ）
+- テストカバレッジ: 全テストPASS
+- 作成ドキュメント:
+  - 実装ガイド（Part 1 概念的説明 + Part 2 技術的詳細）
+  - ドキュメント変更履歴（documentation-changelog.md）
+  - 未タスク検出レポート（unassigned-task-detection.md - 0件）
+- 実装内容:
+  - useInterval カスタムフック（動的間隔タイマー）
+  - usePageVisibility カスタムフック（タブ可視状態監視）
+  - TimestampContext（現在時刻のContext配信）
+  - calculateUpdateInterval / calculateMinUpdateInterval（更新間隔計算）
+  - UPDATE_INTERVALS定数
+
+### aiworkflow-requirements更新
+
+- ui-ux-feature-components.md v1.3.0
+  - TASK-3-2-C完了タスクテーブルに追加
+  - 関連ドキュメントに実装ガイドリンク追加
+  - 変更履歴にv1.3.0エントリ追加
+- LOGS.md にTASK-3-2-C完了エントリ追加
+
+### 未タスク検出
+
+- 検出数: 0件
+- すべてのテストがPASS、発見課題なし
+- Phase 3/10レビュー結果にMINOR判定なし
+- コードベースにTODO/FIXMEなし
+- 将来改善候補2件を参考として記録（適応的更新間隔、仮想化統合テスト）
+
+### 次のアクション
+
+- [x] Phase 12成果物の完全化（完了）
+- [x] aiworkflow-requirements更新（完了）
+- [x] task-specification-creator/LOGS.md記録（完了）
+- [ ] Phase 13 PR作成（ユーザー指示待ち）
+
+---
+
+## [2026-01-28T14:15:38.022Z]
+
+- **Agent**: unknown
+- **Phase**: Phase 12 - 未タスク仕様書作成
+- **Result**: ✓ 成功
 
 ---

@@ -192,14 +192,114 @@
 | TASK-3-2-D-05 | task-copy-history-keyboard-shortcuts.md  | キーボードショートカット |
 
 ---
+
+## 2026-01-28: 構造最適化（ui-ux-feature-components.md分割）
+
+| 項目         | 内容                                            |
+| ------------ | ----------------------------------------------- |
+| 操作         | split-spec                                      |
+| 対象ファイル | references/ui-ux-feature-components.md          |
+| 結果         | success                                         |
+| 備考         | spec-splitting-guidelines.md準拠、700行超過対応 |
+
+### 実施内容
+
+**分割前の状態**
+
+- ui-ux-feature-components.md: 826行（500行推奨、700行必須分割ライン超過）
+
+**分割後の構成**
+
+- ui-ux-feature-components.md v1.5.0: 約400行（インデックス化）
+- ui-ux-feature-skill-stream.md v1.0.0: 約396行（新規作成）
+
+**新規ファイル: ui-ux-feature-skill-stream.md**
+
+- SkillStreamDisplay詳細仕様（TASK-3-2/3-2-A/3-2-B/3-2-C統合）
+- コンポーネント階層、IPC API、Hook仕様
+- UX改善機能（LoadingSpinner、MessageTimestamp、CopyButton）
+- タイムスタンプ自動更新（TimestampContext、useInterval）
+- i18n対応（日英2言語、翻訳テーブル）
+
+### インデックス更新
+
+- `node scripts/generate-index.js` 実行（135ファイル、950キーワード）
+- indexes/resource-map.md v1.5.0更新
+- indexes/topic-map.md 自動更新
+
+---
+
+## 2026-01-28: システム仕様更新（TASK-3-2-B Phase 12）
+
+| 項目         | 内容                                                       |
+| ------------ | ---------------------------------------------------------- |
+| タスクID     | TASK-3-2-B                                                 |
+| 操作         | update-spec                                                |
+| 対象ファイル | references/ui-ux-feature-components.md                     |
+| 結果         | success                                                    |
+| 備考         | SkillStreamDisplay i18n対応、formatRelativeTime locale追加 |
+
+### 更新内容
+
+**references/ui-ux-feature-components.md v1.4.0**
+
+- 新セクション追加: i18n対応（TASK-3-2-B）
+  - 対応言語テーブル（日本語/英語）
+  - formatRelativeTime関数仕様（localeパラメータ追加後）
+  - 翻訳テーブル（日英対照）
+  - 実装アプローチ（独自翻訳テーブル）
+  - テスト品質（74テスト、100%カバレッジ）
+- R2タイムスタンプ表示セクション更新: localeパラメータ追加
+- 完了タスクテーブル更新: TASK-3-2-B追加
+- 関連ドキュメント更新: i18n実装ガイドリンク追加
+- 変更履歴更新: v1.4.0エントリ追加
+
+### インデックス更新
+
+- `node scripts/generate-index.js` 実行
+- indexes/topic-map.md 自動更新（i18n対応セクション L728 追加）
+
+---
+
+## 2026-01-28: 未タスク仕様書作成（TASK-6-1 Phase 12）
+
+| 項目         | 内容                                       |
+| ------------ | ------------------------------------------ |
+| タスクID     | TASK-6-1                                   |
+| 操作         | create-unassigned-task                     |
+| 対象ファイル | docs/30-workflows/unassigned-task/         |
+| 結果         | success                                    |
+| 備考         | SkillSlice統合手動テスト未タスク仕様書作成 |
+
+### 作成内容
+
+- **作成**: `task-skill-integration-e2e-manual-testing.md`
+  - 分類: テスト（統合手動テスト）
+  - 対象: SkillSlice + Main Process IPC + スキルUI統合動作検証
+  - 依存: TASK-6-2, TASK-6-3
+  - 7シナリオ（スキル一覧、インポート、選択、実行、権限、中止、エラー）
+  - Why/What/How品質基準準拠
+  - システム仕様（arch-state-management.md, interfaces-agent-sdk-skill.md）参照
+
+### 検出結果
+
+| 検出事項                | 対応                       |
+| ----------------------- | -------------------------- |
+| 統合手動テスト          | 未タスク仕様書として作成   |
+| ElectronAPI.skill型定義 | TASK-6対応（既存タスク）   |
+| Main Process IPC        | TASK-6-2対応（既存タスク） |
+| スキルUI                | TASK-6-3対応（既存タスク） |
+
+---
+
 ## 2026-01-27: SkillAPI Preload実装（TASK-5-1）
 
-| 項目         | 内容                                                                        |
-| ------------ | --------------------------------------------------------------------------- |
-| タスクID     | TASK-5-1                                                                    |
-| 操作         | update-spec                                                                 |
+| 項目         | 内容                                                                         |
+| ------------ | ---------------------------------------------------------------------------- |
+| タスクID     | TASK-5-1                                                                     |
+| 操作         | update-spec                                                                  |
 | 対象ファイル | references/security-skill-ipc.md, references/interfaces-agent-sdk-history.md |
-| 結果         | success                                                                     |
+| 結果         | success                                                                      |
 | 備考         | SkillAPI Preload実装（6メソッド、safeInvoke/safeOnパターン）                 |
 
 ### 更新詳細
@@ -264,13 +364,13 @@
 
 ## 2026-01-27: ui-ux-feature-components.md構造最適化
 
-| 項目         | 内容                                                                                           |
-| ------------ | ---------------------------------------------------------------------------------------------- |
-| タスクID     | -                                                                                              |
-| 操作         | optimize-structure                                                                             |
-| 対象ファイル | references/ui-ux-feature-components.md, indexes/topic-map.md                                   |
-| 結果         | success                                                                                        |
-| 備考         | spec-guidelines準拠の概要セクション追加、topic-map行番号更新                                  |
+| 項目         | 内容                                                         |
+| ------------ | ------------------------------------------------------------ |
+| タスクID     | -                                                            |
+| 操作         | optimize-structure                                           |
+| 対象ファイル | references/ui-ux-feature-components.md, indexes/topic-map.md |
+| 結果         | success                                                      |
+| 備考         | spec-guidelines準拠の概要セクション追加、topic-map行番号更新 |
 
 ### 更新詳細
 
@@ -287,12 +387,12 @@
 
 ## 2026-01-27: workspace-chat-edit-ui（TASK-WCE-UI-001 / Issue #494）
 
-| 項目         | 内容                                                                                           |
-| ------------ | ---------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-WCE-UI-001                                                                                |
-| 操作         | update-spec                                                                                    |
-| 対象ファイル | references/ui-ux-feature-components.md                                                         |
-| 結果         | success                                                                                        |
+| 項目         | 内容                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-WCE-UI-001                                                                              |
+| 操作         | update-spec                                                                                  |
+| 対象ファイル | references/ui-ux-feature-components.md                                                       |
+| 結果         | success                                                                                      |
 | 備考         | FileAttachmentButton, FileContextList UIコンポーネント実装（66テスト、25 Storybook Stories） |
 
 ### 更新詳細
@@ -305,11 +405,11 @@
 
 ### 実装サマリー
 
-| 項目 | 内容 |
-| ---- | ---- |
-| コンポーネント | FileAttachmentButton.tsx, FileContextList.tsx |
-| テスト数 | 66テスト（ユニット40 + アクセシビリティ14 + 統合12） |
-| Storybook | 25 Stories（Button 7 + List 9 + Badge 9） |
+| 項目             | 内容                                                     |
+| ---------------- | -------------------------------------------------------- |
+| コンポーネント   | FileAttachmentButton.tsx, FileContextList.tsx            |
+| テスト数         | 66テスト（ユニット40 + アクセシビリティ14 + 統合12）     |
+| Storybook        | 25 Stories（Button 7 + List 9 + Badge 9）                |
 | アクセシビリティ | WCAG 2.1 AA準拠（キーボード操作、aria-label、aria-live） |
 
 ---
@@ -1087,13 +1187,13 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ## 2026-01-27: SkillStreamDisplay UX改善（TASK-3-2-A）
 
-| 項目         | 内容                                                    |
-| ------------ | ------------------------------------------------------- |
-| タスクID     | TASK-3-2-A                                              |
-| Issue番号    | #520                                                    |
-| 操作         | update-spec                                             |
-| 対象ファイル | ui-ux-feature-components.md                             |
-| 結果         | success                                                 |
+| 項目         | 内容                                                                    |
+| ------------ | ----------------------------------------------------------------------- |
+| タスクID     | TASK-3-2-A                                                              |
+| Issue番号    | #520                                                                    |
+| 操作         | update-spec                                                             |
+| 対象ファイル | ui-ux-feature-components.md                                             |
+| 結果         | success                                                                 |
 | 備考         | SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー機能） |
 
 ### 更新詳細
@@ -1109,31 +1209,31 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 新規追加コンポーネント
 
-| コンポーネント   | 責務                     |
-| ---------------- | ------------------------ |
-| LoadingSpinner   | 実行中スピナー表示       |
+| コンポーネント   | 責務                       |
+| ---------------- | -------------------------- |
+| LoadingSpinner   | 実行中スピナー表示         |
 | MessageTimestamp | 相対時刻タイムスタンプ表示 |
-| CopyButton       | クリップボードコピー機能 |
+| CopyButton       | クリップボードコピー機能   |
 
 ### 新規ユーティリティ
 
-| 関数               | ファイル          | 責務                   |
-| ------------------ | ----------------- | ---------------------- |
-| formatRelativeTime | formatTime.ts     | 相対時刻文字列への変換 |
+| 関数               | ファイル      | 責務                   |
+| ------------------ | ------------- | ---------------------- |
+| formatRelativeTime | formatTime.ts | 相対時刻文字列への変換 |
 
 ### テスト品質
 
-| 項目       | 値     |
-| ---------- | ------ |
-| 新規テスト | 50     |
-| カバレッジ | 100%   |
+| 項目       | 値   |
+| ---------- | ---- |
+| 新規テスト | 50   |
+| カバレッジ | 100% |
 
 ### 関連ドキュメント
 
-| ドキュメント | パス                                                                                |
-| ------------ | ----------------------------------------------------------------------------------- |
+| ドキュメント | パス                                                                                                 |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
 | 実装ガイド   | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md` |
-| タスク仕様書 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`                        |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`                                         |
 
 ---
 
@@ -1163,12 +1263,12 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 関連ドキュメント
 
-| ドキュメント   | パス                                                                        |
-| -------------- | --------------------------------------------------------------------------- |
-| 実装ガイド     | `docs/30-workflows/TASK-5-1/outputs/phase-12/implementation-guide.md`       |
-| タスク仕様書   | `docs/30-workflows/TASK-5-1/`                                               |
-| テストファイル | `apps/desktop/src/preload/__tests__/skill-api.test.ts`                      |
-| 権限テスト     | `apps/desktop/src/preload/__tests__/skill-api.permission.test.ts`           |
+| ドキュメント   | パス                                                                  |
+| -------------- | --------------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-5-1/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書   | `docs/30-workflows/TASK-5-1/`                                         |
+| テストファイル | `apps/desktop/src/preload/__tests__/skill-api.test.ts`                |
+| 権限テスト     | `apps/desktop/src/preload/__tests__/skill-api.permission.test.ts`     |
 
 ### テスト品質
 
@@ -1210,20 +1310,20 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 成果物
 
-| 種別             | ファイル                                                           |
-| ---------------- | ------------------------------------------------------------------ |
-| コンポーネント   | FileAttachmentButton.tsx, FileContextList.tsx                      |
-| テスト           | FileAttachmentButton.test.tsx, FileContextList.test.tsx            |
-| アクセシビリティ | accessibility.test.tsx, integration-ui.test.tsx                    |
-| Storybook        | FileAttachmentButton.stories.tsx, FileContextList.stories.tsx      |
-| ドキュメント     | implementation-guide.md, documentation-changelog.md                |
+| 種別             | ファイル                                                      |
+| ---------------- | ------------------------------------------------------------- |
+| コンポーネント   | FileAttachmentButton.tsx, FileContextList.tsx                 |
+| テスト           | FileAttachmentButton.test.tsx, FileContextList.test.tsx       |
+| アクセシビリティ | accessibility.test.tsx, integration-ui.test.tsx               |
+| Storybook        | FileAttachmentButton.stories.tsx, FileContextList.stories.tsx |
+| ドキュメント     | implementation-guide.md, documentation-changelog.md           |
 
 ### 関連ドキュメント
 
-| ドキュメント       | パス                                                                     |
-| ------------------ | ------------------------------------------------------------------------ |
-| 実装ガイド         | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md` |
-| タスク仕様書       | `docs/30-workflows/workspace-chat-edit-ui/`                              |
+| ドキュメント         | パス                                                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| 実装ガイド           | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md`      |
+| タスク仕様書         | `docs/30-workflows/workspace-chat-edit-ui/`                                              |
 | 未タスク検出レポート | `docs/30-workflows/workspace-chat-edit-ui/outputs/phase-12/unassigned-task-detection.md` |
 
 ### テスト品質
@@ -1273,6 +1373,91 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | テスト総数     | 46（自動）  |
 | 手動テスト     | 23          |
 | カバレッジ     | 80%+ Line   |
+
+---
+
+## 2026-01-28: SkillSlice実装（TASK-6-1）
+
+| 項目         | 内容                                                                           |
+| ------------ | ------------------------------------------------------------------------------ |
+| タスクID     | TASK-6-1                                                                       |
+| 操作         | update-spec                                                                    |
+| 対象ファイル | references/interfaces-agent-sdk-history.md, references/interfaces-agent-sdk.md |
+| 結果         | success                                                                        |
+| 備考         | SkillSlice Zustand状態管理実装（14状態、10アクション、4内部ハンドラー）        |
+
+### 更新詳細
+
+- **更新**: `references/interfaces-agent-sdk-history.md`（v6.31.0 → v6.32.0）
+  - 「TASK-6-1: SkillSlice実装（Zustand状態管理）」完了タスクセクション追加
+  - 実装内容・品質基準・テスト結果サマリー・成果物テーブル追加
+  - 113テスト全PASS、カバレッジ100%
+
+- **更新**: `references/interfaces-agent-sdk.md`
+  - 変更履歴にv6.32.0エントリ追加
+
+### 新規ファイル
+
+| ファイル               | 配置先                                                   |
+| ---------------------- | -------------------------------------------------------- |
+| skillSlice.ts          | `apps/desktop/src/renderer/store/slices/skillSlice.ts`   |
+| setupSkillListeners.ts | `apps/desktop/src/renderer/store/setupSkillListeners.ts` |
+
+### 関連ドキュメント
+
+- 実装ガイド: `docs/30-workflows/TASK-6-1/outputs/phase-12-documentation.md`
+- タスク仕様書: `docs/30-workflows/TASK-6-1/`
+
+---
+
+## 2026-01-28: タイムスタンプ自動更新（TASK-3-2-C）
+
+| 項目         | 内容                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-3-2-C                                                                                  |
+| 操作         | update-spec                                                                                 |
+| 対象ファイル | references/ui-ux-feature-components.md                                                      |
+| 結果         | success                                                                                     |
+| 備考         | タイムスタンプ自動更新機能（TimestampProvider, useInterval, usePageVisibility, formatTime） |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.2.0 → v1.3.0）
+  - TASK-3-2-C完了タスクテーブルに追加
+  - 関連ドキュメントに実装ガイドリンク追加
+  - 変更履歴にv1.3.0エントリ追加
+
+### 新規ファイル
+
+| ファイル                  | 配置先                                          |
+| ------------------------- | ----------------------------------------------- |
+| useInterval.ts            | `apps/desktop/src/renderer/hooks/`              |
+| usePageVisibility.ts      | `apps/desktop/src/renderer/hooks/`              |
+| TimestampContext.tsx      | `apps/desktop/src/renderer/contexts/`           |
+| useInterval.test.ts       | `apps/desktop/src/renderer/hooks/__tests__/`    |
+| usePageVisibility.test.ts | `apps/desktop/src/renderer/hooks/__tests__/`    |
+| TimestampContext.test.tsx | `apps/desktop/src/renderer/contexts/__tests__/` |
+
+### 更新ファイル
+
+| ファイル               | 配置先                                            |
+| ---------------------- | ------------------------------------------------- |
+| formatTime.ts          | `apps/desktop/src/renderer/utils/`                |
+| formatTime.test.ts     | `apps/desktop/src/renderer/utils/__tests__/`      |
+| SkillStreamDisplay.tsx | `apps/desktop/src/renderer/components/AgentView/` |
+
+### 関連ドキュメント
+
+- 実装ガイド: `docs/30-workflows/TASK-3-2-C-timestamp-autoupdate/outputs/phase-12/implementation-guide.md`
+- タスク仕様書: `docs/30-workflows/TASK-3-2-C-timestamp-autoupdate/`
+
+---
+
+## [実行日時: 2026-01-28T13:42:17.894Z]
+
+- Task: unknown
+- 結果: success
+- フィードバック: TASK-6-1 SkillSlice仕様追加（skillSliceセクション、型定義、読み込み条件更新）
 
 ---
 

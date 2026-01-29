@@ -42,14 +42,14 @@ Renderer ProcessからMain ProcessへのIPC通信でAgent機能を提供し、�
 
 ### レイヤー構成
 
-| レイヤー                | コンポーネント               | 役割                                          |
-| ----------------------- | ---------------------------- | --------------------------------------------- |
-| Renderer Process        | React UI                     | `window.agentAPI.query()` によるユーザー操作  |
-| (通信層)                | IPC (contextBridge)          | Renderer → Main のプロセス間通信              |
-| Main Process            | IPC Handler (agent-handler)  | IPCリクエストの受信・処理                     |
-| Main Process            | Agent Client (@repo/shared)  | SDK呼び出しのラッパー                         |
-| (通信層)                | HTTPS                        | Main → Cloud の外部API通信                    |
-| External                | Claude Agent SDK             | Anthropic Cloud Serviceが提供するAI機能       |
+| レイヤー         | コンポーネント              | 役割                                         |
+| ---------------- | --------------------------- | -------------------------------------------- |
+| Renderer Process | React UI                    | `window.agentAPI.query()` によるユーザー操作 |
+| (通信層)         | IPC (contextBridge)         | Renderer → Main のプロセス間通信             |
+| Main Process     | IPC Handler (agent-handler) | IPCリクエストの受信・処理                    |
+| Main Process     | Agent Client (@repo/shared) | SDK呼び出しのラッパー                        |
+| (通信層)         | HTTPS                       | Main → Cloud の外部API通信                   |
+| External         | Claude Agent SDK            | Anthropic Cloud Serviceが提供するAI機能      |
 
 ### データフロー
 
@@ -326,12 +326,13 @@ LRUキャッシュベースのセッション管理。
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                        |
-| ---------- | ---------- | ----------------------------------------------- |
-| 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装              |
+| 日付       | バージョン | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-28 | 6.32.0     | TASK-6-1完了、SkillSlice（Zustand状態管理）実装        |
+| 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装                     |
 | 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠） |
-| 2026-01-26 | 6.30.0     | ファイル分割（巨大化防止）                      |
-| 2026-01-26 | 6.29.0     | TASK-3-1-D完了、Permission UI実装   |
-| 2026-01-25 | 6.28.0     | TASK-3-2完了、SkillExecutor IPC統合 |
-| 2026-01-24 | 6.27.0     | TASK-2A完了、SkillScanner実装       |
-| 2026-01-23 | 6.26.0     | TASK-3-1-A完了、SkillExecutor実装   |
+| 2026-01-26 | 6.30.0     | ファイル分割（巨大化防止）                             |
+| 2026-01-26 | 6.29.0     | TASK-3-1-D完了、Permission UI実装                      |
+| 2026-01-25 | 6.28.0     | TASK-3-2完了、SkillExecutor IPC統合                    |
+| 2026-01-24 | 6.27.0     | TASK-2A完了、SkillScanner実装                          |
+| 2026-01-23 | 6.26.0     | TASK-3-1-A完了、SkillExecutor実装                      |

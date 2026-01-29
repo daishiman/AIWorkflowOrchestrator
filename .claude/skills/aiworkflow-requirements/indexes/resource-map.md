@@ -61,7 +61,7 @@
 | arch-claude-cli.md                 | Claude CLI統合、セッション管理アーキテクチャ時             | CLIプロセス、セッションライフサイクル      |
 | arch-electron-services.md          | Electronサービス層設計、Main Process実装時                 | サービス層、依存関係注入                   |
 | arch-ipc-persistence.md            | IPC永続化パターン、Store設計時                             | 永続化戦略、ファイル保存                   |
-| arch-state-management.md           | 状態管理設計、Zustand詳細時                                | Zustand Store、状態分離                    |
+| arch-state-management.md           | 状態管理設計、Zustand詳細、skillSlice実装時                | Zustand Store、状態分離、skillSlice        |
 | arch-ui-components.md              | UIコンポーネントアーキテクチャ、Atomic Design時            | コンポーネント階層、責務分離               |
 
 ### 3. インターフェース
@@ -157,28 +157,29 @@
 
 ### 6. UI/UX
 
-| ファイル                    | 読み込み条件                                     | 主要コンテンツ                         |
-| --------------------------- | ------------------------------------------------ | -------------------------------------- |
-| ui-ux-components.md         | コンポーネント実装、Apple HIG準拠、WCAG対応時    | 設計原則、HIG、アクセシビリティ        |
-| ui-ux-design-system.md      | Design Token確認、カラー・タイポグラフィ設定時   | Tokens、カラー、タイポグラフィ         |
-| ui-ux-history-panel.md      | 履歴パネルUI全体像把握時（インデックス）         | 概要、ドキュメント構成、テスト品質     |
-| ui-history-components.md    | 履歴コンポーネント実装、Props定義確認時          | VersionHistory、Detail、Logs、Hook     |
-| ui-history-data-types.md    | 履歴データ型、IPC通信チャンネル定義時            | VersionHistoryItem、IPC API            |
-| ui-history-design.md        | 履歴UIデザイン、WCAG対応、エラーハンドリング時   | アクセシビリティ、エラー表示           |
-| ui-history-integration.md   | 履歴機能統合、タスク依存関係確認時               | 統合手順、タスク状態                   |
-| ui-ux-settings.md           | 設定画面UI実装、Permission Settings実装時        | 設定アーキテクチャ、IPC、権限設定      |
-| ui-ux-search-panel.md       | 検索パネルUI実装、ファイル/ワークスペース検索時  | タブバー、各検索パネル                 |
-| ui-ux-file-selector.md      | ファイルセレクタUI実装時                         | モーダル、ドロップゾーン               |
-| ui-ux-llm-selector.md       | LLMセレクタUI実装時                              | プロバイダー切替、状態管理             |
-| ui-ux-system-prompt.md      | システムプロンプトUI実装時                       | パネル展開、テンプレート管理           |
-| ui-ux-navigation.md         | ナビゲーションUI実装、AppDock設計時              | AppDock、ChatView                      |
-| ui-ux-forms.md              | フォームUI実装、認証UI、APIキー設定UI時          | フォーム設計、認証UI                   |
-| ui-ux-panels.md             | パネル共通ガイドライン確認時                     | アイコン、パネルガイドライン           |
-| ui-ux-portal-patterns.md    | Portal/Stacking Context問題解決時                | Portal、WAI-ARIA Menu                  |
-| ui-ux-advanced.md           | 高度なUI機能確認時（インデックス）               | ドキュメント一覧                       |
-| ui-ux-agent-execution.md    | Agent実行UI詳細、進捗表示実装時                  | 実行状態、ログ表示                     |
-| ui-ux-design-principles.md  | UI設計原則詳細、HIG/WCAG準拠時                   | デザイン原則、ガイドライン             |
-| ui-ux-feature-components.md | 機能別コンポーネント実装時、UX改善（TASK-3-2-A） | 機能コンポーネント、UX改善（R1/R2/R3） |
+| ファイル                      | 読み込み条件                                         | 主要コンテンツ                     |
+| ----------------------------- | ---------------------------------------------------- | ---------------------------------- |
+| ui-ux-components.md           | コンポーネント実装、Apple HIG準拠、WCAG対応時        | 設計原則、HIG、アクセシビリティ    |
+| ui-ux-design-system.md        | Design Token確認、カラー・タイポグラフィ設定時       | Tokens、カラー、タイポグラフィ     |
+| ui-ux-history-panel.md        | 履歴パネルUI全体像把握時（インデックス）             | 概要、ドキュメント構成、テスト品質 |
+| ui-history-components.md      | 履歴コンポーネント実装、Props定義確認時              | VersionHistory、Detail、Logs、Hook |
+| ui-history-data-types.md      | 履歴データ型、IPC通信チャンネル定義時                | VersionHistoryItem、IPC API        |
+| ui-history-design.md          | 履歴UIデザイン、WCAG対応、エラーハンドリング時       | アクセシビリティ、エラー表示       |
+| ui-history-integration.md     | 履歴機能統合、タスク依存関係確認時                   | 統合手順、タスク状態               |
+| ui-ux-settings.md             | 設定画面UI実装、Permission Settings実装時            | 設定アーキテクチャ、IPC、権限設定  |
+| ui-ux-search-panel.md         | 検索パネルUI実装、ファイル/ワークスペース検索時      | タブバー、各検索パネル             |
+| ui-ux-file-selector.md        | ファイルセレクタUI実装時                             | モーダル、ドロップゾーン           |
+| ui-ux-llm-selector.md         | LLMセレクタUI実装時                                  | プロバイダー切替、状態管理         |
+| ui-ux-system-prompt.md        | システムプロンプトUI実装時                           | パネル展開、テンプレート管理       |
+| ui-ux-navigation.md           | ナビゲーションUI実装、AppDock設計時                  | AppDock、ChatView                  |
+| ui-ux-forms.md                | フォームUI実装、認証UI、APIキー設定UI時              | フォーム設計、認証UI               |
+| ui-ux-panels.md               | パネル共通ガイドライン確認時                         | アイコン、パネルガイドライン       |
+| ui-ux-portal-patterns.md      | Portal/Stacking Context問題解決時                    | Portal、WAI-ARIA Menu              |
+| ui-ux-advanced.md             | 高度なUI機能確認時（インデックス）                   | ドキュメント一覧                   |
+| ui-ux-agent-execution.md      | Agent実行UI詳細、進捗表示実装時                      | 実行状態、ログ表示                 |
+| ui-ux-design-principles.md    | UI設計原則詳細、HIG/WCAG準拠時                       | デザイン原則、ガイドライン         |
+| ui-ux-feature-components.md   | 機能別コンポーネント実装時（インデックス）           | 機能コンポーネント一覧、共通仕様   |
+| ui-ux-feature-skill-stream.md | SkillStreamDisplay詳細、i18n対応、タイムスタンプ更新 | TASK-3-2シリーズ完全仕様、IPC API  |
 
 ### 7. セキュリティ
 
@@ -292,9 +293,11 @@
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                                                           |
-| ---------- | ---------- | ---------------------------------------------------------------------------------- |
-| 2026-01-27 | 1.3.0      | TASK-3-2-A UX改善追加: ui-ux-feature-components.md読み込み条件・主要コンテンツ更新 |
-| 2026-01-26 | 1.2.0      | 未登録ファイル18件追加: arch-6件、rag-6件、api-ipc-3件、ui-ux-3件                  |
-| 2026-01-26 | 1.1.0      | 分割ファイル追加: llm-4件、rag-search-5件、ui-history-4件、security-3件            |
-| 2026-01-26 | 1.0.0      | 初版作成（topic-map.mdから派生）                                                   |
+| 日付       | バージョン | 変更内容                                                                            |
+| ---------- | ---------- | ----------------------------------------------------------------------------------- |
+| 2026-01-28 | 1.5.0      | ui-ux-feature-skill-stream.md追加（ui-ux-feature-components.mdより分割）            |
+| 2026-01-28 | 1.4.0      | TASK-6-1 SkillSlice追加: arch-state-management.md/interfaces-agent-sdk-skill.md更新 |
+| 2026-01-27 | 1.3.0      | TASK-3-2-A UX改善追加: ui-ux-feature-components.md読み込み条件・主要コンテンツ更新  |
+| 2026-01-26 | 1.2.0      | 未登録ファイル18件追加: arch-6件、rag-6件、api-ipc-3件、ui-ux-3件                   |
+| 2026-01-26 | 1.1.0      | 分割ファイル追加: llm-4件、rag-search-5件、ui-history-4件、security-3件             |
+| 2026-01-26 | 1.0.0      | 初版作成（topic-map.mdから派生）                                                    |

@@ -234,9 +234,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| 残課題（未タスク） | L256 |
-| 関連ドキュメント | L267 |
-| 変更履歴 | L281 |
+| 残課題（未タスク） | L307 |
+| 関連ドキュメント | L318 |
+| 変更履歴 | L332 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -254,9 +254,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
 | SkillImportStore（TASK-2B） | L378 |
-| ModifierSkill（スライド逆同期機能） | L430 |
-| 関連ドキュメント | L464 |
-| 変更履歴 | L473 |
+| SkillSlice型定義（TASK-6-1） | L430 |
+| ModifierSkill（スライド逆同期機能） | L522 |
+| 関連ドキュメント | L556 |
+| 変更履歴 | L565 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -753,16 +754,29 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L36 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L143 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L210 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L358 |
-| UX改善機能（TASK-3-2-A） | L504 |
-| コピー履歴機能（TASK-3-2-D） | L594 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L703 |
-| 完了タスク | L714 |
-| 関連ドキュメント | L726 |
-| 変更履歴 | L737 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L35 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L142 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L209 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L357 |
+| コピー履歴機能（TASK-3-2-D） | L370 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L392 |
+| 完了タスク | L403 |
+| 関連ドキュメント | L416 |
+| 変更履歴 | L437 |
+
+### references/ui-ux-feature-skill-stream.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| コンポーネント階層 | L25 |
+| SkillStreamDisplay コンポーネント | L38 |
+| useSkillExecution Hook | L71 |
+| IPC API（Preload） | L93 |
+| UX改善機能（TASK-3-2-A） | L115 |
+| タイムスタンプ自動更新機能（TASK-3-2-C） | L198 |
+| i18n対応（TASK-3-2-B） | L332 |
+| 関連ドキュメント | L380 |
+| 変更履歴 | L391 |
 
 ### references/ui-ux-file-selector.md
 
@@ -1249,9 +1263,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L17 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L111 |
-| 関連ドキュメント | L201 |
+| Zustand Sliceパターン | L18 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L113 |
+| skillSlice（スキル実行状態管理） | L203 |
+| 関連ドキュメント | L327 |
 
 ### references/arch-ui-components.md
 

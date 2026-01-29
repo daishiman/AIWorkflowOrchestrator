@@ -13,23 +13,23 @@
 
 ### 収録機能一覧
 
-| 機能 | タスクID | 主要コンポーネント | 状態 |
-| ---- | -------- | ------------------ | ---- |
-| Community Visualization | CONV-08-05 | CommunityGraph, CommunityDetailPanel | 完了 |
-| Custom Execution Environment | AGENT-006 | ExecutionEnvironment, HTMLPreviewEnvironment | 完了 |
-| Workspace Chat Edit | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 |
-| Skill Stream Display | TASK-3-2 | SkillStreamDisplay, useSkillExecution | 完了 |
-| Skill Stream Copy History | TASK-3-2-D | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 |
+| 機能                         | タスクID         | 主要コンポーネント                                 | 状態 | 詳細仕様                                                         |
+| ---------------------------- | ---------------- | -------------------------------------------------- | ---- | ---------------------------------------------------------------- |
+| Community Visualization      | CONV-08-05       | CommunityGraph, CommunityDetailPanel               | 完了 | 本ファイル                                                       |
+| Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
+| Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
+| Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
+| Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 
 ### 共通仕様
 
-| 項目 | 基準 |
-| ---- | ---- |
-| アクセシビリティ | WCAG 2.1 AA準拠 |
-| スタイリング | Tailwind CSS + cn()ユーティリティ |
-| 状態管理 | Zustand |
-| テストフレームワーク | Vitest + React Testing Library |
-| Storybook | 全コンポーネント必須 |
+| 項目                 | 基準                              |
+| -------------------- | --------------------------------- |
+| アクセシビリティ     | WCAG 2.1 AA準拠                   |
+| スタイリング         | Tailwind CSS + cn()ユーティリティ |
+| 状態管理             | Zustand                           |
+| テストフレームワーク | Vitest + React Testing Library    |
+| Storybook            | 全コンポーネント必須              |
 
 ---
 
@@ -213,74 +213,74 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 
 ### コンポーネント階層
 
-| コンポーネント | 種類 | 親 | 子要素 |
-| -------------- | ---- | --- | ------ |
-| ChatView | views | - | FileContextDropZone, FileContextList, FileAttachmentButton, EditCommandInput, DiffPreview |
-| FileAttachmentButton | molecules | ChatView | なし |
-| FileContextList | organisms | ChatView | FileContextBadge（複数） |
-| FileContextDropZone | organisms | ChatView | ChatContent |
-| FileContextBadge | molecules | FileContextList | なし |
-| EditCommandInput | molecules | ChatView | CommandTypeSelector, TextInput + SendButton |
-| DiffPreview | organisms | ChatView（モーダル） | DiffEditor, ApplyControls |
-| DiffEditor | - | DiffPreview | Monaco DiffEditor |
+| コンポーネント       | 種類      | 親                   | 子要素                                                                                    |
+| -------------------- | --------- | -------------------- | ----------------------------------------------------------------------------------------- |
+| ChatView             | views     | -                    | FileContextDropZone, FileContextList, FileAttachmentButton, EditCommandInput, DiffPreview |
+| FileAttachmentButton | molecules | ChatView             | なし                                                                                      |
+| FileContextList      | organisms | ChatView             | FileContextBadge（複数）                                                                  |
+| FileContextDropZone  | organisms | ChatView             | ChatContent                                                                               |
+| FileContextBadge     | molecules | FileContextList      | なし                                                                                      |
+| EditCommandInput     | molecules | ChatView             | CommandTypeSelector, TextInput + SendButton                                               |
+| DiffPreview          | organisms | ChatView（モーダル） | DiffEditor, ApplyControls                                                                 |
+| DiffEditor           | -         | DiffPreview          | Monaco DiffEditor                                                                         |
 
 ### コンポーネント仕様
 
 #### FileAttachmentButton（Issue #494）
 
-| 項目 | 仕様 |
-| ---- | ---- |
-| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileAttachmentButton.tsx` |
-| 責務 | ファイル選択ダイアログを開き、選択されたファイルをコンテキストに追加 |
-| 依存 | useFileContext, electronAPI.fileSelection |
-| Props | `onFilesSelected?`, `multiple?`, `accept?`, `maxFiles?`, `disabled?`, `className?`, `children?` |
+| 項目     | 仕様                                                                                            |
+| -------- | ----------------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileAttachmentButton.tsx`    |
+| 責務     | ファイル選択ダイアログを開き、選択されたファイルをコンテキストに追加                            |
+| 依存     | useFileContext, electronAPI.fileSelection                                                       |
+| Props    | `onFilesSelected?`, `multiple?`, `accept?`, `maxFiles?`, `disabled?`, `className?`, `children?` |
 
 **Props詳細**
 
-| Prop | 型 | 必須 | デフォルト | 説明 |
-| ---- | --- | ---- | ---------- | ---- |
-| onFilesSelected | `(files: FileContext[]) => void` | No | - | ファイル選択時コールバック |
-| multiple | `boolean` | No | true | 複数選択許可 |
-| accept | `string[]` | No | ["*"] | 許可する拡張子 |
-| maxFiles | `number` | No | 10 | 最大ファイル数 |
-| disabled | `boolean` | No | false | 無効状態 |
+| Prop            | 型                               | 必須 | デフォルト | 説明                       |
+| --------------- | -------------------------------- | ---- | ---------- | -------------------------- |
+| onFilesSelected | `(files: FileContext[]) => void` | No   | -          | ファイル選択時コールバック |
+| multiple        | `boolean`                        | No   | true       | 複数選択許可               |
+| accept          | `string[]`                       | No   | ["*"]      | 許可する拡張子             |
+| maxFiles        | `number`                         | No   | 10         | 最大ファイル数             |
+| disabled        | `boolean`                        | No   | false      | 無効状態                   |
 
 **機能**
 
-| 機能 | 説明 |
-| ---- | ---- |
-| ダイアログ表示 | クリックでファイル選択ダイアログを開く |
-| 最大数制限 | canAddContext: falseで自動無効化 |
-| キーボード操作 | Enter/Spaceでダイアログを開く |
-| ローディング状態 | 処理中はボタン無効化 |
+| 機能             | 説明                                   |
+| ---------------- | -------------------------------------- |
+| ダイアログ表示   | クリックでファイル選択ダイアログを開く |
+| 最大数制限       | canAddContext: falseで自動無効化       |
+| キーボード操作   | Enter/Spaceでダイアログを開く          |
+| ローディング状態 | 処理中はボタン無効化                   |
 
 #### FileContextList（Issue #494）
 
-| 項目 | 仕様 |
-| ---- | ---- |
-| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextList.tsx` |
-| 責務 | 添付ファイル一覧の表示、削除・選択操作のハンドリング |
-| 依存 | useFileContext, FileContextBadge |
-| Props | `contexts?`, `onRemove?`, `onSelect?`, `selectedId?`, `emptyMessage?`, `maxHeight?`, `className?` |
+| 項目     | 仕様                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextList.tsx`           |
+| 責務     | 添付ファイル一覧の表示、削除・選択操作のハンドリング                                              |
+| 依存     | useFileContext, FileContextBadge                                                                  |
+| Props    | `contexts?`, `onRemove?`, `onSelect?`, `selectedId?`, `emptyMessage?`, `maxHeight?`, `className?` |
 
 **Props詳細**
 
-| Prop | 型 | 必須 | デフォルト | 説明 |
-| ---- | --- | ---- | ---------- | ---- |
-| contexts | `FileContext[]` | No | (Zustandから取得) | 表示するコンテキスト |
-| onRemove | `(id: string) => void` | No | - | 削除時コールバック |
-| onSelect | `(id: string) => void` | No | - | 選択時コールバック |
-| selectedId | `string` | No | (Zustandから取得) | 選択中のID |
-| emptyMessage | `string` | No | "ファイルが添付されていません" | 空状態メッセージ |
+| Prop         | 型                     | 必須 | デフォルト                     | 説明                 |
+| ------------ | ---------------------- | ---- | ------------------------------ | -------------------- |
+| contexts     | `FileContext[]`        | No   | (Zustandから取得)              | 表示するコンテキスト |
+| onRemove     | `(id: string) => void` | No   | -                              | 削除時コールバック   |
+| onSelect     | `(id: string) => void` | No   | -                              | 選択時コールバック   |
+| selectedId   | `string`               | No   | (Zustandから取得)              | 選択中のID           |
+| emptyMessage | `string`               | No   | "ファイルが添付されていません" | 空状態メッセージ     |
 
 **機能**
 
-| 機能 | 説明 |
-| ---- | ---- |
-| 一覧表示 | FileContextBadgeで各ファイルを表示 |
-| 空状態表示 | ファイルなし時にメッセージ表示 |
-| スクロール | 大量ファイル時にスクロール可能 |
-| キーボードナビゲーション | Tab/Enter/Deleteで操作 |
+| 機能                     | 説明                               |
+| ------------------------ | ---------------------------------- |
+| 一覧表示                 | FileContextBadgeで各ファイルを表示 |
+| 空状態表示               | ファイルなし時にメッセージ表示     |
+| スクロール               | 大量ファイル時にスクロール可能     |
+| キーボードナビゲーション | Tab/Enter/Deleteで操作             |
 
 #### FileContextBadge
 
@@ -357,238 +357,36 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 
 ## SkillStreamDisplay コンポーネント（TASK-3-2）
 
-スキル実行結果をリアルタイムでストリーミング表示するUIコンポーネント。
+> **詳細仕様**: [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md)
 
-### コンポーネント階層
+スキル実行結果をリアルタイムでストリーミング表示するUIコンポーネント群。TASK-3-2シリーズで段階的に機能拡張。
 
-| コンポーネント     | 種類      | 親                 | 子要素                                                                                                       |
-| ------------------ | --------- | ------------------ | ------------------------------------------------------------------------------------------------------------ |
-| SkillStreamDisplay | organisms | -                  | StreamHeader, StreamContent                                                                                  |
-| StreamHeader       | -         | SkillStreamDisplay | StatusBadge, LoadingSpinner（running時）, AbortButton（running時）, ResetButton（completed/error/aborted時） |
-| StreamContent      | -         | SkillStreamDisplay | MessageItem（複数、React.memo適用）                                                                          |
-| MessageItem        | -         | StreamContent      | message-content, MessageTimestamp, CopyButton                                                                |
+### コンポーネント概要
 
-StreamContentにはrole="log"およびaria-live="polite"を設定する。
+| コンポーネント     | 責務                             | 主要機能                       |
+| ------------------ | -------------------------------- | ------------------------------ |
+| SkillStreamDisplay | スキル実行ストリームの表示・制御 | 実行開始/中断/リセット         |
+| useSkillExecution  | 状態管理・IPC通信                | メッセージ管理、ステータス追跡 |
+| MessageTimestamp   | 相対時刻表示                     | 自動更新、i18n対応             |
+| CopyButton         | クリップボードコピー             | フィードバック表示             |
 
-### UX改善機能（TASK-3-2-A）
+### タスク履歴
 
-TASK-3-2-Aで追加されたUX改善機能。
+| タスクID   | 機能名                 | 完了日     | 主要追加機能                                     |
+| ---------- | ---------------------- | ---------- | ------------------------------------------------ |
+| TASK-3-2   | 基盤実装               | 2026-01-25 | SkillStreamDisplay、useSkillExecution            |
+| TASK-3-2-A | UX改善                 | 2026-01-27 | LoadingSpinner、MessageTimestamp、CopyButton     |
+| TASK-3-2-B | i18n対応               | 2026-01-28 | formatRelativeTime locale対応、日英2言語         |
+| TASK-3-2-C | タイムスタンプ自動更新 | 2026-01-28 | TimestampContext、useInterval、usePageVisibility |
 
-#### R1: LoadingSpinner（ローディングアニメーション）
+### IPC API概要
 
-| 項目 | 仕様 |
-| ---- | ---- |
-| 表示条件 | `status === "running"` |
-| 位置 | StreamHeader内、StatusBadgeの右隣 |
-| アニメーション | Tailwind CSS `animate-spin` |
-| サイズ | 16px × 16px |
-| アクセシビリティ | `role="status"` `aria-label="実行中"` |
-| data-testid | `loading-spinner-container`, `loading-spinner` |
-
-#### R2: MessageTimestamp（タイムスタンプ表示）
-
-| 項目 | 仕様 |
-| ---- | ---- |
-| 表示位置 | MessageItem内、message-contentの右側 |
-| フォーマット | 相対時刻（「X秒前」「X分前」「X時間前」「X日前」） |
-| スタイル | `text-xs text-gray-400 flex-shrink-0` |
-| 依存関数 | `formatRelativeTime` |
-| Props | `timestamp: number`, `messageId: string` |
-
-**formatRelativeTime ユーティリティ**
-
-| 項目 | 仕様 |
-| ---- | ---- |
-| ファイル | `apps/desktop/src/renderer/utils/formatTime.ts` |
-| 引数 | `timestamp: number`（UNIXミリ秒）, `locale?: string`（デフォルト: "ja"）, `now?: number`（テスト用） |
-| 戻り値 | 相対時刻文字列（ロケールに応じた言語） |
-| 対応言語 | 日本語（ja）、英語（en） |
-
-出力形式:
-
-| 条件 | 出力例 |
-| ---- | ------ |
-| diff < 0 | 「たった今」 |
-| seconds < 60 | 「X秒前」 |
-| minutes < 60 | 「X分前」 |
-| hours < 24 | 「X時間前」 |
-| days >= 1 | 「X日前」 |
-
-#### R3: CopyButton（クリップボードコピー）
-
-| 項目 | 仕様 |
-| ---- | ---- |
-| 表示条件 | Clipboard API対応時のみ（非対応時は `null` を返す） |
-| 表示位置 | MessageItem内、ホバー時に表示 |
-| スタイル | `opacity-0 group-hover:opacity-100 transition-opacity` |
-| フィードバック | 「コピーしました」を2秒間表示 |
-| キーボード操作 | `tabIndex={0}`, Enter/Space対応 |
-| アクセシビリティ | `aria-label="メッセージをコピー"`, `role="status" aria-live="polite"`（フィードバック） |
-| Props | `content: string`, `messageId: string` |
-| エラーハンドリング | コピー失敗時は `console.error` でログ出力 |
-
-### コンポーネント仕様
-
-#### SkillStreamDisplay
-
-| 項目     | 仕様                                                                    |
-| -------- | ----------------------------------------------------------------------- |
-| ファイル | `apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx` |
-| 責務     | スキル実行ストリームの表示、実行制御                                    |
-| 依存Hook | `useSkillExecution`                                                     |
-
-**Props**
-
-| Prop           | 型                                     | 必須 | デフォルト | 説明                       |
-| -------------- | -------------------------------------- | ---- | ---------- | -------------------------- |
-| skillId        | `string`                               | Yes  | -          | 実行対象のスキルID         |
-| initialPrompt  | `string`                               | No   | -          | 初期プロンプト             |
-| autoExecute    | `boolean`                              | No   | false      | 自動実行フラグ             |
-| onComplete     | `() => void`                           | No   | -          | 完了時コールバック         |
-| onError        | `(error: SkillExecutionError) => void` | No   | -          | エラー時コールバック       |
-| onStatusChange | `(status: string) => void`             | No   | -          | ステータス変更コールバック |
-| height         | `string \| number`                     | No   | "auto"     | コンポーネント高さ         |
-| className      | `string`                               | No   | -          | カスタムクラス名           |
-
-**ステータス表示**
-
-| ステータス | 日本語表示 | 色    |
-| ---------- | ---------- | ----- |
-| idle       | 待機中     | gray  |
-| running    | 実行中     | blue  |
-| completed  | 完了       | green |
-| error      | エラー     | red   |
-| aborted    | 中断       | red   |
-
-#### useSkillExecution Hook
-
-| 項目     | 仕様                                                   |
-| -------- | ------------------------------------------------------ |
-| ファイル | `apps/desktop/src/renderer/hooks/useSkillExecution.ts` |
-| 責務     | スキル実行状態管理、IPC通信                            |
-
-**戻り値**
-
-| プロパティ  | 型                                      | 説明                     |
-| ----------- | --------------------------------------- | ------------------------ |
-| messages    | `SkillStreamMessage[]`                  | ストリームメッセージ一覧 |
-| status      | `ExecutionStatus`                       | 現在のステータス         |
-| executionId | `string \| null`                        | 現在の実行ID             |
-| error       | `SkillExecutionError \| null`           | エラー情報               |
-| isAborting  | `boolean`                               | 中断処理中フラグ         |
-| execute     | `(prompt: string) => Promise<Response>` | 実行開始関数             |
-| abort       | `() => Promise<void>`                   | 中断関数                 |
-| reset       | `() => void`                            | リセット関数             |
-
-### IPC API（Preload）
-
-SkillAPIは以下のメソッドを提供する。
-
-| メソッド           | 引数                                            | 戻り値                             | 説明                     |
-| ------------------ | ----------------------------------------------- | ---------------------------------- | ------------------------ |
-| execute            | request: SkillExecutionRequest                  | `Promise<SkillExecutionResponse>`  | スキル実行開始           |
-| onStream           | callback: (message: SkillStreamMessage) => void | `() => void`（クリーンアップ関数） | ストリームメッセージ購読 |
-| abort              | executionId: string                             | `Promise<boolean>`                 | 実行中断                 |
-| getExecutionStatus | executionId: string                             | `Promise<ExecutionInfo \| null>`   | ステータス照会           |
-
-**IPCチャンネル**
-
-| チャンネル       | 方向            | 用途                 |
-| ---------------- | --------------- | -------------------- |
-| skill:execute    | Renderer → Main | 実行開始             |
-| skill:stream     | Main → Renderer | メッセージストリーム |
-| skill:abort      | Renderer → Main | 実行中断             |
-| skill:get-status | Renderer → Main | ステータス照会       |
-
----
-
-## UX改善機能（TASK-3-2-A）
-
-SkillStreamDisplayコンポーネントのユーザー体験を向上させる3つの機能。
-
-### R1: ローディングアニメーション
-
-スキル実行中（status === "running"）にスピナーを表示する。
-
-| 項目       | 仕様                                            |
-| ---------- | ----------------------------------------------- |
-| トリガー   | status === "running"                            |
-| 表示位置   | StreamHeader内、StatusBadgeの隣                 |
-| スタイル   | 16x16px、青色（#3B82F6）、border-2、1秒周期回転 |
-| 非表示条件 | status !== "running"                            |
-| aria-label | "スキル実行中"                                  |
-| role       | "status"                                        |
-
-**CSSクラス**: `loading-spinner w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin`
-
-### R2: タイムスタンプ表示
-
-各メッセージの送信時刻を相対時間形式で表示する。
-
-| 項目           | 仕様                                                          |
-| -------------- | ------------------------------------------------------------- |
-| ユーティリティ | `formatRelativeTime(timestamp: number, now?: number): string` |
-| ファイル       | `apps/desktop/src/renderer/utils/formatTime.ts`               |
-| 表示位置       | MessageItem内、メッセージ内容の右側                           |
-| HTML要素       | `<time dateTime="ISO形式">相対時刻</time>`                    |
-
-**表示形式**
-
-| 経過時間  | 表示     |
-| --------- | -------- |
-| 0秒       | たった今 |
-| 1〜59秒   | X秒前    |
-| 1〜59分   | X分前    |
-| 1〜23時間 | X時間前  |
-| 1日以上   | X日前    |
-
-**エッジケース処理**: null、undefined、NaN、負数の場合は空文字列を返す
-
-### R3: クリップボードコピー
-
-メッセージ内容をワンクリックでコピーする機能。
-
-| 項目                   | 仕様                                     |
-| ---------------------- | ---------------------------------------- | ----- |
-| API                    | `navigator.clipboard.writeText(content)` |
-| 状態管理               | `copiedMessageId: string                 | null` |
-| フィードバック表示時間 | 2秒                                      |
-| ボタンアイコン         | 通常: 📋、コピー後: ✓                    |
-| フィードバックテキスト | "コピーしました"                         |
-
-**コピーボタン仕様**
-
-| 項目       | 仕様                                                             |
-| ---------- | ---------------------------------------------------------------- |
-| 表示位置   | MessageItem内、メッセージ内容の右端                              |
-| className  | `copy-button ml-2 p-1 text-gray-400 hover:text-gray-600 rounded` |
-| aria-label | "メッセージをコピー"                                             |
-
-**フィードバック仕様**
-
-| 項目      | 仕様                                        |
-| --------- | ------------------------------------------- |
-| className | `copy-feedback ml-2 text-xs text-green-600` |
-| role      | "status"                                    |
-| aria-live | "polite"                                    |
-
-### MessageItem 内部構造（TASK-3-2-A拡張後）
-
-| 要素                 | 位置     | 説明                             |
-| -------------------- | -------- | -------------------------------- |
-| アバター/アイコン    | 左端     | roleに応じたアイコン表示         |
-| メッセージ内容       | 中央     | テキストコンテンツ               |
-| タイムスタンプ       | 右側     | formatRelativeTimeによる相対時刻 |
-| コピーボタン         | 右端     | クリップボードコピー機能         |
-| コピーフィードバック | ボタン隣 | コピー成功時に2秒間表示          |
-
-### テスト品質（TASK-3-2-A）
-
-| ファイル                    | テスト数 | カバレッジ |
-| --------------------------- | -------- | ---------- |
-| formatTime.test.ts          | 25       | 100%       |
-| SkillStreamDisplay.test.tsx | 63       | 96.9%      |
-| 合計                        | 88       | -          |
+| メソッド  | 用途                     |
+| --------- | ------------------------ |
+| execute   | スキル実行開始           |
+| onStream  | ストリームメッセージ購読 |
+| abort     | 実行中断                 |
+| getStatus | ステータス照会           |
 
 ---
 
@@ -763,35 +561,49 @@ SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過�
 
 ## 完了タスク
 
-| Issue # | 機能名 | 完了日 | 関連ドキュメント |
-| ------- | ------ | ------ | ---------------- |
-| TASK-3-2-B | skill-stream-i18n | 2026-01-28 | `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/` |
-| TASK-3-2-D | skill-stream-copy-history | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/` |
-| TASK-3-2-A | skill-stream-ux-improvements | 2026-01-27 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/` |
-| TASK-3-2 | skillexecutor-ipc-integration | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
-| #468 | workspace-chat-edit-ui (基盤) | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/` |
-| #494 | workspace-chat-edit-ui (FileAttachmentButton, FileContextList) | 2026-01-27 | `docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md` |
+| Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
+| ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-3-2-D | skill-stream-copy-history                                      | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                           |
+| TASK-3-2-B | skill-stream-i18n                                              | 2026-01-28 | `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/`                                                   |
+| TASK-3-2-C | timestamp-autoupdate                                           | 2026-01-28 | `docs/30-workflows/TASK-3-2-C-timestamp-autoupdate/`                                                |
+| TASK-3-2-A | skill-stream-ux-improvements                                   | 2026-01-27 | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`                                        |
+| TASK-3-2   | skillexecutor-ipc-integration                                  | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/`                                         |
+| #468       | workspace-chat-edit-ui (基盤)                                  | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/`                                                         |
+| #494       | workspace-chat-edit-ui (FileAttachmentButton, FileContextList) | 2026-01-27 | `docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md` |
 
 ---
 
 ## 関連ドキュメント
 
+### 分割ファイル
+
+- [SkillStreamDisplay詳細仕様](./ui-ux-feature-skill-stream.md) - TASK-3-2シリーズの完全な仕様
+
+### 親・関連仕様
+
 - [UI/UXコンポーネント概要](./ui-ux-components.md)
 - [デザイン原則](./ui-ux-design-principles.md)
 - [Agent Execution UI](./ui-ux-agent-execution.md)
-- [SkillStreamDisplay UX改善 実装ガイド](../../../docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md)
-- [SkillStreamDisplay コピー履歴機能 実装ガイド](../../../docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/outputs/phase-12/implementation-guide.md)
-- [workspace-chat-edit-ui 実装ガイド](../../../docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md)
+
+### 実装ガイド
+
+- [SkillStreamDisplay UX改善](../../../docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/outputs/phase-12/implementation-guide.md)
+- [タイムスタンプ自動更新](../../../docs/30-workflows/TASK-3-2-C-timestamp-autoupdate/outputs/phase-12/implementation-guide.md)
+- [SkillStreamDisplay i18n](../../../docs/30-workflows/TASK-3-2-B-skill-stream-i18n/outputs/phase-12/implementation-guide.md)
+- [SkillStreamDisplay コピー履歴](../../../docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/outputs/phase-12/implementation-guide.md)
+- [workspace-chat-edit-ui](../../../docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md)
 
 ---
 
 ## 変更履歴
 
-| 日付 | バージョン | 変更内容 |
-| ---- | ---------- | -------- |
-| 2026-01-28 | v1.4.0 | TASK-3-2-B: SkillStreamDisplay i18n対応（日本語/英語、aria-label翻訳、formatRelativeTime locale引数追加） |
-| 2026-01-28 | v1.3.0 | TASK-3-2-D: SkillStreamDisplay コピー履歴機能（CopyHistoryPanel、CopyHistoryContext、useCopyHistory）追加 |
-| 2026-01-27 | v1.2.0 | TASK-3-2-A: SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー）追加 |
-| 2026-01-27 | v1.1.1 | 構造最適化: 概要セクション追加（収録機能一覧・共通仕様テーブル） |
-| 2026-01-27 | v1.1.0 | Issue #494: FileAttachmentButton, FileContextList コンポーネント仕様追加 |
-| 2026-01-26 | v1.0.0 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+| 日付       | バージョン | 変更内容                                                                                        |
+| ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-01-28 | v1.6.0     | TASK-3-2-D: コピー履歴機能追加（CopyHistoryPanel、CopyHistoryContext、useCopyHistory）          |
+| 2026-01-28 | v1.5.0     | 構造最適化: SkillStreamDisplay関連を ui-ux-feature-skill-stream.md に分割（826行→約400行）      |
+| 2026-01-28 | v1.4.0     | TASK-3-2-B: i18n対応追加（formatRelativeTime localeパラメータ、日英2言語、翻訳テーブル）        |
+| 2026-01-28 | v1.3.0     | TASK-3-2-C: タイムスタンプ自動更新機能追加（TimestampProvider, useInterval, usePageVisibility） |
+| 2026-01-27 | v1.2.0     | TASK-3-2-A: SkillStreamDisplay UX改善（R1スピナー、R2タイムスタンプ、R3コピー）追加             |
+| 2026-01-27 | v1.1.1     | 構造最適化: 概要セクション追加（収録機能一覧・共通仕様テーブル）                                |
+| 2026-01-27 | v1.1.0     | Issue #494: FileAttachmentButton, FileContextList コンポーネント仕様追加                        |
+| 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                              |
