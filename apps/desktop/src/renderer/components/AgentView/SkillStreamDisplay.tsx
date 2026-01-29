@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import { useSkillExecution } from "../../hooks/useSkillExecution";
 import { useSkillPermission } from "../../hooks/useSkillPermission";
 import { useCopyHistory } from "../../hooks/useCopyHistory";
+import { CopyHistoryProvider } from "../../contexts/CopyHistoryContext";
 import { PermissionDialog } from "../organisms/PermissionDialog/PermissionDialog";
 import { CopyHistoryPanel, CopyHistoryToggle } from "./CopyHistoryPanel";
 import { formatRelativeTime } from "../../utils/formatTime";
@@ -301,7 +302,10 @@ const MessageItem = React.memo(function MessageItem({
 });
 
 /**
- * スキル実行ストリーム表示コンポーネント
+ * スキル実行ストリーム表示コンポーネント（外側）
+ *
+ * CopyHistoryProvider と TimestampProvider でラップし、
+ * 内部コンポーネントに処理を委譲する。
  *
  * @example
  * ```tsx
@@ -313,7 +317,22 @@ const MessageItem = React.memo(function MessageItem({
  * />
  * ```
  */
-export function SkillStreamDisplay({
+export function SkillStreamDisplay(props: SkillStreamDisplayProps) {
+  return (
+    <CopyHistoryProvider>
+      <TimestampProvider>
+        <SkillStreamDisplayInner {...props} />
+      </TimestampProvider>
+    </CopyHistoryProvider>
+  );
+}
+
+/**
+ * スキル実行ストリーム表示コンポーネント（内側）
+ *
+ * CopyHistoryProvider / TimestampProvider 内で使用される。
+ */
+function SkillStreamDisplayInner({
   skillId,
   initialPrompt,
   autoExecute = false,
@@ -386,96 +405,94 @@ export function SkillStreamDisplay({
   const executingMessage = t("message.executing");
 
   return (
-    <TimestampProvider>
-      <div
-        className={`skill-stream-display ${className || ""}`}
-        style={containerStyle}
-      >
-        {/* スクリーンリーダー用ステータス通知 */}
-        <div className="sr-only" role="status" aria-live="polite">
-          {statusText}
-        </div>
-
-        {/* ヘッダー: 実行状態表示 */}
-        <div className="stream-header flex items-center justify-between gap-2 p-2 border-b">
-          <div className="flex items-center gap-2">
-            <span
-              className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
-            >
-              {statusText}
-            </span>
-            {/* R1: ローディングスピナー */}
-            {status === "running" && (
-              <LoadingSpinner ariaLabel={loadingAriaLabel} />
-            )}
-            {status === "running" && (
-              <button
-                onClick={abort}
-                disabled={isAborting}
-                aria-label={abortAriaLabel}
-                className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
-              >
-                {abortButtonText}
-              </button>
-            )}
-            {(status === "completed" ||
-              status === "error" ||
-              status === "aborted") && (
-              <button
-                onClick={reset}
-                aria-label={resetAriaLabel}
-                className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
-              >
-                {resetButtonText}
-              </button>
-            )}
-          </div>
-          {/* R4: コピー履歴トグル */}
-          <div className="relative">
-            <CopyHistoryToggle
-              isOpen={isHistoryPanelOpen}
-              onToggle={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}
-              historyCount={historyCount}
-            />
-            <CopyHistoryPanel
-              isOpen={isHistoryPanelOpen}
-              onClose={() => setIsHistoryPanelOpen(false)}
-            />
-          </div>
-        </div>
-
-        {/* メッセージ一覧 */}
-        <div
-          className="stream-content p-2 overflow-y-auto"
-          role="log"
-          aria-live="polite"
-        >
-          {status === "idle" && messages.length === 0 && (
-            <p className="text-gray-500">{startPromptMessage}</p>
-          )}
-          {status === "running" && messages.length === 0 && (
-            <p className="text-gray-500">{executingMessage}</p>
-          )}
-          {messages.map((message) => (
-            <MessageItem
-              key={message.id}
-              message={message}
-              locale={i18n.language}
-              copyAriaLabel={copyAriaLabel}
-              copyFeedbackText={copyFeedbackText}
-              onCopySuccess={handleCopySuccess}
-            />
-          ))}
-        </div>
-
-        {/* 権限確認ダイアログ */}
-        <PermissionDialog
-          request={pendingPermission}
-          onApprove={handleApprove}
-          onDeny={handleDeny}
-        />
+    <div
+      className={`skill-stream-display ${className || ""}`}
+      style={containerStyle}
+    >
+      {/* スクリーンリーダー用ステータス通知 */}
+      <div className="sr-only" role="status" aria-live="polite">
+        {statusText}
       </div>
-    </TimestampProvider>
+
+      {/* ヘッダー: 実行状態表示 */}
+      <div className="stream-header flex items-center justify-between gap-2 p-2 border-b">
+        <div className="flex items-center gap-2">
+          <span
+            className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
+          >
+            {statusText}
+          </span>
+          {/* R1: ローディングスピナー */}
+          {status === "running" && (
+            <LoadingSpinner ariaLabel={loadingAriaLabel} />
+          )}
+          {status === "running" && (
+            <button
+              onClick={abort}
+              disabled={isAborting}
+              aria-label={abortAriaLabel}
+              className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+            >
+              {abortButtonText}
+            </button>
+          )}
+          {(status === "completed" ||
+            status === "error" ||
+            status === "aborted") && (
+            <button
+              onClick={reset}
+              aria-label={resetAriaLabel}
+              className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              {resetButtonText}
+            </button>
+          )}
+        </div>
+        {/* R4: コピー履歴トグル */}
+        <div className="relative">
+          <CopyHistoryToggle
+            isOpen={isHistoryPanelOpen}
+            onToggle={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}
+            historyCount={historyCount}
+          />
+          <CopyHistoryPanel
+            isOpen={isHistoryPanelOpen}
+            onClose={() => setIsHistoryPanelOpen(false)}
+          />
+        </div>
+      </div>
+
+      {/* メッセージ一覧 */}
+      <div
+        className="stream-content p-2 overflow-y-auto"
+        role="log"
+        aria-live="polite"
+      >
+        {status === "idle" && messages.length === 0 && (
+          <p className="text-gray-500">{startPromptMessage}</p>
+        )}
+        {status === "running" && messages.length === 0 && (
+          <p className="text-gray-500">{executingMessage}</p>
+        )}
+        {messages.map((message) => (
+          <MessageItem
+            key={message.id}
+            message={message}
+            locale={i18n.language}
+            copyAriaLabel={copyAriaLabel}
+            copyFeedbackText={copyFeedbackText}
+            onCopySuccess={handleCopySuccess}
+          />
+        ))}
+      </div>
+
+      {/* 権限確認ダイアログ */}
+      <PermissionDialog
+        request={pendingPermission}
+        onApprove={handleApprove}
+        onDeny={handleDeny}
+      />
+    </div>
   );
 }
 
