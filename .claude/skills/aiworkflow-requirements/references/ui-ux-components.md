@@ -120,6 +120,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | CONV-08-05 | Community Visualization | 2026-01-25 |
 | TASK-3-2 | SkillStreamDisplay | 2026-01-25 |
 | #468 | workspace-chat-edit-ui | 2026-01-25 |
+| TASK-7A | SkillSelector コンポーネント実装 | 2026-01-30 |
 
 ---
 
@@ -127,6 +128,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                        |
 | ------- | ---------- | ---------------------------------------------- |
+| 2.1.0   | 2026-01-30 | TASK-7A完了タスク追加（SkillSelector コンポーネント） |
 | 2.0.0   | 2026-01-26 | 4ファイルに分割（964行→インデックス+詳細ファイル） |
 | 1.1.0   | 2026-01-26 | コードブロックを表形式に変換（spec-guidelines準拠） |
 | 1.0.0   | 2026-01-25 | 初版作成                                       |

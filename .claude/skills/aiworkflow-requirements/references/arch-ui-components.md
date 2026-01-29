@@ -205,10 +205,206 @@ Monaco Diff Editorは`@monaco-editor/react`を使用してサイドバイサイ�
 
 ---
 
+## SkillSelector コンポーネントパターン
+
+### 概要
+
+SkillSelectorはスキル選択用ドロップダウンコンポーネント。WAI-ARIA Listboxパターンに準拠し、キーボードナビゲーション・ダークモード対応を実装。
+
+**実装場所**: `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`
+
+### コンポーネント構成
+
+| 階層 | コンポーネント        | 分類      | 説明                           |
+|------|-----------------------|-----------|--------------------------------|
+| 1    | SkillSelector         | molecules | メインコンポーネント           |
+| 1-1  | SkillOption           | atoms     | インポート済みスキルオプション |
+| 1-2  | SkillOptionUnimported | atoms     | 未インポートスキルオプション   |
+
+### Props/Types定義
+
+#### SkillSelectorProps
+
+| Prop        | 型       | 必須 | デフォルト | 説明                   |
+|-------------|----------|------|------------|------------------------|
+| `className` | `string` | -    | `""`       | カスタムCSSクラス追加  |
+
+#### SkillOptionProps（内部）
+
+| Prop           | 型                 | 必須 | 説明                     |
+|----------------|--------------------|------|--------------------------|
+| `name`         | `string \| null`   | ✅   | スキル名（nullで「なし」） |
+| `label`        | `string`           | -    | 表示ラベル               |
+| `description`  | `string`           | -    | スキル説明               |
+| `agentCount`   | `number`           | -    | サブエージェント数       |
+| `referenceCount`| `number`          | -    | 参照資料数               |
+| `isSelected`   | `boolean`          | ✅   | 選択状態                 |
+| `isFocused`    | `boolean`          | ✅   | キーボードフォーカス状態 |
+| `index`        | `number`           | ✅   | オプションインデックス   |
+| `onSelect`     | `() => void`       | ✅   | 選択コールバック         |
+
+#### SkillOptionUnimportedProps（内部）
+
+| Prop           | 型                 | 必須 | 説明                     |
+|----------------|--------------------|------|--------------------------|
+| `name`         | `string`           | ✅   | スキル名                 |
+| `description`  | `string`           | -    | スキル説明               |
+| `isSelected`   | `boolean`          | ✅   | 選択状態（常にfalse）    |
+| `isFocused`    | `boolean`          | ✅   | キーボードフォーカス状態 |
+| `index`        | `number`           | ✅   | オプションインデックス   |
+| `onSelect`     | `() => void`       | ✅   | 選択コールバック         |
+
+### 状態管理連携
+
+#### useSkillStore()セレクター
+
+`useSkillStore()` Hook 経由で skillSlice にアクセス。
+
+| プロパティ          | 型                   | 説明                 |
+|---------------------|----------------------|----------------------|
+| `availableSkills`   | `SkillMetadata[]`    | 利用可能スキル一覧   |
+| `importedSkills`    | `ImportedSkill[]`    | インポート済み一覧   |
+| `selectedSkillName` | `string \| null`     | 選択中スキル名       |
+| `isScanning`        | `boolean`            | スキャン中フラグ     |
+| `selectSkill`       | `(name) => void`     | 選択アクション       |
+| `rescanSkills`      | `() => Promise<void>`| 再スキャンアクション |
+
+#### 内部状態（useState）
+
+| 状態           | 型        | 初期値 | 説明                     |
+|----------------|-----------|--------|--------------------------|
+| `isOpen`       | `boolean` | false  | ドロップダウン開閉状態   |
+| `focusedIndex` | `number`  | -1     | フォーカス中オプション   |
+
+### 実装パターン
+
+#### 計算済みデータ（useMemo）
+
+| 変数名            | 計算内容                                | 依存配列             |
+|-------------------|----------------------------------------|----------------------|
+| `importedNames`   | インポート済みスキル名のSet             | `[importedSkills]`   |
+| `unimportedSkills`| 利用可能だが未インポートのスキル配列    | `[availableSkills, importedNames]` |
+| `allOptions`      | 全選択肢（none + imported + available） | `[importedSkills, unimportedSkills]` |
+
+#### コールバック（useCallback）
+
+| 関数名        | 引数                        | 責務                       |
+|---------------|-----------------------------|---------------------------|
+| `handleToggle`| -                           | ドロップダウン開閉         |
+| `handleSelect`| `name: string \| null`      | スキル選択・閉じる         |
+| `handleKeyDown`| `event: KeyboardEvent`     | キーボードナビゲーション   |
+| `handleRescan`| -                           | 再スキャン実行             |
+
+#### 外部クリック検知（useEffect）
+
+- `mousedown`イベントリスナーを登録
+- `containerRef`の外側クリックで`setIsOpen(false)`
+- クリーンアップでリスナー解除
+
+### ARIA属性パターン
+
+| 要素             | role     | 主要属性                                              |
+|------------------|----------|-------------------------------------------------------|
+| トリガーボタン   | combobox | aria-expanded, aria-haspopup, aria-controls, aria-activedescendant |
+| ドロップダウン   | listbox  | aria-labelledby                                       |
+| 各オプション     | option   | aria-selected                                         |
+| セクションヘッダー | presentation | aria-hidden="true"                              |
+| スクリーンリーダーラベル | - | `<label id="skill-selector-label" className="sr-only">` |
+
+### キーボードナビゲーション
+
+| キー       | 動作                                       |
+|------------|-------------------------------------------|
+| Enter/Space | ドロップダウン開閉・オプション選択        |
+| ArrowDown/Up | オプション間フォーカス移動              |
+| Home/End   | 最初/最後のオプションへ移動               |
+| Escape     | ドロップダウンを閉じる                    |
+| Tab        | ドロップダウンを閉じてフォーカス移動      |
+
+### スタイリングパターン
+
+#### Tailwind CSS クラス構成
+
+| 要素           | 基本クラス                                           | 状態クラス                     |
+|----------------|-----------------------------------------------------|--------------------------------|
+| トリガーボタン | `rounded-md border border-gray-300 bg-white`        | `focus:ring-2 focus:ring-blue-500` |
+| ドロップダウン | `absolute z-50 mt-1 shadow-lg rounded-md`           | `max-h-60 overflow-auto`       |
+| オプション     | `px-3 py-2 cursor-pointer text-sm`                  | `hover:bg-gray-50`, 選択時: `bg-blue-50` |
+
+#### ダークモード対応
+
+| 要素           | ライトモード        | ダークモード                |
+|----------------|--------------------|-----------------------------|
+| 背景           | `bg-white`         | `dark:bg-gray-800`          |
+| ボーダー       | `border-gray-300`  | `dark:border-gray-600`      |
+| テキスト       | `text-gray-900`    | `dark:text-gray-100`        |
+| サブテキスト   | `text-gray-500`    | `dark:text-gray-400`        |
+
+### ヘルパー関数
+
+#### getArrayLength
+
+**シグネチャ**: `(obj: Record<string, unknown>, key: string) => number | undefined`
+
+**責務**: オプショナルな配列プロパティの長さを安全に取得
+
+| 入力     | 出力                                  |
+|----------|---------------------------------------|
+| 配列     | `array.length`                        |
+| 非配列   | `undefined`                           |
+
+### 品質メトリクス
+
+- 28テストケース全PASS
+- Line Coverage: 100%, Branch Coverage: 93.15%, Function Coverage: 87.5%
+- WAI-ARIA Listbox パターン完全準拠
+- TypeScript strict: PASS, ESLint: 0エラー
+
+### 関連タスク
+
+- **TASK-7A**: SkillSelector実装（2026-01-30完了）
+
+### 完了タスク
+
+| タスクID | 内容                             | 完了日     |
+|----------|----------------------------------|------------|
+| TASK-7A  | SkillSelector コンポーネント実装 | 2026-01-30 |
+
+#### タスク: SkillSelector コンポーネント実装（2026-01-30完了）
+
+| 項目         | 内容                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| タスクID     | TASK-7A                                                           |
+| 完了日       | 2026-01-30                                                        |
+| ステータス   | **完了**                                                          |
+| テスト数     | 28（自動テスト）+ 17（手動テスト項目）                           |
+| 発見課題     | 0件                                                               |
+| ドキュメント | `docs/30-workflows/TASK-7A-skill-selector/`                       |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 機能テスト         | 13       | 13   | 0    |
+| エラーハンドリング | 3        | 3    | 0    |
+| アクセシビリティ   | 8        | 8    | 0    |
+| 統合テスト連携     | 4        | 4    | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-7A-skill-selector/outputs/phase-11/manual-test-result.md`  |
+| 実装ガイド         | `docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md`|
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 1.3.0   | 2026-01-30 | SkillSelector詳細実装パターン追加（Props/Types/Hooks/スタイリング） |
+| 1.2.0   | 2026-01-30 | SkillSelectorコンポーネントパターン追加（TASK-7A） |
 | 1.1.0   | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式/文章形式に変換 |
 | 1.0.0   | 2026-01-25 | Monaco Diff Editor統合パターン追加 |
 
@@ -218,3 +414,4 @@ Monaco Diff Editorは`@monaco-editor/react`を使用してサイドバイサイ�
 
 - [アーキテクチャパターン概要](./architecture-patterns.md)
 - [状態管理パターン](./arch-state-management.md)
+- [SkillSelector実装ガイド](../../../docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md)
