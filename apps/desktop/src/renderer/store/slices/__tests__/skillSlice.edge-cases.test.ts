@@ -260,7 +260,7 @@ describe("skillSlice - エッジケース", () => {
       expect(
         (global as any).window.electronAPI.skill.execute,
       ).toHaveBeenCalledWith({
-        skillName: "test-skill-1",
+        skillId: "test-skill-1",
         prompt: "",
       });
     });

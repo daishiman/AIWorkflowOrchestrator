@@ -1,6 +1,6 @@
 {
   "generated": "2026-01-29T04:16:14.247Z",
-  "totalKeywords": 946,
+  "totalKeywords": 950,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -31,6 +31,7 @@
       "security-skill-execution.md",
       "security-skill-ipc.md",
       "spec-splitting-guidelines.md",
+      "ui-ux-feature-skill-stream.md",
       "ui-ux-forms.md",
       "ui-ux-settings.md"
     ],
@@ -106,6 +107,7 @@
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
       "ui-ux-file-selector.md",
       "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md",
@@ -220,6 +222,7 @@
       "ui-ux-components.md",
       "ui-ux-design-principles.md",
       "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
       "ui-ux-history-panel.md",
@@ -330,6 +333,7 @@
       "ui-ux-components.md",
       "ui-ux-design-principles.md",
       "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
       "ui-ux-file-selector.md",
       "ui-ux-history-panel.md",
       "ui-ux-llm-selector.md",
@@ -444,6 +448,7 @@
       "technology-desktop.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
+      "ui-ux-feature-skill-stream.md",
       "ui-ux-history-panel.md",
       "ui-ux-settings.md"
     ],
@@ -778,7 +783,8 @@
       "arch-claude-cli.md",
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
-      "security-skill-ipc.md"
+      "security-skill-ipc.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "サービス": [
       "arch-electron-services.md"
@@ -847,6 +853,12 @@
       "rag-desktop-state.md",
       "technology-frontend.md",
       "ui-ux-llm-selector.md"
+    ],
+    "skillSlice": [
+      "arch-state-management.md"
+    ],
+    "スキル実行状態管理": [
+      "arch-state-management.md"
     ],
     "UI": [
       "arch-ui-components.md",
@@ -1143,7 +1155,7 @@
       "ui-ux-components.md",
       "ui-ux-design-principles.md",
       "ui-ux-design-system.md",
-      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
       "ui-ux-forms.md",
       "ui-ux-llm-selector.md",
       "ui-ux-panels.md",
@@ -1925,6 +1937,7 @@
       "interfaces-agent-sdk-skill.md",
       "security-skill-ipc.md",
       "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
       "ui-ux-search-panel.md"
     ],
     "PermissionResolver": [
@@ -1968,6 +1981,9 @@
       "ui-ux-feature-components.md"
     ],
     "SkillImportStore": [
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "SkillSlice": [
       "interfaces-agent-sdk-skill.md"
     ],
     "ModifierSkill": [
@@ -2037,7 +2053,8 @@
       "interfaces-chat-history.md"
     ],
     "Hook": [
-      "interfaces-agent-sdk.md"
+      "interfaces-agent-sdk.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "useAgent": [
       "interfaces-agent-sdk.md"
@@ -2209,7 +2226,8 @@
       "ui-ux-system-prompt.md"
     ],
     "対応": [
-      "interfaces-llm.md"
+      "interfaces-llm.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "主要": [
       "interfaces-llm.md"
@@ -2311,7 +2329,8 @@
       "llm-streaming.md",
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
-      "ui-ux-feature-components.md"
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "実装場所": [
       "interfaces-rag-file-selection.md"
@@ -3223,7 +3242,8 @@
     ],
     "コンポーネント仕様": [
       "ui-history-components.md",
-      "ui-ux-agent-execution.md"
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "ファイル構成": [
       "ui-history-components.md"
@@ -3299,7 +3319,8 @@
       "ui-ux-advanced.md"
     ],
     "コンポーネント階層": [
-      "ui-ux-agent-execution.md"
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "インタラクション設計": [
       "ui-ux-agent-execution.md",
@@ -3408,16 +3429,20 @@
       "ui-ux-feature-components.md"
     ],
     "SkillStreamDisplay": [
-      "ui-ux-feature-components.md"
-    ],
-    "改善機能": [
-      "ui-ux-feature-components.md"
-    ],
-    "コピー履歴機能": [
-      "ui-ux-feature-components.md"
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "全コンポーネント共通": [
       "ui-ux-feature-components.md"
+    ],
+    "useSkillExecution": [
+      "ui-ux-feature-skill-stream.md"
+    ],
+    "改善機能": [
+      "ui-ux-feature-skill-stream.md"
+    ],
+    "タイムスタンプ自動更新機能": [
+      "ui-ux-feature-skill-stream.md"
     ],
     "ファイルセレクター": [
       "ui-ux-file-selector.md"

@@ -7,6 +7,66 @@ echo "🔍 Running pre-push CI validation..."
 # 高速モードで検証（ビルドはスキップ）
 # フルチェックが必要な場合は ./scripts/validate-ci.sh を直接実行
 
+# ==========================================================================
+# Node.jsバージョンチェック
+# .nvmrcで指定されたバージョンと現在のバージョンを比較し、
+# 不一致の場合はnvm/fnm/voltaで自動切替を試みる
+# ==========================================================================
+SKIP_NATIVE_TESTS=false
+
+if [ -f ".nvmrc" ]; then
+    REQUIRED_MAJOR=$(sed 's/^v//' .nvmrc | cut -d. -f1)
+    CURRENT_MAJOR=$(node -v | sed 's/^v//' | cut -d. -f1)
+
+    if [ "$REQUIRED_MAJOR" != "$CURRENT_MAJOR" ]; then
+        echo "⚠️  Node.js version mismatch: current v$(node -v | sed 's/^v//'), required v$(cat .nvmrc)"
+        echo "   Attempting to switch Node.js version..."
+
+        SWITCHED=false
+
+        # fnm
+        if command -v fnm > /dev/null 2>&1; then
+            eval "$(fnm env --shell sh 2>/dev/null)" 2>/dev/null
+            if fnm use 2>/dev/null; then
+                echo "   ✅ Switched via fnm to $(node -v)"
+                SWITCHED=true
+            fi
+        fi
+
+        # nvm
+        if [ "$SWITCHED" = false ]; then
+            export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+                . "$NVM_DIR/nvm.sh" 2>/dev/null
+                if nvm use 2>/dev/null; then
+                    echo "   ✅ Switched via nvm to $(node -v)"
+                    SWITCHED=true
+                fi
+            fi
+        fi
+
+        # volta
+        if [ "$SWITCHED" = false ] && command -v volta > /dev/null 2>&1; then
+            if volta run --node "$(cat .nvmrc)" node -v > /dev/null 2>&1; then
+                echo "   ✅ Volta detected Node.js $(cat .nvmrc)"
+                SWITCHED=true
+            fi
+        fi
+
+        if [ "$SWITCHED" = false ]; then
+            # 再度メジャーバージョン確認（切り替え後）
+            CURRENT_MAJOR=$(node -v | sed 's/^v//' | cut -d. -f1)
+            if [ "$REQUIRED_MAJOR" != "$CURRENT_MAJOR" ]; then
+                echo "   ❌ Could not switch Node.js version."
+                echo "   Skipping tests that require native modules (better-sqlite3)."
+                echo "   Lint and type check will still run."
+                echo "   💡 Install Node.js $(cat .nvmrc): nvm install $(cat .nvmrc)"
+                SKIP_NATIVE_TESTS=true
+            fi
+        fi
+    fi
+fi
+
 # ドキュメント専用変更の検出
 REMOTE_REF=$(git rev-parse @{upstream} 2>/dev/null || git rev-parse origin/main 2>/dev/null || echo "HEAD~1")
 CHANGED_FILES=$(git diff --name-only "$REMOTE_REF" HEAD 2>/dev/null)
@@ -54,31 +114,36 @@ if ! pnpm typecheck; then
 fi
 
 # 3. テスト実行（タイムアウト: 120秒）
-echo "🧪 Running tests (timeout: 120s)..."
+if [ "$SKIP_NATIVE_TESTS" = true ]; then
+    echo "⏭️  Skipping tests (Node.js version mismatch - native modules incompatible)."
+    echo "   Tests will run in CI with the correct Node.js version."
+else
+    echo "🧪 Running tests (timeout: 120s)..."
 
-# タイムアウト付きテスト実行
-run_tests_with_timeout() {
-    # タイムアウトコマンドの存在確認
-    if command -v timeout > /dev/null 2>&1; then
-        timeout 120 pnpm --filter @repo/shared test:run
-    elif command -v gtimeout > /dev/null 2>&1; then
-        gtimeout 120 pnpm --filter @repo/shared test:run
-    else
-        # タイムアウトなしで実行（警告表示）
-        echo "⚠️  timeout command not found. Running tests without timeout."
-        pnpm --filter @repo/shared test:run
-    fi
-}
+    # タイムアウト付きテスト実行
+    run_tests_with_timeout() {
+        # タイムアウトコマンドの存在確認
+        if command -v timeout > /dev/null 2>&1; then
+            timeout 120 pnpm --filter @repo/shared test:run
+        elif command -v gtimeout > /dev/null 2>&1; then
+            gtimeout 120 pnpm --filter @repo/shared test:run
+        else
+            # タイムアウトなしで実行（警告表示）
+            echo "⚠️  timeout command not found. Running tests without timeout."
+            pnpm --filter @repo/shared test:run
+        fi
+    }
 
-if ! run_tests_with_timeout; then
-    EXIT_CODE=$?
-    if [ $EXIT_CODE -eq 124 ]; then
-        echo "⏱️  Tests timed out after 120s. Proceeding with push."
-        echo "💡 Run 'pnpm test' manually to verify all tests pass."
-    else
-        echo "❌ Tests failed. Push aborted."
-        echo "💡 Fix failing tests or use 'git push --no-verify' to skip."
-        exit 1
+    if ! run_tests_with_timeout; then
+        EXIT_CODE=$?
+        if [ $EXIT_CODE -eq 124 ]; then
+            echo "⏱️  Tests timed out after 120s. Proceeding with push."
+            echo "💡 Run 'pnpm test' manually to verify all tests pass."
+        else
+            echo "❌ Tests failed. Push aborted."
+            echo "💡 Fix failing tests or use 'git push --no-verify' to skip."
+            exit 1
+        fi
     fi
 fi
 

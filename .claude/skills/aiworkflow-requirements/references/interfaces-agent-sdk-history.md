@@ -15,16 +15,67 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 ## 完了タスク
 
+### TASK-6-1: SkillSlice実装（Zustand状態管理）（2026-01-28完了）
+
+| 項目         | 内容                                                          |
+| ------------ | ------------------------------------------------------------- |
+| タスクID     | TASK-6-1                                                      |
+| 完了日       | 2026-01-28                                                    |
+| ステータス   | **完了**                                                      |
+| テスト数     | 113件（59基本 + 16エッジケース + 17状態遷移 + 14IPC + 7統合） |
+| 発見課題     | 0件                                                           |
+| ドキュメント | `docs/30-workflows/TASK-6-1/`                                 |
+
+#### 実装内容
+
+- SkillSliceインターフェース定義（14状態 + 10アクション + 4内部ハンドラー）
+- Zustand StateCreatorパターンでのスライス実装（skillSlice.ts: 347行）
+- IPCイベントリスナー設定（setupSkillListeners.ts: 49行）
+- useAppStoreへの統合（useSkillStoreセレクター）
+- ストリーミングメッセージ管理
+- 権限リクエストフロー対応
+
+#### 品質基準
+
+| 基準              | 結果   |
+| ----------------- | ------ |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+| Prettier          | PASS   |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 98.21% |
+| Function Coverage | 100%   |
+
+#### テスト結果サマリー
+
+| カテゴリ                            | テスト数 | PASS | FAIL |
+| ----------------------------------- | -------- | ---- | ---- |
+| skillSlice.test.ts                  | 59       | 59   | 0    |
+| skillSlice.edge-cases.test.ts       | 16       | 16   | 0    |
+| skillSlice.state-transition.test.ts | 17       | 17   | 0    |
+| skillSlice.ipc.test.ts              | 14       | 14   | 0    |
+| skillSlice.integration.test.ts      | 7        | 7    | 0    |
+
+#### 成果物
+
+| ファイル               | パス                                                   | 行数 |
+| ---------------------- | ------------------------------------------------------ | ---- |
+| skillSlice.ts          | apps/desktop/src/renderer/store/slices/skillSlice.ts   | 347  |
+| setupSkillListeners.ts | apps/desktop/src/renderer/store/setupSkillListeners.ts | 49   |
+| store/index.ts         | apps/desktop/src/renderer/store/index.ts               | 修正 |
+
+---
+
 ### TASK-5-1: SkillAPI Preload実装（2026-01-27完了）
 
-| 項目         | 内容                                                      |
-| ------------ | --------------------------------------------------------- |
-| タスクID     | TASK-5-1                                                  |
-| 完了日       | 2026-01-27                                                |
-| ステータス   | **完了**                                                  |
-| テスト数     | 67件（37 + 30）                                           |
-| 発見課題     | 0件                                                       |
-| ドキュメント | `docs/30-workflows/TASK-5-1/`                             |
+| 項目         | 内容                          |
+| ------------ | ----------------------------- |
+| タスクID     | TASK-5-1                      |
+| 完了日       | 2026-01-27                    |
+| ステータス   | **完了**                      |
+| テスト数     | 67件（37 + 30）               |
+| 発見課題     | 0件                           |
+| ドキュメント | `docs/30-workflows/TASK-5-1/` |
 
 #### 実装内容
 
@@ -48,10 +99,10 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 #### テスト結果サマリー
 
-| カテゴリ           | テスト数 | PASS | FAIL |
-| ------------------ | -------- | ---- | ---- |
-| skill-api.test.ts  | 37       | 37   | 0    |
-| skill-api.permission.test.ts | 30 | 30   | 0    |
+| カテゴリ                     | テスト数 | PASS | FAIL |
+| ---------------------------- | -------- | ---- | ---- |
+| skill-api.test.ts            | 37       | 37   | 0    |
+| skill-api.permission.test.ts | 30       | 30   | 0    |
 
 ---
 
@@ -282,6 +333,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | 日付       | バージョン | 変更内容                                |
 | ---------- | ---------- | --------------------------------------- |
+| 2026-01-28 | 6.32.0     | TASK-6-1完了、SkillSlice（Zustand）実装 |
 | 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装      |
 | 2026-01-26 | 6.30.0     | ファイル分割（巨大化防止）              |
 | 2026-01-26 | 6.29.0     | TASK-3-1-D完了、Permission UI実装       |
