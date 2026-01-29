@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                          |
 | ---------- | ---------- | ------------------------------------------------- |
+| v1.3.0     | 2026-01-30 | TASK-7A完了: SkillSelectorステータス更新          |
 | v1.2.0     | 2026-01-28 | TASK-6-1完了: skillSliceセクション追加            |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換 |
 | v1.0.0     | 2026-01-23 | 初版作成                                          |
@@ -317,7 +318,7 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | タスクID | 内容                      | ステータス |
 | -------- | ------------------------- | ---------- |
 | TASK-6-1 | SkillSlice実装（Zustand） | **完了**   |
-| TASK-7A  | SkillSelector             | 未着手     |
+| TASK-7A  | SkillSelector             | **完了**   |
 | TASK-7B  | SkillImportDialog         | **完了**   |
 | TASK-7C  | PermissionDialog          | 未着手     |
 | TASK-7D  | ChatPanel統合             | 未着手     |

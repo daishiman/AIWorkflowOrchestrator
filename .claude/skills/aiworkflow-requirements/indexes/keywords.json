@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-29T04:16:14.247Z",
-  "totalKeywords": 950,
+  "generated": "2026-01-29T16:48:54.501Z",
+  "totalKeywords": 952,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -905,6 +905,9 @@
       "arch-ui-components.md"
     ],
     "統合パターン": [
+      "arch-ui-components.md"
+    ],
+    "SkillSelector": [
       "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
@@ -2227,6 +2230,7 @@
     ],
     "対応": [
       "interfaces-llm.md",
+      "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "主要": [
@@ -3431,6 +3435,9 @@
     "SkillStreamDisplay": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "コピー履歴機能": [
+      "ui-ux-feature-components.md"
     ],
     "全コンポーネント共通": [
       "ui-ux-feature-components.md"

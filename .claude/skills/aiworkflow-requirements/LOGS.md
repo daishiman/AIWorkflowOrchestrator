@@ -58,6 +58,31 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ---
 
+## 2026-01-30: TASK-7A SkillSelector コンポーネント実装完了
+
+| 項目         | 内容                                                                           |
+| ------------ | ------------------------------------------------------------------------------ |
+| タスクID     | TASK-7A                                                                        |
+| 操作         | task-completion                                                                |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`                 |
+| 結果         | success                                                                        |
+| 備考         | Phase 1-12 全完了。28テスト全PASS。Line 100%, Branch 93.15%, Function 87.5%    |
+
+### 仕様更新
+
+| 更新ファイル             | 内容                                                          |
+| ------------------------ | ------------------------------------------------------------- |
+| `arch-ui-components.md`  | SkillSelector コンポーネントパターン追加 + 詳細完了セクション |
+| `ui-ux-components.md`    | 完了タスクに TASK-7A 追加（v2.1.0）                          |
+| `indexes/topic-map.md`   | generate-index.js で再生成（SkillSelectorエントリ追加）       |
+| `EVALS.json`             | 使用回数 +1（28→29）                                         |
+
+### 実装ガイド
+
+`docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md`
+
+---
+
 ## 2026-01-29: コードベースTODOスキャン未タスク新規作成（4件）
 
 | 項目         | 内容                                                                 |

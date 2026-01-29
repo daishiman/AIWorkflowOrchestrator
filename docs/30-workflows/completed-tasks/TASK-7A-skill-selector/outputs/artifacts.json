@@ -1,0 +1,183 @@
+{
+  "schema": "1.0.0",
+  "taskId": "TASK-7A",
+  "taskName": "SkillSelector コンポーネント実装",
+  "createdAt": "2026-01-30",
+  "completedAt": "2026-01-30",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入条件"
+        },
+        {
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "name": "コンポーネント設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-2/component-design.md",
+          "description": "コンポーネント設計書"
+        },
+        {
+          "path": "outputs/phase-2/accessibility-design.md",
+          "description": "アクセシビリティ設計書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テストケース作成（Red）",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillSelector.test.tsx",
+          "description": "テストファイル"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装（Green）",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/SkillSelector.tsx",
+          "description": "メインコンポーネント"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/index.ts",
+          "description": "barrel export"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "カバレッジ検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジゲート検証結果"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    }
+  },
+  "targetFiles": [
+    "apps/desktop/src/renderer/components/skill/SkillSelector.tsx",
+    "apps/desktop/src/renderer/components/skill/index.ts",
+    "apps/desktop/src/renderer/components/skill/__tests__/SkillSelector.test.tsx"
+  ],
+  "dependencies": {
+    "blocks": ["TASK-7D"],
+    "blockedBy": ["TASK-6-1"]
+  },
+  "qualityMetrics": {
+    "tests": 28,
+    "testsPassed": 28,
+    "lineCoverage": 100,
+    "branchCoverage": 93.15,
+    "functionCoverage": 87.5,
+    "eslintErrors": 0,
+    "typescriptErrors": 0
+  }
+}
