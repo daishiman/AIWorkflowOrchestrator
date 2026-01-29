@@ -1,5 +1,9 @@
-// Simplified ESLint config for Next.js 15 backend
-export default [
+// ESLint config for Next.js 16 backend
+// eslint-config-next@16+ natively supports ESLint flat config
+import nextConfig from "eslint-config-next/core-web-vitals";
+
+const config = [
+  ...nextConfig,
   {
     ignores: [
       "**/__tests__/**",
@@ -8,7 +12,10 @@ export default [
       ".next/**",
       "out/**",
       "node_modules/**",
-      "next-env.d.ts", // Next.js auto-generated file
+      "coverage/**",
+      "next-env.d.ts",
     ],
   },
 ];
+
+export default config;

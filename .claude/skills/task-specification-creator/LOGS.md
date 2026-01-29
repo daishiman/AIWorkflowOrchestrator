@@ -43,6 +43,216 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## 2026-01-29 - コードベースTODOスキャンによる未タスク4件新規作成（v9.14.0）
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- フェーズ: Phase 12 detect-unassigned（コードコメントスキャン）
+- エージェント: generate-unassigned-task
+
+### 実行内容
+
+TASK-CI-FIX-001実行中のコードベーススキャン（52件のTODOコメント）から、既存189件のタスクと重複しない4件の新規未タスクを検出・作成した。
+
+### 検出ソース
+
+| ソース | スキャン件数 | 新規検出 |
+| --- | --- | --- |
+| Phase 3/10レビュー | 全PASS | 0件 |
+| Phase 11手動テスト | 既存U4/U5 | 0件 |
+| スコープ外 | 既存U1/U3 | 0件 |
+| コードコメント（TODO） | 52件 | 4件 |
+
+### 作成タスク
+
+| タスクID | ファイル | カテゴリ | 優先度 |
+| --- | --- | --- | --- |
+| task-ref-community-test-sync-001 | task-ref-community-test-sync-001.md | ref | medium |
+| task-bug-debug-code-removal-001 | task-bug-debug-code-removal-001.md | bug | medium |
+| task-imp-llm-handler-timeout-001 | task-imp-llm-handler-timeout-001.md | imp | medium |
+| task-imp-error-reporting-001 | task-imp-error-reporting-001.md | imp | low |
+
+### 品質検証
+
+- 全4件が9セクション構造に完全準拠
+- Why/What/How品質基準充足
+- システム仕様書スキル（aiworkflow-requirements）の参照情報を各タスクに反映
+- 既存189件との重複チェック完了
+
+### 結果
+
+- Result: ✓ 成功
+- 新規作成: 4件
+- 重複検出: 0件
+- テンプレート準拠率: 100%
+
+---
+
+## 2026-01-29 - 未タスク指示書テンプレート準拠修正（v9.13.0）
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- モード: update（skill-creator経由）
+- 改善契機: TASK-CI-FIX-001で生成された未タスク指示書U3/U4/U5の品質検証
+- 実行者: Claude Code
+
+### 検出された問題
+
+1. **テンプレート不完全準拠**: U3（task-web-lint-migration.md）、U4（task-eslintignore-flat-config-migration.md）、U5（task-shared-no-explicit-any-fix.md）で9セクション中3セクションが欠落
+   - Section 4（実行手順）: Phase構成が未記載
+   - Section 6（検証方法）: テストケース・検証手順が未記載
+   - Section 7（リスクと対策）: リスクテーブルが未記載
+   - セクション番号が 3→5→8→9 とジャンプしていた
+2. **U1は正常**: task-nextjs16-breaking-changes.md は全9セクション完備
+
+### 適用した改善
+
+| ファイル | 変更内容 |
+|---------|----------|
+| task-web-lint-migration.md | Section 4（Phase 1-2構成）、Section 6（テストケース3件・検証手順3ステップ）、Section 7（リスク2件）追加 |
+| task-eslintignore-flat-config-migration.md | Section 4（Phase 1-2構成）、Section 6（テストケース3件・検証手順3ステップ）、Section 7（リスク2件）追加 |
+| task-shared-no-explicit-any-fix.md | Section 4（Phase 1-2構成）、Section 6（テストケース4件・検証手順3ステップ）、Section 7（リスク3件）追加 |
+| SKILL.md | v9.13.0として変更履歴に記録 |
+
+### 結果
+
+- ステータス: success
+- 改善完了日時: 2026-01-29
+- バージョン: v9.12.0 → v9.13.0
+
+### 根本原因分析
+
+- generate-unassigned-task エージェントが小規模・低優先度タスクで Section 4/6/7 を省略する傾向がある
+- U1（中規模・中優先度）は全セクション生成されたが、U3/U4/U5（小-中規模・低優先度）では省略された
+- テンプレート準拠の検証ステップがgenerate-unassigned-taskフローに不足している可能性
+
+### 期待される効果
+
+- 全未タスク指示書が unassigned-task-template.md の9セクション構造に完全準拠
+- 「100人中100人が同じ理解で実行できる」品質基準の達成
+
+---
+
+## 2026-01-29 - skill-creator改善（task-specification-creator v9.12.0）
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- モード: update（skill-creator経由）
+- 改善契機: TASK-CI-FIX-001 Phase 12実行経験
+- 実行者: Claude Code
+
+### 検出された問題
+
+1. **仕様ファイル特定マッピング不足**: Phase 12 Task 2生成時に、ESLint/lint/DevOps/backend関連のキーワードが`technology-backend.md`や`technology-devops.md`にマッピングされておらず、存在しない`devops-code-quality.md`や`devops-ci-cd.md`が参照された
+
+### 適用した改善
+
+| ファイル | 変更内容 |
+|---------|----------|
+| agents/update-system-specs.md | 3.2マッピング表にtechnology-backend.md/technology-devops.md向けキーワード3行追加 |
+| references/spec-update-workflow.md | 機能キーワードマッピング表にtechnology系ファイル3行追加 |
+| SKILL.md | v9.12.0として変更履歴に記録 |
+
+### 追加キーワード
+
+| キーワード | マッピング先 |
+|-----------|-------------|
+| `eslint`, `lint`, `next-lint`, `code-quality` | `technology-backend.md` |
+| `ci`, `ci-cd`, `devops`, `build`, `deploy` | `technology-devops.md` |
+| `backend`, `next`, `next.js`, `framework` | `technology-backend.md` |
+
+### 結果
+
+- ステータス: success
+- 改善完了日時: 2026-01-29
+- バージョン: v9.11.0 → v9.12.0
+
+### 期待される効果
+
+- ESLint/lint/CI/CD関連タスクのPhase 12で正しい仕様ファイルが参照される
+- 存在しない仕様ファイルの参照を防止
+
+---
+
+## 2026-01-29 - fix-backend-lint-next16（TASK-CI-FIX-001）タスク完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-CI-FIX-001
+- タスク名: fix-backend-lint-next16
+- Phase: 1-12
+
+### 成果
+
+- 実装内容:
+  - next lint → eslint . への移行
+  - eslint.config.mjs に eslint-config-next ルール統合（ネイティブ flat config）
+  - coverage/** を ignores に追加
+- 未タスク指示書: 4件作成（U1, U3, U4, U5）
+  - task-nextjs16-breaking-changes.md（中優先度）
+  - task-web-lint-migration.md（低優先度）
+  - task-eslintignore-flat-config-migration.md（低優先度）
+  - task-shared-no-explicit-any-fix.md（低優先度）
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-01-29
+
+### 発見事項
+
+- **問題発見**: Phase 12仕様書がtechnology-backend.mdではなく存在しない`devops-code-quality.md`を参照 → v9.12.0で修正
+- **良かった点**: eslint-config-next@16+がネイティブflat configをエクスポートすることを実装段階で発見、FlatCompat不要と判明
+
+---
+
+## 2026-01-28 - TASK-3-2-B SkillStreamDisplay i18n対応タスク完了
+
+### コンテキスト
+
+- タスクID: TASK-3-2-B
+- タスク名: SkillStreamDisplay i18n対応
+- 実行者: Claude Code
+- Phase: 1〜12完了
+
+### 完了サマリー
+
+| 項目       | 内容                          |
+| ---------- | ----------------------------- |
+| タスクID   | TASK-3-2-B                    |
+| ステータス | **完了**                      |
+| テスト数   | 74（自動）                    |
+| 対応言語   | 日本語（ja）、英語（en）      |
+| カバレッジ | 100%（Line/Branch/Function）  |
+
+### 成果物
+
+| Phase | 成果物 |
+| ----- | ------ |
+| 1     | 要件定義書 |
+| 2     | i18n設計書 |
+| 3     | テスト仕様書 |
+| 4     | TDD Red結果 |
+| 5     | 実装サマリー |
+| 6     | テスト拡充カバレッジ |
+| 7     | カバレッジ確認結果 |
+| 8     | リファクタリングレポート |
+| 9     | 品質レポート |
+| 10    | 最終レビュー結果 |
+| 11    | 手動テスト結果 |
+| 12    | 実装ガイド、ドキュメント更新 |
+
+### 補足
+
+- i18next + react-i18next + i18next-browser-languagedetectorを導入
+- formatRelativeTimeにlocale引数を追加（後方互換性維持）
+- 翻訳キーの型安全性をTypeScript型定義で確保
+- 統合テストはhappy-dom環境の制限によりスキップ（TASK-3-2-Fで対応予定）
+
 ---
 
 ## 2026-01-28 - TASK-3-2-D Phase 12完了・スキル改善
@@ -77,7 +287,6 @@ node scripts/log-usage.js \
 - TASK-3-2-Dでは5件の未タスク指示書を生成（TASK-3-2-D-01〜05）
 
 ---
-
 ## 2026-01-27 - TASK-3-1-B未タスク仕様書作成
 
 ### コンテキスト

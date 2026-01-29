@@ -1,0 +1,37 @@
+{
+  "status": {
+    "idle": "Idle",
+    "running": "Running",
+    "completed": "Completed",
+    "error": "Error",
+    "aborted": "Aborted"
+  },
+  "time": {
+    "justNow": "Just now",
+    "secondsAgo_one": "{{count}} second ago",
+    "secondsAgo_other": "{{count}} seconds ago",
+    "minutesAgo_one": "{{count}} minute ago",
+    "minutesAgo_other": "{{count}} minutes ago",
+    "hoursAgo_one": "{{count}} hour ago",
+    "hoursAgo_other": "{{count}} hours ago",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago"
+  },
+  "feedback": {
+    "copied": "Copied"
+  },
+  "button": {
+    "abort": "Abort",
+    "reset": "Reset"
+  },
+  "message": {
+    "startPrompt": "Start skill execution",
+    "executing": "Executing..."
+  },
+  "aria": {
+    "loading": "Loading",
+    "copyMessage": "Copy message",
+    "abortExecution": "Abort skill execution",
+    "resetState": "Reset state"
+  }
+}

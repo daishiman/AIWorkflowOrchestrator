@@ -7,6 +7,10 @@
  *   - R1: ローディングスピナー
  *   - R2: タイムスタンプ表示
  *   - R3: クリップボードコピー
+ * TASK-3-2-B: SkillStreamDisplay i18n対応
+ *   - 多言語化対応（日本語・英語）
+ * TASK-3-2-C: タイムスタンプ自動更新
+ *   - TimestampContextによるバッチ更新
  * TASK-3-2-D: コピー履歴機能
  *   - R4: コピー履歴パネル
  *
@@ -14,9 +18,11 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSkillExecution } from "../../hooks/useSkillExecution";
 import { useSkillPermission } from "../../hooks/useSkillPermission";
 import { useCopyHistory } from "../../hooks/useCopyHistory";
+import { CopyHistoryProvider } from "../../contexts/CopyHistoryContext";
 import { PermissionDialog } from "../organisms/PermissionDialog/PermissionDialog";
 import { CopyHistoryPanel, CopyHistoryToggle } from "./CopyHistoryPanel";
 import { formatRelativeTime } from "../../utils/formatTime";
@@ -52,34 +58,18 @@ export interface SkillStreamDisplayProps {
 }
 
 /**
- * ステータス表示テキストを取得
- */
-function getStatusText(status: string): string {
-  switch (status) {
-    case "idle":
-      return "待機中";
-    case "running":
-      return "実行中";
-    case "completed":
-      return "完了";
-    case "error":
-      return "エラー";
-    case "aborted":
-      return "中断";
-    default:
-      return status;
-  }
-}
-
-/**
  * R1: ローディングスピナーコンポーネント
  */
-const LoadingSpinner = React.memo(function LoadingSpinner() {
+const LoadingSpinner = React.memo(function LoadingSpinner({
+  ariaLabel,
+}: {
+  ariaLabel: string;
+}) {
   return (
     <div
       data-testid="loading-spinner-container"
       role="status"
-      aria-label="実行中"
+      aria-label={ariaLabel}
       className="flex items-center"
     >
       <div
@@ -97,10 +87,14 @@ const LoadingSpinner = React.memo(function LoadingSpinner() {
 const CopyButton = React.memo(function CopyButton({
   content,
   messageId,
+  ariaLabel,
+  feedbackText,
   onCopySuccess,
 }: {
   content: string;
   messageId: string;
+  ariaLabel: string;
+  feedbackText: string;
   onCopySuccess?: (content: string, messageId: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -136,7 +130,7 @@ const CopyButton = React.memo(function CopyButton({
           }
         }}
         className="copy-button opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-gray-100 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        aria-label="メッセージをコピー"
+        aria-label={ariaLabel}
         tabIndex={0}
       >
         <svg
@@ -159,7 +153,7 @@ const CopyButton = React.memo(function CopyButton({
           role="status"
           aria-live="polite"
         >
-          コピーしました
+          {feedbackText}
         </span>
       )}
     </div>
@@ -169,15 +163,18 @@ const CopyButton = React.memo(function CopyButton({
 /**
  * R2: タイムスタンプコンポーネント（自動更新対応）
  *
+ * TASK-3-2-B: i18n対応（locale引数追加）
  * TASK-3-2-C: タイムスタンプ自動更新
  * TimestampContextから現在時刻を取得してバッチ更新
  */
 const MessageTimestamp = React.memo(function MessageTimestamp({
   timestamp,
   messageId,
+  locale,
 }: {
   timestamp: number;
   messageId: string;
+  locale: string;
 }) {
   // TimestampContextから現在時刻を取得（バッチ更新用）
   const currentTime = useTimestampContext();
@@ -187,7 +184,7 @@ const MessageTimestamp = React.memo(function MessageTimestamp({
       data-testid={`message-timestamp-${messageId}`}
       className="text-xs text-gray-400 flex-shrink-0"
     >
-      {formatRelativeTime(timestamp, currentTime)}
+      {formatRelativeTime(timestamp, locale, currentTime)}
     </span>
   );
 });
@@ -202,9 +199,15 @@ const MessageTimestamp = React.memo(function MessageTimestamp({
  */
 const MessageItem = React.memo(function MessageItem({
   message,
+  locale,
+  copyAriaLabel,
+  copyFeedbackText,
   onCopySuccess,
 }: {
   message: SkillStreamMessage;
+  locale: string;
+  copyAriaLabel: string;
+  copyFeedbackText: string;
   onCopySuccess?: (content: string, messageId: string) => void;
 }) {
   const getMessageClassName = (): string => {
@@ -238,10 +241,13 @@ const MessageItem = React.memo(function MessageItem({
             <MessageTimestamp
               timestamp={message.timestamp}
               messageId={message.id}
+              locale={locale}
             />
             <CopyButton
               content={parsed.name}
               messageId={message.id}
+              ariaLabel={copyAriaLabel}
+              feedbackText={copyFeedbackText}
               onCopySuccess={onCopySuccess}
             />
           </div>
@@ -257,10 +263,13 @@ const MessageItem = React.memo(function MessageItem({
             <MessageTimestamp
               timestamp={message.timestamp}
               messageId={message.id}
+              locale={locale}
             />
             <CopyButton
               content={message.content}
               messageId={message.id}
+              ariaLabel={copyAriaLabel}
+              feedbackText={copyFeedbackText}
               onCopySuccess={onCopySuccess}
             />
           </div>
@@ -278,10 +287,13 @@ const MessageItem = React.memo(function MessageItem({
         <MessageTimestamp
           timestamp={message.timestamp}
           messageId={message.id}
+          locale={locale}
         />
         <CopyButton
           content={message.content}
           messageId={message.id}
+          ariaLabel={copyAriaLabel}
+          feedbackText={copyFeedbackText}
           onCopySuccess={onCopySuccess}
         />
       </div>
@@ -290,7 +302,10 @@ const MessageItem = React.memo(function MessageItem({
 });
 
 /**
- * スキル実行ストリーム表示コンポーネント
+ * スキル実行ストリーム表示コンポーネント（外側）
+ *
+ * CopyHistoryProvider と TimestampProvider でラップし、
+ * 内部コンポーネントに処理を委譲する。
  *
  * @example
  * ```tsx
@@ -302,7 +317,22 @@ const MessageItem = React.memo(function MessageItem({
  * />
  * ```
  */
-export function SkillStreamDisplay({
+export function SkillStreamDisplay(props: SkillStreamDisplayProps) {
+  return (
+    <CopyHistoryProvider>
+      <TimestampProvider>
+        <SkillStreamDisplayInner {...props} />
+      </TimestampProvider>
+    </CopyHistoryProvider>
+  );
+}
+
+/**
+ * スキル実行ストリーム表示コンポーネント（内側）
+ *
+ * CopyHistoryProvider / TimestampProvider 内で使用される。
+ */
+function SkillStreamDisplayInner({
   skillId,
   initialPrompt,
   autoExecute = false,
@@ -312,6 +342,7 @@ export function SkillStreamDisplay({
   height = "auto",
   className,
 }: SkillStreamDisplayProps) {
+  const { t, i18n } = useTranslation("skill-stream");
   const { messages, status, error, execute, abort, reset, isAborting } =
     useSkillExecution(skillId);
 
@@ -361,92 +392,107 @@ export function SkillStreamDisplay({
     height: typeof height === "number" ? `${height}px` : height,
   };
 
+  // 翻訳されたテキストを取得
+  const statusText = t(`status.${status}`);
+  const loadingAriaLabel = t("aria.loading");
+  const copyAriaLabel = t("aria.copyMessage");
+  const copyFeedbackText = t("feedback.copied");
+  const abortAriaLabel = t("aria.abortExecution");
+  const resetAriaLabel = t("aria.resetState");
+  const abortButtonText = t("button.abort");
+  const resetButtonText = t("button.reset");
+  const startPromptMessage = t("message.startPrompt");
+  const executingMessage = t("message.executing");
+
   return (
-    <TimestampProvider>
-      <div
-        className={`skill-stream-display ${className || ""}`}
-        style={containerStyle}
-      >
-        {/* スクリーンリーダー用ステータス通知 */}
-        <div className="sr-only" role="status" aria-live="polite">
-          {getStatusText(status)}
-        </div>
-
-        {/* ヘッダー: 実行状態表示 */}
-        <div className="stream-header flex items-center justify-between gap-2 p-2 border-b">
-          <div className="flex items-center gap-2">
-            <span
-              className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
-            >
-              {getStatusText(status)}
-            </span>
-            {/* R1: ローディングスピナー */}
-            {status === "running" && <LoadingSpinner />}
-            {status === "running" && (
-              <button
-                onClick={abort}
-                disabled={isAborting}
-                aria-label="スキル実行を中断"
-                className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
-              >
-                中断
-              </button>
-            )}
-            {(status === "completed" ||
-              status === "error" ||
-              status === "aborted") && (
-              <button
-                onClick={reset}
-                aria-label="状態をリセット"
-                className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
-              >
-                リセット
-              </button>
-            )}
-          </div>
-          {/* R4: コピー履歴トグル */}
-          <div className="relative">
-            <CopyHistoryToggle
-              isOpen={isHistoryPanelOpen}
-              onToggle={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}
-              historyCount={historyCount}
-            />
-            <CopyHistoryPanel
-              isOpen={isHistoryPanelOpen}
-              onClose={() => setIsHistoryPanelOpen(false)}
-            />
-          </div>
-        </div>
-
-        {/* メッセージ一覧 */}
-        <div
-          className="stream-content p-2 overflow-y-auto"
-          role="log"
-          aria-live="polite"
-        >
-          {status === "idle" && messages.length === 0 && (
-            <p className="text-gray-500">スキル実行を開始してください</p>
-          )}
-          {status === "running" && messages.length === 0 && (
-            <p className="text-gray-500">実行中...</p>
-          )}
-          {messages.map((message) => (
-            <MessageItem
-              key={message.id}
-              message={message}
-              onCopySuccess={handleCopySuccess}
-            />
-          ))}
-        </div>
-
-        {/* 権限確認ダイアログ */}
-        <PermissionDialog
-          request={pendingPermission}
-          onApprove={handleApprove}
-          onDeny={handleDeny}
-        />
+    <div
+      className={`skill-stream-display ${className || ""}`}
+      style={containerStyle}
+    >
+      {/* スクリーンリーダー用ステータス通知 */}
+      <div className="sr-only" role="status" aria-live="polite">
+        {statusText}
       </div>
-    </TimestampProvider>
+
+      {/* ヘッダー: 実行状態表示 */}
+      <div className="stream-header flex items-center justify-between gap-2 p-2 border-b">
+        <div className="flex items-center gap-2">
+          <span
+            className={`status-badge status-${status} px-2 py-1 rounded text-sm`}
+          >
+            {statusText}
+          </span>
+          {/* R1: ローディングスピナー */}
+          {status === "running" && (
+            <LoadingSpinner ariaLabel={loadingAriaLabel} />
+          )}
+          {status === "running" && (
+            <button
+              onClick={abort}
+              disabled={isAborting}
+              aria-label={abortAriaLabel}
+              className="abort-button px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+            >
+              {abortButtonText}
+            </button>
+          )}
+          {(status === "completed" ||
+            status === "error" ||
+            status === "aborted") && (
+            <button
+              onClick={reset}
+              aria-label={resetAriaLabel}
+              className="reset-button px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              {resetButtonText}
+            </button>
+          )}
+        </div>
+        {/* R4: コピー履歴トグル */}
+        <div className="relative">
+          <CopyHistoryToggle
+            isOpen={isHistoryPanelOpen}
+            onToggle={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}
+            historyCount={historyCount}
+          />
+          <CopyHistoryPanel
+            isOpen={isHistoryPanelOpen}
+            onClose={() => setIsHistoryPanelOpen(false)}
+          />
+        </div>
+      </div>
+
+      {/* メッセージ一覧 */}
+      <div
+        className="stream-content p-2 overflow-y-auto"
+        role="log"
+        aria-live="polite"
+      >
+        {status === "idle" && messages.length === 0 && (
+          <p className="text-gray-500">{startPromptMessage}</p>
+        )}
+        {status === "running" && messages.length === 0 && (
+          <p className="text-gray-500">{executingMessage}</p>
+        )}
+        {messages.map((message) => (
+          <MessageItem
+            key={message.id}
+            message={message}
+            locale={i18n.language}
+            copyAriaLabel={copyAriaLabel}
+            copyFeedbackText={copyFeedbackText}
+            onCopySuccess={handleCopySuccess}
+          />
+        ))}
+      </div>
+
+      {/* 権限確認ダイアログ */}
+      <PermissionDialog
+        request={pendingPermission}
+        onApprove={handleApprove}
+        onDeny={handleDeny}
+      />
+    </div>
   );
 }
 

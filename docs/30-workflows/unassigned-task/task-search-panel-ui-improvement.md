@@ -61,3 +61,5 @@ MEDIUM - 機能は動作するため、UIリファクタリングは次フェー
 ## 関連タスク
 
 - `task-imp-search-ui-001` (検索・置換機能 UI実装)
+
+| issue_number | 572 |

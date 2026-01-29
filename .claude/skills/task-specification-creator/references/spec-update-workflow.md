@@ -145,6 +145,9 @@ Phase 12 Task 2 開始
 | `database`, `schema`, `DB`                         | `database-schema.md`                           | 実装詳細は`database-*.md`                       |
 | `security`, `セキュリティ`                         | `security-*.md`                                | 機能により細分化                                |
 | `api`, `endpoint`, `エンドポイント`                | `api-*.md`                                     | 機能により細分化                                |
+| `eslint`, `lint`, `next-lint`, `code-quality`      | `technology-backend.md`                        | DevOps関連は`technology-devops.md`              |
+| `ci`, `ci-cd`, `devops`, `build`, `deploy`         | `technology-devops.md`                         | バックエンド技術は`technology-backend.md`        |
+| `backend`, `next`, `next.js`, `framework`          | `technology-backend.md`                        | -                                               |
 
 ### 仕様ファイル特定フローチャート
 

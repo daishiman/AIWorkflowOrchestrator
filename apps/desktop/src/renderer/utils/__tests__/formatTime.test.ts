@@ -23,16 +23,16 @@ describe("formatRelativeTime", () => {
   describe("seconds formatting", () => {
     it("should return seconds ago for less than 60 seconds", () => {
       const timestamp = NOW - 30 * 1000; // 30秒前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("30秒前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("30秒前");
     });
 
     it("should return 0秒前 for current timestamp", () => {
-      expect(formatRelativeTime(NOW, NOW)).toBe("0秒前");
+      expect(formatRelativeTime(NOW, "ja", NOW)).toBe("0秒前");
     });
 
     it("should return 59秒前 at boundary", () => {
       const timestamp = NOW - 59 * 1000; // 59秒前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("59秒前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("59秒前");
     });
   });
 
@@ -40,17 +40,17 @@ describe("formatRelativeTime", () => {
   describe("minutes formatting", () => {
     it("should return minutes ago for less than 60 minutes", () => {
       const timestamp = NOW - 5 * 60 * 1000; // 5分前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("5分前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("5分前");
     });
 
     it("should return 1分前 at 60 seconds boundary", () => {
       const timestamp = NOW - 60 * 1000; // 60秒前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("1分前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("1分前");
     });
 
     it("should return 59分前 at boundary", () => {
       const timestamp = NOW - 59 * 60 * 1000; // 59分前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("59分前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("59分前");
     });
   });
 
@@ -58,17 +58,17 @@ describe("formatRelativeTime", () => {
   describe("hours formatting", () => {
     it("should return hours ago for less than 24 hours", () => {
       const timestamp = NOW - 2 * 60 * 60 * 1000; // 2時間前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("2時間前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("2時間前");
     });
 
     it("should return 1時間前 at 60 minutes boundary", () => {
       const timestamp = NOW - 60 * 60 * 1000; // 60分前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("1時間前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("1時間前");
     });
 
     it("should return 23時間前 at boundary", () => {
       const timestamp = NOW - 23 * 60 * 60 * 1000; // 23時間前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("23時間前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("23時間前");
     });
   });
 
@@ -76,17 +76,17 @@ describe("formatRelativeTime", () => {
   describe("days formatting", () => {
     it("should return days ago for 24 hours or more", () => {
       const timestamp = NOW - 3 * 24 * 60 * 60 * 1000; // 3日前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("3日前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("3日前");
     });
 
     it("should return 1日前 at 24 hours boundary", () => {
       const timestamp = NOW - 24 * 60 * 60 * 1000; // 24時間前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("1日前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("1日前");
     });
 
     it("should handle large number of days", () => {
       const timestamp = NOW - 365 * 24 * 60 * 60 * 1000; // 365日前
-      expect(formatRelativeTime(timestamp, NOW)).toBe("365日前");
+      expect(formatRelativeTime(timestamp, "ja", NOW)).toBe("365日前");
     });
   });
 
@@ -94,14 +94,14 @@ describe("formatRelativeTime", () => {
   describe("edge cases", () => {
     it("should handle future timestamp gracefully", () => {
       const futureTimestamp = NOW + 1000; // 1秒後
-      const result = formatRelativeTime(futureTimestamp, NOW);
-      // 未来のタイムスタンプは「たった今」または「0秒前」
-      expect(result).toMatch(/たった今|0秒前/);
+      const result = formatRelativeTime(futureTimestamp, "ja", NOW);
+      // 未来のタイムスタンプは「たった今」
+      expect(result).toBe("たった今");
     });
 
     it("should use Date.now() when now parameter is not provided", () => {
       const recentTimestamp = Date.now() - 5000; // 5秒前
-      const result = formatRelativeTime(recentTimestamp);
+      const result = formatRelativeTime(recentTimestamp, "ja");
       expect(result).toMatch(/\d+秒前/);
     });
   });

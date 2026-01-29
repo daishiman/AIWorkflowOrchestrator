@@ -414,11 +414,16 @@ generateObject関数はスキーマに基づいてAIの応答を検証・パー�
 
 **ESLint設定（eslint.config.mjs - Flat Config形式）**
 
-| 設定項目         | 値                               | 説明                                 |
-| ---------------- | -------------------------------- | ------------------------------------ |
-| ベース設定       | eslint.configs.recommended       | ESLint推奨ルール                     |
-| TypeScript設定   | tseslint.configs.strictTypeChecked | 型チェック付き厳格ルール             |
-| Next.jsプラグイン | @next/eslint-plugin-next         | Next.js固有のルール                  |
+ルートの `eslint.config.js` では `typescript-eslint` を使用。`apps/backend/eslint.config.mjs` では `eslint-config-next` のネイティブ flat config をインポートしている。
+
+| 設定項目                  | 値                                    | 説明                                      |
+| ------------------------- | ------------------------------------- | ----------------------------------------- |
+| ベース設定（ルート）      | eslint.configs.recommended            | ESLint推奨ルール                          |
+| TypeScript設定（ルート）  | tseslint.configs.strictTypeChecked    | 型チェック付き厳格ルール                  |
+| Next.js設定（backend）    | eslint-config-next/core-web-vitals    | Next.js推奨ルール（ネイティブ flat config）|
+| lint コマンド（backend）  | eslint . --cache --cache-location ... | ESLint CLI 直接実行（Next.js 16対応）     |
+
+Next.js 16 で `next lint` サブコマンドが削除されたため、`apps/backend` では ESLint CLI を直接実行する方式に移行済み（TASK-CI-FIX-001）。`eslint-config-next@16+` はネイティブ flat config をエクスポートするため、`FlatCompat` は不要。
 
 **カスタムルール**
 
@@ -437,8 +442,51 @@ generateObject関数はスキーマに基づいてAIの応答を検証・パー�
 
 ---
 
+## 完了タスク
+
+### タスク: fix-backend-lint-next16（2026-01-29完了）
+
+| 項目         | 内容                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                                                         |
+| 完了日       | 2026-01-29                                                                              |
+| ステータス   | **完了**                                                                                |
+| テスト数     | 5（自動テスト）+ 7（手動テスト項目）                                                    |
+| 発見課題     | 1件（coverage/ ディレクトリの ignores 追加 → 修正済み）                                  |
+| ドキュメント | `docs/30-workflows/TASK-CI-FIX-001-fix-backend-lint-next16/`                            |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 機能テスト         | 4        | 4    | 0    |
+| エラーハンドリング | 1        | 1    | 0    |
+| キャッシュ検証     | 1        | 1    | 0    |
+| 設定検証           | 1        | 1    | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                                                      |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-CI-FIX-001-fix-backend-lint-next16/outputs/phase-11/manual-test-result.md`        |
+| 発見課題リスト     | `docs/30-workflows/TASK-CI-FIX-001-fix-backend-lint-next16/outputs/phase-11/discovered-issues.md`         |
+| 実装ガイド         | `docs/30-workflows/TASK-CI-FIX-001-fix-backend-lint-next16/outputs/phase-12/implementation-guide.md`      |
+
+---
+
+## 関連ドキュメント
+
+| ドキュメント              | パス                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 実装ガイド                | `docs/30-workflows/TASK-CI-FIX-001-fix-backend-lint-next16/outputs/phase-12/implementation-guide.md` |
+| apps/backend ESLint設定   | `apps/backend/eslint.config.mjs`                                                                     |
+| apps/backend package.json | `apps/backend/package.json`                                                                          |
+
+---
+
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                         |
-| ---------- | ---------- | ------------------------------------------------ |
-| 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+| 日付       | バージョン | 変更内容                                                                          |
+| ---------- | ---------- | --------------------------------------------------------------------------------- |
+| 2026-01-29 | v1.2.0     | TASK-CI-FIX-001完了: ESLint設定をNext.js 16対応に更新、完了タスク・関連ドキュメント追加 |
+| 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                |

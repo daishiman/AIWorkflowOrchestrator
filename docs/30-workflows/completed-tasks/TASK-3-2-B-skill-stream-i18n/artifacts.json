@@ -1,0 +1,106 @@
+{
+  "taskId": "TASK-3-2-B",
+  "taskName": "SkillStreamDisplay i18n対応",
+  "githubIssue": 531,
+  "createdAt": "2026-01-28T21:15:00Z",
+  "updatedAt": "2026-01-28T22:55:00Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements-definition.md"]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/i18n-design.md"]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/test-spec.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-result.md"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/coverage-report.md"]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-report.md",
+        "outputs/phase-8/future-improvements.md"
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "skipped",
+      "artifacts": [],
+      "note": "ユーザー指示によりスキップ"
+    }
+  },
+  "dependencies": [
+    {
+      "taskId": "TASK-3-2-A",
+      "status": "completed"
+    }
+  ],
+  "metadata": {
+    "priority": "low",
+    "estimatedSize": "medium",
+    "category": "improvement",
+    "targetFeature": "SkillStreamDisplay",
+    "parentTask": "TASK-3-2-A"
+  },
+  "testResults": {
+    "total": 74,
+    "passed": 70,
+    "skipped": 4,
+    "coverage": {
+      "line": "100%",
+      "branch": "100%",
+      "function": "100%"
+    }
+  }
+}
