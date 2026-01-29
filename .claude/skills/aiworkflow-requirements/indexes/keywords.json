@@ -1,5 +1,5 @@
 {
-  "generated": "2026-01-28T13:53:26.807Z",
+  "generated": "2026-01-29T04:16:14.247Z",
   "totalKeywords": 946,
   "keywords": {
     "チャット履歴": [
@@ -317,6 +317,7 @@
       "spec-splitting-guidelines.md",
       "task-workflow-rules.md",
       "task-workflow.md",
+      "technology-backend.md",
       "technology-desktop.md",
       "technology-devops.md",
       "technology-frontend.md",
@@ -633,6 +634,7 @@
       "security-api-electron.md",
       "security-skill-ipc.md",
       "task-workflow.md",
+      "technology-backend.md",
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
       "ui-ux-search-panel.md"

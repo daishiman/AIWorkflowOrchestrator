@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "node .next/standalone/apps/backend/server.js",
     "start:dev": "next start -p 3001",
-    "lint": "next lint",
+    "lint": "eslint . --cache --cache-location .next/cache/eslint/",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",

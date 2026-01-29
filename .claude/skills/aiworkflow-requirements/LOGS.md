@@ -5,6 +5,114 @@
 
 ---
 
+## 2026-01-29: コードベースTODOスキャン未タスク新規作成（4件）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                                      |
+| 操作         | detect-unassigned-task（コードコメントスキャン）                    |
+| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）           |
+| 結果         | success                                                              |
+| 備考         | 52件のTODOコメントから既存189件と重複しない4件を検出・作成          |
+
+### 作成詳細
+
+| タスクID | ファイル | 内容 | 優先度 |
+| --- | --- | --- | --- |
+| task-ref-community-test-sync-001 | task-ref-community-test-sync-001.md | Community統合テスト-UI同期修正 | 中 |
+| task-bug-debug-code-removal-001 | task-bug-debug-code-removal-001.md | デバッグコード除去 | 中 |
+| task-imp-llm-handler-timeout-001 | task-imp-llm-handler-timeout-001.md | LLMハンドラータイムアウト実装 | 中 |
+| task-imp-error-reporting-001 | task-imp-error-reporting-001.md | エラーレポーティングサービス統合 | 低 |
+
+### システム仕様書参照
+
+各タスクにaiworkflow-requirementsの以下仕様書を参照情報として反映:
+- technology-backend.md（技術スタック・AI SDK・テスト設定）
+- technology-devops.md（CI/CD・無料枠最適化）
+- security-api-electron.md（セキュリティ要件）
+- error-handling.md（エラーハンドリングパターン）
+- interfaces-llm.md（LLMインターフェース仕様）
+
+---
+
+## 2026-01-29: TASK-CI-FIX-001 未タスク指示書テンプレート最適化
+
+| 項目         | 内容                                                                                     |
+| ------------ | ---------------------------------------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                                                          |
+| 操作         | optimize-unassigned-task                                                                 |
+| 対象ファイル | 3件の未タスク指示書（docs/30-workflows/unassigned-task/）                                |
+| 結果         | success                                                                                  |
+| 備考         | unassigned-task-template.md 9セクション完全準拠化（Section 4/6/7 追加）                  |
+
+### 最適化詳細
+
+| タスクID | ファイル | 追加セクション |
+|---------|----------|---------------|
+| TASK-CI-FIX-001-U3 | task-web-lint-migration.md | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
+| TASK-CI-FIX-001-U4 | task-eslintignore-flat-config-migration.md | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
+| TASK-CI-FIX-001-U5 | task-shared-no-explicit-any-fix.md | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
+
+### スキル改善
+
+- task-specification-creator v9.13.0: テンプレート準拠修正を記録
+- 根本原因: generate-unassigned-task エージェントが低優先度タスクでセクションを省略する傾向を検出
+
+---
+
+## 2026-01-29: fix-backend-lint-next16 未タスク指示書作成（TASK-CI-FIX-001）
+
+| 項目         | 内容                                                          |
+| ------------ | ------------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                               |
+| 操作         | create-unassigned-task                                        |
+| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）     |
+| 結果         | success                                                       |
+| 備考         | Phase 12 Task 4で検出された5件のうち4件を指示書化（U2は解決済み） |
+
+### 作成詳細
+
+| タスクID | ファイル | 内容 | 優先度 |
+|---------|----------|------|--------|
+| TASK-CI-FIX-001-U1 | task-nextjs16-breaking-changes.md | Next.js 16 その他の破壊的変更対応 | 中 |
+| TASK-CI-FIX-001-U3 | task-web-lint-migration.md | apps/web の lint 設定移行 | 低 |
+| TASK-CI-FIX-001-U4 | task-eslintignore-flat-config-migration.md | .eslintignore → eslint.config.js ignores 移行 | 低 |
+| TASK-CI-FIX-001-U5 | task-shared-no-explicit-any-fix.md | packages/shared の no-explicit-any warning 解消 | 低 |
+
+---
+
+## 2026-01-29: fix-backend-lint-next16（TASK-CI-FIX-001）
+
+| 項目         | 内容                                                          |
+| ------------ | ------------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                               |
+| 操作         | update-spec                                                   |
+| 対象ファイル | technology-backend.md, technology-devops.md                   |
+| 結果         | success                                                       |
+| 備考         | next lint → eslint . 移行（Next.js 16対応）                  |
+
+### 更新詳細
+
+- **更新**: `references/technology-backend.md`（v1.1.0 → v1.2.0）
+  - ESLint設定テーブルを更新（`@next/eslint-plugin-next` → `eslint-config-next/core-web-vitals` ネイティブ flat config）
+  - Next.js 16 `next lint` 削除対応の説明追加
+  - lint コマンド変更（`next lint` → `eslint . --cache`）の記載追加
+  - 「完了タスク」セクション追加（TASK-CI-FIX-001）
+  - 「関連ドキュメント」セクション追加（実装ガイドリンク）
+  - 変更履歴にv1.2.0追記
+
+- **更新**: `references/technology-devops.md`
+  - マイグレーション計画: `ESLint 9 Flat Configへの移行完了` をチェック済みに変更
+  - 変更履歴にTASK-CI-FIX-001完了エントリ追加
+
+- **ソースコード変更**:
+  - `apps/backend/package.json`: `"lint": "next lint"` → `"lint": "eslint . --cache --cache-location .next/cache/eslint/"`
+  - `apps/backend/eslint.config.mjs`: `eslint-config-next/core-web-vitals` をネイティブ flat config でインポート、`coverage/**` を ignores に追加
+
+---
+
+---
+
 ## 2026-01-28: skill-stream-i18n（TASK-3-2-B）
 
 | 項目         | 内容                                                           |

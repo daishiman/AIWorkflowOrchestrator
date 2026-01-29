@@ -433,3 +433,5 @@ AccountSection (organism)
 - `docs/30-workflows/login-only-auth/design-auth-view.md`
 - `apps/desktop/tailwind.config.js`
 - `apps/desktop/src/renderer/components/index.ts`
+
+| issue_number | 571 |
