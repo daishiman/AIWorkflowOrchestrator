@@ -5,6 +5,48 @@
 
 ---
 
+## 2026-01-28: skill-stream-i18n（TASK-3-2-B）
+
+| 項目         | 内容                                                           |
+| ------------ | -------------------------------------------------------------- |
+| タスクID     | TASK-3-2-B                                                     |
+| 操作         | update-spec                                                    |
+| 対象ファイル | references/ui-ux-feature-components.md                         |
+| 結果         | success                                                        |
+| 備考         | SkillStreamDisplay i18n対応（日本語/英語、翻訳キー、aria-label） |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-feature-components.md`（v1.2.0 → v1.3.0）
+  - i18n対応（TASK-3-2-B）セクション追加
+  - 対応言語（日本語/英語）仕様
+  - 使用ライブラリ（i18next, react-i18next, i18next-browser-languagedetector）
+  - 翻訳対象テキスト一覧（status, time, button, aria, feedback）
+  - i18n設定ファイルパス
+  - テスト品質（74テスト、全ファイル100%カバレッジ）
+  - formatRelativeTime仕様更新（locale引数追加）
+  - TASK-3-2-B完了記録追加
+  - 変更履歴にv1.3.0エントリ追加
+
+### 新規ファイル
+
+| ファイル                         | 配置先                                                          |
+| -------------------------------- | --------------------------------------------------------------- |
+| i18n/config.ts                   | `apps/desktop/src/renderer/i18n/config.ts`                      |
+| i18n/types.d.ts                  | `apps/desktop/src/renderer/i18n/types.d.ts`                     |
+| locales/ja/skill-stream.json     | `apps/desktop/src/renderer/i18n/locales/ja/skill-stream.json`   |
+| locales/en/skill-stream.json     | `apps/desktop/src/renderer/i18n/locales/en/skill-stream.json`   |
+| config.test.ts                   | `apps/desktop/src/renderer/i18n/config.test.ts`                 |
+| formatTime.i18n.test.ts          | `apps/desktop/src/renderer/utils/__tests__/formatTime.i18n.test.ts` |
+| SkillStreamDisplay.i18n.test.tsx | `apps/desktop/src/renderer/components/AgentView/__tests__/SkillStreamDisplay.i18n.test.tsx` |
+
+### 関連ドキュメント
+
+- 実装ガイド: `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/outputs/phase-12/implementation-guide.md`
+- タスク仕様書: `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/`
+
+---
+
 ## 2026-01-28: コピー履歴機能（TASK-3-2-D）
 
 | 項目         | 内容                                       |
@@ -42,7 +84,6 @@
 | TASK-3-2-D-05 | task-copy-history-keyboard-shortcuts.md  | キーボードショートカット |
 
 ---
-
 ## 2026-01-27: SkillAPI Preload実装（TASK-5-1）
 
 | 項目         | 内容                                                                        |

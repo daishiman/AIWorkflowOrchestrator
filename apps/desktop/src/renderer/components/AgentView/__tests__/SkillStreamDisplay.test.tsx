@@ -11,9 +11,10 @@
 
 import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, cleanup, waitFor } from "@testing-library/react";
+import { screen, cleanup, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { SkillStreamMessage } from "@repo/shared/types/skill-execution";
+import { renderWithI18n } from "../../../test-utils/i18n-test-utils";
 
 // Cleanup DOM between tests
 afterEach(() => {
@@ -85,14 +86,14 @@ describe("SkillStreamDisplay - rendering", () => {
 
   it("should render without crashing", () => {
     expect(() => {
-      render(<SkillStreamDisplay skillId="test-skill" />);
+      renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
     }).not.toThrow();
   });
 
   it("should display idle state initially", () => {
     mockUseSkillExecution.status = "idle";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // Status text appears in both badge and sr-only region
     const elements = screen.getAllByText(/待機中/);
@@ -102,7 +103,7 @@ describe("SkillStreamDisplay - rendering", () => {
   it("should display loading state when running", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // There are two "実行中" elements: status badge and loading text
     const elements = screen.getAllByText(/実行中/);
@@ -112,7 +113,7 @@ describe("SkillStreamDisplay - rendering", () => {
   it("should display completed state when done", () => {
     mockUseSkillExecution.status = "completed";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // Status text appears in both badge and sr-only region
     const elements = screen.getAllByText(/完了/);
@@ -126,7 +127,7 @@ describe("SkillStreamDisplay - rendering", () => {
       message: "Something went wrong",
     };
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // Status text appears in both badge and sr-only region
     const elements = screen.getAllByText(/エラー/);
@@ -136,7 +137,7 @@ describe("SkillStreamDisplay - rendering", () => {
   it("should display aborted state when aborted", () => {
     mockUseSkillExecution.status = "aborted";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // Status text appears in both badge and sr-only region
     const elements = screen.getAllByText(/中断/);
@@ -146,7 +147,7 @@ describe("SkillStreamDisplay - rendering", () => {
   it("should apply custom className", () => {
     mockUseSkillExecution.status = "idle";
 
-    const { container } = render(
+    const { container } = renderWithI18n(
       <SkillStreamDisplay skillId="test-skill" className="custom-class" />,
     );
 
@@ -156,7 +157,7 @@ describe("SkillStreamDisplay - rendering", () => {
   it("should apply custom height", () => {
     mockUseSkillExecution.status = "idle";
 
-    const { container } = render(
+    const { container } = renderWithI18n(
       <SkillStreamDisplay skillId="test-skill" height="500px" />,
     );
 
@@ -189,7 +190,7 @@ describe("SkillStreamDisplay - message display", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.getByText("Hello world")).toBeInTheDocument();
   });
@@ -209,7 +210,7 @@ describe("SkillStreamDisplay - message display", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.getByText("read_file")).toBeInTheDocument();
   });
@@ -226,7 +227,7 @@ describe("SkillStreamDisplay - message display", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const errorMessage = screen.getByText("Network error occurred");
     expect(errorMessage).toBeInTheDocument();
@@ -262,7 +263,7 @@ describe("SkillStreamDisplay - message display", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const messages = screen.getAllByText(/message/i);
     expect(messages[0]).toHaveTextContent("First message");
@@ -290,7 +291,7 @@ describe("SkillStreamDisplay - message display", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.getByText("Text message")).toBeInTheDocument();
     // Complete message should not be rendered
@@ -301,7 +302,7 @@ describe("SkillStreamDisplay - message display", () => {
     mockUseSkillExecution.messages = [];
     mockUseSkillExecution.status = "idle";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(
       screen.getByText(/スキル実行を開始してください/),
@@ -312,7 +313,7 @@ describe("SkillStreamDisplay - message display", () => {
     mockUseSkillExecution.messages = [];
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // There are two "実行中" elements: status badge and loading text
     const elements = screen.getAllByText(/実行中/);
@@ -338,7 +339,7 @@ describe("SkillStreamDisplay - interactions", () => {
   it("should call abort when abort button is clicked", async () => {
     const user = userEvent.setup();
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const abortButton = screen.getByRole("button", { name: /中断/ });
     await user.click(abortButton);
@@ -349,7 +350,7 @@ describe("SkillStreamDisplay - interactions", () => {
   it("should disable abort button when not running", () => {
     mockUseSkillExecution.status = "idle";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const abortButton = screen.queryByRole("button", { name: /中断/ });
     // Abort button should not be visible when not running
@@ -360,7 +361,7 @@ describe("SkillStreamDisplay - interactions", () => {
     mockUseSkillExecution.status = "running";
     mockUseSkillExecution.isAborting = true;
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const abortButton = screen.getByRole("button", { name: /中断/ });
     expect(abortButton).toBeDisabled();
@@ -370,7 +371,7 @@ describe("SkillStreamDisplay - interactions", () => {
     mockUseSkillExecution.status = "completed";
     const user = userEvent.setup();
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const resetButton = screen.getByRole("button", { name: /リセット/ });
     expect(resetButton).toBeInTheDocument();
@@ -383,7 +384,7 @@ describe("SkillStreamDisplay - interactions", () => {
     mockUseSkillExecution.status = "error";
     const user = userEvent.setup();
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const resetButton = screen.getByRole("button", { name: /リセット/ });
     expect(resetButton).toBeInTheDocument();
@@ -396,7 +397,7 @@ describe("SkillStreamDisplay - interactions", () => {
     mockUseSkillExecution.status = "aborted";
     const user = userEvent.setup();
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const resetButton = screen.getByRole("button", { name: /リセット/ });
     expect(resetButton).toBeInTheDocument();
@@ -422,7 +423,7 @@ describe("SkillStreamDisplay - callbacks", () => {
   it("should call onStatusChange when status changes", async () => {
     const onStatusChange = vi.fn();
 
-    const { rerender } = render(
+    const { rerender } = renderWithI18n(
       <SkillStreamDisplay
         skillId="test-skill"
         onStatusChange={onStatusChange}
@@ -445,7 +446,7 @@ describe("SkillStreamDisplay - callbacks", () => {
   it("should call onComplete when status becomes completed", async () => {
     const onComplete = vi.fn();
 
-    const { rerender } = render(
+    const { rerender } = renderWithI18n(
       <SkillStreamDisplay skillId="test-skill" onComplete={onComplete} />,
     );
 
@@ -463,7 +464,7 @@ describe("SkillStreamDisplay - callbacks", () => {
     const onError = vi.fn();
     const error = { code: "EXECUTION_FAILED", message: "Something went wrong" };
 
-    const { rerender } = render(
+    const { rerender } = renderWithI18n(
       <SkillStreamDisplay skillId="test-skill" onError={onError} />,
     );
 
@@ -492,7 +493,7 @@ describe("SkillStreamDisplay - auto execute", () => {
   });
 
   it("should auto execute when autoExecute is true and initialPrompt is provided", async () => {
-    render(
+    renderWithI18n(
       <SkillStreamDisplay
         skillId="test-skill"
         initialPrompt="Auto execute prompt"
@@ -508,7 +509,7 @@ describe("SkillStreamDisplay - auto execute", () => {
   });
 
   it("should not auto execute when autoExecute is false", async () => {
-    render(
+    renderWithI18n(
       <SkillStreamDisplay
         skillId="test-skill"
         initialPrompt="Auto execute prompt"
@@ -520,7 +521,9 @@ describe("SkillStreamDisplay - auto execute", () => {
   });
 
   it("should not auto execute when initialPrompt is not provided", async () => {
-    render(<SkillStreamDisplay skillId="test-skill" autoExecute={true} />);
+    renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" autoExecute={true} />,
+    );
 
     expect(mockUseSkillExecution.execute).not.toHaveBeenCalled();
   });
@@ -540,13 +543,13 @@ describe("SkillStreamDisplay - accessibility", () => {
   });
 
   it("should have role=log on content area", () => {
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.getByRole("log")).toBeInTheDocument();
   });
 
   it("should have aria-live=polite on content area", () => {
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const logArea = screen.getByRole("log");
     expect(logArea).toHaveAttribute("aria-live", "polite");
@@ -555,7 +558,7 @@ describe("SkillStreamDisplay - accessibility", () => {
   it("should have accessible button labels", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const abortButton = screen.getByRole("button", { name: /中断/ });
     expect(abortButton).toBeInTheDocument();
@@ -588,7 +591,7 @@ describe("SkillStreamDisplay - edge cases", () => {
       },
     ];
 
-    const { container } = render(
+    const { container } = renderWithI18n(
       <SkillStreamDisplay skillId="test-skill" height="200px" />,
     );
 
@@ -599,7 +602,9 @@ describe("SkillStreamDisplay - edge cases", () => {
   it("should handle rapid message updates", () => {
     mockUseSkillExecution.status = "running";
 
-    const { rerender } = render(<SkillStreamDisplay skillId="test-skill" />);
+    const { rerender } = renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" />,
+    );
 
     // Simulate rapid message updates
     for (let i = 0; i < 100; i++) {
@@ -624,14 +629,14 @@ describe("SkillStreamDisplay - edge cases", () => {
     mockUseSkillExecution.status = "idle";
 
     expect(() => {
-      render(<SkillStreamDisplay skillId="" />);
+      renderWithI18n(<SkillStreamDisplay skillId="" />);
     }).not.toThrow();
   });
 
   it("should handle prop changes during execution", () => {
     mockUseSkillExecution.status = "running";
 
-    const { rerender } = render(
+    const { rerender } = renderWithI18n(
       <SkillStreamDisplay skillId="skill-1" className="class-1" />,
     );
 
@@ -660,7 +665,7 @@ describe("SkillStreamDisplay - extended accessibility", () => {
   it("should have proper ARIA labels", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const logArea = screen.getByRole("log");
     expect(logArea).toHaveAttribute("aria-live", "polite");
@@ -670,7 +675,7 @@ describe("SkillStreamDisplay - extended accessibility", () => {
     const user = userEvent.setup();
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const abortButton = screen.getByRole("button", { name: /中断/ });
 
@@ -686,7 +691,9 @@ describe("SkillStreamDisplay - extended accessibility", () => {
   it("should announce status changes to screen readers", () => {
     mockUseSkillExecution.status = "running";
 
-    const { rerender } = render(<SkillStreamDisplay skillId="test-skill" />);
+    const { rerender } = renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" />,
+    );
 
     const logArea = screen.getByRole("log");
     expect(logArea).toHaveAttribute("aria-live", "polite");
@@ -725,7 +732,7 @@ describe("SkillStreamDisplay - callback edge cases", () => {
     const onComplete = vi.fn();
     const onError = vi.fn();
 
-    const { rerender } = render(
+    const { rerender } = renderWithI18n(
       <SkillStreamDisplay
         skillId="test-skill"
         onComplete={onComplete}
@@ -756,7 +763,7 @@ describe("SkillStreamDisplay - callback edge cases", () => {
     const onComplete = vi.fn();
     const onError = vi.fn();
 
-    const { rerender } = render(
+    const { rerender } = renderWithI18n(
       <SkillStreamDisplay
         skillId="test-skill"
         onComplete={onComplete}
@@ -780,7 +787,7 @@ describe("SkillStreamDisplay - callback edge cases", () => {
   });
 
   it("should handle undefined callbacks gracefully", () => {
-    const { rerender } = render(
+    const { rerender } = renderWithI18n(
       <SkillStreamDisplay
         skillId="test-skill"
         onComplete={undefined}
@@ -819,7 +826,7 @@ describe("SkillStreamDisplay - Loading Spinner (R1)", () => {
   it("should display spinner when status is running", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const spinner = screen.getByTestId("loading-spinner");
     expect(spinner).toBeInTheDocument();
@@ -829,7 +836,7 @@ describe("SkillStreamDisplay - Loading Spinner (R1)", () => {
   it("should not display spinner when status is idle", () => {
     mockUseSkillExecution.status = "idle";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
   });
@@ -838,7 +845,7 @@ describe("SkillStreamDisplay - Loading Spinner (R1)", () => {
   it("should not display spinner when status is completed", () => {
     mockUseSkillExecution.status = "completed";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument();
   });
@@ -847,7 +854,7 @@ describe("SkillStreamDisplay - Loading Spinner (R1)", () => {
   it("spinner should have animate-spin class", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const spinner = screen.getByTestId("loading-spinner");
     expect(spinner).toHaveClass("animate-spin");
@@ -857,7 +864,7 @@ describe("SkillStreamDisplay - Loading Spinner (R1)", () => {
   it("spinner should have accessible aria-label", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const spinnerContainer = screen.getByRole("status", { name: /実行中/ });
     expect(spinnerContainer).toBeInTheDocument();
@@ -867,7 +874,7 @@ describe("SkillStreamDisplay - Loading Spinner (R1)", () => {
   it("spinner container should have role=status", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const spinnerContainer = screen.getByTestId("loading-spinner-container");
     expect(spinnerContainer).toHaveAttribute("role", "status");
@@ -901,7 +908,7 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // タイムスタンプ要素が存在することを確認
     const timestamp = screen.getByTestId("message-timestamp-msg-1");
@@ -923,7 +930,7 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const timestamp = screen.getByTestId("message-timestamp-msg-1");
     expect(timestamp).toHaveClass("text-xs");
@@ -951,7 +958,7 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.getByTestId("message-timestamp-msg-1")).toBeInTheDocument();
     expect(screen.getByTestId("message-timestamp-msg-2")).toBeInTheDocument();
@@ -1004,7 +1011,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     expect(copyButton).toBeInTheDocument();
@@ -1024,7 +1031,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1046,7 +1053,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1071,7 +1078,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1104,7 +1111,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     expect(copyButton).toHaveAttribute("aria-label", "メッセージをコピー");
@@ -1124,7 +1131,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     copyButton.focus();
@@ -1151,7 +1158,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1181,7 +1188,7 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
   it("spinner should be announced by screen readers", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const spinnerContainer = screen.getByTestId("loading-spinner-container");
     expect(spinnerContainer).toHaveAttribute("role", "status");
@@ -1212,7 +1219,7 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1241,7 +1248,7 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // Copy button should be focusable
     const copyButton = screen.getByTestId("copy-button-msg-1");
@@ -1266,7 +1273,9 @@ describe("SkillStreamDisplay - Loading Spinner Edge Cases", () => {
   it("spinner should stop when status changes from running", () => {
     mockUseSkillExecution.status = "running";
 
-    const { rerender } = render(<SkillStreamDisplay skillId="test-skill" />);
+    const { rerender } = renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" />,
+    );
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
 
     mockUseSkillExecution.status = "completed";
@@ -1279,7 +1288,7 @@ describe("SkillStreamDisplay - Loading Spinner Edge Cases", () => {
   it("spinner should coexist with abort button", () => {
     mockUseSkillExecution.status = "running";
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /中断/ })).toBeInTheDocument();
@@ -1289,7 +1298,9 @@ describe("SkillStreamDisplay - Loading Spinner Edge Cases", () => {
   it("spinner animation should not affect layout", () => {
     mockUseSkillExecution.status = "running";
 
-    const { container } = render(<SkillStreamDisplay skillId="test-skill" />);
+    const { container } = renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" />,
+    );
 
     const header = container.querySelector(".stream-header");
     expect(header).toHaveClass("flex", "items-center");
@@ -1323,7 +1334,7 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
     ];
 
     expect(() => {
-      render(<SkillStreamDisplay skillId="test-skill" />);
+      renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
     }).not.toThrow();
 
     const timestamp = screen.getByTestId("message-timestamp-msg-1");
@@ -1343,7 +1354,7 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const timestamp = screen.getByTestId("message-timestamp-msg-1");
     expect(timestamp).toHaveTextContent("365日前");
@@ -1362,7 +1373,9 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
       },
     ];
 
-    const { rerender } = render(<SkillStreamDisplay skillId="test-skill" />);
+    const { rerender } = renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" />,
+    );
     expect(screen.getByTestId("message-timestamp-msg-1")).toBeInTheDocument();
 
     mockUseSkillExecution.messages = [
@@ -1396,7 +1409,7 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
     ];
 
     expect(() => {
-      render(<SkillStreamDisplay skillId="test-skill" />);
+      renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
     }).not.toThrow();
 
     const timestamp = screen.getByTestId("message-timestamp-msg-1");
@@ -1451,7 +1464,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1474,7 +1487,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1497,7 +1510,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton);
@@ -1519,7 +1532,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
 
@@ -1545,7 +1558,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton = screen.getByTestId("copy-button-msg-1");
     // ボタンがフォーカス可能であることを確認
@@ -1575,7 +1588,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const copyButton1 = screen.getByTestId("copy-button-msg-1");
     await user.click(copyButton1);
@@ -1635,7 +1648,7 @@ describe.skip("SkillStreamDisplay - Integration Scenarios", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // R1: スピナーが表示される
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
@@ -1662,7 +1675,7 @@ describe.skip("SkillStreamDisplay - Integration Scenarios", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // スピナーが表示されている状態で
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
@@ -1688,7 +1701,7 @@ describe.skip("SkillStreamDisplay - Integration Scenarios", () => {
       },
     ];
 
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     const timestamp = screen.getByTestId("message-timestamp-msg-1");
     const copyButton = screen.getByTestId("copy-button-msg-1");
@@ -1713,7 +1726,9 @@ describe.skip("SkillStreamDisplay - Integration Scenarios", () => {
       },
     ];
 
-    const { rerender } = render(<SkillStreamDisplay skillId="test-skill" />);
+    const { rerender } = renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" />,
+    );
 
     // リセット後
     mockUseSkillExecution.status = "idle";
@@ -1756,7 +1771,7 @@ describe("SkillStreamDisplay - Performance", () => {
     mockUseSkillExecution.messages = messages;
 
     const startTime = performance.now();
-    render(<SkillStreamDisplay skillId="test-skill" />);
+    renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
     const endTime = performance.now();
 
     // レンダリングが1秒以内に完了することを確認
@@ -1777,7 +1792,7 @@ describe("SkillStreamDisplay - Performance", () => {
     mockUseSkillExecution.messages = messages;
 
     expect(() => {
-      render(<SkillStreamDisplay skillId="test-skill" />);
+      renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
     }).not.toThrow();
 
     expect(screen.getAllByText(/Message/)).toHaveLength(1000);
@@ -1785,7 +1800,9 @@ describe("SkillStreamDisplay - Performance", () => {
 
   // TC-PERF-3
   it("rapid message updates should not cause issues", () => {
-    const { rerender } = render(<SkillStreamDisplay skillId="test-skill" />);
+    const { rerender } = renderWithI18n(
+      <SkillStreamDisplay skillId="test-skill" />,
+    );
 
     // 100回の高速アップデート
     for (let i = 0; i < 100; i++) {

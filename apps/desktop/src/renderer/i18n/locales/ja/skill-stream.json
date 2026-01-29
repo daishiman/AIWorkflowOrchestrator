@@ -1,0 +1,33 @@
+{
+  "status": {
+    "idle": "待機中",
+    "running": "実行中",
+    "completed": "完了",
+    "error": "エラー",
+    "aborted": "中断"
+  },
+  "time": {
+    "justNow": "たった今",
+    "secondsAgo": "{{count}}秒前",
+    "minutesAgo": "{{count}}分前",
+    "hoursAgo": "{{count}}時間前",
+    "daysAgo": "{{count}}日前"
+  },
+  "feedback": {
+    "copied": "コピーしました"
+  },
+  "button": {
+    "abort": "中断",
+    "reset": "リセット"
+  },
+  "message": {
+    "startPrompt": "スキル実行を開始してください",
+    "executing": "実行中..."
+  },
+  "aria": {
+    "loading": "実行中",
+    "copyMessage": "メッセージをコピー",
+    "abortExecution": "スキル実行を中断",
+    "resetState": "状態をリセット"
+  }
+}
