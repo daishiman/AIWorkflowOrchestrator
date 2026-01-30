@@ -131,19 +131,32 @@
 
 | 項目 | 仕様 |
 | ---- | ---- |
-| ファイル | `apps/desktop/src/renderer/components/organisms/PermissionDialog/` |
+| ファイル（設計） | `apps/desktop/src/renderer/components/organisms/PermissionDialog/` |
+| ファイル（実装） | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx` |
 | 責務 | ツール使用権限確認、フォーカストラップ、「常に許可」機能 |
-| Props | `request: PermissionRequest`, `onAllow: (remember: boolean) => void`, `onDeny: (remember: boolean) => void` |
+| Props（設計） | `request: PermissionRequest`, `onAllow: (remember: boolean) => void`, `onDeny: (remember: boolean) => void` |
+| API（実装） | Store直結パターン（`useAppStore()` から `pendingPermission`, `respondToSkillPermission` を取得） |
+| 実装状況 | **TASK-7C 完了**（2026-01-30） |
 
 **モーダル構成**
 
 | 領域 | 要素 | 内容例 | 備考 |
 | ---- | ---- | ------ | ---- |
-| ヘッダー | アイコン + タイトル | 「権限の確認」 | 警告アイコン付き |
-| 本文 | メッセージ | 「Edit」ツールを実行してもいいですか？ | ツール名を動的表示 |
-| 本文 | 引数詳細 | file_path: /path/to/file.ts | 引数をkey: value形式で表示 |
-| オプション | チェックボックス | この選択を記憶する | 未チェック状態がデフォルト |
-| フッター | アクションボタン | 拒否、許可 | 拒否が左、許可が右に配置 |
+| ヘッダー | アイコン + タイトル | 「権限の確認」 | 警告アイコン⚠️ + タイトル、閉じるボタン（✕）右端配置 |
+| 本文 | メッセージ | 「エージェントが以下の操作を実行しようとしています。許可しますか？」 | - |
+| 本文 | ツールバッジ | `Bash`（灰色背景バッジ） | ツール名を動的表示 |
+| 本文 | 引数詳細 | `ls -la` / `{"query": "test"}` | formatArgsヘルパーで表示（command/path直接、他JSON） |
+| 本文 | 理由（任意） | 「ディレクトリ内容を確認するため」 | reason存在時のみ表示 |
+| オプション | チェックボックス | このセッション中は同様の操作を自動許可する | 未チェック状態がデフォルト、「許可」ボタンのみに影響 |
+| フッター | アクションボタン（3つ） | 拒否、1回許可、許可 | 左から: 拒否（赤）、1回許可（グレー）、許可（青） |
+
+**3ボタン応答パターン（実装）**
+
+| ボタン | 呼び出し | 動作 |
+| ------ | -------- | ---- |
+| 拒否 | `respondToSkillPermission(false, false)` | 操作を拒否、ダイアログ閉じる |
+| 1回許可 | `respondToSkillPermission(true, false)` | 今回のみ許可、チェック状態無視 |
+| 許可 | `respondToSkillPermission(true, rememberChoice)` | 許可、チェックON時は以降自動許可 |
 
 **アクセシビリティ**
 
@@ -245,6 +258,12 @@
 
 ---
 
+## 完了タスク
+
+| タスクID | 完了日 | 主要成果物 |
+| -------- | ------ | ---------- |
+| TASK-7C  | 2026-01-30 | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`, `PermissionDialog.test.tsx`（40テスト） |
+
 ## 関連ドキュメント
 
 | ドキュメント | パス |
@@ -252,6 +271,7 @@
 | Agent SDK仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md` |
 | Agent Execution UI実装ガイド | `docs/30-workflows/agent-execution-ui/outputs/phase-12/implementation-guide.md` |
 | コンポーネント設計書 | `docs/30-workflows/agent-execution-ui/outputs/phase-2/component-design.md` |
+| PermissionDialog実装ガイド | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md` |
 
 ---
 

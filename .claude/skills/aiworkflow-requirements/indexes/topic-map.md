@@ -723,11 +723,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L15 |
 | コンポーネント設計概要 | L25 |
-| デザイン原則サマリー | L54 |
-| コンポーネント階層図 | L76 |
-| 完了タスク | L114 |
-| 変更履歴 | L126 |
-| 関連ドキュメント | L136 |
+| デザイン原則サマリー | L55 |
+| コンポーネント階層図 | L77 |
+| 完了タスク | L116 |
+| 変更履歴 | L129 |
+| 関連ドキュメント | L140 |
 
 ### references/ui-ux-design-principles.md
 
@@ -754,15 +754,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L35 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L142 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L209 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L357 |
-| コピー履歴機能（TASK-3-2-D） | L370 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L392 |
-| 完了タスク | L403 |
-| 関連ドキュメント | L416 |
-| 変更履歴 | L437 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L36 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L143 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L210 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L358 |
+| i18n対応（TASK-3-2-B） | L393 |
+| コピー履歴機能（TASK-3-2-D） | L442 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L551 |
+| 完了タスク | L562 |
+| 関連ドキュメント | L576 |
+| 変更履歴 | L598 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1263,17 +1264,18 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L18 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L113 |
-| skillSlice（スキル実行状態管理） | L203 |
-| 関連ドキュメント | L327 |
+| Zustand Sliceパターン | L19 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L114 |
+| skillSlice（スキル実行状態管理） | L204 |
+| 関連ドキュメント | L328 |
 
 ### references/arch-ui-components.md
 
 | セクション | 行 |
 |------------|----|\n| Monaco Diff Editor統合パターン | L10 |
-| 変更履歴 | L208 |
-| 関連ドキュメント | L217 |
+| SkillSelector コンポーネントパターン | L208 |
+| 変更履歴 | L402 |
+| 関連ドキュメント | L413 |
 
 ### references/deployment-electron.md
 

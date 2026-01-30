@@ -349,7 +349,7 @@ AgentViewを親コンポーネントとして、各UIコンポーネントが階
 | `SkillList`           | `components/SkillList.tsx`           | スキル一覧表示         |
 | `SkillCard`           | `components/SkillCard.tsx`           | スキルカード表示       |
 | `SkillDetailPanel`    | `components/SkillDetailPanel.tsx`    | スキル詳細パネル       |
-| `SkillImportDialog`   | `components/SkillImportDialog.tsx`   | インポートダイアログ   |
+| `SkillImportDialog`   | `components/skill/SkillImportDialog.tsx` | インポートダイアログ   |
 | `SkillSearchBar`      | `components/SkillSearchBar.tsx`      | 検索バー               |
 | `SkillCategoryFilter` | `components/SkillCategoryFilter.tsx` | カテゴリフィルター     |
 
@@ -559,6 +559,7 @@ useAppStoreから専用セレクターを提供。
 | ----------------------- | -------------------------- |
 | interfaces-agent-sdk.md | 親ファイル（インデックス） |
 | ui-ux-components.md     | UIコンポーネント仕様       |
+| [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md) | SkillImportDialog実装詳細 |
 
 ---
 
@@ -566,6 +567,7 @@ useAppStoreから専用セレクターを提供。
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-30 | 1.3.0      | TASK-7B完了: SkillImportDialogファイルパス修正（components/skill/）|
 | 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加           |
 | 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                        |
