@@ -136,20 +136,20 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 新規仕様書作成時のテンプレート。`node scripts/select-template.js` で自動選定可能。
 
-| ファイル                   | 用途                 | 対象カテゴリ     |
-| -------------------------- | -------------------- | ---------------- |
-| `spec-template.md`         | 汎用仕様テンプレート | 概要・品質       |
-| `interfaces-template.md`   | インターフェース仕様 | インターフェース |
-| `architecture-template.md` | アーキテクチャ仕様   | アーキテクチャ   |
-| `api-template.md`          | API設計              | API設計          |
-| `ipc-channel-template.md`  | Electron IPC         | IPC通信          |
-| `react-hook-template.md`   | React Hook           | カスタムフック   |
-| `react-context-template.md`| React Context        | 状態管理         |
-| `service-template.md`      | サービス層           | ビジネスロジック |
-| `database-template.md`     | データベース仕様     | データベース     |
-| `ui-ux-template.md`        | UI/UX仕様            | UI/UX            |
-| `security-template.md`     | セキュリティ仕様     | セキュリティ     |
-| `testing-template.md`      | テスト仕様           | テスト戦略       |
+| ファイル                    | 用途                 | 対象カテゴリ     |
+| --------------------------- | -------------------- | ---------------- |
+| `spec-template.md`          | 汎用仕様テンプレート | 概要・品質       |
+| `interfaces-template.md`    | インターフェース仕様 | インターフェース |
+| `architecture-template.md`  | アーキテクチャ仕様   | アーキテクチャ   |
+| `api-template.md`           | API設計              | API設計          |
+| `ipc-channel-template.md`   | Electron IPC         | IPC通信          |
+| `react-hook-template.md`    | React Hook           | カスタムフック   |
+| `react-context-template.md` | React Context        | 状態管理         |
+| `service-template.md`       | サービス層           | ビジネスロジック |
+| `database-template.md`      | データベース仕様     | データベース     |
+| `ui-ux-template.md`         | UI/UX仕様            | UI/UX            |
+| `security-template.md`      | セキュリティ仕様     | セキュリティ     |
+| `testing-template.md`       | テスト仕様           | テスト戦略       |
 
 > **注記**: 詳細はtemplates/配下を直接参照。追加テンプレートが必要な場合は `agents/create-spec.md` を参照。
 
@@ -195,6 +195,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                        |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **8.14.0** | **2026-01-30** | **TASK-7C完了**: ui-ux-agent-execution.md v1.2.0更新（PermissionDialog 3ボタンパターン、Store-direct実装）、interfaces-agent-sdk-ui.md v1.2.0更新、interfaces-agent-sdk-history.md v6.33.0更新（完了タスク追加）。40テスト・100%カバレッジ達成                 |
 | **8.13.0** | **2026-01-30** | **TASK-3-2-F完了**: quality-requirements.md v1.2.0（テスト環境設定パターン: jsdom/happy-dom選択、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処）、architecture-implementation-patterns.md v1.2.0（テスト環境設定パターン追加）                     |
 | 8.12.0     | 2026-01-28     | TASK-3-2-D完了: ui-ux-feature-components.md更新（コピー履歴機能: CopyHistoryContext/Panel/useCopyHistory Hook）、5件の未タスク仕様書作成（TASK-3-2-D-01〜05）                                                                                                   |
 | 8.11.0     | 2026-01-28     | **構造最適化**: ui-ux-feature-components.md分割（826行→400行）、ui-ux-feature-skill-stream.md新規作成（SkillStreamDisplay完全仕様）、resource-map.md v1.5.0更新                                                                                                |

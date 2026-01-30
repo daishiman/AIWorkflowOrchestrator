@@ -19,15 +19,15 @@ Agent Execution UI機能で使用する型定義。エージェント実行画�
 
 ### 実装ファイル
 
-| ファイル                                                                 | 説明                                   |
-| ------------------------------------------------------------------------ | -------------------------------------- |
-| `packages/shared/src/types/agent.ts`                                     | Agent Execution UI型定義（共有）       |
-| `apps/desktop/src/renderer/store/slices/agentSlice.ts`                   | Zustand状態管理（Agent Execution拡張） |
-| `apps/desktop/src/renderer/views/AgentExecutionView/`                    | メインビュー                           |
-| `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`         | 権限確認ダイアログ（TASK-7C実装済み）  |
-| `apps/desktop/src/renderer/components/organisms/AgentChatInterface/`     | チャットインターフェース               |
-| `apps/desktop/src/renderer/components/molecules/AgentMessageInput/`      | メッセージ入力                         |
-| `apps/desktop/src/renderer/components/molecules/AgentExecutionControls/` | 実行制御ボタン                         |
+| ファイル                                                                 | 説明                                            |
+| ------------------------------------------------------------------------ | ----------------------------------------------- |
+| `packages/shared/src/types/agent.ts`                                     | Agent Execution UI型定義（共有）                |
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts`                   | Zustand状態管理（Agent Execution拡張）          |
+| `apps/desktop/src/renderer/views/AgentExecutionView/`                    | メインビュー                                    |
+| `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`        | 権限確認ダイアログ（TASK-7C実装、Store-direct） |
+| `apps/desktop/src/renderer/components/organisms/AgentChatInterface/`     | チャットインターフェース                        |
+| `apps/desktop/src/renderer/components/molecules/AgentMessageInput/`      | メッセージ入力                                  |
+| `apps/desktop/src/renderer/components/molecules/AgentExecutionControls/` | 実行制御ボタン                                  |
 
 ---
 
@@ -37,21 +37,21 @@ Agent Execution UIは、Electronのマルチプロセスアーキテクチャに
 
 #### プロセス構成
 
-| プロセス         | 責務                                           |
-| ---------------- | ---------------------------------------------- |
-| Renderer Process | UI表示、ユーザー操作の受付、状態管理           |
+| プロセス         | 責務                                            |
+| ---------------- | ----------------------------------------------- |
+| Renderer Process | UI表示、ユーザー操作の受付、状態管理            |
 | Main Process     | Claude Agent SDK統合、IPC処理、システムリソース |
 
 #### Renderer Process コンポーネント階層
 
-| レイヤー | コンポーネント           | 役割                                         |
-| -------- | ------------------------ | -------------------------------------------- |
-| View     | AgentExecutionView       | 最上位ビュー、全体レイアウト管理             |
-| Organism | AgentChatInterface       | チャット会話表示領域                         |
-| Molecule | AgentOutputStream        | ストリーミング出力のリアルタイム表示         |
-| Molecule | AgentExecutionControls   | 実行制御ボタン（キャンセル、クリア）         |
-| Molecule | AgentMessageInput        | メッセージ入力フィールドと送信ボタン         |
-| Organism | PermissionDialog         | ツール実行許可の確認モーダル（許可/拒否/常に許可） |
+| レイヤー | コンポーネント         | 役割                                                       |
+| -------- | ---------------------- | ---------------------------------------------------------- |
+| View     | AgentExecutionView     | 最上位ビュー、全体レイアウト管理                           |
+| Organism | AgentChatInterface     | チャット会話表示領域                                       |
+| Molecule | AgentOutputStream      | ストリーミング出力のリアルタイム表示                       |
+| Molecule | AgentExecutionControls | 実行制御ボタン（キャンセル、クリア）                       |
+| Molecule | AgentMessageInput      | メッセージ入力フィールドと送信ボタン                       |
+| Organism | PermissionDialog       | ツール実行許可の確認モーダル（拒否/1回許可/許可の3ボタン） |
 
 #### プロセス間通信
 
@@ -324,7 +324,8 @@ AGENT-004実装後のポストリリーステストで作成されたAgent SDK�
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                         |
-| ---------- | ---------- | ------------------------------------------------ |
-| 2026-01-26 | 1.1.0      | アーキテクチャ図のコードブロックを表形式に変換   |
-| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                  |
+| 日付       | バージョン | 変更内容                                                           |
+| ---------- | ---------- | ------------------------------------------------------------------ |
+| 2026-01-30 | 1.2.0      | TASK-7C完了: PermissionDialog実装ファイル更新、3ボタンパターン記載 |
+| 2026-01-26 | 1.1.0      | アーキテクチャ図のコードブロックを表形式に変換                     |
+| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                                    |
