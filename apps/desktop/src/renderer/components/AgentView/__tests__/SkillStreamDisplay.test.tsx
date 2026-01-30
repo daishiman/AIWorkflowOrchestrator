@@ -1,5 +1,5 @@
 /**
- * @vitest-environment happy-dom
+ * @vitest-environment jsdom
  *
  * SkillStreamDisplay Component Tests
  *
@@ -967,24 +967,11 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
 
 // ============================================================
 // 12. R3 Clipboard Copy Tests (TDD Red Phase)
-// NOTE: happy-dom環境でnavigator.clipboardのモックが困難なため一時スキップ
-// TODO: TASK-3-2-F で修正予定
+// NOTE: jsdom環境 + setup.tsのClipboard APIモックを使用
+// TASK-3-2-F: vi.spyOnでsetup.tsのモックを監視
 // ============================================================
-describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
-  const mockWriteText = vi.fn();
-  const mockClipboard = { writeText: mockWriteText };
-
-  beforeAll(() => {
-    // グローバルnavigator.clipboardをモック
-    vi.stubGlobal("navigator", {
-      ...navigator,
-      clipboard: mockClipboard,
-    });
-  });
-
-  afterAll(() => {
-    vi.unstubAllGlobals();
-  });
+describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
+  let mockWriteText: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
@@ -994,8 +981,14 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    // Reset mock for each test
-    mockWriteText.mockResolvedValue(undefined);
+    // setup.tsで定義されたnavigator.clipboard.writeTextをスパイ
+    mockWriteText = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    mockWriteText.mockRestore();
   });
 
   // TC-R3-1
@@ -1065,8 +1058,11 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
 
   // TC-R3-4
   it("copy feedback should disappear after 2000ms", async () => {
-    vi.useFakeTimers();
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+      delay: null,
+    });
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
@@ -1089,7 +1085,7 @@ describe.skip("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     });
 
     // 2000ms経過後
-    vi.advanceTimersByTime(2000);
+    await vi.advanceTimersByTimeAsync(2000);
 
     await waitFor(() => {
       expect(screen.queryByText("コピーしました")).not.toBeInTheDocument();
@@ -1196,8 +1192,7 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
   });
 
   // TC-A-2
-  // NOTE: happy-dom環境でnavigator.clipboardのモックが困難なため一時スキップ
-  // TODO: TASK-3-2-F で修正予定
+  // NOTE: jsdom環境 + vi.stubGlobalを使用（レガシーパターン）
   it.skip("copy feedback should be announced to screen readers", async () => {
     const user = userEvent.setup();
     // Setup clipboard mock for this test
@@ -1420,23 +1415,11 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
 
 // ============================================================
 // 16. R3 Clipboard Copy Edge Cases (Phase 6)
-// NOTE: happy-dom環境でnavigator.clipboardのモックが困難なため一時スキップ
-// TODO: TASK-3-2-F で修正予定
+// NOTE: jsdom環境 + setup.tsのClipboard APIモックを使用
+// TASK-3-2-F: vi.spyOnでsetup.tsのモックを監視
 // ============================================================
-describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
-  const mockWriteText = vi.fn();
-  const mockClipboard = { writeText: mockWriteText };
-
-  beforeAll(() => {
-    vi.stubGlobal("navigator", {
-      ...navigator,
-      clipboard: mockClipboard,
-    });
-  });
-
-  afterAll(() => {
-    vi.unstubAllGlobals();
-  });
+describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
+  let mockWriteText: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
@@ -1446,8 +1429,14 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    // Reset mock for each test
-    mockWriteText.mockResolvedValue(undefined);
+    // setup.tsで定義されたnavigator.clipboard.writeTextをスパイ
+    mockWriteText = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    mockWriteText.mockRestore();
   });
 
   // TC-R3-8
@@ -1567,8 +1556,11 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
 
   // TC-R3-13
   it("multiple messages can show copy feedback independently", async () => {
-    vi.useFakeTimers();
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+      delay: null,
+    });
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
@@ -1604,23 +1596,11 @@ describe.skip("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
 
 // ============================================================
 // 17. Integration Scenario Tests (Phase 6)
-// NOTE: happy-dom環境でnavigator.clipboardのモックが困難なため一時スキップ
-// TODO: TASK-3-2-F で修正予定
+// NOTE: jsdom環境 + setup.tsのClipboard APIモックを使用
+// TASK-3-2-F: vi.spyOnでsetup.tsのモックを監視
 // ============================================================
-describe.skip("SkillStreamDisplay - Integration Scenarios", () => {
-  const mockWriteText = vi.fn();
-  const mockClipboard = { writeText: mockWriteText };
-
-  beforeAll(() => {
-    vi.stubGlobal("navigator", {
-      ...navigator,
-      clipboard: mockClipboard,
-    });
-  });
-
-  afterAll(() => {
-    vi.unstubAllGlobals();
-  });
+describe("SkillStreamDisplay - Integration Scenarios", () => {
+  let mockWriteText: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
@@ -1630,8 +1610,14 @@ describe.skip("SkillStreamDisplay - Integration Scenarios", () => {
     mockUseSkillExecution.isAborting = false;
     vi.clearAllMocks();
 
-    // Reset mock for each test
-    mockWriteText.mockResolvedValue(undefined);
+    // setup.tsで定義されたnavigator.clipboard.writeTextをスパイ
+    mockWriteText = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    mockWriteText.mockRestore();
   });
 
   // TC-INT-1

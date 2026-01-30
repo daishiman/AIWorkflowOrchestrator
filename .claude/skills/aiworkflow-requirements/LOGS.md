@@ -5,6 +5,40 @@
 
 ---
 
+## 2026-01-30: TASK-3-2-F テスト環境改善知見のシステム仕様書追加
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-3-2-F                                                                    |
+| 操作         | update-spec                                                                   |
+| 対象ファイル | quality-requirements.md, architecture-implementation-patterns.md               |
+| 結果         | success                                                                       |
+| 備考         | jsdom環境移行、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処を文書化 |
+
+### 更新詳細
+
+| ファイル | バージョン | 追加内容 |
+|----------|------------|----------|
+| quality-requirements.md | v1.1.0 → v1.2.0 | テスト環境設定パターン（jsdom/happy-dom選択）、グローバルAPIモック（Clipboard API、window.skillAPI）、vi.stubGlobal再設定パターン、act()警告対処パターン |
+| architecture-implementation-patterns.md | v1.1.0 → v1.2.0 | テスト環境設定パターン（環境選択、ディレクティブ指定、グローバルモック設計、モック上書きパターン） |
+
+### 追加されたパターン
+
+| パターン | 説明 | 用途 |
+|----------|------|------|
+| jsdom vs happy-dom選択 | 機能要件に応じた環境選択 | Clipboard API等の完全DOM機能が必要な場合 |
+| Clipboard APIモック | navigator.clipboard.writeText/readTextモック | コピー/ペースト機能テスト |
+| window.skillAPIモック | vi.stubGlobal設定 | useSkillExecution/useSkillPermission Hook |
+| vi.stubGlobal再設定 | beforeEach内での再呼び出し | テスト固有モックの確保 |
+| act()警告対処 | fakeTimers/waitFor/act wrap | React状態更新タイミング問題 |
+| pnpm.overrides | jsdomバージョン統一 | ESM互換性確保 |
+
+### SKILL.md変更履歴
+
+- **v8.13.0** (2026-01-30): TASK-3-2-F完了記録
+
+---
+
 ## 2026-01-30: TASK-7C PermissionDialog コンポーネント完了
 
 | 項目         | 内容                                                                                   |
@@ -121,7 +155,6 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 `docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md`
 
 ---
-
 ## 2026-01-29: コードベースTODOスキャン未タスク新規作成（4件）
 
 | 項目         | 内容                                                                 |
@@ -1575,6 +1608,49 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 - Task: unknown
 - 結果: success
 - フィードバック: TASK-6-1 SkillSlice仕様追加（skillSliceセクション、型定義、読み込み条件更新）
+
+---
+
+## 2026-01-30: TASK-3-2-F SkillStreamDisplay テスト環境改善
+
+| 項目         | 内容                                                         |
+| ------------ | ------------------------------------------------------------ |
+| タスクID     | TASK-3-2-F                                                   |
+| 操作         | update-spec                                                  |
+| 対象ファイル | references/quality-requirements.md                           |
+| 結果         | success                                                      |
+| 備考         | jsdom環境移行、Clipboard APIモック、162テストPASS達成        |
+
+### 更新詳細
+
+- **更新**: `references/quality-requirements.md`（v1.1.0 → v1.2.0）
+  - 「完了タスク」セクション追加
+  - TASK-3-2-F完了記録（タスク名、完了日、成果）
+  - jsdom環境移行ガイド情報
+  - 変更履歴にv1.2.0エントリ追加
+
+### 実装内容
+
+| 項目               | 内容                                          |
+| ------------------ | --------------------------------------------- |
+| 環境変更           | happy-dom → jsdom                             |
+| Clipboard APIモック | setup.ts にグローバルモック追加               |
+| window.skillAPI    | useSkillExecution/useSkillPermission用モック  |
+| テスト結果         | 162 passed, 1 skipped (5ファイル)             |
+| カバレッジ         | Statements 82.4%, Branches 64.2%              |
+
+### 生成された未タスク仕様書
+
+| タスクID                            | ファイル                                   | 内容             | 優先度 |
+| ----------------------------------- | ------------------------------------------ | ---------------- | ------ |
+| task-ref-act-warning-elimination-001 | task-ref-act-warning-elimination-001.md   | act()警告完全解消 | LOW    |
+
+### 関連ドキュメント
+
+| ドキュメント | パス                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| 実装ガイド   | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/`                                        |
 
 ---
 

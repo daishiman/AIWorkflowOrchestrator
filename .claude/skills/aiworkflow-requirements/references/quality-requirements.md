@@ -145,6 +145,23 @@ TDD（テスト駆動開発）は「Red-Green-Refactor」の3フェーズで進�
 | `__tests__/unit/`           | ドメインモデルのテスト |
 | `__tests__/integration/`    | リポジトリ統合テスト   |
 
+**テスト環境設定（TASK-3-2-F 2026-01-30実装）**:
+
+| 設定項目 | 推奨値 | 理由 |
+| -------- | ------ | ---- |
+| environment | jsdom | Clipboard API等の完全なDOM機能サポートが必要な場合 |
+| environment | happy-dom | 軽量で高速、基本的なDOM操作のみの場合 |
+| pool | forks | プロセス分離でテスト安定性向上 |
+| fileParallelism | false | テスト間の干渉防止 |
+
+**jsdomバージョン管理**:
+
+jsdom@27.x系でESMエラーが発生する場合、root package.jsonにpnpm.overridesを設定してバージョンを統一する。
+
+| 設定 | 値 | 効果 |
+| ---- | --- | ---- |
+| pnpm.overrides.jsdom | 25.0.1 | 全パッケージでバージョン統一、ESM互換性確保 |
+
 **ベストプラクティス**:
 
 - 各テストは独立して実行可能であること
@@ -159,6 +176,42 @@ Vitestの並列実行はデフォルトで有効。スレッド数は5、テス�
 ### モック戦略
 
 外部依存をテストから分離するため、適切なモック手法を使用する。
+
+**グローバルAPIモック（TASK-3-2-F 2026-01-30実装）**:
+
+| API | モック方法 | 配置先 |
+| --- | ---------- | ------ |
+| Clipboard API | vi.fn().mockResolvedValue() | setup.ts |
+| window.skillAPI | vi.stubGlobal() | setup.ts beforeAll |
+
+**Clipboard APIモック設計**:
+
+| メソッド | モック戻り値 | 用途 |
+| -------- | ------------ | ---- |
+| navigator.clipboard.writeText | Promise<void> | コピー操作テスト |
+| navigator.clipboard.readText | Promise<string>（空文字） | ペースト操作テスト |
+
+**window.skillAPIモック設計**:
+
+useSkillExecution/useSkillPermissionフックがwindow.skillAPIを参照するため、テスト環境でモックが必要。
+
+| メソッド | 戻り値 | 用途 |
+| -------- | ------ | ---- |
+| onStream | () => void | ストリームリスナー登録 |
+| onPermission | () => void | 権限リクエストリスナー |
+| respondPermission | Promise<boolean> | 権限応答送信 |
+| execute | Promise<{executionId}> | スキル実行開始 |
+| abort | Promise<void> | 実行中断 |
+
+**vi.stubGlobal再設定パターン**:
+
+setup.tsのbeforeAllでグローバルモックを設定後、テストファイル固有のモックを使用したい場合の対処法。
+
+| 手順 | 内容 |
+| ---- | ---- |
+| 1 | テストファイルでmockSkillAPIを定義 |
+| 2 | vi.stubGlobal("skillAPI", mockSkillAPI)をモジュールレベルで実行 |
+| 3 | beforeEach内で再度vi.stubGlobalを呼び出し（setup.tsの上書き対策） |
 
 **MSW（Mock Service Worker）によるAPIモック**:
 
@@ -204,6 +257,25 @@ MSWはネットワークレベルでHTTPリクエストをインターセプト�
 ### React Testing Library ベストプラクティス
 
 RTL（React Testing Library）はユーザー視点でのテストを推奨する。実装の詳細ではなく、ユーザーが見る要素（ラベル、ロール、テキスト）でクエリを行う。
+
+**act()警告対処パターン（TASK-3-2-F 2026-01-30実装）**:
+
+React状態更新がテスト外で発生した場合にact()警告が出る。以下のパターンで対処する。
+
+| パターン | 対処法 | 用途 |
+| -------- | ------ | ---- |
+| fakeTimers | vi.useFakeTimers() + vi.advanceTimersByTime(ms) | setInterval/setTimeout依存 |
+| waitFor | await waitFor(() => expect(...)) | 非同期状態更新 |
+| act wrap | await act(async () => { ... }) | 明示的な状態更新待機 |
+
+**残存警告の許容判断基準**:
+
+| 条件 | 許容可否 | 理由 |
+| ---- | -------- | ---- |
+| テスト結果が正しい | 許容 | 機能に影響なし |
+| 警告が少数（10件未満） | 許容 | 費用対効果の観点 |
+| 外部ライブラリ起因 | 許容 | 修正困難 |
+| 本番コードに影響 | 不可 | 品質問題 |
 
 **推奨クエリの優先順位**:
 
@@ -506,5 +578,6 @@ vitest.config.tsで設定済みの閾値:
 
 | Version | Date       | Changes                                                              |
 | ------- | ---------- | -------------------------------------------------------------------- |
+| 1.2.0   | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処） |
 | 1.1.0   | 2026-01-26 | spec-guidelines.md準拠: CI/CDパイプライン構成図を表形式に変換        |
 | 1.0.0   | -          | 初版作成                                                             |

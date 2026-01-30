@@ -1,0 +1,222 @@
+{
+  "feature": "TASK-3-2-F-skill-stream-test-env",
+  "created": "2026-01-30T00:00:00.000Z",
+  "lastUpdated": "2026-01-30T12:00:00.000Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト環境問題分析",
+          "path": "outputs/phase-1/test-environment-analysis.md",
+          "type": "document"
+        },
+        {
+          "name": "DOM環境比較",
+          "path": "outputs/phase-1/dom-environment-comparison.md",
+          "type": "document"
+        },
+        {
+          "name": "受け入れ基準定義書",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "type": "document"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "アプローチ選定書",
+          "path": "outputs/phase-2/approach-selection.md",
+          "type": "document"
+        },
+        {
+          "name": "Vitest設定変更設計",
+          "path": "outputs/phase-2/vitest-config-design.md",
+          "type": "document"
+        },
+        {
+          "name": "Clipboard APIモック設計",
+          "path": "outputs/phase-2/clipboard-mock-design.md",
+          "type": "document"
+        },
+        {
+          "name": "互換性影響分析",
+          "path": "outputs/phase-2/compatibility-analysis.md",
+          "type": "document"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "スキップテスト棚卸し",
+          "path": "outputs/phase-4/skipped-test-inventory.md",
+          "type": "document"
+        },
+        {
+          "name": "Red状態証拠",
+          "path": "outputs/phase-4/tdd-red-evidence.md",
+          "type": "document"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "Vitest設定",
+          "path": "apps/desktop/vitest.config.ts",
+          "type": "code"
+        },
+        {
+          "name": "テストセットアップ",
+          "path": "apps/desktop/src/test/setup.ts",
+          "type": "code"
+        },
+        {
+          "name": "Green状態証拠",
+          "path": "outputs/phase-5/tdd-green-evidence.md",
+          "type": "document"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト拡充結果",
+          "path": "outputs/phase-6/test-expansion-evidence.md",
+          "type": "document"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタリング結果",
+          "path": "outputs/phase-8/refactoring-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質保証結果",
+          "path": "outputs/phase-9/quality-assurance-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビューゲート",
+          "path": "outputs/phase-10/final-review-gate.md",
+          "type": "document"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テスト検証",
+          "path": "outputs/phase-11/manual-test-verification.md",
+          "type": "document"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document"
+        },
+        {
+          "name": "完了サマリー",
+          "path": "outputs/phase-12/completion-summary.md",
+          "type": "document"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [],
+      "note": "PR作成はユーザー指示によりスキップ"
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "chore",
+    "estimatedPhases": 13,
+    "issueNumber": 559,
+    "taskId": "TASK-3-2-F",
+    "relatedTasks": ["TASK-3-2-A", "TASK-3-2-B", "TASK-3-2-C"],
+    "completedPhases": 12,
+    "completedDate": "2026-01-30",
+    "testResults": {
+      "passed": 162,
+      "skipped": 1,
+      "failed": 0
+    },
+    "coverageResults": {
+      "statements": 82.4,
+      "branches": 64.2,
+      "functions": 85.7,
+      "lines": 82.4
+    }
+  }
+}
