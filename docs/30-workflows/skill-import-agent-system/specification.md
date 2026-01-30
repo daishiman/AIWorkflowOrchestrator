@@ -5579,7 +5579,7 @@ const RETRY_CONFIG = {
 
 - [ ] TASK-7A: SkillSelector（日本語UI）
 - [ ] TASK-7B: SkillImportDialog（日本語UI）
-- [ ] TASK-7C: PermissionDialog（日本語UI）
+- [x] TASK-7C: PermissionDialog（日本語UI）
 - [ ] TASK-7D: ChatPanel統合
 
 ### Phase 8: テスト

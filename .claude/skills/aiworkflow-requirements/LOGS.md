@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-01-30: TASK-7C PermissionDialog コンポーネント完了
+
+| 項目         | 内容                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------- |
+| タスクID     | TASK-7C                                                                                |
+| 操作         | Phase 1-12 全フェーズ完了                                                              |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                      |
+| 結果         | success                                                                                |
+| 備考         | Store直結パターンで実装。40テストPASS、カバレッジ Line:100% Branch:94.44% Function:100% |
+
+### 成果物
+
+| 成果物                    | パス                                                                                    |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| PermissionDialogコンポーネント | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                   |
+| skillエクスポート         | `apps/desktop/src/renderer/components/skill/index.ts`                                   |
+| テストファイル（40テスト）| `apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.test.tsx`        |
+| 実装ガイド                | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md`  |
+
+### システム仕様書更新
+
+| 更新対象                       | 変更内容                                                    |
+| ------------------------------ | ----------------------------------------------------------- |
+| `arch-state-management.md`     | TASK-7C ステータス 未着手 → **完了**                        |
+| `ui-ux-agent-execution.md`     | PermissionDialog実装ファイルパス追記、完了タスク・関連ドキュメント追加 |
+| `interfaces-agent-sdk-ui.md`   | PermissionDialogファイルパス更新                            |
+| `specification.md`             | TASK-7C チェックボックス完了                                |
+
+### 未タスク検出
+
+| 検出タスク                        | 優先度 | ソース             |
+| --------------------------------- | ------ | ------------------ |
+| ツール別アイコン表示（toolIcons） | medium | 元タスク仕様書     |
+| 改善版UI（人間可読操作説明）      | medium | specification.md   |
+| ダークモード対応                  | low    | Phase 11手動テスト |
+| 既存PermissionDialogとの統合      | low    | 設計判断           |
+
+---
+
 ## 2026-01-29: コードベースTODOスキャン未タスク新規作成（4件）
 
 | 項目         | 内容                                                                 |
