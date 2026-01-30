@@ -1,5 +1,5 @@
 /**
- * @vitest-environment happy-dom
+ * @vitest-environment jsdom
  *
  * SkillStreamDisplay Permission Integration Tests
  *
@@ -518,6 +518,9 @@ describe("SkillStreamDisplay permission - IPC integration", () => {
     mockUseSkillExecution.error = null;
     mockUseSkillExecution.isAborting = false;
     mockUseSkillPermission.pendingPermission = null;
+    // Re-stub window.skillAPI to ensure test's mockSkillAPI is used
+    // (setup.ts beforeAll may have overwritten the module-level stubGlobal)
+    vi.stubGlobal("skillAPI", mockSkillAPI);
     mockSkillAPI.onPermission.mockReturnValue(() => {});
     mockSkillAPI.respondPermission.mockResolvedValue(true);
     vi.clearAllMocks();

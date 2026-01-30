@@ -3,15 +3,8 @@ name: Backend CI/CD
 on:
   push:
     branches: [main]
-    paths:
-      - "apps/backend/**"
-      - "packages/shared/**"
-      - ".github/workflows/backend-ci.yml"
   pull_request:
     branches: [main]
-    paths:
-      - "apps/backend/**"
-      - "packages/shared/**"
   workflow_dispatch:
 
 # 最小権限の原則
@@ -24,9 +17,28 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'apps/backend/**'
+              - 'packages/shared/**'
+              - '.github/workflows/backend-ci.yml'
+
   ci:
     name: Validate Build
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -61,6 +73,14 @@ jobs:
 
       - name: Lint
         run: pnpm --filter @repo/backend lint
+
+  ci-skip:
+    name: Validate Build
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.backend != 'true'
+    steps:
+      - run: echo "No backend changes detected. Skipping."
 
   deploy:
     name: Deploy to Railway

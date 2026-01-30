@@ -279,6 +279,40 @@
 | コンポーネント | Reactコンポーネント | RTL + Vitest | API、ストア |
 | E2E | ユーザーフロー | Playwright | なし（実環境） |
 
+### テスト環境設定パターン（TASK-3-2-F 2026-01-30実装）
+
+| 環境 | 特徴 | 適用ケース |
+|------|------|-----------|
+| jsdom | 完全なDOM機能、Clipboard API対応 | UI統合テスト、ブラウザAPI依存 |
+| happy-dom | 軽量・高速、基本DOM機能 | 単純なコンポーネントテスト |
+| node | DOM不要 | ユーティリティ関数、サービス層 |
+
+**テストファイル単位の環境指定**:
+
+| 方法 | 説明 |
+|------|------|
+| ディレクティブ | ファイル先頭に `// @vitest-environment jsdom` を記述 |
+| vitest.config.ts | environmentMatchGlobsで glob パターン指定 |
+
+**グローバルモック設計（setup.ts）**:
+
+| モック対象 | 設定タイミング | 用途 |
+|-----------|---------------|------|
+| Clipboard API | beforeAll | コピー/ペースト機能テスト |
+| window.skillAPI | beforeAll | useSkillExecution等のHook |
+| IntersectionObserver | トップレベル | 無限スクロール等 |
+
+**モック上書きパターン**:
+
+グローバルモック後にテスト固有モックを使用する場合、beforeEach内でvi.stubGlobalを再呼び出しする。
+
+| 手順 | 処理 |
+|------|------|
+| 1 | テストファイルでモックオブジェクト定義 |
+| 2 | モジュールレベルでvi.stubGlobal実行 |
+| 3 | beforeEach内で再度vi.stubGlobal（setup.ts上書き対策） |
+| 4 | vi.clearAllMocks()でカウンターリセット |
+
 ### モック戦略
 
 | モック種別 | 用途 | 使用場面 |
@@ -339,5 +373,6 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2.0 | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルモック設計、モック上書きパターン） |
 | 1.1.0 | 2026-01-26 | 仕様ガイドライン準拠: コード例削除、文章・表形式に変更 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

@@ -1,5 +1,5 @@
 /**
- * @vitest-environment happy-dom
+ * @vitest-environment jsdom
  *
  * SkillStreamDisplay i18n Tests (TDD Red Phase)
  *
@@ -242,10 +242,12 @@ describe("SkillStreamDisplay - English locale (en)", () => {
 
 // ============================================================
 // CopyButton フィードバックテスト
-// NOTE: happy-dom環境でnavigator.clipboardのモックが困難なため一時スキップ
-// TODO: TASK-3-2-F で修正予定
+// NOTE: jsdom環境 + setup.tsのClipboard APIモックを使用
+// TASK-3-2-F: vi.spyOnでsetup.tsのモックを監視
 // ============================================================
-describe.skip("SkillStreamDisplay - CopyButton feedback", () => {
+describe("SkillStreamDisplay - CopyButton feedback", () => {
+  let mockWriteText: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     mockUseSkillExecution.status = "running";
     mockUseSkillExecution.messages = [
@@ -258,12 +260,14 @@ describe.skip("SkillStreamDisplay - CopyButton feedback", () => {
     ];
     vi.clearAllMocks();
 
-    // Mock clipboard API
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: vi.fn().mockResolvedValue(undefined),
-      },
-    });
+    // setup.tsで定義されたnavigator.clipboard.writeTextをスパイ
+    mockWriteText = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    mockWriteText.mockRestore();
   });
 
   it("should display 'コピーしました' after copying in Japanese locale", async () => {

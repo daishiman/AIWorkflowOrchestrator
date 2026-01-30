@@ -8,6 +8,54 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 // グローバルモック
+// scrollIntoView モック（happy-dom/jsdomには実装されていない場合がある）
+if (typeof Element !== "undefined") {
+  Element.prototype.scrollIntoView = vi.fn();
+}
+
+// Clipboard API モック（happy-dom/jsdom両対応）
+if (typeof navigator !== "undefined") {
+  // happy-domでは既存のclipboardを上書き、jsdomではundefinedなので新規作成
+  const clipboardMock = {
+    writeText: vi.fn().mockResolvedValue(undefined),
+    readText: vi.fn().mockResolvedValue(""),
+  };
+
+  try {
+    Object.defineProperty(navigator, "clipboard", {
+      value: clipboardMock,
+      writable: true,
+      configurable: true,
+    });
+  } catch {
+    // happy-domで既にclipboardが定義されている場合は直接上書き
+    if (navigator.clipboard) {
+      (navigator.clipboard as unknown as typeof clipboardMock).writeText =
+        clipboardMock.writeText;
+      (navigator.clipboard as unknown as typeof clipboardMock).readText =
+        clipboardMock.readText;
+    }
+  }
+}
+
+// window.skillAPI モック（useSkillExecutionフック用）
+// beforeAllで設定することで、jsdom環境のセットアップ後に確実に実行
+beforeAll(() => {
+  if (typeof window !== "undefined") {
+    (window as unknown as { skillAPI: object }).skillAPI = {
+      onStream: vi.fn().mockReturnValue(() => {}),
+      onPermissionRequest: vi.fn().mockReturnValue(() => {}),
+      sendPermissionResponse: vi.fn().mockResolvedValue(undefined),
+      execute: vi.fn().mockResolvedValue({ executionId: "test-exec-id" }),
+      abort: vi.fn().mockResolvedValue(undefined),
+      listImported: vi.fn().mockResolvedValue([]),
+      listAvailable: vi.fn().mockResolvedValue([]),
+      import: vi.fn().mockResolvedValue({ success: true }),
+      remove: vi.fn().mockResolvedValue({ success: true }),
+    };
+  }
+});
+
 // Electronのモジュールをモック
 vi.mock("electron", () => ({
   ipcRenderer: {
