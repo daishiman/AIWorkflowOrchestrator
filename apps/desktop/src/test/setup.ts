@@ -8,6 +8,9 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 // グローバルモック
+// scrollIntoView モック（jsdomには実装されていない）
+Element.prototype.scrollIntoView = vi.fn();
+
 // Clipboard API モック（happy-dom/jsdom両対応）
 if (typeof navigator !== "undefined") {
   // happy-domでは既存のclipboardを上書き、jsdomではundefinedなので新規作成
