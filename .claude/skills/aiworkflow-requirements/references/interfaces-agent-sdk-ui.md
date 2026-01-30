@@ -24,7 +24,7 @@ Agent Execution UI機能で使用する型定義。エージェント実行画�
 | `packages/shared/src/types/agent.ts`                                     | Agent Execution UI型定義（共有）       |
 | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                   | Zustand状態管理（Agent Execution拡張） |
 | `apps/desktop/src/renderer/views/AgentExecutionView/`                    | メインビュー                           |
-| `apps/desktop/src/renderer/components/organisms/PermissionDialog/`       | 権限確認ダイアログ                     |
+| `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`         | 権限確認ダイアログ（TASK-7C実装済み）  |
 | `apps/desktop/src/renderer/components/organisms/AgentChatInterface/`     | チャットインターフェース               |
 | `apps/desktop/src/renderer/components/molecules/AgentMessageInput/`      | メッセージ入力                         |
 | `apps/desktop/src/renderer/components/molecules/AgentExecutionControls/` | 実行制御ボタン                         |
