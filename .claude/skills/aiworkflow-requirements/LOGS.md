@@ -44,6 +44,84 @@
 
 ---
 
+## 2026-01-30: TASK-7B SkillImportDialog実装完了
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | TASK-7B                                                         |
+| 操作         | update-spec                                                     |
+| 対象ファイル | references/ui-ux-components.md                                  |
+| 結果         | success                                                         |
+| 備考         | SkillImportDialogコンポーネント追加（Phase 1-12完了）           |
+
+### コンテキスト
+
+TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。新規UIコンポーネントをシステム仕様書に反映。
+
+### 結果
+
+- コンポーネント: SkillImportDialog
+- ファイル: `apps/desktop/src/renderer/components/skill/SkillImportDialog.tsx`（276行）
+- テスト: 31件全PASS、カバレッジ100%（Line/Branch/Function/Statement）
+- Phase 3設計レビュー: PASS（MINOR-001: エラー表示UIは将来改善候補）
+- Phase 10最終レビュー: PASS（指摘0件）
+- Phase 11手動テスト: 19/19項目PASS
+
+### 発見事項
+
+- 未割当タスク: 0件（新規）
+- 将来改善候補: 2件
+  - useFocusTrapフック汎用化（複数ダイアログで同一パターン検出時に検討）
+  - インポートエラーUI表示（TASK-7D統合時に設計検討）
+
+### 成果
+
+| 成果物種別           | ファイル                                           |
+| -------------------- | -------------------------------------------------- |
+| コンポーネント       | SkillImportDialog.tsx                              |
+| バレルエクスポート   | skill/index.ts                                     |
+| テストスイート       | SkillImportDialog.test.tsx                         |
+| 実装ガイド           | outputs/phase-12/implementation-guide.md           |
+| ドキュメント変更履歴 | outputs/phase-12/documentation-changelog.md        |
+| 未割当タスク検出     | outputs/phase-12/unassigned-task-detection.md      |
+
+### aiworkflow-requirements更新
+
+| ファイル                               | 更新内容                                                                    |
+| -------------------------------------- | --------------------------------------------------------------------------- |
+| references/ui-ux-components.md         | SkillImportDialogをコンポーネント一覧・organisms・完了タスク・変更履歴に追加 |
+| references/arch-state-management.md    | 関連タスクテーブルのTASK-7Bを「**完了**」に更新                             |
+| references/interfaces-agent-sdk-skill.md | ファイルパス修正、v1.3.0変更履歴追加、実装ガイドリンク追加                  |
+| references/interfaces-agent-sdk-history.md | v6.33.0変更履歴追加（TASK-7B完了）                                        |
+| indexes/topic-map.md                   | ui-ux-components.mdのセクション行番号を更新                                 |
+
+---
+
+## 2026-01-30: TASK-7A SkillSelector コンポーネント実装完了
+
+| 項目         | 内容                                                                           |
+| ------------ | ------------------------------------------------------------------------------ |
+| タスクID     | TASK-7A                                                                        |
+| 操作         | task-completion                                                                |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`                 |
+| 結果         | success                                                                        |
+| 備考         | Phase 1-12 全完了。28テスト全PASS。Line 100%, Branch 93.15%, Function 87.5%    |
+
+### 仕様更新
+
+| 更新ファイル             | 内容                                                          |
+| ------------------------ | ------------------------------------------------------------- |
+| `arch-ui-components.md`  | SkillSelector コンポーネントパターン追加 + 詳細完了セクション |
+| `ui-ux-components.md`    | 完了タスクに TASK-7A 追加（v2.1.0）                          |
+| `indexes/topic-map.md`   | generate-index.js で再生成（SkillSelectorエントリ追加）       |
+| `EVALS.json`             | 使用回数 +1（28→29）                                         |
+
+### 実装ガイド
+
+`docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md`
+
+---
+
 ## 2026-01-29: コードベースTODOスキャン未タスク新規作成（4件）
 
 | 項目         | 内容                                                                 |
