@@ -46,6 +46,7 @@
 | SplitLayout | AGENT-006 | 左右分割レイアウト |
 | DiffPreview | Issue #468 | 差分プレビューモーダル |
 | SkillStreamDisplay | TASK-3-2 | スキル実行ストリーム表示 |
+| SkillImportDialog | TASK-7B | スキルインポート確認ダイアログ |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
 
@@ -93,6 +94,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | CommunityGraph         | コミュニティグラフ表示         |
 | SplitLayout            | 左右分割レイアウト             |
 | DiffPreview            | 差分プレビューモーダル         |
+| SkillImportDialog      | スキルインポート確認ダイアログ |
 
 ### components/molecules/
 
@@ -121,17 +123,19 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-3-2 | SkillStreamDisplay | 2026-01-25 |
 | #468 | workspace-chat-edit-ui | 2026-01-25 |
 | TASK-7A | SkillSelector コンポーネント実装 | 2026-01-30 |
+| TASK-7B | SkillImportDialog | 2026-01-30 |
 
 ---
 
 ## 変更履歴
 
-| Version | Date       | Changes                                        |
-| ------- | ---------- | ---------------------------------------------- |
-| 2.1.0   | 2026-01-30 | TASK-7A完了タスク追加（SkillSelector コンポーネント） |
-| 2.0.0   | 2026-01-26 | 4ファイルに分割（964行→インデックス+詳細ファイル） |
-| 1.1.0   | 2026-01-26 | コードブロックを表形式に変換（spec-guidelines準拠） |
-| 1.0.0   | 2026-01-25 | 初版作成                                       |
+| Version | Date       | Changes                                                                              |
+| ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.2.0   | 2026-01-30 | TASK-7B完了タスク追加（SkillImportDialogコンポーネント）                             |
+| 2.1.0   | 2026-01-30 | TASK-7A完了タスク追加（SkillSelector コンポーネント）                                |
+| 2.0.0   | 2026-01-26 | 4ファイルに分割（964行→インデックス+詳細ファイル）                                   |
+| 1.1.0   | 2026-01-26 | コードブロックを表形式に変換（spec-guidelines準拠）                                  |
+| 1.0.0   | 2026-01-25 | 初版作成                                                                             |
 
 ---
 
@@ -139,3 +143,4 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 - [アーキテクチャパターン](./architecture-patterns.md)
 - [History Panel UI仕様](./ui-ux-history-panel.md)
+- [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)

@@ -43,6 +43,129 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## 2026-01-30 - skill-creator改善（task-specification-creator v9.14.0）
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- モード: update（skill-creator経由）
+- 改善契機: TASK-7B（SkillImportDialog）Phase 12実行経験
+- 実行者: Claude Code
+
+### 検出された問題
+
+1. **関連タスクテーブル更新漏れ**: arch-state-management.mdの「関連タスク」テーブルでTASK-7Bが「未着手」のまま残っていた
+   - spec-update-workflow.mdに「関連タスクテーブル」の更新手順が明示されていなかった
+   - Phase 12 Task 2実行時に漏れやすい項目だった
+2. **documentation-changelog.mdへの更新ファイル記載漏れ**: Task 2で更新した全ファイルが記録されていなかった
+
+### 適用した改善
+
+| ファイル | 変更内容 |
+|---------|----------|
+| spec-update-workflow.md | Step 1-C「関連タスクテーブル更新」セクション追加（30行程度）|
+| phase-templates.md | Phase 12完了条件にStep 1-Cチェック項目追加 |
+| SKILL.md | v9.14.0として変更履歴に記録 |
+
+### 追加内容詳細
+
+**Step 1-C: 関連タスクテーブル更新（該当する場合は必須）**
+
+- 確認すべきファイルのタスク種別マッピング追加
+  - Skill/Agent関連 → arch-state-management.md
+  - IPC/Preload関連 → security-api-electron.md
+  - UI/UXコンポーネント関連 → ui-ux-components.md
+  - データベース関連 → database-schema.md
+- ステータス更新例の追加（「未着手」→「**完了**」）
+- フローチャートによる判断基準の明確化
+
+### 結果
+
+- ステータス: success
+- 改善完了日時: 2026-01-30
+- バージョン: v9.13.0 → v9.14.0
+
+### 期待される効果
+
+- Phase 12実行時の「関連タスク」テーブル更新漏れ防止
+- 仕様書とタスク状態の整合性維持
+- TASK-7Bで発生した問題の再発防止
+
+---
+
+## 2026-01-30 - TASK-7B SkillImportDialog Phase 1-12 完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- フェーズ: Phase 1-12（Phase 13 PR作成は除外）
+- エージェント: Phase別マルチエージェント実行
+- タスク仕様書: docs/30-workflows/TASK-7B-skill-import-dialog/
+
+### 実行内容
+
+TASK-7B（SkillImportDialog）のPhase 1-12を完了。TDD Red-Green-Refactorサイクル（Phase 4→5→8）でコンポーネントを実装し、Phase 10最終レビュー・Phase 11手動テストを経て品質検証完了。Phase 12でシステム仕様書更新および実装ガイド作成。
+
+### Phase完了状況
+
+| Phase    | Phase名              | 状態 |
+| -------- | -------------------- | ---- |
+| Phase 1  | 要件定義             | 完了 |
+| Phase 2  | 設計                 | 完了 |
+| Phase 3  | 設計レビューゲート   | 完了 |
+| Phase 4  | テスト作成（Red）    | 完了 |
+| Phase 5  | 実装（Green）        | 完了 |
+| Phase 6  | テスト拡充           | 完了 |
+| Phase 7  | テストカバレッジ確認 | 完了 |
+| Phase 8  | リファクタリング     | 完了 |
+| Phase 9  | 品質保証             | 完了 |
+| Phase 10 | 最終レビューゲート   | 完了 |
+| Phase 11 | 手動テスト検証       | 完了 |
+| Phase 12 | ドキュメント更新     | 完了 |
+| Phase 13 | PR作成               | 未着手 |
+
+### 品質メトリクス
+
+| メトリクス         | 値   | 基準 |
+| ------------------ | ---- | ---- |
+| テスト総数         | 31   | -    |
+| テスト成功         | 31   | -    |
+| Statement Coverage | 100% | 80%+ |
+| Branch Coverage    | 100% | 60%+ |
+| Function Coverage  | 100% | 80%+ |
+| Line Coverage      | 100% | 80%+ |
+| TypeScriptエラー   | 0    | 0    |
+| ESLintエラー       | 0    | 0    |
+
+### Phase 12 Task別成果物
+
+| Task   | 成果物                   | 特記事項                                               |
+| ------ | ------------------------ | ------------------------------------------------------ |
+| Task 1 | 実装ガイド               | Part 1（中学生レベル説明）+ Part 2（技術詳細）形式準拠 |
+| Task 2 | システム仕様書更新       | ui-ux-components.md、LOGS.md×2、topic-map.md           |
+| Task 3 | ドキュメント変更履歴     | 更新判定テーブル付き                                   |
+| Task 4 | 未割当タスク検出レポート | 6ソース検出、新規0件、将来改善候補2件                  |
+
+### 未割当タスク検出結果
+
+| 検出ソース                   | 結果                    |
+| ---------------------------- | ----------------------- |
+| 元タスク仕様書（スコープ外） | 0件（既知の除外項目）   |
+| Phase 3 設計レビュー         | 1件（MINOR-001→将来改善）|
+| Phase 10 最終レビュー        | 0件                     |
+| Phase 11 手動テスト結果      | 0件                     |
+| コードベースTODO/FIXME       | 0件                     |
+| 実装中の発見事項             | 1件（将来改善候補）     |
+
+### 結果
+
+- Result: ✓ 成功
+- Phase完了: 12/13
+- 未割当タスク新規作成: 0件
+- ブロック解除: TASK-7D（部分的、TASK-7A/7C完了待ち）
+
+---
+
 ## 2026-01-30 - TASK-7A SkillSelector Phase 1-12 完了
 
 ### コンテキスト
@@ -81,6 +204,7 @@ node scripts/log-usage.js \
 - ドキュメント: `docs/30-workflows/TASK-7A-skill-selector/outputs/`
 
 ---
+
 
 ## 2026-01-29 - コードベースTODOスキャンによる未タスク4件新規作成（v9.14.0）
 

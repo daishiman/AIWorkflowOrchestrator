@@ -1147,6 +1147,7 @@ node scripts/complete-phase.js \
 - [ ] **【Task 2 Step 1】aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加した**
 - [ ] **【Task 2 Step 1】task-specification-creator/LOGS.mdにタスク完了記録を追加した**
 - [ ] **【Task 2 Step 1】topic-map.mdに新規セクションエントリを追加した（該当する場合）**
+- [ ] **【Task 2 Step 1-C】関連タスクテーブルのステータスを「完了」に更新した（該当する場合）**
 - [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **アーキテクチャ層別のドキュメントが作成されている（該当する層のみ）**
 - [ ] **未タスク検出レポートが出力されている**【必須】
