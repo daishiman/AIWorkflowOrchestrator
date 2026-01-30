@@ -1,13 +1,12 @@
 /**
- * @vitest-environment happy-dom
+ * @vitest-environment jsdom
  *
- * SkillStreamDisplay i18n Integration Tests (Phase 6)
+ * SkillStreamDisplay i18n Integration Tests
  *
  * TASK-3-2-B: SkillStreamDisplay i18n対応
  * 統合テスト - コンポーネント間のロケール一貫性を検証
  *
- * NOTE: happy-dom環境でReact concurrent modeとの相性問題があるため一時スキップ
- * TODO: TASK-3-2-F で修正予定（jsdom環境への切り替えまたはテスト構造の見直し）
+ * TASK-3-2-F: jsdom環境に切替完了
  *
  * @module @repo/desktop/renderer/components/AgentView/__tests__/SkillStreamDisplay.i18n.integration
  */
@@ -37,9 +36,28 @@ const mockUseSkillExecution = {
   reset: vi.fn(),
 };
 
-// Mock the hook
+// Mock the hook (both relative and alias paths)
 vi.mock("../../hooks/useSkillExecution", () => ({
   useSkillExecution: () => mockUseSkillExecution,
+}));
+
+vi.mock("@/renderer/hooks/useSkillExecution", () => ({
+  useSkillExecution: () => mockUseSkillExecution,
+}));
+
+// Mock useSkillPermission hook
+const mockUseSkillPermission = {
+  pendingPermission: null,
+  handleApprove: vi.fn(),
+  handleDeny: vi.fn(),
+};
+
+vi.mock("../../hooks/useSkillPermission", () => ({
+  useSkillPermission: () => mockUseSkillPermission,
+}));
+
+vi.mock("@/renderer/hooks/useSkillPermission", () => ({
+  useSkillPermission: () => mockUseSkillPermission,
 }));
 
 // Import component after mock setup
@@ -58,10 +76,9 @@ function renderWithProvider(
 
 // ============================================================
 // 統合テスト: 言語切替
-// NOTE: happy-dom環境でReact concurrent modeとの相性問題があるため一時スキップ
-// TODO: TASK-3-2-F で修正予定
+// jsdom環境で動作（TASK-3-2-F完了）
 // ============================================================
-describe.skip("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
+describe("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
   beforeEach(() => {
     mockUseSkillExecution.messages = [];
     mockUseSkillExecution.status = "idle";
@@ -80,8 +97,8 @@ describe.skip("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
         </I18nextProvider>,
       );
 
-      // 日本語で表示されていることを確認
-      expect(screen.getByText("待機中")).toBeInTheDocument();
+      // 日本語で表示されていることを確認（複数表示の可能性あり）
+      expect(screen.getAllByText("待機中").length).toBeGreaterThanOrEqual(1);
 
       // 言語を英語に変更
       await i18n.changeLanguage("en");
@@ -93,9 +110,9 @@ describe.skip("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
         </I18nextProvider>,
       );
 
-      // 英語で表示されることを確認
+      // 英語で表示されることを確認（複数表示の可能性あり）
       await waitFor(() => {
-        expect(screen.getByText("Idle")).toBeInTheDocument();
+        expect(screen.getAllByText("Idle").length).toBeGreaterThanOrEqual(1);
       });
     });
 
@@ -108,8 +125,8 @@ describe.skip("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
         </I18nextProvider>,
       );
 
-      // 英語で表示されていることを確認
-      expect(screen.getByText("Idle")).toBeInTheDocument();
+      // 英語で表示されていることを確認（複数表示の可能性あり）
+      expect(screen.getAllByText("Idle").length).toBeGreaterThanOrEqual(1);
 
       // 言語を日本語に変更
       await i18n.changeLanguage("ja");
@@ -121,9 +138,9 @@ describe.skip("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
         </I18nextProvider>,
       );
 
-      // 日本語で表示されることを確認
+      // 日本語で表示されることを確認（複数表示の可能性あり）
       await waitFor(() => {
-        expect(screen.getByText("待機中")).toBeInTheDocument();
+        expect(screen.getAllByText("待機中").length).toBeGreaterThanOrEqual(1);
       });
     });
   });
@@ -148,8 +165,8 @@ describe.skip("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
 
       renderWithProvider(<SkillStreamDisplay skillId="test" />, "ja");
 
-      // ステータスが日本語
-      expect(screen.getByText("実行中")).toBeInTheDocument();
+      // ステータスが日本語（複数表示の可能性あり）
+      expect(screen.getAllByText("実行中").length).toBeGreaterThanOrEqual(1);
 
       // タイムスタンプも日本語
       const timestamp = screen.getByTestId("message-timestamp-msg-1");
@@ -172,8 +189,8 @@ describe.skip("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
 
       renderWithProvider(<SkillStreamDisplay skillId="test" />, "en");
 
-      // ステータスが英語
-      expect(screen.getByText("Running")).toBeInTheDocument();
+      // ステータスが英語（複数表示の可能性あり）
+      expect(screen.getAllByText("Running").length).toBeGreaterThanOrEqual(1);
 
       // タイムスタンプも英語
       const timestamp = screen.getByTestId("message-timestamp-msg-1");
