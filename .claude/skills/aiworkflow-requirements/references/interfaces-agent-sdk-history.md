@@ -15,6 +15,61 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 ## 完了タスク
 
+### TASK-7C: PermissionDialogコンポーネント実装（2026-01-30完了）
+
+| 項目         | 内容                                           |
+| ------------ | ---------------------------------------------- |
+| タスクID     | TASK-7C                                        |
+| 完了日       | 2026-01-30                                     |
+| ステータス   | **完了**                                       |
+| テスト数     | 40件                                           |
+| 発見課題     | 4件（未タスク指示書として作成）                |
+| ドキュメント | `docs/30-workflows/TASK-7C-permission-dialog/` |
+
+#### 実装内容
+
+- Store-directパターン（Props-basedではなくuseAppStore()直接使用）
+- 3ボタン応答パターン（拒否/1回許可/許可）
+- formatArgsヘルパー（command/path直接表示、その他JSON.stringify）
+- WCAG 2.1 AA準拠アクセシビリティ（フォーカストラップ、Escapeキー、ARIA属性）
+- TDDサイクル（Red→Green→Refactor）で実装
+
+#### 品質基準
+
+| 基準              | 結果   |
+| ----------------- | ------ |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+| Prettier          | PASS   |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 94.44% |
+| Function Coverage | 100%   |
+
+#### テスト結果サマリー
+
+| カテゴリ                  | テスト数 | PASS | FAIL |
+| ------------------------- | -------- | ---- | ---- |
+| PermissionDialog.test.tsx | 40       | 40   | 0    |
+
+#### 成果物
+
+| ファイル                  | パス                                                                                 | 行数 |
+| ------------------------- | ------------------------------------------------------------------------------------ | ---- |
+| PermissionDialog.tsx      | apps/desktop/src/renderer/components/skill/PermissionDialog.tsx                      | 120  |
+| PermissionDialog.test.tsx | apps/desktop/src/renderer/components/skill/**tests**/PermissionDialog.test.tsx       | 600+ |
+| implementation-guide.md   | docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md | -    |
+
+#### 未タスク（改善候補）
+
+| タスクID                              | 内容                       | 優先度 |
+| ------------------------------------- | -------------------------- | ------ |
+| task-imp-permission-tool-icons-001    | ツール別アイコン表示       | 中     |
+| task-imp-permission-readable-ui-001   | 人間可読UI改善             | 中     |
+| task-imp-permission-dark-mode-001     | ダークモード対応           | 低     |
+| task-ref-permission-consolidation-001 | 既存コンポーネント統合検討 | 低     |
+
+---
+
 ### TASK-6-1: SkillSlice実装（Zustand状態管理）（2026-01-28完了）
 
 | 項目         | 内容                                                          |

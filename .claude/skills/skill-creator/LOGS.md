@@ -622,3 +622,122 @@
   - 改善提案: タスク仕様書作成時に依存タスク参照の整合性チェックを強化すべき
 
 ---
+
+## 2026-01-30 - skill-creator改善（v7.2.0）
+
+### コンテキスト
+
+- スキル: skill-creator
+- モード: update（TASK-7Bフィードバック反映）
+- 実行者: Claude Code
+
+### 検出された改善ポイント
+
+1. **統合パターン集の不足**: Electron IPC、REST API等の契約定義テンプレートがなかった
+2. **Phase完了基準の曖昧さ**: 各Phaseの完了条件が明確でなかった
+3. **成果物の期待形式が不明確**: 各モードで何が成果物なのかが分かりにくかった
+
+### 適用した改善
+
+| ファイル                                 | 変更内容                                                             |
+| ---------------------------------------- | -------------------------------------------------------------------- |
+| references/integration-patterns.md       | 新規作成（1171行）- Electron IPC, REST API, GraphQL, Webhookパターン |
+| references/phase-completion-checklist.md | 新規作成（695行）- Phase 1-13完了条件テンプレート                    |
+| references/resource-map.md               | 更新 - 成果物明確化セクション、統合契約パターンリンク追加            |
+| SKILL.md                                 | v7.2.0として変更履歴に記録                                           |
+
+### 結果
+
+- ステータス: success
+- バージョン: v7.1.2 → v7.2.0
+
+---
+
+## [2026-01-30 - v8.0.0]
+
+- **Agent**: skill-creator (self-improvement)
+- **Phase**: Phase 4
+- **Result**: ✓ 成功
+- **Notes**: Problem First + DDD/Clean Architecture統合 - スキルクリエイターの根本的な品質向上
+
+### 課題分析
+
+| 課題                      | 根本原因                                         | 対策                                 |
+| ------------------------- | ------------------------------------------------ | ------------------------------------ |
+| 機能先行で問題が曖昧      | 問題空間の探索プロセスが不在                     | Phase 0-0（問題発見）追加            |
+| DDDがラベルだけ           | 戦略的設計の具体的プロセスがワークフローに未統合 | Phase 0.5（ドメインモデリング）追加  |
+| 層分離思考の欠如          | Clean Architectureがスキル設計に適用されていない | 4層アーキテクチャガイド追加          |
+| 問題-解決の適合検証がない | ゴールがOutputベースでOutcomeベースでない        | Problem-Solution Fit検証プロセス追加 |
+
+### 適用した改善
+
+| ファイル                                    | 変更内容                                                         |
+| ------------------------------------------- | ---------------------------------------------------------------- |
+| references/problem-discovery-framework.md   | 新規作成 - 5 Whys, First Principles, Problem-Solution Fit検証    |
+| references/domain-modeling-guide.md         | 新規作成 - DDD戦略的設計・ユビキタス言語・Bounded Context        |
+| references/clean-architecture-for-skills.md | 新規作成 - 4層アーキテクチャ・依存関係ルール・品質指標           |
+| agents/discover-problem.md                  | 新規作成 - 根本原因分析エージェント（Phase 0-0）                 |
+| agents/model-domain.md                      | 新規作成 - ドメインモデリングエージェント（Phase 0.5）           |
+| agents/interview-user.md                    | 更新 - Phase 0-0/0.5の前提統合、Problem-Solution Fit検証ステップ |
+| references/core-principles.md               | 更新 - Problem First, DDD, Clean Architecture原則追加            |
+| references/resource-map.md                  | 更新 - 新エージェント・新リファレンス追加                        |
+| SKILL.md                                    | 更新 - 設計原則・ワークフロー・エントリポイント・Anchors刷新     |
+
+### 設計思想
+
+**新ワークフロー**:
+
+```
+Phase 0-0: 問題発見（根本原因分析・5 Whys・Outcome定義）
+  → problem-definition.json
+Phase 0.5: ドメインモデリング（Core Domain・Bounded Context・Clean Architecture層）
+  → domain-model.json
+Phase 0-1〜0-8: インタビュー（問題定義を土台とした精度の高い機能ヒアリング）
+  → interview-result.json
+Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
+```
+
+### 結果
+
+- ステータス: success
+- バージョン: v7.2.0 → v8.0.0
+
+---
+
+## [2026-01-30 - v8.1.0]
+
+- **Agent**: skill-creator (refactoring)
+- **Phase**: structural-refactoring
+- **Result**: ✓ 成功
+- **Notes**: v8.0.0構造整合性リファクタリング
+
+### 検出された問題
+
+| 問題                              | 深刻度   | 対策                                           |
+| --------------------------------- | -------- | ---------------------------------------------- |
+| Phase 0-0/0.5のスキーマ未定義     | CRITICAL | problem-definition.json, domain-model.json作成 |
+| .tmpに陳腐化した成果物が残存      | LOW      | 3ファイル+ディレクトリ削除                     |
+| integration-patterns.md 1,171行   | MEDIUM   | 4サブファイルに分割+インデックス化             |
+| resource-map.mdに新スキーマ未登録 | MEDIUM   | collaborativeモードセクションに追加            |
+
+### 適用した改善
+
+| ファイル                                   | 変更内容                                                 |
+| ------------------------------------------ | -------------------------------------------------------- |
+| schemas/problem-definition.json            | 新規作成 - Phase 0-0出力スキーマ（JSON Schema draft-07） |
+| schemas/domain-model.json                  | 新規作成 - Phase 0.5出力スキーマ（JSON Schema draft-07） |
+| references/integration-patterns.md         | 1,171→70行（94%削減）インデックスに書き換え              |
+| references/integration-patterns-ipc.md     | 新規作成 - Electron IPCパターン（337行）                 |
+| references/integration-patterns-rest.md    | 新規作成 - REST APIパターン（243行）                     |
+| references/integration-patterns-graphql.md | 新規作成 - GraphQLパターン（240行）                      |
+| references/integration-patterns-webhook.md | 新規作成 - Webhookパターン（341行）                      |
+| references/resource-map.md                 | 更新 - 新スキーマ2件+分割リファレンス4件追加             |
+| SKILL.md                                   | 更新 - v8.1.0変更履歴追加                                |
+| .tmp/                                      | 削除 - 陳腐化成果物3ファイル+ディレクトリ                |
+
+### 結果
+
+- ステータス: success
+- バージョン: v8.0.0 → v8.1.0
+
+---
