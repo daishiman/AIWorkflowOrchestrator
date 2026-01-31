@@ -53,5 +53,8 @@
       "restore-cursor>signal-exit": "^3.0.7",
       "jsdom": "25.0.1"
     }
+  },
+  "volta": {
+    "node": "22.21.1"
   }
 }

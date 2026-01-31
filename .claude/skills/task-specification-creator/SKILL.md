@@ -92,7 +92,7 @@ Phase 4〜5: 検証 → 完了
 | references/ | 15  | [resource-map.md#references](references/resource-map.md) |
 | scripts/    | 10  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
-| assets/     | 8   | [resource-map.md#assets](references/resource-map.md)     |
+| assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
 
 📖 [references/resource-map.md](references/resource-map.md)
 
@@ -212,21 +212,32 @@ Phase 4〜5: 検証 → 完了
 
 ---
 
-### Task 2: システム仕様更新【2ステップ】
+### Task 2: システム仕様更新【4サブステップ + 条件付きStep 2】
 
-| Step   | 必須 | 内容                                                                           |
-| ------ | ---- | ------------------------------------------------------------------------------ |
-| Step 1 | ✅   | タスク完了記録（1-A: 「完了タスク」セクション追加、1-B: 実装状況テーブル更新） |
-| Step 2 | 条件 | システム仕様更新（新規インターフェース追加時のみ）                             |
+| Step   | 必須 | 内容                                                                            |
+| ------ | ---- | ------------------------------------------------------------------------------- |
+| Step 1-A | ✅   | タスク完了記録（「完了タスク」セクション追加 + 関連ドキュメントリンク + 変更履歴 + LOGS.md×2 + topic-map.md） |
+| Step 1-B | ✅   | 実装状況テーブル更新（api-endpoints.md等の「未実装」→「完了」）                |
+| Step 1-C | ✅   | 関連タスクテーブル更新（仕様書内の「関連タスク」「未タスク候補」テーブルのステータス更新） |
+| Step 2   | 条件 | システム仕様更新（新規インターフェース追加時のみ）                              |
 
-**更新が必要な場合**:
+> **⚠️ Task 1（実装ガイド作成）との境界に注意**
+>
+> | 活動                             | Task 1（実装ガイド） | Task 2（仕様更新） |
+> | -------------------------------- | -------------------- | ------------------ |
+> | Part 1/2 実装ガイド作成          | ✅ メイン責務        | ❌ 対象外          |
+> | aiworkflow-requirements 仕様更新 | ❌ 対象外            | ✅ Step 2          |
+> | タスク完了記録（仕様書内）       | ❌ 対象外            | ✅ Step 1-A 必須   |
+> | LOGS.md更新（2ファイル）         | ❌ 対象外            | ✅ Step 1-A 必須   |
+
+**Step 2 更新が必要な場合**:
 
 - 新規インターフェース/型の追加
 - 既存インターフェースの変更
 - 新規定数/設定値の追加
 - API仕様の変更
 
-**更新が不要な場合**:
+**Step 2 更新が不要な場合**:
 
 - 内部実装の詳細変更のみ
 - リファクタリング（インターフェース不変）
@@ -251,6 +262,18 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 📖 [references/phase-11-12-guide.md](references/phase-11-12-guide.md)
 📖 [references/spec-update-workflow.md](references/spec-update-workflow.md)
 📖 [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
+
+---
+
+### Phase 12 実行時によくある漏れ
+
+| 漏れパターン                          | 防止方法                                                                         |
+| ------------------------------------- | -------------------------------------------------------------------------------- |
+| Step 1-C（関連タスクテーブル）を未実行 | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む             |
+| topic-map.md 未更新                   | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                 |
+| documentation-changelog.md が不完全   | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）         |
+| LOGS.md が1ファイルのみ更新           | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方 |
+| 完了タスクセクションが簡略形式        | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う |
 
 ---
 
@@ -331,7 +354,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                      |
 | ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.14.0** | **2026-01-30** | **Phase 12 Step 1-C追加: 関連タスクテーブルのステータス更新手順を追加。arch-state-management.md等の「関連タスク」テーブル更新漏れ防止（TASK-7Bフィードバック反映）** |
+| **9.15.0** | **2026-01-31** | **Phase 12改善拡充: Task 2テーブル4サブステップ化（Step 1-A/1-B/1-C/Step 2）、Task 1 vs Task 2境界テーブル追加、よくある漏れパターン5件追加、documentation-changelog-template.md新規作成、implementation-guide-template.md UIコンポーネントパターン追加、spec-update-workflow.md具体例（TASK-IMP）追加** |
+| 9.14.0 | 2026-01-30 | Phase 12 Step 1-C追加: 関連タスクテーブルのステータス更新手順を追加。arch-state-management.md等の「関連タスク」テーブル更新漏れ防止（TASK-7Bフィードバック反映） |
 | 9.13.0 | 2026-01-29 | 未タスク指示書テンプレート準拠修正: U3/U4/U5に欠落していたSection 4(実行手順)/6(検証方法)/7(リスクと対策)を追加し9セクション完全準拠化（TASK-CI-FIX-001品質改善） |
 | 9.12.0 | 2026-01-29 | 機能キーワードマッピング拡充: technology-backend.md/technology-devops.md向けキーワード追加（eslint, lint, ci, devops, backend, next.js等）（TASK-CI-FIX-001フィードバック反映） |
 | 9.11.0     | 2026-01-28     | 未タスク検出ソース拡充: 元タスク仕様書の「スコープ外」項目を検出ソースに追加、Phase 11改善提案も対象に（TASK-3-2-Dフィードバック反映）                                                                                                                                     |

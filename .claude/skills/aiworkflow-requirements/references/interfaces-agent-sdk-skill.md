@@ -553,6 +553,41 @@ useAppStoreから専用セレクターを提供。
 
 ---
 
+## ChatPanel統合（TASK-7D）
+
+### 概要
+
+ChatPanelは、既存チャット機能にスキル関連コンポーネントを統合する統括コンポーネントである。
+
+### 統合コンポーネント一覧
+
+| コンポーネント       | ファイルパス                                          | 統合方式             |
+| -------------------- | ----------------------------------------------------- | -------------------- |
+| SkillSelector        | `components/skill/SkillSelector.tsx`                  | 直接レンダー         |
+| SkillStreamingView   | `components/skill/SkillStreamingView.tsx`             | 条件付きレンダー     |
+| SkillImportDialog    | `components/skill/SkillImportDialog.tsx`              | ローカルstate制御    |
+| PermissionDialog     | `components/skill/PermissionDialog.tsx`               | Store-directパターン |
+
+### ChatPanel公開インターフェース
+
+| 名前                | 種別   | 説明                             |
+| ------------------- | ------ | -------------------------------- |
+| `ChatPanelProps`    | type   | `{ onImportRequest?: (skill: SkillMetadata) => void }` |
+| `ChatPanelHandle`   | type   | `{ handleImportRequest: (skill: SkillMetadata) => void }` |
+| `ChatPanel`         | component | `forwardRef<ChatPanelHandle, ChatPanelProps>` |
+
+### Store依存（useAppStore）
+
+| セレクタ                  | 用途                     |
+| ------------------------- | ------------------------ |
+| `selectedSkillName`       | 選択中スキル名           |
+| `streamingMessages`       | ストリーミングメッセージ |
+| `isExecuting`             | 実行中フラグ             |
+| `skillExecutionStatus`    | 実行ステータス           |
+| `fetchSkills`             | スキル一覧取得アクション |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント            | 説明                       |
@@ -560,6 +595,7 @@ useAppStoreから専用セレクターを提供。
 | interfaces-agent-sdk.md | 親ファイル（インデックス） |
 | ui-ux-components.md     | UIコンポーネント仕様       |
 | [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md) | SkillImportDialog実装詳細 |
+| [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md) | ChatPanel統合実装詳細 |
 
 ---
 
@@ -567,6 +603,7 @@ useAppStoreから専用セレクターを提供。
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-01-30 | 1.4.0      | TASK-7D完了: ChatPanel統合セクション追加               |
 | 2026-01-30 | 1.3.0      | TASK-7B完了: SkillImportDialogファイルパス修正（components/skill/）|
 | 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加           |
 | 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠） |

@@ -3,3 +3,5 @@ export { SkillImportDialog } from "./SkillImportDialog";
 export type { SkillImportDialogProps } from "./SkillImportDialog";
 export { SkillSelector } from "./SkillSelector";
 export type { SkillSelectorProps } from "./SkillSelector";
+export { SkillStreamingView } from "./SkillStreamingView";
+export type { SkillStreamingViewProps } from "./SkillStreamingView";

@@ -132,6 +132,36 @@
 
 ## 完了タスク
 
+### タスク: TASK-7D ChatPanel統合（2026-01-30完了）
+
+| 項目       | 内容                                                                   |
+| ---------- | ---------------------------------------------------------------------- |
+| タスクID   | TASK-7D                                                                |
+| 完了日     | 2026-01-30                                                             |
+| ステータス | **完了**                                                               |
+| Phase      | Phase 1-12完了                                                         |
+| テスト数   | 48（ChatPanel: 15, SkillStreamingView: 33）                           |
+| カバレッジ | Line 100%, Branch 93.75%+, Function 100%                              |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+|--------|-----------|
+| ChatPanel.tsx | `apps/desktop/src/renderer/components/chat/ChatPanel.tsx`（136行） |
+| SkillStreamingView.tsx | `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx`（251行） |
+| index.ts更新 | `apps/desktop/src/renderer/components/skill/index.ts` |
+| テスト | ChatPanel.test.tsx, SkillStreamingView.test.tsx |
+| ドキュメント | `docs/30-workflows/TASK-7D-chat-panel-integration/`（33 Phase出力ファイル） |
+
+#### 未タスク（TASK-7D実施中に発見）
+
+| タスクID | タスク名 | 優先度 |
+|----------|----------|--------|
+| task-imp-skillselector-onimportrequest-001 | SkillSelector onImportRequest改善 | 中 |
+| task-imp-chatpanel-new-design-001 | ChatPanel新デザイン改善 | 中 |
+
+---
+
 ### タスク: task-specification-creator Phase 12テンプレート強化（2026-01-22完了）
 
 | 項目       | 内容                                         |
@@ -212,6 +242,12 @@
 | TSC-AUTOMATION-001   | Phase 12自動化スクリプト拡充       | 低     | skill-import-persistence-bugfix実施時           | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md`      |
 | UT-008               | Chat History UI Components         | 中     | Phase 12（UT-006完了後の後続タスク）            | `docs/30-workflows/unassigned-task/task-chat-history-ui-components.md`          |
 | UT-009               | Chat History Additional Use Cases  | 中     | Phase 12（api-chat-history.md 未実装Use Cases） | `docs/30-workflows/unassigned-task/task-chat-history-additional-usecases.md`    |
+| task-imp-skillselector-onimportrequest-001 | SkillSelector onImportRequest改善 | 中 | TASK-7D実施中に発見 | `docs/30-workflows/unassigned-task/task-imp-skillselector-onimportrequest-improvements.md` |
+| task-imp-chatpanel-new-design-001 | ChatPanel新デザイン改善 | 中 | TASK-7D実施中に発見 | `docs/30-workflows/unassigned-task/task-imp-chatpanel-new-design-improvements.md` |
+| task-chatedit-store-integration-001 | chatEditSlice Store統合 | 中 | システム仕様書分析（arch-state-management.md） | `docs/30-workflows/unassigned-task/task-chatedit-slice-store-integration.md` |
+| task-rag-largefile-perf-001 | RAG変換 大容量ファイルパフォーマンス検証 | 中 | システム仕様書分析（quality-requirements.md） | `docs/30-workflows/unassigned-task/task-rag-converter-largefile-performance.md` |
+| TASK-CHUNK-API-001   | Chunk Search APIレイヤー実装       | 中     | api-internal-chunk-search.md（未実装レイヤー）  | `docs/30-workflows/unassigned-task/task-imp-chunk-search-api-layers.md`         |
+| TASK-DOM-NESTING-001 | validateDOMNesting警告修正         | 低     | ui-history-integration.md（残課題）             | `docs/30-workflows/unassigned-task/task-validate-dom-nesting-bugfix.md`         |
 
 ### 未タスク管理ルール
 
@@ -241,4 +277,6 @@
 | 1.3.0      | 2026-01-22 | task-specification-creator v7.6.0完了記録追加（Phase 12テンプレート強化）                 |
 | 1.4.0      | 2026-01-22 | 未タスク追加: UT-008 Chat History UI Components, UT-009 Chat History Additional Use Cases |
 | 1.5.0      | 2026-01-25 | 未タスク追加: TASK-3-1-B (IPC Handler統合), TASK-SKILL-PERF-TEST (パフォーマンステスト)   |
+| 1.7.0      | 2026-01-30 | TASK-7D完了記録追加、未タスク2件（task-imp-skillselector-onimportrequest-001, task-imp-chatpanel-new-design-001）登録 |
+| 1.8.0      | 2026-01-31 | 未タスク追加: TASK-CHUNK-API-001 (Chunk Search API), TASK-DOM-NESTING-001 (DOM警告修正) |
 | 1.6.0      | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（成果物配置、フェーズ遷移図、ファイル配置） |

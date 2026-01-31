@@ -1,0 +1,128 @@
+{
+  "feature": "TASK-7D-chat-panel-integration",
+  "created": "2026-01-30T22:51:26.000Z",
+  "lastUpdated": "2026-01-31T00:55:00.000Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/chatpanel-analysis.md",
+        "outputs/phase-1/component-interfaces.md",
+        "outputs/phase-1/store-dependencies.md",
+        "outputs/phase-1/ui-ux-requirements.md",
+        "outputs/phase-1/requirements-definition.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/chatpanel-layout-design.md",
+        "outputs/phase-2/skill-streaming-view-design.md",
+        "outputs/phase-2/data-flow-design.md",
+        "outputs/phase-2/accessibility-design.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-report.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specifications.md",
+        "apps/desktop/src/renderer/components/chat/__tests__/ChatPanel.test.tsx",
+        "apps/desktop/src/renderer/components/skill/__tests__/SkillStreamingView.test.tsx"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-report.md",
+        "apps/desktop/src/renderer/components/chat/ChatPanel.tsx",
+        "apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx",
+        "apps/desktop/src/renderer/components/skill/index.ts"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/edge-case-test-report.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-decision.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-report.md",
+        "apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx",
+        "apps/desktop/src/renderer/components/chat/ChatPanel.tsx"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/code-quality-report.md",
+        "outputs/phase-9/security-check-report.md",
+        "outputs/phase-9/accessibility-check-report.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/implementation-review-report.md",
+        "outputs/phase-10/test-review-report.md",
+        "outputs/phase-10/quality-summary-report.md",
+        "outputs/phase-10/final-gate-decision.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/basic-test-results.md",
+        "outputs/phase-11/streaming-test-results.md",
+        "outputs/phase-11/permission-test-results.md",
+        "outputs/phase-11/accessibility-manual-results.md",
+        "outputs/phase-11/manual-test-report.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide-part1.md",
+        "outputs/phase-12/implementation-guide-part2.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "13": { "status": "pending", "artifacts": [] }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "estimatedPhases": 13,
+    "taskId": "TASK-7D",
+    "dependsOn": ["TASK-7A", "TASK-7B", "TASK-7C"],
+    "blocks": ["TASK-8A", "TASK-8B", "TASK-8C"]
+  }
+}

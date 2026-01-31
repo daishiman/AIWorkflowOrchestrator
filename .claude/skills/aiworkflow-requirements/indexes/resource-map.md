@@ -62,6 +62,8 @@
 | arch-electron-services.md          | Electronサービス層設計、Main Process実装時                 | サービス層、依存関係注入                   |
 | arch-ipc-persistence.md            | IPC永続化パターン、Store設計時                             | 永続化戦略、ファイル保存                   |
 | arch-state-management.md           | 状態管理設計、Zustand詳細、skillSlice実装時                | Zustand Store、状態分離、skillSlice        |
+| architecture-overview.md             | アーキテクチャ全体像把握、プロジェクト構造理解時           | 全体構成、レイヤー概要                     |
+| architecture-implementation-patterns.md | 実装パターン確認、forwardRef/memo/テスト設計パターン時  | フロントエンド/バックエンド/テストパターン |
 | arch-ui-components.md              | UIコンポーネントアーキテクチャ、Atomic Design時            | コンポーネント階層、責務分離               |
 
 ### 3. インターフェース
@@ -199,9 +201,11 @@
 
 | ファイル              | 読み込み条件                                    | 主要コンテンツ             |
 | --------------------- | ----------------------------------------------- | -------------------------- |
-| technology-core.md    | コアランタイム、フロントエンド技術確認時        | Node.js、TypeScript、React |
-| technology-backend.md | バックエンド技術、AI統合技術確認時              | Drizzle、AI、開発ツール    |
-| technology-devops.md  | CI/CD、依存関係管理、マイグレーション計画確認時 | pnpm、CI/CD、学習リソース  |
+| technology-core.md     | コアランタイム、フロントエンド技術確認時        | Node.js、TypeScript、React       |
+| technology-frontend.md | フロントエンド技術スタック詳細確認時            | React、Next.js、Tailwind CSS     |
+| technology-desktop.md  | デスクトップ技術スタック詳細確認時              | Electron、IPC、ビルド            |
+| technology-backend.md  | バックエンド技術、AI統合技術確認時              | Drizzle、AI、開発ツール          |
+| technology-devops.md   | CI/CD、依存関係管理、マイグレーション計画確認時 | pnpm、CI/CD、学習リソース        |
 
 ### 9. Claude Code
 
@@ -237,11 +241,12 @@
 
 | ファイル                     | 読み込み条件                             | 主要コンテンツ                 |
 | ---------------------------- | ---------------------------------------- | ------------------------------ |
-| spec-guidelines.md           | 仕様書作成、命名規則確認時               | 命名規則、記述形式             |
-| spec-splitting-guidelines.md | 大規模ファイル分割時                     | 分割基準、カテゴリ別パターン   |
-| task-workflow.md             | タスクワークフロー確認時（インデックス） | 概要、フェーズ構造             |
-| task-workflow-phases.md      | Phase詳細確認時                          | フェーズ構造、出力テンプレート |
-| task-workflow-rules.md       | 品質ゲート、分解ルール確認時             | 品質ゲート、タスク分解         |
+| spec-guidelines.md               | 仕様書作成、命名規則確認時               | 命名規則、記述形式             |
+| spec-splitting-guidelines.md     | 大規模ファイル分割時                     | 分割基準、カテゴリ別パターン   |
+| development-guidelines.md        | 開発ガイドライン確認、命名規則、デバッグ時 | ロギング、キャッシング、i18n   |
+| task-workflow.md                 | タスクワークフロー確認時（インデックス） | 概要、フェーズ構造             |
+| task-workflow-phases.md          | Phase詳細確認時                          | フェーズ構造、出力テンプレート |
+| task-workflow-rules.md           | 品質ゲート、分解ルール確認時             | 品質ゲート、タスク分解         |
 
 ---
 
@@ -295,6 +300,7 @@
 
 | 日付       | バージョン | 変更内容                                                                            |
 | ---------- | ---------- | ----------------------------------------------------------------------------------- |
+| 2026-01-31 | 1.6.0      | TASK-7D追加更新: architecture-overview.md, architecture-implementation-patterns.md, technology-frontend.md, technology-desktop.md, development-guidelines.md追加 |
 | 2026-01-28 | 1.5.0      | ui-ux-feature-skill-stream.md追加（ui-ux-feature-components.mdより分割）            |
 | 2026-01-28 | 1.4.0      | TASK-6-1 SkillSlice追加: arch-state-management.md/interfaces-agent-sdk-skill.md更新 |
 | 2026-01-27 | 1.3.0      | TASK-3-2-A UX改善追加: ui-ux-feature-components.md読み込み条件・主要コンテンツ更新  |
