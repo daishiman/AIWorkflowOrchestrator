@@ -111,14 +111,14 @@
 
 ## 参照資料
 
-| 参照資料           | パス                                                                           | 用途         |
-| ------------------ | ------------------------------------------------------------------------------ | ------------ |
-| Phase 1要件定義    | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-1/`             | 要件参照     |
-| Phase 9品質結果    | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-9/`             | 品質結果参照 |
-| レビューゲート基準 | `.claude/skills/task-specification-creator/references/review-gate-criteria.md` | 判定基準     |
-| SkillExecutor      | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                        | 実装確認     |
-| 要件定義書 | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物 |
-| RetryConfig型設計書 | `outputs/phase-2/retry-config-design.md` | Phase 2 成果物 |
+| 参照資料            | パス                                                                           | 用途           |
+| ------------------- | ------------------------------------------------------------------------------ | -------------- |
+| Phase 1要件定義     | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-1/`             | 要件参照       |
+| Phase 9品質結果     | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-9/`             | 品質結果参照   |
+| レビューゲート基準  | `.claude/skills/task-specification-creator/references/review-gate-criteria.md` | 判定基準       |
+| SkillExecutor       | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                        | 実装確認       |
+| 要件定義書          | `outputs/phase-1/requirements-definition.md`                                   | Phase 1 成果物 |
+| RetryConfig型設計書 | `outputs/phase-2/retry-config-design.md`                                       | Phase 2 成果物 |
 
 ---
 

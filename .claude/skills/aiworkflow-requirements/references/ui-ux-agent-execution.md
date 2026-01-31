@@ -17,6 +17,9 @@
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換                                          |
 | v1.3.0     | 2026-01-31 | TASK-IMP-permission-tool-icons完了: ツールアイコンバッジ視覚仕様追加、完了タスク・関連ドキュメント拡充 |
 | v1.2.0     | 2026-01-30 | TASK-7C完了: PermissionDialog 3ボタンパターン実装、Store-directパターン、skill/PermissionDialog.tsx |
+| v1.3.0     | 2026-01-30 | task-imp-permission-readable-ui-001完了: permissionDescriptions.ts追加、人間可読UI・折りたたみ詳細・ARIA属性実装 |
+| v1.4.0     | 2026-01-30 | task-imp-permission-readable-ui-001詳細完了記録追加: テスト結果サマリー（53自動+20手動、全PASS）、成果物テーブル追加 |
+| v1.5.0     | 2026-01-31 | permissionDescriptionsモジュール仕様セクション追加: getDescription API、12種ツールテンプレート一覧、safeStringセキュリティ対策、PermissionDialog統合記述 |
 
 ---
 
@@ -145,7 +148,9 @@
 | ---------- | ---------------------------------- | -------------------------- | ----------------------------------------------------- |
 | ヘッダー   | アイコン + タイトル + ツールバッジ | 「権限の確認」+ 💻Bashバッジ | 警告アイコン⚠️ + タイトル、閉じるボタン（✕）右端配置 |
 | 本文       | メッセージ                         | 「Bash」を実行しますか？   | ツール名を動的表示                                    |
-| 本文       | 引数詳細（formatArgs）             | command: `ls -la`          | command/pathは直接表示、他はJSON                       |
+| 本文       | 人間可読説明文                     | 「ls -la」コマンドを実行します | `permissionDescriptions.ts`の`getDescription()`で生成 |
+| 本文       | 詳細展開ボタン                     | 詳細を隠す ▲ / 詳細を表示 ▼ | `aria-expanded`, `aria-controls`属性付き              |
+| 本文       | 引数詳細（formatArgs）             | command: `ls -la`          | 折りたたみ可能（デフォルト展開）、command/pathは直接表示、他はJSON |
 | 本文       | 理由（任意）                       | 「ディレクトリ内容を確認するため」 | reason存在時のみ表示                            |
 | オプション | チェックボックス                   | 次回から自動的に許可する   | 未チェック状態がデフォルト、「許可」ボタンのみに影響  |
 | フッター   | 3ボタン                            | 拒否 / 1回許可 / 許可      | 左から: 拒否（赤）、1回許可（グレー）、許可（青）    |
@@ -198,6 +203,60 @@
 | Enter     | フォーカス中のボタン実行                                                 |
 | Escape    | 拒否として閉じる                                                         |
 | Space     | チェックボックストグル                                                   |
+
+### permissionDescriptions モジュール（task-imp-permission-readable-ui-001実装済）
+
+PermissionDialogで表示するツール操作の自然言語説明を生成するモジュール。ツール名と引数から日本語の説明文を組み立て、ユーザーが技術的知識なしで操作内容を理解できるようにする。
+
+| 項目     | 仕様                                                                          |
+| -------- | ----------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`        |
+| 責務     | ツール別人間可読説明テンプレートの生成                                        |
+| 公開API  | `getDescription(toolName: string, args: Record<string, unknown>): string`     |
+| テスト   | 34テスト、Line 100%、Branch 100%、Function 100%                               |
+| 実装状況 | **task-imp-permission-readable-ui-001 完了**（2026-01-30）                     |
+
+**getDescription API**
+
+| 引数       | 型                           | 説明                                    |
+| ---------- | ---------------------------- | --------------------------------------- |
+| toolName   | 文字列                       | ツール識別子（例: "Bash", "Read"）      |
+| args       | キー・バリューオブジェクト   | ツール引数                              |
+| 戻り値     | 文字列                       | 人間可読な日本語説明文                  |
+| フォールバック | 文字列                   | 未定義ツール: 「{toolName}ツールの操作を実行します」 |
+
+**ツール別説明テンプレート（12種）**
+
+| ツール名     | 参照引数      | 生成例                                       |
+| ------------ | ------------- | -------------------------------------------- |
+| Bash         | command       | 「ls -la」コマンドを実行します               |
+| Read         | file_path     | 「src/index.ts」ファイルを読み取ります       |
+| Write        | file_path     | 「src/index.ts」ファイルに書き込みます       |
+| Edit         | file_path     | 「src/index.ts」ファイルを編集します         |
+| Glob         | pattern       | 「**/*.ts」パターンでファイルを検索します    |
+| Grep         | pattern       | 「TODO」を含むファイルを検索します           |
+| WebSearch    | query         | 「React hooks」で検索します                  |
+| Task         | description   | タスクを実行します：探索タスク               |
+| NotebookEdit | notebook_path | ノートブックを編集します：analysis.ipynb     |
+| WebFetch     | url           | 「https://...」からデータを取得します        |
+| Skill        | skill         | 「commit」スキルを実行します                 |
+| AskUser      | （なし）      | ユーザーに確認します                         |
+
+**セキュリティ対策（safeStringヘルパー）**
+
+XSSおよびインジェクション対策として、全引数値は表示前に `safeString` で安全化される。
+
+| 対策               | 処理内容                                    |
+| ------------------ | ------------------------------------------- |
+| null/undefined     | 空文字列に変換                              |
+| 非文字列型         | String()で文字列化                          |
+| 長文截断           | 100文字超過時、先頭100文字 + "..." に切り詰め |
+| XSS防御            | React JSXの自動エスケープに依存             |
+| 例外処理           | getDescription内でtry-catchし、デフォルト説明にフォールバック |
+
+**PermissionDialogとの統合**
+
+PermissionDialogのモーダル本文で `getDescription()` を呼び出し、ツールバッジの直下に人間可読説明文を表示する。ユーザーは「詳細を表示」ボタンで技術的なJSON引数も確認可能。Progressive Disclosureの原則に従い、初見ユーザーは自然言語説明のみで判断でき、上級ユーザーは詳細展開で完全な引数情報にアクセスできる。
 
 ### AgentOutputStream
 
@@ -286,6 +345,35 @@
 | -------- | ------ | ---------- |
 | TASK-7C  | 2026-01-30 | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`, `PermissionDialog.test.tsx`（40テスト） |
 | task-imp-permission-tool-icons-001 | 2026-01-30 | `PermissionDialog.tsx`（TOOL_ICONS/getToolIcon/formatArgs追加）、`PermissionDialog.test.tsx`（57テスト） |
+| task-imp-permission-readable-ui-001 | 2026-01-30 | `permissionDescriptions.ts`（説明テンプレート）, `PermissionDialog.tsx`（人間可読UI統合）, テスト53件追加 |
+
+### タスク: PermissionDialog人間可読UI改善（2026-01-30完了）
+
+| 項目         | 内容                                                                    |
+| ------------ | ----------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-readable-ui-001                                     |
+| 完了日       | 2026-01-30                                                              |
+| ステータス   | **完了**                                                                |
+| テスト数     | 53（自動テスト）+ 20（手動テスト項目）                                  |
+| 発見課題     | 0件                                                                     |
+| ドキュメント | `docs/30-workflows/task-imp-permission-readable-ui-001/`                |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 機能テスト         | 8        | 8    | 0    |
+| エラーハンドリング | 4        | 4    | 0    |
+| アクセシビリティ   | 4        | 4    | 0    |
+| 統合テスト連携     | 4        | 4    | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| テスト結果レポート | `docs/30-workflows/task-imp-permission-readable-ui-001/outputs/phase-11/manual-test-report.md`   |
+| 最終レビュー       | `docs/30-workflows/task-imp-permission-readable-ui-001/outputs/phase-10/final-review-report.md`  |
+| 実装ガイド         | `docs/30-workflows/task-imp-permission-readable-ui-001/outputs/phase-12/implementation-guide.md` |
 
 ## 関連ドキュメント
 
@@ -297,6 +385,7 @@
 | コンポーネント設計書               | `docs/30-workflows/agent-execution-ui/outputs/phase-2/component-design.md`                    |
 | PermissionDialog実装ガイド         | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md`        |
 | ツールアイコン実装ガイド           | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-12/implementation-guide.md`   |
+| 人間可読UI実装ガイド               | `docs/30-workflows/task-imp-permission-readable-ui-001/outputs/phase-12/implementation-guide.md` |
 | UI/UXコンポーネント概要            | `./ui-ux-components.md`                                                                       |
 | デザイン原則                       | `./ui-ux-design-principles.md`                                                                |
 | 機能別UIコンポーネント             | `./ui-ux-feature-components.md`                                                               |

@@ -92,13 +92,13 @@ Phase 2で作成した設計の品質を検証し、実装に進むかどうか�
 
 ## 参照資料
 
-| 参照資料           | パス                                                                           | 用途     |
-| ------------------ | ------------------------------------------------------------------------------ | -------- |
-| Phase 1成果物      | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-1/`             | 要件参照 |
-| Phase 2成果物      | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-2/`             | 設計参照 |
-| レビューゲート基準 | `.claude/skills/task-specification-creator/references/review-gate-criteria.md` | 判定基準 |
-| 要件定義書 | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物 |
-| RetryConfig型設計書 | `outputs/phase-2/retry-config-design.md` | Phase 2 成果物 |
+| 参照資料            | パス                                                                           | 用途           |
+| ------------------- | ------------------------------------------------------------------------------ | -------------- |
+| Phase 1成果物       | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-1/`             | 要件参照       |
+| Phase 2成果物       | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-2/`             | 設計参照       |
+| レビューゲート基準  | `.claude/skills/task-specification-creator/references/review-gate-criteria.md` | 判定基準       |
+| 要件定義書          | `outputs/phase-1/requirements-definition.md`                                   | Phase 1 成果物 |
+| RetryConfig型設計書 | `outputs/phase-2/retry-config-design.md`                                       | Phase 2 成果物 |
 
 ---
 

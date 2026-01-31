@@ -354,7 +354,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                      |
 | ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.15.0** | **2026-01-31** | **Phase 12改善拡充: Task 2テーブル4サブステップ化（Step 1-A/1-B/1-C/Step 2）、Task 1 vs Task 2境界テーブル追加、よくある漏れパターン5件追加、documentation-changelog-template.md新規作成、implementation-guide-template.md UIコンポーネントパターン追加、spec-update-workflow.md具体例（TASK-IMP）追加** |
+| **9.17.0** | **2026-01-31** | **Phase 12改善拡充: Task 2テーブル4サブステップ化（Step 1-A/1-B/1-C/Step 2）、Task 1 vs Task 2境界テーブル追加、よくある漏れパターン5件追加、documentation-changelog-template.md新規作成、implementation-guide-template.md UIコンポーネントパターン追加、spec-update-workflow.md具体例（TASK-IMP）追加** |
+| **9.16.0** | **2026-01-31** | **spec-update-workflow.md改善**: Step 1完了チェックリスト追加（詳細テンプレート必須明記）、permissionキーワードマッピング追加、詳細完了記録テンプレート参照の強化（task-imp-permission-readable-ui-001フィードバック反映） |
+| **9.15.0** | **2026-01-30** | **task-imp-permission-readable-ui-001完了**: Phase 1-12全工程完了。permissionDescriptions.ts新規作成、PermissionDialog.tsx人間可読UI統合、53テスト・100%カバレッジ。4件の未タスク検出・仕様書作成 |
 | 9.14.0 | 2026-01-30 | Phase 12 Step 1-C追加: 関連タスクテーブルのステータス更新手順を追加。arch-state-management.md等の「関連タスク」テーブル更新漏れ防止（TASK-7Bフィードバック反映） |
 | 9.13.0 | 2026-01-29 | 未タスク指示書テンプレート準拠修正: U3/U4/U5に欠落していたSection 4(実行手順)/6(検証方法)/7(リスクと対策)を追加し9セクション完全準拠化（TASK-CI-FIX-001品質改善） |
 | 9.12.0 | 2026-01-29 | 機能キーワードマッピング拡充: technology-backend.md/technology-devops.md向けキーワード追加（eslint, lint, ci, devops, backend, next.js等）（TASK-CI-FIX-001フィードバック反映） |

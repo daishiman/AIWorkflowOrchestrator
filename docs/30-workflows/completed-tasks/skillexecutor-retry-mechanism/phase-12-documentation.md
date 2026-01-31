@@ -170,8 +170,8 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 | error-handling                | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                | 仕様更新対象   |
 | 仕様更新フロー                | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`       | 更新手順参照   |
 | Phase 11/12ガイド             | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`          | 手順詳細       |
-| 要件定義書 | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物 |
-| RetryConfig型設計書 | `outputs/phase-2/retry-config-design.md` | Phase 2 成果物 |
+| 要件定義書                    | `outputs/phase-1/requirements-definition.md`                                         | Phase 1 成果物 |
+| RetryConfig型設計書           | `outputs/phase-2/retry-config-design.md`                                             | Phase 2 成果物 |
 
 ---
 

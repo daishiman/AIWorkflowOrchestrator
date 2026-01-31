@@ -124,6 +124,8 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | #468 | workspace-chat-edit-ui | 2026-01-25 |
 | TASK-7A | SkillSelector コンポーネント実装 | 2026-01-30 |
 | TASK-7B | SkillImportDialog | 2026-01-30 |
+| TASK-7C | PermissionDialog実装 | 2026-01-30 |
+| #585 | PermissionDialog人間可読UI改善 | 2026-01-30 |
 | TASK-7D | ChatPanel統合（SkillStreamingView実装） | 2026-01-30 |
 
 ---
@@ -132,7 +134,9 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
-| 2.3.0   | 2026-01-30 | TASK-7D完了タスク追加（ChatPanel統合・SkillStreamingView） |
+| 2.5.0   | 2026-01-30 | TASK-7D完了タスク追加（ChatPanel統合・SkillStreamingView） |
+| 2.4.0   | 2026-01-30 | task-imp-permission-readable-ui-001完了タスク追加（PermissionDialog人間可読UI改善、permissionDescriptions統合） |
+| 2.3.0   | 2026-01-30 | TASK-7C完了タスク追加（PermissionDialog実装）                                       |
 | 2.2.0   | 2026-01-30 | TASK-7B完了タスク追加（SkillImportDialogコンポーネント）                             |
 | 2.1.0   | 2026-01-30 | TASK-7A完了タスク追加（SkillSelector コンポーネント）                                |
 | 2.0.0   | 2026-01-26 | 4ファイルに分割（964行→インデックス+詳細ファイル）                                   |

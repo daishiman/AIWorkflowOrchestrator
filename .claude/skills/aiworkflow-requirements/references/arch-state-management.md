@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                          |
 | ---------- | ---------- | ------------------------------------------------- |
+| v1.4.0     | 2026-01-30 | task-imp-permission-readable-ui-001完了: 関連タスクテーブル更新 |
 | v1.3.0     | 2026-01-30 | TASK-7A完了: SkillSelectorステータス更新          |
 | v1.2.0     | 2026-01-28 | TASK-6-1完了: skillSliceセクション追加            |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換 |
@@ -321,6 +322,7 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | TASK-7A  | SkillSelector             | **完了**   |
 | TASK-7B  | SkillImportDialog         | **完了**   |
 | TASK-7C  | PermissionDialog          | **完了**   |
+| task-imp-permission-readable-ui-001 | PermissionDialog人間可読UI改善 | **完了** |
 | TASK-7D  | ChatPanel統合             | **完了**（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
 
 ---

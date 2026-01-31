@@ -206,7 +206,7 @@ Phase 1で確定した要件に基づき、リトライ機構の詳細設計を�
 | skill型定義            | `packages/shared/src/types/skill.ts`                                  | 型構成確認       |
 | エラーハンドリング仕様 | `.claude/skills/aiworkflow-requirements/references/error-handling.md` | リトライ戦略     |
 | AWSバックオフ記事      | AWS Architecture Blog: Exponential Backoff And Jitter                 | アルゴリズム参考 |
-| 要件定義書 | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物 |
+| 要件定義書             | `outputs/phase-1/requirements-definition.md`                          | Phase 1 成果物   |
 
 ---
 

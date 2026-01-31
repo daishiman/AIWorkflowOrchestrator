@@ -142,9 +142,9 @@ TDD Red状態のテストを先行作成する。全テストがFail状態であ
 | 既存SkillExecutorテスト | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts`            | モックパターン |
 | 既存Permissionテスト    | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.permission.test.ts` | テスト構造参考 |
 | skill型定義             | `packages/shared/src/types/skill.ts`                                              | 型参照         |
-| 要件定義書 | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物 |
-| RetryConfig型設計書 | `outputs/phase-2/retry-config-design.md` | Phase 2 成果物 |
-| ゲート判定結果 | `outputs/phase-3/gate-judgment.md` | Phase 3 成果物 |
+| 要件定義書              | `outputs/phase-1/requirements-definition.md`                                      | Phase 1 成果物 |
+| RetryConfig型設計書     | `outputs/phase-2/retry-config-design.md`                                          | Phase 2 成果物 |
+| ゲート判定結果          | `outputs/phase-3/gate-judgment.md`                                                | Phase 3 成果物 |
 
 ---
 

@@ -16,7 +16,7 @@ issue_number: 585
 | 対象機能     | PermissionDialog（Desktop）         |
 | 優先度       | 中                                  |
 | 見積もり規模 | 中規模                              |
-| ステータス   | 未実施                              |
+| ステータス   | 完了                                |
 | 発見元       | specification.md                    |
 | 発見日       | 2026-01-30                          |
 
