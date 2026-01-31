@@ -111,6 +111,27 @@ Claude Codeスキル実行時のセキュリティチェックに使用する危
 
 AllowedTool型はALLOWED_TOOLS_WHITELISTの要素をリテラル型として定義します。結果として "Read" | "Write" | "Edit" | "Bash" | "Glob" | "Grep" | "LS" | "Task" | "WebSearch" | "WebFetch" | "TodoWrite" のユニオン型となります。
 
+### toolMetadataモジュール（PermissionDialog表示用）
+
+ALLOWED_TOOLS_WHITELISTに加えて、PermissionDialogでのリスクレベルバッジ表示用に `toolMetadata.ts` モジュールが存在する。
+
+**ファイル**: `apps/desktop/src/renderer/components/skill/toolMetadata.ts`
+
+**目的**: PermissionDialogでツール使用許可を求める際に、リスクレベルバッジとセキュリティ影響テキストを表示する。
+
+#### ALLOWED_TOOLS_WHITELIST vs toolMetadata対応
+
+| 対象         | ツール数 | 目的                                   |
+| ------------ | -------- | -------------------------------------- |
+| WHITELIST    | 11       | スキル実行時のセキュリティ制御         |
+| toolMetadata | 12       | PermissionDialog UIでのリスクレベル表示 |
+
+**差異理由**:
+- toolMetadataに存在しWHITELISTにないツール（NotebookEdit, Skill, AskUser）: Renderer UIで表示されうるがスキル実行制御の対象外
+- WHITELISTに存在しtoolMetadataにないツール（LS, TodoWrite）: Renderer UIでの使用頻度が低く、未定義時はDEFAULT_METADATA（Medium）にフォールバック
+
+**詳細仕様**: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md)（toolMetadataモジュール仕様・ツールカバレッジマッピング）
+
 ---
 
 ## API リファレンス
@@ -335,6 +356,7 @@ PreToolUseフックでは、ツール名と引数に基づいてセキュリテ�
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
+| v1.3.0     | 2026-02-01 | toolMetadataモジュール参照追加: ALLOWED_TOOLS_WHITELIST vs toolMetadata対応表、差異理由、ui-ux-agent-execution.mdリンク |
 | 1.2.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E）           |
 | 1.0.0      | 2026-01-24 | 初版作成（TASK-2C完了に伴い新規作成）            |

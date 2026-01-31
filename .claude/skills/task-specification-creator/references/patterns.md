@@ -228,6 +228,53 @@
 - **発見日**: 2026-01-30
 - **関連タスク**: TASK-7D
 
+### Record型による定数スタイルマッピング
+
+- **状況**: TypeScriptのユニオン型に対応するUIスタイルを定義する場合
+- **パターン**: `Record<EnumType, StyleObject>` でTailwind CSSクラスを型安全にマッピング
+- **例**（task-imp-permission-tool-metadata-001）:
+  ```
+  const RISK_LEVEL_STYLES: Record<RiskLevel, { bg: string; text: string; border: string }> = {
+    Low: { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" },
+    ...
+  };
+  ```
+- **効果**:
+  - 全リスクレベルのスタイル定義が必須（コンパイル時検証）
+  - 新しいリスクレベル追加時に未定義スタイルがコンパイルエラー
+  - UIの一貫性保証
+- **発見日**: 2026-01-31
+- **関連タスク**: task-imp-permission-tool-metadata-001
+
+### IIFE（即時実行関数式）によるインラインJSXレンダリング
+
+- **状況**: JSX内で変数束縛を伴う条件付きレンダリングが必要な場合
+- **パターン**: `{(() => { const val = compute(); return <span>{val}</span>; })()}` でインライン実行
+- **例**（task-imp-permission-tool-metadata-001）:
+  - `getRiskLevel(toolName)` の結果を変数に束縛してバッジスタイルを適用
+  - 複数のstyleプロパティ（bg, text, border）を組み合わせるためIIFEで中間変数が必要
+- **効果**:
+  - 別関数に分離するほどでもない小規模なロジックをインラインで表現
+  - className構築に中間変数が使える
+  - render関数の肥大化を防止
+- **発見日**: 2026-01-31
+- **関連タスク**: task-imp-permission-tool-metadata-001
+
+### デフォルトメタデータによる安全側フォールバック
+
+- **状況**: 外部入力（ツール名など）に対してメタデータを提供する場合
+- **パターン**: 未定義キーに対してDEFAULT値を返し、安全側にフォールバック
+- **例**（task-imp-permission-tool-metadata-001）:
+  - `DEFAULT_METADATA = { riskLevel: "Medium", securityImpact: "ツールを実行します" }`
+  - `TOOL_METADATA[toolName] ?? DEFAULT_METADATA` でnullish coalescing
+  - 未知のツールは「Medium」リスク（安全側の中間値）
+- **効果**:
+  - 新ツール追加時にUIがクラッシュしない
+  - 未定義ツールを「安全」ではなく「中程度リスク」として扱う安全設計
+  - Null safety保証
+- **発見日**: 2026-01-31
+- **関連タスク**: task-imp-permission-tool-metadata-001
+
 ---
 
 ## フェーズ境界遷移パターン（Phase Boundary Transition）
@@ -265,7 +312,8 @@
 
 | Date           | Changes                                                                                                           |
 | -------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **2026-01-31** | **TASK-7D知見体系化: フェーズ境界遷移パターン（4件）・失敗回避パターン（3件）追加** |
+| **2026-02-01** | **task-imp-permission-tool-metadata-001知見追加: 成功パターン3件（Record型スタイルマッピング、IIFEレンダリング、デフォルトメタデータフォールバック）** |
+| 2026-01-31     | TASK-7D知見体系化: フェーズ境界遷移パターン（4件）・失敗回避パターン（3件）追加 |
 | 2026-01-30     | TASK-7Dフィードバック反映: 成功パターン4件追加（forwardRef テスト、Exclude型設定マップ、個別セレクタ、並列エージェント） |
 | 2026-01-28     | TASK-3-2-Cフィードバック反映: 成功パターン3件追加（React Context一括更新、動的更新間隔、Page Visibility API）      |
 | 2026-01-27     | TASK-3-2-Aフィードバック反映: 成功パターン5件追加（R-ID方式、日常例え、ユーティリティ分離、未タスク変換）         |
