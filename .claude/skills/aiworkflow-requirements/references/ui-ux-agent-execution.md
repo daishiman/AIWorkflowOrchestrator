@@ -19,6 +19,7 @@
 | v1.2.0     | 2026-01-30 | TASK-7C完了: PermissionDialog 3ボタンパターン実装、Store-directパターン、skill/PermissionDialog.tsx |
 | v1.3.0     | 2026-01-30 | task-imp-permission-readable-ui-001完了: permissionDescriptions.ts追加、人間可読UI・折りたたみ詳細・ARIA属性実装 |
 | v1.4.0     | 2026-01-30 | task-imp-permission-readable-ui-001詳細完了記録追加: テスト結果サマリー（53自動+20手動、全PASS）、成果物テーブル追加 |
+| v1.6.0     | 2026-01-31 | TASK-7D完了: ChatPanel統合UIフローセクション追加、完了タスクテーブル・関連ドキュメント拡充 |
 | v1.5.0     | 2026-01-31 | permissionDescriptionsモジュール仕様セクション追加: getDescription API、12種ツールテンプレート一覧、safeStringセキュリティ対策、PermissionDialog統合記述 |
 
 ---
@@ -346,6 +347,7 @@ PermissionDialogのモーダル本文で `getDescription()` を呼び出し、�
 | TASK-7C  | 2026-01-30 | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`, `PermissionDialog.test.tsx`（40テスト） |
 | task-imp-permission-tool-icons-001 | 2026-01-30 | `PermissionDialog.tsx`（TOOL_ICONS/getToolIcon/formatArgs追加）、`PermissionDialog.test.tsx`（57テスト） |
 | task-imp-permission-readable-ui-001 | 2026-01-30 | `permissionDescriptions.ts`（説明テンプレート）, `PermissionDialog.tsx`（人間可読UI統合）, テスト53件追加 |
+| TASK-7D | 2026-01-31 | `ChatPanel.tsx`（forwardRef統合）, `SkillStreamingView.tsx`（React.memo最適化）, テスト48件（15+33）全PASS |
 
 ### タスク: PermissionDialog人間可読UI改善（2026-01-30完了）
 
@@ -375,6 +377,59 @@ PermissionDialogのモーダル本文で `getDescription()` を呼び出し、�
 | 最終レビュー       | `docs/30-workflows/task-imp-permission-readable-ui-001/outputs/phase-10/final-review-report.md`  |
 | 実装ガイド         | `docs/30-workflows/task-imp-permission-readable-ui-001/outputs/phase-12/implementation-guide.md` |
 
+## ChatPanel統合UIフロー（TASK-7D実装済）
+
+### 概要
+
+ChatPanelコンポーネントにスキル実行機能を統合し、ユーザーがチャットインターフェースからスキル選択・実行・ストリーミング応答確認・権限確認を一貫して操作できるUIフローを提供する。
+
+### 統合コンポーネント構成
+
+| コンポーネント         | 役割                                           | 統合パターン                          |
+| ---------------------- | ---------------------------------------------- | ------------------------------------- |
+| ChatPanel              | 統合コンテナ（forwardRef + useImperativeHandle）| 既存チャットUIへのスキル機能注入       |
+| SkillStreamingView     | ストリーミング応答表示（React.memo最適化）      | StatusBadge + StreamMessageItem表示    |
+| SkillSelector          | スキル選択UI                                   | ChatPanel内に埋め込み表示             |
+| SkillImportDialog      | スキルインポートダイアログ                     | モーダルオーバーレイ表示              |
+| PermissionDialog       | 権限確認ダイアログ                             | Store-directパターンで自動表示        |
+
+### ChatPanel統合実行フロー
+
+| ステップ | アクション                             | 詳細                                                     |
+| -------- | -------------------------------------- | -------------------------------------------------------- |
+| 1        | ユーザーがスキルを選択                 | SkillSelectorでスキル一覧から選択                        |
+| 2        | プロンプトを入力して送信               | ChatPanel入力欄からメッセージ送信                         |
+| 3        | skillSlice.executeSkill()呼び出し      | Store経由でIPC実行開始                                   |
+| 4        | SkillStreamingViewでリアルタイム表示   | StatusBadge（実行中）+ StreamMessageItemで差分表示        |
+| 5        | 権限確認要求時にPermissionDialog表示   | Store.pendingPermissionの変更を検知し自動表示            |
+| 6        | ユーザーが権限を応答                   | 3ボタン（拒否/1回許可/許可）で応答                       |
+| 7        | 実行完了時にStatusBadge更新            | DisplayableStatus型で完了/エラー/キャンセルを表示        |
+
+### DisplayableStatus型
+
+SkillStreamingViewで表示するステータスを制御する型。実行状態に応じて適切なステータスバッジを表示する。
+
+| ステータス     | バッジ表示 | 条件                          |
+| -------------- | ---------- | ----------------------------- |
+| executing      | 実行中     | isExecuting === true          |
+| permission     | 権限待ち   | pendingPermission !== null    |
+| completed      | 完了       | executionStatus === completed |
+| error          | エラー     | skillError !== null           |
+| idle           | （非表示） | 初期状態・待機中              |
+
+### 再レンダー最適化パターン
+
+ChatPanel統合ではStore個別セレクタパターンを採用し、不要な再レンダーを防止する。
+
+| パターン             | 適用箇所               | 効果                                        |
+| -------------------- | ---------------------- | ------------------------------------------- |
+| React.memo           | SkillStreamingView     | props未変更時の再レンダースキップ           |
+| 個別セレクタ         | useAppStore各プロパティ | 必要なプロパティのみsubscribe               |
+| forwardRef           | ChatPanel              | 親コンポーネントからのref転送               |
+| useImperativeHandle  | ChatPanel              | 外部からのメソッド公開を最小化              |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                       | パス                                                                                          |
@@ -386,6 +441,7 @@ PermissionDialogのモーダル本文で `getDescription()` を呼び出し、�
 | PermissionDialog実装ガイド         | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md`        |
 | ツールアイコン実装ガイド           | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-12/implementation-guide.md`   |
 | 人間可読UI実装ガイド               | `docs/30-workflows/task-imp-permission-readable-ui-001/outputs/phase-12/implementation-guide.md` |
+| TASK-7D ChatPanel統合実装ガイド    | `docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/`                             |
 | UI/UXコンポーネント概要            | `./ui-ux-components.md`                                                                       |
 | デザイン原則                       | `./ui-ux-design-principles.md`                                                                |
 | 機能別UIコンポーネント             | `./ui-ux-feature-components.md`                                                               |
