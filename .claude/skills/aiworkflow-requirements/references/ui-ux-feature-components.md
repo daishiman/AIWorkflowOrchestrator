@@ -559,10 +559,55 @@ SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過�
 
 ---
 
+## SkillStreamingView コンポーネント（TASK-7D）
+
+TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネント。ChatPanel内で条件レンダーされ、Agent Executionのストリーミング表示を担当する。
+
+### コンポーネント概要
+
+| 項目 | 内容 |
+|------|------|
+| ファイル | `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx` |
+| レイヤー | Organism（ChatPanel子コンポーネント） |
+| テスト | 33テスト（Line: 99.31%, Branch: 93.75%, Function: 100%） |
+| 表示条件 | `isExecuting && selectedSkillName` が真のとき |
+
+### 構成サブコンポーネント
+
+| コンポーネント | 役割 | Props |
+|---------------|------|-------|
+| StatusBadge | 実行ステータス表示（信号機パターン） | `status: DisplayableStatus` |
+| StreamMessageItem | ストリーミングメッセージ1件の表示 | `message: SkillStreamMessage` |
+| ToolExecutionHistory | ツール実行履歴の折りたたみ表示 | `entries: ToolExecution[]` |
+
+### 型定義
+
+| 型名 | 定義 | 用途 |
+|------|------|------|
+| `DisplayableStatus` | `Exclude<SkillExecutionStatus, 'idle'>` | idle除外の厳密なステータス型 |
+| `SkillStreamMessage` | 判別共用体（text/tool_use/tool_result/error/permission_request） | メッセージ種別の型安全な分岐 |
+
+### 適用パターン
+
+| パターン | 内容 |
+|----------|------|
+| forwardRef + useImperativeHandle | ChatPanel→SkillStreamingViewへの外部メソッド公開 |
+| React.memo + 個別セレクタ | Store変更時の不要再レンダー防止 |
+| aria-live="polite" | ストリーミングメッセージのスクリーンリーダー通知 |
+
+### 関連仕様
+
+- [SkillStreamDisplay詳細仕様](./ui-ux-feature-skill-stream.md) - TASK-3-2シリーズとの統合仕様
+- [ChatPanel統合UIフロー](./ui-ux-agent-execution.md) - Agent Execution UI全体フロー
+- [ChatPanel統合仕様](./interfaces-agent-sdk-ui.md) - TASK-7D完了タスクセクション
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-7D    | chatpanel-agent-integration（ChatPanel統合・SkillStreamingView） | 2026-01-31 | `docs/30-workflows/TASK-7D-chatpanel-agent-integration/`                                            |
 | TASK-3-2-D | skill-stream-copy-history                                      | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                           |
 | TASK-3-2-B | skill-stream-i18n                                              | 2026-01-28 | `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/`                                                   |
 | TASK-3-2-C | timestamp-autoupdate                                           | 2026-01-28 | `docs/30-workflows/TASK-3-2-C-timestamp-autoupdate/`                                                |
@@ -578,6 +623,7 @@ SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過�
 ### 分割ファイル
 
 - [SkillStreamDisplay詳細仕様](./ui-ux-feature-skill-stream.md) - TASK-3-2シリーズの完全な仕様
+- [SkillStreamingView統合仕様](./interfaces-agent-sdk-ui.md) - TASK-7D ChatPanel統合仕様
 
 ### 親・関連仕様
 
@@ -599,6 +645,7 @@ SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-01-31 | v1.7.0     | TASK-7D: SkillStreamingViewコンポーネント仕様追加、完了タスクテーブルにTASK-7D追加、関連ドキュメントリンク追加 |
 | 2026-01-28 | v1.6.0     | TASK-3-2-D: コピー履歴機能追加（CopyHistoryPanel、CopyHistoryContext、useCopyHistory）          |
 | 2026-01-28 | v1.5.0     | 構造最適化: SkillStreamDisplay関連を ui-ux-feature-skill-stream.md に分割（826行→約400行）      |
 | 2026-01-28 | v1.4.0     | TASK-3-2-B: i18n対応追加（formatRelativeTime localeパラメータ、日英2言語、翻訳テーブル）        |

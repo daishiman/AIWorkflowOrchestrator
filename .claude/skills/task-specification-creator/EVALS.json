@@ -11,67 +11,110 @@
     "averageDuration": 0,
     "lastEvaluated": "2026-01-31T00:00:00.000Z"
   },
-  "levelHistory": [],
+  "levelHistory": [
+    {
+      "level": 2,
+      "achievedAt": "2026-01-30T00:00:00.000Z",
+      "trigger": "TASK-7D完了時点でusageCount=29、successRate=1.0によりLevel 2維持"
+    }
+  ],
   "patterns": {
-    "commonErrors": [],
-    "slowPhases": [],
-    "frequentAgents": []
+    "commonErrors": [
+      "Phase 12出力要件の漏れ（implementation-guide Part 1/Part 2、documentation-changelog.md、unassigned-task-detection.md）",
+      "artifacts.json同期漏れ（Phase完了後のstatus更新忘れ）",
+      "Step 1-C関連タスクテーブル更新漏れ（arch-state-management.md等）",
+      "topic-map.md再生成漏れ（Step 1-Aチェックリスト見落とし）"
+    ],
+    "slowPhases": [
+      "Phase 12（4タスク並列が必要、システム仕様書14ファイル更新）"
+    ],
+    "frequentAgents": [
+      "execute-workflow",
+      "Explore（Phase 1要件調査）",
+      "Plan（Phase 2設計）"
+    ]
   },
   "phaseMetrics": {
     "decompose-task": {
-      "usageCount": 0,
+      "usageCount": 7,
       "avgDuration": 0,
-      "successRate": 0,
+      "successRate": 1,
       "commonIssues": []
     },
     "identify-scope": {
-      "usageCount": 0,
+      "usageCount": 7,
       "avgDuration": 0,
-      "successRate": 0,
+      "successRate": 1,
       "commonIssues": []
     },
     "design-phases": {
-      "usageCount": 0,
+      "usageCount": 7,
       "avgDuration": 0,
-      "successRate": 0,
+      "successRate": 1,
       "commonIssues": []
     },
     "generate-task-specs": {
-      "usageCount": 0,
+      "usageCount": 7,
       "avgDuration": 0,
-      "successRate": 0,
+      "successRate": 0.86,
       "commonIssues": [
-        "Phase 12出力要件の漏れ（phase-11-12-guide.md参照不足）"
+        "Phase 12出力要件の漏れ（phase-11-12-guide.md参照不足）",
+        "未タスクファイルのセクション4/6/7省略（v9.13.0で修正）"
       ]
     },
     "output-phase-files": {
-      "usageCount": 0,
+      "usageCount": 7,
       "avgDuration": 0,
-      "successRate": 0,
+      "successRate": 0.86,
       "commonIssues": [
-        "artifacts.json同期漏れ"
+        "artifacts.json同期漏れ",
+        "Phase 12 documentation-changelog.mdステータス更新漏れ"
       ]
     },
     "update-dependencies": {
-      "usageCount": 0,
+      "usageCount": 7,
       "avgDuration": 0,
-      "successRate": 0,
+      "successRate": 1,
       "commonIssues": []
     },
     "generate-unassigned-task": {
-      "usageCount": 0,
+      "usageCount": 7,
       "avgDuration": 0,
-      "successRate": 0,
+      "successRate": 0.86,
       "commonIssues": [
-        "未タスクファイルのunassigned-task/配置漏れ"
+        "未タスクファイルのunassigned-task/配置漏れ",
+        "既存タスク仕様書マッピング文書化漏れ"
       ]
     }
   },
   "qualityInsights": {
-    "patternAdoptionRate": 0,
-    "coverageTargetHitRate": 0,
-    "unassignedTaskDetectionRate": 0,
-    "notes": "TASK-7D実行で検証済みパターン: forwardRef+useImperativeHandle, Exclude型設定マップ, Store個別セレクタ, 並列バックグラウンドエージェント。フェーズ境界遷移パターン4件・失敗回避パターン3件をpatterns.mdに体系化。"
+    "patternAdoptionRate": 0.57,
+    "coverageTargetHitRate": 0.86,
+    "unassignedTaskDetectionRate": 1,
+    "notes": "TASK-7D実行で検証済みパターン: forwardRef+useImperativeHandle, Exclude型設定マップ, Store個別セレクタ, 並列バックグラウンドエージェント。フェーズ境界遷移パターン4件・失敗回避パターン3件をpatterns.mdに体系化。patternAdoptionRate=0.57（12パターン中7件をTASK-7Dで適用）。coverageTargetHitRate=0.86（7タスク中6タスクでカバレッジ95%以上達成）。unassignedTaskDetectionRate=1.0（全7タスクで検出レポート出力済み）。",
+    "taskMetrics": {
+      "TASK-7D": {
+        "completedPhases": 12,
+        "totalTests": 48,
+        "avgCoverage": 99.6,
+        "systemSpecsUpdated": 14,
+        "unassignedTasksDetected": 7
+      },
+      "TASK-7C": {
+        "completedPhases": 12,
+        "totalTests": 57,
+        "avgCoverage": 98.5,
+        "systemSpecsUpdated": 4,
+        "unassignedTasksDetected": 3
+      },
+      "TASK-SKILL-RETRY-001": {
+        "completedPhases": 12,
+        "totalTests": 73,
+        "avgCoverage": 97.2,
+        "systemSpecsUpdated": 6,
+        "unassignedTasksDetected": 4
+      }
+    }
   },
   "levelCriteria": {
     "level2": {
