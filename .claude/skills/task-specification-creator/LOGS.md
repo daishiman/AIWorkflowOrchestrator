@@ -59,6 +59,43 @@ node scripts/log-usage.js \
 
 ---
 
+## 2026-01-31 - スキル改善: Phase 12 テンプレート最適化・ドキュメント構造改善
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- 操作: update（skill-creator連携）
+- トリガー: TASK-IMP-permission-tool-icons Phase 12実行時のフィードバック
+
+### 成果
+
+- **SKILL.md v9.15.0**:
+  - Task 2テーブルを4サブステップに拡張（Step 1-A/1-B/1-C/Step 2）
+  - Task 1 vs Task 2 境界テーブル追加（誤判断防止）
+  - Phase 12 よくある漏れパターン5件追加
+  - assets数更新（8→9）
+- **documentation-changelog-template.md** 新規作成:
+  - Phase 12 Task 2全Step記録テンプレート
+  - よくある漏れパターン表・品質チェックリスト付き
+- **implementation-guide-template.md** 拡充:
+  - UIコンポーネント実装パターンセクション追加（定数マッピング/引数フォーマット/アクセシビリティ）
+- **spec-update-workflow.md** 強化:
+  - TASK-IMP-permission-tool-icons-001の具体例セクション追加
+  - Step 1-C発見プロセスのGrep例追加
+  - 参照リソーステーブル拡充（documentation-changelog-template.md追加）
+- **resource-map.md** 更新:
+  - assets/9ファイルに更新（documentation-changelog-template.md追加）
+
+### 結果
+
+| 項目         | 値                                           |
+| ------------ | -------------------------------------------- |
+| ステータス   | success                                      |
+| 完了日時     | 2026-01-31                                   |
+| 更新ファイル | SKILL.md, documentation-changelog-template.md, implementation-guide-template.md, spec-update-workflow.md, resource-map.md |
+
+---
+
 ## 2026-01-30 - TASK-7D ChatPanel統合 Phase 1-12 完了
 
 ### コンテキスト
@@ -108,6 +145,60 @@ TASK-7D ChatPanel統合のPhase 1-12を全フェーズ完了。TDDサイクル�
 
 ---
 
+## 2026-01-30 - TASK-IMP-permission-tool-icons Phase 1-12 完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: task-imp-permission-tool-icons-001
+- タスク名: PermissionDialog ツール別アイコン表示
+- Phase: 1-12（Phase 13 PR作成は除外）
+- エージェント: execute-workflow
+
+### 成果
+
+- テストカバレッジ: 57テスト全件PASS
+- 実装内容:
+  - TOOL_ICONS定数（10ツール分Emojiマッピング）追加
+  - DEFAULT_TOOL_ICON定数（🔧）追加
+  - getToolIcon()ヘルパー関数追加
+  - PermissionDialog JSXバッジにアイコン表示（aria-hidden="true"）
+  - 17テストケース追加（ツールアイコン表示6件、全定義済みツール8件、エッジケース3件）
+- システム仕様書更新:
+  - interfaces-agent-sdk-ui.md: 完了タスクセクション追加、関連ドキュメントリンク追加、変更履歴v1.3.0
+  - interfaces-agent-sdk-history.md: 未タスク候補テーブルのステータス更新（完了）
+
+### 結果
+
+| 項目             | 値                                        |
+| ---------------- | ----------------------------------------- |
+| ステータス       | success                                   |
+| 完了日時         | 2026-01-30                                |
+| タスクID         | task-imp-permission-tool-icons-001        |
+| タスク名         | PermissionDialog ツール別アイコン表示     |
+| テスト結果       | 57/57 PASS                                |
+| TypeScriptエラー | 0件（対象ファイル）                       |
+| ESLintエラー     | 0件                                       |
+| Prettierチェック | PASS                                      |
+
+### Phase完了状況
+
+| Phase | 名称                 | 結果 |
+| ----- | -------------------- | ---- |
+| 1     | 要件定義             | ✓    |
+| 2     | 設計                 | ✓    |
+| 3     | 設計レビューゲート   | ✓    |
+| 4     | テスト作成（Red）    | ✓    |
+| 5     | 実装（Green）        | ✓    |
+| 6     | テスト拡充           | ✓    |
+| 7     | テストカバレッジ     | ✓    |
+| 8     | リファクタリング     | ✓    |
+| 9     | 品質保証             | ✓    |
+| 10    | 最終レビュー         | ✓    |
+| 11    | 手動テスト           | ✓    |
+| 12    | ドキュメント更新     | ✓    |
+
+---
 ## 2026-01-30 - TASK-7C PermissionDialog コンポーネント Phase 1-12 完了
 
 ### コンテキスト

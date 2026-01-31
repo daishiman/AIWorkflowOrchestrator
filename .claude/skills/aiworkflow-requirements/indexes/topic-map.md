@@ -268,7 +268,9 @@ node scripts/list-specs.js --topics
 | Agent Execution UI 型定義（AGENT-004） | L16 |
 | AgentSDKPage（ポストリリーステスト検証UI） | L252 |
 | 関連ドキュメント | L315 |
-| 変更履歴 | L325 |
+| PermissionDialog ツールアイコンマッピング | L113 |
+| 完了タスク（task-imp-permission-tool-icons-001） | L358 |
+| 変更履歴 | L383 |
 
 ### references/interfaces-agent-sdk.md
 
@@ -710,14 +712,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L12 |
-| 概要 | L22 |
-| コンポーネント階層 | L28 |
-| コンポーネント仕様 | L55 |
-| インタラクション設計 | L205 |
-| 視覚デザイン | L233 |
-| アクセシビリティ（WCAG 2.1 AA） | L257 |
-| 完了タスク | L269 |
-| 関連ドキュメント | L275 |
+| 概要 | L23 |
+| コンポーネント階層 | L29 |
+| コンポーネント仕様 | L56 |
+| ツールアイコンバッジ（TASK-IMP-permission-tool-icons） | L154 |
+| インタラクション設計 | L220 |
+| 視覚デザイン | L248 |
+| アクセシビリティ（WCAG 2.1 AA） | L272 |
+| 完了タスク（TASK-7C, TASK-IMP-permission-tool-icons） | L284 |
+| 関連ドキュメント | L291 |
 
 ### references/ui-ux-components.md
 

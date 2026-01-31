@@ -13,6 +13,34 @@ import React, { useState, useEffect, useRef, useCallback, useId } from "react";
 import { useAppStore } from "../../store";
 
 /**
+ * ツール名からEmojiアイコンへのマッピング
+ * 元タスク仕様書（TASK-7C）で定義されたtoolIcons
+ */
+const TOOL_ICONS: Record<string, string> = {
+  Bash: "💻",
+  Read: "📖",
+  Write: "✏️",
+  Edit: "📝",
+  Glob: "🔍",
+  Grep: "🔎",
+  LS: "📁",
+  Task: "📋",
+  WebSearch: "🌐",
+  WebFetch: "🌐",
+};
+
+/** デフォルトアイコン（未定義ツール用） */
+const DEFAULT_TOOL_ICON = "🔧";
+
+/**
+ * ツール名に対応するアイコンを返す
+ * 未定義ツールの場合はデフォルトアイコン（🔧）を返す
+ */
+function getToolIcon(toolName: string): string {
+  return TOOL_ICONS[toolName] ?? DEFAULT_TOOL_ICON;
+}
+
+/**
  * ツール引数を表示用にフォーマットする
  *
  * - Bashコマンド: args.command を直接返す
@@ -152,7 +180,10 @@ export const PermissionDialog: React.FC = () => {
           <div className="bg-gray-50 rounded-lg p-4 mb-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs text-gray-500">ツール:</span>
-              <span className="px-2 py-0.5 bg-gray-200 rounded text-sm font-mono font-medium">
+              <span className="px-2 py-0.5 bg-gray-200 rounded text-sm font-mono font-medium inline-flex items-center gap-1">
+                <span aria-hidden="true">
+                  {getToolIcon(pendingPermission.toolName)}
+                </span>
                 {pendingPermission.toolName}
               </span>
             </div>
