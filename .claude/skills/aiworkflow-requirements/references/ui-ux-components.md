@@ -124,6 +124,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | #468 | workspace-chat-edit-ui | 2026-01-25 |
 | TASK-7A | SkillSelector コンポーネント実装 | 2026-01-30 |
 | TASK-7B | SkillImportDialog | 2026-01-30 |
+| TASK-7D | ChatPanel統合（SkillStreamingView実装） | 2026-01-30 |
 
 ---
 
@@ -131,6 +132,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.3.0   | 2026-01-30 | TASK-7D完了タスク追加（ChatPanel統合・SkillStreamingView） |
 | 2.2.0   | 2026-01-30 | TASK-7B完了タスク追加（SkillImportDialogコンポーネント）                             |
 | 2.1.0   | 2026-01-30 | TASK-7A完了タスク追加（SkillSelector コンポーネント）                                |
 | 2.0.0   | 2026-01-26 | 4ファイルに分割（964行→インデックス+詳細ファイル）                                   |
@@ -144,3 +146,4 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [アーキテクチャパターン](./architecture-patterns.md)
 - [History Panel UI仕様](./ui-ux-history-panel.md)
 - [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)
+- [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md)

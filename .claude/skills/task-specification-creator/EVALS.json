@@ -2,13 +2,14 @@
   "skillName": "task-specification-creator",
   "version": "2.0.0",
   "currentLevel": 2,
+  "lastUpdated": "2026-01-31T00:00:00.000Z",
   "metrics": {
-    "totalUsageCount": 27,
-    "successCount": 27,
+    "totalUsageCount": 29,
+    "successCount": 29,
     "failureCount": 0,
     "successRate": 1,
     "averageDuration": 0,
-    "lastEvaluated": "2026-01-30T00:00:00.000Z"
+    "lastEvaluated": "2026-01-31T00:00:00.000Z"
   },
   "levelHistory": [],
   "patterns": {
@@ -18,40 +19,59 @@
   },
   "phaseMetrics": {
     "decompose-task": {
-      "successRate": 0,
+      "usageCount": 0,
       "avgDuration": 0,
-      "usageCount": 0
+      "successRate": 0,
+      "commonIssues": []
     },
     "identify-scope": {
-      "successRate": 0,
+      "usageCount": 0,
       "avgDuration": 0,
-      "usageCount": 0
+      "successRate": 0,
+      "commonIssues": []
     },
     "design-phases": {
-      "successRate": 0,
+      "usageCount": 0,
       "avgDuration": 0,
-      "usageCount": 0
+      "successRate": 0,
+      "commonIssues": []
     },
     "generate-task-specs": {
-      "successRate": 0,
+      "usageCount": 0,
       "avgDuration": 0,
-      "usageCount": 0
+      "successRate": 0,
+      "commonIssues": [
+        "Phase 12出力要件の漏れ（phase-11-12-guide.md参照不足）"
+      ]
     },
     "output-phase-files": {
-      "successRate": 0,
+      "usageCount": 0,
       "avgDuration": 0,
-      "usageCount": 0
+      "successRate": 0,
+      "commonIssues": [
+        "artifacts.json同期漏れ"
+      ]
     },
     "update-dependencies": {
-      "successRate": 0,
+      "usageCount": 0,
       "avgDuration": 0,
-      "usageCount": 0
+      "successRate": 0,
+      "commonIssues": []
     },
     "generate-unassigned-task": {
-      "successRate": 0,
+      "usageCount": 0,
       "avgDuration": 0,
-      "usageCount": 0
+      "successRate": 0,
+      "commonIssues": [
+        "未タスクファイルのunassigned-task/配置漏れ"
+      ]
     }
+  },
+  "qualityInsights": {
+    "patternAdoptionRate": 0,
+    "coverageTargetHitRate": 0,
+    "unassignedTaskDetectionRate": 0,
+    "notes": "TASK-7D実行で検証済みパターン: forwardRef+useImperativeHandle, Exclude型設定マップ, Store個別セレクタ, 並列バックグラウンドエージェント。フェーズ境界遷移パターン4件・失敗回避パターン3件をpatterns.mdに体系化。"
   },
   "levelCriteria": {
     "level2": {

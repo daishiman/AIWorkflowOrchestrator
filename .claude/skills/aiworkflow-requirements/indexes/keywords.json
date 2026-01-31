@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-29T16:48:54.501Z",
-  "totalKeywords": 952,
+  "generated": "2026-01-30T23:54:07.229Z",
+  "totalKeywords": 954,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -636,10 +636,12 @@
       "interfaces-chat-history.md",
       "interfaces-llm.md",
       "interfaces-system-prompt.md",
+      "quality-requirements.md",
       "security-api-electron.md",
       "security-skill-ipc.md",
       "task-workflow.md",
       "technology-backend.md",
+      "ui-ux-agent-execution.md",
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
       "ui-ux-search-panel.md"
@@ -910,6 +912,21 @@
     "SkillSelector": [
       "arch-ui-components.md"
     ],
+    "ChatPanel": [
+      "arch-ui-components.md",
+      "interfaces-agent-sdk-skill.md",
+      "ui-ux-feature-skill-stream.md"
+    ],
+    "TASK": [
+      "arch-ui-components.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "security-skill-ipc.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
+      "ui-ux-search-panel.md"
+    ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
     ],
@@ -1063,7 +1080,9 @@
       "architecture-file-conversion.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
-      "technology-backend.md"
+      "interfaces-agent-sdk-skill.md",
+      "technology-backend.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "history": [
       "architecture-file-conversion.md",
@@ -1933,15 +1952,6 @@
     ],
     "SkillExecutor": [
       "interfaces-agent-sdk-executor.md"
-    ],
-    "TASK": [
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "security-skill-ipc.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-feature-skill-stream.md",
-      "ui-ux-search-panel.md"
     ],
     "PermissionResolver": [
       "interfaces-agent-sdk-executor.md"
@@ -3449,6 +3459,9 @@
       "ui-ux-feature-skill-stream.md"
     ],
     "タイムスタンプ自動更新機能": [
+      "ui-ux-feature-skill-stream.md"
+    ],
+    "SkillStreamingView": [
       "ui-ux-feature-skill-stream.md"
     ],
     "ファイルセレクター": [

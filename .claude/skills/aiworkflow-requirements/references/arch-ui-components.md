@@ -369,6 +369,7 @@ SkillSelectorはスキル選択用ドロップダウンコンポーネント。W
 | タスクID | 内容                             | 完了日     |
 |----------|----------------------------------|------------|
 | TASK-7A  | SkillSelector コンポーネント実装 | 2026-01-30 |
+| TASK-7D  | ChatPanel統合パターン             | 2026-01-30 |
 
 #### タスク: SkillSelector コンポーネント実装（2026-01-30完了）
 
@@ -399,10 +400,62 @@ SkillSelectorはスキル選択用ドロップダウンコンポーネント。W
 
 ---
 
+## ChatPanel統合パターン（TASK-7D）
+
+### 概要
+
+ChatPanelは、既存のチャット画面にスキル関連コンポーネントを統合する統括コンポーネントである。forwardRef + useImperativeHandle パターンで外部からスキルインポートを制御可能。
+
+### コンポーネント構成
+
+| コンポーネント       | レベル    | 統合方式             | 条件                              |
+| -------------------- | --------- | -------------------- | --------------------------------- |
+| SkillSelector        | organisms | 直接レンダー         | 常時表示（ヘッダー内）            |
+| SkillStreamingView   | organisms | 条件付きレンダー     | `isExecuting && selectedSkillName` |
+| SkillImportDialog    | organisms | ローカルstate制御    | `importDialogSkill !== null`      |
+| PermissionDialog     | organisms | Store-directパターン | 常時マウント                      |
+
+### レイアウト構成
+
+| エリア         | data-testid         | 内容                                     |
+| -------------- | ------------------- | ---------------------------------------- |
+| ヘッダー       | `chat-header`       | ModelSelector slot + SkillSelector       |
+| メッセージ     | `message-area`      | MessageList slot + SkillStreamingView    |
+| 入力           | `input-area`        | ChatInput slot                           |
+| ダイアログ     | -                   | SkillImportDialog + PermissionDialog     |
+
+### Store接続パターン
+
+個別セレクタパターンを採用（不要な再レンダー防止）。
+
+| セレクタ                  | 型                               |
+| ------------------------- | -------------------------------- |
+| `selectedSkillName`       | `string \| null`                 |
+| `streamingMessages`       | `SkillStreamMessage[]`           |
+| `isExecuting`             | `boolean`                        |
+| `skillExecutionStatus`    | `SkillExecutionStatus \| null`   |
+| `fetchSkills`             | `() => Promise<void>`            |
+
+### テスト品質（TASK-7D）
+
+| テスト対象             | テスト数 | Line    | Branch  | Function |
+| ---------------------- | -------- | ------- | ------- | -------- |
+| ChatPanel.tsx          | 15       | 100%    | 100%    | 100%     |
+| SkillStreamingView.tsx | 33       | 99.3%   | 93.75%  | 100%     |
+
+#### 成果物
+
+| 成果物             | パス                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------- |
+| 実装ガイド         | `docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md` |
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 1.4.0   | 2026-01-30 | ChatPanel統合パターン追加（TASK-7D） |
 | 1.3.0   | 2026-01-30 | SkillSelector詳細実装パターン追加（Props/Types/Hooks/スタイリング） |
 | 1.2.0   | 2026-01-30 | SkillSelectorコンポーネントパターン追加（TASK-7A） |
 | 1.1.0   | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式/文章形式に変換 |

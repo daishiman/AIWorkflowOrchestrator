@@ -75,6 +75,44 @@
 | 機能単位 | 機能隔離（チャット、設定等） | 機能別エラーUI |
 | コンポーネント単位 | 特定UIの隔離 | プレースホルダー表示 |
 
+### forwardRef + useImperativeHandle パターン（TASK-7D）
+
+外部から命令的にコンポーネントのメソッドを呼び出すためのパターン。親コンポーネントがrefを通じて子コンポーネントの特定メソッドのみを呼び出す場合に使用する。
+
+**ユースケース**: ChatPanelの`handleImportRequest`を親コンポーネントから呼び出す
+
+| 要素 | 実装 |
+|------|------|
+| Handle型 | `ChatPanelHandle { handleImportRequest: (skill: SkillMetadata) => void }` |
+| Component宣言 | `forwardRef<ChatPanelHandle, ChatPanelProps>` |
+| Handle公開 | `useImperativeHandle(ref, () => ({ handleImportRequest }))` |
+| displayName | `ChatPanel.displayName = "ChatPanel"` |
+| 使用側 | `const ref = useRef<ChatPanelHandle>(null); ref.current?.handleImportRequest(skill)` |
+
+**Props callbackパターンとの使い分け**:
+
+| 判断基準 | forwardRef + useImperativeHandle | Props callback |
+|----------|----------------------------------|----------------|
+| 呼び出し方向 | 親 → 子（命令的） | 子 → 親（宣言的） |
+| 適用場面 | 親が子のメソッドを直接呼ぶ必要がある場合 | 子のイベントを親に通知する場合 |
+| パフォーマンス | 選択的メソッド公開で不要な再レンダー回避 | Props変更時に再レンダー発生 |
+| テスト | `ref.current`経由でFunction Coverage 100%達成 | Props経由で直接テスト可能 |
+
+### React.memo + Exclude型パターン（TASK-7D）
+
+`React.memo`によるメモ化と`Exclude`ユーティリティ型を組み合わせ、表示不要なステータスをコンパイル時に除外するパターン。
+
+**ユースケース**: SkillStreamingViewコンポーネントでステータス"idle"を表示対象から除外する
+
+| 要素 | 実装 |
+|------|------|
+| メモ化 | `memo(({ skillName, messages, status }) => ...)` |
+| 型安全除外 | `type DisplayableStatus = Exclude<SkillExecutionStatus, "idle">` |
+| 設定マップ | `Record<DisplayableStatus, { color: string; label: string }>` |
+| displayName | `SkillStreamingView.displayName = "SkillStreamingView"` |
+
+**メリット**: `Record<DisplayableStatus, ...>`により、新しいステータスが追加された場合にコンパイルエラーで網羅性不足を検出できる。
+
 ---
 
 ## バックエンド実装パターン
@@ -373,6 +411,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.0 | 2026-01-30 | TASK-7D: forwardRef + useImperativeHandleパターン、React.memo + Exclude型パターン追加 |
 | 1.2.0 | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルモック設計、モック上書きパターン） |
 | 1.1.0 | 2026-01-26 | 仕様ガイドライン準拠: コード例削除、文章・表形式に変更 |
 | 1.0.0 | 2026-01-26 | 初版作成 |
