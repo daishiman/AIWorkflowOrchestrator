@@ -1,0 +1,201 @@
+{
+  "featureName": "task-imp-permission-readable-ui-001",
+  "taskName": "PermissionDialog 人間可読UI改善",
+  "issueNumber": 585,
+  "createdDate": "2026-01-30",
+  "phases": [
+    {
+      "phaseNumber": 1,
+      "phaseName": "要件定義",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "requirements-definition",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "type": "document",
+          "description": "PermissionDialog人間可読UI改善の要件定義書"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 2,
+      "phaseName": "設計",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "design-document",
+          "path": "outputs/phase-2/design-document.md",
+          "type": "document",
+          "description": "permissionDescriptions モジュール設計書・UI設計書"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 3,
+      "phaseName": "設計レビューゲート",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "design-review-report",
+          "path": "outputs/phase-3/design-review-report.md",
+          "type": "document",
+          "description": "設計レビュー結果レポート"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 4,
+      "phaseName": "テスト作成",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "permission-descriptions-test",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/permissionDescriptions.test.ts",
+          "type": "code",
+          "description": "説明テンプレートのユニットテスト"
+        },
+        {
+          "name": "permission-dialog-readable-test",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.readable.test.tsx",
+          "type": "code",
+          "description": "人間可読UI表示のテスト"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 5,
+      "phaseName": "実装",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "permission-descriptions",
+          "path": "apps/desktop/src/renderer/components/skill/permissionDescriptions.ts",
+          "type": "code",
+          "description": "ツール別説明テンプレートモジュール"
+        },
+        {
+          "name": "permission-dialog-updated",
+          "path": "apps/desktop/src/renderer/components/skill/PermissionDialog.tsx",
+          "type": "code",
+          "description": "人間可読UI統合済みPermissionDialog"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 6,
+      "phaseName": "テスト拡充",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "expanded-tests",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/permissionDescriptions.test.ts",
+          "type": "code",
+          "description": "拡充済みテスト（エッジケース・アクセシビリティ）"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 7,
+      "phaseName": "テストカバレッジ確認",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "coverage-report",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document",
+          "description": "テストカバレッジレポート"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 8,
+      "phaseName": "リファクタリング",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "refactoring-report",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "type": "document",
+          "description": "リファクタリング実施レポート"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 9,
+      "phaseName": "品質保証",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "quality-assurance-report",
+          "path": "outputs/phase-9/quality-assurance-report.md",
+          "type": "document",
+          "description": "品質保証レポート"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 10,
+      "phaseName": "最終レビューゲート",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "final-review-report",
+          "path": "outputs/phase-10/final-review-report.md",
+          "type": "document",
+          "description": "最終レビューゲート結果レポート"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 11,
+      "phaseName": "手動テスト検証",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "manual-test-report",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "type": "document",
+          "description": "手動テスト検証レポート"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 12,
+      "phaseName": "ドキュメント更新",
+      "status": "complete",
+      "artifacts": [
+        {
+          "name": "implementation-guide",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document",
+          "description": "実装ガイド（Part 1: 中学生レベル + Part 2: 技術者レベル）"
+        },
+        {
+          "name": "documentation-changelog",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "name": "unassigned-task-detection",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    {
+      "phaseNumber": 13,
+      "phaseName": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "pr-description",
+          "path": "outputs/phase-13/pr-description.md",
+          "type": "document",
+          "description": "PR本文"
+        }
+      ]
+    }
+  ]
+}
