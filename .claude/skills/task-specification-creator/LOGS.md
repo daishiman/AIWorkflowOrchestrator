@@ -43,6 +43,15 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-01 - unassigned task generation: codebase TODO scan + system spec gap analysis]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned (codebase scan + system spec gap)
+- **Result**: ✓ 成功
+- **Notes**: コードベース全体のTODO/FIXMEスキャン（50+箇所検出）+ システム仕様書23ギャップ分析から、既存220件と照合し重複なしの新規3件を作成。task-imp-skill-stream-type-preload-completion-001（TASK-7D残課題）、task-imp-sdk-integration-test-activation-001（SDK統合テスト）、task-imp-community-dashboard-handlers-001（IPC実サービス化）。9セクション完全準拠。
+
+---
+
 ## [2026-01-31 - unassigned task generation from system specs]
 
 - Agent: generate-unassigned-task

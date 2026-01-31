@@ -5,6 +5,37 @@
 
 ---
 
+## 2026-02-01: 未タスク仕様書3件新規作成（コードベースTODOスキャン + システム仕様書ギャップ分析）
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | unassigned-task-generation-2026-02-01                                         |
+| 操作         | generate-unassigned-task                                                      |
+| 対象ファイル | docs/30-workflows/unassigned-task/ (3件新規作成)                              |
+| 結果         | success                                                                       |
+
+### 検出ソース
+
+| ソース | 検出数 | 内容 |
+|--------|--------|------|
+| コードベースTODOスキャン | 50+ | apps/desktop/src/, packages/shared/src/ 全TypeScriptファイル |
+| システム仕様書ギャップ | 23 | 13カテゴリの未実装項目（interfaces-*, api-*, rag-*, architecture-*） |
+| TASK-7D残課題 | 3 | TASK-7D明示的TODOコメント（setupSkillListeners.ts, skill-api.ts） |
+
+### 作成ファイル
+
+| ファイル | タスクID | 優先度 | 概要 |
+|----------|----------|--------|------|
+| `task-imp-skill-stream-type-preload-completion-001.md` | task-imp-skill-stream-type-preload-completion-001 | 中 | TASK-7D残課題: SkillStreamMessage型統一 + Preload APIコールバック実装 |
+| `task-imp-sdk-integration-test-activation-001.md` | task-imp-sdk-integration-test-activation-001 | 中 | Agent SDK統合テスト有効化（50+箇所のTODO） |
+| `task-imp-community-dashboard-handlers-001.md` | task-imp-community-dashboard-handlers-001 | 低 | Community/Dashboard IPCハンドラー実サービス実装 |
+
+### 既存タスクとの重複チェック
+
+220件の既存未タスク仕様書と照合し、上記3件がいずれも新規であることを確認。参照したシステム仕様書: interfaces-agent-sdk-ui.md, interfaces-agent-sdk-executor.md, api-endpoints.md, architecture-patterns.md, security-api-electron.md, database-architecture.md, quality-requirements.md
+
+---
+
 ## 2026-01-31: aiworkflow-requirements v8.19.0 スキル更新（skill-creator準拠）
 
 | 項目         | 内容                                                                          |
