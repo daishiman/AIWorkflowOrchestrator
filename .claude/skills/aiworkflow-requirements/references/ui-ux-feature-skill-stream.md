@@ -377,6 +377,67 @@ SkillStreamDisplayコンポーネントの国際化対応。formatRelativeTime�
 
 ---
 
+## ChatPanel統合 SkillStreamingView（TASK-7D）
+
+### 概要
+
+ChatPanel統合により、SkillStreamingView コンポーネントを新規実装した。既存の SkillStreamDisplay とは別に、ChatPanel 内でスキル実行結果をストリーミング表示するための軽量コンポーネントである。
+
+### コンポーネント構成
+
+| コンポーネント         | レベル    | 役割                           |
+| ---------------------- | --------- | ------------------------------ |
+| SkillStreamingView     | organisms | ストリーミング表示コンテナ     |
+| StatusBadge            | atoms     | 実行ステータスバッジ表示       |
+| StreamMessageItem      | molecules | メッセージアイテム表示         |
+| ToolExecutionHistory   | molecules | ツール実行履歴（折りたたみ）   |
+
+### Props
+
+| Prop       | 型                               | 説明                   |
+| ---------- | -------------------------------- | ---------------------- |
+| skillName  | `string`                         | 実行中のスキル名       |
+| messages   | `SkillStreamMessage[]`           | ストリーミングメッセージ |
+| status     | `SkillExecutionStatus \| null`   | 実行ステータス         |
+
+### ステータスバッジマッピング
+
+| ステータス          | 色          | ラベル     |
+| ------------------- | ----------- | ---------- |
+| running             | bg-blue-500 | 実行中...  |
+| permission_pending  | bg-yellow-500 | 権限確認  |
+| completed           | bg-green-500 | 完了      |
+| cancelled           | bg-gray-500 | キャンセル |
+| error               | bg-red-500  | エラー     |
+| idle                | -           | 非表示     |
+
+### ChatPanel統合パターン
+
+| 統合コンポーネント   | 統合方式               | 条件                              |
+| -------------------- | ---------------------- | --------------------------------- |
+| SkillSelector        | 直接レンダー           | 常時表示                          |
+| SkillStreamingView   | 条件付きレンダー       | `isExecuting && selectedSkillName` |
+| SkillImportDialog    | ローカルstate制御      | `importDialogSkill !== null`      |
+| PermissionDialog     | Store-directパターン   | 常時マウント                      |
+
+### テスト品質（TASK-7D）
+
+| ファイル                     | テスト数 | Line   | Branch | Function |
+| ---------------------------- | -------- | ------ | ------ | -------- |
+| SkillStreamingView.test.tsx  | 33       | 99.3%  | 93.75% | 100%     |
+| ChatPanel.test.tsx           | 15       | 100%   | 100%   | 100%     |
+| 合計                         | 48       | -      | -      | -        |
+
+### 実装ファイル
+
+| ファイル                                             | 行数 |
+| ---------------------------------------------------- | ---- |
+| `components/skill/SkillStreamingView.tsx`            | 252  |
+| `components/chat/ChatPanel.tsx`                      | 131  |
+| `components/skill/index.ts`                          | 7    |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                  | パス                                                                                      |
@@ -384,6 +445,7 @@ SkillStreamDisplayコンポーネントの国際化対応。formatRelativeTime�
 | TASK-3-2-B i18n実装ガイド     | `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/outputs/phase-12/implementation-guide.md` |
 | TASK-3-2-A UX改善成果物       | `docs/30-workflows/TASK-3-2-A-skill-stream-ux-improvements/`                              |
 | TASK-3-2-C タイムスタンプ更新 | `docs/30-workflows/TASK-3-2-C-timestamp-autoupdate/`                                      |
+| TASK-7D ChatPanel統合         | `docs/30-workflows/TASK-7D-chat-panel-integration/`                                       |
 | 親ドキュメント                | [ui-ux-feature-components.md](./ui-ux-feature-components.md)                              |
 
 ---
@@ -392,5 +454,6 @@ SkillStreamDisplayコンポーネントの国際化対応。formatRelativeTime�
 
 | Version   | Date       | Changes                                                                       |
 | --------- | ---------- | ----------------------------------------------------------------------------- |
+| **1.1.0** | 2026-01-30 | TASK-7D完了: ChatPanel統合SkillStreamingView仕様追加                          |
 | **1.0.0** | 2026-01-28 | 初版作成（ui-ux-feature-components.mdより分割）                               |
 |           |            | TASK-3-2/3-2-A/3-2-B/3-2-C仕様を統合、コンポーネント階層・IPC・Hook・i18n対応 |
