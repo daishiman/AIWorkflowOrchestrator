@@ -1,5 +1,5 @@
 {
-  "generated": "2026-01-30T23:54:07.229Z",
+  "generated": "2026-01-31T03:46:02.202Z",
   "totalKeywords": 954,
   "keywords": {
     "チャット履歴": [
@@ -632,6 +632,7 @@
     "完了タスク": [
       "api-ipc-agent.md",
       "architecture-chat-history.md",
+      "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history.md",
       "interfaces-chat-history.md",
       "interfaces-llm.md",
@@ -1481,7 +1482,9 @@
       "claude-code-skills-structure.md"
     ],
     "SKILL": [
-      "claude-code-skills-structure.md"
+      "claude-code-skills-structure.md",
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md"
     ],
     "Turso": [
       "database-architecture.md",
@@ -1873,6 +1876,24 @@
     "リトライ戦略": [
       "error-handling.md"
     ],
+    "SkillExecutor": [
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md"
+    ],
+    "TASK": [
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "security-skill-ipc.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
+      "ui-ux-search-panel.md"
+    ],
+    "RETRY": [
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md"
+    ],
     "サーキットブレーカー": [
       "error-handling.md"
     ],
@@ -1950,7 +1971,7 @@
     "Executor": [
       "interfaces-agent-sdk-executor.md"
     ],
-    "SkillExecutor": [
+    "リトライ機構": [
       "interfaces-agent-sdk-executor.md"
     ],
     "PermissionResolver": [

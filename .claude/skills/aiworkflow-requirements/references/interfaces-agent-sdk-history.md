@@ -419,7 +419,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 | ------ | ----------------------------- | ------ | ---------- |
 | -      | EnvironmentType: terminal実装 | 低     | 未着手     |
 | -      | EnvironmentType: code実装     | 低     | 未着手     |
-| -      | SkillExecutor: リトライ機構   | 中     | 検討中     |
+| ~~-~~  | ~~SkillExecutor: リトライ機構~~ | ~~中~~ | ~~検討中~~ ✅ **完了** |
 | -      | Permission: 永続化UIの改善    | 低     | 未着手     |
 
 ---

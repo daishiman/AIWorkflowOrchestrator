@@ -95,6 +95,7 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | Permission Control設計   | 権限ルールの設計と実装               | Phase 1, 2     | permission-control.md                          |
 | Electron IPC統合         | Main-Renderer間のAgent通信           | Phase 2        | electron-ipc.md                                |
 | エラーハンドリング       | AbortSignal、タイムアウト、リトライ  | Phase 2        | error-handling.md, hooks-system.md             |
+| リトライ機構             | Exponential Backoff, Jitter, エラー分類 | Phase 2     | error-handling.md, retry-patterns.md           |
 | MCP統合                  | MCPサーバーとの連携                  | Phase 2, 3     | mcp-integration.md                             |
 | セキュリティ設計         | サンドボックス、ホスティング         | Phase 2, 3     | security-sandboxing.md                         |
 
@@ -271,8 +272,11 @@ cat .claude/skills/claude-agent-sdk/references/permission-control.md
 # Electron IPC統合
 cat .claude/skills/claude-agent-sdk/references/electron-ipc.md
 
-# エラーハンドリング
+# エラーハンドリング（AbortSignal、タイムアウト）
 cat .claude/skills/claude-agent-sdk/references/error-handling.md
+
+# リトライパターン（Exponential Backoff, Jitter, エラー分類）
+cat .claude/skills/claude-agent-sdk/references/retry-patterns.md
 
 # MCP統合
 cat .claude/skills/claude-agent-sdk/references/mcp-integration.md
@@ -348,6 +352,22 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 | SkillExecutor      | `apps/desktop/src/main/slide/skill-executor.ts`                | フェーズマッピング、進捗コールバック |
 | 型定義             | `packages/shared/src/types/slide.ts`                           | SkillPhase, SkillExecutionResult |
 
+### TASK-SKILL-RETRY-001 リトライ機構実装成果物
+
+| ドキュメント       | パス                                                                                           | 説明                            |
+| ------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------- |
+| 実装ガイド（概念） | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part1.md` | 中学生レベル概念説明          |
+| 実装ガイド（技術） | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part2.md` | 型定義・API・使用例           |
+| システム仕様       | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md`            | RetryConfig, isRetryableError |
+| エラー仕様         | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                          | リトライ戦略セクション        |
+
+### TASK-SKILL-RETRY-001 実装ファイル
+
+| ファイル           | パス                                                                          | 説明                                           |
+| ------------------ | ----------------------------------------------------------------------------- | ---------------------------------------------- |
+| SkillExecutor      | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                       | executeWithRetry, isRetryableError, backoff     |
+| テスト             | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.retry.test.ts`  | 72テストケース（9カテゴリ）                     |
+
 ### TASK-3-1-B Hooks実装成果物
 
 | ドキュメント       | パス                                                                         | 説明                            |
@@ -383,6 +403,8 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 | Version | Date       | Changes                                                    |
 | ------- | ---------- | ---------------------------------------------------------- |
+| 2.7.0   | 2026-01-31 | retry-patterns.mdリファレンス新規作成、error-handling.mdリトライセクション最適化（outdated値修正、cross-reference追加） |
+| 2.6.0   | 2026-01-31 | TASK-SKILL-RETRY-001リトライ機構パターン追加（RetryConfig, isRetryableError, Exponential Backoff with Jitter） |
 | 2.5.0   | 2026-01-26 | TASK-3-1-E権限永続化パターン追加（PermissionStore API、rememberChoice連携、データスキーマ） |
 | 2.4.0   | 2026-01-25 | TASK-3-1-B Hooks実装パターン追加（createHooks, categorizeError, isRetryable, セキュリティチェック関数） |
 | 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加 |

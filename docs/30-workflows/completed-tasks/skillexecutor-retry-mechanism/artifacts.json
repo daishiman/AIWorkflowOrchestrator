@@ -1,0 +1,274 @@
+{
+  "feature": "skillexecutor-retry-mechanism",
+  "created": "2026-01-30T22:52:25.000Z",
+  "lastUpdated": "2026-01-31T00:00:00.000Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-01-30T15:14:23.330Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/existing-implementation-analysis.md",
+          "description": "既存実装分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/retryable-errors-definition.md",
+          "description": "リトライ対象エラー定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/error-handling-alignment.md",
+          "description": "エラーハンドリング整合性"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/streaming-event-requirements.md",
+          "description": "ストリーミングイベント要件"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-01-30T15:17:48.578Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/retry-config-design.md",
+          "description": "RetryConfig型設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/error-classification-design.md",
+          "description": "エラー分類設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/backoff-algorithm-design.md",
+          "description": "バックオフアルゴリズム設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/execute-with-retry-design.md",
+          "description": "executeWithRetry設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/streaming-event-design.md",
+          "description": "ストリーミングイベント設計"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-01-30T15:17:49.897Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-judgment.md",
+          "description": "ゲート判定結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/traceability-matrix.md",
+          "description": "トレーサビリティマトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/retry-strategy-review.md",
+          "description": "リトライ戦略レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/type-safety-review.md",
+          "description": "型安全性レビュー"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-skeleton-report.md",
+          "description": "テストスケルトンレポート"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/test-results.md",
+          "description": "テスト実行結果"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-summary.md",
+          "description": "テスト拡充サマリー"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-judgment.md",
+          "description": "カバレッジ判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/uncovered-analysis.md",
+          "description": "未カバー分析"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-test-results.md",
+          "description": "リファクタリングテスト結果"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/typecheck-results.md",
+          "description": "型チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/eslint-results.md",
+          "description": "ESLint結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/prettier-results.md",
+          "description": "Prettier結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/final-test-results.md",
+          "description": "最終テスト結果"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/feature-completeness-review.md",
+          "description": "機能完全性レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/code-quality-review.md",
+          "description": "コード品質レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/test-quality-review.md",
+          "description": "テスト品質レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/gate-judgment.md",
+          "description": "ゲート判定結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-results.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-01-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide-part1.md",
+          "description": "実装ガイドPart1（初学者向け）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide-part2.md",
+          "description": "実装ガイドPart2（技術者向け）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "taskId": "TASK-SKILL-RETRY-001",
+    "issueNumber": 584,
+    "estimatedPhases": 13
+  }
+}
