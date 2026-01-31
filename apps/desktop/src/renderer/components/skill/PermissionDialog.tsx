@@ -11,6 +11,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useId } from "react";
 import { useAppStore } from "../../store";
+import { getDescription } from "./permissionDescriptions";
 
 /**
  * ツール名からEmojiアイコンへのマッピング
@@ -60,6 +61,7 @@ function formatArgs(args: Record<string, unknown>): string {
 export const PermissionDialog: React.FC = () => {
   const { pendingPermission, respondToSkillPermission } = useAppStore();
   const [rememberChoice, setRememberChoice] = useState(false);
+  const [isDetailExpanded, setIsDetailExpanded] = useState(true);
   const dialogRef = useRef<HTMLDivElement>(null);
   const approveButtonRef = useRef<HTMLButtonElement>(null);
   const uniqueId = useId();
@@ -188,10 +190,33 @@ export const PermissionDialog: React.FC = () => {
               </span>
             </div>
 
-            {/* 引数表示 */}
-            <pre className="mt-1 p-2 bg-gray-100 rounded text-xs overflow-x-auto">
-              {formatArgs(pendingPermission.args)}
-            </pre>
+            {/* 人間可読説明文 */}
+            <p className="text-sm text-gray-600 mt-2">
+              {getDescription(
+                pendingPermission.toolName,
+                pendingPermission.args,
+              )}
+            </p>
+
+            {/* 詳細展開ボタン */}
+            <button
+              type="button"
+              className="text-xs text-gray-400 hover:text-gray-600 mt-2 flex items-center gap-1"
+              onClick={() => setIsDetailExpanded(!isDetailExpanded)}
+              aria-expanded={isDetailExpanded}
+              aria-controls={`${uniqueId}-detail`}
+            >
+              {isDetailExpanded ? "詳細を隠す ▲" : "詳細を表示 ▼"}
+            </button>
+
+            {/* 技術的詳細（折りたたみ） */}
+            {isDetailExpanded && (
+              <div id={`${uniqueId}-detail`} role="region" className="mt-2">
+                <pre className="p-2 bg-gray-100 rounded text-xs overflow-x-auto">
+                  {formatArgs(pendingPermission.args)}
+                </pre>
+              </div>
+            )}
           </div>
 
           {/* 理由表示 */}

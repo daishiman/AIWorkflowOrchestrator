@@ -712,15 +712,24 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L12 |
-| 概要 | L23 |
-| コンポーネント階層 | L29 |
-| コンポーネント仕様 | L56 |
+| 概要 | L24 |
+| コンポーネント階層 | L30 |
+| コンポーネント仕様 | L57 |
+| PermissionDialog（TASK-7C実装済） | L133 |
 | ツールアイコンバッジ（TASK-IMP-permission-tool-icons） | L154 |
-| インタラクション設計 | L220 |
-| 視覚デザイン | L248 |
-| アクセシビリティ（WCAG 2.1 AA） | L272 |
-| 完了タスク（TASK-7C, TASK-IMP-permission-tool-icons） | L284 |
-| 関連ドキュメント | L291 |
+| permissionDescriptions モジュール | L192 |
+| getDescription API | L204 |
+| ツール別説明テンプレート（12種） | L213 |
+| セキュリティ対策（safeStringヘルパー） | L230 |
+| PermissionDialogとの統合 | L242 |
+| AgentOutputStream | L246 |
+| インタラクション設計 | L263 |
+| 視覚デザイン | L291 |
+| アクセシビリティ（WCAG 2.1 AA） | L315 |
+| 完了タスク（TASK-7C, TASK-IMP-permission-tool-icons, task-imp-permission-readable-ui-001） | L327 |
+| 関連ドキュメント | L362 |
+
+**追加キーワード**: permissionDescriptions, getDescription, 人間可読, 折りたたみUI, aria-expanded, safeString, Progressive Disclosure, ツール説明テンプレート
 
 ### references/ui-ux-components.md
 

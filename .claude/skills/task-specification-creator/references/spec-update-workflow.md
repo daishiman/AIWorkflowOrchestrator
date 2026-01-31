@@ -163,6 +163,7 @@ Phase 12 Task 2 開始
 | `database`, `schema`, `DB`                         | `database-schema.md`                           | 実装詳細は`database-*.md`                       |
 | `security`, `セキュリティ`                         | `security-*.md`                                | 機能により細分化                                |
 | `api`, `endpoint`, `エンドポイント`                | `api-*.md`                                     | 機能により細分化                                |
+| `permission`, `PermissionDialog`, `権限確認`       | `ui-ux-agent-execution.md`                     | コンポーネント一覧は`ui-ux-components.md`       |
 | `eslint`, `lint`, `next-lint`, `code-quality`      | `technology-backend.md`                        | DevOps関連は`technology-devops.md`              |
 | `ci`, `ci-cd`, `devops`, `build`, `deploy`         | `technology-devops.md`                         | バックエンド技術は`technology-backend.md`        |
 | `backend`, `next`, `next.js`, `framework`          | `technology-backend.md`                        | -                                               |
@@ -237,7 +238,8 @@ Phase 12 Task 2 開始
   └── 例: skill関連 → interfaces-agent-sdk.md
     ↓
 「## 完了タスク」セクションを追加（末尾近く）
-  └── テンプレート: 「タスク完了ステータス更新」セクション参照
+  └── ⚠️ 必須: 「タスク完了ステータス更新」セクションの詳細テンプレートを使用
+  └── テスト結果サマリー表・成果物表を含む詳細記録を追加すること
     ↓
 「## 関連ドキュメント」セクションに実装ガイドリンク追加
     ↓
@@ -250,6 +252,38 @@ task-specification-creator/LOGS.md にタスク完了記録を追加（下記参
 topic-map.md に新規セクションエントリを追加（下記参照）
     ↓
 完了
+```
+
+#### Step 1 完了チェックリスト（Phase 12 Task 2 完了前に確認）
+
+```markdown
+## Step 1 完了チェックリスト
+
+### Step 1-A: タスク完了記録
+- [ ] 該当仕様書の「完了タスク」テーブルにタスクIDと完了日を追加した
+- [ ] 「タスク完了ステータス更新」セクションの**詳細テンプレート**で完了記録を追加した
+  - [ ] テスト結果サマリー表（機能/エラーハンドリング/アクセシビリティ/統合テスト）
+  - [ ] 成果物テーブル（テスト結果レポート/実装ガイド等）
+- [ ] 「関連ドキュメント」セクションに実装ガイドリンクを追加した
+- [ ] 「変更履歴」にバージョン番号を追記した
+
+### Step 1-B: 実装状況テーブル更新
+- [ ] 該当仕様書に「実装状況」テーブルがある場合、該当行を「完了」に更新した
+
+### Step 1-C: 関連タスクテーブル更新
+- [ ] arch-state-management.md等の「関連タスク」テーブルを確認した
+- [ ] 該当タスクのステータスを「**完了**」に更新した
+
+### Step 1-D: topic-map.md更新
+- [ ] permissionDescriptions等の新規キーワードを追加した
+
+### 必須更新ファイル（全タスク共通）
+- [ ] aiworkflow-requirements/LOGS.md を更新した
+- [ ] task-specification-creator/LOGS.md を更新した
+- [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
+- [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
+- [ ] ui-ux-components.md（UI/UX関連タスクの場合）の完了タスクと変更履歴を更新した
+- [ ] completed-tasks/ 内の該当タスク仕様書のステータスを「完了」に更新した
 ```
 
 #### LOGS.md 更新（必須：2ファイル両方を更新）

@@ -140,6 +140,87 @@
 | SkillStreamingView.tsx | components/skill/SkillStreamingView.tsx | 33 | 99.3% |
 
 ---
+
+## 2026-01-31: permissionDescriptionsモジュール仕様追加
+
+| 項目         | 内容                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-readable-ui-001                                                    |
+| 操作         | update-spec（permissionDescriptionsモジュール仕様セクション追加）                      |
+| 対象ファイル | ui-ux-agent-execution.md, topic-map.md                                                 |
+| 結果         | success                                                                                |
+| 備考         | getDescription API仕様、12種ツールテンプレート一覧、safeStringセキュリティ対策、PermissionDialog統合記述。topic-map.md 6セクション追加 |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-agent-execution.md`（v1.4.0 → v1.5.0）
+  - permissionDescriptionsモジュール仕様セクション新規追加（L192-L244）
+  - getDescription API仕様テーブル、12種ツールテンプレート一覧、safeString対策テーブル
+- **更新**: `indexes/topic-map.md`
+  - ui-ux-agent-execution.mdセクションに6エントリ追加（permissionDescriptions, getDescription API, ツール別テンプレート, セキュリティ対策, 統合, AgentOutputStream）
+  - キーワード追加（safeString, Progressive Disclosure, ツール説明テンプレート）
+
+---
+
+## 2026-01-31: task-imp-permission-readable-ui-001 詳細完了記録・スキル改善
+
+| 項目         | 内容                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-readable-ui-001                                                    |
+| 操作         | update-spec（詳細完了記録追加 + スキル改善）                                           |
+| 対象ファイル | ui-ux-agent-execution.md, spec-update-workflow.md                                      |
+| 結果         | success                                                                                |
+| 備考         | 詳細完了記録テンプレート適用（テスト結果サマリー表・成果物表）、Step 1完了チェックリスト追加、permissionキーワードマッピング追加 |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-agent-execution.md`（v1.3.0 → v1.4.0）
+  - タスク完了詳細記録追加（テスト結果サマリー表、成果物テーブル）
+- **改善**: `task-specification-creator/references/spec-update-workflow.md`
+  - Step 1完了チェックリスト新規追加（12項目）
+  - permissionキーワードマッピング追加
+  - 詳細テンプレート必須参照の明記
+
+---
+
+## 2026-01-30: task-imp-permission-readable-ui-001 PermissionDialog 人間可読UI改善完了
+
+| 項目         | 内容                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-readable-ui-001                                                    |
+| 操作         | Phase 1-12 全フェーズ完了                                                              |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`, `PermissionDialog.tsx` |
+| 結果         | success                                                                                |
+| 備考         | 12種ツール対応テンプレート、折りたたみUI、ARIA属性。テスト53件追加、カバレッジ Lines:99.73% Branch:95.87% |
+
+### 成果物
+
+| 成果物                         | パス                                                                                    |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| 説明テンプレートモジュール     | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`                  |
+| PermissionDialog（修正）       | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                       |
+| ユニットテスト（34テスト）     | `apps/desktop/src/renderer/components/skill/__tests__/permissionDescriptions.test.ts`   |
+| コンポーネントテスト（19テスト）| `apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.readable.test.tsx` |
+
+### システム仕様書更新
+
+| 更新対象                       | 変更内容                                                    |
+| ------------------------------ | ----------------------------------------------------------- |
+| `ui-ux-agent-execution.md`     | v1.3.0: 完了タスク追加、PermissionDialog仕様にpermissionDescriptions統合情報追記、関連ドキュメント追加 |
+| `arch-state-management.md`     | v1.4.0: 関連タスクテーブルにtask-imp-permission-readable-ui-001完了を追加 |
+| `topic-map.md`                 | ui-ux-agent-execution.mdエントリにpermissionDescriptionsキーワード追加 |
+
+### 未タスク検出
+
+| 検出タスク                             | 優先度 | ソース             |
+| -------------------------------------- | ------ | ------------------ |
+| 多言語対応（i18n）                     | medium | 元タスク仕様書     |
+| AI生成動的説明文                       | low    | 元タスク仕様書     |
+| 説明文カスタマイズ設定                 | low    | 元タスク仕様書     |
+| 詳細展開デフォルト状態変更             | low    | Phase 10 MINOR     |
+
+---
+
 ## 2026-01-30: TASK-3-2-F テスト環境改善知見のシステム仕様書追加
 
 | 項目         | 内容                                                                          |
