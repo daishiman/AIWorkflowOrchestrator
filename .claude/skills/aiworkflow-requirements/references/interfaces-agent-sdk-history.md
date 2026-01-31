@@ -15,6 +15,60 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 ## 完了タスク
 
+### TASK-7D: ChatPanel統合（2026-01-30完了）
+
+| 項目         | 内容                                                               |
+| ------------ | ------------------------------------------------------------------ |
+| タスクID     | TASK-7D                                                            |
+| 完了日       | 2026-01-30                                                         |
+| ステータス   | **完了**                                                           |
+| テスト数     | 48件（15 ChatPanel + 33 SkillStreamingView）                      |
+| 発見課題     | 2件（未タスク指示書として作成）                                    |
+| ドキュメント | `docs/30-workflows/TASK-7D-chat-panel-integration/`               |
+
+#### 実装内容
+
+- ChatPanel統合コンポーネント（forwardRef + useImperativeHandle）
+- SkillStreamingView（React.memo最適化、StatusBadge、StreamMessageItem、ToolExecutionHistory）
+- SkillSelector/SkillImportDialog/PermissionDialog統合
+- DisplayableStatus型によるステータス表示制御
+- Store個別セレクタパターンによる再レンダー最適化
+
+#### 品質基準
+
+| 基準              | 結果   |
+| ----------------- | ------ |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+| Prettier          | PASS   |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 93.75%+|
+| Function Coverage | 100%   |
+
+#### テスト結果サマリー
+
+| カテゴリ                     | テスト数 | PASS | FAIL |
+| ---------------------------- | -------- | ---- | ---- |
+| ChatPanel.test.tsx           | 15       | 15   | 0    |
+| SkillStreamingView.test.tsx  | 33       | 33   | 0    |
+
+#### 成果物
+
+| ファイル               | パス                                                      | 行数 |
+| ---------------------- | --------------------------------------------------------- | ---- |
+| ChatPanel.tsx          | apps/desktop/src/renderer/components/chat/ChatPanel.tsx   | 131  |
+| SkillStreamingView.tsx | apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx | 252 |
+| index.ts               | apps/desktop/src/renderer/components/skill/index.ts       | 7    |
+
+#### 未タスク（改善候補）
+
+| タスクID                                        | 内容                          | 優先度 |
+| ----------------------------------------------- | ----------------------------- | ------ |
+| task-imp-skillselector-onimportrequest-001      | SkillSelector onImportRequest | 低     |
+| task-imp-chatpanel-new-design-001               | ChatPanel新規デザイン適用     | 低     |
+
+---
+
 ### TASK-7C: PermissionDialogコンポーネント実装（2026-01-30完了）
 
 | 項目         | 内容                                           |
@@ -63,7 +117,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | タスクID                              | 内容                       | 優先度 |
 | ------------------------------------- | -------------------------- | ------ |
-| task-imp-permission-tool-icons-001    | ツール別アイコン表示       | 中     |
+| ~~task-imp-permission-tool-icons-001~~ | ~~ツール別アイコン表示~~ | ~~中~~ | ~~完了（2026-01-30）~~ ✅ **完了** |
 | task-imp-permission-readable-ui-001   | 人間可読UI改善             | 中     |
 | task-imp-permission-dark-mode-001     | ダークモード対応           | 低     |
 | task-ref-permission-consolidation-001 | 既存コンポーネント統合検討 | 低     |
@@ -379,6 +433,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 | interfaces-agent-sdk-ui.md          | Agent Execution UI仕様       |
 | interfaces-agent-sdk-integration.md | 統合機能仕様                 |
 | interfaces-agent-sdk-executor.md    | SkillExecutor/Permission仕様 |
+| TASK-7D 実装ガイド                  | `docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/` |
 | architecture-monorepo.md            | モノレポアーキテクチャ       |
 | technology-devops.md                | DevOpsベストプラクティス     |
 
@@ -388,6 +443,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | 日付       | バージョン | 変更内容                                |
 | ---------- | ---------- | --------------------------------------- |
+| 2026-01-30 | 6.34.0     | TASK-7D完了、ChatPanel統合（48テスト全PASS） |
 | 2026-01-30 | 6.33.0     | TASK-7B完了、SkillImportDialogコンポーネント実装（31テスト100%カバレッジ） |
 | 2026-01-28 | 6.32.0     | TASK-6-1完了、SkillSlice（Zustand）実装 |
 | 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装      |

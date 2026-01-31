@@ -84,7 +84,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 ---
 
-## assets/ （8ファイル）
+## assets/ （9ファイル）
 
 出力で使用するテンプレート。
 
@@ -97,6 +97,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | [integration-test-template.md](../assets/integration-test-template.md) | Phase 4/6実行時 | 統合テストテンプレート |
 | [unassigned-task-template.md](../assets/unassigned-task-template.md) | 未タスク生成時 | 未タスク指示書テンプレート |
 | [implementation-guide-template.md](../assets/implementation-guide-template.md) | Phase 12実行時 | 実装ガイドテンプレート |
+| [documentation-changelog-template.md](../assets/documentation-changelog-template.md) | Phase 12 Task 2実行時 | ドキュメント更新履歴テンプレート |
 | [review-result-template.md](../assets/review-result-template.md) | Phase 3/10レビュー時 | レビュー結果テンプレート |
 
 ---
@@ -105,6 +106,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-01-31 | assets/9に更新（documentation-changelog-template.md追加）、Phase 12 Task 2更新履歴テンプレート |
 | 2026-01-26 | schemas/8, scripts/10, assets/8に更新（review-gate-result, scope-definition, generate-index, review-result-template追加） |
 | 2026-01-26 | references/カウント修正（10→15） |
 | 2026-01-26 | 初版作成（skill-creator v7準拠リファクタリング） |

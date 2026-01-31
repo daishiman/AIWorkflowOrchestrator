@@ -112,6 +112,8 @@ searchChunksByNear関数を使用し、第2引数にキーワード配列（例:
 
 **参照実装**: `packages/shared/src/db/queries/chunks-search.ts`
 
+**未タスク指示書**: [`task-imp-chunk-search-api-layers.md`](../../../docs/30-workflows/unassigned-task/task-imp-chunk-search-api-layers.md)（Service/REST/IPC層の実装タスク）
+
 ---
 
 ## 変更履歴
@@ -119,4 +121,5 @@ searchChunksByNear関数を使用し、第2引数にキーワード配列（例:
 | バージョン | 日付       | 変更内容                                                 |
 | ---------- | ---------- | -------------------------------------------------------- |
 | v1.0.0     | -          | 初版作成                                                 |
+| v1.2.0     | 2026-01-31 | 未タスク指示書リンク追加（TASK-CHUNK-API-001: Service/REST/IPC実装） |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換 |
