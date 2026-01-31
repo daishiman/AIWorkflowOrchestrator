@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-02-01 - unassigned task specs creation session]
+
+- **Agent**: skill-creator (update)
+- **Phase**: detect-unassigned → generate-unassigned-task
+- **Result**: ✓ 成功
+- **Notes**: システム仕様書（aiworkflow-requirements references/）とコードベースTODOからの未タスク検出・仕様書作成セッション。3エージェント並列探索（system-spec-gap, codebase-todo, toolMetadata-gap）→5件の新規未タスク仕様書を9セクションテンプレート準拠で作成。task-specification-creator/LOGS・EVALS、aiworkflow-requirements/EVALS、skill-creator/LOGS・EVALS更新。
+
+---
+
+## [2026-02-01 - task-imp-permission-tool-metadata-001 spec-gap-fix session]
+
+- **Agent**: skill-creator (update)
+- **Phase**: spec-gap-analysis → spec-update
+- **Result**: ✓ 成功
+- **Notes**: task-imp-permission-tool-metadata-001の仕様カバレッジ85%→95%改善。interfaces-agent-sdk-ui.md v1.5.0（RiskLevel/ToolMetadata型定義追加）、security-skill-execution.md v1.3.0（toolMetadataクロスリファレンス追加）、ui-ux-agent-execution.md v1.7.0（RISK_LEVEL_STYLES/PermissionDialog統合/ツールカバレッジマッピング追加）。topic-map.md 8エントリ・7キーワード追加。task-specification-creator patterns.md 3件・EVALS更新。
+
+---
+
+## [2026-01-31 - task-imp-permission-tool-metadata-001 completion]
+
+- **Agent**: skill-creator (update)
+- **Phase**: Phase 12 (documentation + skill improvement)
+- **Result**: ✓ 成功
+- **Notes**: task-imp-permission-tool-metadata-001（Issue #606）完了記録。システム仕様書（ui-ux-agent-execution.md v1.6.0→v1.7.0）にRISK_LEVEL_STYLES定数・PermissionDialog統合・ツールカバレッジマッピング追記。未タスク指示書3件作成（risk-level-dynamic-change, risk-level-auto-deny, settings-risk-display）。aiworkflow-requirements・task-specification-creator連携更新。
+
+---
+
 ## [2026-01-31 - multi-skill optimization session]
 
 - **Agent**: skill-creator (optimize-session)

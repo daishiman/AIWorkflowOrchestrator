@@ -51,7 +51,7 @@ Agent Execution UIは、Electronのマルチプロセスアーキテクチャに
 | Molecule | AgentOutputStream      | ストリーミング出力のリアルタイム表示                       |
 | Molecule | AgentExecutionControls | 実行制御ボタン（キャンセル、クリア）                       |
 | Molecule | AgentMessageInput      | メッセージ入力フィールドと送信ボタン                       |
-| Organism | PermissionDialog       | ツール実行許可の確認モーダル（拒否/1回許可/許可の3ボタン、toolIconsマッピングによるEmoji表示対応済み） |
+| Organism | PermissionDialog       | ツール実行許可の確認モーダル（拒否/1回許可/許可の3ボタン、toolIconsマッピングによるEmoji表示、toolMetadataリスクバッジ対応済み） |
 
 #### プロセス間通信
 
@@ -110,6 +110,37 @@ Renderer ProcessはPreload APIを通じてMain Processと通信する。window.a
 | `granted`   | `boolean` | ✓    | 許可されたか     |
 | `remember`  | `boolean` | -    | 選択を記憶するか |
 
+#### RiskLevel型
+
+ツールのリスクレベルを表す文字列リテラル型。toolMetadata.tsで定義。
+
+| 値       | 説明                           | UIスタイル（背景色）  |
+| -------- | ------------------------------ | -------------------- |
+| Low      | 低リスク操作（読取・検索等）   | `bg-green-100`       |
+| Medium   | 中程度リスク（書込・タスク等） | `bg-yellow-100`      |
+| High     | 高リスク（コマンド実行等）     | `bg-orange-100`      |
+| Critical | 極度のリスク                   | `bg-red-100`         |
+
+#### ToolMetadata型
+
+ツールのセキュリティメタデータを表すインターフェース。
+
+| プロパティ     | 型        | 必須 | 説明                                       |
+| -------------- | --------- | ---- | ------------------------------------------ |
+| riskLevel      | RiskLevel | ✓    | ツールのリスクレベル                       |
+| securityImpact | string    | ✓    | セキュリティ影響説明文（日本語テキスト）   |
+
+**デフォルト値**: 未定義ツールには `{ riskLevel: "Medium", securityImpact: "ツールを実行します" }` が適用される。
+
+#### RISK_LEVEL_STYLES定数
+
+PermissionDialog.tsxで定義。リスクレベルごとのTailwind CSSスタイルマッピング。
+
+| 型 | `Record<RiskLevel, { bg: string; text: string; border: string }>` |
+| -- | ----------------------------------------------------------------- |
+
+参照: `apps/desktop/src/renderer/components/skill/toolMetadata.ts`, `PermissionDialog.tsx`
+
 #### PermissionDialog ツールアイコンマッピング
 
 PermissionDialogコンポーネントは、ツール名に対応するEmojiアイコンを表示する。`TOOL_ICONS`定数でマッピングを管理し、`getToolIcon()`ヘルパーで取得する。
@@ -153,6 +184,18 @@ PermissionDialogコンポーネントは、ツール名に対応するEmojiア�
 | 優先度 | 1. `args.command`（string時）→ 直接表示                       |
 |        | 2. `args.path`（string時）→ 直接表示                          |
 |        | 3. それ以外 → `JSON.stringify(args, null, 2)`                |
+
+#### toolMetadata ユーティリティ関数
+
+| 関数                      | 引数                  | 戻り値         | 説明                                     |
+| ------------------------- | --------------------- | -------------- | ---------------------------------------- |
+| `getRiskLevel(toolName)`  | `toolName: string`    | `RiskLevel`    | ツールのリスクレベルを取得（未定義→Medium）|
+| `getSecurityImpact(toolName)` | `toolName: string` | `string`       | セキュリティ影響テキストを取得           |
+| `getToolMetadata(toolName)` | `toolName: string`  | `ToolMetadata` | メタデータ全体を取得                     |
+
+**モジュール**: `apps/desktop/src/renderer/components/skill/toolMetadata.ts`
+
+**カバレッジ**: 12ツール定義（Read, Write, Edit, Bash, Glob, Grep, WebSearch, Task, NotebookEdit, WebFetch, Skill, AskUser）+ DEFAULT_METADATA フォールバック
 
 ##### アクセシビリティ対応
 
@@ -368,6 +411,7 @@ AGENT-004実装後のポストリリーステストで作成されたAgent SDK�
 | ------------------------------------------------------------------------------------------ | ------------------------------------ |
 | interfaces-agent-sdk.md                                                                    | 親ファイル（インデックス）           |
 | interfaces-agent-sdk-executor.md                                                           | SkillExecutor仕様                    |
+| ui-ux-agent-execution.md                                                                   | toolMetadataモジュール仕様（RiskLevel型、公開API） |
 | ui-ux-components.md                                                                        | UIコンポーネント仕様                 |
 | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-12/implementation-guide.md` | ツールアイコン実装ガイド（Phase 12） |
 
@@ -409,6 +453,8 @@ AGENT-004実装後のポストリリーステストで作成されたAgent SDK�
 
 | 日付       | バージョン | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| 2026-02-01 | 1.5.0      | toolMetadata型定義追記: RiskLevel型・ToolMetadata型・RISK_LEVEL_STYLES定数をPermissionDialog型定義セクションに追加、toolMetadataユーティリティ関数APIテーブル追加 |
+| 2026-01-31 | 1.4.0      | task-imp-permission-tool-metadata-001完了: toolMetadataリスクバッジ参照追加、PermissionDialog説明更新 |
 | 2026-01-31 | 1.3.2      | formatArgs()ヘルパー関数仕様追加                                              |
 | 2026-01-31 | 1.3.1      | TOOL_ICONS定数・getToolIcon()ヘルパー・アクセシビリティ対応の仕様詳細を追記   |
 | 2026-01-30 | 1.3.0      | TASK-IMP-permission-tool-icons完了: toolIconsマッピング追加、Emojiアイコン表示 |

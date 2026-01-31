@@ -12,6 +12,11 @@
 import React, { useState, useEffect, useRef, useCallback, useId } from "react";
 import { useAppStore } from "../../store";
 import { getDescription } from "./permissionDescriptions";
+import {
+  getRiskLevel,
+  getSecurityImpact,
+  type RiskLevel,
+} from "./toolMetadata";
 
 /**
  * ツール名からEmojiアイコンへのマッピング
@@ -32,6 +37,33 @@ const TOOL_ICONS: Record<string, string> = {
 
 /** デフォルトアイコン（未定義ツール用） */
 const DEFAULT_TOOL_ICON = "🔧";
+
+/** リスクレベル別スタイルマッピング */
+const RISK_LEVEL_STYLES: Record<
+  RiskLevel,
+  { bg: string; text: string; border: string }
+> = {
+  Low: {
+    bg: "bg-green-100",
+    text: "text-green-800",
+    border: "border-green-200",
+  },
+  Medium: {
+    bg: "bg-yellow-100",
+    text: "text-yellow-800",
+    border: "border-yellow-200",
+  },
+  High: {
+    bg: "bg-orange-100",
+    text: "text-orange-800",
+    border: "border-orange-200",
+  },
+  Critical: {
+    bg: "bg-red-100",
+    text: "text-red-800",
+    border: "border-red-200",
+  },
+};
 
 /**
  * ツール名に対応するアイコンを返す
@@ -188,6 +220,18 @@ export const PermissionDialog: React.FC = () => {
                 </span>
                 {pendingPermission.toolName}
               </span>
+              {(() => {
+                const riskLevel = getRiskLevel(pendingPermission.toolName);
+                const styles = RISK_LEVEL_STYLES[riskLevel];
+                return (
+                  <span
+                    className={`${styles.bg} ${styles.text} ${styles.border} border px-1.5 py-0.5 rounded text-xs font-medium`}
+                    aria-label={`リスクレベル: ${riskLevel}`}
+                  >
+                    {riskLevel}
+                  </span>
+                );
+              })()}
             </div>
 
             {/* 人間可読説明文 */}
@@ -196,6 +240,11 @@ export const PermissionDialog: React.FC = () => {
                 pendingPermission.toolName,
                 pendingPermission.args,
               )}
+            </p>
+
+            {/* セキュリティ影響テキスト */}
+            <p className="text-xs text-gray-500 mt-1">
+              {getSecurityImpact(pendingPermission.toolName)}
             </p>
 
             {/* 詳細展開ボタン */}
