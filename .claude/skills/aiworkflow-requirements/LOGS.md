@@ -5,6 +5,31 @@
 
 ---
 
+## 2026-01-31: aiworkflow-requirements v8.19.0 スキル更新（skill-creator準拠）
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-7D (skill-creator update)                                                |
+| 操作         | update-skill                                                                  |
+| 対象ファイル | SKILL.md, indexes/quick-reference.md                                          |
+| 結果         | success                                                                       |
+
+### 更新内容
+
+| ファイル | 変更内容 |
+|----------|----------|
+| SKILL.md | キーワードトリガー10語追加（ChatPanel, SkillStreamingView, Agent Execution, forwardRef, useImperativeHandle, DisplayableStatus, 条件レンダー, ストリーミング表示, StatusBadge, StreamMessageItem）。v8.19.0変更履歴エントリ追加 |
+| indexes/quick-reference.md | ChatPanel統合パターン（TASK-7D）セクション追加（条件レンダー統合、forwardRef+useImperativeHandle、DisplayableStatus型、Store個別セレクタ） |
+
+### 関連更新（同セッション先行コミット）
+
+| ファイル | バージョン | 内容 |
+|----------|------------|------|
+| references/ui-ux-feature-components.md | → v1.7.0 | SkillStreamingView仕様セクション追加、TASK-7D完了タスク登録 |
+| references/ui-ux-panels.md | — | ChatPanel統合パターンセクション追加（統合概要・レイアウト・アクセシビリティ） |
+
+---
+
 ## 2026-01-31: TASK-7D Phase 1-12再実行セッション・システム仕様書追加更新
 
 | 項目         | 内容                                                                          |
