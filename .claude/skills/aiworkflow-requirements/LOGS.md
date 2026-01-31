@@ -5,6 +5,95 @@
 
 ---
 
+## 2026-01-31: システム仕様書Gap分析 → 未タスク仕様書2件作成
+
+| 項目         | 内容                                           |
+| ------------ | ---------------------------------------------- |
+| タスクID     | system-spec-gap-analysis                       |
+| 操作         | detect-unassigned + create-unassigned-task      |
+| 対象ファイル | task-workflow.md                               |
+| 結果         | success                                        |
+| 備考         | arch-state-management.md / quality-requirements.md のGapから2件の未タスク仕様書を作成 |
+
+### 作成ファイル
+
+| ファイル | 発見元 | タスクID |
+| --- | --- | --- |
+| `task-chatedit-slice-store-integration.md` | arch-state-management.md「Store統合（予定）」 | task-chatedit-store-integration-001 |
+| `task-rag-converter-largefile-performance.md` | quality-requirements.md「1MB-10MB/10MB超 未検証」 | task-rag-largefile-perf-001 |
+
+---
+
+## 2026-01-31: TASK-7D Phase 12追加仕様書更新
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-7D (追加更新)                                                            |
+| 操作         | update-spec                                                                   |
+| 対象ファイル | architecture-implementation-patterns.md, quality-requirements.md, task-workflow.md, ui-ux-design-principles.md |
+| 結果         | success                                                                       |
+| 備考         | 初回更新（4ファイル）後の追加更新。forwardRefパターン、テスト実績、完了タスクエントリ、設計事例を追加 |
+
+### 更新詳細
+
+| ファイル | 追加内容 |
+|----------|----------|
+| architecture-implementation-patterns.md | forwardRef + useImperativeHandle パターン、React.memo + Exclude型パターン |
+| quality-requirements.md | TASK-7D テスト実績（48テスト、カバレッジ詳細、適用パターン一覧） |
+| task-workflow.md | TASK-7D 完了タスクエントリ（Phase 1-12、48テスト、2件未タスク） |
+| ui-ux-design-principles.md | ChatPanel統合パターン設計事例（6設計原則の適用表） |
+
+---
+
+## 2026-01-30: TASK-7D Phase 12 完了タスク・インデックス更新
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-7D (Phase 12)                                                            |
+| 操作         | update-spec, regenerate-index                                                 |
+| 対象ファイル | interfaces-agent-sdk-history.md, ui-ux-components.md, arch-ui-components.md, topic-map.md |
+| 結果         | success                                                                       |
+| 備考         | Phase 12 完了タスクテーブル追加・トピックマップ再生成                         |
+
+### 更新詳細
+
+| ファイル | バージョン | 追加内容 |
+|----------|------------|----------|
+| interfaces-agent-sdk-history.md | v6.33.0 → v6.34.0 | TASK-7D完了エントリ（実装内容・品質基準・テスト結果・未タスク一覧）、関連ドキュメントにTASK-7D実装ガイド追加 |
+| ui-ux-components.md | v2.2.0 → v2.3.0 | 完了タスクテーブルにTASK-7D追加、関連ドキュメントにTASK-7D実装ガイド追加 |
+| arch-ui-components.md | - | 完了タスクテーブルにTASK-7D追加 |
+| topic-map.md | 再生成 | 135ファイル・954キーワードで再生成。TASK-7Dセクション（ChatPanel統合パターン等）を反映 |
+
+---
+
+## 2026-01-30: TASK-7D ChatPanel統合のシステム仕様書更新
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-7D                                                                       |
+| 操作         | update-spec                                                                   |
+| 対象ファイル | arch-state-management.md, ui-ux-feature-skill-stream.md, interfaces-agent-sdk-skill.md, arch-ui-components.md |
+| 結果         | success                                                                       |
+| 備考         | ChatPanel統合完了に伴うシステム仕様書更新（4ファイル）                        |
+
+### 更新詳細
+
+| ファイル | バージョン | 追加内容 |
+|----------|------------|----------|
+| arch-state-management.md | - | TASK-7Dステータスを「未着手」→「完了」に更新 |
+| ui-ux-feature-skill-stream.md | v1.0.0 → v1.1.0 | ChatPanel統合SkillStreamingView仕様セクション追加（コンポーネント構成、Props、ステータスバッジマッピング、統合パターン、テスト品質） |
+| interfaces-agent-sdk-skill.md | v1.3.0 → v1.4.0 | ChatPanel統合セクション追加（統合コンポーネント一覧、公開インターフェース、Store依存） |
+| arch-ui-components.md | v1.3.0 → v1.4.0 | ChatPanel統合パターン追加（コンポーネント構成、レイアウト、Store接続、テスト品質） |
+
+### 実装成果物
+
+| 成果物 | ファイル | テスト数 | カバレッジ |
+|--------|----------|----------|------------|
+| ChatPanel.tsx | components/chat/ChatPanel.tsx | 15 | 100% |
+| SkillStreamingView.tsx | components/skill/SkillStreamingView.tsx | 33 | 99.3% |
+
+---
+
 ## 2026-01-30: TASK-3-2-F テスト環境改善知見のシステム仕様書追加
 
 | 項目         | 内容                                                                          |

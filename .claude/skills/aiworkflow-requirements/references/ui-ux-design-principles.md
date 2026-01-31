@@ -48,6 +48,19 @@
 | スプレッド演算子で拡張性を確保       | `...rest`でHTML属性を透過的に渡す     |
 | Discriminated Unionsで型安全に       | バリアントごとに異なるPropsを型で表現 |
 
+### ChatPanel統合パターン（TASK-7D事例）
+
+ChatPanelは4つの子コンポーネントを統合するOrganismsレベルのコンポーネントとして設計された。以下の設計原則を適用している。
+
+| 設計原則 | 適用 |
+|----------|------|
+| 単一責任 | ChatPanel = レイアウト統合のみ、ビジネスロジックはStore委譲 |
+| 合成パターン | 4子コンポーネント（SkillSelector, SkillStreamingView, SkillImportDialog, PermissionDialog） |
+| Props最小化 | 必須Props: onImportRequest のみ、残りはStore直接参照 |
+| 命令的API | forwardRef + useImperativeHandle で外部制御を最小限公開 |
+| 条件付きレンダリング | SkillStreamingView は isExecuting && selectedSkillName 時のみ表示 |
+| アクセシビリティ | role="log", aria-live="polite", aria-label 必須 |
+
 ---
 
 ## Apple HIG 準拠（Electron向け）
@@ -415,5 +428,6 @@ React Error Boundaryを使用して、コンポーネントツリー内のエラ
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2.0 | 2026-01-30 | TASK-7D: ChatPanel統合パターン（設計原則6項目）追加 |
 | 1.1.0 | 2026-01-26 | UXデザイン法則（Fitts, Hick, Jakob, Miller, Gestalt等）・認知負荷の軽減セクション追加 |
 | 1.0.0 | - | 初版作成 |
