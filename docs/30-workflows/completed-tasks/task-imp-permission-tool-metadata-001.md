@@ -16,7 +16,8 @@ issue_number: 606
 | 対象機能     | PermissionDialog、permissionDescriptions                                             |
 | 優先度       | 高                                                                                   |
 | 見積もり規模 | 中規模                                                                               |
-| ステータス   | 未実施                                                                               |
+| ステータス   | **完了**                                                                             |
+| 完了日       | 2026-01-31                                                                           |
 | 発見元       | システム仕様書分析（security-skill-execution.md と ui-ux-agent-execution.md の差分） |
 | 発見日       | 2026-01-31                                                                           |
 
