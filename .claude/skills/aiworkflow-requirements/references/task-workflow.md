@@ -248,6 +248,13 @@
 | task-rag-largefile-perf-001 | RAG変換 大容量ファイルパフォーマンス検証 | 中 | システム仕様書分析（quality-requirements.md） | `docs/30-workflows/unassigned-task/task-rag-converter-largefile-performance.md` |
 | TASK-CHUNK-API-001   | Chunk Search APIレイヤー実装       | 中     | api-internal-chunk-search.md（未実装レイヤー）  | `docs/30-workflows/unassigned-task/task-imp-chunk-search-api-layers.md`         |
 | TASK-DOM-NESTING-001 | validateDOMNesting警告修正         | 低     | ui-history-integration.md（残課題）             | `docs/30-workflows/unassigned-task/task-validate-dom-nesting-bugfix.md`         |
+| UT-RETRY-001         | リトライ設定UI                     | 低     | TASK-SKILL-RETRY-001 Phase 12                   | `docs/30-workflows/unassigned-task/task-retry-settings-ui.md`                  |
+| UT-RETRY-002         | リトライ履歴永続化                 | 低     | TASK-SKILL-RETRY-001 Phase 12                   | `docs/30-workflows/unassigned-task/task-retry-history-persistence.md`          |
+| UT-RETRY-003         | サーキットブレーカーパターン導入   | 中     | TASK-SKILL-RETRY-001 Phase 11 + error-handling.md | `docs/30-workflows/unassigned-task/task-circuit-breaker-pattern.md`          |
+| UT-RETRY-004         | リトライイベントRenderer表示       | 中     | TASK-SKILL-RETRY-001 Phase 11                   | `docs/30-workflows/unassigned-task/task-use-skill-execution-retry-events.md`   |
+| UT-RETRY-005         | リトライ型定義shared package移行   | 低     | TASK-SKILL-RETRY-001 Phase 5                    | `docs/30-workflows/unassigned-task/task-retry-types-shared-migration.md`       |
+| CONV-DEBT-001        | PlainTextConverter実装             | 中     | interfaces-converter.md / architecture-file-conversion.md | `docs/30-workflows/unassigned-task/task-plaintext-converter.md`        |
+| UT-VECTOR-001        | ベクトル検索フィルター拡張         | 低     | rag-vector-search.md 未対応フィルター           | `docs/30-workflows/unassigned-task/task-vector-search-advanced-filters.md`     |
 
 ### 未タスク管理ルール
 
@@ -279,4 +286,5 @@
 | 1.5.0      | 2026-01-25 | 未タスク追加: TASK-3-1-B (IPC Handler統合), TASK-SKILL-PERF-TEST (パフォーマンステスト)   |
 | 1.7.0      | 2026-01-30 | TASK-7D完了記録追加、未タスク2件（task-imp-skillselector-onimportrequest-001, task-imp-chatpanel-new-design-001）登録 |
 | 1.8.0      | 2026-01-31 | 未タスク追加: TASK-CHUNK-API-001 (Chunk Search API), TASK-DOM-NESTING-001 (DOM警告修正) |
+| 1.9.0      | 2026-01-31 | 未タスク9件追加: TASK-SKILL-RETRY-001関連5件（設定UI/履歴永続化/サーキットブレーカー/Rendererイベント/型shared移行）+ システム仕様検出3件（Chunk Search API層/PlainTextConverter/ベクトル検索フィルター） |
 | 1.6.0      | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（成果物配置、フェーズ遷移図、ファイル配置） |

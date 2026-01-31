@@ -16,7 +16,8 @@ issue_number: 584
 | 対象機能     | SkillExecutor (Main Process)   |
 | 優先度       | 中                             |
 | 見積もり規模 | 中規模                         |
-| ステータス   | 未実施                         |
+| ステータス   | 完了                           |
+| 完了日       | 2026-01-31                     |
 | 発見元       | aiworkflow-requirements残課題  |
 | 発見日       | 2026-01-30                     |
 

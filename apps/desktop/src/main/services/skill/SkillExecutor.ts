@@ -35,12 +35,42 @@ export type ExecutionState =
   | "aborted"
   | "error";
 
+/** リトライ可能なエラーの分類 */
+export type RetryableErrorType =
+  | "network"
+  | "rate_limit"
+  | "server_error"
+  | "timeout";
+
+/** リトライ設定 */
+export interface RetryConfig {
+  /** 最大リトライ回数（デフォルト: 3） */
+  maxRetries: number;
+  /** 基本待機時間（ミリ秒）（デフォルト: 1000） */
+  baseDelayMs: number;
+  /** 最大待機時間（ミリ秒）（デフォルト: 30000） */
+  maxDelayMs: number;
+  /** Jitter範囲 0-1（デフォルト: 0.2） */
+  jitterFactor: number;
+  /** バックオフ倍率（デフォルト: 2） */
+  backoffMultiplier: number;
+}
+
+/** リトライ判定結果 */
+export interface RetryableErrorResult {
+  retryable: boolean;
+  errorType?: RetryableErrorType;
+  retryAfterMs?: number;
+}
+
 /** スキル実行リクエスト */
 export interface SkillExecutionRequest {
   prompt: string;
   skillId: string;
   timeout?: number;
   sessionId?: string;
+  /** リトライ設定（部分指定可能、未指定フィールドはデフォルト値） */
+  retryConfig?: Partial<RetryConfig>;
 }
 
 /** スキル実行レスポンス */
@@ -60,7 +90,12 @@ export interface ExecutionInfo {
 }
 
 /** ストリームメッセージタイプ */
-export type SkillStreamMessageType = "text" | "tool_use" | "error" | "complete";
+export type SkillStreamMessageType =
+  | "text"
+  | "tool_use"
+  | "error"
+  | "complete"
+  | "retry";
 
 /** スキルストリームメッセージ */
 export interface SkillStreamMessage {
@@ -203,6 +238,161 @@ const MAX_CONCURRENT_EXECUTIONS = 5;
 /** 履歴保持期間（ミリ秒）- クリーンアップまでの待機時間 */
 const HISTORY_RETENTION_MS = 60000;
 
+/** リトライ対象のネットワークエラーコード */
+const RETRYABLE_NETWORK_ERRORS = [
+  "ECONNRESET",
+  "ETIMEDOUT",
+  "ECONNREFUSED",
+  "ENOTFOUND",
+  "EAI_AGAIN",
+] as const;
+
+/** デフォルトリトライ設定 */
+export const DEFAULT_RETRY_CONFIG: RetryConfig = {
+  maxRetries: 3,
+  baseDelayMs: 1000,
+  maxDelayMs: 30000,
+  jitterFactor: 0.2,
+  backoffMultiplier: 2,
+};
+
+// =================================================================
+// リトライ関連のモジュールレベル関数
+// =================================================================
+
+/**
+ * Retry-Afterヘッダーの値をミリ秒にパースする
+ */
+function parseRetryAfterMs(error: unknown): number | undefined {
+  const err = error as { headers?: Record<string, string> };
+  const retryAfter = err?.headers?.["retry-after"];
+  if (retryAfter === undefined || retryAfter === null) {
+    return undefined;
+  }
+  const seconds = Number(retryAfter);
+  if (!Number.isNaN(seconds) && seconds >= 0) {
+    return seconds * 1000;
+  }
+  return undefined;
+}
+
+/**
+ * エラーがリトライ対象かどうかを判定する
+ *
+ * @param error - 判定対象のエラー
+ * @returns リトライ判定結果
+ */
+export function isRetryableError(error: unknown): RetryableErrorResult {
+  if (error === null || error === undefined) {
+    return { retryable: false };
+  }
+
+  if (!(error instanceof Error) && typeof error !== "object") {
+    return { retryable: false };
+  }
+
+  const err = error as Error & {
+    code?: string;
+    status?: number;
+    headers?: Record<string, string>;
+  };
+
+  // AbortError はリトライしない
+  if (err.name === "AbortError") {
+    return { retryable: false };
+  }
+
+  // ネットワークエラー
+  if (
+    err.code &&
+    (RETRYABLE_NETWORK_ERRORS as readonly string[]).includes(err.code)
+  ) {
+    return { retryable: true, errorType: "network" };
+  }
+
+  // HTTP 429 (Rate Limit)
+  if (err.status === 429) {
+    return {
+      retryable: true,
+      errorType: "rate_limit",
+      retryAfterMs: parseRetryAfterMs(error),
+    };
+  }
+
+  // HTTP 5xx (Server Error)
+  if (err.status !== undefined && err.status >= 500 && err.status < 600) {
+    return { retryable: true, errorType: "server_error" };
+  }
+
+  // HTTP 4xx (Client Error) - 明示的に非リトライ
+  if (err.status !== undefined && err.status >= 400 && err.status < 500) {
+    return { retryable: false };
+  }
+
+  // タイムアウト
+  if (err.name === "TimeoutError" || err.code === "TIMEOUT") {
+    return { retryable: true, errorType: "timeout" };
+  }
+
+  return { retryable: false };
+}
+
+/**
+ * リトライ間隔を計算する（Exponential Backoff with Jitter）
+ *
+ * @param attempt - リトライ試行回数（0始まり）
+ * @param config - リトライ設定
+ * @param retryAfterMs - Retry-Afterヘッダーから算出した待機時間（オプション）
+ * @returns 待機時間（ミリ秒）
+ */
+export function calculateBackoffDelay(
+  attempt: number,
+  config: RetryConfig,
+  retryAfterMs?: number,
+): number {
+  // Retry-Afterヘッダー優先（maxDelayMsでキャップ）
+  if (retryAfterMs !== undefined) {
+    return Math.min(
+      Math.max(retryAfterMs, config.baseDelayMs),
+      config.maxDelayMs,
+    );
+  }
+
+  const exponentialDelay =
+    config.baseDelayMs * Math.pow(config.backoffMultiplier, attempt);
+  const cappedDelay = Math.min(config.maxDelayMs, exponentialDelay);
+  const jitter = cappedDelay * (Math.random() * 2 - 1) * config.jitterFactor;
+  return Math.max(0, cappedDelay + jitter);
+}
+
+/**
+ * AbortSignal対応のsleep関数
+ *
+ * @param ms - 待機時間（ミリ秒）
+ * @param signal - AbortSignal（オプション）
+ * @returns Promise<void>
+ * @throws AbortError（signal.abort()時）
+ */
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException("Aborted", "AbortError"));
+      return;
+    }
+
+    const timer = setTimeout(resolve, ms);
+
+    signal?.addEventListener(
+      "abort",
+      () => {
+        clearTimeout(timer);
+        reject(new DOMException("Aborted", "AbortError"));
+      },
+      { once: true },
+    );
+  });
+}
+
 /** 機密情報として除去するキーのパターン */
 const SENSITIVE_KEY_PATTERNS = [
   "password",
@@ -327,18 +517,13 @@ export class SkillExecutor {
     this.updateExecutionState(executionId, "running");
 
     try {
-      // プロンプト構築
-      const fullPrompt = await this.buildPrompt(request.prompt, skill);
-
-      // query() API 呼び出し
-      // NOTE: 実際のSDK呼び出しは claude-agent-sdk パッケージから
-      // 現在はモック対応のため、直接呼び出しを実装
-      const response = await this.callSDKQuery(fullPrompt, {
-        tools: skill.allowedTools || [...DEFAULT_TOOLS],
-        permissionMode: "default",
-        signal: abortController.signal,
-        timeout: request.timeout ?? this.defaultTimeout,
-      });
+      // query() API 呼び出し（リトライ付き）
+      const response = await this.executeWithRetry(
+        executionId,
+        request,
+        skill,
+        abortController.signal,
+      );
 
       // ストリーミング処理
       for await (const message of response.stream()) {
@@ -445,6 +630,107 @@ export class SkillExecutor {
   // =================================================================
   // Private Methods
   // =================================================================
+
+  /**
+   * リトライ付きでSDK query()を実行する
+   *
+   * @param executionId - 実行ID
+   * @param request - 実行リクエスト
+   * @param skill - スキルメタデータ
+   * @param abortSignal - AbortSignal
+   * @returns SDKレスポンス
+   */
+  private async executeWithRetry(
+    executionId: string,
+    request: SkillExecutionRequest,
+    skill: SkillMetadata,
+    abortSignal: AbortSignal,
+  ): Promise<{ stream: () => AsyncIterable<SDKMessage> }> {
+    const config: RetryConfig = {
+      ...DEFAULT_RETRY_CONFIG,
+      ...request.retryConfig,
+    };
+
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+      // abort チェック
+      if (abortSignal.aborted) {
+        throw new DOMException("Aborted", "AbortError");
+      }
+
+      try {
+        const fullPrompt = await this.buildPrompt(request.prompt, skill);
+        const response = await this.callSDKQuery(fullPrompt, {
+          tools: skill.allowedTools || [...DEFAULT_TOOLS],
+          permissionMode: "default",
+          signal: abortSignal,
+          timeout: request.timeout ?? this.defaultTimeout,
+        });
+        return response;
+      } catch (error) {
+        lastError = error;
+
+        const retryResult = isRetryableError(error);
+
+        // リトライ不可の場合は即座にスロー
+        if (!retryResult.retryable) {
+          throw error;
+        }
+
+        // 最後の試行の場合はスロー
+        if (attempt >= config.maxRetries) {
+          throw error;
+        }
+
+        // abort チェック
+        if (abortSignal.aborted) {
+          throw new DOMException("Aborted", "AbortError");
+        }
+
+        // バックオフ計算
+        const delayMs = calculateBackoffDelay(
+          attempt,
+          config,
+          retryResult.retryAfterMs,
+        );
+
+        // リトライストリーミングイベント送信
+        this.sendStream({
+          executionId,
+          id: uuidv4(),
+          type: "retry",
+          content: JSON.stringify({
+            attempt,
+            maxRetries: config.maxRetries,
+            delayMs,
+            errorType: retryResult.errorType,
+            errorMessage:
+              error instanceof Error ? error.message : String(error),
+          }),
+          timestamp: Date.now(),
+          isComplete: false,
+        });
+
+        // バックオフ待機（AbortSignal対応）
+        try {
+          await sleep(delayMs, abortSignal);
+        } catch (sleepError) {
+          // sleep中にabortされた場合
+          if (
+            sleepError instanceof DOMException &&
+            sleepError.name === "AbortError"
+          ) {
+            throw sleepError;
+          }
+          throw sleepError;
+        }
+      }
+    }
+
+    // 到達不能だが型安全のため
+    throw lastError;
+  }
 
   /**
    * SDK query() を呼び出す

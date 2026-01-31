@@ -100,69 +100,22 @@ const result = await withTimeout(
 
 ## レート制限対応
 
-### 自動リトライ
+### SDKの自動リトライ
 
-SDKは429エラー（レート制限）発生時に指数バックオフで自動リトライを行います:
+SDKは429エラー（レート制限）発生時に指数バックオフで自動リトライを行う。
 
-```
-リトライ間隔: 1s → 2s → 4s → 8s → 16s（最大5回）
-```
+### SkillExecutorのリトライ機構
 
-### 手動リトライ実装
+SkillExecutorでは`executeWithRetry()`によるExponential Backoff with Jitterリトライを実装済み。レート制限を含む一時的エラーに対して自動リトライを行う。
 
-```typescript
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  maxRetries = 5,
-): Promise<T> {
-  let lastError: Error;
+| パラメータ     | デフォルト値 | 説明                   |
+| -------------- | ------------ | ---------------------- |
+| maxRetries     | 3            | 最大リトライ回数       |
+| baseDelayMs    | 1000         | 基本待機時間（ms）     |
+| maxDelayMs     | 30000        | 最大待機時間（ms）     |
+| jitterFactor   | 0.2          | Jitter範囲（±20%）     |
 
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error as Error;
-      if (!error.message?.includes("429")) throw error;
-
-      const delay = Math.min(1000 * Math.pow(2, i), 16000);
-      console.log(`Rate limited, retrying in ${delay}ms...`);
-      await new Promise((r) => setTimeout(r, delay));
-    }
-  }
-
-  throw lastError;
-}
-```
-
-### ジッターを追加したバックオフ
-
-```typescript
-async function withRetryAndJitter<T>(
-  fn: () => Promise<T>,
-  maxRetries = 5,
-): Promise<T> {
-  let lastError: Error;
-
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      lastError = error as Error;
-      if (!error.message?.includes("429")) throw error;
-
-      // ジッターを追加してサンダリングハード問題を回避
-      const baseDelay = Math.min(1000 * Math.pow(2, i), 16000);
-      const jitter = Math.random() * 1000;
-      const delay = baseDelay + jitter;
-
-      console.log(`Rate limited, retrying in ${Math.round(delay)}ms...`);
-      await new Promise((r) => setTimeout(r, delay));
-    }
-  }
-
-  throw lastError;
-}
-```
+詳細: [retry-patterns.md](./retry-patterns.md)
 
 ---
 
@@ -297,7 +250,7 @@ class AgentConnection {
   }
 
   private async backoff(): Promise<void> {
-    const delay = Math.min(1000 * Math.pow(2, this.retryCount), 10000);
+    const delay = Math.min(1000 * Math.pow(2, this.retryCount), 30000);
     await new Promise((r) => setTimeout(r, delay));
   }
 }
@@ -313,7 +266,8 @@ class AgentConnection {
 - エラーをログに記録（機密情報除去）
 - ユーザーにわかりやすいエラーメッセージを表示
 - 適切なタイムアウト値を設定
-- リトライ時にジッターを追加
+- リトライ時にジッターを追加（Thundering Herd回避）
+- リトライ対象/非対象を正しく分類
 
 ### 避けるべきこと
 
@@ -322,11 +276,13 @@ class AgentConnection {
 - 機密情報をエラーメッセージに含める
 - タイムアウトなしの無期限待機
 - signal.abortedチェックの省略
+- 認証エラーやバリデーションエラーにリトライを実行
 
 ---
 
 ## 関連ドキュメント
 
+- [retry-patterns.md](./retry-patterns.md) - リトライパターン詳細（Exponential Backoff, Jitter, エラー分類）
 - [query-api.md](./query-api.md) - query() API
 - [hooks-system.md](./hooks-system.md) - Hooksシステム
 - [electron-ipc.md](./electron-ipc.md) - Electron IPC統合

@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-30
+> 自動生成: 2026-01-31
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -225,10 +225,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | SkillExecutor 型定義（TASK-3-1-A） | L16 |
-| PermissionResolver 型定義（TASK-3-2） | L164 |
-| SkillExecutor IPC統合（TASK-3-2） | L251 |
-| 関連ドキュメント | L328 |
-| 変更履歴 | L338 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L166 |
+| PermissionResolver 型定義（TASK-3-2） | L233 |
+| SkillExecutor IPC統合（TASK-3-2） | L320 |
+| 完了タスク | L397 |
+| 関連ドキュメント | L434 |
+| 変更履歴 | L446 |
 
 ### references/interfaces-agent-sdk-history.md
 
@@ -1401,13 +1403,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| エラー分類 | L8 |
 | 認可エラー（UnauthorizedError） | L145 |
 | リトライ戦略 | L210 |
-| サーキットブレーカー（将来対応） | L252 |
-| エラーレスポンス形式 | L280 |
-| エラーログ出力 | L311 |
-| ユーザー向けエラーメッセージ | L348 |
-| エラーハンドリングの実装指針 | L371 |
-| 関連ドキュメント | L401 |
-| 変更履歴 | L410 |
+| SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
+| サーキットブレーカー（将来対応） | L289 |
+| エラーレスポンス形式 | L317 |
+| エラーログ出力 | L348 |
+| ユーザー向けエラーメッセージ | L385 |
+| エラーハンドリングの実装指針 | L408 |
+| 関連ドキュメント | L438 |
+| 変更履歴 | L447 |
 
 ### references/llm-embedding.md
 

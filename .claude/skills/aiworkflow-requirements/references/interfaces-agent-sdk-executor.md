@@ -67,10 +67,11 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 
 | プロパティ  | 型       | 必須 | 説明                       |
 | ----------- | -------- | ---- | -------------------------- |
-| `prompt`    | `string` | ✓    | 実行プロンプト             |
-| `skillId`   | `string` | ✓    | スキルID                   |
-| `timeout`   | `number` | -    | タイムアウト (ms)          |
-| `sessionId` | `string` | -    | セッションID（会話継続用） |
+| `prompt`      | `string`               | ✓    | 実行プロンプト                               |
+| `skillId`     | `string`               | ✓    | スキルID                                     |
+| `timeout`     | `number`               | -    | タイムアウト (ms)                            |
+| `sessionId`   | `string`               | -    | セッションID（会話継続用）                   |
+| `retryConfig` | `Partial<RetryConfig>` | -    | リトライ設定（部分指定可能、デフォルト値あり） |
 
 #### SkillExecutionResponse
 
@@ -103,6 +104,7 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 | `tool_use` | ツール使用         |
 | `error`    | エラーメッセージ   |
 | `complete` | 完了通知           |
+| `retry`    | リトライ通知       |
 
 #### SkillExecutionError
 
@@ -158,6 +160,73 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 | `DEFAULT_TIMEOUT_MS`        | `30000` | デフォルトタイムアウト (ms)  |
 | `MAX_CONCURRENT_EXECUTIONS` | `5`     | 最大同時実行数               |
 | `HISTORY_RETENTION_MS`      | `60000` | 履歴保持期間 (ms)            |
+
+---
+
+## リトライ機構（TASK-SKILL-RETRY-001）
+
+SkillExecutorにExponential Backoff with Jitterパターンのリトライ機構を追加。一時的なエラーからの自動回復を実現する。
+
+### 概要
+
+| 項目           | 内容                                                    |
+| -------------- | ------------------------------------------------------- |
+| タスクID       | TASK-SKILL-RETRY-001                                    |
+| 完了日         | 2026-01-31                                              |
+| ステータス     | **完了**                                                |
+| テスト数       | 72件                                                    |
+| 実装ファイル   | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
+
+### リトライ関連型定義
+
+#### RetryableErrorType
+
+リトライ可能なエラーの分類。
+
+| 値             | 説明                       |
+| -------------- | -------------------------- |
+| `network`      | ネットワークエラー         |
+| `rate_limit`   | API レート制限（HTTP 429） |
+| `server_error` | サーバーエラー（HTTP 5xx） |
+| `timeout`      | タイムアウト               |
+
+#### RetryConfig
+
+リトライ動作を制御する設定インターフェース。
+
+| プロパティ          | 型       | デフォルト値 | 説明                   |
+| ------------------- | -------- | ------------ | ---------------------- |
+| `maxRetries`        | `number` | `3`          | 最大リトライ回数       |
+| `baseDelayMs`       | `number` | `1000`       | 基本待機時間（ミリ秒） |
+| `maxDelayMs`        | `number` | `30000`      | 最大待機時間（ミリ秒） |
+| `jitterFactor`      | `number` | `0.2`        | Jitter範囲（0〜1）     |
+| `backoffMultiplier` | `number` | `2`          | バックオフ倍率         |
+
+#### RetryableErrorResult
+
+エラーのリトライ判定結果。
+
+| プロパティ     | 型                   | 必須 | 説明                                  |
+| -------------- | -------------------- | ---- | ------------------------------------- |
+| `retryable`    | `boolean`            | ✓    | リトライ可能かどうか                  |
+| `errorType`    | `RetryableErrorType` | -    | エラータイプ（retryable=true時のみ）  |
+| `retryAfterMs` | `number`             | -    | Retry-Afterヘッダー値（ミリ秒換算）  |
+
+### リトライ関連API
+
+| 関数                    | シグネチャ                                                              | エクスポート | 説明                           |
+| ----------------------- | ----------------------------------------------------------------------- | ------------ | ------------------------------ |
+| `isRetryableError`      | `(error: unknown) => RetryableErrorResult`                              | ✓            | エラーのリトライ可否判定       |
+| `calculateBackoffDelay` | `(attempt: number, config: RetryConfig, retryAfterMs?: number) => number` | ✓          | バックオフ待機時間計算         |
+| `executeWithRetry`      | private メソッド                                                         | -            | リトライ付きSDK query()実行   |
+| `sleep`                 | `(ms: number, signal?: AbortSignal) => Promise<void>`                   | -            | AbortSignal対応の待機          |
+
+### リトライ関連定数
+
+| 定数                        | 値                                                        | エクスポート | 説明                     |
+| --------------------------- | --------------------------------------------------------- | ------------ | ------------------------ |
+| `DEFAULT_RETRY_CONFIG`      | maxRetries:3, baseDelayMs:1000, maxDelayMs:30000, jitterFactor:0.2, backoffMultiplier:2 | ✓ | デフォルトリトライ設定 |
+| `RETRYABLE_NETWORK_ERRORS`  | ECONNRESET, ETIMEDOUT, ECONNREFUSED, ENOTFOUND, EAI_AGAIN | -           | リトライ対象ネットワークエラーコード |
 
 ---
 
@@ -325,6 +394,43 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 ---
 
+## 完了タスク
+
+### タスク: SkillExecutor リトライ機構実装（2026-01-31完了）
+
+| 項目         | 内容                                                       |
+| ------------ | ---------------------------------------------------------- |
+| タスクID     | TASK-SKILL-RETRY-001                                       |
+| 完了日       | 2026-01-31                                                 |
+| ステータス   | **完了**                                                   |
+| テスト数     | 72（自動テスト）+ 12（手動テスト項目）                     |
+| 発見課題     | 0件                                                        |
+| ドキュメント | `docs/30-workflows/skillexecutor-retry-mechanism/`         |
+
+#### テスト結果サマリー
+
+| カテゴリ                     | テスト数 | PASS | FAIL |
+| ---------------------------- | -------- | ---- | ---- |
+| リトライ基本機能             | 15       | 15   | 0    |
+| エラー分類                   | 12       | 12   | 0    |
+| バックオフ計算               | 10       | 10   | 0    |
+| Retry-After対応              | 8        | 8    | 0    |
+| abort連携                    | 8        | 8    | 0    |
+| ストリーミング通知           | 7        | 7    | 0    |
+| エッジケース                 | 6        | 6    | 0    |
+| 並行実行                     | 3        | 3    | 0    |
+| 手動テスト（executeWithRetry）| 12      | 12   | 0    |
+
+#### 成果物
+
+| 成果物                    | パス                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------ |
+| テスト結果レポート        | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-11/manual-test-results.md`  |
+| 実装ガイド（初学者向け）  | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part1.md` |
+| 実装ガイド（技術者向け）  | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part2.md` |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                        | 説明                       |
@@ -332,6 +438,8 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 | interfaces-agent-sdk.md             | 親ファイル（インデックス） |
 | interfaces-agent-sdk-integration.md | 統合機能仕様               |
 | interfaces-agent-sdk-history.md     | 完了タスク履歴             |
+| [実装ガイドPart1](../../../docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part1.md) | リトライ機構 初学者向け概念説明 |
+| [実装ガイドPart2](../../../docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part2.md) | リトライ機構 技術者向け詳細 |
 
 ---
 
@@ -339,5 +447,6 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-01-31 | 1.2.0      | TASK-SKILL-RETRY-001: リトライ機構の型・API・定数追加      |
 | 2026-01-26 | 1.1.0      | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |
 | 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                            |

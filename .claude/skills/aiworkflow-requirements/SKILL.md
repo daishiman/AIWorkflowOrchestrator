@@ -12,7 +12,7 @@ description: |
 
   Trigger:
   プロジェクト仕様の検索、アーキテクチャ確認、API設計参照、セキュリティ要件確認、テスト戦略参照を行う場合に使用。
-  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice
+  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig
 allowed-tools:
   - Read
   - Glob
@@ -195,6 +195,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                        |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **8.15.0** | **2026-01-31** | **TASK-SKILL-RETRY-001完了**: interfaces-agent-sdk-executor.md v1.2.0更新（リトライ型定義・API・定数追加、完了タスクセクション）、error-handling.md v1.2.0更新（SkillExecutorリトライ戦略セクション追加）、interfaces-agent-sdk-history.md更新（残課題テーブル完了反映）。72テスト・全210テストGREEN |
 | **8.14.0** | **2026-01-30** | **TASK-7C完了**: ui-ux-agent-execution.md v1.2.0更新（PermissionDialog 3ボタンパターン、Store-direct実装）、interfaces-agent-sdk-ui.md v1.2.0更新、interfaces-agent-sdk-history.md v6.33.0更新（完了タスク追加）。40テスト・100%カバレッジ達成                 |
 | **8.13.0** | **2026-01-30** | **TASK-3-2-F完了**: quality-requirements.md v1.2.0（テスト環境設定パターン: jsdom/happy-dom選択、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処）、architecture-implementation-patterns.md v1.2.0（テスト環境設定パターン追加）                     |
 | 8.12.0     | 2026-01-28     | TASK-3-2-D完了: ui-ux-feature-components.md更新（コピー履歴機能: CopyHistoryContext/Panel/useCopyHistory Hook）、5件の未タスク仕様書作成（TASK-3-2-D-01〜05）                                                                                                   |

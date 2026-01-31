@@ -72,6 +72,14 @@ export default defineConfig({
         __dirname,
         "../../packages/shared/src/agent/index.ts",
       ),
+      "@repo/shared/constants": resolve(
+        __dirname,
+        "../../packages/shared/src/constants/index.ts",
+      ),
+      "@repo/shared/src/ipc/channels": resolve(
+        __dirname,
+        "../../packages/shared/src/ipc/channels.ts",
+      ),
       "@anthropic-ai/claude-agent-sdk": resolve(
         __dirname,
         "src/test/__mocks__/@anthropic-ai/claude-agent-sdk.ts",
