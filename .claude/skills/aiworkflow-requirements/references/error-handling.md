@@ -249,6 +249,43 @@ isUnauthorizedError関数は、エラーオブジェクトがUnauthorizedError�
 
 ---
 
+## SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001）
+
+SkillExecutor固有のExponential Backoff with Jitterリトライ戦略。
+
+### SkillExecutor リトライ設定
+
+| 設定項目         | 値      | 説明                                    |
+| ---------------- | ------- | --------------------------------------- |
+| 最大リトライ回数 | 3回     | DEFAULT_RETRY_CONFIG.maxRetries         |
+| 初期待機時間     | 1000ms  | DEFAULT_RETRY_CONFIG.baseDelayMs        |
+| バックオフ倍率   | 2       | DEFAULT_RETRY_CONFIG.backoffMultiplier  |
+| 最大待機時間     | 30000ms | DEFAULT_RETRY_CONFIG.maxDelayMs         |
+| ジッター         | ±20%    | DEFAULT_RETRY_CONFIG.jitterFactor: 0.2  |
+
+### SkillExecutor リトライ対象エラー
+
+| エラー種別                   | 条件                       | errorType      |
+| ---------------------------- | -------------------------- | -------------- |
+| ネットワークエラー           | ECONNRESET, ETIMEDOUT等    | `network`      |
+| API レート制限               | HTTP 429                   | `rate_limit`   |
+| サーバーエラー               | HTTP 500-599               | `server_error` |
+| タイムアウト                 | TimeoutError / code TIMEOUT| `timeout`      |
+
+### Retry-After ヘッダー対応
+
+HTTP 429エラーの`Retry-After`ヘッダー（秒単位の数値）をパースし、ミリ秒に変換して使用する。`calculateBackoffDelay()`はRetry-After値を優先し、`baseDelayMs`以上`maxDelayMs`以下の範囲にクランプする。極端に大きいRetry-After値（例: 86400秒=24時間）は`maxDelayMs`（30秒）で制限される。
+
+### リトライ通知
+
+リトライ発生時にIPCチャネル`skill:stream`経由で`retry`タイプのストリーミングメッセージを送信し、Renderer Processに通知する。
+
+### abort連携
+
+リトライ待機中（sleep中）にAbortSignalが発火した場合、即座に待機を中断しAbortErrorをスローする。
+
+---
+
 ## サーキットブレーカー（将来対応）
 
 ### 状態
@@ -411,4 +448,5 @@ isUnauthorizedError関数は、エラーオブジェクトがUnauthorizedError�
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-01-31 | v1.2.0     | TASK-SKILL-RETRY-001: SkillExecutorリトライ戦略セクション追加        |
 | 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                   |

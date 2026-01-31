@@ -24,6 +24,36 @@
 
 ---
 
+## 2026-01-31: TASK-SKILL-RETRY-001 SkillExecutor リトライ機構 Phase 1-12 完了
+
+| 項目         | 内容                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-SKILL-RETRY-001                                                                                    |
+| 操作         | Phase 1-12 全フェーズ完了                                                                               |
+| 対象ファイル | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                                                |
+| 結果         | success                                                                                                 |
+| 備考         | Exponential Backoff with Jitter リトライ機構実装。72テストPASS。全210テスト GREEN                       |
+
+### 更新詳細
+
+| ファイル                            | バージョン      | 追加内容                                                                       |
+| ----------------------------------- | --------------- | ------------------------------------------------------------------------------ |
+| interfaces-agent-sdk-executor.md    | v1.1.0 → v1.2.0 | リトライ型定義（RetryConfig, RetryableErrorType, RetryableErrorResult）、API（isRetryableError, calculateBackoffDelay）、定数（DEFAULT_RETRY_CONFIG, RETRYABLE_NETWORK_ERRORS） |
+| error-handling.md                   | v1.1.0 → v1.2.0 | SkillExecutor リトライ戦略セクション追加（設定、対象エラー、Retry-After対応、abort連携） |
+
+### 実装内容
+
+| 項目                    | 内容                                                                                |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| リトライ型定義          | RetryableErrorType, RetryConfig, RetryableErrorResult, SkillStreamMessageType拡張   |
+| 公開API                 | isRetryableError(), calculateBackoffDelay()                                         |
+| プライベートメソッド    | executeWithRetry(), sleep()                                                         |
+| 定数                    | DEFAULT_RETRY_CONFIG, RETRYABLE_NETWORK_ERRORS                                      |
+| テスト                  | 72テストケース（9 describeブロック）                                                |
+| 未タスク検出            | 4件（リトライ設定UI、リトライ履歴永続化、サーキットブレーカー、useSkillExecution対応） |
+
+---
+
 ## 2026-01-31: TASK-IMP-permission-tool-icons 仕様詳細追記（v1.3.2）
 
 | 項目         | 内容                                                                                    |

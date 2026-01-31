@@ -12,7 +12,7 @@ description: |
 
   Trigger:
   プロジェクト仕様の検索、アーキテクチャ確認、API設計参照、セキュリティ要件確認、テスト戦略参照を行う場合に使用。
-  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice
+  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig
 allowed-tools:
   - Read
   - Glob
@@ -195,6 +195,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                        |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **8.18.0** | **2026-01-31** | **TASK-SKILL-RETRY-001完了**: interfaces-agent-sdk-executor.md v1.2.0更新（リトライ型定義・API・定数追加、完了タスクセクション）、error-handling.md v1.2.0更新（SkillExecutorリトライ戦略セクション追加）、interfaces-agent-sdk-history.md更新（残課題テーブル完了反映）。72テスト・全210テストGREEN |
 | **8.17.0** | **2026-01-31** | **permissionDescriptionsモジュール仕様追加**: ui-ux-agent-execution.md v1.5.0更新（getDescription API仕様、12種ツールテンプレート一覧、safeStringセキュリティ対策、PermissionDialog統合記述追加）、topic-map.md更新（6セクション追加） |
 | **8.16.0** | **2026-01-31** | **task-imp-permission-readable-ui-001詳細完了記録**: ui-ux-agent-execution.md v1.4.0更新（テスト結果サマリー表・成果物表追加、spec-update-workflow.mdの詳細テンプレート準拠） |
 | **8.15.0** | **2026-01-30** | **task-imp-permission-readable-ui-001完了**: ui-ux-agent-execution.md v1.3.0更新（permissionDescriptions統合、人間可読説明文・詳細展開ボタン追加）、ui-ux-components.md v2.4.0更新（完了タスク追加）、arch-state-management.md v1.4.0更新（関連タスク追加）、topic-map.md更新。53テスト・100%カバレッジ達成 |
