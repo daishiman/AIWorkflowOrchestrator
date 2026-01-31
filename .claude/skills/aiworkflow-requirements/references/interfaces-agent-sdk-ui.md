@@ -51,7 +51,7 @@ Agent Execution UIは、Electronのマルチプロセスアーキテクチャに
 | Molecule | AgentOutputStream      | ストリーミング出力のリアルタイム表示                       |
 | Molecule | AgentExecutionControls | 実行制御ボタン（キャンセル、クリア）                       |
 | Molecule | AgentMessageInput      | メッセージ入力フィールドと送信ボタン                       |
-| Organism | PermissionDialog       | ツール実行許可の確認モーダル（拒否/1回許可/許可の3ボタン） |
+| Organism | PermissionDialog       | ツール実行許可の確認モーダル（拒否/1回許可/許可の3ボタン、toolIconsマッピングによるEmoji表示対応済み） |
 
 #### プロセス間通信
 
@@ -109,6 +109,56 @@ Renderer ProcessはPreload APIを通じてMain Processと通信する。window.a
 | `requestId` | `string`  | ✓    | リクエストID     |
 | `granted`   | `boolean` | ✓    | 許可されたか     |
 | `remember`  | `boolean` | -    | 選択を記憶するか |
+
+#### PermissionDialog ツールアイコンマッピング
+
+PermissionDialogコンポーネントは、ツール名に対応するEmojiアイコンを表示する。`TOOL_ICONS`定数でマッピングを管理し、`getToolIcon()`ヘルパーで取得する。
+
+**実装ファイル**: `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`
+
+##### TOOL_ICONS定数
+
+| キー（ツール名） | アイコン | 説明              |
+| ----------------- | -------- | ----------------- |
+| `Bash`            | 💻       | コマンド実行      |
+| `Read`            | 📖       | ファイル読取      |
+| `Write`           | ✏️       | ファイル書込      |
+| `Edit`            | 📝       | ファイル編集      |
+| `Glob`            | 🔍       | ファイルパターン検索 |
+| `Grep`            | 🔎       | テキスト検索      |
+| `LS`              | 📁       | ディレクトリ一覧  |
+| `Task`            | 📋       | タスク実行        |
+| `WebSearch`       | 🌐       | Web検索           |
+| `WebFetch`        | 🌐       | Webフェッチ       |
+
+- **型**: `Record<string, string>`
+- **デフォルトアイコン**: 🔧（`DEFAULT_TOOL_ICON`、未定義ツール用）
+
+##### getToolIcon()ヘルパー関数
+
+| 項目   | 内容                                          |
+| ------ | --------------------------------------------- |
+| 引数   | `toolName: string`                            |
+| 戻り値 | `string`（対応するEmoji、未定義時は🔧）      |
+| 実装   | `TOOL_ICONS[toolName] ?? DEFAULT_TOOL_ICON`   |
+
+##### formatArgs()ヘルパー関数
+
+ツール引数を表示用にフォーマットする。
+
+| 項目   | 内容                                                          |
+| ------ | ------------------------------------------------------------- |
+| 引数   | `args: Record<string, unknown>`                               |
+| 戻り値 | `string`（フォーマット済み文字列）                            |
+| 優先度 | 1. `args.command`（string時）→ 直接表示                       |
+|        | 2. `args.path`（string時）→ 直接表示                          |
+|        | 3. それ以外 → `JSON.stringify(args, null, 2)`                |
+
+##### アクセシビリティ対応
+
+- アイコン`<span>`に`aria-hidden="true"`を設定（スクリーンリーダーでの二重読み上げ防止）
+- アイコンは装飾目的のみ、ツール名テキストが主要な情報伝達手段
+- `inline-flex`レイアウト + `gap-1`でアイコンとテキストを適切に配置
 
 ---
 
@@ -314,18 +364,54 @@ AGENT-004実装後のポストリリーステストで作成されたAgent SDK�
 
 ## 関連ドキュメント
 
-| ドキュメント                     | 説明                       |
-| -------------------------------- | -------------------------- |
-| interfaces-agent-sdk.md          | 親ファイル（インデックス） |
-| interfaces-agent-sdk-executor.md | SkillExecutor仕様          |
-| ui-ux-components.md              | UIコンポーネント仕様       |
+| ドキュメント                                                                               | 説明                                 |
+| ------------------------------------------------------------------------------------------ | ------------------------------------ |
+| interfaces-agent-sdk.md                                                                    | 親ファイル（インデックス）           |
+| interfaces-agent-sdk-executor.md                                                           | SkillExecutor仕様                    |
+| ui-ux-components.md                                                                        | UIコンポーネント仕様                 |
+| `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-12/implementation-guide.md` | ツールアイコン実装ガイド（Phase 12） |
 
 ---
 
+## 完了タスク
+
+### タスク: PermissionDialog ツール別アイコン表示（2026-01-30完了）
+
+| 項目         | 内容                                                                      |
+| ------------ | ------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-tool-icons-001                                        |
+| 完了日       | 2026-01-30                                                                |
+| ステータス   | **完了**                                                                  |
+| テスト数     | 57（自動テスト）+ 14（手動テスト項目）                                   |
+| 発見課題     | 0件                                                                       |
+| ドキュメント | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/`                       |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| ツールアイコン表示 | 6        | 6    | 0    |
+| 全定義済みツール   | 8        | 8    | 0    |
+| エッジケース       | 3        | 3    | 0    |
+| 既存テスト         | 40       | 40   | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| 実装ファイル       | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                             |
+| テストファイル     | `apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.test.tsx`              |
+| テスト結果レポート | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-11/manual-test-result.md`    |
+| 発見課題リスト     | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-11/discovered-issues.md`     |
+| 実装ガイド         | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-12/implementation-guide.md`  |
+
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                                           |
-| ---------- | ---------- | ------------------------------------------------------------------ |
-| 2026-01-30 | 1.2.0      | TASK-7C完了: PermissionDialog実装ファイル更新、3ボタンパターン記載 |
-| 2026-01-26 | 1.1.0      | アーキテクチャ図のコードブロックを表形式に変換                     |
-| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                                    |
+| 日付       | バージョン | 変更内容                                                                     |
+| ---------- | ---------- | ---------------------------------------------------------------------------- |
+| 2026-01-31 | 1.3.2      | formatArgs()ヘルパー関数仕様追加                                              |
+| 2026-01-31 | 1.3.1      | TOOL_ICONS定数・getToolIcon()ヘルパー・アクセシビリティ対応の仕様詳細を追記   |
+| 2026-01-30 | 1.3.0      | TASK-IMP-permission-tool-icons完了: toolIconsマッピング追加、Emojiアイコン表示 |
+| 2026-01-30 | 1.2.0      | TASK-7C完了: PermissionDialog実装ファイル更新、3ボタンパターン記載           |
+| 2026-01-26 | 1.1.0      | アーキテクチャ図のコードブロックを表形式に変換                               |
+| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                                              |

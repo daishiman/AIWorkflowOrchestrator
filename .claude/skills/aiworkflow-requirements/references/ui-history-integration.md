@@ -213,7 +213,7 @@
 | 課題 | 依存タスク | 優先度 | 未タスク指示書 |
 |------|-----------|--------|---------------|
 | UIコンポーネント実装 | CONV-05-02, ~~history-service-db-integration~~ | 中 | CONV-05-03 |
-| validateDOMNesting警告修正 | CONV-05-03 | 低 | - |
+| validateDOMNesting警告修正 | CONV-05-03 | 低 | [task-validate-dom-nesting-bugfix.md](../../../docs/30-workflows/unassigned-task/task-validate-dom-nesting-bugfix.md) |
 | Rendererビルド問題修正 | なし | 高 | task-renderer-build-fix.md ✅ |
 | ~~GUI手動テスト実施~~ | ~~Rendererビルド修正~~ | ~~中~~ | ~~task-history-gui-manual-test.md~~ ✅ **完了** |
 | エラーメッセージ国際化対応 | なし | 低 | task-error-i18n-support.md ✅ |

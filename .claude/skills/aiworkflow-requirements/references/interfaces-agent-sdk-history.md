@@ -117,7 +117,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | タスクID                              | 内容                       | 優先度 |
 | ------------------------------------- | -------------------------- | ------ |
-| task-imp-permission-tool-icons-001    | ツール別アイコン表示       | 中     |
+| ~~task-imp-permission-tool-icons-001~~ | ~~ツール別アイコン表示~~ | ~~中~~ | ~~完了（2026-01-30）~~ ✅ **完了** |
 | task-imp-permission-readable-ui-001   | 人間可読UI改善             | 中     |
 | task-imp-permission-dark-mode-001     | ダークモード対応           | 低     |
 | task-ref-permission-consolidation-001 | 既存コンポーネント統合検討 | 低     |

@@ -455,4 +455,166 @@ describe("PermissionDialog", () => {
       expect(screen.getByText(/"pattern": "test"/)).toBeInTheDocument();
     });
   });
+
+  // ============================================================
+  // ツールアイコン表示
+  // ============================================================
+  describe("ツールアイコン表示", () => {
+    it("Bashツールのアイコン（💻）が表示される", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "Bash",
+        args: { command: "ls -la" },
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("💻")).toBeInTheDocument();
+    });
+
+    it("Readツールのアイコン（📖）が表示される", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "Read",
+        args: { path: "/tmp/test.txt" },
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("📖")).toBeInTheDocument();
+    });
+
+    it("Writeツールのアイコン（✏️）が表示される", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "Write",
+        args: { path: "/tmp/output.txt" },
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("✏️")).toBeInTheDocument();
+    });
+
+    it("未定義ツールにデフォルトアイコン（🔧）が表示される", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "UnknownTool",
+        args: {},
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("🔧")).toBeInTheDocument();
+    });
+
+    it('アイコン要素にaria-hidden="true"が付与されている', () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "Bash",
+        args: { command: "echo test" },
+      };
+      const { container } = render(<PermissionDialog />);
+      const iconElement = container.querySelector('[aria-hidden="true"]');
+      expect(iconElement).toBeInTheDocument();
+      expect(iconElement?.textContent).toBe("💻");
+    });
+
+    it("アイコンがツール名の前に配置されている", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "Bash",
+        args: { command: "echo test" },
+      };
+      const { container } = render(<PermissionDialog />);
+      const badge = container.querySelector(".font-mono");
+      expect(badge?.textContent).toMatch(/💻.*Bash/);
+    });
+  });
+
+  // ============================================================
+  // 全定義済みツールのアイコン表示
+  // ============================================================
+  describe("全定義済みツールのアイコン表示", () => {
+    const toolIconTestCases = [
+      { toolName: "Edit", expectedIcon: "📝" },
+      { toolName: "Glob", expectedIcon: "🔍" },
+      { toolName: "Grep", expectedIcon: "🔎" },
+      { toolName: "LS", expectedIcon: "📁" },
+      { toolName: "Task", expectedIcon: "📋" },
+      { toolName: "WebSearch", expectedIcon: "🌐" },
+      { toolName: "WebFetch", expectedIcon: "🌐" },
+    ];
+
+    it.each(toolIconTestCases)(
+      "$toolNameツールのアイコン（$expectedIcon）が表示される",
+      ({ toolName, expectedIcon }) => {
+        mockPendingPermission = {
+          executionId: "exec-1",
+          requestId: "req-1",
+          toolName,
+          args: {},
+        };
+        render(<PermissionDialog />);
+        expect(screen.getByText(expectedIcon)).toBeInTheDocument();
+      },
+    );
+
+    it("WebSearchとWebFetchは同じアイコン（🌐）を表示する", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "WebSearch",
+        args: {},
+      };
+      const { unmount } = render(<PermissionDialog />);
+      expect(screen.getByText("🌐")).toBeInTheDocument();
+      unmount();
+
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "WebFetch",
+        args: {},
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("🌐")).toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // ツールアイコン エッジケース
+  // ============================================================
+  describe("ツールアイコン エッジケース", () => {
+    it("空文字列のツール名にデフォルトアイコンが表示される", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "",
+        args: {},
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("🔧")).toBeInTheDocument();
+    });
+
+    it("大文字小文字が異なるツール名（bash）にデフォルトアイコンが表示される", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "bash",
+        args: {},
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("🔧")).toBeInTheDocument();
+    });
+
+    it("非常に長いツール名でもアイコンが表示される", () => {
+      mockPendingPermission = {
+        executionId: "exec-1",
+        requestId: "req-1",
+        toolName: "VeryLongToolNameThatDoesNotExistInMapping",
+        args: {},
+      };
+      render(<PermissionDialog />);
+      expect(screen.getByText("🔧")).toBeInTheDocument();
+    });
+  });
 });

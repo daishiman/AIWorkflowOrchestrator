@@ -15,6 +15,7 @@
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------- |
 | v1.0.0     | 初版       | 初期作成                                                                                            |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換                                          |
+| v1.3.0     | 2026-01-31 | TASK-IMP-permission-tool-icons完了: ツールアイコンバッジ視覚仕様追加、完了タスク・関連ドキュメント拡充 |
 | v1.2.0     | 2026-01-30 | TASK-7C完了: PermissionDialog 3ボタンパターン実装、Store-directパターン、skill/PermissionDialog.tsx |
 
 ---
@@ -135,19 +136,32 @@
 | ファイル | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx` |
 | 責務     | ツール使用権限確認、フォーカストラップ、「常に許可」機能          |
 | パターン | Store-direct（useAppStore()直接使用、Propsなし）                  |
-| テスト   | 40テスト、Line 100%、Branch 94.44%、Function 100%                 |
-| 実装状況 | **TASK-7C 完了**（2026-01-30）                                    |
+| テスト   | 57テスト、Line 100%、Branch 94.44%、Function 100%                 |
+| 実装状況 | **TASK-7C 完了**（2026-01-30）、**toolIcons追加**（2026-01-30）   |
 
 **モーダル構成**
 
 | 領域       | 要素                               | 内容例                     | 備考                                                  |
 | ---------- | ---------------------------------- | -------------------------- | ----------------------------------------------------- |
-| ヘッダー   | アイコン + タイトル + ツールバッジ | 「権限の確認」+ Bashバッジ | 警告アイコン⚠️ + タイトル、閉じるボタン（✕）右端配置 |
+| ヘッダー   | アイコン + タイトル + ツールバッジ | 「権限の確認」+ 💻Bashバッジ | 警告アイコン⚠️ + タイトル、閉じるボタン（✕）右端配置 |
 | 本文       | メッセージ                         | 「Bash」を実行しますか？   | ツール名を動的表示                                    |
 | 本文       | 引数詳細（formatArgs）             | command: `ls -la`          | command/pathは直接表示、他はJSON                       |
 | 本文       | 理由（任意）                       | 「ディレクトリ内容を確認するため」 | reason存在時のみ表示                            |
 | オプション | チェックボックス                   | 次回から自動的に許可する   | 未チェック状態がデフォルト、「許可」ボタンのみに影響  |
 | フッター   | 3ボタン                            | 拒否 / 1回許可 / 許可      | 左から: 拒否（赤）、1回許可（グレー）、許可（青）    |
+
+**ツールアイコンバッジ（TASK-IMP-permission-tool-icons実装）**
+
+ヘッダーのツールバッジにEmoji アイコンを表示。`TOOL_ICONS`定数で10ツール＋デフォルト（🔧）をマッピング。
+
+| 要素       | スタイリング                                    | 備考                                 |
+| ---------- | ----------------------------------------------- | ------------------------------------ |
+| バッジ全体 | `inline-flex items-center gap-1`                | アイコンとツール名を水平配置         |
+| バッジ背景 | `px-2 py-0.5 bg-gray-200 rounded text-sm`      | コンパクトなピル型                   |
+| アイコン   | `<span aria-hidden="true">`                     | 装飾目的、スクリーンリーダー非読上げ |
+| テキスト   | `font-mono font-medium`                         | ツール名（主要な情報伝達手段）       |
+
+詳細マッピングは `interfaces-agent-sdk-ui.md` の「PermissionDialog ツールアイコンマッピング」セクション参照。
 
 **3ボタン応答パターン（TASK-7C実装）**
 
@@ -271,15 +285,18 @@
 | タスクID | 完了日 | 主要成果物 |
 | -------- | ------ | ---------- |
 | TASK-7C  | 2026-01-30 | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`, `PermissionDialog.test.tsx`（40テスト） |
+| task-imp-permission-tool-icons-001 | 2026-01-30 | `PermissionDialog.tsx`（TOOL_ICONS/getToolIcon/formatArgs追加）、`PermissionDialog.test.tsx`（57テスト） |
 
 ## 関連ドキュメント
 
-| ドキュメント                 | パス                                                                            |
-| ---------------------------- | ------------------------------------------------------------------------------- |
-| Agent SDK仕様                | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`     |
-| Agent Execution UI実装ガイド | `docs/30-workflows/agent-execution-ui/outputs/phase-12/implementation-guide.md` |
-| コンポーネント設計書         | `docs/30-workflows/agent-execution-ui/outputs/phase-2/component-design.md`             |
-| PermissionDialog実装ガイド   | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md` |
-| UI/UXコンポーネント概要      | `./ui-ux-components.md`                                                                |
-| デザイン原則                 | `./ui-ux-design-principles.md`                                                         |
-| 機能別UIコンポーネント       | `./ui-ux-feature-components.md`                                                        |
+| ドキュメント                       | パス                                                                                          |
+| ---------------------------------- | --------------------------------------------------------------------------------------------- |
+| Agent SDK仕様                      | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`                   |
+| Agent SDK UI型仕様                 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-ui.md`                |
+| Agent Execution UI実装ガイド       | `docs/30-workflows/agent-execution-ui/outputs/phase-12/implementation-guide.md`               |
+| コンポーネント設計書               | `docs/30-workflows/agent-execution-ui/outputs/phase-2/component-design.md`                    |
+| PermissionDialog実装ガイド         | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md`        |
+| ツールアイコン実装ガイド           | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-12/implementation-guide.md`   |
+| UI/UXコンポーネント概要            | `./ui-ux-components.md`                                                                       |
+| デザイン原則                       | `./ui-ux-design-principles.md`                                                                |
+| 機能別UIコンポーネント             | `./ui-ux-feature-components.md`                                                               |

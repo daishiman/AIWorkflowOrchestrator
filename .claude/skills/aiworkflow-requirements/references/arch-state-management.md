@@ -321,7 +321,7 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | TASK-7A  | SkillSelector             | **完了**   |
 | TASK-7B  | SkillImportDialog         | **完了**   |
 | TASK-7C  | PermissionDialog          | **完了**   |
-| TASK-7D  | ChatPanel統合             | **完了**   |
+| TASK-7D  | ChatPanel統合             | **完了**（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
 
 ---
 

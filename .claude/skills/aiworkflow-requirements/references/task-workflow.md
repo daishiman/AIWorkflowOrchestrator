@@ -246,6 +246,8 @@
 | task-imp-chatpanel-new-design-001 | ChatPanel新デザイン改善 | 中 | TASK-7D実施中に発見 | `docs/30-workflows/unassigned-task/task-imp-chatpanel-new-design-improvements.md` |
 | task-chatedit-store-integration-001 | chatEditSlice Store統合 | 中 | システム仕様書分析（arch-state-management.md） | `docs/30-workflows/unassigned-task/task-chatedit-slice-store-integration.md` |
 | task-rag-largefile-perf-001 | RAG変換 大容量ファイルパフォーマンス検証 | 中 | システム仕様書分析（quality-requirements.md） | `docs/30-workflows/unassigned-task/task-rag-converter-largefile-performance.md` |
+| TASK-CHUNK-API-001   | Chunk Search APIレイヤー実装       | 中     | api-internal-chunk-search.md（未実装レイヤー）  | `docs/30-workflows/unassigned-task/task-imp-chunk-search-api-layers.md`         |
+| TASK-DOM-NESTING-001 | validateDOMNesting警告修正         | 低     | ui-history-integration.md（残課題）             | `docs/30-workflows/unassigned-task/task-validate-dom-nesting-bugfix.md`         |
 
 ### 未タスク管理ルール
 
@@ -276,4 +278,5 @@
 | 1.4.0      | 2026-01-22 | 未タスク追加: UT-008 Chat History UI Components, UT-009 Chat History Additional Use Cases |
 | 1.5.0      | 2026-01-25 | 未タスク追加: TASK-3-1-B (IPC Handler統合), TASK-SKILL-PERF-TEST (パフォーマンステスト)   |
 | 1.7.0      | 2026-01-30 | TASK-7D完了記録追加、未タスク2件（task-imp-skillselector-onimportrequest-001, task-imp-chatpanel-new-design-001）登録 |
+| 1.8.0      | 2026-01-31 | 未タスク追加: TASK-CHUNK-API-001 (Chunk Search API), TASK-DOM-NESTING-001 (DOM警告修正) |
 | 1.6.0      | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（成果物配置、フェーズ遷移図、ファイル配置） |

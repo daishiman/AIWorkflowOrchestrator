@@ -27,6 +27,7 @@ Phase 12 Task 2 開始
 │ Step 1-A: タスク完了記録（必須）                                   │
 │ → 「完了タスク」セクションを該当仕様書に追加                        │
 │ → 関連ドキュメントセクションに実装ガイドへのリンク追加               │
+│ → LOGS.md×2ファイル + topic-map.md 更新                            │
 └─────────────────────────────────────────────────────────────────┘
     ↓
 ┌─────────────────────────────────────────────────────────────────┐
@@ -37,9 +38,25 @@ Phase 12 Task 2 開始
 └─────────────────────────────────────────────────────────────────┘
     ↓
 ┌─────────────────────────────────────────────────────────────────┐
+│ Step 1-C: 関連タスクテーブル更新（該当する場合は必須）              │
+│ → 仕様書内の「関連タスク」「未タスク候補」テーブルを確認            │
+│ → grep でタスクID/名を references/ 配下全体から検索                 │
+│ → 該当タスクのステータスを「完了」に更新                            │
+│ → ⚠️ 見落としやすいステップ: 必ずGrepで確認すること                │
+└─────────────────────────────────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────────────────────────────────┐
 │ Step 2: システム仕様更新判断（条件付き）                           │
 │ → 新規インターフェース/型の追加があるか判断                        │
 │ → 不要の場合は「更新なし」と documentation-changelog.md に明記     │
+└─────────────────────────────────────────────────────────────────┘
+    ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ 完了チェック: documentation-changelog.md に全Step結果を記録        │
+│ → Step 1-A: ✅/❌ + 詳細                                          │
+│ → Step 1-B: ✅/該当なし + 詳細                                     │
+│ → Step 1-C: ✅/該当なし + 詳細                                     │
+│ → Step 2:   ✅/更新不要 + 理由                                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -53,6 +70,7 @@ Phase 12 Task 2 開始
 | 「内部実装のみなので更新不要」           | **Step 1-A必須** | タスク完了記録は常に必須                              |
 | 「Renderer側で定義済みなので更新不要」   | **Step 2必要**   | Main Process側のインターフェース追加は仕様追加に該当  |
 | 「型は別タスクで追加済みなので更新不要」 | **Step 2必要**   | 新規クラス/コンポーネントは独自の仕様セクションが必要 |
+| 「関連タスクテーブルは確認不要」         | **Step 1-C必須** | 仕様書内の「未タスク候補」「関連タスク」テーブルにタスクが記載されている可能性あり。Grepで確認が必要 |
 
 ### 🆕 新規クラス/コンポーネント追加時のチェックリスト
 
@@ -315,12 +333,19 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 
 #### 確認すべきファイル（タスク種別による）
 
-| タスク種別                 | 確認すべきファイル              |
-| -------------------------- | ------------------------------- |
-| Skill/Agent関連            | `arch-state-management.md`      |
-| IPC/Preload関連            | `security-api-electron.md`      |
-| UI/UXコンポーネント関連    | `ui-ux-components.md`           |
-| データベース関連           | `database-schema.md`            |
+| タスク種別                 | 確認すべきファイル                | テーブル名                   |
+| -------------------------- | --------------------------------- | ---------------------------- |
+| Skill/Agent関連            | `arch-state-management.md`        | 関連タスク                   |
+| Skill/Agent関連            | `interfaces-agent-sdk-history.md` | 未タスク候補                 |
+| IPC/Preload関連            | `security-api-electron.md`        | 関連タスク                   |
+| UI/UXコンポーネント関連    | `ui-ux-components.md`             | 関連タスク                   |
+| データベース関連           | `database-schema.md`              | 関連タスク                   |
+
+> **Step 1-C 発見手順**: 上記テーブルだけでなく、以下のGrepで漏れを防止する:
+> ```bash
+> grep -rl "TASK_ID_OR_NAME" .claude/skills/aiworkflow-requirements/references/
+> ```
+> 例: `grep -rl "permission-tool-icons" .claude/skills/aiworkflow-requirements/references/`
 
 #### 更新例
 
@@ -419,11 +444,55 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.mjs
 
 ---
 
+## 具体例: TASK-IMP-permission-tool-icons-001
+
+以下は実際のタスク完了時のPhase 12 Task 2実行例。UI コンポーネント内部変更（Renderer Process のみ）の典型パターン。
+
+### Step実行結果
+
+| Step   | 判定      | 理由                                                                 |
+| ------ | --------- | -------------------------------------------------------------------- |
+| 1-A    | ✅ 完了   | `interfaces-agent-sdk-ui.md` に完了タスクセクション追加              |
+| 1-B    | 該当なし  | Renderer Process内部変更のみ。APIエンドポイント追加なし              |
+| 1-C    | ✅ 完了   | `interfaces-agent-sdk-history.md` の未タスク候補テーブルを更新       |
+| 2      | ✅ 更新実施 | 新定数 `TOOL_ICONS`、新関数 `getToolIcon()`、`formatArgs()` を追加 |
+
+### Step 1-C 発見プロセス
+
+```bash
+grep -rn "permission-tool-icons" references/
+# → interfaces-agent-sdk-history.md:310: 未タスク候補テーブルに記載あり
+# → interfaces-agent-sdk-ui.md: 記載なし（Step 1-Aで追加）
+```
+
+### Step 2 更新判定の根拠
+
+| 追加項目                    | 判定             | 根拠                                         |
+| --------------------------- | ---------------- | -------------------------------------------- |
+| `TOOL_ICONS` 定数           | 仕様追記が必要   | 他コンポーネントから参照される可能性あり      |
+| `getToolIcon()` 関数        | 仕様追記が必要   | パブリック関数、再利用可能                    |
+| `formatArgs()` 関数         | 仕様追記が必要   | 引数フォーマットの優先度ロジックが仕様的     |
+| ツールアイコンバッジのCSS   | UI/UX仕様追記    | `ui-ux-agent-execution.md` にスタイリング仕様 |
+
+### 更新ファイル一覧
+
+| ファイル                         | 変更内容                                                       |
+| -------------------------------- | -------------------------------------------------------------- |
+| `interfaces-agent-sdk-ui.md`     | v1.3.0: 完了タスク、v1.3.1: TOOL_ICONS/getToolIcon/formatArgs |
+| `interfaces-agent-sdk-history.md`| 未タスク候補テーブルのステータス更新                           |
+| `ui-ux-agent-execution.md`       | ツールアイコンバッジ視覚仕様追加、テスト数更新                |
+| `aiworkflow-requirements/LOGS.md`| 仕様更新記録                                                  |
+| `task-specification-creator/LOGS.md` | Phase 1-12完了記録                                        |
+| `topic-map.md`                   | 新セクションエントリ追加                                      |
+
+---
+
 ## 参照リソース
 
-| リソース         | パス                                                                   |
-| ---------------- | ---------------------------------------------------------------------- |
-| 仕様スキル       | `.claude/skills/aiworkflow-requirements/SKILL.md`                      |
-| トピックマップ   | `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`          |
-| 記述ガイドライン | `.claude/skills/aiworkflow-requirements/references/spec-guidelines.md` |
-| テンプレート     | `.claude/skills/aiworkflow-requirements/assets/spec-template.md`       |
+| リソース                   | パス                                                                           |
+| -------------------------- | ------------------------------------------------------------------------------ |
+| 仕様スキル                 | `.claude/skills/aiworkflow-requirements/SKILL.md`                              |
+| トピックマップ             | `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                  |
+| 記述ガイドライン           | `.claude/skills/aiworkflow-requirements/references/spec-guidelines.md`         |
+| 仕様テンプレート           | `.claude/skills/aiworkflow-requirements/assets/spec-template.md`               |
+| ドキュメント更新履歴テンプレート | `.claude/skills/task-specification-creator/assets/documentation-changelog-template.md` |
