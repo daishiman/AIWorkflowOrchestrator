@@ -98,6 +98,22 @@ Phase 11 手動テスト検証結果の備考セクションから検出され�
 | 6   | Phase 11   | 実環境手動テスト実施            | 中     | ユーザーによる手動確認推奨 |
 | 7   | Phase 11   | IPC含むE2Eテスト作成            | 中     | E2Eテスト基盤整備後に対応  |
 
+## 既存タスク仕様書マッピング
+
+検出された7件の未タスクと既存タスク仕様書の対応関係:
+
+| #   | 項目                            | 既存タスク仕様書                                                                   | カバー状況       |
+| --- | ------------------------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| 1   | 個別コンポーネント改善          | `task-imp-chatpanel-new-design-improvements.md`                                    | カバー済み       |
+| 2   | Main Process側SkillExecutor修正 | TASK-IMP-retry-mechanism (完了タスク)                                              | 対応済み         |
+| 3   | IPC通信プロトコル最適化         | `task-3-1-B-skillexecutor-ipc-integration.md`, `task-skill-execution-streaming.md` | 部分的にカバー   |
+| 4   | 新しいPreload API追加           | なし（低優先度のため新規作成不要）                                                 | 機能拡張時に検討 |
+| 5   | バックエンド/IPCチャネル変更    | `task-3-1-B-skillexecutor-ipc-integration.md`                                      | 部分的にカバー   |
+| 6   | 実環境手動テスト実施            | `task-skill-integration-e2e-manual-testing.md`                                     | カバー済み       |
+| 7   | IPC含むE2Eテスト作成            | `task-skill-import-e2e-testing.md`                                                 | カバー済み       |
+
+**判定**: 7件中5件は既存タスク仕様書でカバー済み。2件（#3, #5）は既存タスクが部分的にカバーしており、IPC関連の最適化は`task-3-1-B-skillexecutor-ipc-integration.md`のスコープ内で対応可能。新規タスク指示書の作成は不要と判断。
+
 ## 結論
 
 TASK-7D ChatPanel + Agent Execution統合の実装は、定義されたスコープ内で全ての受け入れ基準を満たしている。Phase 3（設計レビュー）およびPhase 10（最終レビュー）の両方で指摘事項なしのPASS判定を受けており、コードベースにもTODO/FIXMEコメントは残っていない。
