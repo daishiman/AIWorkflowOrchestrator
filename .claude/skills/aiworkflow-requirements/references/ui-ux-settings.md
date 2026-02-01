@@ -16,18 +16,18 @@ Electronデスクトップアプリにおける設定画面のUI/UX仕様を定�
 
 ### レイヤー構成
 
-| レイヤー         | コンポーネント                         | 役割                                     |
-| ---------------- | -------------------------------------- | ---------------------------------------- |
-| Renderer Process | Settings Components (React)            | UIレンダリング                           |
-|                  | - SlideDirectorySettings.tsx           | 設定画面コンポーネント                   |
-|                  | - useSlideSettings フック              | 状態管理                                 |
-|                  | window.slideSettingsAPI                | Preloadから公開されたAPI                 |
-| Preload Script   | channels.ts + index.ts                 | IPC通信の橋渡し                          |
-|                  | - SLIDE_SETTINGS_CHANNELS              | ホワイトリストチャンネル定義             |
-|                  | - slideSettingsAPI 公開                | contextBridgeによるAPI公開               |
-| Main Process     | slideSettingsHandlers.ts               | IPCハンドラー実装                        |
-|                  | slideSettingsStore.ts                  | electron-storeによる永続化               |
-|                  | - validateIpcSender()                  | sender検証によるセキュリティ確保         |
+| レイヤー         | コンポーネント               | 役割                             |
+| ---------------- | ---------------------------- | -------------------------------- |
+| Renderer Process | Settings Components (React)  | UIレンダリング                   |
+|                  | - SlideDirectorySettings.tsx | 設定画面コンポーネント           |
+|                  | - useSlideSettings フック    | 状態管理                         |
+|                  | window.slideSettingsAPI      | Preloadから公開されたAPI         |
+| Preload Script   | channels.ts + index.ts       | IPC通信の橋渡し                  |
+|                  | - SLIDE_SETTINGS_CHANNELS    | ホワイトリストチャンネル定義     |
+|                  | - slideSettingsAPI 公開      | contextBridgeによるAPI公開       |
+| Main Process     | slideSettingsHandlers.ts     | IPCハンドラー実装                |
+|                  | slideSettingsStore.ts        | electron-storeによる永続化       |
+|                  | - validateIpcSender()        | sender検証によるセキュリティ確保 |
 
 **通信フロー**: Renderer Process → contextBridge → Preload Script → IPC通信 → Main Process
 
@@ -46,13 +46,13 @@ Electronデスクトップアプリにおける設定画面のUI/UX仕様を定�
 
 ### UIコンポーネント構成
 
-| コンポーネント                   | 役割・属性                                               |
-| -------------------------------- | -------------------------------------------------------- |
-| SlideDirectorySettings           | 親コンポーネント                                         |
-| - ディレクトリパス入力欄         | 読み取り専用、aria-label="スライド出力ディレクトリ"      |
-| - フォルダ選択ボタン             | OSネイティブダイアログを起動                             |
-| - 自動作成チェックボックス       | ディレクトリが存在しない場合に自動作成                   |
-| - エラー/成功メッセージ表示エリア | フィードバック表示                                       |
+| コンポーネント                    | 役割・属性                                          |
+| --------------------------------- | --------------------------------------------------- |
+| SlideDirectorySettings            | 親コンポーネント                                    |
+| - ディレクトリパス入力欄          | 読み取り専用、aria-label="スライド出力ディレクトリ" |
+| - フォルダ選択ボタン              | OSネイティブダイアログを起動                        |
+| - 自動作成チェックボックス        | ディレクトリが存在しない場合に自動作成              |
+| - エラー/成功メッセージ表示エリア | フィードバック表示                                  |
 
 ### UI仕様
 
@@ -68,14 +68,14 @@ Electronデスクトップアプリにおける設定画面のUI/UX仕様を定�
 
 useSlideSettingsフックが返すオブジェクトの構造を以下に示す。
 
-| プロパティ        | 型                                         | 説明               |
-| ----------------- | ------------------------------------------ | ------------------ |
-| settings          | SlideSettings または null                  | 現在の設定         |
-| loading           | boolean                                    | 読み込み中フラグ   |
-| error             | string または null                         | エラーメッセージ   |
-| selectDirectory   | () => Promise\<void\>                      | フォルダ選択関数   |
-| setDirectory      | (path: string) => Promise\<void\>          | 設定保存関数       |
-| validateDirectory | (path: string) => Promise\<ValidationResult\> | パス検証関数       |
+| プロパティ        | 型                                            | 説明             |
+| ----------------- | --------------------------------------------- | ---------------- |
+| settings          | SlideSettings または null                     | 現在の設定       |
+| loading           | boolean                                       | 読み込み中フラグ |
+| error             | string または null                            | エラーメッセージ |
+| selectDirectory   | () => Promise\<void\>                         | フォルダ選択関数 |
+| setDirectory      | (path: string) => Promise\<void\>             | 設定保存関数     |
+| validateDirectory | (path: string) => Promise\<ValidationResult\> | パス検証関数     |
 
 ### バリデーション仕様
 
@@ -104,10 +104,10 @@ useSlideSettingsフックが返すオブジェクトの構造を以下に示す�
 
 SlideSettings型の構造を以下に示す。
 
-| プロパティ          | 型      | デフォルト値           | 説明                   |
-| ------------------- | ------- | ---------------------- | ---------------------- |
-| outputDirectory     | string  | ~/Documents/Slides     | 出力先ディレクトリパス |
-| autoCreateDirectory | boolean | true                   | ディレクトリ自動作成   |
+| プロパティ          | 型      | デフォルト値       | 説明                   |
+| ------------------- | ------- | ------------------ | ---------------------- |
+| outputDirectory     | string  | ~/Documents/Slides | 出力先ディレクトリパス |
+| autoCreateDirectory | boolean | true               | ディレクトリ自動作成   |
 
 ### 設定ファイル配置
 
@@ -135,12 +135,12 @@ SlideSettings型の構造を以下に示す。
 
 IPCResult型は成功または失敗を表すユニオン型であり、以下の2つのパターンを持つ。
 
-| パターン | プロパティ | 型     | 説明                 |
-| -------- | ---------- | ------ | -------------------- |
-| 成功時   | success    | true   | 成功フラグ           |
-|          | data       | T      | 結果データ（型引数） |
-| 失敗時   | success    | false  | 失敗フラグ           |
-|          | error      | string | エラーコード         |
+| パターン | プロパティ | 型             | 説明                 |
+| -------- | ---------- | -------------- | -------------------- |
+| 成功時   | success    | true           | 成功フラグ           |
+|          | data       | T              | 結果データ（型引数） |
+| 失敗時   | success    | false          | 失敗フラグ           |
+|          | error      | string         | エラーコード         |
 |          | message    | string（任意） | エラーメッセージ     |
 
 ---
@@ -197,18 +197,18 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ### UIコンポーネント構成
 
-| コンポーネント             | 役割・属性                                           |
-| -------------------------- | ---------------------------------------------------- |
-| PermissionSettings         | 親コンポーネント                                     |
-| - ヘッダー                 | h2: "Allowed Tools"                                  |
-| - ローディングスケルトン   | データ取得中に表示                                   |
-| - エラー表示               | 取得失敗時に表示                                     |
-| - 許可済みツールリスト     | ツールごとに以下を表示                               |
-|   - ツール名               | 許可されたツールの名前                               |
-|   - 許可日時               | "Allowed: 日時" 形式で表示                           |
-|   - Revokeボタン           | 個別ツールの許可取消                                 |
-| - 空状態表示               | "No tools have been allowed yet"                     |
-| - Clear Allボタン          | 全クリア（確認ダイアログ付き）                       |
+| コンポーネント           | 役割・属性                       |
+| ------------------------ | -------------------------------- |
+| PermissionSettings       | 親コンポーネント                 |
+| - ヘッダー               | h2: "Allowed Tools"              |
+| - ローディングスケルトン | データ取得中に表示               |
+| - エラー表示             | 取得失敗時に表示                 |
+| - 許可済みツールリスト   | ツールごとに以下を表示           |
+| - ツール名               | 許可されたツールの名前           |
+| - 許可日時               | "Allowed: 日時" 形式で表示       |
+| - Revokeボタン           | 個別ツールの許可取消             |
+| - 空状態表示             | "No tools have been allowed yet" |
+| - Clear Allボタン        | 全クリア（確認ダイアログ付き）   |
 
 ### UI仕様
 
@@ -248,6 +248,66 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ---
 
+## 権限要求履歴パネル（Permission History Panel）
+
+**実装タスク**: task-imp-permission-history-001（2026-02-01完了）
+
+### 機能概要
+
+| 項目   | 内容                                                                    |
+| ------ | ----------------------------------------------------------------------- |
+| 機能名 | 権限要求履歴パネル                                                      |
+| 目的   | 権限リクエストの判断履歴（approved/denied/approved_once）を時系列で閲覧 |
+| 永続化 | Zustand persist middleware（localStorage: knowledge-studio-store）      |
+
+### UIコンポーネント構成
+
+| コンポーネント            | 役割・属性                                               |
+| ------------------------- | -------------------------------------------------------- |
+| PermissionHistoryPanel    | 親コンポーネント（仮想スクロール管理）                   |
+| - PermissionHistoryFilter | ツール名・判断結果のフィルタUI（2ドロップダウン）        |
+| - 仮想スクロールリスト    | @tanstack/react-virtual（estimateSize=72px, overscan=5） |
+| - PermissionHistoryItem   | 個別エントリ（emoji icon、判断バッジ、相対時刻）         |
+| - 空状態メッセージ        | 履歴なし時 / フィルタ結果0件時                           |
+| - クリアボタン            | 確認ダイアログ付き全履歴クリア                           |
+| - 件数表示                | "N件の権限要求履歴" 形式                                 |
+
+### UI仕様
+
+| 要素               | 仕様                                             |
+| ------------------ | ------------------------------------------------ |
+| リスト最大高       | 400px                                            |
+| エントリ推定サイズ | 72px（仮想スクロール用）                         |
+| オーバースキャン   | 5エントリ                                        |
+| 判断バッジ色       | approved: 緑、denied: 赤、approved_once: 黄      |
+| 時刻表示           | 24時間以内: "N分前"/"N時間前"、それ以降: "N日前" |
+| ツールアイコン     | emoji表示（Bash:💻、Read:📖 等、デフォルト:🔧）  |
+
+### フィルタ仕様
+
+| フィルタ項目 | 型                | 選択肢                                   |
+| ------------ | ----------------- | ---------------------------------------- |
+| ツール名     | select (combobox) | 履歴内の全ツール名を動的生成             |
+| 判断結果     | select (combobox) | 全て / approved / denied / approved_once |
+
+### データ制限
+
+| パラメータ                     | 値   | 説明               |
+| ------------------------------ | ---- | ------------------ |
+| PERMISSION_HISTORY_MAX_ENTRIES | 1000 | 履歴最大保持件数   |
+| ARGS_SNAPSHOT_MAX_LENGTH       | 200  | 引数要約最大文字数 |
+
+### テストカバレッジ
+
+| 指標              | 値     |
+| ----------------- | ------ |
+| テスト数          | 63     |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 95.16% |
+| Function Coverage | 100%   |
+
+---
+
 ## 関連ドキュメント
 
 - [security-api-electron.md](./security-api-electron.md) - IPCセキュリティ詳細
@@ -259,25 +319,31 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ## 実装ファイル
 
-| ファイル                                                                   | 役割                     |
-| -------------------------------------------------------------------------- | ------------------------ |
-| apps/desktop/src/renderer/components/settings/SlideDirectorySettings.tsx   | UIコンポーネント         |
-| apps/desktop/src/renderer/hooks/useSlideSettings.ts                        | カスタムフック           |
-| apps/desktop/src/renderer/components/settings/PermissionSettings/index.tsx | 許可設定UIコンポーネント |
-| apps/desktop/src/preload/channels.ts                                       | チャンネル定義           |
-| apps/desktop/src/preload/index.ts                                          | API公開                  |
-| apps/desktop/src/main/settings/slideSettingsStore.ts                       | 永続化ストア             |
-| apps/desktop/src/main/ipc/slideSettingsHandlers.ts                         | IPCハンドラー            |
-| apps/desktop/src/main/services/skill/PermissionStore.ts                    | 許可永続化ストア         |
-| apps/desktop/src/main/ipc/permission-handlers.ts                           | 許可IPCハンドラー        |
-| packages/shared/src/types/permission-store.ts                              | 許可型定義               |
+| ファイル                                                                                     | 役割                       |
+| -------------------------------------------------------------------------------------------- | -------------------------- |
+| apps/desktop/src/renderer/components/settings/SlideDirectorySettings.tsx                     | UIコンポーネント           |
+| apps/desktop/src/renderer/hooks/useSlideSettings.ts                                          | カスタムフック             |
+| apps/desktop/src/renderer/components/settings/PermissionSettings/index.tsx                   | 許可設定UIコンポーネント   |
+| apps/desktop/src/preload/channels.ts                                                         | チャンネル定義             |
+| apps/desktop/src/preload/index.ts                                                            | API公開                    |
+| apps/desktop/src/main/settings/slideSettingsStore.ts                                         | 永続化ストア               |
+| apps/desktop/src/main/ipc/slideSettingsHandlers.ts                                           | IPCハンドラー              |
+| apps/desktop/src/main/services/skill/PermissionStore.ts                                      | 許可永続化ストア           |
+| apps/desktop/src/main/ipc/permission-handlers.ts                                             | 許可IPCハンドラー          |
+| packages/shared/src/types/permission-store.ts                                                | 許可型定義                 |
+| apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryPanel.tsx  | 履歴パネルUIコンポーネント |
+| apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryItem.tsx   | 個別エントリ表示           |
+| apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryFilter.tsx | フィルタUIコンポーネント   |
+| apps/desktop/src/renderer/components/skill/permissionHistory.ts                              | データモデル・ヘルパー関数 |
+| apps/desktop/src/renderer/store/slices/permissionHistorySlice.ts                             | 履歴Store Slice            |
 
 ---
 
 ## バージョン履歴
 
-| Version | Date       | Changes                                                    |
-| ------- | ---------- | ---------------------------------------------------------- |
-| 1.1.1   | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換         |
-| 1.1.0   | 2026-01-26 | PermissionSettings UI追加（TASK-3-1-E）                    |
-| 1.0.0   | 2026-01-14 | 初版作成: スライド出力ディレクトリ設定機能                 |
+| Version | Date       | Changes                                                       |
+| ------- | ---------- | ------------------------------------------------------------- |
+| 1.2.0   | 2026-02-01 | PermissionHistoryPanel追加（task-imp-permission-history-001） |
+| 1.1.1   | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換            |
+| 1.1.0   | 2026-01-26 | PermissionSettings UI追加（TASK-3-1-E）                       |
+| 1.0.0   | 2026-01-14 | 初版作成: スライド出力ディレクトリ設定機能                    |

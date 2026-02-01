@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-31T15:16:30.902Z",
-  "totalKeywords": 962,
+  "generated": "2026-01-31T22:21:50.994Z",
+  "totalKeywords": 961,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -88,7 +88,6 @@
       "interfaces-system-prompt.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
-      "quality-e2e-testing.md",
       "rag-desktop-state.md",
       "rag-knowledge-graph.md",
       "rag-query-pipeline.md",
@@ -194,7 +193,6 @@
       "interfaces-system-prompt.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
-      "quality-e2e-testing.md",
       "quality-requirements.md",
       "rag-query-pipeline.md",
       "rag-search-crag.md",
@@ -299,7 +297,6 @@
       "local-agent.md",
       "overview.md",
       "plugin-development.md",
-      "quality-e2e-testing.md",
       "quality-requirements.md",
       "rag-desktop-state.md",
       "rag-knowledge-graph.md",
@@ -641,7 +638,6 @@
       "interfaces-chat-history.md",
       "interfaces-llm.md",
       "interfaces-system-prompt.md",
-      "quality-e2e-testing.md",
       "quality-requirements.md",
       "security-api-electron.md",
       "security-skill-ipc.md",
@@ -866,6 +862,12 @@
       "arch-state-management.md"
     ],
     "スキル実行状態管理": [
+      "arch-state-management.md"
+    ],
+    "permissionHistorySlice": [
+      "arch-state-management.md"
+    ],
+    "権限要求履歴管理": [
       "arch-state-management.md"
     ],
     "UI": [
@@ -1537,7 +1539,6 @@
     ],
     "テスト戦略": [
       "database-implementation.md",
-      "quality-e2e-testing.md",
       "quality-requirements.md"
     ],
     "ベクトル検索実装": [
@@ -2634,24 +2635,6 @@
     "個人開発における注意点": [
       "plugin-development.md"
     ],
-    "テスト仕様": [
-      "quality-e2e-testing.md"
-    ],
-    "テストフィクスチャ": [
-      "quality-e2e-testing.md"
-    ],
-    "フィクスチャ詳細仕様": [
-      "quality-e2e-testing.md"
-    ],
-    "フィクスチャ検証テスト": [
-      "quality-e2e-testing.md"
-    ],
-    "SkillScanner": [
-      "quality-e2e-testing.md"
-    ],
-    "テスト統合パターン": [
-      "quality-e2e-testing.md"
-    ],
     "非機能要件": [
       "quality-requirements.md",
       "rag-search-keyword.md"
@@ -3715,6 +3698,15 @@
       "ui-ux-settings.md"
     ],
     "Settings": [
+      "ui-ux-settings.md"
+    ],
+    "権限要求履歴パネル": [
+      "ui-ux-settings.md"
+    ],
+    "History": [
+      "ui-ux-settings.md"
+    ],
+    "Panel": [
       "ui-ux-settings.md"
     ],
     "実装ファイル": [

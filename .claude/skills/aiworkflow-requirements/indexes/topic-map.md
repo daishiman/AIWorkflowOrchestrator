@@ -70,14 +70,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| パフォーマンス要件 | L6 |
 | テスト戦略（TDD実践ガイド） | L94 |
-| セキュリティ | L330 |
-| 可用性 | L358 |
-| 保守性 | L376 |
-| アクセシビリティ | L476 |
-| テストカバレッジ目標 | L495 |
-| 関連ドキュメント | L572 |
-| 完了タスク | L580 |
-| 変更履歴 | L640 |
+| セキュリティ | L328 |
+| 可用性 | L356 |
+| 保守性 | L374 |
+| アクセシビリティ | L474 |
+| テストカバレッジ目標 | L493 |
+| 関連ドキュメント | L570 |
+| 完了タスク | L578 |
+| 変更履歴 | L638 |
 
 ---
 
@@ -237,9 +237,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| 残課題（未タスク） | L416 |
-| 関連ドキュメント | L427 |
-| 変更履歴 | L442 |
+| 残課題（未タスク） | L478 |
+| 関連ドキュメント | L489 |
+| 変更履歴 | L505 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -268,17 +268,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Agent Execution UI 型定義（AGENT-004） | L16 |
-| AgentSDKPage（ポストリリーステスト検証UI） | L252 |
-| RiskLevel型 | L113 |
-| ToolMetadata型 | L124 |
-| RISK_LEVEL_STYLES定数 | L135 |
-| PermissionDialog ツールアイコンマッピング | L144 |
-| toolMetadataユーティリティ関数 | L188 |
-| 関連ドキュメント | L315 |
-| 完了タスク（task-imp-permission-tool-icons-001） | L358 |
-| 変更履歴 | L383 |
-
-**追加キーワード**: RiskLevel, ToolMetadata, RISK_LEVEL_STYLES, DEFAULT_METADATA, toolMetadata, getRiskLevel, getSecurityImpact, getToolMetadata, WCAG
+| AgentSDKPage（ポストリリーステスト検証UI） | L302 |
+| 関連ドキュメント | L365 |
+| 完了タスク | L376 |
+| 変更履歴 | L408 |
 
 ### references/interfaces-agent-sdk.md
 
@@ -720,30 +713,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L12 |
-| 概要 | L24 |
-| コンポーネント階層 | L30 |
-| コンポーネント仕様 | L57 |
-| PermissionDialog（TASK-7C実装済） | L133 |
-| ツールアイコンバッジ（TASK-IMP-permission-tool-icons） | L154 |
-| permissionDescriptions モジュール | L192 |
-| getDescription API | L204 |
-| ツール別説明テンプレート（12種） | L213 |
-| セキュリティ対策（safeStringヘルパー） | L230 |
-| PermissionDialogとの統合 | L242 |
-| AgentOutputStream | L246 |
-| インタラクション設計 | L263 |
-| 視覚デザイン | L291 |
-| アクセシビリティ（WCAG 2.1 AA） | L315 |
-| toolMetadataモジュール仕様（task-imp-permission-tool-metadata-001） | L390 |
-| 公開API（getRiskLevel, getSecurityImpact, getToolMetadata） | L399 |
-| リスクレベル色分け（WCAG準拠） | L407 |
-| RISK_LEVEL_STYLES定数 | L426 |
-| PermissionDialog統合（toolMetadata連携） | L442 |
-| ツールカバレッジマッピング | L453 |
-| 完了タスク（TASK-7C, TASK-IMP-permission-tool-icons, task-imp-permission-readable-ui-001, task-imp-permission-tool-metadata-001） | L342 |
-| 関連ドキュメント | L423 |
-
-**追加キーワード**: permissionDescriptions, getDescription, 人間可読, 折りたたみUI, aria-expanded, safeString, Progressive Disclosure, ツール説明テンプレート, toolMetadata, ToolMetadata, RiskLevel, リスクレベル, セキュリティ影響, getSecurityImpact, getRiskLevel, RISK_LEVEL_STYLES, DEFAULT_METADATA, WCAG
+| 概要 | L26 |
+| コンポーネント階層 | L32 |
+| コンポーネント仕様 | L59 |
+| インタラクション設計 | L278 |
+| 視覚デザイン | L306 |
+| アクセシビリティ（WCAG 2.1 AA） | L330 |
+| 完了タスク | L342 |
+| 関連ドキュメント | L378 |
 
 ### references/ui-ux-components.md
 
@@ -933,9 +910,10 @@ node scripts/list-specs.js --topics
 | セキュリティ要件 | L148 |
 | テスト要件 | L163 |
 | ツール許可設定（Permission Settings） | L186 |
-| 関連ドキュメント | L251 |
-| 実装ファイル | L260 |
-| バージョン履歴 | L277 |
+| 権限要求履歴パネル（Permission History Panel） | L251 |
+| 関連ドキュメント | L311 |
+| 実装ファイル | L320 |
+| バージョン履歴 | L342 |
 
 ### references/ui-ux-system-prompt.md
 
@@ -1038,7 +1016,6 @@ node scripts/list-specs.js --topics
 | エクスポート一覧 | L20 |
 | DANGEROUS_PATTERNS | L35 |
 | ALLOWED_TOOLS_WHITELIST | L92 |
-| toolMetadataモジュール（PermissionDialog表示用） | L114 |
 | API リファレンス | L116 |
 | 使用例 | L193 |
 | テストカバレッジ | L224 |
@@ -1270,9 +1247,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Environment Backend サービス | L17 |
-| スキル管理サービス | L84 |
-| 関連ドキュメント | L407 |
+| Environment Backend サービス | L16 |
+| スキル管理サービス | L83 |
+| 関連ドキュメント | L390 |
 
 ### references/arch-feature-addition.md
 
@@ -1294,10 +1271,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L20 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L115 |
-| skillSlice（スキル実行状態管理） | L205 |
-| 関連ドキュメント | L330 |
+| Zustand Sliceパターン | L21 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L117 |
+| skillSlice（スキル実行状態管理） | L207 |
+| permissionHistorySlice（権限要求履歴管理） | L333 |
+| 関連ドキュメント | L436 |
 
 ### references/arch-ui-components.md
 
@@ -1387,8 +1365,8 @@ node scripts/list-specs.js --topics
 | 機能追加の手順 | L431 |
 | 構造の選択理由 | L463 |
 | 依存関係ルール | L478 |
-| pnpm-workspace 設定 | L523 |
-| 関連ドキュメント | L542 |
+| pnpm-workspace 設定 | L505 |
+| 関連ドキュメント | L524 |
 
 ### references/discord-bot.md
 
@@ -1517,19 +1495,6 @@ node scripts/list-specs.js --topics
 | サンプルプラグイン仕様 | L317 |
 | 個人開発における注意点 | L345 |
 | 関連ドキュメント | L373 |
-
-### references/quality-e2e-testing.md
-
-| セクション | 行 |
-|------------|----|\n| 変更履歴 | L8 |
-| 概要 | L16 |
-| テスト戦略 | L30 |
-| E2Eテストフィクスチャ | L50 |
-| フィクスチャ詳細仕様 | L87 |
-| フィクスチャ検証テスト | L137 |
-| SkillScannerテスト統合パターン | L193 |
-| 完了タスク | L213 |
-| 関連ドキュメント | L221 |
 
 ### references/rag-desktop-state.md
 
