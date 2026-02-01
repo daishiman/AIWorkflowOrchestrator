@@ -77,6 +77,44 @@
 
 ---
 
+## ChatPanel統合パターン（TASK-7D）
+
+TASK-7D ChatPanel Agent統合で確立されたパネル統合パターン。既存パネルに子コンポーネントを条件レンダーで統合する際の設計指針。
+
+### 統合パターン概要
+
+| 項目 | 内容 |
+|------|------|
+| 対象 | ChatPanel（既存Organism） + SkillStreamingView（新規Organism） |
+| 統合方式 | 条件レンダー（`isExecuting && selectedSkillName`） |
+| 状態管理 | Zustand Store個別セレクタ（再レンダー最適化） |
+| 外部API公開 | forwardRef + useImperativeHandle |
+
+### レイアウトパターン
+
+| パターン | 説明 | 適用例 |
+|----------|------|--------|
+| 条件レンダー統合 | Store状態に基づき子コンポーネントを切替表示 | ChatPanel → SkillStreamingView |
+| ヘッダー・コンテンツ分離 | StatusBadgeをヘッダー、StreamMessageをコンテンツに配置 | SkillStreamingView内部 |
+| 折りたたみ履歴 | ToolExecutionHistoryを展開・折りたたみで表示 | ツール実行結果 |
+
+### アクセシビリティ統合パターン
+
+| 要件 | 実装パターン |
+|------|-------------|
+| ストリーミング通知 | `aria-live="polite"` でメッセージ追加を通知 |
+| ステータス変更通知 | StatusBadgeに `role="status"` |
+| フォーカス管理 | パネル切替時にコンテンツ先頭へフォーカス移動 |
+| キーボード操作 | ToolExecutionHistoryの展開をEnter/Spaceで操作 |
+
+### 関連仕様
+
+- [ChatPanel統合仕様](./interfaces-agent-sdk-ui.md) - TASK-7D完了タスクセクション
+- [ChatPanel統合UIフロー](./ui-ux-agent-execution.md) - Agent Execution UI全体フロー
+- [SkillStreamingView詳細](./ui-ux-feature-components.md) - コンポーネント仕様
+
+---
+
 ## 関連ドキュメント
 
 - [基本UI/UXガイドライン](./ui-ux-basics.md)
