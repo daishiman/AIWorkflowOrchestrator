@@ -13,6 +13,11 @@ import type {
   SkillStreamMessage,
   SkillPermissionRequest,
 } from "@repo/shared";
+import {
+  createHistoryEntry,
+  type PermissionDecision,
+} from "../../components/skill/permissionHistory";
+import type { PermissionHistorySlice } from "./permissionHistorySlice";
 
 // ============================================
 // エラーメッセージ定数
@@ -298,6 +303,23 @@ export const createSkillSlice: StateCreator<SkillSlice, [], [], SkillSlice> = (
   respondToSkillPermission: (approved, remember = false) => {
     const { pendingPermission } = get();
     if (pendingPermission) {
+      // 履歴記録
+      const decision: PermissionDecision = !approved
+        ? "denied"
+        : remember
+          ? "approved"
+          : "approved_once";
+      const entry = createHistoryEntry({
+        toolName: pendingPermission.toolName,
+        args: (pendingPermission.args ?? {}) as Record<string, unknown>,
+        decision,
+      });
+      const addHistoryEntry = (get() as unknown as PermissionHistorySlice)
+        .addHistoryEntry;
+      if (addHistoryEntry) {
+        addHistoryEntry(entry);
+      }
+
       window.electronAPI?.skill?.sendPermissionResponse({
         requestId: pendingPermission.requestId,
         approved,
