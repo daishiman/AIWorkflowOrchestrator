@@ -127,6 +127,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-7C | PermissionDialog実装 | 2026-01-30 |
 | #585 | PermissionDialog人間可読UI改善 | 2026-01-30 |
 | TASK-7D | ChatPanel統合（SkillStreamingView実装） | 2026-01-30 |
+| #606 | PermissionDialogリスクレベル・セキュリティメタデータ表示 | 2026-01-31 |
 
 ---
 
@@ -134,6 +135,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.6.0   | 2026-01-31 | task-imp-permission-tool-metadata-001完了タスク追加（PermissionDialogリスクレベル・セキュリティメタデータ表示、toolMetadata統合） |
 | 2.5.0   | 2026-01-30 | TASK-7D完了タスク追加（ChatPanel統合・SkillStreamingView） |
 | 2.4.0   | 2026-01-30 | task-imp-permission-readable-ui-001完了タスク追加（PermissionDialog人間可読UI改善、permissionDescriptions統合） |
 | 2.3.0   | 2026-01-30 | TASK-7C完了タスク追加（PermissionDialog実装）                                       |

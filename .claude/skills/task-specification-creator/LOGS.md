@@ -52,6 +52,42 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-01 - 未タスク仕様書5件新規作成]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned + create-unassigned-task
+- **Result**: ✓ 成功
+- **Notes**: システム仕様書（aiworkflow-requirements）とコードベースTODO分析から未タスク5件を検出・仕様書作成。9セクションテンプレート完全準拠。Why/What/Howの品質基準を満たした指示書を`docs/30-workflows/unassigned-task/`に配置。
+
+### 作成ファイル
+
+| # | ファイル | 分類 | 優先度 | 発見元 |
+|---|---------|------|--------|--------|
+| 1 | `task-permission-toolmetadata-whitelist-sync.md` | セキュリティ | 中 | security-skill-execution.md仕様Gap |
+| 2 | `task-permission-risk-level-styles-shared.md` | リファクタリング | 低 | interfaces-agent-sdk-ui.md仕様Gap |
+| 3 | `task-permission-toolmetadata-i18n.md` | 改善 | 低 | ui-ux-agent-execution.md仕様Gap |
+| 4 | `task-community-integration-test-alignment.md` | バグ修正 | 中 | コードTODO（community-integration.test.tsx L178/238/378/486） |
+| 5 | `task-imp-skillstream-type-unification.md` | リファクタリング | 中 | コードTODO（setupSkillListeners.ts:23） |
+
+---
+
+## [2026-01-31 - task-imp-permission-tool-metadata-001 Phase 12完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 (documentation)
+- **Result**: ✓ 成功
+- **Notes**: Phase 1-12全完了。56テスト追加（toolMetadata 37 + PermissionDialog統合 19）、全258テスト PASS。未タスク3件検出・指示書作成（docs/30-workflows/unassigned-task/配置）。
+
+---
+
+## [2026-01-31 - task-imp-permission-tool-metadata-001 Phase 1-12 完了]
+
+- Agent: task-specification-creator
+- Phase: Phase 1-12 全フェーズ実行完了
+- Result: success
+- Notes: PermissionDialogリスクレベル・セキュリティメタデータ表示。Phase 1-12をステップバイステップで実行。全258テストPASS、カバレッジ100%。未タスク3件検出。
+
+---
 ## [2026-01-31 - unassigned task generation from system specs]
 
 - Agent: generate-unassigned-task
@@ -2315,10 +2351,113 @@ if (artifactPath) {
 
 ---
 
+## [2026-02-01T02:00:00.000Z]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: 未タスク検出・仕様書作成（TASK-8C-E Post-Phase 12）
+- **Result**: ✓ 成功
+- **Notes**: quality-e2e-testing.md Gap分析から2件の未タスク仕様書を作成
+
+### 検出プロセス
+
+| ソース                          | 結果                          |
+| ------------------------------- | ----------------------------- |
+| TASK-8C-E Phase 3/10レビュー   | PASS（MINOR指摘なし）         |
+| TASK-8C-E Phase 11手動テスト   | 発見事項0件                   |
+| TASK-8C-E Phase 12未タスクレポート | 0件（既報）               |
+| コードコメント                  | TODO/FIXME/HACK/XXX 0件      |
+| システム仕様書（quality-e2e-testing.md） | **2件検出**          |
+
+### 作成した未タスク仕様書
+
+| # | ファイル名                                      | タスクID                                       | 分類 | 優先度 | 規模 |
+| - | ----------------------------------------------- | ---------------------------------------------- | ---- | ------ | ---- |
+| 1 | `task-imp-e2e-fixture-subresource-expansion.md` | task-imp-e2e-fixture-subresource-expansion-001 | 改善 | 中     | 小   |
+| 2 | `task-imp-e2e-fixture-edge-cases.md`            | task-imp-e2e-fixture-edge-cases-001            | 改善 | 低     | 小   |
+
+### Gap詳細
+
+| Gap                                     | 根拠                                                         |
+| --------------------------------------- | ------------------------------------------------------------ |
+| サブリソース型4/6未カバー               | ScannedSkillMetadataが6型定義、E2Eフィクスチャは2型のみカバー |
+| エッジケースフィクスチャなし            | 空allowed-tools/空description/bodyなし等のE2E検証が未カバー  |
+
+### 品質チェック（9セクション検証）
+
+| セクション | task-1 | task-2 |
+| ---------- | ------ | ------ |
+| 1. Why     | ✅     | ✅     |
+| 2. What    | ✅     | ✅     |
+| 3. How     | ✅     | ✅     |
+| 4. 実行手順 | ✅    | ✅     |
+| 5. 完了条件 | ✅    | ✅     |
+| 6. 検証方法 | ✅    | ✅     |
+| 7. リスク   | ✅    | ✅     |
+| 8. 参照情報 | ✅    | ✅     |
+| 9. 備考     | ✅    | ✅     |
+
+---
+
+## [2026-02-01T00:00:00.000Z]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了（TASK-8C-E E2Eテストフィクスチャ作成）
+- **Result**: ✓ 成功
+- **Notes**: TDD Red→Green→Refactorサイクル完遂、29テスト全PASS
+
+### TASK-8C-E サマリー
+
+| 項目         | 内容                                           |
+| ------------ | ---------------------------------------------- |
+| タスクID     | TASK-8C-E                                      |
+| タスク名     | E2Eテストフィクスチャ作成                      |
+| 完了Phase    | Phase 1-12（Phase 13 PR作成はユーザー指示で未実施） |
+| テスト結果   | 29/29 PASS                                     |
+| 未タスク検出 | 0件                                            |
+| 複雑度       | small（見積り通り）                            |
+
+### Phase 12 成果物
+
+| 成果物         | パス                                                          |
+| -------------- | ------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-8C-E/outputs/phase-12/implementation-guide.md` |
+| 更新記録       | `docs/30-workflows/TASK-8C-E/outputs/phase-12/documentation-changelog.md` |
+| 未タスクレポート | `docs/30-workflows/TASK-8C-E/outputs/phase-12/unassigned-task-report.md` |
+
+### Phase 12 Task 2 実施結果
+
+| Step   | 対象                  | 結果                                    |
+| ------ | --------------------- | --------------------------------------- |
+| 1-A    | タスク完了記録        | ✅ 実施（status更新, LOGS.md×2更新）     |
+| 1-B    | 実装状況テーブル      | ➖ 該当なし（静的フィクスチャのため）    |
+| 1-C    | 関連タスクテーブル    | ✅ 実施（index.md, B/C/D depends_on更新）|
+| Step 2 | システム仕様更新      | ➖ 該当なし（新規API/インターフェースなし）|
+
+### コード成果物
+
+| ファイル                                                              | 種類           |
+| --------------------------------------------------------------------- | -------------- |
+| `apps/desktop/src/__tests__/__fixtures__/skills/test-skill/SKILL.md`  | 完全構成フィクスチャ |
+| `apps/desktop/src/__tests__/__fixtures__/skills/test-skill/agents/test-agent.md` | サブエージェント |
+| `apps/desktop/src/__tests__/__fixtures__/skills/test-skill/references/test-ref.md` | 参照資料 |
+| `apps/desktop/src/__tests__/__fixtures__/skills/another-skill/SKILL.md` | 最小構成フィクスチャ |
+| `apps/desktop/src/__tests__/__fixtures__/skills/invalid-skill/README.md` | 無効フィクスチャ |
+| `apps/desktop/src/__tests__/fixtures/skills.fixture.test.ts`          | 検証テスト（29ケース） |
+
+---
+
 ## [2026-01-29T17:02:09.450Z]
 
 - **Agent**: unknown
 - **Phase**: 未タスク指示書作成（TASK-7A Phase 12）
+- **Result**: ✓ 成功
+
+---
+
+## [2026-01-31T22:43:00.786Z]
+
+- **Agent**: unknown
+- **Phase**: Phase 12 - Unassigned Task Spec Improvement
 - **Result**: ✓ 成功
 
 ---

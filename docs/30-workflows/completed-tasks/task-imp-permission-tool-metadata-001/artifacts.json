@@ -1,0 +1,213 @@
+{
+  "featureName": "task-imp-permission-tool-metadata-001",
+  "description": "PermissionDialogツールリスクレベル・セキュリティメタデータ表示",
+  "issueNumber": 606,
+  "createdAt": "2026-01-31T22:49:12+09:00",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "type": "document",
+          "description": "機能要件・非機能要件・受け入れ基準の定義"
+        },
+        {
+          "name": "スコープ定義書",
+          "path": "outputs/phase-1/scope-definition.md",
+          "type": "document",
+          "description": "スコープ境界とリスクレベル定義の確定"
+        }
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計書",
+          "path": "outputs/phase-2/architecture-design.md",
+          "type": "document",
+          "description": "toolMetadata.tsモジュール設計・RiskBadgeコンポーネント設計"
+        },
+        {
+          "name": "UIデザイン仕様書",
+          "path": "outputs/phase-2/ui-design-specification.md",
+          "type": "document",
+          "description": "リスクバッジ配色・レイアウト・インタラクション仕様"
+        }
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計レビューレポート",
+          "path": "outputs/phase-3/design-review-report.md",
+          "type": "document",
+          "description": "設計レビュー結果・PASS/MINOR/MAJOR判定"
+        }
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "type": "document",
+          "description": "テスト設計・テストケース一覧"
+        },
+        {
+          "name": "toolMetadataテスト",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/toolMetadata.test.ts",
+          "type": "test",
+          "description": "toolMetadata.tsのユニットテスト（TDD Red）"
+        },
+        {
+          "name": "PermissionDialogメタデータテスト",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.metadata.test.tsx",
+          "type": "test",
+          "description": "PermissionDialogリスクバッジ統合テスト（TDD Red）"
+        }
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "toolMetadataモジュール",
+          "path": "apps/desktop/src/renderer/components/skill/toolMetadata.ts",
+          "type": "code",
+          "description": "ツールリスクレベル・セキュリティ影響テキスト定義モジュール"
+        },
+        {
+          "name": "PermissionDialog修正",
+          "path": "apps/desktop/src/renderer/components/skill/PermissionDialog.tsx",
+          "type": "code",
+          "description": "RiskBadgeコンポーネント統合"
+        },
+        {
+          "name": "実装サマリー",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "type": "document",
+          "description": "実装内容のサマリー"
+        }
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "拡充テスト",
+          "path": "outputs/phase-6/expanded-test-report.md",
+          "type": "document",
+          "description": "テスト拡充レポート"
+        }
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document",
+          "description": "テストカバレッジ測定結果"
+        }
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタリングレポート",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "type": "document",
+          "description": "リファクタリング内容と結果"
+        }
+      ]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-assurance-report.md",
+          "type": "document",
+          "description": "型チェック・Lint・セキュリティ・アクセシビリティ検証結果"
+        }
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビューレポート",
+          "path": "outputs/phase-10/final-review-report.md",
+          "type": "document",
+          "description": "最終レビュー結果・PASS/MINOR/MAJOR/CRITICAL判定"
+        }
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テストレポート",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "type": "document",
+          "description": "手動テスト結果・UX確認・アクセシビリティ確認"
+        }
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document",
+          "description": "Part 1（中学生レベル）+ Part 2（技術者レベル）"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document",
+          "description": "変更内容の記録"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document",
+          "description": "未完了タスクの検出結果（0件でも出力必須）"
+        }
+      ]
+    },
+    "phase-13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "PRリンク",
+          "path": "outputs/phase-13/pr-creation-report.md",
+          "type": "document",
+          "description": "PR作成結果・CIステータス"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "phase-2": ["phase-1"],
+    "phase-3": ["phase-2"],
+    "phase-4": ["phase-3"],
+    "phase-5": ["phase-4"],
+    "phase-6": ["phase-5"],
+    "phase-7": ["phase-6"],
+    "phase-8": ["phase-7"],
+    "phase-9": ["phase-8"],
+    "phase-10": ["phase-9"],
+    "phase-11": ["phase-10"],
+    "phase-12": ["phase-11"],
+    "phase-13": ["phase-12"]
+  }
+}

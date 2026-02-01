@@ -28,6 +28,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@repo/shared": "workspace:*",
     "@supabase/supabase-js": "^2.86.2",
+    "@tanstack/react-virtual": "^3.13.18",
     "@xyflow/react": "^12.10.0",
     "better-sqlite3": "^12.5.0",
     "chokidar": "^5.0.0",

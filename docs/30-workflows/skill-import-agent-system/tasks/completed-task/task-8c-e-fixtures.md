@@ -6,7 +6,7 @@ phase: 8
 depends_on: [TASK-2A]
 parallel_with: [TASK-8C-A]
 blocks: [TASK-8C-B, TASK-8C-C, TASK-8C-D]
-status: pending
+status: completed
 priority: high
 estimated_complexity: small
 tags: [test, fixtures]
@@ -137,7 +137,7 @@ allowed-tools:
 
 ## 完了条件
 
-- [ ] test-skill フィクスチャが作成されている
-- [ ] another-skill フィクスチャが作成されている
-- [ ] invalid-skill（無効なスキル）フィクスチャが作成されている
-- [ ] SkillScanner がフィクスチャを正しくパースできる
+- [x] test-skill フィクスチャが作成されている
+- [x] another-skill フィクスチャが作成されている
+- [x] invalid-skill（無効なスキル）フィクスチャが作成されている
+- [x] SkillScanner がフィクスチャを正しくパースできる

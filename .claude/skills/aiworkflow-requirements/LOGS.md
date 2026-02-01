@@ -36,6 +36,38 @@
 
 ---
 
+## 2026-02-01: task-imp-permission-tool-metadata-001 仕様追加記述セッション
+
+| 項目         | 内容                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-tool-metadata-001                                                                   |
+| 操作         | P1/P2/P3仕様Gap修正 + topic-map再生成                                                                   |
+| 対象ファイル | interfaces-agent-sdk-ui.md, security-skill-execution.md, ui-ux-agent-execution.md, topic-map.md        |
+| 結果         | success                                                                                                 |
+| 備考         | 仕様カバレッジ85%→95%改善。RiskLevel/ToolMetadata型定義、toolMetadataクロスリファレンス、ツールカバレッジマッピング追加 |
+
+### 更新詳細
+
+- **更新**: `references/interfaces-agent-sdk-ui.md`（v1.4.0 → v1.5.0）
+  - RiskLevel型（4値+UIスタイルテーブル）追加
+  - ToolMetadata型定義追加
+  - RISK_LEVEL_STYLES定数ドキュメント追加
+  - toolMetadataユーティリティ関数APIテーブル（getRiskLevel, getSecurityImpact, getToolMetadata）追加
+- **更新**: `references/security-skill-execution.md`（v1.2.0 → v1.3.0）
+  - toolMetadataモジュール（PermissionDialog表示用）サブセクション追加
+  - ALLOWED_TOOLS_WHITELIST vs toolMetadata比較テーブル（11 vs 12ツール）追加
+  - 差異説明とクロスリファレンス追加
+- **更新**: `references/ui-ux-agent-execution.md`（v1.6.0 → v1.7.0）
+  - RISK_LEVEL_STYLES定数仕様追加
+  - PermissionDialog統合パターン（IIFE, security impact, aria-label, style application）追加
+  - ツールカバレッジマッピングテーブル追加
+  - デザイン哲学（DEFAULT_METADATAフォールバック）追加
+- **更新**: `indexes/topic-map.md`
+  - 8エントリ追加（ui-ux-agent-execution 3件, interfaces-agent-sdk-ui 4件, security-skill-execution 1件）
+  - キーワード7件追加（ToolMetadata, DEFAULT_METADATA, WCAG, RISK_LEVEL_STYLES, getRiskLevel, getSecurityImpact, getToolMetadata）
+
+---
+
 ## 2026-01-31: aiworkflow-requirements v8.19.0 スキル更新（skill-creator準拠）
 
 | 項目         | 内容                                                                          |
@@ -61,6 +93,40 @@
 
 ---
 
+## 2026-01-31: task-imp-permission-tool-metadata-001 Phase 12 ドキュメント更新
+
+| 項目         | 内容                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-tool-metadata-001                                                                   |
+| 操作         | Phase 1-12 全フェーズ完了                                                                               |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/toolMetadata.ts`, `PermissionDialog.tsx`                   |
+| 結果         | success                                                                                                 |
+| 備考         | ツールリスクレベル・セキュリティメタデータ表示。56テスト追加、全258テスト PASS                          |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-agent-execution.md`（v1.5.0 → v1.6.0）
+  - toolMetadataモジュール仕様セクション追加（RiskLevel型、公開API 3種、リスクレベル色分けWCAG準拠）
+  - 完了タスク・テスト結果サマリー追加
+- **更新**: `references/ui-ux-components.md`（v2.5.0 → v2.6.0）
+  - 完了タスクテーブルに #606 追加
+- **更新**: `references/interfaces-agent-sdk-ui.md`（v1.3.2 → v1.4.0）
+  - PermissionDialog説明にtoolMetadataリスクバッジ参照追加
+  - 関連ドキュメントにui-ux-agent-execution.md（toolMetadata仕様）追加
+- **更新**: `indexes/topic-map.md`
+  - toolMetadata関連セクション3エントリ追加、キーワード追加
+
+### 実装内容
+
+| 項目                    | 内容                                                                                |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| 新規ファイル            | toolMetadata.ts（RiskLevel型、ToolMetadata型、12ツール定義、3公開API）               |
+| 修正ファイル            | PermissionDialog.tsx（RISK_LEVEL_STYLES追加、リスクバッジ・影響テキスト統合）        |
+| テスト追加              | toolMetadata.test.ts（37件）、PermissionDialog.metadata.test.tsx（19件）            |
+| カバレッジ              | toolMetadata.ts Lines/Branches/Functions/Statements 100%                            |
+
+---
+
 ## 2026-01-31: TASK-7D Phase 1-12再実行セッション・システム仕様書追加更新
 
 | 項目         | 内容                                                                          |
@@ -82,7 +148,6 @@
 Phase 1-12全成果物を検証し、23件のoutputファイルを確認。documentation-changelog.mdのシステムドキュメント更新状況を「更新予定」→「完了」に更新。未タスク検出レポートに既存タスク仕様書マッピングセクションを追加。
 
 ---
-
 ## 2026-01-31: システム仕様書Gap分析 → 未タスク仕様書2件作成
 
 | 項目         | 内容                                           |
@@ -1975,6 +2040,119 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | ------------ | -------------------------------------------------------------------------------------------- |
 | 実装ガイド   | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/outputs/phase-12/implementation-guide.md` |
 | タスク仕様書 | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/`                                        |
+
+---
+
+## [2026-02-01T00:00:00.000Z]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録（TASK-8C-E）
+- **Result**: ✓ 成功
+- **Notes**: E2Eテストフィクスチャ作成タスク完了
+
+### タスク概要
+
+| 項目     | 内容                                              |
+| -------- | ------------------------------------------------- |
+| タスクID | TASK-8C-E                                         |
+| タスク名 | E2Eテストフィクスチャ作成                         |
+| 完了日   | 2026-02-01                                        |
+| Phase    | Phase 1-12 完了（Phase 13 PR作成はユーザー指示で未実施） |
+
+### 更新対象ファイル
+
+| 対象ファイル                 | 操作       | 内容                              |
+| ---------------------------- | ---------- | --------------------------------- |
+| arch-electron-services.md    | 更新不要   | 静的フィクスチャのため変更なし    |
+| tasks/index.md               | ステータス | TASK-8C-E: pending → completed    |
+| task-8c-e-fixtures.md        | ステータス | status: pending → completed       |
+| task-8c-b-e2e-selection.md   | 依存追加   | depends_on に TASK-8C-E 追加      |
+| task-8c-c-e2e-import-execute.md | 依存追加 | depends_on に TASK-8C-E 追加      |
+| task-8c-d-e2e-permission.md  | 依存追加   | depends_on に TASK-8C-E 追加      |
+
+### 実装内容
+
+| 項目           | 内容                                                              |
+| -------------- | ----------------------------------------------------------------- |
+| フィクスチャ   | 3種類（test-skill完全構成, another-skill最小構成, invalid-skill無効） |
+| テストファイル | skills.fixture.test.ts（29テストケース全PASS）                    |
+| 配置先         | apps/desktop/src/__tests__/__fixtures__/skills/                   |
+| SkillScanner互換 | 完全対応（scanAll()でtest-skill, another-skillがパースされる）  |
+
+### 生成された未タスク仕様書
+
+なし（0件検出）
+
+### 関連ドキュメント
+
+| ドキュメント   | パス                                                              |
+| -------------- | ----------------------------------------------------------------- |
+| 実装ガイド     | `docs/30-workflows/TASK-8C-E/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書   | `docs/30-workflows/TASK-8C-E/`                                    |
+| 更新記録       | `docs/30-workflows/TASK-8C-E/outputs/phase-12/documentation-changelog.md` |
+
+---
+
+## [2026-02-01T02:00:00.000Z]
+
+- **Agent**: task-specification-creator (generate-unassigned-task)
+- **Phase**: 未タスク検出・仕様書作成（TASK-8C-E Post-Phase 12）
+- **Result**: ✓ 成功
+- **Notes**: システム仕様書Gap分析から2件の未タスク仕様書を作成
+
+### 検出ソース分析
+
+| ソース                | 確認結果                                          |
+| --------------------- | ------------------------------------------------- |
+| TASK-8C-E Phase 3/10  | PASS判定（MINOR指摘なし）                         |
+| TASK-8C-E Phase 11    | 発見事項0件、スコープ外改善提案なし               |
+| TASK-8C-E Phase 12    | 未タスク0件（既報）                               |
+| コードコメント        | TODO/FIXME/HACK/XXX 0件                           |
+| quality-e2e-testing.md| サブリソース型4/6未カバー、エッジケース未カバー   |
+
+### 作成ファイル
+
+| ファイル                                        | タスクID                                        | 優先度 |
+| ----------------------------------------------- | ----------------------------------------------- | ------ |
+| `task-imp-e2e-fixture-subresource-expansion.md` | task-imp-e2e-fixture-subresource-expansion-001  | 中     |
+| `task-imp-e2e-fixture-edge-cases.md`            | task-imp-e2e-fixture-edge-cases-001             | 低     |
+
+---
+
+## [2026-02-01T01:00:00.000Z]
+
+- **Agent**: skill-creator + aiworkflow-requirements
+- **Phase**: TASK-8C-E システム仕様書反映（Post-Phase 12）
+- **Result**: ✓ 成功
+- **Notes**: TASK-8C-E実装内容をシステム仕様書に反映。新規E2Eテスト仕様書作成、関連仕様4件更新。
+
+### 作業概要
+
+| 項目     | 内容                                              |
+| -------- | ------------------------------------------------- |
+| タスクID | TASK-8C-E（Post-Phase 12 ドキュメント反映）       |
+| 目的     | E2Eテストフィクスチャ実装内容をシステム仕様書に記録 |
+| 完了日   | 2026-02-01                                        |
+
+### 更新対象ファイル
+
+| 対象ファイル               | 操作     | バージョン       | 内容                                             |
+| -------------------------- | -------- | ---------------- | ------------------------------------------------ |
+| quality-e2e-testing.md     | **新規** | v1.0.0           | E2Eテスト仕様（フィクスチャ・テスト戦略・29TC一覧・SkillScanner統合パターン） |
+| quality-requirements.md    | 更新     | -                | E2Eセクションにquality-e2e-testing.mdへのクロスリファレンス追加 |
+| directory-structure.md     | 更新     | -                | apps/desktopテスト基盤セクション追加（フィクスチャディレクトリ構造） |
+| arch-electron-services.md  | 更新     | → v6.31.0        | SkillScanner E2Eテストフィクスチャセクション追加 |
+| SKILL.md                   | 更新     | → v8.19.0        | バージョン履歴にTASK-8C-E完了エントリ追加        |
+| indexes/topic-map.md       | 再生成   | -                | generate-index.js実行（136ファイル）              |
+| indexes/keywords.json      | 再生成   | -                | generate-index.js実行（962キーワード）            |
+
+### 設計判断
+
+| 判断                         | 根拠                                                                 |
+| ---------------------------- | -------------------------------------------------------------------- |
+| 新規ファイル作成             | quality-requirements.md（646行）が700行分割閾値に近いためスプリット  |
+| testing-template.md準拠      | spec-guidelines.mdのテスト仕様テンプレートに沿った構造               |
+| quality-プレフィックス命名   | 品質関連仕様のネーミング規約に準拠                                   |
 
 ---
 

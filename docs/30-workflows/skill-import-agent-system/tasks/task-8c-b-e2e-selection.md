@@ -3,7 +3,7 @@ id: TASK-8C-B
 tier: 1
 title: E2Eテスト - スキル選択フロー
 phase: 8
-depends_on: [TASK-7D]
+depends_on: [TASK-7D, TASK-8C-E]
 parallel_with: [TASK-8C-A, TASK-8C-C, TASK-8C-D]
 blocks: []
 status: pending

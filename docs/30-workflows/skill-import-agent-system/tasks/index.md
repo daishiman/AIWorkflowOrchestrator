@@ -154,10 +154,10 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 | TASK-8A   | [単体テスト](./task-8a-unit-tests.md)                          | 2A, 2B, 3-1-A~C, 3-2, 6-1 | medium | pending    |
 | TASK-8B   | [コンポーネントテスト](./task-8b-component-tests.md)           | 7A, 7B, 7C, 7D            | medium | pending    |
 | TASK-8C-A | [IPC統合テスト](./task-8c-a-ipc-integration.md)                | 4-1, 4-2                  | medium | pending    |
-| TASK-8C-B | [E2Eスキル選択テスト](./task-8c-b-e2e-selection.md)            | 7D, 8C-A                  | medium | pending    |
-| TASK-8C-C | [E2Eインポート・実行テスト](./task-8c-c-e2e-import-execute.md) | 7D, 8C-A                  | medium | pending    |
-| TASK-8C-D | [E2E権限ダイアログテスト](./task-8c-d-e2e-permission.md)       | 7D, 8C-A                  | medium | pending    |
-| TASK-8C-E | [テストフィクスチャ](./task-8c-e-fixtures.md)                  | -                         | small  | pending    |
+| TASK-8C-B | [E2Eスキル選択テスト](./task-8c-b-e2e-selection.md)            | 7D, 8C-A, 8C-E            | medium | pending    |
+| TASK-8C-C | [E2Eインポート・実行テスト](./task-8c-c-e2e-import-execute.md) | 7D, 8C-A, 8C-E            | medium | pending    |
+| TASK-8C-D | [E2E権限ダイアログテスト](./task-8c-d-e2e-permission.md)       | 7D, 8C-A, 8C-E            | medium | pending    |
+| TASK-8C-E | [テストフィクスチャ](./task-8c-e-fixtures.md)                  | -                         | small  | completed  |
 
 ---
 
