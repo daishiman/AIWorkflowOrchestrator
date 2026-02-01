@@ -214,12 +214,12 @@ Phase 4〜5: 検証 → 完了
 
 ### Task 2: システム仕様更新【4サブステップ + 条件付きStep 2】
 
-| Step   | 必須 | 内容                                                                            |
-| ------ | ---- | ------------------------------------------------------------------------------- |
+| Step     | 必須 | 内容                                                                                                          |
+| -------- | ---- | ------------------------------------------------------------------------------------------------------------- |
 | Step 1-A | ✅   | タスク完了記録（「完了タスク」セクション追加 + 関連ドキュメントリンク + 変更履歴 + LOGS.md×2 + topic-map.md） |
-| Step 1-B | ✅   | 実装状況テーブル更新（api-endpoints.md等の「未実装」→「完了」）                |
-| Step 1-C | ✅   | 関連タスクテーブル更新（仕様書内の「関連タスク」「未タスク候補」テーブルのステータス更新） |
-| Step 2   | 条件 | システム仕様更新（新規インターフェース追加時のみ）                              |
+| Step 1-B | ✅   | 実装状況テーブル更新（api-endpoints.md等の「未実装」→「完了」）                                               |
+| Step 1-C | ✅   | 関連タスクテーブル更新（仕様書内の「関連タスク」「未タスク候補」テーブルのステータス更新）                    |
+| Step 2   | 条件 | システム仕様更新（新規インターフェース追加時のみ）                                                            |
 
 > **⚠️ Task 1（実装ガイド作成）との境界に注意**
 >
@@ -247,12 +247,12 @@ Phase 4〜5: 検証 → 完了
 
 ### Task 4: 未タスク検出（0件でも出力必須）
 
-| ソース                 | 確認項目                    |
-| ---------------------- | --------------------------- |
+| ソース                 | 確認項目                           |
+| ---------------------- | ---------------------------------- |
 | 元タスク仕様書         | 「スコープ外」として明示された項目 |
-| Phase 3/10レビュー結果 | MINOR判定の指摘事項         |
-| Phase 11手動テスト     | スコープ外の発見事項・改善提案 |
-| コードコメント         | TODO/FIXME/HACK/XXX         |
+| Phase 3/10レビュー結果 | MINOR判定の指摘事項                |
+| Phase 11手動テスト     | スコープ外の発見事項・改善提案     |
+| コードコメント         | TODO/FIXME/HACK/XXX                |
 
 ```bash
 # 未タスク検出スクリプト
@@ -267,13 +267,13 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 ### Phase 12 実行時によくある漏れ
 
-| 漏れパターン                          | 防止方法                                                                         |
-| ------------------------------------- | -------------------------------------------------------------------------------- |
-| Step 1-C（関連タスクテーブル）を未実行 | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む             |
-| topic-map.md 未更新                   | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                 |
-| documentation-changelog.md が不完全   | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）         |
-| LOGS.md が1ファイルのみ更新           | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方 |
-| 完了タスクセクションが簡略形式        | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う |
+| 漏れパターン                           | 防止方法                                                                            |
+| -------------------------------------- | ----------------------------------------------------------------------------------- |
+| Step 1-C（関連タスクテーブル）を未実行 | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                |
+| topic-map.md 未更新                    | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                    |
+| documentation-changelog.md が不完全    | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）            |
+| LOGS.md が1ファイルのみ更新            | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方   |
+| 完了タスクセクションが簡略形式         | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う |
 
 ---
 
@@ -352,53 +352,54 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 ## 変更履歴
 
-| Version    | Date           | Changes                                                                                                                                                                                                                                                                      |
-| ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.19.0** | **2026-02-01** | **task-imp-permission-tool-metadata-001フィードバック反映**: patterns.md成功パターン3件追加（Record型スタイルマッピング, IIFEレンダリング, デフォルトメタデータフォールバック）、spec-update-workflow.md漏れパターン追加、EVALS.json使用カウント更新 |
-| **9.18.0** | **2026-01-31** | **task-imp-permission-tool-metadata-001完了**: Phase 1-12全工程完了。toolMetadata.ts新規作成（RiskLevel型、12ツール定義）、PermissionDialog.tsxリスクバッジ統合、56テスト追加・全258テストPASS。未タスク3件検出 |
+| Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.20.0** | **2026-02-01** | **TASK-8C-G完了**: patterns.md成功パターン3件追加（境界値フィクスチャ設計、parseFrontmatter検証、execSync決定論的テスト）、LOGS.md完了記録追加。96テスト・100%ギャップカバレッジ達成                                                                                                                     |
+| **9.19.0** | **2026-02-01** | **task-imp-permission-tool-metadata-001フィードバック反映**: patterns.md成功パターン3件追加（Record型スタイルマッピング, IIFEレンダリング, デフォルトメタデータフォールバック）、spec-update-workflow.md漏れパターン追加、EVALS.json使用カウント更新                                                     |
+| **9.18.0** | **2026-01-31** | **task-imp-permission-tool-metadata-001完了**: Phase 1-12全工程完了。toolMetadata.ts新規作成（RiskLevel型、12ツール定義）、PermissionDialog.tsxリスクバッジ統合、56テスト追加・全258テストPASS。未タスク3件検出                                                                                          |
 | **9.17.0** | **2026-01-31** | **Phase 12改善拡充: Task 2テーブル4サブステップ化（Step 1-A/1-B/1-C/Step 2）、Task 1 vs Task 2境界テーブル追加、よくある漏れパターン5件追加、documentation-changelog-template.md新規作成、implementation-guide-template.md UIコンポーネントパターン追加、spec-update-workflow.md具体例（TASK-IMP）追加** |
-| **9.16.0** | **2026-01-31** | **spec-update-workflow.md改善**: Step 1完了チェックリスト追加（詳細テンプレート必須明記）、permissionキーワードマッピング追加、詳細完了記録テンプレート参照の強化（task-imp-permission-readable-ui-001フィードバック反映） |
-| **9.15.0** | **2026-01-30** | **task-imp-permission-readable-ui-001完了**: Phase 1-12全工程完了。permissionDescriptions.ts新規作成、PermissionDialog.tsx人間可読UI統合、53テスト・100%カバレッジ。4件の未タスク検出・仕様書作成 |
-| 9.14.0 | 2026-01-30 | Phase 12 Step 1-C追加: 関連タスクテーブルのステータス更新手順を追加。arch-state-management.md等の「関連タスク」テーブル更新漏れ防止（TASK-7Bフィードバック反映） |
-| 9.13.0 | 2026-01-29 | 未タスク指示書テンプレート準拠修正: U3/U4/U5に欠落していたSection 4(実行手順)/6(検証方法)/7(リスクと対策)を追加し9セクション完全準拠化（TASK-CI-FIX-001品質改善） |
-| 9.12.0 | 2026-01-29 | 機能キーワードマッピング拡充: technology-backend.md/technology-devops.md向けキーワード追加（eslint, lint, ci, devops, backend, next.js等）（TASK-CI-FIX-001フィードバック反映） |
-| 9.11.0     | 2026-01-28     | 未タスク検出ソース拡充: 元タスク仕様書の「スコープ外」項目を検出ソースに追加、Phase 11改善提案も対象に（TASK-3-2-Dフィードバック反映）                                                                                                                                     |
-| 9.10.0     | 2026-01-27     | 両ブランチ統合: Phase 12 Task 3改善（artifacts.json更新統合、complete-phase.js実行例、フォールバック手順）+ TASK-3-2-A成功パターン追加（patterns.md 5件追加）+ TASK-WCE-UI-001フィードバック反映（LOGS.md 2ファイル更新要件明記）                                              |
-| 9.9.0      | 2026-01-27     | TASK-3-2-A成功パターン追加: patterns.mdに5件の成功パターン追加（UX改善R-ID方式、Part 1日常例えパターン、ユーティリティ関数分離、将来改善候補の未タスク仕様書変換）                                                                                                           |
-| 9.8.0      | 2026-01-27     | Phase 12 Task 3改善: artifacts.json更新をTask 3に統合、complete-phase.js実行例追加、フォールバック手順にartifacts.json手動作成参照先追加（TASK-5-1フィードバック反映）+ spec-update-workflow.mdにtask-specification-creator/LOGS.md更新手順追加                              |
-| 9.7.1      | 2026-01-27     | spec-update-workflow.md改善: Phase 12 Step 1でaiworkflow-requirements/LOGS.mdとtask-specification-creator/LOGS.mdの両方を更新する要件を明記（TASK-WCE-UI-001フィードバック反映）                                                                                             |
-| 9.7.0      | 2026-01-26     | 第3次整合性検証修正: SKILL.mdコマンド例修正(complete-phase.js --artifacts追加、detect-unassigned-tasks.js引数修正)、phase-templates.mdファイル名typo修正、spec-update-workflow.md外部スキル拡張子修正(.js→.mjs)、generate-task-specs.md出力先追加、verify-specs.md入力元明記 |
-| 9.6.0      | 2026-01-26     | 追加整合性修正: identify-scope出力先追加、verification-report.json additionalProperties追加、ファイル名documentation-changelog.md統一                                                                                                                                        |
-| 9.5.0      | 2026-01-26     | 全ファイル整合性検証: スキーマ/テンプレート不整合修正(identify-scope, design-phases)、commands.md引数仕様修正、Phase 12 4タスク構成統一、mode.json additionalProperties追加                                                                                                  |
-| 9.4.0      | 2026-01-26     | 整合性検証修正: identify-scope.mdスキーマ参照修正(scope-definition.json)、phase-templates.mdサブタスク命名統一(Task N)、verify-all-specs.js ESM互換性修正                                                                                                                    |
-| 9.3.0      | 2026-01-26     | skill-creatorリファクタリング: 未リンクreferences 4件を機能別ガイドに追加、commands.mdにgenerate-index.js追加、検証0エラー0警告達成                                                                                                                                          |
-| 9.2.1      | 2026-01-26     | アーキテクチャ層別観点をPhase 5（実装）・Phase 12（ドキュメント）テンプレートに追加: 実装ファイル配置・ドキュメント内容の層別ガイド                                                                                                                                          |
-| 9.2.0      | 2026-01-26     | Electronデスクトップアプリ観点追加: フロントエンド(Renderer)/バックエンド(Main)/IPC/Preload/ローカルストレージの層別チェック観点をPhase 1,2,4テンプレートに追加                                                                                                              |
-| 9.1.0      | 2026-01-26     | システム開発観点チェック追加: セキュリティ/UI・UX/アーキテクチャ等の多角的観点をPhase共通テンプレートに追加、aiworkflow-requirements連携強化                                                                                                                                 |
-| 9.0.2      | 2026-01-26     | Phase 12重要仕様を拡充: Part 2必須要件、未タスク検出、3ステップ仕様更新を追加                                                                                                                                                                                                |
-| 9.0.1      | 2026-01-26     | 不足リソース追加: schemas/2, scripts/1, assets/1（合計+4ファイル）                                                                                                                                                                                                           |
-| 9.0.0      | 2026-01-26     | skill-creator v7.0.1準拠: description最適化、情報保持しながらプロンプト圧縮                                                                                                                                                                                                  |
-| 8.0.1      | 2026-01-26     | resource-map.md参照カウント修正                                                                                                                                                                                                                                              |
-| 8.0.0      | 2026-01-26     | skill-creator v7準拠: 597→350行（41%削減）                                                                                                                                                                                                                                   |
-| 7.13.0     | 2026-01-26     | patterns.md改善: Phase 12出力要件漏れパターン追加、成功パターンにPhase 12出力チェックリスト追加（TASK-3-1-Dフィードバック反映）                                                                                                                                              |
-| 7.12.0     | 2026-01-25     | spec-update-workflow.md改善: 新規クラス/コンポーネント追加時のチェックリスト追加、「型は別タスクで追加済み」誤判断パターン追加（TASK-3-2フィードバック反映）                                                                                                                 |
-| 7.11.0     | 2026-01-25     | spec-update-workflow.md改善: Step 1にLOGS.md・topic-map.md更新手順を追加（Phase 12ドキュメント更新漏れ防止）                                                                                                                                                                 |
-| 7.10.1     | 2026-01-25     | unassigned-task-guidelines.md修正: 未タスク検出レポートファイル名をunassigned-task-detection.mdに統一（Phase 12タスク仕様との整合性確保）                                                                                                                                    |
-| 7.10.0     | 2026-01-25     | spec-update-workflow.md改善: 実装状況テーブル更新を必須アクションとして明記、Step 1-B追加、よくある誤判断パターン表追加（Phase 12誤判断防止強化）                                                                                                                            |
-| 7.9.0      | 2026-01-25     | Phase 12仕様ファイル特定ロジック強化: 機能キーワードから仕様ファイルへのマッピング表追加、混同しやすいファイル対照表追加、思考プロセスにステップ0/0.5追加                                                                                                                    |
-| 7.8.0      | 2026-01-23     | update-system-specs.md標準フォーマット化: 5セクション構造化（メタ情報/プロフィール/知識ベース/実行仕様/インターフェース）、思考プロセステーブル追加、patterns.md新規作成                                                                                                     |
-| 7.7.0      | 2026-01-23     | Phase 12 Step 1検証強化: validate-phase12-step1.js追加、Step 1必須性を「検証タスクでも必須」と明記、検証コマンド使用例追加                                                                                                                                                   |
-| 7.6.0      | 2026-01-22     | Phase 12テンプレート強化: 完了条件にPhase 12-2の3ステップチェックリスト追加、フォールバック手順セクション追加、spec-update-workflow.md参照リンク追加                                                                                                                         |
-| 7.5.0      | 2026-01-22     | Phase 12改善: Task 2を2ステップ化（タスク完了記録必須＋仕様更新条件付き）、Task 3自動生成スクリプト追加、spec-update-workflow.md明確化                                                                                                                                       |
-| 7.4.0      | 2026-01-18     | Phase 12 Task 2強化: システム仕様更新チェックリスト追加、変更タイプ別マッピング追加、更新漏れ防止ガイダンス強化                                                                                                                                                              |
-| 7.3.0      | 2026-01-17     | Phase 12-2システム仕様更新ガイダンス強化: spec-update-workflow.mdに更新判断基準・フローチャート追加、aiworkflow-requirements更新タイミング明確化                                                                                                                             |
-| 7.2.0      | 2026-01-17     | Phase 11/12実行ガイダンス追加: テスト結果レポート形式、未タスク検出レポート形式（0件含む）、システム仕様書更新手順                                                                                                                                                           |
-| 7.1.0      | 2026-01-17     | Phase 5「全体整合性検証」追加: verify-all-specs.js（自動13ファイル一括検証）、verify-specs.md（LLM品質検証）、verification-report.json追加                                                                                                                                   |
-| 7.0.0      | 2026-01-17     | skill-creator v5.3準拠リファクタリング: Progressive Disclosure完全化、スクリプト拡張子.js統一、リソースマップ整理                                                                                                                                                            |
-| 6.1.0      | 2026-01-14     | タスク完了ワークフロー追加: unassigned-task→completed-tasks移動・ステータス更新                                                                                                                                                                                              |
-| 6.0.0      | 2026-01-13     | skill-creator最新仕様準拠リファクタリング: Script First原則明確化、Progressive Disclosure完全対応、schemas/追加、Self-Improvement基盤追加                                                                                                                                    |
-| 5.1.0      | 2026-01-13     | Phase 12-2システムドキュメント更新を強化                                                                                                                                                                                                                                     |
-| 5.0.0      | 2026-01-10     | スキル選定機能削除、シンプル化                                                                                                                                                                                                                                               |
-| 4.0.0      | 2026-01-06     | Git Worktree削除、結合テストカバレッジ基準追加                                                                                                                                                                                                                               |
-| 3.1.0      | 2026-01-07     | Phase 6追加（テスト拡充）、統合テスト連携必須化                                                                                                                                                                                                                              |
-| 3.0.0      | 2026-01-06     | Phase再構成（1-13）、/ai:diff-to-pr統合                                                                                                                                                                                                                                      |
+| **9.16.0** | **2026-01-31** | **spec-update-workflow.md改善**: Step 1完了チェックリスト追加（詳細テンプレート必須明記）、permissionキーワードマッピング追加、詳細完了記録テンプレート参照の強化（task-imp-permission-readable-ui-001フィードバック反映）                                                                               |
+| **9.15.0** | **2026-01-30** | **task-imp-permission-readable-ui-001完了**: Phase 1-12全工程完了。permissionDescriptions.ts新規作成、PermissionDialog.tsx人間可読UI統合、53テスト・100%カバレッジ。4件の未タスク検出・仕様書作成                                                                                                        |
+| 9.14.0     | 2026-01-30     | Phase 12 Step 1-C追加: 関連タスクテーブルのステータス更新手順を追加。arch-state-management.md等の「関連タスク」テーブル更新漏れ防止（TASK-7Bフィードバック反映）                                                                                                                                         |
+| 9.13.0     | 2026-01-29     | 未タスク指示書テンプレート準拠修正: U3/U4/U5に欠落していたSection 4(実行手順)/6(検証方法)/7(リスクと対策)を追加し9セクション完全準拠化（TASK-CI-FIX-001品質改善）                                                                                                                                        |
+| 9.12.0     | 2026-01-29     | 機能キーワードマッピング拡充: technology-backend.md/technology-devops.md向けキーワード追加（eslint, lint, ci, devops, backend, next.js等）（TASK-CI-FIX-001フィードバック反映）                                                                                                                          |
+| 9.11.0     | 2026-01-28     | 未タスク検出ソース拡充: 元タスク仕様書の「スコープ外」項目を検出ソースに追加、Phase 11改善提案も対象に（TASK-3-2-Dフィードバック反映）                                                                                                                                                                   |
+| 9.10.0     | 2026-01-27     | 両ブランチ統合: Phase 12 Task 3改善（artifacts.json更新統合、complete-phase.js実行例、フォールバック手順）+ TASK-3-2-A成功パターン追加（patterns.md 5件追加）+ TASK-WCE-UI-001フィードバック反映（LOGS.md 2ファイル更新要件明記）                                                                        |
+| 9.9.0      | 2026-01-27     | TASK-3-2-A成功パターン追加: patterns.mdに5件の成功パターン追加（UX改善R-ID方式、Part 1日常例えパターン、ユーティリティ関数分離、将来改善候補の未タスク仕様書変換）                                                                                                                                       |
+| 9.8.0      | 2026-01-27     | Phase 12 Task 3改善: artifacts.json更新をTask 3に統合、complete-phase.js実行例追加、フォールバック手順にartifacts.json手動作成参照先追加（TASK-5-1フィードバック反映）+ spec-update-workflow.mdにtask-specification-creator/LOGS.md更新手順追加                                                          |
+| 9.7.1      | 2026-01-27     | spec-update-workflow.md改善: Phase 12 Step 1でaiworkflow-requirements/LOGS.mdとtask-specification-creator/LOGS.mdの両方を更新する要件を明記（TASK-WCE-UI-001フィードバック反映）                                                                                                                         |
+| 9.7.0      | 2026-01-26     | 第3次整合性検証修正: SKILL.mdコマンド例修正(complete-phase.js --artifacts追加、detect-unassigned-tasks.js引数修正)、phase-templates.mdファイル名typo修正、spec-update-workflow.md外部スキル拡張子修正(.js→.mjs)、generate-task-specs.md出力先追加、verify-specs.md入力元明記                             |
+| 9.6.0      | 2026-01-26     | 追加整合性修正: identify-scope出力先追加、verification-report.json additionalProperties追加、ファイル名documentation-changelog.md統一                                                                                                                                                                    |
+| 9.5.0      | 2026-01-26     | 全ファイル整合性検証: スキーマ/テンプレート不整合修正(identify-scope, design-phases)、commands.md引数仕様修正、Phase 12 4タスク構成統一、mode.json additionalProperties追加                                                                                                                              |
+| 9.4.0      | 2026-01-26     | 整合性検証修正: identify-scope.mdスキーマ参照修正(scope-definition.json)、phase-templates.mdサブタスク命名統一(Task N)、verify-all-specs.js ESM互換性修正                                                                                                                                                |
+| 9.3.0      | 2026-01-26     | skill-creatorリファクタリング: 未リンクreferences 4件を機能別ガイドに追加、commands.mdにgenerate-index.js追加、検証0エラー0警告達成                                                                                                                                                                      |
+| 9.2.1      | 2026-01-26     | アーキテクチャ層別観点をPhase 5（実装）・Phase 12（ドキュメント）テンプレートに追加: 実装ファイル配置・ドキュメント内容の層別ガイド                                                                                                                                                                      |
+| 9.2.0      | 2026-01-26     | Electronデスクトップアプリ観点追加: フロントエンド(Renderer)/バックエンド(Main)/IPC/Preload/ローカルストレージの層別チェック観点をPhase 1,2,4テンプレートに追加                                                                                                                                          |
+| 9.1.0      | 2026-01-26     | システム開発観点チェック追加: セキュリティ/UI・UX/アーキテクチャ等の多角的観点をPhase共通テンプレートに追加、aiworkflow-requirements連携強化                                                                                                                                                             |
+| 9.0.2      | 2026-01-26     | Phase 12重要仕様を拡充: Part 2必須要件、未タスク検出、3ステップ仕様更新を追加                                                                                                                                                                                                                            |
+| 9.0.1      | 2026-01-26     | 不足リソース追加: schemas/2, scripts/1, assets/1（合計+4ファイル）                                                                                                                                                                                                                                       |
+| 9.0.0      | 2026-01-26     | skill-creator v7.0.1準拠: description最適化、情報保持しながらプロンプト圧縮                                                                                                                                                                                                                              |
+| 8.0.1      | 2026-01-26     | resource-map.md参照カウント修正                                                                                                                                                                                                                                                                          |
+| 8.0.0      | 2026-01-26     | skill-creator v7準拠: 597→350行（41%削減）                                                                                                                                                                                                                                                               |
+| 7.13.0     | 2026-01-26     | patterns.md改善: Phase 12出力要件漏れパターン追加、成功パターンにPhase 12出力チェックリスト追加（TASK-3-1-Dフィードバック反映）                                                                                                                                                                          |
+| 7.12.0     | 2026-01-25     | spec-update-workflow.md改善: 新規クラス/コンポーネント追加時のチェックリスト追加、「型は別タスクで追加済み」誤判断パターン追加（TASK-3-2フィードバック反映）                                                                                                                                             |
+| 7.11.0     | 2026-01-25     | spec-update-workflow.md改善: Step 1にLOGS.md・topic-map.md更新手順を追加（Phase 12ドキュメント更新漏れ防止）                                                                                                                                                                                             |
+| 7.10.1     | 2026-01-25     | unassigned-task-guidelines.md修正: 未タスク検出レポートファイル名をunassigned-task-detection.mdに統一（Phase 12タスク仕様との整合性確保）                                                                                                                                                                |
+| 7.10.0     | 2026-01-25     | spec-update-workflow.md改善: 実装状況テーブル更新を必須アクションとして明記、Step 1-B追加、よくある誤判断パターン表追加（Phase 12誤判断防止強化）                                                                                                                                                        |
+| 7.9.0      | 2026-01-25     | Phase 12仕様ファイル特定ロジック強化: 機能キーワードから仕様ファイルへのマッピング表追加、混同しやすいファイル対照表追加、思考プロセスにステップ0/0.5追加                                                                                                                                                |
+| 7.8.0      | 2026-01-23     | update-system-specs.md標準フォーマット化: 5セクション構造化（メタ情報/プロフィール/知識ベース/実行仕様/インターフェース）、思考プロセステーブル追加、patterns.md新規作成                                                                                                                                 |
+| 7.7.0      | 2026-01-23     | Phase 12 Step 1検証強化: validate-phase12-step1.js追加、Step 1必須性を「検証タスクでも必須」と明記、検証コマンド使用例追加                                                                                                                                                                               |
+| 7.6.0      | 2026-01-22     | Phase 12テンプレート強化: 完了条件にPhase 12-2の3ステップチェックリスト追加、フォールバック手順セクション追加、spec-update-workflow.md参照リンク追加                                                                                                                                                     |
+| 7.5.0      | 2026-01-22     | Phase 12改善: Task 2を2ステップ化（タスク完了記録必須＋仕様更新条件付き）、Task 3自動生成スクリプト追加、spec-update-workflow.md明確化                                                                                                                                                                   |
+| 7.4.0      | 2026-01-18     | Phase 12 Task 2強化: システム仕様更新チェックリスト追加、変更タイプ別マッピング追加、更新漏れ防止ガイダンス強化                                                                                                                                                                                          |
+| 7.3.0      | 2026-01-17     | Phase 12-2システム仕様更新ガイダンス強化: spec-update-workflow.mdに更新判断基準・フローチャート追加、aiworkflow-requirements更新タイミング明確化                                                                                                                                                         |
+| 7.2.0      | 2026-01-17     | Phase 11/12実行ガイダンス追加: テスト結果レポート形式、未タスク検出レポート形式（0件含む）、システム仕様書更新手順                                                                                                                                                                                       |
+| 7.1.0      | 2026-01-17     | Phase 5「全体整合性検証」追加: verify-all-specs.js（自動13ファイル一括検証）、verify-specs.md（LLM品質検証）、verification-report.json追加                                                                                                                                                               |
+| 7.0.0      | 2026-01-17     | skill-creator v5.3準拠リファクタリング: Progressive Disclosure完全化、スクリプト拡張子.js統一、リソースマップ整理                                                                                                                                                                                        |
+| 6.1.0      | 2026-01-14     | タスク完了ワークフロー追加: unassigned-task→completed-tasks移動・ステータス更新                                                                                                                                                                                                                          |
+| 6.0.0      | 2026-01-13     | skill-creator最新仕様準拠リファクタリング: Script First原則明確化、Progressive Disclosure完全対応、schemas/追加、Self-Improvement基盤追加                                                                                                                                                                |
+| 5.1.0      | 2026-01-13     | Phase 12-2システムドキュメント更新を強化                                                                                                                                                                                                                                                                 |
+| 5.0.0      | 2026-01-10     | スキル選定機能削除、シンプル化                                                                                                                                                                                                                                                                           |
+| 4.0.0      | 2026-01-06     | Git Worktree削除、結合テストカバレッジ基準追加                                                                                                                                                                                                                                                           |
+| 3.1.0      | 2026-01-07     | Phase 6追加（テスト拡充）、統合テスト連携必須化                                                                                                                                                                                                                                                          |
+| 3.0.0      | 2026-01-06     | Phase再構成（1-13）、/ai:diff-to-pr統合                                                                                                                                                                                                                                                                  |

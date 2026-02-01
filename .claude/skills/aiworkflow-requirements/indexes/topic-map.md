@@ -1511,8 +1511,9 @@ node scripts/list-specs.js --topics
 | フィクスチャ検証テスト | L138 |
 | SkillScannerテスト統合パターン | L194 |
 | 完了タスク | L214 |
-| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L230 |
-| 関連ドキュメント | L269 |
+| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L231 |
+| 関連ドキュメント | L270 |
+
 
 ### references/rag-desktop-state.md
 
