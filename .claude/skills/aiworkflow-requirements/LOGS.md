@@ -5,6 +5,72 @@
 
 ---
 
+## 2026-02-01: task-imp-permission-tool-metadata-001 仕様追加記述セッション
+
+| 項目         | 内容                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-tool-metadata-001                                                                   |
+| 操作         | P1/P2/P3仕様Gap修正 + topic-map再生成                                                                   |
+| 対象ファイル | interfaces-agent-sdk-ui.md, security-skill-execution.md, ui-ux-agent-execution.md, topic-map.md        |
+| 結果         | success                                                                                                 |
+| 備考         | 仕様カバレッジ85%→95%改善。RiskLevel/ToolMetadata型定義、toolMetadataクロスリファレンス、ツールカバレッジマッピング追加 |
+
+### 更新詳細
+
+- **更新**: `references/interfaces-agent-sdk-ui.md`（v1.4.0 → v1.5.0）
+  - RiskLevel型（4値+UIスタイルテーブル）追加
+  - ToolMetadata型定義追加
+  - RISK_LEVEL_STYLES定数ドキュメント追加
+  - toolMetadataユーティリティ関数APIテーブル（getRiskLevel, getSecurityImpact, getToolMetadata）追加
+- **更新**: `references/security-skill-execution.md`（v1.2.0 → v1.3.0）
+  - toolMetadataモジュール（PermissionDialog表示用）サブセクション追加
+  - ALLOWED_TOOLS_WHITELIST vs toolMetadata比較テーブル（11 vs 12ツール）追加
+  - 差異説明とクロスリファレンス追加
+- **更新**: `references/ui-ux-agent-execution.md`（v1.6.0 → v1.7.0）
+  - RISK_LEVEL_STYLES定数仕様追加
+  - PermissionDialog統合パターン（IIFE, security impact, aria-label, style application）追加
+  - ツールカバレッジマッピングテーブル追加
+  - デザイン哲学（DEFAULT_METADATAフォールバック）追加
+- **更新**: `indexes/topic-map.md`
+  - 8エントリ追加（ui-ux-agent-execution 3件, interfaces-agent-sdk-ui 4件, security-skill-execution 1件）
+  - キーワード7件追加（ToolMetadata, DEFAULT_METADATA, WCAG, RISK_LEVEL_STYLES, getRiskLevel, getSecurityImpact, getToolMetadata）
+
+---
+
+## 2026-01-31: task-imp-permission-tool-metadata-001 Phase 12 ドキュメント更新
+
+| 項目         | 内容                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-tool-metadata-001                                                                   |
+| 操作         | Phase 1-12 全フェーズ完了                                                                               |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/toolMetadata.ts`, `PermissionDialog.tsx`                   |
+| 結果         | success                                                                                                 |
+| 備考         | ツールリスクレベル・セキュリティメタデータ表示。56テスト追加、全258テスト PASS                          |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-agent-execution.md`（v1.5.0 → v1.6.0）
+  - toolMetadataモジュール仕様セクション追加（RiskLevel型、公開API 3種、リスクレベル色分けWCAG準拠）
+  - 完了タスク・テスト結果サマリー追加
+- **更新**: `references/ui-ux-components.md`（v2.5.0 → v2.6.0）
+  - 完了タスクテーブルに #606 追加
+- **更新**: `references/interfaces-agent-sdk-ui.md`（v1.3.2 → v1.4.0）
+  - PermissionDialog説明にtoolMetadataリスクバッジ参照追加
+  - 関連ドキュメントにui-ux-agent-execution.md（toolMetadata仕様）追加
+- **更新**: `indexes/topic-map.md`
+  - toolMetadata関連セクション3エントリ追加、キーワード追加
+
+### 実装内容
+
+| 項目                    | 内容                                                                                |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| 新規ファイル            | toolMetadata.ts（RiskLevel型、ToolMetadata型、12ツール定義、3公開API）               |
+| 修正ファイル            | PermissionDialog.tsx（RISK_LEVEL_STYLES追加、リスクバッジ・影響テキスト統合）        |
+| テスト追加              | toolMetadata.test.ts（37件）、PermissionDialog.metadata.test.tsx（19件）            |
+| カバレッジ              | toolMetadata.ts Lines/Branches/Functions/Statements 100%                            |
+
+---
+
 ## 2026-01-31: システム仕様書Gap分析 → 未タスク仕様書2件作成
 
 | 項目         | 内容                                           |

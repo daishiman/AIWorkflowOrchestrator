@@ -43,6 +43,43 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-01 - 未タスク仕様書5件新規作成]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned + create-unassigned-task
+- **Result**: ✓ 成功
+- **Notes**: システム仕様書（aiworkflow-requirements）とコードベースTODO分析から未タスク5件を検出・仕様書作成。9セクションテンプレート完全準拠。Why/What/Howの品質基準を満たした指示書を`docs/30-workflows/unassigned-task/`に配置。
+
+### 作成ファイル
+
+| # | ファイル | 分類 | 優先度 | 発見元 |
+|---|---------|------|--------|--------|
+| 1 | `task-permission-toolmetadata-whitelist-sync.md` | セキュリティ | 中 | security-skill-execution.md仕様Gap |
+| 2 | `task-permission-risk-level-styles-shared.md` | リファクタリング | 低 | interfaces-agent-sdk-ui.md仕様Gap |
+| 3 | `task-permission-toolmetadata-i18n.md` | 改善 | 低 | ui-ux-agent-execution.md仕様Gap |
+| 4 | `task-community-integration-test-alignment.md` | バグ修正 | 中 | コードTODO（community-integration.test.tsx L178/238/378/486） |
+| 5 | `task-imp-skillstream-type-unification.md` | リファクタリング | 中 | コードTODO（setupSkillListeners.ts:23） |
+
+---
+
+## [2026-01-31 - task-imp-permission-tool-metadata-001 Phase 12完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 (documentation)
+- **Result**: ✓ 成功
+- **Notes**: Phase 1-12全完了。56テスト追加（toolMetadata 37 + PermissionDialog統合 19）、全258テスト PASS。未タスク3件検出・指示書作成（docs/30-workflows/unassigned-task/配置）。
+
+---
+
+## [2026-01-31 - task-imp-permission-tool-metadata-001 Phase 1-12 完了]
+
+- Agent: task-specification-creator
+- Phase: Phase 1-12 全フェーズ実行完了
+- Result: success
+- Notes: PermissionDialogリスクレベル・セキュリティメタデータ表示。Phase 1-12をステップバイステップで実行。全258テストPASS、カバレッジ100%。未タスク3件検出。
+
+---
+
 ## [2026-01-31 - unassigned task generation from system specs]
 
 - Agent: generate-unassigned-task

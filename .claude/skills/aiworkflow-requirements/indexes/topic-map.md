@@ -269,10 +269,16 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L9 |
 | Agent Execution UI 型定義（AGENT-004） | L16 |
 | AgentSDKPage（ポストリリーステスト検証UI） | L252 |
+| RiskLevel型 | L113 |
+| ToolMetadata型 | L124 |
+| RISK_LEVEL_STYLES定数 | L135 |
+| PermissionDialog ツールアイコンマッピング | L144 |
+| toolMetadataユーティリティ関数 | L188 |
 | 関連ドキュメント | L315 |
-| PermissionDialog ツールアイコンマッピング | L113 |
 | 完了タスク（task-imp-permission-tool-icons-001） | L358 |
 | 変更履歴 | L383 |
+
+**追加キーワード**: RiskLevel, ToolMetadata, RISK_LEVEL_STYLES, DEFAULT_METADATA, toolMetadata, getRiskLevel, getSecurityImpact, getToolMetadata, WCAG
 
 ### references/interfaces-agent-sdk.md
 
@@ -728,10 +734,16 @@ node scripts/list-specs.js --topics
 | インタラクション設計 | L263 |
 | 視覚デザイン | L291 |
 | アクセシビリティ（WCAG 2.1 AA） | L315 |
-| 完了タスク（TASK-7C, TASK-IMP-permission-tool-icons, task-imp-permission-readable-ui-001） | L327 |
-| 関連ドキュメント | L362 |
+| toolMetadataモジュール仕様（task-imp-permission-tool-metadata-001） | L390 |
+| 公開API（getRiskLevel, getSecurityImpact, getToolMetadata） | L399 |
+| リスクレベル色分け（WCAG準拠） | L407 |
+| RISK_LEVEL_STYLES定数 | L426 |
+| PermissionDialog統合（toolMetadata連携） | L442 |
+| ツールカバレッジマッピング | L453 |
+| 完了タスク（TASK-7C, TASK-IMP-permission-tool-icons, task-imp-permission-readable-ui-001, task-imp-permission-tool-metadata-001） | L342 |
+| 関連ドキュメント | L423 |
 
-**追加キーワード**: permissionDescriptions, getDescription, 人間可読, 折りたたみUI, aria-expanded, safeString, Progressive Disclosure, ツール説明テンプレート
+**追加キーワード**: permissionDescriptions, getDescription, 人間可読, 折りたたみUI, aria-expanded, safeString, Progressive Disclosure, ツール説明テンプレート, toolMetadata, ToolMetadata, RiskLevel, リスクレベル, セキュリティ影響, getSecurityImpact, getRiskLevel, RISK_LEVEL_STYLES, DEFAULT_METADATA, WCAG
 
 ### references/ui-ux-components.md
 
@@ -1026,6 +1038,7 @@ node scripts/list-specs.js --topics
 | エクスポート一覧 | L20 |
 | DANGEROUS_PATTERNS | L35 |
 | ALLOWED_TOOLS_WHITELIST | L92 |
+| toolMetadataモジュール（PermissionDialog表示用） | L114 |
 | API リファレンス | L116 |
 | 使用例 | L193 |
 | テストカバレッジ | L224 |

@@ -354,6 +354,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                      |
 | ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.19.0** | **2026-02-01** | **task-imp-permission-tool-metadata-001フィードバック反映**: patterns.md成功パターン3件追加（Record型スタイルマッピング, IIFEレンダリング, デフォルトメタデータフォールバック）、spec-update-workflow.md漏れパターン追加、EVALS.json使用カウント更新 |
+| **9.18.0** | **2026-01-31** | **task-imp-permission-tool-metadata-001完了**: Phase 1-12全工程完了。toolMetadata.ts新規作成（RiskLevel型、12ツール定義）、PermissionDialog.tsxリスクバッジ統合、56テスト追加・全258テストPASS。未タスク3件検出 |
 | **9.17.0** | **2026-01-31** | **Phase 12改善拡充: Task 2テーブル4サブステップ化（Step 1-A/1-B/1-C/Step 2）、Task 1 vs Task 2境界テーブル追加、よくある漏れパターン5件追加、documentation-changelog-template.md新規作成、implementation-guide-template.md UIコンポーネントパターン追加、spec-update-workflow.md具体例（TASK-IMP）追加** |
 | **9.16.0** | **2026-01-31** | **spec-update-workflow.md改善**: Step 1完了チェックリスト追加（詳細テンプレート必須明記）、permissionキーワードマッピング追加、詳細完了記録テンプレート参照の強化（task-imp-permission-readable-ui-001フィードバック反映） |
 | **9.15.0** | **2026-01-30** | **task-imp-permission-readable-ui-001完了**: Phase 1-12全工程完了。permissionDescriptions.ts新規作成、PermissionDialog.tsx人間可読UI統合、53テスト・100%カバレッジ。4件の未タスク検出・仕様書作成 |
