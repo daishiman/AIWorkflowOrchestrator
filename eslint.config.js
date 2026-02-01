@@ -23,6 +23,7 @@ export default tseslint.config(
       "pnpm-lock.yaml",
       "**/next-env.d.ts",
       "docs/99-claude/**",
+      "**/__fixtures__/**",
     ],
   },
   {

@@ -1,5 +1,7 @@
 # 検索パネル UI/UX 改善タスク
 
+issue_number: 646
+
 ## 概要
 
 検索・置換機能のUI/UXを`.claude/skills/aiworkflow-requirements/references/ui-ux-panels.md`の仕様に合わせて改善する。

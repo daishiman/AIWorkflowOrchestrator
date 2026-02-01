@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-01-31
+> 自動生成: 2026-02-01
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -70,14 +70,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| パフォーマンス要件 | L6 |
 | テスト戦略（TDD実践ガイド） | L94 |
-| セキュリティ | L328 |
-| 可用性 | L356 |
-| 保守性 | L374 |
-| アクセシビリティ | L474 |
-| テストカバレッジ目標 | L493 |
-| 関連ドキュメント | L570 |
-| 完了タスク | L578 |
-| 変更履歴 | L638 |
+| セキュリティ | L330 |
+| 可用性 | L358 |
+| 保守性 | L376 |
+| アクセシビリティ | L476 |
+| テストカバレッジ目標 | L495 |
+| 関連ドキュメント | L572 |
+| 完了タスク | L580 |
+| 変更履歴 | L640 |
 
 ---
 
@@ -268,10 +268,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Agent Execution UI 型定義（AGENT-004） | L16 |
-| AgentSDKPage（ポストリリーステスト検証UI） | L302 |
-| 関連ドキュメント | L365 |
-| 完了タスク | L376 |
-| 変更履歴 | L408 |
+| AgentSDKPage（ポストリリーステスト検証UI） | L345 |
+| 関連ドキュメント | L408 |
+| 完了タスク | L421 |
+| 変更履歴 | L480 |
 
 ### references/interfaces-agent-sdk.md
 
@@ -713,14 +713,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L12 |
-| 概要 | L26 |
-| コンポーネント階層 | L32 |
-| コンポーネント仕様 | L59 |
-| インタラクション設計 | L278 |
-| 視覚デザイン | L306 |
-| アクセシビリティ（WCAG 2.1 AA） | L330 |
-| 完了タスク | L342 |
-| 関連ドキュメント | L378 |
+| 概要 | L29 |
+| コンポーネント階層 | L35 |
+| コンポーネント仕様 | L62 |
+| インタラクション設計 | L281 |
+| 視覚デザイン | L309 |
+| アクセシビリティ（WCAG 2.1 AA） | L333 |
+| 完了タスク | L345 |
+| ChatPanel統合UIフロー（TASK-7D実装済） | L383 |
+| 関連ドキュメント | L537 |
 
 ### references/ui-ux-components.md
 
@@ -731,8 +732,8 @@ node scripts/list-specs.js --topics
 | デザイン原則サマリー | L55 |
 | コンポーネント階層図 | L77 |
 | 完了タスク | L116 |
-| 変更履歴 | L133 |
-| 関連ドキュメント | L148 |
+| 変更履歴 | L134 |
+| 関連ドキュメント | L150 |
 
 ### references/ui-ux-design-principles.md
 
@@ -766,9 +767,10 @@ node scripts/list-specs.js --topics
 | i18n対応（TASK-3-2-B） | L393 |
 | コピー履歴機能（TASK-3-2-D） | L442 |
 | アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L551 |
-| 完了タスク | L562 |
-| 関連ドキュメント | L576 |
-| 変更履歴 | L598 |
+| SkillStreamingView コンポーネント（TASK-7D） | L562 |
+| 完了タスク | L606 |
+| 関連ドキュメント | L621 |
+| 変更履歴 | L644 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -861,7 +863,8 @@ node scripts/list-specs.js --topics
 | ドキュメント構成 | L12 |
 | アイコンとイラスト | L21 |
 | パネル共通ガイドライン | L58 |
-| 関連ドキュメント | L80 |
+| ChatPanel統合パターン（TASK-7D） | L80 |
+| 関連ドキュメント | L118 |
 
 ### references/ui-ux-portal-patterns.md
 
@@ -1016,12 +1019,12 @@ node scripts/list-specs.js --topics
 | エクスポート一覧 | L20 |
 | DANGEROUS_PATTERNS | L35 |
 | ALLOWED_TOOLS_WHITELIST | L92 |
-| API リファレンス | L116 |
-| 使用例 | L193 |
-| テストカバレッジ | L224 |
-| Permission Store（権限永続化） | L240 |
-| 関連ドキュメント | L324 |
-| 変更履歴 | L334 |
+| API リファレンス | L137 |
+| 使用例 | L214 |
+| テストカバレッジ | L245 |
+| Permission Store（権限永続化） | L261 |
+| 関連ドキュメント | L345 |
+| 変更履歴 | L355 |
 
 ### references/security-skill-ipc.md
 
@@ -1194,6 +1197,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
 | コア原則 | L43 |
+| プロジェクト登録スキル一覧 | L108 |
 
 ### references/claude-code-skills-process.md
 
@@ -1247,9 +1251,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Environment Backend サービス | L16 |
-| スキル管理サービス | L83 |
-| 関連ドキュメント | L390 |
+| Environment Backend サービス | L17 |
+| スキル管理サービス | L84 |
+| 関連ドキュメント | L407 |
 
 ### references/arch-feature-addition.md
 
@@ -1365,8 +1369,8 @@ node scripts/list-specs.js --topics
 | 機能追加の手順 | L431 |
 | 構造の選択理由 | L463 |
 | 依存関係ルール | L478 |
-| pnpm-workspace 設定 | L505 |
-| 関連ドキュメント | L524 |
+| pnpm-workspace 設定 | L523 |
+| 関連ドキュメント | L542 |
 
 ### references/discord-bot.md
 
@@ -1495,6 +1499,20 @@ node scripts/list-specs.js --topics
 | サンプルプラグイン仕様 | L317 |
 | 個人開発における注意点 | L345 |
 | 関連ドキュメント | L373 |
+
+### references/quality-e2e-testing.md
+
+| セクション | 行 |
+|------------|----|\n| 変更履歴 | L8 |
+| 概要 | L17 |
+| テスト戦略 | L31 |
+| E2Eテストフィクスチャ | L51 |
+| フィクスチャ詳細仕様 | L88 |
+| フィクスチャ検証テスト | L138 |
+| SkillScannerテスト統合パターン | L194 |
+| 完了タスク | L214 |
+| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L230 |
+| 関連ドキュメント | L269 |
 
 ### references/rag-desktop-state.md
 

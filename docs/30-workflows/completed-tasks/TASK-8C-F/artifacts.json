@@ -1,0 +1,108 @@
+{
+  "feature": "task-8c-f-skill-creator-fixtures",
+  "taskId": "TASK-8C-F",
+  "taskName": "Skill-Creator テスト用フィクスチャ & 実行スキル作成",
+  "created": "2026-02-01T00:00:00Z",
+  "lastUpdated": "2026-02-01T00:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-01/requirements-definition.md",
+        "outputs/phase-01/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-02/fixture-design.md"]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-03/design-review-result.md"]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-04/test-specification.md"]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-05/implementation-summary.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": []
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-07/coverage-report.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-08/refactoring-log.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-09/quality-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/documentation-changelog.md"
+      ]
+    },
+    "13": { "status": "not_started", "artifacts": [] }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "codeArtifacts": [
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/SKILL.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/package.json",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/EVALS.json",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/agents/analyze-request.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/agents/generate-code.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/references/overview.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/references/quality-standards.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/scripts/utils.js",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/scripts/validate_all.js",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/assets/skill-template.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/complete-skill/schemas/agent-definition.json",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/minimal-skill/SKILL.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/partial-skill/SKILL.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/partial-skill/agents/single-agent.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/invalid-skill/SKILL.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/orchestration-skill/SKILL.md",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/orchestration-skill/assets/chain-config.yaml",
+    "apps/desktop/src/__tests__/__fixtures__/skill-creator/orchestration-skill/assets/parallel-config.yaml",
+    ".claude/skills/skill-fixture-runner/SKILL.md",
+    ".claude/skills/skill-fixture-runner/scripts/validate-skill-structure.js",
+    ".claude/skills/skill-fixture-runner/scripts/validate-skill-md.js",
+    ".claude/skills/skill-fixture-runner/scripts/validate-agents.js",
+    ".claude/skills/skill-fixture-runner/scripts/validate-schemas.js",
+    ".claude/skills/skill-fixture-runner/scripts/run-all-validations.js",
+    "apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts"
+  ]
+}

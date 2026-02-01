@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-31T22:21:50.994Z",
-  "totalKeywords": 961,
+  "generated": "2026-02-01T12:32:51.466Z",
+  "totalKeywords": 970,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -88,6 +88,7 @@
       "interfaces-system-prompt.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
+      "quality-e2e-testing.md",
       "rag-desktop-state.md",
       "rag-knowledge-graph.md",
       "rag-query-pipeline.md",
@@ -193,6 +194,7 @@
       "interfaces-system-prompt.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md",
       "rag-query-pipeline.md",
       "rag-search-crag.md",
@@ -297,6 +299,7 @@
       "local-agent.md",
       "overview.md",
       "plugin-development.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md",
       "rag-desktop-state.md",
       "rag-knowledge-graph.md",
@@ -638,6 +641,7 @@
       "interfaces-chat-history.md",
       "interfaces-llm.md",
       "interfaces-system-prompt.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md",
       "security-api-electron.md",
       "security-skill-ipc.md",
@@ -915,7 +919,8 @@
       "arch-ui-components.md"
     ],
     "統合パターン": [
-      "arch-ui-components.md"
+      "arch-ui-components.md",
+      "ui-ux-panels.md"
     ],
     "SkillSelector": [
       "arch-ui-components.md"
@@ -923,7 +928,9 @@
     "ChatPanel": [
       "arch-ui-components.md",
       "interfaces-agent-sdk-skill.md",
-      "ui-ux-feature-skill-stream.md"
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-skill-stream.md",
+      "ui-ux-panels.md"
     ],
     "TASK": [
       "arch-ui-components.md",
@@ -931,9 +938,12 @@
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
+      "quality-e2e-testing.md",
       "security-skill-ipc.md",
+      "ui-ux-agent-execution.md",
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
+      "ui-ux-panels.md",
       "ui-ux-search-panel.md"
     ],
     "認証・セキュリティ": [
@@ -1091,6 +1101,7 @@
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
       "technology-backend.md",
+      "ui-ux-agent-execution.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "history": [
@@ -1447,6 +1458,9 @@
     "コア原則": [
       "claude-code-skills-overview.md"
     ],
+    "プロジェクト登録スキル一覧": [
+      "claude-code-skills-overview.md"
+    ],
     "作成・更新プロセス": [
       "claude-code-skills-process.md"
     ],
@@ -1457,7 +1471,8 @@
       "claude-code-skills-process.md"
     ],
     "skill": [
-      "claude-code-skills-process.md"
+      "claude-code-skills-process.md",
+      "quality-e2e-testing.md"
     ],
     "最小限に維持": [
       "claude-code-skills-process.md"
@@ -1539,6 +1554,7 @@
     ],
     "テスト戦略": [
       "database-implementation.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md"
     ],
     "ベクトル検索実装": [
@@ -2491,6 +2507,7 @@
     ],
     "フロー": [
       "llm-streaming.md",
+      "ui-ux-agent-execution.md",
       "ui-ux-llm-selector.md"
     ],
     "プロバイダー別": [
@@ -2634,6 +2651,27 @@
     ],
     "個人開発における注意点": [
       "plugin-development.md"
+    ],
+    "テスト仕様": [
+      "quality-e2e-testing.md"
+    ],
+    "テストフィクスチャ": [
+      "quality-e2e-testing.md"
+    ],
+    "フィクスチャ詳細仕様": [
+      "quality-e2e-testing.md"
+    ],
+    "フィクスチャ検証テスト": [
+      "quality-e2e-testing.md"
+    ],
+    "SkillScanner": [
+      "quality-e2e-testing.md"
+    ],
+    "テスト統合パターン": [
+      "quality-e2e-testing.md"
+    ],
+    "creator": [
+      "quality-e2e-testing.md"
     ],
     "非機能要件": [
       "quality-requirements.md",
@@ -3372,6 +3410,9 @@
       "ui-ux-design-principles.md",
       "ui-ux-feature-components.md"
     ],
+    "実装済": [
+      "ui-ux-agent-execution.md"
+    ],
     "ガイドライン": [
       "ui-ux-components.md",
       "ui-ux-design-system.md",
@@ -3471,6 +3512,10 @@
     "全コンポーネント共通": [
       "ui-ux-feature-components.md"
     ],
+    "SkillStreamingView": [
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md"
+    ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
     ],
@@ -3478,9 +3523,6 @@
       "ui-ux-feature-skill-stream.md"
     ],
     "タイムスタンプ自動更新機能": [
-      "ui-ux-feature-skill-stream.md"
-    ],
-    "SkillStreamingView": [
       "ui-ux-feature-skill-stream.md"
     ],
     "ファイルセレクター": [

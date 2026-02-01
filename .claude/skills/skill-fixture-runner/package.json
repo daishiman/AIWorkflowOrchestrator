@@ -1,0 +1,8 @@
+{
+  "name": "@skills/skill-fixture-runner",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/run-all-validations.js"
+  }
+}
