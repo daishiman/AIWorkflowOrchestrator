@@ -7,13 +7,14 @@
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                          |
-| ---------- | ---------- | ------------------------------------------------- |
-| v1.4.0     | 2026-01-30 | task-imp-permission-readable-ui-001完了: 関連タスクテーブル更新 |
-| v1.3.0     | 2026-01-30 | TASK-7A完了: SkillSelectorステータス更新          |
-| v1.2.0     | 2026-01-28 | TASK-6-1完了: skillSliceセクション追加            |
-| v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換 |
-| v1.0.0     | 2026-01-23 | 初版作成                                          |
+| バージョン | 日付       | 変更内容                                                                        |
+| ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.5.0     | 2026-02-01 | task-imp-permission-history-001完了: permissionHistorySlice追加、関連タスク更新 |
+| v1.4.0     | 2026-01-30 | task-imp-permission-readable-ui-001完了: 関連タスクテーブル更新                 |
+| v1.3.0     | 2026-01-30 | TASK-7A完了: SkillSelectorステータス更新                                        |
+| v1.2.0     | 2026-01-28 | TASK-6-1完了: skillSliceセクション追加                                          |
+| v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換                               |
+| v1.0.0     | 2026-01-23 | 初版作成                                                                        |
 
 ---
 
@@ -49,13 +50,14 @@
 
 ### 既存Slice一覧
 
-| Slice名      | 責務                     | 実装ファイル                 | タスク    |
-| ------------ | ------------------------ | ---------------------------- | --------- |
-| `uiSlice`    | UI状態（currentView等）  | `store/slices/uiSlice.ts`    | -         |
-| `authSlice`  | 認証状態                 | `store/slices/authSlice.ts`  | -         |
-| `chatSlice`  | チャット状態             | `store/slices/chatSlice.ts`  | -         |
-| `agentSlice` | エージェント・スキル管理 | `store/slices/agentSlice.ts` | AGENT-002 |
-| `skillSlice` | スキル実行状態管理       | `store/slices/skillSlice.ts` | TASK-6-1  |
+| Slice名                  | 責務                     | 実装ファイル                             | タスク                          |
+| ------------------------ | ------------------------ | ---------------------------------------- | ------------------------------- |
+| `uiSlice`                | UI状態（currentView等）  | `store/slices/uiSlice.ts`                | -                               |
+| `authSlice`              | 認証状態                 | `store/slices/authSlice.ts`              | -                               |
+| `chatSlice`              | チャット状態             | `store/slices/chatSlice.ts`              | -                               |
+| `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
+| `skillSlice`             | スキル実行状態管理       | `store/slices/skillSlice.ts`             | TASK-6-1                        |
+| `permissionHistorySlice` | 権限要求履歴管理         | `store/slices/permissionHistorySlice.ts` | task-imp-permission-history-001 |
 
 ### agentSlice詳細
 
@@ -316,14 +318,118 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 
 ### 関連タスク
 
-| タスクID | 内容                      | ステータス |
-| -------- | ------------------------- | ---------- |
-| TASK-6-1 | SkillSlice実装（Zustand） | **完了**   |
-| TASK-7A  | SkillSelector             | **完了**   |
-| TASK-7B  | SkillImportDialog         | **完了**   |
-| TASK-7C  | PermissionDialog          | **完了**   |
-| task-imp-permission-readable-ui-001 | PermissionDialog人間可読UI改善 | **完了** |
-| TASK-7D  | ChatPanel統合             | **完了**（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
+| タスクID                            | 内容                           | ステータス                                                                                               |
+| ----------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| TASK-6-1                            | SkillSlice実装（Zustand）      | **完了**                                                                                                 |
+| TASK-7A                             | SkillSelector                  | **完了**                                                                                                 |
+| TASK-7B                             | SkillImportDialog              | **完了**                                                                                                 |
+| TASK-7C                             | PermissionDialog               | **完了**                                                                                                 |
+| task-imp-permission-readable-ui-001 | PermissionDialog人間可読UI改善 | **完了**                                                                                                 |
+| TASK-7D                             | ChatPanel統合                  | **完了**（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
+| task-imp-permission-history-001     | Permission履歴トラッキングUI   | **完了**                                                                                                 |
+
+---
+
+## permissionHistorySlice（権限要求履歴管理）
+
+### 概要
+
+権限要求の履歴をトラッキングするSlice。PermissionDialog での判断結果（approved/denied/approved_once）を時系列で記録し、フィルタリング・クリア機能を提供する。skillSlice.respondToSkillPermission から cross-slice アクセスで自動記録される。
+
+**実装場所**: `apps/desktop/src/renderer/store/slices/permissionHistorySlice.ts`
+
+**実装ファイル**:
+
+| ファイル                    | パス                                                               | 行数 | 説明                         |
+| --------------------------- | ------------------------------------------------------------------ | ---- | ---------------------------- |
+| `permissionHistorySlice.ts` | `apps/desktop/src/renderer/store/slices/permissionHistorySlice.ts` | 60+  | Slice定義（状態+アクション） |
+| `permissionHistory.ts`      | `apps/desktop/src/renderer/components/skill/permissionHistory.ts`  | 50+  | データモデル・ヘルパー関数   |
+
+**テストファイル**:
+
+| ファイル                         | テスト数 | カテゴリ     |
+| -------------------------------- | -------- | ------------ |
+| `permissionHistorySlice.test.ts` | 16       | Store操作    |
+| `permissionHistory.test.ts`      | 21       | データモデル |
+
+### 状態定義（2プロパティ）
+
+| プロパティ          | 型                         | 初期値 | 説明                                       |
+| ------------------- | -------------------------- | ------ | ------------------------------------------ |
+| `permissionHistory` | `PermissionHistoryEntry[]` | `[]`   | 履歴エントリ一覧（最新が先頭、最大1000件） |
+| `historyFilter`     | `PermissionHistoryFilter`  | `{}`   | フィルタ条件（非永続化）                   |
+
+### アクション定義（3メソッド）
+
+| アクション         | シグネチャ                                                           | 説明                                 |
+| ------------------ | -------------------------------------------------------------------- | ------------------------------------ |
+| `addHistoryEntry`  | `(entry: Omit<PermissionHistoryEntry, "id" \| "timestamp">) => void` | 履歴追加（1000件上限で自動切り捨て） |
+| `clearHistory`     | `() => void`                                                         | 全履歴クリア                         |
+| `setHistoryFilter` | `(filter: PermissionHistoryFilter) => void`                          | フィルタ条件設定                     |
+
+### データモデル
+
+| 型名                      | 説明                                                        |
+| ------------------------- | ----------------------------------------------------------- |
+| `PermissionDecision`      | `"approved" \| "denied" \| "approved_once"`                 |
+| `PermissionHistoryEntry`  | id, timestamp, toolName, argsSnapshot, decision, sessionId? |
+| `PermissionHistoryFilter` | toolName?, decision? によるフィルタ条件                     |
+
+### 定数
+
+| 定数名                           | 値   | 説明               |
+| -------------------------------- | ---- | ------------------ |
+| `PERMISSION_HISTORY_MAX_ENTRIES` | 1000 | 履歴最大保持件数   |
+| `ARGS_SNAPSHOT_MAX_LENGTH`       | 200  | 引数要約最大文字数 |
+
+### セキュリティ: safeArgsSnapshot()
+
+引数を安全な文字列に変換するヘルパー関数。
+
+| ステップ | 処理                               |
+| -------- | ---------------------------------- |
+| 1        | JSON.stringify（循環参照時は"{}"） |
+| 2        | HTMLタグ除去（XSS防止）            |
+| 3        | 制御文字除去                       |
+| 4        | 200文字制限（超過時は"..."付加）   |
+
+### Store統合
+
+**統合先ファイル**: `apps/desktop/src/renderer/store/index.ts`
+
+| インポート対象                 | インポート元                      |
+| ------------------------------ | --------------------------------- |
+| `createPermissionHistorySlice` | `./slices/permissionHistorySlice` |
+| `PermissionHistorySlice`       | `./slices/permissionHistorySlice` |
+
+**永続化**: Zustand persist middleware の`partialize`設定に`permissionHistory`を追加。ストレージキー: `knowledge-studio-store`（localStorage）。`historyFilter`は非永続化。
+
+### Cross-Sliceアクセス
+
+`skillSlice.respondToSkillPermission`内で`(get() as unknown as PermissionHistorySlice).addHistoryEntry()`パターンで自動記録。権限応答時に以下のマッピングで判断結果を記録:
+
+| 条件                    | decision          |
+| ----------------------- | ----------------- |
+| `!approved`             | `"denied"`        |
+| `approved && remember`  | `"approved"`      |
+| `approved && !remember` | `"approved_once"` |
+
+### 品質メトリクス
+
+| 指標              | 値     |
+| ----------------- | ------ |
+| テスト数          | 63     |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 95.16% |
+| Function Coverage | 100%   |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+
+### 関連タスク
+
+| タスクID                        | 内容                         | ステータス |
+| ------------------------------- | ---------------------------- | ---------- |
+| task-imp-permission-history-001 | Permission履歴トラッキングUI | **完了**   |
 
 ---
 

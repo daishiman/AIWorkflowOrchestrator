@@ -43,51 +43,6 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
-## [2026-02-01 - unassigned task generation: codebase TODO scan + system spec gap analysis]
-
-- **Agent**: generate-unassigned-task
-- **Phase**: detect-unassigned (codebase scan + system spec gap)
-- **Result**: ✓ 成功
-- **Notes**: コードベース全体のTODO/FIXMEスキャン（50+箇所検出）+ システム仕様書23ギャップ分析から、既存220件と照合し重複なしの新規3件を作成。task-imp-skill-stream-type-preload-completion-001（TASK-7D残課題）、task-imp-sdk-integration-test-activation-001（SDK統合テスト）、task-imp-community-dashboard-handlers-001（IPC実サービス化）。9セクション完全準拠。
-
----
-
-## [2026-02-01 - 未タスク仕様書5件新規作成]
-
-- **Agent**: generate-unassigned-task
-- **Phase**: detect-unassigned + create-unassigned-task
-- **Result**: ✓ 成功
-- **Notes**: システム仕様書（aiworkflow-requirements）とコードベースTODO分析から未タスク5件を検出・仕様書作成。9セクションテンプレート完全準拠。Why/What/Howの品質基準を満たした指示書を`docs/30-workflows/unassigned-task/`に配置。
-
-### 作成ファイル
-
-| # | ファイル | 分類 | 優先度 | 発見元 |
-|---|---------|------|--------|--------|
-| 1 | `task-permission-toolmetadata-whitelist-sync.md` | セキュリティ | 中 | security-skill-execution.md仕様Gap |
-| 2 | `task-permission-risk-level-styles-shared.md` | リファクタリング | 低 | interfaces-agent-sdk-ui.md仕様Gap |
-| 3 | `task-permission-toolmetadata-i18n.md` | 改善 | 低 | ui-ux-agent-execution.md仕様Gap |
-| 4 | `task-community-integration-test-alignment.md` | バグ修正 | 中 | コードTODO（community-integration.test.tsx L178/238/378/486） |
-| 5 | `task-imp-skillstream-type-unification.md` | リファクタリング | 中 | コードTODO（setupSkillListeners.ts:23） |
-
----
-
-## [2026-01-31 - task-imp-permission-tool-metadata-001 Phase 12完了]
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 (documentation)
-- **Result**: ✓ 成功
-- **Notes**: Phase 1-12全完了。56テスト追加（toolMetadata 37 + PermissionDialog統合 19）、全258テスト PASS。未タスク3件検出・指示書作成（docs/30-workflows/unassigned-task/配置）。
-
----
-
-## [2026-01-31 - task-imp-permission-tool-metadata-001 Phase 1-12 完了]
-
-- Agent: task-specification-creator
-- Phase: Phase 1-12 全フェーズ実行完了
-- Result: success
-- Notes: PermissionDialogリスクレベル・セキュリティメタデータ表示。Phase 1-12をステップバイステップで実行。全258テストPASS、カバレッジ100%。未タスク3件検出。
-
----
 ## [2026-01-31 - unassigned task generation from system specs]
 
 - Agent: generate-unassigned-task
@@ -133,10 +88,10 @@ node scripts/log-usage.js \
 
 ### 結果
 
-| 項目         | 値                                           |
-| ------------ | -------------------------------------------- |
-| ステータス   | success                                      |
-| 完了日時     | 2026-01-31                                   |
+| 項目         | 値                                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| ステータス   | success                                                                                                                   |
+| 完了日時     | 2026-01-31                                                                                                                |
 | 更新ファイル | SKILL.md, documentation-changelog-template.md, implementation-guide-template.md, spec-update-workflow.md, resource-map.md |
 
 ---
@@ -152,20 +107,20 @@ node scripts/log-usage.js \
 
 ### 実行結果
 
-| Phase | 名称               | 結果 | 成果物数 |
-| ----- | ------------------ | ---- | -------- |
-| 1     | 要件定義           | PASS | 5        |
-| 2     | 設計               | PASS | 5        |
-| 3     | 設計レビュー       | MINOR| 4        |
-| 4     | テスト作成         | PASS | 1        |
-| 5     | 実装               | PASS | 1        |
-| 6     | テスト拡充         | PASS | 1        |
-| 7     | カバレッジ確認     | PASS | 3        |
-| 8     | リファクタリング   | PASS | 1        |
-| 9     | 品質チェック       | PASS | 4        |
-| 10    | 最終レビュー       | PASS | 4        |
-| 11    | 手動テスト         | PASS | 1        |
-| 12    | ドキュメント更新   | PASS | 4        |
+| Phase | 名称             | 結果  | 成果物数 |
+| ----- | ---------------- | ----- | -------- |
+| 1     | 要件定義         | PASS  | 5        |
+| 2     | 設計             | PASS  | 5        |
+| 3     | 設計レビュー     | MINOR | 4        |
+| 4     | テスト作成       | PASS  | 1        |
+| 5     | 実装             | PASS  | 1        |
+| 6     | テスト拡充       | PASS  | 1        |
+| 7     | カバレッジ確認   | PASS  | 3        |
+| 8     | リファクタリング | PASS  | 1        |
+| 9     | 品質チェック     | PASS  | 4        |
+| 10    | 最終レビュー     | PASS  | 4        |
+| 11    | 手動テスト       | PASS  | 1        |
+| 12    | ドキュメント更新 | PASS  | 4        |
 
 ### サマリー
 
@@ -190,71 +145,38 @@ TASK-7D ChatPanel統合のPhase 1-12を全フェーズ完了。TDDサイクル�
 
 ### 成果物
 
-| Phase | 成果物 | 結果 |
-| ----- | ------ | ---- |
-| 1 | 要件定義・コンポーネント分析 | ChatPanel分析, コンポーネントインターフェース, Store依存, UI/UX要件 |
-| 2 | 設計 | レイアウト設計, SkillStreamingView設計, データフロー設計, アクセシビリティ設計 |
-| 3 | 設計レビューゲート | MINOR（SkillSelector onImportRequest未実装） |
-| 4 | テスト作成（TDD Red→Green） | 48テスト（ChatPanel 15件 + SkillStreamingView 33件）全PASS |
-| 5 | 実装（TDD Green） | ChatPanel.tsx 131行, SkillStreamingView.tsx 252行 |
-| 6 | エッジケーステスト | Phase 4に統合（empty messages, stress test, status transitions等） |
-| 7 | カバレッジ確認 | ChatPanel 100%全項目, SkillStreamingView Line:99.3%, Branch:93.75%, Function:100% |
-| 8 | リファクタリング | React.memo適用, DisplayableStatus型, forwardRef + useImperativeHandle |
-| 9 | 品質保証 | ESLint/Prettier/TypeScript PASS, セキュリティ/アクセシビリティ確認, 130既存テストPASS |
-| 10 | 最終レビューゲート | PASS |
-| 11 | 手動テスト検証 | 24/24 PASS（コード分析ベース） |
-| 12 | ドキュメント更新 | 実装ガイド2パート、システム仕様書14ファイル更新、未タスク7件検出 |
+| Phase | 成果物                       | 結果                                                                                  |
+| ----- | ---------------------------- | ------------------------------------------------------------------------------------- |
+| 1     | 要件定義・コンポーネント分析 | ChatPanel分析, コンポーネントインターフェース, Store依存, UI/UX要件                   |
+| 2     | 設計                         | レイアウト設計, SkillStreamingView設計, データフロー設計, アクセシビリティ設計        |
+| 3     | 設計レビューゲート           | MINOR（SkillSelector onImportRequest未実装）                                          |
+| 4     | テスト作成（TDD Red→Green）  | 48テスト（ChatPanel 15件 + SkillStreamingView 33件）全PASS                            |
+| 5     | 実装（TDD Green）            | ChatPanel.tsx 131行, SkillStreamingView.tsx 252行                                     |
+| 6     | エッジケーステスト           | Phase 4に統合（empty messages, stress test, status transitions等）                    |
+| 7     | カバレッジ確認               | ChatPanel 100%全項目, SkillStreamingView Line:99.3%, Branch:93.75%, Function:100%     |
+| 8     | リファクタリング             | React.memo適用, DisplayableStatus型, forwardRef + useImperativeHandle                 |
+| 9     | 品質保証                     | ESLint/Prettier/TypeScript PASS, セキュリティ/アクセシビリティ確認, 130既存テストPASS |
+| 10    | 最終レビューゲート           | PASS                                                                                  |
+| 11    | 手動テスト検証               | 24/24 PASS（コード分析ベース）                                                        |
+| 12    | ドキュメント更新             | 実装ガイド2パート、システム仕様書4ファイル更新、未タスク2件検出                       |
 
-### Phase 12 出力ファイル
+### システム仕様書更新
 
-| タスク | ファイル | 内容 |
-| ------ | -------- | ---- |
-| Task 1 | `outputs/phase-12/implementation-guide.md` (677行) | Part 1: 日常例え（勉強机/道具箱/信号機）+ Part 2: TypeScript IF/API仕様 |
-| Task 3 | `outputs/phase-12/documentation-changelog.md` (179行) | 全44成果物リスト、14システム仕様書更新記録、4スキル更新記録 |
-| Task 4 | `outputs/phase-12/unassigned-task-detection.md` (127行) | 5ソース検出（スコープ外5件 + Phase 11発見2件）、既存タスク仕様書マッピング付き |
-
-### Phase 12 Step 1-A/1-B/1-C 完了状態
-
-| ステップ | 対象 | 完了状態 |
-| -------- | ---- | -------- |
-| Step 1-A | interfaces-agent-sdk-ui.md 完了タスクセクション | 完了 (v1.4.0) |
-| Step 1-A | 関連ドキュメントリンク | 完了（実装ガイドリンク追加） |
-| Step 1-A | 変更履歴エントリ | 完了（v1.4.0エントリ追加） |
-| Step 1-A | aiworkflow-requirements/LOGS.md | 完了（5エントリ追加） |
-| Step 1-A | task-specification-creator/LOGS.md | 完了（本エントリ） |
-| Step 1-A | topic-map.md | 完了（135ファイル・954キーワード再生成） |
-| Step 1-B | arch-state-management.md 実装状況テーブル | 完了（TASK-7D → 「完了」） |
-| Step 1-C | interfaces-agent-sdk-history.md 関連タスクテーブル | 完了 (v6.34.0) |
-| Step 2 | interfaces-agent-sdk-ui.md ChatPanel統合仕様 | 完了（コンポーネント階層・Props仕様追加） |
-| Step 2 | ui-ux-agent-execution.md ChatPanel統合UIフロー | 完了 (v1.6.0、7ステップ実行フロー追加) |
-
-### システム仕様書更新（全14ファイル）
-
-| ファイル | 更新内容 | バージョン |
-| -------- | -------- | ---------- |
-| interfaces-agent-sdk-ui.md | 完了タスク + ChatPanel統合仕様 | v1.4.0 |
-| ui-ux-agent-execution.md | ChatPanel統合UIフロー | v1.6.0 |
-| arch-state-management.md | TASK-7Dステータス「完了」に更新 | - |
-| ui-ux-feature-skill-stream.md | ChatPanel統合SkillStreamingView仕様セクション追加 | v1.1.0 |
-| interfaces-agent-sdk-skill.md | ChatPanel統合セクション追加 | v1.4.0 |
-| arch-ui-components.md | ChatPanel統合パターン追加 | v1.4.0 |
-| interfaces-agent-sdk-history.md | TASK-7D完了記録追加 | v6.34.0 |
-| architecture-implementation-patterns.md | forwardRef+useImperativeHandleパターン追加 | v1.3.0 |
-| quality-requirements.md | TASK-7Dテスト実績追加 | v1.3.0 |
-| task-workflow.md | TASK-7D完了タスクエントリ追加 | - |
-| ui-ux-design-principles.md | ChatPanel統合パターン設計事例追加 | v1.2.0 |
-| ui-ux-feature-components.md | SkillStreamingViewコンポーネント仕様追加 | v1.7.0 |
-| ui-ux-panels.md | ChatPanel統合パターン追加 | - |
-| topic-map.md | ChatPanel統合セクションエントリ追加 | 再生成 |
+| ファイル                      | 更新内容                                                   |
+| ----------------------------- | ---------------------------------------------------------- |
+| arch-state-management.md      | TASK-7Dステータス「完了」に更新                            |
+| ui-ux-feature-skill-stream.md | ChatPanel統合SkillStreamingView仕様セクション追加 (v1.1.0) |
+| interfaces-agent-sdk-skill.md | ChatPanel統合セクション追加 (v1.4.0)                       |
+| arch-ui-components.md         | ChatPanel統合パターン追加 (v1.4.0)                         |
 
 ### 主要な技術的決定
 
-| 決定事項 | 選択 | 理由 |
-| -------- | ---- | ---- |
-| SkillStreamingView配置 | ChatPanel内条件レンダー | isExecuting && selectedSkillName条件で表示制御 |
-| ChatPanel公開API | forwardRef + useImperativeHandle | handleImportRequest外部アクセス用 |
-| StatusBadge型 | DisplayableStatus = Exclude<SkillExecutionStatus, "idle"> | idle除外の厳密な型制約 |
-| パフォーマンス | React.memo + 個別セレクタ | 不要な再レンダー防止 |
+| 決定事項               | 選択                                                      | 理由                                           |
+| ---------------------- | --------------------------------------------------------- | ---------------------------------------------- |
+| SkillStreamingView配置 | ChatPanel内条件レンダー                                   | isExecuting && selectedSkillName条件で表示制御 |
+| ChatPanel公開API       | forwardRef + useImperativeHandle                          | handleImportRequest外部アクセス用              |
+| StatusBadge型          | DisplayableStatus = Exclude<SkillExecutionStatus, "idle"> | idle除外の厳密な型制約                         |
+| パフォーマンス         | React.memo + 個別セレクタ                                 | 不要な再レンダー防止                           |
 
 ---
 
@@ -283,33 +205,33 @@ TASK-7D ChatPanel統合のPhase 1-12を全フェーズ完了。TDDサイクル�
 
 ### 結果
 
-| 項目             | 値                                        |
-| ---------------- | ----------------------------------------- |
-| ステータス       | success                                   |
-| 完了日時         | 2026-01-30                                |
-| タスクID         | task-imp-permission-tool-icons-001        |
-| タスク名         | PermissionDialog ツール別アイコン表示     |
-| テスト結果       | 57/57 PASS                                |
-| TypeScriptエラー | 0件（対象ファイル）                       |
-| ESLintエラー     | 0件                                       |
-| Prettierチェック | PASS                                      |
+| 項目             | 値                                    |
+| ---------------- | ------------------------------------- |
+| ステータス       | success                               |
+| 完了日時         | 2026-01-30                            |
+| タスクID         | task-imp-permission-tool-icons-001    |
+| タスク名         | PermissionDialog ツール別アイコン表示 |
+| テスト結果       | 57/57 PASS                            |
+| TypeScriptエラー | 0件（対象ファイル）                   |
+| ESLintエラー     | 0件                                   |
+| Prettierチェック | PASS                                  |
 
 ### Phase完了状況
 
-| Phase | 名称                 | 結果 |
-| ----- | -------------------- | ---- |
-| 1     | 要件定義             | ✓    |
-| 2     | 設計                 | ✓    |
-| 3     | 設計レビューゲート   | ✓    |
-| 4     | テスト作成（Red）    | ✓    |
-| 5     | 実装（Green）        | ✓    |
-| 6     | テスト拡充           | ✓    |
-| 7     | テストカバレッジ     | ✓    |
-| 8     | リファクタリング     | ✓    |
-| 9     | 品質保証             | ✓    |
-| 10    | 最終レビュー         | ✓    |
-| 11    | 手動テスト           | ✓    |
-| 12    | ドキュメント更新     | ✓    |
+| Phase | 名称               | 結果 |
+| ----- | ------------------ | ---- |
+| 1     | 要件定義           | ✓    |
+| 2     | 設計               | ✓    |
+| 3     | 設計レビューゲート | ✓    |
+| 4     | テスト作成（Red）  | ✓    |
+| 5     | 実装（Green）      | ✓    |
+| 6     | テスト拡充         | ✓    |
+| 7     | テストカバレッジ   | ✓    |
+| 8     | リファクタリング   | ✓    |
+| 9     | 品質保証           | ✓    |
+| 10    | 最終レビュー       | ✓    |
+| 11    | 手動テスト         | ✓    |
+| 12    | ドキュメント更新   | ✓    |
 
 ---
 
@@ -353,20 +275,20 @@ task-imp-permission-readable-ui-001（PermissionDialog人間可読UI改善）の
 
 ### 成果物
 
-| Phase | 成果物 | 結果 |
-| ----- | ------ | ---- |
-| 1 | 要件定義 | 12種ツールテンプレート、折りたたみUI、ARIA属性 |
-| 2 | 設計書 | permissionDescriptionsモジュール設計 |
-| 3 | 設計レビューゲート | PASS（指摘0件） |
-| 4 | テスト作成（TDD Red） | 53テスト作成 |
-| 5 | 実装（TDD Green） | 全テストPASS |
-| 6 | テスト拡充 | Phase 4で十分（変更なし） |
-| 7 | カバレッジ確認 | Lines:99.73%, Branch:95.87%, Function:96.96% |
-| 8 | リファクタリング | 変更不要（品質基準充足済み） |
-| 9 | 品質保証 | 全ゲートPASS |
-| 10 | 最終レビューゲート | PASS（MINOR: デフォルト展開状態） |
-| 11 | 手動テスト検証 | 20/20 PASS |
-| 12 | ドキュメント更新 | 実装ガイド、更新履歴、未タスク4件 |
+| Phase | 成果物                | 結果                                           |
+| ----- | --------------------- | ---------------------------------------------- |
+| 1     | 要件定義              | 12種ツールテンプレート、折りたたみUI、ARIA属性 |
+| 2     | 設計書                | permissionDescriptionsモジュール設計           |
+| 3     | 設計レビューゲート    | PASS（指摘0件）                                |
+| 4     | テスト作成（TDD Red） | 53テスト作成                                   |
+| 5     | 実装（TDD Green）     | 全テストPASS                                   |
+| 6     | テスト拡充            | Phase 4で十分（変更なし）                      |
+| 7     | カバレッジ確認        | Lines:99.73%, Branch:95.87%, Function:96.96%   |
+| 8     | リファクタリング      | 変更不要（品質基準充足済み）                   |
+| 9     | 品質保証              | 全ゲートPASS                                   |
+| 10    | 最終レビューゲート    | PASS（MINOR: デフォルト展開状態）              |
+| 11    | 手動テスト検証        | 20/20 PASS                                     |
+| 12    | ドキュメント更新      | 実装ガイド、更新履歴、未タスク4件              |
 
 ### システム仕様書更新
 
@@ -397,20 +319,20 @@ TASK-7C PermissionDialogコンポーネントのPhase 1-12を全フェーズ完�
 
 ### 成果物
 
-| Phase | 成果物 | 結果 |
-| ----- | ------ | ---- |
-| 1 | 要件定義・受け入れ基準 | FR-14件, NFR-12件, AC-15件 |
-| 2 | アーキテクチャ設計 | Store直結パターン, WCAG 2.1 AA |
-| 3 | 設計レビューゲート | PASS |
-| 4 | テスト作成（TDD Red） | 22テスト → 全FAIL確認 |
-| 5 | 実装（TDD Green） | 22テスト → 全PASS |
-| 6 | テスト拡充 | +18テスト → 合計40テスト |
-| 7 | カバレッジ確認 | Line:100%, Branch:94.44%, Function:100% |
-| 8 | リファクタリング | 変更不要（品質基準充足済み） |
-| 9 | 品質保証 | 全4ゲートPASS |
-| 10 | 最終レビューゲート | PASS |
-| 11 | 手動テスト検証 | 31/31 PASS |
-| 12 | ドキュメント更新 | 実装ガイド、更新履歴、未タスク4件 |
+| Phase | 成果物                 | 結果                                    |
+| ----- | ---------------------- | --------------------------------------- |
+| 1     | 要件定義・受け入れ基準 | FR-14件, NFR-12件, AC-15件              |
+| 2     | アーキテクチャ設計     | Store直結パターン, WCAG 2.1 AA          |
+| 3     | 設計レビューゲート     | PASS                                    |
+| 4     | テスト作成（TDD Red）  | 22テスト → 全FAIL確認                   |
+| 5     | 実装（TDD Green）      | 22テスト → 全PASS                       |
+| 6     | テスト拡充             | +18テスト → 合計40テスト                |
+| 7     | カバレッジ確認         | Line:100%, Branch:94.44%, Function:100% |
+| 8     | リファクタリング       | 変更不要（品質基準充足済み）            |
+| 9     | 品質保証               | 全4ゲートPASS                           |
+| 10    | 最終レビューゲート     | PASS                                    |
+| 11    | 手動テスト検証         | 31/31 PASS                              |
+| 12    | ドキュメント更新       | 実装ガイド、更新履歴、未タスク4件       |
 
 ### システム仕様書更新
 
@@ -446,11 +368,11 @@ TASK-7C PermissionDialogコンポーネントのPhase 1-12を全フェーズ完�
 
 ### 適用した改善
 
-| ファイル | 変更内容 |
-|---------|----------|
-| spec-update-workflow.md | Step 1-C「関連タスクテーブル更新」セクション追加（30行程度）|
-| phase-templates.md | Phase 12完了条件にStep 1-Cチェック項目追加 |
-| SKILL.md | v9.14.0として変更履歴に記録 |
+| ファイル                | 変更内容                                                     |
+| ----------------------- | ------------------------------------------------------------ |
+| spec-update-workflow.md | Step 1-C「関連タスクテーブル更新」セクション追加（30行程度） |
+| phase-templates.md      | Phase 12完了条件にStep 1-Cチェック項目追加                   |
+| SKILL.md                | v9.14.0として変更履歴に記録                                  |
 
 ### 追加内容詳細
 
@@ -493,20 +415,20 @@ TASK-7B（SkillImportDialog）のPhase 1-12を完了。TDD Red-Green-Refactorサ
 
 ### Phase完了状況
 
-| Phase    | Phase名              | 状態 |
-| -------- | -------------------- | ---- |
-| Phase 1  | 要件定義             | 完了 |
-| Phase 2  | 設計                 | 完了 |
-| Phase 3  | 設計レビューゲート   | 完了 |
-| Phase 4  | テスト作成（Red）    | 完了 |
-| Phase 5  | 実装（Green）        | 完了 |
-| Phase 6  | テスト拡充           | 完了 |
-| Phase 7  | テストカバレッジ確認 | 完了 |
-| Phase 8  | リファクタリング     | 完了 |
-| Phase 9  | 品質保証             | 完了 |
-| Phase 10 | 最終レビューゲート   | 完了 |
-| Phase 11 | 手動テスト検証       | 完了 |
-| Phase 12 | ドキュメント更新     | 完了 |
+| Phase    | Phase名              | 状態   |
+| -------- | -------------------- | ------ |
+| Phase 1  | 要件定義             | 完了   |
+| Phase 2  | 設計                 | 完了   |
+| Phase 3  | 設計レビューゲート   | 完了   |
+| Phase 4  | テスト作成（Red）    | 完了   |
+| Phase 5  | 実装（Green）        | 完了   |
+| Phase 6  | テスト拡充           | 完了   |
+| Phase 7  | テストカバレッジ確認 | 完了   |
+| Phase 8  | リファクタリング     | 完了   |
+| Phase 9  | 品質保証             | 完了   |
+| Phase 10 | 最終レビューゲート   | 完了   |
+| Phase 11 | 手動テスト検証       | 完了   |
+| Phase 12 | ドキュメント更新     | 完了   |
 | Phase 13 | PR作成               | 未着手 |
 
 ### 品質メトリクス
@@ -533,14 +455,14 @@ TASK-7B（SkillImportDialog）のPhase 1-12を完了。TDD Red-Green-Refactorサ
 
 ### 未割当タスク検出結果
 
-| 検出ソース                   | 結果                    |
-| ---------------------------- | ----------------------- |
-| 元タスク仕様書（スコープ外） | 0件（既知の除外項目）   |
-| Phase 3 設計レビュー         | 1件（MINOR-001→将来改善）|
-| Phase 10 最終レビュー        | 0件                     |
-| Phase 11 手動テスト結果      | 0件                     |
-| コードベースTODO/FIXME       | 0件                     |
-| 実装中の発見事項             | 1件（将来改善候補）     |
+| 検出ソース                   | 結果                      |
+| ---------------------------- | ------------------------- |
+| 元タスク仕様書（スコープ外） | 0件（既知の除外項目）     |
+| Phase 3 設計レビュー         | 1件（MINOR-001→将来改善） |
+| Phase 10 最終レビュー        | 0件                       |
+| Phase 11 手動テスト結果      | 0件                       |
+| コードベースTODO/FIXME       | 0件                       |
+| 実装中の発見事項             | 1件（将来改善候補）       |
 
 ### 結果
 
@@ -561,20 +483,20 @@ TASK-7B（SkillImportDialog）のPhase 1-12を完了。TDD Red-Green-Refactorサ
 
 ### 実行内容
 
-| Phase | 内容                       | 結果    |
-|-------|---------------------------|---------|
-| 1     | 要件定義                   | PASS    |
-| 2     | コンポーネント設計         | PASS    |
-| 3     | 設計レビュー               | PASS    |
-| 4     | テストケース作成（Red）    | 13件    |
-| 5     | 実装（Green）              | 全PASS  |
-| 6     | テスト拡充                 | 28件    |
-| 7     | カバレッジ検証             | PASS    |
-| 8     | リファクタリング           | 3件改善 |
-| 9     | 品質保証                   | PASS    |
-| 10    | 最終レビューゲート         | PASS    |
-| 11    | 手動テスト                 | 17/17   |
-| 12    | ドキュメント更新           | 完了    |
+| Phase | 内容                    | 結果    |
+| ----- | ----------------------- | ------- |
+| 1     | 要件定義                | PASS    |
+| 2     | コンポーネント設計      | PASS    |
+| 3     | 設計レビュー            | PASS    |
+| 4     | テストケース作成（Red） | 13件    |
+| 5     | 実装（Green）           | 全PASS  |
+| 6     | テスト拡充              | 28件    |
+| 7     | カバレッジ検証          | PASS    |
+| 8     | リファクタリング        | 3件改善 |
+| 9     | 品質保証                | PASS    |
+| 10    | 最終レビューゲート      | PASS    |
+| 11    | 手動テスト              | 17/17   |
+| 12    | ドキュメント更新        | 完了    |
 
 ### 品質メトリクス
 
@@ -2351,98 +2273,74 @@ if (artifactPath) {
 
 ---
 
-## [2026-02-01T02:00:00.000Z]
+## 2026-02-01 - task-imp-permission-history-001 Permission履歴トラッキングUI 完了ログ
 
-- **Agent**: generate-unassigned-task
-- **Phase**: 未タスク検出・仕様書作成（TASK-8C-E Post-Phase 12）
-- **Result**: ✓ 成功
-- **Notes**: quality-e2e-testing.md Gap分析から2件の未タスク仕様書を作成
+### コンテキスト
 
-### 検出プロセス
+- スキル: task-specification-creator
+- タスクID: task-imp-permission-history-001
+- Phase: Phase 1-12 全完了
+- Issue: #602
 
-| ソース                          | 結果                          |
-| ------------------------------- | ----------------------------- |
-| TASK-8C-E Phase 3/10レビュー   | PASS（MINOR指摘なし）         |
-| TASK-8C-E Phase 11手動テスト   | 発見事項0件                   |
-| TASK-8C-E Phase 12未タスクレポート | 0件（既報）               |
-| コードコメント                  | TODO/FIXME/HACK/XXX 0件      |
-| システム仕様書（quality-e2e-testing.md） | **2件検出**          |
+### 実装サマリー
 
-### 作成した未タスク仕様書
+| 項目             | 内容                                                                                     |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| データモデル     | PermissionHistoryEntry, PermissionHistoryFilter, PermissionDecision                      |
+| Store Slice      | permissionHistorySlice（addHistoryEntry, clearHistory, setHistoryFilter）                |
+| UIコンポーネント | PermissionHistoryPanel（仮想スクロール）, PermissionHistoryItem, PermissionHistoryFilter |
+| 自動記録         | skillSlice.respondToSkillPermission内で履歴自動記録                                      |
+| セキュリティ     | safeArgsSnapshot()（XSS防止、制御文字除去、200文字制限）                                 |
+| 永続化           | Zustand persist middleware partialize設定（localStorage）                                |
+| テスト数         | 63件（21 data model + 16 store + 26 component）                                          |
+| カバレッジ       | Statements 100%, Branches 95.16%, Functions 100%, Lines 100%                             |
 
-| # | ファイル名                                      | タスクID                                       | 分類 | 優先度 | 規模 |
-| - | ----------------------------------------------- | ---------------------------------------------- | ---- | ------ | ---- |
-| 1 | `task-imp-e2e-fixture-subresource-expansion.md` | task-imp-e2e-fixture-subresource-expansion-001 | 改善 | 中     | 小   |
-| 2 | `task-imp-e2e-fixture-edge-cases.md`            | task-imp-e2e-fixture-edge-cases-001            | 改善 | 低     | 小   |
+### ドキュメント成果物
 
-### Gap詳細
+| ドキュメント         | パス                                          |
+| -------------------- | --------------------------------------------- |
+| 要件定義書           | outputs/phase-1/requirements-definition.md    |
+| 受け入れ基準         | outputs/phase-1/acceptance-criteria.md        |
+| スコープ定義         | outputs/phase-1/scope-definition.md           |
+| アーキテクチャ設計   | outputs/phase-2/architecture-design.md        |
+| ドメインモデル       | outputs/phase-2/domain-model.md               |
+| 設計レビュー結果     | outputs/phase-3/design-review-result.md       |
+| テスト仕様書         | outputs/phase-4/test-specification.md         |
+| テストケース         | outputs/phase-4/test-cases.md                 |
+| 実装レポート         | outputs/phase-5/implementation-report.md      |
+| カバレッジレポート   | outputs/phase-6/coverage-report.md            |
+| カバレッジ再測定     | outputs/phase-7/coverage-report.md            |
+| リファクタリング記録 | outputs/phase-8/refactoring-log.md            |
+| 品質レポート         | outputs/phase-9/quality-report.md             |
+| 最終レビュー結果     | outputs/phase-10/final-review-result.md       |
+| 手動テスト結果       | outputs/phase-11/manual-test-result.md        |
+| 実装ガイド           | outputs/phase-12/implementation-guide.md      |
+| ドキュメント更新履歴 | outputs/phase-12/documentation-changelog.md   |
+| 未タスク検出レポート | outputs/phase-12/unassigned-task-detection.md |
 
-| Gap                                     | 根拠                                                         |
-| --------------------------------------- | ------------------------------------------------------------ |
-| サブリソース型4/6未カバー               | ScannedSkillMetadataが6型定義、E2Eフィクスチャは2型のみカバー |
-| エッジケースフィクスチャなし            | 空allowed-tools/空description/bodyなし等のE2E検証が未カバー  |
+### システム仕様書更新
 
-### 品質チェック（9セクション検証）
+| ファイル                        | バージョン変更    | 更新内容                                 |
+| ------------------------------- | ----------------- | ---------------------------------------- |
+| ui-ux-settings.md               | v1.1.1 → v1.2.0   | PermissionHistoryPanel仕様セクション追加 |
+| arch-state-management.md        | v1.4.0 → v1.5.0   | permissionHistorySliceセクション追加     |
+| interfaces-agent-sdk-history.md | v6.34.0 → v6.35.0 | 完了タスク追加、未タスクステータス更新   |
 
-| セクション | task-1 | task-2 |
-| ---------- | ------ | ------ |
-| 1. Why     | ✅     | ✅     |
-| 2. What    | ✅     | ✅     |
-| 3. How     | ✅     | ✅     |
-| 4. 実行手順 | ✅    | ✅     |
-| 5. 完了条件 | ✅    | ✅     |
-| 6. 検証方法 | ✅    | ✅     |
-| 7. リスク   | ✅    | ✅     |
-| 8. 参照情報 | ✅    | ✅     |
-| 9. 備考     | ✅    | ✅     |
+### 未タスク検出結果
 
----
+| タスクID                           | 分類 | 優先度 | 内容                   |
+| ---------------------------------- | ---- | ------ | ---------------------- |
+| task-imp-permission-date-filter    | 改善 | 中     | 期間別フィルタリング   |
+| task-imp-permission-auto-recommend | 改善 | 低     | 自動推奨ロジック       |
+| task-imp-permission-log-export     | 改善 | 低     | 外部ログ連携           |
+| task-imp-tool-icon-resolver        | 改善 | 低     | ツールアイコン動的解決 |
 
-## [2026-02-01T00:00:00.000Z]
+### 結果
 
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了（TASK-8C-E E2Eテストフィクスチャ作成）
-- **Result**: ✓ 成功
-- **Notes**: TDD Red→Green→Refactorサイクル完遂、29テスト全PASS
-
-### TASK-8C-E サマリー
-
-| 項目         | 内容                                           |
-| ------------ | ---------------------------------------------- |
-| タスクID     | TASK-8C-E                                      |
-| タスク名     | E2Eテストフィクスチャ作成                      |
-| 完了Phase    | Phase 1-12（Phase 13 PR作成はユーザー指示で未実施） |
-| テスト結果   | 29/29 PASS                                     |
-| 未タスク検出 | 0件                                            |
-| 複雑度       | small（見積り通り）                            |
-
-### Phase 12 成果物
-
-| 成果物         | パス                                                          |
-| -------------- | ------------------------------------------------------------- |
-| 実装ガイド     | `docs/30-workflows/TASK-8C-E/outputs/phase-12/implementation-guide.md` |
-| 更新記録       | `docs/30-workflows/TASK-8C-E/outputs/phase-12/documentation-changelog.md` |
-| 未タスクレポート | `docs/30-workflows/TASK-8C-E/outputs/phase-12/unassigned-task-report.md` |
-
-### Phase 12 Task 2 実施結果
-
-| Step   | 対象                  | 結果                                    |
-| ------ | --------------------- | --------------------------------------- |
-| 1-A    | タスク完了記録        | ✅ 実施（status更新, LOGS.md×2更新）     |
-| 1-B    | 実装状況テーブル      | ➖ 該当なし（静的フィクスチャのため）    |
-| 1-C    | 関連タスクテーブル    | ✅ 実施（index.md, B/C/D depends_on更新）|
-| Step 2 | システム仕様更新      | ➖ 該当なし（新規API/インターフェースなし）|
-
-### コード成果物
-
-| ファイル                                                              | 種類           |
-| --------------------------------------------------------------------- | -------------- |
-| `apps/desktop/src/__tests__/__fixtures__/skills/test-skill/SKILL.md`  | 完全構成フィクスチャ |
-| `apps/desktop/src/__tests__/__fixtures__/skills/test-skill/agents/test-agent.md` | サブエージェント |
-| `apps/desktop/src/__tests__/__fixtures__/skills/test-skill/references/test-ref.md` | 参照資料 |
-| `apps/desktop/src/__tests__/__fixtures__/skills/another-skill/SKILL.md` | 最小構成フィクスチャ |
-| `apps/desktop/src/__tests__/__fixtures__/skills/invalid-skill/README.md` | 無効フィクスチャ |
-| `apps/desktop/src/__tests__/fixtures/skills.fixture.test.ts`          | 検証テスト（29ケース） |
+- ステータス: success
+- 記録日時: 2026-02-01
+- Phase 1-12: 全完了
+- 未タスク指示書: 4件作成
 
 ---
 
@@ -2450,14 +2348,6 @@ if (artifactPath) {
 
 - **Agent**: unknown
 - **Phase**: 未タスク指示書作成（TASK-7A Phase 12）
-- **Result**: ✓ 成功
-
----
-
-## [2026-01-31T22:43:00.786Z]
-
-- **Agent**: unknown
-- **Phase**: Phase 12 - Unassigned Task Spec Improvement
 - **Result**: ✓ 成功
 
 ---

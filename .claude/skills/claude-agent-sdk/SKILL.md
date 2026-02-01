@@ -87,31 +87,32 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 
 ## Task仕様ナビ
 
-| Task                     | 概要                                 | 対応する Phase | リソース                                       |
-| ------------------------ | ------------------------------------ | -------------- | ---------------------------------------------- |
-| query() API基本実装      | ストリーミングメッセージ処理の基本   | Phase 1, 2     | query-api.md, agent-handler-template.ts        |
-| Hooks実装                | PreToolUse/PostToolUse/Permission    | Phase 2        | hooks-system.md                                |
-| Hooks Factory            | createHooks, セキュリティチェック    | Phase 2        | hooks-system.md（TASK-3-1-B）                  |
-| Permission Control設計   | 権限ルールの設計と実装               | Phase 1, 2     | permission-control.md                          |
-| Electron IPC統合         | Main-Renderer間のAgent通信           | Phase 2        | electron-ipc.md                                |
-| エラーハンドリング       | AbortSignal、タイムアウト、リトライ  | Phase 2        | error-handling.md, hooks-system.md             |
-| リトライ機構             | Exponential Backoff, Jitter, エラー分類 | Phase 2     | error-handling.md, retry-patterns.md           |
-| MCP統合                  | MCPサーバーとの連携                  | Phase 2, 3     | mcp-integration.md                             |
-| セキュリティ設計         | サンドボックス、ホスティング         | Phase 2, 3     | security-sandboxing.md                         |
+| Task                   | 概要                                    | 対応する Phase | リソース                                |
+| ---------------------- | --------------------------------------- | -------------- | --------------------------------------- |
+| query() API基本実装    | ストリーミングメッセージ処理の基本      | Phase 1, 2     | query-api.md, agent-handler-template.ts |
+| Hooks実装              | PreToolUse/PostToolUse/Permission       | Phase 2        | hooks-system.md                         |
+| Hooks Factory          | createHooks, セキュリティチェック       | Phase 2        | hooks-system.md（TASK-3-1-B）           |
+| Permission Control設計 | 権限ルールの設計と実装                  | Phase 1, 2     | permission-control.md                   |
+| Electron IPC統合       | Main-Renderer間のAgent通信              | Phase 2        | electron-ipc.md                         |
+| エラーハンドリング     | AbortSignal、タイムアウト、リトライ     | Phase 2        | error-handling.md, hooks-system.md      |
+| リトライ機構           | Exponential Backoff, Jitter, エラー分類 | Phase 2        | error-handling.md, retry-patterns.md    |
+| MCP統合                | MCPサーバーとの連携                     | Phase 2, 3     | mcp-integration.md                      |
+| セキュリティ設計       | サンドボックス、ホスティング            | Phase 2, 3     | security-sandboxing.md                  |
 
 ## パターン選択ガイド
 
 ### claude-agent-sdk vs 直接SDK使用
 
-| 要件 | claude-agent-sdk | 直接SDK (`@anthropic-ai/sdk`) |
-|------|-----------------|------------------------------|
-| Hooks (PreToolUse等) | ✅ 必要 | ❌ 不要 |
-| Permission Control | ✅ 必要 | ❌ 不要 |
-| ストリーミングUI | ✅ 複雑 | ⚪ シンプル |
-| Main Process専用 | ⚪ 可能 | ✅ 推奨 |
-| バッチ処理 | ⚪ 可能 | ✅ 推奨 |
+| 要件                 | claude-agent-sdk | 直接SDK (`@anthropic-ai/sdk`) |
+| -------------------- | ---------------- | ----------------------------- |
+| Hooks (PreToolUse等) | ✅ 必要          | ❌ 不要                       |
+| Permission Control   | ✅ 必要          | ❌ 不要                       |
+| ストリーミングUI     | ✅ 複雑          | ⚪ シンプル                   |
+| Main Process専用     | ⚪ 可能          | ✅ 推奨                       |
+| バッチ処理           | ⚪ 可能          | ✅ 推奨                       |
 
 **推奨**:
+
 - **対話型エージェント** → `@anthropic-ai/claude-agent-sdk`
 - **バックグラウンド処理/バッチ** → `@anthropic-ai/sdk` 直接使用
 
@@ -143,7 +144,7 @@ async function getApiKey(): Promise<string> {
 async function executeQuery(
   prompt: string,
   systemPrompt?: string,
-  timeout = 30000
+  timeout = 30000,
 ): Promise<string> {
   const client = new Anthropic({ apiKey: await getApiKey() });
 
@@ -158,10 +159,10 @@ async function executeQuery(
         ...(systemPrompt ? { system: systemPrompt } : {}),
         messages: [{ role: "user", content: prompt }],
       },
-      { signal: controller.signal }
+      { signal: controller.signal },
     );
 
-    const textContent = response.content.find(b => b.type === "text");
+    const textContent = response.content.find((b) => b.type === "text");
     return textContent?.type === "text" ? textContent.text : "";
   } finally {
     clearTimeout(timeoutId);
@@ -177,7 +178,10 @@ async function executeQuery(
 
 ```typescript
 interface SkillExecutor {
-  execute(phase: SkillPhase, projectPath: string): Promise<SkillExecutionResult>;
+  execute(
+    phase: SkillPhase,
+    projectPath: string,
+  ): Promise<SkillExecutionResult>;
   cancel(): void;
   onProgress(callback: (progress: number) => void): void;
   isExecuting(): boolean;
@@ -247,7 +251,10 @@ const options = {
   hooks: {
     PreToolUse: async (input, toolUseID, { signal }) => {
       if (input.toolName === "Bash" && input.args.command?.includes("rm -rf")) {
-        return { proceed: false, message: "危険なコマンドは許可されていません" };
+        return {
+          proceed: false,
+          message: "危険なコマンドは許可されていません",
+        };
       }
       return { proceed: true };
     },
@@ -307,108 +314,128 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 ## 関連ドキュメント
 
-| ドキュメント                  | パス                                                                           | 説明                                |
-| ----------------------------- | ------------------------------------------------------------------------------ | ----------------------------------- |
-| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`    | 統合システム設計仕様（型定義、IPC） |
-| 実装ガイド                    | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド      |
+| ドキュメント                  | パス                                                                                 | 説明                                |
+| ----------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------- |
+| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`          | 統合システム設計仕様（型定義、IPC） |
+| 実装ガイド                    | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド            |
 
 ### AGENT-005実装成果物
 
-| ドキュメント         | パス                                                                         | 説明                    |
-| -------------------- | ---------------------------------------------------------------------------- | ----------------------- |
-| 要件定義             | `docs/30-workflows/claude-code-integration/outputs/phase-1/`                 | 受け入れ基準、スコープ  |
-| 設計                 | `docs/30-workflows/claude-code-integration/outputs/phase-2/`                 | アーキテクチャ、型定義  |
-| テスト仕様           | `docs/30-workflows/claude-code-integration/outputs/phase-4/`                 | テストケース設計        |
-| 実装サマリー         | `docs/30-workflows/claude-code-integration/outputs/phase-5/implementation-summary.md` | 実装概要     |
-| 品質検証レポート     | `docs/30-workflows/claude-code-integration/outputs/phase-9/`                 | セキュリティチェック    |
-| 最終レビュー         | `docs/30-workflows/claude-code-integration/outputs/phase-10/`                | リリースチェックリスト  |
-| 手動テスト結果       | `docs/30-workflows/claude-code-integration/outputs/phase-11/`                | 手動検証結果            |
-| 実装ガイド           | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` | 概念・技術詳細 |
+| ドキュメント     | パス                                                                                  | 説明                   |
+| ---------------- | ------------------------------------------------------------------------------------- | ---------------------- |
+| 要件定義         | `docs/30-workflows/claude-code-integration/outputs/phase-1/`                          | 受け入れ基準、スコープ |
+| 設計             | `docs/30-workflows/claude-code-integration/outputs/phase-2/`                          | アーキテクチャ、型定義 |
+| テスト仕様       | `docs/30-workflows/claude-code-integration/outputs/phase-4/`                          | テストケース設計       |
+| 実装サマリー     | `docs/30-workflows/claude-code-integration/outputs/phase-5/implementation-summary.md` | 実装概要               |
+| 品質検証レポート | `docs/30-workflows/claude-code-integration/outputs/phase-9/`                          | セキュリティチェック   |
+| 最終レビュー     | `docs/30-workflows/claude-code-integration/outputs/phase-10/`                         | リリースチェックリスト |
+| 手動テスト結果   | `docs/30-workflows/claude-code-integration/outputs/phase-11/`                         | 手動検証結果           |
+| 実装ガイド       | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md`  | 概念・技術詳細         |
 
 ### Slide Agent SDK統合実装成果物（Direct SDK Pattern参照）
 
-| ドキュメント         | パス                                                                         | 説明                        |
-| -------------------- | ---------------------------------------------------------------------------- | --------------------------- |
-| 実装ガイド           | `docs/30-workflows/slide-agent-sdk-integration/outputs/phase-12/implementation-guide.md` | Direct SDKパターン詳細 |
-| CHANGELOGエントリ    | `docs/30-workflows/slide-agent-sdk-integration/outputs/phase-12/changelog-entry.md` | リリースノート |
-| システム仕様         | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`  | SDK統合システム仕様（更新済み） |
+| ドキュメント      | パス                                                                                     | 説明                            |
+| ----------------- | ---------------------------------------------------------------------------------------- | ------------------------------- |
+| 実装ガイド        | `docs/30-workflows/slide-agent-sdk-integration/outputs/phase-12/implementation-guide.md` | Direct SDKパターン詳細          |
+| CHANGELOGエントリ | `docs/30-workflows/slide-agent-sdk-integration/outputs/phase-12/changelog-entry.md`      | リリースノート                  |
+| システム仕様      | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`              | SDK統合システム仕様（更新済み） |
 
 ### 実装ファイル
 
-| ファイル           | パス                                                           | 説明                   |
-| ------------------ | -------------------------------------------------------------- | ---------------------- |
-| 型定義             | `packages/shared/src/types/agent-execution.ts`                 | Agent実行関連型        |
-| HooksFactory       | `apps/desktop/src/main/services/agent/HooksFactory.ts`         | SDK Hooks生成          |
-| PermissionRules    | `apps/desktop/src/main/services/agent/PermissionRules.ts`      | 権限ルール定義         |
-| AgentExecutor      | `apps/desktop/src/main/services/agent/AgentExecutor.ts`        | SDK query()統合        |
-| ExecutionManager   | `apps/desktop/src/main/services/agent/ExecutionManager.ts`     | 複数実行管理           |
-| IPCハンドラー      | `apps/desktop/src/main/ipc/agentHandlers.ts`                   | IPC通信処理            |
+| ファイル         | パス                                                       | 説明            |
+| ---------------- | ---------------------------------------------------------- | --------------- |
+| 型定義           | `packages/shared/src/types/agent-execution.ts`             | Agent実行関連型 |
+| HooksFactory     | `apps/desktop/src/main/services/agent/HooksFactory.ts`     | SDK Hooks生成   |
+| PermissionRules  | `apps/desktop/src/main/services/agent/PermissionRules.ts`  | 権限ルール定義  |
+| AgentExecutor    | `apps/desktop/src/main/services/agent/AgentExecutor.ts`    | SDK query()統合 |
+| ExecutionManager | `apps/desktop/src/main/services/agent/ExecutionManager.ts` | 複数実行管理    |
+| IPCハンドラー    | `apps/desktop/src/main/ipc/agentHandlers.ts`               | IPC通信処理     |
 
 ### Slide SDK統合実装ファイル（Direct SDK Pattern）
 
-| ファイル           | パス                                                           | 説明                            |
-| ------------------ | -------------------------------------------------------------- | ------------------------------- |
-| AgentClient        | `apps/desktop/src/main/slide/agent-client.ts`                  | Direct SDK呼び出し、シングルトン |
-| SkillExecutor      | `apps/desktop/src/main/slide/skill-executor.ts`                | フェーズマッピング、進捗コールバック |
-| 型定義             | `packages/shared/src/types/slide.ts`                           | SkillPhase, SkillExecutionResult |
+| ファイル      | パス                                            | 説明                                 |
+| ------------- | ----------------------------------------------- | ------------------------------------ |
+| AgentClient   | `apps/desktop/src/main/slide/agent-client.ts`   | Direct SDK呼び出し、シングルトン     |
+| SkillExecutor | `apps/desktop/src/main/slide/skill-executor.ts` | フェーズマッピング、進捗コールバック |
+| 型定義        | `packages/shared/src/types/slide.ts`            | SkillPhase, SkillExecutionResult     |
 
 ### TASK-SKILL-RETRY-001 リトライ機構実装成果物
 
-| ドキュメント       | パス                                                                                           | 説明                            |
-| ------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------- |
+| ドキュメント       | パス                                                                                             | 説明                          |
+| ------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------- |
 | 実装ガイド（概念） | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part1.md` | 中学生レベル概念説明          |
 | 実装ガイド（技術） | `docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part2.md` | 型定義・API・使用例           |
-| システム仕様       | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md`            | RetryConfig, isRetryableError |
-| エラー仕様         | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                          | リトライ戦略セクション        |
+| システム仕様       | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md`             | RetryConfig, isRetryableError |
+| エラー仕様         | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                            | リトライ戦略セクション        |
 
 ### TASK-SKILL-RETRY-001 実装ファイル
 
-| ファイル           | パス                                                                          | 説明                                           |
-| ------------------ | ----------------------------------------------------------------------------- | ---------------------------------------------- |
-| SkillExecutor      | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                       | executeWithRetry, isRetryableError, backoff     |
-| テスト             | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.retry.test.ts`  | 72テストケース（9カテゴリ）                     |
+| ファイル      | パス                                                                         | 説明                                        |
+| ------------- | ---------------------------------------------------------------------------- | ------------------------------------------- |
+| SkillExecutor | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                      | executeWithRetry, isRetryableError, backoff |
+| テスト        | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.retry.test.ts` | 72テストケース（9カテゴリ）                 |
 
 ### TASK-3-1-B Hooks実装成果物
 
-| ドキュメント       | パス                                                                         | 説明                            |
-| ------------------ | ---------------------------------------------------------------------------- | ------------------------------- |
-| 実装ガイド         | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md` | createHooks, エラーハンドリング |
-| テスト仕様         | `apps/desktop/src/main/services/skill/__tests__/hooks.test.ts`               | PreToolUse/PostToolUseテスト    |
-| エラーテスト       | `apps/desktop/src/main/services/skill/__tests__/error.test.ts`               | categorizeError/isRetryable     |
-| システム仕様       | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`  | 型定義、メソッドシグネチャ      |
+| ドキュメント | パス                                                                          | 説明                            |
+| ------------ | ----------------------------------------------------------------------------- | ------------------------------- |
+| 実装ガイド   | `docs/30-workflows/task-3-1-b-hooks/outputs/phase-12/implementation-guide.md` | createHooks, エラーハンドリング |
+| テスト仕様   | `apps/desktop/src/main/services/skill/__tests__/hooks.test.ts`                | PreToolUse/PostToolUseテスト    |
+| エラーテスト | `apps/desktop/src/main/services/skill/__tests__/error.test.ts`                | categorizeError/isRetryable     |
+| システム仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`   | 型定義、メソッドシグネチャ      |
 
 ### TASK-3-1-B実装ファイル
 
-| ファイル           | パス                                                           | 説明                                    |
-| ------------------ | -------------------------------------------------------------- | --------------------------------------- |
-| SkillExecutor      | `apps/desktop/src/main/services/skill/SkillExecutor.ts`        | createHooks, categorizeError, isRetryable |
+| ファイル      | パス                                                    | 説明                                      |
+| ------------- | ------------------------------------------------------- | ----------------------------------------- |
+| SkillExecutor | `apps/desktop/src/main/services/skill/SkillExecutor.ts` | createHooks, categorizeError, isRetryable |
 
 ### TASK-3-1-E 権限永続化成果物
 
-| ドキュメント       | パス                                                                                | 説明                            |
-| ------------------ | ----------------------------------------------------------------------------------- | ------------------------------- |
-| 実装ガイド         | `docs/guides/permission-store.md`                                                    | PermissionStore API、IPC連携    |
-| システム仕様       | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`      | データスキーマ、ストレージパス  |
-| 設定UI仕様         | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                | PermissionSettings UI           |
+| ドキュメント | パス                                                                            | 説明                           |
+| ------------ | ------------------------------------------------------------------------------- | ------------------------------ |
+| 実装ガイド   | `docs/guides/permission-store.md`                                               | PermissionStore API、IPC連携   |
+| システム仕様 | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md` | データスキーマ、ストレージパス |
+| 設定UI仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`           | PermissionSettings UI          |
 
 ### TASK-3-1-E 実装ファイル
 
-| ファイル           | パス                                                           | 説明                                    |
-| ------------------ | -------------------------------------------------------------- | --------------------------------------- |
-| PermissionStore    | `apps/desktop/src/main/services/skill/PermissionStore.ts`      | 権限永続化ストア（electron-store）      |
-| permission-handlers | `apps/desktop/src/main/ipc/permission-handlers.ts`             | IPC handlers（getAllowedTools等）      |
-| PermissionSettings | `apps/desktop/src/renderer/components/settings/PermissionSettings/` | 設定UI                          |
+| ファイル            | パス                                                                | 説明                               |
+| ------------------- | ------------------------------------------------------------------- | ---------------------------------- |
+| PermissionStore     | `apps/desktop/src/main/services/skill/PermissionStore.ts`           | 権限永続化ストア（electron-store） |
+| permission-handlers | `apps/desktop/src/main/ipc/permission-handlers.ts`                  | IPC handlers（getAllowedTools等）  |
+| PermissionSettings  | `apps/desktop/src/renderer/components/settings/PermissionSettings/` | 設定UI                             |
+
+### TASK-IMP-permission-history-001 Permission History Tracking
+
+| 区分                     | ファイル                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------ |
+| タスク仕様書             | `docs/30-workflows/TASK-IMP-permission-history-001/`                                             |
+| 実装ガイド               | `outputs/phase-12/implementation-guide.md`                                                       |
+| システム仕様（状態管理） | `arch-state-management.md`（permissionHistorySlice）                                             |
+| システム仕様（UI）       | `ui-ux-settings.md`（Permission History Panel）                                                  |
+| システム仕様（履歴）     | `interfaces-agent-sdk-history.md`                                                                |
+| 実装ファイル             | `permissionHistorySlice.ts`, `permissionHistory.ts`                                              |
+| UIコンポーネント         | `PermissionHistoryPanel.tsx`, `PermissionHistoryItem.tsx`, `PermissionHistoryFilter.tsx`         |
+| テスト                   | `permissionHistory.test.ts`, `permissionHistorySlice.test.ts`, `PermissionHistoryPanel.test.tsx` |
+
+Key patterns from this task:
+
+- Cross-Slice access: `(get() as unknown as PermissionHistorySlice).addHistoryEntry()`
+- Security: `safeArgsSnapshot()` for argument sanitization (max 200 chars)
+- Virtual scroll: `@tanstack/react-virtual` for 1000-entry performance
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                    |
-| ------- | ---------- | ---------------------------------------------------------- |
-| 2.7.0   | 2026-01-31 | retry-patterns.mdリファレンス新規作成、error-handling.mdリトライセクション最適化（outdated値修正、cross-reference追加） |
-| 2.6.0   | 2026-01-31 | TASK-SKILL-RETRY-001リトライ機構パターン追加（RetryConfig, isRetryableError, Exponential Backoff with Jitter） |
-| 2.5.0   | 2026-01-26 | TASK-3-1-E権限永続化パターン追加（PermissionStore API、rememberChoice連携、データスキーマ） |
-| 2.4.0   | 2026-01-25 | TASK-3-1-B Hooks実装パターン追加（createHooks, categorizeError, isRetryable, セキュリティチェック関数） |
-| 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加 |
-| 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正        |
-| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携             |
-| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加                 |
-| 1.0.0   | 2026-01-08 | 初期バージョン作成                                         |
+| Version | Date       | Changes                                                                                                                       |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 2.8.0   | 2026-02-01 | TASK-IMP-permission-history-001 Permission History Tracking成果物追加（Cross-Slice access, safeArgsSnapshot, Virtual scroll） |
+| 2.7.0   | 2026-01-31 | retry-patterns.mdリファレンス新規作成、error-handling.mdリトライセクション最適化（outdated値修正、cross-reference追加）       |
+| 2.6.0   | 2026-01-31 | TASK-SKILL-RETRY-001リトライ機構パターン追加（RetryConfig, isRetryableError, Exponential Backoff with Jitter）                |
+| 2.5.0   | 2026-01-26 | TASK-3-1-E権限永続化パターン追加（PermissionStore API、rememberChoice連携、データスキーマ）                                   |
+| 2.4.0   | 2026-01-25 | TASK-3-1-B Hooks実装パターン追加（createHooks, categorizeError, isRetryable, セキュリティチェック関数）                       |
+| 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加                                                     |
+| 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正                                                                           |
+| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携                                                                                |
+| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加                                                                                    |
+| 1.0.0   | 2026-01-08 | 初期バージョン作成                                                                                                            |
