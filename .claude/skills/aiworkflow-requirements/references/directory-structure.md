@@ -500,6 +500,24 @@
 | App            | apps/web/app/                   | Next.js App Router、API Routes               |
 | Desktop        | apps/desktop/src/               | Electron Main/Preload/Renderer               |
 
+### apps/desktop テスト基盤
+
+| パス                                                     | 役割                               |
+| -------------------------------------------------------- | ---------------------------------- |
+| src/__tests__/                                           | E2Eテスト・統合テストルート        |
+| src/__tests__/__fixtures__/skills/                       | **E2Eテストフィクスチャ**          |
+| src/__tests__/__fixtures__/skills/test-skill/            | 完全構成スキル（SKILL.md + サブリソース） |
+| src/__tests__/__fixtures__/skills/test-skill/SKILL.md    | スキル定義（Frontmatter + body）   |
+| src/__tests__/__fixtures__/skills/test-skill/agents/     | エージェントサブリソース           |
+| src/__tests__/__fixtures__/skills/test-skill/references/ | 参照サブリソース                   |
+| src/__tests__/__fixtures__/skills/another-skill/         | 最小構成スキル（SKILL.md のみ）    |
+| src/__tests__/__fixtures__/skills/invalid-skill/         | 無効スキル（SKILL.md なし）        |
+| src/__tests__/fixtures/skills.fixture.test.ts            | フィクスチャ検証テスト（29ケース） |
+| src/main/services/skill/__tests__/__fixtures__/          | ユニットテスト用フィクスチャ（独立） |
+| src/test/                                                | テストユーティリティ               |
+
+> **詳細**: [quality-e2e-testing.md](./quality-e2e-testing.md)
+
 ---
 
 ## pnpm-workspace 設定
