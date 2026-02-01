@@ -36,6 +36,10 @@ import {
   type ChatEditSlice,
 } from "../features/workspace-chat-edit/store/chatEditSlice";
 import { createSkillSlice, type SkillSlice } from "./slices/skillSlice";
+import {
+  createPermissionHistorySlice,
+  type PermissionHistorySlice,
+} from "./slices/permissionHistorySlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -52,7 +56,8 @@ export type AppStore = NavigationSlice &
   LLMSlice &
   AgentSlice &
   ChatEditSlice &
-  SkillSlice;
+  SkillSlice &
+  PermissionHistorySlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -107,6 +112,7 @@ export const useAppStore = create<AppStore>()(
         ...createAgentSlice(...args),
         ...createChatEditSlice(...args),
         ...createSkillSlice(...args),
+        ...createPermissionHistorySlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -119,6 +125,7 @@ export const useAppStore = create<AppStore>()(
           userProfile: state.userProfile,
           autoSyncEnabled: state.autoSyncEnabled,
           windowSize: state.windowSize,
+          permissionHistory: state.permissionHistory,
         }),
       },
     ),
