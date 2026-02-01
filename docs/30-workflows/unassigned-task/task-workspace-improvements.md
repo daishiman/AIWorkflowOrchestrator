@@ -1,5 +1,7 @@
 # Workspace Manager 改善タスク
 
+issue_number: 647
+
 ## 概要
 
 **作成日時**: 2025-12-11

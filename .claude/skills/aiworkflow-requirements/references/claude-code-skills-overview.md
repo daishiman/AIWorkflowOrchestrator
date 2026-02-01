@@ -104,3 +104,27 @@ Skillは、Claude（メインのオーケストレーター）が **「必要だ
 | 出力素材が必要       | Level 3（assets/）     |
 
 ---
+
+## プロジェクト登録スキル一覧
+
+| スキル名                       | 概要                                           | 使用ツール        |
+| ------------------------------ | ---------------------------------------------- | ----------------- |
+| aiworkflow-requirements        | プロジェクト仕様管理・検索                     | Read, Grep, Glob  |
+| task-specification-creator     | タスク仕様書生成（Phase 1-13）                 | Read, Write, Edit |
+| skill-creator                  | スキル作成・更新・プロンプト改善               | Read, Write, Edit, Bash |
+| claude-agent-sdk               | Agent SDK統合実装支援                          | Read, Write, Edit, Bash |
+| presentation-slide-generator   | HTMLプレゼンスライド生成                       | Write, Bash       |
+| github-issue-manager           | GitHub Issue管理・タスク仕様書連携             | Bash, Read, Glob  |
+| skill-fixture-runner           | skill-creator出力フィクスチャの自動検証        | Bash, Read, Glob  |
+
+### skill-fixture-runner 検証テスト
+
+5つの検証スクリプトでskill-creator出力の構造整合性を自動検証する。TASK-8C-F（基本フィクスチャ62件）とTASK-8C-G（境界値フィクスチャ34件追加）により96テスト・100%ギャップカバレッジを達成。
+
+| メトリクス         | 値                              |
+| ------------------ | ------------------------------- |
+| テストケース数     | 96（TASK-8C-F: 62 + TASK-8C-G: 34） |
+| 全PASS             | 96/96                           |
+| ギャップカバレッジ | 100%（A:10, B:9, C:1, D:3）    |
+
+詳細: [quality-e2e-testing.md](./quality-e2e-testing.md)（TASK-8C-F/Gセクション参照）

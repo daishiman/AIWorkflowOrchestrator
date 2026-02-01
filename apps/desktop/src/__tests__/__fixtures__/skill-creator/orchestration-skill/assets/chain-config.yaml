@@ -1,0 +1,26 @@
+name: fixture-chain
+version: "1.0.0"
+description: テスト用チェーン設定
+
+steps:
+  - id: step-1
+    skill: analyze-request
+    args: {}
+    depends_on: []
+    timeout: 30
+  - id: step-2
+    skill: generate-code
+    args: {}
+    depends_on:
+      - step-1
+    timeout: 60
+
+error_handling:
+  on_step_error: abort
+  max_retries: 1
+
+metadata:
+  created_by: fixture
+  tags:
+    - test
+    - chain

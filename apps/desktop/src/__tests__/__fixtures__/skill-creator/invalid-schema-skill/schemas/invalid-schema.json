@@ -1,0 +1,9 @@
+{
+  "title": "Invalid Schema",
+  "description": "Schema missing $schema and type properties",
+  "properties": {
+    "name": {
+      "description": "A name field"
+    }
+  }
+}

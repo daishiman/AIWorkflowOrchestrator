@@ -1,0 +1,8 @@
+{
+  "name": "@skills/fixture-complete-skill",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate_all.js"
+  }
+}

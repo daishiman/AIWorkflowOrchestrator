@@ -1,0 +1,27 @@
+name: boundary-parallel
+version: "1.0.0"
+description: Boundary parallel config with minimum tasks
+
+tasks:
+  - id: task-1
+    skill: validate
+    args: {}
+    priority: 1
+    timeout: 30
+    required: true
+  - id: task-2
+    skill: report
+    args: {}
+    priority: 1
+    timeout: 30
+    required: false
+
+execution:
+  max_concurrency: 2
+  fail_fast: false
+  timeout: 60
+
+result_aggregation:
+  strategy: merge
+  merge_strategy: shallow
+  include_failed: false

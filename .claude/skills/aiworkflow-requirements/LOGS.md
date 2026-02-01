@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-02-01: TASK-8C-G完了（quality-e2e-testing.md v1.1.0更新）
+
+| 項目         | 内容                                                                                |
+| ------------ | ----------------------------------------------------------------------------------- |
+| タスクID     | TASK-8C-G                                                                           |
+| 操作         | update-spec (quality-e2e-testing.md)                                                |
+| 対象ファイル | references/quality-e2e-testing.md, references/claude-code-skills-overview.md         |
+| 結果         | success                                                                             |
+| 備考         | skill-creatorフィクスチャ境界値テスト拡充完了記録追加。96テスト・100%ギャップカバレッジ |
+
+---
+
 ## 2026-02-01: task-imp-permission-history-001 Permission履歴トラッキングUI 仕様更新
 
 | 項目         | 内容                                                                                                        |
@@ -1997,6 +2009,19 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | ------------ | -------------------------------------------------------------------------------------------- |
 | 実装ガイド   | `docs/30-workflows/TASK-IMP-permission-history-001/outputs/phase-12/implementation-guide.md` |
 | タスク仕様書 | `docs/30-workflows/TASK-IMP-permission-history-001/`                                         |
+
+---
+
+### TASK-8C-F: Skill-Creator テスト用フィクスチャ & 実行スキル作成 (2026-02-01)
+
+- **quality-e2e-testing.md** - Updated: Added skill-creator fixture section with TASK-8C-F cross-reference
+- **claude-code-skills-overview.md** - Updated: Added skill-fixture-runner to skill list
+- **indexes/topic-map.md** - Regenerated: Added skill-creator fixtures entries
+
+#### New Files
+- `apps/desktop/src/__tests__/__fixtures__/skill-creator/` - 5種類のフィクスチャ (18ファイル)
+- `.claude/skills/skill-fixture-runner/` - 検証スクリプト実行スキル (8ファイル)
+- `apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts` - 62テストケース
 
 ---
 

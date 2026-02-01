@@ -27,3 +27,4 @@ coverage/
 .claude/skills/
 .claude/commands/
 .claude/agents/
+apps/desktop/src/__tests__/__fixtures__/
