@@ -10,6 +10,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import type { AllowedToolEntry } from "@repo/shared";
+import { PermissionHistoryPanel } from "./PermissionHistoryPanel";
 
 /**
  * コンポーネントプロパティ
@@ -224,6 +225,9 @@ export function PermissionSettings({
       <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
         {tools.length} tool{tools.length !== 1 ? "s" : ""} allowed
       </div>
+
+      {/* 権限要求履歴パネル */}
+      <PermissionHistoryPanel />
     </div>
   );
 }
