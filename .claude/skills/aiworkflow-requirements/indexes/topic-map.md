@@ -70,14 +70,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| パフォーマンス要件 | L6 |
 | テスト戦略（TDD実践ガイド） | L94 |
-| セキュリティ | L328 |
-| 可用性 | L356 |
-| 保守性 | L374 |
-| アクセシビリティ | L474 |
-| テストカバレッジ目標 | L493 |
-| 関連ドキュメント | L570 |
-| 完了タスク | L578 |
-| 変更履歴 | L638 |
+| セキュリティ | L330 |
+| 可用性 | L358 |
+| 保守性 | L376 |
+| アクセシビリティ | L476 |
+| テストカバレッジ目標 | L495 |
+| 関連ドキュメント | L572 |
+| 完了タスク | L580 |
+| 変更履歴 | L640 |
 
 ---
 
@@ -574,7 +574,7 @@ node scripts/list-specs.js --topics
 | 性能目標 | L69 |
 | 使用例（データベース層） | L78 |
 | 実装ステータス | L104 |
-| 変更履歴 | L117 |
+| 変更履歴 | L119 |
 
 ### references/api-internal-conversion.md
 
@@ -754,8 +754,8 @@ node scripts/list-specs.js --topics
 | デザイン原則サマリー | L55 |
 | コンポーネント階層図 | L77 |
 | 完了タスク | L116 |
-| 変更履歴 | L131 |
-| 関連ドキュメント | L144 |
+| 変更履歴 | L133 |
+| 関連ドキュメント | L148 |
 
 ### references/ui-ux-design-principles.md
 
@@ -1270,9 +1270,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Environment Backend サービス | L16 |
-| スキル管理サービス | L83 |
-| 関連ドキュメント | L390 |
+| Environment Backend サービス | L17 |
+| スキル管理サービス | L84 |
+| 関連ドキュメント | L407 |
 
 ### references/arch-feature-addition.md
 
@@ -1294,10 +1294,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L19 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L114 |
-| skillSlice（スキル実行状態管理） | L204 |
-| 関連ドキュメント | L328 |
+| Zustand Sliceパターン | L20 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L115 |
+| skillSlice（スキル実行状態管理） | L205 |
+| 関連ドキュメント | L330 |
 
 ### references/arch-ui-components.md
 
@@ -1387,8 +1387,8 @@ node scripts/list-specs.js --topics
 | 機能追加の手順 | L431 |
 | 構造の選択理由 | L463 |
 | 依存関係ルール | L478 |
-| pnpm-workspace 設定 | L505 |
-| 関連ドキュメント | L524 |
+| pnpm-workspace 設定 | L523 |
+| 関連ドキュメント | L542 |
 
 ### references/discord-bot.md
 
@@ -1517,6 +1517,19 @@ node scripts/list-specs.js --topics
 | サンプルプラグイン仕様 | L317 |
 | 個人開発における注意点 | L345 |
 | 関連ドキュメント | L373 |
+
+### references/quality-e2e-testing.md
+
+| セクション | 行 |
+|------------|----|\n| 変更履歴 | L8 |
+| 概要 | L16 |
+| テスト戦略 | L30 |
+| E2Eテストフィクスチャ | L50 |
+| フィクスチャ詳細仕様 | L87 |
+| フィクスチャ検証テスト | L137 |
+| SkillScannerテスト統合パターン | L193 |
+| 完了タスク | L213 |
+| 関連ドキュメント | L221 |
 
 ### references/rag-desktop-state.md
 
@@ -1727,8 +1740,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L258 |
-| 変更履歴 | L268 |
+| 関連ドキュメント | L267 |
+| 変更履歴 | L277 |
 
 ### references/ui-history-components.md
 

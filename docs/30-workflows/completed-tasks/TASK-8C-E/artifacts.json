@@ -1,0 +1,92 @@
+{
+  "feature": "task-8c-e-fixtures",
+  "taskId": "TASK-8C-E",
+  "taskName": "E2Eテストフィクスチャ作成",
+  "created": "2026-01-31T22:50:00Z",
+  "lastUpdated": "2026-02-01T00:00:00Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-01/requirements-definition.md",
+        "outputs/phase-01/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-02/fixture-design.md"]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": []
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-04/test-specification.md"]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-05/implementation-summary.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": []
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-07/coverage-report.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-08/refactoring-log.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-09/quality-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    "13": { "status": "not_started", "artifacts": [] }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "codeArtifacts": [
+    "apps/desktop/src/__tests__/__fixtures__/skills/test-skill/SKILL.md",
+    "apps/desktop/src/__tests__/__fixtures__/skills/test-skill/agents/test-agent.md",
+    "apps/desktop/src/__tests__/__fixtures__/skills/test-skill/references/test-ref.md",
+    "apps/desktop/src/__tests__/__fixtures__/skills/another-skill/SKILL.md",
+    "apps/desktop/src/__tests__/__fixtures__/skills/invalid-skill/README.md",
+    "apps/desktop/src/__tests__/fixtures/skills.fixture.test.ts"
+  ]
+}

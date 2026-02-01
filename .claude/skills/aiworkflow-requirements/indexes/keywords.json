@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-31T03:46:02.202Z",
-  "totalKeywords": 954,
+  "generated": "2026-01-31T15:16:30.902Z",
+  "totalKeywords": 962,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -88,6 +88,7 @@
       "interfaces-system-prompt.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
+      "quality-e2e-testing.md",
       "rag-desktop-state.md",
       "rag-knowledge-graph.md",
       "rag-query-pipeline.md",
@@ -193,6 +194,7 @@
       "interfaces-system-prompt.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md",
       "rag-query-pipeline.md",
       "rag-search-crag.md",
@@ -297,6 +299,7 @@
       "local-agent.md",
       "overview.md",
       "plugin-development.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md",
       "rag-desktop-state.md",
       "rag-knowledge-graph.md",
@@ -634,9 +637,11 @@
       "architecture-chat-history.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history.md",
+      "interfaces-agent-sdk-ui.md",
       "interfaces-chat-history.md",
       "interfaces-llm.md",
       "interfaces-system-prompt.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md",
       "security-api-electron.md",
       "security-skill-ipc.md",
@@ -920,6 +925,7 @@
     ],
     "TASK": [
       "arch-ui-components.md",
+      "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
@@ -1531,6 +1537,7 @@
     ],
     "テスト戦略": [
       "database-implementation.md",
+      "quality-e2e-testing.md",
       "quality-requirements.md"
     ],
     "ベクトル検索実装": [
@@ -1879,16 +1886,6 @@
     "SkillExecutor": [
       "error-handling.md",
       "interfaces-agent-sdk-executor.md"
-    ],
-    "TASK": [
-      "error-handling.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "security-skill-ipc.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-feature-skill-stream.md",
-      "ui-ux-search-panel.md"
     ],
     "RETRY": [
       "error-handling.md",
@@ -2636,6 +2633,24 @@
     ],
     "個人開発における注意点": [
       "plugin-development.md"
+    ],
+    "テスト仕様": [
+      "quality-e2e-testing.md"
+    ],
+    "テストフィクスチャ": [
+      "quality-e2e-testing.md"
+    ],
+    "フィクスチャ詳細仕様": [
+      "quality-e2e-testing.md"
+    ],
+    "フィクスチャ検証テスト": [
+      "quality-e2e-testing.md"
+    ],
+    "SkillScanner": [
+      "quality-e2e-testing.md"
+    ],
+    "テスト統合パターン": [
+      "quality-e2e-testing.md"
     ],
     "非機能要件": [
       "quality-requirements.md",
