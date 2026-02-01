@@ -7,16 +7,15 @@
 
 ## 2026-02-01: TASK-8C-G完了（quality-e2e-testing.md v1.1.0更新）
 
-| 項目         | 内容                                                                                |
-| ------------ | ----------------------------------------------------------------------------------- |
-| タスクID     | TASK-8C-G                                                                           |
-| 操作         | update-spec (quality-e2e-testing.md)                                                |
-| 対象ファイル | references/quality-e2e-testing.md, references/claude-code-skills-overview.md         |
-| 結果         | success                                                                             |
-| 備考         | skill-creatorフィクスチャ境界値テスト拡充完了記録追加。96テスト・100%ギャップカバレッジ |
+| 項目         | 内容                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| タスクID     | TASK-8C-G                                                                                              |
+| 操作         | update-spec (quality-e2e-testing.md v1.1.0)                                                            |
+| 対象ファイル | quality-e2e-testing.md, claude-code-skills-overview.md, topic-map.md                                   |
+| 結果         | success                                                                                                |
+| 備考         | skill-creatorフィクスチャ境界値テスト拡充完了記録追加。6フィクスチャ・96テスト・100%ギャップカバレッジ |
 
 ---
-
 ## 2026-02-01: task-imp-permission-history-001 Permission履歴トラッキングUI 仕様更新
 
 | 項目         | 内容                                                                                                        |

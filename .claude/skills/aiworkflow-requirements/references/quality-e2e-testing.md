@@ -220,6 +220,7 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 | TASK-8C-G | skill-creatorフィクスチャ境界値テスト拡充 | 2026-02-01 | 96/96 PASS |
 
 #### TASK-8C-F: Skill-Creator テスト用フィクスチャ (2026-02-01)
+
 - フィクスチャパス: `apps/desktop/src/__tests__/__fixtures__/skill-creator/`
 - テストファイル: `apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts`
 - 62テストケース (TC-001〜TC-062) 全件PASS
