@@ -47,6 +47,29 @@ export const createXxxSlice: StateCreator<XxxSlice> = (set) => ({
 
 **詳細**: architecture-patterns.md L141-234
 
+### ChatPanel統合パターン（TASK-7D）
+
+```typescript
+// 条件レンダーでSkillStreamingViewを統合
+{isExecuting && selectedSkillName && (
+  <SkillStreamingView skillName={selectedSkillName} />
+)}
+
+// forwardRef + useImperativeHandle で外部API公開
+const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>((props, ref) => {
+  useImperativeHandle(ref, () => ({ handleImportRequest }));
+});
+
+// DisplayableStatus型（idle除外の厳密なステータス）
+type DisplayableStatus = Exclude<SkillExecutionStatus, "idle">;
+
+// Store個別セレクタで再レンダー最適化
+const isExecuting = useAppStore((s) => s.skill.isExecuting);
+const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
+```
+
+**詳細**: interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, ui-ux-feature-components.md
+
 ---
 
 ## 型定義クイックアクセス

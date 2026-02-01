@@ -414,10 +414,38 @@ AGENT-004実装後のポストリリーステストで作成されたAgent SDK�
 | ui-ux-agent-execution.md                                                                   | toolMetadataモジュール仕様（RiskLevel型、公開API） |
 | ui-ux-components.md                                                                        | UIコンポーネント仕様                 |
 | `docs/30-workflows/completed-tasks/TASK-IMP-permission-tool-icons/outputs/phase-12/implementation-guide.md` | ツールアイコン実装ガイド（Phase 12） |
+| `docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/`                                        | TASK-7D ChatPanel統合実装ガイド      |
 
 ---
 
 ## 完了タスク
+
+### タスク: TASK-7D ChatPanel統合（2026-01-31完了）
+
+| 項目         | 内容                                                               |
+| ------------ | ------------------------------------------------------------------ |
+| タスクID     | TASK-7D                                                            |
+| ステータス   | **完了**                                                           |
+| テスト数     | 48（自動）+ 17（手動）                                            |
+| 発見課題     | 2件（未タスク指示書として作成）                                    |
+| ドキュメント | `docs/30-workflows/TASK-7D-chat-panel-integration/`               |
+
+#### テスト結果サマリー
+
+| カテゴリ                     | テスト数 | PASS | FAIL |
+| ---------------------------- | -------- | ---- | ---- |
+| ChatPanel.test.tsx           | 15       | 15   | 0    |
+| SkillStreamingView.test.tsx  | 33       | 33   | 0    |
+
+#### 成果物
+
+| ファイル               | パス                                                                         |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| ChatPanel.tsx          | `apps/desktop/src/renderer/components/chat/ChatPanel.tsx`                    |
+| SkillStreamingView.tsx | `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx`          |
+| index.ts               | `apps/desktop/src/renderer/components/skill/index.ts`                        |
+
+---
 
 ### タスク: PermissionDialog ツール別アイコン表示（2026-01-30完了）
 
@@ -454,7 +482,7 @@ AGENT-004実装後のポストリリーステストで作成されたAgent SDK�
 | 日付       | バージョン | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
 | 2026-02-01 | 1.5.0      | toolMetadata型定義追記: RiskLevel型・ToolMetadata型・RISK_LEVEL_STYLES定数をPermissionDialog型定義セクションに追加、toolMetadataユーティリティ関数APIテーブル追加 |
-| 2026-01-31 | 1.4.0      | task-imp-permission-tool-metadata-001完了: toolMetadataリスクバッジ参照追加、PermissionDialog説明更新 |
+| 2026-01-31 | 1.4.0      | TASK-7D完了: ChatPanel統合・SkillStreamingView実装、完了タスク・関連ドキュメント追加。task-imp-permission-tool-metadata-001完了: toolMetadataリスクバッジ参照追加、PermissionDialog説明更新 |
 | 2026-01-31 | 1.3.2      | formatArgs()ヘルパー関数仕様追加                                              |
 | 2026-01-31 | 1.3.1      | TOOL_ICONS定数・getToolIcon()ヘルパー・アクセシビリティ対応の仕様詳細を追記   |
 | 2026-01-30 | 1.3.0      | TASK-IMP-permission-tool-icons完了: toolIconsマッピング追加、Emojiアイコン表示 |

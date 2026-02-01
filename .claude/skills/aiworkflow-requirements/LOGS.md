@@ -5,6 +5,37 @@
 
 ---
 
+## 2026-02-01: 未タスク仕様書3件新規作成（コードベースTODOスキャン + システム仕様書ギャップ分析）
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | unassigned-task-generation-2026-02-01                                         |
+| 操作         | generate-unassigned-task                                                      |
+| 対象ファイル | docs/30-workflows/unassigned-task/ (3件新規作成)                              |
+| 結果         | success                                                                       |
+
+### 検出ソース
+
+| ソース | 検出数 | 内容 |
+|--------|--------|------|
+| コードベースTODOスキャン | 50+ | apps/desktop/src/, packages/shared/src/ 全TypeScriptファイル |
+| システム仕様書ギャップ | 23 | 13カテゴリの未実装項目（interfaces-*, api-*, rag-*, architecture-*） |
+| TASK-7D残課題 | 3 | TASK-7D明示的TODOコメント（setupSkillListeners.ts, skill-api.ts） |
+
+### 作成ファイル
+
+| ファイル | タスクID | 優先度 | 概要 |
+|----------|----------|--------|------|
+| `task-imp-skill-stream-type-preload-completion-001.md` | task-imp-skill-stream-type-preload-completion-001 | 中 | TASK-7D残課題: SkillStreamMessage型統一 + Preload APIコールバック実装 |
+| `task-imp-sdk-integration-test-activation-001.md` | task-imp-sdk-integration-test-activation-001 | 中 | Agent SDK統合テスト有効化（50+箇所のTODO） |
+| `task-imp-community-dashboard-handlers-001.md` | task-imp-community-dashboard-handlers-001 | 低 | Community/Dashboard IPCハンドラー実サービス実装 |
+
+### 既存タスクとの重複チェック
+
+220件の既存未タスク仕様書と照合し、上記3件がいずれも新規であることを確認。参照したシステム仕様書: interfaces-agent-sdk-ui.md, interfaces-agent-sdk-executor.md, api-endpoints.md, architecture-patterns.md, security-api-electron.md, database-architecture.md, quality-requirements.md
+
+---
+
 ## 2026-02-01: task-imp-permission-tool-metadata-001 仕様追加記述セッション
 
 | 項目         | 内容                                                                                                    |
@@ -34,6 +65,31 @@
 - **更新**: `indexes/topic-map.md`
   - 8エントリ追加（ui-ux-agent-execution 3件, interfaces-agent-sdk-ui 4件, security-skill-execution 1件）
   - キーワード7件追加（ToolMetadata, DEFAULT_METADATA, WCAG, RISK_LEVEL_STYLES, getRiskLevel, getSecurityImpact, getToolMetadata）
+
+---
+
+## 2026-01-31: aiworkflow-requirements v8.19.0 スキル更新（skill-creator準拠）
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-7D (skill-creator update)                                                |
+| 操作         | update-skill                                                                  |
+| 対象ファイル | SKILL.md, indexes/quick-reference.md                                          |
+| 結果         | success                                                                       |
+
+### 更新内容
+
+| ファイル | 変更内容 |
+|----------|----------|
+| SKILL.md | キーワードトリガー10語追加（ChatPanel, SkillStreamingView, Agent Execution, forwardRef, useImperativeHandle, DisplayableStatus, 条件レンダー, ストリーミング表示, StatusBadge, StreamMessageItem）。v8.19.0変更履歴エントリ追加 |
+| indexes/quick-reference.md | ChatPanel統合パターン（TASK-7D）セクション追加（条件レンダー統合、forwardRef+useImperativeHandle、DisplayableStatus型、Store個別セレクタ） |
+
+### 関連更新（同セッション先行コミット）
+
+| ファイル | バージョン | 内容 |
+|----------|------------|------|
+| references/ui-ux-feature-components.md | → v1.7.0 | SkillStreamingView仕様セクション追加、TASK-7D完了タスク登録 |
+| references/ui-ux-panels.md | — | ChatPanel統合パターンセクション追加（統合概要・レイアウト・アクセシビリティ） |
 
 ---
 
@@ -71,6 +127,27 @@
 
 ---
 
+## 2026-01-31: TASK-7D Phase 1-12再実行セッション・システム仕様書追加更新
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-7D (Phase 1-12再実行)                                                    |
+| 操作         | update-spec                                                                   |
+| 対象ファイル | interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md                          |
+| 結果         | success                                                                       |
+
+### 更新内容
+
+| ファイル | バージョン | 追加内容 |
+|----------|------------|----------|
+| interfaces-agent-sdk-ui.md | → v1.4.0 | TASK-7D完了タスクセクション追加（48テスト: ChatPanel 15 + SkillStreamingView 33）、関連ドキュメントに実装ガイドリンク追加、変更履歴エントリ追加 |
+| ui-ux-agent-execution.md | → v1.6.0 | 完了タスクテーブルにTASK-7D追加、ChatPanel統合UIフローセクション追加（統合コンポーネント構成・7ステップ実行フロー・DisplayableStatus型・再レンダー最適化パターン）、関連ドキュメントリンク追加 |
+
+### Phase 12 成果物確認
+
+Phase 1-12全成果物を検証し、23件のoutputファイルを確認。documentation-changelog.mdのシステムドキュメント更新状況を「更新予定」→「完了」に更新。未タスク検出レポートに既存タスク仕様書マッピングセクションを追加。
+
+---
 ## 2026-01-31: システム仕様書Gap分析 → 未タスク仕様書2件作成
 
 | 項目         | 内容                                           |
