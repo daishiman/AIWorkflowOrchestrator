@@ -15,16 +15,78 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 ## 完了タスク
 
+### task-imp-permission-history-001: Permission履歴トラッキングUI（2026-02-01完了）
+
+| 項目         | 内容                                                 |
+| ------------ | ---------------------------------------------------- |
+| タスクID     | task-imp-permission-history-001                      |
+| 完了日       | 2026-02-01                                           |
+| ステータス   | **完了**                                             |
+| テスト数     | 63件（21 data model + 16 store + 26 component）      |
+| 発見課題     | 4件（未タスク指示書として作成）                      |
+| ドキュメント | `docs/30-workflows/TASK-IMP-permission-history-001/` |
+
+#### 実装内容
+
+- PermissionHistoryEntry / PermissionHistoryFilter データモデル（permissionHistory.ts）
+- permissionHistorySlice（Zustand StateCreatorパターン、addHistoryEntry / clearHistory / setHistoryFilter）
+- PermissionHistoryPanel（@tanstack/react-virtual仮想スクロール、estimateSize=72px、overscan=5）
+- PermissionHistoryItem（emoji icon表示、判断結果バッジ、相対時刻表示）
+- PermissionHistoryFilter（ツール名・判断結果2ドロップダウン）
+- safeArgsSnapshot()セキュリティ関数（HTML除去、制御文字除去、200文字制限）
+- skillSlice.respondToSkillPermission内で履歴自動記録（cross-sliceアクセス）
+- Zustand persist middleware partialize設定でlocalStorage永続化
+
+#### 品質基準
+
+| 基準              | 結果   |
+| ----------------- | ------ |
+| TypeScript strict | PASS   |
+| ESLint            | PASS   |
+| Prettier          | PASS   |
+| Line Coverage     | 100%   |
+| Branch Coverage   | 95.16% |
+| Function Coverage | 100%   |
+
+#### テスト結果サマリー
+
+| カテゴリ                        | テスト数 | PASS | FAIL |
+| ------------------------------- | -------- | ---- | ---- |
+| permissionHistory.test.ts       | 21       | 21   | 0    |
+| permissionHistorySlice.test.ts  | 16       | 16   | 0    |
+| PermissionHistoryPanel.test.tsx | 26       | 26   | 0    |
+
+#### 成果物
+
+| ファイル                    | パス                                                                                         | 行数 |
+| --------------------------- | -------------------------------------------------------------------------------------------- | ---- |
+| permissionHistory.ts        | apps/desktop/src/renderer/components/skill/permissionHistory.ts                              | 50+  |
+| permissionHistorySlice.ts   | apps/desktop/src/renderer/store/slices/permissionHistorySlice.ts                             | 60+  |
+| PermissionHistoryPanel.tsx  | apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryPanel.tsx  | 130+ |
+| PermissionHistoryItem.tsx   | apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryItem.tsx   | 80+  |
+| PermissionHistoryFilter.tsx | apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryFilter.tsx | 70+  |
+
+#### 未タスク（改善候補）
+
+| タスクID                           | 内容                   | 優先度 |
+| ---------------------------------- | ---------------------- | ------ |
+| task-imp-permission-date-filter    | 期間別フィルタリング   | 中     |
+| task-imp-permission-auto-recommend | 自動推奨ロジック       | 低     |
+| task-imp-permission-log-export     | 外部ログ連携・ログ出力 | 低     |
+| task-imp-tool-icon-resolver        | ツールアイコン動的解決 | 低     |
+
+---
+
 ### TASK-7D: ChatPanel統合（2026-01-30完了）
 
-| 項目         | 内容                                                               |
-| ------------ | ------------------------------------------------------------------ |
-| タスクID     | TASK-7D                                                            |
-| 完了日       | 2026-01-30                                                         |
-| ステータス   | **完了**                                                           |
-| テスト数     | 48件（15 ChatPanel + 33 SkillStreamingView）                      |
-| 発見課題     | 2件（未タスク指示書として作成）                                    |
-| ドキュメント | `docs/30-workflows/TASK-7D-chat-panel-integration/`               |
+| 項目         | 内容                                                |
+| ------------ | --------------------------------------------------- |
+| タスクID     | TASK-7D                                             |
+| 完了日       | 2026-01-30                                          |
+| ステータス   | **完了**                                            |
+| テスト数     | 48件（15 ChatPanel + 33 SkillStreamingView）        |
+| 発見課題     | 2件（未タスク指示書として作成）                     |
+| ドキュメント | `docs/30-workflows/TASK-7D-chat-panel-integration/` |
 
 #### 実装内容
 
@@ -36,36 +98,36 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 #### 品質基準
 
-| 基準              | 結果   |
-| ----------------- | ------ |
-| TypeScript strict | PASS   |
-| ESLint            | PASS   |
-| Prettier          | PASS   |
-| Line Coverage     | 100%   |
-| Branch Coverage   | 93.75%+|
-| Function Coverage | 100%   |
+| 基準              | 結果    |
+| ----------------- | ------- |
+| TypeScript strict | PASS    |
+| ESLint            | PASS    |
+| Prettier          | PASS    |
+| Line Coverage     | 100%    |
+| Branch Coverage   | 93.75%+ |
+| Function Coverage | 100%    |
 
 #### テスト結果サマリー
 
-| カテゴリ                     | テスト数 | PASS | FAIL |
-| ---------------------------- | -------- | ---- | ---- |
-| ChatPanel.test.tsx           | 15       | 15   | 0    |
-| SkillStreamingView.test.tsx  | 33       | 33   | 0    |
+| カテゴリ                    | テスト数 | PASS | FAIL |
+| --------------------------- | -------- | ---- | ---- |
+| ChatPanel.test.tsx          | 15       | 15   | 0    |
+| SkillStreamingView.test.tsx | 33       | 33   | 0    |
 
 #### 成果物
 
-| ファイル               | パス                                                      | 行数 |
-| ---------------------- | --------------------------------------------------------- | ---- |
-| ChatPanel.tsx          | apps/desktop/src/renderer/components/chat/ChatPanel.tsx   | 131  |
-| SkillStreamingView.tsx | apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx | 252 |
-| index.ts               | apps/desktop/src/renderer/components/skill/index.ts       | 7    |
+| ファイル               | パス                                                              | 行数 |
+| ---------------------- | ----------------------------------------------------------------- | ---- |
+| ChatPanel.tsx          | apps/desktop/src/renderer/components/chat/ChatPanel.tsx           | 131  |
+| SkillStreamingView.tsx | apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx | 252  |
+| index.ts               | apps/desktop/src/renderer/components/skill/index.ts               | 7    |
 
 #### 未タスク（改善候補）
 
-| タスクID                                        | 内容                          | 優先度 |
-| ----------------------------------------------- | ----------------------------- | ------ |
-| task-imp-skillselector-onimportrequest-001      | SkillSelector onImportRequest | 低     |
-| task-imp-chatpanel-new-design-001               | ChatPanel新規デザイン適用     | 低     |
+| タスクID                                   | 内容                          | 優先度 |
+| ------------------------------------------ | ----------------------------- | ------ |
+| task-imp-skillselector-onimportrequest-001 | SkillSelector onImportRequest | 低     |
+| task-imp-chatpanel-new-design-001          | ChatPanel新規デザイン適用     | 低     |
 
 ---
 
@@ -115,12 +177,12 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 #### 未タスク（改善候補）
 
-| タスクID                              | 内容                       | 優先度 |
-| ------------------------------------- | -------------------------- | ------ |
-| ~~task-imp-permission-tool-icons-001~~ | ~~ツール別アイコン表示~~ | ~~中~~ | ~~完了（2026-01-30）~~ ✅ **完了** |
-| task-imp-permission-readable-ui-001   | 人間可読UI改善             | 中     |
-| task-imp-permission-dark-mode-001     | ダークモード対応           | 低     |
-| task-ref-permission-consolidation-001 | 既存コンポーネント統合検討 | 低     |
+| タスクID                                | 内容                       | 優先度 |
+| --------------------------------------- | -------------------------- | ------ | ---------------------------------- |
+| ~~task-imp-permission-tool-icons-001~~  | ~~ツール別アイコン表示~~   | ~~中~~ | ~~完了（2026-01-30）~~ ✅ **完了** |
+| ~~task-imp-permission-readable-ui-001~~ | ~~人間可読UI改善~~         | ~~中~~ | ~~完了（2026-01-30）~~ ✅ **完了** |
+| task-imp-permission-dark-mode-001       | ダークモード対応           | 低     |
+| task-ref-permission-consolidation-001   | 既存コンポーネント統合検討 | 低     |
 
 ---
 
@@ -415,46 +477,48 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 ## 残課題（未タスク）
 
-| 課題ID | 内容                          | 優先度 | ステータス |
-| ------ | ----------------------------- | ------ | ---------- |
-| -      | EnvironmentType: terminal実装 | 低     | 未着手     |
-| -      | EnvironmentType: code実装     | 低     | 未着手     |
+| 課題ID | 内容                            | 優先度 | ステータス             |
+| ------ | ------------------------------- | ------ | ---------------------- |
+| -      | EnvironmentType: terminal実装   | 低     | 未着手                 |
+| -      | EnvironmentType: code実装       | 低     | 未着手                 |
 | ~~-~~  | ~~SkillExecutor: リトライ機構~~ | ~~中~~ | ~~検討中~~ ✅ **完了** |
-| -      | Permission: 永続化UIの改善    | 低     | 未着手     |
+| -      | Permission: 永続化UIの改善      | 低     | 未着手                 |
 
 ---
 
 ## 関連ドキュメント
 
-| ドキュメント                        | 説明                         |
-| ----------------------------------- | ---------------------------- |
-| interfaces-agent-sdk.md             | 親ファイル（インデックス）   |
-| interfaces-agent-sdk-skill.md       | Skill Dashboard仕様          |
-| interfaces-agent-sdk-ui.md          | Agent Execution UI仕様       |
-| interfaces-agent-sdk-integration.md | 統合機能仕様                 |
-| interfaces-agent-sdk-executor.md    | SkillExecutor/Permission仕様 |
-| TASK-7D 実装ガイド                  | `docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/` |
-| architecture-monorepo.md            | モノレポアーキテクチャ       |
-| technology-devops.md                | DevOpsベストプラクティス     |
+| ドキュメント                        | 説明                                                                                         |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- |
+| interfaces-agent-sdk.md             | 親ファイル（インデックス）                                                                   |
+| interfaces-agent-sdk-skill.md       | Skill Dashboard仕様                                                                          |
+| interfaces-agent-sdk-ui.md          | Agent Execution UI仕様                                                                       |
+| interfaces-agent-sdk-integration.md | 統合機能仕様                                                                                 |
+| interfaces-agent-sdk-executor.md    | SkillExecutor/Permission仕様                                                                 |
+| TASK-7D 実装ガイド                  | `docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/`                         |
+| permission-history-001 実装ガイド   | `docs/30-workflows/TASK-IMP-permission-history-001/outputs/phase-12/implementation-guide.md` |
+| architecture-monorepo.md            | モノレポアーキテクチャ                                                                       |
+| technology-devops.md                | DevOpsベストプラクティス                                                                     |
 
 ---
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                |
-| ---------- | ---------- | --------------------------------------- |
-| 2026-01-30 | 6.34.0     | TASK-7D完了、ChatPanel統合（48テスト全PASS） |
+| 日付       | バージョン | 変更内容                                                                   |
+| ---------- | ---------- | -------------------------------------------------------------------------- |
+| 2026-02-01 | 6.35.0     | task-imp-permission-history-001完了、Permission履歴UI（63テスト全PASS）    |
+| 2026-01-30 | 6.34.0     | TASK-7D完了、ChatPanel統合（48テスト全PASS）                               |
 | 2026-01-30 | 6.33.0     | TASK-7B完了、SkillImportDialogコンポーネント実装（31テスト100%カバレッジ） |
-| 2026-01-28 | 6.32.0     | TASK-6-1完了、SkillSlice（Zustand）実装 |
-| 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装      |
-| 2026-01-26 | 6.30.0     | ファイル分割（巨大化防止）              |
-| 2026-01-26 | 6.29.0     | TASK-3-1-D完了、Permission UI実装       |
-| 2026-01-25 | 6.28.0     | TASK-3-2完了、SkillExecutor IPC統合     |
-| 2026-01-24 | 6.27.0     | TASK-2A完了、SkillScanner実装           |
-| 2026-01-23 | 6.26.0     | TASK-3-1-A完了、SkillExecutor実装       |
-| 2026-01-22 | 6.25.0     | TASK-2B完了、SkillImportStore実装       |
-| 2026-01-20 | 6.24.0     | TASK-1-1完了、共通型定義                |
-| 2026-01-19 | 6.23.0     | AGENT-006完了、Preview State Management |
-| 2026-01-18 | 6.22.0     | AGENT-005-POST完了、Postrelease Testing |
-| 2026-01-17 | 6.21.0     | AGENT-004完了、Agent Execution UI       |
-| 2026-01-15 | 6.20.0     | AGENT-002完了、Skill Dashboard          |
+| 2026-01-28 | 6.32.0     | TASK-6-1完了、SkillSlice（Zustand）実装                                    |
+| 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装                                         |
+| 2026-01-26 | 6.30.0     | ファイル分割（巨大化防止）                                                 |
+| 2026-01-26 | 6.29.0     | TASK-3-1-D完了、Permission UI実装                                          |
+| 2026-01-25 | 6.28.0     | TASK-3-2完了、SkillExecutor IPC統合                                        |
+| 2026-01-24 | 6.27.0     | TASK-2A完了、SkillScanner実装                                              |
+| 2026-01-23 | 6.26.0     | TASK-3-1-A完了、SkillExecutor実装                                          |
+| 2026-01-22 | 6.25.0     | TASK-2B完了、SkillImportStore実装                                          |
+| 2026-01-20 | 6.24.0     | TASK-1-1完了、共通型定義                                                   |
+| 2026-01-19 | 6.23.0     | AGENT-006完了、Preview State Management                                    |
+| 2026-01-18 | 6.22.0     | AGENT-005-POST完了、Postrelease Testing                                    |
+| 2026-01-17 | 6.21.0     | AGENT-004完了、Agent Execution UI                                          |
+| 2026-01-15 | 6.20.0     | AGENT-002完了、Skill Dashboard                                             |

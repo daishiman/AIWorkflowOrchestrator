@@ -5,323 +5,203 @@
 
 ---
 
-## 2026-02-01: 未タスク仕様書3件新規作成（コードベースTODOスキャン + システム仕様書ギャップ分析）
+## 2026-02-01: task-imp-permission-history-001 Permission履歴トラッキングUI 仕様更新
 
-| 項目         | 内容                                                                          |
-| ------------ | ----------------------------------------------------------------------------- |
-| タスクID     | unassigned-task-generation-2026-02-01                                         |
-| 操作         | generate-unassigned-task                                                      |
-| 対象ファイル | docs/30-workflows/unassigned-task/ (3件新規作成)                              |
-| 結果         | success                                                                       |
-
-### 検出ソース
-
-| ソース | 検出数 | 内容 |
-|--------|--------|------|
-| コードベースTODOスキャン | 50+ | apps/desktop/src/, packages/shared/src/ 全TypeScriptファイル |
-| システム仕様書ギャップ | 23 | 13カテゴリの未実装項目（interfaces-*, api-*, rag-*, architecture-*） |
-| TASK-7D残課題 | 3 | TASK-7D明示的TODOコメント（setupSkillListeners.ts, skill-api.ts） |
-
-### 作成ファイル
-
-| ファイル | タスクID | 優先度 | 概要 |
-|----------|----------|--------|------|
-| `task-imp-skill-stream-type-preload-completion-001.md` | task-imp-skill-stream-type-preload-completion-001 | 中 | TASK-7D残課題: SkillStreamMessage型統一 + Preload APIコールバック実装 |
-| `task-imp-sdk-integration-test-activation-001.md` | task-imp-sdk-integration-test-activation-001 | 中 | Agent SDK統合テスト有効化（50+箇所のTODO） |
-| `task-imp-community-dashboard-handlers-001.md` | task-imp-community-dashboard-handlers-001 | 低 | Community/Dashboard IPCハンドラー実サービス実装 |
-
-### 既存タスクとの重複チェック
-
-220件の既存未タスク仕様書と照合し、上記3件がいずれも新規であることを確認。参照したシステム仕様書: interfaces-agent-sdk-ui.md, interfaces-agent-sdk-executor.md, api-endpoints.md, architecture-patterns.md, security-api-electron.md, database-architecture.md, quality-requirements.md
-
----
-
-## 2026-02-01: task-imp-permission-tool-metadata-001 仕様追加記述セッション
-
-| 項目         | 内容                                                                                                    |
-| ------------ | ------------------------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-tool-metadata-001                                                                   |
-| 操作         | P1/P2/P3仕様Gap修正 + topic-map再生成                                                                   |
-| 対象ファイル | interfaces-agent-sdk-ui.md, security-skill-execution.md, ui-ux-agent-execution.md, topic-map.md        |
-| 結果         | success                                                                                                 |
-| 備考         | 仕様カバレッジ85%→95%改善。RiskLevel/ToolMetadata型定義、toolMetadataクロスリファレンス、ツールカバレッジマッピング追加 |
+| 項目         | 内容                                                                                                        |
+| ------------ | ----------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-history-001                                                                             |
+| 操作         | Phase 12 仕様更新（3参照ファイル更新 + 3インデックス更新）                                                  |
+| 対象ファイル | arch-state-management.md, ui-ux-settings.md, interfaces-agent-sdk-history.md, resource-map.md, topic-map.md |
+| 結果         | success                                                                                                     |
+| 備考         | 63テスト全PASS、100%カバレッジ。SKILL.md v8.19.0、trigger keywords 8語追加                                  |
 
 ### 更新詳細
 
-- **更新**: `references/interfaces-agent-sdk-ui.md`（v1.4.0 → v1.5.0）
-  - RiskLevel型（4値+UIスタイルテーブル）追加
-  - ToolMetadata型定義追加
-  - RISK_LEVEL_STYLES定数ドキュメント追加
-  - toolMetadataユーティリティ関数APIテーブル（getRiskLevel, getSecurityImpact, getToolMetadata）追加
-- **更新**: `references/security-skill-execution.md`（v1.2.0 → v1.3.0）
-  - toolMetadataモジュール（PermissionDialog表示用）サブセクション追加
-  - ALLOWED_TOOLS_WHITELIST vs toolMetadata比較テーブル（11 vs 12ツール）追加
-  - 差異説明とクロスリファレンス追加
-- **更新**: `references/ui-ux-agent-execution.md`（v1.6.0 → v1.7.0）
-  - RISK_LEVEL_STYLES定数仕様追加
-  - PermissionDialog統合パターン（IIFE, security impact, aria-label, style application）追加
-  - ツールカバレッジマッピングテーブル追加
-  - デザイン哲学（DEFAULT_METADATAフォールバック）追加
-- **更新**: `indexes/topic-map.md`
-  - 8エントリ追加（ui-ux-agent-execution 3件, interfaces-agent-sdk-ui 4件, security-skill-execution 1件）
-  - キーワード7件追加（ToolMetadata, DEFAULT_METADATA, WCAG, RISK_LEVEL_STYLES, getRiskLevel, getSecurityImpact, getToolMetadata）
+| ファイル                        | バージョン | 追加内容                                                                                                            |
+| ------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| arch-state-management.md        | v1.5.0     | permissionHistorySliceセクション追加（状態2、アクション3、データモデル3型、定数2、Cross-Sliceアクセスパターン記録） |
+| ui-ux-settings.md               | v1.2.0     | 権限要求履歴パネルUI仕様（コンポーネント構成、フィルタ仕様、データ制限、テストカバレッジ）                          |
+| interfaces-agent-sdk-history.md | v6.35.0    | 完了タスク記録（実装内容、品質基準表、テスト結果サマリー、成果物5件、未タスク4件）                                  |
+| resource-map.md                 | v1.7.0     | 権限/Permission実装行に参照先追加、権限履歴/Permission History行新設                                                |
+| topic-map.md                    | -          | 3ファイル（arch-state-management/ui-ux-settings/interfaces-agent-sdk-history）の行番号更新                          |
+| SKILL.md                        | v8.19.0    | trigger keywords追加（permissionHistory等8語）、変更履歴v8.19.0追加                                                 |
 
 ---
 
-## 2026-01-31: aiworkflow-requirements v8.19.0 スキル更新（skill-creator準拠）
-
-| 項目         | 内容                                                                          |
-| ------------ | ----------------------------------------------------------------------------- |
-| タスクID     | TASK-7D (skill-creator update)                                                |
-| 操作         | update-skill                                                                  |
-| 対象ファイル | SKILL.md, indexes/quick-reference.md                                          |
-| 結果         | success                                                                       |
-
-### 更新内容
-
-| ファイル | 変更内容 |
-|----------|----------|
-| SKILL.md | キーワードトリガー10語追加（ChatPanel, SkillStreamingView, Agent Execution, forwardRef, useImperativeHandle, DisplayableStatus, 条件レンダー, ストリーミング表示, StatusBadge, StreamMessageItem）。v8.19.0変更履歴エントリ追加 |
-| indexes/quick-reference.md | ChatPanel統合パターン（TASK-7D）セクション追加（条件レンダー統合、forwardRef+useImperativeHandle、DisplayableStatus型、Store個別セレクタ） |
-
-### 関連更新（同セッション先行コミット）
-
-| ファイル | バージョン | 内容 |
-|----------|------------|------|
-| references/ui-ux-feature-components.md | → v1.7.0 | SkillStreamingView仕様セクション追加、TASK-7D完了タスク登録 |
-| references/ui-ux-panels.md | — | ChatPanel統合パターンセクション追加（統合概要・レイアウト・アクセシビリティ） |
-
----
-
-## 2026-01-31: task-imp-permission-tool-metadata-001 Phase 12 ドキュメント更新
-
-| 項目         | 内容                                                                                                    |
-| ------------ | ------------------------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-tool-metadata-001                                                                   |
-| 操作         | Phase 1-12 全フェーズ完了                                                                               |
-| 対象ファイル | `apps/desktop/src/renderer/components/skill/toolMetadata.ts`, `PermissionDialog.tsx`                   |
-| 結果         | success                                                                                                 |
-| 備考         | ツールリスクレベル・セキュリティメタデータ表示。56テスト追加、全258テスト PASS                          |
-
-### 更新詳細
-
-- **更新**: `references/ui-ux-agent-execution.md`（v1.5.0 → v1.6.0）
-  - toolMetadataモジュール仕様セクション追加（RiskLevel型、公開API 3種、リスクレベル色分けWCAG準拠）
-  - 完了タスク・テスト結果サマリー追加
-- **更新**: `references/ui-ux-components.md`（v2.5.0 → v2.6.0）
-  - 完了タスクテーブルに #606 追加
-- **更新**: `references/interfaces-agent-sdk-ui.md`（v1.3.2 → v1.4.0）
-  - PermissionDialog説明にtoolMetadataリスクバッジ参照追加
-  - 関連ドキュメントにui-ux-agent-execution.md（toolMetadata仕様）追加
-- **更新**: `indexes/topic-map.md`
-  - toolMetadata関連セクション3エントリ追加、キーワード追加
-
-### 実装内容
-
-| 項目                    | 内容                                                                                |
-| ----------------------- | ----------------------------------------------------------------------------------- |
-| 新規ファイル            | toolMetadata.ts（RiskLevel型、ToolMetadata型、12ツール定義、3公開API）               |
-| 修正ファイル            | PermissionDialog.tsx（RISK_LEVEL_STYLES追加、リスクバッジ・影響テキスト統合）        |
-| テスト追加              | toolMetadata.test.ts（37件）、PermissionDialog.metadata.test.tsx（19件）            |
-| カバレッジ              | toolMetadata.ts Lines/Branches/Functions/Statements 100%                            |
-
----
-
-## 2026-01-31: TASK-7D Phase 1-12再実行セッション・システム仕様書追加更新
-
-| 項目         | 内容                                                                          |
-| ------------ | ----------------------------------------------------------------------------- |
-| タスクID     | TASK-7D (Phase 1-12再実行)                                                    |
-| 操作         | update-spec                                                                   |
-| 対象ファイル | interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md                          |
-| 結果         | success                                                                       |
-
-### 更新内容
-
-| ファイル | バージョン | 追加内容 |
-|----------|------------|----------|
-| interfaces-agent-sdk-ui.md | → v1.4.0 | TASK-7D完了タスクセクション追加（48テスト: ChatPanel 15 + SkillStreamingView 33）、関連ドキュメントに実装ガイドリンク追加、変更履歴エントリ追加 |
-| ui-ux-agent-execution.md | → v1.6.0 | 完了タスクテーブルにTASK-7D追加、ChatPanel統合UIフローセクション追加（統合コンポーネント構成・7ステップ実行フロー・DisplayableStatus型・再レンダー最適化パターン）、関連ドキュメントリンク追加 |
-
-### Phase 12 成果物確認
-
-Phase 1-12全成果物を検証し、23件のoutputファイルを確認。documentation-changelog.mdのシステムドキュメント更新状況を「更新予定」→「完了」に更新。未タスク検出レポートに既存タスク仕様書マッピングセクションを追加。
-
----
 ## 2026-01-31: システム仕様書Gap分析 → 未タスク仕様書2件作成
 
-| 項目         | 内容                                           |
-| ------------ | ---------------------------------------------- |
-| タスクID     | system-spec-gap-analysis                       |
-| 操作         | detect-unassigned + create-unassigned-task      |
-| 対象ファイル | task-workflow.md                               |
-| 結果         | success                                        |
+| 項目         | 内容                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------- |
+| タスクID     | system-spec-gap-analysis                                                              |
+| 操作         | detect-unassigned + create-unassigned-task                                            |
+| 対象ファイル | task-workflow.md                                                                      |
+| 結果         | success                                                                               |
 | 備考         | arch-state-management.md / quality-requirements.md のGapから2件の未タスク仕様書を作成 |
 
 ### 作成ファイル
 
-| ファイル | 発見元 | タスクID |
-| --- | --- | --- |
-| `task-chatedit-slice-store-integration.md` | arch-state-management.md「Store統合（予定）」 | task-chatedit-store-integration-001 |
-| `task-rag-converter-largefile-performance.md` | quality-requirements.md「1MB-10MB/10MB超 未検証」 | task-rag-largefile-perf-001 |
+| ファイル                                      | 発見元                                            | タスクID                            |
+| --------------------------------------------- | ------------------------------------------------- | ----------------------------------- |
+| `task-chatedit-slice-store-integration.md`    | arch-state-management.md「Store統合（予定）」     | task-chatedit-store-integration-001 |
+| `task-rag-converter-largefile-performance.md` | quality-requirements.md「1MB-10MB/10MB超 未検証」 | task-rag-largefile-perf-001         |
 
 ---
 
 ## 2026-01-31: TASK-SKILL-RETRY-001 SkillExecutor リトライ機構 Phase 1-12 完了
 
-| 項目         | 内容                                                                                                    |
-| ------------ | ------------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-SKILL-RETRY-001                                                                                    |
-| 操作         | Phase 1-12 全フェーズ完了                                                                               |
-| 対象ファイル | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                                                |
-| 結果         | success                                                                                                 |
-| 備考         | Exponential Backoff with Jitter リトライ機構実装。72テストPASS。全210テスト GREEN                       |
+| 項目         | 内容                                                                              |
+| ------------ | --------------------------------------------------------------------------------- |
+| タスクID     | TASK-SKILL-RETRY-001                                                              |
+| 操作         | Phase 1-12 全フェーズ完了                                                         |
+| 対象ファイル | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                           |
+| 結果         | success                                                                           |
+| 備考         | Exponential Backoff with Jitter リトライ機構実装。72テストPASS。全210テスト GREEN |
 
 ### 更新詳細
 
-| ファイル                            | バージョン      | 追加内容                                                                       |
-| ----------------------------------- | --------------- | ------------------------------------------------------------------------------ |
-| interfaces-agent-sdk-executor.md    | v1.1.0 → v1.2.0 | リトライ型定義（RetryConfig, RetryableErrorType, RetryableErrorResult）、API（isRetryableError, calculateBackoffDelay）、定数（DEFAULT_RETRY_CONFIG, RETRYABLE_NETWORK_ERRORS） |
-| error-handling.md                   | v1.1.0 → v1.2.0 | SkillExecutor リトライ戦略セクション追加（設定、対象エラー、Retry-After対応、abort連携） |
+| ファイル                         | バージョン      | 追加内容                                                                                                                                                                        |
+| -------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| interfaces-agent-sdk-executor.md | v1.1.0 → v1.2.0 | リトライ型定義（RetryConfig, RetryableErrorType, RetryableErrorResult）、API（isRetryableError, calculateBackoffDelay）、定数（DEFAULT_RETRY_CONFIG, RETRYABLE_NETWORK_ERRORS） |
+| error-handling.md                | v1.1.0 → v1.2.0 | SkillExecutor リトライ戦略セクション追加（設定、対象エラー、Retry-After対応、abort連携）                                                                                        |
 
 ### 実装内容
 
-| 項目                    | 内容                                                                                |
-| ----------------------- | ----------------------------------------------------------------------------------- |
-| リトライ型定義          | RetryableErrorType, RetryConfig, RetryableErrorResult, SkillStreamMessageType拡張   |
-| 公開API                 | isRetryableError(), calculateBackoffDelay()                                         |
-| プライベートメソッド    | executeWithRetry(), sleep()                                                         |
-| 定数                    | DEFAULT_RETRY_CONFIG, RETRYABLE_NETWORK_ERRORS                                      |
-| テスト                  | 72テストケース（9 describeブロック）                                                |
-| 未タスク検出            | 4件（リトライ設定UI、リトライ履歴永続化、サーキットブレーカー、useSkillExecution対応） |
+| 項目                 | 内容                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| リトライ型定義       | RetryableErrorType, RetryConfig, RetryableErrorResult, SkillStreamMessageType拡張      |
+| 公開API              | isRetryableError(), calculateBackoffDelay()                                            |
+| プライベートメソッド | executeWithRetry(), sleep()                                                            |
+| 定数                 | DEFAULT_RETRY_CONFIG, RETRYABLE_NETWORK_ERRORS                                         |
+| テスト               | 72テストケース（9 describeブロック）                                                   |
+| 未タスク検出         | 4件（リトライ設定UI、リトライ履歴永続化、サーキットブレーカー、useSkillExecution対応） |
 
 ---
 
 ## 2026-01-31: TASK-IMP-permission-tool-icons 仕様詳細追記（v1.3.2）
 
-| 項目         | 内容                                                                                    |
-| ------------ | --------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-tool-icons-001                                                      |
-| 操作         | update-spec                                                                             |
-| 対象ファイル | interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md                                    |
-| 結果         | success                                                                                 |
+| 項目         | 内容                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-tool-icons-001                                                     |
+| 操作         | update-spec                                                                            |
+| 対象ファイル | interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md                                   |
+| 結果         | success                                                                                |
 | 備考         | v1.3.1: TOOL_ICONS/getToolIcon()/アクセシビリティ、v1.3.2: formatArgs()/バッジ視覚仕様 |
 
 ### 更新詳細
 
-| ファイル                      | バージョン       | 追加内容                                                                                                      |
-| ----------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------- |
-| interfaces-agent-sdk-ui.md   | v1.3.0 → v1.3.2 | v1.3.1: ツールアイコンマッピングセクション（TOOL_ICONS定数、getToolIcon()仕様）、v1.3.2: formatArgs()仕様追加 |
-| ui-ux-agent-execution.md     | -                | ツールアイコンバッジ視覚仕様追加、テスト数40→57更新、Emojiバッジ例追加                                        |
+| ファイル                   | バージョン      | 追加内容                                                                                                      |
+| -------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------- |
+| interfaces-agent-sdk-ui.md | v1.3.0 → v1.3.2 | v1.3.1: ツールアイコンマッピングセクション（TOOL_ICONS定数、getToolIcon()仕様）、v1.3.2: formatArgs()仕様追加 |
+| ui-ux-agent-execution.md   | -               | ツールアイコンバッジ視覚仕様追加、テスト数40→57更新、Emojiバッジ例追加                                        |
 
 ---
 
 ## 2026-01-31: TASK-7D Phase 12追加仕様書更新
 
-| 項目         | 内容                                                                          |
-| ------------ | ----------------------------------------------------------------------------- |
-| タスクID     | TASK-7D (追加更新)                                                            |
-| 操作         | update-spec                                                                   |
+| 項目         | 内容                                                                                                           |
+| ------------ | -------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-7D (追加更新)                                                                                             |
+| 操作         | update-spec                                                                                                    |
 | 対象ファイル | architecture-implementation-patterns.md, quality-requirements.md, task-workflow.md, ui-ux-design-principles.md |
-| 結果         | success                                                                       |
-| 備考         | 初回更新（4ファイル）後の追加更新。forwardRefパターン、テスト実績、完了タスクエントリ、設計事例を追加 |
+| 結果         | success                                                                                                        |
+| 備考         | 初回更新（4ファイル）後の追加更新。forwardRefパターン、テスト実績、完了タスクエントリ、設計事例を追加          |
 
 ### 更新詳細
 
-| ファイル | 追加内容 |
-|----------|----------|
+| ファイル                                | 追加内容                                                                  |
+| --------------------------------------- | ------------------------------------------------------------------------- |
 | architecture-implementation-patterns.md | forwardRef + useImperativeHandle パターン、React.memo + Exclude型パターン |
-| quality-requirements.md | TASK-7D テスト実績（48テスト、カバレッジ詳細、適用パターン一覧） |
-| task-workflow.md | TASK-7D 完了タスクエントリ（Phase 1-12、48テスト、2件未タスク） |
-| ui-ux-design-principles.md | ChatPanel統合パターン設計事例（6設計原則の適用表） |
+| quality-requirements.md                 | TASK-7D テスト実績（48テスト、カバレッジ詳細、適用パターン一覧）          |
+| task-workflow.md                        | TASK-7D 完了タスクエントリ（Phase 1-12、48テスト、2件未タスク）           |
+| ui-ux-design-principles.md              | ChatPanel統合パターン設計事例（6設計原則の適用表）                        |
 
 ---
 
 ## 2026-01-30: TASK-7D Phase 12 完了タスク・インデックス更新
 
-| 項目         | 内容                                                                          |
-| ------------ | ----------------------------------------------------------------------------- |
-| タスクID     | TASK-7D (Phase 12)                                                            |
-| 操作         | update-spec, regenerate-index                                                 |
+| 項目         | 内容                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| タスクID     | TASK-7D (Phase 12)                                                                        |
+| 操作         | update-spec, regenerate-index                                                             |
 | 対象ファイル | interfaces-agent-sdk-history.md, ui-ux-components.md, arch-ui-components.md, topic-map.md |
-| 結果         | success                                                                       |
-| 備考         | Phase 12 完了タスクテーブル追加・トピックマップ再生成                         |
+| 結果         | success                                                                                   |
+| 備考         | Phase 12 完了タスクテーブル追加・トピックマップ再生成                                     |
 
 ### 更新詳細
 
-| ファイル | バージョン | 追加内容 |
-|----------|------------|----------|
+| ファイル                        | バージョン        | 追加内容                                                                                                     |
+| ------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------ |
 | interfaces-agent-sdk-history.md | v6.33.0 → v6.34.0 | TASK-7D完了エントリ（実装内容・品質基準・テスト結果・未タスク一覧）、関連ドキュメントにTASK-7D実装ガイド追加 |
-| ui-ux-components.md | v2.2.0 → v2.3.0 | 完了タスクテーブルにTASK-7D追加、関連ドキュメントにTASK-7D実装ガイド追加 |
-| arch-ui-components.md | - | 完了タスクテーブルにTASK-7D追加 |
-| topic-map.md | 再生成 | 135ファイル・954キーワードで再生成。TASK-7Dセクション（ChatPanel統合パターン等）を反映 |
+| ui-ux-components.md             | v2.2.0 → v2.3.0   | 完了タスクテーブルにTASK-7D追加、関連ドキュメントにTASK-7D実装ガイド追加                                     |
+| arch-ui-components.md           | -                 | 完了タスクテーブルにTASK-7D追加                                                                              |
+| topic-map.md                    | 再生成            | 135ファイル・954キーワードで再生成。TASK-7Dセクション（ChatPanel統合パターン等）を反映                       |
 
 ---
 
 ## 2026-01-30: TASK-IMP-permission-tool-icons PermissionDialogツール別アイコン表示
 
-| 項目         | 内容                                                                                             |
-| ------------ | ------------------------------------------------------------------------------------------------ |
-| タスクID     | task-imp-permission-tool-icons-001                                                               |
-| 操作         | update-spec                                                                                      |
-| 対象ファイル | interfaces-agent-sdk-ui.md, interfaces-agent-sdk-history.md                                      |
-| 結果         | success                                                                                          |
+| 項目         | 内容                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| タスクID     | task-imp-permission-tool-icons-001                                                                           |
+| 操作         | update-spec                                                                                                  |
+| 対象ファイル | interfaces-agent-sdk-ui.md, interfaces-agent-sdk-history.md                                                  |
+| 結果         | success                                                                                                      |
 | 備考         | 完了タスクセクション追加（詳細形式）、関連ドキュメントリンク追加、変更履歴v1.3.0、未タスク候補ステータス更新 |
 
 ### 更新詳細
 
-| ファイル                         | バージョン       | 追加内容                                                                               |
-| -------------------------------- | ---------------- | -------------------------------------------------------------------------------------- |
+| ファイル                        | バージョン      | 追加内容                                                                                                                                          |
+| ------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | interfaces-agent-sdk-ui.md      | v1.2.0 → v1.3.0 | 完了タスクセクション追加（詳細形式: テスト結果サマリー、成果物テーブル）、関連ドキュメントリンク追加、PermissionDialog説明にtoolIcons対応記述追加 |
-| interfaces-agent-sdk-history.md | -                | 未タスク候補テーブルのtask-imp-permission-tool-icons-001ステータスを完了に更新（Step 1-C） |
+| interfaces-agent-sdk-history.md | -               | 未タスク候補テーブルのtask-imp-permission-tool-icons-001ステータスを完了に更新（Step 1-C）                                                        |
 
 ### Step実行記録
 
-| Step   | 内容                               | 結果     |
-| ------ | ---------------------------------- | -------- |
-| 1-A    | タスク完了記録追加                 | 完了     |
-| 1-B    | 実装状況テーブル更新               | 該当なし |
-| 1-C    | 関連タスクテーブル更新             | 完了     |
-| 2      | システム仕様更新判断               | 更新不要 |
+| Step | 内容                   | 結果     |
+| ---- | ---------------------- | -------- |
+| 1-A  | タスク完了記録追加     | 完了     |
+| 1-B  | 実装状況テーブル更新   | 該当なし |
+| 1-C  | 関連タスクテーブル更新 | 完了     |
+| 2    | システム仕様更新判断   | 更新不要 |
 
 ---
 
 ## 2026-01-30: TASK-7D ChatPanel統合のシステム仕様書更新
 
-| 項目         | 内容                                                                          |
-| ------------ | ----------------------------------------------------------------------------- |
-| タスクID     | TASK-7D                                                                       |
-| 操作         | update-spec                                                                   |
+| 項目         | 内容                                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-7D                                                                                                       |
+| 操作         | update-spec                                                                                                   |
 | 対象ファイル | arch-state-management.md, ui-ux-feature-skill-stream.md, interfaces-agent-sdk-skill.md, arch-ui-components.md |
-| 結果         | success                                                                       |
-| 備考         | ChatPanel統合完了に伴うシステム仕様書更新（4ファイル）                        |
+| 結果         | success                                                                                                       |
+| 備考         | ChatPanel統合完了に伴うシステム仕様書更新（4ファイル）                                                        |
 
 ### 更新詳細
 
-| ファイル | バージョン | 追加内容 |
-|----------|------------|----------|
-| arch-state-management.md | - | TASK-7Dステータスを「未着手」→「完了」に更新 |
+| ファイル                      | バージョン      | 追加内容                                                                                                                             |
+| ----------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| arch-state-management.md      | -               | TASK-7Dステータスを「未着手」→「完了」に更新                                                                                         |
 | ui-ux-feature-skill-stream.md | v1.0.0 → v1.1.0 | ChatPanel統合SkillStreamingView仕様セクション追加（コンポーネント構成、Props、ステータスバッジマッピング、統合パターン、テスト品質） |
-| interfaces-agent-sdk-skill.md | v1.3.0 → v1.4.0 | ChatPanel統合セクション追加（統合コンポーネント一覧、公開インターフェース、Store依存） |
-| arch-ui-components.md | v1.3.0 → v1.4.0 | ChatPanel統合パターン追加（コンポーネント構成、レイアウト、Store接続、テスト品質） |
+| interfaces-agent-sdk-skill.md | v1.3.0 → v1.4.0 | ChatPanel統合セクション追加（統合コンポーネント一覧、公開インターフェース、Store依存）                                               |
+| arch-ui-components.md         | v1.3.0 → v1.4.0 | ChatPanel統合パターン追加（コンポーネント構成、レイアウト、Store接続、テスト品質）                                                   |
 
 ### 実装成果物
 
-| 成果物 | ファイル | テスト数 | カバレッジ |
-|--------|----------|----------|------------|
-| ChatPanel.tsx | components/chat/ChatPanel.tsx | 15 | 100% |
-| SkillStreamingView.tsx | components/skill/SkillStreamingView.tsx | 33 | 99.3% |
+| 成果物                 | ファイル                                | テスト数 | カバレッジ |
+| ---------------------- | --------------------------------------- | -------- | ---------- |
+| ChatPanel.tsx          | components/chat/ChatPanel.tsx           | 15       | 100%       |
+| SkillStreamingView.tsx | components/skill/SkillStreamingView.tsx | 33       | 99.3%      |
 
 ---
 
 ## 2026-01-31: permissionDescriptionsモジュール仕様追加
 
-| 項目         | 内容                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-readable-ui-001                                                    |
-| 操作         | update-spec（permissionDescriptionsモジュール仕様セクション追加）                      |
-| 対象ファイル | ui-ux-agent-execution.md, topic-map.md                                                 |
-| 結果         | success                                                                                |
+| 項目         | 内容                                                                                                                                   |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-readable-ui-001                                                                                                    |
+| 操作         | update-spec（permissionDescriptionsモジュール仕様セクション追加）                                                                      |
+| 対象ファイル | ui-ux-agent-execution.md, topic-map.md                                                                                                 |
+| 結果         | success                                                                                                                                |
 | 備考         | getDescription API仕様、12種ツールテンプレート一覧、safeStringセキュリティ対策、PermissionDialog統合記述。topic-map.md 6セクション追加 |
 
 ### 更新詳細
@@ -337,12 +217,12 @@ Phase 1-12全成果物を検証し、23件のoutputファイルを確認。docum
 
 ## 2026-01-31: task-imp-permission-readable-ui-001 詳細完了記録・スキル改善
 
-| 項目         | 内容                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-readable-ui-001                                                    |
-| 操作         | update-spec（詳細完了記録追加 + スキル改善）                                           |
-| 対象ファイル | ui-ux-agent-execution.md, spec-update-workflow.md                                      |
-| 結果         | success                                                                                |
+| 項目         | 内容                                                                                                                             |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-readable-ui-001                                                                                              |
+| 操作         | update-spec（詳細完了記録追加 + スキル改善）                                                                                     |
+| 対象ファイル | ui-ux-agent-execution.md, spec-update-workflow.md                                                                                |
+| 結果         | success                                                                                                                          |
 | 備考         | 詳細完了記録テンプレート適用（テスト結果サマリー表・成果物表）、Step 1完了チェックリスト追加、permissionキーワードマッピング追加 |
 
 ### 更新詳細
@@ -358,69 +238,69 @@ Phase 1-12全成果物を検証し、23件のoutputファイルを確認。docum
 
 ## 2026-01-30: task-imp-permission-readable-ui-001 PermissionDialog 人間可読UI改善完了
 
-| 項目         | 内容                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-readable-ui-001                                                    |
-| 操作         | Phase 1-12 全フェーズ完了                                                              |
-| 対象ファイル | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`, `PermissionDialog.tsx` |
-| 結果         | success                                                                                |
+| 項目         | 内容                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-readable-ui-001                                                                       |
+| 操作         | Phase 1-12 全フェーズ完了                                                                                 |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`, `PermissionDialog.tsx`            |
+| 結果         | success                                                                                                   |
 | 備考         | 12種ツール対応テンプレート、折りたたみUI、ARIA属性。テスト53件追加、カバレッジ Lines:99.73% Branch:95.87% |
 
 ### 成果物
 
-| 成果物                         | パス                                                                                    |
-| ------------------------------ | --------------------------------------------------------------------------------------- |
-| 説明テンプレートモジュール     | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`                  |
-| PermissionDialog（修正）       | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                       |
-| ユニットテスト（34テスト）     | `apps/desktop/src/renderer/components/skill/__tests__/permissionDescriptions.test.ts`   |
-| コンポーネントテスト（19テスト）| `apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.readable.test.tsx` |
+| 成果物                           | パス                                                                                      |
+| -------------------------------- | ----------------------------------------------------------------------------------------- |
+| 説明テンプレートモジュール       | `apps/desktop/src/renderer/components/skill/permissionDescriptions.ts`                    |
+| PermissionDialog（修正）         | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                         |
+| ユニットテスト（34テスト）       | `apps/desktop/src/renderer/components/skill/__tests__/permissionDescriptions.test.ts`     |
+| コンポーネントテスト（19テスト） | `apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.readable.test.tsx` |
 
 ### システム仕様書更新
 
-| 更新対象                       | 変更内容                                                    |
-| ------------------------------ | ----------------------------------------------------------- |
-| `ui-ux-agent-execution.md`     | v1.3.0: 完了タスク追加、PermissionDialog仕様にpermissionDescriptions統合情報追記、関連ドキュメント追加 |
-| `arch-state-management.md`     | v1.4.0: 関連タスクテーブルにtask-imp-permission-readable-ui-001完了を追加 |
-| `topic-map.md`                 | ui-ux-agent-execution.mdエントリにpermissionDescriptionsキーワード追加 |
+| 更新対象                   | 変更内容                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `ui-ux-agent-execution.md` | v1.3.0: 完了タスク追加、PermissionDialog仕様にpermissionDescriptions統合情報追記、関連ドキュメント追加 |
+| `arch-state-management.md` | v1.4.0: 関連タスクテーブルにtask-imp-permission-readable-ui-001完了を追加                              |
+| `topic-map.md`             | ui-ux-agent-execution.mdエントリにpermissionDescriptionsキーワード追加                                 |
 
 ### 未タスク検出
 
-| 検出タスク                             | 優先度 | ソース             |
-| -------------------------------------- | ------ | ------------------ |
-| 多言語対応（i18n）                     | medium | 元タスク仕様書     |
-| AI生成動的説明文                       | low    | 元タスク仕様書     |
-| 説明文カスタマイズ設定                 | low    | 元タスク仕様書     |
-| 詳細展開デフォルト状態変更             | low    | Phase 10 MINOR     |
+| 検出タスク                 | 優先度 | ソース         |
+| -------------------------- | ------ | -------------- |
+| 多言語対応（i18n）         | medium | 元タスク仕様書 |
+| AI生成動的説明文           | low    | 元タスク仕様書 |
+| 説明文カスタマイズ設定     | low    | 元タスク仕様書 |
+| 詳細展開デフォルト状態変更 | low    | Phase 10 MINOR |
 
 ---
 
 ## 2026-01-30: TASK-3-2-F テスト環境改善知見のシステム仕様書追加
 
-| 項目         | 内容                                                                          |
-| ------------ | ----------------------------------------------------------------------------- |
-| タスクID     | TASK-3-2-F                                                                    |
-| 操作         | update-spec                                                                   |
-| 対象ファイル | quality-requirements.md, architecture-implementation-patterns.md               |
-| 結果         | success                                                                       |
+| 項目         | 内容                                                                             |
+| ------------ | -------------------------------------------------------------------------------- |
+| タスクID     | TASK-3-2-F                                                                       |
+| 操作         | update-spec                                                                      |
+| 対象ファイル | quality-requirements.md, architecture-implementation-patterns.md                 |
+| 結果         | success                                                                          |
 | 備考         | jsdom環境移行、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処を文書化 |
 
 ### 更新詳細
 
-| ファイル | バージョン | 追加内容 |
-|----------|------------|----------|
-| quality-requirements.md | v1.1.0 → v1.2.0 | テスト環境設定パターン（jsdom/happy-dom選択）、グローバルAPIモック（Clipboard API、window.skillAPI）、vi.stubGlobal再設定パターン、act()警告対処パターン |
-| architecture-implementation-patterns.md | v1.1.0 → v1.2.0 | テスト環境設定パターン（環境選択、ディレクティブ指定、グローバルモック設計、モック上書きパターン） |
+| ファイル                                | バージョン      | 追加内容                                                                                                                                                 |
+| --------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| quality-requirements.md                 | v1.1.0 → v1.2.0 | テスト環境設定パターン（jsdom/happy-dom選択）、グローバルAPIモック（Clipboard API、window.skillAPI）、vi.stubGlobal再設定パターン、act()警告対処パターン |
+| architecture-implementation-patterns.md | v1.1.0 → v1.2.0 | テスト環境設定パターン（環境選択、ディレクティブ指定、グローバルモック設計、モック上書きパターン）                                                       |
 
 ### 追加されたパターン
 
-| パターン | 説明 | 用途 |
-|----------|------|------|
-| jsdom vs happy-dom選択 | 機能要件に応じた環境選択 | Clipboard API等の完全DOM機能が必要な場合 |
-| Clipboard APIモック | navigator.clipboard.writeText/readTextモック | コピー/ペースト機能テスト |
-| window.skillAPIモック | vi.stubGlobal設定 | useSkillExecution/useSkillPermission Hook |
-| vi.stubGlobal再設定 | beforeEach内での再呼び出し | テスト固有モックの確保 |
-| act()警告対処 | fakeTimers/waitFor/act wrap | React状態更新タイミング問題 |
-| pnpm.overrides | jsdomバージョン統一 | ESM互換性確保 |
+| パターン               | 説明                                         | 用途                                      |
+| ---------------------- | -------------------------------------------- | ----------------------------------------- |
+| jsdom vs happy-dom選択 | 機能要件に応じた環境選択                     | Clipboard API等の完全DOM機能が必要な場合  |
+| Clipboard APIモック    | navigator.clipboard.writeText/readTextモック | コピー/ペースト機能テスト                 |
+| window.skillAPIモック  | vi.stubGlobal設定                            | useSkillExecution/useSkillPermission Hook |
+| vi.stubGlobal再設定    | beforeEach内での再呼び出し                   | テスト固有モックの確保                    |
+| act()警告対処          | fakeTimers/waitFor/act wrap                  | React状態更新タイミング問題               |
+| pnpm.overrides         | jsdomバージョン統一                          | ESM互換性確保                             |
 
 ### SKILL.md変更履歴
 
@@ -430,31 +310,31 @@ Phase 1-12全成果物を検証し、23件のoutputファイルを確認。docum
 
 ## 2026-01-30: TASK-7C PermissionDialog コンポーネント完了
 
-| 項目         | 内容                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------- |
-| タスクID     | TASK-7C                                                                                |
-| 操作         | Phase 1-12 全フェーズ完了                                                              |
-| 対象ファイル | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                      |
-| 結果         | success                                                                                |
+| 項目         | 内容                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------- |
+| タスクID     | TASK-7C                                                                                 |
+| 操作         | Phase 1-12 全フェーズ完了                                                               |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                       |
+| 結果         | success                                                                                 |
 | 備考         | Store直結パターンで実装。40テストPASS、カバレッジ Line:100% Branch:94.44% Function:100% |
 
 ### 成果物
 
-| 成果物                    | パス                                                                                    |
-| ------------------------- | --------------------------------------------------------------------------------------- |
-| PermissionDialogコンポーネント | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                   |
-| skillエクスポート         | `apps/desktop/src/renderer/components/skill/index.ts`                                   |
-| テストファイル（40テスト）| `apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.test.tsx`        |
-| 実装ガイド                | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md`  |
+| 成果物                         | パス                                                                                   |
+| ------------------------------ | -------------------------------------------------------------------------------------- |
+| PermissionDialogコンポーネント | `apps/desktop/src/renderer/components/skill/PermissionDialog.tsx`                      |
+| skillエクスポート              | `apps/desktop/src/renderer/components/skill/index.ts`                                  |
+| テストファイル（40テスト）     | `apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.test.tsx`       |
+| 実装ガイド                     | `docs/30-workflows/TASK-7C-permission-dialog/outputs/phase-12/implementation-guide.md` |
 
 ### システム仕様書更新
 
-| 更新対象                       | 変更内容                                                    |
-| ------------------------------ | ----------------------------------------------------------- |
-| `arch-state-management.md`     | TASK-7C ステータス 未着手 → **完了**                        |
-| `ui-ux-agent-execution.md`     | PermissionDialog実装ファイルパス追記、完了タスク・関連ドキュメント追加 |
-| `interfaces-agent-sdk-ui.md`   | PermissionDialogファイルパス更新                            |
-| `specification.md`             | TASK-7C チェックボックス完了                                |
+| 更新対象                     | 変更内容                                                               |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| `arch-state-management.md`   | TASK-7C ステータス 未着手 → **完了**                                   |
+| `ui-ux-agent-execution.md`   | PermissionDialog実装ファイルパス追記、完了タスク・関連ドキュメント追加 |
+| `interfaces-agent-sdk-ui.md` | PermissionDialogファイルパス更新                                       |
+| `specification.md`           | TASK-7C チェックボックス完了                                           |
 
 ### 未タスク検出
 
@@ -469,13 +349,13 @@ Phase 1-12全成果物を検証し、23件のoutputファイルを確認。docum
 
 ## 2026-01-30: TASK-7B SkillImportDialog実装完了
 
-| 項目         | 内容                                                            |
-| ------------ | --------------------------------------------------------------- |
-| タスクID     | TASK-7B                                                         |
-| 操作         | update-spec                                                     |
-| 対象ファイル | references/ui-ux-components.md                                  |
-| 結果         | success                                                         |
-| 備考         | SkillImportDialogコンポーネント追加（Phase 1-12完了）           |
+| 項目         | 内容                                                  |
+| ------------ | ----------------------------------------------------- |
+| タスクID     | TASK-7B                                               |
+| 操作         | update-spec                                           |
+| 対象ファイル | references/ui-ux-components.md                        |
+| 結果         | success                                               |
+| 備考         | SkillImportDialogコンポーネント追加（Phase 1-12完了） |
 
 ### コンテキスト
 
@@ -499,73 +379,75 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ### 成果
 
-| 成果物種別           | ファイル                                           |
-| -------------------- | -------------------------------------------------- |
-| コンポーネント       | SkillImportDialog.tsx                              |
-| バレルエクスポート   | skill/index.ts                                     |
-| テストスイート       | SkillImportDialog.test.tsx                         |
-| 実装ガイド           | outputs/phase-12/implementation-guide.md           |
-| ドキュメント変更履歴 | outputs/phase-12/documentation-changelog.md        |
-| 未割当タスク検出     | outputs/phase-12/unassigned-task-detection.md      |
+| 成果物種別           | ファイル                                      |
+| -------------------- | --------------------------------------------- |
+| コンポーネント       | SkillImportDialog.tsx                         |
+| バレルエクスポート   | skill/index.ts                                |
+| テストスイート       | SkillImportDialog.test.tsx                    |
+| 実装ガイド           | outputs/phase-12/implementation-guide.md      |
+| ドキュメント変更履歴 | outputs/phase-12/documentation-changelog.md   |
+| 未割当タスク検出     | outputs/phase-12/unassigned-task-detection.md |
 
 ### aiworkflow-requirements更新
 
-| ファイル                               | 更新内容                                                                    |
-| -------------------------------------- | --------------------------------------------------------------------------- |
-| references/ui-ux-components.md         | SkillImportDialogをコンポーネント一覧・organisms・完了タスク・変更履歴に追加 |
-| references/arch-state-management.md    | 関連タスクテーブルのTASK-7Bを「**完了**」に更新                             |
-| references/interfaces-agent-sdk-skill.md | ファイルパス修正、v1.3.0変更履歴追加、実装ガイドリンク追加                  |
-| references/interfaces-agent-sdk-history.md | v6.33.0変更履歴追加（TASK-7B完了）                                        |
-| indexes/topic-map.md                   | ui-ux-components.mdのセクション行番号を更新                                 |
+| ファイル                                   | 更新内容                                                                     |
+| ------------------------------------------ | ---------------------------------------------------------------------------- |
+| references/ui-ux-components.md             | SkillImportDialogをコンポーネント一覧・organisms・完了タスク・変更履歴に追加 |
+| references/arch-state-management.md        | 関連タスクテーブルのTASK-7Bを「**完了**」に更新                              |
+| references/interfaces-agent-sdk-skill.md   | ファイルパス修正、v1.3.0変更履歴追加、実装ガイドリンク追加                   |
+| references/interfaces-agent-sdk-history.md | v6.33.0変更履歴追加（TASK-7B完了）                                           |
+| indexes/topic-map.md                       | ui-ux-components.mdのセクション行番号を更新                                  |
 
 ---
 
 ## 2026-01-30: TASK-7A SkillSelector コンポーネント実装完了
 
-| 項目         | 内容                                                                           |
-| ------------ | ------------------------------------------------------------------------------ |
-| タスクID     | TASK-7A                                                                        |
-| 操作         | task-completion                                                                |
-| 対象ファイル | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`                 |
-| 結果         | success                                                                        |
-| 備考         | Phase 1-12 全完了。28テスト全PASS。Line 100%, Branch 93.15%, Function 87.5%    |
+| 項目         | 内容                                                                        |
+| ------------ | --------------------------------------------------------------------------- |
+| タスクID     | TASK-7A                                                                     |
+| 操作         | task-completion                                                             |
+| 対象ファイル | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`              |
+| 結果         | success                                                                     |
+| 備考         | Phase 1-12 全完了。28テスト全PASS。Line 100%, Branch 93.15%, Function 87.5% |
 
 ### 仕様更新
 
-| 更新ファイル             | 内容                                                          |
-| ------------------------ | ------------------------------------------------------------- |
-| `arch-ui-components.md`  | SkillSelector コンポーネントパターン追加 + 詳細完了セクション |
-| `ui-ux-components.md`    | 完了タスクに TASK-7A 追加（v2.1.0）                          |
-| `indexes/topic-map.md`   | generate-index.js で再生成（SkillSelectorエントリ追加）       |
-| `EVALS.json`             | 使用回数 +1（28→29）                                         |
+| 更新ファイル            | 内容                                                          |
+| ----------------------- | ------------------------------------------------------------- |
+| `arch-ui-components.md` | SkillSelector コンポーネントパターン追加 + 詳細完了セクション |
+| `ui-ux-components.md`   | 完了タスクに TASK-7A 追加（v2.1.0）                           |
+| `indexes/topic-map.md`  | generate-index.js で再生成（SkillSelectorエントリ追加）       |
+| `EVALS.json`            | 使用回数 +1（28→29）                                          |
 
 ### 実装ガイド
 
 `docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md`
 
 ---
+
 ## 2026-01-29: コードベースTODOスキャン未タスク新規作成（4件）
 
-| 項目         | 内容                                                                 |
-| ------------ | -------------------------------------------------------------------- |
-| タスクID     | TASK-CI-FIX-001                                                      |
-| 操作         | detect-unassigned-task（コードコメントスキャン）                    |
-| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）           |
-| 結果         | success                                                              |
-| 備考         | 52件のTODOコメントから既存189件と重複しない4件を検出・作成          |
+| 項目         | 内容                                                       |
+| ------------ | ---------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                            |
+| 操作         | detect-unassigned-task（コードコメントスキャン）           |
+| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）  |
+| 結果         | success                                                    |
+| 備考         | 52件のTODOコメントから既存189件と重複しない4件を検出・作成 |
 
 ### 作成詳細
 
-| タスクID | ファイル | 内容 | 優先度 |
-| --- | --- | --- | --- |
-| task-ref-community-test-sync-001 | task-ref-community-test-sync-001.md | Community統合テスト-UI同期修正 | 中 |
-| task-bug-debug-code-removal-001 | task-bug-debug-code-removal-001.md | デバッグコード除去 | 中 |
-| task-imp-llm-handler-timeout-001 | task-imp-llm-handler-timeout-001.md | LLMハンドラータイムアウト実装 | 中 |
-| task-imp-error-reporting-001 | task-imp-error-reporting-001.md | エラーレポーティングサービス統合 | 低 |
+| タスクID                         | ファイル                            | 内容                             | 優先度 |
+| -------------------------------- | ----------------------------------- | -------------------------------- | ------ |
+| task-ref-community-test-sync-001 | task-ref-community-test-sync-001.md | Community統合テスト-UI同期修正   | 中     |
+| task-bug-debug-code-removal-001  | task-bug-debug-code-removal-001.md  | デバッグコード除去               | 中     |
+| task-imp-llm-handler-timeout-001 | task-imp-llm-handler-timeout-001.md | LLMハンドラータイムアウト実装    | 中     |
+| task-imp-error-reporting-001     | task-imp-error-reporting-001.md     | エラーレポーティングサービス統合 | 低     |
 
 ### システム仕様書参照
 
 各タスクにaiworkflow-requirementsの以下仕様書を参照情報として反映:
+
 - technology-backend.md（技術スタック・AI SDK・テスト設定）
 - technology-devops.md（CI/CD・無料枠最適化）
 - security-api-electron.md（セキュリティ要件）
@@ -576,21 +458,21 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ## 2026-01-29: TASK-CI-FIX-001 未タスク指示書テンプレート最適化
 
-| 項目         | 内容                                                                                     |
-| ------------ | ---------------------------------------------------------------------------------------- |
-| タスクID     | TASK-CI-FIX-001                                                                          |
-| 操作         | optimize-unassigned-task                                                                 |
-| 対象ファイル | 3件の未タスク指示書（docs/30-workflows/unassigned-task/）                                |
-| 結果         | success                                                                                  |
-| 備考         | unassigned-task-template.md 9セクション完全準拠化（Section 4/6/7 追加）                  |
+| 項目         | 内容                                                                    |
+| ------------ | ----------------------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                                         |
+| 操作         | optimize-unassigned-task                                                |
+| 対象ファイル | 3件の未タスク指示書（docs/30-workflows/unassigned-task/）               |
+| 結果         | success                                                                 |
+| 備考         | unassigned-task-template.md 9セクション完全準拠化（Section 4/6/7 追加） |
 
 ### 最適化詳細
 
-| タスクID | ファイル | 追加セクション |
-|---------|----------|---------------|
-| TASK-CI-FIX-001-U3 | task-web-lint-migration.md | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
+| タスクID           | ファイル                                   | 追加セクション                                      |
+| ------------------ | ------------------------------------------ | --------------------------------------------------- |
+| TASK-CI-FIX-001-U3 | task-web-lint-migration.md                 | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
 | TASK-CI-FIX-001-U4 | task-eslintignore-flat-config-migration.md | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
-| TASK-CI-FIX-001-U5 | task-shared-no-explicit-any-fix.md | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
+| TASK-CI-FIX-001-U5 | task-shared-no-explicit-any-fix.md         | 4(実行手順 Phase 1-2), 6(検証方法), 7(リスクと対策) |
 
 ### スキル改善
 
@@ -601,34 +483,34 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ## 2026-01-29: fix-backend-lint-next16 未タスク指示書作成（TASK-CI-FIX-001）
 
-| 項目         | 内容                                                          |
-| ------------ | ------------------------------------------------------------- |
-| タスクID     | TASK-CI-FIX-001                                               |
-| 操作         | create-unassigned-task                                        |
-| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）     |
-| 結果         | success                                                       |
+| 項目         | 内容                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                                                   |
+| 操作         | create-unassigned-task                                            |
+| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）         |
+| 結果         | success                                                           |
 | 備考         | Phase 12 Task 4で検出された5件のうち4件を指示書化（U2は解決済み） |
 
 ### 作成詳細
 
-| タスクID | ファイル | 内容 | 優先度 |
-|---------|----------|------|--------|
-| TASK-CI-FIX-001-U1 | task-nextjs16-breaking-changes.md | Next.js 16 その他の破壊的変更対応 | 中 |
-| TASK-CI-FIX-001-U3 | task-web-lint-migration.md | apps/web の lint 設定移行 | 低 |
-| TASK-CI-FIX-001-U4 | task-eslintignore-flat-config-migration.md | .eslintignore → eslint.config.js ignores 移行 | 低 |
-| TASK-CI-FIX-001-U5 | task-shared-no-explicit-any-fix.md | packages/shared の no-explicit-any warning 解消 | 低 |
+| タスクID           | ファイル                                   | 内容                                            | 優先度 |
+| ------------------ | ------------------------------------------ | ----------------------------------------------- | ------ |
+| TASK-CI-FIX-001-U1 | task-nextjs16-breaking-changes.md          | Next.js 16 その他の破壊的変更対応               | 中     |
+| TASK-CI-FIX-001-U3 | task-web-lint-migration.md                 | apps/web の lint 設定移行                       | 低     |
+| TASK-CI-FIX-001-U4 | task-eslintignore-flat-config-migration.md | .eslintignore → eslint.config.js ignores 移行   | 低     |
+| TASK-CI-FIX-001-U5 | task-shared-no-explicit-any-fix.md         | packages/shared の no-explicit-any warning 解消 | 低     |
 
 ---
 
 ## 2026-01-29: fix-backend-lint-next16（TASK-CI-FIX-001）
 
-| 項目         | 内容                                                          |
-| ------------ | ------------------------------------------------------------- |
-| タスクID     | TASK-CI-FIX-001                                               |
-| 操作         | update-spec                                                   |
-| 対象ファイル | technology-backend.md, technology-devops.md                   |
-| 結果         | success                                                       |
-| 備考         | next lint → eslint . 移行（Next.js 16対応）                  |
+| 項目         | 内容                                        |
+| ------------ | ------------------------------------------- |
+| タスクID     | TASK-CI-FIX-001                             |
+| 操作         | update-spec                                 |
+| 対象ファイル | technology-backend.md, technology-devops.md |
+| 結果         | success                                     |
+| 備考         | next lint → eslint . 移行（Next.js 16対応） |
 
 ### 更新詳細
 
@@ -654,12 +536,12 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ## 2026-01-28: skill-stream-i18n（TASK-3-2-B）
 
-| 項目         | 内容                                                           |
-| ------------ | -------------------------------------------------------------- |
-| タスクID     | TASK-3-2-B                                                     |
-| 操作         | update-spec                                                    |
-| 対象ファイル | references/ui-ux-feature-components.md                         |
-| 結果         | success                                                        |
+| 項目         | 内容                                                             |
+| ------------ | ---------------------------------------------------------------- |
+| タスクID     | TASK-3-2-B                                                       |
+| 操作         | update-spec                                                      |
+| 対象ファイル | references/ui-ux-feature-components.md                           |
+| 結果         | success                                                          |
 | 備考         | SkillStreamDisplay i18n対応（日本語/英語、翻訳キー、aria-label） |
 
 ### 更新詳細
@@ -677,14 +559,14 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ### 新規ファイル
 
-| ファイル                         | 配置先                                                          |
-| -------------------------------- | --------------------------------------------------------------- |
-| i18n/config.ts                   | `apps/desktop/src/renderer/i18n/config.ts`                      |
-| i18n/types.d.ts                  | `apps/desktop/src/renderer/i18n/types.d.ts`                     |
-| locales/ja/skill-stream.json     | `apps/desktop/src/renderer/i18n/locales/ja/skill-stream.json`   |
-| locales/en/skill-stream.json     | `apps/desktop/src/renderer/i18n/locales/en/skill-stream.json`   |
-| config.test.ts                   | `apps/desktop/src/renderer/i18n/config.test.ts`                 |
-| formatTime.i18n.test.ts          | `apps/desktop/src/renderer/utils/__tests__/formatTime.i18n.test.ts` |
+| ファイル                         | 配置先                                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------------- |
+| i18n/config.ts                   | `apps/desktop/src/renderer/i18n/config.ts`                                                  |
+| i18n/types.d.ts                  | `apps/desktop/src/renderer/i18n/types.d.ts`                                                 |
+| locales/ja/skill-stream.json     | `apps/desktop/src/renderer/i18n/locales/ja/skill-stream.json`                               |
+| locales/en/skill-stream.json     | `apps/desktop/src/renderer/i18n/locales/en/skill-stream.json`                               |
+| config.test.ts                   | `apps/desktop/src/renderer/i18n/config.test.ts`                                             |
+| formatTime.i18n.test.ts          | `apps/desktop/src/renderer/utils/__tests__/formatTime.i18n.test.ts`                         |
 | SkillStreamDisplay.i18n.test.tsx | `apps/desktop/src/renderer/components/AgentView/__tests__/SkillStreamDisplay.i18n.test.tsx` |
 
 ### 関連ドキュメント
@@ -696,13 +578,13 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ## 2026-01-28: コピー履歴機能（TASK-3-2-D）
 
-| 項目         | 内容                                       |
-| ------------ | ------------------------------------------ |
-| タスクID     | TASK-3-2-D                                 |
-| 操作         | update-spec                                |
-| 対象ファイル | references/ui-ux-feature-components.md     |
-| 結果         | success                                    |
-| 備考         | SkillStreamDisplayコピー履歴機能完全実装   |
+| 項目         | 内容                                     |
+| ------------ | ---------------------------------------- |
+| タスクID     | TASK-3-2-D                               |
+| 操作         | update-spec                              |
+| 対象ファイル | references/ui-ux-feature-components.md   |
+| 結果         | success                                  |
+| 備考         | SkillStreamDisplayコピー履歴機能完全実装 |
 
 ### 更新詳細
 
@@ -722,13 +604,13 @@ TASK-7B（SkillImportDialog実装）がPhase 1-13のうちPhase 1-12を完了。
 
 ### 生成された未タスク仕様書
 
-| タスクID      | ファイル                                 | 内容                   |
-| ------------- | ---------------------------------------- | ---------------------- |
-| TASK-3-2-D-01 | task-copy-history-persistence.md         | localStorage永続化     |
-| TASK-3-2-D-02 | task-copy-history-search-filter.md       | 検索・フィルタリング   |
-| TASK-3-2-D-03 | task-copy-history-auto-expire.md         | 自動期限切れ           |
-| TASK-3-2-D-04 | task-copy-history-e2e-tests.md           | E2Eテスト追加          |
-| TASK-3-2-D-05 | task-copy-history-keyboard-shortcuts.md  | キーボードショートカット |
+| タスクID      | ファイル                                | 内容                     |
+| ------------- | --------------------------------------- | ------------------------ |
+| TASK-3-2-D-01 | task-copy-history-persistence.md        | localStorage永続化       |
+| TASK-3-2-D-02 | task-copy-history-search-filter.md      | 検索・フィルタリング     |
+| TASK-3-2-D-03 | task-copy-history-auto-expire.md        | 自動期限切れ             |
+| TASK-3-2-D-04 | task-copy-history-e2e-tests.md          | E2Eテスト追加            |
+| TASK-3-2-D-05 | task-copy-history-keyboard-shortcuts.md | キーボードショートカット |
 
 ---
 
@@ -1877,13 +1759,13 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ## 2026-01-28: TASK-3-2-D SkillStreamDisplay コピー履歴機能
 
-| 項目         | 内容                                                   |
-| ------------ | ------------------------------------------------------ |
-| タスクID     | TASK-3-2-D                                             |
-| 操作         | update-spec                                            |
-| 対象ファイル | ui-ux-feature-components.md                            |
-| 結果         | success                                                |
-| 備考         | コピー履歴機能（CopyHistoryPanel、Context、Hook）追加  |
+| 項目         | 内容                                                  |
+| ------------ | ----------------------------------------------------- |
+| タスクID     | TASK-3-2-D                                            |
+| 操作         | update-spec                                           |
+| 対象ファイル | ui-ux-feature-components.md                           |
+| 結果         | success                                               |
+| 備考         | コピー履歴機能（CopyHistoryPanel、Context、Hook）追加 |
 
 ### 更新詳細
 
@@ -1900,18 +1782,18 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 関連ドキュメント
 
-| ドキュメント | パス                                                                                    |
-| ------------ | --------------------------------------------------------------------------------------- |
+| ドキュメント | パス                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
 | 実装ガイド   | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/outputs/phase-12/implementation-guide.md` |
-| タスク仕様書 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                               |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                         |
 
 ### テスト品質
 
-| 項目           | 値          |
-| -------------- | ----------- |
-| テスト総数     | 46（自動）  |
-| 手動テスト     | 23          |
-| カバレッジ     | 80%+ Line   |
+| 項目       | 値         |
+| ---------- | ---------- |
+| テスト総数 | 46（自動） |
+| 手動テスト | 23         |
+| カバレッジ | 80%+ Line  |
 
 ---
 
@@ -2002,13 +1884,13 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ## 2026-01-30: TASK-3-2-F SkillStreamDisplay テスト環境改善
 
-| 項目         | 内容                                                         |
-| ------------ | ------------------------------------------------------------ |
-| タスクID     | TASK-3-2-F                                                   |
-| 操作         | update-spec                                                  |
-| 対象ファイル | references/quality-requirements.md                           |
-| 結果         | success                                                      |
-| 備考         | jsdom環境移行、Clipboard APIモック、162テストPASS達成        |
+| 項目         | 内容                                                  |
+| ------------ | ----------------------------------------------------- |
+| タスクID     | TASK-3-2-F                                            |
+| 操作         | update-spec                                           |
+| 対象ファイル | references/quality-requirements.md                    |
+| 結果         | success                                               |
+| 備考         | jsdom環境移行、Clipboard APIモック、162テストPASS達成 |
 
 ### 更新詳細
 
@@ -2020,139 +1902,101 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 実装内容
 
-| 項目               | 内容                                          |
-| ------------------ | --------------------------------------------- |
-| 環境変更           | happy-dom → jsdom                             |
-| Clipboard APIモック | setup.ts にグローバルモック追加               |
-| window.skillAPI    | useSkillExecution/useSkillPermission用モック  |
-| テスト結果         | 162 passed, 1 skipped (5ファイル)             |
-| カバレッジ         | Statements 82.4%, Branches 64.2%              |
+| 項目                | 内容                                         |
+| ------------------- | -------------------------------------------- |
+| 環境変更            | happy-dom → jsdom                            |
+| Clipboard APIモック | setup.ts にグローバルモック追加              |
+| window.skillAPI     | useSkillExecution/useSkillPermission用モック |
+| テスト結果          | 162 passed, 1 skipped (5ファイル)            |
+| カバレッジ          | Statements 82.4%, Branches 64.2%             |
 
 ### 生成された未タスク仕様書
 
-| タスクID                            | ファイル                                   | 内容             | 優先度 |
-| ----------------------------------- | ------------------------------------------ | ---------------- | ------ |
-| task-ref-act-warning-elimination-001 | task-ref-act-warning-elimination-001.md   | act()警告完全解消 | LOW    |
+| タスクID                             | ファイル                                | 内容              | 優先度 |
+| ------------------------------------ | --------------------------------------- | ----------------- | ------ |
+| task-ref-act-warning-elimination-001 | task-ref-act-warning-elimination-001.md | act()警告完全解消 | LOW    |
+
+### 関連ドキュメント
+
+| ドキュメント | パス                                                                                          |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| 実装ガイド   | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書 | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/`                                         |
+
+---
+
+## 2026-02-01: TASK-IMP-permission-history-001 Permission履歴トラッキングUI
+
+| 項目         | 内容                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-history-001                                                         |
+| 操作         | update-spec                                                                             |
+| 対象ファイル | references/ui-ux-settings.md, arch-state-management.md, interfaces-agent-sdk-history.md |
+| 結果         | success                                                                                 |
+| 備考         | Permission履歴トラッキングUI実装完了（Phase 1-12）                                      |
+
+### 更新詳細
+
+- **更新**: `references/ui-ux-settings.md`（v1.1.1 → v1.2.0）
+  - PermissionHistoryPanel仕様セクション追加
+  - 新規コンポーネント3件の仕様記載
+  - 実装ファイル一覧更新
+- **更新**: `references/arch-state-management.md`（v1.4.0 → v1.5.0）
+  - permissionHistorySliceセクション追加（状態・アクション・品質メトリクス）
+  - 既存Slice一覧にpermissionHistorySlice追加
+  - 関連タスクテーブル更新
+- **更新**: `references/interfaces-agent-sdk-history.md`（v6.34.0 → v6.35.0）
+  - task-imp-permission-history-001完了タスクセクション追加
+  - task-imp-permission-readable-ui-001ステータスを完了に更新
+  - 関連ドキュメントリンク追加
+  - 変更履歴にv6.35.0エントリ追加
+
+### 新規ファイル
+
+| ファイル                    | 配置先                                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------- |
+| permissionHistory.ts        | apps/desktop/src/renderer/components/skill/permissionHistory.ts                              |
+| permissionHistorySlice.ts   | apps/desktop/src/renderer/store/slices/permissionHistorySlice.ts                             |
+| PermissionHistoryPanel.tsx  | apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryPanel.tsx  |
+| PermissionHistoryItem.tsx   | apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryItem.tsx   |
+| PermissionHistoryFilter.tsx | apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryFilter.tsx |
+
+### 更新ファイル
+
+| ファイル                     | 配置先                                                                     |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| store/index.ts               | apps/desktop/src/renderer/store/index.ts                                   |
+| skillSlice.ts                | apps/desktop/src/renderer/store/slices/skillSlice.ts                       |
+| PermissionSettings/index.tsx | apps/desktop/src/renderer/components/settings/PermissionSettings/index.tsx |
+
+### 実装内容
+
+| 項目             | 内容                                                                                     |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| データモデル     | PermissionHistoryEntry, PermissionHistoryFilter, PermissionDecision                      |
+| Store Slice      | permissionHistorySlice（addHistoryEntry, clearHistory, setHistoryFilter）                |
+| UIコンポーネント | PermissionHistoryPanel（仮想スクロール）, PermissionHistoryItem, PermissionHistoryFilter |
+| 自動記録         | skillSlice.respondToSkillPermission内でaddHistoryEntry呼び出し                           |
+| セキュリティ     | safeArgsSnapshot()（XSS防止、制御文字除去、200文字制限）                                 |
+| 永続化           | Zustand persist middleware partialize設定                                                |
+| テスト数         | 63件（21 data model + 16 store + 26 component）                                          |
+| カバレッジ       | Statements 100%, Branches 95.16%, Functions 100%, Lines 100%                             |
+
+### 生成された未タスク仕様書
+
+| タスクID                           | ファイル                              | 内容                   | 優先度 |
+| ---------------------------------- | ------------------------------------- | ---------------------- | ------ |
+| task-imp-permission-date-filter    | task-imp-permission-date-filter.md    | 期間別フィルタリング   | 中     |
+| task-imp-permission-auto-recommend | task-imp-permission-auto-recommend.md | 自動推奨ロジック       | 低     |
+| task-imp-permission-log-export     | task-imp-permission-log-export.md     | 外部ログ連携・ログ出力 | 低     |
+| task-imp-tool-icon-resolver        | task-imp-tool-icon-resolver.md        | ツールアイコン動的解決 | 低     |
 
 ### 関連ドキュメント
 
 | ドキュメント | パス                                                                                         |
 | ------------ | -------------------------------------------------------------------------------------------- |
-| 実装ガイド   | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/outputs/phase-12/implementation-guide.md` |
-| タスク仕様書 | `docs/30-workflows/TASK-3-2-F-skill-stream-test-env/`                                        |
-
----
-
-## [2026-02-01T00:00:00.000Z]
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 完了記録（TASK-8C-E）
-- **Result**: ✓ 成功
-- **Notes**: E2Eテストフィクスチャ作成タスク完了
-
-### タスク概要
-
-| 項目     | 内容                                              |
-| -------- | ------------------------------------------------- |
-| タスクID | TASK-8C-E                                         |
-| タスク名 | E2Eテストフィクスチャ作成                         |
-| 完了日   | 2026-02-01                                        |
-| Phase    | Phase 1-12 完了（Phase 13 PR作成はユーザー指示で未実施） |
-
-### 更新対象ファイル
-
-| 対象ファイル                 | 操作       | 内容                              |
-| ---------------------------- | ---------- | --------------------------------- |
-| arch-electron-services.md    | 更新不要   | 静的フィクスチャのため変更なし    |
-| tasks/index.md               | ステータス | TASK-8C-E: pending → completed    |
-| task-8c-e-fixtures.md        | ステータス | status: pending → completed       |
-| task-8c-b-e2e-selection.md   | 依存追加   | depends_on に TASK-8C-E 追加      |
-| task-8c-c-e2e-import-execute.md | 依存追加 | depends_on に TASK-8C-E 追加      |
-| task-8c-d-e2e-permission.md  | 依存追加   | depends_on に TASK-8C-E 追加      |
-
-### 実装内容
-
-| 項目           | 内容                                                              |
-| -------------- | ----------------------------------------------------------------- |
-| フィクスチャ   | 3種類（test-skill完全構成, another-skill最小構成, invalid-skill無効） |
-| テストファイル | skills.fixture.test.ts（29テストケース全PASS）                    |
-| 配置先         | apps/desktop/src/__tests__/__fixtures__/skills/                   |
-| SkillScanner互換 | 完全対応（scanAll()でtest-skill, another-skillがパースされる）  |
-
-### 生成された未タスク仕様書
-
-なし（0件検出）
-
-### 関連ドキュメント
-
-| ドキュメント   | パス                                                              |
-| -------------- | ----------------------------------------------------------------- |
-| 実装ガイド     | `docs/30-workflows/TASK-8C-E/outputs/phase-12/implementation-guide.md` |
-| タスク仕様書   | `docs/30-workflows/TASK-8C-E/`                                    |
-| 更新記録       | `docs/30-workflows/TASK-8C-E/outputs/phase-12/documentation-changelog.md` |
-
----
-
-## [2026-02-01T02:00:00.000Z]
-
-- **Agent**: task-specification-creator (generate-unassigned-task)
-- **Phase**: 未タスク検出・仕様書作成（TASK-8C-E Post-Phase 12）
-- **Result**: ✓ 成功
-- **Notes**: システム仕様書Gap分析から2件の未タスク仕様書を作成
-
-### 検出ソース分析
-
-| ソース                | 確認結果                                          |
-| --------------------- | ------------------------------------------------- |
-| TASK-8C-E Phase 3/10  | PASS判定（MINOR指摘なし）                         |
-| TASK-8C-E Phase 11    | 発見事項0件、スコープ外改善提案なし               |
-| TASK-8C-E Phase 12    | 未タスク0件（既報）                               |
-| コードコメント        | TODO/FIXME/HACK/XXX 0件                           |
-| quality-e2e-testing.md| サブリソース型4/6未カバー、エッジケース未カバー   |
-
-### 作成ファイル
-
-| ファイル                                        | タスクID                                        | 優先度 |
-| ----------------------------------------------- | ----------------------------------------------- | ------ |
-| `task-imp-e2e-fixture-subresource-expansion.md` | task-imp-e2e-fixture-subresource-expansion-001  | 中     |
-| `task-imp-e2e-fixture-edge-cases.md`            | task-imp-e2e-fixture-edge-cases-001             | 低     |
-
----
-
-## [2026-02-01T01:00:00.000Z]
-
-- **Agent**: skill-creator + aiworkflow-requirements
-- **Phase**: TASK-8C-E システム仕様書反映（Post-Phase 12）
-- **Result**: ✓ 成功
-- **Notes**: TASK-8C-E実装内容をシステム仕様書に反映。新規E2Eテスト仕様書作成、関連仕様4件更新。
-
-### 作業概要
-
-| 項目     | 内容                                              |
-| -------- | ------------------------------------------------- |
-| タスクID | TASK-8C-E（Post-Phase 12 ドキュメント反映）       |
-| 目的     | E2Eテストフィクスチャ実装内容をシステム仕様書に記録 |
-| 完了日   | 2026-02-01                                        |
-
-### 更新対象ファイル
-
-| 対象ファイル               | 操作     | バージョン       | 内容                                             |
-| -------------------------- | -------- | ---------------- | ------------------------------------------------ |
-| quality-e2e-testing.md     | **新規** | v1.0.0           | E2Eテスト仕様（フィクスチャ・テスト戦略・29TC一覧・SkillScanner統合パターン） |
-| quality-requirements.md    | 更新     | -                | E2Eセクションにquality-e2e-testing.mdへのクロスリファレンス追加 |
-| directory-structure.md     | 更新     | -                | apps/desktopテスト基盤セクション追加（フィクスチャディレクトリ構造） |
-| arch-electron-services.md  | 更新     | → v6.31.0        | SkillScanner E2Eテストフィクスチャセクション追加 |
-| SKILL.md                   | 更新     | → v8.19.0        | バージョン履歴にTASK-8C-E完了エントリ追加        |
-| indexes/topic-map.md       | 再生成   | -                | generate-index.js実行（136ファイル）              |
-| indexes/keywords.json      | 再生成   | -                | generate-index.js実行（962キーワード）            |
-
-### 設計判断
-
-| 判断                         | 根拠                                                                 |
-| ---------------------------- | -------------------------------------------------------------------- |
-| 新規ファイル作成             | quality-requirements.md（646行）が700行分割閾値に近いためスプリット  |
-| testing-template.md準拠      | spec-guidelines.mdのテスト仕様テンプレートに沿った構造               |
-| quality-プレフィックス命名   | 品質関連仕様のネーミング規約に準拠                                   |
+| 実装ガイド   | `docs/30-workflows/TASK-IMP-permission-history-001/outputs/phase-12/implementation-guide.md` |
+| タスク仕様書 | `docs/30-workflows/TASK-IMP-permission-history-001/`                                         |
 
 ---
 
