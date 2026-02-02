@@ -60,13 +60,82 @@ E2Eテストは「新しいスマートフォンを買ったときに、電話�
 
 ## Task 2: システムドキュメント更新【必須】
 
-### Step 1: タスク完了記録【必須】
+> **参照**: `.claude/skills/task-specification-creator/references/spec-update-workflow.md`
 
-- [ ] `quality-e2e-testing.md` に TASK-8C-C 完了記録を追加
+### Step 1-A: タスク完了記録【必須】
+
+- [ ] `quality-e2e-testing.md` に TASK-8C-C 完了記録を追加（詳細テンプレート使用）
 - [ ] `aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加
 - [ ] `task-specification-creator/LOGS.md` にタスク完了記録を追加
+- [ ] `aiworkflow-requirements/SKILL.md` の変更履歴にバージョンを追記
+- [ ] `task-specification-creator/SKILL.md` の変更履歴にバージョンを追記
 
-### Step 2: システム仕様更新【条件付き】
+#### 完了記録テンプレート（詳細版）
+
+```markdown
+### タスク: TASK-8C-C E2Eテスト - インポート・実行フロー（{{COMPLETION_DATE}}完了）
+
+| 項目         | 内容                                    |
+| ------------ | --------------------------------------- |
+| タスクID     | TASK-8C-C                               |
+| 完了日       | {{COMPLETION_DATE}}                     |
+| ステータス   | **完了**                                |
+| テスト数     | 7（自動E2Eテスト）+ 5（手動テスト項目） |
+| 発見課題     | {{ISSUE_COUNT}}件                       |
+| ドキュメント | `docs/30-workflows/TASK-8C-C/`          |
+
+#### テスト結果サマリー
+
+| カテゴリ         | テスト数 | PASS  | FAIL  |
+| ---------------- | -------- | ----- | ----- |
+| インポートフロー | 3        | {{N}} | {{N}} |
+| 実行フロー       | 3        | {{N}} | {{N}} |
+| 再スキャンフロー | 1        | {{N}} | {{N}} |
+| 手動テスト       | 5        | {{N}} | {{N}} |
+
+#### 成果物
+
+| 成果物             | パス                                                                   |
+| ------------------ | ---------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-8C-C/outputs/phase-11/manual-test-result.md`   |
+| 実装ガイド         | `docs/30-workflows/TASK-8C-C/outputs/phase-12/implementation-guide.md` |
+```
+
+### Step 1-B: 実装状況テーブル更新【該当時は必須】
+
+| 確認対象                     | 確認結果                     |
+| ---------------------------- | ---------------------------- |
+| 該当仕様書に実装状況テーブル | quality-e2e-testing.mdを確認 |
+| 「未実装」→「完了」更新要否  | E2Eテスト完了記録を追加      |
+
+> **注**: テストコード追加のため、api-endpoints.md等の実装状況テーブルは該当なし。
+> quality-e2e-testing.mdの完了タスクテーブルに追加する。
+
+### Step 1-C: 関連タスクテーブル更新【該当時は必須】
+
+**確認コマンド**（必ず実行）:
+
+```bash
+grep -rn "TASK-8C-C" .claude/skills/aiworkflow-requirements/references/
+grep -rn "e2e-import-execute" .claude/skills/aiworkflow-requirements/references/
+```
+
+| 確認対象ファイル                  | 確認項目             | 更新要否 |
+| --------------------------------- | -------------------- | -------- |
+| `interfaces-agent-sdk-history.md` | 未タスク候補テーブル | [ ]      |
+| `arch-state-management.md`        | 関連タスクテーブル   | [ ]      |
+| `quality-e2e-testing.md`          | 関連タスクテーブル   | [ ]      |
+
+### Step 1-D: topic-map.md再生成【新規セクション追加時は必須】
+
+```bash
+# インデックス再生成コマンド
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.mjs
+```
+
+- [ ] 再生成後、新規セクションの行番号が正しく反映されていることを確認
+
+### Step 2: システム仕様更新判断【条件付き】
 
 | 更新判断                 | 結果                     |
 | ------------------------ | ------------------------ |
@@ -74,16 +143,24 @@ E2Eテストは「新しいスマートフォンを買ったときに、電話�
 | 既存インターフェース変更 | なし                     |
 | 更新要否                 | **更新不要**             |
 
+> **理由**: TASK-8C-CはE2Eテストコードの追加のみであり、新規インターフェース・型・定数の追加はない。
+> `documentation-changelog.md`に「Step 2: 更新不要（テストコードのみ）」と明記する。
+
 ## Task 3: ドキュメント更新履歴【必須】
 
 更新されたドキュメントの一覧:
 
-| ドキュメント             | 更新内容               |
-| ------------------------ | ---------------------- |
-| `quality-e2e-testing.md` | TASK-8C-C完了記録追加  |
-| `LOGS.md`（2ファイル）   | タスク完了エントリ追加 |
+| ドキュメント                          | 更新内容               |
+| ------------------------------------- | ---------------------- |
+| `quality-e2e-testing.md`              | TASK-8C-C完了記録追加  |
+| `aiworkflow-requirements/LOGS.md`     | タスク完了エントリ追加 |
+| `task-specification-creator/LOGS.md`  | タスク完了記録追加     |
+| `aiworkflow-requirements/SKILL.md`    | 変更履歴バージョン追記 |
+| `task-specification-creator/SKILL.md` | 変更履歴バージョン追記 |
 
 ## Task 4: 未タスク検出【必須】
+
+### 検出ソース
 
 | #   | ソース                 | 確認項目                    | 検出数 |
 | --- | ---------------------- | --------------------------- | ------ |
@@ -91,6 +168,17 @@ E2Eテストは「新しいスマートフォンを買ったときに、電話�
 | 2   | Phase 10レビュー結果   | MINOR判定の指摘事項         | [ ]    |
 | 3   | Phase 11手動テスト結果 | スコープ外の発見事項        | [ ]    |
 | 4   | コードベース           | TODO/FIXME/HACK/XXXコメント | [ ]    |
+
+### Step 1-E: 未タスク指示書作成・登録【1件以上検出時は必須】
+
+検出数が1件以上の場合、以下を実行:
+
+1. **指示書作成**: `docs/30-workflows/unassigned-task/` に指示書を作成
+2. **テーブル登録**:
+   - [ ] `task-workflow.md` の残課題（未タスク）テーブルに登録
+   - [ ] 関連仕様書（`quality-e2e-testing.md`等）の残課題テーブルに登録
+
+> **注**: 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること。
 
 ## 成果物
 
@@ -102,12 +190,32 @@ E2Eテストは「新しいスマートフォンを買ったときに、電話�
 
 ## 完了条件
 
+### Task 1: 実装ガイド
+
 - [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
-- [ ] **【Task 2 Step 1】quality-e2e-testing.mdに完了記録を追加した**
-- [ ] **【Task 2 Step 1】LOGS.md（2ファイル）にタスク完了エントリを追加した**
-- [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
+
+### Task 2: システムドキュメント更新
+
+- [ ] **【Step 1-A】quality-e2e-testing.mdに完了記録を追加した**（詳細テンプレート使用）
+- [ ] **【Step 1-A】LOGS.md（2ファイル）にタスク完了エントリを追加した**
+- [ ] **【Step 1-A】SKILL.md（2ファイル）の変更履歴にバージョンを追記した**
+- [ ] **【Step 1-B】実装状況テーブルの確認を行い、結果をdocumentation-changelog.mdに記録した**
+- [ ] **【Step 1-C】関連タスクテーブルをGrepで確認し、該当があれば更新した**
+- [ ] **【Step 1-D】topic-map.mdを再生成した**（新規セクション追加時）
+- [ ] **【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
+
+### Task 3: ドキュメント更新履歴
+
+- [ ] **documentation-changelog.mdに全Step結果を記録した**
+
+### Task 4: 未タスク検出
+
 - [ ] **未タスク検出レポートが出力されている**【必須】
+- [ ] **【Step 1-E】検出数が1件以上の場合、指示書作成+テーブル登録を実行した**
+
+### 最終確認
+
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
