@@ -267,13 +267,15 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 ### Phase 12 実行時によくある漏れ
 
-| 漏れパターン                           | 防止方法                                                                            |
-| -------------------------------------- | ----------------------------------------------------------------------------------- |
-| Step 1-C（関連タスクテーブル）を未実行 | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                |
-| topic-map.md 未更新                    | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                    |
-| documentation-changelog.md が不完全    | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）            |
-| LOGS.md が1ファイルのみ更新            | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方   |
-| 完了タスクセクションが簡略形式         | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う |
+| 漏れパターン                                | 防止方法                                                                            |
+| ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Step 1-C（関連タスクテーブル）を未実行      | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                |
+| topic-map.md 未更新                         | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                    |
+| documentation-changelog.md が不完全         | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）            |
+| LOGS.md が1ファイルのみ更新                 | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方   |
+| 完了タスクセクションが簡略形式              | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う |
+| Phase 10 MINOR指摘を未タスク化せず進行      | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
+| 未タスク検出レポートで0件判定のまま未修正   | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない |
 
 ---
 

@@ -1,0 +1,262 @@
+{
+  "feature": "task-8b-component-tests",
+  "created": "2026-02-02T00:00:00Z",
+  "lastUpdated": "2026-02-02T12:00:00Z",
+  "status": "completed",
+  "qualityMetrics": {
+    "testCount": 280,
+    "lineCoverage": 99.71,
+    "branchCoverage": 95.85,
+    "functionCoverage": 97.61,
+    "eslintErrors": 0,
+    "typescriptErrors": 0
+  },
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-02T01:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-02T02:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-architecture-design.md",
+          "description": "テストアーキテクチャ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-data-specification.md",
+          "description": "テストデータ仕様書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-02T03:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-02T04:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-02T05:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/test-results.md",
+          "description": "テスト実行結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/adjustment-log.md",
+          "description": "調整ログ"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillSelector.test.tsx",
+          "description": "SkillSelectorテスト（28テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillImportDialog.test.tsx",
+          "description": "SkillImportDialogテスト（31テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.test.tsx",
+          "description": "PermissionDialogテスト（57テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillStreamingView.test.tsx",
+          "description": "SkillStreamingViewテスト（33テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.readable.test.tsx",
+          "description": "PermissionDialog人間可読UIテスト（19テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/PermissionDialog.metadata.test.tsx",
+          "description": "PermissionDialogメタデータテスト（19テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/permissionDescriptions.test.ts",
+          "description": "permissionDescriptionsユーティリティテスト（34テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/toolMetadata.test.ts",
+          "description": "toolMetadataユーティリティテスト（37テスト）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/permissionHistory.test.ts",
+          "description": "permissionHistoryユーティリティテスト（22テスト）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-02T06:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/additional-tests.md",
+          "description": "追加テスト記録"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-02T07:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ検証結果"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-02T08:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-02T09:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-02T10:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-02T11:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-02T12:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 概念編 / Part 2: 技術詳細編）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート（0件）"
+        }
+      ]
+    },
+    "13": {
+      "status": "in_progress",
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "11": ["5"],
+    "12": ["5", "10", "11"],
+    "13": ["10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "test",
+    "estimatedPhases": 13,
+    "taskId": "TASK-8B",
+    "parentWorkflow": "skill-import-agent-system",
+    "dependsOn": ["TASK-7A", "TASK-7B", "TASK-7C", "TASK-7D"],
+    "parallelWith": ["TASK-8A", "TASK-8C"],
+    "blocks": []
+  }
+}

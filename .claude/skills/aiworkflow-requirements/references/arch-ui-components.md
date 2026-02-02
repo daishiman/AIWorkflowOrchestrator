@@ -370,6 +370,45 @@ SkillSelectorはスキル選択用ドロップダウンコンポーネント。W
 |----------|----------------------------------|------------|
 | TASK-7A  | SkillSelector コンポーネント実装 | 2026-01-30 |
 | TASK-7D  | ChatPanel統合パターン             | 2026-01-30 |
+| TASK-8B  | コンポーネントテスト（全4コンポーネント） | 2026-02-02 |
+
+#### タスク: TASK-8B コンポーネントテスト（2026-02-02完了）
+
+| 項目               | 内容                                                                   |
+| ------------------ | ---------------------------------------------------------------------- |
+| タスクID           | TASK-8B                                                                |
+| 完了日             | 2026-02-02                                                             |
+| ステータス         | **完了**                                                               |
+| テスト数           | 280（自動） + 19（手動）                                               |
+| カバレッジ         | Line 99.71%, Branch 95.85%, Function 97.61%                            |
+| 対象コンポーネント | SkillSelector, SkillImportDialog, PermissionDialog, SkillStreamingView |
+
+#### テスト結果サマリー（TASK-8B）
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 仕様定義テスト     | 55       | 55   | 0    |
+| 追加テスト         | 225      | 225  | 0    |
+| 手動テスト         | 19       | 19   | 0    |
+
+#### 成果物（TASK-8B）
+
+| 成果物             | パス                                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-8B-component-tests/outputs/phase-11/manual-test-result.md`                             |
+| 実装ガイド         | `docs/30-workflows/TASK-8B-component-tests/outputs/phase-12/implementation-guide.md`                           |
+
+#### テスト品質（TASK-8B）
+
+| テスト対象             | テスト数 | Line    | Branch  | Function |
+| ---------------------- | -------- | ------- | ------- | -------- |
+| PermissionDialog.tsx   | 57+19+19 | 100%    | 95.34%  | 100%     |
+| SkillImportDialog.tsx  | 31       | 100%    | 100%    | 100%     |
+| SkillSelector.tsx      | 28       | 100%    | 93.15%  | 87.5%    |
+| SkillStreamingView.tsx | 33       | 99.31%  | 93.75%  | 100%     |
+| permissionDescriptions | 34       | 97.75%  | 97.91%  | 100%     |
+| toolMetadata           | 37       | 100%    | 100%    | 100%     |
+| permissionHistory      | 22       | 100%    | 100%    | 100%     |
 
 #### タスク: SkillSelector コンポーネント実装（2026-01-30完了）
 
@@ -455,6 +494,7 @@ ChatPanelは、既存のチャット画面にスキル関連コンポーネン�
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 1.5.0   | 2026-02-02 | TASK-8Bコンポーネントテスト完了記録・テスト品質メトリクス追加 |
 | 1.4.0   | 2026-01-30 | ChatPanel統合パターン追加（TASK-7D） |
 | 1.3.0   | 2026-01-30 | SkillSelector詳細実装パターン追加（Props/Types/Hooks/スタイリング） |
 | 1.2.0   | 2026-01-30 | SkillSelectorコンポーネントパターン追加（TASK-7A） |
@@ -468,3 +508,4 @@ ChatPanelは、既存のチャット画面にスキル関連コンポーネン�
 - [アーキテクチャパターン概要](./architecture-patterns.md)
 - [状態管理パターン](./arch-state-management.md)
 - [SkillSelector実装ガイド](../../../docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md)
+- [TASK-8Bコンポーネントテスト実装ガイド](../../../docs/30-workflows/TASK-8B-component-tests/outputs/phase-12/implementation-guide.md)
