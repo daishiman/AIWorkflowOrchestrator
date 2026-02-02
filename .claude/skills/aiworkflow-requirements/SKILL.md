@@ -12,7 +12,7 @@ description: |
 
   Trigger:
   プロジェクト仕様の検索、アーキテクチャ確認、API設計参照、セキュリティ要件確認、テスト戦略参照を行う場合に使用。
-  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig, permissionHistory, PermissionHistoryPanel, PermissionHistorySlice, 権限履歴, 履歴トラッキング, safeArgsSnapshot, PermissionHistoryEntry, PermissionHistoryFilter, コンポーネントテスト, Storeモック, フィクスチャ, アクセシビリティ, WCAG, userEvent, fireEvent, RTL, React Testing Library, jest-axe, ARIA
+  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig, permissionHistory, PermissionHistoryPanel, PermissionHistorySlice, 権限履歴, 履歴トラッキング, safeArgsSnapshot, PermissionHistoryEntry, PermissionHistoryFilter, DatePreset, DateRangeFilter, dateFilterUtils, 期間フィルタ, コンポーネントテスト, Storeモック, フィクスチャ, アクセシビリティ, WCAG, userEvent, fireEvent, RTL, React Testing Library, jest-axe, ARIA
 allowed-tools:
   - Read
   - Glob
@@ -195,11 +195,14 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **8.25.0** | **2026-02-02** | **TASK-8C-Aシステム仕様書パターン記述**: architecture-implementation-patterns.md v1.4.0更新（IPC通信テストパターン4種追加）、interfaces-agent-sdk-skill.md v1.6.0更新（テストアーキテクチャセクション追加）、未タスク指示書2件にシステム仕様書参照テーブル追加 |
-| **8.24.0** | **2026-02-02** | **未タスク検出・配置（detect-unassigned）**: コードベースTODO/FIXMEスキャン（51件）+ システム仕様ギャップ分析（14件）実施。既存270件と照合し重複なし新規2件作成: task-ref-skillexecutor-error-code-enum-001（エラーコードenum正式化: P3）、task-imp-topic-map-auto-regeneration-001（topic-map自動再生成フック: P3）。9セクションテンプレート完全準拠 |
-| 8.23.0     | 2026-02-02     | TASK-8Aシステム仕様最適化: error-handling.md v1.3.0更新（SkillExecutor実行エラーコード6種の正式仕様追加: EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT）、interfaces-agent-sdk-executor.md発見課題0件→1件修正、topic-map.md再生成（971キーワード）。EVALS.json qualityInsights最適化（patternAdoptionRate=0.60, coverageTargetHitRate=0.875） |
-| 8.22.0     | 2026-02-02     | TASK-8A補完: topic-map.md再生成（TASK-8Aシステム仕様更新反映）、未タスク1件正式配置（task-skillscanner-file-deletion-race: P3）、quality-requirements.md/interfaces-agent-sdk-executor.md/interfaces-agent-sdk-skill.mdにTASK-8A完了セクション・変更履歴追加 |
-| **8.21.0** | **2026-02-02** | **TASK-8A完了**: スキル管理モジュール単体テスト Phase 1-12完了。231テスト全PASS、5モジュールカバレッジ検証済み。実装ガイド（中学生レベル＋技術者レベル）作成                                                                                                                                                                                                                                   |
+| **8.28.0** | **2026-02-02** | **両ブランチ統合マージ**: task-imp-permission-date-filter + TASK-8C-A/TASK-8A/TASK-8B完了統合 |
+| **8.27.0** | **2026-02-02** | **実装詳細拡充**: arch-state-management.md（dateFilterUtils.ts追加、フィルタリングパイプライン仕様追加）、ui-ux-settings.md（3ドロップダウン化）、72テスト反映 |
+| **8.26.0** | **2026-02-02** | **TASK-8C-Aシステム仕様書パターン記述**: architecture-implementation-patterns.md更新（IPC通信テストパターン4種追加）、interfaces-agent-sdk-skill.md更新（テストアーキテクチャセクション追加） |
+| **8.25.0** | **2026-02-02** | **未タスク検出・配置（detect-unassigned）**: コードベースTODO/FIXMEスキャン（51件）+ システム仕様ギャップ分析（14件）実施。既存270件と照合し重複なし新規4件作成 |
+| **8.24.0** | **2026-02-02** | **task-imp-permission-date-filter完了**: interfaces-agent-sdk-history.md更新、DateRangeFilter/DatePreset型追加、72テスト全PASS |
+| 8.23.0     | 2026-02-02     | TASK-8Aシステム仕様最適化: error-handling.md v1.3.0更新（SkillExecutor実行エラーコード6種の正式仕様追加） |
+| 8.22.0     | 2026-02-02     | TASK-8A補完: topic-map.md再生成、未タスク1件正式配置 |
+| **8.21.0** | **2026-02-02** | **TASK-8A + TASK-8B完了**: スキル管理モジュール単体テスト231テスト + コンポーネントテスト280テスト全PASS |
 | **8.20.0** | **2026-02-01** | **TASK-8C-G完了**: quality-e2e-testing.md v1.1.0更新（skill-creatorフィクスチャ境界値テスト拡充記録追加、96テストPASS）、claude-code-skills-overview.md更新（skill-fixture-runnerセクション追加、TASK-8C-Gテスト拡充記録）、topic-map.md再生成                                                                                                                                                   |
 | **8.19.0** | **2026-02-01** | **task-imp-permission-history-001完了**: arch-state-management.md v1.5.0更新（permissionHistorySliceセクション追加）、ui-ux-settings.md v1.2.0更新（権限要求履歴パネルUI仕様追加）、interfaces-agent-sdk-history.md v6.35.0更新（完了タスク・品質基準・テスト結果記録）、resource-map.md v1.7.0更新（権限履歴参照先追加）、topic-map.md更新（3ファイル行番号同期）。63テスト・100%カバレッジ達成 |
 | **8.18.0** | **2026-01-31** | **TASK-SKILL-RETRY-001完了**: interfaces-agent-sdk-executor.md v1.2.0更新（リトライ型定義・API・定数追加、完了タスクセクション）、error-handling.md v1.2.0更新（SkillExecutorリトライ戦略セクション追加）、interfaces-agent-sdk-history.md更新（残課題テーブル完了反映）。72テスト・全210テストGREEN                                                                                             |

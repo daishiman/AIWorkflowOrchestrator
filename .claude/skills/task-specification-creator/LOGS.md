@@ -43,30 +43,39 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-02 - 両ブランチ統合マージ]
+
+- **Agent**: merge-workflow
+- **Phase**: マージ
+- **Result**: ✓ 成功
+- **Notes**: origin/main統合。task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A/TASK-8B完了を統合。
+
+---
+
+## [2026-02-02 - 未タスク仕様書2件新規作成（システム仕様書横断スキャン）]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned (codebase TODO scan + system spec gap analysis)
+- **Result**: ✓ 成功
+- **Notes**: コードベース全体のTODO/FIXMEスキャン（45+箇所検出）+ システム仕様書references/全ファイル分析から、既存226件と照合し重複なしの新規2件を作成。9セクションテンプレート完全準拠。
+
+---
+
+## [2026-02-02 - TASK-IMP-permission-date-filter Phase 1-12完了]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 完了
+- **Result**: ✓ 成功
+- **Notes**: TASK-IMP-permission-date-filter「権限履歴の期間別フィルタリング」Phase 1-12全工程完了。72テスト全PASS・カバレッジ98.5%達成。
+
+---
+
 ## [2026-02-02 - TASK-8C-A Phase 1-12完了]
 
 - **Agent**: execute-workflow (Phase 1-12)
 - **Phase**: Phase 12 完了
 - **Result**: ✓ 成功
-- **Notes**: TASK-8C-A「IPC統合テスト」Phase 1-12全工程完了。skillHandlers.ts対象。41テスト全PASS（22基本+19エッジケース）。行カバレッジ91.4%、ブランチカバレッジ76%。リファクタリング3件（EXPECTED_CHANNELS定数、invokeOptionalHandler、型エイリアス）。未タスク2件検出（IMP-002チャネル実装、permission:response実装）。
-
----
-
-## [2026-02-02 - 未タスク検出・配置（detect-unassigned）]
-
-- **Agent**: generate-unassigned-task
-- **Phase**: detect-unassigned (codebase scan + system spec gap)
-- **Result**: ✓ 成功
-- **Notes**: コードベースTODO/FIXMEスキャン（51件検出）+ システム仕様書14ギャップ分析。既存270件と照合し重複なしの新規2件を作成。task-ref-skillexecutor-error-code-enum-001（SkillExecutorエラーコードenum正式化: P3）、task-imp-topic-map-auto-regeneration-001（topic-map.md自動再生成フック: P3）。9セクションテンプレート完全準拠。
-
----
-
-## [2026-02-02 - TASK-8Aスキル改善（skill-creator update）]
-
-- **Agent**: skill-creator (update mode)
-- **Phase**: スキル改善
-- **Result**: ✓ 成功
-- **Notes**: TASK-8A実行知見に基づくスキル改善。4ファイル更新: (1) generate-unassigned-task.md - P3全件記録ルール追加（優先度に関わらず未タスク候補は全件最終テーブルに記録・unassigned-task/に配置する制約を明記）、(2) spec-update-workflow.md - Step 1-D改善（topic-map.md再生成の明示化、スクリプトコマンド記載）、(3) patterns.md - 成功パターン4件目追加（未タスク検出P3全件記録パターン）、(4) EVALS.json - taskMetrics.TASK-8A.unassignedTasksDetected 0→1、commonIssuesにP3除外問題追記。
+- **Notes**: TASK-8C-A「IPC統合テスト」Phase 1-12全工程完了。41テスト全PASS。行カバレッジ91.4%、ブランチカバレッジ76%。
 
 ---
 
@@ -75,16 +84,7 @@ node scripts/log-usage.js \
 - **Agent**: execute-workflow (Phase 1-12)
 - **Phase**: Phase 12 完了
 - **Result**: ✓ 成功
-- **Notes**: TASK-8A「スキル管理モジュール単体テスト」Phase 1-12全工程完了。execute モード。5モジュール（SkillScanner, SkillImportManager, SkillExecutor, PermissionResolver, skillSlice）対象。231テスト全PASS、5テスト新規追加（SE-02, SE-07, SE-08, PR-03）。カバレッジ: 4/5モジュール80%以上達成、SkillExecutor.ts 52.73%は統合テスト範囲免除。未タスク1件（task-skillscanner-file-deletion-race: P3）。
-
----
-
-## [2026-02-02 - 未タスク仕様書作成（workspace-chat-edit関連TODO）]
-
-- **Agent**: generate-unassigned-task
-- **Phase**: Phase 12 追加作業
-- **Result**: ✓ 成功
-- **Notes**: コードベースTODOスキャンから3件のTODO（chatEditHandlers.ts:77,302、useFileContext.ts:96）を検出し、2件の未タスク仕様書に統合作成。task-chat-edit-workspace-management-integration.md（UT-WCE-WORKSPACE-001）、task-chat-edit-monaco-editor-integration.md（UT-WCE-MONACO-001）。9セクションテンプレート準拠。
+- **Notes**: TASK-8A「スキル管理モジュール単体テスト」Phase 1-12全工程完了。231テスト全PASS。
 
 ---
 
@@ -93,7 +93,7 @@ node scripts/log-usage.js \
 - **Agent**: execute-workflow (Phase 1-12)
 - **Phase**: Phase 12 完了
 - **Result**: ✓ 成功
-- **Notes**: TASK-8B「コンポーネントテスト」Phase 1-12全工程完了。execute モード。4コンポーネント（SkillSelector, SkillImportDialog, PermissionDialog, SkillStreamingView）+3ユーティリティの280テスト全PASS。Line 99.71%, Branch 95.85%, Function 97.61%カバレッジ。未タスク2件（M-01: テスト名命名規則統一、M-02: 未使用import除去）。スキル改善: SKILL.md漏れパターン2件追加、patterns.md成功パターン1件追加、unassigned-task-guidelines.mdコンポーネントテスト検出パターン追加。
+- **Notes**: TASK-8B「コンポーネントテスト」Phase 1-12全工程完了。280テスト全PASS。Line 99.71%カバレッジ。
 
 ---
 ## [2026-02-01 - TASK-8C-G Phase 1-12完了]
@@ -2490,5 +2490,27 @@ if (artifactPath) {
 - **Agent**: unknown
 - **Phase**: detect-unassigned TASK-8C-G
 - **Result**: ✓ 成功
+
+---
+
+## 2026-02-02 - 権限履歴の期間別フィルタリング（task-imp-permission-date-filter）タスク完了
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: task-imp-permission-date-filter
+- タスク名: 権限履歴の期間別フィルタリング
+- Phase: 1-12
+
+### 成果
+- テストカバレッジ: 72テスト全件PASS（Stmts 98.50% / Branch 87.82% / Func 100%）
+- 実装内容:
+  - dateFilterUtils.ts新規作成（getDateRangeStartDate, filterByDateRange）
+  - PermissionHistoryFilter.tsx期間セレクトUI追加
+  - DatePreset/DateRangeFilter型定義追加
+  - 境界値テスト含む22ケースのフィルタロジックテスト
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-02
 
 ---

@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
+import os from "os";
 
 export default defineConfig({
   plugins: [react()],
@@ -13,13 +14,17 @@ export default defineConfig({
     pool: "forks",
     poolOptions: {
       forks: {
-        maxForks: 2,
+        // CI環境では並列度を上げる、ローカルはCPUコア数の半分
+        maxForks: process.env.CI
+          ? 4
+          : Math.max(1, Math.floor(os.cpus().length / 2)),
         isolate: true,
       },
     },
     testTimeout: 10000,
     teardownTimeout: 5000,
-    fileParallelism: false,
+    // CI環境ではファイル並列実行を有効化（シャードと併用で高速化）
+    fileParallelism: !!process.env.CI,
     dangerouslyIgnoreUnhandledErrors: true,
     coverage: {
       provider: "v8",

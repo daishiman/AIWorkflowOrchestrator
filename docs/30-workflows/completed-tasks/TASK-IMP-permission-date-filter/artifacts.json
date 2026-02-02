@@ -1,0 +1,216 @@
+{
+  "taskId": "task-imp-permission-date-filter",
+  "taskName": "権限履歴の期間別フィルタリング",
+  "issueNumber": 632,
+  "category": "改善",
+  "priority": "中",
+  "scale": "小規模",
+  "status": "実装完了",
+  "createdDate": "2026-02-01",
+  "completedDate": "2026-02-02",
+  "dependencies": [],
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "機能・非機能要件"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "AC定義"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "実装範囲"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "UI・型・ロジック設計"
+        },
+        {
+          "name": "ドメインモデル",
+          "path": "outputs/phase-2/domain-model.md",
+          "description": "DateRangeFilter/DatePreset"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "判定結果"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト設計"
+        },
+        {
+          "name": "テストケース一覧",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "ケース一覧"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "outputs": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジ分析結果"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "再測定結果"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "リファクタリング結果",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "改善内容の記録"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質検証結果"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "判定結果"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "name": "発見課題",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題リスト（0件でも出力）"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "outputs": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "概念的+技術的ドキュメント"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "検出結果（なしでも出力）"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "outputs": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR URL等"
+        }
+      ]
+    }
+  },
+  "targetFiles": {
+    "types": ["packages/shared/src/types/permissionHistory.ts"],
+    "components": [
+      "apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryFilter.tsx",
+      "apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryPanel.tsx"
+    ],
+    "newFiles": [
+      "apps/desktop/src/renderer/components/settings/PermissionSettings/dateFilterUtils.ts"
+    ],
+    "tests": [
+      "apps/desktop/src/renderer/components/settings/PermissionSettings/dateFilterUtils.test.ts",
+      "apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryFilter.test.tsx",
+      "apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryPanel.test.tsx",
+      "packages/shared/src/types/permissionHistory.test.ts"
+    ]
+  },
+  "systemSpecsToUpdate": [
+    "aiworkflow-requirements: arch-state-management.md",
+    "aiworkflow-requirements: ui-ux-settings.md",
+    "aiworkflow-requirements: interfaces-agent-sdk-history.md",
+    "aiworkflow-requirements: ui-ux-components.md"
+  ],
+  "qualityMetrics": {
+    "targetLineCoverage": "80%+",
+    "targetBranchCoverage": "60%+",
+    "targetFunctionCoverage": "80%+",
+    "actualLineCoverage": "98.50%",
+    "actualBranchCoverage": "87.82%",
+    "actualFunctionCoverage": "100%"
+  }
+}
