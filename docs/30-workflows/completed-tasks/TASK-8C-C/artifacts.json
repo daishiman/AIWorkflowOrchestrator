@@ -1,0 +1,103 @@
+{
+  "taskId": "TASK-8C-C",
+  "taskName": "E2Eテスト - インポート・実行フロー",
+  "version": "1.0.0",
+  "createdAt": "2026-02-02T00:00:00Z",
+  "updatedAt": "2026-02-02T00:00:00Z",
+  "status": "pending",
+  "phases": [
+    {
+      "phaseNumber": 1,
+      "phaseName": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 2,
+      "phaseName": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 3,
+      "phaseName": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 4,
+      "phaseName": "テスト作成",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 5,
+      "phaseName": "実装",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 6,
+      "phaseName": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 7,
+      "phaseName": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 8,
+      "phaseName": "リファクタリング",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 9,
+      "phaseName": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 10,
+      "phaseName": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 11,
+      "phaseName": "手動テスト検証",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 12,
+      "phaseName": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    {
+      "phaseNumber": 13,
+      "phaseName": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  ],
+  "dependencies": {
+    "required": ["TASK-7D", "TASK-8C-E"],
+    "parallelWith": ["TASK-8C-A", "TASK-8C-B", "TASK-8C-D"]
+  },
+  "outputs": {
+    "primary": "apps/desktop/src/__tests__/skillImportExecution.e2e.ts",
+    "testCount": 7
+  },
+  "qualityMetrics": {
+    "testCases": {
+      "basic": 6,
+      "additional": 1,
+      "total": 7
+    }
+  }
+}

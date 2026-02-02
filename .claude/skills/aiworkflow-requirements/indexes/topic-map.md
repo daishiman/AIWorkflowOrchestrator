@@ -164,9 +164,9 @@ node scripts/list-specs.js --topics
 | パフォーマンス最適化パターン | L239 |
 | セキュリティ実装パターン | L277 |
 | テスト実装パターン | L309 |
-| アクセシビリティ実装パターン | L435 |
-| 関連ドキュメント | L460 |
-| 変更履歴 | L472 |
+| アクセシビリティ実装パターン | L541 |
+| 関連ドキュメント | L566 |
+| 変更履歴 | L578 |
 
 ### references/architecture-monorepo.md
 
@@ -735,8 +735,8 @@ node scripts/list-specs.js --topics
 | デザイン原則サマリー | L55 |
 | コンポーネント階層図 | L77 |
 | 完了タスク | L116 |
-| 変更履歴 | L135 |
-| 関連ドキュメント | L152 |
+| 変更履歴 | L136 |
+| 関連ドキュメント | L154 |
 
 ### references/ui-ux-design-principles.md
 
@@ -1280,11 +1280,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L23 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L119 |
-| skillSlice（スキル実行状態管理） | L209 |
-| permissionHistorySlice（権限要求履歴管理） | L335 |
-| 関連ドキュメント | L464 |
+| Zustand Sliceパターン | L24 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L120 |
+| skillSlice（スキル実行状態管理） | L210 |
+| permissionHistorySlice（権限要求履歴管理） | L337 |
+| 関連ドキュメント | L466 |
 
 ### references/arch-ui-components.md
 
@@ -1512,15 +1512,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| 概要 | L17 |
-| テスト戦略 | L31 |
-| E2Eテストフィクスチャ | L51 |
-| フィクスチャ詳細仕様 | L88 |
-| フィクスチャ検証テスト | L138 |
-| SkillScannerテスト統合パターン | L194 |
-| 完了タスク | L214 |
-| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L231 |
-| 関連ドキュメント | L270 |
+| 概要 | L19 |
+| テスト戦略 | L33 |
+| E2Eテストフィクスチャ | L53 |
+| フィクスチャ詳細仕様 | L90 |
+| フィクスチャ検証テスト | L140 |
+| SkillScannerテスト統合パターン | L196 |
+| 完了タスク | L216 |
+| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L259 |
+| 関連ドキュメント | L298 |
 
 ### references/rag-desktop-state.md
 
@@ -1731,8 +1731,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L269 |
-| 変更履歴 | L279 |
+| 関連ドキュメント | L271 |
+| 変更履歴 | L281 |
 
 ### references/testing-accessibility.md
 
