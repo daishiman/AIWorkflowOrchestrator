@@ -286,6 +286,45 @@ HTTP 429エラーの`Retry-After`ヘッダー（秒単位の数値）をパー�
 
 ---
 
+## SkillExecutor 実行エラーコード（TASK-8A）
+
+TASK-8A単体テストで検証されたSkillExecutor/PermissionResolverの実行時エラーコード。
+
+### 実行エラー一覧
+
+| エラーコード                | カテゴリ     | 発生条件                                       | リトライ | テスト検証 |
+| --------------------------- | ------------ | ---------------------------------------------- | -------- | ---------- |
+| `EXECUTION_FAILED`          | 実行エラー   | SDK query()呼び出し中の例外発生                | 不可     | SE-06      |
+| `MAX_CONCURRENT_EXCEEDED`   | リソース制限 | 同時実行数が上限（5件）に到達                  | 待機後可 | SE-01      |
+| `INVALID_SKILL_METADATA`    | バリデーション | SkillMetadata必須フィールド不足（anchors等）  | 不可     | SE-02      |
+| `PERMISSION_DENIED`         | 権限エラー   | PreToolUseフックでツール使用が拒否された       | 不可     | SE-07      |
+| `TIMEOUT`                   | タイムアウト | PermissionResolver応答待機が5分を超過          | 不可     | PR-02      |
+| `ABORT`                     | キャンセル   | ユーザーまたはシステムによる実行中断           | 不可     | SE-03      |
+
+### SkillExecutionError 構造
+
+| フィールド | 型     | 必須 | 説明                         |
+| ---------- | ------ | ---- | ---------------------------- |
+| code       | string | 必須 | 上記エラーコードのいずれか   |
+| message    | string | 必須 | エラーの詳細メッセージ       |
+| details    | object | 任意 | 追加のコンテキスト情報       |
+
+### エラー発生フローと対処
+
+| シナリオ                 | エラーコード              | 対処方法                                           |
+| ------------------------ | ------------------------- | -------------------------------------------------- |
+| スキル実行時のSDKエラー  | `EXECUTION_FAILED`        | エラーメッセージをUIに表示、ログ出力               |
+| 同時実行数超過           | `MAX_CONCURRENT_EXCEEDED` | 既存実行の完了を待機、またはabort後に再実行        |
+| 不正なスキル定義         | `INVALID_SKILL_METADATA`  | SKILL.mdのフォーマットを確認・修正                 |
+| ツール使用権限なし       | `PERMISSION_DENIED`       | ユーザーに権限承認を促す                           |
+| 権限応答タイムアウト     | `TIMEOUT`                 | 再実行（5分以内に応答が必要）                      |
+| ユーザーによる中断       | `ABORT`                   | 正常終了として処理、activeExecutionsから削除        |
+
+**実装場所**: `apps/desktop/src/main/services/skill/SkillExecutor.ts`
+**テスト検証**: `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts` (52テスト)、`PermissionResolver.test.ts` (43テスト)
+
+---
+
 ## サーキットブレーカー（将来対応）
 
 ### 状態
@@ -448,5 +487,6 @@ HTTP 429エラーの`Retry-After`ヘッダー（秒単位の数値）をパー�
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-02-02 | v1.3.0     | TASK-8A: SkillExecutor実行エラーコード6種の正式仕様追加（EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT） |
 | 2026-01-31 | v1.2.0     | TASK-SKILL-RETRY-001: SkillExecutorリトライ戦略セクション追加        |
 | 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                   |
