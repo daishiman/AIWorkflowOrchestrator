@@ -5,6 +5,25 @@
 
 ---
 
+## 2026-02-02: 未タスク仕様書作成（2件）- workspace-chat-edit関連TODO
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-8B（Phase 12追加作業）                                                                    |
+| 操作         | create-unassigned-task                                                                         |
+| 対象ファイル | task-chat-edit-workspace-management-integration.md, task-chat-edit-monaco-editor-integration.md |
+| 結果         | success                                                                                        |
+| 備考         | コードベースTODOスキャンから3件のTODO（chatEditHandlers.ts:77,302、useFileContext.ts:96）を検出し、2件の未タスク仕様書に統合 |
+
+### 作成ファイル
+
+| ファイル                                       | タスクID            | 対象TODO                                                    |
+| ---------------------------------------------- | ------------------- | ----------------------------------------------------------- |
+| task-chat-edit-workspace-management-integration.md | UT-WCE-WORKSPACE-001 | chatEditHandlers.ts:77, useFileContext.ts:96（Workspace連携） |
+| task-chat-edit-monaco-editor-integration.md        | UT-WCE-MONACO-001    | chatEditHandlers.ts:302（Monaco Editor連携）                 |
+
+---
+
 ## 2026-02-02: コンポーネントテストドキュメント新規作成（3ファイル）
 
 | 項目         | 内容                                                                      |
