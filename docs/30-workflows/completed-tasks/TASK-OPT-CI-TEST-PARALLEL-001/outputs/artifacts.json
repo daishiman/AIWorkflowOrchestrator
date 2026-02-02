@@ -1,0 +1,255 @@
+{
+  "taskId": "TASK-OPT-CI-TEST-PARALLEL-001",
+  "taskName": "GitHub Actions CI テスト並列実行最適化",
+  "createdAt": "2026-02-02T13:46:00Z",
+  "updatedAt": "2026-02-02T16:30:00Z",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md"
+        },
+        {
+          "name": "現状分析レポート",
+          "path": "outputs/phase-1/current-state-analysis.md"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計",
+          "path": "outputs/phase-2/architecture-design.md"
+        },
+        {
+          "name": "CI変更設計書",
+          "path": "outputs/phase-2/ci-change-design.md"
+        },
+        {
+          "name": "Vitest変更設計書",
+          "path": "outputs/phase-2/vitest-change-design.md"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md"
+        },
+        {
+          "name": "テストケース",
+          "path": "outputs/phase-4/test-cases.md"
+        },
+        {
+          "name": "統合テストシナリオ",
+          "path": "outputs/phase-4/integration-test-design.md"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "変更後CI設定",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "name": "変更後Vitest設定",
+          "path": "apps/desktop/vitest.config.ts"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-6/coverage-report.md"
+        },
+        {
+          "name": "統合テスト結果",
+          "path": "outputs/phase-6/integration-test.md"
+        },
+        {
+          "name": "パフォーマンス測定",
+          "path": "outputs/phase-6/performance-data.md"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md"
+        },
+        {
+          "name": "統合テスト結果",
+          "path": "outputs/phase-7/integration-test.md"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタ後CI設定",
+          "path": ".github/workflows/ci.yml"
+        },
+        {
+          "name": "リファクタ後Vitest設定",
+          "path": "apps/desktop/vitest.config.ts"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md"
+        }
+      ]
+    }
+  ],
+  "qualityMetrics": {
+    "targetShardTime": "10分以下",
+    "targetTotalTime": "12分以下",
+    "currentShardTime": "13分（変更前）→ 6-8分（期待値）",
+    "currentTotalTime": "18分（変更前）→ 9-10分（期待値）",
+    "coverageThreshold": {
+      "line": "80%",
+      "branch": "60%",
+      "function": "80%"
+    },
+    "currentCoverage": {
+      "line": "維持",
+      "statements": "維持",
+      "status": "しきい値設定済み"
+    }
+  },
+  "implementationSummary": {
+    "ci.yml": {
+      "shardCount": "8 → 16",
+      "cacheStrategy": "shared packageビルドキャッシュ導入",
+      "coverageBranching": "PR時スキップ、main push時計測"
+    },
+    "vitest.config.ts": {
+      "maxForks": "CI: 4 / LOCAL: CPUコア数/2（動的計算）",
+      "fileParallelism": "CI・ローカル両環境で有効（環境変数で無効化可能）",
+      "envVars": ["VITEST_MAX_FORKS", "VITEST_FILE_PARALLELISM"]
+    },
+    "package.json": {
+      "parallelScripts": "run-p (npm-run-all2) によるクロスプラットフォーム並列実行",
+      "validateCommand": "lint, typecheck, test を並列実行",
+      "checkCommand": "lint, typecheck を並列実行"
+    }
+  },
+  "localEnvironment": {
+    "issue": "better-sqlite3アーキテクチャ不一致",
+    "cause": "pnpmグローバルストアのネイティブモジュールがx86_64でビルド",
+    "solution": "npm rebuild実行でarm64にリビルド",
+    "status": "解決済み"
+  },
+  "systemSpecUpdates": {
+    "deployment-gha.md": "シャード戦略・並列化設定・キャッシュ戦略セクション追加",
+    "technology-devops.md": "完了タスクセクション・CI最適化パターン追加",
+    "quality-requirements.md": "並列化設定・環境変数制御セクション追加",
+    "aiworkflow-requirements/LOGS.md": "TASK完了エントリ追加",
+    "task-specification-creator/LOGS.md": "TASK完了エントリ追加"
+  },
+  "completedAt": "2026-02-02T16:30:00Z"
+}

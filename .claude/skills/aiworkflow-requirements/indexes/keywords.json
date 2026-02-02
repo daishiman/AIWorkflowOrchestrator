@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-02T01:41:14.833Z",
-  "totalKeywords": 971,
+  "generated": "2026-02-02T09:02:27.654Z",
+  "totalKeywords": 1001,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -70,6 +70,7 @@
       "claude-code-skills-overview.md",
       "claude-code-skills-structure.md",
       "database-schema.md",
+      "deployment-gha.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-integration.md",
@@ -89,6 +90,7 @@
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
       "quality-e2e-testing.md",
+      "quality-requirements.md",
       "rag-desktop-state.md",
       "rag-knowledge-graph.md",
       "rag-query-pipeline.md",
@@ -104,6 +106,9 @@
       "technology-desktop.md",
       "technology-devops.md",
       "technology-frontend.md",
+      "testing-accessibility.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
@@ -169,6 +174,7 @@
       "database-architecture.md",
       "database-implementation.md",
       "database-schema.md",
+      "deployment-gha.md",
       "development-guidelines.md",
       "environment-variables.md",
       "error-handling.md",
@@ -217,6 +223,9 @@
       "technology-desktop.md",
       "technology-devops.md",
       "technology-frontend.md",
+      "testing-accessibility.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md",
       "ui-history-components.md",
       "ui-history-data-types.md",
       "ui-history-design.md",
@@ -648,6 +657,7 @@
       "security-skill-ipc.md",
       "task-workflow.md",
       "technology-backend.md",
+      "technology-devops.md",
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
@@ -941,6 +951,7 @@
       "interfaces-agent-sdk-skill.md",
       "quality-e2e-testing.md",
       "security-skill-ipc.md",
+      "technology-devops.md",
       "ui-ux-agent-execution.md",
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
@@ -1384,7 +1395,10 @@
     "参照": [
       "claude-code-commands.md",
       "claude-code-overview.md",
-      "claude-code-skills-process.md"
+      "claude-code-skills-process.md",
+      "testing-accessibility.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md"
     ],
     "層アーキテクチャ設計仕様書": [
       "claude-code-overview.md"
@@ -1909,6 +1923,9 @@
       "error-handling.md",
       "interfaces-agent-sdk-executor.md"
     ],
+    "実行エラーコード": [
+      "error-handling.md"
+    ],
     "サーキットブレーカー": [
       "error-handling.md"
     ],
@@ -2394,7 +2411,9 @@
     ],
     "Store": [
       "interfaces-rag-knowledge-graph-store.md",
-      "security-skill-execution.md"
+      "security-skill-execution.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md"
     ],
     "検索クエリ・結果型定義": [
       "interfaces-rag-search.md",
@@ -2483,7 +2502,8 @@
       "llm-ipc-types.md"
     ],
     "Provider": [
-      "llm-ipc-types.md"
+      "llm-ipc-types.md",
+      "testing-fixtures.md"
     ],
     "チャット関連型定義": [
       "llm-ipc-types.md"
@@ -3280,6 +3300,21 @@
     "マイグレーション計画": [
       "technology-devops.md"
     ],
+    "最適化パターン": [
+      "technology-devops.md"
+    ],
+    "OPT": [
+      "technology-devops.md"
+    ],
+    "TEST": [
+      "technology-devops.md"
+    ],
+    "PARALLEL": [
+      "technology-devops.md"
+    ],
+    "追加": [
+      "technology-devops.md"
+    ],
     "フロントエンド技術スタック": [
       "technology-frontend.md"
     ],
@@ -3308,6 +3343,103 @@
     "ビルド・バンドル": [
       "technology-frontend.md"
     ],
+    "アクセシビリティテストガイド": [
+      "testing-accessibility.md"
+    ],
+    "ARIA": [
+      "testing-accessibility.md",
+      "ui-ux-portal-patterns.md"
+    ],
+    "属性テスト": [
+      "testing-accessibility.md"
+    ],
+    "キーボードナビゲーション": [
+      "testing-accessibility.md",
+      "testing-component-patterns.md"
+    ],
+    "スクリーンリーダー互換性": [
+      "testing-accessibility.md"
+    ],
+    "色とコントラスト": [
+      "testing-accessibility.md"
+    ],
+    "検証チェックリスト": [
+      "testing-accessibility.md"
+    ],
+    "自動テストツール": [
+      "testing-accessibility.md"
+    ],
+    "WCAG": [
+      "testing-accessibility.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-design-principles.md",
+      "ui-ux-feature-components.md"
+    ],
+    "AA": [
+      "testing-accessibility.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-design-principles.md",
+      "ui-ux-feature-components.md"
+    ],
+    "チェックリスト": [
+      "testing-accessibility.md"
+    ],
+    "コンポーネントテストパターン": [
+      "testing-component-patterns.md"
+    ],
+    "モッキングパターン": [
+      "testing-component-patterns.md"
+    ],
+    "テストデータファクトリ": [
+      "testing-component-patterns.md"
+    ],
+    "アクセシビリティテスト": [
+      "testing-component-patterns.md"
+    ],
+    "非同期テスト": [
+      "testing-component-patterns.md"
+    ],
+    "テスト構成": [
+      "testing-component-patterns.md"
+    ],
+    "userEvent": [
+      "testing-component-patterns.md"
+    ],
+    "vs": [
+      "testing-component-patterns.md"
+    ],
+    "fireEvent": [
+      "testing-component-patterns.md"
+    ],
+    "テストフィクスチャパターン": [
+      "testing-fixtures.md"
+    ],
+    "ファクトリ関数パターン": [
+      "testing-fixtures.md"
+    ],
+    "境界値フィクスチャ": [
+      "testing-fixtures.md"
+    ],
+    "モック構築": [
+      "testing-fixtures.md"
+    ],
+    "Props": [
+      "testing-fixtures.md",
+      "ui-history-components.md"
+    ],
+    "ビルダー": [
+      "testing-fixtures.md"
+    ],
+    "ラッパー": [
+      "testing-fixtures.md"
+    ],
+    "フィクスチャファイル構成": [
+      "testing-fixtures.md"
+    ],
+    "ベストプラクティス": [
+      "testing-fixtures.md",
+      "ui-ux-portal-patterns.md"
+    ],
     "履歴": [
       "ui-history-components.md",
       "ui-history-data-types.md",
@@ -3321,9 +3453,6 @@
       "ui-ux-feature-skill-stream.md"
     ],
     "ファイル構成": [
-      "ui-history-components.md"
-    ],
-    "Props": [
       "ui-history-components.md"
     ],
     "定義": [
@@ -3403,16 +3532,6 @@
     ],
     "視覚デザイン": [
       "ui-ux-agent-execution.md"
-    ],
-    "WCAG": [
-      "ui-ux-agent-execution.md",
-      "ui-ux-design-principles.md",
-      "ui-ux-feature-components.md"
-    ],
-    "AA": [
-      "ui-ux-agent-execution.md",
-      "ui-ux-design-principles.md",
-      "ui-ux-feature-components.md"
     ],
     "実装済": [
       "ui-ux-agent-execution.md"
@@ -3653,16 +3772,10 @@
     "WAI": [
       "ui-ux-portal-patterns.md"
     ],
-    "ARIA": [
-      "ui-ux-portal-patterns.md"
-    ],
     "Menu": [
       "ui-ux-portal-patterns.md"
     ],
     "テスト設計": [
-      "ui-ux-portal-patterns.md"
-    ],
-    "ベストプラクティス": [
       "ui-ux-portal-patterns.md"
     ],
     "注意事項": [

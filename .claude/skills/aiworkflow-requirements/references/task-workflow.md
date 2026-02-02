@@ -257,6 +257,7 @@
 | UT-VECTOR-001        | ベクトル検索フィルター拡張         | 低     | rag-vector-search.md 未対応フィルター           | `docs/30-workflows/unassigned-task/task-vector-search-advanced-filters.md`     |
 | task-imp-ipc-imp002-channels-001 | IMP-002チャネル本体実装（settings/permissions/cache） | 中 | TASK-8C-A Phase 12（IPC統合テスト） | `docs/30-workflows/unassigned-task/task-imp-ipc-imp002-channels.md` |
 | task-imp-ipc-permission-response-001 | skill:permission:response チャネル実装 | 低 | TASK-8C-A Phase 12（IPC統合テスト） | `docs/30-workflows/unassigned-task/task-imp-ipc-permission-response.md` |
+| task-ref-quality-requirements-split-001 | quality-requirements.md仕様書分割 | 低 | TASK-OPT-CI-TEST-PARALLEL-001 Phase 12（テンプレート準拠確認） | `docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md` |
 
 ### 未タスク管理ルール
 
@@ -291,3 +292,4 @@
 | 1.9.0      | 2026-01-31 | 未タスク9件追加: TASK-SKILL-RETRY-001関連5件（設定UI/履歴永続化/サーキットブレーカー/Rendererイベント/型shared移行）+ システム仕様検出3件（Chunk Search API層/PlainTextConverter/ベクトル検索フィルター） |
 | 1.6.0      | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（成果物配置、フェーズ遷移図、ファイル配置） |
 | 1.10.0     | 2026-02-02 | 未タスク2件追加: task-imp-ipc-imp002-channels-001（IMP-002チャネル実装）、task-imp-ipc-permission-response-001（permission:response実装）。TASK-8C-A Phase 12検出 |
+| 1.11.0     | 2026-02-02 | 未タスク追加: task-ref-quality-requirements-split-001（quality-requirements.md仕様書分割）。TASK-OPT-CI-TEST-PARALLEL-001 Phase 12検出 |
