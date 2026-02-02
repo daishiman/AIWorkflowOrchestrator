@@ -43,6 +43,15 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-02 - TASK-8C-B Phase 1-12完了]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 完了
+- **Result**: ✓ 成功
+- **Notes**: TASK-8C-B「E2Eテスト - スキル選択フロー」Phase 1-12全工程完了。8テストケース実装（基本表示2件、スキル選択2件、キーボード操作2件、アクセシビリティ2件）。ARIA属性ベースセレクタ使用。
+
+---
+
 ## [2026-02-02 - 両ブランチ統合マージ]
 
 - **Agent**: merge-workflow
