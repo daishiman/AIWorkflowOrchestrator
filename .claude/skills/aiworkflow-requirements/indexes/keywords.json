@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-01T12:32:51.466Z",
-  "totalKeywords": 970,
+  "generated": "2026-02-02T00:06:09.757Z",
+  "totalKeywords": 971,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1907,6 +1907,9 @@
     "RETRY": [
       "error-handling.md",
       "interfaces-agent-sdk-executor.md"
+    ],
+    "実行エラーコード": [
+      "error-handling.md"
     ],
     "サーキットブレーカー": [
       "error-handling.md"

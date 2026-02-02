@@ -293,8 +293,9 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] arch-state-management.md等の「関連タスク」テーブルを確認した
 - [ ] 該当タスクのステータスを「**完了**」に更新した
 
-### Step 1-D: topic-map.md更新
-- [ ] permissionDescriptions等の新規キーワードを追加した
+### Step 1-D: topic-map.md再生成（⚠️ 見落としやすい）
+- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行した
+- [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されている
 
 ### 必須更新ファイル（全タスク共通）
 - [ ] aiworkflow-requirements/LOGS.md を更新した

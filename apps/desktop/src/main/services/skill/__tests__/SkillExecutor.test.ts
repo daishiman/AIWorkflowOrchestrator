@@ -231,6 +231,19 @@ describe("SkillExecutor", () => {
         isComplete: true,
       });
     });
+
+    // SE-02: execute - スキル未発見エラー
+    it("should return error when skill metadata is invalid", async () => {
+      const invalidSkill = {
+        ...mockSkill,
+        anchors: undefined,
+      } as unknown as SkillMetadata;
+
+      const response = await executor.execute(mockRequest, invalidSkill);
+      expect(response.success).toBe(false);
+      expect(response.error).toBeDefined();
+      expect(response.error?.code).toBe("EXECUTION_FAILED");
+    });
   });
 
   describe("abort", () => {
@@ -492,6 +505,56 @@ describe("SkillExecutor", () => {
         "skill:stream",
         expect.any(Object),
       );
+    });
+  });
+
+  // SE-07: createHooks - Hooks作成
+  describe("createHooks", () => {
+    it("should return object with PreToolUse and PostToolUse hooks", () => {
+      const hooks = executor.createHooks("test-execution-id");
+
+      expect(hooks).toHaveProperty("PreToolUse");
+      expect(hooks).toHaveProperty("PostToolUse");
+      expect(typeof hooks.PreToolUse).toBe("function");
+      expect(typeof hooks.PostToolUse).toBe("function");
+    });
+  });
+
+  // SE-08: handlePermissionResponse - 権限応答
+  describe("handlePermissionResponse", () => {
+    it("should call permissionResolver.resolveRequest with correct response", () => {
+      // @ts-expect-error - private property access for testing
+      const resolveRequestSpy = vi.spyOn(
+        executor.permissionResolver,
+        "resolveRequest",
+      );
+
+      executor.handlePermissionResponse(
+        "test-request-id",
+        true,
+        true,
+        undefined,
+        "Read",
+      );
+
+      expect(resolveRequestSpy).toHaveBeenCalledWith({
+        requestId: "test-request-id",
+        approved: true,
+        rememberChoice: true,
+        rejectReason: undefined,
+      });
+    });
+
+    it("should call permissionStore.allowTool when approved with rememberChoice", () => {
+      executor.handlePermissionResponse(
+        "test-request-id",
+        true,
+        true,
+        undefined,
+        "Read",
+      );
+
+      expect(mockPermissionStore.allowTool).toHaveBeenCalledWith("Read");
     });
   });
 

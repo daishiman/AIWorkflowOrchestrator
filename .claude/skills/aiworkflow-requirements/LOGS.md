@@ -5,6 +5,74 @@
 
 ---
 
+## 2026-02-02: 未タスク検出・配置（detect-unassigned: コードベース+システム仕様ギャップ分析）
+
+| 項目         | 内容                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| タスクID     | detect-unassigned（TASK-8A後続）                                                                       |
+| 操作         | detect-unassigned + create-unassigned-task（コードベースTODOスキャン + システム仕様ギャップ分析）       |
+| 対象ファイル | docs/30-workflows/unassigned-task/ 2件新規                                                             |
+| 結果         | success                                                                                                |
+| 備考         | TODO/FIXME 51件検出、システム仕様ギャップ14件分析。既存270件と照合し重複なし新規2件作成。9セクションテンプレート完全準拠 |
+
+### 作成ファイル
+
+| ファイル名                                        | 分類             | 優先度 | 発見元                        |
+| ------------------------------------------------- | ---------------- | ------ | ----------------------------- |
+| task-ref-skillexecutor-error-code-enum-001.md      | リファクタリング | 低(P3) | TASK-8A Phase 12 error-handling.md更新 |
+| task-imp-topic-map-auto-regeneration-001.md        | 改善             | 低(P3) | TASK-8A Phase 12 topic-map再生成漏れ   |
+
+---
+
+## 2026-02-02: TASK-8Aシステム仕様最適化（エラーコード正式化・発見課題修正・メトリクス最適化）
+
+| 項目         | 内容                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| タスクID     | TASK-8A（仕様最適化）                                                                                  |
+| 操作         | update-spec (error-handling.md v1.3.0 + interfaces-agent-sdk-executor.md修正 + EVALS.json最適化)       |
+| 対象ファイル | error-handling.md, interfaces-agent-sdk-executor.md, topic-map.md, EVALS.json                          |
+| 結果         | success                                                                                                |
+| 備考         | error-handling.mdにSkillExecutor実行エラーコード6種追加（テスト検証済み）、executor仕様の発見課題0件→1件修正、topic-map.md再生成（136ファイル/971キーワード）、EVALS.jsonメトリクス精度向上（patternAdoptionRate=0.60, coverageTargetHitRate=0.875） |
+
+### 更新詳細
+
+- **新規セクション**: `error-handling.md` - SkillExecutor実行エラーコード（EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT）
+- **修正**: `interfaces-agent-sdk-executor.md` - TASK-8A発見課題 0件→1件（task-skillscanner-file-deletion-race: P3）
+- **再生成**: `topic-map.md`（error-handling.mdセクション追加反映）
+- **最適化**: `EVALS.json` - qualityInsights数値精度向上、notesにエラーコード正式化記録追加
+
+---
+
+## 2026-02-02: TASK-8A補完（システム仕様書・topic-map再生成・未タスク配置）
+
+| 項目         | 内容                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| タスクID     | TASK-8A（補完）                                                                                        |
+| 操作         | update-spec (topic-map.md再生成 + 未タスク配置 + システム仕様書補完)                                    |
+| 対象ファイル | topic-map.md, quality-requirements.md, interfaces-agent-sdk-skill.md, interfaces-agent-sdk-executor.md, unassigned-task-detection.md |
+| 結果         | success                                                                                                |
+| 備考         | topic-map.md再生成（generate-index.js実行）、未タスク1件正式配置（task-skillscanner-file-deletion-race: P3）、検出レポート0件→1件修正 |
+
+### 更新詳細
+
+- **再生成**: `indexes/topic-map.md`（TASK-8Aシステム仕様更新後の行番号同期）
+- **新規配置**: `docs/30-workflows/unassigned-task/task-skillscanner-file-deletion-race.md`
+- **修正**: `outputs/phase-12/unassigned-task-detection.md`（0件→1件）
+
+---
+
+## 2026-02-02: TASK-8A完了（スキル管理モジュール単体テスト）
+
+| 項目         | 内容                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| タスクID     | TASK-8A                                                                                                |
+| 操作         | unit-test (5モジュール単体テスト Phase 1-12完了)                                                       |
+| 対象ファイル | SkillScanner.test.ts, SkillImportManager.test.ts, SkillExecutor.test.ts, PermissionResolver.test.ts, skillSlice.test.ts |
+| 結果         | success                                                                                                |
+| 備考         | 231テスト全PASS。カバレッジ: PermissionResolver 100%, SkillImportManager 97.36%, SkillScanner 84.07%, skillSlice 94.44%, SkillExecutor 52.73%(統合テスト範囲免除)。Phase 4-6で5テスト追加(SE-02, SE-07, SE-08, PR-03) |
+
+---
+
 ## 2026-02-01: TASK-8C-G完了（quality-e2e-testing.md v1.1.0更新）
 
 | 項目         | 内容                                                                                                   |

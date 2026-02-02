@@ -2,14 +2,14 @@
   "skillName": "task-specification-creator",
   "version": "2.0.0",
   "currentLevel": 2,
-  "lastUpdated": "2026-02-01T00:00:00.000Z",
+  "lastUpdated": "2026-02-02T00:00:00.000Z",
   "metrics": {
-    "totalUsageCount": 35,
-    "successCount": 35,
+    "totalUsageCount": 37,
+    "successCount": 37,
     "failureCount": 0,
     "successRate": 1,
     "averageDuration": 0,
-    "lastEvaluated": "2026-02-01T12:12:15.185Z"
+    "lastEvaluated": "2026-02-02T00:00:00.000Z"
   },
   "levelHistory": [
     {
@@ -82,17 +82,25 @@
       "avgDuration": 0,
       "successRate": 0.86,
       "commonIssues": [
-        "未タスクファイルのunassigned-task/配置漏れ",
-        "既存タスク仕様書マッピング文書化漏れ"
+        "未タスクファイルのunassigned-task/配置漏れ（TASK-8Aで改善: P3全件記録ルール追加）",
+        "既存タスク仕様書マッピング文書化漏れ",
+        "P3低優先度候補の最終テーブル除外（TASK-8Aで改善: generate-unassigned-task.mdにP3全件記録制約追加）"
       ]
     }
   },
   "qualityInsights": {
-    "patternAdoptionRate": 0.57,
-    "coverageTargetHitRate": 0.86,
+    "patternAdoptionRate": 0.6,
+    "coverageTargetHitRate": 0.875,
     "unassignedTaskDetectionRate": 1,
-    "notes": "TASK-7D実行で検証済みパターン: forwardRef+useImperativeHandle, Exclude型設定マップ, Store個別セレクタ, 並列バックグラウンドエージェント。フェーズ境界遷移パターン4件・失敗回避パターン3件をpatterns.mdに体系化。patternAdoptionRate=0.57（12パターン中7件をTASK-7Dで適用）。coverageTargetHitRate=0.86（7タスク中6タスクでカバレッジ95%以上達成）。unassignedTaskDetectionRate=1.0（全7タスクで検出レポート出力済み）。task-imp-permission-tool-metadata-001: Record型スタイルマッピング, IIFEレンダリング, デフォルトメタデータフォールバック追加。システム仕様Gap分析+コードTODO分析→未タスク5件新規作成（whitelist-sync, styles-shared, i18n, test-alignment, type-unification）。",
+    "notes": "TASK-8A実行知見によるスキル改善完了。patterns.md成功パターン4件追加（カバレッジ閾値免除判定, ギャップ分析ベースTDD, vi.doMock動的再読み込み, P3全件記録パターン）。generate-unassigned-task.mdにP3全件記録ルール追加。spec-update-workflow.md Step 1-D改善（topic-map.md再生成明示化）。TASK-8A: 5モジュール231テスト全PASS、4/5モジュール80%以上、SkillExecutor.ts統合テスト免除適用、未タスク1件（task-skillscanner-file-deletion-race: P3）。システム仕様8ファイル更新（quality-requirements.md, interfaces-agent-sdk-skill.md, interfaces-agent-sdk-executor.md, error-handling.md + topic-map.md再生成）。前回知見: TASK-7D forwardRef+useImperativeHandle, Exclude型設定マップ, Store個別セレクタ, 並列バックグラウンドエージェント。",
     "taskMetrics": {
+      "TASK-8A": {
+        "completedPhases": 12,
+        "totalTests": 231,
+        "avgCoverage": 85.7,
+        "systemSpecsUpdated": 7,
+        "unassignedTasksDetected": 1
+      },
       "TASK-7D": {
         "completedPhases": 12,
         "totalTests": 48,

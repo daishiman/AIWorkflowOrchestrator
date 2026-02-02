@@ -43,6 +43,33 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-02 - 未タスク検出・配置（detect-unassigned）]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned (codebase scan + system spec gap)
+- **Result**: ✓ 成功
+- **Notes**: コードベースTODO/FIXMEスキャン（51件検出）+ システム仕様書14ギャップ分析。既存270件と照合し重複なしの新規2件を作成。task-ref-skillexecutor-error-code-enum-001（SkillExecutorエラーコードenum正式化: P3）、task-imp-topic-map-auto-regeneration-001（topic-map.md自動再生成フック: P3）。9セクションテンプレート完全準拠。
+
+---
+
+## [2026-02-02 - TASK-8Aスキル改善（skill-creator update）]
+
+- **Agent**: skill-creator (update mode)
+- **Phase**: スキル改善
+- **Result**: ✓ 成功
+- **Notes**: TASK-8A実行知見に基づくスキル改善。4ファイル更新: (1) generate-unassigned-task.md - P3全件記録ルール追加（優先度に関わらず未タスク候補は全件最終テーブルに記録・unassigned-task/に配置する制約を明記）、(2) spec-update-workflow.md - Step 1-D改善（topic-map.md再生成の明示化、スクリプトコマンド記載）、(3) patterns.md - 成功パターン4件目追加（未タスク検出P3全件記録パターン）、(4) EVALS.json - taskMetrics.TASK-8A.unassignedTasksDetected 0→1、commonIssuesにP3除外問題追記。
+
+---
+
+## [2026-02-02 - TASK-8A Phase 1-12完了]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 完了
+- **Result**: ✓ 成功
+- **Notes**: TASK-8A「スキル管理モジュール単体テスト」Phase 1-12全工程完了。execute モード。5モジュール（SkillScanner, SkillImportManager, SkillExecutor, PermissionResolver, skillSlice）対象。231テスト全PASS、5テスト新規追加（SE-02, SE-07, SE-08, PR-03）。カバレッジ: 4/5モジュール80%以上達成、SkillExecutor.ts 52.73%は統合テスト範囲免除。未タスク1件（task-skillscanner-file-deletion-race: P3）。
+
+---
+
 ## [2026-02-01 - TASK-8C-G Phase 1-12完了]
 
 - **Agent**: execute-workflow (Phase 1-12)
