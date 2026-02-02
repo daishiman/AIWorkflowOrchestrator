@@ -27,12 +27,27 @@ export interface PermissionHistoryEntry {
   sessionId?: string;
 }
 
+/** 期間プリセット */
+export type DatePreset = "all" | "today" | "week" | "month" | "custom";
+
+/** 期間フィルタ条件 */
+export interface DateRangeFilter {
+  /** プリセット選択値 */
+  preset: DatePreset;
+  /** カスタム範囲の開始日（YYYY-MM-DD形式） */
+  start?: string;
+  /** カスタム範囲の終了日（YYYY-MM-DD形式） */
+  end?: string;
+}
+
 /** フィルタ条件 */
 export interface PermissionHistoryFilter {
   /** ツール名フィルタ（undefinedで全件） */
   toolName?: string;
   /** 判断結果フィルタ（undefinedで全件） */
   decision?: PermissionDecision;
+  /** 期間フィルタ（undefinedで全件） */
+  dateRange?: DateRangeFilter;
 }
 
 // ==========================================================================

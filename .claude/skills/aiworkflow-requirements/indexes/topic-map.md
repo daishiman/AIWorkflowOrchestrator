@@ -237,9 +237,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| 残課題（未タスク） | L499 |
-| 関連ドキュメント | L512 |
-| 変更履歴 | L528 |
+| 残課題（未タスク） | L529 |
+| 関連ドキュメント | L542 |
+| 変更履歴 | L558 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -734,8 +734,8 @@ node scripts/list-specs.js --topics
 | デザイン原則サマリー | L55 |
 | コンポーネント階層図 | L77 |
 | 完了タスク | L116 |
-| 変更履歴 | L134 |
-| 関連ドキュメント | L150 |
+| 変更履歴 | L135 |
+| 関連ドキュメント | L152 |
 
 ### references/ui-ux-design-principles.md
 
@@ -916,9 +916,9 @@ node scripts/list-specs.js --topics
 | テスト要件 | L163 |
 | ツール許可設定（Permission Settings） | L186 |
 | 権限要求履歴パネル（Permission History Panel） | L251 |
-| 関連ドキュメント | L311 |
-| 実装ファイル | L320 |
-| バージョン履歴 | L342 |
+| 関連ドキュメント | L324 |
+| 実装ファイル | L334 |
+| バージョン履歴 | L359 |
 
 ### references/ui-ux-system-prompt.md
 
@@ -1277,11 +1277,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L21 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L117 |
-| skillSlice（スキル実行状態管理） | L207 |
-| permissionHistorySlice（権限要求履歴管理） | L333 |
-| 関連ドキュメント | L436 |
+| Zustand Sliceパターン | L23 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L119 |
+| skillSlice（スキル実行状態管理） | L209 |
+| permissionHistorySlice（権限要求履歴管理） | L335 |
+| 関連ドキュメント | L464 |
 
 ### references/arch-ui-components.md
 

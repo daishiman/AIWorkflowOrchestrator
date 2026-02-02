@@ -5,78 +5,36 @@
 
 ---
 
-## 2026-02-02: TASK-8C-A完了（security-skill-ipc.md + quality-requirements.md更新）
+## 2026-02-02: 両ブランチ統合マージ
+
+| 項目         | 内容                                                                     |
+| ------------ | ------------------------------------------------------------------------ |
+| タスクID     | マージ                                                                   |
+| 操作         | merge                                                                    |
+| 結果         | success                                                                  |
+| 備考         | origin/main統合。task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A/TASK-8B完了を統合 |
+
+---
+
+## 2026-02-02: task-imp-permission-date-filter完了（権限履歴の期間別フィルタリング）
+
+| 項目         | 内容                                                                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-permission-date-filter                                                                                             |
+| 操作         | update-spec                                                                                                                 |
+| 結果         | success                                                                                                                     |
+| 備考         | 期間別フィルタリング機能完了。DatePreset/DateRangeFilter型追加、PermissionHistoryFilter拡張。72テスト全PASS、カバレッジ98.5% |
+
+---
+
+## 2026-02-02: TASK-8C-A完了（IPC統合テスト）
 
 | 項目         | 内容                                                                                               |
 | ------------ | -------------------------------------------------------------------------------------------------- |
 | タスクID     | TASK-8C-A                                                                                          |
-| 操作         | Phase 12 仕様更新（2参照ファイル更新）                                                             |
-| 対象ファイル | security-skill-ipc.md, quality-requirements.md                                                     |
+| 操作         | Phase 12 仕様更新                                                                                  |
 | 結果         | success                                                                                            |
-| 備考         | IPC統合テスト41件全PASS、skillHandlers.ts 91.4%行カバレッジ・76%ブランチカバレッジ。未タスク2件検出 |
-
-### 更新詳細
-
-| ファイル                 | バージョン | 追加内容                                                   |
-| ------------------------ | ---------- | ---------------------------------------------------------- |
-| security-skill-ipc.md    | -          | 完了タスクテーブルにTASK-8C-A追加（41テスト）              |
-| quality-requirements.md  | v1.4.0     | 完了タスクセクションにTASK-8C-A追加（テストパターン4種）   |
-
----
-
-## 2026-02-02: 未タスク検出・配置（detect-unassigned: コードベース+システム仕様ギャップ分析）
-
-| 項目         | 内容                                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------------------ |
-| タスクID     | detect-unassigned（TASK-8A後続）                                                                       |
-| 操作         | detect-unassigned + create-unassigned-task（コードベースTODOスキャン + システム仕様ギャップ分析）       |
-| 対象ファイル | docs/30-workflows/unassigned-task/ 2件新規                                                             |
-| 結果         | success                                                                                                |
-| 備考         | TODO/FIXME 51件検出、システム仕様ギャップ14件分析。既存270件と照合し重複なし新規2件作成。9セクションテンプレート完全準拠 |
-
-### 作成ファイル
-
-| ファイル名                                        | 分類             | 優先度 | 発見元                        |
-| ------------------------------------------------- | ---------------- | ------ | ----------------------------- |
-| task-ref-skillexecutor-error-code-enum-001.md      | リファクタリング | 低(P3) | TASK-8A Phase 12 error-handling.md更新 |
-| task-imp-topic-map-auto-regeneration-001.md        | 改善             | 低(P3) | TASK-8A Phase 12 topic-map再生成漏れ   |
-
----
-
-## 2026-02-02: TASK-8Aシステム仕様最適化（エラーコード正式化・発見課題修正・メトリクス最適化）
-
-| 項目         | 内容                                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------------------ |
-| タスクID     | TASK-8A（仕様最適化）                                                                                  |
-| 操作         | update-spec (error-handling.md v1.3.0 + interfaces-agent-sdk-executor.md修正 + EVALS.json最適化)       |
-| 対象ファイル | error-handling.md, interfaces-agent-sdk-executor.md, topic-map.md, EVALS.json                          |
-| 結果         | success                                                                                                |
-| 備考         | error-handling.mdにSkillExecutor実行エラーコード6種追加（テスト検証済み）、executor仕様の発見課題0件→1件修正、topic-map.md再生成（136ファイル/971キーワード）、EVALS.jsonメトリクス精度向上（patternAdoptionRate=0.60, coverageTargetHitRate=0.875） |
-
-### 更新詳細
-
-- **新規セクション**: `error-handling.md` - SkillExecutor実行エラーコード（EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT）
-- **修正**: `interfaces-agent-sdk-executor.md` - TASK-8A発見課題 0件→1件（task-skillscanner-file-deletion-race: P3）
-- **再生成**: `topic-map.md`（error-handling.mdセクション追加反映）
-- **最適化**: `EVALS.json` - qualityInsights数値精度向上、notesにエラーコード正式化記録追加
-
----
-
-## 2026-02-02: TASK-8A補完（システム仕様書・topic-map再生成・未タスク配置）
-
-| 項目         | 内容                                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------------------ |
-| タスクID     | TASK-8A（補完）                                                                                        |
-| 操作         | update-spec (topic-map.md再生成 + 未タスク配置 + システム仕様書補完)                                    |
-| 対象ファイル | topic-map.md, quality-requirements.md, interfaces-agent-sdk-skill.md, interfaces-agent-sdk-executor.md, unassigned-task-detection.md |
-| 結果         | success                                                                                                |
-| 備考         | topic-map.md再生成（generate-index.js実行）、未タスク1件正式配置（task-skillscanner-file-deletion-race: P3）、検出レポート0件→1件修正 |
-
-### 更新詳細
-
-- **再生成**: `indexes/topic-map.md`（TASK-8Aシステム仕様更新後の行番号同期）
-- **新規配置**: `docs/30-workflows/unassigned-task/task-skillscanner-file-deletion-race.md`
-- **修正**: `outputs/phase-12/unassigned-task-detection.md`（0件→1件）
+| 備考         | IPC統合テスト41件全PASS、skillHandlers.ts 91.4%行カバレッジ・76%ブランチカバレッジ                  |
 
 ---
 
@@ -86,71 +44,22 @@
 | ------------ | ------------------------------------------------------------------------------------------------------ |
 | タスクID     | TASK-8A                                                                                                |
 | 操作         | unit-test (5モジュール単体テスト Phase 1-12完了)                                                       |
-| 対象ファイル | SkillScanner.test.ts, SkillImportManager.test.ts, SkillExecutor.test.ts, PermissionResolver.test.ts, skillSlice.test.ts |
 | 結果         | success                                                                                                |
-| 備考         | 231テスト全PASS。カバレッジ: PermissionResolver 100%, SkillImportManager 97.36%, SkillScanner 84.07%, skillSlice 94.44%, SkillExecutor 52.73%(統合テスト範囲免除)。Phase 4-6で5テスト追加(SE-02, SE-07, SE-08, PR-03) |
+| 備考         | 231テスト全PASS。カバレッジ: PermissionResolver 100%, SkillImportManager 97.36%                        |
 
 ---
 
-## 2026-02-02: 未タスク仕様書作成（2件）- workspace-chat-edit関連TODO
-
-| 項目         | 内容                                                                                           |
-| ------------ | ---------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-8B（Phase 12追加作業）                                                                    |
-| 操作         | create-unassigned-task                                                                         |
-| 対象ファイル | task-chat-edit-workspace-management-integration.md, task-chat-edit-monaco-editor-integration.md |
-| 結果         | success                                                                                        |
-| 備考         | コードベースTODOスキャンから3件のTODO（chatEditHandlers.ts:77,302、useFileContext.ts:96）を検出し、2件の未タスク仕様書に統合 |
-
-### 作成ファイル
-
-| ファイル                                       | タスクID            | 対象TODO                                                    |
-| ---------------------------------------------- | ------------------- | ----------------------------------------------------------- |
-| task-chat-edit-workspace-management-integration.md | UT-WCE-WORKSPACE-001 | chatEditHandlers.ts:77, useFileContext.ts:96（Workspace連携） |
-| task-chat-edit-monaco-editor-integration.md        | UT-WCE-MONACO-001    | chatEditHandlers.ts:302（Monaco Editor連携）                 |
-
----
-
-## 2026-02-02: コンポーネントテストドキュメント新規作成（3ファイル）
-
-| 項目         | 内容                                                                      |
-| ------------ | ------------------------------------------------------------------------- |
-| タスクID     | TASK-8B (追加ドキュメント)                                                |
-| 操作         | create-spec                                                               |
-| 対象ファイル | testing-component-patterns.md, testing-fixtures.md, testing-accessibility.md |
-| 結果         | success                                                                   |
-| 備考         | TASK-8B 280テスト知見を体系化。Storeモック3パターン、ファクトリ関数、WCAG検証、キーボードナビゲーションテスト |
-
-### 作成ファイル
-
-| ファイル                      | バージョン | 内容                                                      |
-| ----------------------------- | ---------- | --------------------------------------------------------- |
-| testing-component-patterns.md | v1.0.0     | コンポーネントテストパターン（Storeモック、userEvent、非同期） |
-| testing-fixtures.md           | v1.0.0     | テストフィクスチャ設計（ファクトリ、境界値、Propsビルダー）   |
-| testing-accessibility.md      | v1.0.0     | アクセシビリティテスト（ARIA、キーボード、jest-axe、WCAG）   |
-
----
-
-## 2026-02-02: TASK-8B完了（4仕様書更新 + 残存課題修正）
+## 2026-02-02: TASK-8B完了（コンポーネントテスト）
 
 | 項目         | 内容                                                                                                                             |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | タスクID     | TASK-8B                                                                                                                          |
-| 操作         | update-spec (arch-ui-components.md v1.5.0, ui-ux-components.md v2.7.0, quality-requirements.md v1.4.0, arch-state-management.md v1.6.0) |
-| 対象ファイル | arch-ui-components.md, ui-ux-components.md, quality-requirements.md, arch-state-management.md                                    |
+| 操作         | update-spec                                                                                                                      |
 | 結果         | success                                                                                                                          |
-| 備考         | コンポーネントテスト完了記録追加。280テスト全PASS、Line 99.71%/Branch 95.85%/Function 97.61%カバレッジ達成。4コンポーネント+3ユーティリティ対象 |
-
-### 更新詳細
-
-| ファイル                | バージョン | 追加内容                                                                               |
-| ----------------------- | ---------- | -------------------------------------------------------------------------------------- |
-| arch-ui-components.md   | v1.5.0     | TASK-8B完了タスク記録、テスト結果サマリー、テスト品質メトリクス表、成果物リンク、変更履歴更新 |
-| ui-ux-components.md     | v2.7.0     | TASK-8B完了タスク一覧追加、変更履歴更新                                                 |
-| quality-requirements.md | v1.4.0     | TASK-8B完了タスク記録追加（テストカバレッジ実績7対象、テストパターン5種、変更履歴更新）  |
-| arch-state-management.md| v1.6.0     | skillSlice関連タスクにTASK-8Bコンポーネントテスト追加、変更履歴更新                     |
+| 備考         | コンポーネントテスト完了。280テスト全PASS、Line 99.71%/Branch 95.85%/Function 97.61%カバレッジ達成                                |
 
 ---
+
 ## 2026-02-01: TASK-8C-G完了（quality-e2e-testing.md v1.1.0更新）
 
 | 項目         | 内容                                                                                                   |

@@ -9,6 +9,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useAppStore } from "../../../store";
 import { PermissionHistoryFilter } from "./PermissionHistoryFilter";
 import { PermissionHistoryItem } from "./PermissionHistoryItem";
+import { filterByDateRange } from "./dateFilterUtils";
 
 // ==========================================================================
 // コンポーネント
@@ -38,6 +39,10 @@ export const PermissionHistoryPanel: React.FC<PermissionHistoryPanelProps> = ({
 
     if (historyFilter.decision) {
       entries = entries.filter((e) => e.decision === historyFilter.decision);
+    }
+
+    if (historyFilter.dateRange) {
+      entries = filterByDateRange(entries, historyFilter.dateRange);
     }
 
     return entries;

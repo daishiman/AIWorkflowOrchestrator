@@ -86,6 +86,37 @@
 - **発見日**: 2026-01-27
 - **関連タスク**: TASK-3-2-A
 
+### コンポーネント同階層ユーティリティファイル配置
+
+- **状況**: 特定コンポーネント専用のフィルタロジックを分離する場合
+- **パターン**: コンポーネントと同じディレクトリに`*Utils.ts`として配置（共通utils/ではなく）
+- **例**（task-imp-permission-date-filter）:
+  - `dateFilterUtils.ts` → `PermissionSettings/dateFilterUtils.ts`（PermissionHistoryFilter.tsx・PermissionHistoryPanel.tsxと同階層）
+  - `getDateRangeStartDate()`, `filterByDateRange()` をエクスポート
+  - 定数 `DAYS_IN_WEEK=7`, `DAYS_IN_MONTH=30` も同ファイルで管理
+- **効果**:
+  - コンポーネント固有ロジックの局所性が高い（Feature Cohesion）
+  - テストファイルも`__tests__/dateFilterUtils.test.ts`として同階層に配置
+  - 22テストケース（境界値・1000件パフォーマンス含む）で98.5%カバレッジ
+- **判断基準**: 2ファイル以上で使われるが同機能グループ内→同階層、プロジェクト横断→共通utils/
+- **発見日**: 2026-02-02
+- **関連タスク**: task-imp-permission-date-filter
+
+### 順次フィルタパイプライン（useMemo チェーン）
+
+- **状況**: 複数の独立したフィルタ条件を組み合わせてリストをフィルタリングする場合
+- **パターン**: `useMemo`内で条件ごとに順次フィルタを適用するパイプライン
+- **例**（task-imp-permission-date-filter）:
+  1. toolNameフィルタ（定義時のみ適用）
+  2. decisionフィルタ（定義時のみ適用）
+  3. dateRangeフィルタ（`filterByDateRange()`で適用）
+- **効果**:
+  - 各フィルタが独立しており追加・削除が容易
+  - 新フィルタ追加時は既存コードに影響なし（Open-Closed原則）
+  - `useMemo`の依存配列で最小限の再計算
+- **発見日**: 2026-02-02
+- **関連タスク**: task-imp-permission-date-filter
+
 ### 将来改善候補の未タスク仕様書変換
 
 - **状況**: Phase 12未タスク検出で「将来改善候補」を発見した場合

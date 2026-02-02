@@ -9,7 +9,9 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
-| v1.6.0     | 2026-02-02 | TASK-8B完了: skillSlice関連タスクにTASK-8Bコンポーネントテスト（280テスト）追加 |
+| v1.8.0     | 2026-02-02 | 両ブランチ統合: task-imp-permission-date-filter完了+TASK-8B完了 |
+| v1.7.0     | 2026-02-02 | 実装詳細拡充: dateFilterUtils.ts実装ファイル追加、テストファイル2件追加、フィルタリングパイプライン仕様追加、品質メトリクス72テスト反映 |
+| v1.6.0     | 2026-02-02 | task-imp-permission-date-filter完了: DateRangeFilter/DatePreset型追加、TASK-8Bコンポーネントテスト（280テスト）追加 |
 | v1.5.0     | 2026-02-01 | task-imp-permission-history-001完了: permissionHistorySlice追加、関連タスク更新 |
 | v1.4.0     | 2026-01-30 | task-imp-permission-readable-ui-001完了: 関連タスクテーブル更新                 |
 | v1.3.0     | 2026-01-30 | TASK-7A完了: SkillSelectorステータス更新                                        |
@@ -342,17 +344,20 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 
 **実装ファイル**:
 
-| ファイル                    | パス                                                               | 行数 | 説明                         |
-| --------------------------- | ------------------------------------------------------------------ | ---- | ---------------------------- |
-| `permissionHistorySlice.ts` | `apps/desktop/src/renderer/store/slices/permissionHistorySlice.ts` | 60+  | Slice定義（状態+アクション） |
-| `permissionHistory.ts`      | `apps/desktop/src/renderer/components/skill/permissionHistory.ts`  | 50+  | データモデル・ヘルパー関数   |
+| ファイル                    | パス                                                               | 行数 | 説明                                      |
+| --------------------------- | ------------------------------------------------------------------ | ---- | ----------------------------------------- |
+| `permissionHistorySlice.ts` | `apps/desktop/src/renderer/store/slices/permissionHistorySlice.ts` | 60+  | Slice定義（状態+アクション）              |
+| `permissionHistory.ts`      | `apps/desktop/src/renderer/components/skill/permissionHistory.ts`  | 116  | データモデル・型定義・ヘルパー関数        |
+| `dateFilterUtils.ts`        | `apps/desktop/src/renderer/components/settings/PermissionSettings/dateFilterUtils.ts` | 107 | 期間フィルタヘルパー（getDateRangeStartDate, filterByDateRange） |
 
 **テストファイル**:
 
-| ファイル                         | テスト数 | カテゴリ     |
-| -------------------------------- | -------- | ------------ |
-| `permissionHistorySlice.test.ts` | 16       | Store操作    |
-| `permissionHistory.test.ts`      | 21       | データモデル |
+| ファイル                              | テスト数 | カテゴリ               |
+| ------------------------------------- | -------- | ---------------------- |
+| `permissionHistorySlice.test.ts`      | 16       | Store操作              |
+| `permissionHistory.test.ts`           | 21       | データモデル           |
+| `dateFilterUtils.test.ts`             | 22       | 期間フィルタロジック   |
+| `PermissionHistoryFilter.test.tsx`    | 8        | フィルタUIコンポーネント |
 
 ### 状態定義（2プロパティ）
 
@@ -375,7 +380,9 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | ------------------------- | ----------------------------------------------------------- |
 | `PermissionDecision`      | `"approved" \| "denied" \| "approved_once"`                 |
 | `PermissionHistoryEntry`  | id, timestamp, toolName, argsSnapshot, decision, sessionId? |
-| `PermissionHistoryFilter` | toolName?, decision? によるフィルタ条件                     |
+| `PermissionHistoryFilter` | toolName?, decision?, dateRange? によるフィルタ条件         |
+| `DateRangeFilter`         | preset, start?, end? による期間フィルタ条件                 |
+| `DatePreset`              | `"all" \| "today" \| "week" \| "month" \| "custom"`        |
 
 ### 定数
 
@@ -416,13 +423,33 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | `approved && remember`  | `"approved"`      |
 | `approved && !remember` | `"approved_once"` |
 
+### フィルタリングパイプライン
+
+`PermissionHistoryPanel`内の`useMemo`で3段階の順次フィルタを適用:
+
+| 順序 | フィルタ     | 条件                       | 関数                                    |
+| ---- | ------------ | -------------------------- | --------------------------------------- |
+| 1    | ツール名     | `toolName`が定義されている | `entry.toolName === filter.toolName`    |
+| 2    | 判断結果     | `decision`が定義されている | `entry.decision === filter.decision`    |
+| 3    | 期間         | `dateRange`が定義されている | `filterByDateRange(entries, dateRange)` |
+
+**filterByDateRange処理フロー**:
+
+| プリセット | 処理                                                     |
+| ---------- | -------------------------------------------------------- |
+| `all`      | 全エントリ返却（フィルタなし）                          |
+| `today`    | `getDateRangeStartDate("today")`で本日0時を算出→比較    |
+| `week`     | `getDateRangeStartDate("week")`で7日前0時を算出→比較    |
+| `month`    | `getDateRangeStartDate("month")`で30日前0時を算出→比較  |
+| `custom`   | `start?`/`end?`をISO8601変換し範囲フィルタ（境界含む）  |
+
 ### 品質メトリクス
 
 | 指標              | 値     |
 | ----------------- | ------ |
-| テスト数          | 63     |
-| Line Coverage     | 100%   |
-| Branch Coverage   | 95.16% |
+| テスト数          | 72     |
+| Line Coverage     | 98.50% |
+| Branch Coverage   | 87.82% |
 | Function Coverage | 100%   |
 | TypeScript strict | PASS   |
 | ESLint            | PASS   |
@@ -432,6 +459,7 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | タスクID                        | 内容                         | ステータス |
 | ------------------------------- | ---------------------------- | ---------- |
 | task-imp-permission-history-001 | Permission履歴トラッキングUI | **完了**   |
+| task-imp-permission-date-filter | 期間別フィルタリング         | **完了**   |
 
 ---
 
