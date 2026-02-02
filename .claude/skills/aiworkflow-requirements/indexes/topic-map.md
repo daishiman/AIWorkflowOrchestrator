@@ -78,7 +78,7 @@ node scripts/list-specs.js --topics
 | テストカバレッジ目標 | L542 |
 | 関連ドキュメント | L619 |
 | 完了タスク | L627 |
-| 変更履歴 | L792 |
+| 変更履歴 | L826 |
 
 ---
 
@@ -164,9 +164,9 @@ node scripts/list-specs.js --topics
 | パフォーマンス最適化パターン | L239 |
 | セキュリティ実装パターン | L277 |
 | テスト実装パターン | L309 |
-| アクセシビリティ実装パターン | L541 |
-| 関連ドキュメント | L566 |
-| 変更履歴 | L578 |
+| アクセシビリティ実装パターン | L435 |
+| 関連ドキュメント | L460 |
+| 変更履歴 | L472 |
 
 ### references/architecture-monorepo.md
 
@@ -1512,15 +1512,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| 概要 | L19 |
-| テスト戦略 | L33 |
-| E2Eテストフィクスチャ | L53 |
-| フィクスチャ詳細仕様 | L90 |
-| フィクスチャ検証テスト | L140 |
-| SkillScannerテスト統合パターン | L196 |
-| 完了タスク | L216 |
-| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L259 |
-| 関連ドキュメント | L298 |
+| 概要 | L18 |
+| テスト戦略 | L32 |
+| E2Eテストフィクスチャ | L52 |
+| フィクスチャ詳細仕様 | L89 |
+| フィクスチャ検証テスト | L139 |
+| SkillScannerテスト統合パターン | L195 |
+| 完了タスク | L215 |
+| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L256 |
+| 残課題（未タスク） | L295 |
+| 関連ドキュメント | L306 |
 
 ### references/rag-desktop-state.md
 
@@ -1731,8 +1732,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L271 |
-| 変更履歴 | L281 |
+| 関連ドキュメント | L272 |
+| 変更履歴 | L282 |
 
 ### references/testing-accessibility.md
 
@@ -1762,6 +1763,21 @@ node scripts/list-specs.js --topics
 | 参照 | L337 |
 | 変更履歴 | L345 |
 
+### references/testing-dialog-patterns.md
+
+| セクション | 行 |
+|------------|----|\n| 変更履歴 | L8 |
+| 概要 | L16 |
+| ダイアログ種別 | L22 |
+| テストカテゴリ構成 | L32 |
+| Basic Flowパターン | L45 |
+| Edge Casesパターン | L141 |
+| Accessibilityパターン | L180 |
+| ヘルパー関数定義 | L256 |
+| 定数パターン | L289 |
+| テストファイル実装例 | L313 |
+| 関連ドキュメント | L328 |
+
 ### references/testing-fixtures.md
 
 | セクション | 行 |
@@ -1775,6 +1791,23 @@ node scripts/list-specs.js --topics
 | 7. ベストプラクティス | L349 |
 | 参照 | L371 |
 | 変更履歴 | L379 |
+
+### references/testing-playwright-e2e.md
+
+| セクション | 行 |
+|------------|----|\n| 変更履歴 | L8 |
+| 概要 | L16 |
+| テスト構成 | L22 |
+| セレクター戦略 | L43 |
+| 待機戦略 | L77 |
+| ヘルパー関数パターン | L113 |
+| テストスイート構造 | L158 |
+| アクセシビリティテスト | L205 |
+| beforeEachパターン | L233 |
+| テストスキップパターン | L259 |
+| CI/CD統合 | L275 |
+| デバッグパターン | L307 |
+| 関連ドキュメント | L329 |
 
 ### references/ui-history-components.md
 

@@ -9,6 +9,7 @@
 
 | Version | Date       | Changes                                                                                                             |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| 1.5.0   | 2026-02-02 | TASK-8C-D完了: Playwrightパターン・ダイアログパターンリファレンス追加、関連ドキュメントリンク拡充                    |
 | 1.4.0   | 2026-02-02 | TASK-8C-C詳細追記: テストケース詳細表追加、architecture-implementation-patterns.mdへのリンク追加                     |
 | 1.3.0   | 2026-02-02 | TASK-8C-C完了: E2Eテスト-インポート・実行フロー記録追加（9テストケース・フィクスチャ連携）                           |
 | 1.2.0   | 2026-02-02 | TASK-8C-B完了: スキル選択フローE2Eテスト（8件テスト実装、ARIA属性ベースセレクタ、キーボード操作・アクセシビリティ検証） |
@@ -218,17 +219,13 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 
 | タスクID  | タスク名                                  | 完了日     | テスト結果 |
 | --------- | ----------------------------------------- | ---------- | ---------- |
-<<<<<<< Updated upstream
 | TASK-8C-B | E2Eテスト - スキル選択フロー              | 2026-02-02 | 8/8 PASS   |
-||||||| Stash base
-=======
 | TASK-8C-C | E2Eテスト - インポート・実行フロー        | 2026-02-02 | 9/9 PASS   |
->>>>>>> Stashed changes
+| TASK-8C-D | E2Eテスト - 権限ダイアログフロー          | 2026-02-02 | 12/12 PASS |
 | TASK-8C-E | E2Eテストフィクスチャ作成                 | 2026-02-01 | 29/29 PASS |
 | TASK-8C-F | Skill-Creator テスト用フィクスチャ        | 2026-02-01 | 62/62 PASS |
 | TASK-8C-G | skill-creatorフィクスチャ境界値テスト拡充 | 2026-02-01 | 96/96 PASS |
 
-<<<<<<< Updated upstream
 ### タスク: TASK-8C-B スキル選択フローE2Eテスト（2026-02-02完了）
 
 | 項目         | 内容                                                     |
@@ -270,8 +267,6 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 | テスト結果レポート | `docs/30-workflows/TASK-8C-B/outputs/phase-11/manual-test-result.md`       |
 | 実装ガイド         | `docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md`     |
 
-||||||| Stash base
-=======
 #### TASK-8C-C: E2Eテスト - インポート・実行フロー (2026-02-02)
 
 - テストファイル: `apps/desktop/src/__tests__/skillImportExecution.e2e.ts`
@@ -297,7 +292,29 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 **実装パターン（詳細）**:
 architecture-implementation-patterns.md の「E2Eテストパターン（TASK-8C-C）」セクション参照
 
->>>>>>> Stashed changes
+#### TASK-8C-D: E2Eテスト - 権限ダイアログフロー (2026-02-02)
+
+- テストファイル: `apps/desktop/e2e/skill-permission.spec.ts`
+- テストフレームワーク: Playwright (@playwright/test)
+- テストケース: 12件（有効）、1件（SKIP: タイムアウトテスト）
+
+| カテゴリ       | テスト数 | 内容                                           |
+| -------------- | -------- | ---------------------------------------------- |
+| Basic Flow     | 5        | TC-1〜TC-5: ダイアログ表示・許可・拒否・選択記憶 |
+| Edge Cases     | 2        | 連続権限処理・ダイアログキュー                 |
+| Error Handling | 1 (skip) | タイムアウト処理                               |
+| Accessibility  | 6        | ARIA属性・キーボードナビゲーション             |
+
+**実装済みヘルパー関数**:
+- `selectSkill()` - スキル選択
+- `triggerPermissionDialog()` - ダイアログトリガー
+- `waitForPermissionDialog()` - ダイアログ待機
+- `approvePermission()` - 許可操作
+- `denyPermission()` - 拒否操作
+- `checkRememberChoice()` - 選択記憶
+
+---
+
 #### TASK-8C-F: Skill-Creator テスト用フィクスチャ (2026-02-01)
 
 - フィクスチャパス: `apps/desktop/src/__tests__/__fixtures__/skill-creator/`
@@ -346,11 +363,25 @@ architecture-implementation-patterns.md の「E2Eテストパターン（TASK-8C
 
 ---
 
+## 残課題（未タスク）
+
+以下のタスクはTASK-8C-D実施中に検出された未タスクです。
+
+| タスクID                               | タスク名                        | 優先度 | 発見元          | タスク仕様書                                                                          |
+| -------------------------------------- | ------------------------------- | ------ | --------------- | ------------------------------------------------------------------------------------- |
+| task-e2e-permission-waitfortimeout-001 | E2E権限テスト waitForTimeout改善 | 低     | Phase 10 TQ-M1 | `docs/30-workflows/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md` |
+| task-e2e-test-readme-documentation-001 | READMEへのE2Eテスト実行方法追加  | 低     | Phase 9 DOC-M1 | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md`             |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                                                                        | 内容                             |
 | ----------------------------------------------------------------------------------- | -------------------------------- |
 | [quality-requirements.md](./quality-requirements.md)                                | 品質要件（テスト戦略全体）       |
+| [testing-playwright-e2e.md](./testing-playwright-e2e.md)                            | Playwright E2Eテスト実装パターン |
+| [testing-dialog-patterns.md](./testing-dialog-patterns.md)                          | ダイアログテストパターン         |
+| [testing-accessibility.md](./testing-accessibility.md)                              | アクセシビリティテスト仕様       |
 | [arch-electron-services.md](./arch-electron-services.md)                            | SkillScanner仕様                 |
 | [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md)                    | ScannedSkillMetadata型定義       |
 | [directory-structure.md](./directory-structure.md)                                  | プロジェクトディレクトリ構造     |
