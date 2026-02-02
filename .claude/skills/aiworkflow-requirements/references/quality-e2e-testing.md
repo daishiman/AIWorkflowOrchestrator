@@ -9,6 +9,7 @@
 
 | Version | Date       | Changes                                                                                                             |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2026-02-02 | TASK-8C-B完了: スキル選択フローE2Eテスト（8件テスト実装、ARIA属性ベースセレクタ、キーボード操作・アクセシビリティ検証） |
 | 1.1.0   | 2026-02-01 | TASK-8C-G完了: skill-creatorフィクスチャ境界値テスト拡充記録追加（6フィクスチャ・96テストPASS・100%ギャップカバレッジ） |
 | 1.0.0   | 2026-02-01 | TASK-8C-E完了: 初版作成（E2Eフィクスチャ仕様、テスト戦略、完了タスク記録）                                           |
 
@@ -42,7 +43,7 @@ E2Eテストはスキルインポートエージェントシステム全体の�
 
 | フロー         | タスクID  | テストケース数 | 内容                             |
 | -------------- | --------- | -------------- | -------------------------------- |
-| スキル選択     | TASK-8C-B | 4              | ドロップダウン表示・選択・解除   |
+| スキル選択     | TASK-8C-B | 8              | ドロップダウン表示・選択・解除・キーボード操作・アクセシビリティ |
 | インポート実行 | TASK-8C-C | 6              | インポートダイアログ・実行・中止 |
 | 権限ダイアログ | TASK-8C-D | 5              | 許可・拒否・選択記憶             |
 
@@ -215,9 +216,51 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 
 | タスクID  | タスク名                                  | 完了日     | テスト結果 |
 | --------- | ----------------------------------------- | ---------- | ---------- |
+| TASK-8C-B | E2Eテスト - スキル選択フロー              | 2026-02-02 | 8/8 PASS   |
 | TASK-8C-E | E2Eテストフィクスチャ作成                 | 2026-02-01 | 29/29 PASS |
 | TASK-8C-F | Skill-Creator テスト用フィクスチャ        | 2026-02-01 | 62/62 PASS |
 | TASK-8C-G | skill-creatorフィクスチャ境界値テスト拡充 | 2026-02-01 | 96/96 PASS |
+
+### タスク: TASK-8C-B スキル選択フローE2Eテスト（2026-02-02完了）
+
+| 項目         | 内容                                                     |
+| ------------ | -------------------------------------------------------- |
+| タスクID     | TASK-8C-B                                                |
+| 完了日       | 2026-02-02                                               |
+| ステータス   | **完了**                                                 |
+| テスト数     | 8件（自動テスト）+ 8件（手動テスト設計確認）             |
+| 発見課題     | 0件                                                      |
+| ドキュメント | `docs/30-workflows/TASK-8C-B/`                           |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 基本表示           | 2        | 2    | 0    |
+| スキル選択         | 2        | 2    | 0    |
+| キーボード操作     | 2        | 2    | 0    |
+| アクセシビリティ   | 2        | 2    | 0    |
+
+#### テストケース詳細
+
+| No  | テストケース                                   | カテゴリ         |
+| --- | ---------------------------------------------- | ---------------- |
+| 1   | should display skill selector in chat panel    | 基本表示         |
+| 2   | should open dropdown and show available skills | 基本表示         |
+| 3   | should select a skill                          | スキル選択       |
+| 4   | should deselect skill by clicking なし         | スキル選択       |
+| 5   | should support keyboard navigation             | キーボード操作   |
+| 6   | should close dropdown when clicking outside    | キーボード操作   |
+| 7   | should have proper ARIA attributes             | アクセシビリティ |
+| 8   | should close dropdown on Escape key            | アクセシビリティ |
+
+#### 成果物
+
+| 成果物             | パス                                                                       |
+| ------------------ | -------------------------------------------------------------------------- |
+| E2Eテストファイル  | `apps/desktop/src/__tests__/skillSelection.e2e.ts`                         |
+| テスト結果レポート | `docs/30-workflows/TASK-8C-B/outputs/phase-11/manual-test-result.md`       |
+| 実装ガイド         | `docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md`     |
 
 #### TASK-8C-F: Skill-Creator テスト用フィクスチャ (2026-02-01)
 
@@ -269,9 +312,10 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 
 ## 関連ドキュメント
 
-| ドキュメント                                                     | 内容                         |
-| ---------------------------------------------------------------- | ---------------------------- |
-| [quality-requirements.md](./quality-requirements.md)             | 品質要件（テスト戦略全体）   |
-| [arch-electron-services.md](./arch-electron-services.md)         | SkillScanner仕様             |
-| [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md) | ScannedSkillMetadata型定義   |
-| [directory-structure.md](./directory-structure.md)               | プロジェクトディレクトリ構造 |
+| ドキュメント                                                                        | 内容                             |
+| ----------------------------------------------------------------------------------- | -------------------------------- |
+| [quality-requirements.md](./quality-requirements.md)                                | 品質要件（テスト戦略全体）       |
+| [arch-electron-services.md](./arch-electron-services.md)                            | SkillScanner仕様                 |
+| [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md)                    | ScannedSkillMetadata型定義       |
+| [directory-structure.md](./directory-structure.md)                                  | プロジェクトディレクトリ構造     |
+| [TASK-8C-B実装ガイド](../../../docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md) | スキル選択E2Eテスト実装ガイド |

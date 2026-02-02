@@ -263,8 +263,8 @@ node scripts/list-specs.js --topics
 | ChatPanel統合（TASK-7D） | L558 |
 | テストアーキテクチャ（TASK-8C-A） | L593 |
 | 完了タスク | L645 |
-| 関連ドキュメント | L677 |
-| 変更履歴 | L689 |
+| 関連ドキュメント | L716 |
+| 変更履歴 | L729 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -735,8 +735,8 @@ node scripts/list-specs.js --topics
 | デザイン原則サマリー | L55 |
 | コンポーネント階層図 | L77 |
 | 完了タスク | L116 |
-| 変更履歴 | L135 |
-| 関連ドキュメント | L152 |
+| 変更履歴 | L136 |
+| 関連ドキュメント | L154 |
 
 ### references/ui-ux-design-principles.md
 
@@ -1280,11 +1280,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L23 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L119 |
-| skillSlice（スキル実行状態管理） | L209 |
-| permissionHistorySlice（権限要求履歴管理） | L335 |
-| 関連ドキュメント | L464 |
+| Zustand Sliceパターン | L24 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L120 |
+| skillSlice（スキル実行状態管理） | L210 |
+| permissionHistorySlice（権限要求履歴管理） | L337 |
+| 関連ドキュメント | L466 |
 
 ### references/arch-ui-components.md
 
@@ -1360,7 +1360,7 @@ node scripts/list-specs.js --topics
 | バックアップ・リカバリ | L411 |
 | 環境構築ガイド | L448 |
 | 関連ドキュメント | L491 |
-| 変更履歴 | L503 |
+| 変更履歴 | L504 |
 
 ### references/directory-structure.md
 
@@ -1512,15 +1512,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| 概要 | L17 |
-| テスト戦略 | L31 |
-| E2Eテストフィクスチャ | L51 |
-| フィクスチャ詳細仕様 | L88 |
-| フィクスチャ検証テスト | L138 |
-| SkillScannerテスト統合パターン | L194 |
-| 完了タスク | L214 |
-| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L231 |
-| 関連ドキュメント | L270 |
+| 概要 | L18 |
+| テスト戦略 | L32 |
+| E2Eテストフィクスチャ | L52 |
+| フィクスチャ詳細仕様 | L89 |
+| フィクスチャ検証テスト | L139 |
+| SkillScannerテスト統合パターン | L195 |
+| 完了タスク | L215 |
+| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L274 |
+| 関連ドキュメント | L313 |
 
 ### references/rag-desktop-state.md
 
@@ -1731,8 +1731,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L269 |
-| 変更履歴 | L279 |
+| 関連ドキュメント | L270 |
+| 変更履歴 | L280 |
 
 ### references/testing-accessibility.md
 
