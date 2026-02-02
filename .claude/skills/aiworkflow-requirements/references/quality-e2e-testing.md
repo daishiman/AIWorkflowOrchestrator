@@ -9,6 +9,8 @@
 
 | Version | Date       | Changes                                                                                                             |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| 1.4.0   | 2026-02-02 | TASK-8C-C詳細追記: テストケース詳細表追加、architecture-implementation-patterns.mdへのリンク追加                     |
+| 1.3.0   | 2026-02-02 | TASK-8C-C完了: E2Eテスト-インポート・実行フロー記録追加（9テストケース・フィクスチャ連携）                           |
 | 1.2.0   | 2026-02-02 | TASK-8C-B完了: スキル選択フローE2Eテスト（8件テスト実装、ARIA属性ベースセレクタ、キーボード操作・アクセシビリティ検証） |
 | 1.1.0   | 2026-02-01 | TASK-8C-G完了: skill-creatorフィクスチャ境界値テスト拡充記録追加（6フィクスチャ・96テストPASS・100%ギャップカバレッジ） |
 | 1.0.0   | 2026-02-01 | TASK-8C-E完了: 初版作成（E2Eフィクスチャ仕様、テスト戦略、完了タスク記録）                                           |
@@ -216,11 +218,17 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 
 | タスクID  | タスク名                                  | 完了日     | テスト結果 |
 | --------- | ----------------------------------------- | ---------- | ---------- |
+<<<<<<< Updated upstream
 | TASK-8C-B | E2Eテスト - スキル選択フロー              | 2026-02-02 | 8/8 PASS   |
+||||||| Stash base
+=======
+| TASK-8C-C | E2Eテスト - インポート・実行フロー        | 2026-02-02 | 9/9 PASS   |
+>>>>>>> Stashed changes
 | TASK-8C-E | E2Eテストフィクスチャ作成                 | 2026-02-01 | 29/29 PASS |
 | TASK-8C-F | Skill-Creator テスト用フィクスチャ        | 2026-02-01 | 62/62 PASS |
 | TASK-8C-G | skill-creatorフィクスチャ境界値テスト拡充 | 2026-02-01 | 96/96 PASS |
 
+<<<<<<< Updated upstream
 ### タスク: TASK-8C-B スキル選択フローE2Eテスト（2026-02-02完了）
 
 | 項目         | 内容                                                     |
@@ -262,6 +270,34 @@ E2Eテストで SkillScanner をフィクスチャに対して実行する際の
 | テスト結果レポート | `docs/30-workflows/TASK-8C-B/outputs/phase-11/manual-test-result.md`       |
 | 実装ガイド         | `docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md`     |
 
+||||||| Stash base
+=======
+#### TASK-8C-C: E2Eテスト - インポート・実行フロー (2026-02-02)
+
+- テストファイル: `apps/desktop/src/__tests__/skillImportExecution.e2e.ts`
+- 9テストケース (TC-1〜TC-9) 実装完了
+- フロー: インポートフロー(3件) + 実行フロー(3件) + 再スキャン(1件) + エッジケース(2件)
+- 依存: TASK-8C-E（フィクスチャ）、TASK-7D（ChatPanel統合）
+- 成果物: `docs/30-workflows/TASK-8C-C/outputs/`
+
+**テストケース詳細**:
+
+| TC | フロー | 検証内容 |
+|----|--------|----------|
+| TC-1 | Import | 未インポートスキル選択時にインポートダイアログ表示 |
+| TC-2 | Import | ダイアログ内で許可ツール・サブエージェント表示 |
+| TC-3 | Import | インポート完了後、インポート済みセクションに追加 |
+| TC-4 | Execution | スキル実行中にストリーミングビュー表示 |
+| TC-5 | Execution | 実行中に停止ボタン表示 |
+| TC-6 | Execution | 停止ボタン押下後、キャンセル状態に遷移 |
+| TC-7 | Rescan | 再スキャン実行でスキル一覧更新 |
+| TC-8 | Edge | 無効スキル（SKILL.mdなし）は一覧非表示 |
+| TC-9 | Edge | インポート済みスキル再選択時はダイアログスキップ |
+
+**実装パターン（詳細）**:
+architecture-implementation-patterns.md の「E2Eテストパターン（TASK-8C-C）」セクション参照
+
+>>>>>>> Stashed changes
 #### TASK-8C-F: Skill-Creator テスト用フィクスチャ (2026-02-01)
 
 - フィクスチャパス: `apps/desktop/src/__tests__/__fixtures__/skill-creator/`

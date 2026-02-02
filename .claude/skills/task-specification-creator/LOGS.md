@@ -43,6 +43,32 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-02 - 未タスク仕様書3件新規作成（コードベースTODOスキャン）]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned (codebase TODO scan)
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: コードベース全体のTODO/FIXMEスキャン（50+箇所検出）から、既存タスクと照合し重複なしの新規3件を作成。9セクションテンプレート完全準拠。task-workflow.md残課題テーブルにも登録。
+
+### 生成タスク
+
+1. **task-imp-community-ui-implementation-001** - Community統合テストUIコンポーネント不一致修正（優先度: 低）
+2. **task-imp-llm-handler-timeout-001** - LLMハンドラータイムアウト実装（優先度: 中）
+3. **task-imp-usefilecontext-workspace-type-001** - useFileContext Workspace型プロパティ追加（優先度: 低）
+
+---
+
+## [2026-02-02 - TASK-8C-C完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 全工程完了
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: E2Eテスト-インポート・実行フロー（9テストケース実装）、フィクスチャ連携、成果物outputs/配下出力
+
+---
+
 ## [2026-02-02 - TASK-8C-B Phase 1-12完了]
 
 - **Agent**: execute-workflow (Phase 1-12)

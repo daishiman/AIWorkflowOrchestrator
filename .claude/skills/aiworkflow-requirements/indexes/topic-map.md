@@ -164,9 +164,9 @@ node scripts/list-specs.js --topics
 | パフォーマンス最適化パターン | L239 |
 | セキュリティ実装パターン | L277 |
 | テスト実装パターン | L309 |
-| アクセシビリティ実装パターン | L435 |
-| 関連ドキュメント | L460 |
-| 変更履歴 | L472 |
+| アクセシビリティ実装パターン | L541 |
+| 関連ドキュメント | L566 |
+| 変更履歴 | L578 |
 
 ### references/architecture-monorepo.md
 
@@ -263,8 +263,8 @@ node scripts/list-specs.js --topics
 | ChatPanel統合（TASK-7D） | L558 |
 | テストアーキテクチャ（TASK-8C-A） | L593 |
 | 完了タスク | L645 |
-| 関連ドキュメント | L716 |
-| 変更履歴 | L729 |
+| 関連ドキュメント | L677 |
+| 変更履歴 | L689 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -1360,7 +1360,7 @@ node scripts/list-specs.js --topics
 | バックアップ・リカバリ | L411 |
 | 環境構築ガイド | L448 |
 | 関連ドキュメント | L491 |
-| 変更履歴 | L504 |
+| 変更履歴 | L503 |
 
 ### references/directory-structure.md
 
@@ -1512,15 +1512,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| 概要 | L18 |
-| テスト戦略 | L32 |
-| E2Eテストフィクスチャ | L52 |
-| フィクスチャ詳細仕様 | L89 |
-| フィクスチャ検証テスト | L139 |
-| SkillScannerテスト統合パターン | L195 |
-| 完了タスク | L215 |
-| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L274 |
-| 関連ドキュメント | L313 |
+| 概要 | L19 |
+| テスト戦略 | L33 |
+| E2Eテストフィクスチャ | L53 |
+| フィクスチャ詳細仕様 | L90 |
+| フィクスチャ検証テスト | L140 |
+| SkillScannerテスト統合パターン | L196 |
+| 完了タスク | L216 |
+| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L259 |
+| 関連ドキュメント | L298 |
 
 ### references/rag-desktop-state.md
 
@@ -1731,8 +1731,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L270 |
-| 変更履歴 | L280 |
+| 関連ドキュメント | L271 |
+| 変更履歴 | L281 |
 
 ### references/testing-accessibility.md
 

@@ -375,6 +375,26 @@
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-8B
 
+### Phase 12 Step 1完了チェックリストの厳格遵守
+
+- **状況**: Phase 12 Task 2（システムドキュメント更新）実行後に漏れが発生する場合
+- **パターン**: spec-update-workflow.mdの「Step 1完了チェックリスト」を完全に実行してから次に進む
+- **誤りやすいポイント**:
+  1. **SKILL.md変更履歴の更新漏れ**: 「テストコードのみだから不要」は誤り。タスク完了記録として必ず両方のSKILL.md（aiworkflow-requirements + task-specification-creator）の変更履歴を更新
+  2. **未タスク指示書のunassigned-task/配置漏れ**: 検出レポート（unassigned-task-detection.md）作成だけでなく、正式な9セクション形式の指示書を`docs/30-workflows/unassigned-task/`に配置
+  3. **task-workflow.md残課題テーブル登録漏れ**: 未タスク検出時は`task-workflow.md`の残課題テーブルに必ず登録
+  4. **topic-map.md再生成忘れ**: 新規ファイル追加時は必ず`generate-index.js`を実行して行番号を再同期
+- **例**（TASK-8C-C）:
+  - 当初「テストコードのみなのでSKILL.md更新不要」と誤判断
+  - 再検証で4項目の漏れを発見・修正
+  - aiworkflow-requirements/SKILL.md v8.29.0、task-specification-creator/SKILL.md v9.27.0を追記
+- **効果**:
+  - Phase 12完了前に全ての必須アクションが確実に実行される
+  - 再検証・手戻りの削減
+  - ドキュメント品質の一貫性確保
+- **発見日**: 2026-02-02
+- **関連タスク**: TASK-8C-C
+
 ---
 
 ## フェーズ境界遷移パターン（Phase Boundary Transition）
@@ -568,6 +588,7 @@
 
 | Date           | Changes                                                                                                                                            |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2026-02-02** | **TASK-8C-C知見追加: 成功パターン1件（Phase 12 Step 1完了チェックリストの厳格遵守 - SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止）** |
 | **2026-02-02** | **TASK-8C-B知見追加: E2Eテスト設計パターン3件（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）** |
 | **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）** |
 | **2026-02-02** | **TASK-8B知見追加: 成功パターン1件（Phase 10 MINOR指摘の確実な未タスク変換）**                                                                    |
