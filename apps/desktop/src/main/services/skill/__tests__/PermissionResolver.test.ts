@@ -166,6 +166,25 @@ describe("PermissionResolver", () => {
       expect(result2.approved).toBe(false);
       expect(resolver.pendingCount).toBe(0);
     });
+
+    // PR-03: waitForResponse - 記憶選択
+    it("should include rememberChoice in resolved response", async () => {
+      const requestId = "test-remember-choice";
+      const response: SkillPermissionResponse = {
+        requestId,
+        approved: true,
+        rememberChoice: true,
+      };
+
+      const waitPromise = resolver.waitForResponse(requestId);
+
+      queueMicrotask(() => {
+        resolver.resolveRequest(response);
+      });
+
+      const result = await waitPromise;
+      expect(result.rememberChoice).toBe(true);
+    });
   });
 
   describe("resolveRequest", () => {

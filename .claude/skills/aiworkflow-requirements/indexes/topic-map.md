@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-01
+> 自動生成: 2026-02-02
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -77,7 +77,7 @@ node scripts/list-specs.js --topics
 | テストカバレッジ目標 | L495 |
 | 関連ドキュメント | L572 |
 | 完了タスク | L580 |
-| 変更履歴 | L640 |
+| 変更履歴 | L685 |
 
 ### references/testing-component-patterns.md
 
@@ -263,8 +263,8 @@ node scripts/list-specs.js --topics
 | PermissionResolver 型定義（TASK-3-2） | L233 |
 | SkillExecutor IPC統合（TASK-3-2） | L320 |
 | 完了タスク | L397 |
-| 関連ドキュメント | L434 |
-| 変更履歴 | L446 |
+| 関連ドキュメント | L469 |
+| 変更履歴 | L481 |
 
 ### references/interfaces-agent-sdk-history.md
 
@@ -1442,13 +1442,14 @@ node scripts/list-specs.js --topics
 | 認可エラー（UnauthorizedError） | L145 |
 | リトライ戦略 | L210 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
-| サーキットブレーカー（将来対応） | L289 |
-| エラーレスポンス形式 | L317 |
-| エラーログ出力 | L348 |
-| ユーザー向けエラーメッセージ | L385 |
-| エラーハンドリングの実装指針 | L408 |
-| 関連ドキュメント | L438 |
-| 変更履歴 | L447 |
+| SkillExecutor 実行エラーコード（TASK-8A） | L289 |
+| サーキットブレーカー（将来対応） | L328 |
+| エラーレスポンス形式 | L356 |
+| エラーログ出力 | L387 |
+| ユーザー向けエラーメッセージ | L424 |
+| エラーハンドリングの実装指針 | L447 |
+| 関連ドキュメント | L477 |
+| 変更履歴 | L486 |
 
 ### references/llm-embedding.md
 
@@ -1547,7 +1548,6 @@ node scripts/list-specs.js --topics
 | 完了タスク | L214 |
 | skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L231 |
 | 関連ドキュメント | L270 |
-
 
 ### references/rag-desktop-state.md
 

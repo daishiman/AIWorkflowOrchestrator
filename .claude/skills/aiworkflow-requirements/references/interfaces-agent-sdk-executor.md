@@ -431,6 +431,41 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 ---
 
+### タスク: スキル管理モジュール単体テスト（2026-02-02完了）
+
+| 項目         | 内容                                                       |
+| ------------ | ---------------------------------------------------------- |
+| タスクID     | TASK-8A                                                    |
+| 完了日       | 2026-02-02                                                 |
+| ステータス   | **完了**                                                   |
+| テスト数     | 231（SkillExecutor: 52, PermissionResolver: 43, 他3モジュール: 136） |
+| 発見課題     | 1件（task-skillscanner-file-deletion-race: P3 - SkillScanner SKILL.md削除中レース） |
+| ドキュメント | `docs/30-workflows/TASK-8A/`                               |
+
+#### テスト結果サマリー（SkillExecutor + PermissionResolver）
+
+| カテゴリ                          | テスト数 | PASS | FAIL |
+| --------------------------------- | -------- | ---- | ---- |
+| SkillExecutor - execute           | 15       | 15   | 0    |
+| SkillExecutor - abort             | 8        | 8    | 0    |
+| SkillExecutor - stream handling   | 10       | 10   | 0    |
+| SkillExecutor - createHooks       | 1        | 1    | 0    |
+| SkillExecutor - handlePermission  | 2        | 2    | 0    |
+| SkillExecutor - Edge Cases        | 16       | 16   | 0    |
+| PermissionResolver - waitForResponse | 12    | 12   | 0    |
+| PermissionResolver - cancelRequest   | 8     | 8    | 0    |
+| PermissionResolver - cancelAll       | 8     | 8    | 0    |
+| PermissionResolver - Edge Cases      | 15    | 15   | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                    |
+| ------------------ | ----------------------------------------------------------------------- |
+| 実装ガイド         | `docs/30-workflows/TASK-8A/outputs/phase-12/implementation-guide.md`    |
+| カバレッジレポート | `docs/30-workflows/TASK-8A/outputs/phase-7/coverage-report.md`          |
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント                        | 説明                       |
@@ -447,6 +482,7 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-02-02 | 1.3.0      | TASK-8A: SkillExecutor/PermissionResolver単体テスト95テスト全PASS、完了タスク追加 |
 | 2026-01-31 | 1.2.0      | TASK-SKILL-RETRY-001: リトライ機構の型・API・定数追加      |
 | 2026-01-26 | 1.1.0      | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |
 | 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                            |
