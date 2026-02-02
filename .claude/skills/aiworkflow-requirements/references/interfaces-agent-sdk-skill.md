@@ -644,6 +644,45 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 ## 完了タスク
 
+### TASK-8C-B: スキル選択フローE2Eテスト（2026-02-02完了）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-8C-B                                                                  |
+| 完了日       | 2026-02-02                                                                 |
+| ステータス   | **完了**                                                                   |
+| テスト数     | 8（自動テスト）                                                            |
+| 発見課題     | 0件                                                                        |
+| ドキュメント | `docs/30-workflows/TASK-8C-B/`                                             |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 基本表示           | 2        | 2    | 0    |
+| スキル選択         | 2        | 2    | 0    |
+| キーボード操作     | 2        | 2    | 0    |
+| アクセシビリティ   | 2        | 2    | 0    |
+
+#### 主要成果
+
+| 成果                         | 内容                                                 |
+| ---------------------------- | ---------------------------------------------------- |
+| ARIA属性ベースセレクタ       | `role="combobox"`, `role="listbox"`, `role="option"` |
+| キーボードナビゲーション検証 | ArrowDown, ArrowUp, Enter, Escape                    |
+| E2Eヘルパー関数              | 操作シーケンスのDRY化                                |
+| 安定性対策3層                | 明示的待機 + UI安定化 + DOMロード待機                |
+
+#### 成果物
+
+| 成果物             | パス                                                                  |
+| ------------------ | --------------------------------------------------------------------- |
+| E2Eテストファイル  | `apps/desktop/src/__tests__/skillSelection.e2e.ts`                    |
+| テスト結果レポート | `docs/30-workflows/TASK-8C-B/outputs/phase-11/manual-test-result.md`  |
+| 実装ガイド         | `docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md`|
+
+---
+
 ### TASK-8C-A: IPC統合テスト（2026-02-02完了）
 
 | 項目         | 内容                                                                       |
@@ -683,6 +722,7 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 | [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md) | SkillImportDialog実装詳細 |
 | [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md) | ChatPanel統合実装詳細 |
 | [TASK-8C-A 実装ガイド](../../../../docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md) | IPC統合テスト実装詳細 |
+| [TASK-8C-B 実装ガイド](../../../../docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md) | スキル選択E2Eテスト実装詳細 |
 
 ---
 
@@ -690,6 +730,7 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-02 | 1.8.0      | TASK-8C-B: スキル選択E2Eテスト完了記録追加（8テスト、ARIA属性ベースセレクタ、安定性対策3層） |
 | 2026-02-02 | 1.7.0      | TASK-8C-A: テストアーキテクチャセクション追加（テスト構成、適用パターン、ヘルパー関数、テストデータ定数） |
 | 2026-02-02 | 1.6.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む |
 | 2026-02-02 | 1.5.0      | TASK-8C-A完了: skill:abort/get-statusチャネル仕様追加、IPC統合テスト完了記録 |
