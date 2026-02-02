@@ -68,16 +68,17 @@ node scripts/list-specs.js --topics
 ### references/quality-requirements.md
 
 | セクション | 行 |
-|------------|----|\n| パフォーマンス要件 | L6 |
-| テスト戦略（TDD実践ガイド） | L94 |
-| セキュリティ | L330 |
-| 可用性 | L358 |
-| 保守性 | L376 |
-| アクセシビリティ | L476 |
-| テストカバレッジ目標 | L495 |
-| 関連ドキュメント | L572 |
-| 完了タスク | L580 |
-| 変更履歴 | L670 |
+|------------|----|\n| 概要 | L6 |
+| パフォーマンス要件 | L37 |
+| テスト戦略（TDD実践ガイド） | L125 |
+| セキュリティ | L377 |
+| 可用性 | L405 |
+| 保守性 | L423 |
+| アクセシビリティ | L523 |
+| テストカバレッジ目標 | L542 |
+| 関連ドキュメント | L619 |
+| 完了タスク | L627 |
+| 変更履歴 | L792 |
 
 ---
 
@@ -229,8 +230,8 @@ node scripts/list-specs.js --topics
 | PermissionResolver 型定義（TASK-3-2） | L233 |
 | SkillExecutor IPC統合（TASK-3-2） | L320 |
 | 完了タスク | L397 |
-| 関連ドキュメント | L434 |
-| 変更履歴 | L446 |
+| 関連ドキュメント | L469 |
+| 変更履歴 | L481 |
 
 ### references/interfaces-agent-sdk-history.md
 
@@ -1094,7 +1095,9 @@ node scripts/list-specs.js --topics
 | 学習リソースとコミュニティ | L375 |
 | マイグレーション計画 | L402 |
 | 関連ドキュメント | L423 |
-| 変更履歴 | L431 |
+| 完了タスク | L433 |
+| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L444 |
+| 変更履歴 | L474 |
 
 ### references/technology-frontend.md
 
@@ -1288,9 +1291,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Monaco Diff Editor統合パターン | L10 |
 | SkillSelector コンポーネントパターン | L208 |
-| ChatPanel統合パターン（TASK-7D） | L403 |
-| 変更履歴 | L454 |
-| 関連ドキュメント | L466 |
+| ChatPanel統合パターン（TASK-7D） | L442 |
+| 変更履歴 | L493 |
+| 関連ドキュメント | L506 |
 
 ### references/deployment-electron.md
 
@@ -1307,14 +1310,16 @@ node scripts/list-specs.js --topics
 ### references/deployment-gha.md
 
 | セクション | 行 |
-|------------|----|\n| ワークフロー構成 | L10 |
-| CI ワークフロー要件（PR時） | L20 |
-| キャッシュ戦略 | L54 |
-| 並列実行の活用 | L76 |
-| CD ワークフロー要件（mainマージ時） | L95 |
-| モニタリングとアラート | L119 |
-| GitHub Secrets の要件 | L166 |
-| 関連ドキュメント | L184 |
+|------------|----|\n| 概要 | L10 |
+| ワークフロー構成 | L38 |
+| CI ワークフロー要件（PR時） | L48 |
+| キャッシュ戦略 | L82 |
+| 並列実行の活用 | L112 |
+| CD ワークフロー要件（mainマージ時） | L185 |
+| モニタリングとアラート | L209 |
+| GitHub Secrets の要件 | L256 |
+| 関連ドキュメント | L274 |
+| 変更履歴 | L282 |
 
 ### references/deployment-railway.md
 
@@ -1410,13 +1415,14 @@ node scripts/list-specs.js --topics
 | 認可エラー（UnauthorizedError） | L145 |
 | リトライ戦略 | L210 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
-| サーキットブレーカー（将来対応） | L289 |
-| エラーレスポンス形式 | L317 |
-| エラーログ出力 | L348 |
-| ユーザー向けエラーメッセージ | L385 |
-| エラーハンドリングの実装指針 | L408 |
-| 関連ドキュメント | L438 |
-| 変更履歴 | L447 |
+| SkillExecutor 実行エラーコード（TASK-8A） | L289 |
+| サーキットブレーカー（将来対応） | L328 |
+| エラーレスポンス形式 | L356 |
+| エラーログ出力 | L387 |
+| ユーザー向けエラーメッセージ | L424 |
+| エラーハンドリングの実装指針 | L447 |
+| 関連ドキュメント | L477 |
+| 変更履歴 | L486 |
 
 ### references/llm-embedding.md
 
@@ -1727,6 +1733,48 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L233 |
 | 関連ドキュメント | L269 |
 | 変更履歴 | L279 |
+
+### references/testing-accessibility.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| 1. ARIA属性テスト | L17 |
+| 2. キーボードナビゲーション | L105 |
+| 3. スクリーンリーダー互換性 | L169 |
+| 4. 色とコントラスト | L214 |
+| 5. 検証チェックリスト | L244 |
+| 6. 自動テストツール | L270 |
+| 7. WCAG 2.1 AAチェックリスト | L300 |
+| 参照 | L327 |
+| 変更履歴 | L335 |
+
+### references/testing-component-patterns.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L9 |
+| 1. Storeモッキングパターン | L18 |
+| 2. テストデータファクトリ | L83 |
+| 3. アクセシビリティテスト | L147 |
+| 4. キーボードナビゲーション | L201 |
+| 5. 非同期テスト | L240 |
+| 6. テスト構成 | L278 |
+| 7. userEvent vs fireEvent | L314 |
+| 参照 | L337 |
+| 変更履歴 | L345 |
+
+### references/testing-fixtures.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L9 |
+| 1. ファクトリ関数パターン | L16 |
+| 2. 境界値フィクスチャ | L106 |
+| 3. Storeモック構築 | L155 |
+| 4. Propsビルダー | L209 |
+| 5. Providerラッパー | L251 |
+| 6. フィクスチャファイル構成 | L308 |
+| 7. ベストプラクティス | L349 |
+| 参照 | L371 |
+| 変更履歴 | L379 |
 
 ### references/ui-history-components.md
 

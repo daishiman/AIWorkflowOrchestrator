@@ -1,7 +1,22 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
-import os from "os";
+import { cpus } from "os";
+
+// 並列化設定
+// CI環境: GitHub Actionsランナー（2コア、8GB RAM）でのI/O待ち時間活用
+// ローカル環境: CPUコア数に基づいて動的に設定
+const CI_MAX_FORKS = 4;
+// ローカルではCPUコア数の半分を使用（最低2、最大8）
+// 環境変数 VITEST_MAX_FORKS で上書き可能
+const cpuCount = cpus().length;
+const LOCAL_MAX_FORKS = process.env.VITEST_MAX_FORKS
+  ? parseInt(process.env.VITEST_MAX_FORKS, 10)
+  : Math.max(2, Math.min(8, Math.floor(cpuCount / 2)));
+
+// ローカルでも並列実行を有効化（メモリ16GB以上推奨）
+// 環境変数 VITEST_FILE_PARALLELISM=false で無効化可能
+const enableFileParallelism = process.env.VITEST_FILE_PARALLELISM !== "false";
 
 export default defineConfig({
   plugins: [react()],
@@ -14,17 +29,16 @@ export default defineConfig({
     pool: "forks",
     poolOptions: {
       forks: {
-        // CI環境では並列度を上げる、ローカルはCPUコア数の半分
-        maxForks: process.env.CI
-          ? 4
-          : Math.max(1, Math.floor(os.cpus().length / 2)),
+        // CI環境では4並列、ローカルでは2並列
+        maxForks: process.env.CI ? CI_MAX_FORKS : LOCAL_MAX_FORKS,
         isolate: true,
       },
     },
     testTimeout: 10000,
     teardownTimeout: 5000,
-    // CI環境ではファイル並列実行を有効化（シャードと併用で高速化）
-    fileParallelism: !!process.env.CI,
+    // CI環境・ローカル環境ともにファイル間並列化を有効化
+    // メモリ不足時は環境変数 VITEST_FILE_PARALLELISM=false で無効化可能
+    fileParallelism: enableFileParallelism,
     dangerouslyIgnoreUnhandledErrors: true,
     coverage: {
       provider: "v8",

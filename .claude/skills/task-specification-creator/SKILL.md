@@ -356,7 +356,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.25.0** | **2026-02-02** | **両ブランチ統合**: task-imp-permission-date-filter完了+TASK-8C-A/TASK-8A完了統合 |
+| **9.26.0** | **2026-02-02** | **マージ統合**: TASK-OPT-CI-TEST-PARALLEL-001完了 + task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A完了をマージ統合 |
+| **9.25.0** | **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001スキル改善**: patterns.md CI/DevOps最適化パターン2件追加（GitHub Actionsテスト並列実行、DevOps仕様書更新）、spec-update-workflow.md Step 1-F追加（DevOps関連ファイル更新チェックリスト）。CI最適化タスク完了時の仕様書更新漏れ防止 |
 | **9.24.0** | **2026-02-02** | **TASK-8C-A未タスク指示書最適化**: task-imp-ipc-imp002-channels.md・task-imp-ipc-permission-response.mdにシステム仕様書参照テーブル追加（3.4セクション）。実装者がarchitecture-implementation-patterns.md/interfaces-agent-sdk-skill.md/security-skill-ipc.mdを参照できるよう強化 |
 | **9.23.0** | **2026-02-02** | **patterns.md拡充**: 成功パターン2件追加（コンポーネント同階層ユーティリティ配置、順次フィルタパイプラインuseMemoチェーン）+ 未タスク検出・配置（detect-unassigned）51件スキャン |
 | **9.22.0** | **2026-02-02** | **task-imp-permission-date-filter完了**: Phase 1-12全工程完了。dateFilterUtils.ts新規作成、72テスト全PASS + TASK-8A実行知見スキル改善                                                                                                                            |

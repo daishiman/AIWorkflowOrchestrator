@@ -446,10 +446,63 @@
 
 ---
 
+## CI/DevOps最適化パターン
+
+> TASK-OPT-CI-TEST-PARALLEL-001で検証されたGitHub Actions CI最適化パターン。
+
+### GitHub Actions テスト並列実行最適化パターン
+
+- **状況**: CIテスト実行時間が長く（18分以上）、開発フィードバックループが遅い場合
+- **パターン**: シャード数増加 + maxForks最適化 + キャッシュ導入 + カバレッジ条件分岐の4軸で最適化
+- **例**（TASK-OPT-CI-TEST-PARALLEL-001）:
+  | 項目 | 変更前 | 変更後 | 効果 |
+  | -------- | ------ | ------ | ---- |
+  | シャード数 | 8 | 16 | 各シャード約25ファイル |
+  | maxForks | 2 | 4 (CI) / CPUベース (LOCAL) | I/O待ち活用 |
+  | fileParallelism | false | true | 並列ファイル実行 |
+  | キャッシュ | なし | shared packageビルドキャッシュ | ビルド時間短縮 |
+  | カバレッジ | 常時計測 | PR時スキップ、main push時計測 | 約30%時間短縮 |
+- **実装詳細**:
+  - `vitest.config.ts`: `pool: "forks"` + 動的`maxForks`計算（`Math.min(Math.max(cpus().length / 2, 2), 8)`）
+  - `ci.yml`: `matrix.shard: [1,2,...,16]` + `actions/cache@v4`
+  - `package.json`: `npm-run-all2`の`run-p`でlint/typecheck/test並列実行
+- **環境変数制御**:
+  - `VITEST_MAX_FORKS`: maxForks上書き
+  - `VITEST_FILE_PARALLELISM`: "false"で無効化（メモリ不足時）
+- **効果**:
+  - CI全体: 18分 → 9-10分（目標12分以下達成）
+  - 各シャード: 13分 → 6-8分（目標10分以下達成）
+  - ローカル: lint/typecheck/testが並列実行でフィードバック高速化
+- **発見日**: 2026-02-02
+- **関連タスク**: TASK-OPT-CI-TEST-PARALLEL-001
+
+### DevOps関連システム仕様書更新パターン
+
+- **状況**: CI/CD最適化タスク完了後、システム仕様書への反映が漏れる場合
+- **パターン**: Phase 12で以下3ファイルを必ず確認・更新
+- **更新対象ファイル**:
+  | ファイル | 更新内容 |
+  | -------- | -------- |
+  | `deployment-gha.md` | シャード戦略、キャッシュ戦略、並列化設定 |
+  | `technology-devops.md` | CI最適化パターン、完了タスクセクション |
+  | `quality-requirements.md` | 並列化設定、環境変数制御 |
+- **チェックリスト**:
+  1. シャード数・分散方式が`deployment-gha.md`に記載されているか
+  2. Vitest並列化設定（maxForks, fileParallelism, pool）が記載されているか
+  3. 環境変数制御方法が`quality-requirements.md`に記載されているか
+  4. CI最適化パターンが`technology-devops.md`に追加されているか
+  5. 完了タスクセクションに本タスクが記録されているか
+- **効果**: DevOps知見がシステム仕様書に確実に蓄積され、将来のCI最適化に活用可能
+- **発見日**: 2026-02-02
+- **関連タスク**: TASK-OPT-CI-TEST-PARALLEL-001
+
+---
+
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                            |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）** |
 | **2026-02-02** | **TASK-8B知見追加: 成功パターン1件（Phase 10 MINOR指摘の確実な未タスク変換）**                                                                    |
 | **2026-02-02** | **TASK-8A知見追加: 成功パターン4件（カバレッジ閾値免除判定、ギャップ分析ベースTDD、未タスク検出P3全件記録、vi.doMock動的再読み込み）** |
 | 2026-02-01     | TASK-8C-G知見追加: 成功パターン3件（境界値フィクスチャ設計、parseFrontmatter構造化検証、execSync決定論的テスト）                                   |

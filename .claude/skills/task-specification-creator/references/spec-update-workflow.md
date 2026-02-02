@@ -306,6 +306,21 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`等）の残課題テーブルに新規未タスクを登録した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
 
+### Step 1-F: DevOps関連ファイル更新（CI/CD最適化タスクの場合は必須）
+CI/CD・ビルド・テスト並列化等のDevOps関連タスク完了時は、以下のファイルを確認・更新する。
+
+- [ ] `deployment-gha.md` にCI/CD変更内容を記載した
+  - [ ] シャード戦略（シャード数、分散方式）
+  - [ ] キャッシュ戦略（対象、キャッシュキー）
+  - [ ] 並列化設定（Vitest pool, maxForks, fileParallelism）
+- [ ] `technology-devops.md` にパターン・完了タスクを追加した
+  - [ ] CI最適化パターンセクション
+  - [ ] 完了タスクテーブル
+- [ ] `quality-requirements.md` に品質関連設定を追加した
+  - [ ] 並列化設定と環境変数制御
+  - [ ] パフォーマンス要件（実行時間目標）
+- [ ] ⚠️ DevOps知見は3ファイルに分散するため、漏れやすい。必ず全ファイルを確認すること
+
 ### 必須更新ファイル（全タスク共通）
 - [ ] aiworkflow-requirements/LOGS.md を更新した
 - [ ] task-specification-creator/LOGS.md を更新した
