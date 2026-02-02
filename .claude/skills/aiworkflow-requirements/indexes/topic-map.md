@@ -77,7 +77,7 @@ node scripts/list-specs.js --topics
 | テストカバレッジ目標 | L495 |
 | 関連ドキュメント | L572 |
 | 完了タスク | L580 |
-| 変更履歴 | L640 |
+| 変更履歴 | L670 |
 
 ---
 
@@ -163,9 +163,9 @@ node scripts/list-specs.js --topics
 | パフォーマンス最適化パターン | L239 |
 | セキュリティ実装パターン | L277 |
 | テスト実装パターン | L309 |
-| アクセシビリティ実装パターン | L373 |
-| 関連ドキュメント | L398 |
-| 変更履歴 | L410 |
+| アクセシビリティ実装パターン | L435 |
+| 関連ドキュメント | L460 |
+| 変更履歴 | L472 |
 
 ### references/architecture-monorepo.md
 
@@ -237,9 +237,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| 残課題（未タスク） | L508 |
-| 関連ドキュメント | L519 |
-| 変更履歴 | L535 |
+| 残課題（未タスク） | L529 |
+| 関連ドキュメント | L542 |
+| 変更履歴 | L558 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -256,12 +256,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L378 |
-| SkillSlice型定義（TASK-6-1） | L430 |
-| ModifierSkill（スライド逆同期機能） | L522 |
-| ChatPanel統合（TASK-7D） | L556 |
-| 関連ドキュメント | L591 |
-| 変更履歴 | L602 |
+| SkillImportStore（TASK-2B） | L380 |
+| SkillSlice型定義（TASK-6-1） | L432 |
+| ModifierSkill（スライド逆同期機能） | L524 |
+| ChatPanel統合（TASK-7D） | L558 |
+| テストアーキテクチャ（TASK-8C-A） | L593 |
+| 完了タスク | L645 |
+| 関連ドキュメント | L677 |
+| 変更履歴 | L689 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -1030,14 +1032,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| スキル管理IPCセキュリティ | L20 |
-| スキルインポートIPCチャネル（TASK-4-1） | L67 |
-| Claude Code CLI連携セキュリティ | L110 |
-| Skill Execution Preload API セキュリティ | L171 |
-| Permission IPC Handler セキュリティ | L216 |
-| SkillAPI Preload実装（TASK-5-1） | L252 |
-| 完了タスク | L318 |
-| 関連ドキュメント | L330 |
+| スキル管理IPCセキュリティ | L21 |
+| スキルインポートIPCチャネル（TASK-4-1） | L68 |
+| Claude Code CLI連携セキュリティ | L111 |
+| Skill Execution Preload API セキュリティ | L172 |
+| Permission IPC Handler セキュリティ | L217 |
+| SkillAPI Preload実装（TASK-5-1） | L253 |
+| 完了タスク | L319 |
+| 関連ドキュメント | L332 |
 
 ---
 
@@ -1723,8 +1725,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L267 |
-| 変更履歴 | L277 |
+| 関連ドキュメント | L269 |
+| 変更履歴 | L279 |
 
 ### references/ui-history-components.md
 

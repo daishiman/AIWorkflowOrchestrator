@@ -368,6 +368,68 @@
 | Fixture | 固定のテストデータセット |
 | Builder | 複雑なオブジェクトの段階的構築 |
 
+### IPC通信テストパターン（TASK-8C-A 2026-02-02実装）
+
+Electron IPC ハンドラーの統合テストにおいて、Main Process のハンドラーを Renderer Process を起動せずにテストするためのパターン群。
+
+#### Handler Map方式
+
+`ipcMain.handle` をモック化し、登録されたハンドラー関数を `Map<string, Function>` に格納する方式。テスト側から `handlers.get(channel)` でハンドラーを直接呼び出すことにより、IPC通信層を経由せず統合テストを実行できる。
+
+| 要素 | 実装 |
+|------|------|
+| モック対象 | `ipcMain.handle` |
+| 格納構造 | `Map<string, (...args: unknown[]) => Promise<unknown>>` |
+| ハンドラー取得 | `handlers.get("skill:list-available")` |
+| 呼び出し方法 | `handler(mockIpcEvent, ...args)` |
+| セットアップ | `beforeEach` 内で `registerSkillHandlers()` を呼び出し、Map にハンドラーを蓄積 |
+
+**使い分け基準**:
+
+| 基準 | Handler Map方式 | 実プロセス起動方式 |
+|------|-----------------|-------------------|
+| テスト速度 | 高速（プロセス不要） | 低速（Electron起動必要） |
+| テスト粒度 | ハンドラーロジック単体 | E2Eプロセス間通信 |
+| セットアップ | `vi.mock("electron")` | Spectron/Playwright |
+| 適用場面 | 統合テスト（推奨） | E2Eテスト |
+
+#### SkillService Partial Mock
+
+テスト対象ハンドラーの依存サービス（SkillService）を部分モックする方式。全メソッドを `vi.fn()` で置き換えつつ、テストケースごとに `mockResolvedValueOnce` で個別の戻り値を設定する。
+
+| 要素 | 実装 |
+|------|------|
+| モック構造 | 全メソッドを `vi.fn()` で定義したオブジェクトリテラル |
+| 型キャスト | `mockSkillService as never` で型チェックを回避 |
+| 個別設定 | `mockSkillService.scanAvailableSkills.mockResolvedValueOnce(data)` |
+| リセット | `vi.clearAllMocks()` を `beforeEach` で実行 |
+
+**メソッド数の目安**: テスト対象の全IPCチャネルが呼び出すServiceメソッドを網羅する（TASK-8C-Aでは15メソッド）。
+
+#### invokeOptionalHandler パターン
+
+未実装チャネル（将来実装予定）のテストを「ハンドラー未登録」の検証として記述する方式。ハンドラーが登録されていれば実行し、未登録であれば `undefined` を検証する。
+
+| 要素 | 実装 |
+|------|------|
+| ヘルパー関数 | `invokeOptionalHandler(handlerMap, channel, ...args)` |
+| 戻り値（登録済み） | `{ exists: true, result: unknown }` |
+| 戻り値（未登録） | `{ exists: false }` |
+| テスト記述 | `it("should handle channel (if handler exists)", ...)` |
+
+**移行容易性**: ハンドラーが実装された時点で、テストは自動的に実ハンドラーパスを通過するため、テストコードの変更は不要。
+
+#### validateIpcSender失敗検証パターン
+
+セキュリティ検証（`validateIpcSender`）の失敗パスをテストする方式。`mockReturnValueOnce` で一時的にバリデーション失敗を返し、ハンドラーがエラー応答を返すことを検証する。
+
+| 要素 | 実装 |
+|------|------|
+| モック設定 | `validateIpcSender.mockReturnValueOnce({ valid: false, errorCode: "..." })` |
+| 検証対象 | ハンドラーが `success: false` を返すこと |
+| エラー変換 | `toIPCValidationError(result)` で統一エラー形式に変換 |
+| 適用チャネル | セキュリティ上重要なチャネル（abort, get-status等） |
+
 ---
 
 ## アクセシビリティ実装パターン
@@ -411,6 +473,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4.0 | 2026-02-02 | TASK-8C-A: IPC通信テストパターン追加（Handler Map方式、SkillService Partial Mock、invokeOptionalHandler、validateIpcSender失敗検証） |
 | 1.3.0 | 2026-01-30 | TASK-7D: forwardRef + useImperativeHandleパターン、React.memo + Exclude型パターン追加 |
 | 1.2.0 | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルモック設計、モック上書きパターン） |
 | 1.1.0 | 2026-01-26 | 仕様ガイドライン準拠: コード例削除、文章・表形式に変更 |

@@ -637,10 +637,118 @@ vitest.config.tsで設定済みの閾値:
 
 ---
 
+### TASK-8A: スキル管理モジュール単体テスト（2026-02-02完了）
+
+**概要**: スキル管理システムの5モジュールに対する単体テスト実装・検証。TDD Red-Green-Refactorサイクルに基づくPhase 1-12全工程完了。
+
+**テストカバレッジ実績**:
+
+| モジュール            | テスト数 | Line    | Branch  | Function | Statements |
+| --------------------- | -------- | ------- | ------- | -------- | ---------- |
+| SkillScanner.ts       | 49       | 84.07%  | 83.56%  | 100%     | 84.07%     |
+| SkillImportManager.ts | 28       | 97.36%  | 92.85%  | 100%     | 97.36%     |
+| SkillExecutor.ts      | 52       | 52.73%  | 70.4%   | 64.86%   | 52.73%     |
+| PermissionResolver.ts | 43       | 100%    | 100%    | 100%     | 100%       |
+| skillSlice.ts         | 59       | 94.44%  | 84.61%  | 100%     | 94.44%     |
+| **合計**              | **231**  | -       | -       | -        | -          |
+
+**SkillExecutor.ts カバレッジ注記**: 未カバー部分（sanitizeArgs, getPermissionReason, sendPermissionRequest）はIPC通信依存のユーティリティメソッドであり、統合テスト（TASK-8B）の範囲に該当。Branch Coverage 70.4%は閾値（60%）達成済み。
+
+**適用テストパターン**:
+
+| パターン | 適用箇所 | 効果 |
+|----------|----------|------|
+| vi.doMock 動的モジュール再読み込み | SkillImportManager electron-store | テスト独立性確保 |
+| async generator mock | SkillExecutor SDK query | ストリーミング処理テスト |
+| vi.useFakeTimers + queueMicrotask | PermissionResolver タイムアウト | 非同期タイミング制御 |
+| (global as any).window 上書き | skillSlice Electron IPC | Renderer Process APIモック |
+| __fixtures__/ 実ファイル使用 | SkillScanner SKILL.md解析 | モック最小化・実データ検証 |
+
+**新規追加テストケース（Phase 4-6）**:
+
+| テストID | 内容 |
+|----------|------|
+| SE-02 | execute - 不正メタデータエラー処理 |
+| SE-07 | createHooks - PreToolUse/PostToolUse生成 |
+| SE-08 | handlePermissionResponse - 権限応答処理 |
+| PR-03 | waitForResponse - rememberChoice記憶選択 |
+
+**成果物**:
+
+| ファイル | 説明 |
+|----------|------|
+| [実装ガイド](../../../../docs/30-workflows/TASK-8A/outputs/phase-12/implementation-guide.md) | Part1: 概念説明 + Part2: 技術詳細 |
+| docs/30-workflows/TASK-8A/ | Phase 1-12 全成果物（21ファイル） |
+
+---
+
+### TASK-8B: コンポーネントテスト（2026-02-02完了）
+
+**概要**: skill-import-agent-system全4コンポーネント（SkillSelector, SkillImportDialog, PermissionDialog, SkillStreamingView）+3ユーティリティの包括的テスト実装
+
+**テストカバレッジ実績**:
+
+| テスト対象             | テスト数 | Line    | Branch  | Function |
+| ---------------------- | -------- | ------- | ------- | -------- |
+| PermissionDialog.tsx   | 57+19+19 | 100%    | 95.34%  | 100%     |
+| SkillImportDialog.tsx  | 31       | 100%    | 100%    | 100%     |
+| SkillSelector.tsx      | 28       | 100%    | 93.15%  | 87.5%    |
+| SkillStreamingView.tsx | 33       | 99.31%  | 93.75%  | 100%     |
+| permissionDescriptions | 34       | 97.75%  | 97.91%  | 100%     |
+| toolMetadata           | 37       | 100%    | 100%    | 100%     |
+| permissionHistory      | 22       | 100%    | 100%    | 100%     |
+| **合計**               | **280**  | **99.71%** | **95.85%** | **97.61%** |
+
+**適用テストパターン**:
+
+| パターン | 適用箇所 | 効果 |
+|----------|----------|------|
+| Store個別セレクタモック | useAppStore各フィールド | テスト独立性確保 |
+| act() + 非同期イベント | Dialog操作全般 | Warning-free テスト |
+| data-testid統一命名 | 全コンポーネント | テスト信頼性向上 |
+| userEvent統合 | ユーザー操作テスト | 実操作に近いテスト |
+| アクセシビリティテスト | ARIA属性・キーボード操作 | WCAG 2.1準拠確認 |
+
+**残存課題**: Phase 10で2件MINOR検出→未タスク化済み（M-01: テスト名命名規則統一、M-02: 未使用import除去）
+
+---
+
+### TASK-8C-A: IPC統合テスト（2026-02-02完了）
+
+**概要**: skillHandlers.ts のIPC統合テストを実装。8チャネル（list-available, list-imported, import, remove, get-detail, execute, abort, get-status）の全パスをテスト。
+
+**テストカバレッジ実績**:
+
+| 指標 | skillHandlers.ts |
+|------|-----------------|
+| テスト数 | 41（22基本 + 19エッジケース） |
+| Line Coverage | 91.4% |
+| Branch Coverage | 76% |
+| Function Coverage | 20%（実質100%: 2 exported関数をカバー） |
+
+**適用テストパターン**:
+
+| パターン | 適用箇所 | 効果 |
+|----------|----------|------|
+| Handler Map方式 | ipcMain.handle モック → Map格納 | ハンドラー直接呼び出し可能 |
+| SkillService Partial Mock | 15メソッド vi.fn() | テスト独立性確保 |
+| invokeOptionalHandler | IMP-002未実装チャネル | 実装時の移行容易性 |
+| validateIpcSender失敗検証 | abort/get-status | セキュリティ検証 |
+
+**成果物**:
+
+| ファイル | 内容 |
+|----------|------|
+| skillIpc.integration.test.ts | 41テスト（~750行） |
+
+---
 ## 変更履歴
 
 | Version | Date       | Changes                                                              |
 | ------- | ---------- | -------------------------------------------------------------------- |
+| 1.4.2   | 2026-02-02 | TASK-8C-A: IPC統合テスト実績追加（41テスト、4テストパターン）       |
+| 1.4.1   | 2026-02-02 | TASK-8B: コンポーネントテスト実績追加（280テスト、7テスト対象、テストパターン5種） |
+| 1.4.0   | 2026-02-02 | TASK-8A: スキル管理モジュール単体テスト実績追加（231テスト、5モジュール、テストパターン5種） |
 | 1.3.0   | 2026-01-30 | TASK-7D: ChatPanel統合テスト実績追加（48テスト、テストパターン5種） |
 | 1.2.0   | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処） |
 | 1.1.0   | 2026-01-26 | spec-guidelines.md準拠: CI/CDパイプライン構成図を表形式に変換        |

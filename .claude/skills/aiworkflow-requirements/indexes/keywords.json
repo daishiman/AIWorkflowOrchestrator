@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-02T01:31:50.993Z",
-  "totalKeywords": 970,
+  "generated": "2026-02-02T01:41:14.833Z",
+  "totalKeywords": 971,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -637,6 +637,7 @@
       "architecture-chat-history.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history.md",
+      "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-chat-history.md",
       "interfaces-llm.md",
@@ -2038,6 +2039,9 @@
       "interfaces-agent-sdk-skill.md"
     ],
     "スライド逆同期機能": [
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "テストアーキテクチャ": [
       "interfaces-agent-sdk-skill.md"
     ],
     "Execution": [

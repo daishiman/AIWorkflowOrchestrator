@@ -12,6 +12,7 @@
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
 | v1.0.0     | 2026-01-25 | 初版作成                                     |
+| v1.2.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
 
@@ -319,6 +320,7 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 
 | タスク | 完了日 | テスト数 |
 |--------|--------|----------|
+| TASK-8C-A IPC統合テスト（skillHandlers） | 2026-02-02 | 41 |
 | TASK-5-1 SkillAPI Preload実装 | 2026-01-27 | 67 |
 | TASK-4-1 スキルインポートIPCチャネル | 2026-01-25 | 60 |
 | TASK-3-2 SkillExecutor IPC Handler | 2026-01-25 | 192 |
@@ -333,3 +335,4 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 - [APIセキュリティ](./security-api.md)
 - [Electron IPCセキュリティ](./security-electron-ipc.md)
 - [TASK-5-1 実装ガイド](../../../../docs/30-workflows/TASK-5-1/outputs/phase-12/implementation-guide.md)
+- [TASK-8C-A 実装ガイド](../../../../docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md)

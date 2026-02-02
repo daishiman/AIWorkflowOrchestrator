@@ -1,0 +1,203 @@
+{
+  "feature": "TASK-8A",
+  "created": "2026-02-01T23:20:00Z",
+  "lastUpdated": "2026-02-01T15:57:52.717Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:11:04.227Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/existing-test-audit.md",
+          "description": "既存テスト監査結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/gap-analysis.md",
+          "description": "ギャップ分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/module-analysis.md",
+          "description": "モジュール分析"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:13:07.354Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-design.md",
+          "description": "テスト設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/mock-strategy.md",
+          "description": "モック戦略"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/fixture-design.md",
+          "description": "フィクスチャ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-helper-design.md",
+          "description": "テストヘルパー設計"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:13:15.929Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:20:10.729Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:22:35.925Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:29:41.093Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/preliminary-coverage.md",
+          "description": "予備カバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:44:16.089Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:47:29.653Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:49:32.347Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:51:00.121Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:53:11.917Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-01T15:57:52.715Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5", "6", "7", "8", "9"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+  }
+}

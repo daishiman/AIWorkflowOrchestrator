@@ -5,69 +5,58 @@
 
 ---
 
-## 2026-02-02: 未タスク2件検出（コードベース横断スキャン）
+## 2026-02-02: 両ブランチ統合マージ
 
 | 項目         | 内容                                                                     |
 | ------------ | ------------------------------------------------------------------------ |
-| タスクID     | （横断スキャン）                                                        |
-| 操作         | detect-unassigned                                                        |
-| 対象ファイル | apps/desktop/src/ 全体（TODO/FIXME）+ references/ 全体（未実装項目）    |
+| タスクID     | マージ                                                                   |
+| 操作         | merge                                                                    |
 | 結果         | success                                                                  |
-| 備考         | 45+ TODO/FIXME検出、既存226件と照合、新規2件のみ未カバー→仕様書作成    |
-
-### 検出結果
-
-- **task-imp-community-entity-detail-navigation-001**: CONV-08-06 エンティティ詳細画面ナビゲーション（CommunityVisualization/index.tsx:139）
-- **task-imp-workspace-chat-edit-monaco-integration-001**: Monaco Editor統合 3 TODO（chatEditHandlers.ts:77,302,344）
-- 配置先: `docs/30-workflows/unassigned-task/`
+| 備考         | origin/main統合。task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A/TASK-8B完了を統合 |
 
 ---
 
-## 2026-02-02: 実装詳細拡充（task-imp-permission-date-filter仕様書最適化）
-
-| 項目         | 内容                                                                                                                         |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-date-filter（追加更新）                                                                                  |
-| 操作         | update-spec                                                                                                                  |
-| 対象ファイル | arch-state-management.md, ui-ux-settings.md, interfaces-agent-sdk-history.md                                                |
-| 結果         | success                                                                                                                      |
-| 備考         | 実装詳細拡充。フィルタリングパイプライン仕様追加、実装ファイルテーブル充実、テストファイル追加、品質メトリクス最新化、UI説明3ドロップダウン化 |
-
-### 更新詳細
-
-- **更新**: `references/arch-state-management.md`（v1.6.0 → v1.7.0）
-  - dateFilterUtils.ts実装ファイル追加、テストファイル2件追加（dateFilterUtils.test.ts, PermissionHistoryFilter.test.tsx）
-  - フィルタリングパイプライン仕様セクション追加（3段階順次フィルタ、filterByDateRange処理フロー表）
-  - 品質メトリクス更新（テスト数63→72、カバレッジ反映）
-- **更新**: `references/ui-ux-settings.md`（v1.3.0 → v1.4.0）
-  - PermissionHistoryFilterコンポーネント説明を「2ドロップダウン」→「3ドロップダウン + カスタム日付入力」に更新
-  - テストカバレッジ更新（63→72件）
-  - 実装ファイルテーブルにdateFilterUtils.ts, PermissionHistoryFilter.tsx, PermissionHistoryPanel.tsx追加
-- **更新**: `references/interfaces-agent-sdk-history.md`（v6.36.0 → v6.37.0）
-  - PermissionHistoryFilter説明を3ドロップダウン化に更新
-
----
-
-## 2026-02-02: task-imp-permission-date-filter（権限履歴の期間別フィルタリング）
+## 2026-02-02: task-imp-permission-date-filter完了（権限履歴の期間別フィルタリング）
 
 | 項目         | 内容                                                                                                                        |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------- |
 | タスクID     | task-imp-permission-date-filter                                                                                             |
 | 操作         | update-spec                                                                                                                 |
-| 対象ファイル | interfaces-agent-sdk-history.md, ui-ux-settings.md, arch-state-management.md, ui-ux-components.md, topic-map.md            |
 | 結果         | success                                                                                                                     |
 | 備考         | 期間別フィルタリング機能完了。DatePreset/DateRangeFilter型追加、PermissionHistoryFilter拡張。72テスト全PASS、カバレッジ98.5% |
 
-### 更新詳細
+---
 
-- **更新**: `references/interfaces-agent-sdk-history.md`（v6.35.0 → v6.36.0）
-  - 完了タスクセクション追加、未タスク候補テーブルで完了マーク
-- **更新**: `references/ui-ux-settings.md`（v1.2.0 → v1.3.0）
-  - フィルタ仕様に期間フィルタ追加、関連ドキュメントに実装ガイドリンク
-- **更新**: `references/arch-state-management.md`（v1.5.0 → v1.6.0）
-  - DateRangeFilter/DatePreset型をデータモデルに追加
-- **更新**: `references/ui-ux-components.md`（v2.6.0 → v2.7.0）
-  - 完了タスクテーブルに追加
+## 2026-02-02: TASK-8C-A完了（IPC統合テスト）
+
+| 項目         | 内容                                                                                               |
+| ------------ | -------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-8C-A                                                                                          |
+| 操作         | Phase 12 仕様更新                                                                                  |
+| 結果         | success                                                                                            |
+| 備考         | IPC統合テスト41件全PASS、skillHandlers.ts 91.4%行カバレッジ・76%ブランチカバレッジ                  |
+
+---
+
+## 2026-02-02: TASK-8A完了（スキル管理モジュール単体テスト）
+
+| 項目         | 内容                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| タスクID     | TASK-8A                                                                                                |
+| 操作         | unit-test (5モジュール単体テスト Phase 1-12完了)                                                       |
+| 結果         | success                                                                                                |
+| 備考         | 231テスト全PASS。カバレッジ: PermissionResolver 100%, SkillImportManager 97.36%                        |
+
+---
+
+## 2026-02-02: TASK-8B完了（コンポーネントテスト）
+
+| 項目         | 内容                                                                                                                             |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-8B                                                                                                                          |
+| 操作         | update-spec                                                                                                                      |
+| 結果         | success                                                                                                                          |
+| 備考         | コンポーネントテスト完了。280テスト全PASS、Line 99.71%/Branch 95.85%/Function 97.61%カバレッジ達成                                |
 
 ---
 
