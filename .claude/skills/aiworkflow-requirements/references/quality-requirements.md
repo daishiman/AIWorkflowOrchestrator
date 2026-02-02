@@ -712,10 +712,41 @@ vitest.config.tsで設定済みの閾値:
 **残存課題**: Phase 10で2件MINOR検出→未タスク化済み（M-01: テスト名命名規則統一、M-02: 未使用import除去）
 
 ---
+
+### TASK-8C-A: IPC統合テスト（2026-02-02完了）
+
+**概要**: skillHandlers.ts のIPC統合テストを実装。8チャネル（list-available, list-imported, import, remove, get-detail, execute, abort, get-status）の全パスをテスト。
+
+**テストカバレッジ実績**:
+
+| 指標 | skillHandlers.ts |
+|------|-----------------|
+| テスト数 | 41（22基本 + 19エッジケース） |
+| Line Coverage | 91.4% |
+| Branch Coverage | 76% |
+| Function Coverage | 20%（実質100%: 2 exported関数をカバー） |
+
+**適用テストパターン**:
+
+| パターン | 適用箇所 | 効果 |
+|----------|----------|------|
+| Handler Map方式 | ipcMain.handle モック → Map格納 | ハンドラー直接呼び出し可能 |
+| SkillService Partial Mock | 15メソッド vi.fn() | テスト独立性確保 |
+| invokeOptionalHandler | IMP-002未実装チャネル | 実装時の移行容易性 |
+| validateIpcSender失敗検証 | abort/get-status | セキュリティ検証 |
+
+**成果物**:
+
+| ファイル | 内容 |
+|----------|------|
+| skillIpc.integration.test.ts | 41テスト（~750行） |
+
+---
 ## 変更履歴
 
 | Version | Date       | Changes                                                              |
 | ------- | ---------- | -------------------------------------------------------------------- |
+| 1.4.2   | 2026-02-02 | TASK-8C-A: IPC統合テスト実績追加（41テスト、4テストパターン）       |
 | 1.4.1   | 2026-02-02 | TASK-8B: コンポーネントテスト実績追加（280テスト、7テスト対象、テストパターン5種） |
 | 1.4.0   | 2026-02-02 | TASK-8A: スキル管理モジュール単体テスト実績追加（231テスト、5モジュール、テストパターン5種） |
 | 1.3.0   | 2026-01-30 | TASK-7D: ChatPanel統合テスト実績追加（48テスト、テストパターン5種） |
