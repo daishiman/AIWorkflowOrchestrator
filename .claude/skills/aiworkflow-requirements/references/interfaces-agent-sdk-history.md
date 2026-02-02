@@ -15,6 +15,36 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 ## 完了タスク
 
+### task-imp-permission-date-filter: 権限履歴の期間別フィルタリング（2026-02-02完了）
+
+| 項目         | 内容                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| タスクID     | task-imp-permission-date-filter                                                            |
+| 完了日       | 2026-02-02                                                                                 |
+| ステータス   | **完了**                                                                                   |
+| テスト数     | 72件（自動テスト）+ 22件（手動テスト項目）                                                |
+| 発見課題     | 0件                                                                                        |
+| ドキュメント | `docs/30-workflows/TASK-IMP-permission-date-filter/`                                       |
+
+#### テスト結果サマリー
+
+| カテゴリ             | テスト数 | PASS | FAIL |
+| -------------------- | -------- | ---- | ---- |
+| フィルタロジック     | 22       | 22   | 0    |
+| UIコンポーネント     | 8        | 8    | 0    |
+| パネル統合           | 25       | 25   | 0    |
+| 既存リグレッション   | 17       | 17   | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                                                      |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-IMP-permission-date-filter/outputs/phase-11/manual-test-result.md`                |
+| 発見課題リスト     | `docs/30-workflows/TASK-IMP-permission-date-filter/outputs/phase-11/discovered-issues.md`                 |
+| 実装ガイド         | `docs/30-workflows/TASK-IMP-permission-date-filter/outputs/phase-12/implementation-guide.md`              |
+
+---
+
 ### task-imp-permission-history-001: Permission履歴トラッキングUI（2026-02-01完了）
 
 | 項目         | 内容                                                 |
@@ -32,7 +62,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 - permissionHistorySlice（Zustand StateCreatorパターン、addHistoryEntry / clearHistory / setHistoryFilter）
 - PermissionHistoryPanel（@tanstack/react-virtual仮想スクロール、estimateSize=72px、overscan=5）
 - PermissionHistoryItem（emoji icon表示、判断結果バッジ、相対時刻表示）
-- PermissionHistoryFilter（ツール名・判断結果2ドロップダウン）
+- PermissionHistoryFilter（ツール名・判断結果・期間の3ドロップダウン + カスタム日付入力）
 - safeArgsSnapshot()セキュリティ関数（HTML除去、制御文字除去、200文字制限）
 - skillSlice.respondToSkillPermission内で履歴自動記録（cross-sliceアクセス）
 - Zustand persist middleware partialize設定でlocalStorage永続化
@@ -70,7 +100,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | タスクID                           | 内容                   | 優先度 |
 | ---------------------------------- | ---------------------- | ------ |
-| task-imp-permission-date-filter    | 期間別フィルタリング   | 中     |
+| ~~task-imp-permission-date-filter~~    | ~~期間別フィルタリング~~   | ~~中~~ | ✅ **完了** |
 | task-imp-permission-auto-recommend | 自動推奨ロジック       | 低     |
 | task-imp-permission-log-export     | 外部ログ連携・ログ出力 | 低     |
 | task-imp-tool-icon-resolver        | ツールアイコン動的解決 | 低     |
@@ -506,6 +536,8 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | 日付       | バージョン | 変更内容                                                                   |
 | ---------- | ---------- | -------------------------------------------------------------------------- |
+| 2026-02-02 | 6.37.0     | PermissionHistoryFilter説明をフィルタ3ドロップダウン化に更新（実装反映）    |
+| 2026-02-02 | 6.36.0     | task-imp-permission-date-filter完了、期間別フィルタリング（72テスト全PASS）|
 | 2026-02-01 | 6.35.0     | task-imp-permission-history-001完了、Permission履歴UI（63テスト全PASS）    |
 | 2026-01-30 | 6.34.0     | TASK-7D完了、ChatPanel統合（48テスト全PASS）                               |
 | 2026-01-30 | 6.33.0     | TASK-7B完了、SkillImportDialogコンポーネント実装（31テスト100%カバレッジ） |

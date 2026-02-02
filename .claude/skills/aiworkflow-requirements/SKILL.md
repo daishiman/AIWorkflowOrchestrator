@@ -12,7 +12,7 @@ description: |
 
   Trigger:
   プロジェクト仕様の検索、アーキテクチャ確認、API設計参照、セキュリティ要件確認、テスト戦略参照を行う場合に使用。
-  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig, permissionHistory, PermissionHistoryPanel, PermissionHistorySlice, 権限履歴, 履歴トラッキング, safeArgsSnapshot, PermissionHistoryEntry, PermissionHistoryFilter
+  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig, permissionHistory, PermissionHistoryPanel, PermissionHistorySlice, 権限履歴, 履歴トラッキング, safeArgsSnapshot, PermissionHistoryEntry, PermissionHistoryFilter, DatePreset, DateRangeFilter, dateFilterUtils, 期間フィルタ
 allowed-tools:
   - Read
   - Glob
@@ -195,6 +195,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **8.22.0** | **2026-02-02** | **実装詳細拡充**: arch-state-management.md v1.7.0（dateFilterUtils.ts実装ファイル追加、テストファイル2件追加、フィルタリングパイプライン仕様追加、品質メトリクス72テスト反映）、ui-ux-settings.md v1.4.0（3ドロップダウン化、実装ファイル3件追加）、interfaces-agent-sdk-history.md v6.37.0（フィルタ説明更新）、filterByDateRange, getDateRangeStartDate |
+| **8.21.0** | **2026-02-02** | **task-imp-permission-date-filter完了**: interfaces-agent-sdk-history.md v6.36.0更新（完了タスク追加、未タスク候補完了マーク）、ui-ux-settings.md v1.3.0更新（期間フィルタ仕様追加）、arch-state-management.md v1.6.0更新（DateRangeFilter/DatePreset型追加）、ui-ux-components.md v2.7.0更新。72テスト全PASS |
 | **8.20.0** | **2026-02-01** | **TASK-8C-G完了**: quality-e2e-testing.md v1.1.0更新（skill-creatorフィクスチャ境界値テスト拡充記録追加、96テストPASS）、claude-code-skills-overview.md更新（skill-fixture-runnerセクション追加、TASK-8C-Gテスト拡充記録）、topic-map.md再生成                                                                                                                                                   |
 | **8.19.0** | **2026-02-01** | **task-imp-permission-history-001完了**: arch-state-management.md v1.5.0更新（permissionHistorySliceセクション追加）、ui-ux-settings.md v1.2.0更新（権限要求履歴パネルUI仕様追加）、interfaces-agent-sdk-history.md v6.35.0更新（完了タスク・品質基準・テスト結果記録）、resource-map.md v1.7.0更新（権限履歴参照先追加）、topic-map.md更新（3ファイル行番号同期）。63テスト・100%カバレッジ達成 |
 | **8.18.0** | **2026-01-31** | **TASK-SKILL-RETRY-001完了**: interfaces-agent-sdk-executor.md v1.2.0更新（リトライ型定義・API・定数追加、完了タスクセクション）、error-handling.md v1.2.0更新（SkillExecutorリトライ戦略セクション追加）、interfaces-agent-sdk-history.md更新（残課題テーブル完了反映）。72テスト・全210テストGREEN                                                                                             |

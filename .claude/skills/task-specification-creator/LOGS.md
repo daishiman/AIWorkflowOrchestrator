@@ -43,6 +43,54 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-02 - 未タスク仕様書2件新規作成（システム仕様書横断スキャン）]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned (codebase TODO scan + system spec gap analysis)
+- **Result**: ✓ 成功
+- **Notes**: コードベース全体のTODO/FIXMEスキャン（45+箇所検出）+ システム仕様書references/全ファイル分析から、既存226件と照合し重複なしの新規2件を作成。9セクションテンプレート完全準拠。
+
+### 作成ファイル
+
+| ファイル名                                              | タスクID                                            | 優先度 | 規模   |
+| ------------------------------------------------------- | --------------------------------------------------- | ------ | ------ |
+| task-imp-community-entity-detail-navigation-001.md      | task-imp-community-entity-detail-navigation-001     | 低     | 小規模 |
+| task-imp-workspace-chat-edit-monaco-integration-001.md  | task-imp-workspace-chat-edit-monaco-integration-001 | 中     | 中規模 |
+
+### 検出元
+
+- CONV-08-06: CommunityVisualization/index.tsx:139 TODO
+- chatEditHandlers.ts:77,302,344 TODO（3つのstub実装）
+
+---
+
+## [2026-02-02 - patterns.md拡充: 成功パターン2件追加]
+
+- **Agent**: skill-creator (update mode)
+- **Phase**: フィードバック反映
+- **Result**: ✓ 成功
+- **Notes**: task-imp-permission-date-filter実行時に発見された2つのアーキテクチャパターンをpatterns.mdに追加。(1) コンポーネント同階層ユーティリティファイル配置（dateFilterUtils.tsのFeature Cohesionパターン、共通utils/との使い分け判断基準含む）、(2) 順次フィルタパイプラインuseMemoチェーン（Open-Closed原則に基づくフィルタ拡張パターン）。SKILL.md v9.23.0更新。
+
+---
+
+## [2026-02-02 - spec-update-workflow.md改善: 誤判断パターン3件追加]
+
+- **Agent**: skill-creator (update mode)
+- **Phase**: フィードバック反映
+- **Result**: ✓ 成功
+- **Notes**: task-imp-permission-date-filter実行時に発見された3つの漏れパターンをspec-update-workflow.mdの「よくある誤判断パターン」テーブルに追加。(1) LOGS.md両ファイル同時更新必須（task-specification-creator側が漏れやすい）、(2) topic-map.md再生成必須（仕様書セクション追加時の行番号ドリフト）、(3) arch-state-management.md関連タスクGrep必須（Sliceセクション内テーブル見落とし防止）。SKILL.md v9.22.0更新。
+
+---
+
+## [2026-02-02 - TASK-IMP-permission-date-filter Phase 1-12完了]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 完了
+- **Result**: ✓ 成功
+- **Notes**: TASK-IMP-permission-date-filter「権限履歴の期間別フィルタリング」Phase 1-12全工程完了。executeモード。dateFilterUtils.ts新規作成（DatePreset/DateRangeFilter型、getDateRangeStartDate/filterByDateRange関数）、PermissionHistoryFilter.tsx期間セレクト拡張、72テスト全PASS・カバレッジ98.5%達成。未タスク0件。
+
+---
+
 ## [2026-02-01 - TASK-8C-G Phase 1-12完了]
 
 - **Agent**: execute-workflow (Phase 1-12)
@@ -2437,5 +2485,27 @@ if (artifactPath) {
 - **Agent**: unknown
 - **Phase**: detect-unassigned TASK-8C-G
 - **Result**: ✓ 成功
+
+---
+
+## 2026-02-02 - 権限履歴の期間別フィルタリング（task-imp-permission-date-filter）タスク完了
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: task-imp-permission-date-filter
+- タスク名: 権限履歴の期間別フィルタリング
+- Phase: 1-12
+
+### 成果
+- テストカバレッジ: 72テスト全件PASS（Stmts 98.50% / Branch 87.82% / Func 100%）
+- 実装内容:
+  - dateFilterUtils.ts新規作成（getDateRangeStartDate, filterByDateRange）
+  - PermissionHistoryFilter.tsx期間セレクトUI追加
+  - DatePreset/DateRangeFilter型定義追加
+  - 境界値テスト含む22ケースのフィルタロジックテスト
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-02
 
 ---

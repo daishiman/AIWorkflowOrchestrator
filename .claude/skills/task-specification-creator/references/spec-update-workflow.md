@@ -72,6 +72,9 @@ Phase 12 Task 2 開始
 | 「型は別タスクで追加済みなので更新不要」 | **Step 2必要**   | 新規クラス/コンポーネントは独自の仕様セクションが必要 |
 | 「関連タスクテーブルは確認不要」         | **Step 1-C必須** | 仕様書内の「未タスク候補」「関連タスク」テーブルにタスクが記載されている可能性あり。Grepで確認が必要 |
 | 「未タスク指示書のunassigned-task/配置は見送り」 | **作成が必要** | ガイドラインの「条件」要件を確認し、検出件数が1件以上の場合は原則作成する |
+| 「task-specification-creator/LOGS.mdは後で更新」 | **Step 1-A必須** | 両方のLOGS.md（aiworkflow-requirements + task-specification-creator）を同時に更新すること。後回しにすると漏れる |
+| 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・行数変更があった場合、`generate-index.mjs`で行番号を再同期すること |
+| 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
 
 ### 🆕 新規クラス/コンポーネント追加時のチェックリスト
 

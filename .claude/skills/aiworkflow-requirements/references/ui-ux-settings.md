@@ -265,7 +265,7 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 | コンポーネント            | 役割・属性                                               |
 | ------------------------- | -------------------------------------------------------- |
 | PermissionHistoryPanel    | 親コンポーネント（仮想スクロール管理）                   |
-| - PermissionHistoryFilter | ツール名・判断結果のフィルタUI（2ドロップダウン）        |
+| - PermissionHistoryFilter | ツール名・判断結果・期間のフィルタUI（3ドロップダウン + カスタム日付入力） |
 | - 仮想スクロールリスト    | @tanstack/react-virtual（estimateSize=72px, overscan=5） |
 | - PermissionHistoryItem   | 個別エントリ（emoji icon、判断バッジ、相対時刻）         |
 | - 空状態メッセージ        | 履歴なし時 / フィルタ結果0件時                           |
@@ -285,10 +285,23 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ### フィルタ仕様
 
-| フィルタ項目 | 型                | 選択肢                                   |
-| ------------ | ----------------- | ---------------------------------------- |
-| ツール名     | select (combobox) | 履歴内の全ツール名を動的生成             |
-| 判断結果     | select (combobox) | 全て / approved / denied / approved_once |
+| フィルタ項目 | 型                | 選択肢                                                  |
+| ------------ | ----------------- | ------------------------------------------------------- |
+| ツール名     | select (combobox) | 履歴内の全ツール名を動的生成                            |
+| 判断結果     | select (combobox) | 全て / approved / denied / approved_once                |
+| 期間         | select            | 全期間 / 今日 / 過去7日 / 過去30日 / カスタム範囲       |
+
+#### 期間フィルタ詳細（task-imp-permission-date-filter）
+
+| 項目         | 仕様                                                           |
+| ------------ | -------------------------------------------------------------- |
+| 型定義       | `DatePreset = "all" \| "today" \| "week" \| "month" \| "custom"` |
+| カスタム入力 | `<input type="date" />`（プリセット="custom"時のみ表示）       |
+| デフォルト   | "all"（全期間）                                                |
+| aria-label   | "期間フィルタ"                                                 |
+| 日付入力     | "開始日" / "終了日"（aria-label）                              |
+| ヘルパー     | `dateFilterUtils.ts`（getDateRangeStartDate, filterByDateRange）|
+| 定数         | DAYS_IN_WEEK=7, DAYS_IN_MONTH=30                              |
 
 ### データ制限
 
@@ -301,9 +314,9 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 | 指標              | 値     |
 | ----------------- | ------ |
-| テスト数          | 63     |
-| Line Coverage     | 100%   |
-| Branch Coverage   | 95.16% |
+| テスト数          | 72     |
+| Line Coverage     | 98.50% |
+| Branch Coverage   | 87.82% |
 | Function Coverage | 100%   |
 
 ---
@@ -314,6 +327,7 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 - [security-skill-execution.md](./security-skill-execution.md) - Permission Store詳細
 - [ui-ux-forms.md](./ui-ux-forms.md) - フォーム設計ガイドライン
 - [deployment-electron.md](./deployment-electron.md) - Electronデプロイ
+- [期間フィルタ実装ガイド](../../../docs/30-workflows/TASK-IMP-permission-date-filter/outputs/phase-12/implementation-guide.md) - 期間別フィルタリング実装詳細
 
 ---
 
@@ -324,6 +338,9 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 | apps/desktop/src/renderer/components/settings/SlideDirectorySettings.tsx                     | UIコンポーネント           |
 | apps/desktop/src/renderer/hooks/useSlideSettings.ts                                          | カスタムフック             |
 | apps/desktop/src/renderer/components/settings/PermissionSettings/index.tsx                   | 許可設定UIコンポーネント   |
+| apps/desktop/src/renderer/components/settings/PermissionSettings/dateFilterUtils.ts          | 期間フィルタヘルパー関数   |
+| apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryFilter.tsx | フィルタUI（3ドロップダウン）|
+| apps/desktop/src/renderer/components/settings/PermissionSettings/PermissionHistoryPanel.tsx  | 履歴パネル（仮想スクロール）|
 | apps/desktop/src/preload/channels.ts                                                         | チャンネル定義             |
 | apps/desktop/src/preload/index.ts                                                            | API公開                    |
 | apps/desktop/src/main/settings/slideSettingsStore.ts                                         | 永続化ストア               |
@@ -341,9 +358,11 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ## バージョン履歴
 
-| Version | Date       | Changes                                                       |
-| ------- | ---------- | ------------------------------------------------------------- |
-| 1.2.0   | 2026-02-01 | PermissionHistoryPanel追加（task-imp-permission-history-001） |
+| Version | Date       | Changes                                                                              |
+| ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 1.4.0   | 2026-02-02 | 実装詳細拡充: フィルタUI説明を3ドロップダウン化、テストカバレッジ72件反映、実装ファイル3件追加 |
+| 1.3.0   | 2026-02-02 | 期間フィルタ追加（task-imp-permission-date-filter: DatePreset/DateRangeFilter型追加）|
+| 1.2.0   | 2026-02-01 | PermissionHistoryPanel追加（task-imp-permission-history-001）                        |
 | 1.1.1   | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換            |
 | 1.1.0   | 2026-01-26 | PermissionSettings UI追加（TASK-3-1-E）                       |
 | 1.0.0   | 2026-01-14 | 初版作成: スライド出力ディレクトリ設定機能                    |
