@@ -430,6 +430,112 @@ Electron IPC ハンドラーの統合テストにおいて、Main Process のハ
 | エラー変換 | `toIPCValidationError(result)` で統一エラー形式に変換 |
 | 適用チャネル | セキュリティ上重要なチャネル（abort, get-status等） |
 
+### E2Eテストパターン（TASK-8C-C 2026-02-02実装）
+
+Playwright + Vitest を使用した Electron アプリケーションの E2E テストパターン群。
+
+#### Electron E2Eセットアップパターン
+
+Playwright の `_electron` モジュールを使用して Electron アプリケーションを起動し、E2E テストを実行するためのセットアップパターン。
+
+| 要素 | 実装 |
+|------|------|
+| 起動メソッド | `_electron.launch({ args: [...], env: {...} })` |
+| ウィンドウ取得 | `electronApp.firstWindow()` |
+| 待機処理 | `page.waitForLoadState("domcontentloaded")` |
+| 終了処理 | `electronApp?.close()` |
+| 環境変数 | `NODE_ENV: "test"`, `TEST_SKILLS_DIR: fixtureDir` |
+
+**テストライフサイクル**:
+
+| フック | 用途 |
+|--------|------|
+| beforeAll | Electron アプリ起動、初期ページ取得 |
+| afterAll | Electron アプリ終了 |
+| beforeEach | テスト間の状態リセット |
+
+#### セレクタ定数パターン
+
+E2E テストで使用するセレクタを定数オブジェクトとして一元管理するパターン。
+
+| 要素 | 実装 |
+|------|------|
+| 構造 | `const SELECTORS = { ... } as const` |
+| role セレクタ | `role=combobox`, `role=listbox`, `role=option` |
+| text セレクタ | `text="スキャン中..."` |
+| data-testid | `[data-testid="skill-streaming-view"]` |
+| 動的セレクタ | `skillOption: (name: string) => \`role=option >> text="${name}"\`` |
+| aria-label | `[aria-label="再スキャン"]` |
+
+**セレクタ優先順位**:
+
+| 優先度 | セレクタ種別 | 理由 |
+|--------|------------|------|
+| 1 | role セレクタ | アクセシビリティ準拠、実装非依存 |
+| 2 | data-testid | テスト専用、安定性高い |
+| 3 | text セレクタ | 可読性高いが変更に弱い |
+| 4 | CSS クラス | 最終手段、スタイル変更に弱い |
+
+#### タイムアウト定数パターン
+
+操作種別ごとにタイムアウト値を定数化し、テストの安定性と可読性を向上させるパターン。
+
+| 要素 | 実装 |
+|------|------|
+| 構造 | `const TIMEOUTS = { ... } as const` |
+| ダイアログ表示 | `dialog: 5000` |
+| スキャン完了 | `scan: 10000` |
+| 実行状態変化 | `execution: 5000` |
+
+**適用場面**: `page.waitForSelector()`, `expect().toBeVisible()` の timeout 引数
+
+#### ヘルパー関数パターン
+
+頻出する操作をヘルパー関数として抽出し、テストコードの重複を排除するパターン。
+
+| 関数 | 用途 | 戻り値 |
+|------|------|--------|
+| `openSkillSelector(page)` | スキル選択UIを開く | Promise<void> |
+| `openImportDialog(page, skillName)` | 未インポートスキルを選択してダイアログを開く | Promise<void> |
+| `importSkillViaAPI(page, skillName)` | API経由でスキルをインポート | Promise<void> |
+| `startSkillExecution(page, prompt)` | スキル実行を開始 | Promise<void> |
+| `resetForTesting(page)` | テスト間の状態リセット | Promise<void> |
+
+**ヘルパー関数設計原則**:
+
+| 原則 | 説明 |
+|------|------|
+| 単一責任 | 1つの関数は1つの操作のみ |
+| 暗黙の待機 | 必要な待機処理を関数内に含める |
+| 状態非依存 | 関数呼び出し前の状態に依存しない |
+| エラー伝播 | 例外は呼び出し元に伝播（catch しない） |
+
+#### テストグループ構成パターン
+
+関連するテストケースを describe ブロックでグループ化し、テストの構造を明確にするパターン。
+
+| グループ | テストケース数 | 内容 |
+|----------|---------------|------|
+| Skill Import Flow | 3 | ダイアログ表示、詳細表示、インポート実行 |
+| Skill Execution Flow | 3 | ストリーミング、停止ボタン、中止 |
+| Rescan Flow | 1 | 再スキャン実行 |
+| Edge Cases | 2 | 無効スキル除外、インポート済み再選択 |
+
+**ネスト beforeEach パターン**: Execution Flow グループでは beforeEach でスキルを事前インポートし、各テストケースの前提条件を統一する。
+
+#### page.evaluate パターン
+
+Renderer Process のコンテキストで JavaScript を実行し、Electron API 経由で操作を行うパターン。
+
+| 要素 | 実装 |
+|------|------|
+| 構文 | `page.evaluate(async (arg) => { ... }, arg)` |
+| コンテキスト | Renderer Process（window オブジェクトにアクセス可能） |
+| 用途 | preload API 呼び出し、DOM 直接操作、状態リセット |
+| 引数渡し | 第2引数でシリアライズ可能な値を渡す |
+
+**使用例**: `window.electronAPI?.skill?.resetForTesting?.()`
+
 ---
 
 ## アクセシビリティ実装パターン
@@ -473,6 +579,7 @@ Electron IPC ハンドラーの統合テストにおいて、Main Process のハ
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.0 | 2026-02-02 | TASK-8C-C: E2Eテストパターン追加（Electron E2Eセットアップ、セレクタ定数、タイムアウト定数、ヘルパー関数、テストグループ構成、page.evaluate） |
 | 1.4.0 | 2026-02-02 | TASK-8C-A: IPC通信テストパターン追加（Handler Map方式、SkillService Partial Mock、invokeOptionalHandler、validateIpcSender失敗検証） |
 | 1.3.0 | 2026-01-30 | TASK-7D: forwardRef + useImperativeHandleパターン、React.memo + Exclude型パターン追加 |
 | 1.2.0 | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルモック設計、モック上書きパターン） |

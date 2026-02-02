@@ -356,6 +356,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.30.0** | **2026-02-02** | **TASK-8C-Cスキル改善**: patterns.md成功パターン1件追加（Phase 12 Step 1完了チェックリスト厳格遵守）、SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止パターン |
+| **9.29.0** | **2026-02-02** | **TASK-8C-C完了**: E2Eテスト-インポート・実行フロー（9テストケース）、未タスク4件検出、task-workflow.md登録 |
+| **9.28.0** | **2026-02-02** | **TASK-8C-B知見追加**: patterns.md E2Eテスト設計パターン3件追加（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層） |
+| **9.27.0** | **2026-02-02** | **TASK-8C-B完了**: スキル選択フローE2Eテスト Phase 1-12全工程完了。8テストケース（ARIA属性ベースセレクタ、キーボード操作、アクセシビリティ検証）。LOGS.md完了記録追加 |
 | **9.26.0** | **2026-02-02** | **マージ統合**: TASK-OPT-CI-TEST-PARALLEL-001完了 + task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A完了をマージ統合 |
 | **9.25.0** | **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001スキル改善**: patterns.md CI/DevOps最適化パターン2件追加（GitHub Actionsテスト並列実行、DevOps仕様書更新）、spec-update-workflow.md Step 1-F追加（DevOps関連ファイル更新チェックリスト）。CI最適化タスク完了時の仕様書更新漏れ防止 |
 | **9.24.0** | **2026-02-02** | **TASK-8C-A未タスク指示書最適化**: task-imp-ipc-imp002-channels.md・task-imp-ipc-permission-response.mdにシステム仕様書参照テーブル追加（3.4セクション）。実装者がarchitecture-implementation-patterns.md/interfaces-agent-sdk-skill.md/security-skill-ipc.mdを参照できるよう強化 |

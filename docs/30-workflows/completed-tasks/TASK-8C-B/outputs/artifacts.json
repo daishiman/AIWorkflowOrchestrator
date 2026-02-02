@@ -1,0 +1,214 @@
+{
+  "taskId": "TASK-8C-B",
+  "taskName": "E2Eテスト - スキル選択フロー",
+  "createdAt": "2026-02-02T19:30:00Z",
+  "phases": {
+    "phase-01": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "機能・非機能要件"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "AC定義"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "実装範囲"
+        }
+      ]
+    },
+    "phase-02": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト設計書",
+          "path": "outputs/phase-2/test-design.md",
+          "description": "テスト構造設計"
+        },
+        {
+          "name": "セレクタ一覧",
+          "path": "outputs/phase-2/selectors.md",
+          "description": "UI要素定義"
+        }
+      ]
+    },
+    "phase-03": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "判定結果"
+        }
+      ]
+    },
+    "phase-04": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "E2Eテストファイル",
+          "path": "apps/desktop/src/__tests__/skillSelection.e2e.ts",
+          "description": "6件のテストケース"
+        },
+        {
+          "name": "テストケース一覧",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース詳細"
+        }
+      ]
+    },
+    "phase-05": {
+      "name": "実装（TDD: Green）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "環境設定確認書",
+          "path": "outputs/phase-5/environment-setup.md",
+          "description": "環境設定の確認結果"
+        },
+        {
+          "name": "連携確認書",
+          "path": "outputs/phase-5/integration-check.md",
+          "description": "フィクスチャ連携確認"
+        }
+      ]
+    },
+    "phase-06": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "拡充テストレポート",
+          "path": "outputs/phase-6/test-expansion.md",
+          "description": "追加テスト一覧"
+        },
+        {
+          "name": "安定性改善記録",
+          "path": "outputs/phase-6/stability-fixes.md",
+          "description": "フレーキー対策"
+        }
+      ]
+    },
+    "phase-07": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "テスト結果分析"
+        },
+        {
+          "name": "安定性テスト結果",
+          "path": "outputs/phase-7/stability-result.md",
+          "description": "再現性確認結果"
+        }
+      ]
+    },
+    "phase-08": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-summary.md",
+          "description": "改善内容一覧"
+        }
+      ]
+    },
+    "phase-09": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質検証結果"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "判定結果"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "Part 1/Part 2構成"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "検出結果（0件でも出力）"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR URL等"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "depends_on": ["TASK-7D", "TASK-8C-E"],
+    "parallel_with": ["TASK-8C-A", "TASK-8C-C", "TASK-8C-D"],
+    "blocks": []
+  },
+  "metadata": {
+    "priority": "high",
+    "estimated_complexity": "medium",
+    "tags": ["test", "e2e", "playwright"],
+    "output_file": "apps/desktop/src/__tests__/skillSelection.e2e.ts",
+    "test_cases": [
+      "スキルセレクター表示",
+      "ドロップダウン開く",
+      "スキル選択",
+      "スキル選択解除",
+      "キーボードナビゲーション",
+      "外側クリックで閉じる"
+    ]
+  }
+}

@@ -493,6 +493,7 @@
 | ドキュメント | 内容 |
 |--------------|------|
 | [quality-requirements.md](./quality-requirements.md) | 非機能要件・テスト戦略 |
+| [quality-e2e-testing.md](./quality-e2e-testing.md) | E2Eテスト仕様（スキル選択フロー等） |
 | [error-handling.md](./error-handling.md) | エラーハンドリング仕様 |
 | [security-principles.md](./security-principles.md) | セキュリティ原則 |
 | [architecture-overview.md](./architecture-overview.md) | アーキテクチャ全体像 |
@@ -504,6 +505,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.0 | 2026-02-02 | E2Eテスト仕様（quality-e2e-testing.md）への参照リンク追加 |
 | 1.2.0 | 2026-01-26 | 仕様ガイドライン準拠: コード例削除、文章・表形式に変更 |
 | 1.1.0 | 2026-01-26 | 命名規則、デバッグガイド、リリースプロセス、バックアップ・リカバリ、環境構築ガイド追加 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

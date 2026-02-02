@@ -258,6 +258,8 @@
 | task-imp-ipc-imp002-channels-001 | IMP-002チャネル本体実装（settings/permissions/cache） | 中 | TASK-8C-A Phase 12（IPC統合テスト） | `docs/30-workflows/unassigned-task/task-imp-ipc-imp002-channels.md` |
 | task-imp-ipc-permission-response-001 | skill:permission:response チャネル実装 | 低 | TASK-8C-A Phase 12（IPC統合テスト） | `docs/30-workflows/unassigned-task/task-imp-ipc-permission-response.md` |
 | task-ref-quality-requirements-split-001 | quality-requirements.md仕様書分割 | 低 | TASK-OPT-CI-TEST-PARALLEL-001 Phase 12（テンプレート準拠確認） | `docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md` |
+| task-e2e-permission-waitfortimeout-001 | E2E権限テスト waitForTimeout改善 | 低 | TASK-8C-D Phase 10（TQ-M1指摘） | `docs/30-workflows/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md` |
+| task-e2e-test-readme-documentation-001 | READMEへのE2Eテスト実行方法追加 | 低 | TASK-8C-D Phase 9（DOC-M1指摘） | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md` |
 
 ### 未タスク管理ルール
 
@@ -293,3 +295,4 @@
 | 1.6.0      | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（成果物配置、フェーズ遷移図、ファイル配置） |
 | 1.10.0     | 2026-02-02 | 未タスク2件追加: task-imp-ipc-imp002-channels-001（IMP-002チャネル実装）、task-imp-ipc-permission-response-001（permission:response実装）。TASK-8C-A Phase 12検出 |
 | 1.11.0     | 2026-02-02 | 未タスク追加: task-ref-quality-requirements-split-001（quality-requirements.md仕様書分割）。TASK-OPT-CI-TEST-PARALLEL-001 Phase 12検出 |
+| 1.12.0     | 2026-02-02 | 未タスク2件追加: task-e2e-permission-waitfortimeout-001（waitForTimeout改善）、task-e2e-test-readme-documentation-001（READMEドキュメント）。TASK-8C-D Phase 9/10検出 |
