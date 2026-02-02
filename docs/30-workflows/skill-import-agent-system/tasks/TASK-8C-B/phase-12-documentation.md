@@ -48,11 +48,46 @@
 
 #### Step 1: タスク完了記録【必須・全タスク】
 
-- [ ] 該当する仕様書に「完了タスク」セクションを追加
-- [ ] 関連ドキュメントセクションに実装ガイドリンクを追加
-- [ ] 変更履歴セクションにバージョンを追記
-- [ ] aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加
-- [ ] task-specification-creator/LOGS.mdにタスク完了記録を追加
+> **重要**: 詳細手順は `references/spec-update-workflow.md` を参照
+
+##### Step 1-A: タスク完了記録
+
+- [ ] 該当仕様書の「完了タスク」テーブルにタスクIDと完了日を追加した
+- [ ] 「タスク完了ステータス更新」セクションの**詳細テンプレート**で完了記録を追加した
+  - [ ] テスト結果サマリー表（機能/エラーハンドリング/アクセシビリティ/統合テスト）
+  - [ ] 成果物テーブル（テスト結果レポート/実装ガイド等）
+- [ ] 「関連ドキュメント」セクションに実装ガイドリンクを追加した
+- [ ] 「変更履歴」にバージョン番号を追記した
+
+##### Step 1-B: 実装状況テーブル更新
+
+- [ ] 該当仕様書に「実装状況」テーブルがある場合、該当行を「完了」に更新した
+- 本タスク判断: テスト実装のため該当なし（APIエンドポイント追加なし）
+
+##### Step 1-C: 関連タスクテーブル更新【Grep必須】
+
+- [ ] `grep -rn "TASK-8C-B" .claude/skills/aiworkflow-requirements/references/` を実行した
+- [ ] arch-state-management.md等の「関連タスク」テーブルを確認した
+- [ ] 該当タスクのステータスを「**完了**」に更新した
+
+##### Step 1-D: topic-map.md再生成【見落としやすい】
+
+- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行した
+- [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されている
+
+##### Step 1-E: 未タスク指示書作成・登録（1件以上検出時は必須）
+
+- [ ] 未タスク候補が1件以上の場合、`docs/30-workflows/unassigned-task/` に指示書を作成・配置した
+- [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
+- [ ] 関連仕様書の残課題テーブルに新規未タスクを登録した
+- ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
+
+##### 必須更新ファイル（全タスク共通）
+
+- [ ] aiworkflow-requirements/LOGS.md を更新した
+- [ ] task-specification-creator/LOGS.md を更新した
+- [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
+- [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
 
 **更新対象ファイル**:
 
@@ -70,6 +105,7 @@
 - 新規インターフェース/型追加なし
 - 既存インターフェース変更なし
 - 新規定数/設定値追加なし
+- documentation-changelog.md に「更新なし」と理由を明記すること
 
 ### Task 3: ドキュメント更新履歴 & artifacts.json更新【必須】
 
@@ -107,13 +143,60 @@ node scripts/complete-phase.js \
 
 ## 完了条件
 
-- [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
+### Task 1: 実装ガイド
+
+- [ ] 実装ガイド（Part 1: 概念的説明・中学生レベル）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
-- [ ] **【Task 2 Step 1】aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加した**
-- [ ] **【Task 2 Step 1】task-specification-creator/LOGS.mdにタスク完了記録を追加した**
-- [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
-- [ ] **未タスク検出レポートが出力されている**【必須】
+
+### Task 2: システムドキュメント更新
+
+#### Step 1-A: タスク完了記録
+
+- [ ] 該当仕様書の「完了タスク」テーブルにタスクIDと完了日を追加した
+- [ ] 「タスク完了ステータス更新」詳細テンプレートで完了記録を追加した
+- [ ] 「関連ドキュメント」セクションに実装ガイドリンクを追加した
+- [ ] 「変更履歴」にバージョン番号を追記した
+
+#### Step 1-B: 実装状況テーブル更新
+
+- [ ] 該当仕様書の「実装状況」テーブルを確認し、該当なしまたは「完了」に更新した
+
+#### Step 1-C: 関連タスクテーブル更新
+
+- [ ] `grep -rn "TASK-8C-B" references/` でタスク記載箇所を確認した
+- [ ] 該当タスクのステータスを「**完了**」に更新した（該当する場合）
+
+#### Step 1-D: topic-map.md再生成
+
+- [ ] `generate-index.js` を実行してtopic-map.mdを再生成した
+
+#### Step 1-E: 未タスク指示書作成・登録
+
+- [ ] 未タスク候補が1件以上の場合、指示書を作成・配置した
+- [ ] 残課題テーブルに新規未タスクを登録した（該当する場合）
+
+#### 必須更新ファイル
+
+- [ ] aiworkflow-requirements/LOGS.md を更新した
+- [ ] task-specification-creator/LOGS.md を更新した
+- [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
+- [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
+
+#### Step 2: システム仕様更新
+
+- [ ] システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
+
+### Task 3: ドキュメント更新履歴
+
+- [ ] documentation-changelog.md が作成されている
 - [ ] artifacts.jsonが更新されている
+
+### Task 4: 未タスク検出
+
+- [ ] **未タスク検出レポートが出力されている**【0件でも必須】
+
+### 最終確認
+
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
