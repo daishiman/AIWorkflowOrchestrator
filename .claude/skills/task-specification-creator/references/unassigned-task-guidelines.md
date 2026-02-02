@@ -49,6 +49,15 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 | ------------------------ | ---- | ----------------------------------------------- |
 | 未タスク検出レポート     | ✅   | `outputs/phase-12/unassigned-task-detection.md` |
 | 未タスク指示書（該当時） | 条件 | `docs/30-workflows/unassigned-task/`            |
+| task-workflow.md テーブル登録 | 条件 | `references/task-workflow.md` の残課題テーブル |
+| 関連仕様書の残課題テーブル登録 | 条件 | 対象機能の仕様書（例: `interfaces-agent-sdk-history.md`） |
+
+> **⚠️ 重要**: 未タスクが1件以上検出された場合、以下の3ステップを**全て**完了すること:
+> 1. 指示書作成（`unassigned-task/` に配置）
+> 2. `task-workflow.md` の残課題テーブルに登録
+> 3. 関連仕様書の残課題テーブルに登録
+>
+> 検出レポートだけ作成して指示書・テーブル登録を行わないのは**不完全**です。
 
 **重要**: 未タスクが検出されなかった場合でも、検出レポートに「未対応課題は検出されませんでした」と明記すること。
 

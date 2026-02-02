@@ -77,41 +77,7 @@ node scripts/list-specs.js --topics
 | テストカバレッジ目標 | L495 |
 | 関連ドキュメント | L572 |
 | 完了タスク | L580 |
-| 変更履歴 | L685 |
-
-### references/testing-component-patterns.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L10 |
-| Storeモッキングパターン | L18 |
-| テストデータファクトリ | L75 |
-| アクセシビリティテスト | L120 |
-| キーボードナビゲーション | L160 |
-| 非同期テスト | L200 |
-| テスト構成 | L230 |
-| userEvent vs fireEvent | L280 |
-
-### references/testing-fixtures.md
-
-| セクション | 行 |
-|------------|----|\n| ファクトリ関数パターン | L15 |
-| 境界値フィクスチャ | L60 |
-| Storeモック構築 | L100 |
-| Propsビルダー | L140 |
-| Providerラッパー | L180 |
-| フィクスチャファイル構成 | L210 |
-| ベストプラクティス | L250 |
-
-### references/testing-accessibility.md
-
-| セクション | 行 |
-|------------|----|\n| ARIA属性テスト | L15 |
-| キーボードナビゲーション | L80 |
-| スクリーンリーダー互換性 | L130 |
-| 色とコントラスト | L170 |
-| 検証チェックリスト | L200 |
-| 自動テストツール（jest-axe） | L230 |
-| WCAG 2.1 AAチェックリスト | L260 |
+| 変更履歴 | L670 |
 
 ---
 
@@ -197,9 +163,9 @@ node scripts/list-specs.js --topics
 | パフォーマンス最適化パターン | L239 |
 | セキュリティ実装パターン | L277 |
 | テスト実装パターン | L309 |
-| アクセシビリティ実装パターン | L373 |
-| 関連ドキュメント | L398 |
-| 変更履歴 | L410 |
+| アクセシビリティ実装パターン | L435 |
+| 関連ドキュメント | L460 |
+| 変更履歴 | L472 |
 
 ### references/architecture-monorepo.md
 
@@ -263,17 +229,17 @@ node scripts/list-specs.js --topics
 | PermissionResolver 型定義（TASK-3-2） | L233 |
 | SkillExecutor IPC統合（TASK-3-2） | L320 |
 | 完了タスク | L397 |
-| 関連ドキュメント | L469 |
-| 変更履歴 | L481 |
+| 関連ドキュメント | L434 |
+| 変更履歴 | L446 |
 
 ### references/interfaces-agent-sdk-history.md
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
-| 残課題（未タスク） | L478 |
-| 関連ドキュメント | L489 |
-| 変更履歴 | L505 |
+| 残課題（未タスク） | L499 |
+| 関連ドキュメント | L512 |
+| 変更履歴 | L528 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -290,12 +256,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L378 |
-| SkillSlice型定義（TASK-6-1） | L430 |
-| ModifierSkill（スライド逆同期機能） | L522 |
-| ChatPanel統合（TASK-7D） | L556 |
-| 関連ドキュメント | L591 |
-| 変更履歴 | L602 |
+| SkillImportStore（TASK-2B） | L380 |
+| SkillSlice型定義（TASK-6-1） | L432 |
+| ModifierSkill（スライド逆同期機能） | L524 |
+| ChatPanel統合（TASK-7D） | L558 |
+| テストアーキテクチャ（TASK-8C-A） | L593 |
+| 完了タスク | L645 |
+| 関連ドキュメント | L677 |
+| 変更履歴 | L689 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -1064,14 +1032,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| スキル管理IPCセキュリティ | L20 |
-| スキルインポートIPCチャネル（TASK-4-1） | L67 |
-| Claude Code CLI連携セキュリティ | L110 |
-| Skill Execution Preload API セキュリティ | L171 |
-| Permission IPC Handler セキュリティ | L216 |
-| SkillAPI Preload実装（TASK-5-1） | L252 |
-| 完了タスク | L318 |
-| 関連ドキュメント | L330 |
+| スキル管理IPCセキュリティ | L21 |
+| スキルインポートIPCチャネル（TASK-4-1） | L68 |
+| Claude Code CLI連携セキュリティ | L111 |
+| Skill Execution Preload API セキュリティ | L172 |
+| Permission IPC Handler セキュリティ | L217 |
+| SkillAPI Preload実装（TASK-5-1） | L253 |
+| 完了タスク | L319 |
+| 関連ドキュメント | L332 |
 
 ---
 
@@ -1442,14 +1410,13 @@ node scripts/list-specs.js --topics
 | 認可エラー（UnauthorizedError） | L145 |
 | リトライ戦略 | L210 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
-| SkillExecutor 実行エラーコード（TASK-8A） | L289 |
-| サーキットブレーカー（将来対応） | L328 |
-| エラーレスポンス形式 | L356 |
-| エラーログ出力 | L387 |
-| ユーザー向けエラーメッセージ | L424 |
-| エラーハンドリングの実装指針 | L447 |
-| 関連ドキュメント | L477 |
-| 変更履歴 | L486 |
+| サーキットブレーカー（将来対応） | L289 |
+| エラーレスポンス形式 | L317 |
+| エラーログ出力 | L348 |
+| ユーザー向けエラーメッセージ | L385 |
+| エラーハンドリングの実装指針 | L408 |
+| 関連ドキュメント | L438 |
+| 変更履歴 | L447 |
 
 ### references/llm-embedding.md
 
@@ -1758,8 +1725,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L267 |
-| 変更履歴 | L277 |
+| 関連ドキュメント | L269 |
+| 変更履歴 | L279 |
 
 ### references/ui-history-components.md
 

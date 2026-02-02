@@ -473,6 +473,27 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 - SkillSearchBar / SkillCategoryFilter
 - agentSlice（Zustand状態管理）
 
+### TASK-8C-A: IPC統合テスト（2026-02-02完了）
+
+| 項目         | 内容                                  |
+| ------------ | ------------------------------------- |
+| タスクID     | TASK-8C-A                             |
+| 完了日       | 2026-02-02                            |
+| ステータス   | **完了**                              |
+| テスト数     | 41件（22基本TC + 19エッジケース）     |
+| 発見課題     | 2件（IMP-002チャネル、permission:response） |
+| ドキュメント | `docs/30-workflows/TASK-8C-A/`        |
+
+#### 実装内容
+
+- skillHandlers.ts 8チャネル全パスのIPC統合テスト
+- Handler Map方式（ipcMain.handle → Map格納 → 直接呼び出し）
+- SkillService Partial Mock（15メソッド）
+- validateIpcSender セキュリティ検証（成功/失敗パス）
+- IMP-002チャネル（settings/permissions/cache）条件付きテスト
+- unregisterSkillHandlers テスト
+- カバレッジ: 行91.4%、ブランチ76%
+
 ---
 
 ## 残課題（未タスク）
@@ -483,6 +504,8 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 | -      | EnvironmentType: code実装       | 低     | 未着手                 |
 | ~~-~~  | ~~SkillExecutor: リトライ機構~~ | ~~中~~ | ~~検討中~~ ✅ **完了** |
 | -      | Permission: 永続化UIの改善      | 低     | 未着手                 |
+| task-imp-ipc-imp002-channels-001 | IMP-002チャネル本体実装（settings/permissions/cache 9チャネル） | 中 | 未着手 |
+| task-imp-ipc-permission-response-001 | skill:permission:response チャネル実装 | 低 | 未着手 |
 
 ---
 
@@ -506,6 +529,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | 日付       | バージョン | 変更内容                                                                   |
 | ---------- | ---------- | -------------------------------------------------------------------------- |
+| 2026-02-02 | 6.36.0     | TASK-8C-A完了、IPC統合テスト（41テスト、91.4%カバレッジ）                 |
 | 2026-02-01 | 6.35.0     | task-imp-permission-history-001完了、Permission履歴UI（63テスト全PASS）    |
 | 2026-01-30 | 6.34.0     | TASK-7D完了、ChatPanel統合（48テスト全PASS）                               |
 | 2026-01-30 | 6.33.0     | TASK-7B完了、SkillImportDialogコンポーネント実装（31テスト100%カバレッジ） |

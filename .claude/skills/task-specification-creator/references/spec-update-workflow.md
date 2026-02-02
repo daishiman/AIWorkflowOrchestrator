@@ -297,6 +297,12 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行した
 - [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されている
 
+### Step 1-E: 未タスク指示書作成・登録（1件以上検出時は必須）
+- [ ] 未タスク候補が1件以上の場合、`docs/30-workflows/unassigned-task/` に指示書を作成・配置した
+- [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
+- [ ] 関連仕様書（`interfaces-agent-sdk-history.md`等）の残課題テーブルに新規未タスクを登録した
+- [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
+
 ### 必須更新ファイル（全タスク共通）
 - [ ] aiworkflow-requirements/LOGS.md を更新した
 - [ ] task-specification-creator/LOGS.md を更新した

@@ -191,6 +191,8 @@ Zustand Sliceパターンで実装された状態管理。
 | `skill:remove`         | Renderer → Main | スキル削除               | `OperationResult<void>`           |
 | `skill:get-detail`     | Renderer → Main | スキル詳細取得           | `OperationResult<Skill>`          |
 | `skill:execute`        | Renderer → Main | スキル実行               | `OperationResult<SkillRunResult>` |
+| `skill:abort`          | Renderer → Main | スキル実行中断           | `boolean`                         |
+| `skill:get-status`     | Renderer → Main | 実行ステータス取得       | `ExecutionStatus \| null`         |
 
 #### OperationResult型
 
@@ -588,6 +590,90 @@ ChatPanelは、既存チャット機能にスキル関連コンポーネント�
 
 ---
 
+## テストアーキテクチャ（TASK-8C-A）
+
+### 概要
+
+skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Electron プロセスを起動せずにハンドラーロジックをテストする。テストファイルは `apps/desktop/src/main/ipc/__tests__/skillIpc.integration.test.ts` に配置される。
+
+### テスト構成
+
+| カテゴリ | テスト数 | 検証対象 |
+|----------|----------|----------|
+| ハンドラー登録/解除 | 1 | registerSkillHandlers / unregisterSkillHandlers |
+| 基本チャネルテスト | 12 | list-available, list-imported, import, remove, get-detail, execute |
+| 拡張チャネルテスト | 2 | abort, get-status |
+| エラーハンドリング | 10 | 各チャネルの異常系 |
+| セキュリティ検証 | 2 | validateIpcSender失敗パス（abort, get-status） |
+| エッジケース | 4 | undefined引数、空配列、不正イベント等 |
+| IMP-002チャネル | 10 | settings/permissions/cache（未実装パス） |
+
+### 適用テストパターン
+
+| パターン | 参照先 | 用途 |
+|----------|--------|------|
+| Handler Map方式 | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) IPC通信テストパターン | ハンドラー関数の直接テスト |
+| SkillService Partial Mock | 同上 | 依存サービスの部分モック |
+| invokeOptionalHandler | 同上 | IMP-002未実装チャネルの条件付きテスト |
+| validateIpcSender失敗検証 | 同上 | セキュリティレイヤーの検証 |
+
+### ヘルパー関数
+
+テストファイル内に定義された再利用可能ヘルパー。
+
+| 関数 | 用途 |
+|------|------|
+| `createMockIpcEvent(senderId?)` | モックIPCイベントオブジェクト生成 |
+| `expectOperationSuccess(result, expectedData?)` | OperationResult成功検証 |
+| `expectOperationError(result, errorPattern?)` | OperationResultエラー検証 |
+| `invokeOptionalHandler(handlerMap, channel, ...args)` | 未実装チャネルの条件付き呼び出し |
+
+### テストデータ定数
+
+| 定数 | 型 | 用途 |
+|------|-----|------|
+| `EXPECTED_CHANNELS` | `string[]` | 登録されるべき全8チャネル名 |
+| `MOCK_SKILL_A` / `MOCK_SKILL_B` | `Skill` | スキルデータのFixture |
+| `MOCK_SCAN_RESULT` | `ScanResult` | スキャン結果Fixture |
+| `MOCK_EXECUTION_RESULT` | `SkillRunResult` | 実行結果Fixture |
+| `MOCK_SETTINGS` | `object` | IMP-002設定データFixture |
+| `MOCK_PERMISSIONS` | `object` | IMP-002権限データFixture |
+| `MOCK_CACHE_DATA` | `object` | IMP-002キャッシュデータFixture |
+
+---
+
+## 完了タスク
+
+### TASK-8C-A: IPC統合テスト（2026-02-02完了）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-8C-A                                                                  |
+| 完了日       | 2026-02-02                                                                 |
+| ステータス   | **完了**                                                                   |
+| テスト数     | 41（自動テスト）+ 5（手動テスト項目）                                      |
+| 発見課題     | 2件（IMP-002チャネル未実装、permission:response未実装）                    |
+| ドキュメント | `docs/30-workflows/TASK-8C-A/`                                             |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| 機能テスト         | 23       | 23   | 0    |
+| エラーハンドリング | 10       | 10   | 0    |
+| セキュリティ       | 2        | 2    | 0    |
+| エッジケース       | 5        | 5    | 0    |
+| 登録/解除          | 1        | 1    | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                  |
+| ------------------ | --------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-8C-A/outputs/phase-11/manual-test-result.md`  |
+| 実装ガイド         | `docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md`|
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント            | 説明                       |
@@ -596,6 +682,7 @@ ChatPanelは、既存チャット機能にスキル関連コンポーネント�
 | ui-ux-components.md     | UIコンポーネント仕様       |
 | [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md) | SkillImportDialog実装詳細 |
 | [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md) | ChatPanel統合実装詳細 |
+| [TASK-8C-A 実装ガイド](../../../../docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md) | IPC統合テスト実装詳細 |
 
 ---
 
@@ -603,7 +690,9 @@ ChatPanelは、既存チャット機能にスキル関連コンポーネント�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
-| 2026-02-02 | 1.5.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む |
+| 2026-02-02 | 1.7.0      | TASK-8C-A: テストアーキテクチャセクション追加（テスト構成、適用パターン、ヘルパー関数、テストデータ定数） |
+| 2026-02-02 | 1.6.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む |
+| 2026-02-02 | 1.5.0      | TASK-8C-A完了: skill:abort/get-statusチャネル仕様追加、IPC統合テスト完了記録 |
 | 2026-01-30 | 1.4.0      | TASK-7D完了: ChatPanel統合セクション追加               |
 | 2026-01-30 | 1.3.0      | TASK-7B完了: SkillImportDialogファイルパス修正（components/skill/）|
 | 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加           |
