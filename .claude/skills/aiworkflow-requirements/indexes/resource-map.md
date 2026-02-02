@@ -26,6 +26,9 @@
 | LLM連携                     | interfaces-llm.md                                             | api-endpoints.md (AI Provider)                                        |
 | デプロイ・CI/CD             | deployment.md                                                 | deployment-\*, technology-devops.md                                   |
 | テスト実装                  | quality-requirements.md (TDD)                                 | 機能に応じたinterfaces-\*                                             |
+| コンポーネントテスト        | testing-component-patterns.md                                 | testing-fixtures.md, testing-accessibility.md                         |
+| アクセシビリティテスト      | testing-accessibility.md                                      | ui-ux-design-principles.md (WCAG)                                     |
+| テストフィクスチャ設計      | testing-fixtures.md                                           | quality-e2e-testing.md                                                |
 | Claude Code スキル作成      | claude-code-skills-overview.md                                | claude-code-skills-\*, claude-code-agents-\*                          |
 | 会話履歴機能                | interfaces-chat-history.md, architecture-chat-history.md      | api-chat-history.md, ui-ux-history-panel.md                           |
 | 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |

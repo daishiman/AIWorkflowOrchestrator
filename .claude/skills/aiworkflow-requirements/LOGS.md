@@ -73,6 +73,65 @@
 
 ---
 
+## 2026-02-02: 未タスク仕様書作成（2件）- workspace-chat-edit関連TODO
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-8B（Phase 12追加作業）                                                                    |
+| 操作         | create-unassigned-task                                                                         |
+| 対象ファイル | task-chat-edit-workspace-management-integration.md, task-chat-edit-monaco-editor-integration.md |
+| 結果         | success                                                                                        |
+| 備考         | コードベースTODOスキャンから3件のTODO（chatEditHandlers.ts:77,302、useFileContext.ts:96）を検出し、2件の未タスク仕様書に統合 |
+
+### 作成ファイル
+
+| ファイル                                       | タスクID            | 対象TODO                                                    |
+| ---------------------------------------------- | ------------------- | ----------------------------------------------------------- |
+| task-chat-edit-workspace-management-integration.md | UT-WCE-WORKSPACE-001 | chatEditHandlers.ts:77, useFileContext.ts:96（Workspace連携） |
+| task-chat-edit-monaco-editor-integration.md        | UT-WCE-MONACO-001    | chatEditHandlers.ts:302（Monaco Editor連携）                 |
+
+---
+
+## 2026-02-02: コンポーネントテストドキュメント新規作成（3ファイル）
+
+| 項目         | 内容                                                                      |
+| ------------ | ------------------------------------------------------------------------- |
+| タスクID     | TASK-8B (追加ドキュメント)                                                |
+| 操作         | create-spec                                                               |
+| 対象ファイル | testing-component-patterns.md, testing-fixtures.md, testing-accessibility.md |
+| 結果         | success                                                                   |
+| 備考         | TASK-8B 280テスト知見を体系化。Storeモック3パターン、ファクトリ関数、WCAG検証、キーボードナビゲーションテスト |
+
+### 作成ファイル
+
+| ファイル                      | バージョン | 内容                                                      |
+| ----------------------------- | ---------- | --------------------------------------------------------- |
+| testing-component-patterns.md | v1.0.0     | コンポーネントテストパターン（Storeモック、userEvent、非同期） |
+| testing-fixtures.md           | v1.0.0     | テストフィクスチャ設計（ファクトリ、境界値、Propsビルダー）   |
+| testing-accessibility.md      | v1.0.0     | アクセシビリティテスト（ARIA、キーボード、jest-axe、WCAG）   |
+
+---
+
+## 2026-02-02: TASK-8B完了（4仕様書更新 + 残存課題修正）
+
+| 項目         | 内容                                                                                                                             |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-8B                                                                                                                          |
+| 操作         | update-spec (arch-ui-components.md v1.5.0, ui-ux-components.md v2.7.0, quality-requirements.md v1.4.0, arch-state-management.md v1.6.0) |
+| 対象ファイル | arch-ui-components.md, ui-ux-components.md, quality-requirements.md, arch-state-management.md                                    |
+| 結果         | success                                                                                                                          |
+| 備考         | コンポーネントテスト完了記録追加。280テスト全PASS、Line 99.71%/Branch 95.85%/Function 97.61%カバレッジ達成。4コンポーネント+3ユーティリティ対象 |
+
+### 更新詳細
+
+| ファイル                | バージョン | 追加内容                                                                               |
+| ----------------------- | ---------- | -------------------------------------------------------------------------------------- |
+| arch-ui-components.md   | v1.5.0     | TASK-8B完了タスク記録、テスト結果サマリー、テスト品質メトリクス表、成果物リンク、変更履歴更新 |
+| ui-ux-components.md     | v2.7.0     | TASK-8B完了タスク一覧追加、変更履歴更新                                                 |
+| quality-requirements.md | v1.4.0     | TASK-8B完了タスク記録追加（テストカバレッジ実績7対象、テストパターン5種、変更履歴更新）  |
+| arch-state-management.md| v1.6.0     | skillSlice関連タスクにTASK-8Bコンポーネントテスト追加、変更履歴更新                     |
+
+---
 ## 2026-02-01: TASK-8C-G完了（quality-e2e-testing.md v1.1.0更新）
 
 | 項目         | 内容                                                                                                   |
