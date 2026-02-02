@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.6.0     | 2026-02-02 | TASK-8B完了: skillSlice関連タスクにTASK-8Bコンポーネントテスト（280テスト）追加 |
 | v1.5.0     | 2026-02-01 | task-imp-permission-history-001完了: permissionHistorySlice追加、関連タスク更新 |
 | v1.4.0     | 2026-01-30 | task-imp-permission-readable-ui-001完了: 関連タスクテーブル更新                 |
 | v1.3.0     | 2026-01-30 | TASK-7A完了: SkillSelectorステータス更新                                        |
@@ -327,6 +328,7 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | task-imp-permission-readable-ui-001 | PermissionDialog人間可読UI改善 | **完了**                                                                                                 |
 | TASK-7D                             | ChatPanel統合                  | **完了**（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
 | task-imp-permission-history-001     | Permission履歴トラッキングUI   | **完了**                                                                                                 |
+| TASK-8B                             | コンポーネントテスト（全4コンポーネント+3ユーティリティ、280テスト） | **完了**                                                                                                 |
 
 ---
 
