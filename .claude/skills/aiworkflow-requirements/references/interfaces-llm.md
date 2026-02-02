@@ -84,7 +84,7 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | LLM Adapter         | 360      | 99.25%        | 90.56%          |
 | Streaming           | 129      | -             | 全PASS          |
 | Embedding Pipeline  | 104 + 14 | 91.39%        | 87.13%          |
-| Workspace Chat Edit | 164 + 23 | 92.55%        | 92.85%          |
+| Workspace Chat Edit | 164 + 45 | 95%           | 90%             |
 
 ---
 
@@ -119,12 +119,26 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | テスト数     | 114（自動テスト）+ 12（手動テスト項目）                                                   |
 | カバレッジ   | Line 100%, Branch 100%, Function 100%                                                     |
 
+### Workspace管理統合（TASK-WCE-WORKSPACE-001）
+
+| 項目         | 内容                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------- |
+| タスクID     | TASK-WCE-WORKSPACE-001                                                                  |
+| Issue        | #660                                                                                    |
+| 完了日       | 2026-02-02                                                                              |
+| 実装内容     | workspacePathパラメータ追加、isWithinWorkspace検証、folderFileTreesからファイル一覧取得 |
+| 修正ファイル | chatEditHandlers.ts, useFileContext.ts, fileTreeUtils.ts（新規）                        |
+| テスト数     | 45（ユニット＋統合）                                                                    |
+| カバレッジ   | Line 95%, Branch 90%, Function 100%                                                     |
+| 詳細         | [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md#workspace管理統合task-wce-workspace-0012026-02-02完了) |
+
 ---
 
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
+| 2.2.0   | 2026-02-02 | TASK-WCE-WORKSPACE-001完了: Workspace管理統合エントリ追加、品質メトリクス更新          |
 | 2.1.0   | 2026-01-26 | アーキテクチャ概要をコードブロックから表形式・文章に変換（spec-guidelines準拠）        |
 | 2.0.0   | 2026-01-26 | 4ファイルに分割（901行→インデックス+詳細ファイル）                                     |
 | 1.2.0   | 2026-01-25 | Workspace Chat Edit サービスインターフェース追加                                       |

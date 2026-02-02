@@ -99,7 +99,7 @@
 | llm-ipc-types.md            | LLM IPC型定義、Request/Response型確認時            | LLMChatRequest、Response型、設定型      |
 | llm-streaming.md            | ストリーミング実装、SSEレスポンス処理時            | StreamingResponse、Parser、Hooks        |
 | llm-embedding.md            | 埋め込み生成、EmbeddingProvider実装時              | EmbeddingRequest、Provider、バッチ処理  |
-| llm-workspace-chat-edit.md  | Workspace/Chat/Edit機能、Entity/Repository定義時   | WorkspaceEntity、ChatEntity、Repository |
+| llm-workspace-chat-edit.md  | Workspace/Chat/Edit機能、ファイルI/O、IPC統合、workspacePath検証時 | FileService、ContextBuilder、ChatEditService、workspacePath |
 | interfaces-chat-history.md  | 会話履歴機能実装、Repositoryインターフェース定義時 | Schema、Entity、Repository、IPC         |
 | interfaces-system-prompt.md | システムプロンプト管理、永続化実装時               | Repository、Entity、IPC、バリデーション |
 
@@ -304,6 +304,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-02 | 1.8.0      | TASK-WCE-WORKSPACE-001: llm-workspace-chat-edit.md説明拡張（Main Process実装、IPC統合、workspacePath検証追加）                                                   |
 | 2026-02-01 | 1.7.0      | task-imp-permission-history-001: 権限/Permission実装行に参照先追加、権限履歴/Permission History行新設                                                            |
 | 2026-01-31 | 1.6.0      | TASK-7D追加更新: architecture-overview.md, architecture-implementation-patterns.md, technology-frontend.md, technology-desktop.md, development-guidelines.md追加 |
 | 2026-01-28 | 1.5.0      | ui-ux-feature-skill-stream.md追加（ui-ux-feature-components.mdより分割）                                                                                         |

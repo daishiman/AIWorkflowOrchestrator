@@ -26,23 +26,23 @@ issue_number: 652
 
 ### 1.1 背景
 
-Workspace Chat-Edit機能の`chatEditHandlers.ts`（`apps/desktop/src/main/handlers/chatEditHandlers.ts`）には以下の3つのTODO項目が残されている:
+Workspace Chat-Edit機能の`chatEditHandlers.ts`（`apps/desktop/src/main/handlers/chatEditHandlers.ts`）には以下のTODO項目が残されている:
 
-1. **L77**: `getWorkspacePath()` - 実際のワークスペース管理からパス取得（現在は`process.cwd()`で仮実装）
+1. ~~**L77**: `getWorkspacePath()` - 実際のワークスペース管理からパス取得~~ → **TASK-WCE-WORKSPACE-001 (#660) で完了済み**
 2. **L302**: `handleGetSelection()` - Monaco Editorとの連携によるエディタ選択範囲取得（現在は`null`を返却）
 3. **L344**: `handleSendWithContext()` - 実際のLLM連携による生成処理（現在は仮実装で入力をそのまま返却）
+
+> **Note**: L77（ワークスペースパス取得）は2026-02-02にTASK-WCE-WORKSPACE-001 (#660)で実装完了。workspacePathパラメータによるパス検証とisWithinWorkspace関数が追加された。
 
 ### 1.2 問題点・課題
 
 - エディタ上のテキスト選択がMain Process側で取得できない（`handleGetSelection`が常に`null`）
 - LLMによるコード生成が機能しない（`handleSendWithContext`が仮実装）
-- ワークスペースパスが`process.cwd()`固定のため、複数ワークスペース切り替え時に不正なパスを返す可能性
 
 ### 1.3 放置した場合の影響
 
 - Chat-Edit機能のコア機能（選択範囲へのLLM提案、コンテキスト付きコード生成）が使用不能
 - 機能としてUIは表示されるが実質的に動作しないため、ユーザー混乱の原因となる
-- ワークスペース安全性チェック（`isWithinWorkspace`）が不完全になる
 
 ---
 
@@ -50,22 +50,26 @@ Workspace Chat-Edit機能の`chatEditHandlers.ts`（`apps/desktop/src/main/handl
 
 ### 2.1 目的
 
-chatEditHandlersの3つのTODO項目を本実装に置き換え、Chat-Edit機能のエンドツーエンドフローを完成させる。
+chatEditHandlersの残り2つのTODO項目（L302, L344）を本実装に置き換え、Chat-Edit機能のエンドツーエンドフローを完成させる。
+
+> **前提条件達成済み**: ワークスペースパス取得（L77）はTASK-WCE-WORKSPACE-001で完了。workspacePathパラメータとisWithinWorkspace検証が利用可能。
 
 ### 2.2 最終ゴール
 
 - Monaco Editorからの選択範囲取得がIPC経由で正常に動作する
 - LLMによるコンテキスト付きコード生成が動作する
-- ワークスペースパスが実際のワークスペース管理と連携して取得される
 
 ### 2.3 スコープ
 
 #### 含むもの
 
-- `getWorkspacePath()` の実装（ワークスペース管理サービスとの連携）
 - `handleGetSelection()` の実装（Renderer→Main IPC経由でMonaco Editor選択範囲取得）
 - `handleSendWithContext()` の実装（Claude Agent SDK / Anthropic SDK連携）
 - 各ハンドラのユニットテスト
+
+#### 完了済み（スコープ外）
+
+- ~~`getWorkspacePath()` の実装~~ → TASK-WCE-WORKSPACE-001 (#660) で完了
 
 #### 含まないもの
 
@@ -77,10 +81,16 @@ chatEditHandlersの3つのTODO項目を本実装に置き換え、Chat-Edit機�
 
 | 成果物                       | 説明                                      |
 | ---------------------------- | ----------------------------------------- |
-| chatEditHandlers.ts更新      | 3つのTODO実装                             |
+| chatEditHandlers.ts更新      | 2つのTODO実装（L302, L344）               |
 | chatEditHandlers.test.ts更新 | 新規テストケース追加                      |
 | Monaco連携Preload API        | 選択範囲取得のPreload API（必要に応じて） |
 | テスト結果レポート           | 全テストPASS確認                          |
+
+### 2.5 前提として完了済みのタスク
+
+| タスクID               | Issue | 完了内容                                               |
+| ---------------------- | ----- | ------------------------------------------------------ |
+| TASK-WCE-WORKSPACE-001 | #660  | workspacePathパラメータ追加、isWithinWorkspace検証実装 |
 
 ---
 
@@ -95,7 +105,7 @@ chatEditHandlersの3つのTODO項目を本実装に置き換え、Chat-Edit機�
 ### 3.2 依存タスク
 
 - claude-agent-sdk スキルの実装完了（LLM連携部分）
-- ワークスペース管理サービスの基盤実装
+- ~~ワークスペース管理サービスの基盤実装~~ → **TASK-WCE-WORKSPACE-001 (#660) で完了済み**
 
 ### 3.3 必要な知識
 
@@ -106,12 +116,13 @@ chatEditHandlersの3つのTODO項目を本実装に置き換え、Chat-Edit機�
 
 ### 3.4 推奨アプローチ
 
-**Step 1: getWorkspacePath() 実装**
+**Step 1: ~~getWorkspacePath() 実装~~** → **完了済み (TASK-WCE-WORKSPACE-001)**
 
-- Electron `app.getPath('userData')` またはワークスペース設定ストアから取得
-- 複数ワークスペース対応の場合、アクティブワークスペースIDから解決
+- ~~Electron `app.getPath('userData')` またはワークスペース設定ストアから取得~~
+- ~~複数ワークスペース対応の場合、アクティブワークスペースIDから解決~~
+- **実装済み**: workspacePathパラメータによるIPC経由のパス受け渡し、isWithinWorkspace検証
 
-**Step 2: handleGetSelection() 実装**
+**Step 2: handleGetSelection() 実装** ← **このタスクの開始点**
 
 - Renderer→Main方向のIPC通信パターン:
   1. Main ProcessからRendererへ`webContents.send('request-selection')`
@@ -132,27 +143,16 @@ chatEditHandlersの3つのTODO項目を本実装に置き換え、Chat-Edit機�
 
 Phase 1-13のタスク仕様書作成スキルに従って実行。中規模タスクのため、3つのサブタスクに分割して段階的に実装。
 
-### Phase 4-5: テスト作成・実装（getWorkspacePath）
+### ~~Phase 4-5: テスト作成・実装（getWorkspacePath）~~ → 完了済み
 
-#### 目的
-
-ワークスペースパス取得の正確な実装
-
-#### 手順
-
-1. ワークスペース管理の現状確認（設定ストア構造）
-2. テスト作成: getWorkspacePath()のモック・境界値テスト
-3. 実装: 設定ストアからアクティブワークスペースパスを取得
-
-#### 成果物
-
-- getWorkspacePath()の本実装
-- 対応テスト
-
-#### 完了条件
-
-- ワークスペースパスが設定ストアから正しく取得される
-- テストがPASS
+> **TASK-WCE-WORKSPACE-001 (#660) で実装完了** (2026-02-02)
+>
+> - workspacePathパラメータをIPCリクエストで受け渡し
+> - isWithinWorkspace()でパス検証
+> - 外部アクセス時はPERMISSION_DENIEDエラー
+> - 後方互換性維持（パラメータ未指定時は検証スキップ）
+>
+> 詳細: `docs/30-workflows/TASK-WCE-WORKSPACE-001/outputs/phase-12/implementation-guide.md`
 
 ### Phase 4-5: テスト作成・実装（handleGetSelection）
 
@@ -208,7 +208,7 @@ LLM連携によるコンテキスト付きコード生成
 
 ### 機能要件
 
-- [ ] getWorkspacePath()がアクティブワークスペースのパスを返す
+- [x] ~~getWorkspacePath()がアクティブワークスペースのパスを返す~~ → **TASK-WCE-WORKSPACE-001で完了**
 - [ ] handleGetSelection()がMonaco Editorの選択範囲を返す
 - [ ] handleGetSelection()が選択なし時にnullを返す
 - [ ] handleSendWithContext()がLLM APIを呼び出して生成結果を返す
@@ -232,15 +232,17 @@ LLM連携によるコンテキスト付きコード生成
 
 ### テストケース
 
-| #   | テストケース                       | 期待結果                                       |
-| --- | ---------------------------------- | ---------------------------------------------- |
-| 1   | getWorkspacePath() 正常取得        | 設定ストアのアクティブワークスペースパスが返る |
-| 2   | getWorkspacePath() 未設定時        | デフォルトパス（cwd）が返る                    |
-| 3   | handleGetSelection() 選択あり      | TextSelection型の選択範囲が返る                |
-| 4   | handleGetSelection() 選択なし      | nullが返る                                     |
-| 5   | handleSendWithContext() 正常生成   | LLM生成結果がresultフィールドに格納される      |
-| 6   | handleSendWithContext() サイズ超過 | CONTEXT_TOO_LARGEエラーが返る                  |
-| 7   | handleSendWithContext() API失敗    | エラーレスポンスが返る（retryable判定付き）    |
+| #   | テストケース                       | 期待結果                                     | 状態     |
+| --- | ---------------------------------- | -------------------------------------------- | -------- |
+| 1   | ~~getWorkspacePath() 正常取得~~    | ~~設定ストアのアクティブワークスペースパス~~ | **完了** |
+| 2   | ~~getWorkspacePath() 未設定時~~    | ~~デフォルトパス（cwd）が返る~~              | **完了** |
+| 3   | handleGetSelection() 選択あり      | TextSelection型の選択範囲が返る              | 未実施   |
+| 4   | handleGetSelection() 選択なし      | nullが返る                                   | 未実施   |
+| 5   | handleSendWithContext() 正常生成   | LLM生成結果がresultフィールドに格納される    | 未実施   |
+| 6   | handleSendWithContext() サイズ超過 | CONTEXT_TOO_LARGEエラーが返る                | 未実施   |
+| 7   | handleSendWithContext() API失敗    | エラーレスポンスが返る（retryable判定付き）  | 未実施   |
+
+> テストケース1-2は TASK-WCE-WORKSPACE-001 (#660) で完了済み。workspacePathパラメータによるパス検証テストが実装されている。
 
 ### 検証手順
 
@@ -272,7 +274,7 @@ LLM連携によるコンテキスト付きコード生成
 
 ### 参考資料
 
-- TODO参照: `chatEditHandlers.ts:77` - `// TODO: 実際のワークスペース管理から取得`
+- ~~TODO参照: `chatEditHandlers.ts:77`~~ - `// TODO: 実際のワークスペース管理から取得` → **TASK-WCE-WORKSPACE-001で削除済み**
 - TODO参照: `chatEditHandlers.ts:302` - `// TODO: Monaco Editorとの連携を実装`
 - TODO参照: `chatEditHandlers.ts:344` - `// TODO: 実際のLLM連携を実装`
 
@@ -283,13 +285,20 @@ LLM連携によるコンテキスト付きコード生成
 ### レビュー指摘の原文（該当する場合）
 
 ```
-// L77: TODO: 実際のワークスペース管理から取得
+// L77: TODO: 実際のワークスペース管理から取得 → TASK-WCE-WORKSPACE-001で解決済み
 // L302: TODO: Monaco Editorとの連携を実装
 // L344: TODO: 実際のLLM連携を実装
 ```
 
 ### 補足事項
 
-- このタスクは3つの独立したTODO項目をまとめているが、それぞれ独立して実装可能。依存関係は `getWorkspacePath` → `handleGetSelection` → `handleSendWithContext` の順。
+- このタスクは当初3つのTODO項目をまとめていたが、L77はTASK-WCE-WORKSPACE-001 (#660, 2026-02-02完了)で解決済み。残り2つ（L302, L344）が本タスクのスコープ。
 - handleSendWithContextのLLM連携部分は、Claude Agent SDKスキルの実装状況に依存する。SDKが未実装の場合は、Direct SDKパターン（`@anthropic-ai/sdk`直接呼び出し）をフォールバックとして使用する。
 - 既存テスト `chatEditHandlers.test.ts` の `// TODO` コメント（L290: 30秒タイムアウト）もこのタスクのスコープに含める。
+
+### 更新履歴
+
+| 日付       | 更新内容                                                           |
+| ---------- | ------------------------------------------------------------------ |
+| 2026-02-02 | L77（getWorkspacePath）完了反映: TASK-WCE-WORKSPACE-001 (#660)参照 |
+| 2026-02-02 | 初版作成                                                           |
