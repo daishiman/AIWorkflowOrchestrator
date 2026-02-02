@@ -10,14 +10,16 @@
 
 ## 更新ファイル一覧
 
-| ファイル                             | バージョン | 更新内容                                                          |
-| ------------------------------------ | ---------- | ----------------------------------------------------------------- |
-| `arch-ui-components.md`              | v1.5.0     | TASK-8B完了タスク記録追加、テスト品質メトリクス追加、変更履歴更新 |
-| `ui-ux-components.md`                | v2.7.0     | TASK-8B完了タスク一覧追加、変更履歴更新                           |
-| `quality-requirements.md`            | v1.4.0     | TASK-8B完了タスク記録追加（テストカバレッジ実績・テストパターン） |
-| `arch-state-management.md`           | v1.6.0     | skillSlice関連タスクにTASK-8B追加                                 |
-| `aiworkflow-requirements/LOGS.md`    | -          | TASK-8Bタスク完了エントリ追加（追加仕様更新含む）                 |
-| `task-specification-creator/LOGS.md` | -          | TASK-8B Phase 1-12完了記録追加                                    |
+| ファイル                                                     | バージョン | 更新内容                                                          |
+| ------------------------------------------------------------ | ---------- | ----------------------------------------------------------------- |
+| `arch-ui-components.md`                                      | v1.5.0     | TASK-8B完了タスク記録追加、テスト品質メトリクス追加、変更履歴更新 |
+| `ui-ux-components.md`                                        | v2.7.0     | TASK-8B完了タスク一覧追加、変更履歴更新                           |
+| `quality-requirements.md`                                    | v1.4.0     | TASK-8B完了タスク記録追加（テストカバレッジ実績・テストパターン） |
+| `arch-state-management.md`                                   | v1.6.0     | skillSlice関連タスクにTASK-8B追加                                 |
+| `aiworkflow-requirements/LOGS.md`                            | -          | TASK-8Bタスク完了エントリ追加（追加仕様更新含む）                 |
+| `task-specification-creator/LOGS.md`                         | -          | TASK-8B Phase 1-12完了記録追加                                    |
+| `unassigned-task/task-component-tests-naming-consistency.md` | -          | M-01未タスク仕様書新規作成（テスト名日本語統一）                  |
+| `unassigned-task/task-component-tests-import-cleanup.md`     | -          | M-02未タスク仕様書新規作成（未使用import除去）                    |
 
 ## Step 1-A: タスク完了記録
 

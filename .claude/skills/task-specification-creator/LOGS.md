@@ -48,7 +48,7 @@ node scripts/log-usage.js \
 - **Agent**: execute-workflow (Phase 1-12)
 - **Phase**: Phase 12 完了
 - **Result**: ✓ 成功
-- **Notes**: TASK-8B「コンポーネントテスト」Phase 1-12全工程完了。execute モード。4コンポーネント（SkillSelector, SkillImportDialog, PermissionDialog, SkillStreamingView）+3ユーティリティの280テスト全PASS。Line 99.71%, Branch 95.85%, Function 97.61%カバレッジ。未タスク0件。
+- **Notes**: TASK-8B「コンポーネントテスト」Phase 1-12全工程完了。execute モード。4コンポーネント（SkillSelector, SkillImportDialog, PermissionDialog, SkillStreamingView）+3ユーティリティの280テスト全PASS。Line 99.71%, Branch 95.85%, Function 97.61%カバレッジ。未タスク2件（M-01: テスト名命名規則統一、M-02: 未使用import除去）。スキル改善: SKILL.md漏れパターン2件追加、patterns.md成功パターン1件追加、unassigned-task-guidelines.mdコンポーネントテスト検出パターン追加。
 
 ---
 
