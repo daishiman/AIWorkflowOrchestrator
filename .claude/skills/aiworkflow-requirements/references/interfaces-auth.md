@@ -78,6 +78,35 @@ Desktop アプリの認証機能で使用する型定義。
 | github  | GitHub OAuth  |
 | discord | Discord OAuth |
 
+### SupabaseIdentity
+
+Supabase Auth が返す identity オブジェクト。OAuth プロバイダーごとに identity_data のキー名が異なる。
+
+| フィールド    | 型                                     | 説明                   |
+| ------------- | -------------------------------------- | ---------------------- |
+| id            | string                                 | Identity ID            |
+| provider      | string                                 | プロバイダー名         |
+| identity_data | SupabaseIdentityData \| undefined      | プロバイダー固有データ |
+| created_at    | string                                 | 作成日時（ISO8601）    |
+
+#### SupabaseIdentityData
+
+| フィールド | 型             | 説明                               |
+| ---------- | -------------- | ---------------------------------- |
+| email      | string \| undefined | メールアドレス                |
+| name       | string \| undefined | 表示名                        |
+| avatar_url | string \| undefined | アバターURL（GitHub, Discord） |
+| picture    | string \| undefined | アバターURL（Google）          |
+
+> **プロバイダー別アバターURLキー名**
+> - Google: `picture`
+> - GitHub: `avatar_url`
+> - Discord: `avatar_url`
+
+**実装場所**: `packages/shared/types/auth.ts`
+
+---
+
 ### LinkedProvider
 
 連携済みプロバイダー情報。

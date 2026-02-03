@@ -126,7 +126,7 @@
     },
     "12": {
       "name": "ドキュメント更新",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "path": "phase-12-documentation.md",
