@@ -584,10 +584,56 @@
 
 ---
 
+## Main→Renderer逆方向クエリパターン（TASK-WCE-MONACO-001）
+
+> Electron IPCにおいて、Main ProcessからRenderer Processの状態を取得する特殊パターン。通常のipcRenderer.invokeとは逆方向の通信が必要な場合に適用。
+
+### webContents.executeJavaScriptによるグローバルブリッジパターン
+
+- **状況**: Main ProcessからRenderer Processで管理されるUIコンポーネント（Monaco Editor等）の状態を取得する必要がある場合
+- **パターン**: `window.__editorSelection`のようなグローバルブリッジオブジェクトをRendererに公開し、`webContents.executeJavaScript()`でMain Processから呼び出す
+- **例**（TASK-WCE-MONACO-001）:
+  | 要素 | 実装 |
+  | ------------ | ----------------------------------------------------- |
+  | ブリッジ定義 | `window.__editorSelection = { getSelection: () => {...} }` |
+  | エディタ登録 | `setActiveEditor(editor)` でMonacoインスタンスを登録 |
+  | Main側呼び出し | `webContents.executeJavaScript('window.__editorSelection?.getSelection()')` |
+- **効果**:
+  - 通常IPCの方向制限（Renderer→Mainのみ）を回避
+  - Monaco EditorのgetSelection(), getModel()等のAPIにMain Processからアクセス可能
+  - Optional chaining（?.）でnull安全な呼び出し
+- **注意点**:
+  - `setActiveEditor()`がUI側で呼び出されていないとnullが返る
+  - セキュリティ上、任意のJS実行は信頼できるコードのみ
+- **発見日**: 2026-02-03
+- **関連タスク**: TASK-WCE-MONACO-001
+
+### EditorSelection型の最小インターフェース設計
+
+- **状況**: エディタ選択範囲を表すデータ構造を設計する場合
+- **パターン**: 最小限の必須フィールドのみを型に含め、拡張性はオプショナルプロパティで確保
+- **例**（TASK-WCE-MONACO-001）:
+  | フィールド | 型 | 用途 |
+  | ------------ | ------ | -------------- |
+  | startLine | number | 選択開始行（1ベース） |
+  | startColumn | number | 選択開始列（1ベース） |
+  | endLine | number | 選択終了行 |
+  | endColumn | number | 選択終了列 |
+  | selectedText | string | 選択されたテキスト |
+- **効果**:
+  - Monaco Editor以外のエディタでも互換性を保てる汎用型
+  - 行番号1ベースでMonaco Editor標準に合わせる
+  - selectedTextを含めることでAPI呼び出し回数を削減
+- **発見日**: 2026-02-03
+- **関連タスク**: TASK-WCE-MONACO-001
+
+---
+
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                            |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2026-02-03** | **TASK-WCE-MONACO-001知見追加: Main→Renderer逆方向クエリパターン2件（webContents.executeJavaScriptグローバルブリッジ、EditorSelection最小インターフェース）** |
 | **2026-02-02** | **TASK-8C-C知見追加: 成功パターン1件（Phase 12 Step 1完了チェックリストの厳格遵守 - SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止）** |
 | **2026-02-02** | **TASK-8C-B知見追加: E2Eテスト設計パターン3件（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）** |
 | **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）** |

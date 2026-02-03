@@ -536,6 +536,74 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 **使用例**: `window.electronAPI?.skill?.resetForTesting?.()`
 
+### Main→Renderer逆方向クエリパターン（TASK-WCE-MONACO-001 2026-02-03実装）
+
+通常のElectron IPCは Renderer → Main 方向の通信が基本だが、Main ProcessからRenderer Processの状態を取得する必要がある場合（例: Monaco Editorの選択範囲取得）に使用するパターン。
+
+#### 問題定義（Problem Statement）
+
+| 問題 | 影響 | 発生条件 |
+|------|------|----------|
+| 通常IPCの方向制限 | Main側でUI状態を把握できない | Renderer状態に依存する機能 |
+| Renderer状態アクセス不可 | DOM/コンポーネント状態の直接参照不可 | Monaco Editor等のUI状態取得 |
+| 非同期タイミング問題 | レースコンディション発生 | エディタ未初期化時のアクセス |
+
+#### 解決アプローチ
+
+**コア解決策**: `webContents.executeJavaScript()` でMain→Rendererクエリを実現
+
+| 解決策 | 適用対象 | 効果 |
+|--------|----------|------|
+| グローバルブリッジ | 状態公開 | Rendererから安全にMain参照可能な関数を公開 |
+| Optional chaining | null安全性 | 未初期化時のクラッシュ防止 |
+| フォールバック戦略 | webContents取得 | focused/first順でコンテキスト取得 |
+
+#### 実装パターン構成
+
+| 要素 | 役割 | 実装 |
+|------|------|------|
+| ブリッジインターフェース | Rendererに公開するグローバルオブジェクト | `window.__editorSelection = { getSelection: () => ... }` |
+| エディタ登録関数 | Monaco EditorインスタンスをRendererで登録 | `setActiveEditor(editor)` でグローバル変数に格納 |
+| Main側クエリ関数 | RendererのブリッジインターフェースをMain Processから呼び出し | `webContents.executeJavaScript('window.__editorSelection?.getSelection()')` |
+| IPCハンドラー | preload API経由でRenderer→Mainトリガー | `ipcMain.handle("chat-edit:get-selection", handler)` |
+
+#### 実装時の課題と解決策（再利用可能ナレッジ）
+
+> **このセクションは同様のIPC課題を持つ将来のタスクで参照されることを想定**
+
+| 課題ID | 課題 | 根本原因 | 解決策 | 適用条件 |
+|--------|------|----------|--------|----------|
+| MR-01 | webContentsがnull | BrowserWindow未作成/クローズ済み | focusedWebContents ?? firstWebContentsのフォールバック | Main→Renderer全般 |
+| MR-02 | 未登録エラー | setActiveEditor未呼び出し | Optional chaining（`?.`）使用 | グローバルブリッジ全般 |
+| MR-03 | 非同期結果処理 | executeJavaScriptがPromise | async/await適切使用 | Main→Renderer全般 |
+| MR-04 | TypeScript型エラー | グローバル変数型未定義 | `declare global { interface Window { __xxx?: {...} } }` | グローバルブリッジ全般 |
+
+**汎用チェックリスト**（Main→Renderer実装時に確認）:
+- [ ] ブリッジオブジェクトはwindow直下に配置
+- [ ] getterメソッドはOptional chainingで保護
+- [ ] webContents取得にフォールバックを実装
+- [ ] 型定義ファイルでdeclare globalを追加
+- [ ] 単体テストでnull/undefined両ケースをカバー
+
+#### 使い分け基準
+
+| 基準 | Main→Rendererクエリ | 通常IPC（Renderer→Main） |
+|------|---------------------|-------------------------|
+| 主体 | Main ProcessがRenderer状態を「取得」 | RendererがMainに「要求」 |
+| 用途 | UIコンポーネント状態、DOM状態の読み取り | データ取得、外部API呼び出し、ファイル操作 |
+| 実装 | webContents.executeJavaScript | ipcMain.handle + ipcRenderer.invoke |
+| 典型例 | エディタ選択範囲、フォーム入力値、スクロール位置 | DBクエリ、設定読み込み、ファイル読み書き |
+
+#### セキュリティ考慮事項
+
+| リスク | 対策 | 重要度 |
+|--------|------|--------|
+| 任意JS実行 | 信頼できる固定文字列のみ実行 | 高 |
+| ユーザー入力注入 | 入力をJS文字列に連結しない | 高 |
+| サンドボックス回避 | preload経由のみで実行 | 中 |
+
+**関連ドキュメント**: [api-ipc-agent.md](./api-ipc-agent.md)（実装詳細・完了タスク記録）
+
 ---
 
 ## アクセシビリティ実装パターン
@@ -579,6 +647,8 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.7.0 | 2026-02-03 | TASK-WCE-MONACO-001スキル最適化: Main→Rendererパターン再構成（Problem Statement追加、課題IDテーブル、汎用チェックリスト、セキュリティ考慮事項表追加）、api-ipc-agent.md相互リンク追加 |
+| 1.6.0 | 2026-02-03 | TASK-WCE-MONACO-001: Main→Renderer逆方向クエリパターン追加（webContents.executeJavaScript、グローバルブリッジ、苦戦ポイントと対処法） |
 | 1.5.0 | 2026-02-02 | TASK-8C-C: E2Eテストパターン追加（Electron E2Eセットアップ、セレクタ定数、タイムアウト定数、ヘルパー関数、テストグループ構成、page.evaluate） |
 | 1.4.0 | 2026-02-02 | TASK-8C-A: IPC通信テストパターン追加（Handler Map方式、SkillService Partial Mock、invokeOptionalHandler、validateIpcSender失敗検証） |
 | 1.3.0 | 2026-01-30 | TASK-7D: forwardRef + useImperativeHandleパターン、React.memo + Exclude型パターン追加 |

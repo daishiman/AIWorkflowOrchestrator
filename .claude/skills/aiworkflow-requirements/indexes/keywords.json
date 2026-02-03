@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-02T13:23:25.951Z",
-  "totalKeywords": 1019,
+  "generated": "2026-02-03T06:26:15.365Z",
+  "totalKeywords": 1020,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -658,6 +658,7 @@
       "interfaces-chat-history.md",
       "interfaces-llm.md",
       "interfaces-system-prompt.md",
+      "llm-workspace-chat-edit.md",
       "quality-e2e-testing.md",
       "quality-requirements.md",
       "security-api-electron.md",
@@ -669,6 +670,9 @@
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
       "ui-ux-search-panel.md"
+    ],
+    "実装パターン参照": [
+      "api-ipc-agent.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
