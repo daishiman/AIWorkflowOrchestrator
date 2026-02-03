@@ -87,12 +87,14 @@ AIによるコード編集支援（ファイルコンテキスト付きチャッ
 
 ### チャンネル一覧
 
-| チャネル                   | 方向            | 用途                     | Request                                           | Response                         |
-| -------------------------- | --------------- | ------------------------ | ------------------------------------------------- | -------------------------------- |
-| `chat-edit:read-file`      | Renderer → Main | ファイル内容読み込み     | `{ filePath: string }`                            | `IPCResponse<FileContext>`       |
-| `chat-edit:write-file`     | Renderer → Main | ファイル書き込み         | `{ filePath: string, content: string }`           | `IPCResponse<void>`              |
-| `chat-edit:get-selection`  | Renderer → Main | エディタ選択範囲取得     | なし                                              | `IPCResponse<TextSelection>`     |
-| `chat-edit:send-with-context` | Renderer → Main | コンテキスト付きチャット | `{ contexts: FileContext[], command: EditCommand }` | `IPCResponse<GeneratedResult>` |
+| チャネル                      | 方向            | 用途                     | Request                                                          | Response                       |
+| ----------------------------- | --------------- | ------------------------ | ---------------------------------------------------------------- | ------------------------------ |
+| `chat-edit:read-file`         | Renderer → Main | ファイル内容読み込み     | `{ filePath: string, workspacePath?: string \| null }`           | `IPCResponse<FileContext>`     |
+| `chat-edit:write-file`        | Renderer → Main | ファイル書き込み         | `{ filePath, content, workspacePath?: string \| null }`          | `IPCResponse<void>`            |
+| `chat-edit:get-selection`     | Renderer → Main | エディタ選択範囲取得     | なし                                                             | `IPCResponse<TextSelection>`   |
+| `chat-edit:send-with-context` | Renderer → Main | コンテキスト付きチャット | `{ contexts: FileContext[], command: EditCommand }`              | `IPCResponse<GeneratedResult>` |
+
+**workspacePathパラメータ（v1.2.0追加）**: 指定時はワークスペース内のファイルのみアクセス許可。外部アクセス時は`PERMISSION_DENIED`エラー。
 
 ### 型定義
 
@@ -210,6 +212,19 @@ AIによるコード生成・編集の結果を保持する。
 | カバレッジ   | Line 92.55%, Branch 92.85%                                     |
 | ドキュメント | `docs/30-workflows/workspace-chat-edit-main-process/`          |
 
+### Workspace管理統合（TASK-WCE-WORKSPACE-001）2026-02-02完了
+
+| 項目         | 内容                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------- |
+| タスクID     | TASK-WCE-WORKSPACE-001                                                                  |
+| Issue        | #660                                                                                    |
+| ステータス   | **完了**                                                                                |
+| 実装内容     | workspacePathパラメータ追加、isWithinWorkspace検証、folderFileTreesからファイル一覧取得 |
+| 修正ファイル | chatEditHandlers.ts, useFileContext.ts, fileTreeUtils.ts（新規）                        |
+| テスト数     | 45（ユニット＋統合）                                                                    |
+| カバレッジ   | Line 95%, Branch 90%, Function 100%                                                     |
+| ドキュメント | `docs/30-workflows/TASK-WCE-WORKSPACE-001/`                                             |
+
 ---
 
 ## 関連ドキュメント
@@ -223,7 +238,8 @@ AIによるコード生成・編集の結果を保持する。
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                           |
-| ---------- | ---------- | -------------------------------------------------- |
-| v1.0.0     | 2026-01-25 | 初版作成                                           |
-| v1.1.0     | 2026-01-26 | TypeScriptコードブロックを表形式に変換（spec-guidelines.md準拠） |
+| バージョン | 日付       | 変更内容                                                                     |
+| ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.2.0     | 2026-02-02 | TASK-WCE-WORKSPACE-001: workspacePathパラメータ追加、完了タスク追加          |
+| v1.1.0     | 2026-01-26 | TypeScriptコードブロックを表形式に変換（spec-guidelines.md準拠）             |
+| v1.0.0     | 2026-01-25 | 初版作成                                                                     |

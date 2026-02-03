@@ -4,16 +4,20 @@
  * @description ファイルの添付・削除・読み込みを管理するカスタムフック
  */
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useStore } from "../../../store";
 import type { FileContext, FileReadResult, TextSelection } from "../types";
 import { MAX_FILE_CONTEXTS, MAX_FILE_SIZE } from "../types";
+import { flattenFileTrees } from "../utils/fileTreeUtils";
 
 /**
  * chatEditAPI インターフェース（Preload API）
  */
 interface ChatEditAPI {
-  readFile: (filePath: string) => Promise<FileReadResult>;
+  readFile: (
+    filePath: string,
+    workspacePath?: string | null,
+  ) => Promise<FileReadResult>;
   detectLanguage: (filePath: string) => Promise<string>;
   getEditorSelection: () => Promise<TextSelection | null>;
 }
@@ -92,9 +96,17 @@ export const useFileContext = (): UseFileContextReturn => {
   const setDraggingAction = useStore((state) => state.setDragging);
   const setErrorAction = useStore((state) => state.setError);
 
-  // workspaceSliceからファイル一覧を取得
-  // TODO: Workspace型にopenFilesプロパティを追加するか、別の方法でファイル一覧を取得する
-  const openFiles: Array<{ path: string; name?: string }> = [];
+  // workspaceSliceからワークスペースとファイルツリーを取得
+  const workspace = useStore((state) => state.workspace);
+  const folderFileTrees = useStore((state) => state.folderFileTrees);
+
+  // ファイルツリーからファイル一覧を抽出（メモ化）
+  const availableFiles = useMemo(() => {
+    if (!folderFileTrees || folderFileTrees.size === 0) {
+      return [];
+    }
+    return flattenFileTrees(folderFileTrees);
+  }, [folderFileTrees]);
 
   // 内部状態
   const warning: string | null = null;
@@ -125,8 +137,11 @@ export const useFileContext = (): UseFileContextReturn => {
         throw new Error("Maximum number of contexts reached");
       }
 
-      // ファイル読み込み
-      const result = await window.chatEditAPI.readFile(filePath);
+      // ワークスペースパスを取得（最初のフォルダを使用）
+      const workspacePath = workspace?.folders?.[0]?.path ?? null;
+
+      // ファイル読み込み（workspacePathを渡す）
+      const result = await window.chatEditAPI.readFile(filePath, workspacePath);
 
       if (!result.success) {
         const errorCode = result.error?.code || "READ_ERROR";
@@ -150,7 +165,7 @@ export const useFileContext = (): UseFileContextReturn => {
         fileSize: result.fileSize || 0,
       });
     },
-    [fileContexts, addFileContextAction, setErrorAction],
+    [fileContexts, addFileContextAction, setErrorAction, workspace],
   );
 
   /**
@@ -231,13 +246,11 @@ export const useFileContext = (): UseFileContextReturn => {
 
   /**
    * 利用可能なファイルを取得
+   * @returns ワークスペース内のファイル一覧
    */
   const getAvailableFiles = useCallback(() => {
-    return openFiles.map((file: { path: string; name?: string }) => ({
-      path: file.path,
-      name: file.name || getFileNameFromPath(file.path),
-    }));
-  }, [openFiles]);
+    return availableFiles;
+  }, [availableFiles]);
 
   // 派生状態
   const canAddContext = fileContexts.length < MAX_FILE_CONTEXTS;

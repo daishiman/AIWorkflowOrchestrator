@@ -71,23 +71,36 @@ const detectLanguage = (filePath: string): string => {
 };
 
 /**
- * ワークスペースパスを取得（実装は環境に依存）
+ * ワークスペースパスを正規化
+ * @param workspacePath ワークスペースパス（オプション）
+ * @returns 正規化されたパス、または null（未指定/空の場合）
  */
-const getWorkspacePath = (): string | null => {
-  // TODO: 実際のワークスペース管理から取得
-  return process.cwd();
+const normalizeWorkspacePath = (
+  workspacePath?: string | null,
+): string | null => {
+  if (!workspacePath || workspacePath.trim() === "") {
+    return null;
+  }
+  return path.resolve(workspacePath);
 };
 
 /**
  * パスがワークスペース内かどうかを検証
+ * @param filePath 検証するファイルパス
+ * @param workspacePath ワークスペースパス
+ * @returns ワークスペース内の場合true
  */
-const isWithinWorkspace = (
+export const isWithinWorkspace = (
   filePath: string,
   workspacePath: string,
 ): boolean => {
   const resolvedFilePath = path.resolve(filePath);
   const resolvedWorkspace = path.resolve(workspacePath);
-  return resolvedFilePath.startsWith(resolvedWorkspace);
+  // ワークスペースパスの後に/が続くか、完全一致の場合のみtrue
+  return (
+    resolvedFilePath === resolvedWorkspace ||
+    resolvedFilePath.startsWith(resolvedWorkspace + path.sep)
+  );
 };
 
 /**
@@ -100,10 +113,14 @@ const hasPathTraversal = (filePath: string): boolean => {
 /**
  * chat-edit:read-file ハンドラー
  * ファイルを読み込んで内容と言語情報を返す
+ * @param _event IPCイベント
+ * @param filePath ファイルの絶対パス
+ * @param workspacePath ワークスペースパス（オプション、検証用）
  */
-const handleReadFile = async (
+export const handleReadFile = async (
   _event: IpcMainInvokeEvent,
   filePath: string,
+  workspacePath?: string | null,
 ): Promise<FileReadResult> => {
   try {
     // パス検証
@@ -128,9 +145,12 @@ const handleReadFile = async (
       };
     }
 
-    // ワークスペース検証
-    const workspacePath = getWorkspacePath();
-    if (workspacePath && !isWithinWorkspace(filePath, workspacePath)) {
+    // ワークスペース検証（workspacePathが指定されている場合のみ）
+    const normalizedWorkspace = normalizeWorkspacePath(workspacePath);
+    if (
+      normalizedWorkspace &&
+      !isWithinWorkspace(filePath, normalizedWorkspace)
+    ) {
       return {
         success: false,
         error: {
@@ -200,11 +220,17 @@ const handleReadFile = async (
 /**
  * chat-edit:write-file ハンドラー
  * ファイルに内容を書き込む
+ * @param _event IPCイベント
+ * @param filePath ファイルの絶対パス
+ * @param content 書き込む内容
+ * @param workspacePath ワークスペースパス（オプション、検証用）
+ * @param options 書き込みオプション
  */
-const handleWriteFile = async (
+export const handleWriteFile = async (
   _event: IpcMainInvokeEvent,
   filePath: string,
   content: string,
+  workspacePath?: string | null,
   options?: FileWriteOptions,
 ): Promise<FileWriteResult> => {
   try {
@@ -230,9 +256,12 @@ const handleWriteFile = async (
       };
     }
 
-    // ワークスペース検証
-    const workspacePath = getWorkspacePath();
-    if (workspacePath && !isWithinWorkspace(filePath, workspacePath)) {
+    // ワークスペース検証（workspacePathが指定されている場合のみ）
+    const normalizedWorkspace = normalizeWorkspacePath(workspacePath);
+    if (
+      normalizedWorkspace &&
+      !isWithinWorkspace(filePath, normalizedWorkspace)
+    ) {
       return {
         success: false,
         error: {

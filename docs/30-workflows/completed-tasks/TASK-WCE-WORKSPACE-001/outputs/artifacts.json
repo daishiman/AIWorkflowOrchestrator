@@ -1,0 +1,119 @@
+{
+  "taskId": "TASK-WCE-WORKSPACE-001",
+  "taskName": "Chat Edit Workspace管理統合",
+  "issueNumber": 660,
+  "createdAt": "2026-02-02T19:17:00Z",
+  "completedAt": "2026-02-02T21:30:00Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-02T19:30:00Z",
+      "artifacts": [
+        "phase-1/requirements-definition.md",
+        "phase-1/acceptance-criteria.md",
+        "phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-02T19:45:00Z",
+      "artifacts": ["phase-2/architecture-design.md", "phase-2/api-design.md"]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-02T20:00:00Z",
+      "artifacts": ["phase-3/design-review-result.md"]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-02T20:15:00Z",
+      "artifacts": [
+        "phase-4/test-specification.md",
+        "phase-4/test-cases.md",
+        "phase-4/integration-test-design.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-02T20:45:00Z",
+      "artifacts": [],
+      "codeChanges": [
+        "apps/desktop/src/main/handlers/chatEditHandlers.ts",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/hooks/useFileContext.ts",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/utils/fileTreeUtils.ts"
+      ],
+      "testFiles": [
+        "apps/desktop/src/main/handlers/__tests__/chatEditHandlers.workspace.test.ts",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/hooks/__tests__/useFileContext.workspace.test.ts",
+        "apps/desktop/src/renderer/features/workspace-chat-edit/utils/__tests__/fileTreeUtils.test.ts"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-02T21:00:00Z",
+      "artifacts": ["phase-6/coverage-report.md", "phase-6/integration-test.md"]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-02T21:05:00Z",
+      "artifacts": ["phase-7/coverage-report.md", "phase-7/integration-test.md"]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-02T21:10:00Z",
+      "artifacts": ["phase-8/refactoring-result.md"]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-02T21:15:00Z",
+      "artifacts": ["phase-9/quality-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-02T21:20:00Z",
+      "artifacts": ["phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-02T21:25:00Z",
+      "artifacts": ["phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-02T21:30:00Z",
+      "artifacts": [
+        "phase-12/implementation-guide.md",
+        "phase-12/documentation-changelog.md",
+        "phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [],
+      "note": "PR作成はユーザー指示により保留"
+    }
+  },
+  "qualityMetrics": {
+    "lineCoverage": "95%",
+    "branchCoverage": "90%",
+    "functionCoverage": "100%",
+    "testCount": 45,
+    "passedTests": 45,
+    "failedTests": 0
+  },
+  "summary": {
+    "deletedTodos": [
+      "chatEditHandlers.ts:77 - TODO: 実際のワークスペース管理から取得",
+      "useFileContext.ts:96-97 - TODO: Workspace型にopenFilesプロパティを追加"
+    ],
+    "remainingTodos": [
+      "chatEditHandlers.ts:302 - TODO: Monaco Editorとの連携を実装（別タスク）",
+      "chatEditHandlers.ts:344 - TODO: 実際のLLM連携を実装（別タスク）"
+    ],
+    "newFeatures": [
+      "ワークスペースパス検証機能",
+      "ファイルツリーからのファイル一覧取得",
+      "PERMISSION_DENIEDエラーハンドリング"
+    ]
+  }
+}

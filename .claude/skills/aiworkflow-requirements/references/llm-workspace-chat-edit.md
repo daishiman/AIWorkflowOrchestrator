@@ -148,12 +148,21 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 ## IPCチャンネル
 
-| チャネル                    | 方向            | Request                        | Response                    |
-| --------------------------- | --------------- | ------------------------------ | --------------------------- |
-| `chat-edit:read-file`       | Renderer → Main | `{ filePath: string }`         | `IPCResponse<FileReadResult>` |
-| `chat-edit:write-file`      | Renderer → Main | `{ filePath, content }`        | `IPCResponse<FileWriteResult>` |
-| `chat-edit:get-selection`   | Renderer → Main | なし                           | `IPCResponse<TextSelection>` |
-| `chat-edit:send-with-context` | Renderer → Main | `SendWithContextRequest`     | `IPCResponse<GeneratedResult>` |
+| チャネル                    | 方向            | Request                                             | Response                      |
+| --------------------------- | --------------- | --------------------------------------------------- | ----------------------------- |
+| `chat-edit:read-file`       | Renderer → Main | `{ filePath: string, workspacePath?: string \| null }` | `IPCResponse<FileReadResult>` |
+| `chat-edit:write-file`      | Renderer → Main | `{ filePath, content, workspacePath?: string \| null }` | `IPCResponse<FileWriteResult>` |
+| `chat-edit:get-selection`   | Renderer → Main | なし                                                | `IPCResponse<TextSelection>`  |
+| `chat-edit:send-with-context` | Renderer → Main | `SendWithContextRequest`                          | `IPCResponse<GeneratedResult>` |
+
+### workspacePathパラメータ
+
+| パラメータ    | 型               | 必須 | 説明                                                               |
+| ------------- | ---------------- | ---- | ------------------------------------------------------------------ |
+| workspacePath | string \| null   | No   | ワークスペースパス。指定時はファイルアクセスをワークスペース内に制限 |
+
+- **未指定/null/空文字の場合**: 検証スキップ（後方互換性維持）
+- **指定時**: `isWithinWorkspace()`でパス検証し、外部アクセスは`PERMISSION_DENIED`エラー
 
 ---
 
@@ -208,14 +217,60 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 ## 関連ドキュメント
 
-- [LLMインターフェース概要](./interfaces-llm.md)
+### 親ドキュメント
+
+- [LLMインターフェース概要](./interfaces-llm.md)（インデックス・全体像把握）
+
+### 同カテゴリ
+
 - [LLM IPC型定義](./llm-ipc-types.md)
-- [アーキテクチャパターン](./architecture-patterns.md)
+- [LLMストリーミング](./llm-streaming.md)
+- [Embedding](./llm-embedding.md)
+
+### アーキテクチャ・パターン
+
+- [アーキテクチャパターン](./architecture-patterns.md)（chatEditSliceパターン）
+- [API IPC Agent](./api-ipc-agent.md)（IPCチャンネル一覧）
+
+### セキュリティ
+
+- [Electron IPCセキュリティ](./security-electron-ipc.md)
+- [APIセキュリティ](./security-api-electron.md)
+
+### 実装ガイド
+
+- [Workspace管理統合 実装ガイド](../../../docs/30-workflows/TASK-WCE-WORKSPACE-001/outputs/phase-12/implementation-guide.md)
+
+---
+
+## 完了タスク
+
+### Workspace管理統合（TASK-WCE-WORKSPACE-001）2026-02-02完了
+
+| 項目           | 内容                                                                            |
+| -------------- | ------------------------------------------------------------------------------- |
+| タスクID       | TASK-WCE-WORKSPACE-001                                                          |
+| Issue          | #660                                                                            |
+| ステータス     | **完了**                                                                        |
+| 実装内容       | workspacePathパラメータ追加、isWithinWorkspace検証、folderFileTreesからファイル一覧取得 |
+| 修正ファイル   | chatEditHandlers.ts, useFileContext.ts                                          |
+| 新規ファイル   | fileTreeUtils.ts                                                                |
+| テスト数       | 45（ユニット＋統合）                                                            |
+| カバレッジ     | Line 95%, Branch 90%, Function 100%                                             |
+| ドキュメント   | `docs/30-workflows/TASK-WCE-WORKSPACE-001/`                                     |
+
+### 削除されたTODO
+
+| ファイル            | 行番号 | 削除されたTODO                                 |
+| ------------------- | ------ | ---------------------------------------------- |
+| chatEditHandlers.ts | 77     | `TODO: 実際のワークスペース管理から取得`       |
+| useFileContext.ts   | 96-97  | `TODO: Workspace型にopenFilesプロパティを追加` |
 
 ---
 
 ## 変更履歴
 
-| 日付 | バージョン | 変更内容 |
-| ---- | ---------- | -------- |
-| 2026-01-26 | - | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+| 日付       | バージョン | 変更内容                                                            |
+| ---------- | ---------- | ------------------------------------------------------------------- |
+| 2026-02-02 | v1.1.0     | TASK-WCE-WORKSPACE-001完了: workspacePathパラメータ追加、完了タスクセクション追加 |
+| 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                  |

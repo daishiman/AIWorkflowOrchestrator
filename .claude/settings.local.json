@@ -102,7 +102,8 @@
       "Bash(fi)",
       "Bash(do if [ -f \"$file\" ])",
       "Bash(then echo \"EXISTS: $file\")",
-      "Bash(else echo \"MISSING: $file\")"
+      "Bash(else echo \"MISSING: $file\")",
+      "Bash(pnpm --filter @repo/desktop test -- --run fileTreeUtils)"
     ],
     "deny": [],
     "ask": []
