@@ -72,11 +72,11 @@ beforeEach(() => {
 
 ### 選択基準
 
-| パターン | 状態変更頻度 | セレクタ使用 | 推奨コンポーネント |
-|----------|--------------|--------------|-------------------|
-| パターン1 | 低 | なし | 表示専用コンポーネント |
-| パターン2 | 中 | あり | Zustand接続コンポーネント |
-| パターン3 | 高 | なし/あり | ダイアログ・フォーム |
+| パターン  | 状態変更頻度 | セレクタ使用 | 推奨コンポーネント        |
+| --------- | ------------ | ------------ | ------------------------- |
+| パターン1 | 低           | なし         | 表示専用コンポーネント    |
+| パターン2 | 中           | あり         | Zustand接続コンポーネント |
+| パターン3 | 高           | なし/あり    | ダイアログ・フォーム      |
 
 ---
 
@@ -87,7 +87,7 @@ beforeEach(() => {
 ```typescript
 // factories/skillMetadata.factory.ts
 export function createSkillMetadata(
-  overrides: Partial<SkillMetadata> = {}
+  overrides: Partial<SkillMetadata> = {},
 ): SkillMetadata {
   return {
     name: "test-skill",
@@ -104,12 +104,18 @@ export function createSkillMetadata(
 
 // 境界値バリアント
 export const emptySkillMetadata = createSkillMetadata({
-  agents: [], references: [], scripts: [], assets: [], schemas: [],
+  agents: [],
+  references: [],
+  scripts: [],
+  assets: [],
+  schemas: [],
 });
 
 export const fullSkillMetadata = createSkillMetadata({
   agents: [{ filename: "agent1.md", relativePath: "agents/", size: 1024 }],
-  references: [{ filename: "ref1.md", relativePath: "references/", size: 2048 }],
+  references: [
+    { filename: "ref1.md", relativePath: "references/", size: 2048 },
+  ],
   // ... 全リソース
 });
 ```
@@ -120,7 +126,7 @@ export const fullSkillMetadata = createSkillMetadata({
 export function createAssistantMessage(
   text: string,
   isPartial = false,
-  timestamp = Date.now()
+  timestamp = Date.now(),
 ): SkillStreamMessage {
   return {
     type: "assistant",
@@ -132,7 +138,7 @@ export function createAssistantMessage(
 
 export function createToolUseMessage(
   toolName: string,
-  timestamp = Date.now()
+  timestamp = Date.now(),
 ): SkillStreamMessage {
   return {
     type: "tool_use",
@@ -202,14 +208,14 @@ it("選択状態でaria-activedescendantが更新される", async () => {
 
 ### 必須テストマトリクス
 
-| キー | テスト内容 | 検証項目 |
-|------|-----------|----------|
+| キー         | テスト内容     | 検証項目                              |
+| ------------ | -------------- | ------------------------------------- |
 | ArrowUp/Down | オプション移動 | フォーカス位置、aria-activedescendant |
-| Enter | 選択確定 | 選択値、ダイアログ閉じ |
-| Escape | キャンセル | ダイアログ閉じ、フォーカス復帰 |
-| Tab | 順方向トラップ | 最後→最初の循環 |
-| Shift+Tab | 逆方向トラップ | 最初→最後の循環 |
-| Home/End | 境界移動 | 最初/最後の要素 |
+| Enter        | 選択確定       | 選択値、ダイアログ閉じ                |
+| Escape       | キャンセル     | ダイアログ閉じ、フォーカス復帰        |
+| Tab          | 順方向トラップ | 最後→最初の循環                       |
+| Shift+Tab    | 逆方向トラップ | 最初→最後の循環                       |
+| Home/End     | 境界移動       | 最初/最後の要素                       |
 
 ### 実装例
 
@@ -317,9 +323,9 @@ describe("ComponentName", () => {
 
 ```typescript
 const user = userEvent.setup();
-await user.click(button);           // 実際のクリック動作
-await user.type(input, "text");     // 文字入力
-await user.keyboard("{Enter}");     // キー操作
+await user.click(button); // 実際のクリック動作
+await user.type(input, "text"); // 文字入力
+await user.keyboard("{Enter}"); // キー操作
 ```
 
 ### fireEvent使用ケース
@@ -342,8 +348,19 @@ fireEvent.change(input, { target: { value: "text" } });
 
 ---
 
+## 関連未タスク
+
+| タスクID                  | タスク名                           | 優先度 | 発見元    | 概要                                                             |
+| ------------------------- | ---------------------------------- | ------ | --------- | ---------------------------------------------------------------- |
+| TASK-IMP-VITEST-UTILS-001 | Vitestテスト共通ユーティリティ整備 | 中     | TASK-9A-A | ESModuleモッキング回避パターン・一時ディレクトリヘルパーの共通化 |
+
+> **配置先**: `docs/30-workflows/unassigned-task/task-vitest-test-utilities-improvement.md`
+
+---
+
 ## 変更履歴
 
-| Version | Date       | Changes                              |
-|---------|------------|--------------------------------------|
-| 1.0.0   | 2026-02-02 | TASK-8Bパターンから初版作成（280テスト知見統合） |
+| Version | Date       | Changes                                                            |
+| ------- | ---------- | ------------------------------------------------------------------ |
+| 1.1.0   | 2026-02-03 | TASK-9A-A: 関連未タスクセクション追加（TASK-IMP-VITEST-UTILS-001） |
+| 1.0.0   | 2026-02-02 | TASK-8Bパターンから初版作成（280テスト知見統合）                   |

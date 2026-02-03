@@ -183,16 +183,21 @@ Zustand Sliceパターンで実装された状態管理。
 
 ### IPC チャンネル（スキル管理）
 
-| チャンネル             | 方向            | 説明                     | 戻り値                            |
-| ---------------------- | --------------- | ------------------------ | --------------------------------- |
-| `skill:list-imported`  | Renderer → Main | インポート済みスキル取得 | `OperationResult<Skill[]>`        |
-| `skill:list-available` | Renderer → Main | 利用可能スキル取得       | `OperationResult<Skill[]>`        |
-| `skill:import`         | Renderer → Main | スキルインポート         | `OperationResult<void>`           |
-| `skill:remove`         | Renderer → Main | スキル削除               | `OperationResult<void>`           |
-| `skill:get-detail`     | Renderer → Main | スキル詳細取得           | `OperationResult<Skill>`          |
-| `skill:execute`        | Renderer → Main | スキル実行               | `OperationResult<SkillRunResult>` |
-| `skill:abort`          | Renderer → Main | スキル実行中断           | `boolean`                         |
-| `skill:get-status`     | Renderer → Main | 実行ステータス取得       | `ExecutionStatus \| null`         |
+| チャンネル                | 方向            | 説明                        | 戻り値                                |
+| ------------------------- | --------------- | --------------------------- | ------------------------------------- |
+| `skill:list-imported`     | Renderer → Main | インポート済みスキル取得    | `OperationResult<Skill[]>`            |
+| `skill:list-available`    | Renderer → Main | 利用可能スキル取得          | `OperationResult<Skill[]>`            |
+| `skill:import`            | Renderer → Main | スキルインポート            | `OperationResult<void>`               |
+| `skill:remove`            | Renderer → Main | スキル削除                  | `OperationResult<void>`               |
+| `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `OperationResult<Skill>`              |
+| `skill:execute`           | Renderer → Main | スキル実行                  | `OperationResult<SkillRunResult>`     |
+| `skill:abort`             | Renderer → Main | スキル実行中断              | `boolean`                             |
+| `skill:get-status`        | Renderer → Main | 実行ステータス取得          | `ExecutionStatus \| null`             |
+| `skill:analyze`           | Renderer → Main | スキル分析（TASK-9C）       | `OperationResult<SkillAnalysis>`      |
+| `skill:improve`           | Renderer → Main | スキル改善（TASK-9C）       | `OperationResult<ImprovementResult>`  |
+| `skill:optimize`          | Renderer → Main | プロンプト最適化（TASK-9C） | `OperationResult<OptimizationResult>` |
+| `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
+| `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
 
 #### OperationResult型
 
@@ -345,15 +350,15 @@ AgentViewを親コンポーネントとして、各UIコンポーネントが階
 
 #### コンポーネント仕様
 
-| コンポーネント        | ファイル                             | 責務                   |
-| --------------------- | ------------------------------------ | ---------------------- |
-| `AgentView`           | `views/AgentView/index.tsx`          | メインビュー、状態管理 |
-| `SkillList`           | `components/SkillList.tsx`           | スキル一覧表示         |
-| `SkillCard`           | `components/SkillCard.tsx`           | スキルカード表示       |
-| `SkillDetailPanel`    | `components/SkillDetailPanel.tsx`    | スキル詳細パネル       |
+| コンポーネント        | ファイル                                 | 責務                   |
+| --------------------- | ---------------------------------------- | ---------------------- |
+| `AgentView`           | `views/AgentView/index.tsx`              | メインビュー、状態管理 |
+| `SkillList`           | `components/SkillList.tsx`               | スキル一覧表示         |
+| `SkillCard`           | `components/SkillCard.tsx`               | スキルカード表示       |
+| `SkillDetailPanel`    | `components/SkillDetailPanel.tsx`        | スキル詳細パネル       |
 | `SkillImportDialog`   | `components/skill/SkillImportDialog.tsx` | インポートダイアログ   |
-| `SkillSearchBar`      | `components/SkillSearchBar.tsx`      | 検索バー               |
-| `SkillCategoryFilter` | `components/SkillCategoryFilter.tsx` | カテゴリフィルター     |
+| `SkillSearchBar`      | `components/SkillSearchBar.tsx`          | 検索バー               |
+| `SkillCategoryFilter` | `components/SkillCategoryFilter.tsx`     | カテゴリフィルター     |
 
 ---
 
@@ -563,30 +568,118 @@ ChatPanelは、既存チャット機能にスキル関連コンポーネント�
 
 ### 統合コンポーネント一覧
 
-| コンポーネント       | ファイルパス                                          | 統合方式             |
-| -------------------- | ----------------------------------------------------- | -------------------- |
-| SkillSelector        | `components/skill/SkillSelector.tsx`                  | 直接レンダー         |
-| SkillStreamingView   | `components/skill/SkillStreamingView.tsx`             | 条件付きレンダー     |
-| SkillImportDialog    | `components/skill/SkillImportDialog.tsx`              | ローカルstate制御    |
-| PermissionDialog     | `components/skill/PermissionDialog.tsx`               | Store-directパターン |
+| コンポーネント     | ファイルパス                              | 統合方式             |
+| ------------------ | ----------------------------------------- | -------------------- |
+| SkillSelector      | `components/skill/SkillSelector.tsx`      | 直接レンダー         |
+| SkillStreamingView | `components/skill/SkillStreamingView.tsx` | 条件付きレンダー     |
+| SkillImportDialog  | `components/skill/SkillImportDialog.tsx`  | ローカルstate制御    |
+| PermissionDialog   | `components/skill/PermissionDialog.tsx`   | Store-directパターン |
 
 ### ChatPanel公開インターフェース
 
-| 名前                | 種別   | 説明                             |
-| ------------------- | ------ | -------------------------------- |
-| `ChatPanelProps`    | type   | `{ onImportRequest?: (skill: SkillMetadata) => void }` |
-| `ChatPanelHandle`   | type   | `{ handleImportRequest: (skill: SkillMetadata) => void }` |
-| `ChatPanel`         | component | `forwardRef<ChatPanelHandle, ChatPanelProps>` |
+| 名前              | 種別      | 説明                                                      |
+| ----------------- | --------- | --------------------------------------------------------- |
+| `ChatPanelProps`  | type      | `{ onImportRequest?: (skill: SkillMetadata) => void }`    |
+| `ChatPanelHandle` | type      | `{ handleImportRequest: (skill: SkillMetadata) => void }` |
+| `ChatPanel`       | component | `forwardRef<ChatPanelHandle, ChatPanelProps>`             |
 
 ### Store依存（useAppStore）
 
-| セレクタ                  | 用途                     |
-| ------------------------- | ------------------------ |
-| `selectedSkillName`       | 選択中スキル名           |
-| `streamingMessages`       | ストリーミングメッセージ |
-| `isExecuting`             | 実行中フラグ             |
-| `skillExecutionStatus`    | 実行ステータス           |
-| `fetchSkills`             | スキル一覧取得アクション |
+| セレクタ               | 用途                     |
+| ---------------------- | ------------------------ |
+| `selectedSkillName`    | 選択中スキル名           |
+| `streamingMessages`    | ストリーミングメッセージ |
+| `isExecuting`          | 実行中フラグ             |
+| `skillExecutionStatus` | 実行ステータス           |
+| `fetchSkills`          | スキル一覧取得アクション |
+
+---
+
+## SkillFileManager（TASK-9A-A）
+
+### 概要
+
+スキルファイルのCRUD操作を提供するサービスクラス。スキルディレクトリ内のファイル読み書き、バックアップ、復元機能を実装する。
+
+**実装ファイル**:
+
+- Service: `apps/desktop/src/main/services/skill/SkillFileManager.ts`
+- Errors: `apps/desktop/src/main/services/skill/errors.ts`
+- Tests: `apps/desktop/src/main/services/skill/__tests__/SkillFileManager.*.test.ts`
+
+### 対応ディレクトリ
+
+| ディレクトリ            | 権限         | 説明               |
+| ----------------------- | ------------ | ------------------ |
+| `~/.aiworkflow/skills/` | 読み書き可   | ユーザー作成スキル |
+| `~/.claude/skills/`     | 読み取り専用 | Claude公式スキル   |
+
+### 型定義
+
+#### SkillFileManagerOptions
+
+| プロパティ            | 型       | 必須 | 説明                                                      |
+| --------------------- | -------- | ---- | --------------------------------------------------------- |
+| `aiworkflowSkillsDir` | `string` | -    | カスタムディレクトリ（デフォルト: ~/.aiworkflow/skills/） |
+| `claudeSkillsDir`     | `string` | -    | カスタムディレクトリ（デフォルト: ~/.claude/skills/）     |
+
+#### BackupInfo
+
+| プロパティ     | 型                      | 説明                             |
+| -------------- | ----------------------- | -------------------------------- |
+| `filename`     | `string`                | バックアップファイル名           |
+| `relativePath` | `string`                | スキルディレクトリからの相対パス |
+| `originalPath` | `string`                | 元ファイルのパス                 |
+| `type`         | `'backup' \| 'deleted'` | バックアップ種別                 |
+| `timestamp`    | `number`                | タイムスタンプ（ミリ秒）         |
+| `createdAt`    | `Date`                  | 作成日時                         |
+
+### API
+
+| メソッド        | シグネチャ                                                                    | 説明             |
+| --------------- | ----------------------------------------------------------------------------- | ---------------- |
+| `readFile`      | `(skillName: string, relativePath: string) => Promise<string>`                | ファイル読み込み |
+| `writeFile`     | `(skillName: string, relativePath: string, content: string) => Promise<void>` | ファイル書き込み |
+| `createFile`    | `(skillName: string, relativePath: string, content: string) => Promise<void>` | ファイル作成     |
+| `deleteFile`    | `(skillName: string, relativePath: string) => Promise<void>`                  | ファイル削除     |
+| `listBackups`   | `(skillName: string) => Promise<BackupInfo[]>`                                | バックアップ一覧 |
+| `restoreBackup` | `(skillName: string, backupPath: string) => Promise<void>`                    | バックアップ復元 |
+| `isReadonly`    | `(skillName: string) => Promise<boolean>`                                     | 読み取り専用判定 |
+
+### エラークラス
+
+| エラークラス         | エラーコード              | 発生条件                       |
+| -------------------- | ------------------------- | ------------------------------ |
+| `SkillNotFoundError` | `SKILL_NOT_FOUND`         | スキルディレクトリが存在しない |
+| `ReadonlySkillError` | `READONLY_SKILL`          | 読み取り専用スキルへの書き込み |
+| `PathTraversalError` | `PATH_TRAVERSAL_DETECTED` | パストラバーサル検出           |
+| `FileExistsError`    | `FILE_ALREADY_EXISTS`     | createFile で既存ファイルあり  |
+| `FileNotFoundError`  | `FILE_NOT_FOUND`          | 操作対象ファイルが存在しない   |
+
+### バックアップ形式
+
+| 操作     | ファイル名形式                   | 例                               |
+| -------- | -------------------------------- | -------------------------------- |
+| 書き込み | `{filename}.backup.{timestamp}`  | `guide.md.backup.1738500000000`  |
+| 削除     | `{filename}.deleted.{timestamp}` | `guide.md.deleted.1738500000000` |
+
+### セキュリティ
+
+| 対策                 | 実装                                           |
+| -------------------- | ---------------------------------------------- |
+| パストラバーサル防止 | `validatePath()` で `../` パターンを検出・拒否 |
+| 読み取り専用保護     | `~/.claude/skills/` への書き込みを全て拒否     |
+| Nullバイト検証       | Nullバイトを含むパスは安全に処理               |
+
+### テストカバレッジ
+
+| カテゴリ           | テスト数 | ファイル                               |
+| ------------------ | -------- | -------------------------------------- |
+| ユニットテスト     | 50       | `SkillFileManager.test.ts`             |
+| 統合テスト         | 21       | `SkillFileManager.integration.test.ts` |
+| セキュリティテスト | 25       | `SkillFileManager.security.test.ts`    |
+| エッジケーステスト | 41       | `SkillFileManager.edge.test.ts`        |
+| **合計**           | **137**  |                                        |
 
 ---
 
@@ -598,71 +691,131 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 ### テスト構成
 
-| カテゴリ | テスト数 | 検証対象 |
-|----------|----------|----------|
-| ハンドラー登録/解除 | 1 | registerSkillHandlers / unregisterSkillHandlers |
-| 基本チャネルテスト | 12 | list-available, list-imported, import, remove, get-detail, execute |
-| 拡張チャネルテスト | 2 | abort, get-status |
-| エラーハンドリング | 10 | 各チャネルの異常系 |
-| セキュリティ検証 | 2 | validateIpcSender失敗パス（abort, get-status） |
-| エッジケース | 4 | undefined引数、空配列、不正イベント等 |
-| IMP-002チャネル | 10 | settings/permissions/cache（未実装パス） |
+| カテゴリ            | テスト数 | 検証対象                                                           |
+| ------------------- | -------- | ------------------------------------------------------------------ |
+| ハンドラー登録/解除 | 1        | registerSkillHandlers / unregisterSkillHandlers                    |
+| 基本チャネルテスト  | 12       | list-available, list-imported, import, remove, get-detail, execute |
+| 拡張チャネルテスト  | 2        | abort, get-status                                                  |
+| エラーハンドリング  | 10       | 各チャネルの異常系                                                 |
+| セキュリティ検証    | 2        | validateIpcSender失敗パス（abort, get-status）                     |
+| エッジケース        | 4        | undefined引数、空配列、不正イベント等                              |
+| IMP-002チャネル     | 10       | settings/permissions/cache（未実装パス）                           |
 
 ### 適用テストパターン
 
-| パターン | 参照先 | 用途 |
-|----------|--------|------|
-| Handler Map方式 | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) IPC通信テストパターン | ハンドラー関数の直接テスト |
-| SkillService Partial Mock | 同上 | 依存サービスの部分モック |
-| invokeOptionalHandler | 同上 | IMP-002未実装チャネルの条件付きテスト |
-| validateIpcSender失敗検証 | 同上 | セキュリティレイヤーの検証 |
+| パターン                  | 参照先                                                                                                     | 用途                                  |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Handler Map方式           | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) IPC通信テストパターン | ハンドラー関数の直接テスト            |
+| SkillService Partial Mock | 同上                                                                                                       | 依存サービスの部分モック              |
+| invokeOptionalHandler     | 同上                                                                                                       | IMP-002未実装チャネルの条件付きテスト |
+| validateIpcSender失敗検証 | 同上                                                                                                       | セキュリティレイヤーの検証            |
 
 ### ヘルパー関数
 
 テストファイル内に定義された再利用可能ヘルパー。
 
-| 関数 | 用途 |
-|------|------|
-| `createMockIpcEvent(senderId?)` | モックIPCイベントオブジェクト生成 |
-| `expectOperationSuccess(result, expectedData?)` | OperationResult成功検証 |
-| `expectOperationError(result, errorPattern?)` | OperationResultエラー検証 |
-| `invokeOptionalHandler(handlerMap, channel, ...args)` | 未実装チャネルの条件付き呼び出し |
+| 関数                                                  | 用途                              |
+| ----------------------------------------------------- | --------------------------------- |
+| `createMockIpcEvent(senderId?)`                       | モックIPCイベントオブジェクト生成 |
+| `expectOperationSuccess(result, expectedData?)`       | OperationResult成功検証           |
+| `expectOperationError(result, errorPattern?)`         | OperationResultエラー検証         |
+| `invokeOptionalHandler(handlerMap, channel, ...args)` | 未実装チャネルの条件付き呼び出し  |
 
 ### テストデータ定数
 
-| 定数 | 型 | 用途 |
-|------|-----|------|
-| `EXPECTED_CHANNELS` | `string[]` | 登録されるべき全8チャネル名 |
-| `MOCK_SKILL_A` / `MOCK_SKILL_B` | `Skill` | スキルデータのFixture |
-| `MOCK_SCAN_RESULT` | `ScanResult` | スキャン結果Fixture |
-| `MOCK_EXECUTION_RESULT` | `SkillRunResult` | 実行結果Fixture |
-| `MOCK_SETTINGS` | `object` | IMP-002設定データFixture |
-| `MOCK_PERMISSIONS` | `object` | IMP-002権限データFixture |
-| `MOCK_CACHE_DATA` | `object` | IMP-002キャッシュデータFixture |
+| 定数                            | 型               | 用途                           |
+| ------------------------------- | ---------------- | ------------------------------ |
+| `EXPECTED_CHANNELS`             | `string[]`       | 登録されるべき全8チャネル名    |
+| `MOCK_SKILL_A` / `MOCK_SKILL_B` | `Skill`          | スキルデータのFixture          |
+| `MOCK_SCAN_RESULT`              | `ScanResult`     | スキャン結果Fixture            |
+| `MOCK_EXECUTION_RESULT`         | `SkillRunResult` | 実行結果Fixture                |
+| `MOCK_SETTINGS`                 | `object`         | IMP-002設定データFixture       |
+| `MOCK_PERMISSIONS`              | `object`         | IMP-002権限データFixture       |
+| `MOCK_CACHE_DATA`               | `object`         | IMP-002キャッシュデータFixture |
 
 ---
 
 ## 完了タスク
 
-### TASK-8C-B: スキル選択フローE2Eテスト（2026-02-02完了）
+### TASK-9C: スキル改善・自動修正機能（2026-02-03完了）
 
-| 項目         | 内容                                                                       |
-| ------------ | -------------------------------------------------------------------------- |
-| タスクID     | TASK-8C-B                                                                  |
-| 完了日       | 2026-02-02                                                                 |
-| ステータス   | **完了**                                                                   |
-| テスト数     | 8（自動テスト）                                                            |
-| 発見課題     | 0件                                                                        |
-| ドキュメント | `docs/30-workflows/TASK-8C-B/`                                             |
+| 項目         | 内容                                                    |
+| ------------ | ------------------------------------------------------- |
+| タスクID     | TASK-9C                                                 |
+| 完了日       | 2026-02-03                                              |
+| ステータス   | **完了**                                                |
+| テスト数     | 83（自動テスト）+ 17（手動テスト項目）                  |
+| 発見課題     | 3件（UI表示、改善履歴永続化、A/Bテスト）→将来タスク候補 |
+| ドキュメント | `docs/30-workflows/TASK-9C-skill-improver/`             |
 
 #### テスト結果サマリー
 
-| カテゴリ           | テスト数 | PASS | FAIL |
-| ------------------ | -------- | ---- | ---- |
-| 基本表示           | 2        | 2    | 0    |
-| スキル選択         | 2        | 2    | 0    |
-| キーボード操作     | 2        | 2    | 0    |
-| アクセシビリティ   | 2        | 2    | 0    |
+| カテゴリ                         | テスト数 | PASS | FAIL |
+| -------------------------------- | -------- | ---- | ---- |
+| SkillAnalyzer.test.ts            | 8        | 8    | 0    |
+| SkillAnalyzer.additional.test.ts | 13       | 13   | 0    |
+| SkillImprover.test.ts            | 10       | 10   | 0    |
+| SkillImprover.additional.test.ts | 18       | 18   | 0    |
+| PromptOptimizer.test.ts          | 11       | 11   | 0    |
+| skillHandlers.improve.test.ts    | 18       | 18   | 0    |
+| performance.test.ts              | 5        | 5    | 0    |
+
+#### 主要成果
+
+| 成果              | 内容                                                             |
+| ----------------- | ---------------------------------------------------------------- |
+| SkillAnalyzer     | 静的分析 + AI分析、スコアリング（0-100）、改善提案生成           |
+| SkillImprover     | 改善適用、バックアップ/復元、エラーハンドリング                  |
+| PromptOptimizer   | プロンプト最適化、バリアント生成、評価                           |
+| IPCチャネル5種    | skill:analyze, skill:improve, skill:optimize, variants, evaluate |
+| Graceful Fallback | SDK接続エラー時のサービス継続性                                  |
+
+#### 成果物
+
+| 成果物             | パス                                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| 実装ガイド         | `docs/30-workflows/TASK-9C-skill-improver/outputs/phase-12/implementation-guide.md`      |
+| テスト結果レポート | `docs/30-workflows/TASK-9C-skill-improver/outputs/phase-11/manual-test-result.md`        |
+| 未タスク検出       | `docs/30-workflows/TASK-9C-skill-improver/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 実装課題と解決策
+
+| 課題                     | 解決策                                                          | 参照                                     |
+| ------------------------ | --------------------------------------------------------------- | ---------------------------------------- |
+| SDK接続エラー時の処理    | `tryAgentSdkWithFallback<T>(fn, fallback)` で graceful fallback | `sdkUtils.ts`                            |
+| テストでのSDKモック      | `queryFn` パラメータで DI（依存注入）可能に                     | `SkillAnalyzer.ts`, `PromptOptimizer.ts` |
+| スキル名バリデーション   | 禁止文字リスト `<>:"\|?*` でサニタイズ                          | `SkillAnalyzer.ts`                       |
+| ESModule モッキング制約  | SDK本体をモックせず `queryFn` を注入してテスト                  | `SkillAnalyzer.test.ts`                  |
+| バックアップファイル管理 | 改善前に自動バックアップ、エラー時は自動復元                    | `SkillImprover.ts`                       |
+
+#### 関連仕様書
+
+| 仕様書                                    | 内容                                                  |
+| ----------------------------------------- | ----------------------------------------------------- |
+| `architecture-implementation-patterns.md` | SDK連携パターン（Fallback, DI, バリデーション）の詳細 |
+| `arch-electron-services.md`               | サービス層コンポーネント構成                          |
+
+---
+
+### TASK-8C-B: スキル選択フローE2Eテスト（2026-02-02完了）
+
+| 項目         | 内容                           |
+| ------------ | ------------------------------ |
+| タスクID     | TASK-8C-B                      |
+| 完了日       | 2026-02-02                     |
+| ステータス   | **完了**                       |
+| テスト数     | 8（自動テスト）                |
+| 発見課題     | 0件                            |
+| ドキュメント | `docs/30-workflows/TASK-8C-B/` |
+
+#### テスト結果サマリー
+
+| カテゴリ         | テスト数 | PASS | FAIL |
+| ---------------- | -------- | ---- | ---- |
+| 基本表示         | 2        | 2    | 0    |
+| スキル選択       | 2        | 2    | 0    |
+| キーボード操作   | 2        | 2    | 0    |
+| アクセシビリティ | 2        | 2    | 0    |
 
 #### 主要成果
 
@@ -675,24 +828,24 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 #### 成果物
 
-| 成果物             | パス                                                                  |
-| ------------------ | --------------------------------------------------------------------- |
-| E2Eテストファイル  | `apps/desktop/src/__tests__/skillSelection.e2e.ts`                    |
-| テスト結果レポート | `docs/30-workflows/TASK-8C-B/outputs/phase-11/manual-test-result.md`  |
-| 実装ガイド         | `docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md`|
+| 成果物             | パス                                                                   |
+| ------------------ | ---------------------------------------------------------------------- |
+| E2Eテストファイル  | `apps/desktop/src/__tests__/skillSelection.e2e.ts`                     |
+| テスト結果レポート | `docs/30-workflows/TASK-8C-B/outputs/phase-11/manual-test-result.md`   |
+| 実装ガイド         | `docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md` |
 
 ---
 
 ### TASK-8C-A: IPC統合テスト（2026-02-02完了）
 
-| 項目         | 内容                                                                       |
-| ------------ | -------------------------------------------------------------------------- |
-| タスクID     | TASK-8C-A                                                                  |
-| 完了日       | 2026-02-02                                                                 |
-| ステータス   | **完了**                                                                   |
-| テスト数     | 41（自動テスト）+ 5（手動テスト項目）                                      |
-| 発見課題     | 2件（IMP-002チャネル未実装、permission:response未実装）                    |
-| ドキュメント | `docs/30-workflows/TASK-8C-A/`                                             |
+| 項目         | 内容                                                    |
+| ------------ | ------------------------------------------------------- |
+| タスクID     | TASK-8C-A                                               |
+| 完了日       | 2026-02-02                                              |
+| ステータス   | **完了**                                                |
+| テスト数     | 41（自動テスト）+ 5（手動テスト項目）                   |
+| 発見課題     | 2件（IMP-002チャネル未実装、permission:response未実装） |
+| ドキュメント | `docs/30-workflows/TASK-8C-A/`                          |
 
 #### テスト結果サマリー
 
@@ -706,23 +859,23 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 #### 成果物
 
-| 成果物             | パス                                                                  |
-| ------------------ | --------------------------------------------------------------------- |
-| テスト結果レポート | `docs/30-workflows/TASK-8C-A/outputs/phase-11/manual-test-result.md`  |
-| 実装ガイド         | `docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md`|
+| 成果物             | パス                                                                   |
+| ------------------ | ---------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-8C-A/outputs/phase-11/manual-test-result.md`   |
+| 実装ガイド         | `docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md` |
 
 ---
 
 ## 関連ドキュメント
 
-| ドキュメント            | 説明                       |
-| ----------------------- | -------------------------- |
-| interfaces-agent-sdk.md | 親ファイル（インデックス） |
-| ui-ux-components.md     | UIコンポーネント仕様       |
-| [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md) | SkillImportDialog実装詳細 |
-| [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md) | ChatPanel統合実装詳細 |
-| [TASK-8C-A 実装ガイド](../../../../docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md) | IPC統合テスト実装詳細 |
-| [TASK-8C-B 実装ガイド](../../../../docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md) | スキル選択E2Eテスト実装詳細 |
+| ドキュメント                                                                                                                      | 説明                        |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| interfaces-agent-sdk.md                                                                                                           | 親ファイル（インデックス）  |
+| ui-ux-components.md                                                                                                               | UIコンポーネント仕様        |
+| [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)          | SkillImportDialog実装詳細   |
+| [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md) | ChatPanel統合実装詳細       |
+| [TASK-8C-A 実装ガイド](../../../../docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md)                          | IPC統合テスト実装詳細       |
+| [TASK-8C-B 実装ガイド](../../../../docs/30-workflows/TASK-8C-B/outputs/phase-12/implementation-guide.md)                          | スキル選択E2Eテスト実装詳細 |
 
 ---
 
@@ -1009,14 +1162,15 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-03 | 1.11.0     | マージ統合: TASK-9B-G + TASK-9C |
 | 2026-02-03 | 1.10.0     | TASK-9B-G: 実装上の苦戦箇所・教訓セクション追加（未タスク登録漏れ、Script First統合設計、定数外部化、パストラバーサル防止） |
 | 2026-02-03 | 1.9.0      | TASK-9B-G: SkillCreatorService仕様追加（SkillCreatorMode, ScriptExecutor, ResourceLoader型定義、API仕様、50テスト完了記録） |
 | 2026-02-02 | 1.8.0      | TASK-8C-B: スキル選択E2Eテスト完了記録追加（8テスト、ARIA属性ベースセレクタ、安定性対策3層） |
 | 2026-02-02 | 1.7.0      | TASK-8C-A: テストアーキテクチャセクション追加（テスト構成、適用パターン、ヘルパー関数、テストデータ定数） |
-| 2026-02-02 | 1.6.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む |
-| 2026-02-02 | 1.5.0      | TASK-8C-A完了: skill:abort/get-statusチャネル仕様追加、IPC統合テスト完了記録 |
-| 2026-01-30 | 1.4.0      | TASK-7D完了: ChatPanel統合セクション追加               |
-| 2026-01-30 | 1.3.0      | TASK-7B完了: SkillImportDialogファイルパス修正（components/skill/）|
-| 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加           |
-| 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠） |
-| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                        |
+| 2026-02-02 | 1.6.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む                       |
+| 2026-02-02 | 1.5.0      | TASK-8C-A完了: skill:abort/get-statusチャネル仕様追加、IPC統合テスト完了記録                              |
+| 2026-01-30 | 1.4.0      | TASK-7D完了: ChatPanel統合セクション追加                                                                  |
+| 2026-01-30 | 1.3.0      | TASK-7B完了: SkillImportDialogファイルパス修正（components/skill/）                                       |
+| 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加                                                              |
+| 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠）                                                    |
+| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                                                                           |

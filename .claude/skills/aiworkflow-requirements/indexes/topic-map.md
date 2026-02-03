@@ -78,7 +78,7 @@ node scripts/list-specs.js --topics
 | テストカバレッジ目標 | L542 |
 | 関連ドキュメント | L619 |
 | 完了タスク | L627 |
-| 変更履歴 | L826 |
+| 変更履歴 | L881 |
 
 ---
 
@@ -161,13 +161,13 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L118 |
 | デスクトップ（Electron）実装パターン | L184 |
-| パフォーマンス最適化パターン | L239 |
-| セキュリティ実装パターン | L277 |
-| テスト実装パターン | L309 |
-| アクセシビリティ実装パターン | L609 |
-| 関連ドキュメント | L634 |
-| スキル作成実装パターン（TASK-9B-G） | L646 |
-| 変更履歴 | L770 |
+| パフォーマンス最適化パターン | L292 |
+| セキュリティ実装パターン | L330 |
+| テスト実装パターン | L362 |
+| アクセシビリティ実装パターン | L647 |
+| 関連ドキュメント | L672 |
+| スキル作成実装パターン（TASK-9B-G） | L684 |
+| 変更履歴 | L808 |
 
 ### references/architecture-monorepo.md
 
@@ -258,16 +258,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L380 |
-| SkillSlice型定義（TASK-6-1） | L432 |
-| ModifierSkill（スライド逆同期機能） | L524 |
-| ChatPanel統合（TASK-7D） | L558 |
-| テストアーキテクチャ（TASK-8C-A） | L593 |
-| 完了タスク | L645 |
-| 関連ドキュメント | L716 |
-| SkillCreatorService（TASK-9B-G） | L729 |
-| 完了タスク | L935 |
-| 変更履歴 | L966 |
+| SkillImportStore（TASK-2B） | L385 |
+| SkillSlice型定義（TASK-6-1） | L437 |
+| ModifierSkill（スライド逆同期機能） | L529 |
+| ChatPanel統合（TASK-7D） | L563 |
+| SkillFileManager（TASK-9A-A） | L598 |
+| テストアーキテクチャ（TASK-8C-A） | L686 |
+| 完了タスク | L738 |
+| 関連ドキュメント | L869 |
+| SkillCreatorService（TASK-9B-G） | L882 |
+| 変更履歴 | L1161 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -617,10 +617,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Agent Dashboard IPC チャネル | L10 |
 | Workspace Chat Edit IPC チャネル | L76 |
-| 完了タスク | L202 |
-| 実装パターン参照 | L274 |
-| 関連ドキュメント | L286 |
-| 変更履歴 | L296 |
+| 完了タスク | L201 |
+| 関連ドキュメント | L230 |
+| 変更履歴 | L239 |
 
 ### references/api-ipc-auth.md
 
@@ -1262,7 +1261,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 変更履歴 | L8 |
 | Environment Backend サービス | L17 |
 | スキル管理サービス | L84 |
-| 関連ドキュメント | L407 |
+| 関連ドキュメント | L413 |
 
 ### references/arch-feature-addition.md
 
@@ -1360,11 +1359,11 @@ node scripts/list-specs.js --topics
 | Git ワークフロー | L261 |
 | 命名規則 | L297 |
 | デバッグガイド | L345 |
-| リリースプロセス | L382 |
-| バックアップ・リカバリ | L411 |
-| 環境構築ガイド | L448 |
-| 関連ドキュメント | L491 |
-| 変更履歴 | L504 |
+| リリースプロセス | L399 |
+| バックアップ・リカバリ | L428 |
+| 環境構築ガイド | L465 |
+| 関連ドキュメント | L508 |
+| 変更履歴 | L521 |
 
 ### references/directory-structure.md
 
@@ -1737,8 +1736,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L272 |
-| 変更履歴 | L282 |
+| 関連ドキュメント | L275 |
+| 変更履歴 | L285 |
 
 ### references/testing-accessibility.md
 
@@ -1760,13 +1759,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L9 |
 | 1. Storeモッキングパターン | L18 |
 | 2. テストデータファクトリ | L83 |
-| 3. アクセシビリティテスト | L147 |
-| 4. キーボードナビゲーション | L201 |
-| 5. 非同期テスト | L240 |
-| 6. テスト構成 | L278 |
-| 7. userEvent vs fireEvent | L314 |
-| 参照 | L337 |
-| 変更履歴 | L345 |
+| 3. アクセシビリティテスト | L153 |
+| 4. キーボードナビゲーション | L207 |
+| 5. 非同期テスト | L246 |
+| 6. テスト構成 | L284 |
+| 7. userEvent vs fireEvent | L320 |
+| 参照 | L343 |
+| 関連未タスク | L351 |
+| 変更履歴 | L361 |
 
 ### references/testing-dialog-patterns.md
 

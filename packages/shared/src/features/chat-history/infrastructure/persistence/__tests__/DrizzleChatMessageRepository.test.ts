@@ -41,7 +41,7 @@ describe("DrizzleChatMessageRepository", () => {
   });
 
   afterEach(() => {
-    testDb.close();
+    testDb?.close();
   });
 
   // ============================================================

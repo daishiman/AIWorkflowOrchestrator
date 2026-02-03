@@ -43,27 +43,104 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
-## [2026-02-03 - TASK-WCE-MONACO-001 Phase 1-12完了]
+## [2026-02-03 - 未タスク仕様書への実装課題セクション追加]
 
-- **Agent**: execute-workflow (Phase 1-12)
-- **Phase**: Phase 12 完了
+- **Agent**: generate-unassigned-task (update)
+- **Phase**: Phase 12 Documentation Supplement
 - **Result**: ✓ 成功
 - **Duration**: -
-- **Notes**: TASK-WCE-MONACO-001「Monaco Editor選択範囲取得」Phase 1-12全工程完了。editorSelection.ts新規作成（Renderer）、chatEditHandlers.ts修正（Main Process）。26テスト全PASS、100%カバレッジ。未タスク0件。
+- **Notes**: TASK-9Cの実装課題と解決策を3つの未タスク仕様書（TASK-10A, 10B, 10C）に反映。システム仕様書（architecture-implementation-patterns.md, interfaces-agent-sdk-skill.md）の内容を各タスクに適用形で追加。
+
+### 更新ファイル
+
+| ファイル                     | 追加内容                                               |
+| ---------------------------- | ------------------------------------------------------ |
+| task-10a-ui-skill-improve.md | 3.5セクション「実装課題と解決策（TASK-9Cからの学び）」 |
+| task-10b-improve-history.md  | 3.5セクション「実装課題と解決策（TASK-9Cからの学び）」 |
+| task-10c-ab-test.md          | 3.5セクション「実装課題と解決策（TASK-9Cからの学び）」 |
+
+### 追加した実装課題パターン
+
+| パターン                 | 適用タスク         | 内容                                |
+| ------------------------ | ------------------ | ----------------------------------- |
+| Graceful SDK Fallback    | TASK-10A, 10C      | SDK接続エラー時のフォールバック表示 |
+| queryFn DI パターン      | TASK-10A, 10B, 10C | SDKテスト時のモック注入             |
+| バックアップファイル管理 | TASK-10B           | 履歴との紐付け保存                  |
+| スキル名バリデーション   | TASK-10C           | テスト名にも適用                    |
+
+---
+
+## [2026-02-03 - TASK-9C完了・Phase 1-12全工程完了]
+
+- **Agent**: execute (Phase 1-12)
+- **Phase**: Phase 12 Documentation
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: TASK-9Cスキル改善・自動修正機能のPhase 1-12全工程完了。83テスト全PASS。SkillAnalyzer/SkillImprover/PromptOptimizer実装、IPC 5チャネル追加。未タスク3件検出（TASK-10A-UI-SKILL-IMPROVE, TASK-10B-IMPROVE-HISTORY, TASK-10C-AB-TEST）。
 
 ### 成果物
 
-| Phase | 成果物                   | ファイル                   |
-| ----- | ------------------------ | -------------------------- |
-| 1     | 要件定義書               | requirements-definition.md |
-| 2     | アーキテクチャ設計       | architecture-design.md     |
-| 3     | 設計レビュー結果         | design-review-result.md    |
-| 4     | テスト仕様書             | test-specification.md      |
-| 5     | 実装サマリー             | implementation-summary.md  |
-| 6-9   | 品質保証関連             | qa-report.md等             |
-| 10    | 最終レビュー結果         | final-review.md            |
-| 11    | 手動テスト手順書         | manual-test-procedure.md   |
-| 12    | ドキュメント更新         | documentation-update.md    |
+| 成果物          | パス                                                                                |
+| --------------- | ----------------------------------------------------------------------------------- |
+| SkillAnalyzer   | `apps/desktop/src/main/services/skill/SkillAnalyzer.ts`                             |
+| SkillImprover   | `apps/desktop/src/main/services/skill/SkillImprover.ts`                             |
+| PromptOptimizer | `apps/desktop/src/main/services/skill/PromptOptimizer.ts`                           |
+| 実装ガイド      | `docs/30-workflows/TASK-9C-skill-improver/outputs/phase-12/implementation-guide.md` |
+
+### 実装課題・苦戦箇所
+
+| 課題                   | 解決策                                      | 記録先                  |
+| ---------------------- | ------------------------------------------- | ----------------------- |
+| SDK接続エラー時の処理  | graceful fallback（空結果返却）パターン採用 | patterns.md             |
+| テストでのSDKモック    | DI（queryFn注入）パターンで解決             | implementation-guide.md |
+| スキル名バリデーション | 禁止文字リスト`<>:"\|?*`でサニタイズ        | SkillAnalyzer.ts        |
+
+---
+
+## [2026-02-03 - TASK-9A-A実装課題から未タスク検出・1件作成]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned (Phase 12実装課題検出)
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: TASK-9A-A（SkillFileManager単体テスト、137テスト、98%+カバレッジ）の実装中に遭遇した課題（ESModuleモッキング制約、エラークラス不一致、一時ディレクトリ管理）を基に未タスク1件を検出・作成。9セクションテンプレート完全準拠。システム仕様書参照セクション（architecture-implementation-patterns.md、development-guidelines.md、testing-component-patterns.md）を追加し、将来の実装者が同じ課題を回避できるよう設計。
+
+### 生成タスク
+
+1. **TASK-IMP-VITEST-UTILS-001** - Vitestテスト共通ユーティリティ整備（優先度: 中）
+   - ESModuleモッキング回避パターンのガイドライン化
+   - 一時ディレクトリ管理ヘルパー関数の共通化
+   - 配置先: `docs/30-workflows/unassigned-task/task-vitest-test-utilities-improvement.md`
+
+### 関連仕様書更新
+
+- testing-component-patterns.md: 関連未タスクセクション追加（v1.1.0）
+
+---
+
+## [2026-02-03 - TASK-WCE-MONACO-001未タスク検出・4件作成]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned (Phase 12スコープ外項目検出)
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: TASK-WCE-MONACO-001（Monaco Editor選択範囲取得）のスコープ外項目・備考セクションから未タスク4件を検出・作成。9セクションテンプレート完全準拠。システム仕様書参照（課題ID MR-01〜MR-04）セクションを各タスクに追加し、将来の実装者が苦戦箇所を回避できるよう設計。
+
+### 生成タスク
+
+1. **task-imp-monaco-multi-cursor-support-001** - マルチカーソル対応（優先度: 低）
+2. **task-imp-monaco-selection-highlight-001** - 選択範囲ハイライト表示（優先度: 低）
+3. **task-imp-monaco-write-back-001** - エディタ書き戻し機能（優先度: 中）
+4. **task-imp-monaco-vim-emacs-mode-001** - Vim/Emacsモード選択範囲対応（優先度: 低）
+
+### 苦戦箇所（再利用可能ナレッジ）
+
+| 課題ID | 課題               | 解決策                                                  |
+| ------ | ------------------ | ------------------------------------------------------- |
+| MR-01  | webContentsがnull  | focusedWebContents ?? firstWebContentsのフォールバック  |
+| MR-02  | 未登録エラー       | Optional chaining（`?.`）使用                           |
+| MR-03  | 非同期結果処理     | async/await適切使用                                     |
+| MR-04  | TypeScript型エラー | `declare global { interface Window { __xxx?: {...} } }` |
 
 ---
 
@@ -2614,5 +2691,57 @@ if (artifactPath) {
 
 - ステータス: success
 - 完了日時: 2026-02-02
+
+---
+
+## [2026-02-03 - TASK-9B-A Phase 1-12完了]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 完了
+- **Result**: ✓ 成功
+- **Notes**: TASK-9B-A「skill-creator SKILL.md 作成」Phase 1-12全工程完了。SKILL.mdメタスキル定義ファイル新規作成（212行、12機能、9ツール許可、5エージェント参照、4リファレンス参照）。TDD手法によるバリデーション100%達成。依存タスクTASK-9B-B〜Gは計画済み。
+
+### 成果物
+
+| Phase | 成果物             | パス                                        |
+| ----- | ------------------ | ------------------------------------------- |
+| 1     | 要件定義書         | outputs/phase-1/requirements-definition.md  |
+| 2     | 構造設計書         | outputs/phase-2/structure-design.md         |
+| 3     | 設計レビュー結果   | outputs/phase-3/design-review-result.md     |
+| 4     | 検証スクリプト     | outputs/phase-4/validate-skill-md.sh        |
+| 5     | SKILL.md           | ~/.aiworkflow/skills/skill-creator/SKILL.md |
+| 6-7   | カバレッジレポート | outputs/phase-6/, outputs/phase-7/          |
+| 8-10  | 品質・レビュー結果 | outputs/phase-8/, phase-9/, phase-10/       |
+| 11    | 手動テスト結果     | outputs/phase-11/manual-test-result.md      |
+| 12    | 実装ガイド         | outputs/phase-12/implementation-guide.md    |
+
+---
+
+## 2026-02-03: TASK-9A-A完了（SkillFileManager実装）
+
+| 項目         | 内容                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9A-A                                                                                    |
+| 操作         | Phase 1-12 完了（サービスクラス新規作成）                                                    |
+| 対象ファイル | SkillFileManager.ts, errors.ts, index.ts                                                     |
+| 結果         | success                                                                                      |
+| 備考         | スキルファイルCRUD操作サービス実装。137テスト全PASS、Line 98.02%/Branch 96.34%/Function 100% |
+
+### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| ユニットテスト     | 50       | 50   | 0    |
+| 統合テスト         | 21       | 21   | 0    |
+| セキュリティテスト | 25       | 25   | 0    |
+| エッジケーステスト | 41       | 41   | 0    |
+
+### 成果物
+
+| 成果物       | パス                                                     |
+| ------------ | -------------------------------------------------------- |
+| 実装ファイル | apps/desktop/src/main/services/skill/SkillFileManager.ts |
+| エラー定義   | apps/desktop/src/main/services/skill/errors.ts           |
+| 実装ガイド   | outputs/phase-12/implementation-guide.md                 |
 
 ---
