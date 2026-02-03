@@ -7,10 +7,10 @@
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                         |
-| ---------- | ---------- | ------------------------------------------------ |
+| バージョン | 日付       | 変更内容                                                                                    |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------- |
 | 6.31.0     | 2026-02-01 | TASK-8C-E完了: E2Eテストフィクスチャセクション追加（3フィクスチャ仕様・検証テスト29ケース） |
-| 6.30.0     | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+| 6.30.0     | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                          |
 
 ---
 
@@ -26,14 +26,14 @@ Environment BackendはElectronのMain Processで動作し、エージェント�
 
 Environment BackendはMain Process（Electron）上で動作し、以下の階層構造を持つ。
 
-| 階層 | コンポーネント       | 役割                       |
-| ---- | -------------------- | -------------------------- |
-| L1   | EnvironmentService   | Facade（外部エントリポイント） |
-| L2   | ContentExtractor     | コードブロック抽出          |
-| L2   | ContentSanitizer     | HTMLサニタイズ（DOMPurify） |
-| L2   | TempFileManager      | 一時ファイル管理            |
-| L1   | IPC Handlers         | Renderer通信                |
-| L2   | agentHandlers.ts     | IPCハンドラ実装             |
+| 階層 | コンポーネント     | 役割                           |
+| ---- | ------------------ | ------------------------------ |
+| L1   | EnvironmentService | Facade（外部エントリポイント） |
+| L2   | ContentExtractor   | コードブロック抽出             |
+| L2   | ContentSanitizer   | HTMLサニタイズ（DOMPurify）    |
+| L2   | TempFileManager    | 一時ファイル管理               |
+| L1   | IPC Handlers       | Renderer通信                   |
+| L2   | agentHandlers.ts   | IPCハンドラ実装                |
 
 ### ファイル構成
 
@@ -93,25 +93,31 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 
 スキル管理バックエンドはMain Process（Electron）上で動作し、以下の階層構造を持つ。
 
-| 階層 | コンポーネント       | 役割                       |
-| ---- | -------------------- | -------------------------- |
-| L1   | SkillService         | Facade（外部エントリポイント） |
-| L2   | SkillScanner         | スキル検出・パス検証        |
-| L2   | SkillParser          | SKILL.md解析               |
-| L2   | SkillImportManager   | インポート管理・永続化      |
-| L1   | IPC Handlers         | Renderer通信                |
-| L2   | skillHandlers.ts     | IPCハンドラ実装             |
+| 階層 | コンポーネント     | 役割                           |
+| ---- | ------------------ | ------------------------------ |
+| L1   | SkillService       | Facade（外部エントリポイント） |
+| L2   | SkillScanner       | スキル検出・パス検証           |
+| L2   | SkillParser        | SKILL.md解析                   |
+| L2   | SkillImportManager | インポート管理・永続化         |
+| L2   | SkillAnalyzer      | スキル品質分析（TASK-9C）      |
+| L2   | SkillImprover      | スキル改善適用（TASK-9C）      |
+| L2   | PromptOptimizer    | プロンプト最適化（TASK-9C）    |
+| L1   | IPC Handlers       | Renderer通信                   |
+| L2   | skillHandlers.ts   | IPCハンドラ実装                |
 
 ### ファイル構成
 
-| ファイル                | 責務                           |
-| ----------------------- | ------------------------------ |
-| `SkillScanner.ts`       | ディレクトリスキャン・パス検証 |
-| `SkillParser.ts`        | SKILL.md解析・構造化           |
-| `SkillImportManager.ts` | インポート状態管理・永続化     |
-| `SkillService.ts`       | Facadeサービス（外部API）      |
-| `index.ts`              | エクスポート                   |
-| `skillHandlers.ts`      | IPCハンドラ（ipc/配下）        |
+| ファイル                | 責務                              |
+| ----------------------- | --------------------------------- |
+| `SkillScanner.ts`       | ディレクトリスキャン・パス検証    |
+| `SkillParser.ts`        | SKILL.md解析・構造化              |
+| `SkillImportManager.ts` | インポート状態管理・永続化        |
+| `SkillAnalyzer.ts`      | スキル静的・AI分析（TASK-9C）     |
+| `SkillImprover.ts`      | 改善適用・バックアップ（TASK-9C） |
+| `PromptOptimizer.ts`    | プロンプト最適化（TASK-9C）       |
+| `SkillService.ts`       | Facadeサービス（外部API）         |
+| `index.ts`              | エクスポート                      |
+| `skillHandlers.ts`      | IPCハンドラ（ipc/配下）           |
 
 ### 型定義
 
@@ -154,24 +160,24 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 
 スキャン対象となるサブディレクトリは以下の6種類。定数名は `SUB_DIRECTORIES`。
 
-| サブディレクトリ | 説明               |
-| ---------------- | ------------------ |
-| agents           | エージェント定義   |
-| references       | 参照ドキュメント   |
-| scripts          | スクリプトファイル |
-| assets           | アセットファイル   |
-| schemas          | JSONスキーマ       |
+| サブディレクトリ | 説明                 |
+| ---------------- | -------------------- |
+| agents           | エージェント定義     |
+| references       | 参照ドキュメント     |
+| scripts          | スクリプトファイル   |
+| assets           | アセットファイル     |
+| schemas          | JSONスキーマ         |
 | indexes          | インデックスファイル |
 
 #### その他ファイル定数
 
 スキャン対象となるその他ファイルは以下の3種類。定数名は `OTHER_FILES`。
 
-| ファイル名    | タイプ  |
-| ------------- | ------- |
-| EVALS.json    | evals   |
-| LOGS.md       | logs    |
-| package.json  | package |
+| ファイル名   | タイプ  |
+| ------------ | ------- |
+| EVALS.json   | evals   |
+| LOGS.md      | logs    |
+| package.json | package |
 
 #### セキュリティ対策
 
@@ -185,18 +191,18 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 
 SkillScanner.scanAll() 実行時の処理フローを以下に示す。
 
-| ステップ | 処理                    | 詳細                                     | 並列処理 |
-| -------- | ----------------------- | ---------------------------------------- | -------- |
-| 1        | ensureAiworkflowDir()   | ~/.aiworkflow/skills/ ディレクトリを確保 | -        |
+| ステップ | 処理                    | 詳細                                               | 並列処理 |
+| -------- | ----------------------- | -------------------------------------------------- | -------- |
+| 1        | ensureAiworkflowDir()   | ~/.aiworkflow/skills/ ディレクトリを確保           | -        |
 | 2a       | scanSkillDirectory()    | aiworkflowディレクトリをスキャン（readonly=false） | 並列     |
 | 2b       | scanSkillDirectory()    | claudeディレクトリをスキャン（readonly=true）      | 並列     |
-| 2-1      | fs.readdir()            | ディレクトリ内容を読み取り               | -        |
-| 2-2      | セキュリティ検証        | パストラバーサル・シンボリックリンク検証 | -        |
-| 2-3      | parseSkill()            | スキル解析を実行                         | -        |
-| 2-3-1    | fs.readFile(SKILL.md)   | SKILL.mdファイルを読み込み               | -        |
-| 2-3-2    | parseFrontmatter()      | フロントマター解析                       | -        |
-| 2-3-3a   | scanAllSubDirectories() | 全サブディレクトリをスキャン             | 並列     |
-| 2-3-3b   | scanOtherFiles()        | その他ファイルをスキャン                 | 並列     |
+| 2-1      | fs.readdir()            | ディレクトリ内容を読み取り                         | -        |
+| 2-2      | セキュリティ検証        | パストラバーサル・シンボリックリンク検証           | -        |
+| 2-3      | parseSkill()            | スキル解析を実行                                   | -        |
+| 2-3-1    | fs.readFile(SKILL.md)   | SKILL.mdファイルを読み込み                         | -        |
+| 2-3-2    | parseFrontmatter()      | フロントマター解析                                 | -        |
+| 2-3-3a   | scanAllSubDirectories() | 全サブディレクトリをスキャン                       | 並列     |
+| 2-3-3b   | scanOtherFiles()        | その他ファイルをスキャン                           | 並列     |
 
 #### E2Eテストフィクスチャ（TASK-8C-E実装）
 
@@ -205,11 +211,11 @@ SkillScanner.scanAll() 実行時の処理フローを以下に示す。
 
 SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続タスク（TASK-8C-B/C/D）が共通利用する。
 
-| フィクスチャ   | 内容                                 | scanAll()結果    |
-| -------------- | ------------------------------------ | ---------------- |
-| test-skill     | 完全構成（SKILL.md + agents + refs） | 含まれる         |
-| another-skill  | 最小構成（SKILL.md のみ）            | 含まれる         |
-| invalid-skill  | 無効（SKILL.md なし）                | スキップされる   |
+| フィクスチャ  | 内容                                 | scanAll()結果  |
+| ------------- | ------------------------------------ | -------------- |
+| test-skill    | 完全構成（SKILL.md + agents + refs） | 含まれる       |
+| another-skill | 最小構成（SKILL.md のみ）            | 含まれる       |
+| invalid-skill | 無効（SKILL.md なし）                | スキップされる |
 
 **配置先**: `apps/desktop/src/__tests__/__fixtures__/skills/`
 **検証テスト**: 29テストケース全PASS（`skills.fixture.test.ts`）
@@ -231,28 +237,28 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 
 **SkillScannerOptions型（キャッシュ機能用）**
 
-| プロパティ   | 型       | 必須 | デフォルト     | 説明                 |
-| ------------ | -------- | ---- | -------------- | -------------------- |
-| cacheTtlMs   | number   | No   | 300000（5分）  | キャッシュ有効期間（ミリ秒） |
+| プロパティ | 型     | 必須 | デフォルト    | 説明                         |
+| ---------- | ------ | ---- | ------------- | ---------------------------- |
+| cacheTtlMs | number | No   | 300000（5分） | キャッシュ有効期間（ミリ秒） |
 
 **SkillChangeEvent型（増分スキャン用）**
 
-| プロパティ   | 型                                 | 必須 | 説明                     |
-| ------------ | ---------------------------------- | ---- | ------------------------ |
-| type         | "added" / "modified" / "removed"   | Yes  | 変更種別                 |
-| skillPath    | string                             | Yes  | スキルのパス             |
-| skillName    | string                             | Yes  | スキル名                 |
-| timestamp    | number                             | Yes  | タイムスタンプ（Unix時間）|
+| プロパティ | 型                               | 必須 | 説明                       |
+| ---------- | -------------------------------- | ---- | -------------------------- |
+| type       | "added" / "modified" / "removed" | Yes  | 変更種別                   |
+| skillPath  | string                           | Yes  | スキルのパス               |
+| skillName  | string                           | Yes  | スキル名                   |
+| timestamp  | number                           | Yes  | タイムスタンプ（Unix時間） |
 
 **PaginatedSkillResult型（ページネーション用）**
 
-| プロパティ   | 型                      | 必須 | 説明                     |
-| ------------ | ----------------------- | ---- | ------------------------ |
-| items        | ScannedSkillMetadata[]  | Yes  | 現在ページのスキル一覧   |
-| total        | number                  | Yes  | 全スキル数               |
-| page         | number                  | Yes  | 現在ページ番号           |
-| pageSize     | number                  | Yes  | 1ページあたりの件数      |
-| hasMore      | boolean                 | Yes  | 次ページが存在するか     |
+| プロパティ | 型                     | 必須 | 説明                   |
+| ---------- | ---------------------- | ---- | ---------------------- |
+| items      | ScannedSkillMetadata[] | Yes  | 現在ページのスキル一覧 |
+| total      | number                 | Yes  | 全スキル数             |
+| page       | number                 | Yes  | 現在ページ番号         |
+| pageSize   | number                 | Yes  | 1ページあたりの件数    |
+| hasMore    | boolean                | Yes  | 次ページが存在するか   |
 
 ### IPC APIチャネル
 
@@ -268,11 +274,11 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 
 スキル管理のデータフローは以下の3ステップで構成される。
 
-| ステップ | 送信元         | 経由             | 送信先                           |
-| -------- | -------------- | ---------------- | -------------------------------- |
-| 1        | Renderer       | IPC Channel      | Main Process                     |
-| 2        | Main Process   | SkillService     | Scanner / Parser / Manager       |
-| 3        | 処理結果       | IPC Channel      | Renderer                         |
+| ステップ | 送信元       | 経由         | 送信先                     |
+| -------- | ------------ | ------------ | -------------------------- |
+| 1        | Renderer     | IPC Channel  | Main Process               |
+| 2        | Main Process | SkillService | Scanner / Parser / Manager |
+| 3        | 処理結果     | IPC Channel  | Renderer                   |
 
 ### SkillService（Facade）API
 
@@ -311,21 +317,21 @@ PermissionResolverはMain Process（Electron）上で動作し、以下の階層
 
 **SkillExecutor（スキル実行エンジン）**
 
-| メソッド                   | 説明                           |
-| -------------------------- | ------------------------------ |
-| sendPermissionRequest()    | IPC経由で権限リクエスト送信    |
-| handlePermissionResponse() | IPC経由で権限応答受信          |
-| sanitizeArgs()             | 機密情報サニタイズ             |
-| getPermissionReason()      | 理由文生成                     |
+| メソッド                   | 説明                        |
+| -------------------------- | --------------------------- |
+| sendPermissionRequest()    | IPC経由で権限リクエスト送信 |
+| handlePermissionResponse() | IPC経由で権限応答受信       |
+| sanitizeArgs()             | 機密情報サニタイズ          |
+| getPermissionReason()      | 理由文生成                  |
 
 **PermissionResolver（権限解決管理）**
 
-| メソッド            | 説明             |
-| ------------------- | ---------------- |
-| waitForResponse()   | Promise待機      |
-| resolveRequest()    | 応答解決         |
-| cancelRequest()     | 個別キャンセル   |
-| cancelAllRequests() | 全キャンセル     |
+| メソッド            | 説明           |
+| ------------------- | -------------- |
+| waitForResponse()   | Promise待機    |
+| resolveRequest()    | 応答解決       |
+| cancelRequest()     | 個別キャンセル |
+| cancelAllRequests() | 全キャンセル   |
 
 #### PermissionResolver API
 
@@ -347,22 +353,22 @@ PermissionResolverはMain Process（Electron）上で動作し、以下の階層
 
 機密情報を含むキーは以下の14パターンで検出され、サニタイズされる。定数名は `SENSITIVE_KEY_PATTERNS`。
 
-| No. | パターン        | 説明                   |
-| --- | --------------- | ---------------------- |
-| 1   | password        | パスワード             |
-| 2   | passwd          | パスワード（短縮形）   |
-| 3   | pwd             | パスワード（省略形）   |
-| 4   | secret          | シークレット           |
-| 5   | token           | トークン               |
-| 6   | bearer          | Bearerトークン         |
-| 7   | key             | キー                   |
-| 8   | apikey          | APIキー（連結形）      |
-| 9   | api_key         | APIキー（アンダースコア形）|
-| 10  | credential      | 認証情報               |
-| 11  | auth            | 認証                   |
-| 12  | access_token    | アクセストークン       |
-| 13  | refresh_token   | リフレッシュトークン   |
-| 14  | private_key     | 秘密鍵                 |
+| No. | パターン      | 説明                        |
+| --- | ------------- | --------------------------- |
+| 1   | password      | パスワード                  |
+| 2   | passwd        | パスワード（短縮形）        |
+| 3   | pwd           | パスワード（省略形）        |
+| 4   | secret        | シークレット                |
+| 5   | token         | トークン                    |
+| 6   | bearer        | Bearerトークン              |
+| 7   | key           | キー                        |
+| 8   | apikey        | APIキー（連結形）           |
+| 9   | api_key       | APIキー（アンダースコア形） |
+| 10  | credential    | 認証情報                    |
+| 11  | auth          | 認証                        |
+| 12  | access_token  | アクセストークン            |
+| 13  | refresh_token | リフレッシュトークン        |
+| 14  | private_key   | 秘密鍵                      |
 
 #### 定数
 
@@ -377,30 +383,30 @@ PermissionResolverはMain Process（Electron）上で動作し、以下の階層
 
 **フェーズ1: Main Process（権限リクエスト送信）**
 
-| ステップ | 処理                         | 詳細                               |
-| -------- | ---------------------------- | ---------------------------------- |
-| 1-1      | SkillExecutor.executeSkill() | スキル実行開始                     |
-| 1-2      | PermissionRequest Hook発火   | 権限確認が必要な操作を検出         |
-| 1-3      | sendPermissionRequest()      | 権限リクエスト送信処理開始         |
-| 1-3a     | sanitizeArgs()               | 機密情報を除去                     |
-| 1-3b     | getPermissionReason()        | 理由文を生成                       |
+| ステップ | 処理                         | 詳細                                  |
+| -------- | ---------------------------- | ------------------------------------- |
+| 1-1      | SkillExecutor.executeSkill() | スキル実行開始                        |
+| 1-2      | PermissionRequest Hook発火   | 権限確認が必要な操作を検出            |
+| 1-3      | sendPermissionRequest()      | 権限リクエスト送信処理開始            |
+| 1-3a     | sanitizeArgs()               | 機密情報を除去                        |
+| 1-3b     | getPermissionReason()        | 理由文を生成                          |
 | 1-3c     | IPC送信                      | skill:permission:request チャネル経由 |
 
 **フェーズ2: Renderer Process（ユーザー応答）**
 
-| ステップ | 処理                     | 詳細                               |
-| -------- | ------------------------ | ---------------------------------- |
-| 2-1      | PermissionDialog表示     | 権限確認ダイアログを表示           |
-| 2-2      | ユーザー選択             | 許可または拒否を選択               |
-| 2-3      | IPC送信                  | skill:permission:response チャネル経由 |
+| ステップ | 処理                 | 詳細                                   |
+| -------- | -------------------- | -------------------------------------- |
+| 2-1      | PermissionDialog表示 | 権限確認ダイアログを表示               |
+| 2-2      | ユーザー選択         | 許可または拒否を選択                   |
+| 2-3      | IPC送信              | skill:permission:response チャネル経由 |
 
 **フェーズ3: Main Process（応答処理）**
 
-| ステップ | 処理                               | 詳細                               |
-| -------- | ---------------------------------- | ---------------------------------- |
-| 3-1      | handlePermissionResponse()         | 権限応答を受信                     |
-| 3-2      | PermissionResolver.resolveRequest()| 待機中のPromiseを解決              |
-| 3-3      | SkillExecutor続行/中止             | 結果に応じてスキル実行を継続または中止 |
+| ステップ | 処理                                | 詳細                                   |
+| -------- | ----------------------------------- | -------------------------------------- |
+| 3-1      | handlePermissionResponse()          | 権限応答を受信                         |
+| 3-2      | PermissionResolver.resolveRequest() | 待機中のPromiseを解決                  |
+| 3-3      | SkillExecutor続行/中止              | 結果に応じてスキル実行を継続または中止 |
 
 ---
 

@@ -2077,6 +2077,9 @@
     "スライド逆同期機能": [
       "interfaces-agent-sdk-skill.md"
     ],
+    "SkillFileManager": [
+      "interfaces-agent-sdk-skill.md"
+    ],
     "テストアーキテクチャ": [
       "interfaces-agent-sdk-skill.md"
     ],
@@ -3434,6 +3437,9 @@
       "testing-component-patterns.md"
     ],
     "fireEvent": [
+      "testing-component-patterns.md"
+    ],
+    "関連未タスク": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [

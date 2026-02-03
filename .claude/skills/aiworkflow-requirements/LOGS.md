@@ -5,41 +5,24 @@
 
 ---
 
-## 2026-02-03: TASK-WCE-MONACO-001未タスク検出・仕様書4件作成
+## 2026-02-03: TASK-9C完了（スキル改善・自動修正機能）
 
-| 項目         | 内容                                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------------------ |
-| タスクID     | TASK-WCE-MONACO-001                                                                                    |
-| 操作         | Phase 12 未タスク検出・仕様書作成                                                                      |
-| 結果         | success                                                                                                |
-| 備考         | スコープ外項目から4件検出。各未タスクに「3.4 システム仕様書参照」セクション追加（課題ID MR-01〜MR-04参照）|
-
-### 作成した未タスク
-
-| ファイル                                    | 内容                        | 優先度 |
-| ------------------------------------------- | --------------------------- | ------ |
-| task-imp-monaco-multi-cursor-support-001.md | マルチカーソル対応          | 低     |
-| task-imp-monaco-selection-highlight-001.md  | 選択範囲ハイライト表示      | 低     |
-| task-imp-monaco-write-back-001.md           | エディタ書き戻し機能        | 中     |
-| task-imp-monaco-vim-emacs-mode-001.md       | Vim/Emacsモード選択範囲対応 | 低     |
-
----
-
-## 2026-02-03: TASK-WCE-MONACO-001完了（Monaco Editor選択範囲取得）
-
-| 項目         | 内容                                                                                               |
-| ------------ | -------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-WCE-MONACO-001                                                                                |
-| 操作         | Phase 1-12 完了（システム仕様書1ファイル更新）                                                     |
-| 対象ファイル | api-ipc-agent.md                                                                                   |
-| 結果         | success                                                                                            |
-| 備考         | Monaco Editorの選択範囲をMain Processから取得するAPI実装。26テスト全PASS、100%カバレッジ           |
+| 項目         | 内容                                                                                                  |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9C                                                                                               |
+| 操作         | Phase 1-12 完了（システム仕様書4ファイル更新）                                                        |
+| 対象ファイル | interfaces-agent-sdk-skill.md, arch-electron-services.md, task-workflow.md, claude-agent-sdk SKILL.md |
+| 結果         | success                                                                                               |
+| 備考         | 83テスト全PASS。SkillAnalyzer/SkillImprover/PromptOptimizer実装、IPC 5チャネル追加、未タスク3件検出   |
 
 ### 更新詳細
 
-| ファイル           | 追加内容                                                            |
-| ------------------ | ------------------------------------------------------------------- |
-| api-ipc-agent.md   | 実装状況テーブル更新、完了タスクセクション追加（v1.3.0）            |
+| ファイル                      | 追加内容                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| interfaces-agent-sdk-skill.md | TASK-9C完了記録、IPC 5チャネル（analyze/improve/optimize/variants/evaluate）   |
+| arch-electron-services.md     | 3サービス追加（SkillAnalyzer/SkillImprover/PromptOptimizer）、ファイル構成追加 |
+| task-workflow.md              | 未タスク3件追加（TASK-10A/10B/10C）、変更履歴v1.13.0                           |
+| claude-agent-sdk SKILL.md     | TASK-9C成果物セクション追加                                                    |
 
 ---
 
@@ -81,95 +64,95 @@
 ---
 ## 2026-02-02: TASK-WCE-WORKSPACE-001完了（Chat Edit Workspace管理統合）
 
-| 項目         | 内容                                                                                                               |
-| ------------ | ------------------------------------------------------------------------------------------------------------------ |
-| タスクID     | TASK-WCE-WORKSPACE-001                                                                                             |
-| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                                                                     |
-| 対象ファイル | llm-workspace-chat-edit.md, api-ipc-agent.md                                                                       |
-| 結果         | success                                                                                                            |
+| 項目         | 内容                                                                                                                          |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-WCE-WORKSPACE-001                                                                                                        |
+| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                                                                                |
+| 対象ファイル | llm-workspace-chat-edit.md, api-ipc-agent.md                                                                                  |
+| 結果         | success                                                                                                                       |
 | 備考         | workspacePathパラメータ追加、isWithinWorkspace検証機能、folderFileTreesからファイル一覧取得。45テスト、カバレッジ95%/90%/100% |
 
 ### 更新詳細
 
-| ファイル                  | 追加内容                                                            |
-| ------------------------- | ------------------------------------------------------------------- |
-| llm-workspace-chat-edit.md | workspacePathパラメータ仕様、完了タスクセクション、変更履歴v1.1.0   |
-| api-ipc-agent.md          | IPCチャンネルRequest更新、完了タスク追加、変更履歴v1.2.0            |
+| ファイル                   | 追加内容                                                          |
+| -------------------------- | ----------------------------------------------------------------- |
+| llm-workspace-chat-edit.md | workspacePathパラメータ仕様、完了タスクセクション、変更履歴v1.1.0 |
+| api-ipc-agent.md           | IPCチャンネルRequest更新、完了タスク追加、変更履歴v1.2.0          |
 
 ---
 
 ## 2026-02-02: 両ブランチ統合マージ
 
-| 項目         | 内容                                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------------------ |
-| タスクID     | マージ                                                                                                 |
-| 操作         | merge                                                                                                  |
-| 結果         | success                                                                                                |
-| 備考         | origin/main統合。TASK-OPT-CI-TEST-PARALLEL-001完了 + task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A/TASK-8B完了を統合 |
+| 項目     | 内容                                                                                                                           |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID | マージ                                                                                                                         |
+| 操作     | merge                                                                                                                          |
+| 結果     | success                                                                                                                        |
+| 備考     | origin/main統合。TASK-OPT-CI-TEST-PARALLEL-001完了 + task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A/TASK-8B完了を統合 |
 
 ---
 
 ## 2026-02-02: TASK-OPT-CI-TEST-PARALLEL-001完了（CI/テスト並列実行最適化）
 
-| 項目         | 内容                                                                                               |
-| ------------ | -------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-OPT-CI-TEST-PARALLEL-001                                                                      |
-| 操作         | Phase 1-12 完了（システム仕様書3ファイル更新）                                                     |
-| 対象ファイル | deployment-gha.md, technology-devops.md, quality-requirements.md                                   |
-| 結果         | success                                                                                            |
+| 項目         | 内容                                                                                                        |
+| ------------ | ----------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-OPT-CI-TEST-PARALLEL-001                                                                               |
+| 操作         | Phase 1-12 完了（システム仕様書3ファイル更新）                                                              |
+| 対象ファイル | deployment-gha.md, technology-devops.md, quality-requirements.md                                            |
+| 結果         | success                                                                                                     |
 | 備考         | シャード8→16、maxForks 2→4(CI)/CPUベース(LOCAL)、fileParallelism有効化、キャッシュ導入、run-p並列スクリプト |
 
 ### 更新詳細
 
-| ファイル                  | 追加内容                                                   |
-| ------------------------- | ---------------------------------------------------------- |
-| deployment-gha.md         | テストシャード戦略、Vitest並列化設定、キャッシュ戦略セクション追加 |
-| technology-devops.md      | 完了タスクセクション、CI最適化パターンセクション追加       |
-| quality-requirements.md   | 並列化設定テーブル、環境変数制御セクション追加             |
+| ファイル                | 追加内容                                                           |
+| ----------------------- | ------------------------------------------------------------------ |
+| deployment-gha.md       | テストシャード戦略、Vitest並列化設定、キャッシュ戦略セクション追加 |
+| technology-devops.md    | 完了タスクセクション、CI最適化パターンセクション追加               |
+| quality-requirements.md | 並列化設定テーブル、環境変数制御セクション追加                     |
 
 ---
 
 ## 2026-02-02: task-imp-permission-date-filter完了（権限履歴の期間別フィルタリング）
 
-| 項目         | 内容                                                                                                                        |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------- |
-| タスクID     | task-imp-permission-date-filter                                                                                             |
-| 操作         | update-spec                                                                                                                 |
-| 結果         | success                                                                                                                     |
-| 備考         | 期間別フィルタリング機能完了。DatePreset/DateRangeFilter型追加、PermissionHistoryFilter拡張。72テスト全PASS、カバレッジ98.5% |
+| 項目     | 内容                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| タスクID | task-imp-permission-date-filter                                                                                              |
+| 操作     | update-spec                                                                                                                  |
+| 結果     | success                                                                                                                      |
+| 備考     | 期間別フィルタリング機能完了。DatePreset/DateRangeFilter型追加、PermissionHistoryFilter拡張。72テスト全PASS、カバレッジ98.5% |
 
 ---
 
 ## 2026-02-02: TASK-8C-A完了（IPC統合テスト）
 
-| 項目         | 内容                                                                                               |
-| ------------ | -------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-8C-A                                                                                          |
-| 操作         | Phase 12 仕様更新                                                                                  |
-| 結果         | success                                                                                            |
-| 備考         | IPC統合テスト41件全PASS、skillHandlers.ts 91.4%行カバレッジ・76%ブランチカバレッジ                  |
+| 項目     | 内容                                                                               |
+| -------- | ---------------------------------------------------------------------------------- |
+| タスクID | TASK-8C-A                                                                          |
+| 操作     | Phase 12 仕様更新                                                                  |
+| 結果     | success                                                                            |
+| 備考     | IPC統合テスト41件全PASS、skillHandlers.ts 91.4%行カバレッジ・76%ブランチカバレッジ |
 
 ---
 
 ## 2026-02-02: TASK-8A完了（スキル管理モジュール単体テスト）
 
-| 項目         | 内容                                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------------------ |
-| タスクID     | TASK-8A                                                                                                |
-| 操作         | unit-test (5モジュール単体テスト Phase 1-12完了)                                                       |
-| 結果         | success                                                                                                |
-| 備考         | 231テスト全PASS。カバレッジ: PermissionResolver 100%, SkillImportManager 97.36%                        |
+| 項目     | 内容                                                                            |
+| -------- | ------------------------------------------------------------------------------- |
+| タスクID | TASK-8A                                                                         |
+| 操作     | unit-test (5モジュール単体テスト Phase 1-12完了)                                |
+| 結果     | success                                                                         |
+| 備考     | 231テスト全PASS。カバレッジ: PermissionResolver 100%, SkillImportManager 97.36% |
 
 ---
 
 ## 2026-02-02: TASK-8B完了（コンポーネントテスト）
 
-| 項目         | 内容                                                                                                                             |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-8B                                                                                                                          |
-| 操作         | update-spec                                                                                                                      |
-| 結果         | success                                                                                                                          |
-| 備考         | コンポーネントテスト完了。280テスト全PASS、Line 99.71%/Branch 95.85%/Function 97.61%カバレッジ達成                                |
+| 項目     | 内容                                                                                               |
+| -------- | -------------------------------------------------------------------------------------------------- |
+| タスクID | TASK-8B                                                                                            |
+| 操作     | update-spec                                                                                        |
+| 結果     | success                                                                                            |
+| 備考     | コンポーネントテスト完了。280テスト全PASS、Line 99.71%/Branch 95.85%/Function 97.61%カバレッジ達成 |
 
 ---
 
@@ -184,6 +167,7 @@
 | 備考         | skill-creatorフィクスチャ境界値テスト拡充完了記録追加。6フィクスチャ・96テスト・100%ギャップカバレッジ |
 
 ---
+
 ## 2026-02-01: task-imp-permission-history-001 Permission履歴トラッキングUI 仕様更新
 
 | 項目         | 内容                                                                                                        |
@@ -2186,6 +2170,7 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 - **indexes/topic-map.md** - Regenerated: Added skill-creator fixtures entries
 
 #### New Files
+
 - `apps/desktop/src/__tests__/__fixtures__/skill-creator/` - 5種類のフィクスチャ (18ファイル)
 - `.claude/skills/skill-fixture-runner/` - 検証スクリプト実行スキル (8ファイル)
 - `apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts` - 62テストケース
@@ -2193,3 +2178,101 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 ---
 
 （ログエントリはここに追記されます）
+
+## 2026-02-03: TASK-9B-A完了（skill-creator SKILL.md 作成）
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-A                                                                                      |
+| 操作         | Phase 1-12 完了（SKILL.md新規作成）                                                            |
+| 対象ファイル | ~/.aiworkflow/skills/skill-creator/SKILL.md, claude-code-skills-overview.md                    |
+| 結果         | success                                                                                        |
+| 備考         | skill-creator メタスキル定義。12機能、9ツール許可、5エージェント参照、4リファレンス参照。212行 |
+
+### 更新詳細
+
+| ファイル                       | 追加内容                                     |
+| ------------------------------ | -------------------------------------------- |
+| SKILL.md                       | skill-creator メタスキル定義ファイル新規作成 |
+| claude-code-skills-overview.md | skill-creatorの使用ツール更新（4→9ツール）   |
+
+### 作成機能一覧
+
+| コマンド                | 機能              |
+| ----------------------- | ----------------- |
+| /skill-creator          | 対話的スキル作成  |
+| /skill-creator api      | API連携スキル生成 |
+| /skill-creator improve  | 既存スキル改善    |
+| /skill-creator execute  | タスク実行        |
+| /skill-creator use      | 即時使用          |
+| /skill-creator chain    | スキルチェーン    |
+| /skill-creator fork     | スキルフォーク    |
+| /skill-creator share    | スキル共有        |
+| /skill-creator schedule | スケジュール設定  |
+| /skill-creator debug    | デバッグ実行      |
+| /skill-creator docs     | ドキュメント生成  |
+| /skill-creator stats    | 使用統計          |
+
+### 依存タスク（計画済み）
+
+| タスク    | 内容                             |
+| --------- | -------------------------------- |
+| TASK-9B-B | hearing-facilitator エージェント |
+| TASK-9B-C | task-generator エージェント      |
+| TASK-9B-D | code-generator エージェント      |
+| TASK-9B-E | validator エージェント           |
+| TASK-9B-F | 参照資料                         |
+| TASK-9B-G | SkillCreatorService              |
+
+---
+
+## 2026-02-03: TASK-9A-A完了（SkillFileManager実装）
+
+| 項目         | 内容                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9A-A                                                                                    |
+| 操作         | Phase 1-12 完了（サービスクラス新規作成）                                                    |
+| 対象ファイル | SkillFileManager.ts, errors.ts, index.ts                                                     |
+| 結果         | success                                                                                      |
+| 備考         | スキルファイルCRUD操作サービス実装。137テスト全PASS、Line 98.02%/Branch 96.34%/Function 100% |
+
+### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| ユニットテスト     | 50       | 50   | 0    |
+| 統合テスト         | 21       | 21   | 0    |
+| セキュリティテスト | 25       | 25   | 0    |
+| エッジケーステスト | 41       | 41   | 0    |
+
+### 実装内容
+
+| 項目             | 内容                                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------- |
+| 主要クラス       | SkillFileManager（readFile, writeFile, createFile, deleteFile, listBackups, restoreBackup, isReadonly） |
+| エラークラス     | SkillNotFoundError, ReadonlySkillError, PathTraversalError, FileExistsError, FileNotFoundError          |
+| バックアップ形式 | .backup.{timestamp}, .deleted.{timestamp}                                                               |
+| セキュリティ     | パストラバーサル防止（validatePath）、読み取り専用保護（~/.claude/skills/）                             |
+| 対応ディレクトリ | ~/.aiworkflow/skills/（読み書き可）、~/.claude/skills/（読み取り専用）                                  |
+
+### 成果物
+
+| 成果物             | パス                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| 実装ファイル       | apps/desktop/src/main/services/skill/SkillFileManager.ts                            |
+| エラー定義         | apps/desktop/src/main/services/skill/errors.ts                                      |
+| エクスポート       | apps/desktop/src/main/services/skill/index.ts                                       |
+| ユニットテスト     | apps/desktop/src/main/services/skill/**tests**/SkillFileManager.test.ts             |
+| 統合テスト         | apps/desktop/src/main/services/skill/**tests**/SkillFileManager.integration.test.ts |
+| セキュリティテスト | apps/desktop/src/main/services/skill/**tests**/SkillFileManager.security.test.ts    |
+| エッジケーステスト | apps/desktop/src/main/services/skill/**tests**/SkillFileManager.edge.test.ts        |
+| 実装ガイド         | outputs/phase-12/implementation-guide.md                                            |
+
+### 関連タスク
+
+| タスクID  | 内容                        | ステータス |
+| --------- | --------------------------- | ---------- |
+| TASK-9A-A | SkillFileManager実装        | **完了**   |
+| TASK-9A-B | IPC接続・フロントエンド統合 | 計画済み   |
+
+---

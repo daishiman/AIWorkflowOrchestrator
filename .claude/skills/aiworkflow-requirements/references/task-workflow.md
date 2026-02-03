@@ -23,12 +23,12 @@
 
 生成された仕様書は以下のパス形式で配置する。
 
-| 要素         | 説明                                   | 例                      |
-| ------------ | -------------------------------------- | ----------------------- |
-| ベースパス   | `docs/30-workflows/`                   | 固定                    |
-| 機能名       | 実装対象の機能を表すディレクトリ名     | `skill-import-agent/`   |
-| ファイル名   | `task-step{N}-{機能名}.md` 形式        | `task-step1-init.md`    |
-| 完全パス例   | 上記を組み合わせた配置先               | `docs/30-workflows/skill-import-agent/task-step1-init.md` |
+| 要素       | 説明                               | 例                                                        |
+| ---------- | ---------------------------------- | --------------------------------------------------------- |
+| ベースパス | `docs/30-workflows/`               | 固定                                                      |
+| 機能名     | 実装対象の機能を表すディレクトリ名 | `skill-import-agent/`                                     |
+| ファイル名 | `task-step{N}-{機能名}.md` 形式    | `task-step1-init.md`                                      |
+| 完全パス例 | 上記を組み合わせた配置先           | `docs/30-workflows/skill-import-agent/task-step1-init.md` |
 
 ---
 
@@ -59,16 +59,16 @@
 
 以下の表はフェーズ間の遷移関係を示す。通常は上から順に進行し、Phase 5で品質ゲートを通過しない場合はPhase 4に戻る。
 
-| 遷移元                   | 遷移先                   | 条件                 |
-| ------------------------ | ------------------------ | -------------------- |
-| Phase 0: 要件定義        | Phase 1: 設計            | 要件定義完了         |
-| Phase 1: 設計            | Phase 2: テスト作成      | 設計完了             |
-| Phase 2: テスト作成      | Phase 3: 実装            | テスト作成完了       |
-| Phase 3: 実装            | Phase 4: リファクタリング | 実装完了             |
-| Phase 4: リファクタリング | Phase 5: 品質保証        | リファクタリング完了 |
-| Phase 5: 品質保証        | Phase 6: ドキュメント更新 | 品質ゲート通過       |
-| Phase 5: 品質保証        | Phase 4: リファクタリング | 品質ゲート未通過     |
-| Phase 6: ドキュメント更新 | 完了                     | ドキュメント更新完了 |
+| 遷移元                    | 遷移先                    | 条件                 |
+| ------------------------- | ------------------------- | -------------------- |
+| Phase 0: 要件定義         | Phase 1: 設計             | 要件定義完了         |
+| Phase 1: 設計             | Phase 2: テスト作成       | 設計完了             |
+| Phase 2: テスト作成       | Phase 3: 実装             | テスト作成完了       |
+| Phase 3: 実装             | Phase 4: リファクタリング | 実装完了             |
+| Phase 4: リファクタリング | Phase 5: 品質保証         | リファクタリング完了 |
+| Phase 5: 品質保証         | Phase 6: ドキュメント更新 | 品質ゲート通過       |
+| Phase 5: 品質保証         | Phase 4: リファクタリング | 品質ゲート未通過     |
+| Phase 6: ドキュメント更新 | 完了                      | ドキュメント更新完了 |
 
 ---
 
@@ -134,31 +134,31 @@
 
 ### タスク: TASK-7D ChatPanel統合（2026-01-30完了）
 
-| 項目       | 内容                                                                   |
-| ---------- | ---------------------------------------------------------------------- |
-| タスクID   | TASK-7D                                                                |
-| 完了日     | 2026-01-30                                                             |
-| ステータス | **完了**                                                               |
-| Phase      | Phase 1-12完了                                                         |
-| テスト数   | 48（ChatPanel: 15, SkillStreamingView: 33）                           |
-| カバレッジ | Line 100%, Branch 93.75%+, Function 100%                              |
+| 項目       | 内容                                        |
+| ---------- | ------------------------------------------- |
+| タスクID   | TASK-7D                                     |
+| 完了日     | 2026-01-30                                  |
+| ステータス | **完了**                                    |
+| Phase      | Phase 1-12完了                              |
+| テスト数   | 48（ChatPanel: 15, SkillStreamingView: 33） |
+| カバレッジ | Line 100%, Branch 93.75%+, Function 100%    |
 
 #### 成果物
 
-| 成果物 | パス/内容 |
-|--------|-----------|
-| ChatPanel.tsx | `apps/desktop/src/renderer/components/chat/ChatPanel.tsx`（136行） |
+| 成果物                 | パス/内容                                                                    |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| ChatPanel.tsx          | `apps/desktop/src/renderer/components/chat/ChatPanel.tsx`（136行）           |
 | SkillStreamingView.tsx | `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx`（251行） |
-| index.ts更新 | `apps/desktop/src/renderer/components/skill/index.ts` |
-| テスト | ChatPanel.test.tsx, SkillStreamingView.test.tsx |
-| ドキュメント | `docs/30-workflows/TASK-7D-chat-panel-integration/`（33 Phase出力ファイル） |
+| index.ts更新           | `apps/desktop/src/renderer/components/skill/index.ts`                        |
+| テスト                 | ChatPanel.test.tsx, SkillStreamingView.test.tsx                              |
+| ドキュメント           | `docs/30-workflows/TASK-7D-chat-panel-integration/`（33 Phase出力ファイル）  |
 
 #### 未タスク（TASK-7D実施中に発見）
 
-| タスクID | タスク名 | 優先度 |
-|----------|----------|--------|
-| task-imp-skillselector-onimportrequest-001 | SkillSelector onImportRequest改善 | 中 |
-| task-imp-chatpanel-new-design-001 | ChatPanel新デザイン改善 | 中 |
+| タスクID                                   | タスク名                          | 優先度 |
+| ------------------------------------------ | --------------------------------- | ------ |
+| task-imp-skillselector-onimportrequest-001 | SkillSelector onImportRequest改善 | 中     |
+| task-imp-chatpanel-new-design-001          | ChatPanel新デザイン改善           | 中     |
 
 ---
 
@@ -234,37 +234,40 @@
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 
-| タスクID             | タスク名                           | 優先度 | 発見元                                          | タスク仕様書                                                                    |
-| -------------------- | ---------------------------------- | ------ | ----------------------------------------------- | ------------------------------------------------------------------------------- |
-| TASK-3-1-B           | SkillExecutor IPC Handler統合      | 高     | TASK-3-1-A完了時（blocks）                      | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md` |
-| TASK-SKILL-PERF-TEST | SkillExecutor パフォーマンステスト | 低     | TASK-3-1-A Phase 11推奨事項                     | `docs/30-workflows/unassigned-task/task-skillexecutor-performance-testing.md`   |
-| SKILL-E2E-001        | スキルインポートE2Eテスト          | 中     | Phase 11（手動テスト検証）推奨事項              | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`            |
-| TSC-AUTOMATION-001   | Phase 12自動化スクリプト拡充       | 低     | skill-import-persistence-bugfix実施時           | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md`      |
-| UT-008               | Chat History UI Components         | 中     | Phase 12（UT-006完了後の後続タスク）            | `docs/30-workflows/unassigned-task/task-chat-history-ui-components.md`          |
-| UT-009               | Chat History Additional Use Cases  | 中     | Phase 12（api-chat-history.md 未実装Use Cases） | `docs/30-workflows/unassigned-task/task-chat-history-additional-usecases.md`    |
-| task-imp-skillselector-onimportrequest-001 | SkillSelector onImportRequest改善 | 中 | TASK-7D実施中に発見 | `docs/30-workflows/unassigned-task/task-imp-skillselector-onimportrequest-improvements.md` |
-| task-imp-chatpanel-new-design-001 | ChatPanel新デザイン改善 | 中 | TASK-7D実施中に発見 | `docs/30-workflows/unassigned-task/task-imp-chatpanel-new-design-improvements.md` |
-| task-chatedit-store-integration-001 | chatEditSlice Store統合 | 中 | システム仕様書分析（arch-state-management.md） | `docs/30-workflows/unassigned-task/task-chatedit-slice-store-integration.md` |
-| task-rag-largefile-perf-001 | RAG変換 大容量ファイルパフォーマンス検証 | 中 | システム仕様書分析（quality-requirements.md） | `docs/30-workflows/unassigned-task/task-rag-converter-largefile-performance.md` |
-| TASK-CHUNK-API-001   | Chunk Search APIレイヤー実装       | 中     | api-internal-chunk-search.md（未実装レイヤー）  | `docs/30-workflows/unassigned-task/task-imp-chunk-search-api-layers.md`         |
-| TASK-DOM-NESTING-001 | validateDOMNesting警告修正         | 低     | ui-history-integration.md（残課題）             | `docs/30-workflows/unassigned-task/task-validate-dom-nesting-bugfix.md`         |
-| UT-RETRY-001         | リトライ設定UI                     | 低     | TASK-SKILL-RETRY-001 Phase 12                   | `docs/30-workflows/unassigned-task/task-retry-settings-ui.md`                  |
-| UT-RETRY-002         | リトライ履歴永続化                 | 低     | TASK-SKILL-RETRY-001 Phase 12                   | `docs/30-workflows/unassigned-task/task-retry-history-persistence.md`          |
-| UT-RETRY-003         | サーキットブレーカーパターン導入   | 中     | TASK-SKILL-RETRY-001 Phase 11 + error-handling.md | `docs/30-workflows/unassigned-task/task-circuit-breaker-pattern.md`          |
-| UT-RETRY-004         | リトライイベントRenderer表示       | 中     | TASK-SKILL-RETRY-001 Phase 11                   | `docs/30-workflows/unassigned-task/task-use-skill-execution-retry-events.md`   |
-| UT-RETRY-005         | リトライ型定義shared package移行   | 低     | TASK-SKILL-RETRY-001 Phase 5                    | `docs/30-workflows/unassigned-task/task-retry-types-shared-migration.md`       |
-| CONV-DEBT-001        | PlainTextConverter実装             | 中     | interfaces-converter.md / architecture-file-conversion.md | `docs/30-workflows/unassigned-task/task-plaintext-converter.md`        |
-| UT-VECTOR-001        | ベクトル検索フィルター拡張         | 低     | rag-vector-search.md 未対応フィルター           | `docs/30-workflows/unassigned-task/task-vector-search-advanced-filters.md`     |
-| task-imp-ipc-imp002-channels-001 | IMP-002チャネル本体実装（settings/permissions/cache） | 中 | TASK-8C-A Phase 12（IPC統合テスト） | `docs/30-workflows/unassigned-task/task-imp-ipc-imp002-channels.md` |
-| task-imp-ipc-permission-response-001 | skill:permission:response チャネル実装 | 低 | TASK-8C-A Phase 12（IPC統合テスト） | `docs/30-workflows/unassigned-task/task-imp-ipc-permission-response.md` |
-| task-ref-quality-requirements-split-001 | quality-requirements.md仕様書分割 | 低 | TASK-OPT-CI-TEST-PARALLEL-001 Phase 12（テンプレート準拠確認） | `docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md` |
-| task-e2e-permission-waitfortimeout-001 | E2E権限テスト waitForTimeout改善 | 低 | TASK-8C-D Phase 10（TQ-M1指摘） | `docs/30-workflows/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md` |
-| task-e2e-test-readme-documentation-001 | READMEへのE2Eテスト実行方法追加 | 低 | TASK-8C-D Phase 9（DOC-M1指摘） | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md` |
-| TASK-9B-H | SkillCreatorService IPC通信設定 | 高 | TASK-9B-G Phase 12（IPC未設定） | `docs/30-workflows/unassigned-task/task-9b-h-skill-creator-ipc-channel.md` |
-| UI-INTEGRATION-9B | SkillCreator UI統合（TASK-10A連携） | 高 | TASK-9B-G Phase 12（UI未実装） | `docs/30-workflows/unassigned-task/task-9b-ui-integration-task10a.md` |
-| TASK-9B-I | Claude Agent SDK本格統合 | 中 | TASK-9B-G Phase 3（推奨事項） | `docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md` |
-| TASK-9B-J | ResourceLoaderキャッシュ無効化 | 低 | TASK-9B-G Phase 3（推奨事項） | `docs/30-workflows/unassigned-task/task-9b-j-skill-creator-cache-invalidation.md` |
-| TASK-9B-K | タイムアウト設定の外部化 | 低 | TASK-9B-G Phase 3（推奨事項） | `docs/30-workflows/unassigned-task/task-9b-k-skill-creator-timeout-config.md` |
+| タスクID                                   | タスク名                                              | 優先度 | 発見元                                                         | タスク仕様書                                                                               |
+| ------------------------------------------ | ----------------------------------------------------- | ------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| TASK-3-1-B                                 | SkillExecutor IPC Handler統合                         | 高     | TASK-3-1-A完了時（blocks）                                     | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md`            |
+| TASK-SKILL-PERF-TEST                       | SkillExecutor パフォーマンステスト                    | 低     | TASK-3-1-A Phase 11推奨事項                                    | `docs/30-workflows/unassigned-task/task-skillexecutor-performance-testing.md`              |
+| SKILL-E2E-001                              | スキルインポートE2Eテスト                             | 中     | Phase 11（手動テスト検証）推奨事項                             | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`                       |
+| TSC-AUTOMATION-001                         | Phase 12自動化スクリプト拡充                          | 低     | skill-import-persistence-bugfix実施時                          | `docs/30-workflows/unassigned-task/task-phase12-automation-enhancement.md`                 |
+| UT-008                                     | Chat History UI Components                            | 中     | Phase 12（UT-006完了後の後続タスク）                           | `docs/30-workflows/unassigned-task/task-chat-history-ui-components.md`                     |
+| UT-009                                     | Chat History Additional Use Cases                     | 中     | Phase 12（api-chat-history.md 未実装Use Cases）                | `docs/30-workflows/unassigned-task/task-chat-history-additional-usecases.md`               |
+| task-imp-skillselector-onimportrequest-001 | SkillSelector onImportRequest改善                     | 中     | TASK-7D実施中に発見                                            | `docs/30-workflows/unassigned-task/task-imp-skillselector-onimportrequest-improvements.md` |
+| task-imp-chatpanel-new-design-001          | ChatPanel新デザイン改善                               | 中     | TASK-7D実施中に発見                                            | `docs/30-workflows/unassigned-task/task-imp-chatpanel-new-design-improvements.md`          |
+| task-chatedit-store-integration-001        | chatEditSlice Store統合                               | 中     | システム仕様書分析（arch-state-management.md）                 | `docs/30-workflows/unassigned-task/task-chatedit-slice-store-integration.md`               |
+| task-rag-largefile-perf-001                | RAG変換 大容量ファイルパフォーマンス検証              | 中     | システム仕様書分析（quality-requirements.md）                  | `docs/30-workflows/unassigned-task/task-rag-converter-largefile-performance.md`            |
+| TASK-CHUNK-API-001                         | Chunk Search APIレイヤー実装                          | 中     | api-internal-chunk-search.md（未実装レイヤー）                 | `docs/30-workflows/unassigned-task/task-imp-chunk-search-api-layers.md`                    |
+| TASK-DOM-NESTING-001                       | validateDOMNesting警告修正                            | 低     | ui-history-integration.md（残課題）                            | `docs/30-workflows/unassigned-task/task-validate-dom-nesting-bugfix.md`                    |
+| UT-RETRY-001                               | リトライ設定UI                                        | 低     | TASK-SKILL-RETRY-001 Phase 12                                  | `docs/30-workflows/unassigned-task/task-retry-settings-ui.md`                              |
+| UT-RETRY-002                               | リトライ履歴永続化                                    | 低     | TASK-SKILL-RETRY-001 Phase 12                                  | `docs/30-workflows/unassigned-task/task-retry-history-persistence.md`                      |
+| UT-RETRY-003                               | サーキットブレーカーパターン導入                      | 中     | TASK-SKILL-RETRY-001 Phase 11 + error-handling.md              | `docs/30-workflows/unassigned-task/task-circuit-breaker-pattern.md`                        |
+| UT-RETRY-004                               | リトライイベントRenderer表示                          | 中     | TASK-SKILL-RETRY-001 Phase 11                                  | `docs/30-workflows/unassigned-task/task-use-skill-execution-retry-events.md`               |
+| UT-RETRY-005                               | リトライ型定義shared package移行                      | 低     | TASK-SKILL-RETRY-001 Phase 5                                   | `docs/30-workflows/unassigned-task/task-retry-types-shared-migration.md`                   |
+| CONV-DEBT-001                              | PlainTextConverter実装                                | 中     | interfaces-converter.md / architecture-file-conversion.md      | `docs/30-workflows/unassigned-task/task-plaintext-converter.md`                            |
+| UT-VECTOR-001                              | ベクトル検索フィルター拡張                            | 低     | rag-vector-search.md 未対応フィルター                          | `docs/30-workflows/unassigned-task/task-vector-search-advanced-filters.md`                 |
+| task-imp-ipc-imp002-channels-001           | IMP-002チャネル本体実装（settings/permissions/cache） | 中     | TASK-8C-A Phase 12（IPC統合テスト）                            | `docs/30-workflows/unassigned-task/task-imp-ipc-imp002-channels.md`                        |
+| task-imp-ipc-permission-response-001       | skill:permission:response チャネル実装                | 低     | TASK-8C-A Phase 12（IPC統合テスト）                            | `docs/30-workflows/unassigned-task/task-imp-ipc-permission-response.md`                    |
+| task-ref-quality-requirements-split-001    | quality-requirements.md仕様書分割                     | 低     | TASK-OPT-CI-TEST-PARALLEL-001 Phase 12（テンプレート準拠確認） | `docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md`             |
+| task-e2e-permission-waitfortimeout-001     | E2E権限テスト waitForTimeout改善                      | 低     | TASK-8C-D Phase 10（TQ-M1指摘）                                | `docs/30-workflows/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md`      |
+| task-e2e-test-readme-documentation-001     | READMEへのE2Eテスト実行方法追加                       | 低     | TASK-8C-D Phase 9（DOC-M1指摘）                                | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md`                  |
+| TASK-9B-H                                  | SkillCreatorService IPC通信設定                       | 高     | TASK-9B-G Phase 12（IPC未設定）                                | `docs/30-workflows/unassigned-task/task-9b-h-skill-creator-ipc-channel.md`                 |
+| UI-INTEGRATION-9B                          | SkillCreator UI統合（TASK-10A連携）                   | 高     | TASK-9B-G Phase 12（UI未実装）                                 | `docs/30-workflows/unassigned-task/task-9b-ui-integration-task10a.md`                      |
+| TASK-9B-I                                  | Claude Agent SDK本格統合                              | 中     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md`             |
+| TASK-9B-J                                  | ResourceLoaderキャッシュ無効化                        | 低     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-j-skill-creator-cache-invalidation.md`          |
+| TASK-9B-K                                  | タイムアウト設定の外部化                              | 低     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-k-skill-creator-timeout-config.md`              |
+| TASK-10A-UI-SKILL-IMPROVE                  | スキル改善UI表示機能                                  | 中     | TASK-9C Phase 11（手動テスト発見）                             | `docs/30-workflows/unassigned-task/task-10a-ui-skill-improve.md`                           |
+| TASK-10B-IMPROVE-HISTORY                   | 改善履歴の永続化                                      | 低     | TASK-9C Phase 12（スコープ外候補）                             | `docs/30-workflows/unassigned-task/task-10b-improve-history.md`                            |
+| TASK-10C-AB-TEST                           | A/Bテスト実行・結果比較機能                           | 低     | TASK-9C Phase 12（スコープ外候補）                             | `docs/30-workflows/unassigned-task/task-10c-ab-test.md`                                    |
 
 ### 未タスク管理ルール
 
@@ -286,19 +289,20 @@
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                                  |
-| ---------- | ---------- | ----------------------------------------------------------------------------------------- |
-| 1.0.0      | 2026-01-20 | 初版作成                                                                                  |
-| 1.1.0      | 2026-01-22 | task-specification-creator Phase 12改善完了記録追加                                       |
-| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、未タスク2件（E2Eテスト、自動化拡充）登録                |
-| 1.3.0      | 2026-01-22 | task-specification-creator v7.6.0完了記録追加（Phase 12テンプレート強化）                 |
-| 1.4.0      | 2026-01-22 | 未タスク追加: UT-008 Chat History UI Components, UT-009 Chat History Additional Use Cases |
-| 1.5.0      | 2026-01-25 | 未タスク追加: TASK-3-1-B (IPC Handler統合), TASK-SKILL-PERF-TEST (パフォーマンステスト)   |
-| 1.7.0      | 2026-01-30 | TASK-7D完了記録追加、未タスク2件（task-imp-skillselector-onimportrequest-001, task-imp-chatpanel-new-design-001）登録 |
-| 1.8.0      | 2026-01-31 | 未タスク追加: TASK-CHUNK-API-001 (Chunk Search API), TASK-DOM-NESTING-001 (DOM警告修正) |
+| バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
+| ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0.0      | 2026-01-20 | 初版作成                                                                                                                                                                                                  |
+| 1.1.0      | 2026-01-22 | task-specification-creator Phase 12改善完了記録追加                                                                                                                                                       |
+| 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、未タスク2件（E2Eテスト、自動化拡充）登録                                                                                                                                |
+| 1.3.0      | 2026-01-22 | task-specification-creator v7.6.0完了記録追加（Phase 12テンプレート強化）                                                                                                                                 |
+| 1.4.0      | 2026-01-22 | 未タスク追加: UT-008 Chat History UI Components, UT-009 Chat History Additional Use Cases                                                                                                                 |
+| 1.5.0      | 2026-01-25 | 未タスク追加: TASK-3-1-B (IPC Handler統合), TASK-SKILL-PERF-TEST (パフォーマンステスト)                                                                                                                   |
+| 1.7.0      | 2026-01-30 | TASK-7D完了記録追加、未タスク2件（task-imp-skillselector-onimportrequest-001, task-imp-chatpanel-new-design-001）登録                                                                                     |
+| 1.8.0      | 2026-01-31 | 未タスク追加: TASK-CHUNK-API-001 (Chunk Search API), TASK-DOM-NESTING-001 (DOM警告修正)                                                                                                                   |
 | 1.9.0      | 2026-01-31 | 未タスク9件追加: TASK-SKILL-RETRY-001関連5件（設定UI/履歴永続化/サーキットブレーカー/Rendererイベント/型shared移行）+ システム仕様検出3件（Chunk Search API層/PlainTextConverter/ベクトル検索フィルター） |
-| 1.6.0      | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（成果物配置、フェーズ遷移図、ファイル配置） |
-| 1.10.0     | 2026-02-02 | 未タスク2件追加: task-imp-ipc-imp002-channels-001（IMP-002チャネル実装）、task-imp-ipc-permission-response-001（permission:response実装）。TASK-8C-A Phase 12検出 |
-| 1.11.0     | 2026-02-02 | 未タスク追加: task-ref-quality-requirements-split-001（quality-requirements.md仕様書分割）。TASK-OPT-CI-TEST-PARALLEL-001 Phase 12検出 |
-| 1.12.0     | 2026-02-02 | 未タスク2件追加: task-e2e-permission-waitfortimeout-001（waitForTimeout改善）、task-e2e-test-readme-documentation-001（READMEドキュメント）。TASK-8C-D Phase 9/10検出 |
-| 1.13.0     | 2026-02-03 | 未タスク5件追加: TASK-9B-H（IPC通信設定）、UI-INTEGRATION-9B（UI統合）、TASK-9B-I（SDK統合）、TASK-9B-J（キャッシュ無効化）、TASK-9B-K（タイムアウト外部化）。TASK-9B-G Phase 12検出 |
+| 1.6.0      | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（成果物配置、フェーズ遷移図、ファイル配置）                                                                                                    |
+| 1.10.0     | 2026-02-02 | 未タスク2件追加: task-imp-ipc-imp002-channels-001（IMP-002チャネル実装）、task-imp-ipc-permission-response-001（permission:response実装）。TASK-8C-A Phase 12検出                                         |
+| 1.11.0     | 2026-02-02 | 未タスク追加: task-ref-quality-requirements-split-001（quality-requirements.md仕様書分割）。TASK-OPT-CI-TEST-PARALLEL-001 Phase 12検出                                                                    |
+| 1.12.0     | 2026-02-02 | 未タスク2件追加: task-e2e-permission-waitfortimeout-001（waitForTimeout改善）、task-e2e-test-readme-documentation-001（READMEドキュメント）。TASK-8C-D Phase 9/10検出                                     |
+| 1.13.0     | 2026-02-03 | 未タスク5件追加: TASK-9B-H（IPC通信設定）、UI-INTEGRATION-9B（UI統合）、TASK-9B-I（SDK統合）、TASK-9B-J（キャッシュ無効化）、TASK-9B-K（タイムアウト外部化）。TASK-9B-G Phase 12検出                       |
+| 1.14.0     | 2026-02-03 | 未タスク3件追加: TASK-10A-UI-SKILL-IMPROVE（スキル改善UI）、TASK-10B-IMPROVE-HISTORY（履歴永続化）、TASK-10C-AB-TEST（A/Bテスト）。TASK-9C Phase 11/12検出                                                |

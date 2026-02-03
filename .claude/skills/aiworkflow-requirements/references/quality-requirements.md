@@ -15,22 +15,22 @@
 
 ### スコープ
 
-| カテゴリ | 説明 |
-| -------- | ---- |
-| パフォーマンス | レスポンスタイム、リソース使用量 |
-| テスト戦略 | TDD実践、カバレッジ目標、CI/CD統合 |
-| セキュリティ | 認証・認可、データ保護 |
-| 可用性 | 稼働率、バックアップ・リカバリ |
-| 保守性 | コード品質、並列化設定、環境変数制御 |
-| アクセシビリティ | WCAG 2.1 AA準拠 |
+| カテゴリ         | 説明                                 |
+| ---------------- | ------------------------------------ |
+| パフォーマンス   | レスポンスタイム、リソース使用量     |
+| テスト戦略       | TDD実践、カバレッジ目標、CI/CD統合   |
+| セキュリティ     | 認証・認可、データ保護               |
+| 可用性           | 稼働率、バックアップ・リカバリ       |
+| 保守性           | コード品質、並列化設定、環境変数制御 |
+| アクセシビリティ | WCAG 2.1 AA準拠                      |
 
 ### 設計原則
 
-| 原則 | 説明 |
-| ---- | ---- |
+| 原則     | 説明                               |
+| -------- | ---------------------------------- |
 | 測定可能 | すべての要件に定量的な目標値を設定 |
-| 検証可能 | 自動テストで品質を継続的に検証 |
-| 環境適応 | CI/ローカルで異なる最適設定を許容 |
+| 検証可能 | 自動テストで品質を継続的に検証     |
+| 環境適応 | CI/ローカルで異なる最適設定を許容  |
 
 ---
 
@@ -178,35 +178,35 @@ TDD（テスト駆動開発）は「Red-Green-Refactor」の3フェーズで進�
 
 **テスト環境設定（TASK-3-2-F 2026-01-30実装、TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02更新）**:
 
-| 設定項目 | 推奨値 | 理由 |
-| -------- | ------ | ---- |
-| environment | jsdom | Clipboard API等の完全なDOM機能サポートが必要な場合 |
-| environment | happy-dom | 軽量で高速、基本的なDOM操作のみの場合 |
-| pool | forks | プロセス分離でテスト安定性向上 |
-| fileParallelism | CI: true / ローカル: 環境変数制御 | CI高速化、ローカルは安定性重視 |
+| 設定項目        | 推奨値                            | 理由                                               |
+| --------------- | --------------------------------- | -------------------------------------------------- |
+| environment     | jsdom                             | Clipboard API等の完全なDOM機能サポートが必要な場合 |
+| environment     | happy-dom                         | 軽量で高速、基本的なDOM操作のみの場合              |
+| pool            | forks                             | プロセス分離でテスト安定性向上                     |
+| fileParallelism | CI: true / ローカル: 環境変数制御 | CI高速化、ローカルは安定性重視                     |
 
 **並列化設定（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02実装）**:
 
-| 設定項目 | CI値 | ローカル値 | 理由 |
-| -------- | ---- | ---------- | ---- |
-| maxForks | 4 | CPUコア数/2（最低2、最大8） | CIはI/O活用、ローカルはマシン負荷軽減 |
-| fileParallelism | true | VITEST_FILE_PARALLELISM環境変数で制御 | メモリ不足時に無効化可能 |
-| testTimeout | 10秒 | 10秒 | 両環境共通 |
-| isolate | true | true | プロセス間干渉防止 |
+| 設定項目        | CI値 | ローカル値                            | 理由                                  |
+| --------------- | ---- | ------------------------------------- | ------------------------------------- |
+| maxForks        | 4    | CPUコア数/2（最低2、最大8）           | CIはI/O活用、ローカルはマシン負荷軽減 |
+| fileParallelism | true | VITEST_FILE_PARALLELISM環境変数で制御 | メモリ不足時に無効化可能              |
+| testTimeout     | 10秒 | 10秒                                  | 両環境共通                            |
+| isolate         | true | true                                  | プロセス間干渉防止                    |
 
 **環境変数によるローカル制御**:
 
-| 環境変数 | 用途 | 例 |
-| -------- | ---- | --- |
-| VITEST_MAX_FORKS | fork数の上書き | VITEST_MAX_FORKS=6 pnpm test |
+| 環境変数                | 用途                   | 例                                      |
+| ----------------------- | ---------------------- | --------------------------------------- |
+| VITEST_MAX_FORKS        | fork数の上書き         | VITEST_MAX_FORKS=6 pnpm test            |
 | VITEST_FILE_PARALLELISM | ファイル並列化の無効化 | VITEST_FILE_PARALLELISM=false pnpm test |
 
 **jsdomバージョン管理**:
 
 jsdom@27.x系でESMエラーが発生する場合、root package.jsonにpnpm.overridesを設定してバージョンを統一する。
 
-| 設定 | 値 | 効果 |
-| ---- | --- | ---- |
+| 設定                 | 値     | 効果                                        |
+| -------------------- | ------ | ------------------------------------------- |
 | pnpm.overrides.jsdom | 25.0.1 | 全パッケージでバージョン統一、ESM互換性確保 |
 
 **ベストプラクティス**:
@@ -226,39 +226,39 @@ Vitestの並列実行はデフォルトで有効。スレッド数は5、テス�
 
 **グローバルAPIモック（TASK-3-2-F 2026-01-30実装）**:
 
-| API | モック方法 | 配置先 |
-| --- | ---------- | ------ |
-| Clipboard API | vi.fn().mockResolvedValue() | setup.ts |
-| window.skillAPI | vi.stubGlobal() | setup.ts beforeAll |
+| API             | モック方法                  | 配置先             |
+| --------------- | --------------------------- | ------------------ |
+| Clipboard API   | vi.fn().mockResolvedValue() | setup.ts           |
+| window.skillAPI | vi.stubGlobal()             | setup.ts beforeAll |
 
 **Clipboard APIモック設計**:
 
-| メソッド | モック戻り値 | 用途 |
-| -------- | ------------ | ---- |
-| navigator.clipboard.writeText | Promise<void> | コピー操作テスト |
-| navigator.clipboard.readText | Promise<string>（空文字） | ペースト操作テスト |
+| メソッド                      | モック戻り値              | 用途               |
+| ----------------------------- | ------------------------- | ------------------ |
+| navigator.clipboard.writeText | Promise<void>             | コピー操作テスト   |
+| navigator.clipboard.readText  | Promise<string>（空文字） | ペースト操作テスト |
 
 **window.skillAPIモック設計**:
 
 useSkillExecution/useSkillPermissionフックがwindow.skillAPIを参照するため、テスト環境でモックが必要。
 
-| メソッド | 戻り値 | 用途 |
-| -------- | ------ | ---- |
-| onStream | () => void | ストリームリスナー登録 |
-| onPermission | () => void | 権限リクエストリスナー |
-| respondPermission | Promise<boolean> | 権限応答送信 |
-| execute | Promise<{executionId}> | スキル実行開始 |
-| abort | Promise<void> | 実行中断 |
+| メソッド          | 戻り値                 | 用途                   |
+| ----------------- | ---------------------- | ---------------------- |
+| onStream          | () => void             | ストリームリスナー登録 |
+| onPermission      | () => void             | 権限リクエストリスナー |
+| respondPermission | Promise<boolean>       | 権限応答送信           |
+| execute           | Promise<{executionId}> | スキル実行開始         |
+| abort             | Promise<void>          | 実行中断               |
 
 **vi.stubGlobal再設定パターン**:
 
 setup.tsのbeforeAllでグローバルモックを設定後、テストファイル固有のモックを使用したい場合の対処法。
 
-| 手順 | 内容 |
-| ---- | ---- |
-| 1 | テストファイルでmockSkillAPIを定義 |
-| 2 | vi.stubGlobal("skillAPI", mockSkillAPI)をモジュールレベルで実行 |
-| 3 | beforeEach内で再度vi.stubGlobalを呼び出し（setup.tsの上書き対策） |
+| 手順 | 内容                                                              |
+| ---- | ----------------------------------------------------------------- |
+| 1    | テストファイルでmockSkillAPIを定義                                |
+| 2    | vi.stubGlobal("skillAPI", mockSkillAPI)をモジュールレベルで実行   |
+| 3    | beforeEach内で再度vi.stubGlobalを呼び出し（setup.tsの上書き対策） |
 
 **MSW（Mock Service Worker）によるAPIモック**:
 
@@ -309,20 +309,20 @@ RTL（React Testing Library）はユーザー視点でのテストを推奨す�
 
 React状態更新がテスト外で発生した場合にact()警告が出る。以下のパターンで対処する。
 
-| パターン | 対処法 | 用途 |
-| -------- | ------ | ---- |
+| パターン   | 対処法                                          | 用途                       |
+| ---------- | ----------------------------------------------- | -------------------------- |
 | fakeTimers | vi.useFakeTimers() + vi.advanceTimersByTime(ms) | setInterval/setTimeout依存 |
-| waitFor | await waitFor(() => expect(...)) | 非同期状態更新 |
-| act wrap | await act(async () => { ... }) | 明示的な状態更新待機 |
+| waitFor    | await waitFor(() => expect(...))                | 非同期状態更新             |
+| act wrap   | await act(async () => { ... })                  | 明示的な状態更新待機       |
 
 **残存警告の許容判断基準**:
 
-| 条件 | 許容可否 | 理由 |
-| ---- | -------- | ---- |
-| テスト結果が正しい | 許容 | 機能に影響なし |
-| 警告が少数（10件未満） | 許容 | 費用対効果の観点 |
-| 外部ライブラリ起因 | 許容 | 修正困難 |
-| 本番コードに影響 | 不可 | 品質問題 |
+| 条件                   | 許容可否 | 理由             |
+| ---------------------- | -------- | ---------------- |
+| テスト結果が正しい     | 許容     | 機能に影響なし   |
+| 警告が少数（10件未満） | 許容     | 費用対効果の観点 |
+| 外部ライブラリ起因     | 許容     | 修正困難         |
+| 本番コードに影響       | 不可     | 品質問題         |
 
 **推奨クエリの優先順位**:
 
@@ -656,30 +656,30 @@ vitest.config.tsで設定済みの閾値:
 
 **テストカバレッジ実績**:
 
-| 指標 | ChatPanel | SkillStreamingView | 合計 |
-|------|-----------|-------------------|------|
-| テスト数 | 15 | 33 | 48 |
-| Line Coverage | 100% | 99.3% | - |
-| Branch Coverage | 100% | 93.75% | - |
-| Function Coverage | 100% | 100% | - |
+| 指標              | ChatPanel | SkillStreamingView | 合計 |
+| ----------------- | --------- | ------------------ | ---- |
+| テスト数          | 15        | 33                 | 48   |
+| Line Coverage     | 100%      | 99.3%              | -    |
+| Branch Coverage   | 100%      | 93.75%             | -    |
+| Function Coverage | 100%      | 100%               | -    |
 
 **適用テストパターン**:
 
-| パターン | 適用箇所 | 効果 |
-|----------|----------|------|
-| forwardRef + useImperativeHandle テスト | ChatPanel.handleImportRequest | Function Coverage 50%→100% |
-| Store個別セレクタモック | useAppStore各フィールド | テスト独立性確保 |
-| act() + 非同期イベント | SkillImportDialog/PermissionDialog操作 | Warning-free テスト |
-| data-testid統一命名 | 全コンポーネント | テスト信頼性向上 |
-| React.memo renderチェック | SkillStreamingView | 不要な再レンダー検出 |
+| パターン                                | 適用箇所                               | 効果                       |
+| --------------------------------------- | -------------------------------------- | -------------------------- |
+| forwardRef + useImperativeHandle テスト | ChatPanel.handleImportRequest          | Function Coverage 50%→100% |
+| Store個別セレクタモック                 | useAppStore各フィールド                | テスト独立性確保           |
+| act() + 非同期イベント                  | SkillImportDialog/PermissionDialog操作 | Warning-free テスト        |
+| data-testid統一命名                     | 全コンポーネント                       | テスト信頼性向上           |
+| React.memo renderチェック               | SkillStreamingView                     | 不要な再レンダー検出       |
 
 **成果物**:
 
-| ファイル | 行数 |
-|----------|------|
-| ChatPanel.tsx | 136行 |
-| SkillStreamingView.tsx | 251行 |
-| ChatPanel.test.tsx | 15テスト |
+| ファイル                    | 行数     |
+| --------------------------- | -------- |
+| ChatPanel.tsx               | 136行    |
+| SkillStreamingView.tsx      | 251行    |
+| ChatPanel.test.tsx          | 15テスト |
 | SkillStreamingView.test.tsx | 33テスト |
 
 ---
@@ -690,27 +690,28 @@ vitest.config.tsで設定済みの閾値:
 
 **テストカバレッジ実績**:
 
-| テスト項目                 | テスト数 | 状態   |
-| -------------------------- | -------- | ------ |
-| TC-1: 権限ダイアログ表示   | 1        | PASS   |
-| TC-2: ツール情報表示       | 1        | PASS   |
-| TC-3: 許可して続行         | 1        | PASS   |
-| TC-4: 拒否して停止         | 1        | PASS   |
-| TC-5: 選択記憶             | 1        | PASS   |
-| Edge Case: 連続権限処理    | 1        | PASS   |
-| Edge Case: ダイアログキュー | 1        | PASS   |
-| A11y: ARIA属性             | 2        | PASS   |
-| A11y: キーボードナビ       | 4        | PASS   |
-| **合計（有効）**           | **12**   | **12/12** |
+| テスト項目                  | テスト数 | 状態      |
+| --------------------------- | -------- | --------- |
+| TC-1: 権限ダイアログ表示    | 1        | PASS      |
+| TC-2: ツール情報表示        | 1        | PASS      |
+| TC-3: 許可して続行          | 1        | PASS      |
+| TC-4: 拒否して停止          | 1        | PASS      |
+| TC-5: 選択記憶              | 1        | PASS      |
+| Edge Case: 連続権限処理     | 1        | PASS      |
+| Edge Case: ダイアログキュー | 1        | PASS      |
+| A11y: ARIA属性              | 2        | PASS      |
+| A11y: キーボードナビ        | 4        | PASS      |
+| **合計（有効）**            | **12**   | **12/12** |
 
 **成果物**:
 
-| ファイル                   | 行数   | 内容                     |
-| -------------------------- | ------ | ------------------------ |
-| skill-permission.spec.ts   | 382行  | E2Eテスト本体            |
-| Phase成果物（outputs/）    | 36ファイル | Phase 1-12ドキュメント |
+| ファイル                 | 行数       | 内容                   |
+| ------------------------ | ---------- | ---------------------- |
+| skill-permission.spec.ts | 382行      | E2Eテスト本体          |
+| Phase成果物（outputs/）  | 36ファイル | Phase 1-12ドキュメント |
 
 **テストアーキテクチャ**:
+
 - テストランナー: Playwright
 - テストフレームワーク: @playwright/test
 - アプリケーション: Vite + React (Renderer Process)
@@ -724,42 +725,42 @@ vitest.config.tsで設定済みの閾値:
 
 **テストカバレッジ実績**:
 
-| モジュール            | テスト数 | Line    | Branch  | Function | Statements |
-| --------------------- | -------- | ------- | ------- | -------- | ---------- |
-| SkillScanner.ts       | 49       | 84.07%  | 83.56%  | 100%     | 84.07%     |
-| SkillImportManager.ts | 28       | 97.36%  | 92.85%  | 100%     | 97.36%     |
-| SkillExecutor.ts      | 52       | 52.73%  | 70.4%   | 64.86%   | 52.73%     |
-| PermissionResolver.ts | 43       | 100%    | 100%    | 100%     | 100%       |
-| skillSlice.ts         | 59       | 94.44%  | 84.61%  | 100%     | 94.44%     |
-| **合計**              | **231**  | -       | -       | -        | -          |
+| モジュール            | テスト数 | Line   | Branch | Function | Statements |
+| --------------------- | -------- | ------ | ------ | -------- | ---------- |
+| SkillScanner.ts       | 49       | 84.07% | 83.56% | 100%     | 84.07%     |
+| SkillImportManager.ts | 28       | 97.36% | 92.85% | 100%     | 97.36%     |
+| SkillExecutor.ts      | 52       | 52.73% | 70.4%  | 64.86%   | 52.73%     |
+| PermissionResolver.ts | 43       | 100%   | 100%   | 100%     | 100%       |
+| skillSlice.ts         | 59       | 94.44% | 84.61% | 100%     | 94.44%     |
+| **合計**              | **231**  | -      | -      | -        | -          |
 
 **SkillExecutor.ts カバレッジ注記**: 未カバー部分（sanitizeArgs, getPermissionReason, sendPermissionRequest）はIPC通信依存のユーティリティメソッドであり、統合テスト（TASK-8B）の範囲に該当。Branch Coverage 70.4%は閾値（60%）達成済み。
 
 **適用テストパターン**:
 
-| パターン | 適用箇所 | 効果 |
-|----------|----------|------|
-| vi.doMock 動的モジュール再読み込み | SkillImportManager electron-store | テスト独立性確保 |
-| async generator mock | SkillExecutor SDK query | ストリーミング処理テスト |
-| vi.useFakeTimers + queueMicrotask | PermissionResolver タイムアウト | 非同期タイミング制御 |
-| (global as any).window 上書き | skillSlice Electron IPC | Renderer Process APIモック |
-| __fixtures__/ 実ファイル使用 | SkillScanner SKILL.md解析 | モック最小化・実データ検証 |
+| パターン                           | 適用箇所                          | 効果                       |
+| ---------------------------------- | --------------------------------- | -------------------------- |
+| vi.doMock 動的モジュール再読み込み | SkillImportManager electron-store | テスト独立性確保           |
+| async generator mock               | SkillExecutor SDK query           | ストリーミング処理テスト   |
+| vi.useFakeTimers + queueMicrotask  | PermissionResolver タイムアウト   | 非同期タイミング制御       |
+| (global as any).window 上書き      | skillSlice Electron IPC           | Renderer Process APIモック |
+| **fixtures**/ 実ファイル使用       | SkillScanner SKILL.md解析         | モック最小化・実データ検証 |
 
 **新規追加テストケース（Phase 4-6）**:
 
-| テストID | 内容 |
-|----------|------|
-| SE-02 | execute - 不正メタデータエラー処理 |
-| SE-07 | createHooks - PreToolUse/PostToolUse生成 |
-| SE-08 | handlePermissionResponse - 権限応答処理 |
-| PR-03 | waitForResponse - rememberChoice記憶選択 |
+| テストID | 内容                                     |
+| -------- | ---------------------------------------- |
+| SE-02    | execute - 不正メタデータエラー処理       |
+| SE-07    | createHooks - PreToolUse/PostToolUse生成 |
+| SE-08    | handlePermissionResponse - 権限応答処理  |
+| PR-03    | waitForResponse - rememberChoice記憶選択 |
 
 **成果物**:
 
-| ファイル | 説明 |
-|----------|------|
+| ファイル                                                                                     | 説明                              |
+| -------------------------------------------------------------------------------------------- | --------------------------------- |
 | [実装ガイド](../../../../docs/30-workflows/TASK-8A/outputs/phase-12/implementation-guide.md) | Part1: 概念説明 + Part2: 技術詳細 |
-| docs/30-workflows/TASK-8A/ | Phase 1-12 全成果物（21ファイル） |
+| docs/30-workflows/TASK-8A/                                                                   | Phase 1-12 全成果物（21ファイル） |
 
 ---
 
@@ -769,26 +770,26 @@ vitest.config.tsで設定済みの閾値:
 
 **テストカバレッジ実績**:
 
-| テスト対象             | テスト数 | Line    | Branch  | Function |
-| ---------------------- | -------- | ------- | ------- | -------- |
-| PermissionDialog.tsx   | 57+19+19 | 100%    | 95.34%  | 100%     |
-| SkillImportDialog.tsx  | 31       | 100%    | 100%    | 100%     |
-| SkillSelector.tsx      | 28       | 100%    | 93.15%  | 87.5%    |
-| SkillStreamingView.tsx | 33       | 99.31%  | 93.75%  | 100%     |
-| permissionDescriptions | 34       | 97.75%  | 97.91%  | 100%     |
-| toolMetadata           | 37       | 100%    | 100%    | 100%     |
-| permissionHistory      | 22       | 100%    | 100%    | 100%     |
+| テスト対象             | テスト数 | Line       | Branch     | Function   |
+| ---------------------- | -------- | ---------- | ---------- | ---------- |
+| PermissionDialog.tsx   | 57+19+19 | 100%       | 95.34%     | 100%       |
+| SkillImportDialog.tsx  | 31       | 100%       | 100%       | 100%       |
+| SkillSelector.tsx      | 28       | 100%       | 93.15%     | 87.5%      |
+| SkillStreamingView.tsx | 33       | 99.31%     | 93.75%     | 100%       |
+| permissionDescriptions | 34       | 97.75%     | 97.91%     | 100%       |
+| toolMetadata           | 37       | 100%       | 100%       | 100%       |
+| permissionHistory      | 22       | 100%       | 100%       | 100%       |
 | **合計**               | **280**  | **99.71%** | **95.85%** | **97.61%** |
 
 **適用テストパターン**:
 
-| パターン | 適用箇所 | 効果 |
-|----------|----------|------|
-| Store個別セレクタモック | useAppStore各フィールド | テスト独立性確保 |
-| act() + 非同期イベント | Dialog操作全般 | Warning-free テスト |
-| data-testid統一命名 | 全コンポーネント | テスト信頼性向上 |
-| userEvent統合 | ユーザー操作テスト | 実操作に近いテスト |
-| アクセシビリティテスト | ARIA属性・キーボード操作 | WCAG 2.1準拠確認 |
+| パターン                | 適用箇所                 | 効果                |
+| ----------------------- | ------------------------ | ------------------- |
+| Store個別セレクタモック | useAppStore各フィールド  | テスト独立性確保    |
+| act() + 非同期イベント  | Dialog操作全般           | Warning-free テスト |
+| data-testid統一命名     | 全コンポーネント         | テスト信頼性向上    |
+| userEvent統合           | ユーザー操作テスト       | 実操作に近いテスト  |
+| アクセシビリティテスト  | ARIA属性・キーボード操作 | WCAG 2.1準拠確認    |
 
 **残存課題**: Phase 10で2件MINOR検出→未タスク化済み（M-01: テスト名命名規則統一、M-02: 未使用import除去）
 
@@ -800,38 +801,93 @@ vitest.config.tsで設定済みの閾値:
 
 **テストカバレッジ実績**:
 
-| 指標 | skillHandlers.ts |
-|------|-----------------|
-| テスト数 | 41（22基本 + 19エッジケース） |
-| Line Coverage | 91.4% |
-| Branch Coverage | 76% |
+| 指標              | skillHandlers.ts                        |
+| ----------------- | --------------------------------------- |
+| テスト数          | 41（22基本 + 19エッジケース）           |
+| Line Coverage     | 91.4%                                   |
+| Branch Coverage   | 76%                                     |
 | Function Coverage | 20%（実質100%: 2 exported関数をカバー） |
 
 **適用テストパターン**:
 
-| パターン | 適用箇所 | 効果 |
-|----------|----------|------|
-| Handler Map方式 | ipcMain.handle モック → Map格納 | ハンドラー直接呼び出し可能 |
-| SkillService Partial Mock | 15メソッド vi.fn() | テスト独立性確保 |
-| invokeOptionalHandler | IMP-002未実装チャネル | 実装時の移行容易性 |
-| validateIpcSender失敗検証 | abort/get-status | セキュリティ検証 |
+| パターン                  | 適用箇所                        | 効果                       |
+| ------------------------- | ------------------------------- | -------------------------- |
+| Handler Map方式           | ipcMain.handle モック → Map格納 | ハンドラー直接呼び出し可能 |
+| SkillService Partial Mock | 15メソッド vi.fn()              | テスト独立性確保           |
+| invokeOptionalHandler     | IMP-002未実装チャネル           | 実装時の移行容易性         |
+| validateIpcSender失敗検証 | abort/get-status                | セキュリティ検証           |
 
 **成果物**:
 
-| ファイル | 内容 |
-|----------|------|
+| ファイル                     | 内容               |
+| ---------------------------- | ------------------ |
 | skillIpc.integration.test.ts | 41テスト（~750行） |
 
 ---
+
+### TASK-9A-A: SkillFileManager単体テスト（2026-02-03完了）
+
+**概要**: スキルファイルのCRUD操作を提供するサービスクラス（SkillFileManager）の実装とテスト。バックアップ/リストア機能、パストラバーサル防止を含む。
+
+**テストカバレッジ実績**:
+
+| 指標              | SkillFileManager.ts |
+| ----------------- | ------------------- |
+| テスト数          | 137                 |
+| Line Coverage     | 98.02%              |
+| Branch Coverage   | 96.34%              |
+| Function Coverage | 100%                |
+
+**適用テストパターン**:
+
+| パターン               | 適用箇所             | 効果                                   |
+| ---------------------- | -------------------- | -------------------------------------- |
+| ESModuleモッキング回避 | node:fs/promises     | vi.spyOn()制約を回避、実エラー条件使用 |
+| 汎用エラーアサーション | 空入力バリデーション | 実装詳細に依存しない堅牢テスト         |
+| 一時ディレクトリ活用   | バックアップテスト   | テスト間の隔離性確保                   |
+| カスタムエラークラス   | 5種類の専用Error     | 明確なエラー識別とハンドリング         |
+
+**遭遇した課題と解決策**:
+
+| 課題                     | エラー内容                                     | 解決策                                                   |
+| ------------------------ | ---------------------------------------------- | -------------------------------------------------------- |
+| ESModuleモッキング制約   | `Cannot redefine property: readFile`           | モックを使わず実際のエラー条件（存在しないパス等）を使用 |
+| 空入力エラークラス不一致 | SkillNotFoundError期待 → FileNotFoundError発生 | `.rejects.toThrow()`で汎用的に検証                       |
+| @types/node互換性        | グローバル型定義の競合                         | プロジェクト横断課題として記録（スコープ外）             |
+
+**カスタムエラークラス**:
+
+| エラークラス       | 用途                               |
+| ------------------ | ---------------------------------- |
+| SkillNotFoundError | スキルが見つからない               |
+| ReadonlySkillError | 読み取り専用スキルへの書き込み試行 |
+| PathTraversalError | `../` を含むパストラバーサル検出   |
+| FileExistsError    | 既存ファイルへの上書き禁止         |
+| FileNotFoundError  | ファイルが存在しない               |
+
+**成果物**:
+
+| ファイル                             | 内容                      |
+| ------------------------------------ | ------------------------- |
+| SkillFileManager.ts                  | メインクラス実装（7 API） |
+| errors.ts                            | カスタムエラークラス5種   |
+| SkillFileManager.test.ts             | 単体テスト                |
+| SkillFileManager.integration.test.ts | 統合テスト                |
+| SkillFileManager.security.test.ts    | セキュリティテスト        |
+| SkillFileManager.edge.test.ts        | エッジケーステスト        |
+
+---
+
 ## 変更履歴
 
-| Version | Date       | Changes                                                              |
-| ------- | ---------- | -------------------------------------------------------------------- |
+| Version | Date       | Changes                                                                                                                                                                                |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.6.0   | 2026-02-03 | TASK-9A-A: SkillFileManager単体テスト実績追加（137テスト、3テストパターン、ESModuleモッキング回避パターン、カバレッジ Line 98.02%/Branch 96.34%/Function 100%）                        |
 | 1.5.0   | 2026-02-02 | TASK-OPT-CI-TEST-PARALLEL-001: Vitest並列化設定・環境変数制御セクション追加（maxForks CI:4/ローカル動的、fileParallelism両環境対応、VITEST_MAX_FORKS/VITEST_FILE_PARALLELISM環境変数） |
-| 1.4.2   | 2026-02-02 | TASK-8C-A: IPC統合テスト実績追加（41テスト、4テストパターン）       |
-| 1.4.1   | 2026-02-02 | TASK-8B: コンポーネントテスト実績追加（280テスト、7テスト対象、テストパターン5種） |
-| 1.4.0   | 2026-02-02 | TASK-8A: スキル管理モジュール単体テスト実績追加（231テスト、5モジュール、テストパターン5種） |
-| 1.3.0   | 2026-01-30 | TASK-7D: ChatPanel統合テスト実績追加（48テスト、テストパターン5種） |
-| 1.2.0   | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処） |
-| 1.1.0   | 2026-01-26 | spec-guidelines.md準拠: CI/CDパイプライン構成図を表形式に変換        |
-| 1.0.0   | -          | 初版作成                                                             |
+| 1.4.2   | 2026-02-02 | TASK-8C-A: IPC統合テスト実績追加（41テスト、4テストパターン）                                                                                                                          |
+| 1.4.1   | 2026-02-02 | TASK-8B: コンポーネントテスト実績追加（280テスト、7テスト対象、テストパターン5種）                                                                                                     |
+| 1.4.0   | 2026-02-02 | TASK-8A: スキル管理モジュール単体テスト実績追加（231テスト、5モジュール、テストパターン5種）                                                                                           |
+| 1.3.0   | 2026-01-30 | TASK-7D: ChatPanel統合テスト実績追加（48テスト、テストパターン5種）                                                                                                                    |
+| 1.2.0   | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルAPIモック、vi.stubGlobalパターン、act()警告対処）                                                               |
+| 1.1.0   | 2026-01-26 | spec-guidelines.md準拠: CI/CDパイプライン構成図を表形式に変換                                                                                                                          |
+| 1.0.0   | -          | 初版作成                                                                                                                                                                               |

@@ -267,15 +267,15 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 ### Phase 12 実行時によくある漏れ
 
-| 漏れパターン                                | 防止方法                                                                            |
-| ------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Step 1-C（関連タスクテーブル）を未実行      | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                |
-| topic-map.md 未更新                         | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                    |
-| documentation-changelog.md が不完全         | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）            |
-| LOGS.md が1ファイルのみ更新                 | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方   |
-| 完了タスクセクションが簡略形式              | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う |
-| Phase 10 MINOR指摘を未タスク化せず進行      | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
-| 未タスク検出レポートで0件判定のまま未修正   | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない |
+| 漏れパターン                              | 防止方法                                                                                        |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Step 1-C（関連タスクテーブル）を未実行    | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                            |
+| topic-map.md 未更新                       | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                                |
+| documentation-changelog.md が不完全       | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）                        |
+| LOGS.md が1ファイルのみ更新               | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方               |
+| 完了タスクセクションが簡略形式            | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う             |
+| Phase 10 MINOR指摘を未タスク化せず進行    | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
+| 未タスク検出レポートで0件判定のまま未修正 | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
 
 ---
 
@@ -356,18 +356,23 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.32.0** | **2026-02-03** | **TASK-9B-G知見追加**: patterns.mdサービス設計パターン4件追加（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）。task-workflow.md未タスク5件登録。50テスト・94.59%カバレッジ |
-| **9.31.0** | **2026-02-03** | **TASK-WCE-MONACO-001スキル改善**: patterns.md Main→Renderer逆方向クエリパターン2件追加（webContents.executeJavaScriptグローバルブリッジ、EditorSelection最小インターフェース設計） |
-| **9.30.0** | **2026-02-02** | **TASK-8C-Cスキル改善**: patterns.md成功パターン1件追加（Phase 12 Step 1完了チェックリスト厳格遵守）、SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止パターン |
-| **9.29.0** | **2026-02-02** | **TASK-8C-C完了**: E2Eテスト-インポート・実行フロー（9テストケース）、未タスク4件検出、task-workflow.md登録 |
-| **9.28.0** | **2026-02-02** | **TASK-8C-B知見追加**: patterns.md E2Eテスト設計パターン3件追加（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層） |
-| **9.27.0** | **2026-02-02** | **TASK-8C-B完了**: スキル選択フローE2Eテスト Phase 1-12全工程完了。8テストケース（ARIA属性ベースセレクタ、キーボード操作、アクセシビリティ検証）。LOGS.md完了記録追加 |
-| **9.26.0** | **2026-02-02** | **マージ統合**: TASK-OPT-CI-TEST-PARALLEL-001完了 + task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A完了をマージ統合 |
-| **9.25.0** | **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001スキル改善**: patterns.md CI/DevOps最適化パターン2件追加（GitHub Actionsテスト並列実行、DevOps仕様書更新）、spec-update-workflow.md Step 1-F追加（DevOps関連ファイル更新チェックリスト）。CI最適化タスク完了時の仕様書更新漏れ防止 |
-| **9.24.0** | **2026-02-02** | **TASK-8C-A未タスク指示書最適化**: task-imp-ipc-imp002-channels.md・task-imp-ipc-permission-response.mdにシステム仕様書参照テーブル追加（3.4セクション）。実装者がarchitecture-implementation-patterns.md/interfaces-agent-sdk-skill.md/security-skill-ipc.mdを参照できるよう強化 |
-| **9.23.0** | **2026-02-02** | **patterns.md拡充**: 成功パターン2件追加（コンポーネント同階層ユーティリティ配置、順次フィルタパイプラインuseMemoチェーン）+ 未タスク検出・配置（detect-unassigned）51件スキャン |
-| **9.22.0** | **2026-02-02** | **task-imp-permission-date-filter完了**: Phase 1-12全工程完了。dateFilterUtils.ts新規作成、72テスト全PASS + TASK-8A実行知見スキル改善                                                                                                                            |
-| 9.21.0     | 2026-02-02     | TASK-8A完了: スキル管理モジュール単体テスト Phase 1-12全工程完了。231テスト全PASS、5テスト新規追加、4/5モジュールカバレッジ80%以上。LOGS.md完了記録追加                                                                                                                                                                                                                                    |
+| **9.35.0** | **2026-02-03** | **マージ統合**: TASK-9B-G（スキル作成サービス）+ TASK-9C/9A-A（スキル改善機能）を統合。patterns.md成功パターン9件追加、未タスク8件登録                                                                                                                                                                    |
+| **9.34.0** | **2026-02-03** | **未タスク実装課題補完**: TASK-10A/10B/10Cに「3.5 実装課題と解決策（TASK-9Cからの学び）」セクション追加。システム仕様書参照表拡充、各タスクへの適用形で実装パターンを記述                                                                                                                                |
+| **9.33.0** | **2026-02-03** | **TASK-9C知見追加**: patterns.md成功パターン3件追加（Graceful SDK Fallbackパターン、queryFn DIパターン、スキル名バリデーション禁止文字サニタイズ）。未タスク3件をunassigned-task/に配置（TASK-10A-UI-SKILL-IMPROVE、TASK-10B-IMPROVE-HISTORY、TASK-10C-AB-TEST）                                         |
+| **9.32.1** | **2026-02-03** | **TASK-9B-G知見追加**: patterns.mdサービス設計パターン4件追加（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）。task-workflow.md未タスク5件登録。50テスト・94.59%カバレッジ                                                                                 |
+| **9.32.0** | **2026-02-03** | **TASK-9A-A未タスク作成**: TASK-IMP-VITEST-UTILS-001（Vitestテスト共通ユーティリティ整備）をunassigned-task/に配置、testing-component-patterns.md関連未タスクセクション追加、LOGS.md使用記録追加                                                                                                         |
+| **9.31.1** | **2026-02-03** | **TASK-WCE-MONACO-001スキル改善**: patterns.md Main→Renderer逆方向クエリパターン2件追加（webContents.executeJavaScriptグローバルブリッジ、EditorSelection最小インターフェース設計）                                                                                                                       |
+| **9.31.0** | **2026-02-03** | **TASK-9A-A完了記録**: LOGS.md完了記録追加（SkillFileManager実装、137テスト、98%+カバレッジ）                                                                                                                                                                                                            |
+| **9.30.0** | **2026-02-02** | **TASK-8C-Cスキル改善**: patterns.md成功パターン1件追加（Phase 12 Step 1完了チェックリスト厳格遵守）、SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止パターン                                                                                                                               |
+| **9.29.0** | **2026-02-02** | **TASK-8C-C完了**: E2Eテスト-インポート・実行フロー（9テストケース）、未タスク4件検出、task-workflow.md登録                                                                                                                                                                                              |
+| **9.28.0** | **2026-02-02** | **TASK-8C-B知見追加**: patterns.md E2Eテスト設計パターン3件追加（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）                                                                                                                                                                        |
+| **9.27.0** | **2026-02-02** | **TASK-8C-B完了**: スキル選択フローE2Eテスト Phase 1-12全工程完了。8テストケース（ARIA属性ベースセレクタ、キーボード操作、アクセシビリティ検証）。LOGS.md完了記録追加                                                                                                                                    |
+| **9.26.0** | **2026-02-02** | **マージ統合**: TASK-OPT-CI-TEST-PARALLEL-001完了 + task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A完了をマージ統合                                                                                                                                                                              |
+| **9.25.0** | **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001スキル改善**: patterns.md CI/DevOps最適化パターン2件追加（GitHub Actionsテスト並列実行、DevOps仕様書更新）、spec-update-workflow.md Step 1-F追加（DevOps関連ファイル更新チェックリスト）。CI最適化タスク完了時の仕様書更新漏れ防止                                        |
+| **9.24.0** | **2026-02-02** | **TASK-8C-A未タスク指示書最適化**: task-imp-ipc-imp002-channels.md・task-imp-ipc-permission-response.mdにシステム仕様書参照テーブル追加（3.4セクション）。実装者がarchitecture-implementation-patterns.md/interfaces-agent-sdk-skill.md/security-skill-ipc.mdを参照できるよう強化                        |
+| **9.23.0** | **2026-02-02** | **patterns.md拡充**: 成功パターン2件追加（コンポーネント同階層ユーティリティ配置、順次フィルタパイプラインuseMemoチェーン）+ 未タスク検出・配置（detect-unassigned）51件スキャン                                                                                                                         |
+| **9.22.0** | **2026-02-02** | **task-imp-permission-date-filter完了**: Phase 1-12全工程完了。dateFilterUtils.ts新規作成、72テスト全PASS + TASK-8A実行知見スキル改善                                                                                                                                                                    |
+| 9.21.0     | 2026-02-02     | TASK-8A完了: スキル管理モジュール単体テスト Phase 1-12全工程完了。231テスト全PASS、5テスト新規追加、4/5モジュールカバレッジ80%以上。LOGS.md完了記録追加                                                                                                                                                  |
 | **9.20.0** | **2026-02-01** | **TASK-8C-G完了**: patterns.md成功パターン3件追加（境界値フィクスチャ設計、parseFrontmatter検証、execSync決定論的テスト）、LOGS.md完了記録追加。96テスト・100%ギャップカバレッジ達成                                                                                                                     |
 | **9.19.0** | **2026-02-01** | **task-imp-permission-tool-metadata-001フィードバック反映**: patterns.md成功パターン3件追加（Record型スタイルマッピング, IIFEレンダリング, デフォルトメタデータフォールバック）、spec-update-workflow.md漏れパターン追加、EVALS.json使用カウント更新                                                     |
 | **9.18.0** | **2026-01-31** | **task-imp-permission-tool-metadata-001完了**: Phase 1-12全工程完了。toolMetadata.ts新規作成（RiskLevel型、12ツール定義）、PermissionDialog.tsxリスクバッジ統合、56テスト追加・全258テストPASS。未タスク3件検出                                                                                          |

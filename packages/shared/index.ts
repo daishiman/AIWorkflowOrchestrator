@@ -76,6 +76,25 @@ export type {
   SkillOptimizeEvaluateRequest,
 } from "./src/types/skill-improver";
 
+// Skill Creator types (TASK-9B-G)
+export type {
+  SkillCreatorMode,
+  ExecutionEngine,
+  CreateSkillOptions,
+  InterviewResult,
+  DomainModel,
+  ExecuteTasksOptions,
+  ExecutionReport,
+  TaskResult,
+  ExecutionSummary,
+  Entity,
+  BoundedContext,
+  ExternalApiConfig,
+  ScriptResult,
+  TaskSpec,
+  DependencyGraph,
+} from "./src/types/skillCreator";
+
 // Core
 export * from "./core";
 
