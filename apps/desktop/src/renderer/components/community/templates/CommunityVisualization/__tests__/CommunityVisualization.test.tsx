@@ -262,6 +262,9 @@ describe("CommunityVisualization Integration Tests", () => {
       const clearButton = screen.getByRole("button", { name: /クリア/i });
       await user.click(clearButton);
 
+      // クリア後のReact状態更新を待機
+      await vi.advanceTimersByTimeAsync(100);
+
       await waitFor(() => {
         const node = screen.getByTestId("community-node-community-1");
         expect(node).not.toHaveClass("highlighted");

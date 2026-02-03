@@ -29,7 +29,8 @@ export default defineConfig({
     pool: "forks",
     poolOptions: {
       forks: {
-        // CI環境では4並列、ローカルでは2並列
+        // CI環境では4並列、ローカルでは動的に設定
+        minForks: 1,
         maxForks: process.env.CI ? CI_MAX_FORKS : LOCAL_MAX_FORKS,
         isolate: true,
       },
