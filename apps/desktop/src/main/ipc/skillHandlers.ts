@@ -9,10 +9,20 @@ import { ipcMain, IpcMainInvokeEvent, BrowserWindow } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { SkillService } from "../services/skill/SkillService";
 import { SkillExecutor } from "../services/skill/SkillExecutor";
+import { SkillAnalyzer } from "../services/skill/SkillAnalyzer";
+import { SkillImprover } from "../services/skill/SkillImprover";
+import { PromptOptimizer } from "../services/skill/PromptOptimizer";
 import {
   validateIpcSender,
   toIPCValidationError,
 } from "../infrastructure/security/ipc-validator";
+import type {
+  SkillAnalyzeRequest,
+  SkillImproveRequest,
+  SkillOptimizeRequest,
+  SkillOptimizeVariantsRequest,
+  SkillOptimizeEvaluateRequest,
+} from "@repo/shared";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
@@ -245,6 +255,174 @@ export function registerSkillHandlers(
       return _skillExecutorInstance.getExecutionStatus(executionId) ?? null;
     },
   );
+
+  // ========================================
+  // TASK-9C: スキル改善・自動修正機能
+  // ========================================
+
+  // スキル改善サービスのインスタンスを初期化
+  const skillsDir = skillService.getSkillsDirectory();
+  const skillAnalyzer = new SkillAnalyzer(skillsDir);
+  const skillImprover = new SkillImprover(skillsDir);
+  const promptOptimizer = new PromptOptimizer();
+
+  // skill:analyze - スキル分析
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_ANALYZE,
+    async (event: IpcMainInvokeEvent, args: SkillAnalyzeRequest) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_ANALYZE, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillName !== "string" || args.skillName === "") {
+        return { success: false, error: "スキル名が指定されていません" };
+      }
+      try {
+        const skill = await skillService.getSkillByName(args.skillName);
+        if (!skill) {
+          return { success: false, error: "スキルが見つかりません" };
+        }
+        const analysis = await skillAnalyzer.analyze(skill);
+        return { success: true, data: analysis };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error ? error.message : "スキル分析に失敗しました",
+        };
+      }
+    },
+  );
+
+  // skill:improve - スキル改善
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_IMPROVE,
+    async (event: IpcMainInvokeEvent, args: SkillImproveRequest) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_IMPROVE, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillName !== "string" || args.skillName === "") {
+        return { success: false, error: "スキル名が指定されていません" };
+      }
+      if (!args.analysis) {
+        return { success: false, error: "分析結果が指定されていません" };
+      }
+      try {
+        const result = await skillImprover.applyImprovements(
+          args.skillName,
+          args.analysis,
+          args.options,
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error ? error.message : "スキル改善に失敗しました",
+        };
+      }
+    },
+  );
+
+  // skill:optimize - プロンプト最適化
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_OPTIMIZE,
+    async (event: IpcMainInvokeEvent, args: SkillOptimizeRequest) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_OPTIMIZE, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.prompt !== "string" || args.prompt.trim() === "") {
+        return { success: false, error: "プロンプトが指定されていません" };
+      }
+      try {
+        const result = await promptOptimizer.optimize(args.prompt);
+        return { success: true, data: result };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "プロンプト最適化に失敗しました",
+        };
+      }
+    },
+  );
+
+  // skill:optimize:variants - バリアント生成
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS,
+    async (event: IpcMainInvokeEvent, args: SkillOptimizeVariantsRequest) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS,
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.prompt !== "string" || args.prompt.trim() === "") {
+        return { success: false, error: "プロンプトが指定されていません" };
+      }
+      try {
+        const variants = await promptOptimizer.generateVariants(
+          args.prompt,
+          args.count,
+        );
+        return { success: true, data: variants };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "バリアント生成に失敗しました",
+        };
+      }
+    },
+  );
+
+  // skill:optimize:evaluate - プロンプト評価
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
+    async (event: IpcMainInvokeEvent, args: SkillOptimizeEvaluateRequest) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.prompt !== "string" || args.prompt.trim() === "") {
+        return { success: false, error: "プロンプトが指定されていません" };
+      }
+      try {
+        const evaluation = await promptOptimizer.evaluate(args.prompt);
+        return { success: true, data: evaluation };
+      } catch (error) {
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "プロンプト評価に失敗しました",
+        };
+      }
+    },
+  );
 }
 
 /**
@@ -260,4 +438,10 @@ export function unregisterSkillHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_EXECUTE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_ABORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_STATUS);
+  // TASK-9C: スキル改善・自動修正機能
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_ANALYZE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPROVE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE);
 }

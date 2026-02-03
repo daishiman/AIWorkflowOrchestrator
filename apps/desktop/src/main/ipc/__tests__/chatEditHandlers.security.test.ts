@@ -18,6 +18,9 @@ vi.mock("electron", () => ({
     handle: vi.fn(),
     removeHandler: vi.fn(),
   },
+  BrowserWindow: {
+    getFocusedWindow: vi.fn(),
+  },
 }));
 
 // IPC Validatorをモック

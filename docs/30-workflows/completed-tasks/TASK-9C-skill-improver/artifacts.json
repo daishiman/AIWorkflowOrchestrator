@@ -1,0 +1,148 @@
+{
+  "taskId": "TASK-9C",
+  "taskName": "スキル改善・自動修正機能",
+  "createdAt": "2026-02-03T13:30:00Z",
+  "updatedAt": "2026-02-03T15:00:00Z",
+  "status": "completed",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "completedAt": "2026-02-03T13:35:00Z",
+      "artifacts": ["outputs/phase-1/requirements-definition.md"]
+    },
+    "phase-2": {
+      "status": "completed",
+      "completedAt": "2026-02-03T13:40:00Z",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/domain-model.md",
+        "outputs/phase-2/api-design.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "completedAt": "2026-02-03T13:45:00Z",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "completedAt": "2026-02-03T13:50:00Z",
+      "artifacts": ["outputs/phase-4/test-implementation-report.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "completedAt": "2026-02-03T14:00:00Z",
+      "artifacts": ["outputs/phase-5/implementation-report.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "completedAt": "2026-02-03T14:10:00Z",
+      "artifacts": ["outputs/phase-6/coverage-report.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "completedAt": "2026-02-03T14:15:00Z",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "completedAt": "2026-02-03T14:25:00Z",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "completedAt": "2026-02-03T14:35:00Z",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "completedAt": "2026-02-03T14:45:00Z",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "completedAt": "2026-02-03T14:50:00Z",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "phase-12": {
+      "status": "completed",
+      "completedAt": "2026-02-03T15:00:00Z",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "phase-13": {
+      "status": "skipped",
+      "reason": "User requested not to create PR automatically"
+    }
+  },
+  "dependencies": {
+    "depends_on": ["TASK-7D", "TASK-8C"],
+    "parallel_with": ["TASK-9A", "TASK-9B"],
+    "blocks": ["TASK-10A"]
+  },
+  "metadata": {
+    "tier": 2,
+    "priority": "high",
+    "estimated_complexity": "large",
+    "tags": [
+      "backend",
+      "main",
+      "skill-management",
+      "claude-agent-sdk",
+      "ai-improvement"
+    ]
+  },
+  "artifacts": {
+    "creates": [
+      "apps/desktop/src/main/services/skill/SkillAnalyzer.ts",
+      "apps/desktop/src/main/services/skill/SkillImprover.ts",
+      "apps/desktop/src/main/services/skill/PromptOptimizer.ts",
+      "apps/desktop/src/main/services/skill/utils/fileUtils.ts",
+      "apps/desktop/src/main/services/skill/utils/sdkUtils.ts",
+      "apps/desktop/src/main/services/skill/utils/index.ts",
+      "apps/desktop/src/main/services/skill/__tests__/SkillAnalyzer.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/SkillAnalyzer.additional.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/SkillImprover.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/SkillImprover.additional.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/PromptOptimizer.test.ts",
+      "apps/desktop/src/main/ipc/__tests__/skillHandlers.improve.test.ts",
+      "apps/desktop/src/main/services/skill/__tests__/__mocks__/claude-agent-sdk.ts"
+    ],
+    "modifies": ["apps/desktop/src/main/ipc/skillHandlers.ts"]
+  },
+  "testSummary": {
+    "total": 83,
+    "passed": 83,
+    "failed": 0,
+    "skipped": 0,
+    "breakdown": {
+      "SkillAnalyzer.test.ts": 8,
+      "SkillAnalyzer.additional.test.ts": 13,
+      "SkillImprover.test.ts": 10,
+      "SkillImprover.additional.test.ts": 18,
+      "PromptOptimizer.test.ts": 11,
+      "skillHandlers.improve.test.ts": 18,
+      "performance.test.ts": 5
+    }
+  },
+  "unassignedTasks": [
+    {
+      "id": "TASK-10A-UI-SKILL-IMPROVE",
+      "description": "UI表示機能（分析結果、改善提案一覧、実行確認ダイアログ）",
+      "priority": "medium"
+    },
+    {
+      "id": "TASK-10B-IMPROVE-HISTORY",
+      "description": "改善履歴の永続化",
+      "priority": "low"
+    },
+    {
+      "id": "TASK-10C-AB-TEST",
+      "description": "A/Bテスト実行・結果比較機能",
+      "priority": "low"
+    }
+  ]
+}

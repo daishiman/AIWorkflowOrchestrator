@@ -63,6 +63,8 @@ const mockSkillService = {
   getSkillById: vi.fn(),
   executeSkill: vi.fn(), // New method to be tested
   clearCache: vi.fn(),
+  // TASK-9C: スキル改善機能
+  getSkillsDirectory: vi.fn().mockReturnValue("/mock/skills/dir"),
 };
 
 // Mock BrowserWindow for validation

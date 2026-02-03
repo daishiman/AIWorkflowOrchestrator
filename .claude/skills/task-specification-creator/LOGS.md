@@ -43,6 +43,30 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-03 - TASK-WCE-MONACO-001 Phase 1-12完了]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 完了
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: TASK-WCE-MONACO-001「Monaco Editor選択範囲取得」Phase 1-12全工程完了。editorSelection.ts新規作成（Renderer）、chatEditHandlers.ts修正（Main Process）。26テスト全PASS、100%カバレッジ。未タスク0件。
+
+### 成果物
+
+| Phase | 成果物                   | ファイル                   |
+| ----- | ------------------------ | -------------------------- |
+| 1     | 要件定義書               | requirements-definition.md |
+| 2     | アーキテクチャ設計       | architecture-design.md     |
+| 3     | 設計レビュー結果         | design-review-result.md    |
+| 4     | テスト仕様書             | test-specification.md      |
+| 5     | 実装サマリー             | implementation-summary.md  |
+| 6-9   | 品質保証関連             | qa-report.md等             |
+| 10    | 最終レビュー結果         | final-review.md            |
+| 11    | 手動テスト手順書         | manual-test-procedure.md   |
+| 12    | ドキュメント更新         | documentation-update.md    |
+
+---
+
 ## [2026-02-02 - 未タスク仕様書3件新規作成（コードベースTODOスキャン）]
 
 - **Agent**: generate-unassigned-task
