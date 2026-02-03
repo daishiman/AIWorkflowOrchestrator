@@ -12,7 +12,7 @@ description: |
 
   Trigger:
   プロジェクト仕様の検索、アーキテクチャ確認、API設計参照、セキュリティ要件確認、テスト戦略参照を行う場合に使用。
-  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig, permissionHistory, PermissionHistoryPanel, PermissionHistorySlice, 権限履歴, 履歴トラッキング, safeArgsSnapshot, PermissionHistoryEntry, PermissionHistoryFilter, DatePreset, DateRangeFilter, dateFilterUtils, 期間フィルタ, コンポーネントテスト, Storeモック, フィクスチャ, アクセシビリティ, WCAG, userEvent, fireEvent, RTL, React Testing Library, jest-axe, ARIA
+  仕様, 要件, アーキテクチャ, API, データベース, セキュリティ, UI/UX, デプロイ, Claude Code, テスト, MSW, カバレッジ, PermissionStore, 権限永続化, rememberChoice, SkillSlice, Zustand, 状態管理, skillSlice, リトライ, retry, backoff, Exponential Backoff, Jitter, RetryConfig, permissionHistory, PermissionHistoryPanel, PermissionHistorySlice, 権限履歴, 履歴トラッキング, safeArgsSnapshot, PermissionHistoryEntry, PermissionHistoryFilter, DatePreset, DateRangeFilter, dateFilterUtils, 期間フィルタ, コンポーネントテスト, Storeモック, フィクスチャ, アクセシビリティ, WCAG, userEvent, fireEvent, RTL, React Testing Library, jest-axe, ARIA, Main→Renderer, webContents.executeJavaScript, Monaco Editor, editorSelection, TextSelection, chat-edit, 逆方向IPC
 allowed-tools:
   - Read
   - Glob
@@ -195,6 +195,9 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **8.34.0** | **2026-02-03** | **TASK-WCE-MONACO-001未タスク検出**: 4件の未タスク仕様書作成（task-imp-monaco-multi-cursor-support-001, task-imp-monaco-selection-highlight-001, task-imp-monaco-write-back-001, task-imp-monaco-vim-emacs-mode-001）、各仕様書にセクション3.4「システム仕様書参照（実装課題回避ナレッジ）」追加、patterns.md Main→Renderer IPCパターン追加、topic-map.md再生成（141ファイル・1020キーワード） |
+| **8.33.0** | **2026-02-03** | **TASK-WCE-MONACO-001スキル最適化**: architecture-implementation-patterns.md v1.7.0更新（Main→Rendererパターン再構成: Problem Statement追加、課題ID付与、汎用チェックリスト追加、セキュリティ考慮事項表追加）、api-ipc-agent.md実装パターン参照セクション追加、SKILL.mdトリガーキーワード7件追加（Main→Renderer, webContents等） |
+| **8.32.0** | **2026-02-03** | **TASK-WCE-MONACO-001完了**: api-ipc-agent.md v1.3.0更新（get-selection実装完了、完了タスクセクション追加、テスト結果26件PASS・100%カバレッジ記録） |
 | **8.31.0** | **2026-02-02** | **TASK-8C-C実装パターン追記**: architecture-implementation-patterns.md v1.5.0（E2Eテストパターン6種追加）、quality-e2e-testing.md v1.4.0（テストケース詳細表追加）、topic-map.md再生成 |
 | **8.30.0** | **2026-02-02** | **TASK-8C-C完了**: quality-e2e-testing.md v1.3.0更新、task-workflow.md v1.12.0更新（未タスク4件追加）、topic-map.md再生成 |
 | **8.29.0** | **2026-02-02** | **TASK-8C-B完了**: quality-e2e-testing.md v1.2.0更新（スキル選択フローE2Eテスト8件実装完了記録、ARIA属性ベースセレクタ、キーボード操作・アクセシビリティ検証、完了タスクセクション追加） |

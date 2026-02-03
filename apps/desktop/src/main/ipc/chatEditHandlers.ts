@@ -103,9 +103,22 @@ export function registerChatEditHandlers(
         throw toIPCValidationError(validation);
       }
 
-      // 現時点ではエディタ選択範囲取得は未実装
-      // 将来的にエディタ統合時に実装
-      return { success: true, data: null };
+      // フォーカスされているウィンドウを取得
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (!focusedWindow) {
+        return { success: true, data: null };
+      }
+
+      try {
+        // Renderer側のwindow.__editorSelection.getEditorSelection()を呼び出す
+        const selection = await focusedWindow.webContents.executeJavaScript(
+          `window.__editorSelection?.getEditorSelection?.() ?? null`,
+        );
+        return { success: true, data: selection };
+      } catch {
+        // executeJavaScript失敗時はnullを返す
+        return { success: true, data: null };
+      }
     },
   );
 

@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-02
+> 自動生成: 2026-02-03
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -164,9 +164,9 @@ node scripts/list-specs.js --topics
 | パフォーマンス最適化パターン | L239 |
 | セキュリティ実装パターン | L277 |
 | テスト実装パターン | L309 |
-| アクセシビリティ実装パターン | L435 |
-| 関連ドキュメント | L460 |
-| 変更履歴 | L472 |
+| アクセシビリティ実装パターン | L609 |
+| 関連ドキュメント | L634 |
+| 変更履歴 | L646 |
 
 ### references/architecture-monorepo.md
 
@@ -263,8 +263,8 @@ node scripts/list-specs.js --topics
 | ChatPanel統合（TASK-7D） | L558 |
 | テストアーキテクチャ（TASK-8C-A） | L593 |
 | 完了タスク | L645 |
-| 関連ドキュメント | L677 |
-| 変更履歴 | L689 |
+| 関連ドキュメント | L716 |
+| 変更履歴 | L729 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -379,8 +379,8 @@ node scripts/list-specs.js --topics
 | 主要IPCチャンネル | L69 |
 | 品質メトリクス サマリー | L80 |
 | 完了タスク | L91 |
-| 変更履歴 | L124 |
-| 関連ドキュメント | L136 |
+| 変更履歴 | L137 |
+| 関連ドキュメント | L150 |
 
 ### references/interfaces-rag-chunk-embedding.md
 
@@ -614,9 +614,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Agent Dashboard IPC チャネル | L10 |
 | Workspace Chat Edit IPC チャネル | L76 |
-| 完了タスク | L199 |
-| 関連ドキュメント | L215 |
-| 変更履歴 | L224 |
+| 完了タスク | L202 |
+| 実装パターン参照 | L274 |
+| 関連ドキュメント | L286 |
+| 変更履歴 | L296 |
 
 ### references/api-ipc-auth.md
 
@@ -1360,7 +1361,7 @@ node scripts/list-specs.js --topics
 | バックアップ・リカバリ | L411 |
 | 環境構築ガイド | L448 |
 | 関連ドキュメント | L491 |
-| 変更履歴 | L503 |
+| 変更履歴 | L504 |
 
 ### references/directory-structure.md
 
@@ -1471,11 +1472,12 @@ node scripts/list-specs.js --topics
 | ContextBuilder | L63 |
 | ChatEditService | L103 |
 | IPCチャンネル | L149 |
-| セキュリティ | L160 |
-| ディレクトリ構成 | L172 |
-| 品質メトリクス | L198 |
-| 関連ドキュメント | L209 |
-| 変更履歴 | L217 |
+| セキュリティ | L169 |
+| ディレクトリ構成 | L181 |
+| 品質メトリクス | L207 |
+| 関連ドキュメント | L218 |
+| 完了タスク | L246 |
+| 変更履歴 | L271 |
 
 ### references/local-agent.md
 
@@ -1512,16 +1514,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| 概要 | L18 |
-| テスト戦略 | L32 |
-| E2Eテストフィクスチャ | L52 |
-| フィクスチャ詳細仕様 | L89 |
-| フィクスチャ検証テスト | L139 |
-| SkillScannerテスト統合パターン | L195 |
-| 完了タスク | L215 |
-| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L256 |
-| 残課題（未タスク） | L295 |
-| 関連ドキュメント | L306 |
+| 概要 | L21 |
+| テスト戦略 | L35 |
+| E2Eテストフィクスチャ | L55 |
+| フィクスチャ詳細仕様 | L92 |
+| フィクスチャ検証テスト | L142 |
+| SkillScannerテスト統合パターン | L198 |
+| 完了タスク | L218 |
+| skill-creatorフィクスチャ検証テスト（TASK-8C-G） | L327 |
+| 残課題（未タスク） | L366 |
+| 関連ドキュメント | L377 |
 
 ### references/rag-desktop-state.md
 

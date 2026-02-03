@@ -195,6 +195,7 @@ AIによるコード生成・編集の結果を保持する。
 | UIコンポーネント   | 未実装   | 別タスク（task-workspace-chat-edit-ui-components） |
 | Main Processサービス | **完了** | FileService, ContextBuilder, ChatEditService |
 | IPCハンドラー      | **完了** | chatEditHandlers.ts               |
+| get-selection実装  | **完了** | Monaco Editor選択範囲取得（TASK-WCE-MONACO-001） |
 
 ---
 
@@ -225,6 +226,61 @@ AIによるコード生成・編集の結果を保持する。
 | カバレッジ   | Line 95%, Branch 90%, Function 100%                                                     |
 | ドキュメント | `docs/30-workflows/TASK-WCE-WORKSPACE-001/`                                             |
 
+### Monaco Editor選択範囲取得（TASK-WCE-MONACO-001）2026-02-03完了
+
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-WCE-MONACO-001                                                           |
+| ステータス   | **完了**                                                                      |
+| 実装内容     | Monaco Editorの選択範囲をMain Processから取得するAPI実装                      |
+| 新規ファイル | editorSelection.ts（Renderer）、chatEditHandlers.selection.test.ts（テスト）  |
+| 修正ファイル | chatEditHandlers.ts、index.ts                                                 |
+| テスト数     | 26（editorSelection: 14、chatEditHandlers.selection: 12）                     |
+| カバレッジ   | Line 100%, Branch 100%                                                        |
+| ドキュメント | `docs/30-workflows/TASK-WCE-MONACO-001/outputs/`                              |
+
+**テスト結果サマリー**:
+
+| テストファイル                     | テスト数 | 成功 | 失敗 | 時間  |
+| ---------------------------------- | -------- | ---- | ---- | ----- |
+| editorSelection.test.ts            | 14       | 14   | 0    | 51ms  |
+| chatEditHandlers.selection.test.ts | 12       | 12   | 0    | 202ms |
+
+**成果物テーブル**:
+
+| Phase | 成果物                   | ファイル                    |
+| ----- | ------------------------ | --------------------------- |
+| 1     | 要件定義書               | requirements-definition.md  |
+| 1     | 受け入れ基準             | acceptance-criteria.md      |
+| 1     | スコープ定義             | scope-definition.md         |
+| 2     | アーキテクチャ設計       | architecture-design.md      |
+| 2     | API設計                  | api-design.md               |
+| 2     | シーケンス図             | sequence-diagram.md         |
+| 3     | 設計レビュー結果         | design-review-result.md     |
+| 4     | テスト仕様書             | test-specification.md       |
+| 4     | テストケース一覧         | test-cases.md               |
+| 4     | 統合テスト設計           | integration-test-design.md  |
+| 5     | 実装サマリー             | implementation-summary.md   |
+| 6     | テスト拡充レポート       | test-enhancement-report.md  |
+| 7     | カバレッジレポート       | coverage-report.md          |
+| 8     | リファクタリングレポート | refactoring-report.md       |
+| 9     | 品質保証レポート         | qa-report.md                |
+| 10    | 最終レビュー結果         | final-review.md             |
+| 11    | 手動テスト手順書         | manual-test-procedure.md    |
+| 12    | ドキュメント更新         | documentation-update.md     |
+
+---
+
+## 実装パターン参照
+
+> **Progressive Disclosure**: 実装時に参照すべきパターンドキュメント
+
+| 実装課題 | 参照パターン | ドキュメント |
+|----------|-------------|--------------|
+| Main→Renderer状態取得 | webContents.executeJavaScript逆方向クエリ | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md#main→renderer逆方向クエリパターンtask-wce-monaco-001-2026-02-03実装) |
+| IPC通信テスト | Handler Map方式、Partial Mock | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md#ipc通信テストパターンtask-8c-a-2026-02-02実装) |
+| E2Eテスト | Electron E2Eセットアップ | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md#e2eテストパターンtask-8c-c-2026-02-02実装) |
+
 ---
 
 ## 関連ドキュメント
@@ -233,6 +289,7 @@ AIによるコード生成・編集の結果を保持する。
 - [認証・プロフィールIPC](./api-ipc-auth.md)
 - [システムIPC・プロバイダーAPI](./api-ipc-system.md)
 - [LLM Workspace Chat Edit](./llm-workspace-chat-edit.md)
+- [実装パターン総合ガイド](./architecture-implementation-patterns.md)
 
 ---
 
@@ -240,6 +297,7 @@ AIによるコード生成・編集の結果を保持する。
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.3.0     | 2026-02-03 | TASK-WCE-MONACO-001: get-selection実装完了、完了タスクセクション追加         |
 | v1.2.0     | 2026-02-02 | TASK-WCE-WORKSPACE-001: workspacePathパラメータ追加、完了タスク追加          |
 | v1.1.0     | 2026-01-26 | TypeScriptコードブロックを表形式に変換（spec-guidelines.md準拠）             |
 | v1.0.0     | 2026-01-25 | 初版作成                                                                     |
