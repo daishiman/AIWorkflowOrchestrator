@@ -190,6 +190,13 @@ export const IPC_CHANNELS = {
   SKILL_PERMISSION_REQUEST: "skill:permission:request",
   SKILL_PERMISSION_RESPONSE: "skill:permission:response",
 
+  // Skill improvement operations (TASK-9C)
+  SKILL_ANALYZE: "skill:analyze",
+  SKILL_IMPROVE: "skill:improve",
+  SKILL_OPTIMIZE: "skill:optimize",
+  SKILL_OPTIMIZE_VARIANTS: "skill:optimize:variants",
+  SKILL_OPTIMIZE_EVALUATE: "skill:optimize:evaluate",
+
   // History operations
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
@@ -386,6 +393,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_UPDATE,
   // Skill permission channels (TASK-3-1-D + TASK-4-1 + TASK-4-2)
   IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+  // Skill improvement channels (TASK-9C)
+  IPC_CHANNELS.SKILL_ANALYZE,
+  IPC_CHANNELS.SKILL_IMPROVE,
+  IPC_CHANNELS.SKILL_OPTIMIZE,
+  IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS,
+  IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,

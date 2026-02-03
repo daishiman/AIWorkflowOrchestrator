@@ -31,3 +31,8 @@ export {
   SkillFileErrorCode,
   type SkillFileErrorCodeType,
 } from "./errors";
+
+// TASK-9C: スキル改善・自動修正機能
+export { SkillAnalyzer } from "./SkillAnalyzer";
+export { SkillImprover } from "./SkillImprover";
+export { PromptOptimizer } from "./PromptOptimizer";

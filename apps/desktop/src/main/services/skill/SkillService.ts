@@ -10,6 +10,7 @@ import type {
   ImportResult,
   RemoveResult,
   SkillRunResult,
+  ImportedSkill,
 } from "@repo/shared";
 import { randomUUID } from "crypto";
 import { SkillScanner } from "./SkillScanner";
@@ -147,6 +148,45 @@ export class SkillService {
   clearCache(): void {
     this.cache.clear();
     this.lastScanTime = null;
+  }
+
+  /**
+   * 名前でスキルを取得する（TASK-9C）
+   */
+  async getSkillByName(name: string): Promise<ImportedSkill | null> {
+    if (this.cache.size === 0) {
+      await this.scanAvailableSkills();
+    }
+    for (const skill of this.cache.values()) {
+      if (skill.name === name) {
+        // Skillを ImportedSkillに変換
+        return {
+          ...skill,
+          name: skill.name,
+          description: skill.description,
+          path: skill.path,
+          allowedTools: skill.allowedTools,
+          updatedAt: skill.lastModified,
+          agents: [],
+          references: [],
+          scripts: [],
+          assets: [],
+          schemas: [],
+          indexes: [],
+          otherFiles: [],
+          importedAt: new Date(),
+          status: "active" as const,
+        };
+      }
+    }
+    return null;
+  }
+
+  /**
+   * スキルディレクトリのパスを取得する（TASK-9C）
+   */
+  getSkillsDirectory(): string {
+    return this.scanner.getBasePath();
   }
 
   /**
