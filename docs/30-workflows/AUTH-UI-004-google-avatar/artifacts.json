@@ -1,0 +1,170 @@
+{
+  "taskId": "AUTH-UI-004",
+  "taskName": "Googleアバター取得修正",
+  "issueNumber": 347,
+  "createdAt": "2026-02-04",
+  "status": "in_progress",
+  "currentPhase": 11,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-01-requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-02-design.md",
+          "description": "設計ドキュメント"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-03-design-review.md",
+          "description": "レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-04-test-creation.md",
+          "description": "テスト仕様書"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-05-implementation.md",
+          "description": "実装ドキュメント"
+        },
+        {
+          "path": "packages/shared/types/auth.ts",
+          "description": "SupabaseIdentity型修正"
+        },
+        {
+          "path": "packages/shared/infrastructure/auth/supabase-client.ts",
+          "description": "toLinkedProvider関数修正"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-06-test-expansion.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-07-coverage.md",
+          "description": "カバレッジ確認結果"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-08-refactoring.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-09-quality.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "phase-10-final-review.md",
+          "description": "レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "in_progress",
+      "artifacts": [
+        {
+          "path": "phase-11-manual-test.md",
+          "description": "手動テスト仕様"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-12-documentation.md",
+          "description": "ドキュメント更新仕様"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-13-pr-creation.md",
+          "description": "PR作成仕様"
+        }
+      ]
+    }
+  },
+  "qualityMetrics": {
+    "testsPassed": 1265,
+    "coverage": {
+      "line": "100%",
+      "branch": "100%",
+      "function": "100%"
+    },
+    "lintErrors": 0,
+    "typeErrors": 0
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/architecture-auth-security.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-auth.md",
+      ".claude/skills/aiworkflow-requirements/references/api-ipc-auth.md"
+    ],
+    "relatedFiles": [
+      "packages/shared/types/auth.ts",
+      "packages/shared/infrastructure/auth/supabase-client.ts",
+      "apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx"
+    ]
+  }
+}
