@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-03T06:26:15.365Z",
-  "totalKeywords": 1020,
+  "generated": "2026-02-03T08:09:30.528Z",
+  "totalKeywords": 1021,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -671,9 +671,6 @@
       "ui-ux-feature-components.md",
       "ui-ux-search-panel.md"
     ],
-    "実装パターン参照": [
-      "api-ipc-agent.md"
-    ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
       "interfaces-auth.md"
@@ -958,6 +955,7 @@
     ],
     "TASK": [
       "arch-ui-components.md",
+      "architecture-implementation-patterns.md",
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
@@ -1195,6 +1193,9 @@
       "architecture-implementation-patterns.md"
     ],
     "アクセシビリティ実装パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "スキル作成実装パターン": [
       "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
@@ -2077,6 +2078,9 @@
       "interfaces-agent-sdk-skill.md"
     ],
     "テストアーキテクチャ": [
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "SkillCreatorService": [
       "interfaces-agent-sdk-skill.md"
     ],
     "Execution": [
