@@ -41,6 +41,12 @@ import {
   createStubLogRepository,
   createStubLogger,
 } from "../infrastructure";
+import { registerChatEditHandlers } from "./chatEditHandlers";
+import {
+  ChatEditService,
+  FileService,
+  ContextBuilder,
+} from "../services/chat-edit";
 
 /**
  * Register all IPC handlers
@@ -131,6 +137,20 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
 
   // Register Claude CLI handlers (for skill discovery via Claude CLI)
   registerClaudeCliHandlers(mainWindow);
+
+  // Register Chat Edit handlers (TASK-WCE-MONACO-001)
+  // Note: ChatEditService requires an LLM adapter, using stub for now
+  // as the primary use case is get-selection which doesn't need LLM
+  const fileService = new FileService();
+  const contextBuilder = new ContextBuilder();
+  const stubLLMAdapter = {
+    sendMessage: async () => ({
+      success: false,
+      error: { message: "LLM adapter not configured for chat-edit" },
+    }),
+  };
+  const chatEditService = new ChatEditService(stubLLMAdapter, contextBuilder);
+  registerChatEditHandlers(mainWindow, chatEditService, fileService);
 }
 
 /**
