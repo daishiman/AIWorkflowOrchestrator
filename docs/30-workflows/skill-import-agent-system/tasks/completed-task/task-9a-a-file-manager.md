@@ -6,13 +6,16 @@ phase: 9
 depends_on: [TASK-7D]
 parallel_with: []
 blocks: [TASK-9A-B]
-status: pending
+status: spec_created
 priority: high
 estimated_complexity: medium
 tags: [backend, main-process, service, file-management]
+spec_dir: ./task-9a-a-skill-file-manager/
 ---
 
 # SkillFileManager 実装
+
+> **タスク仕様書**: [task-9a-a-skill-file-manager/](./task-9a-a-skill-file-manager/) (Phase 1〜13)
 
 ## 概要
 
