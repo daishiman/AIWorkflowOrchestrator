@@ -726,10 +726,291 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 ---
 
+## SkillCreatorService（TASK-9B-G）
+
+### 概要
+
+スキル作成の統合サービス。Facadeパターンで複雑なスキル作成処理を統合し、Script First原則・Progressive Disclosure原則に基づいた設計を採用する。
+
+**実装ファイル**:
+
+| ファイル                 | パス                                                     | 説明                   |
+| ------------------------ | -------------------------------------------------------- | ---------------------- |
+| SkillCreatorService.ts   | `apps/desktop/src/main/services/skill/`                  | スキル作成統合サービス |
+| ScriptExecutor.ts        | `apps/desktop/src/main/services/skill/`                  | スクリプト実行基盤     |
+| ResourceLoader.ts        | `apps/desktop/src/main/services/skill/`                  | リソース遅延読み込み   |
+| constants.ts             | `apps/desktop/src/main/services/skill/`                  | 定数定義               |
+| skillCreator.ts          | `packages/shared/src/types/`                             | 型定義                 |
+
+---
+
+### 型定義
+
+#### SkillCreatorMode
+
+スキル作成モードを表す列挙型。
+
+| 値               | 説明                               |
+| ---------------- | ---------------------------------- |
+| `collaborative`  | ユーザー対話型スキル共創（推奨）   |
+| `orchestrate`    | 実行エンジン選択モード             |
+| `create`         | 新規スキル作成                     |
+| `update`         | 既存スキル更新                     |
+| `improve-prompt` | プロンプト改善                     |
+
+#### ExecutionEngine
+
+実行エンジンを表す列挙型（orchestrateモード用）。
+
+| 値               | 説明                           |
+| ---------------- | ------------------------------ |
+| `claude`         | Claude Codeで実行              |
+| `codex`          | OpenAI Codexで実行             |
+| `claude-to-codex`| Claudeで設計→Codexで実行       |
+
+#### CreateSkillOptions
+
+スキル作成オプション。
+
+| プロパティ        | 型                  | 必須 | 説明                           |
+| ----------------- | ------------------- | ---- | ------------------------------ |
+| `name`            | `string`            | ✓    | スキル名（ディレクトリ名）     |
+| `description`     | `string`            | ✓    | スキルの説明                   |
+| `mode`            | `SkillCreatorMode`  | ✓    | 作成モード                     |
+| `executionEngine` | `ExecutionEngine`   | -    | 実行エンジン（orchestrate時）  |
+| `generateTasks`   | `boolean`           | -    | タスク仕様書を生成するか       |
+| `interviewResult` | `InterviewResult`   | -    | インタビュー結果（collaborative時） |
+| `domainModel`     | `DomainModel`       | -    | ドメインモデル（collaborative時） |
+
+#### ScriptResult
+
+スクリプト実行結果。
+
+| プロパティ  | 型        | 説明                           |
+| ----------- | --------- | ------------------------------ |
+| `success`   | `boolean` | 実行成功フラグ（exitCode===0） |
+| `stdout`    | `string`  | 標準出力                       |
+| `stderr`    | `string`  | 標準エラー出力                 |
+| `exitCode`  | `number`  | 終了コード                     |
+
+#### ExecutionReport
+
+タスク実行レポート。
+
+| プロパティ      | 型                | 説明                     |
+| --------------- | ----------------- | ------------------------ |
+| `mode`          | `string`          | 実行モード（dry-run/execution） |
+| `tasks`         | `string[][]`      | 実行順序（dry-run時）    |
+| `results`       | `TaskResult[]`    | 実行結果（execution時）  |
+| `summary`       | `ExecutionSummary`| サマリー                 |
+| `estimatedTime` | `number`          | 見積もり時間（分）       |
+
+---
+
+### SkillCreatorService API
+
+#### detectMode
+
+ユーザーリクエストから適切なモードを判定する。
+
+| パラメータ | 型       | 必須 | 説明               |
+| ---------- | -------- | ---- | ------------------ |
+| `request`  | `string` | ✓    | ユーザーリクエスト |
+
+**戻り値**: `Promise<SkillCreatorMode>`
+
+#### createSkill
+
+スキルを作成する。
+
+| パラメータ | 型                   | 必須 | 説明               |
+| ---------- | -------------------- | ---- | ------------------ |
+| `options`  | `CreateSkillOptions` | ✓    | スキル作成オプション |
+
+**戻り値**: `Promise<string>` - 作成されたスキルディレクトリパス
+
+#### executeTasks
+
+タスクを依存関係順に実行する。
+
+| パラメータ | 型                    | 必須 | 説明               |
+| ---------- | --------------------- | ---- | ------------------ |
+| `options`  | `ExecuteTasksOptions` | ✓    | タスク実行オプション |
+
+**戻り値**: `Promise<ExecutionReport>`
+
+#### validateSkill
+
+スキルを検証する。
+
+| パラメータ  | 型       | 必須 | 説明                   |
+| ----------- | -------- | ---- | ---------------------- |
+| `skillDir`  | `string` | ✓    | スキルディレクトリパス |
+
+**戻り値**: `Promise<boolean>`
+
+---
+
+### ScriptExecutor API
+
+Script First原則に基づき、決定論的処理をスクリプトに委譲する。
+
+#### execute
+
+スクリプトを実行し、結果を返す。
+
+| パラメータ   | 型         | 必須 | 説明                             |
+| ------------ | ---------- | ---- | -------------------------------- |
+| `scriptName` | `string`   | ✓    | スクリプト名（例: detect_mode.js） |
+| `args`       | `string[]` | ✓    | スクリプトに渡す引数             |
+
+**戻り値**: `Promise<ScriptResult>`
+
+**セキュリティ**: パストラバーサル防止（`..`, `/`, `\`を含むスクリプト名を拒否）
+
+#### executeJson
+
+JSON出力スクリプトを実行し、パースした結果を返す。
+
+**戻り値**: `Promise<T>` - パースされたJSONオブジェクト
+
+---
+
+### ResourceLoader API
+
+Progressive Disclosure原則に基づき、リソースを遅延読み込みする。
+
+#### load
+
+リソースを読み込む（キャッシュ優先）。
+
+| パラメータ | 型                | 必須 | 説明                             |
+| ---------- | ----------------- | ---- | -------------------------------- |
+| `category` | `ResourceCategory`| ✓    | カテゴリ（agents/references/assets/schemas） |
+| `name`     | `string`          | ✓    | リソース名（ファイル名）         |
+
+**戻り値**: `Promise<string>`
+
+#### loadAgent / loadSchema
+
+ショートカットメソッド。
+
+| メソッド     | 戻り値            | 説明                   |
+| ------------ | ----------------- | ---------------------- |
+| `loadAgent`  | `Promise<string>` | エージェントプロンプト |
+| `loadSchema` | `Promise<object>` | JSONスキーマ           |
+
+#### clearCache
+
+キャッシュをクリアする。
+
+---
+
+### テストカバレッジ
+
+| ファイル               | Statements | Branches | Functions | Lines  |
+| ---------------------- | ---------- | -------- | --------- | ------ |
+| ResourceLoader.ts      | 100%       | 100%     | 100%      | 100%   |
+| ScriptExecutor.ts      | 100%       | 91.66%   | 100%      | 100%   |
+| SkillCreatorService.ts | 94.59%     | 88.63%   | 100%      | 94.59% |
+
+| テストファイル                          | テスト数 | 状態    |
+| --------------------------------------- | -------- | ------- |
+| ScriptExecutor.test.ts                  | 9        | ✅ PASS |
+| ResourceLoader.test.ts                  | 9        | ✅ PASS |
+| SkillCreatorService.test.ts             | 22       | ✅ PASS |
+| SkillCreatorService.integration.test.ts | 10       | ✅ PASS |
+| **合計**                                | **50**   | ✅ PASS |
+
+---
+
+### 実装上の苦戦箇所・教訓
+
+TASK-9B-G実装で得られた知見。同様の課題に直面した際の参考として記録する。
+
+#### 1. 未タスク登録漏れ（Phase 12）
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | 未タスク指示書を作成しても、task-workflow.mdの残課題テーブルへの登録を忘れやすい |
+| 原因 | Phase 12の未タスク検出が「指示書作成」で完了と誤認しやすい |
+| 解決策 | **3ステップ必須**: ①指示書作成 → ②task-workflow.md残課題テーブル登録 → ③関連仕様書への記載 |
+| 検証方法 | Phase 12完了前にtask-workflow.mdの残課題テーブルを目視確認 |
+
+#### 2. Script First + Progressive Disclosure統合設計
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 決定論的処理（Script First）とリソース遅延読み込み（Progressive Disclosure）を同一サービスで統合する設計判断 |
+| 解決策 | ScriptExecutorとResourceLoaderを独立クラスとして実装し、SkillCreatorService（Facade）で統合 |
+| 利点 | 単一責任原則を維持しつつ、利用者には統一APIを提供 |
+| テスト戦略 | 各コンポーネントを独立テスト後、統合テストでFacadeを検証 |
+
+#### 3. 定数外部化のタイミング
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | タイムアウト値などのマジックナンバーがコード内に散在 |
+| 原因 | Phase 5（実装）でハードコードし、Phase 8（リファクタリング）で外部化する2段階工程 |
+| 教訓 | 12-Factor App準拠を意識し、Phase 5時点で定数ファイル（constants.ts）を作成すべき |
+| 対策 | 新規サービス実装時は、定数定義ファイルを最初に作成するルールを適用 |
+
+#### 4. パストラバーサル防止の実装箇所
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | セキュリティ対策（BC-003）をどのレイヤーで実装すべきか |
+| 判断 | スクリプト名を受け取るScriptExecutor.execute()メソッド内で検証 |
+| 理由 | 入力に最も近い場所で検証することで、バイパスリスクを低減 |
+| 実装 | `..`, `/`, `\`を含むスクリプト名を拒否し、早期リターン |
+
+---
+
+### 関連ドキュメント
+
+| ドキュメント | 説明 |
+| ------------ | ---- |
+| [TASK-9B-G 実装ガイド](../../../../docs/30-workflows/TASK-9B-G-skill-creator-service/outputs/phase-12/implementation-guide.md) | 概念的説明（中学生レベル）+ 技術詳細 |
+
+---
+
+## 完了タスク
+
+### TASK-9B-G: SkillCreatorService実装（2026-02-03完了）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-G                                                                  |
+| 完了日       | 2026-02-03                                                                 |
+| ステータス   | **完了**                                                                   |
+| テスト数     | 50（自動テスト）                                                           |
+| 発見課題     | 0件                                                                        |
+| ドキュメント | `docs/30-workflows/TASK-9B-G-skill-creator-service/`                       |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| ScriptExecutor     | 9        | 9    | 0    |
+| ResourceLoader     | 9        | 9    | 0    |
+| SkillCreatorService| 22       | 22   | 0    |
+| 統合テスト         | 10       | 10   | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                       |
+| ------------------ | -------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-9B-G-skill-creator-service/outputs/phase-11/manual-test-result.md` |
+| 実装ガイド         | `docs/30-workflows/TASK-9B-G-skill-creator-service/outputs/phase-12/implementation-guide.md` |
+
+---
+
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-03 | 1.10.0     | TASK-9B-G: 実装上の苦戦箇所・教訓セクション追加（未タスク登録漏れ、Script First統合設計、定数外部化、パストラバーサル防止） |
+| 2026-02-03 | 1.9.0      | TASK-9B-G: SkillCreatorService仕様追加（SkillCreatorMode, ScriptExecutor, ResourceLoader型定義、API仕様、50テスト完了記録） |
 | 2026-02-02 | 1.8.0      | TASK-8C-B: スキル選択E2Eテスト完了記録追加（8テスト、ARIA属性ベースセレクタ、安定性対策3層） |
 | 2026-02-02 | 1.7.0      | TASK-8C-A: テストアーキテクチャセクション追加（テスト構成、適用パターン、ヘルパー関数、テストデータ定数） |
 | 2026-02-02 | 1.6.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む |

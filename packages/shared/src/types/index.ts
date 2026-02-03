@@ -100,6 +100,25 @@ export type {
   IPermissionStore,
 } from "./permission-store";
 
+// SkillCreator型定義 (TASK-9B-G)
+export type {
+  SkillCreatorMode,
+  ExecutionEngine,
+  CreateSkillOptions,
+  InterviewResult,
+  DomainModel,
+  ExecuteTasksOptions,
+  ExecutionReport,
+  TaskResult,
+  ExecutionSummary,
+  Entity,
+  BoundedContext,
+  ExternalApiConfig,
+  ScriptResult,
+  TaskSpec,
+  DependencyGraph,
+} from "./skillCreator";
+
 // ファイル選択型定義
 export type {
   FileExtension,

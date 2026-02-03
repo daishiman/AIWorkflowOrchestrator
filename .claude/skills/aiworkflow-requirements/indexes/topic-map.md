@@ -166,7 +166,8 @@ node scripts/list-specs.js --topics
 | テスト実装パターン | L309 |
 | アクセシビリティ実装パターン | L609 |
 | 関連ドキュメント | L634 |
-| 変更履歴 | L646 |
+| スキル作成実装パターン（TASK-9B-G） | L646 |
+| 変更履歴 | L770 |
 
 ### references/architecture-monorepo.md
 
@@ -264,7 +265,9 @@ node scripts/list-specs.js --topics
 | テストアーキテクチャ（TASK-8C-A） | L593 |
 | 完了タスク | L645 |
 | 関連ドキュメント | L716 |
-| 変更履歴 | L729 |
+| SkillCreatorService（TASK-9B-G） | L729 |
+| 完了タスク | L935 |
+| 変更履歴 | L966 |
 
 ### references/interfaces-agent-sdk-ui.md
 
