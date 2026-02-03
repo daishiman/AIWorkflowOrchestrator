@@ -481,6 +481,86 @@
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-8A
 
+### Graceful SDK Fallback パターン
+
+- **状況**: 外部SDK（Claude Agent SDK等）への接続が失敗した場合でもアプリケーションがクラッシュしない必要がある場合
+- **パターン**: `tryAgentSdkWithFallback<T>(fn, fallback)` ユーティリティでSDKエラー時にフォールバック値を返す
+- **例**（TASK-9C）:
+  | 項目 | 実装 |
+  | ---- | ---- |
+  | ユーティリティ | `sdkUtils.ts: tryAgentSdkWithFallback<T>(fn, fallback)` |
+  | 使用例 | `tryAgentSdkWithFallback(() => queryFn(prompt), { suggestions: [] })` |
+  | エラーログ | `console.warn()` で警告出力、アプリは継続動作 |
+- **効果**:
+  - SDKが未インストール/設定不備でもアプリが起動・動作する
+  - ユーザーには「分析結果なし」等の空状態を表示
+  - エラー詳細は開発者コンソールで確認可能
+- **発見日**: 2026-02-03
+- **関連タスク**: TASK-9C
+
+### queryFn DI パターン（SDK テスト用）
+
+- **状況**: Claude Agent SDK の `query()` 呼び出しを含むサービスの単体テストを書く場合
+- **パターン**: `queryFn` パラメータでSDK呼び出しを依存注入（DI）可能にし、テストではモック関数を渡す
+- **例**（TASK-9C）:
+  | 項目 | 実装 |
+  | ---- | ---- |
+  | インターフェース | `queryFn?: (prompt: string) => Promise<Result>` |
+  | デフォルト値 | 本番: Claude Agent SDK の `query()` を呼び出す関数 |
+  | テスト時 | `vi.fn().mockResolvedValue({ suggestions: [...] })` を注入 |
+- **効果**:
+  - SDK本体をモック不要（ESModule問題を回避）
+  - テストが高速・決定論的
+  - 本番コードは変更なしで動作
+- **発見日**: 2026-02-03
+- **関連タスク**: TASK-9C
+
+### スキル名バリデーション（禁止文字サニタイズ）
+
+- **状況**: ユーザー入力のスキル名をファイルパスとして使用する場合
+- **パターン**: 禁止文字リスト `<>:"\|?*` を定義し、該当文字を含む名前を拒否またはサニタイズ
+- **例**（TASK-9C）:
+  | 項目 | 実装 |
+  | ---- | ---- |
+  | 禁止文字定数 | `FORBIDDEN_CHARS = ['<', '>', ':', '"', '\|', '?', '*']` |
+  | 検証関数 | `validateSkillName(name): { valid: boolean; error?: string }` |
+  | エラーメッセージ | 「スキル名に使用できない文字が含まれています: <具体的な文字>」 |
+- **効果**:
+  - パストラバーサル攻撃の防止
+  - Windows/macOS/Linux全環境で安全なファイル名
+  - ユーザーフレンドリーなエラーメッセージ
+- **発見日**: 2026-02-03
+- **関連タスク**: TASK-9C
+
+### ESModuleモッキング回避パターン
+
+- **状況**: `node:fs/promises`等のESModuleエクスポートに対して`vi.spyOn()`を使用すると`Cannot redefine property`エラーが発生する場合
+- **パターン**: モックを使わず、実際にエラーが発生する条件（存在しないファイル、権限不足等）を作ってテストする
+- **例**（TASK-9A-A）:
+  - 問題: `vi.spyOn(fs, "readFile")` → `TypeError: Cannot redefine property: readFile`
+  - 解決: 存在しないスキル名を渡してENOENTエラーを発生させる
+  - 解決: 権限のないディレクトリを使ってEACCESエラーを発生させる
+- **効果**:
+  - Vitestの制約を回避
+  - 実際のエラーパスをテスト（モックより信頼性高い）
+  - 137テスト全PASS、カバレッジ98%達成
+- **発見日**: 2026-02-03
+- **関連タスク**: TASK-9A-A
+
+### 汎用エラーアサーションパターン
+
+- **状況**: 空入力に対するエラーが複数のエラークラスのいずれかを返す可能性がある場合
+- **パターン**: 特定のエラークラスではなく`.rejects.toThrow()`で汎用的にエラー発生を検証
+- **例**（TASK-9A-A）:
+  - 問題: `readSkillFile("")`は`SkillNotFoundError`を期待したが`FileNotFoundError`が発生
+  - 解決: `.rejects.toThrow(SkillNotFoundError)` → `.rejects.toThrow()` に変更
+  - 理由: 空スキル名は「スキルが見つからない」とも「ファイルが見つからない」とも解釈できる
+- **効果**:
+  - 実装の詳細に依存しない堅牢なテスト
+  - エラーハンドリングのリファクタリング耐性
+- **発見日**: 2026-02-03
+- **関連タスク**: TASK-9A-A
+
 ---
 
 ## E2Eテスト設計パターン（TASK-8C-B）
@@ -496,16 +576,16 @@
   const selectors = {
     skillSelector: '[role="combobox"][aria-haspopup="listbox"]',
     dropdown: '[role="listbox"]',
-    option: (text: string) => `[role="option"]:has-text("${text}")`
+    option: (text: string) => `[role="option"]:has-text("${text}")`,
   };
   ```
 - **セレクタ優先順位**:
   | 優先度 | セレクタタイプ | 理由 |
   | ------ | -------------- | ---- |
-  | 1      | ARIA属性       | セマンティック、安定、アクセシビリティ検証も兼ねる |
-  | 2      | data-testid    | テスト専用、明示的 |
-  | 3      | テキストベース | 可読性高い |
-  | 4      | ID/クラス      | 実装詳細に依存するため最後の手段 |
+  | 1 | ARIA属性 | セマンティック、安定、アクセシビリティ検証も兼ねる |
+  | 2 | data-testid | テスト専用、明示的 |
+  | 3 | テキストベース | 可読性高い |
+  | 4 | ID/クラス | 実装詳細に依存するため最後の手段 |
 - **効果**:
   - CSSリファクタリング時もテストが壊れにくい
   - アクセシビリティとE2Eテストが同時に検証される
@@ -601,48 +681,34 @@
 
 ---
 
-## Main→Renderer逆方向クエリパターン（TASK-WCE-MONACO-001）
+## Main→Renderer IPC実装パターン（TASK-WCE-MONACO-001）
 
-> Electron IPCにおいて、Main ProcessからRenderer Processの状態を取得する特殊パターン。通常のipcRenderer.invokeとは逆方向の通信が必要な場合に適用。
+> TASK-WCE-MONACO-001のMonaco Editor選択範囲取得実装で検証されたパターン。通常のRenderer→Main方向とは逆の、Main ProcessからRenderer Processの状態を取得するパターン。
 
-### webContents.executeJavaScriptによるグローバルブリッジパターン
+### webContents.executeJavaScript逆方向クエリパターン
 
-- **状況**: Main ProcessからRenderer Processで管理されるUIコンポーネント（Monaco Editor等）の状態を取得する必要がある場合
-- **パターン**: `window.__editorSelection`のようなグローバルブリッジオブジェクトをRendererに公開し、`webContents.executeJavaScript()`でMain Processから呼び出す
-- **例**（TASK-WCE-MONACO-001）:
+- **状況**: Main ProcessからRenderer ProcessのUI状態（Monaco Editorの選択範囲等）を取得する必要がある場合
+- **パターン**: `webContents.executeJavaScript()`でRendererのグローバルブリッジオブジェクトを呼び出す
+- **実装**:
   | 要素 | 実装 |
-  | ------------ | ----------------------------------------------------- |
-  | ブリッジ定義 | `window.__editorSelection = { getSelection: () => {...} }` |
-  | エディタ登録 | `setActiveEditor(editor)` でMonacoインスタンスを登録 |
-  | Main側呼び出し | `webContents.executeJavaScript('window.__editorSelection?.getSelection()')` |
+  | ---- | ---- |
+  | グローバルブリッジ | `window.__editorSelection = { getSelection: () => {...} }` |
+  | Main側クエリ | `webContents.executeJavaScript('window.__editorSelection?.getSelection()')` |
+  | webContents取得 | `BrowserWindow.getFocusedWindow()?.webContents ?? BrowserWindow.getAllWindows()[0]?.webContents` |
+- **課題と解決策（再利用可能ナレッジ）**:
+  | 課題ID | 課題 | 解決策 |
+  | ------ | ---- | ------ |
+  | MR-01 | webContentsがnull | focusedWebContents ?? firstWebContentsのフォールバック |
+  | MR-02 | 未登録エラー | Optional chaining（`?.`）使用 |
+  | MR-03 | 非同期結果処理 | async/await適切使用 |
+  | MR-04 | TypeScript型エラー | `declare global { interface Window { __xxx?: {...} } }` |
 - **効果**:
-  - 通常IPCの方向制限（Renderer→Mainのみ）を回避
-  - Monaco EditorのgetSelection(), getModel()等のAPIにMain Processからアクセス可能
-  - Optional chaining（?.）でnull安全な呼び出し
-- **注意点**:
-  - `setActiveEditor()`がUI側で呼び出されていないとnullが返る
-  - セキュリティ上、任意のJS実行は信頼できるコードのみ
+  - 26テスト全PASS、100%カバレッジ達成
+  - Main→Renderer通信の標準パターンとして確立
+  - 将来の同様タスク（書き戻し機能等）で再利用可能
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-WCE-MONACO-001
-
-### EditorSelection型の最小インターフェース設計
-
-- **状況**: エディタ選択範囲を表すデータ構造を設計する場合
-- **パターン**: 最小限の必須フィールドのみを型に含め、拡張性はオプショナルプロパティで確保
-- **例**（TASK-WCE-MONACO-001）:
-  | フィールド | 型 | 用途 |
-  | ------------ | ------ | -------------- |
-  | startLine | number | 選択開始行（1ベース） |
-  | startColumn | number | 選択開始列（1ベース） |
-  | endLine | number | 選択終了行 |
-  | endColumn | number | 選択終了列 |
-  | selectedText | string | 選択されたテキスト |
-- **効果**:
-  - Monaco Editor以外のエディタでも互換性を保てる汎用型
-  - 行番号1ベースでMonaco Editor標準に合わせる
-  - selectedTextを含めることでAPI呼び出し回数を削減
-- **発見日**: 2026-02-03
-- **関連タスク**: TASK-WCE-MONACO-001
+- **システム仕様書参照**: [architecture-implementation-patterns.md](/.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
 
 ---
 
@@ -732,21 +798,24 @@
 
 ## 変更履歴
 
-| Date           | Changes                                                                                                                                            |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **2026-02-03** | **TASK-9B-G失敗パターン追加: 未タスク検出後のtask-workflow.md登録漏れ（3ステップ必須の誤認パターン）** |
-| **2026-02-03** | **TASK-9B-G知見追加: サービス設計パターン4件（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）** |
-| **2026-02-03** | **TASK-WCE-MONACO-001知見追加: Main→Renderer逆方向クエリパターン2件（webContents.executeJavaScriptグローバルブリッジ、EditorSelection最小インターフェース）** |
+| Date           | Changes                                                                                                                                              |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2026-02-03** | **マージ統合**: TASK-9B-G（サービス設計パターン4件）+ TASK-9C/9A-A（SDK統合パターン5件）を統合                                                       |
+| **2026-02-03** | **TASK-9B-G失敗パターン追加: 未タスク検出後のtask-workflow.md登録漏れ（3ステップ必須の誤認パターン）**                                               |
+| **2026-02-03** | **TASK-9B-G知見追加: サービス設計パターン4件（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）**         |
+| **2026-02-03** | **TASK-9C知見追加: 成功パターン3件（Graceful SDK Fallbackパターン、queryFn DIパターン、スキル名バリデーション禁止文字サニタイズ）**                  |
+| **2026-02-03** | **TASK-WCE-MONACO-001知見追加: Main→Renderer IPC実装パターン（webContents.executeJavaScript逆方向クエリ、課題ID MR-01〜MR-04）**                     |
+| **2026-02-03** | **TASK-9A-A知見追加: 成功パターン2件（ESModuleモッキング回避パターン、汎用エラーアサーションパターン）**                                             |
 | **2026-02-02** | **TASK-8C-C知見追加: 成功パターン1件（Phase 12 Step 1完了チェックリストの厳格遵守 - SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止）** |
-| **2026-02-02** | **TASK-8C-B知見追加: E2Eテスト設計パターン3件（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）** |
-| **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）** |
-| **2026-02-02** | **TASK-8B知見追加: 成功パターン1件（Phase 10 MINOR指摘の確実な未タスク変換）**                                                                    |
-| **2026-02-02** | **TASK-8A知見追加: 成功パターン4件（カバレッジ閾値免除判定、ギャップ分析ベースTDD、未タスク検出P3全件記録、vi.doMock動的再読み込み）** |
-| 2026-02-01     | TASK-8C-G知見追加: 成功パターン3件（境界値フィクスチャ設計、parseFrontmatter構造化検証、execSync決定論的テスト）                                   |
-| 2026-02-01     | task-imp-permission-tool-metadata-001知見追加: 成功パターン3件（Record型スタイルマッピング、IIFEレンダリング、デフォルトメタデータフォールバック） |
-| 2026-01-31     | TASK-7D知見体系化: フェーズ境界遷移パターン（4件）・失敗回避パターン（3件）追加                                                                    |
-| 2026-01-30     | TASK-7Dフィードバック反映: 成功パターン4件追加（forwardRef テスト、Exclude型設定マップ、個別セレクタ、並列エージェント）                           |
-| 2026-01-28     | TASK-3-2-Cフィードバック反映: 成功パターン3件追加（React Context一括更新、動的更新間隔、Page Visibility API）                                      |
-| 2026-01-27     | TASK-3-2-Aフィードバック反映: 成功パターン5件追加（R-ID方式、日常例え、ユーティリティ分離、未タスク変換）                                          |
-| 2026-01-26     | Phase 12出力要件漏れパターン追加、成功パターンにチェックリスト追加                                                                                 |
-| 2026-01-24     | 初版作成、Markdown見出しパターン追加                                                                                                               |
+| **2026-02-02** | **TASK-8C-B知見追加: E2Eテスト設計パターン3件（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）**                                    |
+| **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）**                              |
+| **2026-02-02** | **TASK-8B知見追加: 成功パターン1件（Phase 10 MINOR指摘の確実な未タスク変換）**                                                                       |
+| **2026-02-02** | **TASK-8A知見追加: 成功パターン4件（カバレッジ閾値免除判定、ギャップ分析ベースTDD、未タスク検出P3全件記録、vi.doMock動的再読み込み）**               |
+| 2026-02-01     | TASK-8C-G知見追加: 成功パターン3件（境界値フィクスチャ設計、parseFrontmatter構造化検証、execSync決定論的テスト）                                     |
+| 2026-02-01     | task-imp-permission-tool-metadata-001知見追加: 成功パターン3件（Record型スタイルマッピング、IIFEレンダリング、デフォルトメタデータフォールバック）   |
+| 2026-01-31     | TASK-7D知見体系化: フェーズ境界遷移パターン（4件）・失敗回避パターン（3件）追加                                                                      |
+| 2026-01-30     | TASK-7Dフィードバック反映: 成功パターン4件追加（forwardRef テスト、Exclude型設定マップ、個別セレクタ、並列エージェント）                             |
+| 2026-01-28     | TASK-3-2-Cフィードバック反映: 成功パターン3件追加（React Context一括更新、動的更新間隔、Page Visibility API）                                        |
+| 2026-01-27     | TASK-3-2-Aフィードバック反映: 成功パターン5件追加（R-ID方式、日常例え、ユーティリティ分離、未タスク変換）                                            |
+| 2026-01-26     | Phase 12出力要件漏れパターン追加、成功パターンにチェックリスト追加                                                                                   |
+| 2026-01-24     | 初版作成、Markdown見出しパターン追加                                                                                                                 |

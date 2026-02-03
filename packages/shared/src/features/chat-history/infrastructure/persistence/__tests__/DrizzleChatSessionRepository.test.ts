@@ -28,7 +28,7 @@ describe("DrizzleChatSessionRepository", () => {
   });
 
   afterEach(() => {
-    testDb.close();
+    testDb?.close();
   });
 
   // ============================================================

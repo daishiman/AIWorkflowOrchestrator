@@ -425,17 +425,36 @@ Key patterns from this task:
 - Security: `safeArgsSnapshot()` for argument sanitization (max 200 chars)
 - Virtual scroll: `@tanstack/react-virtual` for 1000-entry performance
 
+### TASK-9C スキル改善・自動修正機能（Skill Improvement & Auto-fix）
+
+| 区分           | ファイル                                                                            |
+| -------------- | ----------------------------------------------------------------------------------- |
+| タスク仕様書   | `docs/30-workflows/TASK-9C-skill-improver/`                                         |
+| 実装ガイド     | `outputs/phase-12/implementation-guide.md`                                          |
+| システム仕様   | `interfaces-agent-sdk-skill.md`（IPC 5チャネル追加）、`arch-electron-services.md`   |
+| 実装ファイル   | `SkillAnalyzer.ts`, `SkillImprover.ts`, `PromptOptimizer.ts`                        |
+| ユーティリティ | `utils/fileUtils.ts`, `utils/sdkUtils.ts`                                           |
+| テスト         | `SkillAnalyzer.test.ts`, `SkillImprover.test.ts`, `PromptOptimizer.test.ts`（83件） |
+
+Key patterns from this task:
+
+- Graceful SDK fallback: tryAgentSdkWithFallback()でSDKエラー時にフォールバック
+- DI Pattern: `queryFn`パラメータでSDK呼び出しを注入可能に
+- Backup strategy: 改善前にバックアップを自動作成
+- Analysis categories: static, ai, combined分析モード
+
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                       |
-| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 2.8.0   | 2026-02-01 | TASK-IMP-permission-history-001 Permission History Tracking成果物追加（Cross-Slice access, safeArgsSnapshot, Virtual scroll） |
-| 2.7.0   | 2026-01-31 | retry-patterns.mdリファレンス新規作成、error-handling.mdリトライセクション最適化（outdated値修正、cross-reference追加）       |
-| 2.6.0   | 2026-01-31 | TASK-SKILL-RETRY-001リトライ機構パターン追加（RetryConfig, isRetryableError, Exponential Backoff with Jitter）                |
-| 2.5.0   | 2026-01-26 | TASK-3-1-E権限永続化パターン追加（PermissionStore API、rememberChoice連携、データスキーマ）                                   |
-| 2.4.0   | 2026-01-25 | TASK-3-1-B Hooks実装パターン追加（createHooks, categorizeError, isRetryable, セキュリティチェック関数）                       |
-| 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加                                                     |
-| 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正                                                                           |
-| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携                                                                                |
-| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加                                                                                    |
-| 1.0.0   | 2026-01-08 | 初期バージョン作成                                                                                                            |
+| Version | Date       | Changes                                                                                                                         |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.9.0   | 2026-02-03 | TASK-9Cスキル改善・自動修正機能成果物追加（SkillAnalyzer, SkillImprover, PromptOptimizer、83テスト、Graceful fallbackパターン） |
+| 2.8.0   | 2026-02-01 | TASK-IMP-permission-history-001 Permission History Tracking成果物追加（Cross-Slice access, safeArgsSnapshot, Virtual scroll）   |
+| 2.7.0   | 2026-01-31 | retry-patterns.mdリファレンス新規作成、error-handling.mdリトライセクション最適化（outdated値修正、cross-reference追加）         |
+| 2.6.0   | 2026-01-31 | TASK-SKILL-RETRY-001リトライ機構パターン追加（RetryConfig, isRetryableError, Exponential Backoff with Jitter）                  |
+| 2.5.0   | 2026-01-26 | TASK-3-1-E権限永続化パターン追加（PermissionStore API、rememberChoice連携、データスキーマ）                                     |
+| 2.4.0   | 2026-01-25 | TASK-3-1-B Hooks実装パターン追加（createHooks, categorizeError, isRetryable, セキュリティチェック関数）                         |
+| 2.3.0   | 2026-01-17 | Direct SDK Pattern追加、Slide SDK統合実装参照追加、パターン選択ガイド追加                                                       |
+| 2.2.0   | 2026-01-12 | AGENT-005実装成果物・実装ファイル参照追加、パス修正                                                                             |
+| 2.1.0   | 2026-01-08 | 関連ドキュメントセクション追加、aiworkflow連携                                                                                  |
+| 2.0.0   | 2026-01-08 | 責務ベースに再構成、最新情報取得フロー追加                                                                                      |
+| 1.0.0   | 2026-01-08 | 初期バージョン作成                                                                                                              |

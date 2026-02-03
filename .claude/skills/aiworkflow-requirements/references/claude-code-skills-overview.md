@@ -107,15 +107,15 @@ Skillは、Claude（メインのオーケストレーター）が **「必要だ
 
 ## プロジェクト登録スキル一覧
 
-| スキル名                     | 概要                                    | 使用ツール              |
-| ---------------------------- | --------------------------------------- | ----------------------- |
-| aiworkflow-requirements      | プロジェクト仕様管理・検索              | Read, Grep, Glob        |
-| task-specification-creator   | タスク仕様書生成（Phase 1-13）          | Read, Write, Edit       |
-| skill-creator                | スキル作成・更新・プロンプト改善        | Read, Write, Edit, Bash |
-| claude-agent-sdk             | Agent SDK統合実装支援                   | Read, Write, Edit, Bash |
-| presentation-slide-generator | HTMLプレゼンスライド生成                | Write, Bash             |
-| github-issue-manager         | GitHub Issue管理・タスク仕様書連携      | Bash, Read, Glob        |
-| skill-fixture-runner         | skill-creator出力フィクスチャの自動検証 | Bash, Read, Glob        |
+| スキル名                     | 概要                                    | 使用ツール                                                           |
+| ---------------------------- | --------------------------------------- | -------------------------------------------------------------------- |
+| aiworkflow-requirements      | プロジェクト仕様管理・検索              | Read, Grep, Glob                                                     |
+| task-specification-creator   | タスク仕様書生成（Phase 1-13）          | Read, Write, Edit                                                    |
+| skill-creator                | スキル作成・更新・プロンプト改善        | Read, Write, Edit, Glob, Grep, Bash, Task, WebFetch, AskUserQuestion |
+| claude-agent-sdk             | Agent SDK統合実装支援                   | Read, Write, Edit, Bash                                              |
+| presentation-slide-generator | HTMLプレゼンスライド生成                | Write, Bash                                                          |
+| github-issue-manager         | GitHub Issue管理・タスク仕様書連携      | Bash, Read, Glob                                                     |
+| skill-fixture-runner         | skill-creator出力フィクスチャの自動検証 | Bash, Read, Glob                                                     |
 
 ### skill-fixture-runner 検証テスト
 
