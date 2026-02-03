@@ -86,6 +86,19 @@ node scripts/log-usage.js \
 - **Notes**: TASK-8C-B「E2Eテスト - スキル選択フロー」Phase 1-12全工程完了。8テストケース実装（基本表示2件、スキル選択2件、キーボード操作2件、アクセシビリティ2件）。ARIA属性ベースセレクタ使用。
 
 ---
+
+## [2026-02-02 - aiworkflow-requirements v8.29.0 未タスク検出]
+
+- **Agent**: generate-unassigned-task
+- **Phase**: detect-unassigned
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: aiworkflow-requirements v8.29.0更新（testing-dialog-patterns.md新規作成）に伴うギャップ分析。未タスク2件検出・作成:
+  - task-e2e-dialog-accessibility-patterns-001: E2Eダイアログアクセシビリティテストパターン拡充（優先度:中）
+  - task-e2e-dialog-helpers-library-001: E2Eテストヘルパー関数ライブラリ化（優先度:低）
+
+---
+
 ## [2026-02-02 - 両ブランチ統合マージ]
 
 - **Agent**: merge-workflow
@@ -148,6 +161,7 @@ node scripts/log-usage.js \
 - **Notes**: TASK-8B「コンポーネントテスト」Phase 1-12全工程完了。280テスト全PASS。Line 99.71%カバレッジ。
 
 ---
+
 ## [2026-02-01 - TASK-8C-G Phase 1-12完了]
 
 - **Agent**: execute-workflow (Phase 1-12)
@@ -175,13 +189,13 @@ node scripts/log-usage.js \
 
 ### 作成ファイル
 
-| # | ファイル | 分類 | 優先度 | 発見元 |
-|---|---------|------|--------|--------|
-| 1 | `task-permission-toolmetadata-whitelist-sync.md` | セキュリティ | 中 | security-skill-execution.md仕様Gap |
-| 2 | `task-permission-risk-level-styles-shared.md` | リファクタリング | 低 | interfaces-agent-sdk-ui.md仕様Gap |
-| 3 | `task-permission-toolmetadata-i18n.md` | 改善 | 低 | ui-ux-agent-execution.md仕様Gap |
-| 4 | `task-community-integration-test-alignment.md` | バグ修正 | 中 | コードTODO（community-integration.test.tsx L178/238/378/486） |
-| 5 | `task-imp-skillstream-type-unification.md` | リファクタリング | 中 | コードTODO（setupSkillListeners.ts:23） |
+| #   | ファイル                                         | 分類             | 優先度 | 発見元                                                        |
+| --- | ------------------------------------------------ | ---------------- | ------ | ------------------------------------------------------------- |
+| 1   | `task-permission-toolmetadata-whitelist-sync.md` | セキュリティ     | 中     | security-skill-execution.md仕様Gap                            |
+| 2   | `task-permission-risk-level-styles-shared.md`    | リファクタリング | 低     | interfaces-agent-sdk-ui.md仕様Gap                             |
+| 3   | `task-permission-toolmetadata-i18n.md`           | 改善             | 低     | ui-ux-agent-execution.md仕様Gap                               |
+| 4   | `task-community-integration-test-alignment.md`   | バグ修正         | 中     | コードTODO（community-integration.test.tsx L178/238/378/486） |
+| 5   | `task-imp-skillstream-type-unification.md`       | リファクタリング | 中     | コードTODO（setupSkillListeners.ts:23）                       |
 
 ---
 
@@ -202,6 +216,7 @@ node scripts/log-usage.js \
 - Notes: PermissionDialogリスクレベル・セキュリティメタデータ表示。Phase 1-12をステップバイステップで実行。全258テストPASS、カバレッジ100%。未タスク3件検出。
 
 ---
+
 ## [2026-01-31 - unassigned task generation from system specs]
 
 - Agent: generate-unassigned-task
@@ -2548,12 +2563,14 @@ if (artifactPath) {
 ## 2026-02-02 - 権限履歴の期間別フィルタリング（task-imp-permission-date-filter）タスク完了
 
 ### コンテキスト
+
 - スキル: task-specification-creator
 - タスクID: task-imp-permission-date-filter
 - タスク名: 権限履歴の期間別フィルタリング
 - Phase: 1-12
 
 ### 成果
+
 - テストカバレッジ: 72テスト全件PASS（Stmts 98.50% / Branch 87.82% / Func 100%）
 - 実装内容:
   - dateFilterUtils.ts新規作成（getDateRangeStartDate, filterByDateRange）
@@ -2562,6 +2579,7 @@ if (artifactPath) {
   - 境界値テスト含む22ケースのフィルタロジックテスト
 
 ### 結果
+
 - ステータス: success
 - 完了日時: 2026-02-02
 
