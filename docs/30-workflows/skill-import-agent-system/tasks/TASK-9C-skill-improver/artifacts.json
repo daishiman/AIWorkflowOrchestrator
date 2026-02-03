@@ -1,0 +1,49 @@
+{
+  "taskId": "TASK-9C",
+  "taskName": "スキル改善・自動修正機能",
+  "createdAt": "2026-02-03T13:30:00Z",
+  "status": "pending",
+  "phases": {
+    "phase-1": { "status": "pending", "artifacts": [] },
+    "phase-2": { "status": "pending", "artifacts": [] },
+    "phase-3": { "status": "pending", "artifacts": [] },
+    "phase-4": { "status": "pending", "artifacts": [] },
+    "phase-5": { "status": "pending", "artifacts": [] },
+    "phase-6": { "status": "pending", "artifacts": [] },
+    "phase-7": { "status": "pending", "artifacts": [] },
+    "phase-8": { "status": "pending", "artifacts": [] },
+    "phase-9": { "status": "pending", "artifacts": [] },
+    "phase-10": { "status": "pending", "artifacts": [] },
+    "phase-11": { "status": "pending", "artifacts": [] },
+    "phase-12": { "status": "pending", "artifacts": [] },
+    "phase-13": { "status": "pending", "artifacts": [] }
+  },
+  "dependencies": {
+    "depends_on": ["TASK-7D", "TASK-8C"],
+    "parallel_with": ["TASK-9A", "TASK-9B"],
+    "blocks": ["TASK-10A"]
+  },
+  "metadata": {
+    "tier": 2,
+    "priority": "high",
+    "estimated_complexity": "large",
+    "tags": [
+      "backend",
+      "main",
+      "skill-management",
+      "claude-agent-sdk",
+      "ai-improvement"
+    ]
+  },
+  "artifacts": {
+    "creates": [
+      "apps/desktop/src/main/services/skill/SkillImprover.ts",
+      "apps/desktop/src/main/services/skill/SkillAnalyzer.ts",
+      "apps/desktop/src/main/services/skill/PromptOptimizer.ts"
+    ],
+    "modifies": [
+      "apps/desktop/src/main/ipc/skillHandlers.ts",
+      "apps/desktop/src/renderer/store/slices/skillSlice.ts"
+    ]
+  }
+}

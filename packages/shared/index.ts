@@ -54,6 +54,28 @@ export type {
   IPermissionStore,
 } from "./src/types/permission-store";
 
+// Skill Improver types (TASK-9C)
+export type {
+  SuggestionType,
+  SuggestionPriority,
+  Suggestion,
+  Risk,
+  AnalysisCategory,
+  SkillAnalysis,
+  ImprovementOptions,
+  AppliedImprovement,
+  ImprovementResult,
+  OptimizationMetrics,
+  OptimizationResult,
+  EvaluationBreakdown,
+  PromptEvaluation,
+  SkillAnalyzeRequest,
+  SkillImproveRequest,
+  SkillOptimizeRequest,
+  SkillOptimizeVariantsRequest,
+  SkillOptimizeEvaluateRequest,
+} from "./src/types/skill-improver";
+
 // Core
 export * from "./core";
 

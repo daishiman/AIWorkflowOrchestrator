@@ -49,6 +49,8 @@ const mockSkillService = {
   getCache: vi.fn(),
   setCache: vi.fn(),
   invalidateCache: vi.fn(),
+  // TASK-9C: スキル改善機能
+  getSkillsDirectory: vi.fn().mockReturnValue("/mock/skills/dir"),
 };
 
 // === Mock BrowserWindow ===

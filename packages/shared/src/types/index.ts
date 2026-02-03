@@ -15,6 +15,9 @@ export * from "./llm-metadata";
 // スキル管理型定義
 export * from "./skill";
 
+// スキル改善型定義 (TASK-9C)
+export * from "./skill-improver";
+
 // エージェント実行型定義 (AGENT-004)
 export type {
   AgentMessage,
