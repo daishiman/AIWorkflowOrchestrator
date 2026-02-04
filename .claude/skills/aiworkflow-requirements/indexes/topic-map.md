@@ -910,8 +910,8 @@ node scripts/list-specs.js --topics
 | 実装詳細（TASK-SEARCH-INTEGRATE-001） | L310 |
 | 関連ドキュメント | L408 |
 | 完了タスク | L417 |
-| 未タスク（将来の改善候補） | L423 |
-| 変更履歴 | L464 |
+| 未タスク（将来の改善候補） | L453 |
+| 変更履歴 | L494 |
 
 ### references/ui-ux-settings.md
 

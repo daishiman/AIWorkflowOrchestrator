@@ -44,6 +44,33 @@
 
 ---
 
+## 2026-02-04: task-imp-search-ui-001完了（検索・置換機能UI実装）
+
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | task-imp-search-ui-001                                                                         |
+| 操作         | Phase 1-12 完了（システム仕様書1ファイル更新）                                                 |
+| 対象ファイル | ui-ux-search-panel.md                                                                          |
+| 結果         | success                                                                                        |
+| 備考         | E2Eテスト17件追加、グローバルショートカット統合、IPCプロバイダ実装。Line 80%+, Branch 60%+達成 |
+
+### 更新詳細
+
+| ファイル              | 追加内容                                                    |
+| --------------------- | ----------------------------------------------------------- |
+| ui-ux-search-panel.md | 完了タスク記録（task-imp-search-ui-001）、変更履歴v1.1.0追加 |
+
+### 成果物
+
+| 成果物               | パス                                                                          |
+| -------------------- | ----------------------------------------------------------------------------- |
+| E2Eテスト            | `apps/desktop/e2e/search.spec.ts`                                             |
+| SearchPanelPage      | `apps/desktop/e2e/pages/SearchPanelPage.ts`                                   |
+| WorkspaceSearchPage  | `apps/desktop/e2e/pages/WorkspaceSearchPage.ts`                               |
+| 実装ガイド           | `docs/30-workflows/search-replace-ui/outputs/phase-12/implementation-guide.md` |
+
+---
+
 ## 2026-02-03: TASK-9C完了（スキル改善・自動修正機能）
 
 | 項目         | 内容                                                                                                  |

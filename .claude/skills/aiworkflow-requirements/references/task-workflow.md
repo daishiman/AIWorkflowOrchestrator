@@ -270,6 +270,8 @@
 | TASK-10C-AB-TEST                           | A/Bテスト実行・結果比較機能                           | 低     | TASK-9C Phase 12（スコープ外候補）                             | `docs/30-workflows/unassigned-task/task-10c-ab-test.md`                                    |
 | task-imp-phase12-validation-001            | Phase 12ドキュメント更新自動検証ツール                | 中     | AUTH-UI-004 Phase 12（ドキュメント更新漏れ）                   | `docs/30-workflows/unassigned-task/task-phase12-doc-validation-tool.md`                    |
 | UT-AUTH-001                                | profileHandlers.test.ts IPCハンドラモック環境修正     | 低     | AUTH-UI-001 Phase 5（テスト環境問題）                          | `docs/30-workflows/unassigned-task/ut-auth-001-profilehandlers-test-fix.md`                |
+| task-search-scope-folder-001               | 検索スコープ指定機能                                  | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-scope-folder.md`                            |
+| task-search-multifile-replace-001          | マルチファイル一括置換機能                            | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-multifile-replace.md`                       |
 
 ### 未タスク管理ルール
 
@@ -311,3 +313,4 @@
 | 1.17.0     | 2026-02-04 | AUTH-UI-001完了記録追加。UT-AUTH-001タスク仕様書パスを正式な指示書（ut-auth-001-profilehandlers-test-fix.md）に更新                                                                                       |
 | 1.16.0     | 2026-02-04 | 未タスク追加: UT-AUTH-001（profileHandlers.test.ts環境修正）。AUTH-UI-001 Phase 5検出                                                                                                                     |
 | 1.15.0     | 2026-02-04 | AUTH-UI-004完了: 未タスク1件追加（task-imp-phase12-validation-001）、better-sqlite3タスクv1.1.0更新                                                                                                        |
+| 1.16.0     | 2026-02-04 | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（マルチファイル一括置換）。task-imp-search-ui-001 Phase 12検出                                       |

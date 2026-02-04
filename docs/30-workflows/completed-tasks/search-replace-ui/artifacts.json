@@ -1,0 +1,116 @@
+{
+  "taskId": "task-imp-search-ui-001",
+  "taskName": "検索・置換機能 UI実装",
+  "feature": "search-replace-ui",
+  "issueNumber": 366,
+  "workflowPath": "docs/30-workflows/search-replace-ui",
+  "created": "2026-02-04T08:00:00+09:00",
+  "lastUpdated": "2026-02-04T08:30:00+09:00",
+  "status": "in_progress",
+  "currentPhase": 0,
+  "phases": {
+    "0": {
+      "name": "準備作業（除外解除確認）",
+      "status": "pending",
+      "artifacts": []
+    },
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装（TDD: Green）",
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "existingImplementation": {
+    "note": "UIコンポーネントとユニットテストは既存。E2E統合とグローバルキーボードショートカットが主な作業",
+    "existingFiles": {
+      "components": [
+        "apps/desktop/src/features/search/components/SearchPanel.tsx",
+        "apps/desktop/src/features/search/components/WorkspaceSearchPanel.tsx",
+        "apps/desktop/src/features/search/components/SearchOptionButtons.tsx"
+      ],
+      "stores": ["apps/desktop/src/features/search/stores/useSearchStore.ts"],
+      "hooks": [
+        "apps/desktop/src/features/search/hooks/useSearchKeyboardShortcuts.ts"
+      ],
+      "unitTests": [
+        "apps/desktop/src/features/search/__tests__/SearchPanel.test.tsx",
+        "apps/desktop/src/features/search/__tests__/WorkspaceSearchPanel.test.tsx",
+        "apps/desktop/src/features/search/__tests__/useSearchStore.test.ts",
+        "apps/desktop/src/features/search/__tests__/useSearchKeyboardShortcuts.test.ts"
+      ],
+      "integrationTests": [
+        "apps/desktop/src/features/search/__tests__/integration/*.test.tsx"
+      ]
+    },
+    "missingFiles": {
+      "e2eTests": ["apps/desktop/tests/e2e/search.spec.ts"]
+    }
+  },
+  "qualityMetrics": {
+    "targetCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    }
+  }
+}
