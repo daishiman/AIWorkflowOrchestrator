@@ -678,6 +678,47 @@ better-sqlite3のNODE_MODULE_VERSION不一致。
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更者 | 変更内容                                       |
-| ---------- | ---------- | ------ | ---------------------------------------------- |
-| 2025-12-21 | 1.0.0      | AI     | 初版作成（better-sqlite3バージョン不一致問題） |
+| 日付       | バージョン | 変更者 | 変更内容                                                             |
+| ---------- | ---------- | ------ | -------------------------------------------------------------------- |
+| 2026-02-04 | 1.1.0      | AI     | AUTH-UI-004からの学びを追加（再発事例、NODE_MODULE_VERSION 131対応） |
+| 2025-12-21 | 1.0.0      | AI     | 初版作成（better-sqlite3バージョン不一致問題）                       |
+
+---
+
+## 10. AUTH-UI-004からの学び（2026-02-04追記）
+
+### 再発事例
+
+AUTH-UI-004（Googleアバター取得修正）実装時に、同様のエラーが再発：
+
+```
+Error: The module '/path/to/better_sqlite3.node'
+was compiled against a different Node.js version using
+NODE_MODULE_VERSION 127. This version of Node.js requires
+NODE_MODULE_VERSION 131.
+```
+
+### 教訓
+
+| 教訓                            | 詳細                                                                         |
+| ------------------------------- | ---------------------------------------------------------------------------- |
+| タスク完了しても問題は再発する  | 前回（2025-12-21）の対策後も同様の問題が発生                                 |
+| NODE_MODULE_VERSIONは更新される | Node.js 22.xでは NODE_MODULE_VERSION が131に変更                             |
+| グローバルpnpm環境の罠          | グローバルにインストールされたモジュールがローカル設定を上書きする場合がある |
+
+### 推奨対応（追加）
+
+1. **テスト実行時の回避策**: 特定のテストファイルのみ実行してbetter-sqlite3依存を回避
+
+   ```bash
+   pnpm --filter @repo/shared vitest run --config vitest.config.ts <specific-test-file>
+   ```
+
+2. **CI環境での明示的再ビルド**: GitHub Actionsのワークフローに`pnpm rebuild better-sqlite3`を追加
+
+3. **Worktree使用時の注意**: Worktree作成後は必ず`pnpm install && pnpm rebuild`を実行
+
+### 関連タスク
+
+- AUTH-UI-004（Googleアバター取得修正）: `docs/30-workflows/AUTH-UI-004-google-avatar/`
+- interfaces-auth.md 苦戦箇所セクション: `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`
