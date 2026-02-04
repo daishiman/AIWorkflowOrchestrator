@@ -96,6 +96,18 @@ export interface SupabaseIdentity {
 
 ---
 
+## 統合テスト連携【必須】
+
+統合ポイント/契約（API・スキーマ）を設計に反映する:
+
+| 統合ポイント | 契約定義                              |
+| ------------ | ------------------------------------- |
+| IPC通信      | profile:get-providers（既存チャネル） |
+| Supabase     | identity_data → LinkedProvider変換    |
+| Renderer     | avatarUrl表示（既存UIコンポーネント） |
+
+---
+
 ## 成果物
 
 | 成果物           | パス                        | 説明           |

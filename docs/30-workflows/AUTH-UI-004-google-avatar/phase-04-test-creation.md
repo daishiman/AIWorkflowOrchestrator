@@ -140,6 +140,18 @@ pnpm --filter @repo/shared test:run
 
 ---
 
+## 統合テスト連携【必須】
+
+統合テストシナリオを設計する:
+
+| シナリオカテゴリ | 検証内容                              | テストファイル            |
+| ---------------- | ------------------------------------- | ------------------------- |
+| 単体テスト       | toLinkedProvider関数のavatarUrl取得   | `supabase-client.test.ts` |
+| プロバイダー別   | Google/GitHub/Discordのキー名差異     | `supabase-client.test.ts` |
+| 境界値テスト     | 両方存在/両方なし/identity_data未定義 | `supabase-client.test.ts` |
+
+---
+
 ## 参照資料
 
 | 資料名       | パス                                      | 説明          |

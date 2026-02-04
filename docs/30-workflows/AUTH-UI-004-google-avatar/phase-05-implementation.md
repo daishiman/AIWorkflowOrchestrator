@@ -93,6 +93,18 @@ pnpm --filter @repo/desktop test:run
 
 ---
 
+## 統合テスト連携【必須】
+
+フロント/バック接続の実装とテスト支援コード整備:
+
+| 実装項目           | 内容                                       |
+| ------------------ | ------------------------------------------ |
+| 型定義             | SupabaseIdentity.identity_data.picture追加 |
+| フォールバック実装 | avatar_url ?? picture ?? null              |
+| 既存UI             | 変更不要（LinkedProvider.avatarUrl経由）   |
+
+---
+
 ## 参照資料
 
 | 資料名       | パス                                    | 説明          |
