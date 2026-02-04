@@ -1005,6 +1005,102 @@
 
 ---
 
+## 型定義統合/移行パターン（TASK-FIX-1-1-TYPE-ALIGNMENT）
+
+> TASK-FIX-1-1-TYPE-ALIGNMENTのスキル型定義統合で検証されたパターン。skill-execution.ts → skill.tsへの6型+1定数の移行から得た知見。
+
+### パッケージエクスポート更新チェックパターン
+
+- **状況**: 共有パッケージ（@repo/shared等）で型定義ファイルの追加・統合・削除を行う場合
+- **パターン**: 3点セットで必ず更新確認する
+- **チェックリスト**:
+  | # | ファイル | 確認内容 |
+  | - | -------- | -------- |
+  | 1 | package.json exports | 新エクスポートパスの追加、旧パスの削除 |
+  | 2 | tsup.config.ts entry | ビルドエントリポイントの追加・削除 |
+  | 3 | src/index.ts | re-exportの追加・削除 |
+- **誤りやすいポイント**:
+  - 型定義ファイル自体の変更のみで「完了」と誤認
+  - package.json exportsを更新したがtsup.config.tsを忘れる
+  - 旧ファイル削除時に旧エクスポートパスを残す
+- **効果**:
+  - `Module not found`エラーの防止
+  - ビルド成功を保証
+  - import文が正しく解決される
+- **発見日**: 2026-02-04
+- **関連タスク**: TASK-FIX-1-1-TYPE-ALIGNMENT
+
+### 型定義ファイルのカバレッジ寄与パターン
+
+- **状況**: 型定義ファイル（.d.ts相当の.ts）のカバレッジが0%で気になる場合
+- **パターン**: 型定義ファイルはランタイムコードを含まないため、カバレッジ対象外として扱う
+- **判断基準**:
+  | ファイル内容 | カバレッジ寄与 | 対応 |
+  | ------------ | -------------- | ---- |
+  | type/interface定義のみ | 0%（正常） | 無視してOK |
+  | export const定数あり | ≥0% | テスト追加検討 |
+  | ランタイム関数あり | 要カバレッジ | テスト必須 |
+- **効果**:
+  - 不要なテスト追加を回避
+  - カバレッジ目標の正しい解釈
+  - Phase 6/7での混乱防止
+- **発見日**: 2026-02-04
+- **関連タスク**: TASK-FIX-1-1-TYPE-ALIGNMENT
+
+### Discriminated UnionのDRY原則適用パターン（TASK-FIX-1-1-TYPE-ALIGNMENT）
+
+- **状況**: Discriminated Union型で各バリアントに共通フィールドがある場合
+- **パターン**: 共通フィールドをBase型として抽出し、各バリアントでIntersection型として合成
+- **例**（TASK-FIX-1-1-TYPE-ALIGNMENT）:
+  ```typescript
+  // Before: 各バリアントで重複定義
+  type SkillStreamMessage =
+    | { type: "assistant"; executionId: string; timestamp: number; content: ... }
+    | { type: "tool_use"; executionId: string; timestamp: number; content: ... }
+    | ...
+
+  // After: Base型抽出でDRY
+  interface BaseStreamMessage {
+    executionId: string;
+    timestamp: number;
+  }
+  type SkillStreamMessage =
+    | (BaseStreamMessage & { type: "assistant"; content: ... })
+    | (BaseStreamMessage & { type: "tool_use"; content: ... })
+    | ...
+  ```
+- **効果**:
+  - 共通フィールド追加時の修正箇所が1箇所
+  - コードの意図が明確（共通 vs バリアント固有）
+  - TypeScriptの型推論が正しく機能
+- **発見日**: 2026-02-04
+- **関連タスク**: TASK-FIX-1-1-TYPE-ALIGNMENT
+
+### import文一括置換の安全性パターン
+
+- **状況**: 型定義の移行でimport文を一括置換する必要がある場合
+- **パターン**: sed/awkではなくIDE機能またはEditツールで1ファイルずつ確認しながら置換
+- **危険なアプローチ**:
+  | 方法 | リスク |
+  | ---- | ------ |
+  | `sed -i 's/old/new/g'` | 予期しない箇所も置換される可能性 |
+  | `find . -exec sed` | ファイル全体への影響が見えない |
+  | 正規表現一括置換 | エスケープ漏れで破壊的変更 |
+- **安全なアプローチ**:
+  | 方法 | メリット |
+  | ---- | -------- |
+  | IDE Find/Replace（プレビュー付き） | 変更箇所を事前確認可能 |
+  | Claude Code Editツール | 1ファイルずつ差分確認 |
+  | 手動置換（少数ファイル時） | 確実性が高い |
+- **効果**:
+  - 意図しない変更の防止
+  - 変更の追跡可能性
+  - ロールバックが容易
+- **発見日**: 2026-02-04
+- **関連タスク**: TASK-FIX-1-1-TYPE-ALIGNMENT
+
+---
+
 ## 認証UIバグ修正パターン（AUTH-UI-001）
 
 > AUTH-UI-001（認証UIの3つのバグ修正）タスクで検証されたパターン。既実装済みコードの発見と検証、テスト環境問題の切り分けに関する知見。
@@ -1090,7 +1186,6 @@
 - **関連タスク**: AUTH-UI-001
 
 ---
-
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                              |
@@ -1098,6 +1193,7 @@
 | **2026-02-04** | **AUTH-UI-001知見追加**: 認証UIバグ修正パターン4件（既実装発見、テスト環境切り分け、React Portal z-index、認証状態変更後UI更新）                    |
 | **2026-02-04** | **patterns.md構造最適化**: クイックナビゲーション・Phase 12 Task 2クイックリファレンス追加、search-replace-ui実装パターン3件追加（既存実装品質評価、Page Object、generate-index.jsファイル名誤認回避） |
 | **2026-02-04** | **AUTH-UI-004知見追加**: 外部APIデータ正規化パターン3件（プロバイダー別フォールバック、Phase 12ドキュメント5点セット、環境依存テスト分離）           |
+| **2026-02-04** | **TASK-FIX-1-1-TYPE-ALIGNMENT知見追加**: 型定義統合/移行パターン4件（パッケージエクスポート更新チェック、型定義ファイルカバレッジ、Discriminated Union DRY、import文一括置換安全性） |
 | **2026-02-03** | **マージ統合**: TASK-9B-G（サービス設計パターン4件）+ TASK-9C/9A-A（SDK統合パターン5件）を統合                                                       |
 | **2026-02-03** | **TASK-9B-G失敗パターン追加: 未タスク検出後のtask-workflow.md登録漏れ（3ステップ必須の誤認パターン）**                                               |
 | **2026-02-03** | **TASK-9B-G知見追加: サービス設計パターン4件（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）**         |

@@ -73,10 +73,6 @@
       "types": "./dist/src/types/skill.d.ts",
       "import": "./dist/src/types/skill.js"
     },
-    "./types/skill-execution": {
-      "types": "./dist/src/types/skill-execution.d.ts",
-      "import": "./dist/src/types/skill-execution.js"
-    },
     "./services/history/types": {
       "types": "./dist/src/services/history/types.d.ts",
       "import": "./dist/src/services/history/types.js"

@@ -13,7 +13,7 @@ import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { screen, cleanup, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { SkillStreamMessage } from "@repo/shared/types/skill-execution";
+import type { SkillStreamMessage } from "@repo/shared/types/skill";
 import { renderWithI18n } from "../../../test-utils/i18n-test-utils";
 
 // Cleanup DOM between tests
@@ -182,11 +182,9 @@ describe("SkillStreamDisplay - message display", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Hello world",
+        type: "assistant",
+        content: { text: "Hello world", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
@@ -199,14 +197,13 @@ describe("SkillStreamDisplay - message display", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
         type: "tool_use",
-        content: JSON.stringify({
-          name: "read_file",
-          input: { path: "/test.txt" },
-        }),
+        content: {
+          toolName: "read_file",
+          args: { path: "/test.txt" },
+          toolUseId: "tool-use-001",
+        },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
@@ -219,11 +216,13 @@ describe("SkillStreamDisplay - message display", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
         type: "error",
-        content: "Network error occurred",
+        content: {
+          code: "network",
+          message: "Network error occurred",
+          retryable: true,
+        },
         timestamp: Date.now(),
-        isComplete: true,
       },
     ];
 
@@ -239,27 +238,21 @@ describe("SkillStreamDisplay - message display", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "First message",
+        type: "assistant",
+        content: { text: "First message", isPartial: false },
         timestamp: 1000,
-        isComplete: false,
       },
       {
-        executionId: "test-exec-001",
-        id: "msg-2",
-        type: "text",
-        content: "Second message",
+        executionId: "test-exec-002",
+        type: "assistant",
+        content: { text: "Second message", isPartial: false },
         timestamp: 2000,
-        isComplete: false,
       },
       {
-        executionId: "test-exec-001",
-        id: "msg-3",
-        type: "text",
-        content: "Third message",
+        executionId: "test-exec-003",
+        type: "assistant",
+        content: { text: "Third message", isPartial: false },
         timestamp: 3000,
-        isComplete: false,
       },
     ];
 
@@ -271,31 +264,27 @@ describe("SkillStreamDisplay - message display", () => {
     expect(messages[2]).toHaveTextContent("Third message");
   });
 
-  it("should not display complete type messages", () => {
+  it("should not display completed status messages", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Text message",
+        type: "assistant",
+        content: { text: "Text message", isPartial: false },
         timestamp: 1000,
-        isComplete: false,
       },
       {
-        executionId: "test-exec-001",
-        id: "msg-2",
-        type: "complete",
-        content: "",
+        executionId: "test-exec-002",
+        type: "status",
+        content: { status: "completed" },
         timestamp: 2000,
-        isComplete: true,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     expect(screen.getByText("Text message")).toBeInTheDocument();
-    // Complete message should not be rendered
-    expect(screen.queryByText("complete")).not.toBeInTheDocument();
+    // Completed status message should not be rendered
+    expect(screen.queryByText("completed")).not.toBeInTheDocument();
   });
 
   it("should display empty state message when no messages and idle", () => {
@@ -583,11 +572,9 @@ describe("SkillStreamDisplay - edge cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "x".repeat(10000), // Very long message
+        type: "assistant",
+        content: { text: "x".repeat(10000), isPartial: false }, // Very long message
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
@@ -611,12 +598,10 @@ describe("SkillStreamDisplay - edge cases", () => {
       mockUseSkillExecution.messages = [
         ...mockUseSkillExecution.messages,
         {
-          executionId: "test-exec-001",
-          id: `msg-${i}`,
-          type: "text" as const,
-          content: `Message ${i}`,
-          timestamp: Date.now(),
-          isComplete: false,
+          executionId: `test-exec-${i}`,
+          type: "assistant" as const,
+          content: { text: `Message ${i}`, isPartial: false },
+          timestamp: Date.now() + i,
         },
       ];
       rerender(<SkillStreamDisplay skillId="test-skill" />);
@@ -900,18 +885,16 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: now - 30000, // 30秒前
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // タイムスタンプ要素が存在することを確認
-    const timestamp = screen.getByTestId("message-timestamp-msg-1");
+    const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
     expect(timestamp).toBeInTheDocument();
     expect(timestamp).toHaveTextContent(/秒前|分前|時間前|日前/);
   });
@@ -922,17 +905,15 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: now - 30000,
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const timestamp = screen.getByTestId("message-timestamp-msg-1");
+    const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
     expect(timestamp).toHaveClass("text-xs");
     expect(timestamp).toHaveClass("text-gray-400");
   });
@@ -942,26 +923,26 @@ describe("SkillStreamDisplay - Timestamp Display (R2)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "First message",
+        type: "assistant",
+        content: { text: "First message", isPartial: false },
         timestamp: now - 60000, // 1分前
-        isComplete: false,
       },
       {
-        executionId: "test-exec-001",
-        id: "msg-2",
-        type: "text",
-        content: "Second message",
+        executionId: "test-exec-002",
+        type: "assistant",
+        content: { text: "Second message", isPartial: false },
         timestamp: now - 30000, // 30秒前
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    expect(screen.getByTestId("message-timestamp-msg-1")).toBeInTheDocument();
-    expect(screen.getByTestId("message-timestamp-msg-2")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("message-timestamp-test-exec-001"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("message-timestamp-test-exec-002"),
+    ).toBeInTheDocument();
   });
 });
 
@@ -996,17 +977,15 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     expect(copyButton).toBeInTheDocument();
   });
 
@@ -1016,17 +995,15 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message to copy",
+        type: "assistant",
+        content: { text: "Test message to copy", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     expect(mockWriteText).toHaveBeenCalledWith("Test message to copy");
@@ -1038,17 +1015,15 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     await waitFor(() => {
@@ -1066,17 +1041,15 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     // フィードバックが表示されていることを確認
@@ -1099,17 +1072,15 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     expect(copyButton).toHaveAttribute("aria-label", "メッセージをコピー");
   });
 
@@ -1119,17 +1090,15 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     copyButton.focus();
     await user.keyboard("{Enter}");
 
@@ -1146,17 +1115,15 @@ describe("SkillStreamDisplay - Clipboard Copy (R3)", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     await waitFor(() => {
@@ -1235,18 +1202,16 @@ describe("SkillStreamDisplay - New Features Accessibility", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
     // Copy button should be focusable
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     expect(copyButton.tabIndex).not.toBe(-1);
   });
 });
@@ -1320,11 +1285,9 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Future message",
+        type: "assistant",
+        content: { text: "Future message", isPartial: false },
         timestamp: Date.now() + 10000, // 未来のタイムスタンプ
-        isComplete: false,
       },
     ];
 
@@ -1332,7 +1295,7 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
       renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
     }).not.toThrow();
 
-    const timestamp = screen.getByTestId("message-timestamp-msg-1");
+    const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
     expect(timestamp).toBeInTheDocument();
   });
 
@@ -1341,17 +1304,15 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Old message",
+        type: "assistant",
+        content: { text: "Old message", isPartial: false },
         timestamp: Date.now() - 365 * 24 * 60 * 60 * 1000, // 1年前
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const timestamp = screen.getByTestId("message-timestamp-msg-1");
+    const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
     expect(timestamp).toHaveTextContent("365日前");
   });
 
@@ -1360,34 +1321,36 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "First message",
+        type: "assistant",
+        content: { text: "First message", isPartial: false },
         timestamp: Date.now() - 60000,
-        isComplete: false,
       },
     ];
 
     const { rerender } = renderWithI18n(
       <SkillStreamDisplay skillId="test-skill" />,
     );
-    expect(screen.getByTestId("message-timestamp-msg-1")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("message-timestamp-test-exec-001"),
+    ).toBeInTheDocument();
 
     mockUseSkillExecution.messages = [
       ...mockUseSkillExecution.messages,
       {
-        executionId: "test-exec-001",
-        id: "msg-2",
-        type: "text",
-        content: "Second message",
+        executionId: "test-exec-002",
+        type: "assistant",
+        content: { text: "Second message", isPartial: false },
         timestamp: Date.now() - 30000,
-        isComplete: false,
       },
     ];
     rerender(<SkillStreamDisplay skillId="test-skill" />);
 
-    expect(screen.getByTestId("message-timestamp-msg-1")).toBeInTheDocument();
-    expect(screen.getByTestId("message-timestamp-msg-2")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("message-timestamp-test-exec-001"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("message-timestamp-test-exec-002"),
+    ).toBeInTheDocument();
   });
 
   // TC-R2-12
@@ -1395,11 +1358,9 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Epoch message",
+        type: "assistant",
+        content: { text: "Epoch message", isPartial: false },
         timestamp: 0, // エポック時刻
-        isComplete: false,
       },
     ];
 
@@ -1407,7 +1368,7 @@ describe("SkillStreamDisplay - Timestamp Edge Cases", () => {
       renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
     }).not.toThrow();
 
-    const timestamp = screen.getByTestId("message-timestamp-msg-1");
+    const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
     expect(timestamp).toBeInTheDocument();
     expect(timestamp).toHaveTextContent(/日前/); // 多くの日数が表示される
   });
@@ -1445,17 +1406,15 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "",
+        type: "assistant",
+        content: { text: "", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     expect(mockWriteText).toHaveBeenCalledWith("");
@@ -1468,17 +1427,15 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: longContent,
+        type: "assistant",
+        content: { text: longContent, isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     expect(mockWriteText).toHaveBeenCalledWith(longContent);
@@ -1491,17 +1448,15 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: specialContent,
+        type: "assistant",
+        content: { text: specialContent, isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     expect(mockWriteText).toHaveBeenCalledWith(specialContent);
@@ -1513,17 +1468,15 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
 
     // 連続クリック
     await user.click(copyButton);
@@ -1539,17 +1492,15 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     // ボタンがフォーカス可能であることを確認
     expect(copyButton).toHaveAttribute("tabIndex", "0");
   });
@@ -1564,25 +1515,21 @@ describe("SkillStreamDisplay - Clipboard Copy Edge Cases", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Message 1",
+        type: "assistant",
+        content: { text: "Message 1", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
       {
-        executionId: "test-exec-001",
-        id: "msg-2",
-        type: "text",
-        content: "Message 2",
-        timestamp: Date.now(),
-        isComplete: false,
+        executionId: "test-exec-002",
+        type: "assistant",
+        content: { text: "Message 2", isPartial: false },
+        timestamp: Date.now() + 1,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const copyButton1 = screen.getByTestId("copy-button-msg-1");
+    const copyButton1 = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton1);
 
     // 最初のフィードバックが表示される
@@ -1626,11 +1573,9 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now() - 30000,
-        isComplete: false,
       },
     ];
 
@@ -1640,10 +1585,12 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
 
     // R2: タイムスタンプが表示される
-    expect(screen.getByTestId("message-timestamp-msg-1")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("message-timestamp-test-exec-001"),
+    ).toBeInTheDocument();
 
     // R3: コピーボタンが存在する
-    expect(screen.getByTestId("copy-button-msg-1")).toBeInTheDocument();
+    expect(screen.getByTestId("copy-button-test-exec-001")).toBeInTheDocument();
   });
 
   // TC-INT-2
@@ -1653,11 +1600,9 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Running message",
+        type: "assistant",
+        content: { text: "Running message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
     ];
 
@@ -1667,7 +1612,7 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     expect(screen.getByTestId("loading-spinner")).toBeInTheDocument();
 
     // コピーも動作する
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     expect(mockWriteText).toHaveBeenCalledWith("Running message");
@@ -1679,18 +1624,16 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now() - 60000, // 1分前
-        isComplete: false,
       },
     ];
 
     renderWithI18n(<SkillStreamDisplay skillId="test-skill" />);
 
-    const timestamp = screen.getByTestId("message-timestamp-msg-1");
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
 
     expect(timestamp).toBeInTheDocument();
     expect(timestamp).toHaveTextContent("1分前");
@@ -1704,11 +1647,9 @@ describe("SkillStreamDisplay - Integration Scenarios", () => {
     mockUseSkillExecution.messages = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "Completed message",
+        type: "assistant",
+        content: { text: "Completed message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: true,
       },
     ];
 
@@ -1747,12 +1688,10 @@ describe("SkillStreamDisplay - Performance", () => {
   // TC-PERF-1
   it("should handle 100 messages without lag", () => {
     const messages = Array.from({ length: 100 }, (_, i) => ({
-      executionId: "test-exec-001",
-      id: `msg-${i}`,
-      type: "text" as const,
-      content: `Message ${i}`,
+      executionId: `test-exec-${i}`,
+      type: "assistant" as const,
+      content: { text: `Message ${i}`, isPartial: false },
       timestamp: Date.now() - i * 1000,
-      isComplete: false,
     }));
     mockUseSkillExecution.messages = messages;
 
@@ -1768,12 +1707,10 @@ describe("SkillStreamDisplay - Performance", () => {
   // TC-PERF-2
   it("should handle 1000 messages gracefully", () => {
     const messages = Array.from({ length: 1000 }, (_, i) => ({
-      executionId: "test-exec-001",
-      id: `msg-${i}`,
-      type: "text" as const,
-      content: `Message ${i}`,
+      executionId: `test-exec-${i}`,
+      type: "assistant" as const,
+      content: { text: `Message ${i}`, isPartial: false },
       timestamp: Date.now() - i * 1000,
-      isComplete: false,
     }));
     mockUseSkillExecution.messages = messages;
 
@@ -1795,12 +1732,10 @@ describe("SkillStreamDisplay - Performance", () => {
       mockUseSkillExecution.messages = [
         ...mockUseSkillExecution.messages,
         {
-          executionId: "test-exec-001",
-          id: `msg-${i}`,
-          type: "text" as const,
-          content: `Rapid message ${i}`,
-          timestamp: Date.now(),
-          isComplete: false,
+          executionId: `test-exec-${i}`,
+          type: "assistant" as const,
+          content: { text: `Rapid message ${i}`, isPartial: false },
+          timestamp: Date.now() + i,
         },
       ];
       rerender(<SkillStreamDisplay skillId="test-skill" />);

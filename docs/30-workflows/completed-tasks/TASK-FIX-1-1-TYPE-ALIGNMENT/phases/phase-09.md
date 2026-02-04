@@ -1,0 +1,85 @@
+# Phase 9: 品質保証
+
+## メタ情報
+
+| 項目   | 値                          |
+| ------ | --------------------------- |
+| Phase  | 9                           |
+| 機能名 | TASK-FIX-1-1-TYPE-ALIGNMENT |
+| 作成日 | 2026-02-04                  |
+
+## 目的
+
+定義された品質基準をすべて満たすことを検証する。
+
+## 品質ゲート
+
+### 1. 機能検証
+
+| チェック項目         | コマンド                  | 期待結果 |
+| -------------------- | ------------------------- | -------- |
+| 型チェック           | `pnpm typecheck`          | エラー0  |
+| 自動テスト           | `pnpm test`               | 全PASS   |
+| 型定義ファイルテスト | `pnpm test skill.test.ts` | 全PASS   |
+
+### 2. コード品質
+
+| チェック項目 | コマンド            | 期待結果 |
+| ------------ | ------------------- | -------- |
+| ESLint       | `pnpm lint`         | エラー0  |
+| Prettier     | `pnpm format:check` | 差分0    |
+
+### 3. テスト網羅性
+
+| チェック項目      | 基準    |
+| ----------------- | ------- |
+| Line Coverage     | 80%以上 |
+| Branch Coverage   | 60%以上 |
+| Function Coverage | 80%以上 |
+
+### 4. 型安全性
+
+| チェック項目                       | 確認方法                      |
+| ---------------------------------- | ----------------------------- |
+| Discriminated Union の型ガード     | テストで検証                  |
+| 後方互換性（ランタイムエラーなし） | 既存テストがPASS              |
+| strict mode 対応                   | tsconfig.json の strict: true |
+
+## 参照資料
+
+| 資料名               | パス                                                                              | 説明                   |
+| -------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`                                              | Phase 7成果物          |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様       |
+| quality-requirements | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | テスト戦略・カバレッジ |
+| api-ipc-agent        | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`              | IPCチャンネル定義      |
+
+## 統合テスト連携【必須】
+
+品質保証で統合テスト結果を確認:
+
+| 品質項目      | 確認内容                | 結果  |
+| ------------- | ----------------------- | ----- |
+| 機能検証      | 全自動テスト成功        | ☐ TBD |
+| 型チェック    | typecheckエラー0        | ☐ TBD |
+| IPC型整合性   | Main-Renderer間の一貫性 | ☐ TBD |
+| Store型整合性 | skillSliceでの型使用    | ☐ TBD |
+
+## 成果物
+
+| 成果物       | パス                                | 説明         |
+| ------------ | ----------------------------------- | ------------ |
+| 品質レポート | `outputs/phase-9/quality-report.md` | 品質検証結果 |
+
+## 完了条件
+
+- [ ] 全品質ゲートをクリア
+- [ ] 型チェック完了（エラー0）
+- [ ] Lint/Format完了（エラー0）
+- [ ] テストカバレッジ基準達成
+- [ ] 統合テスト結果が確認されている
+- [ ] **本Phase内の全タスクを100%実行完了**
+
+## 次のPhase
+
+Phase 10: 最終レビューゲート

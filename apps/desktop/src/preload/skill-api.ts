@@ -17,7 +17,7 @@ import type {
   SkillExecutionRequest,
   SkillExecutionResponse,
   ExecutionInfo,
-} from "@repo/shared/types/skill-execution";
+} from "@repo/shared/types/skill";
 import type {
   SkillPermissionRequest,
   SkillPermissionResponse,

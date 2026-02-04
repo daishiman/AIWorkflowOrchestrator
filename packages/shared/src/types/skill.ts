@@ -426,41 +426,44 @@ export interface ErrorMessageContent {
 }
 
 /**
+ * ストリーミングメッセージ基底型
+ * 全てのSkillStreamMessageに共通するプロパティを定義
+ * @see specification.md §5.1 SkillStreamMessage
+ */
+interface BaseStreamMessage {
+  /** 実行ID（UUID） */
+  executionId: string;
+  /** タイムスタンプ（UNIXタイムスタンプ） */
+  timestamp: number;
+}
+
+/**
  * ストリーミングメッセージ（型安全版 - Discriminated Union）
  * typeプロパティで型を判別可能
+ * BaseStreamMessageを継承し、type毎に異なるcontentを持つ
  * @see specification.md §5.1 SkillStreamMessage
  */
 export type SkillStreamMessage =
-  | {
-      executionId: string;
+  | (BaseStreamMessage & {
       type: "assistant";
       content: AssistantMessageContent;
-      timestamp: number;
-    }
-  | {
-      executionId: string;
+    })
+  | (BaseStreamMessage & {
       type: "tool_use";
       content: ToolUseMessageContent;
-      timestamp: number;
-    }
-  | {
-      executionId: string;
+    })
+  | (BaseStreamMessage & {
       type: "tool_result";
       content: ToolResultMessageContent;
-      timestamp: number;
-    }
-  | {
-      executionId: string;
+    })
+  | (BaseStreamMessage & {
       type: "status";
       content: StatusMessageContent;
-      timestamp: number;
-    }
-  | {
-      executionId: string;
+    })
+  | (BaseStreamMessage & {
       type: "error";
       content: ErrorMessageContent;
-      timestamp: number;
-    };
+    });
 
 // ========================================
 // Section: 権限確認（§5.1）
@@ -503,3 +506,106 @@ export interface SkillPermissionResponse {
   /** 拒否理由（オプション） */
   rejectReason?: string;
 }
+
+// ========================================
+// Section: 実行状態・コンテキスト（移行元: skill-execution.ts）
+// TASK-FIX-1-1-TYPE-ALIGNMENT: 型統合
+// ========================================
+
+/**
+ * 実行状態
+ * @see specification.md §5.1 ExecutionState
+ */
+export type ExecutionState =
+  | "pending"
+  | "running"
+  | "completed"
+  | "aborted"
+  | "error";
+
+/**
+ * 実行情報
+ */
+export interface ExecutionInfo {
+  /** 実行ID */
+  id: string;
+
+  /** スキルID */
+  skillId: string;
+
+  /** 実行状態 */
+  state: ExecutionState;
+
+  /** 実行開始時刻（UNIXタイムスタンプ） */
+  startedAt: number;
+
+  /** 実行完了時刻（UNIXタイムスタンプ、オプション） */
+  completedAt?: number;
+}
+
+/**
+ * スキル実行エラーコード
+ */
+export type SkillExecutionErrorCode =
+  | "EXECUTION_FAILED"
+  | "TIMEOUT"
+  | "ABORTED"
+  | "MAX_CONCURRENT_EXCEEDED"
+  | "SKILL_NOT_FOUND"
+  | "VALIDATION_FAILED"
+  | "SDK_ERROR"
+  | "NETWORK_ERROR"
+  | "AUTHENTICATION_ERROR";
+
+/**
+ * スキル実行エラー
+ */
+export interface SkillExecutionError {
+  /** エラーコード */
+  code: SkillExecutionErrorCode;
+
+  /** エラーメッセージ */
+  message: string;
+
+  /** 追加情報（オプション） */
+  details?: unknown;
+}
+
+/**
+ * 実行コンテキスト（内部用）
+ */
+export interface ExecutionContext {
+  /** 実行ID */
+  id: string;
+
+  /** スキルID */
+  skillId: string;
+
+  /** 中断コントローラー */
+  abortController: AbortController;
+
+  /** 実行状態 */
+  state: ExecutionState;
+
+  /** 実行開始時刻 */
+  startedAt: number;
+
+  /** 実行完了時刻 */
+  completedAt?: number;
+}
+
+/**
+ * スキル実行設定定数
+ */
+export const SKILL_EXECUTION_DEFAULTS = {
+  /** デフォルトタイムアウト（ミリ秒） */
+  DEFAULT_TIMEOUT: 30000,
+  /** 最大同時実行数 */
+  MAX_CONCURRENT_EXECUTIONS: 5,
+  /** 最大リトライ回数 */
+  MAX_RETRIES: 3,
+  /** 初回リトライ待機時間（ミリ秒） */
+  INITIAL_RETRY_DELAY: 1000,
+  /** 最大リトライ待機時間（ミリ秒） */
+  MAX_RETRY_DELAY: 4000,
+} as const;

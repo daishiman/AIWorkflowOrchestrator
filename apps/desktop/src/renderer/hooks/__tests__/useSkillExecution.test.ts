@@ -10,7 +10,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useSkillExecution } from "../useSkillExecution";
-import type { SkillStreamMessage } from "@repo/shared/types/skill-execution";
+import type { SkillStreamMessage } from "@repo/shared/types/skill";
 
 // Mock window.skillAPI
 const mockSkillAPI = {
@@ -170,7 +170,7 @@ describe("useSkillExecution - execute", () => {
 
     expect(mockSkillAPI.execute).toHaveBeenCalledWith({
       prompt: "Test prompt",
-      skillId: "test-skill",
+      skillName: "test-skill",
     });
   });
 
@@ -227,11 +227,9 @@ describe("useSkillExecution - stream handling", () => {
 
     const message: SkillStreamMessage = {
       executionId: "test-exec-001",
-      id: "msg-1",
-      type: "text",
-      content: "Hello world",
+      type: "assistant",
+      content: { text: "Hello world", isPartial: false },
       timestamp: Date.now(),
-      isComplete: false,
     };
 
     act(() => {
@@ -239,7 +237,9 @@ describe("useSkillExecution - stream handling", () => {
     });
 
     expect(result.current.messages).toHaveLength(1);
-    expect(result.current.messages[0].content).toBe("Hello world");
+    expect((result.current.messages[0] as any).content.text).toBe(
+      "Hello world",
+    );
   });
 
   it("should set status to completed when complete message received", async () => {
@@ -258,11 +258,9 @@ describe("useSkillExecution - stream handling", () => {
     act(() => {
       capturedCallback?.({
         executionId: "test-exec-001",
-        id: "msg-complete",
-        type: "complete",
-        content: "",
+        type: "status",
+        content: { status: "completed" },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 
@@ -285,11 +283,13 @@ describe("useSkillExecution - stream handling", () => {
     act(() => {
       capturedCallback?.({
         executionId: "test-exec-001",
-        id: "msg-error",
         type: "error",
-        content: "Something went wrong",
+        content: {
+          code: "EXECUTION_FAILED",
+          message: "Something went wrong",
+          retryable: false,
+        },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 
@@ -468,11 +468,13 @@ describe("useSkillExecution - abort", () => {
     act(() => {
       capturedCallback?.({
         executionId: "test-exec-001",
-        id: "msg-abort",
         type: "error",
-        content: "Execution aborted by user",
+        content: {
+          code: "ABORTED",
+          message: "Execution aborted by user",
+          retryable: false,
+        },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 
@@ -828,11 +830,9 @@ describe("useSkillExecution - edge cases (message handling)", () => {
     act(() => {
       capturedCallback?.({
         executionId: "test-exec-001",
-        id: "msg-complete",
-        type: "complete",
-        content: "",
+        type: "status",
+        content: { status: "completed" },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 
@@ -842,11 +842,9 @@ describe("useSkillExecution - edge cases (message handling)", () => {
     act(() => {
       capturedCallback?.({
         executionId: "test-exec-001",
-        id: "msg-late",
-        type: "text",
-        content: "Late message",
+        type: "assistant",
+        content: { text: "Late message", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       });
     });
 

@@ -15,7 +15,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import type { SkillStreamMessage } from "@repo/shared/types/skill-execution";
+import type { SkillStreamMessage } from "@repo/shared/types/skill";
 
 // Mock skillAPI for integration testing
 const mockSkillAPI = {
@@ -79,30 +79,25 @@ function getStreamCallback(): ((msg: SkillStreamMessage) => void) | null {
 describe("IT-001: スキル実行〜完了", () => {
   it("should complete full execution flow: execute → onStream → complete", async () => {
     // Arrange
+    // Note: すべてのメッセージで同じexecutionIdを使用（フックが実行IDで分離するため）
     const mockMessages: SkillStreamMessage[] = [
       {
         executionId: "test-exec-001",
-        id: "msg-1",
-        type: "text",
-        content: "処理を開始します",
+        type: "assistant",
+        content: { text: "処理を開始します", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
       {
         executionId: "test-exec-001",
-        id: "msg-2",
-        type: "text",
-        content: "処理が完了しました",
+        type: "assistant",
+        content: { text: "処理が完了しました", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       },
       {
         executionId: "test-exec-001",
-        id: "msg-3",
-        type: "complete",
-        content: "",
+        type: "status",
+        content: { status: "completed" },
         timestamp: Date.now(),
-        isComplete: true,
       },
     ];
 
@@ -132,8 +127,12 @@ describe("IT-001: スキル実行〜完了", () => {
     // Assert
     expect(result.current.status).toBe("completed");
     expect(result.current.messages).toHaveLength(3);
-    expect(result.current.messages[0].content).toBe("処理を開始します");
-    expect(result.current.messages[1].content).toBe("処理が完了しました");
+    expect((result.current.messages[0] as any).content.text).toBe(
+      "処理を開始します",
+    );
+    expect((result.current.messages[1] as any).content.text).toBe(
+      "処理が完了しました",
+    );
     expect(result.current.error).toBeNull();
   });
 
@@ -152,24 +151,23 @@ describe("IT-001: スキル実行〜完了", () => {
     const streamCallback = getStreamCallback();
 
     // Simulate incremental text streaming
+    // Note: すべてのメッセージで同じexecutionIdを使用（フックが実行IDで分離するため）
     const textChunks = ["こんにちは", "、", "これは", "テスト", "です。"];
     for (let i = 0; i < textChunks.length; i++) {
       act(() => {
         streamCallback?.({
           executionId: "test-exec-001",
-          id: `msg-${i}`,
-          type: "text",
-          content: textChunks[i],
-          timestamp: Date.now(),
-          isComplete: false,
+          type: "assistant",
+          content: { text: textChunks[i], isPartial: false },
+          timestamp: Date.now() + i,
         });
       });
     }
 
     expect(result.current.messages).toHaveLength(5);
-    expect(result.current.messages.map((m) => m.content).join("")).toBe(
-      "こんにちは、これはテストです。",
-    );
+    expect(
+      result.current.messages.map((m: any) => m.content.text).join(""),
+    ).toBe("こんにちは、これはテストです。");
   });
 });
 
@@ -208,11 +206,13 @@ describe("IT-002: スキル実行中断", () => {
     act(() => {
       streamCallback?.({
         executionId: "test-exec-002",
-        id: "msg-abort",
         type: "error",
-        content: "Execution aborted by user",
+        content: {
+          code: "ABORTED",
+          message: "Execution aborted by user",
+          retryable: false,
+        },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 
@@ -280,11 +280,13 @@ describe("IT-003: エラー発生時", () => {
     act(() => {
       streamCallback?.({
         executionId: "test-exec-003",
-        id: "msg-error",
         type: "error",
-        content: "Network error occurred",
+        content: {
+          code: "NETWORK_ERROR",
+          message: "Network error occurred",
+          retryable: true,
+        },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 
@@ -519,26 +521,24 @@ describe("IT-005: コンポーネント統合 E2E", () => {
     act(() => {
       streamCallback?.({
         executionId: "test-exec-005",
-        id: "msg-1",
-        type: "text",
-        content: "テストメッセージ",
+        type: "assistant",
+        content: { text: "テストメッセージ", isPartial: false },
         timestamp: Date.now(),
-        isComplete: false,
       });
     });
 
     expect(result.current.messages).toHaveLength(1);
-    expect(result.current.messages[0].content).toBe("テストメッセージ");
+    expect((result.current.messages[0] as any).content.text).toBe(
+      "テストメッセージ",
+    );
 
     // Complete
     act(() => {
       streamCallback?.({
         executionId: "test-exec-005",
-        id: "msg-complete",
-        type: "complete",
-        content: "",
+        type: "status",
+        content: { status: "completed" },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 
@@ -853,11 +853,13 @@ describe("IT-007: Skill Stream Integration - error recovery", () => {
     act(() => {
       capturedCallback?.({
         executionId: "test-exec-stream-error",
-        id: "msg-error",
         type: "error",
-        content: "Stream connection lost",
+        content: {
+          code: "STREAM_ERROR",
+          message: "Stream connection lost",
+          retryable: true,
+        },
         timestamp: Date.now(),
-        isComplete: true,
       });
     });
 

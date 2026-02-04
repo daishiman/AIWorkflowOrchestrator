@@ -14,7 +14,7 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { screen, cleanup, waitFor, render } from "@testing-library/react";
-import type { SkillStreamMessage } from "@repo/shared/types/skill-execution";
+import type { SkillStreamMessage } from "@repo/shared/types/skill";
 import { createTestI18n } from "../../../test-utils/i18n-test-utils";
 import { I18nextProvider } from "react-i18next";
 
@@ -154,12 +154,10 @@ describe("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
       mockUseSkillExecution.status = "running";
       mockUseSkillExecution.messages = [
         {
-          id: "msg-1",
           executionId: "test-exec-001",
-          type: "text",
-          content: "Test message",
+          type: "assistant",
+          content: { text: "Test message", isPartial: false },
           timestamp: now - 60000, // 1分前
-          isComplete: false,
         },
       ];
 
@@ -169,7 +167,7 @@ describe("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
       expect(screen.getAllByText("実行中").length).toBeGreaterThanOrEqual(1);
 
       // タイムスタンプも日本語
-      const timestamp = screen.getByTestId("message-timestamp-msg-1");
+      const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
       expect(timestamp).toHaveTextContent("1分前");
     });
 
@@ -178,12 +176,10 @@ describe("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
       mockUseSkillExecution.status = "running";
       mockUseSkillExecution.messages = [
         {
-          id: "msg-1",
           executionId: "test-exec-001",
-          type: "text",
-          content: "Test message",
+          type: "assistant",
+          content: { text: "Test message", isPartial: false },
           timestamp: now - 60000, // 1 minute ago
-          isComplete: false,
         },
       ];
 
@@ -193,7 +189,7 @@ describe("SkillStreamDisplay - i18n Integration (Phase 6)", () => {
       expect(screen.getAllByText("Running").length).toBeGreaterThanOrEqual(1);
 
       // タイムスタンプも英語
-      const timestamp = screen.getByTestId("message-timestamp-msg-1");
+      const timestamp = screen.getByTestId("message-timestamp-test-exec-001");
       expect(timestamp).toHaveTextContent("1 minute ago");
     });
   });

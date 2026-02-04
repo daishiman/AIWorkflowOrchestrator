@@ -63,20 +63,13 @@ export type {
 
 export { AGENT_DEFAULTS, DANGEROUS_PATTERNS } from "./agent-execution";
 
-// スキル実行型定義 (TASK-3-1-A)
-export type {
-  ExecutionState,
-  SkillExecutionRequest,
-  SkillExecutionResponse,
-  ExecutionInfo,
-  SkillStreamMessageType,
-  SkillStreamMessage,
-  SkillExecutionErrorCode,
-  SkillExecutionError,
-  ExecutionContext,
-} from "./skill-execution";
-
-export { SKILL_EXECUTION_DEFAULTS } from "./skill-execution";
+// スキル実行型定義 (TASK-FIX-1-1-TYPE-ALIGNMENT: skill.tsに統合)
+// 以下の型はskill.tsからexport *で自動エクスポートされます:
+// - ExecutionState, ExecutionInfo, ExecutionContext
+// - SkillExecutionRequest, SkillExecutionResponse
+// - SkillStreamMessageType, SkillStreamMessage
+// - SkillExecutionErrorCode, SkillExecutionError
+// - SKILL_EXECUTION_DEFAULTS
 
 // スライド設定型定義
 export type {
