@@ -70,6 +70,30 @@ pnpm --filter @repo/desktop test:e2e -- search.spec.ts
 - [ ] カバレッジレポートが出力されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. Task 7-1: カバレッジ再測定
+2. Task 7-2: E2Eテスト実行
+3. Task 7-3: 結果評価
+4. カバレッジレポート出力
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスク（Task 7-1〜7-3）を100%実行完了
+- [ ] カバレッジ基準達成が確認されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 7
+```
+
 ## 次のPhase
 
 Phase 8: リファクタリング（TDD: Refactor）

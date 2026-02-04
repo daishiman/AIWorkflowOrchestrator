@@ -133,6 +133,32 @@ E2Eテストが全てPASSすることを確認する。
 - [ ] 既存ユニット/統合テストが継続成功
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. Task 5-1: グローバルキーボードショートカット統合
+2. Task 5-2: ワークスペース検索IPCプロバイダ実装
+3. Task 5-3: 検索パネルのEditorView統合確認
+4. Task 5-4: E2Eテストを通す（Green状態確認）
+5. ユニットテスト継続成功確認
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスク（Task 5-1〜5-4）を100%実行完了
+- [ ] TDD Green状態が確認されている
+- [ ] 既存テストも継続成功
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 5
+```
+
 ## TDD検証
 
 ```bash

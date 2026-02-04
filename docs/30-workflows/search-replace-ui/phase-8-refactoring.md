@@ -69,6 +69,30 @@ pnpm --filter @repo/desktop test:e2e
 - [ ] 重複が排除されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. Task 8-1: コードスメル検出
+2. Task 8-2: リファクタリング実施
+3. Task 8-3: テスト継続成功確認
+4. リファクタリングレポート作成
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスク（Task 8-1〜8-3）を100%実行完了
+- [ ] テスト継続成功が確認されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 8
+```
+
 ## TDD検証
 
 ```bash

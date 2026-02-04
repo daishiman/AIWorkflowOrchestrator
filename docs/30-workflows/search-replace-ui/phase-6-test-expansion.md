@@ -106,6 +106,31 @@ test.describe("Search Panel E2E - Edge Cases", () => {
 - [ ] カバレッジレポートが出力されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. Task 6-1: カバレッジ測定
+2. Task 6-2: ギャップ分析
+3. Task 6-3: 追加テスト作成
+4. Task 6-4: E2Eテスト拡充
+5. カバレッジレポート作成
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスク（Task 6-1〜6-4）を100%実行完了
+- [ ] カバレッジ基準を達成している
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 6
+```
+
 ## 次のPhase
 
 Phase 7: テストカバレッジ確認

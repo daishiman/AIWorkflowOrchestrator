@@ -82,6 +82,31 @@ pnpm --filter @repo/desktop typecheck
 - [ ] 品質レポートが出力されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. Task 9-1: 全テスト実行
+2. Task 9-2: 静的解析（lint, typecheck）
+3. Task 9-3: アクセシビリティ検証
+4. Task 9-4: パフォーマンス検証
+5. 品質レポート作成
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスク（Task 9-1〜9-4）を100%実行完了
+- [ ] 全品質ゲートをクリアしている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 9
+```
+
 ## 次のPhase
 
 Phase 10: 最終レビューゲート

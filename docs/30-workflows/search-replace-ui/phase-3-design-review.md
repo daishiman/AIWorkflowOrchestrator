@@ -91,6 +91,32 @@
 - [ ] MINOR指摘があれば対応済み
 - [ ] **本Phase内のレビュー作業を100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. E2Eテスト設計レビュー
+2. IPC統合設計レビュー
+3. 既存実装との整合性レビュー
+4. 統合テスト観点レビュー
+5. レビュー結果記録・判定
+6. 成果物の作成
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全レビュータスクを100%実行完了
+- [ ] レビュー結果が記録されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 3
+```
+
 ## 次のPhase
 
 Phase 4: テスト作成（TDD: Red）

@@ -1,9 +1,11 @@
 {
   "taskId": "task-imp-search-ui-001",
   "taskName": "検索・置換機能 UI実装",
+  "feature": "search-replace-ui",
   "issueNumber": 366,
   "workflowPath": "docs/30-workflows/search-replace-ui",
-  "createdAt": "2026-02-04T08:00:00+09:00",
+  "created": "2026-02-04T08:00:00+09:00",
+  "lastUpdated": "2026-02-04T08:30:00+09:00",
   "status": "in_progress",
   "currentPhase": 0,
   "phases": {

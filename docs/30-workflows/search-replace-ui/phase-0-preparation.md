@@ -92,6 +92,30 @@ pnpm --filter @repo/desktop test:run -- --testPathPattern="features/search"
 - [ ] テスト実行結果を記録した
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. Task 0-1: 現在のテスト実行状態の確認
+2. Task 0-2: テスト結果の記録
+3. Task 0-3: 除外設定の修正（必要な場合のみ）
+4. 成果物の作成（準備完了レポート）
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスク（Task 0-1〜0-3）を100%実行完了
+- [ ] 各タスクの確認結果が記録されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 0
+```
+
 ## 次のPhase
 
 Phase 1: 要件定義

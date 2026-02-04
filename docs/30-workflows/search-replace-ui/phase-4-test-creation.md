@@ -137,6 +137,33 @@ E2Eテストで以下の統合シナリオを確認:
 - [ ] 既存ユニット/統合テストが正常に実行されることを確認
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. 既存テストの確認
+2. E2Eテストファイル作成
+3. ページオブジェクト作成
+4. E2Eテストシナリオ実装（E2E-1〜E2E-12）
+5. テスト失敗確認（Red状態）
+6. 成果物の作成
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] E2Eテストコードが作成されている
+- [ ] TDD Red状態が確認されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 4
+```
+
 ## TDD検証
 
 ```bash
