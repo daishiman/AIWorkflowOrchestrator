@@ -252,9 +252,9 @@ describe("SkillStreamDisplay - CopyButton feedback", () => {
     mockUseSkillExecution.status = "running";
     mockUseSkillExecution.messages = [
       {
-        id: "msg-1",
-        type: "text",
-        content: "Test message",
+        executionId: "test-exec-001",
+        type: "assistant",
+        content: { text: "Test message", isPartial: false },
         timestamp: Date.now(),
       },
     ];
@@ -274,7 +274,7 @@ describe("SkillStreamDisplay - CopyButton feedback", () => {
     const user = userEvent.setup();
     renderWithI18n(<SkillStreamDisplay skillId="test" />, "ja");
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     await waitFor(() => {
@@ -286,7 +286,7 @@ describe("SkillStreamDisplay - CopyButton feedback", () => {
     const user = userEvent.setup();
     renderWithI18n(<SkillStreamDisplay skillId="test" />, "en");
 
-    const copyButton = screen.getByTestId("copy-button-msg-1");
+    const copyButton = screen.getByTestId("copy-button-test-exec-001");
     await user.click(copyButton);
 
     await waitFor(() => {
