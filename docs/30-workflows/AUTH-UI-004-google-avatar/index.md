@@ -58,21 +58,21 @@ AUTH-UI-003でアバターメニューの動的表示機能を実装した際、
 
 ## Phase構成
 
-| Phase | 名称                 | 目的                             | ステータス | ドキュメント                                                |
-| ----- | -------------------- | -------------------------------- | ---------- | ----------------------------------------------------------- |
-| 1     | 要件定義             | 目的・スコープ・受け入れ基準定義 | **完了**   | [phase-01-requirements.md](./phase-01-requirements.md)      |
-| 2     | 設計                 | アーキテクチャ・詳細設計         | **完了**   | [phase-02-design.md](./phase-02-design.md)                  |
-| 3     | 設計レビューゲート   | 要件・設計の妥当性検証           | **完了**   | [phase-03-design-review.md](./phase-03-design-review.md)    |
-| 4     | テスト作成           | TDD: Red（失敗するテスト作成）   | **完了**   | [phase-04-test-creation.md](./phase-04-test-creation.md)    |
-| 5     | 実装                 | TDD: Green（テストを通す実装）   | **完了**   | [phase-05-implementation.md](./phase-05-implementation.md)  |
-| 6     | テスト拡充           | カバレッジ目標達成               | **完了**   | [phase-06-test-expansion.md](./phase-06-test-expansion.md)  |
-| 7     | テストカバレッジ確認 | カバレッジ目標検証               | **完了**   | [phase-07-coverage-verification.md](./phase-07-coverage.md) |
-| 8     | リファクタリング     | TDD: Refactor（品質改善）        | **完了**   | [phase-08-refactoring.md](./phase-08-refactoring.md)        |
-| 9     | 品質保証             | 静的解析・セキュリティ           | **完了**   | [phase-09-quality-assurance.md](./phase-09-quality.md)      |
-| 10    | 最終レビューゲート   | 全体品質・整合性検証             | **完了**   | [phase-10-final-review.md](./phase-10-final-review.md)      |
-| 11    | 手動テスト検証       | 実環境動作確認                   | 作業中     | [phase-11-manual-test.md](./phase-11-manual-test.md)        |
-| 12    | ドキュメント更新     | ドキュメント更新・仕様反映       | 未着手     | [phase-12-documentation.md](./phase-12-documentation.md)    |
-| 13    | PR作成               | コミット・PR・CI確認             | 未着手     | [phase-13-pr-creation.md](./phase-13-pr-creation.md)        |
+| Phase | 名称                 | 目的                             | ステータス | ドキュメント                                               |
+| ----- | -------------------- | -------------------------------- | ---------- | ---------------------------------------------------------- |
+| 1     | 要件定義             | 目的・スコープ・受け入れ基準定義 | **完了**   | [phase-01-requirements.md](./phase-01-requirements.md)     |
+| 2     | 設計                 | アーキテクチャ・詳細設計         | **完了**   | [phase-02-design.md](./phase-02-design.md)                 |
+| 3     | 設計レビューゲート   | 要件・設計の妥当性検証           | **完了**   | [phase-03-design-review.md](./phase-03-design-review.md)   |
+| 4     | テスト作成           | TDD: Red（失敗するテスト作成）   | **完了**   | [phase-04-test-creation.md](./phase-04-test-creation.md)   |
+| 5     | 実装                 | TDD: Green（テストを通す実装）   | **完了**   | [phase-05-implementation.md](./phase-05-implementation.md) |
+| 6     | テスト拡充           | カバレッジ目標達成               | **完了**   | [phase-06-test-expansion.md](./phase-06-test-expansion.md) |
+| 7     | テストカバレッジ確認 | カバレッジ目標検証               | **完了**   | [phase-07-coverage.md](./phase-07-coverage.md)             |
+| 8     | リファクタリング     | TDD: Refactor（品質改善）        | **完了**   | [phase-08-refactoring.md](./phase-08-refactoring.md)       |
+| 9     | 品質保証             | 静的解析・セキュリティ           | **完了**   | [phase-09-quality.md](./phase-09-quality.md)               |
+| 10    | 最終レビューゲート   | 全体品質・整合性検証             | **完了**   | [phase-10-final-review.md](./phase-10-final-review.md)     |
+| 11    | 手動テスト検証       | 実環境動作確認                   | 作業中     | [phase-11-manual-test.md](./phase-11-manual-test.md)       |
+| 12    | ドキュメント更新     | ドキュメント更新・仕様反映       | 未着手     | [phase-12-documentation.md](./phase-12-documentation.md)   |
+| 13    | PR作成               | コミット・PR・CI確認             | 未着手     | [phase-13-pr-creation.md](./phase-13-pr-creation.md)       |
 
 ---
 
