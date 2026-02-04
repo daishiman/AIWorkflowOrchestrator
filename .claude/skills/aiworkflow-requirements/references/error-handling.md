@@ -325,6 +325,48 @@ TASK-8A単体テストで検証されたSkillExecutor/PermissionResolverの実�
 
 ---
 
+## 認証フォールバックパターン（AUTH-UI-001）
+
+認証プロフィール操作におけるフォールバック処理パターン。
+
+### user_profilesテーブル不在時フォールバック
+
+Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`にフォールバックする処理パターン。
+
+**対象ファイル**: `apps/desktop/src/main/ipc/profileHandlers.ts:66-85`
+
+**検出関数**: `isUserProfilesTableError(error)`
+
+| エラーパターン | 検出対象 | 説明 |
+| -------------- | -------- | ---- |
+| 文字列パターン | `schema cache`, `does not exist`, `user_profiles`, `column "user_profiles"` | エラーメッセージの部分一致 |
+| エラーコード   | `PGRST200`, `PGRST116`, `42P01`, `42703` | PostgreSQL/PostgRESTエラーコード |
+
+**処理フロー**:
+
+| ステップ | 処理内容 | 成功時 | 失敗時 |
+| -------- | -------- | ------ | ------ |
+| 1 | `user_profiles`テーブルから取得/更新を試行 | 処理完了 | ステップ2へ |
+| 2 | `isUserProfilesTableError()`でエラー判定 | フォールバック実行 | エラーをスロー |
+| 3 | `user_metadata`から取得/へ更新 | 処理完了 | エラーをスロー |
+
+**ログ出力**:
+
+フォールバック実行時は警告ログを出力する。
+
+| ログレベル | タイミング | メッセージ例 |
+| ---------- | ---------- | ------------ |
+| warn | フォールバック実行時 | `user_profiles table not available, falling back to user_metadata` |
+
+**実装コンテキスト**:
+
+このフォールバック処理は、プロジェクト初期段階で`user_profiles`テーブルが未作成の環境や、
+スキーマ変更によるマイグレーション未実行環境でもアプリケーションが正常動作することを保証する。
+
+**テスト**: `profileHandlers.test.ts`（環境問題によりUT-AUTH-001で修正予定）
+
+---
+
 ## サーキットブレーカー（将来対応）
 
 ### 状態
@@ -487,6 +529,7 @@ TASK-8A単体テストで検証されたSkillExecutor/PermissionResolverの実�
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-02-04 | v1.4.0     | AUTH-UI-001: 認証フォールバックパターン（user_profilesテーブル不在時）追加 |
 | 2026-02-02 | v1.3.0     | TASK-8A: SkillExecutor実行エラーコード6種の正式仕様追加（EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT） |
 | 2026-01-31 | v1.2.0     | TASK-SKILL-RETRY-001: SkillExecutorリトライ戦略セクション追加        |
 | 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                   |

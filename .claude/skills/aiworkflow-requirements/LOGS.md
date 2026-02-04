@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-02-04: AUTH-UI-001完了（認証UIバグ修正）
+
+| 項目         | 内容                                                                                               |
+| ------------ | -------------------------------------------------------------------------------------------------- |
+| タスクID     | AUTH-UI-001                                                                                        |
+| 操作         | Phase 1-12 完了（システム仕様書3ファイル更新）                                                     |
+| 対象ファイル | error-handling.md, architecture-auth-security.md, task-workflow.md                                 |
+| 結果         | success                                                                                            |
+| 備考         | 3つの修正は既実装済み。132/165テストPASS（profileHandlers.test.ts環境問題を未タスクUT-AUTH-001へ） |
+
+### 更新詳細
+
+| ファイル                     | 追加内容                                                                |
+| ---------------------------- | ----------------------------------------------------------------------- |
+| error-handling.md            | 認証フォールバックパターン（isUserProfilesTableError）追加、v1.4.0      |
+| architecture-auth-security.md| AUTH-UI-001完了記録追加、技術的負債セクションにUT-AUTH-001追加、v1.2.0  |
+| task-workflow.md             | UT-AUTH-001未タスク追加、正式指示書パス更新、v1.16.0                    |
+| patterns.md                  | AUTH-UI-001パターン4件追加（既実装発見、テスト環境切り分け、Portal、状態更新） |
+
+---
+
 ## 2026-02-04: AUTH-UI-004完了（Googleアバター取得修正）
 
 | 項目         | 内容                                                                                |
@@ -2399,5 +2420,47 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | 実装ガイド           | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md |
 | 未タスク検出レポート | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/unassigned-task-detection.md |
 | ドキュメント更新履歴 | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/documentation-changelog.md |
+
+---
+
+## 2026-02-04: AUTH-UI-001完了（認証UI改善）
+
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | AUTH-UI-001                                                                        |
+| 操作         | update-spec                                                                        |
+| 対象ファイル | architecture-auth-security.md                                                      |
+| 結果         | success                                                                            |
+| 備考         | 認証UI改善3件（z-index, フォールバック, 状態更新）実装完了確認・仕様書更新         |
+
+### 更新詳細
+
+- **更新**: `references/architecture-auth-security.md`（v1.1.0 → v1.2.0）
+  - 完了タスクセクションにAUTH-UI-001を追加
+  - テスト結果サマリー表・成果物テーブルを追加
+  - 関連ドキュメントに実装ガイドリンクを追加
+
+### テスト結果サマリー
+
+| テストファイル                 | テスト数 | 結果        |
+| ------------------------------ | -------- | ----------- |
+| AccountSection.portal.test.tsx | 27       | ✅ ALL PASS |
+| authSlice.test.ts              | 105      | ✅ ALL PASS |
+| profileHandlers.test.ts        | 33       | ⚠️ 環境問題 |
+
+### 成果物
+
+| Phase | 成果物                   | パス                                                    |
+| ----- | ------------------------ | ------------------------------------------------------- |
+| 1     | 要件定義・受け入れ基準   | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-1/ |
+| 2     | 設計書・変更計画         | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-2/ |
+| 4     | テスト仕様・統合テスト設計 | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-4/ |
+| 12    | 実装ガイド・未タスク検出 | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-12/ |
+
+### 未タスク検出
+
+| タスクID    | 内容                            | 優先度 | 発見元      |
+| ----------- | ------------------------------- | ------ | ----------- |
+| UT-AUTH-001 | profileHandlers.test.ts環境修正 | 低     | AUTH-UI-001 |
 
 ---

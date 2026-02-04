@@ -1,0 +1,107 @@
+{
+  "taskId": "AUTH-UI-001",
+  "taskName": "auth-ui-improvements-282",
+  "issueNumber": 282,
+  "githubUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/282",
+  "createdAt": "2026-02-04T00:00:00Z",
+  "updatedAt": "2026-02-04T00:00:00Z",
+  "status": "pending",
+  "currentPhase": 0,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [],
+      "completedAt": null
+    }
+  },
+  "qualityMetrics": {
+    "testCoverage": {
+      "line": 0,
+      "branch": 0,
+      "function": 0
+    },
+    "testResults": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0
+    }
+  },
+  "relatedFiles": [
+    "apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx",
+    "apps/desktop/src/main/ipc/profileHandlers.ts",
+    "apps/desktop/src/renderer/store/slices/authSlice.ts"
+  ]
+}
