@@ -1,0 +1,215 @@
+{
+  "feature": "auth-ui-004-google-avatar",
+  "created": "2026-02-04T00:00:00Z",
+  "lastUpdated": "2026-02-04T12:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-02-04T01:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-02-04T02:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "設計ドキュメント"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-02-04T03:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-02-04T04:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "test",
+          "path": "packages/shared/infrastructure/auth/__tests__/supabase-client.test.ts",
+          "description": "ユニットテスト"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-02-04T05:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装ドキュメント"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/types/auth.ts",
+          "description": "SupabaseIdentity型修正"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/infrastructure/auth/supabase-client.ts",
+          "description": "toLinkedProvider関数修正"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-02-04T06:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-02-04T07:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ確認結果"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-02-04T08:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-summary.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-02-04T09:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-02-04T10:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "in_progress",
+      "startedAt": "2026-02-04T11:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-02-04T12:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "taskType": "fix",
+    "estimatedPhases": 13,
+    "actualPhases": 13
+  },
+  "qualityMetrics": {
+    "testsPassed": 1265,
+    "coverage": {
+      "line": "100%",
+      "branch": "100%",
+      "function": "100%"
+    },
+    "lintErrors": 0,
+    "typeErrors": 0
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/architecture-auth-security.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-auth.md",
+      ".claude/skills/aiworkflow-requirements/references/api-ipc-auth.md"
+    ],
+    "relatedFiles": [
+      "packages/shared/types/auth.ts",
+      "packages/shared/infrastructure/auth/supabase-client.ts",
+      "apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx"
+    ]
+  }
+}

@@ -805,10 +805,50 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 ---
 
+## 外部API データ正規化パターン
+
+### プロバイダー別フォールバックパターン（AUTH-UI-004）
+
+複数の外部OAuthプロバイダーからのレスポンスを統一的に扱うためのパターン。プロバイダーごとにキー名が異なる場合に、Nullish coalescingでフォールバックチェーンを構成する。
+
+**問題**: Supabase Authの`identity_data`でアバターURLのキー名がプロバイダーごとに異なる
+
+| プロバイダー | キー名       | 備考                     |
+| ------------ | ------------ | ------------------------ |
+| Google       | `picture`    | OAuth 2.0標準のclaim名   |
+| GitHub       | `avatar_url` | GitHub API準拠           |
+| Discord      | `avatar_url` | GitHub互換               |
+
+**実装パターン**:
+
+| 要素           | 実装                                                         |
+| -------------- | ------------------------------------------------------------ |
+| フォールバック | `identity_data?.avatar_url ?? identity_data?.picture ?? null` |
+| 優先順位       | 既存プロバイダー（avatar_url）を優先、Googleを後続           |
+| 安全性         | 未知のプロバイダーはnullにフォールバック                     |
+
+**型定義の拡張**:
+
+| プロパティ | 型                  | 追加理由               |
+| ---------- | ------------------- | ---------------------- |
+| avatar_url | string \| undefined | 既存（GitHub/Discord） |
+| picture    | string \| undefined | Google用に追加         |
+
+**適用場面**:
+- 複数OAuthプロバイダーのデータ統合
+- 外部APIのレスポンス正規化
+- 後方互換性を維持した機能拡張
+
+**関連タスク**: AUTH-UI-004
+**関連仕様書**: [interfaces-auth.md](./interfaces-auth.md) - SupabaseIdentity型定義
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.11.0 | 2026-02-04 | AUTH-UI-004: 外部APIデータ正規化パターン追加（プロバイダー別フォールバック） |
 | 1.10.0 | 2026-02-03 | マージ統合: TASK-9B-G + TASK-9C/9A-A |
 | 1.9.0 | 2026-02-03 | TASK-9C: SDK連携パターン追加（Graceful SDK Fallback, queryFn DI, スキル名バリデーション） |
 | 1.8.0 | 2026-02-03 | TASK-9A-A: ESModuleモッキング制約パターン、バックアップファイルテストパターン追加 |
