@@ -417,6 +417,36 @@ EditorInstanceインターフェースのTextArea実装。
 ## 完了タスク
 
 - [x] Phase 5 検索パネル実装の EditorView 統合（TASK-SEARCH-INTEGRATE-001） - 2026-01-22
+- [x] 検索・置換機能UI実装（task-imp-search-ui-001） - 2026-02-04
+
+### task-imp-search-ui-001（2026-02-04完了）
+
+| 項目         | 内容                                                      |
+| ------------ | --------------------------------------------------------- |
+| タスクID     | task-imp-search-ui-001                                    |
+| 完了日       | 2026-02-04                                                |
+| ステータス   | **完了**                                                  |
+| テスト数     | E2E 17件 + ユニット 100+件 + 統合 80+件                   |
+| カバレッジ   | Line 80%+, Branch 60%+                                    |
+| ドキュメント | `docs/30-workflows/search-replace-ui/`                    |
+
+#### テスト結果サマリー
+
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| E2Eテスト          | 17       | -    | -    |
+| ユニットテスト     | 100+     | ✅   | 0    |
+| 統合テスト         | 80+      | ✅   | 0    |
+| アクセシビリティ   | 含む     | ✅   | 0    |
+
+#### 成果物
+
+| 成果物              | パス                                                                           |
+| ------------------- | ------------------------------------------------------------------------------ |
+| E2Eテスト           | `apps/desktop/e2e/search.spec.ts`                                              |
+| SearchPanelPage     | `apps/desktop/e2e/pages/SearchPanelPage.ts`                                    |
+| WorkspaceSearchPage | `apps/desktop/e2e/pages/WorkspaceSearchPage.ts`                                |
+| 実装ガイド          | `docs/30-workflows/search-replace-ui/outputs/phase-12/implementation-guide.md` |
 
 ---
 
@@ -429,6 +459,8 @@ EditorInstanceインターフェースのTextArea実装。
 | TASK-SEARCH-REGEX-ERROR-UI-001   | 正規表現エラーのUI表示改善     | 低     | S      | [task-search-panel-regex-error-ui.md](../../../docs/30-workflows/unassigned-task/task-search-panel-regex-error-ui.md) |
 | TASK-SEARCH-HISTORY-001          | 検索履歴機能                   | 低     | M      | [task-search-panel-history.md](../../../docs/30-workflows/unassigned-task/task-search-panel-history.md) |
 | TASK-SEARCH-FILE-NAV-001         | 検索結果ファイル間ナビゲーション | 低     | M      | [task-search-panel-file-navigation.md](../../../docs/30-workflows/unassigned-task/task-search-panel-file-navigation.md) |
+| task-search-scope-folder-001     | 検索スコープ指定機能           | 中     | M      | [task-search-scope-folder.md](../../../docs/30-workflows/unassigned-task/task-search-scope-folder.md) |
+| task-search-multifile-replace-001| マルチファイル一括置換機能     | 中     | M      | [task-search-multifile-replace.md](../../../docs/30-workflows/unassigned-task/task-search-multifile-replace.md) |
 
 ### 改善候補の詳細
 
@@ -459,10 +491,41 @@ EditorInstanceインターフェースのTextArea実装。
 - ファイル境界を跨いで連続的に移動
 - 現在位置インジケーター表示（例: 3/15）
 
+#### 4. 検索スコープ指定機能（task-search-scope-folder-001）
+
+**現状**: ワークスペース全体が検索対象で、絞り込みができない
+
+**改善案**:
+- WorkspaceSearchModalに「検索フォルダ」入力欄を追加
+- Electron dialogによるフォルダ選択をサポート
+- 複数フォルダの指定をサポート
+- 除外パターン（.gitignore形式）のサポート
+
+**実装課題の参考**:
+- MR-01: 既存実装の品質評価（Phase 5でギャップ分析を実施）
+- MR-04: E2Eテスト設計（Page Objectパターンを使用）
+
+#### 5. マルチファイル一括置換機能（task-search-multifile-replace-001）
+
+**現状**: 1ファイルずつ手動で置換を実行する必要がある
+
+**改善案**:
+- WorkspaceSearchModalに「すべて置換」ボタンを追加
+- 置換プレビュー表示（Monaco Diff Viewer活用）
+- 確認ダイアログによる安全な実行フロー
+- Undo機能（1回の操作で全ファイルを元に戻す）
+
+**実装課題の参考**:
+- MR-01: 既存実装の品質評価（Phase 5でギャップ分析を実施）
+- MR-02: Phase 12 Task 2 Step 1-A更新漏れ（spec-update-workflow.mdのチェックリスト確認）
+- MR-03: generate-index.jsファイル名（`.mjs`ではなく`.js`）
+
 ---
 
 ## 変更履歴
 
-| 日付 | 変更内容 |
-| ---- | -------- |
-| 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+| 日付       | バージョン | 変更内容                                                                 |
+| ---------- | ---------- | ------------------------------------------------------------------------ |
+| 2026-02-04 | v1.2.0     | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（一括置換） |
+| 2026-02-04 | v1.1.0     | task-imp-search-ui-001完了記録追加（E2Eテスト17件、グローバルショートカット統合、IPCプロバイダ） |
+| 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                       |

@@ -269,6 +269,8 @@
 | TASK-10B-IMPROVE-HISTORY                   | 改善履歴の永続化                                      | 低     | TASK-9C Phase 12（スコープ外候補）                             | `docs/30-workflows/unassigned-task/task-10b-improve-history.md`                            |
 | TASK-10C-AB-TEST                           | A/Bテスト実行・結果比較機能                           | 低     | TASK-9C Phase 12（スコープ外候補）                             | `docs/30-workflows/unassigned-task/task-10c-ab-test.md`                                    |
 | task-imp-phase12-validation-001            | Phase 12ドキュメント更新自動検証ツール                | 中     | AUTH-UI-004 Phase 12（ドキュメント更新漏れ）                   | `docs/30-workflows/unassigned-task/task-phase12-doc-validation-tool.md`                    |
+| task-search-scope-folder-001               | 検索スコープ指定機能                                  | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-scope-folder.md`                            |
+| task-search-multifile-replace-001          | マルチファイル一括置換機能                            | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-multifile-replace.md`                       |
 
 ### 未タスク管理ルール
 
@@ -308,3 +310,4 @@
 | 1.13.0     | 2026-02-03 | 未タスク5件追加: TASK-9B-H（IPC通信設定）、UI-INTEGRATION-9B（UI統合）、TASK-9B-I（SDK統合）、TASK-9B-J（キャッシュ無効化）、TASK-9B-K（タイムアウト外部化）。TASK-9B-G Phase 12検出                       |
 | 1.14.0     | 2026-02-03 | 未タスク3件追加: TASK-10A-UI-SKILL-IMPROVE（スキル改善UI）、TASK-10B-IMPROVE-HISTORY（履歴永続化）、TASK-10C-AB-TEST（A/Bテスト）。TASK-9C Phase 11/12検出                                                |
 | 1.15.0     | 2026-02-04 | AUTH-UI-004完了: 未タスク1件追加（task-imp-phase12-validation-001）、better-sqlite3タスクv1.1.0更新                                                                                                        |
+| 1.16.0     | 2026-02-04 | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（マルチファイル一括置換）。task-imp-search-ui-001 Phase 12検出                                       |
