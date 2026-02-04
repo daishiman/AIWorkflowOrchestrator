@@ -148,6 +148,57 @@ Supabase Auth が返す identity オブジェクト。OAuth プロバイダー�
 
 **実装場所**: `packages/shared/types/auth.ts`, `apps/desktop/src/renderer/components/AuthGuard/types.ts`
 
+### SupabaseIdentity
+
+Supabase Auth から取得するプロバイダー識別情報。
+
+| フィールド    | 型                   | 説明                   |
+| ------------- | -------------------- | ---------------------- |
+| id            | string               | Identity ID            |
+| provider      | string               | プロバイダー名         |
+| identity_data | SupabaseIdentityData | プロバイダー固有データ |
+| created_at    | string               | 作成日時（ISO8601）    |
+
+#### SupabaseIdentityData
+
+プロバイダー固有のユーザー情報。
+
+| フィールド | 型             | 説明                                    |
+| ---------- | -------------- | --------------------------------------- |
+| email      | string         | プロバイダーのメール                    |
+| name       | string         | プロバイダーの名前                      |
+| avatar_url | string \| null | アバターURL（GitHub/Discord）           |
+| picture    | string \| null | アバターURL（Google）※AUTH-UI-004で追加 |
+
+**プロバイダー別アバターURLキー名**:
+
+| プロバイダー | キー名       |
+| ------------ | ------------ |
+| Google       | `picture`    |
+| GitHub       | `avatar_url` |
+| Discord      | `avatar_url` |
+
+**実装場所**: `packages/shared/types/auth.ts`
+
+---
+
+## 完了タスク
+
+### AUTH-UI-004: Googleアバター取得修正（2026-02-04完了）
+
+| 項目         | 内容                                           |
+| ------------ | ---------------------------------------------- |
+| タスクID     | AUTH-UI-004                                    |
+| ステータス   | **完了**                                       |
+| テスト数     | 1265（自動テスト）+ 5（手動テスト項目）        |
+| 発見課題     | 0件                                            |
+| ドキュメント | `docs/30-workflows/AUTH-UI-004-google-avatar/` |
+
+#### 変更内容
+
+- SupabaseIdentity型にpictureプロパティを追加
+- toLinkedProvider関数にフォールバック処理を実装（avatar_url → picture）
+
 ---
 
 ## ワークスペース型定義
