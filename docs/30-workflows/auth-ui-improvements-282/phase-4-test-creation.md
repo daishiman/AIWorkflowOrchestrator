@@ -152,12 +152,16 @@ pnpm --filter @repo/desktop test:run src/renderer/store/slices/authSlice.test.ts
 
 ## 参照資料
 
-| 資料名        | パス                                               | 説明         |
-| ------------- | -------------------------------------------------- | ------------ |
-| Phase 1成果物 | `outputs/phase-1/`                                 | 要件定義     |
-| Phase 2成果物 | `outputs/phase-2/`                                 | 設計書       |
-| Phase 3成果物 | `outputs/phase-3/`                                 | レビュー結果 |
-| テスト戦略    | `aiworkflow-requirements: quality-requirements.md` | テスト指針   |
+| 資料名             | パス                                                     | 説明                     |
+| ------------------ | -------------------------------------------------------- | ------------------------ |
+| Phase 1成果物      | `outputs/phase-1/`                                       | 要件定義                 |
+| Phase 2成果物      | `outputs/phase-2/`                                       | 設計書                   |
+| Phase 3成果物      | `outputs/phase-3/`                                       | レビュー結果             |
+| テスト戦略         | `aiworkflow-requirements: quality-requirements.md`       | テスト指針               |
+| UI/UXポータル      | `aiworkflow-requirements: ui-ux-portal-patterns.md`      | z-index階層テスト根拠    |
+| エラーハンドリング | `aiworkflow-requirements: error-handling.md`             | フォールバックテスト根拠 |
+| 認証アーキテクチャ | `aiworkflow-requirements: architecture-auth-security.md` | IPC通信テスト根拠        |
+| セキュリティ       | `aiworkflow-requirements: security-api-electron.md`      | Preload APIテスト観点    |
 
 ---
 

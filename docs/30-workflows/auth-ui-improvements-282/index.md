@@ -74,14 +74,20 @@ github_url: https://github.com/daishiman/AIWorkflowOrchestrator/issues/282
 
 ### システム仕様参照（aiworkflow-requirements）
 
-| 観点               | 参照先仕様書             | 適用理由                      |
-| ------------------ | ------------------------ | ----------------------------- |
-| UI/UX              | ui-ux-components.md      | z-index階層、ポップアップ設計 |
-| アーキテクチャ     | architecture-patterns.md | IPC通信パターン、状態管理     |
-| エラーハンドリング | error-handling.md        | フォールバック処理パターン    |
-| 状態管理           | arch-state-management.md | authSlice設計                 |
-| IPC通信            | interfaces-agent-sdk.md  | Main-Renderer通信契約         |
-| セキュリティ       | security-api-electron.md | Preload APIセキュリティ       |
+| 観点               | 参照先仕様書                            | 適用理由                      |
+| ------------------ | --------------------------------------- | ----------------------------- |
+| UI/UX              | ui-ux-components.md                     | z-index階層、ポップアップ設計 |
+| UI/UXポータル      | ui-ux-portal-patterns.md                | z-index値（z-[9999]）根拠     |
+| アーキテクチャ     | architecture-patterns.md                | IPC通信パターン、状態管理     |
+| 認証アーキテクチャ | architecture-auth-security.md           | Supabase+Electron認証構造     |
+| 実装パターン       | architecture-implementation-patterns.md | フォールバックパターン        |
+| エラーハンドリング | error-handling.md                       | フォールバック処理パターン    |
+| 状態管理           | arch-state-management.md                | authSlice設計                 |
+| IPC通信            | interfaces-agent-sdk.md                 | Main-Renderer通信契約         |
+| 認証IPC仕様        | api-ipc-auth.md                         | profile:get-providers等       |
+| 認証型定義         | interfaces-auth.md                      | Auth/LinkedProvider型         |
+| データベース       | database-schema.md                      | user_profilesテーブル定義     |
+| セキュリティ       | security-api-electron.md                | Preload APIセキュリティ       |
 
 ---
 

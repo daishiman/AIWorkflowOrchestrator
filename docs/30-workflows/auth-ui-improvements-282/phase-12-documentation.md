@@ -33,16 +33,30 @@
 
 #### Part 2 要件（技術者レベル）
 
-- 変更したファイルと変更内容の一覧
-- エラーパターンとフォールバック条件
-- 状態更新フローの詳細
-- テストコード例
+- [ ] インターフェース・型定義（TypeScript スキーマ）
+- [ ] APIシグネチャとメソッド表
+- [ ] 使用例（実装コードスニペット）
+- [ ] エラーハンドリング・エッジケース
+- [ ] 設定可能パラメータと定数の一覧
+- [ ] 変更したファイルと変更内容の一覧
+- [ ] エラーパターンとフォールバック条件
+- [ ] 状態更新フローの詳細
+- [ ] テストコード例
+- [ ] パフォーマンスに関する注意点
+- [ ] セキュリティ上の考慮事項
+
+#### 層別実装ドキュメント（Electronアプリ必須）
+
+- [ ] Renderer Process（UIコンポーネント、状態管理）の実装パターン
+- [ ] Main Process（ビジネスロジック、IPC通信ハンドラ）の実装パターン
+- [ ] IPC通信契約（チャンネル定義、型定義）
+- [ ] Preloadセキュリティ考慮事項
 
 ---
 
 ### Task 2: システムドキュメント更新【必須】
 
-#### Step 1: タスク完了記録【必須・全タスク】
+#### Step 1-A: タスク完了記録【必須・全タスク】
 
 | 確認項目                                   | ファイル                           | 完了 |
 | ------------------------------------------ | ---------------------------------- | ---- |
@@ -52,6 +66,48 @@
 | タスク完了エントリ追加                     | aiworkflow-requirements/LOGS.md    | -    |
 | タスク完了記録追加                         | task-specification-creator/LOGS.md | -    |
 | 新規セクションエントリ追加（該当する場合） | topic-map.md                       | -    |
+
+##### LOGS.md更新テンプレート（aiworkflow-requirements）
+
+```markdown
+## {{DATE}}: auth-ui-improvements-282（AUTH-UI-001）
+
+| 項目         | 内容                                        |
+| ------------ | ------------------------------------------- |
+| タスクID     | AUTH-UI-001                                 |
+| 操作         | update-spec                                 |
+| 対象ファイル | arch-state-management.md, error-handling.md |
+| 結果         | success                                     |
+```
+
+##### LOGS.md更新テンプレート（task-specification-creator）
+
+```markdown
+## {{DATE}} - auth-ui-improvements-282（AUTH-UI-001）タスク完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: AUTH-UI-001
+- Phase: 1-12
+- Issue: #282
+
+### 成果
+
+- テストカバレッジ: {{N}}テスト全件PASS
+- 実装内容:
+  - z-index修正（z-50 → z-[9999]）
+  - フォールバック処理実装（user_metadata）
+  - UI更新フロー実装（fetchLinkedProviders追加）
+```
+
+##### topic-map.md再生成コマンド
+
+新規セクション追加時は以下を実行:
+
+```bash
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+```
 
 #### Step 1-B: 実装状況テーブル更新
 
@@ -136,14 +192,46 @@ node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.j
 
 ---
 
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点をドキュメントに反映する：
+
+| 観点               | 適用判断                    | 仕様参照先（aiworkflow-requirements） |
+| ------------------ | --------------------------- | ------------------------------------- |
+| UI/UX              | z-index問題（Renderer実装） | ui-ux-portal-patterns.md              |
+| エラーハンドリング | フォールバック処理          | error-handling.md                     |
+| 認証アーキテクチャ | Supabase+Electron構造       | architecture-auth-security.md         |
+| 状態管理           | authSlice拡張               | arch-state-management.md              |
+| IPC通信            | profile:get-providers等     | api-ipc-auth.md                       |
+| セキュリティ       | Preload APIセキュリティ     | security-api-electron.md              |
+
+---
+
+## 統合テスト連携（Phase 11/12の確認）
+
+Phase 11手動テストの以下の統合テスト項目を確認:
+
+| テスト項目         | 確認内容                  | 期待結果           |
+| ------------------ | ------------------------- | ------------------ |
+| IPC通信            | プロフィール取得/更新     | 正常レスポンス     |
+| 認証フロー         | ログイン→プロフィール表示 | 正常表示           |
+| データ永続化       | 名前変更→リロード→表示    | データ保持         |
+| エラーハンドリング | 意図的なエラー発生時      | フォールバック動作 |
+| 状態同期           | 連携解除→UI更新           | リアルタイム反映   |
+
+---
+
 ## 参照資料
 
-| 資料名                 | パス                                                                  | 説明             |
-| ---------------------- | --------------------------------------------------------------------- | ---------------- |
-| Phase 11成果物         | `outputs/phase-11/`                                                   | 手動テスト結果   |
-| 仕様更新フロー         | `task-specification-creator: spec-update-workflow.md`                 | 更新手順         |
-| 未タスクガイドライン   | `task-specification-creator: unassigned-task-guidelines.md`           | 未タスク作成指針 |
-| 実装ガイドテンプレート | `task-specification-creator: assets/implementation-guide-template.md` | テンプレート     |
+| 資料名                 | パス                                                                  | 説明                   |
+| ---------------------- | --------------------------------------------------------------------- | ---------------------- |
+| Phase 11成果物         | `outputs/phase-11/`                                                   | 手動テスト結果         |
+| 仕様更新フロー         | `task-specification-creator: spec-update-workflow.md`                 | 更新手順               |
+| 未タスクガイドライン   | `task-specification-creator: unassigned-task-guidelines.md`           | 未タスク作成指針       |
+| 実装ガイドテンプレート | `task-specification-creator: assets/implementation-guide-template.md` | テンプレート           |
+| UI/UXポータル          | `aiworkflow-requirements: ui-ux-portal-patterns.md`                   | z-index階層参照        |
+| 認証アーキテクチャ     | `aiworkflow-requirements: architecture-auth-security.md`              | Supabase+Electron構造  |
+| エラーハンドリング     | `aiworkflow-requirements: error-handling.md`                          | フォールバックパターン |
 
 ---
 

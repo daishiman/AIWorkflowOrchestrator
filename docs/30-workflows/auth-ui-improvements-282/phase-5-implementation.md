@@ -145,11 +145,16 @@ pnpm --filter @repo/desktop test:run src/renderer/store/slices/authSlice.test.ts
 
 ## 参照資料
 
-| 資料名        | パス                                                | 説明           |
-| ------------- | --------------------------------------------------- | -------------- |
-| Phase 4成果物 | `outputs/phase-4/`                                  | テスト仕様     |
-| エラー処理    | `aiworkflow-requirements: error-handling.md`        | エラー処理指針 |
-| 状態管理      | `aiworkflow-requirements: arch-state-management.md` | Store設計      |
+| 資料名             | パス                                                               | 説明                        |
+| ------------------ | ------------------------------------------------------------------ | --------------------------- |
+| Phase 4成果物      | `outputs/phase-4/`                                                 | テスト仕様                  |
+| エラー処理         | `aiworkflow-requirements: error-handling.md`                       | エラー処理指針              |
+| 状態管理           | `aiworkflow-requirements: arch-state-management.md`                | Store設計                   |
+| UI/UXポータル      | `aiworkflow-requirements: ui-ux-portal-patterns.md`                | z-index階層（z-[9999]根拠） |
+| 認証アーキテクチャ | `aiworkflow-requirements: architecture-auth-security.md`           | Supabase+Electron構造       |
+| 実装パターン       | `aiworkflow-requirements: architecture-implementation-patterns.md` | フォールバックパターン      |
+| 認証IPC仕様        | `aiworkflow-requirements: api-ipc-auth.md`                         | IPC API詳細                 |
+| セキュリティ       | `aiworkflow-requirements: security-api-electron.md`                | Preload APIセキュリティ     |
 
 ---
 

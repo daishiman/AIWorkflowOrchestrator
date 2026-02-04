@@ -131,15 +131,38 @@ Supabaseに`user_profiles`テーブルが存在しないため、「Could not fi
 
 ---
 
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する：
+
+| 観点               | 適用判断                    | 仕様参照先（aiworkflow-requirements）         |
+| ------------------ | --------------------------- | --------------------------------------------- |
+| UI/UX              | z-index問題（Renderer実装） | ui-ux-portal-patterns.md, ui-ux-components.md |
+| エラーハンドリング | フォールバック処理          | error-handling.md                             |
+| 認証アーキテクチャ | Supabase+Electron構造       | architecture-auth-security.md                 |
+| 状態管理           | authSlice拡張               | arch-state-management.md                      |
+| IPC通信            | profile:get-providers等     | api-ipc-auth.md, interfaces-auth.md           |
+| データベース       | user_profilesテーブル       | database-schema.md                            |
+| セキュリティ       | Preload APIセキュリティ     | security-api-electron.md                      |
+
+---
+
 ## 参照資料
 
-| 資料名              | パス                                                | 説明           |
-| ------------------- | --------------------------------------------------- | -------------- |
-| システム要件        | `docs/00-requirements/master_system_design.md`      | 全体要件       |
-| UI/UXコンポーネント | `aiworkflow-requirements: ui-ux-components.md`      | UI設計指針     |
-| エラーハンドリング  | `aiworkflow-requirements: error-handling.md`        | エラー処理指針 |
-| 状態管理            | `aiworkflow-requirements: arch-state-management.md` | Store設計指針  |
-| 認証機能設計        | `docs/30-workflows/login-only-auth/`                | 認証機能詳細   |
+| 資料名              | パス                                                               | 説明                        |
+| ------------------- | ------------------------------------------------------------------ | --------------------------- |
+| システム要件        | `docs/00-requirements/master_system_design.md`                     | 全体要件                    |
+| UI/UXコンポーネント | `aiworkflow-requirements: ui-ux-components.md`                     | UI設計指針                  |
+| UI/UXポータル       | `aiworkflow-requirements: ui-ux-portal-patterns.md`                | z-index階層、Portalパターン |
+| エラーハンドリング  | `aiworkflow-requirements: error-handling.md`                       | エラー処理指針              |
+| 状態管理            | `aiworkflow-requirements: arch-state-management.md`                | Store設計指針               |
+| 認証アーキテクチャ  | `aiworkflow-requirements: architecture-auth-security.md`           | Supabase+Electron認証構造   |
+| 認証IPC仕様         | `aiworkflow-requirements: api-ipc-auth.md`                         | IPC API詳細                 |
+| 認証型定義          | `aiworkflow-requirements: interfaces-auth.md`                      | Auth/LinkedProvider型       |
+| データベース        | `aiworkflow-requirements: database-schema.md`                      | user_profilesテーブル定義   |
+| セキュリティ        | `aiworkflow-requirements: security-api-electron.md`                | Preload APIセキュリティ     |
+| 実装パターン        | `aiworkflow-requirements: architecture-implementation-patterns.md` | フォールバックパターン      |
+| 認証機能設計        | `docs/30-workflows/login-only-auth/`                               | 認証機能詳細                |
 
 ---
 

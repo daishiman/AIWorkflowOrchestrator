@@ -20,7 +20,7 @@ Phase 1で定義した要件を実現可能な構造に落とし込む。
 
 #### z-index階層定義
 
-アプリ全体で一貫したz-index階層を設計する:
+アプリ全体で一貫したz-index階層を設計する（参照: `aiworkflow-requirements: ui-ux-portal-patterns.md`）:
 
 | z-index値    | 用途                                   | 対象コンポーネント例             |
 | ------------ | -------------------------------------- | -------------------------------- |
@@ -156,14 +156,34 @@ Renderer Process (authSlice)
 
 ---
 
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する：
+
+| 観点               | 適用判断                    | 仕様参照先（aiworkflow-requirements） |
+| ------------------ | --------------------------- | ------------------------------------- |
+| UI/UX              | z-index問題（Renderer実装） | ui-ux-portal-patterns.md              |
+| エラーハンドリング | フォールバック処理          | error-handling.md                     |
+| 認証アーキテクチャ | Supabase+Electron構造       | architecture-auth-security.md         |
+| 状態管理           | authSlice拡張               | arch-state-management.md              |
+| IPC通信            | profile:get-providers等     | api-ipc-auth.md                       |
+| セキュリティ       | Preload APIセキュリティ     | security-api-electron.md              |
+
+---
+
 ## 参照資料
 
-| 資料名        | パス                                                | 説明               |
-| ------------- | --------------------------------------------------- | ------------------ |
-| Phase 1成果物 | `outputs/phase-1/requirements-definition.md`        | 要件定義書         |
-| エラー処理    | `aiworkflow-requirements: error-handling.md`        | エラー処理パターン |
-| 状態管理      | `aiworkflow-requirements: arch-state-management.md` | 状態管理パターン   |
-| IPC設計       | `aiworkflow-requirements: interfaces-agent-sdk.md`  | IPC契約定義        |
+| 資料名             | パス                                                               | 説明                        |
+| ------------------ | ------------------------------------------------------------------ | --------------------------- |
+| Phase 1成果物      | `outputs/phase-1/requirements-definition.md`                       | 要件定義書                  |
+| エラー処理         | `aiworkflow-requirements: error-handling.md`                       | エラー処理パターン          |
+| 状態管理           | `aiworkflow-requirements: arch-state-management.md`                | 状態管理パターン            |
+| IPC設計            | `aiworkflow-requirements: interfaces-agent-sdk.md`                 | IPC契約定義                 |
+| UI/UXポータル      | `aiworkflow-requirements: ui-ux-portal-patterns.md`                | z-index階層、Portalパターン |
+| 認証アーキテクチャ | `aiworkflow-requirements: architecture-auth-security.md`           | Supabase+Electron認証構造   |
+| 認証IPC仕様        | `aiworkflow-requirements: api-ipc-auth.md`                         | IPC API詳細                 |
+| 実装パターン       | `aiworkflow-requirements: architecture-implementation-patterns.md` | フォールバックパターン      |
+| セキュリティ       | `aiworkflow-requirements: security-api-electron.md`                | Preload APIセキュリティ     |
 
 ---
 
