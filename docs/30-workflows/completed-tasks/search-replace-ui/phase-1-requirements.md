@@ -1,0 +1,239 @@
+# Phase 1: 要件定義
+
+## メタ情報
+
+| 項目      | 値                     |
+| --------- | ---------------------- |
+| Phase     | 1                      |
+| 機能名    | search-replace-ui      |
+| タスクID  | task-imp-search-ui-001 |
+| 関連Issue | #366                   |
+| 作成日    | 2026-02-04             |
+
+## 目的
+
+検索・置換UI機能の要件を明確化し、受け入れ基準を定義する。既存実装の評価と残作業の特定を行う。
+
+## 既存実装の評価
+
+### 実装済みコンポーネント
+
+| コンポーネント             | ファイル                              | 状態     |
+| -------------------------- | ------------------------------------- | -------- |
+| SearchPanel                | `components/SearchPanel.tsx`          | 実装済み |
+| WorkspaceSearchPanel       | `components/WorkspaceSearchPanel.tsx` | 実装済み |
+| SearchOptionButtons        | `components/SearchOptionButtons.tsx`  | 実装済み |
+| useSearchStore             | `stores/useSearchStore.ts`            | 実装済み |
+| useSearchKeyboardShortcuts | `hooks/useSearchKeyboardShortcuts.ts` | 実装済み |
+
+### 未実装項目
+
+| 項目                         | 状態   | 優先度 |
+| ---------------------------- | ------ | ------ |
+| E2Eテスト                    | 未実装 | 高     |
+| グローバルショートカット統合 | 要確認 | 高     |
+| IPC統合（WorkspaceSearch）   | 部分的 | 中     |
+
+## 機能要件（FR）
+
+### FR-1: ファイル内検索パネル
+
+| 要件ID | 要件                                             | 優先度 |
+| ------ | ------------------------------------------------ | ------ |
+| FR-1-1 | Cmd+F（Mac）/Ctrl+F（Win）で開く                 | 高     |
+| FR-1-2 | リアルタイム検索（Enter実行）                    | 高     |
+| FR-1-3 | 検索オプション（大文字小文字/正規表現/単語単位） | 高     |
+| FR-1-4 | 検索結果ハイライト表示                           | 高     |
+| FR-1-5 | 結果間ナビゲーション（F3/Shift+F3）              | 高     |
+| FR-1-6 | 置換機能（単一/全置換）                          | 高     |
+
+### FR-2: ワークスペース検索パネル
+
+| 要件ID | 要件                                         | 優先度 |
+| ------ | -------------------------------------------- | ------ |
+| FR-2-1 | Cmd+Shift+F（Mac）/Ctrl+Shift+F（Win）で開く | 高     |
+| FR-2-2 | ファイル横断検索                             | 高     |
+| FR-2-3 | ファイルパターンフィルタ                     | 中     |
+| FR-2-4 | 除外パターン指定                             | 中     |
+| FR-2-5 | 検索結果ツリー表示                           | 高     |
+| FR-2-6 | 結果クリックでファイル/位置ジャンプ          | 高     |
+| FR-2-7 | 全ファイル一括置換（確認ダイアログ付き）     | 中     |
+
+### FR-3: キーボードショートカット
+
+| 要件ID | キー               | macOS                | Windows/Linux        | 機能                     |
+| ------ | ------------------ | -------------------- | -------------------- | ------------------------ |
+| FR-3-1 | ファイル内検索     | Cmd+F                | Ctrl+F               | SearchPanel開く          |
+| FR-3-2 | ファイル内置換     | Cmd+T                | Ctrl+T               | 置換モードで開く         |
+| FR-3-3 | ワークスペース検索 | Cmd+Shift+F          | Ctrl+Shift+F         | WorkspaceSearchPanel開く |
+| FR-3-4 | 閉じる             | Escape               | Escape               | パネルを閉じる           |
+| FR-3-5 | 次の結果           | Enter/F3             | Enter/F3             | 次のマッチへ             |
+| FR-3-6 | 前の結果           | Shift+Enter/Shift+F3 | Shift+Enter/Shift+F3 | 前のマッチへ             |
+
+## 非機能要件（NFR）
+
+| 要件ID | カテゴリ         | 要件                     | 基準                 | 仕様参照                       |
+| ------ | ---------------- | ------------------------ | -------------------- | ------------------------------ |
+| NFR-1  | パフォーマンス   | 検索応答時間             | 200ms以内            | `ui-ux-search-panel.md`        |
+| NFR-2  | パフォーマンス   | デバウンス               | 150-300ms            | `ui-ux-search-panel.md`        |
+| NFR-3  | パフォーマンス   | 最大表示件数             | 1000件               | `ui-ux-search-panel.md`        |
+| NFR-4  | セキュリティ     | ReDoSタイムアウト        | 5000ms               | `api-internal-search.md`       |
+| NFR-5  | セキュリティ     | パストラバーサル防止     | ワークスペース外拒否 | `security-input-validation.md` |
+| NFR-6  | アクセシビリティ | WCAG 2.1 AA準拠          | 全項目クリア         | `ui-ux-search-panel.md`        |
+| NFR-7  | テストカバレッジ | ユニットテストカバレッジ | Line 80%以上         | `coverage-standards.md`        |
+| NFR-8  | テストカバレッジ | E2Eテストカバレッジ      | 主要シナリオ100%     | `coverage-standards.md`        |
+
+## セキュリティ要件（aiworkflow-requirements参照）
+
+**参照**: `security-input-validation.md`, `api-internal-search.md`
+
+| 要件ID | 要件                 | 実装方法                                 |
+| ------ | -------------------- | ---------------------------------------- |
+| SEC-1  | ReDoS対策            | タイムアウト5000ms、後方参照禁止         |
+| SEC-2  | パストラバーサル防止 | ワークスペースパス検証                   |
+| SEC-3  | エラーコード         | INVALID_PATTERN, TIMEOUT, PATH_TRAVERSAL |
+| SEC-4  | 入力長制限           | 検索パターン最大長設定                   |
+
+### SEC-1: ReDoS対策実装詳細
+
+**実装場所**: SearchService.searchInFile / searchInWorkspace（Main Process）
+
+| 対策項目           | 実装内容                               |
+| ------------------ | -------------------------------------- |
+| タイムアウト       | Promise.race()で5000ms超過時に強制終了 |
+| 後方参照禁止       | `\1`, `\2`等のパターンを検出してエラー |
+| ネスト量指定子禁止 | `(a+)+`等のパターンを検出してエラー    |
+| 非限定量指定子制限 | `.+`, `.*`の連続使用を検出して警告     |
+
+### SEC-2: パストラバーサル防止実装詳細
+
+**実装場所**: WorkspaceSearchEngine.search()（Main Process）
+
+| 検証項目           | 実装内容                               |
+| ------------------ | -------------------------------------- |
+| パス正規化         | path.normalize()でパスを正規化         |
+| プレフィックス検証 | ワークスペースパス配下か確認           |
+| 拒否パターン       | `../`, `..\\`, 絶対パス外参照を拒否    |
+| エラー処理         | PATH_TRAVERSALエラーを返却、ログに記録 |
+
+### エラーコード定義
+
+| コード          | カテゴリ       | 説明                          | リトライ |
+| --------------- | -------------- | ----------------------------- | -------- |
+| INVALID_PATTERN | Validation     | 正規表現が無効（ReDoSリスク） | 不可     |
+| TIMEOUT         | Infrastructure | 5000ms以内に完了しなかった    | 不可     |
+| PATH_TRAVERSAL  | Security       | ワークスペース外アクセス試行  | 不可     |
+| FILE_READ_ERROR | Infrastructure | ファイル読み取りエラー        | 可能     |
+
+## 受け入れ基準
+
+### AC-1: ファイル内検索
+
+- [ ] Cmd+F/Ctrl+Fでパネルが開く
+- [ ] 検索入力後Enterで検索が実行される
+- [ ] 検索結果がハイライト表示される
+- [ ] 結果件数が「X/Y」形式で表示される
+- [ ] F3/Shift+F3で結果間を移動できる
+- [ ] Escapeでパネルが閉じる
+
+### AC-2: ワークスペース検索
+
+- [ ] Cmd+Shift+F/Ctrl+Shift+Fでパネルが開く
+- [ ] 複数ファイルに跨る検索ができる
+- [ ] 結果がファイルごとにグループ化される
+- [ ] 結果クリックで該当ファイル/行にジャンプする
+
+### AC-3: E2Eテスト
+
+- [ ] Playwrightによる自動E2Eテストが実行可能
+- [ ] 主要な操作シナリオがテストでカバーされている
+
+## 統合テスト連携【必須】
+
+接続要件を以下に明記:
+
+| 接続要件カテゴリ | 記載内容                                      |
+| ---------------- | --------------------------------------------- |
+| IPC接続          | ワークスペース検索API（Main→Renderer）        |
+| 状態管理         | Zustand Store（useSearchStore）               |
+| エディタ連携     | EditorInstance経由のハイライト/スクロール制御 |
+
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する：
+
+| 観点               | 適用判断 | 確認内容                              | 仕様参照先                     |
+| ------------------ | -------- | ------------------------------------- | ------------------------------ |
+| セキュリティ       | 適用     | ReDoS対策、パストラバーサル防止       | `security-input-validation.md` |
+| UI/UX              | 適用     | キーボードショートカット、WCAG準拠    | `ui-ux-search-panel.md`        |
+| アーキテクチャ     | 適用     | IPC設計、Main/Renderer分離            | `architecture-*.md`            |
+| API設計            | 適用     | IPCチャンネル定義                     | `api-internal-search.md`       |
+| エラーハンドリング | 適用     | INVALID_PATTERN等エラー対応           | `error-handling.md`            |
+| パフォーマンス     | 適用     | 検索応答200ms（P50）、デバウンス150ms | `quality-requirements.md`      |
+| アクセシビリティ   | 適用     | WCAG 2.1 AA準拠、aria属性             | `ui-ux-search-panel.md`        |
+
+**Electronデスクトップアプリ観点**:
+
+| 層                         | 確認観点                                       |
+| -------------------------- | ---------------------------------------------- |
+| フロントエンド（Renderer） | SearchPanel/WorkspaceSearchPanelのUI表示       |
+| バックエンド（Main）       | SearchService、WorkspaceSearchEngine           |
+| IPC通信                    | search:workspace等のチャンネル定義             |
+| Preload/セキュリティ       | contextBridge経由API公開、パストラバーサル防止 |
+
+## アーキテクチャ層別要件
+
+| 層                         | 確認観点                                       |
+| -------------------------- | ---------------------------------------------- |
+| フロントエンド（Renderer） | SearchPanel/WorkspaceSearchPanelのUI表示       |
+| バックエンド（Main）       | ワークスペース検索のファイルシステムアクセス   |
+| IPC通信                    | 検索リクエスト/レスポンスのチャンネル定義      |
+| セキュリティ               | 検索パスの検証（ワークスペース外アクセス防止） |
+
+## 成果物
+
+| 成果物       | パス                                         | 説明             |
+| ------------ | -------------------------------------------- | ---------------- |
+| 要件定義書   | `outputs/phase-1/requirements-definition.md` | 機能・非機能要件 |
+| 受け入れ基準 | `outputs/phase-1/acceptance-criteria.md`     | AC定義           |
+| スコープ定義 | `outputs/phase-1/scope-definition.md`        | 実装範囲         |
+
+## 完了条件
+
+- [ ] 全要件が抽出されている
+- [ ] 各要件に受け入れ基準がある
+- [ ] FR/NFRが分類されている
+- [ ] セキュリティ要件が明記されている
+- [ ] 既存実装の状態が評価されている
+- [ ] 残作業（E2E、IPC統合）が特定されている
+- [ ] **本Phase内の全タスクを100%実行完了**
+
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. 既存実装の評価
+2. 機能要件（FR）の抽出
+3. 非機能要件（NFR）の抽出
+4. セキュリティ要件の特定
+5. 受け入れ基準の定義
+6. 成果物の作成
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/search-replace-ui --phase 1
+```
+
+## 次のPhase
+
+Phase 2: 設計

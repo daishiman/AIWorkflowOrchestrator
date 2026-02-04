@@ -4,6 +4,43 @@
 
 ---
 
+## 📌 クイックナビゲーション
+
+| カテゴリ | パターン数 | 説明 |
+| -------- | ---------- | ---- |
+| [失敗パターン](#失敗パターン) | 4件 | 回避すべきアンチパターン |
+| [成功パターン](#成功パターン) | 35+件 | 再利用可能なベストプラクティス |
+| [ガイドライン](#ガイドライン) | 5件 | 判断基準・検出パターン |
+| [フェーズ境界遷移](#フェーズ境界遷移パターンphase-boundary-transition) | 4件 | Phase間の成果物引き継ぎ |
+| [失敗回避](#失敗回避パターン) | 3件 | よくある失敗の未然防止 |
+| [単体テスト設計](#単体テスト設計パターンtask-8a) | 4件 | モック・カバレッジ戦略 |
+| [E2Eテスト設計](#e2eテスト設計パターンtask-8c-b) | 3件 | Playwright安定化 |
+| [CI/DevOps最適化](#cidevops最適化パターン) | 2件 | GitHub Actions並列化 |
+| [Main→Renderer IPC](#mainrenderer-ipc実装パターンtask-wce-monaco-001) | 1件 | 逆方向通信パターン |
+| [サービス設計](#サービス設計パターンtask-9b-g) | 4件 | Facade・Script First |
+
+---
+
+## 🚨 Phase 12 Task 2 クイックリファレンス
+
+> **最重要**: Phase 12 Task 2は漏れが発生しやすい。以下を必ず確認。
+
+| Step | 必須 | チェック項目 | 更新対象 |
+| ---- | ---- | ------------ | -------- |
+| 1-A  | ✅   | タスク完了記録 | 該当仕様書（ui-ux-*.md等） |
+| 1-A  | ✅   | LOGS.md更新 | **aiworkflow-requirements/LOGS.md** |
+| 1-A  | ✅   | LOGS.md更新 | **task-specification-creator/LOGS.md** |
+| 1-A  | ✅   | SKILL.md変更履歴 | **aiworkflow-requirements/SKILL.md** |
+| 1-A  | ✅   | SKILL.md変更履歴 | **task-specification-creator/SKILL.md** |
+| 1-B  | △    | 実装状況テーブル | api-endpoints.md等（該当する場合） |
+| 1-C  | △    | 関連タスクテーブル | `grep -rn "TASK_ID" references/` で検索 |
+| 1-D  | ✅   | topic-map.md再生成 | `node generate-index.js` 実行 |
+| 2    | △    | システム仕様更新 | 新規インターフェース追加時のみ |
+
+📖 詳細: [spec-update-workflow.md](./spec-update-workflow.md)
+
+---
+
 ## 失敗パターン
 
 ### Markdown見出しレベルの誤検出
@@ -32,6 +69,27 @@
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-9B-G
 
+### Phase 12 Task 2 Step 1-A更新漏れ（task-imp-search-ui-001）
+
+- **状況**: Phase 12 Task 2実行時、タスク完了記録をシステム仕様書に追加した
+- **問題**: 以下の3つの必須更新を漏らした
+  1. **LOGS.md×2ファイル更新漏れ**: aiworkflow-requirements/LOGS.mdのみ更新し、task-specification-creator/LOGS.mdを忘れた
+  2. **SKILL.md変更履歴更新漏れ**: 両スキルの変更履歴にバージョン番号を追記しなかった
+  3. **topic-map.md再生成漏れ**: 仕様書更新後にgenerate-index.jsを実行しなかった
+- **原因**:
+  1. spec-update-workflow.mdの「2ファイル両方更新」要件を見落とし
+  2. Step 1-Dの「topic-map.md再生成」を確認せず完了と誤認
+  3. documentation-changelog.mdのStep詳細記録が不完全だったため、漏れに気付けなかった
+- **教訓**:
+  1. Phase 12 Task 2は必ず**Step 1-A〜1-D + Step 2**の全ステップを個別に確認
+  2. LOGS.mdは**aiworkflow-requirements + task-specification-creator**の**2ファイル**を更新
+  3. SKILL.mdの変更履歴も更新対象（見落としやすい）
+  4. 仕様書変更後はgenerate-index.jsで**topic-map.md再生成**が必須
+  5. documentation-changelog.mdに各Stepの完了結果を詳細に記録することで漏れを可視化
+- **修正**: 全7ファイル（LOGS.md×2、SKILL.md×2、ui-ux-search-panel.md、documentation-changelog.md、topic-map.md）を追加更新
+- **発見日**: 2026-02-04
+- **関連タスク**: task-imp-search-ui-001
+
 ### Phase 12出力要件の漏れ
 
 - **状況**: タスク仕様書（phase-12-documentation.md）作成時
@@ -59,6 +117,26 @@
   4. ✅ `unassigned-task-report.md` - 未タスク検出報告（0件でも必須）
 - **根拠**: phase-11-12-guide.md Task 1-4の完全準拠
 - **発見日**: 2026-01-26
+
+### Phase 12 Task 2完全チェックリスト（task-imp-search-ui-001）
+
+- **状況**: Phase 12 Task 2（システム仕様書更新）実行時
+- **パターン**: Step 1-A〜1-D + Step 2の全ステップを個別にチェック
+- **チェックリスト**:
+  | Step | チェック項目 | 更新対象 |
+  | ---- | ------------ | -------- |
+  | 1-A  | タスク完了記録 | 該当仕様書（ui-ux-*.md等） |
+  | 1-A  | LOGS.md更新 | **aiworkflow-requirements/LOGS.md** |
+  | 1-A  | LOGS.md更新 | **task-specification-creator/LOGS.md** |
+  | 1-A  | SKILL.md変更履歴 | **aiworkflow-requirements/SKILL.md** |
+  | 1-A  | SKILL.md変更履歴 | **task-specification-creator/SKILL.md** |
+  | 1-B  | 実装状況テーブル | api-endpoints.md等（該当する場合） |
+  | 1-C  | 関連タスクテーブル | Grepで検索して確認 |
+  | 1-D  | topic-map.md再生成 | `node generate-index.js` 実行 |
+  | 2    | システム仕様更新 | 新規インターフェース追加時のみ |
+- **効果**: documentation-changelog.mdに各Stepの結果を記録することで漏れを防止
+- **発見日**: 2026-02-04
+- **関連タスク**: task-imp-search-ui-001
 
 ### UX改善タスクの構造化（R-ID方式）
 
@@ -796,6 +874,75 @@
 
 ---
 
+## 検索/置換UI実装パターン（task-imp-search-ui-001）
+
+> task-imp-search-ui-001のPhase 1-12全工程完了で検証されたパターン。既存実装の高品質活用・E2Eテスト設計・Phase 12漏れ防止の知見。
+
+### 既存実装品質評価パターン
+
+- **状況**: タスク仕様書で計画された実装が、既に高品質で完成している場合
+- **パターン**: Phase 5（実装）でギャップ分析を行い、追加実装が不要と判断する
+- **判断基準**:
+  | 観点 | チェック項目 |
+  | ---- | ------------ |
+  | 機能網羅性 | 仕様書の要件がすべて実装されているか |
+  | テストカバレッジ | 既存テストで80%+カバレッジが達成されているか |
+  | エラーハンドリング | エッジケースが適切に処理されているか |
+  | アーキテクチャ整合性 | システム仕様に準拠した設計になっているか |
+- **例**（task-imp-search-ui-001）:
+  - Phase 1要件: SearchPanel/WorkspaceSearch/GlobalShortcut連携
+  - 調査結果: SearchService, SearchPanel.tsx, WorkspaceSearchModal.tsx が完全実装済み
+  - 判断: 追加実装0件、E2Eテストのみ追加
+- **効果**:
+  - 不要な重複実装を回避
+  - 品質を維持しながらテストカバレッジを向上
+  - タスク完了条件は「検証完了」で満たされる
+- **発見日**: 2026-02-04
+- **関連タスク**: task-imp-search-ui-001
+
+### E2Eテスト Page Object パターン（Playwright）
+
+- **状況**: Playwright E2Eテストで複数のテストケースが同じUI操作を共有する場合
+- **パターン**: Page Objectクラスを作成し、セレクタとアクションを集約
+- **例**（task-imp-search-ui-001）:
+  | ファイル | 責務 |
+  | -------- | ---- |
+  | `SearchPanelPage.ts` | 検索パネルUI操作（toggle, type, count） |
+  | `WorkspaceSearchPage.ts` | ワークスペース検索モーダル操作 |
+- **構成**:
+  ```typescript
+  class SearchPanelPage {
+    readonly searchInput: Locator;
+    readonly resultsCount: Locator;
+
+    async typeSearchQuery(query: string) { ... }
+    async getResultsCount(): Promise<number> { ... }
+  }
+  ```
+- **効果**:
+  - テストの可読性向上（what, not how）
+  - セレクタ変更時の修正箇所が1箇所
+  - テストケース間のコード共有
+- **発見日**: 2026-02-04
+- **関連タスク**: task-imp-search-ui-001
+
+### generate-index.jsファイル名誤認パターン（回避）
+
+- **状況**: topic-map.md再生成時にスクリプトファイル名を間違える
+- **問題**: `generate-index.mjs`と`generate-index.js`の混同
+- **誤りパターン**:
+  - ❌ `node scripts/generate-index.mjs` → 存在しない
+  - ✅ `node scripts/generate-index.js` → 正しい
+- **確認方法**:
+  ```bash
+  ls .claude/skills/aiworkflow-requirements/scripts/
+  ```
+- **教訓**: spec-update-workflow.mdのコマンド例を直接コピーせず、実ファイル名を確認
+- **発見日**: 2026-02-04
+- **関連タスク**: task-imp-search-ui-001
+
+---
+
 ## 外部APIデータ正規化パターン（AUTH-UI-004）
 
 > AUTH-UI-004のGoogleアバター取得修正で検証されたパターン。プロバイダー別のレスポンス形式差異を吸収するパターン。
@@ -900,7 +1047,7 @@
 - **発見日**: 2026-02-04
 - **関連タスク**: TASK-FIX-1-1-TYPE-ALIGNMENT
 
-### Discriminated UnionのDRY原則適用パターン（BaseStreamMessage抽出）
+### Discriminated UnionのDRY原則適用パターン（TASK-FIX-1-1-TYPE-ALIGNMENT）
 
 - **状況**: Discriminated Union型で各バリアントに共通フィールドがある場合
 - **パターン**: 共通フィールドをBase型として抽出し、各バリアントでIntersection型として合成
@@ -953,11 +1100,11 @@
 - **関連タスク**: TASK-FIX-1-1-TYPE-ALIGNMENT
 
 ---
-
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                              |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **2026-02-04** | **patterns.md構造最適化**: クイックナビゲーション・Phase 12 Task 2クイックリファレンス追加、search-replace-ui実装パターン3件追加（既存実装品質評価、Page Object、generate-index.jsファイル名誤認回避） |
 | **2026-02-04** | **AUTH-UI-004知見追加**: 外部APIデータ正規化パターン3件（プロバイダー別フォールバック、Phase 12ドキュメント5点セット、環境依存テスト分離）           |
 | **2026-02-04** | **TASK-FIX-1-1-TYPE-ALIGNMENT知見追加**: 型定義統合/移行パターン4件（パッケージエクスポート更新チェック、型定義ファイルカバレッジ、Discriminated Union DRY、import文一括置換安全性） |
 | **2026-02-03** | **マージ統合**: TASK-9B-G（サービス設計パターン4件）+ TASK-9C/9A-A（SDK統合パターン5件）を統合                                                       |
