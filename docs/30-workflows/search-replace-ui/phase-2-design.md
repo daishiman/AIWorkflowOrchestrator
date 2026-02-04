@@ -138,6 +138,28 @@ async function* defaultSearchProvider(
 | IPC→SearchEngine      | `WorkspaceSearchEngine.search()` 呼び出し   |
 | SearchEngine→フロント | `FileSearchResult` ストリーミングレスポンス |
 
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する：
+
+| 観点               | 適用判断 | 確認内容                            | 仕様参照先                     |
+| ------------------ | -------- | ----------------------------------- | ------------------------------ |
+| セキュリティ       | 適用     | ReDoS対策設計、パストラバーサル防止 | `security-input-validation.md` |
+| UI/UX              | 適用     | ショートカット設計、フォーカス管理  | `ui-ux-search-panel.md`        |
+| アーキテクチャ     | 適用     | IPC設計、Main/Renderer分離          | `architecture-*.md`            |
+| API設計            | 適用     | IPCチャンネル/ペイロード設計        | `api-internal-search.md`       |
+| エラーハンドリング | 適用     | エラーコード設計、UI表示設計        | `error-handling.md`            |
+| パフォーマンス     | 適用     | デバウンス設計、ストリーミング設計  | `quality-requirements.md`      |
+
+**Electronデスクトップアプリ観点**:
+
+| 層                         | 設計観点                                 |
+| -------------------------- | ---------------------------------------- |
+| フロントエンド（Renderer） | SearchPanel/WorkspaceSearchPanel設計確認 |
+| バックエンド（Main）       | SearchService、IPCハンドラー設計         |
+| IPC通信                    | search:workspaceチャンネル設計           |
+| Preload/セキュリティ       | contextBridge経由API設計                 |
+
 ## アーキテクチャ層別設計
 
 | 層                         | 設計観点                             | 仕様参照先                 |

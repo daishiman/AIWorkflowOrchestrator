@@ -94,6 +94,37 @@
 | SEC-3  | エラーコード         | INVALID_PATTERN, TIMEOUT, PATH_TRAVERSAL |
 | SEC-4  | 入力長制限           | 検索パターン最大長設定                   |
 
+### SEC-1: ReDoS対策実装詳細
+
+**実装場所**: SearchService.searchInFile / searchInWorkspace（Main Process）
+
+| 対策項目           | 実装内容                               |
+| ------------------ | -------------------------------------- |
+| タイムアウト       | Promise.race()で5000ms超過時に強制終了 |
+| 後方参照禁止       | `\1`, `\2`等のパターンを検出してエラー |
+| ネスト量指定子禁止 | `(a+)+`等のパターンを検出してエラー    |
+| 非限定量指定子制限 | `.+`, `.*`の連続使用を検出して警告     |
+
+### SEC-2: パストラバーサル防止実装詳細
+
+**実装場所**: WorkspaceSearchEngine.search()（Main Process）
+
+| 検証項目           | 実装内容                               |
+| ------------------ | -------------------------------------- |
+| パス正規化         | path.normalize()でパスを正規化         |
+| プレフィックス検証 | ワークスペースパス配下か確認           |
+| 拒否パターン       | `../`, `..\\`, 絶対パス外参照を拒否    |
+| エラー処理         | PATH_TRAVERSALエラーを返却、ログに記録 |
+
+### エラーコード定義
+
+| コード          | カテゴリ       | 説明                          | リトライ |
+| --------------- | -------------- | ----------------------------- | -------- |
+| INVALID_PATTERN | Validation     | 正規表現が無効（ReDoSリスク） | 不可     |
+| TIMEOUT         | Infrastructure | 5000ms以内に完了しなかった    | 不可     |
+| PATH_TRAVERSAL  | Security       | ワークスペース外アクセス試行  | 不可     |
+| FILE_READ_ERROR | Infrastructure | ファイル読み取りエラー        | 可能     |
+
 ## 受け入れ基準
 
 ### AC-1: ファイル内検索
@@ -126,6 +157,29 @@
 | IPC接続          | ワークスペース検索API（Main→Renderer）        |
 | 状態管理         | Zustand Store（useSearchStore）               |
 | エディタ連携     | EditorInstance経由のハイライト/スクロール制御 |
+
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する：
+
+| 観点               | 適用判断 | 確認内容                              | 仕様参照先                     |
+| ------------------ | -------- | ------------------------------------- | ------------------------------ |
+| セキュリティ       | 適用     | ReDoS対策、パストラバーサル防止       | `security-input-validation.md` |
+| UI/UX              | 適用     | キーボードショートカット、WCAG準拠    | `ui-ux-search-panel.md`        |
+| アーキテクチャ     | 適用     | IPC設計、Main/Renderer分離            | `architecture-*.md`            |
+| API設計            | 適用     | IPCチャンネル定義                     | `api-internal-search.md`       |
+| エラーハンドリング | 適用     | INVALID_PATTERN等エラー対応           | `error-handling.md`            |
+| パフォーマンス     | 適用     | 検索応答200ms（P50）、デバウンス150ms | `quality-requirements.md`      |
+| アクセシビリティ   | 適用     | WCAG 2.1 AA準拠、aria属性             | `ui-ux-search-panel.md`        |
+
+**Electronデスクトップアプリ観点**:
+
+| 層                         | 確認観点                                       |
+| -------------------------- | ---------------------------------------------- |
+| フロントエンド（Renderer） | SearchPanel/WorkspaceSearchPanelのUI表示       |
+| バックエンド（Main）       | SearchService、WorkspaceSearchEngine           |
+| IPC通信                    | search:workspace等のチャンネル定義             |
+| Preload/セキュリティ       | contextBridge経由API公開、パストラバーサル防止 |
 
 ## アーキテクチャ層別要件
 
