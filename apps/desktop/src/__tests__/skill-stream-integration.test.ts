@@ -79,6 +79,7 @@ function getStreamCallback(): ((msg: SkillStreamMessage) => void) | null {
 describe("IT-001: スキル実行〜完了", () => {
   it("should complete full execution flow: execute → onStream → complete", async () => {
     // Arrange
+    // Note: すべてのメッセージで同じexecutionIdを使用（フックが実行IDで分離するため）
     const mockMessages: SkillStreamMessage[] = [
       {
         executionId: "test-exec-001",
@@ -87,13 +88,13 @@ describe("IT-001: スキル実行〜完了", () => {
         timestamp: Date.now(),
       },
       {
-        executionId: "test-exec-002",
+        executionId: "test-exec-001",
         type: "assistant",
         content: { text: "処理が完了しました", isPartial: false },
         timestamp: Date.now(),
       },
       {
-        executionId: "test-exec-003",
+        executionId: "test-exec-001",
         type: "status",
         content: { status: "completed" },
         timestamp: Date.now(),
@@ -150,11 +151,12 @@ describe("IT-001: スキル実行〜完了", () => {
     const streamCallback = getStreamCallback();
 
     // Simulate incremental text streaming
+    // Note: すべてのメッセージで同じexecutionIdを使用（フックが実行IDで分離するため）
     const textChunks = ["こんにちは", "、", "これは", "テスト", "です。"];
     for (let i = 0; i < textChunks.length; i++) {
       act(() => {
         streamCallback?.({
-          executionId: `test-exec-${i}`,
+          executionId: "test-exec-001",
           type: "assistant",
           content: { text: textChunks[i], isPartial: false },
           timestamp: Date.now() + i,
