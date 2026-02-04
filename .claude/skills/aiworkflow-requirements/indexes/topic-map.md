@@ -167,7 +167,8 @@ node scripts/list-specs.js --topics
 | アクセシビリティ実装パターン | L647 |
 | 関連ドキュメント | L672 |
 | スキル作成実装パターン（TASK-9B-G） | L684 |
-| 変更履歴 | L808 |
+| 外部API データ正規化パターン | L808 |
+| 変更履歴 | L847 |
 
 ### references/architecture-monorepo.md
 
@@ -301,7 +302,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
-| ワークスペース型定義 | L124 |
+| ワークスペース型定義 | L153 |
+| 完了タスク | L207 |
+| 変更履歴 | L266 |
 
 ### references/interfaces-chat-history.md
 

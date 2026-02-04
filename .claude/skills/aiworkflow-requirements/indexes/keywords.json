@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-04T03:39:41.146Z",
-  "totalKeywords": 1024,
+  "generated": "2026-02-04T02:59:34.443Z",
+  "totalKeywords": 1026,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -23,6 +23,7 @@
       "api-ipc-auth.md",
       "api-ipc-system.md",
       "arch-claude-cli.md",
+      "architecture-implementation-patterns.md",
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
       "interfaces-rag-file-selection.md",
@@ -187,6 +188,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
+      "interfaces-auth.md",
       "interfaces-chat-history.md",
       "interfaces-converter-extension.md",
       "interfaces-converter-implementations.md",
@@ -655,6 +657,7 @@
       "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
+      "interfaces-auth.md",
       "interfaces-chat-history.md",
       "interfaces-llm.md",
       "interfaces-system-prompt.md",
@@ -1199,6 +1202,12 @@
       "architecture-implementation-patterns.md"
     ],
     "スキル作成実装パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "外部": [
+      "architecture-implementation-patterns.md"
+    ],
+    "データ正規化パターン": [
       "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
