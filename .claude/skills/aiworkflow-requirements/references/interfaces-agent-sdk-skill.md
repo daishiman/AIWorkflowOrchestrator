@@ -737,6 +737,93 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 ## 完了タスク
 
+### TASK-FIX-1-1-TYPE-ALIGNMENT: スキル型定義の統一（2026-02-04完了）
+
+| 項目         | 内容                                             |
+| ------------ | ------------------------------------------------ |
+| タスクID     | TASK-FIX-1-1-TYPE-ALIGNMENT                      |
+| 完了日       | 2026-02-04                                       |
+| ステータス   | **完了**                                         |
+| テスト数     | 49（自動テスト）                                 |
+| 発見課題     | 0件                                              |
+| ドキュメント | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/` |
+
+#### テスト結果サマリー
+
+| カテゴリ            | テスト数 | PASS | FAIL |
+| ------------------- | -------- | ---- | ---- |
+| Skill Metadata Types| 8        | 8    | 0    |
+| Skill Execution Types| 5       | 5    | 0    |
+| Skill Stream Message | 11      | 11   | 0    |
+| Discriminated Union | 6        | 6    | 0    |
+| Permission Types    | 5        | 5    | 0    |
+| 移行型テスト        | 14       | 14   | 0    |
+
+#### 主要成果
+
+| 成果                    | 内容                                                                 |
+| ----------------------- | -------------------------------------------------------------------- |
+| 型統合                  | skill-execution.tsの6型+1定数をskill.tsに統合                        |
+| BaseStreamMessage抽出   | Discriminated Unionの共通プロパティをDRY原則に基づき共通化           |
+| import文更新            | 9ファイルのimport文を`skill-execution`→`skill`に統一                 |
+| パッケージエクスポート削除 | package.json, tsup.config.tsからskill-executionエントリ削除        |
+
+#### 成果物
+
+| 成果物             | パス                                                                                   |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| 実装ガイド         | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md` |
+| テスト結果レポート | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-11/manual-test-result.md`   |
+| 未タスク検出       | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 関連ドキュメント
+
+| ドキュメント                          | 説明                        |
+| ------------------------------------- | --------------------------- |
+| [実装ガイド](../../../../docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md) | 概念的説明（中学生レベル）+ 技術詳細 |
+
+#### 実装上の苦戦箇所・教訓
+
+TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直面した際の参考として記録する。
+
+##### 1. パッケージエクスポート更新漏れ
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | 型ファイル削除時、package.json/tsup.config.tsのエクスポート定義を更新し忘れる |
+| 原因 | 型定義ファイルの削除に集中し、パッケージ設定への影響を見落とす |
+| 解決策 | **削除前チェックリスト**: ①ファイル削除 → ②package.json exports確認 → ③tsup.config.ts entry確認 → ④index.ts再エクスポート確認 |
+| 検証方法 | `grep -rn "削除対象ファイル名" packages/shared/` で参照残存確認 |
+
+##### 2. 型定義ファイルのカバレッジ寄与
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 型のみ定義するファイル（interface, type）はJavaScriptにトランスパイルされないためカバレッジに寄与しない |
+| 認識 | Vitestのc8/istanbulは実行時コードのみカバレッジ計測 |
+| 対策 | 型テストは**コンパイル成功＝テスト成功**として扱い、カバレッジ目標から除外 |
+| テスト戦略 | `tsc --noEmit`による型チェック + ランタイムテストでの型ガード検証 |
+
+##### 3. Discriminated UnionのDRY原則適用
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | Discriminated Unionの各バリアントに共通プロパティ（executionId, timestamp）が重複 |
+| 解決策 | BaseStreamMessageインターフェースを抽出し、Intersection Type (`&`) で結合 |
+| 利点 | 共通プロパティの一元管理、将来の共通プロパティ追加が容易 |
+| 注意点 | TypeScript 4.1以降のIntersection Type最適化を活用 |
+
+##### 4. import文一括置換の安全性
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 複数ファイルのimport文を一括で変更する際の漏れ・誤変換リスク |
+| 解決策 | ①Grep で対象ファイル特定 → ②1ファイルずつ手動確認 → ③typecheck実行で検証 |
+| 禁止事項 | sed/awkによる一括置換は避ける（コンテキスト無視の誤変換リスク） |
+| 推奨 | IDE のリファクタリング機能またはEdit tool での個別置換 |
+
+---
+
 ### TASK-9C: スキル改善・自動修正機能（2026-02-03完了）
 
 | 項目         | 内容                                                    |
@@ -1162,6 +1249,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-04 | 1.12.0     | TASK-FIX-1-1-TYPE-ALIGNMENT: スキル型定義統一完了記録追加（skill-execution.ts削除、6型+1定数をskill.tsに統合、BaseStreamMessage抽出） |
 | 2026-02-03 | 1.11.0     | マージ統合: TASK-9B-G + TASK-9C |
 | 2026-02-03 | 1.10.0     | TASK-9B-G: 実装上の苦戦箇所・教訓セクション追加（未タスク登録漏れ、Script First統合設計、定数外部化、パストラバーサル防止） |
 | 2026-02-03 | 1.9.0      | TASK-9B-G: SkillCreatorService仕様追加（SkillCreatorMode, ScriptExecutor, ResourceLoader型定義、API仕様、50テスト完了記録） |

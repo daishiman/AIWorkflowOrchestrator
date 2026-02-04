@@ -19,7 +19,7 @@ import {
   within,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { SkillStreamMessage } from "@repo/shared/types/skill-execution";
+import type { SkillStreamMessage } from "@repo/shared/types/skill";
 
 // Cleanup DOM between tests
 afterEach(() => {

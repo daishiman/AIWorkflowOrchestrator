@@ -49,11 +49,14 @@
 
 ## 参照資料
 
-| 資料名       | パス                                       | 説明           |
-| ------------ | ------------------------------------------ | -------------- |
-| 最終レビュー | `outputs/phase-10/final-review-result.md`  | Phase 10成果物 |
-| 手動テスト   | `outputs/phase-11/manual-test-result.md`   | Phase 11成果物 |
-| 実装ガイド   | `outputs/phase-12/implementation-guide.md` | Phase 12成果物 |
+| 資料名               | パス                                                                              | 説明              |
+| -------------------- | --------------------------------------------------------------------------------- | ----------------- |
+| 最終レビュー         | `outputs/phase-10/final-review-result.md`                                         | Phase 10成果物    |
+| 手動テスト           | `outputs/phase-11/manual-test-result.md`                                          | Phase 11成果物    |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`                                        | Phase 12成果物    |
+| 未タスク検出レポート | `outputs/phase-12/unassigned-task-detection.md`                                   | Phase 12成果物    |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様  |
+| phase-templates      | `.claude/skills/task-specification-creator/references/phase-templates.md`         | Phaseテンプレート |
 
 ## 成果物
 

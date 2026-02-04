@@ -48,6 +48,15 @@
 | index.ts の re-export が整理されている      | ☐    |
 | JSDocコメントが整理されている               | ☐    |
 
+## 参照資料
+
+| 資料名               | パス                                                                              | 説明                   |
+| -------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| 品質レポート         | `outputs/phase-9/quality-report.md`                                               | Phase 9成果物          |
+| 要件定義書           | `outputs/phase-1/requirements-definition.md`                                      | Phase 1成果物          |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様       |
+| quality-requirements | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | テスト戦略・カバレッジ |
+
 ## 統合テスト連携【必須】
 
 最終レビューで統合テスト結果を確認:

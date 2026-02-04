@@ -32,6 +32,13 @@ pnpm test:coverage
 
 カバレッジ未達や統合テスト失敗がある場合、Phase 6へ戻って拡充する。
 
+## 参照資料
+
+| 資料名               | パス                                                                        | 説明                   |
+| -------------------- | --------------------------------------------------------------------------- | ---------------------- |
+| Phase 6成果物        | `outputs/phase-6/coverage-report.md`                                        | カバレッジレポート     |
+| quality-requirements | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` | テスト戦略・カバレッジ |
+
 ## 統合テスト連携【必須】
 
 統合テストの再実行とゲート判定:

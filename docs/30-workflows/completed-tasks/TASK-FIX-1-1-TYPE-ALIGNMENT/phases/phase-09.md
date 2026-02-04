@@ -45,6 +45,15 @@
 | 後方互換性（ランタイムエラーなし） | 既存テストがPASS              |
 | strict mode 対応                   | tsconfig.json の strict: true |
 
+## 参照資料
+
+| 資料名               | パス                                                                              | 説明                   |
+| -------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`                                              | Phase 7成果物          |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様       |
+| quality-requirements | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | テスト戦略・カバレッジ |
+| api-ipc-agent        | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`              | IPCチャンネル定義      |
+
 ## 統合テスト連携【必須】
 
 品質保証で統合テスト結果を確認:

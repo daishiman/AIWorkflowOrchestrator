@@ -43,6 +43,15 @@
 2. **import の自動補完確認**
    - `@repo/shared` からの import が正しく補完されること
 
+## 参照資料
+
+| 資料名               | パス                                                                              | 説明                  |
+| -------------------- | --------------------------------------------------------------------------------- | --------------------- |
+| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`                                         | Phase 10成果物        |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様      |
+| api-ipc-agent        | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`              | IPCチャンネル定義     |
+| phase-11-12-guide    | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`       | Phase 11/12ガイダンス |
+
 ## テストケース
 
 | No  | カテゴリ     | テスト項目         | 期待結果           | 実行結果 |

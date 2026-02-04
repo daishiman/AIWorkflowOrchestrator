@@ -64,6 +64,15 @@ describe("Runtime Type Validation", () => {
 });
 ```
 
+## 参照資料
+
+| 資料名               | パス                                                                              | 説明                   |
+| -------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| Phase 5成果物        | `packages/shared/src/types/skill.ts`                                              | 統合済み型定義         |
+| テスト仕様書         | `outputs/phase-4/test-specification.md`                                           | Phase 4成果物          |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様       |
+| quality-requirements | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | テスト戦略・カバレッジ |
+
 ## ユニットテストカバレッジ基準
 
 | 指標              | 最低基準 | 推奨基準 | 現在 |

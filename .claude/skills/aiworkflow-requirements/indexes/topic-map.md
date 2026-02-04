@@ -266,10 +266,10 @@ node scripts/list-specs.js --topics
 | SkillFileManager（TASK-9A-A） | L598 |
 | テストアーキテクチャ（TASK-8C-A） | L686 |
 | 完了タスク | L738 |
-| 関連ドキュメント | L869 |
-| SkillCreatorService（TASK-9B-G） | L882 |
-| 完了タスク | L1130 |
-| 変更履歴 | L1161 |
+| 関連ドキュメント | L956 |
+| SkillCreatorService（TASK-9B-G） | L969 |
+| 完了タスク | L1217 |
+| 変更履歴 | L1248 |
 
 ### references/interfaces-agent-sdk-ui.md
 

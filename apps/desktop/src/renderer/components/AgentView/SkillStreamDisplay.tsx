@@ -33,7 +33,7 @@ import {
 import type {
   SkillStreamMessage,
   SkillExecutionError,
-} from "@repo/shared/types/skill-execution";
+} from "@repo/shared/types/skill";
 
 /**
  * SkillStreamDisplay Props
@@ -212,86 +212,82 @@ const MessageItem = React.memo(function MessageItem({
 }) {
   const getMessageClassName = (): string => {
     switch (message.type) {
-      case "text":
+      case "assistant":
         return "message-text";
       case "tool_use":
         return "message-tool-use";
       case "error":
         return "message-error text-red-500";
+      case "status":
+        return "message-status";
+      case "tool_result":
+        return "message-tool-result";
       default:
         return "";
     }
   };
 
-  // complete タイプは表示しない
-  if (message.type === "complete") {
+  // completed status は表示しない
+  if (message.type === "status" && message.content.status === "completed") {
     return null;
   }
 
   // tool_use の場合はツール名を抽出して表示
   if (message.type === "tool_use") {
-    try {
-      const parsed = JSON.parse(message.content);
-      return (
-        <div
-          className={`message-item ${getMessageClassName()} group flex justify-between items-start gap-2`}
-        >
-          <span className="tool-name flex-1">{parsed.name}</span>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <MessageTimestamp
-              timestamp={message.timestamp}
-              messageId={message.id}
-              locale={locale}
-            />
-            <CopyButton
-              content={parsed.name}
-              messageId={message.id}
-              ariaLabel={copyAriaLabel}
-              feedbackText={copyFeedbackText}
-              onCopySuccess={onCopySuccess}
-            />
-          </div>
+    const toolName = message.content.toolName;
+    return (
+      <div
+        className={`message-item ${getMessageClassName()} group flex justify-between items-start gap-2`}
+      >
+        <span className="tool-name flex-1">{toolName}</span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <MessageTimestamp
+            timestamp={message.timestamp}
+            messageId={message.executionId}
+            locale={locale}
+          />
+          <CopyButton
+            content={toolName}
+            messageId={message.executionId}
+            ariaLabel={copyAriaLabel}
+            feedbackText={copyFeedbackText}
+            onCopySuccess={onCopySuccess}
+          />
         </div>
-      );
-    } catch {
-      return (
-        <div
-          className={`message-item ${getMessageClassName()} group flex justify-between items-start gap-2`}
-        >
-          <span className="flex-1">{message.content}</span>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <MessageTimestamp
-              timestamp={message.timestamp}
-              messageId={message.id}
-              locale={locale}
-            />
-            <CopyButton
-              content={message.content}
-              messageId={message.id}
-              ariaLabel={copyAriaLabel}
-              feedbackText={copyFeedbackText}
-              onCopySuccess={onCopySuccess}
-            />
-          </div>
-        </div>
-      );
-    }
+      </div>
+    );
+  }
+
+  // content を文字列化
+  let displayContent: string;
+  if (message.type === "assistant") {
+    displayContent = message.content.text;
+  } else if (message.type === "tool_result") {
+    displayContent = message.content.success
+      ? String(message.content.result ?? "")
+      : (message.content.error ?? "");
+  } else if (message.type === "status") {
+    displayContent = message.content.detail ?? message.content.status;
+  } else if (message.type === "error") {
+    displayContent = message.content.message;
+  } else {
+    displayContent = "";
   }
 
   return (
     <div
       className={`message-item ${getMessageClassName()} group flex justify-between items-start gap-2`}
     >
-      <span className="flex-1">{message.content}</span>
+      <span className="flex-1">{displayContent}</span>
       <div className="flex items-center gap-2 flex-shrink-0">
         <MessageTimestamp
           timestamp={message.timestamp}
-          messageId={message.id}
+          messageId={message.executionId}
           locale={locale}
         />
         <CopyButton
-          content={message.content}
-          messageId={message.id}
+          content={displayContent}
+          messageId={message.executionId}
           ariaLabel={copyAriaLabel}
           feedbackText={copyFeedbackText}
           onCopySuccess={onCopySuccess}
@@ -476,7 +472,7 @@ function SkillStreamDisplayInner({
         )}
         {messages.map((message) => (
           <MessageItem
-            key={message.id}
+            key={`${message.executionId}-${message.timestamp}`}
             message={message}
             locale={i18n.language}
             copyAriaLabel={copyAriaLabel}

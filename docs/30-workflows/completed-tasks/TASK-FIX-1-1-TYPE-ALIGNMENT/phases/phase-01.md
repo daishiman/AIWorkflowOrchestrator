@@ -62,12 +62,15 @@
 
 ## 参照資料
 
-| 資料名             | パス                                                           | 説明           |
-| ------------------ | -------------------------------------------------------------- | -------------- |
-| 仕様書             | `docs/30-workflows/skill-import-agent-system/specification.md` | §5.1 型定義    |
-| 元タスク指示書     | `tasks/task-fix-1-1-type-alignment.md`                         | 発見経緯・背景 |
-| 型定義（正）       | `packages/shared/src/types/skill.ts`                           | 統合先         |
-| 型定義（統合対象） | `packages/shared/src/types/skill-execution.ts`                 | 削除予定       |
+| 資料名                | パス                                                                              | 説明                   |
+| --------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| 仕様書                | `docs/30-workflows/skill-import-agent-system/specification.md`                    | §5.1 型定義            |
+| 元タスク指示書        | `tasks/task-fix-1-1-type-alignment.md`                                            | 発見経緯・背景         |
+| 型定義（正）          | `packages/shared/src/types/skill.ts`                                              | 統合先                 |
+| 型定義（統合対象）    | `packages/shared/src/types/skill-execution.ts`                                    | 削除予定               |
+| interfaces-agent-sdk  | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様       |
+| api-ipc-agent         | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`              | IPCチャンネル定義      |
+| arch-state-management | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`      | 状態管理アーキテクチャ |
 
 ## 統合テスト連携【必須】
 

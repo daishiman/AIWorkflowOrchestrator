@@ -74,6 +74,16 @@ import {
 import { SkillStreamMessage, SkillExecutionRequest } from "@repo/shared";
 ```
 
+## 参照資料
+
+| 資料名               | パス                                                                              | 説明              |
+| -------------------- | --------------------------------------------------------------------------------- | ----------------- |
+| 要件定義書           | `outputs/phase-1/requirements-definition.md`                                      | Phase 1成果物     |
+| 型統合設計書         | `outputs/phase-2/type-integration-design.md`                                      | Phase 2成果物     |
+| テスト仕様書         | `outputs/phase-4/test-specification.md`                                           | Phase 4成果物     |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様  |
+| api-ipc-agent        | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`              | IPCチャンネル定義 |
+
 ## 統合テスト連携【必須】
 
 型統合後の接続確認:

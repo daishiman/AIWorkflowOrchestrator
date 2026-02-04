@@ -46,6 +46,17 @@
 | 既存テストへの影響が明確             | ☐    |
 | 型安全性テストの方針が定義されている | ☐    |
 
+## 参照資料
+
+| 資料名                | パス                                                                                        | 説明                   |
+| --------------------- | ------------------------------------------------------------------------------------------- | ---------------------- |
+| 型統合設計書          | `outputs/phase-2/type-integration-design.md`                                                | Phase 2成果物          |
+| interfaces-agent-sdk  | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`           | スキル型定義仕様       |
+| api-ipc-agent         | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                        | IPCチャンネル定義      |
+| arch-state-management | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | skillSlice状態管理     |
+| quality-requirements  | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | テスト戦略・カバレッジ |
+| architecture-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | 実装パターン           |
+
 ## 統合テスト連携【必須】
 
 統合テスト観点のレビューゲートを実施:

@@ -14,7 +14,7 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { screen, cleanup, waitFor, render } from "@testing-library/react";
-import type { SkillStreamMessage } from "@repo/shared/types/skill-execution";
+import type { SkillStreamMessage } from "@repo/shared/types/skill";
 import { createTestI18n } from "../../../test-utils/i18n-test-utils";
 import { I18nextProvider } from "react-i18next";
 

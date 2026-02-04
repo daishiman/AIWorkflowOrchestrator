@@ -11,7 +11,7 @@ import type {
   SkillStreamMessage,
   SkillExecutionResponse,
   SkillExecutionError,
-} from "@repo/shared/types/skill-execution";
+} from "@repo/shared/types/skill";
 
 /**
  * 実行ステータス
@@ -93,18 +93,21 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
         });
 
         // メッセージタイプに応じてステータス更新
-        if (message.type === "complete") {
+        if (
+          message.type === "status" &&
+          message.content.status === "completed"
+        ) {
           setStatus("completed");
         } else if (message.type === "error") {
           // 中断メッセージの場合は aborted ステータス
-          if (message.content.toLowerCase().includes("abort")) {
+          if (message.content.message.toLowerCase().includes("abort")) {
             setStatus("aborted");
             setIsAborting(false);
           } else {
             setStatus("error");
             setError({
               code: "EXECUTION_FAILED",
-              message: message.content,
+              message: message.content.message,
             });
           }
         }
@@ -128,19 +131,24 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
       try {
         const response = await window.skillAPI.execute({
           prompt,
-          skillId,
+          skillName: skillId,
         });
 
         if (response.success) {
           executionIdRef.current = response.executionId;
         } else {
           setStatus("error");
-          setError(
-            response.error || {
-              code: "EXECUTION_FAILED",
-              message: "Unknown error",
-            },
-          );
+          const errorValue: SkillExecutionError =
+            typeof response.error === "string"
+              ? {
+                  code: "EXECUTION_FAILED",
+                  message: response.error,
+                }
+              : response.error || {
+                  code: "EXECUTION_FAILED",
+                  message: "Unknown error",
+                };
+          setError(errorValue);
         }
 
         return response;

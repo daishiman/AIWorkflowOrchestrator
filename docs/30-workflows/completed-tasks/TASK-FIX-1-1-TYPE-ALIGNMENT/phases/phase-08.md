@@ -67,6 +67,14 @@ rm packages/shared/src/types/skill-execution.ts
 grep "skill-execution" packages/shared/src/types/index.ts
 ```
 
+## 参照資料
+
+| 資料名                | パス                                                                              | 説明             |
+| --------------------- | --------------------------------------------------------------------------------- | ---------------- |
+| 統合済み型定義        | `packages/shared/src/types/skill.ts`                                              | Phase 5成果物    |
+| interfaces-agent-sdk  | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様 |
+| architecture-monorepo | `.claude/skills/aiworkflow-requirements/references/architecture-monorepo.md`      | モノレポ構成     |
+
 ## 統合テスト連携【必須】
 
 リファクタリング後の統合テスト継続成功を確認:

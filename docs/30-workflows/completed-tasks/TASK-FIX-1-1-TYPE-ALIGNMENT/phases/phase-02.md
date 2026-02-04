@@ -75,10 +75,14 @@ import { SkillStreamMessage } from "@repo/shared";
 
 ## 参照資料
 
-| 資料名      | パス                                         | 説明          |
-| ----------- | -------------------------------------------- | ------------- |
-| 要件定義書  | `outputs/phase-1/requirements-definition.md` | Phase 1成果物 |
-| 仕様書 §5.1 | `specification.md`                           | 型定義仕様    |
+| 資料名                | パス                                                                                        | 説明               |
+| --------------------- | ------------------------------------------------------------------------------------------- | ------------------ |
+| 要件定義書            | `outputs/phase-1/requirements-definition.md`                                                | Phase 1成果物      |
+| 仕様書 §5.1           | `specification.md`                                                                          | 型定義仕様         |
+| interfaces-agent-sdk  | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`           | スキル型定義仕様   |
+| api-ipc-agent         | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                        | IPCチャンネル定義  |
+| arch-state-management | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | skillSlice状態管理 |
+| architecture-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | 実装パターン       |
 
 ## 統合テスト連携【必須】
 

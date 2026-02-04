@@ -78,11 +78,13 @@ describe("Import Path Validation", () => {
 
 ## 参照資料
 
-| 資料名       | パス                                         | 説明          |
-| ------------ | -------------------------------------------- | ------------- |
-| 要件定義書   | `outputs/phase-1/requirements-definition.md` | Phase 1成果物 |
-| 型統合設計書 | `outputs/phase-2/type-integration-design.md` | Phase 2成果物 |
-| 設計レビュー | `outputs/phase-3/design-review-result.md`    | Phase 3成果物 |
+| 資料名               | パス                                                                              | 説明                   |
+| -------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| 要件定義書           | `outputs/phase-1/requirements-definition.md`                                      | Phase 1成果物          |
+| 型統合設計書         | `outputs/phase-2/type-integration-design.md`                                      | Phase 2成果物          |
+| 設計レビュー         | `outputs/phase-3/design-review-result.md`                                         | Phase 3成果物          |
+| interfaces-agent-sdk | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | スキル型定義仕様       |
+| quality-requirements | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | テスト戦略・カバレッジ |
 
 ## 統合テスト連携【必須】
 

@@ -23,6 +23,37 @@
 
 ---
 
+## 2026-02-04: TASK-FIX-1-1-TYPE-ALIGNMENT完了（スキル型定義の統一）
+
+| 項目         | 内容                                                                     |
+| ------------ | ------------------------------------------------------------------------ |
+| タスクID     | TASK-FIX-1-1-TYPE-ALIGNMENT                                              |
+| 操作         | Phase 1-12 完了（型統合・リファクタリング）                              |
+| 対象ファイル | skill.ts, skill-execution.ts（削除）, index.ts, package.json, tsup.config.ts |
+| 結果         | success                                                                  |
+| 備考         | 49テスト全PASS。skill-execution.tsの6型+1定数をskill.tsに統合、BaseStreamMessage抽出 |
+
+### 更新詳細
+
+| ファイル                  | 変更内容                                               |
+| ------------------------- | ------------------------------------------------------ |
+| skill.ts                  | ExecutionState等6型+SKILL_EXECUTION_DEFAULTS追加       |
+| skill-execution.ts        | 削除（型をskill.tsに移行）                             |
+| index.ts                  | skill-executionエクスポート削除                        |
+| package.json              | skill-executionエントリ削除                            |
+| tsup.config.ts            | skill-executionエントリ削除                            |
+| 9ファイル（apps/desktop/）| import文更新（skill-execution→skill）                  |
+
+### テスト結果サマリー
+
+| カテゴリ            | テスト数 | PASS | FAIL |
+| ------------------- | -------- | ---- | ---- |
+| 機能テスト          | 49       | 49   | 0    |
+| Discriminated Union | 6        | 6    | 0    |
+| 移行型テスト        | 12       | 12   | 0    |
+
+---
+
 ## 2026-02-03: TASK-9C完了（スキル改善・自動修正機能）
 
 | 項目         | 内容                                                                                                  |
@@ -2292,5 +2323,55 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | --------- | --------------------------- | ---------- |
 | TASK-9A-A | SkillFileManager実装        | **完了**   |
 | TASK-9A-B | IPC接続・フロントエンド統合 | 計画済み   |
+
+---
+
+## 2026-02-04: TASK-FIX-1-1-TYPE-ALIGNMENT完了（スキル型定義統一）
+
+| 項目         | 内容                                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-1-1-TYPE-ALIGNMENT                                                                                |
+| 操作         | Phase 1-12 完了（型統合・ファイル削除）                                                                    |
+| 対象ファイル | packages/shared/src/types/skill.ts, skill-execution.ts（削除）                                             |
+| 結果         | success                                                                                                    |
+| 備考         | skill-execution.tsの6型+1定数をskill.tsに統合。BaseStreamMessage抽出（DRY原則）。49テスト・typecheck全PASS |
+
+### テスト結果サマリー
+
+| カテゴリ            | テスト数 | PASS | FAIL |
+| ------------------- | -------- | ---- | ---- |
+| Skill Metadata Types| 8        | 8    | 0    |
+| Skill Execution Types| 5       | 5    | 0    |
+| Skill Stream Message | 11      | 11   | 0    |
+| Discriminated Union | 6        | 6    | 0    |
+| Permission Types    | 5        | 5    | 0    |
+| 移行型テスト        | 14       | 14   | 0    |
+
+### 実装内容
+
+| 項目                    | 内容                                                                 |
+| ----------------------- | -------------------------------------------------------------------- |
+| 型統合                  | skill-execution.tsの6型+1定数をskill.tsに統合                        |
+| BaseStreamMessage抽出   | Discriminated Unionの共通プロパティをDRY原則に基づき共通化           |
+| import文更新            | 9ファイルのimport文を`skill-execution`→`skill`に統一                 |
+| パッケージエクスポート削除 | package.json, tsup.config.tsからskill-executionエントリ削除        |
+| ファイル削除            | packages/shared/src/types/skill-execution.ts                         |
+
+### 実装課題と解決策（教訓）
+
+| 課題                     | 解決策                                                                     |
+| ------------------------ | -------------------------------------------------------------------------- |
+| パッケージエクスポート更新漏れ | 削除前チェックリスト: ①ファイル削除→②package.json→③tsup.config.ts→④index.ts |
+| 型カバレッジ寄与なし     | 型テストはコンパイル成功＝テスト成功として扱う                             |
+| Discriminated Union DRY  | BaseStreamMessage抽出＋Intersection Type結合                               |
+| import一括置換リスク     | IDE/Edit toolでの個別置換、sed/awk一括置換禁止                             |
+
+### 成果物
+
+| 成果物               | パス                                                               |
+| -------------------- | ------------------------------------------------------------------ |
+| 実装ガイド           | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md |
+| 未タスク検出レポート | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/unassigned-task-detection.md |
+| ドキュメント更新履歴 | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/documentation-changelog.md |
 
 ---
