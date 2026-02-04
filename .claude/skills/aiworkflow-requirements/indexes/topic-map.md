@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-03
+> 自動生成: 2026-02-04
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -267,6 +267,7 @@ node scripts/list-specs.js --topics
 | 完了タスク | L738 |
 | 関連ドキュメント | L869 |
 | SkillCreatorService（TASK-9B-G） | L882 |
+| 完了タスク | L1130 |
 | 変更履歴 | L1161 |
 
 ### references/interfaces-agent-sdk-ui.md
@@ -617,9 +618,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Agent Dashboard IPC チャネル | L10 |
 | Workspace Chat Edit IPC チャネル | L76 |
-| 完了タスク | L201 |
-| 関連ドキュメント | L230 |
-| 変更履歴 | L239 |
+| 完了タスク | L202 |
+| 実装パターン参照 | L274 |
+| 関連ドキュメント | L286 |
+| 変更履歴 | L296 |
 
 ### references/api-ipc-auth.md
 
@@ -905,8 +907,8 @@ node scripts/list-specs.js --topics
 | 実装詳細（TASK-SEARCH-INTEGRATE-001） | L310 |
 | 関連ドキュメント | L408 |
 | 完了タスク | L417 |
-| 未タスク（将来の改善候補） | L423 |
-| 変更履歴 | L464 |
+| 未タスク（将来の改善候補） | L453 |
+| 変更履歴 | L494 |
 
 ### references/ui-ux-settings.md
 
@@ -1736,8 +1738,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L275 |
-| 変更履歴 | L285 |
+| 関連ドキュメント | L280 |
+| 変更履歴 | L290 |
 
 ### references/testing-accessibility.md
 

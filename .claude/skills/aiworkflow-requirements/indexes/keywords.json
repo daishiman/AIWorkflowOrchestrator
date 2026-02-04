@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-03T08:09:30.528Z",
-  "totalKeywords": 1021,
+  "generated": "2026-02-04T03:39:41.146Z",
+  "totalKeywords": 1024,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -670,6 +670,9 @@
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
       "ui-ux-search-panel.md"
+    ],
+    "実装パターン参照": [
+      "api-ipc-agent.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
