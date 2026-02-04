@@ -2,7 +2,7 @@
 id: AUTH-UI-004
 tier: 1
 title: Googleアバター取得修正
-phase: 11
+phase: 12
 depends_on: [AUTH-UI-001, AUTH-UI-003]
 parallel_with: []
 blocks: []
@@ -70,21 +70,23 @@ AUTH-UI-003でアバターメニューの動的表示機能を実装した際、
 | 8     | リファクタリング     | TDD: Refactor（品質改善）        | **完了**   | [phase-08-refactoring.md](./phase-08-refactoring.md)       |
 | 9     | 品質保証             | 静的解析・セキュリティ           | **完了**   | [phase-09-quality.md](./phase-09-quality.md)               |
 | 10    | 最終レビューゲート   | 全体品質・整合性検証             | **完了**   | [phase-10-final-review.md](./phase-10-final-review.md)     |
-| 11    | 手動テスト検証       | 実環境動作確認                   | 作業中     | [phase-11-manual-test.md](./phase-11-manual-test.md)       |
-| 12    | ドキュメント更新     | ドキュメント更新・仕様反映       | 未着手     | [phase-12-documentation.md](./phase-12-documentation.md)   |
+| 11    | 手動テスト検証       | 実環境動作確認                   | **待機中** | [phase-11-manual-test.md](./phase-11-manual-test.md)       |
+| 12    | ドキュメント更新     | ドキュメント更新・仕様反映       | **完了**   | [phase-12-documentation.md](./phase-12-documentation.md)   |
 | 13    | PR作成               | コミット・PR・CI確認             | 未着手     | [phase-13-pr-creation.md](./phase-13-pr-creation.md)       |
 
 ---
 
 ## 成果物一覧
 
-| 成果物                                                   | Phase | 説明                     | ステータス |
-| -------------------------------------------------------- | ----- | ------------------------ | ---------- |
-| `packages/shared/types/auth.ts`                          | 5     | SupabaseIdentity型修正   | **完了**   |
-| `packages/shared/infrastructure/auth/supabase-client.ts` | 5     | toLinkedProvider関数修正 | **完了**   |
-| テストケース                                             | 4, 6  | ユニットテスト           | **完了**   |
-| 手動テスト結果                                           | 11    | 動作確認レポート         | 未着手     |
-| 実装ガイド                                               | 12    | ドキュメント             | 未着手     |
+| 成果物                                                                  | Phase | 説明                     | ステータス |
+| ----------------------------------------------------------------------- | ----- | ------------------------ | ---------- |
+| `packages/shared/types/auth.ts`                                         | 5     | SupabaseIdentity型修正   | **完了**   |
+| `packages/shared/infrastructure/auth/supabase-client.ts`                | 5     | toLinkedProvider関数修正 | **完了**   |
+| `packages/shared/infrastructure/auth/__tests__/supabase-client.test.ts` | 4, 6  | ユニットテスト           | **完了**   |
+| `outputs/phase-11/manual-test-result.md`                                | 11    | 動作確認レポート         | **待機中** |
+| `outputs/phase-12/implementation-guide.md`                              | 12    | 実装ガイド               | **完了**   |
+| `outputs/phase-12/documentation-changelog.md`                           | 12    | ドキュメント更新履歴     | **完了**   |
+| `outputs/phase-12/unassigned-task-detection.md`                         | 12    | 未タスク検出レポート     | **完了**   |
 
 ---
 
@@ -144,8 +146,8 @@ AUTH-UI-003でアバターメニューの動的表示機能を実装した際、
 ### ドキュメント要件
 
 - [x] コードにJSDocコメントが追加されている
-- [ ] 実装ガイドが作成されている
-- [ ] 未タスク検出レポートが作成されている
+- [x] 実装ガイドが作成されている
+- [x] 未タスク検出レポートが作成されている
 
 ---
 
@@ -180,6 +182,7 @@ const avatarUrl =
 
 ## 変更履歴
 
-| Version | Date       | Changes  |
-| ------- | ---------- | -------- |
-| 1.0.0   | 2026-02-04 | 初版作成 |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 1.0.0   | 2026-02-04 | 初版作成                                 |
+| 1.1.0   | 2026-02-04 | Phase 1-12成果物出力、ユニットテスト追加 |

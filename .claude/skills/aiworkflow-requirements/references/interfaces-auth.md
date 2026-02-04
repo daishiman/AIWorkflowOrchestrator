@@ -203,3 +203,69 @@ Desktop アプリの複数フォルダ管理機能で使用する型定義。
 **実装場所**: `apps/desktop/src/renderer/store/types/workspace.ts`, `apps/desktop/src/main/ipc/validation.ts`
 
 ---
+
+## 完了タスク
+
+### AUTH-UI-004: Googleアバター取得修正（2026-02-04）
+
+**概要**: Google連携時に「Googleのアバターを使用」オプションがアバターメニューに表示されない問題を修正。
+
+#### 実装内容
+
+| 対象                     | 変更内容                                           |
+| ------------------------ | -------------------------------------------------- |
+| `SupabaseIdentity`型     | `picture`プロパティを追加（Google用）              |
+| `toLinkedProvider()`関数 | フォールバック処理: `avatar_url ?? picture ?? null` |
+
+#### プロバイダー別アバターURL取得ロジック
+
+| プロバイダー | キー名       | 取得優先度 |
+| ------------ | ------------ | ---------- |
+| Google       | `picture`    | 2          |
+| GitHub       | `avatar_url` | 1          |
+| Discord      | `avatar_url` | 1          |
+
+**フォールバック実装**:
+```typescript
+const avatarUrl =
+  identity.identity_data?.avatar_url ??
+  identity.identity_data?.picture ??
+  null;
+```
+
+#### テスト結果サマリー
+
+| 項目           | 結果      |
+| -------------- | --------- |
+| ユニットテスト | 8件 PASS  |
+| カバレッジ     | 100%      |
+| 型エラー       | なし      |
+| Lintエラー     | なし      |
+
+#### 苦戦箇所・教訓
+
+| 課題                         | 原因                                      | 解決策                                       |
+| ---------------------------- | ----------------------------------------- | -------------------------------------------- |
+| better-sqlite3バインディング | グローバルpnpm環境のネイティブモジュール不一致 | 対象テストのみ実行（環境依存問題として分離）  |
+| Phase 12ドキュメント漏れ     | LOGS.md×2、SKILL.md更新、topic-map.md再生成忘れ | spec-update-workflow.mdのチェックリスト遵守 |
+| テストファイル指定           | vitestのテストパスパターン指定方法の誤解       | `--config`オプション併用で明示的指定         |
+
+#### 成果物
+
+| 成果物                   | パス                                                              |
+| ------------------------ | ----------------------------------------------------------------- |
+| 型定義                   | `packages/shared/types/auth.ts`                                   |
+| 関数実装                 | `packages/shared/infrastructure/auth/supabase-client.ts`          |
+| テスト                   | `packages/shared/infrastructure/auth/__tests__/supabase-client.test.ts` |
+| タスク仕様書             | `docs/30-workflows/AUTH-UI-004-google-avatar/`                    |
+
+**関連ドキュメント**: [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) - プロバイダー別フォールバックパターン
+
+---
+
+## 変更履歴
+
+| Version    | Date           | Changes                                                                                 |
+| ---------- | -------------- | --------------------------------------------------------------------------------------- |
+| **1.1.0**  | **2026-02-04** | AUTH-UI-004完了: SupabaseIdentity型にpictureプロパティ追加、完了タスクセクション追加    |
+| 1.0.0      | 2026-01-15     | 初版作成: 認証・プロフィール・ワークスペース型定義                                       |
