@@ -4,8 +4,8 @@
    責務: プレゼンテーションスライドをA4横向き印刷に最適化
 
    設計原則:
-   - A4横向き印刷を最優先（281mm × 158mm スライド）
-   - すべての要素がA4内に収まることを保証
+   - A4横向き印刷を最優先（277mm × 156mm スライド）
+   - すべての要素がA4内に収まることを保証（ボーダー+プリンタ余白分の余裕確保）
    - 100%スケールで正確に印刷
    - pt単位でフォントサイズを固定
 
@@ -13,8 +13,13 @@
    - A4横: 297mm × 210mm
    - ページマージン: 8mm（上下左右）
    - 印刷可能領域: 281mm × 194mm
-   - 16:9スライド: 281mm × 158mm (281 × 9/16)
-   - 縦余白: 18mm（上下均等配置）
+   - 16:9スライド: 277mm × 156mm (277 × 9/16 ≈ 156mm)
+   - ボーダー余裕: 2mm（左右各1mm、プリンタの非印刷領域対策）
+   - 縦余白: 19mm（上下均等配置）
+
+   重要（v3.5.0修正）:
+   - 旧281mm幅ではボーダー(0.5pt×2)+プリンタ余白で右端が切れる問題あり
+   - 277mm幅に縮小し、4mmのバッファを確保して確実にA4内に収める
 
    使用方法:
    - Cmd+P (Mac) / Ctrl+P (Windows) で印刷ダイアログを開く
@@ -34,7 +39,26 @@
   }
 
   /* =================================================================
-     非表示要素
+     外部要素の完全非表示（Chrome拡張アイコン対策）
+     body直下の.slider以外を全て非表示にすることで、
+     Chrome拡張が注入するアイコン・バナーをPDFから除外
+     ================================================================= */
+  body > *:not(.slider) {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+  }
+
+  html::before, html::after,
+  body::before, body::after {
+    display: none !important;
+  }
+
+  /* =================================================================
+     非表示要素（ナビゲーション・UI）
      ================================================================= */
   .progress-bar,
   .slider-navigation,
@@ -75,16 +99,17 @@
   }
 
   /* =================================================================
-     スライド枠 - 281mm × 158mm 固定
+     スライド枠 - 277mm × 156mm 固定
+     ボーダー+プリンタ余白で右端切れ防止（旧281mm→277mmに縮小）
      ================================================================= */
   .slider__item {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 281mm !important;
-    height: 158mm !important;
-    margin: 18mm auto !important;
+    width: 277mm !important;
+    height: 156mm !important;
+    margin: 19mm auto !important;
     padding: 8mm !important;
     background: white !important;
     border: 0.5pt solid #CCC !important;
@@ -93,6 +118,7 @@
     page-break-after: always !important;
     page-break-inside: avoid !important;
     overflow: hidden !important;
+    isolation: isolate !important;
   }
 
   .slider__item:last-child {
@@ -100,7 +126,7 @@
   }
 
   /* =================================================================
-     コンテンツエリア - 265mm × 142mm 最大
+     コンテンツエリア - 261mm × 140mm 最大
      重要: visibility: visible を各スライドタイプに明示的に設定
      GSAPアニメーションがvisibility: hiddenをデフォルト設定するため
      ================================================================= */
@@ -109,9 +135,9 @@
     opacity: 1 !important;
     transform: none !important;
     width: 100% !important;
-    max-width: 265mm !important;
+    max-width: 261mm !important;
     height: auto !important;
-    max-height: 142mm !important;
+    max-height: 140mm !important;
     padding: 0 !important;
     box-sizing: border-box !important;
     overflow: visible !important;
@@ -659,7 +685,84 @@
   }
 
   /* =================================================================
-     スライド番号（CSS counter使用）
+     質問バッジ（印刷用）
+     ================================================================= */
+  .question-badge {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #b35b79 !important;
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+    font-size: 11pt !important;
+    padding: 2mm 6mm !important;
+    margin-bottom: 4mm !important;
+    border-radius: 4mm !important;
+  }
+
+  .question-badge i {
+    color: white !important;
+    -webkit-text-fill-color: white !important;
+    font-size: 10pt !important;
+  }
+
+  /* =================================================================
+     リストスライド拡張（single-col / alert / solution）
+     ================================================================= */
+  .slide-list .list-container.single-col {
+    flex-direction: column !important;
+    align-items: center !important;
+    max-width: 230mm !important;
+  }
+
+  .slide-list .list-container.single-col .list-item {
+    max-width: 230mm !important;
+    width: 100% !important;
+    min-width: auto !important;
+  }
+
+  .slide-list .list-item.alert {
+    border-left-color: #b35b79 !important;
+  }
+
+  .slide-list .list-item.solution {
+    border-left-color: #597b75 !important;
+  }
+
+  .slide-list .list-item.alert i {
+    color: #b35b79 !important;
+  }
+
+  .slide-list .list-item.solution i {
+    color: #597b75 !important;
+  }
+
+  /* =================================================================
+     まとめリスト（印刷用）
+     ================================================================= */
+  .summary-list {
+    font-size: 10pt !important;
+    line-height: 1.6 !important;
+    max-width: 200mm !important;
+  }
+
+  .summary-list p {
+    font-size: 10pt !important;
+  }
+
+  /* =================================================================
+     グラデーション文字の印刷対応（solid colorに変換）
+     ================================================================= */
+  .stat-value {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: #4d699b !important;
+    color: #4d699b !important;
+  }
+
+  /* =================================================================
+     スライド番号（CSS counter使用・動的ページ数）
+     data-total属性から総スライド数を取得（ハードコード禁止）
      ================================================================= */
   body {
     counter-reset: slide-counter;
@@ -670,7 +773,7 @@
   }
 
   .slider__item::before {
-    content: counter(slide-counter) " / {{総スライド数}}";
+    content: counter(slide-counter) " / " attr(data-total);
     position: absolute !important;
     bottom: 2mm !important;
     right: 3mm !important;

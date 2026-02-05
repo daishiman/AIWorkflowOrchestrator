@@ -18,7 +18,7 @@ const EXIT_ARGS_ERROR = 2;
 
 function showHelp() {
   console.log(`
-Usage: node log_usage.mjs [options]
+Usage: node log_usage.js [options]
 
 Options:
   --result <success|failure>  実行結果（必須）

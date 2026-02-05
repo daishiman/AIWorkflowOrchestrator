@@ -6,8 +6,8 @@
  * 構成案JSONの必須フィールドとスライドタイプを検証します。
  *
  * 使用例:
- *   node validate-structure.mjs structure.json
- *   echo '{"title":"Test","slides":[]}' | node validate-structure.mjs
+ *   node validate-structure.js structure.json
+ *   echo '{"title":"Test","slides":[]}' | node validate-structure.js
  *
  * 終了コード:
  *   0: 成功（検証パス）
@@ -67,8 +67,8 @@ function showHelp() {
 スライド構成案検証スクリプト
 
 Usage:
-  node validate-structure.mjs <structure.json>
-  echo '<json>' | node validate-structure.mjs
+  node validate-structure.js <structure.json>
+  echo '<json>' | node validate-structure.js
 
 Arguments:
   <structure.json>  構成案JSONファイルのパス（省略時は標準入力から読み込み）

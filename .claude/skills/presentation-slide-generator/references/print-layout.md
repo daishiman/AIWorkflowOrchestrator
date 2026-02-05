@@ -17,10 +17,10 @@ A4横向き: 297mm × 210mm
 ページマージン: 8mm（上下左右）
 印刷可能領域: 281mm × 194mm
 
-16:9比率でwidth=281mmの場合:
-height = 281 × (9/16) = 158mm
+16:9比率でwidth=277mmの場合（281mmから4mmバッファ確保）:
+height = 277 × (9/16) ≈ 156mm
 
-縦方向余白: (194 - 158) / 2 = 18mm（上下均等配置）
+縦方向余白: (194 - 156) / 2 = 19mm（上下均等配置）
 ```
 
 ### ページレイアウト
@@ -32,7 +32,7 @@ height = 281 × (9/16) = 158mm
 │ │                    18mm                      │    │
 │ │  ┌─────────── 16:9スライド ───────────┐      │    │
 │ │  │                                    │      │    │
-│ │  │         281mm × 158mm              │      │210mm
+│ │  │         277mm × 156mm              │      │210mm
 │ │  │                                    │      │    │
 │ │  │    ・アスペクト比 16:9 厳守         │      │    │
 │ │  │    ・100%スケールで正確に印刷       │      │    │
@@ -51,11 +51,12 @@ height = 281 × (9/16) = 158mm
 | ページサイズ | A4横 (297mm × 210mm) | @page size: A4 landscape |
 | ページマージン | 8mm (上下左右) | @page margin: 8mm |
 | 印刷可能領域 | 281mm × 194mm | 297-16, 210-16 |
-| **スライド幅** | **281mm** | 印刷領域フル幅 |
-| **スライド高さ** | **158mm** | 281 × 9/16 |
+| **スライド幅** | **277mm** | ボーダー+プリンタ余白分4mm確保 |
+| **スライド高さ** | **156mm** | 277 × 9/16 |
 | **アスペクト比** | **16:9** | 厳守 |
-| 縦余白（上下各） | 18mm | (194-158)/2 で中央配置 |
-| 区切り線 | 1px solid #DDD | スライド境界 |
+| 縦余白（上下各） | 19mm | (194-156)/2 で中央配置 |
+| ボーダー | 0.5pt solid #CCC | スライド境界（box-sizing: border-box） |
+| 左右バッファ | 2mm（各側） | プリンタ非印刷領域への対策 |
 
 ### シンプル方式（推奨）
 
@@ -128,6 +129,39 @@ height = 281 × (9/16) = 158mm
 }
 ```
 
+### Chrome拡張・外部要素の非表示
+
+ブラウザ印刷時にChrome拡張アイコン等の外部UI要素がPDFに混入するのを防止する。
+
+```css
+@media print {
+  /* スライダー以外の全直下要素を非表示 */
+  body > *:not(.slider) {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+  }
+
+  /* 疑似要素も非表示 */
+  html::before, html::after,
+  body::before, body::after {
+    display: none !important;
+  }
+
+  /* スタッキングコンテキスト分離 */
+  .slider__item {
+    isolation: isolate !important;
+  }
+}
+```
+
+**重要**: `body > *:not(.slider)` は `.slider` 要素以外のすべてのbody直下要素を対象とする。Chrome拡張が挿入するDOM要素（アイコン、ツールバー等）は通常body直下に挿入されるため、この指定で確実に非表示にできる。
+
+---
+
 ### スライドコンテナ（16:9固定 + mm単位）
 
 **重要**: `.slider__item` は **16:9アスペクト比を固定**し、**mm単位**で寸法を指定。
@@ -142,11 +176,11 @@ A4横向き印刷で100%スケール出力に対応。
     align-items: center !important;
     justify-content: center !important;
     /* 16:9固定サイズ（A4横の印刷領域に最適化） */
-    width: 281mm !important;
-    height: 158mm !important;
+    width: 277mm !important;
+    height: 156mm !important;
     aspect-ratio: 16 / 9 !important;
-    /* 中央配置（縦余白18mm） */
-    margin: 18mm auto !important;
+    /* 中央配置（縦余白19mm） */
+    margin: 19mm auto !important;
     padding: 8mm !important;  /* mm単位 */
     background: white !important;
     border: 1px solid #DDD !important;
@@ -168,9 +202,9 @@ A4横向き印刷で100%スケール出力に対応。
     opacity: 1 !important;
     transform: none !important;
     width: 100% !important;
-    max-width: 265mm !important;   /* コンテンツ領域幅 */
+    max-width: 261mm !important;   /* コンテンツ領域幅 */
     height: auto !important;
-    max-height: 142mm !important;  /* コンテンツ領域高さ */
+    max-height: 140mm !important;  /* コンテンツ領域高さ */
     padding: 0 !important;
     box-sizing: border-box !important;
     overflow: hidden !important;   /* はみ出し防止 */
@@ -294,18 +328,18 @@ A4横向き印刷で100%スケール出力に対応。
 
   /* スライド番号表示 */
   .slider__item::before {
-    content: counter(slide-counter) " / {{総スライド数}}";
+    content: counter(slide-counter) " / " attr(data-total);
     position: absolute !important;
-    bottom: 10px !important;
-    right: 15px !important;
-    font-size: 9pt !important;
+    bottom: 2mm !important;
+    right: 3mm !important;
+    font-size: 8pt !important;
     color: #888 !important;
     font-family: 'Noto Sans JP', sans-serif !important;
   }
 }
 ```
 
-**注**: `{{総スライド数}}` はHTML生成時に実際のスライド数に置換する。
+**注**: `attr(data-total)` は各 `.slider__item` 要素の `data-total` 属性から総スライド数を取得する。ハードコードは禁止。各スライドに `data-total="N"` を設定すること。
 
 ### フォントサイズ（pt単位固定）
 
@@ -665,6 +699,7 @@ A4横向き印刷で100%スケール出力に対応。
 
 | 問題 | 原因 | 解決策 |
 |------|------|--------|
+| **印刷時に右端ボーダーが切れる** | **スライド幅281mmが印刷領域と完全一致しボーダー分はみ出す** | **幅を277mmに変更（4mmバッファ確保）、height=156mm、margin=19mm auto** |
 | **表紙・メッセージが消える** | **GSAPがvisibility:hiddenを設定** | **各スライドタイプ別に`visibility: visible !important`を明示設定** |
 | **特定スライドのみ消える** | **スライドタイプ別CSSルール欠落** | **全23種のスライドタイプに対しdisplay/visibilityを設定** |
 | コンテンツが消える | `visibility: hidden` | 全子要素に `visibility: visible !important` を追加 |
@@ -740,6 +775,8 @@ GSAPは画面表示用に `.slider__content { visibility: hidden }` をデフォ
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **3.3.0** | **2026-02-05** | **Chrome拡張非表示**: `body>*:not(.slider)`による外部UI要素の印刷除外セクション追加。**動的スライドカウンター**: `{{総スライド数}}`を`attr(data-total)`に変更（ハードコード禁止）。**質問バッジ印刷**: 11pt/2mm 6mmに拡大 |
+| **3.2.0** | **2026-02-05** | **右端切れ修正**: スライド寸法281mm×158mm→277mm×156mmに変更（ボーダー0.5pt+プリンタ非印刷領域で右端が切れる問題を修正）、margin: 18mm→19mm、コンテンツ領域: 265mm×142mm→261mm×140mm、トラブルシューティングに右端切れ対策追加 |
 | **3.1.0** | **2026-01-23** | **GSAP競合対策**: 各スライドタイプ別に`visibility: visible`を明示設定、全子要素の可視化ルール追加、トラブルシューティング強化 |
 | 3.0.0 | 2026-01-23 | A4ファースト設計に全面改訂: pt単位フォント、mm単位寸法、スライドタイプ別サイズ指定、サイクル図絶対配置対応 |
 | 2.1.0 | 2026-01-04 | Flexbox/Grid維持方式に変更：`.slider__item`をflex表示に、コンテナごとの明示的display設定、全子要素のvisibility保証追加 |

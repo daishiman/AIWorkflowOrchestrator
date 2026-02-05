@@ -9,7 +9,7 @@
  * - 検証完了後のスクリーンショット削除
  *
  * 使用方法:
- *   node scripts/verify-slides.mjs <html-file-path> [output-dir] [options]
+ *   node scripts/verify-slides.js <html-file-path> [output-dir] [options]
  *
  * オプション:
  *   --cleanup       スクリーンショットを削除して終了
@@ -17,10 +17,10 @@
  *   --check-ratio   16:9アスペクト比のみチェック（スクリーンショットなし）
  *
  * 例:
- *   node scripts/verify-slides.mjs ./index.html ./screenshots
- *   node scripts/verify-slides.mjs ./index.html --cleanup
- *   node scripts/verify-slides.mjs ./index.html --auto-cleanup
- *   node scripts/verify-slides.mjs ./index.html --check-ratio
+ *   node scripts/verify-slides.js ./index.html ./screenshots
+ *   node scripts/verify-slides.js ./index.html --cleanup
+ *   node scripts/verify-slides.js ./index.html --auto-cleanup
+ *   node scripts/verify-slides.js ./index.html --check-ratio
  */
 
 import { execSync } from 'child_process';
@@ -52,7 +52,7 @@ if (flags.includes('--help') || flags.includes('-h')) {
 スライド検証スクリプト（16:9対応版）
 
 使用方法:
-  node verify-slides.mjs <html-file-path> [output-dir] [options]
+  node verify-slides.js <html-file-path> [output-dir] [options]
 
 オプション:
   --cleanup       指定ディレクトリのスクリーンショットを削除して終了
@@ -62,16 +62,16 @@ if (flags.includes('--help') || flags.includes('-h')) {
 
 例:
   # スクリーンショット撮影（16:9ビューポート: 1920x1080）
-  node verify-slides.mjs ./index.html ./screenshots
+  node verify-slides.js ./index.html ./screenshots
 
   # スクリーンショット削除のみ
-  node verify-slides.mjs ./index.html --cleanup
+  node verify-slides.js ./index.html --cleanup
 
   # 撮影後に自動削除
-  node verify-slides.mjs ./index.html --auto-cleanup
+  node verify-slides.js ./index.html --auto-cleanup
 
   # 16:9アスペクト比の検証のみ
-  node verify-slides.mjs ./index.html --check-ratio
+  node verify-slides.js ./index.html --check-ratio
 `);
   process.exit(0);
 }
@@ -127,7 +127,7 @@ function cleanupScreenshots(dir) {
  */
 function checkAspectRatio(htmlPath) {
   if (!htmlPath) {
-    console.error('Usage: node verify-slides.mjs <html-file-path> --check-ratio');
+    console.error('Usage: node verify-slides.js <html-file-path> --check-ratio');
     process.exit(1);
   }
 
@@ -226,8 +226,8 @@ except Exception as e:
  */
 function captureScreenshots(htmlPath, outputDir) {
   if (!htmlPath) {
-    console.error('Usage: node verify-slides.mjs <html-file-path> [output-dir]');
-    console.error('Example: node verify-slides.mjs ./index.html ./screenshots');
+    console.error('Usage: node verify-slides.js <html-file-path> [output-dir]');
+    console.error('Example: node verify-slides.js ./index.html ./screenshots');
     process.exit(1);
   }
 
@@ -372,9 +372,9 @@ if (cleanupOnly) {
     console.log('   2. 問題のあるスライドのHTMLを修正');
     console.log('   3. 再度このスクリプトを実行して検証');
     console.log('\n📐 16:9アスペクト比のみを検証する場合:');
-    console.log(`   node verify-slides.mjs ${htmlPath} --check-ratio`);
+    console.log(`   node verify-slides.js ${htmlPath} --check-ratio`);
     console.log('\n🗑️  確認完了後、以下のコマンドでスクリーンショットを削除:');
-    console.log(`   node verify-slides.mjs ${htmlPath} --cleanup`);
+    console.log(`   node verify-slides.js ${htmlPath} --cleanup`);
   } else {
     process.exit(1);
   }

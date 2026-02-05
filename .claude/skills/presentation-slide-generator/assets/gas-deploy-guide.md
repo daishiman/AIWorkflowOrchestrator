@@ -3,22 +3,66 @@
 ## 概要
 
 生成したHTMLプレゼンテーションをGoogle Apps Script (GAS) を使用してウェブアプリとして公開する手順。
+**2つの方法**を用意しています。
+
+| 方法 | 特徴 | 推奨場面 |
+|------|------|----------|
+| 方法A: 1ファイル結合 | ビルドスクリプトでHTML/CSS/JavaScriptを1ファイルに結合 | シンプルにコピペでデプロイしたい場合（推奨） |
+| 方法B: GASテンプレート | GAS側でファイルを分離したままデプロイ | GAS上で直接編集・メンテナンスしたい場合 |
+
+### ファイル構成の前提
+
+スライド出力ディレクトリには以下のいずれかの構成があります：
+
+**1ファイル構成**（従来）:
+```
+slide-YYYY-MM-DD-{タイトル}/
+├── index.html      # HTML/CSS/JavaScript全てインライン
+├── structure.md
+└── deploy-guide.md
+```
+
+**分離構成**（新）:
+```
+slide-YYYY-MM-DD-{タイトル}/
+├── index.html      # HTMLのみ（CSS/JavaScriptは外部参照）
+├── styles.css      # CSS分離ファイル
+├── scripts.js      # JavaScript分離ファイル
+├── structure.md
+└── deploy-guide.md
+```
+
+> **重要**: GASでは外部ファイル参照（`<link href="styles.css">`等）が動作しません。
+> 分離構成の場合は方法A（ビルド結合）または方法B（GASテンプレート）で対応します。
 
 ---
 
-## 1. Google Apps Script プロジェクト作成
+## 方法A: 1ファイル結合方式（推奨）
+
+### A-0. ビルド（HTML/CSS/JavaScriptを結合）
+
+分離形式（index.html + styles.css + scripts.js）から1ファイルHTMLを生成します。
+
+```bash
+# スライドディレクトリを指定して実行
+node .claude/skills/presentation-slide-generator/scripts/build-single-html.js \
+  "./05_Project/スライド/slide-YYYY-MM-DD-{タイトル}/"
+```
+
+→ `index-single.html` が生成されます。
+
+> **注**: 1ファイル構成（CSS/JavaScript全てインライン済み）の場合はこの手順は不要です。
+> そのまま index.html をGASに貼り付けてください。
+
+### A-1. GASプロジェクト作成
 
 1. [Google Drive](https://drive.google.com) を開く
 2. 「新規」→「その他」→「Google Apps Script」をクリック
 3. プロジェクト名を設定（例：「MyPresentation」）
 
----
+### A-2. コード設定
 
-## 2. コード設定
-
-### 2.1 コード.gs の設定
-
-`コード.gs` に以下を貼り付け：
+#### コード.gs
 
 ```javascript
 function doGet() {
@@ -29,22 +73,108 @@ function doGet() {
 }
 ```
 
-### 2.2 HTMLファイルの作成
+#### index.html
 
-1. 左側のファイル一覧で「+」をクリック
-2. 「HTML」を選択
-3. ファイル名を `index` に設定（.html は自動付与）
-4. 生成されたHTMLコードをすべて貼り付け
+1. 左側のファイル一覧で「+」→「HTML」を選択
+2. ファイル名を `index` に設定（.html は自動付与）
+3. `index-single.html`（または1ファイル構成の`index.html`）の内容をすべて貼り付け
+
+### A-3. デプロイ
+
+→ 「3. デプロイ手順」セクションへ
 
 ---
 
-## 3. デプロイ
+## 方法B: GASテンプレート方式（ファイル分離）
+
+GASの`HtmlService.createTemplateFromFile()`を使い、HTML/CSS/JavaScriptをGAS上でも分離したまま管理します。
+
+### B-1. GASプロジェクト作成
+
+方法Aと同じ。
+
+### B-2. コード設定（4ファイル）
+
+GASプロジェクトに以下の4ファイルを作成します。
+
+#### ファイル1: コード.gs（サーバーサイド）
+
+```javascript
+function doGet() {
+  return HtmlService.createTemplateFromFile('index')
+    .evaluate()
+    .setTitle('プレゼンテーション')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+/**
+ * HTMLテンプレートからファイルを読み込むヘルパー関数
+ * index.html 内の <?!= include('styles') ?> で呼び出される
+ */
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+```
+
+#### ファイル2: index.html
+
+1. 「+」→「HTML」→ファイル名 `index`
+2. ローカルの `index.html` をコピーし、以下2箇所を置換：
+
+**置換前:**
+```html
+<link rel="stylesheet" href="styles.css">
+```
+**置換後:**
+```html
+<?!= include('styles') ?>
+```
+
+**置換前:**
+```html
+<script src="scripts.js"></script>
+```
+**置換後:**
+```html
+<?!= include('scripts') ?>
+```
+
+#### ファイル3: styles.html
+
+1. 「+」→「HTML」→ファイル名 `styles`
+2. 以下の形式で`styles.css`の内容を貼り付け：
+
+```html
+<style>
+/* === ここにstyles.cssの内容をそのまま貼り付け === */
+</style>
+```
+
+#### ファイル4: scripts.html
+
+1. 「+」→「HTML」→ファイル名 `scripts`
+2. 以下の形式で`scripts.js`の内容を貼り付け：
+
+```html
+<script>
+/* === ここにscripts.jsの内容をそのまま貼り付け === */
+</script>
+```
+
+### B-3. デプロイ
+
+→ 「3. デプロイ手順」セクションへ
+
+---
+
+## 3. デプロイ手順（共通）
 
 ### 3.1 新しいデプロイの作成
 
 1. 右上の「デプロイ」ボタンをクリック
 2. 「新しいデプロイ」を選択
-3. ⚙️（歯車）アイコンをクリック
+3. 歯車アイコンをクリック
 4. 「ウェブアプリ」を選択
 
 ### 3.2 デプロイ設定
@@ -90,21 +220,25 @@ https://script.google.com/macros/s/{SCRIPT_ID}/exec
 | 次のスライド | →キー / スペースキー / 右ボタン |
 | 前のスライド | ←キー / 左ボタン |
 | スライドジャンプ | 下部ドットをクリック |
+| PDF出力 | Ctrl+P (Windows) / Cmd+P (Mac) |
 
 ---
 
 ## 6. 更新方法
 
-### 6.1 コンテンツの更新
+### 方法A（1ファイル結合）の更新
 
-1. GASプロジェクトを開く
-2. `index.html` を編集
-3. 「デプロイ」→「デプロイを管理」
-4. 鉛筆アイコンをクリック
-5. 「バージョン」を「新バージョン」に変更
-6. 「デプロイ」をクリック
+1. ローカルのファイル（index.html / styles.css / scripts.js）を修正
+2. ビルドスクリプトで `index-single.html` を再生成
+3. GASプロジェクトの `index.html` を新しい内容で上書き
+4. 「デプロイ」→「デプロイを管理」→ 鉛筆アイコン → 「新バージョン」→「デプロイ」
 
-### 6.2 URLについて
+### 方法B（GASテンプレート）の更新
+
+1. GASプロジェクトで該当ファイル（index.html / styles.html / scripts.html）を直接編集
+2. 「デプロイ」→「デプロイを管理」→ 鉛筆アイコン → 「新バージョン」→「デプロイ」
+
+### URLについて
 
 - 同じURLで更新内容が反映される
 - URLは変更されない
@@ -136,16 +270,33 @@ https://script.google.com/macros/s/{SCRIPT_ID}/exec
 | JavaScriptエラー | ブラウザの開発者ツールでコンソールを確認 |
 | GSAPの読み込み失敗 | ネットワーク接続を確認 |
 
+### 7.4 方法Bでスタイル/スクリプトが反映されない
+
+| 原因 | 対処法 |
+|------|--------|
+| include()関数が未定義 | コード.gsにinclude関数があるか確認 |
+| ファイル名の不一致 | styles.html / scripts.html のファイル名を確認（.htmlは自動付与） |
+| テンプレートタグの記述ミス | `<?!= include('styles') ?>` の `!` を忘れていないか確認 |
+| `createHtmlOutputFromFile`使用 | 方法Bでは`createTemplateFromFile`を使用すること |
+
+### 7.5 CSS/JavaScriptが外部参照のまま
+
+| 原因 | 対処法 |
+|------|--------|
+| 分離構成をそのままデプロイ | 方法AでビルドするかB方法でテンプレート化 |
+| `<link href="styles.css">` が残っている | GASでは外部ファイル参照不可。インライン化必須 |
+
 ---
 
 ## 8. 制限事項
 
 | 項目 | 制限 |
 |------|------|
-| HTMLファイルサイズ | 最大500KB |
+| HTMLファイルサイズ | 最大500KB（結合後） |
 | 実行時間 | 最大6分 |
 | 同時アクセス数 | 制限なし（Google側で管理） |
 | カスタムドメイン | 不可（script.google.com のみ） |
+| 外部CSS/JavaScriptファイル | **不可**（インライン化またはGASテンプレート方式が必須） |
 
 ---
 

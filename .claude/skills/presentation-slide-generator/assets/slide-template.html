@@ -1314,18 +1314,19 @@
       }
 
       /* 16:9スライドアイテム - A4横に最適化 */
+      /* 注: 277mm = 印刷領域281mm - 4mmバッファ（ボーダー+プリンタ余白で右端が切れる対策） */
       .slider__item {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        /* 16:9固定サイズ */
-        width: 281mm !important;
-        height: 158mm !important;
+        /* 16:9固定サイズ（281mmだとボーダー分で右端切れ → 277mmに縮小） */
+        width: 277mm !important;
+        height: 156mm !important;
         aspect-ratio: 16 / 9 !important;
         /* 中央配置 */
-        margin: 18mm auto !important;
-        padding: 10mm !important;
+        margin: 19mm auto !important;
+        padding: 8mm !important;
         background: white !important;
         border: 1px solid #DDD !important;
         border-radius: 4px !important;
@@ -1346,10 +1347,10 @@
         opacity: 1 !important;
         transform: none !important;
         width: 100% !important;
-        max-width: 100% !important;
+        max-width: 261mm !important;   /* コンテンツ領域幅 */
         height: auto !important;
-        max-height: 100% !important;
-        padding: 20px !important;
+        max-height: 140mm !important;  /* コンテンツ領域高さ */
+        padding: 0 !important;
         box-sizing: border-box !important;
         overflow: visible !important;
       }

@@ -143,7 +143,33 @@
 this.slideWidth = this.slideArea ? this.slideArea.offsetWidth : window.innerWidth;
 ```
 
-### 4.5 index.html ⇔ structure.md 整合性維持（重要）
+### 4.5 印刷品質チェックリスト（必須）
+
+HTML生成後、`validate-print.js` による自動検証前に以下を確認すること。
+
+| # | チェック項目 | 必須CSS/HTML | 理由 |
+|---|-------------|-------------|------|
+| P01 | Chrome拡張非表示 | `body>*:not(.slider) { display:none!important }` | 印刷時にChrome拡張のUIが混入する |
+| P02 | スライド番号動的化 | `content: counter(…) " / " attr(data-total)` | ハードコードすると修正漏れが発生 |
+| P03 | data-total属性 | 全`.slider__item`に`data-total="N"` | P02のattr()参照先 |
+| P04 | 色強制印刷 | `print-color-adjust: exact` + `-webkit-print-color-adjust: exact` | ブラウザが背景色を省略する |
+| P05 | フォントpt単位 | フォントサイズはpt指定 | mm寸法との整合性、印刷精度 |
+| P06 | スライド寸法mm | `width: 277mm; height: 156mm` | A4横16:9印刷に最適化 |
+| P07 | ページネーション色 | `.pagination`に明示的color指定 | 色なしだとブラウザデフォルトになる |
+| P08 | isolation | `isolation: isolate` | mix-blend-mode等の影響分離 |
+| P09 | グラデーション代替 | `-webkit-background-clip:text`使用時にprint代替あり | 印刷時にグラデーション文字が消える |
+| P10 | question-badge | `.question-badge`にprint CSS記述あり | バッジが印刷されない |
+| P11 | 印刷パディング | `padding: 8mm` | 物理プリンタの印刷不可領域対策 |
+| P12 | 拡張非表示詳細 | visibility/width/overflow/pseudo-element対策 | P01の補強（強固な非表示） |
+
+**検証コマンド**:
+```bash
+node .claude/skills/presentation-slide-generator/scripts/validate-print.js "path/to/index.html"
+```
+
+---
+
+### 4.6 index.html ⇔ structure.md 整合性維持（重要）
 
 **原則: index.htmlとstructure.mdは常に同期を維持すること。**
 
@@ -236,7 +262,7 @@ HTML生成後、必ず視覚検証を実施すること。
 
 1. **スクリーンショット撮影**
    ```bash
-   node scripts/verify-slides.mjs ./index.html ./screenshots
+   node scripts/verify-slides.js ./index.html ./screenshots
    ```
 
 2. **各スライドの確認項目**

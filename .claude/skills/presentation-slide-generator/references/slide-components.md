@@ -1644,10 +1644,94 @@ const animations = {
 
 ---
 
-## 7. 完成チェックリスト
+## 7. 共通コンポーネント
+
+### 7.1 質問バッジ（.question-badge）
+
+質問スライドに必須。アイコンだけでなく「質問」テキストを明示する。
+
+```css
+.question-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: var(--sakura-pink);
+  color: white;
+  padding: 0.8rem 2.5rem;
+  border-radius: 100px;
+  font-size: calc(1.4rem * var(--font-scale));
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(179, 91, 121, 0.3);
+}
+.question-badge i {
+  font-size: calc(1.3rem * var(--font-scale));
+}
+```
+
+```html
+<div class="question-badge"><i class="fas fa-circle-question"></i> 質問</div>
+```
+
+**アニメーション**: `slide-message`のenter時に`scale: 0→1`で`back.out(1.7)`
+
+**印刷時**: `print-color-adjust: exact`で背景色を維持、フォント11pt固定、パディング2mm 6mm
+
+### 7.2 リスト修飾子（.single-col / .alert / .solution）
+
+| クラス | 適用先 | 効果 |
+|--------|--------|------|
+| `.single-col` | `.list-container` | 1列レイアウト（max-width: 900px） |
+| `.alert` | `.list-item` | 左ボーダー色をsakura-pinkに |
+| `.solution` | `.list-item` | 左ボーダー色をwave-aquaに |
+
+### 7.3 5スライドマーカー（.milestone）
+
+ナビゲーションドットの5の倍数にラベルを表示。JavaScriptで動的に付与。
+
+```javascript
+if ((i + 1) % 5 === 0) {
+  li.classList.add('milestone');
+  li.dataset.label = i + 1;
+}
+```
+
+```css
+.slider-navigation li.milestone a { width: 14px; height: 14px; border-width: 2.5px; }
+.slider-navigation li.milestone::after {
+  content: attr(data-label);
+  position: absolute; top: calc(100% + 4px);
+  font-size: 0.6rem; color: var(--fg-dim);
+}
+```
+
+### 7.4 動的スライドカウンター（data-total属性）
+
+各`.slider__item`に`data-total="N"`を設定。印刷時のページ番号表示に使用。
+
+```html
+<div class="slider__item slide-title" data-total="21">
+```
+
+```css
+/* 印刷CSS */
+.slider__item::before {
+  content: counter(slide-counter) " / " attr(data-total);
+}
+```
+
+**重要**: 総スライド数はハードコードせず、必ず`attr(data-total)`で動的に取得する。
+
+---
+
+## 8. 完成チェックリスト
 
 - [ ] スライドタイプは内容に適しているか
 - [ ] ホバーエフェクトは適切に設定されているか
 - [ ] ツールチップの内容は適切か
 - [ ] アニメーションは滑らかか
 - [ ] カラーはテーマに沿っているか
+- [ ] 質問スライドに`.question-badge`が付いているか
+- [ ] 5スライドマーカー（`.milestone`）が動的に設定されているか
+- [ ] `data-total`属性が全スライドに設定されているか
