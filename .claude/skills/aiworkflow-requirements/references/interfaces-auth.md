@@ -148,6 +148,53 @@ Supabase Auth が返す identity オブジェクト。OAuth プロバイダー�
 
 **実装場所**: `packages/shared/types/auth.ts`, `apps/desktop/src/renderer/components/AuthGuard/types.ts`
 
+### AUTH_ERROR_CODES（OAuth拡張）
+
+TASK-FIX-GOOGLE-LOGIN-001で追加されたOAuth認証エラーコード。
+
+| コード                            | 値                                     | 説明                           |
+| --------------------------------- | -------------------------------------- | ------------------------------ |
+| AUTH_NOT_CONFIGURED               | `auth/not-configured`                  | Supabaseが設定されていない     |
+| OAUTH_ACCESS_DENIED               | `auth/oauth-access-denied`             | ユーザーが認証をキャンセル     |
+| OAUTH_SERVER_ERROR                | `auth/oauth-server-error`              | 認証サーバーエラー             |
+| OAUTH_TEMPORARILY_UNAVAILABLE     | `auth/oauth-temporarily-unavailable`   | 認証サーバー一時利用不可       |
+| OAUTH_INVALID_REQUEST             | `auth/oauth-invalid-request`           | 認証リクエストが不正           |
+| OAUTH_UNAUTHORIZED_CLIENT         | `auth/oauth-unauthorized-client`       | クライアントが許可されていない |
+| OAUTH_UNSUPPORTED_RESPONSE_TYPE   | `auth/oauth-unsupported-response-type` | サポートされていない認証タイプ |
+| OAUTH_INVALID_SCOPE               | `auth/oauth-invalid-scope`             | 無効な認証スコープ             |
+| OAUTH_UNKNOWN_ERROR               | `auth/oauth-unknown-error`             | 未知の認証エラー               |
+
+**実装場所**: `packages/shared/types/auth.ts`
+
+### AuthSession
+
+認証セッション情報。
+
+| フィールド            | 型             | 説明                                     |
+| --------------------- | -------------- | ---------------------------------------- |
+| user                  | AuthUser       | 認証済みユーザー情報                     |
+| accessToken           | string         | アクセストークン                         |
+| refreshToken          | string         | リフレッシュトークン                     |
+| expiresAt             | number         | トークン有効期限（UNIXタイムスタンプ）   |
+| isOffline             | boolean        | オフラインモードフラグ                   |
+| refreshTokenExpiresAt | number \| undefined | リフレッシュトークン有効期限（7日後） |
+
+**実装場所**: `packages/shared/types/auth.ts`
+
+### AuthState
+
+Zustand認証状態。
+
+| フィールド            | 型                 | 説明                                     |
+| --------------------- | ------------------ | ---------------------------------------- |
+| isAuthenticated       | boolean            | 認証済みフラグ                           |
+| isLoading             | boolean            | ローディング状態                         |
+| user                  | AuthUser \| null   | ユーザー情報                             |
+| error                 | string \| null     | エラーメッセージ                         |
+| errorCode             | string \| undefined | エラーコード（AUTH_ERROR_CODES値）       |
+
+**実装場所**: `apps/desktop/src/renderer/store/slices/authSlice.ts`
+
 ### SupabaseIdentity
 
 Supabase Auth から取得するプロバイダー識別情報。
@@ -193,6 +240,41 @@ Supabase Auth から取得するプロバイダー識別情報。
 | テスト数     | 1265（自動テスト）+ 5（手動テスト項目）        |
 | 発見課題     | 0件                                            |
 | ドキュメント | `docs/30-workflows/AUTH-UI-004-google-avatar/` |
+
+### TASK-FIX-GOOGLE-LOGIN-001: Googleログイン修正（2026-02-05完了）
+
+| 項目         | 内容                                                  |
+| ------------ | ----------------------------------------------------- |
+| タスクID     | TASK-FIX-GOOGLE-LOGIN-001                             |
+| ステータス   | **完了**                                              |
+| Phase        | Phase 1-12完了                                        |
+| テスト数     | 約50件（oauth-error-handler, authSlice.listener等）   |
+| ドキュメント | `docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/`        |
+
+#### 修正内容
+
+| 問題 | 修正内容                                                            |
+| ---- | ------------------------------------------------------------------- |
+| 1    | OAuthコールバックのerrorパラメータ検出（parseOAuthError関数追加）   |
+| 2    | Supabase未設定時エラー（AUTH_NOT_CONFIGUREDコード追加）             |
+| 3    | セッション管理（refreshTokenExpiresAtフィールド追加）               |
+| 4    | リスナー二重登録防止（authListenerRegisteredフラグ追加）            |
+
+#### 新規ファイル
+
+| ファイル                                            | 内容                               |
+| --------------------------------------------------- | ---------------------------------- |
+| `apps/desktop/src/main/auth/oauth-error-handler.ts` | OAuthエラーパース・マッピング関数  |
+
+#### 関数追加
+
+| 関数名                         | 説明                                   |
+| ------------------------------ | -------------------------------------- |
+| `parseOAuthError()`            | URLからOAuthエラーパラメータを抽出     |
+| `mapOAuthErrorToMessage()`     | エラーコードを日本語メッセージに変換   |
+| `calculateRefreshTokenExpiry()`| リフレッシュトークン有効期限計算       |
+| `waitForSession()`             | ポーリングベースのセッション待機       |
+| `resetAuthListenerFlag()`      | テスト用リスナーフラグリセット         |
 
 #### 変更内容
 
@@ -255,68 +337,10 @@ Desktop アプリの複数フォルダ管理機能で使用する型定義。
 
 ---
 
-## 完了タスク
-
-### AUTH-UI-004: Googleアバター取得修正（2026-02-04）
-
-**概要**: Google連携時に「Googleのアバターを使用」オプションがアバターメニューに表示されない問題を修正。
-
-#### 実装内容
-
-| 対象                     | 変更内容                                           |
-| ------------------------ | -------------------------------------------------- |
-| `SupabaseIdentity`型     | `picture`プロパティを追加（Google用）              |
-| `toLinkedProvider()`関数 | フォールバック処理: `avatar_url ?? picture ?? null` |
-
-#### プロバイダー別アバターURL取得ロジック
-
-| プロバイダー | キー名       | 取得優先度 |
-| ------------ | ------------ | ---------- |
-| Google       | `picture`    | 2          |
-| GitHub       | `avatar_url` | 1          |
-| Discord      | `avatar_url` | 1          |
-
-**フォールバック実装**:
-```typescript
-const avatarUrl =
-  identity.identity_data?.avatar_url ??
-  identity.identity_data?.picture ??
-  null;
-```
-
-#### テスト結果サマリー
-
-| 項目           | 結果      |
-| -------------- | --------- |
-| ユニットテスト | 8件 PASS  |
-| カバレッジ     | 100%      |
-| 型エラー       | なし      |
-| Lintエラー     | なし      |
-
-#### 苦戦箇所・教訓
-
-| 課題                         | 原因                                      | 解決策                                       |
-| ---------------------------- | ----------------------------------------- | -------------------------------------------- |
-| better-sqlite3バインディング | グローバルpnpm環境のネイティブモジュール不一致 | 対象テストのみ実行（環境依存問題として分離）  |
-| Phase 12ドキュメント漏れ     | LOGS.md×2、SKILL.md更新、topic-map.md再生成忘れ | spec-update-workflow.mdのチェックリスト遵守 |
-| テストファイル指定           | vitestのテストパスパターン指定方法の誤解       | `--config`オプション併用で明示的指定         |
-
-#### 成果物
-
-| 成果物                   | パス                                                              |
-| ------------------------ | ----------------------------------------------------------------- |
-| 型定義                   | `packages/shared/types/auth.ts`                                   |
-| 関数実装                 | `packages/shared/infrastructure/auth/supabase-client.ts`          |
-| テスト                   | `packages/shared/infrastructure/auth/__tests__/supabase-client.test.ts` |
-| タスク仕様書             | `docs/30-workflows/AUTH-UI-004-google-avatar/`                    |
-
-**関連ドキュメント**: [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) - プロバイダー別フォールバックパターン
-
----
-
 ## 変更履歴
 
 | Version    | Date           | Changes                                                                                 |
 | ---------- | -------------- | --------------------------------------------------------------------------------------- |
-| **1.1.0**  | **2026-02-04** | AUTH-UI-004完了: SupabaseIdentity型にpictureプロパティ追加、完了タスクセクション追加    |
+| **1.2.0**  | **2026-02-05** | TASK-FIX-GOOGLE-LOGIN-001完了: AUTH_ERROR_CODES拡張(9コード)、AuthSession/AuthState型拡張、OAuthエラーハンドリング |
+| 1.1.0      | 2026-02-04     | AUTH-UI-004完了: SupabaseIdentity型にpictureプロパティ追加、完了タスクセクション追加    |
 | 1.0.0      | 2026-01-15     | 初版作成: 認証・プロフィール・ワークスペース型定義                                       |

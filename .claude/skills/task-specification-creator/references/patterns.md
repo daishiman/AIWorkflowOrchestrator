@@ -118,6 +118,30 @@
 - **根拠**: phase-11-12-guide.md Task 1-4の完全準拠
 - **発見日**: 2026-01-26
 
+### IPCチャンネル統合パターン（TASK-FIX-4-1-IPC-CONSOLIDATION）
+
+- **状況**: 重複したIPCチャンネル定義を統合・整理する場合
+- **苦戦箇所と解決策**:
+
+  | 苦戦箇所 | 問題 | 解決策 |
+  | -------- | ---- | ------ |
+  | ハードコード発見 | `"skill:complete" as string`で型チェック・ホワイトリストバイパス | Grepで`as string`パターンを検索し、IPC_CHANNELS定数に置換 |
+  | 重複定義整理 | preload/channels.ts vs shared/ipc/channels.tsの重複 | Single Source of Truth（preload/channels.ts）に集約 |
+  | ホワイトリスト更新漏れ | ALLOWED_INVOKE_CHANNELSに旧チャンネルが残存 | テストで旧チャンネルが含まれていないことを検証 |
+
+- **検出コマンド**:
+  ```bash
+  # ハードコード文字列の検出
+  grep -rn '"skill:' apps/desktop/src/preload/
+  grep -rn 'as string' apps/desktop/src/preload/skill-api.ts
+  ```
+- **効果**:
+  - 型安全性向上（コンパイル時にチャンネル名検証）
+  - セキュリティ強化（ホワイトリストバイパス防止）
+  - 保守性向上（定義箇所が単一）
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-4-1-IPC-CONSOLIDATION
+
 ### Phase 12 Task 2完全チェックリスト（task-imp-search-ui-001）
 
 - **状況**: Phase 12 Task 2（システム仕様書更新）実行時
@@ -274,6 +298,83 @@
   - ブラウザのパフォーマンス最適化に貢献
 - **発見日**: 2026-01-28
 - **関連タスク**: TASK-3-2-C
+
+### OAuth Implicit FlowのURLフラグメントパース（TASK-FIX-GOOGLE-LOGIN-001）
+
+- **状況**: OAuth Implicit Flowでのコールバック処理時
+- **パターン**: URLフラグメント（#）からパラメータを抽出
+- **問題**: `url.search`（?以降）ではなく`url.hash`（#以降）にトークン/エラーが返される
+- **実装**:
+  ```typescript
+  const url = new URL(callbackUrl);
+  const params = new URLSearchParams(url.hash.slice(1)); // #を除去
+  const error = params.get('error');
+  const accessToken = params.get('access_token');
+  ```
+- **注意点**:
+  - OAuth Implicit Flow: `#`（hash）にパラメータ
+  - OAuth Authorization Code Flow: `?`（search）にパラメータ
+  - PKCE実装時はAuthorization Code Flowに変更されるため`url.search`を使用
+- **効果**: OAuthコールバックのエラーパラメータを正しく検出・ハンドリング
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
+
+### Zustandリスナー二重登録防止パターン（TASK-FIX-GOOGLE-LOGIN-001）
+
+- **状況**: Zustand storeの`subscribe()`でIPCリスナーを設定する場合
+- **問題**: React StrictModeでuseEffectが2回実行され、リスナーが二重登録される
+- **パターン**: モジュールスコープのフラグでガード
+- **実装**:
+  ```typescript
+  // authSlice.ts
+  let authListenerRegistered = false;
+
+  export const setupAuthStateListener = () => {
+    if (authListenerRegistered) return;
+    authListenerRegistered = true;
+
+    window.api?.onAuthStateChange((payload) => {
+      // リスナー処理
+    });
+  };
+
+  // テスト用リセット関数
+  export const resetAuthListenerFlag = () => {
+    authListenerRegistered = false;
+  };
+  ```
+- **テスト時の注意**:
+  - モジュールスコープ変数はテスト間で共有される
+  - `beforeEach`で`resetAuthListenerFlag()`を呼び出す
+- **効果**: React StrictModeでもリスナーが1回だけ登録される
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
+
+### IPC経由のエラー情報伝達設計（TASK-FIX-GOOGLE-LOGIN-001）
+
+- **状況**: Main→Renderer間でOAuthエラー情報を伝達する場合
+- **問題**: AUTH_STATE_CHANGEDペイロードにerror情報が含まれておらず、Rendererでエラー表示不可
+- **パターン**: ペイロードにerror/errorCodeフィールドを追加
+- **実装**:
+  ```typescript
+  // Main Process (index.ts)
+  mainWindow.webContents.send('auth:state-changed', {
+    user: session?.user ?? null,
+    isAuthenticated: !!session?.user,
+    error: errorMessage ?? null,      // 追加
+    errorCode: mappedError?.code,     // 追加
+  });
+
+  // Renderer (authSlice.ts)
+  window.api?.onAuthStateChange((payload) => {
+    if (payload.error) {
+      set({ error: payload.error, errorCode: payload.errorCode });
+    }
+  });
+  ```
+- **効果**: OAuthエラー時にRendererで適切なエラーメッセージを表示可能
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
 
 ---
 

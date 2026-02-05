@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { createAuthSlice, type AuthSlice } from "./authSlice";
+import {
+  createAuthSlice,
+  resetAuthListenerFlag,
+  type AuthSlice,
+} from "./authSlice";
 
 // Mock window.electronAPI
 const mockAuthLogin = vi.fn();
@@ -77,6 +81,8 @@ describe("authSlice", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset auth listener flag to ensure clean state between tests
+    resetAuthListenerFlag();
 
     // Setup window.electronAPI mock
     Object.defineProperty(window, "electronAPI", {

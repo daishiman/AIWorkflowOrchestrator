@@ -1,0 +1,86 @@
+{
+  "taskId": "TASK-FIX-4-1-IPC-CONSOLIDATION",
+  "taskName": "IPCチャンネルの重複解消（仕様書準拠）",
+  "createdAt": "2026-02-04",
+  "status": "pending",
+  "currentPhase": 0,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "name": "実装（TDD: Green）",
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": []
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": []
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "metadata": {
+    "category": "リファクタリング",
+    "priority": "高",
+    "estimatedSize": "中規模",
+    "relatedTasks": ["TASK-4-1", "TASK-FIX-1-1-TYPE-ALIGNMENT", "TASK-5-1"],
+    "systemSpecs": [
+      "security-skill-ipc.md",
+      "interfaces-agent-sdk-skill.md",
+      "security-electron-ipc.md",
+      "api-ipc-agent.md"
+    ]
+  }
+}

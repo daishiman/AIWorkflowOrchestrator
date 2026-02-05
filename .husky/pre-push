@@ -1,6 +1,11 @@
 #!/bin/sh
 # pre-push hook: プッシュ前にCI相当のチェックを実行
-# --no-verify オプションでスキップ可能
+#
+# ⚠️  警告: --no-verify オプションは絶対禁止です！
+# このフックをスキップすると、CIで初めてエラーが検出され、
+# 修正に余計な時間がかかります。
+# テストが失敗する場合は、テストを修正してください。
+# 詳細は CLAUDE.md の「Git操作の禁止事項」を参照。
 
 echo "🔍 Running pre-push CI validation..."
 
@@ -113,32 +118,34 @@ if ! pnpm typecheck; then
     exit 1
 fi
 
-# 3. テスト実行（タイムアウト: 120秒）
+# 3. テスト実行（全パッケージ、タイムアウト: 600秒）
+# Note: CIと同等のテストをローカルで実行し、プッシュ前に問題を検出
 if [ "$SKIP_NATIVE_TESTS" = true ]; then
     echo "⏭️  Skipping tests (Node.js version mismatch - native modules incompatible)."
     echo "   Tests will run in CI with the correct Node.js version."
 else
-    echo "🧪 Running tests (timeout: 120s)..."
+    echo "🧪 Running ALL tests (timeout: 600s)..."
+    echo "   This includes @repo/shared and @repo/desktop to match CI coverage."
 
-    # タイムアウト付きテスト実行
+    # タイムアウト付きテスト実行（全パッケージ）
     run_tests_with_timeout() {
         # タイムアウトコマンドの存在確認
         if command -v timeout > /dev/null 2>&1; then
-            timeout 120 pnpm --filter @repo/shared test:run
+            timeout 600 pnpm test:all
         elif command -v gtimeout > /dev/null 2>&1; then
-            gtimeout 120 pnpm --filter @repo/shared test:run
+            gtimeout 600 pnpm test:all
         else
             # タイムアウトなしで実行（警告表示）
             echo "⚠️  timeout command not found. Running tests without timeout."
-            pnpm --filter @repo/shared test:run
+            pnpm test:all
         fi
     }
 
     if ! run_tests_with_timeout; then
         EXIT_CODE=$?
         if [ $EXIT_CODE -eq 124 ]; then
-            echo "⏱️  Tests timed out after 120s. Proceeding with push."
-            echo "💡 Run 'pnpm test' manually to verify all tests pass."
+            echo "⏱️  Tests timed out after 600s. Proceeding with push."
+            echo "💡 Run 'pnpm test:all' manually to verify all tests pass."
         else
             echo "❌ Tests failed. Push aborted."
             echo "💡 Fix failing tests or use 'git push --no-verify' to skip."
