@@ -43,6 +43,15 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-05 - ENV-INFRA-001タスク完了（better-sqlite3バージョン不一致修正）]
+
+- **Agent**: execute-task / generate-task-specs
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: better-sqlite3のNODE_MODULE_VERSION不一致（127 vs 131）を解決。pnpm store prune + install --forceパターンを確立。CONTRIBUTING.md新規作成、patterns.mdに失敗パターン追加、UT-ENV-001（CI node-version .nvmrc参照化）を未タスクとして登録。
+
+---
 ## [2026-02-05 - TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）]
 
 - **Agent**: execute-workflow (Phase 1-12)
@@ -72,7 +81,6 @@ node scripts/log-usage.js \
 3. ホワイトリスト更新漏れ防止: テストで検証
 
 ---
-
 ## [2026-02-04 - AUTH-UI-001タスク完了（認証UIバグ修正）]
 
 - **Agent**: generate-task-specs / execute-task
@@ -2910,7 +2918,36 @@ if (artifactPath) {
 - 完了日時: 2026-02-04
 
 ---
+## 2026-02-04 - better-sqlite3バージョン不一致修正（ENV-INFRA-001）タスク完了
 
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: ENV-INFRA-001
+- タスク名: better-sqlite3 Node.jsバージョン不一致問題の解決
+- Phase: 1-12
+
+### 成果
+
+- テストカバレッジ: workflow-repository.test.ts 10テストPASS
+- 実装内容:
+  - 診断: NODE_MODULE_VERSIONアーキテクチャ不一致問題の特定
+  - 修正: pnpm store prune && pnpm install --forceによる再ビルド
+  - 確認: 既存設定（.nvmrc, engines, volta, setup-native-modules.sh）の検証
+- 成果物: Phase 1-12の15件のドキュメント作成
+
+### 発見事項
+
+- 既存のバージョン管理インフラは適切に設計されていた
+- 問題はpnpmグローバルストアのキャッシュ汚染が原因
+- Rosetta 2環境でのx86_64バイナリキャッシュが問題を引き起こしていた
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-02-04
+
+---
 ## 2026-02-05 - TASK-FIX-GOOGLE-LOGIN-001 Phase 1-12完了
 
 ### コンテキスト

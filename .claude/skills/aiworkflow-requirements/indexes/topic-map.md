@@ -1107,8 +1107,8 @@ node scripts/list-specs.js --topics
 | マイグレーション計画 | L402 |
 | 関連ドキュメント | L423 |
 | 完了タスク | L433 |
-| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L444 |
-| 変更履歴 | L474 |
+| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L445 |
+| 変更履歴 | L475 |
 
 ### references/technology-frontend.md
 
@@ -1746,8 +1746,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L284 |
-| 変更履歴 | L294 |
+| 関連ドキュメント | L285 |
+| 変更履歴 | L295 |
 
 ### references/testing-accessibility.md
 

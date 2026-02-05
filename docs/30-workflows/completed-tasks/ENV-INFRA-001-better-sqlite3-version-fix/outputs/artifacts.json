@@ -1,0 +1,102 @@
+{
+  "feature": "ENV-INFRA-001-better-sqlite3-version-fix",
+  "created": "2026-02-04T22:38:00Z",
+  "lastUpdated": "2026-02-04T23:32:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/diagnosis-report.md",
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/script-design.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-result.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-summary.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "CONTRIBUTING.md"
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "fix",
+    "estimatedPhases": 13,
+    "taskId": "ENV-INFRA-001",
+    "taskName": "better-sqlite3 Node.jsバージョン不一致問題の解決",
+    "category": "インフラ・環境問題",
+    "priority": "中",
+    "scale": "小規模",
+    "githubIssue": 288
+  }
+}

@@ -438,6 +438,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | -------- | -------- | ------ | -------- |
 | TASK-CI-FIX-001 | ESLint 9 Flat Config移行 | 2026-01-29 | apps/backend ESLint 9対応完了 |
 | TASK-OPT-CI-TEST-PARALLEL-001 | GitHub Actions CI テスト並列実行最適化 | 2026-02-02 | シャード8→16、maxForks 2→4、fileParallelism有効化、キャッシュ導入 |
+| ENV-INFRA-001 | better-sqlite3 Node.jsバージョン不一致修正 | 2026-02-04 | pnpm store prune + install --forceによる再ビルド、CONTRIBUTING.md作成 |
 
 ---
 
@@ -475,6 +476,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 
 | 日付       | 変更内容                                                                     |
 | ---------- | ---------------------------------------------------------------------------- |
+| 2026-02-04 | ENV-INFRA-001: better-sqlite3バージョン不一致修正完了記録追加                |
 | 2026-02-02 | TASK-OPT-CI-TEST-PARALLEL-001: CI最適化パターン・完了タスクセクション追加    |
 | 2026-01-29 | TASK-CI-FIX-001: ESLint 9 Flat Config移行（apps/backend）完了チェック        |
 | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換                           |
