@@ -19,13 +19,14 @@
 
 ## 参照資料
 
-| 資料名                       | パス                                                | 説明                    |
-| ---------------------------- | --------------------------------------------------- | ----------------------- |
-| 仕様書§4                     | `specification.md` §4                               | API定義の正本           |
-| SkillAPIインターフェース仕様 | `interfaces-agent-sdk-skill.md` 行227-293           | Preload API型定義       |
-| Electronセキュリティ仕様     | `security-api-electron.md` 行30-48                  | IPC通信セキュリティ原則 |
-| 実装パターン（IPC統合）      | `architecture-implementation-patterns.md` 行203-240 | チャンネル統合パターン  |
-| APIエンドポイント            | `api-endpoints.md`                                  | Desktop IPC APIサマリー |
+| 資料名                       | パス                                                | 説明                               |
+| ---------------------------- | --------------------------------------------------- | ---------------------------------- |
+| 仕様書§4                     | `specification.md` §4                               | API定義の正本                      |
+| SkillAPIインターフェース仕様 | `interfaces-agent-sdk-skill.md` 行227-293           | Preload API型定義                  |
+| Electronセキュリティ仕様     | `security-api-electron.md` 行30-48                  | IPC通信セキュリティ原則            |
+| 実装パターン（IPC統合）      | `architecture-implementation-patterns.md` 行203-240 | チャンネル統合パターン             |
+| APIエンドポイント            | `api-endpoints.md`                                  | Desktop IPC APIサマリー            |
+| SkillAPI IPCチャンネル定義   | `security-skill-ipc.md` 行79-108                    | チャンネル定数・ホワイトリスト構成 |
 
 ## 実行タスク
 

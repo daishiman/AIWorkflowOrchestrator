@@ -14,10 +14,12 @@
 
 ## 参照資料
 
-| 資料名             | パス                                    | 説明          |
-| ------------------ | --------------------------------------- | ------------- |
-| カバレッジレポート | `outputs/phase-7/coverage-report.md`    | Phase 7成果物 |
-| 統一API設計書      | `outputs/phase-2/unified-api-design.md` | Phase 2成果物 |
+| 資料名                    | パス                                                | 説明                 |
+| ------------------------- | --------------------------------------------------- | -------------------- |
+| カバレッジレポート        | `outputs/phase-7/coverage-report.md`                | Phase 7成果物        |
+| 統一API設計書             | `outputs/phase-2/unified-api-design.md`             | Phase 2成果物        |
+| IPC設計原則・統合パターン | `architecture-implementation-patterns.md` 行194-240 | リファクタリング指針 |
+| SkillAPI IPC実装仕様      | `security-skill-ipc.md` 行256-319                   | 現行実装パターン参照 |
 
 ## 実行タスク
 

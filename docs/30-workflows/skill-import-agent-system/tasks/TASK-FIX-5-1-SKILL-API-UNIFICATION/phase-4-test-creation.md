@@ -14,10 +14,13 @@
 
 ## 参照資料
 
-| 資料名        | パス                                      | 説明          |
-| ------------- | ----------------------------------------- | ------------- |
-| 統一API設計書 | `outputs/phase-2/unified-api-design.md`   | Phase 2成果物 |
-| レビュー結果  | `outputs/phase-3/design-review-result.md` | Phase 3成果物 |
+| 資料名                    | パス                                      | 説明                                  |
+| ------------------------- | ----------------------------------------- | ------------------------------------- |
+| 統一API設計書             | `outputs/phase-2/unified-api-design.md`   | Phase 2成果物                         |
+| レビュー結果              | `outputs/phase-3/design-review-result.md` | Phase 3成果物                         |
+| Zustandモックパターン     | `testing-component-patterns.md` 行18-79   | ストアモック3パターン                 |
+| テストデータファクトリ    | `testing-component-patterns.md` 行83-149  | SkillMetadata/StreamMessageファクトリ |
+| SkillExecutorエラーコード | `error-handling.md` 行289-325             | 6種エラーコード定義                   |
 
 ## 実行タスク
 

@@ -14,15 +14,17 @@
 
 ## 参照資料
 
-| 資料名             | パス                                                | 説明                              |
-| ------------------ | --------------------------------------------------- | --------------------------------- |
-| API比較分析表      | `outputs/phase-1/api-comparison.md`                 | Phase 1成果物                     |
-| 呼び出し元マップ   | `outputs/phase-1/caller-mapping.md`                 | Phase 1成果物                     |
-| 仕様書照合結果     | `outputs/phase-1/spec-alignment.md`                 | Phase 1成果物                     |
-| 仕様書§4           | `specification.md` §4                               | API定義の正本                     |
-| SkillAPI型定義仕様 | `interfaces-agent-sdk-skill.md` 行202-293           | OperationResult/Preload API定義   |
-| IPC設計原則        | `architecture-implementation-patterns.md` 行194-201 | Electron IPC設計原則              |
-| セキュリティ仕様   | `security-api-electron.md` 行30-48                  | contextBridge/IPC通信セキュリティ |
+| 資料名               | パス                                                | 説明                                            |
+| -------------------- | --------------------------------------------------- | ----------------------------------------------- |
+| API比較分析表        | `outputs/phase-1/api-comparison.md`                 | Phase 1成果物                                   |
+| 呼び出し元マップ     | `outputs/phase-1/caller-mapping.md`                 | Phase 1成果物                                   |
+| 仕様書照合結果       | `outputs/phase-1/spec-alignment.md`                 | Phase 1成果物                                   |
+| 仕様書§4             | `specification.md` §4                               | API定義の正本                                   |
+| SkillAPI型定義仕様   | `interfaces-agent-sdk-skill.md` 行202-293           | OperationResult/Preload API定義                 |
+| IPC設計原則          | `architecture-implementation-patterns.md` 行194-201 | Electron IPC設計原則                            |
+| セキュリティ仕様     | `security-api-electron.md` 行30-48                  | contextBridge/IPC通信セキュリティ               |
+| SkillAPI IPC実装仕様 | `security-skill-ipc.md` 行256-319                   | 現行SkillAPIインターフェース実装                |
+| skillSlice状態管理   | `arch-state-management.md` 行233-290                | skillSlice状態14件・アクション10件・IPCハンドラ |
 
 ## 実行タスク
 

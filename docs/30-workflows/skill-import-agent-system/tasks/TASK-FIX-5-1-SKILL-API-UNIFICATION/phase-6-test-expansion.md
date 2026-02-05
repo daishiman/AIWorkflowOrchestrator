@@ -14,10 +14,12 @@ Phase 5の実装に対してテストカバレッジを拡充し、品質基準�
 
 ## 参照資料
 
-| 資料名              | パス                                    | 説明          |
-| ------------------- | --------------------------------------- | ------------- |
-| テスト結果（Green） | `outputs/phase-5/test-green-result.md`  | Phase 5成果物 |
-| 統一API設計書       | `outputs/phase-2/unified-api-design.md` | Phase 2成果物 |
+| 資料名                 | パス                                     | 説明                                  |
+| ---------------------- | ---------------------------------------- | ------------------------------------- |
+| テスト結果（Green）    | `outputs/phase-5/test-green-result.md`   | Phase 5成果物                         |
+| 統一API設計書          | `outputs/phase-2/unified-api-design.md`  | Phase 2成果物                         |
+| Zustandモックパターン  | `testing-component-patterns.md` 行18-79  | ストアモック3パターン（テスト拡充用） |
+| テストデータファクトリ | `testing-component-patterns.md` 行83-149 | SkillMetadata/StreamMessageファクトリ |
 
 ## 実行タスク
 
@@ -56,6 +58,14 @@ Phase 5の実装に対してテストカバレッジを拡充し、品質基準�
 | `import()` が正しいIPCチャンネルを呼ぶ  | `SKILL_CHANNELS.IMPORT`         |
 | `remove()` が正しいIPCチャンネルを呼ぶ  | `SKILL_CHANNELS.REMOVE`         |
 | `abort()` が正しいIPCチャンネルを呼ぶ   | `SKILL_CHANNELS.ABORT`          |
+
+## Electronデスクトップアプリ観点
+
+| 層       | テスト拡充の考慮事項                                  |
+| -------- | ----------------------------------------------------- |
+| Preload  | `safeInvoke`/`safeOn`のチャンネル検証テスト追加       |
+| Renderer | `window.electronAPI.skill` モックの正確性検証         |
+| IPC通信  | `SKILL_CHANNELS` 定数との一致を全メソッドで網羅テスト |
 
 ## 統合テスト連携【必須】
 

@@ -14,11 +14,14 @@ Phase 4で作成したテストを全てパスさせるため、統一SkillAPI�
 
 ## 参照資料
 
-| 資料名        | パス                                                   | 説明          |
-| ------------- | ------------------------------------------------------ | ------------- |
-| 統一API設計書 | `outputs/phase-2/unified-api-design.md`                | Phase 2成果物 |
-| 移行計画書    | `outputs/phase-2/migration-plan.md`                    | Phase 2成果物 |
-| テスト（Red） | `apps/desktop/src/preload/__tests__/skill-api.test.ts` | Phase 4成果物 |
+| 資料名                   | パス                                                   | 説明                                     |
+| ------------------------ | ------------------------------------------------------ | ---------------------------------------- |
+| 統一API設計書            | `outputs/phase-2/unified-api-design.md`                | Phase 2成果物                            |
+| 移行計画書               | `outputs/phase-2/migration-plan.md`                    | Phase 2成果物                            |
+| テスト（Red）            | `apps/desktop/src/preload/__tests__/skill-api.test.ts` | Phase 4成果物                            |
+| SkillAPI Preload実装仕様 | `security-skill-ipc.md` 行175-319                      | safeInvoke/safeOnパターン・contextBridge |
+| skillSlice状態管理       | `arch-state-management.md` 行233-290                   | 移行対象の状態14件・アクション10件       |
+| エラーコード定義         | `error-handling.md` 行289-325                          | SkillExecutorエラーコード6種             |
 
 ## 実行タスク
 
@@ -162,6 +165,24 @@ const response = await window.electronAPI.skill.execute({
 # Green状態の確認（全テスト成功）
 pnpm --filter @repo/desktop test
 ```
+
+## システム開発観点チェック
+
+| 観点               | 確認項目                                            | 参照仕様書                                |
+| ------------------ | --------------------------------------------------- | ----------------------------------------- |
+| セキュリティ       | contextBridge公開APIの最小化・safeInvoke/safeOn維持 | `security-skill-ipc.md`                   |
+| アーキテクチャ     | Preload層の責務（IPC呼び出しラッパーのみ）          | `architecture-implementation-patterns.md` |
+| エラーハンドリング | SkillExecutorエラーコードの適切なthrow              | `error-handling.md`                       |
+| 状態管理           | skillSlice移行時の状態一貫性                        | `arch-state-management.md`                |
+
+## Electronデスクトップアプリ観点
+
+| 層       | 実装考慮事項                                                    |
+| -------- | --------------------------------------------------------------- |
+| Preload  | `safeInvoke`/`safeOn`パターン維持、チャンネルホワイトリスト準拠 |
+| Renderer | `window.electronAPI.skill` 単一パスへの全呼び出し元移行         |
+| IPC通信  | `channels.ts` の `SKILL_CHANNELS` 定数のみ使用                  |
+| 型定義   | `@repo/shared` の型をPreload/Renderer両側で統一使用             |
 
 ## 統合テスト連携【必須】
 
