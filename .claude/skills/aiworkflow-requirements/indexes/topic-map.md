@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-04
+> 自動生成: 2026-02-05
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -163,14 +163,14 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L118 |
 | デスクトップ（Electron）実装パターン | L184 |
-| パフォーマンス最適化パターン | L372 |
-| セキュリティ実装パターン | L410 |
-| テスト実装パターン | L442 |
-| アクセシビリティ実装パターン | L727 |
-| 関連ドキュメント | L752 |
-| スキル作成実装パターン（TASK-9B-G） | L764 |
-| 外部API データ正規化パターン | L888 |
-| 変更履歴 | L927 |
+| パフォーマンス最適化パターン | L411 |
+| セキュリティ実装パターン | L449 |
+| テスト実装パターン | L481 |
+| アクセシビリティ実装パターン | L766 |
+| 関連ドキュメント | L791 |
+| スキル作成実装パターン（TASK-9B-G） | L803 |
+| 外部API データ正規化パターン | L927 |
+| 変更履歴 | L966 |
 
 ### references/architecture-monorepo.md
 
@@ -1043,14 +1043,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| スキル管理IPCセキュリティ | L21 |
-| スキルインポートIPCチャネル（TASK-4-1） | L68 |
-| Claude Code CLI連携セキュリティ | L111 |
-| Skill Execution Preload API セキュリティ | L172 |
-| Permission IPC Handler セキュリティ | L217 |
-| SkillAPI Preload実装（TASK-5-1） | L253 |
-| 完了タスク | L319 |
-| 関連ドキュメント | L332 |
+| スキル管理IPCセキュリティ | L22 |
+| スキルインポートIPCチャネル（TASK-4-1） | L71 |
+| Claude Code CLI連携セキュリティ | L114 |
+| Skill Execution Preload API セキュリティ | L175 |
+| Permission IPC Handler セキュリティ | L220 |
+| SkillAPI Preload実装（TASK-5-1） | L256 |
+| 完了タスク | L322 |
+| 残課題 | L353 |
+| 関連ドキュメント | L365 |
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-04T22:37:11.935Z",
+  "generated": "2026-02-05T03:50:44.329Z",
   "totalKeywords": 1034,
   "keywords": {
     "チャット履歴": [
@@ -2071,6 +2071,7 @@
       "interfaces-agent-sdk-history.md",
       "interfaces-chat-history.md",
       "quality-e2e-testing.md",
+      "security-skill-ipc.md",
       "task-workflow.md",
       "ui-history-integration.md"
     ],

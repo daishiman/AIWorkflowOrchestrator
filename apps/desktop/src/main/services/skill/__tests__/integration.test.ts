@@ -62,8 +62,8 @@ interface RemoveResult {
 
 // Skill IPC Channels (per Phase 3 review)
 const _SKILL_CHANNELS = {
-  LIST_AVAILABLE: "skill:list-available",
-  LIST_IMPORTED: "skill:list-imported",
+  LIST_AVAILABLE: "skill:list",
+  LIST_IMPORTED: "skill:getImported",
   IMPORT: "skill:import",
   REMOVE: "skill:remove",
   GET_DETAIL: "skill:get-detail",
@@ -177,7 +177,7 @@ This is the content of ${name}.
   // ===========================================================================
 
   describe("IPC Connection", () => {
-    it("INT-IPC-01: should respond to skill:list-available", async () => {
+    it("INT-IPC-01: should respond to skill:list", async () => {
       if (!skillService) {
         throw new Error("SkillService not initialized - Red phase");
       }
@@ -191,7 +191,7 @@ This is the content of ${name}.
       expect(result.scannedAt).toBeInstanceOf(Date);
     });
 
-    it("INT-IPC-02: should respond to skill:list-imported", async () => {
+    it("INT-IPC-02: should respond to skill:getImported", async () => {
       if (!skillService) {
         throw new Error("SkillService not initialized - Red phase");
       }

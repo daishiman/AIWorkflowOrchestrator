@@ -118,6 +118,30 @@
 - **根拠**: phase-11-12-guide.md Task 1-4の完全準拠
 - **発見日**: 2026-01-26
 
+### IPCチャンネル統合パターン（TASK-FIX-4-1-IPC-CONSOLIDATION）
+
+- **状況**: 重複したIPCチャンネル定義を統合・整理する場合
+- **苦戦箇所と解決策**:
+
+  | 苦戦箇所 | 問題 | 解決策 |
+  | -------- | ---- | ------ |
+  | ハードコード発見 | `"skill:complete" as string`で型チェック・ホワイトリストバイパス | Grepで`as string`パターンを検索し、IPC_CHANNELS定数に置換 |
+  | 重複定義整理 | preload/channels.ts vs shared/ipc/channels.tsの重複 | Single Source of Truth（preload/channels.ts）に集約 |
+  | ホワイトリスト更新漏れ | ALLOWED_INVOKE_CHANNELSに旧チャンネルが残存 | テストで旧チャンネルが含まれていないことを検証 |
+
+- **検出コマンド**:
+  ```bash
+  # ハードコード文字列の検出
+  grep -rn '"skill:' apps/desktop/src/preload/
+  grep -rn 'as string' apps/desktop/src/preload/skill-api.ts
+  ```
+- **効果**:
+  - 型安全性向上（コンパイル時にチャンネル名検証）
+  - セキュリティ強化（ホワイトリストバイパス防止）
+  - 保守性向上（定義箇所が単一）
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-4-1-IPC-CONSOLIDATION
+
 ### Phase 12 Task 2完全チェックリスト（task-imp-search-ui-001）
 
 - **状況**: Phase 12 Task 2（システム仕様書更新）実行時
