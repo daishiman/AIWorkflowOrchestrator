@@ -89,13 +89,12 @@ node scripts/list-specs.js --topics
 ### references/architecture-auth-security.md
 
 | セクション | 行 |
-|------------|----|\n| 変更履歴 | L28 |
-| 認証アーキテクチャ（Supabase + Electron） | L39 |
-| セキュリティアーキテクチャ | L161 |
-| RAGパイプラインアーキテクチャ | L200 |
-| 完了タスク | L315 |
-| 実装時の苦戦した箇所・知見 | L391 |
-| 関連ドキュメント | L435 |
+|------------|----|\n| 変更履歴 | L6 |
+| 認証アーキテクチャ（Supabase + Electron） | L16 |
+| セキュリティアーキテクチャ | L135 |
+| RAGパイプラインアーキテクチャ | L174 |
+| 完了タスク | L289 |
+| 関連ドキュメント | L334 |
 
 ### references/architecture-chat-history.md
 
@@ -163,14 +162,14 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L118 |
 | デスクトップ（Electron）実装パターン | L184 |
-| パフォーマンス最適化パターン | L411 |
-| セキュリティ実装パターン | L449 |
-| テスト実装パターン | L481 |
-| アクセシビリティ実装パターン | L766 |
-| 関連ドキュメント | L791 |
-| スキル作成実装パターン（TASK-9B-G） | L803 |
-| 外部API データ正規化パターン | L927 |
-| 変更履歴 | L966 |
+| パフォーマンス最適化パターン | L372 |
+| セキュリティ実装パターン | L410 |
+| テスト実装パターン | L442 |
+| アクセシビリティ実装パターン | L727 |
+| 関連ドキュメント | L752 |
+| スキル作成実装パターン（TASK-9B-G） | L764 |
+| 外部API データ正規化パターン | L888 |
+| 変更履歴 | L927 |
 
 ### references/architecture-monorepo.md
 
@@ -304,9 +303,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
-| 完了タスク | L232 |
-| ワークスペース型定義 | L286 |
-| 変更履歴 | L340 |
+| 完了タスク | L185 |
+| ワークスペース型定義 | L204 |
+| 完了タスク | L258 |
+| 変更履歴 | L317 |
 
 ### references/interfaces-chat-history.md
 
@@ -634,11 +634,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 認証 IPC チャネル | L10 |
 | プロフィール IPC チャネル | L32 |
 | イベントチャネル（Main → Renderer） | L43 |
-| 型定義 | L60 |
-| 認証状態管理 | L118 |
-| IPCセキュリティ実装 | L149 |
-| 関連ドキュメント | L176 |
-| 変更履歴 | L184 |
+| 型定義 | L51 |
+| 認証状態管理 | L108 |
+| IPCセキュリティ実装 | L139 |
+| 関連ドキュメント | L166 |
+| 変更履歴 | L174 |
 
 ### references/api-ipc-system.md
 
@@ -1043,15 +1043,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| スキル管理IPCセキュリティ | L22 |
-| スキルインポートIPCチャネル（TASK-4-1） | L71 |
-| Claude Code CLI連携セキュリティ | L114 |
-| Skill Execution Preload API セキュリティ | L175 |
-| Permission IPC Handler セキュリティ | L220 |
-| SkillAPI Preload実装（TASK-5-1） | L256 |
-| 完了タスク | L322 |
-| 残課題 | L353 |
-| 関連ドキュメント | L365 |
+| スキル管理IPCセキュリティ | L21 |
+| スキルインポートIPCチャネル（TASK-4-1） | L68 |
+| Claude Code CLI連携セキュリティ | L111 |
+| Skill Execution Preload API セキュリティ | L172 |
+| Permission IPC Handler セキュリティ | L217 |
+| SkillAPI Preload実装（TASK-5-1） | L253 |
+| 完了タスク | L319 |
+| 関連ドキュメント | L332 |
 
 ---
 
@@ -1427,15 +1426,14 @@ node scripts/list-specs.js --topics
 | リトライ戦略 | L210 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
 | SkillExecutor 実行エラーコード（TASK-8A） | L289 |
-| OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L328 |
-| 認証フォールバックパターン（AUTH-UI-001） | L370 |
-| サーキットブレーカー（将来対応） | L412 |
-| エラーレスポンス形式 | L440 |
-| エラーログ出力 | L471 |
-| ユーザー向けエラーメッセージ | L508 |
-| エラーハンドリングの実装指針 | L531 |
-| 関連ドキュメント | L561 |
-| 変更履歴 | L570 |
+| 認証フォールバックパターン（AUTH-UI-001） | L328 |
+| サーキットブレーカー（将来対応） | L370 |
+| エラーレスポンス形式 | L398 |
+| エラーログ出力 | L429 |
+| ユーザー向けエラーメッセージ | L466 |
+| エラーハンドリングの実装指針 | L489 |
+| 関連ドキュメント | L519 |
+| 変更履歴 | L528 |
 
 ### references/llm-embedding.md
 

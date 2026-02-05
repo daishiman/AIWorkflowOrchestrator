@@ -1,10 +1,31 @@
 import { defineConfig } from "vitest/config";
+import { cpus } from "os";
+
+// 並列化設定（desktop と同じパターン）
+// CI環境: GitHub Actionsランナー（2コア、8GB RAM）でのI/O待ち時間活用
+// ローカル環境: CPUコア数に基づいて動的に設定
+const CI_MAX_FORKS = 4;
+const cpuCount = cpus().length;
+const LOCAL_MAX_FORKS = process.env.VITEST_MAX_FORKS
+  ? parseInt(process.env.VITEST_MAX_FORKS, 10)
+  : Math.max(2, Math.min(8, Math.floor(cpuCount / 2)));
+
+const enableFileParallelism = process.env.VITEST_FILE_PARALLELISM !== "false";
 
 export default defineConfig({
   test: {
     globals: true,
     environment: "node",
     include: ["**/*.test.ts"],
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        minForks: 1,
+        maxForks: process.env.CI ? CI_MAX_FORKS : LOCAL_MAX_FORKS,
+        isolate: true,
+      },
+    },
+    fileParallelism: enableFileParallelism,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
