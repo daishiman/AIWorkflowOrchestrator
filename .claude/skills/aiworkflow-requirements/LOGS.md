@@ -5,6 +5,34 @@
 
 ---
 
+## 2026-02-05: ENV-INFRA-001完了（better-sqlite3 Node.jsバージョン不一致修正）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | ENV-INFRA-001                                                              |
+| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                             |
+| 対象ファイル | technology-devops.md, task-workflow.md                                     |
+| 結果         | success                                                                    |
+| 備考         | pnpm store prune + install --forceで解決。CONTRIBUTING.md新規作成          |
+
+### 更新詳細
+
+| ファイル            | 追加内容                                                        |
+| ------------------- | --------------------------------------------------------------- |
+| technology-devops.md | 完了タスクテーブル追加（ENV-INFRA-001）、変更履歴v2026-02-04    |
+| task-workflow.md     | UT-ENV-001未タスク追加（CI node-version .nvmrc参照化）、v1.18.0 |
+| patterns.md          | 失敗パターン追加（ネイティブモジュールNODE_MODULE_VERSION不一致）|
+| CONTRIBUTING.md      | 新規作成（開発者向けセットアップ・トラブルシューティング）       |
+
+### 解決パターン
+
+```bash
+# pnpm storeに古いNode.js用バイナリがキャッシュされる問題の解決
+pnpm store prune
+pnpm install --force
+```
+
+---
 ## 2026-02-05: TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）
 
 | 項目         | 内容                                                                           |
@@ -29,7 +57,6 @@
 3. **ホワイトリスト更新**: ALLOWED_INVOKE_CHANNELSから旧チャンネルを漏れなく削除
 
 ---
-
 ## 2026-02-04: AUTH-UI-001完了（認証UIバグ修正）
 
 | 項目         | 内容                                                                                               |
@@ -2489,7 +2516,41 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | UT-AUTH-001 | profileHandlers.test.ts環境修正 | 低     | AUTH-UI-001 |
 
 ---
+## 2026-02-04: ENV-INFRA-001完了（better-sqlite3バージョン不一致修正）
 
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | ENV-INFRA-001                                                                      |
+| 操作         | task-complete                                                                      |
+| 対象ファイル | technology-devops.md                                                               |
+| 結果         | success                                                                            |
+| 備考         | better-sqlite3 NODE_MODULE_VERSION不一致問題の解決・環境管理設定の文書化           |
+
+### 更新詳細
+
+- **確認**: Node.jsバージョン管理設定（.nvmrc, engines, volta）は既存で適切に設定済み
+- **修正**: pnpm store prune && pnpm install --forceで再ビルド実施
+- **テスト**: workflow-repository.test.ts 10/10成功
+
+### テスト結果サマリー
+
+| テストファイル              | テスト数 | 結果        |
+| --------------------------- | -------- | ----------- |
+| workflow-repository.test.ts | 10       | ✅ ALL PASS |
+
+### 成果物
+
+| Phase | 成果物               | パス                                                                     |
+| ----- | -------------------- | ------------------------------------------------------------------------ |
+| 1     | 診断レポート・要件   | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-1/ |
+| 5     | 実装結果             | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-5/ |
+| 12    | 実装ガイド           | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-12/ |
+
+### 未タスク検出
+
+該当なし - 既存のNode.jsバージョン管理設定は適切に機能していた
+
+---
 ## 2026-02-05: TASK-FIX-GOOGLE-LOGIN-001完了（Googleログイン修正）
 
 | 項目         | 内容                                                                               |

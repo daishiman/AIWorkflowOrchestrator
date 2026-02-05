@@ -69,6 +69,28 @@
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-9B-G
 
+### ネイティブモジュールNODE_MODULE_VERSION不一致（ENV-INFRA-001）
+
+- **状況**: better-sqlite3がNODE_MODULE_VERSION不一致エラー（127 vs 131）で動作しない
+- **問題**: pnpm storeに古いNode.jsバージョン用にコンパイルされたバイナリがキャッシュされ続ける
+- **原因**:
+  1. pnpm storeがネイティブモジュールのバイナリをNode.jsバージョンごとに区別しない
+  2. `pnpm install`だけでは既存キャッシュを使い回してしまう
+  3. 通常の再ビルドコマンド（`pnpm rebuild`）では解決しない場合がある
+- **発見経緯**: Node.js 22.11.0 → 22.13.1更新後にElectronアプリ起動時に即座にクラッシュ
+- **教訓**:
+  1. NODE_MODULE_VERSION不一致は**pnpm store prune**でキャッシュクリアが必要
+  2. その後**pnpm install --force**で再ビルドを強制
+  3. .nvmrc/package.json engines/voltaの三重構造でバージョン管理する
+  4. CONTRIBUTING.mdにトラブルシューティング手順を記載しておく
+- **修正コマンド**:
+  ```bash
+  pnpm store prune
+  pnpm install --force
+  ```
+- **発見日**: 2026-02-04
+- **関連タスク**: ENV-INFRA-001
+
 ### Phase 12 Task 2 Step 1-A更新漏れ（task-imp-search-ui-001）
 
 - **状況**: Phase 12 Task 2実行時、タスク完了記録をシステム仕様書に追加した

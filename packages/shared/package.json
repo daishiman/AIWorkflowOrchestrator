@@ -30,8 +30,8 @@
       "import": "./dist/src/types/index.js"
     },
     "./types/auth": {
-      "types": "./dist/types/auth.d.ts",
-      "import": "./dist/types/auth.js"
+      "types": "./dist/src/types/auth.d.ts",
+      "import": "./dist/src/types/auth.js"
     },
     "./types/api-keys": {
       "types": "./dist/types/api-keys.d.ts",
