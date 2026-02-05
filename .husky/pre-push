@@ -1,6 +1,11 @@
 #!/bin/sh
 # pre-push hook: プッシュ前にCI相当のチェックを実行
-# --no-verify オプションでスキップ可能
+#
+# ⚠️  警告: --no-verify オプションは絶対禁止です！
+# このフックをスキップすると、CIで初めてエラーが検出され、
+# 修正に余計な時間がかかります。
+# テストが失敗する場合は、テストを修正してください。
+# 詳細は CLAUDE.md の「Git操作の禁止事項」を参照。
 
 echo "🔍 Running pre-push CI validation..."
 
@@ -92,59 +97,149 @@ if [ "$DOCS_ONLY" = "true" ] && [ -n "$CHANGED_FILES" ]; then
     exit 0
 fi
 
-# 1. Lint チェック
-echo "📝 Checking lint..."
-if ! pnpm lint; then
-    echo "❌ Lint failed. Push aborted."
-    echo "💡 Fix lint errors or use 'git push --no-verify' to skip."
-    exit 1
-fi
+# ==========================================================================
+# Phase 1: Lint + Shared Build（並列実行）
+# - Lint は独立して実行可能
+# - Shared Build は TypeCheck の前提条件（型解決に dist が必要）
+# ==========================================================================
+echo ""
+echo "═══════════════════════════════════════════"
+echo "  Phase 1: Lint + Shared Build（並列）"
+echo "═══════════════════════════════════════════"
 
-# 2. TypeScript 型チェック
-echo "🔧 Checking types..."
-if ! pnpm --filter @repo/shared build > /dev/null 2>&1; then
-    echo "❌ Shared package build failed. Push aborted."
-    exit 1
-fi
+PHASE1_FAILED=""
 
-if ! pnpm typecheck; then
-    echo "❌ Type check failed. Push aborted."
-    echo "💡 Fix type errors or use 'git push --no-verify' to skip."
-    exit 1
-fi
+# Lint をバックグラウンドで実行
+echo "📝 [1/2] Starting lint..."
+pnpm lint > /tmp/pre-push-lint.log 2>&1 &
+LINT_PID=$!
 
-# 3. テスト実行（タイムアウト: 120秒）
-if [ "$SKIP_NATIVE_TESTS" = true ]; then
-    echo "⏭️  Skipping tests (Node.js version mismatch - native modules incompatible)."
-    echo "   Tests will run in CI with the correct Node.js version."
+# Shared Build をバックグラウンドで実行
+echo "📦 [2/2] Starting shared build..."
+pnpm --filter @repo/shared build > /tmp/pre-push-shared-build.log 2>&1 &
+BUILD_PID=$!
+
+# Lint の完了を待機
+wait $LINT_PID
+LINT_EXIT=$?
+if [ $LINT_EXIT -ne 0 ]; then
+    echo "❌ Lint failed (exit code: $LINT_EXIT)"
+    cat /tmp/pre-push-lint.log
+    PHASE1_FAILED="lint"
 else
-    echo "🧪 Running tests (timeout: 120s)..."
+    echo "✅ Lint passed"
+fi
+
+# Shared Build の完了を待機
+wait $BUILD_PID
+BUILD_EXIT=$?
+if [ $BUILD_EXIT -ne 0 ]; then
+    echo "❌ Shared build failed (exit code: $BUILD_EXIT)"
+    cat /tmp/pre-push-shared-build.log
+    if [ -n "$PHASE1_FAILED" ]; then
+        PHASE1_FAILED="$PHASE1_FAILED, shared-build"
+    else
+        PHASE1_FAILED="shared-build"
+    fi
+else
+    echo "✅ Shared build passed"
+fi
+
+# Phase 1 の結果チェック
+if [ -n "$PHASE1_FAILED" ]; then
+    echo ""
+    echo "❌ Phase 1 failed: $PHASE1_FAILED"
+    echo "💡 Fix the errors above and try again."
+    rm -f /tmp/pre-push-lint.log /tmp/pre-push-shared-build.log
+    exit 1
+fi
+
+echo "✅ Phase 1 complete"
+
+# ==========================================================================
+# Phase 2: TypeCheck + Tests（並列実行）
+# - TypeCheck: Shared Build 完了後に実行（Phase 1 で保証）
+# - Tests: Shared Build に依存しない（エイリアスで直接ソース参照）
+# ==========================================================================
+echo ""
+echo "═══════════════════════════════════════════"
+echo "  Phase 2: TypeCheck + Tests（並列）"
+echo "═══════════════════════════════════════════"
+
+PHASE2_FAILED=""
+
+# TypeCheck をバックグラウンドで実行
+echo "🔧 [1/2] Starting type check..."
+pnpm typecheck > /tmp/pre-push-typecheck.log 2>&1 &
+TYPECHECK_PID=$!
+
+# テスト実行（バックグラウンド）
+if [ "$SKIP_NATIVE_TESTS" = true ]; then
+    echo "⏭️  [2/2] Skipping tests (Node.js version mismatch)"
+    # ダミーのバックグラウンドプロセス（即完了）
+    true &
+    TEST_PID=$!
+else
+    echo "🧪 [2/2] Starting ALL tests (timeout: 600s)..."
+    echo "   This includes @repo/shared and @repo/desktop to match CI coverage."
 
     # タイムアウト付きテスト実行
-    run_tests_with_timeout() {
-        # タイムアウトコマンドの存在確認
+    (
         if command -v timeout > /dev/null 2>&1; then
-            timeout 120 pnpm --filter @repo/shared test:run
+            timeout 600 pnpm test:all
         elif command -v gtimeout > /dev/null 2>&1; then
-            gtimeout 120 pnpm --filter @repo/shared test:run
+            gtimeout 600 pnpm test:all
         else
-            # タイムアウトなしで実行（警告表示）
-            echo "⚠️  timeout command not found. Running tests without timeout."
-            pnpm --filter @repo/shared test:run
+            pnpm test:all
         fi
-    }
-
-    if ! run_tests_with_timeout; then
-        EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 124 ]; then
-            echo "⏱️  Tests timed out after 120s. Proceeding with push."
-            echo "💡 Run 'pnpm test' manually to verify all tests pass."
-        else
-            echo "❌ Tests failed. Push aborted."
-            echo "💡 Fix failing tests or use 'git push --no-verify' to skip."
-            exit 1
-        fi
-    fi
+    ) > /tmp/pre-push-test.log 2>&1 &
+    TEST_PID=$!
 fi
 
-echo "✅ All pre-push checks passed!"
+# TypeCheck の完了を待機
+wait $TYPECHECK_PID
+TYPECHECK_EXIT=$?
+if [ $TYPECHECK_EXIT -ne 0 ]; then
+    echo "❌ Type check failed (exit code: $TYPECHECK_EXIT)"
+    cat /tmp/pre-push-typecheck.log
+    PHASE2_FAILED="typecheck"
+else
+    echo "✅ Type check passed"
+fi
+
+# テストの完了を待機
+wait $TEST_PID
+TEST_EXIT=$?
+if [ "$SKIP_NATIVE_TESTS" = true ]; then
+    echo "⏭️  Tests skipped (will run in CI)"
+elif [ $TEST_EXIT -eq 124 ]; then
+    echo "⏱️  Tests timed out after 600s. Proceeding with push."
+    echo "💡 Run 'pnpm test:all' manually to verify all tests pass."
+elif [ $TEST_EXIT -ne 0 ]; then
+    echo "❌ Tests failed (exit code: $TEST_EXIT)"
+    cat /tmp/pre-push-test.log
+    if [ -n "$PHASE2_FAILED" ]; then
+        PHASE2_FAILED="$PHASE2_FAILED, tests"
+    else
+        PHASE2_FAILED="tests"
+    fi
+else
+    echo "✅ Tests passed"
+fi
+
+# Phase 2 の結果チェック
+if [ -n "$PHASE2_FAILED" ]; then
+    echo ""
+    echo "❌ Phase 2 failed: $PHASE2_FAILED"
+    echo "💡 Fix the errors above and try again."
+    rm -f /tmp/pre-push-lint.log /tmp/pre-push-shared-build.log /tmp/pre-push-typecheck.log /tmp/pre-push-test.log
+    exit 1
+fi
+
+# 一時ファイルのクリーンアップ
+rm -f /tmp/pre-push-lint.log /tmp/pre-push-shared-build.log /tmp/pre-push-typecheck.log /tmp/pre-push-test.log
+
+echo ""
+echo "═══════════════════════════════════════════"
+echo "  ✅ All pre-push checks passed!"
+echo "═══════════════════════════════════════════"

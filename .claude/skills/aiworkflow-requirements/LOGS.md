@@ -5,6 +5,58 @@
 
 ---
 
+## 2026-02-05: ENV-INFRA-001完了（better-sqlite3 Node.jsバージョン不一致修正）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | ENV-INFRA-001                                                              |
+| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                             |
+| 対象ファイル | technology-devops.md, task-workflow.md                                     |
+| 結果         | success                                                                    |
+| 備考         | pnpm store prune + install --forceで解決。CONTRIBUTING.md新規作成          |
+
+### 更新詳細
+
+| ファイル            | 追加内容                                                        |
+| ------------------- | --------------------------------------------------------------- |
+| technology-devops.md | 完了タスクテーブル追加（ENV-INFRA-001）、変更履歴v2026-02-04    |
+| task-workflow.md     | UT-ENV-001未タスク追加（CI node-version .nvmrc参照化）、v1.18.0 |
+| patterns.md          | 失敗パターン追加（ネイティブモジュールNODE_MODULE_VERSION不一致）|
+| CONTRIBUTING.md      | 新規作成（開発者向けセットアップ・トラブルシューティング）       |
+
+### 解決パターン
+
+```bash
+# pnpm storeに古いNode.js用バイナリがキャッシュされる問題の解決
+pnpm store prune
+pnpm install --force
+```
+
+---
+## 2026-02-05: TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）
+
+| 項目         | 内容                                                                           |
+| ------------ | ------------------------------------------------------------------------------ |
+| タスクID     | TASK-FIX-4-1-IPC-CONSOLIDATION                                                 |
+| 操作         | Phase 1-12 完了（システム仕様書1ファイル更新）                                 |
+| 対象ファイル | security-skill-ipc.md                                                          |
+| 結果         | success                                                                        |
+| 備考         | 旧チャンネル（SKILL_LIST_AVAILABLE, SKILL_LIST_IMPORTED）削除、42テスト全PASS  |
+
+### 更新詳細
+
+| ファイル              | 追加内容                                                    |
+| --------------------- | ----------------------------------------------------------- |
+| security-skill-ipc.md | v1.4.0: 旧チャンネル削除記録、Noteセクション追加            |
+| patterns.md           | IPC統合パターン2件追加（ハードコード発見、重複定義整理）     |
+
+### 苦戦箇所
+
+1. **ハードコード文字列の発見**: `"skill:complete" as string`のような型キャストでホワイトリストをバイパスしていた
+2. **重複定義の整理**: preload/channels.ts vs shared/ipc/channels.tsの重複を解消
+3. **ホワイトリスト更新**: ALLOWED_INVOKE_CHANNELSから旧チャンネルを漏れなく削除
+
+---
 ## 2026-02-04: AUTH-UI-001完了（認証UIバグ修正）
 
 | 項目         | 内容                                                                                               |
@@ -2462,5 +2514,78 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | タスクID    | 内容                            | 優先度 | 発見元      |
 | ----------- | ------------------------------- | ------ | ----------- |
 | UT-AUTH-001 | profileHandlers.test.ts環境修正 | 低     | AUTH-UI-001 |
+
+---
+## 2026-02-04: ENV-INFRA-001完了（better-sqlite3バージョン不一致修正）
+
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | ENV-INFRA-001                                                                      |
+| 操作         | task-complete                                                                      |
+| 対象ファイル | technology-devops.md                                                               |
+| 結果         | success                                                                            |
+| 備考         | better-sqlite3 NODE_MODULE_VERSION不一致問題の解決・環境管理設定の文書化           |
+
+### 更新詳細
+
+- **確認**: Node.jsバージョン管理設定（.nvmrc, engines, volta）は既存で適切に設定済み
+- **修正**: pnpm store prune && pnpm install --forceで再ビルド実施
+- **テスト**: workflow-repository.test.ts 10/10成功
+
+### テスト結果サマリー
+
+| テストファイル              | テスト数 | 結果        |
+| --------------------------- | -------- | ----------- |
+| workflow-repository.test.ts | 10       | ✅ ALL PASS |
+
+### 成果物
+
+| Phase | 成果物               | パス                                                                     |
+| ----- | -------------------- | ------------------------------------------------------------------------ |
+| 1     | 診断レポート・要件   | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-1/ |
+| 5     | 実装結果             | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-5/ |
+| 12    | 実装ガイド           | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-12/ |
+
+### 未タスク検出
+
+該当なし - 既存のNode.jsバージョン管理設定は適切に機能していた
+
+---
+## 2026-02-05: TASK-FIX-GOOGLE-LOGIN-001完了（Googleログイン修正）
+
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-GOOGLE-LOGIN-001                                                          |
+| 操作         | update-spec                                                                        |
+| 対象ファイル | interfaces-auth.md, architecture-auth-security.md, api-ipc-auth.md, error-handling.md |
+| 結果         | success                                                                            |
+| 備考         | Googleログイン修正実装完了・仕様書4ファイル更新                                    |
+
+### 更新詳細
+
+| ファイル                     | 更新内容                                                           |
+| ---------------------------- | ------------------------------------------------------------------ |
+| `interfaces-auth.md`         | AUTH_ERROR_CODES拡張(9コード)、AuthSession/AuthState型拡張、完了タスク追加 |
+| `architecture-auth-security.md` | OAuthエラーハンドリングフロー、リスナー管理、完了タスク追加       |
+| `api-ipc-auth.md`            | AuthSession型にrefreshTokenExpiresAt追加、auth:state-changed拡張  |
+| `error-handling.md`          | OAuthエラーコードマッピングセクション追加                         |
+
+### 新規追加コンテンツ
+
+| カテゴリ           | 追加内容                                                                   |
+| ------------------ | -------------------------------------------------------------------------- |
+| エラーコード       | AUTH_NOT_CONFIGURED, OAUTH_ACCESS_DENIED他8コード                         |
+| 型フィールド       | AuthSession.refreshTokenExpiresAt, AuthState.errorCode                    |
+| 関数仕様           | parseOAuthError(), mapOAuthErrorToMessage(), waitForSession()             |
+| フローチャート     | OAuthエラーハンドリングフロー（5ステップ）                                |
+
+### 成果物
+
+| Phase | 成果物                   | パス                                                    |
+| ----- | ------------------------ | ------------------------------------------------------- |
+| 1     | 要件定義・受け入れ基準   | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-1/ |
+| 2     | アーキテクチャ設計       | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-2/ |
+| 4     | テスト仕様・テストケース | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-4/ |
+| 12    | 実装ガイド               | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-12/ |
 
 ---

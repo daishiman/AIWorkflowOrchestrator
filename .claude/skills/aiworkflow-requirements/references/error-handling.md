@@ -325,6 +325,48 @@ TASK-8A単体テストで検証されたSkillExecutor/PermissionResolverの実�
 
 ---
 
+## OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001）
+
+OAuth認証コールバックで発生するエラーコードを日本語メッセージにマッピング。
+
+**対象ファイル**: `apps/desktop/src/main/auth/oauth-error-handler.ts`
+
+### OAuthエラーコード一覧
+
+| OAuthエラー               | AUTH_ERROR_CODE                         | 日本語メッセージ                     |
+| ------------------------- | --------------------------------------- | ------------------------------------ |
+| access_denied             | auth/oauth-access-denied                | 認証がキャンセルされました           |
+| server_error              | auth/oauth-server-error                 | 認証サーバーでエラーが発生しました   |
+| temporarily_unavailable   | auth/oauth-temporarily-unavailable      | 認証サーバーが一時的に利用できません |
+| invalid_request           | auth/oauth-invalid-request              | 認証リクエストが不正です             |
+| unauthorized_client       | auth/oauth-unauthorized-client          | 認証クライアントが許可されていません |
+| unsupported_response_type | auth/oauth-unsupported-response-type    | サポートされていない認証タイプです   |
+| invalid_scope             | auth/oauth-invalid-scope                | 無効な認証スコープです               |
+| (その他)                  | auth/oauth-unknown-error                | 認証に失敗しました                   |
+
+### エラーパース関数
+
+**parseOAuthError(url: string): OAuthError | null**
+
+| 処理                 | 説明                                           |
+| -------------------- | ---------------------------------------------- |
+| URLハッシュ抽出      | URL中の `#` 以降をURLSearchParamsでパース      |
+| errorパラメータ検出  | `error` パラメータが存在するかチェック         |
+| 戻り値               | `{ error, errorDescription }` または `null`    |
+
+**mapOAuthErrorToMessage(errorCode: string): MappedError**
+
+| 処理                 | 説明                                           |
+| -------------------- | ---------------------------------------------- |
+| テーブルルックアップ | OAUTH_ERROR_MESSAGESテーブルから対応を検索     |
+| フォールバック       | 未知のエラーコードは `OAUTH_UNKNOWN_ERROR` に  |
+| 戻り値               | `{ code, message }` 形式のMappedErrorオブジェクト |
+
+**実装場所**: `apps/desktop/src/main/auth/oauth-error-handler.ts`
+**テスト**: `apps/desktop/src/main/__tests__/auth-callback.test.ts`
+
+---
+
 ## 認証フォールバックパターン（AUTH-UI-001）
 
 認証プロフィール操作におけるフォールバック処理パターン。
@@ -529,6 +571,7 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-02-05 | v1.5.0     | TASK-FIX-GOOGLE-LOGIN-001: OAuthエラーコードマッピングセクション追加（9エラーコード、parseOAuthError、mapOAuthErrorToMessage関数仕様） |
 | 2026-02-04 | v1.4.0     | AUTH-UI-001: 認証フォールバックパターン（user_profilesテーブル不在時）追加 |
 | 2026-02-02 | v1.3.0     | TASK-8A: SkillExecutor実行エラーコード6種の正式仕様追加（EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT） |
 | 2026-01-31 | v1.2.0     | TASK-SKILL-RETRY-001: SkillExecutorリトライ戦略セクション追加        |

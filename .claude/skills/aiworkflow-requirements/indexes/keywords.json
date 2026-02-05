@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-04T03:37:47.394Z",
-  "totalKeywords": 1024,
+  "generated": "2026-02-05T05:08:20.326Z",
+  "totalKeywords": 1034,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -652,6 +652,7 @@
     ],
     "完了タスク": [
       "api-ipc-agent.md",
+      "architecture-auth-security.md",
       "architecture-chat-history.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history.md",
@@ -905,6 +906,7 @@
       "arch-ui-components.md",
       "architecture-chat-history.md",
       "architecture-overview.md",
+      "error-handling.md",
       "glossary.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-chat-history.md",
@@ -995,6 +997,9 @@
       "architecture-overview.md"
     ],
     "パイプラインアーキテクチャ": [
+      "architecture-auth-security.md"
+    ],
+    "実装時の苦戦した箇所・知見": [
       "architecture-auth-security.md"
     ],
     "チャット履歴機能": [
@@ -1955,6 +1960,27 @@
     "実行エラーコード": [
       "error-handling.md"
     ],
+    "OAuth": [
+      "error-handling.md"
+    ],
+    "エラーコードマッピング": [
+      "error-handling.md"
+    ],
+    "FIX": [
+      "error-handling.md"
+    ],
+    "GOOGLE": [
+      "error-handling.md"
+    ],
+    "LOGIN": [
+      "error-handling.md"
+    ],
+    "認証フォールバックパターン": [
+      "error-handling.md"
+    ],
+    "AUTH": [
+      "error-handling.md"
+    ],
     "サーキットブレーカー": [
       "error-handling.md"
     ],
@@ -2045,6 +2071,7 @@
       "interfaces-agent-sdk-history.md",
       "interfaces-chat-history.md",
       "quality-e2e-testing.md",
+      "security-skill-ipc.md",
       "task-workflow.md",
       "ui-history-integration.md"
     ],

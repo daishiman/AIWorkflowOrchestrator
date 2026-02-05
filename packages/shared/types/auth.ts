@@ -294,6 +294,12 @@ export interface AuthSession {
   refreshToken: string;
   expiresAt: number;
   isOffline: boolean;
+  /**
+   * リフレッシュトークンの有効期限（Unix timestamp）
+   * セッション作成時刻 + 7日（604800秒）
+   * @see TASK-FIX-GOOGLE-LOGIN-001 Problem 3
+   */
+  refreshTokenExpiresAt?: number;
 }
 
 /**
@@ -303,6 +309,11 @@ export interface AuthState {
   authenticated: boolean;
   user?: AuthUser;
   error?: string;
+  /**
+   * エラーコード（AUTH_ERROR_CODES の値）
+   * @see TASK-FIX-GOOGLE-LOGIN-001 Problem 1
+   */
+  errorCode?: string;
   isOffline?: boolean;
 }
 
@@ -336,6 +347,17 @@ export const AUTH_ERROR_CODES = {
   INVALID_PROVIDER: "auth/invalid-provider",
   NETWORK_ERROR: "auth/network-error",
   TOKEN_EXPIRED: "auth/token-expired",
+  // TASK-FIX-GOOGLE-LOGIN-001 Problem 2: Supabase未設定エラー
+  AUTH_NOT_CONFIGURED: "auth/not-configured",
+  // TASK-FIX-GOOGLE-LOGIN-001 Problem 1: OAuthエラーコード
+  OAUTH_ACCESS_DENIED: "auth/oauth-access-denied",
+  OAUTH_SERVER_ERROR: "auth/oauth-server-error",
+  OAUTH_TEMPORARILY_UNAVAILABLE: "auth/oauth-temporarily-unavailable",
+  OAUTH_INVALID_REQUEST: "auth/oauth-invalid-request",
+  OAUTH_UNAUTHORIZED_CLIENT: "auth/oauth-unauthorized-client",
+  OAUTH_UNSUPPORTED_RESPONSE_TYPE: "auth/oauth-unsupported-response-type",
+  OAUTH_INVALID_SCOPE: "auth/oauth-invalid-scope",
+  OAUTH_UNKNOWN_ERROR: "auth/oauth-unknown-error",
 } as const;
 
 export const PROFILE_ERROR_CODES = {
