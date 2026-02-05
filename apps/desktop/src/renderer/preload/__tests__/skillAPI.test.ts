@@ -151,7 +151,7 @@ describe("skillAPI argument format tests", () => {
 
       await skillAPI.listAvailable();
 
-      expect(mockInvoke).toHaveBeenCalledWith("skill:list-available");
+      expect(mockInvoke).toHaveBeenCalledWith("skill:list");
     });
   });
 
@@ -163,7 +163,7 @@ describe("skillAPI argument format tests", () => {
 
       await skillAPI.listImported();
 
-      expect(mockInvoke).toHaveBeenCalledWith("skill:list-imported");
+      expect(mockInvoke).toHaveBeenCalledWith("skill:get-imported");
     });
   });
 

@@ -97,8 +97,8 @@ import { validateIpcSender } from "../../infrastructure/security/ipc-validator.j
 
 // === Channel Constants ===
 const EXPECTED_CHANNELS = [
-  "skill:list-available",
-  "skill:list-imported",
+  "skill:list",
+  "skill:get-imported",
   "skill:import",
   "skill:remove",
   "skill:get-detail",
@@ -253,11 +253,11 @@ describe("Skill IPC Integration", () => {
     });
   });
 
-  // --- TC-01, TC-02, TC-12: skill:list-available ---
-  describe("skill:list-available", () => {
+  // --- TC-01, TC-02, TC-12: skill:list ---
+  describe("skill:list", () => {
     it("TC-01: should return available skills from SkillService.scanAvailableSkills", async () => {
       mockSkillService.scanAvailableSkills.mockResolvedValue(MOCK_SCAN_RESULT);
-      const handler = handlers.get("skill:list-available")!;
+      const handler = handlers.get("skill:list")!;
       const result = (await handler(createMockIpcEvent())) as {
         success: boolean;
         data: unknown[];
@@ -271,7 +271,7 @@ describe("Skill IPC Integration", () => {
       mockSkillService.scanAvailableSkills.mockRejectedValue(
         new Error("Scan failed"),
       );
-      const handler = handlers.get("skill:list-available")!;
+      const handler = handlers.get("skill:list")!;
       const result = (await handler(createMockIpcEvent())) as {
         success: boolean;
         error: string;
@@ -291,7 +291,7 @@ describe("Skill IPC Integration", () => {
         scannedAt: new Date("2026-02-02"),
       };
       mockSkillService.scanAvailableSkills.mockResolvedValue(updatedScanResult);
-      const handler = handlers.get("skill:list-available")!;
+      const handler = handlers.get("skill:list")!;
       const result = (await handler(createMockIpcEvent(), {
         forceRefresh: true,
       })) as { success: boolean; data: unknown[] };
@@ -301,11 +301,11 @@ describe("Skill IPC Integration", () => {
     });
   });
 
-  // --- TC-03: skill:list-imported ---
-  describe("skill:list-imported", () => {
+  // --- TC-03: skill:get-imported ---
+  describe("skill:get-imported", () => {
     it("TC-03: should return imported skills from SkillService.getImportedSkills", async () => {
       mockSkillService.getImportedSkills.mockResolvedValue([MOCK_SKILL_A]);
-      const handler = handlers.get("skill:list-imported")!;
+      const handler = handlers.get("skill:get-imported")!;
       const result = (await handler(createMockIpcEvent())) as {
         success: boolean;
         data: unknown[];
@@ -569,13 +569,13 @@ describe("Skill IPC Integration", () => {
     });
   });
 
-  // --- Edge Cases: skill:list-imported error ---
-  describe("skill:list-imported - error", () => {
+  // --- Edge Cases: skill:get-imported error ---
+  describe("skill:get-imported - error", () => {
     it("should return error when getImportedSkills throws", async () => {
       mockSkillService.getImportedSkills.mockRejectedValue(
         new Error("Service unavailable"),
       );
-      const handler = handlers.get("skill:list-imported")!;
+      const handler = handlers.get("skill:get-imported")!;
       const result = (await handler(createMockIpcEvent())) as {
         success: boolean;
         error: string;

@@ -47,9 +47,7 @@ function hasElectronAPI(win: Window): win is Window & {
 export const skillAPI: SkillAPI = {
   listAvailable: async () => {
     if (hasElectronAPI(window)) {
-      return window.electronAPI.invoke<OperationResult<Skill[]>>(
-        "skill:list-available",
-      );
+      return window.electronAPI.invoke<OperationResult<Skill[]>>("skill:list");
     }
     // Fallback for non-electron environment (development/testing)
     return { success: true, data: [] };
@@ -59,10 +57,11 @@ export const skillAPI: SkillAPI = {
     console.log("[skillAPI][DEBUG] listImported called");
     console.log("[skillAPI][DEBUG] hasElectronAPI:", hasElectronAPI(window));
     if (hasElectronAPI(window)) {
-      console.log("[skillAPI][DEBUG] Invoking skill:list-imported via IPC...");
-      const result = await window.electronAPI.invoke<OperationResult<Skill[]>>(
-        "skill:list-imported",
-      );
+      console.log("[skillAPI][DEBUG] Invoking skill:get-imported via IPC...");
+      const result =
+        await window.electronAPI.invoke<OperationResult<Skill[]>>(
+          "skill:get-imported",
+        );
       console.log("[skillAPI][DEBUG] IPC result received:", result);
       return result;
     }

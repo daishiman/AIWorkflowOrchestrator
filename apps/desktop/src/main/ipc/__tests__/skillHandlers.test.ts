@@ -7,8 +7,8 @@
  * instead of the originally designed `agent:` prefix channels.
  *
  * Channel mapping:
- * - skill:list-available (was: agent:scan-available-skills)
- * - skill:list-imported (was: agent:get-imported-skills)
+ * - skill:list (was: agent:scan-available-skills)
+ * - skill:get-imported (was: agent:get-imported-skills)
  * - skill:import (was: agent:import-skills)
  * - skill:remove (was: agent:remove-skill)
  * - skill:get-detail (was: agent:get-skill-detail)
@@ -155,8 +155,8 @@ import { ipcMain } from "electron";
 
 // Skill IPC Channels (per Phase 3 review - using existing channels.ts definitions)
 const SKILL_CHANNELS = {
-  LIST_AVAILABLE: "skill:list-available",
-  LIST_IMPORTED: "skill:list-imported",
+  LIST_AVAILABLE: "skill:list",
+  LIST_IMPORTED: "skill:get-imported",
   IMPORT: "skill:import",
   REMOVE: "skill:remove",
   GET_DETAIL: "skill:get-detail",
@@ -212,11 +212,11 @@ describe("skillHandlers", () => {
   // ===========================================================================
 
   describe("registerSkillHandlers", () => {
-    it("SH-REG-01: should register skill:list-available handler", () => {
+    it("SH-REG-01: should register skill:list handler", () => {
       expect(handlers.has(SKILL_CHANNELS.LIST_AVAILABLE)).toBe(true);
     });
 
-    it("SH-REG-02: should register skill:list-imported handler", () => {
+    it("SH-REG-02: should register skill:get-imported handler", () => {
       expect(handlers.has(SKILL_CHANNELS.LIST_IMPORTED)).toBe(true);
     });
 
@@ -234,10 +234,10 @@ describe("skillHandlers", () => {
   });
 
   // ===========================================================================
-  // skill:list-available
+  // skill:list
   // ===========================================================================
 
-  describe("skill:list-available", () => {
+  describe("skill:list", () => {
     it("SH-LA-01: should call skillService.scanAvailableSkills", async () => {
       const mockData: SkillScanResult = {
         skills: [
@@ -260,7 +260,7 @@ describe("skillHandlers", () => {
 
       const handler = handlers.get(SKILL_CHANNELS.LIST_AVAILABLE);
       if (!handler) {
-        throw new Error("skill:list-available handler not registered");
+        throw new Error("skill:list handler not registered");
       }
 
       // When: ハンドラーを呼び出す
@@ -277,7 +277,7 @@ describe("skillHandlers", () => {
     it("SH-LA-02: should pass forceRefresh option", async () => {
       const handler = handlers.get(SKILL_CHANNELS.LIST_AVAILABLE);
       if (!handler) {
-        throw new Error("skill:list-available handler not registered");
+        throw new Error("skill:list handler not registered");
       }
 
       // When: forceRefreshオプション付きで呼び出す
@@ -294,7 +294,7 @@ describe("skillHandlers", () => {
 
       const handler = handlers.get(SKILL_CHANNELS.LIST_AVAILABLE);
       if (!handler) {
-        throw new Error("skill:list-available handler not registered");
+        throw new Error("skill:list handler not registered");
       }
 
       // When & Then: エラーがスローされるか、エラーレスポンスが返される
@@ -308,10 +308,10 @@ describe("skillHandlers", () => {
   });
 
   // ===========================================================================
-  // skill:list-imported
+  // skill:get-imported
   // ===========================================================================
 
-  describe("skill:list-imported", () => {
+  describe("skill:get-imported", () => {
     it("SH-LI-01: should call skillService.getImportedSkills", async () => {
       const mockData: Skill[] = [
         {
@@ -329,7 +329,7 @@ describe("skillHandlers", () => {
 
       const handler = handlers.get(SKILL_CHANNELS.LIST_IMPORTED);
       if (!handler) {
-        throw new Error("skill:list-imported handler not registered");
+        throw new Error("skill:get-imported handler not registered");
       }
 
       // When: ハンドラーを呼び出す
@@ -348,7 +348,7 @@ describe("skillHandlers", () => {
 
       const handler = handlers.get(SKILL_CHANNELS.LIST_IMPORTED);
       if (!handler) {
-        throw new Error("skill:list-imported handler not registered");
+        throw new Error("skill:get-imported handler not registered");
       }
 
       // When: ハンドラーを呼び出す
@@ -645,7 +645,7 @@ describe("skillHandlers", () => {
 
       const handler = handlers.get(SKILL_CHANNELS.LIST_AVAILABLE);
       if (!handler) {
-        throw new Error("skill:list-available handler not registered");
+        throw new Error("skill:list handler not registered");
       }
 
       // When & Then: 無効なsenderが拒否される
