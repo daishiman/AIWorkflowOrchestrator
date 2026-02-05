@@ -12,9 +12,10 @@
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
 | v1.0.0     | 2026-01-25 | 初版作成                                     |
-| v1.2.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
+| v1.3.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
+| v1.4.0     | 2026-02-04 | TASK-FIX-4-1-IPC-CONSOLIDATION完了（旧チャンネル削除、42テスト） |
 
 ---
 
@@ -57,11 +58,13 @@
 
 | チャネル               | 検証項目                          |
 | ---------------------- | --------------------------------- |
-| `skill:list-available` | sender検証 + パストラバーサル検証 |
-| `skill:list-imported`  | sender検証                        |
+| `skill:list`           | sender検証 + パストラバーサル検証 |
+| `skill:getImported`    | sender検証                        |
 | `skill:import`         | sender検証 + skillIds検証         |
 | `skill:remove`         | sender検証 + skillId検証          |
 | `skill:get-detail`     | sender検証 + skillId検証          |
+
+> **Note**: TASK-FIX-4-1-IPC-CONSOLIDATIONにより、旧チャンネル名（`skill:list-available`, `skill:list-imported`）は削除されました。
 
 ---
 
@@ -320,12 +323,42 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 
 | タスク | 完了日 | テスト数 |
 |--------|--------|----------|
+| TASK-FIX-4-1-IPC-CONSOLIDATION IPCチャンネル統合 | 2026-02-05 | 42 |
+
+### TASK-FIX-4-1-IPC-CONSOLIDATION 実装課題と解決策
+
+| 苦戦箇所               | 問題                                                                          | 解決策                                                                |
+| ---------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| ハードコード文字列発見 | `"skill:complete" as string` のようなコードで型チェックとホワイトリストをバイパス | Grep で `as string` パターンを検出し、`IPC_CHANNELS.SKILL_COMPLETE` 定数に置換 |
+| 重複定義の整理         | `preload/channels.ts` と `shared/ipc/channels.ts` に同じチャンネルが定義されていた | Single Source of Truth パターンで `preload/channels.ts` に統合         |
+| ホワイトリスト更新漏れ | 旧チャンネル名 `skill:list-available` が `ALLOWED_INVOKE_CHANNELS` に残存       | テストで旧チャンネル名が含まれないことを検証するアサーション追加       |
+| テスト独立性           | 既存テストがグローバル状態に依存していた                                        | beforeEach で明示的にリセットし、各テストが独立して実行できるよう改善  |
+
+**教訓**:
+- `as string` を使った型キャストはセキュリティ上危険（ホワイトリスト検証をバイパス）
+- IPC チャンネル定義は必ず Single Source of Truth パターンで管理
+- ホワイトリストの更新は必ずテストで検証
+
+**関連パターン**: [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) - IPCチャンネル統合パターン
+
 | TASK-8C-A IPC統合テスト（skillHandlers） | 2026-02-02 | 41 |
 | TASK-5-1 SkillAPI Preload実装 | 2026-01-27 | 67 |
 | TASK-4-1 スキルインポートIPCチャネル | 2026-01-25 | 60 |
 | TASK-3-2 SkillExecutor IPC Handler | 2026-01-25 | 192 |
 | TASK-3-1-D Permission Dialog UI | 2026-01-26 | 93 |
 | claude-code-cli-integration | 2026-01-17 | 240 |
+
+---
+
+## 残課題
+
+| タスクID | タスク名 | 優先度 | 状態 |
+|----------|----------|--------|------|
+| TASK-IPC-SHARED-CHANNELS-REFACTORING | packages/shared/ipc/channels.ts 整理 | 低 | 未実施 |
+
+> **Note**: TASK-FIX-4-1-IPC-CONSOLIDATION で preload/channels.ts への統合は完了したが、packages/shared 配下の整理は他パッケージへの影響調査が必要なため、別タスクとして分離。
+>
+> **指示書**: [task-ipc-shared-channels-refactoring.md](../../../../docs/30-workflows/unassigned-task/task-ipc-shared-channels-refactoring.md)
 
 ---
 

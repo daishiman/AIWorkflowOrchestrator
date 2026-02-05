@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-04T03:37:47.394Z",
-  "totalKeywords": 1024,
+  "generated": "2026-02-04T22:36:47.127Z",
+  "totalKeywords": 1028,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -652,6 +652,7 @@
     ],
     "完了タスク": [
       "api-ipc-agent.md",
+      "architecture-auth-security.md",
       "architecture-chat-history.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history.md",
@@ -905,6 +906,7 @@
       "arch-ui-components.md",
       "architecture-chat-history.md",
       "architecture-overview.md",
+      "error-handling.md",
       "glossary.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-chat-history.md",
@@ -1953,6 +1955,12 @@
       "interfaces-agent-sdk-executor.md"
     ],
     "実行エラーコード": [
+      "error-handling.md"
+    ],
+    "認証フォールバックパターン": [
+      "error-handling.md"
+    ],
+    "AUTH": [
       "error-handling.md"
     ],
     "サーキットブレーカー": [

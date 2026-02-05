@@ -38,18 +38,16 @@ export function registerSkillHandlers(
 ): void {
   // Initialize SkillExecutor instance
   _skillExecutorInstance = new SkillExecutor(mainWindow);
-  // skill:list-available - 利用可能なスキルをスキャン
+  // skill:list - 利用可能なスキルをスキャン (TASK-FIX-4-1-IPC-CONSOLIDATION: unified from SKILL_LIST_AVAILABLE)
   ipcMain.handle(
-    IPC_CHANNELS.SKILL_LIST_AVAILABLE,
+    IPC_CHANNELS.SKILL_LIST,
     async (
       event: IpcMainInvokeEvent,
       args?: { basePath?: string; forceRefresh?: boolean },
     ) => {
-      const validation = validateIpcSender(
-        event,
-        IPC_CHANNELS.SKILL_LIST_AVAILABLE,
-        { getAllowedWindows: () => [mainWindow] },
-      );
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_LIST, {
+        getAllowedWindows: () => [mainWindow],
+      });
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
@@ -68,24 +66,24 @@ export function registerSkillHandlers(
     },
   );
 
-  // skill:list-imported - インポート済みスキルを取得
+  // skill:getImported - インポート済みスキルを取得 (TASK-FIX-4-1-IPC-CONSOLIDATION: unified from SKILL_LIST_IMPORTED)
   ipcMain.handle(
-    IPC_CHANNELS.SKILL_LIST_IMPORTED,
+    IPC_CHANNELS.SKILL_GET_IMPORTED,
     async (event: IpcMainInvokeEvent) => {
-      console.log("[skillHandlers][DEBUG] skill:list-imported - START");
+      console.log("[skillHandlers][DEBUG] skill:getImported - START");
       const validation = validateIpcSender(
         event,
-        IPC_CHANNELS.SKILL_LIST_IMPORTED,
+        IPC_CHANNELS.SKILL_GET_IMPORTED,
         { getAllowedWindows: () => [mainWindow] },
       );
       if (!validation.valid) {
         console.log(
-          "[skillHandlers][DEBUG] skill:list-imported - validation FAILED",
+          "[skillHandlers][DEBUG] skill:getImported - validation FAILED",
         );
         throw toIPCValidationError(validation);
       }
       console.log(
-        "[skillHandlers][DEBUG] skill:list-imported - validation PASSED",
+        "[skillHandlers][DEBUG] skill:getImported - validation PASSED",
       );
       try {
         console.log(
@@ -99,10 +97,7 @@ export function registerSkillHandlers(
         );
         return { success: true, data: skills };
       } catch (error) {
-        console.error(
-          "[skillHandlers][DEBUG] skill:list-imported ERROR:",
-          error,
-        );
+        console.error("[skillHandlers][DEBUG] skill:getImported ERROR:", error);
         return {
           success: false,
           error:
@@ -430,8 +425,9 @@ export function registerSkillHandlers(
  */
 export function unregisterSkillHandlers(): void {
   _skillExecutorInstance = null;
-  ipcMain.removeHandler(IPC_CHANNELS.SKILL_LIST_AVAILABLE);
-  ipcMain.removeHandler(IPC_CHANNELS.SKILL_LIST_IMPORTED);
+  // TASK-FIX-4-1-IPC-CONSOLIDATION: unified channels
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_LIST);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_IMPORTED);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_REMOVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_DETAIL);

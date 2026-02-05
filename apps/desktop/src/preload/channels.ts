@@ -169,8 +169,8 @@ export const IPC_CHANNELS = {
   AGENT_CLEANUP_TEMP_FILES: "agent:cleanup-temp-files",
 
   // Skill management operations
-  SKILL_LIST_AVAILABLE: "skill:list-available",
-  SKILL_LIST_IMPORTED: "skill:list-imported",
+  // Note: SKILL_LIST_AVAILABLE and SKILL_LIST_IMPORTED removed in TASK-FIX-4-1-IPC-CONSOLIDATION
+  // Unified to SKILL_LIST and SKILL_GET_IMPORTED (see Skill import operations below)
   SKILL_IMPORT: "skill:import",
   SKILL_REMOVE: "skill:remove",
   SKILL_GET_DETAIL: "skill:get-detail",
@@ -378,8 +378,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AGENT_GET_PREVIEW_CONTENT,
   IPC_CHANNELS.AGENT_CLEANUP_TEMP_FILES,
   // Skill management channels
-  IPC_CHANNELS.SKILL_LIST_AVAILABLE,
-  IPC_CHANNELS.SKILL_LIST_IMPORTED,
+  // Note: SKILL_LIST_AVAILABLE and SKILL_LIST_IMPORTED removed (TASK-FIX-4-1-IPC-CONSOLIDATION)
   IPC_CHANNELS.SKILL_IMPORT,
   IPC_CHANNELS.SKILL_REMOVE,
   IPC_CHANNELS.SKILL_GET_DETAIL,

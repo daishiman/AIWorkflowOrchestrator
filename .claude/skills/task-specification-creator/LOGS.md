@@ -43,6 +43,36 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-05 - TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 ドキュメント更新
+- **Result**: ✓ 成功
+- **Notes**: 旧チャンネル削除、ハードコード排除、42テスト全PASS
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-FIX-4-1-IPC-CONSOLIDATION
+- Phase: 1-12完了
+
+### 成果
+
+- テストカバレッジ: 42テスト全PASS
+- 実装内容:
+  - 旧チャンネル（SKILL_LIST_AVAILABLE, SKILL_LIST_IMPORTED）削除
+  - ハードコード文字列（"skill:complete" as string）をIPC_CHANNELS定数に置換
+  - ALLOWED_INVOKE_CHANNELSから旧チャンネル削除
+  - skillHandlers.tsを新チャンネル名に更新
+
+### 苦戦箇所（patterns.md記録済み）
+
+1. ハードコード文字列発見: 型キャスト`as string`で隠れていた
+2. 重複定義整理: preload vs sharedの整合性確保
+3. ホワイトリスト更新漏れ防止: テストで検証
+
+---
+
 ## [2026-02-04 - AUTH-UI-001タスク完了（認証UIバグ修正）]
 
 - **Agent**: generate-task-specs / execute-task
