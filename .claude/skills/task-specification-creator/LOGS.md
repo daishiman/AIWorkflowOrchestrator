@@ -43,33 +43,13 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
-## [2026-02-05 - TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）]
+## [2026-02-05 - ENV-INFRA-001タスク完了（better-sqlite3バージョン不一致修正）]
 
-- **Agent**: execute-workflow (Phase 1-12)
-- **Phase**: Phase 12 ドキュメント更新
+- **Agent**: execute-task / generate-task-specs
+- **Phase**: Phase 1-12 完了
 - **Result**: ✓ 成功
-- **Notes**: 旧チャンネル削除、ハードコード排除、42テスト全PASS
-
-### コンテキスト
-
-- スキル: task-specification-creator
-- タスクID: TASK-FIX-4-1-IPC-CONSOLIDATION
-- Phase: 1-12完了
-
-### 成果
-
-- テストカバレッジ: 42テスト全PASS
-- 実装内容:
-  - 旧チャンネル（SKILL_LIST_AVAILABLE, SKILL_LIST_IMPORTED）削除
-  - ハードコード文字列（"skill:complete" as string）をIPC_CHANNELS定数に置換
-  - ALLOWED_INVOKE_CHANNELSから旧チャンネル削除
-  - skillHandlers.tsを新チャンネル名に更新
-
-### 苦戦箇所（patterns.md記録済み）
-
-1. ハードコード文字列発見: 型キャスト`as string`で隠れていた
-2. 重複定義整理: preload vs sharedの整合性確保
-3. ホワイトリスト更新漏れ防止: テストで検証
+- **Duration**: -
+- **Notes**: better-sqlite3のNODE_MODULE_VERSION不一致（127 vs 131）を解決。pnpm store prune + install --forceパターンを確立。CONTRIBUTING.md新規作成、patterns.mdに失敗パターン追加、UT-ENV-001（CI node-version .nvmrc参照化）を未タスクとして登録。
 
 ---
 
@@ -2911,47 +2891,33 @@ if (artifactPath) {
 
 ---
 
-## 2026-02-05 - TASK-FIX-GOOGLE-LOGIN-001 Phase 1-12完了
+## 2026-02-04 - better-sqlite3バージョン不一致修正（ENV-INFRA-001）タスク完了
 
 ### コンテキスト
 
 - スキル: task-specification-creator
-- タスクID: TASK-FIX-GOOGLE-LOGIN-001
-- タスク名: Googleログイン修正
+- タスクID: ENV-INFRA-001
+- タスク名: better-sqlite3 Node.jsバージョン不一致問題の解決
 - Phase: 1-12
 
 ### 成果
 
-- テストカバレッジ: 約50テストPASS
+- テストカバレッジ: workflow-repository.test.ts 10テストPASS
 - 実装内容:
-  - Problem 1: OAuthコールバックのerrorパラメータ検出（parseOAuthError関数）
-  - Problem 2: Supabase未設定時エラー（AUTH_NOT_CONFIGUREDコード追加）
-  - Problem 3: セッション管理（refreshTokenExpiresAtフィールド追加）
-  - Problem 4: リスナー二重登録防止（authListenerRegisteredフラグ）
-- 成果物: Phase 1-12の成果物を`outputs/`配下に出力
+  - 診断: NODE_MODULE_VERSIONアーキテクチャ不一致問題の特定
+  - 修正: pnpm store prune && pnpm install --forceによる再ビルド
+  - 確認: 既存設定（.nvmrc, engines, volta, setup-native-modules.sh）の検証
+- 成果物: Phase 1-12の15件のドキュメント作成
 
-### 変更ファイル
+### 発見事項
 
-| ファイル                                              | 変更内容                       |
-| ----------------------------------------------------- | ------------------------------ |
-| `packages/shared/types/auth.ts`                       | AUTH_ERROR_CODES拡張(9コード)、型拡張 |
-| `apps/desktop/src/main/auth/oauth-error-handler.ts`   | 新規作成                       |
-| `apps/desktop/src/main/index.ts`                      | handleAuthCallback修正         |
-| `apps/desktop/src/renderer/store/slices/authSlice.ts` | リスナー管理改善               |
-
-### テストファイル
-
-| ファイル                                                                      | 内容                     |
-| ----------------------------------------------------------------------------- | ------------------------ |
-| `apps/desktop/src/main/__tests__/auth-callback.test.ts`                       | OAuthエラーハンドリング  |
-| `apps/desktop/src/main/__tests__/auth-callback.edge-cases.test.ts`            | エッジケーステスト       |
-| `apps/desktop/src/main/__tests__/auth-flow.integration.test.ts`               | 統合テスト               |
-| `packages/shared/types/__tests__/auth.test.ts`                                | 型・定数テスト           |
-| `apps/desktop/src/renderer/store/slices/__tests__/authSlice.listener.test.ts` | リスナーテスト           |
+- 既存のバージョン管理インフラは適切に設計されていた
+- 問題はpnpmグローバルストアのキャッシュ汚染が原因
+- Rosetta 2環境でのx86_64バイナリキャッシュが問題を引き起こしていた
 
 ### 結果
 
 - ステータス: success
-- 完了日時: 2026-02-05
+- 完了日時: 2026-02-04
 
 ---
