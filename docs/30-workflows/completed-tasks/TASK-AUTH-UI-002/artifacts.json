@@ -1,0 +1,156 @@
+{
+  "taskId": "AUTH-UI-002",
+  "taskName": "アバターメニューz-index修正",
+  "createdAt": "2026-02-04T22:30:00Z",
+  "status": "specifications-created",
+  "issueNumber": 283,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-01-requirements.md",
+          "description": "要件定義仕様書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-02-design.md",
+          "description": "設計仕様書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-03-design-review.md",
+          "description": "設計レビュー仕様書"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-04-test-creation.md",
+          "description": "テスト作成仕様書"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-05-implementation.md",
+          "description": "実装仕様書"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-06-test-expansion.md",
+          "description": "テスト拡充仕様書"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-07-coverage-check.md",
+          "description": "カバレッジ確認仕様書"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-08-refactoring.md",
+          "description": "リファクタリング仕様書"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-09-quality-assurance.md",
+          "description": "品質保証仕様書"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-10-final-review.md",
+          "description": "最終レビュー仕様書"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-11-manual-testing.md",
+          "description": "手動テスト仕様書"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-12-documentation.md",
+          "description": "ドキュメント更新仕様書"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-13-pr-creation.md",
+          "description": "PR作成仕様書"
+        }
+      ]
+    }
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/ui-ux-portal-patterns.md",
+      ".claude/skills/aiworkflow-requirements/references/ui-ux-components.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md"
+    ],
+    "skillReferences": [
+      ".claude/skills/task-specification-creator/references/spec-update-workflow.md",
+      ".claude/skills/task-specification-creator/references/phase-templates.md"
+    ],
+    "implementation": [
+      "apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx",
+      "apps/desktop/src/renderer/components/organisms/AccountSection/AccountSection.portal.test.tsx"
+    ],
+    "originalTaskSpec": "docs/30-workflows/unassigned-task/task-auth-ui-z-index-fix.md"
+  },
+  "notes": "実装は既に完了済み。本タスクは検証・テスト確認・ドキュメント整備に焦点を当てる。"
+}
