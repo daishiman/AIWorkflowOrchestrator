@@ -8,7 +8,7 @@
  *
  * Channel mapping:
  * - skill:list (was: agent:scan-available-skills)
- * - skill:get-imported (was: agent:get-imported-skills)
+ * - skill:getImported (was: agent:get-imported-skills)
  * - skill:import (was: agent:import-skills)
  * - skill:remove (was: agent:remove-skill)
  * - skill:get-detail (was: agent:get-skill-detail)
@@ -156,7 +156,7 @@ import { ipcMain } from "electron";
 // Skill IPC Channels (per Phase 3 review - using existing channels.ts definitions)
 const SKILL_CHANNELS = {
   LIST_AVAILABLE: "skill:list",
-  LIST_IMPORTED: "skill:get-imported",
+  LIST_IMPORTED: "skill:getImported",
   IMPORT: "skill:import",
   REMOVE: "skill:remove",
   GET_DETAIL: "skill:get-detail",
@@ -216,7 +216,7 @@ describe("skillHandlers", () => {
       expect(handlers.has(SKILL_CHANNELS.LIST_AVAILABLE)).toBe(true);
     });
 
-    it("SH-REG-02: should register skill:get-imported handler", () => {
+    it("SH-REG-02: should register skill:getImported handler", () => {
       expect(handlers.has(SKILL_CHANNELS.LIST_IMPORTED)).toBe(true);
     });
 
@@ -308,10 +308,10 @@ describe("skillHandlers", () => {
   });
 
   // ===========================================================================
-  // skill:get-imported
+  // skill:getImported
   // ===========================================================================
 
-  describe("skill:get-imported", () => {
+  describe("skill:getImported", () => {
     it("SH-LI-01: should call skillService.getImportedSkills", async () => {
       const mockData: Skill[] = [
         {
@@ -329,7 +329,7 @@ describe("skillHandlers", () => {
 
       const handler = handlers.get(SKILL_CHANNELS.LIST_IMPORTED);
       if (!handler) {
-        throw new Error("skill:get-imported handler not registered");
+        throw new Error("skill:getImported handler not registered");
       }
 
       // When: ハンドラーを呼び出す
@@ -348,7 +348,7 @@ describe("skillHandlers", () => {
 
       const handler = handlers.get(SKILL_CHANNELS.LIST_IMPORTED);
       if (!handler) {
-        throw new Error("skill:get-imported handler not registered");
+        throw new Error("skill:getImported handler not registered");
       }
 
       // When: ハンドラーを呼び出す

@@ -163,7 +163,7 @@ describe("skillAPI argument format tests", () => {
 
       await skillAPI.listImported();
 
-      expect(mockInvoke).toHaveBeenCalledWith("skill:get-imported");
+      expect(mockInvoke).toHaveBeenCalledWith("skill:getImported");
     });
   });
 

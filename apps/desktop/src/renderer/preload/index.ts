@@ -57,10 +57,10 @@ export const skillAPI: SkillAPI = {
     console.log("[skillAPI][DEBUG] listImported called");
     console.log("[skillAPI][DEBUG] hasElectronAPI:", hasElectronAPI(window));
     if (hasElectronAPI(window)) {
-      console.log("[skillAPI][DEBUG] Invoking skill:get-imported via IPC...");
+      console.log("[skillAPI][DEBUG] Invoking skill:getImported via IPC...");
       const result =
         await window.electronAPI.invoke<OperationResult<Skill[]>>(
-          "skill:get-imported",
+          "skill:getImported",
         );
       console.log("[skillAPI][DEBUG] IPC result received:", result);
       return result;

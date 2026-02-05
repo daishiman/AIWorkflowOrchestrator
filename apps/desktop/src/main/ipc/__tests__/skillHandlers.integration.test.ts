@@ -144,7 +144,7 @@ describe("skillHandlers Integration Tests", () => {
   // ===========================================================================
 
   describe("IPC Persistence Flow", () => {
-    it("IPC-INT-01: skill:import should persist skills and skill:get-imported should return them", async () => {
+    it("IPC-INT-01: skill:import should persist skills and skill:getImported should return them", async () => {
       // Act: スキルをインポート
       const importResult = await skillService.importSkills(["skill-1"]);
 
@@ -246,7 +246,7 @@ describe("skillHandlers Integration Tests", () => {
   // ===========================================================================
 
   describe("State Synchronization", () => {
-    it("IPC-INT-07: skill:get-imported should return 0 skills initially", async () => {
+    it("IPC-INT-07: skill:getImported should return 0 skills initially", async () => {
       // Act: 初期状態でインポート済みスキルを取得
       const importedSkills = await skillService.getImportedSkills();
 
