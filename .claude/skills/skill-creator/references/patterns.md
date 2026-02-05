@@ -214,6 +214,42 @@
 - **発見日**: 2026-02-04
 - **関連タスク**: AUTH-UI-001
 
+### OAuthコールバックエラーパラメータ抽出パターン（TASK-FIX-GOOGLE-LOGIN-001）
+
+- **状況**: OAuthコールバックURL内のエラーパラメータを検出してUIに反映したい
+- **アプローチ**:
+  - 問題: OAuth implicit flowではエラー情報がURLフラグメント(`#error=...`)に含まれる
+  - 解決: `url.substring(url.indexOf('#') + 1)`でフラグメント抽出後、URLSearchParamsでパース
+  - 実装: `parseOAuthError()`関数を作成し、`handleAuthCallback`内で呼び出す
+- **結果**: ユーザーがOAuthをキャンセルした場合のエラーを検出し、適切なエラーメッセージを表示
+- **適用条件**: OAuth implicit flow、カスタムプロトコルコールバック処理
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
+
+### Zustandリスナー二重登録防止パターン（TASK-FIX-GOOGLE-LOGIN-001）
+
+- **状況**: initializeAuthが複数回呼ばれるとリスナーが重複登録される
+- **アプローチ**:
+  - 問題: React Strict ModeやHot Reloadで初期化関数が複数回実行される
+  - 解決: モジュールスコープの`authListenerRegistered`フラグで登録状態を追跡
+  - テスト対応: `resetAuthListenerFlag()`エクスポート関数で各テスト前にリセット
+- **結果**: リスナーの二重登録を防止し、認証状態変更の重複処理を回避
+- **適用条件**: Electron IPC + Zustandでの認証状態管理
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
+
+### IPC経由のエラー情報伝達設計パターン（TASK-FIX-GOOGLE-LOGIN-001）
+
+- **状況**: Main ProcessのエラーをRenderer側のUIに伝える必要がある
+- **アプローチ**:
+  - 問題: 既存のIPCイベントペイロードにエラー情報フィールドがない
+  - 解決: ペイロード型に`error`, `errorCode`フィールドを追加し、既存のイベントで送信
+  - 型拡張: `AuthState`インターフェースに`errorCode?: AuthErrorCode`を追加
+- **結果**: 新規チャネル追加なしで、既存の`AUTH_STATE_CHANGED`イベントでエラー伝達
+- **適用条件**: Electron IPC設計、エラーハンドリング拡張
+- **発見日**: 2026-02-05
+- **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
+
 ---
 
 ## 失敗パターン（避けるべきこと）

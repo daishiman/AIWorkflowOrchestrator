@@ -131,6 +131,27 @@ issue_number: 284
 3. **詳細なエラーログ**: どの検証で失敗したかを明確に記録
 4. **ユーザーフィードバック**: エラー時はユーザーに分かりやすいメッセージを表示
 
+### 3.5 実装課題と解決策（TASK-FIX-GOOGLE-LOGIN-001からの学び）
+
+TASK-FIX-GOOGLE-LOGIN-001でOAuth認証実装時に発見された課題と解決策。本タスク実装時の参考にすること。
+
+| 課題                                    | 原因                                                            | 解決策                                         | 関連ファイル             |
+| --------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------- | ------------------------ |
+| URLフラグメントからのパラメータ抽出失敗 | OAuth Implicit Flowでは`?`ではなく`#`でパラメータが返される     | `url.hash`から`URLSearchParams`でパース        | `oauth-error-handler.ts` |
+| エラーパラメータの見落とし              | エラー時のみ`error`/`error_description`パラメータがセットされる | URLパース時に`error`パラメータを最初にチェック | `oauth-error-handler.ts` |
+
+**URL検証時の注意事項**:
+
+- OAuth Implicit Flowでは**URLフラグメント（#）**にトークン/エラーが返される
+- `new URL(callbackUrl)`では`url.hash`を使用（`url.search`ではない）
+- エラー時のパラメータ: `error`, `error_description`（RFC 6749準拠）
+- 成功時のパラメータ: `access_token`, `refresh_token`, `expires_in`
+
+**参照先システム仕様書**:
+
+- `architecture-auth-security.md` - 「実装時の苦戦した箇所・知見」セクション
+- `error-handling.md` - 「OAuthエラーコードマッピング」セクション
+
 ---
 
 ## 4. 実行手順

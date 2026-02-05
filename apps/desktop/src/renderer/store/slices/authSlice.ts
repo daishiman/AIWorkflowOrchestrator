@@ -9,6 +9,55 @@ import { hasExpiresAt } from "../../components/AuthGuard/types";
 import type { AuthErrorCode } from "../../components/AuthGuard/types";
 
 // ============================================================
+// リスナー管理（二重登録防止）
+// @see TASK-FIX-GOOGLE-LOGIN-001 Problem 4
+// ============================================================
+
+/**
+ * onAuthStateChanged リスナーの登録状態
+ * 二重登録を防止するためのモジュールスコープフラグ
+ */
+let authListenerRegistered = false;
+
+/**
+ * リスナー登録状態をリセット
+ * clearAuth時に呼び出され、再初期化を可能にする
+ */
+export function resetAuthListenerFlag(): void {
+  authListenerRegistered = false;
+}
+
+/**
+ * セッション取得を動的タイムアウト付きで待機
+ *
+ * @param pollInterval - ポーリング間隔（ミリ秒）
+ * @param timeout - 最大待機時間（ミリ秒）
+ * @returns セッションデータ、またはタイムアウト時は null
+ */
+export async function waitForSession(
+  pollInterval: number = 100,
+  timeout: number = 5000,
+): Promise<unknown | null> {
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeout) {
+    try {
+      if (window.electronAPI?.auth?.getSession) {
+        const response = await window.electronAPI.auth.getSession();
+        if (response.success && response.data) {
+          return response.data;
+        }
+      }
+    } catch {
+      // エラーは無視して再試行
+    }
+    await new Promise((resolve) => setTimeout(resolve, pollInterval));
+  }
+
+  return null;
+}
+
+// ============================================================
 // エラーハンドリングユーティリティ
 // ============================================================
 
@@ -283,8 +332,14 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         });
       }
 
-      // Subscribe to auth state changes
-      if (window.electronAPI.auth.onAuthStateChanged) {
+      // Subscribe to auth state changes (二重登録防止)
+      // @see TASK-FIX-GOOGLE-LOGIN-001 Problem 4
+      if (
+        window.electronAPI.auth.onAuthStateChanged &&
+        !authListenerRegistered
+      ) {
+        authListenerRegistered = true;
+        console.log("[AuthSlice] Registering auth state change listener");
         window.electronAPI.auth.onAuthStateChanged(async (state) => {
           console.log("[AuthSlice] Auth state changed:", state);
 
@@ -345,7 +400,34 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
               get().fetchLinkedProviders();
             }
           } else {
-            get().clearAuth();
+            // authenticated: false の場合
+            // @see TASK-FIX-GOOGLE-LOGIN-001 Problem 1, 4
+            // エラー情報がある場合は authError を設定してから clearAuth
+            const authError = state.error ?? null;
+            const errorCode = (state as { errorCode?: string }).errorCode;
+
+            if (authError) {
+              console.log(
+                `[AuthSlice] Auth error received: ${authError} (code: ${errorCode})`,
+              );
+              // エラー情報を設定
+              set({
+                authError,
+                isLoading: false,
+              });
+            }
+
+            // 認証状態をクリア（ただし authError は維持）
+            set({
+              isAuthenticated: false,
+              authUser: null,
+              sessionExpiresAt: null,
+              profile: null,
+              linkedProviders: [],
+              isLoading: false,
+              // エラーがある場合は維持、ない場合はクリア
+              authError: authError ?? null,
+            });
           }
         });
       }
@@ -680,6 +762,10 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
   },
 
   clearAuth: () => {
+    // リスナーフラグをリセット（再初期化を可能にする）
+    // @see TASK-FIX-GOOGLE-LOGIN-001 Problem 4
+    resetAuthListenerFlag();
+
     set({
       isAuthenticated: false,
       isLoading: false,

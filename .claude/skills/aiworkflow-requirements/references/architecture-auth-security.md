@@ -3,10 +3,33 @@
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > 管理: .claude/skills/aiworkflow-requirements/
 
+### 認証状態リスナー管理
+
+TASK-FIX-GOOGLE-LOGIN-001で追加されたリスナー二重登録防止の仕組み。
+
+| 項目                      | 実装                                                        |
+| ------------------------- | ----------------------------------------------------------- |
+| フラグ名                  | `authListenerRegistered`（モジュールスコープ）              |
+| 初期値                    | `false`                                                     |
+| 登録時の動作              | フラグがfalseの場合のみリスナー登録、登録後trueに設定       |
+| リセットタイミング        | ログアウト時（clearAuth）                                   |
+| テスト用エクスポート      | `resetAuthListenerFlag()`                                   |
+
+**セッション待機関数**: `waitForSession(pollInterval, timeout)`
+
+| パラメータ    | デフォルト値 | 説明                                   |
+| ------------- | ------------ | -------------------------------------- |
+| pollInterval  | 100ms        | ポーリング間隔                         |
+| timeout       | 5000ms       | 最大待機時間                           |
+| 戻り値        | -            | セッションデータまたはタイムアウト時null |
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                               |
 | ---------- | ---------- | ---------------------------------------------------------------------- |
+| v1.3.0     | 2026-02-05 | TASK-FIX-GOOGLE-LOGIN-001完了: OAuthエラーハンドリング、リスナー管理追加 |
 | v1.2.0     | 2026-02-04 | AUTH-UI-001完了: フォールバック処理・状態更新フロー実装完了を記録      |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（3箇所）    |
 | v1.0.0     | -          | 初版作成                                                               |
@@ -43,6 +66,8 @@
 | 3        | ブラウザ       | OAuth 認証完了                                      |
 | 4        | Supabase       | aiworkflow://auth/callback#access_token=xxx にリダイレクト |
 | 5        | Main           | カスタムプロトコルでコールバック受信（app.on('open-url')） |
+| 5.5      | Main           | parseOAuthError()でエラーパラメータをチェック       |
+| 5.6      | Main           | エラーがある場合: mapOAuthErrorToMessage()で日本語化、AUTH_STATE_CHANGED送信 |
 | 6        | Main           | URLからaccess_token/refresh_tokenを抽出             |
 | 7        | Main           | Refresh TokenをsafeStorage.encryptString()で暗号化  |
 | 8        | Main           | 暗号化トークンをelectron-storeに保存                |
@@ -52,6 +77,7 @@
 **実装ファイル**:
 
 - `apps/desktop/src/main/index.ts:105-188` - カスタムプロトコル処理
+- `apps/desktop/src/main/auth/oauth-error-handler.ts` - OAuthエラーパース・マッピング
 - `apps/desktop/src/main/infrastructure/secureStorage.ts` - トークン暗号化
 - `apps/desktop/src/main/ipc/authHandlers.ts` - IPCハンドラー
 - `apps/desktop/src/renderer/store/slices/authSlice.ts` - 状態管理
@@ -288,6 +314,37 @@ RAGシステムのコア機能として、SQLite FTS5による高速全文検索
 
 ## 完了タスク
 
+### タスク: TASK-FIX-GOOGLE-LOGIN-001 Googleログイン修正（2026-02-05完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | TASK-FIX-GOOGLE-LOGIN-001                       |
+| 完了日     | 2026-02-05                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | 約50件                                          |
+
+#### 修正内容
+
+| 修正                   | 実装箇所                             | 内容                                              |
+| ---------------------- | ------------------------------------ | ------------------------------------------------- |
+| OAuthエラー検出        | oauth-error-handler.ts               | parseOAuthError()でerrorパラメータ検出            |
+| エラーメッセージ変換   | oauth-error-handler.ts               | mapOAuthErrorToMessage()で日本語化                |
+| セッション管理         | auth.ts, oauth-error-handler.ts      | refreshTokenExpiresAt計算・送信                   |
+| リスナー二重登録防止   | authSlice.ts                         | authListenerRegisteredフラグ追加                  |
+
+#### OAuthエラーハンドリングフロー
+
+| ステップ | 処理                                                        |
+| -------- | ----------------------------------------------------------- |
+| 1        | コールバックURL受信                                         |
+| 2        | parseOAuthError()でURLからerrorパラメータを抽出             |
+| 3        | エラーがある場合、mapOAuthErrorToMessage()で日本語に変換    |
+| 4        | AUTH_STATE_CHANGEDイベントにerror/errorCodeを含めて送信     |
+| 5        | Renderer側でエラー状態を更新し、UIにエラーメッセージを表示  |
+
+---
+
 ### タスク: AUTH-UI-001 認証UI改善（2026-02-04完了）
 
 | 項目       | 内容                                           |
@@ -328,6 +385,50 @@ RAGシステムのコア機能として、SQLite FTS5による高速全文検索
 
 - 実装ガイド: `docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-12/implementation-guide.md`
 - Portal実装パターン: `ui-ux-portal-patterns.md`
+
+---
+
+## 実装時の苦戦した箇所・知見
+
+### TASK-FIX-GOOGLE-LOGIN-001 実装時の知見（2026-02-05）
+
+本タスクで遭遇した技術的課題と解決策を将来の参考として記録。
+
+#### 知見1: URLフラグメントからのパラメータ抽出
+
+| 項目     | 内容                                                                 |
+| -------- | -------------------------------------------------------------------- |
+| 課題     | OAuthコールバックURLの`#`以降にあるエラーパラメータの抽出方法        |
+| 原因     | URLSearchParamsはクエリストリング(`?`)のみ対応、フラグメント(`#`)非対応 |
+| 解決策   | `url.substring(url.indexOf('#') + 1)`で手動抽出後、URLSearchParamsに渡す |
+| 学び     | OAuth implicit flowではトークンがフラグメントに含まれる仕様を理解する |
+
+#### 知見2: Zustandリスナーの二重登録防止
+
+| 項目     | 内容                                                                 |
+| -------- | -------------------------------------------------------------------- |
+| 課題     | `initializeAuth`が複数回呼ばれると`onAuthStateChanged`リスナーが重複 |
+| 原因     | React Strict ModeやHot Reloadで初期化関数が複数回実行される          |
+| 解決策   | モジュールスコープの`authListenerRegistered`フラグで登録状態を追跡   |
+| 学び     | Electronでの認証リスナーは明示的な登録状態管理が必須                 |
+
+#### 知見3: IPC経由のエラー情報伝達
+
+| 項目     | 内容                                                                 |
+| -------- | -------------------------------------------------------------------- |
+| 課題     | Main ProcessのOAuthエラーをRenderer側UIに伝える方法                  |
+| 原因     | 既存の`AUTH_STATE_CHANGED`イベントペイロードにエラー情報がない       |
+| 解決策   | ペイロードに`error`, `errorCode`フィールドを追加                     |
+| 学び     | IPC設計時はエラーケースを含めた型定義を先に行う                      |
+
+#### 知見4: テストにおけるモジュールスコープフラグ
+
+| 項目     | 内容                                                                 |
+| -------- | -------------------------------------------------------------------- |
+| 課題     | `authListenerRegistered`フラグがテスト間で状態を保持してしまう       |
+| 原因     | Vitestのモジュールキャッシュがテスト間で共有される                   |
+| 解決策   | `resetAuthListenerFlag()`エクスポート関数を作成し、各テスト前にリセット |
+| 学び     | モジュールスコープの状態はテスト用リセット関数を用意する             |
 
 ---
 

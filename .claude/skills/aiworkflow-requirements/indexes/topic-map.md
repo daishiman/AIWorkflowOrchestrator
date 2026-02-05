@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-04
+> 自動生成: 2026-02-05
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -89,12 +89,13 @@ node scripts/list-specs.js --topics
 ### references/architecture-auth-security.md
 
 | セクション | 行 |
-|------------|----|\n| 変更履歴 | L6 |
-| 認証アーキテクチャ（Supabase + Electron） | L16 |
-| セキュリティアーキテクチャ | L135 |
-| RAGパイプラインアーキテクチャ | L174 |
-| 完了タスク | L289 |
-| 関連ドキュメント | L334 |
+|------------|----|\n| 変更履歴 | L28 |
+| 認証アーキテクチャ（Supabase + Electron） | L39 |
+| セキュリティアーキテクチャ | L161 |
+| RAGパイプラインアーキテクチャ | L200 |
+| 完了タスク | L315 |
+| 実装時の苦戦した箇所・知見 | L391 |
+| 関連ドキュメント | L435 |
 
 ### references/architecture-chat-history.md
 
@@ -303,10 +304,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
-| 完了タスク | L185 |
-| ワークスペース型定義 | L204 |
-| 完了タスク | L258 |
-| 変更履歴 | L317 |
+| 完了タスク | L232 |
+| ワークスペース型定義 | L286 |
+| 変更履歴 | L340 |
 
 ### references/interfaces-chat-history.md
 
@@ -634,11 +634,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 認証 IPC チャネル | L10 |
 | プロフィール IPC チャネル | L32 |
 | イベントチャネル（Main → Renderer） | L43 |
-| 型定義 | L51 |
-| 認証状態管理 | L108 |
-| IPCセキュリティ実装 | L139 |
-| 関連ドキュメント | L166 |
-| 変更履歴 | L174 |
+| 型定義 | L60 |
+| 認証状態管理 | L118 |
+| IPCセキュリティ実装 | L149 |
+| 関連ドキュメント | L176 |
+| 変更履歴 | L184 |
 
 ### references/api-ipc-system.md
 
@@ -1050,7 +1050,8 @@ node scripts/list-specs.js --topics
 | Permission IPC Handler セキュリティ | L220 |
 | SkillAPI Preload実装（TASK-5-1） | L256 |
 | 完了タスク | L322 |
-| 関連ドキュメント | L353 |
+| 残課題 | L353 |
+| 関連ドキュメント | L365 |
 
 ---
 
@@ -1426,14 +1427,15 @@ node scripts/list-specs.js --topics
 | リトライ戦略 | L210 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
 | SkillExecutor 実行エラーコード（TASK-8A） | L289 |
-| 認証フォールバックパターン（AUTH-UI-001） | L328 |
-| サーキットブレーカー（将来対応） | L370 |
-| エラーレスポンス形式 | L398 |
-| エラーログ出力 | L429 |
-| ユーザー向けエラーメッセージ | L466 |
-| エラーハンドリングの実装指針 | L489 |
-| 関連ドキュメント | L519 |
-| 変更履歴 | L528 |
+| OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L328 |
+| 認証フォールバックパターン（AUTH-UI-001） | L370 |
+| サーキットブレーカー（将来対応） | L412 |
+| エラーレスポンス形式 | L440 |
+| エラーログ出力 | L471 |
+| ユーザー向けエラーメッセージ | L508 |
+| エラーハンドリングの実装指針 | L531 |
+| 関連ドキュメント | L561 |
+| 変更履歴 | L570 |
 
 ### references/llm-embedding.md
 

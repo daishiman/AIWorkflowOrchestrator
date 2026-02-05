@@ -2489,3 +2489,42 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | UT-AUTH-001 | profileHandlers.test.ts環境修正 | 低     | AUTH-UI-001 |
 
 ---
+
+## 2026-02-05: TASK-FIX-GOOGLE-LOGIN-001完了（Googleログイン修正）
+
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-GOOGLE-LOGIN-001                                                          |
+| 操作         | update-spec                                                                        |
+| 対象ファイル | interfaces-auth.md, architecture-auth-security.md, api-ipc-auth.md, error-handling.md |
+| 結果         | success                                                                            |
+| 備考         | Googleログイン修正実装完了・仕様書4ファイル更新                                    |
+
+### 更新詳細
+
+| ファイル                     | 更新内容                                                           |
+| ---------------------------- | ------------------------------------------------------------------ |
+| `interfaces-auth.md`         | AUTH_ERROR_CODES拡張(9コード)、AuthSession/AuthState型拡張、完了タスク追加 |
+| `architecture-auth-security.md` | OAuthエラーハンドリングフロー、リスナー管理、完了タスク追加       |
+| `api-ipc-auth.md`            | AuthSession型にrefreshTokenExpiresAt追加、auth:state-changed拡張  |
+| `error-handling.md`          | OAuthエラーコードマッピングセクション追加                         |
+
+### 新規追加コンテンツ
+
+| カテゴリ           | 追加内容                                                                   |
+| ------------------ | -------------------------------------------------------------------------- |
+| エラーコード       | AUTH_NOT_CONFIGURED, OAUTH_ACCESS_DENIED他8コード                         |
+| 型フィールド       | AuthSession.refreshTokenExpiresAt, AuthState.errorCode                    |
+| 関数仕様           | parseOAuthError(), mapOAuthErrorToMessage(), waitForSession()             |
+| フローチャート     | OAuthエラーハンドリングフロー（5ステップ）                                |
+
+### 成果物
+
+| Phase | 成果物                   | パス                                                    |
+| ----- | ------------------------ | ------------------------------------------------------- |
+| 1     | 要件定義・受け入れ基準   | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-1/ |
+| 2     | アーキテクチャ設計       | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-2/ |
+| 4     | テスト仕様・テストケース | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-4/ |
+| 12    | 実装ガイド               | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-12/ |
+
+---
