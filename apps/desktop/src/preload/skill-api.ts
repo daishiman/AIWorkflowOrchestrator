@@ -228,9 +228,9 @@ export const skillAPI: SkillAPI = {
   onComplete: (
     callback: (data: { executionId: string }) => void,
   ): (() => void) => {
-    // TODO: TASK-7D で実装
+    // TASK-FIX-4-1-IPC-CONSOLIDATION: Hardcoded string replaced with IPC_CHANNELS constant
     return safeOn<{ executionId: string }>(
-      "skill:complete" as string,
+      IPC_CHANNELS.SKILL_COMPLETE,
       callback,
     );
   },
@@ -238,9 +238,9 @@ export const skillAPI: SkillAPI = {
   onError: (
     callback: (data: { executionId: string; error: string }) => void,
   ): (() => void) => {
-    // TODO: TASK-7D で実装
+    // TASK-FIX-4-1-IPC-CONSOLIDATION: Hardcoded string replaced with IPC_CHANNELS constant
     return safeOn<{ executionId: string; error: string }>(
-      "skill:error" as string,
+      IPC_CHANNELS.SKILL_ERROR,
       callback,
     );
   },

@@ -200,6 +200,45 @@
 | エラーハンドリング | Main側でtry-catch、Result型で返却   |
 | セキュリティ       | sender検証、パス検証を実施          |
 
+#### IPCチャンネル統合パターン（TASK-FIX-4-1-IPC-CONSOLIDATION 2026-02-05実装）
+
+既存のIPCチャンネル定義が複数箇所に重複している場合に、Single Source of Truthへ統合するパターン。
+
+**問題**: `preload/channels.ts` と `shared/ipc/channels.ts` に同じチャンネル定義が存在し、変更時に不整合が発生する。
+
+| 課題                     | 問題                                                        | 解決策                                       |
+| ------------------------ | ----------------------------------------------------------- | -------------------------------------------- |
+| ハードコード文字列の発見 | `"skill:complete" as string` で型チェックをバイパス         | Grepで `as string` パターンを検索し定数に置換 |
+| 重複定義の整理           | preload/channels.ts と shared/ipc/channels.ts の重複        | Single Source of Truth（preload側）に集約    |
+| ホワイトリスト更新漏れ   | 旧チャンネル名が ALLOWED_INVOKE_CHANNELS に残存             | テストで旧チャンネルが含まれないことを検証   |
+
+**Single Source of Truth パターン**:
+
+| ステップ | 処理内容                               | 成果物                                      |
+| -------- | -------------------------------------- | ------------------------------------------- |
+| 1        | Grep で重複チャンネル定義を検出        | 重複箇所リスト                              |
+| 2        | 正規のソース（preload/channels.ts）を特定 | IPC_CHANNELS オブジェクト定義               |
+| 3        | ハードコード文字列を定数参照に置換     | 型安全な import 使用                        |
+| 4        | ホワイトリスト更新                     | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS 更新 |
+| 5        | テスト追加                             | チャンネル存在検証、旧名称排除検証          |
+
+**チャンネルマイグレーション例**:
+
+| 旧チャンネル          | 新チャンネル       | 理由                       |
+| --------------------- | ------------------ | -------------------------- |
+| skill:list-available  | skill:list         | 冗長なサフィックス削除     |
+| skill:list-imported   | skill:getImported  | 命名規則統一（動詞:対象）  |
+
+**効果**:
+
+| 観点       | 効果                                           |
+| ---------- | ---------------------------------------------- |
+| 保守性     | 変更箇所が1箇所に集約され、不整合リスク排除    |
+| 型安全性   | TypeScript の型チェックでチャンネル名を検証    |
+| セキュリティ | ホワイトリスト更新漏れをテストで防止         |
+
+**関連仕様書**: [security-skill-ipc.md](./security-skill-ipc.md)
+
 ### サービス層パターン
 
 #### Facadeパターン
@@ -928,6 +967,7 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.13.0 | 2026-02-05 | TASK-FIX-4-1-IPC-CONSOLIDATION: IPCチャンネル統合パターン追加（Single Source of Truth、ハードコード検出、ホワイトリスト検証） |
 | 1.12.0 | 2026-02-04 | AUTH-UI-001: React Portal オーバーレイUI最前面表示パターン、Supabase認証状態変更時の即時UI更新パターン追加 |
 | 1.11.0 | 2026-02-04 | AUTH-UI-004: 外部APIデータ正規化パターン追加（プロバイダー別フォールバック） |
 | 1.10.0 | 2026-02-03 | マージ統合: TASK-9B-G + TASK-9C/9A-A |
