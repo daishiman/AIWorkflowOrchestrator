@@ -1,6 +1,11 @@
 #!/bin/sh
 # pre-push hook: プッシュ前にCI相当のチェックを実行
-# --no-verify オプションでスキップ可能
+#
+# ⚠️  警告: --no-verify オプションは絶対禁止です！
+# このフックをスキップすると、CIで初めてエラーが検出され、
+# 修正に余計な時間がかかります。
+# テストが失敗する場合は、テストを修正してください。
+# 詳細は CLAUDE.md の「Git操作の禁止事項」を参照。
 
 echo "🔍 Running pre-push CI validation..."
 
