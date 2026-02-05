@@ -2,18 +2,19 @@
 
 ## メタ情報
 
-| 項目         | 内容                           |
-| ------------ | ------------------------------ |
-| タスクID     | TASK-AUTH-SESSION-REFRESH-001  |
-| 元タスクID   | UX-002                         |
-| GitHub Issue | #278                           |
-| タスク名     | セッション自動リフレッシュ実装 |
-| 分類         | 改善                           |
-| 対象機能     | OAuth認証（Desktop）           |
-| 優先度       | 中                             |
-| 見積もり規模 | 中規模                         |
-| ステータス   | 仕様書作成完了                 |
-| 作成日       | 2026-02-05                     |
+| 項目         | 内容                                 |
+| ------------ | ------------------------------------ |
+| タスクID     | TASK-AUTH-SESSION-REFRESH-001        |
+| 元タスクID   | UX-002                               |
+| GitHub Issue | #278                                 |
+| タスク名     | セッション自動リフレッシュ実装       |
+| 分類         | 改善                                 |
+| 対象機能     | OAuth認証（Desktop）                 |
+| 優先度       | 中                                   |
+| 見積もり規模 | 中規模                               |
+| ステータス   | 仕様書作成完了                       |
+| ブランチ     | `docs/task-auth-session-refresh-001` |
+| 作成日       | 2026-02-05                           |
 
 ## 概要
 
@@ -44,6 +45,7 @@ Access Token有効期限切れ前に自動的にRefresh Tokenを使用してト�
 | 実装   | TokenRefreshScheduler           | `apps/desktop/src/main/services/tokenRefreshScheduler.ts`      |
 | 実装   | authHandlers.ts修正             | `apps/desktop/src/main/ipc/authHandlers.ts`                    |
 | 実装   | authSlice修正                   | `apps/desktop/src/renderer/store/slices/authSlice.ts`          |
+| 実装   | supabaseClient設定変更          | `apps/desktop/src/main/infrastructure/supabaseClient.ts`       |
 | テスト | TokenRefreshScheduler単体テスト | `apps/desktop/src/main/services/tokenRefreshScheduler.test.ts` |
 
 ## スコープ

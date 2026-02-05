@@ -45,6 +45,16 @@ Phase 5の実装に対してテストを拡充し、カバレッジ目標を達�
 | Branch Coverage   | 60%      | 70%      |
 | Function Coverage | 80%      | 90%      |
 
+## 結合テストカバレッジ基準
+
+| 指標                         | 目標 |
+| ---------------------------- | ---- |
+| APIエンドポイント            | 100% |
+| モジュール間インターフェース | 100% |
+| 正常系シナリオ               | 100% |
+| 異常系シナリオ               | 80%+ |
+| 外部連携ポイント             | 100% |
+
 ## 実行手順
 
 ### ステップ1: カバレッジ測定
@@ -123,6 +133,13 @@ pnpm --filter @repo/desktop test:run
 7. 完了条件の検証
 
 ## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-AUTH-SESSION-REFRESH-001 --phase 6

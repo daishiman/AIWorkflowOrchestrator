@@ -57,12 +57,14 @@ Phase 4で作成したテストを通すための最小限の実装を行う。T
 4. `reset(newExpiresAt)`: stop() → 新しいexpiresAtでstart()
 5. `isRunning()`: タイマー稼働状態を返す
 6. `dispose()`: 全リソースの解放
-7. リトライロジック: 失敗時に最大3回、5秒間隔でリトライ
+7. リトライロジック: 失敗時に最大3回、指数バックオフ（1s→2s→4s + ジッター）でリトライ
+8. 排他制御: `_isRefreshing`フラグで二重リフレッシュを防止
+9. 単位変換: Supabaseの`expires_at`（秒）を受け取り、`* 1000`でミリ秒に変換してスケジューリング
 
 **設計ポイント:**
 
 - `setTimeout`の戻り値（`NodeJS.Timeout`）をインスタンス変数に保持
-- リフレッシュ実行時間の計算: `Math.max(0, expiresAt - Date.now() - refreshBeforeExpiryMs)`
+- リフレッシュ実行時間の計算: `Math.max(0, expiresAtMs - Date.now() - refreshBeforeExpiryMs)`（expiresAtMsはミリ秒単位）
 - リトライカウンターの管理
 - console.log/console.errorでのデバッグログ出力
 
@@ -72,19 +74,14 @@ Phase 4で作成したテストを通すための最小限の実装を行う。T
 
 修正要件:
 
-1. モジュールスコープにTokenRefreshSchedulerインスタンスを保持
-2. `startRefreshScheduler(expiresAt)`: スケジューラー開始
-3. `stopRefreshScheduler()`: スケジューラー停止
-4. `resetRefreshScheduler(newExpiresAt)`: スケジューラーリセット
-5. `isRefreshing`状態の追加
-6. ログイン成功時（`initializeAuth`/`onAuthStateChanged`内）にスケジューラー開始
-7. ログアウト時にスケジューラー停止
-8. リフレッシュコールバック内で`window.electronAPI.auth.refresh()`を呼び出し
+1. `isRefreshing`状態の追加（Main ProcessからのAUTH_STATE_CHANGEDイベントで更新）
+2. `sessionExpiresAt`の更新ロジック（リフレッシュ成功時にMain Processから通知）
+3. 既存の`onAuthStateChanged`リスナーでの状態反映
 
-**既存コードとの統合ポイント:**
+**注意: スケジューラーはMain Process側で管理**
 
-- `onAuthStateChanged`リスナーの`SIGNED_IN`イベントでスケジューラー開始
-- `onAuthStateChanged`リスナーの`SIGNED_OUT`イベントでスケジューラー停止
+- authSlice側ではスケジューラーを直接操作しない（Main Process完結型アーキテクチャ）
+- Renderer側の役割は、AUTH_STATE_CHANGEDイベントを受けて`sessionExpiresAt`と`isRefreshing`を更新すること
 - 二重登録防止の`listenerRegistered`フラグと共存
 
 ### ステップ3: authHandlers修正（必要に応じて）
@@ -93,11 +90,14 @@ Phase 4で作成したテストを通すための最小限の実装を行う。T
 
 修正要件:
 
-1. `auth:refresh`ハンドラーにログ出力追加（`Token refreshed automatically`）
-2. リフレッシュ成功時の`expiresAt`計算の正確性確認
-3. Refresh Token更新時のSecureStorage書き込み確認
-
-**注意**: 既存の`auth:refresh`ハンドラーは基本的に動作しているため、最小限の変更に留める。
+1. TokenRefreshSchedulerインスタンスの生成・管理をauthHandlers初期化時に追加
+2. ログイン成功時（`auth:login`ハンドラー内）にスケジューラーstart()を呼び出し
+3. ログアウト時（`auth:logout`ハンドラー内）にスケジューラーstop()を呼び出し
+4. `auth:refresh`ハンドラーにログ出力追加（`Token refreshed automatically`）
+5. リフレッシュ成功時の`expiresAt`計算: `expires_at * 1000`（秒→ミリ秒変換）
+6. Refresh Token更新時のSecureStorage書き込み確認
+7. `supabaseClient.ts`の`autoRefreshToken: true`→`false`に変更
+8. `app.on('before-quit')`でスケジューラーdispose()を呼び出し
 
 ## 統合テスト連携【必須】
 
@@ -117,12 +117,13 @@ Phase 4で作成したテストを通すための最小限の実装を行う。T
 
 ## 成果物
 
-| 成果物                | パス                                                      | 説明                 |
-| --------------------- | --------------------------------------------------------- | -------------------- |
-| TokenRefreshScheduler | `apps/desktop/src/main/services/tokenRefreshScheduler.ts` | スケジューラー実装   |
-| authSlice修正         | `apps/desktop/src/renderer/store/slices/authSlice.ts`     | 自動リフレッシュ統合 |
-| authHandlers修正      | `apps/desktop/src/main/ipc/authHandlers.ts`               | ログ出力追加         |
-| 実装サマリー          | `outputs/phase-5/implementation-summary.md`               | 変更内容のサマリー   |
+| 成果物                | パス                                                      | 説明                             |
+| --------------------- | --------------------------------------------------------- | -------------------------------- |
+| TokenRefreshScheduler | `apps/desktop/src/main/services/tokenRefreshScheduler.ts` | スケジューラー実装               |
+| authSlice修正         | `apps/desktop/src/renderer/store/slices/authSlice.ts`     | 自動リフレッシュ統合             |
+| authHandlers修正      | `apps/desktop/src/main/ipc/authHandlers.ts`               | スケジューラー統合・ログ出力追加 |
+| supabaseClient修正    | `apps/desktop/src/main/infrastructure/supabaseClient.ts`  | autoRefreshToken: false          |
+| 実装サマリー          | `outputs/phase-5/implementation-summary.md`               | 変更内容のサマリー               |
 
 ## 完了条件
 
@@ -159,6 +160,13 @@ pnpm --filter @repo/desktop test:run
 7. 完了条件の検証
 
 ## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-AUTH-SESSION-REFRESH-001 --phase 5

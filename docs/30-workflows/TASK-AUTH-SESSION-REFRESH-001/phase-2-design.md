@@ -52,8 +52,8 @@ interface TokenRefreshSchedulerConfig {
   refreshBeforeExpiryMs: number;
   /** リトライ最大回数。デフォルト: 3 */
   maxRetries: number;
-  /** リトライ間隔（ミリ秒）。デフォルト: 5000（5秒） */
-  retryIntervalMs: number;
+  /** リトライ初期間隔（ミリ秒）。デフォルト: 1000（1秒）。指数バックオフで増加 */
+  retryBaseIntervalMs: number;
 }
 
 interface TokenRefreshCallbacks {
@@ -66,9 +66,15 @@ interface TokenRefreshCallbacks {
 }
 
 class TokenRefreshScheduler {
+  /** リフレッシュ処理中フラグ（排他制御用） */
+  private _isRefreshing: boolean;
+
   constructor(config?: Partial<TokenRefreshSchedulerConfig>);
 
-  /** スケジューラー開始。expiresAtはUnixタイムスタンプ（ミリ秒） */
+  /**
+   * スケジューラー開始。expiresAtはUnixタイムスタンプ（ミリ秒）
+   * 注意: Supabaseのexpires_atは秒単位。呼び出し側で `expires_at * 1000` に変換すること
+   */
   start(expiresAt: number, callbacks: TokenRefreshCallbacks): void;
 
   /** スケジューラー停止。タイマーをクリア */
@@ -80,6 +86,9 @@ class TokenRefreshScheduler {
   /** スケジューラーの稼働状態を取得 */
   isRunning(): boolean;
 
+  /** リフレッシュ処理中かどうか（排他制御） */
+  isRefreshing(): boolean;
+
   /** クリーンアップ（アプリ終了時） */
   dispose(): void;
 }
@@ -89,7 +98,20 @@ class TokenRefreshScheduler {
 
 - `setTimeout`ベース（`setInterval`ではなく）: 各リフレッシュ成功後にreset()で新タイマーを設定
 - コールバックパターン: 依存性注入でテスタビリティを確保
-- リトライロジック内蔵: 一時的なネットワークエラーに対応
+- リトライロジック内蔵: 指数バックオフ（1s→2s→4s）で一時的なネットワークエラーに対応
+- 排他制御: `_isRefreshing`フラグにより二重リフレッシュを防止
+- **expiresAt単位**: スケジューラー内部はミリ秒統一。Supabaseの秒→ミリ秒変換は呼び出し側の責務
+- **Main Process完結型**: スケジューラーはMain Processで動作し、Supabase API呼び出しも直接実行。不要なIPC往復を排除
+
+**前提条件（supabaseClient設定変更）:**
+
+```typescript
+// apps/desktop/src/main/infrastructure/supabaseClient.ts
+// autoRefreshToken: true → false に変更（カスタムスケジューラーとの競合防止）
+const supabase = createClient(url, key, {
+  auth: { autoRefreshToken: false },
+});
+```
 
 ### ステップ2: IPC連携フロー設計
 
@@ -98,28 +120,38 @@ class TokenRefreshScheduler {
       |                                     |
   ログイン成功                              |
       |--- auth:login --->                  |
+      |                          expires_at（秒）→ expiresAt（ミリ秒）変換
+      |                          TokenRefreshScheduler.start(expiresAt * 1000)
       |<--- AuthSession(expiresAt) ---      |
       |                                     |
-  authSlice.startRefreshScheduler()         |
-      |  (sessionExpiresAtを使って           |
-      |   スケジューラー開始)               |
+  authSlice: sessionExpiresAtを保持          |
       |                                     |
   ... 55分経過（有効期限5分前）...           |
       |                                     |
-  スケジューラーがコールバック実行           |
-      |--- auth:refresh --->                |
-      |                          Supabase refreshSession()
-      |                          SecureStorage更新
-      |<--- AuthSession(newExpiresAt) ---   |
+      |                          スケジューラーがonRefresh実行
+      |                          ┌─ _isRefreshing = true（排他制御）
+      |                          │  Supabase refreshSession()
+      |                          │  SecureStorage更新
+      |                          │  TokenRefreshScheduler.reset(newExpiresAt)
+      |                          └─ _isRefreshing = false
+      |<--- AUTH_STATE_CHANGED(newSession) ---|
       |                                     |
-  authSlice.resetRefreshScheduler()         |
-      |  (新しいexpiresAtでリセット)        |
+  authSlice: sessionExpiresAtを更新          |
       |                                     |
   ... ログアウト ...                        |
       |--- auth:logout --->                 |
-  authSlice.stopRefreshScheduler()          |
+      |                          TokenRefreshScheduler.stop()
       |                          SecureStorage.clearTokens()
 ```
+
+**アーキテクチャ選択: Main Process完結型**
+
+TokenRefreshSchedulerをMain Processに配置する理由:
+
+1. トークン操作が全てMain Process内で完結（Renderer経由のIPC往復が不要）
+2. Supabase SDK呼び出しをMain Processから直接実行できる
+3. セキュリティ: リフレッシュ処理中にトークンがIPC境界を越えない
+4. Renderer Process停止時もリフレッシュが継続可能
 
 ### ステップ3: authSlice統合設計
 
@@ -142,20 +174,22 @@ interface AuthSliceActions {
 
 **設計判断:**
 
-- スケジューラーインスタンスはモジュールスコープ変数として保持（Zustandストア外）
-- `isRefreshing`フラグでUI側でのリフレッシュ状態表示が可能
+- **スケジューラーはMain Process側**: `authHandlers.ts`の初期化時にインスタンスを生成。Renderer側はスケジューラーを直接操作しない
+- authSlice側の`isRefreshing`フラグはMain ProcessからのAUTH_STATE_CHANGEDイベントで間接的に更新
 - 既存の`onAuthStateChanged`リスナーと競合しないよう設計
+- `clearAuth()`呼び出し時にMain Process側でスケジューラーstop()を連動
 
 ### ステップ4: エラーハンドリング設計
 
-| エラーケース          | 対応                                        |
-| --------------------- | ------------------------------------------- |
-| ネットワークエラー    | リトライ（最大3回、5秒間隔）                |
-| Refresh Token期限切れ | onFailure → ログアウト処理                  |
-| Supabase APIエラー    | リトライ（最大3回、5秒間隔）                |
-| 全リトライ失敗        | onFailure → ユーザー通知 → ログイン画面遷移 |
-| タイマー設定エラー    | console.error + スケジューラー停止          |
-| expiresAtが過去の値   | 即座にリフレッシュ実行（待機なし）          |
+| エラーケース          | 対応                                                               |
+| --------------------- | ------------------------------------------------------------------ |
+| ネットワークエラー    | リトライ（最大3回、指数バックオフ: 1s→2s→4s + ジッター）           |
+| Refresh Token期限切れ | リトライ不要 → 即座にonFailure → ログアウト処理                    |
+| Supabase APIエラー    | リトライ（最大3回、指数バックオフ: 1s→2s→4s + ジッター）           |
+| 全リトライ失敗        | onFailure → ユーザー通知 → ログイン画面遷移                        |
+| タイマー設定エラー    | console.error + スケジューラー停止                                 |
+| expiresAtが過去の値   | 即座にリフレッシュ実行（待機なし）                                 |
+| 二重リフレッシュ      | \_isRefreshingフラグで排他制御。実行中の場合は新規リクエストを無視 |
 
 ## 統合テスト連携【必須】
 
@@ -178,12 +212,12 @@ interface AuthSliceActions {
 
 ## 多角的チェック観点
 
-| 観点               | チェック項目                                                    |
-| ------------------ | --------------------------------------------------------------- |
-| セキュリティ       | トークンがRendererに露出しない設計。IPC経由のみ                 |
-| アーキテクチャ     | Main/Renderer責務分離。スケジューラーはRenderer側で時刻監視のみ |
-| エラーハンドリング | リトライロジック、全失敗時のフォールバック、ユーザー通知        |
-| パフォーマンス     | setTimeoutの適切なクリーンアップ。メモリリーク防止              |
+| 観点               | チェック項目                                                   |
+| ------------------ | -------------------------------------------------------------- |
+| セキュリティ       | トークンがRendererに露出しない設計。Main Process内で完結       |
+| アーキテクチャ     | Main Process完結型。スケジューラー・リフレッシュ実行ともにMain |
+| エラーハンドリング | リトライロジック、全失敗時のフォールバック、ユーザー通知       |
+| パフォーマンス     | setTimeoutの適切なクリーンアップ。メモリリーク防止             |
 
 ## 成果物
 
@@ -214,6 +248,13 @@ interface AuthSliceActions {
 7. 完了条件の検証
 
 ## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-AUTH-SESSION-REFRESH-001 --phase 2
