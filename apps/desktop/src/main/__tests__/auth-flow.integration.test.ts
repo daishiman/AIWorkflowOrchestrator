@@ -34,7 +34,7 @@ const mockSupabase = {
   },
 };
 
-vi.mock("../../infrastructure/supabaseClient", () => ({
+vi.mock("../infrastructure/supabaseClient", () => ({
   getSupabaseClient: vi.fn(() => mockSupabase),
 }));
 
@@ -58,7 +58,7 @@ vi.mock("electron", () => ({
 }));
 
 // Mock secure storage
-vi.mock("../../infrastructure/secureStorage", () => ({
+vi.mock("../infrastructure/secureStorage", () => ({
   createSecureStorage: vi.fn(() => ({
     storeRefreshToken: vi.fn().mockResolvedValue(undefined),
     getRefreshToken: vi.fn().mockResolvedValue("mock-refresh-token"),
@@ -205,7 +205,7 @@ describe("Scenario 3: Supabase not configured flow", () => {
 
     // Mock getSupabaseClient to return null
     const { getSupabaseClient } =
-      await import("../../infrastructure/supabaseClient");
+      await import("../infrastructure/supabaseClient");
     vi.mocked(getSupabaseClient).mockReturnValue(null);
 
     // auth:login IPC ハンドラーの応答を検証
@@ -231,7 +231,7 @@ describe("Data flow tests", () => {
    */
   it("should store refresh token in SecureStorage after successful OAuth", async () => {
     const { createSecureStorage } =
-      await import("../../infrastructure/secureStorage");
+      await import("../infrastructure/secureStorage");
     const mockStoreRefreshToken = vi.fn();
     vi.mocked(createSecureStorage).mockReturnValue({
       storeRefreshToken: mockStoreRefreshToken,
@@ -262,7 +262,7 @@ describe("Data flow tests", () => {
    */
   it("should restore session from SecureStorage on app restart", async () => {
     const { createSecureStorage } =
-      await import("../../infrastructure/secureStorage");
+      await import("../infrastructure/secureStorage");
     const mockGetRefreshToken = vi
       .fn()
       .mockResolvedValue("stored-refresh-token");
