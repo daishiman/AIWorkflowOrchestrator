@@ -10,9 +10,10 @@
 
 | 処理 | スクリプト | 説明 |
 |------|-----------|------|
-| 構成案検証 | `validate-structure.mjs` | 23種のスライドタイプ・必須フィールド・アイコン形式を機械的に検証 |
-| 視覚検証 | `verify-slides.mjs` | Playwrightでスクリーンショット撮影、レイアウト崩れを機械的に検出 |
-| フィードバック記録 | `log_usage.mjs` | 使用状況を決まったフォーマットで記録 |
+| 構成案検証 | `validate-structure.js` | 23種のスライドタイプ・必須フィールド・アイコン形式を機械的に検証 |
+| 視覚検証 | `verify-slides.js` | Playwrightでスクリーンショット撮影、レイアウト崩れを機械的に検出 |
+| 印刷品質検証 | `validate-print.js` | @media print CSSの12項目（P01-P12）を機械的に検証 |
+| フィードバック記録 | `log_usage.js` | 使用状況を決まったフォーマットで記録 |
 | HTMLテンプレート | `assets/slide-template.html` | 基本構造は固定テンプレートを使用 |
 | 構造化データ形式 | `assets/structure-template.md` | structure.mdのフォーマットは固定 |
 
@@ -22,6 +23,11 @@
 - 必須フィールド（title, slides, type, message, icon）の存在
 - アイコン形式が`fa-xxx`パターンに一致するか
 - HTMLが正しく表示されるか（スクリーンショット撮影）
+- 印刷CSS（`@media print`）に必須ルールが含まれているか（12項目）
+- Chrome拡張非表示（`body>*:not(.slider)`）が設定されているか
+- スライド番号が動的（`attr(data-total)`）か
+- `print-color-adjust: exact` が設定されているか
+- フォントサイズがpt単位、寸法がmm単位か
 
 ---
 
@@ -50,8 +56,9 @@
 
 ```
 【検証の流れ】
-LLM: structure.md作成 → Script: validate-structure.mjs検証 → LLM: エラー修正
-LLM: index.html生成 → Script: verify-slides.mjs検証 → LLM: 問題修正
+LLM: structure.md作成 → Script: validate-structure.js検証 → LLM: エラー修正
+LLM: index.html生成 → Script: verify-slides.js検証 → LLM: 問題修正
+LLM: index.html生成 → Script: validate-print.js検証 → LLM: 問題修正
 
 【決定論的にすべき処理をLLMに任せない】
 ❌ LLMがスライドタイプの妥当性を判断
@@ -62,6 +69,9 @@ LLM: index.html生成 → Script: verify-slides.mjs検証 → LLM: 問題修正
 
 ❌ LLMが「なんとなく良さそう」で完了判断
 ✅ Scriptがスクリーンショット撮影で客観的に検証
+
+❌ LLMが印刷CSSの品質を主観で判断
+✅ Scriptが12項目パターンマッチで機械的に検証
 
 【創造的にすべき処理をScriptに任せない】
 ❌ Scriptが「この内容はlistタイプ」と判定
@@ -80,7 +90,7 @@ Phase 2: 構成設計
 ┌─────────────────┐     ┌──────────────────────┐
 │ LLM             │     │ Script               │
 │ structure.md作成│────▶│ validate-structure   │
-│                 │     │ .mjs                 │
+│                 │     │ .js                  │
 └─────────────────┘     └──────────────────────┘
                                │
                     エラーあり │ エラーなし
@@ -93,8 +103,22 @@ Phase 2: 構成設計
 Phase 3.5: 視覚検証
 ┌─────────────────┐     ┌──────────────────────┐
 │ LLM             │     │ Script               │
-│ index.html生成  │────▶│ verify-slides.mjs    │
+│ index.html生成  │────▶│ verify-slides.js    │
 │                 │     │ (Playwright)         │
+└─────────────────┘     └──────────────────────┘
+                               │
+                    問題あり   │ 問題なし
+                               ▼
+                        ┌──────────────┐
+                        │ LLM修正      │
+                        │ or 次Phase   │
+                        └──────────────┘
+
+Phase 3.6: 印刷品質検証
+┌─────────────────┐     ┌──────────────────────┐
+│ LLM             │     │ Script               │
+│ index.html生成  │────▶│ validate-print.js   │
+│                 │     │ (12項目 P01-P12)    │
 └─────────────────┘     └──────────────────────┘
                                │
                     問題あり   │ 問題なし

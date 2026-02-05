@@ -43,7 +43,7 @@ allowed-tools:
 |------|-------------|------|
 | **テーマ** | Kanagawa Light（ライトモード） | 読みやすさと印刷時のインク節約を考慮 |
 | **アジェンダインジケーター** | 有効（左上固定表示） | セクション追跡・クリックジャンプ機能付き |
-| **印刷フォーマット** | A4横向き16:9（281mm×158mm） | 100%スケールで最適印刷 |
+| **印刷フォーマット** | A4横向き16:9（277mm×156mm） | 100%スケール・右端切れ防止4mmバッファ付き |
 | **アスペクト比** | 16:9 | 画面・印刷の両方で一貫した表示 |
 
 ## モード一覧
@@ -72,7 +72,7 @@ Phase 1: ヒアリング（LLM Task）
                             ↓
 Phase 2: 構成設計（LLM Task + Script Validation）
 ┌─────────────────────────────────────────────────────────┐
-│ structure-designer → [validate-structure.mjs]           │
+│ structure-designer → [validate-structure.js]           │
 │ 📖 Read: agents/structure-designer.md                   │
 │ 📖 Read: references/strategy.md (構成戦略)              │
 │ 📖 Read: references/icons.md (アイコン選定時)           │
@@ -93,7 +93,7 @@ Phase 3: HTML生成（LLM Task + Script Validation）
                             ↓
 Phase 3.5: 視覚検証（Script Task - 100%精度）
 ┌─────────────────────────────────────────────────────────┐
-│ [verify-slides.mjs]                                     │
+│ [verify-slides.js]                                     │
 │                                                         │
 │ Input: index.html                                       │
 │ Output: スクリーンショット + 問題レポート               │
@@ -101,9 +101,37 @@ Phase 3.5: 視覚検証（Script Task - 100%精度）
 │ 問題発見時 → LLMが修正 → 再検証                         │
 └─────────────────────────────────────────────────────────┘
                             ↓
+Phase 3.6: 印刷品質検証（Script Task - 100%精度）
+┌─────────────────────────────────────────────────────────┐
+│ [validate-print.js]                                     │
+│                                                         │
+│ Input: index.html                                       │
+│ Output: 12項目検証レポート（P01-P12）                   │
+│                                                         │
+│ 検証項目: Chrome拡張非表示・data-total動的化・           │
+│ print-color-adjust・pt単位フォント・mm寸法・             │
+│ ページネーション色・isolation・グラデーション等           │
+│                                                         │
+│ 問題発見時 → LLMが修正 → 再検証                         │
+└─────────────────────────────────────────────────────────┘
+                            ↓
+Phase 3.7: UI/UXレビュー（LLM Task）
+┌─────────────────────────────────────────────────────────┐
+│ uiux-reviewer                                           │
+│ 📖 Read: agents/uiux-reviewer.md                        │
+│ 📖 Read: references/print-layout.md (印刷レビュー時)    │
+│                                                         │
+│ レビュー対象:                                            │
+│ ① HTML画面表示のUI/UX（テキスト量・カードバランス）     │
+│ ② A4印刷のUI/UX（溢れ・切れ・外部UI混入）              │
+│                                                         │
+│ Output: レビュー結果 + 改善提案（優先度付き）           │
+│ 問題発見時 → LLMが修正 → 再レビュー                     │
+└─────────────────────────────────────────────────────────┘
+                            ↓
 Phase 4: 完了（Script Task）
 ┌─────────────────────────────────────────────────────────┐
-│ [log_usage.mjs] → フィードバック記録                    │
+│ [log_usage.js] → フィードバック記録                    │
 └─────────────────────────────────────────────────────────┘
 
 凡例: [script] = Script Task (100%精度), 無印 = LLM Task
@@ -128,8 +156,8 @@ Phase 2: 修正適用（LLM Task）
 │ Output: 更新されたindex.html + structure.md             │
 └─────────────────────────────────────────────────────────┘
                             ↓
-Phase 3: 視覚検証 + 完了
-（createモードと同様）
+Phase 3: 視覚検証 + UI/UXレビュー + 完了
+（createモードのPhase 3.5 → 3.7 → 4と同様）
 ```
 
 ---
@@ -187,6 +215,7 @@ Phase 3: 視覚検証 + 完了
 | [structure-designer.md](agents/structure-designer.md) | Phase 2開始時 | 構成設計・スライドタイプ判定 |
 | [html-generator.md](agents/html-generator.md) | Phase 3開始時 | HTML生成・アニメーション実装 |
 | [slide-modifier.md](agents/slide-modifier.md) | modifyモード時 | 既存スライド修正 |
+| [uiux-reviewer.md](agents/uiux-reviewer.md) | Phase 3.7（HTML生成後） | 画面表示+A4印刷のUI/UXレビュー |
 
 ### schemas/ （入出力スキーマ）
 
@@ -223,9 +252,11 @@ Phase 3: 視覚検証 + 完了
 
 | Script | 用途 | 実行タイミング |
 |--------|------|---------------|
-| `validate-structure.mjs` | 構成案検証（23種対応） | Phase 2完了時 |
-| `verify-slides.mjs` | 視覚検証（16:9対応） | Phase 3.5 |
-| `log_usage.mjs` | フィードバック記録 | 完了時 |
+| `validate-structure.js` | 構成案検証（23種対応） | Phase 2完了時 |
+| `verify-slides.js` | 視覚検証（16:9対応） | Phase 3.5 |
+| `validate-print.js` | 印刷品質検証（12項目・P01-P12） | Phase 3.6 |
+| `build-single-html.js` | HTML/CSS/JavaScript結合（GASデプロイ用） | Phase 3完了時/デプロイ時 |
+| `log_usage.js` | フィードバック記録 | 完了時 |
 
 ---
 
@@ -260,7 +291,7 @@ Phase 3: 視覚検証 + 完了
 ### 検証コマンド
 
 ```bash
-node scripts/verify-slides.mjs ./index.html --check-ratio
+node scripts/verify-slides.js ./index.html --check-ratio
 ```
 
 ## index.html ⇔ structure.md 同期ルール
@@ -283,32 +314,32 @@ structure.md 修正 → ユーザー承認 → index.html 再生成
 
 ```bash
 # JSON形式で検証
-node scripts/validate-structure.mjs structure.json
+node scripts/validate-structure.js structure.json
 
 # パイプで検証
-echo '{"title":"Test","slides":[...]}' | node scripts/validate-structure.mjs
+echo '{"title":"Test","slides":[...]}' | node scripts/validate-structure.js
 ```
 
 ## 視覚検証
 
 ```bash
 # スクリーンショット撮影（16:9ビューポート: 1920x1080）
-node scripts/verify-slides.mjs ./index.html ./screenshots
+node scripts/verify-slides.js ./index.html ./screenshots
 
 # 16:9アスペクト比のみ検証
-node scripts/verify-slides.mjs ./index.html --check-ratio
+node scripts/verify-slides.js ./index.html --check-ratio
 
 # 検証後に自動削除
-node scripts/verify-slides.mjs ./index.html --auto-cleanup
+node scripts/verify-slides.js ./index.html --auto-cleanup
 
 # スクリーンショット削除のみ
-node scripts/verify-slides.mjs ./index.html --cleanup
+node scripts/verify-slides.js ./index.html --cleanup
 ```
 
 ## フィードバック記録
 
 ```bash
-node scripts/log_usage.mjs --result success --phase "Phase 3" --agent "html-generator"
+node scripts/log_usage.js --result success --phase "Phase 3" --agent "html-generator"
 ```
 
 ---
@@ -317,14 +348,34 @@ node scripts/log_usage.mjs --result success --phase "Phase 3" --agent "html-gene
 
 ## デフォルト構成
 
+### 分離構成（推奨）
+
 ```
 05_Project/
 └── スライド/
     └── slide-YYYY-MM-DD-{タイトル}/
-        ├── index.html      # プレゼンテーション本体
+        ├── index.html        # HTML（CSS/JavaScriptは外部参照）
+        ├── styles.css        # CSS分離ファイル
+        ├── scripts.js        # JavaScript分離ファイル
+        ├── index-single.html # 結合版（GASデプロイ用、build-single-html.jsで生成）
+        ├── structure.md      # 構造化データ（改善・修正用）
+        └── deploy-guide.md   # GASデプロイ手順
+```
+
+### 1ファイル構成（従来）
+
+```
+05_Project/
+└── スライド/
+    └── slide-YYYY-MM-DD-{タイトル}/
+        ├── index.html      # HTML/CSS/JavaScript全てインライン
         ├── structure.md    # 構造化データ（改善・修正用）
         └── deploy-guide.md # GASデプロイ手順
 ```
+
+> **注**: GASでは外部ファイル参照（`<link href="styles.css">`等）が動作しません。
+> 分離構成の場合は `build-single-html.js` で結合するか、GASテンプレート方式でデプロイします。
+> 詳細は `assets/gas-deploy-guide.md` を参照。
 
 ## Electronアプリ連携
 
@@ -377,6 +428,9 @@ const outputDir = settings.data.outputDirectory;
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **3.7.0** | **2026-02-05** | **印刷品質自動検証スクリプト追加**: validate-print.js（12項目P01-P12の決定論的検証）を新規作成。**Phase 3.6追加**: 視覚検証（Phase 3.5）とUI/UXレビュー（Phase 3.7）の間に印刷品質検証フェーズを挿入。**LLM/Script責務分離強化**: 印刷品質の判断をLLMの主観から決定論的スクリプト検証に移行。**.mjs→.js統一**: 全スクリプトを.js拡張子に統一（package.json `"type": "module"` 追加） |
+| 3.6.0 | 2026-02-05 | **UI/UXレビューエージェント追加**: Phase 3.7にuiux-reviewer（画面表示+A4印刷の2軸レビュー）を追加。**動的ページ数対応**: スライドカウンターを`attr(data-total)`で動的化（ハードコード禁止）。**質問バッジ**: `.question-badge`コンポーネント追加（アイコン+「質問」テキスト）。**Chrome拡張非表示**: `body>*:not(.slider)`で外部UI要素を印刷から除外。**質問トーン改善**: 「有効か？」→「方針共有+追加アドバイス依頼」形式に統一。**print-styles.css強化**: question-badge/single-col/alert/solution/summary-list/isolation追加 |
+| 3.5.0 | 2026-02-05 | **印刷右端切れ修正**: スライド寸法281mm×158mm→277mm×156mmに変更（ボーダー+プリンタ余白で右端切れ防止）、**分離構成対応**: HTML/CSS/JavaScript分離出力、build-single-html.js追加、**GASデプロイ2方式**: 方法A（1ファイル結合）・方法B（GASテンプレート）をgas-deploy-guide.mdに追加 |
 | 3.4.1 | 2026-01-23 | **GSAP競合対策**: 各スライドタイプ別に`visibility: visible`を明示設定、全子要素の可視化ルール追加（表紙・メッセージスライドが印刷されない問題を修正） |
 | 3.4.0 | 2026-01-23 | **A4印刷優先設計**: 設計原則に追加、print-layout.md v3.0.0全面改訂（pt単位フォント・mm単位寸法・スライドタイプ別サイズ指定・サイクル図絶対配置）、print-styles.css全面改訂 |
 | 3.3.0 | 2026-01-23 | **デフォルト設定セクション追加**: ライトモード・アジェンダインジケーター・A4横16:9印刷をデフォルトとして明記、**スキーマ追加**: structure-definition.json, slide-definition.json, validation-result.json |
@@ -386,6 +440,6 @@ const outputDir = settings.data.outputDirectory;
 | 2.5.0 | 2026-01-07 | 整合性維持ルール強化 |
 | 2.4.0 | 2026-01-07 | 16:9アスペクト比の厳格化 |
 | 2.3.0 | 2026-01-04 | 印刷CSS刷新、LLM/Script責務分離 |
-| 2.2.0 | 2026-01-03 | validate-structure.mjs 23種対応 |
+| 2.2.0 | 2026-01-03 | validate-structure.js 23種対応 |
 | 2.0.0 | 2026-01-03 | ホバーエフェクト・拡張スライドタイプ追加 |
 | 1.0.0 | 2026-01-02 | 初版作成 |
