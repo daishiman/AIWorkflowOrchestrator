@@ -2880,3 +2880,48 @@ if (artifactPath) {
 - 完了日時: 2026-02-04
 
 ---
+
+## 2026-02-05 - TASK-FIX-GOOGLE-LOGIN-001 Phase 1-12完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-FIX-GOOGLE-LOGIN-001
+- タスク名: Googleログイン修正
+- Phase: 1-12
+
+### 成果
+
+- テストカバレッジ: 約50テストPASS
+- 実装内容:
+  - Problem 1: OAuthコールバックのerrorパラメータ検出（parseOAuthError関数）
+  - Problem 2: Supabase未設定時エラー（AUTH_NOT_CONFIGUREDコード追加）
+  - Problem 3: セッション管理（refreshTokenExpiresAtフィールド追加）
+  - Problem 4: リスナー二重登録防止（authListenerRegisteredフラグ）
+- 成果物: Phase 1-12の成果物を`outputs/`配下に出力
+
+### 変更ファイル
+
+| ファイル                                              | 変更内容                       |
+| ----------------------------------------------------- | ------------------------------ |
+| `packages/shared/types/auth.ts`                       | AUTH_ERROR_CODES拡張(9コード)、型拡張 |
+| `apps/desktop/src/main/auth/oauth-error-handler.ts`   | 新規作成                       |
+| `apps/desktop/src/main/index.ts`                      | handleAuthCallback修正         |
+| `apps/desktop/src/renderer/store/slices/authSlice.ts` | リスナー管理改善               |
+
+### テストファイル
+
+| ファイル                                                                      | 内容                     |
+| ----------------------------------------------------------------------------- | ------------------------ |
+| `apps/desktop/src/main/__tests__/auth-callback.test.ts`                       | OAuthエラーハンドリング  |
+| `apps/desktop/src/main/__tests__/auth-callback.edge-cases.test.ts`            | エッジケーステスト       |
+| `apps/desktop/src/main/__tests__/auth-flow.integration.test.ts`               | 統合テスト               |
+| `packages/shared/types/__tests__/auth.test.ts`                                | 型・定数テスト           |
+| `apps/desktop/src/renderer/store/slices/__tests__/authSlice.listener.test.ts` | リスナーテスト           |
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-02-05
+
+---

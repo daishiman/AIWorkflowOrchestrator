@@ -6,6 +6,11 @@ import { setupCustomProtocol } from "./protocol";
 import { IPC_CHANNELS } from "../preload/channels";
 import { getSupabaseClient, createSecureStorage } from "./infrastructure";
 import { toAuthUser } from "@repo/shared/infrastructure/auth";
+import { AUTH_ERROR_CODES } from "@repo/shared/types/auth";
+import {
+  parseOAuthError,
+  mapOAuthErrorToMessage,
+} from "./auth/oauth-error-handler";
 
 // メインウィンドウの参照を保持（モジュールスコープ）
 export let mainWindowRef: BrowserWindow | null = null;
@@ -109,6 +114,25 @@ async function handleAuthCallback(url: string): Promise<void> {
   }
 
   try {
+    // ==========================================================
+    // OAuthエラー検出（Problem 1対応）
+    // @see TASK-FIX-GOOGLE-LOGIN-001
+    // ==========================================================
+    const oauthError = parseOAuthError(url);
+    if (oauthError) {
+      const mappedError = mapOAuthErrorToMessage(oauthError.error);
+      console.error(
+        `[Auth] OAuth error detected: ${oauthError.error}`,
+        oauthError.errorDescription ?? "",
+      );
+      mainWindowRef.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+        authenticated: false,
+        error: mappedError.message,
+        errorCode: mappedError.code,
+      });
+      return;
+    }
+
     // URL からハッシュフラグメントを抽出
     // 形式: aiworkflow://auth/callback#access_token=xxx&refresh_token=xxx&...
     const hashIndex = url.indexOf("#");
@@ -117,6 +141,7 @@ async function handleAuthCallback(url: string): Promise<void> {
       mainWindowRef.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
         authenticated: false,
         error: "認証コールバックURLが無効です：トークンが見つかりません",
+        errorCode: AUTH_ERROR_CODES.LOGIN_FAILED,
       });
       return;
     }
@@ -130,17 +155,22 @@ async function handleAuthCallback(url: string): Promise<void> {
       mainWindowRef.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
         authenticated: false,
         error: "認証トークンが見つかりません",
+        errorCode: AUTH_ERROR_CODES.LOGIN_FAILED,
       });
       return;
     }
 
-    // Supabaseセッションを設定
+    // ==========================================================
+    // Supabase設定検証（Problem 2対応）
+    // @see TASK-FIX-GOOGLE-LOGIN-001
+    // ==========================================================
     const supabase = getSupabaseClient();
     if (!supabase) {
       console.error("Supabase client not available");
       mainWindowRef.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
         authenticated: false,
         error: "Supabaseが設定されていません",
+        errorCode: AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED,
       });
       return;
     }

@@ -42,9 +42,18 @@ Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 
 ## イベントチャネル（Main → Renderer）
 
-| チャネル             | 用途             | Payload                                           |
-| -------------------- | ---------------- | ------------------------------------------------- |
-| `auth:state-changed` | 認証状態変更通知 | `{ authenticated: boolean; tokens?: AuthTokens }` |
+| チャネル             | 用途             | Payload                                                                                   |
+| -------------------- | ---------------- | ----------------------------------------------------------------------------------------- |
+| `auth:state-changed` | 認証状態変更通知 | `{ authenticated: boolean; tokens?: AuthTokens; error?: string; errorCode?: string }` |
+
+**Payload詳細（TASK-FIX-GOOGLE-LOGIN-001で拡張）**:
+
+| フィールド    | 型                  | 説明                                         |
+| ------------- | ------------------- | -------------------------------------------- |
+| authenticated | boolean             | 認証状態                                     |
+| tokens        | AuthTokens \| undefined | 認証トークン情報                           |
+| error         | string \| undefined | エラーメッセージ（日本語）                   |
+| errorCode     | string \| undefined | エラーコード（AUTH_ERROR_CODES値）           |
 
 ---
 
@@ -58,13 +67,14 @@ Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 
 認証セッション情報を表すインターフェース。
 
-| フィールド   | 型        | 説明                               |
-| ------------ | --------- | ---------------------------------- |
-| user         | AuthUser  | 認証済みユーザー情報               |
-| accessToken  | string    | アクセストークン                   |
-| refreshToken | string    | リフレッシュトークン               |
-| expiresAt    | number    | トークン有効期限（UNIXタイムスタンプ） |
-| isOffline    | boolean   | オフラインモードフラグ             |
+| フィールド            | 型                   | 説明                                     |
+| --------------------- | -------------------- | ---------------------------------------- |
+| user                  | AuthUser             | 認証済みユーザー情報                     |
+| accessToken           | string               | アクセストークン                         |
+| refreshToken          | string               | リフレッシュトークン                     |
+| expiresAt             | number               | トークン有効期限（UNIXタイムスタンプ）   |
+| isOffline             | boolean              | オフラインモードフラグ                   |
+| refreshTokenExpiresAt | number \| undefined  | リフレッシュトークン有効期限（7日後）    |
 
 ### UserProfile
 
@@ -173,7 +183,8 @@ IPC通信の共通レスポンス型。ジェネリクス型Tでデータ型を�
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                   |
-| ---------- | ---------- | ---------------------------------------------------------- |
-| v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |
-| v1.0.0     | -          | 初版作成                                                   |
+| バージョン | 日付       | 変更内容                                                                |
+| ---------- | ---------- | ----------------------------------------------------------------------- |
+| v1.2.0     | 2026-02-05 | TASK-FIX-GOOGLE-LOGIN-001: AuthSessionにrefreshTokenExpiresAt追加、auth:state-changedにerror/errorCode追加 |
+| v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換              |
+| v1.0.0     | -          | 初版作成                                                                |

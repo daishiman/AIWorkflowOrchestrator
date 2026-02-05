@@ -136,6 +136,24 @@ OAuth 2.1仕様に準拠したPKCE実装を追加し、認可コード横取り�
 3. **有効期限管理**: 10分の有効期限設定
 4. **ワンタイムユース**: 検証成功後にverifierを削除
 
+### 3.5 実装課題と解決策（TASK-FIX-GOOGLE-LOGIN-001からの学び）
+
+TASK-FIX-GOOGLE-LOGIN-001でOAuth認証実装時に発見された課題と解決策。本タスク実装時の参考にすること。
+
+| 課題                                    | 原因                                                        | 解決策                                                                                | 関連ファイル                                 |
+| --------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------- |
+| URLフラグメントからのパラメータ抽出失敗 | OAuth Implicit Flowでは`?`ではなく`#`でパラメータが返される | `url.hash`から`URLSearchParams`でパース（`new URLSearchParams(url.hash.slice(1))`）   | `oauth-error-handler.ts`                     |
+| Zustandリスナーの二重登録               | React StrictModeでuseEffectが2回実行される                  | モジュールスコープの`let authListenerRegistered = false`フラグでガード                | `authSlice.ts`                               |
+| テストでのフラグリセット問題            | モジュールスコープ変数はテスト間で共有される                | `resetAuthListenerFlag()`関数をエクスポートしてbeforeEachでリセット                   | `authSlice.ts`, `authSlice.listener.test.ts` |
+| IPC経由でエラー情報がRenderer届かない   | AUTH_STATE_CHANGEDペイロードにerror情報が含まれていなかった | ペイロードに`error: string \| null`, `errorCode: string \| undefined`フィールドを追加 | `index.ts`, `authSlice.ts`                   |
+
+**注意**: PKCE実装ではAuthorization Code Flowに変更するため、URLフラグメント（#）ではなくクエリパラメータ（?）でcodeが返される点に注意。ただし、上記のリスナー二重登録防止パターンはそのまま適用可能。
+
+**参照先システム仕様書**:
+
+- `architecture-auth-security.md` - 「実装時の苦戦した箇所・知見」セクション
+- `skill-creator/references/patterns.md` - 「OAuthコールバックエラーパラメータ抽出パターン」
+
 ---
 
 ## 4. 実行手順
