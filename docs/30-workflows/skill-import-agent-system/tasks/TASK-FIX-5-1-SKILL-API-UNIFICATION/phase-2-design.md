@@ -14,12 +14,15 @@
 
 ## 参照資料
 
-| 資料名           | パス                                | 説明          |
-| ---------------- | ----------------------------------- | ------------- |
-| API比較分析表    | `outputs/phase-1/api-comparison.md` | Phase 1成果物 |
-| 呼び出し元マップ | `outputs/phase-1/caller-mapping.md` | Phase 1成果物 |
-| 仕様書照合結果   | `outputs/phase-1/spec-alignment.md` | Phase 1成果物 |
-| 仕様書§4         | `specification.md` §4               | API定義の正本 |
+| 資料名             | パス                                                | 説明                              |
+| ------------------ | --------------------------------------------------- | --------------------------------- |
+| API比較分析表      | `outputs/phase-1/api-comparison.md`                 | Phase 1成果物                     |
+| 呼び出し元マップ   | `outputs/phase-1/caller-mapping.md`                 | Phase 1成果物                     |
+| 仕様書照合結果     | `outputs/phase-1/spec-alignment.md`                 | Phase 1成果物                     |
+| 仕様書§4           | `specification.md` §4                               | API定義の正本                     |
+| SkillAPI型定義仕様 | `interfaces-agent-sdk-skill.md` 行202-293           | OperationResult/Preload API定義   |
+| IPC設計原則        | `architecture-implementation-patterns.md` 行194-201 | Electron IPC設計原則              |
+| セキュリティ仕様   | `security-api-electron.md` 行30-48                  | contextBridge/IPC通信セキュリティ |
 
 ## 実行タスク
 
@@ -137,6 +140,15 @@ interface SkillAPI {
 | Preload  | contextBridge.exposeInMainWorld での公開ポイント統一 |
 | Renderer | `window.electronAPI.skill` 単一パスへの統一          |
 | IPC通信  | channels.ts の定義との整合性維持                     |
+
+## 統合テスト連携【必須】
+
+| カテゴリ           | 設計項目                                         | 成果物への反映              |
+| ------------------ | ------------------------------------------------ | --------------------------- |
+| API契約            | 統一SkillAPIの全メソッドシグネチャ定義           | unified-api-design.mdに記載 |
+| IPC通信            | チャンネル名とメソッドの対応表                   | unified-api-design.mdに記載 |
+| エラーハンドリング | IPC通信エラー時の戻り値設計（throw vs Result型） | type-change-design.mdに記載 |
+| 状態同期           | スキル操作後のRenderer状態更新設計               | migration-plan.mdに記載     |
 
 ## 成果物
 

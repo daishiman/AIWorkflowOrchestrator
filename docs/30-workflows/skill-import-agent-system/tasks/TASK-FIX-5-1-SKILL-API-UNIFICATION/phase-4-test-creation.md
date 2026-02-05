@@ -103,6 +103,24 @@ pnpm --filter @repo/desktop test -- --run apps/desktop/src/preload/__tests__/ski
 # 期待: テストがFAIL（まだ実装していない）
 ```
 
+## 統合テスト連携【必須】
+
+| カテゴリ           | テストシナリオ                                        | 検証内容                     |
+| ------------------ | ----------------------------------------------------- | ---------------------------- |
+| API接続テスト      | 全13メソッドがIPC通信で正しいチャンネルを呼び出すこと | SKILL_CHANNELS定数との一致   |
+| データフロー       | execute→onStream→onCompleteのイベントフロー           | ストリーミングデータの型一致 |
+| エラーハンドリング | IPC通信失敗時にErrorがthrowされること                 | OperationResult不使用の確認  |
+| 認証連携           | onPermissionRequest→sendPermissionResponseのフロー    | 権限チェックフローの整合性   |
+| 状態同期           | import/remove後の一覧更新                             | リアルタイム反映のテスト設計 |
+
+### テストパターン参照
+
+| パターン                  | 参照先                                              | 用途                     |
+| ------------------------- | --------------------------------------------------- | ------------------------ |
+| Handler Map方式           | `architecture-implementation-patterns.md` 行600-610 | ipcMain.handleのモック化 |
+| SkillService Partial Mock | `architecture-implementation-patterns.md` 行621-632 | 依存サービスの隔離テスト |
+| validateIpcSender検証     | `architecture-implementation-patterns.md` 行647-657 | セキュリティ検証テスト   |
+
 ## 成果物
 
 | 成果物            | パス                                                   | 説明                    |

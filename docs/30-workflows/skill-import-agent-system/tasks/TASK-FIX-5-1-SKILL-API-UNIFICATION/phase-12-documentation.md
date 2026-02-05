@@ -12,6 +12,16 @@
 
 実装した内容をシステム要件ドキュメントに反映し、技術的な理解を促進するドキュメントを作成し、未完了タスクを検出・記録する。
 
+## 参照資料
+
+| 資料名               | パス                                             | 説明                 |
+| -------------------- | ------------------------------------------------ | -------------------- |
+| 最終レビュー         | `outputs/phase-10/final-review-result.md`        | Phase 10成果物       |
+| 手動テスト           | `outputs/phase-11/manual-test-result.md`         | Phase 11成果物       |
+| 仕様更新ワークフロー | `references/spec-update-workflow.md`             | Task 2の詳細手順     |
+| 更新履歴テンプレート | `references/documentation-changelog-template.md` | Task 3のテンプレート |
+| 未タスクガイドライン | `references/unassigned-task-guidelines.md`       | Task 4の判断基準     |
+
 ## 実行タスク
 
 ### Task 1: 実装ガイド作成【必須】
@@ -72,6 +82,18 @@
 #### Step 1-C: 関連タスクテーブル更新
 
 - [ ] 関連仕様書内の「関連タスク」テーブルでTASK-FIX-5-1のステータスを「完了」に更新
+
+#### Step 1-D: LOGS.md×2ファイル更新【必須】
+
+> **⚠️ 後回しにすると漏れる。Step 1-Aと同時に更新すること**
+
+- [ ] `aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加
+- [ ] `task-specification-creator/LOGS.md` にタスク完了記録を追加
+
+#### Step 1-E: topic-map.md再生成【新規セクション追加時は必須】
+
+- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` 実行
+- [ ] 行番号が正しく反映されたことを確認
 
 #### Step 2: システム仕様更新【条件付き】
 
@@ -162,6 +184,9 @@ node scripts/detect-unassigned-tasks.js --scan apps/desktop/src/preload --output
 - [ ] **アーキテクチャ層別のドキュメントが作成されている（Preload/Renderer/IPC層）**
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
+- [ ] **【Task 2 Step 1-D】`aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加した**
+- [ ] **【Task 2 Step 1-D】`task-specification-creator/LOGS.md` にタスク完了記録を追加した**
+- [ ] **【Task 2 Step 1-E】`topic-map.md` が再生成されている（新規セクション追加時）**
 - [ ] artifacts.jsonが更新されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 

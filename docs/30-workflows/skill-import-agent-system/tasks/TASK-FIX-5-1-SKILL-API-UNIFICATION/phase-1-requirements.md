@@ -17,6 +17,16 @@
 - TASK-FIX-1-1-TYPE-ALIGNMENT が完了していること（型定義統一済み）
 - TASK-FIX-4-1-IPC-CONSOLIDATION が完了していること（IPCチャンネル統一済み）
 
+## 参照資料
+
+| 資料名                       | パス                                                | 説明                    |
+| ---------------------------- | --------------------------------------------------- | ----------------------- |
+| 仕様書§4                     | `specification.md` §4                               | API定義の正本           |
+| SkillAPIインターフェース仕様 | `interfaces-agent-sdk-skill.md` 行227-293           | Preload API型定義       |
+| Electronセキュリティ仕様     | `security-api-electron.md` 行30-48                  | IPC通信セキュリティ原則 |
+| 実装パターン（IPC統合）      | `architecture-implementation-patterns.md` 行203-240 | チャンネル統合パターン  |
+| APIエンドポイント            | `api-endpoints.md`                                  | Desktop IPC APIサマリー |
+
 ## 実行タスク
 
 ### Task 1: 両APIの完全なメソッドリストアップ
@@ -118,6 +128,15 @@ grep -rn "window\.skillAPI\|window\.electronAPI\.skill" apps/desktop/src/rendere
 | Preload  | contextBridgeでの公開APIの一元化 |
 | Renderer | 呼び出し元のアクセスパス統一     |
 | IPC通信  | チャンネル定義との整合性         |
+
+## 統合テスト連携【必須】
+
+| カテゴリ           | 確認項目                                           | 期待結果                     |
+| ------------------ | -------------------------------------------------- | ---------------------------- |
+| API接続            | 統一skillAPI全メソッドのIPC疎通要件を定義          | 全13メソッドの接続要件リスト |
+| データフロー       | Renderer→Preload→Main→Preload→Rendererのフロー確認 | データフロー図の要件定義     |
+| エラーハンドリング | IPC通信エラー時のRenderer側表示要件                | エラーハンドリング要件リスト |
+| 状態同期           | スキルインポート/削除後の一覧更新要件              | リアルタイム反映要件         |
 
 ## 成果物
 
