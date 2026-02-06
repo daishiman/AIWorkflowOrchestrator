@@ -351,11 +351,14 @@ ipcMain.handle(IPC_CHANNELS.SKILL_IMPORT, async (event, args) => {
 
 ## 8. 参照資料
 
-| 資料                   | パス                                                                                                              |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Phase 1 要件定義       | `docs/30-workflows/skill-import-agent-system/tasks/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/phase-01-requirements.md` |
-| エラーハンドリング規約 | `.claude/rules/02-code-quality.md`                                                                                |
-| 既知の落とし穴         | `.claude/rules/06-known-pitfalls.md`                                                                              |
+| 資料                   | パス                                                                                                              | 説明                         |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Phase 1 要件定義       | `docs/30-workflows/skill-import-agent-system/tasks/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/phase-01-requirements.md` | -                            |
+| エラーハンドリング規約 | `.claude/rules/02-code-quality.md`                                                                                | -                            |
+| 既知の落とし穴         | `.claude/rules/06-known-pitfalls.md`                                                                              | -                            |
+| エラーハンドリング仕様 | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                                             | リトライ戦略、フォールバック |
+| 実装パターン           | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                       | Main Processパターン         |
+| セキュリティ原則       | `.claude/skills/aiworkflow-requirements/references/security-principles.md`                                        | エラーレスポンス設計         |
 
 ---
 

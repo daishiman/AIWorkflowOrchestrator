@@ -131,13 +131,16 @@ const skillImportManager = new SkillImportManager(skillStore);
 
 ## 5. 参照資料
 
-| 資料                       | パス                                                                    |
-| -------------------------- | ----------------------------------------------------------------------- |
-| 永続化設計仕様             | `docs/30-workflows/skill-import-agent-system/technical-decisions.md` §3 |
-| スキルハンドラー実装       | `apps/desktop/src/main/ipc/skillHandlers.ts`                            |
-| インポートマネージャー実装 | `apps/desktop/src/main/services/skill/SkillImportManager.ts`            |
-| IPC初期化処理              | `apps/desktop/src/main/ipc/index.ts` L118-132                           |
-| 既知の落とし穴             | `.claude/rules/06-known-pitfalls.md`                                    |
+| 資料                       | パス                                                                              | 説明                          |
+| -------------------------- | --------------------------------------------------------------------------------- | ----------------------------- |
+| 永続化設計仕様             | `docs/30-workflows/skill-import-agent-system/technical-decisions.md` §3           | -                             |
+| スキルハンドラー実装       | `apps/desktop/src/main/ipc/skillHandlers.ts`                                      | -                             |
+| インポートマネージャー実装 | `apps/desktop/src/main/services/skill/SkillImportManager.ts`                      | -                             |
+| IPC初期化処理              | `apps/desktop/src/main/ipc/index.ts` L118-132                                     | -                             |
+| 既知の落とし穴             | `.claude/rules/06-known-pitfalls.md`                                              | -                             |
+| エラーハンドリング仕様     | `.claude/skills/aiworkflow-requirements/references/error-handling.md`             | エラーコード定義（1000-5999） |
+| セキュリティ原則           | `.claude/skills/aiworkflow-requirements/references/security-principles.md`        | ログサニタイゼーション        |
+| IPC型定義                  | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | skill:\*チャンネル仕様        |
 
 ---
 

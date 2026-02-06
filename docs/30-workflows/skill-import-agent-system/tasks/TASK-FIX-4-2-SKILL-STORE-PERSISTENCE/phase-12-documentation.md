@@ -166,6 +166,132 @@ grep -rn "TODO\|FIXME\|HACK\|XXX" apps/desktop/src/main/ipc/skillHandlers.ts
 | 仕様更新ワークフロー   | `references/spec-update-workflow.md`      | Step詳細手順     |
 | 永続化設計書           | `technical-decisions.md` §3               | 設計仕様         |
 
+## 実行手順
+
+### Task 1: 実装ガイド作成
+
+#### Step 1: Part 1（概念説明）を作成
+
+1. 日常生活の例えを作成（例: 図書館の貸出リストをメモに書いておくイメージ）
+2. 機能一覧表を作成（スキル保存、スキル復元、エラー回復）
+3. 専門用語を使わず、中学生でも理解できる文章で記述
+
+#### Step 2: Part 2（技術詳細）を作成
+
+1. electron-store設定と初期化コードを記載
+2. SkillImportManagerの永続化フローを図解
+3. validateStoredSkillIds()関数のAPIシグネチャを記載
+4. エラーハンドリングとフォールバック戦略を説明
+
+### Task 2: システムドキュメント更新
+
+#### Step 1-A: タスク完了記録
+
+1. `technical-decisions.md` §3に以下形式で追加:
+
+   ```markdown
+   ### 完了タスク: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE（2026-02-07）
+
+   | 項目       | 内容        |
+   | ---------- | ----------- |
+   | ステータス | 完了        |
+   | テスト数   | N件（自動） |
+   | 実装ガイド | [リンク]    |
+   ```
+
+2. `aiworkflow-requirements/LOGS.md`に完了エントリ追加
+3. `task-specification-creator/LOGS.md`に完了記録追加
+
+#### Step 1-B: 実装状況テーブル更新
+
+1. `technical-decisions.md` §3の永続化設計セクションにステータス追記
+2. GitHub Issue #418のステータス更新（Closed）
+
+#### Step 1-C: 関連タスクテーブル更新
+
+```bash
+grep -rn "TASK-FIX-4-2" .claude/skills/aiworkflow-requirements/references/
+```
+
+検索結果の全ファイルで「ステータス」を「完了」に更新
+
+#### Step 1-D: topic-map.md再生成
+
+```bash
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+```
+
+実行後、git diffで変更内容を確認
+
+#### Step 1-E: 未タスク指示書配置（Task 4で検出時のみ）
+
+1. `docs/30-workflows/unassigned-task/` に指示書作成
+2. 関連仕様書の残課題テーブルに登録
+
+#### Step 2: システム仕様更新（条件付き）
+
+本タスクはバグ修正のため、基本的に更新不要。
+ただし、型バリデーション関数追加があるため、必要に応じてerror-handling.mdのフォールバック戦略セクションに追記。
+
+### Task 3: ドキュメント更新履歴 & artifacts.json更新
+
+1. `outputs/phase-12/documentation-changelog.md`を以下形式で作成:
+
+   ```markdown
+   # ドキュメント更新履歴
+
+   | 項目   | 内容        |
+   | ------ | ----------- |
+   | 実施日 | 2026-02-07  |
+   | 担当   | Claude Code |
+
+   ## Step実行結果
+
+   | Step     | 結果     | 備考                            |
+   | -------- | -------- | ------------------------------- |
+   | Step 1-A | 完了     | technical-decisions.md L100-110 |
+   | Step 1-B | 完了     | Issue #418 Closed               |
+   | Step 1-C | 該当なし | 関連タスクなし                  |
+   | Step 1-D | 完了     | topic-map.md更新差分なし        |
+   | Step 1-E | 該当なし | 未タスク0件                     |
+   | Step 2   | 該当なし | バグ修正のため仕様変更なし      |
+   ```
+
+2. `artifacts.json`のPhase 12ステータスを`completed`に更新
+
+### Task 4: 未タスク検出
+
+1. 検出コマンド実行:
+
+   ```bash
+   grep -rn "TODO\|FIXME\|HACK\|XXX" apps/desktop/src/main/services/skill/ --include="*.ts" | grep -v test
+   ```
+
+2. Phase 3/10レビュー結果のMINOR指摘を確認
+
+3. `outputs/phase-12/unassigned-task-detection.md`を以下形式で作成:
+
+   ```markdown
+   # 未タスク検出レポート
+
+   ## サマリー
+
+   - 検出日: 2026-02-07
+   - 検出件数: 0件
+
+   ## 検出ソース別結果
+
+   | ソース             | 件数 | 詳細 |
+   | ------------------ | ---- | ---- |
+   | Phase 3 MINOR指摘  | 0件  | -    |
+   | Phase 10 MINOR指摘 | 0件  | -    |
+   | コードTODO/FIXME   | 0件  | -    |
+
+   ## 対応方針
+
+   検出件数0件のため、未タスク指示書作成は不要。
+   ```
+
 ## アーキテクチャ層別ドキュメント
 
 実装ガイドPart 2で以下の層別にドキュメントを作成する:

@@ -23,12 +23,15 @@ Phase 4で作成したテストをすべてパスさせる最小限の実装を�
 
 ## 参照資料
 
-| 資料名           | パス                                                                   | 説明               |
-| ---------------- | ---------------------------------------------------------------------- | ------------------ |
-| Phase 4成果物    | `tasks/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/phase-04-test-creation.md` | テスト仕様         |
-| 現行実装         | `apps/desktop/src/main/services/skill/SkillImportManager.ts`           | 修正対象ファイル   |
-| 設計書           | `docs/30-workflows/skill-import-agent-system/technical-decisions.md`   | 永続化設計         |
-| コード品質ルール | `.claude/rules/02-code-quality.md`                                     | エラーハンドリング |
+| 資料名                 | パス                                                                                        | 説明                    |
+| ---------------------- | ------------------------------------------------------------------------------------------- | ----------------------- |
+| Phase 4成果物          | `tasks/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/phase-04-test-creation.md`                      | テスト仕様              |
+| 現行実装               | `apps/desktop/src/main/services/skill/SkillImportManager.ts`                                | 修正対象ファイル        |
+| 設計書                 | `docs/30-workflows/skill-import-agent-system/technical-decisions.md`                        | 永続化設計              |
+| コード品質ルール       | `.claude/rules/02-code-quality.md`                                                          | エラーハンドリング      |
+| エラーハンドリング仕様 | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                       | エラーコード使用        |
+| 開発ガイドライン       | `.claude/skills/aiworkflow-requirements/references/development-guidelines.md`               | コード品質基準          |
+| 実装パターン           | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | async-mutex導入パターン |
 
 ## 実行手順
 
