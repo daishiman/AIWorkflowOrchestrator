@@ -7,9 +7,12 @@
 export {
   CUSTOM_PROTOCOL,
   AUTH_CALLBACK_PATH,
+  AUTH_DONE_PATH,
   setupCustomProtocol,
   registerAsDefaultProtocolClient,
   isAuthCallbackUrl,
+  isAuthDoneUrl,
+  isAllowedProtocolUrl,
   setupMacOSProtocolHandler,
   setupWindowsLinuxProtocolHandler,
   processLaunchUrl,

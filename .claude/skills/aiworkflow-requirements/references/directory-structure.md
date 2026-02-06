@@ -302,6 +302,13 @@
 | ipc/workspaceHandlers.ts                 | ワークスペースIPC                                                |
 | ipc/aiHandlers.ts                        | **AI/LLM チャットIPC（AI_CHAT、AI_CHECK_CONNECTION、AI_INDEX）** |
 | ipc/validation.ts                        | 入力バリデーション                                               |
+| auth/                                    | 認証フロー実装（TASK-AUTH-CALLBACK-001）                         |
+| auth/pkce.ts                             | PKCE code_verifier/code_challenge生成（RFC 7636）                |
+| auth/authCallbackServer.ts               | ローカルHTTPコールバックサーバー（127.0.0.1動的ポート）          |
+| auth/authFlowOrchestrator.ts             | 認証フロー統合制御（State/PKCE/サーバー管理）                    |
+| auth/__tests__/                          | 認証機能テスト（5スイート68テスト）                              |
+| protocol/                                | カスタムプロトコル処理                                           |
+| protocol/customProtocol.ts               | URLスキーム検証・パス抽出（extractProtocolPath）                 |
 | infrastructure/secureStorage.ts          | トークン暗号化（safeStorage）                                    |
 | infrastructure/security/ipc-validator.ts | IPC送信元検証（withValidation）                                  |
 | services/                                | バックグラウンドサービス                                         |
