@@ -117,6 +117,15 @@ vi.mock("../infrastructure/security/ipc-validator.js", () => ({
   ),
 }));
 
+// Mock AuthFlowOrchestrator
+const mockStartOAuthFlow = vi.fn();
+vi.mock("../auth/authFlowOrchestrator", () => ({
+  AuthFlowOrchestrator: vi.fn().mockImplementation(() => ({
+    startOAuthFlow: mockStartOAuthFlow,
+    dispose: vi.fn(),
+  })),
+}));
+
 // Mock electron-store
 vi.mock("electron-store", () => ({
   default: vi.fn().mockImplementation(() => ({
@@ -349,16 +358,15 @@ describe("authHandlers", () => {
   });
 
   describe("AUTH_LOGIN handler", () => {
+    beforeEach(() => {
+      mockStartOAuthFlow.mockResolvedValue(undefined);
+    });
+
     it("should initiate OAuth flow for Google provider", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
-
-      mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-        data: { url: "https://accounts.google.com/oauth" },
-        error: null,
-      });
 
       const result = (await handler(
         {},
@@ -366,12 +374,7 @@ describe("authHandlers", () => {
       )) as IPCResponse<void>;
 
       expect(result.success).toBe(true);
-      expect(mockSupabaseAuth.signInWithOAuth).toHaveBeenCalledWith({
-        provider: "google",
-        options: expect.objectContaining({
-          redirectTo: expect.stringContaining("aiworkflow://auth/callback"),
-        }),
-      });
+      expect(mockStartOAuthFlow).toHaveBeenCalledWith("google");
     });
 
     it("should initiate OAuth flow for GitHub provider", async () => {
@@ -380,23 +383,13 @@ describe("authHandlers", () => {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-        data: { url: "https://github.com/login/oauth" },
-        error: null,
-      });
-
       const result = (await handler(
         {},
         { provider: "github" },
       )) as IPCResponse<void>;
 
       expect(result.success).toBe(true);
-      expect(mockSupabaseAuth.signInWithOAuth).toHaveBeenCalledWith({
-        provider: "github",
-        options: expect.objectContaining({
-          redirectTo: expect.stringContaining("aiworkflow://auth/callback"),
-        }),
-      });
+      expect(mockStartOAuthFlow).toHaveBeenCalledWith("github");
     });
 
     it("should initiate OAuth flow for Discord provider", async () => {
@@ -405,40 +398,25 @@ describe("authHandlers", () => {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-        data: { url: "https://discord.com/oauth2" },
-        error: null,
-      });
-
       const result = (await handler(
         {},
         { provider: "discord" },
       )) as IPCResponse<void>;
 
       expect(result.success).toBe(true);
-      expect(mockSupabaseAuth.signInWithOAuth).toHaveBeenCalledWith({
-        provider: "discord",
-        options: expect.objectContaining({
-          redirectTo: expect.stringContaining("aiworkflow://auth/callback"),
-        }),
-      });
+      expect(mockStartOAuthFlow).toHaveBeenCalledWith("discord");
     });
 
-    it("should open external browser with auth URL", async () => {
+    it("should call AuthFlowOrchestrator.startOAuthFlow", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      const authUrl = "https://accounts.google.com/oauth?state=xxx";
-      mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-        data: { url: authUrl },
-        error: null,
-      });
-
       await handler({}, { provider: "google" });
 
-      expect(mockOpenExternal).toHaveBeenCalledWith(authUrl);
+      expect(mockStartOAuthFlow).toHaveBeenCalledTimes(1);
+      expect(mockStartOAuthFlow).toHaveBeenCalledWith("google");
     });
 
     it("should return error on OAuth failure", async () => {
@@ -447,10 +425,10 @@ describe("authHandlers", () => {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-        data: null,
-        error: { message: "OAuth configuration error" },
-      });
+      // AuthFlowOrchestratorがOAuthエラーを投げるケース
+      mockStartOAuthFlow.mockRejectedValue(
+        new Error("OAuth configuration error"),
+      );
 
       const result = (await handler(
         {},
@@ -459,7 +437,6 @@ describe("authHandlers", () => {
 
       expect(result.success).toBe(false);
       expect(result.error?.code).toBe("auth/login-failed");
-      expect(result.error?.message).toContain("OAuth configuration error");
     });
 
     it("should reject invalid provider", async () => {
@@ -873,9 +850,8 @@ describe("authHandlers", () => {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      mockSupabaseAuth.signInWithOAuth.mockRejectedValue(
-        new Error("Network timeout"),
-      );
+      // AuthFlowOrchestrator.startOAuthFlowがエラーを投げるケース
+      mockStartOAuthFlow.mockRejectedValue(new Error("Network timeout"));
 
       const result = (await handler(
         {},
@@ -892,20 +868,17 @@ describe("authHandlers", () => {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      // OAuth returns null URL (user cancelled)
-      mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-        data: { url: null },
-        error: null,
-      });
+      // AuthFlowOrchestratorがキャンセルエラーを投げるケース
+      mockStartOAuthFlow.mockRejectedValue(new Error("User cancelled"));
 
       const result = (await handler(
         {},
         { provider: "google" },
       )) as IPCResponse<void>;
 
-      // Should handle gracefully - not necessarily an error
-      // Implementation decision: either success with no action or specific error
-      expect(result).toBeDefined();
+      // エラーとして処理される
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe("auth/login-failed");
     });
   });
 

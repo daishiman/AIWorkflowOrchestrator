@@ -4,13 +4,12 @@
  * Main Process で認証関連のIPC通信を処理する
  */
 
-import { ipcMain, shell, net, BrowserWindow } from "electron";
+import { ipcMain, net, BrowserWindow } from "electron";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { IPC_CHANNELS } from "../../preload/channels";
 import {
   toAuthUser,
   parseAuthCallback,
-  AUTH_REDIRECT_URL,
 } from "@repo/shared/infrastructure/auth";
 import {
   type AuthState,
@@ -22,7 +21,7 @@ import {
 } from "@repo/shared/types/auth";
 import { withValidation } from "../infrastructure/security/ipc-validator.js";
 import { TokenRefreshScheduler } from "../services/tokenRefreshScheduler";
-import { stateManager } from "../infrastructure/stateManager";
+import { AuthFlowOrchestrator } from "../auth/authFlowOrchestrator";
 
 // === 型定義 ===
 
@@ -161,12 +160,33 @@ export function disposeTokenRefreshScheduler(): void {
 /**
  * 認証関連IPCハンドラーを登録
  */
+// === オーケストレーターインスタンス ===
+
+let authFlowOrchestrator: AuthFlowOrchestrator | null = null;
+
+/**
+ * AuthFlowOrchestrator インスタンスを取得（テスト用）
+ */
+export function getAuthFlowOrchestrator(): AuthFlowOrchestrator | null {
+  return authFlowOrchestrator;
+}
+
+/**
+ * 認証関連IPCハンドラーを登録
+ */
 export function registerAuthHandlers(
   mainWindow: BrowserWindow,
   supabase: SupabaseClient,
   secureStorage: SecureStorage,
 ): void {
-  // auth:login - OAuthログイン開始
+  // AuthFlowOrchestrator初期化
+  authFlowOrchestrator = new AuthFlowOrchestrator(
+    supabase,
+    mainWindow,
+    secureStorage,
+  );
+
+  // auth:login - OAuthログイン開始（PKCE + ローカルHTTPサーバー方式）
   ipcMain.handle(
     IPC_CHANNELS.AUTH_LOGIN,
     withValidation(
@@ -187,41 +207,13 @@ export function registerAuthHandlers(
             };
           }
 
-          // State parameter生成（CSRF対策: DEBT-SEC-001）
-          const state = stateManager.generate(provider as OAuthProvider);
-
-          // OAuth URL取得
-          const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: provider as OAuthProvider,
-            options: {
-              queryParams: { state },
-              redirectTo: AUTH_REDIRECT_URL,
-              skipBrowserRedirect: true,
-            },
-          });
-
-          if (error) {
-            return {
-              success: false,
-              error: {
-                code: AUTH_ERROR_CODES.LOGIN_FAILED,
-                message: error.message,
-              },
-            };
-          }
-
-          if (!data.url) {
-            return {
-              success: false,
-              error: {
-                code: AUTH_ERROR_CODES.LOGIN_FAILED,
-                message: "Failed to generate OAuth URL",
-              },
-            };
-          }
-
-          // 外部ブラウザで認証URLを開く
-          await shell.openExternal(data.url);
+          // AuthFlowOrchestratorでPKCE対応OAuthフロー開始
+          // - PKCE code_verifier/challenge生成
+          // - ローカルHTTPサーバー起動
+          // - State parameter生成（CSRF対策）
+          // - 外部ブラウザで認証
+          // - コールバック受信・トークン交換
+          await authFlowOrchestrator!.startOAuthFlow(provider as OAuthProvider);
 
           return { success: true };
         } catch (error) {
