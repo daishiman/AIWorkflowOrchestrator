@@ -2,43 +2,37 @@
  * 認証フローオーケストレーター
  *
  * OAuth認証のPKCE対応フローを統合的に制御する。
- * PKCE生成 → HTTPサーバー起動 → OAuth URL構築 → コールバック待機 →
- * State検証 → トークン交換 → セッション確立 までの全工程を管理。
+ * HTTPサーバー起動 → OAuth URL構築 → コールバック待機 →
+ * トークン交換 → セッション確立 までの全工程を管理。
+ *
+ * Note: PKCE（code_verifier/code_challenge）とState parameter（CSRF保護）は
+ * Supabase JS クライアントが内部で管理するため、アプリ側では管理しない。
  *
  * @module authFlowOrchestrator
  */
 
-import crypto from "node:crypto";
 import { shell, type BrowserWindow } from "electron";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { generatePKCEPair, base64URLEncode } from "./pkce";
 import {
   createAuthCallbackServer,
   type AuthCallbackServer,
 } from "./authCallbackServer";
 import type { SecureStorage } from "../ipc/authHandlers";
-import type {
-  OAuthProvider,
-  AuthCallbackResult,
-} from "@repo/shared/types/auth";
+import type { OAuthProvider } from "@repo/shared/types/auth";
 import { toAuthUser } from "@repo/shared/infrastructure/auth";
 import { IPC_CHANNELS } from "../../preload/channels";
 
-/** State parameterの有効期限（5分） */
-const STATE_TTL_MS = 5 * 60 * 1000;
-
-/** State parameterのエントロピーサイズ（32バイト = 256ビット） */
-const STATE_ENTROPY_BYTES = 32;
+/** フローの有効期限（5分） */
+const FLOW_TTL_MS = 5 * 60 * 1000;
 
 interface PendingAuthFlow {
-  state: string;
-  codeVerifier: string;
   server: AuthCallbackServer;
   createdAt: number;
 }
 
 export class AuthFlowOrchestrator {
-  private pendingFlows = new Map<string, PendingAuthFlow>();
+  /** 現在進行中のフロー（1つのみ許可） */
+  private currentFlow: PendingAuthFlow | null = null;
 
   constructor(
     private supabase: SupabaseClient,
@@ -48,42 +42,35 @@ export class AuthFlowOrchestrator {
 
   /**
    * PKCE対応OAuth認証フローを開始する
+   *
+   * Note: PKCE（code_verifier/code_challenge）とState parameter（CSRF保護）は
+   * Supabase JS クライアントが内部で管理する。アプリ側ではHTTPサーバーの
+   * ライフサイクルのみを管理する。
    */
   async startOAuthFlow(provider: OAuthProvider): Promise<void> {
+    console.log("[AuthFlowOrchestrator] Starting OAuth flow for:", provider);
+
     // 既存フローのクリーンアップ
-    this.cleanupExpiredFlows();
-    await this.cancelExistingFlows();
-
-    // PKCE生成
-    const pkcePair = generatePKCEPair();
-
-    // State parameter生成（32バイト = 256ビットエントロピー）
-    const state = this.generateState();
+    await this.cancelCurrentFlow();
 
     // HTTPサーバー起動
     const server = createAuthCallbackServer();
     const { port } = await server.start();
+    console.log("[AuthFlowOrchestrator] HTTP server started on port:", port);
 
-    // pendingFlowsに保存
-    this.pendingFlows.set(state, {
-      state,
-      codeVerifier: pkcePair.codeVerifier,
+    // 現在のフローを保存
+    this.currentFlow = {
       server,
       createdAt: Date.now(),
-    });
+    };
 
     try {
-      // Supabase OAuth URLを構築
+      // Supabase OAuth URLを構築（PKCE/StateはSupabaseが内部管理）
       const { data, error } = await this.supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `http://127.0.0.1:${port}/auth/callback`,
+          redirectTo: `http://localhost:${port}/auth/callback`,
           skipBrowserRedirect: true,
-          queryParams: {
-            code_challenge: pkcePair.codeChallenge,
-            code_challenge_method: "S256",
-            state,
-          },
         },
       });
 
@@ -91,18 +78,22 @@ export class AuthFlowOrchestrator {
         throw new Error(error?.message ?? "Failed to generate OAuth URL");
       }
 
+      console.log("[AuthFlowOrchestrator] Opening OAuth URL in browser");
+
       // 外部ブラウザで認証URLを開く
       await shell.openExternal(data.url);
 
       // コールバック待機
       const callbackResult = await server.waitForCallback();
+      console.log("[AuthFlowOrchestrator] Callback received with code");
 
-      // State検証
-      await this.handleCallback(callbackResult, state);
+      // トークン交換
+      await this.handleCallback(callbackResult.code);
     } catch (err) {
       // エラー通知
       const errorMessage =
         err instanceof Error ? err.message : "Unknown authentication error";
+      console.error("[AuthFlowOrchestrator] Error:", errorMessage);
       this.mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
         authenticated: false,
         error: errorMessage,
@@ -110,37 +101,36 @@ export class AuthFlowOrchestrator {
       throw err;
     } finally {
       // クリーンアップ
-      await this.cleanupFlow(state);
+      await this.cancelCurrentFlow();
     }
   }
 
   /**
-   * コールバック受信後の処理
+   * コールバック受信後の処理（トークン交換）
    */
-  private async handleCallback(
-    result: AuthCallbackResult,
-    expectedState: string,
-  ): Promise<void> {
-    // State検証
-    if (result.state !== expectedState) {
-      throw new Error("State parameter mismatch: possible CSRF attack");
+  private async handleCallback(code: string): Promise<void> {
+    if (!this.currentFlow) {
+      throw new Error("No pending flow found");
     }
 
-    const flow = this.pendingFlows.get(expectedState);
-    if (!flow) {
-      throw new Error("No pending flow found for state");
+    // フローの有効期限チェック
+    if (Date.now() - this.currentFlow.createdAt > FLOW_TTL_MS) {
+      throw new Error("Authentication flow expired");
     }
 
-    // トークン交換
-    const { data, error } = await this.supabase.auth.exchangeCodeForSession(
-      result.code,
-    );
+    console.log("[AuthFlowOrchestrator] Exchanging code for session");
+
+    // トークン交換（Supabaseが内部で保存したcode_verifierを使用）
+    const { data, error } =
+      await this.supabase.auth.exchangeCodeForSession(code);
 
     if (error || !data.session) {
       throw new Error(
         error?.message ?? "Token exchange failed: no session returned",
       );
     }
+
+    console.log("[AuthFlowOrchestrator] Session established successfully");
 
     // Refresh Token暗号化保存
     await this.secureStorage.storeRefreshToken(data.session.refresh_token);
@@ -160,43 +150,12 @@ export class AuthFlowOrchestrator {
   }
 
   /**
-   * State parameter生成（暗号的ランダム）
+   * 現在のフローをキャンセル
    */
-  private generateState(): string {
-    return base64URLEncode(crypto.randomBytes(STATE_ENTROPY_BYTES));
-  }
-
-  /**
-   * 期限切れフローのクリーンアップ
-   */
-  private cleanupExpiredFlows(): void {
-    const now = Date.now();
-    for (const [state, flow] of this.pendingFlows) {
-      if (now - flow.createdAt > STATE_TTL_MS) {
-        flow.server.stop().catch(() => {});
-        this.pendingFlows.delete(state);
-      }
-    }
-  }
-
-  /**
-   * 既存フローのキャンセル
-   */
-  private async cancelExistingFlows(): Promise<void> {
-    for (const [state, flow] of this.pendingFlows) {
-      await flow.server.stop().catch(() => {});
-      this.pendingFlows.delete(state);
-    }
-  }
-
-  /**
-   * 特定フローのクリーンアップ
-   */
-  private async cleanupFlow(state: string): Promise<void> {
-    const flow = this.pendingFlows.get(state);
-    if (flow) {
-      await flow.server.stop().catch(() => {});
-      this.pendingFlows.delete(state);
+  private async cancelCurrentFlow(): Promise<void> {
+    if (this.currentFlow) {
+      await this.currentFlow.server.stop().catch(() => {});
+      this.currentFlow = null;
     }
   }
 
@@ -204,6 +163,6 @@ export class AuthFlowOrchestrator {
    * 全リソース解放
    */
   async dispose(): Promise<void> {
-    await this.cancelExistingFlows();
+    await this.cancelCurrentFlow();
   }
 }

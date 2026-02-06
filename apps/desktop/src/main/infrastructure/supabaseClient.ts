@@ -27,6 +27,7 @@ export function getSupabaseClient(): SupabaseClient | null {
   if (!supabaseInstance) {
     supabaseInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
+        flowType: "pkce", // Authorization Code Flow + PKCE を強制
         persistSession: false, // メインプロセスではセッションを永続化しない（SecureStorageで管理）
         autoRefreshToken: false, // カスタムスケジューラー（TokenRefreshScheduler）で管理
         detectSessionInUrl: false,
@@ -53,6 +54,7 @@ export function createSupabaseClient(
 ): SupabaseClient {
   return createClient(url, anonKey, {
     auth: {
+      flowType: "pkce", // Authorization Code Flow + PKCE を強制
       persistSession: false,
       autoRefreshToken: false, // カスタムスケジューラー（TokenRefreshScheduler）で管理
       detectSessionInUrl: false,
