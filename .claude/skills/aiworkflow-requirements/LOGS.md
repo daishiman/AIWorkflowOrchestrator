@@ -24,6 +24,27 @@
 
 ---
 
+## 2026-02-06: TASK-AUTH-SESSION-REFRESH-001完了（セッション自動リフレッシュ実装）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-AUTH-SESSION-REFRESH-001                                              |
+| 操作         | Phase 1-12 完了                                                            |
+| 対象ファイル | tokenRefreshScheduler.ts, authHandlers.ts, supabaseClient.ts, authSlice.ts |
+| 結果         | success                                                                    |
+| 備考         | TDD Red-Green-Refactor、26テストケース全PASS、カバレッジ96.15%             |
+
+### 更新詳細
+
+| ファイル                    | 内容                                                  |
+| --------------------------- | ----------------------------------------------------- |
+| tokenRefreshScheduler.ts    | 新規作成: setTimeout + 指数バックオフリトライスケジューラー |
+| authHandlers.ts             | スケジューラー統合: startTokenRefreshScheduler等追加   |
+| supabaseClient.ts           | autoRefreshToken: false（SDK競合防止）                 |
+| authSlice.ts                | isRefreshing状態追加                                  |
+| packages/shared/types/auth.ts | sessionExpiresAt追加                                |
+
+---
 ## 2026-02-05: ENV-INFRA-001完了（better-sqlite3 Node.jsバージョン不一致修正）
 
 | 項目         | 内容                                                                       |

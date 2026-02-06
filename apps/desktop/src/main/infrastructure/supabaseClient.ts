@@ -28,7 +28,7 @@ export function getSupabaseClient(): SupabaseClient | null {
     supabaseInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         persistSession: false, // メインプロセスではセッションを永続化しない（SecureStorageで管理）
-        autoRefreshToken: true,
+        autoRefreshToken: false, // カスタムスケジューラー（TokenRefreshScheduler）で管理
         detectSessionInUrl: false,
       },
     });
@@ -54,7 +54,7 @@ export function createSupabaseClient(
   return createClient(url, anonKey, {
     auth: {
       persistSession: false,
-      autoRefreshToken: true,
+      autoRefreshToken: false, // カスタムスケジューラー（TokenRefreshScheduler）で管理
       detectSessionInUrl: false,
     },
   });

@@ -3,14 +3,14 @@
 ## メタ情報
 
 ```yaml
-issue_number: 273
+issue_number: 720
 ```
 
 ## メタ情報
 
 | 項目             | 内容                       |
 | ---------------- | -------------------------- |
-| タスクID         | AUDIT-001                  |
+| タスクID         | UT-AUDIT-001               |
 | タスク名         | ログイン履歴・監査ログ実装 |
 | 分類             | 改善                       |
 | 対象機能         | OAuth認証（Desktop）       |
@@ -131,6 +131,22 @@ issue_number: 273
 2. **監査ログ記録**: ログイン成功/失敗時に自動的に記録
 3. **UI実装**: Settings画面にログイン履歴を表示
 4. **異常検知**: 異常な場所/デバイスからのログインを検出
+
+### 3.5 実装課題と解決策（TASK-AUTH-SESSION-REFRESH-001からの学び）
+
+以下はセッション自動リフレッシュ実装で得た知見。監査ログ実装時に参考にすること。
+
+| 苦戦箇所            | 問題                                                               | 解決策                                                                             |
+| ------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Callback DIパターン | スケジューラーからSupabase/SecureStorage/BrowserWindowへの依存分離 | `TokenRefreshCallbacks`インターフェースで`onRefresh`, `onFailure`, `onSuccess`をDI |
+| 排他制御フラグ      | リフレッシュ中に追加リクエストが実行される可能性                   | `_isRefreshing`フラグでmutex的保護                                                 |
+| Supabase SDK設定    | `autoRefreshToken: true`との競合でテストがランダム失敗             | `autoRefreshToken: false`を明示設定し、カスタム処理に完全委譲                      |
+
+**システム仕様書参照**:
+
+- [architecture-auth-security.md](../../.claude/skills/aiworkflow-requirements/references/architecture-auth-security.md) — 認証セキュリティ設計
+- [error-handling.md](../../.claude/skills/aiworkflow-requirements/references/error-handling.md) — リトライ戦略
+- [interfaces-auth.md](../../.claude/skills/aiworkflow-requirements/references/interfaces-auth.md) — 認証インターフェース型定義
 
 ---
 

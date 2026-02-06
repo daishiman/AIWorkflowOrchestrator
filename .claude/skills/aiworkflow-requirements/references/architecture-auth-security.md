@@ -25,10 +25,78 @@ TASK-FIX-GOOGLE-LOGIN-001で追加されたリスナー二重登録防止の仕�
 
 ---
 
+## セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001）
+
+### 概要
+
+TokenRefreshSchedulerによるセッション有効期限の自動延長。Main Process上で動作し、Supabase SDKの内蔵リフレッシュ機能を無効化して独自のスケジューリングを行う。
+
+**実装ファイル**: `apps/desktop/src/main/services/tokenRefreshScheduler.ts`
+
+### アーキテクチャ
+
+| コンポーネント | プロセス | 責務 |
+| --- | --- | --- |
+| TokenRefreshScheduler | Main | setTimeout再帰によるリフレッシュスケジューリング |
+| authHandlers.ts | Main | スケジューラーのライフサイクル管理（start/stop/dispose） |
+| supabaseClient.ts | Main | `autoRefreshToken: false` に設定（競合防止） |
+| authSlice.ts | Renderer | `sessionExpiresAt` と `isRefreshing` 状態の管理 |
+
+### リフレッシュフロー
+
+| ステップ | プロセス | 処理内容 |
+| --- | --- | --- |
+| 1 | Main | スケジューラーが有効期限の80%経過時点でリフレッシュ開始 |
+| 2 | Main | `supabase.auth.refreshSession()` 呼び出し |
+| 3 | Main | 成功: 新トークンをsafeStorageで暗号化保存 |
+| 4 | Main → Renderer | `auth:state-changed` イベント送信（expiresAt含む） |
+| 5 | Renderer | authSliceの `sessionExpiresAt` を更新 |
+
+### リトライ戦略
+
+| 項目 | 値 |
+| --- | --- |
+| 最大リトライ回数 | 3回 |
+| バックオフ方式 | 指数バックオフ（1s→2s→4s） |
+| ジッター | ランダム 0-500ms |
+| 全リトライ失敗時 | トークンクリア → ログアウト |
+
+### セキュリティ設計
+
+| 項目 | 実装 |
+| --- | --- |
+| トークン保管 | Main Processのみ（safeStorage暗号化） |
+| Renderer露出情報 | sessionExpiresAt（有効期限のみ） |
+| 排他制御 | `_isRefreshing` mutexで同時実行防止 |
+| エラーサニタイズ | sanitizeErrorMessage()で機密情報除去 |
+
+### 品質メトリクス
+
+| 指標 | 値 |
+| --- | --- |
+| テストケース数 | 26 |
+| カバレッジ | 96.15% |
+| Branch Coverage | 93.10% |
+| Function Coverage | 100% |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-AUTH-SESSION-REFRESH-001 | セッション自動リフレッシュ実装 | **完了** |
+| UT-OFFLINE-REFRESH-001 | オフライン時リフレッシュ処理 | 未着手 |
+| UT-AUDIT-001 | 認証イベント監査ログ | 未着手 |
+| UT-REFRESH-NOTIFICATION-001 | リフレッシュ通知UI | 未着手 |
+
+- [セッション自動リフレッシュ実装ガイド](../../../docs/30-workflows/TASK-AUTH-SESSION-REFRESH-001/outputs/phase-12/implementation-guide.md)
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                               |
 | ---------- | ---------- | ---------------------------------------------------------------------- |
+| v1.4.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了: TokenRefreshSchedulerアーキテクチャ、リフレッシュフロー、リトライ戦略、セキュリティ設計追加 |
 | v1.3.0     | 2026-02-05 | TASK-FIX-GOOGLE-LOGIN-001完了: OAuthエラーハンドリング、リスナー管理追加 |
 | v1.2.0     | 2026-02-04 | AUTH-UI-001完了: フォールバック処理・状態更新フロー実装完了を記録      |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換（3箇所）    |
@@ -45,7 +113,7 @@ TASK-FIX-GOOGLE-LOGIN-001で追加されたリスナー二重登録防止の仕�
 | 認証サービス     | Supabase Auth           | OAuth 2.0 PKCE フロー対応       |
 | 対応プロバイダー | Google, GitHub, Discord | ソーシャルログイン              |
 | トークン管理     | Electron SafeStorage    | OS キーチェーンによる暗号化保存 |
-| セッション管理   | Supabase Session        | JWT ベース、自動リフレッシュ    |
+| セッション管理   | TokenRefreshScheduler   | 独自スケジューラー、指数バックオフ+Jitter |
 
 ### プロセス間責務分離
 
