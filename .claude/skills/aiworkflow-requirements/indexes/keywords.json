@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-05T05:08:20.326Z",
-  "totalKeywords": 1034,
+  "generated": "2026-02-06T01:41:20.838Z",
+  "totalKeywords": 1035,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1215,6 +1215,24 @@
     "データ正規化パターン": [
       "architecture-implementation-patterns.md"
     ],
+    "SkillAPI": [
+      "architecture-implementation-patterns.md",
+      "security-skill-ipc.md"
+    ],
+    "統一パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "FIX": [
+      "architecture-implementation-patterns.md",
+      "error-handling.md"
+    ],
+    "実装": [
+      "architecture-implementation-patterns.md",
+      "rag-knowledge-graph.md",
+      "rag-search-vector.md",
+      "security-skill-ipc.md",
+      "ui-ux-portal-patterns.md"
+    ],
     "モノレポ": [
       "architecture-monorepo.md",
       "directory-structure.md"
@@ -1964,9 +1982,6 @@
       "error-handling.md"
     ],
     "エラーコードマッピング": [
-      "error-handling.md"
-    ],
-    "FIX": [
       "error-handling.md"
     ],
     "GOOGLE": [
@@ -2817,12 +2832,6 @@
       "rag-desktop-state.md",
       "ui-ux-system-prompt.md"
     ],
-    "実装": [
-      "rag-knowledge-graph.md",
-      "rag-search-vector.md",
-      "security-skill-ipc.md",
-      "ui-ux-portal-patterns.md"
-    ],
     "主要型定義": [
       "rag-knowledge-graph.md"
     ],
@@ -3176,9 +3185,6 @@
       "security-skill-ipc.md"
     ],
     "連携セキュリティ": [
-      "security-skill-ipc.md"
-    ],
-    "SkillAPI": [
       "security-skill-ipc.md"
     ],
     "仕様書記述ガイドライン": [

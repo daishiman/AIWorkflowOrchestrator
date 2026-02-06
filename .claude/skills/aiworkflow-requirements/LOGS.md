@@ -5,6 +5,25 @@
 
 ---
 
+## 2026-02-06: TASK-FIX-5-1完了（SkillAPI二重定義の統一）
+
+| 項目         | 内容                                                                              |
+| ------------ | --------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-5-1-SKILL-API-UNIFICATION                                                |
+| 操作         | Phase 1-12 完了（SkillAPI統一、仕様書3ファイル更新）                              |
+| 対象ファイル | interfaces-agent-sdk-skill.md, security-skill-ipc.md                              |
+| 結果         | success                                                                           |
+| 備考         | window.skillAPI廃止→window.electronAPI.skill一本化。テスト210件PASS               |
+
+### 更新詳細
+
+| ファイル                          | 追加内容                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------ |
+| interfaces-agent-sdk-skill.md     | 完了タスクセクション追加、Preloadファイルパス修正                        |
+| security-skill-ipc.md             | contextBridge公開API統一記録（2箇所）                                    |
+
+---
+
 ## 2026-02-05: ENV-INFRA-001完了（better-sqlite3 Node.jsバージョン不一致修正）
 
 | 項目         | 内容                                                                       |
@@ -2322,6 +2341,15 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 - `apps/desktop/src/__tests__/__fixtures__/skill-creator/` - 5種類のフィクスチャ (18ファイル)
 - `.claude/skills/skill-fixture-runner/` - 検証スクリプト実行スキル (8ファイル)
 - `apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts` - 62テストケース
+
+---
+
+
+## [実行日時: 2026-02-06T01:41:25.133Z]
+
+- Task: unknown
+- 結果: success
+- フィードバック: なし
 
 ---
 

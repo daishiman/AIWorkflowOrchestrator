@@ -12,7 +12,7 @@ import { renderHook, act } from "@testing-library/react";
 import { useSkillExecution } from "../useSkillExecution";
 import type { SkillStreamMessage } from "@repo/shared/types/skill";
 
-// Mock window.skillAPI
+// Mock window.electronAPI.skill
 const mockSkillAPI = {
   execute: vi.fn(),
   onStream: vi.fn(),
@@ -37,11 +37,11 @@ beforeEach(() => {
     };
   });
 
-  mockSkillAPI.abort.mockResolvedValue(true);
+  mockSkillAPI.abort.mockResolvedValue(undefined);
 
-  // Mock window.skillAPI
-  Object.defineProperty(window, "skillAPI", {
-    value: mockSkillAPI,
+  // Mock window.electronAPI.skill
+  Object.defineProperty(window, "electronAPI", {
+    value: { skill: mockSkillAPI },
     writable: true,
     configurable: true,
   });

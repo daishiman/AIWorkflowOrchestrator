@@ -182,7 +182,7 @@ scriptNameには正規表現`^[a-zA-Z0-9_.-]+$`を適用し、パストラバー
 | ------------------------ | ------------------------------- | ---------------------- |
 | チャンネルホワイトリスト | `SKILL_INVOKE_CHANNELS`配列     | 未許可チャンネルを拒否 |
 | イベントホワイトリスト   | `SKILL_ON_CHANNELS`配列         | 未許可イベントを拒否   |
-| contextBridge            | `exposeInMainWorld('skillApi')` | window直接割り当て禁止 |
+| contextBridge            | `exposeInMainWorld('electronAPI', { skill: skillAPI })` | window直接割り当て禁止。TASK-FIX-5-1で`window.skillAPI`廃止→`window.electronAPI.skill`に統一 |
 | 型安全性                 | TypeScript + SkillStreamChunk型 | 型チェックによる安全性 |
 
 ### スキル実行セキュリティレイヤー
@@ -287,7 +287,7 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 | ------------------- | ----------------------------------------- | ---------------------- |
 | safeInvoke パターン | チャネルホワイトリスト検証                | 未許可チャネルを拒否   |
 | safeOn パターン     | イベントチャネルホワイトリスト検証        | 未許可イベントを拒否   |
-| contextBridge       | `exposeInMainWorld('skillAPI', skillAPI)` | window直接割り当て禁止 |
+| contextBridge       | `exposeInMainWorld('electronAPI', { skill: skillAPI })` | window直接割り当て禁止。TASK-FIX-5-1で統一 |
 | クリーンアップ関数  | ipcRenderer.removeListener呼び出し        | メモリリーク防止       |
 
 **safeInvoke検証フロー**:

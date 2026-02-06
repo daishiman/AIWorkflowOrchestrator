@@ -320,7 +320,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 #### 実装内容
 
-- Preload API拡張（skillAPI.execute, onStream, abort, getExecutionStatus）
+- Preload API拡張（window.electronAPI.skill.execute, onStream, abort, getExecutionStatus）
 - React Hook（useSkillExecution）
 - UIコンポーネント（SkillStreamDisplay）
 - アクセシビリティ対応（WCAG 2.1 AA準拠）

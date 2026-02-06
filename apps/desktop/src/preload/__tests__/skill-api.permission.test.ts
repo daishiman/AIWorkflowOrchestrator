@@ -61,7 +61,7 @@ describe("skillAPI.onPermissionRequest", () => {
   };
 
   beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -74,7 +74,7 @@ describe("skillAPI.onPermissionRequest", () => {
     const unsubscribe = vi.fn();
     mockSkillAPI.onPermissionRequest.mockReturnValue(unsubscribe);
 
-    const result = window.skillAPI.onPermissionRequest(callback);
+    const result = window.electronAPI.skill.onPermissionRequest(callback);
 
     expect(mockSkillAPI.onPermissionRequest).toHaveBeenCalledWith(callback);
     expect(result).toBe(unsubscribe);
@@ -89,7 +89,7 @@ describe("skillAPI.onPermissionRequest", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const mockRequest = {
       executionId: "exec-test-001",
@@ -109,7 +109,7 @@ describe("skillAPI.onPermissionRequest", () => {
     const unsubscribe = vi.fn();
     mockSkillAPI.onPermissionRequest.mockReturnValue(unsubscribe);
 
-    const result = window.skillAPI.onPermissionRequest(callback);
+    const result = window.electronAPI.skill.onPermissionRequest(callback);
 
     expect(typeof result).toBe("function");
 
@@ -129,7 +129,7 @@ describe("skillAPI.onPermissionRequest", () => {
       return unsubscribe;
     });
 
-    const unsub = window.skillAPI.onPermissionRequest(callback);
+    const unsub = window.electronAPI.skill.onPermissionRequest(callback);
     unsub();
 
     expect(unsubscribe).toHaveBeenCalled();
@@ -146,8 +146,8 @@ describe("skillAPI.onPermissionRequest", () => {
       .mockReturnValueOnce(unsubscribe1)
       .mockReturnValueOnce(unsubscribe2);
 
-    const unsub1 = window.skillAPI.onPermissionRequest(callback1);
-    const unsub2 = window.skillAPI.onPermissionRequest(callback2);
+    const unsub1 = window.electronAPI.skill.onPermissionRequest(callback1);
+    const unsub2 = window.electronAPI.skill.onPermissionRequest(callback2);
 
     expect(mockSkillAPI.onPermissionRequest).toHaveBeenCalledTimes(2);
     expect(unsub1).toBe(unsubscribe1);
@@ -169,7 +169,7 @@ describe("skillAPI.sendPermissionResponse", () => {
   };
 
   beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -185,7 +185,7 @@ describe("skillAPI.sendPermissionResponse", () => {
       approved: true,
     };
 
-    await window.skillAPI.sendPermissionResponse(response);
+    await window.electronAPI.skill.sendPermissionResponse(response);
 
     expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(response);
   });
@@ -198,7 +198,7 @@ describe("skillAPI.sendPermissionResponse", () => {
       approved: false,
     };
 
-    await window.skillAPI.sendPermissionResponse(response);
+    await window.electronAPI.skill.sendPermissionResponse(response);
 
     expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(response);
   });
@@ -212,7 +212,7 @@ describe("skillAPI.sendPermissionResponse", () => {
       rememberChoice: true,
     };
 
-    await window.skillAPI.sendPermissionResponse(response);
+    await window.electronAPI.skill.sendPermissionResponse(response);
 
     expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -230,7 +230,7 @@ describe("skillAPI.sendPermissionResponse", () => {
       rejectReason: "User declined the request",
     };
 
-    await window.skillAPI.sendPermissionResponse(response);
+    await window.electronAPI.skill.sendPermissionResponse(response);
 
     expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -242,7 +242,7 @@ describe("skillAPI.sendPermissionResponse", () => {
   it("should return true on successful response", async () => {
     mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
 
-    const result = await window.skillAPI.sendPermissionResponse({
+    const result = await window.electronAPI.skill.sendPermissionResponse({
       requestId: "req-test-001",
       approved: true,
     });
@@ -256,7 +256,7 @@ describe("skillAPI.sendPermissionResponse", () => {
     );
 
     await expect(
-      window.skillAPI.sendPermissionResponse({
+      window.electronAPI.skill.sendPermissionResponse({
         requestId: "req-test-001",
         approved: true,
       }),
@@ -278,7 +278,7 @@ describe("skillAPI permission - data types", () => {
   };
 
   beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -295,7 +295,7 @@ describe("skillAPI permission - data types", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const validRequest = {
       executionId: "exec-123",
@@ -327,7 +327,7 @@ describe("skillAPI permission - data types", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const requestWithTimestamp = {
       executionId: "exec-123",
@@ -356,7 +356,7 @@ describe("skillAPI permission - data types", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const complexArgs = {
       command: "npm install",
@@ -391,7 +391,7 @@ describe("skillAPI permission - data types", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const sanitizedArgs = {
       command: "curl -H",
@@ -421,9 +421,9 @@ describe("skillAPI permission - data types", () => {
 });
 
 // ============================================================
-// 5. window.skillAPI Permission Method Availability Tests
+// 5. window.electronAPI.skill Permission Method Availability Tests
 // ============================================================
-describe("window.skillAPI - Permission Methods Availability", () => {
+describe("window.electronAPI.skill - Permission Methods Availability", () => {
   const mockSkillAPI = {
     execute: vi.fn(),
     onStream: vi.fn(),
@@ -434,7 +434,7 @@ describe("window.skillAPI - Permission Methods Availability", () => {
   };
 
   beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
   });
 
   afterEach(() => {
@@ -442,11 +442,15 @@ describe("window.skillAPI - Permission Methods Availability", () => {
   });
 
   it("should have onPermissionRequest method", () => {
-    expect(window.skillAPI?.onPermissionRequest).toBeInstanceOf(Function);
+    expect(window.electronAPI.skill?.onPermissionRequest).toBeInstanceOf(
+      Function,
+    );
   });
 
   it("should have sendPermissionResponse method", () => {
-    expect(window.skillAPI?.sendPermissionResponse).toBeInstanceOf(Function);
+    expect(window.electronAPI.skill?.sendPermissionResponse).toBeInstanceOf(
+      Function,
+    );
   });
 });
 
@@ -464,7 +468,7 @@ describe("skillAPI permission - IPC integration simulation", () => {
   };
 
   beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -482,7 +486,7 @@ describe("skillAPI permission - IPC integration simulation", () => {
 
     // Step 1: Register listener
     const dialogHandler = vi.fn();
-    window.skillAPI.onPermissionRequest(dialogHandler);
+    window.electronAPI.skill.onPermissionRequest(dialogHandler);
 
     // Step 2: Simulate Main Process sending permission request
     const permissionRequest = {
@@ -498,7 +502,7 @@ describe("skillAPI permission - IPC integration simulation", () => {
     expect(dialogHandler).toHaveBeenCalledWith(permissionRequest);
 
     // Step 4: Simulate user approval
-    await window.skillAPI.sendPermissionResponse({
+    await window.electronAPI.skill.sendPermissionResponse({
       requestId: "req-flow-001",
       approved: true,
       rememberChoice: false,
@@ -522,7 +526,7 @@ describe("skillAPI permission - IPC integration simulation", () => {
 
     // Register listener
     const dialogHandler = vi.fn();
-    window.skillAPI.onPermissionRequest(dialogHandler);
+    window.electronAPI.skill.onPermissionRequest(dialogHandler);
 
     // Simulate permission request
     const permissionRequest = {
@@ -537,7 +541,7 @@ describe("skillAPI permission - IPC integration simulation", () => {
     expect(dialogHandler).toHaveBeenCalledWith(permissionRequest);
 
     // Simulate user denial
-    await window.skillAPI.sendPermissionResponse({
+    await window.electronAPI.skill.sendPermissionResponse({
       requestId: "req-deny-001",
       approved: false,
       rememberChoice: true,
@@ -559,7 +563,7 @@ describe("skillAPI permission - IPC integration simulation", () => {
     mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
 
     const dialogHandler = vi.fn();
-    window.skillAPI.onPermissionRequest(dialogHandler);
+    window.electronAPI.skill.onPermissionRequest(dialogHandler);
 
     // Simulate two concurrent requests
     const request1 = {
@@ -586,11 +590,11 @@ describe("skillAPI permission - IPC integration simulation", () => {
     expect(dialogHandler).toHaveBeenNthCalledWith(2, request2);
 
     // Respond to requests (out of order)
-    await window.skillAPI.sendPermissionResponse({
+    await window.electronAPI.skill.sendPermissionResponse({
       requestId: "req-2",
       approved: true,
     });
-    await window.skillAPI.sendPermissionResponse({
+    await window.electronAPI.skill.sendPermissionResponse({
       requestId: "req-1",
       approved: false,
     });
@@ -613,7 +617,7 @@ describe("skillAPI permission - edge cases", () => {
   };
 
   beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -630,7 +634,7 @@ describe("skillAPI permission - edge cases", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const requestWithEmptyArgs = {
       executionId: "exec-empty-args",
@@ -658,7 +662,7 @@ describe("skillAPI permission - edge cases", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const requestWithoutReason = {
       executionId: "exec-no-reason",
@@ -686,7 +690,7 @@ describe("skillAPI permission - edge cases", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     // Fire 10 requests in rapid succession
     for (let i = 0; i < 10; i++) {
@@ -706,7 +710,7 @@ describe("skillAPI permission - edge cases", () => {
     mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
 
     // Minimal response without rememberChoice or rejectReason
-    await window.skillAPI.sendPermissionResponse({
+    await window.electronAPI.skill.sendPermissionResponse({
       requestId: "req-minimal",
       approved: true,
     });
@@ -726,7 +730,7 @@ describe("skillAPI permission - edge cases", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const longReason = "A".repeat(10000);
     const requestWithLongReason = {
@@ -755,7 +759,7 @@ describe("skillAPI permission - edge cases", () => {
       return () => {};
     });
 
-    window.skillAPI.onPermissionRequest(callback);
+    window.electronAPI.skill.onPermissionRequest(callback);
 
     const specialArgs = {
       command: 'echo "Hello, World!" && rm -rf / || true',

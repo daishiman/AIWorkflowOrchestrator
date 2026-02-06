@@ -43,6 +43,16 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-06 - TASK-FIX-5-1完了（SkillAPI二重定義の統一）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A（複数セッション）
+- **Notes**: SkillAPI二重定義（preload/skill-api.ts + renderer/preload/index.ts）を統一。window.skillAPI廃止→window.electronAPI.skill一本化。テスト210件PASS、カバレッジ Line 91.07%, Branch 89.47%, Function 100%。未タスク1件検出（AgentView型アサーション→TASK-FIX-6-1で対応予定）
+
+---
+
 ## [2026-02-05 - ENV-INFRA-001タスク完了（better-sqlite3バージョン不一致修正）]
 
 - **Agent**: execute-task / generate-task-specs
