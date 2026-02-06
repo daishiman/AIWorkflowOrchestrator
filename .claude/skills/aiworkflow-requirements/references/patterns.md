@@ -73,6 +73,39 @@
 - **適用条件**: 仕様書に変更履歴エントリを追加する場合
 - **発見日**: 2026-02-06（DEBT-SEC-001）
 
+### Supabase OAuth flowType設定パターン
+
+- **状況**: デスクトップアプリでSupabase OAuth認証を実装する際、Implicit Flow（#access_token）ではなくAuthorization Code Flow（?code）を使用したい
+- **アプローチ**: Supabaseクライアント初期化時に `auth: { flowType: 'pkce' }` を設定する
+- **結果**: コールバックURLが `?code=xxx` 形式になり、セキュアなトークン交換が可能に
+- **適用条件**: Supabase + Electronでの認証実装時は必須
+- **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001）
+- **関連タスク**: TASK-AUTH-CALLBACK-001
+
+### Supabase PKCE内部管理委任パターン
+
+- **状況**: PKCEのcode_verifier/code_challengeを自前で生成・管理しようとしたが、トークン交換時にエラーが発生
+- **アプローチ**:
+  - 問題: カスタムcode_challengeをqueryParamsに渡すと、Supabase内部のcode_verifierと不整合になる
+  - 解決: PKCEパラメータを一切渡さず、Supabaseに完全委任（`flowType: 'pkce'`のみ設定）
+  - 理由: Supabase JSクライアントが内部ストレージでcode_verifierを管理し、exchangeCodeForSession時に自動で使用
+- **結果**: `both auth code and code verifier should be non-empty`エラーが解消、認証成功
+- **適用条件**: Supabase OAuth + PKCEを使用する場合は、カスタムPKCE実装を避ける
+- **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001）
+- **関連タスク**: TASK-AUTH-CALLBACK-001
+
+### ローカルHTTPサーバーによるOAuthコールバック受信パターン
+
+- **状況**: デスクトップアプリでOAuthコールバックを受信するため、カスタムプロトコル(aiworkflow://)ではなくHTTPサーバーを使用
+- **アプローチ**:
+  - localhost:52100（固定ポート）でHTTPサーバーを起動
+  - Supabase Dashboard の Redirect URLs に `http://localhost:52100/auth/callback` を登録
+  - Site URL も `http://localhost:52100` に設定（フォールバック先として重要）
+- **結果**: ブラウザからのコールバックを確実に受信可能。カスタムプロトコルの制限（OSによる登録問題）を回避
+- **適用条件**: Electron/Tauri等のデスクトップアプリでのOAuth実装時
+- **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001）
+- **関連タスク**: TASK-AUTH-CALLBACK-001
+
 ---
 
 ## 失敗パターン（避けるべきこと）
@@ -142,6 +175,38 @@
 - **原因**: Vitestのモジュールキャッシュがテスト間で共有される
 - **教訓**: モジュールスコープ変数にはresetXxxFlag()リセット関数を用意し、beforeEachで呼び出す
 - **発見日**: 2026-02-05（TASK-FIX-GOOGLE-LOGIN-001、06-known-pitfalls.md P9）
+
+### Supabaseカスタムstateパラメータ競合
+
+- **状況**: CSRF対策のため独自のstateパラメータをqueryParamsに渡した
+- **問題**: `bad_oauth_state`エラーが発生し、認証が失敗
+- **原因**: Supabaseが内部でstateを生成・検証しており、カスタムstateを渡すと競合する
+- **教訓**: SupabaseのOAuth認証では、state管理をSupabaseに完全委任する。カスタムstateは渡さない
+- **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001、06-known-pitfalls.md P15）
+
+### Supabase Site URL未設定によるリダイレクト失敗
+
+- **状況**: Redirect URLsに`http://localhost:52100/auth/callback`を登録したが、コールバックが別のURLにリダイレクトされる
+- **問題**: ブラウザが`localhost:3000`にリダイレクトされ、HTTPサーバーが受信できない
+- **原因**: Supabase DashboardのSite URLがデフォルトの`localhost:3000`のままだった
+- **教訓**: Redirect URLsだけでなく、Site URLも正しい値に設定する。Site URLはフォールバック先として使用される
+- **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001、06-known-pitfalls.md P16）
+
+### Implicit Flow vs Authorization Code Flow混同
+
+- **状況**: コールバックURLに`#access_token=...`（フラグメント）が含まれ、`?code=...`（クエリ）が期待と異なる
+- **問題**: HTTPサーバーで`code`パラメータを取得できず、「認証コードが見つかりません」エラー
+- **原因**: Supabaseクライアントに`flowType: 'pkce'`を設定していなかったため、Implicit Flowが使用された
+- **教訓**: Authorization Code Flow + PKCEを使用する場合、クライアント初期化時に`flowType: 'pkce'`を明示的に設定する
+- **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001、06-known-pitfalls.md P17）
+
+### exchangeCodeForSession code_verifier不足エラー
+
+- **状況**: `exchangeCodeForSession(code)`呼び出し時に「both auth code and code verifier should be non-empty」エラー
+- **問題**: トークン交換が失敗し、セッションが確立できない
+- **原因**: カスタムcode_challengeをqueryParamsに渡したが、Supabase内部のcode_verifierと不整合
+- **教訓**: Supabase PKCEではカスタムcode_challenge/code_verifierを渡さない。Supabaseに完全委任する
+- **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001、06-known-pitfalls.md P18）
 
 ---
 

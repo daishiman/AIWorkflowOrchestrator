@@ -79,3 +79,22 @@
 ### P10: 正規表現の見出しレベル誤検出
 
 - **教訓**: `/^##/` は H3 以降にもマッチする。見出しレベルを正確に検出するには否定文字クラス（`/^## [^#]/`）を使う
+
+## Supabase OAuth
+
+### P15: カスタム state パラメータ競合
+
+- **教訓**: Supabase は内部で state を生成・検証する。カスタム state を `queryParams` に渡すと `bad_oauth_state` エラーが発生する
+- **ルール**: [04-electron-security.md#認証セキュリティ](./04-electron-security.md)
+
+### P16: Site URL 未設定によるリダイレクト失敗
+
+- **教訓**: Supabase Dashboard の Redirect URLs だけでなく、Site URL も正しく設定する必要がある。Site URL はフォールバック先として使用される
+
+### P17: flowType 未設定による Implicit Flow
+
+- **教訓**: Supabase クライアント初期化時に `flowType: 'pkce'` を設定しないと、Implicit Flow（`#access_token`）が使用される。Authorization Code Flow（`?code`）を使うには明示的な設定が必要
+
+### P18: カスタム PKCE パラメータ競合
+
+- **教訓**: Supabase に `code_challenge` をカスタムで渡すと、内部の `code_verifier` と不整合が発生し `both auth code and code verifier should be non-empty` エラーになる。PKCE は Supabase に完全委任する
