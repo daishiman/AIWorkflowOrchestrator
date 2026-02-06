@@ -15,7 +15,6 @@ import { SkillDetailPanel } from "../../components/organisms/SkillDetailPanel";
 import { SkillImportDialog } from "../../components/organisms/SkillImportDialog";
 import type { Skill, SkillCategory } from "@repo/shared/types/skill";
 import { Plus, RefreshCw, X } from "lucide-react";
-import { skillAPI } from "../../preload";
 
 export interface AgentViewProps {
   className?: string;
@@ -144,42 +143,29 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
 
   // Fetch imported skills on mount
   const fetchSkills = useCallback(async () => {
-    console.log("[AgentView][DEBUG] fetchSkills called - START");
-    console.log("[AgentView][DEBUG] Current isLoading:", isLoading);
     setLoading(true);
     setError(null);
     try {
-      console.log("[AgentView][DEBUG] Calling skillAPI.listImported()...");
-      const result = await skillAPI.listImported();
-      console.log("[AgentView][DEBUG] skillAPI.listImported() result:", result);
-      if (result.success && result.data) {
-        console.log("[AgentView][DEBUG] Setting skills:", result.data.length);
-        setSkills(result.data);
-      } else {
-        throw new Error(result.error || "スキルの取得に失敗しました");
-      }
+      const imported = await window.electronAPI.skill.getImported();
+      // TASK-FIX-5-1: ImportedSkill[] → Skill[] 型アサーション（agentSlice型移行は別タスク）
+      setSkills(imported as unknown as Skill[]);
     } catch (err) {
-      console.error("[AgentView][DEBUG] Error in fetchSkills:", err);
       setError(
         err instanceof Error
           ? `エラーが発生しました: ${err.message}`
           : "エラーが発生しました",
       );
     } finally {
-      console.log(
-        "[AgentView][DEBUG] fetchSkills - FINALLY (setLoading false)",
-      );
       setLoading(false);
     }
-  }, [setSkills, setLoading, setError, isLoading]);
+  }, [setSkills, setLoading, setError]);
 
   // Fetch available skills for import dialog
   const fetchAvailableSkills = useCallback(async () => {
     try {
-      const result = await skillAPI.listAvailable();
-      if (result.success && result.data) {
-        setAvailableSkills(result.data);
-      }
+      const available = await window.electronAPI.skill.list();
+      // TASK-FIX-5-1: SkillMetadata[] → Skill[] 型アサーション（agentSlice型移行は別タスク）
+      setAvailableSkills(available as unknown as Skill[]);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err) {
       // Silent error for available skills
@@ -209,12 +195,11 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const handleExecute = useCallback(
     async (skill: Skill) => {
       try {
-        const result = await skillAPI.execute(skill.id);
-        if (result.success && result.data) {
-          showToast("success", `${skill.name} を実行しました`);
-        } else {
-          throw new Error(result.error || "スキル実行に失敗しました");
-        }
+        await window.electronAPI.skill.execute({
+          skillName: skill.name,
+          prompt: "",
+        });
+        showToast("success", `${skill.name} を実行しました`);
       } catch (err) {
         showToast(
           "error",
@@ -230,14 +215,10 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const handleDelete = useCallback(
     async (skill: Skill) => {
       try {
-        const result = await skillAPI.remove(skill.id);
-        if (result.success) {
-          showToast("success", `${skill.name} を削除しました`);
-          selectSkill(null);
-          fetchSkills();
-        } else {
-          throw new Error(result.error || "削除に失敗しました");
-        }
+        await window.electronAPI.skill.remove(skill.name);
+        showToast("success", `${skill.name} を削除しました`);
+        selectSkill(null);
+        fetchSkills();
       } catch (err) {
         showToast(
           "error",
@@ -257,17 +238,15 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const handleImport = useCallback(
     async (skillIds: string[]) => {
       try {
-        const result = await skillAPI.import(skillIds);
-        if (result.success) {
-          showToast(
-            "success",
-            `${skillIds.length}件のスキルをインポートしました`,
-          );
-          closeImportDialog();
-          fetchSkills();
-        } else {
-          throw new Error(result.error || "インポートに失敗しました");
+        for (const skillName of skillIds) {
+          await window.electronAPI.skill.import(skillName);
         }
+        showToast(
+          "success",
+          `${skillIds.length}件のスキルをインポートしました`,
+        );
+        closeImportDialog();
+        fetchSkills();
       } catch (err) {
         showToast(
           "error",

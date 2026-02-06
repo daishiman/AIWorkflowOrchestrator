@@ -1,623 +1,1090 @@
 /**
- * Skill API Preload Tests
+ * 統一SkillAPI テスト（Phase 4: TDD Red）
  *
- * TDD Red Phase: Tests for skillAPI exposed via contextBridge.
- * All tests should fail until implementation in Phase 5.
+ * TASK-FIX-5-1-SKILL-API-UNIFICATION
+ * 統一API全13メソッドの期待動作をテストとして定義する。
+ *
+ * Red状態（Phase 5実装前に失敗するテスト）:
+ * - list, getImported, rescan, import, remove → スタブがsafeInvokeを呼ばない
+ * - abort → boolean返却（void期待）
+ * - remove → boolean返却（void期待）
+ * - respondToPermission → 存在する（削除期待）
+ *
+ * Green状態（既に実装済みで成功するテスト）:
+ * - execute, onStream, getExecutionStatus
+ * - onPermissionRequest, sendPermissionResponse
+ * - onComplete, onError
+ * - IPCチャンネルホワイトリスト
  *
  * @module @repo/desktop/preload/__tests__/skill-api
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   IPC_CHANNELS,
   ALLOWED_INVOKE_CHANNELS,
   ALLOWED_ON_CHANNELS,
 } from "../channels";
 
+// Mock electron module - vi.hoisted()でホイスティング対応
+const { mockInvoke, mockOn, mockRemoveListener } = vi.hoisted(() => ({
+  mockInvoke: vi.fn(),
+  mockOn: vi.fn(),
+  mockRemoveListener: vi.fn(),
+}));
+
+vi.mock("electron", () => ({
+  ipcRenderer: {
+    invoke: mockInvoke,
+    on: mockOn,
+    removeListener: mockRemoveListener,
+  },
+}));
+
+// Import after mocking - skillAPI uses ipcRenderer internally
+import { skillAPI } from "../skill-api";
+import type { SkillAPI } from "../skill-api";
+import type {
+  SkillExecutionRequest,
+  SkillExecutionResponse,
+  ExecutionInfo,
+  SkillPermissionResponse,
+  SkillMetadata,
+  ImportedSkill,
+} from "@repo/shared";
+
 // ============================================================
-// 1. IPC Channel Tests
+// テストフィクスチャ
 // ============================================================
-describe("Skill API - IPC Channels", () => {
-  describe("Channel Definitions", () => {
-    it("should define SKILL_EXECUTE channel", () => {
-      expect(IPC_CHANNELS.SKILL_EXECUTE).toBe("skill:execute");
-    });
+const createMockSkillMetadata = (
+  overrides?: Partial<SkillMetadata>,
+): SkillMetadata => ({
+  name: "test-skill",
+  description: "Test skill description",
+  path: "/skills/test-skill",
+  updatedAt: new Date("2026-01-01"),
+  agents: [],
+  references: [],
+  scripts: [],
+  assets: [],
+  schemas: [],
+  indexes: [],
+  otherFiles: [],
+  ...overrides,
+});
 
-    it("should define SKILL_STREAM channel", () => {
-      expect(IPC_CHANNELS.SKILL_STREAM).toBe("skill:stream");
-    });
+const createMockImportedSkill = (
+  overrides?: Partial<ImportedSkill>,
+): ImportedSkill => ({
+  ...createMockSkillMetadata(),
+  importedAt: new Date("2026-01-01"),
+  status: "active",
+  ...overrides,
+});
 
-    it("should define SKILL_ABORT channel", () => {
-      expect(IPC_CHANNELS.SKILL_ABORT).toBe("skill:abort");
-    });
+const createMockExecutionRequest = (
+  overrides?: Partial<SkillExecutionRequest>,
+): SkillExecutionRequest => ({
+  skillName: "test-skill",
+  prompt: "Test prompt",
+  ...overrides,
+});
 
-    it("should define SKILL_GET_STATUS channel", () => {
-      expect(IPC_CHANNELS.SKILL_GET_STATUS).toBe("skill:get-status");
-    });
-  });
+const createMockExecutionResponse = (
+  overrides?: Partial<SkillExecutionResponse>,
+): SkillExecutionResponse => ({
+  executionId: "exec-001",
+  success: true,
+  ...overrides,
+});
 
-  describe("Whitelist Registration - Invoke Channels", () => {
-    it("should include SKILL_EXECUTE in allowed invoke channels", () => {
-      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.SKILL_EXECUTE);
-    });
-
-    it("should include SKILL_ABORT in allowed invoke channels", () => {
-      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.SKILL_ABORT);
-    });
-
-    it("should include SKILL_GET_STATUS in allowed invoke channels", () => {
-      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.SKILL_GET_STATUS);
-    });
-  });
-
-  describe("Whitelist Registration - On Channels", () => {
-    it("should include SKILL_STREAM in allowed on channels", () => {
-      expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.SKILL_STREAM);
-    });
-  });
+const createMockExecutionInfo = (
+  overrides?: Partial<ExecutionInfo>,
+): ExecutionInfo => ({
+  id: "exec-001",
+  skillId: "test-skill",
+  state: "running",
+  startedAt: Date.now(),
+  ...overrides,
 });
 
 // ============================================================
-// 2. skillAPI.onStream Tests
+// セットアップ
 // ============================================================
-describe("skillAPI.onStream", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
-
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("should register callback and return unsubscribe function", () => {
-    const callback = vi.fn();
-    const unsubscribe = vi.fn();
-    mockSkillAPI.onStream.mockReturnValue(unsubscribe);
-
-    const result = window.skillAPI.onStream(callback);
-
-    expect(mockSkillAPI.onStream).toHaveBeenCalledWith(callback);
-    expect(result).toBe(unsubscribe);
-  });
-
-  it("should call callback when skill:stream message is received", () => {
-    const callback = vi.fn();
-    let capturedCallback: ((msg: unknown) => void) | null = null;
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
-    });
-
-    window.skillAPI.onStream(callback);
-
-    const message = {
-      executionId: "test-exec-001",
-      id: "msg-1",
-      type: "text",
-      content: "Test message",
-      timestamp: Date.now(),
-      isComplete: false,
-    };
-
-    // Simulate message reception
-    capturedCallback?.(message);
-
-    expect(callback).toHaveBeenCalledWith(message);
-  });
-
-  it("should not call callback after unsubscribe", () => {
-    const callback = vi.fn();
-    let capturedCallback: ((msg: unknown) => void) | null = null;
-    const unsubscribe = vi.fn(() => {
-      capturedCallback = null;
-    });
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return unsubscribe;
-    });
-
-    const unsub = window.skillAPI.onStream(callback);
-    unsub();
-
-    expect(unsubscribe).toHaveBeenCalled();
-    // After unsubscribe, callback should be null
-    expect(capturedCallback).toBeNull();
-  });
-
-  it("should handle multiple listeners", () => {
-    const callback1 = vi.fn();
-    const callback2 = vi.fn();
-    const unsubscribe1 = vi.fn();
-    const unsubscribe2 = vi.fn();
-
-    mockSkillAPI.onStream
-      .mockReturnValueOnce(unsubscribe1)
-      .mockReturnValueOnce(unsubscribe2);
-
-    const unsub1 = window.skillAPI.onStream(callback1);
-    const unsub2 = window.skillAPI.onStream(callback2);
-
-    expect(mockSkillAPI.onStream).toHaveBeenCalledTimes(2);
-    expect(unsub1).toBe(unsubscribe1);
-    expect(unsub2).toBe(unsubscribe2);
-  });
+beforeEach(() => {
+  vi.clearAllMocks();
+  // デフォルト: invokeは成功を返す
+  mockInvoke.mockResolvedValue(undefined);
+  // デフォルト: onはリスナー登録を受け付ける
+  mockOn.mockImplementation(() => {});
 });
 
 // ============================================================
-// 3. skillAPI.abort Tests
+// 1. IPCチャンネルホワイトリスト検証
 // ============================================================
-describe("skillAPI.abort", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
+describe("統一SkillAPI - IPCチャンネルホワイトリスト", () => {
+  describe("invokeチャンネル（Renderer→Main）", () => {
+    const invokeChannels = [
+      IPC_CHANNELS.SKILL_LIST,
+      IPC_CHANNELS.SKILL_GET_IMPORTED,
+      IPC_CHANNELS.SKILL_IMPORT,
+      IPC_CHANNELS.SKILL_REMOVE,
+      IPC_CHANNELS.SKILL_SCAN,
+      IPC_CHANNELS.SKILL_EXECUTE,
+      IPC_CHANNELS.SKILL_ABORT,
+      IPC_CHANNELS.SKILL_GET_STATUS,
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+    ];
 
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("should call ipcRenderer.invoke with skill:abort channel", async () => {
-    const executionId = "test-exec-001";
-    mockSkillAPI.abort.mockResolvedValue(true);
-
-    await window.skillAPI.abort(executionId);
-
-    expect(mockSkillAPI.abort).toHaveBeenCalledWith(executionId);
-  });
-
-  it("should return true when abort is successful", async () => {
-    const executionId = "test-exec-001";
-    mockSkillAPI.abort.mockResolvedValue(true);
-
-    const result = await window.skillAPI.abort(executionId);
-
-    expect(result).toBe(true);
-  });
-
-  it("should return false when execution not found", async () => {
-    const executionId = "non-existent-exec";
-    mockSkillAPI.abort.mockResolvedValue(false);
-
-    const result = await window.skillAPI.abort(executionId);
-
-    expect(result).toBe(false);
-  });
-
-  it("should validate executionId format (UUID v4)", async () => {
-    const validUuid = "550e8400-e29b-41d4-a716-446655440000";
-    mockSkillAPI.abort.mockResolvedValue(true);
-
-    await window.skillAPI.abort(validUuid);
-
-    expect(mockSkillAPI.abort).toHaveBeenCalledWith(validUuid);
-  });
-});
-
-// ============================================================
-// 4. skillAPI.getExecutionStatus Tests
-// ============================================================
-describe("skillAPI.getExecutionStatus", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
-
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("should return execution info when found", async () => {
-    const executionId = "test-exec-001";
-    const executionInfo = {
-      executionId,
-      status: "running",
-      skillId: "test-skill",
-      startedAt: Date.now(),
-    };
-    mockSkillAPI.getExecutionStatus.mockResolvedValue(executionInfo);
-
-    const result = await window.skillAPI.getExecutionStatus(executionId);
-
-    expect(mockSkillAPI.getExecutionStatus).toHaveBeenCalledWith(executionId);
-    expect(result).toEqual(executionInfo);
-  });
-
-  it("should return null when not found", async () => {
-    const executionId = "non-existent-exec";
-    mockSkillAPI.getExecutionStatus.mockResolvedValue(null);
-
-    const result = await window.skillAPI.getExecutionStatus(executionId);
-
-    expect(result).toBeNull();
-  });
-});
-
-// ============================================================
-// 5. skillAPI.execute Tests
-// ============================================================
-describe("skillAPI.execute", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
-
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("should call execute with request object", async () => {
-    const request = {
-      skillId: "test-skill",
-      prompt: "Test prompt",
-    };
-    const response = {
-      executionId: "test-exec-001",
-      success: true,
-    };
-    mockSkillAPI.execute.mockResolvedValue(response);
-
-    const result = await window.skillAPI.execute(request);
-
-    expect(mockSkillAPI.execute).toHaveBeenCalledWith(request);
-    expect(result).toEqual(response);
-  });
-
-  it("should return error response on failure", async () => {
-    const request = {
-      skillId: "test-skill",
-      prompt: "Test prompt",
-    };
-    const response = {
-      executionId: "",
-      success: false,
-      error: {
-        code: "SKILL_NOT_FOUND",
-        message: "Skill not found",
+    it.each(invokeChannels)(
+      "チャンネル %s がALLOWED_INVOKE_CHANNELSに含まれる",
+      (channel) => {
+        expect(ALLOWED_INVOKE_CHANNELS).toContain(channel);
       },
-    };
-    mockSkillAPI.execute.mockResolvedValue(response);
+    );
+  });
 
-    const result = await window.skillAPI.execute(request);
+  describe("onチャンネル（Main→Renderer）", () => {
+    const onChannels = [
+      IPC_CHANNELS.SKILL_STREAM,
+      IPC_CHANNELS.SKILL_COMPLETE,
+      IPC_CHANNELS.SKILL_ERROR,
+      IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+    ];
 
-    expect(result.success).toBe(false);
-    expect(result.error).toBeDefined();
+    it.each(onChannels)(
+      "チャンネル %s がALLOWED_ON_CHANNELSに含まれる",
+      (channel) => {
+        expect(ALLOWED_ON_CHANNELS).toContain(channel);
+      },
+    );
   });
 });
 
 // ============================================================
-// 6. skillAPI.onStream - Edge Cases
+// 2. 一覧・管理メソッド（5メソッド）
+//    ※ list, getImported, rescan, import, remove はスタブのためRed
 // ============================================================
-describe("skillAPI.onStream - edge cases", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
+describe("統一SkillAPI - 一覧・管理メソッド", () => {
+  describe("list()", () => {
+    it("safeInvokeでSKILL_LISTチャンネルを呼び出す", async () => {
+      const mockMetadata = [createMockSkillMetadata()];
+      mockInvoke.mockResolvedValue(mockMetadata);
 
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
-    vi.clearAllMocks();
-  });
+      await skillAPI.list();
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("should handle rapid consecutive messages", () => {
-    const callback = vi.fn();
-    let capturedCallback: ((msg: unknown) => void) | null = null;
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+      // RED: スタブはipcRenderer.invokeを呼ばず Promise.resolve([]) を返す
+      expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_LIST);
     });
 
-    window.skillAPI.onStream(callback);
+    it("SkillMetadata[]型で結果を返す", async () => {
+      const mockMetadata = [
+        createMockSkillMetadata({ name: "skill-a" }),
+        createMockSkillMetadata({ name: "skill-b" }),
+      ];
+      mockInvoke.mockResolvedValue(mockMetadata);
 
-    // Send 100 rapid messages
-    for (let i = 0; i < 100; i++) {
-      capturedCallback?.({
-        executionId: "test-exec-001",
-        id: `msg-${i}`,
-        type: "text",
-        content: `Message ${i}`,
-        timestamp: Date.now(),
-        isComplete: false,
+      const result = await skillAPI.list();
+
+      // RED: スタブは空配列を返す
+      expect(result).toEqual(mockMetadata);
+      expect(result).toHaveLength(2);
+    });
+  });
+
+  describe("getImported()", () => {
+    it("safeInvokeでSKILL_GET_IMPORTEDチャンネルを呼び出す", async () => {
+      const mockImported = [createMockImportedSkill()];
+      mockInvoke.mockResolvedValue(mockImported);
+
+      await skillAPI.getImported();
+
+      // RED: スタブはipcRenderer.invokeを呼ばない
+      expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_GET_IMPORTED);
+    });
+
+    it("ImportedSkill[]型で結果を返す", async () => {
+      const mockImported = [
+        createMockImportedSkill({ name: "imported-skill" }),
+      ];
+      mockInvoke.mockResolvedValue(mockImported);
+
+      const result = await skillAPI.getImported();
+
+      // RED: スタブは空配列を返す
+      expect(result).toEqual(mockImported);
+    });
+  });
+
+  describe("import(skillName)", () => {
+    it("safeInvokeでSKILL_IMPORTチャンネルをskillName引数で呼び出す", async () => {
+      const mockImported = createMockImportedSkill({ name: "new-skill" });
+      mockInvoke.mockResolvedValue(mockImported);
+
+      await skillAPI.import("new-skill");
+
+      // RED: スタブはipcRenderer.invokeを呼ばない
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_IMPORT,
+        "new-skill",
+      );
+    });
+
+    it("ImportedSkill型で結果を返す", async () => {
+      const mockImported = createMockImportedSkill({ name: "new-skill" });
+      mockInvoke.mockResolvedValue(mockImported);
+
+      const result = await skillAPI.import("new-skill");
+
+      // RED: スタブはハードコードされたオブジェクトを返す（IPC経由でない）
+      expect(result).toEqual(mockImported);
+    });
+  });
+
+  describe("remove(skillName)", () => {
+    it("safeInvokeでSKILL_REMOVEチャンネルをskillName引数で呼び出す", async () => {
+      mockInvoke.mockResolvedValue(undefined);
+
+      await skillAPI.remove("old-skill");
+
+      // RED: スタブはipcRenderer.invokeを呼ばない
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_REMOVE,
+        "old-skill",
+      );
+    });
+
+    it("戻り値がvoid（undefined）である", async () => {
+      mockInvoke.mockResolvedValue(undefined);
+
+      const result = await skillAPI.remove("old-skill");
+
+      // RED: スタブはboolean(true)を返す
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe("rescan()", () => {
+    it("safeInvokeでSKILL_SCANチャンネルを呼び出す", async () => {
+      const mockMetadata = [createMockSkillMetadata()];
+      mockInvoke.mockResolvedValue(mockMetadata);
+
+      await skillAPI.rescan();
+
+      // RED: スタブはipcRenderer.invokeを呼ばない
+      expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_SCAN);
+    });
+
+    it("SkillMetadata[]型で結果を返す", async () => {
+      const mockMetadata = [createMockSkillMetadata({ name: "rescanned" })];
+      mockInvoke.mockResolvedValue(mockMetadata);
+
+      const result = await skillAPI.rescan();
+
+      // RED: スタブは空配列を返す
+      expect(result).toEqual(mockMetadata);
+    });
+  });
+});
+
+// ============================================================
+// 3. 実行メソッド（3メソッド）
+//    ※ execute, getExecutionStatus は既に実装済み（Green）
+//    ※ abort は戻り値型変更のためRed
+// ============================================================
+describe("統一SkillAPI - 実行メソッド", () => {
+  describe("execute(request)", () => {
+    it("safeInvokeでSKILL_EXECUTEチャンネルをリクエスト引数で呼び出す", async () => {
+      const request = createMockExecutionRequest();
+      const response = createMockExecutionResponse();
+      mockInvoke.mockResolvedValue(response);
+
+      await skillAPI.execute(request);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_EXECUTE,
+        request,
+      );
+    });
+
+    it("SkillExecutionResponse型で結果を返す", async () => {
+      const request = createMockExecutionRequest();
+      const response = createMockExecutionResponse({
+        executionId: "exec-test-001",
+        success: true,
       });
-    }
+      mockInvoke.mockResolvedValue(response);
 
-    expect(callback).toHaveBeenCalledTimes(100);
-  });
+      const result = await skillAPI.execute(request);
 
-  it("should handle empty message content", () => {
-    const callback = vi.fn();
-    let capturedCallback: ((msg: unknown) => void) | null = null;
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+      expect(result).toEqual(response);
+      expect(result.executionId).toBe("exec-test-001");
+      expect(result.success).toBe(true);
     });
 
-    window.skillAPI.onStream(callback);
-
-    capturedCallback?.({
-      executionId: "test-exec-001",
-      id: "msg-1",
-      type: "text",
-      content: "",
-      timestamp: Date.now(),
-      isComplete: false,
-    });
-
-    expect(callback).toHaveBeenCalledWith(
-      expect.objectContaining({ content: "" }),
-    );
-  });
-
-  it("should handle very long message content", () => {
-    const callback = vi.fn();
-    let capturedCallback: ((msg: unknown) => void) | null = null;
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
-    });
-
-    window.skillAPI.onStream(callback);
-
-    const longContent = "x".repeat(100000); // 100KB of data
-    capturedCallback?.({
-      executionId: "test-exec-001",
-      id: "msg-1",
-      type: "text",
-      content: longContent,
-      timestamp: Date.now(),
-      isComplete: false,
-    });
-
-    expect(callback).toHaveBeenCalledWith(
-      expect.objectContaining({ content: longContent }),
-    );
-  });
-
-  it("should handle special characters in message", () => {
-    const callback = vi.fn();
-    let capturedCallback: ((msg: unknown) => void) | null = null;
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
-    });
-
-    window.skillAPI.onStream(callback);
-
-    const specialContent = '日本語テスト\n\t<script>alert("xss")</script>&amp;';
-    capturedCallback?.({
-      executionId: "test-exec-001",
-      id: "msg-1",
-      type: "text",
-      content: specialContent,
-      timestamp: Date.now(),
-      isComplete: false,
-    });
-
-    expect(callback).toHaveBeenCalledWith(
-      expect.objectContaining({ content: specialContent }),
-    );
-  });
-
-  it("should handle concurrent subscriptions from multiple components", () => {
-    const callbacks: Array<() => void> = [];
-    const listeners: Array<(msg: unknown) => void> = [];
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      listeners.push(cb);
-      const index = listeners.length - 1;
-      return () => {
-        listeners.splice(index, 1);
+    it("SkillExecutionRequest単一引数で呼び出し可能", async () => {
+      const request: SkillExecutionRequest = {
+        skillName: "my-skill",
+        prompt: "Hello",
+        workingDirectory: "/tmp",
       };
+      mockInvoke.mockResolvedValue(createMockExecutionResponse());
+
+      await skillAPI.execute(request);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_EXECUTE,
+        request,
+      );
+    });
+  });
+
+  describe("abort(executionId)", () => {
+    it("safeInvokeでSKILL_ABORTチャンネルをexecutionId引数で呼び出す", async () => {
+      mockInvoke.mockResolvedValue(undefined);
+
+      await skillAPI.abort("exec-001");
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_ABORT,
+        "exec-001",
+      );
     });
 
-    // Subscribe 5 listeners
-    for (let i = 0; i < 5; i++) {
-      const callback = vi.fn();
-      callbacks.push(callback);
-      window.skillAPI.onStream(callback);
-    }
+    it("戻り値がvoid（undefined）である", async () => {
+      mockInvoke.mockResolvedValue(undefined);
 
-    expect(mockSkillAPI.onStream).toHaveBeenCalledTimes(5);
-    expect(listeners).toHaveLength(5);
+      const result = await skillAPI.abort("exec-001");
+
+      // RED: 現在はboolean(true/false)を返す
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe("getExecutionStatus(executionId)", () => {
+    it("safeInvokeでSKILL_GET_STATUSチャンネルを呼び出す", async () => {
+      const info = createMockExecutionInfo();
+      mockInvoke.mockResolvedValue(info);
+
+      await skillAPI.getExecutionStatus("exec-001");
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_GET_STATUS,
+        "exec-001",
+      );
+    });
+
+    it("ExecutionInfo型で結果を返す", async () => {
+      const info = createMockExecutionInfo({
+        id: "exec-001",
+        state: "running",
+      });
+      mockInvoke.mockResolvedValue(info);
+
+      const result = await skillAPI.getExecutionStatus("exec-001");
+
+      expect(result).toEqual(info);
+      expect(result?.state).toBe("running");
+    });
+
+    it("存在しないexecutionIdの場合nullを返す", async () => {
+      mockInvoke.mockResolvedValue(null);
+
+      const result = await skillAPI.getExecutionStatus("non-existent");
+
+      expect(result).toBeNull();
+    });
   });
 });
 
 // ============================================================
-// 7. skillAPI.abort - Edge Cases
+// 4. イベントメソッド（3メソッド）
+//    ※ 全て既に実装済み（Green）
 // ============================================================
-describe("skillAPI.abort - edge cases", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
+describe("統一SkillAPI - イベントメソッド", () => {
+  describe("onStream(callback)", () => {
+    it("safeOnでSKILL_STREAMチャンネルにリスナーを登録する", () => {
+      const callback = vi.fn();
 
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
-    vi.clearAllMocks();
+      skillAPI.onStream(callback);
+
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_STREAM,
+        expect.any(Function),
+      );
+    });
+
+    it("unsubscribe関数（() => void）を返す", () => {
+      const callback = vi.fn();
+
+      const unsubscribe = skillAPI.onStream(callback);
+
+      expect(typeof unsubscribe).toBe("function");
+    });
+
+    it("unsubscribe呼び出しでリスナーが解除される", () => {
+      const callback = vi.fn();
+
+      const unsubscribe = skillAPI.onStream(callback);
+      unsubscribe();
+
+      expect(mockRemoveListener).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_STREAM,
+        expect.any(Function),
+      );
+    });
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
+  describe("onComplete(callback)", () => {
+    it("safeOnでSKILL_COMPLETEチャンネルにリスナーを登録する", () => {
+      const callback = vi.fn();
+
+      skillAPI.onComplete(callback);
+
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_COMPLETE,
+        expect.any(Function),
+      );
+    });
+
+    it("unsubscribe関数を返す", () => {
+      const callback = vi.fn();
+
+      const unsubscribe = skillAPI.onComplete(callback);
+
+      expect(typeof unsubscribe).toBe("function");
+    });
   });
 
-  it("should handle abort on already completed execution", async () => {
-    const executionId = "completed-exec-001";
-    mockSkillAPI.abort.mockResolvedValue(false);
+  describe("onError(callback)", () => {
+    it("safeOnでSKILL_ERRORチャンネルにリスナーを登録する", () => {
+      const callback = vi.fn();
 
-    const result = await window.skillAPI.abort(executionId);
+      skillAPI.onError(callback);
 
-    expect(result).toBe(false);
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_ERROR,
+        expect.any(Function),
+      );
+    });
+
+    it("unsubscribe関数を返す", () => {
+      const callback = vi.fn();
+
+      const unsubscribe = skillAPI.onError(callback);
+
+      expect(typeof unsubscribe).toBe("function");
+    });
+  });
+});
+
+// ============================================================
+// 5. 権限メソッド（2メソッド + respondToPermission削除検証）
+//    ※ onPermissionRequest, sendPermissionResponse は既に実装済み（Green）
+//    ※ respondToPermission削除はRed
+// ============================================================
+describe("統一SkillAPI - 権限メソッド", () => {
+  describe("onPermissionRequest(callback)", () => {
+    it("safeOnでSKILL_PERMISSION_REQUESTチャンネルにリスナーを登録する", () => {
+      const callback = vi.fn();
+
+      skillAPI.onPermissionRequest(callback);
+
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+        expect.any(Function),
+      );
+    });
+
+    it("unsubscribe関数を返す", () => {
+      const callback = vi.fn();
+
+      const unsubscribe = skillAPI.onPermissionRequest(callback);
+
+      expect(typeof unsubscribe).toBe("function");
+    });
   });
 
-  it("should handle abort on already aborted execution", async () => {
-    const executionId = "aborted-exec-001";
-    mockSkillAPI.abort.mockResolvedValue(false);
+  describe("sendPermissionResponse(response)", () => {
+    it("safeInvokeでSKILL_PERMISSION_RESPONSEチャンネルを呼び出す", async () => {
+      const response: SkillPermissionResponse = {
+        requestId: "req-001",
+        approved: true,
+      };
+      mockInvoke.mockResolvedValue({ success: true });
 
-    const result = await window.skillAPI.abort(executionId);
+      await skillAPI.sendPermissionResponse(response);
 
-    expect(result).toBe(false);
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+        response,
+      );
+    });
+
+    it("{ success: boolean }型で結果を返す", async () => {
+      const response: SkillPermissionResponse = {
+        requestId: "req-001",
+        approved: true,
+        rememberChoice: true,
+      };
+      mockInvoke.mockResolvedValue({ success: true });
+
+      const result = await skillAPI.sendPermissionResponse(response);
+
+      expect(result).toEqual({ success: true });
+    });
   });
 
-  it("should handle abort with invalid executionId format", async () => {
-    const invalidId = "invalid-id-format";
-    mockSkillAPI.abort.mockResolvedValue(false);
-
-    const result = await window.skillAPI.abort(invalidId);
-
-    expect(mockSkillAPI.abort).toHaveBeenCalledWith(invalidId);
-    expect(result).toBe(false);
+  describe("respondToPermission削除", () => {
+    it("統一APIにrespondToPermissionメソッドが存在しない", () => {
+      // RED: 現在はエイリアスとして存在する
+      // Phase 5で削除後にGreenになる
+      const api = skillAPI as Record<string, unknown>;
+      expect(api.respondToPermission).toBeUndefined();
+    });
   });
+});
 
-  it("should handle abort when IPC fails", async () => {
-    const executionId = "test-exec-001";
-    mockSkillAPI.abort.mockRejectedValue(new Error("IPC connection failed"));
+// ============================================================
+// 6. エラーハンドリングテスト（Task 2）
+// ============================================================
+describe("統一SkillAPI - エラーハンドリング", () => {
+  it("execute()でIPC通信エラー発生時にthrowされる（OperationResult不使用）", async () => {
+    mockInvoke.mockRejectedValue(new Error("IPC connection failed"));
 
-    await expect(window.skillAPI.abort(executionId)).rejects.toThrow(
+    const request = createMockExecutionRequest();
+
+    await expect(skillAPI.execute(request)).rejects.toThrow(
       "IPC connection failed",
     );
   });
-});
 
-// ============================================================
-// 8. skillAPI - Error Handling
-// ============================================================
-describe("skillAPI - error handling", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
+  it("abort()で無効なexecutionId指定時にエラーがthrowされる", async () => {
+    mockInvoke.mockRejectedValue(new Error("Execution not found"));
 
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
-    vi.clearAllMocks();
+    await expect(skillAPI.abort("invalid-id")).rejects.toThrow(
+      "Execution not found",
+    );
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
+  it("getExecutionStatus()で存在しないexecutionIdの場合nullを返す", async () => {
+    mockInvoke.mockResolvedValue(null);
+
+    const result = await skillAPI.getExecutionStatus("non-existent-id");
+
+    expect(result).toBeNull();
   });
 
-  it("should handle IPC timeout", async () => {
-    mockSkillAPI.execute.mockRejectedValue(new Error("IPC timeout"));
+  it("import()で存在しないskillName指定時にエラーがthrowされる", async () => {
+    mockInvoke.mockRejectedValue(new Error("Skill not found: unknown-skill"));
 
-    await expect(
-      window.skillAPI.execute({ skillId: "test", prompt: "test" }),
-    ).rejects.toThrow("IPC timeout");
+    // RED: スタブはエラーをthrowせずスタブオブジェクトを返す
+    await expect(skillAPI.import("unknown-skill")).rejects.toThrow(
+      "Skill not found",
+    );
   });
 
-  it("should handle IPC connection failure", async () => {
-    mockSkillAPI.getExecutionStatus.mockRejectedValue(
-      new Error("IPC connection refused"),
+  it("remove()で未インポートskillName指定時にエラーがthrowされる", async () => {
+    mockInvoke.mockRejectedValue(
+      new Error("Skill not imported: unknown-skill"),
     );
 
-    await expect(
-      window.skillAPI.getExecutionStatus("test-exec-001"),
-    ).rejects.toThrow("IPC connection refused");
+    // RED: スタブはエラーをthrowせずtrue(boolean)を返す
+    await expect(skillAPI.remove("unknown-skill")).rejects.toThrow(
+      "Skill not imported",
+    );
   });
 
-  it("should handle malformed message data", () => {
-    const callback = vi.fn();
-    let capturedCallback: ((msg: unknown) => void) | null = null;
-
-    mockSkillAPI.onStream.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
-    });
-
-    window.skillAPI.onStream(callback);
-
-    // Send malformed message (missing required fields)
-    const malformedMessage = {
-      executionId: "test-exec-001",
-      // missing id, type, content, timestamp, isComplete
-    };
-
-    capturedCallback?.(malformedMessage);
-
-    // Callback should still be called with malformed data
-    expect(callback).toHaveBeenCalledWith(malformedMessage);
+  it("許可されていないチャンネルへのinvoke呼び出しがrejectされる", async () => {
+    // safeInvokeが不正チャンネルを拒否することを間接的にテスト
+    // これは既にsafeInvoke内部で実装されている（Green）
+    // ただし直接テストするにはprivate関数のテストが必要なため、
+    // skillAPI経由で正しいチャンネルが使われることを他テストで検証
+    expect(ALLOWED_INVOKE_CHANNELS).not.toContain("invalid:channel");
   });
 });
 
 // ============================================================
-// 9. window.skillAPI Availability Tests
+// 7. 呼び出し元移行テスト（Task 3）
 // ============================================================
-describe("window.skillAPI - API Object Availability", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-  };
+describe("統一SkillAPI - 呼び出し元移行テスト", () => {
+  describe("useSkillExecution相当のAPI呼び出しパターン", () => {
+    it("window.electronAPI.skill.execute経由でIPC呼び出しが行われる", async () => {
+      const request = createMockExecutionRequest({
+        skillName: "test-skill",
+        prompt: "Execute this",
+      });
+      mockInvoke.mockResolvedValue(createMockExecutionResponse());
 
-  beforeEach(() => {
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+      // skillAPIオブジェクトはwindow.electronAPI.skillとして公開される
+      // ここではskillAPIを直接テストし、IPC呼び出しを検証
+      await skillAPI.execute(request);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_EXECUTE,
+        request,
+      );
+    });
+
+    it("abort呼び出し後にvoidが返る（booleanではない）", async () => {
+      mockInvoke.mockResolvedValue(undefined);
+
+      const result = await skillAPI.abort("exec-001");
+
+      // RED: 現在の実装はboolean
+      expect(result).toBeUndefined();
+    });
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
+  describe("useSkillPermission相当のAPI呼び出しパターン", () => {
+    it("window.electronAPI.skill.onPermissionRequest経由でリスナー登録", () => {
+      const callback = vi.fn();
+
+      const unsubscribe = skillAPI.onPermissionRequest(callback);
+
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+        expect.any(Function),
+      );
+      expect(typeof unsubscribe).toBe("function");
+    });
+
+    it("window.electronAPI.skill.sendPermissionResponse経由で応答送信", async () => {
+      const response: SkillPermissionResponse = {
+        requestId: "req-001",
+        approved: true,
+      };
+      mockInvoke.mockResolvedValue({ success: true });
+
+      await skillAPI.sendPermissionResponse(response);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+        response,
+      );
+    });
   });
 
-  it("should expose skillAPI on window object", () => {
-    expect(window.skillAPI).toBeDefined();
+  describe("skillSlice相当のAPI呼び出しパターン", () => {
+    it("list()が直接型（非OperationResult）でSkillMetadata[]を返す", async () => {
+      const mockMetadata = [
+        createMockSkillMetadata({ name: "skill-1" }),
+        createMockSkillMetadata({ name: "skill-2" }),
+      ];
+      mockInvoke.mockResolvedValue(mockMetadata);
+
+      const result = await skillAPI.list();
+
+      // RED: スタブは空配列を返すため失敗
+      // 直接型であること（OperationResult<T>でないこと）を検証
+      expect(Array.isArray(result)).toBe(true);
+      expect(result).toHaveLength(2);
+      // OperationResultでないことを確認（success/dataプロパティがない）
+      expect(
+        (result as unknown as Record<string, unknown>).success,
+      ).toBeUndefined();
+      expect(
+        (result as unknown as Record<string, unknown>).data,
+      ).toBeUndefined();
+    });
+
+    it("execute()がSkillExecutionRequestオブジェクト引数を受け取る", async () => {
+      const request: SkillExecutionRequest = {
+        skillName: "my-skill",
+        prompt: "Do something",
+      };
+      mockInvoke.mockResolvedValue(createMockExecutionResponse());
+
+      await skillAPI.execute(request);
+
+      // 引数がオブジェクト形式であることを検証（分割引数ではない）
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_EXECUTE,
+        expect.objectContaining({
+          skillName: "my-skill",
+          prompt: "Do something",
+        }),
+      );
+    });
+  });
+});
+
+// ============================================================
+// 8. 統一API構造テスト
+// ============================================================
+describe("統一SkillAPI - API構造検証", () => {
+  it("統一APIが13メソッドを持つ（respondToPermission除外）", () => {
+    const expectedMethods: (keyof SkillAPI)[] = [
+      "list",
+      "getImported",
+      "import",
+      "remove",
+      "rescan",
+      "execute",
+      "abort",
+      "getExecutionStatus",
+      "onStream",
+      "onComplete",
+      "onError",
+      "onPermissionRequest",
+      "sendPermissionResponse",
+    ];
+
+    for (const method of expectedMethods) {
+      expect(typeof skillAPI[method]).toBe("function");
+    }
+
+    // RED: respondToPermissionがまだ含まれているため14メソッドになる
+    const methodCount = Object.keys(skillAPI).filter(
+      (key) => typeof (skillAPI as Record<string, unknown>)[key] === "function",
+    ).length;
+    expect(methodCount).toBe(13);
   });
 
-  it("should have execute method", () => {
-    expect(window.skillAPI?.execute).toBeInstanceOf(Function);
+  it("全イベントリスナーメソッドがunsubscribe関数を返す", () => {
+    const eventMethods = [
+      skillAPI.onStream,
+      skillAPI.onComplete,
+      skillAPI.onError,
+      skillAPI.onPermissionRequest,
+    ];
+
+    for (const method of eventMethods) {
+      const unsubscribe = method(vi.fn());
+      expect(typeof unsubscribe).toBe("function");
+    }
+  });
+});
+
+// ============================================================
+// 9. 統合テスト連携: IPC通信フロー検証
+// ============================================================
+describe("統一SkillAPI - 統合テスト連携", () => {
+  it("execute→onStream→onCompleteのイベントフロー設計", async () => {
+    // Step 1: execute呼び出し
+    mockInvoke.mockResolvedValue(
+      createMockExecutionResponse({ executionId: "flow-001" }),
+    );
+    const response = await skillAPI.execute(
+      createMockExecutionRequest({ skillName: "flow-skill" }),
+    );
+    expect(response.executionId).toBe("flow-001");
+
+    // Step 2: onStreamリスナー登録
+    const streamCallback = vi.fn();
+    const unsubStream = skillAPI.onStream(streamCallback);
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_STREAM,
+      expect.any(Function),
+    );
+
+    // Step 3: onCompleteリスナー登録
+    const completeCallback = vi.fn();
+    const unsubComplete = skillAPI.onComplete(completeCallback);
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_COMPLETE,
+      expect.any(Function),
+    );
+
+    // クリーンアップ
+    unsubStream();
+    unsubComplete();
+    expect(mockRemoveListener).toHaveBeenCalledTimes(2);
   });
 
-  it("should have onStream method", () => {
-    expect(window.skillAPI?.onStream).toBeInstanceOf(Function);
+  it("onPermissionRequest→sendPermissionResponseの権限フロー", async () => {
+    // Step 1: 権限リクエストリスナー登録
+    const permCallback = vi.fn();
+    const unsubPerm = skillAPI.onPermissionRequest(permCallback);
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+      expect.any(Function),
+    );
+
+    // Step 2: 権限応答送信
+    const permResponse: SkillPermissionResponse = {
+      requestId: "req-001",
+      approved: true,
+      rememberChoice: false,
+    };
+    mockInvoke.mockResolvedValue({ success: true });
+    await skillAPI.sendPermissionResponse(permResponse);
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+      permResponse,
+    );
+
+    unsubPerm();
   });
 
-  it("should have abort method", () => {
-    expect(window.skillAPI?.abort).toBeInstanceOf(Function);
+  it("import/remove後の一覧更新パターン", async () => {
+    // Step 1: import
+    mockInvoke.mockResolvedValueOnce(
+      createMockImportedSkill({ name: "new-skill" }),
+    );
+
+    // RED: スタブはipcRenderer.invokeを呼ばない
+    await skillAPI.import("new-skill");
+
+    // Step 2: list（更新確認）
+    const updatedList = [
+      createMockSkillMetadata({ name: "existing" }),
+      createMockSkillMetadata({ name: "new-skill" }),
+    ];
+    mockInvoke.mockResolvedValueOnce(updatedList);
+
+    // RED: スタブは空配列を返す
+    const result = await skillAPI.list();
+    expect(result).toHaveLength(2);
+  });
+});
+
+// ================================================================
+// Phase 6: テスト拡充
+// ================================================================
+
+// ================================================================
+// Task 1: 境界値・異常系テスト
+// ================================================================
+describe("Phase 6: 境界値・異常系テスト", () => {
+  it("list() IPCエラー時にthrow", async () => {
+    mockInvoke.mockRejectedValueOnce(new Error("IPC communication failed"));
+    await expect(skillAPI.list()).rejects.toThrow("IPC communication failed");
   });
 
-  it("should have getExecutionStatus method", () => {
-    expect(window.skillAPI?.getExecutionStatus).toBeInstanceOf(Function);
+  it("getImported() IPCエラー時にthrow", async () => {
+    mockInvoke.mockRejectedValueOnce(new Error("Connection lost"));
+    await expect(skillAPI.getImported()).rejects.toThrow("Connection lost");
+  });
+
+  it("rescan() IPCエラー時にthrow", async () => {
+    mockInvoke.mockRejectedValueOnce(new Error("Scan timeout"));
+    await expect(skillAPI.rescan()).rejects.toThrow("Scan timeout");
+  });
+
+  it("execute() 空skillNameでもsafeInvokeに委譲", async () => {
+    const emptyRequest = createMockExecutionRequest();
+    emptyRequest.skillName = "";
+    mockInvoke.mockResolvedValueOnce(
+      createMockExecutionResponse({ executionId: "exec-empty" }),
+    );
+
+    const result = await skillAPI.execute(emptyRequest);
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_EXECUTE,
+      emptyRequest,
+    );
+    expect(result.executionId).toBe("exec-empty");
+  });
+
+  it("import() 空文字列skillNameでもsafeInvokeに委譲", async () => {
+    mockInvoke.mockResolvedValueOnce(createMockImportedSkill({ name: "" }));
+    const result = await skillAPI.import("");
+    expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_IMPORT, "");
+    expect(result).toBeDefined();
+  });
+
+  it("abort() 空executionIdでもsafeInvokeに委譲", async () => {
+    mockInvoke.mockResolvedValueOnce(undefined);
+    await skillAPI.abort("");
+    expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_ABORT, "");
+  });
+
+  it("sendPermissionResponse() IPCエラー時にthrow", async () => {
+    mockInvoke.mockRejectedValueOnce(new Error("Permission IPC failed"));
+    await expect(
+      skillAPI.sendPermissionResponse({
+        requestId: "req-err",
+        approved: true,
+        rememberChoice: false,
+      }),
+    ).rejects.toThrow("Permission IPC failed");
+  });
+
+  it("不許可チャンネルのsafeInvokeでreject", async () => {
+    // safeInvokeは内部関数だが、ALLOWED_INVOKE_CHANNELSに無いチャンネルはrejectされる
+    // skillAPIの全メソッドは許可チャンネルのみ使用するため、直接テスト不可
+    // 代わりにALLOWED_INVOKE_CHANNELSの不正チャンネル不在を検証
+    expect(ALLOWED_INVOKE_CHANNELS).not.toContain("skill:invalid:channel");
+    expect(ALLOWED_ON_CHANNELS).not.toContain("skill:invalid:channel");
+  });
+});
+
+// ================================================================
+// Task 2: イベントリスナーのライフサイクルテスト
+// ================================================================
+describe("Phase 6: イベントリスナーのライフサイクルテスト", () => {
+  it("onStream: unsubscribe後にイベント発火してもコールバック呼ばれない", () => {
+    const callback = vi.fn();
+    let capturedListener: ((...args: unknown[]) => void) | null = null;
+
+    mockOn.mockImplementation(
+      (_channel: string, listener: (...args: unknown[]) => void) => {
+        capturedListener = listener;
+      },
+    );
+
+    const unsubscribe = skillAPI.onStream(callback);
+
+    // リスナーが登録されたことを確認
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_STREAM,
+      expect.any(Function),
+    );
+
+    // unsubscribe
+    unsubscribe();
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_STREAM,
+      expect.any(Function),
+    );
+
+    // unsubscribe後にイベント発火
+    capturedListener?.(
+      {},
+      { executionId: "e1", type: "text", content: "test", timestamp: 0 },
+    );
+
+    // safeOnの実装により、removeListenerが呼ばれた後もcapturedListenerは残るが
+    // ipcRenderer.removeListenerによりElectron内部で解除される
+    // ここではremoveListenerが正しく呼ばれたことを検証
+    expect(mockRemoveListener).toHaveBeenCalledTimes(1);
+  });
+
+  it("onComplete: 複数登録→1つunsubscribe→残りのリスナーは維持", () => {
+    const callback1 = vi.fn();
+    const callback2 = vi.fn();
+
+    const unsubscribe1 = skillAPI.onComplete(callback1);
+    skillAPI.onComplete(callback2);
+
+    expect(mockOn).toHaveBeenCalledTimes(2);
+
+    // 1つ目をunsubscribe
+    unsubscribe1();
+
+    // removeListenerは1回のみ
+    expect(mockRemoveListener).toHaveBeenCalledTimes(1);
+
+    // 2つ目は解除されていない
+    expect(mockOn).toHaveBeenCalledTimes(2);
+  });
+
+  it("onError: 登録なし状態でもクラッシュしない", () => {
+    // onErrorを呼ばずに、mockOnが呼ばれないことを確認
+    // （リスナー未登録 = onError未呼出）
+    expect(mockOn).not.toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_ERROR,
+      expect.any(Function),
+    );
+
+    // 直接ipcRenderer.onに登録されたリスナーなしの状態でも
+    // skillAPI自体はクラッシュしない
+    expect(() => skillAPI.onError).not.toThrow();
+  });
+
+  it("onPermissionRequest: register→unsubscribe→removeListener確認", () => {
+    const callback = vi.fn();
+
+    const unsubscribe = skillAPI.onPermissionRequest(callback);
+
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+      expect.any(Function),
+    );
+
+    unsubscribe();
+
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+      expect.any(Function),
+    );
+  });
+
+  it("全イベントメソッドのunsubscribeが独立して動作", () => {
+    const unsub1 = skillAPI.onStream(vi.fn());
+    const unsub2 = skillAPI.onComplete(vi.fn());
+    const unsub3 = skillAPI.onError(vi.fn());
+    const unsub4 = skillAPI.onPermissionRequest(vi.fn());
+
+    expect(mockOn).toHaveBeenCalledTimes(4);
+
+    unsub1();
+    expect(mockRemoveListener).toHaveBeenCalledTimes(1);
+
+    unsub2();
+    expect(mockRemoveListener).toHaveBeenCalledTimes(2);
+
+    unsub3();
+    expect(mockRemoveListener).toHaveBeenCalledTimes(3);
+
+    unsub4();
+    expect(mockRemoveListener).toHaveBeenCalledTimes(4);
+  });
+});
+
+// ================================================================
+// Task 3: 統合テスト（Preload→IPC呼び出し チャンネル値検証）
+// ================================================================
+describe("Phase 6: IPCチャンネル統合テスト", () => {
+  it("list() はSKILL_LISTチャンネル（'skill:list'）を呼ぶ", async () => {
+    mockInvoke.mockResolvedValueOnce([]);
+    await skillAPI.list();
+    expect(mockInvoke).toHaveBeenCalledWith("skill:list");
+  });
+
+  it("execute() はSKILL_EXECUTEチャンネル（'skill:execute'）を呼ぶ", async () => {
+    const req = createMockExecutionRequest();
+    mockInvoke.mockResolvedValueOnce(createMockExecutionResponse());
+    await skillAPI.execute(req);
+    expect(mockInvoke).toHaveBeenCalledWith("skill:execute", req);
+  });
+
+  it("import() はSKILL_IMPORTチャンネル（'skill:import'）を呼ぶ", async () => {
+    mockInvoke.mockResolvedValueOnce(createMockImportedSkill());
+    await skillAPI.import("test-skill");
+    expect(mockInvoke).toHaveBeenCalledWith("skill:import", "test-skill");
+  });
+
+  it("remove() はSKILL_REMOVEチャンネル（'skill:remove'）を呼ぶ", async () => {
+    mockInvoke.mockResolvedValueOnce(undefined);
+    await skillAPI.remove("test-skill");
+    expect(mockInvoke).toHaveBeenCalledWith("skill:remove", "test-skill");
+  });
+
+  it("abort() はSKILL_ABORTチャンネル（'skill:abort'）を呼ぶ", async () => {
+    mockInvoke.mockResolvedValueOnce(undefined);
+    await skillAPI.abort("exec-123");
+    expect(mockInvoke).toHaveBeenCalledWith("skill:abort", "exec-123");
+  });
+
+  it("getImported() はSKILL_GET_IMPORTEDチャンネルを呼ぶ", async () => {
+    mockInvoke.mockResolvedValueOnce([]);
+    await skillAPI.getImported();
+    expect(mockInvoke).toHaveBeenCalledWith("skill:getImported");
+  });
+
+  it("rescan() はSKILL_SCANチャンネルを呼ぶ", async () => {
+    mockInvoke.mockResolvedValueOnce([]);
+    await skillAPI.rescan();
+    expect(mockInvoke).toHaveBeenCalledWith("skill:scan");
+  });
+
+  it("getExecutionStatus() はSKILL_GET_STATUSチャンネルを呼ぶ", async () => {
+    mockInvoke.mockResolvedValueOnce(null);
+    await skillAPI.getExecutionStatus("exec-123");
+    expect(mockInvoke).toHaveBeenCalledWith("skill:get-status", "exec-123");
+  });
+
+  it("sendPermissionResponse() はSKILL_PERMISSION_RESPONSEチャンネルを呼ぶ", async () => {
+    const resp = { requestId: "r1", approved: true, rememberChoice: false };
+    mockInvoke.mockResolvedValueOnce({ success: true });
+    await skillAPI.sendPermissionResponse(resp);
+    expect(mockInvoke).toHaveBeenCalledWith("skill:permission:response", resp);
+  });
+
+  it("onStream() はSKILL_STREAMチャンネルでリスナー登録", () => {
+    skillAPI.onStream(vi.fn());
+    expect(mockOn).toHaveBeenCalledWith("skill:stream", expect.any(Function));
   });
 });

@@ -46,9 +46,8 @@ export interface SkillAPI {
   /**
    * 実行中のスキルを中断する
    * @param executionId - 中断対象の実行ID
-   * @returns 中断成功の場合 true
    */
-  abort: (executionId: string) => Promise<boolean>;
+  abort: (executionId: string) => Promise<void>;
 
   /**
    * 実行状態を取得する
@@ -77,64 +76,54 @@ export interface SkillAPI {
     response: SkillPermissionResponse,
   ) => Promise<{ success: boolean }>;
 
-  // === Skill Management API (TASK-7A~7D - Stubs for TASK-6-1 compatibility) ===
+  // === Skill Management API ===
 
   /**
-   * 利用可能なスキル一覧を取得（スタブ）
+   * 利用可能なスキル一覧を取得
    * @returns スキルメタデータ配列
    */
   list: () => Promise<SkillMetadata[]>;
 
   /**
-   * インポート済みスキル一覧を取得（スタブ）
+   * インポート済みスキル一覧を取得
    * @returns インポート済みスキル配列
    */
   getImported: () => Promise<ImportedSkill[]>;
 
   /**
-   * スキルを再スキャン（スタブ）
+   * スキルを再スキャン
    * @returns 再スキャン後の利用可能なスキル一覧
    */
   rescan: () => Promise<SkillMetadata[]>;
 
   /**
-   * スキルをインポート（スタブ）
+   * スキルをインポート
    * @param skillName - スキル名
    * @returns インポート済みスキル情報
    */
   import: (skillName: string) => Promise<ImportedSkill>;
 
   /**
-   * スキルを削除（スタブ）
+   * スキルを削除
    * @param skillName - スキル名
-   * @returns 成功フラグ
    */
-  remove: (skillName: string) => Promise<boolean>;
+  remove: (skillName: string) => Promise<void>;
 
   /**
-   * 完了イベントを購読（スタブ）
+   * 完了イベントを購読
    * @param callback - 完了時のコールバック
    * @returns クリーンアップ関数
    */
   onComplete: (callback: (data: { executionId: string }) => void) => () => void;
 
   /**
-   * エラーイベントを購読（スタブ）
+   * エラーイベントを購読
    * @param callback - エラー時のコールバック
    * @returns クリーンアップ関数
    */
   onError: (
     callback: (data: { executionId: string; error: string }) => void,
   ) => () => void;
-
-  /**
-   * 権限応答を送信（sendPermissionResponseのエイリアス）
-   * @param response - 権限応答
-   * @returns 送信結果
-   */
-  respondToPermission: (
-    response: SkillPermissionResponse,
-  ) => Promise<{ success: boolean }>;
 }
 
 /**
@@ -177,7 +166,7 @@ export const skillAPI: SkillAPI = {
   onStream: (callback: (message: SkillStreamMessage) => void): (() => void) =>
     safeOn<SkillStreamMessage>(IPC_CHANNELS.SKILL_STREAM, callback),
 
-  abort: (executionId: string): Promise<boolean> =>
+  abort: (executionId: string): Promise<void> =>
     safeInvoke(IPC_CHANNELS.SKILL_ABORT, executionId),
 
   getExecutionStatus: (executionId: string): Promise<ExecutionInfo | null> =>
@@ -198,55 +187,31 @@ export const skillAPI: SkillAPI = {
   ): Promise<{ success: boolean }> =>
     safeInvoke(IPC_CHANNELS.SKILL_PERMISSION_RESPONSE, response),
 
-  // === Skill Management API (TASK-7A~7D - Stubs for TASK-6-1 compatibility) ===
+  // === Skill Management API ===
 
-  list: (): Promise<SkillMetadata[]> => Promise.resolve([]), // TODO: TASK-7A で実装
+  list: (): Promise<SkillMetadata[]> => safeInvoke(IPC_CHANNELS.SKILL_LIST),
 
-  getImported: (): Promise<ImportedSkill[]> => Promise.resolve([]), // TODO: TASK-7A で実装
+  getImported: (): Promise<ImportedSkill[]> =>
+    safeInvoke(IPC_CHANNELS.SKILL_GET_IMPORTED),
 
-  rescan: (): Promise<SkillMetadata[]> => Promise.resolve([]), // TODO: TASK-7A で実装
+  rescan: (): Promise<SkillMetadata[]> => safeInvoke(IPC_CHANNELS.SKILL_SCAN),
 
   import: (skillName: string): Promise<ImportedSkill> =>
-    Promise.resolve({
-      name: skillName,
-      description: "Stub imported skill",
-      path: "",
-      updatedAt: new Date(),
-      importedAt: new Date(),
-      status: "active",
-      agents: [],
-      references: [],
-      scripts: [],
-      assets: [],
-      schemas: [],
-      indexes: [],
-      otherFiles: [],
-    }), // TODO: TASK-7B で実装
+    safeInvoke(IPC_CHANNELS.SKILL_IMPORT, skillName),
 
-  remove: (_skillName: string): Promise<boolean> => Promise.resolve(true), // TODO: TASK-7A で実装
+  remove: (skillName: string): Promise<void> =>
+    safeInvoke(IPC_CHANNELS.SKILL_REMOVE, skillName),
 
   onComplete: (
     callback: (data: { executionId: string }) => void,
-  ): (() => void) => {
-    // TASK-FIX-4-1-IPC-CONSOLIDATION: Hardcoded string replaced with IPC_CHANNELS constant
-    return safeOn<{ executionId: string }>(
-      IPC_CHANNELS.SKILL_COMPLETE,
-      callback,
-    );
-  },
+  ): (() => void) =>
+    safeOn<{ executionId: string }>(IPC_CHANNELS.SKILL_COMPLETE, callback),
 
   onError: (
     callback: (data: { executionId: string; error: string }) => void,
-  ): (() => void) => {
-    // TASK-FIX-4-1-IPC-CONSOLIDATION: Hardcoded string replaced with IPC_CHANNELS constant
-    return safeOn<{ executionId: string; error: string }>(
+  ): (() => void) =>
+    safeOn<{ executionId: string; error: string }>(
       IPC_CHANNELS.SKILL_ERROR,
       callback,
-    );
-  },
-
-  respondToPermission: (
-    response: SkillPermissionResponse,
-  ): Promise<{ success: boolean }> =>
-    safeInvoke(IPC_CHANNELS.SKILL_PERMISSION_RESPONSE, response),
+    ),
 };

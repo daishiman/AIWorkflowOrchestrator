@@ -38,20 +38,29 @@ if (typeof navigator !== "undefined") {
   }
 }
 
-// window.skillAPI モック（useSkillExecutionフック用）
+// window.electronAPI.skill モック（useSkillExecutionフック用）
 // beforeAllで設定することで、jsdom環境のセットアップ後に確実に実行
 beforeAll(() => {
   if (typeof window !== "undefined") {
-    (window as unknown as { skillAPI: object }).skillAPI = {
-      onStream: vi.fn().mockReturnValue(() => {}),
-      onPermissionRequest: vi.fn().mockReturnValue(() => {}),
-      sendPermissionResponse: vi.fn().mockResolvedValue(undefined),
-      execute: vi.fn().mockResolvedValue({ executionId: "test-exec-id" }),
-      abort: vi.fn().mockResolvedValue(undefined),
-      listImported: vi.fn().mockResolvedValue([]),
-      listAvailable: vi.fn().mockResolvedValue([]),
-      import: vi.fn().mockResolvedValue({ success: true }),
-      remove: vi.fn().mockResolvedValue({ success: true }),
+    const existingElectronAPI =
+      (window as unknown as { electronAPI?: object }).electronAPI || {};
+    (window as unknown as { electronAPI: object }).electronAPI = {
+      ...existingElectronAPI,
+      skill: {
+        onStream: vi.fn().mockReturnValue(() => {}),
+        onPermissionRequest: vi.fn().mockReturnValue(() => {}),
+        sendPermissionResponse: vi.fn().mockResolvedValue(undefined),
+        execute: vi.fn().mockResolvedValue({ executionId: "test-exec-id" }),
+        abort: vi.fn().mockResolvedValue(undefined),
+        list: vi.fn().mockResolvedValue([]),
+        getImported: vi.fn().mockResolvedValue([]),
+        import: vi.fn().mockResolvedValue({}),
+        remove: vi.fn().mockResolvedValue(undefined),
+        rescan: vi.fn().mockResolvedValue([]),
+        onComplete: vi.fn().mockReturnValue(() => {}),
+        onError: vi.fn().mockReturnValue(() => {}),
+        getExecutionStatus: vi.fn().mockResolvedValue(null),
+      },
     };
   }
 });

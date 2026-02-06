@@ -10,7 +10,7 @@ import { renderHook, act } from "@testing-library/react";
 import type { SkillPermissionRequest } from "@repo/shared";
 import { usePermissionDialog } from "../usePermissionDialog";
 
-// window.skillAPI モック
+// window.electronAPI.skill モック
 const mockSkillAPI = {
   onPermissionRequest: vi.fn(),
   sendPermissionResponse: vi.fn(),
@@ -23,7 +23,7 @@ const mockSkillAPI = {
 describe("usePermissionDialog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     mockSkillAPI.onPermissionRequest.mockReturnValue(() => {});
     mockSkillAPI.sendPermissionResponse.mockResolvedValue({ success: true });
   });
