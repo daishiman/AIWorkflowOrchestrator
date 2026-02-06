@@ -1,0 +1,218 @@
+{
+  "feature": "debt-sec-001-auth-state-parameter",
+  "created": "2026-02-05T00:00:00Z",
+  "lastUpdated": "2026-02-06T00:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design.md",
+          "description": "アーキテクチャ設計書"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/main/infrastructure/stateManager.test.ts",
+          "description": "StateManagerユニットテスト"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/infrastructure/stateManager.ts",
+          "description": "StateManagerモジュール"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/authHandlers.ts",
+          "description": "authHandlers修正（state生成）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/index.ts",
+          "description": "index.ts修正（state検証）"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-verification.md",
+          "description": "カバレッジ最終レポート"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-summary.md",
+          "description": "リファクタリング記録"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1/Part 2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "estimatedPhases": 13,
+    "actualPhases": 12
+  },
+  "references": {
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/architecture-auth-security.md",
+      ".claude/skills/aiworkflow-requirements/references/security-principles.md",
+      ".claude/skills/aiworkflow-requirements/references/security-api-electron.md",
+      ".claude/skills/aiworkflow-requirements/references/security-operations.md",
+      ".claude/skills/aiworkflow-requirements/references/security-input-validation.md",
+      ".claude/skills/aiworkflow-requirements/references/api-ipc-auth.md"
+    ],
+    "relatedFiles": [
+      "apps/desktop/src/main/ipc/authHandlers.ts",
+      "apps/desktop/src/main/index.ts",
+      "apps/desktop/src/main/infrastructure/stateManager.ts",
+      "apps/desktop/src/main/infrastructure/secureStorage.ts",
+      "apps/desktop/src/main/auth/oauth-error-handler.ts"
+    ]
+  }
+}

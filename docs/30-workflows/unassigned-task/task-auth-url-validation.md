@@ -152,6 +152,21 @@ TASK-FIX-GOOGLE-LOGIN-001でOAuth認証実装時に発見された課題と解�
 - `architecture-auth-security.md` - 「実装時の苦戦した箇所・知見」セクション
 - `error-handling.md` - 「OAuthエラーコードマッピング」セクション
 
+### 3.6 DEBT-SEC-001実装時の苦戦箇所と教訓
+
+DEBT-SEC-001（State Parameter CSRF防御）実装時に発見された課題と解決策。URL検証はState Parameter検証と同じコールバックパス（`handleAuthCallback`）に実装するため、以下の教訓が直接的に適用される。
+
+| 課題                         | 原因                                                         | URL検証への影響                                                                                                                                             |
+| ---------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| URLフラグメント(#)パース     | Implicit Flowはurl.hashにトークンを返す                      | **URL検証時の最重要注意点**: `url.search`ではなく`url.hash`にパラメータが存在。ホワイトリスト検証はhashフラグメント内のパラメータに対して実施する必要がある |
+| State形式検証の先行チェック  | consumeState()呼び出し前に`/^[a-f0-9]{64}$/`で不正形式を除外 | URL検証でも同様にスキーム・パス検証を先行させ、パラメータ検証前に不正リクエストを排除                                                                       |
+| Phase 12ドキュメント更新漏れ | references/とdocs/の2階層に同じ情報が存在                    | Phase 12では`grep -rn "KEYWORD" references/ docs/`で両階層を必ず検索                                                                                        |
+
+**参照先システム仕様書（DEBT-SEC-001）**:
+
+- `.claude/skills/aiworkflow-requirements/references/csrf-state-parameter.md` - StateManager API仕様。State形式検証（`/^[a-f0-9]{64}$/`）の設計根拠が参考になる
+- `.claude/skills/aiworkflow-requirements/references/patterns.md` - 実行パターン集。「正本と派生ドキュメントの同期検索」パターンをPhase 12で適用
+
 ---
 
 ## 4. 実行手順
@@ -439,6 +454,10 @@ pnpm --filter @repo/desktop preview
 - `docs/30-workflows/login-recovery/step11-final-review.md` - 最終レビュー結果
 - `docs/00-requirements/17-security-guidelines.md` - セキュリティガイドライン
 - `apps/desktop/src/main/index.ts` - カスタムプロトコル処理
+- `.claude/skills/aiworkflow-requirements/references/csrf-state-parameter.md` - State形式検証パターンの設計参考
+- `.claude/skills/aiworkflow-requirements/references/patterns.md` - 実行パターン集（OAuth実装の成功/失敗パターン）
+- `.claude/skills/aiworkflow-requirements/references/architecture-auth-security.md` - 認証セキュリティアーキテクチャ全体
+- `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md` - State Map定期クリーンアップ（関連タスク）
 
 ### 参考資料
 

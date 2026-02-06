@@ -92,7 +92,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | API設計          | api-endpoints.md, api-ipc-\*.md                                                                   |
 | データベース     | database-schema.md, database-implementation.md                                                    |
 | UI/UX            | ui-ux-components.md, ui-ux-design-principles.md, ui-history-\*.md                                 |
-| セキュリティ     | security-principles.md, security-electron-ipc.md, security-\*.md                                  |
+| セキュリティ     | security-principles.md, security-electron-ipc.md, csrf-state-parameter.md, security-\*.md         |
 | 技術スタック     | technology-core.md, technology-frontend.md, technology-desktop.md                                 |
 | Claude Code      | claude-code-overview.md, claude-code-skills-\*.md                                                 |
 | デプロイ・運用   | deployment.md, deployment-electron.md, environment-variables.md                                   |
@@ -195,6 +195,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **8.42.0** | **2026-02-06** | **DEBT-SEC-001仕様構造最適化**: csrf-state-parameter.md新規作成（StateManager API仕様・型定義・セキュリティ設計根拠・苦戦箇所）、patterns.md拡充（8成功/8失敗/4ガイドライン）、architecture-auth-security.mdクロスリファレンス追加、SKILL.mdセキュリティカテゴリ更新 |
+| **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md v1.2.0更新（State parameter実装済み、CSRF対策済み）、architecture-auth-security.md v1.4.0更新（完了タスクセクション追加、StateManager実装ファイル・認証フローCSRF対策ステップ追加）、api-ipc-auth.md v1.3.0更新（CSRF_VALIDATION_FAILEDエラーコード・既知errorCode値テーブル追加）、security-operations.md v1.2.0更新（CSRF検証失敗ログ要件追記）、task-workflow.md v1.19.0更新（DEBT-SEC-001完了記録） |
 | **8.41.0** | **2026-02-06** | **TASK-FIX-5-1最適化**: architecture-implementation-patterns.md v1.15.0更新（S1-S5リファクタリング: S2/S3/S5をskill-creator/patterns.mdへ委譲し重複排除）、06-known-pitfalls.md P11追加（PostToolUseフックEdit失敗）、クロスリファレンス体系整備 |
 | **8.40.1** | **2026-02-06** | **TASK-FIX-5-1-SKILL-API-UNIFICATION完了**: interfaces-agent-sdk-skill.md v1.13.0更新（Preload API統一: window.skillAPI→window.electronAPI.skill、13メソッド定義更新、OperationResult廃止）、security-skill-ipc.md v1.5.0更新（contextBridge参照修正）、architecture-implementation-patterns.md更新（テストモック表修正）、quality-requirements.md更新（skillAPIモック参照修正）、210テスト全PASS |
 | **8.40.0** | **2026-02-06** | **TASK-AUTH-SESSION-REFRESH-001完了**: api-ipc-auth.md v1.3.0更新（TokenRefreshScheduler統合・auth:state-changedにexpiresAt追加）、arch-state-management.md v1.9.0更新（authSliceにsessionExpiresAt/isRefreshing追加）、architecture-auth-security.md v1.4.0更新（セッション自動リフレッシュアーキテクチャ追加）、task-workflow.md v1.19.0更新（未タスク3件登録）。26テスト全PASS・カバレッジ96.15% |

@@ -22,6 +22,7 @@ import {
 } from "@repo/shared/types/auth";
 import { withValidation } from "../infrastructure/security/ipc-validator.js";
 import { TokenRefreshScheduler } from "../services/tokenRefreshScheduler";
+import { stateManager } from "../infrastructure/stateManager";
 
 // === 型定義 ===
 
@@ -186,10 +187,14 @@ export function registerAuthHandlers(
             };
           }
 
+          // State parameter生成（CSRF対策: DEBT-SEC-001）
+          const state = stateManager.generate(provider as OAuthProvider);
+
           // OAuth URL取得
           const { data, error } = await supabase.auth.signInWithOAuth({
             provider: provider as OAuthProvider,
             options: {
+              queryParams: { state },
               redirectTo: AUTH_REDIRECT_URL,
               skipBrowserRedirect: true,
             },

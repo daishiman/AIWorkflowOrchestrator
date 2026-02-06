@@ -1014,11 +1014,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| ログ・監査 | L17 |
-| ファイル選択セキュリティ | L56 |
-| インシデント対応 | L123 |
-| セキュリティチェックリスト | L169 |
-| 関連ドキュメント | L215 |
+| ログ・監査 | L18 |
+| ファイル選択セキュリティ | L57 |
+| インシデント対応 | L124 |
+| セキュリティチェックリスト | L170 |
+| 関連ドキュメント | L216 |
 
 ### references/security-principles.md
 
@@ -1309,6 +1309,20 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L493 |
 | 関連ドキュメント | L506 |
 
+### references/csrf-state-parameter.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L6 |
+| 概要 | L17 |
+| API仕様 | L24 |
+| 認証フローにおける統合 | L99 |
+| セキュリティ設計根拠 | L142 |
+| 既知の制約（Implicit Flow由来） | L155 |
+| 苦戦箇所と教訓 | L166 |
+| テストカバレッジ | L197 |
+| 関連ドキュメント | L221 |
+| 変更履歴 | L229 |
+
 ### references/deployment-electron.md
 
 | セクション | 行 |
@@ -1511,6 +1525,13 @@ node scripts/list-specs.js --topics
 | ヘルスチェック | L278 |
 | 開発・デバッグ | L309 |
 | 関連ドキュメント | L330 |
+
+### references/patterns.md
+
+| セクション | 行 |
+|------------|----|\n| 成功パターン | L8 |
+| 失敗パターン（避けるべきこと） | L78 |
+| ガイドライン | L148 |
 
 ### references/plugin-development.md
 

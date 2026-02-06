@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-06T02:07:22.118Z",
-  "totalKeywords": 1038,
+  "generated": "2026-02-06T02:12:43.722Z",
+  "totalKeywords": 1049,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -24,6 +24,7 @@
       "api-ipc-system.md",
       "arch-claude-cli.md",
       "architecture-implementation-patterns.md",
+      "csrf-state-parameter.md",
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
       "interfaces-rag-file-selection.md",
@@ -43,6 +44,7 @@
       "claude-code-commands.md",
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
+      "csrf-state-parameter.md",
       "discord-bot.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
@@ -70,6 +72,7 @@
       "claude-code-overview.md",
       "claude-code-skills-overview.md",
       "claude-code-skills-structure.md",
+      "csrf-state-parameter.md",
       "database-schema.md",
       "deployment-gha.md",
       "interfaces-agent-sdk-executor.md",
@@ -175,6 +178,7 @@
       "claude-code-skills-process.md",
       "claude-code-skills-resources.md",
       "claude-code-skills-structure.md",
+      "csrf-state-parameter.md",
       "database-architecture.md",
       "database-implementation.md",
       "database-schema.md",
@@ -274,6 +278,7 @@
       "claude-code-skills-agents.md",
       "claude-code-skills-resources.md",
       "claude-code-skills-structure.md",
+      "csrf-state-parameter.md",
       "database-architecture.md",
       "database-operations.md",
       "database-schema.md",
@@ -1577,6 +1582,54 @@
       "error-handling.md",
       "interfaces-agent-sdk-executor.md"
     ],
+    "State": [
+      "csrf-state-parameter.md"
+    ],
+    "Parameter": [
+      "csrf-state-parameter.md"
+    ],
+    "CSRF": [
+      "csrf-state-parameter.md"
+    ],
+    "防御": [
+      "csrf-state-parameter.md"
+    ],
+    "実装仕様": [
+      "csrf-state-parameter.md"
+    ],
+    "メタ情報": [
+      "csrf-state-parameter.md"
+    ],
+    "認証フローにおける統合": [
+      "csrf-state-parameter.md"
+    ],
+    "セキュリティ設計根拠": [
+      "csrf-state-parameter.md"
+    ],
+    "既知の制約": [
+      "csrf-state-parameter.md"
+    ],
+    "Implicit": [
+      "csrf-state-parameter.md"
+    ],
+    "Flow": [
+      "csrf-state-parameter.md",
+      "testing-dialog-patterns.md"
+    ],
+    "由来": [
+      "csrf-state-parameter.md"
+    ],
+    "苦戦箇所と教訓": [
+      "csrf-state-parameter.md"
+    ],
+    "テストカバレッジ": [
+      "csrf-state-parameter.md",
+      "llm-streaming.md",
+      "rag-knowledge-graph.md",
+      "security-skill-execution.md",
+      "ui-history-integration.md",
+      "ui-ux-llm-selector.md"
+    ],
     "Turso": [
       "database-architecture.md",
       "database-operations.md"
@@ -2628,13 +2681,6 @@
     "キャンセル機構": [
       "llm-streaming.md"
     ],
-    "テストカバレッジ": [
-      "llm-streaming.md",
-      "rag-knowledge-graph.md",
-      "security-skill-execution.md",
-      "ui-history-integration.md",
-      "ui-ux-llm-selector.md"
-    ],
     "型安全性の保証": [
       "llm-streaming.md",
       "rag-knowledge-graph.md"
@@ -2723,6 +2769,28 @@
     ],
     "成功基準": [
       "overview.md"
+    ],
+    "実行パターン集": [
+      "patterns.md"
+    ],
+    "成功パターン": [
+      "patterns.md"
+    ],
+    "失敗パターン": [
+      "patterns.md"
+    ],
+    "避けるべきこと": [
+      "patterns.md",
+      "spec-guidelines.md"
+    ],
+    "ガイドライン": [
+      "patterns.md",
+      "ui-ux-components.md",
+      "ui-ux-design-system.md",
+      "ui-ux-forms.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-settings.md"
     ],
     "機能プラグイン追加手順": [
       "plugin-development.md"
@@ -3211,9 +3279,6 @@
     "すべきこと": [
       "spec-guidelines.md"
     ],
-    "避けるべきこと": [
-      "spec-guidelines.md"
-    ],
     "新規仕様の追加手順": [
       "spec-guidelines.md"
     ],
@@ -3514,9 +3579,6 @@
     "Basic": [
       "testing-dialog-patterns.md"
     ],
-    "Flow": [
-      "testing-dialog-patterns.md"
-    ],
     "Edge": [
       "testing-dialog-patterns.md"
     ],
@@ -3680,14 +3742,6 @@
     ],
     "実装済": [
       "ui-ux-agent-execution.md"
-    ],
-    "ガイドライン": [
-      "ui-ux-components.md",
-      "ui-ux-design-system.md",
-      "ui-ux-forms.md",
-      "ui-ux-panels.md",
-      "ui-ux-portal-patterns.md",
-      "ui-ux-settings.md"
     ],
     "コンポーネント設計概要": [
       "ui-ux-components.md"
