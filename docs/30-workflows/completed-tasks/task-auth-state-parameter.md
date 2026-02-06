@@ -16,7 +16,7 @@ issue_number: 279
 | 対象機能         | OAuth認証（Desktop）                                               |
 | 優先度           | 中                                                                 |
 | 見積もり規模     | 小規模                                                             |
-| ステータス       | 未実施                                                             |
+| ステータス       | 完了（2026-02-06）                                                 |
 | 発見元           | Phase 7（最終レビューゲート）                                      |
 | 発見日           | 2025-12-22                                                         |
 | 発見エージェント | .claude/agents/sec-auditor.md, .claude/agents/electron-security.md |

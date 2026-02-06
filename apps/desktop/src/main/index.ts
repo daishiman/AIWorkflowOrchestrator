@@ -11,6 +11,7 @@ import {
   parseOAuthError,
   mapOAuthErrorToMessage,
 } from "./auth/oauth-error-handler";
+import { stateManager } from "./infrastructure/stateManager";
 
 // メインウィンドウの参照を保持（モジュールスコープ）
 export let mainWindowRef: BrowserWindow | null = null;
@@ -149,6 +150,36 @@ async function handleAuthCallback(url: string): Promise<void> {
     const hashParams = new URLSearchParams(url.substring(hashIndex + 1));
     const accessToken = hashParams.get("access_token");
     const refreshToken = hashParams.get("refresh_token");
+    const state = hashParams.get("state");
+
+    // ==========================================================
+    // State parameter検証（CSRF対策: DEBT-SEC-001）
+    // RFC 6749 Section 10.12準拠
+    // ==========================================================
+
+    // state形式バリデーション: 64文字hex文字列であること
+    if (state && (typeof state !== "string" || !/^[a-f0-9]{64}$/.test(state))) {
+      console.warn("[Auth] CSRF validation failed: malformed state parameter");
+      mainWindowRef.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+        authenticated: false,
+        error: "認証状態が無効または期限切れです。再度ログインしてください。",
+        errorCode: "CSRF_VALIDATION_FAILED",
+      });
+      return;
+    }
+
+    // state検証（stateがない場合、または検証失敗の場合はエラー）
+    if (!state || !stateManager.consumeState(state)) {
+      console.warn(
+        "[Auth] CSRF validation failed: invalid or expired state parameter",
+      );
+      mainWindowRef.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+        authenticated: false,
+        error: "認証状態が無効または期限切れです。再度ログインしてください。",
+        errorCode: "CSRF_VALIDATION_FAILED",
+      });
+      return;
+    }
 
     if (!accessToken || !refreshToken) {
       console.error("Missing tokens in auth callback URL");

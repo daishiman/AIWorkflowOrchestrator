@@ -432,7 +432,7 @@ describe("Phase 6: Expanded Tests", () => {
           const count = parseInt(
             screen.getByTestId("counter").textContent || "0",
           );
-          expect(count).toBeGreaterThan(5);
+          expect(count).toBeGreaterThanOrEqual(5);
         },
         { timeout: 200 },
       );

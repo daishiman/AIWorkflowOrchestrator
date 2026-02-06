@@ -56,6 +56,15 @@ Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 | error         | string \| undefined | エラーメッセージ（日本語）                   |
 | errorCode     | string \| undefined | エラーコード（AUTH_ERROR_CODES値）           |
 
+**既知のerrorCode値**:
+
+| errorCode                | 発生条件                                      | 追加タスク                |
+| ------------------------ | --------------------------------------------- | ------------------------- |
+| CSRF_VALIDATION_FAILED   | state parameter欠落・不正形式・期限切れ・不一致 | DEBT-SEC-001（2026-02-06） |
+| AUTH_CALLBACK_ERROR      | OAuthコールバックでerrorパラメータ検出         | TASK-FIX-GOOGLE-LOGIN-001 |
+| TOKEN_EXCHANGE_FAILED    | トークン交換失敗                              | TASK-FIX-GOOGLE-LOGIN-001 |
+| SESSION_NOT_FOUND        | セッション取得失敗                            | TASK-FIX-GOOGLE-LOGIN-001 |
+
 ---
 
 ## 型定義
@@ -241,6 +250,7 @@ Main Process上で動作するセッション自動リフレッシュスケジ�
 
 | バージョン | 日付       | 変更内容                                                                |
 | ---------- | ---------- | ----------------------------------------------------------------------- |
+| v1.3.1     | 2026-02-06 | DEBT-SEC-001: CSRF_VALIDATION_FAILEDエラーコード追記、既知のerrorCode値テーブル追加 |
 | v1.3.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshScheduler統合セクション追加、auth:state-changedにexpiresAt追加、autoRefreshToken:false設定変更 |
 | v1.2.0     | 2026-02-05 | TASK-FIX-GOOGLE-LOGIN-001: AuthSessionにrefreshTokenExpiresAt追加、auth:state-changedにerror/errorCode追加 |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換              |

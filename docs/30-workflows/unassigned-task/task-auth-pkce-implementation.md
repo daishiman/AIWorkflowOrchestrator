@@ -79,13 +79,21 @@ OAuth 2.1仕様に準拠したPKCE実装を追加し、認可コード横取り�
 - authHandlers.ts修正（code_challenge送信）
 - index.ts修正（code_verifierでトークン交換）
 - Supabase PKCEサポート状況の調査・確認
+- detectProvider関数実装（コールバックURLからプロバイダーを特定）（UT-SEC-001統合: DEBT-SEC-001 Phase 10 MINOR指摘）
+- consumeState()からvalidate(state, provider)への置換（UT-SEC-001統合: Authorization Code Flowへの移行で自然に対応可能）
 - ユニットテスト追加
 
 #### 含まないもの
 
-- State parameter検証（DEBT-SEC-001として別タスク）
+- ~~State parameter検証（DEBT-SEC-001として完了済み 2026-02-06）~~
 - カスタムプロトコルURL詳細検証（DEBT-SEC-003として別タスク）
 - セッション管理の改善（別タスク）
+
+#### 統合された未タスク
+
+| 統合元     | 内容                                              | 統合理由                                                                                          |
+| ---------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| UT-SEC-001 | detectProvider実装によるconsumeState→validate置換 | Authorization Code Flowへの移行でプロバイダー情報が取得可能になるため、PKCE実装と同時に対応が自然 |
 
 ### 2.4 成果物
 
@@ -153,6 +161,22 @@ TASK-FIX-GOOGLE-LOGIN-001でOAuth認証実装時に発見された課題と解�
 
 - `architecture-auth-security.md` - 「実装時の苦戦した箇所・知見」セクション
 - `skill-creator/references/patterns.md` - 「OAuthコールバックエラーパラメータ抽出パターン」
+
+### 3.6 DEBT-SEC-001実装時の苦戦箇所と教訓
+
+DEBT-SEC-001（State Parameter CSRF防御）実装時に発見された課題と解決策。PKCE実装はState Parameterの後続タスクであり、同じ認証フローに変更を加えるため、以下の教訓が直接的に適用される。
+
+| 課題                         | 原因                                                          | PKCE実装への影響                                                                                                         |
+| ---------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| consumeState()設計の乖離     | Implicit FlowのコールバックURLにプロバイダー情報が含まれない  | PKCE（Authorization Code Flow）ではサーバーサイドでプロバイダー情報取得可能。`validate(state, provider)`が使用可能になる |
+| URLフラグメント(#)パース     | Implicit Flowはurl.hashにトークンを返す                       | **PKCE移行で最重要**: `url.hash.slice(1)` → `url.search`（?パラメータ）に切り替え必須                                    |
+| Phase 12ドキュメント更新漏れ | references/とdocs/の2階層に同じ情報が存在                     | Phase 12では`grep -rn "KEYWORD" references/ docs/`で両階層を必ず検索                                                     |
+| Vitest fakeTimers精度問題    | `advanceTimersByTime()`で期限切れテスト時にタイマー精度のズレ | PKCEManagerのcode_verifier有効期限テストでも同様。`Date.now()`モック推奨                                                 |
+
+**参照先システム仕様書（DEBT-SEC-001）**:
+
+- `.claude/skills/aiworkflow-requirements/references/csrf-state-parameter.md` - StateManager API仕様・型定義・セキュリティ設計根拠。PKCEManagerは同じパターンで設計可能
+- `.claude/skills/aiworkflow-requirements/references/patterns.md` - 成功パターン（OAuth仕様制約の設計時実証、IPC既存ペイロードへのエラーフィールド追加）
 
 ---
 
@@ -553,6 +577,10 @@ pnpm --filter @repo/desktop preview
 - `docs/00-requirements/17-security-guidelines.md` - セキュリティガイドライン
 - `apps/desktop/src/main/ipc/authHandlers.ts` - 既存認証ハンドラー
 - `apps/desktop/src/main/index.ts` - カスタムプロトコル処理
+- `.claude/skills/aiworkflow-requirements/references/csrf-state-parameter.md` - StateManager API仕様（PKCEManagerの設計参考）
+- `.claude/skills/aiworkflow-requirements/references/patterns.md` - 実行パターン集（OAuth実装の成功/失敗パターン）
+- `.claude/skills/aiworkflow-requirements/references/architecture-auth-security.md` - 認証セキュリティアーキテクチャ全体
+- `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md` - State Map定期クリーンアップ（PKCEManagerにも同様のcleanup必要）
 
 ### 参考資料
 
