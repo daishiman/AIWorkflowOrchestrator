@@ -32,7 +32,7 @@ describe("supabaseClient", () => {
         expect.objectContaining({
           auth: expect.objectContaining({
             persistSession: false,
-            autoRefreshToken: true,
+            autoRefreshToken: false, // カスタムスケジューラーに委譲
             detectSessionInUrl: false,
           }),
         }),

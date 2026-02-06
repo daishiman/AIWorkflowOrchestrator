@@ -181,6 +181,30 @@ TASK-FIX-GOOGLE-LOGIN-001で追加されたOAuth認証エラーコード。
 
 **実装場所**: `packages/shared/types/auth.ts`
 
+### TokenRefreshCallbacks（TASK-AUTH-SESSION-REFRESH-001）
+
+セッションリフレッシュ時のコールバックインターフェース。Callback DIパターンにより、スケジューラーは「いつ実行するか」のみに責務を限定。
+
+| フィールド | 型                                        | 説明                                   |
+| ---------- | ----------------------------------------- | -------------------------------------- |
+| onRefresh  | () => Promise\<number \| null\>           | リフレッシュ実行。新expiresAt(ms)を返す |
+| onFailure  | (error: Error) => void                    | 全リトライ失敗時のコールバック         |
+| onSuccess  | (newExpiresAt: number) => void \| undefined | リフレッシュ成功時（オプション）       |
+
+**実装場所**: `apps/desktop/src/main/services/tokenRefreshScheduler.ts`
+
+### TokenRefreshConfig（TASK-AUTH-SESSION-REFRESH-001）
+
+スケジューラー設定。
+
+| フィールド            | 型     | デフォルト | 説明                                   |
+| --------------------- | ------ | ---------- | -------------------------------------- |
+| refreshBeforeExpiryMs | number | 300000     | 有効期限の何ms前にリフレッシュ         |
+| maxRetries            | number | 3          | 最大リトライ回数                       |
+| retryBaseIntervalMs   | number | 1000       | リトライ基本間隔（指数バックオフ基準） |
+
+**実装場所**: `apps/desktop/src/main/services/tokenRefreshScheduler.ts`
+
 ### AuthState
 
 Zustand認証状態。
@@ -341,6 +365,7 @@ Desktop アプリの複数フォルダ管理機能で使用する型定義。
 
 | Version    | Date           | Changes                                                                                 |
 | ---------- | -------------- | --------------------------------------------------------------------------------------- |
+| **1.3.0**  | **2026-02-06** | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshCallbacks/TokenRefreshConfig型定義追加（Callback DIパターン、スケジューラー設定） |
 | **1.2.0**  | **2026-02-05** | TASK-FIX-GOOGLE-LOGIN-001完了: AUTH_ERROR_CODES拡張(9コード)、AuthSession/AuthState型拡張、OAuthエラーハンドリング |
 | 1.1.0      | 2026-02-04     | AUTH-UI-004完了: SupabaseIdentity型にpictureプロパティ追加、完了タスクセクション追加    |
 | 1.0.0      | 2026-01-15     | 初版作成: 認証・プロフィール・ワークスペース型定義                                       |

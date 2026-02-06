@@ -21,6 +21,8 @@ import {
   AUTH_ERROR_CODES,
 } from "@repo/shared/types/auth";
 import { withValidation } from "../infrastructure/security/ipc-validator.js";
+import { TokenRefreshScheduler } from "../services/tokenRefreshScheduler";
+import { stateManager } from "../infrastructure/stateManager";
 
 // === 型定義 ===
 
@@ -61,6 +63,99 @@ function sanitizeErrorMessage(error: unknown): string {
   return "An unknown error occurred";
 }
 
+// === スケジューラーインスタンス ===
+
+let tokenRefreshScheduler: TokenRefreshScheduler | null = null;
+
+/**
+ * TokenRefreshScheduler インスタンスを取得（テスト用）
+ */
+export function getTokenRefreshScheduler(): TokenRefreshScheduler | null {
+  return tokenRefreshScheduler;
+}
+
+/**
+ * TokenRefreshScheduler を開始する
+ * ログイン成功・セッション復元時に呼び出す
+ */
+function startTokenRefreshScheduler(
+  expiresAtSeconds: number,
+  supabase: SupabaseClient,
+  secureStorage: SecureStorage,
+  mainWindow: BrowserWindow,
+): void {
+  if (!tokenRefreshScheduler) {
+    tokenRefreshScheduler = new TokenRefreshScheduler();
+  }
+
+  const expiresAtMs = expiresAtSeconds * 1000;
+
+  tokenRefreshScheduler.start(expiresAtMs, {
+    onRefresh: async () => {
+      const refreshToken = await secureStorage.getRefreshToken();
+      if (!refreshToken) {
+        throw new Error("No refresh token available");
+      }
+
+      const { data, error } = await supabase.auth.refreshSession({
+        refresh_token: refreshToken,
+      });
+
+      if (error || !data.session) {
+        throw new Error(error?.message ?? "Token refresh failed");
+      }
+
+      // 新しいリフレッシュトークンを保存
+      await secureStorage.storeRefreshToken(data.session.refresh_token);
+
+      const newExpiresAt = data.session.expires_at ?? Date.now() / 1000 + 3600;
+
+      // Renderer に認証状態更新を通知
+      const user = toAuthUser(data.session.user);
+      if (user) {
+        mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+          authenticated: true,
+          user,
+          expiresAt: newExpiresAt,
+        });
+      }
+
+      return newExpiresAt * 1000; // ミリ秒で返す
+    },
+    onFailure: (error: Error) => {
+      console.error(
+        `[TokenRefreshScheduler] All retries failed: ${error.message}`,
+      );
+
+      // 全リトライ失敗 → ログアウト処理
+      secureStorage.clearTokens().catch(() => {});
+      mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+        authenticated: false,
+      } as AuthState);
+    },
+    onSuccess: (newExpiresAtMs: number) => {
+      console.info(
+        `[TokenRefreshScheduler] Token refreshed automatically. Next expiry: ${new Date(newExpiresAtMs).toISOString()}`,
+      );
+    },
+  });
+}
+
+/**
+ * TokenRefreshScheduler を停止する
+ */
+function stopTokenRefreshScheduler(): void {
+  tokenRefreshScheduler?.stop();
+}
+
+/**
+ * TokenRefreshScheduler を破棄する（アプリ終了時）
+ */
+export function disposeTokenRefreshScheduler(): void {
+  tokenRefreshScheduler?.dispose();
+  tokenRefreshScheduler = null;
+}
+
 // === ハンドラー登録 ===
 
 /**
@@ -92,10 +187,14 @@ export function registerAuthHandlers(
             };
           }
 
+          // State parameter生成（CSRF対策: DEBT-SEC-001）
+          const state = stateManager.generate(provider as OAuthProvider);
+
           // OAuth URL取得
           const { data, error } = await supabase.auth.signInWithOAuth({
             provider: provider as OAuthProvider,
             options: {
+              queryParams: { state },
               redirectTo: AUTH_REDIRECT_URL,
               skipBrowserRedirect: true,
             },
@@ -146,6 +245,9 @@ export function registerAuthHandlers(
       IPC_CHANNELS.AUTH_LOGOUT,
       async (_event): Promise<IPCResponse<void>> => {
         try {
+          // スケジューラー停止
+          stopTokenRefreshScheduler();
+
           const { error } = await supabase.auth.signOut();
 
           if (error) {
@@ -390,10 +492,15 @@ export async function processAuthCallback(
   // リフレッシュトークンを保存
   await secureStorage.storeRefreshToken(data.session.refresh_token);
 
+  // トークンリフレッシュスケジューラーを開始
+  const expiresAt = data.session.expires_at ?? Date.now() / 1000 + 3600;
+  startTokenRefreshScheduler(expiresAt, supabase, secureStorage, mainWindow);
+
   // Rendererに認証状態変更を通知
   const user = toAuthUser(data.session.user);
   mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
     authenticated: true,
     user,
-  } as AuthState);
+    expiresAt,
+  });
 }

@@ -66,7 +66,7 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 | カスタムプロトコル     | ✅ 実装済み | `aiworkflow://auth/callback` で認証コールバック受信 |
 | Refresh Token暗号化    | ✅ 実装済み | safeStorage.encryptString()で暗号化後保存           |
 | Access Tokenメモリ保持 | ✅ 実装済み | Zustand storeでメモリ上のみ保持                     |
-| State parameter検証    | ❌ 未実装   | DEBT-SEC-001として技術的負債に記録                  |
+| State parameter検証    | ✅ 実装済み | DEBT-SEC-001完了（2026-02-06）                      |
 | PKCE実装               | ❌ 未実装   | DEBT-SEC-002として技術的負債に記録                  |
 
 **実装ファイル**:
@@ -130,7 +130,7 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 
 | リスク                | 対策状況    | 技術的負債                          |
 | --------------------- | ----------- | ----------------------------------- |
-| CSRF攻撃              | ⚠️ 一部対策 | State parameter検証（DEBT-SEC-001） |
+| CSRF攻撃              | ✅ 対策済み | State parameter検証（DEBT-SEC-001完了） |
 | 認可コード横取り      | ⚠️ 一部対策 | PKCE実装（DEBT-SEC-002）            |
 | 不正なコールバックURL | ⚠️ 基本対策 | URL詳細検証（DEBT-SEC-003）         |
 
@@ -351,5 +351,6 @@ macOSのLaunchServicesキャッシュにより、削除されたworktreeのパ�
 
 | バージョン | 日付       | 変更内容                                                       |
 | ---------- | ---------- | -------------------------------------------------------------- |
-| v1.0.0     | -          | 初版作成                                                       |
+| v1.2.0     | 2026-02-06 | DEBT-SEC-001完了: State parameter検証実装済み、CSRF対策ステータス更新 |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換           |
+| v1.0.0     | -          | 初版作成                                                       |

@@ -229,7 +229,7 @@ Vitestの並列実行はデフォルトで有効。スレッド数は5、テス�
 | API             | モック方法                  | 配置先             |
 | --------------- | --------------------------- | ------------------ |
 | Clipboard API   | vi.fn().mockResolvedValue() | setup.ts           |
-| window.skillAPI | vi.stubGlobal()             | setup.ts beforeAll |
+| window.electronAPI.skill | vi.stubGlobal()             | setup.ts beforeAll（TASK-FIX-5-1で統一） |
 
 **Clipboard APIモック設計**:
 
@@ -238,27 +238,29 @@ Vitestの並列実行はデフォルトで有効。スレッド数は5、テス�
 | navigator.clipboard.writeText | Promise<void>             | コピー操作テスト   |
 | navigator.clipboard.readText  | Promise<string>（空文字） | ペースト操作テスト |
 
-**window.skillAPIモック設計**:
+**window.electronAPI.skill モック設計（TASK-FIX-5-1で統一）**:
 
-useSkillExecution/useSkillPermissionフックがwindow.skillAPIを参照するため、テスト環境でモックが必要。
+useSkillExecution/useSkillPermissionフックがwindow.electronAPI.skillを参照するため、テスト環境でモックが必要。
 
-| メソッド          | 戻り値                 | 用途                   |
-| ----------------- | ---------------------- | ---------------------- |
-| onStream          | () => void             | ストリームリスナー登録 |
-| onPermission      | () => void             | 権限リクエストリスナー |
-| respondPermission | Promise<boolean>       | 権限応答送信           |
-| execute           | Promise<{executionId}> | スキル実行開始         |
-| abort             | Promise<void>          | 実行中断               |
+| メソッド               | 戻り値                    | 用途                   |
+| ---------------------- | ------------------------- | ---------------------- |
+| onStream               | () => void                | ストリームリスナー登録 |
+| onPermissionRequest    | () => void                | 権限リクエストリスナー |
+| sendPermissionResponse | Promise<{success}>        | 権限応答送信           |
+| execute                | Promise<{executionId}>    | スキル実行開始         |
+| abort                  | Promise<void>             | 実行中断               |
+| list                   | Promise<SkillMetadata[]>  | スキル一覧取得         |
+| getImported            | Promise<ImportedSkill[]>  | インポート済み取得     |
 
 **vi.stubGlobal再設定パターン**:
 
 setup.tsのbeforeAllでグローバルモックを設定後、テストファイル固有のモックを使用したい場合の対処法。
 
-| 手順 | 内容                                                              |
-| ---- | ----------------------------------------------------------------- |
-| 1    | テストファイルでmockSkillAPIを定義                                |
-| 2    | vi.stubGlobal("skillAPI", mockSkillAPI)をモジュールレベルで実行   |
-| 3    | beforeEach内で再度vi.stubGlobalを呼び出し（setup.tsの上書き対策） |
+| 手順 | 内容                                                                              |
+| ---- | --------------------------------------------------------------------------------- |
+| 1    | テストファイルでmockSkillAPIを定義                                                |
+| 2    | vi.stubGlobal("electronAPI", { skill: mockSkillAPI })をモジュールレベルで実行     |
+| 3    | beforeEach内で再度vi.stubGlobalを呼び出し（setup.tsの上書き対策）                 |
 
 **MSW（Mock Service Worker）によるAPIモック**:
 
@@ -644,7 +646,7 @@ vitest.config.tsで設定済みの閾値:
 
 - package.json (root): pnpm.overrides追加（jsdom@25.0.1固定）
 - apps/desktop/vitest.config.ts: environment: "jsdom"
-- apps/desktop/src/test/setup.ts: Clipboard API + window.skillAPI モック
+- apps/desktop/src/test/setup.ts: Clipboard API + window.electronAPI.skill モック（TASK-FIX-5-1で統一）
 
 **残存課題**: act()警告が一部残存（LOW優先度、task-ref-act-warning-elimination-001として登録）
 

@@ -5,6 +5,98 @@
 
 ---
 
+## 2026-02-06: DEBT-SEC-001 仕様書更新（Phase 12ドキュメント・未タスク管理）
+
+| 項目         | 内容                                                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| タスクID     | DEBT-SEC-001                                                                                                      |
+| Agent        | aiworkflow-requirements                                                                                           |
+| 操作         | Phase 12 仕様書更新（7仕様書更新）                                                                               |
+| 対象ファイル | security-principles.md, architecture-auth-security.md, api-ipc-auth.md, security-operations.md, task-workflow.md, 17-security-guidelines.md, topic-map.md |
+| 結果         | 成功                                                                                                              |
+| 備考         | 苦戦箇所3点を完了タスクセクションに記録。UT-SEC-001をDEBT-SEC-002に正式統合                                       |
+
+### 更新詳細
+
+| ファイル                       | 追加内容                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| security-principles.md         | DEBT-SEC-001ステータス「実装済み」、CSRF対策完了記録                             |
+| architecture-auth-security.md  | 完了タスクセクション、苦戦箇所3点記録、残課題リンク追加                          |
+| api-ipc-auth.md                | CSRF_VALIDATION_FAILEDエラーコード追記                                          |
+| security-operations.md         | CSRF検証失敗イベントのログ要件追記                                              |
+| task-workflow.md               | UT-SEC-001をDEBT-SEC-002スコープに統合、残課題テーブル更新                       |
+| 17-security-guidelines.md      | 派生ドキュメント同期（正本security-principles.mdの変更を反映）                  |
+| topic-map.md                   | generate-index.js再生成による索引更新                                           |
+
+### 苦戦箇所
+
+1. **正本と派生ドキュメントの同期漏れ**: references/security-principles.md（正本）を更新しても docs/00-requirements/17-security-guidelines.md（派生）の更新を忘れやすい。`grep -rn` で両方検索する習慣が必要
+2. **未タスク「包含」判断の追跡性不足**: UT-SEC-001を「DEBT-SEC-002/003に包含」と判断したが、包含先のスコープに明示追記しなかった。包含先仕様書への追記 + task-workflow.md残課題テーブル登録 + 関連仕様書リンク追加の3ステップが必要
+3. **Phase 12の全Step確認前に完了記載**: 一部Step完了時点で「完了」と記載しがち。全Step (1-A〜1-D + Step 2) 確認後に記載すべき
+
+---
+
+## 2026-02-06: DEBT-SEC-001完了（OAuth State Parameter検証実装）
+
+| 項目         | 内容                                                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| タスクID     | DEBT-SEC-001                                                                                                      |
+| 操作         | Phase 1-12 完了（システム仕様書4ファイル更新）                                                                    |
+| 対象ファイル | security-principles.md, architecture-auth-security.md, api-ipc-auth.md, security-operations.md                   |
+| 結果         | success                                                                                                           |
+| 備考         | RFC 6749 Section 10.12準拠のCSRF対策。StateManager新規作成、21テスト全PASS、カバレッジ100%                        |
+
+### 更新詳細
+
+| ファイル                     | 追加内容                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------- |
+| security-principles.md       | DEBT-SEC-001ステータスを「実装済み」に更新、CSRF攻撃対策を「対策済み」に更新 |
+| architecture-auth-security.md | DEBT-SEC-001完了記録、State parameter検証フロー追加、stateManager.ts実装ファイル追記 |
+| api-ipc-auth.md              | CSRF_VALIDATION_FAILEDエラーコード追記                                    |
+| security-operations.md       | CSRF検証失敗イベントのログ要件追記                                        |
+
+---
+
+## 2026-02-06: TASK-FIX-5-1完了（SkillAPI二重定義の統一）
+
+| 項目         | 内容                                                                              |
+| ------------ | --------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-5-1-SKILL-API-UNIFICATION                                                |
+| 操作         | Phase 1-12 完了（SkillAPI統一、仕様書3ファイル更新）                              |
+| 対象ファイル | interfaces-agent-sdk-skill.md, security-skill-ipc.md                              |
+| 結果         | success                                                                           |
+| 備考         | window.skillAPI廃止→window.electronAPI.skill一本化。テスト210件PASS               |
+
+### 更新詳細
+
+| ファイル                          | 追加内容                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------ |
+| interfaces-agent-sdk-skill.md     | 完了タスクセクション追加、Preloadファイルパス修正                        |
+| security-skill-ipc.md             | contextBridge公開API統一記録（2箇所）                                    |
+
+---
+
+## 2026-02-06: TASK-AUTH-SESSION-REFRESH-001完了（セッション自動リフレッシュ実装）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-AUTH-SESSION-REFRESH-001                                              |
+| 操作         | Phase 1-12 完了                                                            |
+| 対象ファイル | tokenRefreshScheduler.ts, authHandlers.ts, supabaseClient.ts, authSlice.ts |
+| 結果         | success                                                                    |
+| 備考         | TDD Red-Green-Refactor、26テストケース全PASS、カバレッジ96.15%             |
+
+### 更新詳細
+
+| ファイル                    | 内容                                                  |
+| --------------------------- | ----------------------------------------------------- |
+| tokenRefreshScheduler.ts    | 新規作成: setTimeout + 指数バックオフリトライスケジューラー |
+| authHandlers.ts             | スケジューラー統合: startTokenRefreshScheduler等追加   |
+| supabaseClient.ts           | autoRefreshToken: false（SDK競合防止）                 |
+| authSlice.ts                | isRefreshing状態追加                                  |
+| packages/shared/types/auth.ts | sessionExpiresAt追加                                |
+
+---
 ## 2026-02-05: ENV-INFRA-001完了（better-sqlite3 Node.jsバージョン不一致修正）
 
 | 項目         | 内容                                                                       |
@@ -2322,6 +2414,32 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 - `apps/desktop/src/__tests__/__fixtures__/skill-creator/` - 5種類のフィクスチャ (18ファイル)
 - `.claude/skills/skill-fixture-runner/` - 検証スクリプト実行スキル (8ファイル)
 - `apps/desktop/src/__tests__/fixtures/skill-creator.fixture.test.ts` - 62テストケース
+
+---
+
+
+
+## [実行日時: 2026-02-06T02:11:35.490Z]
+
+- Task: DEBT-SEC-001 csrf-state-parameter.md新規作成・patterns.md最適化
+- 結果: success
+- フィードバック: 新規参照ファイル作成: csrf-state-parameter.md（StateManager API仕様・セキュリティ設計根拠）。patterns.md強化: 成功8パターン・失敗8パターン・ガイドライン4件に拡充。architecture-auth-security.mdにクロスリファレンス追加。
+
+---
+
+## [実行日時: 2026-02-06T01:43:32.416Z]
+
+- Task: unknown
+- 結果: success
+- フィードバック: 7仕様書更新、苦戦箇所記録、UT-SEC-001統合
+
+---
+
+## [実行日時: 2026-02-06T01:41:25.133Z]
+
+- Task: unknown
+- 結果: success
+- フィードバック: なし
 
 ---
 

@@ -132,6 +132,38 @@
 
 ## 完了タスク
 
+### タスク: TASK-AUTH-SESSION-REFRESH-001 セッション自動リフレッシュ実装（2026-02-06完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | TASK-AUTH-SESSION-REFRESH-001                   |
+| 完了日     | 2026-02-06                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | 26                                              |
+| カバレッジ | Stmts 96.15%, Branch 93.10%, Funcs 100%         |
+
+#### 成果物
+
+| 成果物                     | パス/内容                                                    |
+| -------------------------- | ------------------------------------------------------------ |
+| TokenRefreshScheduler      | `apps/desktop/src/main/services/tokenRefreshScheduler.ts`    |
+| テストケース               | `apps/desktop/src/main/services/__tests__/tokenRefreshScheduler.test.ts` |
+| authHandlers.ts更新        | スケジューラー統合、コールバック追加                         |
+| supabaseClient.ts更新      | `autoRefreshToken: false`                                    |
+| authSlice.ts更新           | `isRefreshing` フィールド追加                                |
+| auth.ts更新                | `sessionExpiresAt` フィールド追加                            |
+
+#### 未タスク（TASK-AUTH-SESSION-REFRESH-001実施中に発見）
+
+| タスクID                    | タスク名                           | 優先度 |
+| --------------------------- | ---------------------------------- | ------ |
+| UT-OFFLINE-REFRESH-001      | オフライン時リフレッシュ失敗処理   | 中     |
+| UT-AUDIT-001                | 認証イベント監査ログ               | 中     |
+| UT-REFRESH-NOTIFICATION-001 | セッションリフレッシュ通知UI       | 低     |
+
+---
+
 ### タスク: TASK-7D ChatPanel統合（2026-01-30完了）
 
 | 項目       | 内容                                        |
@@ -273,6 +305,12 @@
 | task-search-scope-folder-001               | 検索スコープ指定機能                                  | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-scope-folder.md`                            |
 | task-search-multifile-replace-001          | マルチファイル一括置換機能                            | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-multifile-replace.md`                       |
 | UT-ENV-001                                 | CI node-versionの.nvmrc参照化                         | 低     | ENV-INFRA-001 Phase 3レビュー                                  | `docs/30-workflows/unassigned-task/task-ut-env-001-ci-nvmrc.md`                            |
+| UT-FIX-5-1-001                             | AgentView型アサーション解消（ImportedSkill→Skill）    | 低     | TASK-FIX-5-1-SKILL-API-UNIFICATION Phase 10（MINOR指摘）      | `docs/30-workflows/unassigned-task/task-ut-fix-5-1-001-agentview-type-assertion.md`        |
+| UT-OFFLINE-REFRESH-001                   | オフライン時リフレッシュ失敗処理                      | 中     | TASK-AUTH-SESSION-REFRESH-001 Phase 12（スコープ外項目）       | `docs/30-workflows/unassigned-task/task-offline-refresh.md`                                |
+| UT-AUDIT-001                             | 認証イベント監査ログ                                  | 中     | TASK-AUTH-SESSION-REFRESH-001 Phase 12（スコープ外項目）       | `docs/30-workflows/unassigned-task/task-auth-audit-logging.md`                             |
+| UT-REFRESH-NOTIFICATION-001              | セッションリフレッシュ通知UI                          | 低     | TASK-AUTH-SESSION-REFRESH-001 Phase 12（スコープ外項目）       | `docs/30-workflows/unassigned-task/task-refresh-notification.md`                           |
+| UT-SEC-001                                 | detectProvider実装・consumeState→validate置換（DEBT-SEC-002に統合） | 低 | DEBT-SEC-001 Phase 10 MINOR指摘                                | DEBT-SEC-002に統合: `docs/30-workflows/unassigned-task/task-auth-pkce-implementation.md`    |
+| task-sec-auth-state-cleanup-001            | State Map定期クリーンアップ実装                                     | 低 | DEBT-SEC-001 Phase 12（既知制約検出）                          | `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md`                   |
 
 ### 未タスク管理ルール
 
@@ -316,3 +354,5 @@
 | 1.15.0     | 2026-02-04 | AUTH-UI-004完了: 未タスク1件追加（task-imp-phase12-validation-001）、better-sqlite3タスクv1.1.0更新                                                                                                        |
 | 1.16.0     | 2026-02-04 | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（マルチファイル一括置換）。task-imp-search-ui-001 Phase 12検出                                       |
 | 1.18.0     | 2026-02-05 | 未タスク追加: UT-ENV-001（CI node-versionの.nvmrc参照化）。ENV-INFRA-001 Phase 3検出                                                                                                                       |
+| 1.19.1     | 2026-02-06 | DEBT-SEC-001完了記録追加。UT-SEC-001はDEBT-SEC-002/003の対応範囲に包含と判定（独立未タスク不要）                                                                                                             |
+| 1.19.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了記録追加、未タスク3件追加（UT-OFFLINE-REFRESH-001、UT-AUDIT-001、UT-REFRESH-NOTIFICATION-001） |

@@ -52,8 +52,18 @@ Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 | ------------- | ------------------- | -------------------------------------------- |
 | authenticated | boolean             | 認証状態                                     |
 | tokens        | AuthTokens \| undefined | 認証トークン情報                           |
+| expiresAt     | number \| undefined | セッション有効期限（UNIXタイムスタンプ秒）   |
 | error         | string \| undefined | エラーメッセージ（日本語）                   |
 | errorCode     | string \| undefined | エラーコード（AUTH_ERROR_CODES値）           |
+
+**既知のerrorCode値**:
+
+| errorCode                | 発生条件                                      | 追加タスク                |
+| ------------------------ | --------------------------------------------- | ------------------------- |
+| CSRF_VALIDATION_FAILED   | state parameter欠落・不正形式・期限切れ・不一致 | DEBT-SEC-001（2026-02-06） |
+| AUTH_CALLBACK_ERROR      | OAuthコールバックでerrorパラメータ検出         | TASK-FIX-GOOGLE-LOGIN-001 |
+| TOKEN_EXCHANGE_FAILED    | トークン交換失敗                              | TASK-FIX-GOOGLE-LOGIN-001 |
+| SESSION_NOT_FOUND        | セッション取得失敗                            | TASK-FIX-GOOGLE-LOGIN-001 |
 
 ---
 
@@ -173,11 +183,66 @@ IPC通信の共通レスポンス型。ジェネリクス型Tでデータ型を�
 
 ---
 
+## セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001）
+
+### TokenRefreshScheduler
+
+Main Process上で動作するセッション自動リフレッシュスケジューラー。
+
+**実装ファイル**: `apps/desktop/src/main/services/tokenRefreshScheduler.ts`
+
+| 項目 | 値 |
+| --- | --- |
+| スケジューリング方式 | setTimeout再帰（setInterval不使用） |
+| リフレッシュタイミング | 有効期限の80%経過時点 |
+| リトライ戦略 | 指数バックオフ + Jitter（1s→2s→4s + ランダム0-500ms） |
+| 最大リトライ回数 | 3回 |
+| 排他制御 | `_isRefreshing` mutexフラグ |
+| 依存性注入 | Callback DIパターン（onRefresh, onFailure） |
+
+#### デフォルト設定
+
+| 設定項目 | デフォルト値 | 説明 |
+| --- | --- | --- |
+| refreshThresholdRatio | 0.8 | 有効期限の何%で更新するか |
+| minRefreshInterval | 60000 (1分) | 最小リフレッシュ間隔 |
+| maxRetries | 3 | 最大リトライ回数 |
+| retryBaseDelay | 1000 (1秒) | リトライ基本待機時間 |
+| maxJitter | 500 (0.5秒) | 最大ジッター |
+
+#### authHandlers.ts統合
+
+| 連携ポイント | 処理内容 |
+| --- | --- |
+| ログイン成功時 | `startTokenRefreshScheduler()` でスケジューラー開始 |
+| ログアウト時 | `stopTokenRefreshScheduler()` でスケジューラー停止 |
+| リフレッシュ成功時 | `supabase.auth.refreshSession()` → トークン再保存 → `AUTH_STATE_CHANGED` 送信（expiresAt含む） |
+| リフレッシュ失敗時 | トークンクリア → `AUTH_STATE_CHANGED` 送信（unauthenticated） |
+
+#### Supabase設定変更
+
+| 設定 | 変更前 | 変更後 | 理由 |
+| --- | --- | --- | --- |
+| `autoRefreshToken` | `true` | `false` | SDK内蔵リフレッシュとの競合防止 |
+
+### テスト
+
+| 指標 | 値 |
+| --- | --- |
+| テストケース数 | 26 |
+| Statements Coverage | 96.15% |
+| Branch Coverage | 93.10% |
+| Function Coverage | 100% |
+| Line Coverage | 96.15% |
+
+---
+
 ## 関連ドキュメント
 
 - [APIエンドポイント概要](./api-endpoints.md)
 - [Agent Dashboard IPC](./api-ipc-agent.md)
 - [システムIPC・プロバイダーAPI](./api-ipc-system.md)
+- [セッション自動リフレッシュ実装ガイド](../../../docs/30-workflows/TASK-AUTH-SESSION-REFRESH-001/outputs/phase-12/implementation-guide.md)
 
 ---
 
@@ -185,6 +250,8 @@ IPC通信の共通レスポンス型。ジェネリクス型Tでデータ型を�
 
 | バージョン | 日付       | 変更内容                                                                |
 | ---------- | ---------- | ----------------------------------------------------------------------- |
+| v1.3.1     | 2026-02-06 | DEBT-SEC-001: CSRF_VALIDATION_FAILEDエラーコード追記、既知のerrorCode値テーブル追加 |
+| v1.3.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshScheduler統合セクション追加、auth:state-changedにexpiresAt追加、autoRefreshToken:false設定変更 |
 | v1.2.0     | 2026-02-05 | TASK-FIX-GOOGLE-LOGIN-001: AuthSessionにrefreshTokenExpiresAt追加、auth:state-changedにerror/errorCode追加 |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換              |
 | v1.0.0     | -          | 初版作成                                                                |

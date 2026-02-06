@@ -76,7 +76,7 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
   // ストリームメッセージのリスナー登録
   // Note: Empty deps array is intentional - we only want to register the listener once
   useEffect(() => {
-    const unsubscribe = window.skillAPI.onStream(
+    const unsubscribe = window.electronAPI.skill.onStream(
       (message: SkillStreamMessage) => {
         // 現在の実行IDと一致するメッセージのみ処理
         if (message.executionId !== executionIdRef.current) {
@@ -129,7 +129,7 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
       setIsAborting(false);
 
       try {
-        const response = await window.skillAPI.execute({
+        const response = await window.electronAPI.skill.execute({
           prompt,
           skillName: skillId,
         });
@@ -175,7 +175,7 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
     setIsAborting(true);
 
     try {
-      await window.skillAPI.abort(executionIdRef.current);
+      await window.electronAPI.skill.abort(executionIdRef.current);
       // isAborting は abort 確認メッセージ受信時にリセットされる
     } catch {
       // abort 失敗時は isAborting をリセット

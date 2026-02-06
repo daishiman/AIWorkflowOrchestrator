@@ -286,6 +286,57 @@ HTTP 429エラーの`Retry-After`ヘッダー（秒単位の数値）をパー�
 
 ---
 
+## TokenRefreshScheduler リトライ戦略（TASK-AUTH-SESSION-REFRESH-001）
+
+セッション自動リフレッシュのExponential Backoff with Jitterリトライ戦略。
+
+### TokenRefreshScheduler リトライ設定
+
+| 設定項目         | 値      | 説明                                        |
+| ---------------- | ------- | ------------------------------------------- |
+| 最大リトライ回数 | 3回     | DEFAULT_CONFIG.maxRetries                   |
+| 初期待機時間     | 1000ms  | DEFAULT_CONFIG.retryBaseIntervalMs          |
+| バックオフ倍率   | 2       | 指数バックオフ（1s→2s→4s）                 |
+| ジッター         | 0-10%   | retryBaseIntervalMs × 0.1 × Math.random() |
+| リフレッシュ閾値 | 80%     | 有効期限の80%経過時点でリフレッシュ開始     |
+
+### TokenRefreshScheduler 待機時間計算
+
+待機時間は以下の式で計算する: delay = retryBaseIntervalMs × 2^retryCount + random(0, retryBaseIntervalMs × 0.1)
+
+| リトライ回数 | 基本待機時間 | ジッター後範囲 |
+| ------------ | ------------ | -------------- |
+| 1回目        | 1000ms       | 1000-1100ms    |
+| 2回目        | 2000ms       | 2000-2100ms    |
+| 3回目        | 4000ms       | 4000-4100ms    |
+
+### TokenRefreshScheduler リトライ対象エラー
+
+**リトライする**:
+
+| 条件                           | 理由                           |
+| ------------------------------ | ------------------------------ |
+| ネットワークエラー             | 一時的な接続問題               |
+| Supabase APIエラー（5xx）      | サーバー側の一時的な問題       |
+| onRefresh()がnullを返した場合  | セッション情報取得に一時失敗   |
+
+**リトライしない**:
+
+| 条件                              | 理由                             |
+| --------------------------------- | -------------------------------- |
+| リフレッシュトークン期限切れ      | 再ログインが必要                 |
+| 全リトライ失敗                    | onFailure()→ログアウトフロー実行 |
+| _isDisposed後の呼び出し          | スケジューラー破棄済み           |
+
+### Supabase SDK競合防止（重要）
+
+`supabaseClient.ts`で`autoRefreshToken: false`を設定すること。Supabase SDKの自動リフレッシュとTokenRefreshSchedulerが同時に実行されると、一方が無効なトークンで実行されエラーになる。
+
+**実装場所**: `apps/desktop/src/main/services/tokenRefreshScheduler.ts`
+**関連**: [architecture-auth-security.md](architecture-auth-security.md) セッション自動リフレッシュセクション
+
+---
+
 ## SkillExecutor 実行エラーコード（TASK-8A）
 
 TASK-8A単体テストで検証されたSkillExecutor/PermissionResolverの実行時エラーコード。
@@ -571,6 +622,7 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-02-06 | v1.6.0     | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshSchedulerリトライ戦略セクション追加（Exponential Backoff with Jitter、リトライ対象/非対象エラー分類、Supabase SDK競合防止） |
 | 2026-02-05 | v1.5.0     | TASK-FIX-GOOGLE-LOGIN-001: OAuthエラーコードマッピングセクション追加（9エラーコード、parseOAuthError、mapOAuthErrorToMessage関数仕様） |
 | 2026-02-04 | v1.4.0     | AUTH-UI-001: 認証フォールバックパターン（user_profilesテーブル不在時）追加 |
 | 2026-02-02 | v1.3.0     | TASK-8A: SkillExecutor実行エラーコード6種の正式仕様追加（EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT） |

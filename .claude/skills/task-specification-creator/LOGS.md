@@ -43,6 +43,100 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-06 - DEBT-SEC-001タスク完了（OAuth State Parameter検証実装）]
+
+- **Agent**: execute-task
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Notes**: RFC 6749 Section 10.12準拠のCSRF対策。StateManager新規作成（infrastructure層）、authHandlers.ts/index.ts変更。21テスト全PASS、カバレッジ100%。consumeStateメソッドを追加（設計書にないがdetectProvider未実装のため妥当）。
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: DEBT-SEC-001
+- Phase: 1-12完了
+
+### 成果
+
+- テストカバレッジ: 21テスト全PASS（Line/Branch/Function 100%）
+- 実装内容:
+  - stateManager.ts新規作成（generate/validate/consumeState/cleanup）
+  - authHandlers.tsにstate生成追加（queryParamsにstate付与）
+  - index.tsにstate検証追加（consumeState + 形式バリデーション）
+  - CSRF_VALIDATION_FAILEDエラーコードで異常通知
+
+### 変更ファイル
+
+- apps/desktop/src/main/infrastructure/stateManager.ts（新規）
+- apps/desktop/src/main/infrastructure/stateManager.test.ts（新規）
+- apps/desktop/src/main/ipc/authHandlers.ts（変更）
+- apps/desktop/src/main/index.ts（変更）
+
+---
+
+## [2026-02-06 - TASK-FIX-5-1完了（SkillAPI二重定義の統一）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A（複数セッション）
+- **Notes**: SkillAPI二重定義（preload/skill-api.ts + renderer/preload/index.ts）を統一。window.skillAPI廃止→window.electronAPI.skill一本化。テスト210件PASS、カバレッジ Line 91.07%, Branch 89.47%, Function 100%。未タスク1件検出（AgentView型アサーション→TASK-FIX-6-1で対応予定）
+
+---
+
+## [2026-02-06 - TASK-AUTH-SESSION-REFRESH-001知見展開（未タスク・システム仕様書・スキル改善）]
+
+- **Agent**: detect-unassigned / skill-improvement
+- **Phase**: Phase 12 補完（未タスク仕様書強化・システム仕様書反映・スキル改善）
+- **Result**: ✓ 成功
+- **Notes**: 未タスク3件に「3.5 実装課題と解決策」セクション追加、error-handling.md/interfaces-auth.md更新、patterns.mdドメインカテゴリタグ・クイックナビゲーション追加
+
+### コンテキスト
+
+- スキル: task-specification-creator + aiworkflow-requirements + skill-creator
+- 親タスクID: TASK-AUTH-SESSION-REFRESH-001
+- 対象未タスク: UT-OFFLINE-REFRESH-001, UT-REFRESH-NOTIFICATION-001, UT-AUDIT-001
+
+### 成果
+
+- 未タスク仕様書更新:
+  - task-offline-refresh.md: 3.5節追加（Supabase SDK競合/タイマーテスト無限ループ/setTimeout再帰パターン）
+  - task-refresh-notification.md: 3.5節追加（IPC経由エラー情報伝達/リスナー二重登録/タイムスタンプ単位混在）
+  - task-auth-audit-logging.md: 3.5節追加（Callback DIパターン/排他制御フラグ/Supabase SDK設定）
+- システム仕様書更新:
+  - error-handling.md v1.6.0: TokenRefreshSchedulerリトライ戦略セクション追加
+  - interfaces-auth.md v1.3.0: TokenRefreshCallbacks/TokenRefreshConfig型定義追加
+  - SKILL.md: トリガーキーワード14件追加（session, refresh, token, scheduler等）
+- スキル改善:
+  - patterns.md: 6ドメインクイックナビゲーション追加、全33パターンにドメインカテゴリタグ付与
+  - topic-map.md再生成（1038キーワード）
+
+---
+
+## [2026-02-06 - TASK-AUTH-SESSION-REFRESH-001完了（セッション自動リフレッシュ実装）]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 ドキュメント更新
+- **Result**: ✓ 成功
+- **Notes**: TokenRefreshScheduler新規実装、TDD Red-Green-Refactor完遂、26テスト全PASS、カバレッジ96.15%
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-AUTH-SESSION-REFRESH-001
+- Phase: 1-12完了
+
+### 成果
+
+- テストカバレッジ: Stmts 96.15%, Branch 93.1%, Funcs 100%
+- 実装内容:
+  - TokenRefreshSchedulerクラス新規作成（setTimeout + 指数バックオフ）
+  - authHandlers.ts統合（startTokenRefreshScheduler/stopTokenRefreshScheduler/disposeTokenRefreshScheduler）
+  - supabaseClient.ts: autoRefreshToken false化
+  - authSlice.ts: isRefreshing状態追加
+  - packages/shared/types/auth.ts: sessionExpiresAt追加
+
+---
 ## [2026-02-05 - ENV-INFRA-001タスク完了（better-sqlite3バージョン不一致修正）]
 
 - **Agent**: execute-task / generate-task-specs
@@ -2990,5 +3084,73 @@ if (artifactPath) {
 
 - ステータス: success
 - 完了日時: 2026-02-05
+
+---
+## 2026-02-06 - DEBT-SEC-001 OAuth State Parameter検証実装 Phase 12完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: DEBT-SEC-001
+- タスク名: OAuth State Parameter検証（CSRF攻撃防止）
+- Phase: Phase 12（ドキュメント更新）
+
+### 成果
+
+- Phase 12ドキュメント更新を完了
+- 再検証で9件の更新漏れを発見・修正:
+  1. SKILL.md x2（aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md）
+  2. topic-map.md 再生成漏れ
+  3. completed-tasks 移動漏れ
+  4. task-workflow.md 残課題テーブル更新漏れ
+  5. 17-security-guidelines.md 関連タスクテーブル更新漏れ
+  6. バージョン順序不整合 x2
+  7. artifacts.json パス不整合 x2
+
+### 発見事項
+
+- P1（LOGS.md 2ファイル更新漏れ）パターン再現
+- P2（topic-map.md 再生成忘れ）パターン再現
+- P3（未タスク3ステップ不完全）パターン再現
+- P4（documentation-changelog.md への早期「完了」記載）パターン再現
+- 06-known-pitfalls.md の既知パターンが4件とも再現したことで、Phase 12開始前の pitfalls 再読の重要性を再確認
+
+### 教訓
+
+- Phase 12は機械的チェックリスト消化が最も有効
+- `grep -rn "TASK_ID" references/` による更新対象の事前列挙が漏れ防止に不可欠
+- 未タスクを「既存タスクに包含」と判断する場合、包含先仕様書への明示的追記が必要
+
+### 結果
+
+- ステータス: success（再検証で9件の漏れを修正後に完了）
+- 完了日時: 2026-02-06
+
+---
+
+## [2026-02-06T01:43:32.390Z]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+- **Notes**: DEBT-SEC-001完了。Phase12更新漏れ9件を再検証で修正。P1/P2/P3/P4パターン再現・対応
+
+---
+
+## [2026-02-06T02:12:17.158Z]
+
+- **Agent**: unknown
+- **Phase**: unknown
+- **Result**: ✓ 成功
+- **Notes**: aiworkflow-requirementsスキルの仕様書構造を最適化: csrf-state-parameter.md新規作成によるProgressive Disclosure実践、patterns.mdを8成功/8失敗/4ガイドラインに拡充
+
+---
+
+## [2026-02-06T02:59:12.050Z]
+
+- **Agent**: unknown
+- **Phase**: unknown
+- **Result**: ✓ 成功
+- **Notes**: task-auth-state-cleanup-scheduling.md新規作成（9セクション完全準拠）、task-auth-pkce-implementation.md/task-auth-url-validation.md苦戦箇所追加
 
 ---
