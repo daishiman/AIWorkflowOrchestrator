@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.9.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了: authSliceにsessionExpiresAt/isRefreshing追加、セキュリティ考慮事項・関連タスク記載 |
 | v1.8.0     | 2026-02-02 | 両ブランチ統合: task-imp-permission-date-filter完了+TASK-8B完了 |
 | v1.7.0     | 2026-02-02 | 実装詳細拡充: dateFilterUtils.ts実装ファイル追加、テストファイル2件追加、フィルタリングパイプライン仕様追加、品質メトリクス72テスト反映 |
 | v1.6.0     | 2026-02-02 | task-imp-permission-date-filter完了: DateRangeFilter/DatePreset型追加、TASK-8Bコンポーネントテスト（280テスト）追加 |
@@ -61,6 +62,35 @@
 | `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
 | `skillSlice`             | スキル実行状態管理       | `store/slices/skillSlice.ts`             | TASK-6-1                        |
 | `permissionHistorySlice` | 権限要求履歴管理         | `store/slices/permissionHistorySlice.ts` | task-imp-permission-history-001 |
+
+### authSlice詳細（TASK-AUTH-SESSION-REFRESH-001更新）
+
+**実装ファイル**: `apps/desktop/src/renderer/store/slices/authSlice.ts`
+
+**状態定義**:
+
+| プロパティ         | 型                  | 初期値  | 説明                                         |
+| ------------------ | ------------------- | ------- | -------------------------------------------- |
+| `isAuthenticated`  | `boolean`           | `false` | 認証状態                                     |
+| `isLoading`        | `boolean`           | `false` | ローディング中                               |
+| `authUser`         | `AuthUser \| null`  | `null`  | 認証済みユーザー情報                         |
+| `sessionExpiresAt` | `number \| null`    | `null`  | セッション有効期限（UNIXタイムスタンプ秒）   |
+| `isRefreshing`     | `boolean`           | `false` | トークンリフレッシュ中フラグ                 |
+| `linkedProviders`  | `LinkedProvider[]`  | `[]`    | 連携済みプロバイダー一覧                     |
+| `error`            | `string \| null`    | `null`  | エラーメッセージ                             |
+
+**セキュリティ考慮事項**:
+- トークン情報はRenderer側の状態に保存しない（Main Processのみで管理）
+- Rendererには `sessionExpiresAt`（有効期限のみ）と `isRefreshing`（更新状態のみ）を公開
+- リスナー二重登録防止: モジュールスコープ `authListenerRegistered` フラグでガード
+
+**関連タスク**:
+
+| タスクID                         | 内容                         | ステータス |
+| -------------------------------- | ---------------------------- | ---------- |
+| TASK-FIX-GOOGLE-LOGIN-001       | Googleログイン修正           | **完了**   |
+| AUTH-UI-001                      | 認証UI改善                   | **完了**   |
+| TASK-AUTH-SESSION-REFRESH-001    | セッション自動リフレッシュ   | **完了**   |
 
 ### agentSlice詳細
 

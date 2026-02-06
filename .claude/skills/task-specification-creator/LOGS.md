@@ -53,6 +53,59 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-06 - TASK-AUTH-SESSION-REFRESH-001知見展開（未タスク・システム仕様書・スキル改善）]
+
+- **Agent**: detect-unassigned / skill-improvement
+- **Phase**: Phase 12 補完（未タスク仕様書強化・システム仕様書反映・スキル改善）
+- **Result**: ✓ 成功
+- **Notes**: 未タスク3件に「3.5 実装課題と解決策」セクション追加、error-handling.md/interfaces-auth.md更新、patterns.mdドメインカテゴリタグ・クイックナビゲーション追加
+
+### コンテキスト
+
+- スキル: task-specification-creator + aiworkflow-requirements + skill-creator
+- 親タスクID: TASK-AUTH-SESSION-REFRESH-001
+- 対象未タスク: UT-OFFLINE-REFRESH-001, UT-REFRESH-NOTIFICATION-001, UT-AUDIT-001
+
+### 成果
+
+- 未タスク仕様書更新:
+  - task-offline-refresh.md: 3.5節追加（Supabase SDK競合/タイマーテスト無限ループ/setTimeout再帰パターン）
+  - task-refresh-notification.md: 3.5節追加（IPC経由エラー情報伝達/リスナー二重登録/タイムスタンプ単位混在）
+  - task-auth-audit-logging.md: 3.5節追加（Callback DIパターン/排他制御フラグ/Supabase SDK設定）
+- システム仕様書更新:
+  - error-handling.md v1.6.0: TokenRefreshSchedulerリトライ戦略セクション追加
+  - interfaces-auth.md v1.3.0: TokenRefreshCallbacks/TokenRefreshConfig型定義追加
+  - SKILL.md: トリガーキーワード14件追加（session, refresh, token, scheduler等）
+- スキル改善:
+  - patterns.md: 6ドメインクイックナビゲーション追加、全33パターンにドメインカテゴリタグ付与
+  - topic-map.md再生成（1038キーワード）
+
+---
+
+## [2026-02-06 - TASK-AUTH-SESSION-REFRESH-001完了（セッション自動リフレッシュ実装）]
+
+- **Agent**: execute-workflow (Phase 1-12)
+- **Phase**: Phase 12 ドキュメント更新
+- **Result**: ✓ 成功
+- **Notes**: TokenRefreshScheduler新規実装、TDD Red-Green-Refactor完遂、26テスト全PASS、カバレッジ96.15%
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-AUTH-SESSION-REFRESH-001
+- Phase: 1-12完了
+
+### 成果
+
+- テストカバレッジ: Stmts 96.15%, Branch 93.1%, Funcs 100%
+- 実装内容:
+  - TokenRefreshSchedulerクラス新規作成（setTimeout + 指数バックオフ）
+  - authHandlers.ts統合（startTokenRefreshScheduler/stopTokenRefreshScheduler/disposeTokenRefreshScheduler）
+  - supabaseClient.ts: autoRefreshToken false化
+  - authSlice.ts: isRefreshing状態追加
+  - packages/shared/types/auth.ts: sessionExpiresAt追加
+
+---
 ## [2026-02-05 - ENV-INFRA-001タスク完了（better-sqlite3バージョン不一致修正）]
 
 - **Agent**: execute-task / generate-task-specs

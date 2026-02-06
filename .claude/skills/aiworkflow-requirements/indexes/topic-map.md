@@ -89,13 +89,14 @@ node scripts/list-specs.js --topics
 ### references/architecture-auth-security.md
 
 | セクション | 行 |
-|------------|----|\n| 変更履歴 | L28 |
-| 認証アーキテクチャ（Supabase + Electron） | L39 |
-| セキュリティアーキテクチャ | L161 |
-| RAGパイプラインアーキテクチャ | L200 |
-| 完了タスク | L315 |
-| 実装時の苦戦した箇所・知見 | L391 |
-| 関連ドキュメント | L435 |
+|------------|----|\n| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L28 |
+| 変更履歴 | L95 |
+| 認証アーキテクチャ（Supabase + Electron） | L107 |
+| セキュリティアーキテクチャ | L229 |
+| RAGパイプラインアーキテクチャ | L268 |
+| 完了タスク | L383 |
+| 実装時の苦戦した箇所・知見 | L459 |
+| 関連ドキュメント | L503 |
 
 ### references/architecture-chat-history.md
 
@@ -305,9 +306,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
-| 完了タスク | L232 |
-| ワークスペース型定義 | L286 |
-| 変更履歴 | L340 |
+| 完了タスク | L256 |
+| ワークスペース型定義 | L310 |
+| 変更履歴 | L364 |
 
 ### references/interfaces-chat-history.md
 
@@ -635,11 +636,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 認証 IPC チャネル | L10 |
 | プロフィール IPC チャネル | L32 |
 | イベントチャネル（Main → Renderer） | L43 |
-| 型定義 | L60 |
-| 認証状態管理 | L118 |
-| IPCセキュリティ実装 | L149 |
-| 関連ドキュメント | L176 |
-| 変更履歴 | L184 |
+| 型定義 | L61 |
+| 認証状態管理 | L119 |
+| IPCセキュリティ実装 | L150 |
+| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L177 |
+| 関連ドキュメント | L231 |
+| 変更履歴 | L240 |
 
 ### references/api-ipc-system.md
 
@@ -1292,11 +1294,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L24 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L120 |
-| skillSlice（スキル実行状態管理） | L210 |
-| permissionHistorySlice（権限要求履歴管理） | L337 |
-| 関連ドキュメント | L466 |
+| Zustand Sliceパターン | L25 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L150 |
+| skillSlice（スキル実行状態管理） | L240 |
+| permissionHistorySlice（権限要求履歴管理） | L367 |
+| 関連ドキュメント | L496 |
 
 ### references/arch-ui-components.md
 
@@ -1429,14 +1431,17 @@ node scripts/list-specs.js --topics
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
 | SkillExecutor 実行エラーコード（TASK-8A） | L289 |
 | OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L328 |
-| 認証フォールバックパターン（AUTH-UI-001） | L370 |
-| サーキットブレーカー（将来対応） | L412 |
-| エラーレスポンス形式 | L440 |
-| エラーログ出力 | L471 |
-| ユーザー向けエラーメッセージ | L508 |
-| エラーハンドリングの実装指針 | L531 |
-| 関連ドキュメント | L561 |
-| 変更履歴 | L570 |
+| TokenRefreshScheduler リトライ戦略（TASK-AUTH-SESSION-REFRESH-001） | L289 |
+| SkillExecutor 実行エラーコード（TASK-8A） | L340 |
+| OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L379 |
+| 認証フォールバックパターン（AUTH-UI-001） | L421 |
+| サーキットブレーカー（将来対応） | L463 |
+| エラーレスポンス形式 | L491 |
+| エラーログ出力 | L522 |
+| ユーザー向けエラーメッセージ | L559 |
+| エラーハンドリングの実装指針 | L582 |
+| 関連ドキュメント | L612 |
+| 変更履歴 | L621 |
 
 ### references/llm-embedding.md
 
@@ -1746,9 +1751,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L233 |
-| 関連ドキュメント | L286 |
-| 変更履歴 | L296 |
+| 残課題（未タスク） | L265 |
+| 関連ドキュメント | L320 |
+| 変更履歴 | L330 |
 
 ### references/testing-accessibility.md
 

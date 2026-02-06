@@ -315,6 +315,8 @@ export interface AuthState {
    */
   errorCode?: string;
   isOffline?: boolean;
+  /** セッション有効期限（Unixタイムスタンプ、秒） */
+  sessionExpiresAt?: number;
 }
 
 // === IPC レスポンス ===
