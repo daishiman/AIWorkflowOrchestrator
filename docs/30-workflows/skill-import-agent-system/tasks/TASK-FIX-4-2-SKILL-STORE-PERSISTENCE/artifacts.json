@@ -1,0 +1,238 @@
+{
+  "taskId": "TASK-FIX-4-2-SKILL-STORE-PERSISTENCE",
+  "taskName": "インポートスキルの永続化消失バグ修正",
+  "createdAt": "2026-02-07T06:50:00Z",
+  "updatedAt": "2026-02-07T06:56:00Z",
+  "status": "pending",
+  "currentPhase": 0,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "pending",
+      "specFile": "phase-01-requirements.md",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "機能・非機能要件"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "AC定義"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "実装範囲"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "pending",
+      "specFile": "phase-02-design.md",
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "システム構造"
+        },
+        {
+          "name": "修正設計書",
+          "path": "outputs/phase-2/fix-design.md",
+          "description": "バグ修正設計"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "specFile": "phase-03-design-review.md",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "判定結果"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成（TDD: Red）",
+      "status": "pending",
+      "specFile": "phase-04-test-creation.md",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト設計"
+        },
+        {
+          "name": "テストケース",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "ケース一覧"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装（TDD: Green）",
+      "status": "pending",
+      "specFile": "phase-05-implementation.md",
+      "artifacts": [
+        {
+          "name": "実装サマリー",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装概要"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "pending",
+      "specFile": "phase-06-test-expansion.md",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジ分析結果"
+        },
+        {
+          "name": "統合テスト結果",
+          "path": "outputs/phase-6/integration-test.md",
+          "description": "統合テスト実行結果"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "specFile": "phase-07-coverage-verification.md",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "再測定結果"
+        },
+        {
+          "name": "統合テスト結果",
+          "path": "outputs/phase-7/integration-test.md",
+          "description": "統合テスト実行結果"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "pending",
+      "specFile": "phase-08-refactoring.md",
+      "artifacts": [
+        {
+          "name": "リファクタリングログ",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "変更履歴"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "pending",
+      "specFile": "phase-09-quality-assurance.md",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質検証結果"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "判定結果"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "pending",
+      "specFile": "phase-11-manual-testing.md",
+      "artifacts": [
+        {
+          "name": "テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "概念的+技術的ドキュメント"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "検出結果（0件でも出力）"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR URL等"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "category": "バグ修正",
+    "priority": "高",
+    "estimatedSize": "中規模",
+    "relatedIssue": "Issue #418 (SKILL-STORE-001)",
+    "discoverySource": "skill-system-conflict-report #4",
+    "discoveryDate": "2026-02-05"
+  },
+  "qualityMetrics": {
+    "targetLineCoverage": 80,
+    "targetBranchCoverage": 60,
+    "targetFunctionCoverage": 80
+  },
+  "relatedFiles": [
+    "apps/desktop/src/main/ipc/skillHandlers.ts",
+    "apps/desktop/src/main/services/skill/SkillImportManager.ts",
+    "apps/desktop/src/main/ipc/index.ts",
+    "docs/30-workflows/skill-import-agent-system/technical-decisions.md"
+  ]
+}
