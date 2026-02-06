@@ -27,7 +27,22 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | `apps/desktop/src/renderer/views/AgentView/index.tsx`   | メインビュー               |
 | `apps/desktop/src/renderer/views/AgentView/components/` | UIコンポーネント群         |
 | `apps/desktop/src/main/skill/skill-handler.ts`          | Main Process IPCハンドラー |
-| `apps/desktop/src/preload/skillApi.ts`                  | Preload API                |
+| `apps/desktop/src/preload/skill-api.ts`                 | Preload API（統一SkillAPI） |
+
+---
+
+### 完了タスク
+
+#### TASK-FIX-5-1-SKILL-API-UNIFICATION（2026-02-06完了）
+
+| 項目       | 内容                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-5-1                                                          |
+| ステータス | **完了**                                                              |
+| テスト数   | 210（自動）+ 15（手動チェック項目）                                   |
+| 主要変更   | SkillAPI二重定義の統一（`window.skillAPI`廃止→`window.electronAPI.skill`一本化） |
+| 実装ガイド | `docs/30-workflows/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md` |
+| 備考       | AgentViewの型アサーション（`as unknown as Skill[]`）はTASK-FIX-6-1で解消予定 |
 
 ---
 
@@ -224,72 +239,113 @@ Zustand Sliceパターンで実装された状態管理。
 
 ---
 
-### Preload API（window.skillAPI）
+### Preload API（window.electronAPI.skill）
 
-#### listImported
+> **TASK-FIX-5-1実装ノート**: 旧 `window.skillAPI` から `window.electronAPI.skill` に統一。OperationResult ラッパーを廃止し、safeInvoke/safeOn パターンで直接型を返却。未タスク UT-FIX-5-1-001（AgentView型アサーション解消）が残存。
 
-インポート済みのスキル一覧を取得する。
+#### Skill実行API
 
-**戻り値**: `Promise<OperationResult<Skill[]>>`
-
-#### listAvailable
-
-利用可能なスキル一覧を取得する。
-
-**戻り値**: `Promise<OperationResult<Skill[]>>`
-
-#### import
-
-スキルをインポートする。
-
-| パラメータ | 型         | 必須 | 説明           |
-| ---------- | ---------- | ---- | -------------- |
-| `skillIds` | `string[]` | ✓    | スキルIDの配列 |
-
-**戻り値**: `Promise<OperationResult<void>>`
-
-#### remove
-
-スキルを削除する。
-
-| パラメータ | 型       | 必須 | 説明     |
-| ---------- | -------- | ---- | -------- |
-| `skillId`  | `string` | ✓    | スキルID |
-
-**戻り値**: `Promise<OperationResult<void>>`
-
-#### getDetail
-
-スキルの詳細情報を取得する。
-
-| パラメータ | 型       | 必須 | 説明     |
-| ---------- | -------- | ---- | -------- |
-| `skillId`  | `string` | ✓    | スキルID |
-
-**戻り値**: `Promise<OperationResult<Skill>>`
-
-#### execute
+##### execute
 
 スキルを実行する。
 
-| パラメータ | 型                        | 必須 | 説明                               |
-| ---------- | ------------------------- | ---- | ---------------------------------- |
-| `skillId`  | `string`                  | ✓    | 実行するスキルのID                 |
-| `params`   | `Record<string, unknown>` | -    | オプションパラメータ（将来拡張用） |
+| パラメータ | 型                      | 必須 | 説明             |
+| ---------- | ----------------------- | ---- | ---------------- |
+| `request`  | `SkillExecutionRequest` | ✓    | 実行リクエスト   |
 
-**戻り値**: `Promise<OperationResult<SkillRunResult>>`
+**戻り値**: `Promise<SkillExecutionResponse>`
 
-#### onPermission（TASK-3-1-D）
+##### onStream
+
+ストリーミングメッセージを購読する。
+
+**シグネチャ**: `onStream: (callback: (message: SkillStreamMessage) => void) => () => void`
+
+##### abort
+
+実行中のスキルを中断する。
+
+| パラメータ    | 型       | 必須 | 説明   |
+| ------------- | -------- | ---- | ------ |
+| `executionId` | `string` | ✓    | 実行ID |
+
+**戻り値**: `Promise<void>`
+
+##### getExecutionStatus
+
+実行ステータスを取得する。
+
+| パラメータ    | 型       | 必須 | 説明   |
+| ------------- | -------- | ---- | ------ |
+| `executionId` | `string` | ✓    | 実行ID |
+
+**戻り値**: `Promise<ExecutionInfo | null>`
+
+##### onComplete
+
+スキル実行完了イベントを購読する。
+
+**シグネチャ**: `onComplete: (callback: (data: { executionId: string }) => void) => () => void`
+
+##### onError
+
+スキル実行エラーイベントを購読する。
+
+**シグネチャ**: `onError: (callback: (data: { executionId: string; error: string }) => void) => () => void`
+
+#### Permission API（TASK-3-1-D + TASK-4-2）
+
+##### onPermissionRequest
 
 Main ProcessからのPermission要求をリッスンするリスナーを登録する。
 
-**シグネチャ**: `onPermission: (callback: (request: SkillPermissionRequest) => void) => () => void`
+**シグネチャ**: `onPermissionRequest: (callback: (request: SkillPermissionRequest) => void) => () => void`
 
-#### respondPermission（TASK-3-1-D）
+##### sendPermissionResponse
 
 Permission要求に対してユーザーの応答を送信する。
 
-**シグネチャ**: `respondPermission: (response: SkillPermissionResponse) => Promise<boolean>`
+**シグネチャ**: `sendPermissionResponse: (response: SkillPermissionResponse) => Promise<{ success: boolean }>`
+
+#### Skill管理API
+
+##### list
+
+利用可能なスキル一覧を取得する。
+
+**戻り値**: `Promise<SkillMetadata[]>`
+
+##### getImported
+
+インポート済みのスキル一覧を取得する。
+
+**戻り値**: `Promise<ImportedSkill[]>`
+
+##### rescan
+
+スキルディレクトリを再スキャンする。
+
+**戻り値**: `Promise<SkillMetadata[]>`
+
+##### import
+
+スキルをインポートする。
+
+| パラメータ  | 型       | 必須 | 説明     |
+| ----------- | -------- | ---- | -------- |
+| `skillName` | `string` | ✓    | スキル名 |
+
+**戻り値**: `Promise<ImportedSkill>`
+
+##### remove
+
+スキルを削除する。
+
+| パラメータ  | 型       | 必須 | 説明     |
+| ----------- | -------- | ---- | -------- |
+| `skillName` | `string` | ✓    | スキル名 |
+
+**戻り値**: `Promise<void>`
 
 ---
 

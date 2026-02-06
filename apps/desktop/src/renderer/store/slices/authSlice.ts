@@ -173,6 +173,8 @@ export interface AuthSlice {
   authUser: AuthUser | null;
   /** セッション有効期限 (Unix timestamp) - トークンは含まない */
   sessionExpiresAt: number | null;
+  /** トークンリフレッシュ処理中フラグ */
+  isRefreshing: boolean;
   profile: UserProfile | null;
   linkedProviders: LinkedProvider[];
   isOffline: boolean;
@@ -209,6 +211,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
   isLoading: true,
   authUser: null,
   sessionExpiresAt: null, // トークンは含まない、有効期限のみ
+  isRefreshing: false,
   profile: null,
   linkedProviders: [],
   isOffline: false,
@@ -422,6 +425,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
               isAuthenticated: false,
               authUser: null,
               sessionExpiresAt: null,
+              isRefreshing: false,
               profile: null,
               linkedProviders: [],
               isLoading: false,
@@ -771,6 +775,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       isLoading: false,
       authUser: null,
       sessionExpiresAt: null, // トークンは含まない
+      isRefreshing: false,
       profile: null,
       linkedProviders: [],
       authError: null,

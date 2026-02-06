@@ -93,8 +93,8 @@ vi.mock("../../hooks/useCopyHistory", () => ({
   }),
 }));
 
-// Mock window.skillAPI
-vi.stubGlobal("skillAPI", mockSkillAPI);
+// Mock window.electronAPI.skill
+vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
 
 // Mock react-i18next for i18n support
 vi.mock("react-i18next", () => ({
@@ -518,9 +518,9 @@ describe("SkillStreamDisplay permission - IPC integration", () => {
     mockUseSkillExecution.error = null;
     mockUseSkillExecution.isAborting = false;
     mockUseSkillPermission.pendingPermission = null;
-    // Re-stub window.skillAPI to ensure test's mockSkillAPI is used
+    // Re-stub window.electronAPI.skill to ensure test's mockSkillAPI is used
     // (setup.ts beforeAll may have overwritten the module-level stubGlobal)
-    vi.stubGlobal("skillAPI", mockSkillAPI);
+    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     mockSkillAPI.onPermission.mockReturnValue(() => {});
     mockSkillAPI.respondPermission.mockResolvedValue(true);
     vi.clearAllMocks();
@@ -586,7 +586,7 @@ describe("SkillStreamDisplay permission - IPC integration", () => {
 
     // Mock handleApprove to call skillAPI.respondPermission
     mockUseSkillPermission.handleApprove = vi.fn(async (rememberChoice) => {
-      await window.skillAPI.respondPermission({
+      await window.electronAPI.skill.respondPermission({
         requestId: "req-ipc-approval",
         approved: true,
         rememberChoice,
@@ -617,7 +617,7 @@ describe("SkillStreamDisplay permission - IPC integration", () => {
 
     // Mock handleDeny to call skillAPI.respondPermission
     mockUseSkillPermission.handleDeny = vi.fn(async (rememberChoice) => {
-      await window.skillAPI.respondPermission({
+      await window.electronAPI.skill.respondPermission({
         requestId: "req-ipc-denial",
         approved: false,
         rememberChoice,

@@ -69,7 +69,7 @@ export function usePermissionDialog(): UsePermissionDialogReturn {
 
   // 権限確認リクエストの購読
   useEffect(() => {
-    const unsubscribe = window.skillAPI.onPermissionRequest(
+    const unsubscribe = window.electronAPI.skill.onPermissionRequest(
       (request: SkillPermissionRequest) => {
         setRequestQueue((prev) => [...prev, request]);
       },
@@ -96,7 +96,7 @@ export function usePermissionDialog(): UsePermissionDialogReturn {
           rememberChoice,
         };
 
-        await window.skillAPI.sendPermissionResponse(response);
+        await window.electronAPI.skill.sendPermissionResponse(response);
 
         // キューから現在のリクエストを削除
         setRequestQueue((prev) => prev.slice(1));

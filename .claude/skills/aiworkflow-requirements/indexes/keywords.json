@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-05T05:08:20.326Z",
-  "totalKeywords": 1034,
+  "generated": "2026-02-06T02:07:22.118Z",
+  "totalKeywords": 1038,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -731,6 +731,43 @@
     "セキュリティ実装": [
       "api-ipc-auth.md"
     ],
+    "セッション自動リフレッシュ": [
+      "api-ipc-auth.md",
+      "architecture-auth-security.md"
+    ],
+    "TASK": [
+      "api-ipc-auth.md",
+      "arch-ui-components.md",
+      "architecture-auth-security.md",
+      "architecture-implementation-patterns.md",
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "quality-e2e-testing.md",
+      "security-skill-ipc.md",
+      "technology-devops.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
+      "ui-ux-panels.md",
+      "ui-ux-search-panel.md"
+    ],
+    "AUTH": [
+      "api-ipc-auth.md",
+      "architecture-auth-security.md",
+      "error-handling.md"
+    ],
+    "SESSION": [
+      "api-ipc-auth.md",
+      "architecture-auth-security.md",
+      "error-handling.md"
+    ],
+    "REFRESH": [
+      "api-ipc-auth.md",
+      "architecture-auth-security.md",
+      "error-handling.md"
+    ],
     "システム": [
       "api-ipc-system.md"
     ],
@@ -960,22 +997,6 @@
       "ui-ux-agent-execution.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md"
-    ],
-    "TASK": [
-      "arch-ui-components.md",
-      "architecture-implementation-patterns.md",
-      "error-handling.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "quality-e2e-testing.md",
-      "security-skill-ipc.md",
-      "technology-devops.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-feature-skill-stream.md",
-      "ui-ux-panels.md",
-      "ui-ux-search-panel.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -1957,6 +1978,9 @@
       "error-handling.md",
       "interfaces-agent-sdk-executor.md"
     ],
+    "TokenRefreshScheduler": [
+      "error-handling.md"
+    ],
     "実行エラーコード": [
       "error-handling.md"
     ],
@@ -1976,9 +2000,6 @@
       "error-handling.md"
     ],
     "認証フォールバックパターン": [
-      "error-handling.md"
-    ],
-    "AUTH": [
       "error-handling.md"
     ],
     "サーキットブレーカー": [

@@ -5,11 +5,22 @@
 
 ---
 
+## クイックナビゲーション
+
+| ドメイン | 成功パターン | 失敗パターン |
+| -------- | ------------ | ------------ |
+| 🔐 認証・セッション | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | - |
+| ⏱️ テスト | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層 | テスト環境問題の実装問題誤認 |
+| 📋 Phase 12 | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン | ハードコード文字列発見 |
+| 📦 スキル設計 | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング | - |
+| 🔧 ビルド・環境 | - | ネイティブモジュールNODE_MODULE_VERSION不一致 |
+
 ## 成功パターン
 
 成功した実行から学んだベストプラクティス。
 
-### Collaborative First による要件明確化
+### [Skill] Collaborative First による要件明確化
 
 - **状況**: ユーザーの要求が抽象的（L1/L2レベル）
 - **アプローチ**: AskUserQuestion でインタビューを実施し、段階的に具体化
@@ -17,7 +28,7 @@
 - **適用条件**: 抽象度が高い要求、複数の解釈が可能な場合
 - **発見日**: 2026-01-15
 
-### Script First によるメトリクス収集
+### [Skill] Script First によるメトリクス収集
 
 - **状況**: フィードバック分析でデータ収集が必要
 - **アプローチ**: collect_feedback.js でメトリクスを収集し、LLMは解釈のみ担当
@@ -25,7 +36,7 @@
 - **適用条件**: 定量的なデータが必要な処理
 - **発見日**: 2026-01-13
 
-### 詳細情報の分離によるSKILL.md最適化
+### [Skill] 詳細情報の分離によるSKILL.md最適化
 
 - **状況**: SKILL.mdが500行制限を超過（521行）
 - **アプローチ**:
@@ -35,7 +46,7 @@
 - **適用条件**: Progressive Disclosure対象の詳細情報が肥大化した場合
 - **発見日**: 2026-01-20
 
-### 大規模DRYリファクタリング
+### [Skill] 大規模DRYリファクタリング
 
 - **状況**: SKILL.md 481行、interview-user.md 398行と肥大化
 - **アプローチ**:
@@ -46,7 +57,7 @@
 - **適用条件**: 300行超のファイルで詳細とサマリーが混在している場合
 - **発見日**: 2026-01-24
 
-### Phase仕様書の成果物名厳密化
+### [Phase12] Phase仕様書の成果物名厳密化
 
 - **状況**: Phase 12実行時に仕様書と異なるファイル名で成果物を生成
 - **アプローチ**:
@@ -57,7 +68,7 @@
 - **発見日**: 2026-01-22
 - **関連タスク**: SHARED-TYPE-EXPORT-01
 
-### スキル間ドキュメント整合性の定期確認
+### [Phase12] スキル間ドキュメント整合性の定期確認
 
 - **状況**: task-specification-creatorのSKILL.mdとreferences/artifact-naming-conventions.mdでPhase 12成果物リストが不整合
 - **アプローチ**:
@@ -68,7 +79,7 @@
 - **発見日**: 2026-01-22
 - **関連タスク**: SHARED-TYPE-EXPORT-01
 
-### 既存アダプターパターンの活用（新規API統合時）
+### [Architecture] 既存アダプターパターンの活用（新規API統合時）
 
 - **状況**: システムプロンプトのLLM API統合時、仕様書ではVercel AI SDK使用を提案
 - **アプローチ**:
@@ -80,7 +91,7 @@
 - **発見日**: 2026-01-23
 - **関連タスク**: TASK-CHAT-SYSPROMPT-LLM-001
 
-### システム仕様書への完了タスク記録
+### [Phase12] システム仕様書への完了タスク記録
 
 - **状況**: Phase 12 Task 2でシステム仕様書更新が必要
 - **アプローチ**:
@@ -92,7 +103,7 @@
 - **発見日**: 2026-01-23
 - **関連タスク**: TASK-CHAT-SYSPROMPT-LLM-001
 
-### Phase 12 Task 2の見落とし防止
+### [Phase12] Phase 12 Task 2の見落とし防止
 
 - **状況**: Phase 12 Task 2（システム仕様書更新）が実行されずにPhase 12完了とマークされた
 - **アプローチ**:
@@ -105,7 +116,7 @@
 - **発見日**: 2026-01-22
 - **関連タスク**: UT-007 ChatHistoryProvider App Integration
 
-### Phase 12 Step 1 検証スクリプトによる自動化
+### [Phase12] Phase 12 Step 1 検証スクリプトによる自動化
 
 - **状況**: Phase 12 Step 1（必須タスク完了記録）が正しく実行されたか手動確認が困難
 - **アプローチ**:
@@ -118,7 +129,7 @@
 - **関連タスク**: SHARED-TYPE-EXPORT-03
 - **検証コマンド**: `node .claude/skills/task-specification-creator/scripts/validate-phase12-step1.js --workflow <dir> --spec <file>`
 
-### 複数システム仕様書への横断的更新
+### [Phase12] 複数システム仕様書への横断的更新
 
 - **状況**: 単一タスクが複数の仕様書に関連する場合の更新漏れ
 - **アプローチ**:
@@ -130,7 +141,7 @@
 - **発見日**: 2026-01-23
 - **関連タスク**: SHARED-TYPE-EXPORT-03
 
-### E2EテストでのARIA属性ベースセレクタ優先
+### [Testing] E2EテストでのARIA属性ベースセレクタ優先
 
 - **状況**: Playwrightでドロップダウンコンポーネントをテストする際のセレクタ選定
 - **アプローチ**:
@@ -142,7 +153,7 @@
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-8C-B
 
-### E2Eヘルパー関数による操作シーケンスの分離
+### [Testing] E2Eヘルパー関数による操作シーケンスの分離
 
 - **状況**: 複数のE2Eテストで同じ操作シーケンス（スキル選択、ドロップダウン開閉など）が重複
 - **アプローチ**:
@@ -154,7 +165,7 @@
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-8C-B
 
-### E2E安定性対策3層アプローチ
+### [Testing] E2E安定性対策3層アプローチ
 
 - **状況**: E2Eテストでフレーキー（不安定）なテスト結果が発生
 - **アプローチ**:
@@ -166,7 +177,7 @@
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-8C-B
 
-### 既実装済み修正の発見パターン（AUTH-UI-001）
+### [Auth] 既実装済み修正の発見パターン（AUTH-UI-001）
 
 - **状況**: バグ修正タスクで、調査中に既に修正が実装済みであることを発見
 - **アプローチ**:
@@ -178,7 +189,7 @@
 - **発見日**: 2026-02-04
 - **関連タスク**: AUTH-UI-001
 
-### テスト環境問題と実装コード切り分けパターン（AUTH-UI-001）
+### [Testing] テスト環境問題と実装コード切り分けパターン（AUTH-UI-001）
 
 - **状況**: 33件のテストが失敗しているが、実装コード自体は正常動作
 - **アプローチ**:
@@ -190,7 +201,7 @@
 - **発見日**: 2026-02-04
 - **関連タスク**: AUTH-UI-001, UT-AUTH-001
 
-### React Portalによるz-index問題解決パターン（AUTH-UI-001）
+### [UI] React Portalによるz-index問題解決パターン（AUTH-UI-001）
 
 - **状況**: ドロップダウンメニューが他の要素の下に隠れる（z-indexだけでは解決不可）
 - **アプローチ**:
@@ -202,7 +213,7 @@
 - **発見日**: 2026-02-04
 - **関連タスク**: AUTH-UI-001
 
-### Supabase認証状態変更後の即時UI更新パターン（AUTH-UI-001）
+### [Auth] Supabase認証状態変更後の即時UI更新パターン（AUTH-UI-001）
 
 - **状況**: 認証状態変更（リンク/解除）後にUIが即座に更新されない
 - **アプローチ**:
@@ -214,7 +225,7 @@
 - **発見日**: 2026-02-04
 - **関連タスク**: AUTH-UI-001
 
-### OAuthコールバックエラーパラメータ抽出パターン（TASK-FIX-GOOGLE-LOGIN-001）
+### [Auth] OAuthコールバックエラーパラメータ抽出パターン（TASK-FIX-GOOGLE-LOGIN-001）
 
 - **状況**: OAuthコールバックURL内のエラーパラメータを検出してUIに反映したい
 - **アプローチ**:
@@ -226,7 +237,7 @@
 - **発見日**: 2026-02-05
 - **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
 
-### Zustandリスナー二重登録防止パターン（TASK-FIX-GOOGLE-LOGIN-001）
+### [Auth] Zustandリスナー二重登録防止パターン（TASK-FIX-GOOGLE-LOGIN-001）
 
 - **状況**: initializeAuthが複数回呼ばれるとリスナーが重複登録される
 - **アプローチ**:
@@ -238,7 +249,7 @@
 - **発見日**: 2026-02-05
 - **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
 
-### IPC経由のエラー情報伝達設計パターン（TASK-FIX-GOOGLE-LOGIN-001）
+### [IPC] IPC経由のエラー情報伝達設計パターン（TASK-FIX-GOOGLE-LOGIN-001）
 
 - **状況**: Main ProcessのエラーをRenderer側のUIに伝える必要がある
 - **アプローチ**:
@@ -250,13 +261,100 @@
 - **発見日**: 2026-02-05
 - **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
 
+### IPC Bridge API統一時のテストモック設計パターン（TASK-FIX-5-1）
+
+- **状況**: `window.skillAPI` と `window.electronAPI.skill` の二重定義を統一する際、テストモックの再設計が必要（623行→1092行に膨張）
+- **アプローチ**:
+  - `vi.hoisted()` でモック定義をファイルスコープの巻き上げ位置に配置
+  - フィクスチャファクトリ関数でテストごとにリセット可能なモックを生成
+  - パスエイリアス（`@/`）と相対パスの両方に対応するモック配布パターン
+- **結果**: テストの保守性向上、モック二重定義の解消、210テスト全PASS
+- **適用条件**: Electron Preload APIの変更、IPC Bridge層のリファクタリング
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+- **関連仕様書**: [architecture-implementation-patterns.md S2](.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+
+### セッション間での仕様書編集永続化検証パターン（TASK-FIX-5-1）
+
+- **状況**: 前セッションで10件の仕様書修正を完了と報告したが、8件がディスクに永続化されていなかった
+- **アプローチ**:
+  - 大量編集後は `git diff --stat` で変更ファイル数と期待値の一致を検証
+  - PostToolUseフック（Prettier/ESLint）によるファイル変更で Edit の `old_string` 不一致が発生する可能性を認識
+  - 重要な編集は直後に `git diff <file>` で実際の差分を確認
+- **結果**: 全8件の未永続化を発見し再適用、仕様書と実装の完全な整合性を達成
+- **適用条件**: 複数セッションにまたがる仕様書更新、Linterフックが有効な環境
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+- **関連ルール**: [06-known-pitfalls.md P11](.claude/rules/06-known-pitfalls.md)
+
+### Phase 1仕様書作成時の依存仕様書マトリクスパターン（TASK-FIX-5-1）
+
+- **状況**: Phase 1作成時にaiworkflow-requirementsの関連仕様書参照が不足し、後から2コミットで19件修正が必要
+- **アプローチ**:
+  - Phase 1作成時に「仕様書依存マトリクス」を明示的に作成
+  - task-specification-creatorとaiworkflow-requirementsの両方のreferences/を検索し、関連する全仕様書を特定
+  - 各Phase仕様書に必要な参照リンクを漏れなく追加
+- **結果**: 後付け修正のコスト（2コミット、19件修正）を事前に防止可能
+- **適用条件**: 複数の仕様書体系を持つプロジェクトでのタスク仕様書作成時
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+
+### [Auth] Supabase SDK自動リフレッシュ競合防止パターン（TASK-AUTH-SESSION-REFRESH-001）
+
+- **状況**: Supabase SDKの`autoRefreshToken: true`（デフォルト）とカスタムスケジューラーが同時にリフレッシュを試みる
+- **アプローチ**:
+  - 問題: 2つのリフレッシュ処理が同時実行されると、一方が無効なトークンで実行されエラーになる
+  - 解決: `supabaseClient.ts`で`autoRefreshToken: false`を設定し、カスタムスケジューラーに完全に委譲
+  - 排他制御: `_isRefreshing`フラグでスケジューラー内の二重実行も防止
+- **結果**: リフレッシュ処理の衝突を完全に排除、リトライ戦略を自由にカスタマイズ可能に
+- **適用条件**: 外部SDK（Supabase, Firebase等）のデフォルト自動処理をカスタム実装で置き換える場合
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-AUTH-SESSION-REFRESH-001
+
+### [Auth] setTimeout方式 vs setInterval方式の選択パターン（TASK-AUTH-SESSION-REFRESH-001）
+
+- **状況**: セッションリフレッシュのスケジューリング方式選定
+- **アプローチ**:
+  - setIntervalの問題: 固定間隔実行のため、リフレッシュ成功で新しいexpiresAtが変わっても間隔が変わらない
+  - setTimeout選択理由: リフレッシュ成功時に`reset(newExpiresAt)`で新しいタイマーを設定でき、動的な間隔調整が可能
+  - 追加利点: `stop()`で確実にタイマークリア可能、メモリリーク防止
+- **結果**: 毎回新しいexpiresAtに基づいた正確なスケジューリングを実現
+- **適用条件**: スケジュール間隔が動的に変わる定期処理
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-AUTH-SESSION-REFRESH-001
+
+### [Testing] vi.useFakeTimers + flushPromisesテストパターン（TASK-AUTH-SESSION-REFRESH-001）
+
+- **状況**: setTimeout + async/await が組み合わさったコードのテストが困難
+- **アプローチ**:
+  - 問題: `vi.runAllTimersAsync()`はリフレッシュ成功→新タイマー設定→再発火の無限ループを引き起こす
+  - 解決: `vi.advanceTimersByTime(ms)` + `flushPromises()`を組み合わせて段階的に制御
+  - `flushPromises()`: `for (let i = 0; i < 10; i++) await Promise.resolve()`でmicrotaskキューを消化
+  - テスト手順: タイマー進行→Promise解決→アサーション を1ステップずつ実行
+- **結果**: 26テスト全PASS、96.15%カバレッジ達成。タイマーと非同期処理の両方を正確にテスト可能
+- **適用条件**: setTimeout/setInterval + Promise/async-awaitが混在するコードのユニットテスト
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-AUTH-SESSION-REFRESH-001
+
+### [Auth] Callback DIによるテスタブル設計パターン（TASK-AUTH-SESSION-REFRESH-001）
+
+- **状況**: TokenRefreshSchedulerからSupabase, SecureStorage, BrowserWindowへの依存を分離したい
+- **アプローチ**:
+  - 問題: クラス内で直接`supabase.auth.refreshSession()`を呼ぶとモックが困難
+  - 解決: `TokenRefreshCallbacks`インターフェースで`onRefresh`, `onFailure`, `onSuccess`をDI
+  - スケジューラーは「いつ実行するか」のみに責務を限定、「何を実行するか」は呼び出し側が決定
+  - authHandlers.tsのstartTokenRefreshScheduler()でコールバック実装を注入
+- **結果**: スケジューラーのテストにSupabaseモック不要、テスト対象が明確に分離
+- **適用条件**: 外部サービス呼び出しを含むスケジューラー/タイマー系処理
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-AUTH-SESSION-REFRESH-001
 ---
 
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
 
-### 成果物名の暗黙的解釈
+### [Phase12] 成果物名の暗黙的解釈
 
 - **状況**: Phase 12で`implementation-guide.md`を`documentation.md`として生成
 - **問題**: 仕様書との不整合、後続処理でのファイル参照エラー
@@ -264,7 +362,7 @@
 - **教訓**: Phase仕様書の「成果物」セクションを必ず確認し、ファイル名を厳密に一致させる
 - **発見日**: 2026-01-22
 
-### Phase 12サブタスクの暗黙的省略
+### [Phase12] Phase 12サブタスクの暗黙的省略
 
 - **状況**: Phase 12完了時に「実装ガイド作成」のみ実行し、「システム仕様書更新」を省略
 - **問題**: システム仕様書に完了記録が残らず、成果が追跡できない
@@ -273,7 +371,7 @@
 - **発見日**: 2026-01-22
 - **対策済み**: phase-templates.md v7.6.0で完了条件チェックリストを強化
 
-### 全リソース一括読み込み
+### [Skill] 全リソース一括読み込み
 
 - **状況**: スキル実行開始時に全ファイルを読み込んだ
 - **問題**: コンテキストウィンドウを圧迫し、精度低下
@@ -281,7 +379,7 @@
 - **教訓**: 必要な時に必要なリソースのみ読み込む
 - **発見日**: 2026-01-10
 
-### LLMでのメトリクス計算
+### [Skill] LLMでのメトリクス計算
 
 - **状況**: 成功率や実行回数をLLMに計算させた
 - **問題**: 計算ミスが発生、信頼性低下
@@ -289,7 +387,7 @@
 - **教訓**: 決定論的処理は必ずスクリプトで実行
 - **発見日**: 2026-01-08
 
-### スクリプトでのデータ形式前提の誤り
+### [Build] スクリプトでのデータ形式前提の誤り
 
 - **状況**: generate-documentation-changelog.jsがartifacts.jsonを解析してエラー発生
 - **問題**: `TypeError: The "path" argument must be of type string. Received undefined`
@@ -299,7 +397,7 @@
 - **発見日**: 2026-01-22
 - **関連タスク**: skill-import-store-persistence (SKILL-STORE-001)
 
-### 「検証タスク」でのPhase 12 Step 1省略
+### [Phase12] 「検証タスク」でのPhase 12 Step 1省略
 
 - **状況**: SHARED-TYPE-EXPORT-03（検証タスク）でPhase 12 Step 1を「検証タスクなので更新不要」と判断し省略
 - **問題**: spec-update-record.mdに「更新不要」と記載したが、Step 1は必須要件だった
@@ -311,7 +409,7 @@
 - **発見日**: 2026-01-23
 - **関連タスク**: SHARED-TYPE-EXPORT-03
 
-### ES Module互換性の確認漏れ
+### [Build] ES Module互換性の確認漏れ
 
 - **状況**: 新規スクリプト（validate-phase12-step1.js）作成時にCommonJS構文（require）を使用
 - **問題**: プロジェクトがES Module（"type": "module"）設定のため実行時エラー

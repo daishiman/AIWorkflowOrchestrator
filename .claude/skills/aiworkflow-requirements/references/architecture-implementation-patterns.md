@@ -509,7 +509,7 @@ CSSスタッキングコンテキストによりz-indexが親要素の範囲内�
 | モック対象           | 設定タイミング | 用途                      |
 | -------------------- | -------------- | ------------------------- |
 | Clipboard API        | beforeAll      | コピー/ペースト機能テスト |
-| window.skillAPI      | beforeAll      | useSkillExecution等のHook |
+| window.electronAPI.skill | beforeAll      | useSkillExecution等のHook（TASK-FIX-5-1で統一） |
 | IntersectionObserver | トップレベル   | 無限スクロール等          |
 
 **モック上書きパターン**:
@@ -963,10 +963,62 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 ---
 
+## SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装）
+
+SkillAPIの二重定義（`window.skillAPI` + `window.electronAPI.skill`）を単一の `window.electronAPI.skill` に統一するパターン。
+
+### 問題: IPC Bridge API二重公開
+
+| 要素 | 説明 |
+|------|------|
+| 旧状態 | `window.skillAPI`（直接公開）+ `window.electronAPI.skill`（contextBridge経由）が共存 |
+| 問題 | 呼び出し側で参照先が分散し、テストモックも二重管理が必要 |
+| 解決 | `window.electronAPI.skill` に一本化、旧 `window.skillAPI` を完全削除 |
+
+### 統一後のAPI構成（13メソッド）
+
+| カテゴリ | メソッド | パターン | 戻り値 |
+|----------|----------|----------|--------|
+| Skill実行 | execute, onStream, abort, getExecutionStatus, onComplete, onError | safeInvoke/safeOn | 直接型（OperationResult不使用） |
+| Permission | onPermissionRequest, sendPermissionResponse | safeOn/safeInvoke | 直接型 |
+| Skill管理 | list, getImported, rescan, import, remove | safeInvoke | 直接型 |
+
+### 実装上の課題と対処法
+
+#### 型アサーション残存（S1）
+
+| 要素 | 説明 |
+|------|------|
+| 問題 | `AgentView/index.tsx` で `as unknown as Skill[]` 型アサーション残存（agentSliceが旧 `Skill` 型使用） |
+| 対処 | 未タスク UT-FIX-5-1-001 として登録、TASK-FIX-6-1（状態管理変更）で包含予定 |
+| 教訓 | API統一時は呼び出し側のStore型定義まで影響範囲を調査し、スコープに含めるか明示的に判断する |
+
+#### OperationResult廃止の影響波及（S4）
+
+| 要素 | 説明 |
+|------|------|
+| 問題 | `OperationResult<T>` ラッパー廃止で8ファイルに影響波及。使用箇所が分散していた |
+| 対処 | Preload層では直接型に統一し、旧定義は後方互換のため残置 |
+| 教訓 | 型ラッパー廃止時は `grep -rn` で全使用箇所をリストアップし、段階的置換プランを策定する |
+
+#### テストモック設計・仕様書参照・編集永続化（S2/S3/S5）
+
+以下の実行プロセス上の課題は [skill-creator/references/patterns.md](.claude/skills/skill-creator/references/patterns.md) に成功パターンとして詳細を記録:
+
+| ID | 課題 | 対応パターン |
+|----|------|-------------|
+| S2 | パスエイリアス対応でテスト623→1092行に膨張 | IPC Bridge API統一時のテストモック設計パターン |
+| S3 | Phase 1で仕様書参照19件が不足し後付け修正 | Phase 1仕様書作成時の依存仕様書マトリクスパターン |
+| S5 | PostToolUseフックで8件が未永続化 | セッション間での仕様書編集永続化検証パターン |
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.15.0 | 2026-02-06 | TASK-FIX-5-1リファクタリング: S1-S5苦戦箇所を最適化（S1/S4は実装パターンとして保持、S2/S3/S5はskill-creator/patterns.mdへクロスリファレンス化で重複解消） |
+| 1.14.0 | 2026-02-06 | TASK-FIX-5-1-SKILL-API-UNIFICATION: SkillAPI統一パターン追加（API二重公開解消、苦戦箇所5件記録） |
 | 1.13.0 | 2026-02-05 | TASK-FIX-4-1-IPC-CONSOLIDATION: IPCチャンネル統合パターン追加（Single Source of Truth、ハードコード検出、ホワイトリスト検証） |
 | 1.12.0 | 2026-02-04 | AUTH-UI-001: React Portal オーバーレイUI最前面表示パターン、Supabase認証状態変更時の即時UI更新パターン追加 |
 | 1.11.0 | 2026-02-04 | AUTH-UI-004: 外部APIデータ正規化パターン追加（プロバイダー別フォールバック） |

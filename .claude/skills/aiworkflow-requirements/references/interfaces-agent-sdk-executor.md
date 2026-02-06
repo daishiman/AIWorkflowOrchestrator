@@ -331,7 +331,7 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 | テスト数     | 138件（37 + 38 + 40 + 23）                                  |
 | ドキュメント | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/` |
 
-### Preload API（skillAPI）
+### Preload API（window.electronAPI.skill）
 
 | メソッド             | シグネチャ                                        | 用途                               |
 | -------------------- | ------------------------------------------------- | ---------------------------------- |

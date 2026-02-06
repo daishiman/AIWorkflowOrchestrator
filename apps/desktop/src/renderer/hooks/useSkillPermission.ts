@@ -51,12 +51,12 @@ export function useSkillPermission(): UseSkillPermissionReturn {
     // skillAPI が利用可能か確認
     if (
       typeof window === "undefined" ||
-      !window.skillAPI?.onPermissionRequest
+      !window.electronAPI?.skill?.onPermissionRequest
     ) {
       return;
     }
 
-    const cleanup = window.skillAPI.onPermissionRequest(
+    const cleanup = window.electronAPI.skill.onPermissionRequest(
       (request: SkillPermissionRequest) => {
         setPendingPermission(request);
       },
@@ -72,7 +72,7 @@ export function useSkillPermission(): UseSkillPermissionReturn {
     (rememberChoice: boolean) => {
       if (!pendingPermission) return;
 
-      window.skillAPI
+      window.electronAPI?.skill
         ?.sendPermissionResponse({
           requestId: pendingPermission.requestId,
           approved: true,
@@ -94,7 +94,7 @@ export function useSkillPermission(): UseSkillPermissionReturn {
     (rememberChoice: boolean) => {
       if (!pendingPermission) return;
 
-      window.skillAPI
+      window.electronAPI?.skill
         ?.sendPermissionResponse({
           requestId: pendingPermission.requestId,
           approved: false,
