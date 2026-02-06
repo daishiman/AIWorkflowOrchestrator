@@ -5,6 +5,33 @@
 
 ---
 
+## 2026-02-06: TASK-AUTH-CALLBACK-001 未タスク指示書作成（苦戦箇所からの知見展開）
+
+| 項目         | 内容                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| タスクID     | TASK-AUTH-CALLBACK-001                                                                    |
+| Agent        | aiworkflow-requirements                                                                   |
+| 操作         | 未タスク2件作成 + 関連仕様書更新                                                          |
+| 対象ファイル | task-protocol-url-parsing-utility.md, task-auth-provider-detection.md, task-workflow.md, architecture-auth-security.md |
+| 結果         | 成功                                                                                      |
+| 備考         | TASK-AUTH-CALLBACK-001実装時の苦戦箇所から2件の未タスクを検出・仕様書化                  |
+
+### 作成した未タスク
+
+| タスクID            | タスク名                                  | 優先度 | 発見元                                      |
+| ------------------- | ----------------------------------------- | ------ | ------------------------------------------- |
+| UT-PROTOCOL-URL-001 | カスタムプロトコルURLパース標準化         | 中     | RFC 3986 authorityコンポーネント問題        |
+| UT-SEC-001          | OAuth プロバイダー自動検出機能            | 低     | DEBT-SEC-001設計乖離（consumeState→validate） |
+
+### 更新ファイル
+
+| ファイル                       | 追加内容                                                       |
+| ------------------------------ | -------------------------------------------------------------- |
+| task-workflow.md               | 残課題テーブルに2件追加、変更履歴v1.20.0追加                   |
+| architecture-auth-security.md  | 関連タスクテーブルに2件追加                                    |
+
+---
+
 ## 2026-02-06: DEBT-SEC-001 仕様書更新（Phase 12ドキュメント・未タスク管理）
 
 | 項目         | 内容                                                                                                              |
@@ -2705,5 +2732,57 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | 2     | アーキテクチャ設計       | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-2/ |
 | 4     | テスト仕様・テストケース | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-4/ |
 | 12    | 実装ガイド               | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-12/ |
+
+---
+
+## TASK-AUTH-CALLBACK-001: OAuth認証コールバックPKCE移行
+
+### メタ情報
+
+| 項目       | 内容                    |
+| ---------- | ----------------------- |
+| タスクID   | TASK-AUTH-CALLBACK-001  |
+| 機能名     | auth-callback-urlscheme |
+| 完了日     | 2026-02-06              |
+| ステータス | **完了**                |
+
+### 概要
+
+OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行。DEBT-SEC-001/002/003を全て解消。
+
+### 主な変更内容
+
+| 変更                     | 内容                                                 |
+| ------------------------ | ---------------------------------------------------- |
+| PKCE実装                 | RFC 7636準拠のcode_verifier/code_challenge生成       |
+| ローカルHTTPサーバー     | 127.0.0.1動的ポートでOAuthコールバック受信           |
+| State parameter          | 32バイトエントロピー + 厳密検証 + 5分TTL             |
+| カスタムプロトコルURL検証 | ALLOWED_PATHSホワイトリスト + isAllowedProtocolUrl() |
+| AuthFlowOrchestrator     | PKCE + HTTPサーバー + State管理の統合制御            |
+
+### 更新した仕様書
+
+| ドキュメント                     | 変更内容                                                          |
+| -------------------------------- | ----------------------------------------------------------------- |
+| `interfaces-auth.md`            | PKCEPair, AuthCallbackResult, AuthCallbackServer, AuthFlowOrchestrator型追加 |
+| `architecture-auth-security.md` | ハイブリッド認証フロー追加、DEBT-SEC-001/002/003を完了に更新     |
+| `security-implementation.md`    | PKCE/State/HTTPサーバー実装記録追加                               |
+
+### 成果物
+
+| Phase | 成果物                     | パス                                                                |
+| ----- | -------------------------- | ------------------------------------------------------------------- |
+| 1     | 要件定義・受け入れ基準     | docs/30-workflows/auth-callback-urlscheme/outputs/phase-1/          |
+| 2     | アーキテクチャ設計         | docs/30-workflows/auth-callback-urlscheme/outputs/phase-2/          |
+| 3     | 設計レビュー結果           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-3/          |
+| 4     | テスト仕様・テストケース   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-4/          |
+| 5     | 実装サマリー               | docs/30-workflows/auth-callback-urlscheme/outputs/phase-5/          |
+| 6     | テスト拡充結果             | docs/30-workflows/auth-callback-urlscheme/outputs/phase-6/          |
+| 7     | カバレッジ確認結果         | docs/30-workflows/auth-callback-urlscheme/outputs/phase-7/          |
+| 8     | リファクタリングサマリー   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-8/          |
+| 9     | 品質保証レポート           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-9/          |
+| 10    | 最終レビュー結果           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-10/         |
+| 11    | 手動テスト結果             | docs/30-workflows/auth-callback-urlscheme/outputs/phase-11/         |
+| 12    | 実装ガイド・ドキュメント   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-12/         |
 
 ---

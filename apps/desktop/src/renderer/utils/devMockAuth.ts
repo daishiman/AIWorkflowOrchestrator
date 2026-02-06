@@ -25,11 +25,6 @@ export function isDevMode(): boolean {
     return false;
   }
 
-  // 🔧 一時的な修正: 開発環境では常に認証をスキップ
-  // TODO: 認証機能を復活させる際にこの行を削除
-  // 関連タスク: docs/30-workflows/unassigned-task/task-auth-callback-url-scheme.md
-  return true;
-
   // E2E環境フラグ
   if (import.meta.env.VITE_E2E_MODE === "true") {
     return true;

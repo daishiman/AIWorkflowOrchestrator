@@ -4,6 +4,26 @@
  * Supabase認証とプロフィール管理のための型を定義
  */
 
+// === PKCE (Proof Key for Code Exchange) ===
+
+/**
+ * PKCEペア（code_verifier + code_challenge）
+ * RFC 7636準拠
+ */
+export interface PKCEPair {
+  codeVerifier: string;
+  codeChallenge: string;
+}
+
+/**
+ * OAuth認証コールバック結果
+ * HTTPサーバーが受信するauthorization_codeとstate
+ */
+export interface AuthCallbackResult {
+  code: string;
+  state: string;
+}
+
 // === OAuth プロバイダー ===
 
 /**

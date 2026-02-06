@@ -12,6 +12,10 @@ export const CUSTOM_PROTOCOL = "aiworkflow";
 
 // コールバックパス
 export const AUTH_CALLBACK_PATH = "/auth/callback";
+export const AUTH_DONE_PATH = "/auth/done";
+
+// 許可されたプロトコルパスのホワイトリスト（DEBT-SEC-003）
+const ALLOWED_PATHS = [AUTH_CALLBACK_PATH, AUTH_DONE_PATH];
 
 /**
  * プロトコル URL からトークンを抽出するコールバック関数の型
@@ -46,12 +50,39 @@ export function registerAsDefaultProtocolClient(): boolean {
 }
 
 /**
+ * カスタムプロトコルURLからパス部分を抽出する
+ * aiworkflow://auth/callback?code=xxx → /auth/callback
+ */
+function extractProtocolPath(url: string): string | null {
+  const prefix = `${CUSTOM_PROTOCOL}://`;
+  if (!url.startsWith(prefix)) return null;
+  const rest = url.slice(prefix.length);
+  // クエリパラメータとフラグメントを除去
+  const pathOnly = rest.split("?")[0].split("#")[0];
+  return `/${pathOnly}`;
+}
+
+/**
+ * プロトコル URL が許可されたパスかどうかを検証（DEBT-SEC-003）
+ */
+export function isAllowedProtocolUrl(url: string): boolean {
+  const path = extractProtocolPath(url);
+  if (!path) return false;
+  return ALLOWED_PATHS.includes(path);
+}
+
+/**
+ * プロトコル URL が認証完了通知（auth/done）かどうかを判定
+ */
+export function isAuthDoneUrl(url: string): boolean {
+  return extractProtocolPath(url) === AUTH_DONE_PATH;
+}
+
+/**
  * プロトコル URL が認証コールバックかどうかを判定
  */
 export function isAuthCallbackUrl(url: string): boolean {
-  return (
-    url.startsWith(`${CUSTOM_PROTOCOL}://`) && url.includes(AUTH_CALLBACK_PATH)
-  );
+  return extractProtocolPath(url) === AUTH_CALLBACK_PATH;
 }
 
 /**
@@ -69,13 +100,19 @@ async function handleProtocolUrl(
     return;
   }
 
+  // URLパス検証（DEBT-SEC-003: 不正パスを拒否）
+  if (!isAllowedProtocolUrl(url)) {
+    console.warn("[Protocol] Rejected unknown protocol path:", url);
+    return;
+  }
+
   // ウィンドウを前面に表示
   if (mainWindow.isMinimized()) {
     mainWindow.restore();
   }
   mainWindow.focus();
 
-  // 認証コールバックの場合
+  // 認証コールバックの場合（カスタムURLスキーム経由のフォールバック）
   if (isAuthCallbackUrl(url)) {
     if (options.onAuthCallback) {
       try {
@@ -85,6 +122,7 @@ async function handleProtocolUrl(
       }
     }
   }
+  // auth/done: ウィンドウフォーカスのみ（PKCE完了通知 — 上記で処理済み）
 }
 
 /**

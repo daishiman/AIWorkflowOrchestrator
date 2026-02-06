@@ -168,6 +168,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
 - [ ] artifacts.jsonが更新されている
+- [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ---

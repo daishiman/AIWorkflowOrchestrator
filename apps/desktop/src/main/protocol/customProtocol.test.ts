@@ -1,5 +1,7 @@
 /**
  * カスタムプロトコルハンドラーのテスト
+ *
+ * @vitest-environment node
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
@@ -7,6 +9,8 @@ import {
   CUSTOM_PROTOCOL,
   AUTH_CALLBACK_PATH,
   isAuthCallbackUrl,
+  isAuthDoneUrl,
+  isAllowedProtocolUrl,
   registerAsDefaultProtocolClient,
   setupCustomProtocol,
   setupMacOSProtocolHandler,
@@ -255,6 +259,170 @@ describe("customProtocol", () => {
 
       expect(hashParams.get("error")).toBe("access_denied");
       expect(hashParams.get("error_description")).toBe("User denied access");
+    });
+  });
+
+  // === Phase 6: プラットフォーム固有テスト ===
+
+  describe("プラットフォーム固有テスト", () => {
+    describe("macOS", () => {
+      it("PLAT-01: open-urlイベントでauth/done URLを受信する", async () => {
+        const { app } = await import("electron");
+        const mockCallback = vi.fn();
+        const mockWindow = {
+          isMinimized: vi.fn(() => false),
+          focus: vi.fn(),
+        } as never;
+
+        const options: ProtocolSetupOptions = {
+          getMainWindow: () => mockWindow,
+          onAuthCallback: mockCallback,
+        };
+
+        setupMacOSProtocolHandler(options);
+
+        // open-url ハンドラーを取得して実行
+        const openUrlCall = vi
+          .mocked(app.on)
+          .mock.calls.find((call) => call[0] === "open-url");
+        expect(openUrlCall).toBeDefined();
+
+        const handler = openUrlCall![1] as (
+          event: { preventDefault: () => void },
+          url: string,
+        ) => Promise<void>;
+        const mockEvent = { preventDefault: vi.fn() };
+        await handler(mockEvent, "aiworkflow://auth/done");
+
+        // auth/done はウィンドウフォーカスのみ、onAuthCallbackは呼ばれない
+        expect(mockEvent.preventDefault).toHaveBeenCalled();
+        expect(mockCallback).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("Windows", () => {
+      it("PLAT-02: second-instanceイベントでDeep Linkを受信する", async () => {
+        const { app } = await import("electron");
+        const mockCallback = vi.fn();
+        const mockWindow = {
+          isMinimized: vi.fn(() => true),
+          restore: vi.fn(),
+          focus: vi.fn(),
+        } as never;
+
+        const options: ProtocolSetupOptions = {
+          getMainWindow: () => mockWindow,
+          onAuthCallback: mockCallback,
+        };
+
+        setupWindowsLinuxProtocolHandler(options);
+
+        // second-instance ハンドラーを取得して実行
+        const secondInstanceCall = vi
+          .mocked(app.on)
+          .mock.calls.find((call) => call[0] === "second-instance");
+        expect(secondInstanceCall).toBeDefined();
+
+        const handler = secondInstanceCall![1] as (
+          event: unknown,
+          commandLine: string[],
+        ) => Promise<void>;
+        await handler({}, [
+          "app.exe",
+          "--some-flag",
+          "aiworkflow://auth/callback?code=test_code&state=test_state",
+        ]);
+
+        // コマンドライン引数からURLが抽出され、onAuthCallbackが呼ばれる
+        expect(mockCallback).toHaveBeenCalledWith(
+          "aiworkflow://auth/callback?code=test_code&state=test_state",
+        );
+      });
+    });
+
+    describe("Linux / 開発ビルド", () => {
+      it("PLAT-03: HTTPサーバーフォールバックで動作する", async () => {
+        // カスタムURLスキーム非対応環境でもHTTPサーバーで認証が完結する
+        const { createAuthCallbackServer } =
+          await import("../auth/authCallbackServer");
+        const server = createAuthCallbackServer({ host: "127.0.0.1" });
+        const { port } = await server.start();
+
+        expect(port).toBeGreaterThan(0);
+        expect(server.isRunning).toBe(true);
+
+        // カスタムURLスキームなしでもHTTP直接アクセスで認証コールバック受信可能
+        const callbackPromise = server.waitForCallback();
+        await fetch(
+          `http://127.0.0.1:${port}/auth/callback?code=linux_code&state=linux_state`,
+        );
+        const result = await callbackPromise;
+        expect(result.code).toBe("linux_code");
+
+        await server.stop();
+      });
+
+      it("PLAT-04: 開発ビルドでHTTPサーバー方式が使用される", async () => {
+        const { app } = await import("electron");
+        // 開発ビルドではprocess.defaultApp = true
+        (process as { defaultApp?: boolean }).defaultApp = true;
+        process.argv = ["/path/to/electron", "/path/to/script.js"];
+
+        // 開発ビルドでもプロトコル登録は成功する
+        const result = registerAsDefaultProtocolClient();
+        expect(result).toBe(true);
+        expect(app.setAsDefaultProtocolClient).toHaveBeenCalledWith(
+          "aiworkflow",
+          process.execPath,
+          ["/path/to/script.js"],
+        );
+
+        // HTTPサーバーはprocess.defaultAppに依存せず独立動作する
+        const { createAuthCallbackServer } =
+          await import("../auth/authCallbackServer");
+        const server = createAuthCallbackServer();
+        const { port } = await server.start();
+        expect(port).toBeGreaterThan(0);
+        await server.stop();
+      });
+    });
+  });
+
+  // === Phase 6: 追加リグレッション ===
+
+  describe("追加リグレッション", () => {
+    it("REG-02: DEBT-SEC-003 - 不正なURLパスが拒否される", () => {
+      // 許可リスト外のパスが拒否されること
+      expect(isAllowedProtocolUrl("aiworkflow://auth/unknown")).toBe(false);
+      expect(isAllowedProtocolUrl("aiworkflow://settings")).toBe(false);
+      expect(isAllowedProtocolUrl("aiworkflow://")).toBe(false);
+      expect(isAllowedProtocolUrl("aiworkflow://malicious/path")).toBe(false);
+      expect(isAllowedProtocolUrl("http://127.0.0.1/auth/callback")).toBe(
+        false,
+      );
+
+      // パス拡張攻撃の防止（strict pathname match）
+      expect(isAllowedProtocolUrl("aiworkflow://auth/callbackextra")).toBe(
+        false,
+      );
+      expect(isAllowedProtocolUrl("aiworkflow://evil/auth/callback")).toBe(
+        false,
+      );
+      expect(
+        isAllowedProtocolUrl("aiworkflow://auth/callback/../../secret"),
+      ).toBe(false);
+
+      // 許可リスト内のパスは許可される
+      expect(isAllowedProtocolUrl("aiworkflow://auth/callback")).toBe(true);
+      expect(
+        isAllowedProtocolUrl("aiworkflow://auth/callback?code=xxx&state=yyy"),
+      ).toBe(true);
+      expect(isAllowedProtocolUrl("aiworkflow://auth/done")).toBe(true);
+
+      // isAuthDoneUrl の検証
+      expect(isAuthDoneUrl("aiworkflow://auth/done")).toBe(true);
+      expect(isAuthDoneUrl("aiworkflow://auth/callback")).toBe(false);
+      expect(isAuthDoneUrl("http://auth/done")).toBe(false);
     });
   });
 });
