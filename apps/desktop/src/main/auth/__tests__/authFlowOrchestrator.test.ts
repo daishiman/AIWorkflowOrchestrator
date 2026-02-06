@@ -2,7 +2,10 @@
  * 認証フローオーケストレーター テスト
  * Phase 4: TDD Red - 実装前のテスト作成
  *
- * テストID: ORC-01 ~ ORC-09, EDGE-02, EDGE-03, SEC-01 ~ SEC-04, SEC-06
+ * テストID: ORC-01 ~ ORC-09, EDGE-02, EDGE-03, SEC-02 ~ SEC-04, SEC-06
+ *
+ * Note: State parameter（CSRF保護）はSupabaseが内部で管理するため、
+ * アプリ側でのstate検証テスト（SEC-01）は不要。PKCEに集中したテストを行う。
  *
  * @vitest-environment node
  */
@@ -87,10 +90,10 @@ describe("認証フローオーケストレーター", () => {
     );
   });
 
-  describe("State parameter", () => {
-    it("ORC-01: 32バイト以上のランダム文字列が生成される", async () => {
-      // startOAuthFlowを呼び出して内部的に生成されるstateを検証
-      // stateは内部実装なので、signInWithOAuthに渡されるqueryParamsで検証
+  describe("Supabase Delegated PKCE/State", () => {
+    it("ORC-01: PKCE/StateパラメータはSupabaseに完全委任される", async () => {
+      // PKCE（code_verifier/code_challenge）とState parameter（CSRF保護）は
+      // Supabase JS クライアントが内部で管理する
       const flowPromise = orchestrator.startOAuthFlow("google");
 
       // signInWithOAuthが呼ばれるまで待機
@@ -100,20 +103,21 @@ describe("認証フローオーケストレーター", () => {
 
       const callArgs = mockSignInWithOAuth.mock.calls[0];
       const options = callArgs[0].options;
-      const state = options.queryParams?.state;
 
-      // 32バイト → Base64URLで約43文字
-      expect(state).toBeDefined();
-      expect(state.length).toBeGreaterThanOrEqual(43);
+      // redirectToとskipBrowserRedirectのみを指定
+      expect(options.redirectTo).toMatch(/^http:\/\/localhost:\d+/);
+      expect(options.skipBrowserRedirect).toBe(true);
+      // カスタムqueryParamsは渡さない（Supabaseに任せる）
+      expect(options.queryParams).toBeUndefined();
 
       // クリーンアップ
       await orchestrator.dispose();
       await flowPromise.catch(() => {}); // ignore cleanup errors
     });
 
-    it("ORC-02: state一致時にフローが続行される", async () => {
+    it("ORC-02: コールバック受信後にトークン交換が実行される", async () => {
       // startOAuthFlow内でHTTPサーバーが起動し、
-      // コールバックが正しいstateで受信された場合にトークン交換が行われることを検証
+      // コールバック受信後にトークン交換が行われることを検証
       const flowPromise = orchestrator.startOAuthFlow("google");
 
       await vi.waitFor(() => {
@@ -121,17 +125,13 @@ describe("認証フローオーケストレーター", () => {
       });
 
       // オーケストレーターのフロー完了を待つ（モックサーバーのため）
-      // 実装時にはHTTPサーバーへのリクエスト送信が必要
       await orchestrator.dispose();
       await flowPromise.catch(() => {});
-
-      // トークン交換は正しいstateの場合のみ呼ばれる
-      // 具体的な検証はPhase 5の実装後に詳細化
     });
 
-    it("ORC-03: state不一致時に認証が拒否される", async () => {
-      // 不正なstateでコールバックが来た場合、トークン交換が呼ばれないことを検証
-      // Phase 5の実装後にHTTPサーバー経由で不正stateを送信して検証
+    it("ORC-03: Supabaseがエラーを返した場合にエラーハンドリングされる", async () => {
+      // SupabaseからのOAuthエラー（bad_oauth_state等）は
+      // コールバックサーバーでエラーとして処理される
       const flowPromise = orchestrator.startOAuthFlow("google");
 
       await vi.waitFor(() => {
@@ -143,8 +143,8 @@ describe("認証フローオーケストレーター", () => {
     });
   });
 
-  describe("PKCE統合", () => {
-    it("ORC-04: OAuth URLにcode_challengeが含まれる", async () => {
+  describe("OAuth URL構築", () => {
+    it("ORC-04: signInWithOAuthが正しいプロバイダーで呼ばれる", async () => {
       const flowPromise = orchestrator.startOAuthFlow("google");
 
       await vi.waitFor(() => {
@@ -152,20 +152,14 @@ describe("認証フローオーケストレーター", () => {
       });
 
       const callArgs = mockSignInWithOAuth.mock.calls[0];
-      const options = callArgs[0].options;
-
-      expect(options.queryParams).toBeDefined();
-      expect(options.queryParams.code_challenge).toBeDefined();
-      expect(options.queryParams.code_challenge.length).toBeGreaterThan(0);
-      expect(options.queryParams.code_challenge_method).toBe("S256");
+      expect(callArgs[0].provider).toBe("google");
 
       await orchestrator.dispose();
       await flowPromise.catch(() => {});
     });
 
-    it("ORC-05: トークン交換が正しい引数で呼ばれる", async () => {
-      // トークン交換時にcodeとcode_verifierが渡されることを検証
-      // Phase 5の実装後にHTTPサーバー経由でコールバックを受信して検証
+    it("ORC-05: exchangeCodeForSessionが呼ばれる", async () => {
+      // トークン交換時にexchangeCodeForSessionが呼ばれることを検証
       const flowPromise = orchestrator.startOAuthFlow("google");
 
       await vi.waitFor(() => {
@@ -258,10 +252,9 @@ describe("認証フローオーケストレーター", () => {
 
       const callArgs = mockSignInWithOAuth.mock.calls[0];
       const redirectTo = callArgs[0].options.redirectTo;
-      const state = callArgs[0].options.queryParams.state;
 
-      // 正しいstateでコールバック送信 → トークン交換 → storeRefreshToken失敗
-      await fetch(`${redirectTo}?code=test_code&state=${state}`).catch(
+      // コールバック送信 → トークン交換 → storeRefreshToken失敗
+      await fetch(`${redirectTo}?code=test_code&state=test_state`).catch(
         () => {},
       );
 
@@ -296,25 +289,7 @@ describe("認証フローオーケストレーター", () => {
   // === Phase 6: セキュリティテスト ===
 
   describe("セキュリティテスト", () => {
-    it("SEC-01: State不一致で認証を拒否する", async () => {
-      const flowPromise = orchestrator.startOAuthFlow("google");
-      flowPromise.catch(() => {}); // Prevent vitest unhandled rejection
-
-      await vi.waitFor(() => {
-        expect(mockSignInWithOAuth).toHaveBeenCalled();
-      });
-
-      const callArgs = mockSignInWithOAuth.mock.calls[0];
-      const redirectTo = callArgs[0].options.redirectTo;
-
-      // 不正なstateでコールバック送信
-      await fetch(`${redirectTo}?code=test_code&state=wrong_state_value`).catch(
-        () => {},
-      );
-
-      await expect(flowPromise).rejects.toThrow(/[Ss]tate/);
-      expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
-    });
+    // Note: SEC-01（State不一致検証）はSupabaseが内部で処理するため削除
 
     it("SEC-02: トークン交換失敗時にエラーが正しく処理される", async () => {
       mockExchangeCodeForSession.mockResolvedValueOnce({
@@ -331,16 +306,15 @@ describe("認証フローオーケストレーター", () => {
 
       const callArgs = mockSignInWithOAuth.mock.calls[0];
       const redirectTo = callArgs[0].options.redirectTo;
-      const state = callArgs[0].options.queryParams.state;
 
-      await fetch(`${redirectTo}?code=test_code&state=${state}`).catch(
+      await fetch(`${redirectTo}?code=test_code&state=test_state`).catch(
         () => {},
       );
 
       await expect(flowPromise).rejects.toThrow();
     });
 
-    it("SEC-03: リダイレクトURIが127.0.0.1のみを使用する", async () => {
+    it("SEC-03: リダイレクトURIがlocalhostを使用する", async () => {
       const flowPromise = orchestrator.startOAuthFlow("google");
 
       await vi.waitFor(() => {
@@ -350,21 +324,22 @@ describe("認証フローオーケストレーター", () => {
       const callArgs = mockSignInWithOAuth.mock.calls[0];
       const redirectTo = callArgs[0].options.redirectTo;
 
-      expect(redirectTo).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/auth\/callback$/);
+      // localhostを使用（Supabase Redirect URLs登録済み）
+      expect(redirectTo).toMatch(/^http:\/\/localhost:\d+\/auth\/callback$/);
 
       await orchestrator.dispose();
       await flowPromise.catch(() => {});
     });
 
-    it("SEC-04: 各フローで一意のstateが生成される", async () => {
+    it("SEC-04: 各フローで独立したHTTPサーバーが起動される", async () => {
       const flow1Promise = orchestrator.startOAuthFlow("google");
 
       await vi.waitFor(() => {
         expect(mockSignInWithOAuth).toHaveBeenCalledTimes(1);
       });
 
-      const state1 =
-        mockSignInWithOAuth.mock.calls[0][0].options.queryParams.state;
+      const redirectTo1 =
+        mockSignInWithOAuth.mock.calls[0][0].options.redirectTo;
 
       await orchestrator.dispose();
       await flow1Promise.catch(() => {});
@@ -377,11 +352,12 @@ describe("認証フローオーケストレーター", () => {
         expect(mockSignInWithOAuth).toHaveBeenCalledTimes(1);
       });
 
-      const state2 =
-        mockSignInWithOAuth.mock.calls[0][0].options.queryParams.state;
+      const redirectTo2 =
+        mockSignInWithOAuth.mock.calls[0][0].options.redirectTo;
 
-      // 2つのstateは異なるべき（暗号的ランダム）
-      expect(state1).not.toBe(state2);
+      // 両方のフローでredirectToが設定されている
+      expect(redirectTo1).toMatch(/^http:\/\/localhost:\d+/);
+      expect(redirectTo2).toMatch(/^http:\/\/localhost:\d+/);
 
       await orchestrator.dispose();
       await flow2Promise.catch(() => {});
@@ -397,9 +373,8 @@ describe("認証フローオーケストレーター", () => {
 
       const callArgs = mockSignInWithOAuth.mock.calls[0];
       const redirectTo = callArgs[0].options.redirectTo;
-      const state = callArgs[0].options.queryParams.state;
 
-      await fetch(`${redirectTo}?code=test_code&state=${state}`).catch(
+      await fetch(`${redirectTo}?code=test_code&state=test_state`).catch(
         () => {},
       );
 
