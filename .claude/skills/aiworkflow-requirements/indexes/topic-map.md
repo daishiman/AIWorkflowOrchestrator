@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-05
+> 自動生成: 2026-02-06
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -71,14 +71,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | パフォーマンス要件 | L37 |
 | テスト戦略（TDD実践ガイド） | L125 |
-| セキュリティ | L377 |
-| 可用性 | L405 |
-| 保守性 | L423 |
-| アクセシビリティ | L523 |
-| テストカバレッジ目標 | L542 |
-| 関連ドキュメント | L619 |
-| 完了タスク | L627 |
-| 変更履歴 | L881 |
+| セキュリティ | L379 |
+| 可用性 | L407 |
+| 保守性 | L425 |
+| アクセシビリティ | L525 |
+| テストカバレッジ目標 | L544 |
+| 関連ドキュメント | L621 |
+| 完了タスク | L629 |
+| 変更履歴 | L883 |
 
 ---
 
@@ -89,12 +89,13 @@ node scripts/list-specs.js --topics
 ### references/architecture-auth-security.md
 
 | セクション | 行 |
-|------------|----|\n| 変更履歴 | L6 |
-| 認証アーキテクチャ（Supabase + Electron） | L16 |
-| セキュリティアーキテクチャ | L135 |
-| RAGパイプラインアーキテクチャ | L174 |
-| 完了タスク | L289 |
-| 関連ドキュメント | L334 |
+|------------|----|\n| 変更履歴 | L28 |
+| 認証アーキテクチャ（Supabase + Electron） | L39 |
+| セキュリティアーキテクチャ | L161 |
+| RAGパイプラインアーキテクチャ | L200 |
+| 完了タスク | L315 |
+| 実装時の苦戦した箇所・知見 | L391 |
+| 関連ドキュメント | L435 |
 
 ### references/architecture-chat-history.md
 
@@ -162,14 +163,15 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L118 |
 | デスクトップ（Electron）実装パターン | L184 |
-| パフォーマンス最適化パターン | L372 |
-| セキュリティ実装パターン | L410 |
-| テスト実装パターン | L442 |
-| アクセシビリティ実装パターン | L727 |
-| 関連ドキュメント | L752 |
-| スキル作成実装パターン（TASK-9B-G） | L764 |
-| 外部API データ正規化パターン | L888 |
-| 変更履歴 | L927 |
+| パフォーマンス最適化パターン | L411 |
+| セキュリティ実装パターン | L449 |
+| テスト実装パターン | L481 |
+| アクセシビリティ実装パターン | L766 |
+| 関連ドキュメント | L791 |
+| スキル作成実装パターン（TASK-9B-G） | L803 |
+| 外部API データ正規化パターン | L927 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L966 |
+| 変更履歴 | L1016 |
 
 ### references/architecture-monorepo.md
 
@@ -260,17 +262,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L385 |
-| SkillSlice型定義（TASK-6-1） | L437 |
-| ModifierSkill（スライド逆同期機能） | L529 |
-| ChatPanel統合（TASK-7D） | L563 |
-| SkillFileManager（TASK-9A-A） | L598 |
-| テストアーキテクチャ（TASK-8C-A） | L686 |
-| 完了タスク | L738 |
-| 関連ドキュメント | L956 |
-| SkillCreatorService（TASK-9B-G） | L969 |
-| 完了タスク | L1217 |
-| 変更履歴 | L1248 |
+| SkillImportStore（TASK-2B） | L441 |
+| SkillSlice型定義（TASK-6-1） | L493 |
+| ModifierSkill（スライド逆同期機能） | L585 |
+| ChatPanel統合（TASK-7D） | L619 |
+| SkillFileManager（TASK-9A-A） | L654 |
+| テストアーキテクチャ（TASK-8C-A） | L742 |
+| 完了タスク | L794 |
+| 関連ドキュメント | L1012 |
+| SkillCreatorService（TASK-9B-G） | L1025 |
+| 完了タスク | L1273 |
+| 変更履歴 | L1304 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -303,10 +305,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
-| 完了タスク | L185 |
-| ワークスペース型定義 | L204 |
-| 完了タスク | L258 |
-| 変更履歴 | L317 |
+| 完了タスク | L232 |
+| ワークスペース型定義 | L286 |
+| 変更履歴 | L340 |
 
 ### references/interfaces-chat-history.md
 
@@ -568,8 +569,8 @@ node scripts/list-specs.js --topics
 | REST API エンドポイント一覧 | L25 |
 | エンドポイント命名規則 | L81 |
 | Desktop IPC API サマリー | L102 |
-| 変更履歴 | L127 |
-| 関連ドキュメント | L136 |
+| 変更履歴 | L130 |
+| 関連ドキュメント | L140 |
 
 ### references/api-internal-chunk-search.md
 
@@ -634,11 +635,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 認証 IPC チャネル | L10 |
 | プロフィール IPC チャネル | L32 |
 | イベントチャネル（Main → Renderer） | L43 |
-| 型定義 | L51 |
-| 認証状態管理 | L108 |
-| IPCセキュリティ実装 | L139 |
-| 関連ドキュメント | L166 |
-| 変更履歴 | L174 |
+| 型定義 | L60 |
+| 認証状態管理 | L118 |
+| IPCセキュリティ実装 | L149 |
+| 関連ドキュメント | L176 |
+| 変更履歴 | L184 |
 
 ### references/api-ipc-system.md
 
@@ -1043,14 +1044,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| スキル管理IPCセキュリティ | L21 |
-| スキルインポートIPCチャネル（TASK-4-1） | L68 |
-| Claude Code CLI連携セキュリティ | L111 |
-| Skill Execution Preload API セキュリティ | L172 |
-| Permission IPC Handler セキュリティ | L217 |
-| SkillAPI Preload実装（TASK-5-1） | L253 |
-| 完了タスク | L319 |
-| 関連ドキュメント | L332 |
+| スキル管理IPCセキュリティ | L22 |
+| スキルインポートIPCチャネル（TASK-4-1） | L71 |
+| Claude Code CLI連携セキュリティ | L114 |
+| Skill Execution Preload API セキュリティ | L175 |
+| Permission IPC Handler セキュリティ | L220 |
+| SkillAPI Preload実装（TASK-5-1） | L256 |
+| 完了タスク | L322 |
+| 残課題 | L353 |
+| 関連ドキュメント | L365 |
 
 ---
 
@@ -1426,14 +1428,15 @@ node scripts/list-specs.js --topics
 | リトライ戦略 | L210 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
 | SkillExecutor 実行エラーコード（TASK-8A） | L289 |
-| 認証フォールバックパターン（AUTH-UI-001） | L328 |
-| サーキットブレーカー（将来対応） | L370 |
-| エラーレスポンス形式 | L398 |
-| エラーログ出力 | L429 |
-| ユーザー向けエラーメッセージ | L466 |
-| エラーハンドリングの実装指針 | L489 |
-| 関連ドキュメント | L519 |
-| 変更履歴 | L528 |
+| OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L328 |
+| 認証フォールバックパターン（AUTH-UI-001） | L370 |
+| サーキットブレーカー（将来対応） | L412 |
+| エラーレスポンス形式 | L440 |
+| エラーログ出力 | L471 |
+| ユーザー向けエラーメッセージ | L508 |
+| エラーハンドリングの実装指針 | L531 |
+| 関連ドキュメント | L561 |
+| 変更履歴 | L570 |
 
 ### references/llm-embedding.md
 
@@ -1744,8 +1747,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L233 |
-| 関連ドキュメント | L285 |
-| 変更履歴 | L295 |
+| 関連ドキュメント | L286 |
+| 変更履歴 | L296 |
 
 ### references/testing-accessibility.md
 

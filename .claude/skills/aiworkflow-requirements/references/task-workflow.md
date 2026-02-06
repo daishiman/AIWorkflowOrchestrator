@@ -273,6 +273,7 @@
 | task-search-scope-folder-001               | 検索スコープ指定機能                                  | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-scope-folder.md`                            |
 | task-search-multifile-replace-001          | マルチファイル一括置換機能                            | 中     | task-imp-search-ui-001 Phase 12（将来拡張候補）                | `docs/30-workflows/unassigned-task/task-search-multifile-replace.md`                       |
 | UT-ENV-001                                 | CI node-versionの.nvmrc参照化                         | 低     | ENV-INFRA-001 Phase 3レビュー                                  | `docs/30-workflows/unassigned-task/task-ut-env-001-ci-nvmrc.md`                            |
+| UT-FIX-5-1-001                             | AgentView型アサーション解消（ImportedSkill→Skill）    | 低     | TASK-FIX-5-1-SKILL-API-UNIFICATION Phase 10（MINOR指摘）      | `docs/30-workflows/unassigned-task/task-ut-fix-5-1-001-agentview-type-assertion.md`        |
 
 ### 未タスク管理ルール
 

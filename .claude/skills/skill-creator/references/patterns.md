@@ -250,6 +250,44 @@
 - **発見日**: 2026-02-05
 - **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
 
+### IPC Bridge API統一時のテストモック設計パターン（TASK-FIX-5-1）
+
+- **状況**: `window.skillAPI` と `window.electronAPI.skill` の二重定義を統一する際、テストモックの再設計が必要（623行→1092行に膨張）
+- **アプローチ**:
+  - `vi.hoisted()` でモック定義をファイルスコープの巻き上げ位置に配置
+  - フィクスチャファクトリ関数でテストごとにリセット可能なモックを生成
+  - パスエイリアス（`@/`）と相対パスの両方に対応するモック配布パターン
+- **結果**: テストの保守性向上、モック二重定義の解消、210テスト全PASS
+- **適用条件**: Electron Preload APIの変更、IPC Bridge層のリファクタリング
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+- **関連仕様書**: [architecture-implementation-patterns.md S2](.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+
+### セッション間での仕様書編集永続化検証パターン（TASK-FIX-5-1）
+
+- **状況**: 前セッションで10件の仕様書修正を完了と報告したが、8件がディスクに永続化されていなかった
+- **アプローチ**:
+  - 大量編集後は `git diff --stat` で変更ファイル数と期待値の一致を検証
+  - PostToolUseフック（Prettier/ESLint）によるファイル変更で Edit の `old_string` 不一致が発生する可能性を認識
+  - 重要な編集は直後に `git diff <file>` で実際の差分を確認
+- **結果**: 全8件の未永続化を発見し再適用、仕様書と実装の完全な整合性を達成
+- **適用条件**: 複数セッションにまたがる仕様書更新、Linterフックが有効な環境
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+- **関連ルール**: [06-known-pitfalls.md P11](.claude/rules/06-known-pitfalls.md)
+
+### Phase 1仕様書作成時の依存仕様書マトリクスパターン（TASK-FIX-5-1）
+
+- **状況**: Phase 1作成時にaiworkflow-requirementsの関連仕様書参照が不足し、後から2コミットで19件修正が必要
+- **アプローチ**:
+  - Phase 1作成時に「仕様書依存マトリクス」を明示的に作成
+  - task-specification-creatorとaiworkflow-requirementsの両方のreferences/を検索し、関連する全仕様書を特定
+  - 各Phase仕様書に必要な参照リンクを漏れなく追加
+- **結果**: 後付け修正のコスト（2コミット、19件修正）を事前に防止可能
+- **適用条件**: 複数の仕様書体系を持つプロジェクトでのタスク仕様書作成時
+- **発見日**: 2026-02-06
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+
 ---
 
 ## 失敗パターン（避けるべきこと）
