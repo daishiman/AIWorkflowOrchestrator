@@ -207,6 +207,50 @@ isUnauthorizedError関数は、エラーオブジェクトがUnauthorizedError�
 
 ---
 
+## 外部ストレージ取得フォールバックパターン（TASK-FIX-4-2）
+
+> **実装完了**: 2026-02-07（TASK-FIX-4-2）
+> **参照**: [arch-electron-services.md](./arch-electron-services.md) SkillImportManager永続化実装詳細
+
+electron-storeなどの外部ストレージから取得したデータは型保証がないため、実行時バリデーションとフォールバックが必要。
+
+### フォールバックマトリクス
+
+| ケース | 入力値例 | 対応 | ログレベル |
+|--------|----------|------|------------|
+| null/undefined | `null`, `undefined` | 空配列を返す | なし |
+| 非配列値 | `"string"`, `123`, `{}` | 空配列を返す | WARN |
+| 混合配列 | `["a", 123, "b"]` | 非string要素をフィルタリング | WARN |
+| 正常配列 | `["skill-1", "skill-2"]` | そのまま返す | なし |
+
+### 実装パターン
+
+**バリデーション関数の設計**:
+
+| 設計原則 | 詳細 |
+|----------|------|
+| 戻り値型 | `unknown` → バリデーション後の具体型 |
+| null合体 | `value == null` で null/undefined を一括処理 |
+| 配列検証 | `Array.isArray(value)` で配列かどうかを判定 |
+| 要素フィルタ | `filter()` + 型ガードで型安全な要素抽出 |
+
+**警告ログの出力条件**:
+
+| 条件 | ログ内容 |
+|------|----------|
+| 非配列値 | `Stored value is not an array, returning empty array` |
+| 混合配列 | `Filtered out non-string elements from stored array` |
+
+### セキュリティ考慮事項
+
+| 考慮事項 | 対策 |
+|----------|------|
+| 型アサーション禁止 | `as` キャストではなくバリデーション関数を使用 |
+| 信頼できないデータ | 外部ストレージの値は常に `unknown` として扱う |
+| フェイルセーフ | 不正なデータは安全なデフォルト値（空配列）にフォールバック |
+
+---
+
 ## リトライ戦略
 
 ### 基本設定
@@ -622,6 +666,7 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-02-07 | v1.7.0     | TASK-FIX-4-2: 外部ストレージ取得フォールバックパターンセクション追加（フォールバックマトリクス・実装パターン・セキュリティ考慮事項） |
 | 2026-02-06 | v1.6.0     | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshSchedulerリトライ戦略セクション追加（Exponential Backoff with Jitter、リトライ対象/非対象エラー分類、Supabase SDK競合防止） |
 | 2026-02-05 | v1.5.0     | TASK-FIX-GOOGLE-LOGIN-001: OAuthエラーコードマッピングセクション追加（9エラーコード、parseOAuthError、mapOAuthErrorToMessage関数仕様） |
 | 2026-02-04 | v1.4.0     | AUTH-UI-001: 認証フォールバックパターン（user_profilesテーブル不在時）追加 |

@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
+| 6.32.0     | 2026-02-07 | TASK-FIX-4-2完了: SkillImportManager永続化実装詳細セクション追加（型バリデーション・SkillStoreインターフェース・デバッグフラグ・テストファイル構成） |
 | 6.31.0     | 2026-02-01 | TASK-8C-E完了: E2Eテストフィクスチャセクション追加（3フィクスチャ仕様・検証テスト29ケース） |
 | 6.30.0     | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                          |
 
@@ -302,6 +303,54 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 - インポート状態は`electron-store`で永続化
 - アプリ再起動後もインポート状態を維持
 - ストレージキー: `importedSkillIds`
+
+### SkillImportManager 永続化実装詳細（TASK-FIX-4-2）
+
+> **実装完了**: 2026-02-07（TASK-FIX-4-2）
+> **参照**: [error-handling.md](./error-handling.md) 外部ストレージフォールバックパターン
+
+#### 型バリデーション関数
+
+外部ストレージからの値は型安全性が保証されないため、バリデーション関数で検証する。
+
+| 入力値 | 出力 | 処理 |
+|--------|------|------|
+| null/undefined | `[]` | 空配列を返す |
+| 非配列値 | `[]` | 空配列を返す + WARNログ |
+| 混合配列 | フィルタ済み配列 | 非string要素を除外 + WARNログ |
+| 正常配列（string[]） | そのまま | そのまま返す |
+
+**関数シグネチャ**: `validateStoredSkillIds(value: unknown): string[]`
+
+#### SkillStoreインターフェース
+
+electron-storeとの型安全な連携のための抽象化インターフェース。
+
+| メソッド | 引数 | 戻り値 | 説明 |
+|----------|------|--------|------|
+| `get` | `key: string, defaultValue: string[]` | `unknown` | 外部ストレージからの取得（型保証なし） |
+| `set` | `key: string, value: string[]` | `void` | ストレージへの保存 |
+| `path` | - | `string \| undefined` | ストレージファイルパス（任意） |
+
+**重要**: `get`メソッドの戻り値は`unknown`型とし、呼び出し側でバリデーションを行う。
+
+#### デバッグフラグ
+
+開発環境でのデバッグ出力制御。
+
+| オプション | 型 | デフォルト | 説明 |
+|------------|-----|-----------|------|
+| `debug` | `boolean` | `process.env.NODE_ENV === 'development'` | デバッグログ出力フラグ |
+
+**コンストラクタ**: `constructor(store: SkillStore, options?: { debug?: boolean })`
+
+#### テストファイル構成
+
+| ファイル | テスト内容 | ケース数 |
+|----------|-----------|----------|
+| `SkillImportManager.persistence.test.ts` | ストア保存・復元、再起動シミュレーション | 永続化 |
+| `SkillImportManager.error.test.ts` | 異常系、例外処理、フォールバック | エラー |
+| `SkillImportManager.boundary.test.ts` | null、空配列、最大長、Unicode | 境界値 |
 
 ### PermissionResolver（TASK-3-1-C実装）
 

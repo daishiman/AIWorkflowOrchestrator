@@ -5,6 +5,68 @@
 
 ---
 
+## 2026-02-08: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了（スキル永続化バグ修正）
+
+| 項目         | 内容                                                                                |
+| ------------ | ----------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-4-2-SKILL-STORE-PERSISTENCE                                                |
+| Agent        | aiworkflow-requirements                                                             |
+| 操作         | Phase 12 ドキュメント更新完了                                                       |
+| 対象ファイル | implementation-guide.md, documentation-changelog.md, unassigned-task-detection.md   |
+| 結果         | success                                                                             |
+| 備考         | 型バリデーション追加によるスキル永続化バグ修正完了。87テスト全PASS、カバレッジ91%+  |
+
+### 問題
+
+インポートしたスキルがアプリ再起動後に消失するバグ。ユーザーがスキルをインポートしても、次回起動時に状態がリセットされる深刻な問題。
+
+### 根本原因
+
+`store.get()` の戻り値を `as string[]` で型キャストしており、実行時バリデーションを完全にバイパスしていた。JSONストア（electron-store）から取得したデータは、ファイル破損・不正編集・バージョン不整合などにより型が保証されないが、これを検証なしで使用していた。
+
+### 解決策
+
+| 対策                               | 実装内容                                                            |
+| ---------------------------------- | ------------------------------------------------------------------- |
+| 1. 型バリデーション関数追加        | `validateStoredSkillIds(value: unknown): string[]` 新規作成         |
+| 2. 戻り値型変更                    | `SkillStore.get()` 戻り値を `unknown` に変更                        |
+| 3. フィルタリング                  | `Array.isArray()` + `.filter()` で不正要素を除外                    |
+| 4. ログ制御                        | `this.debug` フラグで開発時のみログ出力                             |
+
+### 苦戦した箇所
+
+| 苦戦ポイント                       | 解決方法                                                            |
+| ---------------------------------- | ------------------------------------------------------------------- |
+| 型アサーション（as）が実行時検証をバイパス | `unknown` 型で受けて明示的バリデーション関数を経由する設計に変更   |
+| テスト中のログ出力がテスト結果を汚染       | `debug` フラグを導入し、テスト時は `false` に設定                 |
+| vi.doMockでのモジュール再読み込み複雑さ   | 動的import + resetModules パターンを確立                          |
+
+### 成果
+
+| 指標         | 結果                                                                |
+| ------------ | ------------------------------------------------------------------- |
+| テスト       | 87件（全PASS）                                                      |
+| カバレッジ   | Statement 91.52%, Branch 91.17%, Function 100%                      |
+| 新規パターン | 成功1件（vi.doMock動的再読み込み）+ 失敗2件（P19/P20）              |
+| 未タスク     | 0件                                                                 |
+
+### 変更ファイル
+
+| ファイル                                            | 変更種別 | 内容                                          |
+| --------------------------------------------------- | -------- | --------------------------------------------- |
+| apps/desktop/src/main/services/skill/SkillImportManager.ts | 修正     | validateStoredSkillIds追加、debug フラグ追加  |
+| apps/desktop/src/main/ipc/skillHandlers.ts          | 修正     | DEBUGログ削除                                 |
+| apps/desktop/src/main/services/skill/SkillService.ts | 修正     | DEBUGログ削除                                 |
+
+### 知見記録先
+
+| 記録先                                   | 追加内容                                                    |
+| ---------------------------------------- | ----------------------------------------------------------- |
+| 06-known-pitfalls.md                     | P19（型アサーション失敗）、P20（ログ出力汚染）              |
+| skill-creator/references/patterns.md     | vi.doMock動的モジュール再読み込みパターン                   |
+
+---
+
 ## 2026-02-06: TASK-AUTH-CALLBACK-001 未タスク指示書作成（苦戦箇所からの知見展開）
 
 | 項目         | 内容                                                                                      |
@@ -2784,5 +2846,58 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 | 10    | 最終レビュー結果           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-10/         |
 | 11    | 手動テスト結果             | docs/30-workflows/auth-callback-urlscheme/outputs/phase-11/         |
 | 12    | 実装ガイド・ドキュメント   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-12/         |
+
+---
+
+## TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
+
+### メタ情報
+
+| 項目       | 内容                               |
+| ---------- | ---------------------------------- |
+| タスクID   | TASK-FIX-4-2-SKILL-STORE-PERSISTENCE |
+| 機能名     | skill-store-persistence            |
+| 完了日     | 2026-02-08                         |
+| ステータス | **完了**                           |
+
+### 概要
+
+スキル永続化消失バグを修正。electron-storeからの取得値に対する型キャスト（`as string[]`）が実行時検証をバイパスしていた問題を解消。
+
+### 主な変更内容
+
+| 変更                         | 内容                                                               |
+| ---------------------------- | ------------------------------------------------------------------ |
+| validateStoredSkillIds()追加 | unknown型で受け取り、Array.isArray + filter で実行時バリデーション |
+| SkillStore.get()戻り値変更   | string[] から unknown に変更し、型安全性を強制                     |
+| DEBUGログ整理                | this.debug フラグ導入でテスト環境のログ汚染を防止                  |
+| electron-log移行             | console.log/warn から electron-log への移行                        |
+
+### 苦戦した箇所
+
+| 問題                         | 原因                                                                 | 解決策                                                               |
+| ---------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 型キャストによる検証バイパス | `as string[]` は実行時検証を行わない                                 | unknown型で受け取り、validateStoredSkillIds()で実行時検証            |
+| テスト環境でのログ汚染       | console.log/warn がテスト出力を汚染                                  | this.debug フラグと electron-log によるレベル制御                    |
+
+### テストカバレッジ
+
+| 指標              | 結果    |
+| ----------------- | ------- |
+| Line Coverage     | 91.52%  |
+| Branch Coverage   | 73.17%  |
+| Function Coverage | 93.10%  |
+
+### 更新した仕様書
+
+| ドキュメント          | 変更内容                                              |
+| --------------------- | ----------------------------------------------------- |
+| `06-known-pitfalls.md` | P19（型キャスト検証バイパス）、P20（ログ汚染）を追加 |
+
+### 成果物
+
+| Phase | 成果物                   | パス                                                              |
+| ----- | ------------------------ | ----------------------------------------------------------------- |
+| 1-13  | 全Phase仕様書            | docs/30-workflows/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/           |
 
 ---
