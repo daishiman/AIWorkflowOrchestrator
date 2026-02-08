@@ -106,6 +106,49 @@
 - **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001）
 - **関連タスク**: TASK-AUTH-CALLBACK-001
 
+### electron-store get()型バリデーションパターン
+
+- **状況**: electron-storeからデータ取得時に、ストアデータの型安全性を確保する必要がある
+- **アプローチ**:
+  - `store.get(key)` の戻り値を `unknown` として扱う
+  - 明示的な型バリデーション関数（例: `validateStoredSkillIds()`）で検証
+  - `Array.isArray()` と `filter()` で不正データを除外
+- **結果**: アプリ再起動後もデータが正しく復元され、型安全性が保証される
+- **適用条件**: electron-storeやlocalStorageなど外部ストレージからデータを取得する場合
+- **発見日**: 2026-02-08（TASK-FIX-4-2-SKILL-STORE-PERSISTENCE）
+- **関連タスク**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
+- **実装例**: `apps/desktop/src/main/services/skill/SkillImportManager.ts` の `validateStoredSkillIds()` 関数
+
+### テストファイル種別分離パターン
+
+- **状況**: 永続化、エラーハンドリング、境界値など異なる関心事のテストが混在し、テストの意図が不明確
+- **アプローチ**:
+
+| テスト種別 | ファイル命名 | 目的 |
+|-----------|-------------|------|
+| 永続化テスト | `*.persistence.test.ts` | ストア永続化・復元の検証 |
+| エラーテスト | `*.error.test.ts` | 異常系・エラーハンドリング検証 |
+| 境界値テスト | `*.boundary.test.ts` | 空配列・null・型不整合等の境界条件 |
+
+- **結果**: テストの意図が明確になり、特定の関心事に集中したテスト設計が可能
+- **適用条件**: 複雑なモジュールで異なる観点のテストが必要な場合
+- **発見日**: 2026-02-08（TASK-FIX-4-2-SKILL-STORE-PERSISTENCE）
+- **関連タスク**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
+
+### DEBUGログ条件付き出力パターン
+
+- **状況**: 開発時に追加したconsole.logが本番環境やテスト環境に残ると、パフォーマンス低下とログ汚染が発生
+- **アプローチ**:
+  - コンストラクタで `debug` フラグを受け取り、インスタンス変数として保持
+  - ログ出力時は `if (this.debug) console.log(...)` でガード
+  - 代替として `process.env.NODE_ENV !== 'test'` でテスト環境を除外
+- **結果**: 本番では不要なログが出力されず、テスト時にはログ抑制で結果が見やすい
+- **適用条件**: デバッグ情報を開発中のみ表示したい場合。特にサービス層やマネージャークラス
+- **発見日**: 2026-02-08（TASK-FIX-4-2-SKILL-STORE-PERSISTENCE）
+- **関連タスク**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
+- **実装例**: `SkillImportManager` のコンストラクタに `options?: { debug?: boolean }` を追加
+- **関連**: 06-known-pitfalls.md#P20
+
 ---
 
 ## 失敗パターン（避けるべきこと）
@@ -207,6 +250,28 @@
 - **原因**: カスタムcode_challengeをqueryParamsに渡したが、Supabase内部のcode_verifierと不整合
 - **教訓**: Supabase PKCEではカスタムcode_challenge/code_verifierを渡さない。Supabaseに完全委任する
 - **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001、06-known-pitfalls.md P18）
+
+### 型アサーションによるストアデータ取得
+
+- **状況**: `store.get('importedSkillIds') as string[]` のように型アサーションでストアデータを取得
+- **問題**: アプリ再起動後にデータが消失、またはコンソールに型エラーが発生
+- **原因**: 外部ストレージ（electron-store）のデータ型は実行時には不明。型アサーションはコンパイル時のみ有効で、実行時バリデーションを行わない
+- **教訓**: ストレージからのデータ取得は常に `unknown` 型で受け取り、`Array.isArray()` と `typeof` による実行時バリデーションを行う
+- **発見日**: 2026-02-08（TASK-FIX-4-2-SKILL-STORE-PERSISTENCE）
+- **関連タスク**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
+
+### テスト中のログ出力による可読性低下
+
+- **状況**: 開発中に追加した `console.log` / `console.warn` がテスト実行時にも出力される
+- **問題**: テスト結果の可読性が低下し、重要なエラーメッセージを見逃す。CI/CDのログ容量も増大
+- **原因**: 本番コードのDEBUGログが環境判定なしに出力され、テストランナーの出力が汚染された
+- **教訓**: ログ出力は環境によって制御可能にすべき。以下のいずれかを実装する:
+  - `this.debug` フラグをコンストラクタで受け取り、`{ debug: false }` でテスト時は抑制
+  - `process.env.NODE_ENV !== 'test'` ガードでテスト環境では出力しない
+  - `electron-log` 等のロガーを使用し、環境ごとにログレベルを設定
+- **発見日**: 2026-02-08（TASK-FIX-4-2-SKILL-STORE-PERSISTENCE）
+- **関連タスク**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
+- **関連**: 06-known-pitfalls.md#P20
 
 ---
 
