@@ -48,20 +48,8 @@ const mockPermissionStore = {
   clearAll: vi.fn(),
 };
 
-// AuthKeyServiceモック（TASK-FIX-16-1: SDK認証キー管理）
-const mockAuthKeyService = {
-  getKey: vi.fn().mockResolvedValue("sk-ant-api03-test-key-for-unit-tests"),
-  setKey: vi.fn().mockResolvedValue({ success: true }),
-  deleteKey: vi.fn().mockResolvedValue({ success: true }),
-  hasKey: vi.fn().mockResolvedValue(true),
-  validateKey: vi
-    .fn()
-    .mockResolvedValue({ success: true, data: { isValid: true } }),
-};
-
 describe("SkillExecutor", () => {
   let executor: SkillExecutor;
-  let originalApiKey: string | undefined;
 
   const mockSkill: SkillMetadata = {
     id: "test-skill",
@@ -88,10 +76,6 @@ describe("SkillExecutor", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // 環境変数を設定（TASK-FIX-16-1: 認証キーが必要なため）
-    originalApiKey = process.env.ANTHROPIC_API_KEY;
-    process.env.ANTHROPIC_API_KEY = "sk-ant-api03-test-key-for-unit-tests";
-
     // mockQueryの実装を再設定
     mockQuery.mockImplementation(() => ({
       stream: () => mockStreamGenerator(),
@@ -111,44 +95,21 @@ describe("SkillExecutor", () => {
     // PermissionStoreモックをリセット
     mockPermissionStore.isToolAllowed.mockReturnValue(false);
 
-    // AuthKeyServiceモックをリセット
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-
-    executor = new SkillExecutor(
-      mockMainWindow,
-      mockPermissionStore,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow, mockPermissionStore);
   });
 
   afterEach(() => {
-    // 環境変数を元に戻す
-    if (originalApiKey === undefined) {
-      delete process.env.ANTHROPIC_API_KEY;
-    } else {
-      process.env.ANTHROPIC_API_KEY = originalApiKey;
-    }
     vi.restoreAllMocks();
   });
 
   describe("constructor", () => {
     it("should create instance with BrowserWindow", () => {
-      const instance = new SkillExecutor(
-        mockMainWindow,
-        mockPermissionStore,
-        mockAuthKeyService,
-      );
+      const instance = new SkillExecutor(mockMainWindow, mockPermissionStore);
       expect(instance).toBeDefined();
     });
 
     it("should initialize with empty active executions", () => {
-      const instance = new SkillExecutor(
-        mockMainWindow,
-        mockPermissionStore,
-        mockAuthKeyService,
-      );
+      const instance = new SkillExecutor(mockMainWindow, mockPermissionStore);
       expect(instance.getActiveExecutions()).toHaveLength(0);
     });
   });
@@ -207,7 +168,6 @@ describe("SkillExecutor", () => {
       const testExecutor = new SkillExecutor(
         mockMainWindow,
         mockPermissionStore,
-        mockAuthKeyService,
       );
 
       // 5つのダミー実行を登録してactiveExecutionsを満杯にする
@@ -530,7 +490,6 @@ describe("SkillExecutor", () => {
       const destroyedExecutor = new SkillExecutor(
         mockMainWindow,
         mockPermissionStore,
-        mockAuthKeyService,
       );
 
       await destroyedExecutor.execute(mockRequest, mockSkill);

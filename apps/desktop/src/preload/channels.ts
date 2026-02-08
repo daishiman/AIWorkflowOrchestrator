@@ -259,12 +259,6 @@ export const IPC_CHANNELS = {
   PERMISSION_GET_ALLOWED_TOOLS: "permission:getAllowedTools",
   PERMISSION_REVOKE_TOOL: "permission:revokeTool",
   PERMISSION_CLEAR_ALL: "permission:clearAll",
-
-  // Auth Key operations (TASK-FIX-16-1)
-  AUTH_KEY_SET: "auth-key:set",
-  AUTH_KEY_EXISTS: "auth-key:exists",
-  AUTH_KEY_VALIDATE: "auth-key:validate",
-  AUTH_KEY_DELETE: "auth-key:delete",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -457,11 +451,6 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.PERMISSION_GET_ALLOWED_TOOLS,
   IPC_CHANNELS.PERMISSION_REVOKE_TOOL,
   IPC_CHANNELS.PERMISSION_CLEAR_ALL,
-  // Auth Key channels (TASK-FIX-16-1)
-  IPC_CHANNELS.AUTH_KEY_SET,
-  IPC_CHANNELS.AUTH_KEY_EXISTS,
-  IPC_CHANNELS.AUTH_KEY_VALIDATE,
-  IPC_CHANNELS.AUTH_KEY_DELETE,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

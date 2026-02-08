@@ -119,56 +119,6 @@ SkillExecutorでは`executeWithRetry()`によるExponential Backoff with Jitter�
 
 ---
 
-## 認証エラー (AUTHENTICATION_ERROR)
-
-### エラーコード
-
-| コード | 名称             | 説明                         | リトライ |
-| ------ | ---------------- | ---------------------------- | -------- |
-| 3001   | AUTH_KEY_NOT_SET | APIキーが設定されていない    | 不可     |
-| 3002   | AUTH_KEY_INVALID | APIキーが無効                | 不可     |
-| 3003   | AUTH_KEY_EXPIRED | APIキーの有効期限切れ        | 不可     |
-
-### エラーハンドリングパターン
-
-```typescript
-import { AuthenticationError } from "@/types/errors";
-
-try {
-  const result = await skillExecutor.execute("hearing", projectPath);
-} catch (error) {
-  if (error instanceof AuthenticationError) {
-    switch (error.code) {
-      case 3001:
-        // キー未設定 → 設定画面へ誘導
-        showApiKeySettingsDialog();
-        break;
-      case 3002:
-        // キー無効 → 再入力を促す
-        showInvalidKeyError("APIキーが無効です。正しいキーを入力してください。");
-        break;
-      case 3003:
-        // キー期限切れ → 再発行を促す
-        showExpiredKeyError("APIキーの有効期限が切れています。");
-        break;
-    }
-    return; // リトライ不可
-  }
-  throw error;
-}
-```
-
-### HTTP ステータスコードとの対応
-
-| HTTP Status | 認証エラー種別    | 対処                     |
-| ----------- | ----------------- | ------------------------ |
-| 401         | AUTH_KEY_INVALID  | キー再入力を促す         |
-| 403         | AUTH_KEY_INVALID  | 権限不足、キー確認を促す |
-
-**重要**: 認証エラーはリトライ不可。ユーザーに対してキーの再設定を促す。
-
----
-
 ## エラーハンドリングパターン
 
 ### ストリーミングエラー処理

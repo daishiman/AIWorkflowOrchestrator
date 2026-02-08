@@ -198,39 +198,6 @@ const skillMap: Record<SkillPhase, string> = {
 
 📖 実装参照: `apps/desktop/src/main/slide/skill-executor.ts`
 
-### AuthKeyService 統合パターン
-
-Electron環境でのセキュアな認証キー管理パターン。Main Processでキーを安全に保持し、SkillExecutorにDIで注入する。
-
-```typescript
-// AuthKeyService - 認証キーの暗号化保存・取得
-interface AuthKeyService {
-  setKey(key: string): Promise<void>;
-  getKey(): Promise<string | null>;
-  deleteKey(): Promise<void>;
-  hasKey(): Promise<boolean>;
-  validateKey(): Promise<{ valid: boolean; error?: string }>;
-}
-
-// SkillExecutor への DI パターン
-const skillExecutor = new SkillExecutor({
-  authKeyService,  // DI で注入
-  retryConfig: { maxRetries: 3 },
-});
-
-// query() 呼び出し時に自動でキーを取得
-const result = await skillExecutor.execute("hearing", projectPath);
-```
-
-**認証キー解決優先順位**:
-
-1. `options.apiKey` で直接指定
-2. `AuthKeyService.getKey()` からの取得（Electron環境）
-3. 環境変数 `ANTHROPIC_API_KEY`
-
-📖 実装参照: `apps/desktop/src/main/services/auth/AuthKeyService.ts`
-📖 IPC参照: `apps/desktop/src/main/ipc/authKeyHandlers.ts`
-
 ## ベストプラクティス
 
 ### すべきこと
@@ -423,23 +390,6 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 | ------------- | ------------------------------------------------------- | ----------------------------------------- |
 | SkillExecutor | `apps/desktop/src/main/services/skill/SkillExecutor.ts` | createHooks, categorizeError, isRetryable |
 
-### TASK-FIX-16-1 SDK Auth Infrastructure
-
-| 区分             | ファイル                                                                     |
-| ---------------- | ---------------------------------------------------------------------------- |
-| タスク仕様書     | `docs/30-workflows/sdk-auth-infrastructure/`                                 |
-| 実装ガイド       | `outputs/phase-12/implementation-guide.md`                                   |
-| システム仕様     | `security-skill-execution.md`（AuthKeyService追加）                          |
-| 実装ファイル     | `AuthKeyService.ts`, `authKeyHandlers.ts`, `authKeyApi.ts`                   |
-| テスト           | `SkillExecutor.auth.test.ts`, `authKeyHandlers.test.ts`（41テスト）          |
-
-Key patterns from this task:
-
-- **Secure Storage**: `safeStorage.encryptString()` for API key encryption (Main Process only)
-- **DI Pattern**: `AuthKeyService` injected into `SkillExecutor` via constructor
-- **Priority Resolution**: `options.apiKey` > `AuthKeyService.getKey()` > `process.env.ANTHROPIC_API_KEY`
-- **IPC Channels**: `auth-key:set`, `auth-key:exists`, `auth-key:validate`, `auth-key:delete`
-
 ### TASK-3-1-E 権限永続化成果物
 
 | ドキュメント | パス                                                                            | 説明                           |
@@ -495,10 +445,9 @@ Key patterns from this task:
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                                                         |
-| ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2.10.0  | 2026-02-08 | TASK-FIX-16-1 SDK Auth Infrastructure追加（AuthKeyService統合パターン、認証キー解決優先順位、IPC 4チャンネル追加、query-api.md/error-handling.md/electron-ipc.md更新） |
-| 2.9.0   | 2026-02-03 | TASK-9Cスキル改善・自動修正機能成果物追加（SkillAnalyzer, SkillImprover, PromptOptimizer、83テスト、Graceful fallbackパターン）                                 |
+| Version | Date       | Changes                                                                                                                         |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.9.0   | 2026-02-03 | TASK-9Cスキル改善・自動修正機能成果物追加（SkillAnalyzer, SkillImprover, PromptOptimizer、83テスト、Graceful fallbackパターン） |
 | 2.8.0   | 2026-02-01 | TASK-IMP-permission-history-001 Permission History Tracking成果物追加（Cross-Slice access, safeArgsSnapshot, Virtual scroll）   |
 | 2.7.0   | 2026-01-31 | retry-patterns.mdリファレンス新規作成、error-handling.mdリトライセクション最適化（outdated値修正、cross-reference追加）         |
 | 2.6.0   | 2026-01-31 | TASK-SKILL-RETRY-001リトライ機構パターン追加（RetryConfig, isRetryableError, Exponential Backoff with Jitter）                  |
