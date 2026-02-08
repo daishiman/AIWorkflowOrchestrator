@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-06
+> 自動生成: 2026-02-08
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -91,12 +91,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L28 |
 | 変更履歴 | L95 |
-| 認証アーキテクチャ（Supabase + Electron） | L107 |
-| セキュリティアーキテクチャ | L229 |
-| RAGパイプラインアーキテクチャ | L268 |
-| 完了タスク | L383 |
-| 実装時の苦戦した箇所・知見 | L459 |
-| 関連ドキュメント | L503 |
+| 認証アーキテクチャ（Supabase + Electron） | L108 |
+| セキュリティアーキテクチャ | L233 |
+| RAGパイプラインアーキテクチャ | L272 |
+| 完了タスク | L387 |
+| 実装時の苦戦した箇所・知見 | L509 |
+| 関連ドキュメント | L553 |
 
 ### references/architecture-chat-history.md
 
@@ -232,12 +232,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | SkillExecutor 型定義（TASK-3-1-A） | L16 |
-| リトライ機構（TASK-SKILL-RETRY-001） | L166 |
-| PermissionResolver 型定義（TASK-3-2） | L233 |
-| SkillExecutor IPC統合（TASK-3-2） | L320 |
-| 完了タスク | L397 |
-| 関連ドキュメント | L469 |
-| 変更履歴 | L481 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L193 |
+| PermissionResolver 型定義（TASK-3-2） | L260 |
+| SkillExecutor IPC統合（TASK-3-2） | L347 |
+| 完了タスク | L424 |
+| 関連ドキュメント | L496 |
+| 変更履歴 | L508 |
 
 ### references/interfaces-agent-sdk-history.md
 
@@ -570,8 +570,8 @@ node scripts/list-specs.js --topics
 | REST API エンドポイント一覧 | L25 |
 | エンドポイント命名規則 | L81 |
 | Desktop IPC API サマリー | L102 |
-| 変更履歴 | L130 |
-| 関連ドキュメント | L140 |
+| 変更履歴 | L131 |
+| 関連ドキュメント | L142 |
 
 ### references/api-internal-chunk-search.md
 
@@ -636,12 +636,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 認証 IPC チャネル | L10 |
 | プロフィール IPC チャネル | L32 |
 | イベントチャネル（Main → Renderer） | L43 |
-| 型定義 | L61 |
-| 認証状態管理 | L119 |
-| IPCセキュリティ実装 | L150 |
-| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L177 |
-| 関連ドキュメント | L231 |
-| 変更履歴 | L240 |
+| 型定義 | L70 |
+| 認証状態管理 | L128 |
+| IPCセキュリティ実装 | L159 |
+| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L186 |
+| 関連ドキュメント | L240 |
+| 変更履歴 | L249 |
 
 ### references/api-ipc-system.md
 
@@ -649,10 +649,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| AI/チャット IPC チャネル | L10 |
 | Slide IPC API（スライド同期） | L46 |
 | Electron IPC API設計 | L100 |
-| AIプロバイダーAPI連携 | L137 |
-| エンティティ抽出サービス (NER) | L170 |
-| 関連ドキュメント | L207 |
-| 変更履歴 | L216 |
+| AIプロバイダーAPI連携 | L177 |
+| エンティティ抽出サービス (NER) | L210 |
+| 関連ドキュメント | L247 |
+| 変更履歴 | L256 |
 
 ---
 
@@ -997,7 +997,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L14 |
 | セキュリティ原則 | L24 |
-| 関連ドキュメント | L47 |
+| PKCE / State parameter 実装記録 | L47 |
+| 実装時の苦戦した箇所・知見 | L90 |
+| 関連ドキュメント | L108 |
 
 ### references/security-input-validation.md
 
@@ -1026,7 +1028,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設計原則 | L8 |
 | 認証・認可 | L45 |
 | データ保護 | L227 |
-| 変更履歴 | L350 |
+| 変更履歴 | L408 |
 
 ### references/security-skill-execution.md
 
@@ -1398,14 +1400,14 @@ node scripts/list-specs.js --topics
 | packages/shared/ 詳細構造 | L96 |
 | apps/web/ 詳細構造（Next.js） | L252 |
 | apps/desktop/ 詳細構造（Electron） | L292 |
-| local-agent/ 詳細構造 | L391 |
-| .github/workflows/ 詳細構造 | L402 |
-| ルートの設定ファイル群 | L412 |
-| 機能追加の手順 | L431 |
-| 構造の選択理由 | L463 |
-| 依存関係ルール | L478 |
-| pnpm-workspace 設定 | L523 |
-| 関連ドキュメント | L542 |
+| local-agent/ 詳細構造 | L398 |
+| .github/workflows/ 詳細構造 | L409 |
+| ルートの設定ファイル群 | L419 |
+| 機能追加の手順 | L438 |
+| 構造の選択理由 | L470 |
+| 依存関係ルール | L485 |
+| pnpm-workspace 設定 | L530 |
+| 関連ドキュメント | L549 |
 
 ### references/discord-bot.md
 
@@ -1443,8 +1445,6 @@ node scripts/list-specs.js --topics
 | 認可エラー（UnauthorizedError） | L145 |
 | リトライ戦略 | L210 |
 | SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L252 |
-| SkillExecutor 実行エラーコード（TASK-8A） | L289 |
-| OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L328 |
 | TokenRefreshScheduler リトライ戦略（TASK-AUTH-SESSION-REFRESH-001） | L289 |
 | SkillExecutor 実行エラーコード（TASK-8A） | L340 |
 | OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L379 |
@@ -1530,8 +1530,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 成功パターン | L8 |
-| 失敗パターン（避けるべきこと） | L78 |
-| ガイドライン | L148 |
+| 失敗パターン（避けるべきこと） | L111 |
+| ガイドライン | L213 |
 
 ### references/plugin-development.md
 
@@ -1773,8 +1773,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L265 |
-| 関連ドキュメント | L320 |
-| 変更履歴 | L330 |
+| 関連ドキュメント | L324 |
+| 変更履歴 | L334 |
 
 ### references/testing-accessibility.md
 

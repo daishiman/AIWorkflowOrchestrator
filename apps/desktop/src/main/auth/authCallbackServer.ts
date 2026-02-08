@@ -112,7 +112,12 @@ export function createAuthCallbackServer(
 
             // コールバック結果を通知
             if (callbackResolve) {
-              callbackResolve({ code, state: state ?? undefined });
+              // Supabase PKCE フローでは state はオプショナル
+              if (state !== null) {
+                callbackResolve({ code: code!, state });
+              } else {
+                callbackResolve({ code: code! });
+              }
               callbackResolve = null;
               callbackReject = null;
               if (timeoutHandle) {

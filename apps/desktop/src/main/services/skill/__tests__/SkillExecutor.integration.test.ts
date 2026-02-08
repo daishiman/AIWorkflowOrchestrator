@@ -81,6 +81,15 @@ const mockMainWindow = {
   isDestroyed: vi.fn().mockReturnValue(false),
 } as unknown as BrowserWindow;
 
+// TASK-FIX-16-1: AuthKeyService モック
+const mockAuthKeyService = {
+  getKey: vi.fn().mockResolvedValue("sk-ant-api03-test-key-for-unit-tests"),
+  setKey: vi.fn().mockResolvedValue(undefined),
+  deleteKey: vi.fn().mockResolvedValue(undefined),
+  hasKey: vi.fn().mockResolvedValue(true),
+  validateKey: vi.fn().mockResolvedValue(true),
+};
+
 describe("SkillExecutor Integration Tests", () => {
   let executor: SkillExecutor;
 
@@ -104,7 +113,12 @@ describe("SkillExecutor Integration Tests", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    executor = new SkillExecutor(mockMainWindow);
+    // TASK-FIX-16-1: AuthKeyService モックをリセット
+    mockAuthKeyService.getKey.mockResolvedValue(
+      "sk-ant-api03-test-key-for-unit-tests",
+    );
+    // TASK-FIX-16-1: AuthKeyService を渡す（第2引数はpermissionStore、第3引数がauthKeyService）
+    executor = new SkillExecutor(mockMainWindow, undefined, mockAuthKeyService);
   });
 
   afterEach(() => {
