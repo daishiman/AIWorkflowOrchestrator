@@ -17,11 +17,15 @@ export interface PKCEPair {
 
 /**
  * OAuth認証コールバック結果
- * HTTPサーバーが受信するauthorization_codeとstate
+ * HTTPサーバーが受信するauthorization_code
+ *
+ * Note: Supabase PKCE フローでは state パラメータは Supabase が内部管理するため、
+ * コールバック URL には含まれない。state はオプショナルとして定義。
+ * @see CLAUDE.md P15, P17, P18 - Supabase OAuth 関連の既知の落とし穴
  */
 export interface AuthCallbackResult {
   code: string;
-  state: string;
+  state?: string;
 }
 
 // === OAuth プロバイダー ===
