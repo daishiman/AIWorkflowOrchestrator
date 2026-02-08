@@ -43,6 +43,69 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-08 - TASK-FIX-4-2-SKILL-STORE-PERSISTENCEパターン追加（スキル改善）]
+
+- **Agent**: skill-improvement
+- **Phase**: Phase 12 後続（パターン文書化・ログ最適化）
+- **Result**: PASS
+- **Notes**: 実装完了後のスキル改善。patterns.md/known-pitfalls.mdへの知見記録、LOGS.md詳細フォーマット化
+
+### 問題
+
+実装完了時のログ記録が基本情報のみで、「問題」「根本原因」「解決策」「苦戦した箇所」の詳細が欠落。将来の類似問題発生時に参照できる知見が不十分。
+
+### 根本原因
+
+Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的に要求していなかった。
+
+### 解決策
+
+| 対策                         | 実施内容                                                       |
+| ---------------------------- | -------------------------------------------------------------- |
+| LOGS.md詳細フォーマット化    | 問題/根本原因/解決策/苦戦箇所/成果の5セクション構造を導入       |
+| known-pitfalls.md追加        | P19（型アサーション失敗）、P20（ログ出力汚染）追加              |
+| patterns.md追加              | vi.doMock動的モジュール再読み込みパターン追加                   |
+
+### 記録先
+
+| 記録先                                              | 追加内容                                            |
+| --------------------------------------------------- | --------------------------------------------------- |
+| .claude/rules/06-known-pitfalls.md                  | P19（型アサーション失敗）、P20（ログ出力汚染）       |
+| .claude/skills/task-specification-creator/references/patterns.md | vi.doMock動的モジュール再読み込みパターン |
+| .claude/skills/aiworkflow-requirements/LOGS.md      | 詳細フォーマット化（5セクション構造）               |
+
+---
+
+## [2026-02-08 - TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了（スキル永続化バグ修正）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: PASS
+- **Notes**: インポートスキルの永続化消失バグ修正完了。validateStoredSkillIds()による型バリデーション追加、87テスト全PASS、カバレッジLine 91.52%/Branch 91.17%/Function 100%。未タスク0件
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
+- Phase: 1-12完了
+
+### 成果
+
+- テストカバレッジ: 87テスト全PASS（Line 91.52%, Branch 91.17%, Function 100%）
+- 実装内容:
+  - validateStoredSkillIds()関数新規追加（型バリデーション）
+  - SkillStore.get()戻り値をunknownに変更（型安全性向上）
+  - コンストラクタで型検証付きロード処理
+  - debugフラグによる条件付きログ出力
+
+### 変更ファイル
+
+- apps/desktop/src/main/services/skill/SkillImportManager.ts（修正）
+- apps/desktop/src/main/ipc/skillHandlers.ts（修正: DEBUGログ削除）
+- apps/desktop/src/main/services/skill/SkillService.ts（修正: DEBUGログ削除）
+
+---
+
 ## [2026-02-06 - DEBT-SEC-001タスク完了（OAuth State Parameter検証実装）]
 
 - **Agent**: execute-task
@@ -3152,5 +3215,14 @@ if (artifactPath) {
 - **Phase**: unknown
 - **Result**: ✓ 成功
 - **Notes**: task-auth-state-cleanup-scheduling.md新規作成（9セクション完全準拠）、task-auth-pkce-implementation.md/task-auth-url-validation.md苦戦箇所追加
+
+---
+
+## [2026-02-08T00:00:00.000Z]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13
+- **Result**: SUCCESS
+- **Notes**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了。型キャスト（as string[]）による実行時検証バイパス問題を修正。validateStoredSkillIds()関数追加、SkillStore.get()戻り値をunknownに変更。テストカバレッジ91.52%達成。06-known-pitfalls.mdにP19（型キャスト検証バイパス）、P20（テスト環境ログ汚染）を追記
 
 ---

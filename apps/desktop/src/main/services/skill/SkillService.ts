@@ -13,6 +13,7 @@ import type {
   ImportedSkill,
 } from "@repo/shared";
 import { randomUUID } from "crypto";
+import log from "electron-log";
 import { SkillScanner } from "./SkillScanner";
 import { SkillParser } from "./SkillParser";
 import { SkillImportManager } from "./SkillImportManager";
@@ -31,15 +32,7 @@ export class SkillService {
    * 利用可能なスキルをスキャンする
    */
   async scanAvailableSkills(forceRefresh = false): Promise<SkillScanResult> {
-    console.log(
-      "[SkillService][DEBUG] scanAvailableSkills - START, forceRefresh:",
-      forceRefresh,
-    );
     if (!forceRefresh && this.cache.size > 0 && this.lastScanTime) {
-      console.log(
-        "[SkillService][DEBUG] Returning cached skills:",
-        this.cache.size,
-      );
       return {
         skills: Array.from(this.cache.values()),
         errors: [],
@@ -50,9 +43,7 @@ export class SkillService {
     const skills: Skill[] = [];
     const errors: SkillScanError[] = [];
 
-    console.log("[SkillService][DEBUG] Scanning directory...");
     const skillPaths = await this.scanner.scanDirectory();
-    console.log("[SkillService][DEBUG] Found skill paths:", skillPaths.length);
 
     for (const skillPath of skillPaths) {
       try {
@@ -60,11 +51,7 @@ export class SkillService {
         skills.push(skill);
         this.cache.set(skill.id, skill);
       } catch (error) {
-        console.error(
-          "[SkillService][DEBUG] Parse error for:",
-          skillPath,
-          error,
-        );
+        log.warn("[SkillService] Parse error for:", skillPath, error);
         errors.push({
           path: skillPath,
           error: (error as Error).message,
@@ -74,12 +61,6 @@ export class SkillService {
     }
 
     this.lastScanTime = new Date();
-    console.log(
-      "[SkillService][DEBUG] scanAvailableSkills - DONE, skills:",
-      skills.length,
-      "errors:",
-      errors.length,
-    );
 
     return {
       skills,
@@ -92,30 +73,15 @@ export class SkillService {
    * インポート済みスキルを取得する
    */
   async getImportedSkills(): Promise<Skill[]> {
-    console.log("[SkillService][DEBUG] getImportedSkills - START");
     const importedIds = this.importManager.getImportedSkillIds();
-    console.log("[SkillService][DEBUG] importedIds:", importedIds);
 
     if (this.cache.size === 0) {
-      console.log(
-        "[SkillService][DEBUG] Cache is empty, calling scanAvailableSkills...",
-      );
       await this.scanAvailableSkills();
-      console.log(
-        "[SkillService][DEBUG] scanAvailableSkills completed, cache size:",
-        this.cache.size,
-      );
     }
 
-    const result = importedIds
+    return importedIds
       .map((id) => this.cache.get(id))
       .filter((skill): skill is Skill => skill !== undefined);
-    console.log(
-      "[SkillService][DEBUG] getImportedSkills - DONE, returning",
-      result.length,
-      "skills",
-    );
-    return result;
   }
 
   /**

@@ -98,3 +98,18 @@
 ### P18: カスタム PKCE パラメータ競合
 
 - **教訓**: Supabase に `code_challenge` をカスタムで渡すと、内部の `code_verifier` と不整合が発生し `both auth code and code verifier should be non-empty` エラーになる。PKCE は Supabase に完全委任する
+
+## TypeScript / 型安全
+
+### P19: 型キャスト（as）による実行時検証バイパス
+
+- **教訓**: `as string[]` などの型キャストは実行時検証を行わない。`electron-store` 等の JSON ストアから取得したデータは、破損や不正値によって型が保証されないため、必ず実行時バリデーションが必要
+- **解決策**: 戻り値を `unknown` 型で受け取り、配列チェック（`Array.isArray()`）と要素フィルタリング（`.filter()`）を行うバリデーション関数を作成する
+- **ルール**: [02-code-quality.md#TypeScript型安全](./02-code-quality.md)
+
+## テスト環境
+
+### P20: テスト環境でのログ出力汚染
+
+- **教訓**: `console.log` / `console.warn` をテスト中に出力すると、テスト結果の可読性が低下し、重要なエラーを見逃す原因になる
+- **解決策**: `this.debug` フラグや `process.env.NODE_ENV !== 'test'` でガードし、開発環境でのみログ出力。または `electron-log` 等のロガーを使用して環境ごとに出力レベルを制御
