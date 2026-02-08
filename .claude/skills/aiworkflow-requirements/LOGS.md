@@ -5,6 +5,46 @@
 
 ---
 
+## 2026-02-08: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）
+
+| 項目         | 内容                                                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE                                                                             |
+| Agent        | aiworkflow-requirements                                                                                           |
+| 操作         | Phase 1-12 完了（システム仕様書4ファイル更新）                                                                    |
+| 対象ファイル | security-principles.md, api-ipc-system.md, api-endpoints.md, interfaces-agent-sdk-executor.md                     |
+| 結果         | success                                                                                                           |
+| 備考         | AuthKeyService実装（暗号化保存・復号・検証）、IPC 4チャンネル、SkillExecutor統合。119テスト全PASS                 |
+
+### 成果物
+
+| カテゴリ        | 内容                                                      |
+| --------------- | --------------------------------------------------------- |
+| AuthKeyService  | Anthropic APIキーの暗号化保存・復号・検証                  |
+| IPCハンドラー   | auth-key:set, auth-key:exists, auth-key:validate, auth-key:delete |
+| SkillExecutor統合 | query()呼び出し時にapiKeyオプションを渡す                |
+| Preload API     | authKey API の追加                                        |
+
+### 更新詳細
+
+| ファイル                          | 追加内容                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------ |
+| security-principles.md            | SDK認証キー管理セクション追加（暗号化保存要件）                           |
+| api-ipc-system.md                 | auth-key IPCチャンネル仕様追加（4チャンネル定義）                         |
+| api-endpoints.md                  | SDK認証キーカテゴリ追加                                                  |
+| interfaces-agent-sdk-executor.md  | AUTHENTICATION_ERROR追加、AuthKeyService統合                             |
+
+### テスト結果
+
+| 指標              | 値      |
+| ----------------- | ------- |
+| 総テスト数        | 119     |
+| Line Coverage     | 76-83%  |
+| Branch Coverage   | 78-83%  |
+| Function Coverage | 82-100% |
+
+---
+
 ## 2026-02-08: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了（スキル永続化バグ修正）
 
 | 項目         | 内容                                                                                |
@@ -66,6 +106,7 @@
 | skill-creator/references/patterns.md     | vi.doMock動的モジュール再読み込みパターン                   |
 
 ---
+
 
 ## 2026-02-06: TASK-AUTH-CALLBACK-001 未タスク指示書作成（苦戦箇所からの知見展開）
 

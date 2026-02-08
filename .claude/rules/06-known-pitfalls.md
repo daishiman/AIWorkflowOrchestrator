@@ -113,3 +113,18 @@
 
 - **教訓**: `console.log` / `console.warn` をテスト中に出力すると、テスト結果の可読性が低下し、重要なエラーを見逃す原因になる
 - **解決策**: `this.debug` フラグや `process.env.NODE_ENV !== 'test'` でガードし、開発環境でのみログ出力。または `electron-log` 等のロガーを使用して環境ごとに出力レベルを制御
+
+### P21: 既存テストへの DI 追加時の大規模修正
+
+- **教訓**: 新しいサービスを DI で追加する際、既存のテストファイルすべてにモックを追加する必要がある。SkillExecutor に AuthKeyService を追加した際、5つのテストファイル（test, auth, retry, integration, permission）すべてに mockAuthKeyService を追加する必要があった
+- **解決策**:
+  1. テストファイルごとに mockAuthKeyService を定義
+  2. beforeEach で mockAuthKeyService.getKey.mockResolvedValue() をリセット
+  3. SkillExecutor コンストラクタの第3引数として渡す
+- **関連タスク**: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE
+
+### P22: Vitest Worker の予期しない終了
+
+- **教訓**: 大規模テスト実行時（9000+ テスト）に Vitest Worker が予期せず終了することがある。メモリ消費やタイムアウトが原因の可能性
+- **解決策**: テストを分割実行するか、`--poolOptions.workers.max` を調整。または `--no-file-parallelism` で並列実行を制限
+- **関連タスク**: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE

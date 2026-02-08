@@ -1,0 +1,115 @@
+{
+  "taskId": "TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE",
+  "taskName": "Claude Agent SDK用認証キー管理基盤の構築",
+  "createdAt": "2026-02-07",
+  "currentPhase": 12,
+  "status": "phase-12-completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "completed",
+      "description": "機能要件・非機能要件・受入基準の定義"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "completed",
+      "description": "アーキテクチャ設計・インターフェース設計"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "file": "phase-3-design-review.md",
+      "status": "completed",
+      "description": "レビュー観点・判定基準"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "completed",
+      "description": "TDD Red Phase - テストケース設計・テストコード作成"
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "completed",
+      "description": "TDD Green Phase - プロダクションコード実装"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "completed",
+      "description": "カバレッジ不足箇所のテスト追加"
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage-verification.md",
+      "status": "completed",
+      "description": "カバレッジ基準の充足確認"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "completed",
+      "description": "TDD Refactor Phase - コード品質改善"
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "file": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "description": "Lint・型チェック・全テスト実行"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "file": "phase-10-final-review.md",
+      "status": "completed",
+      "description": "多角的品質・整合性検証"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "file": "phase-11-manual-testing.md",
+      "status": "completed",
+      "description": "UIテスト・E2Eシナリオ実行"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "description": "実装ガイド・システム仕様更新・未タスク検出"
+    },
+    {
+      "phase": 13,
+      "name": "完了",
+      "file": "phase-13-completion.md",
+      "status": "pending",
+      "description": "成果物最終確認・PR準備"
+    }
+  ],
+  "deliverables": {
+    "services": ["apps/desktop/src/main/services/auth/AuthKeyService.ts"],
+    "ipcHandlers": ["apps/desktop/src/main/ipc/authKeyHandlers.ts"],
+    "preloadApi": ["apps/desktop/src/preload/authKeyApi.ts"],
+    "tests": [
+      "apps/desktop/src/main/services/auth/__tests__/AuthKeyService.test.ts",
+      "apps/desktop/src/main/ipc/__tests__/authKeyHandlers.test.ts"
+    ],
+    "modifications": ["apps/desktop/src/main/services/skill/SkillExecutor.ts"]
+  },
+  "dependencies": {
+    "blockedBy": [],
+    "blocks": ["TASK-FIX-15-1-EXECUTE-HANDLER-ROUTING"]
+  },
+  "securityCritical": true
+}

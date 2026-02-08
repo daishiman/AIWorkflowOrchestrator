@@ -25,6 +25,7 @@ Claude Agent SDK の `query()` API を使用してスキルを実行し、スト
 | 型定義         | `packages/shared/src/types/skill-execution.ts`          |
 | IPC チャンネル | `skill:stream` (Main → Renderer)                        |
 | SDK 依存       | `@anthropic-ai/claude-agent-sdk`                        |
+| 認証依存       | `IAuthKeyService` (DI via constructor) TASK-FIX-16-1    |
 
 ### アーキテクチャ
 
@@ -116,12 +117,13 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 
 #### SkillExecutionErrorCode
 
-| コード                    | 説明               |
-| ------------------------- | ------------------ |
-| `MAX_CONCURRENT_EXCEEDED` | 同時実行数超過     |
-| `ABORTED`                 | ユーザーによる中断 |
-| `TIMEOUT`                 | タイムアウト       |
-| `EXECUTION_FAILED`        | 実行失敗           |
+| コード                    | 説明                                         |
+| ------------------------- | -------------------------------------------- |
+| `MAX_CONCURRENT_EXCEEDED` | 同時実行数超過                               |
+| `ABORTED`                 | ユーザーによる中断                           |
+| `TIMEOUT`                 | タイムアウト                                 |
+| `EXECUTION_FAILED`        | 実行失敗                                     |
+| `AUTHENTICATION_ERROR`    | 認証エラー（API Key 未設定・無効）TASK-FIX-16-1 |
 
 #### ExecutionInfo
 
@@ -160,6 +162,68 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 | `DEFAULT_TIMEOUT_MS`        | `30000` | デフォルトタイムアウト (ms)  |
 | `MAX_CONCURRENT_EXECUTIONS` | `5`     | 最大同時実行数               |
 | `HISTORY_RETENTION_MS`      | `60000` | 履歴保持期間 (ms)            |
+
+### AuthKeyService 統合（TASK-FIX-16-1）
+
+SkillExecutor は Claude Agent SDK の `query()` 呼び出し時に、Anthropic API Key を `IAuthKeyService` 経由で取得する。
+
+| 項目             | 内容                                                      |
+| ---------------- | --------------------------------------------------------- |
+| DI パラメータ    | `constructor(mainWindow, permissionStore?, authKeyService?)` |
+| キー取得優先順位 | 1. AuthKeyService.getKey() 2. ANTHROPIC_API_KEY 環境変数  |
+| キー未設定時     | `AUTHENTICATION_ERROR` エラーをスロー                     |
+
+### IAuthKeyService インターフェース
+
+認証キー管理サービスの抽象インターフェース。DI により SkillExecutor に注入される。
+
+| メソッド       | シグネチャ                                      | 説明                                       |
+| -------------- | ----------------------------------------------- | ------------------------------------------ |
+| `setKey`       | `(apiKey: string) => Promise<void>`             | キーを暗号化して保存                       |
+| `getKey`       | `() => Promise<string \| null>`                 | キーを復号して取得（Main Process のみ）    |
+| `deleteKey`    | `() => Promise<void>`                           | キーを削除                                 |
+| `hasKey`       | `() => Promise<boolean>`                        | キー存在確認                               |
+| `validateKey`  | `(key?: string) => Promise<AuthKeyValidationResult>` | Anthropic API でキーを検証            |
+
+### AuthKeyValidationResult 型
+
+| プロパティ | 型                                           | 必須 | 説明                     |
+| ---------- | -------------------------------------------- | ---- | ------------------------ |
+| `valid`    | `boolean`                                    | ✓    | キーが有効かどうか       |
+| `error`    | `AuthKeyValidationError`                     | -    | エラー詳細（失敗時のみ） |
+
+### AuthKeyValidationError 型
+
+| プロパティ | 型                      | 必須 | 説明                 |
+| ---------- | ----------------------- | ---- | -------------------- |
+| `code`     | `AuthKeyErrorCode`      | ✓    | エラーコード         |
+| `message`  | `string`                | ✓    | エラーメッセージ     |
+
+### AuthKeyErrorCode
+
+| コード                   | 説明                          |
+| ------------------------ | ----------------------------- |
+| `AUTH_KEY_NOT_SET`       | 認証キー未設定                |
+| `AUTH_KEY_INVALID`       | 認証キー無効                  |
+| `VALIDATION_FAILED`      | バリデーションエラー          |
+| `NETWORK_ERROR`          | ネットワークエラー            |
+| `ENCRYPTION_UNAVAILABLE` | safeStorage 暗号化不可        |
+| `STORAGE_ERROR`          | ストレージエラー              |
+
+**SkillExecutor コンストラクタ**:
+
+| パラメータ        | 型                 | 必須 | 説明                            |
+| ----------------- | ------------------ | ---- | ------------------------------- |
+| `mainWindow`      | `BrowserWindow`    | ✓    | メインウィンドウ                |
+| `permissionStore` | `IPermissionStore` | -    | 権限永続化ストア                |
+| `authKeyService`  | `IAuthKeyService`  | -    | 認証キー管理サービス（DI）      |
+
+**キー取得フロー**:
+
+1. `authKeyService.getKey()` を呼び出し
+2. キーが取得できた場合 → SDK に渡す
+3. キーが null の場合 → `process.env.ANTHROPIC_API_KEY` をフォールバック
+4. 環境変数も未設定の場合 → `AUTHENTICATION_ERROR` をスロー
 
 ---
 
@@ -482,6 +546,7 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-02-08 | 1.4.0      | TASK-FIX-16-1: AuthKeyService統合（AUTHENTICATION_ERROR追加、DI対応、キー取得フロー追加） |
 | 2026-02-02 | 1.3.0      | TASK-8A: SkillExecutor/PermissionResolver単体テスト95テスト全PASS、完了タスク追加 |
 | 2026-01-31 | 1.2.0      | TASK-SKILL-RETRY-001: リトライ機構の型・API・定数追加      |
 | 2026-01-26 | 1.1.0      | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |
