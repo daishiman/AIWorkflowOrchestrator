@@ -112,7 +112,11 @@ export function createAuthCallbackServer(
 
             // コールバック結果を通知
             if (callbackResolve) {
-              callbackResolve({ code, state: state ?? undefined });
+              const result: AuthCallbackResult = { code: code! };
+              if (state) {
+                result.state = state;
+              }
+              callbackResolve(result);
               callbackResolve = null;
               callbackReject = null;
               if (timeoutHandle) {

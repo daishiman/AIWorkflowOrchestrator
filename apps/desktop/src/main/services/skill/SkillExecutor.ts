@@ -4,6 +4,7 @@
  * TASK-3-1-A: SDK query() 基本実装
  * TASK-3-1-B: Hooks実装（PreToolUse/PostToolUse）
  * TASK-3-1-E: rememberChoice機能永続化（PermissionStore連携）
+ * TASK-FIX-16-1: AuthKeyService統合（SDK認証キー管理）
  *
  * Claude Agent SDK の query() API を使用してスキルを実行し、
  * ストリーミングレスポンスを Renderer Process に配信する。
@@ -21,6 +22,7 @@ import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
 import { SKILL_CHANNELS } from "@repo/shared/src/ipc/channels";
 import { PermissionResolver } from "./PermissionResolver";
 import { PermissionStore } from "./PermissionStore";
+import type { IAuthKeyService } from "../auth/types";
 
 // =================================================================
 // SkillExecutor専用の型定義
@@ -461,17 +463,24 @@ export class SkillExecutor {
   private readonly defaultTimeout: number = DEFAULT_TIMEOUT_MS;
   private permissionResolver: PermissionResolver;
   private permissionStore: IPermissionStore | null;
+  private authKeyService: IAuthKeyService | null;
 
   /**
    * コンストラクタ
    *
    * @param mainWindow - メインウィンドウ
    * @param permissionStore - 権限永続化ストア（オプション、DIまたはデフォルト作成）
+   * @param authKeyService - 認証キー管理サービス（オプション、TASK-FIX-16-1）
    */
-  constructor(mainWindow: BrowserWindow, permissionStore?: IPermissionStore) {
+  constructor(
+    mainWindow: BrowserWindow,
+    permissionStore?: IPermissionStore,
+    authKeyService?: IAuthKeyService,
+  ) {
     this.mainWindow = mainWindow;
     this.permissionResolver = new PermissionResolver();
     this.permissionStore = permissionStore ?? new PermissionStore();
+    this.authKeyService = authKeyService ?? null;
   }
 
   /**
@@ -736,11 +745,16 @@ export class SkillExecutor {
    * SDK query() を呼び出す
    * NOTE: 実際の実装では claude-agent-sdk を使用
    * SDK型定義が不完全なため、anyキャストを使用
+   *
+   * TASK-FIX-16-1: AuthKeyService から API キーを取得
    */
   private async callSDKQuery(
     prompt: string,
     options: SDKQueryOptions,
   ): Promise<{ stream: () => AsyncIterable<SDKMessage> }> {
+    // TASK-FIX-16-1: API キーを取得
+    const apiKey = await this.getApiKey();
+
     // Dynamic import for SDK
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { query } = (await import("@anthropic-ai/claude-agent-sdk")) as any;
@@ -748,6 +762,7 @@ export class SkillExecutor {
     const conversation = query({
       prompt,
       options: {
+        apiKey, // TASK-FIX-16-1: 認証キーを渡す
         tools: options.tools,
         permissionMode: options.permissionMode,
         signal: options.signal,
@@ -757,6 +772,38 @@ export class SkillExecutor {
     return {
       stream: () => conversation.stream(),
     };
+  }
+
+  /**
+   * API キーを取得する
+   *
+   * TASK-FIX-16-1: AuthKeyService 経由で取得、環境変数フォールバック対応
+   *
+   * @returns API キー
+   * @throws Error - キーが設定されていない場合
+   */
+  private async getApiKey(): Promise<string> {
+    // AuthKeyService 経由で取得
+    if (this.authKeyService) {
+      const key = await this.authKeyService.getKey();
+      if (key) {
+        return key;
+      }
+    }
+
+    // 環境変数フォールバック
+    const envKey = process.env.ANTHROPIC_API_KEY;
+    if (envKey) {
+      return envKey;
+    }
+
+    // キー未設定エラー
+    const error: SkillExecutionError = {
+      code: "AUTHENTICATION_ERROR",
+      message:
+        "Anthropic API Key is not configured. Please set it in Settings.",
+    };
+    throw error;
   }
 
   /**
@@ -941,6 +988,22 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
       return {
         code: "TIMEOUT",
         message: "Execution timed out",
+      };
+    }
+
+    // TASK-FIX-16-1: SkillExecutionError オブジェクトがそのまま throw された場合
+    // (例: AUTHENTICATION_ERROR)
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      "message" in error
+    ) {
+      const errorObj = error as SkillExecutionError;
+      return {
+        code: errorObj.code,
+        message: errorObj.message,
+        details: errorObj.details,
       };
     }
 

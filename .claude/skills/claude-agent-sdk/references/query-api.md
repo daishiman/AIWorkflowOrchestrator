@@ -245,6 +245,34 @@ const options: Options = {
 
 ## 認証設定
 
+### 認証キー設定オプション
+
+`query()` は以下の優先順位で認証キーを解決します:
+
+1. `options.apiKey` で直接指定
+2. `AuthKeyService.getKey()` からの取得（Electron環境）
+3. 環境変数 `ANTHROPIC_API_KEY`
+
+#### 直接指定パターン
+
+```typescript
+const result = await query({
+  prompt: "Your task here",
+  options: {
+    apiKey: "sk-ant-api03-...",  // 直接指定（最優先）
+  },
+});
+```
+
+#### AuthKeyService 連携パターン（Electron環境）
+
+```typescript
+// SkillExecutor 経由で自動解決
+const skillExecutor = new SkillExecutor({ authKeyService });
+const result = await skillExecutor.execute("hearing", projectPath);
+// → authKeyService.getKey() が自動的に呼び出される
+```
+
 ### 環境変数
 
 ```bash

@@ -55,6 +55,18 @@ const mockPermissionStore = {
   clearAll: vi.fn(),
 };
 
+/**
+ * AuthKeyService モック
+ * TASK-FIX-16-1: API キーが設定されていない場合に AUTHENTICATION_ERROR が返されるため
+ */
+const mockAuthKeyService = {
+  getKey: vi.fn().mockResolvedValue("sk-ant-api03-test-key-for-unit-tests"),
+  setKey: vi.fn().mockResolvedValue(undefined),
+  deleteKey: vi.fn().mockResolvedValue(undefined),
+  hasKey: vi.fn().mockResolvedValue(true),
+  validateKey: vi.fn().mockResolvedValue(true),
+};
+
 // =================================================================
 // ヘルパー
 // =================================================================
@@ -166,7 +178,15 @@ describe("SkillExecutor Retry Mechanism", () => {
     setupSuccessStream();
     mockMainWindow.isDestroyed = vi.fn().mockReturnValue(false);
     mockPermissionStore.isToolAllowed.mockReturnValue(false);
-    executor = new SkillExecutor(mockMainWindow, mockPermissionStore);
+    // TASK-FIX-16-1: AuthKeyService モックをリセット
+    mockAuthKeyService.getKey.mockResolvedValue(
+      "sk-ant-api03-test-key-for-unit-tests",
+    );
+    executor = new SkillExecutor(
+      mockMainWindow,
+      mockPermissionStore,
+      mockAuthKeyService,
+    );
   });
 
   afterEach(() => {

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-06T02:12:43.722Z",
-  "totalKeywords": 1049,
+  "generated": "2026-02-08T10:43:19.077Z",
+  "totalKeywords": 1059,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -752,6 +752,7 @@
       "quality-e2e-testing.md",
       "security-skill-ipc.md",
       "technology-devops.md",
+      "testing-component-patterns.md",
       "ui-ux-agent-execution.md",
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
@@ -1026,7 +1027,8 @@
       "architecture-auth-security.md"
     ],
     "実装時の苦戦した箇所・知見": [
-      "architecture-auth-security.md"
+      "architecture-auth-security.md",
+      "security-implementation.md"
     ],
     "チャット履歴機能": [
       "architecture-chat-history.md"
@@ -1240,6 +1242,25 @@
     ],
     "データ正規化パターン": [
       "architecture-implementation-patterns.md"
+    ],
+    "SkillAPI": [
+      "architecture-implementation-patterns.md",
+      "security-skill-ipc.md"
+    ],
+    "統一パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "FIX": [
+      "architecture-implementation-patterns.md",
+      "error-handling.md",
+      "testing-component-patterns.md"
+    ],
+    "実装": [
+      "architecture-implementation-patterns.md",
+      "rag-knowledge-graph.md",
+      "rag-search-vector.md",
+      "security-skill-ipc.md",
+      "ui-ux-portal-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -1583,7 +1604,8 @@
       "interfaces-agent-sdk-executor.md"
     ],
     "State": [
-      "csrf-state-parameter.md"
+      "csrf-state-parameter.md",
+      "security-implementation.md"
     ],
     "Parameter": [
       "csrf-state-parameter.md"
@@ -2020,6 +2042,9 @@
     "UnauthorizedError": [
       "error-handling.md"
     ],
+    "外部ストレージ取得フォールバックパターン": [
+      "error-handling.md"
+    ],
     "リトライ戦略": [
       "error-handling.md"
     ],
@@ -2041,9 +2066,6 @@
       "error-handling.md"
     ],
     "エラーコードマッピング": [
-      "error-handling.md"
-    ],
-    "FIX": [
       "error-handling.md"
     ],
     "GOOGLE": [
@@ -2906,12 +2928,6 @@
       "rag-desktop-state.md",
       "ui-ux-system-prompt.md"
     ],
-    "実装": [
-      "rag-knowledge-graph.md",
-      "rag-search-vector.md",
-      "security-skill-ipc.md",
-      "ui-ux-portal-patterns.md"
-    ],
     "主要型定義": [
       "rag-knowledge-graph.md"
     ],
@@ -3172,6 +3188,15 @@
     "セキュリティ実装仕様": [
       "security-implementation.md"
     ],
+    "PKCE": [
+      "security-implementation.md"
+    ],
+    "parameter": [
+      "security-implementation.md"
+    ],
+    "実装記録": [
+      "security-implementation.md"
+    ],
     "入力バリデーション・ファイル変換セキュリティ": [
       "security-input-validation.md"
     ],
@@ -3265,9 +3290,6 @@
       "security-skill-ipc.md"
     ],
     "連携セキュリティ": [
-      "security-skill-ipc.md"
-    ],
-    "SkillAPI": [
       "security-skill-ipc.md"
     ],
     "仕様書記述ガイドライン": [
@@ -3562,6 +3584,9 @@
       "testing-component-patterns.md"
     ],
     "fireEvent": [
+      "testing-component-patterns.md"
+    ],
+    "テストファイル分離パターン": [
       "testing-component-patterns.md"
     ],
     "関連未タスク": [
