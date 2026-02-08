@@ -6,6 +6,7 @@
  * @see docs/30-workflows/agent-003-skill-management-backend/outputs/phase-3/review-summary.md
  */
 import { ipcMain, IpcMainInvokeEvent, BrowserWindow } from "electron";
+import log from "electron-log";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { SkillService } from "../services/skill/SkillService";
 import { SkillExecutor } from "../services/skill/SkillExecutor";
@@ -70,34 +71,19 @@ export function registerSkillHandlers(
   ipcMain.handle(
     IPC_CHANNELS.SKILL_GET_IMPORTED,
     async (event: IpcMainInvokeEvent) => {
-      console.log("[skillHandlers][DEBUG] skill:getImported - START");
       const validation = validateIpcSender(
         event,
         IPC_CHANNELS.SKILL_GET_IMPORTED,
         { getAllowedWindows: () => [mainWindow] },
       );
       if (!validation.valid) {
-        console.log(
-          "[skillHandlers][DEBUG] skill:getImported - validation FAILED",
-        );
         throw toIPCValidationError(validation);
       }
-      console.log(
-        "[skillHandlers][DEBUG] skill:getImported - validation PASSED",
-      );
       try {
-        console.log(
-          "[skillHandlers][DEBUG] Calling skillService.getImportedSkills()...",
-        );
         const skills = await skillService.getImportedSkills();
-        console.log(
-          "[skillHandlers][DEBUG] getImportedSkills result:",
-          skills?.length,
-          "skills",
-        );
         return { success: true, data: skills };
       } catch (error) {
-        console.error("[skillHandlers][DEBUG] skill:getImported ERROR:", error);
+        log.error("[skillHandlers] skill:getImported failed:", error);
         return {
           success: false,
           error:
