@@ -88,18 +88,34 @@ describe("ローカルHTTPサーバー", () => {
     await expect(server.waitForCallback()).rejects.toThrow(/timeout/i);
   });
 
-  it("SRV-07: code/stateパラメータ欠如時にエラーレスポンスを返す", async () => {
+  it("SRV-07: codeパラメータ欠如時にエラーレスポンスを返す", async () => {
     server = createAuthCallbackServer();
     const { port } = await server.start();
 
-    // codeパラメータなし
+    // codeパラメータなし（stateのみ）
     const response = await fetch(
       `http://127.0.0.1:${port}/auth/callback?state=test`,
     );
     expect(response.status).toBe(400);
 
     const html = await response.text();
-    expect(html).toContain("エラー");
+    expect(html).toContain("認証コードが見つかりません");
+  });
+
+  it("SRV-08: stateなしでもcodeがあれば成功する（PKCE対応）", async () => {
+    server = createAuthCallbackServer();
+    const { port } = await server.start();
+    const callbackPromise = server.waitForCallback();
+
+    // Supabase PKCE フローではstateはSupabaseが内部管理するため省略可能
+    const response = await fetch(
+      `http://127.0.0.1:${port}/auth/callback?code=pkce_code_only`,
+    );
+
+    expect(response.ok).toBe(true);
+    const result = await callbackPromise;
+    expect(result.code).toBe("pkce_code_only");
+    expect(result.state).toBeUndefined();
   });
 
   // === Phase 6: エッジケーステスト ===
