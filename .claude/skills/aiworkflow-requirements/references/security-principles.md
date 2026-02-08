@@ -345,71 +345,12 @@ macOSのLaunchServicesキャッシュにより、削除されたworktreeのパ�
 - `packages/shared/infrastructure/ai/apiKeyValidator.ts` - API検証
 - `apps/desktop/src/renderer/components/organisms/ApiKeysSection/` - UI
 
-### Claude Agent SDK 認証キー管理（TASK-FIX-16-1）
-
-Claude Agent SDK を使用したスキル実行に必要な Anthropic API Key を管理する。
-
-**アーキテクチャ**:
-
-| コンポーネント   | 役割                              | 実装場所                                 |
-| ---------------- | --------------------------------- | ---------------------------------------- |
-| AuthKeyService   | キー管理の Facade                 | `apps/desktop/src/main/services/auth/`   |
-| AuthKeyStorage   | safeStorage による暗号化・永続化  | `apps/desktop/src/main/services/auth/`   |
-| IPC Handlers     | Renderer との通信                 | `apps/desktop/src/main/ipc/authKeyHandlers.ts` |
-| Preload API      | contextBridge 経由の安全な公開    | `apps/desktop/src/preload/authKeyApi.ts` |
-| SkillExecutor    | SDK query() 呼び出し時にキー使用  | `apps/desktop/src/main/services/skill/SkillExecutor.ts` |
-
-**セキュリティ設計**:
-
-| 要件               | 実装                                                      |
-| ------------------ | --------------------------------------------------------- |
-| 暗号化             | safeStorage.encryptString() → Base64 → electron-store     |
-| Renderer 分離      | getKey() は Main Process のみ（Renderer 非公開）          |
-| フォーマット検証   | `sk-ant-api` プレフィックスパターンによるバリデーション   |
-| 環境変数フォールバック | ANTHROPIC_API_KEY 環境変数からの取得（開発用）        |
-| IPC 検証           | withValidation() ラッパーで sender 検証                   |
-| ログ出力           | キー値は一切ログに出力しない                              |
-
-**キー取得優先順位**:
-
-1. electron-store に保存された暗号化済みキー
-2. ANTHROPIC_API_KEY 環境変数（フォールバック）
-
-**IPCチャネル**:
-
-| チャネル          | 公開先   | 用途                       |
-| ----------------- | -------- | -------------------------- |
-| auth-key:set      | Renderer | キー保存（暗号化）         |
-| auth-key:exists   | Renderer | キー存在確認               |
-| auth-key:validate | Renderer | Anthropic API でキー検証   |
-| auth-key:delete   | Renderer | キー削除                   |
-| (getKey)          | Main Only | キー取得（Renderer 非公開） |
-
-**エラーコード**:
-
-| コード | 名称                      | 説明                       | カテゴリ               |
-| ------ | ------------------------- | -------------------------- | ---------------------- |
-| 3001   | AUTH_KEY_NOT_SET          | 認証キー未設定             | External Service Error |
-| 3002   | AUTH_KEY_INVALID          | 認証キー無効               | External Service Error |
-| 3003   | VALIDATION_FAILED         | バリデーションエラー       | External Service Error |
-| 3004   | NETWORK_ERROR             | ネットワークエラー         | External Service Error |
-| 4001   | ENCRYPTION_UNAVAILABLE    | safeStorage 暗号化不可     | Infrastructure Error   |
-| 4002   | STORAGE_ERROR             | ストレージエラー           | Infrastructure Error   |
-
-**実装ファイル**:
-
-- `apps/desktop/src/main/services/auth/AuthKeyService.ts` - キー管理サービス
-- `apps/desktop/src/main/services/auth/types.ts` - 型定義
-- `apps/desktop/src/main/ipc/authKeyHandlers.ts` - IPCハンドラー
-- `apps/desktop/src/preload/authKeyApi.ts` - Preload API
-
 ---
 
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                       |
 | ---------- | ---------- | -------------------------------------------------------------- |
-| v1.3.0     | 2026-02-08 | TASK-FIX-16-1: Claude Agent SDK認証キー管理セクション追加（AuthKeyService、IPCチャンネル4種、エラーコード6種） |
 | v1.2.0     | 2026-02-06 | DEBT-SEC-001完了: State parameter検証実装済み、CSRF対策ステータス更新 |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換           |
 | v1.0.0     | -          | 初版作成                                                       |

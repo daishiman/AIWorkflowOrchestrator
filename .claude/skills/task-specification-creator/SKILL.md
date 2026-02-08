@@ -355,7 +355,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 ## 変更履歴
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
-| **9.46.0** | **2026-02-08** | **TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了**: Claude Agent SDK用認証キー管理基盤構築。AuthKeyService新規作成（暗号化保存・復号・検証）、IPC 4チャンネル、SkillExecutor統合、Preload authKey API追加。119テスト全PASS |
+| ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **9.45.0** | **2026-02-08** | **TASK-FIX-4-2-SKILL-STORE-PERSISTENCEパターン追加**: references/patterns.mdにvi.doMock動的モジュール再読み込みパターン追加（electron-storeテスト分離）。.claude/rules/06-known-pitfalls.mdにP19（型アサーション失敗）・P20（ログ出力汚染）追加。aiworkflow-requirements/LOGS.md詳細フォーマット化 |
 | **9.44.0** | **2026-02-08** | **TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了**: Phase 1-12全工程完了。スキル永続化バグ修正（validateStoredSkillIds型バリデーション追加）。87テスト全PASS、カバレッジLine 91.52%/Branch 91.17%/Function 100%。未タスク0件 |
 | **9.43.1** | **2026-02-06** | **DEBT-SEC-001完了**: Phase 1-12全工程完了。StateManager新規作成（infrastructure層）、authHandlers.ts/index.ts変更。21テスト全PASS、カバレッジ100%。consumeStateメソッド追加（detectProvider未実装のため妥当）。LOGS.md完了記録追加 |

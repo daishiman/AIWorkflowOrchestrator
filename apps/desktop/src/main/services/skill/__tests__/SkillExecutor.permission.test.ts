@@ -48,17 +48,6 @@ vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
   })),
 }));
 
-// AuthKeyService モック
-const mockAuthKeyService = {
-  getKey: vi.fn().mockResolvedValue("sk-ant-api03-test-key-for-unit-tests"),
-  setKey: vi.fn().mockResolvedValue({ success: true }),
-  deleteKey: vi.fn().mockResolvedValue({ success: true }),
-  hasKey: vi.fn().mockResolvedValue(true),
-  validateKey: vi
-    .fn()
-    .mockResolvedValue({ success: true, data: { isValid: true } }),
-};
-
 describe("SkillExecutor - PermissionRequest Hook", () => {
   let executor: SkillExecutor;
   let mockMainWindow: {
@@ -74,14 +63,7 @@ describe("SkillExecutor - PermissionRequest Hook", () => {
       isDestroyed: vi.fn().mockReturnValue(false),
     };
     vi.clearAllMocks();
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    executor = new SkillExecutor(
-      mockMainWindow as unknown as BrowserWindow,
-      undefined,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow as unknown as BrowserWindow);
   });
 
   afterEach(() => {
@@ -327,14 +309,7 @@ describe("SkillExecutor - sanitizeArgs", () => {
       webContents: { send: vi.fn() },
       isDestroyed: vi.fn().mockReturnValue(false),
     };
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    executor = new SkillExecutor(
-      mockMainWindow as unknown as BrowserWindow,
-      undefined,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow as unknown as BrowserWindow);
   });
 
   describe("長文省略", () => {
@@ -487,14 +462,7 @@ describe("SkillExecutor - Edge Cases (Phase 6)", () => {
       webContents: { send: vi.fn() },
       isDestroyed: vi.fn().mockReturnValue(false),
     };
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    executor = new SkillExecutor(
-      mockMainWindow as unknown as BrowserWindow,
-      undefined,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow as unknown as BrowserWindow);
   });
 
   describe("sanitizeArgs エッジケース", () => {
@@ -725,14 +693,7 @@ describe("SkillExecutor - getPermissionReason", () => {
       webContents: { send: vi.fn() },
       isDestroyed: vi.fn().mockReturnValue(false),
     };
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    executor = new SkillExecutor(
-      mockMainWindow as unknown as BrowserWindow,
-      undefined,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow as unknown as BrowserWindow);
   });
 
   describe("Bash ツール", () => {
@@ -871,14 +832,7 @@ describe("SkillExecutor - handlePermissionResponse", () => {
       isDestroyed: vi.fn().mockReturnValue(false),
     };
     vi.clearAllMocks();
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    executor = new SkillExecutor(
-      mockMainWindow as unknown as BrowserWindow,
-      undefined,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow as unknown as BrowserWindow);
   });
 
   it("should resolve pending request with approval", () => {
@@ -948,14 +902,7 @@ describe("SkillExecutor - Error Handling (Phase 6)", () => {
       isDestroyed: vi.fn().mockReturnValue(false),
     };
     vi.clearAllMocks();
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    executor = new SkillExecutor(
-      mockMainWindow as unknown as BrowserWindow,
-      undefined,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow as unknown as BrowserWindow);
   });
 
   describe("PermissionRequest エラーハンドリング", () => {
@@ -1101,14 +1048,7 @@ describe("SkillExecutor - Integration Tests (Phase 6)", () => {
       isDestroyed: vi.fn().mockReturnValue(false),
     };
     vi.clearAllMocks();
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    executor = new SkillExecutor(
-      mockMainWindow as unknown as BrowserWindow,
-      undefined,
-      mockAuthKeyService,
-    );
+    executor = new SkillExecutor(mockMainWindow as unknown as BrowserWindow);
   });
 
   describe("SkillExecutor と PermissionResolver 連携", () => {
@@ -1401,14 +1341,10 @@ describe("SkillExecutor - PermissionStore Integration (TASK-3-1-E)", () => {
     };
     vi.clearAllMocks();
 
-    mockAuthKeyService.getKey.mockResolvedValue(
-      "sk-ant-api03-test-key-for-unit-tests",
-    );
-    // PermissionStore と AuthKeyService を注入して executor を作成
+    // PermissionStore を注入して executor を作成
     executor = new SkillExecutor(
       mockMainWindow as unknown as BrowserWindow,
       mockPermissionStoreInstance,
-      mockAuthKeyService,
     );
   });
 
@@ -1615,8 +1551,6 @@ describe("SkillExecutor - PermissionStore Integration (TASK-3-1-E)", () => {
       // デフォルトのPermissionStoreモックを使用してSkillExecutorを作成
       const executorWithDefaultStore = new SkillExecutor(
         mockMainWindow as unknown as BrowserWindow,
-        undefined,
-        mockAuthKeyService,
       );
 
       mockPermissionResolver.waitForResponse.mockResolvedValue({

@@ -122,46 +122,6 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 **セキュリティ注意**: `apiKey:get` はRenderer Processに公開しない（Main Process内部使用のみ）
 
-### Claude Agent SDK 認証キー管理 IPC チャネル（TASK-FIX-16-1）
-
-Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
-
-**実装ファイル**:
-
-- ハンドラー: `apps/desktop/src/main/ipc/authKeyHandlers.ts`
-- サービス: `apps/desktop/src/main/services/auth/AuthKeyService.ts`
-- チャンネル定義: `apps/desktop/src/preload/channels.ts`
-- Preload API: `apps/desktop/src/preload/authKeyApi.ts`
-
-| チャネル          | メソッド | 引数             | 戻り値                      | 公開先    |
-| ----------------- | -------- | ---------------- | --------------------------- | --------- |
-| `auth-key:set`    | invoke   | `{ key }`        | `AuthKeySetResponse`        | Renderer  |
-| `auth-key:exists` | invoke   | なし             | `AuthKeyExistsResponse`     | Renderer  |
-| `auth-key:validate` | invoke | `{ key }`        | `AuthKeyValidateResponse`   | Renderer  |
-| `auth-key:delete` | invoke   | なし             | `AuthKeyDeleteResponse`     | Renderer  |
-| (getKey)          | -        | -                | `string \| null`            | Main Only |
-
-**型定義**:
-
-| 型名                     | フィールド                  | 説明                     |
-| ------------------------ | --------------------------- | ------------------------ |
-| `AuthKeySetRequest`      | `key: string`               | API Key                  |
-| `AuthKeySetResponse`     | `success: boolean, error?`  | 設定結果                 |
-| `AuthKeyExistsResponse`  | `exists: boolean`           | キー存在確認             |
-| `AuthKeyValidateRequest` | `key: string`               | 検証対象キー             |
-| `AuthKeyValidateResponse`| `valid: boolean, error?`    | 検証結果                 |
-| `AuthKeyDeleteResponse`  | `success: boolean, error?`  | 削除結果                 |
-
-**セキュリティ設計**:
-
-| 項目           | 対策                                              |
-| -------------- | ------------------------------------------------- |
-| 暗号化         | Electron safeStorage.encryptString()              |
-| Renderer 分離  | getKey() は Renderer 非公開（Main Process のみ）  |
-| IPC 検証       | withValidation() ラッパーで sender 検証           |
-| フォーマット検証 | `sk-ant-api` プレフィックスパターン              |
-| ログ出力       | キー値は一切ログに出力しない                      |
-
 ### IPC エラーコード
 
 | コード               | 説明                 | 対処                         |
@@ -257,6 +217,5 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
-| v1.2.0     | 2026-02-08 | TASK-FIX-16-1: Claude Agent SDK認証キー管理IPCチャネル4種追加（auth-key:set/exists/validate/delete） |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換 |
 | v1.0.0     | -          | 初版作成                                           |
