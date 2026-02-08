@@ -96,11 +96,13 @@ export function createAuthCallbackServer(
             const code = requestUrl.searchParams.get("code");
             const state = requestUrl.searchParams.get("state");
 
-            if (!code || !state) {
+            // Supabase PKCE フローでは state は内部管理されるため、code のみ必須
+            // @see CLAUDE.md P15, P17, P18 - Supabase OAuth 関連の既知の落とし穴
+            if (!code) {
               res.writeHead(400, {
                 "Content-Type": "text/html; charset=utf-8",
               });
-              res.end(ERROR_HTML("必要なパラメータが不足しています"));
+              res.end(ERROR_HTML("認証コードが見つかりません"));
               return;
             }
 
@@ -110,7 +112,7 @@ export function createAuthCallbackServer(
 
             // コールバック結果を通知
             if (callbackResolve) {
-              callbackResolve({ code, state });
+              callbackResolve({ code, state: state ?? undefined });
               callbackResolve = null;
               callbackReject = null;
               if (timeoutHandle) {
