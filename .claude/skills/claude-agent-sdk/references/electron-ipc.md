@@ -30,6 +30,8 @@
 
 ## IPCチャネル設計
 
+### Agent チャネル
+
 | チャネル               | 方向            | 用途                     |
 | ---------------------- | --------------- | ------------------------ |
 | `agent:start`          | Renderer → Main | エージェント起動         |
@@ -39,6 +41,15 @@
 | `agent:permission`     | Main → Renderer | 権限要求                 |
 | `agent:permission:res` | Renderer → Main | 権限応答                 |
 | `agent:status`         | Main → Renderer | ステータス更新           |
+
+### AuthKey チャネル
+
+| チャネル           | 方向            | 用途                       |
+| ------------------ | --------------- | -------------------------- |
+| `auth-key:set`     | Renderer → Main | APIキー設定（暗号化保存）  |
+| `auth-key:exists`  | Renderer → Main | APIキー存在確認            |
+| `auth-key:validate`| Renderer → Main | APIキー検証（API呼び出し） |
+| `auth-key:delete`  | Renderer → Main | APIキー削除                |
 
 ---
 
@@ -339,6 +350,135 @@ export function useAgent() {
     stopAgent,
     respondToPermission,
   };
+}
+```
+
+---
+
+## AuthKeyService 統合パターン
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Electron App                            │
+├─────────────────────────────────────────────────────────────┤
+│  Renderer Process                                           │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  Settings UI                                           │ │
+│  │  - API Key Input                                       │ │
+│  │  - Validation Status                                   │ │
+│  └───────────────────┬────────────────────────────────────┘ │
+│                      │ IPC (auth-key:*)                     │
+│  ┌───────────────────▼────────────────────────────────────┐ │
+│  │  Main Process                                          │ │
+│  │  ┌───────────────────────────────────────────────────┐ │ │
+│  │  │  AuthKeyService                                   │ │ │
+│  │  │  - safeStorage encryption                         │ │ │
+│  │  │  - electron-store persistence                     │ │ │
+│  │  │  - API validation                                 │ │ │
+│  │  └───────────────────────────────────────────────────┘ │ │
+│  │                       │                                │ │
+│  │                       ▼ DI                             │ │
+│  │  ┌───────────────────────────────────────────────────┐ │ │
+│  │  │  SkillExecutor                                    │ │ │
+│  │  │  - query() with auto key resolution               │ │ │
+│  │  └───────────────────────────────────────────────────┘ │ │
+│  └────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 統合フロー
+
+1. **Main Process で AuthKeyService を初期化**
+2. **SkillExecutor に DI で注入**
+3. **query() 呼び出し時に自動でキーを取得**
+
+### authKeyHandlers.ts
+
+```typescript
+// apps/desktop/src/main/ipc/authKeyHandlers.ts
+import { ipcMain } from "electron";
+import { authKeyService } from "../services/auth/AuthKeyService";
+
+export function setupAuthKeyHandlers(): void {
+  // APIキー設定
+  ipcMain.handle("auth-key:set", async (_, key: string) => {
+    try {
+      await authKeyService.setKey(key);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: String(error) };
+    }
+  });
+
+  // キー存在確認
+  ipcMain.handle("auth-key:exists", async () => {
+    return authKeyService.hasKey();
+  });
+
+  // キー検証（API呼び出しで確認）
+  ipcMain.handle("auth-key:validate", async () => {
+    return authKeyService.validateKey();
+  });
+
+  // キー削除
+  ipcMain.handle("auth-key:delete", async () => {
+    try {
+      await authKeyService.deleteKey();
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: String(error) };
+    }
+  });
+}
+```
+
+### Preload API
+
+```typescript
+// apps/desktop/src/preload/authKeyApi.ts
+import { contextBridge, ipcRenderer } from "electron";
+
+contextBridge.exposeInMainWorld("authKeyApi", {
+  setKey: (key: string) => ipcRenderer.invoke("auth-key:set", key),
+  hasKey: () => ipcRenderer.invoke("auth-key:exists"),
+  validateKey: () => ipcRenderer.invoke("auth-key:validate"),
+  deleteKey: () => ipcRenderer.invoke("auth-key:delete"),
+});
+```
+
+### SkillExecutor 連携
+
+```typescript
+// apps/desktop/src/main/services/skill/SkillExecutor.ts
+export class SkillExecutor {
+  constructor(private readonly deps: {
+    authKeyService: AuthKeyService;
+    retryConfig?: RetryConfig;
+  }) {}
+
+  async execute(phase: SkillPhase, projectPath: string): Promise<Result> {
+    // 認証キーを自動解決
+    const apiKey = await this.resolveApiKey();
+
+    if (!apiKey) {
+      throw new AuthenticationError(3001, "API key not set");
+    }
+
+    return this.executeWithRetry(() =>
+      query({ prompt, options: { apiKey, ...options } })
+    );
+  }
+
+  private async resolveApiKey(): Promise<string | null> {
+    // 1. AuthKeyService から取得
+    const key = await this.deps.authKeyService.getKey();
+    if (key) return key;
+
+    // 2. 環境変数フォールバック
+    return process.env.ANTHROPIC_API_KEY || null;
+  }
 }
 ```
 

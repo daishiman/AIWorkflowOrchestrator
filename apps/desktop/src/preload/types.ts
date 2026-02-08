@@ -724,6 +724,26 @@ export interface ApiKeyListResponse {
   };
 }
 
+// Auth Key Types (TASK-FIX-16-1)
+export interface AuthKeySetResponse {
+  success: boolean;
+  error?: string;
+}
+
+export interface AuthKeyExistsResponse {
+  exists: boolean;
+}
+
+export interface AuthKeyValidateResponse {
+  valid: boolean;
+  error?: string;
+}
+
+export interface AuthKeyDeleteResponse {
+  success: boolean;
+  error?: string;
+}
+
 export interface ThemeGetResponse {
   success: boolean;
   data?: {
@@ -857,6 +877,14 @@ export interface ElectronAPI {
       request: ApiKeyValidateRequest,
     ) => Promise<ApiKeyValidateResponse>;
     list: () => Promise<ApiKeyListResponse>;
+  };
+
+  // Auth Key API (TASK-FIX-16-1)
+  authKey: {
+    set: (key: string) => Promise<AuthKeySetResponse>;
+    exists: () => Promise<AuthKeyExistsResponse>;
+    validate: (key: string) => Promise<AuthKeyValidateResponse>;
+    delete: () => Promise<AuthKeyDeleteResponse>;
   };
 
   workspace: {

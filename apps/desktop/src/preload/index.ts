@@ -239,6 +239,15 @@ const electronAPI: ElectronAPI = {
     list: () => safeInvoke(IPC_CHANNELS.API_KEY_LIST),
   },
 
+  // Auth Key API (TASK-FIX-16-1)
+  authKey: {
+    set: (key: string) => safeInvoke(IPC_CHANNELS.AUTH_KEY_SET, { key }),
+    exists: () => safeInvoke(IPC_CHANNELS.AUTH_KEY_EXISTS),
+    validate: (key: string) =>
+      safeInvoke(IPC_CHANNELS.AUTH_KEY_VALIDATE, { key }),
+    delete: () => safeInvoke(IPC_CHANNELS.AUTH_KEY_DELETE),
+  },
+
   workspace: {
     load: () => safeInvoke(IPC_CHANNELS.WORKSPACE_LOAD),
     save: (request: WorkspaceSaveRequest) =>
