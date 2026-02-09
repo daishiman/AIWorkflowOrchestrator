@@ -6,7 +6,7 @@
 | ------ | ---------------------------------- |
 | Phase  | 5                                  |
 | 機能名 | TASK-FIX-5-1-SKILL-API-UNIFICATION |
-| 作成日 | 2026-02-05                         |
+| 作成日 | 2026-02-08                         |
 
 ## 目的
 
@@ -14,14 +14,17 @@ Phase 4で作成したテストを全てパスさせるため、統一SkillAPI�
 
 ## 参照資料
 
-| 資料名                   | パス                                                   | 説明                                     |
-| ------------------------ | ------------------------------------------------------ | ---------------------------------------- |
-| 統一API設計書            | `outputs/phase-2/unified-api-design.md`                | Phase 2成果物                            |
-| 移行計画書               | `outputs/phase-2/migration-plan.md`                    | Phase 2成果物                            |
-| テスト（Red）            | `apps/desktop/src/preload/__tests__/skill-api.test.ts` | Phase 4成果物                            |
-| SkillAPI Preload実装仕様 | `security-skill-ipc.md` 行175-319                      | safeInvoke/safeOnパターン・contextBridge |
-| skillSlice状態管理       | `arch-state-management.md` 行233-290                   | 移行対象の状態14件・アクション10件       |
-| エラーコード定義         | `error-handling.md` 行289-325                          | SkillExecutorエラーコード6種             |
+| 資料名                   | パス                                                                                        | 説明                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| 統一API設計書            | `outputs/phase-2/unified-api-design.md`                                                     | Phase 2成果物                              |
+| 移行計画書               | `outputs/phase-2/migration-plan.md`                                                         | Phase 2成果物                              |
+| テスト（Red）            | `apps/desktop/src/preload/__tests__/skill-api.test.ts`                                      | Phase 4成果物                              |
+| 設計レビュー結果         | `outputs/phase-3/design-review-result.md`                                                   | Phase 3成果物                              |
+| SkillAPI Preload実装仕様 | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md` 行175-319         | safeInvoke/safeOnパターン・contextBridge   |
+| skillSlice状態管理       | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` 行233-290      | 移行対象の状態14件・アクション10件         |
+| エラーコード定義         | `.claude/skills/aiworkflow-requirements/references/error-handling.md` 行289-325             | SkillExecutorエラーコード6種               |
+| TASK-FIX-5-1統一API仕様  | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` 行242-349 | 13メソッド戻り値型、TASK-FIX-5-1実装ノート |
+| safeInvoke実装例         | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` 行97-113       | createSafeInvokeヘルパー関数パターン       |
 
 ## 実行タスク
 
@@ -30,6 +33,10 @@ Phase 4で作成したテストを全てパスさせるため、統一SkillAPI�
 #### 目的
 
 `preload/skill-api.ts` を統一SkillAPIインターフェースに拡張する。
+
+#### 対象ファイル
+
+- `apps/desktop/src/preload/skill-api.ts`
 
 #### 手順
 
@@ -44,8 +51,6 @@ Phase 4で作成したテストを全てパスさせるため、統一SkillAPI�
 #### 実装ガイド
 
 ```
-[実装時にPhase 2設計書の統一インターフェースに従う]
-
 重要: 既存の実装済みメソッド（execute, onStream, abort等）は
 動作を変えずにインターフェースを統一すること
 ```
@@ -62,6 +67,10 @@ Phase 4で作成したテストを全てパスさせるため、統一SkillAPI�
 #### 目的
 
 `contextBridge.exposeInMainWorld` での公開を一本化する。
+
+#### 対象ファイル
+
+- `apps/desktop/src/preload/index.ts`
 
 #### 手順
 
@@ -105,6 +114,10 @@ Phase 4で作成したテストを全てパスさせるため、統一SkillAPI�
 
 `skillSlice.ts` を新APIのインターフェースに対応させる。
 
+#### 対象ファイル
+
+- `apps/desktop/src/renderer/store/slices/skillSlice.ts`
+
 #### 手順
 
 1. `apps/desktop/src/renderer/store/slices/skillSlice.ts` を開く
@@ -140,6 +153,10 @@ const response = await window.electronAPI.skill.execute({
 
 不要になったrenderer側のskillAPI定義を削除する。
 
+#### 対象ファイル
+
+- `apps/desktop/src/renderer/preload/index.ts`
+
 #### 手順
 
 1. `apps/desktop/src/renderer/preload/index.ts` を開く
@@ -147,7 +164,16 @@ const response = await window.electronAPI.skill.execute({
 3. skillAPI関連のimportを削除
 4. 削除後もファイル内の他の定義（electronAPI等）に影響がないことを確認
 
-### Task 6: テスト修正
+#### 削除対象
+
+| 削除対象                      | 行番号（目安） |
+| ----------------------------- | -------------- |
+| skillAPI インターフェース定義 | 1-109          |
+| SkillAPIInterface 型定義      | 関連箇所       |
+| window.skillAPI 拡張定義      | 関連箇所       |
+| skillAPI 関連の import 文     | 関連箇所       |
+
+### Task 6: テストモックの更新
 
 #### 目的
 
@@ -156,8 +182,22 @@ const response = await window.electronAPI.skill.execute({
 #### 手順
 
 1. `window.skillAPI` をモックしているテストファイルを検索
+
+```bash
+grep -rn "window\.skillAPI" apps/desktop/src/
+```
+
 2. モック対象を `window.electronAPI.skill` に変更
 3. `OperationResult<T>` をモック返却していた箇所を直接型に変更
+
+#### 更新対象テストファイル（予想）
+
+| テストファイル                              | 更新内容                                                                      |
+| ------------------------------------------- | ----------------------------------------------------------------------------- |
+| `useSkillExecution.test.ts`                 | モック対象パス変更                                                            |
+| `useSkillPermission.test.ts`                | モック対象パス変更                                                            |
+| `skillSlice.test.ts`                        | モック対象パス変更、OperationResultアンラップ削除                             |
+| `AgentView.test.tsx` / `ChatPanel.test.tsx` | モック対象パス変更が必要な場合のみ更新（window.electronAPI.skill → 変更なし） |
 
 ## TDD検証
 
@@ -174,6 +214,7 @@ pnpm --filter @repo/desktop test
 | アーキテクチャ     | Preload層の責務（IPC呼び出しラッパーのみ）          | `architecture-implementation-patterns.md` |
 | エラーハンドリング | SkillExecutorエラーコードの適切なthrow              | `error-handling.md`                       |
 | 状態管理           | skillSlice移行時の状態一貫性                        | `arch-state-management.md`                |
+| IPC sender検証     | Main ProcessハンドラでのvalidateIpcSender維持確認   | `security-skill-ipc.md` 行56-65           |
 
 ## Electronデスクトップアプリ観点
 
@@ -215,6 +256,7 @@ pnpm --filter @repo/desktop test
 - [ ] Phase 4のテストが全てPASS（Green状態）
 - [ ] `pnpm typecheck` がエラーなし
 - [ ] `pnpm lint` がエラーなし
+- [ ] validateIpcSenderによる送信元ウィンドウ検証が全ハンドラで維持されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase

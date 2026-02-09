@@ -6,7 +6,7 @@
 | ------ | ---------------------------------- |
 | Phase  | 13                                 |
 | 機能名 | TASK-FIX-5-1-SKILL-API-UNIFICATION |
-| 作成日 | 2026-02-05                         |
+| 作成日 | 2026-02-08                         |
 
 ## 目的
 
@@ -27,11 +27,14 @@
 
 PR作成前に、ユーザーにローカル環境での動作確認を依頼する。
 
-確認依頼項目:
+#### 確認依頼項目
 
 - アプリ起動とスキル機能の基本動作
 - `window.skillAPI` が未定義であること（DevToolsで確認）
 - `window.electronAPI.skill` の全メソッドが機能すること
+- スキル一覧取得・インポート・削除が正常動作すること
+- スキル実行とストリーミング表示が正常動作すること
+- 権限ダイアログが正常表示されること
 
 ### 2. 変更サマリーの提示と許可確認【必須】
 
@@ -58,7 +61,7 @@ PR作成前に、ユーザーにローカル環境での動作確認を依頼す
 ### テスト結果
 
 - ユニットテスト: {{N}}件 全PASS
-- 手動テスト: 15件 全PASS
+- 手動テスト: 17件 全PASS
 - カバレッジ: Line {{N}}%, Branch {{N}}%, Function {{N}}%
 ```
 
@@ -76,10 +79,42 @@ PR作成前に、ユーザーにローカル環境での動作確認を依頼す
 
 - PRが作成されていること
 - CIが通過していること
+- PRタイトルが70文字以内、descriptionにSummary（1-3箇条書き）とTest Planが含まれている
 
 ### 5. フォールバック（必要時）
 
 `/ai:diff-to-pr` が使えない場合は、git/gh CLIで手動対応する。
+
+```bash
+# ブランチ作成（必要な場合）
+git checkout -b fix/skill-api-unification
+
+# 変更をコミット
+git add .
+git commit -m "refactor(preload): SkillAPI二重定義の解消
+
+- preload/skill-api.tsに統一SkillAPIインターフェースを実装
+- window.skillAPI個別公開を廃止
+- 全hooks/sliceをwindow.electronAPI.skillに移行
+
+TASK-FIX-5-1-SKILL-API-UNIFICATION"
+
+# リモートにプッシュ
+git push -u origin fix/skill-api-unification
+
+# PRを作成
+gh pr create --title "refactor(preload): SkillAPI二重定義の解消" --body "..."
+```
+
+## 統合テスト連携【必須】
+
+| 確認項目  | 判定基準                              |
+| --------- | ------------------------------------- |
+| CI通過    | GitHub Actions全ジョブ成功            |
+| typecheck | `pnpm typecheck` エラーなし           |
+| lint      | `pnpm lint` エラーなし                |
+| test      | `pnpm test` 全PASS（210テスト以上）   |
+| coverage  | Line 80%+, Branch 60%+, Function 80%+ |
 
 ## 成果物
 
@@ -105,21 +140,43 @@ PR作成前に、ユーザーにローカル環境での動作確認を依頼す
 ### 移動手順
 
 ```bash
-# タスク指示書をcompleted-taskに移動
-mv docs/30-workflows/skill-import-agent-system/tasks/task-fix-5-1-skill-api-unification.md \
-   docs/30-workflows/skill-import-agent-system/tasks/completed-task/
-
 # タスクディレクトリをcompleted-tasksに移動
-mv docs/30-workflows/skill-import-agent-system/tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION/ \
-   docs/30-workflows/skill-import-agent-system/tasks/completed-task/
+mv docs/30-workflows/TASK-FIX-5-1-SKILL-API-UNIFICATION/ \
+   docs/30-workflows/completed-tasks/
 
 # 移動を確認
-ls docs/30-workflows/skill-import-agent-system/tasks/completed-task/ | grep -i "fix-5-1"
+ls docs/30-workflows/completed-tasks/ | grep -i "fix-5-1"
 
 # 変更をコミット
 git add docs/30-workflows/
 git commit -m "docs(workflows): TASK-FIX-5-1-SKILL-API-UNIFICATIONをcompleted-tasksに移動"
 git push
+```
+
+## PR情報テンプレート
+
+PR作成後、以下の形式で `outputs/phase-13/pr-info.md` を作成する:
+
+```markdown
+# PR情報
+
+| 項目         | 値           |
+| ------------ | ------------ |
+| PR番号       | #{{NUMBER}}  |
+| PR URL       | {{URL}}      |
+| 作成日時     | {{DATETIME}} |
+| CIステータス | {{STATUS}}   |
+| レビュアー   | {{REVIEWER}} |
+
+## 変更ファイル数
+
+- 追加: {{N}}
+- 変更: {{N}}
+- 削除: {{N}}
+
+## 関連Issue
+
+- {{ISSUE_LINK}}
 ```
 
 ## 次のPhase

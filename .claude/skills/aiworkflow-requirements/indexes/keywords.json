@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-08T10:43:19.077Z",
-  "totalKeywords": 1059,
+  "generated": "2026-02-08T22:59:47.866Z",
+  "totalKeywords": 1063,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -103,6 +103,7 @@
       "security-api-electron.md",
       "security-implementation.md",
       "security-skill-execution.md",
+      "skill-executor-type-migration.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-backend.md",
@@ -224,6 +225,7 @@
       "security-principles.md",
       "security-skill-execution.md",
       "security-skill-ipc.md",
+      "skill-executor-type-migration.md",
       "spec-splitting-guidelines.md",
       "task-workflow-phases.md",
       "task-workflow.md",
@@ -1475,6 +1477,7 @@
       "claude-code-commands.md",
       "claude-code-overview.md",
       "claude-code-skills-process.md",
+      "skill-executor-type-migration.md",
       "testing-accessibility.md",
       "testing-component-patterns.md",
       "testing-fixtures.md"
@@ -2050,7 +2053,8 @@
     ],
     "SkillExecutor": [
       "error-handling.md",
-      "interfaces-agent-sdk-executor.md"
+      "interfaces-agent-sdk-executor.md",
+      "skill-executor-type-migration.md"
     ],
     "RETRY": [
       "error-handling.md",
@@ -3291,6 +3295,18 @@
     ],
     "連携セキュリティ": [
       "security-skill-ipc.md"
+    ],
+    "型統一リファクタリング": [
+      "skill-executor-type-migration.md"
+    ],
+    "実装内容": [
+      "skill-executor-type-migration.md"
+    ],
+    "苦戦した箇所と解決策": [
+      "skill-executor-type-migration.md"
+    ],
+    "関連タスク": [
+      "skill-executor-type-migration.md"
     ],
     "仕様書記述ガイドライン": [
       "spec-guidelines.md"

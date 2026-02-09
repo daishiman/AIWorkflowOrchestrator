@@ -14,6 +14,24 @@ import {
   ALLOWED_ON_CHANNELS,
 } from "../channels";
 
+// Mock electron module - vi.hoisted()でホイスティング対応
+const { mockInvoke, mockOn, mockRemoveListener } = vi.hoisted(() => ({
+  mockInvoke: vi.fn(),
+  mockOn: vi.fn(),
+  mockRemoveListener: vi.fn(),
+}));
+
+vi.mock("electron", () => ({
+  ipcRenderer: {
+    invoke: mockInvoke,
+    on: mockOn,
+    removeListener: mockRemoveListener,
+  },
+}));
+
+// Import after mocking - skillAPI uses ipcRenderer internally
+import { skillAPI } from "../skill-api";
+
 // ============================================================
 // 1. IPC Channel Definition Tests (Permission)
 // ============================================================
@@ -51,17 +69,7 @@ describe("Skill API Permission - IPC Channels", () => {
 // 2. skillAPI.onPermissionRequest Tests
 // ============================================================
 describe("skillAPI.onPermissionRequest", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-    onPermissionRequest: vi.fn(),
-    sendPermissionResponse: vi.fn(),
-  };
-
   beforeEach(() => {
-    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -71,87 +79,85 @@ describe("skillAPI.onPermissionRequest", () => {
 
   it("should register a permission request listener", () => {
     const callback = vi.fn();
-    const unsubscribe = vi.fn();
-    mockSkillAPI.onPermissionRequest.mockReturnValue(unsubscribe);
 
-    const result = window.electronAPI.skill.onPermissionRequest(callback);
+    const unsubscribe = skillAPI.onPermissionRequest(callback);
 
-    expect(mockSkillAPI.onPermissionRequest).toHaveBeenCalledWith(callback);
-    expect(result).toBe(unsubscribe);
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+      expect.any(Function),
+    );
+    expect(typeof unsubscribe).toBe("function");
   });
 
   it("should call the callback when permission request is received", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const mockRequest = {
       executionId: "exec-test-001",
       requestId: "req-test-001",
       toolName: "Bash",
       args: { command: "echo test" },
-      reason: "コマンドを実行: echo test",
+      reason: "Execute command: echo test",
     };
 
-    capturedCallback?.(mockRequest);
+    capturedHandler?.({}, mockRequest);
 
     expect(callback).toHaveBeenCalledWith(mockRequest);
   });
 
   it("should return a cleanup function", () => {
     const callback = vi.fn();
-    const unsubscribe = vi.fn();
-    mockSkillAPI.onPermissionRequest.mockReturnValue(unsubscribe);
 
-    const result = window.electronAPI.skill.onPermissionRequest(callback);
+    const unsubscribe = skillAPI.onPermissionRequest(callback);
 
-    expect(typeof result).toBe("function");
+    expect(typeof unsubscribe).toBe("function");
 
-    result();
-    expect(unsubscribe).toHaveBeenCalled();
+    unsubscribe();
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+      expect.any(Function),
+    );
   });
 
   it("should not call callback after unsubscribe", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
-    const unsubscribe = vi.fn(() => {
-      capturedCallback = null;
+    let _capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
+    let isUnsubscribed = false;
+
+    mockOn.mockImplementation((_channel, handler) => {
+      _capturedHandler = handler;
     });
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return unsubscribe;
+    mockRemoveListener.mockImplementation(() => {
+      isUnsubscribed = true;
     });
 
-    const unsub = window.electronAPI.skill.onPermissionRequest(callback);
+    const unsub = skillAPI.onPermissionRequest(callback);
     unsub();
 
-    expect(unsubscribe).toHaveBeenCalled();
-    expect(capturedCallback).toBeNull();
+    expect(mockRemoveListener).toHaveBeenCalled();
+    expect(isUnsubscribed).toBe(true);
   });
 
   it("should handle multiple permission listeners", () => {
     const callback1 = vi.fn();
     const callback2 = vi.fn();
-    const unsubscribe1 = vi.fn();
-    const unsubscribe2 = vi.fn();
 
-    mockSkillAPI.onPermissionRequest
-      .mockReturnValueOnce(unsubscribe1)
-      .mockReturnValueOnce(unsubscribe2);
+    const unsub1 = skillAPI.onPermissionRequest(callback1);
+    const unsub2 = skillAPI.onPermissionRequest(callback2);
 
-    const unsub1 = window.electronAPI.skill.onPermissionRequest(callback1);
-    const unsub2 = window.electronAPI.skill.onPermissionRequest(callback2);
-
-    expect(mockSkillAPI.onPermissionRequest).toHaveBeenCalledTimes(2);
-    expect(unsub1).toBe(unsubscribe1);
-    expect(unsub2).toBe(unsubscribe2);
+    expect(mockOn).toHaveBeenCalledTimes(2);
+    expect(typeof unsub1).toBe("function");
+    expect(typeof unsub2).toBe("function");
   });
 });
 
@@ -159,17 +165,7 @@ describe("skillAPI.onPermissionRequest", () => {
 // 3. skillAPI.sendPermissionResponse Tests
 // ============================================================
 describe("skillAPI.sendPermissionResponse", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-    onPermissionRequest: vi.fn(),
-    sendPermissionResponse: vi.fn(),
-  };
-
   beforeEach(() => {
-    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -178,33 +174,39 @@ describe("skillAPI.sendPermissionResponse", () => {
   });
 
   it("should send permission response with approved=true", async () => {
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     const response = {
       requestId: "req-test-001",
       approved: true,
     };
 
-    await window.electronAPI.skill.sendPermissionResponse(response);
+    await skillAPI.sendPermissionResponse(response);
 
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(response);
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+      response,
+    );
   });
 
   it("should send permission response with approved=false", async () => {
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     const response = {
       requestId: "req-test-001",
       approved: false,
     };
 
-    await window.electronAPI.skill.sendPermissionResponse(response);
+    await skillAPI.sendPermissionResponse(response);
 
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(response);
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+      response,
+    );
   });
 
   it("should include rememberChoice when provided", async () => {
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     const response = {
       requestId: "req-test-001",
@@ -212,9 +214,10 @@ describe("skillAPI.sendPermissionResponse", () => {
       rememberChoice: true,
     };
 
-    await window.electronAPI.skill.sendPermissionResponse(response);
+    await skillAPI.sendPermissionResponse(response);
 
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
       expect.objectContaining({
         rememberChoice: true,
       }),
@@ -222,7 +225,7 @@ describe("skillAPI.sendPermissionResponse", () => {
   });
 
   it("should include rejectReason when provided", async () => {
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     const response = {
       requestId: "req-test-001",
@@ -230,9 +233,10 @@ describe("skillAPI.sendPermissionResponse", () => {
       rejectReason: "User declined the request",
     };
 
-    await window.electronAPI.skill.sendPermissionResponse(response);
+    await skillAPI.sendPermissionResponse(response);
 
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith(
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
       expect.objectContaining({
         rejectReason: "User declined the request",
       }),
@@ -240,9 +244,9 @@ describe("skillAPI.sendPermissionResponse", () => {
   });
 
   it("should return true on successful response", async () => {
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
-    const result = await window.electronAPI.skill.sendPermissionResponse({
+    const result = await skillAPI.sendPermissionResponse({
       requestId: "req-test-001",
       approved: true,
     });
@@ -251,12 +255,10 @@ describe("skillAPI.sendPermissionResponse", () => {
   });
 
   it("should handle IPC error gracefully", async () => {
-    mockSkillAPI.sendPermissionResponse.mockRejectedValue(
-      new Error("IPC connection failed"),
-    );
+    mockInvoke.mockRejectedValue(new Error("IPC connection failed"));
 
     await expect(
-      window.electronAPI.skill.sendPermissionResponse({
+      skillAPI.sendPermissionResponse({
         requestId: "req-test-001",
         approved: true,
       }),
@@ -268,17 +270,7 @@ describe("skillAPI.sendPermissionResponse", () => {
 // 4. Permission Request Data Type Tests
 // ============================================================
 describe("skillAPI permission - data types", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-    onPermissionRequest: vi.fn(),
-    sendPermissionResponse: vi.fn(),
-  };
-
   beforeEach(() => {
-    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -288,14 +280,14 @@ describe("skillAPI permission - data types", () => {
 
   it("should receive permission request with all required fields", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const validRequest = {
       executionId: "exec-123",
@@ -305,7 +297,7 @@ describe("skillAPI permission - data types", () => {
       reason: "List directory contents",
     };
 
-    capturedCallback?.(validRequest);
+    capturedHandler?.({}, validRequest);
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -320,14 +312,14 @@ describe("skillAPI permission - data types", () => {
 
   it("should receive permission request with optional timestamp", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const requestWithTimestamp = {
       executionId: "exec-123",
@@ -338,7 +330,7 @@ describe("skillAPI permission - data types", () => {
       timestamp: Date.now(),
     };
 
-    capturedCallback?.(requestWithTimestamp);
+    capturedHandler?.({}, requestWithTimestamp);
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -349,14 +341,14 @@ describe("skillAPI permission - data types", () => {
 
   it("should handle args with various data types", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const complexArgs = {
       command: "npm install",
@@ -373,7 +365,7 @@ describe("skillAPI permission - data types", () => {
       reason: "Install dependencies",
     };
 
-    capturedCallback?.(request);
+    capturedHandler?.({}, request);
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -384,14 +376,14 @@ describe("skillAPI permission - data types", () => {
 
   it("should handle sanitized args with [REDACTED] values", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const sanitizedArgs = {
       command: "curl -H",
@@ -407,7 +399,7 @@ describe("skillAPI permission - data types", () => {
       reason: "API call with credentials",
     };
 
-    capturedCallback?.(request);
+    capturedHandler?.({}, request);
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -421,36 +413,15 @@ describe("skillAPI permission - data types", () => {
 });
 
 // ============================================================
-// 5. window.electronAPI.skill Permission Method Availability Tests
+// 5. skillAPI Permission Method Availability Tests
 // ============================================================
-describe("window.electronAPI.skill - Permission Methods Availability", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-    onPermissionRequest: vi.fn(),
-    sendPermissionResponse: vi.fn(),
-  };
-
-  beforeEach(() => {
-    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
+describe("skillAPI - Permission Methods Availability", () => {
   it("should have onPermissionRequest method", () => {
-    expect(window.electronAPI.skill?.onPermissionRequest).toBeInstanceOf(
-      Function,
-    );
+    expect(skillAPI.onPermissionRequest).toBeInstanceOf(Function);
   });
 
   it("should have sendPermissionResponse method", () => {
-    expect(window.electronAPI.skill?.sendPermissionResponse).toBeInstanceOf(
-      Function,
-    );
+    expect(skillAPI.sendPermissionResponse).toBeInstanceOf(Function);
   });
 });
 
@@ -458,17 +429,7 @@ describe("window.electronAPI.skill - Permission Methods Availability", () => {
 // 6. IPC Integration Simulation Tests
 // ============================================================
 describe("skillAPI permission - IPC integration simulation", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-    onPermissionRequest: vi.fn(),
-    sendPermissionResponse: vi.fn(),
-  };
-
   beforeEach(() => {
-    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -477,16 +438,16 @@ describe("skillAPI permission - IPC integration simulation", () => {
   });
 
   it("should handle complete permission flow: request -> dialog -> approve", async () => {
-    let capturedCallback: ((request: unknown) => void) | null = null;
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     // Step 1: Register listener
     const dialogHandler = vi.fn();
-    window.electronAPI.skill.onPermissionRequest(dialogHandler);
+    skillAPI.onPermissionRequest(dialogHandler);
 
     // Step 2: Simulate Main Process sending permission request
     const permissionRequest = {
@@ -496,37 +457,40 @@ describe("skillAPI permission - IPC integration simulation", () => {
       args: { path: "/tmp/test.txt", content: "Hello" },
       reason: "Write file: /tmp/test.txt",
     };
-    capturedCallback?.(permissionRequest);
+    capturedHandler?.({}, permissionRequest);
 
     // Step 3: Verify dialog handler received the request
     expect(dialogHandler).toHaveBeenCalledWith(permissionRequest);
 
     // Step 4: Simulate user approval
-    await window.electronAPI.skill.sendPermissionResponse({
+    await skillAPI.sendPermissionResponse({
       requestId: "req-flow-001",
       approved: true,
       rememberChoice: false,
     });
 
     // Step 5: Verify response was sent
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith({
-      requestId: "req-flow-001",
-      approved: true,
-      rememberChoice: false,
-    });
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+      {
+        requestId: "req-flow-001",
+        approved: true,
+        rememberChoice: false,
+      },
+    );
   });
 
   it("should handle complete permission flow: request -> dialog -> deny", async () => {
-    let capturedCallback: ((request: unknown) => void) | null = null;
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     // Register listener
     const dialogHandler = vi.fn();
-    window.electronAPI.skill.onPermissionRequest(dialogHandler);
+    skillAPI.onPermissionRequest(dialogHandler);
 
     // Simulate permission request
     const permissionRequest = {
@@ -536,34 +500,37 @@ describe("skillAPI permission - IPC integration simulation", () => {
       args: { command: "rm -rf /" },
       reason: "Execute dangerous command",
     };
-    capturedCallback?.(permissionRequest);
+    capturedHandler?.({}, permissionRequest);
 
     expect(dialogHandler).toHaveBeenCalledWith(permissionRequest);
 
     // Simulate user denial
-    await window.electronAPI.skill.sendPermissionResponse({
+    await skillAPI.sendPermissionResponse({
       requestId: "req-deny-001",
       approved: false,
       rememberChoice: true,
     });
 
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith({
-      requestId: "req-deny-001",
-      approved: false,
-      rememberChoice: true,
-    });
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+      {
+        requestId: "req-deny-001",
+        approved: false,
+        rememberChoice: true,
+      },
+    );
   });
 
   it("should handle multiple concurrent permission requests", async () => {
-    let capturedCallback: ((request: unknown) => void) | null = null;
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     const dialogHandler = vi.fn();
-    window.electronAPI.skill.onPermissionRequest(dialogHandler);
+    skillAPI.onPermissionRequest(dialogHandler);
 
     // Simulate two concurrent requests
     const request1 = {
@@ -582,24 +549,24 @@ describe("skillAPI permission - IPC integration simulation", () => {
       reason: "Write file2",
     };
 
-    capturedCallback?.(request1);
-    capturedCallback?.(request2);
+    capturedHandler?.({}, request1);
+    capturedHandler?.({}, request2);
 
     expect(dialogHandler).toHaveBeenCalledTimes(2);
     expect(dialogHandler).toHaveBeenNthCalledWith(1, request1);
     expect(dialogHandler).toHaveBeenNthCalledWith(2, request2);
 
     // Respond to requests (out of order)
-    await window.electronAPI.skill.sendPermissionResponse({
+    await skillAPI.sendPermissionResponse({
       requestId: "req-2",
       approved: true,
     });
-    await window.electronAPI.skill.sendPermissionResponse({
+    await skillAPI.sendPermissionResponse({
       requestId: "req-1",
       approved: false,
     });
 
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledTimes(2);
+    expect(mockInvoke).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -607,17 +574,7 @@ describe("skillAPI permission - IPC integration simulation", () => {
 // 7. Edge Case Tests
 // ============================================================
 describe("skillAPI permission - edge cases", () => {
-  const mockSkillAPI = {
-    execute: vi.fn(),
-    onStream: vi.fn(),
-    abort: vi.fn(),
-    getExecutionStatus: vi.fn(),
-    onPermissionRequest: vi.fn(),
-    sendPermissionResponse: vi.fn(),
-  };
-
   beforeEach(() => {
-    vi.stubGlobal("electronAPI", { skill: mockSkillAPI });
     vi.clearAllMocks();
   });
 
@@ -627,14 +584,14 @@ describe("skillAPI permission - edge cases", () => {
 
   it("should handle empty args object", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const requestWithEmptyArgs = {
       executionId: "exec-empty-args",
@@ -644,7 +601,7 @@ describe("skillAPI permission - edge cases", () => {
       reason: "Search for files",
     };
 
-    capturedCallback?.(requestWithEmptyArgs);
+    capturedHandler?.({}, requestWithEmptyArgs);
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -655,14 +612,14 @@ describe("skillAPI permission - edge cases", () => {
 
   it("should handle undefined reason", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const requestWithoutReason = {
       executionId: "exec-no-reason",
@@ -672,7 +629,7 @@ describe("skillAPI permission - edge cases", () => {
       // reason is undefined
     };
 
-    capturedCallback?.(requestWithoutReason);
+    capturedHandler?.({}, requestWithoutReason);
 
     expect(callback).toHaveBeenCalledWith(
       expect.not.objectContaining({
@@ -683,54 +640,60 @@ describe("skillAPI permission - edge cases", () => {
 
   it("should handle rapid consecutive permission requests", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     // Fire 10 requests in rapid succession
     for (let i = 0; i < 10; i++) {
-      capturedCallback?.({
-        executionId: `exec-rapid-${i}`,
-        requestId: `req-rapid-${i}`,
-        toolName: "Bash",
-        args: { command: `echo ${i}` },
-        reason: `Rapid request ${i}`,
-      });
+      capturedHandler?.(
+        {},
+        {
+          executionId: `exec-rapid-${i}`,
+          requestId: `req-rapid-${i}`,
+          toolName: "Bash",
+          args: { command: `echo ${i}` },
+          reason: `Rapid request ${i}`,
+        },
+      );
     }
 
     expect(callback).toHaveBeenCalledTimes(10);
   });
 
   it("should handle sendPermissionResponse without optional fields", async () => {
-    mockSkillAPI.sendPermissionResponse.mockResolvedValue(true);
+    mockInvoke.mockResolvedValue(true);
 
     // Minimal response without rememberChoice or rejectReason
-    await window.electronAPI.skill.sendPermissionResponse({
+    await skillAPI.sendPermissionResponse({
       requestId: "req-minimal",
       approved: true,
     });
 
-    expect(mockSkillAPI.sendPermissionResponse).toHaveBeenCalledWith({
-      requestId: "req-minimal",
-      approved: true,
-    });
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_PERMISSION_RESPONSE,
+      {
+        requestId: "req-minimal",
+        approved: true,
+      },
+    );
   });
 
   it("should handle very long reason strings", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const longReason = "A".repeat(10000);
     const requestWithLongReason = {
@@ -741,7 +704,7 @@ describe("skillAPI permission - edge cases", () => {
       reason: longReason,
     };
 
-    capturedCallback?.(requestWithLongReason);
+    capturedHandler?.({}, requestWithLongReason);
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -752,19 +715,19 @@ describe("skillAPI permission - edge cases", () => {
 
   it("should handle special characters in args", () => {
     const callback = vi.fn();
-    let capturedCallback: ((request: unknown) => void) | null = null;
+    let capturedHandler: ((_event: unknown, data: unknown) => void) | null =
+      null;
 
-    mockSkillAPI.onPermissionRequest.mockImplementation((cb) => {
-      capturedCallback = cb;
-      return () => {};
+    mockOn.mockImplementation((_channel, handler) => {
+      capturedHandler = handler;
     });
 
-    window.electronAPI.skill.onPermissionRequest(callback);
+    skillAPI.onPermissionRequest(callback);
 
     const specialArgs = {
       command: 'echo "Hello, World!" && rm -rf / || true',
-      path: "/tmp/テスト/file.txt",
-      content: "日本語コンテンツ with emoji 🎉",
+      path: "/tmp/test/file.txt",
+      content: "Japanese content with emoji",
     };
 
     const requestWithSpecialChars = {
@@ -775,7 +738,7 @@ describe("skillAPI permission - edge cases", () => {
       reason: "Execute command with special chars",
     };
 
-    capturedCallback?.(requestWithSpecialChars);
+    capturedHandler?.({}, requestWithSpecialChars);
 
     expect(callback).toHaveBeenCalledWith(
       expect.objectContaining({

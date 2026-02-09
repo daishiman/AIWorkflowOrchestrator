@@ -43,6 +43,49 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-09 - TASK-FIX-5-1-SKILL-API-UNIFICATION完了（SkillAPI二重定義の統一）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A（複数セッション）
+- **Notes**: window.skillAPI 廃止 → window.electronAPI.skill 一本化。138テスト全PASS、カバレッジ Line 91.07%
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-FIX-5-1-SKILL-API-UNIFICATION
+- Phase: 1-12完了
+
+### 問題
+
+`window.skillAPI` と `window.electronAPI.skill` の二重定義により、メンテナンス性と一貫性の問題が発生。どちらのAPIを使用すべきか不明確で、将来の機能追加時にも二重修正が必要になるリスクがあった。
+
+### 成果
+
+- テストカバレッジ: 138テスト全PASS（Line 91.07%, Branch 80.55%, Function 85.71%）
+- 実装内容:
+  - window.skillAPI 型定義の廃止
+  - window.electronAPI.skill へのAPI統一
+  - 仕様書2ファイルの更新（interfaces-agent-sdk-skill.md, security-skill-ipc.md）
+  - テスト23件追加（unification: 15件, permission追加: 8件）
+
+### 更新した仕様書
+
+| ファイル                          | 追加内容                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------ |
+| interfaces-agent-sdk-skill.md     | API参照をwindow.electronAPI.skillに統一                                  |
+| security-skill-ipc.md             | セキュリティ仕様のAPI参照を統一                                          |
+
+### 変更ファイル
+
+| ファイル                                            | 変更種別 | 内容                                          |
+| --------------------------------------------------- | -------- | --------------------------------------------- |
+| apps/desktop/src/preload/types.ts                   | 修正     | SkillAPI定義を統一                            |
+| apps/desktop/src/preload/types.d.ts                 | 修正     | Window.skillAPI を廃止                        |
+
+---
+
 ## [2026-02-08 - TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）]
 
 - **Agent**: task-specification-creator
