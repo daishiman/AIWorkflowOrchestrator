@@ -277,6 +277,39 @@ Supabase Auth から取得するプロバイダー識別情報。
 
 #### 修正内容
 
+### TASK-AUTH-MODE-SELECTION-001: 認証方式選択機能（2026-02-09完了）
+
+| 項目         | 内容                                                  |
+| ------------ | ----------------------------------------------------- |
+| タスクID     | TASK-AUTH-MODE-SELECTION-001                          |
+| ステータス   | **完了**                                              |
+| Phase        | Phase 1-12完了                                        |
+| テスト数     | 86件（AuthModeService, SubscriptionAuthProvider等）   |
+| ドキュメント | `docs/30-workflows/TASK-AUTH-MODE-SELECTION-001/`     |
+
+#### 実装内容
+
+| 機能                        | 説明                                                   |
+| --------------------------- | ------------------------------------------------------ |
+| 認証方式選択UI              | サブスクリプション/APIキー認証の切り替えUI             |
+| AuthModeService             | 認証方式の永続化・管理サービス                         |
+| SubscriptionAuthProvider    | Claude Code CLIトークン取得（macOS Keychain経由）      |
+| IPCハンドラ                 | auth-mode:get/set/status/validate チャンネル           |
+| authModeSlice               | Zustand状態管理（P5防止パターン適用）                  |
+
+#### 新規ファイル
+
+| ファイル                                                  | 内容                               |
+| --------------------------------------------------------- | ---------------------------------- |
+| `packages/shared/src/types/auth-mode.ts`                  | 共有型定義（AuthMode等）           |
+| `apps/desktop/src/main/services/auth/AuthModeService.ts`  | 認証方式管理サービス               |
+| `apps/desktop/src/main/services/auth/SubscriptionAuthProvider.ts` | CLIトークン取得          |
+| `apps/desktop/src/main/ipc/authModeHandlers.ts`           | IPCハンドラ                        |
+| `apps/desktop/src/renderer/store/slices/authModeSlice.ts` | Zustand slice                      |
+| `apps/desktop/src/renderer/components/settings/AuthModeSelector/index.tsx` | UIコンポーネント |
+
+#### 修正内容
+
 | 問題 | 修正内容                                                            |
 | ---- | ------------------------------------------------------------------- |
 | 1    | OAuthコールバックのerrorパラメータ検出（parseOAuthError関数追加）   |
@@ -365,6 +398,7 @@ Desktop アプリの複数フォルダ管理機能で使用する型定義。
 
 | Version    | Date           | Changes                                                                                 |
 | ---------- | -------------- | --------------------------------------------------------------------------------------- |
+| **1.4.0**  | **2026-02-09** | TASK-AUTH-MODE-SELECTION-001: AuthMode型・AuthModeService・SubscriptionAuthProvider・authModeSlice追加（認証方式選択機能） |
 | **1.3.0**  | **2026-02-06** | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshCallbacks/TokenRefreshConfig型定義追加（Callback DIパターン、スケジューラー設定） |
 | **1.2.0**  | **2026-02-05** | TASK-FIX-GOOGLE-LOGIN-001完了: AUTH_ERROR_CODES拡張(9コード)、AuthSession/AuthState型拡張、OAuthエラーハンドリング |
 | 1.1.0      | 2026-02-04     | AUTH-UI-004完了: SupabaseIdentity型にpictureプロパティ追加、完了タスクセクション追加    |

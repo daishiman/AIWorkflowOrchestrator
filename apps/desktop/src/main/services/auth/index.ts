@@ -20,6 +20,16 @@ export type {
   AuthKeyDeleteResponse,
   AuthKeyStoreSchema,
   AuthKeyStorageConfig,
+  // AuthMode 型
+  AuthMode,
+  AuthStatus,
+  AuthModeChangeEvent,
+  AuthModeChangeListener,
+  AuthModeStoreSchema,
+  AuthModeValidationResult,
+  AuthModeStatusError,
+  IAuthModeService,
+  ISubscriptionAuthProvider,
 } from "./types";
 
 // 定数エクスポート
@@ -31,6 +41,11 @@ export {
   MAX_KEY_LENGTH,
   MIN_KEY_LENGTH,
   ANTHROPIC_API_KEY_PREFIX_PATTERN,
+  // AuthMode 定数
+  DEFAULT_AUTH_MODE,
+  VALID_AUTH_MODES,
+  AUTH_MODE_STORE_NAME,
+  AUTH_MODE_ERROR_CODES,
 } from "./types";
 
 // サービスエクスポート
@@ -40,3 +55,12 @@ export {
   clearAuthKeyStore,
   resetAuthKeyStore,
 } from "./AuthKeyService";
+
+// AuthModeService エクスポート
+export {
+  AuthModeService,
+  StubSubscriptionAuthProvider,
+  createAuthModeService,
+  clearAuthModeStore,
+  resetAuthModeStore,
+} from "./AuthModeService";

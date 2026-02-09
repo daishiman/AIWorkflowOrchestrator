@@ -226,6 +226,26 @@
 - **発見日**: 2026-02-05
 - **関連タスク**: TASK-FIX-4-1-IPC-CONSOLIDATION
 
+### TASK-FIX-5-1: SkillAPI二重定義統一
+
+**カテゴリ**: IPC Bridge / Preload API
+
+**成功パターン**:
+
+| パターンID | パターン名 | 説明 | 参照 |
+|-----------|-----------|------|------|
+| FIX-5-1-S1 | 正本参照パターン | 重複記述を削除し、単一ファイルへの参照リンクで統一 | [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md) |
+| FIX-5-1-S2 | IPCチャンネル数矛盾解消 | 歴史的経緯を注記で説明し、最新参照先を明示 | [interfaces-agent-sdk-skill.md](../../aiworkflow-requirements/references/interfaces-agent-sdk-skill.md) |
+| FIX-5-1-S3 | クロスリファレンス表 | P23-P28と実装パターンS1-S5の対応表を追加 | [06-known-pitfalls.md](../../../.claude/rules/06-known-pitfalls.md) |
+
+**失敗パターン**:
+
+| パターンID | パターン名 | 問題 | 回避策 |
+|-----------|-----------|------|--------|
+| FIX-5-1-F1 | safeInvoke/safeOn 3箇所分散 | 同一内容が3ファイルに分散し、更新時に矛盾発生 | 正本を1箇所に決め、他は参照リンクに |
+| FIX-5-1-F2 | IPCチャンネル数不一致（8 vs 13） | 歴史的経緯で数値が異なり混乱 | 注記で経緯を説明、最新値を明示 |
+| FIX-5-1-F3 | completed-tasksパス未更新 | タスク完了後もパスが旧形式のまま | 完了時にリンクパスを一括更新 |
+
 ### Phase 12 Task 2完全チェックリスト（task-imp-search-ui-001）
 
 - **状況**: Phase 12 Task 2（システム仕様書更新）実行時

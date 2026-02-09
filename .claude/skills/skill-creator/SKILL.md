@@ -16,7 +16,8 @@ description: |
   Trigger:
   新規スキルの作成、既存スキルの更新、プロンプト改善を行う場合に使用。
   スキル作成, スキル更新, プロンプト改善, skill creation, skill update, improve prompt,
-  Codexに任せて, assign codex, Codexで実行, GPTに依頼, 実行モード選択, どのAIを使う
+  Codexに任せて, assign codex, Codexで実行, GPTに依頼, 実行モード選択, どのAIを使う,
+  IPC Bridge統一, API統一パターン, safeInvoke/safeOn, Preload API標準化
 allowed-tools:
   - Read
   - Write

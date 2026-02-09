@@ -40,6 +40,10 @@ import {
   createPermissionHistorySlice,
   type PermissionHistorySlice,
 } from "./slices/permissionHistorySlice";
+import {
+  createAuthModeSlice,
+  type AuthModeSlice,
+} from "./slices/authModeSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -50,6 +54,7 @@ export type AppStore = NavigationSlice &
   UISlice &
   DashboardSlice &
   AuthSlice &
+  AuthModeSlice &
   WorkspaceSlice &
   FileSelectionSlice &
   SystemPromptTemplateSlice &
@@ -105,6 +110,7 @@ export const useAppStore = create<AppStore>()(
         ...createUISlice(...args),
         ...createDashboardSlice(...args),
         ...createAuthSlice(...args),
+        ...createAuthModeSlice(...args),
         ...createWorkspaceSlice(...args),
         ...createFileSelectionSlice(...args),
         ...createSystemPromptTemplateSlice(...args),
@@ -307,3 +313,34 @@ export const useSkillStore = () =>
     clearError: state.clearError,
     clearStreamingMessages: state.clearStreamingMessages,
   }));
+
+// AuthMode selectors - single hook for all AuthMode-related state and actions
+export const useAuthModeStore = () =>
+  useAppStore((state) => ({
+    // 状態
+    mode: state.mode,
+    status: state.status,
+    isLoading: state.isLoading,
+    error: state.error,
+    isConfirmDialogOpen: state.isConfirmDialogOpen,
+    pendingMode: state.pendingMode,
+    // アクション
+    fetchMode: state.fetchMode,
+    setMode: state.setMode,
+    fetchStatus: state.fetchStatus,
+    validate: state.validate,
+    openConfirmDialog: state.openConfirmDialog,
+    closeConfirmDialog: state.closeConfirmDialog,
+    confirmModeChange: state.confirmModeChange,
+    clearError: state.clearError,
+    resetAuthMode: state.resetAuthMode,
+    initializeAuthMode: state.initializeAuthMode,
+  }));
+
+// AuthMode basic selectors
+export const useAuthMode = () => useAppStore((state) => state.mode);
+export const useAuthModeStatus = () => useAppStore((state) => state.status);
+export const useAuthModeLoading = () => useAppStore((state) => state.isLoading);
+export const useAuthModeError = () => useAppStore((state) => state.error);
+export const useIsAuthModeValid = () =>
+  useAppStore((state) => state.status?.isValid ?? false);

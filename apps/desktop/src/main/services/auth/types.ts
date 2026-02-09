@@ -273,3 +273,242 @@ export const ANTHROPIC_API_VERSION = "2023-06-01";
 
 /** API検証用のモデル（最小コストのモデル） */
 export const ANTHROPIC_VALIDATION_MODEL = "claude-3-haiku-20240307";
+
+// =================================================================
+// AuthMode 型定義
+// =================================================================
+
+/**
+ * 認証モード
+ *
+ * subscription: Claude Code CLIサブスクリプション認証（Keychain経由）
+ * api-key: Anthropic APIキー認証（既存AuthKeyService）
+ */
+export type AuthMode = "subscription" | "api-key";
+
+/**
+ * 認証モードのデフォルト値
+ */
+export const DEFAULT_AUTH_MODE: AuthMode = "subscription";
+
+/**
+ * 有効な認証モード一覧
+ */
+export const VALID_AUTH_MODES: readonly AuthMode[] = [
+  "subscription",
+  "api-key",
+];
+
+/**
+ * 認証状態エラー
+ */
+export interface AuthModeStatusError {
+  /** エラーコード */
+  code: string;
+  /** ユーザー向けメッセージ */
+  message: string;
+  /** 復旧ガイダンス（任意） */
+  guidance?: string;
+}
+
+/**
+ * 認証状態
+ */
+export interface AuthStatus {
+  /** 現在の認証モード */
+  mode: AuthMode;
+  /** 認証が有効かどうか */
+  isAuthenticated: boolean;
+  /** 認証情報が存在するか */
+  hasCredentials: boolean;
+  /** エラー情報（認証失敗時） */
+  error?: AuthModeStatusError;
+  /** 追加情報 */
+  details?: {
+    /** APIキー認証時: キーが設定されているか */
+    hasApiKey?: boolean;
+    /** サブスクリプション認証時: トークンが存在するか */
+    hasSubscriptionToken?: boolean;
+  };
+}
+
+/**
+ * 認証モード変更イベント
+ */
+export interface AuthModeChangeEvent {
+  /** 変更前のモード */
+  previousMode: AuthMode;
+  /** 変更後のモード */
+  newMode: AuthMode;
+  /** 変更日時（Unix timestamp in ms） */
+  timestamp: number;
+}
+
+/**
+ * 認証モード変更リスナー型
+ */
+export type AuthModeChangeListener = (event: AuthModeChangeEvent) => void;
+
+/**
+ * 認証モード検証結果
+ */
+export interface AuthModeValidationResult {
+  /** 認証情報が有効か */
+  isValid: boolean;
+  /** 検証した認証方式 */
+  mode: AuthMode;
+  /** 認証情報が存在するか */
+  hasCredentials: boolean;
+  /** エラー詳細（無効時のみ） */
+  error?: AuthModeStatusError;
+}
+
+/**
+ * 認証モード設定のストアスキーマ
+ */
+export interface AuthModeStoreSchema {
+  /** 認証モード設定 */
+  authMode?: AuthMode;
+  /** 最終変更日時 */
+  authModeUpdatedAt?: number;
+}
+
+// =================================================================
+// AuthMode エラーコード
+// =================================================================
+
+/**
+ * 認証モード関連エラーコード
+ */
+export const AUTH_MODE_ERROR_CODES = {
+  // === バリデーションエラー (1000番台) ===
+  /** 無効な認証方式が指定された */
+  INVALID_MODE: "auth-mode/invalid-mode",
+
+  // === 認証情報エラー (2000番台) ===
+  /** 認証情報が存在しない */
+  NO_CREDENTIALS: "auth-mode/no-credentials",
+  /** APIキーが設定されていない */
+  NO_API_KEY: "auth-mode/no-api-key",
+  /** サブスクリプショントークンが存在しない */
+  NO_SUBSCRIPTION_TOKEN: "auth-mode/no-subscription-token",
+
+  // === ストレージエラー (5000番台) ===
+  /** 設定の永続化に失敗 */
+  STORAGE_FAILED: "auth-mode/storage-failed",
+  /** 設定の読み込みに失敗 */
+  STORAGE_READ_FAILED: "auth-mode/storage-read-failed",
+
+  // === 内部エラー (9000番台) ===
+  /** 不明なエラー */
+  UNKNOWN_ERROR: "auth-mode/unknown-error",
+} as const;
+
+export type AuthModeErrorCodeType =
+  (typeof AUTH_MODE_ERROR_CODES)[keyof typeof AUTH_MODE_ERROR_CODES];
+
+// =================================================================
+// AuthMode Store 定数
+// =================================================================
+
+/** 認証モード Store 名 */
+export const AUTH_MODE_STORE_NAME = "auth-mode-store";
+
+// =================================================================
+// SubscriptionAuthProvider インターフェース
+// =================================================================
+
+/**
+ * サブスクリプション認証プロバイダーのインターフェース
+ *
+ * macOS Keychain経由でClaude Code CLIのOAuthトークンにアクセスする。
+ */
+export interface ISubscriptionAuthProvider {
+  /**
+   * OAuthトークンを取得
+   *
+   * @returns アクセストークン、未認証の場合はnull
+   */
+  getToken(): Promise<string | null>;
+
+  /**
+   * トークンの存在確認
+   *
+   * @returns トークンが存在する場合true
+   */
+  hasToken(): Promise<boolean>;
+
+  /**
+   * トークンの有効性を検証
+   *
+   * @returns 有効な場合true
+   */
+  validateToken(): Promise<boolean>;
+
+  /**
+   * キャッシュをクリア
+   */
+  clearCache(): void;
+}
+
+// =================================================================
+// AuthModeService インターフェース
+// =================================================================
+
+/**
+ * 認証モード管理サービスのインターフェース
+ *
+ * 認証方式（サブスクリプション/APIキー）の管理と
+ * 適切な認証プロバイダーへのルーティングを担う。
+ */
+export interface IAuthModeService {
+  /**
+   * 現在の認証モードを取得
+   *
+   * @returns 現在の認証モード
+   */
+  getMode(): AuthMode;
+
+  /**
+   * 認証モードを設定
+   *
+   * @param mode - 設定する認証モード
+   * @throws AuthModeError - モード設定失敗時
+   */
+  setMode(mode: AuthMode): Promise<void>;
+
+  /**
+   * 認証状態を取得
+   *
+   * 現在のモードに応じた認証有効性を確認する。
+   *
+   * @returns 認証状態
+   */
+  getStatus(): Promise<AuthStatus>;
+
+  /**
+   * 現在のモードで認証トークン/キーを取得
+   *
+   * subscription: Keychain経由でOAuthトークンを取得
+   * api-key: AuthKeyService経由でAPIキーを取得
+   *
+   * @returns 認証トークン/キー、未認証の場合はnull
+   */
+  getCredential(): Promise<string | null>;
+
+  /**
+   * 認証モード変更リスナーを登録
+   *
+   * @param listener - 変更通知を受け取るコールバック
+   * @returns リスナー解除関数
+   */
+  onModeChange(listener: AuthModeChangeListener): () => void;
+
+  /**
+   * 指定モードの認証が有効かを検証
+   *
+   * @param mode - 検証対象のモード
+   * @returns 有効な場合true
+   */
+  validateMode(mode: AuthMode): Promise<boolean>;
+}

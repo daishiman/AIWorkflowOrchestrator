@@ -108,6 +108,10 @@
     "./src/ipc/channels": {
       "types": "./dist/src/ipc/channels.d.ts",
       "import": "./dist/src/ipc/channels.js"
+    },
+    "./types/auth-mode": {
+      "types": "./dist/src/types/auth-mode.d.ts",
+      "import": "./dist/src/types/auth-mode.js"
     }
   },
   "scripts": {
