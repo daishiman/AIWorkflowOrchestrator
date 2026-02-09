@@ -22,6 +22,38 @@ vi.mock("../../components/organisms/ApiKeysSection", () => ({
   ),
 }));
 
+// Mock AuthModeSelector to avoid complex IPC dependencies
+vi.mock("../../components/settings/AuthModeSelector", () => ({
+  AuthModeSelector: ({
+    currentMode,
+    onModeChange,
+    disabled,
+  }: {
+    currentMode: string;
+    onModeChange: (mode: string) => void;
+    disabled?: boolean;
+  }) => (
+    <div data-testid="auth-mode-selector">
+      <button
+        data-testid="auth-mode-subscription"
+        disabled={disabled}
+        onClick={() => onModeChange("subscription")}
+        aria-pressed={currentMode === "subscription"}
+      >
+        サブスクリプション
+      </button>
+      <button
+        data-testid="auth-mode-api-key"
+        disabled={disabled}
+        onClick={() => onModeChange("api-key")}
+        aria-pressed={currentMode === "api-key"}
+      >
+        APIキー
+      </button>
+    </div>
+  ),
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // SettingsSlice
@@ -40,8 +72,18 @@ const createMockState = (overrides = {}) => ({
   ...overrides,
 });
 
+// Mock useAuthModeStore
+const createMockAuthModeStore = () => ({
+  mode: "subscription" as const,
+  status: null,
+  isLoading: false,
+  setMode: vi.fn(),
+  initializeAuthMode: vi.fn(),
+});
+
 vi.mock("../../store", () => ({
   useAppStore: vi.fn((selector) => selector(createMockState())),
+  useAuthModeStore: vi.fn(() => createMockAuthModeStore()),
 }));
 
 describe("SettingsView", () => {
@@ -176,6 +218,24 @@ describe("SettingsView", () => {
   describe("displayName", () => {
     it("displayNameが設定されている", () => {
       expect(SettingsView.displayName).toBe("SettingsView");
+    });
+  });
+
+  describe("認証方式設定", () => {
+    it("認証方式設定セクションを表示する", () => {
+      render(<SettingsView />);
+      expect(screen.getByText("Claude Agent SDK 認証方式")).toBeInTheDocument();
+    });
+
+    it("AuthModeSelectorコンポーネントをレンダリングする", () => {
+      render(<SettingsView />);
+      expect(screen.getByTestId("auth-mode-selector")).toBeInTheDocument();
+    });
+
+    it("サブスクリプションとAPIキーボタンを表示する", () => {
+      render(<SettingsView />);
+      expect(screen.getByTestId("auth-mode-subscription")).toBeInTheDocument();
+      expect(screen.getByTestId("auth-mode-api-key")).toBeInTheDocument();
     });
   });
 });
