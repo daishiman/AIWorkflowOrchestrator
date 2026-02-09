@@ -86,6 +86,42 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-09 - TASK-FIX-17-1-SKILL-SCAN-HANDLER完了（skill:scan IPCハンドラー新規追加）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: ✓ 成功
+- **Notes**: skill:scan IPCハンドラー実装。12テスト追加（基本5+拡張5+セキュリティ2）、Branch Coverage 70.96%。P23（mockReturnValueOnceパターン）を06-known-pitfalls.mdに追加
+
+### 成果物
+
+| カテゴリ           | 内容                                                                   |
+| ------------------ | ---------------------------------------------------------------------- |
+| IPCハンドラー      | SKILL_SCAN ハンドラー（validateIpcSender + scanAvailableSkills(true)） |
+| テスト             | skillHandlers.test.ts に12テストケース追加                             |
+| 苦戦箇所記録       | P23: mockReturnValue vs mockReturnValueOnce                            |
+| システム仕様書更新 | interfaces-agent-sdk-skill.md v1.13.0                                  |
+
+### 更新詳細
+
+| ファイル                            | 追加内容                                 |
+| ----------------------------------- | ---------------------------------------- |
+| skillHandlers.ts                    | registerSkillScan() 関数追加             |
+| skillHandlers.test.ts               | SH-BS-01〜05, SH-ET-01〜05, SH-SC-08〜12 |
+| interfaces-agent-sdk-skill.md       | skill:scan チャンネル仕様                |
+| 06-known-pitfalls.md                | P23（mockReturnValueOnceパターン）       |
+| skill-creator/patterns.md           | テストパターン追加                       |
+| aiworkflow-requirements/patterns.md | テストパターン追加                       |
+
+### テスト結果
+
+| 指標            | 値     |
+| --------------- | ------ |
+| 新規テスト数    | 12     |
+| Branch Coverage | 70.96% |
+| 全テスト PASS   | ✓      |
+
+---
 ## [2026-02-08 - TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）]
 
 - **Agent**: task-specification-creator
@@ -111,12 +147,12 @@ node scripts/log-usage.js \
 
 ### 更新した仕様書
 
-| ファイル                          | 追加内容                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------ |
-| security-principles.md            | SDK認証キー管理セクション追加                                             |
-| api-ipc-system.md                 | auth-key IPCチャンネル仕様追加                                           |
-| api-endpoints.md                  | SDK認証キーカテゴリ追加                                                  |
-| interfaces-agent-sdk-executor.md  | AUTHENTICATION_ERROR追加、AuthKeyService統合                             |
+| ファイル                         | 追加内容                                     |
+| -------------------------------- | -------------------------------------------- |
+| security-principles.md           | SDK認証キー管理セクション追加                |
+| api-ipc-system.md                | auth-key IPCチャンネル仕様追加               |
+| api-endpoints.md                 | SDK認証キーカテゴリ追加                      |
+| interfaces-agent-sdk-executor.md | AUTHENTICATION_ERROR追加、AuthKeyService統合 |
 
 ---
 
@@ -137,19 +173,19 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### 解決策
 
-| 対策                         | 実施内容                                                       |
-| ---------------------------- | -------------------------------------------------------------- |
-| LOGS.md詳細フォーマット化    | 問題/根本原因/解決策/苦戦箇所/成果の5セクション構造を導入       |
-| known-pitfalls.md追加        | P19（型アサーション失敗）、P20（ログ出力汚染）追加              |
-| patterns.md追加              | vi.doMock動的モジュール再読み込みパターン追加                   |
+| 対策                      | 実施内容                                                  |
+| ------------------------- | --------------------------------------------------------- |
+| LOGS.md詳細フォーマット化 | 問題/根本原因/解決策/苦戦箇所/成果の5セクション構造を導入 |
+| known-pitfalls.md追加     | P19（型アサーション失敗）、P20（ログ出力汚染）追加        |
+| patterns.md追加           | vi.doMock動的モジュール再読み込みパターン追加             |
 
 ### 記録先
 
-| 記録先                                              | 追加内容                                            |
-| --------------------------------------------------- | --------------------------------------------------- |
-| .claude/rules/06-known-pitfalls.md                  | P19（型アサーション失敗）、P20（ログ出力汚染）       |
-| .claude/skills/task-specification-creator/references/patterns.md | vi.doMock動的モジュール再読み込みパターン |
-| .claude/skills/aiworkflow-requirements/LOGS.md      | 詳細フォーマット化（5セクション構造）               |
+| 記録先                                                           | 追加内容                                       |
+| ---------------------------------------------------------------- | ---------------------------------------------- |
+| .claude/rules/06-known-pitfalls.md                               | P19（型アサーション失敗）、P20（ログ出力汚染） |
+| .claude/skills/task-specification-creator/references/patterns.md | vi.doMock動的モジュール再読み込みパターン      |
+| .claude/skills/aiworkflow-requirements/LOGS.md                   | 詳細フォーマット化（5セクション構造）          |
 
 ---
 
@@ -182,7 +218,6 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 - apps/desktop/src/main/services/skill/SkillService.ts（修正: DEBUGログ削除）
 
 ---
-
 
 ## [2026-02-06 - DEBT-SEC-001タスク完了（OAuth State Parameter検証実装）]
 
@@ -278,6 +313,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
   - packages/shared/types/auth.ts: sessionExpiresAt追加
 
 ---
+
 ## [2026-02-05 - ENV-INFRA-001タスク完了（better-sqlite3バージョン不一致修正）]
 
 - **Agent**: execute-task / generate-task-specs
@@ -287,6 +323,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 - **Notes**: better-sqlite3のNODE_MODULE_VERSION不一致（127 vs 131）を解決。pnpm store prune + install --forceパターンを確立。CONTRIBUTING.md新規作成、patterns.mdに失敗パターン追加、UT-ENV-001（CI node-version .nvmrc参照化）を未タスクとして登録。
 
 ---
+
 ## [2026-02-05 - TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）]
 
 - **Agent**: execute-workflow (Phase 1-12)
@@ -316,6 +353,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 3. ホワイトリスト更新漏れ防止: テストで検証
 
 ---
+
 ## [2026-02-04 - AUTH-UI-001タスク完了（認証UIバグ修正）]
 
 - **Agent**: generate-task-specs / execute-task
@@ -353,18 +391,18 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### 成果物
 
-| 成果物       | パス                                                   |
-| ------------ | ------------------------------------------------------ |
-| 型定義修正   | `packages/shared/types/auth.ts`                        |
-| 関数修正     | `packages/shared/infrastructure/auth/supabase-client.ts` |
-| 仕様書更新   | `interfaces-auth.md`                                   |
+| 成果物     | パス                                                     |
+| ---------- | -------------------------------------------------------- |
+| 型定義修正 | `packages/shared/types/auth.ts`                          |
+| 関数修正   | `packages/shared/infrastructure/auth/supabase-client.ts` |
+| 仕様書更新 | `interfaces-auth.md`                                     |
 
 ### 技術ポイント
 
-| ポイント                 | 内容                                           |
-| ------------------------ | ---------------------------------------------- |
-| プロバイダー別キー名対応 | Google=picture, GitHub/Discord=avatar_url      |
-| フォールバックパターン   | `avatar_url ?? picture ?? null` の優先順位     |
+| ポイント                 | 内容                                       |
+| ------------------------ | ------------------------------------------ |
+| プロバイダー別キー名対応 | Google=picture, GitHub/Discord=avatar_url  |
+| フォールバックパターン   | `avatar_url ?? picture ?? null` の優先順位 |
 
 ---
 
@@ -377,19 +415,19 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### 成果物
 
-| Phase | 成果物               | パス                                                                       |
-| ----- | -------------------- | -------------------------------------------------------------------------- |
-| 1     | 要件定義書           | outputs/phase-1/requirements-definition.md                                 |
-| 2     | 型統合設計書         | outputs/phase-2/type-integration-design.md                                 |
-| 3     | 設計レビュー結果     | outputs/phase-3/design-review-result.md                                    |
-| 4     | テスト仕様書         | outputs/phase-4/test-specification.md                                      |
-| 5     | 統合済み型定義       | packages/shared/src/types/skill.ts                                         |
-| 6-7   | カバレッジレポート   | outputs/phase-6/, outputs/phase-7/                                         |
-| 8     | リファクタリング結果 | outputs/phase-8/refactoring-report.md                                      |
-| 9     | 品質レポート         | outputs/phase-9/quality-report.md                                          |
-| 10    | 最終レビュー結果     | outputs/phase-10/final-review-result.md                                    |
-| 11    | 手動テスト結果       | outputs/phase-11/manual-test-result.md                                     |
-| 12    | 実装ガイド           | outputs/phase-12/implementation-guide.md                                   |
+| Phase | 成果物               | パス                                       |
+| ----- | -------------------- | ------------------------------------------ |
+| 1     | 要件定義書           | outputs/phase-1/requirements-definition.md |
+| 2     | 型統合設計書         | outputs/phase-2/type-integration-design.md |
+| 3     | 設計レビュー結果     | outputs/phase-3/design-review-result.md    |
+| 4     | テスト仕様書         | outputs/phase-4/test-specification.md      |
+| 5     | 統合済み型定義       | packages/shared/src/types/skill.ts         |
+| 6-7   | カバレッジレポート   | outputs/phase-6/, outputs/phase-7/         |
+| 8     | リファクタリング結果 | outputs/phase-8/refactoring-report.md      |
+| 9     | 品質レポート         | outputs/phase-9/quality-report.md          |
+| 10    | 最終レビュー結果     | outputs/phase-10/final-review-result.md    |
+| 11    | 手動テスト結果       | outputs/phase-11/manual-test-result.md     |
+| 12    | 実装ガイド           | outputs/phase-12/implementation-guide.md   |
 
 ---
 
@@ -412,13 +450,14 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### テスト結果
 
-| カテゴリ       | 件数 | 結果 |
-| -------------- | ---- | ---- |
+| カテゴリ       | 件数 | 結果                           |
+| -------------- | ---- | ------------------------------ |
 | E2Eテスト      | 17   | 定義済み（Playwright環境必要） |
-| ユニットテスト | 100+ | PASS |
-| 統合テスト     | 80+  | PASS |
+| ユニットテスト | 100+ | PASS                           |
+| 統合テスト     | 80+  | PASS                           |
 
 ---
+
 ## [2026-02-03 - 未タスク仕様書への実装課題セクション追加]
 
 - **Agent**: generate-unassigned-task (update)
@@ -528,6 +567,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 - **Notes**: TASK-9B-G「SkillCreatorService実装」Phase 1-12全工程完了。50テスト全PASS。カバレッジ: Line 94.59%、Branch 88.63%、Function 100%。Script First/Progressive Disclosureパターン採用。未タスク5件検出（IPC通信、UI統合、SDK統合等）。
 
 ---
+
 ## [2026-02-02 - 未タスク仕様書3件新規作成（コードベースTODOスキャン）]
 
 - **Agent**: generate-unassigned-task
@@ -3153,6 +3193,7 @@ if (artifactPath) {
 - 完了日時: 2026-02-04
 
 ---
+
 ## 2026-02-04 - better-sqlite3バージョン不一致修正（ENV-INFRA-001）タスク完了
 
 ### コンテキスト
@@ -3183,6 +3224,7 @@ if (artifactPath) {
 - 完了日時: 2026-02-04
 
 ---
+
 ## 2026-02-05 - TASK-FIX-GOOGLE-LOGIN-001 Phase 1-12完了
 
 ### コンテキスト
@@ -3204,22 +3246,22 @@ if (artifactPath) {
 
 ### 変更ファイル
 
-| ファイル                                              | 変更内容                       |
-| ----------------------------------------------------- | ------------------------------ |
+| ファイル                                              | 変更内容                              |
+| ----------------------------------------------------- | ------------------------------------- |
 | `packages/shared/types/auth.ts`                       | AUTH_ERROR_CODES拡張(9コード)、型拡張 |
-| `apps/desktop/src/main/auth/oauth-error-handler.ts`   | 新規作成                       |
-| `apps/desktop/src/main/index.ts`                      | handleAuthCallback修正         |
-| `apps/desktop/src/renderer/store/slices/authSlice.ts` | リスナー管理改善               |
+| `apps/desktop/src/main/auth/oauth-error-handler.ts`   | 新規作成                              |
+| `apps/desktop/src/main/index.ts`                      | handleAuthCallback修正                |
+| `apps/desktop/src/renderer/store/slices/authSlice.ts` | リスナー管理改善                      |
 
 ### テストファイル
 
-| ファイル                                                                      | 内容                     |
-| ----------------------------------------------------------------------------- | ------------------------ |
-| `apps/desktop/src/main/__tests__/auth-callback.test.ts`                       | OAuthエラーハンドリング  |
-| `apps/desktop/src/main/__tests__/auth-callback.edge-cases.test.ts`            | エッジケーステスト       |
-| `apps/desktop/src/main/__tests__/auth-flow.integration.test.ts`               | 統合テスト               |
-| `packages/shared/types/__tests__/auth.test.ts`                                | 型・定数テスト           |
-| `apps/desktop/src/renderer/store/slices/__tests__/authSlice.listener.test.ts` | リスナーテスト           |
+| ファイル                                                                      | 内容                    |
+| ----------------------------------------------------------------------------- | ----------------------- |
+| `apps/desktop/src/main/__tests__/auth-callback.test.ts`                       | OAuthエラーハンドリング |
+| `apps/desktop/src/main/__tests__/auth-callback.edge-cases.test.ts`            | エッジケーステスト      |
+| `apps/desktop/src/main/__tests__/auth-flow.integration.test.ts`               | 統合テスト              |
+| `packages/shared/types/__tests__/auth.test.ts`                                | 型・定数テスト          |
+| `apps/desktop/src/renderer/store/slices/__tests__/authSlice.listener.test.ts` | リスナーテスト          |
 
 ### 結果
 
@@ -3227,6 +3269,7 @@ if (artifactPath) {
 - 完了日時: 2026-02-05
 
 ---
+
 ## 2026-02-06 - DEBT-SEC-001 OAuth State Parameter検証実装 Phase 12完了
 
 ### コンテキスト

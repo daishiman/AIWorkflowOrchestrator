@@ -33,6 +33,19 @@
 - **発見日**: 2026-02-06
 - **関連ファイル**: architecture-implementation-patterns.md
 
+
+### mockReturnValue vs mockReturnValueOnce のテスト間リーク防止パターン
+
+- **状況**: IPCハンドラーのセキュリティテストで特殊な戻り値を設定する必要があった
+- **問題**: `mockReturnValue` で設定したモック戻り値が後続テストに漏れ、テスト間で状態が共有される
+- **解決策**:
+  - `mockReturnValueOnce` で1回限りのモック設定にする
+  - `beforeEach` でモック関数をデフォルト状態にリセット
+- **結果**: テスト間の状態分離が実現し、独立したテスト実行が可能に
+- **適用条件**: 同一モック関数に対して複数の異なる戻り値パターンをテストする場合
+- **発見日**: 2026-02-09（TASK-FIX-17-1-SKILL-SCAN-HANDLER）
+- **関連**: 06-known-pitfalls.md#P23
+
 ---
 
 ## 失敗パターン（苦戦パターン）
