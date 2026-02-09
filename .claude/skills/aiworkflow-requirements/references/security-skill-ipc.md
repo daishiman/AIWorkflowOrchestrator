@@ -7,15 +7,9 @@
 
 ---
 
-## 変更履歴
+## 概要
 
-| バージョン | 日付       | 変更内容                                     |
-| ---------- | ---------- | -------------------------------------------- |
-| v1.0.0     | 2026-01-25 | 初版作成                                     |
-| v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
-| v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
-| v1.3.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
-| v1.4.0     | 2026-02-04 | TASK-FIX-4-1-IPC-CONSOLIDATION完了（旧チャンネル削除、42テスト） |
+本ドキュメントでは、スキル実行機能に関連するIPC通信のセキュリティ対策を定義する。パストラバーサル防止、コマンドインジェクション防止、ホワイトリストベースのチャンネル検証など、多層防御によりRenderer-Main間の通信を保護する。
 
 ---
 
@@ -72,7 +66,9 @@
 
 **実装場所**: `apps/desktop/src/preload/channels.ts`
 
-スキルインポート機能用のIPCチャネル定義（8チャネル）:
+> **Note**: 本セクションはTASK-4-1時点のチャネル定義（8チャネル）を記録。TASK-FIX-5-1でSkillAPI統一後は13チャネルに拡張。最新のチャネル一覧は [interfaces-agent-sdk-skill.md - 統一API 13メソッド一覧](./interfaces-agent-sdk-skill.md#統一api-13メソッド一覧) を参照。
+
+スキルインポート機能用のIPCチャネル定義（TASK-4-1時点: 8チャネル）:
 
 **チャネル定数一覧**:
 
@@ -323,7 +319,18 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 
 | タスク | 完了日 | テスト数 |
 |--------|--------|----------|
+| TASK-FIX-5-1-SKILL-API-UNIFICATION SkillAPI統一 | 2026-02-06 | 138 |
 | TASK-FIX-4-1-IPC-CONSOLIDATION IPCチャンネル統合 | 2026-02-05 | 42 |
+
+### TASK-FIX-5-1-SKILL-API-UNIFICATION safeInvoke/safeOnパターン
+
+**実装場所**: `apps/desktop/src/preload/skill-api.ts`
+
+SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュリティパターンを通じてIPC通信を行う（safeInvoke 9件 + safeOn 4件）。
+
+パターン実装の詳細（チャンネル一覧、検証ステップ、セキュリティ効果）は以下を参照:
+
+> **正本**: [architecture-implementation-patterns.md - SkillAPI統一パターン](./architecture-implementation-patterns.md#skillapi統一パターンtask-fix-5-1-2026-02-06実装)
 
 ### TASK-FIX-4-1-IPC-CONSOLIDATION 実装課題と解決策
 
@@ -367,5 +374,18 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 - [スキル実行セキュリティ定数](./security-skill-execution.md)
 - [APIセキュリティ](./security-api.md)
 - [Electron IPCセキュリティ](./security-electron-ipc.md)
-- [TASK-5-1 実装ガイド](../../../../docs/30-workflows/TASK-5-1/outputs/phase-12/implementation-guide.md)
-- [TASK-8C-A 実装ガイド](../../../../docs/30-workflows/TASK-8C-A/outputs/phase-12/implementation-guide.md)
+- [TASK-FIX-5-1 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md)
+- [TASK-FIX-4-1 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-FIX-4-1-IPC-CONSOLIDATION/outputs/phase-12/implementation-guide.md)
+
+---
+
+## 変更履歴
+
+| バージョン | 日付       | 変更内容                                     |
+| ---------- | ---------- | -------------------------------------------- |
+| v1.0.0     | 2026-01-25 | 初版作成                                     |
+| v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
+| v1.3.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
+| v1.4.0     | 2026-02-04 | TASK-FIX-4-1-IPC-CONSOLIDATION完了（旧チャンネル削除、42テスト） |
+| v1.5.0     | 2026-02-09 | テンプレート準拠（概要追加、変更履歴を末尾に移動） |

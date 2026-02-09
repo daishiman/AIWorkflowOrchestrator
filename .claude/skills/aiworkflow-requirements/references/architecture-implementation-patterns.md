@@ -1021,6 +1021,18 @@ SkillAPIの二重定義（`window.skillAPI` + `window.electronAPI.skill`）を�
 | Permission | onPermissionRequest, sendPermissionResponse | safeOn/safeInvoke | 直接型 |
 | Skill管理 | list, getImported, rescan, import, remove | safeInvoke | 直接型 |
 
+### テスト結果
+
+| カテゴリ | テスト数 | 結果 |
+|----------|----------|------|
+| skill-api.test.ts | 37 | PASS |
+| skill-api.permission.test.ts | 30 | PASS |
+| skillSlice.test.ts | 59 | PASS |
+| SkillExecutor統合テスト | 12 | PASS |
+| **合計** | **138** | **PASS** |
+
+**カバレッジ**: skill-api.ts で Statements 91.23%、Branches 85.71%、Functions 100%、Lines 91.23% を達成（平均91%）。
+
 ### 実装上の課題と対処法
 
 #### 型アサーション残存（S1）

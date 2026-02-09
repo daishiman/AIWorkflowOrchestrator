@@ -18,6 +18,7 @@ export default defineConfig({
     "src/types/replace.ts",
     "src/types/agent.ts",
     "src/types/agent-execution.ts",
+    "src/types/auth-mode.ts",
     "src/types/llm/schemas/index.ts",
     "src/types/rag/index.ts",
     "src/types/rag/result.ts",
