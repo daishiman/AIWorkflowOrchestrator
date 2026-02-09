@@ -6,7 +6,7 @@
 | ------ | ---------------------------------- |
 | Phase  | 8                                  |
 | 機能名 | TASK-FIX-5-1-SKILL-API-UNIFICATION |
-| 作成日 | 2026-02-05                         |
+| 作成日 | 2026-02-08                         |
 
 ## 目的
 
@@ -29,6 +29,10 @@
 
 `preload/skill-api.ts` 内の重複したIPC呼び出しパターンを共通化する。
 
+#### 対象ファイル
+
+- `apps/desktop/src/preload/skill-api.ts`
+
 #### 手順
 
 1. `apps/desktop/src/preload/skill-api.ts` を開く
@@ -37,6 +41,32 @@
    - エラーハンドリングが重複している箇所
 3. 共通パターンをヘルパー関数として抽出する
 4. 各メソッドがヘルパー関数を使用するようにリファクタリングする
+
+#### リファクタリング例
+
+**変更前（重複パターン）:**
+
+```typescript
+async list(): Promise<SkillMetadata[]> {
+  return ipcRenderer.invoke(SKILL_CHANNELS.LIST_AVAILABLE);
+}
+
+async getImported(): Promise<ImportedSkill[]> {
+  return ipcRenderer.invoke(SKILL_CHANNELS.GET_IMPORTED);
+}
+```
+
+**変更後（共通化）:**
+
+```typescript
+private async invokeChannel<T>(channel: string, ...args: unknown[]): Promise<T> {
+  return ipcRenderer.invoke(channel, ...args);
+}
+
+async list(): Promise<SkillMetadata[]> {
+  return this.invokeChannel<SkillMetadata[]>(SKILL_CHANNELS.LIST_AVAILABLE);
+}
+```
 
 #### 確認事項
 
@@ -100,6 +130,41 @@ grep -rn "window\.skillAPI" apps/desktop/src/
 | `renderer/preload/index.ts` のskillAPI定義が削除済み | {{RESULT}} |
 | 未使用のimport文が残存していない                     | {{RESULT}} |
 | コメントアウトされたコードが残存していない           | {{RESULT}} |
+| デバッグ用console.log/console.warnが残存していない   | {{RESULT}} |
+
+### Task 4: 型定義の整理
+
+#### 目的
+
+`@repo/shared` の型定義が統一APIに最適化されていることを確認する。
+
+#### 対象ファイル
+
+- `packages/shared/src/types/skill.ts`
+
+#### 確認事項
+
+| 確認項目                                | 結果       |
+| --------------------------------------- | ---------- |
+| 不要な型定義（旧API用）が削除されている | {{RESULT}} |
+| 新API用の型がエクスポートされている     | {{RESULT}} |
+| 型名が明確で一貫性がある                | {{RESULT}} |
+| JSDocコメントが適切に付与されている     | {{RESULT}} |
+
+### Task 5: コード構造の改善
+
+#### 目的
+
+ファイル構造とモジュール分割を最適化する。
+
+#### 確認事項
+
+| 確認項目                                             | 結果       |
+| ---------------------------------------------------- | ---------- |
+| 1ファイル1責務の原則が守られている                   | {{RESULT}} |
+| 関連するコードが近い場所に配置されている             | {{RESULT}} |
+| 循環依存が発生していない                             | {{RESULT}} |
+| インポートパスが適切である（相対パス vs エイリアス） | {{RESULT}} |
 
 ## TDD検証
 
@@ -153,6 +218,9 @@ pnpm --filter @repo/desktop test:coverage
 - [ ] `OperationResult` 関連の参照が完全に削除されている
 - [ ] `window.skillAPI` の参照が完全に削除されている
 - [ ] `renderer/preload/index.ts` のskillAPI関連デッドコードが削除されている
+- [ ] 未使用のimport文が削除されている
+- [ ] 型定義が最適化されている
+- [ ] コード構造が改善されている
 - [ ] リファクタリング後も全テストがPASS（Green状態維持）
 - [ ] カバレッジがPhase 7の水準を維持している
 - [ ] `pnpm typecheck` がエラーなし

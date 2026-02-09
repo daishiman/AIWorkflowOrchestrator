@@ -44,6 +44,43 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 実装ガイド | `docs/30-workflows/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md` |
 | 備考       | AgentViewの型アサーション（`as unknown as Skill[]`）はTASK-FIX-6-1で解消予定 |
 
+### TASK-FIX-5-1 実装詳細
+
+#### 変更概要
+- **Before**: `window.skillAPI`（直接公開）+ `window.electronAPI.skill`（contextBridge経由）の二重定義
+- **After**: `window.electronAPI.skill` のみに統一
+
+#### 主要変更ファイル
+| ファイル | 変更内容 |
+|----------|----------|
+| `preload/types.ts` | `skillAPI` インターフェース削除、`ElectronAPI.skill` に統合 |
+| `preload/types.d.ts` | グローバル `Window.skillAPI` 宣言削除 |
+| `preload/index.ts` | `contextBridge.exposeInMainWorld("skillAPI", ...)` 削除 |
+
+#### セキュリティパターン
+- `safeInvoke`: 同期的なIPC呼び出し（ホワイトリスト検証付き）
+- `safeOn`: イベントリスナー登録（クリーンアップ関数返却）
+
+#### 品質指標
+- テスト: 138件（自動）+ 17件（手動）全PASS
+- カバレッジ: Line 91.07%, Branch 89.47%, Function 100%
+
+#### 苦戦パターン（06-known-pitfalls.md 参照）
+- P23: API二重定義による型定義の二重管理
+- P24: 呼び出し元コードの参照先分散
+- P25: Store型定義の不統一による型アサーション発生
+- P26: OperationResult廃止の波及範囲調査不足
+- P27: contextIsolation + safeInvoke パターンの実装複雑性
+- P28: 削除タイプのリファクタリングにおける手動確認忘れ
+
+#### 関連リソース
+
+| リソース | 内容 |
+|----------|------|
+| [patterns.md](./patterns.md) | 成功/失敗パターン集（P23-P28詳細） |
+| [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | safeInvoke/safeOnパターン詳細 |
+| [06-known-pitfalls.md](../../../../.claude/rules/06-known-pitfalls.md) | 苦戦パターン正本 |
+
 ---
 
 ### アーキテクチャ
