@@ -1,0 +1,107 @@
+{
+  "taskId": "TASK-FIX-17-1-SKILL-SCAN-HANDLER",
+  "taskName": "skill:scan IPCハンドラーの新規追加",
+  "createdAt": "2026-02-08T23:44:00Z",
+  "branch": "fix/task-fix-17-1-skill-scan-handler",
+  "phases": {
+    "phase-01": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifact": "phase-01-requirements.md"
+    },
+    "phase-02": {
+      "name": "設計",
+      "status": "completed",
+      "artifact": "phase-02-design.md"
+    },
+    "phase-03": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifact": "phase-03-design-review.md",
+      "verdict": "PASS"
+    },
+    "phase-04": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifact": "phase-04-test-creation.md",
+      "completedAt": "2026-02-09T00:30:00Z"
+    },
+    "phase-05": {
+      "name": "実装",
+      "status": "completed",
+      "artifact": "phase-05-implementation.md",
+      "completedAt": "2026-02-09T00:45:00Z"
+    },
+    "phase-06": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifact": "phase-06-test-enhancement.md",
+      "completedAt": "2026-02-09T01:00:00Z"
+    },
+    "phase-07": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifact": "phase-07-coverage-check.md",
+      "completedAt": "2026-02-09T01:15:00Z",
+      "coverage": {
+        "branch": "70.96%",
+        "threshold": "60%",
+        "verdict": "PASS"
+      }
+    },
+    "phase-08": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifact": "phase-08-refactoring.md",
+      "completedAt": "2026-02-09T01:20:00Z"
+    },
+    "phase-09": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifact": "phase-09-quality-assurance.md",
+      "completedAt": "2026-02-09T01:30:00Z"
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifact": "outputs/phase-10/final-review-result.md",
+      "completedAt": "2026-02-09T01:45:00Z",
+      "verdict": "PASS"
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifact": "outputs/phase-11/manual-test-result.md",
+      "completedAt": "2026-02-09T02:00:00Z"
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifact": "outputs/phase-12/",
+      "completedAt": "2026-02-09T02:30:00Z",
+      "outputs": [
+        "implementation-guide.md",
+        "documentation-update-log.md",
+        "unassigned-task-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "pending",
+      "artifact": "phase-13-completion.md"
+    }
+  },
+  "relatedTasks": [
+    {
+      "taskId": "TASK-FIX-5-1-SKILL-API-UNIFICATION",
+      "relation": "blocked-by",
+      "description": "Preload APIのスタブ解消"
+    },
+    {
+      "taskId": "TASK-FIX-1-1-TYPE-ALIGNMENT",
+      "relation": "depends-on",
+      "status": "completed",
+      "description": "型定義統一"
+    }
+  ]
+}
