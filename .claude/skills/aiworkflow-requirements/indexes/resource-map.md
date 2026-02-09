@@ -243,14 +243,15 @@
 
 ### 11. ガイドライン
 
-| ファイル                     | 読み込み条件                               | 主要コンテンツ                 |
-| ---------------------------- | ------------------------------------------ | ------------------------------ |
-| spec-guidelines.md           | 仕様書作成、命名規則確認時                 | 命名規則、記述形式             |
-| spec-splitting-guidelines.md | 大規模ファイル分割時                       | 分割基準、カテゴリ別パターン   |
-| development-guidelines.md    | 開発ガイドライン確認、命名規則、デバッグ時 | ロギング、キャッシング、i18n   |
-| task-workflow.md             | タスクワークフロー確認時（インデックス）   | 概要、フェーズ構造             |
-| task-workflow-phases.md      | Phase詳細確認時                            | フェーズ構造、出力テンプレート |
-| task-workflow-rules.md       | 品質ゲート、分解ルール確認時               | 品質ゲート、タスク分解         |
+| ファイル                     | 読み込み条件                               | 主要コンテンツ                              |
+| ---------------------------- | ------------------------------------------ | ------------------------------------------- |
+| spec-guidelines.md           | 仕様書作成、命名規則確認時                 | 命名規則、記述形式                          |
+| spec-splitting-guidelines.md | 大規模ファイル分割時                       | 分割基準、カテゴリ別パターン                |
+| development-guidelines.md    | 開発ガイドライン確認、命名規則、デバッグ時 | ロギング、キャッシング、i18n                |
+| task-workflow.md             | タスクワークフロー確認時（インデックス）   | 概要、フェーズ構造                          |
+| task-workflow-phases.md      | Phase詳細確認時                            | フェーズ構造、出力テンプレート              |
+| task-workflow-rules.md       | 品質ゲート、分解ルール確認時               | 品質ゲート、タスク分解                      |
+| patterns.md                  | 実装パターン集（成功/失敗）                | 成功パターン、失敗パターン（P23-P28）、ガイドライン |
 
 ---
 
@@ -297,6 +298,32 @@
 | keywords.json      | キーワード検索用インデックス       |
 | spec-guidelines.md | 仕様書作成ガイドライン             |
 | SKILL.md           | スキルエントリポイント             |
+
+---
+
+## タスク別リソースマップ
+
+### TASK-FIX-5-1: SkillAPI統一
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| patterns.md | 成功/失敗パターン集 | パターン適用・学習時 |
+| architecture-implementation-patterns.md | safeInvoke/safeOnパターン詳細 | 実装時 |
+| interfaces-agent-sdk-skill.md | API型定義・実装ノート | 型定義確認時 |
+| 06-known-pitfalls.md | 苦戦パターン正本（P23-P28） | 問題解決時 |
+
+### 検索クエリ例
+
+```bash
+# SkillAPI統一に関する全パターン
+node scripts/search-spec.js "SkillAPI" -C 5
+
+# 苦戦パターンの学習
+node scripts/search-spec.js "苦戦パターン"
+
+# safeInvokeパターン
+node scripts/search-spec.js "safeInvoke"
+```
 
 ---
 

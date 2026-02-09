@@ -6,7 +6,7 @@
 | ------ | ---------------------------------- |
 | Phase  | 12                                 |
 | 機能名 | TASK-FIX-5-1-SKILL-API-UNIFICATION |
-| 作成日 | 2026-02-05                         |
+| 作成日 | 2026-02-08                         |
 
 ## 目的
 
@@ -59,6 +59,8 @@
 - [ ] 変更履歴セクションにバージョンを追記
 - [ ] `aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加
 - [ ] `task-specification-creator/LOGS.md` にタスク完了記録を追加
+- [ ] `aiworkflow-requirements/SKILL.md` 変更履歴更新
+- [ ] `task-specification-creator/SKILL.md` 変更履歴更新
 - [ ] `topic-map.md` に新規セクションエントリを追加（該当する場合）
 
 ```markdown
@@ -70,7 +72,7 @@
 | ---------- | ------------------------- |
 | タスクID   | TASK-FIX-5-1              |
 | ステータス | **完了**                  |
-| テスト数   | {{N}}（自動）+ 15（手動） |
+| テスト数   | {{N}}（自動）+ 17（手動） |
 | 主要変更   | SkillAPI二重定義の統一    |
 ```
 
@@ -85,12 +87,14 @@
 
 #### Step 1-D: LOGS.md×2ファイル更新【必須】
 
-> **⚠️ 後回しにすると漏れる。Step 1-Aと同時に更新すること**
+> **P1: LOGS.md 2ファイル更新漏れ防止**: 後回しにすると漏れる。Step 1-Aと同時に更新すること
 
 - [ ] `aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加
 - [ ] `task-specification-creator/LOGS.md` にタスク完了記録を追加
 
 #### Step 1-E: topic-map.md再生成【新規セクション追加時は必須】
+
+> **P2: topic-map.md 再生成忘れ防止**: 仕様書更新後は必ず再生成すること
 
 - [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` 実行
 - [ ] 行番号が正しく反映されたことを確認
@@ -102,7 +106,7 @@
 | 変更内容                     | 更新対象仕様書                            |
 | ---------------------------- | ----------------------------------------- |
 | SkillAPIインターフェース統一 | `interfaces-agent-sdk-skill.md`           |
-| `window.skillAPI` 公開廃止   | `security-api-electron.md`                |
+| `window.skillAPI` 公開廃止   | `security-skill-ipc.md`                   |
 | Preload公開API面の変更       | `architecture-implementation-patterns.md` |
 
 更新原則: 概要のみ記載、Single Source of Truth遵守
@@ -111,21 +115,29 @@
 
 ```bash
 # Step 1: ドキュメント更新履歴生成
-node scripts/generate-documentation-changelog.js --workflow docs/30-workflows/skill-import-agent-system/tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION
+node scripts/generate-documentation-changelog.js --workflow docs/30-workflows/TASK-FIX-5-1-SKILL-API-UNIFICATION
 
 # Step 2: Phase 12完了登録
 node scripts/complete-phase.js \
-  --workflow docs/30-workflows/skill-import-agent-system/tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION \
+  --workflow docs/30-workflows/TASK-FIX-5-1-SKILL-API-UNIFICATION \
   --phase 12 \
   --artifacts "outputs/phase-12/implementation-guide.md:実装ガイド,outputs/phase-12/documentation-changelog.md:ドキュメント更新履歴,outputs/phase-12/unassigned-task-detection.md:未タスク検出レポート"
 ```
 
+**artifacts.json必須項目**:
+
+- Phase 12のステータスが`completed`に更新されていること
+- 全Phase（1-12）の成果物パスが登録されていること
+- `qualityMetrics`セクションに品質指標が記録されていること
+
 **スクリプト未存在時の代替手順**:
 
 - 手動で `outputs/phase-12/documentation-changelog.md` を作成
-- 手動で `artifacts.json` を作成
+- 手動で `artifacts.json` を作成（completed-tasks内の例を参照）
 
 ### Task 4: 未タスク検出【必須】
+
+> **P3: 未タスク管理の3ステップ不完全防止**: 指示書作成 → 残課題テーブル → 関連仕様書リンク の全ステップを実行
 
 | #   | ソース                 | 確認項目                           |
 | --- | ---------------------- | ---------------------------------- |
@@ -139,7 +151,9 @@ node scripts/complete-phase.js \
 
 - Main ProcessのIPCハンドラの変更 → 未タスク候補
 - 新機能の追加 → 対象外
-- 状態管理の変更 → TASK-FIX-6-1で実施予定
+- 状態管理の変更 → 別タスクで実施予定
+
+#### 未タスク検出手順
 
 ```bash
 # 未タスク検出スクリプト
@@ -148,46 +162,95 @@ node scripts/detect-unassigned-tasks.js --scan apps/desktop/src/preload --output
 
 **0件でも `outputs/phase-12/unassigned-task-detection.md` を出力すること**
 
+#### 検出時の3ステップ処理
+
+1. `docs/30-workflows/unassigned-task/` に未タスク指示書を作成
+2. `task-workflow.md` 残課題テーブルに登録
+3. 関連仕様書に参照リンク追加
+
 ## アーキテクチャ層別ドキュメント
 
 | 層               | ドキュメント内容                               | 更新対象                        |
 | ---------------- | ---------------------------------------------- | ------------------------------- |
-| Preload          | 統一skillAPI公開メソッド一覧、セキュリティ考慮 | `security-api-electron.md`      |
+| Preload          | 統一skillAPI公開メソッド一覧、セキュリティ考慮 | `security-skill-ipc.md`         |
 | Renderer Process | 呼び出しパス統一（`window.electronAPI.skill`） | `interfaces-agent-sdk-skill.md` |
 | IPC通信          | チャンネル定義との対応関係                     | `api-endpoints.md`              |
+
+## 統合テスト連携【必須】
+
+| 確認項目                         | 判定基準                                             |
+| -------------------------------- | ---------------------------------------------------- |
+| 実装ガイドとシステム仕様の整合性 | interfaces-agent-sdk-skill.mdとの一致確認            |
+| システム仕様更新の完全性         | Step 1-A〜E + Step 2の全Step完了確認                 |
+| 未タスク検出結果の記録           | 0件でもレポート出力確認                              |
+| LOGS.md×2ファイル更新            | aiworkflow-requirements + task-specification-creator |
+| SKILL.md×2ファイル更新           | aiworkflow-requirements + task-specification-creator |
 
 ## 成果物
 
 | 成果物               | パス                                            | 必須 | 説明                      |
 | -------------------- | ----------------------------------------------- | ---- | ------------------------- |
-| 実装ガイド           | `outputs/phase-12/implementation-guide.md`      | ✅   | 概念的+技術的ドキュメント |
-| ドキュメント更新履歴 | `outputs/phase-12/documentation-changelog.md`   | ✅   | 更新履歴                  |
-| 未タスク検出レポート | `outputs/phase-12/unassigned-task-detection.md` | ✅   | 検出結果（なしでも出力）  |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`      | Y    | 概念的+技術的ドキュメント |
+| ドキュメント更新履歴 | `outputs/phase-12/documentation-changelog.md`   | Y    | 更新履歴                  |
+| 未タスク検出レポート | `outputs/phase-12/unassigned-task-detection.md` | Y    | 検出結果（なしでも出力）  |
 | 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`        | 条件 | 検出時のみ作成            |
 
 ## 完了条件
 
-- [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
+### Task 1: 実装ガイド
+
+- [ ] 実装ガイド（Part 1: 概念的説明 - 中学生レベル、日常の例え話必須）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
-- [ ] **【Task 2 Step 1-A】`interfaces-agent-sdk-skill.md` に「完了タスク」セクションを追加した**
-- [ ] **【Task 2 Step 1-A】関連ドキュメントセクションに実装ガイドリンクを追加した**
-- [ ] **【Task 2 Step 1-A】変更履歴セクションにバージョンを追記した**
-- [ ] **【Task 2 Step 1-A】`aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加した**
-- [ ] **【Task 2 Step 1-A】`task-specification-creator/LOGS.md` にタスク完了記録を追加した**
-- [ ] **【Task 2 Step 1-A】`topic-map.md` に新規セクションエントリを追加した（該当する場合）**
-- [ ] **【Task 2 Step 1-B】`api-endpoints.md` の実装状況テーブルを更新した**
-- [ ] **【Task 2 Step 1-B】`interfaces-agent-sdk-skill.md` のSkillAPI型定義を更新した**
-- [ ] **【Task 2 Step 1-C】関連タスクテーブルのステータスを「完了」に更新した**
-- [ ] **【Task 2 Step 2】`interfaces-agent-sdk-skill.md` のSkillAPIインターフェース統一を反映した**
-- [ ] **【Task 2 Step 2】`security-api-electron.md` の`window.skillAPI`廃止を反映した**
-- [ ] **【Task 2 Step 2】`architecture-implementation-patterns.md` のPreload公開API変更を反映した**
-- [ ] **アーキテクチャ層別のドキュメントが作成されている（Preload/Renderer/IPC層）**
-- [ ] **未タスク検出レポートが出力されている**【必須】
+
+### Task 2 Step 1-A: タスク完了記録
+
+- [ ] `interfaces-agent-sdk-skill.md` に「完了タスク」セクションを追加した
+- [ ] 関連ドキュメントセクションに実装ガイドリンクを追加した
+- [ ] 変更履歴セクションにバージョンを追記した
+- [ ] `aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加した
+- [ ] `task-specification-creator/LOGS.md` にタスク完了記録を追加した
+- [ ] `aiworkflow-requirements/SKILL.md` 変更履歴を更新した
+- [ ] `task-specification-creator/SKILL.md` 変更履歴を更新した
+- [ ] `topic-map.md` に新規セクションエントリを追加した（該当する場合）
+
+### Task 2 Step 1-B: 実装状況テーブル
+
+- [ ] `api-endpoints.md` の実装状況テーブルを更新した
+- [ ] `interfaces-agent-sdk-skill.md` のSkillAPI型定義を更新した
+
+### Task 2 Step 1-C: 関連タスクテーブル
+
+- [ ] 関連タスクテーブルのステータスを「完了」に更新した
+
+### Task 2 Step 1-D: LOGS.md×2
+
+- [ ] `aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加した【必須】
+- [ ] `task-specification-creator/LOGS.md` にタスク完了記録を追加した【必須】
+
+### Task 2 Step 1-E: topic-map.md再生成
+
+- [ ] `topic-map.md` が再生成されている（新規セクション追加時）
+
+### Task 2 Step 2: システム仕様更新
+
+- [ ] `interfaces-agent-sdk-skill.md` のSkillAPIインターフェース統一を反映した
+- [ ] `security-skill-ipc.md` の`window.skillAPI`廃止を反映した
+- [ ] `architecture-implementation-patterns.md` のPreload公開API変更を反映した
+
+### Task 3: artifacts.json更新
+
+- [ ] documentation-changelog.md が出力されている
+- [ ] artifacts.json が更新されている
+
+### Task 4: 未タスク検出
+
+- [ ] **未タスク検出レポートが出力されている**【0件でも必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
-- [ ] **【Task 2 Step 1-D】`aiworkflow-requirements/LOGS.md` にタスク完了エントリを追加した**
-- [ ] **【Task 2 Step 1-D】`task-specification-creator/LOGS.md` にタスク完了記録を追加した**
-- [ ] **【Task 2 Step 1-E】`topic-map.md` が再生成されている（新規セクション追加時）**
-- [ ] artifacts.jsonが更新されている
+- [ ] 検出された未タスクが残課題テーブルに登録されている（該当する場合）
+- [ ] 関連仕様書に参照リンクが追加されている（該当する場合）
+
+### 最終確認
+
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## フォールバック手順

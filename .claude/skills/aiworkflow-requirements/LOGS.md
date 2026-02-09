@@ -5,34 +5,124 @@
 
 ---
 
-## 2026-02-08: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）
+## 2026-02-09: TASK-FIX-5-1-SKILL-API-UNIFICATION完了（SkillAPI二重定義の統一）
 
 | 項目         | 内容                                                                                                              |
 | ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| タスクID     | TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE                                                                             |
+| タスクID     | TASK-FIX-5-1-SKILL-API-UNIFICATION                                                                                |
 | Agent        | aiworkflow-requirements                                                                                           |
-| 操作         | Phase 1-12 完了（システム仕様書4ファイル更新）                                                                    |
-| 対象ファイル | security-principles.md, api-ipc-system.md, api-endpoints.md, interfaces-agent-sdk-executor.md                     |
+| 操作         | Phase 1-12 完了（SkillAPI二重定義の統一）                                                                         |
+| 対象ファイル | apps/desktop/src/preload/types.ts, apps/desktop/src/preload/types.d.ts, interfaces-agent-sdk-skill.md, security-skill-ipc.md |
 | 結果         | success                                                                                                           |
-| 備考         | AuthKeyService実装（暗号化保存・復号・検証）、IPC 4チャンネル、SkillExecutor統合。119テスト全PASS                 |
+| 備考         | window.skillAPI 廃止 → window.electronAPI.skill 一本化。138テスト全PASS、カバレッジ Line 91.07%                   |
+
+### 問題
+
+`window.skillAPI` と `window.electronAPI.skill` の二重定義により、メンテナンス性と一貫性の問題が発生。どちらのAPIを使用すべきか不明確で、将来の機能追加時にも二重修正が必要になるリスクがあった。
+
+### 解決策
+
+| 対策                             | 実装内容                                                                       |
+| -------------------------------- | ------------------------------------------------------------------------------ |
+| 1. window.skillAPI 廃止          | types.d.ts から Window.skillAPI 型定義を削除                                   |
+| 2. window.electronAPI.skill 一本化 | types.ts の SkillAPI インターフェースを統一                                   |
+| 3. 仕様書更新                    | interfaces-agent-sdk-skill.md, security-skill-ipc.md の API 参照を統一         |
+| 4. テスト追加                    | skill-api.unification.test.ts（15テスト）, skill-api.permission.test.ts（8テスト追加） |
+
+### 成果
+
+| 指標              | 値      |
+| ----------------- | ------- |
+| 総テスト数        | 138     |
+| Line Coverage     | 91.07%  |
+| Branch Coverage   | 80.55%  |
+| Function Coverage | 85.71%  |
+
+### 変更ファイル
+
+| ファイル                                            | 変更種別 | 内容                                          |
+| --------------------------------------------------- | -------- | --------------------------------------------- |
+| apps/desktop/src/preload/types.ts                   | 修正     | SkillAPI定義を統一                            |
+| apps/desktop/src/preload/types.d.ts                 | 修正     | Window.skillAPI を廃止                        |
+| interfaces-agent-sdk-skill.md                       | 更新     | API参照をwindow.electronAPI.skillに統一       |
+| security-skill-ipc.md                               | 更新     | セキュリティ仕様のAPI参照を統一               |
+
+---
+
+## 2026-02-08: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）
+
+## 2026-02-09: TASK-FIX-17-1-SKILL-SCAN-HANDLER完了（skill:scan IPCハンドラー新規追加）
+
+| 項目         | 内容                                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-17-1-SKILL-SCAN-HANDLER                                                                           |
+| Agent        | aiworkflow-requirements                                                                                    |
+| 操作         | Phase 1-13 完了（システム仕様書更新 + パターン追加）                                                       |
+| 対象ファイル | interfaces-agent-sdk-skill.md, patterns.md, 06-known-pitfalls.md                                           |
+| 結果         | success                                                                                                    |
+| 備考         | skill:scan IPCハンドラー実装。12テスト追加、Branch Coverage 70.96%。P23（mockReturnValueOnceパターン）記録 |
 
 ### 成果物
 
-| カテゴリ        | 内容                                                      |
-| --------------- | --------------------------------------------------------- |
-| AuthKeyService  | Anthropic APIキーの暗号化保存・復号・検証                  |
-| IPCハンドラー   | auth-key:set, auth-key:exists, auth-key:validate, auth-key:delete |
-| SkillExecutor統合 | query()呼び出し時にapiKeyオプションを渡す                |
-| Preload API     | authKey API の追加                                        |
+| カテゴリ      | 内容                                                             |
+| ------------- | ---------------------------------------------------------------- |
+| IPCハンドラー | SKILL_SCAN（強制リフレッシュ付きスキルスキャン）                 |
+| テスト        | 基本5 + 拡張5 + セキュリティ2 = 12テストケース                   |
+| 苦戦箇所記録  | P23: mockReturnValue vs mockReturnValueOnce のテスト間リーク防止 |
 
 ### 更新詳細
 
-| ファイル                          | 追加内容                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------ |
-| security-principles.md            | SDK認証キー管理セクション追加（暗号化保存要件）                           |
-| api-ipc-system.md                 | auth-key IPCチャンネル仕様追加（4チャンネル定義）                         |
-| api-endpoints.md                  | SDK認証キーカテゴリ追加                                                  |
-| interfaces-agent-sdk-executor.md  | AUTHENTICATION_ERROR追加、AuthKeyService統合                             |
+| ファイル                      | 追加内容                                      | バージョン |
+| ----------------------------- | --------------------------------------------- | ---------- |
+| interfaces-agent-sdk-skill.md | skill:scan チャンネル仕様、完了タスク記録     | v1.13.0    |
+| patterns.md                   | mockReturnValueOnceテスト間リーク防止パターン | v8.46.0    |
+| 06-known-pitfalls.md          | P23（mockReturnValue vs mockReturnValueOnce） | -          |
+
+### テスト結果
+
+| 指標              | 値     |
+| ----------------- | ------ |
+| 新規テスト数      | 12     |
+| Branch Coverage   | 70.96% |
+| Function Coverage | 100%   |
+
+### 未タスク検出
+
+| 項目             | 件数                                      |
+| ---------------- | ----------------------------------------- |
+| 新規検出         | 0件                                       |
+| 既知の関連タスク | 1件（TASK-FIX-5-1-SKILL-API-UNIFICATION） |
+
+---
+
+## 2026-02-08: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE                                                             |
+| Agent        | aiworkflow-requirements                                                                           |
+| 操作         | Phase 1-12 完了（システム仕様書4ファイル更新）                                                    |
+| 対象ファイル | security-principles.md, api-ipc-system.md, api-endpoints.md, interfaces-agent-sdk-executor.md     |
+| 結果         | success                                                                                           |
+| 備考         | AuthKeyService実装（暗号化保存・復号・検証）、IPC 4チャンネル、SkillExecutor統合。119テスト全PASS |
+
+### 成果物
+
+| カテゴリ          | 内容                                                              |
+| ----------------- | ----------------------------------------------------------------- |
+| AuthKeyService    | Anthropic APIキーの暗号化保存・復号・検証                         |
+| IPCハンドラー     | auth-key:set, auth-key:exists, auth-key:validate, auth-key:delete |
+| SkillExecutor統合 | query()呼び出し時にapiKeyオプションを渡す                         |
+| Preload API       | authKey API の追加                                                |
+
+### 更新詳細
+
+| ファイル                         | 追加内容                                          |
+| -------------------------------- | ------------------------------------------------- |
+| security-principles.md           | SDK認証キー管理セクション追加（暗号化保存要件）   |
+| api-ipc-system.md                | auth-key IPCチャンネル仕様追加（4チャンネル定義） |
+| api-endpoints.md                 | SDK認証キーカテゴリ追加                           |
+| interfaces-agent-sdk-executor.md | AUTHENTICATION_ERROR追加、AuthKeyService統合      |
 
 ### テスト結果
 
@@ -47,14 +137,14 @@
 
 ## 2026-02-08: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了（スキル永続化バグ修正）
 
-| 項目         | 内容                                                                                |
-| ------------ | ----------------------------------------------------------------------------------- |
-| タスクID     | TASK-FIX-4-2-SKILL-STORE-PERSISTENCE                                                |
-| Agent        | aiworkflow-requirements                                                             |
-| 操作         | Phase 12 ドキュメント更新完了                                                       |
-| 対象ファイル | implementation-guide.md, documentation-changelog.md, unassigned-task-detection.md   |
-| 結果         | success                                                                             |
-| 備考         | 型バリデーション追加によるスキル永続化バグ修正完了。87テスト全PASS、カバレッジ91%+  |
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-4-2-SKILL-STORE-PERSISTENCE                                               |
+| Agent        | aiworkflow-requirements                                                            |
+| 操作         | Phase 12 ドキュメント更新完了                                                      |
+| 対象ファイル | implementation-guide.md, documentation-changelog.md, unassigned-task-detection.md  |
+| 結果         | success                                                                            |
+| 備考         | 型バリデーション追加によるスキル永続化バグ修正完了。87テスト全PASS、カバレッジ91%+ |
 
 ### 問題
 
@@ -66,97 +156,96 @@
 
 ### 解決策
 
-| 対策                               | 実装内容                                                            |
-| ---------------------------------- | ------------------------------------------------------------------- |
-| 1. 型バリデーション関数追加        | `validateStoredSkillIds(value: unknown): string[]` 新規作成         |
-| 2. 戻り値型変更                    | `SkillStore.get()` 戻り値を `unknown` に変更                        |
-| 3. フィルタリング                  | `Array.isArray()` + `.filter()` で不正要素を除外                    |
-| 4. ログ制御                        | `this.debug` フラグで開発時のみログ出力                             |
+| 対策                        | 実装内容                                                    |
+| --------------------------- | ----------------------------------------------------------- |
+| 1. 型バリデーション関数追加 | `validateStoredSkillIds(value: unknown): string[]` 新規作成 |
+| 2. 戻り値型変更             | `SkillStore.get()` 戻り値を `unknown` に変更                |
+| 3. フィルタリング           | `Array.isArray()` + `.filter()` で不正要素を除外            |
+| 4. ログ制御                 | `this.debug` フラグで開発時のみログ出力                     |
 
 ### 苦戦した箇所
 
-| 苦戦ポイント                       | 解決方法                                                            |
-| ---------------------------------- | ------------------------------------------------------------------- |
-| 型アサーション（as）が実行時検証をバイパス | `unknown` 型で受けて明示的バリデーション関数を経由する設計に変更   |
-| テスト中のログ出力がテスト結果を汚染       | `debug` フラグを導入し、テスト時は `false` に設定                 |
-| vi.doMockでのモジュール再読み込み複雑さ   | 動的import + resetModules パターンを確立                          |
+| 苦戦ポイント                               | 解決方法                                                         |
+| ------------------------------------------ | ---------------------------------------------------------------- |
+| 型アサーション（as）が実行時検証をバイパス | `unknown` 型で受けて明示的バリデーション関数を経由する設計に変更 |
+| テスト中のログ出力がテスト結果を汚染       | `debug` フラグを導入し、テスト時は `false` に設定                |
+| vi.doMockでのモジュール再読み込み複雑さ    | 動的import + resetModules パターンを確立                         |
 
 ### 成果
 
-| 指標         | 結果                                                                |
-| ------------ | ------------------------------------------------------------------- |
-| テスト       | 87件（全PASS）                                                      |
-| カバレッジ   | Statement 91.52%, Branch 91.17%, Function 100%                      |
-| 新規パターン | 成功1件（vi.doMock動的再読み込み）+ 失敗2件（P19/P20）              |
-| 未タスク     | 0件                                                                 |
+| 指標         | 結果                                                   |
+| ------------ | ------------------------------------------------------ |
+| テスト       | 87件（全PASS）                                         |
+| カバレッジ   | Statement 91.52%, Branch 91.17%, Function 100%         |
+| 新規パターン | 成功1件（vi.doMock動的再読み込み）+ 失敗2件（P19/P20） |
+| 未タスク     | 0件                                                    |
 
 ### 変更ファイル
 
-| ファイル                                            | 変更種別 | 内容                                          |
-| --------------------------------------------------- | -------- | --------------------------------------------- |
-| apps/desktop/src/main/services/skill/SkillImportManager.ts | 修正     | validateStoredSkillIds追加、debug フラグ追加  |
-| apps/desktop/src/main/ipc/skillHandlers.ts          | 修正     | DEBUGログ削除                                 |
-| apps/desktop/src/main/services/skill/SkillService.ts | 修正     | DEBUGログ削除                                 |
+| ファイル                                                   | 変更種別 | 内容                                         |
+| ---------------------------------------------------------- | -------- | -------------------------------------------- |
+| apps/desktop/src/main/services/skill/SkillImportManager.ts | 修正     | validateStoredSkillIds追加、debug フラグ追加 |
+| apps/desktop/src/main/ipc/skillHandlers.ts                 | 修正     | DEBUGログ削除                                |
+| apps/desktop/src/main/services/skill/SkillService.ts       | 修正     | DEBUGログ削除                                |
 
 ### 知見記録先
 
-| 記録先                                   | 追加内容                                                    |
-| ---------------------------------------- | ----------------------------------------------------------- |
-| 06-known-pitfalls.md                     | P19（型アサーション失敗）、P20（ログ出力汚染）              |
-| skill-creator/references/patterns.md     | vi.doMock動的モジュール再読み込みパターン                   |
+| 記録先                               | 追加内容                                       |
+| ------------------------------------ | ---------------------------------------------- |
+| 06-known-pitfalls.md                 | P19（型アサーション失敗）、P20（ログ出力汚染） |
+| skill-creator/references/patterns.md | vi.doMock動的モジュール再読み込みパターン      |
 
 ---
 
-
 ## 2026-02-06: TASK-AUTH-CALLBACK-001 未タスク指示書作成（苦戦箇所からの知見展開）
 
-| 項目         | 内容                                                                                      |
-| ------------ | ----------------------------------------------------------------------------------------- |
-| タスクID     | TASK-AUTH-CALLBACK-001                                                                    |
-| Agent        | aiworkflow-requirements                                                                   |
-| 操作         | 未タスク2件作成 + 関連仕様書更新                                                          |
+| 項目         | 内容                                                                                                                   |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-AUTH-CALLBACK-001                                                                                                 |
+| Agent        | aiworkflow-requirements                                                                                                |
+| 操作         | 未タスク2件作成 + 関連仕様書更新                                                                                       |
 | 対象ファイル | task-protocol-url-parsing-utility.md, task-auth-provider-detection.md, task-workflow.md, architecture-auth-security.md |
-| 結果         | 成功                                                                                      |
-| 備考         | TASK-AUTH-CALLBACK-001実装時の苦戦箇所から2件の未タスクを検出・仕様書化                  |
+| 結果         | 成功                                                                                                                   |
+| 備考         | TASK-AUTH-CALLBACK-001実装時の苦戦箇所から2件の未タスクを検出・仕様書化                                                |
 
 ### 作成した未タスク
 
-| タスクID            | タスク名                                  | 優先度 | 発見元                                      |
-| ------------------- | ----------------------------------------- | ------ | ------------------------------------------- |
-| UT-PROTOCOL-URL-001 | カスタムプロトコルURLパース標準化         | 中     | RFC 3986 authorityコンポーネント問題        |
-| UT-SEC-001          | OAuth プロバイダー自動検出機能            | 低     | DEBT-SEC-001設計乖離（consumeState→validate） |
+| タスクID            | タスク名                          | 優先度 | 発見元                                        |
+| ------------------- | --------------------------------- | ------ | --------------------------------------------- |
+| UT-PROTOCOL-URL-001 | カスタムプロトコルURLパース標準化 | 中     | RFC 3986 authorityコンポーネント問題          |
+| UT-SEC-001          | OAuth プロバイダー自動検出機能    | 低     | DEBT-SEC-001設計乖離（consumeState→validate） |
 
 ### 更新ファイル
 
-| ファイル                       | 追加内容                                                       |
-| ------------------------------ | -------------------------------------------------------------- |
-| task-workflow.md               | 残課題テーブルに2件追加、変更履歴v1.20.0追加                   |
-| architecture-auth-security.md  | 関連タスクテーブルに2件追加                                    |
+| ファイル                      | 追加内容                                     |
+| ----------------------------- | -------------------------------------------- |
+| task-workflow.md              | 残課題テーブルに2件追加、変更履歴v1.20.0追加 |
+| architecture-auth-security.md | 関連タスクテーブルに2件追加                  |
 
 ---
 
 ## 2026-02-06: DEBT-SEC-001 仕様書更新（Phase 12ドキュメント・未タスク管理）
 
-| 項目         | 内容                                                                                                              |
-| ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| タスクID     | DEBT-SEC-001                                                                                                      |
-| Agent        | aiworkflow-requirements                                                                                           |
-| 操作         | Phase 12 仕様書更新（7仕様書更新）                                                                               |
+| 項目         | 内容                                                                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | DEBT-SEC-001                                                                                                                                              |
+| Agent        | aiworkflow-requirements                                                                                                                                   |
+| 操作         | Phase 12 仕様書更新（7仕様書更新）                                                                                                                        |
 | 対象ファイル | security-principles.md, architecture-auth-security.md, api-ipc-auth.md, security-operations.md, task-workflow.md, 17-security-guidelines.md, topic-map.md |
-| 結果         | 成功                                                                                                              |
-| 備考         | 苦戦箇所3点を完了タスクセクションに記録。UT-SEC-001をDEBT-SEC-002に正式統合                                       |
+| 結果         | 成功                                                                                                                                                      |
+| 備考         | 苦戦箇所3点を完了タスクセクションに記録。UT-SEC-001をDEBT-SEC-002に正式統合                                                                               |
 
 ### 更新詳細
 
-| ファイル                       | 追加内容                                                                        |
-| ------------------------------ | ------------------------------------------------------------------------------- |
-| security-principles.md         | DEBT-SEC-001ステータス「実装済み」、CSRF対策完了記録                             |
-| architecture-auth-security.md  | 完了タスクセクション、苦戦箇所3点記録、残課題リンク追加                          |
-| api-ipc-auth.md                | CSRF_VALIDATION_FAILEDエラーコード追記                                          |
-| security-operations.md         | CSRF検証失敗イベントのログ要件追記                                              |
-| task-workflow.md               | UT-SEC-001をDEBT-SEC-002スコープに統合、残課題テーブル更新                       |
-| 17-security-guidelines.md      | 派生ドキュメント同期（正本security-principles.mdの変更を反映）                  |
-| topic-map.md                   | generate-index.js再生成による索引更新                                           |
+| ファイル                      | 追加内容                                                       |
+| ----------------------------- | -------------------------------------------------------------- |
+| security-principles.md        | DEBT-SEC-001ステータス「実装済み」、CSRF対策完了記録           |
+| architecture-auth-security.md | 完了タスクセクション、苦戦箇所3点記録、残課題リンク追加        |
+| api-ipc-auth.md               | CSRF_VALIDATION_FAILEDエラーコード追記                         |
+| security-operations.md        | CSRF検証失敗イベントのログ要件追記                             |
+| task-workflow.md              | UT-SEC-001をDEBT-SEC-002スコープに統合、残課題テーブル更新     |
+| 17-security-guidelines.md     | 派生ドキュメント同期（正本security-principles.mdの変更を反映） |
+| topic-map.md                  | generate-index.js再生成による索引更新                          |
 
 ### 苦戦箇所
 
@@ -168,41 +257,41 @@
 
 ## 2026-02-06: DEBT-SEC-001完了（OAuth State Parameter検証実装）
 
-| 項目         | 内容                                                                                                              |
-| ------------ | ----------------------------------------------------------------------------------------------------------------- |
-| タスクID     | DEBT-SEC-001                                                                                                      |
-| 操作         | Phase 1-12 完了（システム仕様書4ファイル更新）                                                                    |
-| 対象ファイル | security-principles.md, architecture-auth-security.md, api-ipc-auth.md, security-operations.md                   |
-| 結果         | success                                                                                                           |
-| 備考         | RFC 6749 Section 10.12準拠のCSRF対策。StateManager新規作成、21テスト全PASS、カバレッジ100%                        |
+| 項目         | 内容                                                                                           |
+| ------------ | ---------------------------------------------------------------------------------------------- |
+| タスクID     | DEBT-SEC-001                                                                                   |
+| 操作         | Phase 1-12 完了（システム仕様書4ファイル更新）                                                 |
+| 対象ファイル | security-principles.md, architecture-auth-security.md, api-ipc-auth.md, security-operations.md |
+| 結果         | success                                                                                        |
+| 備考         | RFC 6749 Section 10.12準拠のCSRF対策。StateManager新規作成、21テスト全PASS、カバレッジ100%     |
 
 ### 更新詳細
 
-| ファイル                     | 追加内容                                                                  |
-| ---------------------------- | ------------------------------------------------------------------------- |
-| security-principles.md       | DEBT-SEC-001ステータスを「実装済み」に更新、CSRF攻撃対策を「対策済み」に更新 |
+| ファイル                      | 追加内容                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------ |
+| security-principles.md        | DEBT-SEC-001ステータスを「実装済み」に更新、CSRF攻撃対策を「対策済み」に更新         |
 | architecture-auth-security.md | DEBT-SEC-001完了記録、State parameter検証フロー追加、stateManager.ts実装ファイル追記 |
-| api-ipc-auth.md              | CSRF_VALIDATION_FAILEDエラーコード追記                                    |
-| security-operations.md       | CSRF検証失敗イベントのログ要件追記                                        |
+| api-ipc-auth.md               | CSRF_VALIDATION_FAILEDエラーコード追記                                               |
+| security-operations.md        | CSRF検証失敗イベントのログ要件追記                                                   |
 
 ---
 
 ## 2026-02-06: TASK-FIX-5-1完了（SkillAPI二重定義の統一）
 
-| 項目         | 内容                                                                              |
-| ------------ | --------------------------------------------------------------------------------- |
-| タスクID     | TASK-FIX-5-1-SKILL-API-UNIFICATION                                                |
-| 操作         | Phase 1-12 完了（SkillAPI統一、仕様書3ファイル更新）                              |
-| 対象ファイル | interfaces-agent-sdk-skill.md, security-skill-ipc.md                              |
-| 結果         | success                                                                           |
-| 備考         | window.skillAPI廃止→window.electronAPI.skill一本化。テスト210件PASS               |
+| 項目         | 内容                                                                |
+| ------------ | ------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-5-1-SKILL-API-UNIFICATION                                  |
+| 操作         | Phase 1-12 完了（SkillAPI統一、仕様書3ファイル更新）                |
+| 対象ファイル | interfaces-agent-sdk-skill.md, security-skill-ipc.md                |
+| 結果         | success                                                             |
+| 備考         | window.skillAPI廃止→window.electronAPI.skill一本化。テスト210件PASS |
 
 ### 更新詳細
 
-| ファイル                          | 追加内容                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------ |
-| interfaces-agent-sdk-skill.md     | 完了タスクセクション追加、Preloadファイルパス修正                        |
-| security-skill-ipc.md             | contextBridge公開API統一記録（2箇所）                                    |
+| ファイル                      | 追加内容                                          |
+| ----------------------------- | ------------------------------------------------- |
+| interfaces-agent-sdk-skill.md | 完了タスクセクション追加、Preloadファイルパス修正 |
+| security-skill-ipc.md         | contextBridge公開API統一記録（2箇所）             |
 
 ---
 
@@ -218,33 +307,34 @@
 
 ### 更新詳細
 
-| ファイル                    | 内容                                                  |
-| --------------------------- | ----------------------------------------------------- |
-| tokenRefreshScheduler.ts    | 新規作成: setTimeout + 指数バックオフリトライスケジューラー |
-| authHandlers.ts             | スケジューラー統合: startTokenRefreshScheduler等追加   |
-| supabaseClient.ts           | autoRefreshToken: false（SDK競合防止）                 |
-| authSlice.ts                | isRefreshing状態追加                                  |
-| packages/shared/types/auth.ts | sessionExpiresAt追加                                |
+| ファイル                      | 内容                                                        |
+| ----------------------------- | ----------------------------------------------------------- |
+| tokenRefreshScheduler.ts      | 新規作成: setTimeout + 指数バックオフリトライスケジューラー |
+| authHandlers.ts               | スケジューラー統合: startTokenRefreshScheduler等追加        |
+| supabaseClient.ts             | autoRefreshToken: false（SDK競合防止）                      |
+| authSlice.ts                  | isRefreshing状態追加                                        |
+| packages/shared/types/auth.ts | sessionExpiresAt追加                                        |
 
 ---
+
 ## 2026-02-05: ENV-INFRA-001完了（better-sqlite3 Node.jsバージョン不一致修正）
 
-| 項目         | 内容                                                                       |
-| ------------ | -------------------------------------------------------------------------- |
-| タスクID     | ENV-INFRA-001                                                              |
-| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                             |
-| 対象ファイル | technology-devops.md, task-workflow.md                                     |
-| 結果         | success                                                                    |
-| 備考         | pnpm store prune + install --forceで解決。CONTRIBUTING.md新規作成          |
+| 項目         | 内容                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| タスクID     | ENV-INFRA-001                                                     |
+| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                    |
+| 対象ファイル | technology-devops.md, task-workflow.md                            |
+| 結果         | success                                                           |
+| 備考         | pnpm store prune + install --forceで解決。CONTRIBUTING.md新規作成 |
 
 ### 更新詳細
 
-| ファイル            | 追加内容                                                        |
-| ------------------- | --------------------------------------------------------------- |
-| technology-devops.md | 完了タスクテーブル追加（ENV-INFRA-001）、変更履歴v2026-02-04    |
-| task-workflow.md     | UT-ENV-001未タスク追加（CI node-version .nvmrc参照化）、v1.18.0 |
-| patterns.md          | 失敗パターン追加（ネイティブモジュールNODE_MODULE_VERSION不一致）|
-| CONTRIBUTING.md      | 新規作成（開発者向けセットアップ・トラブルシューティング）       |
+| ファイル             | 追加内容                                                          |
+| -------------------- | ----------------------------------------------------------------- |
+| technology-devops.md | 完了タスクテーブル追加（ENV-INFRA-001）、変更履歴v2026-02-04      |
+| task-workflow.md     | UT-ENV-001未タスク追加（CI node-version .nvmrc参照化）、v1.18.0   |
+| patterns.md          | 失敗パターン追加（ネイティブモジュールNODE_MODULE_VERSION不一致） |
+| CONTRIBUTING.md      | 新規作成（開発者向けセットアップ・トラブルシューティング）        |
 
 ### 解決パターン
 
@@ -255,22 +345,23 @@ pnpm install --force
 ```
 
 ---
+
 ## 2026-02-05: TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）
 
-| 項目         | 内容                                                                           |
-| ------------ | ------------------------------------------------------------------------------ |
-| タスクID     | TASK-FIX-4-1-IPC-CONSOLIDATION                                                 |
-| 操作         | Phase 1-12 完了（システム仕様書1ファイル更新）                                 |
-| 対象ファイル | security-skill-ipc.md                                                          |
-| 結果         | success                                                                        |
-| 備考         | 旧チャンネル（SKILL_LIST_AVAILABLE, SKILL_LIST_IMPORTED）削除、42テスト全PASS  |
+| 項目         | 内容                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-4-1-IPC-CONSOLIDATION                                                |
+| 操作         | Phase 1-12 完了（システム仕様書1ファイル更新）                                |
+| 対象ファイル | security-skill-ipc.md                                                         |
+| 結果         | success                                                                       |
+| 備考         | 旧チャンネル（SKILL_LIST_AVAILABLE, SKILL_LIST_IMPORTED）削除、42テスト全PASS |
 
 ### 更新詳細
 
-| ファイル              | 追加内容                                                    |
-| --------------------- | ----------------------------------------------------------- |
-| security-skill-ipc.md | v1.4.0: 旧チャンネル削除記録、Noteセクション追加            |
-| patterns.md           | IPC統合パターン2件追加（ハードコード発見、重複定義整理）     |
+| ファイル              | 追加内容                                                 |
+| --------------------- | -------------------------------------------------------- |
+| security-skill-ipc.md | v1.4.0: 旧チャンネル削除記録、Noteセクション追加         |
+| patterns.md           | IPC統合パターン2件追加（ハードコード発見、重複定義整理） |
 
 ### 苦戦箇所
 
@@ -279,6 +370,7 @@ pnpm install --force
 3. **ホワイトリスト更新**: ALLOWED_INVOKE_CHANNELSから旧チャンネルを漏れなく削除
 
 ---
+
 ## 2026-02-04: AUTH-UI-001完了（認証UIバグ修正）
 
 | 項目         | 内容                                                                                               |
@@ -291,53 +383,53 @@ pnpm install --force
 
 ### 更新詳細
 
-| ファイル                     | 追加内容                                                                |
-| ---------------------------- | ----------------------------------------------------------------------- |
-| error-handling.md            | 認証フォールバックパターン（isUserProfilesTableError）追加、v1.4.0      |
-| architecture-auth-security.md| AUTH-UI-001完了記録追加、技術的負債セクションにUT-AUTH-001追加、v1.2.0  |
-| task-workflow.md             | UT-AUTH-001未タスク追加、正式指示書パス更新、v1.16.0                    |
-| patterns.md                  | AUTH-UI-001パターン4件追加（既実装発見、テスト環境切り分け、Portal、状態更新） |
+| ファイル                      | 追加内容                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| error-handling.md             | 認証フォールバックパターン（isUserProfilesTableError）追加、v1.4.0             |
+| architecture-auth-security.md | AUTH-UI-001完了記録追加、技術的負債セクションにUT-AUTH-001追加、v1.2.0         |
+| task-workflow.md              | UT-AUTH-001未タスク追加、正式指示書パス更新、v1.16.0                           |
+| patterns.md                   | AUTH-UI-001パターン4件追加（既実装発見、テスト環境切り分け、Portal、状態更新） |
 
 ---
 
 ## 2026-02-04: AUTH-UI-004完了（Googleアバター取得修正）
 
-| 項目         | 内容                                                                                |
-| ------------ | ----------------------------------------------------------------------------------- |
-| タスクID     | AUTH-UI-004                                                                         |
-| 操作         | Phase 1-13 完了（システム仕様書1ファイル更新）                                      |
-| 対象ファイル | interfaces-auth.md                                                                  |
-| 結果         | success                                                                             |
-| 備考         | SupabaseIdentity型にpictureプロパティ追加。Google/GitHub/Discordのアバター取得対応  |
+| 項目         | 内容                                                                               |
+| ------------ | ---------------------------------------------------------------------------------- |
+| タスクID     | AUTH-UI-004                                                                        |
+| 操作         | Phase 1-13 完了（システム仕様書1ファイル更新）                                     |
+| 対象ファイル | interfaces-auth.md                                                                 |
+| 結果         | success                                                                            |
+| 備考         | SupabaseIdentity型にpictureプロパティ追加。Google/GitHub/Discordのアバター取得対応 |
 
 ### 更新詳細
 
-| ファイル           | 追加内容                                              |
-| ------------------ | ----------------------------------------------------- |
+| ファイル           | 追加内容                                             |
+| ------------------ | ---------------------------------------------------- |
 | interfaces-auth.md | SupabaseIdentity型定義追加、プロバイダー別キー名説明 |
 
 ---
 
 ## 2026-02-04: TASK-FIX-1-1-TYPE-ALIGNMENT完了（スキル型定義の統一）
 
-| 項目         | 内容                                                                     |
-| ------------ | ------------------------------------------------------------------------ |
-| タスクID     | TASK-FIX-1-1-TYPE-ALIGNMENT                                              |
-| 操作         | Phase 1-12 完了（型統合・リファクタリング）                              |
-| 対象ファイル | skill.ts, skill-execution.ts（削除）, index.ts, package.json, tsup.config.ts |
-| 結果         | success                                                                  |
+| 項目         | 内容                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------ |
+| タスクID     | TASK-FIX-1-1-TYPE-ALIGNMENT                                                          |
+| 操作         | Phase 1-12 完了（型統合・リファクタリング）                                          |
+| 対象ファイル | skill.ts, skill-execution.ts（削除）, index.ts, package.json, tsup.config.ts         |
+| 結果         | success                                                                              |
 | 備考         | 49テスト全PASS。skill-execution.tsの6型+1定数をskill.tsに統合、BaseStreamMessage抽出 |
 
 ### 更新詳細
 
-| ファイル                  | 変更内容                                               |
-| ------------------------- | ------------------------------------------------------ |
-| skill.ts                  | ExecutionState等6型+SKILL_EXECUTION_DEFAULTS追加       |
-| skill-execution.ts        | 削除（型をskill.tsに移行）                             |
-| index.ts                  | skill-executionエクスポート削除                        |
-| package.json              | skill-executionエントリ削除                            |
-| tsup.config.ts            | skill-executionエントリ削除                            |
-| 9ファイル（apps/desktop/）| import文更新（skill-execution→skill）                  |
+| ファイル                   | 変更内容                                         |
+| -------------------------- | ------------------------------------------------ |
+| skill.ts                   | ExecutionState等6型+SKILL_EXECUTION_DEFAULTS追加 |
+| skill-execution.ts         | 削除（型をskill.tsに移行）                       |
+| index.ts                   | skill-executionエクスポート削除                  |
+| package.json               | skill-executionエントリ削除                      |
+| tsup.config.ts             | skill-executionエントリ削除                      |
+| 9ファイル（apps/desktop/） | import文更新（skill-execution→skill）            |
 
 ### テスト結果サマリー
 
@@ -361,20 +453,21 @@ pnpm install --force
 
 ### 更新詳細
 
-| ファイル              | 追加内容                                                    |
-| --------------------- | ----------------------------------------------------------- |
+| ファイル              | 追加内容                                                     |
+| --------------------- | ------------------------------------------------------------ |
 | ui-ux-search-panel.md | 完了タスク記録（task-imp-search-ui-001）、変更履歴v1.1.0追加 |
 
 ### 成果物
 
-| 成果物               | パス                                                                          |
-| -------------------- | ----------------------------------------------------------------------------- |
-| E2Eテスト            | `apps/desktop/e2e/search.spec.ts`                                             |
-| SearchPanelPage      | `apps/desktop/e2e/pages/SearchPanelPage.ts`                                   |
-| WorkspaceSearchPage  | `apps/desktop/e2e/pages/WorkspaceSearchPage.ts`                               |
-| 実装ガイド           | `docs/30-workflows/search-replace-ui/outputs/phase-12/implementation-guide.md` |
+| 成果物              | パス                                                                           |
+| ------------------- | ------------------------------------------------------------------------------ |
+| E2Eテスト           | `apps/desktop/e2e/search.spec.ts`                                              |
+| SearchPanelPage     | `apps/desktop/e2e/pages/SearchPanelPage.ts`                                    |
+| WorkspaceSearchPage | `apps/desktop/e2e/pages/WorkspaceSearchPage.ts`                                |
+| 実装ガイド          | `docs/30-workflows/search-replace-ui/outputs/phase-12/implementation-guide.md` |
 
 ---
+
 ## 2026-02-03: TASK-9C完了（スキル改善・自動修正機能）
 
 | 項目         | 内容                                                                                                  |
@@ -398,40 +491,41 @@ pnpm install --force
 
 ## 2026-02-03: TASK-9B-G Phase 12完了（苦戦箇所・教訓追記）
 
-| 項目         | 内容                                                                                                               |
-| ------------ | ------------------------------------------------------------------------------------------------------------------ |
-| タスクID     | TASK-9B-G                                                                                                          |
-| 操作         | Phase 12 追記（苦戦箇所・教訓セクション追加）                                                                      |
-| 対象ファイル | interfaces-agent-sdk-skill.md                                                                                      |
-| 結果         | success                                                                                                            |
-| 備考         | 未タスク登録漏れ、Script First統合設計、定数外部化タイミング、パストラバーサル防止実装箇所の4教訓を記録             |
+| 項目         | 内容                                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-G                                                                                               |
+| 操作         | Phase 12 追記（苦戦箇所・教訓セクション追加）                                                           |
+| 対象ファイル | interfaces-agent-sdk-skill.md                                                                           |
+| 結果         | success                                                                                                 |
+| 備考         | 未タスク登録漏れ、Script First統合設計、定数外部化タイミング、パストラバーサル防止実装箇所の4教訓を記録 |
 
 ### 更新詳細
 
-| ファイル                       | 追加内容                                                   |
-| ------------------------------ | ---------------------------------------------------------- |
-| interfaces-agent-sdk-skill.md  | 実装上の苦戦箇所・教訓セクション追加、変更履歴v1.10.0更新  |
+| ファイル                      | 追加内容                                                  |
+| ----------------------------- | --------------------------------------------------------- |
+| interfaces-agent-sdk-skill.md | 実装上の苦戦箇所・教訓セクション追加、変更履歴v1.10.0更新 |
 
 ---
 
 ## 2026-02-03: TASK-9B-G完了（SkillCreatorService実装）
 
-| 項目         | 内容                                                                                                               |
-| ------------ | ------------------------------------------------------------------------------------------------------------------ |
-| タスクID     | TASK-9B-G                                                                                                          |
-| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                                                                     |
-| 対象ファイル | interfaces-agent-sdk-skill.md, architecture-implementation-patterns.md                                             |
-| 結果         | success                                                                                                            |
-| 備考         | SkillCreatorService実装。Script First/Progressive Disclosureパターン採用。50テスト、カバレッジ94.59%/88.63%/100%   |
+| 項目         | 内容                                                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-G                                                                                                        |
+| 操作         | Phase 1-12 完了（システム仕様書2ファイル更新）                                                                   |
+| 対象ファイル | interfaces-agent-sdk-skill.md, architecture-implementation-patterns.md                                           |
+| 結果         | success                                                                                                          |
+| 備考         | SkillCreatorService実装。Script First/Progressive Disclosureパターン採用。50テスト、カバレッジ94.59%/88.63%/100% |
 
 ### 更新詳細
 
-| ファイル                              | 追加内容                                                                       |
-| ------------------------------------- | ------------------------------------------------------------------------------ |
-| interfaces-agent-sdk-skill.md         | SkillCreatorServiceセクション、型定義、API仕様、完了タスク記録、変更履歴v1.9.0  |
-| architecture-implementation-patterns.md | Script First/Progressive Disclosure/Facadeパターン追加、変更履歴v1.6.0          |
+| ファイル                                | 追加内容                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| interfaces-agent-sdk-skill.md           | SkillCreatorServiceセクション、型定義、API仕様、完了タスク記録、変更履歴v1.9.0 |
+| architecture-implementation-patterns.md | Script First/Progressive Disclosure/Facadeパターン追加、変更履歴v1.6.0         |
 
 ---
+
 ## 2026-02-02: TASK-WCE-WORKSPACE-001完了（Chat Edit Workspace管理統合）
 
 | 項目         | 内容                                                                                                                          |
@@ -2547,8 +2641,6 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
-
-
 ## [実行日時: 2026-02-06T02:11:35.490Z]
 
 - Task: DEBT-SEC-001 csrf-state-parameter.md新規作成・patterns.md最適化
@@ -2685,53 +2777,53 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### テスト結果サマリー
 
-| カテゴリ            | テスト数 | PASS | FAIL |
-| ------------------- | -------- | ---- | ---- |
-| Skill Metadata Types| 8        | 8    | 0    |
-| Skill Execution Types| 5       | 5    | 0    |
-| Skill Stream Message | 11      | 11   | 0    |
-| Discriminated Union | 6        | 6    | 0    |
-| Permission Types    | 5        | 5    | 0    |
-| 移行型テスト        | 14       | 14   | 0    |
+| カテゴリ              | テスト数 | PASS | FAIL |
+| --------------------- | -------- | ---- | ---- |
+| Skill Metadata Types  | 8        | 8    | 0    |
+| Skill Execution Types | 5        | 5    | 0    |
+| Skill Stream Message  | 11       | 11   | 0    |
+| Discriminated Union   | 6        | 6    | 0    |
+| Permission Types      | 5        | 5    | 0    |
+| 移行型テスト          | 14       | 14   | 0    |
 
 ### 実装内容
 
-| 項目                    | 内容                                                                 |
-| ----------------------- | -------------------------------------------------------------------- |
-| 型統合                  | skill-execution.tsの6型+1定数をskill.tsに統合                        |
-| BaseStreamMessage抽出   | Discriminated Unionの共通プロパティをDRY原則に基づき共通化           |
-| import文更新            | 9ファイルのimport文を`skill-execution`→`skill`に統一                 |
-| パッケージエクスポート削除 | package.json, tsup.config.tsからskill-executionエントリ削除        |
-| ファイル削除            | packages/shared/src/types/skill-execution.ts                         |
+| 項目                       | 内容                                                        |
+| -------------------------- | ----------------------------------------------------------- |
+| 型統合                     | skill-execution.tsの6型+1定数をskill.tsに統合               |
+| BaseStreamMessage抽出      | Discriminated Unionの共通プロパティをDRY原則に基づき共通化  |
+| import文更新               | 9ファイルのimport文を`skill-execution`→`skill`に統一        |
+| パッケージエクスポート削除 | package.json, tsup.config.tsからskill-executionエントリ削除 |
+| ファイル削除               | packages/shared/src/types/skill-execution.ts                |
 
 ### 実装課題と解決策（教訓）
 
-| 課題                     | 解決策                                                                     |
-| ------------------------ | -------------------------------------------------------------------------- |
+| 課題                           | 解決策                                                                      |
+| ------------------------------ | --------------------------------------------------------------------------- |
 | パッケージエクスポート更新漏れ | 削除前チェックリスト: ①ファイル削除→②package.json→③tsup.config.ts→④index.ts |
-| 型カバレッジ寄与なし     | 型テストはコンパイル成功＝テスト成功として扱う                             |
-| Discriminated Union DRY  | BaseStreamMessage抽出＋Intersection Type結合                               |
-| import一括置換リスク     | IDE/Edit toolでの個別置換、sed/awk一括置換禁止                             |
+| 型カバレッジ寄与なし           | 型テストはコンパイル成功＝テスト成功として扱う                              |
+| Discriminated Union DRY        | BaseStreamMessage抽出＋Intersection Type結合                                |
+| import一括置換リスク           | IDE/Edit toolでの個別置換、sed/awk一括置換禁止                              |
 
 ### 成果物
 
-| 成果物               | パス                                                               |
-| -------------------- | ------------------------------------------------------------------ |
-| 実装ガイド           | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md |
+| 成果物               | パス                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| 実装ガイド           | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md      |
 | 未タスク検出レポート | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/unassigned-task-detection.md |
-| ドキュメント更新履歴 | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/documentation-changelog.md |
+| ドキュメント更新履歴 | docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/documentation-changelog.md   |
 
 ---
 
 ## 2026-02-04: AUTH-UI-001完了（認証UI改善）
 
-| 項目         | 内容                                                                               |
-| ------------ | ---------------------------------------------------------------------------------- |
-| タスクID     | AUTH-UI-001                                                                        |
-| 操作         | update-spec                                                                        |
-| 対象ファイル | architecture-auth-security.md                                                      |
-| 結果         | success                                                                            |
-| 備考         | 認証UI改善3件（z-index, フォールバック, 状態更新）実装完了確認・仕様書更新         |
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | AUTH-UI-001                                                                |
+| 操作         | update-spec                                                                |
+| 対象ファイル | architecture-auth-security.md                                              |
+| 結果         | success                                                                    |
+| 備考         | 認証UI改善3件（z-index, フォールバック, 状態更新）実装完了確認・仕様書更新 |
 
 ### 更新詳細
 
@@ -2750,12 +2842,12 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 成果物
 
-| Phase | 成果物                   | パス                                                    |
-| ----- | ------------------------ | ------------------------------------------------------- |
-| 1     | 要件定義・受け入れ基準   | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-1/ |
-| 2     | 設計書・変更計画         | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-2/ |
-| 4     | テスト仕様・統合テスト設計 | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-4/ |
-| 12    | 実装ガイド・未タスク検出 | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-12/ |
+| Phase | 成果物                     | パス                                                                         |
+| ----- | -------------------------- | ---------------------------------------------------------------------------- |
+| 1     | 要件定義・受け入れ基準     | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-1/  |
+| 2     | 設計書・変更計画           | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-2/  |
+| 4     | テスト仕様・統合テスト設計 | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-4/  |
+| 12    | 実装ガイド・未タスク検出   | docs/30-workflows/completed-tasks/auth-ui-improvements-282/outputs/phase-12/ |
 
 ### 未タスク検出
 
@@ -2764,15 +2856,16 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 | UT-AUTH-001 | profileHandlers.test.ts環境修正 | 低     | AUTH-UI-001 |
 
 ---
+
 ## 2026-02-04: ENV-INFRA-001完了（better-sqlite3バージョン不一致修正）
 
-| 項目         | 内容                                                                               |
-| ------------ | ---------------------------------------------------------------------------------- |
-| タスクID     | ENV-INFRA-001                                                                      |
-| 操作         | task-complete                                                                      |
-| 対象ファイル | technology-devops.md                                                               |
-| 結果         | success                                                                            |
-| 備考         | better-sqlite3 NODE_MODULE_VERSION不一致問題の解決・環境管理設定の文書化           |
+| 項目         | 内容                                                                     |
+| ------------ | ------------------------------------------------------------------------ |
+| タスクID     | ENV-INFRA-001                                                            |
+| 操作         | task-complete                                                            |
+| 対象ファイル | technology-devops.md                                                     |
+| 結果         | success                                                                  |
+| 備考         | better-sqlite3 NODE_MODULE_VERSION不一致問題の解決・環境管理設定の文書化 |
 
 ### 更新詳細
 
@@ -2788,52 +2881,53 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ### 成果物
 
-| Phase | 成果物               | パス                                                                     |
-| ----- | -------------------- | ------------------------------------------------------------------------ |
-| 1     | 診断レポート・要件   | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-1/ |
-| 5     | 実装結果             | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-5/ |
-| 12    | 実装ガイド           | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-12/ |
+| Phase | 成果物             | パス                                                                         |
+| ----- | ------------------ | ---------------------------------------------------------------------------- |
+| 1     | 診断レポート・要件 | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-1/  |
+| 5     | 実装結果           | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-5/  |
+| 12    | 実装ガイド         | docs/30-workflows/ENV-INFRA-001-better-sqlite3-version-fix/outputs/phase-12/ |
 
 ### 未タスク検出
 
 該当なし - 既存のNode.jsバージョン管理設定は適切に機能していた
 
 ---
+
 ## 2026-02-05: TASK-FIX-GOOGLE-LOGIN-001完了（Googleログイン修正）
 
-| 項目         | 内容                                                                               |
-| ------------ | ---------------------------------------------------------------------------------- |
-| タスクID     | TASK-FIX-GOOGLE-LOGIN-001                                                          |
-| 操作         | update-spec                                                                        |
+| 項目         | 内容                                                                                  |
+| ------------ | ------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-GOOGLE-LOGIN-001                                                             |
+| 操作         | update-spec                                                                           |
 | 対象ファイル | interfaces-auth.md, architecture-auth-security.md, api-ipc-auth.md, error-handling.md |
-| 結果         | success                                                                            |
-| 備考         | Googleログイン修正実装完了・仕様書4ファイル更新                                    |
+| 結果         | success                                                                               |
+| 備考         | Googleログイン修正実装完了・仕様書4ファイル更新                                       |
 
 ### 更新詳細
 
-| ファイル                     | 更新内容                                                           |
-| ---------------------------- | ------------------------------------------------------------------ |
-| `interfaces-auth.md`         | AUTH_ERROR_CODES拡張(9コード)、AuthSession/AuthState型拡張、完了タスク追加 |
-| `architecture-auth-security.md` | OAuthエラーハンドリングフロー、リスナー管理、完了タスク追加       |
-| `api-ipc-auth.md`            | AuthSession型にrefreshTokenExpiresAt追加、auth:state-changed拡張  |
-| `error-handling.md`          | OAuthエラーコードマッピングセクション追加                         |
+| ファイル                        | 更新内容                                                                   |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| `interfaces-auth.md`            | AUTH_ERROR_CODES拡張(9コード)、AuthSession/AuthState型拡張、完了タスク追加 |
+| `architecture-auth-security.md` | OAuthエラーハンドリングフロー、リスナー管理、完了タスク追加                |
+| `api-ipc-auth.md`               | AuthSession型にrefreshTokenExpiresAt追加、auth:state-changed拡張           |
+| `error-handling.md`             | OAuthエラーコードマッピングセクション追加                                  |
 
 ### 新規追加コンテンツ
 
-| カテゴリ           | 追加内容                                                                   |
-| ------------------ | -------------------------------------------------------------------------- |
-| エラーコード       | AUTH_NOT_CONFIGURED, OAUTH_ACCESS_DENIED他8コード                         |
-| 型フィールド       | AuthSession.refreshTokenExpiresAt, AuthState.errorCode                    |
-| 関数仕様           | parseOAuthError(), mapOAuthErrorToMessage(), waitForSession()             |
-| フローチャート     | OAuthエラーハンドリングフロー（5ステップ）                                |
+| カテゴリ       | 追加内容                                                      |
+| -------------- | ------------------------------------------------------------- |
+| エラーコード   | AUTH_NOT_CONFIGURED, OAUTH_ACCESS_DENIED他8コード             |
+| 型フィールド   | AuthSession.refreshTokenExpiresAt, AuthState.errorCode        |
+| 関数仕様       | parseOAuthError(), mapOAuthErrorToMessage(), waitForSession() |
+| フローチャート | OAuthエラーハンドリングフロー（5ステップ）                    |
 
 ### 成果物
 
-| Phase | 成果物                   | パス                                                    |
-| ----- | ------------------------ | ------------------------------------------------------- |
-| 1     | 要件定義・受け入れ基準   | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-1/ |
-| 2     | アーキテクチャ設計       | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-2/ |
-| 4     | テスト仕様・テストケース | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-4/ |
+| Phase | 成果物                   | パス                                                          |
+| ----- | ------------------------ | ------------------------------------------------------------- |
+| 1     | 要件定義・受け入れ基準   | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-1/  |
+| 2     | アーキテクチャ設計       | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-2/  |
+| 4     | テスト仕様・テストケース | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-4/  |
 | 12    | 実装ガイド               | docs/30-workflows/TASK-FIX-GOOGLE-LOGIN-001/outputs/phase-12/ |
 
 ---
@@ -2855,38 +2949,38 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 ### 主な変更内容
 
-| 変更                     | 内容                                                 |
-| ------------------------ | ---------------------------------------------------- |
-| PKCE実装                 | RFC 7636準拠のcode_verifier/code_challenge生成       |
-| ローカルHTTPサーバー     | 127.0.0.1動的ポートでOAuthコールバック受信           |
-| State parameter          | 32バイトエントロピー + 厳密検証 + 5分TTL             |
+| 変更                      | 内容                                                 |
+| ------------------------- | ---------------------------------------------------- |
+| PKCE実装                  | RFC 7636準拠のcode_verifier/code_challenge生成       |
+| ローカルHTTPサーバー      | 127.0.0.1動的ポートでOAuthコールバック受信           |
+| State parameter           | 32バイトエントロピー + 厳密検証 + 5分TTL             |
 | カスタムプロトコルURL検証 | ALLOWED_PATHSホワイトリスト + isAllowedProtocolUrl() |
-| AuthFlowOrchestrator     | PKCE + HTTPサーバー + State管理の統合制御            |
+| AuthFlowOrchestrator      | PKCE + HTTPサーバー + State管理の統合制御            |
 
 ### 更新した仕様書
 
-| ドキュメント                     | 変更内容                                                          |
-| -------------------------------- | ----------------------------------------------------------------- |
+| ドキュメント                    | 変更内容                                                                     |
+| ------------------------------- | ---------------------------------------------------------------------------- |
 | `interfaces-auth.md`            | PKCEPair, AuthCallbackResult, AuthCallbackServer, AuthFlowOrchestrator型追加 |
-| `architecture-auth-security.md` | ハイブリッド認証フロー追加、DEBT-SEC-001/002/003を完了に更新     |
-| `security-implementation.md`    | PKCE/State/HTTPサーバー実装記録追加                               |
+| `architecture-auth-security.md` | ハイブリッド認証フロー追加、DEBT-SEC-001/002/003を完了に更新                 |
+| `security-implementation.md`    | PKCE/State/HTTPサーバー実装記録追加                                          |
 
 ### 成果物
 
-| Phase | 成果物                     | パス                                                                |
-| ----- | -------------------------- | ------------------------------------------------------------------- |
-| 1     | 要件定義・受け入れ基準     | docs/30-workflows/auth-callback-urlscheme/outputs/phase-1/          |
-| 2     | アーキテクチャ設計         | docs/30-workflows/auth-callback-urlscheme/outputs/phase-2/          |
-| 3     | 設計レビュー結果           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-3/          |
-| 4     | テスト仕様・テストケース   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-4/          |
-| 5     | 実装サマリー               | docs/30-workflows/auth-callback-urlscheme/outputs/phase-5/          |
-| 6     | テスト拡充結果             | docs/30-workflows/auth-callback-urlscheme/outputs/phase-6/          |
-| 7     | カバレッジ確認結果         | docs/30-workflows/auth-callback-urlscheme/outputs/phase-7/          |
-| 8     | リファクタリングサマリー   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-8/          |
-| 9     | 品質保証レポート           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-9/          |
-| 10    | 最終レビュー結果           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-10/         |
-| 11    | 手動テスト結果             | docs/30-workflows/auth-callback-urlscheme/outputs/phase-11/         |
-| 12    | 実装ガイド・ドキュメント   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-12/         |
+| Phase | 成果物                   | パス                                                        |
+| ----- | ------------------------ | ----------------------------------------------------------- |
+| 1     | 要件定義・受け入れ基準   | docs/30-workflows/auth-callback-urlscheme/outputs/phase-1/  |
+| 2     | アーキテクチャ設計       | docs/30-workflows/auth-callback-urlscheme/outputs/phase-2/  |
+| 3     | 設計レビュー結果         | docs/30-workflows/auth-callback-urlscheme/outputs/phase-3/  |
+| 4     | テスト仕様・テストケース | docs/30-workflows/auth-callback-urlscheme/outputs/phase-4/  |
+| 5     | 実装サマリー             | docs/30-workflows/auth-callback-urlscheme/outputs/phase-5/  |
+| 6     | テスト拡充結果           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-6/  |
+| 7     | カバレッジ確認結果       | docs/30-workflows/auth-callback-urlscheme/outputs/phase-7/  |
+| 8     | リファクタリングサマリー | docs/30-workflows/auth-callback-urlscheme/outputs/phase-8/  |
+| 9     | 品質保証レポート         | docs/30-workflows/auth-callback-urlscheme/outputs/phase-9/  |
+| 10    | 最終レビュー結果         | docs/30-workflows/auth-callback-urlscheme/outputs/phase-10/ |
+| 11    | 手動テスト結果           | docs/30-workflows/auth-callback-urlscheme/outputs/phase-11/ |
+| 12    | 実装ガイド・ドキュメント | docs/30-workflows/auth-callback-urlscheme/outputs/phase-12/ |
 
 ---
 
@@ -2894,12 +2988,12 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 ### メタ情報
 
-| 項目       | 内容                               |
-| ---------- | ---------------------------------- |
+| 項目       | 内容                                 |
+| ---------- | ------------------------------------ |
 | タスクID   | TASK-FIX-4-2-SKILL-STORE-PERSISTENCE |
-| 機能名     | skill-store-persistence            |
-| 完了日     | 2026-02-08                         |
-| ステータス | **完了**                           |
+| 機能名     | skill-store-persistence              |
+| 完了日     | 2026-02-08                           |
+| ステータス | **完了**                             |
 
 ### 概要
 
@@ -2916,29 +3010,29 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 ### 苦戦した箇所
 
-| 問題                         | 原因                                                                 | 解決策                                                               |
-| ---------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| 型キャストによる検証バイパス | `as string[]` は実行時検証を行わない                                 | unknown型で受け取り、validateStoredSkillIds()で実行時検証            |
-| テスト環境でのログ汚染       | console.log/warn がテスト出力を汚染                                  | this.debug フラグと electron-log によるレベル制御                    |
+| 問題                         | 原因                                 | 解決策                                                    |
+| ---------------------------- | ------------------------------------ | --------------------------------------------------------- |
+| 型キャストによる検証バイパス | `as string[]` は実行時検証を行わない | unknown型で受け取り、validateStoredSkillIds()で実行時検証 |
+| テスト環境でのログ汚染       | console.log/warn がテスト出力を汚染  | this.debug フラグと electron-log によるレベル制御         |
 
 ### テストカバレッジ
 
-| 指標              | 結果    |
-| ----------------- | ------- |
-| Line Coverage     | 91.52%  |
-| Branch Coverage   | 73.17%  |
-| Function Coverage | 93.10%  |
+| 指標              | 結果   |
+| ----------------- | ------ |
+| Line Coverage     | 91.52% |
+| Branch Coverage   | 73.17% |
+| Function Coverage | 93.10% |
 
 ### 更新した仕様書
 
-| ドキュメント          | 変更内容                                              |
-| --------------------- | ----------------------------------------------------- |
+| ドキュメント           | 変更内容                                             |
+| ---------------------- | ---------------------------------------------------- |
 | `06-known-pitfalls.md` | P19（型キャスト検証バイパス）、P20（ログ汚染）を追加 |
 
 ### 成果物
 
-| Phase | 成果物                   | パス                                                              |
-| ----- | ------------------------ | ----------------------------------------------------------------- |
-| 1-13  | 全Phase仕様書            | docs/30-workflows/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/           |
+| Phase | 成果物        | パス                                                    |
+| ----- | ------------- | ------------------------------------------------------- |
+| 1-13  | 全Phase仕様書 | docs/30-workflows/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/ |
 
 ---

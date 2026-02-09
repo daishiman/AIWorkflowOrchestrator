@@ -312,6 +312,8 @@
 | UT-SEC-001                                 | OAuth プロバイダー自動検出機能（consumeState→validate置換）         | 低 | DEBT-SEC-001 Phase 12（設計乖離検出）                          | `docs/30-workflows/unassigned-task/task-auth-provider-detection.md`                         |
 | task-sec-auth-state-cleanup-001            | State Map定期クリーンアップ実装                                     | 低 | DEBT-SEC-001 Phase 12（既知制約検出）                          | `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md`                   |
 | UT-PROTOCOL-URL-001                        | カスタムプロトコルURLパース標準ユーティリティ整備                   | 中 | TASK-AUTH-CALLBACK-001 Phase 12（苦戦箇所検出）                | `docs/30-workflows/unassigned-task/task-protocol-url-parsing-utility.md`                    |
+| UT-FIX-5-2                                 | Preload Dialog API ハードコード削除                                 | 中 | TASK-FIX-5-1 アーキテクチャレビュー                            | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`              |
+| UT-FIX-5-3                                 | Preload Agent Abort セキュリティ修正                                | 高 | TASK-FIX-5-1 アーキテクチャレビュー                            | `docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`                  |
 
 ### 未タスク管理ルール
 
