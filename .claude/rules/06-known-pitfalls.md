@@ -129,45 +129,14 @@
 - **解決策**: テストを分割実行するか、`--poolOptions.workers.max` を調整。または `--no-file-parallelism` で並列実行を制限
 - **関連タスク**: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE
 
-## TASK-FIX-5-1 SkillAPI統一
+### P23: SKILL.md 変更履歴の更新漏れ
 
-> **関連リソース**:
->
-> - 成功パターン詳細: `.claude/skills/aiworkflow-requirements/references/patterns.md`
-> - 実装パターン詳細: `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`
+- **教訓**: LOGS.md の更新だけでは不十分。SKILL.md の変更履歴テーブルも必ず更新する
+- **チェックリスト**: [05-task-execution.md#Step 1-A](./05-task-execution.md)
+- **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX
 
-### P23: API二重定義による型定義の二重管理
+### P24: 未タスク検出時の関連ファイル調査不足
 
-- **教訓**: Preload APIが2つのパス（`window.skillAPI` 直接公開 vs `window.electronAPI.skill` contextBridge経由）で公開されると、TypeScript型定義を複数箇所で管理する必要があり、変更忘れ・テストモック複雑化が発生する
-- **解決策**: API公開パスを1つに統一（`window.electronAPI.skill` のみ）し、型定義を1箇所に集約。実装前に`grep -rn`で全参照箇所を把握
-- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
-
-### P24: 呼び出し元コードの参照先分散
-
-- **教訓**: API二重公開時、hooks/store/components 各層で参照パスが混在していた。リファクタリング時に漏れが発生しやすく、新規開発者の判断が曖昧化する
-- **解決策**: Preload層の公開ポイントを統一し、呼び出し側を全て統一パスに移行。lint ルール追加で再発防止
-- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION (Phase 5)
-
-### P25: Store型定義の不統一による型アサーション発生
-
-- **教訓**: API統一時に呼び出し側だけでなく、状態管理層（skillSlice）の型定義も影響範囲として調査する必要がある。AgentView で旧Skill型参照が残存し、型アサーション回避が必要になった
-- **解決策**: API型変更時は「逆方向の依存」（Renderer→Preload）をコード検索で確認。型アサーション発生時は未タスク化して後続タスクに委譲
-- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION, UT-FIX-5-1-001
-
-### P26: OperationResult廃止の波及範囲調査不足
-
-- **教訓**: Preload層の戻り値型をラッパーから直接型に変更する際、影響を受ける全ファイル（skillSlice, hooks, test等）を事前リストアップせずに進めると、段階的に修正箇所が発見される
-- **解決策**: 型定義変更前に`grep -rn "OperationResult" apps/desktop/src/` で全使用箇所を列挙。修正順序を決定してから実装開始
-- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
-
-### P27: contextIsolation + safeInvoke パターンの実装複雑性
-
-- **教訓**: Electron セキュリティモデルとIPC通信パターンを同時に理解・実装する必要があり、contextBridge の制限（クローン可能型のみ）、ホワイトリスト検証、クリーンアップ関数の実装漏れが発生しやすい
-- **解決策**: セキュリティ仕様書（`.claude/rules/04-electron-security.md`）を精読。safeInvoke/safeOn パターンのテンプレート化。テストで「ホワイトリスト外呼び出しreject」を確認
-- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION (Phase 4-9)
-
-### P28: 削除タイプのリファクタリングにおける手動確認忘れ
-
-- **教訓**: 自動テストが PASS でも、削除対象（`window.skillAPI`）が本当に削除されていることを DevTools で確認しないと、実運用で問題が露見する可能性がある
-- **解決策**: Phase 11（手動テスト）チェックリストに「削除対象の DevTools 確認」を明示的に追加。`undefined` または存在しないことを確認
-- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION (Phase 11)
+- **教訓**: 修正対象ファイルだけでなく、同様のパターンを持つ関連ファイルも調査すべき
+- **解決策**: `grep -rn` で同様のパターンをプロジェクト全体で検索
+- **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX

@@ -163,13 +163,27 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 
 - [ ] 実装ガイド（Part 1: **中学生レベル概念説明**）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
-- [ ] 【Step 1】システム仕様書に「完了タスク」セクションを追加した
-- [ ] 【Step 1】関連ドキュメントセクションに実装ガイドリンクを追加した
+- [ ] 【Step 1-A】システム仕様書に「完了タスク」セクションを追加した
+- [ ] 【Step 1-A】関連ドキュメントセクションに実装ガイドリンクを追加した
+- [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
+- [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
+- [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
+- [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
+- [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] **本Phase内の全タスクを100%実行完了**
+
+### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
+
+| ID | 漏れやすいポイント | 対策 |
+| -- | ------------------ | ---- |
+| P23 | SKILL.md 変更履歴の更新漏れ | LOGS.md とは別に SKILL.md の変更履歴テーブルも必ず更新 |
+| P24 | 未タスク検出時の関連ファイル調査不足 | `grep -rn` で同様パターンをプロジェクト全体から検索 |
+| P1 | LOGS.md 2ファイル更新漏れ | aiworkflow-requirements + task-specification-creator 両方を同時更新 |
+| P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
 
 ---
 
