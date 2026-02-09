@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-02-09: TASK-FIX-5-1-SKILL-API-UNIFICATION完了（SkillAPI二重定義の統一）
+
+| 項目         | 内容                                                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-5-1-SKILL-API-UNIFICATION                                                                                |
+| Agent        | aiworkflow-requirements                                                                                           |
+| 操作         | Phase 1-12 完了（SkillAPI二重定義の統一）                                                                         |
+| 対象ファイル | apps/desktop/src/preload/types.ts, apps/desktop/src/preload/types.d.ts, interfaces-agent-sdk-skill.md, security-skill-ipc.md |
+| 結果         | success                                                                                                           |
+| 備考         | window.skillAPI 廃止 → window.electronAPI.skill 一本化。138テスト全PASS、カバレッジ Line 91.07%                   |
+
+### 問題
+
+`window.skillAPI` と `window.electronAPI.skill` の二重定義により、メンテナンス性と一貫性の問題が発生。どちらのAPIを使用すべきか不明確で、将来の機能追加時にも二重修正が必要になるリスクがあった。
+
+### 解決策
+
+| 対策                             | 実装内容                                                                       |
+| -------------------------------- | ------------------------------------------------------------------------------ |
+| 1. window.skillAPI 廃止          | types.d.ts から Window.skillAPI 型定義を削除                                   |
+| 2. window.electronAPI.skill 一本化 | types.ts の SkillAPI インターフェースを統一                                   |
+| 3. 仕様書更新                    | interfaces-agent-sdk-skill.md, security-skill-ipc.md の API 参照を統一         |
+| 4. テスト追加                    | skill-api.unification.test.ts（15テスト）, skill-api.permission.test.ts（8テスト追加） |
+
+### 成果
+
+| 指標              | 値      |
+| ----------------- | ------- |
+| 総テスト数        | 138     |
+| Line Coverage     | 91.07%  |
+| Branch Coverage   | 80.55%  |
+| Function Coverage | 85.71%  |
+
+### 変更ファイル
+
+| ファイル                                            | 変更種別 | 内容                                          |
+| --------------------------------------------------- | -------- | --------------------------------------------- |
+| apps/desktop/src/preload/types.ts                   | 修正     | SkillAPI定義を統一                            |
+| apps/desktop/src/preload/types.d.ts                 | 修正     | Window.skillAPI を廃止                        |
+| interfaces-agent-sdk-skill.md                       | 更新     | API参照をwindow.electronAPI.skillに統一       |
+| security-skill-ipc.md                               | 更新     | セキュリティ仕様のAPI参照を統一               |
+
+---
+
 ## 2026-02-08: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）
 
 | 項目         | 内容                                                                                                              |

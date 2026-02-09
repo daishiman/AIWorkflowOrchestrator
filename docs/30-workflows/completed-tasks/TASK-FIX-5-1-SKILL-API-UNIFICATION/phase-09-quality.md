@@ -6,7 +6,7 @@
 | ------ | ---------------------------------- |
 | Phase  | 9                                  |
 | 機能名 | TASK-FIX-5-1-SKILL-API-UNIFICATION |
-| 作成日 | 2026-02-05                         |
+| 作成日 | 2026-02-08                         |
 
 ## 目的
 
@@ -14,11 +14,11 @@
 
 ## 参照資料
 
-| 資料名               | パス                                    | 説明          |
-| -------------------- | --------------------------------------- | ------------- |
-| リファクタリング報告 | `outputs/phase-8/refactoring-report.md` | Phase 8成果物 |
-| 統一API設計書        | `outputs/phase-2/unified-api-design.md` | Phase 2成果物 |
-| 仕様書               | `specification.md §4`                   | API仕様定義   |
+| 資料名               | パス                                    | 説明                 |
+| -------------------- | --------------------------------------- | -------------------- |
+| リファクタリング報告 | `outputs/phase-8/refactoring-report.md` | Phase 8成果物        |
+| 統一API設計書        | `outputs/phase-2/unified-api-design.md` | Phase 2成果物        |
+| セキュリティ仕様     | `security-skill-ipc.md`                 | IPC セキュリティ要件 |
 
 ## 実行タスク
 
@@ -96,13 +96,13 @@ pnpm --filter @repo/desktop test:coverage
 | IPCチャンネル統合テスト             | {{NUM}}  | {{RESULT}} |
 | 呼び出し元移行テスト                | {{NUM}}  | {{RESULT}} |
 
-### Task 4: セキュリティ
+### Task 4: セキュリティチェック
 
 #### 目的
 
 Electron固有のセキュリティ要件が満たされていることを確認する。
 
-#### セキュリティチェック
+#### セキュリティ要件
 
 | 確認項目                                                      | 結果       |
 | ------------------------------------------------------------- | ---------- |
@@ -112,6 +112,48 @@ Electron固有のセキュリティ要件が満たされていることを確認
 | `validateIpcSender` がMain Process側で維持されている          | {{RESULT}} |
 | IPCチャンネルがホワイトリスト方式で管理されている             | {{RESULT}} |
 | Preload Scriptが不要なNode.js APIを公開していない             | {{RESULT}} |
+
+#### 検証コマンド
+
+```bash
+# window.skillAPI の残存確認
+grep -rn "window\.skillAPI" apps/desktop/src/
+
+# 不正なNode.js API公開の確認
+grep -rn "require\(" apps/desktop/src/preload/
+grep -rn "process\." apps/desktop/src/preload/
+```
+
+### Task 5: 破壊的変更の影響確認
+
+#### 目的
+
+API統一による破壊的変更が適切に対応されていることを確認する。
+
+#### 確認項目
+
+| 確認項目                                          | 結果       |
+| ------------------------------------------------- | ---------- |
+| 全呼び出し元が新APIパスを使用している             | {{RESULT}} |
+| 旧API（window.skillAPI）への参照が存在しない      | {{RESULT}} |
+| OperationResult型のアンラップ処理が削除されている | {{RESULT}} |
+| 型定義が統一されている（Preload/Renderer両側）    | {{RESULT}} |
+| テストモックが新APIに対応している                 | {{RESULT}} |
+
+### Task 6: パフォーマンス影響の確認
+
+#### 目的
+
+リファクタリングがパフォーマンスに悪影響を与えていないことを確認する。
+
+#### 確認項目
+
+| 確認項目                                       | 結果       |
+| ---------------------------------------------- | ---------- |
+| IPC通信のオーバーヘッドが増加していない        | {{RESULT}} |
+| 不要な再レンダリングが発生していない           | {{RESULT}} |
+| メモリリークの兆候がない                       | {{RESULT}} |
+| イベントリスナーの登録解除が適切に行われている | {{RESULT}} |
 
 ## 統合テスト連携【必須】
 
@@ -146,7 +188,10 @@ pnpm --filter @repo/desktop test:coverage
 - [ ] テスト網羅性が確認されている（全カテゴリのテストが存在する）
 - [ ] セキュリティチェック（6項目）が全て確認済み
 - [ ] `contextBridge` 公開APIが `window.electronAPI.skill` に一本化されている
+- [ ] `window.skillAPI` が完全に廃止されている
 - [ ] `validateIpcSender` が維持されている
+- [ ] 破壊的変更の影響が対応済み
+- [ ] パフォーマンス影響が確認済み
 - [ ] 品質レポートが出力されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
