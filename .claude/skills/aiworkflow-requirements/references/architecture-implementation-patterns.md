@@ -239,6 +239,44 @@
 
 **関連仕様書**: [security-skill-ipc.md](./security-skill-ipc.md)
 
+#### IPCチャンネル名定数化パターン（TASK-FIX-12-1-IPC-HARDCODE-FIX 2026-02-09実装）
+
+IPC チャンネル名のハードコード文字列を定数参照に置換し、04-electron-security.md IPC セキュリティ原則に準拠するパターン。
+
+**問題**: Main Process 内で IPC チャンネル名がハードコードされており、タイポや不整合のリスクがある。
+
+| 問題 | 例 | リスク |
+|------|---|--------|
+| ハードコード文字列 | `this.mainWindow.webContents.send("skill:stream", message)` | タイポがコンパイル時に検出されない |
+| 定数との不整合 | Preload側は定数、Main側はハードコード | 変更時に片方だけ更新される |
+| セキュリティ原則違反 | 04-electron-security.md「ハードコード文字列でチャンネル名を指定しない」 | レビューで見落とされやすい |
+
+**解決策: 定数参照への置換**
+
+| 修正前（NG） | 修正後（OK） |
+|-------------|-------------|
+| `webContents.send("skill:stream", message)` | `webContents.send(SKILL_CHANNELS.SKILL_STREAM, message)` |
+
+**実装ステップ**:
+
+| ステップ | 処理内容 | 成果物 |
+|---------|---------|--------|
+| 1 | `grep -rn '"skill:' src/` でハードコード箇所を検出 | 対象箇所リスト |
+| 2 | 対応する定数が `@repo/shared/src/ipc/channels.ts` に存在するか確認 | 定数マッピング |
+| 3 | ハードコード文字列を定数参照に置換 | コード修正 |
+| 4 | テスト実行で動作確認 | 品質検証 |
+
+**メリット**:
+
+| 観点 | 効果 |
+|------|------|
+| 型安全性 | タイポがコンパイル時に検出される |
+| 保守性 | チャンネル名変更が1箇所で済む |
+| セキュリティ | IPC セキュリティ原則準拠 |
+| コードレビュー | 定数参照は意図が明確 |
+
+**関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX（2026-02-09完了）
+
 ### サービス層パターン
 
 #### Facadeパターン
@@ -975,81 +1013,6 @@ SkillAPIの二重定義（`window.skillAPI` + `window.electronAPI.skill`）を�
 | 問題 | 呼び出し側で参照先が分散し、テストモックも二重管理が必要 |
 | 解決 | `window.electronAPI.skill` に一本化、旧 `window.skillAPI` を完全削除 |
 
-### safeInvoke/safeOnセキュリティパターン
-
-Electron Preload層でIPC通信を安全に行うためのセキュリティパターン。ホワイトリスト検証とクリーンアップ関数によりセキュリティと保守性を両立する。
-
-#### safeInvoke（同期的IPC呼び出し）
-
-| 要素 | 説明 |
-|------|------|
-| 目的 | Renderer→Main方向のIPC呼び出しをセキュアに実行 |
-| ホワイトリスト | `ALLOWED_INVOKE_CHANNELS` 配列で許可チャンネルを定義 |
-| 検証タイミング | 呼び出し時（チャンネル名がホワイトリストに含まれるか確認） |
-| 不正チャンネル | `Promise.reject(new Error(...))` で即座に拒否 |
-| 実装ファイル | `apps/desktop/src/preload/index.ts` |
-
-**safeInvokeの動作フロー**:
-
-| ステップ | 処理 |
-|----------|------|
-| 1 | チャンネル名をホワイトリスト（`ALLOWED_INVOKE_CHANNELS`）と照合 |
-| 2 | 含まれない場合は `Promise.reject()` で即座に拒否 |
-| 3 | 含まれる場合は `ipcRenderer.invoke(channel, ...args)` を呼び出し |
-| 4 | 結果を `Promise<T>` として返却 |
-
-#### safeOn（イベントリスナー登録）
-
-| 要素 | 説明 |
-|------|------|
-| 目的 | Main→Renderer方向のイベント購読をセキュアに実行 |
-| ホワイトリスト | `ALLOWED_ON_CHANNELS` 配列で許可チャンネルを定義 |
-| 検証タイミング | リスナー登録時（チャンネル名がホワイトリストに含まれるか確認） |
-| 不正チャンネル | `throw new Error(...)` で例外をスロー |
-| クリーンアップ | `() => ipcRenderer.removeListener(channel, listener)` を返却 |
-| 実装ファイル | `apps/desktop/src/preload/index.ts` |
-
-**safeOnの動作フロー**:
-
-| ステップ | 処理 |
-|----------|------|
-| 1 | チャンネル名をホワイトリスト（`ALLOWED_ON_CHANNELS`）と照合 |
-| 2 | 含まれない場合は例外をスロー |
-| 3 | 含まれる場合は `ipcRenderer.on(channel, listener)` でリスナー登録 |
-| 4 | クリーンアップ関数（`() => ipcRenderer.removeListener(...)`）を返却 |
-
-#### セキュリティ効果
-
-| 効果 | 説明 |
-|------|------|
-| 未承認チャンネルブロック | ホワイトリストに含まれないチャンネルへのアクセスを防止 |
-| リスナーリーク防止 | クリーンアップ関数によりコンポーネントアンマウント時に確実に解除 |
-| コンパイル時検証 | TypeScript型定義によりチャンネル名のタイポを検出 |
-| 監査容易性 | 許可チャンネルが1箇所に集約され、セキュリティレビューが容易 |
-
-#### テスト戦略
-
-| テスト観点 | 検証方法 |
-|------------|----------|
-| ホワイトリスト外拒否 | 許可されていないチャンネルで `Promise.reject` / 例外を確認 |
-| 正常呼び出し | 許可チャンネルで `ipcRenderer.invoke` が呼ばれることを確認 |
-| クリーンアップ実行 | 返却関数を呼び出して `removeListener` が実行されることを確認 |
-| 型安全性 | 不正な型の引数でコンパイルエラーになることを確認 |
-
-#### 関連仕様書
-
-| 仕様書 | 内容 |
-|--------|------|
-| [security-skill-ipc.md](./security-skill-ipc.md) | Skill IPC通信のセキュリティ仕様 |
-| [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md) | Preload API仕様（13メソッド） |
-| [04-electron-security.md](../../rules/04-electron-security.md) | Electronセキュリティルール |
-
-#### 関連リソース
-
-- **パターン集**: [patterns.md](./patterns.md) — 成功/失敗パターンの一覧
-- **苦戦パターン正本**: [06-known-pitfalls.md](../../../../.claude/rules/06-known-pitfalls.md) — P23-P28
-- **API型定義**: [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md) — SkillAPI型定義
-
 ### 統一後のAPI構成（13メソッド）
 
 | カテゴリ | メソッド | パターン | 戻り値 |
@@ -1092,7 +1055,7 @@ Electron Preload層でIPC通信を安全に行うためのセキュリティパ�
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.16.0 | 2026-02-09 | safeInvoke/safeOnセキュリティパターン詳細追加: 動作フロー、セキュリティ効果、テスト戦略を表形式で記載 |
+| 1.16.0 | 2026-02-09 | TASK-FIX-12-1-IPC-HARDCODE-FIX: IPCチャンネル名定数化パターン追加（ハードコード検出、定数参照置換、セキュリティ原則準拠） |
 | 1.15.0 | 2026-02-06 | TASK-FIX-5-1リファクタリング: S1-S5苦戦箇所を最適化（S1/S4は実装パターンとして保持、S2/S3/S5はskill-creator/patterns.mdへクロスリファレンス化で重複解消） |
 | 1.14.0 | 2026-02-06 | TASK-FIX-5-1-SKILL-API-UNIFICATION: SkillAPI統一パターン追加（API二重公開解消、苦戦箇所5件記録） |
 | 1.13.0 | 2026-02-05 | TASK-FIX-4-1-IPC-CONSOLIDATION: IPCチャンネル統合パターン追加（Single Source of Truth、ハードコード検出、ホワイトリスト検証） |

@@ -915,7 +915,7 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
     }
 
     // IPC 経由で Renderer に送信
-    this.mainWindow.webContents.send("skill:stream", message);
+    this.mainWindow.webContents.send(SKILL_CHANNELS.SKILL_STREAM, message);
   }
 
   /**
@@ -1211,7 +1211,7 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
       if (this.mainWindow.isDestroyed()) {
         return;
       }
-      this.mainWindow.webContents.send("skill:stream", message);
+      this.mainWindow.webContents.send(SKILL_CHANNELS.SKILL_STREAM, message);
     } catch (error) {
       // IPC送信エラーはログ出力のみで処理を継続
       console.error("[SkillExecutor] Failed to send hooks stream:", error);
