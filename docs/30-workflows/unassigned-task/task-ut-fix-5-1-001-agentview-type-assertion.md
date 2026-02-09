@@ -3,13 +3,14 @@
 ## メタ情報
 
 ```yaml
-issue_number: 719
+issue_number: 754
 ```
 
 ## メタ情報
 
 | 項目         | 内容                                                                       |
 | ------------ | -------------------------------------------------------------------------- |
+| GitHub Issue | #719                                                                       |
 | タスクID     | UT-FIX-5-1-001                                                             |
 | タスク名     | AgentView型アサーション解消                                                |
 | 分類         | 改善（型安全性向上）                                                       |
@@ -141,6 +142,36 @@ TASK-FIX-5-1実装時に遭遇した以下の課題は、本タスク実行時�
 | 問題 | PostToolUseフック（Prettier/ESLint）がファイルを自動修正し、Edit操作の `old_string` が不一致に。10件中8件が未永続化 |
 | 教訓 | 大量編集後は `git diff --stat` で変更ファイル数と期待値の一致を検証する                                             |
 | 参照 | 06-known-pitfalls.md P11、skill-creator/patterns.md セッション間編集永続化検証パターン                              |
+
+### 3.6 関連する苦戦パターン（06-known-pitfalls.md）
+
+本タスクは TASK-FIX-5-1-SKILL-API-UNIFICATION から派生した未タスクです。
+親タスクで苦戦した箇所と解決策を以下に記録します。
+
+| パターンID | 内容                                               | 詳細参照                 |
+| ---------- | -------------------------------------------------- | ------------------------ |
+| P23        | API二重定義による型定義の二重管理                  | 06-known-pitfalls.md#P23 |
+| P24        | 呼び出し元コードの参照先分散                       | 06-known-pitfalls.md#P24 |
+| P25        | Store型定義の不統一による型アサーション発生        | 06-known-pitfalls.md#P25 |
+| P26        | OperationResult廃止の波及範囲調査不足              | 06-known-pitfalls.md#P26 |
+| P27        | contextIsolation + safeInvoke パターンの実装複雑性 | 06-known-pitfalls.md#P27 |
+| P28        | 削除タイプのリファクタリングにおける手動確認忘れ   | 06-known-pitfalls.md#P28 |
+
+#### 本タスクへの適用
+
+本タスク（AgentView型アサーション解消）は、上記パターンのうち以下が特に関連する:
+
+1. **P25（Store型定義の不統一による型アサーション発生）**: 本タスクの直接原因。agentSliceが`Skill`型を使用し、統一APIが`SkillMetadata`を返すため型アサーションが必要になった。解決策として、agentSliceの型定義を`SkillMetadata`に移行することで型アサーションを解消する。
+
+2. **P24（呼び出し元コードの参照先分散）**: agentSliceを参照するコンポーネントが複数存在する可能性がある。`grep -rn "agentSlice\|useAgentStore"` で全使用箇所をリストアップし、型変更の影響範囲を特定すること。
+
+3. **P26（OperationResult廃止の波及範囲調査不足）**: 型変更時は影響範囲が予想以上に広がる可能性がある。`Skill`型から`SkillMetadata`型への移行前に、全使用箇所の事前調査を徹底すること。
+
+#### 参照資料
+
+- 成功/失敗パターン集: `.claude/skills/aiworkflow-requirements/references/patterns.md`
+- 実装パターン詳細: `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`
+- 苦戦パターン正本: `.claude/rules/06-known-pitfalls.md`
 
 ---
 

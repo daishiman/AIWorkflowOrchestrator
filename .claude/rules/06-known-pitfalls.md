@@ -128,3 +128,15 @@
 - **教訓**: 大規模テスト実行時（9000+ テスト）に Vitest Worker が予期せず終了することがある。メモリ消費やタイムアウトが原因の可能性
 - **解決策**: テストを分割実行するか、`--poolOptions.workers.max` を調整。または `--no-file-parallelism` で並列実行を制限
 - **関連タスク**: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE
+
+### P23: SKILL.md 変更履歴の更新漏れ
+
+- **教訓**: LOGS.md の更新だけでは不十分。SKILL.md の変更履歴テーブルも必ず更新する
+- **チェックリスト**: [05-task-execution.md#Step 1-A](./05-task-execution.md)
+- **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX
+
+### P24: 未タスク検出時の関連ファイル調査不足
+
+- **教訓**: 修正対象ファイルだけでなく、同様のパターンを持つ関連ファイルも調査すべき
+- **解決策**: `grep -rn` で同様のパターンをプロジェクト全体で検索
+- **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX

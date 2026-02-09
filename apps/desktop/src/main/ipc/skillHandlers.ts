@@ -67,6 +67,26 @@ export function registerSkillHandlers(
     },
   );
 
+  // skill:scan - スキルの強制再スキャン (TASK-FIX-17-1-SKILL-SCAN-HANDLER)
+  ipcMain.handle(IPC_CHANNELS.SKILL_SCAN, async (event: IpcMainInvokeEvent) => {
+    const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_SCAN, {
+      getAllowedWindows: () => [mainWindow],
+    });
+    if (!validation.valid) {
+      throw toIPCValidationError(validation);
+    }
+    try {
+      const result = await skillService.scanAvailableSkills(true);
+      return { success: true, data: result.skills };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "スキャンに失敗しました",
+      };
+    }
+  });
+
   // skill:getImported - インポート済みスキルを取得 (TASK-FIX-4-1-IPC-CONSOLIDATION: unified from SKILL_LIST_IMPORTED)
   ipcMain.handle(
     IPC_CHANNELS.SKILL_GET_IMPORTED,
@@ -413,6 +433,7 @@ export function unregisterSkillHandlers(): void {
   _skillExecutorInstance = null;
   // TASK-FIX-4-1-IPC-CONSOLIDATION: unified channels
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_LIST);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCAN); // TASK-FIX-17-1-SKILL-SCAN-HANDLER
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_IMPORTED);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_REMOVE);

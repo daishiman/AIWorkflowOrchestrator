@@ -5,6 +5,78 @@
 
 ---
 
+## 2026-02-09: patterns.md構造最適化（skill-creatorテンプレート準拠）
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | TASK-FIX-12-1-IPC-HARDCODE-FIX (Phase 12 ドキュメント改善)     |
+| Agent        | aiworkflow-requirements + skill-creator                         |
+| 操作         | patterns.md 構造リファクタリング                                |
+| 対象ファイル | references/patterns.md, SKILL.md                                |
+| 結果         | success                                                         |
+| 備考         | カテゴリ別再構成、目次追加、見出しレベル統一                   |
+
+### 変更内容
+
+| 項目 | 変更内容 |
+| ---- | -------- |
+| 目次 | カテゴリナビゲーションテーブル追加（成功5カテゴリ/失敗4カテゴリ） |
+| 成功パターン | Phase 12ドキュメント(4件)/IPC・Electron(2件)/OAuth・認証(4件)/テスト・品質(3件)/ストア・永続化(3件) に再構成 |
+| 失敗パターン | Phase 12漏れ(8件)/OAuth・認証エラー(4件)/テスト・型安全(3件)/その他(2件) に再構成 |
+| 見出しレベル | ###カテゴリ/####個別パターン に統一 |
+
+### 理由
+
+- skill-creator テンプレートの workflow-patterns.md 構造に準拠
+- カテゴリ別ナビゲーションで検索性向上
+- 見出しレベルの一貫性確保
+
+---
+
+## 2026-02-09: TASK-FIX-12-1-IPC-HARDCODE-FIX完了（SkillExecutorのIPCチャネル名定数化）
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | TASK-FIX-12-1-IPC-HARDCODE-FIX                                  |
+| Agent        | aiworkflow-requirements                                         |
+| 操作         | Phase 1-12 完了（リファクタリング）                             |
+| 対象ファイル | apps/desktop/src/main/services/skill/SkillExecutor.ts           |
+| 結果         | success                                                         |
+| 備考         | L918, L1214 のハードコード文字列 `"skill:stream"` を `SKILL_CHANNELS.SKILL_STREAM` 定数参照に変更 |
+
+### 変更内容
+
+| 変更箇所 | 変更前                              | 変更後                            |
+| -------- | ----------------------------------- | --------------------------------- |
+| L918     | `"skill:stream"` (ハードコード)     | `SKILL_CHANNELS.SKILL_STREAM`     |
+| L1214    | `"skill:stream"` (ハードコード)     | `SKILL_CHANNELS.SKILL_STREAM`     |
+| L22      | -                                   | `import { SKILL_CHANNELS } ...` 追加 |
+
+### 理由
+
+- 04-electron-security.md の IPC セキュリティ原則「ハードコード文字列でチャンネル名を指定しない」に準拠
+- タイポ防止（定数名を間違えるとコンパイルエラー）
+- 保守性向上（チャンネル名変更が1箇所で済む）
+
+### テスト結果
+
+| 指標              | 結果     |
+| ----------------- | -------- |
+| 全テスト          | PASS     |
+| 型チェック        | PASS     |
+| Phase 10 レビュー | PASS (指摘0件) |
+| Phase 11 手動テスト | PASS     |
+
+### 成果物
+
+| Phase | 成果物             | パス                                                          |
+| ----- | ------------------ | ------------------------------------------------------------- |
+| 12    | 実装ガイド         | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/implementation-guide.md |
+| 12    | 更新履歴           | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/documentation-changelog.md |
+| 12    | 未タスクレポート   | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/unassigned-task-report.md |
+
+---
+
 ## 2026-02-08: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）
 
 | 項目         | 内容                                                                                                              |

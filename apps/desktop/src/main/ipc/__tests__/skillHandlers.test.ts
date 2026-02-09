@@ -160,6 +160,7 @@ const SKILL_CHANNELS = {
   IMPORT: "skill:import",
   REMOVE: "skill:remove",
   GET_DETAIL: "skill:get-detail",
+  SCAN: "skill:scan",
 } as const;
 
 describe("skillHandlers", () => {
@@ -304,6 +305,268 @@ describe("skillHandlers", () => {
       } catch (error) {
         expect(error).toBeDefined();
       }
+    });
+  });
+
+  // ===========================================================================
+  // skill:scan
+  // ===========================================================================
+
+  describe("skill:scan", () => {
+    it("SH-SC-01: should register skill:scan handler", () => {
+      expect(handlers.has(SKILL_CHANNELS.SCAN)).toBe(true);
+    });
+
+    it("SH-SC-02: should call skillService.scanAvailableSkills with forceRefresh=true", async () => {
+      const mockData: SkillScanResult = {
+        skills: [
+          {
+            id: "skill-1",
+            name: "Test Skill",
+            slug: "test-skill",
+            description: "A test skill",
+            path: "/test/skills/test-skill/SKILL.md",
+            triggers: ["test"],
+            anchors: [],
+            category: "testing",
+            lastModified: new Date(),
+          },
+        ],
+        errors: [],
+        scannedAt: new Date(),
+      };
+      mockSkillService.scanAvailableSkills.mockResolvedValue(mockData);
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When: ハンドラーを呼び出す
+      await handler({});
+
+      // Then: scanAvailableSkillsがforceRefresh=trueで呼び出される
+      expect(mockSkillService.scanAvailableSkills).toHaveBeenCalledWith(true);
+    });
+
+    it("SH-SC-03: should return success response with skills data", async () => {
+      const mockData: SkillScanResult = {
+        skills: [
+          {
+            id: "skill-1",
+            name: "Test Skill",
+            slug: "test-skill",
+            description: "A test skill",
+            path: "/test/skills/test-skill/SKILL.md",
+            triggers: ["test"],
+            anchors: [],
+            lastModified: new Date(),
+          },
+        ],
+        errors: [],
+        scannedAt: new Date(),
+      };
+      mockSkillService.scanAvailableSkills.mockResolvedValue(mockData);
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When: ハンドラーを呼び出す
+      const result = await handler({});
+
+      // Then: 成功レスポンスが返される
+      const opResult = result as OperationResult<Skill[]>;
+      expect(opResult.success).toBe(true);
+      expect(opResult.data).toHaveLength(1);
+      expect(opResult.data?.[0].name).toBe("Test Skill");
+    });
+
+    it("SH-SC-04: should return error response on service failure", async () => {
+      mockSkillService.scanAvailableSkills.mockRejectedValue(
+        new Error("Scan failed"),
+      );
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When: エラーが発生する
+      const result = await handler({});
+
+      // Then: エラーレスポンスが返される
+      const opResult = result as OperationResult<Skill[]>;
+      expect(opResult.success).toBe(false);
+      expect(opResult.error).toBe("Scan failed");
+    });
+
+    it("SH-SC-05: should validate IPC sender", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When: ハンドラーを呼び出す
+      await handler({});
+
+      // Then: validateIpcSenderが呼び出される
+      expect(validateIpcSender).toHaveBeenCalledWith(
+        expect.anything(),
+        "skill:scan",
+        expect.objectContaining({
+          getAllowedWindows: expect.any(Function),
+        }),
+      );
+    });
+
+    it("SH-SC-06: should return empty array when no skills found", async () => {
+      const mockData: SkillScanResult = {
+        skills: [],
+        errors: [],
+        scannedAt: new Date(),
+      };
+      mockSkillService.scanAvailableSkills.mockResolvedValue(mockData);
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When: スキルが0件の場合
+      const result = await handler({});
+
+      // Then: 空配列が返される
+      const opResult = result as OperationResult<Skill[]>;
+      expect(opResult.success).toBe(true);
+      expect(opResult.data).toEqual([]);
+    });
+
+    it("SH-SC-07: should always use forceRefresh=true for cache clear", async () => {
+      const mockData: SkillScanResult = {
+        skills: [],
+        errors: [],
+        scannedAt: new Date(),
+      };
+      mockSkillService.scanAvailableSkills.mockResolvedValue(mockData);
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When: 複数回呼び出す
+      await handler({});
+      await handler({});
+
+      // Then: 常にforceRefresh=trueで呼び出される
+      expect(mockSkillService.scanAvailableSkills).toHaveBeenCalledTimes(2);
+      expect(mockSkillService.scanAvailableSkills).toHaveBeenNthCalledWith(
+        1,
+        true,
+      );
+      expect(mockSkillService.scanAvailableSkills).toHaveBeenNthCalledWith(
+        2,
+        true,
+      );
+    });
+
+    it("SH-SC-08: should reject calls from DevTools", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      // Given: DevToolsからの呼び出し
+      (validateIpcSender as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+        valid: false,
+        errorCode: "IPC_DEVTOOLS_NOT_ALLOWED",
+        errorMessage: "DevTools sender not allowed",
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When & Then: 例外がスローされる
+      await expect(handler({})).rejects.toBeDefined();
+    });
+
+    it("SH-SC-09: should return default error message for non-Error exceptions", async () => {
+      // Given: Error以外の例外
+      mockSkillService.scanAvailableSkills.mockRejectedValue("Unknown error");
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When: 例外が発生
+      const result = await handler({});
+
+      // Then: デフォルトメッセージが返される
+      const opResult = result as OperationResult<Skill[]>;
+      expect(opResult.success).toBe(false);
+      expect(opResult.error).toBe("スキャンに失敗しました");
+    });
+
+    it("SH-SC-10: should be removed by unregisterSkillHandlers", async () => {
+      const { unregisterSkillHandlers } = await import("../skillHandlers");
+
+      // When: unregisterSkillHandlersを呼び出す
+      unregisterSkillHandlers();
+
+      // Then: SKILL_SCANのremoveHandlerが呼び出される
+      expect(ipcMain.removeHandler).toHaveBeenCalledWith("skill:scan");
+    });
+  });
+
+  // ===========================================================================
+  // skill:scan security (Phase 6)
+  // ===========================================================================
+
+  describe("skill:scan security", () => {
+    it("SH-SC-11: should reject calls from unknown window", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      // Given: 未知のウィンドウからの呼び出し
+      (validateIpcSender as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+        valid: false,
+        errorCode: "IPC_UNAUTHORIZED",
+        errorMessage: "Unknown window",
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When & Then: 例外がスローされる
+      await expect(handler({})).rejects.toBeDefined();
+    });
+
+    it("SH-SC-12: should reject calls from destroyed window", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      // Given: 破棄されたウィンドウからの呼び出し
+      (validateIpcSender as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+        valid: false,
+        errorCode: "IPC_WINDOW_DESTROYED",
+        errorMessage: "Window has been destroyed",
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.SCAN);
+      if (!handler) {
+        throw new Error("skill:scan handler not registered");
+      }
+
+      // When & Then: 例外がスローされる
+      await expect(handler({})).rejects.toBeDefined();
     });
   });
 
@@ -682,6 +945,7 @@ describe("skillHandlers", () => {
         expect(ipcMain.removeHandler).toHaveBeenCalledWith(
           SKILL_CHANNELS.GET_DETAIL,
         );
+        expect(ipcMain.removeHandler).toHaveBeenCalledWith(SKILL_CHANNELS.SCAN);
       } catch {
         // Expected in Red phase
         throw new Error("unregisterSkillHandlers not implemented - Red phase");

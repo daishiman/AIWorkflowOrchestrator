@@ -1715,6 +1715,16 @@ node scripts/list-specs.js --topics
 | VectorSearchStrategy（セマンティック検索） | L151 |
 | 関連ドキュメント | L221 |
 
+### references/skill-executor-type-migration.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L3 |
+| 実装内容 | L7 |
+| 苦戦した箇所と解決策 | L28 |
+| 関連タスク | L63 |
+| 参照 | L72 |
+| 変更履歴 | L77 |
+
 ### references/spec-guidelines.md
 
 | セクション | 行 |

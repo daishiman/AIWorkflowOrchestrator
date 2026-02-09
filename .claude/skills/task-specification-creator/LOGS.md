@@ -43,6 +43,54 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-09 - patterns.md構造最適化（skill-creatorテンプレート準拠）]
+
+- **Agent**: skill-creator + aiworkflow-requirements
+- **Phase**: Phase 12 ドキュメント改善
+- **Result**: ✓ 成功
+- **Notes**: aiworkflow-requirements/references/patterns.md をカテゴリ別に再構成。目次追加、成功パターン5カテゴリ/失敗パターン4カテゴリ、見出しレベル統一
+
+---
+
+## [2026-02-09 - TASK-FIX-12-1-IPC-HARDCODE-FIX完了（SkillExecutorのIPCチャネル名定数化）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A（単一セッション）
+- **Notes**: SkillExecutor.tsのIPCチャネル名ハードコードを定数参照に変更。L918/L1214の`"skill:stream"`を`SKILL_CHANNELS.SKILL_STREAM`に置換。全テストPASS、Phase 10/11ともにPASS判定
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: TASK-FIX-12-1-IPC-HARDCODE-FIX
+- Phase: 1-12完了
+- 変更種別: リファクタリング（動作変更なし）
+
+### 成果
+
+- 変更ファイル: `apps/desktop/src/main/services/skill/SkillExecutor.ts`
+- 変更箇所: L918, L1214（ハードコード→定数参照）, L22（import追加）
+- テスト結果: 全テストPASS
+- レビュー結果: Phase 10 PASS（指摘0件）, Phase 11 PASS
+- 未タスク検出: 0件
+
+### 変更理由
+
+04-electron-security.md の IPC セキュリティ原則に準拠:
+- チャンネル名はホワイトリストで管理し、定数で参照
+- ハードコード文字列でチャンネル名を指定しない
+
+### Phase 12 成果物
+
+| 成果物               | パス                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| 実装ガイド           | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/implementation-guide.md         |
+| ドキュメント更新履歴 | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/documentation-changelog.md      |
+| 未タスクレポート     | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/unassigned-task-report.md       |
+
+---
+
 ## [2026-02-08 - TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（Claude Agent SDK用認証キー管理基盤）]
 
 - **Agent**: task-specification-creator
