@@ -16,7 +16,7 @@
 | [IPC / Electron](#ipc--electron)                | 2件        | チャンネル定数化、ペイロード拡張         |
 | [OAuth / 認証](#oauth--認証)                    | 4件        | Supabase PKCE、コールバック受信          |
 | [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
-| [ストア / 永続化](#ストア--永続化)              | 5件        | 型バリデーション、DEBUGログ、Slice統合   |
+| [ストア / 永続化](#ストア--永続化)              | 5件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策 |
 | [非同期処理](#非同期処理)                       | 1件        | race condition対策、executionId事前生成  |
 
 ### 失敗パターン
@@ -266,6 +266,80 @@
 - **結果**: ブラウザからのコールバックを確実に受信可能。カスタムプロトコルの制限（OSによる登録問題）を回避
 - **適用条件**: Electron/Tauri等のデスクトップアプリでのOAuth実装時
 - **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001)
+
+#### Zustand Store Hooks 無限ループ対策（P31）
+
+##### 1. 問題の概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 |
+| 発見日 | 2026-02-10 |
+| 影響範囲 | SettingsView, LLMSelectorPanel, SkillSelector |
+| 症状 | 設定画面がぐるぐる回り続ける、LLM/スキル選択が無限実行 |
+
+##### 2. 根本原因
+
+- **状況**: 合成Store Hook（`useAuthModeStore()` 等）が毎回新しいオブジェクトを返す
+- **問題**: `useEffect` の依存配列に含めると無限ループが発生
+- **原因**: Zustand の合成 Store は呼び出しごとに新しいオブジェクト参照を生成するため、React の依存配列比較で常に「変更あり」と判定される
+
+```typescript
+// ❌ 無限ループ発生
+const { initializeAuthMode } = useAuthModeStore();
+useEffect(() => {
+  initializeAuthMode();
+}, [initializeAuthMode]); // initializeAuthMode は毎回新しい参照
+
+// ✅ 修正後
+const { initializeAuthMode } = useAuthModeStore();
+const initRef = useRef(false);
+useEffect(() => {
+  if (!initRef.current) {
+    initRef.current = true;
+    initializeAuthMode();
+  }
+}, []); // 依存配列は空
+```
+
+##### 3. 解決パターン
+
+| アプローチ | 実装方法 | 適用場面 |
+|-----------|---------|---------|
+| **短期（即時対応）** | `useRef` ガード + 空の依存配列 | 既存コードの緊急修正 |
+| **長期（設計改善）** | 個別セレクタベース再設計（`useAuthMode()`, `useSetAuthMode()` 等） | 新規実装・リファクタリング時 |
+
+- **短期解決策**: `useRef` で初期化済みフラグを管理し、依存配列を空にする
+- **長期解決策**: UT-STORE-HOOKS-REFACTOR-001 で個別セレクタベースの Hook に再設計
+
+##### 4. 実装時の苦戦箇所
+
+| 課題 | 症状 | 解決策 |
+|------|------|--------|
+| ESLint キャッシュ | `react-hooks/exhaustive-deps` ルールが検出されない | `rm -f .eslintcache` でキャッシュクリア |
+| 合成 Hook の参照不安定 | 依存配列に含めると無限ループ | `useRef` ガードで初期化を1回に制限 |
+| コメントフォーマット | 抑制コメントの形式が不統一 | `// P31対策:` 形式に標準化 |
+| 依存配列設計判断 | ESLint ルールとの競合 | ケース別判断基準（下記参照） |
+
+**依存配列設計の判断基準**:
+- 合成 Store Hook から取得した関数 → 依存配列に含めない（`useRef` ガード使用）
+- 個別セレクタ（`useAuthMode()` 等）から取得した値 → 依存配列に含める
+- `eslint-disable-next-line` を使用する場合は理由コメント必須
+
+##### 5. 検証チェックリスト
+
+- [ ] **症状確認**: 対象画面で無限ループ（ローディングが止まらない）が発生しているか
+- [ ] **原因特定**: `useEffect` の依存配列に合成 Store Hook の関数が含まれているか
+- [ ] **修正適用**: `useRef` ガードを追加し、依存配列を空にしたか
+- [ ] **コメント追加**: `// P31対策: 合成Store Hookは毎回新しい参照を返すため依存配列から除外` を記載したか
+- [ ] **動作検証**: 画面遷移・リロード後も正常に動作するか
+- [ ] **ESLint 確認**: `.eslintcache` をクリアして警告を確認したか
+
+##### 6. 参照リンク
+
+- **落とし穴記録**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md)
+- **状態管理設計**: [arch-state-management.md](./arch-state-management.md)
+- **後続タスク**: UT-STORE-HOOKS-REFACTOR-001（個別セレクタベース再設計）
 
 ### 非同期処理
 

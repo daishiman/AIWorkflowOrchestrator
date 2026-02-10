@@ -287,9 +287,10 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
     [isOpen, focusedIndex, allOptions, handleSelect, handleToggle],
   );
 
+  // P31対策: rescanSkillsは参照が不安定なため依存配列から除外
   const handleRescan = useCallback(() => {
     rescanSkills();
-  }, [rescanSkills]);
+  }, []); // 意図的に空の依存配列（P31対策）
 
   // Compute base indices for each section (avoids mutable counter in render)
   const noneOptionIndex = 0;

@@ -274,6 +274,17 @@ node scripts/list-specs.js --topics
 | SkillCreatorService（TASK-9B-G） | L1123 |
 | 完了タスク | L1371 |
 | 変更履歴 | L1402 |
+| SkillImportStore（TASK-2B） | L527 |
+| SkillSlice型定義（TASK-6-1） | L579 |
+| ModifierSkill（スライド逆同期機能） | L671 |
+| ChatPanel統合（TASK-7D） | L705 |
+| SkillFileManager（TASK-9A-A） | L740 |
+| テストアーキテクチャ（TASK-8C-A） | L828 |
+| 完了タスク | L880 |
+| 関連ドキュメント | L1098 |
+| SkillCreatorService（TASK-9B-G） | L1111 |
+| 完了タスク | L1359 |
+| 変更履歴 | L1390 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -1298,11 +1309,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L26 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L151 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L241 |
-| permissionHistorySlice（権限要求履歴管理） | L397 |
-| 関連ドキュメント | L526 |
+| Zustand Sliceパターン | L28 |
+| P31対策: Store Hooks無限ループ防止パターン | L156 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L396 |
+| skillSlice（スキル実行状態管理） | L486 |
+| permissionHistorySlice（権限要求履歴管理） | L613 |
+| 関連ドキュメント | L742 |
 
 ### references/arch-ui-components.md
 
@@ -1536,6 +1548,12 @@ node scripts/list-specs.js --topics
 | 成功パターン | L34 |
 | 失敗パターン（避けるべきこと） | L299 |
 | ガイドライン | L517 |
+
+|------------|----|
+| 目次 | L9 |
+| 成功パターン | L32 |
+| 失敗パターン（避けるべきこと） | L201 |
+| ガイドライン | L376 |
 
 ### references/plugin-development.md
 
@@ -1789,6 +1807,9 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L319 |
 | 関連ドキュメント | L382 |
 | 変更履歴 | L392 |
+| 残課題（未タスク） | L265 |
+| 関連ドキュメント | L328 |
+| 変更履歴 | L338 |
 
 ### references/testing-accessibility.md
 

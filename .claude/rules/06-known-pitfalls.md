@@ -73,6 +73,33 @@
 
 - **教訓**: `new URL("myapp://path/to")` では RFC 3986 の authority 規則により pathname が期待どおりにならない。カスタムプロトコルでは手動パースが安全
 
+### P31: Zustand Store Hooks無限ループ
+
+- **教訓**: `useAuthModeStore()` 等の合成Store Hookが毎回新しいオブジェクトを返すため、その中の関数を`useEffect`の依存配列に含めると無限ループが発生する
+- **症状**: 設定画面がぐるぐる回り続ける、LLM/スキル選択が無限実行
+- **解決策**:
+  1. **短期**: useRefでガードし、依存配列は空にする
+  2. **長期**: 個別セレクタベース（`useAuthMode()`, `useSetAuthMode()`等）に再設計
+- **関連タスク**: UT-FIX-STORE-HOOKS-INFINITE-LOOP-001
+
+```typescript
+// ❌ 無限ループ
+const { initializeAuthMode } = useAuthModeStore();
+useEffect(() => {
+  initializeAuthMode();
+}, [initializeAuthMode]);
+
+// ✅ 修正後
+const { initializeAuthMode } = useAuthModeStore();
+const initRef = useRef(false);
+useEffect(() => {
+  if (!initRef.current) {
+    initRef.current = true;
+    initializeAuthMode();
+  }
+}, []);
+```
+
 ## ビルド / 環境
 
 ### P7: ネイティブモジュールのバイナリ不一致
@@ -249,4 +276,3 @@
 - **教訓**: API 統一後、旧 API（`window.skillAPI`）が本当に削除されたかの手動確認を忘れがち。DevTools で `window.skillAPI === undefined` を確認する必要がある
 - **解決策**: Phase 11 手動テストチェックリストに「旧 API が undefined であることを確認」を必ず含める
 - **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
-  > > > > > > > Stashed changes

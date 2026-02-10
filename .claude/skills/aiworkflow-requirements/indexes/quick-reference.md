@@ -47,6 +47,32 @@ export const createXxxSlice: StateCreator<XxxSlice> = (set) => ({
 
 **詳細**: architecture-patterns.md L141-234
 
+### P31対策: Store Hooks無限ループ防止
+
+合成Store Hook（`useAuthModeStore()`等）が毎回新しいオブジェクトを返すため、関数を`useEffect`依存配列に含めると無限ループ発生。
+
+| 対策 | 方法 | 適用場面 |
+|------|------|---------|
+| 短期 | `useRef`ガード + 空の依存配列 | 既存コード緊急修正 |
+| 長期 | 個別セレクタ再設計 | 新規実装時 |
+
+```typescript
+// ❌ 無限ループ
+const { initializeAuthMode } = useAuthModeStore();
+useEffect(() => { initializeAuthMode(); }, [initializeAuthMode]);
+
+// ✅ useRefガード
+const initRef = useRef(false);
+useEffect(() => {
+  if (!initRef.current) { initRef.current = true; initializeAuthMode(); }
+}, []); // P31対策: 意図的に空の依存配列
+```
+
+**詳細**:
+- 設計原則: arch-state-management.md L156-245
+- 成功パターン: patterns.md（Zustand Store Hooks 無限ループ対策）
+- 落とし穴: 06-known-pitfalls.md#P31
+
 ### ChatPanel統合パターン（TASK-7D）
 
 ```typescript

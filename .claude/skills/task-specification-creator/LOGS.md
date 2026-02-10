@@ -154,6 +154,37 @@ P23パターン（API二重定義の型管理）準拠:
 
 ---
 
+## [2026-02-10 - UT-FIX-STORE-HOOKS-INFINITE-LOOP-001完了（Zustand Store Hooks無限ループ修正）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A（単一セッション）
+- **Notes**: SettingsView.tsxのuseAuthModeStore無限ループを修正。useRefガードによる初期化済みフラグ管理で多重呼び出しを防止
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: UT-FIX-STORE-HOOKS-INFINITE-LOOP-001
+- Phase: 1-12完了
+- 変更種別: バグ修正
+
+### 成果
+
+- 変更ファイル: `apps/desktop/src/renderer/views/SettingsView.tsx`
+- 変更内容: useRefで初期化済みフラグを管理し、無限ループを防止
+- テスト結果: 全テストPASS
+- レビュー結果: Phase 11 PASS
+- 06-known-pitfalls.md: P31追加
+
+### 変更理由
+
+- Zustand合成Store Hook（useAuthModeStore）が毎回新しいオブジェクトを返す
+- useEffectの依存配列にその中の関数を含めると無限ループが発生
+- 短期的解決: useRefガード、長期的解決: 個別セレクタベース設計
+
+---
+
 ## [2026-02-09 - patterns.md構造最適化（skill-creatorテンプレート準拠）]
 
 - **Agent**: skill-creator + aiworkflow-requirements

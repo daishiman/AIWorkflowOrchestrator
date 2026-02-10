@@ -9,7 +9,9 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
-| v1.10.0    | 2026-02-10 | TASK-FIX-6-1-STATE-CENTRALIZATION完了: skillSliceをagentSliceに統合、executionId事前生成によるrace condition対策、skillSliceセクションを「統合済み」に更新 |
+| v1.12.0    | 2026-02-10 | P31対策実装詳細追加: SettingsView/SkillSelector変更箇所、実装時の4課題と解決策、開発者向けチェックリスト |
+| v1.11.0    | 2026-02-10 | P31対策セクション追加: Store Hooks無限ループ防止パターン（useRefガード、依存配列設計、個別セレクタ再設計） |
+| v1.10.0    | 2026-02-10 | TASK-UT-AUTH-MODE-UI-INTEGRATION完了: 未タスク2件追加（UT-STORE-HOOKS-REFACTOR-001, UT-FIX-APP-INITAUTH-CHECK-001）、TASK-FIX-6-1-STATE-CENTRALIZATION完了: skillSliceをagentSliceに統合、executionId事前生成によるrace condition対策 |
 | v1.9.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了: authSliceにsessionExpiresAt/isRefreshing追加、セキュリティ考慮事項・関連タスク記載 |
 | v1.8.0     | 2026-02-02 | 両ブランチ統合: task-imp-permission-date-filter完了+TASK-8B完了 |
 | v1.7.0     | 2026-02-02 | 実装詳細拡充: dateFilterUtils.ts実装ファイル追加、テストファイル2件追加、フィルタリングパイプライン仕様追加、品質メトリクス72テスト反映 |
@@ -92,6 +94,9 @@
 | TASK-FIX-GOOGLE-LOGIN-001       | Googleログイン修正           | **完了**   |
 | AUTH-UI-001                      | 認証UI改善                   | **完了**   |
 | TASK-AUTH-SESSION-REFRESH-001    | セッション自動リフレッシュ   | **完了**   |
+| TASK-UT-AUTH-MODE-UI-INTEGRATION | AuthMode UI統合              | **完了**   |
+| UT-STORE-HOOKS-REFACTOR-001      | Store Hooks個別セレクタ再設計 | 未実施     |
+| UT-FIX-APP-INITAUTH-CHECK-001    | App.tsx initializeAuth確認    | 未実施     |
 
 ### agentSlice詳細
 
@@ -145,6 +150,246 @@
 
 - `store/slices/__tests__/{name}Slice.test.ts` を作成
 - 全アクションのテストを実装
+
+---
+
+## P31対策: Store Hooks無限ループ防止パターン
+
+> 参照: [06-known-pitfalls.md#P31](../../../rules/06-known-pitfalls.md#p31-zustand-store-hooks無限ループ)
+
+### 問題の概要
+
+合成Store Hook（`useAuthModeStore()`等）が毎回新しいオブジェクトを返すため、その中の関数を`useEffect`の依存配列に含めると無限ループが発生する。
+
+### 症状
+
+- 設定画面がぐるぐる回り続ける
+- LLM/スキル選択が無限実行される
+- DevToolsでStateの更新が連続発生
+
+### 対象コンポーネント
+
+| コンポーネント     | ファイルパス                                                              | 影響するHook         |
+| ------------------ | ------------------------------------------------------------------------- | -------------------- |
+| `SettingsView`     | `apps/desktop/src/renderer/views/SettingsView/index.tsx`                  | `useAuthModeStore()` |
+| `LLMSelectorPanel` | `apps/desktop/src/renderer/components/settings/LLMSelectorPanel.tsx`      | `useAuthModeStore()` |
+| `SkillSelector`    | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`            | `useSkillStore()`    |
+
+### 短期解決策: useRefガードパターン
+
+初期化処理を一度だけ実行するためのガードパターン。
+
+**アンチパターン（無限ループ発生）**:
+
+```typescript
+const { initializeAuthMode } = useAuthModeStore();
+useEffect(() => {
+  initializeAuthMode();
+}, [initializeAuthMode]); // 毎回新しい関数参照 → 無限ループ
+```
+
+**推奨パターン（useRefガード）**:
+
+```typescript
+const { initializeAuthMode } = useAuthModeStore();
+const initRef = useRef(false);
+useEffect(() => {
+  if (!initRef.current) {
+    initRef.current = true;
+    initializeAuthMode();
+  }
+}, []); // 依存配列は空
+```
+
+### 依存配列設計のベストプラクティス
+
+| ケース                         | 依存配列                     | 備考                                   |
+| ------------------------------ | ---------------------------- | -------------------------------------- |
+| 初期化処理（一度だけ実行）     | `[]`                         | useRefガードと併用                     |
+| プリミティブ値の変化で再実行   | `[primitiveValue]`           | 安全                                   |
+| Store関数の変化で再実行        | 使用禁止                     | 無限ループの原因                       |
+| 外部から受け取ったコールバック | `[callback]`                 | useCallbackでメモ化されていれば安全    |
+
+### 長期解決策: 個別セレクタベースの再設計
+
+Store Hookを分解し、個別セレクタを提供することで、関数の参照安定性を確保する。
+
+| 現行パターン                                         | 推奨パターン                                                                     |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `const { authMode, setAuthMode } = useAuthModeStore()` | `const authMode = useAuthMode()`<br>`const setAuthMode = useSetAuthMode()`     |
+| オブジェクト全体を返す                               | 個別の値/関数を返す                                                              |
+| 毎回新しい参照                                       | 安定した参照（shallow比較可能）                                                  |
+
+**推奨実装パターン**:
+
+```typescript
+// store/authModeStore.ts
+export const useAuthMode = () => useStore((state) => state.authMode);
+export const useSetAuthMode = () => useStore((state) => state.setAuthMode);
+export const useInitializeAuthMode = () => useStore((state) => state.initializeAuthMode);
+
+// コンポーネント側
+const authMode = useAuthMode();
+const initializeAuthMode = useInitializeAuthMode();
+
+useEffect(() => {
+  initializeAuthMode();
+}, [initializeAuthMode]); // 安定した参照のため無限ループしない
+```
+
+### 関連タスク
+
+| タスクID                             | 内容                          | ステータス |
+| ------------------------------------ | ----------------------------- | ---------- |
+| UT-STORE-HOOKS-REFACTOR-001          | Store Hooks個別セレクタ再設計 | 未実施     |
+| UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | 未実施     |
+
+### 実装詳細（TASK-UT-AUTH-MODE-UI-INTEGRATION）
+
+P31対策として以下のコンポーネントにuseRefガードパターンを適用した。
+
+#### SettingsView
+
+**ファイル**: `apps/desktop/src/renderer/views/SettingsView/index.tsx`
+
+**変更内容**:
+
+| 行番号  | 変更前                                                      | 変更後                                                                              |
+| ------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 34      | なし                                                        | `const authModeInitRef = useRef(false);`                                           |
+| 35-40   | `useEffect(() => { initializeAuthMode(); }, [initializeAuthMode]);` | useRefガードで1回のみ実行、空の依存配列                                             |
+| 40      | なし                                                        | P31対策コメント追加                                                                 |
+
+**適用パターン**:
+
+```typescript
+// P31対策: useRefガードパターン
+const authModeInitRef = useRef(false);
+useEffect(() => {
+  if (!authModeInitRef.current) {
+    authModeInitRef.current = true;
+    initializeAuthMode();
+  }
+}, []); // 意図的に空の依存配列: initializeAuthModeは1回だけ実行（P31対策）
+```
+
+#### SkillSelector
+
+**ファイル**: `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`
+
+**変更内容**:
+
+| 行番号  | 変更前                                                        | 変更後                                                                            |
+| ------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 287-290 | `const handleRescan = useCallback(() => { rescanSkills(); }, [rescanSkills]);` | 空の依存配列 + P31対策コメント追加                                                |
+
+**適用パターン**:
+
+```typescript
+// P31対策: rescanSkillsは参照が不安定なため依存配列から除外
+const handleRescan = useCallback(() => {
+  rescanSkills();
+}, []); // 意図的に空の依存配列（P31対策）
+```
+
+### 実装時の課題と解決策
+
+#### 課題1: ESLintキャッシュによる誤検出
+
+**症状**: `react-hooks/exhaustive-deps` ルールが未定義として扱われ、eslint-disable コメントが認識されない
+
+**原因**: ESLintのキャッシュが古い設定を参照していた
+
+**解決策**:
+
+```bash
+# ESLintキャッシュをクリア
+pnpm --filter @repo/desktop lint -- --cache-location node_modules/.cache/eslint
+# または
+rm -rf node_modules/.cache/eslint
+```
+
+**教訓**: ESLint設定変更後はキャッシュクリアが必要な場合がある
+
+#### 課題2: Zustand合成Hookの参照不安定性
+
+**症状**: `useAuthModeStore()` や `useSkillStore()` から取得した関数を依存配列に含めると無限ループが発生
+
+**原因**: 合成Hookが毎回新しいオブジェクトを生成し、その中の関数参照も毎回変わる
+
+**根本原因分析**:
+
+| Hook種別                     | 参照安定性 | 依存配列に含めた場合 |
+| ---------------------------- | ---------- | -------------------- |
+| プリミティブ値セレクタ       | 安定       | 安全                 |
+| 個別関数セレクタ             | 安定       | 安全                 |
+| オブジェクト全体返却（現行） | 不安定     | 無限ループ発生       |
+
+**短期解決策**: useRefガード + 空の依存配列
+
+**長期解決策**: 個別セレクタベースの再設計（UT-STORE-HOOKS-REFACTOR-001）
+
+#### 課題3: コメントフォーマットの統一
+
+**症状**: P31対策コメントの書式がファイル間で不統一
+
+**解決策**: 以下のコメントフォーマットを標準化
+
+```typescript
+// P31対策: [理由の説明]
+// 意図的に空の依存配列: [関数名]は1回だけ実行（P31対策）
+```
+
+#### 課題4: useEffect依存配列の設計判断
+
+**症状**: ESLint `react-hooks/exhaustive-deps` ルールとP31対策が競合
+
+**判断基準**:
+
+| ケース                               | 推奨対応                                                    |
+| ------------------------------------ | ----------------------------------------------------------- |
+| 初期化処理（マウント時1回のみ）      | 空の依存配列 + useRefガード + eslint-disable コメント      |
+| Store関数の変化で再実行が必要        | 個別セレクタに移行するまで空の依存配列                      |
+| プリミティブ値の変化で再実行が必要   | 通常どおり依存配列に含める                                  |
+
+**eslint-disableコメントの書き方**:
+
+```typescript
+// eslint-disable-next-line react-hooks/exhaustive-deps -- P31対策: initializeAuthModeは1回のみ実行
+```
+
+### 将来の開発者向けガイダンス
+
+#### P31問題発生時のチェックリスト
+
+1. **症状の確認**
+   - [ ] 画面がローディング状態のまま止まらない
+   - [ ] DevToolsでStateの更新が連続している
+   - [ ] コンソールに大量のログが出力されている
+
+2. **原因の特定**
+   - [ ] `useEffect` の依存配列にStore関数が含まれているか確認
+   - [ ] 合成Hook（`useXxxStore()`）を使用しているか確認
+   - [ ] 依存配列の関数が毎回新しい参照になっていないか確認
+
+3. **修正の適用**
+   - [ ] useRefガードパターンを適用
+   - [ ] 依存配列を空にする
+   - [ ] P31対策コメントを追加
+   - [ ] eslint-disable コメントを追加（必要な場合）
+
+4. **検証**
+   - [ ] 無限ループが解消されたか確認
+   - [ ] 初期化処理が1回だけ実行されているか確認
+   - [ ] DevToolsでState更新が落ち着いているか確認
+
+#### コードレビュー時の確認項目
+
+| 確認項目                                              | 判定基準                                             |
+| ----------------------------------------------------- | ---------------------------------------------------- |
+| 合成HookからのStore関数を依存配列に含めていないか     | 空の依存配列 + useRefガード、またはeslint-disable   |
+| P31対策コメントが追加されているか                     | `// P31対策:` または `// 意図的に空の依存配列`       |
+| 初期化処理が1回のみ実行されることが保証されているか   | useRefガード or モジュールスコープフラグ             |
 
 ---
 
