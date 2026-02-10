@@ -22,6 +22,38 @@ vi.mock("../../components/organisms/ApiKeysSection", () => ({
   ),
 }));
 
+// Mock AuthModeSelector to avoid complex IPC dependencies
+vi.mock("../../components/settings/AuthModeSelector", () => ({
+  AuthModeSelector: ({
+    currentMode,
+    onModeChange,
+    disabled,
+  }: {
+    currentMode: string;
+    onModeChange: (mode: string) => void;
+    disabled?: boolean;
+  }) => (
+    <div data-testid="auth-mode-selector">
+      <button
+        data-testid="auth-mode-subscription"
+        disabled={disabled}
+        onClick={() => onModeChange("subscription")}
+        aria-pressed={currentMode === "subscription"}
+      >
+        サブスクリプション
+      </button>
+      <button
+        data-testid="auth-mode-api-key"
+        disabled={disabled}
+        onClick={() => onModeChange("api-key")}
+        aria-pressed={currentMode === "api-key"}
+      >
+        APIキー
+      </button>
+    </div>
+  ),
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // SettingsSlice
@@ -40,8 +72,18 @@ const createMockState = (overrides = {}) => ({
   ...overrides,
 });
 
+// Mock useAuthModeStore
+const createMockAuthModeStore = () => ({
+  mode: "subscription" as const,
+  status: null,
+  isLoading: false,
+  setMode: vi.fn(),
+  initializeAuthMode: vi.fn(),
+});
+
 vi.mock("../../store", () => ({
   useAppStore: vi.fn((selector) => selector(createMockState())),
+  useAuthModeStore: vi.fn(() => createMockAuthModeStore()),
 }));
 
 describe("SettingsView", () => {
@@ -176,6 +218,84 @@ describe("SettingsView", () => {
   describe("displayName", () => {
     it("displayNameが設定されている", () => {
       expect(SettingsView.displayName).toBe("SettingsView");
+    });
+  });
+
+  describe("認証方式設定", () => {
+    it("認証方式設定セクションを表示する", () => {
+      render(<SettingsView />);
+      expect(screen.getByText("Claude Agent SDK 認証方式")).toBeInTheDocument();
+    });
+
+    it("AuthModeSelectorコンポーネントをレンダリングする", () => {
+      render(<SettingsView />);
+      expect(screen.getByTestId("auth-mode-selector")).toBeInTheDocument();
+    });
+
+    it("サブスクリプションとAPIキーボタンを表示する", () => {
+      render(<SettingsView />);
+      expect(screen.getByTestId("auth-mode-subscription")).toBeInTheDocument();
+      expect(screen.getByTestId("auth-mode-api-key")).toBeInTheDocument();
+    });
+  });
+
+  describe("無限ループ防止（P31対策）", () => {
+    it("TC-SV-001: initializeAuthModeが1回だけ呼ばれる（rerenderしても増えない）", async () => {
+      const mockInitializeAuthMode = vi.fn();
+      const { useAuthModeStore } = await import("../../store");
+      vi.mocked(useAuthModeStore).mockReturnValue({
+        mode: "subscription" as const,
+        status: null,
+        isLoading: false,
+        setMode: vi.fn(),
+        initializeAuthMode: mockInitializeAuthMode,
+      });
+
+      const { rerender } = render(<SettingsView />);
+
+      // 最初のレンダリングで1回呼ばれる
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+
+      // rerenderしても追加で呼ばれない
+      rerender(<SettingsView />);
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+
+      // 複数回rerenderしても変わらない
+      rerender(<SettingsView className="test" />);
+      rerender(<SettingsView />);
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+    });
+
+    it("TC-SV-002: stateの変更で再レンダリングしても初期化は再実行されない", async () => {
+      const mockInitializeAuthMode = vi.fn();
+      const mockSetMode = vi.fn();
+      const { useAuthModeStore } = await import("../../store");
+
+      // 初期状態
+      vi.mocked(useAuthModeStore).mockReturnValue({
+        mode: "subscription" as const,
+        status: null,
+        isLoading: false,
+        setMode: mockSetMode,
+        initializeAuthMode: mockInitializeAuthMode,
+      });
+
+      const { rerender } = render(<SettingsView />);
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+
+      // mode が変更された状態をシミュレート
+      vi.mocked(useAuthModeStore).mockReturnValue({
+        mode: "api-key" as const,
+        status: { isValid: true, message: "APIキーが設定されています" },
+        isLoading: false,
+        setMode: mockSetMode,
+        initializeAuthMode: mockInitializeAuthMode,
+      });
+
+      rerender(<SettingsView />);
+
+      // state変更があっても initializeAuthMode は追加呼び出しされない
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
     });
   });
 });

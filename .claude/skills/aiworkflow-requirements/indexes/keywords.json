@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-10T08:08:06.255Z",
-  "totalKeywords": 1063,
+  "generated": "2026-02-10T11:08:28.941Z",
+  "totalKeywords": 1067,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -103,6 +103,7 @@
       "security-api-electron.md",
       "security-implementation.md",
       "security-skill-execution.md",
+      "security-skill-ipc.md",
       "skill-executor-type-migration.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
@@ -924,6 +925,33 @@
       "testing-dialog-patterns.md",
       "testing-playwright-e2e.md",
       "ui-ux-advanced.md"
+    ],
+    "対策": [
+      "arch-state-management.md",
+      "security-input-validation.md"
+    ],
+    "Store": [
+      "arch-state-management.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "security-skill-execution.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md"
+    ],
+    "Hooks": [
+      "arch-state-management.md",
+      "interfaces-chat-history.md"
+    ],
+    "無限ループ防止パターン": [
+      "arch-state-management.md"
+    ],
+    "ESLint": [
+      "arch-state-management.md"
+    ],
+    "キャッシュをクリア": [
+      "arch-state-management.md"
+    ],
+    "または": [
+      "arch-state-management.md"
     ],
     "chatEditSlice": [
       "arch-state-management.md"
@@ -2341,9 +2369,6 @@
     "conversationAPI": [
       "interfaces-chat-history.md"
     ],
-    "Hooks": [
-      "interfaces-chat-history.md"
-    ],
     "コンポーネント構成": [
       "interfaces-chat-history.md",
       "ui-history-components.md",
@@ -2572,12 +2597,6 @@
     "クエリサービス": [
       "interfaces-rag-graphrag-query.md",
       "rag-query-pipeline.md"
-    ],
-    "Store": [
-      "interfaces-rag-knowledge-graph-store.md",
-      "security-skill-execution.md",
-      "testing-component-patterns.md",
-      "testing-fixtures.md"
     ],
     "検索クエリ・結果型定義": [
       "interfaces-rag-search.md",
@@ -3218,9 +3237,6 @@
       "security-input-validation.md"
     ],
     "XSS": [
-      "security-input-validation.md"
-    ],
-    "対策": [
       "security-input-validation.md"
     ],
     "スキーマによるバリデーション": [

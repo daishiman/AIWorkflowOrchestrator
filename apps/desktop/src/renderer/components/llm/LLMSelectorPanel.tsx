@@ -4,7 +4,7 @@
  * @feature chat-multi-llm-switching
  */
 
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import { useLLMStore } from "@/renderer/store";
 import { ProviderSelector } from "./ProviderSelector";
 import { ModelSelector } from "./ModelSelector";
@@ -45,17 +45,26 @@ export const LLMSelectorPanel: React.FC<LLMSelectorPanelProps> = ({
     ? healthStatus[selectedProviderId]
     : undefined;
 
-  // Fetch providers on mount
+  // Fetch providers on mount (1回だけ実行 - P31対策)
+  const providersFetchedRef = useRef(false);
   useEffect(() => {
-    fetchProviders();
-  }, [fetchProviders]);
+    if (!providersFetchedRef.current) {
+      providersFetchedRef.current = true;
+      fetchProviders();
+    }
+  }, []); // 意図的に空の依存配列: fetchProvidersは1回だけ実行（P31対策）
 
-  // Check health when provider changes
+  // Check health when provider changes (P31対策: checkHealthは依存配列から除外)
+  const prevProviderIdRef = useRef<string | null>(null);
   useEffect(() => {
-    if (selectedProviderId) {
+    if (
+      selectedProviderId &&
+      selectedProviderId !== prevProviderIdRef.current
+    ) {
+      prevProviderIdRef.current = selectedProviderId;
       checkHealth(selectedProviderId);
     }
-  }, [selectedProviderId, checkHealth]);
+  }, [selectedProviderId]); // checkHealthは意図的に除外（P31対策）
 
   const handleRetry = useCallback(() => {
     fetchProviders();
