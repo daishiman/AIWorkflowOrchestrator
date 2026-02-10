@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { AccountSection } from "../../components/organisms/AccountSection";
@@ -30,10 +30,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
     initializeAuthMode,
   } = useAuthModeStore();
 
-  // Initialize auth mode on mount
+  // Initialize auth mode on mount (1回だけ実行 - P31対策)
+  const authModeInitRef = useRef(false);
   useEffect(() => {
-    initializeAuthMode();
-  }, [initializeAuthMode]);
+    if (!authModeInitRef.current) {
+      authModeInitRef.current = true;
+      initializeAuthMode();
+    }
+  }, []); // 意図的に空の依存配列: initializeAuthModeは1回だけ実行（P31対策）
 
   // Local state
   const [isLoading] = useState(false);

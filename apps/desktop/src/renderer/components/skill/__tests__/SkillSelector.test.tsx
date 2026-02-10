@@ -474,4 +474,109 @@ describe("SkillSelector", () => {
     const listbox = screen.getByRole("listbox");
     expect(listbox).toHaveAttribute("id", "skill-listbox");
   });
+
+  // ============================================================
+  // Phase 6: 無限ループ防止テスト（P31対策）
+  // ============================================================
+
+  // TC-SK-001: rescanSkillsが意図しない再実行をしない
+  it("TC-SK-001: should not call rescanSkills unintentionally on rerender", async () => {
+    mockRescanSkills.mockClear();
+    const { rerender } = render(<SkillSelector />);
+
+    // 初期レンダリングでは rescanSkills は呼ばれない（ボタンクリック時のみ）
+    expect(mockRescanSkills).not.toHaveBeenCalled();
+
+    // rerender しても呼ばれない
+    rerender(<SkillSelector />);
+    expect(mockRescanSkills).not.toHaveBeenCalled();
+
+    // className が変わっても呼ばれない
+    rerender(<SkillSelector className="custom-class" />);
+    expect(mockRescanSkills).not.toHaveBeenCalled();
+  });
+
+  // TC-SK-002: store state 変更時も handleRescan は安定している
+  it("TC-SK-002: should maintain stable handleRescan callback across state changes", async () => {
+    const user = userEvent.setup();
+    mockRescanSkills.mockClear();
+
+    render(<SkillSelector />);
+
+    // ドロップダウンを開く
+    await user.click(screen.getByRole("combobox"));
+
+    // 再スキャンボタンをクリック
+    const rescanButton = screen.getByRole("button", { name: /再スキャン/ });
+    await user.click(rescanButton);
+
+    // 1回だけ呼ばれる
+    expect(mockRescanSkills).toHaveBeenCalledTimes(1);
+  });
+
+  // TC-SK-003: isScanning 状態変更時に無限ループしない
+  it("TC-SK-003: should not cause infinite loop when isScanning changes", async () => {
+    const user = userEvent.setup();
+    mockRescanSkills.mockClear();
+
+    // 初期状態
+    currentStoreState = {
+      ...defaultStoreState,
+      isScanning: false,
+    };
+    const { rerender } = render(<SkillSelector />);
+
+    // isScanning が true に変更
+    currentStoreState = {
+      ...defaultStoreState,
+      isScanning: true,
+    };
+    rerender(<SkillSelector />);
+
+    // isScanning が false に戻る
+    currentStoreState = {
+      ...defaultStoreState,
+      isScanning: false,
+    };
+    rerender(<SkillSelector />);
+
+    // state 変更だけでは rescanSkills は呼ばれない
+    expect(mockRescanSkills).not.toHaveBeenCalled();
+
+    // ドロップダウンを開いて確認
+    await user.click(screen.getByRole("combobox"));
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+  });
+
+  // TC-SK-004: selectedSkillName 変更時も無限ループしない
+  it("TC-SK-004: should not cause infinite loop when selectedSkillName changes", () => {
+    mockRescanSkills.mockClear();
+
+    // 初期状態 - スキル未選択
+    currentStoreState = {
+      ...defaultStoreState,
+      selectedSkillName: null,
+    };
+    const { rerender } = render(<SkillSelector />);
+    expect(screen.getByText("なし")).toBeInTheDocument();
+
+    // スキルが選択された
+    currentStoreState = {
+      ...defaultStoreState,
+      selectedSkillName: "skill-a",
+    };
+    rerender(<SkillSelector />);
+    expect(screen.getByText("skill-a")).toBeInTheDocument();
+
+    // 別のスキルに変更
+    currentStoreState = {
+      ...defaultStoreState,
+      selectedSkillName: "skill-b",
+    };
+    rerender(<SkillSelector />);
+    expect(screen.getByText("skill-b")).toBeInTheDocument();
+
+    // スキル変更で rescanSkills は呼ばれない
+    expect(mockRescanSkills).not.toHaveBeenCalled();
+  });
 });

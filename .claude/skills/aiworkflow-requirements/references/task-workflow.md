@@ -316,6 +316,8 @@
 | UT-FIX-5-3                                   | Preload Agent Abort セキュリティ修正                                | 高 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`                  |
 | TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
 | UT-FIX-5-4                                   | AgentSDKAPI 型定義不一致修正                                       | 低 | UT-FIX-5-3 Phase 12 アーキテクチャ検証                         | `docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md`          |
+| UT-STORE-HOOKS-REFACTOR-001                  | Store Hooksを個別セレクタベースに再設計                             | 中 | TASK-UT-AUTH-MODE-UI-INTEGRATION タスク仕様書 セクション8      | `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor.md`                         |
+| UT-FIX-APP-INITAUTH-CHECK-001                | App.tsxのinitializeAuth確認                                         | 低 | TASK-UT-AUTH-MODE-UI-INTEGRATION Phase 10 MINOR指摘            | `docs/30-workflows/unassigned-task/task-ut-fix-app-initauth-check.md`                       |
 
 ### 未タスク管理ルール
 
@@ -362,3 +364,4 @@
 | 1.19.1     | 2026-02-06 | DEBT-SEC-001完了記録追加。UT-SEC-001はDEBT-SEC-002/003の対応範囲に包含と判定（独立未タスク不要）                                                                                                             |
 | 1.19.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了記録追加、未タスク3件追加（UT-OFFLINE-REFRESH-001、UT-AUDIT-001、UT-REFRESH-NOTIFICATION-001） |
 | 1.20.0     | 2026-02-06 | 未タスク2件追加: UT-PROTOCOL-URL-001（カスタムプロトコルURLパース標準化）、UT-SEC-001更新（独立指示書作成）。TASK-AUTH-CALLBACK-001 Phase 12苦戦箇所検出                 |
+| 1.21.0     | 2026-02-10 | 未タスク2件追加: UT-STORE-HOOKS-REFACTOR-001（Store Hooks個別セレクタ再設計）、UT-FIX-APP-INITAUTH-CHECK-001（App.tsx initializeAuth確認）。TASK-UT-AUTH-MODE-UI-INTEGRATION Phase 10/12検出 |

@@ -16,7 +16,7 @@ issue_number: 763
 | 対象機能         | 認証モード選択UI                                       |
 | 優先度           | 高                                                     |
 | 見積もり規模     | 小（30分以内）                                         |
-| ステータス       | 未実施                                                 |
+| ステータス       | **実装済み（バグ発見）**                               |
 | 発見元           | TASK-AUTH-MODE-SELECTION-001 Phase 11 手動テスト準備時 |
 | 発見日           | 2026-02-09                                             |
 | セキュリティ影響 | なし                                                   |
@@ -127,3 +127,23 @@ API Keys Settingsセクションの前に認証方式選択セクションを追
 - AuthModeSelector: `apps/desktop/src/renderer/components/settings/AuthModeSelector/index.tsx`
 - authModeSlice: `apps/desktop/src/renderer/store/slices/authModeSlice.ts`
 - SettingsView: `apps/desktop/src/renderer/views/SettingsView/index.tsx`
+
+## 8. 発見されたバグ
+
+手動テスト（Phase 11）実施時に、設定画面で無限ループが発生するバグを発見。
+
+### 関連タスク
+
+- **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001**: Zustand Store Hooks無限ループ修正
+  - 場所: `docs/30-workflows/auth-mode-store-fix/task-ut-fix-store-hooks-infinite-loop.md`
+  - 原因: useAuthModeStore()が毎回新しいオブジェクトを返すため、useEffectの依存配列に含めると無限ループ
+  - 優先度: 緊急
+
+### 実装確認（2026-02-10）
+
+SettingsViewへのAuthModeSelector組み込みは以下のコミットで完了済み：
+
+- `ca110f39` - fix(settings): AuthModeSelectorをSettingsViewに組み込み
+- `f4df5ce3` - fix(auth): アプリ起動時のAuthModeハンドラー登録を追加
+
+場所: **設定画面（SettingsView）** の「Claude Agent SDK 認証方式」セクション

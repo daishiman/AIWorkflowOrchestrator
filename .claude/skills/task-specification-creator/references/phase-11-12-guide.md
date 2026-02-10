@@ -168,13 +168,31 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
+- [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
+- [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
+- [ ] 【品質】コメントフォーマット（JSDoc形式）が統一されている
 - [ ] **本Phase内の全タスクを100%実行完了**
+
+### Phase 12 自動化コマンド
+
+```bash
+# topic-map.md再生成（Step 1-D）
+cd .claude/skills/aiworkflow-requirements && node generate-index.js
+cd .claude/skills/task-specification-creator && node scripts/generate-index.js
+
+# ESLintキャッシュクリア（Hooksでエラーが残る場合）
+rm -rf node_modules/.cache/eslint-*
+pnpm lint --cache=false
+
+# 未使用importの自動修正
+pnpm lint --fix
+```
 
 ### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
 
@@ -191,4 +209,5 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-10 | Phase 12チェックリスト強化: Step 1-D(topic-map.md再生成)、ESLintキャッシュクリア、コメントフォーマット統一、自動化コマンドセクション追加 |
 | 2026-01-26 | SKILL.mdから分離・作成、中学生レベル解説の仕様を明確化 |

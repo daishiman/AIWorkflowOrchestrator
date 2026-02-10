@@ -339,4 +339,81 @@ describe("LLMSelectorPanel", () => {
       expect(screen.getByRole("group", { name: /llm/i })).toBeInTheDocument();
     });
   });
+
+  describe("無限ループ防止（P31対策）", () => {
+    it("TC-LLM-004: propsの変更で再レンダリングしても無限ループしない", async () => {
+      // Props を変更して再レンダリングしても fetchProviders は1回のみ
+      const { rerender } = render(<LLMSelectorPanel compact={false} />);
+
+      await waitFor(() => {
+        expect(mockFetchProviders).toHaveBeenCalledTimes(1);
+      });
+
+      // compact プロパティを変更
+      rerender(<LLMSelectorPanel compact={true} />);
+      expect(mockFetchProviders).toHaveBeenCalledTimes(1);
+
+      // className プロパティを変更
+      rerender(<LLMSelectorPanel compact={true} className="custom-class" />);
+      expect(mockFetchProviders).toHaveBeenCalledTimes(1);
+
+      // isVisible プロパティを変更
+      rerender(<LLMSelectorPanel isVisible={true} />);
+      expect(mockFetchProviders).toHaveBeenCalledTimes(1);
+    });
+
+    it("TC-LLM-007: 同じプロバイダーを再選択してもcheckHealthは再呼び出しされない", async () => {
+      // 最初から openai が選択されている状態
+      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+        ...defaultStoreState,
+        selectedProviderId: "openai",
+      });
+
+      const { rerender } = render(<LLMSelectorPanel />);
+
+      // 初期レンダリングで checkHealth が呼ばれる
+      await waitFor(() => {
+        expect(mockCheckHealth).toHaveBeenCalledWith("openai");
+      });
+      const initialCallCount = mockCheckHealth.mock.calls.length;
+
+      // 同じ selectedProviderId で再レンダリング
+      rerender(<LLMSelectorPanel />);
+
+      // checkHealth は追加で呼ばれない
+      expect(mockCheckHealth).toHaveBeenCalledTimes(initialCallCount);
+
+      // props が変わっても selectedProviderId が同じなら呼ばれない
+      rerender(<LLMSelectorPanel compact={true} />);
+      expect(mockCheckHealth).toHaveBeenCalledTimes(initialCallCount);
+    });
+
+    it("TC-LLM-008: providerIdが変わった場合のみcheckHealthが呼ばれる", async () => {
+      // 最初は openai
+      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+        ...defaultStoreState,
+        selectedProviderId: "openai",
+      });
+
+      const { rerender } = render(<LLMSelectorPanel />);
+
+      await waitFor(() => {
+        expect(mockCheckHealth).toHaveBeenCalledWith("openai");
+      });
+      expect(mockCheckHealth).toHaveBeenCalledTimes(1);
+
+      // anthropic に変更
+      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+        ...defaultStoreState,
+        selectedProviderId: "anthropic",
+      });
+
+      rerender(<LLMSelectorPanel />);
+
+      await waitFor(() => {
+        expect(mockCheckHealth).toHaveBeenCalledWith("anthropic");
+      });
+      expect(mockCheckHealth).toHaveBeenCalledTimes(2);
+    });
+  });
 });

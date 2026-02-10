@@ -238,4 +238,64 @@ describe("SettingsView", () => {
       expect(screen.getByTestId("auth-mode-api-key")).toBeInTheDocument();
     });
   });
+
+  describe("無限ループ防止（P31対策）", () => {
+    it("TC-SV-001: initializeAuthModeが1回だけ呼ばれる（rerenderしても増えない）", async () => {
+      const mockInitializeAuthMode = vi.fn();
+      const { useAuthModeStore } = await import("../../store");
+      vi.mocked(useAuthModeStore).mockReturnValue({
+        mode: "subscription" as const,
+        status: null,
+        isLoading: false,
+        setMode: vi.fn(),
+        initializeAuthMode: mockInitializeAuthMode,
+      });
+
+      const { rerender } = render(<SettingsView />);
+
+      // 最初のレンダリングで1回呼ばれる
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+
+      // rerenderしても追加で呼ばれない
+      rerender(<SettingsView />);
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+
+      // 複数回rerenderしても変わらない
+      rerender(<SettingsView className="test" />);
+      rerender(<SettingsView />);
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+    });
+
+    it("TC-SV-002: stateの変更で再レンダリングしても初期化は再実行されない", async () => {
+      const mockInitializeAuthMode = vi.fn();
+      const mockSetMode = vi.fn();
+      const { useAuthModeStore } = await import("../../store");
+
+      // 初期状態
+      vi.mocked(useAuthModeStore).mockReturnValue({
+        mode: "subscription" as const,
+        status: null,
+        isLoading: false,
+        setMode: mockSetMode,
+        initializeAuthMode: mockInitializeAuthMode,
+      });
+
+      const { rerender } = render(<SettingsView />);
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+
+      // mode が変更された状態をシミュレート
+      vi.mocked(useAuthModeStore).mockReturnValue({
+        mode: "api-key" as const,
+        status: { isValid: true, message: "APIキーが設定されています" },
+        isLoading: false,
+        setMode: mockSetMode,
+        initializeAuthMode: mockInitializeAuthMode,
+      });
+
+      rerender(<SettingsView />);
+
+      // state変更があっても initializeAuthMode は追加呼び出しされない
+      expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
+    });
+  });
 });
