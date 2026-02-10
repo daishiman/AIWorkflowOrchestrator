@@ -10,23 +10,24 @@
 
 ### 成功パターン
 
-| カテゴリ | パターン数 | 主要トピック |
-|----------|-----------|-------------|
-| [Phase 12 ドキュメント](#phase-12-ドキュメント) | 6件 | 仕様書同期、チェックリスト消化、追加検証 |
-| [IPC / Electron](#ipc--electron) | 2件 | チャンネル定数化、ペイロード拡張 |
-| [OAuth / 認証](#oauth--認証) | 4件 | Supabase PKCE、コールバック受信 |
-| [テスト / 品質](#テスト--品質) | 3件 | ファイル種別分離、リスナー管理 |
-| [ストア / 永続化](#ストア--永続化) | 3件 | 型バリデーション、DEBUGログ |
+| カテゴリ                                        | パターン数 | 主要トピック                             |
+| ----------------------------------------------- | ---------- | ---------------------------------------- |
+| [Phase 12 ドキュメント](#phase-12-ドキュメント) | 7件        | 仕様書同期、チェックリスト消化、追加検証 |
+| [IPC / Electron](#ipc--electron)                | 2件        | チャンネル定数化、ペイロード拡張         |
+| [OAuth / 認証](#oauth--認証)                    | 4件        | Supabase PKCE、コールバック受信          |
+| [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
+| [ストア / 永続化](#ストア--永続化)              | 5件        | 型バリデーション、DEBUGログ、Slice統合   |
+| [非同期処理](#非同期処理)                       | 1件        | race condition対策、executionId事前生成  |
 
 ### 失敗パターン
 
-| カテゴリ | パターン数 | 主要トピック |
-|----------|-----------|-------------|
-| [Phase 12 漏れ](#phase-12-漏れ) | 8件 | LOGS.md更新漏れ、SKILL.md漏れ、未タスク管理 |
-| [IPC / Preload](#ipc--preload) | 2件 | チャネル名命名規則不整合、型定義不一致 |
-| [OAuth / 認証エラー](#oauth--認証エラー) | 4件 | state競合、flowType未設定 |
-| [テスト / 型安全](#テスト--型安全) | 3件 | モジュールリーク、型アサーション |
-| [その他](#その他) | 2件 | 設計段階検証、pnpm幽霊依存 |
+| カテゴリ                                 | パターン数 | 主要トピック                                |
+| ---------------------------------------- | ---------- | ------------------------------------------- |
+| [Phase 12 漏れ](#phase-12-漏れ)          | 8件        | LOGS.md更新漏れ、SKILL.md漏れ、未タスク管理 |
+| [IPC / Preload](#ipc--preload)           | 2件        | チャネル名命名規則不整合、型定義不一致      |
+| [OAuth / 認証エラー](#oauth--認証エラー) | 4件        | state競合、flowType未設定                   |
+| [テスト / 型安全](#テスト--型安全)       | 3件        | モジュールリーク、型アサーション            |
+| [その他](#その他)                        | 2件        | 設計段階検証、pnpm幽霊依存                  |
 
 ---
 
@@ -100,6 +101,20 @@
 - **発見日**: 2026-02-10（UT-FIX-5-3）
 - **教訓**: 3ステップ全てを省略せず実施することで追跡性が向上。「包含」判断時も同様
 
+#### Phase 12 LOGS.md/SKILL.md 2ファイル更新パターン（TASK-FIX-6-1 2026-02-10）
+
+- **状況**: Phase 12 Task 2 Step 1-A でタスク完了記録を更新する
+- **アプローチ**:
+  1. `aiworkflow-requirements/LOGS.md` を更新（タスクID、タイトル、完了日、学び/成果）
+  2. `task-specification-creator/LOGS.md` を更新（同内容、2ファイル両方必須）
+  3. `aiworkflow-requirements/SKILL.md` の変更履歴テーブルを更新
+  4. `task-specification-creator/SKILL.md` の変更履歴テーブルを更新
+  5. topic-map.md 再生成（セクション追加/削除/更新時）
+- **結果**: 2つのスキル間で完了記録が一致し、LOGS.md と SKILL.md の情報整合性が確保される
+- **適用条件**: Phase 12 実行時は常に適用。特に Step 1-A 完了条件として必須
+- **発見日**: 2026-02-10（TASK-FIX-6-1-STATE-CENTRALIZATION）
+- **関連**: 06-known-pitfalls.md#P1, P23
+
 ### IPC / Electron
 
 #### IPC既存ペイロードへのエラーフィールド追加
@@ -151,11 +166,11 @@
 - **状況**: 永続化、エラーハンドリング、境界値など異なる関心事のテストが混在し、テストの意図が不明確
 - **アプローチ**:
 
-| テスト種別 | ファイル命名 | 目的 |
-|-----------|-------------|------|
-| 永続化テスト | `*.persistence.test.ts` | ストア永続化・復元の検証 |
-| エラーテスト | `*.error.test.ts` | 異常系・エラーハンドリング検証 |
-| 境界値テスト | `*.boundary.test.ts` | 空配列・null・型不整合等の境界条件 |
+| テスト種別   | ファイル命名            | 目的                               |
+| ------------ | ----------------------- | ---------------------------------- |
+| 永続化テスト | `*.persistence.test.ts` | ストア永続化・復元の検証           |
+| エラーテスト | `*.error.test.ts`       | 異常系・エラーハンドリング検証     |
+| 境界値テスト | `*.boundary.test.ts`    | 空配列・null・型不整合等の境界条件 |
 
 - **結果**: テストの意図が明確になり、特定の関心事に集中したテスト設計が可能
 - **適用条件**: 複雑なモジュールで異なる観点のテストが必要な場合
@@ -191,6 +206,37 @@
 - **実装例**: `SkillImportManager` のコンストラクタに `options?: { debug?: boolean }` を追加
 - **関連**: 06-known-pitfalls.md#P20
 
+#### Zustand Slice統合パターン（TASK-FIX-6-1 2026-02-10）
+
+- **状況**: 複数のSlice（例: skillSlice）を既存のSlice（例: agentSlice）に統合する
+- **アプローチ**:
+  1. 統合先Sliceに全状態とアクションを移行（例: `isExecuting`, `streamingContent`, `executeSkill()`）
+  2. 統合元Sliceファイルを削除
+  3. 互換性セレクタ（例: `useSkillStore`）を作成し、後方互換性を維持
+  4. `setupSkillListeners.ts` でIPCハンドラを統合先Storeのアクションに接続
+  5. コンポーネント側は既存のセレクタ経由でアクセス可能（修正不要）
+- **結果**: 状態の一元管理が実現。Sliceが削除されてもコンポーネント側の変更が最小限
+- **適用条件**: 関連するドメインのSliceを1つに統合し、状態の重複を解消したい場合
+- **発見日**: 2026-02-10（TASK-FIX-6-1-STATE-CENTRALIZATION）
+- **関連ファイル**:
+  - `apps/desktop/src/renderer/store/slices/agentSlice.ts`
+  - `apps/desktop/src/renderer/store/setupSkillListeners.ts`
+  - 03-state-management.md: Zustand設計原則
+
+#### 互換性セレクタによる後方互換維持パターン（TASK-FIX-6-1 2026-02-10）
+
+- **状況**: Slice統合後も既存コンポーネントが `useSkillStore()` を使用している
+- **アプローチ**:
+  ```typescript
+  // 互換性セレクタ（index.ts）
+  export const useSkillStore = <T>(selector: (state: AppState) => T): T =>
+    useAppStore(selector);
+  ```
+- **結果**: 既存コンポーネントの import 文を変更せずに統合先Storeを参照可能
+- **適用条件**: Slice統合時に既存コードへの影響を最小化したい場合
+- **発見日**: 2026-02-10（TASK-FIX-6-1-STATE-CENTRALIZATION）
+- **実装例**: `apps/desktop/src/renderer/store/index.ts` の `useSkillStore` エクスポート
+
 #### Supabase OAuth flowType設定パターン
 
 - **状況**: デスクトップアプリでSupabase OAuth認証を実装する際、Implicit Flow（#access_token）ではなくAuthorization Code Flow（?code）を使用したい
@@ -220,6 +266,33 @@
 - **結果**: ブラウザからのコールバックを確実に受信可能。カスタムプロトコルの制限（OSによる登録問題）を回避
 - **適用条件**: Electron/Tauri等のデスクトップアプリでのOAuth実装時
 - **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001)
+
+### 非同期処理
+
+#### executionId事前生成によるrace condition防止パターン（TASK-FIX-6-1 2026-02-10）
+
+- **状況**: IPC呼び出し前に状態を設定し、イベント到着時にフィルタリングする必要がある
+- **アプローチ**:
+
+  ```typescript
+  // executeSkill アクション内
+  const tempExecutionId = crypto.randomUUID();
+  set({ executionId: tempExecutionId, isExecuting: true });
+  await window.electronAPI.skill.execute(...);
+
+  // _handleStreamMessage でexecutionIdを検証
+  if (get().executionId !== message.executionId) {
+    return; // 古いメッセージを無視
+  }
+  ```
+
+- **結果**: 連続実行時に古いexecutionIdのメッセージがフィルタリングされ、状態の整合性が保証される
+- **適用条件**: IPC経由の非同期処理で、実行IDによるメッセージフィルタリングが必要な場合
+- **発見日**: 2026-02-10（TASK-FIX-6-1-STATE-CENTRALIZATION）
+- **関連ファイル**:
+  - `apps/desktop/src/renderer/store/slices/agentSlice.ts`: `executeSkill()`, `_handleStreamMessage()`
+  - `apps/desktop/src/renderer/store/setupSkillListeners.ts`
+- **関連**: 03-state-management.md#リスナー管理
 
 ---
 
@@ -321,12 +394,15 @@
 - **原因**:
   - チャネル名が定数化されておらず、各層で独立してハードコード
   - 命名規則がプロジェクト全体で統一されていなかった
+  - Main側とPreload側を別の開発者/タイミングで実装し、命名規則の合意がなかった
 - **影響**: IPC通信が成立せず、Main側ハンドラに到達しない。エラーメッセージからは原因が特定しにくい
 - **教訓**:
   1. チャンネル名は必ず定数化（`@repo/shared/src/ipc/channels.ts`）
   2. 命名規則をプロジェクト全体で統一（kebab-caseを推奨）
   3. Phase 10で横断的なチャンネル名検証を実施
+  4. Phase 12の追加検証でアーキテクチャ整合性確認を実施する
 - **発見日**: 2026-02-10（UT-FIX-5-3）
+- **発見方法**: Phase 12追加検証でのアーキテクチャ整合性確認
 - **関連タスク**: TASK-FIX-12-2
 - **関連**: 04-electron-security.md#IPCセキュリティ原則
 
@@ -337,6 +413,7 @@
 - **原因**:
   - safeInvoke()がPromiseを返すことを型定義に反映していなかった
   - Preload実装変更時に型定義ファイルの同期更新を忘れた
+  - 型定義と実装を別々に作成し、整合性確認を行わなかった
 - **影響**:
   - TypeScriptコンパイラが誤った型推論を行う
   - await/then()が使用できない（型エラーにならないため気づきにくい）
@@ -347,6 +424,7 @@
   3. 型定義変更時は呼び出し側（Renderer）も確認
   4. Phase 10でPreload型定義と実装の整合性を検証項目に追加
 - **発見日**: 2026-02-10（UT-FIX-5-3）
+- **発見方法**: safeInvoke()の戻り値型確認
 - **関連タスク**: UT-FIX-5-4
 - **関連**: 02-code-quality.md#TypeScript型安全
 
