@@ -1297,11 +1297,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L25 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L150 |
-| skillSlice（スキル実行状態管理） | L240 |
-| permissionHistorySlice（権限要求履歴管理） | L367 |
-| 関連ドキュメント | L496 |
+| Zustand Sliceパターン | L26 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L151 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L241 |
+| permissionHistorySlice（権限要求履歴管理） | L397 |
+| 関連ドキュメント | L526 |
 
 ### references/arch-ui-components.md
 
@@ -1531,6 +1531,11 @@ node scripts/list-specs.js --topics
 ### references/patterns.md
 
 | セクション | 行 |
+|------------|----|\n| 目次 | L9 |
+| 成功パターン | L32 |
+| 失敗パターン（避けるべきこと） | L201 |
+| ガイドライン | L376 |
+
 |------------|----|\n| 目次 | L9 |
 | 成功パターン | L33 |
 | 失敗パターン（避けるべきこと） | L226 |

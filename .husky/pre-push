@@ -180,15 +180,15 @@ if [ "$SKIP_NATIVE_TESTS" = true ]; then
     true &
     TEST_PID=$!
 else
-    echo "🧪 [2/2] Starting ALL tests (timeout: 600s)..."
+    echo "🧪 [2/2] Starting ALL tests (timeout: 900s)..."
     echo "   This includes @repo/shared and @repo/desktop to match CI coverage."
 
-    # タイムアウト付きテスト実行
+    # タイムアウト付きテスト実行（大規模テストのためタイムアウトを900秒に延長）
     (
         if command -v timeout > /dev/null 2>&1; then
-            timeout 600 pnpm test:all
+            timeout 900 pnpm test:all
         elif command -v gtimeout > /dev/null 2>&1; then
-            gtimeout 600 pnpm test:all
+            gtimeout 900 pnpm test:all
         else
             pnpm test:all
         fi
