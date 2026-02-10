@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-09
+> 自動生成: 2026-02-10
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -164,15 +164,15 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L118 |
 | デスクトップ（Electron）実装パターン | L184 |
-| パフォーマンス最適化パターン | L411 |
-| セキュリティ実装パターン | L449 |
-| テスト実装パターン | L481 |
-| アクセシビリティ実装パターン | L766 |
-| 関連ドキュメント | L791 |
-| スキル作成実装パターン（TASK-9B-G） | L803 |
-| 外部API データ正規化パターン | L927 |
-| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L966 |
-| 変更履歴 | L1028 |
+| パフォーマンス最適化パターン | L449 |
+| セキュリティ実装パターン | L487 |
+| テスト実装パターン | L519 |
+| アクセシビリティ実装パターン | L804 |
+| 関連ドキュメント | L829 |
+| スキル作成実装パターン（TASK-9B-G） | L841 |
+| 外部API データ正規化パターン | L965 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1004 |
+| 変更履歴 | L1054 |
 
 ### references/architecture-monorepo.md
 
@@ -263,17 +263,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L525 |
-| SkillSlice型定義（TASK-6-1） | L577 |
-| ModifierSkill（スライド逆同期機能） | L669 |
-| ChatPanel統合（TASK-7D） | L703 |
-| SkillFileManager（TASK-9A-A） | L738 |
-| テストアーキテクチャ（TASK-8C-A） | L826 |
-| 完了タスク | L878 |
-| 関連ドキュメント | L1096 |
-| SkillCreatorService（TASK-9B-G） | L1109 |
-| 完了タスク | L1357 |
-| 変更履歴 | L1388 |
+| SkillImportStore（TASK-2B） | L503 |
+| SkillSlice型定義（TASK-6-1） | L555 |
+| ModifierSkill（スライド逆同期機能） | L647 |
+| ChatPanel統合（TASK-7D） | L681 |
+| SkillFileManager（TASK-9A-A） | L716 |
+| テストアーキテクチャ（TASK-8C-A） | L804 |
+| 完了タスク | L856 |
+| 関連ドキュメント | L1074 |
+| SkillCreatorService（TASK-9B-G） | L1087 |
+| 完了タスク | L1335 |
+| 変更履歴 | L1366 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -967,8 +967,9 @@ node scripts/list-specs.js --topics
 | セキュリティ原則 | L28 |
 | テスト品質サマリー | L51 |
 | 完了タスク | L65 |
-| 変更履歴 | L80 |
-| 関連ドキュメント | L95 |
+| 完了タスク | L80 |
+| 変更履歴 | L88 |
+| 関連ドキュメント | L104 |
 
 ### references/security-api.md
 
@@ -1530,9 +1531,10 @@ node scripts/list-specs.js --topics
 ### references/patterns.md
 
 | セクション | 行 |
-|------------|----|\n| 成功パターン | L8 |
-| 失敗パターン（避けるべきこと） | L154 |
-| ガイドライン | L278 |
+|------------|----|\n| 目次 | L9 |
+| 成功パターン | L33 |
+| 失敗パターン（避けるべきこと） | L226 |
+| ガイドライン | L439 |
 
 ### references/plugin-development.md
 
