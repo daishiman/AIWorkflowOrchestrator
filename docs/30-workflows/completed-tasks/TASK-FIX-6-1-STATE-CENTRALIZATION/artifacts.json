@@ -1,0 +1,188 @@
+{
+  "taskId": "TASK-FIX-6-1-STATE-CENTRALIZATION",
+  "taskName": "スキル状態管理のZustand集約（仕様書準拠）",
+  "featureName": "state-centralization",
+  "category": "リファクタリング",
+  "createdAt": "2026-02-09",
+  "status": "spec-created",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "phase-1-requirements.md",
+          "description": "機能要件・非機能要件・受け入れ基準"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "phase-2-design.md",
+          "description": "統一状態設計・race condition対策・移行計画"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "phase-3-design-review.md",
+          "description": "レビュー観点・判定結果"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "phase-4-test-creation.md",
+          "description": "テストシナリオ・テストケース定義"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装（TDD: Green）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "実装仕様書",
+          "path": "phase-5-implementation.md",
+          "description": "agentSlice拡張・race condition対策実装"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト拡充仕様書",
+          "path": "phase-6-test-expansion.md",
+          "description": "境界値・エラーケース・並行処理テスト"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "カバレッジ確認仕様書",
+          "path": "phase-7-coverage-check.md",
+          "description": "カバレッジ基準・測定手順"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "リファクタリング仕様書",
+          "path": "phase-8-refactoring.md",
+          "description": "skillSlice削除・import更新"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "品質保証仕様書",
+          "path": "phase-9-quality-assurance.md",
+          "description": "品質ゲート・セキュリティチェック"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "最終レビュー仕様書",
+          "path": "phase-10-final-review.md",
+          "description": "仕様書準拠・後方互換性確認"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "手動テスト仕様書",
+          "path": "phase-11-manual-testing.md",
+          "description": "機能・UI/UX・統合・リグレッションテスト"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "ドキュメント更新仕様書",
+          "path": "phase-12-documentation.md",
+          "description": "実装ガイド・システム仕様書更新・未タスク検出"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "PR作成仕様書",
+          "path": "phase-13-pr-creation.md",
+          "description": "PR作成手順・CI確認"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "prerequisiteTasks": [
+      "TASK-FIX-1-1-TYPE-ALIGNMENT",
+      "TASK-FIX-4-1-IPC-CONSOLIDATION",
+      "TASK-FIX-5-1-SKILL-API-UNIFICATION"
+    ],
+    "relatedTasks": ["TASK-6-1"]
+  },
+  "targetFiles": {
+    "modify": [
+      "apps/desktop/src/renderer/store/slices/agentSlice.ts",
+      "apps/desktop/src/renderer/store/index.ts",
+      "apps/desktop/src/renderer/hooks/useSkillExecution.ts",
+      "apps/desktop/src/renderer/components/chat/ChatPanel.tsx",
+      "apps/desktop/src/renderer/components/agent/AgentView/index.tsx"
+    ],
+    "delete": [
+      "apps/desktop/src/renderer/store/slices/skillSlice.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.edge-cases.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.integration.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.ipc.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/skillSlice.state-transition.test.ts"
+    ]
+  },
+  "qualityMetrics": {
+    "coverageTarget": {
+      "line": "80%",
+      "branch": "60%",
+      "function": "80%"
+    },
+    "testCount": {
+      "minimum": 50
+    }
+  }
+}

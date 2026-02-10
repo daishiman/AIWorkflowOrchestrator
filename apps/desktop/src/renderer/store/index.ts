@@ -35,7 +35,7 @@ import {
   createChatEditSlice,
   type ChatEditSlice,
 } from "../features/workspace-chat-edit/store/chatEditSlice";
-import { createSkillSlice, type SkillSlice } from "./slices/skillSlice";
+// TASK-FIX-6-1: skillSliceは削除済み。状態はagentSliceに統合
 import {
   createPermissionHistorySlice,
   type PermissionHistorySlice,
@@ -46,6 +46,7 @@ import {
 } from "./slices/authModeSlice";
 
 // Combined store type
+// TASK-FIX-6-1: SkillSliceは削除済み。状態はAgentSliceに統合
 export type AppStore = NavigationSlice &
   EditorSlice &
   ChatSlice &
@@ -61,7 +62,6 @@ export type AppStore = NavigationSlice &
   LLMSlice &
   AgentSlice &
   ChatEditSlice &
-  SkillSlice &
   PermissionHistorySlice;
 
 // Custom storage for Set serialization
@@ -117,7 +117,7 @@ export const useAppStore = create<AppStore>()(
         ...createLLMSlice(...args),
         ...createAgentSlice(...args),
         ...createChatEditSlice(...args),
-        ...createSkillSlice(...args),
+        // TASK-FIX-6-1: skillSliceは削除済み。状態はagentSliceに統合
         ...createPermissionHistorySlice(...args),
       }),
       {
@@ -283,15 +283,16 @@ export const useLLMStore = () =>
   }));
 
 // Skill selectors - single hook for all Skill-related state and actions
+// TASK-FIX-6-1: agentSliceから統合された状態を使用
 export const useSkillStore = () =>
   useAppStore((state) => ({
-    // 状態
-    availableSkills: state.availableSkills,
+    // 状態 (agentSliceから)
+    availableSkillsMetadata: state.availableSkillsMetadata,
     importedSkills: state.importedSkills,
     selectedSkillName: state.selectedSkillName,
     isExecuting: state.isExecuting,
     executionId: state.executionId,
-    executionStatus: state.executionStatus,
+    skillExecutionStatus: state.skillExecutionStatus,
     streamingMessages: state.streamingMessages,
     pendingPermission: state.pendingPermission,
     skillError: state.skillError,
@@ -300,7 +301,7 @@ export const useSkillStore = () =>
     isScanning: state.isScanning,
     isImporting: state.isImporting,
     importingSkillName: state.importingSkillName,
-    // アクション
+    // アクション (agentSliceから)
     fetchSkills: state.fetchSkills,
     rescanSkills: state.rescanSkills,
     importSkill: state.importSkill,
@@ -309,8 +310,8 @@ export const useSkillStore = () =>
     selectSkillByName: state.selectSkillByName,
     executeSkill: state.executeSkill,
     abortExecution: state.abortExecution,
-    respondToPermission: state.respondToPermission,
-    clearError: state.clearError,
+    respondToSkillPermission: state.respondToSkillPermission,
+    clearSkillError: state.clearSkillError,
     clearStreamingMessages: state.clearStreamingMessages,
   }));
 

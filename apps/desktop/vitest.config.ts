@@ -100,6 +100,10 @@ export default defineConfig({
         __dirname,
         "../../packages/shared/src/ipc/channels.ts",
       ),
+      "@repo/shared/types/auth-mode": resolve(
+        __dirname,
+        "../../packages/shared/src/types/auth-mode.ts",
+      ),
       "@anthropic-ai/claude-agent-sdk": resolve(
         __dirname,
         "src/test/__mocks__/@anthropic-ai/claude-agent-sdk.ts",

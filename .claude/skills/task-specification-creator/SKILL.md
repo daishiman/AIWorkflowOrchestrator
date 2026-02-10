@@ -356,6 +356,12 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.50.0** | **2026-02-10** | **Phase 12判断基準改善（TASK-FIX-6-1知見）**: spec-update-workflow.mdに2パターン追加（Slice統合パターン、スキルフィードバック必須）、topic-map.md再生成トリガー拡張（セクション削除・更新を追加）、06-known-pitfalls.mdにP25-P28追加 |
+| **9.49.0** | **2026-02-10** | **TASK-FIX-6-1-STATE-CENTRALIZATION Phase 1-12完了**: スキル状態管理集約（skillSlice→agentSlice統合）、race condition対策実装、テスト70件全PASS、未タスク0件 |
+| **9.48.0** | **2026-02-09** | **Phase 12漏れやすいポイント強化**: phase-11-12-guide.md完了条件チェックリストにP23(SKILL.md更新漏れ)/P24(関連ファイル調査不足)/P1(LOGS.md2ファイル)/P3(未タスク3ステップ)を追加。漏れやすいポイントテーブル新設。06-known-pitfalls.mdにP23/P24追加。未タスク配置先を`docs/30-workflows/unassigned-task/`に統一 |
+| **9.47.1** | **2026-02-09** | **TASK-AUTH-MODE-SELECTION-001完了**: 認証方式選択機能（サブスクリプション/APIキー切り替え）Phase 1-12完了。AuthModeService、SubscriptionAuthProvider、authModeSlice、AuthModeSelector実装。IPCハンドラ5チャンネル追加。86テスト全PASS |
+| **9.47.0** | **2026-02-09** | **TASK-FIX-12-1-IPC-HARDCODE-FIX完了**: SkillExecutor.ts IPCチャンネル名定数化。04-electron-security.md IPC セキュリティ原則準拠。未タスク TASK-FIX-12-2 検出・登録 |
+
 | **9.50.0** | **2026-02-10** | **UT-FIX-5-3-PRELOAD-AGENT-ABORT完了**: preload/index.ts Agent Abort IPCセキュリティ修正（`ipcRenderer.send` → `safeInvoke(IPC_CHANNELS.AGENT_ABORT)`）。agent-handler.ts `ipcMain.on` → `ipcMain.handle` 変更、dispose()に`removeHandler`追加。21テストPASS、未タスク0件。Phase 1-12全工程完了 |
 | **9.49.0** | **2026-02-09** | **TASK-AUTH-MODE-SELECTION-001完了**: 認証方式選択機能（サブスクリプション/APIキー切り替え）Phase 1-12完了。AuthModeService、SubscriptionAuthProvider、authModeSlice、AuthModeSelector実装。IPCハンドラ5チャンネル追加。86テスト全PASS |
 | **9.48.0** | **2026-02-09** | **Phase 12漏れやすいポイント強化**: phase-11-12-guide.md完了条件チェックリストにP23(SKILL.md更新漏れ)/P24(関連ファイル調査不足)/P1(LOGS.md2ファイル)/P3(未タスク3ステップ)を追加。漏れやすいポイントテーブル新設。06-known-pitfalls.mdにP23/P24追加。未タスク配置先を`docs/30-workflows/unassigned-task/`に統一 |

@@ -25,6 +25,34 @@
 - **教訓**: 全 Step 完了前に「完了」と書くと、後続 Step の漏れに気付けない
 - **チェックリスト**: [05-task-execution.md#Task 3](./05-task-execution.md)
 
+### P25: Phase 12 LOGS.md 2ファイル更新漏れ（TASK-FIX-6-1）
+
+- **教訓**: LOGS.md は aiworkflow-requirements と task-specification-creator の2箇所にあり、片方の更新忘れが起きやすい。P1と同様のミスが再発した
+- **解決策**: Phase 12チェックリストで「2ファイル更新」を明示的にチェック
+- **チェックリスト**: [05-task-execution.md#Step 1-A](./05-task-execution.md)
+- **関連タスク**: TASK-FIX-6-1-STATE-CENTRALIZATION
+
+### P26: システム仕様書更新遅延（TASK-FIX-6-1）
+
+- **教訓**: 「PRマージ後に更新」と判断し、実装直後にシステム仕様書（arch-state-management.md 等）を更新しなかった。結果として仕様書と実装の乖離が発生
+- **解決策**: Phase 12完了時点でシステム仕様書を更新する。PRマージを待たない
+- **チェックリスト**: [05-task-execution.md#Step 2](./05-task-execution.md)
+- **関連タスク**: TASK-FIX-6-1-STATE-CENTRALIZATION
+
+### P27: topic-map.md 再生成トリガーの判断ミス（TASK-FIX-6-1）
+
+- **教訓**: 「新規セクション追加なし」と判断したが、実際はセクション更新（削除・変更含む）があった。topic-map.md の再生成が必要だった
+- **解決策**: セクションの追加だけでなく、削除・更新も再生成トリガーに含める。仕様書に変更があれば必ず再生成を実行
+- **チェックリスト**: [05-task-execution.md#Step 1-D](./05-task-execution.md)
+- **関連タスク**: TASK-FIX-6-1-STATE-CENTRALIZATION
+
+### P28: スキルフィードバックレポート未作成（TASK-FIX-6-1）
+
+- **教訓**: 「スキル改善なし」と判断したが、実際はワークフロー改善点があった。Phase 12でスキルフィードバックレポートを作成しなかった
+- **解決策**: Phase 12で必ずスキル改善検討を実施し、改善点がなくても「改善点なし」としてレポートを作成する
+- **チェックリスト**: [05-task-execution.md#Phase 12](./05-task-execution.md)
+- **関連タスク**: TASK-FIX-6-1-STATE-CENTRALIZATION
+
 ## Electron / ランタイム
 
 ### P5: リスナー二重登録
