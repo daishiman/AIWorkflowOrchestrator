@@ -60,6 +60,7 @@ export class AgentHandler {
     ipcMain.removeHandler("agent:createSession");
     ipcMain.removeHandler("agent:resumeSession");
     ipcMain.removeHandler("agent:destroySession");
+    ipcMain.removeHandler("agent:abort");
   }
 
   /**
@@ -173,7 +174,7 @@ export class AgentHandler {
       return this.handleDestroySession(request);
     });
 
-    ipcMain.on("agent:abort", () => {
+    ipcMain.handle("agent:abort", () => {
       this.handleAbort();
     });
   }

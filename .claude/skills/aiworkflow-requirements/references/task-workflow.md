@@ -317,6 +317,11 @@
 | TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
 | TASK-DOC-PHASE12-JUDGMENT-CRITERIA-001       | Phase 12判断基準の明確化と漏れ防止強化                             | 低 | TASK-FIX-6-1-STATE-CENTRALIZATION Phase 12                     | `docs/30-workflows/unassigned-task/task-doc-phase12-judgment-criteria-improvement.md`       |
 
+| UT-FIX-5-2                                   | Preload Dialog API ハードコード削除                                 | 中 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`              |
+| UT-FIX-5-3                                   | Preload Agent Abort セキュリティ修正                                | 高 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`                  |
+| TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
+| UT-FIX-5-4                                   | AgentSDKAPI 型定義不一致修正                                       | 低 | UT-FIX-5-3 Phase 12 アーキテクチャ検証                         | `docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md`          |
+
 ### 未タスク管理ルール
 
 - 未タスクは `docs/30-workflows/unassigned-task/` に配置

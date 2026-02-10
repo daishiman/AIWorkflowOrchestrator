@@ -307,8 +307,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
 | 完了タスク | L256 |
-| ワークスペース型定義 | L343 |
-| 変更履歴 | L397 |
+| ワークスペース型定義 | L310 |
+| 変更履歴 | L364 |
 
 ### references/interfaces-chat-history.md
 
@@ -967,8 +967,9 @@ node scripts/list-specs.js --topics
 | セキュリティ原則 | L28 |
 | テスト品質サマリー | L51 |
 | 完了タスク | L65 |
-| 変更履歴 | L80 |
-| 関連ドキュメント | L95 |
+| 完了タスク | L80 |
+| 変更履歴 | L88 |
+| 関連ドキュメント | L104 |
 
 ### references/security-api.md
 
@@ -1055,8 +1056,8 @@ node scripts/list-specs.js --topics
 | Permission IPC Handler セキュリティ | L220 |
 | SkillAPI Preload実装（TASK-5-1） | L256 |
 | 完了タスク | L322 |
-| 残課題 | L413 |
-| 関連ドキュメント | L425 |
+| 残課題 | L353 |
+| 関連ドキュメント | L365 |
 
 ---
 
@@ -1534,6 +1535,11 @@ node scripts/list-specs.js --topics
 | 成功パターン | L32 |
 | 失敗パターン（避けるべきこと） | L201 |
 | ガイドライン | L376 |
+
+|------------|----|\n| 目次 | L9 |
+| 成功パターン | L33 |
+| 失敗パターン（避けるべきこと） | L226 |
+| ガイドライン | L439 |
 
 ### references/plugin-development.md
 

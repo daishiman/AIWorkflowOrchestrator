@@ -11,8 +11,8 @@
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止                                               | テスト環境問題の実装問題誤認                           |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス                                                                        | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン                                                                                                | ハードコード文字列発見                                 |
+| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出                                                                | ハードコード文字列発見                                 |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング                                                                                               | -                                                      |
 | 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
 
@@ -361,6 +361,34 @@
 - **発見日**: 2026-02-09
 - **関連タスク**: TASK-FIX-17-1-SKILL-SCAN-HANDLER
 - **クロスリファレンス**: [06-known-pitfalls.md#P23](../../.claude/rules/06-known-pitfalls.md)
+
+### [IPC/Electron] 横断的セキュリティバイパス検出パターン（UT-FIX-5-3）
+
+- **状況**: IPC APIでセキュリティ検証をバイパスする直接呼び出しが存在（preloadでの`ipcRenderer.send/on`直接使用）
+- **アプローチ**:
+  - Step 1: `grep -rn "ipcRenderer.send\|ipcRenderer.on" <preload-dir>/` で直接呼び出しを検出
+  - Step 2: 検出したチャネル名がホワイトリストに登録されているか確認
+  - Step 3: `safeInvoke()` 経由でない呼び出しを未タスクとして登録
+  - Step 4: 検出された問題ごとに修正方針（AbortController統合、型定義追加等）を記録
+- **結果**: セキュリティ検証バイパスを早期発見、未タスク化で追跡可能に
+- **適用条件**: Electron IPC設計、Phase 10アーキテクチャレビュー時、Preloadスクリプト変更時
+- **発見日**: 2026-02-09
+- **関連タスク**: UT-FIX-5-3-PRELOAD-AGENT-ABORT
+- **クロスリファレンス**: [04-electron-security.md](../../.claude/rules/04-electron-security.md), [06-known-pitfalls.md](../../.claude/rules/06-known-pitfalls.md)
+
+### [Phase12] 横断的問題の追加検証パターン（UT-FIX-5-3）
+
+- **状況**: Phase 10レビューで検出した問題が、他ファイルにも同様に存在する可能性がある
+- **アプローチ**:
+  - Step 1: Phase 10で検出した問題パターンを正規表現で表現
+  - Step 2: `grep -rn "<pattern>" <project-root>/` でプロジェクト全体を検索
+  - Step 3: 同様のパターンが見つかった場合、関連タスクとして追加検出
+  - Step 4: 追加検出された問題はPhase 12の未タスク検出に含める
+- **結果**: 単一ファイル修正に留まらず、横断的な品質改善を実現
+- **適用条件**: Phase 10で設計パターン違反を検出した場合、Phase 12の未タスク検出時
+- **発見日**: 2026-02-09
+- **関連タスク**: UT-FIX-5-3-PRELOAD-AGENT-ABORT
+- **クロスリファレンス**: [05-task-execution.md#Task 4](../../.claude/rules/05-task-execution.md), [06-known-pitfalls.md#P24](../../.claude/rules/06-known-pitfalls.md)
 
 ---
 

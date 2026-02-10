@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-10T07:20:51.851Z",
-  "totalKeywords": 1065,
+  "generated": "2026-02-10T08:08:06.255Z",
+  "totalKeywords": 1063,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -744,7 +744,6 @@
     ],
     "TASK": [
       "api-ipc-auth.md",
-      "arch-state-management.md",
       "arch-ui-components.md",
       "architecture-auth-security.md",
       "architecture-implementation-patterns.md",
@@ -939,19 +938,7 @@
     "skillSlice": [
       "arch-state-management.md"
     ],
-    "統合済み": [
-      "arch-state-management.md"
-    ],
-    "FIX": [
-      "arch-state-management.md",
-      "architecture-implementation-patterns.md",
-      "error-handling.md",
-      "testing-component-patterns.md"
-    ],
-    "STATE": [
-      "arch-state-management.md"
-    ],
-    "CENTRALIZATION": [
+    "スキル実行状態管理": [
       "arch-state-management.md"
     ],
     "permissionHistorySlice": [
@@ -1264,6 +1251,11 @@
     ],
     "統一パターン": [
       "architecture-implementation-patterns.md"
+    ],
+    "FIX": [
+      "architecture-implementation-patterns.md",
+      "error-handling.md",
+      "testing-component-patterns.md"
     ],
     "実装": [
       "architecture-implementation-patterns.md",

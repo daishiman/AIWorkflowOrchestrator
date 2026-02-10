@@ -1,0 +1,228 @@
+{
+  "taskId": "TASK-FIX-15-1-EXECUTE-HANDLER-ROUTING",
+  "taskName": "SKILL_EXECUTEハンドラーのSkillExecutor委譲",
+  "workflowPath": "docs/30-workflows/task-fix-15-1-execute-handler-routing",
+  "createdAt": "2026-02-09T20:20:45Z",
+  "status": "phase_12_completed",
+  "currentPhase": 13,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-01-requirements.md",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "completed"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "completed"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-02-design.md",
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計",
+          "path": "outputs/phase-2/architecture-design.md",
+          "status": "completed"
+        },
+        {
+          "name": "型変換設計",
+          "path": "outputs/phase-2/type-conversion-design.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-03-design-review.md",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-04-test-creation.md",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "status": "completed"
+        },
+        {
+          "name": "テストケース",
+          "path": "outputs/phase-4/test-cases.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-05-implementation.md",
+      "artifacts": [
+        {
+          "name": "実装コード",
+          "path": "apps/desktop/src/main/ipc/skillHandlers.ts",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-06-test-enhancement.md",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-6/coverage-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-07-coverage-verification.md",
+      "artifacts": [
+        {
+          "name": "カバレッジ確認レポート",
+          "path": "outputs/phase-7/test-summary.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-08-refactoring.md",
+      "artifacts": [
+        {
+          "name": "リファクタリング結果",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-09-quality-assurance.md",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "prerequisite": ["TASK-FIX-16-1-SDK-APIKEY-INFRASTRUCTURE"],
+    "related": [
+      "TASK-FIX-5-1-SKILL-API-UNIFICATION",
+      "TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION"
+    ]
+  },
+  "targetFiles": [
+    "apps/desktop/src/main/ipc/skillHandlers.ts",
+    "apps/desktop/src/main/services/skill/SkillService.ts",
+    "apps/desktop/src/main/services/skill/SkillExecutor.ts"
+  ],
+  "qualityMetrics": {
+    "coverageTarget": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    }
+  }
+}

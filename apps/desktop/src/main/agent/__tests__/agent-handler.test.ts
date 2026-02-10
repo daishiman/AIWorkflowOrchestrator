@@ -125,7 +125,7 @@ describe("AgentHandler", () => {
         "agent:destroySession",
         expect.any(Function),
       );
-      expect(ipcMain.on).toHaveBeenCalledWith(
+      expect(ipcMain.handle).toHaveBeenCalledWith(
         "agent:abort",
         expect.any(Function),
       );
@@ -143,6 +143,7 @@ describe("AgentHandler", () => {
       expect(ipcMain.removeHandler).toHaveBeenCalledWith(
         "agent:destroySession",
       );
+      expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:abort");
     });
   });
 
@@ -256,6 +257,88 @@ describe("AgentHandler", () => {
 
       handler.handleAbort();
 
+      expect(mockAbort).toHaveBeenCalled();
+    });
+
+    // TC-E-01: dispose後にabortが呼ばれた場合
+    it("should handle abort gracefully after dispose", async () => {
+      const { AgentClient } = await import("@repo/shared/agent");
+      const mockAbort = vi.fn();
+
+      vi.mocked(AgentClient).mockImplementation(
+        () =>
+          ({
+            initialize: vi.fn().mockResolvedValue(undefined),
+            getStatus: vi.fn(),
+            query: vi.fn(),
+            abort: mockAbort,
+            isQueryRunning: vi.fn().mockReturnValue(false),
+          }) as unknown as InstanceType<typeof AgentClient>,
+      );
+
+      handler = new AgentHandler({ apiKey: "test-api-key" });
+      await handler.initialize();
+
+      // disposeを呼び出す
+      handler.dispose();
+
+      // dispose後にabortを呼び出しても例外が発生しないことを確認
+      expect(() => handler.handleAbort()).not.toThrow();
+      // AgentClientのabortは呼ばれる（現在の実装では disposed チェックなし）
+      expect(mockAbort).toHaveBeenCalled();
+    });
+
+    // TC-E-02: 複数回連続でabortが呼ばれた場合
+    it("should handle multiple consecutive abort calls", async () => {
+      const { AgentClient } = await import("@repo/shared/agent");
+      const mockAbort = vi.fn();
+
+      vi.mocked(AgentClient).mockImplementation(
+        () =>
+          ({
+            initialize: vi.fn().mockResolvedValue(undefined),
+            getStatus: vi.fn(),
+            query: vi.fn(),
+            abort: mockAbort,
+            isQueryRunning: vi.fn().mockReturnValue(true),
+          }) as unknown as InstanceType<typeof AgentClient>,
+      );
+
+      handler = new AgentHandler({ apiKey: "test-api-key" });
+      await handler.initialize();
+
+      // 複数回連続でabortを呼び出す
+      handler.handleAbort();
+      handler.handleAbort();
+      handler.handleAbort();
+
+      // 3回呼び出されることを確認
+      expect(mockAbort).toHaveBeenCalledTimes(3);
+    });
+
+    // TC-E-03: クエリ実行中でない状態でabortが呼ばれた場合
+    it("should handle abort when no query is running", async () => {
+      const { AgentClient } = await import("@repo/shared/agent");
+      const mockAbort = vi.fn();
+      const mockIsQueryRunning = vi.fn().mockReturnValue(false);
+
+      vi.mocked(AgentClient).mockImplementation(
+        () =>
+          ({
+            initialize: vi.fn().mockResolvedValue(undefined),
+            getStatus: vi.fn(),
+            query: vi.fn(),
+            abort: mockAbort,
+            isQueryRunning: mockIsQueryRunning,
+          }) as unknown as InstanceType<typeof AgentClient>,
+      );
+
+      handler = new AgentHandler({ apiKey: "test-api-key" });
+      await handler.initialize();
+
+      // クエリが実行中でない状態でabortを呼び出す
+      expect(() => handler.handleAbort()).not.toThrow();
+      // abortは呼ばれる（AgentClient側で実行中かどうかを判断する）
       expect(mockAbort).toHaveBeenCalled();
     });
   });

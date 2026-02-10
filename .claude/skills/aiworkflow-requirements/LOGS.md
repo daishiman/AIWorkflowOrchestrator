@@ -83,6 +83,63 @@
 
 ---
 
+## 2026-02-10: UT-FIX-5-4未タスク仕様書作成
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | UT-FIX-5-4                                                      |
+| Agent        | task-specification-creator                                      |
+| 操作         | 未タスク仕様書作成                                              |
+| 対象ファイル | docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md |
+| 結果         | success                                                         |
+| 備考         | UT-FIX-5-3 Phase 12追加検証で発見、型定義と実装の不一致         |
+
+---
+
+## 2026-02-10: UT-FIX-5-3完了（Preload Agent Abort セキュリティ修正）
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | UT-FIX-5-3                                                      |
+| Agent        | aiworkflow-requirements                                         |
+| 操作         | Phase 1-12 完了（セキュリティ修正）                             |
+| 対象ファイル | apps/desktop/src/preload/index.ts, apps/desktop/src/main/agent/agent-handler.ts |
+| 結果         | success                                                         |
+| 備考         | `ipcRenderer.send` → `safeInvoke` 変更、IPC一貫性確保           |
+
+### 変更内容
+
+| 変更箇所                   | 変更前                      | 変更後                                  |
+| -------------------------- | --------------------------- | --------------------------------------- |
+| preload/index.ts:423       | `ipcRenderer.send`          | `safeInvoke(IPC_CHANNELS.AGENT_ABORT)`  |
+| agent-handler.ts:176-178   | `ipcMain.on`                | `ipcMain.handle`                        |
+| agent-handler.ts:63        | -                           | `ipcMain.removeHandler` 追加            |
+
+### 理由
+
+- 04-electron-security.md の IPC セキュリティ原則に準拠
+- ホワイトリスト検証のバイパスを解消
+- 他のAPI（stop, getStatus等）と同一パターンに統一
+
+### テスト結果
+
+| 指標              | 結果     |
+| ----------------- | -------- |
+| 全テスト          | PASS     |
+| 型チェック        | PASS     |
+| Phase 10 レビュー | PASS (指摘0件) |
+| Phase 11 手動テスト | PASS     |
+
+### 成果物
+
+| Phase | 成果物             | パス                                                          |
+| ----- | ------------------ | ------------------------------------------------------------- |
+| 12    | 実装ガイド         | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/implementation-guide.md |
+| 12    | 更新履歴           | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/documentation-changelog.md |
+| 12    | 未タスクレポート   | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/unassigned-task-report.md |
+
+---
+
 ## 2026-02-09: patterns.md構造最適化（skill-creatorテンプレート準拠）
 
 | 項目         | 内容                                                            |
