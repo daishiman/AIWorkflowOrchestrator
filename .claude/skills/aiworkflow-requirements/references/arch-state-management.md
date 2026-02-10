@@ -11,7 +11,7 @@
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
 | v1.12.0    | 2026-02-10 | P31対策実装詳細追加: SettingsView/SkillSelector変更箇所、実装時の4課題と解決策、開発者向けチェックリスト |
 | v1.11.0    | 2026-02-10 | P31対策セクション追加: Store Hooks無限ループ防止パターン（useRefガード、依存配列設計、個別セレクタ再設計） |
-| v1.10.0    | 2026-02-10 | TASK-UT-AUTH-MODE-UI-INTEGRATION完了: 未タスク2件追加（UT-STORE-HOOKS-REFACTOR-001, UT-FIX-APP-INITAUTH-CHECK-001） |
+| v1.10.0    | 2026-02-10 | TASK-UT-AUTH-MODE-UI-INTEGRATION完了: 未タスク2件追加（UT-STORE-HOOKS-REFACTOR-001, UT-FIX-APP-INITAUTH-CHECK-001）、TASK-FIX-6-1-STATE-CENTRALIZATION完了: skillSliceをagentSliceに統合、executionId事前生成によるrace condition対策 |
 | v1.9.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了: authSliceにsessionExpiresAt/isRefreshing追加、セキュリティ考慮事項・関連タスク記載 |
 | v1.8.0     | 2026-02-02 | 両ブランチ統合: task-imp-permission-date-filter完了+TASK-8B完了 |
 | v1.7.0     | 2026-02-02 | 実装詳細拡充: dateFilterUtils.ts実装ファイル追加、テストファイル2件追加、フィルタリングパイプライン仕様追加、品質メトリクス72テスト反映 |
@@ -63,7 +63,7 @@
 | `authSlice`              | 認証状態                 | `store/slices/authSlice.ts`              | -                               |
 | `chatSlice`              | チャット状態             | `store/slices/chatSlice.ts`              | -                               |
 | `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
-| `skillSlice`             | スキル実行状態管理       | `store/slices/skillSlice.ts`             | TASK-6-1                        |
+| `skillSlice`             | **統合済み→agentSlice** | ~~`store/slices/skillSlice.ts`~~（削除済み）  | TASK-FIX-6-1（統合完了） |
 | `permissionHistorySlice` | 権限要求履歴管理         | `store/slices/permissionHistorySlice.ts` | task-imp-permission-history-001 |
 
 ### authSlice詳細（TASK-AUTH-SESSION-REFRESH-001更新）
@@ -483,7 +483,34 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 
 ---
 
-## skillSlice（スキル実行状態管理）
+## skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION）
+
+> **注記**: このSliceは TASK-FIX-6-1-STATE-CENTRALIZATION（2026-02-10）で agentSlice に統合されました。
+> 以下は統合前の仕様を参考情報として保持しています。
+
+### 統合先
+
+**agentSlice** に以下の状態・アクションが統合されています:
+
+| 項目 | 統合後の位置 |
+| ---- | ------------ |
+| 状態（14プロパティ） | agentSlice内にそのまま移行 |
+| アクション（10メソッド） | agentSlice内にそのまま移行 |
+| 内部ハンドラー（4メソッド） | agentSlice内の`_handle*`メソッド |
+| IPCリスナー設定 | setupSkillListeners.ts（agentSlice参照） |
+
+### race condition対策（TASK-FIX-6-1で追加）
+
+| 項目 | 説明 |
+| ---- | ---- |
+| executionId事前生成 | executeSkill()開始時にUUID生成、IPC呼び出し前にState設定 |
+| フィルタリング | _handleStreamMessage等でexecutionIdを検証 |
+| 目的 | ストリームイベント到着時の状態不整合を防止 |
+
+---
+
+<details>
+<summary>統合前の仕様（参考情報）</summary>
 
 ### 概要
 
@@ -607,6 +634,8 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | TASK-7D                             | ChatPanel統合                  | **完了**（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
 | task-imp-permission-history-001     | Permission履歴トラッキングUI   | **完了**                                                                                                 |
 | TASK-8B                             | コンポーネントテスト（全4コンポーネント+3ユーティリティ、280テスト） | **完了**                                                                                                 |
+
+</details>
 
 ---
 

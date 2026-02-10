@@ -26,7 +26,7 @@ const mockSelectSkillByName = vi.fn();
 const mockRescanSkills = vi.fn().mockResolvedValue(undefined);
 
 const defaultStoreState = {
-  availableSkills: [
+  availableSkillsMetadata: [
     {
       name: "skill-a",
       description: "Skill A description",
@@ -240,7 +240,7 @@ describe("SkillSelector", () => {
     const user = userEvent.setup();
     currentStoreState = {
       ...defaultStoreState,
-      availableSkills: [],
+      availableSkillsMetadata: [],
       importedSkills: [],
     };
     render(<SkillSelector />);
@@ -378,7 +378,7 @@ describe("SkillSelector", () => {
     const user = userEvent.setup();
     currentStoreState = {
       ...defaultStoreState,
-      availableSkills: [
+      availableSkillsMetadata: [
         {
           name: "skill-a",
           description: "Skill A",

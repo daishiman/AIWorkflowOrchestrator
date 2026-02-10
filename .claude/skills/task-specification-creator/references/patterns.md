@@ -6,19 +6,19 @@
 
 ## 📌 クイックナビゲーション
 
-| カテゴリ | パターン数 | 説明 |
-| -------- | ---------- | ---- |
-| [失敗パターン](#失敗パターン) | 4件 | 回避すべきアンチパターン |
-| [成功パターン](#成功パターン) | 41+件 | 再利用可能なベストプラクティス |
-| [ガイドライン](#ガイドライン) | 6件 | 判断基準・検出パターン・Pitfall登録 |
-| [フェーズ境界遷移](#フェーズ境界遷移パターンphase-boundary-transition) | 4件 | Phase間の成果物引き継ぎ |
-| [失敗回避](#失敗回避パターン) | 3件 | よくある失敗の未然防止 |
-| [単体テスト設計](#単体テスト設計パターンtask-8a) | 4件 | モック・カバレッジ戦略 |
-| [E2Eテスト設計](#e2eテスト設計パターンtask-8c-b) | 3件 | Playwright安定化 |
-| [CI/DevOps最適化](#cidevops最適化パターン) | 2件 | GitHub Actions並列化 |
-| [Main→Renderer IPC](#mainrenderer-ipc実装パターンtask-wce-monaco-001) | 1件 | 逆方向通信パターン |
-| [サービス設計](#サービス設計パターンtask-9b-g) | 4件 | Facade・Script First |
-| [Zustand Store](#zustand-store-hooks無限ループ対策パターンut-fix-store-hooks-infinite-loop-001) | 1件 | 無限ループ対策・useRefガード |
+| カテゴリ                                                                                              | パターン数 | 説明                             |
+| ----------------------------------------------------------------------------------------------------- | ---------- | -------------------------------- |
+| [失敗パターン](#失敗パターン)                                                                         | 4件        | 回避すべきアンチパターン         |
+| [成功パターン](#成功パターン)                                                                         | 41+件      | 再利用可能なベストプラクティス   |
+| [ガイドライン](#ガイドライン)                                                                         | 6件        | 判断基準・検出パターン・Pitfall登録 |
+| [フェーズ境界遷移](#フェーズ境界遷移パターンphase-boundary-transition)                                | 4件        | Phase間の成果物引き継ぎ          |
+| [失敗回避](#失敗回避パターン)                                                                         | 3件        | よくある失敗の未然防止           |
+| [単体テスト設計](#単体テスト設計パターンtask-8a)                                                      | 4件        | モック・カバレッジ戦略           |
+| [E2Eテスト設計](#e2eテスト設計パターンtask-8c-b)                                                      | 3件        | Playwright安定化                 |
+| [CI/DevOps最適化](#cidevops最適化パターン)                                                            | 2件        | GitHub Actions並列化             |
+| [Main→Renderer IPC](#mainrenderer-ipc実装パターンtask-wce-monaco-001)                                 | 1件        | 逆方向通信パターン               |
+| [サービス設計](#サービス設計パターンtask-9b-g)                                                        | 4件        | Facade・Script First             |
+| [Zustand Store](#zustand-store-hooks無限ループ対策パターンut-fix-store-hooks-infinite-loop-001)      | 1件        | 無限ループ対策・useRefガード     |
 
 ---
 
@@ -26,17 +26,17 @@
 
 > **最重要**: Phase 12 Task 2は漏れが発生しやすい。以下を必ず確認。
 
-| Step | 必須 | チェック項目 | 更新対象 |
-| ---- | ---- | ------------ | -------- |
-| 1-A  | ✅   | タスク完了記録 | 該当仕様書（ui-ux-*.md等） |
-| 1-A  | ✅   | LOGS.md更新 | **aiworkflow-requirements/LOGS.md** |
-| 1-A  | ✅   | LOGS.md更新 | **task-specification-creator/LOGS.md** |
-| 1-A  | ✅   | SKILL.md変更履歴 | **aiworkflow-requirements/SKILL.md** |
-| 1-A  | ✅   | SKILL.md変更履歴 | **task-specification-creator/SKILL.md** |
-| 1-B  | △    | 実装状況テーブル | api-endpoints.md等（該当する場合） |
+| Step | 必須 | チェック項目       | 更新対象                                |
+| ---- | ---- | ------------------ | --------------------------------------- |
+| 1-A  | ✅   | タスク完了記録     | 該当仕様書（ui-ux-\*.md等）             |
+| 1-A  | ✅   | LOGS.md更新        | **aiworkflow-requirements/LOGS.md**     |
+| 1-A  | ✅   | LOGS.md更新        | **task-specification-creator/LOGS.md**  |
+| 1-A  | ✅   | SKILL.md変更履歴   | **aiworkflow-requirements/SKILL.md**    |
+| 1-A  | ✅   | SKILL.md変更履歴   | **task-specification-creator/SKILL.md** |
+| 1-B  | △    | 実装状況テーブル   | api-endpoints.md等（該当する場合）      |
 | 1-C  | △    | 関連タスクテーブル | `grep -rn "TASK_ID" references/` で検索 |
-| 1-D  | ✅   | topic-map.md再生成 | `node generate-index.js` 実行 |
-| 2    | △    | システム仕様更新 | 新規インターフェース追加時のみ |
+| 1-D  | ✅   | topic-map.md再生成 | `node generate-index.js` 実行           |
+| 2    | △    | システム仕様更新   | 新規インターフェース追加時のみ          |
 
 📖 詳細: [spec-update-workflow.md](./spec-update-workflow.md)
 
@@ -186,11 +186,11 @@
 - **問題**: 既存のテストファイルすべてにモックを追加する必要があり、大規模修正が発生
 - **苦戦箇所と解決策**:
 
-  | 苦戦箇所 | 問題 | 解決策 |
-  | -------- | ---- | ------ |
-  | テストファイル洗い出し | 影響範囲が不明確 | `grep -rn "new SkillExecutor" apps/desktop/src/` で関連テストを特定 |
-  | モック定義の重複 | 5ファイルに同じモックを追加 | 共通テストユーティリティへの抽出を検討 |
-  | beforeEachリセット忘れ | テスト間で状態がリーク | `mockAuthKeyService.getKey.mockResolvedValue()` を各beforeEachで明示的にリセット |
+  | 苦戦箇所               | 問題                        | 解決策                                                                           |
+  | ---------------------- | --------------------------- | -------------------------------------------------------------------------------- |
+  | テストファイル洗い出し | 影響範囲が不明確            | `grep -rn "new SkillExecutor" apps/desktop/src/` で関連テストを特定              |
+  | モック定義の重複       | 5ファイルに同じモックを追加 | 共通テストユーティリティへの抽出を検討                                           |
+  | beforeEachリセット忘れ | テスト間で状態がリーク      | `mockAuthKeyService.getKey.mockResolvedValue()` を各beforeEachで明示的にリセット |
 
 - **パターン**:
   1. コンストラクタにオプショナル引数として新サービスを追加（後方互換性維持）
@@ -225,6 +225,7 @@
 - **状況**: Phase 12で未タスク指示書を作成する際
 - **パターン**: 親タスクで苦戦した箇所を「実装課題と解決策」セクションとして未タスク仕様書に追記
 - **構成**:
+
   ```markdown
   ## 実装課題と解決策（{{PARENT_TASK_ID}}からの学び）
 
@@ -235,6 +236,7 @@
   **解決策**: {{解決策}}
   **本タスクへの適用**: {{このタスクでどう活かすか}}
   ```
+
 - **効果**:
   - 将来の実装者が同じ問題に遭遇した際の対処法を事前に把握
   - 06-known-pitfalls.mdとの連携による知見の再利用
@@ -247,11 +249,11 @@
 - **状況**: 重複したIPCチャンネル定義を統合・整理する場合
 - **苦戦箇所と解決策**:
 
-  | 苦戦箇所 | 問題 | 解決策 |
-  | -------- | ---- | ------ |
-  | ハードコード発見 | `"skill:complete" as string`で型チェック・ホワイトリストバイパス | Grepで`as string`パターンを検索し、IPC_CHANNELS定数に置換 |
-  | 重複定義整理 | preload/channels.ts vs shared/ipc/channels.tsの重複 | Single Source of Truth（preload/channels.ts）に集約 |
-  | ホワイトリスト更新漏れ | ALLOWED_INVOKE_CHANNELSに旧チャンネルが残存 | テストで旧チャンネルが含まれていないことを検証 |
+  | 苦戦箇所               | 問題                                                             | 解決策                                                    |
+  | ---------------------- | ---------------------------------------------------------------- | --------------------------------------------------------- |
+  | ハードコード発見       | `"skill:complete" as string`で型チェック・ホワイトリストバイパス | Grepで`as string`パターンを検索し、IPC_CHANNELS定数に置換 |
+  | 重複定義整理           | preload/channels.ts vs shared/ipc/channels.tsの重複              | Single Source of Truth（preload/channels.ts）に集約       |
+  | ホワイトリスト更新漏れ | ALLOWED_INVOKE_CHANNELSに旧チャンネルが残存                      | テストで旧チャンネルが含まれていないことを検証            |
 
 - **検出コマンド**:
   ```bash
@@ -293,15 +295,15 @@
 - **チェックリスト**:
   | Step | チェック項目 | 更新対象 |
   | ---- | ------------ | -------- |
-  | 1-A  | タスク完了記録 | 該当仕様書（ui-ux-*.md等） |
-  | 1-A  | LOGS.md更新 | **aiworkflow-requirements/LOGS.md** |
-  | 1-A  | LOGS.md更新 | **task-specification-creator/LOGS.md** |
-  | 1-A  | SKILL.md変更履歴 | **aiworkflow-requirements/SKILL.md** |
-  | 1-A  | SKILL.md変更履歴 | **task-specification-creator/SKILL.md** |
-  | 1-B  | 実装状況テーブル | api-endpoints.md等（該当する場合） |
-  | 1-C  | 関連タスクテーブル | Grepで検索して確認 |
-  | 1-D  | topic-map.md再生成 | `node generate-index.js` 実行 |
-  | 2    | システム仕様更新 | 新規インターフェース追加時のみ |
+  | 1-A | タスク完了記録 | 該当仕様書（ui-ux-\*.md等） |
+  | 1-A | LOGS.md更新 | **aiworkflow-requirements/LOGS.md** |
+  | 1-A | LOGS.md更新 | **task-specification-creator/LOGS.md** |
+  | 1-A | SKILL.md変更履歴 | **aiworkflow-requirements/SKILL.md** |
+  | 1-A | SKILL.md変更履歴 | **task-specification-creator/SKILL.md** |
+  | 1-B | 実装状況テーブル | api-endpoints.md等（該当する場合） |
+  | 1-C | 関連タスクテーブル | Grepで検索して確認 |
+  | 1-D | topic-map.md再生成 | `node generate-index.js` 実行 |
+  | 2 | システム仕様更新 | 新規インターフェース追加時のみ |
 - **効果**: documentation-changelog.mdに各Stepの結果を記録することで漏れを防止
 - **発見日**: 2026-02-04
 - **関連タスク**: task-imp-search-ui-001
@@ -452,8 +454,8 @@
   ```typescript
   const url = new URL(callbackUrl);
   const params = new URLSearchParams(url.hash.slice(1)); // #を除去
-  const error = params.get('error');
-  const accessToken = params.get('access_token');
+  const error = params.get("error");
+  const accessToken = params.get("access_token");
   ```
 - **注意点**:
   - OAuth Implicit Flow: `#`（hash）にパラメータ
@@ -469,6 +471,7 @@
 - **問題**: React StrictModeでuseEffectが2回実行され、リスナーが二重登録される
 - **パターン**: モジュールスコープのフラグでガード
 - **実装**:
+
   ```typescript
   // authSlice.ts
   let authListenerRegistered = false;
@@ -487,6 +490,7 @@
     authListenerRegistered = false;
   };
   ```
+
 - **テスト時の注意**:
   - モジュールスコープ変数はテスト間で共有される
   - `beforeEach`で`resetAuthListenerFlag()`を呼び出す
@@ -500,13 +504,14 @@
 - **問題**: AUTH_STATE_CHANGEDペイロードにerror情報が含まれておらず、Rendererでエラー表示不可
 - **パターン**: ペイロードにerror/errorCodeフィールドを追加
 - **実装**:
+
   ```typescript
   // Main Process (index.ts)
-  mainWindow.webContents.send('auth:state-changed', {
+  mainWindow.webContents.send("auth:state-changed", {
     user: session?.user ?? null,
     isAuthenticated: !!session?.user,
-    error: errorMessage ?? null,      // 追加
-    errorCode: mappedError?.code,     // 追加
+    error: errorMessage ?? null, // 追加
+    errorCode: mappedError?.code, // 追加
   });
 
   // Renderer (authSlice.ts)
@@ -516,6 +521,7 @@
     }
   });
   ```
+
 - **効果**: OAuthエラー時にRendererで適切なエラーメッセージを表示可能
 - **発見日**: 2026-02-05
 - **関連タスク**: TASK-FIX-GOOGLE-LOGIN-001
@@ -1141,7 +1147,7 @@
 - **手順**:
   1. **指示書作成**: `docs/30-workflows/unassigned-task/`に9セクション形式で配置
   2. **task-workflow.md登録**: 残課題テーブルに追加（タスクID、名称、優先度、発見元、仕様書パス）
-  3. **関連仕様書登録**: interfaces-*.md等の残課題テーブルにも追加（該当する場合）
+  3. **関連仕様書登録**: interfaces-\*.md等の残課題テーブルにも追加（該当する場合）
 - **例**（TASK-9B-G）:
   - 検出: 5件（IPC通信、UI統合、SDK統合、キャッシュ無効化、タイムアウト外部化）
   - 指示書: 5ファイル作成（task-9b-h〜k, task-9b-ui-integration）
@@ -1194,6 +1200,7 @@
   | `SearchPanelPage.ts` | 検索パネルUI操作（toggle, type, count） |
   | `WorkspaceSearchPage.ts` | ワークスペース検索モーダル操作 |
 - **構成**:
+
   ```typescript
   class SearchPanelPage {
     readonly searchInput: Locator;
@@ -1203,6 +1210,7 @@
     async getResultsCount(): Promise<number> { ... }
   }
   ```
+
 - **効果**:
   - テストの可読性向上（what, not how）
   - セレクタ変更時の修正箇所が1箇所
@@ -1236,12 +1244,12 @@
 - **状況**: 複数の外部OAuthプロバイダー（Google, GitHub, Discord等）からのデータを統一的に扱う必要がある場合
 - **パターン**: Nullish coalescing（`??`）チェーンでプロバイダー別のキー名を優先度順にフォールバック
 - **例**（AUTH-UI-004）:
-  | プロバイダー | キー名       | 優先度 |
+  | プロバイダー | キー名 | 優先度 |
   | ------------ | ------------ | ------ |
-  | GitHub       | `avatar_url` | 1      |
-  | Discord      | `avatar_url` | 1      |
-  | Google       | `picture`    | 2      |
-  | その他       | -            | null   |
+  | GitHub | `avatar_url` | 1 |
+  | Discord | `avatar_url` | 1 |
+  | Google | `picture` | 2 |
+  | その他 | - | null |
 - **実装**:
   ```
   const avatarUrl = identity_data?.avatar_url ?? identity_data?.picture ?? null;
@@ -1260,11 +1268,11 @@
 - **チェックリスト**:
   | 項目 | 対象ファイル | 確認内容 |
   | ---- | ------------ | -------- |
-  | 1    | LOGS.md×2 | aiworkflow-requirements + task-specification-creator の両方 |
-  | 2    | SKILL.md×2 | 両スキルの変更履歴にバージョン追加 |
-  | 3    | topic-map.md | `node scripts/generate-index.js` 実行 |
-  | 4    | documentation-changelog.md | Step 1-A〜Step 2の全結果を記録 |
-  | 5    | interfaces-*.md | 完了タスクセクション追加（該当する場合） |
+  | 1 | LOGS.md×2 | aiworkflow-requirements + task-specification-creator の両方 |
+  | 2 | SKILL.md×2 | 両スキルの変更履歴にバージョン追加 |
+  | 3 | topic-map.md | `node scripts/generate-index.js` 実行 |
+  | 4 | documentation-changelog.md | Step 1-A〜Step 2の全結果を記録 |
+  | 5 | interfaces-\*.md | 完了タスクセクション追加（該当する場合） |
 - **効果**:
   - ドキュメント更新漏れの防止
   - 将来の開発者が変更履歴を追跡可能
@@ -1336,6 +1344,7 @@
 - **状況**: Discriminated Union型で各バリアントに共通フィールドがある場合
 - **パターン**: 共通フィールドをBase型として抽出し、各バリアントでIntersection型として合成
 - **例**（TASK-FIX-1-1-TYPE-ALIGNMENT）:
+
   ```typescript
   // Before: 各バリアントで重複定義
   type SkillStreamMessage =
@@ -1353,6 +1362,7 @@
     | (BaseStreamMessage & { type: "tool_use"; content: ... })
     | ...
   ```
+
 - **効果**:
   - 共通フィールド追加時の修正箇所が1箇所
   - コードの意図が明確（共通 vs バリアント固有）
@@ -1515,33 +1525,96 @@
 - **発見日**: 2026-02-06
 - **関連タスク**: DEBT-SEC-001, UT-SEC-001, DEBT-SEC-002
 
+### 未タスク仕様書Level A化パターン
+
+- **状況**: 未タスクを作成する際、簡易的な記述（タイトルと概要のみ）では情報が不足し、後で実装時に詳細を再調査する必要が生じる
+- **問題**: 簡易的な未タスク仕様書は自己完結性が低く、以下の問題を引き起こす
+  1. 実装時に要件の詳細が不明で再調査が必要
+  2. 完了条件が曖昧で完了判断ができない
+  3. 参照資料が不明で関連コードを探す時間がかかる
+- **パターン**: 全ての未タスク仕様書を9セクション構成で作成する（Level A品質）
+- **9セクション構成**:
+  | セクション | 内容 | 必須 |
+  | ---------- | ---- | ---- |
+  | 1. タイトル（h1） | タスクID + 日本語名 | ✅ |
+  | 2. メタ情報 | 作成日、ステータス、優先度、関連タスク | ✅ |
+  | 3. 目的 | なぜこのタスクが必要か（1-2文） | ✅ |
+  | 4. 実行タスク | 具体的な作業項目リスト | ✅ |
+  | 5. 参照資料 | 関連ファイルパス、仕様書リンク | ✅ |
+  | 6. 実行手順 | ステップバイステップの作業手順 | ✅ |
+  | 7. 成果物 | 作成/更新するファイル一覧 | ✅ |
+  | 8. 完了条件 | チェックリスト形式の完了判断基準 | ✅ |
+  | 9. 次Phase | 完了後の次のアクション（PR作成等） | △ |
+- **例**（TASK-FIX-15-1）:
+  - 検出した未タスク（TASK-FIX-15-2-TYPE-CONSOLIDATION）を即座に9セクション構成で作成
+  - 参照資料に具体的なファイルパスを5件記載
+  - 完了条件を4項目のチェックリストで明示
+- **効果**:
+  - 後続タスク実行時の情報不足を防止
+  - 自己完結性の確保（他の資料を参照せずに着手可能）
+  - タスク見積もり精度の向上
+- **発見日**: 2026-02-09
+- **関連タスク**: TASK-FIX-15-1
+
+### Phase 12 3ステップ完全性確認パターン
+
+- **状況**: Phase 12 Task 4（未タスク検出）で、指示書作成のみで完了と誤認し、後続の2ステップを漏らす
+- **問題**: P3パターン（未タスク3ステップ不完全）が繰り返し発生する
+  - 指示書は作成したが、task-workflow.mdへの登録を忘れた
+  - task-workflow.mdに登録したが、関連仕様書へのリンク追加を忘れた
+- **パターン**: 3ステップを機械的にチェックするワークフローを確立
+- **3ステップチェックリスト**:
+  | Step | 作業内容 | 確認方法 | チェック |
+  | ---- | -------- | -------- | -------- |
+  | 1 | `unassigned-task/`に指示書作成 | ファイル存在確認 | ☐ |
+  | 2 | `task-workflow.md`残課題テーブルに登録 | grep "TASK-ID" で確認 | ☐ |
+  | 3 | 関連仕様書に参照リンク追加 | 関連箇所を開いて確認 | ☐ |
+- **実行手順**:
+  1. 未タスクを検出したら、まず3ステップの全てを書き出す
+  2. Step 1完了後、すぐにStep 2に着手（記憶が新しいうちに）
+  3. Step 2完了後、すぐにStep 3に着手
+  4. 全Step完了後、documentation-changelog.mdに記録
+- **例**（TASK-FIX-15-1）:
+  - 未タスク TASK-FIX-15-2-TYPE-CONSOLIDATION を検出
+  - Step 1: `docs/30-workflows/unassigned-task/task-fix-15-2-type-consolidation.md` 作成
+  - Step 2: `task-workflow.md` 残課題テーブルに優先度、関連タスクとともに登録
+  - Step 3: `interfaces-agent-sdk-executor.md` に関連タスクリンク追加
+- **効果**:
+  - P3パターンの再発を確実に防止
+  - 未タスクの追跡性を100%確保
+  - Phase 12完了後の検証工数を削減
+- **発見日**: 2026-02-09
+- **関連タスク**: TASK-FIX-15-1
+
 ---
+
 ## 変更履歴
 
-| Date           | Changes                                                                                                                                              |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001知見追加**: Zustand Store Hooks無限ループ対策パターン追加（useRefガード）。06-known-pitfalls.md連携強化（新規Pitfall登録フロー）。クイックナビゲーション更新 |
-| **2026-02-06** | **DEBT-SEC-001知見追加**: 成功パターン2件（Phase 12ドキュメント更新の完全性保証、未タスク「既存タスクに包含」判断の追跡性確保）                      |
-| **2026-02-04** | **AUTH-UI-001知見追加**: 認証UIバグ修正パターン4件（既実装発見、テスト環境切り分け、React Portal z-index、認証状態変更後UI更新）                    |
+| Date           | Changes                                                                                                                                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001知見追加**: Zustand Store Hooks無限ループ対策パターン追加（useRefガード）。06-known-pitfalls.md連携強化（新規Pitfall登録フロー）。クイックナビゲーション更新     |
+| **2026-02-09** | **TASK-FIX-15-1知見追加**: 成功パターン2件（未タスク仕様書Level A化パターン、Phase 12 3ステップ完全性確認パターン）                                                                                    |
+| **2026-02-06** | **DEBT-SEC-001知見追加**: 成功パターン2件（Phase 12ドキュメント更新の完全性保証、未タスク「既存タスクに包含」判断の追跡性確保）                                                                        |
+| **2026-02-04** | **AUTH-UI-001知見追加**: 認証UIバグ修正パターン4件（既実装発見、テスト環境切り分け、React Portal z-index、認証状態変更後UI更新）                                                                       |
 | **2026-02-04** | **patterns.md構造最適化**: クイックナビゲーション・Phase 12 Task 2クイックリファレンス追加、search-replace-ui実装パターン3件追加（既存実装品質評価、Page Object、generate-index.jsファイル名誤認回避） |
-| **2026-02-04** | **AUTH-UI-004知見追加**: 外部APIデータ正規化パターン3件（プロバイダー別フォールバック、Phase 12ドキュメント5点セット、環境依存テスト分離）           |
-| **2026-02-04** | **TASK-FIX-1-1-TYPE-ALIGNMENT知見追加**: 型定義統合/移行パターン4件（パッケージエクスポート更新チェック、型定義ファイルカバレッジ、Discriminated Union DRY、import文一括置換安全性） |
-| **2026-02-03** | **マージ統合**: TASK-9B-G（サービス設計パターン4件）+ TASK-9C/9A-A（SDK統合パターン5件）を統合                                                       |
-| **2026-02-03** | **TASK-9B-G失敗パターン追加: 未タスク検出後のtask-workflow.md登録漏れ（3ステップ必須の誤認パターン）**                                               |
-| **2026-02-03** | **TASK-9B-G知見追加: サービス設計パターン4件（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）**         |
-| **2026-02-03** | **TASK-9C知見追加: 成功パターン3件（Graceful SDK Fallbackパターン、queryFn DIパターン、スキル名バリデーション禁止文字サニタイズ）**                  |
-| **2026-02-03** | **TASK-WCE-MONACO-001知見追加: Main→Renderer IPC実装パターン（webContents.executeJavaScript逆方向クエリ、課題ID MR-01〜MR-04）**                     |
-| **2026-02-03** | **TASK-9A-A知見追加: 成功パターン2件（ESModuleモッキング回避パターン、汎用エラーアサーションパターン）**                                             |
-| **2026-02-02** | **TASK-8C-C知見追加: 成功パターン1件（Phase 12 Step 1完了チェックリストの厳格遵守 - SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止）** |
-| **2026-02-02** | **TASK-8C-B知見追加: E2Eテスト設計パターン3件（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）**                                    |
-| **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）**                              |
-| **2026-02-02** | **TASK-8B知見追加: 成功パターン1件（Phase 10 MINOR指摘の確実な未タスク変換）**                                                                       |
-| **2026-02-02** | **TASK-8A知見追加: 成功パターン4件（カバレッジ閾値免除判定、ギャップ分析ベースTDD、未タスク検出P3全件記録、vi.doMock動的再読み込み）**               |
-| 2026-02-01     | TASK-8C-G知見追加: 成功パターン3件（境界値フィクスチャ設計、parseFrontmatter構造化検証、execSync決定論的テスト）                                     |
-| 2026-02-01     | task-imp-permission-tool-metadata-001知見追加: 成功パターン3件（Record型スタイルマッピング、IIFEレンダリング、デフォルトメタデータフォールバック）   |
-| 2026-01-31     | TASK-7D知見体系化: フェーズ境界遷移パターン（4件）・失敗回避パターン（3件）追加                                                                      |
-| 2026-01-30     | TASK-7Dフィードバック反映: 成功パターン4件追加（forwardRef テスト、Exclude型設定マップ、個別セレクタ、並列エージェント）                             |
-| 2026-01-28     | TASK-3-2-Cフィードバック反映: 成功パターン3件追加（React Context一括更新、動的更新間隔、Page Visibility API）                                        |
-| 2026-01-27     | TASK-3-2-Aフィードバック反映: 成功パターン5件追加（R-ID方式、日常例え、ユーティリティ分離、未タスク変換）                                            |
-| 2026-01-26     | Phase 12出力要件漏れパターン追加、成功パターンにチェックリスト追加                                                                                   |
-| 2026-01-24     | 初版作成、Markdown見出しパターン追加                                                                                                                 |
+| **2026-02-04** | **AUTH-UI-004知見追加**: 外部APIデータ正規化パターン3件（プロバイダー別フォールバック、Phase 12ドキュメント5点セット、環境依存テスト分離）                                                             |
+| **2026-02-04** | **TASK-FIX-1-1-TYPE-ALIGNMENT知見追加**: 型定義統合/移行パターン4件（パッケージエクスポート更新チェック、型定義ファイルカバレッジ、Discriminated Union DRY、import文一括置換安全性）                   |
+| **2026-02-03** | **マージ統合**: TASK-9B-G（サービス設計パターン4件）+ TASK-9C/9A-A（SDK統合パターン5件）を統合                                                                                                         |
+| **2026-02-03** | **TASK-9B-G失敗パターン追加: 未タスク検出後のtask-workflow.md登録漏れ（3ステップ必須の誤認パターン）**                                                                                                 |
+| **2026-02-03** | **TASK-9B-G知見追加: サービス設計パターン4件（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）**                                                           |
+| **2026-02-03** | **TASK-9C知見追加: 成功パターン3件（Graceful SDK Fallbackパターン、queryFn DIパターン、スキル名バリデーション禁止文字サニタイズ）**                                                                    |
+| **2026-02-03** | **TASK-WCE-MONACO-001知見追加: Main→Renderer IPC実装パターン（webContents.executeJavaScript逆方向クエリ、課題ID MR-01〜MR-04）**                                                                       |
+| **2026-02-03** | **TASK-9A-A知見追加: 成功パターン2件（ESModuleモッキング回避パターン、汎用エラーアサーションパターン）**                                                                                               |
+| **2026-02-02** | **TASK-8C-C知見追加: 成功パターン1件（Phase 12 Step 1完了チェックリストの厳格遵守 - SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止）**                                                   |
+| **2026-02-02** | **TASK-8C-B知見追加: E2Eテスト設計パターン3件（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）**                                                                                      |
+| **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）**                                                                                |
+| **2026-02-02** | **TASK-8B知見追加: 成功パターン1件（Phase 10 MINOR指摘の確実な未タスク変換）**                                                                                                                         |
+| **2026-02-02** | **TASK-8A知見追加: 成功パターン4件（カバレッジ閾値免除判定、ギャップ分析ベースTDD、未タスク検出P3全件記録、vi.doMock動的再読み込み）**                                                                 |
+| 2026-02-01     | TASK-8C-G知見追加: 成功パターン3件（境界値フィクスチャ設計、parseFrontmatter構造化検証、execSync決定論的テスト）                                                                                       |
+| 2026-02-01     | task-imp-permission-tool-metadata-001知見追加: 成功パターン3件（Record型スタイルマッピング、IIFEレンダリング、デフォルトメタデータフォールバック）                                                     |
+| 2026-01-31     | TASK-7D知見体系化: フェーズ境界遷移パターン（4件）・失敗回避パターン（3件）追加                                                                                                                        |
+| 2026-01-30     | TASK-7Dフィードバック反映: 成功パターン4件追加（forwardRef テスト、Exclude型設定マップ、個別セレクタ、並列エージェント）                                                                               |
+| 2026-01-28     | TASK-3-2-Cフィードバック反映: 成功パターン3件追加（React Context一括更新、動的更新間隔、Page Visibility API）                                                                                          |
+| 2026-01-27     | TASK-3-2-Aフィードバック反映: 成功パターン5件追加（R-ID方式、日常例え、ユーティリティ分離、未タスク変換）                                                                                              |
+| 2026-01-26     | Phase 12出力要件漏れパターン追加、成功パターンにチェックリスト追加                                                                                                                                     |
+| 2026-01-24     | 初版作成、Markdown見出しパターン追加                                                                                                                                                                   |

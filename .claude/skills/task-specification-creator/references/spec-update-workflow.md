@@ -73,8 +73,10 @@ Phase 12 Task 2 開始
 | 「関連タスクテーブルは確認不要」         | **Step 1-C必須** | 仕様書内の「未タスク候補」「関連タスク」テーブルにタスクが記載されている可能性あり。Grepで確認が必要 |
 | 「未タスク指示書のunassigned-task/配置は見送り」 | **作成が必要** | ガイドラインの「条件」要件を確認し、検出件数が1件以上の場合は原則作成する |
 | 「task-specification-creator/LOGS.mdは後で更新」 | **Step 1-A必須** | 両方のLOGS.md（aiworkflow-requirements + task-specification-creator）を同時に更新すること。後回しにすると漏れる |
-| 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
+| 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
+| 「Slice統合は内部リファクタリングなので更新不要」 | **Step 2必要** | Slice統合（例: skillSlice→agentSlice）はarch-state-management.mdの更新が必須。統合元セクションを「統合済み」に変更し、統合先セクションを拡張すること（P25-P28参照） |
+| 「スキル改善なし」と判断                 | **フィードバック必須** | Phase 12で必ずスキル改善検討を実施し、改善点がなくても「改善点なし」としてskill-feedback-report.mdを作成すること |
 
 ### 🆕 新規クラス/コンポーネント追加時のチェックリスト
 

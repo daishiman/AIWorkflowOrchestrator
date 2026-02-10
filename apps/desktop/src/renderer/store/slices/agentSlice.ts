@@ -9,9 +9,52 @@ import type {
   EnvironmentType,
   PreviewContent,
 } from "@repo/shared/types/agent";
+import type {
+  SkillMetadata,
+  ImportedSkill,
+  SkillExecutionStatus,
+  SkillStreamMessage,
+  SkillPermissionRequest,
+} from "@repo/shared";
 
 // Re-export for backward compatibility
 export type { AgentExecutionStatus } from "@repo/shared/types/agent";
+
+// ============================================
+// エラーメッセージ定数（skillSliceから統合）
+// ============================================
+
+const SKILL_ERRORS = {
+  FETCH_FAILED: "スキル一覧の取得に失敗",
+  SCAN_FAILED: "スキル再スキャンに失敗",
+  IMPORT_FAILED: "スキルのインポートに失敗",
+  REMOVE_FAILED: "スキルの削除に失敗",
+  EXECUTE_FAILED: "実行開始に失敗",
+} as const;
+
+/**
+ * エラーメッセージをフォーマット
+ */
+function formatErrorMessage(prefix: string, error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error);
+  return `${prefix}: ${message}`;
+}
+
+/**
+ * executionIdを生成（UUID v4形式）
+ * race condition対策: IPC呼び出し前にexecutionIdを事前生成
+ */
+function generateExecutionId(): string {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // フォールバック: RFC 4122準拠のUUID v4生成
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 /**
  * agentSlice状態インターフェース
@@ -60,6 +103,34 @@ export interface AgentState {
   selectedEnvironment: EnvironmentType;
   /** 分割比率 (0-100) */
   splitRatio: number;
+
+  // === skillSliceから統合する状態（TASK-FIX-6-1） ===
+  /** 利用可能なスキルメタデータ一覧（未インポート） */
+  availableSkillsMetadata: SkillMetadata[];
+  /** インポート済みスキル一覧 */
+  importedSkills: ImportedSkill[];
+  /** 選択中のスキル名（nullは未選択） */
+  selectedSkillName: string | null;
+  /** スキル実行中フラグ */
+  isExecuting: boolean;
+  /** 実行ID（nullは未実行） */
+  executionId: string | null;
+  /** スキル実行ステータス */
+  skillExecutionStatus: SkillExecutionStatus | null;
+  /** ストリーミングメッセージ一覧 */
+  streamingMessages: SkillStreamMessage[];
+  /** 保留中の権限リクエスト */
+  pendingPermission: SkillPermissionRequest | null;
+  /** スキルエラー情報 */
+  skillError: string | null;
+  /** スキル一覧読み込み中 */
+  isLoadingSkills: boolean;
+  /** スキャン中 */
+  isScanning: boolean;
+  /** インポート中 */
+  isImporting: boolean;
+  /** インポート中のスキル名 */
+  importingSkillName: string | null;
 }
 
 /**
@@ -150,6 +221,34 @@ export interface AgentActions {
   setSplitRatio: (ratio: number) => void;
   /** プレビューをクリア */
   clearPreview: () => void;
+
+  // === skillSliceから統合するアクション（TASK-FIX-6-1） ===
+  /** スキル一覧を取得 */
+  fetchSkills: () => Promise<void>;
+  /** スキルを再スキャン */
+  rescanSkills: () => Promise<void>;
+  /** スキルをインポート */
+  importSkill: (skillName: string) => Promise<void>;
+  /** スキルを削除 */
+  removeSkill: (skillName: string) => Promise<void>;
+  /** スキルを選択 */
+  selectSkillByName: (skillName: string | null) => void;
+  /** スキルを実行（race condition対策版） */
+  executeSkill: (prompt: string) => Promise<void>;
+  /** 実行を中断 */
+  abortExecution: () => void;
+  /** 権限リクエストに応答 */
+  respondToSkillPermission: (approved: boolean, remember?: boolean) => void;
+  /** スキルエラーをクリア */
+  clearSkillError: () => void;
+  /** ストリーミングメッセージをクリア */
+  clearStreamingMessages: () => void;
+
+  // === 内部アクション（IPCイベントハンドラ用） ===
+  _handleStreamMessage: (msg: SkillStreamMessage) => void;
+  _handleComplete: (executionId: string) => void;
+  _handleError: (executionId: string, error: string) => void;
+  _handlePermissionRequest: (req: SkillPermissionRequest) => void;
 }
 
 /**
@@ -197,6 +296,21 @@ const initialAgentState: AgentState = {
   previewContent: null,
   selectedEnvironment: "none",
   splitRatio: 50,
+
+  // === skillSliceから統合する初期状態（TASK-FIX-6-1） ===
+  availableSkillsMetadata: [],
+  importedSkills: [],
+  selectedSkillName: null,
+  isExecuting: false,
+  executionId: null,
+  skillExecutionStatus: null,
+  streamingMessages: [],
+  pendingPermission: null,
+  skillError: null,
+  isLoadingSkills: false,
+  isScanning: false,
+  isImporting: false,
+  importingSkillName: null,
 };
 
 /**
@@ -436,4 +550,217 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       previewContent: null,
       selectedEnvironment: "none",
     }),
+
+  // === skillSliceから統合するアクション（TASK-FIX-6-1） ===
+
+  fetchSkills: async () => {
+    set({ isLoadingSkills: true, skillError: null });
+    try {
+      if (typeof window === "undefined" || !window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      const [available, imported] = await Promise.all([
+        window.electronAPI.skill.list(),
+        window.electronAPI.skill.getImported(),
+      ]);
+      set({
+        availableSkillsMetadata: available,
+        importedSkills: imported,
+        isLoadingSkills: false,
+      });
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage(SKILL_ERRORS.FETCH_FAILED, error),
+        isLoadingSkills: false,
+      });
+    }
+  },
+
+  rescanSkills: async () => {
+    set({ isScanning: true, skillError: null });
+    try {
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      const available = await window.electronAPI.skill.rescan();
+      const imported = await window.electronAPI.skill.getImported();
+      set({
+        availableSkillsMetadata: available,
+        importedSkills: imported,
+        isScanning: false,
+      });
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage(SKILL_ERRORS.SCAN_FAILED, error),
+        isScanning: false,
+      });
+    }
+  },
+
+  importSkill: async (skillName) => {
+    set({ isImporting: true, importingSkillName: skillName, skillError: null });
+    try {
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      const imported = await window.electronAPI.skill.import(skillName);
+      set((state) => ({
+        importedSkills: [...state.importedSkills, imported],
+        availableSkillsMetadata: state.availableSkillsMetadata.filter(
+          (s) => s.name !== skillName,
+        ),
+        isImporting: false,
+        importingSkillName: null,
+      }));
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage(SKILL_ERRORS.IMPORT_FAILED, error),
+        isImporting: false,
+        importingSkillName: null,
+      });
+    }
+  },
+
+  removeSkill: async (skillName) => {
+    try {
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      await window.electronAPI.skill.remove(skillName);
+      set((state) => ({
+        importedSkills: state.importedSkills.filter(
+          (s) => s.name !== skillName,
+        ),
+        selectedSkillName:
+          state.selectedSkillName === skillName
+            ? null
+            : state.selectedSkillName,
+      }));
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage(SKILL_ERRORS.REMOVE_FAILED, error),
+      });
+    }
+  },
+
+  selectSkillByName: (skillName) => {
+    set({ selectedSkillName: skillName });
+  },
+
+  // race condition対策版 executeSkill
+  executeSkill: async (prompt) => {
+    const { selectedSkillName } = get();
+    if (!selectedSkillName) return;
+
+    // race condition対策: IPC呼び出し前にexecutionIdを事前生成
+    const tempExecutionId = generateExecutionId();
+
+    try {
+      set({
+        isExecuting: true,
+        skillExecutionStatus: "running",
+        streamingMessages: [],
+        skillError: null,
+        executionId: tempExecutionId, // 事前設定
+      });
+
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+
+      const response = await window.electronAPI.skill.execute({
+        skillName: selectedSkillName,
+        prompt,
+      });
+
+      // サーバーからの正式なexecutionIdで更新
+      set({ executionId: response.executionId });
+    } catch (error) {
+      set({
+        isExecuting: false,
+        skillExecutionStatus: "error",
+        skillError: formatErrorMessage(SKILL_ERRORS.EXECUTE_FAILED, error),
+      });
+    }
+  },
+
+  abortExecution: () => {
+    const { executionId } = get();
+    if (executionId) {
+      window.electronAPI?.skill?.abort(executionId);
+      set({
+        isExecuting: false,
+        skillExecutionStatus: "cancelled",
+      });
+    }
+  },
+
+  respondToSkillPermission: (approved, remember = false) => {
+    const state = get();
+    const { pendingPermission } = state;
+    if (pendingPermission) {
+      // 権限履歴記録（PermissionHistorySliceが統合されている場合）
+      const addHistoryEntry = (
+        state as unknown as { addHistoryEntry?: (entry: unknown) => void }
+      ).addHistoryEntry;
+      if (addHistoryEntry) {
+        const decision = !approved
+          ? "denied"
+          : remember
+            ? "approved"
+            : "approved_once";
+        addHistoryEntry({
+          toolName: pendingPermission.toolName,
+          args: (pendingPermission.args ?? {}) as Record<string, unknown>,
+          decision,
+          timestamp: new Date(),
+        });
+      }
+
+      window.electronAPI?.skill?.sendPermissionResponse({
+        requestId: pendingPermission.requestId,
+        approved,
+        rememberChoice: remember,
+      });
+      set({ pendingPermission: null });
+    }
+  },
+
+  clearSkillError: () => {
+    set({ skillError: null });
+  },
+
+  clearStreamingMessages: () => {
+    set({ streamingMessages: [] });
+  },
+
+  // === 内部ハンドラ（IPCイベント用） ===
+
+  _handleStreamMessage: (msg) => {
+    set((state) => ({
+      streamingMessages: [...state.streamingMessages, msg],
+    }));
+  },
+
+  _handleComplete: (_executionId) => {
+    set({
+      isExecuting: false,
+      skillExecutionStatus: "completed",
+    });
+  },
+
+  _handleError: (_executionId, error) => {
+    set({
+      isExecuting: false,
+      skillExecutionStatus: "error",
+      skillError: error,
+    });
+  },
+
+  _handlePermissionRequest: (req) => {
+    set({
+      pendingPermission: req,
+      skillExecutionStatus: "permission_pending",
+    });
+  },
 });
