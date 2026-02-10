@@ -3309,3 +3309,12 @@ if (artifactPath) {
 - **Notes**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了。型キャスト（as string[]）による実行時検証バイパス問題を修正。validateStoredSkillIds()関数追加、SkillStore.get()戻り値をunknownに変更。テストカバレッジ91.52%達成。06-known-pitfalls.mdにP19（型キャスト検証バイパス）、P20（テスト環境ログ汚染）を追記
 
 ---
+
+## 2026-02-09
+
+- TASK-AUTH-MODE-SELECTION-001: Phase 12 ドキュメント更新完了
+  - 実装ガイド作成（概念説明・技術詳細）
+  - IPCドキュメント・コンポーネントドキュメント作成
+  - interfaces-auth.md 更新
+  - LOGS.md 2ファイル更新（P1防止）
+

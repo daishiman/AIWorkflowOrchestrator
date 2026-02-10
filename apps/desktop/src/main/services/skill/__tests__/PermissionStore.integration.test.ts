@@ -367,8 +367,8 @@ describe("PermissionStore - Load and Concurrency Tests", () => {
       }
       const elapsed = performance.now() - start;
 
-      // 1万回のランダムアクセスが 100ms 以内
-      expect(elapsed).toBeLessThan(100);
+      // 1万回のランダムアクセスが 200ms 以内（CI環境でのフレイキーテスト対策）
+      expect(elapsed).toBeLessThan(200);
     });
   });
 

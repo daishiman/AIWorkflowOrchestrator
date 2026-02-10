@@ -1,0 +1,113 @@
+{
+  "taskId": "TASK-AUTH-MODE-SELECTION-001",
+  "featureName": "auth-mode-selection",
+  "issueNumber": 750,
+  "createdAt": "2026-02-08T23:45:00Z",
+  "status": "completed",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "cli-auth-investigation.md",
+        "user-stories.md",
+        "requirements-definition.md",
+        "acceptance-criteria.md",
+        "scope-definition.md",
+        "phase-1-execution-record.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "auth-mode-service-design.md",
+        "subscription-auth-provider-design.md",
+        "ipc-specification.md",
+        "type-definitions.ts",
+        "ui-wireframe.md",
+        "state-management-design.md",
+        "architecture-design.md",
+        "phase-2-execution-record.md"
+      ]
+    },
+    "3": { "status": "completed", "artifacts": ["design-review-result.md"] },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "test-specification.md",
+        "test-cases.md",
+        "integration-test-design.md",
+        "AuthModeService.test.ts",
+        "SubscriptionAuthProvider.test.ts",
+        "authModeHandlers.test.ts",
+        "authModeSlice.test.ts"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "auth-mode.ts",
+        "AuthModeService.ts",
+        "SubscriptionAuthProvider.ts",
+        "authModeHandlers.ts",
+        "authModeSlice.ts",
+        "AuthModeSelector/index.tsx",
+        "phase-5-execution-record.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["coverage-analysis.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["coverage-verification.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["refactoring-notes.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["quality-verification.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["final-review-report.md", "phase-10-execution-record.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "test-results.md",
+        "issues-found.md",
+        "phase-11-execution-record.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "implementation-guide.md",
+        "ipc-documentation.md",
+        "component-documentation.md",
+        "documentation-changelog.md",
+        "unassigned-task-report.md"
+      ]
+    },
+    "13": { "status": "completed", "artifacts": ["final-summary.md"] }
+  },
+  "qualityMetrics": {
+    "linesCoverage": null,
+    "branchCoverage": null,
+    "functionCoverage": null,
+    "testCount": null
+  },
+  "dependencies": {
+    "completedTasks": ["TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE"],
+    "systemSpecs": [
+      "interfaces-auth.md",
+      "architecture-auth-security.md",
+      "security-principles.md",
+      "api-ipc-auth.md"
+    ]
+  }
+}

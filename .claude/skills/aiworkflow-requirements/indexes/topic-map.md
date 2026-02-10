@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-08
+> 自動生成: 2026-02-09
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -172,7 +172,7 @@ node scripts/list-specs.js --topics
 | スキル作成実装パターン（TASK-9B-G） | L803 |
 | 外部API データ正規化パターン | L927 |
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L966 |
-| 変更履歴 | L1016 |
+| 変更履歴 | L1028 |
 
 ### references/architecture-monorepo.md
 
@@ -263,17 +263,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L441 |
-| SkillSlice型定義（TASK-6-1） | L493 |
-| ModifierSkill（スライド逆同期機能） | L585 |
-| ChatPanel統合（TASK-7D） | L619 |
-| SkillFileManager（TASK-9A-A） | L654 |
-| テストアーキテクチャ（TASK-8C-A） | L742 |
-| 完了タスク | L794 |
-| 関連ドキュメント | L1012 |
-| SkillCreatorService（TASK-9B-G） | L1025 |
-| 完了タスク | L1273 |
-| 変更履歴 | L1304 |
+| SkillImportStore（TASK-2B） | L525 |
+| SkillSlice型定義（TASK-6-1） | L577 |
+| ModifierSkill（スライド逆同期機能） | L669 |
+| ChatPanel統合（TASK-7D） | L703 |
+| SkillFileManager（TASK-9A-A） | L738 |
+| テストアーキテクチャ（TASK-8C-A） | L826 |
+| 完了タスク | L878 |
+| 関連ドキュメント | L1096 |
+| SkillCreatorService（TASK-9B-G） | L1109 |
+| 完了タスク | L1357 |
+| 変更履歴 | L1388 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -307,8 +307,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
 | 完了タスク | L256 |
-| ワークスペース型定義 | L310 |
-| 変更履歴 | L364 |
+| ワークスペース型定義 | L343 |
+| 変更履歴 | L397 |
 
 ### references/interfaces-chat-history.md
 
@@ -1055,8 +1055,8 @@ node scripts/list-specs.js --topics
 | Permission IPC Handler セキュリティ | L220 |
 | SkillAPI Preload実装（TASK-5-1） | L256 |
 | 完了タスク | L322 |
-| 残課題 | L353 |
-| 関連ドキュメント | L365 |
+| 残課題 | L413 |
+| 関連ドキュメント | L425 |
 
 ---
 
@@ -1784,8 +1784,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L265 |
-| 関連ドキュメント | L324 |
-| 変更履歴 | L334 |
+| 関連ドキュメント | L326 |
+| 変更履歴 | L336 |
 
 ### references/testing-accessibility.md
 

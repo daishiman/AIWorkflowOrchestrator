@@ -20,13 +20,13 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 
 ### 実装ファイル
 
-| ファイル                                                | 説明                        |
-| ------------------------------------------------------- | --------------------------- |
-| `packages/shared/src/types/skill.ts`                    | Skill型定義（共有）         |
-| `apps/desktop/src/renderer/store/slices/agentSlice.ts`  | Zustand状態管理             |
-| `apps/desktop/src/renderer/views/AgentView/index.tsx`   | メインビュー                |
-| `apps/desktop/src/renderer/views/AgentView/components/` | UIコンポーネント群          |
-| `apps/desktop/src/main/skill/skill-handler.ts`          | Main Process IPCハンドラー  |
+| ファイル                                                | 説明                       |
+| ------------------------------------------------------- | -------------------------- |
+| `packages/shared/src/types/skill.ts`                    | Skill型定義（共有）        |
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts`  | Zustand状態管理            |
+| `apps/desktop/src/renderer/views/AgentView/index.tsx`   | メインビュー               |
+| `apps/desktop/src/renderer/views/AgentView/components/` | UIコンポーネント群         |
+| `apps/desktop/src/main/skill/skill-handler.ts`          | Main Process IPCハンドラー |
 | `apps/desktop/src/preload/skill-api.ts`                 | Preload API（統一SkillAPI） |
 
 ---
@@ -35,75 +35,100 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 
 #### TASK-FIX-5-1-SKILL-API-UNIFICATION（2026-02-06完了）
 
-| 項目       | 内容                                                                                            |
-| ---------- | ----------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-FIX-5-1                                                                                    |
-| ステータス | **完了**                                                                                        |
-| テスト数   | 210（自動）+ 15（手動チェック項目）                                                             |
-| 主要変更   | SkillAPI二重定義の統一（`window.skillAPI`廃止→`window.electronAPI.skill`一本化）                |
-| 実装ガイド | `docs/30-workflows/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md` |
-| 備考       | AgentViewの型アサーション（`as unknown as Skill[]`）はTASK-FIX-6-1で解消予定                    |
+| 項目       | 内容                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-5-1                                                          |
+| ステータス | **完了**                                                              |
+| テスト数   | 210（自動）+ 15（手動チェック項目）                                   |
+| 主要変更   | SkillAPI二重定義の統一（`window.skillAPI`廃止→`window.electronAPI.skill`一本化） |
+| 実装ガイド | `docs/30-workflows/completed-tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md` |
+| 備考       | AgentViewの型アサーション（`as unknown as Skill[]`）はTASK-FIX-6-1で解消予定 |
 
-#### TASK-FIX-17-1-SKILL-SCAN-HANDLER（2026-02-09完了）
-
-| 項目       | 内容                                                                       |
-| ---------- | -------------------------------------------------------------------------- |
-| タスクID   | TASK-FIX-17-1                                                              |
-| ステータス | **完了**                                                                   |
-| テスト数   | 12（自動）                                                                 |
-| 主要変更   | skill:scan IPCハンドラー追加（forceRefresh=true固定）                      |
-| 実装ガイド | `docs/30-workflows/TASK-FIX-17-1/outputs/phase-12/implementation-guide.md` |
-| 実装箇所   | `apps/desktop/src/main/ipc/skillHandlers.ts` L70-88                        |
-| カバレッジ | Branch 70.96%（閾値60%以上）                                               |
-
-##### 実装上の苦戦箇所・教訓
-
-###### mockReturnValue vs mockReturnValueOnce のテスト間リーク
-
-| 項目     | 内容                                                                                                           |
-| -------- | -------------------------------------------------------------------------------------------------------------- |
-| 問題     | `mockReturnValue` で設定したモック戻り値が後続テストに影響し、予期しない結果になる                             |
-| 原因     | セキュリティテスト（SH-SC-08, SH-SC-11, SH-SC-12）で `IPC_WINDOW_DESTROYED` 等を設定後、次のテストに漏れた     |
-| 解決策   | 特定テストのみで異なる戻り値が必要な場合は `mockReturnValueOnce` を使用                                        |
-| パターン | ①`beforeEach` でデフォルト値設定 → ②特定テストで `mockReturnValueOnce` → ③テスト終了後は自動でデフォルトに戻る |
-| 参照     | `.claude/rules/06-known-pitfalls.md#P23`                                                                       |
+---
 
 ### TASK-FIX-5-1 実装詳細
 
-#### 変更概要
-- **Before**: `window.skillAPI`（直接公開）+ `window.electronAPI.skill`（contextBridge経由）の二重定義
-- **After**: `window.electronAPI.skill` のみに統一
+#### 統一されたAPI構造
 
-#### 主要変更ファイル
-| ファイル | 変更内容 |
-|----------|----------|
-| `preload/types.ts` | `skillAPI` インターフェース削除、`ElectronAPI.skill` に統合 |
-| `preload/types.d.ts` | グローバル `Window.skillAPI` 宣言削除 |
-| `preload/index.ts` | `contextBridge.exposeInMainWorld("skillAPI", ...)` 削除 |
+TASK-FIX-5-1により、SkillAPI は `window.electronAPI.skill` に一本化された。旧 `window.skillAPI` は完全に廃止され、全てのスキル関連IPC通信は `window.electronAPI.skill` 経由で行う。
 
-#### セキュリティパターン
-- `safeInvoke`: 同期的なIPC呼び出し（ホワイトリスト検証付き）
-- `safeOn`: イベントリスナー登録（クリーンアップ関数返却）
+| 項目 | 旧構成 | 新構成（統一後） |
+|------|--------|------------------|
+| Preload公開 | `window.skillAPI` + `window.electronAPI.skill` の二重定義 | `window.electronAPI.skill` のみ |
+| contextBridge | 一部直接割り当て | 全て `exposeInMainWorld` 経由 |
+| 戻り値型 | `OperationResult<T>` ラッパー | 直接型（`T` または `Promise<T>`） |
 
-#### 品質指標
-- テスト: 138件（自動）+ 17件（手動）全PASS
-- カバレッジ: Line 91.07%, Branch 89.47%, Function 100%
+#### safeInvoke/safeOnセキュリティパターン
 
-#### 苦戦パターン（06-known-pitfalls.md 参照）
-- P23: API二重定義による型定義の二重管理
-- P24: 呼び出し元コードの参照先分散
-- P25: Store型定義の不統一による型アサーション発生
-- P26: OperationResult廃止の波及範囲調査不足
-- P27: contextIsolation + safeInvoke パターンの実装複雑性
-- P28: 削除タイプのリファクタリングにおける手動確認忘れ
+全てのIPC通信は `safeInvoke` / `safeOn` ヘルパー関数を経由し、ホワイトリスト検証を行う。
 
-#### 関連リソース
+> **正本**: [architecture-implementation-patterns.md - SkillAPI統一パターン](./architecture-implementation-patterns.md#skillapi統一パターンtask-fix-5-1-2026-02-06実装)（チャンネル一覧、セキュリティ効果の詳細）
 
-| リソース | 内容 |
-|----------|------|
-| [patterns.md](./patterns.md) | 成功/失敗パターン集（P23-P28詳細） |
-| [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | safeInvoke/safeOnパターン詳細 |
-| [06-known-pitfalls.md](../../../../.claude/rules/06-known-pitfalls.md) | 苦戦パターン正本 |
+| パターン | 用途 | 検証内容 |
+|----------|------|----------|
+| `safeInvoke(channel, ...args)` | Renderer→Main リクエスト | `ALLOWED_INVOKE_CHANNELS` に含まれるか検証 |
+| `safeOn(channel, callback)` | Main→Renderer イベント購読 | `ALLOWED_ON_CHANNELS` に含まれるか検証 |
+
+**検証フロー**:
+
+| ステップ | safeInvoke | safeOn |
+|----------|------------|--------|
+| 1 | チャンネルがホワイトリストに存在するか確認 | チャンネルがホワイトリストに存在するか確認 |
+| 2 | 存在しない場合 `Promise.reject()` | 存在しない場合、空のクリーンアップ関数を返却 |
+| 3 | 存在する場合 `ipcRenderer.invoke()` 実行 | 存在する場合 `ipcRenderer.on()` でリスナー登録 |
+| 4 | - | クリーンアップ関数（`removeListener`）を返却 |
+
+#### 統一API 13メソッド一覧
+
+| カテゴリ | メソッド | IPC方向 | 説明 |
+|----------|----------|---------|------|
+| **Skill実行** | `execute` | R→M | スキル実行開始（SkillExecutionRequest → SkillExecutionResponse） |
+| | `onStream` | M→R | ストリーミングメッセージ購読 |
+| | `abort` | R→M | 実行中断（executionId指定） |
+| | `getExecutionStatus` | R→M | 実行ステータス取得 |
+| | `onComplete` | M→R | 実行完了イベント購読 |
+| | `onError` | M→R | 実行エラーイベント購読 |
+| **Permission** | `onPermissionRequest` | M→R | 権限リクエスト購読（Main起点） |
+| | `sendPermissionResponse` | R→M | 権限レスポンス送信 |
+| **Skill管理** | `list` | R→M | 利用可能スキル一覧取得 |
+| | `getImported` | R→M | インポート済みスキル取得 |
+| | `rescan` | R→M | スキルディレクトリ再スキャン |
+| | `import` | R→M | スキルインポート |
+| | `remove` | R→M | スキル削除 |
+
+#### 廃止されたもの
+
+| 廃止対象 | 理由 | 代替 |
+|----------|------|------|
+| `window.skillAPI` | 二重定義による保守性低下 | `window.electronAPI.skill` |
+| `OperationResult<T>` ラッパー（Preload層） | 冗長なラッパー、型情報の劣化 | 直接型 `T` を返却 |
+
+**OperationResult残置について**: `packages/shared/src/types/skill.ts` の `OperationResult<T>` 定義自体は後方互換のため残置。Preload層では使用しないが、他モジュールでの参照に対応。
+
+#### テスト結果
+
+| カテゴリ | テスト数 | 結果 |
+|----------|----------|------|
+| skill-api.test.ts | 37 | PASS |
+| skill-api.permission.test.ts | 30 | PASS |
+| skillSlice.test.ts | 59 | PASS |
+| SkillExecutor統合テスト | 12 | PASS |
+| **合計** | **138** | **PASS** |
+
+**カバレッジ**:
+
+| ファイル | Statements | Branches | Functions | Lines |
+|----------|------------|----------|-----------|-------|
+| skill-api.ts | 91.23% | 85.71% | 100% | 91.23% |
+| 平均 | **91%** | 86% | 100% | 91% |
+
+#### 関連ドキュメント
+
+| ドキュメント | 説明 |
+|--------------|------|
+| [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | SkillAPI統一パターン詳細 |
+| [security-skill-ipc.md](./security-skill-ipc.md) | safeInvoke/safeOnセキュリティ詳細 |
+| [実装ガイド](../../../../docs/30-workflows/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md) | 概念説明 + 技術詳細 |
 
 ---
 
@@ -263,7 +288,6 @@ Zustand Sliceパターンで実装された状態管理。
 | ------------------------- | --------------- | --------------------------- | ------------------------------------- |
 | `skill:list-imported`     | Renderer → Main | インポート済みスキル取得    | `OperationResult<Skill[]>`            |
 | `skill:list-available`    | Renderer → Main | 利用可能スキル取得          | `OperationResult<Skill[]>`            |
-| `skill:scan`              | Renderer → Main | スキル強制再スキャン        | `OperationResult<Skill[]>`            |
 | `skill:import`            | Renderer → Main | スキルインポート            | `OperationResult<void>`               |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `OperationResult<void>`               |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `OperationResult<Skill>`              |
@@ -311,9 +335,9 @@ Zustand Sliceパターンで実装された状態管理。
 
 スキルを実行する。
 
-| パラメータ | 型                      | 必須 | 説明           |
-| ---------- | ----------------------- | ---- | -------------- |
-| `request`  | `SkillExecutionRequest` | ✓    | 実行リクエスト |
+| パラメータ | 型                      | 必須 | 説明             |
+| ---------- | ----------------------- | ---- | ---------------- |
+| `request`  | `SkillExecutionRequest` | ✓    | 実行リクエスト   |
 
 **戻り値**: `Promise<SkillExecutionResponse>`
 
@@ -868,36 +892,36 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 
 #### テスト結果サマリー
 
-| カテゴリ              | テスト数 | PASS | FAIL |
-| --------------------- | -------- | ---- | ---- |
-| Skill Metadata Types  | 8        | 8    | 0    |
-| Skill Execution Types | 5        | 5    | 0    |
-| Skill Stream Message  | 11       | 11   | 0    |
-| Discriminated Union   | 6        | 6    | 0    |
-| Permission Types      | 5        | 5    | 0    |
-| 移行型テスト          | 14       | 14   | 0    |
+| カテゴリ            | テスト数 | PASS | FAIL |
+| ------------------- | -------- | ---- | ---- |
+| Skill Metadata Types| 8        | 8    | 0    |
+| Skill Execution Types| 5       | 5    | 0    |
+| Skill Stream Message | 11      | 11   | 0    |
+| Discriminated Union | 6        | 6    | 0    |
+| Permission Types    | 5        | 5    | 0    |
+| 移行型テスト        | 14       | 14   | 0    |
 
 #### 主要成果
 
-| 成果                       | 内容                                                        |
-| -------------------------- | ----------------------------------------------------------- |
-| 型統合                     | skill-execution.tsの6型+1定数をskill.tsに統合               |
-| BaseStreamMessage抽出      | Discriminated Unionの共通プロパティをDRY原則に基づき共通化  |
-| import文更新               | 9ファイルのimport文を`skill-execution`→`skill`に統一        |
-| パッケージエクスポート削除 | package.json, tsup.config.tsからskill-executionエントリ削除 |
+| 成果                    | 内容                                                                 |
+| ----------------------- | -------------------------------------------------------------------- |
+| 型統合                  | skill-execution.tsの6型+1定数をskill.tsに統合                        |
+| BaseStreamMessage抽出   | Discriminated Unionの共通プロパティをDRY原則に基づき共通化           |
+| import文更新            | 9ファイルのimport文を`skill-execution`→`skill`に統一                 |
+| パッケージエクスポート削除 | package.json, tsup.config.tsからskill-executionエントリ削除        |
 
 #### 成果物
 
-| 成果物             | パス                                                                                          |
-| ------------------ | --------------------------------------------------------------------------------------------- |
-| 実装ガイド         | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md`      |
-| テスト結果レポート | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-11/manual-test-result.md`        |
+| 成果物             | パス                                                                                   |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| 実装ガイド         | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md` |
+| テスト結果レポート | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-11/manual-test-result.md`   |
 | 未タスク検出       | `docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/unassigned-task-detection.md` |
 
 #### 関連ドキュメント
 
-| ドキュメント                                                                                                     | 説明                                 |
-| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| ドキュメント                          | 説明                        |
+| ------------------------------------- | --------------------------- |
 | [実装ガイド](../../../../docs/30-workflows/TASK-FIX-1-1-TYPE-ALIGNMENT/outputs/phase-12/implementation-guide.md) | 概念的説明（中学生レベル）+ 技術詳細 |
 
 #### 実装上の苦戦箇所・教訓
@@ -906,39 +930,39 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 
 ##### 1. パッケージエクスポート更新漏れ
 
-| 項目     | 内容                                                                                                                          |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 問題     | 型ファイル削除時、package.json/tsup.config.tsのエクスポート定義を更新し忘れる                                                 |
-| 原因     | 型定義ファイルの削除に集中し、パッケージ設定への影響を見落とす                                                                |
-| 解決策   | **削除前チェックリスト**: ①ファイル削除 → ②package.json exports確認 → ③tsup.config.ts entry確認 → ④index.ts再エクスポート確認 |
-| 検証方法 | `grep -rn "削除対象ファイル名" packages/shared/` で参照残存確認                                                               |
+| 項目 | 内容 |
+|------|------|
+| 問題 | 型ファイル削除時、package.json/tsup.config.tsのエクスポート定義を更新し忘れる |
+| 原因 | 型定義ファイルの削除に集中し、パッケージ設定への影響を見落とす |
+| 解決策 | **削除前チェックリスト**: ①ファイル削除 → ②package.json exports確認 → ③tsup.config.ts entry確認 → ④index.ts再エクスポート確認 |
+| 検証方法 | `grep -rn "削除対象ファイル名" packages/shared/` で参照残存確認 |
 
 ##### 2. 型定義ファイルのカバレッジ寄与
 
-| 項目       | 内容                                                                                                    |
-| ---------- | ------------------------------------------------------------------------------------------------------- |
-| 課題       | 型のみ定義するファイル（interface, type）はJavaScriptにトランスパイルされないためカバレッジに寄与しない |
-| 認識       | Vitestのc8/istanbulは実行時コードのみカバレッジ計測                                                     |
-| 対策       | 型テストは**コンパイル成功＝テスト成功**として扱い、カバレッジ目標から除外                              |
-| テスト戦略 | `tsc --noEmit`による型チェック + ランタイムテストでの型ガード検証                                       |
+| 項目 | 内容 |
+|------|------|
+| 課題 | 型のみ定義するファイル（interface, type）はJavaScriptにトランスパイルされないためカバレッジに寄与しない |
+| 認識 | Vitestのc8/istanbulは実行時コードのみカバレッジ計測 |
+| 対策 | 型テストは**コンパイル成功＝テスト成功**として扱い、カバレッジ目標から除外 |
+| テスト戦略 | `tsc --noEmit`による型チェック + ランタイムテストでの型ガード検証 |
 
 ##### 3. Discriminated UnionのDRY原則適用
 
-| 項目   | 内容                                                                              |
-| ------ | --------------------------------------------------------------------------------- |
-| 課題   | Discriminated Unionの各バリアントに共通プロパティ（executionId, timestamp）が重複 |
-| 解決策 | BaseStreamMessageインターフェースを抽出し、Intersection Type (`&`) で結合         |
-| 利点   | 共通プロパティの一元管理、将来の共通プロパティ追加が容易                          |
-| 注意点 | TypeScript 4.1以降のIntersection Type最適化を活用                                 |
+| 項目 | 内容 |
+|------|------|
+| 課題 | Discriminated Unionの各バリアントに共通プロパティ（executionId, timestamp）が重複 |
+| 解決策 | BaseStreamMessageインターフェースを抽出し、Intersection Type (`&`) で結合 |
+| 利点 | 共通プロパティの一元管理、将来の共通プロパティ追加が容易 |
+| 注意点 | TypeScript 4.1以降のIntersection Type最適化を活用 |
 
 ##### 4. import文一括置換の安全性
 
-| 項目     | 内容                                                                     |
-| -------- | ------------------------------------------------------------------------ |
-| 課題     | 複数ファイルのimport文を一括で変更する際の漏れ・誤変換リスク             |
-| 解決策   | ①Grep で対象ファイル特定 → ②1ファイルずつ手動確認 → ③typecheck実行で検証 |
-| 禁止事項 | sed/awkによる一括置換は避ける（コンテキスト無視の誤変換リスク）          |
-| 推奨     | IDE のリファクタリング機能またはEdit tool での個別置換                   |
+| 項目 | 内容 |
+|------|------|
+| 課題 | 複数ファイルのimport文を一括で変更する際の漏れ・誤変換リスク |
+| 解決策 | ①Grep で対象ファイル特定 → ②1ファイルずつ手動確認 → ③typecheck実行で検証 |
+| 禁止事項 | sed/awkによる一括置換は避ける（コンテキスト無視の誤変換リスク） |
+| 推奨 | IDE のリファクタリング機能またはEdit tool での個別置換 |
 
 ---
 
@@ -1092,13 +1116,13 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 
 **実装ファイル**:
 
-| ファイル               | パス                                    | 説明                   |
-| ---------------------- | --------------------------------------- | ---------------------- |
-| SkillCreatorService.ts | `apps/desktop/src/main/services/skill/` | スキル作成統合サービス |
-| ScriptExecutor.ts      | `apps/desktop/src/main/services/skill/` | スクリプト実行基盤     |
-| ResourceLoader.ts      | `apps/desktop/src/main/services/skill/` | リソース遅延読み込み   |
-| constants.ts           | `apps/desktop/src/main/services/skill/` | 定数定義               |
-| skillCreator.ts        | `packages/shared/src/types/`            | 型定義                 |
+| ファイル                 | パス                                                     | 説明                   |
+| ------------------------ | -------------------------------------------------------- | ---------------------- |
+| SkillCreatorService.ts   | `apps/desktop/src/main/services/skill/`                  | スキル作成統合サービス |
+| ScriptExecutor.ts        | `apps/desktop/src/main/services/skill/`                  | スクリプト実行基盤     |
+| ResourceLoader.ts        | `apps/desktop/src/main/services/skill/`                  | リソース遅延読み込み   |
+| constants.ts             | `apps/desktop/src/main/services/skill/`                  | 定数定義               |
+| skillCreator.ts          | `packages/shared/src/types/`                             | 型定義                 |
 
 ---
 
@@ -1108,60 +1132,60 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 
 スキル作成モードを表す列挙型。
 
-| 値               | 説明                             |
-| ---------------- | -------------------------------- |
-| `collaborative`  | ユーザー対話型スキル共創（推奨） |
-| `orchestrate`    | 実行エンジン選択モード           |
-| `create`         | 新規スキル作成                   |
-| `update`         | 既存スキル更新                   |
-| `improve-prompt` | プロンプト改善                   |
+| 値               | 説明                               |
+| ---------------- | ---------------------------------- |
+| `collaborative`  | ユーザー対話型スキル共創（推奨）   |
+| `orchestrate`    | 実行エンジン選択モード             |
+| `create`         | 新規スキル作成                     |
+| `update`         | 既存スキル更新                     |
+| `improve-prompt` | プロンプト改善                     |
 
 #### ExecutionEngine
 
 実行エンジンを表す列挙型（orchestrateモード用）。
 
-| 値                | 説明                     |
-| ----------------- | ------------------------ |
-| `claude`          | Claude Codeで実行        |
-| `codex`           | OpenAI Codexで実行       |
-| `claude-to-codex` | Claudeで設計→Codexで実行 |
+| 値               | 説明                           |
+| ---------------- | ------------------------------ |
+| `claude`         | Claude Codeで実行              |
+| `codex`          | OpenAI Codexで実行             |
+| `claude-to-codex`| Claudeで設計→Codexで実行       |
 
 #### CreateSkillOptions
 
 スキル作成オプション。
 
-| プロパティ        | 型                 | 必須 | 説明                                |
-| ----------------- | ------------------ | ---- | ----------------------------------- |
-| `name`            | `string`           | ✓    | スキル名（ディレクトリ名）          |
-| `description`     | `string`           | ✓    | スキルの説明                        |
-| `mode`            | `SkillCreatorMode` | ✓    | 作成モード                          |
-| `executionEngine` | `ExecutionEngine`  | -    | 実行エンジン（orchestrate時）       |
-| `generateTasks`   | `boolean`          | -    | タスク仕様書を生成するか            |
-| `interviewResult` | `InterviewResult`  | -    | インタビュー結果（collaborative時） |
-| `domainModel`     | `DomainModel`      | -    | ドメインモデル（collaborative時）   |
+| プロパティ        | 型                  | 必須 | 説明                           |
+| ----------------- | ------------------- | ---- | ------------------------------ |
+| `name`            | `string`            | ✓    | スキル名（ディレクトリ名）     |
+| `description`     | `string`            | ✓    | スキルの説明                   |
+| `mode`            | `SkillCreatorMode`  | ✓    | 作成モード                     |
+| `executionEngine` | `ExecutionEngine`   | -    | 実行エンジン（orchestrate時）  |
+| `generateTasks`   | `boolean`           | -    | タスク仕様書を生成するか       |
+| `interviewResult` | `InterviewResult`   | -    | インタビュー結果（collaborative時） |
+| `domainModel`     | `DomainModel`       | -    | ドメインモデル（collaborative時） |
 
 #### ScriptResult
 
 スクリプト実行結果。
 
-| プロパティ | 型        | 説明                           |
-| ---------- | --------- | ------------------------------ |
-| `success`  | `boolean` | 実行成功フラグ（exitCode===0） |
-| `stdout`   | `string`  | 標準出力                       |
-| `stderr`   | `string`  | 標準エラー出力                 |
-| `exitCode` | `number`  | 終了コード                     |
+| プロパティ  | 型        | 説明                           |
+| ----------- | --------- | ------------------------------ |
+| `success`   | `boolean` | 実行成功フラグ（exitCode===0） |
+| `stdout`    | `string`  | 標準出力                       |
+| `stderr`    | `string`  | 標準エラー出力                 |
+| `exitCode`  | `number`  | 終了コード                     |
 
 #### ExecutionReport
 
 タスク実行レポート。
 
-| プロパティ      | 型                 | 説明                            |
-| --------------- | ------------------ | ------------------------------- |
-| `mode`          | `string`           | 実行モード（dry-run/execution） |
-| `tasks`         | `string[][]`       | 実行順序（dry-run時）           |
-| `results`       | `TaskResult[]`     | 実行結果（execution時）         |
-| `summary`       | `ExecutionSummary` | サマリー                        |
-| `estimatedTime` | `number`           | 見積もり時間（分）              |
+| プロパティ      | 型                | 説明                     |
+| --------------- | ----------------- | ------------------------ |
+| `mode`          | `string`          | 実行モード（dry-run/execution） |
+| `tasks`         | `string[][]`      | 実行順序（dry-run時）    |
+| `results`       | `TaskResult[]`    | 実行結果（execution時）  |
+| `summary`       | `ExecutionSummary`| サマリー                 |
+| `estimatedTime` | `number`          | 見積もり時間（分）       |
 
 ---
 
@@ -1181,8 +1205,8 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 
 スキルを作成する。
 
-| パラメータ | 型                   | 必須 | 説明                 |
-| ---------- | -------------------- | ---- | -------------------- |
+| パラメータ | 型                   | 必須 | 説明               |
+| ---------- | -------------------- | ---- | ------------------ |
 | `options`  | `CreateSkillOptions` | ✓    | スキル作成オプション |
 
 **戻り値**: `Promise<string>` - 作成されたスキルディレクトリパス
@@ -1191,8 +1215,8 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 
 タスクを依存関係順に実行する。
 
-| パラメータ | 型                    | 必須 | 説明                 |
-| ---------- | --------------------- | ---- | -------------------- |
+| パラメータ | 型                    | 必須 | 説明               |
+| ---------- | --------------------- | ---- | ------------------ |
 | `options`  | `ExecuteTasksOptions` | ✓    | タスク実行オプション |
 
 **戻り値**: `Promise<ExecutionReport>`
@@ -1201,9 +1225,9 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 
 スキルを検証する。
 
-| パラメータ | 型       | 必須 | 説明                   |
-| ---------- | -------- | ---- | ---------------------- |
-| `skillDir` | `string` | ✓    | スキルディレクトリパス |
+| パラメータ  | 型       | 必須 | 説明                   |
+| ----------- | -------- | ---- | ---------------------- |
+| `skillDir`  | `string` | ✓    | スキルディレクトリパス |
 
 **戻り値**: `Promise<boolean>`
 
@@ -1217,10 +1241,10 @@ Script First原則に基づき、決定論的処理をスクリプトに委譲�
 
 スクリプトを実行し、結果を返す。
 
-| パラメータ   | 型         | 必須 | 説明                               |
-| ------------ | ---------- | ---- | ---------------------------------- |
+| パラメータ   | 型         | 必須 | 説明                             |
+| ------------ | ---------- | ---- | -------------------------------- |
 | `scriptName` | `string`   | ✓    | スクリプト名（例: detect_mode.js） |
-| `args`       | `string[]` | ✓    | スクリプトに渡す引数               |
+| `args`       | `string[]` | ✓    | スクリプトに渡す引数             |
 
 **戻り値**: `Promise<ScriptResult>`
 
@@ -1242,10 +1266,10 @@ Progressive Disclosure原則に基づき、リソースを遅延読み込みす�
 
 リソースを読み込む（キャッシュ優先）。
 
-| パラメータ | 型                 | 必須 | 説明                                         |
-| ---------- | ------------------ | ---- | -------------------------------------------- |
-| `category` | `ResourceCategory` | ✓    | カテゴリ（agents/references/assets/schemas） |
-| `name`     | `string`           | ✓    | リソース名（ファイル名）                     |
+| パラメータ | 型                | 必須 | 説明                             |
+| ---------- | ----------------- | ---- | -------------------------------- |
+| `category` | `ResourceCategory`| ✓    | カテゴリ（agents/references/assets/schemas） |
+| `name`     | `string`          | ✓    | リソース名（ファイル名）         |
 
 **戻り値**: `Promise<string>`
 
@@ -1288,46 +1312,46 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 #### 1. 未タスク登録漏れ（Phase 12）
 
-| 項目     | 内容                                                                                       |
-| -------- | ------------------------------------------------------------------------------------------ |
-| 問題     | 未タスク指示書を作成しても、task-workflow.mdの残課題テーブルへの登録を忘れやすい           |
-| 原因     | Phase 12の未タスク検出が「指示書作成」で完了と誤認しやすい                                 |
-| 解決策   | **3ステップ必須**: ①指示書作成 → ②task-workflow.md残課題テーブル登録 → ③関連仕様書への記載 |
-| 検証方法 | Phase 12完了前にtask-workflow.mdの残課題テーブルを目視確認                                 |
+| 項目 | 内容 |
+|------|------|
+| 問題 | 未タスク指示書を作成しても、task-workflow.mdの残課題テーブルへの登録を忘れやすい |
+| 原因 | Phase 12の未タスク検出が「指示書作成」で完了と誤認しやすい |
+| 解決策 | **3ステップ必須**: ①指示書作成 → ②task-workflow.md残課題テーブル登録 → ③関連仕様書への記載 |
+| 検証方法 | Phase 12完了前にtask-workflow.mdの残課題テーブルを目視確認 |
 
 #### 2. Script First + Progressive Disclosure統合設計
 
-| 項目       | 内容                                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------------------------ |
-| 課題       | 決定論的処理（Script First）とリソース遅延読み込み（Progressive Disclosure）を同一サービスで統合する設計判断 |
-| 解決策     | ScriptExecutorとResourceLoaderを独立クラスとして実装し、SkillCreatorService（Facade）で統合                  |
-| 利点       | 単一責任原則を維持しつつ、利用者には統一APIを提供                                                            |
-| テスト戦略 | 各コンポーネントを独立テスト後、統合テストでFacadeを検証                                                     |
+| 項目 | 内容 |
+|------|------|
+| 課題 | 決定論的処理（Script First）とリソース遅延読み込み（Progressive Disclosure）を同一サービスで統合する設計判断 |
+| 解決策 | ScriptExecutorとResourceLoaderを独立クラスとして実装し、SkillCreatorService（Facade）で統合 |
+| 利点 | 単一責任原則を維持しつつ、利用者には統一APIを提供 |
+| テスト戦略 | 各コンポーネントを独立テスト後、統合テストでFacadeを検証 |
 
 #### 3. 定数外部化のタイミング
 
-| 項目 | 内容                                                                              |
-| ---- | --------------------------------------------------------------------------------- |
-| 課題 | タイムアウト値などのマジックナンバーがコード内に散在                              |
+| 項目 | 内容 |
+|------|------|
+| 課題 | タイムアウト値などのマジックナンバーがコード内に散在 |
 | 原因 | Phase 5（実装）でハードコードし、Phase 8（リファクタリング）で外部化する2段階工程 |
-| 教訓 | 12-Factor App準拠を意識し、Phase 5時点で定数ファイル（constants.ts）を作成すべき  |
-| 対策 | 新規サービス実装時は、定数定義ファイルを最初に作成するルールを適用                |
+| 教訓 | 12-Factor App準拠を意識し、Phase 5時点で定数ファイル（constants.ts）を作成すべき |
+| 対策 | 新規サービス実装時は、定数定義ファイルを最初に作成するルールを適用 |
 
 #### 4. パストラバーサル防止の実装箇所
 
-| 項目 | 内容                                                           |
-| ---- | -------------------------------------------------------------- |
-| 課題 | セキュリティ対策（BC-003）をどのレイヤーで実装すべきか         |
+| 項目 | 内容 |
+|------|------|
+| 課題 | セキュリティ対策（BC-003）をどのレイヤーで実装すべきか |
 | 判断 | スクリプト名を受け取るScriptExecutor.execute()メソッド内で検証 |
-| 理由 | 入力に最も近い場所で検証することで、バイパスリスクを低減       |
-| 実装 | `..`, `/`, `\`を含むスクリプト名を拒否し、早期リターン         |
+| 理由 | 入力に最も近い場所で検証することで、バイパスリスクを低減 |
+| 実装 | `..`, `/`, `\`を含むスクリプト名を拒否し、早期リターン |
 
 ---
 
 ### 関連ドキュメント
 
-| ドキュメント                                                                                                                   | 説明                                 |
-| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| ドキュメント | 説明 |
+| ------------ | ---- |
 | [TASK-9B-G 実装ガイド](../../../../docs/30-workflows/TASK-9B-G-skill-creator-service/outputs/phase-12/implementation-guide.md) | 概念的説明（中学生レベル）+ 技術詳細 |
 
 ---
@@ -1336,48 +1360,47 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ### TASK-9B-G: SkillCreatorService実装（2026-02-03完了）
 
-| 項目         | 内容                                                 |
-| ------------ | ---------------------------------------------------- |
-| タスクID     | TASK-9B-G                                            |
-| 完了日       | 2026-02-03                                           |
-| ステータス   | **完了**                                             |
-| テスト数     | 50（自動テスト）                                     |
-| 発見課題     | 0件                                                  |
-| ドキュメント | `docs/30-workflows/TASK-9B-G-skill-creator-service/` |
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-G                                                                  |
+| 完了日       | 2026-02-03                                                                 |
+| ステータス   | **完了**                                                                   |
+| テスト数     | 50（自動テスト）                                                           |
+| 発見課題     | 0件                                                                        |
+| ドキュメント | `docs/30-workflows/TASK-9B-G-skill-creator-service/`                       |
 
 #### テスト結果サマリー
 
-| カテゴリ            | テスト数 | PASS | FAIL |
-| ------------------- | -------- | ---- | ---- |
-| ScriptExecutor      | 9        | 9    | 0    |
-| ResourceLoader      | 9        | 9    | 0    |
-| SkillCreatorService | 22       | 22   | 0    |
-| 統合テスト          | 10       | 10   | 0    |
+| カテゴリ           | テスト数 | PASS | FAIL |
+| ------------------ | -------- | ---- | ---- |
+| ScriptExecutor     | 9        | 9    | 0    |
+| ResourceLoader     | 9        | 9    | 0    |
+| SkillCreatorService| 22       | 22   | 0    |
+| 統合テスト         | 10       | 10   | 0    |
 
 #### 成果物
 
-| 成果物             | パス                                                                                         |
-| ------------------ | -------------------------------------------------------------------------------------------- |
-| テスト結果レポート | `docs/30-workflows/TASK-9B-G-skill-creator-service/outputs/phase-11/manual-test-result.md`   |
+| 成果物             | パス                                                                       |
+| ------------------ | -------------------------------------------------------------------------- |
+| テスト結果レポート | `docs/30-workflows/TASK-9B-G-skill-creator-service/outputs/phase-11/manual-test-result.md` |
 | 実装ガイド         | `docs/30-workflows/TASK-9B-G-skill-creator-service/outputs/phase-12/implementation-guide.md` |
 
 ---
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                                                                                                              |
-| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-02-09 | 1.13.0     | TASK-FIX-17-1-SKILL-SCAN-HANDLER: skill:scan IPCチャンネル仕様追加、苦戦箇所（mockReturnValue vs mockReturnValueOnce）記録            |
+| 日付       | バージョン | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
 | 2026-02-04 | 1.12.0     | TASK-FIX-1-1-TYPE-ALIGNMENT: スキル型定義統一完了記録追加（skill-execution.ts削除、6型+1定数をskill.tsに統合、BaseStreamMessage抽出） |
-| 2026-02-03 | 1.11.0     | マージ統合: TASK-9B-G + TASK-9C                                                                                                       |
-| 2026-02-03 | 1.10.0     | TASK-9B-G: 実装上の苦戦箇所・教訓セクション追加（未タスク登録漏れ、Script First統合設計、定数外部化、パストラバーサル防止）           |
-| 2026-02-03 | 1.9.0      | TASK-9B-G: SkillCreatorService仕様追加（SkillCreatorMode, ScriptExecutor, ResourceLoader型定義、API仕様、50テスト完了記録）           |
-| 2026-02-02 | 1.8.0      | TASK-8C-B: スキル選択E2Eテスト完了記録追加（8テスト、ARIA属性ベースセレクタ、安定性対策3層）                                          |
-| 2026-02-02 | 1.7.0      | TASK-8C-A: テストアーキテクチャセクション追加（テスト構成、適用パターン、ヘルパー関数、テストデータ定数）                             |
-| 2026-02-02 | 1.6.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む                                                   |
-| 2026-02-02 | 1.5.0      | TASK-8C-A完了: skill:abort/get-statusチャネル仕様追加、IPC統合テスト完了記録                                                          |
-| 2026-01-30 | 1.4.0      | TASK-7D完了: ChatPanel統合セクション追加                                                                                              |
-| 2026-01-30 | 1.3.0      | TASK-7B完了: SkillImportDialogファイルパス修正（components/skill/）                                                                   |
-| 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加                                                                                          |
-| 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠）                                                                                |
-| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                                                                                                       |
+| 2026-02-03 | 1.11.0     | マージ統合: TASK-9B-G + TASK-9C |
+| 2026-02-03 | 1.10.0     | TASK-9B-G: 実装上の苦戦箇所・教訓セクション追加（未タスク登録漏れ、Script First統合設計、定数外部化、パストラバーサル防止） |
+| 2026-02-03 | 1.9.0      | TASK-9B-G: SkillCreatorService仕様追加（SkillCreatorMode, ScriptExecutor, ResourceLoader型定義、API仕様、50テスト完了記録） |
+| 2026-02-02 | 1.8.0      | TASK-8C-B: スキル選択E2Eテスト完了記録追加（8テスト、ARIA属性ベースセレクタ、安定性対策3層） |
+| 2026-02-02 | 1.7.0      | TASK-8C-A: テストアーキテクチャセクション追加（テスト構成、適用パターン、ヘルパー関数、テストデータ定数） |
+| 2026-02-02 | 1.6.0      | TASK-8A完了: スキル管理モジュール単体テスト231テスト全PASS、skillSlice 59テスト含む                       |
+| 2026-02-02 | 1.5.0      | TASK-8C-A完了: skill:abort/get-statusチャネル仕様追加、IPC統合テスト完了記録                              |
+| 2026-01-30 | 1.4.0      | TASK-7D完了: ChatPanel統合セクション追加                                                                  |
+| 2026-01-30 | 1.3.0      | TASK-7B完了: SkillImportDialogファイルパス修正（components/skill/）                                       |
+| 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加                                                              |
+| 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠）                                                    |
+| 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                                                                           |
