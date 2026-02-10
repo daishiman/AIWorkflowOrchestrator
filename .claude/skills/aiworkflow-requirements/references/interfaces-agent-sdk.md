@@ -110,7 +110,9 @@ Claude Agent SDK (`@anthropic-ai/claude-agent-sdk`) を使用する場合、**im
 
 実行中のクエリを中断する。
 
-**戻り値**: `void`
+**戻り値**: `Promise<void>` - 中断処理完了時にresolve
+
+> **UT-FIX-5-4 (2026-02-10)**: `void` → `Promise<void>` に修正。`safeInvoke()` 経由の IPC 通信であるため、戻り値は常に Promise。
 
 ### getStatus
 

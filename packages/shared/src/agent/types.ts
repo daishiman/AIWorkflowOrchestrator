@@ -232,8 +232,9 @@ export interface AgentAPI {
 
   /**
    * 実行中のクエリを中断する
+   * @returns 中断処理完了時にresolveするPromise
    */
-  abort(): void;
+  abort(): Promise<void>;
 
   /**
    * エージェントのステータスを取得する

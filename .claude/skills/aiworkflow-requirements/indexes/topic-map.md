@@ -172,7 +172,7 @@ node scripts/list-specs.js --topics
 | スキル作成実装パターン（TASK-9B-G） | L841 |
 | 外部API データ正規化パターン | L965 |
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1004 |
-| 変更履歴 | L1054 |
+| 変更履歴 | L1066 |
 
 ### references/architecture-monorepo.md
 
@@ -263,17 +263,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L503 |
-| SkillSlice型定義（TASK-6-1） | L555 |
-| ModifierSkill（スライド逆同期機能） | L647 |
-| ChatPanel統合（TASK-7D） | L681 |
-| SkillFileManager（TASK-9A-A） | L716 |
-| テストアーキテクチャ（TASK-8C-A） | L804 |
-| 完了タスク | L856 |
-| 関連ドキュメント | L1074 |
-| SkillCreatorService（TASK-9B-G） | L1087 |
-| 完了タスク | L1335 |
-| 変更履歴 | L1366 |
+| SkillImportStore（TASK-2B） | L539 |
+| SkillSlice型定義（TASK-6-1） | L591 |
+| ModifierSkill（スライド逆同期機能） | L683 |
+| ChatPanel統合（TASK-7D） | L717 |
+| SkillFileManager（TASK-9A-A） | L752 |
+| テストアーキテクチャ（TASK-8C-A） | L840 |
+| 完了タスク | L892 |
+| 関連ドキュメント | L1110 |
+| SkillCreatorService（TASK-9B-G） | L1123 |
+| 完了タスク | L1371 |
+| 変更履歴 | L1402 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -307,8 +307,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
 | 完了タスク | L256 |
-| ワークスペース型定義 | L310 |
-| 変更履歴 | L364 |
+| ワークスペース型定義 | L343 |
+| 変更履歴 | L397 |
 
 ### references/interfaces-chat-history.md
 
@@ -1048,16 +1048,17 @@ node scripts/list-specs.js --topics
 ### references/security-skill-ipc.md
 
 | セクション | 行 |
-|------------|----|\n| 変更履歴 | L10 |
-| スキル管理IPCセキュリティ | L22 |
-| スキルインポートIPCチャネル（TASK-4-1） | L71 |
-| Claude Code CLI連携セキュリティ | L114 |
-| Skill Execution Preload API セキュリティ | L175 |
-| Permission IPC Handler セキュリティ | L220 |
-| SkillAPI Preload実装（TASK-5-1） | L256 |
-| 完了タスク | L322 |
-| 残課題 | L353 |
-| 関連ドキュメント | L365 |
+|------------|----|\n| 概要 | L10 |
+| スキル管理IPCセキュリティ | L16 |
+| スキルインポートIPCチャネル（TASK-4-1） | L65 |
+| Claude Code CLI連携セキュリティ | L110 |
+| Skill Execution Preload API セキュリティ | L171 |
+| Permission IPC Handler セキュリティ | L216 |
+| SkillAPI Preload実装（TASK-5-1） | L252 |
+| 完了タスク | L318 |
+| 残課題 | L360 |
+| 関連ドキュメント | L372 |
+| 変更履歴 | L382 |
 
 ---
 
@@ -1532,14 +1533,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 目次 | L9 |
-| 成功パターン | L32 |
-| 失敗パターン（避けるべきこと） | L201 |
-| ガイドライン | L376 |
-
-|------------|----|\n| 目次 | L9 |
-| 成功パターン | L33 |
-| 失敗パターン（避けるべきこと） | L226 |
-| ガイドライン | L439 |
+| 成功パターン | L34 |
+| 失敗パターン（避けるべきこと） | L299 |
+| ガイドライン | L517 |
 
 ### references/plugin-development.md
 
@@ -1790,9 +1786,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L265 |
-| 関連ドキュメント | L326 |
-| 変更履歴 | L336 |
+| 残課題（未タスク） | L319 |
+| 関連ドキュメント | L382 |
+| 変更履歴 | L392 |
 
 ### references/testing-accessibility.md
 

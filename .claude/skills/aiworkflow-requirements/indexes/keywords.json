@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-10T08:08:06.255Z",
+  "generated": "2026-02-10T13:58:21.494Z",
   "totalKeywords": 1063,
   "keywords": {
     "チャット履歴": [
@@ -103,6 +103,7 @@
       "security-api-electron.md",
       "security-implementation.md",
       "security-skill-execution.md",
+      "security-skill-ipc.md",
       "skill-executor-type-migration.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
