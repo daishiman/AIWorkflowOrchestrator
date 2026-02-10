@@ -130,3 +130,6 @@ export type {
   ValidateFilePathResponse,
   FileSelectionState,
 } from "../../schemas/index.js";
+
+// 認証モード型定義 (TASK-AUTH-MODE-SELECTION-001)
+export * from "./auth-mode";

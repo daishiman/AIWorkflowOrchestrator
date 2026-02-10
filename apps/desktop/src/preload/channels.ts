@@ -265,6 +265,13 @@ export const IPC_CHANNELS = {
   AUTH_KEY_EXISTS: "auth-key:exists",
   AUTH_KEY_VALIDATE: "auth-key:validate",
   AUTH_KEY_DELETE: "auth-key:delete",
+
+  // Auth Mode operations (TASK-AUTH-MODE-SELECTION-001)
+  AUTH_MODE_GET: "auth-mode:get",
+  AUTH_MODE_SET: "auth-mode:set",
+  AUTH_MODE_STATUS: "auth-mode:status",
+  AUTH_MODE_VALIDATE: "auth-mode:validate",
+  AUTH_MODE_CHANGED: "auth-mode:changed",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -462,6 +469,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AUTH_KEY_EXISTS,
   IPC_CHANNELS.AUTH_KEY_VALIDATE,
   IPC_CHANNELS.AUTH_KEY_DELETE,
+  // Auth Mode channels (TASK-AUTH-MODE-SELECTION-001)
+  IPC_CHANNELS.AUTH_MODE_GET,
+  IPC_CHANNELS.AUTH_MODE_SET,
+  IPC_CHANNELS.AUTH_MODE_STATUS,
+  IPC_CHANNELS.AUTH_MODE_VALIDATE,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -504,4 +516,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_ERROR,
   // Skill permission channels (TASK-3-1-D + TASK-4-1 + TASK-4-2)
   IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
+  // Auth Mode channels (TASK-AUTH-MODE-SELECTION-001)
+  IPC_CHANNELS.AUTH_MODE_CHANGED,
 ];

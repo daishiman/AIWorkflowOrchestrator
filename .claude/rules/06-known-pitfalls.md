@@ -129,14 +129,65 @@
 - **解決策**: テストを分割実行するか、`--poolOptions.workers.max` を調整。または `--no-file-parallelism` で並列実行を制限
 - **関連タスク**: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE
 
-### P23: SKILL.md 変更履歴の更新漏れ
+## Preload / API 統一
+
+### P23-P28 と実装パターンの対応表
+
+| Pitfall ID | タイトル             | 実装パターン参照                                                                                                                                                     | 関連Phase |
+| ---------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| P23        | API二重定義の型管理  | [S1: architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md#s1-api二重定義の型管理複雑性)     | Phase 5-9 |
+| P24        | Store型定義不統一    | S1と同上                                                                                                                                                             | Phase 6   |
+| P25        | OperationResult波及  | [S4: architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md#s4-operationresult廃止の影響波及) | Phase 5-8 |
+| P26        | safeInvoke学習コスト | [skill-creator/patterns.md](../skills/skill-creator/references/patterns.md)                                                                                          | Phase 12  |
+| P27        | ハードコード文字列   | [skill-creator/patterns.md](../skills/skill-creator/references/patterns.md)                                                                                          | Phase 12  |
+| P28        | 手動テスト確認漏れ   | -                                                                                                                                                                    | Phase 11  |
+
+### P23: API 二重定義の型管理複雑性
+
+- **教訓**: `window.skillAPI` と `window.electronAPI.skill` の両方に同じメソッドが存在する場合、型定義ファイル（types.ts, types.d.ts）の両方を同時に更新しないと型不整合が発生する
+- **解決策**: 統一前に全ての型定義ファイルをリストアップし、変更順序を決定する。Preload 層の型は types.ts（実装）→ types.d.ts（宣言）の順で更新
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+
+### P24: Store 型定義と Preload 型定義の不統一
+
+- **教訓**: skillSlice.ts の `Skill` 型と preload/types.ts の `ImportedSkill` 型が異なる定義を持ち、AgentView で型アサーション（`as unknown as Skill[]`）が必要になる
+- **解決策**: 共有型は `@repo/shared` に配置し、両層から参照する。既存コードでの型不一致は未タスク化して後続対応
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION, UT-FIX-5-1-001
+
+### P25: OperationResult 廃止の波及影響調査不足
+
+- **教訓**: OperationResult ラッパーを廃止する際、直接型を返すように変更すると、呼び出し元の `.success` / `.data` アクセスパターンが全て壊れる
+- **解決策**: 廃止前に `grep -rn "OperationResult" apps/desktop/` で全使用箇所を特定し、移行計画を立てる
+- **正本**: [architecture-implementation-patterns.md - S4](../.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md#operationresult廃止の影響波及s4)
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+
+### P26: safeInvoke/safeOn パターンの学習コスト
+
+- **教訓**: contextBridge + ホワイトリスト + safeInvoke/safeOn の組み合わせは初見では理解しづらく、実装ミスが起きやすい
+- **解決策**: 実装ガイド Part 1 で「お店の入口統一」のような日常的アナロジーを用意し、概念理解を優先する
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+
+### P27: Preload ハードコード文字列の見落とし
+
+- **教訓**: safeInvoke を使用していても、チャネル名が `IPC_CHANNELS` 定数ではなく文字列リテラルで指定されている箇所がある。grep で発見しにくい
+- **解決策**: 実装後に `grep -rn "safeInvoke\\|safeOn" | grep -v "IPC_CHANNELS"` で文字列リテラル使用箇所を検出
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION, UT-FIX-5-2, UT-FIX-5-3
+
+### P29: SKILL.md 変更履歴の更新漏れ
 
 - **教訓**: LOGS.md の更新だけでは不十分。SKILL.md の変更履歴テーブルも必ず更新する
 - **チェックリスト**: [05-task-execution.md#Step 1-A](./05-task-execution.md)
 - **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX
 
-### P24: 未タスク検出時の関連ファイル調査不足
+### P30: 未タスク検出時の関連ファイル調査不足
 
 - **教訓**: 修正対象ファイルだけでなく、同様のパターンを持つ関連ファイルも調査すべき
 - **解決策**: `grep -rn` で同様のパターンをプロジェクト全体で検索
 - **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX
+
+### P28: 手動テストでの削除確認忘れ
+
+- **教訓**: API 統一後、旧 API（`window.skillAPI`）が本当に削除されたかの手動確認を忘れがち。DevTools で `window.skillAPI === undefined` を確認する必要がある
+- **解決策**: Phase 11 手動テストチェックリストに「旧 API が undefined であることを確認」を必ず含める
+- **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+  > > > > > > > Stashed changes

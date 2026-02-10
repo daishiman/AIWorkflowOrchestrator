@@ -3014,3 +3014,12 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 | 1-13  | 全Phase仕様書            | docs/30-workflows/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/           |
 
 ---
+
+## 2026-02-09
+
+- TASK-AUTH-MODE-SELECTION-001: 認証方式選択機能の実装完了
+  - Phase 1-12完了
+  - AuthModeService, SubscriptionAuthProvider, authModeSlice, AuthModeSelector実装
+  - IPC: auth-mode:get/set/status/validate/changed チャンネル追加
+  - テスト: 86件全てPASS
+
