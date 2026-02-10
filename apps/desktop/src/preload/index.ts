@@ -420,9 +420,7 @@ const agentSDKAPI: AgentSDKAPI = {
       ...request,
       options: { ...request.options, timeout: agentSDKOptions.timeout },
     }),
-  abort: () => {
-    ipcRenderer.send("agent:abort");
-  },
+  abort: () => safeInvoke(IPC_CHANNELS.AGENT_ABORT),
   onMessage: (callback: (message: AgentSDKMessage) => void) =>
     safeOn<AgentSDKMessage>(IPC_CHANNELS.AGENT_MESSAGE, callback),
   setOption: (options: { timeout?: number }) => {

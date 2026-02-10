@@ -125,7 +125,7 @@ describe("AgentHandler", () => {
         "agent:destroySession",
         expect.any(Function),
       );
-      expect(ipcMain.on).toHaveBeenCalledWith(
+      expect(ipcMain.handle).toHaveBeenCalledWith(
         "agent:abort",
         expect.any(Function),
       );
@@ -143,6 +143,7 @@ describe("AgentHandler", () => {
       expect(ipcMain.removeHandler).toHaveBeenCalledWith(
         "agent:destroySession",
       );
+      expect(ipcMain.removeHandler).toHaveBeenCalledWith("agent:abort");
     });
   });
 
