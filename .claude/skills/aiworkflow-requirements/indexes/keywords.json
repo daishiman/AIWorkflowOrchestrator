@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-09T04:29:22.069Z",
+  "generated": "2026-02-10T08:08:06.255Z",
   "totalKeywords": 1063,
   "keywords": {
     "チャット履歴": [
@@ -2767,7 +2767,8 @@
       "master-design.md"
     ],
     "目次": [
-      "master-design.md"
+      "master-design.md",
+      "patterns.md"
     ],
     "ドキュメント管理": [
       "master-design.md"

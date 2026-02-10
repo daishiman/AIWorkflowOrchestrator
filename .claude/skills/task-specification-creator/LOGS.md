@@ -43,6 +43,62 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## 2026-02-10: UT-FIX-5-4未タスク仕様書作成
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | UT-FIX-5-4                                                      |
+| Agent        | task-specification-creator                                      |
+| 操作         | 未タスク仕様書作成                                              |
+| 対象ファイル | docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md |
+| 結果         | success                                                         |
+| 備考         | UT-FIX-5-3 Phase 12追加検証で発見、型定義と実装の不一致         |
+
+---
+
+## [2026-02-10 - UT-FIX-5-3完了（Preload Agent Abort セキュリティ修正）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A（単一セッション）
+- **Notes**: Preload Agent Abort IPCセキュリティ修正。`ipcRenderer.send` → `safeInvoke` 変更でホワイトリスト検証を有効化。全テストPASS、Phase 10/11ともにPASS判定
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: UT-FIX-5-3
+- Phase: 1-12完了
+- 変更種別: セキュリティ修正（IPC一貫性確保）
+
+### 成果
+
+- 変更ファイル: `apps/desktop/src/preload/index.ts`, `apps/desktop/src/main/agent/agent-handler.ts`
+- 変更箇所:
+  - preload/index.ts:423（`ipcRenderer.send` → `safeInvoke`）
+  - agent-handler.ts:176-178（`ipcMain.on` → `ipcMain.handle`）
+  - agent-handler.ts:63（`removeHandler` 追加）
+- テスト結果: 全テストPASS
+- レビュー結果: Phase 10 PASS（指摘0件）, Phase 11 PASS
+- 未タスク検出: 0件
+
+### 変更理由
+
+04-electron-security.md の IPC セキュリティ原則に準拠:
+- チャンネル名はホワイトリストで管理し、定数で参照
+- 他のAPI（stop, getStatus等）と同一パターンに統一
+- ハードコード文字列でチャンネル名を指定しない
+
+### Phase 12 成果物
+
+| 成果物               | パス                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| 実装ガイド           | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/implementation-guide.md         |
+| ドキュメント更新履歴 | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/documentation-changelog.md      |
+| 未タスクレポート     | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/unassigned-task-report.md       |
+
+---
+
 ## [2026-02-09 - patterns.md構造最適化（skill-creatorテンプレート準拠）]
 
 - **Agent**: skill-creator + aiworkflow-requirements

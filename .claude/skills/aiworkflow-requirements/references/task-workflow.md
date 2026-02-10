@@ -312,8 +312,10 @@
 | UT-SEC-001                                 | OAuth プロバイダー自動検出機能（consumeState→validate置換）         | 低 | DEBT-SEC-001 Phase 12（設計乖離検出）                          | `docs/30-workflows/unassigned-task/task-auth-provider-detection.md`                         |
 | task-sec-auth-state-cleanup-001            | State Map定期クリーンアップ実装                                     | 低 | DEBT-SEC-001 Phase 12（既知制約検出）                          | `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md`                   |
 | UT-PROTOCOL-URL-001                        | カスタムプロトコルURLパース標準ユーティリティ整備                   | 中 | TASK-AUTH-CALLBACK-001 Phase 12（苦戦箇所検出）                | `docs/30-workflows/unassigned-task/task-protocol-url-parsing-utility.md`                    |
-| UT-FIX-5-2                                 | Preload Dialog API ハードコード削除                                 | 中 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`              |
-| UT-FIX-5-3                                 | Preload Agent Abort セキュリティ修正                                | 高 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`                  |
+| UT-FIX-5-2                                   | Preload Dialog API ハードコード削除                                 | 中 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`              |
+| UT-FIX-5-3                                   | Preload Agent Abort セキュリティ修正                                | 高 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`                  |
+| TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
+| UT-FIX-5-4                                   | AgentSDKAPI 型定義不一致修正                                       | 低 | UT-FIX-5-3 Phase 12 アーキテクチャ検証                         | `docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md`          |
 
 ### 未タスク管理ルール
 

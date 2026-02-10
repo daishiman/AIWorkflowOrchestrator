@@ -35,6 +35,17 @@ TASK-FIX-12-1 で SkillExecutor.ts の IPC チャネル名ハードコード問�
 | `apps/desktop/src/main/updater.ts`             | 5箇所              | `"updater:check"`, `"updater:download"`, `"updater:install"`, `"updater:get-version"`, `"updater:status"`                                            |
 | `apps/desktop/src/main/agent/agent-handler.ts` | 7箇所              | `"agent:query"`, `"agent:getStatus"`, `"agent:createSession"`, `"agent:resumeSession"`, `"agent:destroySession"`, `"agent:abort"`, `"agent:message"` |
 
+### 1.2.1 重大: チャネル名不整合問題（UT-FIX-5-3検証で発見）
+
+| 層      | ファイル               | チャネル名                             | 備考           |
+| ------- | ---------------------- | -------------------------------------- | -------------- |
+| Preload | `channels.ts:142`      | `AGENT_GET_STATUS: "agent:get-status"` | ケバブケース   |
+| Main    | `agent-handler.ts:161` | `"agent:getStatus"`                    | キャメルケース |
+
+**影響**: `agentSDKAPI.getStatus()` のIPC通信が成立しない（Main側ハンドラに到達しない）
+
+**対応**: 本タスクでチャネル名定数化と同時に命名を統一する
+
 ### 1.3 放置した場合の影響
 
 1. **セキュリティ原則違反**: `.claude/rules/04-electron-security.md` の「ハードコード文字列でチャンネル名を指定しない」ルールに違反したまま
