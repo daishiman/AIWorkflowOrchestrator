@@ -314,6 +314,8 @@
 | UT-PROTOCOL-URL-001                        | カスタムプロトコルURLパース標準ユーティリティ整備                   | 中 | TASK-AUTH-CALLBACK-001 Phase 12（苦戦箇所検出）                | `docs/30-workflows/unassigned-task/task-protocol-url-parsing-utility.md`                    |
 | UT-FIX-5-2                                 | Preload Dialog API ハードコード削除                                 | 中 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`              |
 | UT-FIX-5-3                                 | Preload Agent Abort セキュリティ修正                                | 高 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`                  |
+| TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
+| TASK-DOC-PHASE12-JUDGMENT-CRITERIA-001       | Phase 12判断基準の明確化と漏れ防止強化                             | 低 | TASK-FIX-6-1-STATE-CENTRALIZATION Phase 12                     | `docs/30-workflows/unassigned-task/task-doc-phase12-judgment-criteria-improvement.md`       |
 
 ### 未タスク管理ルール
 
@@ -360,3 +362,5 @@
 | 1.19.1     | 2026-02-06 | DEBT-SEC-001完了記録追加。UT-SEC-001はDEBT-SEC-002/003の対応範囲に包含と判定（独立未タスク不要）                                                                                                             |
 | 1.19.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了記録追加、未タスク3件追加（UT-OFFLINE-REFRESH-001、UT-AUDIT-001、UT-REFRESH-NOTIFICATION-001） |
 | 1.20.0     | 2026-02-06 | 未タスク2件追加: UT-PROTOCOL-URL-001（カスタムプロトコルURLパース標準化）、UT-SEC-001更新（独立指示書作成）。TASK-AUTH-CALLBACK-001 Phase 12苦戦箇所検出                 |
+| 1.21.0     | 2026-02-09 | 未タスク追加: TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT（Updater/AgentHandler IPCチャネル名定数化）。TASK-FIX-12-1 Phase 12検出                                          |
+| 1.22.0     | 2026-02-10 | 未タスク更新: TASK-DOC-PHASE12-JUDGMENT-CRITERIA-001（Phase 12判断基準の明確化と漏れ防止強化）。TASK-FIX-6-1-STATE-CENTRALIZATION Phase 12で発生したP25-P28全インシデントをカバーする包括的な改善タスク |

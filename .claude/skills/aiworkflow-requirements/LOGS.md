@@ -5,6 +5,84 @@
 
 ---
 
+## 2026-02-10: TASK-FIX-6-1知見によるシステム仕様書・スキル改善
+
+| 項目         | 内容                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-6-1-STATE-CENTRALIZATION（Phase 12再検証）                                        |
+| 操作         | update-spec + skill-improvement                                                           |
+| 対象ファイル | arch-state-management.md, patterns.md, 06-known-pitfalls.md, spec-update-workflow.md      |
+| 結果         | success                                                                                   |
+| 備考         | Phase 12漏れ修正、苦戦箇所4件記録、スキル改善実施                                          |
+
+### 苦戦箇所と解決策
+
+| ID  | 問題                           | 解決策                                                    |
+| --- | ------------------------------ | --------------------------------------------------------- |
+| P25 | LOGS.md 2ファイル更新漏れ       | Phase 12チェックリストで「2ファイル更新」を明示的にチェック |
+| P26 | システム仕様書更新遅延          | Phase 12完了時点でシステム仕様書を更新（PRマージを待たない） |
+| P27 | topic-map.md再生成判断ミス      | セクション削除・更新も再生成トリガーに含める               |
+| P28 | スキルフィードバック未作成      | Phase 12で必ずスキル改善検討を実施                         |
+
+### 更新詳細
+
+- **更新**: `references/arch-state-management.md`（v1.9.0 → v1.10.0）
+  - skillSliceセクションを「統合済み」に変更
+  - Slice一覧テーブルのskillSlice行を更新
+  - 変更履歴にTASK-FIX-6-1完了記録追加
+
+- **更新**: `references/patterns.md`
+  - Slice統合パターン追加
+  - Race Condition対策パターン追加
+  - Phase 12仕様書更新チェックリストパターン追加
+
+- **更新**: `.claude/rules/06-known-pitfalls.md`
+  - P25-P28（4件）を「Phase 12インシデント」セクションに追加
+
+### スキル改善実施
+
+| スキル                     | 更新内容                                              | バージョン |
+| -------------------------- | ----------------------------------------------------- | ---------- |
+| task-specification-creator | spec-update-workflow.md判断基準拡張、Slice統合パターン | v9.50.0    |
+| aiworkflow-requirements    | arch-state-management.md更新、patterns.md拡充         | v1.11.0    |
+
+---
+
+## 2026-02-10: TASK-FIX-6-1-STATE-CENTRALIZATION完了（スキル状態管理集約）
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | TASK-FIX-6-1-STATE-CENTRALIZATION                               |
+| Agent        | aiworkflow-requirements                                         |
+| 操作         | Phase 1-12 完了（状態管理リファクタリング）                     |
+| 対象ファイル | agentSlice.ts, skillSlice.ts（削除）, setupSkillListeners.ts    |
+| 結果         | success                                                         |
+| 備考         | skillSliceをagentSliceに統合、race condition対策実装            |
+
+### 変更内容
+
+| 変更箇所 | 変更内容 |
+| -------- | -------- |
+| skillSlice.ts | agentSliceに統合、ファイル削除（約370行） |
+| agentSlice.ts | スキル状態・アクション・内部ハンドラを追加 |
+| setupSkillListeners.ts | agentSliceハンドラ参照に変更 |
+| store/index.ts | skillSlice参照削除、コメント追加 |
+
+### race condition対策
+
+- executeSkill()開始時にexecutionIdをUUID事前生成
+- IPC呼び出し前にState設定でストリームイベント到着前の状態確保
+- _handleStreamMessage等でexecutionIdフィルタリング
+
+### テスト結果
+
+| 指標 | 値 |
+| ---- | -- |
+| テスト数 | 70件（agentSlice: 59, setupSkillListeners: 11） |
+| Branch Coverage | 89.09% |
+
+---
+
 ## 2026-02-09: patterns.md構造最適化（skill-creatorテンプレート準拠）
 
 | 項目         | 内容                                                            |

@@ -155,7 +155,7 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
   className = "",
 }) => {
   const {
-    availableSkills,
+    availableSkillsMetadata,
     importedSkills,
     selectedSkillName,
     isScanning,
@@ -174,8 +174,11 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
   );
 
   const unimportedSkills = useMemo(
-    () => availableSkills.filter((s) => !importedNames.has(s.name)),
-    [availableSkills, importedNames],
+    () =>
+      availableSkillsMetadata.filter(
+        (s: { name: string }) => !importedNames.has(s.name),
+      ),
+    [availableSkillsMetadata, importedNames],
   );
 
   // Build selectable options list for keyboard navigation
@@ -404,20 +407,22 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
               >
                 利用可能なスキル ({unimportedSkills.length})
               </div>
-              {unimportedSkills.map((skill, i) => {
-                const idx = unimportedBaseIndex + i;
-                return (
-                  <SkillOptionUnimported
-                    key={skill.name}
-                    name={skill.name}
-                    description={skill.description}
-                    isSelected={false}
-                    isFocused={focusedIndex === idx}
-                    index={idx}
-                    onSelect={() => handleSelect(skill.name)}
-                  />
-                );
-              })}
+              {unimportedSkills.map(
+                (skill: { name: string; description?: string }, i: number) => {
+                  const idx = unimportedBaseIndex + i;
+                  return (
+                    <SkillOptionUnimported
+                      key={skill.name}
+                      name={skill.name}
+                      description={skill.description}
+                      isSelected={false}
+                      isFocused={focusedIndex === idx}
+                      index={idx}
+                      onSelect={() => handleSelect(skill.name)}
+                    />
+                  );
+                },
+              )}
             </>
           )}
 
