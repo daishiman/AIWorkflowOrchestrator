@@ -210,10 +210,26 @@ fi
 # テストの完了を待機
 wait $TEST_PID
 TEST_EXIT=$?
+
+# タイムアウト判定（timeout/pnpm両方の終了コードに対応）
+# - 124: timeout command直接
+# - 137: SIGKILL (128+9)
+# - 143: SIGTERM (128+15)
+# - 1: pnpmのELIFECYCLEによるラップ時（ログで「ELIFECYCLE Command failed」を確認）
+IS_TIMEOUT=false
+if [ $TEST_EXIT -eq 124 ] || [ $TEST_EXIT -eq 137 ] || [ $TEST_EXIT -eq 143 ]; then
+    IS_TIMEOUT=true
+elif [ $TEST_EXIT -eq 1 ] && grep -q "ELIFECYCLE.*Command failed" /tmp/pre-push-test.log 2>/dev/null; then
+    # pnpmがtimeoutによる強制終了をラップした場合
+    # テスト結果サマリー（"Tests  X passed"）が不完全な場合はタイムアウトと判定
+    if ! grep -qE "Test Files.*passed.*\([0-9]+\)" /tmp/pre-push-test.log 2>/dev/null; then
+        IS_TIMEOUT=true
+    fi
+fi
+
 if [ "$SKIP_NATIVE_TESTS" = true ]; then
     echo "⏭️  Tests skipped (will run in CI)"
-elif [ $TEST_EXIT -eq 124 ] || [ $TEST_EXIT -eq 137 ] || [ $TEST_EXIT -eq 143 ]; then
-    # 124: timeout command, 137: SIGKILL (128+9), 143: SIGTERM (128+15)
+elif [ "$IS_TIMEOUT" = true ]; then
     echo "⏱️  Tests timed out after 900s. Proceeding with push."
     echo "💡 Run 'pnpm test:all' manually to verify all tests pass."
     echo "   CI will run the full test suite."
