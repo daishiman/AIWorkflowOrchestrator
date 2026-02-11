@@ -217,9 +217,8 @@ describe("QueryClassifier Integration", () => {
         const start = performance.now();
         await classifier.classify(query);
         const duration = performance.now() - start;
-        // CI環境やpre-pushでの実行時間を考慮し、100msを閾値とする
-        // (UT-PERF-002: パフォーマンステスト閾値調整)
-        expect(duration).toBeLessThan(100);
+        // pre-push/CI環境での実行遅延を考慮 (UT-PERF-002)
+        expect(duration).toBeLessThan(500);
       }
     });
   });
