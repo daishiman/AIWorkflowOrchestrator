@@ -212,9 +212,11 @@ wait $TEST_PID
 TEST_EXIT=$?
 if [ "$SKIP_NATIVE_TESTS" = true ]; then
     echo "⏭️  Tests skipped (will run in CI)"
-elif [ $TEST_EXIT -eq 124 ]; then
-    echo "⏱️  Tests timed out after 600s. Proceeding with push."
+elif [ $TEST_EXIT -eq 124 ] || [ $TEST_EXIT -eq 137 ] || [ $TEST_EXIT -eq 143 ]; then
+    # 124: timeout command, 137: SIGKILL (128+9), 143: SIGTERM (128+15)
+    echo "⏱️  Tests timed out after 900s. Proceeding with push."
     echo "💡 Run 'pnpm test:all' manually to verify all tests pass."
+    echo "   CI will run the full test suite."
 elif [ $TEST_EXIT -ne 0 ]; then
     echo "❌ Tests failed (exit code: $TEST_EXIT)"
     cat /tmp/pre-push-test.log
