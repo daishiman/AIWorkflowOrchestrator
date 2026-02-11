@@ -104,6 +104,8 @@ const mockSkillService = {
   importSkills: vi.fn(),
   removeSkill: vi.fn(),
   getSkillById: vi.fn(),
+  // TASK-FIX-7-1: SkillExecutor委譲
+  setSkillExecutor: vi.fn(),
   // TASK-9C: スキル改善機能
   getSkillsDirectory: vi.fn().mockReturnValue("/mock/skills/dir"),
 };

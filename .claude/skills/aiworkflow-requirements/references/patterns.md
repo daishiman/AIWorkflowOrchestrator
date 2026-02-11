@@ -14,6 +14,7 @@
 | ----------------------------------------------- | ---------- | ---------------------------------------- |
 | [Phase 12 ドキュメント](#phase-12-ドキュメント) | 7件        | 仕様書同期、チェックリスト消化、追加検証 |
 | [IPC / Electron](#ipc--electron)                | 2件        | チャンネル定数化、ペイロード拡張         |
+| [DI / アーキテクチャ](#di--アーキテクチャ)      | 2件        | Setter Injection遅延初期化、型変換パターン |
 | [OAuth / 認証](#oauth--認証)                    | 4件        | Supabase PKCE、コールバック受信          |
 | [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
 | [ストア / 永続化](#ストア--永続化)              | 5件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策 |
@@ -140,6 +141,38 @@
 - **関連ファイル**:
   - 06-known-pitfalls.md: P23, P24
   - architecture-implementation-patterns.md: IPCチャンネル名定数化パターン
+
+### DI / アーキテクチャ
+
+#### Setter Injectionパターン（遅延初期化DI）（TASK-FIX-7-1 2026-02-11）
+
+- **状況**: BrowserWindow等の外部リソースを必要とする依存オブジェクトは、Constructor Injectionで対応できない
+- **アプローチ**:
+  1. Facadeサービス（例: SkillService）生成時点では依存先（SkillExecutor）は未初期化
+  2. `setXxx(dependency)` Setterメソッドで、外部リソース準備後に依存オブジェクトを注入
+  3. 実行メソッド呼び出し時に依存オブジェクトの存在を検証（未設定時はエラー）
+- **結果**: 初期化タイミングが異なる依存オブジェクトを安全に注入可能。Facadeパターンとの併用でレイヤー分離を維持
+- **適用条件**: 依存オブジェクトの生成に外部リソース（BrowserWindow、IPC接続等）が必要な場合
+- **発見日**: 2026-02-11
+- **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION
+- **関連ファイル**:
+  - architecture-implementation-patterns.md: Setter Injection パターン詳細
+  - skill-creator/references/patterns.md: [DI/Architecture] Setter Injectionパターン
+
+#### IPC層とサービス層の型変換パターン（TASK-FIX-7-1 2026-02-11）
+
+- **状況**: IPC層（Preload/Handler）とサービス層で異なる型定義を使用しており、型変換が必要
+- **アプローチ**:
+  1. IPC層では汎用型（`Skill`）、サービス層では詳細型（`SkillMetadata`）を使用
+  2. IPCハンドラー内で明示的な型変換ロジックを実装
+  3. 変換時に必須フィールドの存在確認とデフォルト値設定を行う
+- **結果**: レイヤー間の型の責務が明確になり、型安全な通信が実現
+- **適用条件**: IPC通信でRenderer/Main間でデータ構造が異なる場合
+- **発見日**: 2026-02-11
+- **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION
+- **関連ファイル**:
+  - interfaces-agent-sdk-executor.md: SkillMetadata型定義
+  - skill-creator/references/patterns.md: [IPC/Type] 型変換パターン
 
 ### OAuth / 認証
 

@@ -291,6 +291,33 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 | `removeSkill`         | `skillId: string`    | `Promise<RemoveResult>`  | 削除               |
 | `getSkillById`        | `skillId: string`    | `Promise<Skill \| null>` | 詳細取得           |
 | `clearCache`          | -                    | `void`                   | キャッシュクリア   |
+| `executeSkill`        | `skillId: string, params?: ExecuteParams` | `Promise<SkillExecutionResponse>` | スキル実行（SkillExecutorに委譲） |
+| `setSkillExecutor`    | `executor: SkillExecutor` | `void` | SkillExecutorを設定（DI） |
+
+### SkillService と SkillExecutor の統合（TASK-FIX-7-1）
+
+> **実装完了**: 2026-02-11（TASK-FIX-7-1）
+
+SkillService は Facade パターンで SkillExecutor への実行委譲を行う。
+
+#### Setter Injection パターン
+
+SkillExecutor は `registerSkillHandlers()` 内で生成され、`setSkillExecutor()` で SkillService に注入される。
+
+| ステップ | 処理 | ファイル |
+|----------|------|----------|
+| 1 | `registerSkillHandlers(mainWindow, skillService)` 呼び出し | `main/index.ts` |
+| 2 | `new SkillExecutor(mainWindow)` でインスタンス生成 | `skillHandlers.ts` |
+| 3 | `skillService.setSkillExecutor(executor)` で注入 | `skillHandlers.ts` |
+| 4 | `skillService.executeSkill()` が内部で `skillExecutor.execute()` を呼び出し | `SkillService.ts` |
+
+#### 設計根拠
+
+| 観点 | 説明 |
+|------|------|
+| 遅延初期化 | SkillExecutor は mainWindow を必要とするため、ハンドラー登録時に生成 |
+| 単一責務 | SkillService はスキル管理、SkillExecutor は実行に責務を分離 |
+| テスタビリティ | SkillExecutor をモックに差し替え可能 |
 
 ### キャッシュ機構
 

@@ -288,6 +288,34 @@ IPC チャンネル名のハードコード文字列を定数参照に置換し�
 | 初期化  | initialize()メソッドで依存関係を初期化           |
 | 公開API | 上位から必要な操作のみを公開                     |
 
+#### Setter Injection パターン（TASK-FIX-7-1 2026-02-11実装）
+
+遅延初期化が必要な依存オブジェクトを、コンストラクタではなく Setter メソッドで注入するパターン。
+
+| 要素 | 説明 |
+|------|------|
+| 目的 | 初期化タイミングが異なる依存オブジェクトの注入 |
+| 構成 | `setXxx(dependency)` メソッドでオブジェクトを受け取り、内部フィールドに保持 |
+| 適用場面 | 依存オブジェクトが外部リソース（BrowserWindow等）を必要とし、Facade よりも後で初期化される場合 |
+| 検証 | `executeXxx()` 呼び出し時に依存オブジェクトの存在を検証（未設定時はエラー） |
+
+**適用例: SkillService と SkillExecutor**
+
+| ステップ | 処理 | 説明 |
+|----------|------|------|
+| 1 | `new SkillService()` | Facade サービス生成（skillExecutor は null） |
+| 2 | `new SkillExecutor(mainWindow, ...)` | 実行エンジン生成（mainWindow 依存） |
+| 3 | `skillService.setSkillExecutor(executor)` | Setter で注入 |
+| 4 | `skillService.executeSkill(...)` | 内部で `skillExecutor.execute()` に委譲 |
+
+**使い分け基準**:
+
+| パターン | 適用場面 | 例 |
+|----------|----------|-----|
+| Constructor Injection | 依存オブジェクトが生成時点で利用可能 | DB接続、設定オブジェクト |
+| Setter Injection | 依存オブジェクトの生成に外部リソースが必要 | BrowserWindow、IPC ハンドラー |
+| Factory Pattern | 依存オブジェクトを動的に生成する必要がある | プラグインシステム |
+
 ### SDK連携パターン（TASK-9C 2026-02-03実装）
 
 外部SDK（Claude Agent SDK等）との連携で発生する課題と解決パターン。
@@ -1121,6 +1149,7 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.18.0 | 2026-02-11 | TASK-FIX-7-1: Setter Injection パターン詳細追加（SkillService と SkillExecutor の統合、使い分け基準テーブル） |
 | 1.17.0 | 2026-02-10 | UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH: 型定義修正タスクパターン追加（システム仕様書更新チェックリスト、関連Pitfall P31/P32との相互参照） |
 | 1.16.0 | 2026-02-09 | TASK-FIX-12-1-IPC-HARDCODE-FIX: IPCチャンネル名定数化パターン追加（ハードコード検出、定数参照置換、セキュリティ原則準拠） |
 | 1.15.0 | 2026-02-06 | TASK-FIX-5-1リファクタリング: S1-S5苦戦箇所を最適化（S1/S4は実装パターンとして保持、S2/S3/S5はskill-creator/patterns.mdへクロスリファレンス化で重複解消） |

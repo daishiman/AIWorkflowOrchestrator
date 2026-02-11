@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-10
+> 自動生成: 2026-02-11
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -164,15 +164,15 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L118 |
 | デスクトップ（Electron）実装パターン | L184 |
-| パフォーマンス最適化パターン | L449 |
-| セキュリティ実装パターン | L487 |
-| テスト実装パターン | L519 |
-| アクセシビリティ実装パターン | L804 |
-| 関連ドキュメント | L829 |
-| スキル作成実装パターン（TASK-9B-G） | L841 |
-| 外部API データ正規化パターン | L965 |
-| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1004 |
-| 変更履歴 | L1066 |
+| パフォーマンス最適化パターン | L477 |
+| セキュリティ実装パターン | L515 |
+| テスト実装パターン | L547 |
+| アクセシビリティ実装パターン | L832 |
+| 関連ドキュメント | L857 |
+| スキル作成実装パターン（TASK-9B-G） | L869 |
+| 外部API データ正規化パターン | L993 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1032 |
+| 変更履歴 | L1094 |
 
 ### references/architecture-monorepo.md
 
@@ -231,13 +231,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
-| SkillExecutor 型定義（TASK-3-1-A） | L16 |
-| リトライ機構（TASK-SKILL-RETRY-001） | L230 |
-| PermissionResolver 型定義（TASK-3-2） | L297 |
-| SkillExecutor IPC統合（TASK-3-2） | L384 |
-| 完了タスク | L461 |
-| 関連ドキュメント | L533 |
-| 変更履歴 | L545 |
+| SkillService 統合（TASK-FIX-7-1） | L16 |
+| SkillExecutor 型定義（TASK-3-1-A） | L102 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L316 |
+| PermissionResolver 型定義（TASK-3-2） | L383 |
+| SkillExecutor IPC統合（TASK-3-2） | L470 |
+| 完了タスク | L547 |
+| 関連ドキュメント | L619 |
+| 変更履歴 | L631 |
 
 ### references/interfaces-agent-sdk-history.md
 
@@ -263,17 +264,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L539 |
-| SkillSlice型定義（TASK-6-1） | L591 |
-| ModifierSkill（スライド逆同期機能） | L683 |
-| ChatPanel統合（TASK-7D） | L717 |
-| SkillFileManager（TASK-9A-A） | L752 |
-| テストアーキテクチャ（TASK-8C-A） | L840 |
-| 完了タスク | L892 |
-| 関連ドキュメント | L1110 |
-| SkillCreatorService（TASK-9B-G） | L1123 |
-| 完了タスク | L1371 |
-| 変更履歴 | L1402 |
 | SkillImportStore（TASK-2B） | L527 |
 | SkillSlice型定義（TASK-6-1） | L579 |
 | ModifierSkill（スライド逆同期機能） | L671 |
@@ -1287,7 +1277,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 変更履歴 | L8 |
 | Environment Backend サービス | L18 |
 | スキル管理サービス | L85 |
-| 関連ドキュメント | L462 |
+| 関連ドキュメント | L489 |
 
 ### references/arch-feature-addition.md
 
@@ -1309,12 +1299,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L28 |
-| P31対策: Store Hooks無限ループ防止パターン | L156 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L396 |
-| skillSlice（スキル実行状態管理） | L486 |
-| permissionHistorySlice（権限要求履歴管理） | L613 |
-| 関連ドキュメント | L742 |
+| Zustand Sliceパターン | L26 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L151 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L241 |
+| permissionHistorySlice（権限要求履歴管理） | L397 |
+| 関連ドキュメント | L526 |
 
 ### references/arch-ui-components.md
 
@@ -1472,6 +1461,17 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L656 |
 | 変更履歴 | L665 |
 
+### references/lessons-learned.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L8 |
+| 変更履歴 | L19 |
+| 目次 | L28 |
+| 関連ドキュメント | L39 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L49 |
+| テンプレート（新規教訓追加用） | L242 |
+| 品質チェックリスト | L314 |
+
 ### references/llm-embedding.md
 
 | セクション | 行 |
@@ -1545,15 +1545,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 目次 | L9 |
-| 成功パターン | L34 |
-| 失敗パターン（避けるべきこと） | L299 |
-| ガイドライン | L517 |
-
-|------------|----|
-| 目次 | L9 |
-| 成功パターン | L32 |
-| 失敗パターン（避けるべきこと） | L201 |
-| ガイドライン | L376 |
+| 成功パターン | L33 |
+| 失敗パターン（避けるべきこと） | L258 |
+| ガイドライン | L471 |
 
 ### references/plugin-development.md
 
@@ -1804,12 +1798,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L319 |
-| 関連ドキュメント | L382 |
-| 変更履歴 | L392 |
 | 残課題（未タスク） | L265 |
-| 関連ドキュメント | L328 |
-| 変更履歴 | L338 |
+| 関連ドキュメント | L336 |
+| 変更履歴 | L346 |
 
 ### references/testing-accessibility.md
 
