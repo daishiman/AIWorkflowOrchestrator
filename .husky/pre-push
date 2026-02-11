@@ -184,13 +184,15 @@ else
     echo "   This includes @repo/shared and @repo/desktop to match CI coverage."
 
     # タイムアウト付きテスト実行（大規模テストのためタイムアウトを900秒に延長）
+    # --foregroundオプションでシグナルがスクリプト全体に伝播しないようにする
     (
+        trap "" TERM
         if command -v timeout > /dev/null 2>&1; then
-            timeout 900 pnpm test:all
+            timeout --foreground 900 pnpm test:all || echo "TIMEOUT_OR_FAILED:$?" >> /tmp/pre-push-test-exit.log
         elif command -v gtimeout > /dev/null 2>&1; then
-            gtimeout 900 pnpm test:all
+            gtimeout 900 pnpm test:all || echo "TIMEOUT_OR_FAILED:$?" >> /tmp/pre-push-test-exit.log
         else
-            pnpm test:all
+            pnpm test:all || echo "TIMEOUT_OR_FAILED:$?" >> /tmp/pre-push-test-exit.log
         fi
     ) > /tmp/pre-push-test.log 2>&1 &
     TEST_PID=$!
