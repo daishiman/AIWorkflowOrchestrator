@@ -9,24 +9,37 @@ import type {
   SkillScanError,
   ImportResult,
   RemoveResult,
-  SkillRunResult,
   ImportedSkill,
 } from "@repo/shared";
-import { randomUUID } from "crypto";
 import log from "electron-log";
 import { SkillScanner } from "./SkillScanner";
 import { SkillParser } from "./SkillParser";
 import { SkillImportManager } from "./SkillImportManager";
+import type {
+  SkillExecutor,
+  SkillExecutionRequest,
+  SkillExecutionResponse,
+  SkillMetadata,
+} from "./SkillExecutor";
 
 export class SkillService {
   private cache: Map<string, Skill> = new Map();
   private lastScanTime: Date | null = null;
+  private skillExecutor: SkillExecutor | null = null;
 
   constructor(
     private scanner: SkillScanner,
     private parser: SkillParser,
-    private importManager: SkillImportManager,
+    public importManager: SkillImportManager,
   ) {}
+
+  /**
+   * SkillExecutorを設定する
+   * @param executor SkillExecutorインスタンス
+   */
+  setSkillExecutor(executor: SkillExecutor): void {
+    this.skillExecutor = executor;
+  }
 
   /**
    * 利用可能なスキルをスキャンする
@@ -157,13 +170,26 @@ export class SkillService {
 
   /**
    * スキルを実行する
+   *
+   * TASK-FIX-7-1: SkillExecutorに委譲して実行
+   *
+   * @param skillId スキルID
+   * @param params 実行パラメータ（prompt, timeout, sessionId, retryConfig等）
+   * @returns SkillExecutionResponse
    */
   async executeSkill(
     skillId: string,
-    _params?: Record<string, unknown>,
-  ): Promise<SkillRunResult> {
-    const executionId = randomUUID();
-    const startedAt = new Date();
+    params?: {
+      prompt?: string;
+      timeout?: number;
+      sessionId?: string;
+      retryConfig?: SkillExecutionRequest["retryConfig"];
+    },
+  ): Promise<SkillExecutionResponse> {
+    // SkillExecutor初期化確認
+    if (!this.skillExecutor) {
+      throw new Error("SkillExecutor が初期化されていません");
+    }
 
     // スキルの存在確認
     const skill = await this.getSkillById(skillId);
@@ -176,26 +202,29 @@ export class SkillService {
       throw new Error("スキルがインポートされていません");
     }
 
-    try {
-      // 初期実装: 成功結果を返す
-      // 将来的にはスキルの実際の実行ロジックを実装
-      const output = `Skill "${skill.name}" executed successfully`;
+    // SkillExecutionRequestを構築
+    const request: SkillExecutionRequest = {
+      prompt: params?.prompt ?? "",
+      skillId,
+      timeout: params?.timeout,
+      sessionId: params?.sessionId,
+      retryConfig: params?.retryConfig,
+    };
 
-      return {
-        executionId,
-        status: "success",
-        output,
-        startedAt,
-        completedAt: new Date(),
-      };
-    } catch (error) {
-      return {
-        executionId,
-        status: "failed",
-        error: error instanceof Error ? error.message : "実行に失敗しました",
-        startedAt,
-        completedAt: new Date(),
-      };
-    }
+    // SkillをSkillMetadataに変換
+    const metadata: SkillMetadata = {
+      id: skill.id,
+      name: skill.name,
+      slug: skill.slug,
+      description: skill.description,
+      path: skill.path,
+      triggers: skill.triggers,
+      anchors: skill.anchors,
+      allowedTools: skill.allowedTools,
+      category: skill.category,
+    };
+
+    // SkillExecutorに委譲
+    return this.skillExecutor.execute(request, metadata);
   }
 }

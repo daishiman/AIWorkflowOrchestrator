@@ -5,6 +5,60 @@
 
 ---
 
+## 2026-02-11: TASK-FIX-7-1システム仕様書更新（Phase 12）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION（Phase 12仕様書更新）          |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | システム仕様書整合性確認・更新                                       |
+| 対象ファイル | arch-electron-services.md, interfaces-agent-sdk-executor.md, architecture-implementation-patterns.md |
+| 結果         | success                                                              |
+| 備考         | SkillService統合セクション追加、Setter Injectionパターン追加         |
+
+### 更新した仕様書
+
+| 仕様書                              | バージョン | 変更内容                                       |
+| ----------------------------------- | ---------- | ---------------------------------------------- |
+| arch-electron-services.md           | v1.11.0    | SkillService API追加（executeSkill, setSkillExecutor）、SkillService統合セクション追加 |
+| interfaces-agent-sdk-executor.md    | v1.4.0     | SkillService統合セクション新設、Setter Injectionパターン記載 |
+| architecture-implementation-patterns.md | v1.17.0 | Setter Injectionパターン追加                   |
+
+---
+
+## 2026-02-11: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了
+
+| 項目         | 内容                                                            |
+| ------------ | --------------------------------------------------------------- |
+| タスクID     | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION                           |
+| Agent        | task-specification-creator                                      |
+| 操作         | Phase 1-12 完了（SkillExecutor委譲実装）                        |
+| 対象ファイル | SkillService.ts, skillHandlers.ts, 関連テストファイル           |
+| 結果         | success                                                         |
+| 備考         | SkillService.executeSkill()をSkillExecutorに委譲                |
+
+### 変更内容
+
+| 変更箇所                           | 変更内容                                       |
+| ---------------------------------- | ---------------------------------------------- |
+| `SkillService.ts`                  | `setSkillExecutor()`, `executeSkill()` 委譲実装 |
+| `skillHandlers.ts`                 | SkillExecutor注入処理追加                       |
+| `skillHandlers.execute.test.ts`    | SkillExecutor委譲テスト追加                     |
+| `skillHandlers.delegate.test.ts`   | 新規: 注入と委譲の統合テスト                    |
+| `SkillService.delegate.test.ts`    | 新規: SkillService委譲テスト                    |
+
+### テスト結果
+
+| 指標             | 値                           |
+| ---------------- | ---------------------------- |
+| 統合テスト       | 7件 全PASS                   |
+| ユニットテスト   | 12件 全PASS                  |
+| Phase 10         | PASS（指摘0件）              |
+| Phase 11         | PASS（全シナリオ成功）       |
+| 未タスク検出     | 0件                          |
+
+---
+
 ## 2026-02-10: UT-FIX-5-4完了（AgentSDKAPI abort() 型定義不一致修正）
 
 | 項目         | 内容                                                                              |

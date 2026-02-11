@@ -13,6 +13,92 @@ SkillExecutor、PermissionResolverに関する型定義とAPI仕様。
 
 ---
 
+## SkillService 統合（TASK-FIX-7-1）
+
+> **実装完了**: 2026-02-11（TASK-FIX-7-1）
+> **参照**: [arch-electron-services.md](./arch-electron-services.md) SkillService Facade API
+
+### 概要
+
+SkillExecutor は SkillService を通じて呼び出される。SkillService は Facade パターンでスキル管理機能を提供し、実行処理を SkillExecutor に委譲する。
+
+### 統合アーキテクチャ
+
+| コンポーネント | 責務 | 呼び出し関係 |
+|---------------|------|-------------|
+| SkillService | スキル管理 Facade（スキャン、インポート、実行） | → SkillExecutor |
+| SkillExecutor | スキル実行エンジン | → Claude Agent SDK |
+| skillHandlers | IPC ハンドラー登録、DI 設定 | → SkillService, SkillExecutor |
+
+### Setter Injection パターン
+
+SkillExecutor は `BrowserWindow` を必要とするため、ハンドラー登録時に遅延生成され、`setSkillExecutor()` で SkillService に注入される。
+
+#### 初期化フロー
+
+| ステップ | 処理 | 実装ファイル |
+|----------|------|-------------|
+| 1 | `registerSkillHandlers(mainWindow, skillService)` | `main/index.ts` |
+| 2 | `new SkillExecutor(mainWindow, permissionStore, authKeyService)` | `skillHandlers.ts` |
+| 3 | `skillService.setSkillExecutor(executor)` | `skillHandlers.ts` |
+| 4 | IPC ハンドラー登録（`skill:execute` 等） | `skillHandlers.ts` |
+
+#### SkillService API（実行関連）
+
+| メソッド | 引数 | 戻り値 | 説明 |
+|----------|------|--------|------|
+| `setSkillExecutor` | `executor: SkillExecutor` | `void` | SkillExecutor を設定 |
+| `executeSkill` | `skillId: string, params?: ExecuteParams` | `Promise<SkillExecutionResponse>` | SkillExecutor.execute() に委譲 |
+
+### 設計根拠
+
+| 観点 | 説明 |
+|------|------|
+| 遅延初期化 | SkillExecutor は mainWindow を必要とするため、アプリ起動後に生成 |
+| 単一責務 | SkillService はスキル管理、SkillExecutor は実行ロジックに責務を分離 |
+| テスタビリティ | SkillExecutor をモックに差し替え可能（DI パターン） |
+| Facade 統一 | 外部からは SkillService のみを参照、内部実装を隠蔽 |
+
+### 型変換パターン（Skill → SkillMetadata）
+
+IPC ハンドラーとSkillExecutor間で型が異なるため、明示的な変換が必要。
+
+#### 問題背景
+
+| レイヤー | 使用型 | 説明 |
+|----------|--------|------|
+| IPC ハンドラー / Store | `Skill` | UI 向け型（インポート済みスキル） |
+| SkillExecutor | `SkillMetadata` | SDK 実行向け型（詳細メタデータ） |
+
+#### 型プロパティの対応関係
+
+| Skill プロパティ | SkillMetadata プロパティ | 変換内容 |
+|-----------------|-------------------------|----------|
+| id | name | スキル識別子（Skill.id → SkillMetadata.name） |
+| name | name | スキル名（同一フィールド、用途が異なる） |
+| description | description | 説明文（直接マッピング） |
+| path | path | ファイルパス（直接マッピング） |
+| - | version | デフォルト値 "1.0.0"（Skill に存在しない） |
+| - | author | デフォルト値 "unknown"（Skill に存在しない） |
+
+#### 変換実装パターン
+
+| 要素 | 実装 |
+|------|------|
+| 変換場所 | `SkillService.executeSkill()` 内部 |
+| 変換関数 | インライン変換（専用関数不要の小規模変換） |
+| デフォルト値 | version: "1.0.0", author: "unknown" |
+
+#### 注意事項
+
+| 項目 | 説明 |
+|------|------|
+| 型安全性 | 変換時は必須プロパティの存在を事前確認 |
+| デフォルト値 | 未設定プロパティには適切なデフォルト値を設定 |
+| 将来の互換性 | 型定義変更時は変換ロジックも更新が必要 |
+
+---
+
 ## SkillExecutor 型定義（TASK-3-1-A）
 
 Claude Agent SDK の `query()` API を使用してスキルを実行し、ストリーミングレスポンスを Renderer Process に配信する実行エンジン。
@@ -546,6 +632,7 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-02-11 | 1.5.0      | TASK-FIX-7-1: SkillService統合セクション追加、型変換パターン（Skill→SkillMetadata）追加 |
 | 2026-02-08 | 1.4.0      | TASK-FIX-16-1: AuthKeyService統合（AUTHENTICATION_ERROR追加、DI対応、キー取得フロー追加） |
 | 2026-02-02 | 1.3.0      | TASK-8A: SkillExecutor/PermissionResolver単体テスト95テスト全PASS、完了タスク追加 |
 | 2026-01-31 | 1.2.0      | TASK-SKILL-RETRY-001: リトライ機構の型・API・定数追加      |
