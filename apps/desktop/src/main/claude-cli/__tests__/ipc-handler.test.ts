@@ -72,9 +72,10 @@ const mockEvent = {
   },
 };
 
-describe("ClaudeCliIpcHandler", () => {
+describe("ClaudeCliIpcHandler", { timeout: 30000 }, () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
 
+  // UT-PERF-004: beforeEach の初期化遅延対策
   beforeEach(async () => {
     vi.clearAllMocks();
     handlers = new Map();
