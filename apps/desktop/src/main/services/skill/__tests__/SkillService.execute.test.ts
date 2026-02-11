@@ -57,6 +57,9 @@ describe("SkillService.executeSkill", () => {
     getImportedSkillIds: ReturnType<typeof vi.fn>;
     isImported: ReturnType<typeof vi.fn>;
   };
+  let mockSkillExecutor: {
+    execute: ReturnType<typeof vi.fn>;
+  };
 
   // Sample skill data
   const sampleSkill1: Skill = {
@@ -124,6 +127,20 @@ describe("SkillService.executeSkill", () => {
         .mockImplementation((id: string) => id === "skill-id-1"),
     };
 
+    mockSkillExecutor = {
+      execute: vi.fn().mockImplementation(() => {
+        // Generate unique executionId for each call
+        const uniqueId = `test-execution-${Date.now()}-${Math.random()}`;
+        return Promise.resolve({
+          executionId: uniqueId,
+          status: "success" as const,
+          output: "Skill execution completed",
+          startedAt: new Date(),
+          completedAt: new Date(),
+        });
+      }),
+    };
+
     // Try to import SkillService (will fail in Red phase if executeSkill not implemented)
     try {
       const module = await import("../SkillService");
@@ -133,6 +150,8 @@ describe("SkillService.executeSkill", () => {
         mockParser as never,
         mockImportManager as never,
       );
+      // Inject SkillExecutor using Setter Injection pattern
+      service.setSkillExecutor(mockSkillExecutor as never);
     } catch {
       // Expected in Red phase - executeSkill method doesn't exist yet
     }

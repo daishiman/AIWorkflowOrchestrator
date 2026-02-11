@@ -10,9 +10,10 @@
 | ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止         | テスト環境問題の実装問題誤認                           |
+| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正 | テスト環境問題の実装問題誤認                           |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策)                        | ハードコード文字列発見                                 |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換 | ハードコード文字列発見                                 |
+| 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング                                                                                               | -                                                      |
 | 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
 
@@ -375,6 +376,49 @@
 - **発見日**: 2026-02-09
 - **関連タスク**: UT-FIX-5-3-PRELOAD-AGENT-ABORT
 - **クロスリファレンス**: [04-electron-security.md](../../.claude/rules/04-electron-security.md), [06-known-pitfalls.md](../../.claude/rules/06-known-pitfalls.md)
+
+### [DI/Architecture] Setter Injectionパターン（遅延初期化DI）（TASK-FIX-7-1）
+
+- **状況**: BrowserWindow等の外部リソースを必要とする依存オブジェクトは、Constructor Injectionで対応できない
+- **アプローチ**:
+  - 問題: Facadeサービス（SkillService）生成時点で、依存先（SkillExecutor）がまだ初期化できない（mainWindow未生成）
+  - 解決: `setXxx(dependency)` Setterメソッドで、外部リソース準備後に依存オブジェクトを注入
+  - 検証: 実行メソッド（`executeSkill`）呼び出し時に、依存オブジェクトの存在を検証（未設定時はエラー）
+  - 実装例: `SkillService.setSkillExecutor(executor)` で、mainWindow生成後にSkillExecutorを注入
+- **結果**: 初期化タイミングが異なる依存オブジェクトを安全に注入可能。Facadeパターンとの併用でレイヤー分離を維持
+- **適用条件**: 依存オブジェクトの生成に外部リソース（BrowserWindow、IPC接続等）が必要な場合
+- **発見日**: 2026-02-11
+- **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION
+- **クロスリファレンス**: [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md#setter-injection-パターンtask-fix-7-1-2026-02-11実装)
+
+### [IPC/Type] IPC層とサービス層の型変換パターン（TASK-FIX-7-1）
+
+- **状況**: IPC層（Preload/Handler）とサービス層で異なる型定義を使用しており、型変換が必要
+- **アプローチ**:
+  - 問題: IPC層では`Skill`型（UI向け汎用型）、サービス層では`SkillMetadata`型（実行エンジン向け詳細型）を使用
+  - 解決: IPCハンドラー内で明示的な型変換ロジックを実装し、型安全性を確保
+  - 変換例: `Skill` → `SkillMetadata` への変換時、必須フィールドの存在確認とデフォルト値設定を行う
+  - 型定義の配置: 共通型は`@repo/shared`に配置し、レイヤー固有の型は各層で定義
+- **結果**: レイヤー間の型の責務が明確になり、型安全な通信が実現
+- **適用条件**: IPC通信でRenderer/Main間でデータ構造が異なる場合、Store型とPreload型が異なる場合
+- **発見日**: 2026-02-11
+- **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION
+- **クロスリファレンス**: [interfaces-agent-sdk-executor.md](../../aiworkflow-requirements/references/interfaces-agent-sdk-executor.md)
+
+### [Testing/DI] DIテストモック大規模修正パターン（TASK-FIX-7-1）
+
+- **状況**: 新しい依存オブジェクトをDIで追加すると、既存の全テストファイルにモック追加が必要になる
+- **アプローチ**:
+  - Step 1: `grep -rn "new TargetClass\|TargetClass(" src/` で影響範囲を事前調査
+  - Step 2: 各テストファイルに対象モックを定義（`mockDependency = { method: vi.fn() }`）
+  - Step 3: `beforeEach`で`mockDependency.method.mockResolvedValue()`をリセット
+  - Step 4: 標準モック構成をテストユーティリティとしてドキュメント化
+  - 例: SkillExecutorにSkillServiceを追加した際、5つのテストファイルにmockSkillServiceを追加
+- **結果**: 既存テストの網羅的な更新が完了し、モック構成が統一される
+- **適用条件**: Constructorに新しい依存オブジェクトを追加する場合、Setter Injectionで新しい依存を追加する場合
+- **発見日**: 2026-02-11
+- **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION
+- **クロスリファレンス**: [06-known-pitfalls.md#P21](../../.claude/rules/06-known-pitfalls.md)
 
 ### [Phase12] 横断的問題の追加検証パターン（UT-FIX-5-3）
 

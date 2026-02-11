@@ -39,6 +39,10 @@ export function registerSkillHandlers(
 ): void {
   // Initialize SkillExecutor instance
   _skillExecutorInstance = new SkillExecutor(mainWindow);
+
+  // TASK-FIX-7-1: SkillExecutorをSkillServiceに注入
+  skillService.setSkillExecutor(_skillExecutorInstance);
+
   // skill:list - 利用可能なスキルをスキャン (TASK-FIX-4-1-IPC-CONSOLIDATION: unified from SKILL_LIST_AVAILABLE)
   ipcMain.handle(
     IPC_CHANNELS.SKILL_LIST,

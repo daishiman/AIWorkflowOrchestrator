@@ -40,6 +40,8 @@ const mockSkillService = {
   getSkillById: vi.fn(),
   executeSkill: vi.fn(),
   clearCache: vi.fn(),
+  // TASK-FIX-7-1: SkillExecutor委譲
+  setSkillExecutor: vi.fn(),
   // IMP-002 extension methods
   getSettings: vi.fn(),
   updateSettings: vi.fn(),

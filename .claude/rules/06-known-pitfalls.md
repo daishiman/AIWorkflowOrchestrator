@@ -276,3 +276,27 @@ useEffect(() => {
 - **教訓**: API 統一後、旧 API（`window.skillAPI`）が本当に削除されたかの手動確認を忘れがち。DevTools で `window.skillAPI === undefined` を確認する必要がある
 - **解決策**: Phase 11 手動テストチェックリストに「旧 API が undefined であることを確認」を必ず含める
 - **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
+
+## DI パターン
+
+### P34: 遅延初期化が必要な依存オブジェクトの DI パターン選択
+
+- **教訓**: BrowserWindow 等の外部リソースを必要とする依存オブジェクトは、Constructor Injection では対応できない。SkillExecutor は mainWindow を必要とするため、SkillService のコンストラクタ時点では生成不可能だった
+- **解決策**: Setter Injection パターンを使用し、外部リソース準備後に `setSkillExecutor()` で注入する
+- **使い分け基準**:
+  - Constructor Injection: 依存オブジェクトが生成時点で利用可能
+  - Setter Injection: 依存オブジェクトの生成に外部リソースが必要
+  - Factory Pattern: 依存オブジェクトを動的に生成する必要がある
+- **参照**: [architecture-implementation-patterns.md#Setter Injection パターン](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION
+
+### P35: DI 追加時のテストモック大規模修正（P21 派生）
+
+- **教訓**: 新しい依存オブジェクト（SkillExecutor）を既存サービス（SkillService）に DI で追加する際、関連する全テストファイルにモックを追加する必要がある。TASK-FIX-7-1 では 5 つのテストファイルに mockSkillExecutor を追加した
+- **解決策**:
+  1. 影響範囲を事前に調査（`grep -rn "SkillService" **/*.test.ts`）
+  2. 各テストファイルにモックオブジェクトを定義
+  3. `beforeEach` でモックをリセット
+  4. 標準的なモック構成をドキュメント化して再利用
+- **参照**: [lessons-learned.md#テストモックの大規模修正](../skills/aiworkflow-requirements/references/lessons-learned.md)
+- **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION, TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE（P21）

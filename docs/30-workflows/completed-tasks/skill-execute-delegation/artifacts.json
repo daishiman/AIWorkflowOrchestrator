@@ -1,0 +1,180 @@
+{
+  "taskId": "TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION",
+  "featureName": "skill-execute-delegation",
+  "title": "SkillService実行ロジックのSkillExecutor委譲",
+  "createdAt": "2026-02-10",
+  "status": "ready-for-commit",
+  "currentPhase": 12,
+  "dependencies": {
+    "required": [
+      {
+        "taskId": "TASK-FIX-15-1-EXECUTE-HANDLER-ROUTING",
+        "status": "completed",
+        "description": "ハンドラーがSkillExecutorを呼ぶ経路確立"
+      },
+      {
+        "taskId": "TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE",
+        "status": "completed",
+        "description": "SDK認証基盤"
+      },
+      {
+        "taskId": "TASK-FIX-5-1-SKILL-API-UNIFICATION",
+        "status": "completed",
+        "description": "Preload APIがMain Processに接続"
+      }
+    ]
+  },
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-02-10",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-1-requirements.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-1/requirements-analysis.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-02-10",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-2-design.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-2/design-document.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-02-10",
+      "reviewResult": "PASS",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-3-review.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-3/review-checklist.md"
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-02-10",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-4-test-creation.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-4/test-cases.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-02-10",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-5-implementation.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-5/implementation-summary.md"
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-02-11",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-6-test-expansion.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-6/coverage-report.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-6/integration-test.md"
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-02-11",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-7-coverage.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-7/coverage-report.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-7/integration-test.md"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-02-11",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-8-refactoring.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-8/refactoring-log.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-8/code-quality-report.md"
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-02-11",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-9-quality.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-9/quality-report.md"
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-02-11",
+      "reviewResult": "PASS",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-10-final-review.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-10/final-review-result.md"
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-02-11",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-11-manual-test.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-02-11",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-12-documentation.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-12/implementation-guide.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-12/unassigned-task-report.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-12/documentation-changelog.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-12/checklist-verification.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-12/system-spec-review.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-12/skill-update-report.md",
+        "docs/30-workflows/skill-execute-delegation/outputs/phase-12/code-elegance-review.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/skill-execute-delegation/phases/phase-13-pr.md"
+      ]
+    }
+  },
+  "qualityMetrics": {
+    "coverage": {
+      "line": "85%",
+      "branch": "70%",
+      "function": "90%"
+    },
+    "testCount": {
+      "unit": 62,
+      "integration": 8,
+      "e2e": 5
+    },
+    "lastMeasured": "2026-02-11"
+  },
+  "references": {
+    "taskSpec": "docs/30-workflows/skill-import-agent-system/tasks/04-task-fix-7-1-execute-skill-delegation.md",
+    "systemSpecs": [
+      ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md",
+      ".claude/skills/aiworkflow-requirements/references/security-skill-execution.md",
+      ".claude/skills/aiworkflow-requirements/references/security-skill-ipc.md",
+      ".claude/skills/aiworkflow-requirements/references/error-handling.md",
+      ".claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md",
+      ".claude/skills/aiworkflow-requirements/references/test-strategy-unit-integration.md"
+    ]
+  }
+}
