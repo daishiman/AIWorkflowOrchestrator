@@ -293,10 +293,20 @@ AIによるコード生成・編集の結果を保持する。
 
 ---
 
+## 完了タスク
+
+| タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
+| ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| UT-FIX-5-4 | AgentSDKAPI型定義不一致修正          | 2026-02-10 | `agentSDKAPI.abort()` 戻り値型を `void` → `Promise<void>` に修正（P23パターン準拠） |
+| UT-FIX-5-3 | Preload Agent Abort セキュリティ修正 | 2026-02-10 | `agentSDKAPI.abort()` を `safeInvoke()` 経由に変更、Main側 `ipcMain.handle()` 使用  |
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.5.0     | 2026-02-10 | UT-FIX-5-4: AgentSDKAPI.abort()型定義修正。`void` → `Promise<void>`。実装（safeInvoke）と型定義の整合性確保 |
 | v1.4.0     | 2026-02-10 | UT-FIX-5-3: `agent:abort` IPCセキュリティ修正。`ipcMain.on`→`ipcMain.handle`変更、`safeInvoke`パターン準拠。**注意**: `agent:getStatus`チャネル名不整合（Main: camelCase vs Preload: kebab-case）検出→TASK-FIX-12-2で対応予定 |
 | v1.3.0     | 2026-02-03 | TASK-WCE-MONACO-001: get-selection実装完了、完了タスクセクション追加         |
 | v1.2.0     | 2026-02-02 | TASK-WCE-WORKSPACE-001: workspacePathパラメータ追加、完了タスク追加          |

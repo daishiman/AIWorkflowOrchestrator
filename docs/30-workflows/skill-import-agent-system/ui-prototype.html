@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIWorkflow Orchestrator v3.0 Prototype</title>
-<style>
-    :root {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AIWorkflow Orchestrator v3.0 Prototype</title>
+    <style>
+      :root {
         /* macOS Dark Mode Palette */
         --app-bg: #1e1e1e;
         --sidebar-bg: #252526;
@@ -21,13 +21,17 @@
         --radius-l: 12px;
         --radius-m: 8px;
         --radius-s: 6px;
-        --shadow-depth: 0 4px 24px rgba(0,0,0,0.4);
-        --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+        --shadow-depth: 0 4px 24px rgba(0, 0, 0, 0.4);
+        --font-stack:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+      }
 
-    * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
 
-    body {
+      body {
         margin: 0;
         background-color: #000;
         color: var(--text-primary);
@@ -37,43 +41,55 @@
         justify-content: center;
         align-items: center;
         overflow: hidden;
-    }
+      }
 
-    /* Window Container (Simulating Electron App) */
-    .app-window {
+      /* Window Container (Simulating Electron App) */
+      .app-window {
         width: 1200px;
         height: 800px;
         background-color: var(--app-bg);
         border-radius: var(--radius-l);
-        box-shadow: 0 0 0 1px #444, var(--shadow-depth);
+        box-shadow:
+          0 0 0 1px #444,
+          var(--shadow-depth);
         display: flex;
         overflow: hidden;
         position: relative;
-    }
+      }
 
-    /* Sidebar */
-    .sidebar {
+      /* Sidebar */
+      .sidebar {
         width: 260px;
         background-color: var(--sidebar-bg);
         border-right: 1px solid var(--border-color);
         display: flex;
         flex-direction: column;
         padding: 0;
-    }
+      }
 
-    .window-controls {
+      .window-controls {
         height: 52px;
         padding: 16px;
         display: flex;
         gap: 8px;
         -webkit-app-region: drag; /* Electron drag */
-    }
-    .traffic-light { width: 12px; height: 12px; border-radius: 50%; }
-    .close { background: #ff5f57; }
-    .minimize { background: #febc2e; }
-    .maximize { background: #28c840; }
+      }
+      .traffic-light {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .close {
+        background: #ff5f57;
+      }
+      .minimize {
+        background: #febc2e;
+      }
+      .maximize {
+        background: #28c840;
+      }
 
-    .sidebar-section-title {
+      .sidebar-section-title {
         font-size: 11px;
         font-weight: 600;
         color: var(--text-secondary);
@@ -81,15 +97,15 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-top: 16px;
-    }
+      }
 
-    .skill-list {
+      .skill-list {
         list-style: none;
         padding: 8px;
         margin: 0;
-    }
+      }
 
-    .skill-item {
+      .skill-item {
         padding: 8px 12px;
         border-radius: var(--radius-s);
         cursor: pointer;
@@ -99,13 +115,22 @@
         font-size: 13px;
         color: var(--text-primary);
         transition: background 0.1s;
-    }
+      }
 
-    .skill-item:hover { background-color: rgba(255,255,255,0.05); }
-    .skill-item.active { background-color: rgba(10, 132, 255, 0.2); color: #fff; }
-    .skill-icon { width: 16px; height: 16px; opacity: 0.7; }
+      .skill-item:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      .skill-item.active {
+        background-color: rgba(10, 132, 255, 0.2);
+        color: #fff;
+      }
+      .skill-icon {
+        width: 16px;
+        height: 16px;
+        opacity: 0.7;
+      }
 
-    .new-skill-btn {
+      .new-skill-btn {
         margin: 8px 16px;
         padding: 8px;
         background: transparent;
@@ -115,19 +140,22 @@
         cursor: pointer;
         font-size: 12px;
         text-align: center;
-    }
-    .new-skill-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+      }
+      .new-skill-btn:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+      }
 
-    /* Main Content */
-    .main-content {
+      /* Main Content */
+      .main-content {
         flex: 1;
         display: flex;
         flex-direction: column;
         background-color: var(--app-bg);
-    }
+      }
 
-    /* Header */
-    .top-bar {
+      /* Header */
+      .top-bar {
         height: 52px;
         border-bottom: 1px solid var(--border-color);
         display: flex;
@@ -135,144 +163,236 @@
         justify-content: space-between;
         padding: 0 24px;
         -webkit-app-region: drag;
-    }
-    .current-context { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-    .status-badge { font-size: 10px; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--text-secondary); }
+      }
+      .current-context {
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .status-badge {
+        font-size: 10px;
+        background: #333;
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: var(--text-secondary);
+      }
 
-    .header-actions button {
+      .header-actions button {
         background: transparent;
         border: none;
         color: var(--text-primary);
         padding: 4px 8px;
         cursor: pointer;
         opacity: 0.7;
-    }
-    .header-actions button:hover { opacity: 1; }
+      }
+      .header-actions button:hover {
+        opacity: 1;
+      }
 
-    /* Views */
-    .view-container {
+      /* Views */
+      .view-container {
         flex: 1;
         display: none; /* JS toggles this */
         flex-direction: column;
         padding: 24px;
         overflow-y: auto;
-    }
-    .view-container.active-view { display: flex; }
+      }
+      .view-container.active-view {
+        display: flex;
+      }
 
-    /* View: Welcome/Home */
-    .welcome-hero {
+      /* View: Welcome/Home */
+      .welcome-hero {
         text-align: center;
         margin-top: 40px;
-    }
-    .welcome-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-    .welcome-sub { color: var(--text-secondary); margin-bottom: 40px; }
+      }
+      .welcome-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .welcome-sub {
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+      }
 
-    .cards-grid {
+      .cards-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
         max-width: 900px;
         margin: 0 auto;
-    }
-    .card {
+      }
+      .card {
         background: var(--panel-bg);
         border: 1px solid var(--border-color);
         padding: 24px;
         border-radius: var(--radius-l);
         text-align: left;
         cursor: pointer;
-        transition: transform 0.2s, border-color 0.2s;
-    }
-    .card:hover { transform: translateY(-2px); border-color: var(--accent-color); }
-    .card-icon { font-size: 24px; margin-bottom: 12px; display: block; }
-    .card h3 { font-size: 15px; margin: 0 0 6px 0; }
-    .card p { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.4; }
+        transition:
+          transform 0.2s,
+          border-color 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-color);
+      }
+      .card-icon {
+        font-size: 24px;
+        margin-bottom: 12px;
+        display: block;
+      }
+      .card h3 {
+        font-size: 15px;
+        margin: 0 0 6px 0;
+      }
+      .card p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0;
+        line-height: 1.4;
+      }
 
-    /* View: Execution (Progress) */
-    .execution-panel {
+      /* View: Execution (Progress) */
+      .execution-panel {
         background: var(--panel-bg);
         border-radius: var(--radius-l);
         border: 1px solid var(--border-color);
         max-width: 700px;
         margin: 20px auto;
         overflow: hidden;
-    }
-    .exec-header {
+      }
+      .exec-header {
         padding: 16px 20px;
-        background: rgba(255,255,255,0.02);
+        background: rgba(255, 255, 255, 0.02);
         border-bottom: 1px solid var(--border-color);
         display: flex;
         justify-content: space-between;
         align-items: center;
-    }
-    .step-list { padding: 0; margin: 0; }
-    .step-item {
+      }
+      .step-list {
+        padding: 0;
+        margin: 0;
+      }
+      .step-item {
         padding: 14px 20px;
         display: flex;
         align-items: center;
         gap: 12px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         font-size: 14px;
-    }
-    .step-item:last-child { border-bottom: none; }
+      }
+      .step-item:last-child {
+        border-bottom: none;
+      }
 
-    /* Step Icons */
-    .step-status { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
-    .status-done { color: var(--success-color); }
-    .status-running {
-        width: 14px; height: 14px; border: 2px solid var(--accent-color);
-        border-top-color: transparent; border-radius: 50%;
+      /* Step Icons */
+      .step-status {
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .status-done {
+        color: var(--success-color);
+      }
+      .status-running {
+        width: 14px;
+        height: 14px;
+        border: 2px solid var(--accent-color);
+        border-top-color: transparent;
+        border-radius: 50%;
         animation: spin 1s linear infinite;
-    }
-    .status-pending { width: 8px; height: 8px; border-radius: 50%; background: #444; margin-left: 5px; }
+      }
+      .status-pending {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #444;
+        margin-left: 5px;
+      }
 
-    @keyframes spin { 100% { transform: rotate(360deg); } }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
 
-    .progress-bar-container {
+      .progress-bar-container {
         height: 4px;
         background: #333;
         width: 100%;
         position: relative;
-    }
-    .progress-fill {
+      }
+      .progress-fill {
         height: 100%;
         background: var(--accent-color);
         width: 65%;
         border-radius: 0 2px 2px 0;
         transition: width 0.3s ease;
-    }
+      }
 
-    /* View: Create New Skill (Chat) */
-    .chat-interface {
+      /* View: Create New Skill (Chat) */
+      .chat-interface {
         display: flex;
         flex-direction: column;
         height: 100%;
         max-width: 800px;
         margin: 0 auto;
         width: 100%;
-    }
-    .step-indicator {
+      }
+      .step-indicator {
         display: flex;
         justify-content: center;
         margin-bottom: 24px;
         gap: 8px;
-    }
-    .step-dot {
+      }
+      .step-dot {
         font-size: 12px;
         padding: 4px 12px;
         background: var(--panel-bg);
         border-radius: 12px;
         color: var(--text-secondary);
-    }
-    .step-dot.active { background: var(--accent-color); color: #fff; }
+      }
+      .step-dot.active {
+        background: var(--accent-color);
+        color: #fff;
+      }
 
-    .chat-history { flex: 1; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 8px; }
+      .chat-history {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        overflow-y: auto;
+        padding-right: 8px;
+      }
 
-    .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
-    .msg-ai { align-self: flex-start; background: var(--panel-bg); border-bottom-left-radius: 4px; color: var(--text-primary); }
-    .msg-user { align-self: flex-end; background: var(--accent-color); border-bottom-right-radius: 4px; color: #fff; }
+      .message {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .msg-ai {
+        align-self: flex-start;
+        background: var(--panel-bg);
+        border-bottom-left-radius: 4px;
+        color: var(--text-primary);
+      }
+      .msg-user {
+        align-self: flex-end;
+        background: var(--accent-color);
+        border-bottom-right-radius: 4px;
+        color: #fff;
+      }
 
-    .input-area {
+      .input-area {
         margin-top: 20px;
         background: var(--panel-bg);
         padding: 8px;
@@ -280,8 +400,8 @@
         border: 1px solid var(--border-color);
         display: flex;
         align-items: center;
-    }
-    .input-area input {
+      }
+      .input-area input {
         flex: 1;
         background: transparent;
         border: none;
@@ -289,22 +409,30 @@
         padding: 8px 16px;
         font-size: 14px;
         outline: none;
-    }
-    .send-btn {
-        width: 32px; height: 32px;
+      }
+      .send-btn {
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         background: var(--text-secondary);
         border: none;
-        display: flex; align-items: center; justify-content: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-    }
-    .input-area input:focus + .send-btn { background: var(--accent-color); }
+      }
+      .input-area input:focus + .send-btn {
+        background: var(--accent-color);
+      }
 
-    /* Modal: Permission */
-    .modal-overlay {
+      /* Modal: Permission */
+      .modal-overlay {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.5);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(4px);
         display: none; /* JS toggles */
         align-items: center;
@@ -312,65 +440,110 @@
         z-index: 100;
         opacity: 0;
         transition: opacity 0.2s;
-    }
-    .modal-overlay.show { display: flex; opacity: 1; }
+      }
+      .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+      }
 
-    .permission-dialog {
+      .permission-dialog {
         background: #252526;
         width: 440px;
         border-radius: var(--radius-l);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         border: 1px solid #444;
         overflow: hidden;
         animation: scaleIn 0.2s ease-out;
-    }
-    @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      }
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
 
-    .dialog-header {
+      .dialog-header {
         padding: 20px 24px 0;
         display: flex;
         gap: 16px;
-    }
-    .dialog-icon { font-size: 28px; }
-    .dialog-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-    .dialog-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.4; }
+      }
+      .dialog-icon {
+        font-size: 28px;
+      }
+      .dialog-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .dialog-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
 
-    .permission-list {
+      .permission-list {
         margin: 16px 24px;
-        background: rgba(0,0,0,0.2);
+        background: rgba(0, 0, 0, 0.2);
         border-radius: var(--radius-m);
         border: 1px solid #333;
-    }
-    .permission-item {
+      }
+      .permission-item {
         padding: 12px;
         display: flex;
         gap: 12px;
         align-items: center;
         border-bottom: 1px solid #333;
-    }
-    .permission-item:last-child { border-bottom: none; }
-    .perm-icon { background: #333; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-    .perm-text { font-size: 13px; font-weight: 500; }
+      }
+      .permission-item:last-child {
+        border-bottom: none;
+      }
+      .perm-icon {
+        background: #333;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+      .perm-text {
+        font-size: 13px;
+        font-weight: 500;
+      }
 
-    .dialog-details {
+      .dialog-details {
         margin: 0 24px 16px;
-    }
-    details summary {
-        font-size: 11px; color: var(--text-secondary); cursor: pointer; outline: none;
-    }
-    details p {
-        font-size: 11px; font-family: monospace; background: #111; padding: 8px; border-radius: 4px; color: #ddd; margin-top: 4px;
-    }
+      }
+      details summary {
+        font-size: 11px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        outline: none;
+      }
+      details p {
+        font-size: 11px;
+        font-family: monospace;
+        background: #111;
+        padding: 8px;
+        border-radius: 4px;
+        color: #ddd;
+        margin-top: 4px;
+      }
 
-    .dialog-footer {
+      .dialog-footer {
         padding: 16px 24px;
-        background: rgba(255,255,255,0.03);
+        background: rgba(255, 255, 255, 0.03);
         display: flex;
         justify-content: flex-end;
         gap: 12px;
         border-top: 1px solid var(--border-color);
-    }
-    .btn {
+      }
+      .btn {
         padding: 6px 16px;
         border-radius: 6px;
         font-size: 13px;
@@ -378,14 +551,24 @@
         cursor: pointer;
         border: none;
         outline: none;
-    }
-    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
-    .btn-primary { background: var(--accent-color); color: #fff; }
-    .btn-primary:hover { background: var(--accent-hover); }
+      }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      .btn-primary {
+        background: var(--accent-color);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
 
-    /* Toast */
-    .toast {
+      /* Toast */
+      .toast {
         position: absolute;
         bottom: 24px;
         left: 50%;
@@ -403,269 +586,392 @@
         opacity: 0;
         transition: all 0.3s;
         pointer-events: none;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-</style>
-</head>
-<body>
-
-<div class="app-window">
-    <div class="sidebar">
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-window">
+      <div class="sidebar">
         <div class="window-controls">
-            <div class="traffic-light close"></div>
-            <div class="traffic-light minimize"></div>
-            <div class="traffic-light maximize"></div>
+          <div class="traffic-light close"></div>
+          <div class="traffic-light minimize"></div>
+          <div class="traffic-light maximize"></div>
         </div>
 
         <div class="sidebar-section-title">スキル (Skills)</div>
         <ul class="skill-list" id="skillMenu">
-            <li class="skill-item active" onclick="switchView('execution')">
-                <span class="skill-icon">📊</span> presentation-maker
-            </li>
-            <li class="skill-item" onclick="switchView('execution')">
-                <span class="skill-icon">🐙</span> github-manager
-            </li>
-            <li class="skill-item" onclick="switchView('execution')">
-                <span class="skill-icon">📝</span> spec-creator
-            </li>
+          <li class="skill-item active" onclick="switchView('execution')">
+            <span class="skill-icon">📊</span> presentation-maker
+          </li>
+          <li class="skill-item" onclick="switchView('execution')">
+            <span class="skill-icon">🐙</span> github-manager
+          </li>
+          <li class="skill-item" onclick="switchView('execution')">
+            <span class="skill-icon">📝</span> spec-creator
+          </li>
         </ul>
-        <button class="new-skill-btn" onclick="switchView('create')">＋ 新しいスキルを追加...</button>
+        <button class="new-skill-btn" onclick="switchView('create')">
+          ＋ 新しいスキルを追加...
+        </button>
 
-        <div style="margin-top: auto; padding: 16px; border-top: 1px solid var(--border-color);">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div style="width:24px; height:24px; background:var(--accent-color); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px;">JD</div>
-                <div style="font-size:12px; font-weight:500;">John Doe</div>
-                <div style="margin-left:auto; font-size:12px; color:var(--text-secondary);">⚙️</div>
+        <div
+          style="
+            margin-top: auto;
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div
+              style="
+                width: 24px;
+                height: 24px;
+                background: var(--accent-color);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+              "
+            >
+              JD
             </div>
+            <div style="font-size: 12px; font-weight: 500">John Doe</div>
+            <div
+              style="
+                margin-left: auto;
+                font-size: 12px;
+                color: var(--text-secondary);
+              "
+            >
+              ⚙️
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <div class="main-content">
+      <div class="main-content">
         <div class="top-bar">
-            <div class="current-context">
-                <span id="headerTitle">AIWorkflow Orchestrator</span>
-                <span class="status-badge" id="headerBadge" style="display:none">v3.0</span>
-            </div>
-            <div class="header-actions">
-                <button title="Search">🔍</button>
-                <button title="History">🕒</button>
-            </div>
+          <div class="current-context">
+            <span id="headerTitle">AIWorkflow Orchestrator</span>
+            <span class="status-badge" id="headerBadge" style="display: none"
+              >v3.0</span
+            >
+          </div>
+          <div class="header-actions">
+            <button title="Search">🔍</button>
+            <button title="History">🕒</button>
+          </div>
         </div>
 
         <div id="view-welcome" class="view-container">
-            <div class="welcome-hero">
-                <div style="font-size: 48px; margin-bottom: 16px;">✨</div>
-                <h1 class="welcome-title">AIWorkflow Orchestrator へようこそ</h1>
-                <p class="welcome-sub">スキルを使えば、AIが様々な作業を自動で行ってくれます。</p>
+          <div class="welcome-hero">
+            <div style="font-size: 48px; margin-bottom: 16px">✨</div>
+            <h1 class="welcome-title">AIWorkflow Orchestrator へようこそ</h1>
+            <p class="welcome-sub">
+              スキルを使えば、AIが様々な作業を自動で行ってくれます。
+            </p>
+          </div>
+          <div class="cards-grid">
+            <div class="card" onclick="switchView('create')">
+              <span class="card-icon">🚀</span>
+              <h3>新しいスキルを作成</h3>
+              <p>
+                「何をしたいか」を伝えるだけで、AIが自動でツールを構成します。
+              </p>
             </div>
-            <div class="cards-grid">
-                <div class="card" onclick="switchView('create')">
-                    <span class="card-icon">🚀</span>
-                    <h3>新しいスキルを作成</h3>
-                    <p>「何をしたいか」を伝えるだけで、AIが自動でツールを構成します。</p>
-                </div>
-                <div class="card" onclick="simulatePermission()">
-                    <span class="card-icon">📚</span>
-                    <h3>スキルライブラリ</h3>
-                    <p>コミュニティで共有された便利なスキルを探してインポートします。</p>
-                </div>
-                <div class="card">
-                    <span class="card-icon">🔧</span>
-                    <h3>設定 & 管理</h3>
-                    <p>APIキーの管理や、実行履歴の確認はこちらから。</p>
-                </div>
+            <div class="card" onclick="simulatePermission()">
+              <span class="card-icon">📚</span>
+              <h3>スキルライブラリ</h3>
+              <p>
+                コミュニティで共有された便利なスキルを探してインポートします。
+              </p>
             </div>
+            <div class="card">
+              <span class="card-icon">🔧</span>
+              <h3>設定 & 管理</h3>
+              <p>APIキーの管理や、実行履歴の確認はこちらから。</p>
+            </div>
+          </div>
         </div>
 
         <div id="view-create" class="view-container">
-            <div class="step-indicator">
-                <span class="step-dot active">1. 要件定義</span>
-                <span class="step-dot">2. 構成確認</span>
-                <span class="step-dot">3. 生成</span>
+          <div class="step-indicator">
+            <span class="step-dot active">1. 要件定義</span>
+            <span class="step-dot">2. 構成確認</span>
+            <span class="step-dot">3. 生成</span>
+          </div>
+          <div class="chat-interface">
+            <div class="chat-history">
+              <div class="message msg-ai">
+                新しいスキルを作成します。<br />
+                どのような作業を自動化したいですか？<br />
+                <span
+                  style="
+                    font-size: 12px;
+                    color: var(--text-secondary);
+                    margin-top: 4px;
+                    display: block;
+                  "
+                  >例:
+                  「毎朝の天気をSlackに通知して」「指定したURLの要約を作って」</span
+                >
+              </div>
+              <div class="message msg-user">
+                GitHubのIssueを読み取って、週報を自動作成したいです。
+              </div>
+              <div class="message msg-ai">
+                承知しました。「GitHub Issue週報作成スキル」を設計します。<br /><br />
+                以下の構成でよろしいですか？
+                <ul style="margin: 8px 0; padding-left: 20px">
+                  <li><strong>GitHub API連携:</strong> Issueの取得</li>
+                  <li><strong>レポート生成:</strong> Markdown形式で出力</li>
+                  <li><strong>認証:</strong> 環境変数 (GITHUB_TOKEN) を使用</li>
+                </ul>
+              </div>
             </div>
-            <div class="chat-interface">
-                <div class="chat-history">
-                    <div class="message msg-ai">
-                        新しいスキルを作成します。<br>
-                        どのような作業を自動化したいですか？<br>
-                        <span style="font-size:12px; color:var(--text-secondary); margin-top:4px; display:block;">例: 「毎朝の天気をSlackに通知して」「指定したURLの要約を作って」</span>
-                    </div>
-                    <div class="message msg-user">GitHubのIssueを読み取って、週報を自動作成したいです。</div>
-                    <div class="message msg-ai">
-                        承知しました。「GitHub Issue週報作成スキル」を設計します。<br><br>
-                        以下の構成でよろしいですか？
-                        <ul style="margin: 8px 0; padding-left: 20px;">
-                            <li><strong>GitHub API連携:</strong> Issueの取得</li>
-                            <li><strong>レポート生成:</strong> Markdown形式で出力</li>
-                            <li><strong>認証:</strong> 環境変数 (GITHUB_TOKEN) を使用</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="input-area">
-                    <input type="text" placeholder="AIに返信..." autofocus>
-                    <button class="send-btn">↑</button>
-                </div>
+            <div class="input-area">
+              <input type="text" placeholder="AIに返信..." autofocus />
+              <button class="send-btn">↑</button>
             </div>
+          </div>
         </div>
 
         <div id="view-execution" class="view-container active-view">
-            <div style="text-align: center; margin-bottom: 24px;">
-                <h2 style="font-size:18px; margin-bottom:4px;">📊 プレゼンテーションを作成中</h2>
-                <p style="color:var(--text-secondary); font-size:13px;">presentation-slide-generator</p>
-            </div>
+          <div style="text-align: center; margin-bottom: 24px">
+            <h2 style="font-size: 18px; margin-bottom: 4px">
+              📊 プレゼンテーションを作成中
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 13px">
+              presentation-slide-generator
+            </p>
+          </div>
 
-            <div class="execution-panel">
-                <div class="progress-bar-container">
-                    <div class="progress-fill"></div>
-                </div>
-                <div class="exec-header">
-                    <span style="font-size:12px; font-weight:600; color:var(--text-secondary);">STATUS</span>
-                    <button class="btn btn-secondary" style="padding: 2px 8px; font-size:11px;">⏹ 中止</button>
-                </div>
-                <ul class="step-list">
-                    <li class="step-item">
-                        <span class="step-status status-done">✓</span>
-                        <span style="color: var(--text-secondary); text-decoration: line-through;">ユーザー入力を解析</span>
-                    </li>
-                    <li class="step-item">
-                        <span class="step-status status-done">✓</span>
-                        <span>スライド構成案を作成</span>
-                    </li>
-                    <li class="step-item" style="background: rgba(10,132,255,0.05);">
-                        <div class="step-status"><div class="status-running"></div></div>
-                        <span style="font-weight: 500;">HTMLファイルを生成中...</span>
-                        <span style="margin-left:auto; font-size:12px; color:var(--accent-color);">output/slide.html</span>
-                    </li>
-                    <li class="step-item">
-                        <span class="step-status status-pending"></span>
-                        <span style="color: var(--text-secondary);">最終チェック</span>
-                    </li>
-                    <li class="step-item">
-                        <span class="step-status status-pending"></span>
-                        <span style="color: var(--text-secondary);">ブラウザでプレビューを開く</span>
-                    </li>
-                </ul>
+          <div class="execution-panel">
+            <div class="progress-bar-container">
+              <div class="progress-fill"></div>
             </div>
+            <div class="exec-header">
+              <span
+                style="
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: var(--text-secondary);
+                "
+                >STATUS</span
+              >
+              <button
+                class="btn btn-secondary"
+                style="padding: 2px 8px; font-size: 11px"
+              >
+                ⏹ 中止
+              </button>
+            </div>
+            <ul class="step-list">
+              <li class="step-item">
+                <span class="step-status status-done">✓</span>
+                <span
+                  style="
+                    color: var(--text-secondary);
+                    text-decoration: line-through;
+                  "
+                  >ユーザー入力を解析</span
+                >
+              </li>
+              <li class="step-item">
+                <span class="step-status status-done">✓</span>
+                <span>スライド構成案を作成</span>
+              </li>
+              <li
+                class="step-item"
+                style="background: rgba(10, 132, 255, 0.05)"
+              >
+                <div class="step-status">
+                  <div class="status-running"></div>
+                </div>
+                <span style="font-weight: 500">HTMLファイルを生成中...</span>
+                <span
+                  style="
+                    margin-left: auto;
+                    font-size: 12px;
+                    color: var(--accent-color);
+                  "
+                  >output/slide.html</span
+                >
+              </li>
+              <li class="step-item">
+                <span class="step-status status-pending"></span>
+                <span style="color: var(--text-secondary)">最終チェック</span>
+              </li>
+              <li class="step-item">
+                <span class="step-status status-pending"></span>
+                <span style="color: var(--text-secondary)"
+                  >ブラウザでプレビューを開く</span
+                >
+              </li>
+            </ul>
+          </div>
 
-            <div style="margin: 0 auto; max-width: 600px; padding: 12px; border: 1px dashed #444; border-radius: 8px; font-size: 12px; color: var(--text-secondary); display:flex; gap:8px;">
-                <span>💡</span>
-                <span>生成には通常30秒〜1分ほどかかります。ブラウザタブを閉じても処理は継続されます。</span>
-            </div>
+          <div
+            style="
+              margin: 0 auto;
+              max-width: 600px;
+              padding: 12px;
+              border: 1px dashed #444;
+              border-radius: 8px;
+              font-size: 12px;
+              color: var(--text-secondary);
+              display: flex;
+              gap: 8px;
+            "
+          >
+            <span>💡</span>
+            <span
+              >生成には通常30秒〜1分ほどかかります。ブラウザタブを閉じても処理は継続されます。</span
+            >
+          </div>
         </div>
+      </div>
 
-    </div>
-
-    <div class="modal-overlay" id="permissionModal">
+      <div class="modal-overlay" id="permissionModal">
         <div class="permission-dialog">
-            <div class="dialog-header">
-                <div class="dialog-icon">⚠️</div>
-                <div>
-                    <div class="dialog-title">操作の確認</div>
-                    <div class="dialog-desc">スキル "presentation-maker" が以下の操作を行おうとしています。</div>
-                </div>
+          <div class="dialog-header">
+            <div class="dialog-icon">⚠️</div>
+            <div>
+              <div class="dialog-title">操作の確認</div>
+              <div class="dialog-desc">
+                スキル "presentation-maker" が以下の操作を行おうとしています。
+              </div>
             </div>
+          </div>
 
-            <div class="permission-list">
-                <div class="permission-item">
-                    <div class="perm-icon">📁</div>
-                    <div class="perm-text">フォルダ「output」を作成</div>
-                </div>
-                <div class="permission-item">
-                    <div class="perm-icon">🌐</div>
-                    <div class="perm-text">ローカルサーバーを起動 (ポート3000)</div>
-                </div>
+          <div class="permission-list">
+            <div class="permission-item">
+              <div class="perm-icon">📁</div>
+              <div class="perm-text">フォルダ「output」を作成</div>
             </div>
+            <div class="permission-item">
+              <div class="perm-icon">🌐</div>
+              <div class="perm-text">ローカルサーバーを起動 (ポート3000)</div>
+            </div>
+          </div>
 
-            <div class="dialog-details">
-                <details>
-                    <summary>詳細を表示 (コマンド)</summary>
-                    <p>mkdir -p output && cd output && npx serve -p 3000</p>
-                </details>
-                <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
-                    <input type="checkbox" id="autoAllow" style="accent-color: var(--accent-color);">
-                    <label for="autoAllow" style="font-size:12px; color:var(--text-secondary);">今後このスキルからの同様の操作は自動で許可する</label>
-                </div>
+          <div class="dialog-details">
+            <details>
+              <summary>詳細を表示 (コマンド)</summary>
+              <p>mkdir -p output && cd output && npx serve -p 3000</p>
+            </details>
+            <div
+              style="
+                margin-top: 12px;
+                display: flex;
+                gap: 8px;
+                align-items: center;
+              "
+            >
+              <input
+                type="checkbox"
+                id="autoAllow"
+                style="accent-color: var(--accent-color)"
+              />
+              <label
+                for="autoAllow"
+                style="font-size: 12px; color: var(--text-secondary)"
+                >今後このスキルからの同様の操作は自動で許可する</label
+              >
             </div>
+          </div>
 
-            <div class="dialog-footer">
-                <button class="btn btn-secondary" onclick="closeModal(false)">キャンセル</button>
-                <button class="btn btn-primary" onclick="closeModal(true)">許可する</button>
-            </div>
+          <div class="dialog-footer">
+            <button class="btn btn-secondary" onclick="closeModal(false)">
+              キャンセル
+            </button>
+            <button class="btn btn-primary" onclick="closeModal(true)">
+              許可する
+            </button>
+          </div>
         </div>
+      </div>
+
+      <div class="toast" id="toast"><span>✓</span> 処理を開始しました</div>
     </div>
 
-    <div class="toast" id="toast">
-        <span>✓</span> 処理を開始しました
-    </div>
-
-</div>
-
-<script>
-    // Simple Router Logic
-    function switchView(viewName) {
+    <script>
+      // Simple Router Logic
+      function switchView(viewName) {
         // Hide all views
-        document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active-view'));
-        document.querySelectorAll('.skill-item').forEach(el => el.classList.remove('active'));
+        document
+          .querySelectorAll(".view-container")
+          .forEach((el) => el.classList.remove("active-view"));
+        document
+          .querySelectorAll(".skill-item")
+          .forEach((el) => el.classList.remove("active"));
 
         // Show selected view
-        document.getElementById('view-' + viewName).classList.add('active-view');
+        document
+          .getElementById("view-" + viewName)
+          .classList.add("active-view");
 
         // Update Header
-        const title = document.getElementById('headerTitle');
-        const badge = document.getElementById('headerBadge');
+        const title = document.getElementById("headerTitle");
+        const badge = document.getElementById("headerBadge");
 
-        if(viewName === 'welcome') {
-            title.innerText = 'AIWorkflow Orchestrator';
-            badge.style.display = 'block';
-        } else if (viewName === 'create') {
-            title.innerText = '新規スキル作成';
-            badge.style.display = 'none';
-        } else if (viewName === 'execution') {
-            title.innerText = '実行中: presentation-maker';
-            badge.style.display = 'block';
-            badge.innerText = 'Running';
-            badge.style.background = 'var(--accent-color)';
-            badge.style.color = '#fff';
+        if (viewName === "welcome") {
+          title.innerText = "AIWorkflow Orchestrator";
+          badge.style.display = "block";
+        } else if (viewName === "create") {
+          title.innerText = "新規スキル作成";
+          badge.style.display = "none";
+        } else if (viewName === "execution") {
+          title.innerText = "実行中: presentation-maker";
+          badge.style.display = "block";
+          badge.innerText = "Running";
+          badge.style.background = "var(--accent-color)";
+          badge.style.color = "#fff";
 
-            // Highlight list item (mock)
-            document.querySelector('.skill-list li:first-child').classList.add('active');
+          // Highlight list item (mock)
+          document
+            .querySelector(".skill-list li:first-child")
+            .classList.add("active");
 
-            // Trigger modal for demo purposes after 1 sec
-            setTimeout(simulatePermission, 1500);
+          // Trigger modal for demo purposes after 1 sec
+          setTimeout(simulatePermission, 1500);
         }
-    }
+      }
 
-    // Modal Logic
-    function simulatePermission() {
-        const modal = document.getElementById('permissionModal');
-        modal.classList.add('show');
-    }
+      // Modal Logic
+      function simulatePermission() {
+        const modal = document.getElementById("permissionModal");
+        modal.classList.add("show");
+      }
 
-    function closeModal(allowed) {
-        const modal = document.getElementById('permissionModal');
-        modal.classList.remove('show');
-        if(allowed) {
-            showToast('操作を許可しました');
+      function closeModal(allowed) {
+        const modal = document.getElementById("permissionModal");
+        modal.classList.remove("show");
+        if (allowed) {
+          showToast("操作を許可しました");
         } else {
-            showToast('操作をキャンセルしました');
+          showToast("操作をキャンセルしました");
         }
-    }
+      }
 
-    // Toast Logic
-    function showToast(msg) {
-        const toast = document.getElementById('toast');
+      // Toast Logic
+      function showToast(msg) {
+        const toast = document.getElementById("toast");
         toast.innerHTML = `<span>✓</span> ${msg}`;
-        toast.classList.add('show');
+        toast.classList.add("show");
         setTimeout(() => {
-            toast.classList.remove('show');
+          toast.classList.remove("show");
         }, 3000);
-    }
+      }
 
-    // Init
-    // Start with Execution view to show off the UI, but usually would start with welcome
-    // switchView('welcome');
-</script>
-
-</body>
+      // Init
+      // Start with Execution view to show off the UI, but usually would start with welcome
+      // switchView('welcome');
+    </script>
+  </body>
 </html>

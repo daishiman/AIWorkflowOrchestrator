@@ -199,23 +199,25 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **v1.11.0** | **2026-02-10** | **TASK-FIX-6-1知見によるスキル改善**: patterns.md成功パターン3件追加（Slice統合、Race Condition対策、Phase 12チェックリスト）、arch-state-management.md v1.10.0（skillSlice統合記録）、06-known-pitfalls.md P25-P28追加、topic-map.md再生成実施 |
 | **v1.10.0** | **2026-02-10** | **TASK-FIX-6-1-STATE-CENTRALIZATION完了**: arch-state-management.md更新（skillSlice統合記録、agentSlice拡張）、テスト70件PASS、Branch Coverage 89.09%達成 |
-| **8.52.0** | **2026-02-10** | **SKILL.md最適化**: skill-creatorテンプレート準拠。変更履歴を最新20件に圧縮（古い19件をLOGS.mdに移動）。500行以内維持 |
-| **8.51.0** | **2026-02-10** | **P31対策スキル改善**: topic-map.md再生成、quick-reference.mdにP31対策早見パターン追加、SKILL.md Triggerキーワード追加、keywords.json再生成 |
-| **8.50.0** | **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001完了**: 06-known-pitfalls.md P31追加（Zustand Store Hooks無限ループ）。useRefガード実装 |
-| **8.49.0** | **2026-02-09** | **TASK-AUTH-MODE-SELECTION-001完了**: interfaces-auth.md更新（AuthMode型・AuthModeService追加）。86テスト全PASS |
-| **8.48.0** | **2026-02-09** | **patterns.md構造最適化**: skill-creatorテンプレート準拠。カテゴリナビゲーション追加、成功16件/失敗17件 |
-| **8.47.0** | **2026-02-09** | **TASK-FIX-12-1苦戦箇所記録**: patterns.md成功/失敗パターン追加、architecture-implementation-patterns.md更新 |
-| **8.46.0** | **2026-02-09** | **TASK-FIX-12-1-IPC-HARDCODE-FIX完了**: SkillExecutor.ts IPCチャンネル名定数化 |
-| **8.45.0** | **2026-02-08** | **TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了**: security-principles.md・api-ipc-system.md更新。119テスト全PASS |
-| **8.44.0** | **2026-02-08** | **TASK-FIX-4-2パターン追加**: 06-known-pitfalls.mdにP19-P20追加（型アサーション検証バイパス・テストログ出力汚染） |
-| **8.43.0** | **2026-02-08** | **TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了**: validateStoredSkillIds()追加。87テスト全PASS |
-| **8.42.0** | **2026-02-06** | **DEBT-SEC-001仕様構造最適化**: csrf-state-parameter.md新規作成、patterns.md拡充 |
-| **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md・architecture-auth-security.md・api-ipc-auth.md更新 |
-| **8.41.0** | **2026-02-06** | **TASK-FIX-5-1最適化**: architecture-implementation-patterns.md更新、06-known-pitfalls.md P11追加 |
-| **8.40.1** | **2026-02-06** | **TASK-FIX-5-1-SKILL-API-UNIFICATION完了**: Preload API統一（window.skillAPI→window.electronAPI.skill）。210テスト全PASS |
-| **8.40.0** | **2026-02-06** | **TASK-AUTH-SESSION-REFRESH-001完了**: TokenRefreshScheduler統合。26テスト全PASS |
-| **8.39.0** | **2026-02-05** | **ENV-INFRA-001苦戦箇所記録**: patterns.md更新（ネイティブモジュールNODE_MODULE_VERSION不一致解決パターン） |
-| **8.38.0** | **2026-02-05** | **TASK-FIX-4-1-IPC-CONSOLIDATION完了**: IPCチャンネル統合。42テスト全PASS |
-| **8.37.0** | **2026-02-04** | **AUTH-UI-001完了**: architecture-implementation-patterns.md更新（React Portal、Supabase認証状態即時更新パターン） |
-| **8.36.0** | **2026-02-04** | **スキル最適化**: spec-update-workflow.mdファイル名修正、topic-map.md再生成 |
-| **8.35.1** | **2026-02-04** | **task-imp-search-ui-001完了**: ui-ux-search-panel.md更新（E2Eテスト17件・グローバルショートカット統合） |
+| **8.54.0** | **2026-02-10** | **SKILL.md最適化**: skill-creatorテンプレート準拠。変更履歴を最新20件に圧縮（古い19件をLOGS.mdに移動）。500行以内維持 |
+| **8.53.0** | **2026-02-10** | **P31対策スキル改善**: topic-map.md再生成、quick-reference.mdにP31対策早見パターン追加、SKILL.md Triggerキーワード追加、keywords.json再生成 |
+| **8.52.0** | **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001完了**: 06-known-pitfalls.md P31追加（Zustand Store Hooks無限ループ）。useRefガード実装 |
+| **8.51.0** | **2026-02-10** | **UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH完了**: AgentSDKAPI abort()型定義修正。`abort(): void` → `abort(): Promise<void>`に変更（2箇所: shared/types.ts, preload/types.ts）。P23パターン準拠。実装（safeInvoke）と型定義の整合性確保。24テストPASS、未タスク0件 |
+| **8.50.0** | **2026-02-10** | **UT-FIX-5-3-PRELOAD-AGENT-ABORT完了**: Agent Abort IPCセキュリティ修正。preload/index.ts `ipcRenderer.send` → `safeInvoke(IPC_CHANNELS.AGENT_ABORT)` 変更、agent-handler.ts `ipcMain.on` → `ipcMain.handle` 変更、dispose()に`removeHandler`追加。04-electron-security.md IPC原則準拠。21テストPASS、未タスク0件 |
+| **8.49.0** | **2026-02-09** | **TASK-AUTH-MODE-SELECTION-001完了**: interfaces-auth.md更新（AuthMode型・AuthModeService・SubscriptionAuthProvider追加）。認証方式選択機能（サブスクリプション/APIキー切り替え）実装。86テスト全PASS |
+| **8.48.0** | **2026-02-09** | **patterns.md構造最適化**: skill-creatorテンプレート準拠。目次カテゴリナビゲーション追加、成功パターン5カテゴリ（Phase 12ドキュメント/IPC・Electron/OAuth・認証/テスト・品質/ストア・永続化）、失敗パターン4カテゴリ（Phase 12漏れ/OAuth・認証エラー/テスト・型安全/その他）に再構成。見出しレベル統一（###カテゴリ/####個別パターン）。パターン件数：成功16件/失敗17件 |
+| **8.47.0** | **2026-02-09** | **TASK-FIX-12-1苦戦箇所記録**: patterns.md成功/失敗パターン追加（IPCチャンネル名定数化、Phase 12 Step 1更新漏れ、未タスク検出時関連ファイル調査不足、未タスク配置ディレクトリ誤り）。architecture-implementation-patterns.md v1.16.0 IPCチャンネル名定数化パターン追加済み。06-known-pitfalls.md P23/P24追加予定 |
+| **8.46.0** | **2026-02-09** | **TASK-FIX-12-1-IPC-HARDCODE-FIX完了**: SkillExecutor.ts L918/L1214 のハードコード文字列 `"skill:stream"` を `SKILL_CHANNELS.SKILL_STREAM` 定数参照に変更。IPC セキュリティ原則準拠。未タスク TASK-FIX-12-2 検出 |
+| **8.45.0** | **2026-02-08** | **TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了**: security-principles.md更新（SDK認証キー管理セクション追加）、api-ipc-system.md更新（auth-key IPCチャンネル4種追加）、api-endpoints.md更新（SDK認証キーカテゴリ追加）、interfaces-agent-sdk-executor.md更新（AUTHENTICATION_ERROR追加、AuthKeyService統合）。119テスト全PASS |
+| **8.44.0** | **2026-02-08** | **TASK-FIX-4-2パターン追加**: 06-known-pitfalls.mdにP19-P20追加（型アサーション検証バイパス・テストログ出力汚染）。interfaces-agent-sdk-executor.md型バリデーションパターン記載 |
+| **8.43.0** | **2026-02-08** | **TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了**: interfaces-skill-execution.md更新（validateStoredSkillIds詳細ロジック追加）、security-principles.md更新（ストレージ整合性検証セクション追加）。87テスト全PASS |
+| **8.42.0** | **2026-02-06** | **DEBT-SEC-001仕様構造最適化**: csrf-state-parameter.md新規作成（OAuth CSRF/State詳細を分離）、security-principles.md軽量化（参照リンク追加）、patterns.md拡充（OAuth成功/失敗パターン10件追加） |
+| **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md更新（CSRF対策セクション）、architecture-auth-security.md更新（PKCE実装詳細）、api-ipc-auth.md更新（認証IPC Channel仕様） |
+| **8.41.0** | **2026-02-06** | **TASK-FIX-5-1最適化**: architecture-implementation-patterns.md更新（S1-S4パターン追加、既知パターンテーブル拡充）、06-known-pitfalls.md P11追加（Claude Code Hooks Edit失敗） |
+| **8.40.1** | **2026-02-06** | **TASK-FIX-5-1-SKILL-API-UNIFICATION完了**: security-electron-ipc.md更新（safeInvoke/safeOnパターン、API統合アーキテクチャ図追加）、interfaces-skill-execution.md更新（ImportedSkill型統一）。Preload API統一（window.skillAPI→window.electronAPI.skill）。210テスト全PASS |
+| **8.40.0** | **2026-02-06** | **TASK-AUTH-SESSION-REFRESH-001完了**: architecture-auth-security.md v1.10.0更新（TokenRefreshScheduler仕様追加）、interfaces-auth.md更新（TokenRefreshCallbacks/TokenRefreshConfig追加）、api-ipc-auth.md更新（session:scheduleRefreshチャンネル追加）。26テスト全PASS |
+| **8.39.0** | **2026-02-05** | **ENV-INFRA-001苦戦箇所記録**: patterns.md更新（ネイティブモジュールNODE_MODULE_VERSION不一致解決パターン追加） |
+| **8.38.0** | **2026-02-05** | **TASK-FIX-4-1-IPC-CONSOLIDATION完了**: api-ipc-system.md更新（統合チャンネル一覧）、security-electron-ipc.md更新（IPCチャンネルホワイトリスト更新）、architecture-patterns.md更新（Preload Bridge Pattern詳細）。42テスト全PASS |
+| **8.37.0** | **2026-02-04** | **AUTH-UI-001完了**: architecture-implementation-patterns.md更新（React Portal/Supabase認証状態即時更新パターン追加）、ui-ux-auth-flow.md v1.3.0更新（Googleログインボタン仕様追加） |
+| **8.36.0** | **2026-02-04** | **スキル最適化**: spec-update-workflow.mdファイル名修正（kebab-case統一）、topic-map.md再生成（新規ファイル反映） |
+| **8.35.1** | **2026-02-04** | **task-imp-search-ui-001完了**: ui-ux-search-panel.md v1.2.0更新（E2Eテスト17件追加、グローバルショートカット統合完了） |

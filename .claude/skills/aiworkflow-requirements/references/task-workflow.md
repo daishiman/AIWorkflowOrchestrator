@@ -132,6 +132,60 @@
 
 ## 完了タスク
 
+### タスク: UT-FIX-5-4 AgentSDKAPI abort() 型定義不一致修正（2026-02-10完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | UT-FIX-5-4                                      |
+| 完了日     | 2026-02-10                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | 24（新規追加）                                  |
+| カバレッジ | 全テストPASS                                    |
+
+#### 成果物
+
+| 成果物                           | パス/内容                                                          |
+| -------------------------------- | ------------------------------------------------------------------ |
+| 型定義修正(shared)               | `packages/shared/src/agent/types.ts` (行237)                       |
+| 型定義修正(preload)              | `apps/desktop/src/preload/types.ts` (行1289)                       |
+| 変更内容                         | `abort(): void` → `abort(): Promise<void>`                         |
+
+#### 変更理由
+
+- P23パターン（API二重定義の型管理）準拠
+- 実装（safeInvoke）の戻り値は`Promise<void>`だが型定義は`void`だった
+- 2箇所同時更新でTypeScript開発者が`.then()`や`await`を正しく使用可能に
+
+---
+
+### タスク: UT-FIX-5-3 Preload Agent Abort セキュリティ修正（2026-02-10完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | UT-FIX-5-3                                      |
+| 完了日     | 2026-02-10                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | 21（全テストPASS）                              |
+| カバレッジ | 全テストPASS                                    |
+
+#### 成果物
+
+| 成果物                           | パス/内容                                                          |
+| -------------------------------- | ------------------------------------------------------------------ |
+| Preload修正                      | `apps/desktop/src/preload/index.ts` (行423)                        |
+| Main修正                         | `apps/desktop/src/main/agent/agent-handler.ts` (行176-178, 63)     |
+| 変更内容                         | `ipcRenderer.send` → `safeInvoke(IPC_CHANNELS.AGENT_ABORT)`        |
+
+#### 変更理由
+
+- 04-electron-security.md IPC セキュリティ原則準拠
+- ホワイトリスト検証のバイパスを解消
+- 他のAPI（stop, getStatus等）と同一パターンに統一
+
+---
+
 ### タスク: TASK-AUTH-SESSION-REFRESH-001 セッション自動リフレッシュ実装（2026-02-06完了）
 
 | 項目       | 内容                                            |
@@ -313,10 +367,10 @@
 | task-sec-auth-state-cleanup-001            | State Map定期クリーンアップ実装                                     | 低 | DEBT-SEC-001 Phase 12（既知制約検出）                          | `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md`                   |
 | UT-PROTOCOL-URL-001                        | カスタムプロトコルURLパース標準ユーティリティ整備                   | 中 | TASK-AUTH-CALLBACK-001 Phase 12（苦戦箇所検出）                | `docs/30-workflows/unassigned-task/task-protocol-url-parsing-utility.md`                    |
 | UT-FIX-5-2                                 | Preload Dialog API ハードコード削除                                 | 中 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`              |
-| UT-FIX-5-3                                 | Preload Agent Abort セキュリティ修正                                | 高 | TASK-FIX-5-1 Phase 10                                          | `docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`                  |
+| ~~UT-FIX-5-3~~                             | ~~Preload Agent Abort セキュリティ修正~~                            | ~~高~~ | ~~TASK-FIX-5-1 Phase 10~~                                      | ~~`docs/30-workflows/unassigned-task/task-ut-fix-5-3-preload-agent-abort.md`~~ **2026-02-10完了** |
 | TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
 | TASK-DOC-PHASE12-JUDGMENT-CRITERIA-001       | Phase 12判断基準の明確化と漏れ防止強化                             | 低 | TASK-FIX-6-1-STATE-CENTRALIZATION Phase 12                     | `docs/30-workflows/unassigned-task/task-doc-phase12-judgment-criteria-improvement.md`       |
-| UT-FIX-5-4                                   | AgentSDKAPI 型定義不一致修正                                       | 低 | UT-FIX-5-3 Phase 12 アーキテクチャ検証                         | `docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md`          |
+| ~~UT-FIX-5-4~~                               | ~~AgentSDKAPI 型定義不一致修正~~                                   | ~~低~~ | ~~UT-FIX-5-3 Phase 12 アーキテクチャ検証~~                     | ~~`docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md`~~ **2026-02-10完了** |
 | UT-STORE-HOOKS-REFACTOR-001                  | Store Hooksを個別セレクタベースに再設計                             | 中 | TASK-UT-AUTH-MODE-UI-INTEGRATION タスク仕様書 セクション8      | `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor.md`                         |
 | UT-FIX-APP-INITAUTH-CHECK-001                | App.tsxのinitializeAuth確認                                         | 低 | TASK-UT-AUTH-MODE-UI-INTEGRATION Phase 10 MINOR指摘            | `docs/30-workflows/unassigned-task/task-ut-fix-app-initauth-check.md`                       |
 
@@ -361,6 +415,7 @@
 | 1.16.0     | 2026-02-04 | 未タスク追加: UT-AUTH-001（profileHandlers.test.ts環境修正）。AUTH-UI-001 Phase 5検出                                                                                                                     |
 | 1.15.0     | 2026-02-04 | AUTH-UI-004完了: 未タスク1件追加（task-imp-phase12-validation-001）、better-sqlite3タスクv1.1.0更新                                                                                                        |
 | 1.16.0     | 2026-02-04 | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（マルチファイル一括置換）。task-imp-search-ui-001 Phase 12検出                                       |
+| 1.18.0     | 2026-02-10 | UT-FIX-5-3/UT-FIX-5-4完了記録追加。残課題テーブルから完了タスクセクションに移動。Agent Abort IPCセキュリティ修正・AgentSDKAPI型定義修正完了                                                               |
 | 1.18.0     | 2026-02-05 | 未タスク追加: UT-ENV-001（CI node-versionの.nvmrc参照化）。ENV-INFRA-001 Phase 3検出                                                                                                                       |
 | 1.19.1     | 2026-02-06 | DEBT-SEC-001完了記録追加。UT-SEC-001はDEBT-SEC-002/003の対応範囲に包含と判定（独立未タスク不要）                                                                                                             |
 | 1.19.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了記録追加、未タスク3件追加（UT-OFFLINE-REFRESH-001、UT-AUDIT-001、UT-REFRESH-NOTIFICATION-001） |

@@ -263,6 +263,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
+| SkillImportStore（TASK-2B） | L539 |
+| SkillSlice型定義（TASK-6-1） | L591 |
+| ModifierSkill（スライド逆同期機能） | L683 |
+| ChatPanel統合（TASK-7D） | L717 |
+| SkillFileManager（TASK-9A-A） | L752 |
+| テストアーキテクチャ（TASK-8C-A） | L840 |
+| 完了タスク | L892 |
+| 関連ドキュメント | L1110 |
+| SkillCreatorService（TASK-9B-G） | L1123 |
+| 完了タスク | L1371 |
+| 変更履歴 | L1402 |
 | SkillImportStore（TASK-2B） | L527 |
 | SkillSlice型定義（TASK-6-1） | L579 |
 | ModifierSkill（スライド逆同期機能） | L671 |
@@ -1533,6 +1544,11 @@ node scripts/list-specs.js --topics
 ### references/patterns.md
 
 | セクション | 行 |
+|------------|----|\n| 目次 | L9 |
+| 成功パターン | L34 |
+| 失敗パターン（避けるべきこと） | L299 |
+| ガイドライン | L517 |
+
 |------------|----|
 | 目次 | L9 |
 | 成功パターン | L32 |
@@ -1788,6 +1804,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
+| 残課題（未タスク） | L319 |
+| 関連ドキュメント | L382 |
+| 変更履歴 | L392 |
 | 残課題（未タスク） | L265 |
 | 関連ドキュメント | L328 |
 | 変更履歴 | L338 |
