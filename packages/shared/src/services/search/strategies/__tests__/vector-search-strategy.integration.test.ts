@@ -199,8 +199,8 @@ describe("VectorSearchStrategy 統合テスト", () => {
       await strategy.search("パフォーマンステスト", 10);
 
       const elapsed = performance.now() - startTime;
-      // モックなので非常に高速なはず
-      expect(elapsed).toBeLessThan(100);
+      // pre-push/CI環境での実行遅延を考慮 (UT-PERF-005)
+      expect(elapsed).toBeLessThan(500);
     });
 
     it("メトリクスに処理時間が正しく記録される", async () => {

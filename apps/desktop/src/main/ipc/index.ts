@@ -32,6 +32,12 @@ import {
   PermissionStore,
 } from "../services/skill";
 import { registerPermissionStoreHandlers } from "./permission-store-handlers";
+import { registerAuthModeHandlers } from "./authModeHandlers";
+import {
+  AuthKeyService,
+  createAuthKeyStorage,
+  createAuthModeService,
+} from "../services/auth";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -134,6 +140,12 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Register Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();
   registerPermissionStoreHandlers(permissionStore);
+
+  // Register Auth Mode handlers (TASK-AUTH-MODE-SELECTION-001)
+  const authKeyStorage = createAuthKeyStorage();
+  const authKeyService = new AuthKeyService(authKeyStorage);
+  const authModeService = createAuthModeService(authKeyService);
+  registerAuthModeHandlers(mainWindow, authModeService);
 
   // Register Claude CLI handlers (for skill discovery via Claude CLI)
   registerClaudeCliHandlers(mainWindow);

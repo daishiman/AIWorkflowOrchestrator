@@ -44,6 +44,18 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 実装ガイド | `docs/30-workflows/completed-tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md` |
 | 備考       | AgentViewの型アサーション（`as unknown as Skill[]`）はTASK-FIX-6-1で解消予定 |
 
+#### UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH（2026-02-10完了）
+
+| 項目       | 内容                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | UT-FIX-5-4                                                            |
+| ステータス | **完了**                                                              |
+| テスト数   | 24（自動）+ 22（手動チェック項目）                                    |
+| 主要変更   | AgentSDKAPI abort()型定義修正（`void` → `Promise<void>`）             |
+| 変更対象   | `packages/shared/src/agent/types.ts`, `apps/desktop/src/preload/types.ts` |
+| 実装ガイド | `docs/30-workflows/UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH/outputs/phase-12/implementation-guide.md` |
+| 備考       | P23パターン（API二重定義の型管理）準拠で2箇所同時更新                 |
+
 ---
 
 ### TASK-FIX-5-1 実装詳細
@@ -1391,6 +1403,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-10 | 1.13.0     | UT-FIX-5-4完了: AgentSDKAPI abort()型定義修正（`void` → `Promise<void>`）。P23パターン準拠で2箇所同時更新、24テスト追加 |
 | 2026-02-04 | 1.12.0     | TASK-FIX-1-1-TYPE-ALIGNMENT: スキル型定義統一完了記録追加（skill-execution.ts削除、6型+1定数をskill.tsに統合、BaseStreamMessage抽出） |
 | 2026-02-03 | 1.11.0     | マージ統合: TASK-9B-G + TASK-9C |
 | 2026-02-03 | 1.10.0     | TASK-9B-G: 実装上の苦戦箇所・教訓セクション追加（未タスク登録漏れ、Script First統合設計、定数外部化、パストラバーサル防止） |

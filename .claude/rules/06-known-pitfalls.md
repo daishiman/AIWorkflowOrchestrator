@@ -73,6 +73,33 @@
 
 - **教訓**: `new URL("myapp://path/to")` では RFC 3986 の authority 規則により pathname が期待どおりにならない。カスタムプロトコルでは手動パースが安全
 
+### P31: Zustand Store Hooks無限ループ
+
+- **教訓**: `useAuthModeStore()` 等の合成Store Hookが毎回新しいオブジェクトを返すため、その中の関数を`useEffect`の依存配列に含めると無限ループが発生する
+- **症状**: 設定画面がぐるぐる回り続ける、LLM/スキル選択が無限実行
+- **解決策**:
+  1. **短期**: useRefでガードし、依存配列は空にする
+  2. **長期**: 個別セレクタベース（`useAuthMode()`, `useSetAuthMode()`等）に再設計
+- **関連タスク**: UT-FIX-STORE-HOOKS-INFINITE-LOOP-001
+
+```typescript
+// ❌ 無限ループ
+const { initializeAuthMode } = useAuthModeStore();
+useEffect(() => {
+  initializeAuthMode();
+}, [initializeAuthMode]);
+
+// ✅ 修正後
+const { initializeAuthMode } = useAuthModeStore();
+const initRef = useRef(false);
+useEffect(() => {
+  if (!initRef.current) {
+    initRef.current = true;
+    initializeAuthMode();
+  }
+}, []);
+```
+
 ## ビルド / 環境
 
 ### P7: ネイティブモジュールのバイナリ不一致
@@ -213,9 +240,39 @@
 - **解決策**: `grep -rn` で同様のパターンをプロジェクト全体で検索
 - **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX
 
+### P31: Phase 12のシステム仕様書更新漏れ（複数ファイル）
+
+- **教訓**: Phase 12では複数のシステム仕様書を同時に更新する必要があるが、一部のファイル更新を忘れやすい。UT-FIX-5-4では以下の更新漏れが発生:
+  - `api-ipc-agent.md` への完了タスクセクション追加漏れ
+  - `security-api-electron.md` への完了タスクテーブル追加漏れ
+  - `interfaces-agent-sdk.md` の型定義更新漏れ
+  - `interfaces-agent-sdk-skill.md` への完了タスクセクション追加漏れ
+  - `task-workflow.md` の残課題テーブル更新・完了タスクセクション追加漏れ
+  - `topic-map.md` の再生成漏れ
+- **解決策**: Phase 12仕様書のチェックリストを全項目確認してから完了とする。特に型定義変更タスクでは以下のファイルを必ず確認:
+  1. 該当する `interfaces-*.md`（型定義の変更内容記録）
+  2. `api-ipc-*.md`（IPC関連の場合）
+  3. `security-*.md`（セキュリティ関連の場合）
+  4. `task-workflow.md`（残課題・完了タスク記録）
+  5. `topic-map.md`（常に再生成）
+- **チェックリスト**: [05-task-execution.md#Phase 12](./05-task-execution.md)
+- **関連タスク**: UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH
+
+### P32: 型定義の二箇所同時更新必須（P23パターンの拡張）
+
+- **教訓**: IPC関連の型定義変更では、以下の2ファイルを同時に更新する必要がある:
+  - `packages/shared/src/agent/types.ts`（共有型定義）
+  - `apps/desktop/src/preload/types.ts`（Preload層型定義）
+    片方だけ更新すると、型不整合によるコンパイルエラーまたは実行時エラーが発生する
+- **解決策**:
+  1. 型変更前に両ファイルの該当型を確認
+  2. 両ファイルを同時に編集（1つのコミットで）
+  3. 編集後に `pnpm typecheck` で型整合性を検証
+- **関連パターン**: P23（API二重定義の型管理複雑性）
+- **関連タスク**: UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH
+
 ### P28: 手動テストでの削除確認忘れ
 
 - **教訓**: API 統一後、旧 API（`window.skillAPI`）が本当に削除されたかの手動確認を忘れがち。DevTools で `window.skillAPI === undefined` を確認する必要がある
 - **解決策**: Phase 11 手動テストチェックリストに「旧 API が undefined であることを確認」を必ず含める
 - **関連タスク**: TASK-FIX-5-1-SKILL-API-UNIFICATION
-  > > > > > > > Stashed changes

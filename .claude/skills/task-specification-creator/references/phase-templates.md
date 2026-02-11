@@ -545,6 +545,18 @@ Phase 5: 実装（TDD: Green）
 | Shared | ユーティリティ、型定義、定数 | `packages/shared/` | - |
 | データ層 | リポジトリ、SQLite操作 | `apps/desktop/src/main/repositories/` | `aiworkflow-requirements: database-*.md` |
 
+## 実装時の注意事項（既知のPitfall対策）
+
+以下は過去の実装経験から得られた重要な注意事項です：
+
+| Pitfall ID | 注意事項 | 対策 |
+| ---------- | -------- | ---- |
+| P31 | Zustand Store Hooks無限ループ | 合成Store Hook（`useAuthModeStore()`等）の関数を`useEffect`依存配列に含めない。`useRef`でガードするか、個別セレクタを使用 |
+| P5 | リスナー二重登録 | React StrictModeで`useEffect`が2回実行される。モジュールレベルでガードするか`useRef`で初期化フラグを管理 |
+| P12 | 外部SDK自動処理との競合 | カスタム実装で置き換える場合、元の自動処理を必ず無効化 |
+
+📖 詳細: `.claude/rules/06-known-pitfalls.md`、`references/patterns.md`
+
 ## 成果物
 
 | 成果物     | パス                               | 説明     |

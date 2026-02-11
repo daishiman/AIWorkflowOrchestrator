@@ -1286,7 +1286,7 @@ export interface AgentSDKAPI {
   resumeSession: (request: AgentSDKResumeSessionRequest) => Promise<void>;
   destroySession: (request: AgentSDKDestroySessionRequest) => Promise<void>;
   query: (request: AgentSDKQueryRequest) => Promise<void>;
-  abort: () => void;
+  abort: () => Promise<void>;
   onMessage: (callback: (message: AgentSDKMessage) => void) => () => void;
   setOption: (options: { timeout?: number }) => void;
   getOption: (key: string) => number | undefined;

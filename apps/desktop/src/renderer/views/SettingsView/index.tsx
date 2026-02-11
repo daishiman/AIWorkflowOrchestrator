@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { AccountSection } from "../../components/organisms/AccountSection";
@@ -7,7 +7,8 @@ import { ProfileSection } from "./ProfileSection";
 import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
-import { useAppStore } from "../../store";
+import { AuthModeSelector } from "../../components/settings/AuthModeSelector";
+import { useAppStore, useAuthModeStore } from "../../store";
 
 export interface SettingsViewProps {
   className?: string;
@@ -19,6 +20,24 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   const setAutoSyncEnabledAction = useAppStore(
     (state) => state.setAutoSyncEnabled,
   );
+
+  // Auth mode store
+  const {
+    mode: authMode,
+    status: authModeStatus,
+    isLoading: authModeLoading,
+    setMode: setAuthMode,
+    initializeAuthMode,
+  } = useAuthModeStore();
+
+  // Initialize auth mode on mount (1回だけ実行 - P31対策)
+  const authModeInitRef = useRef(false);
+  useEffect(() => {
+    if (!authModeInitRef.current) {
+      authModeInitRef.current = true;
+      initializeAuthMode();
+    }
+  }, []); // 意図的に空の依存配列: initializeAuthModeは1回だけ実行（P31対策）
 
   // Local state
   const [isLoading] = useState(false);
@@ -65,6 +84,37 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
             id="account-settings-heading"
           >
             <AccountSection />
+          </SettingsCard>
+        </section>
+
+        {/* Auth Mode Settings - Claude Agent SDK認証方式選択 */}
+        <section role="region" aria-labelledby="auth-mode-settings-heading">
+          <SettingsCard
+            title="Claude Agent SDK 認証方式"
+            description="スキル実行時の認証方式を選択します"
+            id="auth-mode-settings-heading"
+          >
+            <div className="space-y-4">
+              <AuthModeSelector
+                currentMode={authMode}
+                onModeChange={setAuthMode}
+                disabled={authModeLoading}
+              />
+              {/* 認証状態の表示 */}
+              {authModeStatus && (
+                <div
+                  className={clsx(
+                    "text-sm px-3 py-2 rounded-md",
+                    authModeStatus.isValid
+                      ? "bg-green-50 text-green-700 border border-green-200"
+                      : "bg-amber-50 text-amber-700 border border-amber-200",
+                  )}
+                  data-testid="auth-mode-status"
+                >
+                  {authModeStatus.message}
+                </div>
+              )}
+            </div>
           </SettingsCard>
         </section>
 
