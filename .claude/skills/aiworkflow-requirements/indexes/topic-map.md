@@ -172,8 +172,8 @@ node scripts/list-specs.js --topics
 | スキル作成実装パターン（TASK-9B-G） | L869 |
 | 外部API データ正規化パターン | L993 |
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1032 |
-| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1066 |
-| 変更履歴 | L1120 |
+| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1094 |
+| 変更履歴 | L1148 |
 
 ### references/architecture-monorepo.md
 
@@ -265,16 +265,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L527 |
-| SkillSlice型定義（TASK-6-1） | L579 |
-| ModifierSkill（スライド逆同期機能） | L671 |
-| ChatPanel統合（TASK-7D） | L705 |
-| SkillFileManager（TASK-9A-A） | L740 |
-| テストアーキテクチャ（TASK-8C-A） | L828 |
-| 完了タスク | L880 |
-| 関連ドキュメント | L1098 |
-| SkillCreatorService（TASK-9B-G） | L1111 |
-| 完了タスク | L1359 |
+| SkillImportStore（TASK-2B） | L539 |
+| SkillSlice型定義（TASK-6-1） | L591 |
+| ModifierSkill（スライド逆同期機能） | L683 |
+| ChatPanel統合（TASK-7D） | L717 |
+| SkillFileManager（TASK-9A-A） | L752 |
+| テストアーキテクチャ（TASK-8C-A） | L840 |
+| 完了タスク | L892 |
+| 関連ドキュメント | L1110 |
+| SkillCreatorService（TASK-9B-G） | L1123 |
+| 完了タスク | L1371 |
 | 変更履歴 | L1402 |
 
 ### references/interfaces-agent-sdk-ui.md
@@ -1301,12 +1301,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L29 |
-| P31対策: Store Hooks無限ループ防止パターン | L159 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L519 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L609 |
-| permissionHistorySlice（権限要求履歴管理） | L765 |
-| 関連ドキュメント | L894 |
+| Zustand Sliceパターン | L28 |
+| P31対策: Store Hooks無限ループ防止パターン | L156 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L396 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L486 |
+| permissionHistorySlice（権限要求履歴管理） | L642 |
+| 関連ドキュメント | L771 |
 
 ### references/arch-ui-components.md
 
@@ -1548,9 +1548,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 目次 | L9 |
-| 成功パターン | L34 |
-| 失敗パターン（避けるべきこと） | L441 |
-| ガイドライン | L659 |
+| 成功パターン | L35 |
+| 失敗パターン（避けるべきこと） | L406 |
+| ガイドライン | L624 |
 
 ### references/plugin-development.md
 
@@ -1801,9 +1801,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L319 |
-| 関連ドキュメント | L387 |
-| 変更履歴 | L397 |
+| 残課題（未タスク） | L358 |
+| 関連ドキュメント | L427 |
+| 変更履歴 | L437 |
 
 ### references/testing-accessibility.md
 

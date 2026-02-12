@@ -5,6 +5,32 @@
 
 ---
 
+## 2026-02-12: スキル最適化（TASK-FIX-7-1事後）
+
+| 項目         | 内容                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| タスクID     | スキル最適化（TASK-FIX-7-1事後改善）                                                                         |
+| Agent        | aiworkflow-requirements                                                                                      |
+| 操作         | SKILL.md Triggerキーワード網羅性確認・変更履歴v1.16.0追加                                                     |
+| 対象ファイル | SKILL.md                                                                                                     |
+| 結果         | success                                                                                                      |
+| 備考         | Triggerキーワードは全項目カバー済み（追加不要）。task-specification-creatorのcoverage-standards.md・unassigned-task-guidelines.mdフォーマット最適化と連動 |
+
+---
+
+## 2026-02-12: TASK-FIX-7-1スキル改善（スキルクリエーター経由）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION（スキル改善）                  |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | Triggerキーワード拡充（DI関連検索性向上）                            |
+| 対象ファイル | SKILL.md                                                             |
+| 結果         | success                                                              |
+| 備考         | DIパターン, Constructor Injection, Factory Pattern, BrowserWindow遅延生成, テストモック大規模修正 を追加 |
+
+---
+
 ## 2026-02-11: TASK-FIX-7-1システム仕様書更新（Phase 12）
 
 | 項目         | 内容                                                                 |
