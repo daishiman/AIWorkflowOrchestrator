@@ -1158,14 +1158,59 @@ node scripts/complete-phase.js \
 - [ ] **【Task 2 Step 1】変更履歴セクションにバージョンを追記した**
 - [ ] **【Task 2 Step 1】aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加した**
 - [ ] **【Task 2 Step 1】task-specification-creator/LOGS.mdにタスク完了記録を追加した**
-- [ ] **【Task 2 Step 1】topic-map.mdに新規セクションエントリを追加した（該当する場合）**
+- [ ] **【Task 2 Step 1】aiworkflow-requirements/SKILL.md変更履歴テーブルを更新した** ⚠️ 漏れやすい（P29）
+- [ ] **【Task 2 Step 1】task-specification-creator/SKILL.md変更履歴テーブルを更新した** ⚠️ 漏れやすい（P29）
+- [ ] **【Task 2 Step 1-D】topic-map.mdを再生成した** ⚠️ 漏れやすい（P2, P27参照）
+  - 再生成トリガー: セクション追加/削除/更新、行数変更
+  - コマンド: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
 - [ ] **【Task 2 Step 1-C】関連タスクテーブルのステータスを「完了」に更新した（該当する場合）**
 - [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **アーキテクチャ層別のドキュメントが作成されている（該当する層のみ）**
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] artifacts.jsonが更新されている
+- [ ] **苦戦箇所セクションを記録した**（下記参照）
 - [ ] **本Phase内の全タスクを100%実行完了**
+
+## 苦戦箇所の記録【推奨】
+
+タスク実行中に苦戦した箇所があれば、以下に記録する。将来の類似タスクの参考になる。
+
+### 記録テンプレート
+
+```markdown
+## 苦戦箇所
+
+### 1. {{問題の概要}}
+
+- **症状**: {{発生した問題の具体的な症状}}
+- **原因**: {{問題の根本原因}}
+- **解決策**: {{採用した解決策}}
+- **学び**: {{将来のタスクへの教訓}}
+- **関連Pitfall**: {{該当する場合はPitfall ID（例: P31）}}
+```
+
+### 記録が特に有用なケース
+
+| ケース | 記録すべき内容 |
+| ------ | -------------- |
+| 予期しないエラー | エラーメッセージ、原因、解決策 |
+| 仕様理解の齟齬 | 誤解の内容、正しい理解、確認方法 |
+| 設計変更 | 変更前後の設計、変更理由 |
+| 時間のかかった調査 | 調査内容、発見方法、参考資料 |
+| 06-known-pitfalls.mdに追加すべき教訓 | Pitfall ID候補、パターン、対策 |
+
+📖 **参考**: `.claude/rules/06-known-pitfalls.md`、`references/patterns.md`
+
+## 漏れやすいポイント（06-known-pitfalls.md参照）
+
+| ID | ポイント | 対策 |
+| -- | -------- | ---- |
+| P1 | LOGS.md 2ファイル更新漏れ | aiworkflow-requirements + task-specification-creator 両方を同時更新 |
+| P2 | topic-map.md 再生成忘れ | セクション変更時は必ず `generate-index.js` を実行 |
+| P27 | topic-map.md 再生成トリガー判断ミス | 追加だけでなく削除・更新も再生成トリガー |
+| P29 | SKILL.md 変更履歴の更新漏れ | LOGS.md とは別に SKILL.md の変更履歴テーブルも必ず更新 |
+| P3 | 未タスク管理の3ステップ不完全 | ①指示書 → ②task-workflow.md登録 → ③関連仕様書リンク |
 
 ## フォールバック手順
 

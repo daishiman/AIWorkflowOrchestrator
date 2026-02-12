@@ -172,7 +172,8 @@ node scripts/list-specs.js --topics
 | スキル作成実装パターン（TASK-9B-G） | L869 |
 | 外部API データ正規化パターン | L993 |
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1032 |
-| 変更履歴 | L1094 |
+| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1066 |
+| 変更履歴 | L1120 |
 
 ### references/architecture-monorepo.md
 
@@ -274,7 +275,7 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L1098 |
 | SkillCreatorService（TASK-9B-G） | L1111 |
 | 完了タスク | L1359 |
-| 変更履歴 | L1390 |
+| 変更履歴 | L1402 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -294,14 +295,14 @@ node scripts/list-specs.js --topics
 | アーキテクチャ | L39 |
 | 依存関係解決 | L63 |
 | Preload API（window.agentAPI） | L88 |
-| 型定義 | L159 |
-| エラー型 | L205 |
-| IPC チャンネル | L235 |
-| 設定定数 | L249 |
-| React Hook（useAgent） | L261 |
-| セッション管理 | L286 |
-| 関連ドキュメント | L313 |
-| 変更履歴 | L327 |
+| 型定義 | L161 |
+| エラー型 | L207 |
+| IPC チャンネル | L237 |
+| 設定定数 | L251 |
+| React Hook（useAgent） | L263 |
+| セッション管理 | L288 |
+| 関連ドキュメント | L315 |
+| 変更履歴 | L329 |
 
 ### references/interfaces-auth.md
 
@@ -629,7 +630,8 @@ node scripts/list-specs.js --topics
 | 完了タスク | L202 |
 | 実装パターン参照 | L274 |
 | 関連ドキュメント | L286 |
-| 変更履歴 | L296 |
+| 完了タスク | L296 |
+| 変更履歴 | L305 |
 
 ### references/api-ipc-auth.md
 
@@ -969,8 +971,8 @@ node scripts/list-specs.js --topics
 | テスト品質サマリー | L51 |
 | 完了タスク | L65 |
 | 完了タスク | L80 |
-| 変更履歴 | L88 |
-| 関連ドキュメント | L104 |
+| 変更履歴 | L89 |
+| 関連ドキュメント | L106 |
 
 ### references/security-api.md
 
@@ -1299,11 +1301,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L26 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L151 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L241 |
-| permissionHistorySlice（権限要求履歴管理） | L397 |
-| 関連ドキュメント | L526 |
+| Zustand Sliceパターン | L29 |
+| P31対策: Store Hooks無限ループ防止パターン | L159 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L519 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L609 |
+| permissionHistorySlice（権限要求履歴管理） | L765 |
+| 関連ドキュメント | L894 |
 
 ### references/arch-ui-components.md
 
@@ -1385,15 +1388,15 @@ node scripts/list-specs.js --topics
 | データマイグレーション | L104 |
 | コードレビューガイドライン | L143 |
 | パフォーマンス最適化 | L192 |
-| 国際化（i18n） | L231 |
-| Git ワークフロー | L261 |
-| 命名規則 | L297 |
-| デバッグガイド | L345 |
-| リリースプロセス | L399 |
-| バックアップ・リカバリ | L428 |
-| 環境構築ガイド | L465 |
-| 関連ドキュメント | L508 |
-| 変更履歴 | L521 |
+| 国際化（i18n） | L258 |
+| Git ワークフロー | L288 |
+| 命名規則 | L324 |
+| デバッグガイド | L372 |
+| リリースプロセス | L426 |
+| バックアップ・リカバリ | L455 |
+| 環境構築ガイド | L492 |
+| 関連ドキュメント | L535 |
+| 変更履歴 | L548 |
 
 ### references/directory-structure.md
 
@@ -1545,9 +1548,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 目次 | L9 |
-| 成功パターン | L33 |
-| 失敗パターン（避けるべきこと） | L258 |
-| ガイドライン | L471 |
+| 成功パターン | L34 |
+| 失敗パターン（避けるべきこと） | L441 |
+| ガイドライン | L659 |
 
 ### references/plugin-development.md
 
@@ -1798,9 +1801,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L265 |
-| 関連ドキュメント | L336 |
-| 変更履歴 | L346 |
+| 残課題（未タスク） | L319 |
+| 関連ドキュメント | L387 |
+| 変更履歴 | L397 |
 
 ### references/testing-accessibility.md
 

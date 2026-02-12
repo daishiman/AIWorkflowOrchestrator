@@ -17,7 +17,7 @@
 | [DI / アーキテクチャ](#di--アーキテクチャ)      | 2件        | Setter Injection遅延初期化、型変換パターン |
 | [OAuth / 認証](#oauth--認証)                    | 4件        | Supabase PKCE、コールバック受信          |
 | [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
-| [ストア / 永続化](#ストア--永続化)              | 5件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策 |
+| [ストア / 永続化](#ストア--永続化)              | 6件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策、個別セレクタ再設計 |
 | [非同期処理](#非同期処理)                       | 1件        | race condition対策、executionId事前生成  |
 
 ### 失敗パターン
@@ -373,6 +373,74 @@ useEffect(() => {
 - **落とし穴記録**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md)
 - **状態管理設計**: [arch-state-management.md](./arch-state-management.md)
 - **後続タスク**: UT-STORE-HOOKS-REFACTOR-001（個別セレクタベース再設計）
+
+#### Zustand 個別セレクタベース再設計パターン（UT-STORE-HOOKS-REFACTOR-001 2026-02-11）
+
+##### 1. 問題の概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-STORE-HOOKS-REFACTOR-001 |
+| 発見日 | 2026-02-11 |
+| 目的 | P31（無限ループ）の根本解決 |
+| 対象 | useAuthModeStore, useLLMConfigStore, useAgentStore |
+
+##### 2. 設計方針
+
+合成Store Hookが毎回新しいオブジェクトを返す問題を、個別セレクタで解決する。
+
+```typescript
+// ❌ 従来の合成Store Hook（参照不安定）
+export const useAuthModeStore = () => ({
+  authMode: useAppStore((state) => state.authMode),
+  setAuthMode: useAppStore((state) => state.setAuthMode),
+  initializeAuthMode: useAppStore((state) => state.initializeAuthMode),
+});
+
+// ✅ 個別セレクタ（参照安定）
+export const useAuthMode = () => useAppStore((state) => state.authMode);
+export const useSetAuthMode = () => useAppStore((state) => state.setAuthMode);
+export const useInitializeAuthMode = () => useAppStore((state) => state.initializeAuthMode);
+```
+
+##### 3. 命名規則
+
+| セレクタ種別 | 命名パターン | 例 |
+|-------------|-------------|-----|
+| 状態取得 | `use{StateName}` | `useAuthMode`, `useIsExecuting` |
+| アクション取得 | `use{ActionName}` | `useSetAuthMode`, `useExecuteSkill` |
+| 派生状態取得 | `use{DerivedName}` | `useIsApiKeyMode`, `useCanExecute` |
+
+##### 4. 移行戦略
+
+| フェーズ | 作業内容 | 影響範囲 |
+|---------|---------|---------|
+| Phase 1 | 個別セレクタを追加（既存維持） | 新規Hook追加のみ |
+| Phase 2 | 既存コンポーネントを個別セレクタに移行 | 段階的リファクタリング |
+| Phase 3 | 合成Store Hookを削除 | 最終クリーンアップ |
+
+##### 5. 実装チェックリスト
+
+- [ ] Slice内の全状態に対応する個別セレクタを作成
+- [ ] Slice内の全アクションに対応する個別セレクタを作成
+- [ ] 派生状態が必要な場合は専用セレクタを作成
+- [ ] JSDocコメントで用途と戻り値型を明記
+- [ ] 既存の合成Store Hookは互換性維持のため残す（Phase 1）
+- [ ] 新規コンポーネントでは個別セレクタを使用
+
+##### 6. カバレッジ目標
+
+| 指標 | 目標 |
+|------|------|
+| Line Coverage | 80%以上 |
+| Branch Coverage | 70%以上 |
+| セレクタ数 | Slice内の状態+アクション数の100% |
+
+##### 7. 参照リンク
+
+- **完了タスク**: UT-STORE-HOOKS-REFACTOR-001
+- **P31対策**: 短期的なuseRefガードと長期的な個別セレクタ再設計の併用
+- **後続タスク**: UT-STORE-HOOKS-REFACTOR-002（JSDoc追加）、UT-STORE-HOOKS-REFACTOR-003（合成Hook移行）
 
 ### 非同期処理
 
