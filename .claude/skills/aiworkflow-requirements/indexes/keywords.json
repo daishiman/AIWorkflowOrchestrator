@@ -1,6 +1,8 @@
 {
   "generated": "2026-02-12T10:32:53.904Z",
   "totalKeywords": 1093,
+  "generated": "2026-02-12T09:26:47.628Z",
+  "totalKeywords": 1094,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -931,6 +933,7 @@
     ],
     "Zustand": [
       "arch-state-management.md",
+      "testing-component-patterns.md",
       "ui-ux-system-prompt.md"
     ],
     "Slice": [
@@ -956,7 +959,8 @@
     ],
     "Hooks": [
       "arch-state-management.md",
-      "interfaces-chat-history.md"
+      "interfaces-chat-history.md",
+      "testing-component-patterns.md"
     ],
     "無限ループ防止パターン": [
       "arch-state-management.md"
@@ -2729,6 +2733,37 @@
     "ハンドラー登録": [
       "lessons-learned.md"
     ],
+    "STORE": [
+      "lessons-learned.md"
+    ],
+    "HOOKS": [
+      "lessons-learned.md"
+    ],
+    "COMPONENT": [
+      "lessons-learned.md"
+    ],
+    "MIGRATION": [
+      "lessons-learned.md"
+    ],
+    "個別セレクタ": [
+      "lessons-learned.md"
+    ],
+    "移行": [
+      "lessons-learned.md"
+    ],
+    "TEST": [
+      "lessons-learned.md",
+      "technology-devops.md"
+    ],
+    "REFACTOR": [
+      "lessons-learned.md"
+    ],
+    "renderHook": [
+      "lessons-learned.md"
+    ],
+    "パターン移行": [
+      "lessons-learned.md"
+    ],
     "新規教訓追加用": [
       "lessons-learned.md"
     ],
@@ -3606,9 +3641,6 @@
     "OPT": [
       "technology-devops.md"
     ],
-    "TEST": [
-      "technology-devops.md"
-    ],
     "PARALLEL": [
       "technology-devops.md"
     ],
@@ -3714,6 +3746,9 @@
       "testing-component-patterns.md"
     ],
     "テストファイル分離パターン": [
+      "testing-component-patterns.md"
+    ],
+    "テストパターン": [
       "testing-component-patterns.md"
     ],
     "関連未タスク": [

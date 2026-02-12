@@ -10,7 +10,7 @@
 | ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正 | テスト環境問題の実装問題誤認                           |
+| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン | テスト環境問題の実装問題誤認                           |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
@@ -490,6 +490,50 @@
   - [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md) - IPC実装パターン（Setter Injection、型変換、テストモック等）
   - [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md) - Electron IPCセキュリティ仕様（ホワイトリスト管理、sender検証、エラーサニタイズ）
   - [api-ipc-agent.md](../../aiworkflow-requirements/references/api-ipc-agent.md) - IPC API仕様（チャンネル定義、ハンドラー登録、Preload Bridge設計）
+
+### [Testing] Store Hook テスト実装パターン（renderHook方式）（UT-STORE-HOOKS-TEST-REFACTOR-001）
+
+- **状況**: Zustand個別セレクタHookのテストで `getState()` 直接呼び出しを使用しており、Reactサブスクリプション経由の動作検証ができていない
+- **アプローチ**:
+  - 旧パターンの問題: `store.getState().field` はReactの再レンダリングサイクルを経由しないため、コンポーネントでの実際の使用経路と異なる
+  - 新パターン: `renderHook(() => useField())` でReactサブスクリプション経由のテストを実現
+  - 状態変更: `act(() => useAppStore.setState({...}))` でReactの状態更新サイクルを正しく経由
+  - 非同期アクション: `await act(async () => { ... })` でPromise解決を待機
+  - テスト間リセット: `resetStore()` → `cleanup()` → `vi.restoreAllMocks()` の3段階で完全リセット
+
+- **パターン対応表**:
+
+| 対象 | 旧パターン（非推奨） | 新パターン（推奨） |
+|---|---|---|
+| 状態取得 | `store.getState().field` | `renderHook(() => useField())` |
+| 状態変更 | `store.setState({...})` | `act(() => useAppStore.setState({...}))` |
+| アクション実行 | `store.getState().action()` | `renderHook` + `act()` |
+| 非同期アクション | `await action()` | `await act(async () => { ... })` |
+
+- **テストカテゴリ分類**（代表的な5カテゴリ）:
+
+| カテゴリ | 検証内容 | 対応するCAT |
+|----------|----------|------------|
+| 初期値検証 | セレクタが正しいデフォルト値を返すか | CAT-01 |
+| 状態変更検証 | act() + setState 後にセレクタが正しく更新されるか | CAT-02, CAT-04, CAT-08 |
+| 参照安定性 | rerender() 後もアクション関数の参照が ===  で同一か | CAT-05, CAT-10 |
+| 無限ループ防止 | useEffect依存配列にアクションを含めてもrenderCount < 10か | CAT-07, CAT-16 |
+| 再レンダー最適化 | 無関係なフィールド変更でセレクタが再レンダーされないか | CAT-06, CAT-11 |
+
+- **結果**: getState()パターン48件 → renderHookパターン114件（+export検証23件）に移行。Reactサブスクリプション経路の検証、参照安定性テスト、無限ループ検出が可能に
+- **適用条件**: Zustand Store で個別セレクタHookを使用し、React コンポーネントから利用するテストを書く場合。特に useEffect 依存配列にアクション関数を含める場合は無限ループ防止テスト（CAT-07/16）が必須。
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-STORE-HOOKS-TEST-REFACTOR-001
+- **クロスリファレンス**: [development-guidelines.md#Zustand Hook テスト戦略](../../aiworkflow-requirements/references/development-guidelines.md), [lessons-learned.md#UT-STORE-HOOKS-TEST-REFACTOR-001](../../aiworkflow-requirements/references/lessons-learned.md)
+  - [arch-state-management.md#Store Hooks テスト実装ガイド](../../aiworkflow-requirements/references/arch-state-management.md) - テストパターン6種の一覧表
+  - [testing-component-patterns.md#9. Zustand Store Hooks テストパターン](../../aiworkflow-requirements/references/testing-component-patterns.md) - コピペ可能な実装コード例
+
+- **Phase 12での苦戦箇所と解決策**:
+
+| 苦戦箇所 | 原因 | 解決策 |
+|----------|------|--------|
+| Step 2を「該当なし」と誤判定 | テストリファクタリングはインターフェース変更を伴わないため、Step 2不要と判断しがち | テストのみの変更でも、テスト戦略やテストパターンの変更は仕様書（development-guidelines.md等）に記録すべき。Step 2の判断基準に「テスト戦略変更」を含める |
+| 実装ガイドのテストカテゴリテーブル不整合 | Phase 4でテストカテゴリ（CAT-01〜CAT-05）を定義し、Phase 6で拡充したが、実装ガイドのテーブルがPhase 4時点のまま | Phase 6（テスト拡充）完了後に、implementation-guide.md Part 2のテストカテゴリテーブルを必ず再確認・更新する。テスト数やカテゴリ構成が変わった場合は即座に反映 |
 
 ---
 
