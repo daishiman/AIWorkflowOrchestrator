@@ -96,6 +96,33 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-12 - TASK-9B-I-SDK-FORMAL-INTEGRATION完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Notes**:
+  - Claude Agent SDKの型安全な正式統合
+  - SkillExecutor.ts の `as any` を除去、SDK実型（@anthropic-ai/claude-agent-sdk@0.2.30）に基づく型安全な callSDKQuery 実装
+  - apiKey → env.ANTHROPIC_API_KEY、signal → abortController、conversation直接利用の3点修正
+  - テスト278件全PASS
+  - 分類: リファクタリング（型安全性強化）
+
+---
+
+## [2026-02-12 - TASK-9B-I教訓反映（スキル改善）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善
+- **Result**: ✓ 成功
+- **Notes**:
+  - **教訓1: 未タスク配置ディレクトリの間違い** - UT-9B-I-001の指示書を親タスクの`tasks/`に配置してしまった。正しい配置先は`docs/30-workflows/unassigned-task/`。patterns.mdに失敗パターン追加、unassigned-task-guidelines.mdに注意事項追加
+  - **教訓2: テスト数の設計時固定値使用** - Phase 4の想定テスト数「18」を使い続けたが実際は「13」だった。Phase 12では`grep -c "it\\(" *.test.ts`で実測値を使用するルールを追加
+  - 更新ファイル: patterns.md、phase-11-12-guide.md、unassigned-task-guidelines.md、LOGS.md、SKILL.md
+
+---
+
+
 ## [2026-02-12 - スキル最適化（TASK-FIX-7-1事後）]
 
 - **Agent**: task-specification-creator

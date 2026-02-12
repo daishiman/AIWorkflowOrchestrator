@@ -64,6 +64,32 @@
 
 ---
 
+## 2026-02-12: TASK-9B-I-SDK-FORMAL-INTEGRATION完了（Claude Agent SDK型安全正式統合）
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-I-SDK-FORMAL-INTEGRATION                                                                  |
+| Agent        | aiworkflow-requirements                                                                           |
+| 操作         | タスク完了記録（Phase 12 Step 1-A）                                                                |
+| 対象ファイル | SkillExecutor.ts（callSDKQuery メソッド）, 関連テストファイル                                     |
+| 結果         | success                                                                                           |
+| 備考         | `as any` 除去、SDK実型（@anthropic-ai/claude-agent-sdk@0.2.30）に基づく型安全な callSDKQuery 実装  |
+
+### 変更内容
+
+| 変更箇所                           | 変更内容                                                                      |
+| ---------------------------------- | ----------------------------------------------------------------------------- |
+| `callSDKQuery`                     | apiKey → env.ANTHROPIC_API_KEY、signal → abortController、conversation直接利用 |
+| `SkillExecutor.ts`                 | `as any` 型アサーション除去、SDK実型に基づく型安全な実装                       |
+
+### テスト結果
+
+| 指標             | 値                           |
+| ---------------- | ---------------------------- |
+| テスト数         | 278件 全PASS                 |
+| 分類             | リファクタリング（型安全性強化）|
+
+---
 ## 2026-02-12: UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了
 
 | 項目         | 内容                                                                 |
@@ -84,7 +110,6 @@
 | 06-known-pitfalls.md     | -         | P31解決策に個別セレクタ実装完了を反映                        |
 
 ---
-
 ## 2026-02-12: スキル最適化（TASK-FIX-7-1事後）
 
 | 項目         | 内容                                                                                                         |

@@ -419,8 +419,14 @@ const SENSITIVE_KEY_PATTERNS = [
 
 interface SDKQueryOptions {
   tools?: string[];
-  permissionMode?: "default" | "plan" | "bypassPermissions";
-  signal?: AbortSignal;
+  permissionMode?:
+    | "default"
+    | "acceptEdits"
+    | "bypassPermissions"
+    | "plan"
+    | "delegate"
+    | "dontAsk";
+  abortController?: AbortController;
   timeout?: number;
 }
 
@@ -531,7 +537,7 @@ export class SkillExecutor {
         executionId,
         request,
         skill,
-        abortController.signal,
+        abortController,
       );
 
       // ストリーミング処理
@@ -646,15 +652,15 @@ export class SkillExecutor {
    * @param executionId - 実行ID
    * @param request - 実行リクエスト
    * @param skill - スキルメタデータ
-   * @param abortSignal - AbortSignal
+   * @param abortController - AbortController
    * @returns SDKレスポンス
    */
   private async executeWithRetry(
     executionId: string,
     request: SkillExecutionRequest,
     skill: SkillMetadata,
-    abortSignal: AbortSignal,
-  ): Promise<{ stream: () => AsyncIterable<SDKMessage> }> {
+    abortController: AbortController,
+  ): Promise<{ stream: () => AsyncIterable<unknown> }> {
     const config: RetryConfig = {
       ...DEFAULT_RETRY_CONFIG,
       ...request.retryConfig,
@@ -664,7 +670,7 @@ export class SkillExecutor {
 
     for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
       // abort チェック
-      if (abortSignal.aborted) {
+      if (abortController.signal.aborted) {
         throw new DOMException("Aborted", "AbortError");
       }
 
@@ -673,7 +679,7 @@ export class SkillExecutor {
         const response = await this.callSDKQuery(fullPrompt, {
           tools: skill.allowedTools || [...DEFAULT_TOOLS],
           permissionMode: "default",
-          signal: abortSignal,
+          abortController,
           timeout: request.timeout ?? this.defaultTimeout,
         });
         return response;
@@ -693,7 +699,7 @@ export class SkillExecutor {
         }
 
         // abort チェック
-        if (abortSignal.aborted) {
+        if (abortController.signal.aborted) {
           throw new DOMException("Aborted", "AbortError");
         }
 
@@ -722,18 +728,7 @@ export class SkillExecutor {
         });
 
         // バックオフ待機（AbortSignal対応）
-        try {
-          await sleep(delayMs, abortSignal);
-        } catch (sleepError) {
-          // sleep中にabortされた場合
-          if (
-            sleepError instanceof DOMException &&
-            sleepError.name === "AbortError"
-          ) {
-            throw sleepError;
-          }
-          throw sleepError;
-        }
+        await sleep(delayMs, abortController.signal);
       }
     }
 
@@ -744,33 +739,34 @@ export class SkillExecutor {
   /**
    * SDK query() を呼び出す
    * NOTE: 実際の実装では claude-agent-sdk を使用
-   * SDK型定義が不完全なため、anyキャストを使用
+   * 型宣言によりクエリ関数は型安全
    *
    * TASK-FIX-16-1: AuthKeyService から API キーを取得
    */
   private async callSDKQuery(
     prompt: string,
     options: SDKQueryOptions,
-  ): Promise<{ stream: () => AsyncIterable<SDKMessage> }> {
+  ): Promise<{ stream: () => AsyncIterable<unknown> }> {
     // TASK-FIX-16-1: API キーを取得
     const apiKey = await this.getApiKey();
 
-    // Dynamic import for SDK
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { query } = (await import("@anthropic-ai/claude-agent-sdk")) as any;
+    // Dynamic import for SDK（SDK実型により型安全）
+    const { query } = await import("@anthropic-ai/claude-agent-sdk");
 
+    // TASK-9B-I: SDK query() を型安全に呼び出す（as any 不要）
     const conversation = query({
       prompt,
       options: {
-        apiKey, // TASK-FIX-16-1: 認証キーを渡す
+        env: { ANTHROPIC_API_KEY: apiKey }, // TASK-FIX-16-1: 環境変数経由で認証キーを渡す
         tools: options.tools,
         permissionMode: options.permissionMode,
-        signal: options.signal,
+        abortController: options.abortController,
       },
     });
 
+    // Query は AsyncGenerator<SDKMessage, void> を extends するため直接 AsyncIterable として返却
     return {
-      stream: () => conversation.stream(),
+      stream: () => conversation,
     };
   }
 

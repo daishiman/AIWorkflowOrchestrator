@@ -25,11 +25,9 @@ const mockMainWindow = {
   isDestroyed: vi.fn().mockReturnValue(false),
 } as unknown as BrowserWindow;
 
-// SDKモック
+// SDKモック - query()はAsyncIterable（AsyncGenerator互換）を直接返す
 const mockStreamGenerator = vi.fn();
-const mockQuery = vi.fn().mockImplementation(() => ({
-  stream: () => mockStreamGenerator(),
-}));
+const mockQuery = vi.fn().mockImplementation(() => mockStreamGenerator());
 
 vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
   query: (args: unknown) => mockQuery(args),
@@ -89,9 +87,7 @@ describe("SkillExecutor - Auth Integration", () => {
     vi.clearAllMocks();
 
     // mockQueryの実装を再設定
-    mockQuery.mockImplementation(() => ({
-      stream: () => mockStreamGenerator(),
-    }));
+    mockQuery.mockImplementation(() => mockStreamGenerator());
 
     // デフォルトのストリームモック設定
     mockStreamGenerator.mockReturnValue({
@@ -136,7 +132,9 @@ describe("SkillExecutor - Auth Integration", () => {
       expect(mockQuery).toHaveBeenCalledWith(
         expect.objectContaining({
           options: expect.objectContaining({
-            apiKey: validApiKey,
+            env: expect.objectContaining({
+              ANTHROPIC_API_KEY: validApiKey,
+            }),
           }),
         }),
       );
@@ -187,10 +185,10 @@ describe("SkillExecutor - Auth Integration", () => {
       // Act
       await executorWithAuth.execute(mockRequest, mockSkill);
 
-      // Assert - query() の options に apiKey が含まれることを確認
+      // Assert - query() の options.env に ANTHROPIC_API_KEY が含まれることを確認
       const queryCallArgs = mockQuery.mock.calls[0][0];
-      expect(queryCallArgs.options).toHaveProperty("apiKey");
-      expect(queryCallArgs.options.apiKey).toBe(validApiKey);
+      expect(queryCallArgs.options).toHaveProperty("env");
+      expect(queryCallArgs.options.env.ANTHROPIC_API_KEY).toBe(validApiKey);
     });
 
     it("環境変数からフォールバックできる", async () => {
@@ -216,7 +214,9 @@ describe("SkillExecutor - Auth Integration", () => {
         expect(mockQuery).toHaveBeenCalledWith(
           expect.objectContaining({
             options: expect.objectContaining({
-              apiKey: validApiKey,
+              env: expect.objectContaining({
+                ANTHROPIC_API_KEY: validApiKey,
+              }),
             }),
           }),
         );
@@ -251,7 +251,9 @@ describe("SkillExecutor - Auth Integration", () => {
         expect(mockQuery).toHaveBeenCalledWith(
           expect.objectContaining({
             options: expect.objectContaining({
-              apiKey: validApiKey,
+              env: expect.objectContaining({
+                ANTHROPIC_API_KEY: validApiKey,
+              }),
             }),
           }),
         );
@@ -430,7 +432,9 @@ describe("SkillExecutor - Auth Integration", () => {
       expect(mockQuery).toHaveBeenCalledWith(
         expect.objectContaining({
           options: expect.objectContaining({
-            apiKey: longApiKey,
+            env: expect.objectContaining({
+              ANTHROPIC_API_KEY: longApiKey,
+            }),
           }),
         }),
       );
@@ -455,7 +459,9 @@ describe("SkillExecutor - Auth Integration", () => {
       expect(mockQuery).toHaveBeenCalledWith(
         expect.objectContaining({
           options: expect.objectContaining({
-            apiKey: specialCharKey,
+            env: expect.objectContaining({
+              ANTHROPIC_API_KEY: specialCharKey,
+            }),
           }),
         }),
       );
@@ -507,7 +513,9 @@ describe("SkillExecutor - Auth Integration", () => {
       expect(mockQuery).toHaveBeenCalledWith(
         expect.objectContaining({
           options: expect.objectContaining({
-            apiKey: unicodeKey,
+            env: expect.objectContaining({
+              ANTHROPIC_API_KEY: unicodeKey,
+            }),
           }),
         }),
       );
@@ -744,7 +752,9 @@ describe("SkillExecutor - Auth Integration", () => {
       expect(mockQuery).toHaveBeenCalledWith(
         expect.objectContaining({
           options: expect.objectContaining({
-            apiKey: validApiKey,
+            env: expect.objectContaining({
+              ANTHROPIC_API_KEY: validApiKey,
+            }),
           }),
         }),
       );
@@ -772,7 +782,7 @@ describe("SkillExecutor - Auth Integration", () => {
 
       // 全ての呼び出しで同じキーが使用される
       mockQuery.mock.calls.forEach((call) => {
-        expect(call[0].options.apiKey).toBe(validApiKey);
+        expect(call[0].options.env.ANTHROPIC_API_KEY).toBe(validApiKey);
       });
 
       // AuthKeyService.getKeyが3回呼ばれる
