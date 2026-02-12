@@ -13,13 +13,6 @@ import userEvent from "@testing-library/user-event";
 // Component to be implemented
 import { LLMSelectorPanel } from "../LLMSelectorPanel";
 
-// Store mock
-vi.mock("@/renderer/store", () => ({
-  useLLMStore: vi.fn(),
-}));
-
-import { useLLMStore } from "@/renderer/store";
-
 // Types
 import type {
   LLMProvider,
@@ -27,8 +20,14 @@ import type {
   LLMError,
 } from "@repo/shared/types/llm";
 
-// Mock data
-const mockProviders: LLMProvider[] = [
+// Mock functions
+const mockFetchProviders = vi.fn();
+const mockSelectProvider = vi.fn();
+const mockSelectModel = vi.fn();
+const mockCheckHealth = vi.fn();
+
+// Mock data for providers
+const defaultMockProviders: LLMProvider[] = [
   {
     id: "openai",
     name: "OpenAI",
@@ -48,7 +47,7 @@ const mockProviders: LLMProvider[] = [
   },
 ];
 
-const mockHealthStatus: Record<string, HealthCheckResult> = {
+const defaultMockHealthStatus: Record<string, HealthCheckResult> = {
   openai: {
     status: "connected",
     providerId: "openai",
@@ -57,39 +56,105 @@ const mockHealthStatus: Record<string, HealthCheckResult> = {
   },
 };
 
-describe("LLMSelectorPanel", () => {
-  const mockFetchProviders = vi.fn();
-  const mockSelectProvider = vi.fn();
-  const mockSelectModel = vi.fn();
-  const mockCheckHealth = vi.fn();
+// Default mock state values
+let mockProvidersValue = defaultMockProviders;
+let mockSelectedProviderIdValue: string | null = null;
+let mockSelectedModelIdValue: string | null = null;
+let mockIsLoadingValue = false;
+let mockErrorValue: LLMError | null = null;
+let mockHealthStatusValue = defaultMockHealthStatus;
 
-  const defaultStoreState = {
-    providers: mockProviders,
-    selectedProviderId: null,
-    selectedModelId: null,
-    isLoading: false,
-    error: null,
-    healthStatus: mockHealthStatus,
+// Store mock - 個別セレクタ対応（P31対策）
+vi.mock("@/renderer/store", () => ({
+  // 状態セレクタ
+  useLLMProviders: vi.fn(() => mockProvidersValue),
+  useSelectedProviderId: vi.fn(() => mockSelectedProviderIdValue),
+  useSelectedModelId: vi.fn(() => mockSelectedModelIdValue),
+  useLLMIsLoading: vi.fn(() => mockIsLoadingValue),
+  useLLMError: vi.fn(() => mockErrorValue),
+  useLLMHealthStatus: vi.fn(() => mockHealthStatusValue),
+  // アクションセレクタ
+  useFetchProviders: vi.fn(() => mockFetchProviders),
+  useSelectProvider: vi.fn(() => mockSelectProvider),
+  useSelectModel: vi.fn(() => mockSelectModel),
+  useCheckLLMHealth: vi.fn(() => mockCheckHealth),
+  // 非推奨の合成Hook（後方互換性）
+  useLLMStore: vi.fn(() => ({
+    providers: mockProvidersValue,
+    selectedProviderId: mockSelectedProviderIdValue,
+    selectedModelId: mockSelectedModelIdValue,
+    isLoading: mockIsLoadingValue,
+    error: mockErrorValue,
+    healthStatus: mockHealthStatusValue,
     fetchProviders: mockFetchProviders,
     selectProvider: mockSelectProvider,
     selectModel: mockSelectModel,
     checkHealth: mockCheckHealth,
-  };
+  })),
+}));
 
+import {
+  useLLMProviders,
+  useSelectedProviderId,
+  useLLMIsLoading,
+  useLLMError,
+  useLLMHealthStatus,
+} from "@/renderer/store";
+
+// Helper to update mock values
+const setMockValues = (overrides: {
+  providers?: LLMProvider[];
+  selectedProviderId?: string | null;
+  selectedModelId?: string | null;
+  isLoading?: boolean;
+  error?: LLMError | null;
+  healthStatus?: Record<string, HealthCheckResult>;
+}) => {
+  if (overrides.providers !== undefined)
+    mockProvidersValue = overrides.providers;
+  if (overrides.selectedProviderId !== undefined)
+    mockSelectedProviderIdValue = overrides.selectedProviderId;
+  if (overrides.selectedModelId !== undefined)
+    mockSelectedModelIdValue = overrides.selectedModelId;
+  if (overrides.isLoading !== undefined)
+    mockIsLoadingValue = overrides.isLoading;
+  if (overrides.error !== undefined) mockErrorValue = overrides.error;
+  if (overrides.healthStatus !== undefined)
+    mockHealthStatusValue = overrides.healthStatus;
+
+  // Update individual selector mocks
+  vi.mocked(useLLMProviders).mockReturnValue(mockProvidersValue);
+  vi.mocked(useSelectedProviderId).mockReturnValue(mockSelectedProviderIdValue);
+  vi.mocked(useLLMIsLoading).mockReturnValue(mockIsLoadingValue);
+  vi.mocked(useLLMError).mockReturnValue(mockErrorValue);
+  vi.mocked(useLLMHealthStatus).mockReturnValue(mockHealthStatusValue);
+};
+
+describe("LLMSelectorPanel", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
-      defaultStoreState,
+    // Reset to default values
+    mockProvidersValue = defaultMockProviders;
+    mockSelectedProviderIdValue = null;
+    mockSelectedModelIdValue = null;
+    mockIsLoadingValue = false;
+    mockErrorValue = null;
+    mockHealthStatusValue = defaultMockHealthStatus;
+
+    // Reset individual selector mocks
+    vi.mocked(useLLMProviders).mockReturnValue(mockProvidersValue);
+    vi.mocked(useSelectedProviderId).mockReturnValue(
+      mockSelectedProviderIdValue,
     );
+    vi.mocked(useLLMIsLoading).mockReturnValue(mockIsLoadingValue);
+    vi.mocked(useLLMError).mockReturnValue(mockErrorValue);
+    vi.mocked(useLLMHealthStatus).mockReturnValue(mockHealthStatusValue);
   });
 
   describe("UI-017: 統合パネルレンダリング", () => {
     it("should render all three components", () => {
       // Provider must be selected to show model combobox
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-      });
+      setMockValues({ selectedProviderId: "openai" });
 
       render(<LLMSelectorPanel />);
 
@@ -133,10 +198,7 @@ describe("LLMSelectorPanel", () => {
 
   describe("UI-019: ローディングオーバーレイ", () => {
     it("should display loading overlay when isLoading is true", () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        isLoading: true,
-      });
+      setMockValues({ isLoading: true });
 
       render(<LLMSelectorPanel />);
 
@@ -144,11 +206,7 @@ describe("LLMSelectorPanel", () => {
     });
 
     it("should disable all selectors during loading", () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-        isLoading: true,
-      });
+      setMockValues({ selectedProviderId: "openai", isLoading: true });
 
       render(<LLMSelectorPanel />);
 
@@ -170,10 +228,7 @@ describe("LLMSelectorPanel", () => {
         retryable: true,
       };
 
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        error,
-      });
+      setMockValues({ error });
 
       render(<LLMSelectorPanel />);
 
@@ -191,10 +246,7 @@ describe("LLMSelectorPanel", () => {
         retryable: true,
       };
 
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        error,
-      });
+      setMockValues({ error });
 
       render(<LLMSelectorPanel />);
 
@@ -210,10 +262,7 @@ describe("LLMSelectorPanel", () => {
         retryable: false,
       };
 
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        error,
-      });
+      setMockValues({ error });
 
       render(<LLMSelectorPanel />);
 
@@ -229,10 +278,7 @@ describe("LLMSelectorPanel", () => {
         retryable: true,
       };
 
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        error,
-      });
+      setMockValues({ error });
 
       render(<LLMSelectorPanel />);
 
@@ -246,10 +292,7 @@ describe("LLMSelectorPanel", () => {
 
   describe("Provider Selection Integration", () => {
     it("should call selectProvider when provider is selected", async () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: null,
-      });
+      setMockValues({ selectedProviderId: null });
 
       render(<LLMSelectorPanel />);
 
@@ -265,10 +308,7 @@ describe("LLMSelectorPanel", () => {
 
   describe("Model Selection Integration", () => {
     it("should disable ModelSelector when no provider selected", () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: null,
-      });
+      setMockValues({ selectedProviderId: null });
 
       render(<LLMSelectorPanel />);
 
@@ -277,10 +317,7 @@ describe("LLMSelectorPanel", () => {
     });
 
     it("should enable ModelSelector when provider is selected", () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-      });
+      setMockValues({ selectedProviderId: "openai" });
 
       render(<LLMSelectorPanel />);
 
@@ -289,10 +326,7 @@ describe("LLMSelectorPanel", () => {
     });
 
     it("should call selectModel when model is selected", async () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-      });
+      setMockValues({ selectedProviderId: "openai" });
 
       render(<LLMSelectorPanel />);
 
@@ -306,10 +340,7 @@ describe("LLMSelectorPanel", () => {
 
   describe("Health Check Integration", () => {
     it("should call checkHealth when refresh is clicked", async () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-      });
+      setMockValues({ selectedProviderId: "openai" });
 
       render(<LLMSelectorPanel />);
 
@@ -320,10 +351,7 @@ describe("LLMSelectorPanel", () => {
     });
 
     it("should display health status for selected provider", () => {
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-      });
+      setMockValues({ selectedProviderId: "openai" });
 
       render(<LLMSelectorPanel />);
 
@@ -364,10 +392,7 @@ describe("LLMSelectorPanel", () => {
 
     it("TC-LLM-007: 同じプロバイダーを再選択してもcheckHealthは再呼び出しされない", async () => {
       // 最初から openai が選択されている状態
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-      });
+      setMockValues({ selectedProviderId: "openai" });
 
       const { rerender } = render(<LLMSelectorPanel />);
 
@@ -390,10 +415,7 @@ describe("LLMSelectorPanel", () => {
 
     it("TC-LLM-008: providerIdが変わった場合のみcheckHealthが呼ばれる", async () => {
       // 最初は openai
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "openai",
-      });
+      setMockValues({ selectedProviderId: "openai" });
 
       const { rerender } = render(<LLMSelectorPanel />);
 
@@ -403,10 +425,7 @@ describe("LLMSelectorPanel", () => {
       expect(mockCheckHealth).toHaveBeenCalledTimes(1);
 
       // anthropic に変更
-      (useLLMStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
-        ...defaultStoreState,
-        selectedProviderId: "anthropic",
-      });
+      setMockValues({ selectedProviderId: "anthropic" });
 
       rerender(<LLMSelectorPanel />);
 

@@ -197,6 +197,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v1.16.0** | **2026-02-12** | **スキル改善**: UT-STORE-HOOKS-REFACTOR-001教訓反映。patterns.mdに「Zustand個別セレクタベース再設計パターン」追加（設計方針・命名規則・移行ガイド・参照安定性チェックリスト）。P31対策の長期解決策をパターン化 |
+| **v1.15.0** | **2026-02-11** | **UT-STORE-HOOKS-REFACTOR-001完了**: 個別セレクタ53個追加（AuthMode 12個, LLM 16個, Agent 25個）、181テスト全PASS、カバレッジLine 88.51%/Branch 89.79%/Function 92.53%達成。arch-state-management.md関連タスク更新、03-state-management.mdにP31参照リンク追加、未タスク2件検出（002: JSDoc追加, 003: 合成Hook移行）|
 | **v1.14.0** | **2026-02-11** | **TASK-FIX-7-1スキル改善**: Triggerキーワードに「Setter Injection, 依存性注入, 遅延初期化, setSkillExecutor, SkillExecutor委譲」を追加。検索性向上 |
 | **v1.13.0** | **2026-02-11** | **TASK-FIX-7-1システム仕様書更新**: arch-electron-services.md v1.11.0更新（SkillService API追加、SkillService統合セクション追加）、interfaces-agent-sdk-executor.md v1.4.0更新（SkillService統合セクション新設）、architecture-implementation-patterns.md v1.17.0更新（Setter Injectionパターン追加）。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
 | **v1.12.0** | **2026-02-11** | **TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了**: SkillService.executeSkill()をSkillExecutorに委譲するTDD実装。Phase 1-12全工程完了、統合テスト7件・ユニットテスト12件全PASS、未タスク0件。スキル更新（LOGS.md 2ファイル、SKILL.md 2ファイル） |
