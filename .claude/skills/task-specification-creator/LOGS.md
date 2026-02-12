@@ -43,6 +43,39 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - SkillCreatorService IPCハンドラー登録（6チャンネル: 5 invoke + 1 on）
+  - TDDサイクルでPhase 1-12を完了
+  - 85テスト全PASS、Line Coverage 98%/85%
+  - Phase 10: PASS（注記付き、MINOR 2件）
+  - 未タスク検出: 2件（IpcResult型重複、Zodスキーマ未使用）
+
+### 変更内容
+
+| 変更箇所                                              | 変更内容                              |
+| ----------------------------------------------------- | ------------------------------------- |
+| `skillCreatorHandlers.ts`                             | 5つのipcMain.handleハンドラー + 進捗通知 + unregister |
+| `skill-creator-api.ts`                                | SkillCreatorAPI interface + safeInvoke/safeOn |
+| `channels.ts`                                         | 6チャンネル定数 + ホワイトリスト登録 |
+| `preload/index.ts`                                    | skillCreatorAPI統合                   |
+| `ipc/index.ts`                                        | registerAllIpcHandlers連携            |
+
+### 成果物
+
+| 成果物                   | パス                                                                              |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| 実装ガイド               | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/implementation-guide.md`    |
+| ドキュメント更新履歴     | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート     | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/unassigned-task-detection.md` |
+
+---
+
 ## [2026-02-12 - UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了]
 
 - **Agent**: task-specification-creator

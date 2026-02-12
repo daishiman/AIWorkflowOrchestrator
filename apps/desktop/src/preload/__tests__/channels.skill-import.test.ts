@@ -292,9 +292,12 @@ describe("TASK-4-1: Edge Cases - Channel Value Validation", () => {
     expect(skillChannels.length).toBe(uniqueChannels.size);
   });
 
-  it('should have all SKILL_* channels starting with "skill:"', () => {
+  it('should have all SKILL_* channels (excluding SKILL_CREATOR_*) starting with "skill:"', () => {
     const skillChannels = Object.entries(IPC_CHANNELS)
-      .filter(([key]) => key.startsWith("SKILL_"))
+      .filter(
+        ([key]) =>
+          key.startsWith("SKILL_") && !key.startsWith("SKILL_CREATOR_"),
+      )
       .map(([, value]) => value);
     skillChannels.forEach((channel) => {
       expect(channel).toMatch(/^skill:/);
@@ -303,8 +306,9 @@ describe("TASK-4-1: Edge Cases - Channel Value Validation", () => {
 
   it("should have consistent naming between key and value", () => {
     // Example: SKILL_LIST should map to skill:list (lowercased)
-    const entries = Object.entries(IPC_CHANNELS).filter(([key]) =>
-      key.startsWith("SKILL_"),
+    // Note: SKILL_CREATOR_* channels use "skill-creator:" prefix (TASK-9B-H)
+    const entries = Object.entries(IPC_CHANNELS).filter(
+      ([key]) => key.startsWith("SKILL_") && !key.startsWith("SKILL_CREATOR_"),
     );
     entries.forEach(([_key, value]) => {
       expect(typeof value).toBe("string");

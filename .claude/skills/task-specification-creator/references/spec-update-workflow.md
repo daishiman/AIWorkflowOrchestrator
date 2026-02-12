@@ -413,13 +413,16 @@ CI/CD・ビルド・テスト並列化等のDevOps関連タスク完了時は、
 
 #### 確認すべきファイル（タスク種別による）
 
-| タスク種別                 | 確認すべきファイル                | テーブル名                   |
-| -------------------------- | --------------------------------- | ---------------------------- |
-| Skill/Agent関連            | `arch-state-management.md`        | 関連タスク                   |
-| Skill/Agent関連            | `interfaces-agent-sdk-history.md` | 未タスク候補                 |
-| IPC/Preload関連            | `security-api-electron.md`        | 関連タスク                   |
-| UI/UXコンポーネント関連    | `ui-ux-components.md`             | 関連タスク                   |
-| データベース関連           | `database-schema.md`              | 関連タスク                   |
+| タスク種別                 | 確認すべきファイル                          | テーブル名                   |
+| -------------------------- | ------------------------------------------- | ---------------------------- |
+| Skill/Agent関連            | `arch-state-management.md`                  | 関連タスク                   |
+| Skill/Agent関連            | `interfaces-agent-sdk-history.md`           | 未タスク候補                 |
+| IPC/Preload関連            | `security-api-electron.md`                  | 関連タスク                   |
+| IPC/Preload関連            | `api-ipc-agent.md`                          | チャンネル一覧・完了タスク   |
+| IPC/Preload関連            | `interfaces-agent-sdk-skill.md`             | インターフェース定義         |
+| IPC/Preload関連            | `architecture-implementation-patterns.md`   | 実装パターン                 |
+| UI/UXコンポーネント関連    | `ui-ux-components.md`                       | 関連タスク                   |
+| データベース関連           | `database-schema.md`                        | 関連タスク                   |
 
 > **Step 1-C 発見手順**: 上記テーブルだけでなく、以下のGrepで漏れを防止する:
 > ```bash
@@ -438,6 +441,23 @@ CI/CD・ビルド・テスト並列化等のDevOps関連タスク完了時は、
 ```
 
 ---
+
+### IPC機能開発時の追加更新対象（Step 2該当時）
+
+IPC チャンネルの追加・変更を伴うタスクの場合、Step 2 で以下のファイルの更新要否を確認する。
+
+| # | 更新対象ファイル                          | 更新内容                                                 | 必須/任意 |
+|---|-------------------------------------------|----------------------------------------------------------|-----------|
+| 1 | `api-ipc-agent.md`                        | 新規チャンネル一覧、型定義、完了タスク記録               | 必須      |
+| 2 | `security-electron-ipc.md`                | セキュリティ検証パターン（sender検証、ホワイトリスト）   | 必須      |
+| 3 | `architecture-overview.md`                | IPCハンドラー登録一覧（registerAllIpcHandlers）           | 必須      |
+| 4 | `interfaces-agent-sdk-skill.md`           | インターフェース定義、完了タスク記録                     | 必須      |
+| 5 | `task-workflow.md`                        | 残課題テーブル更新、完了タスクセクション追加             | 必須      |
+| 6 | `lessons-learned.md`                      | 実装教訓（新規パターン・落とし穴がある場合）             | 任意      |
+| 7 | `architecture-implementation-patterns.md` | 実装パターン（新規パターンがある場合）                   | 任意      |
+
+> **参考**: TASK-9B-H（SkillCreatorService IPC）では上記7ファイル全ての更新が必要だった。
+> IPC追加タスクでは必ずこの一覧を確認し、該当するファイルを漏れなく更新すること。
 
 ### Step 2: システム仕様更新（条件付き）
 

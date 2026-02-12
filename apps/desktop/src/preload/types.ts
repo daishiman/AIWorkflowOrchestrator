@@ -1085,6 +1085,9 @@ export interface ElectronAPI {
 
   // Skill API (TASK-6-1)
   skill: import("./skill-api").SkillAPI;
+
+  // Skill Creator API (TASK-9B-H)
+  skillCreator: import("./skill-creator-api").SkillCreatorAPI;
 }
 
 // ===== Search operations =====
@@ -1627,6 +1630,7 @@ declare global {
     systemPromptAPI: SystemPromptAPI;
     conversationAPI: import("../shared/types/conversation").ConversationAPI;
     permissionAPI: PermissionAPI;
+    skillCreatorAPI: import("./skill-creator-api").SkillCreatorAPI;
   }
 }
 

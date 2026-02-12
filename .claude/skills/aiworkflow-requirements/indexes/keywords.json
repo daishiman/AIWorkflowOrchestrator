@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-11T22:38:13.771Z",
-  "totalKeywords": 1084,
+  "generated": "2026-02-12T10:32:53.904Z",
+  "totalKeywords": 1093,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -471,6 +471,7 @@
       "interfaces-llm.md",
       "interfaces-rag-file-selection.md",
       "interfaces-system-prompt.md",
+      "lessons-learned.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
       "rag-desktop-state.md",
@@ -684,6 +685,18 @@
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
       "ui-ux-search-panel.md"
+    ],
+    "Skill": [
+      "api-ipc-agent.md",
+      "claude-code-skills-overview.md",
+      "claude-code-skills-process.md",
+      "claude-code-skills-structure.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "security-skill-ipc.md"
+    ],
+    "Creator": [
+      "api-ipc-agent.md"
     ],
     "実装パターン参照": [
       "api-ipc-agent.md"
@@ -1309,7 +1322,8 @@
       "architecture-implementation-patterns.md"
     ],
     "UT": [
-      "architecture-implementation-patterns.md"
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -1588,14 +1602,6 @@
     ],
     "見出しで構造化": [
       "claude-code-skills-agents.md"
-    ],
-    "Skill": [
-      "claude-code-skills-overview.md",
-      "claude-code-skills-process.md",
-      "claude-code-skills-structure.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "security-skill-ipc.md"
     ],
     "概念・コア原則": [
       "claude-code-skills-overview.md"
@@ -2276,7 +2282,8 @@
       "interfaces-agent-sdk-skill.md"
     ],
     "SkillCreatorService": [
-      "interfaces-agent-sdk-skill.md"
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md"
     ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
@@ -2340,6 +2347,7 @@
     ],
     "Hook": [
       "interfaces-agent-sdk.md",
+      "lessons-learned.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "useAgent": [
@@ -2698,6 +2706,27 @@
       "lessons-learned.md"
     ],
     "委譲実装": [
+      "lessons-learned.md"
+    ],
+    "STORE": [
+      "lessons-learned.md"
+    ],
+    "HOOKS": [
+      "lessons-learned.md"
+    ],
+    "COMPONENT": [
+      "lessons-learned.md"
+    ],
+    "MIGRATION": [
+      "lessons-learned.md"
+    ],
+    "個別セレクタ": [
+      "lessons-learned.md"
+    ],
+    "移行": [
+      "lessons-learned.md"
+    ],
+    "ハンドラー登録": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [
@@ -3266,6 +3295,9 @@
       "security-electron-ipc.md"
     ],
     "slideSettingsAPI": [
+      "security-electron-ipc.md"
+    ],
+    "skillCreatorAPI": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [
