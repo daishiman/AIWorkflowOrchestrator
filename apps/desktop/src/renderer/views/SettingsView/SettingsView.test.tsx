@@ -72,18 +72,25 @@ const createMockState = (overrides = {}) => ({
   ...overrides,
 });
 
-// Mock useAuthModeStore
-const createMockAuthModeStore = () => ({
+// Default mock values for AuthMode individual selectors
+const mockAuthModeValues = {
   mode: "subscription" as const,
-  status: null,
+  status: null as { isValid: boolean; message: string } | null,
   isLoading: false,
   setMode: vi.fn(),
   initializeAuthMode: vi.fn(),
-});
+};
 
 vi.mock("../../store", () => ({
   useAppStore: vi.fn((selector) => selector(createMockState())),
-  useAuthModeStore: vi.fn(() => createMockAuthModeStore()),
+  // 個別セレクタ（P31対策）
+  useAuthMode: vi.fn(() => mockAuthModeValues.mode),
+  useAuthModeStatus: vi.fn(() => mockAuthModeValues.status),
+  useAuthModeLoading: vi.fn(() => mockAuthModeValues.isLoading),
+  useSetAuthMode: vi.fn(() => mockAuthModeValues.setMode),
+  useInitializeAuthMode: vi.fn(() => mockAuthModeValues.initializeAuthMode),
+  // 非推奨の合成Hook（後方互換性のため残す）
+  useAuthModeStore: vi.fn(() => mockAuthModeValues),
 }));
 
 describe("SettingsView", () => {
@@ -242,14 +249,8 @@ describe("SettingsView", () => {
   describe("無限ループ防止（P31対策）", () => {
     it("TC-SV-001: initializeAuthModeが1回だけ呼ばれる（rerenderしても増えない）", async () => {
       const mockInitializeAuthMode = vi.fn();
-      const { useAuthModeStore } = await import("../../store");
-      vi.mocked(useAuthModeStore).mockReturnValue({
-        mode: "subscription" as const,
-        status: null,
-        isLoading: false,
-        setMode: vi.fn(),
-        initializeAuthMode: mockInitializeAuthMode,
-      });
+      const { useInitializeAuthMode } = await import("../../store");
+      vi.mocked(useInitializeAuthMode).mockReturnValue(mockInitializeAuthMode);
 
       const { rerender } = render(<SettingsView />);
 
@@ -269,27 +270,27 @@ describe("SettingsView", () => {
     it("TC-SV-002: stateの変更で再レンダリングしても初期化は再実行されない", async () => {
       const mockInitializeAuthMode = vi.fn();
       const mockSetMode = vi.fn();
-      const { useAuthModeStore } = await import("../../store");
+      const {
+        useInitializeAuthMode,
+        useAuthMode,
+        useAuthModeStatus,
+        useSetAuthMode,
+      } = await import("../../store");
 
       // 初期状態
-      vi.mocked(useAuthModeStore).mockReturnValue({
-        mode: "subscription" as const,
-        status: null,
-        isLoading: false,
-        setMode: mockSetMode,
-        initializeAuthMode: mockInitializeAuthMode,
-      });
+      vi.mocked(useAuthMode).mockReturnValue("subscription");
+      vi.mocked(useAuthModeStatus).mockReturnValue(null);
+      vi.mocked(useSetAuthMode).mockReturnValue(mockSetMode);
+      vi.mocked(useInitializeAuthMode).mockReturnValue(mockInitializeAuthMode);
 
       const { rerender } = render(<SettingsView />);
       expect(mockInitializeAuthMode).toHaveBeenCalledTimes(1);
 
       // mode が変更された状態をシミュレート
-      vi.mocked(useAuthModeStore).mockReturnValue({
-        mode: "api-key" as const,
-        status: { isValid: true, message: "APIキーが設定されています" },
-        isLoading: false,
-        setMode: mockSetMode,
-        initializeAuthMode: mockInitializeAuthMode,
+      vi.mocked(useAuthMode).mockReturnValue("api-key");
+      vi.mocked(useAuthModeStatus).mockReturnValue({
+        isValid: true,
+        message: "APIキーが設定されています",
       });
 
       rerender(<SettingsView />);

@@ -43,6 +43,33 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-12 - UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 全工程完了
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: Store Hooks コンポーネント移行（個別セレクタパターン）。LLM/Skill/AuthMode 30個の個別セレクタHook追加、3コンポーネント移行、71テスト全PASS。P31問題（Zustand Store Hooks無限ループ）の根本解決策を実装。
+
+---
+
+## [2026-02-12 - スキル最適化（TASK-FIX-7-1事後）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル最適化
+- **Result**: ✓ 成功
+- **Notes**: coverage-standards.mdテンプレート準拠化（Progressive Disclosureブロック補完、正本パス明記、変更履歴Versionカラム追加）、unassigned-task-guidelines.md 4ステップをテーブル形式に統一・ステータス更新手順テーブル修正（Markdown崩れ修正）、phase-templates.md構造確認（変更不要）。SKILL.md v9.55.0更新
+
+---
+
+## [2026-02-12 - TASK-FIX-7-1スキル改善（スキルクリエーター経由）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善
+- **Result**: ✓ 成功
+- **Notes**: Phase 12未タスク管理チェックリスト強化（指示書物理ファイル存在確認追加）、テスト数記載基準明確化（実測値のみ使用ルール追加）。phase-11-12-guide.md・phase-templates.md・coverage-standards.md・unassigned-task-guidelines.md更新
+
+---
 ## [2026-02-11 - TASK-FIX-7-1システム仕様書更新（Phase 12）]
 
 - **Agent**: aiworkflow-requirements
@@ -86,6 +113,47 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-11 - UT-STORE-HOOKS-REFACTOR-001完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - P31（Zustand Store Hooks無限ループ）の根本解決
+  - 53個の個別セレクタを追加（AuthModeSlice/LLMSlice/AgentSlice）
+  - 合成Hookに@deprecatedタグを追加
+  - SettingsView, LLMSelectorPanelを個別セレクタベースにリファクタリング
+  - 181テスト追加、全PASS
+  - 未タスク検出: 2件（軽微な改善提案のみ）
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: UT-STORE-HOOKS-REFACTOR-001
+- Phase: 1-12完了
+- 変更種別: 状態管理リファクタリング（無限ループ防止）
+
+### 成果
+
+- 変更ファイル: store/index.ts, slices/*.ts, SettingsView/index.tsx, LLMSelectorPanel.tsx
+- 変更箇所:
+  - 53個の個別セレクタ追加
+  - 合成Hook 3種に@deprecatedタグ追加
+  - 2コンポーネントを個別セレクタベースにリファクタリング
+- テスト結果: 181テスト追加、全テストPASS
+- レビュー結果: Phase 3 PASS, Phase 10 PASS（指摘0件）, Phase 11 PASS
+- 未タスク検出: 2件（JSDoc追加、他コンポーネント移行）
+
+### Phase 12 成果物
+
+| 成果物               | パス                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| 実装ガイド           | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/implementation-guide.md    |
+| ドキュメント更新履歴 | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/documentation-changelog.md |
+| 未タスクレポート     | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/unassigned-task-detection.md |
+
+---
 ## [2026-02-10 - TASK-FIX-6-1-STATE-CENTRALIZATION完了]
 
 - **Agent**: task-specification-creator

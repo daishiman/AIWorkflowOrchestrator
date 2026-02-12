@@ -12,7 +12,14 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { useSkillStore } from "../../store";
+import {
+  useAvailableSkillsMetadata,
+  useImportedSkills,
+  useSelectedSkillName,
+  useIsScanningSkills,
+  useSelectSkillByName,
+  useRescanSkills,
+} from "../../store";
 
 // ============================================
 // Types
@@ -154,14 +161,12 @@ const SkillOptionUnimported: React.FC<SkillOptionUnimportedProps> = ({
 export const SkillSelector: React.FC<SkillSelectorProps> = ({
   className = "",
 }) => {
-  const {
-    availableSkillsMetadata,
-    importedSkills,
-    selectedSkillName,
-    isScanning,
-    selectSkillByName,
-    rescanSkills,
-  } = useSkillStore();
+  const availableSkillsMetadata = useAvailableSkillsMetadata();
+  const importedSkills = useImportedSkills();
+  const selectedSkillName = useSelectedSkillName();
+  const isScanning = useIsScanningSkills();
+  const selectSkillByName = useSelectSkillByName();
+  const rescanSkills = useRescanSkills();
 
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -287,10 +292,9 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({
     [isOpen, focusedIndex, allOptions, handleSelect, handleToggle],
   );
 
-  // P31対策: rescanSkillsは参照が不安定なため依存配列から除外
   const handleRescan = useCallback(() => {
     rescanSkills();
-  }, []); // 意図的に空の依存配列（P31対策）
+  }, [rescanSkills]);
 
   // Compute base indices for each section (avoids mutable counter in render)
   const noneOptionIndex = 0;

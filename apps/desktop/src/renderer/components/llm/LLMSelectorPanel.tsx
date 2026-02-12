@@ -5,7 +5,18 @@
  */
 
 import React, { useEffect, useCallback, useRef } from "react";
-import { useLLMStore } from "@/renderer/store";
+import {
+  useLLMProviders,
+  useSelectedProviderId,
+  useSelectedModelId,
+  useLLMIsLoading,
+  useLLMError,
+  useLLMHealthStatus,
+  useFetchProviders,
+  useSelectProvider,
+  useSelectModel,
+  useCheckLLMHealth,
+} from "@/renderer/store";
 import { ProviderSelector } from "./ProviderSelector";
 import { ModelSelector } from "./ModelSelector";
 import { HealthIndicator } from "./HealthIndicator";
@@ -23,18 +34,17 @@ export const LLMSelectorPanel: React.FC<LLMSelectorPanelProps> = ({
   compact = false,
   className = "",
 }) => {
-  const {
-    providers,
-    selectedProviderId,
-    selectedModelId,
-    isLoading,
-    error,
-    healthStatus,
-    fetchProviders,
-    selectProvider,
-    selectModel,
-    checkHealth,
-  } = useLLMStore();
+  // 個別セレクタ（P31対策: 参照が安定）
+  const providers = useLLMProviders();
+  const selectedProviderId = useSelectedProviderId();
+  const selectedModelId = useSelectedModelId();
+  const isLoading = useLLMIsLoading();
+  const error = useLLMError();
+  const healthStatus = useLLMHealthStatus();
+  const fetchProviders = useFetchProviders();
+  const selectProvider = useSelectProvider();
+  const selectModel = useSelectModel();
+  const checkHealth = useCheckLLMHealth();
 
   // Get selected provider's models
   const selectedProvider = providers.find((p) => p.id === selectedProviderId);
@@ -45,16 +55,14 @@ export const LLMSelectorPanel: React.FC<LLMSelectorPanelProps> = ({
     ? healthStatus[selectedProviderId]
     : undefined;
 
-  // Fetch providers on mount (1回だけ実行 - P31対策)
-  const providersFetchedRef = useRef(false);
+  // Fetch providers on mount
+  // 個別セレクタは参照が安定するため、useRefガード不要
   useEffect(() => {
-    if (!providersFetchedRef.current) {
-      providersFetchedRef.current = true;
-      fetchProviders();
-    }
-  }, []); // 意図的に空の依存配列: fetchProvidersは1回だけ実行（P31対策）
+    fetchProviders();
+  }, [fetchProviders]);
 
-  // Check health when provider changes (P31対策: checkHealthは依存配列から除外)
+  // Check health when provider changes
+  // 個別セレクタは参照が安定するため、prevProviderIdRefのみ使用
   const prevProviderIdRef = useRef<string | null>(null);
   useEffect(() => {
     if (
@@ -64,7 +72,7 @@ export const LLMSelectorPanel: React.FC<LLMSelectorPanelProps> = ({
       prevProviderIdRef.current = selectedProviderId;
       checkHealth(selectedProviderId);
     }
-  }, [selectedProviderId]); // checkHealthは意図的に除外（P31対策）
+  }, [selectedProviderId, checkHealth]);
 
   const handleRetry = useCallback(() => {
     fetchProviders();

@@ -56,6 +56,54 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 実装ガイド | `docs/30-workflows/UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH/outputs/phase-12/implementation-guide.md` |
 | 備考       | P23パターン（API二重定義の型管理）準拠で2箇所同時更新                 |
 
+#### TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION（2026-02-11完了）
+
+| 項目       | 内容                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-7-1                                                          |
+| ステータス | **完了**                                                              |
+| テスト数   | 61（自動: ユニット51件 + 統合10件）                                   |
+| 主要変更   | SkillService.executeSkill() の SkillExecutor 委譲実装                 |
+| 変更対象   | `apps/desktop/src/main/services/skill/SkillService.ts`, `apps/desktop/src/main/ipc/skillHandlers.ts` |
+| 実装ガイド | `docs/30-workflows/TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION/outputs/phase-12/implementation-guide.md` |
+| 備考       | Setter Injection パターン採用（BrowserWindow 依存による遅延初期化）。未タスク3件（UT-FIX-7-1-001/002/003）検出 |
+
+##### TASK-FIX-7-1 実装詳細
+
+**Setter Injection による委譲アーキテクチャ**:
+
+| ステップ | 処理 | 説明 |
+|----------|------|------|
+| 1 | `new SkillService()` | Facade サービス生成（skillExecutor は未設定） |
+| 2 | `new SkillExecutor(mainWindow, authKeyService)` | 実行エンジン生成（mainWindow 依存） |
+| 3 | `skillService.setSkillExecutor(executor)` | Setter Injection で注入 |
+| 4 | `skillService.executeSkill(skill, args)` | 内部で型変換後に `skillExecutor.execute()` に委譲 |
+
+**型変換フロー**:
+
+`SkillMetadata` は `Omit<Skill, "lastModified">` として定義されている。`executeSkill()` では以下の9フィールドを明示的にコピーする（`lastModified` は実行時メタデータとして不要なため除外）。
+
+| Skill プロパティ | SkillMetadata プロパティ | 変換内容 |
+|-----------------|-------------------------|----------|
+| id | id | 一意識別子（同一） |
+| name | name | スキル名（同一） |
+| slug | slug | ディレクトリ名（同一） |
+| description | description | 説明文（同一） |
+| path | path | ファイルパス（同一） |
+| triggers | triggers | トリガーキーワード（同一） |
+| anchors | anchors | アンカー情報（同一） |
+| allowedTools | allowedTools | 許可ツール（同一） |
+| category | category | カテゴリ（同一） |
+| lastModified | _(除外)_ | 実行時不要のため変換対象外 |
+
+**関連ドキュメント**:
+
+| ドキュメント | 説明 |
+|--------------|------|
+| [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | Setter Injection パターン詳細 |
+| [interfaces-agent-sdk-executor.md](./interfaces-agent-sdk-executor.md) | SkillExecutor インターフェース仕様 |
+| [lessons-learned.md](./lessons-learned.md) | 苦戦箇所3件記録 |
+
 ---
 
 ### TASK-FIX-5-1 実装詳細
@@ -1403,6 +1451,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-12 | 1.14.1     | TASK-FIX-7-1セクション修正: テスト数を実際の値（61件）に訂正、型変換フローテーブルを実装コード（9フィールド明示コピー、lastModified除外）に準拠して修正 |
+| 2026-02-12 | 1.14.0     | TASK-FIX-7-1完了: SkillService.executeSkill() SkillExecutor 委譲実装。Setter Injection パターン、型変換フロー、未タスク3件（UT-FIX-7-1-001/002/003） |
 | 2026-02-10 | 1.13.0     | UT-FIX-5-4完了: AgentSDKAPI abort()型定義修正（`void` → `Promise<void>`）。P23パターン準拠で2箇所同時更新、24テスト追加 |
 | 2026-02-04 | 1.12.0     | TASK-FIX-1-1-TYPE-ALIGNMENT: スキル型定義統一完了記録追加（skill-execution.ts削除、6型+1定数をskill.tsに統合、BaseStreamMessage抽出） |
 | 2026-02-03 | 1.11.0     | マージ統合: TASK-9B-G + TASK-9C |

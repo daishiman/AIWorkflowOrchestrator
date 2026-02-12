@@ -1,6 +1,6 @@
 # 検索パネル UI/UX 改善タスク
 
-issue_number: 646
+issue_number: 572
 
 ## 概要
 

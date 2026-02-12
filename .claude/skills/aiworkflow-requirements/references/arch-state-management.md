@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.14.0    | 2026-02-12 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了: P31対策セクションに個別セレクタ実装完了記録追加、関連タスクステータス更新（UT-STORE-HOOKS-REFACTOR-001、UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 → 完了）。71テスト全PASS |
+| v1.13.0    | 2026-02-12 | UT-STORE-HOOKS-REFACTOR-001完了: 53個の個別セレクタ追加（AuthMode 12個, LLM 16個, Agent 25個）、合成Hook非推奨化、Phase 12課題追記 |
 | v1.12.0    | 2026-02-10 | P31対策実装詳細追加: SettingsView/SkillSelector変更箇所、実装時の4課題と解決策、開発者向けチェックリスト |
 | v1.11.0    | 2026-02-10 | P31対策セクション追加: Store Hooks無限ループ防止パターン（useRefガード、依存配列設計、個別セレクタ再設計） |
 | v1.10.0    | 2026-02-10 | TASK-UT-AUTH-MODE-UI-INTEGRATION完了: 未タスク2件追加（UT-STORE-HOOKS-REFACTOR-001, UT-FIX-APP-INITAUTH-CHECK-001）、TASK-FIX-6-1-STATE-CENTRALIZATION完了: skillSliceをagentSliceに統合、executionId事前生成によるrace condition対策 |
@@ -95,7 +97,9 @@
 | AUTH-UI-001                      | 認証UI改善                   | **完了**   |
 | TASK-AUTH-SESSION-REFRESH-001    | セッション自動リフレッシュ   | **完了**   |
 | TASK-UT-AUTH-MODE-UI-INTEGRATION | AuthMode UI統合              | **完了**   |
-| UT-STORE-HOOKS-REFACTOR-001      | Store Hooks個別セレクタ再設計 | 未実施     |
+| UT-STORE-HOOKS-REFACTOR-001      | Store Hooks個別セレクタ再設計 | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で実施） |
+| UT-STORE-HOOKS-REFACTOR-002      | 状態セレクタのJSDoc追加       | 未実施     |
+| UT-STORE-HOOKS-REFACTOR-003      | 合成Hook移行                  | 未実施     |
 | UT-FIX-APP-INITAUTH-CHECK-001    | App.tsx initializeAuth確認    | 未実施     |
 
 ### agentSlice詳細
@@ -210,7 +214,46 @@ useEffect(() => {
 | Store関数の変化で再実行        | 使用禁止                     | 無限ループの原因                       |
 | 外部から受け取ったコールバック | `[callback]`                 | useCallbackでメモ化されていれば安全    |
 
+### 個別セレクタHookパターン（推奨）
+
+> **P31対策として確立** (UT-STORE-HOOKS-COMPONENT-MIGRATION-001)
+
+合成Hook（`useLLMStore()`等）の代わりに、個別セレクタHookを使用する。
+
+**推奨パターン**:
+
+```typescript
+// ✅ 推奨: 個別セレクタ
+const providers = useLLMProviders();
+const fetchProviders = useLLMFetchProviders();
+
+useEffect(() => {
+  fetchProviders();
+}, [fetchProviders]); // 参照安定 → 安全
+
+// ❌ 非推奨: 合成Hook
+const { providers, fetchProviders } = useLLMStore();
+
+useEffect(() => {
+  fetchProviders();
+}, [fetchProviders]); // 毎回新参照 → 無限ループ
+```
+
+**個別セレクタの定義パターン**:
+
+```typescript
+// State セレクタ（値を返す）
+export const useLLMProviders = () => useAppStore((state) => state.providers);
+
+// Action セレクタ（関数を返す - 参照安定）
+export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProviders);
+```
+
+**提供済み個別セレクタ**: LLM系12個、Skill系15個、AuthMode系3個（計30個）
+
 ### 長期解決策: 個別セレクタベースの再設計
+
+> **✅ 実装完了** (2026-02-12): UT-STORE-HOOKS-COMPONENT-MIGRATION-001 にて個別セレクタパターンを実装。LLM系12個・Skill系15個・AuthMode系3個の計30個の個別セレクタHookを `store/index.ts` に追加。LLMSelectorPanel、SkillSelector、SettingsView の3コンポーネントを移行し、useRefガードを削除。71テスト全PASS。
 
 Store Hookを分解し、個別セレクタを提供することで、関数の参照安定性を確保する。
 
@@ -237,12 +280,110 @@ useEffect(() => {
 }, [initializeAuthMode]); // 安定した参照のため無限ループしない
 ```
 
+### 実装済み個別セレクタ一覧（UT-STORE-HOOKS-REFACTOR-001）
+
+53個の個別セレクタを3つのStore Hookファイルに追加。
+
+**AuthMode Store（12個）**: `apps/desktop/src/renderer/store/hooks/useAuthModeStore.ts`
+
+| カテゴリ | セレクタ名 | 戻り値型 |
+| -------- | ---------- | -------- |
+| 状態 | `useAuthMode` | `AuthMode` |
+| 状態 | `useIsAuthModeLoading` | `boolean` |
+| 状態 | `useIsAuthModeInitialized` | `boolean` |
+| アクション | `useSetAuthMode` | `(mode: AuthMode) => Promise<void>` |
+| アクション | `useInitializeAuthMode` | `() => Promise<void>` |
+| 状態 | `useIsGoogleAuthenticated` | `boolean` |
+| 状態 | `useIsGoogleLoading` | `boolean` |
+| 状態 | `useGoogleAuthError` | `string \| null` |
+| アクション | `useLoginWithGoogle` | `() => Promise<void>` |
+| アクション | `useLogoutFromGoogle` | `() => Promise<void>` |
+| アクション | `useClearGoogleAuthError` | `() => void` |
+| 非推奨 | `useAuthModeStore` | 合成オブジェクト（**非推奨**） |
+
+**LLM Store（16個）**: `apps/desktop/src/renderer/store/hooks/useLLMStore.ts`
+
+| カテゴリ | セレクタ名 | 戻り値型 |
+| -------- | ---------- | -------- |
+| 状態 | `useSelectedLLM` | `LLMProvider \| null` |
+| 状態 | `useAvailableLLMs` | `LLMProvider[]` |
+| 状態 | `useIsLLMLoading` | `boolean` |
+| 状態 | `useLLMError` | `string \| null` |
+| 状態 | `useIsLLMInitialized` | `boolean` |
+| アクション | `useSelectLLM` | `(llm: LLMProvider \| null) => void` |
+| アクション | `useSetAvailableLLMs` | `(llms: LLMProvider[]) => void` |
+| アクション | `useSetLLMLoading` | `(loading: boolean) => void` |
+| アクション | `useSetLLMError` | `(error: string \| null) => void` |
+| アクション | `useClearLLMError` | `() => void` |
+| アクション | `useInitializeLLMs` | `() => Promise<void>` |
+| アクション | `useSetLLMInitialized` | `(initialized: boolean) => void` |
+| アクション | `useRefreshLLMs` | `() => Promise<void>` |
+| 派生 | `useHasValidLLMSelection` | `boolean` |
+| 派生 | `useLLMDisplayName` | `string` |
+| 非推奨 | `useLLMStore` | 合成オブジェクト（**非推奨**） |
+
+**Agent Store（25個）**: `apps/desktop/src/renderer/store/hooks/useAgentStore.ts`
+
+| カテゴリ | セレクタ名 | 戻り値型 |
+| -------- | ---------- | -------- |
+| スキル状態 | `useSkills` | `Skill[]` |
+| スキル状態 | `useSelectedSkill` | `Skill \| null` |
+| スキル状態 | `useSkillFilter` | `string` |
+| スキル状態 | `useSkillCategory` | `string \| null` |
+| スキル状態 | `useIsLoadingSkills` | `boolean` |
+| スキル状態 | `useSkillError` | `string \| null` |
+| 実行状態 | `useIsExecuting` | `boolean` |
+| 実行状態 | `useExecutionStatus` | `AgentExecutionStatus` |
+| 実行状態 | `useCurrentExecutionId` | `string \| null` |
+| 実行状態 | `useExecutionOutput` | `string[]` |
+| 権限状態 | `usePendingPermission` | `SkillPermissionRequest \| null` |
+| スキルアクション | `useSetSkills` | `(skills: Skill[]) => void` |
+| スキルアクション | `useSelectSkill` | `(skill: Skill \| null) => void` |
+| スキルアクション | `useSetSkillFilter` | `(filter: string) => void` |
+| スキルアクション | `useSetSkillCategory` | `(category: string \| null) => void` |
+| スキルアクション | `useFetchSkills` | `() => Promise<void>` |
+| スキルアクション | `useRescanSkills` | `() => Promise<void>` |
+| スキルアクション | `useClearSkillError` | `() => void` |
+| 実行アクション | `useExecuteSkill` | `(prompt: string) => Promise<void>` |
+| 実行アクション | `useAbortExecution` | `() => void` |
+| 実行アクション | `useClearExecution` | `() => void` |
+| 権限アクション | `useRespondToPermission` | `(approved: boolean, remember?: boolean) => void` |
+| 内部ハンドラ | `useHandleStreamMessage` | `(msg: SkillStreamMessage) => void` |
+| 内部ハンドラ | `useHandleComplete` | `(executionId: string) => void` |
+| 非推奨 | `useSkillStore` | 合成オブジェクト（**非推奨**） |
+
+### 合成Hook非推奨化（@deprecated）
+
+以下の合成Hookは非推奨となりました。個別セレクタへの移行を推奨します。
+
+| 非推奨Hook | 移行先 | 理由 |
+| ---------- | ------ | ---- |
+| `useAuthModeStore()` | `useAuthMode()`, `useSetAuthMode()` 等 | 毎回新しいオブジェクトを返し無限ループの原因となる |
+| `useLLMStore()` | `useSelectedLLM()`, `useSelectLLM()` 等 | 同上 |
+| `useSkillStore()` | `useSkills()`, `useSelectSkill()` 等 | 同上 |
+
+**移行パターン**:
+
+```typescript
+// 非推奨（無限ループのリスク）
+const { authMode, setAuthMode, initializeAuthMode } = useAuthModeStore();
+
+// 推奨（安定した参照）
+const authMode = useAuthMode();
+const setAuthMode = useSetAuthMode();
+const initializeAuthMode = useInitializeAuthMode();
+```
+
 ### 関連タスク
 
 | タスクID                             | 内容                          | ステータス |
 | ------------------------------------ | ----------------------------- | ---------- |
-| UT-STORE-HOOKS-REFACTOR-001          | Store Hooks個別セレクタ再設計 | 未実施     |
-| UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | 未実施     |
+| UT-STORE-HOOKS-REFACTOR-001          | Store Hooks個別セレクタ再設計 | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で実施、2026-02-12） |
+| UT-STORE-HOOKS-REFACTOR-002          | 状態セレクタのJSDoc追加       | 未実施     |
+| UT-STORE-HOOKS-REFACTOR-003          | 合成Hook移行                  | 未実施     |
+| UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で根本対策実施、2026-02-12） |
+| task-imp-store-hooks-remaining-migration | 残コンポーネントの個別セレクタ移行 | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md)） |
+| task-ref-store-hooks-deprecate-composite | 合成Store Hookの非推奨化       | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md)） |
 
 ### 実装詳細（TASK-UT-AUTH-MODE-UI-INTEGRATION）
 
@@ -357,6 +498,30 @@ rm -rf node_modules/.cache/eslint
 ```typescript
 // eslint-disable-next-line react-hooks/exhaustive-deps -- P31対策: initializeAuthModeは1回のみ実行
 ```
+
+#### 課題5: Phase 12ドキュメント更新漏れ（UT-STORE-HOOKS-REFACTOR-001）
+
+**症状**: タスク完了後のシステム仕様書更新が不完全だった
+
+**発生した漏れ**:
+
+| 漏れ項目 | 対象ファイル | 影響 |
+| -------- | ------------ | ---- |
+| SKILL.md 2ファイル更新 | `aiworkflow-requirements/SKILL.md`, `task-specification-creator/SKILL.md` | 変更履歴の不整合 |
+| topic-map.md 再生成 | `references/topic-map.md` | インデックスの古い状態 |
+
+**根本原因**: Phase 12チェックリストの確認が不十分だった
+
+**解決策**:
+
+1. Phase 12仕様書のチェックリストを**全項目逐次確認**してから完了とする
+2. 特に以下の2点は必ず確認:
+   - LOGS.md は `aiworkflow-requirements/` と `task-specification-creator/` の **2ファイル両方**を更新
+   - 仕様書に変更があれば `node generate-index.js` で topic-map.md を**必ず再生成**
+
+**教訓**: Phase 12は漏れが最も発生しやすい Phase。チェックリストを「完了」と記載する前に全項目を確認する。
+
+> 参照: [05-task-execution.md#Phase 12 必須チェックリスト](../../../rules/05-task-execution.md#phase-12-必須チェックリスト)
 
 ### 将来の開発者向けガイダンス
 
@@ -773,3 +938,6 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 - [アーキテクチャパターン概要](./architecture-patterns.md)
 - [UIコンポーネントパターン](./arch-ui-components.md)
 - [スキル関連インターフェース](./interfaces-agent-sdk-skill.md)
+- [既知の落とし穴 P31: Store Hooks無限ループ](../../../rules/06-known-pitfalls.md#p31-zustand-store-hooks無限ループ)
+- [実装パターン総合ガイド: Zustand Slice設計原則](./architecture-implementation-patterns.md#zustand-slice設計原則)
+- [Store Hooks コンポーネント移行 実装ガイド](../../../../docs/30-workflows/completed-tasks/UT-STORE-HOOKS-COMPONENT-MIGRATION-001/outputs/phase-12/implementation-guide.md)

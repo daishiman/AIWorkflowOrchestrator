@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { AccountSection } from "../../components/organisms/AccountSection";
@@ -8,7 +8,14 @@ import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { AuthModeSelector } from "../../components/settings/AuthModeSelector";
-import { useAppStore, useAuthModeStore } from "../../store";
+import {
+  useAppStore,
+  useAuthMode,
+  useAuthModeStatus,
+  useAuthModeLoading,
+  useSetAuthMode,
+  useInitializeAuthMode,
+} from "../../store";
 
 export interface SettingsViewProps {
   className?: string;
@@ -21,23 +28,18 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
     (state) => state.setAutoSyncEnabled,
   );
 
-  // Auth mode store
-  const {
-    mode: authMode,
-    status: authModeStatus,
-    isLoading: authModeLoading,
-    setMode: setAuthMode,
-    initializeAuthMode,
-  } = useAuthModeStore();
+  // Auth mode - 個別セレクタ（P31対策: 参照が安定）
+  const authMode = useAuthMode();
+  const authModeStatus = useAuthModeStatus();
+  const authModeLoading = useAuthModeLoading();
+  const setAuthMode = useSetAuthMode();
+  const initializeAuthMode = useInitializeAuthMode();
 
-  // Initialize auth mode on mount (1回だけ実行 - P31対策)
-  const authModeInitRef = useRef(false);
+  // Initialize auth mode on mount
+  // 個別セレクタは参照が安定するため、useRefガード不要
   useEffect(() => {
-    if (!authModeInitRef.current) {
-      authModeInitRef.current = true;
-      initializeAuthMode();
-    }
-  }, []); // 意図的に空の依存配列: initializeAuthModeは1回だけ実行（P31対策）
+    initializeAuthMode();
+  }, [initializeAuthMode]);
 
   // Local state
   const [isLoading] = useState(false);
