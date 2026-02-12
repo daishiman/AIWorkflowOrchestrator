@@ -17,8 +17,11 @@
 - DO: ドメインごとに独立した Slice を作成し、Store で合成
 - DO: ミドルウェア（`devtools`, `persist`）を活用
 - DO: 個別セレクタで必要なフィールドだけ取得（再レンダー最適化）
+  → 失敗事例: [06-known-pitfalls.md#P31](./06-known-pitfalls.md)（合成Hook無限ループ）
 - DON'T: 1つの Slice に複数ドメインの状態を混在させない
 - DON'T: Store 全体を一括分割代入しない
+- DON'T: 合成Store Hook（useXxxStore()）の戻り値関数を`useEffect`依存配列に含めない
+  → 個別セレクタ（`useXxx()`）を使用する
 
 ## React Context の使い分け
 
