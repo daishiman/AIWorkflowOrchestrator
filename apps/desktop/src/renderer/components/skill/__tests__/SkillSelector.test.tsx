@@ -60,14 +60,24 @@ const defaultStoreState = {
 
 let currentStoreState = { ...defaultStoreState };
 
-// Mock the store module
+// Mock the store module with individual selectors
 vi.mock("../../../store", () => ({
-  useSkillStore: () => currentStoreState,
+  useAvailableSkillsMetadata: () => currentStoreState.availableSkillsMetadata,
+  useImportedSkills: () => currentStoreState.importedSkills,
+  useSelectedSkillName: () => currentStoreState.selectedSkillName,
+  useIsScanningSkills: () => currentStoreState.isScanning,
+  useSelectSkillByName: () => currentStoreState.selectSkillByName,
+  useRescanSkills: () => currentStoreState.rescanSkills,
 }));
 
 // Also mock path alias
 vi.mock("@/renderer/store", () => ({
-  useSkillStore: () => currentStoreState,
+  useAvailableSkillsMetadata: () => currentStoreState.availableSkillsMetadata,
+  useImportedSkills: () => currentStoreState.importedSkills,
+  useSelectedSkillName: () => currentStoreState.selectedSkillName,
+  useIsScanningSkills: () => currentStoreState.isScanning,
+  useSelectSkillByName: () => currentStoreState.selectSkillByName,
+  useRescanSkills: () => currentStoreState.rescanSkills,
 }));
 
 describe("SkillSelector", () => {

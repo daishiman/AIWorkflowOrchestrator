@@ -881,6 +881,40 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 ---
 
+## [2026-02-12 - UT-STORE-HOOKS-COMPONENT-MIGRATION-001 テンプレート準拠最適化]
+
+- **Agent**: skill-creator (update)
+- **Phase**: optimize-documentation
+- **Result**: ✓ 成功
+- **Notes**: aiworkflow-requirements/references/lessons-learned.md のファイルパス・セレクタ名を実装と整合させる修正、patterns.md P31セクションのProgressive Disclosure最適化（73行→30行に圧縮、詳細はarch-state-management.mdに委譲）。skill-creator品質基準「重複回避」原則に準拠。
+
+---
+
+## [2026-02-12 - UT-STORE-HOOKS-COMPONENT-MIGRATION-001スキル更新（第2回）]
+
+- **Agent**: skill-creator (update mode)
+- **Phase**: Phase 12 スキル改善（補完）
+- **Result**: ✓ 成功
+- **Notes**:
+  - aiworkflow-requirements/references/lessons-learned.md: UT-STORE-HOOKS-COMPONENT-MIGRATION-001教訓追加（個別セレクタ参照安定性、Phase 12チェックリスト管理の2苦戦箇所、コード例付き）、変更履歴v1.2.0、目次更新
+  - task-specification-creator/SKILL.md: Phase 12セクションに「苦戦防止Tips」テーブル追加（事前チェックリスト作成、spec-update-workflow.md参照、4ファイル更新、topic-map.md再生成トリガー）
+  - skill-creator/LOGS.md: 改善記録補完
+
+---
+
+## [2026-02-12 - UT-STORE-HOOKS-COMPONENT-MIGRATION-001スキル更新]
+
+- **Agent**: skill-creator (update mode)
+- **Phase**: Phase 12 スキル改善
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - aiworkflow-requirements: Triggerキーワード追加（個別セレクタ、コンポーネント移行、useEffect依存配列、再レンダー最適化）、patterns.md成功パターン1件＋失敗パターン1件追加
+  - task-specification-creator: patterns.md Phase 12全Step逐次実行パターン追加
+  - arch-state-management.md: 個別セレクタHookパターン推奨セクション追加、変更履歴追加
+
+---
+
 ## [2026-02-10T07:18:55.442Z]
 
 - **Agent**: unknown

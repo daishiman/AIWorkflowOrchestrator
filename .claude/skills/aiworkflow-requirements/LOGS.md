@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-02-12: UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-STORE-HOOKS-COMPONENT-MIGRATION-001                               |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | システム仕様書更新（Phase 12）                                       |
+| 対象ファイル | arch-state-management.md, task-workflow.md, 06-known-pitfalls.md     |
+| 結果         | success                                                              |
+| 備考         | P31対策の個別セレクタパターン実装完了記録、関連タスクステータス更新   |
+
+### 更新した仕様書
+
+| 仕様書                  | バージョン | 変更内容                                                     |
+| ----------------------- | ---------- | ------------------------------------------------------------ |
+| arch-state-management.md | -         | P31対策セクションに「実装完了」ステータス追加、関連タスク更新 |
+| task-workflow.md         | -         | 完了タスクセクション追加、残課題テーブル更新                  |
+| 06-known-pitfalls.md     | -         | P31解決策に個別セレクタ実装完了を反映                        |
+
+---
+
 ## 2026-02-12: スキル最適化（TASK-FIX-7-1事後）
 
 | 項目         | 内容                                                                                                         |
@@ -30,7 +51,6 @@
 | 備考         | DIパターン, Constructor Injection, Factory Pattern, BrowserWindow遅延生成, テストモック大規模修正 を追加 |
 
 ---
-
 ## 2026-02-11: TASK-FIX-7-1システム仕様書更新（Phase 12）
 
 | 項目         | 内容                                                                 |
