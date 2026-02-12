@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.15.0    | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001完了: Store Hooksテスト実装ガイドセクション追加（renderHookパターン6種、テスト環境要件、実績テーブル） |
 | v1.14.0    | 2026-02-12 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了: P31対策セクションに個別セレクタ実装完了記録追加、関連タスクステータス更新（UT-STORE-HOOKS-REFACTOR-001、UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 → 完了）。71テスト全PASS |
 | v1.13.0    | 2026-02-12 | UT-STORE-HOOKS-REFACTOR-001完了: 53個の個別セレクタ追加（AuthMode 12個, LLM 16個, Agent 25個）、合成Hook非推奨化、Phase 12課題追記 |
 | v1.12.0    | 2026-02-10 | P31対策実装詳細追加: SettingsView/SkillSelector変更箇所、実装時の4課題と解決策、開発者向けチェックリスト |
@@ -382,6 +383,7 @@ const initializeAuthMode = useInitializeAuthMode();
 | UT-STORE-HOOKS-REFACTOR-002          | 状態セレクタのJSDoc追加       | 未実施     |
 | UT-STORE-HOOKS-REFACTOR-003          | 合成Hook移行                  | 未実施     |
 | UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で根本対策実施、2026-02-12） |
+| UT-STORE-HOOKS-TEST-REFACTOR-001         | Store HooksテストのrenderHookパターン移行 | **完了**（agentSlice 114テスト移行、2026-02-12） |
 | task-imp-store-hooks-remaining-migration | 残コンポーネントの個別セレクタ移行 | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md)） |
 | task-ref-store-hooks-deprecate-composite | 合成Store Hookの非推奨化       | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md)） |
 
@@ -522,6 +524,44 @@ rm -rf node_modules/.cache/eslint
 **教訓**: Phase 12は漏れが最も発生しやすい Phase。チェックリストを「完了」と記載する前に全項目を確認する。
 
 > 参照: [05-task-execution.md#Phase 12 必須チェックリスト](../../../rules/05-task-execution.md#phase-12-必須チェックリスト)
+
+### Store Hooks テスト実装ガイド
+
+> **UT-STORE-HOOKS-TEST-REFACTOR-001 で確立**（2026-02-12）
+
+個別セレクタHookのテストは `@testing-library/react` の `renderHook` パターンを使用する。
+
+#### テストパターン一覧
+
+| テスト対象 | パターン | 検証例 |
+|---|---|---|
+| 状態セレクタ初期値 | `renderHook(() => useField())` | `expect(result.current).toEqual([])` |
+| 状態変更検証 | `act(() => useAppStore.setState({...}))` | setState後のresult.current検証 |
+| アクション実行 | `await act(async () => { ... })` | 非同期アクションのact()ラップ |
+| 関数参照安定性 | `rerender()` 後の `toBe()` | Zustandアクション参照不変性の確認 |
+| 無限ループ防止 | `useEffect + useRef + renderHook` | P31対策テスト（レンダー回数5未満を検証） |
+| 再レンダー最適化 | 無関係setState後の値不変確認 | 個別セレクタの分離検証（`toBe()` で参照同一性確認） |
+
+#### テスト環境要件
+
+| 要件 | 設定値 |
+|---|---|
+| テスト環境 | `@vitest-environment happy-dom` |
+| localStorage | ポリフィル設定必須 |
+| electronAPI | `window.electronAPI` 完全モック（authMode + llm + skill セクション） |
+| ストア | `useAppStore` 統合ストア使用 |
+| beforeEach | `vi.clearAllMocks()` + electronAPI設定 + `resetStore()` |
+| afterEach | `cleanup()` + `vi.restoreAllMocks()` |
+
+#### テスト実績
+
+| テストファイル | テスト数 | パターン | 関連タスク |
+|---|---|---|---|
+| `authModeSlice.selectors.test.ts` | 70+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
+| `llmSlice.selectors.test.ts` | 60+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
+| `agentSlice.selectors.test.ts` | 114 | renderHook | UT-STORE-HOOKS-TEST-REFACTOR-001（移行完了） |
+
+**関連タスク**: UT-STORE-HOOKS-TEST-REFACTOR-001（agentSliceテスト移行）, UT-STORE-HOOKS-REFACTOR-001（個別セレクタ設計）
 
 ### 将来の開発者向けガイダンス
 

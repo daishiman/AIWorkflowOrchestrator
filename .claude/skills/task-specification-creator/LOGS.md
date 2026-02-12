@@ -76,6 +76,16 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-12 - Store HooksテストrenderHookパターン移行（UT-STORE-HOOKS-TEST-REFACTOR-001）タスク完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 全工程完了
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: Store HooksテストをrenderHookパターンに移行。agentSlice.selectors.test.tsのgetState()→renderHookパターン完全移行。テスト拡充（71→114テスト、+43テスト）。ヘルパー関数導入（assertNoInfiniteLoop, assertNoUnrelatedRerender, assertStableReference）。全Sliceテスト統一パターン確認。114テスト全件PASS。
+
+---
+
 ## [2026-02-12 - UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了]
 
 - **Agent**: task-specification-creator

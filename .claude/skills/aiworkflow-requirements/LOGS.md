@@ -47,6 +47,23 @@
 
 ---
 
+## 2026-02-12: Store HooksテストrenderHookパターン移行（UT-STORE-HOOKS-TEST-REFACTOR-001）
+
+| 項目         | 内容                     |
+| ------------ | ------------------------ |
+| タスクID     | UT-STORE-HOOKS-TEST-REFACTOR-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec              |
+| 対象ファイル | arch-state-management.md |
+| 結果         | success                  |
+| 備考         | agentSlice.selectors.test.tsをgetState()→renderHookパターンに移行、114テスト全PASS |
+
+### 更新詳細
+
+- **更新**: `references/arch-state-management.md`（完了タスクセクション追加）
+
+---
+
 ## 2026-02-12: UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了
 
 | 項目         | 内容                                                                 |

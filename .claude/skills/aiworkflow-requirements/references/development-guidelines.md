@@ -233,7 +233,40 @@
 | 2      | 既存コードは`useRef`でガードし、依存配列を空にする           |
 | 3      | 初期化処理はコンポーネント外またはStoreの初期化時に移動      |
 
-📖 詳細: `.claude/rules/06-known-pitfalls.md#P31`
+詳細: `.claude/rules/06-known-pitfalls.md#P31`
+
+### Zustand Hook テスト戦略（renderHook パターン）
+
+個別セレクタHookのテストでは `renderHook` パターンを使用する。`getState()` 直接呼び出しはReactサブスクリプションを経由しないため、テスト対象として不適切。
+
+**テスト環境の前提条件**: テストファイル先頭に `@vitest-environment happy-dom` ディレクティブが必要。また `localStorage` は happy-dom に含まれないため `Object.defineProperty` によるポリフィルが必要。
+
+| 対象 | 旧パターン（非推奨） | 新パターン（推奨） |
+| --- | --- | --- |
+| 状態取得 | `store.getState().field` | `renderHook(() => useField())` |
+| 状態変更 | `store.setState({...})` | `act(() => useAppStore.setState({...}))` |
+| アクション実行 | `store.getState().action()` | `renderHook` + `act()` |
+| 非同期アクション | `await action()` | `await act(async () => { ... })` |
+
+**テスト間の状態リセット手順**:
+
+| 順序 | 処理 | 目的 |
+| --- | --- | --- |
+| 1 | `resetStore()` | Zustand Storeを初期状態に復元 |
+| 2 | `cleanup()` | renderHookで生成されたReactツリーを破棄 |
+| 3 | `vi.restoreAllMocks()` | モック関数をオリジナルに復元 |
+
+**renderHookパターンの利点**:
+
+| 利点 | 説明 |
+| --- | --- |
+| Reactサブスクリプション検証 | コンポーネントが実際に使用する経路でテスト可能 |
+| 参照安定性テスト | `result.current` が同一参照を返すことを検証可能 |
+| 無限ループ検出 | `renderCount` カウンターで不要な再レンダリングを検出可能 |
+
+**テスト実績**（2026-02-12現在）: agentSlice 114テスト、authModeSlice 70+テスト、llmSlice 60+テスト、全PASS。
+
+参照: [testing-component-patterns.md#9-zustand-store-hooks-テストパターン](./testing-component-patterns.md#9-zustand-store-hooks-テストパターン)、[arch-state-management.md#store-hooks-テスト実装ガイド](./arch-state-management.md#store-hooks-テスト実装ガイド)
 
 ### バンドル最適化
 
@@ -549,6 +582,7 @@
 
 | Version | Date       | Changes                                                                                   |
 | ------- | ---------- | ----------------------------------------------------------------------------------------- |
+| 1.6.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Hook テスト戦略（renderHookパターン）セクション追加 |
 | 1.5.0   | 2026-02-12 | UT-STORE-HOOKS-REFACTOR-001: Zustand Store Hooks無限ループ防止（P31対策）セクション追加  |
 | 1.4.0   | 2026-02-03 | TASK-9A-A: Vitestテスト固有の問題と解決策セクション追加（ESModuleモッキング回避パターン） |
 | 1.3.0   | 2026-02-02 | E2Eテスト仕様（quality-e2e-testing.md）への参照リンク追加                                 |
