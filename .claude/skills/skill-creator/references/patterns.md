@@ -15,6 +15,7 @@
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング                                                                                               | -                                                      |
+| 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合                                                                                                                                           | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
 | 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
 
 ## 成功パターン
@@ -535,6 +536,18 @@
 | Step 2を「該当なし」と誤判定 | テストリファクタリングはインターフェース変更を伴わないため、Step 2不要と判断しがち | テストのみの変更でも、テスト戦略やテストパターンの変更は仕様書（development-guidelines.md等）に記録すべき。Step 2の判断基準に「テスト戦略変更」を含める |
 | 実装ガイドのテストカテゴリテーブル不整合 | Phase 4でテストカテゴリ（CAT-01〜CAT-05）を定義し、Phase 6で拡充したが、実装ガイドのテーブルがPhase 4時点のまま | Phase 6（テスト拡充）完了後に、implementation-guide.md Part 2のテストカテゴリテーブルを必ず再確認・更新する。テスト数やカテゴリ構成が変わった場合は即座に反映 |
 
+### [SDK] TypeScript モジュール解決による型安全統合（TASK-9B-I）
+
+- **状況**: 外部 SDK (`@anthropic-ai/claude-agent-sdk@0.2.30`) の `as any` を除去し型安全な統合を実現
+- **アプローチ**:
+  - SDK の型定義ファイル (`dist/index.d.ts`) を直接参照して正確なパラメータ構造を把握
+  - `SDKQueryOptions` 内部型を定義し、SDK `Options` 型への変換を型安全に実装
+  - `@ts-expect-error` を使った compile-time テストで不正な型の検証
+- **結果**: `as any` 完全除去、13テスト追加、278既存テスト全PASS
+- **適用条件**: 外部 SDK の型安全な統合、`as any` 除去タスク
+- **発見日**: 2026-02-12
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+- **クロスリファレンス**: [02-code-quality.md#TypeScript型安全](../../.claude/rules/02-code-quality.md)
 ---
 
 ## 失敗パターン（避けるべきこと）
@@ -605,6 +618,26 @@
 - **対策**: スクリプト作成前に `package.json` の `"type"` フィールドをチェック
 - **発見日**: 2026-01-23
 - **関連タスク**: SHARED-TYPE-EXPORT-03
+
+### [SDK] カスタム declare module と SDK 実型の共存（TASK-9B-I）
+
+- **状況**: SDK 未インストール時にカスタム `declare module` を作成し、SDK インストール後もファイルが残留
+- **問題**: TypeScript は `node_modules` の実型を優先し、カスタム `.d.ts` は無視されるが、仕様書にカスタム型の値が残って型不整合が発生
+- **原因**: SDK インストール前後で型定義ファイルの優先順位が変わることの認識不足
+- **教訓**: SDK インストール後はカスタム `.d.ts` を削除する。TypeScript のモジュール解決優先順位（`node_modules` > カスタム `.d.ts`）を文書化しておく
+- **対策**: SDK バージョンアップ時にカスタム型定義ファイルの棚卸しを実施
+- **発見日**: 2026-02-12
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION, UT-9B-I-001
+
+### [Phase12] 未タスク配置ディレクトリの混同（TASK-9B-I）
+
+- **状況**: 未タスク (UT-9B-I-001) の指示書を親タスクの `tasks/` ディレクトリに誤配置
+- **問題**: `docs/30-workflows/unassigned-task/` ではなく `docs/30-workflows/skill-import-agent-system/tasks/` に配置してしまった
+- **原因**: 未タスク指示書の配置先ルールの確認不足。親タスクディレクトリと未タスクディレクトリの混同
+- **教訓**: 未タスクは必ず `docs/30-workflows/unassigned-task/` に配置する。配置後に `ls` で物理ファイルの存在を検証する
+- **対策**: 未タスク作成時に配置ディレクトリを明示的に確認するチェックリスト項目を追加
+- **発見日**: 2026-02-12
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
 
 ---
 

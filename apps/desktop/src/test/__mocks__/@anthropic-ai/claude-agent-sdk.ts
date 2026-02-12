@@ -38,3 +38,22 @@ export default class ClaudeSDK {
 
   abort(): void {}
 }
+
+// === 追加: query() 名前付きエクスポート (TASK-9B-I-SDK-FORMAL-INTEGRATION) ===
+// SkillExecutor が使用する query() 関数 API のモック
+// query() は AsyncIterable（AsyncGenerator互換）を直接返す
+
+export function query(_args: {
+  prompt: string;
+  options?: Record<string, unknown>;
+}): AsyncIterable<unknown> {
+  return {
+    [Symbol.asyncIterator]() {
+      return {
+        async next() {
+          return { done: true, value: undefined };
+        },
+      };
+    },
+  };
+}

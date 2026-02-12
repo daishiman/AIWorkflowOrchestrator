@@ -546,6 +546,75 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 ## 完了タスク
 
+### タスク: SDK型安全統合 - as any除去（2026-02-12完了）
+
+| 項目         | 内容                                                       |
+| ------------ | ---------------------------------------------------------- |
+| タスクID     | TASK-9B-I-SDK-FORMAL-INTEGRATION                           |
+| 完了日       | 2026-02-12                                                 |
+| ステータス   | **完了**                                                   |
+| テスト数     | 13（SDK型安全テスト）+ 既存278件全PASS                     |
+| 発見課題     | 1件（UT-9B-I-001）                                        |
+| ドキュメント | `docs/30-workflows/completed-tasks/sdk-formal-integration/`                |
+
+#### 変更内容
+
+| 変更項目                       | 変更前                                              | 変更後                                                         |
+| ------------------------------ | --------------------------------------------------- | -------------------------------------------------------------- |
+| SDK import                     | `(await import(...)) as any`                        | 型安全な `import` + 実型参照                                   |
+| SDK Options: apiKey             | `apiKey: string`                                    | `env: { ANTHROPIC_API_KEY: string }`                           |
+| SDK Options: signal             | `signal: AbortSignal`                               | `abortController: AbortController`                             |
+| SDK Query 戻り値               | `conversation.stream()` で AsyncIterable 取得       | `conversation` を直接 AsyncIterable として利用                  |
+| SDKQueryOptions: permissionMode | ローカル定義                                        | SDK 実型（`@anthropic-ai/claude-agent-sdk`）に準拠             |
+
+#### callSDKQuery 型安全化仕様
+
+`SkillExecutor.callSDKQuery()` は以下の型安全なマッピングで SDK を呼び出す。
+
+| SDK Options パラメータ     | マッピング元                            | 説明                                      |
+| ------------------------- | --------------------------------------- | ----------------------------------------- |
+| `prompt`                  | `callSDKQuery` の第1引数（独立パラメータ） | 実行プロンプト                            |
+| `env.ANTHROPIC_API_KEY`   | `getApiKey()` 経由で取得（独立パラメータ） | 環境変数形式でAPI Keyを渡す               |
+| `abortController`         | `new AbortController()`                | AbortController インスタンスを直接渡す    |
+| `options.permissionMode`  | SDK 実型の PermissionMode              | 型安全な権限モード指定                    |
+| `tools`                   | `SDKQueryOptions.tools`                | ツール一覧（Read, Edit, Bash, Glob, Grep）|
+
+#### テスト結果サマリー
+
+| カテゴリ                          | テスト数 | PASS | FAIL |
+| --------------------------------- | -------- | ---- | ---- |
+| SDK Options マッピング            | 6        | 6    | 0    |
+| AbortController 統合              | 4        | 4    | 0    |
+| permissionMode 型検証             | 4        | 4    | 0    |
+| AsyncIterable 戻り値処理          | 4        | 4    | 0    |
+
+#### 成果物
+
+| 成果物                    | パス                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------ |
+| SkillExecutor.ts修正      | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                                    |
+| SDK型安全テスト           | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`           |
+
+#### 実装上の課題と教訓
+
+| 課題 | 詳細 | 解決策 |
+|------|------|--------|
+| TypeScript モジュール解決 | `node_modules` 実型がカスタム `declare module` を上書きし、カスタム `.d.ts` の `PermissionMode`（`auto`/`ask`/`deny`）が無視されゴースト型化 | SDK インストール後はカスタム `.d.ts` を削除する（UT-9B-I-001 で対応予定） |
+| SDK パラメータ発見 | `env: { ANTHROPIC_API_KEY }`, `abortController` が公式ドキュメントに明記されておらず発見に時間を要した | 型定義ファイル（`node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts`）を直接参照して全パラメータを把握 |
+| PermissionMode 値の不一致 | カスタム型（`auto`/`ask`/`deny`）vs SDK 実型（`default`/`acceptEdits`/`bypassPermissions`/`plan`/`delegate`/`dontAsk`）で値セットが完全に異なる | SDK 実型に統一し、仕様書の PermissionMode 定義を全更新 |
+| テスト数乖離 | Phase 4（テスト設計）想定 18 件 vs Phase 5（実装）実績 13 件。設計時に想定していた重複テストケースを実装時に統合 | Phase 12 で `grep -c "it(" *.test.ts` により実測値で仕様書を修正 |
+| 未タスク配置ディレクトリ間違い（P3再発） | UT-9B-I-001 の指示書を `tasks/` 直下に配置したが、正しくは `tasks/unassigned-task/` 配下 | P3 チェックリスト（①指示書 → ②残課題テーブル → ③関連仕様書リンク）を再確認して修正 |
+
+**参照**: [architecture-implementation-patterns.md#S11](./architecture-implementation-patterns.md)（TypeScript モジュール解決）、[architecture-implementation-patterns.md#S12](./architecture-implementation-patterns.md)（SDK API パラメータの把握）
+
+#### 関連未タスク
+
+| タスクID     | タスク名                                       | 優先度 | 指示書                                                                                           |
+| ------------ | ---------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| UT-9B-I-001  | カスタム型宣言ファイルと SDK 実型の共存整理     | 低     | `docs/30-workflows/completed-tasks/sdk-formal-integration/outputs/phase-12/ut-9b-i-001-custom-declare-module-cleanup.md` |
+
+---
+
 ### タスク: SkillExecutor リトライ機構実装（2026-01-31完了）
 
 | 項目         | 内容                                                       |
@@ -632,6 +701,8 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-02-12 | 1.6.1      | TASK-9B-I-SDK-FORMAL-INTEGRATION: 完了タスクセクションに「実装上の課題と教訓」サブセクション追加（TypeScriptモジュール解決、SDKパラメータ発見、PermissionMode不一致、テスト数乖離、P3再発） |
+| 2026-02-12 | 1.6.0      | TASK-9B-I-SDK-FORMAL-INTEGRATION: callSDKQuery型安全化仕様追加、SDK Optionsマッピング（env.ANTHROPIC_API_KEY, abortController）、完了タスク追加 |
 | 2026-02-11 | 1.5.0      | TASK-FIX-7-1: SkillService統合セクション追加、型変換パターン（Skill→SkillMetadata）追加 |
 | 2026-02-08 | 1.4.0      | TASK-FIX-16-1: AuthKeyService統合（AUTHENTICATION_ERROR追加、DI対応、キー取得フロー追加） |
 | 2026-02-02 | 1.3.0      | TASK-8A: SkillExecutor/PermissionResolver単体テスト95テスト全PASS、完了タスク追加 |

@@ -56,14 +56,14 @@ const mockStreamMessages = [
   { type: "text", content: "Completed successfully!" },
 ];
 
+// query()はAsyncIterable（AsyncGenerator互換）を直接返す
+// callSDKQuery内部で { stream: () => conversation } にラップされる
 const createMockSDKStream = (messages: unknown[]) => {
-  return {
-    stream: async function* () {
-      for (const msg of messages) {
-        yield msg;
-      }
-    },
-  };
+  return (async function* () {
+    for (const msg of messages) {
+      yield msg;
+    }
+  })();
 };
 
 // SDK query モック

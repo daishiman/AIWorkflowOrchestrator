@@ -23,11 +23,10 @@ const mockMainWindow = {
   isDestroyed: vi.fn().mockReturnValue(false),
 } as unknown as BrowserWindow;
 
-// SDKモック - query()はstream()メソッドを持つオブジェクトを返す
+// SDKモック - query()はAsyncIterable（AsyncGenerator互換）を直接返す
+// callSDKQuery内部で { stream: () => conversation } にラップされる
 const mockStreamGenerator = vi.fn();
-const mockQuery = vi.fn().mockImplementation(() => ({
-  stream: () => mockStreamGenerator(),
-}));
+const mockQuery = vi.fn().mockImplementation(() => mockStreamGenerator());
 
 vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
   query: (args: unknown) => mockQuery(args),
@@ -93,9 +92,7 @@ describe("SkillExecutor", () => {
     process.env.ANTHROPIC_API_KEY = "sk-ant-api03-test-key-for-unit-tests";
 
     // mockQueryの実装を再設定
-    mockQuery.mockImplementation(() => ({
-      stream: () => mockStreamGenerator(),
-    }));
+    mockQuery.mockImplementation(() => mockStreamGenerator());
 
     // デフォルトのストリームモック設定
     mockStreamGenerator.mockReturnValue({

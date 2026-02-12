@@ -188,6 +188,42 @@
 
 ---
 
+### タスク: TASK-9B-I-SDK-FORMAL-INTEGRATION Claude Agent SDK型安全統合（2026-02-12完了）
+
+| 項目       | 内容                                                    |
+| ---------- | ------------------------------------------------------- |
+| タスクID   | TASK-9B-I-SDK-FORMAL-INTEGRATION                       |
+| 完了日     | 2026-02-12                                              |
+| ステータス | **完了**                                                |
+| Phase      | Phase 1-12完了                                          |
+| テスト数   | 13（SDK型安全テスト新規）+ 既存278件全PASS             |
+| 未タスク   | 1件（UT-9B-I-001）                                     |
+
+#### 成果物
+
+| 成果物                           | パス/内容                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------- |
+| SkillExecutor.ts修正             | `apps/desktop/src/main/services/skill/SkillExecutor.ts`（`as any`除去、SDK実型統合）        |
+| SDK型安全テスト                  | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`（13テスト）|
+| ドキュメント                     | `docs/30-workflows/completed-tasks/sdk-formal-integration/`                                                 |
+
+#### 変更理由
+
+- `callSDKQuery()` の `as any` を完全除去し、Claude Agent SDK（@anthropic-ai/claude-agent-sdk@0.2.30）の実型に基づく型安全な統合を実現
+- SDK Options: `apiKey` を `env: { ANTHROPIC_API_KEY }` に変更（SDK 実型準拠）
+- SDK Options: `signal: AbortSignal` を `abortController: AbortController` に変更（SDK 実型準拠）
+- SDK Query 戻り値: `conversation.stream()` から `conversation` 直接 AsyncIterable 利用に変更
+- SDKQueryOptions ローカル型の permissionMode を SDK 実型に合わせて更新
+
+#### 関連仕様書更新
+
+| 仕様書 | 更新内容 |
+| ------ | -------- |
+| interfaces-agent-sdk-executor.md | callSDKQuery型安全化仕様追加、SDK Optionsマッピング、完了タスク追加 |
+| interfaces-agent-sdk.md | SDK型安全統合セクション追加、SDKQueryOptions変更記録 |
+| task-workflow.md | 完了タスク追加、残課題テーブルからTASK-9B-I完了マーク |
+
+---
 ### タスク: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION executeSkillのSkillExecutor委譲実装（2026-02-11完了）
 
 | 項目       | 内容                                                    |
@@ -442,7 +478,7 @@
 | task-e2e-test-readme-documentation-001     | READMEへのE2Eテスト実行方法追加                       | 低     | TASK-8C-D Phase 9（DOC-M1指摘）                                | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md`                  |
 | ~~TASK-9B-H~~                              | ~~SkillCreatorService IPC通信設定~~                   | ~~高~~ | **2026-02-12完了** TASK-9B-H-SKILL-CREATOR-IPC                 | `docs/30-workflows/skill-creator-ipc/`                                                     |
 | UI-INTEGRATION-9B                          | SkillCreator UI統合（TASK-10A連携）                   | 高     | TASK-9B-G Phase 12（UI未実装）                                 | `docs/30-workflows/unassigned-task/task-9b-ui-integration-task10a.md`                      |
-| TASK-9B-I                                  | Claude Agent SDK本格統合                              | 中     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md`             |
+| ~~TASK-9B-I~~                              | ~~Claude Agent SDK本格統合~~                          | ~~中~~ | ~~TASK-9B-G Phase 3（推奨事項）~~                              | ~~`docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md`~~ **2026-02-12完了** |
 | TASK-9B-J                                  | ResourceLoaderキャッシュ無効化                        | 低     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-j-skill-creator-cache-invalidation.md`          |
 | TASK-9B-K                                  | タイムアウト設定の外部化                              | 低     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-k-skill-creator-timeout-config.md`              |
 | TASK-10A-UI-SKILL-IMPROVE                  | スキル改善UI表示機能                                  | 中     | TASK-9C Phase 11（手動テスト発見）                             | `docs/30-workflows/unassigned-task/task-10a-ui-skill-improve.md`                           |
@@ -480,6 +516,7 @@
 | task-imp-store-hooks-remaining-migration      | 残コンポーネントの個別セレクタHook移行                             | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md`              |
 | task-ref-store-hooks-deprecate-composite      | 合成Store Hookの非推奨化・段階的削除                               | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md`              |
 | task-imp-phase12-auto-verification            | Phase 12チェックリスト自動検証スクリプト                           | 中 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（実装苦戦箇所） | `docs/30-workflows/unassigned-task/task-imp-phase12-auto-verification.md`                    |
+| ~~UT-9B-I-001~~                              | ~~カスタム型宣言ファイルと SDK 実型の共存整理~~                     | ~~低~~ | ~~TASK-9B-I-SDK-FORMAL-INTEGRATION Phase 12（未タスク検出）~~  | ~~`docs/30-workflows/completed-tasks/sdk-formal-integration/outputs/phase-12/ut-9b-i-001-custom-declare-module-cleanup.md`~~ **完了タスクに移動** |
 
 ### 未タスク管理ルール
 
@@ -532,7 +569,9 @@
 | 1.23.0     | 2026-02-10 | 未タスク2件追加: UT-STORE-HOOKS-REFACTOR-001（Store Hooks個別セレクタ再設計）、UT-FIX-APP-INITAUTH-CHECK-001（App.tsx initializeAuth確認）。TASK-UT-AUTH-MODE-UI-INTEGRATION Phase 10/12検出 |
 | 1.24.0     | 2026-02-11 | UT-STORE-HOOKS-REFACTOR-001完了。未タスク2件追加: UT-STORE-HOOKS-REFACTOR-002（JSDoc追加）、UT-STORE-HOOKS-REFACTOR-003（合成Hook移行）。Phase 10最終レビュー検出 |
 | 1.25.0     | 2026-02-11 | 未タスク3件追加: UT-FIX-7-1-001（SkillService型ガード改善）、UT-FIX-7-1-002（skillHandlers分割）、UT-FIX-7-1-003（IPCレスポンスパターン統一）。TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12検出 |
+| 1.27.0     | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION完了記録追加。残課題テーブルからTASK-9B-Iを完了マーク。SDK型安全統合（as any除去、SDKQueryOptions変更）|
 | 1.26.0     | 2026-02-12 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了記録を完了タスクセクションに追加。Phase 12仕様書更新漏れ修正 |
-| 1.27.0     | 2026-02-12 | TASK-9B-H完了記録追加。未タスク2件追加: UT-9B-H-001（IpcResult型統一）、UT-9B-H-002（Zodスキーマ移行）。TASK-9B-H-SKILL-CREATOR-IPC Phase 12検出 |
-| 1.28.0     | 2026-02-12 | 未タスク2件追加: UT-9B-H-003（IPCセキュリティ強化）、UT-9B-H-004（設計書-実装整合性修正）。TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー検出 |
+| 1.30.0     | 2026-02-12 | 未タスク1件追加: UT-9B-I-001（カスタム型宣言ファイルとSDK実型の共存整理）。TASK-9B-I-SDK-FORMAL-INTEGRATION Phase 12検出 |
 | 1.29.0     | 2026-02-12 | 未タスク追加: UT-9B-H-005（Preload API二重公開パターン統一）。TASK-9B-H Phase 10 M-02 / Phase 11 D-3検出 |
+| 1.28.0     | 2026-02-12 | 未タスク2件追加: UT-9B-H-003（IPCセキュリティ強化）、UT-9B-H-004（設計書-実装整合性修正）。TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー検出 |
+| 1.27.0     | 2026-02-12 | TASK-9B-H完了記録追加。未タスク2件追加: UT-9B-H-001（IpcResult型統一）、UT-9B-H-002（Zodスキーマ移行）。TASK-9B-H-SKILL-CREATOR-IPC Phase 12検出 |

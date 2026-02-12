@@ -322,6 +322,13 @@ mv docs/30-workflows/unassigned-task/task-{{task-name}}.md \
 | `docs/30-workflows/unassigned-task/` | 未実施タスクの配置先 |
 | `docs/30-workflows/completed-tasks/` | 完了タスクの配置先   |
 
+> **⚠️ 配置先の注意（P3 再発防止 / TASK-9B-I 教訓）**
+>
+> 未タスク指示書は必ず `docs/30-workflows/unassigned-task/` に配置すること。
+> 親タスクの `docs/30-workflows/{feature-name}/tasks/` ディレクトリに配置してはいけない。
+> TASK-9B-I では親タスクの `tasks/` ディレクトリと混同し、誤った場所に配置するミスが発生した。
+> 配置後は `ls docs/30-workflows/unassigned-task/` で物理ファイルの存在を検証すること。
+
 ### チェックリスト
 
 | #   | 確認項目                                             | 完了 |

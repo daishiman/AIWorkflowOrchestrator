@@ -238,8 +238,8 @@ node scripts/list-specs.js --topics
 | PermissionResolver 型定義（TASK-3-2） | L383 |
 | SkillExecutor IPC統合（TASK-3-2） | L470 |
 | 完了タスク | L547 |
-| 関連ドキュメント | L619 |
-| 変更履歴 | L631 |
+| 関連ドキュメント | L670 |
+| 変更履歴 | L682 |
 
 ### references/interfaces-agent-sdk-history.md
 

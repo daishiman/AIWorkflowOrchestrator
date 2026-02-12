@@ -178,6 +178,9 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
 - [ ] 【品質】コメントフォーマット（JSDoc形式）が統一されている
+- [ ] 未タスク指示書が `docs/30-workflows/unassigned-task/` に配置されていること（親タスクのtasks/ではない） ⚠️ **P3派生: TASK-9B-Iで再発**
+- [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
+- [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ### Phase 12 自動化コマンド
@@ -203,6 +206,8 @@ pnpm lint --fix
 | P24 | 未タスク検出時の関連ファイル調査不足 | `grep -rn` で同様パターンをプロジェクト全体から検索 |
 | P1 | LOGS.md 2ファイル更新漏れ | aiworkflow-requirements + task-specification-creator 両方を同時更新 |
 | P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
+| P3派生 | 未タスク配置ディレクトリの間違い（TASK-9B-I） | 必ず `unassigned-task/` に配置。親タスクの `tasks/` ではない |
+| - | テスト数の設計時固定値使用（TASK-9B-I） | Phase 12では `grep -c "it\\(" *.test.ts` で実測値を使用 |
 
 ---
 
@@ -210,6 +215,7 @@ pnpm lint --fix
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-12 | TASK-9B-I教訓反映: 未タスク配置ディレクトリ確認・テスト数実測値確認・SDK declare module確認の3項目をチェックリストに追加。漏れやすいポイントテーブルに2件追加 |
 | 2026-02-12 | TASK-FIX-7-1スキル改善: 未タスク指示書の物理ファイル存在確認ステップを完了条件チェックリストに追加 |
 | 2026-02-10 | Phase 12チェックリスト強化: Step 1-D(topic-map.md再生成)、ESLintキャッシュクリア、コメントフォーマット統一、自動化コマンドセクション追加 |
 | 2026-01-26 | SKILL.mdから分離・作成、中学生レベル解説の仕様を明確化 |

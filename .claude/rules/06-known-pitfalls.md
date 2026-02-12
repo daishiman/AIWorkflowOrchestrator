@@ -312,3 +312,29 @@ useEffect(() => {
   4. 標準的なモック構成をドキュメント化して再利用
 - **参照**: [lessons-learned.md#テストモックの大規模修正](../skills/aiworkflow-requirements/references/lessons-learned.md)
 - **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION, TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE（P21）
+
+## SDK 型統合
+
+### P36: カスタム declare module と SDK 実型の共存問題（TASK-9B-I）
+
+- **教訓**: `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` にカスタム `declare module '@anthropic-ai/claude-agent-sdk'` を作成した状態で SDK をインストールすると、TypeScript は `node_modules` の実型を優先してカスタム型を無視する。仕様書にカスタム型の値（`auto`/`ask`/`deny`）が残り、実 SDK 型（`default`/`acceptEdits`/`bypassPermissions`/`plan`/`delegate`/`dontAsk`）との不整合が発生する
+- **影響範囲**: PermissionMode の値セットが完全に異なるため、仕様書の PermissionMode 定義、テストの期待値、コードレビューの判断基準の全てに誤情報が波及する
+- **検出方法**: `as any` 除去時に初めて型エラーとして顕在化した（それまではカスタム型でコンパイルが通っていたため気付けなかった）
+- **解決策**: SDK インストール後はカスタム `.d.ts` を削除する。SDK 未インストール環境でのみ使用する場合はフラグで管理する
+- **参照**: [architecture-implementation-patterns.md#S11](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION, UT-9B-I-001
+
+### P37: ドキュメント数値の早期固定（TASK-9B-I）
+
+- **教訓**: Phase 4（テスト設計）で想定したテスト数「18」を仕様書に記載したが、Phase 5（実装）で実際のテスト数は「13」になった。設計と実装の乖離がドキュメント全体に波及し、Phase 12 で documentation-changelog.md に早期に「完了」と記載したため、数値不整合の発見が遅れた（P4 パターン再発）
+- **解決策**: Phase 12 でテスト数を実際のテストファイルから `grep -c "it(" *.test.ts` で正確にカウントして記載する。Phase 4 の想定値をそのまま使い回さない
+- **関連パターン**: P4（documentation-changelog への早期「完了」記載）
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+
+### P38: 未タスク配置ディレクトリ間違い（P3 再発、TASK-9B-I）
+
+- **教訓**: UT-9B-I-001 の指示書を `tasks/` 直下に配置したが、正しくは `tasks/unassigned-task/` 配下に配置する必要があった。P3（未タスク管理の3ステップ不完全）と同じパターンの再発
+- **解決策**: 未タスク指示書の配置先を確認するチェックリストを Phase 12 で必ず実行する。3ステップの確認: (1) `unassigned-task/` に指示書作成 (2) `task-workflow.md` 残課題テーブルに登録 (3) 関連仕様書に参照リンク追加
+- **関連パターン**: P3（未タスク管理の3ステップ不完全）
+- **チェックリスト**: [05-task-execution.md#Task 4](./05-task-execution.md)
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION

@@ -31,21 +31,26 @@ PostToolUse Hook
 
 ## Permission Modes
 
-### モード一覧
+### モード一覧（SDK@0.2.30 実型）
 
 ```typescript
-type PermissionMode =
-  | "auto"      // すべて自動承認
-  | "ask"       // すべて確認
-  | "deny"      // すべて拒否
-  | "default";  // デフォルト（ツールごとの設定に従う）
+type SDKPermissionMode =
+  | "default"              // デフォルト（ツールごとの設定に従う）
+  | "acceptEdits"          // 編集系を自動承認
+  | "bypassPermissions"    // すべてバイパス（開発専用）
+  | "plan"                 // 計画モード
+  | "delegate"             // 委譲モード
+  | "dontAsk";             // 確認なし
 ```
+
+> **注意**: 旧ドキュメントの "auto" | "ask" | "deny" は SDK@0.2.30 の実型には存在しません。
+> 正確な値は `node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts` を参照してください。
 
 ### 使用例
 
 ```typescript
 const options: Options = {
-  permissionMode: "ask", // すべてのツール使用で確認を求める
+  permissionMode: "default", // デフォルトの権限制御
 };
 ```
 
@@ -343,7 +348,7 @@ interface AllowedToolEntry {
 
 | 項目                     | 推奨設定                               |
 | ------------------------ | -------------------------------------- |
-| デフォルトモード         | "ask" または "deny"                    |
+| デフォルトモード         | "default"                              |
 | ファイルアクセス         | プロジェクトディレクトリに制限         |
 | 危険コマンド             | deny ルールでブロック                  |
 | 機密操作                 | ask ルールで明示的確認                 |

@@ -37,14 +37,12 @@ vi.mock("../PermissionStore", () => ({
   PermissionStore: vi.fn(() => mockDefaultPermissionStore),
 }));
 
-// SDK モック
+// SDK モック - query()はAsyncIterable（AsyncGenerator互換）を直接返す
 vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
   query: vi.fn(() => ({
-    stream: vi.fn(() => ({
-      [Symbol.asyncIterator]: () => ({
-        next: () => Promise.resolve({ done: true }),
-      }),
-    })),
+    [Symbol.asyncIterator]: () => ({
+      next: () => Promise.resolve({ done: true }),
+    }),
   })),
 }));
 

@@ -1204,10 +1204,68 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 ---
 
+## SDK 型統合パターン（TASK-9B-I 2026-02-12実装）
+
+### S11: TypeScript モジュール解決の優先順位（TASK-9B-I）
+
+カスタム `declare module` ファイルと `node_modules` 内の実 SDK 型が共存する場合に発生する型解決の優先順位問題。
+
+| 要素 | 説明 |
+|------|------|
+| 問題 | `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` にカスタム `declare module` を作成していたが、SDK が `node_modules` にインストールされると TypeScript は `node_modules` 配下の実型定義を優先する |
+| 原因 | TypeScript のモジュール解決アルゴリズムでは、`node_modules` 配下にパッケージ実体が存在する場合、ambient declaration（`declare module`）よりも実型定義が優先される |
+| 影響 | カスタム `.d.ts` で定義した `PermissionMode`（`'auto' \| 'ask' \| 'deny'`）が無視され、実 SDK の型（`'default' \| 'acceptEdits' \| 'bypassPermissions' \| 'plan' \| 'delegate' \| 'dontAsk'`）が使用される。カスタム型は「ゴースト型」となり、仕様書にも誤った値が記載される |
+| 解決策 | SDK をインストールした時点でカスタム `.d.ts` を削除する。SDK 未インストール環境でのみ使用する場合はフラグで管理する |
+
+**モジュール解決の優先順位**:
+
+| 優先度 | ソース | 条件 |
+|--------|--------|------|
+| 1 | `node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts` | SDK がインストール済みの場合 |
+| 2 | `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` | SDK が未インストールの場合のみ有効 |
+
+**教訓**: SDK 型との重複を避けるため、`declare module` は SDK 未インストール環境でのみ使用する。SDK インストール後にカスタム `.d.ts` が残存すると、仕様書やコードレビューで誤った型情報を参照するリスクがある。
+
+**関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION, UT-9B-I-001
+
+---
+
+### S12: SDK API パラメータの正確な把握（TASK-9B-I）
+
+外部 SDK の公式ドキュメントが限定的な場合に、API パラメータの正確な型情報を取得するためのパターン。
+
+| 要素 | 説明 |
+|------|------|
+| 問題 | Claude Agent SDK (`@anthropic-ai/claude-agent-sdk@0.2.30`) の公式ドキュメントが限定的で、`query({ prompt, options })` の `options` の全フィールドを正確に把握するのに時間がかかった |
+| 特に困難だった点 | `env: { ANTHROPIC_API_KEY }` パターン（API キーを環境変数として渡す）と `abortController` オプションは公式ドキュメントでは明示されていなかった |
+
+**情報源の信頼性順位**:
+
+| 順位 | 情報源 | 信頼性 | 具体的なパス |
+|------|--------|--------|-------------|
+| 1 | SDK の TypeScript 型定義ファイル | 最も信頼できる | `node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts` |
+| 2 | SDK の GitHub リポジトリのテストコード | 実用例として参考 | リポジトリの `test/` ディレクトリ |
+| 3 | SDK の公式ドキュメント | 概要把握には有用だが詳細が不足する場合がある | README.md、公式サイト |
+
+**発見された重要なパラメータ**:
+
+| パラメータ | 用途 | 発見元 |
+|-----------|------|--------|
+| `env: { ANTHROPIC_API_KEY: string }` | API キーを環境変数として SDK に渡す | 型定義ファイル |
+| `abortController: AbortController` | SDK 実行の中断制御 | 型定義ファイル |
+| `permissionMode: PermissionMode` | パーミッション制御モード | 型定義ファイル |
+
+**教訓**: 公式ドキュメントより型定義ファイル（`node_modules/<package>/dist/index.d.ts`）が最も信頼できる情報源である。新しい SDK を統合する際は、まず型定義ファイルを直接読み、全パラメータと型を把握してから実装に着手する。
+
+**関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.21.0 | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型統合パターン追加（S11: TypeScriptモジュール解決の優先順位、S12: SDK APIパラメータの正確な把握） |
 | 1.20.0 | 2026-02-12 | TASK-9B-H: IPCハンドラー登録パターンに「実装時の注意点・苦戦箇所」テーブル追加（5件の苦戦箇所と解決策、lessons-learned.mdへのクロスリファレンス） |
 | 1.19.0 | 2026-02-12 | TASK-9B-H: IPC ハンドラー登録パターン追加（3層セキュリティ、Preload統合4箇所更新チェックリスト、既存同パターンとの対応表） |
 | 1.18.0 | 2026-02-11 | TASK-FIX-7-1: Setter Injection パターン詳細追加（SkillService と SkillExecutor の統合、使い分け基準テーブル） |
