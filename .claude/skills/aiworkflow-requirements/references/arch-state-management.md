@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.14.0    | 2026-02-12 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了: P31対策セクションに個別セレクタ実装完了記録追加、関連タスクステータス更新（UT-STORE-HOOKS-REFACTOR-001、UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 → 完了）。71テスト全PASS |
 | v1.13.0    | 2026-02-12 | UT-STORE-HOOKS-REFACTOR-001完了: 53個の個別セレクタ追加（AuthMode 12個, LLM 16個, Agent 25個）、合成Hook非推奨化、Phase 12課題追記 |
 | v1.12.0    | 2026-02-10 | P31対策実装詳細追加: SettingsView/SkillSelector変更箇所、実装時の4課題と解決策、開発者向けチェックリスト |
 | v1.11.0    | 2026-02-10 | P31対策セクション追加: Store Hooks無限ループ防止パターン（useRefガード、依存配列設計、個別セレクタ再設計） |
@@ -96,7 +97,7 @@
 | AUTH-UI-001                      | 認証UI改善                   | **完了**   |
 | TASK-AUTH-SESSION-REFRESH-001    | セッション自動リフレッシュ   | **完了**   |
 | TASK-UT-AUTH-MODE-UI-INTEGRATION | AuthMode UI統合              | **完了**   |
-| UT-STORE-HOOKS-REFACTOR-001      | Store Hooks個別セレクタ再設計 | **完了**   |
+| UT-STORE-HOOKS-REFACTOR-001      | Store Hooks個別セレクタ再設計 | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で実施） |
 | UT-STORE-HOOKS-REFACTOR-002      | 状態セレクタのJSDoc追加       | 未実施     |
 | UT-STORE-HOOKS-REFACTOR-003      | 合成Hook移行                  | 未実施     |
 | UT-FIX-APP-INITAUTH-CHECK-001    | App.tsx initializeAuth確認    | 未実施     |
@@ -213,7 +214,46 @@ useEffect(() => {
 | Store関数の変化で再実行        | 使用禁止                     | 無限ループの原因                       |
 | 外部から受け取ったコールバック | `[callback]`                 | useCallbackでメモ化されていれば安全    |
 
+### 個別セレクタHookパターン（推奨）
+
+> **P31対策として確立** (UT-STORE-HOOKS-COMPONENT-MIGRATION-001)
+
+合成Hook（`useLLMStore()`等）の代わりに、個別セレクタHookを使用する。
+
+**推奨パターン**:
+
+```typescript
+// ✅ 推奨: 個別セレクタ
+const providers = useLLMProviders();
+const fetchProviders = useLLMFetchProviders();
+
+useEffect(() => {
+  fetchProviders();
+}, [fetchProviders]); // 参照安定 → 安全
+
+// ❌ 非推奨: 合成Hook
+const { providers, fetchProviders } = useLLMStore();
+
+useEffect(() => {
+  fetchProviders();
+}, [fetchProviders]); // 毎回新参照 → 無限ループ
+```
+
+**個別セレクタの定義パターン**:
+
+```typescript
+// State セレクタ（値を返す）
+export const useLLMProviders = () => useAppStore((state) => state.providers);
+
+// Action セレクタ（関数を返す - 参照安定）
+export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProviders);
+```
+
+**提供済み個別セレクタ**: LLM系12個、Skill系15個、AuthMode系3個（計30個）
+
 ### 長期解決策: 個別セレクタベースの再設計
+
+> **✅ 実装完了** (2026-02-12): UT-STORE-HOOKS-COMPONENT-MIGRATION-001 にて個別セレクタパターンを実装。LLM系12個・Skill系15個・AuthMode系3個の計30個の個別セレクタHookを `store/index.ts` に追加。LLMSelectorPanel、SkillSelector、SettingsView の3コンポーネントを移行し、useRefガードを削除。71テスト全PASS。
 
 Store Hookを分解し、個別セレクタを提供することで、関数の参照安定性を確保する。
 
@@ -338,10 +378,12 @@ const initializeAuthMode = useInitializeAuthMode();
 
 | タスクID                             | 内容                          | ステータス |
 | ------------------------------------ | ----------------------------- | ---------- |
-| UT-STORE-HOOKS-REFACTOR-001          | Store Hooks個別セレクタ再設計 | **完了**   |
+| UT-STORE-HOOKS-REFACTOR-001          | Store Hooks個別セレクタ再設計 | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で実施、2026-02-12） |
 | UT-STORE-HOOKS-REFACTOR-002          | 状態セレクタのJSDoc追加       | 未実施     |
 | UT-STORE-HOOKS-REFACTOR-003          | 合成Hook移行                  | 未実施     |
-| UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | **完了**   |
+| UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で根本対策実施、2026-02-12） |
+| task-imp-store-hooks-remaining-migration | 残コンポーネントの個別セレクタ移行 | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md)） |
+| task-ref-store-hooks-deprecate-composite | 合成Store Hookの非推奨化       | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md)） |
 
 ### 実装詳細（TASK-UT-AUTH-MODE-UI-INTEGRATION）
 
@@ -898,3 +940,4 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 - [スキル関連インターフェース](./interfaces-agent-sdk-skill.md)
 - [既知の落とし穴 P31: Store Hooks無限ループ](../../../rules/06-known-pitfalls.md#p31-zustand-store-hooks無限ループ)
 - [実装パターン総合ガイド: Zustand Slice設計原則](./architecture-implementation-patterns.md#zustand-slice設計原則)
+- [Store Hooks コンポーネント移行 実装ガイド](../../../../docs/30-workflows/completed-tasks/UT-STORE-HOOKS-COMPONENT-MIGRATION-001/outputs/phase-12/implementation-guide.md)

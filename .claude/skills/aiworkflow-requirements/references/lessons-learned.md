@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-12 | 1.4.0 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 教訓追加（個別セレクタ移行、Phase 12チェックリスト管理） |
 | 2026-02-12 | 1.3.0 | 苦戦箇所1・3のコード例を実際の実装と整合するよう修正（架空のversion/authorフィールド削除、executeSkillシグネチャ修正） |
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
@@ -35,8 +36,11 @@
    - [苦戦箇所3: 型変換](#3-skill-から-skillmetadata-への型変換)
    - [苦戦箇所4: Phase間テスト数整合性問題](#4-phase間テスト数整合性問題)
    - [苦戦箇所5: 未タスク指示書の作成漏れ](#5-未タスク指示書の作成漏れ)
-2. [関連ドキュメント](#関連ドキュメント)
-3. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+2. [UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行](#ut-store-hooks-component-migration-001-個別セレクタhook移行)
+   - [苦戦箇所1: useStoreの参照安定性](#1-usestoreの参照安定性)
+   - [苦戦箇所2: Phase 12チェックリスト管理](#2-phase-12チェックリスト管理)
+3. [関連ドキュメント](#関連ドキュメント)
+4. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -329,6 +333,94 @@ return this.skillExecutor.execute(request, metadata);
 | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | Setter Injection パターン追加 |
 | [interfaces-agent-sdk-executor.md](./interfaces-agent-sdk-executor.md) | SkillService 統合セクション追加、型変換パターン追加 |
 | [06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) | P32 追加（遅延初期化パターン選択の教訓） |
+
+---
+
+## UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 |
+| 目的 | Zustand合成Store Hookを個別セレクタHookに移行し、P31無限ループを根本解決 |
+| 完了日 | 2026-02-12 |
+| ステータス | **完了** |
+
+### 実装内容
+
+| 変更内容 | ファイル | 説明 |
+|----------|----------|------|
+| 個別セレクタHook 30個追加 | `apps/desktop/src/renderer/store/index.ts` | LLM系12個 + Skill系15個 + AuthMode系3個 |
+| LLMSelectorPanel移行 | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx` | useLLMStore() → useLLMProviders(), useLLMFetchProviders() 等 |
+| SkillSelector移行 | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx` | useSkillStore() → useAvailableSkillsMetadata(), useRescanSkills() 等 |
+| SettingsView移行 | `apps/desktop/src/renderer/views/SettingsView/index.tsx` | useAuthModeStore() → useSetAuthMode(), useInitializeAuthMode() 等。useRefガード削除 |
+
+### 苦戦箇所と解決策
+
+#### 1. useStoreの参照安定性
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | ZustandのuseStore(selector)で返されるオブジェクトや関数の参照安定性を保証する必要があった |
+| **原因** | `useAppStore(state => ({ a: state.a, b: state.b }))` は毎回新しいオブジェクトを返すため、依存配列に入れると無限ループ発生 |
+| **解決策** | 各フィールドを個別のセレクタで取得し、プリミティブ値やZustandが内部的に安定させる関数参照を返すようにした |
+| **教訓** | Zustand Storeからの取得は「1セレクタ=1フィールド」が最も安全。オブジェクトをまとめて返すパターンは避ける |
+
+**コード例（個別セレクタパターン）**:
+
+```typescript
+// store/index.ts - 個別セレクタHook（参照安定）
+export const useLLMProviders = () => useAppStore((state) => state.providers);
+export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProviders);
+
+// コンポーネントでの使用（useRefガード不要）
+const providers = useLLMProviders();
+const fetchProviders = useLLMFetchProviders();
+
+useEffect(() => {
+  // fetchProvidersはZustandが内部的に安定させた参照のため、依存配列に含めても安全
+  fetchProviders();
+}, [fetchProviders]);
+```
+
+**参照**: [arch-state-management.md - P31対策](./arch-state-management.md), [06-known-pitfalls.md - P31](../../../rules/06-known-pitfalls.md)
+
+---
+
+#### 2. Phase 12チェックリスト管理
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 12で12項目もの更新が必要で、複数の更新漏れが発生した |
+| **原因** | Step 1-A〜1-D + Step 2の各サブステップを並列に管理しようとして、一部をスキップした |
+| **解決策** | documentation-changelog.mdに各Step欄を事前に空欄状態で作成し、逐次消化する方式に変更 |
+| **教訓** | Phase 12は「全Step確認前に完了と記載しない」ルールを厳守。チェックリスト駆動が必須 |
+
+**参照**: [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [06-known-pitfalls.md - P1, P4](../../../rules/06-known-pitfalls.md)
+
+---
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 個別セレクタHook（30個） | `apps/desktop/src/renderer/store/index.ts` |
+| 参照安定性テスト（31件） | `apps/desktop/src/renderer/store/__tests__/selectors.test.ts` |
+| 無限ループ防止テスト（40件） | `apps/desktop/src/renderer/__tests__/infinite-loop-prevention.test.tsx` |
+| LLMSelectorPanel | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx` |
+| SkillSelector | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx` |
+| SettingsView | `apps/desktop/src/renderer/views/SettingsView/index.tsx` |
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| [arch-state-management.md](./arch-state-management.md) | P31対策セクションに個別セレクタ実装完了記録 |
+| [06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) | P31解決策に個別セレクタ実装完了を反映 |
+| [task-workflow.md](../../task-specification-creator/references/task-workflow.md) | 完了タスクセクション追加 |
+| [patterns.md](./patterns.md) | P31対策パターンに個別セレクタ移行パターン追加 |
+| [03-state-management.md](../../../rules/03-state-management.md) | 個別セレクタDOルール追加 |
 
 ---
 

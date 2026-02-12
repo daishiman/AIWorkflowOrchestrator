@@ -132,6 +132,36 @@
 
 ## 完了タスク
 
+### タスク: UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Store Hooks コンポーネント移行（2026-02-12完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | UT-STORE-HOOKS-COMPONENT-MIGRATION-001          |
+| 完了日     | 2026-02-12                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | 71（参照安定性31件＋無限ループ防止40件）        |
+| カバレッジ | Line 87.77% / Branch 90% / Function 91.04%      |
+
+#### 成果物
+
+| 成果物                           | パス/内容                                                          |
+| -------------------------------- | ------------------------------------------------------------------ |
+| 個別セレクタHook（30個）         | `apps/desktop/src/renderer/store/index.ts`                         |
+| LLMSelectorPanel移行             | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`    |
+| SkillSelector移行                | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`     |
+| SettingsView移行                 | `apps/desktop/src/renderer/views/SettingsView/index.tsx`           |
+| 参照安定性テスト                 | `apps/desktop/src/renderer/store/__tests__/selectors.test.ts`      |
+| 無限ループ防止テスト             | `apps/desktop/src/renderer/__tests__/infinite-loop-prevention.test.tsx` |
+
+#### 変更理由
+
+- P31問題（Zustand Store Hooks無限ループ）の根本解決策として個別セレクタパターンを実装
+- 合成Hook（`useLLMStore()`等）から個別セレクタ（`useLLMFetchProviders()`等）への移行により、useEffectの依存配列に関数を安全に含められるようになった
+- useRefガードパターンを削除し、コードの可読性と保守性を向上
+
+---
+
 ### タスク: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION executeSkillのSkillExecutor委譲実装（2026-02-11完了）
 
 | 項目       | 内容                                                    |
@@ -170,7 +200,6 @@
 | patterns.md | 成功パターン2件追加 |
 
 ---
-
 ### タスク: UT-FIX-5-4 AgentSDKAPI abort() 型定義不一致修正（2026-02-10完了）
 
 | 項目       | 内容                                            |
@@ -410,13 +439,16 @@
 | TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
 | TASK-DOC-PHASE12-JUDGMENT-CRITERIA-001       | Phase 12判断基準の明確化と漏れ防止強化                             | 低 | TASK-FIX-6-1-STATE-CENTRALIZATION Phase 12                     | `docs/30-workflows/unassigned-task/task-doc-phase12-judgment-criteria-improvement.md`       |
 | ~~UT-FIX-5-4~~                               | ~~AgentSDKAPI 型定義不一致修正~~                                   | ~~低~~ | ~~UT-FIX-5-3 Phase 12 アーキテクチャ検証~~                     | ~~`docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md`~~ **2026-02-10完了** |
-| ~~UT-STORE-HOOKS-REFACTOR-001~~              | ~~Store Hooksを個別セレクタベースに再設計~~                         | ~~中~~ | ~~TASK-UT-AUTH-MODE-UI-INTEGRATION タスク仕様書 セクション8~~  | ~~`docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor.md`~~ **2026-02-11完了**  |
+| ~~UT-STORE-HOOKS-REFACTOR-001~~              | ~~Store Hooksを個別セレクタベースに再設計~~                         | ~~中~~ | ~~TASK-UT-AUTH-MODE-UI-INTEGRATION タスク仕様書 セクション8~~  | ~~`docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor.md`~~ **2026-02-12完了（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で実施）** |
 | UT-STORE-HOOKS-REFACTOR-002                  | 状態セレクタのJSDoc追加                                             | 低 | UT-STORE-HOOKS-REFACTOR-001 Phase 10最終レビュー               | `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor-002-jsdoc.md`               |
 | UT-STORE-HOOKS-REFACTOR-003                  | 合成Hookを使用しているコンポーネントの段階的移行                    | 中 | UT-STORE-HOOKS-REFACTOR-001 Phase 10最終レビュー               | `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor-003-migration.md`           |
 | UT-FIX-APP-INITAUTH-CHECK-001                | App.tsxのinitializeAuth確認                                         | 低 | TASK-UT-AUTH-MODE-UI-INTEGRATION Phase 10 MINOR指摘            | `docs/30-workflows/unassigned-task/task-ut-fix-app-initauth-check.md`                       |
 | UT-FIX-7-1-001                               | SkillService型アサーション→型ガード改善                            | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-001-skillservice-type-guard.md`          |
 | UT-FIX-7-1-002                               | skillHandlers.ts機能別分割                                         | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-002-skillhandlers-split.md`              |
 | UT-FIX-7-1-003                               | IPCレスポンスパターン統一                                          | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-003-ipc-response-pattern-unification.md` |
+| task-imp-store-hooks-remaining-migration      | 残コンポーネントの個別セレクタHook移行                             | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md`              |
+| task-ref-store-hooks-deprecate-composite      | 合成Store Hookの非推奨化・段階的削除                               | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md`              |
+| task-imp-phase12-auto-verification            | Phase 12チェックリスト自動検証スクリプト                           | 中 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（実装苦戦箇所） | `docs/30-workflows/unassigned-task/task-imp-phase12-auto-verification.md`                    |
 
 ### 未タスク管理ルール
 

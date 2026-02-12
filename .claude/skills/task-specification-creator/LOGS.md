@@ -43,6 +43,16 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-12 - UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 全工程完了
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**: Store Hooks コンポーネント移行（個別セレクタパターン）。LLM/Skill/AuthMode 30個の個別セレクタHook追加、3コンポーネント移行、71テスト全PASS。P31問題（Zustand Store Hooks無限ループ）の根本解決策を実装。
+
+---
+
 ## [2026-02-12 - スキル最適化（TASK-FIX-7-1事後）]
 
 - **Agent**: task-specification-creator
@@ -60,7 +70,6 @@ node scripts/log-usage.js \
 - **Notes**: Phase 12未タスク管理チェックリスト強化（指示書物理ファイル存在確認追加）、テスト数記載基準明確化（実測値のみ使用ルール追加）。phase-11-12-guide.md・phase-templates.md・coverage-standards.md・unassigned-task-guidelines.md更新
 
 ---
-
 ## [2026-02-11 - TASK-FIX-7-1システム仕様書更新（Phase 12）]
 
 - **Agent**: aiworkflow-requirements
