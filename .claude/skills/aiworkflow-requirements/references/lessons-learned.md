@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-12 | 1.3.0 | 苦戦箇所1・3のコード例を実際の実装と整合するよう修正（架空のversion/authorフィールド削除、executeSkillシグネチャ修正） |
+| 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
 
@@ -30,7 +32,9 @@
 1. [TASK-FIX-7-1: SkillService executeSkill 委譲実装](#task-fix-7-1-skillservice-executeskill-委譲実装)
    - [苦戦箇所1: Setter Injection vs Constructor Injection](#1-setter-injection-vs-constructor-injection-の選択)
    - [苦戦箇所2: テストモックの大規模修正](#2-テストモックの大規模修正)
-   - [苦戦箇所3: 型変換](#3-skillexecutionrequest--skillexecutionresponse-の型変換)
+   - [苦戦箇所3: 型変換](#3-skill-から-skillmetadata-への型変換)
+   - [苦戦箇所4: Phase間テスト数整合性問題](#4-phase間テスト数整合性問題)
+   - [苦戦箇所5: 未タスク指示書の作成漏れ](#5-未タスク指示書の作成漏れ)
 2. [関連ドキュメント](#関連ドキュメント)
 3. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
@@ -90,26 +94,56 @@
 ```typescript
 // SkillService.ts
 class SkillService {
-  private skillExecutor?: SkillExecutor;
+  private skillExecutor: SkillExecutor | null = null;
 
   // Setter Injection: 遅延初期化用
   setSkillExecutor(executor: SkillExecutor): void {
     this.skillExecutor = executor;
   }
 
-  async executeSkill(skill: Skill, args: string): Promise<SkillExecutionResult> {
+  async executeSkill(
+    skillId: string,
+    params?: {
+      prompt?: string;
+      timeout?: number;
+      sessionId?: string;
+      retryConfig?: SkillExecutionRequest['retryConfig'];
+    },
+  ): Promise<SkillExecutionResponse> {
     if (!this.skillExecutor) {
-      throw new Error('SkillExecutor not initialized. Call setSkillExecutor() first.');
+      throw new Error('SkillExecutor が初期化されていません');
     }
-    // 型変換して委譲
-    const metadata = this.convertToMetadata(skill);
-    return this.skillExecutor.execute(metadata, args);
+    const skill = await this.getSkillById(skillId);
+    if (!skill) {
+      throw new Error('スキルが見つかりません');
+    }
+    // SkillExecutionRequest を構築
+    const request: SkillExecutionRequest = {
+      prompt: params?.prompt ?? '',
+      skillId,
+      timeout: params?.timeout,
+      sessionId: params?.sessionId,
+      retryConfig: params?.retryConfig,
+    };
+    // Skill → SkillMetadata のインライン変換
+    const metadata: SkillMetadata = {
+      id: skill.id,
+      name: skill.name,
+      slug: skill.slug,
+      description: skill.description,
+      path: skill.path,
+      triggers: skill.triggers,
+      anchors: skill.anchors,
+      allowedTools: skill.allowedTools,
+      category: skill.category,
+    };
+    return this.skillExecutor.execute(request, metadata);
   }
 }
 
 // skillHandlers.ts（DI設定）
-function registerSkillHandlers(mainWindow: BrowserWindow): void {
-  const skillExecutor = new SkillExecutor(mainWindow, authKeyService);
+function registerSkillHandlers(mainWindow: BrowserWindow, skillService: SkillService): void {
+  const skillExecutor = new SkillExecutor(mainWindow);
   skillService.setSkillExecutor(skillExecutor);
   // ハンドラー登録...
 }
@@ -175,48 +209,107 @@ describe('SkillService executeSkill委譲', () => {
 
 ---
 
-#### 3. SkillExecutionRequest / SkillExecutionResponse の型変換
+#### 3. Skill から SkillMetadata への型変換
 
 | 項目 | 内容 |
 |------|------|
 | **課題** | Skill 型から SkillMetadata 型への変換が必要 |
-| **原因** | IPC ハンドラーは Skill 型、SkillExecutor.execute() は SkillMetadata 型を期待 |
-| **解決策** | 明示的な型変換関数を実装 |
-| **教訓** | 型変換は明示的に行い、プロパティの対応関係をドキュメント化すべき |
+| **原因** | SkillService は Skill 型（`lastModified` を含む）を保持するが、SkillExecutor.execute() は SkillMetadata 型（`Omit<Skill, "lastModified">`）を期待する |
+| **解決策** | executeSkill() 内でインライン変換を実装（専用メソッドは不要） |
+| **教訓** | 使用箇所が1箇所のみの型変換は、専用メソッドに抽出せずインラインで記述する方が可読性が高い。過剰な抽象化を避けるべき |
 
-**型変換の対応関係**:
+**型変換の対応関係（9フィールド）**:
+
+`SkillMetadata` は `Omit<Skill, "lastModified">` として定義されており、`lastModified` を除くすべての Skill プロパティを含む。実際の変換では、以下の9フィールドを明示的にマッピングしている。
 
 | Skill プロパティ | SkillMetadata プロパティ | 変換内容 |
 |-----------------|-------------------------|----------|
-| id | name | スキル識別子 |
-| name | name | スキル名（同一） |
-| description | description | 説明文 |
-| path | path | ファイルパス |
-| - | version | デフォルト値 "1.0.0" |
-| - | author | デフォルト値 "unknown" |
+| id | id | スキル一意識別子（パスのハッシュ） |
+| name | name | スキル名 |
+| slug | slug | ディレクトリ名 |
+| description | description | 概要説明 |
+| path | path | SKILL.md のファイルパス |
+| triggers | triggers | Trigger キーワード配列 |
+| anchors | anchors | Anchor 一覧 |
+| allowedTools | allowedTools | 許可されたツール配列（任意） |
+| category | category | カテゴリ（任意） |
 
-**コード例（型変換関数）**:
+**コード例（インライン変換）**:
 
 ```typescript
-// SkillService.ts
-private convertToMetadata(skill: Skill): SkillMetadata {
-  return {
-    name: skill.name,
-    description: skill.description ?? '',
-    path: skill.path,
-    version: '1.0.0',  // デフォルト値
-    author: 'unknown', // デフォルト値
-  };
-}
-
-// 使用例
-async executeSkill(skill: Skill, args: string): Promise<SkillExecutionResult> {
-  const metadata = this.convertToMetadata(skill);
-  return this.skillExecutor.execute(metadata, args);
-}
+// SkillService.ts - executeSkill() 内でインライン変換
+// 使用箇所が1箇所のため、専用メソッドへの抽出は過剰な抽象化と判断
+const metadata: SkillMetadata = {
+  id: skill.id,
+  name: skill.name,
+  slug: skill.slug,
+  description: skill.description,
+  path: skill.path,
+  triggers: skill.triggers,
+  anchors: skill.anchors,
+  allowedTools: skill.allowedTools,
+  category: skill.category,
+};
+return this.skillExecutor.execute(request, metadata);
 ```
 
 **参照**: [interfaces-agent-sdk-executor.md - 型変換パターン](./interfaces-agent-sdk-executor.md)
+
+---
+
+#### 4. Phase間テスト数整合性問題
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 7/8/9/10 でテスト数が不整合（Phase 7: 38, Phase 8: 33, Phase 9: 39, Phase 10: 53） |
+| **原因** | 各Phaseの成果物を独立に作成した際に、実際のテスト実行結果ではなく推定値を記載した |
+| **解決策** | テスト数は必ず `pnpm vitest run -- --grep "対象" --reporter=verbose` の実行結果から取得する |
+| **教訓** | テスト数等の定量データは推定ではなく実測値を使用すべき。Phase間で数値が不整合な場合は、最新のテスト実行結果を正として更新する |
+
+**不整合が発生するパターン**:
+
+| パターン | 原因 | 防止策 |
+|----------|------|--------|
+| Phase間の推定値ズレ | 各Phaseを異なるセッションで作成 | Phase完了時に毎回 `pnpm test` を実行して実測値を記録 |
+| テスト追加/削除の未反映 | Phase 6でテスト追加後にPhase 7の数値を更新し忘れ | Phase 7（カバレッジ確認）で必ずテスト総数を再計測 |
+| リファクタリングによるテスト統合 | Phase 8でテスト統合後に数値が減少 | リファクタリング後のテスト数を明示的に記録 |
+
+**推奨ワークフロー**:
+
+| ステップ | 処理 | 成果物 |
+|----------|------|--------|
+| 1 | `pnpm vitest run --reporter=verbose 2>&1 \| tail -5` | テスト総数の実測値 |
+| 2 | 実測値を Phase 成果物に記録 | 正確なテスト数 |
+| 3 | 前Phase の数値と比較し差異を説明 | テスト数増減の根拠 |
+
+---
+
+#### 5. 未タスク指示書の作成漏れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `unassigned-task-report.md` に「指示書作成済み」と記載しながら、実際の指示書ファイルを未作成 |
+| **原因** | レポート作成と指示書作成を別々のエージェントが担当し、指示書作成が実行されなかった |
+| **解決策** | 未タスク管理の3ステップ（(1)指示書作成 (2)残課題テーブル登録 (3)関連仕様書リンク追加）は単一エージェントで一括実行する |
+| **教訓** | P3（未タスク管理の3ステップ不完全）の再発。チェックリストを使った物理的ファイル存在確認が必要 |
+
+**未タスク管理の3ステップ検証方法**:
+
+| ステップ | 検証コマンド | 期待結果 |
+|----------|-------------|----------|
+| 1. 指示書ファイル存在確認 | `ls docs/30-workflows/unassigned-task/task-*.md` | 対象ファイルが存在すること |
+| 2. 残課題テーブル登録確認 | `grep "タスクID" task-workflow.md` | 残課題テーブルにエントリが存在すること |
+| 3. 関連仕様書リンク確認 | `grep "タスクID" references/*.md` | 関連仕様書に参照リンクが存在すること |
+
+**再発防止策**:
+
+| 対策 | 説明 |
+|------|------|
+| 単一エージェント実行 | 3ステップを分割せず、1つのエージェントが一括で実行 |
+| ファイル存在確認 | 各ステップ完了後に `ls` でファイル存在を物理的に検証 |
+| Phase 12チェックリスト | [05-task-execution.md#Task 4](../../../rules/05-task-execution.md) のチェックリストを逐次確認 |
+
+**参照**: [06-known-pitfalls.md - P3](../../../rules/06-known-pitfalls.md)
 
 ---
 
