@@ -72,16 +72,17 @@ Step 2: [2A] [2B] [2C]                    ← 3タスク並列
 
 ---
 
-## 🔧 Tier 0: 仕様書準拠修正（4タスク）
+## 🔧 Tier 0: 仕様書準拠修正（5タスク）
 
 > **重要**: これらのタスクはTier 1の前提として実行必須。既存実装の仕様書乖離を解消する。
 
-| ID           | タイトル                                                 | 依存             | 複雑度 | ステータス |
-| ------------ | -------------------------------------------------------- | ---------------- | ------ | ---------- |
-| TASK-FIX-1-1 | [型定義統一](./task-fix-1-1-type-alignment.md)           | -                | medium | pending    |
-| TASK-FIX-4-1 | [IPCチャンネル整理](./task-fix-4-1-ipc-consolidation.md) | FIX-1-1（推奨）  | medium | pending    |
-| TASK-FIX-5-1 | [SkillAPI統一](./task-fix-5-1-skill-api-unification.md)  | FIX-1-1, FIX-4-1 | medium | pending    |
-| TASK-FIX-6-1 | [状態管理集約](./task-fix-6-1-state-centralization.md)   | FIX-5-1          | medium | pending    |
+| ID                                 | タイトル                                                                             | 依存             | 複雑度 | ステータス |
+| ---------------------------------- | ------------------------------------------------------------------------------------ | ---------------- | ------ | ---------- |
+| TASK-FIX-1-1                       | [型定義統一](./task-fix-1-1-type-alignment.md)                                       | -                | medium | pending    |
+| TASK-FIX-4-1                       | [IPCチャンネル整理](./task-fix-4-1-ipc-consolidation.md)                             | FIX-1-1（推奨）  | medium | pending    |
+| TASK-FIX-5-1                       | [SkillAPI統一](./task-fix-5-1-skill-api-unification.md)                              | FIX-1-1, FIX-4-1 | medium | pending    |
+| TASK-FIX-6-1                       | [状態管理集約](./task-fix-6-1-state-centralization.md)                               | FIX-5-1          | medium | pending    |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001 | [AgentView無限ループ修正](../../unassigned-task/task-agentview-infinite-loop-fix.md) | FIX-6-1          | medium | pending    |
 
 ### Tier 0 完了条件
 

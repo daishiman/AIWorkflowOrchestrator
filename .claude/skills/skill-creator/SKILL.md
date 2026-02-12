@@ -17,7 +17,8 @@ description: |
   新規スキルの作成、既存スキルの更新、プロンプト改善を行う場合に使用。
   スキル作成, スキル更新, プロンプト改善, skill creation, skill update, improve prompt,
   Codexに任せて, assign codex, Codexで実行, GPTに依頼, 実行モード選択, どのAIを使う,
-  IPC Bridge統一, API統一パターン, safeInvoke/safeOn, Preload API標準化
+  IPC Bridge統一, API統一パターン, safeInvoke/safeOn, Preload API標準化,
+  IPC handler registration, Preload API integration, contextBridge, Electron IPC pattern
 allowed-tools:
   - Read
   - Write
@@ -159,6 +160,8 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                            |
 | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **9.2.0**  | **2026-02-12** | **TASK-9B-Hスキル改善: patterns.mdにIPC機能開発ワークフロー6段階パターン追加（チャンネル定数→ハンドラー→Preload→統合→型定義→登録）。クイックナビゲーション更新** |
+| **9.1.0**  | **2026-02-12** | **TASK-9B-H-SKILL-CREATOR-IPC完了記録: SkillCreatorService IPC通信基盤の構築完了（6チャンネル定義、ハンドラー実装、Preload API統合）。85テスト全PASS、3層セキュリティモデル適用**                                                                                                                                       |
 | **9.0.0**  | **2026-02-11** | **TASK-FIX-7-1パターン追加: patterns.mdにSetter Injection（遅延初期化DI）、型変換パターン（Skill→SkillMetadata）、DIテストモック大規模修正パターン追加。06-known-pitfalls.md#P32-P33追加。aiworkflow-requirements/lessons-learned.md新規作成**                                                                      |
 | **8.10.0** | **2026-02-10** | **TASK-FIX-15-1パターン追加: patterns.mdに統合テストでの依存サービスモック漏れ防止パターン（P25）と入力バリデーション統一パターン（whitespace対策、P26）を追加**                                                                                                                                                   |
 | **8.9.0**  | **2026-02-09** | **TASK-FIX-17-1パターン追加: patterns.mdにmockReturnValue vs mockReturnValueOnceテスト間リーク防止パターン追加。06-known-pitfalls.md#P23追加。aiworkflow-requirements/patterns.mdにも同パターン追加**                                                                                                              |
