@@ -276,6 +276,17 @@ node scripts/list-specs.js --topics
 | SkillCreatorService（TASK-9B-G） | L1171 |
 | 完了タスク | L1419 |
 | 変更履歴 | L1502 |
+| SkillImportStore（TASK-2B） | L587 |
+| SkillSlice型定義（TASK-6-1） | L639 |
+| ModifierSkill（スライド逆同期機能） | L731 |
+| ChatPanel統合（TASK-7D） | L765 |
+| SkillFileManager（TASK-9A-A） | L800 |
+| テストアーキテクチャ（TASK-8C-A） | L888 |
+| 完了タスク | L940 |
+| 関連ドキュメント | L1158 |
+| SkillCreatorService（TASK-9B-G） | L1171 |
+| 完了タスク | L1419 |
+| 変更履歴 | L1450 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -1309,6 +1320,12 @@ node scripts/list-specs.js --topics
 | skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L651 |
 | permissionHistorySlice（権限要求履歴管理） | L807 |
 | 関連ドキュメント | L936 |
+| Zustand Sliceパターン | L31 |
+| P31対策: Store Hooks無限ループ防止パターン | L161 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L601 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L691 |
+| permissionHistorySlice（権限要求履歴管理） | L847 |
+| 関連ドキュメント | L976 |
 
 ### references/arch-ui-components.md
 
@@ -1390,15 +1407,15 @@ node scripts/list-specs.js --topics
 | データマイグレーション | L104 |
 | コードレビューガイドライン | L143 |
 | パフォーマンス最適化 | L192 |
-| 国際化（i18n） | L258 |
-| Git ワークフロー | L288 |
-| 命名規則 | L324 |
-| デバッグガイド | L372 |
-| リリースプロセス | L426 |
-| バックアップ・リカバリ | L455 |
-| 環境構築ガイド | L492 |
-| 関連ドキュメント | L535 |
-| 変更履歴 | L548 |
+| 国際化（i18n） | L291 |
+| Git ワークフロー | L321 |
+| 命名規則 | L357 |
+| デバッグガイド | L405 |
+| リリースプロセス | L459 |
+| バックアップ・リカバリ | L488 |
+| 環境構築ガイド | L525 |
+| 関連ドキュメント | L568 |
+| 変更履歴 | L581 |
 
 ### references/directory-structure.md
 
@@ -1478,6 +1495,13 @@ node scripts/list-specs.js --topics
 | TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L441 |
 | テンプレート（新規教訓追加用） | L634 |
 | 品質チェックリスト | L706 |
+| 目次 | L33 |
+| 関連ドキュメント | L56 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L66 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L348 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L436 |
+| テンプレート（新規教訓追加用） | L583 |
+| 品質チェックリスト | L655 |
 
 ### references/llm-embedding.md
 
@@ -1808,6 +1832,9 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L387 |
 | 関連ドキュメント | L470 |
 | 変更履歴 | L480 |
+| 残課題（未タスク） | L413 |
+| 関連ドキュメント | L487 |
+| 変更履歴 | L497 |
 
 ### references/testing-accessibility.md
 
@@ -1835,9 +1862,10 @@ node scripts/list-specs.js --topics
 | 6. テスト構成 | L284 |
 | 7. userEvent vs fireEvent | L320 |
 | 8. テストファイル分離パターン（TASK-FIX-4-2） | L343 |
-| 参照 | L398 |
-| 関連未タスク | L406 |
-| 変更履歴 | L416 |
+| 9. Zustand Store Hooks テストパターン | L398 |
+| 参照 | L561 |
+| 関連未タスク | L570 |
+| 変更履歴 | L580 |
 
 ### references/testing-dialog-patterns.md
 

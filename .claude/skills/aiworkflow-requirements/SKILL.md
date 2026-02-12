@@ -197,6 +197,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v1.21.0** | **2026-02-12** | **UT-STORE-HOOKS-TEST-REFACTOR-001完了**: arch-state-management.md更新（完了タスクセクション追加）。agentSlice.selectors.test.tsのgetState()→renderHookパターン移行、114テスト全PASS |
 | **v1.20.0** | **2026-02-12** | **UT-STORE-HOOKS-COMPONENT-MIGRATION-001テンプレート準拠最適化**: lessons-learned.md ファイルパス修正、patterns.md P31セクション重複削減（Progressive Disclosure準拠） |
 | **v1.19.0** | **2026-02-12** | **UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了**: arch-state-management.md更新（P31対策セクションに個別セレクタ実装完了記録、関連タスクステータス更新）、task-workflow.md更新（完了タスク追加）、06-known-pitfalls.md P31解決策更新。30個の個別セレクタHook、3コンポーネント移行、71テスト全PASS |
 | **v1.18.0** | **2026-02-12** | **スキル改善**: UT-STORE-HOOKS-REFACTOR-001教訓反映。patterns.mdに「Zustand個別セレクタベース再設計パターン」追加（設計方針・命名規則・移行ガイド・参照安定性チェックリスト）。P31対策の長期解決策をパターン化 |

@@ -1,0 +1,28 @@
+{
+  "taskId": "UT-STORE-HOOKS-TEST-REFACTOR-001",
+  "taskName": "Store Hooks テストをrenderHookパターンに移行",
+  "featureName": "UT-STORE-HOOKS-TEST-REFACTOR-001",
+  "createdDate": "2026-02-12",
+  "phases": {
+    "phase-1": { "status": "完了", "artifacts": [] },
+    "phase-2": { "status": "完了", "artifacts": [] },
+    "phase-3": { "status": "完了", "artifacts": [] },
+    "phase-4": { "status": "完了", "artifacts": [] },
+    "phase-5": { "status": "完了", "artifacts": [] },
+    "phase-6": { "status": "完了", "artifacts": [] },
+    "phase-7": { "status": "完了", "artifacts": [] },
+    "phase-8": { "status": "完了", "artifacts": [] },
+    "phase-9": { "status": "完了", "artifacts": [] },
+    "phase-10": { "status": "完了", "artifacts": [] },
+    "phase-11": { "status": "完了", "artifacts": [] },
+    "phase-12": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "phase-13": { "status": "完了", "artifacts": [] }
+  }
+}

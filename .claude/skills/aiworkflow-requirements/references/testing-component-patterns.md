@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.0.0
-> **更新日**: 2026-02-02
-> **関連タスク**: TASK-8B, TASK-7D
+> **バージョン**: 1.3.0
+> **更新日**: 2026-02-12
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001
 
 ---
 
@@ -395,11 +395,175 @@ SkillImportManagerのテストファイル構成:
 
 ---
 
+## 9. Zustand Store Hooks テストパターン
+
+> **実装完了**: 2026-02-12（UT-STORE-HOOKS-TEST-REFACTOR-001）
+
+### 概要
+
+個別セレクタHook（`useAvailableSkillsMetadata()`, `useFetchSkills()` 等）のテストには `@testing-library/react` の `renderHook` を使用する。Store全体のモックではなく、実際の `useAppStore` 統合ストアを用いて個別セレクタの動作を検証する。
+
+### 基本パターン
+
+#### パターン1: 状態セレクタテスト
+
+初期値の検証に使用する。Store生成直後の状態を確認する。
+
+```typescript
+const { result } = renderHook(() => useAvailableSkillsMetadata());
+expect(result.current).toEqual([]);
+```
+
+#### パターン2: 状態変更テスト
+
+`useAppStore.setState()` で状態を変更し、セレクタの戻り値が追従することを検証する。
+
+```typescript
+const { result } = renderHook(() => useAvailableSkillsMetadata());
+act(() => {
+  useAppStore.setState({ availableSkillsMetadata: mockData });
+});
+expect(result.current).toEqual(mockData);
+```
+
+#### パターン3: 非同期アクションテスト
+
+`act()` で非同期アクションをラップし、副作用完了後の状態を検証する。
+
+```typescript
+const { result } = renderHook(() => ({
+  fetchSkills: useFetchSkills(),
+  skills: useAvailableSkillsMetadata(),
+}));
+await act(async () => {
+  await result.current.fetchSkills();
+});
+expect(result.current.skills).toEqual(expected);
+```
+
+#### パターン4: 関数参照安定性テスト
+
+Zustandアクション関数の参照が `rerender()` 後も同一であることを `toBe()` で検証する。
+
+```typescript
+const { result, rerender } = renderHook(() => useFetchSkills());
+const firstRef = result.current;
+rerender();
+expect(result.current).toBe(firstRef);
+```
+
+#### パターン5: 無限ループ防止テスト（P31対策）
+
+`useEffect` 内でアクション関数を依存配列に含めても無限ループが発生しないことを、レンダー回数が5未満であることで検証する。
+
+```typescript
+const renderCount = { current: 0 };
+renderHook(() => {
+  renderCount.current++;
+  const action = useFetchSkills();
+  const initRef = useRef(false);
+  useEffect(() => {
+    if (!initRef.current) { initRef.current = true; }
+  }, [action]);
+});
+await act(async () => {
+  await new Promise(r => setTimeout(r, 100));
+});
+expect(renderCount.current).toBeLessThan(5);
+```
+
+#### パターン6: 再レンダー最適化テスト
+
+無関係なState変更後に個別セレクタの戻り値が参照同一であることを `toBe()` で検証する。
+
+```typescript
+const { result } = renderHook(() => useFetchSkills());
+const firstRef = result.current;
+act(() => {
+  useAppStore.setState({ unrelatedField: "changed" });
+});
+expect(result.current).toBe(firstRef);
+```
+
+### テスト環境要件
+
+| 要件 | 設定値 |
+|---|---|
+| テスト環境ディレクティブ | `@vitest-environment happy-dom` |
+| localStorage | `Object.defineProperty(window, 'localStorage', {...})` でポリフィル |
+| electronAPI | `window.electronAPI` を `Object.defineProperty` で完全モック設定 |
+| electronAPIモック範囲 | `authMode`（`getAuthMode`, `setAuthMode`）、`llm`（`getProviders`, `setLLM`, `getLLM`）、`skill`（`getSkills`, `rescanSkills`, `importSkill`, `removeSkill`, `executeSkill`, `abortExecution`, `respondToPermission`, `onStream`, `onComplete`, `onError`, `onPermissionRequest`） |
+| ストア | `useAppStore` 統合ストア使用（モック不要） |
+| beforeEach | `vi.clearAllMocks()` + electronAPI設定 + `resetStore()` |
+| afterEach | `cleanup()` + `vi.restoreAllMocks()` |
+
+#### electronAPI モック実装例
+
+テスト環境で `window.electronAPI` を完全にモックするためのヘルパー関数:
+
+```typescript
+function createMockElectronAPI() {
+  return {
+    authMode: {
+      get: vi.fn().mockResolvedValue({ success: true, data: { mode: "subscription" } }),
+      set: vi.fn().mockResolvedValue({ success: true }),
+      status: vi.fn().mockResolvedValue({ success: true, data: null }),
+      validate: vi.fn().mockResolvedValue({ success: true, data: { isValid: true } }),
+      onModeChanged: vi.fn(),
+    },
+    llm: {
+      getProviders: vi.fn().mockResolvedValue([]),
+      checkHealth: vi.fn().mockResolvedValue({ status: "healthy" }),
+    },
+    skill: {
+      list: vi.fn().mockResolvedValue([]),
+      getImported: vi.fn().mockResolvedValue([]),
+      import: vi.fn().mockResolvedValue({}),
+      remove: vi.fn().mockResolvedValue(undefined),
+      rescan: vi.fn().mockResolvedValue([]),
+      execute: vi.fn().mockResolvedValue({ executionId: "test-exec-id" }),
+      abort: vi.fn().mockResolvedValue(undefined),
+      onStream: vi.fn().mockReturnValue(() => {}),
+      onComplete: vi.fn().mockReturnValue(() => {}),
+      onError: vi.fn().mockReturnValue(() => {}),
+      onPermissionRequest: vi.fn().mockReturnValue(() => {}),
+      sendPermissionResponse: vi.fn().mockResolvedValue(undefined),
+      getExecutionStatus: vi.fn().mockResolvedValue(null),
+    },
+  };
+}
+```
+
+> **注意**: authMode + llm + skill の3セクション全体をモックする必要がある。skill セクションのみのモックでは、useAppStore 統合ストアの初期化時にエラーが発生する。
+
+### 選択基準
+
+| テスト対象 | 推奨パターン | 理由 |
+|---|---|---|
+| 状態セレクタ（プリミティブ値） | パターン1 + パターン2 | 初期値と変更後の値を検証 |
+| 状態セレクタ（配列・オブジェクト） | パターン1 + パターン2 + パターン6 | 加えて参照安定性を検証 |
+| アクションセレクタ（同期） | パターン2 + パターン4 | 状態変更と参照安定性を検証 |
+| アクションセレクタ（非同期） | パターン3 + パターン4 + パターン5 | 非同期完了、参照安定性、無限ループ防止を検証 |
+| 派生セレクタ | パターン1 + パターン2 | 計算結果の正確性を検証 |
+
+### テスト実績
+
+| テストファイル | テスト数 | パターン | 関連タスク |
+|---|---|---|---|
+| `authModeSlice.selectors.test.ts` | 70+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
+| `llmSlice.selectors.test.ts` | 60+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
+| `agentSlice.selectors.test.ts` | 114 | renderHook | UT-STORE-HOOKS-TEST-REFACTOR-001（移行完了） |
+
+**関連タスク**: UT-STORE-HOOKS-TEST-REFACTOR-001, UT-STORE-HOOKS-REFACTOR-001
+
+---
+
 ## 参照
 
 - **テストフィクスチャ**: [testing-fixtures.md](testing-fixtures.md)
 - **品質要件**: [quality-requirements.md](quality-requirements.md)
 - **UIコンポーネント仕様**: [ui-ux-components.md](ui-ux-components.md)
+- **状態管理パターン Store Hooksテスト実装ガイド**: [arch-state-management.md](arch-state-management.md#store-hooks-テスト実装ガイド)
 
 ---
 
@@ -417,6 +581,7 @@ SkillImportManagerのテストファイル構成:
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.3.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Store Hooksテストパターンセクション追加（renderHook 6パターン、テスト環境要件、選択基準、テスト実績） |
 | 1.2.0   | 2026-02-07 | TASK-FIX-4-2: テストファイル分離パターンセクション追加（永続化・エラー・境界値テスト分離） |
 | 1.1.0   | 2026-02-03 | TASK-9A-A: 関連未タスクセクション追加（TASK-IMP-VITEST-UTILS-001） |
 | 1.0.0   | 2026-02-02 | TASK-8Bパターンから初版作成（280テスト知見統合）                   |

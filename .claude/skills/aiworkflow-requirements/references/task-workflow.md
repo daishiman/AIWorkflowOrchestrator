@@ -132,6 +132,32 @@
 
 ## 完了タスク
 
+### タスク: UT-STORE-HOOKS-TEST-REFACTOR-001 Store Hooks テストリファクタリング（2026-02-12完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | UT-STORE-HOOKS-TEST-REFACTOR-001               |
+| 完了日     | 2026-02-12                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | 208（全PASS）                                   |
+| カバレッジ | 全テストPASS                                    |
+
+#### 成果物
+
+| 成果物                           | パス/内容                                                                                      |
+| -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| テストリファクタリング           | `apps/desktop/src/renderer/store/__tests__/agentSlice.selectors.test.ts`                       |
+| 変更内容                         | getState()パターンからrenderHookパターンへ完全移行                                             |
+
+#### 変更理由
+
+- agentSlice.selectors.test.tsのテストパターンをgetState()直接呼び出しからrenderHookパターンに統一
+- Zustand個別セレクタHookの実際のReact環境での動作を検証するテスト設計に改善
+- 全208テストがPASSすることを確認
+
+---
+
 ### タスク: UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Store Hooks コンポーネント移行（2026-02-12完了）
 
 | 項目       | 内容                                            |
