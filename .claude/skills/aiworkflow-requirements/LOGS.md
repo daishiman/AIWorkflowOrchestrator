@@ -59,6 +59,52 @@
 
 ---
 
+## 2026-02-11: UT-STORE-HOOKS-REFACTOR-001完了（Zustand Store Hooks無限ループ修正）
+
+| 項目         | 内容                                                                              |
+| ------------ | --------------------------------------------------------------------------------- |
+| タスクID     | UT-STORE-HOOKS-REFACTOR-001                                                       |
+| Agent        | aiworkflow-requirements                                                           |
+| 操作         | Phase 1-12 完了（個別セレクタパターン導入）                                       |
+| 対象ファイル | apps/desktop/src/renderer/store/index.ts, slices/*.ts                             |
+| 結果         | success                                                                           |
+| 備考         | P31問題を抜本的に解決、合成Hook非推奨化、53個の個別セレクタ追加                   |
+
+### 変更内容
+
+| 変更箇所                    | 変更内容                                             |
+| --------------------------- | ---------------------------------------------------- |
+| store/index.ts              | 53個の個別セレクタを追加                             |
+| 合成Hook 3種                | @deprecatedタグ追加（useAuthModeStore等）            |
+| SettingsView/index.tsx      | 合成Hook → 個別セレクタ5個に分解                     |
+| LLMSelectorPanel.tsx        | 合成Hook → 個別セレクタ10個に分解                    |
+
+### 理由
+
+- P31（Zustand Store Hooks無限ループ）の根本解決
+- 合成Hookが毎回新しいオブジェクトを返すため、useEffectの依存配列に含めると無限ループ
+- 個別セレクタはZustandアクション参照が安定しているため安全
+
+### テスト結果
+
+| 指標                | 結果                   |
+| ------------------- | ---------------------- |
+| 新規テスト          | 181件追加              |
+| 全テスト            | PASS                   |
+| 型チェック          | PASS                   |
+| カバレッジ          | Line 88.51%, Branch 89.79%, Function 92.53% |
+| Phase 10 レビュー   | PASS (指摘0件)         |
+| Phase 11 手動テスト | PASS                   |
+
+### 成果物
+
+| Phase | 成果物             | パス                                                                                      |
+| ----- | ------------------ | ----------------------------------------------------------------------------------------- |
+| 12    | 実装ガイド         | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/implementation-guide.md    |
+| 12    | 更新履歴           | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/documentation-changelog.md |
+| 12    | 未タスクレポート   | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/unassigned-task-detection.md |
+
+---
 ## 2026-02-10: UT-FIX-5-4完了（AgentSDKAPI abort() 型定義不一致修正）
 
 | 項目         | 内容                                                                              |

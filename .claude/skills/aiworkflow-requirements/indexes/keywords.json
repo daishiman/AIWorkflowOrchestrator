@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-11T05:38:47.916Z",
+  "generated": "2026-02-11T22:38:13.771Z",
   "totalKeywords": 1078,
   "keywords": {
     "チャット履歴": [
@@ -1277,6 +1277,12 @@
       "rag-search-vector.md",
       "security-skill-ipc.md",
       "ui-ux-portal-patterns.md"
+    ],
+    "型定義修正タスクパターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "UT": [
+      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",

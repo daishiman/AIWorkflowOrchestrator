@@ -1,0 +1,152 @@
+{
+  "taskId": "UT-STORE-HOOKS-REFACTOR-001",
+  "taskName": "Zustand Store Hooks無限ループ修正",
+  "createdAt": "2026-02-11T00:00:00Z",
+  "completedAt": null,
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ],
+      "specPath": "phase-1-requirements.md"
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/fix-pattern-spec.md"
+      ],
+      "specPath": "phase-2-design.md"
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"],
+      "specPath": "phase-3-review.md"
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md"
+      ],
+      "specPath": "phase-4-test-creation.md"
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"],
+      "specPath": "phase-5-implementation.md"
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-summary.md"],
+      "specPath": "phase-6-test-enhancement.md"
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-summary.md"],
+      "specPath": "phase-7-coverage-verification.md"
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"],
+      "specPath": "phase-8-refactoring.md"
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"],
+      "specPath": "phase-9-quality-assurance.md"
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"],
+      "specPath": "phase-10-final-review.md"
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"],
+      "specPath": "phase-11-manual-testing.md"
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ],
+      "specPath": "phase-12-documentation.md"
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": ["outputs/phase-13/pr-info.md"],
+      "specPath": "phase-13-pr-creation.md"
+    }
+  },
+  "dependencies": ["UT-FIX-STORE-HOOKS-INFINITE-LOOP-001"],
+  "relatedPitfalls": ["P31"],
+  "issue": null,
+  "qualityMetrics": {
+    "targetCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "achieved": {
+      "tests": 181,
+      "coverage": {
+        "line": 88.51,
+        "branch": 89.79,
+        "function": 92.53
+      },
+      "phaseTests": {
+        "phase10": "PASS",
+        "phase11": "PASS"
+      }
+    }
+  },
+  "changedFiles": {
+    "modified": [
+      "apps/desktop/src/renderer/store/index.ts",
+      "apps/desktop/src/renderer/views/SettingsView/index.tsx",
+      "apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx"
+    ],
+    "added": [
+      "apps/desktop/src/renderer/store/slices/__tests__/authModeSlice.selectors.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/llmSlice.selectors.test.ts",
+      "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.selectors.test.ts",
+      "apps/desktop/src/renderer/store/__tests__/store.selectors.integration.test.ts",
+      "apps/desktop/src/renderer/store/__tests__/store.selectors.edge-cases.test.ts"
+    ],
+    "deleted": []
+  },
+  "problemDescription": {
+    "symptom": "設定画面がぐるぐる回り続ける、LLM/スキル選択が無限実行",
+    "rootCause": "useAuthModeStore()等の合成Store Hookが毎回新しいオブジェクトを返すため、その中の関数をuseEffectの依存配列に含めると無限ループが発生",
+    "solution": {
+      "shortTerm": "useRefでガードし、依存配列は空にする",
+      "longTerm": "個別セレクタベース（useAuthMode(), useSetAuthMode()等）に再設計"
+    }
+  },
+  "affectedComponents": [
+    "設定画面（Settings）",
+    "認証方式選択（AuthModeSelector）",
+    "LLM選択（LLMSelector）",
+    "スキル選択（SkillSelector）"
+  ]
+}

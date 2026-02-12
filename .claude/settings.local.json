@@ -103,7 +103,8 @@
       "Bash(do if [ -f \"$file\" ])",
       "Bash(then echo \"EXISTS: $file\")",
       "Bash(else echo \"MISSING: $file\")",
-      "Bash(pnpm --filter @repo/desktop test -- --run fileTreeUtils)"
+      "Bash(pnpm --filter @repo/desktop test -- --run fileTreeUtils)",
+      "Bash(pnpm --filter @repo/desktop test -- --run apps/desktop/src/renderer/store/slices/__tests__/llmSlice.selectors.test.ts)"
     ],
     "deny": [],
     "ask": []
