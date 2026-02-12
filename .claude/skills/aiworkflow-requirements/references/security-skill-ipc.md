@@ -321,6 +321,7 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 |--------|--------|----------|
 | TASK-FIX-5-1-SKILL-API-UNIFICATION SkillAPI統一 | 2026-02-06 | 138 |
 | TASK-FIX-4-1-IPC-CONSOLIDATION IPCチャンネル統合 | 2026-02-05 | 42 |
+| TASK-9B-H-SKILL-CREATOR-IPC SkillCreatorService IPC登録 | 2026-02-12 | 85 |
 
 ### TASK-FIX-5-1-SKILL-API-UNIFICATION safeInvoke/safeOnパターン
 
@@ -376,6 +377,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 - [Electron IPCセキュリティ](./security-electron-ipc.md)
 - [TASK-FIX-5-1 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md)
 - [TASK-FIX-4-1 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-FIX-4-1-IPC-CONSOLIDATION/outputs/phase-12/implementation-guide.md)
+- [TASK-9B-H 実装ガイド](../../../../docs/30-workflows/skill-creator-ipc/outputs/phase-12/implementation-guide.md)
 
 ---
 
@@ -387,5 +389,6 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
 | v1.3.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
+| v1.6.0     | 2026-02-12 | TASK-9B-H-SKILL-CREATOR-IPC完了: SkillCreatorService IPCチャネルセキュリティセクション追加（6チャンネル、validateIpcSender適用、引数バリデーション、エラーサニタイズ）|
 | v1.4.0     | 2026-02-04 | TASK-FIX-4-1-IPC-CONSOLIDATION完了（旧チャンネル削除、42テスト） |
 | v1.5.0     | 2026-02-09 | テンプレート準拠（概要追加、変更履歴を末尾に移動） |

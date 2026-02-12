@@ -361,6 +361,9 @@ const electronAPI: ElectronAPI = {
 
   // Skill API (TASK-6-1)
   skill: skillAPI,
+
+  // Skill Creator API (TASK-9B-H)
+  skillCreator: skillCreatorAPI,
 };
 
 // Slide API for slide dependency management
@@ -519,6 +522,8 @@ import type {
 } from "../shared/types/conversation";
 
 import { skillAPI } from "./skill-api";
+import { skillCreatorAPI } from "./skill-creator-api";
+import type { SkillCreatorAPI } from "./skill-creator-api";
 import type { PermissionAPI } from "./types";
 
 const conversationAPI: ConversationAPI = {
@@ -559,6 +564,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("systemPromptAPI", systemPromptAPI);
     contextBridge.exposeInMainWorld("conversationAPI", conversationAPI);
     contextBridge.exposeInMainWorld("permissionAPI", permissionAPI);
+    contextBridge.exposeInMainWorld("skillCreatorAPI", skillCreatorAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -580,4 +586,6 @@ if (process.contextIsolated) {
     conversationAPI;
   (window as unknown as { permissionAPI: PermissionAPI }).permissionAPI =
     permissionAPI;
+  (window as unknown as { skillCreatorAPI: SkillCreatorAPI }).skillCreatorAPI =
+    skillCreatorAPI;
 }

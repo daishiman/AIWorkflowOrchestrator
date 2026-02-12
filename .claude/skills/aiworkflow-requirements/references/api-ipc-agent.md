@@ -271,6 +271,64 @@ AIによるコード生成・編集の結果を保持する。
 
 ---
 
+## Skill Creator IPC チャネル
+
+Electronデスクトップアプリでは、IPC通信でスキル作成・管理機能を提供する。
+SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク実行・検証を行う。
+
+**実装ファイル**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- IPCハンドラー: `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`
+- Preload API: `apps/desktop/src/preload/skill-creator-api.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+### チャンネル一覧
+
+| チャネル                        | 方向            | 用途               | Request                                    | Response                       |
+| ------------------------------- | --------------- | ------------------ | ------------------------------------------ | ------------------------------ |
+| `skill-creator:detect-mode`     | Renderer → Main | モード自動判定     | `{ request: string }`                      | `IpcResult<SkillCreatorMode>`  |
+| `skill-creator:create`          | Renderer → Main | スキル新規作成     | `CreateSkillOptions`                       | `IpcResult<string>`            |
+| `skill-creator:execute-tasks`   | Renderer → Main | タスク群実行       | `ExecuteTasksOptions`                      | `IpcResult<ExecutionReport>`   |
+| `skill-creator:validate`        | Renderer → Main | スキル検証         | `{ skillDir: string }`                     | `IpcResult<boolean>`           |
+| `skill-creator:validate-schema` | Renderer → Main | スキーマ検証       | `{ schemaName: string; data: unknown }`    | `IpcResult<boolean>`           |
+| `skill-creator:progress`        | Main → Renderer | 進捗通知           | -                                          | `SkillCreatorProgress`         |
+
+### 型定義
+
+| 型名                   | 説明                                 |
+| ---------------------- | ------------------------------------ |
+| `IpcResult<T>`         | IPC統一レスポンス型（success/error） |
+| `SkillCreatorMode`     | 作成モード列挙値                     |
+| `CreateSkillOptions`   | スキル作成オプション                 |
+| `ExecuteTasksOptions`  | タスク実行オプション                 |
+| `ExecutionReport`      | タスク実行レポート                   |
+| `SkillCreatorProgress` | 進捗通知データ                       |
+| `SkillCreatorAPI`      | Preload APIインターフェース          |
+
+### SkillCreatorProgress型
+
+| プロパティ  | 型       | 説明                           |
+| ----------- | -------- | ------------------------------ |
+| `phase`     | `string` | 現在のフェーズ名               |
+| `taskIndex` | `number` | 現在のタスクインデックス（0始まり） |
+| `totalTasks`| `number` | 総タスク数                     |
+| `message`   | `string` | 進捗メッセージ                 |
+| `timestamp` | `number` | タイムスタンプ（ミリ秒）       |
+
+### 実装状況
+
+| 項目                      | 状態   | タスク                      |
+| ------------------------- | ------ | --------------------------- |
+| チャネル定数定義          | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
+| ホワイトリスト追加        | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
+| IPCハンドラー実装         | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
+| Preload API実装           | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
+| Sender検証（全ハンドラー）| 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
+| エラーサニタイズ          | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
+
+---
+
 ## 実装パターン参照
 
 > **Progressive Disclosure**: 実装時に参照すべきパターンドキュメント
@@ -297,6 +355,7 @@ AIによるコード生成・編集の結果を保持する。
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-9B-H  | SkillCreatorService IPCハンドラー登録 | 2026-02-12 | 6チャンネル追加（5 invoke + 1 progress）、SkillCreatorAPI Preload実装、セキュリティ準拠 |
 | UT-FIX-5-4 | AgentSDKAPI型定義不一致修正          | 2026-02-10 | `agentSDKAPI.abort()` 戻り値型を `void` → `Promise<void>` に修正（P23パターン準拠） |
 | UT-FIX-5-3 | Preload Agent Abort セキュリティ修正 | 2026-02-10 | `agentSDKAPI.abort()` を `safeInvoke()` 経由に変更、Main側 `ipcMain.handle()` 使用  |
 
@@ -306,6 +365,7 @@ AIによるコード生成・編集の結果を保持する。
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.6.0     | 2026-02-12 | TASK-9B-H: Skill Creator IPCチャネルセクション追加。6チャンネル（5 invoke + 1 progress）、型定義、実装状況、完了タスク記録 |
 | v1.5.0     | 2026-02-10 | UT-FIX-5-4: AgentSDKAPI.abort()型定義修正。`void` → `Promise<void>`。実装（safeInvoke）と型定義の整合性確保 |
 | v1.4.0     | 2026-02-10 | UT-FIX-5-3: `agent:abort` IPCセキュリティ修正。`ipcMain.on`→`ipcMain.handle`変更、`safeInvoke`パターン準拠。**注意**: `agent:getStatus`チャネル名不整合（Main: camelCase vs Preload: kebab-case）検出→TASK-FIX-12-2で対応予定 |
 | v1.3.0     | 2026-02-03 | TASK-WCE-MONACO-001: get-selection実装完了、完了タスクセクション追加         |
