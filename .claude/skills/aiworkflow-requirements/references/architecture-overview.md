@@ -74,7 +74,7 @@
 
 | パターン | 適用箇所 | 目的 | 参照 |
 |---------|---------|-----|-----|
-| **Facade** | EnvironmentService, SkillService | 複雑なサブシステムへの単純なインターフェース | arch-electron-services.md |
+| **Facade** | EnvironmentService, SkillService, SkillCreatorService | 複雑なサブシステムへの単純なインターフェース | arch-electron-services.md |
 | **Repository** | SQLite操作（better-sqlite3） | データアクセスの抽象化 | arch-ipc-persistence.md |
 | **Bridge** | IPC通信（Main↔Renderer） | 実装と抽象の分離 | security-electron-ipc.md |
 
@@ -197,6 +197,26 @@
 
 **セキュリティ**: 全通信はホワイトリストチャンネル経由。Sender検証必須。
 
+### IPC ハンドラー登録一覧
+
+`registerAllIpcHandlers` で一元管理されるハンドラー群。各ハンドラーの登録パターンは引数の依存関係によって分類される。
+
+| ハンドラー登録関数               | 登録パターン                 | チャンネル数 | 参照                     |
+| -------------------------------- | ---------------------------- | ------------ | ------------------------ |
+| registerAuthHandlers             | Pattern 1: mainWindow のみ  | -            | api-ipc-auth.md          |
+| registerSkillHandlers            | Pattern 2: service のみ     | -            | api-ipc-agent.md         |
+| registerChatEditHandlers         | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md         |
+| registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 6 (5 invoke + 1 progress) | api-ipc-agent.md |
+
+**Pattern 3 詳細（registerSkillCreatorHandlers）**:
+
+- **引数**: `mainWindow: BrowserWindow`, `service: SkillCreatorService`
+- **mainWindow用途**: Sender検証（`validateIpcSender`）、進捗通知（`webContents.send`）
+- **service用途**: SkillCreatorServiceへのビジネスロジック委譲
+- **対応チャンネル**: `skill-creator:detect-mode`, `skill-creator:create`, `skill-creator:execute-tasks`, `skill-creator:validate`, `skill-creator:validate-schema`, `skill-creator:progress`
+- **セキュリティ**: 全ハンドラーでSender検証、エラーサニタイズ適用
+- **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
+
 📖 詳細: [architecture-patterns.md](./architecture-patterns.md)
 
 ---
@@ -230,6 +250,7 @@
 | apps/desktop/src/main/services/ | Facadeサービス |
 | apps/desktop/src/main/services/environment/ | 環境サービス |
 | apps/desktop/src/main/services/skill/ | スキルサービス |
+| apps/desktop/src/main/services/skill-creator/ | スキル作成サービス |
 | apps/desktop/src/main/ipc/ | IPCハンドラ |
 | apps/desktop/src/main/infrastructure/ | インフラ（DB、セキュリティ） |
 | apps/desktop/src/main/infrastructure/db/ | better-sqlite3 |
@@ -403,6 +424,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6.0 | 2026-02-12 | TASK-9B-H: SkillCreatorService追加。IPCハンドラー登録一覧セクション新設、Facadeパターン・ディレクトリ構造にskill-creator追加 |
 | 1.5.0 | 2026-01-26 | 仕様ガイドライン完全準拠: ASCII図（依存方向図、IPC通信図）を表形式に変換 |
 | 1.4.0 | 2026-01-26 | 仕様ガイドライン準拠: ディレクトリ構造を表形式に変換、参照名修正 |
 | 1.3.0 | 2026-01-26 | 実装パターン総合ガイド参照追加 |

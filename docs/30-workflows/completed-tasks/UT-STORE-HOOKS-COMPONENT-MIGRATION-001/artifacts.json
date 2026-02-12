@@ -1,0 +1,145 @@
+{
+  "taskId": "UT-STORE-HOOKS-COMPONENT-MIGRATION-001",
+  "taskName": "Store Hooks コンポーネント移行",
+  "createdAt": "2026-02-12T00:00:00Z",
+  "completedAt": null,
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements-definition.md"]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/architecture-design.md"]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-specification.md"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/coverage-report.md"]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/verification-result.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-summary.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-result.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": [],
+  "relatedTasks": [
+    "UT-FIX-STORE-HOOKS-INFINITE-LOOP-001",
+    "UT-STORE-HOOKS-REFACTOR-001"
+  ],
+  "issue": null,
+  "qualityMetrics": {
+    "targetCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "achieved": {
+      "line": 87.77,
+      "branch": 90,
+      "function": 91.04
+    }
+  },
+  "targetComponents": [
+    {
+      "name": "LLMSelectorPanel",
+      "path": "apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx",
+      "currentHook": "useLLMStore()",
+      "targetHooks": [
+        "useLLMProviders()",
+        "useLLMFetchProviders()",
+        "useLLMSelectProvider()"
+      ],
+      "status": "migrated"
+    },
+    {
+      "name": "SkillSelector",
+      "path": "apps/desktop/src/renderer/components/skill/SkillSelector.tsx",
+      "currentHook": "useSkillStore()",
+      "targetHooks": [
+        "useAvailableSkillsMetadata()",
+        "useRescanSkills()",
+        "useIsScanning()"
+      ],
+      "status": "migrated"
+    },
+    {
+      "name": "SettingsView",
+      "path": "apps/desktop/src/renderer/views/SettingsView/index.tsx",
+      "currentHook": "useAuthModeStore()",
+      "targetHooks": [
+        "useSetAuthMode()",
+        "useInitializeAuthMode()",
+        "useFetchAuthMode()"
+      ],
+      "status": "migrated"
+    }
+  ],
+  "changedFiles": {
+    "modified": [
+      "apps/desktop/src/renderer/store/index.ts",
+      "apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx",
+      "apps/desktop/src/renderer/components/skill/SkillSelector.tsx",
+      "apps/desktop/src/renderer/views/SettingsView/index.tsx"
+    ],
+    "added": [
+      "apps/desktop/src/renderer/store/__tests__/selectors.test.ts",
+      "apps/desktop/src/renderer/__tests__/infinite-loop-prevention.test.tsx"
+    ]
+  }
+}

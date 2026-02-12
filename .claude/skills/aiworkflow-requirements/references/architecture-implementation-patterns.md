@@ -316,6 +316,65 @@ IPC チャンネル名のハードコード文字列を定数参照に置換し�
 | Setter Injection | 依存オブジェクトの生成に外部リソースが必要 | BrowserWindow、IPC ハンドラー |
 | Factory Pattern | 依存オブジェクトを動的に生成する必要がある | プラグインシステム |
 
+#### IPC ハンドラー登録パターン（TASK-9B-H 2026-02-12実装）
+
+> **このセクションの役割**: 実装パターン（どう実装するか）を記録する。プロセス面の教訓（何が問題だったか、どう防止するか）については [lessons-learned.md - TASK-9B-H](./lessons-learned.md#task-9b-h-skillcreatorservice-ipcハンドラー登録) を参照。
+
+BrowserWindow とサービスインスタンスを受け取り、IPC ハンドラーを登録するパターン。既存の registerAuthHandlers、registerSkillHandlers と同一構成。
+
+| 要素 | 説明 |
+|------|------|
+| 目的 | Main Process で IPC ハンドラーを登録し、Renderer からの要求を処理 |
+| 構成 | `registerXxxHandlers(mainWindow, service)` 関数で登録、`unregisterXxxHandlers()` で解除 |
+| 適用場面 | 新規 IPC チャンネルグループの追加時 |
+| 適用例 | `registerSkillCreatorHandlers(mainWindow, skillCreatorService)` |
+
+**構成要素**:
+
+| 要素 | 数量 | 説明 |
+|------|------|------|
+| `ipcMain.handle()` | 5チャンネル | Renderer からの invoke リクエストを処理 |
+| `sendXxxProgress()` | 1チャンネル | Main → Renderer への進捗通知送信 |
+| `unregisterXxxHandlers()` | 1関数 | ハンドラー解除（テスト用） |
+
+**セキュリティ層（4層防御）**:
+
+> セキュリティ仕様の正本: [security-electron-ipc.md - skillCreatorAPI](./security-electron-ipc.md)
+
+| 層 | 実装 | 説明 |
+|----|------|------|
+| L1 | channels.ts ホワイトリスト | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS に登録 |
+| L2 | validateIpcSender | 送信元BrowserWindowの正当性検証、DevToolsからの呼び出し検出・拒否 |
+| L3 | 引数バリデーション | typeof手動チェックによる型検証（文字列型・オブジェクト型）をMain側で実施 |
+| L4 | エラーサニタイズ | error.messageのみ返却。error.stack・ファイルパス等の内部情報は非露出 |
+
+**Preload統合（4箇所更新必須）**:
+
+| 更新箇所 | ファイル | 内容 |
+|----------|----------|------|
+| 1. API実装 | `preload/skill-creator-api.ts` | safeInvoke/safeOn でホワイトリスト検証付き API 実装 |
+| 2. import追加 | `preload/index.ts` | API実装モジュールの import |
+| 3. electronAPIオブジェクト | `preload/index.ts` | `electronAPI.skillCreator` として追加 |
+| 4. contextBridge統合 | `preload/index.ts` | `contextBridge.exposeInMainWorld` で公開 + non-isolated フォールバック |
+
+**既存の同パターン実装**:
+
+| ハンドラー | ファイル | チャンネル数 |
+|-----------|----------|------------|
+| registerAuthHandlers | `authHandlers.ts` | 認証関連チャンネル |
+| registerSkillHandlers | `skillHandlers.ts` | スキル管理・実行チャンネル |
+| registerSkillCreatorHandlers | `skillCreatorHandlers.ts` | スキル作成チャンネル（5 invoke + 1 on） |
+
+**実装時の注意点**:
+
+| 注意点 | 対策 |
+|--------|------|
+| IpcResult型の重複定義（Main側とPreload側で独立に型定義） | @repo/shared/typesに共通型として配置する |
+
+**プロセス面の教訓（苦戦箇所の詳細）**: [lessons-learned.md - TASK-9B-H 教訓1-8](./lessons-learned.md#task-9b-h-skillcreatorservice-ipcハンドラー登録) を参照。Preload統合漏れ、並列Phase実行、設計-実装乖離、仕様書更新漏れの教訓を記録。
+
+**関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
+
 ### SDK連携パターン（TASK-9C 2026-02-03実装）
 
 外部SDK（Claude Agent SDK等）との連携で発生する課題と解決パターン。
@@ -1149,6 +1208,8 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.20.0 | 2026-02-12 | TASK-9B-H: IPCハンドラー登録パターンに「実装時の注意点・苦戦箇所」テーブル追加（5件の苦戦箇所と解決策、lessons-learned.mdへのクロスリファレンス） |
+| 1.19.0 | 2026-02-12 | TASK-9B-H: IPC ハンドラー登録パターン追加（3層セキュリティ、Preload統合4箇所更新チェックリスト、既存同パターンとの対応表） |
 | 1.18.0 | 2026-02-11 | TASK-FIX-7-1: Setter Injection パターン詳細追加（SkillService と SkillExecutor の統合、使い分け基準テーブル） |
 | 1.17.0 | 2026-02-10 | UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH: 型定義修正タスクパターン追加（システム仕様書更新チェックリスト、関連Pitfall P31/P32との相互参照） |
 | 1.16.0 | 2026-02-09 | TASK-FIX-12-1-IPC-HARDCODE-FIX: IPCチャンネル名定数化パターン追加（ハードコード検出、定数参照置換、セキュリティ原則準拠） |

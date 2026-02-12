@@ -132,6 +132,36 @@
 
 ## 完了タスク
 
+### タスク: UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Store Hooks コンポーネント移行（2026-02-12完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | UT-STORE-HOOKS-COMPONENT-MIGRATION-001          |
+| 完了日     | 2026-02-12                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | 71（参照安定性31件＋無限ループ防止40件）        |
+| カバレッジ | Line 87.77% / Branch 90% / Function 91.04%      |
+
+#### 成果物
+
+| 成果物                           | パス/内容                                                          |
+| -------------------------------- | ------------------------------------------------------------------ |
+| 個別セレクタHook（30個）         | `apps/desktop/src/renderer/store/index.ts`                         |
+| LLMSelectorPanel移行             | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`    |
+| SkillSelector移行                | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`     |
+| SettingsView移行                 | `apps/desktop/src/renderer/views/SettingsView/index.tsx`           |
+| 参照安定性テスト                 | `apps/desktop/src/renderer/store/__tests__/selectors.test.ts`      |
+| 無限ループ防止テスト             | `apps/desktop/src/renderer/__tests__/infinite-loop-prevention.test.tsx` |
+
+#### 変更理由
+
+- P31問題（Zustand Store Hooks無限ループ）の根本解決策として個別セレクタパターンを実装
+- 合成Hook（`useLLMStore()`等）から個別セレクタ（`useLLMFetchProviders()`等）への移行により、useEffectの依存配列に関数を安全に含められるようになった
+- useRefガードパターンを削除し、コードの可読性と保守性を向上
+
+---
+
 ### タスク: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION executeSkillのSkillExecutor委譲実装（2026-02-11完了）
 
 | 項目       | 内容                                                    |
@@ -170,7 +200,6 @@
 | patterns.md | 成功パターン2件追加 |
 
 ---
-
 ### タスク: UT-FIX-5-4 AgentSDKAPI abort() 型定義不一致修正（2026-02-10完了）
 
 | 項目       | 内容                                            |
@@ -385,7 +414,7 @@
 | task-ref-quality-requirements-split-001    | quality-requirements.md仕様書分割                     | 低     | TASK-OPT-CI-TEST-PARALLEL-001 Phase 12（テンプレート準拠確認） | `docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md`             |
 | task-e2e-permission-waitfortimeout-001     | E2E権限テスト waitForTimeout改善                      | 低     | TASK-8C-D Phase 10（TQ-M1指摘）                                | `docs/30-workflows/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md`      |
 | task-e2e-test-readme-documentation-001     | READMEへのE2Eテスト実行方法追加                       | 低     | TASK-8C-D Phase 9（DOC-M1指摘）                                | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md`                  |
-| TASK-9B-H                                  | SkillCreatorService IPC通信設定                       | 高     | TASK-9B-G Phase 12（IPC未設定）                                | `docs/30-workflows/unassigned-task/task-9b-h-skill-creator-ipc-channel.md`                 |
+| ~~TASK-9B-H~~                              | ~~SkillCreatorService IPC通信設定~~                   | ~~高~~ | **2026-02-12完了** TASK-9B-H-SKILL-CREATOR-IPC                 | `docs/30-workflows/skill-creator-ipc/`                                                     |
 | UI-INTEGRATION-9B                          | SkillCreator UI統合（TASK-10A連携）                   | 高     | TASK-9B-G Phase 12（UI未実装）                                 | `docs/30-workflows/unassigned-task/task-9b-ui-integration-task10a.md`                      |
 | TASK-9B-I                                  | Claude Agent SDK本格統合                              | 中     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md`             |
 | TASK-9B-J                                  | ResourceLoaderキャッシュ無効化                        | 低     | TASK-9B-G Phase 3（推奨事項）                                  | `docs/30-workflows/unassigned-task/task-9b-j-skill-creator-cache-invalidation.md`          |
@@ -410,13 +439,21 @@
 | TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT | Updater/AgentHandler IPC チャネル名定数化                          | 低 | TASK-FIX-12-1 Phase 12                                         | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`         |
 | TASK-DOC-PHASE12-JUDGMENT-CRITERIA-001       | Phase 12判断基準の明確化と漏れ防止強化                             | 低 | TASK-FIX-6-1-STATE-CENTRALIZATION Phase 12                     | `docs/30-workflows/unassigned-task/task-doc-phase12-judgment-criteria-improvement.md`       |
 | ~~UT-FIX-5-4~~                               | ~~AgentSDKAPI 型定義不一致修正~~                                   | ~~低~~ | ~~UT-FIX-5-3 Phase 12 アーキテクチャ検証~~                     | ~~`docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md`~~ **2026-02-10完了** |
-| ~~UT-STORE-HOOKS-REFACTOR-001~~              | ~~Store Hooksを個別セレクタベースに再設計~~                         | ~~中~~ | ~~TASK-UT-AUTH-MODE-UI-INTEGRATION タスク仕様書 セクション8~~  | ~~`docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor.md`~~ **2026-02-11完了**  |
+| ~~UT-STORE-HOOKS-REFACTOR-001~~              | ~~Store Hooksを個別セレクタベースに再設計~~                         | ~~中~~ | ~~TASK-UT-AUTH-MODE-UI-INTEGRATION タスク仕様書 セクション8~~  | ~~`docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor.md`~~ **2026-02-12完了（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で実施）** |
 | UT-STORE-HOOKS-REFACTOR-002                  | 状態セレクタのJSDoc追加                                             | 低 | UT-STORE-HOOKS-REFACTOR-001 Phase 10最終レビュー               | `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor-002-jsdoc.md`               |
 | UT-STORE-HOOKS-REFACTOR-003                  | 合成Hookを使用しているコンポーネントの段階的移行                    | 中 | UT-STORE-HOOKS-REFACTOR-001 Phase 10最終レビュー               | `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor-003-migration.md`           |
 | UT-FIX-APP-INITAUTH-CHECK-001                | App.tsxのinitializeAuth確認                                         | 低 | TASK-UT-AUTH-MODE-UI-INTEGRATION Phase 10 MINOR指摘            | `docs/30-workflows/unassigned-task/task-ut-fix-app-initauth-check.md`                       |
 | UT-FIX-7-1-001                               | SkillService型アサーション→型ガード改善                            | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-001-skillservice-type-guard.md`          |
 | UT-FIX-7-1-002                               | skillHandlers.ts機能別分割                                         | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-002-skillhandlers-split.md`              |
 | UT-FIX-7-1-003                               | IPCレスポンスパターン統一                                          | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-003-ipc-response-pattern-unification.md` |
+| UT-9B-H-001                                  | IpcResult型の重複定義を@repo/sharedに統一                          | 低 | TASK-9B-H-SKILL-CREATOR-IPC Phase 10 m-01                      | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md`                 |
+| UT-9B-H-002                                  | SkillCreator IPCハンドラーの引数検証をZodスキーマに移行            | 低 | TASK-9B-H-SKILL-CREATOR-IPC Phase 10 m-02                      | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`                       |
+| UT-9B-H-003                                  | SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト） | 高 | TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー                   | `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md`                          |
+| UT-9B-H-004                                  | SkillCreator設計書-実装整合性修正（Zod/型/メソッド名の乖離対応）  | 中 | TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー                   | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md`             |
+| UT-9B-H-005                                  | Preload API二重公開パターン統一                                    | 低 | TASK-9B-H Phase 10 M-02 / Phase 11 D-3                         | `docs/30-workflows/unassigned-task/task-9b-h-api-dual-publishing-unification.md`             |
+| task-imp-store-hooks-remaining-migration      | 残コンポーネントの個別セレクタHook移行                             | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md`              |
+| task-ref-store-hooks-deprecate-composite      | 合成Store Hookの非推奨化・段階的削除                               | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md`              |
+| task-imp-phase12-auto-verification            | Phase 12チェックリスト自動検証スクリプト                           | 中 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（実装苦戦箇所） | `docs/30-workflows/unassigned-task/task-imp-phase12-auto-verification.md`                    |
 
 ### 未タスク管理ルール
 
@@ -470,3 +507,6 @@
 | 1.24.0     | 2026-02-11 | UT-STORE-HOOKS-REFACTOR-001完了。未タスク2件追加: UT-STORE-HOOKS-REFACTOR-002（JSDoc追加）、UT-STORE-HOOKS-REFACTOR-003（合成Hook移行）。Phase 10最終レビュー検出 |
 | 1.25.0     | 2026-02-11 | 未タスク3件追加: UT-FIX-7-1-001（SkillService型ガード改善）、UT-FIX-7-1-002（skillHandlers分割）、UT-FIX-7-1-003（IPCレスポンスパターン統一）。TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12検出 |
 | 1.26.0     | 2026-02-12 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了記録を完了タスクセクションに追加。Phase 12仕様書更新漏れ修正 |
+| 1.27.0     | 2026-02-12 | TASK-9B-H完了記録追加。未タスク2件追加: UT-9B-H-001（IpcResult型統一）、UT-9B-H-002（Zodスキーマ移行）。TASK-9B-H-SKILL-CREATOR-IPC Phase 12検出 |
+| 1.28.0     | 2026-02-12 | 未タスク2件追加: UT-9B-H-003（IPCセキュリティ強化）、UT-9B-H-004（設計書-実装整合性修正）。TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー検出 |
+| 1.29.0     | 2026-02-12 | 未タスク追加: UT-9B-H-005（Preload API二重公開パターン統一）。TASK-9B-H Phase 10 M-02 / Phase 11 D-3検出 |

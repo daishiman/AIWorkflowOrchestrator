@@ -1637,12 +1637,25 @@
 - **発見日**: 2026-02-09
 - **関連タスク**: TASK-FIX-15-1
 
+#### Phase 12 spec-update-workflow全Step逐次実行パターン（UT-STORE-HOOKS-COMPONENT-MIGRATION-001 2026-02-12）
+
+- **状況**: Phase 12でTask 2（システムドキュメント更新）のStep 1-A〜1-E + Step 2を一部省略してしまった
+- **解決策**:
+  1. documentation-changelog.md に各Step欄を事前に作成（空欄状態）
+  2. Step 1-A → 1-B → 1-C → 1-D → 1-E → Step 2 の順に逐次実行
+  3. 各Step完了後にdocumentation-changelog.mdの該当欄を✅に更新
+  4. 全Step完了後にのみ「Phase 12完了」と記載
+- **教訓**: 12項目もの更新漏れが発生。Phase 12は最も漏れやすいPhaseであり、チェックリスト駆動が必須
+- **発見日**: 2026-02-12
+- **関連**: P1, P2, P4, P25, P27, P29
+
 ---
 
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-02-12** | **UT-STORE-HOOKS-COMPONENT-MIGRATION-001知見追加**: Phase 12 spec-update-workflow全Step逐次実行パターン追加（チェックリスト駆動、12項目更新漏れ防止） |
 | **2026-02-11** | **TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION知見追加**: Setter Injectionによる遅延初期化パターン追加（BrowserWindow依存DI、DIパターン使い分け基準テーブル）。関連Pitfall P34/P35参照                       |
 | **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001知見追加**: Zustand Store Hooks無限ループ対策パターン追加（useRefガード）。06-known-pitfalls.md連携強化（新規Pitfall登録フロー）。クイックナビゲーション更新     |
 | **2026-02-09** | **TASK-FIX-15-1知見追加**: 成功パターン2件（未タスク仕様書Level A化パターン、Phase 12 3ステップ完全性確認パターン）                                                                                    |

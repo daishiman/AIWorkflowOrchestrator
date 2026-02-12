@@ -20,7 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-12 | 1.4.0 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 教訓追加（個別セレクタ移行、Phase 12チェックリスト管理） |
+| 2026-02-12 | 1.3.1 | TASK-9B-H: 苦戦箇所の教訓5-8を追加（Phase 12暗黙的要件、artifacts.json全Phase更新、設計書-実装乖離管理、複数エージェント並列時の仕様書更新漏れ） |
 | 2026-02-12 | 1.3.0 | 苦戦箇所1・3のコード例を実際の実装と整合するよう修正（架空のversion/authorフィールド削除、executeSkillシグネチャ修正） |
+| 2026-02-12 | 1.2.1 | TASK-9B-H: SkillCreatorService IPCハンドラー登録の教訓追加（Preload統合漏れ、並列Phase実行、IPC型定義配置、artifacts.jsonステータス管理） |
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
@@ -35,8 +38,20 @@
    - [苦戦箇所3: 型変換](#3-skill-から-skillmetadata-への型変換)
    - [苦戦箇所4: Phase間テスト数整合性問題](#4-phase間テスト数整合性問題)
    - [苦戦箇所5: 未タスク指示書の作成漏れ](#5-未タスク指示書の作成漏れ)
-2. [関連ドキュメント](#関連ドキュメント)
-3. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+2. [UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行](#ut-store-hooks-component-migration-001-個別セレクタhook移行)
+   - [苦戦箇所1: useStoreの参照安定性](#1-usestoreの参照安定性)
+   - [苦戦箇所2: Phase 12チェックリスト管理](#2-phase-12チェックリスト管理)
+3. [TASK-9B-H: SkillCreatorService IPCハンドラー登録](#task-9b-h-skillcreatorservice-ipcハンドラー登録)
+   - [教訓1: Preload統合の漏れ防止](#1-preload統合の漏れ防止)
+   - [教訓2: 並列Phase実行時のレビュータイミング](#2-並列phase実行時のレビュータイミング)
+   - [教訓3: IPC型定義の配置戦略](#3-ipc型定義の配置戦略)
+   - [教訓4: artifacts.jsonのPhaseステータス管理](#4-artifactsjsonのphaseステータス管理)
+   - [教訓5: Phase 12の暗黙的要件の見落とし](#5-phase-12の暗黙的要件の見落とし)
+   - [教訓6: artifacts.jsonのPhase別ステータス更新忘れ](#6-artifactsjsonのphase別ステータス更新忘れ)
+   - [教訓7: 設計書と実装の乖離管理](#7-設計書と実装の乖離管理)
+   - [教訓8: 複数エージェント並列実行時のシステム仕様書更新漏れ](#8-複数エージェント並列実行時のシステム仕様書更新漏れ)
+4. [関連ドキュメント](#関連ドキュメント)
+5. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -329,6 +344,286 @@ return this.skillExecutor.execute(request, metadata);
 | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | Setter Injection パターン追加 |
 | [interfaces-agent-sdk-executor.md](./interfaces-agent-sdk-executor.md) | SkillService 統合セクション追加、型変換パターン追加 |
 | [06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) | P32 追加（遅延初期化パターン選択の教訓） |
+
+---
+
+## UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 |
+| 目的 | Zustand合成Store Hookを個別セレクタHookに移行し、P31無限ループを根本解決 |
+| 完了日 | 2026-02-12 |
+| ステータス | **完了** |
+
+### 実装内容
+
+| 変更内容 | ファイル | 説明 |
+|----------|----------|------|
+| 個別セレクタHook 30個追加 | `apps/desktop/src/renderer/store/index.ts` | LLM系12個 + Skill系15個 + AuthMode系3個 |
+| LLMSelectorPanel移行 | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx` | useLLMStore() → useLLMProviders(), useLLMFetchProviders() 等 |
+| SkillSelector移行 | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx` | useSkillStore() → useAvailableSkillsMetadata(), useRescanSkills() 等 |
+| SettingsView移行 | `apps/desktop/src/renderer/views/SettingsView/index.tsx` | useAuthModeStore() → useSetAuthMode(), useInitializeAuthMode() 等。useRefガード削除 |
+
+### 苦戦箇所と解決策
+
+#### 1. useStoreの参照安定性
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | ZustandのuseStore(selector)で返されるオブジェクトや関数の参照安定性を保証する必要があった |
+| **原因** | `useAppStore(state => ({ a: state.a, b: state.b }))` は毎回新しいオブジェクトを返すため、依存配列に入れると無限ループ発生 |
+| **解決策** | 各フィールドを個別のセレクタで取得し、プリミティブ値やZustandが内部的に安定させる関数参照を返すようにした |
+| **教訓** | Zustand Storeからの取得は「1セレクタ=1フィールド」が最も安全。オブジェクトをまとめて返すパターンは避ける |
+
+**コード例（個別セレクタパターン）**:
+
+```typescript
+// store/index.ts - 個別セレクタHook（参照安定）
+export const useLLMProviders = () => useAppStore((state) => state.providers);
+export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProviders);
+
+// コンポーネントでの使用（useRefガード不要）
+const providers = useLLMProviders();
+const fetchProviders = useLLMFetchProviders();
+
+useEffect(() => {
+  // fetchProvidersはZustandが内部的に安定させた参照のため、依存配列に含めても安全
+  fetchProviders();
+}, [fetchProviders]);
+```
+
+**参照**: [arch-state-management.md - P31対策](./arch-state-management.md), [06-known-pitfalls.md - P31](../../../rules/06-known-pitfalls.md)
+
+---
+
+#### 2. Phase 12チェックリスト管理
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 12で12項目もの更新が必要で、複数の更新漏れが発生した |
+| **原因** | Step 1-A〜1-D + Step 2の各サブステップを並列に管理しようとして、一部をスキップした |
+| **解決策** | documentation-changelog.mdに各Step欄を事前に空欄状態で作成し、逐次消化する方式に変更 |
+| **教訓** | Phase 12は「全Step確認前に完了と記載しない」ルールを厳守。チェックリスト駆動が必須 |
+
+**参照**: [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [06-known-pitfalls.md - P1, P4](../../../rules/06-known-pitfalls.md)
+
+---
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 個別セレクタHook（30個） | `apps/desktop/src/renderer/store/index.ts` |
+| 参照安定性テスト（31件） | `apps/desktop/src/renderer/store/__tests__/selectors.test.ts` |
+| 無限ループ防止テスト（40件） | `apps/desktop/src/renderer/__tests__/infinite-loop-prevention.test.tsx` |
+| LLMSelectorPanel | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx` |
+| SkillSelector | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx` |
+| SettingsView | `apps/desktop/src/renderer/views/SettingsView/index.tsx` |
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| [arch-state-management.md](./arch-state-management.md) | P31対策セクションに個別セレクタ実装完了記録 |
+| [06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) | P31解決策に個別セレクタ実装完了を反映 |
+| [task-workflow.md](../../task-specification-creator/references/task-workflow.md) | 完了タスクセクション追加 |
+| [patterns.md](./patterns.md) | P31対策パターンに個別セレクタ移行パターン追加 |
+| [03-state-management.md](../../../rules/03-state-management.md) | 個別セレクタDOルール追加 |
+
+---
+
+## TASK-9B-H: SkillCreatorService IPCハンドラー登録
+
+> **このセクションの役割**: プロセス面の教訓（何が問題だったか、どう防止するか）を記録する。実装パターン（どう実装するか）については [architecture-implementation-patterns.md - IPC ハンドラー登録パターン](./architecture-implementation-patterns.md) を参照。
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-9B-H-SKILL-CREATOR-IPC |
+| 目的 | SkillCreatorService の IPC ハンドラー登録・Preload API 公開・セキュリティ層を実装 |
+| 完了日 | 2026-02-12 |
+| ステータス | **完了** |
+
+### 実装内容
+
+| 変更内容 | ファイル | 説明 |
+|----------|----------|------|
+| IPCハンドラー登録 | `skillCreatorHandlers.ts` | ipcMain.handle で5チャンネル + 進捗通知1チャンネルを登録 |
+| Preload API実装 | `skill-creator-api.ts` | safeInvoke/safeOn でホワイトリスト検証付きAPI公開 |
+| contextBridge統合 | `preload/index.ts` | electronAPI.skillCreator として統合公開 |
+| ホワイトリスト更新 | `channels.ts` | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS に追加 |
+
+### 苦戦箇所と解決策
+
+#### 1. Preload統合の漏れ防止
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | skill-creator-api.ts で skillCreatorAPI を実装したが、preload/index.ts への contextBridge 統合を忘れた |
+| **原因** | Preload API の新規追加時に必要な更新箇所が4箇所に分散しており、チェックリスト化されていなかった |
+| **解決策** | Phase 8-9 で発見・修正。新規Preload API追加時の4箇所更新チェックリストを策定 |
+| **教訓** | 新規 Preload API 追加時は以下の4箇所を必ず更新する |
+
+**新規Preload API追加時の必須更新箇所**:
+
+| 更新箇所 | ファイル | 内容 |
+|----------|----------|------|
+| 1. import追加 | `preload/index.ts` | API実装モジュールのimport |
+| 2. electronAPIオブジェクト追加 | `preload/index.ts` | electronAPIオブジェクトに新APIを追加 |
+| 3. contextBridge.exposeInMainWorld | `preload/index.ts` | contextBridge経由でRendererに公開 |
+| 4. non-isolatedフォールバック | `preload/index.ts` | contextIsolation無効時のwindow直下フォールバック |
+
+**参照**: [architecture-implementation-patterns.md - IPC ハンドラー登録パターン](./architecture-implementation-patterns.md)
+
+**相互参照**: [06-known-pitfalls.md#P23 API二重定義の型管理](../../rules/06-known-pitfalls.md)（Preload API追加時の更新箇所分散に関する教訓）
+
+---
+
+#### 2. 並列Phase実行時のレビュータイミング
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 10（読み取り専用レビュー）が Phase 8-9（コード修正）と並列実行され、修正前のコードをレビューして MAJOR 判定を出した |
+| **原因** | コード修正を伴う Phase とコード読み取りの Phase を並列実行した |
+| **解決策** | コード修正を伴う Phase と読み取りレビュー Phase の並列実行を避ける |
+| **教訓** | 並列実行する場合は修正前コードの可能性をレビュー結果に明記する |
+
+**Phase並列実行の安全な組み合わせ**:
+
+| 組み合わせ | 安全性 | 理由 |
+|-----------|--------|------|
+| Phase 1-3（要件・設計・レビュー） | 安全 | 読み取り専用の仕様書作業 |
+| Phase 4-7（テスト・実装・カバレッジ） | 注意 | コード変更あり、依存関係確認必須 |
+| Phase 8-9 + Phase 10 | 危険 | リファクタリング中にレビューすると修正前コードを評価してしまう |
+| Phase 11 + Phase 12 | 安全 | 手動テストとドキュメントは独立 |
+
+---
+
+#### 3. IPC型定義の配置戦略
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | IpcResult<T> 型が Main 側（skillCreatorHandlers.ts）と Preload 側（skill-creator-api.ts）で重複定義された |
+| **原因** | IPC 通信の両端で同じ型を使用するが、共有パッケージに配置する判断が後回しになった |
+| **解決策** | 未タスク UT-9B-H-001 として登録し、@repo/shared/types に型を配置する後日対応を計画 |
+| **教訓** | IPC通信で両側から参照される型は最初から @repo/shared に配置すべき |
+
+**IPC型の配置判断基準**:
+
+| 型の参照元 | 配置先 | 例 |
+|-----------|--------|-----|
+| Main側のみ | `apps/desktop/src/main/` 内 | 内部サービス型 |
+| Preload側のみ | `apps/desktop/src/preload/` 内 | UI固有型 |
+| Main + Preload両方 | `packages/shared/src/` | IpcResult<T>、共有レスポンス型 |
+| Main + Preload + Renderer | `packages/shared/src/` | ドメイン型（Skill、Agent等） |
+
+---
+
+#### 4. artifacts.jsonのPhaseステータス管理
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase完了時に artifacts.json のステータスが自動更新されず、Phase 12 のみ completed で残りが pending だった |
+| **原因** | 各 Phase 完了時に artifacts.json のステータス更新が完了条件に含まれていなかった |
+| **解決策** | 各 Phase 完了時に artifacts.json のステータス更新を完了条件チェックリストに追加 |
+| **教訓** | Phase 完了時は成果物の作成だけでなく、artifacts.json のステータス更新も必須アクションとする |
+
+**相互参照**: [06-known-pitfalls.md#P4 documentation-changelogへの早期完了記載](../../rules/06-known-pitfalls.md)（ステータス管理の早期完了判定に関する教訓）
+
+---
+
+#### 5. Phase 12の暗黙的要件の見落とし
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 12の成果物として仕様書に明示されていないが、P28対策としてスキルフィードバックレポートが必要だった。仕様書のチェックリストを完了しても、`.claude/rules/06-known-pitfalls.md` に記載されたP28への対処が漏れた |
+| **原因** | Phase 12仕様書のチェックリストが `06-known-pitfalls.md` のPhase 12関連項目（P1-P4, P25-P28）を参照していなかった |
+| **解決策** | Phase 12実行前に `06-known-pitfalls.md` のPhase 12関連項目（P1-P4, P25-P28）を全て確認するチェックステップを追加する。P28は仕様書テンプレートにTask 5として明示化すべき |
+| **教訓** | Phase 12のチェックリストだけでなく、`06-known-pitfalls.md` のPhase 12関連Pitfallも完了条件に含める必要がある |
+
+**参照**: [06-known-pitfalls.md - P28](../../../rules/06-known-pitfalls.md)
+
+**相互参照**: [06-known-pitfalls.md#P28 スキルフィードバックレポート未作成](../../rules/06-known-pitfalls.md)（Phase 12の暗黙的成果物に関する教訓）
+
+---
+
+#### 6. artifacts.jsonのPhase別ステータス更新忘れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 12エージェントがPhase 12のステータスのみをcompletedに更新し、Phase 1-11はpendingのまま放置された |
+| **原因** | 各Phaseの完了時にartifacts.jsonを更新する運用が確立されておらず、Phase 12エージェントが自Phase以外のステータスを確認しなかった |
+| **解決策** | Phase 12仕様書の完了条件に「artifacts.jsonの全Phase（1-12）のステータスがcompletedであること」を明示する |
+| **教訓** | Phase 12はプロジェクト全体のステータス整合性を確認する最終チェックポイントとして機能させる |
+
+---
+
+#### 7. 設計書と実装の乖離管理
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 2設計書で詳細に定義されたZodスキーマ、sanitizeError関数、handleWithErrorBoundaryラッパーが実装されなかった。Phase 5で実装をシンプル化したが、設計書を更新しなかったため、最終レビューで「設計-実装乖離」として検出された |
+| **原因** | Phase 5（実装）で設計書の仕様を変更する判断をしたが、設計書（Phase 2成果物）を同時に更新しなかった |
+| **解決策** | Phase 5（実装）で設計書の仕様を変更する場合は、同Phase内で設計書（Phase 2成果物）も更新する。「意図的なシンプル化」と「実装漏れ」を区別するため、変更理由をPhase 5成果物に記録する |
+| **教訓** | 設計と実装の乖離は「意図的」であっても、設計書を更新しなければ後続レビューで「実装漏れ」と区別できない |
+
+**設計変更時の記録フォーマット**:
+
+| 項目 | 記載内容 |
+|------|----------|
+| 変更対象 | 設計書のどの仕様を変更したか |
+| 変更理由 | シンプル化、パフォーマンス最適化、スコープ縮小 等 |
+| 変更種別 | 「意図的なシンプル化」「スコープ外として後日対応」「不要と判断して削除」 |
+| 未タスク化要否 | 後日対応が必要な場合は未タスクとして登録 |
+
+**相互参照**: 将来 06-known-pitfalls.md に P33（設計-実装乖離管理）として追加予定。現時点では本教訓が正本。
+
+---
+
+#### 8. 複数エージェント並列実行時のシステム仕様書更新漏れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 12エージェントが一部のシステム仕様書（api-ipc-agent.md, security-electron-ipc.md, architecture-overview.md）への更新を漏らした。後続の品質レビューで発見・追加修正が必要になった |
+| **原因** | IPC機能開発時に更新すべきシステム仕様書の一覧が明示されておらず、エージェントが一部ファイルの存在を認識していなかった |
+| **解決策** | Phase 12仕様書に「IPC機能開発時の更新対象ファイル一覧」を追加する。最低限の更新対象として以下を明記する |
+| **教訓** | IPC機能開発では影響範囲が広く、更新対象ファイルが多い。チェックリストによる漏れ防止が必須 |
+
+**IPC機能開発時の最低限の更新対象ファイル一覧**:
+
+| ファイル | 更新内容 |
+|----------|----------|
+| `api-ipc-agent.md` | IPCチャンネル定義、ハンドラー仕様の追加・更新 |
+| `security-electron-ipc.md` | セキュリティ層（ホワイトリスト、バリデーション）の記録 |
+| `architecture-overview.md` | アーキテクチャ図、コンポーネント構成の更新 |
+| `interfaces-agent-sdk-skill.md` | 型定義、インターフェース変更の記録 |
+| `task-workflow.md` | 完了タスク記録、残課題テーブル更新 |
+| `lessons-learned.md` | 苦戦箇所と教訓の記録 |
+| `architecture-implementation-patterns.md` | 新規実装パターンの追加 |
+
+---
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| IPCハンドラー | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` |
+| ホワイトリスト更新 | `apps/desktop/src/preload/channels.ts` |
+| Preload統合 | `apps/desktop/src/preload/index.ts` |
+| ハンドラーテスト | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.test.ts` |
+| Preload APIテスト | `apps/desktop/src/preload/__tests__/skill-creator-api.test.ts` |
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | IPC ハンドラー登録パターン（Pattern 3）追加 |
+| [06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) | Preload統合漏れ、並列Phase実行の教訓 |
 
 ---
 

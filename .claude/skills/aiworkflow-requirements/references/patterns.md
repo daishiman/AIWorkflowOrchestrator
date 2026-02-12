@@ -17,14 +17,14 @@
 | [DI / アーキテクチャ](#di--アーキテクチャ)      | 2件        | Setter Injection遅延初期化、型変換パターン |
 | [OAuth / 認証](#oauth--認証)                    | 4件        | Supabase PKCE、コールバック受信          |
 | [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
-| [ストア / 永続化](#ストア--永続化)              | 6件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策、個別セレクタ再設計 |
+| [ストア / 永続化](#ストア--永続化)              | 7件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策、個別セレクタ再設計、個別セレクタ移行 |
 | [非同期処理](#非同期処理)                       | 1件        | race condition対策、executionId事前生成  |
 
 ### 失敗パターン
 
 | カテゴリ                                 | パターン数 | 主要トピック                                |
 | ---------------------------------------- | ---------- | ------------------------------------------- |
-| [Phase 12 漏れ](#phase-12-漏れ)          | 8件        | LOGS.md更新漏れ、SKILL.md漏れ、未タスク管理 |
+| [Phase 12 漏れ](#phase-12-漏れ)          | 9件        | LOGS.md更新漏れ、SKILL.md漏れ、未タスク管理、spec-update-workflow全Step未実施 |
 | [IPC / Preload](#ipc--preload)           | 2件        | チャネル名命名規則不整合、型定義不一致      |
 | [OAuth / 認証エラー](#oauth--認証エラー) | 4件        | state競合、flowType未設定                   |
 | [テスト / 型安全](#テスト--型安全)       | 3件        | モジュールリーク、型アサーション            |
@@ -300,79 +300,79 @@
 - **適用条件**: Electron/Tauri等のデスクトップアプリでのOAuth実装時
 - **発見日**: 2026-02-06（TASK-AUTH-CALLBACK-001)
 
-#### Zustand Store Hooks 無限ループ対策（P31）
-
-##### 1. 問題の概要
+#### Zustand Store Hooks 無限ループ対策（P31）-- 解決済み
 
 | 項目 | 内容 |
 |------|------|
-| タスクID | UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 |
+| タスクID | UT-FIX-STORE-HOOKS-INFINITE-LOOP-001（短期対策） → UT-STORE-HOOKS-COMPONENT-MIGRATION-001（根本解決） |
 | 発見日 | 2026-02-10 |
+| 解決日 | 2026-02-12 |
 | 影響範囲 | SettingsView, LLMSelectorPanel, SkillSelector |
-| 症状 | 設定画面がぐるぐる回り続ける、LLM/スキル選択が無限実行 |
+| ステータス | **解決済み**（個別セレクタHookへの移行完了） |
 
-##### 2. 根本原因
+**問題**: 合成Store Hook（`useAuthModeStore()` 等）が毎回新しいオブジェクトを返し、`useEffect` の依存配列で無限ループ発生
 
-- **状況**: 合成Store Hook（`useAuthModeStore()` 等）が毎回新しいオブジェクトを返す
-- **問題**: `useEffect` の依存配列に含めると無限ループが発生
-- **原因**: Zustand の合成 Store は呼び出しごとに新しいオブジェクト参照を生成するため、React の依存配列比較で常に「変更あり」と判定される
+**解決策**:
+
+| 段階 | 方法 | 状態 |
+|------|------|------|
+| 短期（緊急修正） | `useRef` ガード + 空の依存配列 | 適用後、個別セレクタ移行により削除 |
+| 長期（根本解決） | 個別セレクタHook（`useLLMFetchProviders()` 等）に再設計 | 2026-02-12完了 |
 
 ```typescript
-// ❌ 無限ループ発生
+// ❌ 無限ループ（合成Hook）
 const { initializeAuthMode } = useAuthModeStore();
-useEffect(() => {
-  initializeAuthMode();
-}, [initializeAuthMode]); // initializeAuthMode は毎回新しい参照
+useEffect(() => { initializeAuthMode(); }, [initializeAuthMode]);
 
-// ✅ 修正後
-const { initializeAuthMode } = useAuthModeStore();
-const initRef = useRef(false);
-useEffect(() => {
-  if (!initRef.current) {
-    initRef.current = true;
-    initializeAuthMode();
-  }
-}, []); // 依存配列は空
+// ✅ 安全（個別セレクタ）
+const initializeAuthMode = useInitializeAuthMode();
+useEffect(() => { initializeAuthMode(); }, [initializeAuthMode]);
 ```
 
-##### 3. 解決パターン
+**詳細**: [arch-state-management.md - P31対策セクション](./arch-state-management.md)
+**落とし穴記録**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md)
+**実装ガイド**: [implementation-guide.md](../../../docs/30-workflows/completed-tasks/UT-STORE-HOOKS-COMPONENT-MIGRATION-001/outputs/phase-12/implementation-guide.md)
 
-| アプローチ | 実装方法 | 適用場面 |
-|-----------|---------|---------|
-| **短期（即時対応）** | `useRef` ガード + 空の依存配列 | 既存コードの緊急修正 |
-| **長期（設計改善）** | 個別セレクタベース再設計（`useAuthMode()`, `useSetAuthMode()` 等） | 新規実装・リファクタリング時 |
+#### 個別セレクタHookへのコンポーネント移行パターン（UT-STORE-HOOKS-COMPONENT-MIGRATION-001 2026-02-12実装）
 
-- **短期解決策**: `useRef` で初期化済みフラグを管理し、依存配列を空にする
-- **長期解決策**: UT-STORE-HOOKS-REFACTOR-001 で個別セレクタベースの Hook に再設計
+- **状況**: P31対策として合成Store Hook（`useLLMStore()`, `useSkillStore()`, `useAuthModeStore()`）から個別セレクタHookへの移行が必要だった
+- **アプローチ**:
+  1. `store/index.ts`に30個の個別セレクタHook（LLM:12, Skill:15, AuthMode:3）を追加
+  2. 対象コンポーネント3件（LLMSelectorPanel, SkillSelector, SettingsView）を一括移行
+  3. useRefガードパターンを削除し、useEffectの依存配列にアクション関数を直接含める
+  ```typescript
+  // Before: 合成Hook + useRefガード
+  const { fetchProviders } = useLLMStore();
+  const ref = useRef(false);
+  useEffect(() => { if (!ref.current) { ref.current = true; fetchProviders(); } }, []);
 
-##### 4. 実装時の苦戦箇所
+  // After: 個別セレクタ（ガード不要）
+  const fetchProviders = useLLMFetchProviders();
+  useEffect(() => { fetchProviders(); }, [fetchProviders]);
+  ```
+- **結果**: 71テスト全PASS、P31問題の根本解決、ESLint exhaustive-deps準拠
+- **適用条件**: Zustand Storeの合成Hookを使用しているコンポーネントでuseEffect依存配列の問題がある場合
+- **発見日**: 2026-02-12（UT-STORE-HOOKS-COMPONENT-MIGRATION-001）
+- **関連ファイル**:
+  - `apps/desktop/src/renderer/store/index.ts`: 個別セレクタHook定義
+  - `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`: LLM移行例
+  - `apps/desktop/src/renderer/views/SettingsView/index.tsx`: AuthMode移行例
+- **関連**: 06-known-pitfalls.md#P31、arch-state-management.md#P31対策
 
-| 課題 | 症状 | 解決策 |
-|------|------|--------|
-| ESLint キャッシュ | `react-hooks/exhaustive-deps` ルールが検出されない | `rm -f .eslintcache` でキャッシュクリア |
-| 合成 Hook の参照不安定 | 依存配列に含めると無限ループ | `useRef` ガードで初期化を1回に制限 |
-| コメントフォーマット | 抑制コメントの形式が不統一 | `// P31対策:` 形式に標準化 |
-| 依存配列設計判断 | ESLint ルールとの競合 | ケース別判断基準（下記参照） |
+##### 実装時の苦戦箇所（UT-STORE-HOOKS-COMPONENT-MIGRATION-001）
 
-**依存配列設計の判断基準**:
-- 合成 Store Hook から取得した関数 → 依存配列に含めない（`useRef` ガード使用）
-- 個別セレクタ（`useAuthMode()` 等）から取得した値 → 依存配列に含める
-- `eslint-disable-next-line` を使用する場合は理由コメント必須
+| # | 課題 | 症状 | 根本原因 | 解決策 |
+|---|------|------|----------|--------|
+| 1 | Phase 12 spec-update-workflow全Step未実施 | LOGS.md×2、SKILL.md×2、arch-state-management.md更新、task-workflow.md更新、06-known-pitfalls.md P31更新、topic-map.md再生成、artifacts.json更新、unassigned-task-detection.md作成、skill-feedback-report.md作成 — 合計12項目が漏れた | Phase 12のTask 1（実装ガイド）とTask 4（未タスク検出）に注力し、Task 2（システムドキュメント更新）のStep 1-A〜1-E + Step 2の多段階プロセスを省略。成果物リストとspec-update-workflow.mdのStepリストが分散しており一覧性が低い | Phase 12実行時は「spec-update-workflow.mdのStep 1-A〜1-E + Step 2」と「Phase 12仕様書のTask 1〜5」を並列にチェックリストとして管理し、全Step完了まで「完了」と記載しない |
+| 2 | patterns.md の古い参照残存 | patterns.md内で UT-STORE-HOOKS-REFACTOR-001（先行計画タスク）が「後続タスク」「未実施」として残っており、本タスクで完了済みに更新すべきだった | 先行タスクの参照を横断的に検索して更新する手順がワークフローに組み込まれていなかった | タスク完了時に `grep -rn "TASK_ID" .claude/` で関連参照を全検索し、ステータスを更新する手順をPhase 12チェックリストに追加 |
+| 3 | artifacts.json のステータス矛盾 | Phase 12完了時にartifacts.jsonのトップレベルstatusを"completed"にしたが、Phase 13（PR作成）がpendingのため矛盾が発生 | Phase 12完了とタスク全体完了を混同し、トップレベルstatusの更新タイミングを誤った | トップレベルstatusはPhase 13（PR作成・マージ）完了まで"in_progress"を維持する。個別Phaseのstatusのみ"completed"に更新する |
 
-##### 5. 検証チェックリスト
-
-- [ ] **症状確認**: 対象画面で無限ループ（ローディングが止まらない）が発生しているか
-- [ ] **原因特定**: `useEffect` の依存配列に合成 Store Hook の関数が含まれているか
-- [ ] **修正適用**: `useRef` ガードを追加し、依存配列を空にしたか
-- [ ] **コメント追加**: `// P31対策: 合成Store Hookは毎回新しい参照を返すため依存配列から除外` を記載したか
-- [ ] **動作検証**: 画面遷移・リロード後も正常に動作するか
-- [ ] **ESLint 確認**: `.eslintcache` をクリアして警告を確認したか
-
-##### 6. 参照リンク
-
-- **落とし穴記録**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md)
-- **状態管理設計**: [arch-state-management.md](./arch-state-management.md)
-- **後続タスク**: UT-STORE-HOOKS-REFACTOR-001（個別セレクタベース再設計）
+**再発防止のためのチェックリスト**:
+- [ ] Phase 12開始時にspec-update-workflow.mdの全Step（1-A〜1-E + Step 2）を書き出す
+- [ ] 各Stepの完了をdocumentation-changelog.mdに逐次記録する
+- [ ] `grep -rn "TASK_ID" .claude/ docs/` で先行タスクの参照を検索し、ステータスを更新する
+- [ ] artifacts.jsonのトップレベルstatusはPhase 13完了まで"in_progress"を維持する
+- [ ] 全Step完了を確認してからdocumentation-changelog.mdに「完了」と記載する
 
 #### Zustand 個別セレクタベース再設計パターン（UT-STORE-HOOKS-REFACTOR-001 2026-02-11）
 
@@ -559,6 +559,18 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
   - task-workflow.md の残課題テーブルへの登録も必須
 - **発見日**: 2026-02-09（TASK-FIX-12-1-IPC-HARDCODE-FIX）
 - **関連**: 06-known-pitfalls.md#P3
+
+#### Phase 12 spec-update-workflow.md全Step未実施（UT-STORE-HOOKS-COMPONENT-MIGRATION-001）
+
+- **状況**: Phase 12でimplementation-guide.md等の主要ドキュメントは作成したが、spec-update-workflow.mdの全Stepを実施しなかった
+- **問題**: LOGS.md×2、SKILL.md×2、arch-state-management.md関連タスク更新、task-workflow.md完了タスク追加、06-known-pitfalls.md P31更新、topic-map.md再生成、artifacts.json更新、unassigned-task-detection.md（5ソース形式）、skill-feedback-report.md — 合計12項目が漏れていた
+- **原因**: Phase 12のTask 1（実装ガイド）とTask 4（未タスク検出）に注力し、Task 2（システムドキュメント更新）のStep 1-A〜1-E + Step 2の多段階プロセスを省略した
+- **教訓**:
+  1. Phase 12はTask 1-4の全てが必須であり、Task 2のステップ数が最も多い
+  2. spec-update-workflow.mdの全Step（1-A〜1-E + Step 2）を逐次チェックリスト形式で実行する
+  3. documentation-changelog.mdには全Stepの完了結果を記録してから「完了」とする（P4対策）
+  4. 「LOGS.md×2」「SKILL.md×2」は別々のファイルであることを意識する（P1/P25対策）
+- **発見日**: 2026-02-12（UT-STORE-HOOKS-COMPONENT-MIGRATION-001、P1/P2/P4/P25/P27/P29再発）
 
 ### IPC / Preload
 

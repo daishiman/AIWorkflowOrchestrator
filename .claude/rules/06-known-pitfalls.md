@@ -75,16 +75,18 @@
 
 ### P31: Zustand Store Hooks無限ループ
 
+- **ステータス**: ✅ **解決済み**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001、2026-02-12）
 - **教訓**: `useAuthModeStore()` 等の合成Store Hookが毎回新しいオブジェクトを返すため、その中の関数を`useEffect`の依存配列に含めると無限ループが発生する
 - **症状**: 設定画面がぐるぐる回り続ける、LLM/スキル選択が無限実行
 - **解決策**:
-  1. **短期（非推奨）**: useRefでガードし、依存配列は空にする
-  2. **長期（実装済）**: 個別セレクタベース（`useAuthMode()`, `useSetAuthMode()`等）に再設計
-- **実装完了**: UT-STORE-HOOKS-REFACTOR-001
+  1. **短期（非推奨）**: useRefでガードし、依存配列は空にする（適用済み→個別セレクタ移行により削除）
+  2. **長期（実装済）**: 個別セレクタベース（`useAuthMode()`, `useSetAuthMode()`, `useLLMFetchProviders()`等）に再設計 → **実装完了**
+- **実装完了**: UT-STORE-HOOKS-REFACTOR-001 / UT-STORE-HOOKS-COMPONENT-MIGRATION-001
   - 53個の個別セレクタを追加（AuthModeSlice/LLMSlice/AgentSlice）
   - 合成Hookに`@deprecated`タグを追加
-  - SettingsView, LLMSelectorPanelを個別セレクタベースにリファクタリング
+  - SettingsView, LLMSelectorPanel, SkillSelectorを個別セレクタベースにリファクタリング
   - 181テスト追加、全PASS
+- **関連タスク**: UT-FIX-STORE-HOOKS-INFINITE-LOOP-001, UT-STORE-HOOKS-COMPONENT-MIGRATION-001
 
 ```typescript
 // ❌ 無限ループ（旧パターン）

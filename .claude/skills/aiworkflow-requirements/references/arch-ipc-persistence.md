@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
+| v1.2.0     | 2026-02-12 | TASK-9B-H-SKILL-CREATOR-IPC完了: registerAllIpcHandlersにSkillCreatorService追加記録。registerSkillCreatorHandlers呼び出し（Pattern 3準拠） |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（準拠化） |
 | v1.0.0     | -          | 初版                                         |
 

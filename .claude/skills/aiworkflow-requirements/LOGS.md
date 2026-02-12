@@ -5,6 +5,69 @@
 
 ---
 
+## 2026-02-12: TASK-9B-H-SKILL-CREATOR-IPC完了
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | TASK-9B-H-SKILL-CREATOR-IPC                                          |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | Phase 1-12 完了（SkillCreatorService IPC登録）                       |
+| 対象ファイル | skillCreatorHandlers.ts, skill-creator-api.ts, channels.ts, preload/index.ts, ipc/index.ts |
+| 結果         | success                                                              |
+| 備考         | 6チャンネル追加（5 invoke + 1 on）、85テスト全PASS                   |
+
+### 変更内容
+
+| 変更箇所                                   | 変更内容                                       |
+| ------------------------------------------ | ---------------------------------------------- |
+| `skillCreatorHandlers.ts`                  | 5つのipcMain.handleハンドラー + sendSkillCreatorProgress + unregister |
+| `skill-creator-api.ts`                     | SkillCreatorAPI interface + safeInvoke/safeOn実装 |
+| `channels.ts`                              | 6チャンネル定数 + ホワイトリスト登録           |
+| `preload/index.ts`                         | skillCreatorAPI統合（4箇所変更）               |
+| `ipc/index.ts`                             | registerAllIpcHandlersにSkillCreatorService追加 |
+
+### テスト結果
+
+| 指標             | 値                           |
+| ---------------- | ---------------------------- |
+| テスト数         | 85件 全PASS                  |
+| Line Coverage    | 98% / 85%                    |
+| Branch Coverage  | 95% / 65%                    |
+| Function Coverage| 100% / 100%                  |
+| Phase 10         | PASS（注記付き、MINOR 2件）  |
+| 未タスク検出     | 2件（m-01: IpcResult型重複、m-02: Zodスキーマ未使用） |
+
+### 更新した仕様書
+
+| 仕様書                              | バージョン | 変更内容                                       |
+| ----------------------------------- | ---------- | ---------------------------------------------- |
+| security-skill-ipc.md               | v1.5.0     | 完了タスク追加、関連ドキュメントリンク追加     |
+| interfaces-agent-sdk-skill.md       | v1.14.0    | 完了タスクセクション追加（チャンネル一覧、テスト結果） |
+| arch-ipc-persistence.md             | v1.2.0     | registerAllIpcHandlers更新記録追加             |
+
+---
+
+## 2026-02-12: UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-STORE-HOOKS-COMPONENT-MIGRATION-001                               |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | システム仕様書更新（Phase 12）                                       |
+| 対象ファイル | arch-state-management.md, task-workflow.md, 06-known-pitfalls.md     |
+| 結果         | success                                                              |
+| 備考         | P31対策の個別セレクタパターン実装完了記録、関連タスクステータス更新   |
+
+### 更新した仕様書
+
+| 仕様書                  | バージョン | 変更内容                                                     |
+| ----------------------- | ---------- | ------------------------------------------------------------ |
+| arch-state-management.md | -         | P31対策セクションに「実装完了」ステータス追加、関連タスク更新 |
+| task-workflow.md         | -         | 完了タスクセクション追加、残課題テーブル更新                  |
+| 06-known-pitfalls.md     | -         | P31解決策に個別セレクタ実装完了を反映                        |
+
+---
+
 ## 2026-02-12: スキル最適化（TASK-FIX-7-1事後）
 
 | 項目         | 内容                                                                                                         |
@@ -30,7 +93,6 @@
 | 備考         | DIパターン, Constructor Injection, Factory Pattern, BrowserWindow遅延生成, テストモック大規模修正 を追加 |
 
 ---
-
 ## 2026-02-11: TASK-FIX-7-1システム仕様書更新（Phase 12）
 
 | 項目         | 内容                                                                 |

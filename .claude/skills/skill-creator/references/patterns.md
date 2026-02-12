@@ -12,7 +12,7 @@
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正 | テスト環境問題の実装問題誤認                           |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換 | ハードコード文字列発見                                 |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング                                                                                               | -                                                      |
 | 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
@@ -461,6 +461,35 @@
 - **発見日**: 2026-02-10
 - **関連タスク**: TASK-FIX-15-1-EXECUTE-HANDLER-ROUTING
 - **クロスリファレンス**: [06-known-pitfalls.md#P26](../../.claude/rules/06-known-pitfalls.md)
+
+### [IPC] IPC機能開発ワークフローパターン（TASK-9B-H）
+
+- **状況**: Electron IPC チャンネルの新規追加（サービス層のメソッドをRenderer側に公開する）
+- **アプローチ**:
+  1. **チャンネル定数定義**: `channels.ts` に `IPC_CHANNELS` 定数を追加し、同ファイルのホワイトリスト配列にも登録
+  2. **Main側ハンドラー作成**: `validateIpcSender` でsender検証 + 引数バリデーション + サービス層呼び出し + エラーサニタイズの4段構成
+  3. **Preload API作成**: `safeInvoke`/`safeOn` を使用し、チャンネル名は必ず `IPC_CHANNELS` 定数を参照。インターフェース定義を型安全に設計
+  4. **preload/index.ts統合**: 4箇所を同時更新（import文、electronAPIオブジェクト、exposeInMainWorld、fallback定義）
+  5. **types.ts型定義追加**: `ElectronAPI` インターフェースと `Window` グローバル宣言の両方に型を追加
+  6. **ipc/index.ts登録**: `registerAllIpcHandlers` に新規ハンドラーの register/dispose を追加
+- **セキュリティチェック**:
+  - 全ハンドラーで `validateIpcSender` によるsender検証
+  - チャンネル名のホワイトリスト管理（`channels.ts` の配列に登録されていないチャンネルは `safeInvoke` で拒否）
+  - エラーサニタイズ（内部スタックトレースをRenderer側に漏洩しない）
+- **テスト設計**:
+  - ハンドラー登録/解除テスト（`ipcMain.handle`/`removeHandler` の呼び出し確認）
+  - 正常系テスト（サービス層への引数の受け渡し、戻り値のフォーマット）
+  - 異常系テスト（バリデーションエラー、サービス層エラー、sender検証失敗）
+  - 統合テスト（ハンドラー登録→実行→解除の一連のフロー）
+- **結果**: 6段階のチェックリストにより、IPC チャンネル追加時の漏れを防止。セキュリティ3層モデル（ホワイトリスト + sender検証 + エラーサニタイズ）を標準化
+- **適用条件**: Electron IPC チャンネルの新規追加、既存サービスのRenderer公開
+- **発見日**: 2026-02-12
+- **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC
+- **クロスリファレンス**: [04-electron-security.md](../../.claude/rules/04-electron-security.md), [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **関連仕様書**:
+  - [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md) - IPC実装パターン（Setter Injection、型変換、テストモック等）
+  - [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md) - Electron IPCセキュリティ仕様（ホワイトリスト管理、sender検証、エラーサニタイズ）
+  - [api-ipc-agent.md](../../aiworkflow-requirements/references/api-ipc-agent.md) - IPC API仕様（チャンネル定義、ハンドラー登録、Preload Bridge設計）
 
 ---
 

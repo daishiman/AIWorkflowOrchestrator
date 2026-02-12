@@ -1418,6 +1418,58 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ## 完了タスク
 
+### TASK-9B-H-SKILL-CREATOR-IPC: SkillCreatorService IPC登録（2026-02-12完了）
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-H-SKILL-CREATOR-IPC                                               |
+| 完了日       | 2026-02-12                                                                 |
+| ステータス   | **完了**                                                                   |
+| テスト数     | 85（自動テスト）                                                           |
+| 発見課題     | MINOR 2件（IpcResult型重複、Zodスキーマ未使用）                            |
+| ドキュメント | `docs/30-workflows/skill-creator-ipc/`                                     |
+
+#### テスト結果サマリー
+
+| カテゴリ                     | テスト数 | PASS | FAIL |
+| ---------------------------- | -------- | ---- | ---- |
+| ハンドラー登録/解除          | 2        | 2    | 0    |
+| 正常フロー（5チャンネル）    | 22       | 22   | 0    |
+| sender検証                   | 5        | 5    | 0    |
+| エッジケース                 | 12       | 12   | 0    |
+| セキュリティ                 | 8        | 8    | 0    |
+| 進捗通知                     | 11       | 11   | 0    |
+| 統合テスト                   | 11       | 11   | 0    |
+| Preload API                  | 14       | 14   | 0    |
+
+#### 成果物
+
+| 成果物             | パス                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| 実装ガイド         | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/implementation-guide.md`    |
+
+#### 追加チャンネル一覧（6チャンネル）
+
+| 定数名                           | チャンネル値                      | 方向          |
+| -------------------------------- | --------------------------------- | ------------- |
+| `SKILL_CREATOR_DETECT_MODE`      | `skill-creator:detect-mode`       | invoke (R->M) |
+| `SKILL_CREATOR_CREATE`           | `skill-creator:create`            | invoke (R->M) |
+| `SKILL_CREATOR_EXECUTE_TASKS`    | `skill-creator:execute-tasks`     | invoke (R->M) |
+| `SKILL_CREATOR_VALIDATE`         | `skill-creator:validate`          | invoke (R->M) |
+| `SKILL_CREATOR_VALIDATE_SCHEMA`  | `skill-creator:validate-schema`   | invoke (R->M) |
+| `SKILL_CREATOR_PROGRESS`         | `skill-creator:progress`          | on (M->R)     |
+
+#### 関連未タスク
+
+| タスクID    | 内容                                        | 優先度 | 指示書パス                                                                      |
+| ----------- | ------------------------------------------- | ------ | ------------------------------------------------------------------------------- |
+| UT-9B-H-001 | IpcResult型の重複定義を@repo/sharedに統一   | 低     | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md`     |
+| UT-9B-H-002 | IPCハンドラー引数検証のZodスキーマ移行      | 低     | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`           |
+| UT-9B-H-003 | SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト） | 高 | `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md`             |
+| UT-9B-H-004 | SkillCreator設計書-実装整合性修正（Zod/型/メソッド名の乖離対応） | 中 | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md` |
+
+---
+
 ### TASK-9B-G: SkillCreatorService実装（2026-02-03完了）
 
 | 項目         | 内容                                                                       |
@@ -1451,6 +1503,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-12 | 1.16.0     | 未タスク2件追加: UT-9B-H-003（IPCセキュリティ強化）、UT-9B-H-004（設計書-実装整合性修正）。関連未タスクテーブルに優先度列追加 |
+| 2026-02-12 | 1.15.0     | TASK-9B-H-SKILL-CREATOR-IPC完了: SkillCreatorService IPCチャンネルセクション追加（6チャンネル、SkillCreatorAPI型定義、85テスト） |
 | 2026-02-12 | 1.14.1     | TASK-FIX-7-1セクション修正: テスト数を実際の値（61件）に訂正、型変換フローテーブルを実装コード（9フィールド明示コピー、lastModified除外）に準拠して修正 |
 | 2026-02-12 | 1.14.0     | TASK-FIX-7-1完了: SkillService.executeSkill() SkillExecutor 委譲実装。Setter Injection パターン、型変換フロー、未タスク3件（UT-FIX-7-1-001/002/003） |
 | 2026-02-10 | 1.13.0     | UT-FIX-5-4完了: AgentSDKAPI abort()型定義修正（`void` → `Promise<void>`）。P23パターン準拠で2箇所同時更新、24テスト追加 |

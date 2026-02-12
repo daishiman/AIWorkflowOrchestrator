@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.2.0     | 2026-02-12 | TASK-9B-H: skillCreatorAPIセキュリティ実装例追加。6チャンネル、Sender検証、エラーサニタイズ仕様 |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.0.0     | -          | 初版作成                                       |
 
@@ -171,6 +172,63 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 **テストカバレッジ**: 156テスト（94.30% Line Coverage）
 
 **関連タスク**: slide-directory-settings（2026-01-14完了）
+
+---
+
+## 実装例: skillCreatorAPI
+
+**実装場所**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- Preload API: `apps/desktop/src/preload/skill-creator-api.ts`
+- ハンドラー: `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+**チャンネルホワイトリスト方式**:
+
+`SKILL_CREATOR_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。invoke用5チャンネル、on用1チャンネルの計6チャンネルを管理する。
+
+| 定数名                        | チャンネル名                    | 用途             | ホワイトリスト   |
+| ----------------------------- | ------------------------------- | ---------------- | ---------------- |
+| SKILL_CREATOR_DETECT_MODE     | `skill-creator:detect-mode`     | モード自動判定   | ALLOWED_INVOKE   |
+| SKILL_CREATOR_CREATE          | `skill-creator:create`          | スキル新規作成   | ALLOWED_INVOKE   |
+| SKILL_CREATOR_EXECUTE_TASKS   | `skill-creator:execute-tasks`   | タスク群実行     | ALLOWED_INVOKE   |
+| SKILL_CREATOR_VALIDATE        | `skill-creator:validate`        | スキル検証       | ALLOWED_INVOKE   |
+| SKILL_CREATOR_VALIDATE_SCHEMA | `skill-creator:validate-schema` | スキーマ検証     | ALLOWED_INVOKE   |
+| SKILL_CREATOR_PROGRESS        | `skill-creator:progress`        | 進捗通知         | ALLOWED_ON       |
+
+**実装場所**: `apps/desktop/src/preload/channels.ts`
+
+**セキュリティ検証パターン**:
+
+全5 invokeハンドラーで以下のセキュリティ検証を実施する:
+
+1. **Sender検証**: `validateIpcSender(event, mainWindow)` で送信元BrowserWindowを検証。DevToolsからの呼び出しを検出・拒否
+2. **引数バリデーション**: typeof手動チェックによる型検証を各ハンドラーで実施（文字列型・オブジェクト型の検証）
+3. **エラーサニタイズ**: `error.message`のみを返却し、`error.stack`やファイルパス等の内部情報は非露出
+
+**エラーサニタイズ仕様**:
+
+| 入力パターン             | 返却メッセージ                                     |
+| ------------------------ | -------------------------------------------------- |
+| Zodバリデーションエラー  | バリデーションメッセージをそのまま返却             |
+| パストラバーサル検出     | `"Path traversal detected"`                        |
+| Sender検証失敗           | `"Unauthorized IPC sender"`                        |
+| その他のErrorオブジェクト | `"An internal error occurred. Please try again."` |
+| Error以外のthrown value  | `"An unexpected error occurred."`                  |
+
+**IPCセキュリティ要件**:
+
+| 要件               | 実装                               | 確認方法                            |
+| ------------------ | ---------------------------------- | ----------------------------------- |
+| ホワイトリスト     | `SKILL_CREATOR_CHANNELS`定数で管理 | 定義外チャンネルはエラー            |
+| sender検証         | `validateIpcSender()`              | DevTools/外部からの拒否             |
+| 型安全性           | `IpcResult<T>`型で統一             | TypeScript型チェック                |
+| サンドボックス分離 | contextBridgeで公開                | contextIsolation=true               |
+| 引数検証           | 各ハンドラーでtypeof手動チェック   | バリデーションテスト                |
+| エラーサニタイズ   | error.messageのみ返却              | スタックトレース非露出テスト        |
+
+**関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
 
 ---
 
