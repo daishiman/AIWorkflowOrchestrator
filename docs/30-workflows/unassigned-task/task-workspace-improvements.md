@@ -1,6 +1,6 @@
 # Workspace Manager 改善タスク
 
-issue_number: 647
+issue_number: 573
 
 ## 概要
 

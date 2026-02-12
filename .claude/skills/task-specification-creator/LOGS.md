@@ -43,6 +43,24 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-12 - スキル最適化（TASK-FIX-7-1事後）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル最適化
+- **Result**: ✓ 成功
+- **Notes**: coverage-standards.mdテンプレート準拠化（Progressive Disclosureブロック補完、正本パス明記、変更履歴Versionカラム追加）、unassigned-task-guidelines.md 4ステップをテーブル形式に統一・ステータス更新手順テーブル修正（Markdown崩れ修正）、phase-templates.md構造確認（変更不要）。SKILL.md v9.55.0更新
+
+---
+
+## [2026-02-12 - TASK-FIX-7-1スキル改善（スキルクリエーター経由）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善
+- **Result**: ✓ 成功
+- **Notes**: Phase 12未タスク管理チェックリスト強化（指示書物理ファイル存在確認追加）、テスト数記載基準明確化（実測値のみ使用ルール追加）。phase-11-12-guide.md・phase-templates.md・coverage-standards.md・unassigned-task-guidelines.md更新
+
+---
+
 ## [2026-02-11 - TASK-FIX-7-1システム仕様書更新（Phase 12）]
 
 - **Agent**: aiworkflow-requirements

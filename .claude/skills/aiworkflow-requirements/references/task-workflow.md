@@ -132,6 +132,45 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION executeSkillのSkillExecutor委譲実装（2026-02-11完了）
+
+| 項目       | 内容                                                    |
+| ---------- | ------------------------------------------------------- |
+| タスクID   | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION                  |
+| 完了日     | 2026-02-11                                              |
+| ステータス | **完了**                                                |
+| Phase      | Phase 1-12完了                                          |
+| テスト数   | 統合テスト7件・ユニットテスト12件（全PASS）             |
+| 未タスク   | 3件（UT-FIX-7-1-001, UT-FIX-7-1-002, UT-FIX-7-1-003） |
+
+#### 成果物
+
+| 成果物                           | パス/内容                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------- |
+| SkillService委譲実装             | `apps/desktop/src/main/services/skill/SkillService.ts`（setSkillExecutor, executeSkill）    |
+| skillHandlers DI設定             | `apps/desktop/src/main/ipc/skillHandlers.ts`                                                |
+| 委譲テスト（IPC）                | `apps/desktop/src/main/ipc/__tests__/skillHandlers.delegate.test.ts`                        |
+| 委譲テスト（Service）            | `apps/desktop/src/main/services/skill/__tests__/SkillService.delegate.test.ts`              |
+
+#### 変更理由
+
+- SkillService.executeSkill()が直接実行ロジックを持たず、SkillExecutorに委譲するアーキテクチャに変更
+- Setter Injectionパターンを採用（BrowserWindow依存による遅延初期化が必要）
+- DIパターン使い分け基準を確立（Constructor / Setter / Factory）
+
+#### 関連仕様書更新
+
+| 仕様書 | 更新内容 |
+| ------ | -------- |
+| architecture-implementation-patterns.md | Setter Injectionパターン追加 |
+| interfaces-agent-sdk-executor.md | SkillService統合セクション追加 |
+| arch-electron-services.md | SkillService API追加 |
+| lessons-learned.md | 苦戦箇所3件記録 |
+| 06-known-pitfalls.md | P34, P35追加 |
+| patterns.md | 成功パターン2件追加 |
+
+---
+
 ### タスク: UT-FIX-5-4 AgentSDKAPI abort() 型定義不一致修正（2026-02-10完了）
 
 | 項目       | 内容                                            |
@@ -430,3 +469,4 @@
 | 1.23.0     | 2026-02-10 | 未タスク2件追加: UT-STORE-HOOKS-REFACTOR-001（Store Hooks個別セレクタ再設計）、UT-FIX-APP-INITAUTH-CHECK-001（App.tsx initializeAuth確認）。TASK-UT-AUTH-MODE-UI-INTEGRATION Phase 10/12検出 |
 | 1.24.0     | 2026-02-11 | UT-STORE-HOOKS-REFACTOR-001完了。未タスク2件追加: UT-STORE-HOOKS-REFACTOR-002（JSDoc追加）、UT-STORE-HOOKS-REFACTOR-003（合成Hook移行）。Phase 10最終レビュー検出 |
 | 1.25.0     | 2026-02-11 | 未タスク3件追加: UT-FIX-7-1-001（SkillService型ガード改善）、UT-FIX-7-1-002（skillHandlers分割）、UT-FIX-7-1-003（IPCレスポンスパターン統一）。TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12検出 |
+| 1.26.0     | 2026-02-12 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了記録を完了タスクセクションに追加。Phase 12仕様書更新漏れ修正 |

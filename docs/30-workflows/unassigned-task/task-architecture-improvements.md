@@ -1,6 +1,6 @@
 # アーキテクチャ改善タスク仕様書
 
-issue_number: 645
+issue_number: 571
 
 ## タスク概要
 
