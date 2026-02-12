@@ -545,6 +545,13 @@ Phase 5: 実装（TDD: Green）
 | Shared | ユーティリティ、型定義、定数 | `packages/shared/` | - |
 | データ層 | リポジトリ、SQLite操作 | `apps/desktop/src/main/repositories/` | `aiworkflow-requirements: database-*.md` |
 
+## 設計変更記録（該当する場合）
+
+実装中にPhase 2の設計から乖離が発生した場合、以下を記録する:
+
+- [ ] 乖離内容と理由を `outputs/phase-5/design-changes.md` に記録
+- [ ] Phase 2設計書への影響を評価し、Phase 10レビューで検証できるようにする
+
 ## 実装時の注意事項（既知のPitfall対策）
 
 以下は過去の実装経験から得られた重要な注意事項です：
@@ -569,6 +576,7 @@ Phase 5: 実装（TDD: Green）
 - [ ] 実装が最小限に抑えられている
 - [ ] フロント/バック接続が実装されている
 - [ ] アーキテクチャ層別の実装が適切に配置されている
+- [ ] **設計書（Phase 2成果物）から意図的に変更した箇所がある場合、変更理由をPhase 5成果物に記録し、Phase 2成果物も更新している**
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## TDD検証
@@ -1027,12 +1035,27 @@ Phase 12: ドキュメント更新
 
 実装した内容をシステム要件ドキュメントに反映し、技術的な理解を促進するドキュメントを作成し、未完了タスクを検出・記録する。
 
+## 事前チェック【必須】
+
+Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防止する:
+
+1. `.claude/rules/06-known-pitfalls.md` の Phase 12 関連項目を読む
+   - P1: LOGS.md 2ファイル更新漏れ
+   - P2: topic-map.md 再生成忘れ
+   - P3: 未タスク管理の3ステップ不完全
+   - P4: documentation-changelog への早期「完了」記載
+   - P25: LOGS.md 2ファイル更新漏れ（再発）
+   - P26: システム仕様書更新遅延
+   - P27: topic-map.md 再生成トリガーの判断ミス
+   - P28: スキルフィードバックレポート未作成
+
 ## 実行タスク
 
 - 技術ドキュメント作成: 実装ガイドの作成
 - システムドキュメント更新: aiworkflow-requirements等の更新
 - ドキュメント更新履歴作成: 変更履歴の記録
 - 未タスク検出: 残課題の検出と記録
+- スキルフィードバックレポート作成: ワークフロー改善点と技術的教訓の記録
 
 ## サブフェーズ
 
@@ -1055,12 +1078,24 @@ Phase 12: ドキュメント更新
 
 #### Step 1: タスク完了記録【必須・全タスク】
 
+##### Step 1-A: 仕様書完了記録
 - [ ] 該当する仕様書に「完了タスク」セクションを追加
 - [ ] 関連ドキュメントセクションに実装ガイドリンクを追加
 - [ ] 変更履歴セクションにバージョンを追記
 - [ ] aiworkflow-requirements/LOGS.mdにタスク完了エントリを追加
-- [ ] task-specification-creator/LOGS.mdにタスク完了記録を追加
-- [ ] topic-map.mdに新規セクションエントリを追加（該当する場合）
+- [ ] task-specification-creator/LOGS.mdにタスク完了記録を追加（**2ファイル両方必須** -- P1, P25）
+- [ ] aiworkflow-requirements/SKILL.md 変更履歴更新
+- [ ] task-specification-creator/SKILL.md 変更履歴更新
+
+##### Step 1-B: 実装状況テーブル更新（該当する場合）
+- [ ] api-endpoints.md等の実装ステータスを「完了」に更新
+
+##### Step 1-C: 関連タスクテーブル更新（該当する場合）
+- [ ] `grep -rn "TASK_ID" references/` で関連仕様書を検索して更新
+
+##### Step 1-D: topic-map.md 再生成（**仕様書に変更があれば必ず実行** -- P2, P27）
+- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
+- [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されていることを確認
 
 ```markdown
 ## 完了タスク
@@ -1129,6 +1164,33 @@ node scripts/complete-phase.js \
 | 4   | 各Phase成果物          | 「将来対応」「TODO」「FIXME」 |
 | 5   | コードベース           | TODO/FIXME/HACK/XXXコメント   |
 
+### Task 5: スキルフィードバックレポート作成【必須】
+
+ワークフロー改善点と技術的教訓を記録する。**改善点がなくても「改善点なし」としてレポートを作成する（省略不可）。**
+
+| セクション         | 記載内容                                             |
+| ------------------ | ---------------------------------------------------- |
+| ワークフロー改善点 | Phase実行中に発見したワークフロー上の改善提案         |
+| 技術的教訓         | 実装中に得られた技術的な知見・注意点                  |
+| スキル改善提案     | task-specification-creator/skill-creatorへの改善提案  |
+| 新規Pitfall候補    | 06-known-pitfalls.mdに追加すべき新規Pitfall           |
+
+**成果物**: `outputs/phase-12/skill-feedback-report.md`
+
+### IPC機能開発時の追加更新対象ファイル（該当する場合）
+
+IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2 で以下のファイルの更新要否を確認する:
+
+| # | 更新対象ファイル                          | 更新内容                                                 | 必須/任意 |
+|---|-------------------------------------------|----------------------------------------------------------|-----------|
+| 1 | `api-ipc-agent.md`                        | 新規チャンネル一覧、型定義、完了タスク記録               | 必須      |
+| 2 | `security-electron-ipc.md`                | セキュリティ検証パターン（sender検証、ホワイトリスト）   | 必須      |
+| 3 | `architecture-overview.md`                | IPCハンドラー登録一覧（registerAllIpcHandlers）           | 必須      |
+| 4 | `interfaces-agent-sdk-skill.md`           | インターフェース定義、完了タスク記録                     | 必須      |
+| 5 | `task-workflow.md`                        | 残課題テーブル更新、完了タスクセクション追加             | 必須      |
+| 6 | `lessons-learned.md`                      | 実装教訓（新規パターン・落とし穴がある場合）             | 任意      |
+| 7 | `architecture-implementation-patterns.md` | 実装パターン（新規パターンがある場合）                   | 任意      |
+
 ## アーキテクチャ層別ドキュメント（AIが判断）
 
 実装ガイドPart 2（技術的詳細）では、タスクの性質に応じて以下の層別にドキュメントを作成する：
@@ -1144,12 +1206,13 @@ node scripts/complete-phase.js \
 
 ## 成果物
 
-| 成果物               | パス                                            | 必須 | 説明                      |
-| -------------------- | ----------------------------------------------- | ---- | ------------------------- |
-| 実装ガイド           | `outputs/phase-12/implementation-guide.md`      | ✅   | 概念的+技術的ドキュメント |
-| ドキュメント更新履歴 | `outputs/phase-12/documentation-changelog.md`   | ✅   | 更新履歴                  |
-| 未タスク検出レポート | `outputs/phase-12/unassigned-task-detection.md` | ✅   | 検出結果（なしでも出力）  |
-| 未完了タスク指示書   | `docs/30-workflows/unassigned-task/*.md`        | 条件 | 検出時のみ作成            |
+| 成果物                     | パス                                            | 必須 | 説明                         |
+| -------------------------- | ----------------------------------------------- | ---- | ---------------------------- |
+| 実装ガイド                 | `outputs/phase-12/implementation-guide.md`      | ✅   | 概念的+技術的ドキュメント    |
+| ドキュメント更新履歴       | `outputs/phase-12/documentation-changelog.md`   | ✅   | 更新履歴                     |
+| 未タスク検出レポート       | `outputs/phase-12/unassigned-task-detection.md` | ✅   | 検出結果（なしでも出力）     |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`     | ✅   | 改善点（なしでも出力必須）   |
+| 未完了タスク指示書         | `docs/30-workflows/unassigned-task/*.md`        | 条件 | 検出時のみ作成               |
 
 ## 完了条件
 
@@ -1171,7 +1234,9 @@ node scripts/complete-phase.js \
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] 未タスク指示書の物理ファイル存在を確認した（`ls docs/30-workflows/unassigned-task/` で検証）
+- [ ] **スキルフィードバックレポートが出力されている**【必須・改善点なしでも作成】
 - [ ] artifacts.jsonが更新されている
+- [ ] **artifacts.jsonの全完了Phase（1-12）のステータスがcompletedであること**
 - [ ] **苦戦箇所セクションを記録した**（下記参照）
 - [ ] **本Phase内の全タスクを100%実行完了**
 

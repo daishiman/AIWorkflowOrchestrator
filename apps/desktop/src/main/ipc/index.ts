@@ -24,6 +24,8 @@ import { registerAgentExecutionHandlers } from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
 import { registerSkillHandlers } from "./skillHandlers";
 import { registerClaudeCliHandlers } from "../claude-cli";
+import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
+import { SkillCreatorService } from "../services/skill/SkillCreatorService";
 import {
   SkillScanner,
   SkillParser,
@@ -146,6 +148,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   const authKeyService = new AuthKeyService(authKeyStorage);
   const authModeService = createAuthModeService(authKeyService);
   registerAuthModeHandlers(mainWindow, authModeService);
+
+  // Register Skill Creator handlers (TASK-9B-H)
+  const skillCreatorService = new SkillCreatorService();
+  registerSkillCreatorHandlers(mainWindow, skillCreatorService);
 
   // Register Claude CLI handlers (for skill discovery via Claude CLI)
   registerClaudeCliHandlers(mainWindow);

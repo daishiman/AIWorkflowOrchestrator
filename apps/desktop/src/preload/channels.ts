@@ -272,6 +272,14 @@ export const IPC_CHANNELS = {
   AUTH_MODE_STATUS: "auth-mode:status",
   AUTH_MODE_VALIDATE: "auth-mode:validate",
   AUTH_MODE_CHANGED: "auth-mode:changed",
+
+  // Skill Creator operations (TASK-9B-H)
+  SKILL_CREATOR_DETECT_MODE: "skill-creator:detect-mode",
+  SKILL_CREATOR_CREATE: "skill-creator:create",
+  SKILL_CREATOR_EXECUTE_TASKS: "skill-creator:execute-tasks",
+  SKILL_CREATOR_VALIDATE: "skill-creator:validate",
+  SKILL_CREATOR_VALIDATE_SCHEMA: "skill-creator:validate-schema",
+  SKILL_CREATOR_PROGRESS: "skill-creator:progress",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -474,6 +482,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AUTH_MODE_SET,
   IPC_CHANNELS.AUTH_MODE_STATUS,
   IPC_CHANNELS.AUTH_MODE_VALIDATE,
+  // Skill Creator channels (TASK-9B-H)
+  IPC_CHANNELS.SKILL_CREATOR_DETECT_MODE,
+  IPC_CHANNELS.SKILL_CREATOR_CREATE,
+  IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS,
+  IPC_CHANNELS.SKILL_CREATOR_VALIDATE,
+  IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -518,4 +532,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_PERMISSION_REQUEST,
   // Auth Mode channels (TASK-AUTH-MODE-SELECTION-001)
   IPC_CHANNELS.AUTH_MODE_CHANGED,
+  // Skill Creator channels (TASK-9B-H)
+  IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
 ];
