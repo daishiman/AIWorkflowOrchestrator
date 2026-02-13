@@ -4,6 +4,109 @@
 
 ---
 
+## 2026-02-12: v2.13.0 Progressive Disclosure最適化
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-I-SDK-FORMAL-INTEGRATION（スキル最適化）                                                  |
+| Agent        | claude-agent-sdk                                                                                  |
+| 操作         | スキル構造最適化（Progressive Disclosure適用）                                                     |
+| 対象ファイル | SKILL.md, query-api.md, permission-control.md, implementation-artifacts.md (new), agents/*, LOGS.md |
+| 結果         | success                                                                                           |
+| 備考         | SKILL.md を 513行 → 382行に削減、品質基準（500行以内）クリア                                      |
+
+### 更新内容
+
+| ファイル                       | 変更内容                                                                                       |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| SKILL.md                       | 成果物テーブルをreferences/implementation-artifacts.mdに分離（-133行）                         |
+| SKILL.md                       | 旧API値修正: permissionMode "ask"→"default", conversation.stream()→conversation直接利用         |
+| SKILL.md                       | ベストプラクティス: "auto"→"bypassPermissions"修正                                              |
+| query-api.md                   | バージョン情報 0.1.73+ → 0.2.30+に更新、基本使用例をSDK@0.2.30準拠に修正                       |
+| query-api.md                   | ストリーミング基本パターンをconversation直接利用に更新、互換性テーブル拡充                      |
+| implementation-artifacts.md    | 新規作成: タスク別成果物・実装ファイル一覧（SKILL.mdから分離）                                   |
+| agents/analyze-agent-requirements.md | 旧permissionMode "auto"→"bypassPermissions"修正                                            |
+| agents/validate-agent-setup.md | 末尾のタイプミス修正（`h j\`\`` → `\`\`\``）                                                   |
+
+### 品質基準チェック結果
+
+| チェック項目                              | 結果 |
+| ----------------------------------------- | ---- |
+| SKILL.md が 500 行以内                    | PASS (382行) |
+| YAML frontmatter が有効                   | PASS |
+| description に Anchors と Trigger が含まれる | PASS |
+| references/ の全ファイルが SKILL.md からリンク | PASS (10ファイル) |
+| 動的数値がハードコードされていない         | PASS |
+| 重複情報がない                             | PASS |
+
+---
+
+## 2026-02-12: TASK-9B-I教訓反映（スキルリファレンス更新）
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-I-SDK-FORMAL-INTEGRATION（教訓反映）                                                      |
+| Agent        | claude-agent-sdk                                                                                  |
+| 操作         | スキル更新（references 2ファイル + SKILL.md変更履歴）                                              |
+| 対象ファイル | SKILL.md, query-api.md, permission-control.md, LOGS.md                                            |
+| 結果         | success                                                                                           |
+| 備考         | TypeScriptモジュール解決パターン追加、PermissionMode実型更新、SDKQueryOptions型安全変換パターン追加 |
+
+### 更新内容
+
+| ファイル               | 追加/更新内容                                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| query-api.md           | TypeScriptモジュール解決パターンセクション新規追加（node_modules実型 vs declare module、動的import、SDK Options型安全構築、apiKey→env、signal→abortController、conversation直接利用） |
+| query-api.md           | PermissionMode モード一覧をSDK@0.2.30実型に更新（"auto"/"ask"/"deny" → "default"/"acceptEdits"/"bypassPermissions"/"plan"/"delegate"/"dontAsk"） |
+| permission-control.md  | PermissionMode モード一覧をSDK@0.2.30実型に更新（同上）、セキュリティチェックリスト修正           |
+| SKILL.md               | 変更履歴 v2.12.0 追加                                                                            |
+
+### 教訓
+
+| 教訓                                     | 説明                                                                          |
+| ---------------------------------------- | ----------------------------------------------------------------------------- |
+| node_modules型がdeclare moduleより優先   | SDK インストール後はカスタム型宣言が無視されるため、SDK実型を直接利用すべき    |
+| ドキュメントより型定義ファイルが信頼性高  | `dist/index.d.ts` が最も正確な情報源、env.ANTHROPIC_API_KEYはここで発見       |
+| PermissionMode旧値の残存リスク           | 旧ドキュメントの "auto"/"ask"/"deny" が残っていると実装時に型エラーになる      |
+
+---
+
+## 2026-02-12: TASK-9B-I-SDK-FORMAL-INTEGRATION完了（Claude Agent SDK型安全正式統合）
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9B-I-SDK-FORMAL-INTEGRATION                                                                  |
+| Agent        | claude-agent-sdk                                                                                  |
+| 操作         | SDK実型に基づく型安全な統合実装                                                                    |
+| 対象ファイル | SkillExecutor.ts（callSDKQuery メソッド）, 関連テストファイル                                     |
+| 結果         | success                                                                                           |
+| 備考         | `as any` 除去、@anthropic-ai/claude-agent-sdk@0.2.30 実型に基づく callSDKQuery 実装              |
+
+### 変更内容
+
+| 変更箇所                           | 変更内容                                                                      |
+| ---------------------------------- | ----------------------------------------------------------------------------- |
+| `callSDKQuery`                     | apiKey → env.ANTHROPIC_API_KEY、signal → abortController、conversation直接利用 |
+| `SkillExecutor.ts`                 | `as any` 型アサーション除去、SDK実型に基づく型安全な実装                       |
+
+### 主要パターン
+
+| パターン名             | 説明                                                                         |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| SDK Real Type          | `as any` を排除し SDK エクスポート型を直接使用                               |
+| env.ANTHROPIC_API_KEY  | apiKey オプションから環境変数ベースに変更（SDK公式パターン準拠）              |
+| AbortController        | signal → abortController パラメータ名変更（SDK 0.2.30 API準拠）             |
+| Direct Conversation    | conversation.stream() → conversation 直接利用（AsyncIterable）               |
+
+### テスト結果
+
+| 指標             | 値                           |
+| ---------------- | ---------------------------- |
+| テスト数         | 278件 全PASS                 |
+| 分類             | リファクタリング（型安全性強化）|
+
+---
+
 ## 2026-02-08: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了（認証キー管理基盤）
 
 | 項目         | 内容                                                                                              |

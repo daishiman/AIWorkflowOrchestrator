@@ -924,6 +924,16 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 ---
 
+## [2026-02-12 - TASK-9B-I patterns knowledge transfer]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**: TASK-9B-I-SDK-FORMAL-INTEGRATIONタスクからの知見をpatterns.mdに反映。3パターン追加: (1) [SDK] TypeScriptモジュール解決による型安全統合（`as any`除去、SDKQueryOptions内部型定義、compile-timeテスト）、(2) [SDK] カスタムdeclare moduleとSDK実型の共存（失敗パターン: SDK実型優先によるカスタム.d.ts無効化）、(3) [Phase12] 未タスク配置ディレクトリの混同（失敗パターン: unassigned-task/への配置漏れ）。クイックナビゲーションテーブルに「SDK統合」ドメイン行を新規追加。
+
+---
+
+
 ## [2026-02-10T07:18:55.442Z]
 
 - **Agent**: unknown

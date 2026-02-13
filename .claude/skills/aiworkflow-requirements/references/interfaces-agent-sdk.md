@@ -326,10 +326,70 @@ LRUキャッシュベースのセッション管理。
 
 ---
 
+## SDK 型安全統合（TASK-9B-I）
+
+> **実装完了**: 2026-02-12（TASK-9B-I-SDK-FORMAL-INTEGRATION）
+> **参照**: [interfaces-agent-sdk-executor.md](./interfaces-agent-sdk-executor.md) callSDKQuery 型安全化仕様
+
+### 概要
+
+SkillExecutor の `callSDKQuery()` から `as any` を完全除去し、Claude Agent SDK（`@anthropic-ai/claude-agent-sdk@0.2.30`）の実型に基づく型安全な統合を実現した。
+
+### SDKQueryOptions の変更
+
+| プロパティ       | 変更前                     | 変更後                                        | 説明                                |
+| ---------------- | -------------------------- | --------------------------------------------- | ----------------------------------- |
+| `apiKey`         | `apiKey: string`           | `env: { ANTHROPIC_API_KEY: string }`          | 環境変数形式でAPI Keyを渡す         |
+| `signal`         | `signal: AbortSignal`      | `abortController: AbortController`            | AbortController インスタンスを渡す  |
+| `permissionMode` | ローカル文字列リテラル型   | SDK 実型（`@anthropic-ai/claude-agent-sdk`）  | SDK の PermissionMode に準拠        |
+
+### callSDKQuery Options マッピング
+
+| SDK パラメータ             | SkillExecutor 内部値                    | 説明                                    |
+| -------------------------- | --------------------------------------- | --------------------------------------- |
+| `prompt`                   | `callSDKQuery` の第1引数（独立パラメータ） | 実行プロンプト                          |
+| `env.ANTHROPIC_API_KEY`    | `getApiKey()` 経由で取得（独立パラメータ） | API Key を環境変数形式で渡す            |
+| `abortController`          | `new AbortController()`                | SDK が内部で AbortSignal を取得         |
+| `options.permissionMode`   | SDK PermissionMode 型                  | 型安全な権限モード（default/acceptEdits/bypassPermissions 等） |
+| `tools`                    | DEFAULT_TOOLS 定数                     | Read, Edit, Bash, Glob, Grep            |
+
+### SDK Query 戻り値の変更
+
+| 変更前                                    | 変更後                                     |
+| ----------------------------------------- | ------------------------------------------ |
+| `conversation.stream()` で AsyncIterable  | `conversation` を直接 AsyncIterable として利用 |
+
+### 実装上の課題と教訓
+
+#### TypeScript モジュール解決の優先順位問題
+
+SDK をインストールした環境では、`node_modules` 配下の実型定義がカスタム `declare module` よりも優先される。そのため、`packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` に定義していた `PermissionMode`（`auto`/`ask`/`deny`）は無視され、SDK 実型（`default`/`acceptEdits`/`bypassPermissions`/`plan`/`delegate`/`dontAsk`）が使用される。
+
+| 状態 | 有効な型定義ソース | PermissionMode の値 |
+|------|-------------------|-------------------|
+| SDK 未インストール | カスタム `.d.ts` | `auto`/`ask`/`deny`（仮定義） |
+| SDK インストール済み | `node_modules` 実型 | `default`/`acceptEdits`/`bypassPermissions`/`plan`/`delegate`/`dontAsk` |
+
+**対策**: SDK インストール後はカスタム `.d.ts` を削除し、仕様書の型記載も SDK 実型に統一する。詳細は [architecture-implementation-patterns.md#S11](./architecture-implementation-patterns.md) を参照。
+
+#### SDK パラメータの発見困難性
+
+`query()` API の `options` パラメータのうち、`env: { ANTHROPIC_API_KEY }` と `abortController: AbortController` は公式ドキュメントに明記されていなかった。SDK の型定義ファイル（`node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts`）を直接読むことで発見した。詳細は [architecture-implementation-patterns.md#S12](./architecture-implementation-patterns.md) を参照。
+
+### 関連未タスク
+
+| タスクID     | タスク名                                       | 優先度 | 指示書                                                                                           |
+| ------------ | ---------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------ |
+| UT-9B-I-001  | カスタム型宣言ファイルと SDK 実型の共存整理     | 低     | `docs/30-workflows/completed-tasks/sdk-formal-integration/outputs/phase-12/ut-9b-i-001-custom-declare-module-cleanup.md` |
+
+---
+
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-12 | 6.33.1     | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型安全統合セクションに「実装上の課題と教訓」追加（TypeScriptモジュール解決の優先順位問題、SDKパラメータの発見困難性） |
+| 2026-02-12 | 6.33.0     | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型安全統合セクション追加（SDKQueryOptions変更、callSDKQueryマッピング、戻り値変更） |
 | 2026-01-28 | 6.32.0     | TASK-6-1完了、SkillSlice（Zustand状態管理）実装        |
 | 2026-01-27 | 6.31.0     | TASK-5-1完了、SkillAPI Preload実装                     |
 | 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠） |
