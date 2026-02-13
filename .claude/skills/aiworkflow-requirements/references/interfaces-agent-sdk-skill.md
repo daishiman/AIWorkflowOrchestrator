@@ -80,6 +80,27 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 実装ガイド | `docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/implementation-guide.md` |
 | 備考       | P31対策の適用範囲をSettings/LLM/SkillSelectorからAgentViewへ拡張 |
 
+#### TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION（2026-02-13完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | TASK-FIX-13-1 |
+| ステータス | **完了** |
+| テスト数   | 1（型定義回帰テスト新規） |
+| 主要変更   | `Anchor.name` と `Skill.lastUpdated` のdeprecatedプロパティを削除 |
+| 変更対象   | `packages/shared/src/types/skill.ts`, `docs/30-workflows/completed-tasks/skill-management-ui/outputs/phase-11/detail-panel-check.md` |
+| 実装ガイド | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/06b-task-fix-13-1-deprecated-property-migration.md` |
+| 備考       | `SkillImportConfig.lastUpdated` は永続化互換のため維持 |
+| 検出未タスク | [UT-TYPE-DATETIME-DOC-001](../../../docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md) 型日時表現ガイドライン策定 |
+
+##### TASK-FIX-13-1 実装上の苦戦箇所・教訓
+
+| 苦戦ポイント | 発生要因 | 解決策 | 再発防止 |
+|--------------|----------|--------|----------|
+| `lastUpdated` の削除範囲の切り分け | `Skill.lastUpdated` 削除と `SkillImportConfig.lastUpdated`（永続化用）を同時に扱う必要があった | `Skill` のみを削除対象とし、`SkillImportConfig` は互換維持として明示的に残置した | 型定義削除時は「公開/永続化互換」境界を先に表で確認する |
+| `name` 参照の誤検出リスク | `name` は汎用プロパティで、単純置換では他型へ誤適用する可能性があった | `Anchor` スコープの参照に限定し、`detail-panel-check.md` の該当箇所のみ `source` へ移行した | `grep` 後に型スコープを確認し、無差別置換を禁止する |
+| 仕様とコードの同期漏れ | 型定義修正だけでは Phase 12 要件を満たせず、仕様側の追記が必要だった | 完了タスク記録・変更履歴・未タスク登録を `task-workflow.md` と同時更新した | Phase 12 で LOGS/SKILL/関連仕様を同時更新するチェックリストを適用する |
+
 ##### TASK-FIX-7-1 実装詳細
 
 **Setter Injection による委譲アーキテクチャ**:
@@ -271,6 +292,7 @@ Skill Dashboard機能は、Electron標準の3レイヤー構成で実装され�
 | `triggers`    | `string[]`      | ✓    | トリガーキーワード |
 | `anchors`     | `Anchor[]`      | ✓    | アンカー情報       |
 | `category`    | `SkillCategory` | -    | カテゴリ（任意）   |
+| `lastModified` | `Date`          | ✓    | 最終更新日時       |
 
 #### Anchor型
 
@@ -1515,6 +1537,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-13 | 1.19.0     | TASK-FIX-13-1 苦戦箇所・教訓を追記（削除範囲境界、参照誤検出対策、Phase 12同期手順） |
+| 2026-02-13 | 1.18.0     | TASK-FIX-13-1完了記録追加。deprecated型プロパティ（`Anchor.name`, `Skill.lastUpdated`）削除と型定義テーブル（`lastModified`）を反映 |
 | 2026-02-12 | 1.17.0     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了記録追加。AgentViewのP31適用拡張（個別セレクタ移行）を反映 |
 | 2026-02-12 | 1.16.2     | UT-9B-H-003完了後処理: 関連未タスクテーブルの参照パスを `completed-tasks/unassigned-task/` へ更新 |
 | 2026-02-12 | 1.16.1     | UT-9B-H-003完了反映: 関連未タスクテーブルを更新（取り消し線 + 完了日追記） |

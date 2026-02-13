@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-13T01:58:02.315Z",
-  "totalKeywords": 1108,
+  "generated": "2026-02-13T11:20:18.466Z",
+  "totalKeywords": 1117,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2720,6 +2720,12 @@
       "patterns.md"
     ],
     "統合テスト有効化": [
+      "lessons-learned.md"
+    ],
+    "deprecated": [
+      "lessons-learned.md"
+    ],
+    "プロパティ正式移行": [
       "lessons-learned.md"
     ],
     "executeSkill": [

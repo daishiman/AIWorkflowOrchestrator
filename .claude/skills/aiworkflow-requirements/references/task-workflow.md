@@ -168,6 +168,39 @@
 
 ---
 
+### タスク: TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION deprecatedプロパティ正式移行（2026-02-13完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | TASK-FIX-13-1 |
+| 完了日     | 2026-02-13 |
+| ステータス | **完了** |
+| Phase      | Phase 1-12完了 |
+| テスト数   | 1（型定義回帰テスト） |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| ------ | --------- |
+| 型定義更新 | `packages/shared/src/types/skill.ts`（`Anchor.name` / `Skill.lastUpdated` 削除） |
+| 型回帰テスト | `packages/shared/src/types/__tests__/skill-deprecated-removal.test.ts` |
+| 仕様タスク | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/06b-task-fix-13-1-deprecated-property-migration.md` |
+
+#### 変更理由
+
+- deprecatedプロパティの残存による二重定義状態を解消し、型の正本を単一化
+- `anchor.name` 参照を `anchor.source` に統一し、UI側の参照不整合を解消
+- `SkillImportConfig.lastUpdated` は既存永続化互換のため維持し、不要なスコープ拡大を抑止
+
+#### 苦戦箇所と解決策
+
+| 苦戦ポイント | 問題 | 解決策 |
+| ------------ | ---- | ------ |
+| 削除対象の境界判定 | `lastUpdated` が複数型に存在し、互換性を壊すリスクがあった | `Skill.lastUpdated` のみ削除し、`SkillImportConfig.lastUpdated` は据え置きを仕様に明記 |
+| 参照移行の安全性 | `name` プロパティの機械置換は誤修正の可能性が高かった | `Anchor` 型スコープで参照箇所を限定し、UIドキュメントの対象行のみ修正 |
+| Phase 12の追記漏れ | コード修正だけでは仕様同期が不足した | `interfaces-agent-sdk-skill.md` / `task-workflow.md` / `lessons-learned.md` を同一ターンで更新 |
+
+---
 ### タスク: UT-FIX-AGENTVIEW-INFINITE-LOOP-001 AgentView無限ループ修正（2026-02-12完了）
 
 | 項目       | 内容                                                     |
@@ -584,6 +617,8 @@
 | UT-SETTINGSVIEW-INLINE-SELECTOR-001          | SettingsView残存インラインセレクタの個別セレクタ移行               | 低 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 10（MINOR #2）        | `docs/30-workflows/unassigned-task/task-ut-settingsview-inline-selector-migration.md`        |
 | task-imp-vitest-mock-reset-utility-001       | Vitest モック2段階リセットユーティリティ共通化                      | 中 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`                |
 | task-ref-vitest-module-mock-audit-001        | Vitest モジュールレベルモック監査・使い分けガイドライン策定         | 低 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`                 |
+| UT-PERF-001                                   | グラフユーティリティ性能ベンチマーク基準再設計                     | 中 | TODO検出: `packages/shared/src/types/rag/graph/__tests__/utils.test.ts:791` | `docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md` |
+| UT-TYPE-DATETIME-DOC-001                       | 型日時表現のガイドライン策定とドキュメント化                       | 低 | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION Phase 12                       | `docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md` |
 
 ### 未タスク管理ルール
 
@@ -651,3 +686,6 @@
 | 1.31.0     | 2026-02-12 | 未タスク参照パス整合性を修正。完了済み3件（UT-FIX-5-3/5-4, UT-STORE-HOOKS-REFACTOR-001）の参照先をcompleted-tasksへ更新、未実施3件（UT-STORE-HOOKS-REFACTOR-002/003, UT-FIX-APP-INITAUTH-CHECK-001）のunassigned-task配置を反映 |
 | 1.32.0     | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001を`completed-tasks/`へ移動。関連未タスク4件（UT-FIX-5-1-001, UT-STORE-HOOKS-REFACTOR-002/003, UT-FIX-APP-INITAUTH-CHECK-001）の参照先を`completed-tasks/`へ同期 |
 | 1.33.0     | 2026-02-13 | 未タスク2件追加: UT-TEST-EVENT-STANDARDIZATION-001（テストイベントAPI標準化、P39/P40教訓）、UT-SETTINGSVIEW-INLINE-SELECTOR-001（SettingsViewインラインセレクタ移行）。UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 10/12検出 |
+| 1.34.0     | 2026-02-13 | TASK-FIX-13-1完了記録追加。deprecated型プロパティ（Anchor.name, Skill.lastUpdated）削除、型回帰テスト追加、関連タスク仕様書への参照を反映 |
+| 1.35.0     | 2026-02-13 | 未タスク追加: UT-PERF-001（グラフユーティリティ性能ベンチマーク基準再設計）。TODO検出結果を未タスク指示書へ登録 |
+| 1.36.0     | 2026-02-13 | TASK-FIX-13-1 苦戦箇所と解決策を完了タスクセクションへ追記。削除対象境界・参照置換安全性・Phase 12同期手順を明文化 |

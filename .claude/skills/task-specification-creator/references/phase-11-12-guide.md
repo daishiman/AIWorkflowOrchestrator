@@ -170,6 +170,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
+- [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
@@ -219,6 +220,7 @@ pnpm lint --fix
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-13 | TASK-FIX-13-1教訓反映: Phase 12完了チェックリストに「苦戦箇所のシステム仕様書記録」を追加 |
 | 2026-02-12 | TASK-9B-I教訓反映: 未タスク配置ディレクトリ確認・テスト数実測値確認・SDK declare module確認の3項目をチェックリストに追加。漏れやすいポイントテーブルに2件追加 |
 | 2026-02-12 | TASK-FIX-7-1スキル改善: 未タスク指示書の物理ファイル存在確認ステップを完了条件チェックリストに追加 |
 | 2026-02-10 | Phase 12チェックリスト強化: Step 1-D(topic-map.md再生成)、ESLintキャッシュクリア、コメントフォーマット統一、自動化コマンドセクション追加 |
