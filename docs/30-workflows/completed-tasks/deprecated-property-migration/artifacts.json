@@ -1,0 +1,119 @@
+{
+  "feature": "deprecated-property-migration",
+  "taskId": "TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION",
+  "description": "deprecated型プロパティ（Anchor.name, Skill.lastUpdated）の正式移行・削除",
+  "createdAt": "2026-02-13",
+  "lastUpdated": "2026-02-13T12:00:00Z",
+  "status": "completed",
+  "phases": {
+    "1-3": {
+      "status": "completed",
+      "completedAt": "2026-02-13T10:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1-3/requirements-and-design.md",
+          "description": "要件定義・設計・レビュー（統合）"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-13T10:15:00Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/types/__tests__/skill-deprecated-removal.test.ts",
+          "description": "TDD Red: 型削除回帰テスト（8テスト）"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-13T10:20:00Z",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "packages/shared/src/types/skill.ts",
+          "description": "deprecated定義削除（Anchor.name, Skill.lastUpdated）"
+        }
+      ]
+    },
+    "6-7": {
+      "status": "completed",
+      "completedAt": "2026-02-13T10:25:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6-7/coverage-report.md",
+          "description": "テスト拡充・カバレッジ確認"
+        }
+      ]
+    },
+    "8-9": {
+      "status": "completed",
+      "completedAt": "2026-02-13T10:30:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8-9/quality-verification.md",
+          "description": "リファクタリング・品質検証"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-13T10:35:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-13T10:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-13T11:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "completedAt": "2026-02-13T12:00:00Z",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1-3": [],
+    "4": ["1-3"],
+    "5": ["4"],
+    "6-7": ["5"],
+    "8-9": ["6-7"],
+    "10": ["8-9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

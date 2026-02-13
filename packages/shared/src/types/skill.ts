@@ -11,8 +11,6 @@ import type { EnvironmentType } from "./agent";
 export interface Anchor {
   /** 参照元名（source） */
   source: string;
-  /** @deprecated Use `source` instead */
-  name?: string;
   /** 適用方法 */
   application: string;
   /** 目的 */
@@ -97,8 +95,6 @@ export interface Skill {
   dependencies?: string[];
   /** 最終更新日（Date） */
   lastModified: Date;
-  /** @deprecated Use `lastModified` instead */
-  lastUpdated?: string;
 }
 
 /**

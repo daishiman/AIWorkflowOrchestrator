@@ -52,7 +52,7 @@
     <ul className="space-y-2">
       {skill.anchors.map((anchor, index) => (
         <li key={...} className="p-2 rounded bg-slate-700/30 ...">
-          <p className="font-medium text-slate-200">{anchor.name}</p>
+          <p className="font-medium text-slate-200">{anchor.source}</p>
           <p className="text-sm text-slate-400">適用: {anchor.application}</p>
           <p className="text-sm text-slate-400">目的: {anchor.purpose}</p>
         </li>

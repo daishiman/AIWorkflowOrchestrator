@@ -195,6 +195,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v1.29.0** | **2026-02-13** | **TASK-FIX-13-1未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001追加、task-workflow.md更新）** |
+| **v1.28.0** | **2026-02-13** | **TASK-FIX-13-1再検証教訓追記**: lessons-learned.md v1.8.0更新（ドキュメント偏重による実装検証省略、並列エージェント品質保証の教訓2件追加）。skill-creatorのpatterns.mdにdeprecatedプロパティ移行パターンを追加 |
+| **v1.27.0** | **2026-02-13** | **TASK-FIX-13-1教訓追記**: interfaces-agent-sdk-skill.md v1.19.0（苦戦箇所・再発防止策を追加）、task-workflow.md v1.36.0（完了タスク節に苦戦箇所テーブル追加）、lessons-learned.md v1.7.0（教訓3件追加） |
+| **v1.26.0** | **2026-02-13** | **TASK-FIX-13-1完了反映 + 未タスク登録**: interfaces-agent-sdk-skill.md v1.18.0更新（deprecated型プロパティ削除を反映、Skill型にlastModified明記）、task-workflow.md v1.35.0更新（完了タスク追加 + UT-PERF-001未タスク登録） |
 | **v1.25.0** | **2026-02-13** | **TASK-FIX-11-1スキル改善（技術詳細）**: lessons-learned.md v1.7.0（Vitestモック管理3サブセクション追加: clearAllMocks限界・mockRejectedValueOnce・モジュールモックタイムアウト）。architecture-implementation-patterns.md v1.18.0（2パターン追加: リセット戦略・タイムアウトテスト） |
 | **v1.25.0** | **2026-02-12** | **完了タスク移動を反映**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001を`docs/30-workflows/completed-tasks/`へ移動し、task-workflow.md v1.32.0で関連未タスク4件の参照先を`completed-tasks/`へ同期 |
 | **v1.24.0** | **2026-02-13** | **TASK-FIX-11-1-SDK-TEST-ENABLEMENT 教訓追記**: lessons-learned.md v1.6.0追加（Phase 12 Step 1-A/1-D誤判定、未タスクraw誤検知、Vitestモック再初期化）。interfaces-agent-sdk-executor.md v1.7.1に「実装上の課題と教訓」を追記 |

@@ -5,6 +5,73 @@
 
 ---
 
+## 2026-02-13: TASK-FIX-13-1 未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | 未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001）。task-workflow.md残課題テーブル登録、interfaces-agent-sdk-skill.mdリンク追加 |
+| 対象ファイル | task-workflow.md, interfaces-agent-sdk-skill.md |
+| 結果         | success |
+| 備考         | 型日時表現ガイドライン策定タスクの未タスク登録。task-workflow.md残課題テーブル登録、interfaces-agent-sdk-skill.mdに参照リンク追加 |
+
+---
+
+## 2026-02-13: TASK-FIX-13-1 教訓追記（再検証セッション分）+ skill-creator patterns.md更新
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | 教訓追記（再検証セッション分）+ skill-creator patterns.md更新 |
+| 対象ファイル | lessons-learned.md, skill-creator/references/patterns.md |
+| 結果         | success |
+| 備考         | ドキュメント偏重による実装検証省略の教訓を追加。lessons-learned.md v1.8.0へ更新。skill-creatorのpatterns.mdに「deprecated プロパティ段階的移行」パターンと「ドキュメント偏重失敗パターン」を追加 |
+
+---
+
+## 2026-02-13: TASK-FIX-13-1 苦戦箇所の体系化（再発防止）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書へ苦戦箇所・解決策を追記（再利用可能化） |
+| 対象ファイル | interfaces-agent-sdk-skill.md, task-workflow.md, lessons-learned.md |
+| 結果         | success |
+| 備考         | 削除範囲境界（Skill vs SkillImportConfig）、参照置換誤検出、Phase 12同期漏れ対策を明文化 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| interfaces-agent-sdk-skill.md | v1.19.0 | TASK-FIX-13-1の苦戦箇所・教訓を追記 |
+| task-workflow.md | v1.36.0 | 完了タスク節に苦戦箇所テーブルを追記 |
+| lessons-learned.md | v1.7.0 | TASK-FIX-13-1の教訓3件を新規追加 |
+
+---
+
+## 2026-02-13: TASK-FIX-13-1 deprecatedプロパティ正式移行の仕様反映
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書更新（完了タスク記録 + 型定義同期 + 未タスク登録 + 変更履歴更新） |
+| 対象ファイル | interfaces-agent-sdk-skill.md, task-workflow.md, docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md |
+| 結果         | success |
+| 備考         | `Anchor.name`/`Skill.lastUpdated` 削除を仕様に反映。`SkillImportConfig.lastUpdated` は互換維持のため据え置き |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| interfaces-agent-sdk-skill.md | v1.18.0 | TASK-FIX-13-1完了記録追加、Skill型テーブルに`lastModified`明記 |
+| task-workflow.md | v1.35.0 | TASK-FIX-13-1完了記録追加、UT-PERF-001未タスク登録、変更履歴更新 |
+
+---
+
 ## 2026-02-13: UT-FIX-AGENTVIEW-INFINITE-LOOP-001 苦戦箇所・テスト環境教訓追記
 
 | 項目         | 内容 |

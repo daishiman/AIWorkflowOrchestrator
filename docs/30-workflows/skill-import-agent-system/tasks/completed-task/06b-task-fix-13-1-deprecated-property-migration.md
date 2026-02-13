@@ -10,7 +10,7 @@
 | 対象機能     | 共有型定義（skill.ts）                      |
 | 優先度       | 低                                          |
 | 見積もり規模 | 小規模                                      |
-| ステータス   | 未実施                                      |
+| ステータス   | 完了                                        |
 | 実行順序     | 06b（並列可能 — 05b完了後）                 |
 | 発見元       | skill-system-conflict-report #13            |
 | 発見日       | 2026-02-05                                  |
@@ -122,18 +122,18 @@ deprecated プロパティの全参照箇所を推奨代替に移行し、deprec
 
 ## 5. 完了条件チェックリスト
 
-- [ ] `Anchor.name` の deprecated 定義が削除
-- [ ] `Skill.lastUpdated` の deprecated 定義が削除
-- [ ] 全参照箇所が推奨代替を使用
-- [ ] 全テストが PASS
+- [x] `Anchor.name` の deprecated 定義が削除
+- [x] `Skill.lastUpdated` の deprecated 定義が削除
+- [x] 全参照箇所が推奨代替を使用
+- [x] 全テストが PASS
 
 ---
 
 ## 6. 検証方法
 
-1. `grep -rn "Anchor\.name\b" --include="*.ts"` で型定義以外の参照なし
-2. `grep -rn "lastUpdated" --include="*.ts"` で該当なし
-3. テストスイート PASS
+1. `rg -n "Anchor\\.name|Skill\\.lastUpdated" packages/shared/src/types apps docs/30-workflows/completed-tasks/skill-management-ui` で実装参照が残っていないことを確認
+2. `lastUpdated` は `SkillImportConfig.lastUpdated`（永続化互換）以外に残っていないことを確認
+3. `pnpm --filter @repo/shared typecheck` と `vitest` の型回帰テストが PASS
 
 ---
 

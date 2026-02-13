@@ -372,7 +372,11 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.66.0** | **2026-02-13** | **TASK-FIX-13-1未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001、9セクションテンプレート準拠）** |
+| **9.65.0** | **2026-02-13** | **TASK-FIX-13-1再検証教訓反映**: lessons-learned.md/patterns.md更新に伴うLOGS.md同期。並列エージェント実行時の品質ゲート教訓を反映 |
+| **9.64.0** | **2026-02-13** | **Phase 12チェック強化（苦戦箇所記録の必須化）**: `phase-11-12-guide.md` の完了条件に「実装で苦戦した箇所をシステム仕様書へ記録」を追加。TASK-FIX-13-1の教訓を再利用可能な手順として標準化 |
 | **9.64.0** | **2026-02-13** | **TASK-FIX-11-1スキル改善（パターン追記）**: patterns.mdにSDKテスト有効化成功パターン2件（モック2段階リセット、TODO一括有効化ワークフロー）・失敗パターン1件（モジュールモックタイマーテスト失敗）追加。ナビゲーションテーブル更新 |
+| **9.63.0** | **2026-02-13** | **TASK-FIX-13-1 Phase 12監査是正**: spec-update-workflow準拠で更新漏れを補完（aiworkflow-requirements: interfaces-agent-sdk-skill.md/task-workflow.md、LOGS.md 2ファイル、SKILL.md 2ファイル更新）。deprecatedプロパティ削除タスクの完了記録を反映し、TODO検出のUT-PERF-001を未タスク登録 |
 | **9.63.0** | **2026-02-13** | **Phase 12未タスク検出ガイド改善**: unassigned-task-guidelines.mdに「raw検出は候補」の明記と2段階判定（実装ディレクトリ優先スキャン→手動精査）を追加。`docs/30-workflows/unassigned-task/` への配置条件を「精査後件数>0」に明確化 |
 | **9.62.1** | **2026-02-13** | **テスト環境教訓追記**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001のテスト環境苦戦箇所をシステム仕様書に反映。happy-dom/userEvent非互換対策、テスト実行ディレクトリ依存問題のパターン化 |
 | **9.62.0** | **2026-02-13** | **TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 12監査是正**: Step 1-A/1-Dの「該当なし」誤判定を修正し、LOGS.md x2・SKILL.md x2・references更新・topic-map再生成を完了。documentation-changelog.md/skill-feedback-report.mdの判定整合性を修正。phase-11-12-guide.mdのStep 1-Dコマンドを`--workflow`必須仕様に合わせて更新 |
