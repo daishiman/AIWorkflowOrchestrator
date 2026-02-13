@@ -34,9 +34,7 @@ const mockMainWindow = {
 } as unknown as BrowserWindow;
 
 const mockStreamGenerator = vi.fn();
-const mockQuery = vi.fn().mockImplementation(() => ({
-  stream: () => mockStreamGenerator(),
-}));
+const mockQuery = vi.fn().mockImplementation(() => mockStreamGenerator());
 
 vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
   query: (args: unknown) => mockQuery(args),
@@ -144,11 +142,9 @@ function setupFailThenSuccessQuery(failCount: number, error: Error): void {
       throw error;
     }
     return {
-      stream: () => ({
-        [Symbol.asyncIterator]: async function* () {
-          yield { type: "text", content: "OK" };
-        },
-      }),
+      [Symbol.asyncIterator]: async function* () {
+        yield { type: "text", content: "OK" };
+      },
     };
   });
 }
@@ -171,9 +167,7 @@ describe("SkillExecutor Retry Mechanism", () => {
     vi.clearAllMocks();
     vi.useFakeTimers({ shouldAdvanceTime: true });
 
-    mockQuery.mockImplementation(() => ({
-      stream: () => mockStreamGenerator(),
-    }));
+    mockQuery.mockImplementation(() => mockStreamGenerator());
 
     setupSuccessStream();
     mockMainWindow.isDestroyed = vi.fn().mockReturnValue(false);
@@ -770,11 +764,9 @@ describe("SkillExecutor Retry Mechanism", () => {
           throw createNetworkError("ECONNRESET");
         }
         return {
-          stream: () => ({
-            [Symbol.asyncIterator]: async function* () {
-              yield { type: "text", content: "OK" };
-            },
-          }),
+          [Symbol.asyncIterator]: async function* () {
+            yield { type: "text", content: "OK" };
+          },
         };
       });
 
@@ -801,9 +793,7 @@ describe("SkillExecutor Retry Mechanism", () => {
 
       // Reset for second execution
       setupSuccessStream();
-      mockQuery.mockImplementation(() => ({
-        stream: () => mockStreamGenerator(),
-      }));
+      mockQuery.mockImplementation(() => mockStreamGenerator());
 
       const result2 = await executor.execute(mockRequest, mockSkill);
       expect(result2.success).toBe(true);
@@ -820,9 +810,7 @@ describe("SkillExecutor Retry Mechanism", () => {
 
       // 6th execution should be rejected
       setupSuccessStream();
-      mockQuery.mockImplementation(() => ({
-        stream: () => mockStreamGenerator(),
-      }));
+      mockQuery.mockImplementation(() => mockStreamGenerator());
       const extraResult = await executor.execute(mockRequest, mockSkill);
 
       // Should fail due to concurrent limit (all 5 slots are retrying)
@@ -845,9 +833,12 @@ describe("SkillExecutor Retry Mechanism", () => {
       const activeExecutions = executor.getActiveExecutions();
       expect(activeExecutions.length).toBeLessThanOrEqual(5);
 
-      await vi.advanceTimersByTimeAsync(60000);
+      // 段階的にタイマーを進めて全ての並行リトライ＋バックオフを解消
+      for (let i = 0; i < 20; i++) {
+        await vi.advanceTimersByTimeAsync(5000);
+      }
       await Promise.allSettled(promises);
-    });
+    }, 15000);
 
     it("should allow independent success and failure in concurrent retries", async () => {
       let call = 0;
@@ -856,11 +847,9 @@ describe("SkillExecutor Retry Mechanism", () => {
         // First execution fails once then succeeds
         if (call === 1) throw createNetworkError("ECONNRESET");
         return {
-          stream: () => ({
-            [Symbol.asyncIterator]: async function* () {
-              yield { type: "text", content: "OK" };
-            },
-          }),
+          [Symbol.asyncIterator]: async function* () {
+            yield { type: "text", content: "OK" };
+          },
         };
       });
 
@@ -973,14 +962,20 @@ describe("SkillExecutor Retry Mechanism", () => {
 
     it("should have incrementing attempt numbers starting at 0", async () => {
       setupFailThenSuccessQuery(3, createNetworkError("ECONNRESET"));
-      await executor.execute(mockRequest, mockSkill);
+      const executePromise = executor.execute(mockRequest, mockSkill);
+
+      // Advance timers step-by-step to cover backoff delays (1000 + 2000 + 4000 = 7000ms)
+      for (let i = 0; i < 15; i++) {
+        await vi.advanceTimersByTimeAsync(1000);
+      }
+      await executePromise;
 
       const retryMessages = getRetryStreamMessages();
       for (let i = 0; i < retryMessages.length; i++) {
         const content = parseRetryContent(retryMessages[i]);
         expect(content.attempt).toBe(i);
       }
-    });
+    }, 15000);
 
     it("should have positive delayMs in retry event", async () => {
       setupFailThenSuccessQuery(1, createNetworkError("ECONNRESET"));

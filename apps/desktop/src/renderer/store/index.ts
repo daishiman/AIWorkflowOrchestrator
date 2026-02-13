@@ -513,6 +513,54 @@ export const useClearSkillError = () =>
 export const useClearStreamingMessages = () =>
   useAppStore((state) => state.clearStreamingMessages);
 
+// ==========================================================================
+// AgentView用 個別セレクタ（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+// P31対策: AgentViewのインラインセレクタを個別Hookに移行
+// ==========================================================================
+
+// --- AgentView状態セレクタ ---
+/** スキル一覧（レガシー） */
+export const useSkills = () => useAppStore((state) => state.skills);
+/** 利用可能スキル一覧（レガシー） */
+export const useAvailableSkills = () =>
+  useAppStore((state) => state.availableSkills);
+/** インポート済みスキルID一覧 */
+export const useImportedSkillIds = () =>
+  useAppStore((state) => state.importedSkillIds);
+/** 選択中のスキル */
+export const useSelectedSkill = () =>
+  useAppStore((state) => state.selectedSkill);
+/** スキルフィルター文字列 */
+export const useSkillFilter = () => useAppStore((state) => state.skillFilter);
+/** スキルカテゴリフィルター */
+export const useSkillCategory = () =>
+  useAppStore((state) => state.skillCategory);
+/** インポートダイアログ表示状態 */
+export const useIsImportDialogOpen = () =>
+  useAppStore((state) => state.isImportDialogOpen);
+/** トーストメッセージ */
+export const useToastMessage = () => useAppStore((state) => state.toastMessage);
+
+// --- AgentViewアクションセレクタ ---
+/** スキルを選択 */
+export const useSelectSkill = () => useAppStore((state) => state.selectSkill);
+/** フィルター設定 */
+export const useSetSkillFilter = () =>
+  useAppStore((state) => state.setSkillFilter);
+/** カテゴリ設定 */
+export const useSetSkillCategory = () =>
+  useAppStore((state) => state.setSkillCategory);
+/** インポートダイアログを開く */
+export const useOpenImportDialog = () =>
+  useAppStore((state) => state.openImportDialog);
+/** インポートダイアログを閉じる */
+export const useCloseImportDialog = () =>
+  useAppStore((state) => state.closeImportDialog);
+/** トースト表示 */
+export const useShowToast = () => useAppStore((state) => state.showToast);
+/** トーストクリア */
+export const useClearToast = () => useAppStore((state) => state.clearToast);
+
 /**
  * AuthMode selectors - single hook for all AuthMode-related state and actions
  *

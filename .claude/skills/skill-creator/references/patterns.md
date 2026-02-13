@@ -10,11 +10,12 @@
 | ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン | テスト環境問題の実装問題誤認                           |
+| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ** | テスト環境問題の実装問題誤認                           |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング                                                                                               | -                                                      |
+| 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合                                                                                                                                           | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
 | 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
 
 ## 成功パターン
@@ -116,6 +117,18 @@
 - **適用条件**: Phase 12実行時、特に複数サブタスクを持つPhase
 - **発見日**: 2026-01-22
 - **関連タスク**: UT-007 ChatHistoryProvider App Integration
+
+### [Phase12] 未タスク参照リンクの実在チェック
+
+- **状況**: `task-workflow.md` に未タスクを登録したが、`docs/30-workflows/unassigned-task/` に実体ファイルがなく参照切れになる
+- **アプローチ**:
+  - 未タスク登録後に `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行
+  - `missing > 0` の場合は Phase 12 を完了扱いにしない
+  - 完了タスクへ移動した場合は `task-workflow.md` の参照先を `completed-tasks/` 側に更新
+- **結果**: 未タスク探索時のリンク切れを事前に排除し、後続タスクの追跡性を維持
+- **適用条件**: Phase 12で未タスクを新規作成・更新した場合、または完了移動を行った場合
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
 
 ### [Phase12] Phase 12 Step 1 検証スクリプトによる自動化
 
@@ -535,6 +548,53 @@
 | Step 2を「該当なし」と誤判定 | テストリファクタリングはインターフェース変更を伴わないため、Step 2不要と判断しがち | テストのみの変更でも、テスト戦略やテストパターンの変更は仕様書（development-guidelines.md等）に記録すべき。Step 2の判断基準に「テスト戦略変更」を含める |
 | 実装ガイドのテストカテゴリテーブル不整合 | Phase 4でテストカテゴリ（CAT-01〜CAT-05）を定義し、Phase 6で拡充したが、実装ガイドのテーブルがPhase 4時点のまま | Phase 6（テスト拡充）完了後に、implementation-guide.md Part 2のテストカテゴリテーブルを必ず再確認・更新する。テスト数やカテゴリ構成が変わった場合は即座に反映 |
 
+### [SDK] TypeScript モジュール解決による型安全統合（TASK-9B-I）
+
+- **状況**: 外部 SDK (`@anthropic-ai/claude-agent-sdk@0.2.30`) の `as any` を除去し型安全な統合を実現
+- **アプローチ**:
+  - SDK の型定義ファイル (`dist/index.d.ts`) を直接参照して正確なパラメータ構造を把握
+  - `SDKQueryOptions` 内部型を定義し、SDK `Options` 型への変換を型安全に実装
+  - `@ts-expect-error` を使った compile-time テストで不正な型の検証
+- **結果**: `as any` 完全除去、13テスト追加、278既存テスト全PASS
+- **適用条件**: 外部 SDK の型安全な統合、`as any` 除去タスク
+- **発見日**: 2026-02-12
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+- **クロスリファレンス**: [02-code-quality.md#TypeScript型安全](../../.claude/rules/02-code-quality.md)
+
+### [Testing] テスト環境別イベント発火パターン選択（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+
+- **状況**: Vitest + happy-dom環境でユーザーインタラクションテストを作成する際、`@testing-library/user-event`のSymbol操作がhappy-domで非互換
+- **アプローチ**:
+  - 問題発見: 53テスト中49テストがSymbolエラーで一斉失敗。`userEvent.setup()`がhappy-dom未サポートのDOM操作を実行
+  - 試行1: `// @vitest-environment jsdom` ディレクティブ追加 → `toBeInTheDocument`動作不良、DOM要素重複で断念
+  - 試行2: `userEvent`を`fireEvent`に全面置換 → 53テスト全PASS
+  - 非同期対応: `await act(async () => { fireEvent.click(el) })`でPromise microtask flushを保証
+- **パターン選択基準**:
+
+| テスト環境 | イベントAPI | 理由 |
+|---|---|---|
+| happy-dom（デフォルト） | `fireEvent` | Symbol操作不要、軽量・高速 |
+| jsdom（ディレクティブ指定） | `userEvent` | 完全なDOM API、アクセシビリティ検証向き |
+
+- **結果**: 環境固有の制約を理解し、適切なAPIを選択することでテスト安定性を確保
+- **適用条件**: Vitest + happy-dom環境でのコンポーネントテスト。特にクリック/入力等のユーザーインタラクションテスト
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+- **クロスリファレンス**: [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md#fireevent-vs-userevent-使い分けパターン), [06-known-pitfalls.md#P39](../../.claude/rules/06-known-pitfalls.md)
+
+### [Testing] モノレポ テスト実行ディレクトリ依存パターン（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+
+- **状況**: モノレポ環境でプロジェクトルートからVitest実行すると、サブパッケージの`vitest.config.ts`が読み込まれない
+- **アプローチ**:
+  - 問題: `pnpm vitest run apps/desktop/src/...`（ルートから実行）→ `document is not defined`エラー
+  - 原因: Vitestはカレントディレクトリの設定ファイルを優先。ルートの設定にはhappy-dom/setupFilesが未定義
+  - 解決: `cd apps/desktop && pnpm vitest run src/...` または `pnpm --filter @repo/desktop exec vitest run src/...`
+- **結果**: テスト実行を対象パッケージディレクトリから行うルールを確立
+- **適用条件**: pnpm monorepo + Vitest環境で、パッケージ固有のテスト環境設定がある場合
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+- **クロスリファレンス**: [06-known-pitfalls.md#P40](../../.claude/rules/06-known-pitfalls.md)
+
 ---
 
 ## 失敗パターン（避けるべきこと）
@@ -605,6 +665,26 @@
 - **対策**: スクリプト作成前に `package.json` の `"type"` フィールドをチェック
 - **発見日**: 2026-01-23
 - **関連タスク**: SHARED-TYPE-EXPORT-03
+
+### [SDK] カスタム declare module と SDK 実型の共存（TASK-9B-I）
+
+- **状況**: SDK 未インストール時にカスタム `declare module` を作成し、SDK インストール後もファイルが残留
+- **問題**: TypeScript は `node_modules` の実型を優先し、カスタム `.d.ts` は無視されるが、仕様書にカスタム型の値が残って型不整合が発生
+- **原因**: SDK インストール前後で型定義ファイルの優先順位が変わることの認識不足
+- **教訓**: SDK インストール後はカスタム `.d.ts` を削除する。TypeScript のモジュール解決優先順位（`node_modules` > カスタム `.d.ts`）を文書化しておく
+- **対策**: SDK バージョンアップ時にカスタム型定義ファイルの棚卸しを実施
+- **発見日**: 2026-02-12
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION, UT-9B-I-001
+
+### [Phase12] 未タスク配置ディレクトリの混同（TASK-9B-I）
+
+- **状況**: 未タスク (UT-9B-I-001) の指示書を親タスクの `tasks/` ディレクトリに誤配置
+- **問題**: `docs/30-workflows/unassigned-task/` ではなく `docs/30-workflows/skill-import-agent-system/tasks/` に配置してしまった
+- **原因**: 未タスク指示書の配置先ルールの確認不足。親タスクディレクトリと未タスクディレクトリの混同
+- **教訓**: 未タスクは必ず `docs/30-workflows/unassigned-task/` に配置する。配置後に `ls` で物理ファイルの存在を検証する
+- **対策**: 未タスク作成時に配置ディレクトリを明示的に確認するチェックリスト項目を追加
+- **発見日**: 2026-02-12
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
 
 ---
 

@@ -43,6 +43,43 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-13 - UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓追記]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（仕様書更新）
+- **Result**: ✓ 成功
+- **Notes**: happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用の教訓3件をシステム仕様書に追記。lessons-learned.md v1.6.0、architecture-implementation-patterns.md v1.18.0更新
+
+---
+
+## [2026-02-12 - Phase 12未タスク参照整合チェック強化]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（スキル改善）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `verify-unassigned-links.js` を追加（`task-workflow.md` の `unassigned-task/` 参照パス実在チェック）
+  - `spec-update-workflow.md` Step 1-E に機械検証ステップを追加
+  - `phase-11-12-guide.md` の完了条件チェックリストにリンク整合チェックを追加
+  - `resource-map.md` scripts一覧に検証スクリプトを登録
+
+---
+
+## [2026-02-12 - UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 12是正完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - Step 1-A/1-C/1-D の不足を是正（システム仕様書の完了記録、関連タスク更新、topic-map再生成）
+  - `aiworkflow-requirements` 側の LOGS.md / SKILL.md 更新を反映
+  - `task-specification-creator` 側の LOGS.md / SKILL.md 更新を反映
+  - `docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/` の整合性を更新
+
+---
+
 ## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC完了]
 
 - **Agent**: task-specification-creator
@@ -95,6 +132,33 @@ node scripts/log-usage.js \
 - **Notes**: Store Hooks コンポーネント移行（個別セレクタパターン）。LLM/Skill/AuthMode 30個の個別セレクタHook追加、3コンポーネント移行、71テスト全PASS。P31問題（Zustand Store Hooks無限ループ）の根本解決策を実装。
 
 ---
+
+## [2026-02-12 - TASK-9B-I-SDK-FORMAL-INTEGRATION完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Notes**:
+  - Claude Agent SDKの型安全な正式統合
+  - SkillExecutor.ts の `as any` を除去、SDK実型（@anthropic-ai/claude-agent-sdk@0.2.30）に基づく型安全な callSDKQuery 実装
+  - apiKey → env.ANTHROPIC_API_KEY、signal → abortController、conversation直接利用の3点修正
+  - テスト278件全PASS
+  - 分類: リファクタリング（型安全性強化）
+
+---
+
+## [2026-02-12 - TASK-9B-I教訓反映（スキル改善）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善
+- **Result**: ✓ 成功
+- **Notes**:
+  - **教訓1: 未タスク配置ディレクトリの間違い** - UT-9B-I-001の指示書を親タスクの`tasks/`に配置してしまった。正しい配置先は`docs/30-workflows/unassigned-task/`。patterns.mdに失敗パターン追加、unassigned-task-guidelines.mdに注意事項追加
+  - **教訓2: テスト数の設計時固定値使用** - Phase 4の想定テスト数「18」を使い続けたが実際は「13」だった。Phase 12では`grep -c "it\\(" *.test.ts`で実測値を使用するルールを追加
+  - 更新ファイル: patterns.md、phase-11-12-guide.md、unassigned-task-guidelines.md、LOGS.md、SKILL.md
+
+---
+
 
 ## [2026-02-12 - スキル最適化（TASK-FIX-7-1事後）]
 
@@ -3613,4 +3677,3 @@ if (artifactPath) {
   - IPCドキュメント・コンポーネントドキュメント作成
   - interfaces-auth.md 更新
   - LOGS.md 2ファイル更新（P1防止）
-

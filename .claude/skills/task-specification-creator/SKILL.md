@@ -276,6 +276,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | 完了タスクセクションが簡略形式            | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う             |
 | Phase 10 MINOR指摘を未タスク化せず進行    | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
 | 未タスク検出レポートで0件判定のまま未修正 | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
+| `task-workflow.md` の未タスクリンクが参照切れ | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する                |
 
 ### Phase 12 苦戦防止Tips
 
@@ -319,6 +320,9 @@ node scripts/complete-phase.js --workflow docs/30-workflows/{{FEATURE_NAME}} --p
 
 # 未タスク検出（Phase 12）
 node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp/unassigned-candidates.json
+
+# 未タスク参照リンク整合チェック（Phase 12 Step 1-E後）
+node scripts/verify-unassigned-links.js
 
 # 使用ログ記録
 node scripts/log-usage.js --result success --phase "Phase {{N}}"
@@ -368,6 +372,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.62.0** | **2026-02-13** | **テスト環境教訓追記**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001のテスト環境苦戦箇所をシステム仕様書に反映。happy-dom/userEvent非互換対策、テスト実行ディレクトリ依存問題のパターン化 |
+| **9.61.0** | **2026-02-12** | **未タスク参照整合チェック強化** + **TASK-9B-I教訓反映**: `verify-unassigned-links.js` を追加。Phase 12の漏れパターンに「task-workflow.md の未タスクリンク参照切れ」を追加し、Step 1-E後の機械検証を標準化。patterns.mdに失敗パターン2件追加（未タスク配置ディレクトリ間違い、テスト数設計時固定値使用）。phase-11-12-guide.mdチェックリスト3項目追加。`spec-update-workflow.md` / `phase-11-12-guide.md` / `resource-map.md` / `unassigned-task-guidelines.md` を更新 |
+| **9.60.0** | **2026-02-12** | **UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 12是正** + **TASK-9B-I-SDK-FORMAL-INTEGRATION完了**: Step 1-A/1-C/1-Dの漏れを補完。aiworkflow-requirements参照仕様（arch-state-management.md, task-workflow.md）へ完了反映、LOGS.md/SKILL.md 2ファイルずつ更新、topic-map再生成を実施。Claude Agent SDK型安全正式統合。SkillExecutor.ts `as any` 除去、SDK実型（@anthropic-ai/claude-agent-sdk@0.2.30）に基づく型安全な callSDKQuery 実装。テスト278件全PASS |
 | **9.59.0** | **2026-02-12** | **TASK-9B-Hスキル改善**: Phase 12テンプレート改善（Task 5スキルフィードバックレポート追加、事前チェックステップ追加、artifacts.json全Phaseステータス完了条件追加、IPC更新対象ファイル一覧追加）。Phase 5テンプレートに設計変更記録の完了条件追加。spec-update-workflow.mdにIPC更新対象テーブル追加 |
 | **9.58.0** | **2026-02-12** | **TASK-9B-H-SKILL-CREATOR-IPC Phase 1-12完了**: SkillCreatorService IPC登録（6チャンネル: 5 invoke + 1 on）。85テスト全PASS。MINOR指摘2件未タスク化（IpcResult型重複、Zodスキーマ未使用）。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
 | **9.59.0** | **2026-02-12** | **Phase 12 Step 2判定基準改善**: テストリファクタリングでもテスト戦略変更は仕様書更新対象。implementation-guide.mdのテストカテゴリテーブルをPhase 6後に再確認する手順追加 |
@@ -390,15 +397,14 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **9.46.0** | **2026-02-08** | **TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了**: Claude Agent SDK用認証キー管理基盤構築。AuthKeyService新規作成（暗号化保存・復号・検証）、IPC 4チャンネル、SkillExecutor統合、Preload authKey API追加。119テスト全PASS |
 | **9.45.0** | **2026-02-08** | **TASK-FIX-4-2-SKILL-STORE-PERSISTENCEパターン追加**: references/patterns.mdにvi.doMock動的モジュール再読み込みパターン追加（electron-storeテスト分離）。.claude/rules/06-known-pitfalls.mdにP19（型アサーション失敗）・P20（ログ出力汚染）追加。aiworkflow-requirements/LOGS.md詳細フォーマット化 |
 | **9.44.0** | **2026-02-08** | **TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了**: Phase 1-12全工程完了。スキル永続化バグ修正（validateStoredSkillIds型バリデーション追加）。87テスト全PASS、カバレッジLine 91.52%/Branch 91.17%/Function 100%。未タスク0件 |
-
 | **9.43.1** | **2026-02-06** | **DEBT-SEC-001完了**: Phase 1-12全工程完了。StateManager新規作成（infrastructure層）、authHandlers.ts/index.ts変更。21テスト全PASS、カバレッジ100%。consumeStateメソッド追加（detectProvider未実装のため妥当）。LOGS.md完了記録追加 |
 | **9.43.0** | **2026-02-06** | **TASK-FIX-5-1-SKILL-API-UNIFICATION完了**: Phase 1-12全工程完了。SkillAPI二重定義（window.skillAPI/window.electronAPI.skill）を単一パス（window.electronAPI.skill）に統一。OperationResult廃止、safeInvoke/safeOnパターン13メソッド、210テスト全PASS、Lines 91%カバレッジ。未タスク1件（UT-FIX-5-1-001: AgentView型アサーション解消） |
 | **9.42.0** | **2026-02-06** | **TASK-AUTH-SESSION-REFRESH-001知見展開**: 未タスク3件（UT-OFFLINE-REFRESH-001/UT-REFRESH-NOTIFICATION-001/UT-AUDIT-001）に「3.5 実装課題と解決策」セクション追加。error-handling.md v1.6.0 TokenRefreshSchedulerリトライ戦略、interfaces-auth.md v1.3.0 TokenRefreshCallbacks/Config型追加。patterns.md 6ドメインクイックナビゲーション・全33パターンにカテゴリタグ付与 |
 | **9.41.0** | **2026-02-06** | **TASK-AUTH-SESSION-REFRESH-001完了**: TokenRefreshScheduler新規実装（setTimeout方式・指数バックオフ+Jitter・Callback DI）、26テスト全PASS・カバレッジ96.15%、未タスク3件検出（offline-refresh/audit-log/refresh-notification） |
-| **9.40.0** | **2026-02-05** | **ENV-INFRA-001苦戦箇所記録**: patterns.mdに失敗パターン追加（ネイティブモジュールNODE_MODULE_VERSION不一致）、task-workflow.mdにUT-ENV-001登録、未タスク指示書フォーマット改善                                                                                                    |
+| **9.40.1** | **2026-02-05** | **ENV-INFRA-001苦戦箇所記録**: patterns.mdに失敗パターン追加（ネイティブモジュールNODE_MODULE_VERSION不一致）、task-workflow.mdにUT-ENV-001登録、未タスク指示書フォーマット改善 |
 | **9.40.0** | **2026-02-05** | **TASK-FIX-GOOGLE-LOGIN-001知見追加**: patterns.md OAuth認証パターン3件追加（URLフラグメントパース、Zustandリスナー二重登録防止、IPC経由エラー伝達）、既存未タスク仕様書3件（DEBT-SEC-001〜003）に「実装課題と解決策」セクション追加 |
-| **9.39.0** | **2026-02-05** | **TASK-FIX-4-1-IPC-CONSOLIDATION完了**: patterns.mdにIPCチャンネル統合パターン追加（ハードコード発見、重複定義整理、ホワイトリスト更新）、42テスト全PASS |
-| **9.39.0** | **2026-02-04** | **ENV-INFRA-001完了**: better-sqlite3 Node.jsバージョン不一致修正。Phase 1-12全工程完了、10テストPASS、CONTRIBUTING.md新規作成                                                                                                                                                    |
+| **9.39.1** | **2026-02-05** | **TASK-FIX-4-1-IPC-CONSOLIDATION完了**: patterns.mdにIPCチャンネル統合パターン追加（ハードコード発見、重複定義整理、ホワイトリスト更新）、42テスト全PASS |
+| **9.39.0** | **2026-02-04** | **ENV-INFRA-001完了**: better-sqlite3 Node.jsバージョン不一致修正。Phase 1-12全工程完了、10テストPASS、CONTRIBUTING.md新規作成 |
 | **9.38.0** | **2026-02-04** | **patterns.md構造最適化**: クイックナビゲーション/Phase 12 Task 2クイックリファレンス追加、search-replace-ui実装パターン3件追加（既存実装品質評価、Page Object、generate-index.jsファイル名誤認回避） |
 | **9.37.0** | **2026-02-04** | **task-imp-search-ui-001苦戦箇所記録**: patterns.mdに失敗パターン「Phase 12 Task 2 Step 1-A更新漏れ」追加（LOGS.md×2/SKILL.md×2/topic-map.md再生成漏れ）、成功パターン「Phase 12 Task 2完全チェックリスト」追加                                                                                                |
 | **9.36.1** | **2026-02-04** | **task-imp-search-ui-001完了**: Phase 1-12全工程完了。E2Eテスト17件追加、グローバルショートカット統合、IPCプロバイダ実装。既存実装が高品質のため追加実装不要。未タスク0件（将来改善候補をバックログに記録）                                                                                               |
@@ -410,8 +416,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **9.32.0** | **2026-02-03** | **TASK-9A-A未タスク作成**: TASK-IMP-VITEST-UTILS-001（Vitestテスト共通ユーティリティ整備）をunassigned-task/に配置、testing-component-patterns.md関連未タスクセクション追加、LOGS.md使用記録追加                                                                                                         |
 | **9.31.1** | **2026-02-03** | **TASK-WCE-MONACO-001スキル改善**: patterns.md Main→Renderer逆方向クエリパターン2件追加（webContents.executeJavaScriptグローバルブリッジ、EditorSelection最小インターフェース設計）                                                                                                                       |
 | **9.31.0** | **2026-02-03** | **TASK-9A-A完了記録**: LOGS.md完了記録追加（SkillFileManager実装、137テスト、98%+カバレッジ）                                                                                                                                                                                                            |
-| **9.30.0** | **2026-02-02** | **TASK-8C-Cスキル改善**: patterns.md成功パターン1件追加（Phase 12 Step 1完了チェックリスト厳格遵守）、SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止パターン                                                                                                                               |
-| **9.30.0** | **2026-02-04** | **TASK-FIX-1-1-TYPE-ALIGNMENT知見追加**: patterns.md型定義統合/移行パターン4件追加（パッケージエクスポート更新チェック、型定義ファイルカバレッジ、Discriminated Union DRY、import文一括置換安全性）                                                                                                     |
+| **9.30.1** | **2026-02-04** | **TASK-FIX-1-1-TYPE-ALIGNMENT知見追加**: patterns.md型定義統合/移行パターン4件追加（パッケージエクスポート更新チェック、型定義ファイルカバレッジ、Discriminated Union DRY、import文一括置換安全性） |
+| **9.30.0** | **2026-02-02** | **TASK-8C-Cスキル改善**: patterns.md成功パターン1件追加（Phase 12 Step 1完了チェックリスト厳格遵守）、SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止パターン |
 | **9.29.0** | **2026-02-02** | **TASK-8C-C完了**: E2Eテスト-インポート・実行フロー（9テストケース）、未タスク4件検出、task-workflow.md登録                                                                                                                                                                                              |
 | **9.28.0** | **2026-02-02** | **TASK-8C-B知見追加**: patterns.md E2Eテスト設計パターン3件追加（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）                                                                                                                                                                        |
 | **9.27.0** | **2026-02-02** | **TASK-8C-B完了**: スキル選択フローE2Eテスト Phase 1-12全工程完了。8テストケース（ARIA属性ベースセレクタ、キーボード操作、アクセシビリティ検証）。LOGS.md完了記録追加                                                                                                                                    |

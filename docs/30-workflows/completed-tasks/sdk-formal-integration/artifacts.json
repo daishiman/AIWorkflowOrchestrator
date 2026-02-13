@@ -1,0 +1,196 @@
+{
+  "feature": "sdk-formal-integration",
+  "taskId": "TASK-9B-I-SDK-FORMAL-INTEGRATION",
+  "description": "Claude Agent SDKの型安全な正式統合 — as any除去",
+  "createdAt": "2026-02-12",
+  "lastUpdated": "2026-02-12T13:30:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:15:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:16:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/type-mapping.md",
+          "description": "型マッピング定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-amendment.md",
+          "description": "設計修正書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:17:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:18:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:20:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/SkillExecutor.ts",
+          "description": "SkillExecutor（as any除去、型安全import実装）"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/agent/types.ts",
+          "description": "共有型定義（ClaudeSDKModule型追加）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:22:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6-7/coverage-report.md",
+          "description": "カバレッジレポート（Phase 6-7統合）"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:22:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6-7/coverage-report.md",
+          "description": "カバレッジ検証結果（Phase 6-7統合）"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:24:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8-9/quality-verification.md",
+          "description": "品質検証結果（Phase 8-9統合）"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:24:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8-9/quality-verification.md",
+          "description": "品質保証結果（Phase 8-9統合）"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:25:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:26:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-12T13:30:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

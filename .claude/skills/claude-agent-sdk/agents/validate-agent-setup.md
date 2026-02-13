@@ -143,4 +143,4 @@ Claude Agent SDK統合の設定が正しく行われているか検証し、基�
 {{#each recommendations}}
 - {{action}}
 {{/each}}
-h j``
+```

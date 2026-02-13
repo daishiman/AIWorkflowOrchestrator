@@ -74,7 +74,7 @@
 
 - [x] Step 1: 未タスクレポート（本ドキュメント）に記載
 - [x] Step 2: `task-workflow.md` 残課題テーブルに UT-FIX-5-1-001 を登録済み
-- [x] Step 3: `docs/30-workflows/unassigned-task/task-ut-fix-5-1-001-agentview-type-assertion.md` に指示書を作成済み、`interfaces-agent-sdk-skill.md` の完了タスク備考に記載済み
+- [x] Step 3: `docs/30-workflows/completed-tasks/task-ut-fix-5-1-001-agentview-type-assertion.md` に指示書を作成済み、`interfaces-agent-sdk-skill.md` の完了タスク備考に記載済み
 
 ### UT-FIX-5-2
 

@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.17.0    | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 追補: 実装時の苦戦箇所と再発防止策を追加（単体テスト再実行コマンド標準化、未タスク参照の物理ファイル検証、性能テスト揺らぎ時の再現確認手順） |
+| v1.16.0    | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了: AgentViewを個別セレクタHookに移行（15セレクタ追加）、ローカルfetchSkills/useCallback削除、P31適用範囲をAgentViewまで拡張 |
 | v1.15.0    | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001完了: Store Hooksテスト実装ガイドセクション追加（renderHookパターン6種、テスト環境要件、実績テーブル） |
 | v1.14.0    | 2026-02-12 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001完了: P31対策セクションに個別セレクタ実装完了記録追加、関連タスクステータス更新（UT-STORE-HOOKS-REFACTOR-001、UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 → 完了）。71テスト全PASS |
 | v1.13.0    | 2026-02-12 | UT-STORE-HOOKS-REFACTOR-001完了: 53個の個別セレクタ追加（AuthMode 12個, LLM 16個, Agent 25個）、合成Hook非推奨化、Phase 12課題追記 |
@@ -179,6 +181,7 @@
 | `SettingsView`     | `apps/desktop/src/renderer/views/SettingsView/index.tsx`                  | `useAuthModeStore()` |
 | `LLMSelectorPanel` | `apps/desktop/src/renderer/components/settings/LLMSelectorPanel.tsx`      | `useAuthModeStore()` |
 | `SkillSelector`    | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`            | `useSkillStore()`    |
+| `AgentView`        | `apps/desktop/src/renderer/views/AgentView/index.tsx`                     | `useAppStore()` のインラインセレクタ + ローカル `fetchSkills` |
 
 ### 短期解決策: useRefガードパターン
 
@@ -251,6 +254,7 @@ export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProv
 ```
 
 **提供済み個別セレクタ**: LLM系12個、Skill系15個、AuthMode系3個（計30個）
+（UT-FIX-AGENTVIEW-INFINITE-LOOP-001でAgentView向け15個を追加し、P31適用範囲を拡張）
 
 ### 長期解決策: 個別セレクタベースの再設計
 
@@ -263,6 +267,25 @@ Store Hookを分解し、個別セレクタを提供することで、関数の�
 | `const { authMode, setAuthMode } = useAuthModeStore()` | `const authMode = useAuthMode()`<br>`const setAuthMode = useSetAuthMode()`     |
 | オブジェクト全体を返す                               | 個別の値/関数を返す                                                              |
 | 毎回新しい参照                                       | 安定した参照（shallow比較可能）                                                  |
+
+### AgentView適用拡張（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+
+> **✅ 実装完了** (2026-02-12): AgentViewでP31パターンを適用。`useAppStore((state) => ...)` のインラインセレクタ群を `store/index.ts` の個別セレクタHookへ移行し、ローカル `fetchSkills` の `useCallback` を廃止。
+
+| 項目 | 変更内容 |
+| ---- | -------- |
+| 状態取得 | `skills/error/isLoading` 系を `useImportedSkills/useSkillError/useIsLoadingSkills` へ移行 |
+| アクション | `selectSkill/setSkillFilter/openImportDialog` 等を個別セレクタHook経由へ統一 |
+| 取得処理 | コンポーネント内の独自 `fetchSkills` 実装を削除し、Sliceの `useFetchSkills` に統一 |
+| 品質 | デバッグ `console.log` を削除し、再レンダリング安定性テストを追加 |
+
+#### 実装時の苦戦箇所と再発防止（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+
+| 苦戦箇所 | 原因 | 再発防止 |
+| --- | --- | --- |
+| 単体テスト対象を指定したつもりが広範囲テスト実行に拡大 | `pnpm --filter @repo/desktop run test:run -- <file>` が環境依存で全体実行に流れるケースがある | 単体再検証は `pnpm --filter @repo/desktop exec vitest run <file>` を標準化 |
+| 未タスクID参照に対して指示書実体が欠落しやすい | `task-workflow.md` 更新と `unassigned-task/` 実ファイル配置の同期漏れ | Phase 12で「参照パスの物理ファイル存在確認」を必須化（`ls docs/30-workflows/unassigned-task/<file>.md`） |
+| 長時間テストで性能閾値テストが一時的に不安定化 | 高負荷時にミリ秒閾値テストが揺らぐ | 失敗検知後に対象ファイル単体で再実行し、再現性を確認してから判断する |
 
 **推奨実装パターン**:
 
@@ -384,6 +407,7 @@ const initializeAuthMode = useInitializeAuthMode();
 | UT-STORE-HOOKS-REFACTOR-003          | 合成Hook移行                  | 未実施     |
 | UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で根本対策実施、2026-02-12） |
 | UT-STORE-HOOKS-TEST-REFACTOR-001         | Store HooksテストのrenderHookパターン移行 | **完了**（agentSlice 114テスト移行、2026-02-12） |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001 | AgentView無限ループ修正 | **完了**（個別セレクタ15個追加、2026-02-12） |
 | task-imp-store-hooks-remaining-migration | 残コンポーネントの個別セレクタ移行 | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md)） |
 | task-ref-store-hooks-deprecate-composite | 合成Store Hookの非推奨化       | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md)） |
 
@@ -981,3 +1005,4 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 - [既知の落とし穴 P31: Store Hooks無限ループ](../../../rules/06-known-pitfalls.md#p31-zustand-store-hooks無限ループ)
 - [実装パターン総合ガイド: Zustand Slice設計原則](./architecture-implementation-patterns.md#zustand-slice設計原則)
 - [Store Hooks コンポーネント移行 実装ガイド](../../../../docs/30-workflows/completed-tasks/UT-STORE-HOOKS-COMPONENT-MIGRATION-001/outputs/phase-12/implementation-guide.md)
+- [AgentView無限ループ修正 実装ガイド](../../../../docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/implementation-guide.md)

@@ -288,6 +288,8 @@ unassigned-taskディレクトリに配置されたタスクが完了した場�
     ↓
 ファイル移動（unassigned-task → completed-tasks）
     ↓
+task-workflow.md の参照パスを completed-tasks 側に更新
+    ↓
 完了日追記
     ↓
 [log-usage]（スキル使用ログ記録）
@@ -300,6 +302,7 @@ unassigned-taskディレクトリに配置されたタスクが完了した場�
 | 1   | ステータス更新 | メタ情報テーブルの「ステータス: 未実施」を「ステータス: 完了」に変更 |
 | 2   | 完了日追記     | メタ情報テーブルに「完了日: YYYY-MM-DD」行を追加                     |
 | 3   | ファイル移動   | `unassigned-task/` → `completed-tasks/`                              |
+| 4   | 参照先更新     | `task-workflow.md` の該当行を `completed-tasks/` パスへ更新          |
 
 ### コマンド例
 
@@ -322,6 +325,13 @@ mv docs/30-workflows/unassigned-task/task-{{task-name}}.md \
 | `docs/30-workflows/unassigned-task/` | 未実施タスクの配置先 |
 | `docs/30-workflows/completed-tasks/` | 完了タスクの配置先   |
 
+> **⚠️ 配置先の注意（P3 再発防止 / TASK-9B-I 教訓）**
+>
+> 未タスク指示書は必ず `docs/30-workflows/unassigned-task/` に配置すること。
+> 親タスクの `docs/30-workflows/{feature-name}/tasks/` ディレクトリに配置してはいけない。
+> TASK-9B-I では親タスクの `tasks/` ディレクトリと混同し、誤った場所に配置するミスが発生した。
+> 配置後は `ls docs/30-workflows/unassigned-task/` で物理ファイルの存在を検証すること。
+
 ### チェックリスト
 
 | #   | 確認項目                                             | 完了 |
@@ -329,7 +339,8 @@ mv docs/30-workflows/unassigned-task/task-{{task-name}}.md \
 | 1   | タスクファイルのステータスが「完了」に更新されている | ☐    |
 | 2   | 完了日が記載されている                               | ☐    |
 | 3   | ファイルが`completed-tasks/`に移動されている         | ☐    |
-| 4   | 該当スキルのLOGS.mdに使用ログが記録されている        | ☐    |
+| 4   | `task-workflow.md` の参照先パスが `completed-tasks/` に更新されている | ☐    |
+| 5   | 該当スキルのLOGS.mdに使用ログが記録されている        | ☐    |
 
 ---
 

@@ -196,6 +196,39 @@ useEffect(() => {
 - **解決策**: テストを分割実行するか、`--poolOptions.workers.max` を調整。または `--no-file-parallelism` で並列実行を制限
 - **関連タスク**: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE
 
+### P39: happy-dom環境でのuserEvent非互換
+
+- **教訓**: `@testing-library/user-event`の`userEvent.setup()`はhappy-dom環境でSymbol操作エラー（`Symbol(Node prepared with document state workarounds)`）を起こす。49/53テストが一斉に失敗する
+- **症状**: テスト追加後に大量のテストが`TypeError: Symbol(...)`で失敗
+- **原因**: userEventはjsdomのDOM APIに依存するSymbol操作を内部実行するが、happy-domは未サポート
+- **解決策**: happy-dom環境では`fireEvent`を使用。非同期ハンドラは`await act(async () => { fireEvent.click(el) })`で包む
+- **再発防止**: テスト追加時は必ず実行確認。happy-dom環境では`userEvent`使用禁止
+- **関連パターン**: [architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md) の「fireEvent vs userEvent使い分けパターン」
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+
+```typescript
+// ❌ happy-domで失敗
+const user = userEvent.setup();
+await user.click(element);
+
+// ✅ happy-domで安定
+fireEvent.click(element);
+
+// ✅ 非同期ハンドラ
+await act(async () => {
+  fireEvent.click(element);
+});
+```
+
+### P40: テスト実行ディレクトリ依存（モノレポ）
+
+- **教訓**: モノレポ環境で`pnpm vitest run apps/desktop/src/...`をプロジェクトルートから実行すると、`apps/desktop/vitest.config.ts`の`environment`設定と`setupFiles`が読み込まれず`document is not defined`エラーが発生する
+- **症状**: ローカルでは通るテストがCI/別ディレクトリから実行すると全件失敗
+- **原因**: Vitestはカレントディレクトリの`vitest.config.ts`を優先読み込みするため、`apps/desktop/`のhappy-dom設定が適用されない
+- **解決策**: `cd apps/desktop && pnpm vitest run src/...` または `pnpm --filter @repo/desktop exec vitest run src/...` で実行
+- **再発防止**: テスト実行は常に対象パッケージのディレクトリから行う
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+
 ## Preload / API 統一
 
 ### P23-P28 と実装パターンの対応表
@@ -312,3 +345,29 @@ useEffect(() => {
   4. 標準的なモック構成をドキュメント化して再利用
 - **参照**: [lessons-learned.md#テストモックの大規模修正](../skills/aiworkflow-requirements/references/lessons-learned.md)
 - **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION, TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE（P21）
+
+## SDK 型統合
+
+### P36: カスタム declare module と SDK 実型の共存問題（TASK-9B-I）
+
+- **教訓**: `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` にカスタム `declare module '@anthropic-ai/claude-agent-sdk'` を作成した状態で SDK をインストールすると、TypeScript は `node_modules` の実型を優先してカスタム型を無視する。仕様書にカスタム型の値（`auto`/`ask`/`deny`）が残り、実 SDK 型（`default`/`acceptEdits`/`bypassPermissions`/`plan`/`delegate`/`dontAsk`）との不整合が発生する
+- **影響範囲**: PermissionMode の値セットが完全に異なるため、仕様書の PermissionMode 定義、テストの期待値、コードレビューの判断基準の全てに誤情報が波及する
+- **検出方法**: `as any` 除去時に初めて型エラーとして顕在化した（それまではカスタム型でコンパイルが通っていたため気付けなかった）
+- **解決策**: SDK インストール後はカスタム `.d.ts` を削除する。SDK 未インストール環境でのみ使用する場合はフラグで管理する
+- **参照**: [architecture-implementation-patterns.md#S11](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION, UT-9B-I-001
+
+### P37: ドキュメント数値の早期固定（TASK-9B-I）
+
+- **教訓**: Phase 4（テスト設計）で想定したテスト数「18」を仕様書に記載したが、Phase 5（実装）で実際のテスト数は「13」になった。設計と実装の乖離がドキュメント全体に波及し、Phase 12 で documentation-changelog.md に早期に「完了」と記載したため、数値不整合の発見が遅れた（P4 パターン再発）
+- **解決策**: Phase 12 でテスト数を実際のテストファイルから `grep -c "it(" *.test.ts` で正確にカウントして記載する。Phase 4 の想定値をそのまま使い回さない
+- **関連パターン**: P4（documentation-changelog への早期「完了」記載）
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+
+### P38: 未タスク配置ディレクトリ間違い（P3 再発、TASK-9B-I）
+
+- **教訓**: UT-9B-I-001 の指示書を `tasks/` 直下に配置したが、正しくは `tasks/unassigned-task/` 配下に配置する必要があった。P3（未タスク管理の3ステップ不完全）と同じパターンの再発
+- **解決策**: 未タスク指示書の配置先を確認するチェックリストを Phase 12 で必ず実行する。3ステップの確認: (1) `unassigned-task/` に指示書作成 (2) `task-workflow.md` 残課題テーブルに登録 (3) 関連仕様書に参照リンク追加
+- **関連パターン**: P3（未タスク管理の3ステップ不完全）
+- **チェックリスト**: [05-task-execution.md#Task 4](./05-task-execution.md)
+- **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION

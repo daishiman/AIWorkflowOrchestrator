@@ -10,7 +10,7 @@
 | 対象機能     | SkillExecutor SDK統合              |
 | 優先度       | 中                                 |
 | 見積もり規模 | 小規模                             |
-| ステータス   | 未実施                             |
+| ステータス   | 完了                               |
 | 実行順序     | 05b（並列可能 — 04完了後）         |
 | 発見元       | skill-system-conflict-report #8    |
 | 発見日       | 2026-02-05                         |
@@ -147,14 +147,14 @@ const conversation = sdk.query({
 
 ### 機能要件
 
-- [ ] `as any` が除去されている
-- [ ] SDK の import が型安全
-- [ ] `query()` の引数・戻り値が型チェックされる
+- [x] `as any` が除去されている
+- [x] SDK の import が型安全
+- [x] `query()` の引数・戻り値が型チェックされる
 
 ### 品質要件
 
-- [ ] 全テストが PASS
-- [ ] `@ts-expect-error` 等の型抑制が不要
+- [x] 全テストが PASS
+- [x] `@ts-expect-error` 等の型抑制が不要
 
 ---
 

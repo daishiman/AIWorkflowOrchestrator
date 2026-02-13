@@ -72,6 +72,7 @@ Phase 12 Task 2 開始
 | 「型は別タスクで追加済みなので更新不要」 | **Step 2必要**   | 新規クラス/コンポーネントは独自の仕様セクションが必要 |
 | 「関連タスクテーブルは確認不要」         | **Step 1-C必須** | 仕様書内の「未タスク候補」「関連タスク」テーブルにタスクが記載されている可能性あり。Grepで確認が必要 |
 | 「未タスク指示書のunassigned-task/配置は見送り」 | **作成が必要** | ガイドラインの「条件」要件を確認し、検出件数が1件以上の場合は原則作成する |
+| 「task-workflow.md の未タスクリンクは後で直す」 | **Step 1-Eで即時整合** | 参照切れが残ると後続タスクの探索が失敗する。`verify-unassigned-links.js` で機械検証する |
 | 「task-specification-creator/LOGS.mdは後で更新」 | **Step 1-A必須** | 両方のLOGS.md（aiworkflow-requirements + task-specification-creator）を同時に更新すること。後回しにすると漏れる |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
@@ -308,6 +309,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] 未タスク候補が1件以上の場合、`docs/30-workflows/unassigned-task/` に指示書を作成・配置した
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`等）の残課題テーブルに新規未タスクを登録した
+- [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
 
 ### Step 1-F: DevOps関連ファイル更新（CI/CD最適化タスクの場合は必須）
