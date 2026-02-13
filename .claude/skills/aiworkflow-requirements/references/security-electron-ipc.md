@@ -11,6 +11,8 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.3.1     | 2026-02-12 | UT-9B-H-003仕様追補: skillCreatorHandlers.ts 実装に合わせ、エラーサニタイズ仕様（既定文言/パス・機密情報マスク）と schemaName ホワイトリスト検証の返却値を明記 |
+| v1.3.0     | 2026-02-12 | UT-9B-H-003: SkillCreator IPCセキュリティ強化完了。validatePath（パストラバーサル防止）、sanitizeErrorMessage（内部情報漏洩防止）、ALLOWED_SCHEMA_NAMES（スキーマ名ホワイトリスト）追加。116テスト全PASS |
 | v1.2.0     | 2026-02-12 | TASK-9B-H: skillCreatorAPIセキュリティ実装例追加。6チャンネル、Sender検証、エラーサニタイズ仕様 |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.0.0     | -          | 初版作成                                       |
@@ -204,31 +206,45 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 全5 invokeハンドラーで以下のセキュリティ検証を実施する:
 
 1. **Sender検証**: `validateIpcSender(event, mainWindow)` で送信元BrowserWindowを検証。DevToolsからの呼び出しを検出・拒否
-2. **引数バリデーション**: typeof手動チェックによる型検証を各ハンドラーで実施（文字列型・オブジェクト型の検証）
-3. **エラーサニタイズ**: `error.message`のみを返却し、`error.stack`やファイルパス等の内部情報は非露出
+2. **引数バリデーション**: typeof手動チェック + `validatePath()` によるパストラバーサル/NULLバイト/UNCパス検証
+3. **スキーマ名ホワイトリスト**: `ALLOWED_SCHEMA_NAMES`（`task-spec`/`skill-spec`/`mode`）以外を拒否
+4. **エラーサニタイズ**: `sanitizeErrorMessage()` でスタックトレース・ファイルパス・機密文字列（token/key/password/secret）をマスクして返却
 
 **エラーサニタイズ仕様**:
 
-| 入力パターン             | 返却メッセージ                                     |
-| ------------------------ | -------------------------------------------------- |
-| Zodバリデーションエラー  | バリデーションメッセージをそのまま返却             |
-| パストラバーサル検出     | `"Path traversal detected"`                        |
-| Sender検証失敗           | `"Unauthorized IPC sender"`                        |
-| その他のErrorオブジェクト | `"An internal error occurred. Please try again."` |
-| Error以外のthrown value  | `"An unexpected error occurred."`                  |
+| 入力パターン                 | 返却メッセージ |
+| ---------------------------- | -------------- |
+| 引数バリデーションエラー     | 各ハンドラー定義の日本語エラーメッセージを返却 |
+| パストラバーサル検出         | `"無効なパスが指定されました: <paramName>"` |
+| schemaNameホワイトリスト違反 | `"無効なスキーマ名が指定されました: <schemaName>"` |
+| Sender検証失敗               | `"Unauthorized IPC sender"` |
+| Errorオブジェクト            | `sanitizeErrorMessage()` でサニタイズした `error.message` |
+| Error以外のthrown value      | `"スキル作成処理でエラーが発生しました"` |
 
 **IPCセキュリティ要件**:
 
-| 要件               | 実装                               | 確認方法                            |
-| ------------------ | ---------------------------------- | ----------------------------------- |
-| ホワイトリスト     | `SKILL_CREATOR_CHANNELS`定数で管理 | 定義外チャンネルはエラー            |
-| sender検証         | `validateIpcSender()`              | DevTools/外部からの拒否             |
-| 型安全性           | `IpcResult<T>`型で統一             | TypeScript型チェック                |
-| サンドボックス分離 | contextBridgeで公開                | contextIsolation=true               |
-| 引数検証           | 各ハンドラーでtypeof手動チェック   | バリデーションテスト                |
-| エラーサニタイズ   | error.messageのみ返却              | スタックトレース非露出テスト        |
+| 要件                    | 実装                               | 確認方法                            |
+| ----------------------- | ---------------------------------- | ----------------------------------- |
+| ホワイトリスト（チャンネル） | `SKILL_CREATOR_CHANNELS`定数で管理 | 定義外チャンネルはエラー            |
+| sender検証              | `validateIpcSender()`              | DevTools/外部からの拒否             |
+| 型安全性                | `IpcResult<T>`型で統一             | TypeScript型チェック                |
+| サンドボックス分離      | contextBridgeで公開                | contextIsolation=true               |
+| 引数検証                | 各ハンドラーでtypeof + `validatePath()` | バリデーションテスト            |
+| ホワイトリスト（schemaName） | `ALLOWED_SCHEMA_NAMES` で検証     | 不正値入力テスト                     |
+| エラーサニタイズ        | `sanitizeErrorMessage()` でマスク返却 | スタック/パス/機密情報非露出テスト |
 
 **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
+
+**関連未タスク（UT-9B-H-003教訓反映済み、2026-02-13）**:
+
+| タスクID     | タスク名                                                    | 教訓反映内容                         |
+| ------------ | ----------------------------------------------------------- | ------------------------------------ |
+| UT-9B-H-001 | IpcResult型の重複定義を@repo/sharedに統一                   | L3型整合性、Prettier干渉リスク       |
+| UT-9B-H-002 | SkillCreator IPCハンドラーの引数検証をZodスキーマに移行     | Zodセキュリティ共存設計              |
+| UT-9B-H-004 | SkillCreator設計書-実装整合性修正                           | TDDトレーサビリティ                  |
+| UT-9B-H-005 | Preload API二重公開パターン統一                             | L3横展開評価                         |
+
+> 上記各未タスクは UT-9B-H-003（SkillCreator IPCセキュリティ強化）の苦戦箇所（lessons-learned.md v1.6.0）を反映済み。実施時にはセキュリティ検証パターン（validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES）との整合性を維持すること。
 
 ---
 

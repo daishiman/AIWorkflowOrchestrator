@@ -1,0 +1,122 @@
+{
+  "taskId": "UT-9B-H-003",
+  "taskName": "SkillCreator IPCセキュリティ強化",
+  "featureName": "ut-9b-h-003-security-hardening",
+  "issueNumber": 796,
+  "createdAt": "2026-02-12",
+  "lastUpdated": "2026-02-12",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "artifacts": ["outputs/phase-1/requirements-summary.md"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "artifacts": ["outputs/phase-2/design-summary.md"],
+      "dependsOn": ["phase-1"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/design-review-result.md"],
+      "dependsOn": ["phase-2"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "artifacts": ["outputs/phase-4/test-creation-report.md"],
+      "dependsOn": ["phase-3"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "artifacts": ["outputs/phase-5/implementation-report.md"],
+      "dependsOn": ["phase-4"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "artifacts": ["outputs/phase-6/test-expansion-report.md"],
+      "dependsOn": ["phase-5"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "artifacts": ["outputs/phase-7/coverage-report.md"],
+      "dependsOn": ["phase-6"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"],
+      "dependsOn": ["phase-7"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"],
+      "dependsOn": ["phase-8"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review.md",
+        "outputs/phase-10/gate-decision.md"
+      ],
+      "dependsOn": ["phase-9"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "artifacts": ["outputs/phase-11/manual-test-report.md"],
+      "dependsOn": ["phase-10"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/ipc-documentation.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-compliance-audit.md"
+      ],
+      "dependsOn": ["phase-11"],
+      "completedAt": "2026-02-12"
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [],
+      "dependsOn": ["phase-12"]
+    }
+  }
+}

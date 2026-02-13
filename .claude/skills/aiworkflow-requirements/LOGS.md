@@ -25,6 +25,28 @@
 
 ---
 
+## 2026-02-12: UT-9B-H-003 Phase 12再監査（苦戦箇所記録・未タスク配置整合）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-9B-H-003                                                          |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | Phase 12 仕様準拠再監査 + システム仕様追補                           |
+| 対象ファイル | lessons-learned.md, task-workflow.md, interfaces-agent-sdk-skill.md, phase-12成果物 |
+| 結果         | success                                                              |
+| 備考         | 苦戦箇所の構造化、完了済み未タスク指示書の移管、phase-12成果物追補を実施 |
+
+### 変更内容
+
+| 変更箇所 | 変更内容 |
+| -------- | -------- |
+| `references/lessons-learned.md` | v1.5.2: UT-9B-H-003追補教訓（返却仕様文言不整合・未タスク残置・artifacts整合）追加 |
+| `references/task-workflow.md` | v1.30.2: UT-9B-H-003指示書の移管に伴う参照パス更新 |
+| `references/interfaces-agent-sdk-skill.md` | UT-9B-H-003完了行の参照パスを completed-tasks 側へ更新 |
+| `docs/30-workflows/ut-9b-h-003-security-hardening/outputs/phase-12/skill-feedback-report.md` | 苦戦箇所・再発防止策・Pitfall候補を新規追加 |
+
+---
+
 ## 2026-02-12: 完了タスク移動（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
 
 | 項目         | 内容 |
@@ -57,6 +79,28 @@
 
 ---
 
+## 2026-02-12: UT-9B-H-003 仕様整合追補（未タスク残置・返却仕様の是正）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-9B-H-003                                                          |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | システム仕様書の追補更新（実装準拠化）                               |
+| 対象ファイル | security-electron-ipc.md, api-ipc-agent.md, interfaces-agent-sdk-skill.md, task-workflow.md |
+| 結果         | success                                                              |
+| 備考         | UT-9B-H-003の完了反映漏れ（未タスク表）とエラー返却仕様の古い記述を修正 |
+
+### 変更内容
+
+| 変更箇所 | 変更内容 |
+| -------- | -------- |
+| `security-electron-ipc.md` | v1.3.1: エラーサニタイズ仕様を実装準拠に更新（日本語既定文言、schemaNameホワイトリスト、マスク対象） |
+| `api-ipc-agent.md` | v1.7.0: Skill Creator IPCセキュリティ強化仕様を追加（validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES） |
+| `interfaces-agent-sdk-skill.md` | v1.16.1: 関連未タスク表のUT-9B-H-003を完了ステータスに更新 |
+| `task-workflow.md` | v1.30.1: 残課題表のUT-9B-H-003を完了ステータスに更新 |
+
+---
+
 ## 2026-02-12: UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了
 
 | 項目         | 内容 |
@@ -78,6 +122,34 @@
 
 ---
 
+## 2026-02-12: UT-9B-H-003 SkillCreator IPCセキュリティ強化完了
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-9B-H-003                                                          |
+| Agent        | aiworkflow-requirements                                              |
+| 操作         | Phase 1-12 完了（SkillCreator IPCセキュリティ強化）                  |
+| 対象ファイル | skillCreatorHandlers.ts                                               |
+| 結果         | success                                                              |
+| 備考         | 3セキュリティ関数追加（validatePath, sanitizeErrorMessage, ALLOWED_SCHEMA_NAMES）、116テスト全PASS |
+
+### 変更内容
+
+| 変更箇所                    | 変更内容                                                              |
+| --------------------------- | --------------------------------------------------------------------- |
+| `skillCreatorHandlers.ts`   | validatePath（パストラバーサル防止）、sanitizeErrorMessage（エラーサニタイズ）、ALLOWED_SCHEMA_NAMES（スキーマ名ホワイトリスト）追加 |
+| `security.test.ts`          | セキュリティテスト45件追加（7カテゴリ）                                |
+| `integration.test.ts`       | 既存統合テスト14件をセキュリティ強化に合わせて更新                     |
+
+### テスト結果
+
+| テスト | 結果 |
+| ------ | ---- |
+| セキュリティテスト | 45 PASS |
+| 統合テスト | 71 PASS |
+| 合計 | 116 PASS |
+
+---
 ## 2026-02-12: TASK-9B-H-SKILL-CREATOR-IPC完了
 
 | 項目         | 内容                                                                 |

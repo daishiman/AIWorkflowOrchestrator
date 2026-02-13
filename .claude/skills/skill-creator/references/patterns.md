@@ -12,8 +12,9 @@
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ** | テスト環境問題の実装問題誤認                           |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階** | ハードコード文字列発見                                 |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPC L3セキュリティハードニング** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
+| 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング                                                                                               | -                                                      |
 | 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合                                                                                                                                           | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
 | 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
@@ -76,10 +77,22 @@
 - **アプローチ**:
   - SKILL.mdの成果物定義を正とし、references/を同期
   - 改善作業時に関連ドキュメントの整合性を確認
-- **結果**: artifact-naming-conventions.mdにPhase 12の3成果物（implementation-guide.md, documentation-update-log.md, unassigned-task-report.md）を追加
+- **結果**: artifact-naming-conventions.mdにPhase 12の3成果物（implementation-guide.md, documentation-changelog.md, unassigned-task-report.md）を追加
 - **適用条件**: スキル改善時、バージョンアップ時
 - **発見日**: 2026-01-22
 - **関連タスク**: SHARED-TYPE-EXPORT-01
+
+### [Phase12] 完了済み未タスク指示書の配置整合（残置防止）
+
+- **状況**: 機能実装完了後も、対応済みの未タスク指示書が `docs/30-workflows/unassigned-task/` に残り、運用上「未完了」と誤認される
+- **アプローチ**:
+  - Phase 12完了時に、完了済みの未タスク指示書を `docs/30-workflows/completed-tasks/unassigned-task/` へ移管
+  - `task-workflow.md` / 関連interfaces仕様書 / workflow index の参照パスを同時更新
+  - `artifacts.json` と phase-12成果物（監査レポート含む）を最終整合チェック
+- **結果**: 未タスク台帳の状態と実ファイル配置が一致し、完了/未完了の判定ミスを抑制
+- **適用条件**: 未タスクを起票した機能タスクが完了し、Phase 12の文書化を実施するタイミング
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-9B-H-003
 
 ### [Architecture] 既存アダプターパターンの活用（新規API統合時）
 
@@ -504,6 +517,43 @@
   - [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md) - Electron IPCセキュリティ仕様（ホワイトリスト管理、sender検証、エラーサニタイズ）
   - [api-ipc-agent.md](../../aiworkflow-requirements/references/api-ipc-agent.md) - IPC API仕様（チャンネル定義、ハンドラー登録、Preload Bridge設計）
 
+### [Security] TDDセキュリティテスト分類体系（UT-9B-H-003）
+
+- **状況**: IPCハンドラーのセキュリティ強化でテストを先行設計する必要がある
+- **アプローチ**:
+  - 攻撃カテゴリ別にテストIDを割り当て（SEC-01〜SEC-07g）
+  - 受入基準（AC-01〜AC-10）にテストIDをマッピング
+  - カテゴリ: パストラバーサル(SEC-01〜03)、ホワイトリスト(SEC-04〜05)、回帰(SEC-06)、境界値(SEC-07)
+  - `it.each` で攻撃パターンを網羅（`../`, `..\`, `\x00`, `\\\\`）
+  - テスト間独立性: `beforeEach` で `handlerMap.clear()` + `vi.clearAllMocks()`
+- **結果**: 45セキュリティテスト + 71統合テスト = 116テスト全PASS。ブランチカバレッジ100%
+- **適用条件**: セキュリティ関連のTDD実装時。特にIPC L3検証の追加時
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-9B-H-003
+- **クロスリファレンス**: [lessons-learned.md#UT-9B-H-003](../../aiworkflow-requirements/references/lessons-learned.md), [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md)
+
+### [Security] YAGNI原則に基づく共通化判断の記録パターン（UT-9B-H-003）
+
+- **状況**: Phase 8リファクタリングで、セキュリティ関数（validatePath, sanitizeErrorMessage）を共通パッケージに移動すべきか判断が必要
+- **アプローチ**:
+  - 3つの評価軸で判断: (1) 現在の使用箇所数、(2) 変更頻度の予測、(3) ドメインの独立性
+  - 共通化しない判断も**未タスク候補として明示的に記録**（unassigned-task-report.md）
+  - 既存の未タスク（UT-9B-H-001, UT-9B-H-002）との重複チェックを実施
+  - 重複と判定された候補は新規作成せず、既存タスクのスコープ内で対応と記録
+- **結果**: 3件の共通化候補を検討し、全て「現状維持」と判断。将来の判断材料として未タスクレポートに記録
+- **適用条件**: Phase 8リファクタリングで共通化を検討する場合。特にセキュリティ関数のように複数のIPC Handlerで使用される可能性がある場合
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-9B-H-003
+- **クロスリファレンス**: [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md)
+
+- **Phase 12での苦戦箇所と解決策**:
+
+| 苦戦箇所 | 原因 | 解決策 |
+|----------|------|--------|
+| CLI環境でのPhase 11手動テスト不可 | Claude Code環境ではElectronアプリ起動・DevTools操作ができない | 自動テスト（116テスト）で代替検証を実施。DevToolsコマンドをドキュメントに記載し、開発者向けリファレンスとして提供 |
+| コンテキスト分割によるPhase 12整合性管理 | コンテキスト制限でセッション分割。前セッションの成果物状態追跡が困難 | セッション開始時に `Glob` でoutputs/配下の成果物一覧を確認。`TaskOutput` でバックグラウンドエージェント完了を待ってから整合性チェック |
+| Markdownコードブロック内のPrettier干渉 | PostToolUseフックのPrettierがMarkdown内のTypeScript型表記を自動変形 | バックグラウンドエージェント内で修正ステップを追加。ドキュメント作成時はPrettier影響の検証を後処理に組み込む |
+
 ### [Testing] Store Hook テスト実装パターン（renderHook方式）（UT-STORE-HOOKS-TEST-REFACTOR-001）
 
 - **状況**: Zustand個別セレクタHookのテストで `getState()` 直接呼び出しを使用しており、Reactサブスクリプション経由の動作検証ができていない
@@ -655,6 +705,15 @@
   - validate-phase12-step1.js検証スクリプトで自動チェック
 - **発見日**: 2026-01-23
 - **関連タスク**: SHARED-TYPE-EXPORT-03
+
+### [Phase 12] 正規表現パターンのPrettier干渉
+
+- **状況**: Phase 12 Task 1で実装ガイド・IPCドキュメント作成時、TypeScript型表記を含むMarkdownファイルを生成
+- **問題**: PostToolUseフック（auto-format.sh）のPrettierが、Markdownコードブロック内のTypeScript型表記（`readonly ["task-spec", "skill-spec", "mode"]`）を `readonly[("task-spec", "skill-spec", "mode")]` のように変形
+- **原因**: PrettierのMarkdownフォーマッターがコードブロック内のTypeScript構文を解釈し、独自のフォーマットルールを適用
+- **教訓**: ドキュメント生成タスクでは、PostToolUseフックの自動フォーマット後にコードブロック内の表記を検証する後処理ステップが必要。特に `as const` アサーション付きの型表記は変形されやすい
+- **発見日**: 2026-02-12
+- **対策**: バックグラウンドエージェント内でWrite後にReadで検証し、変形があればEditで修正するステップを組み込む
 
 ### [Build] ES Module互換性の確認漏れ
 

@@ -629,10 +629,10 @@ node scripts/list-specs.js --topics
 | Workspace Chat Edit IPC チャネル | L76 |
 | 完了タスク | L202 |
 | Skill Creator IPC チャネル | L274 |
-| 実装パターン参照 | L332 |
-| 関連ドキュメント | L344 |
-| 完了タスク | L354 |
-| 変更履歴 | L364 |
+| 実装パターン参照 | L344 |
+| 関連ドキュメント | L356 |
+| 完了タスク | L366 |
+| 変更履歴 | L376 |
 
 ### references/api-ipc-auth.md
 
@@ -988,14 +988,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L20 |
-| Content Security Policy (CSP) | L34 |
-| IPC通信のセキュリティ | L51 |
-| 実装例: historyAPI | L77 |
-| 実装例: slideSettingsAPI | L129 |
-| 実装例: skillCreatorAPI | L178 |
-| 自動更新のセキュリティ | L235 |
-| 関連ドキュメント | L246 |
+| セキュリティ設定 | L22 |
+| Content Security Policy (CSP) | L36 |
+| IPC通信のセキュリティ | L53 |
+| 実装例: historyAPI | L79 |
+| 実装例: slideSettingsAPI | L131 |
+| 実装例: skillCreatorAPI | L180 |
+| 自動更新のセキュリティ | L240 |
+| 関連ドキュメント | L251 |
 
 ### references/security-implementation.md
 
@@ -1480,6 +1480,7 @@ node scripts/list-specs.js --topics
 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L793 |
 | テンプレート（新規教訓追加用） | L900 |
 | 品質チェックリスト | L972 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L822 |
 
 ### references/llm-embedding.md
 

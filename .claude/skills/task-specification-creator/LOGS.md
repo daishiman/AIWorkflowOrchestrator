@@ -52,6 +52,20 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-12 - UT-9B-H-003 Phase 12再監査（未タスク配置整合の改善）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 再監査
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - Phase 12完了後の後処理として、完了済み未タスク指示書の配置整合を是正
+  - `task-9b-h-security-hardening.md` を `completed-tasks/unassigned-task/` に移管
+  - `phase-11-12-guide.md` に「完了済み未タスク指示書の残置禁止」チェックを追加
+  - phase-12成果物に `skill-feedback-report.md` / `phase12-compliance-audit.md` を追加
+
+---
+
 ## [2026-02-12 - Phase 12未タスク参照整合チェック強化]
 
 - **Agent**: task-specification-creator
@@ -63,6 +77,21 @@ node scripts/log-usage.js \
   - `spec-update-workflow.md` Step 1-E に機械検証ステップを追加
   - `phase-11-12-guide.md` の完了条件チェックリストにリンク整合チェックを追加
   - `resource-map.md` scripts一覧に検証スクリプトを登録
+
+---
+
+## [2026-02-12 - UT-9B-H-003 SkillCreator IPCセキュリティ強化完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - SkillCreator IPCハンドラーのセキュリティ強化（L3ドメイン検証追加）
+  - validatePath（パストラバーサル防止）、sanitizeErrorMessage（内部情報漏洩防止）、ALLOWED_SCHEMA_NAMES（スキーマ名ホワイトリスト）
+  - 116テスト全PASS（セキュリティ45 + 統合71）
+  - Phase 10: PASS（MINOR 0件）
+  - 未タスク候補: 3件（sanitizeErrorMessage横展開、IpcResult型統一、validatePath共通化）
 
 ---
 
@@ -79,7 +108,6 @@ node scripts/log-usage.js \
   - `docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/` の整合性を更新
 
 ---
-
 ## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC完了]
 
 - **Agent**: task-specification-creator
@@ -3677,3 +3705,12 @@ if (artifactPath) {
   - IPCドキュメント・コンポーネントドキュメント作成
   - interfaces-auth.md 更新
   - LOGS.md 2ファイル更新（P1防止）
+
+## [2026-02-12T22:49:44.654Z]
+
+- **Agent**: unknown
+- **Phase**: unassigned-task-update
+- **Result**: ✓ 成功
+- **Notes**: UT-9B-H-001/002/004/005にUT-9B-H-003セキュリティ教訓を反映、task-workflow.md/security-electron-ipc.md参照リンク更新
+
+---
