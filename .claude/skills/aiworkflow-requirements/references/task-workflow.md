@@ -132,6 +132,42 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-11-1-SDK-TEST-ENABLEMENT SDK統合テスト有効化（2026-02-13完了）
+
+| 項目       | 内容                                            |
+| ---------- | ----------------------------------------------- |
+| タスクID   | TASK-FIX-11-1-SDK-TEST-ENABLEMENT               |
+| 完了日     | 2026-02-13                                      |
+| ステータス | **完了**                                        |
+| Phase      | Phase 1-12完了                                  |
+| テスト数   | TODO有効化17件（3ファイル）+ 回帰テストPASS     |
+| カバレッジ | テストケース有効化タスクのため該当範囲でPASS    |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                    |
+| -------------------- | ---------------------------------------------------------------------------- |
+| ワークフロー一式     | `docs/30-workflows/sdk-test-enablement/`                                    |
+| 実装ガイド           | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md` |
+| 更新履歴             | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 変更理由
+
+- SDK統合時に残存したTODOプレースホルダーを実テスト化し、主要エラーケースの自動検証を有効化
+- テスト間モック汚染（P9）を防ぐため、`beforeEach` でデフォルトモック再設定を導入
+- 30秒タイムアウト検証を Fake Timers + `Promise.all` で決定論的に統一
+
+#### 関連仕様書更新
+
+| 仕様書 | 更新内容 |
+| ------ | -------- |
+| interfaces-agent-sdk-executor.md | 完了タスク追加、SDKテスト有効化パターンを追記 |
+| testing-component-patterns.md | Main Process SDKテスト有効化パターン（Section 10）を追加 |
+| task-workflow.md | 本完了タスクと変更履歴を追加 |
+
+---
+
 ### タスク: UT-FIX-AGENTVIEW-INFINITE-LOOP-001 AgentView無限ループ修正（2026-02-12完了）
 
 | 項目       | 内容                                                     |
@@ -159,7 +195,6 @@
 - デバッグログ除去とテスト増強により、回帰検知の確実性を向上
 
 ---
-
 ### タスク: UT-STORE-HOOKS-TEST-REFACTOR-001 Store Hooks テストリファクタリング（2026-02-12完了）
 
 | 項目       | 内容                                            |
@@ -547,6 +582,8 @@
 | ~~UT-9B-I-001~~                              | ~~カスタム型宣言ファイルと SDK 実型の共存整理~~                     | ~~低~~ | ~~TASK-9B-I-SDK-FORMAL-INTEGRATION Phase 12（未タスク検出）~~  | ~~`docs/30-workflows/completed-tasks/sdk-formal-integration/outputs/phase-12/ut-9b-i-001-custom-declare-module-cleanup.md`~~ **完了タスクに移動** |
 | UT-TEST-EVENT-STANDARDIZATION-001            | テストイベントAPI標準化（happy-dom環境fireEvent統一）              | 中 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 12（P39/P40教訓）     | `docs/30-workflows/unassigned-task/task-ut-test-event-standardization.md`                    |
 | UT-SETTINGSVIEW-INLINE-SELECTOR-001          | SettingsView残存インラインセレクタの個別セレクタ移行               | 低 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 10（MINOR #2）        | `docs/30-workflows/unassigned-task/task-ut-settingsview-inline-selector-migration.md`        |
+| task-imp-vitest-mock-reset-utility-001       | Vitest モック2段階リセットユーティリティ共通化                      | 中 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`                |
+| task-ref-vitest-module-mock-audit-001        | Vitest モジュールレベルモック監査・使い分けガイドライン策定         | 低 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`                 |
 
 ### 未タスク管理ルール
 
@@ -570,6 +607,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.32.0     | 2026-02-13 | 未タスク2件追加: task-imp-vitest-mock-reset-utility-001（mock 2段階リセットユーティリティ）、task-ref-vitest-module-mock-audit-001（モジュールモック監査・ガイドライン）。TASK-FIX-11-1 実装苦戦箇所から検出 |
+| 1.31.0     | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT完了記録追加。SDK統合テストTODO有効化17件、Phase 12 Step 1-A/1-D反映、関連仕様書3ファイル更新を記録 |
 | 1.0.0      | 2026-01-20 | 初版作成                                                                                                                                                                                                  |
 | 1.1.0      | 2026-01-22 | task-specification-creator Phase 12改善完了記録追加                                                                                                                                                       |
 | 1.2.0      | 2026-01-22 | 残課題（未タスク）セクション追加、未タスク2件（E2Eテスト、自動化拡充）登録                                                                                                                                |

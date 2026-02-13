@@ -386,6 +386,11 @@ describe("SkillExecutor", () => {
   describe("Claude Agent SDK Integration", () => {
     beforeEach(() => {
       vi.clearAllMocks();
+      // モックのデフォルト動作を再設定（P9対策: mockImplementation による永続的変更をリセット）
+      mockAgentAPI.query.mockResolvedValue({
+        content: JSON.stringify({ changes: [] }),
+        usage: { inputTokens: 100, outputTokens: 50 },
+      });
     });
 
     describe("SDK skill name mapping", () => {
@@ -413,12 +418,16 @@ describe("SkillExecutor", () => {
           // 現在のシミュレーション実装ではoutputにスキル名が含まれることで確認
           expect(result.output).toContain(expectedSkillName);
 
-          // TODO: SDK統合後は以下を有効化
-          // expect(mockAgentAPI.query).toHaveBeenCalledWith(
-          //   expect.objectContaining({
-          //     prompt: expect.stringContaining(expectedSkillName),
-          //   }),
-          // );
+          // SDK統合: Agent SDKが正しいプロンプトで呼び出されることを検証
+          expect(mockAgentAPI.query).toHaveBeenCalledWith(
+            expect.objectContaining({
+              prompt: expect.any(String),
+              options: expect.objectContaining({
+                systemPrompt: expect.any(String),
+                timeout: 30000,
+              }),
+            }),
+          );
         });
       });
     });
@@ -434,14 +443,15 @@ describe("SkillExecutor", () => {
 
         expect(result.success).toBe(true);
 
-        // TODO: SDK統合後は以下を有効化
-        // expect(mockAgentAPI.query).toHaveBeenCalledWith(
-        //   expect.objectContaining({
-        //     options: expect.objectContaining({
-        //       systemPrompt: expect.stringContaining(customProjectPath),
-        //     }),
-        //   }),
-        // );
+        // SDK統合: Agent SDKがprojectPathを含むプロンプトで呼び出されることを検証
+        expect(mockAgentAPI.query).toHaveBeenCalledWith(
+          expect.objectContaining({
+            prompt: expect.stringContaining(customProjectPath),
+            options: expect.objectContaining({
+              systemPrompt: expect.any(String),
+            }),
+          }),
+        );
 
         // modifierフェーズでprojectPathを検証
         const modifierPromise = executor.execute("modifier", customProjectPath);
@@ -484,21 +494,18 @@ describe("SkillExecutor", () => {
       it("SDK-SE-05: should handle SDK timeout error (30s)", async () => {
         const executor = createSkillExecutor();
 
-        // TODO: SDK統合後、実際の30秒タイムアウトをテスト
-        // 現在のシミュレーションは1秒で完了する
+        // SDK統合: mockAgentAPIを「Request timeout」エラーでrejectするモックに差し替え
+        // skill-executor.tsはagent-client全体をモック化しているため、
+        // タイムアウト処理はagent-client側で発生する。
+        // ここではagent-clientがタイムアウト時に返すエラーをシミュレートする。
+        mockAgentAPI.query.mockRejectedValueOnce(new Error("Request timeout"));
+
         const resultPromise = executor.execute("html", testProjectPath);
         await vi.advanceTimersByTimeAsync(1000);
         const result = await resultPromise;
 
-        // シミュレーションは成功を返す
-        expect(result.success).toBe(true);
-
-        // SDK統合後は以下のテストを追加:
-        // const timeoutPromise = executor.execute("html", testProjectPath);
-        // await vi.advanceTimersByTimeAsync(30000); // 30秒タイムアウト
-        // const timeoutResult = await timeoutPromise;
-        // expect(timeoutResult.success).toBe(false);
-        // expect(timeoutResult.error).toBe("Request timeout");
+        expect(result.success).toBe(false);
+        expect(result.error).toBe("Request timeout");
       });
     });
 
@@ -620,29 +627,33 @@ describe("SkillExecutor", () => {
 
     describe("SDK error scenarios", () => {
       it("SDK-SE-13: should handle API key not found error", async () => {
-        // TODO: SDK統合後に実装
-        // API key not foundエラーのテスト
+        // SDK統合: API key not foundエラーをシミュレート（OnceでP9リーク防止）
+        mockAgentAPI.query.mockRejectedValueOnce(
+          new Error("API key not configured"),
+        );
+
         const executor = createSkillExecutor();
 
         const resultPromise = executor.execute("html", testProjectPath);
         await vi.advanceTimersByTimeAsync(1000);
         const result = await resultPromise;
 
-        // 現在のシミュレーションは成功を返す
-        expect(result.success).toBe(true);
+        expect(result.success).toBe(false);
+        expect(result.error).toBe("API key not configured");
       });
 
       it("SDK-SE-14: should handle SDK call failed error", async () => {
-        // TODO: SDK統合後に実装
-        // SDK呼び出し失敗エラーのテスト
+        // SDK統合: SDK呼び出し失敗エラーをシミュレート
+        mockAgentAPI.query.mockRejectedValueOnce(new Error("SDK call failed"));
+
         const executor = createSkillExecutor();
 
         const resultPromise = executor.execute("html", testProjectPath);
         await vi.advanceTimersByTimeAsync(1000);
         const result = await resultPromise;
 
-        // 現在のシミュレーションは成功を返す
-        expect(result.success).toBe(true);
+        expect(result.success).toBe(false);
+        expect(result.error).toBe("SDK call failed");
       });
     });
   });
@@ -652,6 +663,15 @@ describe("SkillExecutor", () => {
   // テストID: EDGE-SE-01 ~ EDGE-SE-15
   // ==========================================================================
   describe("edge case tests (Phase 6)", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      // モックのデフォルト動作を再設定（P9対策: 前テストブロックの mockImplementation 変更をリセット）
+      mockAgentAPI.query.mockResolvedValue({
+        content: JSON.stringify({ changes: [] }),
+        usage: { inputTokens: 100, outputTokens: 50 },
+      });
+    });
+
     describe("input validation edge cases", () => {
       it("EDGE-SE-01: should handle empty projectPath", async () => {
         const executor = createSkillExecutor();

@@ -197,18 +197,15 @@ describe("AgentClient", () => {
     });
 
     it("AC-06: should reject with SDK error when API call fails", async () => {
-      // TODO: SDK統合後、実際のAPIエラーをシミュレートする
-      // 現在はシミュレーション実装なのでエラーは発生しない
+      // SDK統合: APIエラーをシミュレート
+      mockCreate.mockRejectedValueOnce(new Error("API request failed"));
 
       const queryPromise = agentAPI.query({
         prompt: "Test prompt",
         options: { timeout: 30000 },
       });
-      await vi.advanceTimersByTimeAsync(1000);
-      const response = await queryPromise;
 
-      // シミュレーションは成功を返す
-      expect(response).toBeDefined();
+      await expect(queryPromise).rejects.toThrow("API request failed");
     });
 
     it("AC-07: should prevent concurrent queries", async () => {
@@ -522,9 +519,7 @@ describe("AgentClient", () => {
   describe("Claude Agent SDK Integration", () => {
     describe("SDK API Key Management", () => {
       it("SDK-AC-01: should retrieve API key from safeStorage", async () => {
-        // TODO: SDK統合後に実装
-        // safeStorageからAPIキーが取得されることを検証
-
+        // SDK統合: safeStorageからAPIキーが取得され、SDK呼び出しが行われることを検証
         const queryPromise = agentAPI.query({
           prompt: "Test prompt",
           options: { timeout: 30000 },
@@ -533,11 +528,14 @@ describe("AgentClient", () => {
         const response = await queryPromise;
 
         expect(response).toBeDefined();
+        // APIキー取得に成功し、SDKが呼び出されていることを検証
+        expect(mockCreate).toHaveBeenCalled();
       });
 
       it("SDK-AC-02: should fallback to environment variable if safeStorage fails", async () => {
-        // TODO: SDK統合後に実装
-        // 環境変数ANTHROPIC_API_KEYへのフォールバックを検証
+        // SDK統合: 環境変数ANTHROPIC_API_KEYへのフォールバックを検証
+        // safeStorageにキーが保存されていない状態（electron-storeモックはundefinedを返す）
+        // 環境変数 ANTHROPIC_API_KEY は beforeEach で "test-api-key" に設定済み
 
         const queryPromise = agentAPI.query({
           prompt: "Test prompt",
@@ -547,29 +545,29 @@ describe("AgentClient", () => {
         const response = await queryPromise;
 
         expect(response).toBeDefined();
+        // 環境変数フォールバックでSDKが呼び出されていることを検証
+        expect(mockCreate).toHaveBeenCalled();
       });
 
       it("SDK-AC-03: should throw error if API key not found", async () => {
-        // TODO: SDK統合後に実装
-        // APIキーが見つからない場合のエラーを検証
+        // SDK統合: APIキーが見つからない場合のエラーを検証
+        // 環境変数を削除してAPIキー未設定状態を作成
+        delete process.env.ANTHROPIC_API_KEY;
+        resetAgentAPI();
+        const newAPI = getAgentAPI();
 
-        // 現在はシミュレーション実装
-        const queryPromise = agentAPI.query({
+        const queryPromise = newAPI.query({
           prompt: "Test prompt",
           options: { timeout: 30000 },
         });
-        await vi.advanceTimersByTimeAsync(1000);
-        const response = await queryPromise;
 
-        expect(response).toBeDefined();
+        await expect(queryPromise).rejects.toThrow("API key not configured");
       });
     });
 
     describe("SDK Request Configuration", () => {
       it("SDK-AC-04: should use correct model (claude-sonnet-4-20250514)", async () => {
-        // TODO: SDK統合後に実装
-        // 正しいモデルが使用されていることを検証
-
+        // SDK統合: 正しいモデルが使用されていることを検証
         const queryPromise = agentAPI.query({
           prompt: "Test prompt",
           options: { timeout: 30000 },
@@ -578,12 +576,16 @@ describe("AgentClient", () => {
         const response = await queryPromise;
 
         expect(response).toBeDefined();
+        expect(mockCreate).toHaveBeenCalledWith(
+          expect.objectContaining({
+            model: "claude-sonnet-4-20250514",
+          }),
+          expect.anything(),
+        );
       });
 
       it("SDK-AC-05: should set max_tokens to 8192", async () => {
-        // TODO: SDK統合後に実装
-        // max_tokensが8192に設定されていることを検証
-
+        // SDK統合: max_tokensが8192に設定されていることを検証
         const queryPromise = agentAPI.query({
           prompt: "Test prompt",
           options: { timeout: 30000 },
@@ -592,12 +594,16 @@ describe("AgentClient", () => {
         const response = await queryPromise;
 
         expect(response).toBeDefined();
+        expect(mockCreate).toHaveBeenCalledWith(
+          expect.objectContaining({
+            max_tokens: 8192,
+          }),
+          expect.anything(),
+        );
       });
 
       it("SDK-AC-06: should pass systemPrompt to SDK", async () => {
-        // TODO: SDK統合後に実装
-        // systemPromptがSDKに渡されることを検証
-
+        // SDK統合: systemPromptがSDKに渡されることを検証
         const queryPromise = agentAPI.query({
           prompt: "Test prompt",
           options: {
@@ -609,6 +615,12 @@ describe("AgentClient", () => {
         const response = await queryPromise;
 
         expect(response).toBeDefined();
+        expect(mockCreate).toHaveBeenCalledWith(
+          expect.objectContaining({
+            system: "You are a slide designer.",
+          }),
+          expect.anything(),
+        );
       });
     });
 
@@ -640,31 +652,33 @@ describe("AgentClient", () => {
 
     describe("SDK Error Handling", () => {
       it("SDK-AC-09: should handle SDK 401 Unauthorized error", async () => {
-        // TODO: SDK統合後に実装
-        // 401エラーのハンドリングを検証
+        // SDK統合: 401エラーのハンドリングを検証
+        const authError = Object.assign(new Error("Unauthorized"), {
+          status: 401,
+        });
+        mockCreate.mockRejectedValueOnce(authError);
 
         const queryPromise = agentAPI.query({
           prompt: "Test prompt",
           options: { timeout: 30000 },
         });
-        await vi.advanceTimersByTimeAsync(1000);
-        const response = await queryPromise;
 
-        expect(response).toBeDefined();
+        await expect(queryPromise).rejects.toThrow("Unauthorized");
       });
 
       it("SDK-AC-10: should handle SDK 500 Internal Server Error", async () => {
-        // TODO: SDK統合後に実装
-        // 500エラーのハンドリングを検証
+        // SDK統合: 500エラーのハンドリングを検証
+        const serverError = Object.assign(new Error("Internal Server Error"), {
+          status: 500,
+        });
+        mockCreate.mockRejectedValueOnce(serverError);
 
         const queryPromise = agentAPI.query({
           prompt: "Test prompt",
           options: { timeout: 30000 },
         });
-        await vi.advanceTimersByTimeAsync(1000);
-        const response = await queryPromise;
 
-        expect(response).toBeDefined();
+        await expect(queryPromise).rejects.toThrow("Internal Server Error");
       });
     });
   });

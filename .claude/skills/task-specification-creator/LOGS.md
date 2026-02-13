@@ -43,6 +43,55 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT スキル改善（パターン追記）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善（テストパターン）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `patterns.md` にSDKテスト有効化の成功パターン2件・失敗パターン1件を追加
+  - クイックナビゲーションテーブルを更新
+
+---
+
+## [2026-02-13 - Phase 12未タスク検出ガイド改善（raw誤検知対策）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善（未タスク運用）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `unassigned-task-guidelines.md` に「raw検出は候補」の明確化を追加
+  - 実装ディレクトリ優先スキャン + 手動精査の2段階判定を追加
+  - `docs/30-workflows/unassigned-task/` への配置条件を「精査後件数 > 0」に統一
+
+---
+
+## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 12監査・漏れ是正]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - 初期成果物で Step 1-A/1-D を「該当なし」とした誤判定を検知
+  - `aiworkflow-requirements` の `LOGS.md/SKILL.md` と `references/` 3ファイル更新を実施
+  - `task-specification-creator` の `LOGS.md/SKILL.md` も同時更新してP1/P23/P27/P29漏れを是正
+  - `generate-index.js` を両スキルで実行しtopic-mapを再同期
+  - `phase-11-12-guide.md` のStep 1-Dコマンドを実スクリプト仕様（`--workflow`必須）へ修正
+
+### 成果物
+
+| 成果物 | パス |
+| ------ | ---- |
+| 実装ガイド | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/documentation-changelog.md` |
+| スキルフィードバック | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/skill-feedback-report.md` |
+| 未タスク検出レポート | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/unassigned-task-detection.md` |
+
+---
+
 ## [2026-02-13 - UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓追記]
 
 - **Agent**: task-specification-creator

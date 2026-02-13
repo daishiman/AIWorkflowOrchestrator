@@ -546,6 +546,49 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 ## 完了タスク
 
+### タスク: TASK-FIX-11-1-SDK-TEST-ENABLEMENT SDK統合テスト有効化（2026-02-13完了）
+
+| 項目         | 内容                                                        |
+| ------------ | ----------------------------------------------------------- |
+| タスクID     | TASK-FIX-11-1-SDK-TEST-ENABLEMENT                          |
+| 完了日       | 2026-02-13                                                  |
+| ステータス   | **完了**                                                    |
+| テスト数     | TODO有効化17件（3ファイル）+ 既存回帰全PASS                |
+| 発見課題     | 0件                                                         |
+| ドキュメント | `docs/30-workflows/sdk-test-enablement/`                   |
+
+#### 変更内容
+
+| 変更ファイル | 変更内容 |
+| ------------ | -------- |
+| `apps/desktop/src/main/slide/__tests__/agent-client.test.ts` | AC-06, SDK-AC-01〜06, SDK-AC-09〜10 のTODOを実テスト化。`mockRejectedValueOnce` と Fake Timers を導入 |
+| `apps/desktop/src/main/slide/__tests__/sdk-integration.test.ts` | INT-02, INT-05, SDK-INT-01 のTODOを実テスト化。APIキー無効・SDK障害をモック検証 |
+| `apps/desktop/src/main/slide/__tests__/skill-executor.test.ts` | SDK-SE-05, SDK-SE-13, SDK-SE-14 を有効化。`beforeEach` でモック再初期化しP9を回避 |
+
+#### 仕様化したテストパターン
+
+- `mockRejectedValueOnce` を優先し、テスト間のモック汚染を防止
+- `vi.clearAllMocks()` だけでなく `mockReset` とデフォルト実装再設定を併用
+- 30秒タイムアウトは `Promise.all([advanceTimersByTimeAsync, rejects])` で決定論的に検証
+
+#### 実装上の課題と教訓
+
+| 課題 | 詳細 | 解決策 |
+|------|------|--------|
+| Phase 12 Step 1-A/1-D誤判定 | テスト変更のみのためドキュメント更新を初回で「該当なし」と誤判定 | Step 1-A（LOGS/SKILL更新）と Step 1-D（index再生成）を必須として再実行 |
+| 未タスク検出の誤検知 | `detect-unassigned-tasks.js` の raw 検出が仕様書本文の TODO 文言を多数検出 | 実装ディレクトリ優先スキャン + raw結果の手動精査で「候補」と「確定」を分離 |
+| Vitestモック状態リーク | `vi.clearAllMocks()` のみでは実装が残り後続テストに影響 | `beforeEach` でデフォルト実装を再設定し、失敗系は `mockRejectedValueOnce` を使用 |
+
+#### 成果物
+
+| 成果物 | パス |
+| ------ | ---- |
+| 実装ガイド | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/unassigned-task-detection.md` |
+
+---
+
 ### タスク: SDK型安全統合 - as any除去（2026-02-12完了）
 
 | 項目         | 内容                                                       |
@@ -692,6 +735,7 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 | interfaces-agent-sdk.md             | 親ファイル（インデックス） |
 | interfaces-agent-sdk-integration.md | 統合機能仕様               |
 | interfaces-agent-sdk-history.md     | 完了タスク履歴             |
+| [SDKテスト有効化 実装ガイド](../../../docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md) | TASK-FIX-11-1 のテスト実装パターン |
 | [実装ガイドPart1](../../../docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part1.md) | リトライ機構 初学者向け概念説明 |
 | [実装ガイドPart2](../../../docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part2.md) | リトライ機構 技術者向け詳細 |
 
@@ -701,6 +745,8 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-02-13 | 1.7.1      | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: 「実装上の課題と教訓」追記（Step 1-A/1-D誤判定、未タスクraw誤検知、Vitestモック再初期化） |
+| 2026-02-13 | 1.7.0      | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: 完了タスク追加（SDK統合テスト17件有効化、P9対策モック再初期化、タイムアウト検証パターン） |
 | 2026-02-12 | 1.6.1      | TASK-9B-I-SDK-FORMAL-INTEGRATION: 完了タスクセクションに「実装上の課題と教訓」サブセクション追加（TypeScriptモジュール解決、SDKパラメータ発見、PermissionMode不一致、テスト数乖離、P3再発） |
 | 2026-02-12 | 1.6.0      | TASK-9B-I-SDK-FORMAL-INTEGRATION: callSDKQuery型安全化仕様追加、SDK Optionsマッピング（env.ANTHROPIC_API_KEY, abortController）、完了タスク追加 |
 | 2026-02-11 | 1.5.0      | TASK-FIX-7-1: SkillService統合セクション追加、型変換パターン（Skill→SkillMetadata）追加 |
