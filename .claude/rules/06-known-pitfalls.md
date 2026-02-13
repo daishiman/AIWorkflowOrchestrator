@@ -196,6 +196,39 @@ useEffect(() => {
 - **解決策**: テストを分割実行するか、`--poolOptions.workers.max` を調整。または `--no-file-parallelism` で並列実行を制限
 - **関連タスク**: TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE
 
+### P39: happy-dom環境でのuserEvent非互換
+
+- **教訓**: `@testing-library/user-event`の`userEvent.setup()`はhappy-dom環境でSymbol操作エラー（`Symbol(Node prepared with document state workarounds)`）を起こす。49/53テストが一斉に失敗する
+- **症状**: テスト追加後に大量のテストが`TypeError: Symbol(...)`で失敗
+- **原因**: userEventはjsdomのDOM APIに依存するSymbol操作を内部実行するが、happy-domは未サポート
+- **解決策**: happy-dom環境では`fireEvent`を使用。非同期ハンドラは`await act(async () => { fireEvent.click(el) })`で包む
+- **再発防止**: テスト追加時は必ず実行確認。happy-dom環境では`userEvent`使用禁止
+- **関連パターン**: [architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md) の「fireEvent vs userEvent使い分けパターン」
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+
+```typescript
+// ❌ happy-domで失敗
+const user = userEvent.setup();
+await user.click(element);
+
+// ✅ happy-domで安定
+fireEvent.click(element);
+
+// ✅ 非同期ハンドラ
+await act(async () => {
+  fireEvent.click(element);
+});
+```
+
+### P40: テスト実行ディレクトリ依存（モノレポ）
+
+- **教訓**: モノレポ環境で`pnpm vitest run apps/desktop/src/...`をプロジェクトルートから実行すると、`apps/desktop/vitest.config.ts`の`environment`設定と`setupFiles`が読み込まれず`document is not defined`エラーが発生する
+- **症状**: ローカルでは通るテストがCI/別ディレクトリから実行すると全件失敗
+- **原因**: Vitestはカレントディレクトリの`vitest.config.ts`を優先読み込みするため、`apps/desktop/`のhappy-dom設定が適用されない
+- **解決策**: `cd apps/desktop && pnpm vitest run src/...` または `pnpm --filter @repo/desktop exec vitest run src/...` で実行
+- **再発防止**: テスト実行は常に対象パッケージのディレクトリから行う
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+
 ## Preload / API 統一
 
 ### P23-P28 と実装パターンの対応表

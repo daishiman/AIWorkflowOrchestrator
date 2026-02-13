@@ -1,19 +1,37 @@
-import React, {
-  useEffect,
-  useCallback,
-  useState,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useEffect, useCallback, useState, useMemo } from "react";
 import clsx from "clsx";
-import { useAppStore } from "../../store";
+import {
+  useFetchSkills,
+  useImportedSkills,
+  useIsLoadingSkills,
+  useSkillError,
+  useAvailableSkillsMetadata,
+  useImportedSkillIds,
+  useSelectedSkill,
+  useSkillFilter,
+  useSkillCategory,
+  useIsImportDialogOpen,
+  useToastMessage,
+  useSelectSkill,
+  useSetSkillFilter,
+  useSetSkillCategory,
+  useOpenImportDialog,
+  useCloseImportDialog,
+  useShowToast,
+  useClearToast,
+  useImportSkill,
+  useRemoveSkill,
+} from "../../store";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
 import { SkillSearchBar } from "../../components/molecules/SkillSearchBar";
 import { SkillCategoryFilter } from "../../components/molecules/SkillCategoryFilter";
 import { SkillList } from "../../components/organisms/SkillList";
 import { SkillDetailPanel } from "../../components/organisms/SkillDetailPanel";
 import { SkillImportDialog } from "../../components/organisms/SkillImportDialog";
-import type { Skill, SkillCategory } from "@repo/shared/types/skill";
+import type {
+  Skill,
+  SkillCategory as SkillCategoryType,
+} from "@repo/shared/types/skill";
 import { Plus, RefreshCw, X } from "lucide-react";
 
 export interface AgentViewProps {
@@ -25,7 +43,6 @@ const containerClassName = "flex flex-col gap-6 p-6 h-full overflow-hidden";
 
 /**
  * ヘッダーセクション
- * エージェントビューの共通ヘッダー
  */
 const AgentHeader: React.FC<{
   onImportClick: () => void;
@@ -85,37 +102,35 @@ const Toast: React.FC<{
 /**
  * AgentView コンポーネント
  * エージェント機能の管理と実行を行うビュー
+ *
+ * UT-FIX-AGENTVIEW-INFINITE-LOOP-001:
+ * インラインセレクタ + ローカルfetchSkills useCallback を廃止し、
+ * 個別セレクタHook（P31対策）に移行。無限ループを防止。
  */
 export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
-  // Debug: render counter
-  const renderCount = useRef(0);
-  renderCount.current += 1;
-  console.log("[AgentView][DEBUG] Render #", renderCount.current);
+  // Store state - 個別セレクタ（P31対策）
+  const isLoading = useIsLoadingSkills();
+  const error = useSkillError();
+  const importedSkills = useImportedSkills();
+  const availableSkillsMetadata = useAvailableSkillsMetadata();
+  const importedSkillIds = useImportedSkillIds();
+  const selectedSkill = useSelectedSkill();
+  const skillFilter = useSkillFilter();
+  const skillCategory = useSkillCategory();
+  const isImportDialogOpen = useIsImportDialogOpen();
+  const toastMessage = useToastMessage();
 
-  // Store state
-  const isLoading = useAppStore((state) => state.isLoading);
-  const error = useAppStore((state) => state.error);
-  const skills = useAppStore((state) => state.skills);
-  const availableSkills = useAppStore((state) => state.availableSkills);
-  const importedSkillIds = useAppStore((state) => state.importedSkillIds);
-  const selectedSkill = useAppStore((state) => state.selectedSkill);
-  const skillFilter = useAppStore((state) => state.skillFilter);
-  const skillCategory = useAppStore((state) => state.skillCategory);
-  const isImportDialogOpen = useAppStore((state) => state.isImportDialogOpen);
-  const toastMessage = useAppStore((state) => state.toastMessage);
-
-  // Store actions
-  const setSkills = useAppStore((state) => state.setSkills);
-  const setAvailableSkills = useAppStore((state) => state.setAvailableSkills);
-  const selectSkill = useAppStore((state) => state.selectSkill);
-  const setSkillFilter = useAppStore((state) => state.setSkillFilter);
-  const setSkillCategory = useAppStore((state) => state.setSkillCategory);
-  const openImportDialog = useAppStore((state) => state.openImportDialog);
-  const closeImportDialog = useAppStore((state) => state.closeImportDialog);
-  const showToast = useAppStore((state) => state.showToast);
-  const clearToast = useAppStore((state) => state.clearToast);
-  const setLoading = useAppStore((state) => state.setLoading);
-  const setError = useAppStore((state) => state.setError);
+  // Store actions - 個別セレクタ（P31対策）
+  const fetchSkills = useFetchSkills();
+  const selectSkill = useSelectSkill();
+  const setSkillFilter = useSetSkillFilter();
+  const setSkillCategory = useSetSkillCategory();
+  const openImportDialog = useOpenImportDialog();
+  const closeImportDialog = useCloseImportDialog();
+  const showToast = useShowToast();
+  const clearToast = useClearToast();
+  const importSkillAction = useImportSkill();
+  const removeSkillAction = useRemoveSkill();
 
   // Responsive state
   const [windowWidth, setWindowWidth] = useState(
@@ -130,60 +145,27 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
 
   const isMobile = windowWidth < 1024;
 
-  // Extract unique categories from skills
+  // Extract unique categories from imported skills
   const availableCategories = useMemo(() => {
     const categories = new Set<string>();
-    skills.forEach((skill) => {
-      if (skill.category) {
-        categories.add(skill.category);
+    importedSkills.forEach((skill) => {
+      if ("category" in skill && skill.category) {
+        categories.add(skill.category as string);
       }
     });
-    return Array.from(categories) as SkillCategory[];
-  }, [skills]);
+    return Array.from(categories) as SkillCategoryType[];
+  }, [importedSkills]);
 
-  // Fetch imported skills on mount
-  const fetchSkills = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const imported = await window.electronAPI.skill.getImported();
-      // TASK-FIX-5-1: ImportedSkill[] → Skill[] 型アサーション（agentSlice型移行は別タスク）
-      setSkills(imported as unknown as Skill[]);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? `エラーが発生しました: ${err.message}`
-          : "エラーが発生しました",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [setSkills, setLoading, setError]);
-
-  // Fetch available skills for import dialog
-  const fetchAvailableSkills = useCallback(async () => {
-    try {
-      const available = await window.electronAPI.skill.list();
-      // TASK-FIX-5-1: SkillMetadata[] → Skill[] 型アサーション（agentSlice型移行は別タスク）
-      setAvailableSkills(available as unknown as Skill[]);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_err) {
-      // Silent error for available skills
-    }
-  }, [setAvailableSkills]);
-
+  // Fetch skills on mount - 個別セレクタで参照安定
   useEffect(() => {
-    console.log(
-      "[AgentView][DEBUG] useEffect triggered - fetchSkills reference changed",
-    );
     fetchSkills();
   }, [fetchSkills]);
 
   // Handlers
   const handleImportClick = useCallback(() => {
-    fetchAvailableSkills();
+    fetchSkills();
     openImportDialog();
-  }, [fetchAvailableSkills, openImportDialog]);
+  }, [fetchSkills, openImportDialog]);
 
   const handleSkillSelect = useCallback(
     (skill: Skill) => {
@@ -215,10 +197,9 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const handleDelete = useCallback(
     async (skill: Skill) => {
       try {
-        await window.electronAPI.skill.remove(skill.name);
+        await removeSkillAction(skill.name);
         showToast("success", `${skill.name} を削除しました`);
         selectSkill(null);
-        fetchSkills();
       } catch (err) {
         showToast(
           "error",
@@ -228,7 +209,7 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
         );
       }
     },
-    [fetchSkills, selectSkill, showToast],
+    [removeSkillAction, selectSkill, showToast],
   );
 
   const handleCloseDetail = useCallback(() => {
@@ -239,14 +220,13 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
     async (skillIds: string[]) => {
       try {
         for (const skillName of skillIds) {
-          await window.electronAPI.skill.import(skillName);
+          await importSkillAction(skillName);
         }
         showToast(
           "success",
           `${skillIds.length}件のスキルをインポートしました`,
         );
         closeImportDialog();
-        fetchSkills();
       } catch (err) {
         showToast(
           "error",
@@ -256,12 +236,18 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
         );
       }
     },
-    [closeImportDialog, fetchSkills, showToast],
+    [closeImportDialog, importSkillAction, showToast],
   );
 
   const handleRetry = useCallback(() => {
     fetchSkills();
   }, [fetchSkills]);
+
+  // スキル一覧: importedSkillsをSkill[]として扱う（型互換性のため）
+  const skills = importedSkills as unknown as Skill[];
+
+  // 利用可能スキル: availableSkillsMetadataをSkill[]として扱う（型互換性のため）
+  const availableSkills = availableSkillsMetadata as unknown as Skill[];
 
   // Error state
   if (error) {
@@ -330,7 +316,7 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
           />
         </div>
 
-        {/* Detail Panel - Desktop: side panel, Mobile: overlay */}
+        {/* Detail Panel */}
         {selectedSkill && (
           <div
             className={

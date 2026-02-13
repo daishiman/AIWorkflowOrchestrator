@@ -1,8 +1,6 @@
 {
-  "generated": "2026-02-12T10:32:53.904Z",
-  "totalKeywords": 1093,
-  "generated": "2026-02-12T09:26:47.628Z",
-  "totalKeywords": 1094,
+  "generated": "2026-02-12T23:03:59.446Z",
+  "totalKeywords": 1108,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2003,7 +2001,8 @@
       "directory-structure.md"
     ],
     "apps": [
-      "directory-structure.md"
+      "directory-structure.md",
+      "lessons-learned.md"
     ],
     "web": [
       "directory-structure.md"
@@ -2017,7 +2016,8 @@
       "technology-core.md"
     ],
     "desktop": [
-      "directory-structure.md"
+      "directory-structure.md",
+      "lessons-learned.md"
     ],
     "local": [
       "directory-structure.md"
@@ -2035,7 +2035,8 @@
       "directory-structure.md"
     ],
     "pnpm": [
-      "directory-structure.md"
+      "directory-structure.md",
+      "lessons-learned.md"
     ],
     "workspace": [
       "directory-structure.md",
@@ -2733,24 +2734,6 @@
     "ハンドラー登録": [
       "lessons-learned.md"
     ],
-    "STORE": [
-      "lessons-learned.md"
-    ],
-    "HOOKS": [
-      "lessons-learned.md"
-    ],
-    "COMPONENT": [
-      "lessons-learned.md"
-    ],
-    "MIGRATION": [
-      "lessons-learned.md"
-    ],
-    "個別セレクタ": [
-      "lessons-learned.md"
-    ],
-    "移行": [
-      "lessons-learned.md"
-    ],
     "TEST": [
       "lessons-learned.md",
       "technology-devops.md"
@@ -2762,6 +2745,45 @@
       "lessons-learned.md"
     ],
     "パターン移行": [
+      "lessons-learned.md"
+    ],
+    "AGENTVIEW": [
+      "lessons-learned.md"
+    ],
+    "INFINITE": [
+      "lessons-learned.md"
+    ],
+    "LOOP": [
+      "lessons-learned.md"
+    ],
+    "AgentView": [
+      "lessons-learned.md"
+    ],
+    "無限ループ修正テスト": [
+      "lessons-learned.md"
+    ],
+    "プロジェクトルートから実行": [
+      "lessons-learned.md"
+    ],
+    "失敗": [
+      "lessons-learned.md"
+    ],
+    "から実行": [
+      "lessons-learned.md"
+    ],
+    "成功": [
+      "lessons-learned.md"
+    ],
+    "filter": [
+      "lessons-learned.md"
+    ],
+    "を使用": [
+      "lessons-learned.md"
+    ],
+    "SkillCreator": [
+      "lessons-learned.md"
+    ],
+    "セキュリティ強化": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [

@@ -230,9 +230,10 @@ describe("SkillCreator IPC Handlers", () => {
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_DETECT_MODE)!;
       const result = await handler(createMockEvent(), { request: "テスト" });
 
+      // UT-9B-H-003: sanitizeErrorMessage統一により共通デフォルトメッセージ
       expect(result).toEqual({
         success: false,
-        error: "モード判定に失敗しました",
+        error: "スキル作成処理でエラーが発生しました",
       });
     });
   });
@@ -441,14 +442,15 @@ describe("SkillCreator IPC Handlers", () => {
       mockSkillCreatorService.validateWithSchema.mockResolvedValue(true);
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!;
+      // UT-9B-H-003: ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
       const result = await handler(createMockEvent(), {
-        schemaName: "skill-metadata",
+        schemaName: "skill-spec",
         data: { name: "test" },
       });
 
       expect(result).toEqual({ success: true, data: true });
       expect(mockSkillCreatorService.validateWithSchema).toHaveBeenCalledWith(
-        "skill-metadata",
+        "skill-spec",
         { name: "test" },
       );
     });
@@ -485,8 +487,9 @@ describe("SkillCreator IPC Handlers", () => {
       );
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!;
+      // UT-9B-H-003: ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
       const result = await handler(createMockEvent(), {
-        schemaName: "invalid-schema",
+        schemaName: "task-spec",
         data: {},
       });
 
@@ -695,9 +698,10 @@ describe("SkillCreator IPC Handlers", () => {
           getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE)!(createMockEvent(), {
             skillDir: "/path",
           }),
+          // UT-9B-H-003: ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
           getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!(
             createMockEvent(),
-            { schemaName: "test", data: {} },
+            { schemaName: "skill-spec", data: {} },
           ),
         ]);
 
@@ -789,8 +793,9 @@ describe("SkillCreator IPC Handlers", () => {
         mockSkillCreatorService.validateWithSchema.mockResolvedValue(true);
 
         const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!;
+        // UT-9B-H-003: ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
         const result = await handler(createMockEvent(), {
-          schemaName: "large-schema",
+          schemaName: "task-spec",
           data: largeData,
         });
 
@@ -837,15 +842,16 @@ describe("SkillCreator IPC Handlers", () => {
       // SCIT-EDG-12: validate-schemaのdataがnullの場合
       it("SCIT-EDG-12: should handle null data for validate-schema", async () => {
         const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!;
+        // UT-9B-H-003: ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
         const _result = await handler(createMockEvent(), {
-          schemaName: "test",
+          schemaName: "mode",
           data: null,
         });
 
         // null はundefinedではないため、サービスに渡される
         mockSkillCreatorService.validateWithSchema.mockResolvedValue(false);
         const result2 = await handler(createMockEvent(), {
-          schemaName: "test",
+          schemaName: "mode",
           data: null,
         });
         expect(result2).toEqual({ success: true, data: false });
@@ -859,61 +865,69 @@ describe("SkillCreator IPC Handlers", () => {
 
   describe("Phase 6: Security Tests", () => {
     // SCIT-SEC-05: パストラバーサル攻撃 - tasksDir
-    it("SCIT-SEC-05: should pass path traversal in tasksDir to service (service is responsible for validation)", async () => {
+    // UT-9B-H-003: IPC層でパストラバーサルを拒否（サービス委任→IPC層防御に変更）
+    it("SCIT-SEC-05: should reject path traversal in tasksDir at IPC layer", async () => {
       const traversalPath = "/path/to/tasks/../../../etc/passwd";
-      mockSkillCreatorService.executeTasks.mockRejectedValue(
-        new Error("Invalid path"),
-      );
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS)!;
       const result = await handler(createMockEvent(), {
         tasksDir: traversalPath,
       });
 
-      expect(result).toEqual({ success: false, error: "Invalid path" });
+      expect(result).toEqual({
+        success: false,
+        error: "無効なパスが指定されました: tasksDir",
+      });
+      expect(mockSkillCreatorService.executeTasks).not.toHaveBeenCalled();
     });
 
     // SCIT-SEC-06: パストラバーサル攻撃 - skillDir
-    it("SCIT-SEC-06: should pass path traversal in skillDir to service", async () => {
+    // UT-9B-H-003: IPC層でパストラバーサルを拒否
+    it("SCIT-SEC-06: should reject path traversal in skillDir at IPC layer", async () => {
       const traversalPath = "../../etc/shadow";
-      mockSkillCreatorService.validateSkill.mockRejectedValue(
-        new Error("Invalid path"),
-      );
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE)!;
       const result = await handler(createMockEvent(), {
         skillDir: traversalPath,
       });
 
-      expect(result).toEqual({ success: false, error: "Invalid path" });
+      expect(result).toEqual({
+        success: false,
+        error: "無効なパスが指定されました: skillDir",
+      });
+      expect(mockSkillCreatorService.validateSkill).not.toHaveBeenCalled();
     });
 
     // SCIT-SEC-07: パストラバーサル攻撃 - NULLバイト
-    it("SCIT-SEC-07: should handle null byte in path", async () => {
+    // UT-9B-H-003: IPC層でNULLバイトを拒否
+    it("SCIT-SEC-07: should reject null byte in path at IPC layer", async () => {
       const nullBytePath = "/path/to/skill\0/../../etc/passwd";
-      mockSkillCreatorService.validateSkill.mockRejectedValue(
-        new Error("Invalid path"),
-      );
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE)!;
       const result = await handler(createMockEvent(), {
         skillDir: nullBytePath,
       });
 
-      expect(result).toEqual({ success: false, error: "Invalid path" });
+      expect(result).toEqual({
+        success: false,
+        error: "無効なパスが指定されました: skillDir",
+      });
+      expect(mockSkillCreatorService.validateSkill).not.toHaveBeenCalled();
     });
 
     // SCIT-SEC-08: パストラバーサル攻撃 - Windows UNCパス
-    it("SCIT-SEC-08: should handle Windows UNC path", async () => {
+    // UT-9B-H-003: IPC層でUNCパスを拒否
+    it("SCIT-SEC-08: should reject Windows UNC path at IPC layer", async () => {
       const uncPath = "\\\\server\\share\\path";
-      mockSkillCreatorService.executeTasks.mockRejectedValue(
-        new Error("Invalid path"),
-      );
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS)!;
       const result = await handler(createMockEvent(), { tasksDir: uncPath });
 
-      expect(result).toEqual({ success: false, error: "Invalid path" });
+      expect(result).toEqual({
+        success: false,
+        error: "無効なパスが指定されました: tasksDir",
+      });
+      expect(mockSkillCreatorService.executeTasks).not.toHaveBeenCalled();
     });
 
     // SCIT-SEC-09: コマンドインジェクション - スキル名
@@ -938,9 +952,9 @@ describe("SkillCreator IPC Handlers", () => {
     });
 
     // SCIT-SEC-10: コマンドインジェクション - スキーマ名
-    it("SCIT-SEC-10: should handle command injection in schema name", async () => {
+    // UT-9B-H-003: ALLOWED_SCHEMA_NAMESホワイトリストで拒否
+    it("SCIT-SEC-10: should reject command injection in schema name via whitelist", async () => {
       const maliciousSchema = "$(cat /etc/passwd)";
-      mockSkillCreatorService.validateWithSchema.mockResolvedValue(false);
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!;
       const result = await handler(createMockEvent(), {
@@ -948,7 +962,11 @@ describe("SkillCreator IPC Handlers", () => {
         data: {},
       });
 
-      expect(result).toEqual({ success: true, data: false });
+      expect(result).toEqual({
+        success: false,
+        error: `無効なスキーマ名が指定されました: ${maliciousSchema}`,
+      });
+      expect(mockSkillCreatorService.validateWithSchema).not.toHaveBeenCalled();
     });
 
     // SCIT-SEC-11: 未登録チャンネルへのアクセス試行
@@ -1311,19 +1329,21 @@ describe("SkillCreator IPC Handlers", () => {
       mockSkillCreatorService.validateWithSchema.mockResolvedValue(true);
 
       const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!;
+      // UT-9B-H-003: ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
       const result = await handler(createMockEvent(), {
-        schemaName: "complex-schema",
+        schemaName: "skill-spec",
         data: complexData,
       });
 
       expect(result).toEqual({ success: true, data: true });
       expect(mockSkillCreatorService.validateWithSchema).toHaveBeenCalledWith(
-        "complex-schema",
+        "skill-spec",
         complexData,
       );
     });
 
     // SCIT-INT-07: 全チャンネルのエラーハンドリング一貫性
+    // UT-9B-H-003: sanitizeErrorMessage統一 + schemaNameホワイトリスト
     it("SCIT-INT-07: should return consistent error format across all channels", async () => {
       const errorMsg = "Consistent error";
       mockSkillCreatorService.detectMode.mockRejectedValue(new Error(errorMsg));
@@ -1356,9 +1376,10 @@ describe("SkillCreator IPC Handlers", () => {
         getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE)!(createMockEvent(), {
           skillDir: "/t",
         }),
+        // ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
         getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!(
           createMockEvent(),
-          { schemaName: "t", data: {} },
+          { schemaName: "task-spec", data: {} },
         ),
       ]);
 
@@ -1370,7 +1391,8 @@ describe("SkillCreator IPC Handlers", () => {
     });
 
     // SCIT-INT-08: 非Errorオブジェクトのエラーハンドリング一貫性
-    it("SCIT-INT-08: should return default error messages for non-Error throws", async () => {
+    // UT-9B-H-003: sanitizeErrorMessage統一により全ハンドラーで同一デフォルトメッセージ
+    it("SCIT-INT-08: should return unified default error messages for non-Error throws", async () => {
       mockSkillCreatorService.detectMode.mockRejectedValue("string error");
       mockSkillCreatorService.createSkill.mockRejectedValue(42);
       mockSkillCreatorService.executeTasks.mockRejectedValue(undefined);
@@ -1395,25 +1417,20 @@ describe("SkillCreator IPC Handlers", () => {
         getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE)!(createMockEvent(), {
           skillDir: "/t",
         }),
+        // ALLOWED_SCHEMA_NAMESに含まれるスキーマ名を使用
         getHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA)!(
           createMockEvent(),
-          { schemaName: "t", data: {} },
+          { schemaName: "task-spec", data: {} },
         ),
       ]);
 
-      // 各ハンドラーのデフォルトエラーメッセージ確認
-      const expectedDefaults = [
-        "モード判定に失敗しました",
-        "スキル作成に失敗しました",
-        "タスク実行に失敗しました",
-        "スキル検証に失敗しました",
-        "スキーマ検証に失敗しました",
-      ];
+      // sanitizeErrorMessage統一により全ハンドラー共通のデフォルトメッセージ
+      const unifiedDefault = "スキル作成処理でエラーが発生しました";
 
-      results.forEach((r, i) => {
+      results.forEach((r) => {
         const result = r as { success: boolean; error: string };
         expect(result.success).toBe(false);
-        expect(result.error).toBe(expectedDefaults[i]);
+        expect(result.error).toBe(unifiedDefault);
       });
     });
 

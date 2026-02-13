@@ -167,13 +167,13 @@ node scripts/list-specs.js --topics
 | パフォーマンス最適化パターン | L536 |
 | セキュリティ実装パターン | L574 |
 | テスト実装パターン | L606 |
-| アクセシビリティ実装パターン | L891 |
-| 関連ドキュメント | L916 |
-| スキル作成実装パターン（TASK-9B-G） | L928 |
-| 外部API データ正規化パターン | L1052 |
-| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1091 |
-| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1153 |
-| 変更履歴 | L1207 |
+| アクセシビリティ実装パターン | L913 |
+| 関連ドキュメント | L938 |
+| スキル作成実装パターン（TASK-9B-G） | L950 |
+| 外部API データ正規化パターン | L1074 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1113 |
+| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1175 |
+| 変更履歴 | L1229 |
 
 ### references/architecture-monorepo.md
 
@@ -265,28 +265,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L587 |
-| SkillSlice型定義（TASK-6-1） | L639 |
-| ModifierSkill（スライド逆同期機能） | L731 |
-| ChatPanel統合（TASK-7D） | L765 |
-| SkillFileManager（TASK-9A-A） | L800 |
-| テストアーキテクチャ（TASK-8C-A） | L888 |
-| 完了タスク | L940 |
-| 関連ドキュメント | L1158 |
-| SkillCreatorService（TASK-9B-G） | L1171 |
-| 完了タスク | L1419 |
-| 変更履歴 | L1502 |
-| SkillImportStore（TASK-2B） | L587 |
-| SkillSlice型定義（TASK-6-1） | L639 |
-| ModifierSkill（スライド逆同期機能） | L731 |
-| ChatPanel統合（TASK-7D） | L765 |
-| SkillFileManager（TASK-9A-A） | L800 |
-| テストアーキテクチャ（TASK-8C-A） | L888 |
-| 完了タスク | L940 |
-| 関連ドキュメント | L1158 |
-| SkillCreatorService（TASK-9B-G） | L1171 |
-| 完了タスク | L1419 |
-| 変更履歴 | L1450 |
+| SkillImportStore（TASK-2B） | L599 |
+| SkillSlice型定義（TASK-6-1） | L651 |
+| ModifierSkill（スライド逆同期機能） | L743 |
+| ChatPanel統合（TASK-7D） | L777 |
+| SkillFileManager（TASK-9A-A） | L812 |
+| テストアーキテクチャ（TASK-8C-A） | L900 |
+| 完了タスク | L952 |
+| 関連ドキュメント | L1170 |
+| SkillCreatorService（TASK-9B-G） | L1183 |
+| 完了タスク | L1431 |
+| 変更履歴 | L1514 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -640,10 +629,10 @@ node scripts/list-specs.js --topics
 | Workspace Chat Edit IPC チャネル | L76 |
 | 完了タスク | L202 |
 | Skill Creator IPC チャネル | L274 |
-| 実装パターン参照 | L332 |
-| 関連ドキュメント | L344 |
-| 完了タスク | L354 |
-| 変更履歴 | L364 |
+| 実装パターン参照 | L344 |
+| 関連ドキュメント | L356 |
+| 完了タスク | L366 |
+| 変更履歴 | L376 |
 
 ### references/api-ipc-auth.md
 
@@ -999,14 +988,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L20 |
-| Content Security Policy (CSP) | L34 |
-| IPC通信のセキュリティ | L51 |
-| 実装例: historyAPI | L77 |
-| 実装例: slideSettingsAPI | L129 |
-| 実装例: skillCreatorAPI | L178 |
-| 自動更新のセキュリティ | L235 |
-| 関連ドキュメント | L246 |
+| セキュリティ設定 | L22 |
+| Content Security Policy (CSP) | L36 |
+| IPC通信のセキュリティ | L53 |
+| 実装例: historyAPI | L79 |
+| 実装例: slideSettingsAPI | L131 |
+| 実装例: skillCreatorAPI | L180 |
+| 自動更新のセキュリティ | L240 |
+| 関連ドキュメント | L251 |
 
 ### references/security-implementation.md
 
@@ -1314,18 +1303,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L30 |
-| P31対策: Store Hooks無限ループ防止パターン | L160 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L561 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L651 |
-| permissionHistorySlice（権限要求履歴管理） | L807 |
-| 関連ドキュメント | L936 |
-| Zustand Sliceパターン | L31 |
-| P31対策: Store Hooks無限ループ防止パターン | L161 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L601 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L691 |
-| permissionHistorySlice（権限要求履歴管理） | L847 |
-| 関連ドキュメント | L976 |
+| Zustand Sliceパターン | L33 |
+| P31対策: Store Hooks無限ループ防止パターン | L163 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L625 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L715 |
+| permissionHistorySlice（権限要求履歴管理） | L871 |
+| 関連ドキュメント | L1000 |
 
 ### references/arch-ui-components.md
 
@@ -1488,20 +1471,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L33 |
-| 関連ドキュメント | L58 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L68 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L351 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L441 |
-| テンプレート（新規教訓追加用） | L634 |
-| 品質チェックリスト | L706 |
-| 目次 | L33 |
-| 関連ドキュメント | L56 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L66 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L348 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L436 |
-| テンプレート（新規教訓追加用） | L583 |
-| 品質チェックリスト | L655 |
+| 目次 | L36 |
+| 関連ドキュメント | L74 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L84 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L366 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L454 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L646 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L793 |
+| テンプレート（新規教訓追加用） | L900 |
+| 品質チェックリスト | L972 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L822 |
 
 ### references/llm-embedding.md
 
@@ -1829,12 +1808,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L387 |
-| 関連ドキュメント | L470 |
-| 変更履歴 | L480 |
-| 残課題（未タスク） | L413 |
-| 関連ドキュメント | L487 |
-| 変更履歴 | L497 |
+| 残課題（未タスク） | L441 |
+| 関連ドキュメント | L522 |
+| 変更履歴 | L532 |
 
 ### references/testing-accessibility.md
 

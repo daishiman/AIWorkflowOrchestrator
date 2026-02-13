@@ -134,7 +134,7 @@ grep -rn "useAuthModeStore\|useLLMStore\|useSkillStore" apps/desktop/src/rendere
 | 2. task-workflow.md登録             | **完了**   |
 | 3. 関連仕様書リンク追加             | **完了**   |
 
-**タスク仕様書パス:** `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor-002-jsdoc.md`
+**タスク仕様書パス:** `docs/30-workflows/completed-tasks/task-ut-store-hooks-refactor-002-jsdoc.md`
 
 ### UT-2: コンポーネント移行（UT-STORE-HOOKS-REFACTOR-003）
 
@@ -144,7 +144,7 @@ grep -rn "useAuthModeStore\|useLLMStore\|useSkillStore" apps/desktop/src/rendere
 | 2. task-workflow.md登録             | **完了**   |
 | 3. 関連仕様書リンク追加             | **完了**   |
 
-**タスク仕様書パス:** `docs/30-workflows/unassigned-task/task-ut-store-hooks-refactor-003-migration.md`
+**タスク仕様書パス:** `docs/30-workflows/completed-tasks/task-ut-store-hooks-refactor-003-migration.md`
 
 ---
 

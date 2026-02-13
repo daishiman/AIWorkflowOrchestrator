@@ -276,6 +276,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | 完了タスクセクションが簡略形式            | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う             |
 | Phase 10 MINOR指摘を未タスク化せず進行    | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
 | 未タスク検出レポートで0件判定のまま未修正 | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
+| `task-workflow.md` の未タスクリンクが参照切れ | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する                |
 
 ### Phase 12 苦戦防止Tips
 
@@ -319,6 +320,9 @@ node scripts/complete-phase.js --workflow docs/30-workflows/{{FEATURE_NAME}} --p
 
 # 未タスク検出（Phase 12）
 node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp/unassigned-candidates.json
+
+# 未タスク参照リンク整合チェック（Phase 12 Step 1-E後）
+node scripts/verify-unassigned-links.js
 
 # 使用ログ記録
 node scripts/log-usage.js --result success --phase "Phase {{N}}"
@@ -368,8 +372,11 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.61.0** | **2026-02-12** | **TASK-9B-I教訓反映**: patterns.mdに失敗パターン2件追加（未タスク配置ディレクトリ間違い、テスト数設計時固定値使用）。phase-11-12-guide.mdチェックリスト3項目追加。unassigned-task-guidelines.md配置先注意強化。LOGS.md教訓エントリ追加 |
-| **9.60.0** | **2026-02-12** | **TASK-9B-I-SDK-FORMAL-INTEGRATION完了**: Claude Agent SDK型安全正式統合。SkillExecutor.ts `as any` 除去、SDK実型（@anthropic-ai/claude-agent-sdk@0.2.30）に基づく型安全な callSDKQuery 実装。テスト278件全PASS |
+| **9.62.0** | **2026-02-13** | **テスト環境教訓追記**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001のテスト環境苦戦箇所をシステム仕様書に反映。happy-dom/userEvent非互換対策、テスト実行ディレクトリ依存問題のパターン化 |
+| **9.61.0** | **2026-02-12** | **未タスク参照整合チェック強化** + **TASK-9B-I教訓反映**: `verify-unassigned-links.js` を追加。Phase 12の漏れパターンに「task-workflow.md の未タスクリンク参照切れ」を追加し、Step 1-E後の機械検証を標準化。patterns.mdに失敗パターン2件追加（未タスク配置ディレクトリ間違い、テスト数設計時固定値使用）。phase-11-12-guide.mdチェックリスト3項目追加。`spec-update-workflow.md` / `phase-11-12-guide.md` / `resource-map.md` / `unassigned-task-guidelines.md` を更新 |
+| **9.61.0** | **2026-02-12** | **UT-9B-H-003 Phase 12再監査反映**: phase-11-12-guide.md完了条件に「完了済み未タスク指示書の残置禁止（completed-tasks/unassigned-taskへの移管）」を追加。Phase 12成果物追補（skill-feedback-report.md / phase12-compliance-audit.md）に対応した運用ガードを明確化 |
+| **9.60.0** | **2026-02-12** | **UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 12是正** + **TASK-9B-I-SDK-FORMAL-INTEGRATION完了**: Step 1-A/1-C/1-Dの漏れを補完。aiworkflow-requirements参照仕様（arch-state-management.md, task-workflow.md）へ完了反映、LOGS.md/SKILL.md 2ファイルずつ更新、topic-map再生成を実施。Claude Agent SDK型安全正式統合。SkillExecutor.ts `as any` 除去、SDK実型（@anthropic-ai/claude-agent-sdk@0.2.30）に基づく型安全な callSDKQuery 実装。テスト278件全PASS |
+| **9.60.0** | **2026-02-12** | **UT-9B-H-003完了**: SkillCreator IPCセキュリティ強化Phase 1-12完了。validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES追加。116テスト全PASS、Phase 10 PASS判定。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
 | **9.59.0** | **2026-02-12** | **TASK-9B-Hスキル改善**: Phase 12テンプレート改善（Task 5スキルフィードバックレポート追加、事前チェックステップ追加、artifacts.json全Phaseステータス完了条件追加、IPC更新対象ファイル一覧追加）。Phase 5テンプレートに設計変更記録の完了条件追加。spec-update-workflow.mdにIPC更新対象テーブル追加 |
 | **9.58.0** | **2026-02-12** | **TASK-9B-H-SKILL-CREATOR-IPC Phase 1-12完了**: SkillCreatorService IPC登録（6チャンネル: 5 invoke + 1 on）。85テスト全PASS。MINOR指摘2件未タスク化（IpcResult型重複、Zodスキーマ未使用）。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
 | **9.59.0** | **2026-02-12** | **Phase 12 Step 2判定基準改善**: テストリファクタリングでもテスト戦略変更は仕様書更新対象。implementation-guide.mdのテストカテゴリテーブルをPhase 6後に再確認する手順追加 |

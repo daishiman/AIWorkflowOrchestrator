@@ -20,6 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-13 | 1.7.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓3件追加（happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用） |
+| 2026-02-13 | 1.6.0 | UT-9B-H-003: SkillCreator IPCセキュリティ強化の教訓追加（TDDセキュリティ開発、正規表現パターン検証、YAGNI判断、Phase 12並列エージェント管理） |
+| 2026-02-12 | 1.5.2 | UT-9B-H-003 追補教訓を追加（返却仕様の文言不整合、完了済み未タスク残置、Phase 12成果物レジストリ更新漏れ） |
 | 2026-02-12 | 1.5.1 | UT-STORE-HOOKS-TEST-REFACTOR-001 苦戦箇所5・6追加（Phase 12 Step 2誤判定、実装ガイドテストカテゴリテーブル不整合） |
 | 2026-02-12 | 1.5.0 | UT-STORE-HOOKS-TEST-REFACTOR-001 教訓追加（renderHookパターン移行、テストヘルパー共通化、electronAPIモック統一） |
 | 2026-02-12 | 1.4.0 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 教訓追加（個別セレクタ移行、Phase 12チェックリスト管理） |
@@ -52,17 +55,26 @@
    - [教訓6: artifacts.jsonのPhase別ステータス更新忘れ](#6-artifactsjsonのphase別ステータス更新忘れ)
    - [教訓7: 設計書と実装の乖離管理](#7-設計書と実装の乖離管理)
    - [教訓8: 複数エージェント並列実行時のシステム仕様書更新漏れ](#8-複数エージェント並列実行時のシステム仕様書更新漏れ)
-4. [関連ドキュメント](#関連ドキュメント)
-5. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
-3. [UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行](#ut-store-hooks-test-refactor-001-renderhookパターン移行)
+   - [教訓9: 返却仕様文言・完了済み未タスク配置・artifacts最終整合](#9-返却仕様文言完了済み未タスク配置artifacts最終整合)
+4. [UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行](#ut-store-hooks-test-refactor-001-renderhookパターン移行)
    - [苦戦箇所1: renderHookへの移行効果](#1-renderhookへの移行効果)
    - [苦戦箇所2: テストヘルパー関数の共通化](#2-テストヘルパー関数の共通化)
    - [苦戦箇所3: electronAPIモックの統一](#3-electronapiモックの統一)
    - [苦戦箇所4: 移行中のテスト数増加](#4-移行中のテスト数増加)
    - [苦戦箇所5: Phase 12 Step 2 の「該当なし」誤判定](#5-phase-12-step-2-の該当なし誤判定)
    - [苦戦箇所6: 実装ガイドのテストカテゴリテーブル不整合](#6-実装ガイドのテストカテゴリテーブル不整合)
-4. [関連ドキュメント](#関連ドキュメント)
-5. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+5. [UT-9B-H-003: SkillCreator IPCセキュリティ強化](#ut-9b-h-003-skillcreator-ipcセキュリティ強化)
+   - [苦戦箇所1: TDDでのセキュリティテスト先行設計の難しさ](#1-tddでのセキュリティテスト先行設計の難しさ)
+   - [苦戦箇所2: 正規表現パターンのPrettier干渉](#2-正規表現パターンのprettier干渉)
+   - [苦戦箇所3: YAGNI判断での共通化見送りの根拠付け](#3-yagni判断での共通化見送りの根拠付け)
+   - [苦戦箇所4: Phase 11のCLI環境での手動テスト不可](#4-phase-11のcli環境での手動テスト不可)
+   - [苦戦箇所5: 複数セッション間でのPhase 12成果物整合性](#5-複数セッション間でのphase-12成果物整合性)
+6. [UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト](#ut-fix-agentview-infinite-loop-001-agentview無限ループ修正テスト)
+   - [苦戦箇所1: happy-dom環境でのuserEvent非互換](#1-happy-dom環境でのuserevent非互換)
+   - [苦戦箇所2: テスト実行ディレクトリ依存問題](#2-テスト実行ディレクトリ依存問題)
+   - [苦戦箇所3: jsdom切り替え時の副作用](#3-jsdom切り替え時の副作用)
+7. [関連ドキュメント](#関連ドキュメント)
+8. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -618,6 +630,33 @@ useEffect(() => {
 
 ---
 
+#### 9. 返却仕様文言・完了済み未タスク配置・artifacts最終整合
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | UT-9B-H-003完了後、(1) 仕様書のエラーメッセージ文言が実装と不一致、(2) 完了済み未タスク指示書が `unassigned-task/` に残置、(3) `artifacts.json` のPhase完了状態の更新漏れが発生した |
+| **原因** | Phase 12で「仕様記述」「未タスク管理」「成果物レジストリ管理」を別管理していたため、最終突合が弱かった |
+| **解決策** | 1) `security-electron-ipc.md` / `api-ipc-agent.md` を実装準拠に更新、2) 完了済み指示書を `completed-tasks/unassigned-task/` へ移管、3) `artifacts.json` の phase-1〜12 を completed に統一 |
+| **教訓** | Phase 12の完了判定は「ドキュメント更新」「未タスク配置整合」「artifacts整合」の3点を必須同時チェックにする |
+
+**最終整合チェック（再発防止）**:
+
+| チェック項目 | 確認内容 |
+|-------------|----------|
+| 返却仕様文言整合 | 仕様書のエラー文言が実装値と一致しているか |
+| 未タスク配置整合 | 完了済み未タスクが `unassigned-task/` に残っていないか |
+| artifacts整合 | phase-1〜12 の status が `completed` か |
+
+**関連更新**:
+
+| ファイル | 更新内容 |
+|----------|----------|
+| `security-electron-ipc.md` | v1.3.1: 返却仕様を実装準拠へ更新 |
+| `api-ipc-agent.md` | v1.7.0: セキュリティ強化仕様追記 |
+| `task-workflow.md` | v1.30.2: 完了済み未タスク指示書の移管反映 |
+
+---
+
 ### 成果物
 
 | 成果物 | パス |
@@ -782,6 +821,187 @@ useEffect(() => {
 |--------------|----------|
 | [development-guidelines.md](./development-guidelines.md) | Zustand Hookテスト戦略（renderHookパターン）セクション追加 |
 | [patterns.md](../../skill-creator/references/patterns.md) | Store Hookテスト実装パターン（renderHook方式）追加 |
+
+---
+
+## UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 |
+| 目的 | AgentViewコンポーネントの個別セレクタHook移行とテスト作成 |
+| 完了日 | 2026-02-12 |
+| ステータス | **完了** |
+
+### 1. happy-dom環境でのuserEvent非互換
+
+| 項目 | 内容 |
+|------|------|
+| 難易度 | 高 |
+| 影響範囲 | テストファイル全体（53テスト中49テスト失敗） |
+| 解決時間 | 中程度（原因特定に時間を要した） |
+
+**問題**: Phase 6で追加されたテストが`@testing-library/user-event`の`userEvent.setup()`を使用しており、happy-dom環境でSymbol操作エラーが発生。
+
+```
+TypeError: Symbol(Node prepared with document state workarounds)
+```
+
+**原因分析**:
+- プロジェクトのデフォルトテスト環境は`happy-dom`（`vitest.config.ts`で設定）
+- `userEvent.setup()`はjsdomのDOM APIに依存するSymbol操作を内部的に実行
+- happy-domはこのSymbol操作を完全にはサポートしていない
+
+**解決策**: `userEvent`を全て`fireEvent`に置換
+
+```typescript
+// ❌ happy-domで失敗するパターン
+const { userEvent } = await import("@testing-library/user-event");
+const user = userEvent.setup();
+await user.click(element);
+
+// ✅ happy-domで安定するパターン
+import { fireEvent } from "@testing-library/react";
+fireEvent.click(element);
+
+// ✅ 非同期ハンドラの場合（Promise microtask flush）
+import { act } from "@testing-library/react";
+await act(async () => {
+  fireEvent.click(element);
+});
+```
+
+**再発防止**:
+- happy-dom環境では`fireEvent`を使用する（プロジェクト標準）
+- `userEvent`が必要な場合は`// @vitest-environment jsdom`ディレクティブを追加
+- テスト追加時は必ずCI/ローカルで実行確認
+
+### 2. テスト実行ディレクトリ依存問題
+
+| 項目 | 内容 |
+|------|------|
+| 難易度 | 中 |
+| 影響範囲 | テスト実行全体 |
+| 解決時間 | 短い（パターン認識後は即解決） |
+
+**問題**: プロジェクトルートから`pnpm vitest run apps/desktop/src/...`を実行すると、`document is not defined`エラーが発生。
+
+**原因分析**:
+- プロジェクトルートの`vitest.config.ts`と`apps/desktop/vitest.config.ts`は別ファイル
+- ルートから実行すると`apps/desktop/vitest.config.ts`の`environment: "happy-dom"`と`setupFiles: ["./src/test/setup.ts"]`が読み込まれない
+- 結果、テスト環境がデフォルト（node）となり、DOM APIが利用不可
+
+**解決策**:
+```bash
+# ❌ プロジェクトルートから実行（失敗）
+pnpm vitest run apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx
+
+# ✅ apps/desktop/から実行（成功）
+cd apps/desktop && pnpm vitest run src/renderer/views/AgentView/__tests__/AgentView.test.tsx
+
+# ✅ pnpm --filter を使用（成功）
+pnpm --filter @repo/desktop exec vitest run src/renderer/views/AgentView/__tests__/AgentView.test.tsx
+```
+
+**再発防止**: `apps/desktop/`配下のテストは必ず同ディレクトリから実行
+
+### 3. jsdom切り替え時の副作用
+
+| 項目 | 内容 |
+|------|------|
+| 難易度 | 中 |
+| 影響範囲 | テストファイル全体 |
+| 解決時間 | 短い（切り戻しで対応） |
+
+**問題**: happy-domでの`userEvent`エラーを回避するため`// @vitest-environment jsdom`ディレクティブを追加したところ、別の問題が発生。
+
+**症状**:
+1. `toBeInTheDocument()`マッチャーが動作しない
+2. DOM要素が重複して表示される（`getAllByRole`で期待以上の要素が返る）
+
+**原因分析**:
+- jsdom環境では`setup.ts`のロード順序が異なり、`@testing-library/jest-dom`の拡張が正しく適用されない場合がある
+- jsdom独自のDOM実装による要素重複
+
+**解決策**: jsdomへの切り替えを断念し、happy-dom + fireEventの組み合わせに統一
+
+**教訓**: テスト環境の切り替えは、単一テストの問題解決を目的としない。環境を変更する場合は、テストファイル全体への影響を事前に検証する。
+
+---
+
+## UT-9B-H-003: SkillCreator IPCセキュリティ強化
+
+### タスク概要
+
+| 項目 | 値 |
+|------|---|
+| タスクID | UT-9B-H-003 |
+| 目的 | skillCreatorHandlers.ts のIPC L3ドメイン検証（パストラバーサル防止、エラーサニタイズ、スキーマ名ホワイトリスト）を追加 |
+| 完了日 | 2026-02-12 |
+| ステータス | ✅ 完了 |
+| テスト結果 | 116テスト全PASS（セキュリティ45 + 統合71） |
+
+### 苦戦箇所
+
+| # | 課題 | 原因 | 解決策 | 教訓 |
+|---|------|------|--------|------|
+| 1 | TDDでのセキュリティテスト先行設計の難しさ | セキュリティテストは攻撃ベクトルの網羅が必要で、実装前に全パターンを想定するのが困難 | 攻撃カテゴリ別にテストを分類（SEC-01〜SEC-07g）し、受入基準（AC-01〜AC-10）にマッピング。カテゴリ:パストラバーサル・エラーサニタイズ・ホワイトリスト・境界値・検証優先順序 | セキュリティテストは攻撃パターンの分類体系（SEC-XX）を先に設計し、受入基準にマップすることでTDDが機能する |
+| 2 | 正規表現パターンのPrettier干渉 | Markdownコードブロック内の正規表現表記をPrettierが自動フォーマットし、`readonly["task-spec", ...]` のように壊れた表記になった | バックグラウンドエージェントで修正を実施。ドキュメント内の型表記はPrettierの影響を受けることを前提に、修正ステップを組み込む | Phase 12の実装ガイド作成時、コードブロック内のTypeScript表記がPrettierで変形される可能性を考慮し、PostToolUseフック後に検証を行う |
+| 3 | YAGNI判断での共通化見送りの根拠付け | `validatePath`と`sanitizeErrorMessage`を共通パッケージに移動するか、現在のファイル内に留めるかの判断 | Phase 8で3つの共通化候補（validatePath共通化、sanitizeErrorMessage全ハンドラー横展開、IpcResult型統一）を検討し、全てYAGNI原則により「現状維持」と判断。理由を未タスク候補として記録 | リファクタリングPhaseでの共通化判断は、（1）現在の使用箇所数、（2）変更頻度、（3）独立性を評価し、YAGNI原則を適用。共通化しない判断も未タスクとして記録することで、将来の判断材料を残す |
+| 4 | Phase 11のCLI環境での手動テスト不可 | CLI環境（Claude Code）ではElectronアプリを起動してDevToolsで手動テストができない | 自動テスト（Vitest 116テスト）で代替検証を実施。DevToolsコマンドを開発者向けリファレンスとして手動テストレポートに記載 | CLI環境でのPhase 11は、自動テストでの代替検証 + DevToolsコマンドのドキュメント化で対応する。手動テストが必要な場合は明示的にその旨を記録 |
+| 5 | 複数セッション間でのPhase 12成果物整合性 | コンテキスト制限によりセッションが分割され、前セッションの成果物状態の追跡が困難になった | セッション開始時にoutputs/配下のファイル一覧を確認し、前セッションの進捗を復元。バックグラウンドエージェントの完了通知を待ってから最終整合性チェックを実施 | コンテキスト継続時は、成果物ディレクトリの `Glob` で前セッションの状態を即座に把握する。バックグラウンドエージェントは `TaskOutput` で完了確認してから次ステップに進む |
+
+### コード例
+
+#### セキュリティテスト分類体系（TDD先行設計）
+
+```typescript
+// テストID体系: SEC-[カテゴリ番号][テスト文字]
+// SEC-01a〜SEC-03c: パストラバーサル攻撃テスト
+// SEC-04a〜SEC-05b: ホワイトリスト検証テスト
+// SEC-06a〜SEC-06c: 正常系回帰テスト
+// SEC-07a〜SEC-07g: 境界値テスト
+
+// 受入基準マッピング: AC-01 → SEC-01*, AC-02 → SEC-02* ...
+describe("パストラバーサル攻撃テスト", () => {
+  it.each([
+    ["../etc/passwd", "Unixパストラバーサル"],
+    ["..\\Windows\\System32", "Windowsパストラバーサル"],
+    ["path\x00.txt", "NULLバイトインジェクション"],
+    ["\\\\server\\share", "UNCパス"],
+  ])("SEC-01: %s を検出してエラーを返す", async (maliciousPath) => {
+    // 検証失敗 → サービス層に到達しないことを確認
+  });
+});
+```
+
+#### YAGNI判断の記録パターン
+
+```markdown
+| 検討項目 | 判定 | 理由 | 未タスク |
+|---------|------|------|---------|
+| validatePath を shared に移動 | 現状維持 | 使用箇所1ファイルのみ | UT-9B-H-002 |
+| sanitizeErrorMessage 横展開 | 現状維持 | 他ハンドラーとの統一は別スコープ | UT-9B-H-001 |
+```
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| セキュリティ関数実装 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` |
+| セキュリティテスト | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.security.test.ts` |
+| 実装ガイド | `docs/30-workflows/ut-9b-h-003-security-hardening/outputs/phase-12/implementation-guide.md` |
+| IPCドキュメント | `docs/30-workflows/ut-9b-h-003-security-hardening/outputs/phase-12/ipc-documentation.md` |
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| security-electron-ipc.md | v1.3.0: L3ドメイン検証パターン完了記録 |
+| architecture-implementation-patterns.md | IPC L3セキュリティハードニングパターン追加 |
+| 06-known-pitfalls.md | P11関連: PostToolUseフックによるMarkdownコードブロック変形 |
 
 ---
 
