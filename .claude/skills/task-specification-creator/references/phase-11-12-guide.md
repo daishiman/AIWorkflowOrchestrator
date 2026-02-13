@@ -174,6 +174,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
+- [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）

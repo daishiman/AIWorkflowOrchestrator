@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-12 - Phase 12 unassigned-link integrity improvement]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: Phase 12で発生した未タスク参照切れの再発防止として、patterns.mdに実在チェックパターンを追加。phase-completion-checklist.mdに `verify-unassigned-links.js` 実行を完了条件として追加し、チェックを機械化。
+
+---
+
 ## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC completion]
 
 - **Agent**: skill-creator (update)

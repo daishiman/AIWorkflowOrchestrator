@@ -648,6 +648,28 @@ CSSスタッキングコンテキストによりz-indexが親要素の範囲内�
 | 3    | beforeEach内で再度vi.stubGlobal（setup.ts上書き対策） |
 | 4    | vi.clearAllMocks()でカウンターリセット                |
 
+### fireEvent vs userEvent 使い分けパターン（UT-FIX-AGENTVIEW-INFINITE-LOOP-001 2026-02-12実装）
+
+| ライブラリ | 特徴 | 適用ケース | テスト環境 |
+| ---------- | ---- | ---------- | ---------- |
+| `fireEvent` | 同期的、低レベルDOMイベント発火 | happy-dom環境の標準テスト | happy-dom（推奨） |
+| `userEvent` | 非同期、ユーザー操作シミュレーション | アクセシビリティ検証、複合入力 | jsdom（必須） |
+
+**環境別推奨パターン**:
+
+| テスト環境 | イベント発火 | 非同期ハンドラ |
+| ---------- | ------------ | -------------- |
+| happy-dom | `fireEvent.click(el)` | `await act(async () => { fireEvent.click(el) })` |
+| jsdom | `await user.click(el)` | `await user.click(el)`（自動でact wrap） |
+
+**注意点**:
+
+| 状況 | 問題 | 解決策 |
+| ---- | ---- | ------ |
+| happy-domで`userEvent.setup()` | `Symbol(Node prepared...)` エラー | `fireEvent`に切り替え |
+| `fireEvent`でPromiseハンドラ | microtask未flush | `await act(async () => {...})` で包む |
+| jsdomディレクティブ追加 | `toBeInTheDocument`動作不良、DOM重複 | happy-dom + fireEventに戻す |
+
 ### モック戦略
 
 | モック種別 | 用途               | 使用場面                   |

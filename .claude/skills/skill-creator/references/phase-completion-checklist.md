@@ -468,6 +468,7 @@ pnpm --filter @repo/desktop test:coverage
 - [ ] 実装ガイドが更新されている
 - [ ] 仕様書が更新されている
 - [ ] 未タスクが検出・記録されている
+- [ ] `task-workflow.md` の未タスク参照パスが実在する（`verify-unassigned-links.js` 実行で確認）
 - [ ] Changelogが更新されている
 
 ### 必須成果物
@@ -614,6 +615,11 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 --verbose    # 詳細出力
 --fix        # 自動修正を試みる
 --json       # JSON形式で出力
+```
+
+```bash
+# Phase 12: 未タスク参照リンク整合チェック
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 ```
 
 ### 品質チェック
