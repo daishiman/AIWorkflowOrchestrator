@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-13 | 1.6.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓3件追加（happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用） |
 | 2026-02-12 | 1.5.1 | UT-STORE-HOOKS-TEST-REFACTOR-001 苦戦箇所5・6追加（Phase 12 Step 2誤判定、実装ガイドテストカテゴリテーブル不整合） |
 | 2026-02-12 | 1.5.0 | UT-STORE-HOOKS-TEST-REFACTOR-001 教訓追加（renderHookパターン移行、テストヘルパー共通化、electronAPIモック統一） |
 | 2026-02-12 | 1.4.0 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 教訓追加（個別セレクタ移行、Phase 12チェックリスト管理） |
@@ -52,6 +53,10 @@
    - [教訓6: artifacts.jsonのPhase別ステータス更新忘れ](#6-artifactsjsonのphase別ステータス更新忘れ)
    - [教訓7: 設計書と実装の乖離管理](#7-設計書と実装の乖離管理)
    - [教訓8: 複数エージェント並列実行時のシステム仕様書更新漏れ](#8-複数エージェント並列実行時のシステム仕様書更新漏れ)
+4. [UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト](#ut-fix-agentview-infinite-loop-001-agentview無限ループ修正テスト)
+   - [苦戦箇所1: happy-dom環境でのuserEvent非互換](#1-happy-dom環境でのuserevent非互換)
+   - [苦戦箇所2: テスト実行ディレクトリ依存問題](#2-テスト実行ディレクトリ依存問題)
+   - [苦戦箇所3: jsdom切り替え時の副作用](#3-jsdom切り替え時の副作用)
 4. [関連ドキュメント](#関連ドキュメント)
 5. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 3. [UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行](#ut-store-hooks-test-refactor-001-renderhookパターン移行)
@@ -782,6 +787,113 @@ useEffect(() => {
 |--------------|----------|
 | [development-guidelines.md](./development-guidelines.md) | Zustand Hookテスト戦略（renderHookパターン）セクション追加 |
 | [patterns.md](../../skill-creator/references/patterns.md) | Store Hookテスト実装パターン（renderHook方式）追加 |
+
+---
+
+## UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 |
+| 目的 | AgentViewコンポーネントの個別セレクタHook移行とテスト作成 |
+| 完了日 | 2026-02-12 |
+| ステータス | **完了** |
+
+### 1. happy-dom環境でのuserEvent非互換
+
+| 項目 | 内容 |
+|------|------|
+| 難易度 | 高 |
+| 影響範囲 | テストファイル全体（53テスト中49テスト失敗） |
+| 解決時間 | 中程度（原因特定に時間を要した） |
+
+**問題**: Phase 6で追加されたテストが`@testing-library/user-event`の`userEvent.setup()`を使用しており、happy-dom環境でSymbol操作エラーが発生。
+
+```
+TypeError: Symbol(Node prepared with document state workarounds)
+```
+
+**原因分析**:
+- プロジェクトのデフォルトテスト環境は`happy-dom`（`vitest.config.ts`で設定）
+- `userEvent.setup()`はjsdomのDOM APIに依存するSymbol操作を内部的に実行
+- happy-domはこのSymbol操作を完全にはサポートしていない
+
+**解決策**: `userEvent`を全て`fireEvent`に置換
+
+```typescript
+// ❌ happy-domで失敗するパターン
+const { userEvent } = await import("@testing-library/user-event");
+const user = userEvent.setup();
+await user.click(element);
+
+// ✅ happy-domで安定するパターン
+import { fireEvent } from "@testing-library/react";
+fireEvent.click(element);
+
+// ✅ 非同期ハンドラの場合（Promise microtask flush）
+import { act } from "@testing-library/react";
+await act(async () => {
+  fireEvent.click(element);
+});
+```
+
+**再発防止**:
+- happy-dom環境では`fireEvent`を使用する（プロジェクト標準）
+- `userEvent`が必要な場合は`// @vitest-environment jsdom`ディレクティブを追加
+- テスト追加時は必ずCI/ローカルで実行確認
+
+### 2. テスト実行ディレクトリ依存問題
+
+| 項目 | 内容 |
+|------|------|
+| 難易度 | 中 |
+| 影響範囲 | テスト実行全体 |
+| 解決時間 | 短い（パターン認識後は即解決） |
+
+**問題**: プロジェクトルートから`pnpm vitest run apps/desktop/src/...`を実行すると、`document is not defined`エラーが発生。
+
+**原因分析**:
+- プロジェクトルートの`vitest.config.ts`と`apps/desktop/vitest.config.ts`は別ファイル
+- ルートから実行すると`apps/desktop/vitest.config.ts`の`environment: "happy-dom"`と`setupFiles: ["./src/test/setup.ts"]`が読み込まれない
+- 結果、テスト環境がデフォルト（node）となり、DOM APIが利用不可
+
+**解決策**:
+```bash
+# ❌ プロジェクトルートから実行（失敗）
+pnpm vitest run apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx
+
+# ✅ apps/desktop/から実行（成功）
+cd apps/desktop && pnpm vitest run src/renderer/views/AgentView/__tests__/AgentView.test.tsx
+
+# ✅ pnpm --filter を使用（成功）
+pnpm --filter @repo/desktop exec vitest run src/renderer/views/AgentView/__tests__/AgentView.test.tsx
+```
+
+**再発防止**: `apps/desktop/`配下のテストは必ず同ディレクトリから実行
+
+### 3. jsdom切り替え時の副作用
+
+| 項目 | 内容 |
+|------|------|
+| 難易度 | 中 |
+| 影響範囲 | テストファイル全体 |
+| 解決時間 | 短い（切り戻しで対応） |
+
+**問題**: happy-domでの`userEvent`エラーを回避するため`// @vitest-environment jsdom`ディレクティブを追加したところ、別の問題が発生。
+
+**症状**:
+1. `toBeInTheDocument()`マッチャーが動作しない
+2. DOM要素が重複して表示される（`getAllByRole`で期待以上の要素が返る）
+
+**原因分析**:
+- jsdom環境では`setup.ts`のロード順序が異なり、`@testing-library/jest-dom`の拡張が正しく適用されない場合がある
+- jsdom独自のDOM実装による要素重複
+
+**解決策**: jsdomへの切り替えを断念し、happy-dom + fireEventの組み合わせに統一
+
+**教訓**: テスト環境の切り替えは、単一テストの問題解決を目的としない。環境を変更する場合は、テストファイル全体への影響を事前に検証する。
 
 ---
 

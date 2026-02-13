@@ -42,7 +42,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | テスト数   | 210（自動）+ 15（手動チェック項目）                                   |
 | 主要変更   | SkillAPI二重定義の統一（`window.skillAPI`廃止→`window.electronAPI.skill`一本化） |
 | 実装ガイド | `docs/30-workflows/completed-tasks/TASK-FIX-5-1-SKILL-API-UNIFICATION/outputs/phase-12/implementation-guide.md` |
-| 備考       | AgentViewの型アサーション（`as unknown as Skill[]`）はTASK-FIX-6-1で解消予定 |
+| 備考       | AgentViewの型アサーション（`as unknown as Skill[]`）はUT-FIX-5-1-001で継続管理 |
 
 #### UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH（2026-02-10完了）
 
@@ -67,6 +67,18 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 変更対象   | `apps/desktop/src/main/services/skill/SkillService.ts`, `apps/desktop/src/main/ipc/skillHandlers.ts` |
 | 実装ガイド | `docs/30-workflows/TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION/outputs/phase-12/implementation-guide.md` |
 | 備考       | Setter Injection パターン採用（BrowserWindow 依存による遅延初期化）。未タスク3件（UT-FIX-7-1-001/002/003）検出 |
+
+#### UT-FIX-AGENTVIEW-INFINITE-LOOP-001（2026-02-12完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 |
+| ステータス | **完了** |
+| テスト数   | 53（全PASS） |
+| 主要変更   | AgentViewのインラインセレクタ廃止、個別セレクタHook移行、ローカルfetchSkills削除 |
+| 変更対象   | `apps/desktop/src/renderer/views/AgentView/index.tsx`, `apps/desktop/src/renderer/store/index.ts` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/implementation-guide.md` |
+| 備考       | P31対策の適用範囲をSettings/LLM/SkillSelectorからAgentViewへ拡張 |
 
 ##### TASK-FIX-7-1 実装詳細
 
@@ -1503,6 +1515,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-12 | 1.17.0     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了記録追加。AgentViewのP31適用拡張（個別セレクタ移行）を反映 |
 | 2026-02-12 | 1.16.0     | 未タスク2件追加: UT-9B-H-003（IPCセキュリティ強化）、UT-9B-H-004（設計書-実装整合性修正）。関連未タスクテーブルに優先度列追加 |
 | 2026-02-12 | 1.15.0     | TASK-9B-H-SKILL-CREATOR-IPC完了: SkillCreatorService IPCチャンネルセクション追加（6チャンネル、SkillCreatorAPI型定義、85テスト） |
 | 2026-02-12 | 1.14.1     | TASK-FIX-7-1セクション修正: テスト数を実際の値（61件）に訂正、型変換フローテーブルを実装コード（9フィールド明示コピー、lastModified除外）に準拠して修正 |

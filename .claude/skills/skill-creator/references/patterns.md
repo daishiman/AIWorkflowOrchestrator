@@ -10,7 +10,7 @@
 | ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン | テスト環境問題の実装問題誤認                           |
+| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ** | テスト環境問題の実装問題誤認                           |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
@@ -117,6 +117,18 @@
 - **適用条件**: Phase 12実行時、特に複数サブタスクを持つPhase
 - **発見日**: 2026-01-22
 - **関連タスク**: UT-007 ChatHistoryProvider App Integration
+
+### [Phase12] 未タスク参照リンクの実在チェック
+
+- **状況**: `task-workflow.md` に未タスクを登録したが、`docs/30-workflows/unassigned-task/` に実体ファイルがなく参照切れになる
+- **アプローチ**:
+  - 未タスク登録後に `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行
+  - `missing > 0` の場合は Phase 12 を完了扱いにしない
+  - 完了タスクへ移動した場合は `task-workflow.md` の参照先を `completed-tasks/` 側に更新
+- **結果**: 未タスク探索時のリンク切れを事前に排除し、後続タスクの追跡性を維持
+- **適用条件**: Phase 12で未タスクを新規作成・更新した場合、または完了移動を行った場合
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
 
 ### [Phase12] Phase 12 Step 1 検証スクリプトによる自動化
 
@@ -548,6 +560,41 @@
 - **発見日**: 2026-02-12
 - **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
 - **クロスリファレンス**: [02-code-quality.md#TypeScript型安全](../../.claude/rules/02-code-quality.md)
+
+### [Testing] テスト環境別イベント発火パターン選択（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+
+- **状況**: Vitest + happy-dom環境でユーザーインタラクションテストを作成する際、`@testing-library/user-event`のSymbol操作がhappy-domで非互換
+- **アプローチ**:
+  - 問題発見: 53テスト中49テストがSymbolエラーで一斉失敗。`userEvent.setup()`がhappy-dom未サポートのDOM操作を実行
+  - 試行1: `// @vitest-environment jsdom` ディレクティブ追加 → `toBeInTheDocument`動作不良、DOM要素重複で断念
+  - 試行2: `userEvent`を`fireEvent`に全面置換 → 53テスト全PASS
+  - 非同期対応: `await act(async () => { fireEvent.click(el) })`でPromise microtask flushを保証
+- **パターン選択基準**:
+
+| テスト環境 | イベントAPI | 理由 |
+|---|---|---|
+| happy-dom（デフォルト） | `fireEvent` | Symbol操作不要、軽量・高速 |
+| jsdom（ディレクティブ指定） | `userEvent` | 完全なDOM API、アクセシビリティ検証向き |
+
+- **結果**: 環境固有の制約を理解し、適切なAPIを選択することでテスト安定性を確保
+- **適用条件**: Vitest + happy-dom環境でのコンポーネントテスト。特にクリック/入力等のユーザーインタラクションテスト
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+- **クロスリファレンス**: [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md#fireevent-vs-userevent-使い分けパターン), [06-known-pitfalls.md#P39](../../.claude/rules/06-known-pitfalls.md)
+
+### [Testing] モノレポ テスト実行ディレクトリ依存パターン（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+
+- **状況**: モノレポ環境でプロジェクトルートからVitest実行すると、サブパッケージの`vitest.config.ts`が読み込まれない
+- **アプローチ**:
+  - 問題: `pnpm vitest run apps/desktop/src/...`（ルートから実行）→ `document is not defined`エラー
+  - 原因: Vitestはカレントディレクトリの設定ファイルを優先。ルートの設定にはhappy-dom/setupFilesが未定義
+  - 解決: `cd apps/desktop && pnpm vitest run src/...` または `pnpm --filter @repo/desktop exec vitest run src/...`
+- **結果**: テスト実行を対象パッケージディレクトリから行うルールを確立
+- **適用条件**: pnpm monorepo + Vitest環境で、パッケージ固有のテスト環境設定がある場合
+- **発見日**: 2026-02-12
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+- **クロスリファレンス**: [06-known-pitfalls.md#P40](../../.claude/rules/06-known-pitfalls.md)
+
 ---
 
 ## 失敗パターン（避けるべきこと）

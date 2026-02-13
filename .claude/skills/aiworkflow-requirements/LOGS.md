@@ -5,6 +5,79 @@
 
 ---
 
+## 2026-02-13: UT-FIX-AGENTVIEW-INFINITE-LOOP-001 苦戦箇所・テスト環境教訓追記
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001（教訓追記） |
+| Agent        | aiworkflow-requirements |
+| 操作         | lessons-learned.md, architecture-implementation-patterns.md, 06-known-pitfalls.md 更新 |
+| 対象ファイル | lessons-learned.md, architecture-implementation-patterns.md |
+| 結果         | success |
+| 備考         | テスト環境選択の教訓3件追加（happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用） |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | v1.6.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓3件追加 |
+| architecture-implementation-patterns.md | v1.18.0 | fireEvent vs userEvent使い分けパターン追加 |
+
+---
+
+## 2026-02-12: 完了タスク移動（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | phase-12完了確認後、タスク仕様書をcompleted-tasksへ移動 |
+| 対象ファイル | task-workflow.md, docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001 |
+| 結果         | success |
+| 備考         | 未タスク4件（UT-FIX-5-1-001, UT-STORE-HOOKS-REFACTOR-002/003, UT-FIX-APP-INITAUTH-CHECK-001）の参照パスもcompleted-tasksへ同期 |
+
+---
+
+## 2026-02-12: task-workflow未タスク参照整合の是正
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001（Phase 12是正追補） |
+| Agent        | aiworkflow-requirements |
+| 操作         | task-workflow.md 参照整合修正 + 未タスク配置確認 |
+| 対象ファイル | task-workflow.md |
+| 結果         | success |
+| 備考         | 完了済みタスク3件の参照先を completed-tasks に更新。未実施タスク3件の unassigned-task 配置を反映 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| task-workflow.md | v1.31.0 | 未タスク参照パス整合性修正（completed/unassigned の配置ルールに合わせて更新） |
+
+---
+
+## 2026-02-12: UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書更新（Phase 12 Step 1-A〜1-D） |
+| 対象ファイル | arch-state-management.md, task-workflow.md, interfaces-agent-sdk-skill.md |
+| 結果         | success |
+| 備考         | P31適用範囲をAgentViewまで拡張。完了タスク記録・関連タスク更新・実装ガイドリンク追記 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| arch-state-management.md | v1.16.0 | AgentView移行内容（個別セレクタ15個）をP31セクションと関連タスクに反映 |
+| task-workflow.md | v1.30.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了記録追加 |
+| interfaces-agent-sdk-skill.md | v1.17.0 | 完了タスクにUT-FIX-AGENTVIEW-INFINITE-LOOP-001を追加 |
+
+---
+
 ## 2026-02-12: TASK-9B-H-SKILL-CREATOR-IPC完了
 
 | 項目         | 内容                                                                 |

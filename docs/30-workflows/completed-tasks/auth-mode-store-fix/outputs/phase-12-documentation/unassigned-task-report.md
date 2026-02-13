@@ -138,7 +138,7 @@ Phase 10の最終レビューで、App.tsxにも`initializeAuthMode`または類
    - [ ] 関連仕様書（03-state-management.md）に参照リンク追加
 
 2. **UT-FIX-APP-INITAUTH-CHECK-001**
-   - [ ] `docs/30-workflows/unassigned-task/task-ut-fix-app-initauth-check.md` を作成
+   - [ ] `docs/30-workflows/completed-tasks/task-ut-fix-app-initauth-check.md` を作成
    - [ ] `task-workflow.md` に残課題として登録
    - [ ] 関連仕様書に参照リンク追加
 
