@@ -325,7 +325,19 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | IPCハンドラー実装         | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
 | Preload API実装           | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
 | Sender検証（全ハンドラー）| 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
-| エラーサニタイズ          | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
+| エラーサニタイズ          | 完了   | UT-9B-H-003                 |
+| パストラバーサル検証      | 完了   | UT-9B-H-003                 |
+| schemaNameホワイトリスト検証 | 完了 | UT-9B-H-003                 |
+
+### セキュリティ強化仕様（UT-9B-H-003）
+
+`skillCreatorHandlers.ts` では、全invokeハンドラーで以下の防御を実施する。
+
+| 対策 | 実装 | 返却仕様 |
+| ---- | ---- | -------- |
+| パストラバーサル対策 | `validatePath(inputPath, paramName)` | 不正時: `"無効なパスが指定されました: <paramName>"` |
+| スキーマ名ホワイトリスト | `ALLOWED_SCHEMA_NAMES = ['task-spec','skill-spec','mode']` | 不正時: `"無効なスキーマ名が指定されました: <schemaName>"` |
+| エラー情報マスキング | `sanitizeErrorMessage(error)` | 非Error時: `"スキル作成処理でエラーが発生しました"` |
 
 ---
 
@@ -365,6 +377,7 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.7.0     | 2026-02-12 | UT-9B-H-003反映: Skill Creator IPCのセキュリティ強化仕様を追記（validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES） |
 | v1.6.0     | 2026-02-12 | TASK-9B-H: Skill Creator IPCチャネルセクション追加。6チャンネル（5 invoke + 1 progress）、型定義、実装状況、完了タスク記録 |
 | v1.5.0     | 2026-02-10 | UT-FIX-5-4: AgentSDKAPI.abort()型定義修正。`void` → `Promise<void>`。実装（safeInvoke）と型定義の整合性確保 |
 | v1.4.0     | 2026-02-10 | UT-FIX-5-3: `agent:abort` IPCセキュリティ修正。`ipcMain.on`→`ipcMain.handle`変更、`safeInvoke`パターン準拠。**注意**: `agent:getStatus`チャネル名不整合（Main: camelCase vs Preload: kebab-case）検出→TASK-FIX-12-2で対応予定 |

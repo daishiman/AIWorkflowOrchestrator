@@ -536,11 +536,11 @@
 | UT-FIX-7-1-001                               | SkillService型アサーション→型ガード改善                            | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-001-skillservice-type-guard.md`          |
 | UT-FIX-7-1-002                               | skillHandlers.ts機能別分割                                         | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-002-skillhandlers-split.md`              |
 | UT-FIX-7-1-003                               | IPCレスポンスパターン統一                                          | 低 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12                 | `docs/30-workflows/unassigned-task/task-ut-fix-7-1-003-ipc-response-pattern-unification.md` |
-| UT-9B-H-001                                  | IpcResult型の重複定義を@repo/sharedに統一                          | 低 | TASK-9B-H-SKILL-CREATOR-IPC Phase 10 m-01                      | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md`                 |
-| UT-9B-H-002                                  | SkillCreator IPCハンドラーの引数検証をZodスキーマに移行            | 低 | TASK-9B-H-SKILL-CREATOR-IPC Phase 10 m-02                      | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`                       |
-| UT-9B-H-003                                  | SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト） | 高 | TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー                   | `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md`                          |
-| UT-9B-H-004                                  | SkillCreator設計書-実装整合性修正（Zod/型/メソッド名の乖離対応）  | 中 | TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー                   | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md`             |
-| UT-9B-H-005                                  | Preload API二重公開パターン統一                                    | 低 | TASK-9B-H Phase 10 M-02 / Phase 11 D-3                         | `docs/30-workflows/unassigned-task/task-9b-h-api-dual-publishing-unification.md`             |
+| UT-9B-H-001                                  | IpcResult型の重複定義を@repo/sharedに統一。UT-9B-H-003教訓反映済み（L3型整合性、Prettier干渉リスク） | 低 | TASK-9B-H-SKILL-CREATOR-IPC Phase 10 m-01                      | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md`                 |
+| UT-9B-H-002                                  | SkillCreator IPCハンドラーの引数検証をZodスキーマに移行。UT-9B-H-003教訓反映済み（Zodセキュリティ共存設計） | 低 | TASK-9B-H-SKILL-CREATOR-IPC Phase 10 m-02                      | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`                       |
+| ~~UT-9B-H-003~~                              | ~~SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト）~~ | ~~高~~ | ~~TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー~~                   | ~~`docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-security-hardening.md`~~ **2026-02-12完了（UT-9B-H-003-security-hardeningで実施）** |
+| UT-9B-H-004                                  | SkillCreator設計書-実装整合性修正（Zod/型/メソッド名の乖離対応）。UT-9B-H-003教訓反映済み（TDDトレーサビリティ） | 中 | TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー                   | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md`             |
+| UT-9B-H-005                                  | Preload API二重公開パターン統一。UT-9B-H-003教訓反映済み（L3横展開評価） | 低 | TASK-9B-H Phase 10 M-02 / Phase 11 D-3                         | `docs/30-workflows/unassigned-task/task-9b-h-api-dual-publishing-unification.md`             |
 | task-imp-store-hooks-remaining-migration      | 残コンポーネントの個別セレクタHook移行                             | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md`              |
 | task-ref-store-hooks-deprecate-composite      | 合成Store Hookの非推奨化・段階的削除                               | 低 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（スコープ外項目）| `docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md`              |
 | task-imp-phase12-auto-verification            | Phase 12チェックリスト自動検証スクリプト                           | 中 | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 Phase 12（実装苦戦箇所） | `docs/30-workflows/unassigned-task/task-imp-phase12-auto-verification.md`                    |
@@ -601,10 +601,13 @@
 | 1.25.0     | 2026-02-11 | 未タスク3件追加: UT-FIX-7-1-001（SkillService型ガード改善）、UT-FIX-7-1-002（skillHandlers分割）、UT-FIX-7-1-003（IPCレスポンスパターン統一）。TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION Phase 12検出 |
 | 1.27.0     | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION完了記録追加。残課題テーブルからTASK-9B-Iを完了マーク。SDK型安全統合（as any除去、SDKQueryOptions変更）|
 | 1.26.0     | 2026-02-12 | TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了記録を完了タスクセクションに追加。Phase 12仕様書更新漏れ修正 |
+| 1.30.2     | 2026-02-12 | UT-9B-H-003完了後処理: 未タスク指示書を `unassigned-task/` から `completed-tasks/unassigned-task/` へ移管し、参照パスを更新 |
+| 1.30.1     | 2026-02-12 | UT-9B-H-003完了反映: 残課題テーブルの該当行を完了ステータスに更新（取り消し線 + 完了日追記） |
+| 1.30.0     | 2026-02-12 | UT-9B-H-003完了: SkillCreator IPCセキュリティ強化Phase 1-12完了。validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES追加、116テスト全PASS |
 | 1.30.0     | 2026-02-12 | 未タスク1件追加: UT-9B-I-001（カスタム型宣言ファイルとSDK実型の共存整理）。TASK-9B-I-SDK-FORMAL-INTEGRATION Phase 12検出 |
-| 1.29.0     | 2026-02-12 | 未タスク追加: UT-9B-H-005（Preload API二重公開パターン統一）。TASK-9B-H Phase 10 M-02 / Phase 11 D-3検出 |
 | 1.28.0     | 2026-02-12 | 未タスク2件追加: UT-9B-H-003（IPCセキュリティ強化）、UT-9B-H-004（設計書-実装整合性修正）。TASK-9B-H-SKILL-CREATOR-IPC 最終品質レビュー検出 |
 | 1.27.0     | 2026-02-12 | TASK-9B-H完了記録追加。未タスク2件追加: UT-9B-H-001（IpcResult型統一）、UT-9B-H-002（Zodスキーマ移行）。TASK-9B-H-SKILL-CREATOR-IPC Phase 12検出 |
+| 1.29.0     | 2026-02-12 | 未タスク追加: UT-9B-H-005（Preload API二重公開パターン統一）。TASK-9B-H Phase 10 M-02 / Phase 11 D-3検出 |
 | 1.30.0     | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了記録追加。P31適用範囲をAgentViewまで拡張し、Phase 12成果物リンクを反映 |
 | 1.31.0     | 2026-02-12 | 未タスク参照パス整合性を修正。完了済み3件（UT-FIX-5-3/5-4, UT-STORE-HOOKS-REFACTOR-001）の参照先をcompleted-tasksへ更新、未実施3件（UT-STORE-HOOKS-REFACTOR-002/003, UT-FIX-APP-INITAUTH-CHECK-001）のunassigned-task配置を反映 |
 | 1.32.0     | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001を`completed-tasks/`へ移動。関連未タスク4件（UT-FIX-5-1-001, UT-STORE-HOOKS-REFACTOR-002/003, UT-FIX-APP-INITAUTH-CHECK-001）の参照先を`completed-tasks/`へ同期 |
