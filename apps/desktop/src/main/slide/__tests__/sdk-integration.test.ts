@@ -134,8 +134,8 @@ describe("SDK Integration Tests", () => {
     });
 
     it("INT-02: should fail with invalid API key", async () => {
-      // TODO: SDK統合後に実装
-      // 無効なAPIキーでエラーが発生することを検証
+      // SDK統合: 無効なAPIキーでエラーが発生することを検証
+      mockCreate.mockRejectedValueOnce(new Error("Invalid API key"));
 
       const projectPath = createTestProjectPath("invalid-auth");
 
@@ -143,12 +143,8 @@ describe("SDK Integration Tests", () => {
       await vi.advanceTimersByTimeAsync(1000);
       const result = await resultPromise;
 
-      // 現在のシミュレーションは成功を返す
-      expect(result.success).toBe(true);
-
-      // SDK統合後:
-      // expect(result.success).toBe(false);
-      // expect(result.error).toContain("API key");
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("Invalid API key");
     });
   });
 
@@ -194,19 +190,17 @@ describe("SDK Integration Tests", () => {
   // ==========================================================================
   describe("Error Handling Tests", () => {
     it("INT-05: should display error message on SDK failure", async () => {
-      // TODO: SDK統合後に実装
-      // SDK障害時にエラーメッセージがUIに表示されることを検証
+      // SDK統合: SDK障害時にエラーメッセージが結果に含まれることを検証
+      mockCreate.mockRejectedValueOnce(new Error("SDK service unavailable"));
 
       const projectPath = createTestProjectPath("sdk-error");
 
-      // キャンセルによるエラーをシミュレート
       const resultPromise = executor.execute("html", projectPath);
-      executor.cancel();
       await vi.advanceTimersByTimeAsync(1000);
       const result = await resultPromise;
 
       expect(result.success).toBe(false);
-      expect(result.error).toBeDefined();
+      expect(result.error).toBe("SDK service unavailable");
     });
 
     it("INT-06: should display timeout error message after 30 seconds", async () => {
@@ -442,14 +436,30 @@ describe("SDK Integration Tests", () => {
   // ==========================================================================
   describe("SDK Integration Scenarios", () => {
     it("SDK-INT-01: should execute skill with correct SDK parameters", async () => {
+      // SDK統合: パラメータが正しく渡されることを検証
       const projectPath = createTestProjectPath("sdk-params");
 
       const resultPromise = executor.execute("html", projectPath);
       await vi.advanceTimersByTimeAsync(1000);
       const result = await resultPromise;
 
-      // TODO: SDK統合後、パラメータが正しく渡されることを検証
       expect(result.success).toBe(true);
+      // SDKに正しいパラメータが渡されていることを検証
+      expect(mockCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 8192,
+          messages: expect.arrayContaining([
+            expect.objectContaining({
+              role: "user",
+              content: expect.stringContaining(projectPath),
+            }),
+          ]),
+        }),
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        }),
+      );
     });
 
     it("SDK-INT-02: should handle SDK streaming response", async () => {

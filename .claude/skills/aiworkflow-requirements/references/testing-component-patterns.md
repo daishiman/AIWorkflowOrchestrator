@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.3.0
-> **更新日**: 2026-02-12
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001
+> **バージョン**: 1.4.0
+> **更新日**: 2026-02-13
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT
 
 ---
 
@@ -558,6 +558,66 @@ function createMockElectronAPI() {
 
 ---
 
+## 10. Main Process SDKテスト有効化パターン（TASK-FIX-11-1-SDK-TEST-ENABLEMENT）
+
+> **実装完了**: 2026-02-13（TASK-FIX-11-1-SDK-TEST-ENABLEMENT）
+
+### 概要
+
+`apps/desktop/src/main/slide/__tests__/` 配下のSDK統合テストで、TODOプレースホルダーを実テスト化する際の標準パターン。
+
+### パターン1: `mockRejectedValueOnce` による1回限りエラー注入
+
+```typescript
+mockCreate.mockRejectedValueOnce(new Error("Invalid API key"));
+const result = await executor.execute("html", projectPath);
+expect(result.success).toBe(false);
+```
+
+`mockRejectedValue` の恒久変更を避け、後続テストへの状態リーク（P9）を防止する。
+
+### パターン2: `beforeEach` でモックのデフォルト動作を再設定
+
+```typescript
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockCreate.mockReset();
+  mockCreate.mockResolvedValue(defaultResponse);
+});
+```
+
+`vi.clearAllMocks()` は呼び出し履歴しか消さないため、`mockReset` + デフォルト実装再設定を併用する。
+
+### パターン3: Fake Timersでタイムアウトを決定論的に検証
+
+```typescript
+const queryPromise = agentAPI.query({
+  prompt: "Test prompt",
+  options: { timeout: 30000 },
+});
+
+await Promise.all([
+  vi.advanceTimersByTimeAsync(31000),
+  expect(queryPromise).rejects.toThrow("Request timeout"),
+]);
+```
+
+`Promise.all` で「タイマー進行」と「reject検証」を同時に待つことで、テストハングを回避する。
+
+### パターン4: モジュール全体モック時のタイムアウト検証
+
+`vi.mock("../agent-client")` でモジュールを差し替えるテストでは、内部タイマー処理ではなく `mockAgentAPI.query.mockRejectedValueOnce(new Error("Request timeout"))` でエラーを直接シミュレートする。
+
+### 適用ファイル
+
+| ファイル | 主な適用パターン |
+| --- | --- |
+| `apps/desktop/src/main/slide/__tests__/agent-client.test.ts` | パターン1, 2, 3 |
+| `apps/desktop/src/main/slide/__tests__/sdk-integration.test.ts` | パターン1, 2, 3 |
+| `apps/desktop/src/main/slide/__tests__/skill-executor.test.ts` | パターン1, 2, 4 |
+
+---
+
 ## 参照
 
 - **テストフィクスチャ**: [testing-fixtures.md](testing-fixtures.md)
@@ -581,6 +641,7 @@ function createMockElectronAPI() {
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.4.0   | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: Main Process SDKテスト有効化パターンを追加（mockRejectedValueOnce、beforeEach再設定、Fake Timersタイムアウト検証、モジュールモック時の直接エラー注入） |
 | 1.3.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Store Hooksテストパターンセクション追加（renderHook 6パターン、テスト環境要件、選択基準、テスト実績） |
 | 1.2.0   | 2026-02-07 | TASK-FIX-4-2: テストファイル分離パターンセクション追加（永続化・エラー・境界値テスト分離） |
 | 1.1.0   | 2026-02-03 | TASK-9A-A: 関連未タスクセクション追加（TASK-IMP-VITEST-UTILS-001） |

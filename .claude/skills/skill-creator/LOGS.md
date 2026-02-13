@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-02-13 - UT-9B-H-003 セキュリティ教訓・パターン記録]
+
+- **Agent**: skill-creator (update)
+- **Phase**: Phase 12 (lessons learned & patterns sync)
+- **Result**: ✓ 成功
+- **Notes**: UT-9B-H-003 SkillCreator IPCセキュリティ強化の教訓とパターンを4ファイルに反映。lessons-learned.md（苦戦箇所5件）、architecture-implementation-patterns.md（L3ドメイン検証パターン）、patterns.md（成功2+失敗1パターン）、SKILL.md変更履歴更新。TDDセキュリティテスト分類体系、YAGNI共通化判断記録、正規表現Prettier干渉の3知見をパターン化。
+
+---
+
+## [2026-02-13 - TASK-FIX-11-1 patterns refinement]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**: TASK-FIX-11-1-SDK-TEST-ENABLEMENTのPhase 12再監査で得た知見をpatterns.mdに反映。成功パターン「未タスク2段階判定（raw→精査）」と失敗パターン「未タスクraw検出の誤読」を追加。`docs/30-workflows/unassigned-task/` への配置要否を、raw件数ではなく精査後件数で判断する運用を明文化。
+
+---
+
 ## [2026-02-12 - Phase 12 unassigned-link integrity improvement]
 
 - **Agent**: skill-creator (update)
@@ -13,6 +31,14 @@
 
 ---
 
+## [2026-02-12 - UT-9B-H-003 Phase 12再監査 knowledge sync]
+
+- **Agent**: skill-creator (update)
+- **Phase**: Phase 12 (patterns update)
+- **Result**: ✓ 成功
+- **Notes**: Phase 12の再監査知見をpatterns.mdに反映。成果物名を `documentation-changelog.md` に統一し、完了済み未タスク指示書の移管（`completed-tasks/unassigned-task/`）と参照パス同期、artifacts最終整合チェックをパターン化。
+
+---
 ## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC completion]
 
 - **Agent**: skill-creator (update)
@@ -949,5 +975,14 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Phase**: Phase update
 - **Result**: ✓ 成功
 - **Notes**: TASK-FIX-6-1知見によりtask-specification-creator更新: spec-update-workflow.md判断基準拡張、Slice統合パターン追加
+
+---
+
+## [2026-02-12T22:25:38.829Z]
+
+- **Agent**: unknown
+- **Phase**: update
+- **Result**: ✓ 成功
+- **Notes**: UT-9B-H-003 security lessons and patterns recorded in lessons-learned.md, architecture-implementation-patterns.md, patterns.md
 
 ---

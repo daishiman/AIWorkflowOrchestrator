@@ -601,6 +601,79 @@ CSSスタッキングコンテキストによりz-indexが親要素の範囲内�
 | トークン交換   | Code Verifierを使用してトークン取得   |
 | 保存           | safeStorageで暗号化して保存           |
 
+### IPC L3ドメイン検証パターン（UT-9B-H-003）
+
+IPCハンドラーの3層防御モデルにおけるL3（ドメイン固有検証）の実装パターン。
+
+#### 3層防御モデル
+
+| レイヤー | 検証内容 | 実装 |
+|----------|---------|------|
+| L1 | 送信元ウィンドウ検証 | `validateIpcSender(event)` |
+| L2 | 引数の型チェック | `typeof arg === "string"` |
+| L3 | ドメイン固有検証 | `validatePath()`, `ALLOWED_SCHEMA_NAMES`, `sanitizeErrorMessage()` |
+
+#### パストラバーサル防止（validatePath）
+
+```typescript
+function validatePath(inputPath: string, _paramName: string): string | null {
+  if (!inputPath) return null;                    // 空文字列
+  if (inputPath.includes("\0")) return null;      // NULLバイト
+  if (inputPath.startsWith("\\\\")) return null;  // UNCパス
+  if (inputPath.includes("../")) return null;     // Unixトラバーサル
+  if (inputPath.includes("..\\")) return null;    // Windowsトラバーサル
+  return path.normalize(inputPath);
+}
+```
+
+**検出パターン**: 空文字列 → NULLバイト → UNCパス → Unixトラバーサル → Windowsトラバーサル（5段階順序が重要）
+
+#### エラーサニタイズ（sanitizeErrorMessage）
+
+```typescript
+const STACK_TRACE_PATTERN = /\n\s+at\s+.*/g;
+const UNIX_PATH_PATTERN = /\/[\w./\\-]+/g;
+const WINDOWS_PATH_PATTERN = /[A-Z]:\\[\w.\\-]+/gi;
+const SENSITIVE_DATA_PATTERN = /(token|key|password|secret)=\S+/gi;
+
+function sanitizeErrorMessage(error: unknown): string {
+  if (!(error instanceof Error)) return "スキル作成処理でエラーが発生しました";
+  return error.message
+    .replace(STACK_TRACE_PATTERN, "")
+    .replace(UNIX_PATH_PATTERN, "[path]")
+    .replace(WINDOWS_PATH_PATTERN, "[path]")
+    .replace(SENSITIVE_DATA_PATTERN, "$1=***");
+}
+```
+
+**適用**: 全IPCハンドラーのcatchブロックで使用
+
+#### ホワイトリスト検証（ALLOWED_SCHEMA_NAMES）
+
+```typescript
+const ALLOWED_SCHEMA_NAMES = ["task-spec", "skill-spec", "mode"] as const;
+
+// 使用例（ハンドラー内）
+if (!ALLOWED_SCHEMA_NAMES.includes(schemaName as typeof ALLOWED_SCHEMA_NAMES[number])) {
+  return { success: false, error: `Invalid schema name: ${schemaName}` };
+}
+```
+
+**拡張手順**: (1) ResourceLoaderにスキーマ追加 → (2) 配列に値追加 → (3) テスト追加
+
+#### 適用チェックリスト
+
+| チェック項目 | 対象 |
+|-------------|------|
+| L1: sender検証 | 全ハンドラー |
+| L2: 型チェック | 全引数 |
+| L3a: パス検証 | ファイルパス引数 |
+| L3b: ホワイトリスト | 列挙値引数 |
+| L3c: エラーサニタイズ | 全catchブロック |
+
+**関連仕様書**: [security-electron-ipc.md](./security-electron-ipc.md)
+**関連タスク**: UT-9B-H-003
+
 ---
 
 ## テスト実装パターン
@@ -717,6 +790,118 @@ Node.js ESModule（`node:fs/promises`等）のエクスポートは読み取り�
 | Wrapper関数  | レガシーコード対応     | 低         |
 
 **推奨**: `node:fs/promises`のテストでは、モックを避けて実際のエラー条件（存在しないファイル、権限不足等）を使用する。これによりVitestの制約を回避しつつ、実際の動作に近いテストが可能。
+
+### Vitest モックリセット戦略パターン（TASK-FIX-11-1 2026-02-13実装）
+
+SDK統合テスト有効化時に発見された、`vi.clearAllMocks()` では不十分なモックリセットの問題と解決策。
+
+#### 問題
+
+| 状況                                           | 結果                                                                   |
+| ---------------------------------------------- | ---------------------------------------------------------------------- |
+| `beforeEach` で `vi.clearAllMocks()` のみ使用  | `mockImplementation()` で設定した実装が残存し、後続テストが失敗        |
+| `mockRejectedValue()` でエラーモック設定       | 永続的なモックのため、次のテストケースにもエラーが漏洩                 |
+
+#### Vitest モックリセット API の挙動差異
+
+| API                      | `.mock.calls` クリア | `mockImplementation` リセット | `mockReturnValue` リセット |
+| ------------------------ | :------------------: | :---------------------------: | :------------------------: |
+| `vi.clearAllMocks()`     |          ✅          |              ❌               |             ❌             |
+| `vi.resetAllMocks()`     |          ✅          |              ✅               |             ✅             |
+| `vi.restoreAllMocks()`   |          ✅          |        ✅（元に戻す）         |       ✅（元に戻す）       |
+
+#### 解決策：2段階リセット + Once サフィックス
+
+| 手順 | 処理                                             | 目的                                       |
+| ---- | ------------------------------------------------ | ------------------------------------------ |
+| 1    | `vi.clearAllMocks()`                             | 呼び出し履歴クリア                         |
+| 2    | `mock.mockResolvedValue(defaultResponse)`        | デフォルト正常応答を再設定                 |
+| 3    | エラーテストでは `mockRejectedValueOnce()` を使用 | 1回限りのエラーで次テストに影響しない      |
+
+#### コード例
+
+```typescript
+// beforeEach で2段階リセットを実施
+beforeEach(() => {
+  vi.clearAllMocks();
+  // mockImplementation をデフォルト応答で上書き
+  mockAgentAPI.query.mockResolvedValue({
+    response: "mock response",
+    tokenUsage: { input: 100, output: 50 },
+  });
+});
+
+// エラーテストでは "Once" を使用
+it("SDK障害をハンドリング", async () => {
+  mockAgentAPI.query.mockRejectedValueOnce(
+    new Error("SDK call failed")
+  );
+  // テスト実行...
+});
+```
+
+#### 適用条件
+
+| 条件     | 説明                                                                                   |
+| -------- | -------------------------------------------------------------------------------------- |
+| 対象     | `vi.mock()` でモジュール全体をモック化しているテスト                                   |
+| トリガー | テスト実行順序により結果が変わる場合                                                   |
+| 関連     | P9（モジュールスコープ変数のテスト間リーク）、P13（タイマーテスト無限ループ）          |
+
+### モジュールレベルモックのタイムアウトテストパターン（TASK-FIX-11-1 2026-02-13実装）
+
+`vi.mock()` でモジュール全体をモック化した場合、内部のタイマーロジック（`setTimeout` + `AbortController`）が消失する問題のパターン。
+
+#### 問題
+
+| 状況                                                          | 結果                                                                     |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `vi.mock("../agent-client")` でモジュール全体をモック         | 内部の `setTimeout` + `AbortController` ロジックが消失                   |
+| `vi.advanceTimersByTimeAsync(30000)` でタイムアウト再現を試行 | モジュール内のタイマーが存在しないため、タイムアウトが発生しない         |
+
+#### 解決策：外部インターフェースでのタイムアウトシミュレーション
+
+モジュール内部のタイマーロジックを再現するのではなく、モック関数の応答としてタイムアウトエラーを注入する。
+
+| アプローチ       | 手法                                                                                                | 利点                               |
+| ---------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 直接エラー注入   | `mockRejectedValueOnce(new Error("Request timeout"))`                                               | シンプル、タイマー不要             |
+| タイマー付きモック | `mockImplementation(() => new Promise((_, reject) => setTimeout(() => reject(...), 30000)))`       | タイマーテストとの組み合わせ可能   |
+
+#### コード例
+
+```typescript
+// アプローチ1: 直接エラー注入（推奨）
+it("タイムアウトエラーをハンドリング", async () => {
+  mockAgentAPI.query.mockRejectedValueOnce(
+    new Error("Request timeout")
+  );
+  const result = await skillExecutor.execute(request, metadata);
+  expect(result.error).toContain("timeout");
+});
+
+// アプローチ2: タイマー付きモック（fake timer必要時）
+it("30秒タイムアウト", async () => {
+  vi.useFakeTimers();
+  mockAgentAPI.query.mockImplementation(
+    () => new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Request timeout")), 30000);
+    })
+  );
+  const promise = skillExecutor.execute(request, metadata);
+  await vi.advanceTimersByTimeAsync(30000);
+  await expect(promise).resolves.toMatchObject({ error: expect.stringContaining("timeout") });
+  vi.useRealTimers();
+});
+```
+
+#### 適用条件
+
+| 条件     | 説明                                                                                    |
+| -------- | --------------------------------------------------------------------------------------- |
+| 対象     | `vi.mock()` でモジュール全体をモック化し、かつタイムアウトテストが必要                  |
+| トリガー | fake timer を使ってもタイムアウトが発生しない場合                                       |
+| 関連     | P13（タイマーテスト無限ループ）、ESModuleモッキング制約パターン                         |
 
 ### バックアップファイルテストパターン（TASK-9A-A 2026-02-03実装）
 
@@ -1287,6 +1472,7 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.22.0 | 2026-02-13 | UT-9B-H-003: IPC L3ドメイン検証パターン追加（validatePath, sanitizeErrorMessage, ALLOWED_SCHEMA_NAMES） |
 | 1.21.0 | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型統合パターン追加（S11: TypeScriptモジュール解決の優先順位、S12: SDK APIパラメータの正確な把握） |
 | 1.20.0 | 2026-02-12 | TASK-9B-H: IPCハンドラー登録パターンに「実装時の注意点・苦戦箇所」テーブル追加（5件の苦戦箇所と解決策、lessons-learned.mdへのクロスリファレンス） |
 | 1.19.0 | 2026-02-12 | TASK-9B-H: IPC ハンドラー登録パターン追加（3層セキュリティ、Preload統合4箇所更新チェックリスト、既存同パターンとの対応表） |

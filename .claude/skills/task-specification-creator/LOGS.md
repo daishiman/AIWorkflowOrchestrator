@@ -43,12 +43,75 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT スキル改善（パターン追記）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善（テストパターン）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `patterns.md` にSDKテスト有効化の成功パターン2件・失敗パターン1件を追加
+  - クイックナビゲーションテーブルを更新
+
+---
+
+## [2026-02-13 - Phase 12未タスク検出ガイド改善（raw誤検知対策）]
+
+- **Agent**: task-specification-creator
+- **Phase**: スキル改善（未タスク運用）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `unassigned-task-guidelines.md` に「raw検出は候補」の明確化を追加
+  - 実装ディレクトリ優先スキャン + 手動精査の2段階判定を追加
+  - `docs/30-workflows/unassigned-task/` への配置条件を「精査後件数 > 0」に統一
+
+---
+
+## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 12監査・漏れ是正]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - 初期成果物で Step 1-A/1-D を「該当なし」とした誤判定を検知
+  - `aiworkflow-requirements` の `LOGS.md/SKILL.md` と `references/` 3ファイル更新を実施
+  - `task-specification-creator` の `LOGS.md/SKILL.md` も同時更新してP1/P23/P27/P29漏れを是正
+  - `generate-index.js` を両スキルで実行しtopic-mapを再同期
+  - `phase-11-12-guide.md` のStep 1-Dコマンドを実スクリプト仕様（`--workflow`必須）へ修正
+
+### 成果物
+
+| 成果物 | パス |
+| ------ | ---- |
+| 実装ガイド | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/documentation-changelog.md` |
+| スキルフィードバック | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/skill-feedback-report.md` |
+| 未タスク検出レポート | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/unassigned-task-detection.md` |
+
+---
+
 ## [2026-02-13 - UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓追記]
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 12（仕様書更新）
 - **Result**: ✓ 成功
 - **Notes**: happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用の教訓3件をシステム仕様書に追記。lessons-learned.md v1.6.0、architecture-implementation-patterns.md v1.18.0更新
+
+---
+
+## [2026-02-12 - UT-9B-H-003 Phase 12再監査（未タスク配置整合の改善）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 再監査
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - Phase 12完了後の後処理として、完了済み未タスク指示書の配置整合を是正
+  - `task-9b-h-security-hardening.md` を `completed-tasks/unassigned-task/` に移管
+  - `phase-11-12-guide.md` に「完了済み未タスク指示書の残置禁止」チェックを追加
+  - phase-12成果物に `skill-feedback-report.md` / `phase12-compliance-audit.md` を追加
 
 ---
 
@@ -66,6 +129,21 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-12 - UT-9B-H-003 SkillCreator IPCセキュリティ強化完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - SkillCreator IPCハンドラーのセキュリティ強化（L3ドメイン検証追加）
+  - validatePath（パストラバーサル防止）、sanitizeErrorMessage（内部情報漏洩防止）、ALLOWED_SCHEMA_NAMES（スキーマ名ホワイトリスト）
+  - 116テスト全PASS（セキュリティ45 + 統合71）
+  - Phase 10: PASS（MINOR 0件）
+  - 未タスク候補: 3件（sanitizeErrorMessage横展開、IpcResult型統一、validatePath共通化）
+
+---
+
 ## [2026-02-12 - UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 12是正完了]
 
 - **Agent**: task-specification-creator
@@ -79,7 +157,6 @@ node scripts/log-usage.js \
   - `docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/` の整合性を更新
 
 ---
-
 ## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC完了]
 
 - **Agent**: task-specification-creator
@@ -3677,3 +3754,12 @@ if (artifactPath) {
   - IPCドキュメント・コンポーネントドキュメント作成
   - interfaces-auth.md 更新
   - LOGS.md 2ファイル更新（P1防止）
+
+## [2026-02-12T22:49:44.654Z]
+
+- **Agent**: unknown
+- **Phase**: unassigned-task-update
+- **Result**: ✓ 成功
+- **Notes**: UT-9B-H-001/002/004/005にUT-9B-H-003セキュリティ教訓を反映、task-workflow.md/security-electron-ipc.md参照リンク更新
+
+---

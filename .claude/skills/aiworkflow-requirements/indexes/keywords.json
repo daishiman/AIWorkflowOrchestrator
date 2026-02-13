@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-12T23:03:59.446Z",
+  "generated": "2026-02-13T01:58:02.315Z",
   "totalKeywords": 1108,
   "keywords": {
     "チャット履歴": [
@@ -720,7 +720,8 @@
       "arch-claude-cli.md",
       "arch-electron-services.md",
       "arch-ipc-persistence.md",
-      "technology-desktop.md"
+      "technology-desktop.md",
+      "testing-component-patterns.md"
     ],
     "Renderer": [
       "api-ipc-auth.md",
@@ -768,6 +769,7 @@
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
+      "interfaces-agent-sdk.md",
       "lessons-learned.md",
       "quality-e2e-testing.md",
       "security-skill-ipc.md",
@@ -874,7 +876,8 @@
       "arch-electron-services.md",
       "arch-ipc-persistence.md",
       "interfaces-chat-history.md",
-      "technology-desktop.md"
+      "technology-desktop.md",
+      "testing-component-patterns.md"
     ],
     "Preload": [
       "arch-claude-cli.md",
@@ -1326,6 +1329,20 @@
     "UT": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
+    ],
+    "SDK": [
+      "architecture-implementation-patterns.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-history.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "interfaces-agent-sdk-ui.md",
+      "interfaces-agent-sdk.md",
+      "lessons-learned.md",
+      "testing-component-patterns.md"
+    ],
+    "型統合パターン": [
+      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -2207,14 +2224,6 @@
     "References": [
       "glossary.md"
     ],
-    "SDK": [
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-history.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "interfaces-agent-sdk-ui.md",
-      "interfaces-agent-sdk.md"
-    ],
     "Executor": [
       "interfaces-agent-sdk-executor.md"
     ],
@@ -2359,6 +2368,9 @@
       "interfaces-agent-sdk.md"
     ],
     "セッション管理": [
+      "interfaces-agent-sdk.md"
+    ],
+    "型安全統合": [
       "interfaces-agent-sdk.md"
     ],
     "認証・プロフィール型定義": [
@@ -2707,6 +2719,9 @@
       "master-design.md",
       "patterns.md"
     ],
+    "統合テスト有効化": [
+      "lessons-learned.md"
+    ],
     "executeSkill": [
       "lessons-learned.md"
     ],
@@ -2736,7 +2751,8 @@
     ],
     "TEST": [
       "lessons-learned.md",
-      "technology-devops.md"
+      "technology-devops.md",
+      "testing-component-patterns.md"
     ],
     "REFACTOR": [
       "lessons-learned.md"
@@ -2778,6 +2794,12 @@
       "lessons-learned.md"
     ],
     "を使用": [
+      "lessons-learned.md"
+    ],
+    "SkillCreator": [
+      "lessons-learned.md"
+    ],
+    "セキュリティ強化": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [
@@ -3765,6 +3787,12 @@
       "testing-component-patterns.md"
     ],
     "テストパターン": [
+      "testing-component-patterns.md"
+    ],
+    "テスト有効化パターン": [
+      "testing-component-patterns.md"
+    ],
+    "ENABLEMENT": [
       "testing-component-patterns.md"
     ],
     "関連未タスク": [

@@ -1477,7 +1477,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | ----------- | ------------------------------------------- | ------ | ------------------------------------------------------------------------------- |
 | UT-9B-H-001 | IpcResult型の重複定義を@repo/sharedに統一   | 低     | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md`     |
 | UT-9B-H-002 | IPCハンドラー引数検証のZodスキーマ移行      | 低     | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`           |
-| UT-9B-H-003 | SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト） | 高 | `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md`             |
+| ~~UT-9B-H-003~~ | ~~SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト）~~ | ~~高~~ | ~~`docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-security-hardening.md`~~ **2026-02-12完了（UT-9B-H-003-security-hardeningで実施）** |
 | UT-9B-H-004 | SkillCreator設計書-実装整合性修正（Zod/型/メソッド名の乖離対応） | 中 | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md` |
 
 ---
@@ -1516,6 +1516,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
 | 2026-02-12 | 1.17.0     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了記録追加。AgentViewのP31適用拡張（個別セレクタ移行）を反映 |
+| 2026-02-12 | 1.16.2     | UT-9B-H-003完了後処理: 関連未タスクテーブルの参照パスを `completed-tasks/unassigned-task/` へ更新 |
+| 2026-02-12 | 1.16.1     | UT-9B-H-003完了反映: 関連未タスクテーブルを更新（取り消し線 + 完了日追記） |
 | 2026-02-12 | 1.16.0     | 未タスク2件追加: UT-9B-H-003（IPCセキュリティ強化）、UT-9B-H-004（設計書-実装整合性修正）。関連未タスクテーブルに優先度列追加 |
 | 2026-02-12 | 1.15.0     | TASK-9B-H-SKILL-CREATOR-IPC完了: SkillCreatorService IPCチャンネルセクション追加（6チャンネル、SkillCreatorAPI型定義、85テスト） |
 | 2026-02-12 | 1.14.1     | TASK-FIX-7-1セクション修正: テスト数を実際の値（61件）に訂正、型変換フローテーブルを実装コード（9フィールド明示コピー、lastModified除外）に準拠して修正 |
