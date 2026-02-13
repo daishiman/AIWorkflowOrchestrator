@@ -619,6 +619,8 @@
 | task-ref-vitest-module-mock-audit-001        | Vitest モジュールレベルモック監査・使い分けガイドライン策定         | 低 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`                 |
 | UT-PERF-001                                   | グラフユーティリティ性能ベンチマーク基準再設計                     | 中 | TODO検出: `packages/shared/src/types/rag/graph/__tests__/utils.test.ts:791` | `docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md` |
 | UT-TYPE-DATETIME-DOC-001                       | 型日時表現のガイドライン策定とドキュメント化                       | 低 | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION Phase 12                       | `docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md` |
+| UT-FIX-IPC-RESPONSE-UNWRAP-001                 | IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）| 高 | ランタイムエラー調査（2026-02-13）                                         | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-001.md`                   |
+| UT-FIX-IPC-HANDLER-DOUBLE-REG-001              | IPC ハンドラ二重登録防止修正（activate イベント）                   | 高 | ランタイムエラー調査（2026-02-13）                                         | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-handler-double-reg-001.md`                |
 
 ### 未タスク管理ルール
 
