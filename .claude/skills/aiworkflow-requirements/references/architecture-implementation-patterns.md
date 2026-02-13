@@ -791,6 +791,118 @@ Node.js ESModule（`node:fs/promises`等）のエクスポートは読み取り�
 
 **推奨**: `node:fs/promises`のテストでは、モックを避けて実際のエラー条件（存在しないファイル、権限不足等）を使用する。これによりVitestの制約を回避しつつ、実際の動作に近いテストが可能。
 
+### Vitest モックリセット戦略パターン（TASK-FIX-11-1 2026-02-13実装）
+
+SDK統合テスト有効化時に発見された、`vi.clearAllMocks()` では不十分なモックリセットの問題と解決策。
+
+#### 問題
+
+| 状況                                           | 結果                                                                   |
+| ---------------------------------------------- | ---------------------------------------------------------------------- |
+| `beforeEach` で `vi.clearAllMocks()` のみ使用  | `mockImplementation()` で設定した実装が残存し、後続テストが失敗        |
+| `mockRejectedValue()` でエラーモック設定       | 永続的なモックのため、次のテストケースにもエラーが漏洩                 |
+
+#### Vitest モックリセット API の挙動差異
+
+| API                      | `.mock.calls` クリア | `mockImplementation` リセット | `mockReturnValue` リセット |
+| ------------------------ | :------------------: | :---------------------------: | :------------------------: |
+| `vi.clearAllMocks()`     |          ✅          |              ❌               |             ❌             |
+| `vi.resetAllMocks()`     |          ✅          |              ✅               |             ✅             |
+| `vi.restoreAllMocks()`   |          ✅          |        ✅（元に戻す）         |       ✅（元に戻す）       |
+
+#### 解決策：2段階リセット + Once サフィックス
+
+| 手順 | 処理                                             | 目的                                       |
+| ---- | ------------------------------------------------ | ------------------------------------------ |
+| 1    | `vi.clearAllMocks()`                             | 呼び出し履歴クリア                         |
+| 2    | `mock.mockResolvedValue(defaultResponse)`        | デフォルト正常応答を再設定                 |
+| 3    | エラーテストでは `mockRejectedValueOnce()` を使用 | 1回限りのエラーで次テストに影響しない      |
+
+#### コード例
+
+```typescript
+// beforeEach で2段階リセットを実施
+beforeEach(() => {
+  vi.clearAllMocks();
+  // mockImplementation をデフォルト応答で上書き
+  mockAgentAPI.query.mockResolvedValue({
+    response: "mock response",
+    tokenUsage: { input: 100, output: 50 },
+  });
+});
+
+// エラーテストでは "Once" を使用
+it("SDK障害をハンドリング", async () => {
+  mockAgentAPI.query.mockRejectedValueOnce(
+    new Error("SDK call failed")
+  );
+  // テスト実行...
+});
+```
+
+#### 適用条件
+
+| 条件     | 説明                                                                                   |
+| -------- | -------------------------------------------------------------------------------------- |
+| 対象     | `vi.mock()` でモジュール全体をモック化しているテスト                                   |
+| トリガー | テスト実行順序により結果が変わる場合                                                   |
+| 関連     | P9（モジュールスコープ変数のテスト間リーク）、P13（タイマーテスト無限ループ）          |
+
+### モジュールレベルモックのタイムアウトテストパターン（TASK-FIX-11-1 2026-02-13実装）
+
+`vi.mock()` でモジュール全体をモック化した場合、内部のタイマーロジック（`setTimeout` + `AbortController`）が消失する問題のパターン。
+
+#### 問題
+
+| 状況                                                          | 結果                                                                     |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `vi.mock("../agent-client")` でモジュール全体をモック         | 内部の `setTimeout` + `AbortController` ロジックが消失                   |
+| `vi.advanceTimersByTimeAsync(30000)` でタイムアウト再現を試行 | モジュール内のタイマーが存在しないため、タイムアウトが発生しない         |
+
+#### 解決策：外部インターフェースでのタイムアウトシミュレーション
+
+モジュール内部のタイマーロジックを再現するのではなく、モック関数の応答としてタイムアウトエラーを注入する。
+
+| アプローチ       | 手法                                                                                                | 利点                               |
+| ---------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 直接エラー注入   | `mockRejectedValueOnce(new Error("Request timeout"))`                                               | シンプル、タイマー不要             |
+| タイマー付きモック | `mockImplementation(() => new Promise((_, reject) => setTimeout(() => reject(...), 30000)))`       | タイマーテストとの組み合わせ可能   |
+
+#### コード例
+
+```typescript
+// アプローチ1: 直接エラー注入（推奨）
+it("タイムアウトエラーをハンドリング", async () => {
+  mockAgentAPI.query.mockRejectedValueOnce(
+    new Error("Request timeout")
+  );
+  const result = await skillExecutor.execute(request, metadata);
+  expect(result.error).toContain("timeout");
+});
+
+// アプローチ2: タイマー付きモック（fake timer必要時）
+it("30秒タイムアウト", async () => {
+  vi.useFakeTimers();
+  mockAgentAPI.query.mockImplementation(
+    () => new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Request timeout")), 30000);
+    })
+  );
+  const promise = skillExecutor.execute(request, metadata);
+  await vi.advanceTimersByTimeAsync(30000);
+  await expect(promise).resolves.toMatchObject({ error: expect.stringContaining("timeout") });
+  vi.useRealTimers();
+});
+```
+
+#### 適用条件
+
+| 条件     | 説明                                                                                    |
+| -------- | --------------------------------------------------------------------------------------- |
+| 対象     | `vi.mock()` でモジュール全体をモック化し、かつタイムアウトテストが必要                  |
+| トリガー | fake timer を使ってもタイムアウトが発生しない場合                                       |
+| 関連     | P13（タイマーテスト無限ループ）、ESModuleモッキング制約パターン                         |
+
 ### バックアップファイルテストパターン（TASK-9A-A 2026-02-03実装）
 
 ファイル操作サービスのバックアップ機能をテストするためのパターン。

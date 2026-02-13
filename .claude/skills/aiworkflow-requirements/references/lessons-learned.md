@@ -21,6 +21,7 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-02-13 | 1.7.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓3件追加（happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用） |
+| 2026-02-13 | 1.6.1 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT 教訓追加（Phase 12 Step 1-A/1-D誤判定、未タスクraw検出の誤検知、Vitestモック再初期化の注意点） |
 | 2026-02-13 | 1.6.0 | UT-9B-H-003: SkillCreator IPCセキュリティ強化の教訓追加（TDDセキュリティ開発、正規表現パターン検証、YAGNI判断、Phase 12並列エージェント管理） |
 | 2026-02-12 | 1.5.2 | UT-9B-H-003 追補教訓を追加（返却仕様の文言不整合、完了済み未タスク残置、Phase 12成果物レジストリ更新漏れ） |
 | 2026-02-12 | 1.5.1 | UT-STORE-HOOKS-TEST-REFACTOR-001 苦戦箇所5・6追加（Phase 12 Step 2誤判定、実装ガイドテストカテゴリテーブル不整合） |
@@ -37,6 +38,10 @@
 
 ## 目次
 
+0. [TASK-FIX-11-1: SDK統合テスト有効化](#task-fix-11-1-sdk統合テスト有効化)
+   - [苦戦箇所1: Phase 12 Step 1-A/1-D の誤判定](#1-phase-12-step-1-a1-d-の該当なし誤判定)
+   - [苦戦箇所2: 未タスク検出 raw 結果の誤読](#2-未タスク検出の-raw-結果をそのまま採用)
+   - [苦戦箇所3: Vitest モック初期化の挙動差異](#3-vitest-モック初期化の挙動差異)
 1. [TASK-FIX-7-1: SkillService executeSkill 委譲実装](#task-fix-7-1-skillservice-executeskill-委譲実装)
    - [苦戦箇所1: Setter Injection vs Constructor Injection](#1-setter-injection-vs-constructor-injection-の選択)
    - [苦戦箇所2: テストモックの大規模修正](#2-テストモックの大規模修正)
@@ -85,6 +90,152 @@
 | architecture-implementation-patterns.md | 実装パターン集（DIパターン等） | [./architecture-implementation-patterns.md](./architecture-implementation-patterns.md) |
 | interfaces-agent-sdk-executor.md | SkillExecutor インターフェース仕様 | [./interfaces-agent-sdk-executor.md](./interfaces-agent-sdk-executor.md) |
 | 06-known-pitfalls.md | 既知の落とし穴と防止策 | [../../../rules/06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) |
+
+---
+
+## TASK-FIX-11-1: SDK統合テスト有効化
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-FIX-11-1-SDK-TEST-ENABLEMENT |
+| 目的 | TODOプレースホルダ17件を実テスト化し、SDK統合後の検証を有効化 |
+| 完了日 | 2026-02-13 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. Phase 12 Step 1-A/1-D の「該当なし」誤判定
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 「テストコードのみ変更」を理由に LOGS/SKILL 更新と index 再生成を初回で省略 |
+| **原因** | Step 1-A（必須）と Step 2（条件付き）の区別を混同 |
+| **解決策** | Step 1-A〜1-Dを必須チェックとして再実行し、`LOGS.md x2`・`SKILL.md x2`・`generate-index.js` 実行を固定化 |
+| **教訓** | 検証系・テスト系タスクでも Step 1-A/1-D は常に必須 |
+
+#### 2. 未タスク検出の raw 結果をそのまま採用
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `detect-unassigned-tasks.js` で 51件検出されたが、多くが仕様書本文中の説明用 TODO だった |
+| **原因** | 実装ディレクトリとドキュメントディレクトリを同一ルールで評価 |
+| **解決策** | 2段階判定を採用（1: 実装ディレクトリ優先スキャン、2: raw検出の手動精査） |
+| **教訓** | raw件数は候補であり、未タスク確定件数とは分離して記録する |
+
+#### 3. Vitest モック初期化の挙動差異
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 一部テストで `vi.clearAllMocks()` 後も前テストのモック実装が残存 |
+| **原因** | `clearAllMocks` は call history を消すのみで実装は保持される |
+| **解決策** | `beforeEach` で `mockResolvedValue` を毎回再設定し、失敗系は `mockRejectedValueOnce` を使用 |
+| **教訓** | 「履歴クリア」と「実装リセット」は別操作として扱う |
+
+**Vitest モックリセット API 比較**:
+
+| API | 呼び出し履歴 | mockImplementation | mockReturnValue | mockResolvedValue |
+|-----|:---:|:---:|:---:|:---:|
+| `vi.clearAllMocks()` | クリア | 保持 | 保持 | 保持 |
+| `vi.resetAllMocks()` | クリア | リセット | リセット | リセット |
+| `vi.restoreAllMocks()` | クリア | 元に戻す | 元に戻す | 元に戻す |
+
+**SDK テスト有効化で発生した具体例**:
+
+```typescript
+// ❌ 問題パターン: mockRejectedValue が後続テストに漏洩
+describe("エラーハンドリング", () => {
+  it("SDK障害をハンドリングする", async () => {
+    mockAgentAPI.query.mockRejectedValue(new Error("SDK call failed"));
+    // テスト実行...
+  });
+  // ↑ mockRejectedValue は "永続的" なため、次のテストにも影響する
+
+  it("正常系テスト", async () => {
+    // ← mockRejectedValue が残存し、このテストも失敗する
+  });
+});
+
+// ✅ 解決パターン: "Once" サフィックスで1回限りのモック
+describe("エラーハンドリング", () => {
+  it("SDK障害をハンドリングする", async () => {
+    mockAgentAPI.query.mockRejectedValueOnce(new Error("SDK call failed"));
+    // テスト実行...
+  });
+  // ↑ "Once" なので消費後に元の実装に戻る
+
+  it("正常系テスト", async () => {
+    // ← 前テストの影響を受けない
+  });
+});
+```
+
+#### 3b. モジュールレベルモックによるタイムアウトテスト不可問題
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `vi.mock("../agent-client")` でモジュール全体をモック化すると、内部の `setTimeout` + `AbortController` によるタイムアウトロジックが消失し、`vi.advanceTimersByTimeAsync(30000)` でタイムアウトを再現できない |
+| **原因** | `vi.mock()` はモジュール内の全エクスポートをモック関数に置換するため、元の実装内部のタイマーロジックは実行されない |
+| **解決策** | タイムアウトを内部ロジックで再現するのではなく、`mockRejectedValueOnce(new Error("Request timeout"))` で直接エラーを注入する |
+| **教訓** | モジュールレベルモックでは「内部実装の再現」ではなく「外部インターフェースでのシミュレーション」が正しいアプローチ |
+
+**コード例**:
+
+```typescript
+// ❌ 失敗パターン: モジュールモック下でタイマーを進めてもタイムアウトしない
+vi.useFakeTimers();
+const queryPromise = skillExecutor.execute(request, metadata);
+await vi.advanceTimersByTimeAsync(30000);
+// → モジュール内のsetTimeoutが存在しないため、何も起きない
+
+// ✅ 成功パターン: エラーを直接注入
+mockAgentAPI.query.mockImplementation(
+  () => new Promise((_, reject) => {
+    setTimeout(() => reject(new Error("Request timeout")), 30000);
+  })
+);
+vi.useFakeTimers();
+const queryPromise = skillExecutor.execute(request, metadata);
+await vi.advanceTimersByTimeAsync(30000);
+// → モック内のsetTimeoutがfake timerで制御され、タイムアウトエラーが発生
+```
+
+#### 3c. beforeEach での明示的モック再設定パターン
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `vi.clearAllMocks()` だけでは `mockImplementation()` で設定した「応答しない Promise」が残り続け、後続の正常系テストが全て失敗する |
+| **原因** | `clearAllMocks` は呼び出し回数（`.mock.calls`）をリセットするのみで、`mockImplementation()` の関数置換はリセットしない |
+| **解決策** | `beforeEach` で `mockAgentAPI.query.mockResolvedValue(...)` を毎回呼び出し、「デフォルト正常応答」を明示的に再設定する |
+| **教訓** | テスト基盤の `beforeEach` は「呼び出し履歴クリア」と「デフォルト応答再設定」の2段構えで設計する |
+
+**推奨パターン**:
+
+```typescript
+beforeEach(() => {
+  // 段階1: 呼び出し履歴をクリア
+  vi.clearAllMocks();
+
+  // 段階2: デフォルト応答を明示的に再設定
+  mockAgentAPI.query.mockResolvedValue({
+    response: "default mock response",
+    tokenUsage: { input: 100, output: 50 },
+  });
+
+  // 段階3: 他のモックのデフォルトも設定
+  mockCreate.mockResolvedValue({
+    content: [{ type: "text", text: "response" }],
+  });
+});
+```
+
+### 関連未タスク
+
+| タスクID | タスク名 | 優先度 | 仕様書 |
+|---------|---------|--------|--------|
+| task-imp-vitest-mock-reset-utility-001 | Vitest モック2段階リセットユーティリティ共通化 | 中 | [`docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md) |
+| task-ref-vitest-module-mock-audit-001 | Vitest モジュールレベルモック監査・使い分けガイドライン策定 | 低 | [`docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`](../../../docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md) |
 
 ---
 

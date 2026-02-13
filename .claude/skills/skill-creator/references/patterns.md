@@ -10,13 +10,13 @@
 | ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ** | テスト環境問題の実装問題誤認                           |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証                                                    | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ |
+| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗 |
+| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）                               | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読 |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPC L3セキュリティハードニング** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング                                                                                               | -                                                      |
-| 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合                                                                                                                                           | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
+| 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                              | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
 | 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
 
 ## 成功パターン
@@ -598,6 +598,15 @@
 | Step 2を「該当なし」と誤判定 | テストリファクタリングはインターフェース変更を伴わないため、Step 2不要と判断しがち | テストのみの変更でも、テスト戦略やテストパターンの変更は仕様書（development-guidelines.md等）に記録すべき。Step 2の判断基準に「テスト戦略変更」を含める |
 | 実装ガイドのテストカテゴリテーブル不整合 | Phase 4でテストカテゴリ（CAT-01〜CAT-05）を定義し、Phase 6で拡充したが、実装ガイドのテーブルがPhase 4時点のまま | Phase 6（テスト拡充）完了後に、implementation-guide.md Part 2のテストカテゴリテーブルを必ず再確認・更新する。テスト数やカテゴリ構成が変わった場合は即座に反映 |
 
+### [Test] SDKテスト有効化モック2段階リセット
+
+- **状況**: SDK統合テスト17箇所のTODOコメントを有効化する際、テスト間でモック状態が漏洩してテスト実行順序依存が発生
+- **アプローチ**: `beforeEach` で (1) `vi.clearAllMocks()` + (2) `mockResolvedValue()` による2段階リセットを実施。エラーテストでは `mockRejectedValueOnce` のみ使用
+- **結果**: 134テスト全PASS、テスト実行順序に非依存
+- **適用条件**: `vi.mock()` でモジュール全体をモック化し、正常系・異常系テストが混在する場合
+- **発見日**: 2026-02-13
+- **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
+
 ### [SDK] TypeScript モジュール解決による型安全統合（TASK-9B-I）
 
 - **状況**: 外部 SDK (`@anthropic-ai/claude-agent-sdk@0.2.30`) の `as any` を除去し型安全な統合を実現
@@ -645,6 +654,27 @@
 - **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
 - **クロスリファレンス**: [06-known-pitfalls.md#P40](../../.claude/rules/06-known-pitfalls.md)
 
+### [SDK] SDKテストTODO一括有効化ワークフロー
+
+- **状況**: agent-client.test.ts / skill-executor.test.ts / sdk-integration.test.ts の3ファイルに TODO コメントで無効化された17箇所のテストが存在
+- **アプローチ**: Phase 2設計で17箇所のモック戦略を事前にマッピング → Phase 5でファイルごとに有効化（既存モックパターン `vi.mock`/`vi.hoisted` を活用、NFR-007準拠）→ Phase 9で全134テスト一括検証
+- **結果**: 新規モック戦略導入なしで17箇所全て有効化。既存テスト117件の挙動に影響なし
+- **適用条件**: 段階的にテストを有効化し、回帰テストの安全性を保つ必要がある場合
+- **発見日**: 2026-02-13
+- **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
+
+### [Phase12] 未タスク検出の2段階判定（raw→実タスク候補）
+
+- **状況**: `detect-unassigned-tasks.js` が仕様書本文の説明用 TODO まで大量検出し、未タスク件数を過大評価しやすい
+- **アプローチ**:
+  - 1段階目: 実装ディレクトリ（例: `apps/.../__tests__`）を優先スキャン
+  - 2段階目: ドキュメント全体の raw 検出結果を手動精査し、説明文TODOと実装漏れを分離
+  - 出力は「raw検出件数」と「確定未タスク件数」を別々に記録
+- **結果**: 誤検知由来の不要な未タスク作成を防止し、`docs/30-workflows/unassigned-task/` への配置要否を正確化
+- **適用条件**: Phase 12 Task 4（未タスク検出）実行時
+- **発見日**: 2026-02-13
+- **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
+- **クロスリファレンス**: [unassigned-task-guidelines.md](../../task-specification-creator/references/unassigned-task-guidelines.md)
 ---
 
 ## 失敗パターン（避けるべきこと）
@@ -744,6 +774,25 @@
 - **対策**: 未タスク作成時に配置ディレクトリを明示的に確認するチェックリスト項目を追加
 - **発見日**: 2026-02-12
 - **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+
+### [Phase12] 未タスクraw検出の誤読（TASK-FIX-11-1）
+
+- **状況**: raw検出 51件をそのまま未タスク件数と見なしかけた
+- **問題**: 仕様書本文の説明用 TODO まで未対応課題として誤認し、バックログを汚染する
+- **原因**: `detect-unassigned-tasks.js` の出力が「候補」である前提を明記せずに解釈
+- **教訓**: 未タスクは「検出候補」と「実装上の確定課題」を分離して扱う
+- **対策**: `unassigned-task-detection.md` に raw件数と精査後件数を分離して記録し、配置先 `docs/30-workflows/unassigned-task/` の要否を明示する
+- **発見日**: 2026-02-13
+- **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
+
+### [Test] モジュールモック下でのタイマーテスト失敗
+
+- **状況**: `vi.mock("../agent-client")` でモジュール全体をモック化した状態で、`vi.useFakeTimers()` + `vi.advanceTimersByTimeAsync(30000)` によるタイムアウトテストを実行
+- **症状**: タイマーを進めてもタイムアウトが発生しない。テストがハングまたはタイムアウト条件が不成立
+- **原因**: `vi.mock()` はモジュール内の全エクスポートをモック関数に置換するため、元の実装内部の `setTimeout` + `AbortController` ロジックが消失する
+- **解決策**: モジュール内部のタイマーを再現するのではなく、`mockRejectedValueOnce(new Error("Request timeout"))` で直接エラーを注入。タイマーテストが必要な場合はモック関数の `mockImplementation` 内に `setTimeout` を含める
+- **発見日**: 2026-02-13
+- **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
 
 ---
 

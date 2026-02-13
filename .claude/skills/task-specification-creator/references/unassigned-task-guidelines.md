@@ -34,6 +34,9 @@
 ### 検出コマンド例
 
 ```bash
+# 実装ディレクトリを優先スキャン（推奨）
+node scripts/detect-unassigned-tasks.js --scan apps/desktop/src/main --output .tmp/unassigned-main.json
+
 # Phase成果物からTODO/FIXMEを検出
 grep -rn "TODO\|FIXME\|将来対応\|later\|TBD" outputs/
 
@@ -43,6 +46,17 @@ grep -rn "TODO\|FIXME\|HACK\|XXX" packages/ apps/ --include="*.ts" --include="*.
 # レビュー結果からMINOR判定を検出
 grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 ```
+
+### raw検出の誤検知対策（推奨）
+
+`detect-unassigned-tasks.js` の結果は「未タスク候補（raw）」であり、確定件数ではない。仕様書本文の説明用 TODO が多数ヒットするケースがあるため、以下の2段階で判定する。
+
+| ステップ | 判定内容 | 記録方法 |
+| --- | --- | --- |
+| 1 | 実装ディレクトリ（`apps/`, `packages/`）の検出結果を優先確認 | `unassigned-task-detection.md` に raw件数を記録 |
+| 2 | ドキュメント由来の raw 検出を手動精査し、説明文 TODO を除外 | 「実タスク候補（精査後）」件数を別行で記録 |
+
+> 重要: 未タスク指示書を `docs/30-workflows/unassigned-task/` に作成する条件は、**精査後件数 > 0** の場合のみ。
 
 ### 出力要件
 

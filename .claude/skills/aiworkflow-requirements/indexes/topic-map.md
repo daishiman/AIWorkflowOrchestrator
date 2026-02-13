@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-12
+> 自動生成: 2026-02-13
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -173,7 +173,8 @@ node scripts/list-specs.js --topics
 | 外部API データ正規化パターン | L1074 |
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1113 |
 | 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1175 |
-| 変更履歴 | L1229 |
+| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1229 |
+| 変更履歴 | L1286 |
 
 ### references/architecture-monorepo.md
 
@@ -238,8 +239,8 @@ node scripts/list-specs.js --topics
 | PermissionResolver 型定義（TASK-3-2） | L383 |
 | SkillExecutor IPC統合（TASK-3-2） | L470 |
 | 完了タスク | L547 |
-| 関連ドキュメント | L670 |
-| 変更履歴 | L682 |
+| 関連ドキュメント | L731 |
+| 変更履歴 | L744 |
 
 ### references/interfaces-agent-sdk-history.md
 
@@ -302,7 +303,8 @@ node scripts/list-specs.js --topics
 | React Hook（useAgent） | L263 |
 | セッション管理 | L288 |
 | 関連ドキュメント | L315 |
-| 変更履歴 | L329 |
+| SDK 型安全統合（TASK-9B-I） | L329 |
+| 変更履歴 | L387 |
 
 ### references/interfaces-auth.md
 
@@ -1473,14 +1475,15 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L19 |
 | 目次 | L36 |
 | 関連ドキュメント | L74 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L84 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L366 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L454 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L646 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L793 |
-| テンプレート（新規教訓追加用） | L900 |
-| 品質チェックリスト | L972 |
-| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L822 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L84 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L126 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L408 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L496 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L688 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L835 |
+| テンプレート（新規教訓追加用） | L942 |
+| 品質チェックリスト | L1014 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L864 |
 
 ### references/llm-embedding.md
 
@@ -1808,9 +1811,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L441 |
-| 関連ドキュメント | L522 |
-| 変更履歴 | L532 |
+| 残課題（未タスク） | L485 |
+| 関連ドキュメント | L565 |
+| 変更履歴 | L575 |
 
 ### references/testing-accessibility.md
 
@@ -1839,9 +1842,10 @@ node scripts/list-specs.js --topics
 | 7. userEvent vs fireEvent | L320 |
 | 8. テストファイル分離パターン（TASK-FIX-4-2） | L343 |
 | 9. Zustand Store Hooks テストパターン | L398 |
-| 参照 | L561 |
-| 関連未タスク | L570 |
-| 変更履歴 | L580 |
+| 10. Main Process SDKテスト有効化パターン（TASK-FIX-11-1-SDK-TEST-ENABLEMENT） | L561 |
+| 参照 | L621 |
+| 関連未タスク | L630 |
+| 変更履歴 | L640 |
 
 ### references/testing-dialog-patterns.md
 

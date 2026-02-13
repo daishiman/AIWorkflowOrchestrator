@@ -13,6 +13,15 @@
 
 ---
 
+## [2026-02-13 - TASK-FIX-11-1 patterns refinement]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**: TASK-FIX-11-1-SDK-TEST-ENABLEMENTのPhase 12再監査で得た知見をpatterns.mdに反映。成功パターン「未タスク2段階判定（raw→精査）」と失敗パターン「未タスクraw検出の誤読」を追加。`docs/30-workflows/unassigned-task/` への配置要否を、raw件数ではなく精査後件数で判断する運用を明文化。
+
+---
+
 ## [2026-02-12 - Phase 12 unassigned-link integrity improvement]
 
 - **Agent**: skill-creator (update)

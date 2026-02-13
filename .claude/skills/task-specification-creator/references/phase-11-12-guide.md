@@ -190,7 +190,9 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 ```bash
 # topic-map.md再生成（Step 1-D）
 cd .claude/skills/aiworkflow-requirements && node generate-index.js
-cd .claude/skills/task-specification-creator && node scripts/generate-index.js
+node .claude/skills/task-specification-creator/scripts/generate-index.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --regenerate
 
 # ESLintキャッシュクリア（Hooksでエラーが残る場合）
 rm -rf node_modules/.cache/eslint-*
