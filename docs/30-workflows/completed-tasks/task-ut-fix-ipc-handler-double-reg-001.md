@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 818
+issue_number: 815
 ```
 
 ## メタ情報
@@ -11,7 +11,7 @@ issue_number: 818
 | 項目         | 値                                 |
 | ------------ | ---------------------------------- |
 | タスクID     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001  |
-| GitHub Issue | #814                               |
+| GitHub Issue | #815                               |
 | 種別         | バグ修正 (fix)                     |
 | 優先度       | 高                                 |
 | 見積もり     | Phase 1-13 完全実行                |

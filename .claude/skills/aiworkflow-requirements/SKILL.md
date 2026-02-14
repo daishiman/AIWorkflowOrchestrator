@@ -195,6 +195,11 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v1.31.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001実装知見追記**: lessons-learned.md 実装苦戦箇所4件、architecture-implementation-patterns.md safeInvokeUnwrap パターン、patterns.md 成功/失敗パターン追加 |
+| **v1.30.2** | **2026-02-14** | **UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12再監査追補**: lessons-learned.md に苦戦箇所2件を追記（IPC_CHANNELS全走査の前提確認、IPC外リスナー解除漏れ防止）。Phase 12準拠監査結果を反映し、未タスク検出は「新規0件（rawは既存TODO）」を確認 |
+| **v1.30.1** | **2026-02-14** | **UT-FIX-IPC-HANDLER-DOUBLE-REG-001 参照整合の是正**: task-workflow.md の完了タスク参照を `completed-tasks/` に正規化し、完了タスク仕様書の Issue 番号不整合（#814/#818 → #815）を修正。`generate-index.js` 再実行で topic-map/keywords を同期 |
+| **v1.30.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001完了反映**: interfaces-agent-sdk-skill.md v1.20.0更新（Preload IPCラッパー展開の完了記録、苦戦箇所追記）、task-workflow.md v1.37.0更新（完了反映 + MINOR由来未タスク2件追加）、lessons-learned.md v1.11.0更新（参照正本不一致・MINOR未タスク化漏れ・完了移管リンク不整合の教訓追加） |
+| **v1.30.0** | **2026-02-14** | **UT-FIX-IPC-HANDLER-DOUBLE-REG-001完了**: IPC ハンドラ二重登録防止修正。security-electron-ipc.md v1.4.0更新（IPCハンドラライフサイクル管理セクション追加）、task-workflow.md更新（完了タスク追加）、lessons-learned.md更新（ipcMain.handle()二重登録教訓追加）。7テスト全PASS |
 | **v1.29.0** | **2026-02-13** | **TASK-FIX-13-1未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001追加、task-workflow.md更新）** |
 | **v1.28.0** | **2026-02-13** | **TASK-FIX-13-1再検証教訓追記**: lessons-learned.md v1.8.0更新（ドキュメント偏重による実装検証省略、並列エージェント品質保証の教訓2件追加）。skill-creatorのpatterns.mdにdeprecatedプロパティ移行パターンを追加 |
 | **v1.27.0** | **2026-02-13** | **TASK-FIX-13-1教訓追記**: interfaces-agent-sdk-skill.md v1.19.0（苦戦箇所・再発防止策を追加）、task-workflow.md v1.36.0（完了タスク節に苦戦箇所テーブル追加）、lessons-learned.md v1.7.0（教訓3件追加） |

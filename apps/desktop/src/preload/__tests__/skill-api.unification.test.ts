@@ -134,7 +134,7 @@ describe("SkillAPI Type Safety", () => {
       const mockResult = [
         { name: "test-skill", description: "desc", path: "/path" },
       ];
-      mockInvoke.mockResolvedValueOnce(mockResult);
+      mockInvoke.mockResolvedValueOnce({ success: true, data: mockResult });
 
       const result = await skillAPI.list();
       expect(Array.isArray(result)).toBe(true);
@@ -142,7 +142,7 @@ describe("SkillAPI Type Safety", () => {
 
     it("getImported() returns Promise<ImportedSkill[]>", async () => {
       const mockResult = [{ name: "imported", status: "active" }];
-      mockInvoke.mockResolvedValueOnce(mockResult);
+      mockInvoke.mockResolvedValueOnce({ success: true, data: mockResult });
 
       const result = await skillAPI.getImported();
       expect(Array.isArray(result)).toBe(true);
@@ -168,7 +168,7 @@ describe("SkillAPI Type Safety", () => {
       const mockResult = [
         { name: "rescanned", description: "desc", path: "/path" },
       ];
-      mockInvoke.mockResolvedValueOnce(mockResult);
+      mockInvoke.mockResolvedValueOnce({ success: true, data: mockResult });
 
       const result = await skillAPI.rescan();
       expect(Array.isArray(result)).toBe(true);
@@ -286,33 +286,39 @@ describe("SkillAPI Boundary Tests", () => {
 describe("SkillAPI Integration Scenarios", () => {
   it("Skill discovery flow: list -> rescan -> list", async () => {
     // 初回リスト取得
-    mockInvoke.mockResolvedValueOnce([{ name: "skill-a" }]);
+    mockInvoke.mockResolvedValueOnce({
+      success: true,
+      data: [{ name: "skill-a" }],
+    });
     const initialList = await skillAPI.list();
     expect(initialList).toHaveLength(1);
 
     // 再スキャン
-    mockInvoke.mockResolvedValueOnce([
-      { name: "skill-a" },
-      { name: "skill-b" },
-    ]);
+    mockInvoke.mockResolvedValueOnce({
+      success: true,
+      data: [{ name: "skill-a" }, { name: "skill-b" }],
+    });
     const rescanResult = await skillAPI.rescan();
     expect(rescanResult).toHaveLength(2);
 
     // 再度リスト取得
-    mockInvoke.mockResolvedValueOnce([
-      { name: "skill-a" },
-      { name: "skill-b" },
-    ]);
+    mockInvoke.mockResolvedValueOnce({
+      success: true,
+      data: [{ name: "skill-a" }, { name: "skill-b" }],
+    });
     const updatedList = await skillAPI.list();
     expect(updatedList).toHaveLength(2);
   });
 
   it("Skill import flow: list -> import -> getImported", async () => {
     // 利用可能なスキル一覧
-    mockInvoke.mockResolvedValueOnce([{ name: "available-skill" }]);
+    mockInvoke.mockResolvedValueOnce({
+      success: true,
+      data: [{ name: "available-skill" }],
+    });
     await skillAPI.list();
 
-    // インポート
+    // インポート（import は safeInvoke を使用 — ハンドラがラッパーなしで返す）
     mockInvoke.mockResolvedValueOnce({
       name: "available-skill",
       status: "active",
@@ -320,9 +326,10 @@ describe("SkillAPI Integration Scenarios", () => {
     await skillAPI.import("available-skill");
 
     // インポート済み一覧
-    mockInvoke.mockResolvedValueOnce([
-      { name: "available-skill", status: "active" },
-    ]);
+    mockInvoke.mockResolvedValueOnce({
+      success: true,
+      data: [{ name: "available-skill", status: "active" }],
+    });
     const imported = await skillAPI.getImported();
     expect(imported).toHaveLength(1);
   });

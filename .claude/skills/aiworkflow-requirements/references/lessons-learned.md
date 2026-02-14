@@ -20,6 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-14 | 1.14.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所4件追加（TypeScript type erasure、ハンドラ応答形式不統一、テストモック波及修正、safeInvokeUnwrap設計判断） |
+| 2026-02-14 | 1.13.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 教訓3件追加（仕様書参照正本の不一致、MINOR未タスク化漏れ、完了移管時のリンク不整合） |
+| 2026-02-14 | 1.12.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の苦戦箇所を2件追記（IPC_CHANNELS全走査の前提確認、IPC外リスナー解除漏れの防止） |
+| 2026-02-14 | 1.11.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 教訓追加（ipcMain.handle()二重登録例外、macOS activateライフサイクル） |
 | 2026-02-13 | 1.10.0 | TASK-FIX-13-1 追加教訓2件（ドキュメント偏重による実装検証省略、並列エージェント成果物品質保証） |
 | 2026-02-13 | 1.9.0 | TASK-FIX-13-1 苦戦箇所3件追加（deprecated削除範囲境界、`name`参照誤検出、Phase 12仕様同期漏れ防止） |
 | 2026-02-13 | 1.8.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓3件追加（happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用） |
@@ -40,6 +44,14 @@
 
 ## 目次
 
+0. [UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正](#ut-fix-ipc-response-unwrap-001-ipcレスポンスラッパー未展開修正)
+   - [苦戦箇所1: 仕様書の正本参照が不一致](#1-仕様書の正本参照が不一致)
+   - [苦戦箇所2: Phase 10 MINORの未タスク化漏れ](#2-phase-10-minorの未タスク化漏れ)
+   - [苦戦箇所3: 完了移管後のリンク不整合](#3-完了移管後のリンク不整合)
+   - [苦戦箇所4: TypeScript ジェネリクスの type erasure によるバグ根本原因](#4-typescript-ジェネリクスの-type-erasure-によるバグ根本原因)
+   - [苦戦箇所5: ハンドラ応答形式の不統一](#5-ハンドラ応答形式の不統一safeinvoke-vs-safeinvokeunwrap-選択)
+   - [苦戦箇所6: テストモック値の波及修正（19箇所）](#6-テストモック値の波及修正19箇所)
+   - [苦戦箇所7: Phase 10 仕様書テーブルと実装の乖離](#7-phase-10-仕様書テーブルと実装の乖離)
 0. [TASK-FIX-13-1: deprecatedプロパティ正式移行](#task-fix-13-1-deprecatedプロパティ正式移行)
    - [苦戦箇所1: 削除対象の境界判定](#1-削除対象の境界判定)
    - [苦戦箇所2: 汎用プロパティ参照の誤検出回避](#2-汎用プロパティ参照の誤検出回避)
@@ -86,8 +98,12 @@
    - [苦戦箇所1: happy-dom環境でのuserEvent非互換](#1-happy-dom環境でのuserevent非互換)
    - [苦戦箇所2: テスト実行ディレクトリ依存問題](#2-テスト実行ディレクトリ依存問題)
    - [苦戦箇所3: jsdom切り替え時の副作用](#3-jsdom切り替え時の副作用)
-7. [関連ドキュメント](#関連ドキュメント)
-8. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+7. [UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止](#ut-fix-ipc-handler-double-reg-001-ipcハンドラ二重登録防止)
+   - [教訓1: ipcMain.handle()の二重登録は例外送出](#1-ipcmainhandleの二重登録は例外送出)
+   - [教訓2: IPC_CHANNELS 全走査の前提を先に検証する](#2-ipc_channels-全走査の前提を先に検証する)
+   - [教訓3: IPC外リスナーの解除漏れを同時に防ぐ](#3-ipc外リスナーの解除漏れを同時に防ぐ)
+8. [関連ドキュメント](#関連ドキュメント)
+9. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -1219,6 +1235,171 @@ describe("パストラバーサル攻撃テスト", () => {
 
 ---
 
+## UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正
+
+### タスク概要
+
+| 項目 | 値 |
+|------|---|
+| タスクID | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| 目的 | Preload層でIPC `{ success, data }` ラッパーを展開し、Rendererへ直接型を返す |
+| 完了日 | 2026-02-14 |
+| ステータス | ✅ 完了 |
+| テスト結果 | 25件追加、既存回帰テストPASS |
+
+### 苦戦箇所
+
+| # | 課題 | 原因 | 解決策 | 教訓 |
+|---|------|------|--------|------|
+| 1 | 仕様書の正本参照が不一致 | `api-ipc-skill.md` という非実在ファイル参照が複数ドキュメントに残存 | 参照先を `interfaces-agent-sdk-skill.md` に統一し、index再生成で追従 | 仕様更新前に参照パスの物理存在確認を必須化する |
+| 2 | Phase 10 MINORの未タスク化漏れ | 「軽微なので不要」という判断が先行し、未タスク管理が不完全化 | M-1/M-2を `UT-FIX-IPC-RESPONSE-UNWRAP-002/003` として正式起票 | MINOR判定は影響度に関わらず追跡タスク化し、判断理由を残す |
+| 3 | 完了移管後のリンク不整合 | 元タスク指示書を移動後、`unassigned-task` 参照が残る | `completed-tasks` 側へ参照更新し、リンク整合を機械検証 | 完了移管時は「移動・参照更新・検証」を1セットで実施する |
+| 4 | TypeScript ジェネリクスの type erasure によるバグ根本原因 | `safeInvoke<T>` の型注釈はコンパイル時に消去され、実行時は IPC レスポンスがそのまま透過 | `safeInvokeUnwrap<T>()` で実行時にラッパーを展開 | TypeScript の型注釈は実行時の値を変換しない。IPC 境界では必ず実行時バリデーション／変換を行う（P19 の拡張） |
+| 5 | ハンドラ応答形式の不統一（safeInvoke vs safeInvokeUnwrap 選択） | Main Process のハンドラが全て同じレスポンス形式を使うわけではない | 各ハンドラの return 文を確認し、応答形式に応じて使い分け | IPC チャンネル修正時は必ずハンドラファイルの return 文を確認する |
+| 6 | テストモック値の波及修正（19箇所） | `safeInvokeUnwrap` は `{ success, data }` 形式を期待するため既存モックが全て失敗 | grep で全モック箇所を特定し一括修正 | P21/P35 と同パターン。事前に影響範囲調査（grep）を実施してから一括修正すべき |
+| 7 | Phase 10 仕様書テーブルと実装の乖離 | Phase 2 設計時のテーブルが Phase 5 実装結果を反映していなかった | Phase 10 レビューで MINOR 判定として記録 | Phase 10 レビュー時にテーブルの記載と実装を突合すべき |
+
+### コード例
+
+```typescript
+// PreloadでIPCラッパーを展開する共通関数
+interface IpcResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise<T> {
+  const result = await safeInvoke<IpcResult<T>>(channel, ...args);
+  if (!result.success) {
+    throw new Error(result.error || `IPC call failed: ${channel}`);
+  }
+  return result.data as T;
+}
+```
+
+### 苦戦箇所詳細（実装固有）
+
+#### 4. TypeScript ジェネリクスの type erasure によるバグ根本原因
+
+- **問題**: `safeInvoke<ImportedSkill[]>(channel)` と型注釈しても、TypeScript のジェネリクスはコンパイル時に消去（type erasure）される。実行時には `ipcRenderer.invoke()` が返す値がそのまま透過するため、Main Process が `{ success: true, data: skills }` ラッパーを返すと、Renderer 層が `{ success, data }` オブジェクトを `ImportedSkill[]` として受け取ってしまう
+- **症状**: AgentView で `importedSkills.forEach is not a function` ランタイムエラー
+- **解決策**: `safeInvokeUnwrap<T>()` 関数を追加し、実行時にラッパーを展開。`result.success` を検証し、`result.data` のみを返却する
+- **教訓**: TypeScript の型注釈は実行時の値を変換しない。IPC 境界では必ず実行時バリデーション／変換を行うこと（P19 の拡張）
+- **コード例**:
+
+```typescript
+// ❌ 型注釈だけでは実行時の値は変わらない
+function safeInvoke<T>(channel: string): Promise<T> {
+  return ipcRenderer.invoke(channel); // Main が { success, data } を返しても T として透過
+}
+
+// ✅ 実行時にラッパーを展開する
+async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise<T> {
+  const result = await safeInvoke<IpcResult<T>>(channel, ...args);
+  if (!result.success) {
+    throw new Error(result.error || `IPC call failed: ${channel}`);
+  }
+  return result.data as T;
+}
+```
+
+#### 5. ハンドラ応答形式の不統一（safeInvoke vs safeInvokeUnwrap 選択）
+
+- **問題**: Main Process の IPC ハンドラが全て同じレスポンス形式を使うわけではない。`SKILL_LIST`, `SKILL_SCAN`, `SKILL_GET_IMPORTED` は `{ success, data }` ラッパーで返すが、`SKILL_IMPORT` は `skillService.importSkills()` の戻り値を直接返す（ラッパーなし）
+- **影響**: `import()` に `safeInvokeUnwrap` を適用すると、ラッパーなし応答に対して `result.success` が `undefined`（falsy）となり、正常なレスポンスでもエラーがスローされる
+- **解決策**: 各ハンドラの実装（`skillHandlers.ts`）を確認し、応答形式に応じて `safeInvoke`（ラッパーなし）/ `safeInvokeUnwrap`（ラッパーあり）を選択する
+- **判断基準**:
+
+| ハンドラの return 文 | Preload メソッド |
+|---|---|
+| `return { success: true, data: ... }` | `safeInvokeUnwrap` |
+| `return service.method()` (直接返却) | `safeInvoke` |
+
+- **教訓**: IPC チャンネルの修正時は、必ず `skillHandlers.ts` (または対応するハンドラファイル) の return 文を確認すること。ハンドラ応答形式のドキュメント化（テーブル形式）が将来的に必要
+
+#### 6. テストモック値の波及修正（19箇所）
+
+- **問題**: `safeInvoke` → `safeInvokeUnwrap` に変更すると、`mockInvoke.mockResolvedValue([...])` で直接値を返していた既存テストが全て失敗する。`safeInvokeUnwrap` は `{ success, data }` 形式のレスポンスを期待するため
+- **影響範囲**: 3ファイル・計19箇所のモック値更新が必要
+  - `skill-api.test.ts`: 11箇所
+  - `skill-api.unification.test.ts`: 8箇所
+  - `skill-api.permission.test.ts`: 0箇所（Permission API は未変更のため影響なし）
+- **解決策**: `grep -n "mockResolvedValue\|mockResolvedValueOnce" *.test.ts` で全モック箇所を特定し、`list()`, `getImported()`, `rescan()` を呼ぶテストのモック値を `{ success: true, data: [...] }` 形式に更新
+- **教訓**: P21/P35（DI追加時のテストモック大規模修正）と同パターン。内部実装の変更がテスト層に波及する場合は、事前に影響範囲調査（`grep`）を実施し、修正箇所リストを作成してから一括修正すべき
+
+#### 7. Phase 10 仕様書テーブルと実装の乖離
+
+- **問題**: Phase 10 仕様書の Task 1 テーブル（行83）に `import()` が `safeInvokeUnwrap` を使用すると記載されていたが、実装では正しく `safeInvoke` を使用している。仕様書のテーブルが Phase 2 設計時の初期想定のまま更新されていなかった
+- **解決策**: Phase 10 レビューで MINOR 判定として記録。仕様書は Phase 5 実装結果を反映すべきだが、Phase 10 仕様書自体の修正はスコープ外
+- **教訓**: タスク仕様書のテーブル・チェックリストは Phase 2 設計時に作成されるため、Phase 5 実装で判明した特殊ケース（SKILL_IMPORT の直接返却）が反映されない可能性がある。Phase 10 レビュー時にテーブルの記載と実装を突合すべき
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 実装ガイド | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/unassigned-task-report.md` |
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| interfaces-agent-sdk-skill.md | 完了タスク記録・苦戦箇所追記 |
+| task-workflow.md | 完了反映 + MINOR由来未タスク2件登録 |
+| phase-12-documentation.md | 参照パス修正・Step結果確定化 |
+
+---
+
+## UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| 目的 | macOS ドックアイコンクリック時の IPC ハンドラ二重登録例外を防止 |
+| 完了日 | 2026-02-14 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. ipcMain.handle()の二重登録は例外送出
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | `ipcMain.handle()` は同一チャンネルに2回登録すると `Error: Attempted to register a second handler for ...` 例外を送出する。`ipcMain.on()` は暗黙的にリスナーを追加する動作とは根本的に異なる |
+| 発生条件 | macOS で全ウィンドウを閉じた後、ドックアイコンをクリック → `activate` イベント発火 → `registerAllIpcHandlers()` が再実行される |
+| 原因 | `ipcMain.handle()` はプロセスレベルで登録されるため、BrowserWindow の破棄では解除されない。macOS ではアプリプロセスは終了しないため、ハンドラが残存する |
+| 解決策 | `unregisterAllIpcHandlers()` 関数を新設し、activate ハンドラ内で unregister → createWindow → register の順序で実行する |
+| 教訓 | Electron の IPC API は `handle`/`on` で二重登録時の動作が異なることを理解し、ライフサイクルに応じたハンドラ管理が必要 |
+| 関連パターン | [architecture-implementation-patterns.md - IPC ハンドラ二重登録防止パターン](./architecture-implementation-patterns.md) |
+| 関連 Pitfall | [06-known-pitfalls.md - P5: リスナー二重登録](../../../rules/06-known-pitfalls.md) |
+
+#### 2. IPC_CHANNELS 全走査の前提を先に検証する
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | `Object.values(IPC_CHANNELS)` で全解除する方針は有効だが、`IPC_CHANNELS` がネスト構造の場合はチャンネル漏れが発生する可能性がある |
+| 発生条件 | ライフサイクル修正を急いで実装する際に、チャンネル定数の構造確認を省略する |
+| 原因 | ハンドラ解除ロジックを先に実装し、チャンネル定義のデータ構造検証を後回しにした |
+| 解決策 | `channels.ts` の構造を先に確認し、フラット配列化される前提を明文化してから `unregisterAllIpcHandlers()` を実装する |
+| 教訓 | 「全走査で安全」は前提条件つき。定数構造の確認を先行することで解除漏れと誤検知を防げる |
+| 関連パターン | [security-electron-ipc.md - IPC ハンドラライフサイクル管理](./security-electron-ipc.md#ipc-ハンドラライフサイクル管理) |
+
+#### 3. IPC外リスナーの解除漏れを同時に防ぐ
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | `IPC_CHANNELS` の全解除だけでは `setupThemeWatcher()` の `nativeTheme` リスナーは解除されず、再登録で監視が重複する |
+| 発生条件 | IPC ハンドラ二重登録の修正に集中し、IPCチャネル以外のイベントリスナーを同一ライフサイクルで見落とす |
+| 原因 | 解除対象を「ipcMain のみ」と誤って限定し、モジュールスコープの unsubscribe 管理を設計に含めなかった |
+| 解決策 | `themeWatcherUnsubscribe` を保持し、`unregisterAllIpcHandlers()` で IPC 解除と同時に `setupThemeWatcher` の解除処理を実行する |
+| 教訓 | Main Process のライフサイクル修正は「IPC + 非IPCリスナー」を1セットで扱うと再発を防ぎやすい |
+| 関連パターン | [architecture-implementation-patterns.md - IPC ハンドラ二重登録防止パターン](./architecture-implementation-patterns.md#ipc-ハンドラ二重登録防止パターンut-fix-ipc-handler-double-reg-001-2026-02-14実装) |
+
+---
 ## テンプレート（新規教訓追加用）
 
 以下は将来のタスク記録用テンプレートです。

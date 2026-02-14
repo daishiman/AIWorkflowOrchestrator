@@ -13,7 +13,7 @@
 | カテゴリ                                        | パターン数 | 主要トピック                             |
 | ----------------------------------------------- | ---------- | ---------------------------------------- |
 | [Phase 12 ドキュメント](#phase-12-ドキュメント) | 7件        | 仕様書同期、チェックリスト消化、追加検証 |
-| [IPC / Electron](#ipc--electron)                | 2件        | チャンネル定数化、ペイロード拡張         |
+| [IPC / Electron](#ipc--electron)                | 3件        | チャンネル定数化、ペイロード拡張、safeInvokeUnwrap導入 |
 | [DI / アーキテクチャ](#di--アーキテクチャ)      | 2件        | Setter Injection遅延初期化、型変換パターン |
 | [OAuth / 認証](#oauth--認証)                    | 4件        | Supabase PKCE、コールバック受信          |
 | [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
@@ -25,7 +25,7 @@
 | カテゴリ                                 | パターン数 | 主要トピック                                |
 | ---------------------------------------- | ---------- | ------------------------------------------- |
 | [Phase 12 漏れ](#phase-12-漏れ)          | 9件        | LOGS.md更新漏れ、SKILL.md漏れ、未タスク管理、spec-update-workflow全Step未実施 |
-| [IPC / Preload](#ipc--preload)           | 2件        | チャネル名命名規則不整合、型定義不一致      |
+| [IPC / Preload](#ipc--preload)           | 3件        | チャネル名命名規則不整合、型定義不一致、テストモック波及 |
 | [OAuth / 認証エラー](#oauth--認証エラー) | 4件        | state競合、flowType未設定                   |
 | [テスト / 型安全](#テスト--型安全)       | 3件        | モジュールリーク、型アサーション            |
 | [その他](#その他)                        | 2件        | 設計段階検証、pnpm幽霊依存                  |
@@ -141,6 +141,14 @@
 - **関連ファイル**:
   - 06-known-pitfalls.md: P23, P24
   - architecture-implementation-patterns.md: IPCチャンネル名定数化パターン
+
+#### safeInvokeUnwrap による IPC ラッパー自動展開
+
+- **状況**: Main Process の IPC ハンドラが `{ success: true, data: T }` 形式でレスポンスを返すが、Preload の `safeInvoke<T>()` は TypeScript type erasure により実行時にラッパーを透過させる。Renderer が `{ success, data }` オブジェクトを配列として扱いランタイムエラー発生
+- **アプローチ**: `safeInvokeUnwrap<T>()` 関数を追加し、`safeInvoke<IpcResult<T>>()` でラッパーを受信 → `result.success` 検証 → `result.data` を返却。各ハンドラの応答形式を確認し、ラッパーあり=`safeInvokeUnwrap`、ラッパーなし=`safeInvoke` と使い分け
+- **結果**: `list()`, `getImported()`, `rescan()` の3メソッドで配列が直接返却されるようになり、AgentView のクラッシュが解消。`import()` はハンドラが直接返却のため `safeInvoke` を維持（正しい判断）
+- **適用条件**: Main Process ハンドラが `{ success, data }` ラッパーを使用するチャンネルで、Preload メソッドの戻り値が `data` フィールドの型と一致すべき場合
+- **発見日**: 2026-02-14（UT-FIX-IPC-RESPONSE-UNWRAP-001）
 
 ### DI / アーキテクチャ
 
@@ -614,6 +622,18 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
 - **発見方法**: safeInvoke()の戻り値型確認
 - **関連タスク**: UT-FIX-5-4
 - **関連**: 02-code-quality.md#TypeScript型安全
+
+#### 内部関数変更によるテストモック値の波及修正
+
+- **状況**: `safeInvoke` → `safeInvokeUnwrap` に変更したところ、`mockInvoke.mockResolvedValue([...])` で直接配列を返していた既存テスト19箇所が全て失敗。`safeInvokeUnwrap` は `{ success, data }` 形式を期待するため
+- **原因**: テストが Preload 層の内部実装（`safeInvoke` の呼び出し元）に依存しており、`ipcRenderer.invoke` のモック値がメソッドの内部実装に結合していた
+- **影響**: 3ファイル・計19箇所のモック値修正が必要（`skill-api.test.ts` 11箇所、`skill-api.unification.test.ts` 8箇所）
+- **対策**:
+  1. 変更前に `grep -n "mockResolvedValue\|mockResolvedValueOnce" *.test.ts` で影響範囲を調査
+  2. `list()`, `getImported()`, `rescan()` を呼ぶテストのモック値を特定
+  3. `{ success: true, data: [...] }` 形式に一括変更
+- **Pitfall ID**: P21/P35 の拡張パターン
+- **発見日**: 2026-02-14（UT-FIX-IPC-RESPONSE-UNWRAP-001）
 
 ### OAuth / 認証エラー
 
