@@ -11,6 +11,16 @@
  * @see docs/30-workflows/TASK-FIX-4-2-SKILL-STORE-PERSISTENCE/phase-06-test-expansion.md
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import log from "electron-log";
+
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
 
 describe("SkillImportManager - Error Handling Tests (TASK-FIX-4-2)", () => {
   let mockStore: {
@@ -320,7 +330,6 @@ describe("SkillImportManager - Error Handling Tests (TASK-FIX-4-2)", () => {
   describe("Debug Mode Coverage", () => {
     it("should log store path in debug mode", async () => {
       // Arrange
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
       mockStore.get.mockReturnValue(["skill-1"]);
 
       // Act
@@ -328,22 +337,19 @@ describe("SkillImportManager - Error Handling Tests (TASK-FIX-4-2)", () => {
       new SkillImportManager(mockStore as never, { debug: true });
 
       // Assert
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] Store path:",
         "/mock/path/skill-imports.json",
       );
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] Loaded imported IDs:",
         1,
         "items",
       );
-
-      consoleSpy.mockRestore();
     });
 
     it("should log import operations in debug mode", async () => {
       // Arrange
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
       const { SkillImportManager } = await import("../SkillImportManager");
       const manager = new SkillImportManager(mockStore as never, {
         debug: true,
@@ -353,17 +359,15 @@ describe("SkillImportManager - Error Handling Tests (TASK-FIX-4-2)", () => {
       await manager.importSkills(["skill-1", "skill-2"]);
 
       // Assert
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] importSkills called with:",
         ["skill-1", "skill-2"],
       );
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] importSkills result:",
         2,
         "new imports",
       );
-
-      consoleSpy.mockRestore();
     });
 
     it("should log remove operations in debug mode", async () => {
@@ -373,27 +377,24 @@ describe("SkillImportManager - Error Handling Tests (TASK-FIX-4-2)", () => {
       const manager = new SkillImportManager(mockStore as never, {
         debug: true,
       });
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      vi.mocked(log.debug).mockClear();
 
       // Act
       await manager.removeSkill("skill-1");
 
       // Assert
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] removeSkill called with:",
         "skill-1",
       );
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] removeSkill result:",
         true,
       );
-
-      consoleSpy.mockRestore();
     });
 
     it("should log persist operations in debug mode", async () => {
       // Arrange
-      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
       const { SkillImportManager } = await import("../SkillImportManager");
       const manager = new SkillImportManager(mockStore as never, {
         debug: true,
@@ -403,16 +404,14 @@ describe("SkillImportManager - Error Handling Tests (TASK-FIX-4-2)", () => {
       await manager.importSkills(["skill-1"]);
 
       // Assert
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] Persisting:",
         1,
         "items",
       );
-      expect(consoleSpy).toHaveBeenCalledWith(
+      expect(log.debug).toHaveBeenCalledWith(
         "[SkillImportManager] Persist successful",
       );
-
-      consoleSpy.mockRestore();
     });
   });
 });

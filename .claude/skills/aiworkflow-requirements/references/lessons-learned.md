@@ -23,7 +23,9 @@
 | 2026-02-14 | 1.14.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所4件追加（TypeScript type erasure、ハンドラ応答形式不統一、テストモック波及修正、safeInvokeUnwrap設計判断） |
 | 2026-02-14 | 1.13.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 教訓3件追加（仕様書参照正本の不一致、MINOR未タスク化漏れ、完了移管時のリンク不整合） |
 | 2026-02-14 | 1.12.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の苦戦箇所を2件追記（IPC_CHANNELS全走査の前提確認、IPC外リスナー解除漏れの防止） |
+| 2026-02-14 | 1.12.0 | TASK-FIX-14-1 実装面の技術教訓4件追加（大量テストモック更新、debug後方互換判断、カバレッジ計測注意点、条件ガード削除による簡素化） |
 | 2026-02-14 | 1.11.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 教訓追加（ipcMain.handle()二重登録例外、macOS activateライフサイクル） |
+| 2026-02-14 | 1.11.0 | TASK-FIX-14-1 教訓追加（Phase 12成果物の実変更ファイル名照合、Step 1-A/1-C/1-D先送り誤判定防止、未タスク登録3ステップ同時完了） |
 | 2026-02-13 | 1.10.0 | TASK-FIX-13-1 追加教訓2件（ドキュメント偏重による実装検証省略、並列エージェント成果物品質保証） |
 | 2026-02-13 | 1.9.0 | TASK-FIX-13-1 苦戦箇所3件追加（deprecated削除範囲境界、`name`参照誤検出、Phase 12仕様同期漏れ防止） |
 | 2026-02-13 | 1.8.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓3件追加（happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用） |
@@ -52,6 +54,14 @@
    - [苦戦箇所5: ハンドラ応答形式の不統一](#5-ハンドラ応答形式の不統一safeinvoke-vs-safeinvokeunwrap-選択)
    - [苦戦箇所6: テストモック値の波及修正（19箇所）](#6-テストモック値の波及修正19箇所)
    - [苦戦箇所7: Phase 10 仕様書テーブルと実装の乖離](#7-phase-10-仕様書テーブルと実装の乖離)
+0. [TASK-FIX-14-1: console → electron-log 移行](#task-fix-14-1-console--electron-log-移行)
+   - [苦戦箇所1: 実変更ファイル名との乖離](#1-実変更ファイル名との乖離)
+   - [苦戦箇所2: Phase 12 Step 1-A/1-C/1-D の先送り誤判定](#2-phase-12-step-1-a1-c1-d-の先送り誤判定)
+   - [苦戦箇所3: 未タスク検出後の登録漏れ](#3-未タスク検出後の登録漏れ)
+   - [苦戦箇所4: 大量テストファイルへのモック一括追加](#4-大量テストファイルへのモック一括追加)
+   - [苦戦箇所5: debug プロパティの後方互換性判断](#5-debug-プロパティの後方互換性判断)
+   - [苦戦箇所6: カバレッジ計測コマンドの引数誤り](#6-カバレッジ計測コマンドの引数誤り)
+   - [苦戦箇所7: 条件ガード削除による予想外の簡素化効果](#7-条件ガード削除による予想外の簡素化効果)
 0. [TASK-FIX-13-1: deprecatedプロパティ正式移行](#task-fix-13-1-deprecatedプロパティ正式移行)
    - [苦戦箇所1: 削除対象の境界判定](#1-削除対象の境界判定)
    - [苦戦箇所2: 汎用プロパティ参照の誤検出回避](#2-汎用プロパティ参照の誤検出回避)
@@ -114,6 +124,110 @@
 | architecture-implementation-patterns.md | 実装パターン集（DIパターン等） | [./architecture-implementation-patterns.md](./architecture-implementation-patterns.md) |
 | interfaces-agent-sdk-executor.md | SkillExecutor インターフェース仕様 | [./interfaces-agent-sdk-executor.md](./interfaces-agent-sdk-executor.md) |
 | 06-known-pitfalls.md | 既知の落とし穴と防止策 | [../../../rules/06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) |
+
+---
+
+## TASK-FIX-14-1: console → electron-log 移行
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| 目的 | Skill系Main Processのログ出力を `console.*` から `electron-log` に統一 |
+| 完了日 | 2026-02-14 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. 実変更ファイル名との乖離
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 12成果物（implementation-guide/final-review）に、実装対象と異なるファイル名が混入 |
+| **原因** | 文書更新時に `git diff` ではなく過去メモを基準に記述したため |
+| **解決策** | `git diff --name-only` と実ファイル参照を正として、成果物内の対象ファイル名を全件修正 |
+| **教訓** | Phase 12の技術文書は「実装事実（差分）」を一次情報として記述し、推測ベース記述を禁止する |
+
+#### 2. Phase 12 Step 1-A/1-C/1-D の先送り誤判定
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `documentation-changelog.md` に Step 1-A/1-C/1-D が「PR時対応」相当で記録され、完了条件と不整合 |
+| **原因** | Step 1（必須）とPhase 13（PR作成）の責務境界が曖昧だった |
+| **解決策** | Step 1-A/1-C/1-Dを同ターン内で完了させ、`LOGS.md x2`・`SKILL.md x2`・`generate-index.js` 実行結果を反映 |
+| **教訓** | Phase 12では「後続Phaseで対応予定」という記述を許容せず、必須ステップは即時完了で記録する |
+
+#### 3. 未タスク検出後の登録漏れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `SkillExecutor.ts` 残存 `console` を検出後、検出レポートのみで完了扱いになりやすかった |
+| **原因** | 「検出」と「未タスク登録（指示書 + 仕様書テーブル更新）」の工程が分離されていた |
+| **解決策** | 3ステップを同一ターンで実施（指示書作成 → `task-workflow.md` 登録 → 関連仕様書残課題更新） |
+| **教訓** | 未タスク検出はレポート作成で終わらせず、追跡可能な台帳登録まで完了して初めてPhase 12完了とする |
+
+#### 4. 大量テストファイルへのモック一括追加
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 本番コード4ファイルの electron-log 移行に伴い、関連テスト9ファイルに `vi.mock("electron-log")` を追加する必要があった |
+| **原因** | electron-log はデフォルトで stdout に出力するため、モック未定義のテストではログがテスト出力に混入する（P20パターン） |
+| **解決策** | `grep -rn "from.*SkillImportManager\|PermissionStore\|SkillScanner\|SkillAnalyzer" __tests__/` で影響テストを特定し、バックグラウンドエージェントで9ファイルに一括追加 |
+| **教訓** | ログライブラリ移行では、本番コード修正量よりテストモック追加の影響範囲の方が大きい。事前に影響テストファイル数を見積もり、並列エージェントで効率化すべき |
+
+```typescript
+// 標準モックパターン（全9ファイルに統一適用）
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+```
+
+#### 5. debug プロパティの後方互換性判断
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `SkillImportManager.ts` の `this.debug` プロパティは移行後に読み取られなくなったが、5テストファイル25箇所で参照されていた |
+| **原因** | `if (this.debug) console.log(...)` が `log.debug(...)` に置換されたことで、`this.debug` の読み取り箇所が消滅 |
+| **解決策** | 後方互換性を優先し、`this.debug` プロパティは設定のみ残して維持。テスト側の `{ debug: true }` オプション渡しは既存のまま |
+| **教訓** | 「未使用プロパティの即時削除」vs「テスト影響の最小化」のトレードオフでは、テスト変更量が25箇所を超える場合は後方互換維持が合理的。後続タスク（TASK-FIX-14-2完了後）で段階的に削除を検討 |
+
+#### 6. カバレッジ計測コマンドの引数誤り
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `vitest run --coverage src/main/services/skill/SkillScanner.ts` でカバレッジが 0% と表示された |
+| **原因** | vitest の引数にはテストファイルパスを指定すべきだが、ソースファイルパスを指定していた |
+| **解決策** | `vitest run --coverage src/main/services/skill/` のようにテストファイルが含まれるディレクトリを指定し、出力から対象ソースファイルを grep で抽出 |
+| **教訓** | vitest のカバレッジ計測では引数がテストファイルのフィルタとして機能する。ソースファイル単位のカバレッジが必要な場合は、テストディレクトリを指定して出力をフィルタリングする |
+
+```bash
+# ❌ カバレッジ0%になる（ソースファイルパスを引数に指定）
+vitest run --coverage src/main/services/skill/SkillScanner.ts
+
+# ✅ 正しい方法（テストディレクトリを指定してgrepで抽出）
+vitest run --coverage src/main/services/skill/ 2>&1 | grep "SkillScanner"
+```
+
+#### 7. 条件ガード削除による予想外の簡素化効果
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 当初は `console.log` → `log.debug` の単純置換のみと想定していた |
+| **発見** | `if (this.debug)` ガード（3箇所）と `process.env.NODE_ENV !== "test"` ガード（2箇所）が同時に削除可能だった |
+| **効果** | 条件分岐の削除によりコードの循環的複雑度が低下し、SkillImportManager.ts のコード行数が約10%削減 |
+| **教訓** | ログライブラリ移行は単なるAPI置換ではなく、環境判定ロジックの簡素化という副次効果がある。移行計画時にこの効果を見積もることで、リファクタリングの価値を正当化できる |
+
+### 関連未タスク
+
+| タスクID | タスク名 | 優先度 | 仕様書 |
+|---------|---------|--------|--------|
+| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低 | [`docs/30-workflows/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md`](../../../docs/30-workflows/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md) |
 
 ---
 

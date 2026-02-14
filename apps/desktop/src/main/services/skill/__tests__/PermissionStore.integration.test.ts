@@ -10,6 +10,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { AllowedToolEntry, PermissionStoreSchema } from "@repo/shared";
 
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 // electron-store モック
 let mockStoreData: PermissionStoreSchema = {
   version: 1,

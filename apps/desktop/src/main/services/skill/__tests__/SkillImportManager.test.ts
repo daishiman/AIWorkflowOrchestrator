@@ -7,6 +7,15 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 // Import after mocks - this will fail in Red phase
 let SkillImportManager: typeof import("../SkillImportManager").SkillImportManager;
 

@@ -60,6 +60,29 @@
 | 大量のバイナリデータ  | ログ肥大化         |
 | console.logの本番使用 | 構造化ログを使用   |
 
+### Skill系Main Processログ規約（TASK-FIX-14-1）
+
+| 項目 | 規約 |
+| ---- | ---- |
+| 対象 | `apps/desktop/src/main/services/skill/` 配下の本番コード |
+| 必須ライブラリ | `electron-log` |
+| ログプレフィックス | `[ClassName]` 形式（例: `[SkillImportManager]`） |
+| レベル割当 | `error`=処理失敗, `warn`=継続可能な異常, `info`=状態変化, `debug`=開発詳細 |
+| テスト方針 | `vi.mock(\"electron-log\")` で `error/warn/info/debug` をモックし、必要箇所は呼び出し検証 |
+| 補足 | 2026-02-14時点で `SkillExecutor.ts` の残存4箇所は `TASK-FIX-14-2` で継続管理 |
+
+> **詳細ガイド**: [logging-migration-guide.md](./logging-migration-guide.md) に移行手順チェックリスト、コードパターン、テストモックテンプレートを記載
+
+#### 移行適用範囲（2026-02-14時点）
+
+| ファイル | ステータス | 移行箇所数 | タスクID |
+| -------- | ---------- | ---------- | -------- |
+| SkillScanner.ts | ✅ 移行完了 | 7箇所 | TASK-FIX-14-1 |
+| PermissionStore.ts | ✅ 移行完了 | 7箇所 | TASK-FIX-14-1 |
+| SkillImportManager.ts | ✅ 移行完了 | 9箇所 | TASK-FIX-14-1 |
+| SkillAnalyzer.ts | ✅ 移行完了 | 1箇所 | TASK-FIX-14-1 |
+| SkillExecutor.ts | 🔲 未着手 | 4箇所 | TASK-FIX-14-2 |
+
 ---
 
 ## キャッシング戦略
@@ -582,6 +605,7 @@
 
 | Version | Date       | Changes                                                                                   |
 | ------- | ---------- | ----------------------------------------------------------------------------------------- |
+| 1.7.0   | 2026-02-14 | TASK-FIX-14-1: Skill系Main Processログ規約を追加（electron-log必須、プレフィックス、テスト方針、TASK-FIX-14-2継続管理） |
 | 1.6.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Hook テスト戦略（renderHookパターン）セクション追加 |
 | 1.5.0   | 2026-02-12 | UT-STORE-HOOKS-REFACTOR-001: Zustand Store Hooks無限ループ防止（P31対策）セクション追加  |
 | 1.4.0   | 2026-02-03 | TASK-9A-A: Vitestテスト固有の問題と解決策セクション追加（ESModuleモッキング回避パターン） |

@@ -9,6 +9,15 @@ import * as fs from "fs/promises";
 import type { ImportedSkill } from "@repo/shared";
 import { SkillAnalyzer } from "../SkillAnalyzer";
 
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 // fs/promises モック
 vi.mock("fs/promises", () => ({
   readFile: vi.fn(),

@@ -11,6 +11,15 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 describe("SkillImportManager - Boundary Value Tests (TASK-FIX-4-2)", () => {
   let mockStore: {
     get: ReturnType<typeof vi.fn>;

@@ -78,6 +78,33 @@ node scripts/log-usage.js \
 - **Notes**: IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加、activate イベントハンドラ修正。7テスト全PASS。Phase 10 PASS判定
 
 ---
+
+## 2026-02-14: TASK-FIX-14-1 実装パターン体系化（aiworkflow-requirements更新）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | ログ移行パターンの体系化、スキル仕様書最適化 |
+| 対象ファイル | logging-migration-guide.md（新規）, patterns.md, development-guidelines.md, lessons-learned.md, SKILL.md |
+| 結果         | success |
+| 備考         | P1/P25対策として task-specification-creator LOGS.md も同時更新 |
+
+---
+
+## [2026-02-14 - TASK-FIX-14-1 Phase 12再監査（未タスク登録漏れ是正）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION` の未タスク指示書を `docs/30-workflows/unassigned-task/` に作成
+  - `task-workflow.md` と `interfaces-agent-sdk-history.md` の残課題テーブルへ同時登録
+  - `documentation-changelog.md` / `implementation-guide.md` / `unassigned-task-detection.md` の誤記（PR時先送り・誤ファイル名）を修正
+  - LOGS.md / SKILL.md の4ファイル同時更新を実施
+
+---
 ## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT スキル改善（パターン追記）]
 
 - **Agent**: task-specification-creator

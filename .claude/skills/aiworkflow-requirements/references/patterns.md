@@ -19,6 +19,7 @@
 | [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
 | [ストア / 永続化](#ストア--永続化)              | 7件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策、個別セレクタ再設計、個別セレクタ移行 |
 | [非同期処理](#非同期処理)                       | 1件        | race condition対策、executionId事前生成  |
+| [ログ移行](#ログ移行)                          | 2件        | electron-log移行、テストモックテンプレート化 |
 
 ### 失敗パターン
 
@@ -28,6 +29,7 @@
 | [IPC / Preload](#ipc--preload)           | 3件        | チャネル名命名規則不整合、型定義不一致、テストモック波及 |
 | [OAuth / 認証エラー](#oauth--認証エラー) | 4件        | state競合、flowType未設定                   |
 | [テスト / 型安全](#テスト--型安全)       | 3件        | モジュールリーク、型アサーション            |
+| [ログ環境](#ログ環境)                    | 1件        | テストモック漏れによるログ出力汚染           |
 | [その他](#その他)                        | 2件        | 設計段階検証、pnpm幽霊依存                  |
 
 ---
@@ -246,6 +248,7 @@
 - **関連タスク**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
 - **実装例**: `SkillImportManager` のコンストラクタに `options?: { debug?: boolean }` を追加
 - **関連**: 06-known-pitfalls.md#P20
+- **補足（2026-02-14）**: TASK-FIX-14-1 により、`this.debug` ガードは `log.debug()` に置換するパターンが推奨に。詳細は [logging-migration-guide.md](./logging-migration-guide.md) を参照
 
 #### Zustand Slice統合パターン（TASK-FIX-6-1 2026-02-10）
 
@@ -476,6 +479,34 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
   - `apps/desktop/src/renderer/store/slices/agentSlice.ts`: `executeSkill()`, `_handleStreamMessage()`
   - `apps/desktop/src/renderer/store/setupSkillListeners.ts`
 - **関連**: 03-state-management.md#リスナー管理
+
+### ログ移行
+
+#### electron-log 標準移行パターン（TASK-FIX-14-1）
+
+- **状況**: Main Process サービス層で `console.*` が直接使用されており、テスト環境でのログ汚染や本番でのログレベル制御が不可能
+- **アプローチ**:
+  - `import log from "electron-log"` を追加
+  - ログレベルマッピングに従い置換（console.error→log.error, console.warn→log.warn, console.info→log.info, console.log→log.debug）
+  - `[ClassName]` プレフィックスを全メッセージに統一
+  - `if (this.debug)` / `process.env.NODE_ENV !== "test"` ガードを削除
+- **結果**: 4ファイル27箇所を移行。テスト環境でのログ汚染が解消し、ログレベル制御がトランスポート設定に一元化
+- **適用条件**: `apps/desktop/src/main/` 配下で `console.*` を使用しているサービスファイル
+- **発見日**: 2026-02-14（TASK-FIX-14-1）
+- **関連タスク**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION
+- **詳細ガイド**: [logging-migration-guide.md](./logging-migration-guide.md)
+
+#### テストモックテンプレート化パターン
+
+- **状況**: electron-log を使用するサービスのテストファイルに個別にモックを追加する必要があり、漏れが発生しやすい
+- **アプローチ**:
+  - 標準モックパターンを定義: `vi.mock("electron-log", () => ({ default: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() } }))`
+  - import 直後、describe 直前に配置
+  - `grep -rn "from.*TargetClass" __tests__/` で影響テストを事前特定
+- **結果**: 9ファイルに統一パターンで一括追加。P20（テスト環境でのログ出力汚染）を根本解決
+- **適用条件**: Main Process サービス層のテスト作成時は常に適用
+- **発見日**: 2026-02-14（TASK-FIX-14-1）
+- **関連タスク**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION
 
 ---
 
@@ -718,6 +749,18 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
 - **原因**: pnpm厳格モードで宣言されていない依存は解決できない
 - **教訓**: importする外部ライブラリは必ず自パッケージのpackage.jsonに宣言する。テスト通過 ≠ ランタイム安全
 - **発見日**: 2026-02-05（AGENT-SDK-DEP-FIX、06-known-pitfalls.md P8）
+
+### ログ環境
+
+#### テストモック漏れによるログ出力汚染（TASK-FIX-14-1）
+
+- **状況**: electron-log に移行した本番コードのテストファイルで、モック定義が漏れていた
+- **問題**: テスト実行時に `[ClassName]` プレフィックスのログが stdout に大量出力され、テスト結果の可読性が低下
+- **原因**: electron-log はデフォルトで stdout 出力するため、テスト環境でもモック未定義だとログが漏れる
+- **教訓**: Main Process サービス層のテストファイルには **必ず** `vi.mock("electron-log")` を追加する。影響範囲は `grep -rn "from.*ClassName" __tests__/` で事前特定
+- **発見日**: 2026-02-14（TASK-FIX-14-1）
+- **関連タスク**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION
+- **関連**: P20（テスト環境でのログ出力汚染）、[logging-migration-guide.md](./logging-migration-guide.md)
 
 ---
 

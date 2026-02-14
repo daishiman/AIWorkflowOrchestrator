@@ -7,6 +7,7 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as os from "os";
+import log from "electron-log";
 import { parse as parseYaml } from "yaml";
 import type {
   SkillMetadata,
@@ -152,8 +153,9 @@ export class SkillScanner {
       await fs.mkdir(this.aiworkflowSkillsDir, { recursive: true });
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
-        console.error(
-          `[SkillScanner] Failed to create directory: ${this.aiworkflowSkillsDir}`,
+        log.error(
+          "[SkillScanner] Failed to create directory:",
+          this.aiworkflowSkillsDir,
           error,
         );
         throw error;
@@ -180,9 +182,7 @@ export class SkillScanner {
 
         // パストラバーサル攻撃の検証
         if (entry.name.includes("..") || entry.name.includes("/")) {
-          console.warn(
-            `[SkillScanner] Skipping invalid skill name: ${entry.name}`,
-          );
+          log.warn("[SkillScanner] Skipping invalid skill name:", entry.name);
           continue;
         }
 
@@ -200,8 +200,10 @@ export class SkillScanner {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
         return [];
       }
-      console.warn(
-        `[SkillScanner] Error reading directory ${dir}: ${(error as Error).message}`,
+      log.warn(
+        "[SkillScanner] Error reading directory:",
+        dir,
+        (error as Error).message,
       );
       return [];
     }
@@ -295,7 +297,7 @@ export class SkillScanner {
    * 警告ログを出力
    */
   private logWarning(message: string): void {
-    console.warn(`[SkillScanner] ${message}`);
+    log.warn(`[SkillScanner] ${message}`);
   }
 
   /**
@@ -451,17 +453,17 @@ export class SkillScanner {
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
         // ベースパスが存在しない場合は自動作成して空の配列を返す
-        console.log(
-          `[SkillScanner] Base path does not exist: ${this.basePath}. Creating directory...`,
+        log.info(
+          "[SkillScanner] Base path does not exist, creating directory:",
+          this.basePath,
         );
         try {
           await fs.mkdir(this.basePath, { recursive: true });
-          console.log(
-            `[SkillScanner] Created skills directory: ${this.basePath}`,
-          );
+          log.info("[SkillScanner] Created skills directory:", this.basePath);
         } catch (mkdirError) {
-          console.error(
-            `[SkillScanner] Failed to create skills directory: ${this.basePath}`,
+          log.error(
+            "[SkillScanner] Failed to create skills directory:",
+            this.basePath,
             mkdirError,
           );
         }

@@ -3,6 +3,7 @@
  *
  * @see docs/30-workflows/agent-003-skill-management-backend/outputs/phase-2/class-design.md
  */
+import log from "electron-log";
 import type { ImportResult, RemoveResult } from "@repo/shared";
 
 const STORE_KEY = "importedSkillIds";
@@ -34,20 +35,18 @@ function validateStoredSkillIds(value: unknown): string[] {
 
   // 配列チェック
   if (!Array.isArray(value)) {
-    if (process.env.NODE_ENV !== "test") {
-      console.warn(
-        "[SkillImportManager] Invalid stored data type, expected array:",
-        typeof value,
-      );
-    }
+    log.warn(
+      "[SkillImportManager] Invalid stored data type, expected array:",
+      typeof value,
+    );
     return [];
   }
 
   // 配列内の各要素をフィルタリング（string以外を除外）
   const validIds = value.filter((item): item is string => {
     const isValid = typeof item === "string";
-    if (!isValid && process.env.NODE_ENV !== "test") {
-      console.warn(
+    if (!isValid) {
+      log.warn(
         "[SkillImportManager] Filtered out non-string element:",
         typeof item,
       );
@@ -67,27 +66,22 @@ export class SkillImportManager {
     this.store = store;
     this.debug = options?.debug ?? process.env.NODE_ENV === "development";
 
-    // デバッグログ: ストアパスの出力（開発環境のみ）
-    if (this.debug) {
-      console.log("[SkillImportManager] Store path:", store.path ?? "unknown");
-    }
+    log.debug("[SkillImportManager] Store path:", store.path ?? "unknown");
 
     try {
       // TASK-FIX-4-2: 型バリデーション付きでストアから読み込み
       const rawValue = this.store.get(STORE_KEY, []);
       const stored = validateStoredSkillIds(rawValue);
 
-      if (this.debug) {
-        console.log(
-          "[SkillImportManager] Loaded imported IDs:",
-          stored.length,
-          "items",
-        );
-      }
+      log.debug(
+        "[SkillImportManager] Loaded imported IDs:",
+        stored.length,
+        "items",
+      );
 
       this.importedIds = new Set(stored);
     } catch (error) {
-      console.error("[SkillImportManager] Failed to load from store:", error);
+      log.error("[SkillImportManager] Failed to load from store:", error);
       this.importedIds = new Set();
     }
   }
@@ -96,9 +90,7 @@ export class SkillImportManager {
    * スキルをインポートする
    */
   async importSkills(skillIds: string[]): Promise<ImportResult> {
-    if (this.debug) {
-      console.log("[SkillImportManager] importSkills called with:", skillIds);
-    }
+    log.debug("[SkillImportManager] importSkills called with:", skillIds);
 
     const errors: string[] = [];
     let importedCount = 0;
@@ -114,13 +106,11 @@ export class SkillImportManager {
       this.persist();
     }
 
-    if (this.debug) {
-      console.log(
-        "[SkillImportManager] importSkills result:",
-        importedCount,
-        "new imports",
-      );
-    }
+    log.debug(
+      "[SkillImportManager] importSkills result:",
+      importedCount,
+      "new imports",
+    );
 
     return {
       success: errors.length === 0,
@@ -133,9 +123,7 @@ export class SkillImportManager {
    * スキルを削除する
    */
   async removeSkill(skillId: string): Promise<RemoveResult> {
-    if (this.debug) {
-      console.log("[SkillImportManager] removeSkill called with:", skillId);
-    }
+    log.debug("[SkillImportManager] removeSkill called with:", skillId);
 
     const removed = this.importedIds.has(skillId);
 
@@ -144,9 +132,7 @@ export class SkillImportManager {
       this.persist();
     }
 
-    if (this.debug) {
-      console.log("[SkillImportManager] removeSkill result:", removed);
-    }
+    log.debug("[SkillImportManager] removeSkill result:", removed);
 
     return {
       success: true,
@@ -175,17 +161,13 @@ export class SkillImportManager {
     try {
       const data = Array.from(this.importedIds);
 
-      if (this.debug) {
-        console.log("[SkillImportManager] Persisting:", data.length, "items");
-      }
+      log.debug("[SkillImportManager] Persisting:", data.length, "items");
 
       this.store.set(STORE_KEY, data);
 
-      if (this.debug) {
-        console.log("[SkillImportManager] Persist successful");
-      }
+      log.debug("[SkillImportManager] Persist successful");
     } catch (error) {
-      console.error("[SkillImportManager] Failed to persist:", error);
+      log.error("[SkillImportManager] Failed to persist:", error);
     }
   }
 }

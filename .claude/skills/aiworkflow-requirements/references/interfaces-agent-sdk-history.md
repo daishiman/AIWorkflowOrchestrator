@@ -530,6 +530,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | 課題ID | 内容                            | 優先度 | ステータス             |
 | ------ | ------------------------------- | ------ | ---------------------- |
+| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低 | 未着手 |
 | -      | EnvironmentType: terminal実装   | 低     | 未着手                 |
 | -      | EnvironmentType: code実装       | 低     | 未着手                 |
 | ~~-~~  | ~~SkillExecutor: リトライ機構~~ | ~~中~~ | ~~検討中~~ ✅ **完了** |
@@ -559,6 +560,7 @@ Agent SDK関連の完了タスク、残課題、変更履歴を記録する。
 
 | 日付       | バージョン | 変更内容                                                                   |
 | ---------- | ---------- | -------------------------------------------------------------------------- |
+| 2026-02-14 | 6.39.0     | TASK-FIX-14-1 Phase 12反映: 残課題に TASK-FIX-14-2（SkillExecutor console 残存移行）を追加 |
 | 2026-02-02 | 6.38.0     | 両ブランチ統合: task-imp-permission-date-filter完了+TASK-8C-A完了         |
 | 2026-02-02 | 6.37.0     | PermissionHistoryFilter説明をフィルタ3ドロップダウン化に更新（実装反映）    |
 | 2026-02-02 | 6.36.0     | task-imp-permission-date-filter完了（72テスト）、TASK-8C-A完了（41テスト） |
