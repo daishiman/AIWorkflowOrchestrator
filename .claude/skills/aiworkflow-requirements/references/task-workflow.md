@@ -620,7 +620,9 @@
 | UT-PERF-001                                   | グラフユーティリティ性能ベンチマーク基準再設計                     | 中 | TODO検出: `packages/shared/src/types/rag/graph/__tests__/utils.test.ts:791` | `docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md` |
 | UT-TYPE-DATETIME-DOC-001                       | 型日時表現のガイドライン策定とドキュメント化                       | 低 | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION Phase 12                       | `docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md` |
 | UT-FIX-IPC-RESPONSE-UNWRAP-001                 | IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）| 高 | ランタイムエラー調査（2026-02-13）                                         | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-001.md`                   |
-| UT-FIX-IPC-HANDLER-DOUBLE-REG-001              | IPC ハンドラ二重登録防止修正（activate イベント）                   | 高 | ランタイムエラー調査（2026-02-13）                                         | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-handler-double-reg-001.md`                |
+| ~~UT-FIX-IPC-HANDLER-DOUBLE-REG-001~~              | ~~IPC ハンドラ二重登録防止修正（activate イベント）~~                   | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~                                         | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-handler-double-reg-001.md`~~ **2026-02-14完了** |
+| task-sec-ipc-lifecycle-audit-001                   | Electron ライフサイクルイベント IPC リスナー管理監査                    | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-sec-ipc-lifecycle-audit-001.md`                      |
+| task-imp-ipc-registration-verify-001               | IPC ハンドラ登録整合性自動検証テスト                                   | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-imp-ipc-registration-verify-001.md`                  |
 
 ### 未タスク管理ルール
 
@@ -644,6 +646,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.33.1     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の完了タスク参照パスを `completed-tasks/` に修正。`verify-unassigned-links.js` での参照切れを解消 |
+| 1.33.0     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001完了記録追加。IPC ハンドラ二重登録防止修正（activate イベント）。残課題テーブルから完了タスクに移動 |
 | 1.32.0     | 2026-02-13 | 未タスク2件追加: task-imp-vitest-mock-reset-utility-001（mock 2段階リセットユーティリティ）、task-ref-vitest-module-mock-audit-001（モジュールモック監査・ガイドライン）。TASK-FIX-11-1 実装苦戦箇所から検出 |
 | 1.31.0     | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT完了記録追加。SDK統合テストTODO有効化17件、Phase 12 Step 1-A/1-D反映、関連仕様書3ファイル更新を記録 |
 | 1.0.0      | 2026-01-20 | 初版作成                                                                                                                                                                                                  |

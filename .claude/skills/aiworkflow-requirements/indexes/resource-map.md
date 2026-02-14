@@ -16,7 +16,8 @@
 | タスク種別                  | 最初に読む                                                    | 必要に応じて読む                                                      |
 | --------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
 | 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
-| バグ修正                    | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
+| バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
+| バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
 | セキュリティ実装            | security-implementation.md, security-principles.md            | security-\* 全般                                                      |
