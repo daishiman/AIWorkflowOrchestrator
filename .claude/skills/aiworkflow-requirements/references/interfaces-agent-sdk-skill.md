@@ -93,6 +93,27 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 備考       | `SkillImportConfig.lastUpdated` は永続化互換のため維持 |
 | 検出未タスク | [UT-TYPE-DATETIME-DOC-001](../../../docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md) 型日時表現ガイドライン策定 |
 
+#### UT-FIX-IPC-RESPONSE-UNWRAP-001（2026-02-14完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| ステータス | **完了** |
+| テスト数   | 25（新規）+ 既存回帰テストPASS |
+| 主要変更   | `safeInvokeUnwrap<T>` 追加、`list/getImported/rescan` の IPC ラッパー展開を Preload 側へ統一 |
+| 変更対象   | `apps/desktop/src/preload/skill-api.ts`, `apps/desktop/src/preload/__tests__/skill-api.unwrap.test.ts` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/implementation-guide.md` |
+| 備考       | `import()` は SKILL_IMPORT が直接返却のため `safeInvoke` 維持 |
+| 検出未タスク | [UT-FIX-IPC-RESPONSE-UNWRAP-002](../../../docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-002-phase10-spec-alignment.md), [UT-FIX-IPC-RESPONSE-UNWRAP-003](../../../docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-003-safeinvokeunwrap-type-guard.md) |
+
+##### UT-FIX-IPC-RESPONSE-UNWRAP-001 実装上の苦戦箇所・教訓
+
+| 苦戦ポイント | 発生要因 | 解決策 | 再発防止 |
+|--------------|----------|--------|----------|
+| 仕様書の正本参照ミス | `api-ipc-skill.md` という非実在ファイル参照が混在 | `interfaces-agent-sdk-skill.md` を正本として参照統一し、topic-map再生成で索引同期 | 仕様書更新前に参照ファイル実在チェックを実施 |
+| MINOR の未タスク化判断ブレ | M-1/M-2 を「軽微だから不要」と誤解しやすい | 2件を独立未タスク（002/003）として正式起票 | Phase 10 MINOR は必ず task-workflow 残課題へ登録する |
+| 完了移管後のリンク不整合 | 元タスク移管後に unassigned 側リンクが残る | 完了タスク参照を completed-tasks 側へ更新 | 未タスクリンク検証を自動実行して参照切れを防止 |
+
 ##### TASK-FIX-13-1 実装上の苦戦箇所・教訓
 
 | 苦戦ポイント | 発生要因 | 解決策 | 再発防止 |
@@ -1537,6 +1558,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-14 | 1.20.0     | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録追加。Preload IPCラッパー展開統一と苦戦箇所（参照正本・MINOR未タスク化・リンク整合）を追記 |
 | 2026-02-13 | 1.19.0     | TASK-FIX-13-1 苦戦箇所・教訓を追記（削除範囲境界、参照誤検出対策、Phase 12同期手順） |
 | 2026-02-13 | 1.18.0     | TASK-FIX-13-1完了記録追加。deprecated型プロパティ（`Anchor.name`, `Skill.lastUpdated`）削除と型定義テーブル（`lastModified`）を反映 |
 | 2026-02-12 | 1.17.0     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了記録追加。AgentViewのP31適用拡張（個別セレクタ移行）を反映 |

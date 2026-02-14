@@ -5,6 +5,48 @@
 
 ---
 
+## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所・パターン追記
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | 実装苦戦箇所4件・成功パターン1件・失敗パターン1件・実装パターン1件を追記 |
+| 対象ファイル | lessons-learned.md, architecture-implementation-patterns.md, patterns.md |
+| 結果         | success |
+| 備考         | Phase 1-12 実行で得た実装知見を仕様書に反映。safeInvokeUnwrap パターン（ハンドラ応答形式判断基準テーブル含む）、テストモック波及修正パターン（P21/P35拡張）、TypeScript type erasure の教訓を記録 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | v1.12.0 | 実装苦戦箇所4件追加（type erasure、ハンドラ応答不統一、モック波及、仕様書乖離） |
+| architecture-implementation-patterns.md | +(新規セクション) | IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加 |
+| patterns.md | +(新規エントリ) | 成功パターン1件・失敗パターン1件追加 |
+
+---
+
+## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 完了反映 + MINOR未タスク化
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書更新（完了記録 + 苦戦箇所追記 + MINOR由来未タスク登録） |
+| 対象ファイル | interfaces-agent-sdk-skill.md, task-workflow.md, lessons-learned.md |
+| 結果         | success |
+| 備考         | `safeInvokeUnwrap` 導入と `import()` 例外運用（safeInvoke維持）を反映。Phase 10 MINOR（M-1/M-2）を UT-FIX-IPC-RESPONSE-UNWRAP-002/003 として unassigned-task に登録 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| interfaces-agent-sdk-skill.md | v1.20.0 | 完了タスク・苦戦箇所・関連未タスクを追記 |
+| task-workflow.md | v1.37.0 | 完了タスク追加、残課題テーブル更新（002/003追加） |
+| lessons-learned.md | v1.11.0 | 苦戦箇所3件（参照正本、MINOR未タスク化、リンク整合）を追加 |
+
+---
+
 ## 2026-02-14: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12再監査追補（苦戦箇所記録）
 
 | 項目         | 内容 |
@@ -43,7 +85,6 @@
 | 備考         | macOS activate イベントでの IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加。7テスト全PASS |
 
 ---
-
 ## 2026-02-13: TASK-FIX-13-1 未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001）
 
 | 項目         | 内容 |

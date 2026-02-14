@@ -531,6 +531,69 @@ CSSスタッキングコンテキストによりz-indexが親要素の範囲内�
 | SIGNED_OUT | 必要 | 全連携情報をクリア |
 | USER_UPDATED | 必要 | プロバイダー連携/解除の可能性 |
 
+### IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）
+
+> **導入タスク**: UT-FIX-IPC-RESPONSE-UNWRAP-001（2026-02-14）
+> **関連 Pitfall**: P19（型アサーションによる実行時検証バイパス）
+
+#### 問題
+
+Main Process の IPC ハンドラが `{ success: true, data: T }` 形式のラッパーでレスポンスを返す場合、Preload 層の `safeInvoke<T>()` は TypeScript ジェネリクスの type erasure により、ラッパーオブジェクトをそのまま Renderer に透過する。結果として `importedSkills.forEach is not a function` のようなランタイムエラーが発生する。
+
+#### 解決パターン
+
+```typescript
+// IPC ハンドラのレスポンスラッパー型（ファイルスコープ）
+interface IpcResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+// ラッパー展開関数
+async function safeInvokeUnwrap<T>(
+  channel: string,
+  ...args: unknown[]
+): Promise<T> {
+  const result = await safeInvoke<IpcResult<T>>(channel, ...args);
+  if (!result.success) {
+    throw new Error(result.error || `IPC call failed: ${channel}`);
+  }
+  return result.data as T;
+}
+```
+
+#### 使い分け基準
+
+| ハンドラの return 文 | 使用する関数 | 例 |
+|---|---|---|
+| `return { success: true, data: result }` | `safeInvokeUnwrap` | list(), getImported(), rescan() |
+| `return service.method()` (直接返却) | `safeInvoke` | import(), execute() |
+| `return { success: boolean }` (ステータスのみ) | `safeInvoke` | sendPermissionResponse() |
+| `void` (戻り値なし) | `safeInvoke` | abort(), remove() |
+
+#### データフロー
+
+```
+Renderer          Preload (safeInvokeUnwrap)        Main Process
+  │                       │                              │
+  │── skill.list() ──────>│                              │
+  │                       │── ipcRenderer.invoke() ─────>│
+  │                       │                              │── skillService.getSkills()
+  │                       │<── { success, data: [...] } ─│
+  │                       │                              │
+  │                       │── if (!result.success) throw ─│
+  │                       │── return result.data ─────────│
+  │<── SkillMetadata[] ──│                              │
+```
+
+#### 注意事項
+
+- `IpcResult<T>` はファイルスコープ（エクスポートしない）
+- `safeInvokeUnwrap` は内部で `safeInvoke` を呼び出すため、チャンネルホワイトリスト検証は維持される
+- `result.data as T` の型アサーションは、`success` チェック後の安全なパターンとして許容
+- 新しいスキルメソッド追加時は、対応するハンドラの return 文を確認してから `safeInvoke` / `safeInvokeUnwrap` を選択すること
+
 ---
 
 ## パフォーマンス最適化パターン
@@ -1511,6 +1574,7 @@ macOS の `activate` イベントでウィンドウを再作成する際に、`i
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |
 | v1.23.0 | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止パターン追加（unregister→register、ipcMain.handle() vs on() 動作差異、セキュリティ考慮事項） |
 | v1.22.0 | 2026-02-13 | UT-9B-H-003: IPC L3ドメイン検証パターン追加（validatePath, sanitizeErrorMessage, ALLOWED_SCHEMA_NAMES） |
 | 1.21.0 | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型統合パターン追加（S11: TypeScriptモジュール解決の優先順位、S12: SDK APIパラメータの正確な把握） |

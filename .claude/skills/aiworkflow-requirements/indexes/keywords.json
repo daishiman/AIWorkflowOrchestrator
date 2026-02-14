@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-14T05:27:19.335Z",
-  "totalKeywords": 1121,
+  "generated": "2026-02-14T05:31:12.090Z",
+  "totalKeywords": 1124,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2806,6 +2806,15 @@
       "lessons-learned.md"
     ],
     "セキュリティ強化": [
+      "lessons-learned.md"
+    ],
+    "RESPONSE": [
+      "lessons-learned.md"
+    ],
+    "UNWRAP": [
+      "lessons-learned.md"
+    ],
+    "レスポンスラッパー未展開修正": [
       "lessons-learned.md"
     ],
     "HANDLER": [

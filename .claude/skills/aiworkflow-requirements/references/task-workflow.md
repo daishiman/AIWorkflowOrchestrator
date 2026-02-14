@@ -132,6 +132,43 @@
 
 ## 完了タスク
 
+### タスク: UT-FIX-IPC-RESPONSE-UNWRAP-001 IPC レスポンスラッパー未展開修正（2026-02-14完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| 完了日     | 2026-02-14 |
+| ステータス | **完了** |
+| Phase      | Phase 1-12完了（Phase 13未実施） |
+| テスト数   | 25（新規）+ 既存回帰テストPASS |
+| カバレッジ | Line 92.64% / Branch 91.66% / Function 100% |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| ------ | --------- |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/ipc-response-unwrap/` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/unassigned-task-report.md` |
+| 元タスク指示書（移管） | `docs/30-workflows/completed-tasks/task-ut-fix-ipc-response-unwrap-001.md` |
+
+#### 変更理由
+
+- `skill-api.ts` の `list/getImported/rescan` が `{ success, data }` ラッパーをそのまま返していたため、Renderer で配列前提処理（`forEach`）がクラッシュしていた
+- `safeInvokeUnwrap<T>` を導入し、Preload 層でラッパー展開して `T` を直接返す形へ統一
+- `import()` はハンドラが直接値返却のため `safeInvoke` 維持とし、ハンドラ仕様に合わせて使い分けを明確化
+
+#### 苦戦箇所と解決策
+
+| 苦戦ポイント | 問題 | 解決策 |
+| ------------ | ---- | ------ |
+| 仕様書参照の誤リンク | `api-ipc-skill.md` 参照が残り、正本を辿れなかった | `interfaces-agent-sdk-skill.md` を正本参照に統一し、topic-map再生成で索引を同期 |
+| Phase 10 MINORの扱い | M-1/M-2 を「未タスク化不要」と誤判定しやすかった | 未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）を正式起票し、task-workflowへ登録 |
+| 完了移管時のリンク不整合 | 元タスク指示書を移動後に `unassigned-task` 参照が残るリスク | 参照先を `completed-tasks` 側へ更新し、未タスクリンク検証を実施 |
+
+---
+
 ### タスク: TASK-FIX-11-1-SDK-TEST-ENABLEMENT SDK統合テスト有効化（2026-02-13完了）
 
 | 項目       | 内容                                            |
@@ -619,7 +656,9 @@
 | task-ref-vitest-module-mock-audit-001        | Vitest モジュールレベルモック監査・使い分けガイドライン策定         | 低 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`                 |
 | UT-PERF-001                                   | グラフユーティリティ性能ベンチマーク基準再設計                     | 中 | TODO検出: `packages/shared/src/types/rag/graph/__tests__/utils.test.ts:791` | `docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md` |
 | UT-TYPE-DATETIME-DOC-001                       | 型日時表現のガイドライン策定とドキュメント化                       | 低 | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION Phase 12                       | `docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md` |
-| UT-FIX-IPC-RESPONSE-UNWRAP-001                 | IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）| 高 | ランタイムエラー調査（2026-02-13）                                         | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-001.md`                   |
+| ~~UT-FIX-IPC-RESPONSE-UNWRAP-001~~             | ~~IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）~~ | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~ | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-response-unwrap-001.md`~~ **2026-02-14完了** |
+| UT-FIX-IPC-RESPONSE-UNWRAP-002                 | Phase 10仕様書 `import()` 記載整合 | 低 | UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 10（MINOR M-1） | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-002-phase10-spec-alignment.md` |
+| UT-FIX-IPC-RESPONSE-UNWRAP-003                 | `safeInvokeUnwrap` 型アサーション削減 | 低 | UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 10（MINOR M-2） | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-003-safeinvokeunwrap-type-guard.md` |
 | ~~UT-FIX-IPC-HANDLER-DOUBLE-REG-001~~              | ~~IPC ハンドラ二重登録防止修正（activate イベント）~~                   | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~                                         | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-handler-double-reg-001.md`~~ **2026-02-14完了** |
 | task-sec-ipc-lifecycle-audit-001                   | Electron ライフサイクルイベント IPC リスナー管理監査                    | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-sec-ipc-lifecycle-audit-001.md`                      |
 | task-imp-ipc-registration-verify-001               | IPC ハンドラ登録整合性自動検証テスト                                   | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-imp-ipc-registration-verify-001.md`                  |
@@ -646,6 +685,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.37.0     | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録を追加。残課題テーブルで同タスクを完了マークし、MINOR由来の未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）を登録 |
 | 1.33.1     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の完了タスク参照パスを `completed-tasks/` に修正。`verify-unassigned-links.js` での参照切れを解消 |
 | 1.33.0     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001完了記録追加。IPC ハンドラ二重登録防止修正（activate イベント）。残課題テーブルから完了タスクに移動 |
 | 1.32.0     | 2026-02-13 | 未タスク2件追加: task-imp-vitest-mock-reset-utility-001（mock 2段階リセットユーティリティ）、task-ref-vitest-module-mock-audit-001（モジュールモック監査・ガイドライン）。TASK-FIX-11-1 実装苦戦箇所から検出 |
