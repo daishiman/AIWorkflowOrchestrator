@@ -107,6 +107,16 @@ interview-result.jsonの内容から、スキル作成に必要な全リソー�
 | full     | skill-template.md, agent-template.md, agent-task-template.md |
 | custom   | 上記 + カスタム設計                                          |
 
+#### 4.1.4.1 LLM System Prompt生成 → 追加アセット
+
+| 条件                              | 追加アセット                  |
+| --------------------------------- | ----------------------------- |
+| スキルがLLM System Promptを生成する | system-prompt-template.md     |
+| スキルがLLM System Promptを生成しない | -（追加なし）               |
+
+> `system-prompt-template.md` は、スキルがLLMを外部呼び出し（System Prompt経由）する場合にのみ選択する。
+> skill-creator内部のTask仕様書には `agent-template.md` を使用する。
+
 #### 4.1.5 スクリプト有無 → スキーマ・スクリプト
 
 | 条件          | 追加スキーマ                                                  | 追加スクリプト                        |
