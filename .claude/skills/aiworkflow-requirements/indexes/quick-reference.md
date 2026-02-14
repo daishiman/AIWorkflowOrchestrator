@@ -26,6 +26,35 @@ const result = await window.xxxAPI.action(request);
 
 **詳細**: architecture-patterns.md L620-905, security-api-electron.md
 
+### IPC ハンドラライフサイクル管理パターン（P5 Main Process 対策）
+
+macOS `activate` イベントでウィンドウ再作成時の二重登録防止:
+
+```typescript
+// ❌ 二重登録例外（handle は2回目で例外送出）
+app.on("activate", () => {
+  mainWindowRef = createWindow();
+  registerAllIpcHandlers(mainWindowRef); // Error!
+});
+
+// ✅ unregister → createWindow → register の3ステップ
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    unregisterAllIpcHandlers();           // Step 1: 全解除
+    mainWindowRef = createWindow();       // Step 2: 新ウィンドウ
+    registerAllIpcHandlers(mainWindowRef); // Step 3: 再登録
+  }
+});
+```
+
+| API | 二重登録時の動作 | 解除API |
+|-----|-----------------|---------|
+| `ipcMain.handle()` | 例外送出 | `removeHandler()` |
+| `ipcMain.on()` | リスナー累積 | `removeAllListeners()` |
+
+**詳細**: security-electron-ipc.md（IPC ハンドラライフサイクル管理）, architecture-implementation-patterns.md（二重登録防止パターン）
+**関連 Pitfall**: 06-known-pitfalls.md#P5
+
 ### Result Pattern
 
 ```typescript

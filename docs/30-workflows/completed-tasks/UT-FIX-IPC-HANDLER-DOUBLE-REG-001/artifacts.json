@@ -1,0 +1,216 @@
+{
+  "feature": "UT-FIX-IPC-HANDLER-DOUBLE-REG-001",
+  "taskId": "UT-FIX-IPC-HANDLER-DOUBLE-REG-001",
+  "githubIssue": "#815",
+  "type": "fix",
+  "priority": "高",
+  "created": "2026-02-14",
+  "lastUpdated": "2026-02-14",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-1-requirements.md",
+          "description": "Phase 1 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-1/requirements-analysis.md",
+          "description": "要件分析結果"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-2-design.md",
+          "description": "Phase 2 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-2/design-document.md",
+          "description": "設計ドキュメント"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-3-design-review.md",
+          "description": "Phase 3 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-4-test-creation.md",
+          "description": "Phase 4 仕様書"
+        },
+        {
+          "path": "apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts",
+          "description": "二重登録防止テスト（7テスト）"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-5-implementation.md",
+          "description": "Phase 5 仕様書"
+        },
+        {
+          "path": "apps/desktop/src/main/ipc/index.ts",
+          "description": "IPC ハンドラ登録修正（unregisterAllIpcHandlers追加）"
+        },
+        {
+          "path": "apps/desktop/src/main/index.ts",
+          "description": "activate イベント修正"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-6-test-expansion.md",
+          "description": "Phase 6 仕様書"
+        }
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-7-coverage-verification.md",
+          "description": "Phase 7 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-8-refactoring.md",
+          "description": "Phase 8 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリング実施ログ"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-9-quality-assurance.md",
+          "description": "Phase 9 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-9/quality-report.md",
+          "description": "品質検証レポート"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-10-final-review.md",
+          "description": "Phase 10 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-11-manual-testing.md",
+          "description": "Phase 11 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-12-documentation.md",
+          "description": "Phase 12 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-12/phase12-compliance-audit.md",
+          "description": "Phase 12再監査レポート"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/phase-13-pr-creation.md",
+          "description": "Phase 13 仕様書"
+        },
+        {
+          "path": "docs/30-workflows/UT-FIX-IPC-HANDLER-DOUBLE-REG-001/outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        }
+      ]
+    }
+  },
+  "dependencies": [],
+  "qualityMetrics": {
+    "lineCoverage": "100% (機能カバレッジ・手動分析)",
+    "branchCoverage": "100% (全コードパスカバー)",
+    "functionCoverage": "100% (unregisterAllIpcHandlers + 関連ロジック)",
+    "testCount": 7
+  }
+}

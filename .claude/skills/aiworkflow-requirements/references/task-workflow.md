@@ -659,7 +659,9 @@
 | ~~UT-FIX-IPC-RESPONSE-UNWRAP-001~~             | ~~IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）~~ | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~ | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-response-unwrap-001.md`~~ **2026-02-14完了** |
 | UT-FIX-IPC-RESPONSE-UNWRAP-002                 | Phase 10仕様書 `import()` 記載整合 | 低 | UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 10（MINOR M-1） | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-002-phase10-spec-alignment.md` |
 | UT-FIX-IPC-RESPONSE-UNWRAP-003                 | `safeInvokeUnwrap` 型アサーション削減 | 低 | UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 10（MINOR M-2） | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-003-safeinvokeunwrap-type-guard.md` |
-| UT-FIX-IPC-HANDLER-DOUBLE-REG-001              | IPC ハンドラ二重登録防止修正（activate イベント）                   | 高 | ランタイムエラー調査（2026-02-13）                                         | `docs/30-workflows/unassigned-task/task-ut-fix-ipc-handler-double-reg-001.md`                |
+| ~~UT-FIX-IPC-HANDLER-DOUBLE-REG-001~~              | ~~IPC ハンドラ二重登録防止修正（activate イベント）~~                   | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~                                         | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-handler-double-reg-001.md`~~ **2026-02-14完了** |
+| task-sec-ipc-lifecycle-audit-001                   | Electron ライフサイクルイベント IPC リスナー管理監査                    | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-sec-ipc-lifecycle-audit-001.md`                      |
+| task-imp-ipc-registration-verify-001               | IPC ハンドラ登録整合性自動検証テスト                                   | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-imp-ipc-registration-verify-001.md`                  |
 
 ### 未タスク管理ルール
 
@@ -684,6 +686,8 @@
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1.37.0     | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録を追加。残課題テーブルで同タスクを完了マークし、MINOR由来の未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）を登録 |
+| 1.33.1     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の完了タスク参照パスを `completed-tasks/` に修正。`verify-unassigned-links.js` での参照切れを解消 |
+| 1.33.0     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001完了記録追加。IPC ハンドラ二重登録防止修正（activate イベント）。残課題テーブルから完了タスクに移動 |
 | 1.32.0     | 2026-02-13 | 未タスク2件追加: task-imp-vitest-mock-reset-utility-001（mock 2段階リセットユーティリティ）、task-ref-vitest-module-mock-audit-001（モジュールモック監査・ガイドライン）。TASK-FIX-11-1 実装苦戦箇所から検出 |
 | 1.31.0     | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT完了記録追加。SDK統合テストTODO有効化17件、Phase 12 Step 1-A/1-D反映、関連仕様書3ファイル更新を記録 |
 | 1.0.0      | 2026-01-20 | 初版作成                                                                                                                                                                                                  |

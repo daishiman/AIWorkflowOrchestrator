@@ -47,6 +47,44 @@
 
 ---
 
+## 2026-02-14: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12再監査追補（苦戦箇所記録）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: lessons-learned.md 追補、Phase 12監査結果の仕様同期 |
+| 対象ファイル | lessons-learned.md |
+| 結果         | success |
+| 備考         | 苦戦箇所2件を追加（IPC_CHANNELS全走査前提の確認、IPC外リスナー解除漏れ防止）。未タスク検出は新規0件を確認（raw検出は既存TODO）。 |
+
+---
+
+## 2026-02-14: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 参照整合性是正
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | task-workflow.md 参照修正、完了タスク仕様書 Issue 番号整合、index再生成 |
+| 対象ファイル | task-workflow.md, docs/30-workflows/completed-tasks/task-ut-fix-ipc-handler-double-reg-001.md, indexes/topic-map.md, indexes/keywords.json |
+| 結果         | success |
+| 備考         | 参照切れ（unassigned-task→completed-tasks）を解消し、Issue番号を #815 に統一。`verify-unassigned-links.js` と `generate-index.js` 実行で整合を確認 |
+
+---
+
+## 2026-02-14: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 IPC ハンドラ二重登録防止修正
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: security-electron-ipc.md, task-workflow.md, lessons-learned.md 更新 |
+| 対象ファイル | security-electron-ipc.md, task-workflow.md, lessons-learned.md, architecture-implementation-patterns.md |
+| 結果         | success |
+| 備考         | macOS activate イベントでの IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加。7テスト全PASS |
+
+---
 ## 2026-02-13: TASK-FIX-13-1 未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001）
 
 | 項目         | 内容 |

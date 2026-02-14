@@ -190,17 +190,17 @@ node scripts/list-specs.js --topics
 | 設計思想 | L14 |
 | レイヤー構成 | L41 |
 | デザインパターン | L71 |
-| UI/UXアーキテクチャ | L101 |
-| セキュリティアーキテクチャ | L124 |
-| 状態管理アーキテクチャ | L158 |
-| データフローアーキテクチャ | L183 |
-| ディレクトリ構造 | L224 |
-| データ構造（型システム） | L281 |
-| 機能追加パターン | L315 |
-| 技術スタック | L350 |
-| テンプレート | L362 |
-| 関連ドキュメント | L382 |
-| 変更履歴 | L423 |
+| UI/UXアーキテクチャ | L102 |
+| セキュリティアーキテクチャ | L125 |
+| 状態管理アーキテクチャ | L159 |
+| データフローアーキテクチャ | L184 |
+| ディレクトリ構造 | L225 |
+| データ構造（型システム） | L282 |
+| 機能追加パターン | L316 |
+| 技術スタック | L351 |
+| テンプレート | L363 |
+| 関連ドキュメント | L383 |
+| 変更履歴 | L424 |
 
 ### references/architecture-patterns.md
 
@@ -990,14 +990,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L22 |
-| Content Security Policy (CSP) | L36 |
-| IPC通信のセキュリティ | L53 |
-| 実装例: historyAPI | L79 |
-| 実装例: slideSettingsAPI | L131 |
-| 実装例: skillCreatorAPI | L180 |
-| 自動更新のセキュリティ | L251 |
-| 関連ドキュメント | L262 |
+| セキュリティ設定 | L23 |
+| Content Security Policy (CSP) | L37 |
+| IPC通信のセキュリティ | L54 |
+| 実装例: historyAPI | L80 |
+| 実装例: slideSettingsAPI | L132 |
+| 実装例: skillCreatorAPI | L181 |
+| 自動更新のセキュリティ | L276 |
+| 関連ドキュメント | L287 |
 
 ### references/security-implementation.md
 
@@ -1484,8 +1484,9 @@ node scripts/list-specs.js --topics
 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1051 |
 | UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1158 |
 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1232 |
-| テンプレート（新規教訓追加用） | L1349 |
-| 品質チェックリスト | L1421 |
+| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1349 |
+| テンプレート（新規教訓追加用） | L1421 |
+| 品質チェックリスト | L1493 |
 
 ### references/llm-embedding.md
 

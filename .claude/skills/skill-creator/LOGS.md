@@ -13,6 +13,14 @@
 
 ---
 
+## [2026-02-14 - UT-FIX-IPC-HANDLER-DOUBLE-REG-001 pattern sync]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 のPhase 12再監査結果を反映し、patterns.mdに「IPCハンドラライフサイクル管理（unregister→register）」パターンを追加。IPC_CHANNELS全走査前提確認、IPC外リスナー解除（themeWatcher）、`ipcMain.handle()`/`ipcMain.on()` の二重登録挙動差を明文化。SKILL.md変更履歴v10.6.1を追加。
+
+---
 ## [2026-02-13 - UT-9B-H-003 セキュリティ教訓・パターン記録]
 
 - **Agent**: skill-creator (update)

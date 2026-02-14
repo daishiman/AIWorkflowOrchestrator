@@ -1531,11 +1531,51 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 ---
 
+### IPC ハンドラ二重登録防止パターン（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 2026-02-14実装）
+
+macOS の `activate` イベントでウィンドウを再作成する際に、`ipcMain.handle()` の二重登録例外を防止するパターン。
+
+| 要素 | 説明 |
+|------|------|
+| 問題 | `ipcMain.handle()` は同一チャンネルに2つ目のハンドラ登録を試みると例外を送出する。`ipcMain.on()` とは異なり、暗黙的な多重登録ができない |
+| 発生条件 | macOS でドックアイコンクリック → `activate` イベント → `registerAllIpcHandlers()` 再実行 |
+| 解決策 | `unregisterAllIpcHandlers()` で全チャンネルを一括解除してから再登録する（A案: unregister→register） |
+| 不採用案 | B案: フラグガード（stale参照リスク）、C案: 全ハンドラファイルリファクタ（影響範囲大） |
+
+**一括解除の3ステップ**:
+
+| ステップ | API | 目的 |
+|----------|-----|------|
+| 1 | `ipcMain.removeHandler(channel)` | `ipcMain.handle()` で登録したハンドラを解除 |
+| 2 | `ipcMain.removeAllListeners(channel)` | `ipcMain.on()` で登録したリスナーを解除 |
+| 3 | `themeWatcherUnsubscribe()` | `nativeTheme.on("updated")` リスナーを解除 |
+
+**ipcMain.handle() vs ipcMain.on() の動作差異**:
+
+| API | 二重登録時の動作 | 解除API |
+|-----|-----------------|---------|
+| `ipcMain.handle()` | 例外を送出 | `ipcMain.removeHandler()` |
+| `ipcMain.on()` | 暗黙的に追加（リスナー増殖） | `ipcMain.removeAllListeners()` |
+
+**セキュリティ考慮事項**: 全チャンネルは `IPC_CHANNELS` 定数から `Object.values()` で取得し、ホワイトリストの網羅性を保証する。4層防御（L1-L4）は個別ハンドラ側で維持されるため、unregister/register では影響を受けない。
+
+**関連タスク**: UT-FIX-IPC-HANDLER-DOUBLE-REG-001（2026-02-14完了）
+
+**関連未タスク（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 から派生）**:
+
+| タスクID                             | タスク名                                          | 優先度 |
+| ------------------------------------ | ------------------------------------------------- | ------ |
+| task-sec-ipc-lifecycle-audit-001     | Electron ライフサイクルイベント IPC リスナー管理監査 | 中     |
+| task-imp-ipc-registration-verify-001 | IPC ハンドラ登録整合性自動検証テスト               | 中     |
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v1.23.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |
+| v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |
+| v1.23.0 | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止パターン追加（unregister→register、ipcMain.handle() vs on() 動作差異、セキュリティ考慮事項） |
 | v1.22.0 | 2026-02-13 | UT-9B-H-003: IPC L3ドメイン検証パターン追加（validatePath, sanitizeErrorMessage, ALLOWED_SCHEMA_NAMES） |
 | 1.21.0 | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型統合パターン追加（S11: TypeScriptモジュール解決の優先順位、S12: SDK APIパラメータの正確な把握） |
 | 1.20.0 | 2026-02-12 | TASK-9B-H: IPCハンドラー登録パターンに「実装時の注意点・苦戦箇所」テーブル追加（5件の苦戦箇所と解決策、lessons-learned.mdへのクロスリファレンス） |

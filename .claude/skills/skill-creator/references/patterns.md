@@ -12,7 +12,7 @@
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗 |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**                               | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読 |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPC L3セキュリティハードニング** | ハードコード文字列発見                                 |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計** | -                                                      |
@@ -548,6 +548,41 @@
   - [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md) - IPC実装パターン（Setter Injection、型変換、テストモック等）
   - [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md) - Electron IPCセキュリティ仕様（ホワイトリスト管理、sender検証、エラーサニタイズ）
   - [api-ipc-agent.md](../../aiworkflow-requirements/references/api-ipc-agent.md) - IPC API仕様（チャンネル定義、ハンドラー登録、Preload Bridge設計）
+
+### [IPC] IPCハンドラライフサイクル管理パターン（UT-FIX-IPC-HANDLER-DOUBLE-REG-001）
+
+- **状況**: macOS の `activate` イベントでウィンドウ再生成時に `registerAllIpcHandlers()` が再実行され、`ipcMain.handle()` の二重登録例外が発生
+- **アプローチ**:
+  1. `unregisterAllIpcHandlers()` を追加し、`Object.values(IPC_CHANNELS)` で全チャンネルの `removeHandler` と `removeAllListeners` を実行
+  2. `setupThemeWatcher()` のような IPC 外リスナーは `unsubscribe` をモジュールスコープで保持して同時解除
+  3. `activate` では `unregister -> createWindow -> register` の順序を固定
+  4. `ipcMain.handle()` と `ipcMain.on()` の二重登録時挙動差（例外送出 vs 累積登録）を設計レビューで明示
+- **結果**: 7テストで再現シナリオをカバーし、`Attempted to register a second handler` を解消
+- **適用条件**: Electron Main Process でウィンドウ再生成時に IPC ハンドラ再登録を伴う実装
+- **発見日**: 2026-02-14
+- **関連タスク**: UT-FIX-IPC-HANDLER-DOUBLE-REG-001
+- **クロスリファレンス**:
+  - [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md#ipc-ハンドラライフサイクル管理)
+  - [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md#ipc-ハンドラ二重登録防止パターンut-fix-ipc-handler-double-reg-001-2026-02-14実装)
+  - [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md#ut-fix-ipc-handler-double-reg-001-ipc-ハンドラ二重登録防止)
+
+### [IPC] Main Process ライフサイクル修正ワークフロー
+
+- **状況**: macOS の `activate` イベントで IPC ハンドラが二重登録され、`ipcMain.handle()` が例外を送出するバグ
+- **アプローチ**:
+  - `Object.values(IPC_CHANNELS)` で全チャンネルを動的列挙し、追加漏れを防止
+  - `removeHandler()` + `removeAllListeners()` の両方を呼び出し（handle/on 両対応）
+  - `themeWatcherUnsubscribe` 等の IPC 外リスナーも同時管理（モジュールスコープ変数）
+  - TDD Red-Green パターンで7テスト先行作成 → 実装 → 全 GREEN
+- **結果**: 2ファイル修正 + 7テスト追加のみで完了。4層セキュリティ防御は影響なし
+- **教訓**:
+  - `ipcMain.handle()` と `ipcMain.on()` は二重登録時の動作が根本的に異なる（例外 vs 累積）
+  - IPC_CHANNELS 定数の構造（フラット or ネスト）を事前確認してから全走査ロジックを設計する
+  - IPC ハンドラ以外のプロセスレベルリスナー（nativeTheme 等）も同時に管理する必要がある
+  - macOS 固有のライフサイクル（activate）は Windows/Linux に影響しないことを互換性テストで確認
+- **適用条件**: Electron アプリで macOS ドックアイコンクリック時のウィンドウ再生成がある場合
+- **関連タスク**: UT-FIX-IPC-HANDLER-DOUBLE-REG-001
+- **発見日**: 2026-02-14
 
 ### [Security] TDDセキュリティテスト分類体系（UT-9B-H-003）
 
