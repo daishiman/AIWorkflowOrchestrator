@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-13T11:20:18.466Z",
-  "totalKeywords": 1117,
+  "generated": "2026-02-14T05:27:19.335Z",
+  "totalKeywords": 1121,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2806,6 +2806,18 @@
       "lessons-learned.md"
     ],
     "セキュリティ強化": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
+      "lessons-learned.md"
+    ],
+    "DOUBLE": [
+      "lessons-learned.md"
+    ],
+    "REG": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ二重登録防止": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [

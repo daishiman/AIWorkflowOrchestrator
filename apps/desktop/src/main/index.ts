@@ -1,7 +1,7 @@
 import { app, BrowserWindow, shell, session } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import { registerAllIpcHandlers } from "./ipc";
+import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "./ipc";
 import { setupCustomProtocol } from "./protocol";
 import { IPC_CHANNELS } from "../preload/channels";
 import { getSupabaseClient, createSecureStorage } from "./infrastructure";
@@ -273,6 +273,7 @@ if (!gotSingleInstanceLock) {
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) {
+        unregisterAllIpcHandlers();
         mainWindowRef = createWindow();
         registerAllIpcHandlers(mainWindowRef);
       }

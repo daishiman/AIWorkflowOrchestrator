@@ -55,10 +55,13 @@
 
 ## Electron / ランタイム
 
-### P5: リスナー二重登録
+### P5: リスナー二重登録（Renderer / Main 両プロセス）
 
-- **教訓**: React StrictMode では `useEffect` が2回実行される。リスナー登録はモジュールレベルでガードが必要
+- **教訓（Renderer側）**: React StrictMode では `useEffect` が2回実行される。リスナー登録はモジュールレベルでガードが必要
+- **教訓（Main Process側）**: `ipcMain.handle()` は同一チャンネルへの二重登録で例外を送出する。`ipcMain.on()` は暗黙的にリスナーが累積される。macOS `activate` イベント等でのハンドラ再登録時に発生しやすい
+- **対策（Main Process）**: `unregisterAllIpcHandlers()` で全チャンネルを一括解除後に `registerAllIpcHandlers()` で再登録する
 - **ルール**: [03-state-management.md#リスナー管理](./03-state-management.md)
+- **関連タスク**: UT-FIX-IPC-HANDLER-DOUBLE-REG-001
 
 ### P6: OAuth コールバックパース誤り
 

@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-14 | 1.12.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の苦戦箇所を2件追記（IPC_CHANNELS全走査の前提確認、IPC外リスナー解除漏れの防止） |
+| 2026-02-14 | 1.11.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 教訓追加（ipcMain.handle()二重登録例外、macOS activateライフサイクル） |
 | 2026-02-13 | 1.10.0 | TASK-FIX-13-1 追加教訓2件（ドキュメント偏重による実装検証省略、並列エージェント成果物品質保証） |
 | 2026-02-13 | 1.9.0 | TASK-FIX-13-1 苦戦箇所3件追加（deprecated削除範囲境界、`name`参照誤検出、Phase 12仕様同期漏れ防止） |
 | 2026-02-13 | 1.8.0 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓3件追加（happy-dom/userEvent非互換、テスト実行ディレクトリ依存、jsdom切替副作用） |
@@ -86,8 +88,12 @@
    - [苦戦箇所1: happy-dom環境でのuserEvent非互換](#1-happy-dom環境でのuserevent非互換)
    - [苦戦箇所2: テスト実行ディレクトリ依存問題](#2-テスト実行ディレクトリ依存問題)
    - [苦戦箇所3: jsdom切り替え時の副作用](#3-jsdom切り替え時の副作用)
-7. [関連ドキュメント](#関連ドキュメント)
-8. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+7. [UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止](#ut-fix-ipc-handler-double-reg-001-ipcハンドラ二重登録防止)
+   - [教訓1: ipcMain.handle()の二重登録は例外送出](#1-ipcmainhandleの二重登録は例外送出)
+   - [教訓2: IPC_CHANNELS 全走査の前提を先に検証する](#2-ipc_channels-全走査の前提を先に検証する)
+   - [教訓3: IPC外リスナーの解除漏れを同時に防ぐ](#3-ipc外リスナーの解除漏れを同時に防ぐ)
+8. [関連ドキュメント](#関連ドキュメント)
+9. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -1216,6 +1222,55 @@ describe("パストラバーサル攻撃テスト", () => {
 | security-electron-ipc.md | v1.3.0: L3ドメイン検証パターン完了記録 |
 | architecture-implementation-patterns.md | IPC L3セキュリティハードニングパターン追加 |
 | 06-known-pitfalls.md | P11関連: PostToolUseフックによるMarkdownコードブロック変形 |
+
+---
+
+## UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| 目的 | macOS ドックアイコンクリック時の IPC ハンドラ二重登録例外を防止 |
+| 完了日 | 2026-02-14 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. ipcMain.handle()の二重登録は例外送出
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | `ipcMain.handle()` は同一チャンネルに2回登録すると `Error: Attempted to register a second handler for ...` 例外を送出する。`ipcMain.on()` は暗黙的にリスナーを追加する動作とは根本的に異なる |
+| 発生条件 | macOS で全ウィンドウを閉じた後、ドックアイコンをクリック → `activate` イベント発火 → `registerAllIpcHandlers()` が再実行される |
+| 原因 | `ipcMain.handle()` はプロセスレベルで登録されるため、BrowserWindow の破棄では解除されない。macOS ではアプリプロセスは終了しないため、ハンドラが残存する |
+| 解決策 | `unregisterAllIpcHandlers()` 関数を新設し、activate ハンドラ内で unregister → createWindow → register の順序で実行する |
+| 教訓 | Electron の IPC API は `handle`/`on` で二重登録時の動作が異なることを理解し、ライフサイクルに応じたハンドラ管理が必要 |
+| 関連パターン | [architecture-implementation-patterns.md - IPC ハンドラ二重登録防止パターン](./architecture-implementation-patterns.md) |
+| 関連 Pitfall | [06-known-pitfalls.md - P5: リスナー二重登録](../../../rules/06-known-pitfalls.md) |
+
+#### 2. IPC_CHANNELS 全走査の前提を先に検証する
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | `Object.values(IPC_CHANNELS)` で全解除する方針は有効だが、`IPC_CHANNELS` がネスト構造の場合はチャンネル漏れが発生する可能性がある |
+| 発生条件 | ライフサイクル修正を急いで実装する際に、チャンネル定数の構造確認を省略する |
+| 原因 | ハンドラ解除ロジックを先に実装し、チャンネル定義のデータ構造検証を後回しにした |
+| 解決策 | `channels.ts` の構造を先に確認し、フラット配列化される前提を明文化してから `unregisterAllIpcHandlers()` を実装する |
+| 教訓 | 「全走査で安全」は前提条件つき。定数構造の確認を先行することで解除漏れと誤検知を防げる |
+| 関連パターン | [security-electron-ipc.md - IPC ハンドラライフサイクル管理](./security-electron-ipc.md#ipc-ハンドラライフサイクル管理) |
+
+#### 3. IPC外リスナーの解除漏れを同時に防ぐ
+
+| 項目 | 内容 |
+|------|------|
+| 問題 | `IPC_CHANNELS` の全解除だけでは `setupThemeWatcher()` の `nativeTheme` リスナーは解除されず、再登録で監視が重複する |
+| 発生条件 | IPC ハンドラ二重登録の修正に集中し、IPCチャネル以外のイベントリスナーを同一ライフサイクルで見落とす |
+| 原因 | 解除対象を「ipcMain のみ」と誤って限定し、モジュールスコープの unsubscribe 管理を設計に含めなかった |
+| 解決策 | `themeWatcherUnsubscribe` を保持し、`unregisterAllIpcHandlers()` で IPC 解除と同時に `setupThemeWatcher` の解除処理を実行する |
+| 教訓 | Main Process のライフサイクル修正は「IPC + 非IPCリスナー」を1セットで扱うと再発を防ぎやすい |
+| 関連パターン | [architecture-implementation-patterns.md - IPC ハンドラ二重登録防止パターン](./architecture-implementation-patterns.md#ipc-ハンドラ二重登録防止パターンut-fix-ipc-handler-double-reg-001-2026-02-14実装) |
 
 ---
 

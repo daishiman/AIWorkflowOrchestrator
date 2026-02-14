@@ -43,6 +43,15 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-14 - UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 1-12完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（要件定義〜ドキュメント更新）
+- **Result**: ✓ 成功
+- **Notes**: IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加、activate イベントハンドラ修正。7テスト全PASS。Phase 10 PASS判定
+
+---
+
 ## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT スキル改善（パターン追記）]
 
 - **Agent**: task-specification-creator
