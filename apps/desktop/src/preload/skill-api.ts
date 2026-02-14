@@ -127,6 +127,19 @@ export interface SkillAPI {
 }
 
 /**
+ * IpcResult<T> - Main Process IPC ハンドラのレスポンスラッパー型
+ *
+ * skillHandlers.ts のハンドラは以下の形式でレスポンスを返す:
+ * - 成功: { success: true, data: T }
+ * - 失敗: { success: false, error: string }
+ */
+interface IpcResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
+/**
  * safeInvoke - 許可されたチャンネルのみ invoke を実行
  */
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
@@ -134,6 +147,29 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
     return Promise.reject(new Error(`Channel ${channel} is not allowed`));
   }
   return ipcRenderer.invoke(channel, ...args);
+}
+
+/**
+ * safeInvokeUnwrap - IPC レスポンスラッパーを展開して data フィールドを返す
+ *
+ * Main Process の IPC ハンドラが { success: true, data: T } 形式で返す
+ * レスポンスを展開し、T を直接返す。
+ * { success: false, error: string } の場合は Error をスローする。
+ *
+ * @param channel - IPC チャンネル名
+ * @param args - IPC 引数
+ * @returns data フィールドの値（型 T）
+ * @throws Error - success が false の場合、または IPC 通信エラーの場合
+ */
+async function safeInvokeUnwrap<T>(
+  channel: string,
+  ...args: unknown[]
+): Promise<T> {
+  const result = await safeInvoke<IpcResult<T>>(channel, ...args);
+  if (!result.success) {
+    throw new Error(result.error || `IPC call failed: ${channel}`);
+  }
+  return result.data as T;
 }
 
 /**
@@ -189,12 +225,14 @@ export const skillAPI: SkillAPI = {
 
   // === Skill Management API ===
 
-  list: (): Promise<SkillMetadata[]> => safeInvoke(IPC_CHANNELS.SKILL_LIST),
+  list: (): Promise<SkillMetadata[]> =>
+    safeInvokeUnwrap(IPC_CHANNELS.SKILL_LIST),
 
   getImported: (): Promise<ImportedSkill[]> =>
-    safeInvoke(IPC_CHANNELS.SKILL_GET_IMPORTED),
+    safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_IMPORTED),
 
-  rescan: (): Promise<SkillMetadata[]> => safeInvoke(IPC_CHANNELS.SKILL_SCAN),
+  rescan: (): Promise<SkillMetadata[]> =>
+    safeInvokeUnwrap(IPC_CHANNELS.SKILL_SCAN),
 
   import: (skillName: string): Promise<ImportedSkill> =>
     safeInvoke(IPC_CHANNELS.SKILL_IMPORT, skillName),

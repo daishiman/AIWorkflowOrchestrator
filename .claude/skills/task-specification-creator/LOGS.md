@@ -43,6 +43,68 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装知見記録
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| Agent        | task-specification-creator |
+| 操作         | 実装苦戦箇所・パターンの仕様書反映記録（aiworkflow-requirements と同期） |
+| 対象ファイル | LOGS.md, SKILL.md |
+| 結果         | success |
+| 備考         | safeInvokeUnwrap パターン導入に伴う実装知見（type erasure、ハンドラ応答形式不統一、テストモック波及修正19箇所）を aiworkflow-requirements の3ファイルに反映完了 |
+
+---
+
+## [2026-02-14 - UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 12再監査・是正]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新・未タスク化）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `phase-12-documentation.md` / `documentation-changelog.md` の「完了予定」残存・誤参照（`api-ipc-skill.md`）・`generate-index.mjs` 記述を是正
+  - Phase 10 MINOR 2件を未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）として `docs/30-workflows/unassigned-task/` に正式作成
+  - `spec-update-workflow.md` に「仕様書参照パスの実在確認（test -f）」チェックを追加
+  - `verify-unassigned-links.js` によるリンク整合検証を再実施
+
+---
+
+## [2026-02-14 - UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 1-12完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（要件定義〜ドキュメント更新）
+- **Result**: ✓ 成功
+- **Notes**: IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加、activate イベントハンドラ修正。7テスト全PASS。Phase 10 PASS判定
+
+---
+
+## 2026-02-14: TASK-FIX-14-1 実装パターン体系化（aiworkflow-requirements更新）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | ログ移行パターンの体系化、スキル仕様書最適化 |
+| 対象ファイル | logging-migration-guide.md（新規）, patterns.md, development-guidelines.md, lessons-learned.md, SKILL.md |
+| 結果         | success |
+| 備考         | P1/P25対策として task-specification-creator LOGS.md も同時更新 |
+
+---
+
+## [2026-02-14 - TASK-FIX-14-1 Phase 12再監査（未タスク登録漏れ是正）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION` の未タスク指示書を `docs/30-workflows/unassigned-task/` に作成
+  - `task-workflow.md` と `interfaces-agent-sdk-history.md` の残課題テーブルへ同時登録
+  - `documentation-changelog.md` / `implementation-guide.md` / `unassigned-task-detection.md` の誤記（PR時先送り・誤ファイル名）を修正
+  - LOGS.md / SKILL.md の4ファイル同時更新を実施
+
+---
 ## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT スキル改善（パターン追記）]
 
 - **Agent**: task-specification-creator

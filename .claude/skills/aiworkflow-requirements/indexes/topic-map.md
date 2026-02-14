@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-13
+> 自動生成: 2026-02-14
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -164,17 +164,17 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L118 |
 | デスクトップ（Electron）実装パターン | L184 |
-| パフォーマンス最適化パターン | L536 |
-| セキュリティ実装パターン | L574 |
-| テスト実装パターン | L679 |
-| アクセシビリティ実装パターン | L1098 |
-| 関連ドキュメント | L1123 |
-| スキル作成実装パターン（TASK-9B-G） | L1135 |
-| 外部API データ正規化パターン | L1259 |
-| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1298 |
-| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1360 |
-| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1414 |
-| 変更履歴 | L1471 |
+| パフォーマンス最適化パターン | L599 |
+| セキュリティ実装パターン | L637 |
+| テスト実装パターン | L742 |
+| アクセシビリティ実装パターン | L1161 |
+| 関連ドキュメント | L1186 |
+| スキル作成実装パターン（TASK-9B-G） | L1198 |
+| 外部API データ正規化パターン | L1322 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1361 |
+| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1423 |
+| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1477 |
+| 変更履歴 | L1573 |
 
 ### references/architecture-monorepo.md
 
@@ -190,17 +190,17 @@ node scripts/list-specs.js --topics
 | 設計思想 | L14 |
 | レイヤー構成 | L41 |
 | デザインパターン | L71 |
-| UI/UXアーキテクチャ | L101 |
-| セキュリティアーキテクチャ | L124 |
-| 状態管理アーキテクチャ | L158 |
-| データフローアーキテクチャ | L183 |
-| ディレクトリ構造 | L224 |
-| データ構造（型システム） | L281 |
-| 機能追加パターン | L315 |
-| 技術スタック | L350 |
-| テンプレート | L362 |
-| 関連ドキュメント | L382 |
-| 変更履歴 | L423 |
+| UI/UXアーキテクチャ | L102 |
+| セキュリティアーキテクチャ | L125 |
+| 状態管理アーキテクチャ | L159 |
+| データフローアーキテクチャ | L184 |
+| ディレクトリ構造 | L225 |
+| データ構造（型システム） | L282 |
+| 機能追加パターン | L316 |
+| 技術スタック | L351 |
+| テンプレート | L363 |
+| 関連ドキュメント | L383 |
+| 変更履歴 | L424 |
 
 ### references/architecture-patterns.md
 
@@ -248,8 +248,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
 | 残課題（未タスク） | L529 |
-| 関連ドキュメント | L542 |
-| 変更履歴 | L558 |
+| 関連ドキュメント | L543 |
+| 変更履歴 | L559 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -266,17 +266,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L621 |
-| SkillSlice型定義（TASK-6-1） | L673 |
-| ModifierSkill（スライド逆同期機能） | L765 |
-| ChatPanel統合（TASK-7D） | L799 |
-| SkillFileManager（TASK-9A-A） | L834 |
-| テストアーキテクチャ（TASK-8C-A） | L922 |
-| 完了タスク | L974 |
-| 関連ドキュメント | L1192 |
-| SkillCreatorService（TASK-9B-G） | L1205 |
-| 完了タスク | L1453 |
-| 変更履歴 | L1536 |
+| SkillImportStore（TASK-2B） | L642 |
+| SkillSlice型定義（TASK-6-1） | L694 |
+| ModifierSkill（スライド逆同期機能） | L786 |
+| ChatPanel統合（TASK-7D） | L820 |
+| SkillFileManager（TASK-9A-A） | L855 |
+| テストアーキテクチャ（TASK-8C-A） | L943 |
+| 完了タスク | L995 |
+| 関連ドキュメント | L1213 |
+| SkillCreatorService（TASK-9B-G） | L1226 |
+| 完了タスク | L1474 |
+| 変更履歴 | L1557 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -990,14 +990,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L22 |
-| Content Security Policy (CSP) | L36 |
-| IPC通信のセキュリティ | L53 |
-| 実装例: historyAPI | L79 |
-| 実装例: slideSettingsAPI | L131 |
-| 実装例: skillCreatorAPI | L180 |
-| 自動更新のセキュリティ | L251 |
-| 関連ドキュメント | L262 |
+| セキュリティ設定 | L23 |
+| Content Security Policy (CSP) | L37 |
+| IPC通信のセキュリティ | L54 |
+| 実装例: historyAPI | L80 |
+| 実装例: slideSettingsAPI | L132 |
+| 実装例: skillCreatorAPI | L181 |
+| 自動更新のセキュリティ | L283 |
+| 関連ドキュメント | L294 |
 
 ### references/security-implementation.md
 
@@ -1388,19 +1388,19 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| ロギング戦略 | L10 |
-| キャッシング戦略 | L65 |
-| データマイグレーション | L104 |
-| コードレビューガイドライン | L143 |
-| パフォーマンス最適化 | L192 |
-| 国際化（i18n） | L291 |
-| Git ワークフロー | L321 |
-| 命名規則 | L357 |
-| デバッグガイド | L405 |
-| リリースプロセス | L459 |
-| バックアップ・リカバリ | L488 |
-| 環境構築ガイド | L525 |
-| 関連ドキュメント | L568 |
-| 変更履歴 | L581 |
+| キャッシング戦略 | L88 |
+| データマイグレーション | L127 |
+| コードレビューガイドライン | L166 |
+| パフォーマンス最適化 | L215 |
+| 国際化（i18n） | L314 |
+| Git ワークフロー | L344 |
+| 命名規則 | L380 |
+| デバッグガイド | L428 |
+| リリースプロセス | L482 |
+| バックアップ・リカバリ | L511 |
+| 環境構築ガイド | L548 |
+| 関連ドキュメント | L591 |
+| 変更履歴 | L604 |
 
 ### references/directory-structure.md
 
@@ -1473,18 +1473,21 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L41 |
-| 関連ドキュメント | L94 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L105 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L251 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L306 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L588 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L676 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L895 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1042 |
-| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1149 |
-| テンプレート（新規教訓追加用） | L1223 |
-| 品質チェックリスト | L1295 |
+| 目次 | L51 |
+| 関連ドキュメント | L128 |
+| TASK-FIX-14-1: console → electron-log 移行 | L138 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L242 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L388 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L443 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L725 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L813 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1032 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1179 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1286 |
+| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1360 |
+| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1477 |
+| テンプレート（新規教訓追加用） | L1525 |
+| 品質チェックリスト | L1597 |
 
 ### references/llm-embedding.md
 
@@ -1555,13 +1558,27 @@ node scripts/list-specs.js --topics
 | 開発・デバッグ | L309 |
 | 関連ドキュメント | L330 |
 
+### references/logging-migration-guide.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L9 |
+| 変更履歴 | L21 |
+| 目次 | L29 |
+| ログレベルマッピング基準 | L40 |
+| 移行手順チェックリスト | L63 |
+| コードパターン | L91 |
+| テストモックテンプレート | L133 |
+| 条件ガード削除パターン | L184 |
+| 注意事項・ピットフォール | L227 |
+| 関連ドキュメント | L268 |
+
 ### references/patterns.md
 
 | セクション | 行 |
 |------------|----|\n| 目次 | L9 |
-| 成功パターン | L35 |
-| 失敗パターン（避けるべきこと） | L474 |
-| ガイドライン | L704 |
+| 成功パターン | L37 |
+| 失敗パターン（避けるべきこと） | L513 |
+| ガイドライン | L767 |
 
 ### references/plugin-development.md
 
@@ -1812,9 +1829,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L545 |
-| 関連ドキュメント | L631 |
-| 変更履歴 | L641 |
+| 残課題（未タスク） | L608 |
+| 関連ドキュメント | L701 |
+| 変更履歴 | L711 |
 
 ### references/testing-accessibility.md
 

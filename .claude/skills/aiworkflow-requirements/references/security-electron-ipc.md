@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.4.0     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラライフサイクル管理セクション追加（二重登録防止パターン） |
 | v1.3.1     | 2026-02-12 | UT-9B-H-003仕様追補: skillCreatorHandlers.ts 実装に合わせ、エラーサニタイズ仕様（既定文言/パス・機密情報マスク）と schemaName ホワイトリスト検証の返却値を明記 |
 | v1.3.0     | 2026-02-12 | UT-9B-H-003: SkillCreator IPCセキュリティ強化完了。validatePath（パストラバーサル防止）、sanitizeErrorMessage（内部情報漏洩防止）、ALLOWED_SCHEMA_NAMES（スキーマ名ホワイトリスト）追加。116テスト全PASS |
 | v1.2.0     | 2026-02-12 | TASK-9B-H: skillCreatorAPIセキュリティ実装例追加。6チャンネル、Sender検証、エラーサニタイズ仕様 |
@@ -245,6 +246,37 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 | UT-9B-H-005 | Preload API二重公開パターン統一                             | L3横展開評価                         |
 
 > 上記各未タスクは UT-9B-H-003（SkillCreator IPCセキュリティ強化）の苦戦箇所（lessons-learned.md v1.6.0）を反映済み。実施時にはセキュリティ検証パターン（validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES）との整合性を維持すること。
+
+---
+
+### IPC ハンドラライフサイクル管理
+
+#### 二重登録防止パターン（UT-FIX-IPC-HANDLER-DOUBLE-REG-001）
+
+macOS の `activate` イベントでウィンドウを再作成する際、IPC ハンドラの再登録前に
+全ハンドラを解除する。
+
+| ステップ | API                                  | 目的                                 |
+| -------- | ------------------------------------ | ------------------------------------ |
+| 1        | `unregisterAllIpcHandlers()`         | 全チャンネルのハンドラ・リスナー解除 |
+| 2        | `createWindow()`                     | 新しい BrowserWindow を作成          |
+| 3        | `registerAllIpcHandlers(mainWindow)` | 新しい参照で全ハンドラを再登録       |
+
+**セキュリティ上の注意**: unregister → register の間に極めて短いハンドラ未登録期間が発生するが、ウィンドウが存在しないため Renderer からのリクエストは到達しない。仮にリクエストが到達した場合、`Error: No handler registered` が返され、フェイルセキュアとして機能する。
+
+**Electron API の二重登録挙動の違い**:
+
+| API                | 二重登録時の挙動                       | 解除 API                              |
+| ------------------ | -------------------------------------- | ------------------------------------- |
+| `ipcMain.handle()` | 例外送出（同一チャンネルに2つ目不可）  | `ipcMain.removeHandler(channel)`      |
+| `ipcMain.on()`     | 許可（リスナーが複数登録される）       | `ipcMain.removeAllListeners(channel)` |
+
+**関連未タスク（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 から派生）**:
+
+| タスクID                             | タスク名                                          | 優先度 |
+| ------------------------------------ | ------------------------------------------------- | ------ |
+| task-sec-ipc-lifecycle-audit-001     | Electron ライフサイクルイベント IPC リスナー管理監査 | 中     |
+| task-imp-ipc-registration-verify-001 | IPC ハンドラ登録整合性自動検証テスト               | 中     |
 
 ---
 

@@ -56,6 +56,31 @@ import {
   ContextBuilder,
 } from "../services/chat-edit";
 
+// setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
+let themeWatcherUnsubscribe: (() => void) | null = null;
+
+/**
+ * 全 IPC ハンドラを解除する
+ * activate イベントで registerAllIpcHandlers() を再実行する前に呼び出す
+ *
+ * IPC_CHANNELS 定数から全チャンネル名を取得して removeHandler() と
+ * removeAllListeners() を実行する。ipcMain.removeHandler() は
+ * 未登録チャンネルでもエラーを出さないため安全に全チャンネルを走査できる。
+ */
+export function unregisterAllIpcHandlers(): void {
+  const allChannels = Object.values(IPC_CHANNELS);
+  for (const channel of allChannels) {
+    ipcMain.removeHandler(channel);
+    ipcMain.removeAllListeners(channel);
+  }
+
+  // setupThemeWatcher のリスナーも解除
+  if (themeWatcherUnsubscribe) {
+    themeWatcherUnsubscribe();
+    themeWatcherUnsubscribe = null;
+  }
+}
+
 /**
  * Register all IPC handlers
  * Call this after the main window is created
@@ -79,7 +104,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   registerDialogHandlers(mainWindow);
 
   // Setup theme watcher to broadcast system theme changes
-  setupThemeWatcher(nativeTheme, () => BrowserWindow.getAllWindows());
+  // 再登録時は既存のリスナーを解除してから再設定する
+  themeWatcherUnsubscribe = setupThemeWatcher(nativeTheme, () =>
+    BrowserWindow.getAllWindows(),
+  );
 
   // Register auth, profile, and avatar handlers (only if Supabase is configured)
   const supabase = getSupabaseClient();

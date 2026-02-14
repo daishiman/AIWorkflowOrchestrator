@@ -169,11 +169,10 @@ describe("統一SkillAPI - 一覧・管理メソッド", () => {
   describe("list()", () => {
     it("safeInvokeでSKILL_LISTチャンネルを呼び出す", async () => {
       const mockMetadata = [createMockSkillMetadata()];
-      mockInvoke.mockResolvedValue(mockMetadata);
+      mockInvoke.mockResolvedValue({ success: true, data: mockMetadata });
 
       await skillAPI.list();
 
-      // RED: スタブはipcRenderer.invokeを呼ばず Promise.resolve([]) を返す
       expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_LIST);
     });
 
@@ -182,11 +181,10 @@ describe("統一SkillAPI - 一覧・管理メソッド", () => {
         createMockSkillMetadata({ name: "skill-a" }),
         createMockSkillMetadata({ name: "skill-b" }),
       ];
-      mockInvoke.mockResolvedValue(mockMetadata);
+      mockInvoke.mockResolvedValue({ success: true, data: mockMetadata });
 
       const result = await skillAPI.list();
 
-      // RED: スタブは空配列を返す
       expect(result).toEqual(mockMetadata);
       expect(result).toHaveLength(2);
     });
@@ -195,11 +193,10 @@ describe("統一SkillAPI - 一覧・管理メソッド", () => {
   describe("getImported()", () => {
     it("safeInvokeでSKILL_GET_IMPORTEDチャンネルを呼び出す", async () => {
       const mockImported = [createMockImportedSkill()];
-      mockInvoke.mockResolvedValue(mockImported);
+      mockInvoke.mockResolvedValue({ success: true, data: mockImported });
 
       await skillAPI.getImported();
 
-      // RED: スタブはipcRenderer.invokeを呼ばない
       expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_GET_IMPORTED);
     });
 
@@ -207,11 +204,10 @@ describe("統一SkillAPI - 一覧・管理メソッド", () => {
       const mockImported = [
         createMockImportedSkill({ name: "imported-skill" }),
       ];
-      mockInvoke.mockResolvedValue(mockImported);
+      mockInvoke.mockResolvedValue({ success: true, data: mockImported });
 
       const result = await skillAPI.getImported();
 
-      // RED: スタブは空配列を返す
       expect(result).toEqual(mockImported);
     });
   });
@@ -267,21 +263,19 @@ describe("統一SkillAPI - 一覧・管理メソッド", () => {
   describe("rescan()", () => {
     it("safeInvokeでSKILL_SCANチャンネルを呼び出す", async () => {
       const mockMetadata = [createMockSkillMetadata()];
-      mockInvoke.mockResolvedValue(mockMetadata);
+      mockInvoke.mockResolvedValue({ success: true, data: mockMetadata });
 
       await skillAPI.rescan();
 
-      // RED: スタブはipcRenderer.invokeを呼ばない
       expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_SCAN);
     });
 
     it("SkillMetadata[]型で結果を返す", async () => {
       const mockMetadata = [createMockSkillMetadata({ name: "rescanned" })];
-      mockInvoke.mockResolvedValue(mockMetadata);
+      mockInvoke.mockResolvedValue({ success: true, data: mockMetadata });
 
       const result = await skillAPI.rescan();
 
-      // RED: スタブは空配列を返す
       expect(result).toEqual(mockMetadata);
     });
   });
@@ -671,7 +665,7 @@ describe("統一SkillAPI - 呼び出し元移行テスト", () => {
         createMockSkillMetadata({ name: "skill-1" }),
         createMockSkillMetadata({ name: "skill-2" }),
       ];
-      mockInvoke.mockResolvedValue(mockMetadata);
+      mockInvoke.mockResolvedValue({ success: true, data: mockMetadata });
 
       const result = await skillAPI.list();
 
@@ -831,7 +825,7 @@ describe("統一SkillAPI - 統合テスト連携", () => {
       createMockSkillMetadata({ name: "existing" }),
       createMockSkillMetadata({ name: "new-skill" }),
     ];
-    mockInvoke.mockResolvedValueOnce(updatedList);
+    mockInvoke.mockResolvedValueOnce({ success: true, data: updatedList });
 
     // RED: スタブは空配列を返す
     const result = await skillAPI.list();
@@ -1028,7 +1022,7 @@ describe("Phase 6: イベントリスナーのライフサイクルテスト", (
 // ================================================================
 describe("Phase 6: IPCチャンネル統合テスト", () => {
   it("list() はSKILL_LISTチャンネル（'skill:list'）を呼ぶ", async () => {
-    mockInvoke.mockResolvedValueOnce([]);
+    mockInvoke.mockResolvedValueOnce({ success: true, data: [] });
     await skillAPI.list();
     expect(mockInvoke).toHaveBeenCalledWith("skill:list");
   });
@@ -1059,13 +1053,13 @@ describe("Phase 6: IPCチャンネル統合テスト", () => {
   });
 
   it("getImported() はSKILL_GET_IMPORTEDチャンネルを呼ぶ", async () => {
-    mockInvoke.mockResolvedValueOnce([]);
+    mockInvoke.mockResolvedValueOnce({ success: true, data: [] });
     await skillAPI.getImported();
     expect(mockInvoke).toHaveBeenCalledWith("skill:getImported");
   });
 
   it("rescan() はSKILL_SCANチャンネルを呼ぶ", async () => {
-    mockInvoke.mockResolvedValueOnce([]);
+    mockInvoke.mockResolvedValueOnce({ success: true, data: [] });
     await skillAPI.rescan();
     expect(mockInvoke).toHaveBeenCalledWith("skill:scan");
   });

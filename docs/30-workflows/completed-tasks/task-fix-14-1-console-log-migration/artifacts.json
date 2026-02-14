@@ -1,0 +1,174 @@
+{
+  "taskId": "TASK-FIX-14-1-CONSOLE-LOG-MIGRATION",
+  "taskName": "本番コードのconsole使用をelectron-logに移行",
+  "featureName": "task-fix-14-1-console-log-migration",
+  "branch": "refactor/task-fix-14-1-console-log-migration",
+  "createdAt": "2026-02-14",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "specFile": "phase-1-requirements.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入基準書"
+        },
+        {
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義書"
+        }
+      ],
+      "dependencies": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "specFile": "phase-2-design.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-2/migration-mapping.md",
+          "description": "移行マッピング設計書"
+        },
+        {
+          "path": "outputs/phase-2/test-modification-design.md",
+          "description": "テスト修正設計書"
+        }
+      ],
+      "dependencies": ["phase-1"]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "specFile": "phase-3-design-review.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-3/review-report.md",
+          "description": "レビューレポート"
+        }
+      ],
+      "dependencies": ["phase-1", "phase-2"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "specFile": "phase-4-test-creation.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-4/test-modification-plan.md",
+          "description": "テスト修正計画書"
+        }
+      ],
+      "dependencies": ["phase-3"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "specFile": "phase-5-implementation.md",
+      "artifacts": [],
+      "dependencies": ["phase-4"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "specFile": "phase-6-test-enhancement.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ],
+      "dependencies": ["phase-5"]
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "specFile": "phase-7-coverage-check.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-7/coverage-verification.md",
+          "description": "カバレッジ確認レポート"
+        }
+      ],
+      "dependencies": ["phase-6"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "specFile": "phase-8-refactoring.md",
+      "artifacts": [],
+      "dependencies": ["phase-7"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "specFile": "phase-9-quality-assurance.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質検証レポート"
+        }
+      ],
+      "dependencies": ["phase-8"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-10/final-review-report.md",
+          "description": "最終レビューレポート"
+        }
+      ],
+      "dependencies": ["phase-9"]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "specFile": "phase-11-manual-testing.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テスト結果レポート"
+        }
+      ],
+      "dependencies": ["phase-10"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1 + Part 2）"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        }
+      ],
+      "dependencies": ["phase-11"]
+    },
+    "phase-13": {
+      "name": "PR作成・完了",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [],
+      "dependencies": ["phase-12"]
+    }
+  }
+}

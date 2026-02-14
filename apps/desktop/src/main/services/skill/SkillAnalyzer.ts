@@ -6,6 +6,7 @@
  */
 import * as fs from "fs/promises";
 import * as path from "path";
+import log from "electron-log";
 import type {
   ImportedSkill,
   SkillAnalysis,
@@ -210,7 +211,7 @@ export class SkillAnalyzer {
       return this.parseAIResponse(response.content);
     } catch (error) {
       // SDK障害時はデフォルト結果を返す
-      console.error("AI分析中にエラーが発生しました:", error);
+      log.error("[SkillAnalyzer] AI分析中にエラーが発生しました:", error);
       return {
         categories: [],
         suggestions: [],

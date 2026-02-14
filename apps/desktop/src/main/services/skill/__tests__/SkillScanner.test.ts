@@ -10,6 +10,15 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import { tmpdir } from "os";
 
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 // Mock fs/promises for unit tests
 vi.mock("fs/promises");
 

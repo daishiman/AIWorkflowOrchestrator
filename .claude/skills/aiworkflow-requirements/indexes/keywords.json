@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-13T11:20:18.466Z",
-  "totalKeywords": 1117,
+  "generated": "2026-02-14T11:24:48.896Z",
+  "totalKeywords": 1140,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -212,6 +212,7 @@
       "lessons-learned.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
+      "logging-migration-guide.md",
       "quality-e2e-testing.md",
       "quality-requirements.md",
       "rag-query-pipeline.md",
@@ -323,6 +324,7 @@
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
       "local-agent.md",
+      "logging-migration-guide.md",
       "overview.md",
       "plugin-development.md",
       "quality-e2e-testing.md",
@@ -1697,7 +1699,8 @@
     ],
     "メタ情報": [
       "csrf-state-parameter.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "logging-migration-guide.md"
     ],
     "認証フローにおける統合": [
       "csrf-state-parameter.md"
@@ -1859,7 +1862,9 @@
       "technology-desktop.md"
     ],
     "electron": [
-      "deployment-electron.md"
+      "deployment-electron.md",
+      "lessons-learned.md",
+      "logging-migration-guide.md"
     ],
     "updater": [
       "deployment-electron.md"
@@ -2716,8 +2721,41 @@
     ],
     "目次": [
       "lessons-learned.md",
+      "logging-migration-guide.md",
       "master-design.md",
       "patterns.md"
+    ],
+    "console": [
+      "lessons-learned.md",
+      "logging-migration-guide.md"
+    ],
+    "log": [
+      "lessons-learned.md",
+      "logging-migration-guide.md"
+    ],
+    "移行": [
+      "lessons-learned.md"
+    ],
+    "カバレッジ": [
+      "lessons-learned.md"
+    ],
+    "になる": [
+      "lessons-learned.md"
+    ],
+    "ソースファイルパスを引数に指定": [
+      "lessons-learned.md"
+    ],
+    "正しい方法": [
+      "lessons-learned.md"
+    ],
+    "テストディレクトリを指定して": [
+      "lessons-learned.md"
+    ],
+    "grep": [
+      "lessons-learned.md"
+    ],
+    "で抽出": [
+      "lessons-learned.md"
     ],
     "統合テスト有効化": [
       "lessons-learned.md"
@@ -2747,9 +2785,6 @@
       "lessons-learned.md"
     ],
     "個別セレクタ": [
-      "lessons-learned.md"
-    ],
-    "移行": [
       "lessons-learned.md"
     ],
     "ハンドラー登録": [
@@ -2806,6 +2841,27 @@
       "lessons-learned.md"
     ],
     "セキュリティ強化": [
+      "lessons-learned.md"
+    ],
+    "RESPONSE": [
+      "lessons-learned.md"
+    ],
+    "UNWRAP": [
+      "lessons-learned.md"
+    ],
+    "レスポンスラッパー未展開修正": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
+      "lessons-learned.md"
+    ],
+    "DOUBLE": [
+      "lessons-learned.md"
+    ],
+    "REG": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ二重登録防止": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [
@@ -2946,6 +3002,27 @@
     ],
     "開発・デバッグ": [
       "local-agent.md"
+    ],
+    "ログ移行ガイド": [
+      "logging-migration-guide.md"
+    ],
+    "ログレベルマッピング基準": [
+      "logging-migration-guide.md"
+    ],
+    "移行手順チェックリスト": [
+      "logging-migration-guide.md"
+    ],
+    "コードパターン": [
+      "logging-migration-guide.md"
+    ],
+    "テストモックテンプレート": [
+      "logging-migration-guide.md"
+    ],
+    "条件ガード削除パターン": [
+      "logging-migration-guide.md"
+    ],
+    "注意事項・ピットフォール": [
+      "logging-migration-guide.md"
     ],
     "統合システム設計仕様書": [
       "master-design.md"

@@ -13,21 +13,23 @@
 | カテゴリ                                        | パターン数 | 主要トピック                             |
 | ----------------------------------------------- | ---------- | ---------------------------------------- |
 | [Phase 12 ドキュメント](#phase-12-ドキュメント) | 7件        | 仕様書同期、チェックリスト消化、追加検証 |
-| [IPC / Electron](#ipc--electron)                | 2件        | チャンネル定数化、ペイロード拡張         |
+| [IPC / Electron](#ipc--electron)                | 3件        | チャンネル定数化、ペイロード拡張、safeInvokeUnwrap導入 |
 | [DI / アーキテクチャ](#di--アーキテクチャ)      | 2件        | Setter Injection遅延初期化、型変換パターン |
 | [OAuth / 認証](#oauth--認証)                    | 4件        | Supabase PKCE、コールバック受信          |
 | [テスト / 品質](#テスト--品質)                  | 3件        | ファイル種別分離、リスナー管理           |
 | [ストア / 永続化](#ストア--永続化)              | 7件        | 型バリデーション、DEBUGログ、Slice統合、Zustand無限ループ対策、個別セレクタ再設計、個別セレクタ移行 |
 | [非同期処理](#非同期処理)                       | 1件        | race condition対策、executionId事前生成  |
+| [ログ移行](#ログ移行)                          | 2件        | electron-log移行、テストモックテンプレート化 |
 
 ### 失敗パターン
 
 | カテゴリ                                 | パターン数 | 主要トピック                                |
 | ---------------------------------------- | ---------- | ------------------------------------------- |
 | [Phase 12 漏れ](#phase-12-漏れ)          | 9件        | LOGS.md更新漏れ、SKILL.md漏れ、未タスク管理、spec-update-workflow全Step未実施 |
-| [IPC / Preload](#ipc--preload)           | 2件        | チャネル名命名規則不整合、型定義不一致      |
+| [IPC / Preload](#ipc--preload)           | 3件        | チャネル名命名規則不整合、型定義不一致、テストモック波及 |
 | [OAuth / 認証エラー](#oauth--認証エラー) | 4件        | state競合、flowType未設定                   |
 | [テスト / 型安全](#テスト--型安全)       | 3件        | モジュールリーク、型アサーション            |
+| [ログ環境](#ログ環境)                    | 1件        | テストモック漏れによるログ出力汚染           |
 | [その他](#その他)                        | 2件        | 設計段階検証、pnpm幽霊依存                  |
 
 ---
@@ -142,6 +144,14 @@
   - 06-known-pitfalls.md: P23, P24
   - architecture-implementation-patterns.md: IPCチャンネル名定数化パターン
 
+#### safeInvokeUnwrap による IPC ラッパー自動展開
+
+- **状況**: Main Process の IPC ハンドラが `{ success: true, data: T }` 形式でレスポンスを返すが、Preload の `safeInvoke<T>()` は TypeScript type erasure により実行時にラッパーを透過させる。Renderer が `{ success, data }` オブジェクトを配列として扱いランタイムエラー発生
+- **アプローチ**: `safeInvokeUnwrap<T>()` 関数を追加し、`safeInvoke<IpcResult<T>>()` でラッパーを受信 → `result.success` 検証 → `result.data` を返却。各ハンドラの応答形式を確認し、ラッパーあり=`safeInvokeUnwrap`、ラッパーなし=`safeInvoke` と使い分け
+- **結果**: `list()`, `getImported()`, `rescan()` の3メソッドで配列が直接返却されるようになり、AgentView のクラッシュが解消。`import()` はハンドラが直接返却のため `safeInvoke` を維持（正しい判断）
+- **適用条件**: Main Process ハンドラが `{ success, data }` ラッパーを使用するチャンネルで、Preload メソッドの戻り値が `data` フィールドの型と一致すべき場合
+- **発見日**: 2026-02-14（UT-FIX-IPC-RESPONSE-UNWRAP-001）
+
 ### DI / アーキテクチャ
 
 #### Setter Injectionパターン（遅延初期化DI）（TASK-FIX-7-1 2026-02-11）
@@ -238,6 +248,7 @@
 - **関連タスク**: TASK-FIX-4-2-SKILL-STORE-PERSISTENCE
 - **実装例**: `SkillImportManager` のコンストラクタに `options?: { debug?: boolean }` を追加
 - **関連**: 06-known-pitfalls.md#P20
+- **補足（2026-02-14）**: TASK-FIX-14-1 により、`this.debug` ガードは `log.debug()` に置換するパターンが推奨に。詳細は [logging-migration-guide.md](./logging-migration-guide.md) を参照
 
 #### Zustand Slice統合パターン（TASK-FIX-6-1 2026-02-10）
 
@@ -469,6 +480,34 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
   - `apps/desktop/src/renderer/store/setupSkillListeners.ts`
 - **関連**: 03-state-management.md#リスナー管理
 
+### ログ移行
+
+#### electron-log 標準移行パターン（TASK-FIX-14-1）
+
+- **状況**: Main Process サービス層で `console.*` が直接使用されており、テスト環境でのログ汚染や本番でのログレベル制御が不可能
+- **アプローチ**:
+  - `import log from "electron-log"` を追加
+  - ログレベルマッピングに従い置換（console.error→log.error, console.warn→log.warn, console.info→log.info, console.log→log.debug）
+  - `[ClassName]` プレフィックスを全メッセージに統一
+  - `if (this.debug)` / `process.env.NODE_ENV !== "test"` ガードを削除
+- **結果**: 4ファイル27箇所を移行。テスト環境でのログ汚染が解消し、ログレベル制御がトランスポート設定に一元化
+- **適用条件**: `apps/desktop/src/main/` 配下で `console.*` を使用しているサービスファイル
+- **発見日**: 2026-02-14（TASK-FIX-14-1）
+- **関連タスク**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION
+- **詳細ガイド**: [logging-migration-guide.md](./logging-migration-guide.md)
+
+#### テストモックテンプレート化パターン
+
+- **状況**: electron-log を使用するサービスのテストファイルに個別にモックを追加する必要があり、漏れが発生しやすい
+- **アプローチ**:
+  - 標準モックパターンを定義: `vi.mock("electron-log", () => ({ default: { error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() } }))`
+  - import 直後、describe 直前に配置
+  - `grep -rn "from.*TargetClass" __tests__/` で影響テストを事前特定
+- **結果**: 9ファイルに統一パターンで一括追加。P20（テスト環境でのログ出力汚染）を根本解決
+- **適用条件**: Main Process サービス層のテスト作成時は常に適用
+- **発見日**: 2026-02-14（TASK-FIX-14-1）
+- **関連タスク**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION
+
 ---
 
 ## 失敗パターン（避けるべきこと）
@@ -615,6 +654,18 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
 - **関連タスク**: UT-FIX-5-4
 - **関連**: 02-code-quality.md#TypeScript型安全
 
+#### 内部関数変更によるテストモック値の波及修正
+
+- **状況**: `safeInvoke` → `safeInvokeUnwrap` に変更したところ、`mockInvoke.mockResolvedValue([...])` で直接配列を返していた既存テスト19箇所が全て失敗。`safeInvokeUnwrap` は `{ success, data }` 形式を期待するため
+- **原因**: テストが Preload 層の内部実装（`safeInvoke` の呼び出し元）に依存しており、`ipcRenderer.invoke` のモック値がメソッドの内部実装に結合していた
+- **影響**: 3ファイル・計19箇所のモック値修正が必要（`skill-api.test.ts` 11箇所、`skill-api.unification.test.ts` 8箇所）
+- **対策**:
+  1. 変更前に `grep -n "mockResolvedValue\|mockResolvedValueOnce" *.test.ts` で影響範囲を調査
+  2. `list()`, `getImported()`, `rescan()` を呼ぶテストのモック値を特定
+  3. `{ success: true, data: [...] }` 形式に一括変更
+- **Pitfall ID**: P21/P35 の拡張パターン
+- **発見日**: 2026-02-14（UT-FIX-IPC-RESPONSE-UNWRAP-001）
+
 ### OAuth / 認証エラー
 
 #### Supabaseカスタムstateパラメータ競合
@@ -698,6 +749,18 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
 - **原因**: pnpm厳格モードで宣言されていない依存は解決できない
 - **教訓**: importする外部ライブラリは必ず自パッケージのpackage.jsonに宣言する。テスト通過 ≠ ランタイム安全
 - **発見日**: 2026-02-05（AGENT-SDK-DEP-FIX、06-known-pitfalls.md P8）
+
+### ログ環境
+
+#### テストモック漏れによるログ出力汚染（TASK-FIX-14-1）
+
+- **状況**: electron-log に移行した本番コードのテストファイルで、モック定義が漏れていた
+- **問題**: テスト実行時に `[ClassName]` プレフィックスのログが stdout に大量出力され、テスト結果の可読性が低下
+- **原因**: electron-log はデフォルトで stdout 出力するため、テスト環境でもモック未定義だとログが漏れる
+- **教訓**: Main Process サービス層のテストファイルには **必ず** `vi.mock("electron-log")` を追加する。影響範囲は `grep -rn "from.*ClassName" __tests__/` で事前特定
+- **発見日**: 2026-02-14（TASK-FIX-14-1）
+- **関連タスク**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION
+- **関連**: P20（テスト環境でのログ出力汚染）、[logging-migration-guide.md](./logging-migration-guide.md)
 
 ---
 

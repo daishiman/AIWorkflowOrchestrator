@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 819
+issue_number: 816
 ```
 
 ## メタ情報
@@ -11,10 +11,12 @@ issue_number: 819
 | 項目         | 値                                                                      |
 | ------------ | ----------------------------------------------------------------------- |
 | タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001                                          |
-| GitHub Issue | #813                                                                    |
+| GitHub Issue | #816                                                                    |
 | 種別         | バグ修正 (fix)                                                          |
 | 優先度       | 高                                                                      |
 | 見積もり     | Phase 1-13 完全実行                                                     |
+| ステータス   | **完了**                                                                |
+| 完了日       | 2026-02-14                                                              |
 | 前提タスク   | なし                                                                    |
 | 検出元       | ランタイムエラー調査（2026-02-13）                                      |
 | 関連Pitfall  | P19（型キャスト）, P23（API二重定義の型管理）, P24（Store型定義不統一） |
@@ -134,13 +136,13 @@ async function safeInvokeUnwrap<T>(
 
 ## 5. 完了条件
 
-- [ ] `skill-api.ts` の4メソッドがレスポンスラッパーを展開する
-- [ ] 型注釈と実行時の値が一致する
-- [ ] エラーレスポンス時に適切な例外がスローされる
-- [ ] AgentView で `importedSkills.forEach` が正常動作する
-- [ ] `pnpm typecheck` PASS
-- [ ] `pnpm lint` PASS
-- [ ] `pnpm test` PASS（関連テスト全パス）
+- [x] `skill-api.ts` の4メソッドがレスポンスラッパーを展開する（`list`, `getImported`, `rescan` は `safeInvokeUnwrap`、`import` は `safeInvoke` 維持）
+- [x] 型注釈と実行時の値が一致する
+- [x] エラーレスポンス時に適切な例外がスローされる
+- [x] AgentView で `importedSkills.forEach` が正常動作する
+- [x] `pnpm typecheck` PASS
+- [x] `pnpm lint` PASS
+- [x] `pnpm test` PASS（163テスト全パス、カバレッジ: Line 92.64%, Branch 91.66%, Function 100%）
 
 ---
 

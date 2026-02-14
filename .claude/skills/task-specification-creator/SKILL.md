@@ -372,6 +372,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.68.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001 実装知見記録**: safeInvokeUnwrap パターン導入に伴う実装知見（type erasure、ハンドラ応答形式不統一、テストモック波及修正19箇所）を aiworkflow-requirements の3ファイルに反映完了 |
+| **9.67.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 12是正**: `phase-12-documentation.md` の誤参照（`api-ipc-skill.md`）と `generate-index.mjs` 記述を修正。Phase 10 MINOR 2件を未タスク仕様書（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）へ正式変換。`spec-update-workflow.md` に「仕様書参照パスの実在確認（test -f）」チェックを追加 |
+| **9.67.0** | **2026-02-14** | **UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 1-12完了**: IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加、activate イベントハンドラ修正。7テスト全PASS、Phase 10 PASS判定。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
+| **9.67.0** | **2026-02-14** | **TASK-FIX-14-1 Phase 12再監査反映**: 未タスク `TASK-FIX-14-2` の指示書作成・登録を完了。`task-workflow.md` / `interfaces-agent-sdk-history.md` 更新と LOGS.md・SKILL.md 4ファイル同期更新を実施 |
 | **9.66.0** | **2026-02-13** | **TASK-FIX-13-1未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001、9セクションテンプレート準拠）** |
 | **9.65.0** | **2026-02-13** | **TASK-FIX-13-1再検証教訓反映**: lessons-learned.md/patterns.md更新に伴うLOGS.md同期。並列エージェント実行時の品質ゲート教訓を反映 |
 | **9.64.0** | **2026-02-13** | **Phase 12チェック強化（苦戦箇所記録の必須化）**: `phase-11-12-guide.md` の完了条件に「実装で苦戦した箇所をシステム仕様書へ記録」を追加。TASK-FIX-13-1の教訓を再利用可能な手順として標準化 |

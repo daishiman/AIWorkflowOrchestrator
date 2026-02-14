@@ -5,6 +5,149 @@
 
 ---
 
+## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所・パターン追記
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | 実装苦戦箇所4件・成功パターン1件・失敗パターン1件・実装パターン1件を追記 |
+| 対象ファイル | lessons-learned.md, architecture-implementation-patterns.md, patterns.md |
+| 結果         | success |
+| 備考         | Phase 1-12 実行で得た実装知見を仕様書に反映。safeInvokeUnwrap パターン（ハンドラ応答形式判断基準テーブル含む）、テストモック波及修正パターン（P21/P35拡張）、TypeScript type erasure の教訓を記録 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | v1.12.0 | 実装苦戦箇所4件追加（type erasure、ハンドラ応答不統一、モック波及、仕様書乖離） |
+| architecture-implementation-patterns.md | +(新規セクション) | IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加 |
+| patterns.md | +(新規エントリ) | 成功パターン1件・失敗パターン1件追加 |
+
+---
+
+## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 完了反映 + MINOR未タスク化
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書更新（完了記録 + 苦戦箇所追記 + MINOR由来未タスク登録） |
+| 対象ファイル | interfaces-agent-sdk-skill.md, task-workflow.md, lessons-learned.md |
+| 結果         | success |
+| 備考         | `safeInvokeUnwrap` 導入と `import()` 例外運用（safeInvoke維持）を反映。Phase 10 MINOR（M-1/M-2）を UT-FIX-IPC-RESPONSE-UNWRAP-002/003 として unassigned-task に登録 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| interfaces-agent-sdk-skill.md | v1.20.0 | 完了タスク・苦戦箇所・関連未タスクを追記 |
+| task-workflow.md | v1.37.0 | 完了タスク追加、残課題テーブル更新（002/003追加） |
+| lessons-learned.md | v1.11.0 | 苦戦箇所3件（参照正本、MINOR未タスク化、リンク整合）を追加 |
+
+---
+
+## 2026-02-14: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12再監査追補（苦戦箇所記録）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: lessons-learned.md 追補、Phase 12監査結果の仕様同期 |
+| 対象ファイル | lessons-learned.md |
+| 結果         | success |
+| 備考         | 苦戦箇所2件を追加（IPC_CHANNELS全走査前提の確認、IPC外リスナー解除漏れ防止）。未タスク検出は新規0件を確認（raw検出は既存TODO）。 |
+
+---
+
+## 2026-02-14: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 参照整合性是正
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | task-workflow.md 参照修正、完了タスク仕様書 Issue 番号整合、index再生成 |
+| 対象ファイル | task-workflow.md, docs/30-workflows/completed-tasks/task-ut-fix-ipc-handler-double-reg-001.md, indexes/topic-map.md, indexes/keywords.json |
+| 結果         | success |
+| 備考         | 参照切れ（unassigned-task→completed-tasks）を解消し、Issue番号を #815 に統一。`verify-unassigned-links.js` と `generate-index.js` 実行で整合を確認 |
+
+---
+
+## 2026-02-14: UT-FIX-IPC-HANDLER-DOUBLE-REG-001 IPC ハンドラ二重登録防止修正
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: security-electron-ipc.md, task-workflow.md, lessons-learned.md 更新 |
+| 対象ファイル | security-electron-ipc.md, task-workflow.md, lessons-learned.md, architecture-implementation-patterns.md |
+| 結果         | success |
+| 備考         | macOS activate イベントでの IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加。7テスト全PASS |
+
+---
+
+## 2026-02-14: TASK-FIX-14-1 実装パターンの体系化・スキル最適化
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | ログ移行パターンの体系化、実装教訓の追記、新規リファレンス作成、既存パターン更新 |
+| 対象ファイル | logging-migration-guide.md（新規）, patterns.md, development-guidelines.md, lessons-learned.md |
+| 結果         | success |
+| 備考         | skill-creator テンプレートに準拠し、Progressive Disclosure原則で詳細を専用ファイルに分離 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| logging-migration-guide.md | v1.0.0 | 新規作成（移行手順、コードパターン、テストモックテンプレート、ピットフォール） |
+| patterns.md | v1.16.0 | ログ移行カテゴリ追加（成功2件、失敗1件）、既存DEBUGログパターンに補足追記 |
+| development-guidelines.md | v1.8.0 | Skill系ログ規約に移行適用範囲テーブル追加、ガイド参照リンク追加 |
+| lessons-learned.md | v1.12.0 | TASK-FIX-14-1 技術教訓4件追加（モック一括追加、debug後方互換、カバレッジ計測、条件ガード簡素化） |
+
+---
+
+## 2026-02-14: TASK-FIX-14-1 苦戦箇所のシステム仕様書反映
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | 苦戦箇所を lessons-learned.md に体系化し、再発防止ルールを追記 |
+| 対象ファイル | references/lessons-learned.md |
+| 結果         | success |
+| 備考         | 3教訓を追加（実装差分ベース文書化、Phase 12必須Step先送り禁止、未タスク登録3ステップ同時完了） |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | v1.11.0 | TASK-FIX-14-1 の苦戦箇所3件を追加、関連未タスク（TASK-FIX-14-2）リンクを明記 |
+
+---
+
+## 2026-02-14: TASK-FIX-14-1 console移行タスクのPhase 12再監査・仕様同期
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書更新（完了タスク追加 + 未タスク登録 + ログ規約追記 + 変更履歴更新） |
+| 対象ファイル | task-workflow.md, interfaces-agent-sdk-history.md, development-guidelines.md |
+| 結果         | success |
+| 備考         | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION を未タスク登録し、Skill系Main Processログ規約を development-guidelines.md に追加 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| task-workflow.md | v1.37.0 | TASK-FIX-14-1完了記録追加、TASK-FIX-14-2未タスク登録 |
+| interfaces-agent-sdk-history.md | v6.39.0 | 残課題テーブルにTASK-FIX-14-2を追加 |
+| development-guidelines.md | v1.7.0 | Skill系Main Processログ規約（electron-log運用）追加 |
+
+---
+
 ## 2026-02-13: TASK-FIX-13-1 未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001）
 
 | 項目         | 内容 |
