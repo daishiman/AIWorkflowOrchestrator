@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-14 - UT-FIX-IPC-RESPONSE-UNWRAP-001 patterns sync]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: Phase 12で発生した仕様書参照誤り（非実在パス）を再発防止するため、patterns.mdに「仕様書参照パスの実在チェック」成功パターンを追加。Step 1-B開始前に `test -f` で更新対象の存在確認を行う運用を明文化。
+
+---
+
 ## [2026-02-13 - UT-9B-H-003 セキュリティ教訓・パターン記録]
 
 - **Agent**: skill-creator (update)
