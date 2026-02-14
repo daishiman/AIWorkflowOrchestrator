@@ -85,6 +85,69 @@
 | 備考         | macOS activate イベントでの IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加。7テスト全PASS |
 
 ---
+
+## 2026-02-14: TASK-FIX-14-1 実装パターンの体系化・スキル最適化
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | ログ移行パターンの体系化、実装教訓の追記、新規リファレンス作成、既存パターン更新 |
+| 対象ファイル | logging-migration-guide.md（新規）, patterns.md, development-guidelines.md, lessons-learned.md |
+| 結果         | success |
+| 備考         | skill-creator テンプレートに準拠し、Progressive Disclosure原則で詳細を専用ファイルに分離 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| logging-migration-guide.md | v1.0.0 | 新規作成（移行手順、コードパターン、テストモックテンプレート、ピットフォール） |
+| patterns.md | v1.16.0 | ログ移行カテゴリ追加（成功2件、失敗1件）、既存DEBUGログパターンに補足追記 |
+| development-guidelines.md | v1.8.0 | Skill系ログ規約に移行適用範囲テーブル追加、ガイド参照リンク追加 |
+| lessons-learned.md | v1.12.0 | TASK-FIX-14-1 技術教訓4件追加（モック一括追加、debug後方互換、カバレッジ計測、条件ガード簡素化） |
+
+---
+
+## 2026-02-14: TASK-FIX-14-1 苦戦箇所のシステム仕様書反映
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | 苦戦箇所を lessons-learned.md に体系化し、再発防止ルールを追記 |
+| 対象ファイル | references/lessons-learned.md |
+| 結果         | success |
+| 備考         | 3教訓を追加（実装差分ベース文書化、Phase 12必須Step先送り禁止、未タスク登録3ステップ同時完了） |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | v1.11.0 | TASK-FIX-14-1 の苦戦箇所3件を追加、関連未タスク（TASK-FIX-14-2）リンクを明記 |
+
+---
+
+## 2026-02-14: TASK-FIX-14-1 console移行タスクのPhase 12再監査・仕様同期
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書更新（完了タスク追加 + 未タスク登録 + ログ規約追記 + 変更履歴更新） |
+| 対象ファイル | task-workflow.md, interfaces-agent-sdk-history.md, development-guidelines.md |
+| 結果         | success |
+| 備考         | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION を未タスク登録し、Skill系Main Processログ規約を development-guidelines.md に追加 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| task-workflow.md | v1.37.0 | TASK-FIX-14-1完了記録追加、TASK-FIX-14-2未タスク登録 |
+| interfaces-agent-sdk-history.md | v6.39.0 | 残課題テーブルにTASK-FIX-14-2を追加 |
+| development-guidelines.md | v1.7.0 | Skill系Main Processログ規約（electron-log運用）追加 |
+
+---
+
 ## 2026-02-13: TASK-FIX-13-1 未タスク仕様書作成（UT-TYPE-DATETIME-DOC-001）
 
 | 項目         | 内容 |

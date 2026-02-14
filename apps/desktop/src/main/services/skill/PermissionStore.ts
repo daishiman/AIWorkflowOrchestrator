@@ -8,6 +8,7 @@
  */
 
 import ElectronStore from "electron-store";
+import log from "electron-log";
 import type {
   AllowedToolEntry,
   IPermissionStore,
@@ -94,7 +95,7 @@ export class PermissionStore implements IPermissionStore {
     this.toolCache.set(toolName, entry);
     this.updateStore();
 
-    console.info(`[PermissionStore] Tool permission added: ${toolName}`);
+    log.info(`[PermissionStore] Tool permission added: ${toolName}`);
   }
 
   /**
@@ -112,7 +113,7 @@ export class PermissionStore implements IPermissionStore {
     this.toolCache.delete(toolName);
     this.updateStore();
 
-    console.info(`[PermissionStore] Tool permission revoked: ${toolName}`);
+    log.info(`[PermissionStore] Tool permission revoked: ${toolName}`);
   }
 
   /**
@@ -141,7 +142,7 @@ export class PermissionStore implements IPermissionStore {
     this.toolCache.clear();
     this.updateStore();
 
-    console.warn(`[PermissionStore] All permissions cleared (${count} tools)`);
+    log.warn(`[PermissionStore] All permissions cleared (${count} tools)`);
   }
 
   /**
@@ -153,7 +154,7 @@ export class PermissionStore implements IPermissionStore {
 
       // スキーマバリデーション
       if (!this.validateSchema(data)) {
-        console.warn("[PermissionStore] Invalid schema, resetting to defaults");
+        log.warn("[PermissionStore] Invalid schema, resetting to defaults");
         this.store.clear();
         this.store.set(DEFAULT_SCHEMA);
         return;
@@ -164,11 +165,9 @@ export class PermissionStore implements IPermissionStore {
         this.toolCache.set(entry.toolName, entry);
       }
 
-      console.info(
-        `[PermissionStore] Loaded ${this.toolCache.size} allowed tools`,
-      );
+      log.info(`[PermissionStore] Loaded ${this.toolCache.size} allowed tools`);
     } catch (error) {
-      console.warn(
+      log.warn(
         "[PermissionStore] Failed to load store, using defaults:",
         error,
       );
@@ -188,7 +187,7 @@ export class PermissionStore implements IPermissionStore {
 
       this.store.set(schema);
     } catch (error) {
-      console.error("[PermissionStore] Failed to save store:", error);
+      log.error("[PermissionStore] Failed to save store:", error);
     }
   }
 

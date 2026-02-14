@@ -169,6 +169,32 @@
 
 ---
 
+### タスク: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Skill系Main Processログのelectron-log移行（2026-02-14完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
+| 完了日     | 2026-02-14 |
+| ステータス | **完了** |
+| Phase      | Phase 1-12完了（Phase 13は未実施） |
+| テスト数   | 920（既存回帰を含む） |
+| 変更規模   | 本番コード4ファイル・27箇所、テスト10ファイル |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| ------ | --------- |
+| ワークフロー一式 | `docs/30-workflows/task-fix-14-1-console-log-migration/` |
+| 元タスク指示書 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/06c-task-fix-14-1-console-log-migration.md` |
+| 未タスク検出 | `docs/30-workflows/task-fix-14-1-console-log-migration/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 変更理由
+
+- Skill系サービスの本番ログ方式を `electron-log` に統一し、レベル制御とファイル永続化を担保
+- `SkillImportManager` の `if (this.debug)` / `NODE_ENV !== "test"` 依存を除去してログ制御を一元化
+- Phase 12で残存箇所（`SkillExecutor.ts`）を未タスク `TASK-FIX-14-2` として分離管理
+
+---
 ### タスク: TASK-FIX-11-1-SDK-TEST-ENABLEMENT SDK統合テスト有効化（2026-02-13完了）
 
 | 項目       | 内容                                            |
@@ -585,6 +611,7 @@
 
 | タスクID                                   | タスク名                                              | 優先度 | 発見元                                                         | タスク仕様書                                                                               |
 | ------------------------------------------ | ----------------------------------------------------- | ------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低 | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目） | `docs/30-workflows/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md` |
 | TASK-3-1-B                                 | SkillExecutor IPC Handler統合                         | 高     | TASK-3-1-A完了時（blocks）                                     | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md`            |
 | TASK-SKILL-PERF-TEST                       | SkillExecutor パフォーマンステスト                    | 低     | TASK-3-1-A Phase 11推奨事項                                    | `docs/30-workflows/unassigned-task/task-skillexecutor-performance-testing.md`              |
 | SKILL-E2E-001                              | スキルインポートE2Eテスト                             | 中     | Phase 11（手動テスト検証）推奨事項                             | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`                       |
@@ -686,6 +713,7 @@
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1.37.0     | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録を追加。残課題テーブルで同タスクを完了マークし、MINOR由来の未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）を登録 |
+| 1.37.0     | 2026-02-14 | TASK-FIX-14-1完了記録を追加（本番コード4ファイル27箇所のconsole→electron-log移行）。未タスク TASK-FIX-14-2（SkillExecutor残存4箇所）を残課題テーブルへ登録 |
 | 1.33.1     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の完了タスク参照パスを `completed-tasks/` に修正。`verify-unassigned-links.js` での参照切れを解消 |
 | 1.33.0     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001完了記録追加。IPC ハンドラ二重登録防止修正（activate イベント）。残課題テーブルから完了タスクに移動 |
 | 1.32.0     | 2026-02-13 | 未タスク2件追加: task-imp-vitest-mock-reset-utility-001（mock 2段階リセットユーティリティ）、task-ref-vitest-module-mock-audit-001（モジュールモック監査・ガイドライン）。TASK-FIX-11-1 実装苦戦箇所から検出 |

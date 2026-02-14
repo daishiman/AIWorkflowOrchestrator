@@ -174,7 +174,7 @@ node scripts/list-specs.js --topics
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1361 |
 | 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1423 |
 | SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1477 |
-| 変更履歴 | L1534 |
+| 変更履歴 | L1573 |
 
 ### references/architecture-monorepo.md
 
@@ -248,8 +248,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L9 |
 | 完了タスク | L16 |
 | 残課題（未タスク） | L529 |
-| 関連ドキュメント | L542 |
-| 変更履歴 | L558 |
+| 関連ドキュメント | L543 |
+| 変更履歴 | L559 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -996,8 +996,8 @@ node scripts/list-specs.js --topics
 | 実装例: historyAPI | L80 |
 | 実装例: slideSettingsAPI | L132 |
 | 実装例: skillCreatorAPI | L181 |
-| 自動更新のセキュリティ | L276 |
-| 関連ドキュメント | L287 |
+| 自動更新のセキュリティ | L283 |
+| 関連ドキュメント | L294 |
 
 ### references/security-implementation.md
 
@@ -1388,19 +1388,19 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| ロギング戦略 | L10 |
-| キャッシング戦略 | L65 |
-| データマイグレーション | L104 |
-| コードレビューガイドライン | L143 |
-| パフォーマンス最適化 | L192 |
-| 国際化（i18n） | L291 |
-| Git ワークフロー | L321 |
-| 命名規則 | L357 |
-| デバッグガイド | L405 |
-| リリースプロセス | L459 |
-| バックアップ・リカバリ | L488 |
-| 環境構築ガイド | L525 |
-| 関連ドキュメント | L568 |
-| 変更履歴 | L581 |
+| キャッシング戦略 | L88 |
+| データマイグレーション | L127 |
+| コードレビューガイドライン | L166 |
+| パフォーマンス最適化 | L215 |
+| 国際化（i18n） | L314 |
+| Git ワークフロー | L344 |
+| 命名規則 | L380 |
+| デバッグガイド | L428 |
+| リリースプロセス | L482 |
+| バックアップ・リカバリ | L511 |
+| 環境構築ガイド | L548 |
+| 関連ドキュメント | L591 |
+| 変更履歴 | L604 |
 
 ### references/directory-structure.md
 
@@ -1473,20 +1473,21 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L43 |
-| 関連ドキュメント | L104 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L114 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L260 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L315 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L597 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L685 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L904 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1051 |
-| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1158 |
-| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1232 |
-| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1349 |
-| テンプレート（新規教訓追加用） | L1421 |
-| 品質チェックリスト | L1493 |
+| 目次 | L51 |
+| 関連ドキュメント | L128 |
+| TASK-FIX-14-1: console → electron-log 移行 | L138 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L242 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L388 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L443 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L725 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L813 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1032 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1179 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1286 |
+| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1360 |
+| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1477 |
+| テンプレート（新規教訓追加用） | L1525 |
+| 品質チェックリスト | L1597 |
 
 ### references/llm-embedding.md
 
@@ -1557,13 +1558,27 @@ node scripts/list-specs.js --topics
 | 開発・デバッグ | L309 |
 | 関連ドキュメント | L330 |
 
+### references/logging-migration-guide.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L9 |
+| 変更履歴 | L21 |
+| 目次 | L29 |
+| ログレベルマッピング基準 | L40 |
+| 移行手順チェックリスト | L63 |
+| コードパターン | L91 |
+| テストモックテンプレート | L133 |
+| 条件ガード削除パターン | L184 |
+| 注意事項・ピットフォール | L227 |
+| 関連ドキュメント | L268 |
+
 ### references/patterns.md
 
 | セクション | 行 |
 |------------|----|\n| 目次 | L9 |
-| 成功パターン | L35 |
-| 失敗パターン（避けるべきこと） | L482 |
-| ガイドライン | L724 |
+| 成功パターン | L37 |
+| 失敗パターン（避けるべきこと） | L513 |
+| ガイドライン | L767 |
 
 ### references/plugin-development.md
 
@@ -1814,9 +1829,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L582 |
-| 関連ドキュメント | L672 |
-| 変更履歴 | L682 |
+| 残課題（未タスク） | L608 |
+| 関連ドキュメント | L701 |
+| 変更履歴 | L711 |
 
 ### references/testing-accessibility.md
 

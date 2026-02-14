@@ -6,8 +6,17 @@
  *
  * @see docs/30-workflows/skill-import-store-persistence/outputs/phase-02/test-strategy.md
  */
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import Store from "electron-store";
+
+vi.mock("electron-log", () => ({
+  default: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
 import { SkillImportManager } from "../SkillImportManager";
 import fs from "fs";
 import path from "path";
