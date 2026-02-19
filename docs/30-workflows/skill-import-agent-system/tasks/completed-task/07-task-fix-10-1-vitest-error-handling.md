@@ -10,10 +10,11 @@
 | 対象機能     | Vitest 設定                                |
 | 優先度       | 中                                         |
 | 見積もり規模 | 中規模                                     |
-| ステータス   | 未実施                                     |
+| ステータス   | 完了                                       |
 | 実行順序     | 07（単独 — グループ06完了後・最終）        |
 | 発見元       | skill-system-conflict-report #10           |
 | 発見日       | 2026-02-05                                 |
+| 完了日       | 2026-02-19                                 |
 | 関連Phase    | Phase 4（品質向上）                        |
 | 関連Issue    | -                                          |
 
@@ -117,9 +118,9 @@
 
 ## 5. 完了条件チェックリスト
 
-- [ ] `dangerouslyIgnoreUnhandledErrors` が vitest.config.ts から削除
-- [ ] 全テストが PASS
-- [ ] 未処理 Promise 拒否が適切にハンドリングされている
+- [x] `dangerouslyIgnoreUnhandledErrors` が vitest.config.ts から削除
+- [x] 全テストが PASS
+- [x] 未処理 Promise 拒否が適切にハンドリングされている
 
 ---
 

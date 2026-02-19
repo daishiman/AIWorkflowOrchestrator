@@ -22,6 +22,7 @@
 |------|-----------|----------|
 | 2026-02-19 | 1.16.0 | TASK-9A-B 技術的苦戦箇所4件追加（handlerMap ESMモック、v8カバレッジ関数カウント、.trim()境界値、isKnownSkillFileError型ガード） |
 | 2026-02-19 | 1.15.0 | TASK-9A-B 実装苦戦箇所3件を追加（仕様書の実装事実ドリフト、Preload公開先パス取り違え、未タスクraw検出の誤読防止） |
+| 2026-02-19 | 1.15.0 | TASK-FIX-10-1 教訓追加（Step 2要否判定、未タスク検出範囲、Vitest alias運用）。同種課題向けに「簡潔解決手順（5ステップ）」を追加 |
 | 2026-02-14 | 1.14.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所4件追加（TypeScript type erasure、ハンドラ応答形式不統一、テストモック波及修正、safeInvokeUnwrap設計判断） |
 | 2026-02-14 | 1.13.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 教訓3件追加（仕様書参照正本の不一致、MINOR未タスク化漏れ、完了移管時のリンク不整合） |
 | 2026-02-14 | 1.12.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の苦戦箇所を2件追記（IPC_CHANNELS全走査の前提確認、IPC外リスナー解除漏れの防止） |
@@ -56,6 +57,11 @@
    - [苦戦箇所5: v8カバレッジの関数定義行カウント問題](#5-v8カバレッジの関数定義行カウント問題)
    - [苦戦箇所6: .trim()境界値バリデーション漏れ](#6-trim境界値バリデーション漏れ)
    - [苦戦箇所7: isKnownSkillFileError型ガードによるエラーサニタイズ設計](#7-isknownskillfileerror型ガードによるエラーサニタイズ設計)
+0. [TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元](#task-fix-10-1-vitest未処理promise拒否検知の復元)
+   - [苦戦箇所1: Step 2要否判定の誤り](#1-step-2要否判定の誤り)
+   - [苦戦箇所2: 未タスク検出範囲の不足](#2-未タスク検出範囲の不足)
+   - [苦戦箇所3: alias運用の継続性不足](#3-alias運用の継続性不足)
+   - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ)
 0. [UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正](#ut-fix-ipc-response-unwrap-001-ipcレスポンスラッパー未展開修正)
    - [苦戦箇所1: 仕様書の正本参照が不一致](#1-仕様書の正本参照が不一致)
    - [苦戦箇所2: Phase 10 MINORの未タスク化漏れ](#2-phase-10-minorの未タスク化漏れ)
@@ -311,6 +317,64 @@ catch (error) {
 | 完了タスク記録 | `.claude/skills/aiworkflow-requirements/references/task-workflow.md` |
 | IPC仕様更新 | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md` |
 | セキュリティ仕様更新 | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` |
+
+---
+
+## TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| 目的 | `dangerouslyIgnoreUnhandledErrors` を廃止し、未処理Promise拒否をテスト失敗として検知できる状態に戻す |
+| 完了日 | 2026-02-19 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. Step 2要否判定の誤り
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 「設定削除のみ」と見なしてシステム仕様更新不要と誤判定しやすかった |
+| **原因** | インターフェース変更の有無だけで判断し、テスト戦略変更を仕様変更として扱っていなかった |
+| **解決策** | 未処理Promise拒否の検知ルール変更を「品質仕様の変更」と定義し、`quality-requirements.md` を更新 |
+| **教訓** | プロダクトコード変更がなくても、テスト戦略変更は Step 2 更新対象になる |
+
+#### 2. 未タスク検出範囲の不足
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 変更ファイル中心の確認では、Phase成果物に書かれた将来課題を見落としやすい |
+| **原因** | Task 4で `outputs/phase-*` まで横断確認する運用が徹底されていなかった |
+| **解決策** | Phase成果物まで含めて再監査し、`task-imp-vitest-alias-sync-automation-001` を未タスク登録 |
+| **教訓** | 未タスク検出は「コード差分 + 成果物記述」の両輪で実施する |
+
+#### 3. alias運用の継続性不足
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `@repo/shared` alias は手動追従で、export更新時に再発リスクが残る |
+| **原因** | alias整合の機械検証がなく、発覚がテスト実行時に後ろ倒しになる |
+| **解決策** | 未タスク `task-imp-vitest-alias-sync-automation-001` を起票し、CIで差分検知する方針を定義 |
+| **教訓** | 設定修正完了時点で「再発防止の自動検証」まで分離タスク化して残す |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `dangerouslyIgnoreUnhandledErrors` を未設定に戻し、対象テストを最小実行して失敗原因を観測する。
+2. 失敗が未処理Promise拒否であることを確認し、設定で隠蔽せずテスト/実装側を修正する。
+3. `@repo/shared` の解決エラーが出る場合は、具体サブパスを先にしたalias順序で補正する。
+4. Phase 12では `task-workflow.md` と `quality-requirements.md` を同時更新し、苦戦箇所を記録する。
+5. 将来再発要因は未タスク化し、`verify-unassigned-links.js` で参照整合を確認する。
+
+### 関連仕様書
+
+| 仕様書 | 反映内容 |
+|------|------|
+| task-workflow.md | 完了タスク・苦戦箇所・未タスク登録 |
+| quality-requirements.md | 未処理Promise拒否検知ルール、alias管理ルール |
+| lessons-learned.md（本書） | 同種課題向けの再利用手順 |
 
 ---
 

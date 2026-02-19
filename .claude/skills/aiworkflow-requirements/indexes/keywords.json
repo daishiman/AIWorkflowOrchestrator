@@ -1,6 +1,8 @@
 {
   "generated": "2026-02-19T06:46:41.313Z",
   "totalKeywords": 1144,
+  "generated": "2026-02-19T13:31:48.308Z",
+  "totalKeywords": 1144,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2735,6 +2737,18 @@
       "lessons-learned.md"
     ],
     "実装事実ドリフトを防ぐ最小検証セット": [
+      "lessons-learned.md"
+    ],
+    "Vitest": [
+      "lessons-learned.md"
+    ],
+    "未処理": [
+      "lessons-learned.md"
+    ],
+    "Promise": [
+      "lessons-learned.md"
+    ],
+    "拒否検知の復元": [
       "lessons-learned.md"
     ],
     "console": [
