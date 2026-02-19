@@ -363,11 +363,78 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ---
 
+---
+
+## スキルファイル操作 IPC チャネル（TASK-9A-B）
+
+スキルファイルの読み書き・バックアップ・復元操作をIPC経由で提供する。
+`SkillFileManager` サービスと連携し、Rendererからファイル操作を安全に実行する。
+
+**実装ファイル**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- IPCハンドラー: `apps/desktop/src/main/ipc/skillFileHandlers.ts`
+- Preload API: `apps/desktop/src/preload/skill-api.ts`（`electronAPI.skill` のメソッドとして公開）
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+### チャンネル一覧
+
+| チャネル              | 方向            | 用途                 | Request                                                              | Response              |
+| --------------------- | --------------- | -------------------- | -------------------------------------------------------------------- | --------------------- |
+| `skill:readFile`      | Renderer → Main | ファイル読み込み     | `{ skillName: string, relativePath: string }`                        | `IpcResult<string>`   |
+| `skill:writeFile`     | Renderer → Main | ファイル書き込み     | `{ skillName: string, relativePath: string, content: string }`       | `IpcResult<void>`     |
+| `skill:createFile`    | Renderer → Main | ファイル新規作成     | `{ skillName: string, relativePath: string, content: string }`       | `IpcResult<void>`     |
+| `skill:deleteFile`    | Renderer → Main | ファイル削除         | `{ skillName: string, relativePath: string }`                        | `IpcResult<void>`     |
+| `skill:listBackups`   | Renderer → Main | バックアップ一覧取得 | `{ skillName: string }`                                              | `IpcResult<BackupInfo[]>` |
+| `skill:restoreBackup` | Renderer → Main | バックアップ復元     | `{ skillName: string, backupPath: string }`                          | `IpcResult<void>`     |
+
+### 型定義
+
+| 型名         | 説明                                           |
+| ------------ | ---------------------------------------------- |
+| `IpcResult<T>` | IPC統一レスポンス型（`{ success: true; data: T } \| { success: false; error: string }`） |
+| `BackupInfo` | バックアップファイル情報（filename, relativePath, originalPath, type, timestamp, createdAt） |
+
+### 実装状況
+
+| 項目                   | 状態   | タスク    |
+| ---------------------- | ------ | --------- |
+| チャネル定数定義       | 完了   | TASK-9A-B |
+| ホワイトリスト追加     | 完了   | TASK-9A-B |
+| IPCハンドラー実装      | 完了   | TASK-9A-B |
+| Preload API実装        | 完了   | TASK-9A-B |
+| Sender検証（全ハンドラー）| 完了 | TASK-9A-B |
+| 引数バリデーション     | 完了   | TASK-9A-B |
+| エラーサニタイズ       | 完了   | TASK-9A-B |
+| isKnownSkillFileError  | 完了   | TASK-9A-B |
+
+### セキュリティ仕様
+
+全6 invokeハンドラーで以下のセキュリティ検証を実施する。
+
+| 対策 | 実装 | 返却仕様 |
+| ---- | ---- | -------- |
+| Sender検証 | `validateIpcSender(event, mainWindow)` | 不正時: `toIPCValidationError` で返却（例: `"Unauthorized IPC call"`） |
+| 引数バリデーション | `typeof` チェック + `.trim()` 空文字列検出 | 不正時: 各エラーメッセージ |
+| SkillFileManager内部検証 | `SkillFileManager.validatePath()` によるパストラバーサル検出 | `PathTraversalError` → サニタイズ済みメッセージ |
+| エラーサニタイズ | `isKnownSkillFileError(error)` でSkillFileManagerエラーを識別し安全なメッセージを返却 | 不明エラー: `"Internal error"` |
+
+---
+
 ## 完了タスク
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
 | TASK-9B-H  | SkillCreatorService IPCハンドラー登録 | 2026-02-12 | 6チャンネル追加（5 invoke + 1 progress）、SkillCreatorAPI Preload実装、セキュリティ準拠 |
+
+**TASK-9A-B 派生未タスク**:
+
+| タスクID     | タスク名                                            | 優先度 | 指示書パス                                                                              |
+| ------------ | --------------------------------------------------- | ------ | --------------------------------------------------------------------------------------- |
+| UT-9A-B-001 | IPC入力バリデーション標準化                         | 中     | `docs/30-workflows/unassigned-task/task-ipc-validation-standardize-improvements.md`     |
+| UT-9A-B-002 | IPCエラーサニタイズ共通ユーティリティ化             | 中     | `docs/30-workflows/unassigned-task/task-ipc-error-sanitize-refactoring.md`              |
+| UT-9A-B-003 | IPCテストhandlerMapモックユーティリティ共通化       | 低     | `docs/30-workflows/unassigned-task/task-ipc-test-mock-utils-improvements.md`            |
 | UT-FIX-5-4 | AgentSDKAPI型定義不一致修正          | 2026-02-10 | `agentSDKAPI.abort()` 戻り値型を `void` → `Promise<void>` に修正（P23パターン準拠） |
 | UT-FIX-5-3 | Preload Agent Abort セキュリティ修正 | 2026-02-10 | `agentSDKAPI.abort()` を `safeInvoke()` 経由に変更、Main側 `ipcMain.handle()` 使用  |
 
@@ -377,6 +444,7 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.8.0     | 2026-02-19 | TASK-9A-B: スキルファイル操作IPCチャンネルセクション追加。6チャンネル（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、型定義、実装状況、セキュリティ仕様、完了タスク記録 |
 | v1.7.0     | 2026-02-12 | UT-9B-H-003反映: Skill Creator IPCのセキュリティ強化仕様を追記（validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES） |
 | v1.6.0     | 2026-02-12 | TASK-9B-H: Skill Creator IPCチャネルセクション追加。6チャンネル（5 invoke + 1 progress）、型定義、実装状況、完了タスク記録 |
 | v1.5.0     | 2026-02-10 | UT-FIX-5-4: AgentSDKAPI.abort()型定義修正。`void` → `Promise<void>`。実装（safeInvoke）と型定義の整合性確保 |

@@ -25,6 +25,7 @@ import { registerCommunityHandlers } from "./communityHandlers";
 import { registerSkillHandlers } from "./skillHandlers";
 import { registerClaudeCliHandlers } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
+import { registerSkillFileHandlers } from "./skillFileHandlers";
 import { SkillCreatorService } from "../services/skill/SkillCreatorService";
 import {
   SkillScanner,
@@ -33,6 +34,7 @@ import {
   SkillService,
   PermissionStore,
 } from "../services/skill";
+import { SkillFileManager } from "../services/skill/SkillFileManager";
 import { registerPermissionStoreHandlers } from "./permission-store-handlers";
 import { registerAuthModeHandlers } from "./authModeHandlers";
 import {
@@ -166,6 +168,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     skillImportManager,
   );
   registerSkillHandlers(mainWindow, skillService);
+
+  // Register Skill File handlers (TASK-9A-B)
+  const skillFileManager = new SkillFileManager();
+  registerSkillFileHandlers(mainWindow, skillFileManager, skillService);
 
   // Register Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();

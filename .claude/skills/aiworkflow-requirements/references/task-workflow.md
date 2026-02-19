@@ -132,6 +132,34 @@
 
 ## 完了タスク
 
+### タスク: TASK-9A-B スキルファイル操作IPCハンドラー実装（2026-02-19完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | TASK-9A-B |
+| 完了日     | 2026-02-19 |
+| ステータス | **完了** |
+| Phase      | Phase 1-12完了 |
+| テスト数   | 65（全PASS） |
+| カバレッジ | Line 91.14% / Branch 93.93% / Function 100% |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| ------ | --------- |
+| ワークフロー一式 | `docs/30-workflows/TASK-9A-B-ipc-file-handlers/` |
+| 実装ガイド | `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-12/unassigned-task-report.md` |
+
+#### 変更理由
+
+- SkillFileManagerのファイル操作をIPC経由でRendererから呼び出し可能にするため、6チャンネルを追加（skill:readFile, skill:writeFile, skill:createFile, skill:deleteFile, skill:listBackups, skill:restoreBackup）
+- validateIpcSender + 引数バリデーション + isKnownSkillFileErrorエラーサニタイズによる多層防御を実装
+- registerSkillFileHandlers / unregisterSkillFileHandlers によるハンドラ登録/解除パターンを実装
+
+---
+
 ### タスク: UT-FIX-IPC-RESPONSE-UNWRAP-001 IPC レスポンスラッパー未展開修正（2026-02-14完了）
 
 | 項目       | 内容 |
@@ -689,6 +717,9 @@
 | ~~UT-FIX-IPC-HANDLER-DOUBLE-REG-001~~              | ~~IPC ハンドラ二重登録防止修正（activate イベント）~~                   | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~                                         | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-handler-double-reg-001.md`~~ **2026-02-14完了** |
 | task-sec-ipc-lifecycle-audit-001                   | Electron ライフサイクルイベント IPC リスナー管理監査                    | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-sec-ipc-lifecycle-audit-001.md`                      |
 | task-imp-ipc-registration-verify-001               | IPC ハンドラ登録整合性自動検証テスト                                   | 中     | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 12（実装苦戦箇所）                    | `docs/30-workflows/unassigned-task/task-imp-ipc-registration-verify-001.md`                  |
+| UT-9A-B-001                                        | IPC入力バリデーション標準化                                            | 中     | TASK-9A-B Phase 12（未タスク検出）                                             | `docs/30-workflows/unassigned-task/task-ipc-validation-standardize-improvements.md`          |
+| UT-9A-B-002                                        | IPCエラーサニタイズ共通ユーティリティ化                                | 中     | TASK-9A-B Phase 12（未タスク検出）                                             | `docs/30-workflows/unassigned-task/task-ipc-error-sanitize-refactoring.md`                   |
+| UT-9A-B-003                                        | IPCテストhandlerMapモックユーティリティ共通化                          | 低     | TASK-9A-B Phase 12（未タスク検出）                                             | `docs/30-workflows/unassigned-task/task-ipc-test-mock-utils-improvements.md`                 |
 
 ### 未タスク管理ルール
 
@@ -712,6 +743,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.39.0     | 2026-02-19 | 未タスク3件追加: UT-9A-B-001（IPC入力バリデーション標準化）、UT-9A-B-002（IPCエラーサニタイズ共通化）、UT-9A-B-003（IPCテストhandlerMapモック共通化）。TASK-9A-B Phase 12検出 |
+| 1.38.0     | 2026-02-19 | TASK-9A-B完了記録追加。スキルファイル操作IPCハンドラー6チャンネル実装（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、65テスト全PASS、カバレッジ Line 91.14% / Branch 93.93% / Function 100% |
 | 1.37.0     | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録を追加。残課題テーブルで同タスクを完了マークし、MINOR由来の未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）を登録 |
 | 1.37.0     | 2026-02-14 | TASK-FIX-14-1完了記録を追加（本番コード4ファイル27箇所のconsole→electron-log移行）。未タスク TASK-FIX-14-2（SkillExecutor残存4箇所）を残課題テーブルへ登録 |
 | 1.33.1     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の完了タスク参照パスを `completed-tasks/` に修正。`verify-unassigned-links.js` での参照切れを解消 |

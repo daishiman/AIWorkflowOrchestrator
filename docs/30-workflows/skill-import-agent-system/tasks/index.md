@@ -248,11 +248,11 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 
 ### Phase 9A: SkillEditor
 
-| ID        | タイトル                                            | 依存       | 複雑度 | ステータス |
-| --------- | --------------------------------------------------- | ---------- | ------ | ---------- |
-| TASK-9A-A | [SkillFileManager](./task-9a-a-file-manager.md)     | Tier 1完了 | medium | pending    |
-| TASK-9A-B | [ファイル編集IPC](./task-9a-b-ipc-file-handlers.md) | 9A-A       | small  | pending    |
-| TASK-9A-C | [SkillEditor UI](./task-9a-c-skill-editor-ui.md)    | 9A-B       | medium | pending    |
+| ID        | タイトル                                                           | 依存       | 複雑度 | ステータス |
+| --------- | ------------------------------------------------------------------ | ---------- | ------ | ---------- |
+| TASK-9A-A | [SkillFileManager](./task-9a-a-file-manager.md)                    | Tier 1完了 | medium | pending    |
+| TASK-9A-B | [ファイル編集IPC](./completed-task/task-9a-b-ipc-file-handlers.md) | 9A-A       | small  | completed  |
+| TASK-9A-C | [SkillEditor UI](./task-9a-c-skill-editor-ui.md)                   | 9A-B       | medium | pending    |
 
 ### Phase 9B: skill-creator メタスキル
 
