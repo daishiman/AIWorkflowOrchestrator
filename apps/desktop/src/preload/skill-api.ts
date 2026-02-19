@@ -24,6 +24,7 @@ import type {
   SkillMetadata,
   ImportedSkill,
 } from "@repo/shared";
+import type { BackupInfo } from "./types";
 
 /**
  * SkillAPI - Skill 実行関連の Preload API インターフェース
@@ -124,6 +125,29 @@ export interface SkillAPI {
   onError: (
     callback: (data: { executionId: string; error: string }) => void,
   ) => () => void;
+
+  // === Skill File Operations (TASK-9A-B) ===
+
+  /** スキルファイルを読み込む */
+  readFile: (skillName: string, relativePath: string) => Promise<string>;
+  /** スキルファイルに書き込む */
+  writeFile: (
+    skillName: string,
+    relativePath: string,
+    content: string,
+  ) => Promise<void>;
+  /** 新規ファイルを作成する */
+  createFile: (
+    skillName: string,
+    relativePath: string,
+    content: string,
+  ) => Promise<void>;
+  /** ファイルを削除する */
+  deleteFile: (skillName: string, relativePath: string) => Promise<void>;
+  /** バックアップ一覧を取得する */
+  listBackups: (skillName: string) => Promise<BackupInfo[]>;
+  /** バックアップからファイルを復元する */
+  restoreBackup: (skillName: string, backupPath: string) => Promise<void>;
 }
 
 /**
@@ -252,4 +276,51 @@ export const skillAPI: SkillAPI = {
       IPC_CHANNELS.SKILL_ERROR,
       callback,
     ),
+
+  // === Skill File Operations (TASK-9A-B) ===
+
+  readFile: (skillName: string, relativePath: string): Promise<string> =>
+    safeInvokeUnwrap<string>(IPC_CHANNELS.SKILL_READ_FILE, {
+      skillName,
+      relativePath,
+    }),
+
+  writeFile: (
+    skillName: string,
+    relativePath: string,
+    content: string,
+  ): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_WRITE_FILE, {
+      skillName,
+      relativePath,
+      content,
+    }),
+
+  createFile: (
+    skillName: string,
+    relativePath: string,
+    content: string,
+  ): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_CREATE_FILE, {
+      skillName,
+      relativePath,
+      content,
+    }),
+
+  deleteFile: (skillName: string, relativePath: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DELETE_FILE, {
+      skillName,
+      relativePath,
+    }),
+
+  listBackups: (skillName: string): Promise<BackupInfo[]> =>
+    safeInvokeUnwrap<BackupInfo[]>(IPC_CHANNELS.SKILL_LIST_BACKUPS, {
+      skillName,
+    }),
+
+  restoreBackup: (skillName: string, backupPath: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_RESTORE_BACKUP, {
+      skillName,
+      backupPath,
+    }),
 };

@@ -53,6 +53,15 @@
 - **チェックリスト**: [05-task-execution.md#Phase 12](./05-task-execution.md)
 - **関連タスク**: TASK-FIX-6-1-STATE-CENTRALIZATION
 
+### P43: Phase 12 サブエージェントの rate limit 中断
+
+- **教訓**: Phase 12 Task 2（システム仕様書更新）を1つのサブエージェントに7ファイルの一括更新を委譲すると、49ツール使用・402秒実行後に rate limit に到達して中断する。LOGS.md に先に「完了」を記録したため、中断後の未完了検出が困難だった
+- **解決策**:
+  1. 仕様書更新は3ファイル以下/エージェントに分割する
+  2. LOGS.md への「完了」記録は全ファイル更新後の最終ステップとする
+  3. 中断後は `git diff --stat -- .claude/skills/` で実際の変更ファイルを確認
+- **関連タスク**: TASK-9A-B
+
 ## Electron / ランタイム
 
 ### P5: リスナー二重登録（Renderer / Main 両プロセス）
@@ -75,6 +84,20 @@
 ### P14: カスタムプロトコル URL パース
 
 - **教訓**: `new URL("myapp://path/to")` では RFC 3986 の authority 規則により pathname が期待どおりにならない。カスタムプロトコルでは手動パースが安全
+
+### P42: 文字列引数の .trim() バリデーション漏れ
+
+- **教訓**: IPC ハンドラーの引数バリデーションで `typeof === "string"` と `=== ""` のみチェックすると、スペースのみの入力（`"   "`）がバリデーションを通過する。SkillFileManager 側で不正パスエラーとなるが、IPC 層で早期拒否すべき
+- **解決策**: 全文字列引数に `.trim() === ""` チェックを追加して3段バリデーション（型チェック → 空文字列 → トリム空文字列）を標準化
+- **関連タスク**: TASK-9A-B
+
+```typescript
+// ❌ 不十分
+if (typeof args?.skillName !== "string" || args.skillName === "") { ... }
+
+// ✅ 完全
+if (typeof args?.skillName !== "string" || args.skillName.trim() === "") { ... }
+```
 
 ### P31: Zustand Store Hooks無限ループ
 
@@ -137,6 +160,12 @@ useEffect(() => {
 ### P13: タイマーテストの無限ループ
 
 - **教訓**: setTimeout + Promise + 再スケジュールのパターンでは `runAllTimers` 系が無限ループする。`advanceTimersByTime` で1ステップずつ進めること
+
+### P41: v8 カバレッジプロバイダのインライン関数カウント
+
+- **教訓**: Vitest の v8 カバレッジプロバイダは、インライン arrow function（例: `getAllowedWindows: () => [mainWindow]`）を独立した関数としてカウントする。validateIpcSender のオプションオブジェクト内のコールバックが実行されないと Function Coverage が大幅に低下する（44.44%まで低下した事例あり）
+- **解決策**: セキュリティテストでコールバックの戻り値を明示的に検証する（`mockValidateIpcSender.mock.calls[i][2].getAllowedWindows()` で呼び出し確認）
+- **関連タスク**: TASK-9A-B
 
 ## Claude Code Hooks
 

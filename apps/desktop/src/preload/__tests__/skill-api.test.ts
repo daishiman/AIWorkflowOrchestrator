@@ -707,7 +707,7 @@ describe("統一SkillAPI - 呼び出し元移行テスト", () => {
 // 8. 統一API構造テスト
 // ============================================================
 describe("統一SkillAPI - API構造検証", () => {
-  it("統一APIが13メソッドを持つ（respondToPermission除外）", () => {
+  it("統一APIが19メソッドを持つ（respondToPermission除外）", () => {
     const expectedMethods: (keyof SkillAPI)[] = [
       "list",
       "getImported",
@@ -722,17 +722,22 @@ describe("統一SkillAPI - API構造検証", () => {
       "onError",
       "onPermissionRequest",
       "sendPermissionResponse",
+      "readFile",
+      "writeFile",
+      "createFile",
+      "deleteFile",
+      "listBackups",
+      "restoreBackup",
     ];
 
     for (const method of expectedMethods) {
       expect(typeof skillAPI[method]).toBe("function");
     }
 
-    // RED: respondToPermissionがまだ含まれているため14メソッドになる
     const methodCount = Object.keys(skillAPI).filter(
       (key) => typeof (skillAPI as Record<string, unknown>)[key] === "function",
     ).length;
-    expect(methodCount).toBe(13);
+    expect(methodCount).toBe(19);
   });
 
   it("全イベントリスナーメソッドがunsubscribe関数を返す", () => {

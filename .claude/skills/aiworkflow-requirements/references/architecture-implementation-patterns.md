@@ -737,6 +737,64 @@ if (!ALLOWED_SCHEMA_NAMES.includes(schemaName as typeof ALLOWED_SCHEMA_NAMES[num
 **関連仕様書**: [security-electron-ipc.md](./security-electron-ipc.md)
 **関連タスク**: UT-9B-H-003
 
+### isKnownSkillFileError 型ガードパターン（TASK-9A-B 2026-02-19実装）
+
+**目的**: 複数のIPCハンドラーで共通するエラー判別・サニタイズロジックをDRYに保つ
+
+**課題**: 6つのIPCハンドラーで5種類のカスタムエラーを個別に instanceof チェックすると、30箇所の重複判定が発生
+
+**解決策**: TypeScript の type guard 関数で union type を返し、各ハンドラーの catch ブロックを2行に集約
+
+```typescript
+/**
+ * 既知のスキルファイルエラーかどうかを判定する型ガード関数
+ * 既知エラー → error.message をそのまま返す（ビジネスロジックのエラー）
+ * 未知エラー → "Internal error" を返して内部情報を漏洩しない
+ */
+function isKnownSkillFileError(
+  error: unknown,
+): error is
+  | SkillNotFoundError
+  | ReadonlySkillError
+  | PathTraversalError
+  | FileExistsError
+  | FileNotFoundError {
+  return (
+    error instanceof SkillNotFoundError ||
+    error instanceof ReadonlySkillError ||
+    error instanceof PathTraversalError ||
+    error instanceof FileExistsError ||
+    error instanceof FileNotFoundError
+  );
+}
+
+// 各ハンドラーの catch ブロック（6ハンドラー共通）
+catch (error) {
+  if (isKnownSkillFileError(error)) {
+    return { success: false, error: error.message };
+  }
+  return { success: false, error: "Internal error" };
+}
+```
+
+**適用**: 全6スキルファイル操作IPCハンドラーの catch ブロック
+
+**エラークラス一覧**:
+
+| エラークラス | 発生条件 | クライアント向けメッセージ例 |
+|-------------|----------|---------------------------|
+| SkillNotFoundError | スキルディレクトリが存在しない | "Skill not found: my-skill" |
+| ReadonlySkillError | claude-skills 配下の読み取り専用スキルへの書き込み | "Cannot modify readonly skill: my-skill" |
+| PathTraversalError | `../` 等を含む不正パス | "Path traversal detected: ../etc/passwd" |
+| FileExistsError | createFile で既存ファイルに対して実行 | "File already exists: SKILL.md" |
+| FileNotFoundError | readFile/deleteFile で存在しないファイル指定 | "File not found: SKILL.md" |
+
+**関連**:
+- 実装ファイル: `apps/desktop/src/main/ipc/skillFileHandlers.ts:34-49`
+- テスト: `skillFileHandlers.security.test.ts` S-09〜S-11
+- 関連パターン: [security-electron-ipc.md](./security-electron-ipc.md) の skillFileAPI セキュリティ実装パターン
+- **未タスク**: UT-9A-B-002（IPCエラーサニタイズ共通ユーティリティ化）— isKnownSkillFileError パターンを他のIPCハンドラーに横展開
+
 ---
 
 ## テスト実装パターン
@@ -1049,6 +1107,33 @@ Electron IPC ハンドラーの統合テストにおいて、Main Process のハ
 | 検証対象     | ハンドラーが `success: false` を返すこと                                    |
 | エラー変換   | `toIPCValidationError(result)` で統一エラー形式に変換                       |
 | 適用チャネル | セキュリティ上重要なチャネル（abort, get-status等）                         |
+
+### IPC ハンドラー3層テスト分離パターン（TASK-9A-B 2026-02-19実装）
+
+**目的**: IPCハンドラーのテストをUnit/Security/Integrationの3層に分離し、各テストの責務を明確化
+
+**テスト構成**:
+
+| テスト層 | ファイル | テスト数 | 責務 |
+|---------|----------|---------|------|
+| Unit | `skillFileHandlers.test.ts` | 38 | 引数バリデーション、正常系レスポンス、ハンドラー登録/解除、境界値、エッジケース |
+| Security | `skillFileHandlers.security.test.ts` | 14 | Sender検証、パストラバーサル、エラーサニタイズ、XSSコンテンツ |
+| Integration | `skillFileHandlers.integration.test.ts` | 13 | 実SkillFileManagerとの統合、ファイル操作サイクル、バックアップ/復元 |
+
+**テストレイヤー間の責務分離**:
+
+```
+Unit（モック）     → ハンドラー単体の入出力検証
+Security（モック）  → セキュリティ境界の検証（validateIpcSender、パストラバーサル、情報漏洩）
+Integration（実装） → 実ファイルシステムでの一連操作フロー
+```
+
+**カバレッジ結果**: Line 91.14% / Branch 93.93% / Function 100%（65テスト全PASS）
+
+**関連**:
+- Handler Map 方式: 3テストファイル共通で `Map<string, Function>` によるハンドラーキャプチャを使用
+- 実装: `apps/desktop/src/main/ipc/__tests__/skillFileHandlers*.test.ts`
+- **未タスク**: UT-9A-B-003（IPCテストhandlerMapモックユーティリティ共通化）— Handler Map 方式のセットアップコードを共通ユーティリティに抽出
 
 ### E2Eテストパターン（TASK-8C-C 2026-02-02実装）
 
@@ -1574,6 +1659,7 @@ macOS の `activate` イベントでウィンドウを再作成する際に、`i
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.24.0 | 2026-02-19 | TASK-9A-B: isKnownSkillFileError型ガードパターン追加、IPC3層テスト分離パターン追加（Unit 38 / Security 14 / Integration 13、カバレッジ Line 91.14% / Branch 93.93% / Function 100%） |
 | v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |
 | v1.23.0 | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止パターン追加（unregister→register、ipcMain.handle() vs on() 動作差異、セキュリティ考慮事項） |
 | v1.22.0 | 2026-02-13 | UT-9B-H-003: IPC L3ドメイン検証パターン追加（validatePath, sanitizeErrorMessage, ALLOWED_SCHEMA_NAMES） |

@@ -43,6 +43,19 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## 2026-02-19: TASK-9A-B Phase 12再監査（Step 1-Dコマンド是正）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-9A-B |
+| Agent        | task-specification-creator |
+| 操作         | Phase 12ガイド修正（topic-map再生成コマンドを実パスへ修正） |
+| 対象ファイル | references/phase-11-12-guide.md, SKILL.md |
+| 結果         | success |
+| 備考         | `generate-index.js が存在しない` 誤判定を防ぐため、`node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow ... --regenerate` を明記 |
+
+---
+
 ## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装知見記録
 
 | 項目         | 内容 |
@@ -3874,3 +3887,15 @@ if (artifactPath) {
 - **Notes**: UT-9B-H-001/002/004/005にUT-9B-H-003セキュリティ教訓を反映、task-workflow.md/security-electron-ipc.md参照リンク更新
 
 ---
+
+## 2026-02-19
+
+- TASK-9A-B: Phase 12 システム仕様書更新完了
+  - api-ipc-agent.md 更新（スキルファイル操作IPCチャンネル6種追加）
+  - security-electron-ipc.md 更新（skillFileAPIセキュリティパターン追加）
+  - architecture-overview.md 更新（IPCハンドラー登録一覧にregisterSkillFileHandlers追加）
+  - interfaces-agent-sdk-skill.md 更新（TASK-9A-B完了記録追加）
+  - task-workflow.md 更新（完了タスクセクションにTASK-9A-B追加）
+  - LOGS.md 2ファイル更新（P1防止）
+  - SKILL.md 2ファイル更新（P29防止）
+  - topic-map.md 再生成（2スキル）

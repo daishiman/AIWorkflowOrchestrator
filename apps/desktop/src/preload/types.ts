@@ -1,5 +1,15 @@
 // IPC Request/Response Types
 
+// Skill file operations (TASK-9A-B)
+export interface BackupInfo {
+  filename: string;
+  relativePath: string;
+  originalPath: string;
+  type: "backup" | "deleted";
+  timestamp: number;
+  createdAt: Date;
+}
+
 import type {
   OpenFileDialogRequest,
   OpenFileDialogResponse,

@@ -208,6 +208,16 @@
 | registerSkillHandlers            | Pattern 2: service のみ     | -            | api-ipc-agent.md         |
 | registerChatEditHandlers         | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md         |
 | registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 6 (5 invoke + 1 progress) | api-ipc-agent.md |
+| registerSkillFileHandlers        | Pattern 3: mainWindow + service | 6         | api-ipc-agent.md |
+
+**Pattern 3 詳細（registerSkillFileHandlers）**:
+
+- **引数**: `mainWindow: BrowserWindow`, `service: SkillFileManager`
+- **mainWindow用途**: Sender検証（`validateIpcSender`）
+- **service用途**: SkillFileManagerへのファイル操作委譲
+- **対応チャンネル**: `skill:readFile`, `skill:writeFile`, `skill:createFile`, `skill:deleteFile`, `skill:listBackups`, `skill:restoreBackup`
+- **セキュリティ**: 全ハンドラーでSender検証、引数バリデーション、`isKnownSkillFileError`によるエラーサニタイズ適用
+- **関連タスク**: TASK-9A-B（2026-02-19完了）
 
 **Pattern 3 詳細（registerSkillCreatorHandlers）**:
 

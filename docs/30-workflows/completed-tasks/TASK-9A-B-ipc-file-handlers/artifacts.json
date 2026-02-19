@@ -1,0 +1,131 @@
+{
+  "taskId": "TASK-9A-B",
+  "taskName": "ファイル編集IPCハンドラー追加",
+  "featureName": "TASK-9A-B-ipc-file-handlers",
+  "createdAt": "2026-02-19",
+  "lastUpdated": "2026-02-19",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "artifacts": ["outputs/phase-1/requirements-specification.md"],
+      "dependsOn": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "artifacts": ["outputs/phase-2/design-document.md"],
+      "dependsOn": ["phase-1"]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/design-review-result.md"],
+      "dependsOn": ["phase-2"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "artifacts": ["outputs/phase-4/test-creation-report.md"],
+      "dependsOn": ["phase-3"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "artifacts": ["outputs/phase-5/implementation-report.md"],
+      "dependsOn": ["phase-4"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "artifacts": ["outputs/phase-6/test-enhancement-report.md"],
+      "dependsOn": ["phase-5"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "artifacts": ["outputs/phase-7/coverage-report.md"],
+      "dependsOn": ["phase-6"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/channel-grouping-review.md",
+        "outputs/phase-8/code-quality-analysis.md",
+        "outputs/phase-8/common-pattern-extraction.md",
+        "outputs/phase-8/naming-type-review.md",
+        "outputs/phase-8/preload-api-cleanup.md"
+      ],
+      "dependsOn": ["phase-7"]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/lint-report.md",
+        "outputs/phase-9/quality-gate-result.md",
+        "outputs/phase-9/security-report.md",
+        "outputs/phase-9/test-coverage-report.md",
+        "outputs/phase-9/typecheck-report.md"
+      ],
+      "dependsOn": ["phase-8"]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/architecture-review.md",
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/quality-coverage-review.md",
+        "outputs/phase-10/security-review.md",
+        "outputs/phase-10/type-safety-review.md"
+      ],
+      "dependsOn": ["phase-9"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/auto-test-result.md",
+        "outputs/phase-11/backup-test-result.md",
+        "outputs/phase-11/create-delete-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/read-write-test-result.md",
+        "outputs/phase-11/security-test-result.md"
+      ],
+      "dependsOn": ["phase-10"]
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ],
+      "dependsOn": ["phase-11"]
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [],
+      "dependsOn": ["phase-12"]
+    }
+  }
+}

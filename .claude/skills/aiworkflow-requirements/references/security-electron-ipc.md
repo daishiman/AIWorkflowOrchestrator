@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.5.0     | 2026-02-19 | TASK-9A-B: skillFileAPIセキュリティ実装パターン追加（validateIpcSender + 引数バリデーション + SkillFileManager内部検証 + isKnownSkillFileErrorエラーサニタイズ）。6チャンネル、65テスト全PASS |
 | v1.4.0     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラライフサイクル管理セクション追加（二重登録防止パターン） |
 | v1.3.1     | 2026-02-12 | UT-9B-H-003仕様追補: skillCreatorHandlers.ts 実装に合わせ、エラーサニタイズ仕様（既定文言/パス・機密情報マスク）と schemaName ホワイトリスト検証の返却値を明記 |
 | v1.3.0     | 2026-02-12 | UT-9B-H-003: SkillCreator IPCセキュリティ強化完了。validatePath（パストラバーサル防止）、sanitizeErrorMessage（内部情報漏洩防止）、ALLOWED_SCHEMA_NAMES（スキーマ名ホワイトリスト）追加。116テスト全PASS |
@@ -277,6 +278,79 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | ------------------------------------ | ------------------------------------------------- | ------ |
 | task-sec-ipc-lifecycle-audit-001     | Electron ライフサイクルイベント IPC リスナー管理監査 | 中     |
 | task-imp-ipc-registration-verify-001 | IPC ハンドラ登録整合性自動検証テスト               | 中     |
+
+---
+
+## 実装例: skillFileAPI（TASK-9A-B）
+
+**実装場所**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- Preload API: `apps/desktop/src/preload/skill-api.ts`（`electronAPI.skill` のメソッドとして公開）
+- ハンドラー: `apps/desktop/src/main/ipc/skillFileHandlers.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+**チャンネルホワイトリスト方式**:
+
+`SKILL_FILE_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。invoke用6チャンネルを管理する。
+
+| 定数名                      | チャンネル名            | 用途                 |
+| --------------------------- | ----------------------- | -------------------- |
+| SKILL_READ_FILE             | `skill:readFile`        | ファイル読み込み     |
+| SKILL_WRITE_FILE            | `skill:writeFile`       | ファイル書き込み     |
+| SKILL_CREATE_FILE           | `skill:createFile`      | ファイル新規作成     |
+| SKILL_DELETE_FILE           | `skill:deleteFile`      | ファイル削除         |
+| SKILL_LIST_BACKUPS          | `skill:listBackups`     | バックアップ一覧取得 |
+| SKILL_RESTORE_BACKUP        | `skill:restoreBackup`   | バックアップ復元     |
+
+**実装場所**: `apps/desktop/src/preload/channels.ts`
+
+**セキュリティ検証パターン（4層防御）**:
+
+全6 invokeハンドラーで以下のセキュリティ検証を実施する:
+
+1. **Sender検証**: `validateIpcSender(event, mainWindow)` で送信元BrowserWindowを検証。DevToolsからの呼び出しを検出・拒否
+2. **引数バリデーション**: `typeof` 文字列チェック + `.trim()` による空文字列検出
+3. **SkillFileManager内部検証**: `SkillFileManager.validatePath()` によるパストラバーサル/NULLバイト検出（`PathTraversalError`）
+4. **エラーサニタイズ**: `isKnownSkillFileError(error)` でSkillFileManagerエラーを識別し安全なエラーメッセージを返却
+
+**エラーサニタイズ仕様（isKnownSkillFileErrorパターン）**:
+
+| 入力パターン                       | 返却メッセージ |
+| ---------------------------------- | -------------- |
+| 引数バリデーションエラー           | 各ハンドラー定義の英語エラーメッセージ（例: `skillName must be a non-empty string`） |
+| `PathTraversalError`               | `"Path traversal detected: <path>"` |
+| `SkillNotFoundError`               | `"Skill not found: <skillName>"` |
+| `ReadonlySkillError`               | `"Cannot modify readonly skill: <skillName>"` |
+| `FileExistsError`                  | `"File already exists: <relativePath>"` |
+| `FileNotFoundError`                | `"File not found: <relativePath>"` |
+| Sender検証失敗                     | `toIPCValidationError` で返却されるメッセージ（例: `"Unauthorized IPC call"`） |
+| 不明なエラー                       | `"Internal error"` |
+
+**IPCセキュリティ要件**:
+
+| 要件                    | 実装                                 | 確認方法                            |
+| ----------------------- | ------------------------------------ | ----------------------------------- |
+| ホワイトリスト（チャンネル） | `SKILL_FILE_CHANNELS`定数で管理     | 定義外チャンネルはエラー            |
+| sender検証              | `validateIpcSender()`                | DevTools/外部からの拒否             |
+| 型安全性                | `IpcResult<T>`型で統一               | TypeScript型チェック                |
+| サンドボックス分離      | contextBridgeで公開                  | contextIsolation=true               |
+| 引数検証                | 各ハンドラーでtypeof + `.trim()`     | 空文字列/非文字列入力テスト         |
+| パストラバーサル防止    | SkillFileManager内部の `validatePath()` | `PathTraversalError` スロー確認   |
+| エラーサニタイズ        | `isKnownSkillFileError()` で識別返却 | スタック/パス/機密情報非露出テスト  |
+
+**テストカバレッジ**: 65テスト全PASS
+
+**関連タスク**: TASK-9A-B（2026-02-19完了）
+
+**関連未タスク（TASK-9A-B Phase 12 検出）**:
+
+| タスクID     | タスク名                                | 優先度 | 関連箇所                         |
+| ------------ | --------------------------------------- | ------ | -------------------------------- |
+| UT-9A-B-001 | IPC入力バリデーション標準化             | 中     | 引数バリデーションパターンの統一 |
+| UT-9A-B-002 | IPCエラーサニタイズ共通ユーティリティ化 | 中     | isKnownSkillFileError の共通化   |
+
+> 上記未タスクは skillFileHandlers.ts のバリデーション・エラーサニタイズパターンを他のIPCハンドラー（skillCreatorHandlers.ts 等）に横展開するための改善タスク。
 
 ---
 
