@@ -33,6 +33,10 @@ export default defineConfig({
         minForks: 1,
         maxForks: process.env.CI ? CI_MAX_FORKS : LOCAL_MAX_FORKS,
         isolate: true,
+        // CI環境でのWorker OOM crash防止: メモリ上限を4GBに引き上げ
+        // GitHub Actions ランナー（8GB RAM）でshard分割実行時にワーカーがOOMで
+        // 予期せず終了する問題を防ぐ（P22: Vitest Worker の予期しない終了）
+        execArgv: ["--max-old-space-size=4096"],
       },
     },
     testTimeout: 10000,
