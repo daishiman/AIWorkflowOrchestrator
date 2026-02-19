@@ -220,6 +220,30 @@ jsdom@27.x系でESMエラーが発生する場合、root package.jsonにpnpm.ove
 
 Vitestの並列実行はデフォルトで有効。スレッド数は5、テストタイムアウトは10秒に設定。各テストは分離されて実行される。
 
+### 未処理Promise拒否検知ルール（TASK-FIX-10-1 2026-02-19実装）
+
+テスト結果の信頼性を維持するため、未処理 Promise 拒否を無視する設定は禁止する。
+
+| 設定項目 | 許容値 | 理由 |
+| -------- | ------ | ---- |
+| `dangerouslyIgnoreUnhandledErrors` | 未設定（デフォルト `false`） | 未処理 Promise 拒否をテスト失敗として検知するため |
+
+**運用ルール**:
+
+- `vitest.config.ts` に `dangerouslyIgnoreUnhandledErrors` を追加しない
+- 設定の退行防止として、設定検証テストを1件以上維持する
+- 未処理 Promise 拒否が発生した場合は設定で隠蔽せず、テスト/実装側で根本修正する
+
+### `@repo/shared` alias 管理ルール（TASK-FIX-10-1 2026-02-19更新）
+
+モノレポ環境でのVitest解決エラーを防ぐため、`@repo/shared` のサブパス alias を明示管理する。
+
+| ルール | 内容 |
+| ------ | ---- |
+| 定義順序 | より具体的なサブパスを先、`@repo/shared` 本体を最後に定義する |
+| 追加条件 | `packages/shared` の export 追加時は、Vitest alias への反映要否を必ず確認する |
+| 継続課題 | alias追従の機械検証は未タスク `task-imp-vitest-alias-sync-automation-001` で対応する |
+
 ### モック戦略
 
 外部依存をテストから分離するため、適切なモック手法を使用する。
@@ -884,6 +908,7 @@ vitest.config.tsで設定済みの閾値:
 
 | Version | Date       | Changes                                                                                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.7.0   | 2026-02-19 | TASK-FIX-10-1: 未処理Promise拒否検知ルールを追加（dangerouslyIgnoreUnhandledErrors未設定を明文化）。`@repo/shared` alias 管理ルールと未タスク `task-imp-vitest-alias-sync-automation-001` を追記 |
 | 1.6.0   | 2026-02-03 | TASK-9A-A: SkillFileManager単体テスト実績追加（137テスト、3テストパターン、ESModuleモッキング回避パターン、カバレッジ Line 98.02%/Branch 96.34%/Function 100%）                        |
 | 1.5.0   | 2026-02-02 | TASK-OPT-CI-TEST-PARALLEL-001: Vitest並列化設定・環境変数制御セクション追加（maxForks CI:4/ローカル動的、fileParallelism両環境対応、VITEST_MAX_FORKS/VITEST_FILE_PARALLELISM環境変数） |
 | 1.4.2   | 2026-02-02 | TASK-8C-A: IPC統合テスト実績追加（41テスト、4テストパターン）                                                                                                                          |
