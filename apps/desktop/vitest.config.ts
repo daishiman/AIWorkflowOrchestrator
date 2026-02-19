@@ -40,7 +40,6 @@ export default defineConfig({
     // CI環境・ローカル環境ともにファイル間並列化を有効化
     // メモリ不足時は環境変数 VITEST_FILE_PARALLELISM=false で無効化可能
     fileParallelism: enableFileParallelism,
-    dangerouslyIgnoreUnhandledErrors: true,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
@@ -79,6 +78,31 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
       "@renderer": resolve(__dirname, "src/renderer"),
       "@main": resolve(__dirname, "src/main"),
+      // @repo/shared subpath aliases (longer/more specific paths first)
+      "@repo/shared/infrastructure/ai/apiKeyValidator": resolve(
+        __dirname,
+        "../../packages/shared/infrastructure/ai/apiKeyValidator.ts",
+      ),
+      "@repo/shared/infrastructure/auth": resolve(
+        __dirname,
+        "../../packages/shared/infrastructure/auth/index.ts",
+      ),
+      "@repo/shared/services/history/history-service": resolve(
+        __dirname,
+        "../../packages/shared/src/services/history/history-service.ts",
+      ),
+      "@repo/shared/services/history/types": resolve(
+        __dirname,
+        "../../packages/shared/src/services/history/types.ts",
+      ),
+      "@repo/shared/services/logging/conversion-logger": resolve(
+        __dirname,
+        "../../packages/shared/src/services/logging/conversion-logger.ts",
+      ),
+      "@repo/shared/services/logging/types": resolve(
+        __dirname,
+        "../../packages/shared/src/services/logging/types.ts",
+      ),
       "@repo/shared/schemas/auth": resolve(
         __dirname,
         "../../packages/shared/schemas/auth.ts",
@@ -87,7 +111,6 @@ export default defineConfig({
         __dirname,
         "../../packages/shared/schemas/index.ts",
       ),
-      // Agent SDK integration - resolve to source files instead of dist
       "@repo/shared/agent": resolve(
         __dirname,
         "../../packages/shared/src/agent/index.ts",
@@ -100,10 +123,56 @@ export default defineConfig({
         __dirname,
         "../../packages/shared/src/ipc/channels.ts",
       ),
+      "@repo/shared/types/llm/schemas": resolve(
+        __dirname,
+        "../../packages/shared/src/types/llm/schemas/index.ts",
+      ),
+      "@repo/shared/types/llm": resolve(
+        __dirname,
+        "../../packages/shared/src/types/llm/schemas/index.ts",
+      ),
+      "@repo/shared/types/rag/result": resolve(
+        __dirname,
+        "../../packages/shared/src/types/rag/result.ts",
+      ),
+      "@repo/shared/types/rag": resolve(
+        __dirname,
+        "../../packages/shared/src/types/rag/index.ts",
+      ),
       "@repo/shared/types/auth-mode": resolve(
         __dirname,
         "../../packages/shared/src/types/auth-mode.ts",
       ),
+      "@repo/shared/types/api-keys": resolve(
+        __dirname,
+        "../../packages/shared/types/api-keys.ts",
+      ),
+      "@repo/shared/types/auth": resolve(
+        __dirname,
+        "../../packages/shared/types/auth.ts",
+      ),
+      "@repo/shared/types/agent": resolve(
+        __dirname,
+        "../../packages/shared/src/types/agent.ts",
+      ),
+      "@repo/shared/types/skill": resolve(
+        __dirname,
+        "../../packages/shared/src/types/skill.ts",
+      ),
+      "@repo/shared/types/replace": resolve(
+        __dirname,
+        "../../packages/shared/src/types/replace.ts",
+      ),
+      "@repo/shared/types": resolve(
+        __dirname,
+        "../../packages/shared/src/types/index.ts",
+      ),
+      "@repo/shared/repositories": resolve(
+        __dirname,
+        "../../packages/shared/src/repositories/index.ts",
+      ),
+      // @repo/shared package entry (must be after all subpath aliases)
+      "@repo/shared": resolve(__dirname, "../../packages/shared/index.ts"),
       "@anthropic-ai/claude-agent-sdk": resolve(
         __dirname,
         "src/test/__mocks__/@anthropic-ai/claude-agent-sdk.ts",

@@ -71,14 +71,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | パフォーマンス要件 | L37 |
 | テスト戦略（TDD実践ガイド） | L125 |
-| セキュリティ | L379 |
-| 可用性 | L407 |
-| 保守性 | L425 |
-| アクセシビリティ | L525 |
-| テストカバレッジ目標 | L544 |
-| 関連ドキュメント | L621 |
-| 完了タスク | L629 |
-| 変更履歴 | L883 |
+| セキュリティ | L403 |
+| 可用性 | L431 |
+| 保守性 | L449 |
+| アクセシビリティ | L549 |
+| テストカバレッジ目標 | L568 |
+| 関連ドキュメント | L645 |
+| 完了タスク | L653 |
+| 変更履歴 | L907 |
 
 ---
 
@@ -1491,6 +1491,22 @@ node scripts/list-specs.js --topics
 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1549 |
 | テンプレート（新規教訓追加用） | L1597 |
 | 品質チェックリスト | L1669 |
+| 目次 | L48 |
+| 関連ドキュメント | L126 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L136 |
+| TASK-FIX-14-1: console → electron-log 移行 | L194 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L298 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L444 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L499 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L781 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L869 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1088 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1235 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1342 |
+| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1416 |
+| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1533 |
+| テンプレート（新規教訓追加用） | L1581 |
+| 品質チェックリスト | L1653 |
 
 ### references/llm-embedding.md
 
@@ -1835,6 +1851,9 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L636 |
 | 関連ドキュメント | L729 |
 | 変更履歴 | L739 |
+| 残課題（未タスク） | L652 |
+| 関連ドキュメント | L746 |
+| 変更履歴 | L756 |
 
 ### references/testing-accessibility.md
 

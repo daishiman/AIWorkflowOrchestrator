@@ -29,6 +29,38 @@
 
 ---
 
+## 2026-02-19: TASK-FIX-10-1-VITEST-ERROR-HANDLING 教訓最適化
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| Agent        | aiworkflow-requirements |
+| 操作         | 実装教訓の体系化（同種課題の簡潔解決手順を追加） |
+| 対象ファイル | references/lessons-learned.md, SKILL.md, LOGS.md |
+| 結果         | success |
+| 備考         | Step 2判定誤り・未タスク検出範囲不足・alias運用継続性の3課題を教訓化し、5ステップの再利用手順を追加。類似課題の解決時間短縮を目的にドキュメント構成を最適化 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | v1.15.0 | TASK-FIX-10-1 教訓3件 + 同種課題の簡潔解決手順（5ステップ）を追加 |
+
+---
+
+## 2026-02-19: TASK-FIX-10-1-VITEST-ERROR-HANDLING 完了
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| Agent        | aiworkflow-requirements |
+| 操作         | Phase 12 ドキュメント再監査（完了記録補完、システム仕様更新、未タスク登録） |
+| 対象ファイル | LOGS.md, SKILL.md, references/task-workflow.md, references/quality-requirements.md |
+| 結果         | success |
+| 備考         | `dangerouslyIgnoreUnhandledErrors: true` 削除、18個の `@repo/shared` サブパスエイリアス追加、リグレッション防止テスト13件新規作成。`task-workflow.md` に完了記録追記、未タスク `task-imp-vitest-alias-sync-automation-001` を登録。`quality-requirements.md` に未処理Promise拒否検知ルールを追加 |
+
+---
+
 ## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所・パターン追記
 
 | 項目         | 内容 |

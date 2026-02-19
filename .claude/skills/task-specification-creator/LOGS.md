@@ -56,6 +56,19 @@ node scripts/log-usage.js \
 
 ---
 
+## 2026-02-19: TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 12完了
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| Agent        | task-specification-creator |
+| 操作         | Phase 12 ドキュメント更新（実装ガイド作成、システム仕様書更新、未タスク検出、スキルフィードバック） |
+| 対象ファイル | LOGS.md, SKILL.md, implementation-guide.md, documentation-changelog.md, unassigned-task-detection.md, skill-feedback-report.md |
+| 結果         | success |
+| 備考         | `dangerouslyIgnoreUnhandledErrors: true` 削除、18個の `@repo/shared` サブパスエイリアス追加、リグレッション防止テスト13件新規作成。全テスト10,189件 ALL PASS。Phase 10 PASS（MINOR/MAJOR/CRITICAL 0件）。Phase 11手動テスト 5/5 PASS。未タスクは再監査で1件検出し `task-imp-vitest-alias-sync-automation-001` を登録 |
+
+---
+
 ## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装知見記録
 
 | 項目         | 内容 |

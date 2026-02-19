@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-02-19 - TASK-FIX-10-1 spec-triad pattern sync]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: aiworkflow-requirements への仕様反映を再利用可能にするため、patterns.mdにPhase 12成功パターン「仕様更新三点セット（quality/task-workflow/lessons-learned）」を追加。クイックナビを更新し、SKILL.md変更履歴 v10.10.0 を追記。
+
+---
+
+## [2026-02-19 - TASK-FIX-10-1 patterns sync]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: TASK-FIX-10-1-VITEST-ERROR-HANDLING のPhase 12再監査結果を反映し、patterns.mdにテストドメインの成功/失敗パターンを追加。成功: 「Vitest未処理Promise拒否の可視化運用」、失敗: 「dangerouslyIgnoreUnhandledErrors 常時有効化」。クイックナビゲーションおよびSKILL.md変更履歴 v10.9.0 を更新。
+
+---
+
 ## [2026-02-14 - UT-FIX-IPC-RESPONSE-UNWRAP-001 patterns sync]
 
 - **Agent**: skill-creator (update)

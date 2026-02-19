@@ -196,6 +196,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **v1.33.0** | **2026-02-19** | **TASK-9A-B再監査の教訓反映**: lessons-learned.md v1.15.0に苦戦箇所3件を追加（仕様書の実装事実ドリフト、Preload公開先パス取り違え、未タスクraw検出の誤読防止）。Phase 12の再発防止チェックを明文化 |
+| **v1.35.0** | **2026-02-19** | **TASK-FIX-10-1 教訓最適化反映**: `lessons-learned.md` に実装苦戦箇所（Step 2判定、未タスク検出範囲、alias運用継続性）と「同種課題の簡潔解決手順（5ステップ）」を追加。類似課題の再現性を強化 |
+| **v1.34.0** | **2026-02-19** | **TASK-FIX-10-1-VITEST-ERROR-HANDLING再監査反映**: Vitest設定修正（dangerouslyIgnoreUnhandledErrors削除 + 18個の@repo/sharedサブパスエイリアス追加）に加え、`task-workflow.md` 完了記録/残課題更新（`task-imp-vitest-alias-sync-automation-001`追加）、`quality-requirements.md` に未処理Promise拒否検知ルールとalias管理ルールを追記 |
 | **v1.32.0** | **2026-02-14** | **TASK-FIX-14-1 実装パターン体系化**: logging-migration-guide.md新規作成、patterns.md・development-guidelines.md・lessons-learned.md更新 |
 | **v1.31.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001実装知見追記**: lessons-learned.md 実装苦戦箇所4件、architecture-implementation-patterns.md safeInvokeUnwrap パターン、patterns.md 成功/失敗パターン追加 |
 | **v1.31.0** | **2026-02-14** | **TASK-FIX-14-1 苦戦箇所の仕様化**: lessons-learned.md v1.11.0 を追加（実変更ファイル名との乖離防止、Phase 12 Step 1-A/1-C/1-D先送り誤判定防止、未タスク登録3ステップ同時完了）。task-fix-14-2 への追跡リンクを明記 |

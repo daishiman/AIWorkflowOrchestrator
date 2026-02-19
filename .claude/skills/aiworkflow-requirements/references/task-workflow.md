@@ -160,6 +160,50 @@
 
 ---
 
+### タスク: TASK-FIX-10-1-VITEST-ERROR-HANDLING dangerouslyIgnoreUnhandledErrors設定の解消（2026-02-19完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| 完了日     | 2026-02-19 |
+| ステータス | **完了** |
+| Phase      | Phase 1-12完了（Phase 13未実施） |
+| テスト数   | 新規13件 + 回帰10,189件PASS |
+| 変更規模   | `vitest.config.ts` 1件修正 + テスト2ファイル新規 |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| ------ | --------- |
+| ワークフロー一式 | `docs/30-workflows/TASK-FIX-10-1-VITEST-ERROR-HANDLING/` |
+| 実装ガイド | `docs/30-workflows/TASK-FIX-10-1-VITEST-ERROR-HANDLING/outputs/phase-12/implementation-guide.md` |
+| 更新履歴 | `docs/30-workflows/TASK-FIX-10-1-VITEST-ERROR-HANDLING/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出 | `docs/30-workflows/TASK-FIX-10-1-VITEST-ERROR-HANDLING/outputs/phase-12/unassigned-task-detection.md` |
+| 元タスク指示書（移管） | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/07-task-fix-10-1-vitest-error-handling.md` |
+
+#### 変更理由
+
+- `dangerouslyIgnoreUnhandledErrors: true` による未処理 Promise 拒否の隠蔽を解消し、テスト結果の信頼性を回復
+- `@repo/shared` サブパス解決を安定化するため、Vitest alias を18件追加
+- 未処理 Promise 拒否の検知退行を防ぐため、設定検証5件 + 非同期エラーハンドリング8件の回帰テストを追加
+
+#### 関連仕様書更新
+
+| 仕様書 | 更新内容 |
+| ------ | -------- |
+| quality-requirements.md | 未処理Promise拒否を無視しない運用ルール、alias管理ルールを追加 |
+| task-workflow.md | 本完了タスク記録と未タスク1件を追加 |
+
+#### 苦戦箇所と解決策
+
+| 苦戦ポイント | 問題 | 解決策 |
+| ------------ | ---- | ------ |
+| Step 2の要否判定 | 「設定削除のみなので仕様更新不要」と誤判定しやすかった | テスト戦略変更（未処理Promise拒否検知ルールの変更）を仕様変更として扱い、`quality-requirements.md` を更新 |
+| 未タスク検出範囲 | 変更コードだけを根拠にすると、Phase成果物に記録された将来課題を見落とす | Phase成果物（`outputs/phase-*`）を含めて再監査し、`task-imp-vitest-alias-sync-automation-001` を正式登録 |
+| 参照整合の担保 | 未タスク登録後に参照パス不整合が残ると追跡性が落ちる | `verify-unassigned-links.js` でリンク整合を検証し、missing 0件を完了条件に含める |
+
+---
+
 ### タスク: UT-FIX-IPC-RESPONSE-UNWRAP-001 IPC レスポンスラッパー未展開修正（2026-02-14完了）
 
 | 項目       | 内容 |
@@ -639,7 +683,7 @@
 
 | タスクID                                   | タスク名                                              | 優先度 | 発見元                                                         | タスク仕様書                                                                               |
 | ------------------------------------------ | ----------------------------------------------------- | ------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低 | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目） | `docs/30-workflows/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md` |
+| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低 | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目） | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md` |
 | TASK-3-1-B                                 | SkillExecutor IPC Handler統合                         | 高     | TASK-3-1-A完了時（blocks）                                     | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md`            |
 | TASK-SKILL-PERF-TEST                       | SkillExecutor パフォーマンステスト                    | 低     | TASK-3-1-A Phase 11推奨事項                                    | `docs/30-workflows/unassigned-task/task-skillexecutor-performance-testing.md`              |
 | SKILL-E2E-001                              | スキルインポートE2Eテスト                             | 中     | Phase 11（手動テスト検証）推奨事項                             | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`                       |
@@ -709,6 +753,7 @@
 | UT-SETTINGSVIEW-INLINE-SELECTOR-001          | SettingsView残存インラインセレクタの個別セレクタ移行               | 低 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 10（MINOR #2）        | `docs/30-workflows/unassigned-task/task-ut-settingsview-inline-selector-migration.md`        |
 | task-imp-vitest-mock-reset-utility-001       | Vitest モック2段階リセットユーティリティ共通化                      | 中 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`                |
 | task-ref-vitest-module-mock-audit-001        | Vitest モジュールレベルモック監査・使い分けガイドライン策定         | 低 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）     | `docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`                 |
+| task-imp-vitest-alias-sync-automation-001    | Vitest alias 設定と `@repo/shared` エクスポート整合の自動検証       | 中 | TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 8（スコープ外項目） | `docs/30-workflows/unassigned-task/task-imp-vitest-alias-sync-automation-001.md`             |
 | UT-PERF-001                                   | グラフユーティリティ性能ベンチマーク基準再設計                     | 中 | TODO検出: `packages/shared/src/types/rag/graph/__tests__/utils.test.ts:791` | `docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md` |
 | UT-TYPE-DATETIME-DOC-001                       | 型日時表現のガイドライン策定とドキュメント化                       | 低 | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION Phase 12                       | `docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md` |
 | ~~UT-FIX-IPC-RESPONSE-UNWRAP-001~~             | ~~IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）~~ | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~ | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-response-unwrap-001.md`~~ **2026-02-14完了** |
@@ -745,6 +790,7 @@
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1.39.0     | 2026-02-19 | 未タスク3件追加: UT-9A-B-001（IPC入力バリデーション標準化）、UT-9A-B-002（IPCエラーサニタイズ共通化）、UT-9A-B-003（IPCテストhandlerMapモック共通化）。TASK-9A-B Phase 12検出 |
 | 1.38.0     | 2026-02-19 | TASK-9A-B完了記録追加。スキルファイル操作IPCハンドラー6チャンネル実装（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、65テスト全PASS、カバレッジ Line 91.14% / Branch 93.93% / Function 100% |
+| 1.38.0     | 2026-02-19 | TASK-FIX-10-1-VITEST-ERROR-HANDLING完了記録を追加。dangerouslyIgnoreUnhandledErrors削除・Vitest alias 18件追加・新規テスト13件を反映。残課題に task-imp-vitest-alias-sync-automation-001 を登録。苦戦箇所と解決策（Step 2判定、未タスク検出範囲、参照整合）を追記 |
 | 1.37.0     | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録を追加。残課題テーブルで同タスクを完了マークし、MINOR由来の未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）を登録 |
 | 1.37.0     | 2026-02-14 | TASK-FIX-14-1完了記録を追加（本番コード4ファイル27箇所のconsole→electron-log移行）。未タスク TASK-FIX-14-2（SkillExecutor残存4箇所）を残課題テーブルへ登録 |
 | 1.33.1     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の完了タスク参照パスを `completed-tasks/` に修正。`verify-unassigned-links.js` での参照切れを解消 |
