@@ -1,6 +1,8 @@
 {
-  "generated": "2026-02-14T11:24:48.896Z",
-  "totalKeywords": 1140,
+  "generated": "2026-02-19T06:46:41.313Z",
+  "totalKeywords": 1144,
+  "generated": "2026-02-19T13:31:48.308Z",
+  "totalKeywords": 1144,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -703,6 +705,34 @@
     "実装パターン参照": [
       "api-ipc-agent.md"
     ],
+    "スキルファイル操作": [
+      "api-ipc-agent.md",
+      "lessons-learned.md"
+    ],
+    "TASK": [
+      "api-ipc-agent.md",
+      "api-ipc-auth.md",
+      "arch-state-management.md",
+      "arch-ui-components.md",
+      "architecture-auth-security.md",
+      "architecture-implementation-patterns.md",
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "interfaces-agent-sdk.md",
+      "lessons-learned.md",
+      "quality-e2e-testing.md",
+      "security-electron-ipc.md",
+      "security-skill-ipc.md",
+      "technology-devops.md",
+      "testing-component-patterns.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md",
+      "ui-ux-panels.md",
+      "ui-ux-search-panel.md"
+    ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
       "interfaces-auth.md"
@@ -760,28 +790,6 @@
     "セッション自動リフレッシュ": [
       "api-ipc-auth.md",
       "architecture-auth-security.md"
-    ],
-    "TASK": [
-      "api-ipc-auth.md",
-      "arch-state-management.md",
-      "arch-ui-components.md",
-      "architecture-auth-security.md",
-      "architecture-implementation-patterns.md",
-      "error-handling.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "interfaces-agent-sdk.md",
-      "lessons-learned.md",
-      "quality-e2e-testing.md",
-      "security-skill-ipc.md",
-      "technology-devops.md",
-      "testing-component-patterns.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-feature-skill-stream.md",
-      "ui-ux-panels.md",
-      "ui-ux-search-panel.md"
     ],
     "AUTH": [
       "api-ipc-auth.md",
@@ -2725,6 +2733,24 @@
       "master-design.md",
       "patterns.md"
     ],
+    "ハンドラー実装": [
+      "lessons-learned.md"
+    ],
+    "実装事実ドリフトを防ぐ最小検証セット": [
+      "lessons-learned.md"
+    ],
+    "Vitest": [
+      "lessons-learned.md"
+    ],
+    "未処理": [
+      "lessons-learned.md"
+    ],
+    "Promise": [
+      "lessons-learned.md"
+    ],
+    "拒否検知の復元": [
+      "lessons-learned.md"
+    ],
     "console": [
       "lessons-learned.md",
       "logging-migration-guide.md"
@@ -3454,6 +3480,9 @@
       "security-electron-ipc.md"
     ],
     "skillCreatorAPI": [
+      "security-electron-ipc.md"
+    ],
+    "skillFileAPI": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [

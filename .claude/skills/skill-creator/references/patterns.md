@@ -11,7 +11,9 @@
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗 |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化                               | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入 |
+| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**                               | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入 |
+| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
+| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **仕様更新三点セット（quality/task-workflow/lessons-learned）**                               | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入 |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
@@ -211,6 +213,32 @@
 - **適用条件**: リファクタリング系タスクや大量ファイル編集タスクで、成果物に対象ファイル一覧を記載する場合
 - **発見日**: 2026-02-14
 - **関連タスク**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION
+
+### [Phase12] 実装-仕様ドリフト再監査（数値・パス・文言）
+
+- **状況**: Phase 12完了後の再監査で、仕様書のテスト件数・Preload公開先パス・エラーメッセージ表が実装とずれていた
+- **アプローチ**:
+  - テスト件数は再実行結果（CIログまたはローカル実測）を唯一の正として更新
+  - `rg -n` で旧パス（例: `skill-file-api.ts`）や旧文言を横断検索し、関連仕様書を一括修正
+  - 未タスク検出は raw 件数と確定件数を分離して記録し、既存未タスク管理との重複を除外
+- **結果**: Phase 12成果物の監査再作業を削減し、実装事実と仕様の整合性を維持
+- **適用条件**: IPC機能追加・ハンドラー追加など、仕様書更新ファイルが3件以上に跨るタスク
+- **発見日**: 2026-02-19
+- **関連タスク**: TASK-9A-B
+
+### [Phase12] 仕様更新三点セット（quality/task-workflow/lessons-learned）
+
+- **状況**: Phase 12で実装内容を1ファイルだけに反映すると、運用ルール・完了記録・教訓が分断されやすい
+- **アプローチ**:
+  - `quality-requirements.md` に「今後守るべき運用ルール」を追記
+  - `task-workflow.md` に「今回何を実装し、どこで苦戦したか」を完了タスクとして記録
+  - `lessons-learned.md` に「同種課題の簡潔解決手順（再利用手順）」を記録
+  - 3ファイル更新後に `generate-index.js` を実行して索引を同期
+- **結果**: 仕様の「ルール」「履歴」「再利用ノウハウ」が分離されず、後続タスクの調査コストを削減
+- **適用条件**: テスト戦略・運用方針・ドキュメント運用が同時に変わるタスク（特にPhase 12 Step 2を伴う変更）
+- **発見日**: 2026-02-19
+- **関連タスク**: TASK-FIX-10-1-VITEST-ERROR-HANDLING
+- **クロスリファレンス**: [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [quality-requirements.md](../../aiworkflow-requirements/references/quality-requirements.md), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
 
 ### [Testing] E2EテストでのARIA属性ベースセレクタ優先
 
@@ -742,6 +770,19 @@
 - **発見日**: 2026-02-13
 - **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
 
+### [Testing] Vitest未処理Promise拒否の可視化運用（TASK-FIX-10-1）
+
+- **状況**: `dangerouslyIgnoreUnhandledErrors: true` が残っていると、未処理Promise拒否がテスト失敗として観測されず品質低下を招く
+- **アプローチ**:
+  - `vitest.config.ts` から `dangerouslyIgnoreUnhandledErrors` を削除し、デフォルト挙動（未処理拒否を失敗扱い）を維持
+  - 設定退行を防ぐため、設定検証テストを追加して「危険設定を再導入していないこと」を機械検証
+  - モノレポ解決エラーの混入を避けるため、`@repo/shared` サブパスaliasを具体パス優先で定義
+- **結果**: 未処理Promise拒否の隠蔽を防止し、テスト失敗の原因を早期に可視化
+- **適用条件**: Vitest設定に `dangerously*` 系の緩和設定を検討する場合、またはモノレポでalias整合が必要な場合
+- **発見日**: 2026-02-19
+- **関連タスク**: TASK-FIX-10-1-VITEST-ERROR-HANDLING
+- **クロスリファレンス**: [quality-requirements.md](../../aiworkflow-requirements/references/quality-requirements.md#未処理promise拒否検知ルールtask-fix-10-1-2026-02-19実装)
+
 ### [Phase12] 未タスク検出の2段階判定（raw→実タスク候補）
 
 - **状況**: `detect-unassigned-tasks.js` が仕様書本文の説明用 TODO まで大量検出し、未タスク件数を過大評価しやすい
@@ -873,6 +914,16 @@
 - **対策**: `unassigned-task-detection.md` に raw件数と精査後件数を分離して記録し、配置先 `docs/30-workflows/unassigned-task/` の要否を明示する
 - **発見日**: 2026-02-13
 - **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
+
+### [Testing] dangerouslyIgnoreUnhandledErrors 常時有効化（TASK-FIX-10-1）
+
+- **状況**: Vitestで `dangerouslyIgnoreUnhandledErrors: true` を恒常運用し、未処理Promise拒否を無視する
+- **問題**: 本来失敗すべき非同期エラーがテストで通過し、回帰検知が遅れる
+- **原因**: 一時的なテスト安定化設定を恒久設定として残してしまう運用
+- **教訓**: 未処理Promise拒否は設定で抑止せず、テスト/実装側で根本修正する
+- **対策**: 設定禁止ルールを仕様書に明記し、設定検証テストで再導入を防ぐ
+- **発見日**: 2026-02-19
+- **関連タスク**: TASK-FIX-10-1-VITEST-ERROR-HANDLING
 
 ### [Test] モジュールモック下でのタイマーテスト失敗
 

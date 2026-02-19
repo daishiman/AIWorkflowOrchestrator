@@ -288,7 +288,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **spec-update-workflow.mdを常に参照** | Phase 12開始時に必ず [spec-update-workflow.md](references/spec-update-workflow.md) を開き、チェックリストを確認 |
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする |
 | **LOGS.md/SKILL.md は4ファイル更新** | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md |
-| **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node generate-index.js` を実行 |
+| **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
 
 ---
 
@@ -372,6 +372,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.70.0** | **2026-02-19** | **TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 12再監査反映**: 仕様漏れ再点検で `phase-3` 必須セクション不足を是正、`artifacts.json` 整合を修正、システム仕様（task-workflow/quality-requirements）を更新。未タスク1件（`task-imp-vitest-alias-sync-automation-001`）を登録 |
 | **9.68.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001 実装知見記録**: safeInvokeUnwrap パターン導入に伴う実装知見（type erasure、ハンドラ応答形式不統一、テストモック波及修正19箇所）を aiworkflow-requirements の3ファイルに反映完了 |
 | **9.67.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 12是正**: `phase-12-documentation.md` の誤参照（`api-ipc-skill.md`）と `generate-index.mjs` 記述を修正。Phase 10 MINOR 2件を未タスク仕様書（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）へ正式変換。`spec-update-workflow.md` に「仕様書参照パスの実在確認（test -f）」チェックを追加 |
 | **9.67.0** | **2026-02-14** | **UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 1-12完了**: IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加、activate イベントハンドラ修正。7テスト全PASS、Phase 10 PASS判定。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
@@ -436,7 +437,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **9.27.0** | **2026-02-02** | **TASK-8C-B完了**: スキル選択フローE2Eテスト Phase 1-12全工程完了。8テストケース（ARIA属性ベースセレクタ、キーボード操作、アクセシビリティ検証）。LOGS.md完了記録追加                                                                                                                                    |
 | **9.26.0** | **2026-02-02** | **マージ統合**: TASK-OPT-CI-TEST-PARALLEL-001完了 + task-imp-permission-date-filter完了 + TASK-8C-A/TASK-8A完了をマージ統合                                                                                                                                                                              |
 | **9.25.0** | **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001スキル改善**: patterns.md CI/DevOps最適化パターン2件追加（GitHub Actionsテスト並列実行、DevOps仕様書更新）、spec-update-workflow.md Step 1-F追加（DevOps関連ファイル更新チェックリスト）。CI最適化タスク完了時の仕様書更新漏れ防止                                        |
+| **9.24.1** | **2026-02-19** | **Phase 12再監査是正**: `phase-11-12-guide.md` の topic-map 再生成コマンドを実パスに修正（`scripts/generate-index.js`）。Step 1-D 実行漏れ再発防止のため Tips を具体コマンドへ更新 |
 | **9.24.0** | **2026-02-02** | **TASK-8C-A未タスク指示書最適化**: task-imp-ipc-imp002-channels.md・task-imp-ipc-permission-response.mdにシステム仕様書参照テーブル追加（3.4セクション）。実装者がarchitecture-implementation-patterns.md/interfaces-agent-sdk-skill.md/security-skill-ipc.mdを参照できるよう強化                        |
+| **9.24.0** | **2026-02-19** | **TASK-9A-B完了**: Phase 12 Task 2実施。api-ipc-agent.md・security-electron-ipc.md・architecture-overview.md・interfaces-agent-sdk-skill.md・task-workflow.md更新（スキルファイル操作IPC6チャンネル追加） |
 | **9.23.0** | **2026-02-02** | **patterns.md拡充**: 成功パターン2件追加（コンポーネント同階層ユーティリティ配置、順次フィルタパイプラインuseMemoチェーン）+ 未タスク検出・配置（detect-unassigned）51件スキャン                                                                                                                         |
 | **9.22.0** | **2026-02-02** | **task-imp-permission-date-filter完了**: Phase 1-12全工程完了。dateFilterUtils.ts新規作成、72テスト全PASS + TASK-8A実行知見スキル改善                                                                                                                                                                    |
 | 9.21.0     | 2026-02-02     | TASK-8A完了: スキル管理モジュール単体テスト Phase 1-12全工程完了。231テスト全PASS、5テスト新規追加、4/5モジュールカバレッジ80%以上。LOGS.md完了記録追加                                                                                                                                                  |

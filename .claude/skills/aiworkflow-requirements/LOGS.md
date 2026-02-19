@@ -5,6 +5,62 @@
 
 ---
 
+## 2026-02-19: TASK-9A-B ファイル編集IPCハンドラー追加
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-9A-B |
+| Agent        | aiworkflow-requirements |
+| 操作         | システム仕様書更新（Phase 12完了記録）|
+| 対象ファイル | api-ipc-agent.md, security-electron-ipc.md, architecture-overview.md, interfaces-agent-sdk-skill.md, task-workflow.md |
+| 結果         | success |
+| 備考         | ファイル編集IPCハンドラー6チャンネル（skill:readFile, skill:writeFile, skill:createFile, skill:deleteFile, skill:listBackups, skill:restoreBackup）追加。SkillFileManagerとPreload APIの接続実装。65テスト追加、全PASS。Phase 12再監査で苦戦箇所3件（実装事実ドリフト、Preload公開先パス誤記、未タスクraw誤読防止）を lessons-learned.md v1.15.0 に追記 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| api-ipc-agent.md | v1.8.0 | TASK-9A-B: スキルファイル操作IPCチャンネルセクション追加（6チャンネル、型定義、実装状況、完了タスク記録） |
+| security-electron-ipc.md | v1.5.0 | TASK-9A-B: skillFileAPIセキュリティ実装パターン追加（validateIpcSender + 引数バリデーション + SkillFileManager内部検証 + isKnownSkillFileErrorによるエラーサニタイズ） |
+| architecture-overview.md | v1.7.0 | TASK-9A-B: IPCハンドラー登録一覧にregisterSkillFileHandlersを追加（Pattern 3: mainWindow + service）|
+| interfaces-agent-sdk-skill.md | v1.21.0 | TASK-9A-B: SkillFileManager IPCハンドラー実装完了記録追加 |
+| task-workflow.md | v1.38.0 | TASK-9A-B完了記録を完了タスクセクションに追加 |
+| lessons-learned.md | v1.15.0 | TASK-9A-B 実装苦戦箇所3件を追記（仕様書実装事実ドリフト、Preload公開先パス取り違え、未タスクraw誤読防止） |
+
+---
+
+## 2026-02-19: TASK-FIX-10-1-VITEST-ERROR-HANDLING 教訓最適化
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| Agent        | aiworkflow-requirements |
+| 操作         | 実装教訓の体系化（同種課題の簡潔解決手順を追加） |
+| 対象ファイル | references/lessons-learned.md, SKILL.md, LOGS.md |
+| 結果         | success |
+| 備考         | Step 2判定誤り・未タスク検出範囲不足・alias運用継続性の3課題を教訓化し、5ステップの再利用手順を追加。類似課題の解決時間短縮を目的にドキュメント構成を最適化 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | v1.15.0 | TASK-FIX-10-1 教訓3件 + 同種課題の簡潔解決手順（5ステップ）を追加 |
+
+---
+
+## 2026-02-19: TASK-FIX-10-1-VITEST-ERROR-HANDLING 完了
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| Agent        | aiworkflow-requirements |
+| 操作         | Phase 12 ドキュメント再監査（完了記録補完、システム仕様更新、未タスク登録） |
+| 対象ファイル | LOGS.md, SKILL.md, references/task-workflow.md, references/quality-requirements.md |
+| 結果         | success |
+| 備考         | `dangerouslyIgnoreUnhandledErrors: true` 削除、18個の `@repo/shared` サブパスエイリアス追加、リグレッション防止テスト13件新規作成。`task-workflow.md` に完了記録追記、未タスク `task-imp-vitest-alias-sync-automation-001` を登録。`quality-requirements.md` に未処理Promise拒否検知ルールを追加 |
+
+---
+
 ## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所・パターン追記
 
 | 項目         | 内容 |

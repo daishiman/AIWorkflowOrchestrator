@@ -8,7 +8,7 @@
 
 | ティア              | 内容                          | タスク数 | 目的                             |
 | ------------------- | ----------------------------- | -------- | -------------------------------- |
-| 🔧 **Tier 0: 修正** | 仕様書準拠修正（前提タスク）  | 6        | 既存実装の整合性確保             |
+| 🔧 **Tier 0: 修正** | 仕様書準拠修正（前提タスク）  | 7        | 既存実装の整合性確保             |
 | 🎯 **Tier 1: MVP**  | 基本機能（Phase 1-8）         | 24       | スキル実行・インポート・権限管理 |
 | 🚀 **Tier 2: 拡張** | スキル管理（Phase 9A-C, 10A） | 17       | 作成・編集・改善                 |
 | 🔮 **Tier 3: 将来** | 高度な機能（Phase 9D-J）      | 7        | チェーン・共有・統計             |
@@ -72,7 +72,7 @@ Step 2: [2A] [2B] [2C]                    ← 3タスク並列
 
 ---
 
-## 🔧 Tier 0: 仕様書準拠修正（6タスク）
+## 🔧 Tier 0: 仕様書準拠修正（7タスク）
 
 > **重要**: これらのタスクはTier 1の前提として実行必須。既存実装の仕様書乖離を解消する。
 
@@ -84,6 +84,7 @@ Step 2: [2A] [2B] [2C]                    ← 3タスク並列
 | TASK-FIX-6-1                       | [状態管理集約](./task-fix-6-1-state-centralization.md)                                              | FIX-5-1          | medium | pending    |
 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 | [AgentView無限ループ修正](./completed-task/00-task-agentview-infinite-loop-fix.md)                  | FIX-6-1          | medium | completed  |
 | TASK-FIX-13-1                      | [deprecatedプロパティ正式移行](./completed-task/06b-task-fix-13-1-deprecated-property-migration.md) | FIX-5-1, FIX-6-1 | small  | completed  |
+| TASK-FIX-10-1                      | [Vitestエラー隠蔽設定解消](./completed-task/07-task-fix-10-1-vitest-error-handling.md)              | FIX-11-1         | medium | completed  |
 
 ### Tier 0 完了条件
 
@@ -248,11 +249,11 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 
 ### Phase 9A: SkillEditor
 
-| ID        | タイトル                                            | 依存       | 複雑度 | ステータス |
-| --------- | --------------------------------------------------- | ---------- | ------ | ---------- |
-| TASK-9A-A | [SkillFileManager](./task-9a-a-file-manager.md)     | Tier 1完了 | medium | pending    |
-| TASK-9A-B | [ファイル編集IPC](./task-9a-b-ipc-file-handlers.md) | 9A-A       | small  | pending    |
-| TASK-9A-C | [SkillEditor UI](./task-9a-c-skill-editor-ui.md)    | 9A-B       | medium | pending    |
+| ID        | タイトル                                                           | 依存       | 複雑度 | ステータス |
+| --------- | ------------------------------------------------------------------ | ---------- | ------ | ---------- |
+| TASK-9A-A | [SkillFileManager](./task-9a-a-file-manager.md)                    | Tier 1完了 | medium | pending    |
+| TASK-9A-B | [ファイル編集IPC](./completed-task/task-9a-b-ipc-file-handlers.md) | 9A-A       | small  | completed  |
+| TASK-9A-C | [SkillEditor UI](./task-9a-c-skill-editor-ui.md)                   | 9A-B       | medium | pending    |
 
 ### Phase 9B: skill-creator メタスキル
 

@@ -20,6 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-19 | 1.16.0 | TASK-9A-B 技術的苦戦箇所4件追加（handlerMap ESMモック、v8カバレッジ関数カウント、.trim()境界値、isKnownSkillFileError型ガード） |
+| 2026-02-19 | 1.15.0 | TASK-9A-B 実装苦戦箇所3件を追加（仕様書の実装事実ドリフト、Preload公開先パス取り違え、未タスクraw検出の誤読防止） |
+| 2026-02-19 | 1.15.0 | TASK-FIX-10-1 教訓追加（Step 2要否判定、未タスク検出範囲、Vitest alias運用）。同種課題向けに「簡潔解決手順（5ステップ）」を追加 |
 | 2026-02-14 | 1.14.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 実装苦戦箇所4件追加（TypeScript type erasure、ハンドラ応答形式不統一、テストモック波及修正、safeInvokeUnwrap設計判断） |
 | 2026-02-14 | 1.13.0 | UT-FIX-IPC-RESPONSE-UNWRAP-001 教訓3件追加（仕様書参照正本の不一致、MINOR未タスク化漏れ、完了移管時のリンク不整合） |
 | 2026-02-14 | 1.12.0 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001 の苦戦箇所を2件追記（IPC_CHANNELS全走査の前提確認、IPC外リスナー解除漏れの防止） |
@@ -46,6 +49,19 @@
 
 ## 目次
 
+0. [TASK-9A-B: スキルファイル操作IPCハンドラー実装](#task-9a-b-スキルファイル操作ipcハンドラー実装)
+   - [苦戦箇所1: 仕様書の実装事実ドリフト（テスト件数・エラーメッセージ）](#1-仕様書の実装事実ドリフトテスト件数エラーメッセージ)
+   - [苦戦箇所2: Preload公開先パスの取り違え](#2-preload公開先パスの取り違え)
+   - [苦戦箇所3: 未タスク検出raw件数の誤読防止](#3-未タスク検出raw件数の誤読防止)
+   - [苦戦箇所4: handlerMap ESMモックパターン](#4-handlermap-esmモックパターン)
+   - [苦戦箇所5: v8カバレッジの関数定義行カウント問題](#5-v8カバレッジの関数定義行カウント問題)
+   - [苦戦箇所6: .trim()境界値バリデーション漏れ](#6-trim境界値バリデーション漏れ)
+   - [苦戦箇所7: isKnownSkillFileError型ガードによるエラーサニタイズ設計](#7-isknownskillfileerror型ガードによるエラーサニタイズ設計)
+0. [TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元](#task-fix-10-1-vitest未処理promise拒否検知の復元)
+   - [苦戦箇所1: Step 2要否判定の誤り](#1-step-2要否判定の誤り)
+   - [苦戦箇所2: 未タスク検出範囲の不足](#2-未タスク検出範囲の不足)
+   - [苦戦箇所3: alias運用の継続性不足](#3-alias運用の継続性不足)
+   - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ)
 0. [UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正](#ut-fix-ipc-response-unwrap-001-ipcレスポンスラッパー未展開修正)
    - [苦戦箇所1: 仕様書の正本参照が不一致](#1-仕様書の正本参照が不一致)
    - [苦戦箇所2: Phase 10 MINORの未タスク化漏れ](#2-phase-10-minorの未タスク化漏れ)
@@ -124,6 +140,241 @@
 | architecture-implementation-patterns.md | 実装パターン集（DIパターン等） | [./architecture-implementation-patterns.md](./architecture-implementation-patterns.md) |
 | interfaces-agent-sdk-executor.md | SkillExecutor インターフェース仕様 | [./interfaces-agent-sdk-executor.md](./interfaces-agent-sdk-executor.md) |
 | 06-known-pitfalls.md | 既知の落とし穴と防止策 | [../../../rules/06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) |
+
+---
+
+## TASK-9A-B: スキルファイル操作IPCハンドラー実装
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-9A-B |
+| 目的 | SkillFileManager の6操作を IPC 経由で安全に実行できる状態にする |
+| 完了日 | 2026-02-19 |
+| ステータス | **完了** |
+
+### 実装内容
+
+| 変更内容 | ファイル | 説明 |
+|----------|----------|------|
+| IPCハンドラー追加 | `apps/desktop/src/main/ipc/skillFileHandlers.ts` | `skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup` の6チャンネルを実装 |
+| Preload API公開 | `apps/desktop/src/preload/skill-api.ts` | `electronAPI.skill` から file 操作 API を公開 |
+| チャンネル定義拡張 | `packages/shared/src/ipc/channels.ts` | 6チャンネルを型安全に追加 |
+| セキュリティ検証 | `apps/desktop/src/main/ipc/skillFileHandlers.ts` | `validateIpcSender` + 引数バリデーション + `isKnownSkillFileError` でサニタイズ |
+
+### 苦戦箇所と解決策
+
+#### 1. 仕様書の実装事実ドリフト（テスト件数・エラーメッセージ）
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 仕様書の一部にテスト件数（47）やエラーメッセージ表記の旧値が残り、実装（65テスト、実コード文言）と不一致になった |
+| **原因** | Phase 12の更新時に「前回レビューのメモ」を再利用し、再実行結果との差分確認を省略した |
+| **解決策** | IPCテストを再実行して実測値を基準化し、`api-ipc-agent.md` / `security-electron-ipc.md` / `LOGS.md` を一括修正した |
+| **教訓** | 仕様更新は必ず「実行ログと実装コード」を一次情報にし、数値・文言の転記は最後にクロスチェックする |
+
+#### 2. Preload公開先パスの取り違え
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 仕様書内に `skill-file-api.ts` という非実在パスが残り、実際の公開先（`skill-api.ts`）と乖離した |
+| **原因** | ファイル名変更後の旧参照が複数仕様書に残存し、横断検索をせずに局所更新で完了扱いにした |
+| **解決策** | `rg` で誤パスを全件検出し、`interfaces-agent-sdk-skill.md` / `api-ipc-agent.md` / `security-electron-ipc.md` を同ターンで修正した |
+| **教訓** | IPC系の仕様更新は単一ファイルで閉じず、Preload/Shared/Main を束ねた横断検索を必須工程にする |
+
+#### 3. 未タスク検出raw件数の誤読防止
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | TODO/FIXME の raw 検出4件を新規未タスクと誤認しやすく、不要な指示書作成リスクがあった |
+| **原因** | 検出スクリプト出力の「候補」と「確定課題」の区別が不明確になりやすい |
+| **解決策** | raw 4件を既存未タスクとの対応で精査し、`task-imp-community-dashboard-handlers-001.md` で管理済みと確認して新規起票0件を明記した |
+| **教訓** | 未タスク検出は raw 件数だけで判断せず、既存台帳との突合結果まで記録して完了判定する |
+
+**コード例**:
+
+```bash
+# 実装事実ドリフトを防ぐ最小検証セット
+pnpm --filter @repo/desktop test:run src/main/ipc/__tests__/skillFileHandlers*.test.ts
+rg -n "skill-file-api\\.ts|TASK-9A-B|65テスト|47" .claude/skills/aiworkflow-requirements/references/
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+```
+
+#### 4. handlerMap ESMモックパターン
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Vitest + ESM環境で `require("electron")` が使用不可。ipcMain.handle() で登録されたハンドラー関数をテスト側から直接呼び出す方法が必要だった |
+| **原因** | Electron の ESM サポートが不完全で、CommonJS スタイルの `require` を使ったモジュール取得ができない |
+| **解決策** | `vi.mock("electron")` で ipcMain.handle をモック化し、`Map<string, Function>` (handlerMap) にハンドラーを格納。テスト側から `handlerMap.get(channelName)!(event, args)` で直接呼び出す方式を採用 |
+| **教訓** | Electron IPC テストでは、ランタイム依存を排除した handlerMap キャプチャ方式が最も安定する。TASK-8C-A で確立されたパターンを TASK-9A-B でも踏襲できた |
+
+**コード例**:
+
+```typescript
+const handlerMap = new Map<string, Function>();
+
+vi.mock("electron", () => ({
+  ipcMain: {
+    handle: vi.fn((channel: string, handler: Function) => {
+      handlerMap.set(channel, handler);
+    }),
+    removeHandler: vi.fn((channel: string) => {
+      handlerMap.delete(channel);
+    }),
+  },
+  BrowserWindow: { fromWebContents: vi.fn() },
+}));
+
+// テスト内でハンドラー直接呼び出し
+const handler = handlerMap.get(IPC_CHANNELS.SKILL_READ_FILE);
+const result = await handler!(mockEvent, { skillName: "test", relativePath: "SKILL.md" });
+```
+
+#### 5. v8カバレッジの関数定義行カウント問題
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Function Coverage が 44.44% に急落。コールバック内のインライン arrow function `() => [mainWindow]` が v8 カバレッジプロバイダにより独立した関数としてカウントされた |
+| **原因** | Vitest の v8 カバレッジプロバイダは V8 エンジンのネイティブカバレッジを使用するため、ソースコード上のアロー関数（`getAllowedWindows: () => [mainWindow]`）を個別関数としてカウントする |
+| **解決策** | セキュリティテスト S-03 で `getAllowedWindows()` コールバックの戻り値を明示的に検証するテストを追加し、各ハンドラー内のインライン arrow function が実行されるようにした |
+| **教訓** | v8 カバレッジでは、validateIpcSender のオプション内 arrow function も関数カウント対象。Function Coverage 低下時は、未実行のインライン関数を grep で特定し、テストで明示的に呼び出す |
+
+**コード例**:
+
+```typescript
+// S-03: getAllowedWindows コールバックの実行を確認
+for (let i = 0; i < 6; i++) {
+  const options = mockValidateIpcSender.mock.calls[i][2];
+  expect(options.getAllowedWindows()).toEqual([mainWindow]);
+}
+```
+
+#### 6. .trim()境界値バリデーション漏れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 4（テスト作成）で `typeof args?.skillName !== "string"` の型チェックのみ設計したが、Phase 6（テスト拡充）でスペースのみ入力 `"   "` がバリデーションを通過する問題を発見 |
+| **原因** | 初期設計で空文字列チェック `=== ""` を入れたが、空白のみの文字列（`"   "`）は空文字列ではないため通過。SkillFileManager側でパスエラーとなる前に IPC 層で拒否すべきだった |
+| **解決策** | `args.skillName.trim() === ""` を全6ハンドラーの引数バリデーションに追加。backupPath にも同様の `.trim()` チェックを適用 |
+| **教訓** | 文字列バリデーションでは `typeof` + `=== ""` だけでなく `.trim() === ""` の3段チェックを標準化すべき。境界値テスト（B-01, B-02）の追加により発見できた |
+
+**コード例**:
+
+```typescript
+// ❌ 不十分 — スペースのみの入力を見逃す
+if (typeof args?.skillName !== "string" || args.skillName === "") { ... }
+
+// ✅ 完全 — .trim() でホワイトスペースのみも検出
+if (typeof args?.skillName !== "string" || args.skillName.trim() === "") { ... }
+```
+
+#### 7. isKnownSkillFileError型ガードによるエラーサニタイズ設計
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 5種類のカスタムエラー（SkillNotFoundError, ReadonlySkillError, PathTraversalError, FileExistsError, FileNotFoundError）の判別を各ハンドラーで個別に行うと、DRY 違反とエラー種別追加時の変更漏れリスクがあった |
+| **原因** | 初期設計で catch ブロック内に直接 instanceof チェーンを記述するプランだったが、6ハンドラー × 5エラー種別 = 30箇所の重複が発生 |
+| **解決策** | `isKnownSkillFileError(error): error is A | B | C | D | E` 型ガード関数を共通化。既知エラーは `error.message` をそのまま返し、未知エラーは `"Internal error"` で内部情報を遮断する2分岐に集約 |
+| **教訓** | TypeScript の type guard + union type は、エラーサニタイズの DRY 化に最適。新しいエラークラス追加時も型ガード関数1箇所の修正で済む |
+
+**コード例**:
+
+```typescript
+function isKnownSkillFileError(
+  error: unknown,
+): error is SkillNotFoundError | ReadonlySkillError | PathTraversalError | FileExistsError | FileNotFoundError {
+  return (
+    error instanceof SkillNotFoundError ||
+    error instanceof ReadonlySkillError ||
+    error instanceof PathTraversalError ||
+    error instanceof FileExistsError ||
+    error instanceof FileNotFoundError
+  );
+}
+
+// 各ハンドラーの catch ブロック（DRY）
+catch (error) {
+  if (isKnownSkillFileError(error)) {
+    return { success: false, error: error.message };
+  }
+  return { success: false, error: "Internal error" };
+}
+```
+
+### 参照
+
+- `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-12/spec-update-summary.md`
+- `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-12/unassigned-task-report.md`
+- `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-11/auto-test-result.md`
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| ワークフロー一式 | `docs/30-workflows/TASK-9A-B-ipc-file-handlers/` |
+| 完了タスク記録 | `.claude/skills/aiworkflow-requirements/references/task-workflow.md` |
+| IPC仕様更新 | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md` |
+| セキュリティ仕様更新 | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` |
+
+---
+
+## TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
+| 目的 | `dangerouslyIgnoreUnhandledErrors` を廃止し、未処理Promise拒否をテスト失敗として検知できる状態に戻す |
+| 完了日 | 2026-02-19 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. Step 2要否判定の誤り
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 「設定削除のみ」と見なしてシステム仕様更新不要と誤判定しやすかった |
+| **原因** | インターフェース変更の有無だけで判断し、テスト戦略変更を仕様変更として扱っていなかった |
+| **解決策** | 未処理Promise拒否の検知ルール変更を「品質仕様の変更」と定義し、`quality-requirements.md` を更新 |
+| **教訓** | プロダクトコード変更がなくても、テスト戦略変更は Step 2 更新対象になる |
+
+#### 2. 未タスク検出範囲の不足
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 変更ファイル中心の確認では、Phase成果物に書かれた将来課題を見落としやすい |
+| **原因** | Task 4で `outputs/phase-*` まで横断確認する運用が徹底されていなかった |
+| **解決策** | Phase成果物まで含めて再監査し、`task-imp-vitest-alias-sync-automation-001` を未タスク登録 |
+| **教訓** | 未タスク検出は「コード差分 + 成果物記述」の両輪で実施する |
+
+#### 3. alias運用の継続性不足
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `@repo/shared` alias は手動追従で、export更新時に再発リスクが残る |
+| **原因** | alias整合の機械検証がなく、発覚がテスト実行時に後ろ倒しになる |
+| **解決策** | 未タスク `task-imp-vitest-alias-sync-automation-001` を起票し、CIで差分検知する方針を定義 |
+| **教訓** | 設定修正完了時点で「再発防止の自動検証」まで分離タスク化して残す |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `dangerouslyIgnoreUnhandledErrors` を未設定に戻し、対象テストを最小実行して失敗原因を観測する。
+2. 失敗が未処理Promise拒否であることを確認し、設定で隠蔽せずテスト/実装側を修正する。
+3. `@repo/shared` の解決エラーが出る場合は、具体サブパスを先にしたalias順序で補正する。
+4. Phase 12では `task-workflow.md` と `quality-requirements.md` を同時更新し、苦戦箇所を記録する。
+5. 将来再発要因は未タスク化し、`verify-unassigned-links.js` で参照整合を確認する。
+
+### 関連仕様書
+
+| 仕様書 | 反映内容 |
+|------|------|
+| task-workflow.md | 完了タスク・苦戦箇所・未タスク登録 |
+| quality-requirements.md | 未処理Promise拒否検知ルール、alias管理ルール |
+| lessons-learned.md（本書） | 同種課題向けの再利用手順 |
 
 ---
 

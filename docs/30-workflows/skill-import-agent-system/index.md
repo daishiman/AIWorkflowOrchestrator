@@ -326,7 +326,7 @@ Tier 3 (将来):     7タスク
 ### Phase 9A: SkillEditor
 
 - [ ] [TASK-9A-A](./tasks/task-9a-a-file-manager.md): SkillFileManager
-- [ ] [TASK-9A-B](./tasks/task-9a-b-ipc-file-handlers.md): ファイル編集IPC
+- [x] [TASK-9A-B](./tasks/completed-task/task-9a-b-ipc-file-handlers.md): ファイル編集IPC
 - [ ] [TASK-9A-C](./tasks/task-9a-c-skill-editor-ui.md): SkillEditor UI
 
 ### Phase 9B: skill-creator メタスキル

@@ -280,6 +280,14 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_VALIDATE: "skill-creator:validate",
   SKILL_CREATOR_VALIDATE_SCHEMA: "skill-creator:validate-schema",
   SKILL_CREATOR_PROGRESS: "skill-creator:progress",
+
+  // Skill file operations (TASK-9A-B)
+  SKILL_READ_FILE: "skill:readFile",
+  SKILL_WRITE_FILE: "skill:writeFile",
+  SKILL_CREATE_FILE: "skill:createFile",
+  SKILL_DELETE_FILE: "skill:deleteFile",
+  SKILL_LIST_BACKUPS: "skill:listBackups",
+  SKILL_RESTORE_BACKUP: "skill:restoreBackup",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -488,6 +496,13 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
+  // Skill file operations (TASK-9A-B)
+  IPC_CHANNELS.SKILL_READ_FILE,
+  IPC_CHANNELS.SKILL_WRITE_FILE,
+  IPC_CHANNELS.SKILL_CREATE_FILE,
+  IPC_CHANNELS.SKILL_DELETE_FILE,
+  IPC_CHANNELS.SKILL_LIST_BACKUPS,
+  IPC_CHANNELS.SKILL_RESTORE_BACKUP,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
