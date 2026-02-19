@@ -195,6 +195,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v1.33.0** | **2026-02-19** | **TASK-9A-B再監査の教訓反映**: lessons-learned.md v1.15.0に苦戦箇所3件を追加（仕様書の実装事実ドリフト、Preload公開先パス取り違え、未タスクraw検出の誤読防止）。Phase 12の再発防止チェックを明文化 |
 | **v1.32.0** | **2026-02-14** | **TASK-FIX-14-1 実装パターン体系化**: logging-migration-guide.md新規作成、patterns.md・development-guidelines.md・lessons-learned.md更新 |
 | **v1.31.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001実装知見追記**: lessons-learned.md 実装苦戦箇所4件、architecture-implementation-patterns.md safeInvokeUnwrap パターン、patterns.md 成功/失敗パターン追加 |
 | **v1.31.0** | **2026-02-14** | **TASK-FIX-14-1 苦戦箇所の仕様化**: lessons-learned.md v1.11.0 を追加（実変更ファイル名との乖離防止、Phase 12 Step 1-A/1-C/1-D先送り誤判定防止、未タスク登録3ステップ同時完了）。task-fix-14-2 への追跡リンクを明記 |
@@ -227,6 +228,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **v1.16.0** | **2026-02-12** | **TASK-FIX-7-1スキル改善(2)**: Triggerキーワードに「DIパターン, Constructor Injection, Factory Pattern, BrowserWindow遅延生成, テストモック大規模修正」を追加。DI関連の検索性をさらに向上 |
 | **v1.15.1** | **2026-02-12** | **TASK-9B-H-SKILL-CREATOR-IPC完了**: SkillCreatorService IPC登録。security-skill-ipc.md v1.5.0、interfaces-agent-sdk-skill.md v1.14.0、arch-ipc-persistence.md v1.2.0更新。85テスト全PASS |
 | **v1.15.0** | **2026-02-11** | **UT-STORE-HOOKS-REFACTOR-001完了**: 個別セレクタ53個追加（AuthMode 12個, LLM 16個, Agent 25個）、181テスト全PASS、カバレッジLine 88.51%/Branch 89.79%/Function 92.53%達成。arch-state-management.md関連タスク更新、03-state-management.mdにP31参照リンク追加、未タスク2件検出（002: JSDoc追加, 003: 合成Hook移行）|
+| **v1.15.0** | **2026-02-19** | **TASK-9A-B完了**: ファイル編集IPCハンドラー6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）。api-ipc-agent.md/security-electron-ipc.md/architecture-overview.md/interfaces-agent-sdk-skill.md/task-workflow.md更新 |
 | **v1.14.0** | **2026-02-11** | **TASK-FIX-7-1スキル改善**: Triggerキーワードに「Setter Injection, 依存性注入, 遅延初期化, setSkillExecutor, SkillExecutor委譲」を追加。検索性向上 |
 | **v1.13.0** | **2026-02-11** | **TASK-FIX-7-1システム仕様書更新**: arch-electron-services.md v1.11.0更新（SkillService API追加、SkillService統合セクション追加）、interfaces-agent-sdk-executor.md v1.4.0更新（SkillService統合セクション新設）、architecture-implementation-patterns.md v1.17.0更新（Setter Injectionパターン追加）。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
 | **v1.12.0** | **2026-02-11** | **TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了**: SkillService.executeSkill()をSkillExecutorに委譲するTDD実装。Phase 1-12全工程完了、統合テスト7件・ユニットテスト12件全PASS、未タスク0件。スキル更新（LOGS.md 2ファイル、SKILL.md 2ファイル） |

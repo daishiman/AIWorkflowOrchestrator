@@ -76,7 +76,7 @@ describe("SkillAPI Unification", () => {
       expect(typeof skillAPI.sendPermissionResponse).toBe("function");
     });
 
-    it("should have exactly 13 methods (no extra methods)", () => {
+    it("should have exactly 19 methods (no extra methods)", () => {
       const expectedMethods: (keyof SkillAPI)[] = [
         "list",
         "getImported",
@@ -91,6 +91,12 @@ describe("SkillAPI Unification", () => {
         "onError",
         "onPermissionRequest",
         "sendPermissionResponse",
+        "readFile",
+        "writeFile",
+        "createFile",
+        "deleteFile",
+        "listBackups",
+        "restoreBackup",
       ];
 
       const actualMethods = Object.keys(skillAPI).filter(
@@ -98,8 +104,8 @@ describe("SkillAPI Unification", () => {
           typeof (skillAPI as Record<string, unknown>)[key] === "function",
       );
 
-      // メソッド数が正確に13であること
-      expect(actualMethods.length).toBe(13);
+      // メソッド数が正確に19であること（13 + 6ファイル操作メソッド）
+      expect(actualMethods.length).toBe(19);
 
       // 全ての期待メソッドが含まれていること
       for (const method of expectedMethods) {

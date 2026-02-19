@@ -87,6 +87,20 @@ export const SKILL_CHANNELS = {
    * 権限応答（Renderer → Main）
    */
   SKILL_PERMISSION_RESPONSE: "skill:permission:response",
+
+  // Skill file operations (TASK-9A-B)
+  /** スキルファイル読み込み */
+  SKILL_READ_FILE: "skill:readFile",
+  /** スキルファイル書き込み */
+  SKILL_WRITE_FILE: "skill:writeFile",
+  /** スキルファイル新規作成 */
+  SKILL_CREATE_FILE: "skill:createFile",
+  /** スキルファイル削除 */
+  SKILL_DELETE_FILE: "skill:deleteFile",
+  /** スキルバックアップ一覧 */
+  SKILL_LIST_BACKUPS: "skill:listBackups",
+  /** スキルバックアップ復元 */
+  SKILL_RESTORE_BACKUP: "skill:restoreBackup",
 } as const;
 
 /**
