@@ -11,9 +11,8 @@
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗 |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**                               | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入 |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **仕様更新三点セット（quality/task-workflow/lessons-learned）**                               | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入 |
+| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定** |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング** | ハードコード文字列発見                                 |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
@@ -239,6 +238,18 @@
 - **発見日**: 2026-02-19
 - **関連タスク**: TASK-FIX-10-1-VITEST-ERROR-HANDLING
 - **クロスリファレンス**: [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [quality-requirements.md](../../aiworkflow-requirements/references/quality-requirements.md), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
+
+### [Phase12] 仕様書作成タスクの `spec_created` 状態判定
+
+- **状況**: Phase 12 Step 1-B で、実装未着手タスクまで `completed` と記録しやすい
+- **アプローチ**:
+  - タスクを「実装完了」と「仕様書作成済み（未実装）」に分岐して判定
+  - 実装完了は `completed`、仕様書のみは `spec_created` を使用
+  - `tasks/index.md`・`completed-task/*.md`・関連workflow indexの3点を同時更新
+- **結果**: 実装進捗と仕様進捗の状態混同を防止
+- **適用条件**: Phase 12でドキュメント成果物のみ先行して完了するタスク
+- **発見日**: 2026-02-19
+- **関連タスク**: TASK-9A-C
 
 ### [Testing] E2EテストでのARIA属性ベースセレクタ優先
 
@@ -827,6 +838,16 @@
 - **教訓**: Phase 12実行時は必ずサブタスク一覧を確認し、全タスクの実行を確認する
 - **発見日**: 2026-01-22
 - **対策済み**: phase-templates.md v7.6.0で完了条件チェックリストを強化
+
+### [Phase12] 仕様書作成タスクの completed 誤判定
+
+- **状況**: 実装未着手の仕様書タスクを `completed` と登録
+- **問題**: 「仕様書完了」と「実装完了」が混同し、進捗台帳の意味が崩れる
+- **原因**: Step 1-B の判定ルールが `未実装→完了` の単一ルールになっていた
+- **教訓**: 実装未着手タスクでは `spec_created` を使い、`completed` を使わない
+- **対策**: spec-update-workflow に判定分岐（`completed` / `spec_created`）を明文化する
+- **発見日**: 2026-02-19
+- **関連タスク**: TASK-9A-C
 
 ### [Skill] 全リソース一括読み込み
 

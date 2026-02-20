@@ -1,0 +1,163 @@
+{
+  "feature": "TASK-9A-C-skill-editor-ui",
+  "created": "2026-02-19T00:00:00Z",
+  "lastUpdated": "2026-02-19T06:44:28.000Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-19T06:05:41.149Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/existing-component-analysis.md",
+          "description": "既存コンポーネント分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/skill-editor-requirements.md",
+          "description": "UI要件定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/component-hierarchy-requirements.md",
+          "description": "コンポーネント階層定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/interaction-specifications.md",
+          "description": "インタラクション仕様"
+        }
+      ]
+    },
+    "2": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-19T08:20:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質保証レポート（再監査）"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-19T08:20:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（再監査）"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-19T08:20:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（ドキュメント整合テスト）"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-19T08:20:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1/Part 2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/component-documentation.md",
+          "description": "コンポーネント仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキル改善フィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-compliance-audit.md",
+          "description": "Phase 12準拠監査レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "qualityMetrics": {
+    "testCoverage": {
+      "line": 0,
+      "branch": 0,
+      "function": 0
+    },
+    "testCount": {
+      "unit": 0,
+      "integration": 0,
+      "manual": 4
+    },
+    "lintErrors": 0,
+    "typeErrors": 0
+  }
+}

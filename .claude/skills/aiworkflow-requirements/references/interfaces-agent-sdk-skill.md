@@ -1567,10 +1567,63 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ---
 
+## SkillEditor UI 型定義（TASK-9A-C / spec_created）
+
+> **ステータス**: 仕様書作成済み（実装未着手）
+> 本セクションは TASK-9A-C のUI実装で使用する型定義を定義する。
+
+### SkillEditorProps
+
+| プロパティ | 型              | 必須 | 説明                       |
+| ---------- | --------------- | ---- | -------------------------- |
+| `skill`    | `ImportedSkill` | ✓    | 編集対象のスキル情報       |
+| `onClose`  | `() => void`    | ✓    | エディター閉じるコールバック |
+
+### SkillCodeEditorProps
+
+| プロパティ   | 型                           | 必須 | デフォルト | 説明                       |
+| ------------ | ---------------------------- | ---- | ---------- | -------------------------- |
+| `value`      | `string`                     | ✓    | -          | エディター内テキスト       |
+| `onChange`   | `(value: string) => void`    | ✓    | -          | テキスト変更コールバック   |
+| `language`   | `string`                     | ✓    | -          | ファイルの言語識別子       |
+| `isReadOnly` | `boolean`                    | -    | `false`    | 読み取り専用モード         |
+
+### FileTreeCategory
+
+| プロパティ | 型                 | 説明                                       |
+| ---------- | ------------------ | ------------------------------------------ |
+| `key`      | `string`           | カテゴリキー（`"agents"`, `"references"` 等） |
+| `label`    | `string`           | カテゴリ表示ラベル                         |
+| `files`    | `SkillSubResource[]` | カテゴリに属するファイル一覧             |
+
+### 関連型定義
+
+| 型                | 定義元                                   | 用途                   |
+| ----------------- | ---------------------------------------- | ---------------------- |
+| `ImportedSkill`   | `packages/shared/src/types/skill.ts`     | スキル情報             |
+| `SkillSubResource`| `packages/shared/src/types/skill.ts`     | サブリソースファイル情報 |
+
+### 関連ドキュメント
+
+- [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skilleditor-uitask-9a-c--仕様書作成済み)
+- [TASK-9A-C ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/index.md)
+
+### 関連未タスク
+
+| タスクID | 概要 | 仕様書 |
+| --- | --- | --- |
+| TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md` |
+| TASK-9A-C-002 | ファイル作成・削除機能 | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md` |
+| TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
+
+---
+
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-19 | 1.22.0     | TASK-9A-C: 関連未タスク3件の参照テーブル追加（TASK-9A-C-001/002/003）。ワークフローリンクをcompleted-tasks/に更新 |
+| 2026-02-19 | 1.21.0     | TASK-9A-C: SkillEditor UI 型定義追加（SkillEditorProps, SkillCodeEditorProps, FileTreeCategory）。仕様書作成済み・実装未着手を明記 |
 | 2026-02-19 | 1.21.0     | TASK-9A-B完了記録追加。スキルファイル操作IPCハンドラー6チャンネル（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、65テスト全PASS、カバレッジ Line 91.14% / Branch 93.93% / Function 100% |
 | 2026-02-14 | 1.20.0     | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録追加。Preload IPCラッパー展開統一と苦戦箇所（参照正本・MINOR未タスク化・リンク整合）を追記 |
 | 2026-02-13 | 1.19.0     | TASK-FIX-13-1 苦戦箇所・教訓を追記（削除範囲境界、参照誤検出対策、Phase 12同期手順） |
