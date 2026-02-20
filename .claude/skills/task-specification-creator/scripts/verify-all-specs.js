@@ -209,17 +209,19 @@ function verifyStructure(phaseNum, content) {
     });
   }
 
-  // 完了条件がチェックリスト形式か確認
+  // 完了条件がチェックリスト形式か確認（未完了/完了の両方を許容）
   const completionSection = content.match(
     /##\s*完了条件[\s\S]*?(?=\n##(?!#)|$)/
   );
   if (completionSection) {
-    if (!completionSection[0].includes("- [ ]")) {
+    const hasChecklist = /-\s*\[[ xX]\]/.test(completionSection[0]);
+    if (!hasChecklist) {
       issues.push({
         type: "warning",
         category: "structure",
         phase: phaseNum,
-        message: "完了条件がチェックリスト形式（- [ ]）ではありません",
+        message:
+          "完了条件がチェックリスト形式（- [ ] / - [x]）ではありません",
       });
     }
   }

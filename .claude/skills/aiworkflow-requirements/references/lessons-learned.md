@@ -21,7 +21,9 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-02-20 | 1.17.1 | UT-FIX-SKILL-REMOVE-INTERFACE-001 セクション品質向上: Before/Afterコード例追加、同種課題解決手順をチェックリスト形式に変更、予防策セクション追加、関連パターン相互参照テーブル追加（P23/P32/P42/P44/P3/P40） |
+| 2026-02-20 | 1.17.1 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 を強化: 苦戦箇所4,5追加（paths定義順序、4ファイル同期）、既存3件にコード例追加、「同種課題の簡潔解決手順（5ステップ）」セクション追加 |
 | 2026-02-20 | 1.17.0 | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所3件を追加（`skillId/skillName` 契約ドリフト、未タスク配置ドリフト、Vitest実行コンテキスト差異）。同種課題向け簡潔解決手順を追加 |
+| 2026-02-20 | 1.17.0 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 の苦戦箇所3件を追加（三層整合の同期漏れ、補助型宣言取り込み漏れ、未タスクリンクの既存参照切れ） |
 | 2026-02-19 | 1.16.0 | TASK-9A-C 仕様書作成フェーズの苦戦箇所4件を追加（並列エージェントAPIレートリミット、スキルスクリプトパス解決、大規模仕様書コンテキスト管理、Pitfall事前組み込みの有効性） |
 | 2026-02-19 | 1.16.0 | TASK-9A-B 技術的苦戦箇所4件追加（handlerMap ESMモック、v8カバレッジ関数カウント、.trim()境界値、isKnownSkillFileError型ガード） |
 | 2026-02-19 | 1.15.0 | TASK-9A-C Phase 12準拠監査の苦戦箇所4件を追加（参照パス混在、phase-09/phase-9表記ゆれ、spec_created判定曖昧、未タスクリンク実体不足） |
@@ -80,6 +82,13 @@
    - [苦戦箇所2: 未タスク検出範囲の不足](#2-未タスク検出範囲の不足)
    - [苦戦箇所3: alias運用の継続性不足](#3-alias運用の継続性不足)
    - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ)
+0. [TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: @repo/shared モジュール解決エラー修正](#task-fix-ts-shared-module-resolution-001-reposhared-モジュール解決エラー修正)
+   - [苦戦箇所1: exports/paths/alias 三層整合の同期漏れ](#1-exportspathsalias-三層整合の同期漏れ)
+   - [苦戦箇所2: source直接参照時の補助型宣言取り込み漏れ](#2-source直接参照時の補助型宣言取り込み漏れ)
+   - [苦戦箇所3: 未タスクリンク整合の既存崩れ](#3-未タスクリンク整合の既存崩れ)
+   - [苦戦箇所4: TypeScript paths 定義順序の重要性](#4-typescript-paths-定義順序の重要性)
+   - [苦戦箇所5: 4ファイル同期の必要性](#5-4ファイル同期の必要性packagejson--tsconfig--vitestconfig--typesversions)
+   - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ-1)
 0. [UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正](#ut-fix-ipc-response-unwrap-001-ipcレスポンスラッパー未展開修正)
    - [苦戦箇所1: 仕様書の正本参照が不一致](#1-仕様書の正本参照が不一致)
    - [苦戦箇所2: Phase 10 MINORの未タスク化漏れ](#2-phase-10-minorの未タスク化漏れ)
@@ -783,6 +792,149 @@ catch (error) {
 | task-workflow.md | 完了タスク・苦戦箇所・未タスク登録 |
 | quality-requirements.md | 未処理Promise拒否検知ルール、alias管理ルール |
 | lessons-learned.md（本書） | 同種課題向けの再利用手順 |
+
+---
+
+## TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 |
+| 目的 | `@repo/shared` サブパス解決を TypeScript / Vitest で一貫させる |
+| 完了日 | 2026-02-20 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. exports/paths/alias 三層整合の同期漏れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `package.json exports` だけ更新しても `tsc`/`vitest` の解決が一致しない |
+| **原因** | 正本と実行系設定が分離しており、手動同期漏れが起きやすい |
+| **解決策** | `exports`/`paths`/`alias` を同一変更で更新し、3テストで整合を固定化 |
+| **教訓** | サブパス追加は「3層同時更新 + テスト更新」を1セットで扱う |
+
+**三層設定の対応例**（`@repo/shared/types/rag` を追加する場合）:
+
+```jsonc
+// 1. package.json exports（正本）
+"./types/rag": {
+  "types": "./dist/src/types/rag/index.d.ts",
+  "import": "./dist/src/types/rag/index.js"
+}
+
+// 2. tsconfig.json paths（tsc 解決用）
+"@repo/shared/types/rag": ["../../packages/shared/src/types/rag/index.ts"]
+
+// 3. vitest.config.ts alias（テスト実行用）
+"@repo/shared/types/rag": resolve(__dirname, "../../packages/shared/src/types/rag/index.ts")
+```
+
+**注意**: `exports` は `dist/` 配下を指すが、`paths` と `alias` は **ソースファイル直接参照**（`src/`）を指す。この「参照先の二重性」が同期漏れの原因となる。
+
+#### 2. source直接参照時の補助型宣言取り込み漏れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `apps/desktop` から shared ソースを直接参照すると、一部型宣言が欠落する |
+| **原因** | shared 側補助宣言ファイルが `tsconfig` の `include` 対象外だった |
+| **解決策** | `apps/desktop/tsconfig.json` `include` に `@anthropic-ai-claude-agent-sdk.d.ts` を追加 |
+| **教訓** | workspace source 直参照時は、コードだけでなく補助宣言ファイルの取り込み確認が必要 |
+
+```jsonc
+// ❌ Before: 補助型宣言が include 対象外
+// apps/desktop/tsconfig.json
+{
+  "include": ["src/**/*"]
+}
+// → shared 内の @anthropic-ai-claude-agent-sdk.d.ts が認識されず TS2307
+
+// ✅ After: 補助型宣言を明示的に include
+{
+  "include": [
+    "src/**/*",
+    "../../packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts"
+  ]
+}
+```
+
+#### 3. 未タスクリンク整合の既存崩れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 本タスクの検証中に、既存未タスク参照4件のリンク切れが発覚 |
+| **原因** | `task-workflow.md` 登録済みタスクの指示書ファイルが未作成のまま残存 |
+| **解決策** | 欠落4ファイルを `unassigned-task/` に作成し、`verify-unassigned-links.js` を再実行 |
+| **教訓** | 新規未タスク登録時は、自タスク分だけでなく既存台帳全体のリンク健全性も確認する |
+
+```bash
+# リンク切れ検証コマンド
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+
+# 手動で未タスク参照を一括確認する場合
+grep -rn "unassigned-task/" docs/30-workflows/ .claude/skills/ | \
+  sed 's/.*(\(.*\)).*/\1/' | sort -u | \
+  while read f; do [ ! -f "$f" ] && echo "MISSING: $f"; done
+```
+
+#### 4. TypeScript paths 定義順序の重要性
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `@repo/shared/types` が `@repo/shared/types/llm/schemas` より先に定義されると、後者のパスが解決されない |
+| **原因** | TypeScript は paths マッピングを上から順に評価し、最初にマッチしたパスを使用する。`@repo/shared/types` が先にマッチすると、`@repo/shared/types/llm/schemas` は評価されない |
+| **解決策** | paths 定義順序を「具体的（長いパス）→ 汎用的（短いパス）」に並べる。vitest alias も同じ順序で定義する |
+| **教訓** | TypeScript paths のマッチングは「最長一致」ではなく「先行一致」。定義順序がパス解決の正否を直接決定する |
+
+```jsonc
+// ❌ 誤った順序: 汎用パスが先にマッチし、具体パスが無効化
+{
+  "paths": {
+    "@repo/shared/types": ["../../packages/shared/src/types/index.ts"],
+    "@repo/shared/types/llm/schemas": ["../../packages/shared/src/types/llm/schemas/index.ts"],
+    "@repo/shared/types/rag": ["../../packages/shared/src/types/rag/index.ts"]
+  }
+}
+// → "@repo/shared/types/llm/schemas" は "@repo/shared/types" にマッチして解決失敗
+
+// ✅ 正しい順序: 具体パスを先に定義
+{
+  "paths": {
+    "@repo/shared/types/llm/schemas": ["../../packages/shared/src/types/llm/schemas/index.ts"],
+    "@repo/shared/types/rag": ["../../packages/shared/src/types/rag/index.ts"],
+    "@repo/shared/types": ["../../packages/shared/src/types/index.ts"]
+  }
+}
+```
+
+#### 5. 4ファイル同期の必要性（package.json / tsconfig / vitest.config / typesVersions）
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `package.json exports` のみ更新しても、tsc と vitest が異なるパスに解決し整合しない |
+| **原因** | モノレポの「ソース直接参照」方式では、正本（exports）と実行系設定（paths, alias, typesVersions）が完全に分離している |
+| **解決策** | サブパス追加時は以下4ファイルを同一コミットで更新する |
+| **教訓** | 設定変更の影響範囲を事前にチェックリストで固定化し、1ファイルでも漏れたらテストが落ちる構造にする |
+
+**4ファイル同期チェックリスト**:
+
+| # | ファイル | 更新内容 | 用途 |
+|---|---------|---------|------|
+| 1 | `packages/shared/package.json` exports | サブパスと `dist/` 参照先を追加 | ランタイム（Node.js解決） |
+| 2 | `apps/desktop/tsconfig.json` paths | サブパスとソース直参照先を追加 | tsc 型チェック |
+| 3 | `apps/desktop/vitest.config.ts` alias | サブパスとソース直参照先を追加（具体→汎用順） | Vitest テスト実行 |
+| 4 | `packages/shared/package.json` typesVersions | `*` 条件で型解決パスを追加 | 型解決フォールバック |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. **エラー分析**: `pnpm typecheck 2>&1 | grep "TS2307" | sort -u` でモジュール未検出パスを特定する
+2. **exports 確認**: `package.json` の `exports` エントリと実ファイルパスの 1:1 対応を確認する
+3. **paths 追加**: `tsconfig.json` に paths マッピングを追加する（具体的→汎用の順序で定義）
+4. **alias 同期**: `vitest.config.ts` の `resolve.alias` に同じエントリを追加する（同じく具体→汎用順）
+5. **テスト実行**: `pnpm typecheck && cd apps/desktop && pnpm vitest run src/__tests__/*module-resolution*` で整合性を検証する
 
 ---
 

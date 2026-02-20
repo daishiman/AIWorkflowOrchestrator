@@ -14,10 +14,76 @@
     "baseUrl": ".",
     "paths": {
       "@renderer/*": ["src/renderer/*"],
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@repo/shared": ["../../packages/shared/index.ts"],
+      "@repo/shared/core": ["../../packages/shared/core/index.ts"],
+      "@repo/shared/infrastructure": [
+        "../../packages/shared/infrastructure/index.ts"
+      ],
+      "@repo/shared/infrastructure/auth": [
+        "../../packages/shared/infrastructure/auth/index.ts"
+      ],
+      "@repo/shared/infrastructure/database": [
+        "../../packages/shared/infrastructure/database/index.ts"
+      ],
+      "@repo/shared/infrastructure/ai/apiKeyValidator": [
+        "../../packages/shared/infrastructure/ai/apiKeyValidator.ts"
+      ],
+      "@repo/shared/types": ["../../packages/shared/src/types/index.ts"],
+      "@repo/shared/types/auth": ["../../packages/shared/types/auth.ts"],
+      "@repo/shared/types/api-keys": [
+        "../../packages/shared/types/api-keys.ts"
+      ],
+      "@repo/shared/types/replace": [
+        "../../packages/shared/src/types/replace.ts"
+      ],
+      "@repo/shared/types/rag": [
+        "../../packages/shared/src/types/rag/index.ts"
+      ],
+      "@repo/shared/types/rag/result": [
+        "../../packages/shared/src/types/rag/result.ts"
+      ],
+      "@repo/shared/types/llm/schemas": [
+        "../../packages/shared/src/types/llm/schemas/index.ts"
+      ],
+      "@repo/shared/types/llm": [
+        "../../packages/shared/src/types/llm/schemas/index.ts"
+      ],
+      "@repo/shared/types/skill": ["../../packages/shared/src/types/skill.ts"],
+      "@repo/shared/types/agent": ["../../packages/shared/src/types/agent.ts"],
+      "@repo/shared/types/auth-mode": [
+        "../../packages/shared/src/types/auth-mode.ts"
+      ],
+      "@repo/shared/agent": ["../../packages/shared/src/agent/index.ts"],
+      "@repo/shared/schemas": ["../../packages/shared/schemas/index.ts"],
+      "@repo/shared/schemas/auth": ["../../packages/shared/schemas/auth.ts"],
+      "@repo/shared/services/history/types": [
+        "../../packages/shared/src/services/history/types.ts"
+      ],
+      "@repo/shared/services/history/history-service": [
+        "../../packages/shared/src/services/history/history-service.ts"
+      ],
+      "@repo/shared/services/logging/types": [
+        "../../packages/shared/src/services/logging/types.ts"
+      ],
+      "@repo/shared/services/logging/conversion-logger": [
+        "../../packages/shared/src/services/logging/conversion-logger.ts"
+      ],
+      "@repo/shared/repositories": [
+        "../../packages/shared/src/repositories/index.ts"
+      ],
+      "@repo/shared/constants": [
+        "../../packages/shared/src/constants/index.ts"
+      ],
+      "@repo/shared/src/ipc/channels": [
+        "../../packages/shared/src/ipc/channels.ts"
+      ]
     }
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*",
+    "../../packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts"
+  ],
   "exclude": [
     "node_modules",
     "out",

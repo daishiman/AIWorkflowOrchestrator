@@ -88,6 +88,10 @@ export default defineConfig({
         __dirname,
         "../../packages/shared/infrastructure/ai/apiKeyValidator.ts",
       ),
+      "@repo/shared/infrastructure/database": resolve(
+        __dirname,
+        "../../packages/shared/infrastructure/database/index.ts",
+      ),
       "@repo/shared/infrastructure/auth": resolve(
         __dirname,
         "../../packages/shared/infrastructure/auth/index.ts",
@@ -175,6 +179,14 @@ export default defineConfig({
       "@repo/shared/repositories": resolve(
         __dirname,
         "../../packages/shared/src/repositories/index.ts",
+      ),
+      "@repo/shared/infrastructure": resolve(
+        __dirname,
+        "../../packages/shared/infrastructure/index.ts",
+      ),
+      "@repo/shared/core": resolve(
+        __dirname,
+        "../../packages/shared/core/index.ts",
       ),
       // @repo/shared package entry (must be after all subpath aliases)
       "@repo/shared": resolve(__dirname, "../../packages/shared/index.ts"),

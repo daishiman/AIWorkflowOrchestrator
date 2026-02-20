@@ -237,12 +237,12 @@ class PhaseValidator {
       }
     }
 
-    // 完了条件のチェックリスト形式確認
+    // 完了条件のチェックリスト形式確認（未完了/完了の両方を許容）
     const completionSection = content.match(
       /^##\s+完了条件[\s\S]*?(?=^##|\z)/m,
     );
     if (completionSection) {
-      const checkboxes = completionSection[0].match(/- \[ \]/g);
+      const checkboxes = completionSection[0].match(/- \[[ xX]\]/g);
       if (!checkboxes || checkboxes.length === 0) {
         this.warnings.push(
           `Phase ${phaseNum}: 完了条件がチェックリスト形式ではありません`,

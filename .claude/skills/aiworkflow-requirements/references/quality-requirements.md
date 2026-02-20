@@ -244,6 +244,55 @@ Vitestの並列実行はデフォルトで有効。スレッド数は5、テス�
 | 追加条件 | `packages/shared` の export 追加時は、Vitest alias への反映要否を必ず確認する |
 | 継続課題 | alias追従の機械検証は未タスク `task-imp-vitest-alias-sync-automation-001` で対応する |
 
+### `@repo/shared` サブパス三層整合ルール（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 2026-02-20更新）
+
+TypeScript と Vitest の解決結果を一致させるため、`@repo/shared` サブパスは3層を同時に更新する。
+
+| 層 | ファイル | 役割 |
+| --- | --- | --- |
+| 公開契約 | `packages/shared/package.json` (`exports` / `typesVersions`) | サブパスの正本 |
+| 型解決 | `apps/desktop/tsconfig.json` (`compilerOptions.paths`) | `tsc --noEmit` の解決 |
+| テスト解決 | `apps/desktop/vitest.config.ts` (`resolve.alias`) | Vitest 実行時の解決 |
+
+**品質ゲート**:
+
+- `exports` 追加時は同一変更で `paths` と `alias` を更新する
+- 定義順序は「具体サブパス -> ルート (`@repo/shared`)」を維持する
+- `apps/desktop` が shared ソースを直接参照する場合、補助型宣言（`packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts`）が取り込まれることを確認する
+- 整合テスト（`shared-module-resolution.test.ts` / `vitest-alias-consistency.test.ts` / `module-resolution.test.ts`）を維持する
+
+### モジュール解決整合性テスト（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 2026-02-20実装）
+
+`@repo/shared` サブパスの三層整合を自動検証するため、3つのテストスイートを維持する。
+
+**テストスイート分類**:
+
+| テストスイート | ファイル | テスト数 | 検証対象 | カバレッジ分類 |
+| --- | --- | --- | --- | --- |
+| module-resolution | `apps/desktop/src/__tests__/module-resolution.test.ts` | 57 | `exports` ↔ `tsup` entry | ビルド整合性（公開契約とビルド出力の一致） |
+| shared-module-resolution | `apps/desktop/src/__tests__/shared-module-resolution.test.ts` | 59 | `paths` ↔ `exports` | TypeScript解決整合性（型解決と公開契約の一致） |
+| vitest-alias-consistency | `apps/desktop/src/__tests__/vitest-alias-consistency.test.ts` | 108 | `alias` ↔ `paths` | テスト実行整合性（テスト解決と型解決の一致） |
+
+**品質ゲート項目**:
+
+| ゲート項目 | 合格基準 | 実行タイミング |
+| --- | --- | --- |
+| 3テストスイート全 PASS | 224/224 テスト成功 | サブパス追加時（必須）、CI（常時） |
+| typecheck 0エラー | `pnpm --filter @repo/desktop exec tsc --noEmit` エラー0件 | サブパス追加時（必須）、CI（常時） |
+| shared build 成功 | `pnpm --filter @repo/shared build` 正常完了 | サブパス追加時（必須）、CI（常時） |
+
+**`@repo/shared` サブパス追加時の必須テスト要件**:
+
+新しいサブパスを `packages/shared` に追加する場合、以下の全条件を満たすこと:
+
+1. `packages/shared/package.json` の `exports` にサブパスを追加
+2. `packages/shared/package.json` の `typesVersions` にサブパスを追加
+3. `apps/desktop/tsconfig.json` の `compilerOptions.paths` にサブパスを追加
+4. `apps/desktop/vitest.config.ts` の `resolve.alias` に必要な alias を追加（テスト解決に影響する場合）
+5. 上記3テストスイート全 PASS を確認
+6. `pnpm --filter @repo/desktop exec tsc --noEmit` でエラー0件を確認
+7. `pnpm --filter @repo/shared build` で成功を確認
+
 ### モック戦略
 
 外部依存をテストから分離するため、適切なモック手法を使用する。
@@ -652,6 +701,31 @@ vitest.config.tsで設定済みの閾値:
 
 ## 完了タスク
 
+### TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決整合（2026-02-20完了）
+
+**概要**: `@repo/shared` サブパス解決で `exports` / `paths` / `alias` の三層整合ルールを定義し、回帰防止テストを追加。TypeScript型チェックエラー228件を0件に修正。
+
+**品質ゲート達成状況**:
+
+| ゲート項目 | 結果 | 詳細 |
+| --- | --- | --- |
+| typecheck | ✅ PASS | 228エラー → 0エラー |
+| vitest | ✅ 224/224 PASS | 3テストスイート全件成功 |
+| shared build | ✅ 成功 | `pnpm --filter @repo/shared build` 正常完了 |
+| lint | ✅ PASS | ESLintエラー0件 |
+
+**主要成果**:
+
+| 項目 | 結果 |
+| --- | --- |
+| 品質ルール | 三層整合ルール + モジュール解決整合性テスト品質ゲートを追加 |
+| 回帰テスト | module-resolution(57件) + shared-module-resolution(59件) + vitest-alias-consistency(108件) = 計224件 |
+| 変更規模 | +353行（17ファイル）: tsconfig.json +27 paths / package.json +26 typesVersions / vitest.config.ts +3 alias |
+| 検証 | `verify-unassigned-links` / `validate-phase-output` / `verify-all-specs` 全てPASS |
+| 未タスク検出 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（Vitest alias と tsconfig paths の同期自動化） |
+
+---
+
 ### TASK-3-2-F: SkillStreamDisplay テスト環境改善（2026-01-30完了）
 
 **概要**: SkillStreamDisplayコンポーネントのテスト環境をhappy-domからjsdomに移行し、Clipboard APIモックを実装
@@ -908,6 +982,8 @@ vitest.config.tsで設定済みの閾値:
 
 | Version | Date       | Changes                                                                                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.8.1   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001記録強化: モジュール解決整合性テストセクション追加（3スイート分類表・品質ゲート項目表・サブパス追加時必須テスト要件7ステップ）。完了タスク記録に品質ゲート達成状況テーブル（typecheck 228→0、vitest 224/224 PASS）、変更規模（+353行/17ファイル）、未タスク検出（UT-FIX-TS-VITEST-TSCONFIG-PATHS-001）を追記 |
+| 1.8.0   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス三層整合ルールを追加（`exports`/`paths`/`alias` 同時更新、補助型宣言取り込み確認、整合テスト維持） |
 | 1.7.0   | 2026-02-19 | TASK-FIX-10-1: 未処理Promise拒否検知ルールを追加（dangerouslyIgnoreUnhandledErrors未設定を明文化）。`@repo/shared` alias 管理ルールと未タスク `task-imp-vitest-alias-sync-automation-001` を追記 |
 | 1.6.0   | 2026-02-03 | TASK-9A-A: SkillFileManager単体テスト実績追加（137テスト、3テストパターン、ESModuleモッキング回避パターン、カバレッジ Line 98.02%/Branch 96.34%/Function 100%）                        |
 | 1.5.0   | 2026-02-02 | TASK-OPT-CI-TEST-PARALLEL-001: Vitest並列化設定・環境変数制御セクション追加（maxForks CI:4/ローカル動的、fileParallelism両環境対応、VITEST_MAX_FORKS/VITEST_FILE_PARALLELISM環境変数） |

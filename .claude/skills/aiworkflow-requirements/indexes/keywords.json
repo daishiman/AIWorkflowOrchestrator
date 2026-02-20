@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-20T09:35:35.115Z",
-  "totalKeywords": 1163,
+  "generated": "2026-02-20T13:25:47.767Z",
+  "totalKeywords": 1166,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -667,6 +667,8 @@
       "api-ipc-agent.md",
       "architecture-auth-security.md",
       "architecture-chat-history.md",
+      "architecture-monorepo.md",
+      "development-guidelines.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-skill.md",
@@ -2045,7 +2047,8 @@
       "directory-structure.md"
     ],
     "shared": [
-      "directory-structure.md"
+      "directory-structure.md",
+      "lessons-learned.md"
     ],
     "詳細構造": [
       "directory-structure.md"
@@ -2806,6 +2809,27 @@
       "lessons-learned.md"
     ],
     "拒否検知の復元": [
+      "lessons-learned.md"
+    ],
+    "TS": [
+      "lessons-learned.md"
+    ],
+    "SHARED": [
+      "lessons-learned.md"
+    ],
+    "RESOLUTION": [
+      "lessons-learned.md"
+    ],
+    "repo": [
+      "lessons-learned.md"
+    ],
+    "モジュール解決エラー修正": [
+      "lessons-learned.md"
+    ],
+    "リンク切れ検証コマンド": [
+      "lessons-learned.md"
+    ],
+    "手動で未タスク参照を一括確認する場合": [
       "lessons-learned.md"
     ],
     "console": [

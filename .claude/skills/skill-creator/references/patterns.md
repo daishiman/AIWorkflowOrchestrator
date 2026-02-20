@@ -10,14 +10,14 @@
 | ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
+| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入** |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）** | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）** |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計** | -                                                      |
 | 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                              | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
-| 🔧 ビルド・環境        | -                                                                                                                                                                                  | ネイティブモジュールNODE_MODULE_VERSION不一致          |
+| 🔧 ビルド・環境        | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**                                                                          | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ** |
 | 🔄 型定義リファクタリング | deprecatedプロパティ段階的移行                                                                                                                                                    | ドキュメント偏重による実装検証省略                     |
 
 ## 成功パターン
@@ -837,6 +837,52 @@
 - **クロスリファレンス**: [unassigned-task-guidelines.md](../../task-specification-creator/references/unassigned-task-guidelines.md)
 ---
 
+### [Phase 12] 実行仕様書ステータス同期（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+- **状況**: Phase 12 の成果物は生成済みだが、`phase-12-documentation.md` 本文が「未実施」のまま残る
+- **解決策**: 成果物監査と同時に、仕様書本体の `ステータス` / 事前チェック / 完了条件チェックボックスを実態に同期する
+- **効果**: 実行記録と仕様書の齟齬を防ぎ、後続フェーズ判定を明確化できる
+- **発見日**: 2026-02-20
+- **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
+
+### [ビルド・環境] モノレポ三層モジュール解決整合パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+- **状況**: モノレポ内パッケージ(@repo/shared)のサブパス import で tsc/vitest 両方が解決に失敗する
+- **アプローチ**: exports(npm標準) / paths(TypeScript) / alias(Vitest) の3層を同一変更セットで更新し、整合性テストで固定化
+- **結果**: 228件のTS2307エラーが0件に。224テストで3層整合を常時保証
+- **適用条件**: モノレポで共有パッケージのサブパス import を使用する全プロジェクト
+- **発見日**: 2026-02-20
+- **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
+- **クロスリファレンス**: [architecture-monorepo.md](../../aiworkflow-requirements/references/architecture-monorepo.md), [development-guidelines.md](../../aiworkflow-requirements/references/development-guidelines.md)
+
+### [ビルド・環境] TypeScript paths 定義順序制御パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+- **状況**: tsconfig paths に複数のサブパスを定義する際、汎用パスが具体的パスより先にマッチしてしまう
+- **アプローチ**: 具体的→汎用の順序で定義（例: `@repo/shared/types/llm/schemas` → `@repo/shared/types/llm` → `@repo/shared/types` → `@repo/shared`）。TypeScript は最初にマッチしたパスを使用するため順序が重要
+- **結果**: 全27サブパスが正確に解決される
+- **適用条件**: tsconfig paths でサブパスの階層が3レベル以上ある場合
+- **発見日**: 2026-02-20
+- **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
+
+### [ビルド・環境] ソース構造二重性のパスマッピング吸収パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+- **状況**: shared パッケージ内で `types/auth.ts`(ルートレベル) と `src/types/index.ts`(src配下) が混在し、一律の paths 設定では解決不可
+- **アプローチ**: 両系統を個別にマッピング。ルートレベル→直接参照、src配下→src/ 経由参照。package.json exports のエントリとの1:1対応を確認
+- **結果**: 2系統のソース構造を透過的に扱える paths 設定が完成
+- **適用条件**: パッケージ内でソースレイアウトが歴史的経緯で混在している場合
+- **発見日**: 2026-02-20
+- **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
+
+### [テスト] 整合性テスト駆動の設定管理パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+- **状況**: exports/paths/alias の4ファイル同期が手動で漏れやすく、CI で初めてエラーが検出される
+- **アプローチ**: 3スイート（module-resolution.test / shared-module-resolution.test / vitest-alias-consistency.test）のテストで設定間の整合性を自動検証。exports↔tsup、paths↔exports、alias↔paths の各対応をテストで固定化
+- **結果**: サブパス追加時にテストが即座に不整合を検出。224テストで多角的に保証
+- **適用条件**: 複数の設定ファイルが同期を必要とするモノレポ構成
+- **発見日**: 2026-02-20
+- **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
+- **クロスリファレンス**: [quality-requirements.md](../../aiworkflow-requirements/references/quality-requirements.md)
+
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
@@ -1064,3 +1110,12 @@ it("削除されたプロパティにアクセスするとエラーになるこ�
 1. **コード検証ファースト**: ドキュメント生成前に、テスト・型チェック・grepでコード変更の完了を確認する
 2. **並列エージェント後の統合検証**: 全エージェント完了後に成果物一覧と整合性チェックを実施
 3. **品質ゲートの明示化**: Phase 5（実装）完了の判定基準をテスト結果で定義し、Phase 6以降はその結果を前提とする
+
+### [ビルド・環境] 4ファイル同期漏れパターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+- **状況**: @repo/shared に新サブパスを追加する際、4つのファイル（package.json exports/typesVersions、tsconfig.json paths、vitest.config.ts alias、tsup.config.ts entry）のうち一部のみ更新
+- **結果**: TypeScript は通るが Vitest が失敗、またはその逆。CI で初めてエラーが検出される
+- **解決策**: 4ファイル同時更新チェックリストを development-guidelines.md に配置。整合性テストの追加
+- **発見日**: 2026-02-20
+- **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
+- **関連未タスク**: UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（vitest-tsconfig-paths プラグインによる自動化）
