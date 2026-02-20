@@ -744,7 +744,7 @@ describe("skillHandlers", () => {
   // ===========================================================================
 
   describe("skill:remove", () => {
-    it("SH-RM-01: should call skillService.removeSkill with skillId", async () => {
+    it("SH-RM-01: should call skillService.removeSkill with skillName", async () => {
       const mockResult: RemoveResult = {
         success: true,
         removed: true,
@@ -756,45 +756,51 @@ describe("skillHandlers", () => {
         throw new Error("skill:remove handler not registered");
       }
 
-      // When: skillIdを渡してハンドラーを呼び出す
-      const result = await handler({}, { skillId: "skill-to-remove" });
+      // When: 文字列skillNameを渡してハンドラーを呼び出す
+      const result = await handler({}, "skill-to-remove");
 
-      // Then: skillService.removeSkillがskillIdで呼び出される
+      // Then: skillService.removeSkillがskillNameで呼び出される
       expect(mockSkillService.removeSkill).toHaveBeenCalledWith(
         "skill-to-remove",
       );
       expect((result as RemoveResult).removed).toBe(true);
     });
 
-    it("SH-RM-02: should validate skillId is a string", async () => {
+    it("SH-RM-02: should validate skillName is a string", async () => {
       const handler = handlers.get(SKILL_CHANNELS.REMOVE);
       if (!handler) {
         throw new Error("skill:remove handler not registered");
       }
 
-      // When: skillIdが文字列でない
+      // When: skillNameが文字列でない（数値）
       try {
-        await handler({}, { skillId: 123 });
+        await handler({}, 123);
         throw new Error("Expected validation error");
       } catch (error) {
         // Then: バリデーションエラー
-        expect(error).toBeDefined();
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
       }
     });
 
-    it("SH-RM-03: should validate skillId is not empty", async () => {
+    it("SH-RM-03: should validate skillName is not empty", async () => {
       const handler = handlers.get(SKILL_CHANNELS.REMOVE);
       if (!handler) {
         throw new Error("skill:remove handler not registered");
       }
 
-      // When: skillIdが空文字
+      // When: skillNameが空文字列
       try {
-        await handler({}, { skillId: "" });
+        await handler({}, "");
         throw new Error("Expected validation error");
       } catch (error) {
         // Then: バリデーションエラー
-        expect(error).toBeDefined();
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
       }
     });
 
@@ -809,12 +815,170 @@ describe("skillHandlers", () => {
         throw new Error("skill:remove handler not registered");
       }
 
-      // When: 存在しないスキルを削除
-      const result = await handler({}, { skillId: "nonexistent" });
+      // When: 存在しないスキルを文字列で削除
+      const result = await handler({}, "nonexistent");
 
       // Then: success=true, removed=false
       expect((result as RemoveResult).success).toBe(true);
       expect((result as RemoveResult).removed).toBe(false);
+    });
+
+    it("SH-RM-05: should reject whitespace-only skillName (P42)", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.REMOVE);
+      if (!handler) {
+        throw new Error("skill:remove handler not registered");
+      }
+
+      // When: スペースのみの文字列を渡す
+      try {
+        await handler({}, "   ");
+        throw new Error("Expected validation error");
+      } catch (error) {
+        // Then: バリデーションエラー
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    it("SH-RM-06: should reject undefined skillName", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.REMOVE);
+      if (!handler) {
+        throw new Error("skill:remove handler not registered");
+      }
+
+      // When: undefinedを渡す
+      try {
+        await handler({}, undefined);
+        throw new Error("Expected validation error");
+      } catch (error) {
+        // Then: バリデーションエラー
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    it("SH-RM-07: should call validateIpcSender with correct channel and options", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      mockSkillService.removeSkill.mockResolvedValue({
+        success: true,
+        removed: true,
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.REMOVE);
+      if (!handler) {
+        throw new Error("skill:remove handler not registered");
+      }
+
+      await handler({}, "valid-skill");
+
+      // Then: validateIpcSender が正しい引数で呼ばれている
+      expect(validateIpcSender).toHaveBeenCalledWith(
+        {},
+        SKILL_CHANNELS.REMOVE,
+        expect.objectContaining({
+          getAllowedWindows: expect.any(Function),
+        }),
+      );
+
+      // P41準拠: getAllowedWindows コールバックの戻り値を明示的に検証
+      const callArgs = (
+        validateIpcSender as ReturnType<typeof vi.fn>
+      ).mock.calls.find((call: unknown[]) => call[1] === SKILL_CHANNELS.REMOVE);
+      if (callArgs && callArgs[2]?.getAllowedWindows) {
+        const windows = callArgs[2].getAllowedWindows();
+        expect(windows).toContain(mockMainWindow);
+      }
+    });
+
+    it("SH-RM-08: should throw when validateIpcSender returns invalid", async () => {
+      const { validateIpcSender, toIPCValidationError } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      (validateIpcSender as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+        valid: false,
+        error: "Unauthorized sender",
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.REMOVE);
+      if (!handler) {
+        throw new Error("skill:remove handler not registered");
+      }
+
+      try {
+        await handler({}, "valid-skill");
+        throw new Error("Expected validation error");
+      } catch {
+        // Then: toIPCValidationError の結果がスローされる
+        expect(toIPCValidationError).toHaveBeenCalledWith({
+          valid: false,
+          error: "Unauthorized sender",
+        });
+      }
+    });
+
+    it("SH-RM-09: should pass path traversal string to skillService (service-level concern)", async () => {
+      mockSkillService.removeSkill.mockResolvedValue({
+        success: true,
+        removed: false,
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.REMOVE);
+      if (!handler) {
+        throw new Error("skill:remove handler not registered");
+      }
+
+      // When: パストラバーサル文字列を渡す（IPCハンドラはバリデーション通過、サービス層で防御）
+      await handler({}, "../../../etc/passwd");
+
+      // Then: 文字列としてサービスに渡される
+      expect(mockSkillService.removeSkill).toHaveBeenCalledWith(
+        "../../../etc/passwd",
+      );
+    });
+
+    it("SH-RM-10: should reject tab/newline-only skillName", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.REMOVE);
+      if (!handler) {
+        throw new Error("skill:remove handler not registered");
+      }
+
+      // When: タブ・改行のみの文字列を渡す
+      try {
+        await handler({}, "\t\n");
+        throw new Error("Expected validation error");
+      } catch (error) {
+        // Then: .trim() が空文字列を返すためバリデーションエラー
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    it("SH-RM-11: should propagate skillService.removeSkill error", async () => {
+      const serviceError = new Error("File system error");
+      mockSkillService.removeSkill.mockRejectedValue(serviceError);
+
+      const handler = handlers.get(SKILL_CHANNELS.REMOVE);
+      if (!handler) {
+        throw new Error("skill:remove handler not registered");
+      }
+
+      // When: サービスがエラーをスローする
+      try {
+        await handler({}, "error-skill");
+        throw new Error("Expected service error");
+      } catch (error) {
+        // Then: サービスのエラーがそのまま伝播する
+        expect(error).toBe(serviceError);
+        expect((error as Error).message).toBe("File system error");
+      }
     });
   });
 

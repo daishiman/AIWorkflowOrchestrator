@@ -428,6 +428,14 @@ Zustand Sliceパターンで実装された状態管理。
 | `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
 | `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
 
+#### `skill:remove` リクエスト契約（UT-FIX-SKILL-REMOVE-INTERFACE-001）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 引数形式 | `skillName: string`（オブジェクトラップなし） |
+| バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
+| エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` |
+
 #### OperationResult型
 
 スキル管理APIの統一戻り値型。成功/失敗を明確に区別する。
@@ -1486,6 +1494,33 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ## 完了タスク
 
+### UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove IPCインターフェース不整合修正（2026-02-20完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-FIX-SKILL-REMOVE-INTERFACE-001                                   |
+| 完了日       | 2026-02-20                                                           |
+| ステータス   | **完了**                                                             |
+| テスト数     | 45（`skillHandlers.test.ts`）                                       |
+| ドキュメント | `docs/30-workflows/completed-tasks/ut-fix-skill-remove-interface/`                  |
+
+#### 変更ポイント
+
+| 変更箇所 | 内容 |
+| -------- | ---- |
+| Main IPCハンドラー | `skill:remove` が `{ skillId: string }` 受け取りから `skillName: string` 直接受け取りに変更 |
+| 入力検証 | `trim()` を含む非空文字列検証を追加 |
+| テスト | SH-RM-01〜11を `skillName` 契約に更新（sender検証・空白文字列検証を含む） |
+
+#### 関連ドキュメント
+
+| ドキュメント | 説明 |
+| ------------ | ---- |
+| [UT-FIX-SKILL-REMOVE-INTERFACE-001 実装ガイド](../../../../docs/30-workflows/completed-tasks/ut-fix-skill-remove-interface/outputs/phase-12/implementation-guide.md) | 概念説明（Part 1）と技術詳細（Part 2） |
+| [完了タスク指示書](../../../../docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-ut-fix-skill-remove-interface-001.md) | 元タスクの完了記録 |
+
+---
+
 ### TASK-9B-H-SKILL-CREATOR-IPC: SkillCreatorService IPC登録（2026-02-12完了）
 
 | 項目         | 内容                                                                       |
@@ -1533,7 +1568,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | ----------- | ------------------------------------------- | ------ | ------------------------------------------------------------------------------- |
 | UT-9B-H-001 | IpcResult型の重複定義を@repo/sharedに統一   | 低     | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md`     |
 | UT-9B-H-002 | IPCハンドラー引数検証のZodスキーマ移行      | 低     | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`           |
-| ~~UT-9B-H-003~~ | ~~SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト）~~ | ~~高~~ | ~~`docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-security-hardening.md`~~ **2026-02-12完了（UT-9B-H-003-security-hardeningで実施）** |
+| ~~UT-9B-H-003~~ | ~~SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト）~~ | ~~高~~ | ~~`docs/30-workflows/completed-tasks/ut-9b-h-003-security-hardening/index.md`~~ **2026-02-12完了（UT-9B-H-003-security-hardeningで実施）** |
 | UT-9B-H-004 | SkillCreator設計書-実装整合性修正（Zod/型/メソッド名の乖離対応） | 中 | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md` |
 
 ---
@@ -1622,6 +1657,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-20 | 1.24.0     | 完了済み UT-9B-H-003 の参照先を `docs/30-workflows/completed-tasks/ut-9b-h-003-security-hardening/index.md` に更新（削除済み旧パスの整合修正） |
+| 2026-02-20 | 1.23.0     | UT-FIX-SKILL-REMOVE-INTERFACE-001完了反映。`skill:remove` の引数契約を `skillName: string` に更新し、バリデーション仕様・完了タスク記録を追加 |
 | 2026-02-19 | 1.22.0     | TASK-9A-C: 関連未タスク3件の参照テーブル追加（TASK-9A-C-001/002/003）。ワークフローリンクをcompleted-tasks/に更新 |
 | 2026-02-19 | 1.21.0     | TASK-9A-C: SkillEditor UI 型定義追加（SkillEditorProps, SkillCodeEditorProps, FileTreeCategory）。仕様書作成済み・実装未着手を明記 |
 | 2026-02-19 | 1.21.0     | TASK-9A-B完了記録追加。スキルファイル操作IPCハンドラー6チャンネル（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、65テスト全PASS、カバレッジ Line 91.14% / Branch 93.93% / Function 100% |

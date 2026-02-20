@@ -43,6 +43,19 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-20 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12未タスク配置監査是正]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク運用ルール更新）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `phase-11-12-guide.md` 完了条件に「未実施タスクが `completed-tasks/unassigned-task/` に混在していないこと」を追加
+  - 未実施は `docs/30-workflows/unassigned-task/`、完了済みのみ `completed-tasks/unassigned-task/` へ移管する境界を明文化
+  - `verify-unassigned-links.js` を再実行し、参照整合を確認
+
+---
+
 ## [2026-02-19 - TASK-9A-C Phase 12準拠監査・運用追補]
 
 - **Agent**: task-specification-creator
@@ -3951,3 +3964,26 @@ if (artifactPath) {
   - LOGS.md 2ファイル更新（P1防止）
   - SKILL.md 2ファイル更新（P29防止）
   - topic-map.md 再生成（2スキル）
+
+---
+
+## 2026-02-20 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12再監査
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: UT-FIX-SKILL-REMOVE-INTERFACE-001
+- Phase: Phase 12（ドキュメント更新）
+
+### 実施内容
+
+- `spec-update-workflow.md` の Step 1-A/1-B/1-C/1-D を実施
+- `aiworkflow-requirements` 側の `interfaces-agent-sdk-skill.md`, `api-ipc-agent.md`, `arch-electron-services.md`, `security-skill-ipc.md`, `task-workflow.md` を更新
+- `task-workflow.md` の参照切れを修正（UT-FIX-SKILL-IMPORT/REMOVE）
+- `SKILL.md` 2ファイル・`LOGS.md` 2ファイルを同期更新
+- `generate-index.js` 再実行で topic-map/keywords を同期
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-02-20

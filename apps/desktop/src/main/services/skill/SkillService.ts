@@ -107,8 +107,8 @@ export class SkillService {
   /**
    * スキルを削除する
    */
-  async removeSkill(skillId: string): Promise<RemoveResult> {
-    return this.importManager.removeSkill(skillId);
+  async removeSkill(skillName: string): Promise<RemoveResult> {
+    return this.importManager.removeSkill(skillName);
   }
 
   /**

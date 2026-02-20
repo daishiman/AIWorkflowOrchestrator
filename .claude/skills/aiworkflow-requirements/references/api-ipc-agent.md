@@ -425,6 +425,7 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001 | skill:remove IPCインターフェース不整合修正 | 2026-02-20 | `skill:remove` の Mainハンドラー引数契約を `skillName: string` に統一。空白文字列を拒否する3段バリデーションを追加 |
 | TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
 | TASK-9B-H  | SkillCreatorService IPCハンドラー登録 | 2026-02-12 | 6チャンネル追加（5 invoke + 1 progress）、SkillCreatorAPI Preload実装、セキュリティ準拠 |
 
@@ -432,9 +433,9 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | タスクID     | タスク名                                            | 優先度 | 指示書パス                                                                              |
 | ------------ | --------------------------------------------------- | ------ | --------------------------------------------------------------------------------------- |
-| UT-9A-B-001 | IPC入力バリデーション標準化                         | 中     | `docs/30-workflows/unassigned-task/task-ipc-validation-standardize-improvements.md`     |
-| UT-9A-B-002 | IPCエラーサニタイズ共通ユーティリティ化             | 中     | `docs/30-workflows/unassigned-task/task-ipc-error-sanitize-refactoring.md`              |
-| UT-9A-B-003 | IPCテストhandlerMapモックユーティリティ共通化       | 低     | `docs/30-workflows/unassigned-task/task-ipc-test-mock-utils-improvements.md`            |
+| UT-9A-B-001 | IPC入力バリデーション標準化                         | 中     | `docs/30-workflows/unassigned-task/task-ipc-validation-standardize-improvements.md` |
+| UT-9A-B-002 | IPCエラーサニタイズ共通ユーティリティ化             | 中     | `docs/30-workflows/unassigned-task/task-ipc-error-sanitize-refactoring.md`          |
+| UT-9A-B-003 | IPCテストhandlerMapモックユーティリティ共通化       | 低     | `docs/30-workflows/unassigned-task/task-ipc-test-mock-utils-improvements.md`        |
 | UT-FIX-5-4 | AgentSDKAPI型定義不一致修正          | 2026-02-10 | `agentSDKAPI.abort()` 戻り値型を `void` → `Promise<void>` に修正（P23パターン準拠） |
 | UT-FIX-5-3 | Preload Agent Abort セキュリティ修正 | 2026-02-10 | `agentSDKAPI.abort()` を `safeInvoke()` 経由に変更、Main側 `ipcMain.handle()` 使用  |
 
@@ -444,6 +445,8 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.10.0    | 2026-02-20 | 未タスク参照パス整合を修正: UT-9A-B-001〜003 の指示書参照を `docs/30-workflows/unassigned-task/` に統一 |
+| v1.9.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` 引数契約を `skillName: string` に統一し、完了タスクへ記録 |
 | v1.8.0     | 2026-02-19 | TASK-9A-B: スキルファイル操作IPCチャンネルセクション追加。6チャンネル（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、型定義、実装状況、セキュリティ仕様、完了タスク記録 |
 | v1.7.0     | 2026-02-12 | UT-9B-H-003反映: Skill Creator IPCのセキュリティ強化仕様を追記（validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES） |
 | v1.6.0     | 2026-02-12 | TASK-9B-H: Skill Creator IPCチャネルセクション追加。6チャンネル（5 invoke + 1 progress）、型定義、実装状況、完了タスク記録 |

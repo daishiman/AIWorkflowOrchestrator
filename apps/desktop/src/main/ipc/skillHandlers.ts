@@ -140,17 +140,21 @@ export function registerSkillHandlers(
   // skill:remove - スキルを削除
   ipcMain.handle(
     IPC_CHANNELS.SKILL_REMOVE,
-    async (event: IpcMainInvokeEvent, args: { skillId: string }) => {
+    async (event: IpcMainInvokeEvent, skillName: string) => {
       const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_REMOVE, {
         getAllowedWindows: () => [mainWindow],
       });
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof args?.skillId !== "string") {
-        throw { code: "VALIDATION_ERROR", message: "skillId must be a string" };
+      // P42準拠: 3段バリデーション（型チェック → 空文字列 → トリム空文字列）
+      if (typeof skillName !== "string" || skillName.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "skillName must be a non-empty string",
+        };
       }
-      return skillService.removeSkill(args.skillId);
+      return skillService.removeSkill(skillName);
     },
   );
 
