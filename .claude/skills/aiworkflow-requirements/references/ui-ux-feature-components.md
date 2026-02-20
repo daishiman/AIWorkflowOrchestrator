@@ -20,6 +20,7 @@
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
+| Skill Editor UI              | TASK-9A-C        | SkillEditor, SkillCodeEditor                       | 仕様書作成済み | `docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/` |
 
 ### 共通仕様
 
@@ -603,6 +604,131 @@ TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネ�
 
 ---
 
+## SkillEditor UI（TASK-9A-C / 仕様書作成済み）
+
+TASK-9A-C は実装仕様書（Phase 1-13）まで作成済みで、実装コードは未着手。
+本セクションは「実装完了」ではなく、実装着手前の正本仕様として扱う。
+
+### 予定コンポーネント
+
+| コンポーネント | 役割 | 想定配置 |
+| --- | --- | --- |
+| SkillEditor | ファイル選択・読込・保存制御 | `apps/desktop/src/renderer/components/skill/SkillEditor.tsx` |
+| SkillCodeEditor | テキスト編集UI | `apps/desktop/src/renderer/components/skill/SkillCodeEditor.tsx` |
+
+### 進捗ステータス
+
+| 項目 | 状態 | 参照 |
+| --- | --- | --- |
+| 仕様書（Phase 1-13） | ✅ 作成済み | `docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/` |
+| 実装コード | ⏳ 未着手 | TASK-9A-C 本体で継続 |
+| テスト | ⏳ 未着手 | 実装後に Phase 11 実施 |
+
+### 関連ドキュメント
+
+- [TASK-9A-C ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/index.md)
+- [TASK-9A-C 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/outputs/phase-12/implementation-guide.md)
+- [TASK-9A-C Phase 12準拠監査](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/outputs/phase-12/phase12-compliance-audit.md)
+
+### 関連未タスク
+
+| タスクID | 概要 | 仕様書 |
+| --- | --- | --- |
+| TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md` |
+| TASK-9A-C-002 | ファイル作成・削除機能 | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md` |
+| TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
+
+### コンポーネント階層
+
+| コンポーネント  | 種類     | 親           | 子要素                                       |
+| --------------- | -------- | ------------ | -------------------------------------------- |
+| SkillEditor     | organism | AgentView    | FileTreeSidebar, EditorToolbar, SkillCodeEditor |
+| FileTreeSidebar | molecule | SkillEditor  | カテゴリ展開リスト、ファイルアイテム         |
+| EditorToolbar   | molecule | SkillEditor  | 保存ボタン、閉じるボタン、未保存インジケーター |
+| SkillCodeEditor | molecule | SkillEditor  | textarea（コード編集領域）                   |
+
+### コンポーネント仕様
+
+#### SkillEditor
+
+| 項目     | 仕様                                                               |
+| -------- | ------------------------------------------------------------------ |
+| ファイル | `apps/desktop/src/renderer/components/skill/SkillEditor.tsx`       |
+| 責務     | ファイル選択・読込・保存制御、全体レイアウト統括                   |
+| Props    | `skill: ImportedSkill`, `onClose: () => void`                      |
+
+**レイアウト構造**
+
+| 領域               | 位置                | 内容                               |
+| ------------------ | ------------------- | ---------------------------------- |
+| FileTreeSidebar    | 左側（w-64, 256px） | カテゴリ別ファイルツリー           |
+| EditorToolbar      | 右上部              | 保存/閉じるボタン、未保存表示      |
+| SkillCodeEditor    | 右メイン（flex-1）  | テキスト編集エリア                 |
+
+#### SkillCodeEditor
+
+| 項目     | 仕様                                                                    |
+| -------- | ----------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/components/skill/SkillCodeEditor.tsx`        |
+| 責務     | textareaベースのコード編集UI（外部ライブラリ不使用）                    |
+| Props    | `value: string`, `onChange: (value: string) => void`, `language: string`, `isReadOnly?: boolean` |
+
+**機能**
+
+| 機能           | 説明                                      |
+| -------------- | ----------------------------------------- |
+| Tab→2スペース  | Tabキー押下時にスペース2個を挿入          |
+| spellCheck無効 | `spellCheck={false}` でスペルチェック抑制 |
+| 等幅フォント   | `font-family: monospace` 適用             |
+| 読み取り専用   | `isReadOnly` で編集不可モード切替         |
+
+### 状態管理
+
+| 状態の種類        | 管理方法                   | 判断基準                                    |
+| ----------------- | -------------------------- | ------------------------------------------- |
+| 選択ファイル      | `useState<string \| null>` | コンポーネント固有UI                        |
+| ファイル内容      | `useState<string>`         | エディター内ローカル状態                    |
+| カテゴリ展開状態  | `useState<Set<string>>`    | FileTreeSidebar固有UI                       |
+| 未保存フラグ      | `useState<boolean>`        | 保存アクション制御用                        |
+
+> **設計判断**: Zustand Storeを使用せず、useState のみで管理する（P31: Zustand Store Hooks無限ループの事前対策）
+
+### IPC 依存
+
+| メソッド                         | 用途               | 前提タスク |
+| -------------------------------- | ------------------ | ---------- |
+| `window.electronAPI.skill.readFile`  | ファイル内容読み込み | TASK-9A-B  |
+| `window.electronAPI.skill.writeFile` | ファイル内容書き込み | TASK-9A-B  |
+
+### キーボード操作
+
+| キー       | コンポーネント  | 動作                 |
+| ---------- | --------------- | -------------------- |
+| Cmd+S      | SkillEditor     | ファイル保存         |
+| Escape     | SkillEditor     | エディターを閉じる   |
+| Tab        | SkillCodeEditor | 2スペース挿入        |
+
+### ARIA属性
+
+| 要素               | 属性           | 値                 |
+| ------------------ | -------------- | ------------------ |
+| FileTreeSidebar    | role           | tree               |
+| ファイルアイテム   | role           | treeitem           |
+| SkillCodeEditor    | role           | textbox            |
+| SkillCodeEditor    | aria-multiline | true               |
+| SkillCodeEditor    | aria-label     | コードエディター   |
+
+### 今回実装（監査反映）内容
+
+| 区分 | 反映内容 |
+| --- | --- |
+| 仕様整合 | `TASK-9A-C` 参照を `completed-task/` に統一 |
+| 成果物整合 | Phase 9-12成果物の実体を補完し、リンク切れを解消 |
+| 状態管理 | 実装未着手タスクとして `spec_created` に正規化 |
+| 品質検証 | `verify-all-specs --strict` / `verify-unassigned-links` を再実行し最終PASS確認 |
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
@@ -645,6 +771,10 @@ TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネ�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-02-19 | v1.10.0    | TASK-9A-C: 関連未タスク3件参照テーブル追加。仕様書ディレクトリをcompleted-tasks/にパス移行 |
+| 2026-02-19 | v1.9.0     | TASK-9A-C: SkillEditorコンポーネント仕様追加（コンポーネント階層、レイアウト、状態管理、IPC依存、キーボード、アクセシビリティ） |
+| 2026-02-19 | v1.8.1     | TASK-9A-C: Phase 12準拠監査結果（`phase12-compliance-audit.md`）と監査反映内容を追記 |
+| 2026-02-19 | v1.8.0     | TASK-9A-C: SkillEditor UIの仕様書作成済み状態を追加（実装未着手を明記、関連ドキュメントリンク追加） |
 | 2026-01-31 | v1.7.0     | TASK-7D: SkillStreamingViewコンポーネント仕様追加、完了タスクテーブルにTASK-7D追加、関連ドキュメントリンク追加 |
 | 2026-01-28 | v1.6.0     | TASK-3-2-D: コピー履歴機能追加（CopyHistoryPanel、CopyHistoryContext、useCopyHistory）          |
 | 2026-01-28 | v1.5.0     | 構造最適化: SkillStreamDisplay関連を ui-ux-feature-skill-stream.md に分割（826行→約400行）      |

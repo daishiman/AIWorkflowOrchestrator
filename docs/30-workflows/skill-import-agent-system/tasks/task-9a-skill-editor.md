@@ -41,7 +41,7 @@ artifacts:
 >
 > - [TASK-9A-A: SkillFileManager](./task-9a-a-file-manager.md) - バックアップ・リストア機能付きファイル管理
 > - [TASK-9A-B: ファイル編集IPC](./completed-task/task-9a-b-ipc-file-handlers.md) - ファイル編集用IPCハンドラー
-> - [TASK-9A-C: SkillEditor UI](./task-9a-c-skill-editor-ui.md) - エディターUIコンポーネント
+> - [TASK-9A-C: SkillEditor UI](./completed-task/task-9a-c-skill-editor-ui.md) - エディターUIコンポーネント
 >
 > 以下は参照用の元仕様です。
 

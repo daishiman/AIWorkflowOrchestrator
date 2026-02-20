@@ -174,7 +174,8 @@ node scripts/list-specs.js --topics
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1361 |
 | 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1423 |
 | SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1477 |
-| 変更履歴 | L1573 |
+| SkillEditor 実装パターン（TASK-9A-C spec_created） | L1573 |
+| 変更履歴 | L1633 |
 
 ### references/architecture-monorepo.md
 
@@ -276,7 +277,8 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L1226 |
 | SkillCreatorService（TASK-9B-G） | L1239 |
 | 完了タスク | L1487 |
-| 変更履歴 | L1570 |
+| SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1570 |
+| 変更履歴 | L1613 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -752,11 +754,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L15 |
 | コンポーネント設計概要 | L25 |
-| デザイン原則サマリー | L55 |
-| コンポーネント階層図 | L77 |
-| 完了タスク | L116 |
-| 変更履歴 | L136 |
-| 関連ドキュメント | L154 |
+| デザイン原則サマリー | L56 |
+| コンポーネント階層図 | L78 |
+| 完了タスク | L117 |
+| 変更履歴 | L138 |
+| 関連ドキュメント | L158 |
 
 ### references/ui-ux-design-principles.md
 
@@ -783,17 +785,18 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L36 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L143 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L210 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L358 |
-| i18n対応（TASK-3-2-B） | L393 |
-| コピー履歴機能（TASK-3-2-D） | L442 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L551 |
-| SkillStreamingView コンポーネント（TASK-7D） | L562 |
-| 完了タスク | L606 |
-| 関連ドキュメント | L621 |
-| 変更履歴 | L644 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L37 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L144 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L211 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L359 |
+| i18n対応（TASK-3-2-B） | L394 |
+| コピー履歴機能（TASK-3-2-D） | L443 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L552 |
+| SkillStreamingView コンポーネント（TASK-7D） | L563 |
+| SkillEditor UI（TASK-9A-C / 仕様書作成済み） | L607 |
+| 完了タスク | L724 |
+| 関連ドキュメント | L739 |
+| 変更履歴 | L762 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1477,7 +1480,9 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L19 |
 | 目次 | L48 |
 | 関連ドキュメント | L125 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L131 |
 | TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L135 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L136 |
 | TASK-FIX-14-1: console → electron-log 移行 | L210 |
 | TASK-FIX-11-1: SDK統合テスト有効化 | L314 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L460 |
@@ -1491,22 +1496,6 @@ node scripts/list-specs.js --topics
 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1549 |
 | テンプレート（新規教訓追加用） | L1597 |
 | 品質チェックリスト | L1669 |
-| 目次 | L48 |
-| 関連ドキュメント | L126 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L136 |
-| TASK-FIX-14-1: console → electron-log 移行 | L194 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L298 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L444 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L499 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L781 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L869 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1088 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1235 |
-| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1342 |
-| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1416 |
-| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1533 |
-| テンプレート（新規教訓追加用） | L1581 |
-| 品質チェックリスト | L1653 |
 
 ### references/llm-embedding.md
 
@@ -1848,9 +1837,6 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L636 |
-| 関連ドキュメント | L729 |
-| 変更履歴 | L739 |
 | 残課題（未タスク） | L652 |
 | 関連ドキュメント | L746 |
 | 変更履歴 | L756 |
@@ -1883,9 +1869,10 @@ node scripts/list-specs.js --topics
 | 8. テストファイル分離パターン（TASK-FIX-4-2） | L343 |
 | 9. Zustand Store Hooks テストパターン | L398 |
 | 10. Main Process SDKテスト有効化パターン（TASK-FIX-11-1-SDK-TEST-ENABLEMENT） | L561 |
-| 参照 | L621 |
-| 関連未タスク | L630 |
-| 変更履歴 | L640 |
+| 11. SkillEditor テストパターン（TASK-9A-C spec_created） | L621 |
+| 参照 | L690 |
+| 関連未タスク | L699 |
+| 変更履歴 | L709 |
 
 ### references/testing-dialog-patterns.md
 

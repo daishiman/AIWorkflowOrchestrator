@@ -217,7 +217,7 @@ Phase 4〜5: 検証 → 完了
 | Step     | 必須 | 内容                                                                                                          |
 | -------- | ---- | ------------------------------------------------------------------------------------------------------------- |
 | Step 1-A | ✅   | タスク完了記録（「完了タスク」セクション追加 + 関連ドキュメントリンク + 変更履歴 + LOGS.md×2 + topic-map.md） |
-| Step 1-B | ✅   | 実装状況テーブル更新（api-endpoints.md等の「未実装」→「完了」）                                               |
+| Step 1-B | ✅   | 実装状況テーブル更新（実装完了:「未実装」→「完了」 / 仕様書作成のみ: `spec_created`）                       |
 | Step 1-C | ✅   | 関連タスクテーブル更新（仕様書内の「関連タスク」「未タスク候補」テーブルのステータス更新）                    |
 | Step 2   | 条件 | システム仕様更新（新規インターフェース追加時のみ）                                                            |
 
@@ -372,7 +372,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.71.0** | **2026-02-19** | **TASK-9A-C仕様書作成知見反映**: patterns.mdに成功パターン2件（4並列Phase 1分析、Pitfall事前組み込み）・失敗パターン2件（レートリミット、complete-phase.jsパス誤り）追加。クイックナビゲーション更新 |
 | **9.70.0** | **2026-02-19** | **TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 12再監査反映**: 仕様漏れ再点検で `phase-3` 必須セクション不足を是正、`artifacts.json` 整合を修正、システム仕様（task-workflow/quality-requirements）を更新。未タスク1件（`task-imp-vitest-alias-sync-automation-001`）を登録 |
+| **9.70.0** | **2026-02-19** | **Phase 12 Step 1-B 判定ルール拡張**: 実装未着手の仕様書タスクを `spec_created` で記録する運用を明文化。`spec-update-workflow.md` に誤判定パターンと完了チェックを追加し、`completed` と `spec_created` の使い分けを標準化 |
+| **9.69.0** | **2026-02-19** | **TASK-9A-C再監査運用反映**: `spec_created` 状態でのPhase 12記録パターンを運用適用。参照不整合（`tasks/` ↔ `completed-task/`）補正、Phase 9-12成果物の実体化、`verify-unassigned-links` 連携を含む再監査手順を記録 |
 | **9.68.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001 実装知見記録**: safeInvokeUnwrap パターン導入に伴う実装知見（type erasure、ハンドラ応答形式不統一、テストモック波及修正19箇所）を aiworkflow-requirements の3ファイルに反映完了 |
 | **9.67.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001 Phase 12是正**: `phase-12-documentation.md` の誤参照（`api-ipc-skill.md`）と `generate-index.mjs` 記述を修正。Phase 10 MINOR 2件を未タスク仕様書（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）へ正式変換。`spec-update-workflow.md` に「仕様書参照パスの実在確認（test -f）」チェックを追加 |
 | **9.67.0** | **2026-02-14** | **UT-FIX-IPC-HANDLER-DOUBLE-REG-001 Phase 1-12完了**: IPC ハンドラ二重登録防止修正。unregisterAllIpcHandlers() 関数追加、activate イベントハンドラ修正。7テスト全PASS、Phase 10 PASS判定。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
