@@ -122,13 +122,13 @@ export class SkillImportManager {
   /**
    * スキルを削除する
    */
-  async removeSkill(skillId: string): Promise<RemoveResult> {
-    log.debug("[SkillImportManager] removeSkill called with:", skillId);
+  async removeSkill(skillName: string): Promise<RemoveResult> {
+    log.debug("[SkillImportManager] removeSkill called with:", skillName);
 
-    const removed = this.importedIds.has(skillId);
+    const removed = this.importedIds.has(skillName);
 
     if (removed) {
-      this.importedIds.delete(skillId);
+      this.importedIds.delete(skillName);
       this.persist();
     }
 

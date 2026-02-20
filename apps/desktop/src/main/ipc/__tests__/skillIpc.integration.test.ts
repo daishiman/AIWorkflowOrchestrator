@@ -364,9 +364,10 @@ describe("Skill IPC Integration", () => {
     it("TC-07: should remove skill and return success", async () => {
       mockSkillService.removeSkill.mockResolvedValue(MOCK_REMOVE_SUCCESS);
       const handler = handlers.get("skill:remove")!;
-      const result = (await handler(createMockIpcEvent(), {
-        skillId: "skill-to-remove",
-      })) as { success: boolean; removed: boolean };
+      const result = (await handler(
+        createMockIpcEvent(),
+        "skill-to-remove",
+      )) as { success: boolean; removed: boolean };
       expect(result.success).toBe(true);
       expect(result.removed).toBe(true);
       expect(mockSkillService.removeSkill).toHaveBeenCalledWith(
@@ -378,9 +379,9 @@ describe("Skill IPC Integration", () => {
     it("TC-08: should return error if skill not imported", async () => {
       mockSkillService.removeSkill.mockRejectedValue(new Error("Not imported"));
       const handler = handlers.get("skill:remove")!;
-      await expect(
-        handler(createMockIpcEvent(), { skillId: "unknown" }),
-      ).rejects.toThrow("Not imported");
+      await expect(handler(createMockIpcEvent(), "unknown")).rejects.toThrow(
+        "Not imported",
+      );
       expect(validateIpcSender).toHaveBeenCalled();
     });
   });
@@ -560,13 +561,11 @@ describe("Skill IPC Integration", () => {
 
   // --- Edge Cases: skill:remove validation ---
   describe("skill:remove - validation", () => {
-    it("should throw when skillId is not a string", async () => {
+    it("should throw when skillName is not a string", async () => {
       const handler = handlers.get("skill:remove")!;
-      await expect(
-        handler(createMockIpcEvent(), { skillId: 123 }),
-      ).rejects.toMatchObject({
+      await expect(handler(createMockIpcEvent(), 123)).rejects.toMatchObject({
         code: "VALIDATION_ERROR",
-        message: "skillId must be a string",
+        message: "skillName must be a non-empty string",
       });
     });
   });

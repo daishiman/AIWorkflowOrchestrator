@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-19T13:31:48.308Z",
-  "totalKeywords": 1151,
+  "generated": "2026-02-20T09:35:35.115Z",
+  "totalKeywords": 1163,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1669,6 +1669,7 @@
     ],
     "skill": [
       "claude-code-skills-process.md",
+      "lessons-learned.md",
       "quality-e2e-testing.md"
     ],
     "最小限に維持": [
@@ -1705,7 +1706,8 @@
     "SKILL": [
       "claude-code-skills-structure.md",
       "error-handling.md",
-      "interfaces-agent-sdk-executor.md"
+      "interfaces-agent-sdk-executor.md",
+      "lessons-learned.md"
     ],
     "State": [
       "csrf-state-parameter.md",
@@ -2751,22 +2753,16 @@
       "master-design.md",
       "patterns.md"
     ],
-    "ハンドラー実装": [
+    "REMOVE": [
       "lessons-learned.md"
     ],
-    "実装事実ドリフトを防ぐ最小検証セット": [
+    "INTERFACE": [
       "lessons-learned.md"
     ],
-    "Vitest": [
+    "remove": [
       "lessons-learned.md"
     ],
-    "未処理": [
-      "lessons-learned.md"
-    ],
-    "Promise": [
-      "lessons-learned.md"
-    ],
-    "拒否検知の復元": [
+    "インターフェース整合修正": [
       "lessons-learned.md"
     ],
     "仕様書再監査": [
@@ -2792,6 +2788,24 @@
       "lessons-learned.md"
     ],
     "スキルディレクトリ内の": [
+      "lessons-learned.md"
+    ],
+    "ハンドラー実装": [
+      "lessons-learned.md"
+    ],
+    "実装事実ドリフトを防ぐ最小検証セット": [
+      "lessons-learned.md"
+    ],
+    "Vitest": [
+      "lessons-learned.md"
+    ],
+    "未処理": [
+      "lessons-learned.md"
+    ],
+    "Promise": [
+      "lessons-learned.md"
+    ],
+    "拒否検知の復元": [
       "lessons-learned.md"
     ],
     "console": [

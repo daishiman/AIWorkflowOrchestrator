@@ -55,8 +55,12 @@
 | `skill:list`           | sender検証 + パストラバーサル検証 |
 | `skill:getImported`    | sender検証                        |
 | `skill:import`         | sender検証 + skillIds検証         |
-| `skill:remove`         | sender検証 + skillId検証          |
+| `skill:remove`         | sender検証 + skillName非空文字列検証（`trim()`含む） |
 | `skill:get-detail`     | sender検証 + skillId検証          |
+
+`skill:remove` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-REMOVE-INTERFACE-001）。
+
+> **IPC修正時のチェックリスト**: IPC ハンドラー / Preload API を修正する場合は [ipc-contract-checklist.md](./ipc-contract-checklist.md) の6フェーズチェックリストに従う。P23/P32/P42/P44 パターンを統合した契約ドリフト防止ガイド。
 
 > **Note**: TASK-FIX-4-1-IPC-CONSOLIDATIONにより、旧チャンネル名（`skill:list-available`, `skill:list-imported`）は削除されました。
 
@@ -363,6 +367,8 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 | タスクID | タスク名 | 優先度 | 状態 |
 |----------|----------|--------|------|
 | TASK-IPC-SHARED-CHANNELS-REFACTORING | packages/shared/ipc/channels.ts 整理 | 低 | 未実施 |
+| UT-FIX-SKILL-VALIDATION-P42-001 | skillHandlers P42準拠バリデーション横展開（6ハンドラの`.trim()`追加） | 中 | 未実施 |
+| UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一（throw vs return不統一） | 中 | 未実施 |
 
 > **Note**: TASK-FIX-4-1-IPC-CONSOLIDATION で preload/channels.ts への統合は完了したが、packages/shared 配下の整理は他パッケージへの影響調査が必要なため、別タスクとして分離。
 >
@@ -389,6 +395,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
 | v1.3.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
+| v1.7.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` の検証要件を `skillName` 非空文字列（`trim()` 含む3段バリデーション）に更新 |
 | v1.6.0     | 2026-02-12 | TASK-9B-H-SKILL-CREATOR-IPC完了: SkillCreatorService IPCチャネルセキュリティセクション追加（6チャンネル、validateIpcSender適用、引数バリデーション、エラーサニタイズ）|
 | v1.4.0     | 2026-02-04 | TASK-FIX-4-1-IPC-CONSOLIDATION完了（旧チャンネル削除、42テスト） |
 | v1.5.0     | 2026-02-09 | テンプレート準拠（概要追加、変更履歴を末尾に移動） |

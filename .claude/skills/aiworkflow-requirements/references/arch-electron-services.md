@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
+| 6.33.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` IPC引数を `skillName: string` に更新 |
 | 6.32.0     | 2026-02-07 | TASK-FIX-4-2完了: SkillImportManager永続化実装詳細セクション追加（型バリデーション・SkillStoreインターフェース・デバッグフラグ・テストファイル構成） |
 | 6.31.0     | 2026-02-01 | TASK-8C-E完了: E2Eテストフィクスチャセクション追加（3フィクスチャ仕様・検証テスト29ケース） |
 | 6.30.0     | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                          |
@@ -268,7 +269,7 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 | `skill:list-available` | `basePath: string`   | `Skill[]`       | スキルスキャン     |
 | `skill:list-imported`  | なし                 | `Skill[]`       | インポート済み取得 |
 | `skill:import`         | `skillIds: string[]` | `ImportResult`  | スキルインポート   |
-| `skill:remove`         | `skillId: string`    | `RemoveResult`  | インポート解除     |
+| `skill:remove`         | `skillName: string`  | `RemoveResult`  | インポート解除     |
 | `skill:get-detail`     | `skillId: string`    | `Skill \| null` | スキル詳細取得     |
 
 ### データフロー
@@ -288,7 +289,7 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 | `scanAvailableSkills` | `basePath: string`   | `Promise<Skill[]>`       | スキルスキャン     |
 | `getImportedSkills`   | -                    | `Promise<Skill[]>`       | インポート済み取得 |
 | `importSkills`        | `skillIds: string[]` | `Promise<ImportResult>`  | インポート         |
-| `removeSkill`         | `skillId: string`    | `Promise<RemoveResult>`  | 削除               |
+| `removeSkill`         | `skillName: string`  | `Promise<RemoveResult>`  | 削除               |
 | `getSkillById`        | `skillId: string`    | `Promise<Skill \| null>` | 詳細取得           |
 | `clearCache`          | -                    | `void`                   | キャッシュクリア   |
 | `executeSkill`        | `skillId: string, params?: ExecuteParams` | `Promise<SkillExecutionResponse>` | スキル実行（SkillExecutorに委譲） |

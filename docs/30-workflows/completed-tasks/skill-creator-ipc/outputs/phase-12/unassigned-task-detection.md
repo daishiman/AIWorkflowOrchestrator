@@ -42,7 +42,7 @@
 | 内容       | `IpcResult<T>` 型が `skillCreatorHandlers.ts` と `skill-creator-api.ts` で個別に定義されている |
 | 機能影響   | なし（型定義は同一）                                                                           |
 | 未タスクID | UT-9B-H-001                                                                                    |
-| 指示書パス | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-ipcresult-type-unification.md`    |
+| 指示書パス | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md`                    |
 
 #### m-02: Zodスキーマ未使用（MINOR）
 
@@ -53,7 +53,7 @@
 | 内容       | AC-06ではZodスキーマによる引数検証が要求されているが、typeof手動チェックで実装されている |
 | 機能影響   | なし（同等の検証を実現）                                                                 |
 | 未タスクID | UT-9B-H-002                                                                              |
-| 指示書パス | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-zod-schema-migration.md`    |
+| 指示書パス | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`                    |
 
 ### Phase 10 最終品質レビュー
 
@@ -66,18 +66,18 @@
 | 内容       | skillCreatorHandlers.tsのセキュリティ要件（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト）が未実装 |
 | 機能影響   | セキュリティリスク（パストラバーサル攻撃、内部情報漏洩）                                                           |
 | 未タスクID | UT-9B-H-003                                                                                                        |
-| 指示書パス | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-security-hardening.md`                                |
+| 指示書パス | `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md`                                                |
 
 #### UT-9B-H-004: SkillCreator設計書-実装整合性修正
 
-| 項目       | 内容                                                                                             |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| 指摘ID     | 最終品質レビュー ALIGN                                                                           |
-| 重要度     | 中                                                                                               |
-| 内容       | 設計書と実装の間にZod/型/メソッド名の乖離が存在                                                  |
-| 機能影響   | なし（機能は正常動作）                                                                           |
-| 未タスクID | UT-9B-H-004                                                                                      |
-| 指示書パス | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-design-implementation-alignment.md` |
+| 項目       | 内容                                                                             |
+| ---------- | -------------------------------------------------------------------------------- |
+| 指摘ID     | 最終品質レビュー ALIGN                                                           |
+| 重要度     | 中                                                                               |
+| 内容       | 設計書と実装の間にZod/型/メソッド名の乖離が存在                                  |
+| 機能影響   | なし（機能は正常動作）                                                           |
+| 未タスクID | UT-9B-H-004                                                                      |
+| 指示書パス | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md` |
 
 ### Phase 10 M-02 / Phase 11 D-3: Preload API二重公開パターン統一
 
@@ -90,7 +90,7 @@
 | 内容        | `window.electronAPI.skillCreator` と `window.skillCreatorAPI` の二重公開パターンをプロジェクト全体で統一 |
 | 機能影響    | なし（既存パターン踏襲で機能は正常動作）                                                                 |
 | 未タスクID  | UT-9B-H-005                                                                                              |
-| 指示書パス  | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-api-dual-publishing-unification.md`         |
+| 指示書パス  | `docs/30-workflows/unassigned-task/task-9b-h-api-dual-publishing-unification.md`                         |
 | 関連Pitfall | P23 (API二重定義の型管理複雑性)                                                                          |
 
 ### Phase 11 手動テスト
@@ -120,43 +120,43 @@ Phase 10 の MINOR 2件を継承（D-1, D-2）。新規 INFO 4件（D-3〜D-6）
 
 ### UT-9B-H-001: IpcResult型の重複定義統一
 
-| ステップ                               | 状態 | 詳細                                                                                        |
-| -------------------------------------- | ---- | ------------------------------------------------------------------------------------------- |
-| 1. 指示書作成                          | 完了 | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-ipcresult-type-unification.md` |
-| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-001 行を追加                                                                        |
-| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加                   |
+| ステップ                               | 状態 | 詳細                                                                        |
+| -------------------------------------- | ---- | --------------------------------------------------------------------------- |
+| 1. 指示書作成                          | 完了 | `docs/30-workflows/unassigned-task/task-9b-h-ipcresult-type-unification.md` |
+| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-001 行を追加                                                        |
+| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加   |
 
 ### UT-9B-H-002: IPCハンドラー引数検証のZodスキーマ移行
 
-| ステップ                               | 状態 | 詳細                                                                                  |
-| -------------------------------------- | ---- | ------------------------------------------------------------------------------------- |
-| 1. 指示書作成                          | 完了 | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-zod-schema-migration.md` |
-| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-002 行を追加                                                                  |
-| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加             |
+| ステップ                               | 状態 | 詳細                                                                      |
+| -------------------------------------- | ---- | ------------------------------------------------------------------------- |
+| 1. 指示書作成                          | 完了 | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`     |
+| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-002 行を追加                                                      |
+| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加 |
 
 ### UT-9B-H-003: SkillCreator IPCセキュリティ強化
 
-| ステップ                               | 状態 | 詳細                                                                                |
-| -------------------------------------- | ---- | ----------------------------------------------------------------------------------- |
-| 1. 指示書作成                          | 完了 | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-security-hardening.md` |
-| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-003 行を追加                                                                |
-| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加           |
+| ステップ                               | 状態 | 詳細                                                                      |
+| -------------------------------------- | ---- | ------------------------------------------------------------------------- |
+| 1. 指示書作成                          | 完了 | `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md`       |
+| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-003 行を追加                                                      |
+| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加 |
 
 ### UT-9B-H-004: SkillCreator設計書-実装整合性修正
 
-| ステップ                               | 状態 | 詳細                                                                                             |
-| -------------------------------------- | ---- | ------------------------------------------------------------------------------------------------ |
-| 1. 指示書作成                          | 完了 | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-design-implementation-alignment.md` |
-| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-004 行を追加                                                                             |
-| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加                        |
+| ステップ                               | 状態 | 詳細                                                                             |
+| -------------------------------------- | ---- | -------------------------------------------------------------------------------- |
+| 1. 指示書作成                          | 完了 | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md` |
+| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-004 行を追加                                                             |
+| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加        |
 
 ### UT-9B-H-005: Preload API二重公開パターンの統一
 
-| ステップ                               | 状態 | 詳細                                                                                             |
-| -------------------------------------- | ---- | ------------------------------------------------------------------------------------------------ |
-| 1. 指示書作成                          | 完了 | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-api-dual-publishing-unification.md` |
-| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-005 行を追加                                                                             |
-| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加                        |
+| ステップ                               | 状態 | 詳細                                                                             |
+| -------------------------------------- | ---- | -------------------------------------------------------------------------------- |
+| 1. 指示書作成                          | 完了 | `docs/30-workflows/unassigned-task/task-9b-h-api-dual-publishing-unification.md` |
+| 2. task-workflow.md 残課題テーブル登録 | 完了 | UT-9B-H-005 行を追加                                                             |
+| 3. 関連仕様書に参照リンク追加          | 完了 | `interfaces-agent-sdk-skill.md` TASK-9B-Hセクションに未タスクテーブル追加        |
 
 ---
 
