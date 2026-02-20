@@ -265,14 +265,16 @@ await act(async () => {
 
 ### P23-P28 と実装パターンの対応表
 
-| Pitfall ID | タイトル             | 実装パターン参照                                                                                                                                                     | 関連Phase |
-| ---------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| P23        | API二重定義の型管理  | [S1: architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md#s1-api二重定義の型管理複雑性)     | Phase 5-9 |
-| P24        | Store型定義不統一    | S1と同上                                                                                                                                                             | Phase 6   |
-| P25        | OperationResult波及  | [S4: architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md#s4-operationresult廃止の影響波及) | Phase 5-8 |
-| P26        | safeInvoke学習コスト | [skill-creator/patterns.md](../skills/skill-creator/references/patterns.md)                                                                                          | Phase 12  |
-| P27        | ハードコード文字列   | [skill-creator/patterns.md](../skills/skill-creator/references/patterns.md)                                                                                          | Phase 12  |
-| P28        | 手動テスト確認漏れ   | -                                                                                                                                                                    | Phase 11  |
+| Pitfall ID | タイトル                      | 実装パターン参照                                                                                                                                                     | 関連Phase |
+| ---------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| P23        | API二重定義の型管理           | [S1: architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md#s1-api二重定義の型管理複雑性)     | Phase 5-9 |
+| P24        | Store型定義不統一             | S1と同上                                                                                                                                                             | Phase 6   |
+| P25        | OperationResult波及           | [S4: architecture-implementation-patterns.md](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md#s4-operationresult廃止の影響波及) | Phase 5-8 |
+| P26        | safeInvoke学習コスト          | [skill-creator/patterns.md](../skills/skill-creator/references/patterns.md)                                                                                          | Phase 12  |
+| P27        | ハードコード文字列            | [skill-creator/patterns.md](../skills/skill-creator/references/patterns.md)                                                                                          | Phase 12  |
+| P28        | 手動テスト確認漏れ            | -                                                                                                                                                                    | Phase 11  |
+| P44        | import/removeインターフェース | P23, P32, P42 の複合パターン（✅解決済み）                                                                                                                           | Phase 5   |
+| P45        | IPC引数命名の契約ドリフト     | P44 の派生パターン（✅解決済み）                                                                                                                                     | Phase 5   |
 
 ### P23: API 二重定義の型管理複雑性
 
@@ -348,27 +350,39 @@ await act(async () => {
 - **関連パターン**: P23（API二重定義の型管理複雑性）
 - **関連タスク**: UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH
 
-### P44: skill:import IPCハンドラとPreloadのインターフェース不整合
+### P44: skill:import/remove IPCハンドラとPreloadのインターフェース不整合
 
-- **教訓**: Main Processのハンドラが `{ skillIds: string[] }`（オブジェクト形式）を期待しているのに、Preload側（`skill-api.ts`）が単一の文字列 `skillName` を渡しているため、`args?.skillIds` が `undefined` となりバリデーションエラーが発生する。コンパイル時にはPreloadのモック化により検出されず、ランタイムで初めて顕在化する
-- **症状**: アプリ起動時に `Error occurred in handler for 'skill:import': { code: 'VALIDATION_ERROR', message: 'skillIds must be an array' }` が出力される
-- **原因**: ハンドラは「複数スキル一括インポート」を想定した `{ skillIds: string[] }` で設計されたが、Preload/Renderer側は「単一スキルインポート」として `string` を渡す設計になっており、インターフェース契約が乖離している
-- **解決策**: ハンドラ側の引数を `string`（単一スキル名）に変更し、内部で `[skillName]` として配列化する。または Preload 側を `{ skillIds: [skillName] }` に変更する。変更時は P23/P32 準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
-- **関連パターン**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）
-- **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001
+- **ステータス**: ✅ **解決済み**（UT-FIX-SKILL-IMPORT-INTERFACE-001 + UT-FIX-SKILL-REMOVE-INTERFACE-001、2026-02-20）
+- **教訓**: Main Processのハンドラがオブジェクト形式（`{ skillIds: string[] }` / `{ skillId: string }`）を期待しているのに、Preload側（`skill-api.ts`）が単一の文字列 `skillName` を渡しているため、`args?.skillIds` / `args?.skillId` が `undefined` となりバリデーションエラーが発生する。コンパイル時にはPreloadのモック化により検出されず、ランタイムで初めて顕在化する。skill:import と skill:remove で同一パターンの不整合が存在した
+- **症状**:
+  - skill:import: `Error occurred in handler for 'skill:import': { code: 'VALIDATION_ERROR', message: 'skillIds must be an array' }`
+  - skill:remove: `Error occurred in handler for 'skill:remove': { code: 'VALIDATION_ERROR', message: 'skillId is required' }`
+- **原因**: ハンドラは設計時にオブジェクト形式の引数で定義されたが、Preload/Renderer側は単一文字列を渡す設計になっており、インターフェース契約が乖離している。skill:import は「複数一括」想定の `{ skillIds: string[] }`、skill:remove は「ID指定」想定の `{ skillId: string }` で設計されたが、実際の呼び出し元は両方とも `string`（単一スキル名）を渡す
+- **解決策**: ハンドラ側の引数を `string`（単一スキル名）に変更し、P42準拠の3段バリデーション（型チェック → 空文字列 → トリム空文字列）を追加する。内部メソッドの引数名も `skillId` → `skillName` に統一する。変更時は P23/P32 準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
+- **関連パターン**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）、P45（引数命名の契約ドリフト）
+- **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001, UT-FIX-SKILL-REMOVE-INTERFACE-001
 
 ```typescript
-// ❌ 不整合：ハンドラは{ skillIds: string[] }を期待
+// ❌ skill:import 不整合：ハンドラは{ skillIds: string[] }を期待
 ipcMain.handle("skill:import", async (event, args: { skillIds: string[] }) => {
   if (!Array.isArray(args?.skillIds)) {
-    // args="my-skill" → args?.skillIds=undefined
     throw { code: "VALIDATION_ERROR", message: "skillIds must be an array" };
   }
 });
-// Preloadは文字列を渡す
-safeInvoke(IPC_CHANNELS.SKILL_IMPORT, skillName); // "my-skill"
 
-// ✅ 修正案：ハンドラをPreload側に合わせる
+// ❌ skill:remove 不整合：ハンドラは{ skillId: string }を期待
+ipcMain.handle("skill:remove", async (event, args: { skillId: string }) => {
+  if (typeof args?.skillId !== "string") {
+    throw { code: "VALIDATION_ERROR", message: "skillId is required" };
+  }
+  return skillService.removeSkill(args.skillId);
+});
+
+// Preloadは両方とも文字列を渡す
+safeInvoke(IPC_CHANNELS.SKILL_IMPORT, skillName); // "my-skill"
+safeInvoke(IPC_CHANNELS.SKILL_REMOVE, skillName); // "my-skill"
+
+// ✅ 修正後：ハンドラをPreload側に合わせ、P42準拠3段バリデーション
 ipcMain.handle("skill:import", async (event, skillName: string) => {
   if (typeof skillName !== "string" || skillName.trim() === "") {
     throw {
@@ -378,6 +392,37 @@ ipcMain.handle("skill:import", async (event, skillName: string) => {
   }
   return skillService.importSkills([skillName]);
 });
+
+ipcMain.handle("skill:remove", async (event, skillName: string) => {
+  if (typeof skillName !== "string" || skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  return skillService.removeSkill(skillName);
+});
+```
+
+### P45: IPC引数命名の契約ドリフト（skillId vs skillName）
+
+- **教訓**: IPCハンドラの引数名が `skillId` として定義されているのに、実際に渡される値はスキルの「名前」（`skillName`）であった。命名と実態の乖離により、IDベースの検索ロジックと名前ベースの検索ロジックが混在し、コードの可読性と保守性が低下する。skill:remove では `{ skillId: string }` という引数名だったが、実際の値はスキル名（例: `"my-skill"`）であり、内部メソッド（`SkillService.removeSkill` / `SkillImportManager.removeSkill`）でもパラメータ名が `skillId` のまま使用されていた
+- **症状**: コードレビューで「IDを渡しているのか名前を渡しているのか」が不明確になり、将来のスキル検索ロジック変更時に誤った前提で実装するリスクがある
+- **解決策**: ハンドラ、サービス、マネージャーの全レイヤーで引数名を `skillName` に統一する。命名規約として「実際の値のセマンティクスに合致する引数名」を使用する
+- **再発防止**: 新規IPCハンドラ作成時は、Preload側で渡す値のセマンティクスと一致する引数名を使用する。`grep -rn "skillId" apps/desktop/src/main/` で命名不一致箇所を定期的に検出する
+- **関連パターン**: P44（skill:import/remove IPCインターフェース不整合）
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
+
+```typescript
+// ❌ 命名ドリフト：引数名はskillIdだが実際の値はスキル名
+async removeSkill(skillId: string): Promise<RemoveResult> {
+  const removed = this.importedIds.has(skillId); // skillIdは実はskillName
+}
+
+// ✅ 修正後：セマンティクスに一致する命名
+async removeSkill(skillName: string): Promise<RemoveResult> {
+  const removed = this.importedIds.has(skillName);
+}
 ```
 
 ### P28: 手動テストでの削除確認忘れ

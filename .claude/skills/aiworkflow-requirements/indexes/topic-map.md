@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-19
+> 自動生成: 2026-02-20
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -166,16 +166,16 @@ node scripts/list-specs.js --topics
 | デスクトップ（Electron）実装パターン | L184 |
 | パフォーマンス最適化パターン | L599 |
 | セキュリティ実装パターン | L637 |
-| テスト実装パターン | L742 |
-| アクセシビリティ実装パターン | L1161 |
-| 関連ドキュメント | L1186 |
-| スキル作成実装パターン（TASK-9B-G） | L1198 |
-| 外部API データ正規化パターン | L1322 |
-| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1361 |
-| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1423 |
-| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1477 |
-| SkillEditor 実装パターン（TASK-9A-C spec_created） | L1573 |
-| 変更履歴 | L1633 |
+| テスト実装パターン | L800 |
+| アクセシビリティ実装パターン | L1246 |
+| 関連ドキュメント | L1271 |
+| スキル作成実装パターン（TASK-9B-G） | L1283 |
+| 外部API データ正規化パターン | L1407 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1446 |
+| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1508 |
+| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1562 |
+| SkillEditor 実装パターン（TASK-9A-C spec_created） | L1658 |
+| 変更履歴 | L1718 |
 
 ### references/architecture-monorepo.md
 
@@ -267,18 +267,18 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L655 |
-| SkillSlice型定義（TASK-6-1） | L707 |
-| ModifierSkill（スライド逆同期機能） | L799 |
-| ChatPanel統合（TASK-7D） | L833 |
-| SkillFileManager（TASK-9A-A） | L868 |
-| テストアーキテクチャ（TASK-8C-A） | L956 |
-| 完了タスク | L1008 |
-| 関連ドキュメント | L1226 |
-| SkillCreatorService（TASK-9B-G） | L1239 |
-| 完了タスク | L1487 |
-| SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1570 |
-| 変更履歴 | L1613 |
+| SkillImportStore（TASK-2B） | L663 |
+| SkillSlice型定義（TASK-6-1） | L715 |
+| ModifierSkill（スライド逆同期機能） | L807 |
+| ChatPanel統合（TASK-7D） | L841 |
+| SkillFileManager（TASK-9A-A） | L876 |
+| テストアーキテクチャ（TASK-8C-A） | L964 |
+| 完了タスク | L1016 |
+| 関連ドキュメント | L1234 |
+| SkillCreatorService（TASK-9B-G） | L1247 |
+| 完了タスク | L1495 |
+| SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1605 |
+| 変更履歴 | L1656 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -637,7 +637,7 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L356 |
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L368 |
 | 完了タスク | L424 |
-| 変更履歴 | L435 |
+| 変更履歴 | L444 |
 
 ### references/api-ipc-auth.md
 
@@ -794,9 +794,9 @@ node scripts/list-specs.js --topics
 | アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L552 |
 | SkillStreamingView コンポーネント（TASK-7D） | L563 |
 | SkillEditor UI（TASK-9A-C / 仕様書作成済み） | L607 |
-| 完了タスク | L724 |
-| 関連ドキュメント | L739 |
-| 変更履歴 | L762 |
+| 完了タスク | L732 |
+| 関連ドキュメント | L747 |
+| 変更履歴 | L770 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1001,8 +1001,8 @@ node scripts/list-specs.js --topics
 | 実装例: slideSettingsAPI | L133 |
 | 実装例: skillCreatorAPI | L182 |
 | 実装例: skillFileAPI（TASK-9A-B） | L284 |
-| 自動更新のセキュリティ | L348 |
-| 関連ドキュメント | L359 |
+| 自動更新のセキュリティ | L357 |
+| 関連ドキュメント | L368 |
 
 ### references/security-implementation.md
 
@@ -1062,15 +1062,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
 | スキル管理IPCセキュリティ | L16 |
-| スキルインポートIPCチャネル（TASK-4-1） | L65 |
-| Claude Code CLI連携セキュリティ | L110 |
-| Skill Execution Preload API セキュリティ | L171 |
-| Permission IPC Handler セキュリティ | L216 |
-| SkillAPI Preload実装（TASK-5-1） | L252 |
-| 完了タスク | L318 |
-| 残課題 | L361 |
-| 関連ドキュメント | L373 |
-| 変更履歴 | L384 |
+| スキルインポートIPCチャネル（TASK-4-1） | L67 |
+| Claude Code CLI連携セキュリティ | L112 |
+| Skill Execution Preload API セキュリティ | L173 |
+| Permission IPC Handler セキュリティ | L218 |
+| SkillAPI Preload実装（TASK-5-1） | L254 |
+| 完了タスク | L320 |
+| 残課題 | L363 |
+| 関連ドキュメント | L375 |
+| 変更履歴 | L386 |
 
 ---
 
@@ -1286,9 +1286,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Environment Backend サービス | L18 |
-| スキル管理サービス | L85 |
-| 関連ドキュメント | L489 |
+| Environment Backend サービス | L19 |
+| スキル管理サービス | L86 |
+| 関連ドキュメント | L490 |
 
 ### references/arch-feature-addition.md
 
@@ -1478,24 +1478,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L48 |
-| 関連ドキュメント | L125 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L131 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L135 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L136 |
-| TASK-FIX-14-1: console → electron-log 移行 | L210 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L314 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L460 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L515 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L797 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L885 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1104 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1251 |
-| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1358 |
-| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1432 |
-| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1549 |
-| テンプレート（新規教訓追加用） | L1597 |
-| 品質チェックリスト | L1669 |
+| 目次 | L53 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L153 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L212 |
+| 関連ドキュメント | L351 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L361 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L538 |
+| TASK-FIX-14-1: console → electron-log 移行 | L596 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L700 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L846 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L901 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1183 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L1271 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1490 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1637 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L1744 |
+| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L1818 |
+| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L1935 |
+| テンプレート（新規教訓追加用） | L1983 |
 
 ### references/llm-embedding.md
 
@@ -1837,9 +1837,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L652 |
-| 関連ドキュメント | L746 |
-| 変更履歴 | L756 |
+| 残課題（未タスク） | L685 |
+| 関連ドキュメント | L788 |
+| 変更履歴 | L798 |
 
 ### references/testing-accessibility.md
 

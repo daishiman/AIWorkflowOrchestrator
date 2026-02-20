@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-02-20: UT-FIX-SKILL-REMOVE-INTERFACE-001 未タスク配置整合 + 教訓追記
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-SKILL-REMOVE-INTERFACE-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: 未タスク参照パス是正、苦戦箇所追記 |
+| 対象ファイル | references/task-workflow.md, references/api-ipc-agent.md, references/lessons-learned.md |
+| 結果         | success |
+| 備考         | 未実施タスク参照を `docs/30-workflows/unassigned-task/` に統一。`lessons-learned.md` v1.17.0 に `skillId/skillName` 契約ドリフト、未タスク配置ドリフト、Vitest実行コンテキスト差異を追加 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| task-workflow.md | v1.43.0 | 未実施タスク参照を `unassigned-task/` に統一 |
+| api-ipc-agent.md | v1.10.0 | UT-9A-B派生未タスクの指示書参照パスを統一 |
+| lessons-learned.md | v1.17.0 | 苦戦箇所3件 + 5ステップ解決手順を追加 |
+
+---
+
 ## 2026-02-19: TASK-9A-C SkillEditor UI仕様書作成反映
 
 | 項目         | 内容 |
@@ -4022,6 +4043,17 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
   - `docs/30-workflows/skill-import-agent-system/` 配下の `TASK-9A-C` 参照を `completed-task/` に統一
   - Phase 12成果物（implementation-guide/component-documentation/documentation-changelog/unassigned-task-detection/skill-feedback-report）を追加
   - `verify-unassigned-links.js` の参照切れ（TASK-FIX-14-2）を解消
+
+## 2026-02-20
+
+- UT-FIX-SKILL-REMOVE-INTERFACE-001: Phase 12 システム仕様反映
+  - `task-workflow.md`: UT-FIX-SKILL-REMOVE-INTERFACE-001 を完了化（取り消し線 + 完了日）し、参照先を `tasks/completed-task/` へ移管
+  - `task-workflow.md`: UT-FIX-SKILL-IMPORT-INTERFACE-001 の参照先を `skill-import-agent-system/tasks/00-...` へ修正
+  - `interfaces-agent-sdk-skill.md`: `skill:remove` の `skillName: string` 契約・バリデーション・完了記録を追加
+  - `api-ipc-agent.md`: 完了タスク記録に UT-FIX-SKILL-REMOVE-INTERFACE-001 を追加
+  - `arch-electron-services.md`: IPC/Service API の `skill:remove` 引数名を `skillName` へ更新
+  - `security-skill-ipc.md`: `skill:remove` の検証要件を `skillName` 非空文字列（trim含む）へ更新
+  - `generate-index.js` 実行で `indexes/topic-map.md` / `indexes/keywords.json` を再生成
 
 
 ---

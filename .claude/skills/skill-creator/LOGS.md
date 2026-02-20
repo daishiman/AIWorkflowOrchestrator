@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-20 - UT-FIX-SKILL-REMOVE-INTERFACE-001 unassigned-path drift pattern sync]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.mdに Phase 12成功パターン「未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）」を追加。クイックナビゲーションへ反映し、失敗パターン「未実施タスクの completed-tasks 配置混入」を明文化。
+
+---
+
 ## [2026-02-19 - TASK-9A-C Phase 12 status judgment pattern sync]
 
 - **Agent**: skill-creator (update)

@@ -177,6 +177,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
+- [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）

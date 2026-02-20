@@ -100,7 +100,7 @@ SkillCreator IPCハンドラー（`skillCreatorHandlers.ts`）に対して、3�
 
 | 資料                       | パス                                                                                        | 参照目的                           |
 | -------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------- |
-| タスク指示書               | `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-security-hardening.md`         | タスク要件の正本                   |
+| タスク指示書               | `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md`                         | タスク要件の正本                   |
 | Electronセキュリティルール | `.claude/rules/04-electron-security.md`                                                     | IPCセキュリティ原則                |
 | IPC セキュリティ仕様       | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                | IPC 3層セキュリティ定義            |
 | 実装パターン仕様           | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | IPC実装パターンと設計整合性        |

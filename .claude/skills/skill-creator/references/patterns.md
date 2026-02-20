@@ -10,10 +10,9 @@
 | ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗 |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定** |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング** | ハードコード文字列発見                                 |
+| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入** |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）** | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）** |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計** | -                                                      |
@@ -114,6 +113,18 @@
 - **適用条件**: 未タスクを起票した機能タスクが完了し、Phase 12の文書化を実施するタイミング
 - **発見日**: 2026-02-12
 - **関連タスク**: UT-9B-H-003
+
+### [Phase12] 未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）
+
+- **状況**: 未実施タスク指示書が `docs/30-workflows/completed-tasks/unassigned-task/` に残り、`task-workflow.md` / 関連仕様書リンクと不整合になる
+- **アプローチ**:
+  - `completed-tasks/unassigned-task/` 配下の指示書をステータスで分類し、`未着手|未実施|進行中` は `docs/30-workflows/unassigned-task/` に配置
+  - `task-workflow.md` と関連仕様（例: `api-ipc-agent.md`）の参照を `docs/30-workflows/unassigned-task/` に統一
+  - `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` 実行でリンク整合を検証
+- **結果**: 未タスク台帳と物理配置が一致し、Phase 12監査時の誤判定を防止
+- **適用条件**: 未タスク再監査、完了済み移管作業、参照修正を同時に行うPhase 12
+- **発見日**: 2026-02-20
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
 
 ### [Architecture] 既存アダプターパターンの活用（新規API統合時）
 
@@ -794,6 +805,24 @@
 - **関連タスク**: TASK-FIX-10-1-VITEST-ERROR-HANDLING
 - **クロスリファレンス**: [quality-requirements.md](../../aiworkflow-requirements/references/quality-requirements.md#未処理promise拒否検知ルールtask-fix-10-1-2026-02-19実装)
 
+### [IPC] IPC契約ドリフト防止パターン（3箇所同時更新）（UT-FIX-SKILL-REMOVE-INTERFACE-001）
+
+- **状況**: Main Process の IPC ハンドラと Preload API の引数インターフェースが乖離し、ランタイムでバリデーションエラーが発生（P44パターン）
+- **アプローチ**:
+  1. **契約の正本を特定**: Preload側（`skill-api.ts`）の呼び出しシグネチャを「正」と定義し、ハンドラ側を合わせる
+  2. **3箇所同時更新**: ハンドラ（`skillHandlers.ts`）・Preload API（`skill-api.ts`）・テスト（`*.test.ts`）を1コミットで更新
+  3. **引数命名統一**: `skillId` / `skillIds` / `skillName` の混在を排除し、全レイヤーで `skillName: string` に統一
+  4. **P42準拠バリデーション**: 3段バリデーション（`typeof === "string"` → `=== ""` → `.trim() === ""`）を全ハンドラに適用
+  5. **横断検証**: `grep -rn "skillId\b" apps/desktop/src/main/` で同一パターンの残存を検出
+- **結果**: skill:import と skill:remove の両チャンネルでインターフェース不整合を解消。同一パターンの横断的修正を実現
+- **適用条件**: IPC ハンドラの引数変更、新規 IPC チャンネル追加、既存ハンドラのバリデーション修正
+- **発見日**: 2026-02-20
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001, UT-FIX-SKILL-IMPORT-INTERFACE-001
+- **クロスリファレンス**:
+  - [06-known-pitfalls.md#P44](../../.claude/rules/06-known-pitfalls.md) - インターフェース不整合の教訓
+  - [ipc-contract-checklist.md](../../aiworkflow-requirements/references/ipc-contract-checklist.md) - IPC修正時チェックリスト
+  - [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md) - IPCセキュリティ仕様
+
 ### [Phase12] 未タスク検出の2段階判定（raw→実タスク候補）
 
 - **状況**: `detect-unassigned-tasks.js` が仕様書本文の説明用 TODO まで大量検出し、未タスク件数を過大評価しやすい
@@ -925,6 +954,23 @@
 - **対策**: 未タスク作成時に配置ディレクトリを明示的に確認するチェックリスト項目を追加
 - **発見日**: 2026-02-12
 - **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+
+### [IPC] IPC契約ドリフト（Handler/Preload引数不整合）（UT-FIX-SKILL-REMOVE-INTERFACE-001）
+
+- **状況**: ハンドラ側がオブジェクト形式（`{ skillId: string }`）を期待し、Preload側が文字列（`skillName`）を渡すインターフェース不整合
+- **問題**: ランタイムで `args?.skillId` が `undefined` となり、バリデーションエラーが発生。コンパイル時はPreloadのモック化で検出されない
+- **原因**:
+  - ハンドラ設計時とPreload設計時で異なる想定（オブジェクト形式 vs 単一引数）を前提とした
+  - 引数の命名も乖離（`skillId` / `skillIds` / `skillName`）
+  - TypeScript型チェックがPreloadとMain Processの境界を超えないため、コンパイル時に検出されない
+- **教訓**:
+  - IPC チャンネルの設計時に「引数の正本」をPreload側に定義し、ハンドラはPreloadに合わせる
+  - 引数名はレイヤー間で統一する（`skillName` ならハンドラも `skillName`）
+  - ハンドラ修正時は必ず [IPC契約チェックリスト](../../aiworkflow-requirements/references/ipc-contract-checklist.md) を実行
+- **対策**: 3箇所同時更新チェックリスト（ハンドラ・Preload API・テスト）をIPC修正の必須手順とする
+- **発見日**: 2026-02-20
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001, UT-FIX-SKILL-IMPORT-INTERFACE-001
+- **関連Pitfall**: P23, P32, P42, P44
 
 ### [Phase12] 未タスクraw検出の誤読（TASK-FIX-11-1）
 

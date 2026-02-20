@@ -54,7 +54,7 @@ Phase 8のリファクタリング時に「未タスク化候補」として以�
 ## 配置確認（未タスク指示書）
 
 - `docs/30-workflows/unassigned-task/` には未完了タスクのみを配置する運用とする。
-- 完了済みの `UT-9B-H-003` 指示書は `docs/30-workflows/completed-tasks/unassigned-task/task-9b-h-security-hardening.md` へ移管済み。
+- 完了済みの `UT-9B-H-003` 指示書は `docs/30-workflows/unassigned-task/task-9b-h-security-hardening.md` へ移管済み。
 
 ## 完了条件チェック
 
