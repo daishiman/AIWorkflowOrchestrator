@@ -348,6 +348,38 @@ await act(async () => {
 - **関連パターン**: P23（API二重定義の型管理複雑性）
 - **関連タスク**: UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH
 
+### P44: skill:import IPCハンドラとPreloadのインターフェース不整合
+
+- **教訓**: Main Processのハンドラが `{ skillIds: string[] }`（オブジェクト形式）を期待しているのに、Preload側（`skill-api.ts`）が単一の文字列 `skillName` を渡しているため、`args?.skillIds` が `undefined` となりバリデーションエラーが発生する。コンパイル時にはPreloadのモック化により検出されず、ランタイムで初めて顕在化する
+- **症状**: アプリ起動時に `Error occurred in handler for 'skill:import': { code: 'VALIDATION_ERROR', message: 'skillIds must be an array' }` が出力される
+- **原因**: ハンドラは「複数スキル一括インポート」を想定した `{ skillIds: string[] }` で設計されたが、Preload/Renderer側は「単一スキルインポート」として `string` を渡す設計になっており、インターフェース契約が乖離している
+- **解決策**: ハンドラ側の引数を `string`（単一スキル名）に変更し、内部で `[skillName]` として配列化する。または Preload 側を `{ skillIds: [skillName] }` に変更する。変更時は P23/P32 準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
+- **関連パターン**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）
+- **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001
+
+```typescript
+// ❌ 不整合：ハンドラは{ skillIds: string[] }を期待
+ipcMain.handle("skill:import", async (event, args: { skillIds: string[] }) => {
+  if (!Array.isArray(args?.skillIds)) {
+    // args="my-skill" → args?.skillIds=undefined
+    throw { code: "VALIDATION_ERROR", message: "skillIds must be an array" };
+  }
+});
+// Preloadは文字列を渡す
+safeInvoke(IPC_CHANNELS.SKILL_IMPORT, skillName); // "my-skill"
+
+// ✅ 修正案：ハンドラをPreload側に合わせる
+ipcMain.handle("skill:import", async (event, skillName: string) => {
+  if (typeof skillName !== "string" || skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  return skillService.importSkills([skillName]);
+});
+```
+
 ### P28: 手動テストでの削除確認忘れ
 
 - **教訓**: API 統一後、旧 API（`window.skillAPI`）が本当に削除されたかの手動確認を忘れがち。DevTools で `window.skillAPI === undefined` を確認する必要がある
