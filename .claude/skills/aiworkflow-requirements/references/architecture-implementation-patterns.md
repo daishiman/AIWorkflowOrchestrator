@@ -1655,10 +1655,71 @@ macOS の `activate` イベントでウィンドウを再作成する際に、`i
 
 ---
 
+## SkillEditor 実装パターン（TASK-9A-C spec_created）
+
+> **ステータス**: 仕様書作成済み（実装未着手）
+> TASK-9A-C で実装予定のパターンを事前定義する。
+
+### textareaベースコードエディターパターン
+
+外部ライブラリ（Monaco, CodeMirror等）を使用せず、HTML textarea要素でコード編集UIを実現するパターン。
+
+| 設定項目       | 値                 | 目的                               |
+| -------------- | ------------------ | ---------------------------------- |
+| `spellCheck`   | `false`            | コード入力時のスペルチェック抑制   |
+| `font-family`  | `monospace`        | 等幅フォントでコード可読性向上     |
+| `white-space`  | `pre`              | 空白文字・改行の保持               |
+| `tab-size`     | `2`                | インデント幅統一                   |
+
+**Tab→2スペース挿入**: `onKeyDown` で `key === 'Tab'` を検知し、`e.preventDefault()` 後にカーソル位置にスペース2個を挿入する。`selectionStart` / `selectionEnd` で挿入位置を制御。
+
+### FileTree内部状態管理パターン
+
+Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開状態を管理するパターン。
+
+| 状態               | 型                    | 管理方法   | 理由                                           |
+| ------------------ | --------------------- | ---------- | ---------------------------------------------- |
+| カテゴリ展開状態   | `Set<string>`         | `useState` | コンポーネント固有UI、P31無限ループ事前対策    |
+| 選択ファイルパス   | `string \| null`      | `useState` | エディター内ローカル状態                       |
+| ファイル内容       | `string`              | `useState` | IPC読み込み結果の一時保持                      |
+| 未保存フラグ       | `boolean`             | `useState` | 保存ボタンの有効/無効制御                      |
+
+**設計判断**: P31（Zustand Store Hooks無限ループ）の事前対策として、SkillEditorのすべての状態を `useState` で管理する。SkillEditorはモーダル的なコンポーネントであり、グローバル共有の必要がないため、この選択は妥当。
+
+### IPC連携ファイル編集パターン
+
+ファイルの読み込み・編集・保存をIPC経由で行うデータフローパターン。
+
+| ステップ | 処理                    | データフロー                        |
+| -------- | ----------------------- | ----------------------------------- |
+| 1        | ファイル選択            | ユーザークリック → setState(path)   |
+| 2        | ファイル読み込み        | readFile(skillName, path) → content |
+| 3        | コンテンツ表示          | setState(content) → textarea表示    |
+| 4        | 編集検知                | onChange → setState(newContent) + hasChanges=true |
+| 5        | 保存                    | writeFile(skillName, path, content) → hasChanges=false |
+
+**未保存検出**: `hasChanges` フラグで編集状態を追跡し、保存ボタンの有効/無効制御とEscape閉じる時の確認ダイアログ表示に使用。
+
+### Pitfall事前組み込みパターン
+
+仕様書段階で既知のPitfallを対策として組み込むアプローチ。
+
+| Pitfall | 対策                                          | 組み込み箇所                     |
+| ------- | --------------------------------------------- | -------------------------------- |
+| P31     | Zustand不使用、useState のみで状態管理        | 状態管理設計                     |
+| P39     | happy-dom環境では fireEvent を使用            | テスト設計                       |
+| P40     | `apps/desktop` ディレクトリからテスト実行     | テスト実行手順                   |
+
+**関連タスク**: TASK-9A-C（spec_created）
+**関連ドキュメント**: [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skilleditor-uitask-9a-c--仕様書作成済み)
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.25.0 | 2026-02-19 | TASK-9A-C: SkillEditor実装パターン追加（textareaベースコードエディター、FileTree内部状態管理、IPC連携ファイル編集、Pitfall事前組み込み） |
 | v1.24.0 | 2026-02-19 | TASK-9A-B: isKnownSkillFileError型ガードパターン追加、IPC3層テスト分離パターン追加（Unit 38 / Security 14 / Integration 13、カバレッジ Line 91.14% / Branch 93.93% / Function 100%） |
 | v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |
 | v1.23.0 | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止パターン追加（unregister→register、ipcMain.handle() vs on() 動作差異、セキュリティ考慮事項） |

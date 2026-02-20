@@ -6,13 +6,16 @@ phase: 9
 depends_on: [TASK-9A-B]
 parallel_with: []
 blocks: [TASK-10A]
-status: pending
+status: spec_created
 priority: high
 estimated_complexity: medium
 tags: [frontend, renderer, ui, editor]
+spec_dir: ../../TASK-9A-C-skill-editor-ui/
 ---
 
 # SkillEditor コンポーネント実装
+
+> **タスク仕様書**: [TASK-9A-C-skill-editor-ui/](../../TASK-9A-C-skill-editor-ui/) (Phase 1〜13)
 
 ## 概要
 

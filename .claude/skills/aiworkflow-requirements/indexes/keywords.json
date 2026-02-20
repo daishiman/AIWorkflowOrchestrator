@@ -1,8 +1,6 @@
 {
-  "generated": "2026-02-19T06:46:41.313Z",
-  "totalKeywords": 1144,
   "generated": "2026-02-19T13:31:48.308Z",
-  "totalKeywords": 1144,
+  "totalKeywords": 1151,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1027,6 +1025,7 @@
       "architecture-overview.md",
       "error-handling.md",
       "glossary.md",
+      "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-chat-history.md",
       "interfaces-rag-file-selection.md",
@@ -1354,6 +1353,23 @@
     "型統合パターン": [
       "architecture-implementation-patterns.md"
     ],
+    "SkillEditor": [
+      "architecture-implementation-patterns.md",
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "testing-component-patterns.md",
+      "ui-ux-feature-components.md"
+    ],
+    "spec": [
+      "architecture-implementation-patterns.md",
+      "interfaces-agent-sdk-skill.md",
+      "testing-component-patterns.md"
+    ],
+    "created": [
+      "architecture-implementation-patterns.md",
+      "interfaces-agent-sdk-skill.md",
+      "testing-component-patterns.md"
+    ],
     "モノレポ": [
       "architecture-monorepo.md",
       "directory-structure.md"
@@ -1506,7 +1522,8 @@
       "claude-code-agents-workflow.md"
     ],
     "Phase": [
-      "claude-code-agents-workflow.md"
+      "claude-code-agents-workflow.md",
+      "lessons-learned.md"
     ],
     "共通": [
       "claude-code-agents-workflow.md"
@@ -1658,7 +1675,8 @@
       "claude-code-skills-process.md"
     ],
     "scripts": [
-      "claude-code-skills-resources.md"
+      "claude-code-skills-resources.md",
+      "lessons-learned.md"
     ],
     "references": [
       "claude-code-skills-resources.md"
@@ -2749,6 +2767,31 @@
       "lessons-learned.md"
     ],
     "拒否検知の復元": [
+      "lessons-learned.md"
+    ],
+    "仕様書再監査": [
+      "lessons-learned.md"
+    ],
+    "準拠": [
+      "lessons-learned.md",
+      "ui-ux-design-principles.md"
+    ],
+    "プロジェクトルートの": [
+      "lessons-learned.md"
+    ],
+    "を参照": [
+      "lessons-learned.md"
+    ],
+    "MODULE": [
+      "lessons-learned.md"
+    ],
+    "NOT": [
+      "lessons-learned.md"
+    ],
+    "FOUND": [
+      "lessons-learned.md"
+    ],
+    "スキルディレクトリ内の": [
       "lessons-learned.md"
     ],
     "console": [
@@ -4107,9 +4150,6 @@
     "HIG": [
       "ui-ux-design-principles.md"
     ],
-    "準拠": [
-      "ui-ux-design-principles.md"
-    ],
     "向け": [
       "ui-ux-design-principles.md"
     ],
@@ -4180,6 +4220,9 @@
     "SkillStreamingView": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "仕様書作成済み": [
+      "ui-ux-feature-components.md"
     ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
