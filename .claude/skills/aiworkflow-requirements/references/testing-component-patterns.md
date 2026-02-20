@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.4.0
-> **更新日**: 2026-02-13
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT
+> **バージョン**: 1.5.0
+> **更新日**: 2026-02-19
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A-C
 
 ---
 
@@ -618,6 +618,75 @@ await Promise.all([
 
 ---
 
+## 11. SkillEditor テストパターン（TASK-9A-C spec_created）
+
+> **ステータス**: 仕様書作成済み（実装未着手）
+> TASK-9A-C のテスト実装時に適用する標準パターンを定義する。
+
+### textareaテスト
+
+textarea要素の値変更テストでは `fireEvent.change` を使用する（P39: happy-dom環境でのuserEvent非互換対策）。
+
+| テスト対象 | イベント | パターン |
+|-----------|----------|---------|
+| テキスト入力 | `fireEvent.change(textarea, { target: { value: 'new content' } })` | 値の直接設定 |
+| Tab挿入 | `fireEvent.keyDown(textarea, { key: 'Tab' })` | preventDefault確認 + スペース挿入 |
+| 読み取り専用 | `render(<SkillCodeEditor isReadOnly={true} />)` | textarea の `readOnly` 属性確認 |
+
+### IPC mockパターン
+
+`window.electronAPI.skill.readFile` / `writeFile` をモックし、IPC通信結果をシミュレートする。
+
+| モック対象 | 設定例 | 用途 |
+|-----------|--------|------|
+| `readFile` | `vi.fn().mockResolvedValue('file content')` | ファイル読み込み成功 |
+| `readFile`（エラー） | `vi.fn().mockRejectedValue(new Error('ENOENT'))` | ファイル未存在 |
+| `writeFile` | `vi.fn().mockResolvedValue(undefined)` | ファイル保存成功 |
+| `writeFile`（エラー） | `vi.fn().mockRejectedValue(new Error('EACCES'))` | 権限エラー |
+
+### ファイルツリーテスト
+
+`role="treeitem"` セレクタでツリーノードを検証する。
+
+| テスト対象 | セレクタ | 検証内容 |
+|-----------|---------|---------|
+| ツリー全体 | `screen.getByRole('tree')` | ツリー構造の存在確認 |
+| ファイルノード | `screen.getAllByRole('treeitem')` | ノード数・テキスト内容 |
+| ファイル選択 | `fireEvent.click(screen.getByRole('treeitem', { name: 'SKILL.md' }))` | 選択状態 + readFile呼び出し |
+
+### キーボードショートカットテスト
+
+`fireEvent.keyDown` でキーボードショートカットの動作を検証する。
+
+| ショートカット | テストコード | 検証内容 |
+|---------------|-------------|---------|
+| Cmd+S（保存） | `fireEvent.keyDown(document, { key: 's', metaKey: true })` | writeFile 呼び出し |
+| Escape（閉じる） | `fireEvent.keyDown(document, { key: 'Escape' })` | onClose コールバック |
+| Tab（スペース挿入） | `fireEvent.keyDown(textarea, { key: 'Tab' })` | 2スペース挿入 |
+
+### 非同期テスト
+
+IPC呼び出しの完了を待機するには `await act(async () => {...})` パターンを使用する（P39準拠）。
+
+| パターン | 用途 | 注意点 |
+|---------|------|--------|
+| `await act(async () => { fireEvent.click(el) })` | IPC呼び出しトリガー後の状態更新待機 | happy-dom環境必須 |
+| `await waitFor(() => { expect(mockReadFile).toHaveBeenCalled() })` | IPC呼び出し完了確認 | タイムアウト設定に注意 |
+| `await act(async () => { fireEvent.keyDown(document, { key: 's', metaKey: true }) })` | 保存ショートカット後の状態更新 | hasChanges フラグ確認 |
+
+### テスト環境要件
+
+| 要件 | 設定値 |
+|------|--------|
+| テスト環境 | `@vitest-environment happy-dom` |
+| イベント発火 | `fireEvent`（`userEvent` 使用禁止、P39） |
+| 実行ディレクトリ | `apps/desktop/` 配下（P40対策） |
+| IPC mock | `window.electronAPI.skill.readFile` / `writeFile` を `vi.fn()` でモック |
+
+**関連タスク**: TASK-9A-C（spec_created）
+
+---
+
 ## 参照
 
 - **テストフィクスチャ**: [testing-fixtures.md](testing-fixtures.md)
@@ -641,6 +710,7 @@ await Promise.all([
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.5.0   | 2026-02-19 | TASK-9A-C: SkillEditorテストパターン追加（textareaテスト、IPC mockパターン、ファイルツリーテスト、キーボードショートカットテスト、非同期テスト）。spec_created（実装未着手）を明記 |
 | 1.4.0   | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: Main Process SDKテスト有効化パターンを追加（mockRejectedValueOnce、beforeEach再設定、Fake Timersタイムアウト検証、モジュールモック時の直接エラー注入） |
 | 1.3.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Store Hooksテストパターンセクション追加（renderHook 6パターン、テスト環境要件、選択基準、テスト実績） |
 | 1.2.0   | 2026-02-07 | TASK-FIX-4-2: テストファイル分離パターンセクション追加（永続化・エラー・境界値テスト分離） |

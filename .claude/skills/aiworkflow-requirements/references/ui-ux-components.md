@@ -47,6 +47,7 @@
 | DiffPreview | Issue #468 | 差分プレビューモーダル |
 | SkillStreamDisplay | TASK-3-2 | スキル実行ストリーム表示 |
 | SkillImportDialog | TASK-7B | スキルインポート確認ダイアログ |
+| SkillEditor | TASK-9A-C | スキルファイル編集UI（仕様書作成済み） |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
 
@@ -130,6 +131,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | #606 | PermissionDialogリスクレベル・セキュリティメタデータ表示 | 2026-01-31 |
 | task-imp-permission-date-filter | 期間別フィルタリング（PermissionHistoryFilter拡張） | 2026-02-02 |
 | TASK-8B | コンポーネントテスト（全4コンポーネント、280テスト） | 2026-02-02 |
+| TASK-9A-C | SkillEditor UI（仕様書作成済み・実装待ち） | 2026-02-19 |
 
 ---
 
@@ -137,6 +139,8 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.9.1   | 2026-02-19 | TASK-9A-C: Phase 12準拠監査レポートへの参照を追加（監査済み状態を明確化） |
+| 2.9.0   | 2026-02-19 | TASK-9A-C反映: SkillEditorを主要UIコンポーネント一覧・完了タスク表に追加（仕様書作成済み状態を明記） |
 | 2.8.0   | 2026-02-02 | 両ブランチ統合: task-imp-permission-date-filter完了+TASK-8B完了 |
 | 2.7.0   | 2026-02-02 | task-imp-permission-date-filter完了（期間フィルタ拡張）、TASK-8B完了（280テスト） |
 | 2.6.0   | 2026-01-31 | task-imp-permission-tool-metadata-001完了タスク追加（PermissionDialogリスクレベル・セキュリティメタデータ表示、toolMetadata統合） |
@@ -155,5 +159,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 - [アーキテクチャパターン](./architecture-patterns.md)
 - [History Panel UI仕様](./ui-ux-history-panel.md)
+- [TASK-9A-C 実装ガイド](../../../../docs/30-workflows/TASK-9A-C-skill-editor-ui/outputs/phase-12/implementation-guide.md)
+- [TASK-9A-C Phase 12準拠監査](../../../../docs/30-workflows/TASK-9A-C-skill-editor-ui/outputs/phase-12/phase12-compliance-audit.md)
 - [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)
 - [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md)

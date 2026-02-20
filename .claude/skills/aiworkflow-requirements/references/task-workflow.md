@@ -683,7 +683,8 @@
 
 | タスクID                                   | タスク名                                              | 優先度 | 発見元                                                         | タスク仕様書                                                                               |
 | ------------------------------------------ | ----------------------------------------------------- | ------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低 | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目） | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md` |
+| TASK-9A-C                                          | SkillEditor UI（仕様書作成済み・実装未着手）          | 高     | TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）               | `docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/` (**spec_created**: Phase 1完了、Phase 2-13未着手) |
+| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低 | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目） | `docs/30-workflows/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md` |
 | TASK-3-1-B                                 | SkillExecutor IPC Handler統合                         | 高     | TASK-3-1-A完了時（blocks）                                     | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md`            |
 | TASK-SKILL-PERF-TEST                       | SkillExecutor パフォーマンステスト                    | 低     | TASK-3-1-A Phase 11推奨事項                                    | `docs/30-workflows/unassigned-task/task-skillexecutor-performance-testing.md`              |
 | SKILL-E2E-001                              | スキルインポートE2Eテスト                             | 中     | Phase 11（手動テスト検証）推奨事項                             | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`                       |
@@ -765,6 +766,9 @@
 | UT-9A-B-001                                        | IPC入力バリデーション標準化                                            | 中     | TASK-9A-B Phase 12（未タスク検出）                                             | `docs/30-workflows/unassigned-task/task-ipc-validation-standardize-improvements.md`          |
 | UT-9A-B-002                                        | IPCエラーサニタイズ共通ユーティリティ化                                | 中     | TASK-9A-B Phase 12（未タスク検出）                                             | `docs/30-workflows/unassigned-task/task-ipc-error-sanitize-refactoring.md`                   |
 | UT-9A-B-003                                        | IPCテストhandlerMapモックユーティリティ共通化                          | 低     | TASK-9A-B Phase 12（未タスク検出）                                             | `docs/30-workflows/unassigned-task/task-ipc-test-mock-utils-improvements.md`                 |
+| TASK-9A-C-001                                      | SkillCodeEditor シンタックスハイライト機能                              | 中     | TASK-9A-C Phase 1（将来拡張ポイント: language prop）                           | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md`                         |
+| TASK-9A-C-002                                      | SkillEditor ファイル作成・削除機能（CRUD完全化）                       | 中     | TASK-9A-C Phase 1-2（スコープ外: readFile/writeFileのみ実装）                  | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md`                        |
+| TASK-9A-C-003                                      | SkillCodeEditor Monaco/CodeMirror エディタ移行                         | 低     | TASK-9A-C Phase 2（将来拡張ポイント: textarea→高機能エディタ）                 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md`                       |
 
 ### 未タスク管理ルール
 
@@ -788,7 +792,9 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                  |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.39.0     | 2026-02-19 | TASK-9A-C 未タスク3件登録（TASK-9A-C-001: シンタックスハイライト、TASK-9A-C-002: ファイルCRUD、TASK-9A-C-003: エディタ移行）。TASK-9A-Cを completed-tasks/ にパス更新。P3防止3ステップ完了 |
 | 1.39.0     | 2026-02-19 | 未タスク3件追加: UT-9A-B-001（IPC入力バリデーション標準化）、UT-9A-B-002（IPCエラーサニタイズ共通化）、UT-9A-B-003（IPCテストhandlerMapモック共通化）。TASK-9A-B Phase 12検出 |
+| 1.38.0     | 2026-02-19 | TASK-9A-C SkillEditor UI仕様書作成記録追加。残課題テーブルにTASK-9A-Cをspec_created（仕様書作成済み・実装未着手）として登録。仕様書パス: `docs/30-workflows/TASK-9A-C-skill-editor-ui/` |
 | 1.38.0     | 2026-02-19 | TASK-9A-B完了記録追加。スキルファイル操作IPCハンドラー6チャンネル実装（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、65テスト全PASS、カバレッジ Line 91.14% / Branch 93.93% / Function 100% |
 | 1.38.0     | 2026-02-19 | TASK-FIX-10-1-VITEST-ERROR-HANDLING完了記録を追加。dangerouslyIgnoreUnhandledErrors削除・Vitest alias 18件追加・新規テスト13件を反映。残課題に task-imp-vitest-alias-sync-automation-001 を登録。苦戦箇所と解決策（Step 2判定、未タスク検出範囲、参照整合）を追記 |
 | 1.37.0     | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001完了記録を追加。残課題テーブルで同タスクを完了マークし、MINOR由来の未タスク2件（UT-FIX-IPC-RESPONSE-UNWRAP-002/003）を登録 |
