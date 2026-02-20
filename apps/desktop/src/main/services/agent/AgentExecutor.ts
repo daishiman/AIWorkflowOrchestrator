@@ -81,10 +81,8 @@ export class AgentExecutor {
         },
       });
 
-      // ストリーミング処理
-      // @ts-expect-error - Claude Agent SDK型定義がインストール完了後に解決される
-      const stream = conversation.stream();
-      for await (const message of stream) {
+      // ストリーミング処理（Query自体がAsyncIterable）
+      for await (const message of conversation) {
         // キャンセルチェック
         if (this.abortController.signal.aborted) {
           this.sendStatus("cancelled");
