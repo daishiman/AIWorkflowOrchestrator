@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-21 - UT-FIX-SKILL-IMPORT-INTERFACE-001 Phase 12 step-sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md に Phase 12成功パターン「成果物ログとStep判定の同期（先送り禁止）」を追加。`system-docs-update-log.md` / `documentation-changelog.md` / `phase-12-documentation.md` の3点同時同期を標準手順化し、失敗パターン「Step2該当なし誤判定 / Phase 13先送り記載」を追記。
+
+---
+
 ## [2026-02-20 - UT-FIX-SKILL-REMOVE-INTERFACE-001 unassigned-path drift pattern sync]
 
 - **Agent**: skill-creator (update)

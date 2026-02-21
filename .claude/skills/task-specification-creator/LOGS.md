@@ -43,6 +43,32 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-21 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12再監査（worktree先送り誤判断是正）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新運用改善）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `spec-update-workflow.md` に誤判断パターン「worktree環境なのでStep 1-Aをマージ後対応」を追加し、Step 1-A必須を明文化
+  - `phase-11-12-guide.md` に未実施タスク誤配置検出コマンドを追記（`completed-tasks/unassigned-task` の未着手/未実施/進行中検出）
+  - `patterns.md` に成功パターン「worktreeでもStep 1-Aを先送りしない」を追加
+  - 実ワークツリーで未実施誤配置2件（`task-vitest-tsconfig-paths-sync-automation.md`, `task-imp-module-resolution-ci-guard.md`）を `unassigned-task/` へ是正し、`verify-unassigned-links.js` で整合確認
+
+---
+
+## [2026-02-21 - verify-all-specs 参照パス検証精度改善]
+
+- **Agent**: task-specification-creator
+- **Phase**: 検証スクリプト改善
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `scripts/verify-all-specs.js` のインラインコード抽出を単一行に限定し、改行またぎ誤検出を解消
+  - 参照パス存在判定を「workflow相対 + リポジトリ相対」の両方に拡張し、ワークフロー移動後の偽陽性を抑止
+  - `docs/30-workflows/ut-fix-skill-import-interface-001/` で再検証し、`--strict --json` で `errors=0/warnings=0/info=0` を確認
+
+---
 ## [2026-02-20 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12未タスク配置監査是正]
 
 - **Agent**: task-specification-creator
@@ -4024,3 +4050,61 @@ if (artifactPath) {
 
 - ステータス: success
 - 完了日時: 2026-02-20
+
+---
+
+## 2026-02-21 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 1-12全工程実行
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: UT-FIX-SKILL-REMOVE-INTERFACE-001
+- Phase: Phase 1-12 全工程実行（マルチエージェントチーム編成）
+
+### 実施内容
+
+- 5エージェントチーム（phase-1-3, phase-4-7, phase-8-10, phase-11, phase-12）を編成
+- Phase 1-12 の全成果物（22ファイル）を outputs/ 配下に生成
+- Phase 9 品質検証: ESLint 0件、TypeScript型エラー 0件、テスト全PASS
+- Phase 10 最終レビュー: PASS（7/7観点全PASS、指摘事項0件）
+- Phase 12 未タスク検出: 0件
+
+### 苦戦箇所（スキル改善へのフィードバック）
+
+1. Phase依存順序違反: 全エージェント並列ディスパッチでPhase 1-3完了前にPhase 4-7が先行完了 → ゲートPhase前後で並列化区間を分離すべき
+2. worktree環境でのPhase 11手動テスト不可 → 自動テスト代替手順をテンプレートに追加検討
+3. カバレッジ閾値解釈のあいまいさ → バグ修正タスクの判定基準をPhase 7テンプレートに明記検討
+
+### 結果
+
+- ステータス: success
+- 完了日時: 2026-02-21
+
+---
+
+## 2026-02-21 - UT-FIX-SKILL-IMPORT-INTERFACE-001 完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: UT-FIX-SKILL-IMPORT-INTERFACE-001
+- タスク名: skill:import IPCハンドラ・Preloadインターフェース不整合修正
+- Phase: 1-12 完了
+
+### 実施内容
+
+- Phase 1-12の全仕様書作成・実行完了（7並列エージェントで効率的に実行）
+- 成果物17ファイル＋検証レポート1ファイル生成
+- verify-all-specs.js: PASS（13/13 Phase, 0 errors, 0 warnings）
+- artifacts.json Phase 1-12 全てcompletedに更新
+
+### 苦戦箇所
+
+1. **並列エージェント完了待ち**: 7エージェント並列実行時のrate limit管理とタイムアウト
+2. **artifacts.json ステータス更新のタイミング**: complete-phase.js vs 手動更新の判断
+3. **コンテキスト消費**: 大量の仕様書ルールと参照資料によるコンテキスト圧迫
+
+### 結果
+
+- ステータス: success
+- テスト: 104件全PASS

@@ -20,6 +20,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-21 | 1.18.1 | UT-FIX-SKILL-IMPORT-INTERFACE-001 苦戦箇所2件追加（並列エージェント実行時のコンテキスト分離、completed-task配下のファイル移動時ステータス不整合） |
+| 2026-02-21 | 1.18.0 | UT-FIX-SKILL-IMPORT-INTERFACE-001 教訓追加（Phase 12ステータス未同期、旧参照パス残存、Vitest実行ディレクトリ差異）。同種課題向け簡潔解決手順を追加 |
+| 2026-02-21 | 1.17.4 | UT-FIX-SKILL-REMOVE-INTERFACE-001 に関連未タスク5件テーブルを追加。苦戦箇所から派生した UT-IMP-PHASE11-WORKTREE-PROTOCOL-001、UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001、UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 の3件と既存2件を統合 |
+| 2026-02-21 | 1.17.3 | UT-FIX-SKILL-REMOVE-INTERFACE-001 に苦戦箇所5-7を追加（マルチエージェントPhase実行の依存順序違反、worktree環境でのPhase 11手動テスト制約、カバレッジ閾値のスコープ解釈） |
+| 2026-02-21 | 1.17.2 | UT-FIX-SKILL-REMOVE-INTERFACE-001 に苦戦箇所4を追加（worktree環境でのStep 1-A先送り誤判断）。未実施タスク誤配置（completed-tasks/unassigned-task混在）の再発防止手順を追記 |
 | 2026-02-20 | 1.17.1 | UT-FIX-SKILL-REMOVE-INTERFACE-001 セクション品質向上: Before/Afterコード例追加、同種課題解決手順をチェックリスト形式に変更、予防策セクション追加、関連パターン相互参照テーブル追加（P23/P32/P42/P44/P3/P40） |
 | 2026-02-20 | 1.17.1 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 を強化: 苦戦箇所4,5追加（paths定義順序、4ファイル同期）、既存3件にコード例追加、「同種課題の簡潔解決手順（5ステップ）」セクション追加 |
 | 2026-02-20 | 1.17.0 | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所3件を追加（`skillId/skillName` 契約ドリフト、未タスク配置ドリフト、Vitest実行コンテキスト差異）。同種課題向け簡潔解決手順を追加 |
@@ -55,10 +60,19 @@
 
 ## 目次
 
+0. [UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正](#ut-fix-skill-import-interface-001-skillimport-インターフェース整合修正)
+   - [苦戦箇所1: Phase 12成果物と仕様書本体ステータスの不一致](#1-phase-12成果物と仕様書本体ステータスの不一致)
+   - [苦戦箇所2: ワークフロー移動後の旧参照パス残存](#2-ワークフロー移動後の旧参照パス残存)
+   - [苦戦箇所3: Vitest実行ディレクトリ差異による偽失敗](#3-vitest実行ディレクトリ差異による偽失敗)
+   - [同種課題の簡潔解決手順（5ステップ・import版）](#同種課題の簡潔解決手順5ステップimport版)
 0. [UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正](#ut-fix-skill-remove-interface-001-skillremove-インターフェース整合修正)
    - [苦戦箇所1: `skillId` / `skillName` 契約ドリフト](#1-skillid--skillname-契約ドリフト)
    - [苦戦箇所2: 未タスク配置ディレクトリのドリフト](#2-未タスク配置ディレクトリのドリフト)
    - [苦戦箇所3: Vitest実行コンテキスト差異](#3-vitest実行コンテキスト差異)
+   - [苦戦箇所4: worktree環境でのStep 1-A先送り誤判断](#4-worktree環境でのstep-1-a先送り誤判断)
+   - [苦戦箇所5: マルチエージェントPhase実行の依存順序違反](#5-マルチエージェントphase実行の依存順序違反)
+   - [苦戦箇所6: worktree環境でのPhase 11手動テスト制約](#6-worktree環境でのphase-11手動テスト制約)
+   - [苦戦箇所7: カバレッジ閾値のスコープ解釈](#7-カバレッジ閾値のスコープ解釈)
    - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ)
 0. [TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠）](#task-9a-c-skilleditor-仕様書再監査phase-12準拠)
    - [苦戦箇所1: tasks/completed-task 参照混在](#1-taskscompleted-task-参照混在)
@@ -157,6 +171,76 @@
    - [教訓3: IPC外リスナーの解除漏れを同時に防ぐ](#3-ipc外リスナーの解除漏れを同時に防ぐ)
 8. [関連ドキュメント](#関連ドキュメント)
 9. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+
+---
+
+## UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-SKILL-IMPORT-INTERFACE-001 |
+| 目的 | `skill:import` の IPC 契約を Main / Preload / 仕様書で一致させる |
+| 完了日 | 2026-02-21 |
+| ステータス | **完了** |
+| 関連Pitfall | P23, P42, P44, P40 |
+| テスト | `skillHandlers.test.ts` 52件PASS |
+
+### 苦戦箇所と解決策
+
+#### 1. Phase 12成果物と仕様書本体ステータスの不一致
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `outputs/phase-12/` が揃っていても `phase-12-documentation.md` が「未実施」のまま残った |
+| **原因** | 成果物作成を優先し、仕様書本体のステータス同期を後段に回した |
+| **解決策** | 成果物監査と同時に、`phase-12-documentation.md` のステータスと完了チェックリストを同期 |
+| **教訓** | Phase完了判定は「成果物」と「仕様書本体状態」を同時に満たす必要がある |
+
+#### 2. ワークフロー移動後の旧参照パス残存
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `skill-import-agent-system/tasks/00-...` 旧パスが Phase 1/2 に残存 |
+| **原因** | タスク指示書を `completed-task/` に移動後、参照一括更新が漏れた |
+| **解決策** | `rg` で旧パスを横断検出し、`completed-task/00-ut-fix-skill-import-interface-001.md` に統一 |
+| **教訓** | タスク移動時はリンク修正と `verify-all-specs` 再実行を同一ターンで実施する |
+
+#### 3. Vitest実行ディレクトリ差異による偽失敗
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | ルートからのVitest実行で alias 解決が崩れ、`handler not registered` の偽失敗が発生 |
+| **原因** | `apps/desktop` 前提の設定をルート実行で評価したため |
+| **解決策** | `apps/desktop` 作業ディレクトリで `pnpm vitest run src/main/ipc/__tests__/skillHandlers.test.ts` に統一 |
+| **教訓** | テストの実行場所は再現性要件。コマンドと実行ディレクトリを必ず記録する |
+
+#### 4. 並列エージェント実行時のコンテキスト分離
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 7エージェント並列実行では各エージェントが独立したコンテキストを持つため、Agent 4（コード変更）の結果をAgent 5-7（成果物生成）に自動伝達する仕組みがない |
+| **原因** | 並列エージェントはそれぞれ独立したプロンプトで起動されるため、先行エージェントの出力をリアルタイムに参照できない |
+| **解決策** | Agent 4（Phase 4-5: テスト+実装）完了後にAgent 5-7を起動し、Agent 4の変更内容（修正ファイルパス、テスト結果、主要な実装差分）をプロンプトに明示的に含める |
+| **教訓** | 並列エージェント設計では「コンテキスト伝達の境界」を事前に定義する。全並列投入ではなく、依存関係に基づいた段階的投入が品質を維持する |
+
+#### 5. completed-task配下のファイル移動時ステータス不整合
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | タスク指示書を `tasks/` から `completed-task/` に `mv` コマンドで移動した際、ファイル内のフロントマター `status` フィールドが `pending` のまま残った |
+| **原因** | `mv` コマンドはファイル内容を変更しないため、ディレクトリ構造上は「完了」配下にあるがメタデータは「未完了」という不整合が発生 |
+| **解決策** | ファイル移動時にフロントマターの `status` を `completed` に更新する。移動とステータス更新を同一ターンで実施する |
+| **教訓** | ファイル配置とメタデータは独立した情報源であるため、両方を同時に更新する必要がある。`mv` 後に `verify-all-specs` でフロントマターの整合性を検証する |
+
+### 同種課題の簡潔解決手順（5ステップ・import版）
+
+1. `git diff` で実装差分と Phase 成果物の対象を先に固定する。
+2. Phase仕様書本体のステータス/完了条件を成果物と同時に同期する。
+3. `rg` で旧参照パスを横断検出し、移管先へ統一する。
+4. テストは対象パッケージディレクトリで `vitest run` を実行し、実行場所を証跡化する。
+5. `verify-all-specs` と `verify-unassigned-links` を連続実行し、リンク・整合を最終確認する。
 
 ---
 
@@ -313,6 +397,53 @@ pnpm vitest run -t "SH-RM" src/main/ipc/__tests__/skillHandlers.test.ts
 
 **類似パターン**: P40（テスト実行ディレクトリ依存）
 
+#### 4. worktree環境でのStep 1-A先送り誤判断
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | worktreeで作業中という理由で、Phase 12 Task 2 Step 1-A（LOGS/SKILL/関連仕様更新）を「マージ後対応」に先送りし、仕様同期が不完全なまま残った |
+| **原因** | 「worktreeではスキル仕様書を更新しない」という誤った運用を採用し、spec-update-workflowの必須条件よりローカル判断を優先した |
+| **解決策** | worktreeでもStep 1-Aを通常通り実施。未実施タスク誤配置（`completed-tasks/unassigned-task/`）を是正し、`task-workflow.md` 参照を `unassigned-task/` へ同期。`verify-unassigned-links.js` で機械検証 |
+| **教訓** | 「作業場所（worktree）」はStep 1-A省略理由にならない。省略ではなく、同一ブランチで仕様更新まで完結させることが再発防止に直結する |
+
+**実行コマンド（再発防止用）**:
+
+```bash
+# 未実施タスクの誤配置を検出（completed配下に未着手/未実施が混在していないか）
+rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
+  docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
+
+# task-workflow.md の参照整合を検証
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+```
+
+#### 5. マルチエージェントPhase実行の依存順序違反
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 1-12を5エージェントに分割して全て並列ディスパッチした結果、Phase 4-7エージェントがPhase 1-3エージェントより先に完了した |
+| **原因** | 要件定義（Phase 1）→ 設計（Phase 2）→ レビュー（Phase 3）の成果物が、後続Phaseの前提条件として参照されるべきだった |
+| **解決策** | Phase依存チェーンを尊重し、ゲートPhase（Phase 3設計レビュー、Phase 10最終レビュー）の前後で並列化区間を分離する。推奨構成: [Phase 1→2→3] → [Phase 4→5→6→7] → [Phase 8→9→10] → [Phase 11] → [Phase 12] |
+| **教訓** | エージェントディスパッチ前にPhase依存チェーンを確認し、ゲートPhaseを跨ぐ並列化を禁止する |
+
+#### 6. worktree環境でのPhase 11手動テスト制約
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Git worktree環境ではElectronアプリを起動できないため、Phase 11（手動テスト）のUI操作テストが実行不可 |
+| **原因** | Phase 11仕様書が「Electronアプリ起動 → DevTools → 操作確認」を前提としている |
+| **解決策** | worktree環境では自動テスト（vitest）で代替し、制約を成果物に明記する。Electron起動テストはmainブランチマージ後に実施 |
+| **教訓** | Phase 11仕様書にworktree環境用の代替手順を明記する |
+
+#### 7. カバレッジ閾値のスコープ解釈
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `skillHandlers.ts` 全体のLine Coverage 45.14%（最低基準80%未満）だが、skill:remove固有のコード（行140-159）は全分岐カバー |
+| **原因** | Phase 7（カバレッジ確認）の判定基準が「ファイル全体」か「修正対象ハンドラ」かが仕様書上あいまい |
+| **解決策** | バグ修正タスクのカバレッジはファイル全体ではなく修正対象関数の分岐カバー率で判定する。ファイル全体のカバレッジは参考値として記録 |
+| **教訓** | Phase 7仕様書に「修正対象関数のBranch Coverage 100%」を必須条件として明記する |
+
 ### 同種課題の簡潔解決手順（チェックリスト形式）
 
 IPCインターフェース契約修正を行う場合、以下を順に実行する:
@@ -408,6 +539,16 @@ pnpm --filter @repo/shared build && pnpm typecheck
 | [P40: テスト実行ディレクトリ依存](../../../rules/06-known-pitfalls.md#p40) | Vitest実行コンテキスト | `apps/desktop` からの実行が必須 |
 
 > **統合チェックリスト**: 上記パターンを統合したIPC修正時の品質ゲートは [ipc-contract-checklist.md](./ipc-contract-checklist.md) を参照。
+
+### 関連未タスク
+
+| タスクID | タスク名 | 優先度 | 仕様書 |
+|---------|---------|--------|--------|
+| UT-FIX-SKILL-VALIDATION-P42-001 | skillHandlers P42準拠バリデーション横展開 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-validation-p42-standardization.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-validation-p42-standardization.md) |
+| UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-error-response-unification.md) |
+| UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md) |
+| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 | IPCハンドラ粒度カバレッジ計測インフラ構築 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md) |
+| UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md) |
 
 ---
 

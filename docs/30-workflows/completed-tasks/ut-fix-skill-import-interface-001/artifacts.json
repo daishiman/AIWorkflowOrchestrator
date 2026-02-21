@@ -1,0 +1,126 @@
+{
+  "taskId": "UT-FIX-SKILL-IMPORT-INTERFACE-001",
+  "taskName": "skill:import IPCハンドラ・Preloadインターフェース不整合修正",
+  "featureName": "ut-fix-skill-import-interface-001",
+  "createdAt": "2026-02-21",
+  "lastUpdated": "2026-02-21",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "artifacts": ["outputs/phase-1/requirements.md"],
+      "dependsOn": []
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "artifacts": ["outputs/phase-2/architecture-design.md"],
+      "dependsOn": ["phase-1"]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/review-summary.md"],
+      "dependsOn": ["phase-2"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "artifacts": [
+        "apps/desktop/src/main/ipc/__tests__/skillHandlers.test.ts"
+      ],
+      "dependsOn": ["phase-3"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "artifacts": ["apps/desktop/src/main/ipc/skillHandlers.ts"],
+      "dependsOn": ["phase-4"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "artifacts": [
+        "apps/desktop/src/main/ipc/__tests__/skillHandlers.test.ts"
+      ],
+      "dependsOn": ["phase-5"]
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "artifacts": ["outputs/phase-7/coverage-report.md"],
+      "dependsOn": ["phase-6"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"],
+      "dependsOn": ["phase-7"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "artifacts": ["outputs/phase-9/quality-report.md"],
+      "dependsOn": ["phase-8"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": ["outputs/phase-10/final-review-report.md"],
+      "dependsOn": ["phase-9"]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/auto-test-result.md",
+        "outputs/phase-11/ui-import-test-result.md",
+        "outputs/phase-11/devtools-test-result.md",
+        "outputs/phase-11/console-log-check-result.md",
+        "outputs/phase-11/side-effect-check-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ],
+      "dependsOn": ["phase-10"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-docs-update-log.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ],
+      "dependsOn": ["phase-11"]
+    },
+    "phase-13": {
+      "name": "完了・PR準備",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/ci-result.md"
+      ],
+      "dependsOn": ["phase-12"]
+    }
+  },
+  "relatedPatterns": ["P23", "P32", "P42", "P44", "P45"],
+  "relatedTasks": [
+    "UT-FIX-SKILL-REMOVE-INTERFACE-001",
+    "UT-FIX-SKILL-IMPORT-RETURN-TYPE-001"
+  ]
+}

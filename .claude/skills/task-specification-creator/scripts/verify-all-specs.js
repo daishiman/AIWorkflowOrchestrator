@@ -301,14 +301,24 @@ function verifyConsistency(phaseNum, content, workflowDir) {
   }
 
   // 参照パスの存在確認
-  const pathMatches = content.match(/`[^`]*(?:outputs|phase-\d+)[^`]*`/g) || [];
+  // インラインコード内のパスのみを対象にする（改行をまたぐ誤検出を防止）
+  const pathMatches =
+    content.match(/`[^`\n]*(?:outputs|phase-\d+)[^`\n]*`/g) || [];
   for (const pathMatch of pathMatches) {
     const cleanPath = pathMatch.replace(/`/g, "");
-    const fullPath = path.join(workflowDir, cleanPath);
     // outputsディレクトリ内のパスは生成前なのでスキップ
     if (!cleanPath.startsWith("outputs/")) {
-      if (!fs.existsSync(fullPath) && !cleanPath.includes("{{")) {
-        // テンプレート変数を含まないパスのみチェック
+      if (cleanPath.includes("{{")) {
+        continue;
+      }
+
+      // ワークフロー相対・リポジトリ相対の両方で存在確認する
+      const candidates = path.isAbsolute(cleanPath)
+        ? [cleanPath]
+        : [path.join(workflowDir, cleanPath), cleanPath, path.resolve(cleanPath)];
+      const exists = candidates.some((candidate) => fs.existsSync(candidate));
+
+      if (!exists) {
         issues.push({
           type: "info",
           category: "consistency",
