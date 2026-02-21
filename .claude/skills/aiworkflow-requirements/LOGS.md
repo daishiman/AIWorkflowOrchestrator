@@ -26,6 +26,53 @@
 
 ---
 
+## 2026-02-20: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 12反映
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: モジュール解決運用・品質ゲート・完了台帳・教訓を同期更新 |
+| 対象ファイル | architecture-monorepo.md, quality-requirements.md, development-guidelines.md, task-workflow.md, lessons-learned.md, SKILL.md, LOGS.md |
+| 結果         | success |
+| 備考         | `@repo/shared` TypeScript/Vitest モジュール解決エラー **228件→0件** 修正。tsconfig.json に **27個の paths マッピング**、package.json に **26個の typesVersions エントリ**、vitest.config.ts に **3個の alias** を追加。テスト **224件（3スイート）全PASS**。未タスク `UT-FIX-TS-VITEST-TSCONFIG-PATHS-001` を登録。既存リンク切れ4件を未タスク指示書作成で解消 |
+
+### 変更サマリー
+
+| 変更対象 | 変更内容 | 数量 |
+| -------- | -------- | ---- |
+| tsconfig.json | paths マッピング追加 | 27個 |
+| package.json | typesVersions エントリ追加 | 26個 |
+| vitest.config.ts | alias 追加 | 3個 |
+| テスト | 3スイート全PASS | 224件 |
+
+### 苦戦箇所
+
+| # | 苦戦箇所 | 概要 |
+| - | -------- | ---- |
+| 1 | 三層整合同期 | tsconfig paths / package.json typesVersions / vitest alias の3設定を同時に整合させる必要があった |
+| 2 | ソース構造二重性 | `src/agent/types.ts` と `src/types.ts` の両方にサブパスが存在し、エクスポート対象の特定が困難 |
+| 3 | paths定義順序 | TypeScript の paths はマッチ順序に依存するため、具体パスを先に定義する必要があった |
+| 4 | 補助型宣言取り込み | `.d.ts` ファイルがソース直接参照時に取り込まれない問題の解決 |
+| 5 | 既存リンク切れ | Phase 12中に発見した未タスク指示書の参照パス不整合4件の補完 |
+
+### 設計判断
+
+- **方針**: tsconfig paths 主軸 + typesVersions 補完（dist/ 不要のソース直接参照）
+- **未タスク**: UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（tsconfig paths と vitest alias の自動同期）
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| architecture-monorepo.md | v1.2.0 | `@repo/shared` 三層整合運用（`exports`/`paths`/`alias`）を追加 |
+| quality-requirements.md | v1.8.0 | 三層整合の品質ゲート追加 |
+| development-guidelines.md | v1.8.0 | サブパス追加時の同期手順追加 |
+| task-workflow.md | v1.42.0 | 完了タスク追加、未タスク1件登録 |
+| lessons-learned.md | v1.17.0 | 本タスクの苦戦箇所5件追加（三層整合・ソース二重性・paths順序・補助宣言・リンク切れ） |
+| patterns.md（skill-creator） | - | 三層整合パターン追加 |
+
+---
 ## 2026-02-19: TASK-9A-C SkillEditor UI仕様書作成反映
 
 | 項目         | 内容 |

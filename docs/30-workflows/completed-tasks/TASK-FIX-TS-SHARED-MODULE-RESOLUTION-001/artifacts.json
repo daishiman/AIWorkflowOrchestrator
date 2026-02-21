@@ -1,0 +1,220 @@
+{
+  "taskId": "task-fix-ts-shared-module-resolution-001",
+  "featureName": "TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001",
+  "issueNumber": 837,
+  "createdDate": "2026-02-20",
+  "lastUpdated": "2026-02-20T18:40:00Z",
+  "status": "in_progress",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "completedAt": "2026-02-20T17:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-1-requirements.md",
+          "description": "要件定義書（@repo/shared モジュール解決エラー228件の影響範囲・受入基準）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-analysis.md",
+          "description": "要件分析結果（実測エラー228件、エラーコード別分類、インポートパス24パターン、アプローチB+A補完選択）"
+        }
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "completedAt": "2026-02-20T17:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-2-design.md",
+          "description": "設計書（exports/paths/alias 一元管理化の設計・moduleResolution 設定方針）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-document.md",
+          "description": "設計書成果物（tsconfig paths 27エントリ設計、Vitest alias維持方針、typesVersions追加設計、モジュール解決フロー図）"
+        }
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "completedAt": "2026-02-20T17:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-3-design-review.md",
+          "description": "設計レビュー結果（一元管理化方針の妥当性判定）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果成果物（MINOR判定、全24 TS2307パスカバー確認、UT-FIX-TS-VITEST-TSCONFIG-PATHS-001未タスク化）"
+        }
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-4-test-creation.md",
+          "description": "テスト仕様書（設定ファイル整合性テスト・リグレッション防止テスト設計）"
+        }
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-5-implementation.md",
+          "description": "実装仕様書（package.json exports・tsconfig paths・vitest alias 修正手順）"
+        }
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-6-test-expansion.md",
+          "description": "テスト拡充仕様書（カバレッジ不足箇所のテスト追加計画）"
+        }
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-7-coverage-check.md",
+          "description": "カバレッジ確認仕様書（設定ファイル整合性テストのカバレッジ基準検証）"
+        }
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-8-refactoring.md",
+          "description": "リファクタリング仕様書（二重管理解消・設定ファイル簡素化）"
+        }
+      ]
+    },
+    "phase-9": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-9-quality-assurance.md",
+          "description": "品質保証仕様書（Lint・型チェック・全テスト実行の品質ゲート）"
+        }
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-10-final-review.md",
+          "description": "最終レビュー仕様書（多角的品質・整合性検証）"
+        }
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-11-manual-test.md",
+          "description": "手動テスト仕様書（IDE型情報・新規モジュール追加・alias整合性・E2E確認、14テストケース）"
+        }
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "completedAt": "2026-02-20T18:40:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-12-documentation.md",
+          "description": "ドキュメント更新仕様書（実装ガイド・システム仕様更新・未タスク検出・スキルフィードバック）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "Phase 12 Step実行結果と更新ファイル台帳"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-docs-update-log.md",
+          "description": "システム仕様書更新ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキル改善フィードバック"
+        }
+      ]
+    },
+    "phase-13": {
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-13-pr-creation.md",
+          "description": "PR作成仕様書（ローカル確認・変更サマリー・Issue連携・diff-to-pr実行）"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "qualityMetrics": {
+    "typecheckErrors": {
+      "before": 228,
+      "target": 0,
+      "description": "pnpm typecheck での @repo/shared 関連モジュール解決エラー数"
+    },
+    "vitestAliases": {
+      "before": 18,
+      "targetReduction": "一元管理化",
+      "description": "vitest.config.ts の resolve.alias エントリ数（paths と二重管理されていた）"
+    },
+    "unitTestCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    }
+  }
+}

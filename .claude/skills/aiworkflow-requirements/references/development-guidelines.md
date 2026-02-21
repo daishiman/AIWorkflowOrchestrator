@@ -586,6 +586,66 @@
 | Electronが起動しない       | pnpm --filter @repo/desktop rebuild         |
 | 型エラーが大量に出る       | pnpm --filter @repo/shared build を先に実行 |
 
+### `@repo/shared` サブパス追加時の同期手順（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+`@repo/shared` のサブパスを追加・変更する場合は、以下4ファイルを同一コミットで更新する。
+
+| 順番 | ファイル | 更新内容 |
+| --- | --- | --- |
+| 1 | `packages/shared/package.json` | `exports` と `typesVersions` にエントリ追加 |
+| 2 | `apps/desktop/tsconfig.json` | `compilerOptions.paths` にマッピング追加（順序注意: 具体的→汎用） |
+| 3 | `apps/desktop/vitest.config.ts` | `resolve.alias` にエントリ追加 |
+| 4 | `packages/shared/tsup.config.ts` | `entry` にビルドエントリ追加（ビルド対象の場合） |
+
+#### サブパス追加チェックリスト
+
+新しいサブパスを追加する場合、以下を全て実施:
+
+- [ ] `packages/shared/package.json` — `exports` にサブパスの import 先を追加
+- [ ] `packages/shared/package.json` — `typesVersions` に型解決エントリを追加
+- [ ] `apps/desktop/tsconfig.json` — `compilerOptions.paths` にマッピング追加（`@repo/shared/*` より前に配置）
+- [ ] `apps/desktop/vitest.config.ts` — `resolve.alias` にエントリ追加
+- [ ] `packages/shared/tsup.config.ts` — `entry` にビルドエントリ追加（ビルド対象の場合）
+- [ ] 3層整合性テストを実行して全PASS確認
+
+**検証コマンド**:
+
+| 順序 | コマンド | 検証対象 |
+| --- | --- | --- |
+| 1 | `pnpm --filter @repo/shared build` | shared パッケージのビルド成功 |
+| 2 | `pnpm --filter @repo/desktop exec tsc --noEmit` | TypeScript 型解決の整合性 |
+| 3 | `cd apps/desktop && pnpm vitest run src/__tests__/shared-module-resolution.test.ts src/__tests__/vitest-alias-consistency.test.ts` | Vitest alias 整合性 |
+| 4 | `pnpm --filter @repo/shared exec vitest run src/__tests__/module-resolution.test.ts` | shared 側 exports 整合性 |
+
+#### 補足
+
+- `apps/desktop` が shared ソースを直接参照する場合、`apps/desktop/tsconfig.json` の `include` に shared 側補助型宣言（`packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts`）を含める
+- paths の定義順序は「具体的なサブパス → 汎用パターン（`@repo/shared/*`）→ ルート（`@repo/shared`）」を厳守する。詳細は [architecture-monorepo.md#paths-定義順序ルール](./architecture-monorepo.md) を参照
+
+#### 関連テスト一覧
+
+| テストファイル | テスト数 | 検証内容 |
+| --- | --- | --- |
+| `packages/shared/src/__tests__/module-resolution.test.ts` | 57 | shared パッケージの exports / typesVersions 整合性 |
+| `apps/desktop/src/__tests__/shared-module-resolution.test.ts` | 59 | desktop → shared の paths マッピング整合性 |
+| `apps/desktop/src/__tests__/vitest-alias-consistency.test.ts` | 108 | 3層（exports / paths / alias）の完全一致検証 |
+
+#### トラブルシューティング
+
+| エラー | 原因 | 対処法 |
+| --- | --- | --- |
+| `TS2307: Cannot find module '@repo/shared/xxx'` | `tsconfig.json` の paths にマッピングが未追加 | `compilerOptions.paths` にエントリを追加（`@repo/shared/*` より前に配置） |
+| `TS2307` が特定サブパスのみ発生 | paths の定義順序が誤っている（汎用パターンが先にマッチ） | 具体的なサブパスを `@repo/shared/*` より前に移動 |
+| テスト時に `Cannot find module` | `vitest.config.ts` の `resolve.alias` に未追加 | alias にエントリを追加（tsconfig の paths は Vitest に自動反映されない） |
+| ビルド後に `Module not found` | `package.json` の `exports` / `typesVersions` に未追加 | exports と typesVersions の両方にエントリを追加 |
+| `paths` は正しいのに解決されない | 解決先ファイルパスの誤り（`src/` 有無の混在） | `packages/shared` のソース構造を確認し、実際のファイルパスを指定 |
+
+#### 関連未タスク
+
+| 未タスクID | 概要 |
+| --- | --- |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | vitest-tsconfig-paths プラグイン導入により `resolve.alias` の手動同期を自動化 |
+
 ---
 
 ## 関連ドキュメント
@@ -601,10 +661,23 @@
 
 ---
 
+## 完了タスク
+
+### TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001（2026-02-20完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 |
+| 概要 | `@repo/shared` サブパス追加時の同期手順（`exports` / `paths` / `alias` / `tsup entry`）を標準化 |
+| 成果物 | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/outputs/phase-12/documentation-changelog.md` |
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                   |
 | ------- | ---------- | ----------------------------------------------------------------------------------------- |
+| 1.8.0   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス追加時の同期手順を追加（`exports`/`paths`/`alias`/`tsup entry` 同時更新、補助型宣言取り込みルール） |
 | 1.7.0   | 2026-02-14 | TASK-FIX-14-1: Skill系Main Processログ規約を追加（electron-log必須、プレフィックス、テスト方針、TASK-FIX-14-2継続管理） |
 | 1.6.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Hook テスト戦略（renderHookパターン）セクション追加 |
 | 1.5.0   | 2026-02-12 | UT-STORE-HOOKS-REFACTOR-001: Zustand Store Hooks無限ループ防止（P31対策）セクション追加  |

@@ -111,6 +111,109 @@
 | 独立デプロイ | Web（Railway）とDesktop（GitHub Releases）を独立して管理      |
 | テスト効率   | 共通コンポーネントのテストを一度だけ実装                      |
 
+### `@repo/shared` サブパス解決運用（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
+
+`@repo/shared` のサブパス解決は、以下の3層を同時に整合させる。
+
+| 層 | 正本ファイル | 役割 |
+| --- | --- | --- |
+| 公開境界 | `packages/shared/package.json` (`exports`, `typesVersions`) | サブパスの公開契約 |
+| TypeScript型解決 | `apps/desktop/tsconfig.json` (`compilerOptions.paths`) | `tsc --noEmit` の解決 |
+| テスト時解決 | `apps/desktop/vitest.config.ts` (`resolve.alias`) | Vitest 実行時の解決 |
+
+#### 三層モジュール解決アーキテクチャ
+
+```
+[npm 公開境界層]        [TypeScript 解決層]      [テスト解決層]
+package.json            tsconfig.json            vitest.config.ts
+├─ exports              ├─ compilerOptions       ├─ resolve.alias
+│  └─ サブパスマップ     │  └─ paths              │  └─ エイリアスマップ
+└─ typesVersions        │     └─ サブパスマップ    └─ (tsconfig未参照)
+   └─ 型解決マップ      └─ include
+                           └─ 補助宣言ファイル
+
+同期方向: exports(正本) → paths(TypeScript用) → alias(Vitest用)
+```
+
+各層の役割が異なるため、Vitest は tsconfig の paths を自動参照しない。3層すべてを明示的に同期する必要がある。
+
+#### 運用ルール
+
+- `exports` にサブパスを追加した場合、同一PRで `paths` と `alias` も更新する
+- 3層の定義順序は「具体サブパス → ルート (`@repo/shared`)」を守る（後述の paths 定義順序ルール参照）
+- 3層の解決先は同一ソースを指すこと
+- 回帰防止として以下の整合性テストを維持する
+  `apps/desktop/src/__tests__/shared-module-resolution.test.ts`（59テスト）
+  `apps/desktop/src/__tests__/vitest-alias-consistency.test.ts`（108テスト）
+  `packages/shared/src/__tests__/module-resolution.test.ts`（57テスト）
+
+#### paths 定義順序ルール
+
+TypeScript の `compilerOptions.paths` は**上から順に照合**される。具体的なサブパスを先に、汎用パターンを後に定義しないと、汎用パターンが先にマッチして誤った解決先を返す。
+
+| 定義順序 | パスパターン | 解決先 |
+| --- | --- | --- |
+| 先（具体的） | `@repo/shared/types/auth` | `packages/shared/types/auth.ts` |
+| 先（具体的） | `@repo/shared/agent/types` | `packages/shared/src/agent/types.ts` |
+| 先（具体的） | `@repo/shared/services/graph` | `packages/shared/src/services/graph/index.ts` |
+| 後（汎用） | `@repo/shared/*` | `packages/shared/src/*` |
+| 最後（ルート） | `@repo/shared` | `packages/shared/src/index.ts` |
+
+この順序を逆にすると、`@repo/shared/types/auth` が `@repo/shared/*` に先にマッチし、`packages/shared/src/types/auth`（存在しない可能性あり）に解決されて TS2307 エラーとなる。
+
+#### サブパス追加の具体例（before/after）
+
+新しいサブパス `@repo/shared/utils/format` を追加する場合の4ファイル変更:
+
+**1. packages/shared/package.json**（exports + typesVersions）:
+
+| 変更種別 | キー | 値 |
+| --- | --- | --- |
+| exports 追加 | `"./utils/format"` | `"./src/utils/format.ts"` |
+| typesVersions 追加 | `"utils/format"` | `["src/utils/format.ts"]` |
+
+**2. apps/desktop/tsconfig.json**（compilerOptions.paths）:
+
+| 変更種別 | キー | 値 |
+| --- | --- | --- |
+| paths 追加（`@repo/shared/*` より前に配置） | `"@repo/shared/utils/format"` | `["../../packages/shared/src/utils/format.ts"]` |
+
+**3. apps/desktop/vitest.config.ts**（resolve.alias）:
+
+| 変更種別 | キー | 値 |
+| --- | --- | --- |
+| alias 追加 | `"@repo/shared/utils/format"` | `path.resolve(__dirname, "../../packages/shared/src/utils/format.ts")` |
+
+**4. packages/shared/tsup.config.ts**（entry、ビルド対象の場合のみ）:
+
+| 変更種別 | キー | 値 |
+| --- | --- | --- |
+| entry 追加 | `"utils/format"` | `"src/utils/format.ts"` |
+
+#### ソース構造の二重性
+
+`packages/shared` には以下の2つのソース配置パターンが混在している:
+
+| パターン | パス例 | 特徴 |
+| --- | --- | --- |
+| ルート直下 | `packages/shared/types/auth.ts` | `src/` を経由しない |
+| src 配下 | `packages/shared/src/types/index.ts` | 標準的な src ディレクトリ構成 |
+
+paths マッピングでは解決先がどちらのパターンかを正確に指定する必要がある。誤ったパスを指定すると TS2307 が発生する。
+
+#### 補足（ソース直接参照時）
+
+`apps/desktop` が `packages/shared/src` を直接参照する場合、shared側の補助型宣言も読み込む。
+現行運用では `apps/desktop/tsconfig.json` の `include` に `../../packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` を含める。
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 仕様書パス |
+| --- | --- | --- |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | vitest-tsconfig-paths プラグイン導入による alias 手動同期の自動化 | `docs/30-workflows/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md` |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理） | `docs/30-workflows/unassigned-task/task-refactor-shared-source-structure-consolidation.md` |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | `docs/30-workflows/unassigned-task/task-imp-module-resolution-ci-guard.md` |
+
 ---
 
 ## 型エクスポートパターン
@@ -183,9 +286,22 @@
 
 ---
 
+## 完了タスク
+
+### TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001（2026-02-20完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 |
+| 概要 | `@repo/shared` サブパス解決を `exports` / `paths` / `alias` の三層整合運用へ統一 |
+| 成果物 | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/outputs/phase-12/system-docs-update-log.md` |
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                                 |
 | ---------- | ---------- | ------------------------------------------------------------------------ |
+| v1.2.0     | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス解決運用を追加（exports/paths/alias 三層整合、ソース直接参照時の補助型宣言取り込み） |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: 全コードブロックを表形式・文章に変換                |
 | v1.0.0     | -          | 初版作成                                                                 |

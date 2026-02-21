@@ -71,14 +71,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | パフォーマンス要件 | L37 |
 | テスト戦略（TDD実践ガイド） | L125 |
-| セキュリティ | L403 |
-| 可用性 | L431 |
-| 保守性 | L449 |
-| アクセシビリティ | L549 |
-| テストカバレッジ目標 | L568 |
-| 関連ドキュメント | L645 |
-| 完了タスク | L653 |
-| 変更履歴 | L907 |
+| セキュリティ | L452 |
+| 可用性 | L480 |
+| 保守性 | L498 |
+| アクセシビリティ | L598 |
+| テストカバレッジ目標 | L617 |
+| 関連ドキュメント | L694 |
+| 完了タスク | L702 |
+| 変更履歴 | L981 |
 
 ---
 
@@ -181,8 +181,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| モノレポアーキテクチャ | L8 |
-| 型エクスポートパターン | L116 |
-| 変更履歴 | L186 |
+| 型エクスポートパターン | L217 |
+| 完了タスク | L287 |
+| 変更履歴 | L299 |
 
 ### references/architecture-overview.md
 
@@ -1404,8 +1405,9 @@ node scripts/list-specs.js --topics
 | リリースプロセス | L482 |
 | バックアップ・リカバリ | L511 |
 | 環境構築ガイド | L548 |
-| 関連ドキュメント | L591 |
-| 変更履歴 | L604 |
+| 関連ドキュメント | L651 |
+| 完了タスク | L664 |
+| 変更履歴 | L676 |
 
 ### references/directory-structure.md
 
@@ -1484,6 +1486,7 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L351 |
 | TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L361 |
 | TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L538 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L540 |
 | TASK-FIX-14-1: console → electron-log 移行 | L596 |
 | TASK-FIX-11-1: SDK統合テスト有効化 | L700 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L846 |

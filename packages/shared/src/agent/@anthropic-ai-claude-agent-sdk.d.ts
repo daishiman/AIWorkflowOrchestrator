@@ -40,12 +40,20 @@ declare module "@anthropic-ai/claude-agent-sdk" {
 
   /** query() に渡す Options */
   export interface QueryFunctionOptions {
+    /** 環境変数 */
+    env?: Record<string, string>;
     /** 使用可能ツール */
     tools?: string[];
-    /** 権限モード */
-    permissionMode?: "auto" | "ask" | "deny" | "default";
-    /** AbortSignal */
-    signal?: AbortSignal;
+    /** 権限モード（実SDK型に合わせる） */
+    permissionMode?:
+      | "default"
+      | "plan"
+      | "acceptEdits"
+      | "bypassPermissions"
+      | "delegate"
+      | "dontAsk";
+    /** AbortController */
+    abortController?: AbortController;
     /** API Key（直接指定） */
     apiKey?: string;
     /** タイムアウト（ミリ秒） */
@@ -62,12 +70,12 @@ declare module "@anthropic-ai/claude-agent-sdk" {
     options?: QueryFunctionOptions;
   }
 
-  /** query() が返す Conversation オブジェクト */
-  export interface QueryConversation {
-    /** ストリーミングメッセージを取得する */
-    stream(): AsyncIterable<unknown>;
+  /** query() が返す Query 型（実SDKに合わせてAsyncIterableを実装） */
+  export interface Query extends AsyncIterable<unknown> {
+    /** ストリーミングメッセージを取得する（互換性のため残す） */
+    stream?(): AsyncIterable<unknown>;
   }
 
   /** query() 名前付きエクスポート関数 */
-  export function query(args: QueryFunctionArgs): QueryConversation;
+  export function query(args: QueryFunctionArgs): Query;
 }

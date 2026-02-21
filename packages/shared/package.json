@@ -114,6 +114,88 @@
       "import": "./dist/src/types/auth-mode.js"
     }
   },
+  "typesVersions": {
+    "*": {
+      "core": [
+        "./core/index.ts"
+      ],
+      "infrastructure": [
+        "./infrastructure/index.ts"
+      ],
+      "infrastructure/auth": [
+        "./infrastructure/auth/index.ts"
+      ],
+      "infrastructure/database": [
+        "./infrastructure/database/index.ts"
+      ],
+      "infrastructure/ai/apiKeyValidator": [
+        "./infrastructure/ai/apiKeyValidator.ts"
+      ],
+      "types": [
+        "./src/types/index.ts"
+      ],
+      "types/auth": [
+        "./types/auth.ts"
+      ],
+      "types/api-keys": [
+        "./types/api-keys.ts"
+      ],
+      "types/replace": [
+        "./src/types/replace.ts"
+      ],
+      "types/rag": [
+        "./src/types/rag/index.ts"
+      ],
+      "types/rag/result": [
+        "./src/types/rag/result.ts"
+      ],
+      "types/llm/schemas": [
+        "./src/types/llm/schemas/index.ts"
+      ],
+      "types/llm": [
+        "./src/types/llm/schemas/index.ts"
+      ],
+      "types/skill": [
+        "./src/types/skill.ts"
+      ],
+      "types/agent": [
+        "./src/types/agent.ts"
+      ],
+      "types/auth-mode": [
+        "./src/types/auth-mode.ts"
+      ],
+      "agent": [
+        "./src/agent/index.ts"
+      ],
+      "schemas": [
+        "./schemas/index.ts"
+      ],
+      "schemas/auth": [
+        "./schemas/auth.ts"
+      ],
+      "services/history/types": [
+        "./src/services/history/types.ts"
+      ],
+      "services/history/history-service": [
+        "./src/services/history/history-service.ts"
+      ],
+      "services/logging/types": [
+        "./src/services/logging/types.ts"
+      ],
+      "services/logging/conversion-logger": [
+        "./src/services/logging/conversion-logger.ts"
+      ],
+      "repositories": [
+        "./src/repositories/index.ts"
+      ],
+      "constants": [
+        "./src/constants/index.ts"
+      ],
+      "src/ipc/channels": [
+        "./src/ipc/channels.ts"
+      ]
+    }
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

@@ -13,6 +13,14 @@
 
 ---
 
+## [2026-02-20 - TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 12 status-sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: Phase 12成果物作成済みでも `phase-12-documentation.md` 本体のステータス/チェックリストが未更新で残る失敗を再発防止するため、patterns.md に成功パターン「実行仕様書ステータス同期」を追加。task-specification-creator の Phase 12完了判定に適用可能な形で記録。
+
+---
 ## [2026-02-19 - TASK-9A-C Phase 12 status judgment pattern sync]
 
 - **Agent**: skill-creator (update)

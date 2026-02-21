@@ -204,6 +204,63 @@
 
 ---
 
+### タスク: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 `@repo/shared` モジュール解決エラー修正（2026-02-20完了）
+
+| 項目       | 内容                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001                             |
+| 完了日     | 2026-02-20                                                           |
+| ステータス | **完了**                                                             |
+| Phase      | Phase 1-12完了（Phase 13未実施）                                     |
+| 変更規模   | +353行（17ファイル）: `tsconfig.json`/`vitest.config.ts`/`package.json` + 回帰テスト3ファイル |
+| テスト数   | 224テスト（3スイート: module-resolution 57件 + shared-module-resolution 59件 + vitest-alias-consistency 108件） |
+| エラー削減 | typecheck 228エラー → 0エラー                                        |
+
+#### 品質ゲート達成状況
+
+| ゲート項目     | 結果           | 詳細                                          |
+| -------------- | -------------- | --------------------------------------------- |
+| typecheck      | ✅ PASS        | 228エラー → 0エラー（全サブパス解決）         |
+| vitest         | ✅ 224/224 PASS | 3テストスイート全件成功                       |
+| shared build   | ✅ 成功        | `pnpm --filter @repo/shared build` 正常完了   |
+| lint           | ✅ PASS        | ESLintエラー0件                               |
+
+#### 変更ファイル詳細
+
+| 変更対象 | 変更内容 |
+| --- | --- |
+| `apps/desktop/tsconfig.json` | +27 paths（`@repo/shared/*` サブパス型解決） |
+| `packages/shared/package.json` | +26 typesVersions（TypeScript 4.x/5.x 後方互換） |
+| `apps/desktop/vitest.config.ts` | +3 alias（`@repo/shared/agent/*` 系テスト解決） |
+
+#### 成果物
+
+| 成果物                 | パス/内容                                                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| ワークフロー一式       | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/`                                             |
+| 実装ガイド             | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/outputs/phase-12/implementation-guide.md`     |
+| ドキュメント更新履歴   | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/outputs/phase-12/documentation-changelog.md`  |
+| 未タスク検出レポート   | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/outputs/phase-12/unassigned-task-report.md`   |
+| システム仕様更新ログ   | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/outputs/phase-12/system-docs-update-log.md`   |
+| スキルフィードバック   | `docs/30-workflows/TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001/outputs/phase-12/skill-feedback-report.md`    |
+
+#### 変更理由
+
+- `@repo/shared` サブパスの型解決エラーを解消するため、`exports`/`paths`/`alias` の整合を再構築
+- `apps/desktop` の source 参照時に補助型宣言を取り込むよう `tsconfig` `include` を補強
+- 回帰防止として、`shared-module-resolution` / `vitest-alias-consistency` / `module-resolution` の3テストを追加
+
+#### 関連仕様書更新
+
+| 仕様書 | 更新内容 |
+| ------ | -------- |
+| architecture-monorepo.md | 三層整合（`exports`/`paths`/`alias`）運用ルール追加 |
+| quality-requirements.md | サブパス三層整合の品質ゲート追加 |
+| development-guidelines.md | サブパス追加時の同期手順追加 |
+| lessons-learned.md | 本タスクの苦戦箇所と再発防止策追加 |
+
+---
+
 ### タスク: UT-FIX-IPC-RESPONSE-UNWRAP-001 IPC レスポンスラッパー未展開修正（2026-02-14完了）
 
 | 項目       | 内容                                        |
@@ -759,7 +816,8 @@
 | UT-SETTINGSVIEW-INLINE-SELECTOR-001               | SettingsView残存インラインセレクタの個別セレクタ移行                                                             | 低     | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 Phase 10（MINOR #2）                     | `docs/30-workflows/unassigned-task/task-ut-settingsview-inline-selector-migration.md`                                                              |
 | task-imp-vitest-mock-reset-utility-001            | Vitest モック2段階リセットユーティリティ共通化                                                                   | 中     | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）                   | `docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`                                                                      |
 | task-ref-vitest-module-mock-audit-001             | Vitest モジュールレベルモック監査・使い分けガイドライン策定                                                      | 低     | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）                   | `docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`                                                                       |
-| task-imp-vitest-alias-sync-automation-001         | Vitest alias 設定と `@repo/shared` エクスポート整合の自動検証                                                    | 中     | TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 8（スコープ外項目）               | `docs/30-workflows/unassigned-task/task-imp-vitest-alias-sync-automation-001.md`                                                   |
+| task-imp-vitest-alias-sync-automation-001         | Vitest alias 設定と `@repo/shared` エクスポート整合の自動検証                                                    | 中     | TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 8（スコープ外項目）               | `docs/30-workflows/unassigned-task/task-imp-vitest-alias-sync-automation-001.md`                                                                   |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001               | Vitest alias と tsconfig paths の同期自動化。新サブパス追加時に4ファイル同期が必要で漏れやすい（`exports`/`typesVersions`/`paths`/`alias`）。vitest-tsconfig-paths プラグイン導入で `apps/desktop/vitest.config.ts` の alias を tsconfig paths から自動生成する。スコープ: `apps/desktop/vitest.config.ts` | 中     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 3（MINOR 指摘）              | `docs/30-workflows/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md`                                                                  |
 | UT-PERF-001                                       | グラフユーティリティ性能ベンチマーク基準再設計                                                                   | 中     | TODO検出: `packages/shared/src/types/rag/graph/__tests__/utils.test.ts:791` | `docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md`                                                          |
 | UT-TYPE-DATETIME-DOC-001                          | 型日時表現のガイドライン策定とドキュメント化                                                                     | 低     | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION Phase 12                        | `docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md`                                                 |
 | ~~UT-FIX-IPC-RESPONSE-UNWRAP-001~~                | ~~IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）~~                                        | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~                                      | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-response-unwrap-001.md`~~ **2026-02-14完了**                                                  |
@@ -778,6 +836,8 @@
 | TASK-9A-C-001                                     | SkillCodeEditor シンタックスハイライト機能                                                                        | 中     | TASK-9A-C Phase 1（将来拡張ポイント: language prop）                        | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md`                                                                               |
 | TASK-9A-C-002                                     | SkillEditor ファイル作成・削除機能（CRUD完全化）                                                                 | 中     | TASK-9A-C Phase 1-2（スコープ外: readFile/writeFileのみ実装）               | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md`                                                                              |
 | TASK-9A-C-003                                     | SkillCodeEditor Monaco/CodeMirror エディタ移行                                                                   | 低     | TASK-9A-C Phase 2（将来拡張ポイント: textarea→高機能エディタ）              | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md`                                                                             |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001         | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理）                                               | 中     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 5                            | `docs/30-workflows/unassigned-task/task-refactor-shared-source-structure-consolidation.md`                                                          |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001           | @repo/shared モジュール解決3層整合CIガード                                                                       | 高     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 10 MINOR                     | `docs/30-workflows/unassigned-task/task-imp-module-resolution-ci-guard.md`                                                                         |
 
 ### 未タスク管理ルール
 
@@ -803,7 +863,10 @@
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1.44.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001派生未タスク2件登録**: UT-FIX-SKILL-VALIDATION-P42-001（P42バリデーション横展開）、UT-FIX-SKILL-IPC-ERROR-RESPONSE-001（エラー応答パターン統一）を残課題テーブルに追加。実装苦戦箇所（P23/P42/P44/P45）を未タスク指示書に反映 |
 | **1.43.0** | **2026-02-20** | **未タスク配置ディレクトリ整合を是正**: 未実施タスク（task-imp-vitest-alias-sync-automation-001 / UT-9A-B-001〜003）の参照先を `docs/30-workflows/unassigned-task/` に統一。完了済み UT-9B-H-003 の参照を `completed-tasks/ut-9b-h-003-security-hardening/index.md` に更新。`verify-unassigned-links.js` で再検証 |
+| **1.43.0** | **2026-02-20** | **未タスク2件登録**: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001（@repo/shared ソース構造二重性統一、中優先度）、TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001（3層整合CIガード、高優先度）をP3準拠で残課題テーブルに追加。architecture-monorepo.mdに参照リンク追加 |
+| **1.42.1** | **2026-02-20** | **TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001記録強化**: 完了タスク記録に品質ゲート達成状況テーブル（typecheck 228→0、vitest 224/224 PASS、shared build成功、lint PASS）、変更ファイル詳細（tsconfig +27 paths、package.json +26 typesVersions、vitest.config +3 alias）、変更行数（+353行/17ファイル）、テスト数（224テスト/3スイート）を追記。残課題 UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 の説明を詳細化（背景・提案解決策・スコープ追記） |
 | **1.42.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001完了反映**: 残課題テーブルの同タスクを完了（取り消し線 + 完了日）へ更新。参照先を `skill-import-agent-system/tasks/completed-task/` に変更。UT-FIX-SKILL-IMPORT-INTERFACE-001 の参照先も実ファイルパスへ修正 |
+| **1.42.0** | **2026-02-20** | **TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001完了記録追加**: `@repo/shared` モジュール解決修正（`exports`/`paths`/`alias` 整合、補助型宣言取り込み、回帰テスト3ファイル追加）を完了タスクセクションへ反映。残課題に `UT-FIX-TS-VITEST-TSCONFIG-PATHS-001` を登録 |
 | **1.41.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001登録**: skill:remove IPCインターフェース不整合修正タスクを残課題テーブルに追加。UT-FIX-SKILL-IMPORT-INTERFACE-001の優先度を中→高に変更                                                                                         |
 | **1.40.0** | **2026-02-20** | **UT-FIX-SKILL-IMPORT-INTERFACE-001登録**: skill:import IPCハンドラ・Preloadインターフェース不整合修正タスクを残課題テーブルに追加                                                                                                                                |
 | 1.39.0     | 2026-02-19     | TASK-9A-C 未タスク3件登録（TASK-9A-C-001: シンタックスハイライト、TASK-9A-C-002: ファイルCRUD、TASK-9A-C-003: エディタ移行）。TASK-9A-Cを completed-tasks/ にパス更新。P3防止3ステップ完了                                                                        |
