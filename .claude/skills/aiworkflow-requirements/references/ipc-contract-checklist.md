@@ -103,6 +103,7 @@ if (
 - [ ] **5-2**: `interfaces-agent-sdk-skill.md` の型定義・API仕様更新（該当する場合）
 - [ ] **5-3**: `api-ipc-agent.md` のハンドラー仕様更新（該当する場合）
 - [ ] **5-4**: `lessons-learned.md` に苦戦箇所を記録（該当する場合）
+- [ ] **5-5**: 戻り値型がRendererの期待する型と一致することを確認（例: `skill:import` は `ImportedSkill` を返すこと。`ImportResult` ではない）
 
 ### Phase 6: テスト検証
 
@@ -165,3 +166,4 @@ grep -n "typeof.*string.*===" apps/desktop/src/main/ipc/ | grep -v "trim"
 |----------|---------|-------------|---------|
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | `skill:remove` | ハンドラー `{ skillId }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一 |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | `skill:import` | ハンドラー `{ skillIds: string[] }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一、内部で `[skillName]` 配列化 |
+| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待 | 未修正（未タスク: `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-return-type-001.md`） |

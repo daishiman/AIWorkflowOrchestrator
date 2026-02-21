@@ -436,6 +436,12 @@ Zustand Sliceパターンで実装された状態管理。
 | バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
 | エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` |
 
+#### `skill:import` 関連未タスク
+
+| タスクID | 概要 | ステータス | 指示書パス |
+| -------- | ---- | ---------- | ---------- |
+| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | skill:import 戻り値型不整合修正（ImportResult→ImportedSkill変換） | 未実施 | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-return-type-001.md` |
+
 #### OperationResult型
 
 スキル管理APIの統一戻り値型。成功/失敗を明確に区別する。
