@@ -417,7 +417,7 @@ pnpm vitest run scripts/__tests__/check-shared-module-sync.test.ts
 
 ---
 
-## 8. 参照情報・備考
+## 8. 参照情報
 
 ### 関連タスク
 
@@ -457,3 +457,19 @@ jobs:
 - `package.json exports` を正本（Source of Truth）とする方針は TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 で確立された
 - チェックスクリプトはビルド不要（ソースファイルのみ読み取り）のため、CIの最初期段階で実行可能
 - 既存テスト（`shared-module-resolution.test.ts`、`vitest-alias-consistency.test.ts`）は引き続きアプリケーションテストスイート内で実行される。本タスクのCIガードはこれらを補完する早期検出メカニズムである
+
+---
+
+## 9. 備考
+
+### レビュー指摘の原文（該当する場合）
+
+```text
+TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 10 MINOR:
+"exports / paths / alias の3層整合をCIで継続監視するガードがない"
+```
+
+### 補足事項
+
+- 本指示書は未実施タスクとして `docs/30-workflows/unassigned-task/` に配置する。
+- 完了時は `completed-tasks/unassigned-task/` へ移管し、`task-workflow.md` の参照先を同時更新する。
