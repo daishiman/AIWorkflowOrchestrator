@@ -174,10 +174,8 @@ node scripts/list-specs.js --topics
 | SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1446 |
 | 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1508 |
 | SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1562 |
-| IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L1658 |
-| SkillEditor 実装パターン（TASK-9A-C spec_created） | L1725 |
-| IPC インターフェース不整合修正パターン（P44/P45解決） | L1785 |
-| 変更履歴 | L1813 |
+| SkillEditor 実装パターン（TASK-9A-C spec_created） | L1710 |
+| 変更履歴 | L1770 |
 
 ### references/architecture-monorepo.md
 
@@ -280,8 +278,8 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L1249 |
 | SkillCreatorService（TASK-9B-G） | L1262 |
 | 完了タスク | L1510 |
-| SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1664 |
-| 変更履歴 | L1715 |
+| SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1620 |
+| 変更履歴 | L1671 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -640,7 +638,7 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L356 |
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L368 |
 | 完了タスク | L424 |
-| 変更履歴 | L443 |
+| 変更履歴 | L444 |
 
 ### references/api-ipc-auth.md
 
@@ -997,15 +995,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L26 |
-| Content Security Policy (CSP) | L40 |
-| IPC通信のセキュリティ | L57 |
-| 実装例: historyAPI | L110 |
-| 実装例: slideSettingsAPI | L162 |
-| 実装例: skillCreatorAPI | L211 |
-| 実装例: skillFileAPI（TASK-9A-B） | L313 |
-| 自動更新のセキュリティ | L386 |
-| 関連ドキュメント | L397 |
+| セキュリティ設定 | L24 |
+| Content Security Policy (CSP) | L38 |
+| IPC通信のセキュリティ | L55 |
+| 実装例: historyAPI | L81 |
+| 実装例: slideSettingsAPI | L133 |
+| 実装例: skillCreatorAPI | L182 |
+| 実装例: skillFileAPI（TASK-9A-B） | L284 |
+| 自動更新のセキュリティ | L357 |
+| 関連ドキュメント | L368 |
 
 ### references/security-implementation.md
 
@@ -1065,15 +1063,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
 | スキル管理IPCセキュリティ | L16 |
-| スキルインポートIPCチャネル（TASK-4-1） | L71 |
-| Claude Code CLI連携セキュリティ | L116 |
-| Skill Execution Preload API セキュリティ | L177 |
-| Permission IPC Handler セキュリティ | L222 |
-| SkillAPI Preload実装（TASK-5-1） | L258 |
-| 完了タスク | L324 |
-| 残課題 | L367 |
-| 関連ドキュメント | L381 |
-| 変更履歴 | L392 |
+| スキルインポートIPCチャネル（TASK-4-1） | L69 |
+| Claude Code CLI連携セキュリティ | L114 |
+| Skill Execution Preload API セキュリティ | L175 |
+| Permission IPC Handler セキュリティ | L220 |
+| SkillAPI Preload実装（TASK-5-1） | L256 |
+| 完了タスク | L322 |
+| 残課題 | L365 |
+| 関連ドキュメント | L379 |
+| 変更履歴 | L390 |
 
 ---
 
@@ -1488,29 +1486,41 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L149 |
 | 適用事例 | L163 |
 
+### references/ipc-type-resolution-guide.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L10 |
+| IPC 型不整合の分類 | L18 |
+| 診断ワークフロー | L30 |
+| 解決パターン | L65 |
+| 予防策チェックリスト | L114 |
+| 関連ドキュメント | L129 |
+| 適用実績 | L140 |
+| 変更履歴 | L150 |
+
 ### references/lessons-learned.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L61 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L177 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L247 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L555 |
-| 関連ドキュメント | L694 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L704 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L881 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L939 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1082 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1186 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1332 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1387 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1669 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L1757 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1976 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2123 |
-| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L2230 |
-| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L2304 |
+| 目次 | L56 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L163 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L414 |
+| 関連ドキュメント | L553 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L563 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L740 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L798 |
+| TASK-FIX-14-1: console → electron-log 移行 | L941 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L1045 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1191 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1246 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1528 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L1616 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1835 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L1982 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L2089 |
+| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L2163 |
+| UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止 | L2280 |
 
 ### references/llm-embedding.md
 
@@ -1852,9 +1862,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L742 |
-| 関連ドキュメント | L855 |
-| 変更履歴 | L865 |
+| 残課題（未タスク） | L769 |
+| 関連ドキュメント | L878 |
+| 変更履歴 | L888 |
 
 ### references/testing-accessibility.md
 

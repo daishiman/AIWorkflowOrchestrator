@@ -1616,6 +1616,58 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 ---
 
+### S13: IPC 戻り値型2ステップ変換パターン（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 2026-02-21実装）
+
+IPC ハンドラの戻り値型がサービス層の戻り値型と一致しない場合に、2ステップ呼び出しで型を変換するパターン。
+
+| 要素 | 説明 |
+|------|------|
+| 問題 | `skill:import` ハンドラが `importSkills()` の戻り値 `ImportResult`（`{ success, importedCount, errors }`）をそのまま返していたが、Renderer 側は `ImportedSkill`（`{ name, description, path, importedAt, status, agents }`）を期待していた。2つの型は共有フィールドがゼロであり、型変換が必須 |
+| 発生条件 | サービス層の「操作結果型」と Renderer が必要とする「データ表現型」が異なる場合。特に POST 系操作（import/create/update）で操作結果ではなくリソース表現が必要な場合 |
+| 検出の困難さ | Preload 層がモック化されているためコンパイル時に検出不可。ランタイムで `args?.skillIds` が `undefined` となり、バリデーションエラーとして初めて顕在化する |
+| 解決策 | 2ステップ呼び出し: ①操作実行（`importSkills([skillName])`） → ②データ取得（`getSkillByName(skillName)`）で期待型のオブジェクトを返却 |
+| 不採用案 | A案: ImportResult→ImportedSkill の手動マッピング（importSkills が返さないフィールドが多すぎる）。B案: importSkills の内部変更（他の呼び出し元への影響が大きい） |
+
+**2ステップ変換のデータフロー**:
+
+| ステップ | API呼び出し | 入力 | 出力型 | 目的 |
+|----------|------------|------|--------|------|
+| 1 | `skillService.importSkills([skillName])` | `string[]` | `ImportResult` | スキルファイルのインポート実行 |
+| 2 | `skillService.getSkillByName(skillName)` | `string` | `ImportedSkill \| undefined` | インポート済みスキルのデータ表現取得 |
+
+**P42準拠3段バリデーション**（ハンドラ入口で実施）:
+
+| 段階 | チェック内容 | エラー |
+|------|-------------|--------|
+| 1 | `typeof skillName !== "string"` | 型不一致 |
+| 2 | `skillName === ""` | 空文字列 |
+| 3 | `skillName.trim() === ""` | スペースのみ |
+
+**苦戦箇所と解決策**:
+
+| # | 苦戦ポイント | 原因 | 解決策 | 教訓 |
+|---|-------------|------|--------|------|
+| 1 | IPC インターフェース不整合がランタイムまで検出不可 | Preload がモック化されるため、Main handler の引数型と Preload の送信型の不一致がコンパイル時に検出されない | E2E統合テスト、または IPC 契約テスト（Mock を使わず実際の IPC を通す）の導入を検討 | IPC 境界は「型安全ではない」と認識し、ランタイム型チェックを必ず入れる |
+| 2 | ImportResult と ImportedSkill の型形状が完全に異なる | サービス層は「操作の成否」を返し、UI 層は「リソースのデータ表現」を必要とする。関心事の違い | 2ステップ変換パターン: 操作実行 → データ再取得 | POST 系操作の IPC ハンドラは「操作 + 取得」の2ステップを標準化する |
+| 3 | 引数名の契約ドリフト（skillId vs skillName） | ハンドラ設計時に ID ベースで命名したが、実際の値はスキル名 | 全レイヤーで引数名を `skillName` に統一 | 引数名は「実際の値のセマンティクス」に合致させる |
+| 4 | 3層同時更新の必要性（Main・Preload・Test） | P23/P32 パターン: IPC 関連の型変更は必ず複数ファイルに波及する | 変更前に `grep` で全影響箇所を特定し、1コミットで同時更新 | IPC 変更時は「影響範囲リスト」を事前に作成する |
+| 5 | getSkillByName が null を返す場合のエラーハンドリング | importSkills 成功後でも、内部キャッシュのタイミングにより null が返る可能性がある | IMPORT_ERROR を throw し、Renderer 側で適切にエラー表示 | 2ステップ目の「取得失敗」は独立したエラーケースとして設計する |
+
+**適用判断基準**:
+
+| 条件 | 判断 |
+|------|------|
+| サービス戻り値と UI 期待型が一致する | 直接返却（変換不要） |
+| 戻り値から UI 期待型への機械的マッピングが可能 | マッピング関数で変換 |
+| 戻り値と UI 期待型に共有フィールドがない | **2ステップ変換パターン** |
+| 操作結果ではなくリソース表現が必要 | **2ステップ変換パターン** |
+
+**関連 Pitfall**: P23（API二重定義の型管理）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）、P44（IPC ハンドラと Preload のインターフェース不整合）、P45（IPC引数命名の契約ドリフト）
+
+**関連タスク**: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001（2026-02-21完了）
+
+---
+
 ### IPC ハンドラ二重登録防止パターン（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 2026-02-14実装）
 
 macOS の `activate` イベントでウィンドウを再作成する際に、`ipcMain.handle()` の二重登録例外を防止するパターン。
@@ -1816,6 +1868,7 @@ Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }
 |---------|------|---------|
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル） |
+| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: S13 IPC戻り値型2ステップ変換パターン追加（苦戦箇所5件記録、適用判断基準テーブル、P42/P44/P45準拠） |
 | v1.25.0 | 2026-02-19 | TASK-9A-C: SkillEditor実装パターン追加（textareaベースコードエディター、FileTree内部状態管理、IPC連携ファイル編集、Pitfall事前組み込み） |
 | v1.24.0 | 2026-02-19 | TASK-9A-B: isKnownSkillFileError型ガードパターン追加、IPC3層テスト分離パターン追加（Unit 38 / Security 14 / Integration 13、カバレッジ Line 91.14% / Branch 93.93% / Function 100%） |
 | v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |

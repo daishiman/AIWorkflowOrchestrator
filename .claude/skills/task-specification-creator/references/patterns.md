@@ -19,6 +19,7 @@
 | [Main→Renderer IPC](#mainrenderer-ipc実装パターンtask-wce-monaco-001)                                 | 1件        | 逆方向通信パターン               |
 | [サービス設計](#サービス設計パターンtask-9b-g)                                                        | 4件        | Facade・Script First             |
 | [Zustand Store](#zustand-store-hooks無限ループ対策パターンut-fix-store-hooks-infinite-loop-001)      | 1件        | 無限ループ対策・useRefガード     |
+| [IPC型不整合解決](#ipc型不整合解決パターンut-fix-skill-import-return-type-001)     | 2件        | IPC戻り値型変換・3層整合性確認   |
 
 ---
 
@@ -1863,6 +1864,53 @@
 
 ---
 
+## IPC型不整合解決パターン（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001）
+
+### IPC戻り値型2ステップ変換パターン（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 2026-02-21）
+
+- **状況**: `skill:import` IPC ハンドラが `ImportResult` を返すが、Renderer は `ImportedSkill` を期待。2つの型は共有フィールドがゼロ
+- **問題**: サービス層の「操作結果型」と UI 層の「データ表現型」の不一致。型変換（マッピング）では解決できない（フィールドが完全に異なる）
+- **パターン**: 2ステップ呼び出し: (1)操作実行（importSkills）→ (2)データ取得（getSkillByName）
+- **実装ポイント**:
+  1. 操作実行（Step 1）で `ImportResult` を取得し、`success` と `importedCount` を検証
+  2. データ取得（Step 2）で `ImportedSkill` を取得し、null チェック
+  3. 各ステップの失敗は独立したエラーコード（`IMPORT_ERROR`）で処理
+  4. 入口でP42準拠の3段バリデーション（型チェック → 空文字列 → trim空文字列）
+- **苦戦箇所と教訓**:
+  | # | 苦戦ポイント | 教訓 |
+  | --- | --- | --- |
+  | 1 | IPC インターフェース不整合がランタイムまで検出不可 | IPC 境界は「型安全ではない」と認識し、ランタイム型チェックを必ず入れる |
+  | 2 | ImportResult と ImportedSkill の型形状が完全に異なる | POST系操作の IPC ハンドラは「操作＋取得」の2ステップを標準化する |
+  | 3 | 引数名の契約ドリフト（skillId vs skillName） | 引数名は「実際の値のセマンティクス」に合致させる |
+  | 4 | 3層同時更新の必要性（Main・Preload・Test） | IPC 変更時は「影響範囲リスト」を事前に作成する |
+  | 5 | Phase 12で7+仕様書の同時更新 | P43準拠: 3ファイル以下/エージェントに分割、LOGSは最終ステップで記録 |
+- **結果**: 174テスト全PASS、修正対象10分岐100%カバー、Branch Coverage 84.9%
+- **適用条件**: サービス戻り値と UI 期待型に共有フィールドがない場合、または操作結果ではなくリソース表現が必要な場合
+- **関連パターン**: [S13: architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **関連Pitfall**: P23, P32, P42, P44, P45
+- **発見日**: 2026-02-21
+- **関連タスク**: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001
+
+### Phase 12 並列エージェント最適化パターン（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 2026-02-21）
+
+- **状況**: Phase 12 Task 2（システム仕様書更新）で7+ファイルを更新する必要がある
+- **問題**: P43（Phase 12サブエージェントのrate limit中断）: 1エージェントに7ファイルを委譲すると中断リスクが高い
+- **パターン**: 3ファイル以下/エージェントに分割し、3並列で実行
+- **実装ポイント**:
+  | エージェント | 担当ファイル | 編集数 |
+  | --- | --- | --- |
+  | Agent 1 | interfaces-agent-sdk-skill.md, arch-electron-services.md, security-skill-ipc.md | 6件 |
+  | Agent 2 | LOGS.md x2, SKILL.md x2 | 4件 |
+  | Agent 3 | task-workflow.md | 3件 |
+- **重要な順序**: LOGS.md への「完了」記録は全ファイル更新後の最終ステップとする（P43教訓）
+- **結果**: 全3エージェントが正常完了。rate limit 中断なし
+- **適用条件**: Phase 12 Task 2で4ファイル以上の仕様書更新がある場合
+- **教訓**: 各エージェントには編集対象の正確な行番号と前後のコンテキストを提供することで、編集精度が向上する。事前に Read tool で確認してから起動する
+- **発見日**: 2026-02-21
+- **関連タスク**: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001
+
+---
+
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                                                                                |
@@ -1870,6 +1918,7 @@
 | **2026-02-21** | **worktree運用時のPhase 12先送り誤判断を是正**: 成功パターン「worktree環境でもStep 1-Aを先送りしない」を追加。未実施タスク誤配置検出コマンド（completed配下の未着手/未実施検知）と `verify-unassigned-links.js` 最終検証を標準化 |
 | **2026-02-21** | **IPC不整合姉妹タスク横展開検出パターン追加**: 成功パターン1件（Phase 12未タスク検出時の横展開検証）追加。クイックナビゲーション更新（成功47+件） |
 | **2026-02-21** | **UT-FIX-SKILL-IMPORT-INTERFACE-001知見反映**: 成功パターン2件（P44 IPCインターフェース不整合体系的修正、7並列エージェント仕様書生成）・失敗パターン1件（artifacts.json Phaseステータス更新忘れ）追加。クイックナビゲーション更新（失敗9件・成功46+件） |
+| **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001知見追加**: IPC型不整合解決パターン2件（IPC戻り値型2ステップ変換、Phase 12並列エージェント最適化）追加。クイックナビゲーションにIPC型不整合解決カテゴリ追加 |
 | **2026-02-19** | **TASK-9A-C仕様書作成知見反映**: 成功パターン2件（4並列Phase 1分析、既知Pitfall仕様書事前組み込み）・失敗パターン2件（APIレートリミット、complete-phase.jsパス解決誤り）追加。クイックナビゲーション更新（失敗8件・成功44+件） |
 | **2026-02-12** | **UT-STORE-HOOKS-COMPONENT-MIGRATION-001知見追加**: Phase 12 spec-update-workflow全Step逐次実行パターン追加（チェックリスト駆動、12項目更新漏れ防止） |
 | **2026-02-11** | **TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION知見追加**: Setter Injectionによる遅延初期化パターン追加（BrowserWindow依存DI、DIパターン使い分け基準テーブル）。関連Pitfall P34/P35参照                       |

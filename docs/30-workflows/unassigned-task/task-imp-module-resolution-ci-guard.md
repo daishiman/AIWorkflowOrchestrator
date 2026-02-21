@@ -6,50 +6,50 @@
 issue_number: 845
 ```
 
-| 項目       | 値                                                          |
-| ---------- | ----------------------------------------------------------- |
-| タスクID   | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001                     |
-| 分類       | 改善                                                        |
-| 対象機能   | CI/CD パイプライン、`@repo/shared` モジュール解決           |
-| 優先度     | 高                                                          |
-| 見積もり   | 中規模（Phase 1-13 合計）                                   |
-| 発見元     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 10 MINOR判定 |
-| 発見日     | 2026-02-20                                                  |
-| ステータス | 未着手                                                      |
+| 項目         | 内容                                                               |
+| ------------ | ------------------------------------------------------------------ |
+| タスクID     | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001                            |
+| タスク名     | `@repo/shared` モジュール解決3層整合 CI ガード                     |
+| 分類         | 改善                                                               |
+| 対象機能     | CI 品質ゲート / CI/CD パイプライン / `@repo/shared` モジュール解決 |
+| 優先度       | 高                                                                 |
+| 見積もり規模 | 小規模                                                             |
+| ステータス   | 未実施                                                             |
+| 発見元       | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 10 MINOR            |
+| 発見日       | 2026-02-21                                                         |
 
 ---
 
-## 1. なぜこのタスクが必要か（Why）
+## 1. 背景
 
-### 1.1 背景
+モジュール解決不整合はローカル環境では見落とされ、CIまたは後続タスクで発覚しやすい。早期検知用の専用ガードが不足している。
 
-TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 において、`@repo/shared` パッケージの以下3層の設定不整合により 228件の TS2307 エラーが発生した:
+## 2. 目的
 
-1. **`packages/shared/package.json` の `exports` フィールド** — パッケージ外部からのモジュール解決エントリポイント
-2. **`apps/desktop/tsconfig.json` の `compilerOptions.paths`** — TypeScript コンパイラのモジュール解決マッピング
-3. **`apps/desktop/vitest.config.ts` の `resolve.alias`** — Vitest テスト実行時のモジュール解決マッピング
+`exports` / `typesVersions` / `paths` / `vitest alias` の整合をCIで常時検証し、不整合をPR段階で停止させる。
 
-現在、この3層は手動で個別管理されている。修正タスク完了後に以下2つのテストファイルが追加された:
+## 3. スコープ
 
-- `apps/desktop/src/__tests__/shared-module-resolution.test.ts` — exports ↔ paths の整合性検証（4テストグループ、T-SMR-01〜T-SMR-04）
-- `apps/desktop/src/__tests__/vitest-alias-consistency.test.ts` — alias ↔ paths の整合性検証（4テストグループ、T-VAC-01〜T-VAC-04）
+- 含むもの: 整合チェックスクリプト実行、CIジョブ追加、失敗時メッセージ改善
+- 含まないもの: 各設定値の個別設計変更
 
-これらのテストはアプリケーションテストスイート（`pnpm --filter @repo/desktop test:run`）内に組み込まれており、CIでは `test-desktop` ジョブ（16シャード並列）の一部として実行される。独立した早期チェックとしては実行されていない。
+## 4. 実行手順（概要）
 
-### 1.2 問題点
+1. 既存チェック（typecheck / vitest）に加えて整合専用チェックを追加
+2. 失敗時に「不足箇所」を機械可読かつ人間可読で出力
+3. CIワークフローへ組み込み、必須チェック化
 
-| #   | 問題                                     | 具体的な影響                                                                                                                                              |
-| --- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | 3層不整合が専用チェックで検出されない    | `pnpm typecheck` や `pnpm test` の一般的な失敗メッセージに埋もれ、根本原因特定に時間がかかる                                                              |
-| 2   | 新規サブパス追加時の不整合が見落とされる | `exports` に新サブパスを追加しても `paths` や `alias` の更新を忘れた場合、PRレビューでは検出困難                                                          |
-| 3   | エラーの種別判別が困難                   | テスト失敗時に「モジュール解決エラー」なのか「実装バグ」なのか、CI出力からは判別しにくい                                                                  |
-| 4   | CI実行時間の無駄遣い                     | 3層不整合がある場合、`build-shared` → `typecheck` → `test-desktop`（16シャード全て）が実行されてからエラーが判明する。早期検出なら1分以内で失敗通知が可能 |
+## 5. 完了条件
 
-### 1.3 放置した場合の影響
+- [ ] CIで整合ガードが実行される
+- [ ] 不整合時にPRが失敗する
+- [ ] 修正ガイドが仕様書に記載される
 
-- **228エラー再発リスク**: 新規サブパス追加やパス変更のたびに不整合が紛れ込む
-- **デバッグコスト増大**: 不整合原因の特定に毎回30分〜1時間のデバッグが発生
-- **CIリソースの浪費**: 不整合状態のまま全ジョブが実行され、16シャード分のコンピュートリソースが無駄になる
+## 6. 参照
+
+- `.claude/skills/aiworkflow-requirements/references/task-workflow.md`
+- `docs/30-workflows/unassigned-task/task-imp-vitest-alias-sync-automation-001.md`
+- `docs/30-workflows/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md`
 
 ---
 
