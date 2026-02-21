@@ -34,7 +34,7 @@ issue_number: null
 
 ### 1.1 背景
 
-`pnpm --filter @repo/desktop dev` でアプリケーションを起動すると、以下のエラーが2回発生する：
+`pnpm --filter @repo/desktop dev` でアプリケーションを起動し、スキルインポート操作を実行すると、以下のエラーが**毎回**発生する（2026-02-21実機確認: 5回実行→5回エラー、再現率100%）：
 
 ```
 Error occurred in handler for 'skill:import': { code: 'VALIDATION_ERROR', message: 'skillIds must be an array' }
@@ -64,12 +64,9 @@ Main:      args = "my-skill"                          ← argsが文字列
            → VALIDATION_ERROR
 ```
 
-**エラー2回発生の原因分析**:
+**エラー再現性**（2026-02-21実機確認）: スキルインポート操作を実行するたびに100%再現する。5回実行→5回エラー。
 
-1. **1回目**: `agentSlice.ts` の `importSkill()` が認証完了後のスキル初期化で呼び出される
-2. **2回目**: React StrictMode（development環境）の `useEffect` 二重実行、またはコンポーネント再マウントによる再呼び出し
-
-確認方法: 起動ログのエラータイムスタンプの差分（同時発生 or 500ms差等）で原因を特定可能。
+**エラー発生の原因**: IPCハンドラが `{ skillIds: string[] }` 形式のオブジェクト引数を期待しているが、Preload側から `string`（単一スキル名）がそのまま渡されるため、`args?.skillIds` が `undefined` となりバリデーションエラーが発生する。
 
 **同一パターンの未修正箇所**: `skill:remove` ハンドラにも同一のインターフェース不整合が存在する（ハンドラ: `{ skillId: string }` vs Preload: `skillName` string直接渡し）。詳細は関連タスク UT-FIX-SKILL-REMOVE-INTERFACE-001 を参照。
 
@@ -349,12 +346,12 @@ pnpm --filter @repo/desktop dev
 
 ## 7. リスクと対策
 
-| リスク                                             | 影響度 | 発生確率 | 対策                                                                    |
-| -------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------- |
-| skillService.importSkills() が配列のみ受け取り可能 | 中     | 中       | ハンドラ内部で `[skillName]` として配列化してから渡す                   |
-| Preload側の型定義（types.ts）との不整合            | 中     | 中       | P32準拠で `preload/types.ts` と `shared/types.ts` を同時更新            |
-| エラー2回発生の根本原因が別にある                  | 低     | 低       | インターフェース修正後にまだ2回呼ばれるか確認。別問題なら追加未タスク化 |
-| テストのモック設定が不完全                         | 低     | 低       | 統合テストを追加して実際のIPC通信パスを検証                             |
+| リスク                                             | 影響度 | 発生確率 | 対策                                                                                      |
+| -------------------------------------------------- | ------ | -------- | ----------------------------------------------------------------------------------------- |
+| skillService.importSkills() が配列のみ受け取り可能 | 中     | 中       | ハンドラ内部で `[skillName]` として配列化してから渡す                                     |
+| Preload側の型定義（types.ts）との不整合            | 中     | 中       | P32準拠で `preload/types.ts` と `shared/types.ts` を同時更新                              |
+| インターフェース修正後も他の箇所で不整合が残る     | 低     | 低       | P23準拠で3箇所同時更新（ハンドラ・Preload・型定義）を確認。修正後にランタイムテストで検証 |
+| テストのモック設定が不完全                         | 低     | 低       | 統合テストを追加して実際のIPC通信パスを検証                                               |
 
 ---
 
@@ -402,14 +399,14 @@ pnpm --filter @repo/desktop dev
 
 ### 発見時の状況
 
-`pnpm --filter @repo/desktop dev` でアプリケーションを起動した際、コンソールに以下のエラーが2回出力された：
+`pnpm --filter @repo/desktop dev` でアプリケーションを起動し、スキルインポート操作を実行した際、コンソールに以下のエラーが出力された（2026-02-21実機確認: 5回実行→5回エラー、再現率100%）：
 
 ```
-Error occurred in handler for 'skill:import': { code: 'VALIDATION_ERROR', message: 'skillIds must be an array' }
+[AuthFlowOrchestrator] Session established successfully
 Error occurred in handler for 'skill:import': { code: 'VALIDATION_ERROR', message: 'skillIds must be an array' }
 ```
 
-OAuth認証フロー完了直後に発生しており、認証完了後のスキル初期化処理（`agentSlice.ts` の `importSkill`）から呼び出されている。
+スキルインポート操作を実行するたびに確実に発生する。原因はIPCハンドラとPreload APIのインターフェース不整合であり、ハンドラ側の引数形式を `string` に統一することで解消する。
 
 ### 設計上の考察
 
