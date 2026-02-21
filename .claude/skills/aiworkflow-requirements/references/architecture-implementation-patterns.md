@@ -1715,10 +1715,39 @@ Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開�
 
 ---
 
+## IPC インターフェース不整合修正パターン（P44/P45解決）
+
+### 問題
+
+Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }`）を期待しているのに、Preload側が単一文字列 `skillName` を渡す。contextBridgeのモック化によりコンパイル時には検出されず、ランタイムで初めて顕在化する。
+
+### 解決パターン
+
+1. ハンドラ側をPreload側の引数形式に合わせる（アプローチA）
+2. P42準拠の3段バリデーション適用（typeof → 空文字列 → trim空文字列）
+3. 引数命名をセマンティクスに一致させる（skillId → skillName）
+4. P23/P32準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
+
+### 実装苦戦箇所と対策
+
+| 苦戦箇所 | 原因 | 対策 |
+|----------|------|------|
+| Phase依存順序違反 | 5エージェント並列ディスパッチでPhase 1-3完了前にPhase 4-7が先行 | Phase依存チェーンを尊重し、ゲートPhase（3, 10）前後で並列化区間を分離 |
+| worktree環境でのPhase 11 | Electron起動不可 | 自動テスト（vitest）で代替し、制約を明記 |
+| カバレッジ閾値解釈 | skillHandlers.ts全体のLine 45%は低いが修正対象は全分岐カバー | ハンドラ固有の分岐カバー率を別途記録し、ファイル全体の数値と区別 |
+
+### 関連Pitfall・タスク
+
+- **関連Pitfall**: P23, P32, P42, P44, P45
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001, UT-FIX-SKILL-IMPORT-INTERFACE-001
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
 | v1.25.0 | 2026-02-19 | TASK-9A-C: SkillEditor実装パターン追加（textareaベースコードエディター、FileTree内部状態管理、IPC連携ファイル編集、Pitfall事前組み込み） |
 | v1.24.0 | 2026-02-19 | TASK-9A-B: isKnownSkillFileError型ガードパターン追加、IPC3層テスト分離パターン追加（Unit 38 / Security 14 / Integration 13、カバレッジ Line 91.14% / Branch 93.93% / Function 100%） |
 | v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |
