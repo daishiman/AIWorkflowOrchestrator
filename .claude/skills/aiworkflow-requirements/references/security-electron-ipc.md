@@ -11,6 +11,8 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.7.0     | 2026-02-21 | 契約ドリフト防止（P44/P45対策）セクション追加: ipc-contract-checklist.md参照・3箇所同時更新ルール・3段バリデーション検証テーブルを明文化 |
+| v1.6.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: Skill API（`skill:import`/`skill:remove`）の引数検証パターンを `skillName` 非空文字列（`trim()`含む）へ統一し、契約ドリフト対策を明文化 |
 | v1.5.0     | 2026-02-19 | TASK-9A-B: skillFileAPIセキュリティ実装パターン追加（validateIpcSender + 引数バリデーション + SkillFileManager内部検証 + isKnownSkillFileErrorエラーサニタイズ）。6チャンネル、65テスト全PASS |
 | v1.4.0     | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラライフサイクル管理セクション追加（二重登録防止パターン） |
 | v1.3.1     | 2026-02-12 | UT-9B-H-003仕様追補: skillCreatorHandlers.ts 実装に合わせ、エラーサニタイズ仕様（既定文言/パス・機密情報マスク）と schemaName ホワイトリスト検証の返却値を明記 |
@@ -75,6 +77,33 @@
 - nodeモジュールの直接公開
 - ファイルシステムへの無制限アクセス
 - シェルコマンドの無制限実行
+
+### Skill API 引数検証パターン（UT-FIX-SKILL-IMPORT-INTERFACE-001）
+
+`skill:import` / `skill:remove` は Renderer から単一文字列 `skillName` を受け取る契約に統一する。
+
+| チャンネル | 検証条件 | エラー |
+| --- | --- | --- |
+| `skill:import` | `typeof skillName === "string"` かつ `skillName.trim() !== ""` | `VALIDATION_ERROR` / `skillName must be a non-empty string` |
+| `skill:remove` | `typeof skillName === "string"` かつ `skillName.trim() !== ""` | `VALIDATION_ERROR` / `skillName must be a non-empty string` |
+
+補足:
+- 検証は Main ハンドラーで実施し、Preload/Renderer の呼び出し契約と一致させる。
+- 旧形式（`{ skillIds: string[] }` / `{ skillId: string }`）は受け付けない。
+
+#### 契約ドリフト防止（P44/P45対策）
+
+IPC ハンドラの引数形式が Preload 側と乖離する「契約ドリフト」を防止するため：
+
+- 新規ハンドラ作成時: [ipc-contract-checklist.md](./ipc-contract-checklist.md) Phase 1-6 を実施
+- 引数形式変更時: P23/P32 準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
+- バリデーション: P42準拠3段バリデーション必須
+
+| 検証項目 | 確認方法 |
+|---------|---------|
+| 引数形式一致 | ハンドラ型定義 vs Preload `safeInvoke` 呼び出し |
+| 引数名セマンティクス | 実際の値が `skillId` か `skillName` か確認 |
+| バリデーション網羅 | `typeof` + `=== ""` + `.trim() === ""` の3段 |
 
 ---
 

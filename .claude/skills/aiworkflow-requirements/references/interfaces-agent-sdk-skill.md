@@ -428,6 +428,15 @@ Zustand Sliceパターンで実装された状態管理。
 | `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
 | `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
 
+#### `skill:import` リクエスト契約（UT-FIX-SKILL-IMPORT-INTERFACE-001）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 引数形式 | `skillName: string`（オブジェクトラップなし） |
+| 変換処理 | Mainハンドラー内部で `skillService.importSkills([skillName])` に配列化 |
+| バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
+| エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` |
+
 #### `skill:remove` リクエスト契約（UT-FIX-SKILL-REMOVE-INTERFACE-001）
 
 | 項目 | 契約 |
@@ -1500,6 +1509,42 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ## 完了タスク
 
+### UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import IPCインターフェース不整合修正（2026-02-21完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-FIX-SKILL-IMPORT-INTERFACE-001                                   |
+| 完了日       | 2026-02-21                                                           |
+| ステータス   | **完了**                                                             |
+| テスト数     | 52（`skillHandlers.test.ts`）                                       |
+| ドキュメント | `docs/30-workflows/ut-fix-skill-import-interface-001/`              |
+
+#### 変更ポイント
+
+| 変更箇所 | 内容 |
+| -------- | ---- |
+| Main IPCハンドラー | `skill:import` が `{ skillIds: string[] }` 受け取りから `skillName: string` 直接受け取りに変更 |
+| 入力検証 | `trim()` を含む非空文字列検証を追加（P42準拠） |
+| Service呼び出し | `skillService.importSkills([skillName])` で既存Service API互換を維持 |
+| テスト | SH-IMP-01〜13へ更新（旧形式オブジェクト拒否・境界値・sender検証を含む） |
+
+#### 関連ドキュメント
+
+| ドキュメント | 説明 |
+| ------------ | ---- |
+| [UT-FIX-SKILL-IMPORT-INTERFACE-001 実装ガイド](../../../../docs/30-workflows/ut-fix-skill-import-interface-001/outputs/phase-12/implementation-guide.md) | 概念説明（Part 1）と技術詳細（Part 2） |
+| [完了タスク指示書](../../../../docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-ut-fix-skill-import-interface-001.md) | 元タスクの完了記録 |
+
+#### 実装上の課題と教訓
+
+| 課題 | 解決策 | 教訓 |
+| --- | --- | --- |
+| `phase-12` 成果物は生成済みでも、仕様書本体が未実施のまま残る | `phase-12-documentation.md` のステータス/完了条件を成果物と同時同期 | 成果物作成だけで完了判定せず、仕様書本体の状態も同一ターンで更新する |
+| タスク移動後に旧参照パスが残る | `rg` で旧パスを横断検出し、`completed-task` 側に統一 | ワークフロー移動時はリンク整合チェックを必須工程にする |
+| Vitest をルートで実行すると alias 解決が崩れる | `apps/desktop` ディレクトリで `vitest run` を実行して証跡化 | テスト実行ディレクトリは再現性要件として明示する |
+
+---
+
 ### UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove IPCインターフェース不整合修正（2026-02-20完了）
 
 | 項目         | 内容                                                                 |
@@ -1671,7 +1716,9 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-21 | 1.26.0     | UT-FIX-SKILL-IMPORT-INTERFACE-001 追補: 「実装上の課題と教訓」を追加（Phase 12ステータス同期、旧参照パス残存、Vitest実行ディレクトリ差異） |
 | 2026-02-21 | 1.25.0     | UT-FIX-SKILL-REMOVE-INTERFACE-001: Phase実行時の追加教訓テーブル追加（Phase依存順序違反・worktree Phase 11制約・カバレッジスコープ解釈） |
+| 2026-02-21 | 1.25.0     | UT-FIX-SKILL-IMPORT-INTERFACE-001完了反映。`skill:import` の引数契約を `skillName: string` に統一し、バリデーション仕様・完了タスク記録を追加 |
 | 2026-02-20 | 1.24.0     | 完了済み UT-9B-H-003 の参照先を `docs/30-workflows/completed-tasks/ut-9b-h-003-security-hardening/index.md` に更新（削除済み旧パスの整合修正） |
 | 2026-02-20 | 1.23.0     | UT-FIX-SKILL-REMOVE-INTERFACE-001完了反映。`skill:remove` の引数契約を `skillName: string` に更新し、バリデーション仕様・完了タスク記録を追加 |
 | 2026-02-19 | 1.22.0     | TASK-9A-C: 関連未タスク3件の参照テーブル追加（TASK-9A-C-001/002/003）。ワークフローリンクをcompleted-tasks/に更新 |

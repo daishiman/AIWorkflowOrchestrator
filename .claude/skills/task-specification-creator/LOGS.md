@@ -57,6 +57,18 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-21 - verify-all-specs 参照パス検証精度改善]
+
+- **Agent**: task-specification-creator
+- **Phase**: 検証スクリプト改善
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - `scripts/verify-all-specs.js` のインラインコード抽出を単一行に限定し、改行またぎ誤検出を解消
+  - 参照パス存在判定を「workflow相対 + リポジトリ相対」の両方に拡張し、ワークフロー移動後の偽陽性を抑止
+  - `docs/30-workflows/ut-fix-skill-import-interface-001/` で再検証し、`--strict --json` で `errors=0/warnings=0/info=0` を確認
+
+---
 ## [2026-02-20 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12未タスク配置監査是正]
 
 - **Agent**: task-specification-creator
@@ -4067,3 +4079,32 @@ if (artifactPath) {
 
 - ステータス: success
 - 完了日時: 2026-02-21
+
+---
+
+## 2026-02-21 - UT-FIX-SKILL-IMPORT-INTERFACE-001 完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- タスクID: UT-FIX-SKILL-IMPORT-INTERFACE-001
+- タスク名: skill:import IPCハンドラ・Preloadインターフェース不整合修正
+- Phase: 1-12 完了
+
+### 実施内容
+
+- Phase 1-12の全仕様書作成・実行完了（7並列エージェントで効率的に実行）
+- 成果物17ファイル＋検証レポート1ファイル生成
+- verify-all-specs.js: PASS（13/13 Phase, 0 errors, 0 warnings）
+- artifacts.json Phase 1-12 全てcompletedに更新
+
+### 苦戦箇所
+
+1. **並列エージェント完了待ち**: 7エージェント並列実行時のrate limit管理とタイムアウト
+2. **artifacts.json ステータス更新のタイミング**: complete-phase.js vs 手動更新の判断
+3. **コンテキスト消費**: 大量の仕様書ルールと参照資料によるコンテキスト圧迫
+
+### 結果
+
+- ステータス: success
+- テスト: 104件全PASS

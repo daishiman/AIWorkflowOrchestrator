@@ -323,9 +323,10 @@ describe("Skill IPC Integration", () => {
     it("TC-04: should import skill and return ImportResult", async () => {
       mockSkillService.importSkills.mockResolvedValue(MOCK_IMPORT_SUCCESS);
       const handler = handlers.get("skill:import")!;
-      const result = (await handler(createMockIpcEvent(), {
-        skillIds: ["new-skill"],
-      })) as { success: boolean; importedCount: number };
+      const result = (await handler(createMockIpcEvent(), "new-skill")) as {
+        success: boolean;
+        importedCount: number;
+      };
       expect(result.success).toBe(true);
       expect(result.importedCount).toBe(1);
       expect(mockSkillService.importSkills).toHaveBeenCalledWith(["new-skill"]);
@@ -339,9 +340,10 @@ describe("Skill IPC Integration", () => {
         errors: ["Already imported"],
       });
       const handler = handlers.get("skill:import")!;
-      const result = (await handler(createMockIpcEvent(), {
-        skillIds: ["existing-skill"],
-      })) as { success: boolean; errors: string[] };
+      const result = (await handler(
+        createMockIpcEvent(),
+        "existing-skill",
+      )) as { success: boolean; errors: string[] };
       expect(result.success).toBe(false);
       expect(result.errors).toContain("Already imported");
       expect(validateIpcSender).toHaveBeenCalled();
@@ -353,7 +355,7 @@ describe("Skill IPC Integration", () => {
       );
       const handler = handlers.get("skill:import")!;
       await expect(
-        handler(createMockIpcEvent(), { skillIds: ["nonexistent"] }),
+        handler(createMockIpcEvent(), "nonexistent"),
       ).rejects.toThrow("Skill not found");
       expect(validateIpcSender).toHaveBeenCalled();
     });
@@ -548,13 +550,27 @@ describe("Skill IPC Integration", () => {
 
   // --- Edge Cases: skill:import validation ---
   describe("skill:import - validation", () => {
-    it("should throw when skillIds is not an array", async () => {
+    it("should throw when skillName is not a string", async () => {
       const handler = handlers.get("skill:import")!;
-      await expect(
-        handler(createMockIpcEvent(), { skillIds: "not-array" }),
-      ).rejects.toMatchObject({
+      await expect(handler(createMockIpcEvent(), 123)).rejects.toMatchObject({
         code: "VALIDATION_ERROR",
-        message: "skillIds must be an array",
+        message: "skillName must be a non-empty string",
+      });
+    });
+
+    it("should throw when skillName is empty string", async () => {
+      const handler = handlers.get("skill:import")!;
+      await expect(handler(createMockIpcEvent(), "")).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "skillName must be a non-empty string",
+      });
+    });
+
+    it("should throw when skillName is whitespace only", async () => {
+      const handler = handlers.get("skill:import")!;
+      await expect(handler(createMockIpcEvent(), "   ")).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "skillName must be a non-empty string",
       });
     });
   });
