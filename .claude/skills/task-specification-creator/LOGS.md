@@ -69,6 +69,42 @@ node scripts/log-usage.js \
   - `docs/30-workflows/ut-fix-skill-import-interface-001/` で再検証し、`--strict --json` で `errors=0/warnings=0/info=0` を確認
 
 ---
+## 2026-02-21: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 未タスク検出・登録（3件）
+
+- **Agent**: detect-unassigned
+- **Phase**: Post-Phase 12（未タスク検出）
+- **Result**: ✓ 成功
+- **Notes**:
+  - skillHandlers.ts全14ハンドラのコード調査により未タスク3件を検出
+  - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001: IPC応答形式統一（3パターン混在解消）
+  - UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001: skill:get-detail引数名ドリフト修正（P45）
+  - UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: P42準拠バリデーション統一（6/11ハンドラ未準拠）
+  - 4ステップ登録完了: 指示書作成 → 物理ファイル確認 → task-workflow.md → interfaces-agent-sdk-skill.md
+  - verify-unassigned-links.js: ALL_LINKS_EXIST
+
+---
+
+## 2026-02-21: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 スキル改善（実装パターン文書化）
+
+- **Agent**: skill-improvement
+- **Phase**: Post-Phase 12（スキル改善）
+- **Result**: ✓ 成功
+- **Notes**: patterns.md に IPC型不整合解決パターン2件追加（IPC戻り値型2ステップ変換パターン、Phase 12並列エージェント最適化パターン）。クイックナビゲーションにIPC型不整合解決カテゴリ追加。変更履歴テーブルに2026-02-21エントリ追加
+
+## [2026-02-21 - UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12反映]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: -
+- **Notes**:
+  - skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）のPhase 12ドキュメント更新
+  - interfaces-agent-sdk-skill.md / arch-electron-services.md / security-skill-ipc.md / task-workflow.md を更新
+  - 実装ガイド（Part 1概念説明 + Part 2技術詳細）を作成
+  - 未タスク検出レポート出力（0件）
+
+---
+
 ## [2026-02-20 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12未タスク配置監査是正]
 
 - **Agent**: task-specification-creator

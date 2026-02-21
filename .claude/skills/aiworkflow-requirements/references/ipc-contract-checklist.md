@@ -166,4 +166,4 @@ grep -n "typeof.*string.*===" apps/desktop/src/main/ipc/ | grep -v "trim"
 |----------|---------|-------------|---------|
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | `skill:remove` | ハンドラー `{ skillId }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一 |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | `skill:import` | ハンドラー `{ skillIds: string[] }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一、内部で `[skillName]` 配列化 |
-| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待 | 未修正（未タスク: `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-return-type-001.md`） |
+| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待 | 完了（2026-02-21）: ハンドラーを2ステップ変換（`importSkills` → `getSkillByName`）に修正。記録: `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md` |

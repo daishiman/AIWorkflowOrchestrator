@@ -132,6 +132,33 @@
 
 ## 完了タスク
 
+### タスク: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 skill:import 戻り値型不整合修正（2026-02-21完了）
+
+| 項目       | 内容                                        |
+| ---------- | ------------------------------------------- |
+| タスクID   | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001         |
+| 完了日     | 2026-02-21                                  |
+| ステータス | **完了**                                    |
+| Phase      | Phase 1-12完了                              |
+| テスト数   | 115（全PASS）+ 59（agentSlice integration、全PASS） |
+| カバレッジ | Branch 84.9%（修正対象skill:importハンドラ全10分岐100%カバー） |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| ワークフロー一式     | `docs/30-workflows/ut-fix-skill-import-return-type-001/`                                           |
+| 実装ガイド           | `docs/30-workflows/ut-fix-skill-import-return-type-001/outputs/phase-12/implementation-guide.md`   |
+| ドキュメント更新履歴 | `docs/30-workflows/ut-fix-skill-import-return-type-001/outputs/phase-12/documentation-changelog.md`|
+| 未タスク検出レポート | `docs/30-workflows/ut-fix-skill-import-return-type-001/outputs/phase-12/unassigned-task-report.md` |
+
+#### 変更理由
+
+- skill:import IPCハンドラが `ImportResult` 型を返していたが、Preload/Renderer側は `ImportedSkill` 型を期待していた（P44パターン）
+- 2ステップ変換パターン（importSkills → getSkillByName）で `ImportedSkill` を返すように修正
+- P42準拠の3段バリデーション（型チェック → 空文字列 → trim空文字列）を追加
+- 引数形式を `{ skillIds: string[] }` → `skillName: string` に統一（P44/P45解決）
+
 ### タスク: TASK-9A-B スキルファイル操作IPCハンドラー実装（2026-02-19完了）
 
 | 項目       | 内容                                        |
@@ -817,7 +844,7 @@
 | task-imp-vitest-mock-reset-utility-001            | Vitest モック2段階リセットユーティリティ共通化                                                                   | 中     | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）                   | `docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`                                                                      |
 | task-ref-vitest-module-mock-audit-001             | Vitest モジュールレベルモック監査・使い分けガイドライン策定                                                      | 低     | TASK-FIX-11-1-SDK-TEST-ENABLEMENT Phase 5（実装苦戦箇所）                   | `docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`                                                                       |
 | task-imp-vitest-alias-sync-automation-001         | Vitest alias 設定と `@repo/shared` エクスポート整合の自動検証                                                    | 中     | TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 8（スコープ外項目）               | `docs/30-workflows/unassigned-task/task-imp-vitest-alias-sync-automation-001.md`                                                                   |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001               | Vitest alias と tsconfig paths の同期自動化。新サブパス追加時に4ファイル同期が必要で漏れやすい（`exports`/`typesVersions`/`paths`/`alias`）。vitest-tsconfig-paths プラグイン導入で `apps/desktop/vitest.config.ts` の alias を tsconfig paths から自動生成する。スコープ: `apps/desktop/vitest.config.ts` | 中     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 3（MINOR 指摘）              | `docs/30-workflows/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md`                                                                  |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001               | Vitest alias と tsconfig paths の同期自動化。新サブパス追加時に4ファイル同期が必要で漏れやすい（`exports`/`typesVersions`/`paths`/`alias`）。vitest-tsconfig-paths プラグイン導入で `apps/desktop/vitest.config.ts` の alias を tsconfig paths から自動生成する。スコープ: `apps/desktop/vitest.config.ts` | 中     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 3（MINOR 指摘）              | `docs/30-workflows/completed-tasks/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md`                                                                  |
 | UT-PERF-001                                       | グラフユーティリティ性能ベンチマーク基準再設計                                                                   | 中     | TODO検出: `packages/shared/src/types/rag/graph/__tests__/utils.test.ts:791` | `docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md`                                                          |
 | UT-TYPE-DATETIME-DOC-001                          | 型日時表現のガイドライン策定とドキュメント化                                                                     | 低     | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION Phase 12                        | `docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md`                                                 |
 | ~~UT-FIX-IPC-RESPONSE-UNWRAP-001~~                | ~~IPC レスポンスラッパー未展開修正（importedSkills.forEach クラッシュ）~~                                        | ~~高~~ | ~~ランタイムエラー調査（2026-02-13）~~                                      | ~~`docs/30-workflows/completed-tasks/task-ut-fix-ipc-response-unwrap-001.md`~~ **2026-02-14完了**                                                  |
@@ -838,11 +865,14 @@
 | TASK-9A-C-003                                     | SkillCodeEditor Monaco/CodeMirror エディタ移行                                                                   | 低     | TASK-9A-C Phase 2（将来拡張ポイント: textarea→高機能エディタ）              | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md`                                                                             |
 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001         | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理）                                               | 中     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 5                            | `docs/30-workflows/completed-tasks/unassigned-task/task-refactor-shared-source-structure-consolidation.md`                                          |
 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001           | @repo/shared モジュール解決3層整合CIガード                                                                       | 高     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 10 MINOR                     | `docs/30-workflows/unassigned-task/task-imp-module-resolution-ci-guard.md`                                                                         |
-| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001               | skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）                                     | 高     | 20フレームワーク多角的分析（2026-02-21）                                    | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-return-type-001.md`                                                                    |
+| ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001~~            | ~~skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）~~                                 | ~~高~~ | ~~20フレームワーク多角的分析（2026-02-21）~~ **完了: 2026-02-21**           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md`                                   |
 | UT-FIX-SKILL-IPC-NAMING-P45-001                   | skillHandlers IPC引数命名統一（skillId → skillName横展開）                                                        | 中     | UT-FIX-SKILL-IMPORT-INTERFACE-001 / UT-FIX-SKILL-REMOVE-INTERFACE-001 実装時検出（2026-02-20） | `docs/30-workflows/unassigned-task/task-ut-fix-skill-ipc-naming-p45-001.md`                                                                        |
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001              | Phase 11 Worktree環境手動テスト実行プロトコル策定                                                                | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`                                                              |
 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001        | マルチエージェントPhase依存順序ガード                                                                            | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`                                                                |
+| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001          | skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）                               | 中     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）      | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-ipc-response-consistency.md`                                                                         |
+| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001            | skill:get-detail引数名ドリフト修正（P45パターン：skillId→skillName統一）                                        | 低     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）      | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-getdetail-naming-drift.md`                                                                           |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001            | skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完・苦戦箇所付き）               | 中     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）      | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-validation-consistency.md`                                                                            |
 
 ### 未タスク管理ルール
 
@@ -870,6 +900,7 @@
 | **1.47.0** | **2026-02-21** | **UT-FIX-SKILL-IPC-NAMING-P45-001登録**: skillHandlers IPC引数命名統一タスク（skillId → skillName横展開）を残課題テーブルに追加。P45パターン（IPC引数命名の契約ドリフト）の横展開として、skill:get-detail / skill:execute / SkillService / SkillExecutor / SkillImportManager の引数名修正を定義 |
 | **1.46.0** | **2026-02-21** | **UT-FIX-SKILL-REMOVE-INTERFACE-001実装苦戦箇所から未タスク3件登録**: UT-IMP-PHASE11-WORKTREE-PROTOCOL-001（Worktree環境手動テスト実行プロトコル）、UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001（IPCハンドラ粒度カバレッジ計測）、UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001（マルチエージェントPhase依存順序ガード）をP3準拠で残課題テーブルに追加。Section 3.5に苦戦箇所（Phase依存順序違反、Worktree制約、カバレッジスコープ曖昧性）を記録 |
 | **1.46.0** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-INTERFACE-001完了反映**: 残課題テーブルの同タスクを完了（取り消し線 + 完了日）へ更新。参照先を `skill-import-agent-system/tasks/completed-task/` に移管し、実体ファイルと整合化 |
+| **1.46.0** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001完了記録**: 残課題テーブルを取り消し線で完了化。完了タスクセクションに詳細記録（115テスト全PASS、Branch 84.9%、2ステップ変換パターン、P42/P44/P45解決）を追加 |
 | **1.45.2** | **2026-02-21** | **未実施タスクの配置是正**: `completed-tasks/unassigned-task/` に誤配置されていた未実施2件（`UT-FIX-TS-VITEST-TSCONFIG-PATHS-001`, `TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001`）を `docs/30-workflows/unassigned-task/` へ移動し、残課題テーブル参照を同期更新 |
 | **1.45.1** | **2026-02-21** | **未タスク参照リンク整合を再修正**: `verify-unassigned-links` で検出した未実在リンク4件を実在パスへ更新。`UT-FIX-TS-VITEST-TSCONFIG-PATHS-001` / `TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001` / `TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001` を `completed-tasks/unassigned-task/` へ、`UT-FIX-SKILL-IMPORT-RETURN-TYPE-001` を `skill-import-agent-system/tasks/` へ補正 |
 | **1.45.0** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001登録**: skill:import IPCハンドラ戻り値型不整合修正タスクを残課題テーブルに追加。20フレームワーク多角的分析で発見されたImportResult→ImportedSkill変換漏れの修正 |

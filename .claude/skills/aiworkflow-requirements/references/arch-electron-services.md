@@ -9,7 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
-| 6.34.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数を `skillName: string` に更新（ハンドラー内で `[skillName]` 配列化） |
+| 6.34.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数を `skillName: string` に更新（ハンドラー内で `[skillName]` 配列化）。UT-FIX-SKILL-IMPORT-RETURN-TYPE-001反映: 戻り値を `ImportedSkill` に更新 |
 | 6.33.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` IPC引数を `skillName: string` に更新 |
 | 6.32.0     | 2026-02-07 | TASK-FIX-4-2完了: SkillImportManager永続化実装詳細セクション追加（型バリデーション・SkillStoreインターフェース・デバッグフラグ・テストファイル構成） |
 | 6.31.0     | 2026-02-01 | TASK-8C-E完了: E2Eテストフィクスチャセクション追加（3フィクスチャ仕様・検証テスト29ケース） |
@@ -269,7 +269,7 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 | ---------------------- | -------------------- | --------------- | ------------------ |
 | `skill:list-available` | `basePath: string`   | `Skill[]`       | スキルスキャン     |
 | `skill:list-imported`  | なし                 | `Skill[]`       | インポート済み取得 |
-| `skill:import`         | `skillName: string` | `ImportResult`  | スキルインポート（ハンドラー内で `[skillName]` に変換） |
+| `skill:import`         | `skillName: string`  | `ImportedSkill` | スキルインポート（ハンドラー内で `[skillName]` に変換、UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で戻り値型修正） |
 | `skill:remove`         | `skillName: string`  | `RemoveResult`  | インポート解除     |
 | `skill:get-detail`     | `skillId: string`    | `Skill \| null` | スキル詳細取得     |
 

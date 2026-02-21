@@ -113,6 +113,71 @@
 
 ---
 
+## 2026-02-21: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 未タスク検出・登録（3件）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | detect-unassigned: skillHandlers.ts コード調査による未タスク3件検出・登録 |
+| 対象ファイル | references/task-workflow.md, references/interfaces-agent-sdk-skill.md |
+| 結果         | success |
+| 備考         | skill:ハンドラ全14件のコード調査により、IPC応答形式不統一(3パターン混在)・P45引数名ドリフト・P42バリデーション未準拠(6/11ハンドラ)を検出。未タスク指示書3件作成、task-workflow.md残課題テーブル3エントリ追加、interfaces-agent-sdk-skill.md関連テーブル追加。verify-unassigned-links.js: ALL_LINKS_EXIST |
+
+### 登録した未タスク
+
+| タスクID | 内容 | 優先度 | 指示書パス |
+| -------- | ---- | ------ | ---------- |
+| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一 | 中 | `docs/30-workflows/unassigned-task/task-skill-ipc-response-consistency.md` |
+| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正 | 低 | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション統一 | 中 | `docs/30-workflows/unassigned-task/task-skill-validation-consistency.md` |
+
+---
+
+## 2026-02-21: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 スキル改善（実装パターン・苦戦箇所文書化）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | skill-improvement: 実装パターン・苦戦箇所・IPC型不整合診断ガイドの文書化 |
+| 対象ファイル | references/architecture-implementation-patterns.md, references/ipc-type-resolution-guide.md（新規）, task-specification-creator/references/patterns.md |
+| 結果         | success |
+| 備考         | S13 IPC戻り値型2ステップ変換パターン追加（苦戦箇所5件記録）。ipc-type-resolution-guide.md新規作成（P23/P32/P42/P44/P45統合ガイド）。patterns.mdに成功パターン2件追加（2ステップ変換、Phase 12並列エージェント最適化） |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| architecture-implementation-patterns.md | v1.26.0 | S13パターン追加（苦戦箇所5件、適用判断基準） |
+| ipc-type-resolution-guide.md | v1.0.0 | 新規作成（IPC型不整合の診断・解決ガイド） |
+| patterns.md（task-specification-creator） | 2026-02-21 | IPC型不整合解決パターン2件追加 |
+
+---
+
+## 2026-02-21: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12反映
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: skill:import 戻り値型修正（ImportResult→ImportedSkill）のPhase 12反映 |
+| 対象ファイル | references/interfaces-agent-sdk-skill.md, references/arch-electron-services.md, references/security-skill-ipc.md, references/task-workflow.md, references/ipc-contract-checklist.md |
+| 結果         | success |
+| 備考         | skill:import IPC契約を `skillName: string` → `ImportedSkill` に更新。4仕様書の戻り値型・引数形式・検証要件を修正。残課題テーブルからcompletedへ移動 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| interfaces-agent-sdk-skill.md | - | skill:import 戻り値を ImportedSkill に更新、リクエスト契約セクション追加 |
+| arch-electron-services.md | v6.34.0 | skill:import 引数・戻り値を更新 |
+| security-skill-ipc.md | v1.8.0 | skill:import 検証要件を skillName 3段バリデーションに更新 |
+| task-workflow.md | v1.46.0 | 残課題→完了タスクへ移動 |
+| ipc-contract-checklist.md | - | 適用事例のステータスを「未修正」から「完了（2026-02-21）」へ更新 |
+
+---
+
 ## 2026-02-20: UT-FIX-SKILL-REMOVE-INTERFACE-001 未タスク配置整合 + 教訓追記
 
 | 項目         | 内容 |
