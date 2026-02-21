@@ -44,9 +44,7 @@ describe("AgentExecutor", () => {
       yield { type: "assistant", message: "Hello" };
     })();
 
-    (query as vi.Mock).mockReturnValue({
-      stream: () => mockStream,
-    });
+    (query as vi.Mock).mockReturnValue(mockStream);
 
     const executor = new AgentExecutor(mockRequest, mockWindow);
     await executor.start();
@@ -68,9 +66,7 @@ describe("AgentExecutor", () => {
       yield { type: "assistant", message: "Second message" };
     })();
 
-    (query as vi.Mock).mockReturnValue({
-      stream: () => mockStream,
-    });
+    (query as vi.Mock).mockReturnValue(mockStream);
 
     const executor = new AgentExecutor(mockRequest, mockWindow);
     await executor.start();
@@ -89,9 +85,7 @@ describe("AgentExecutor", () => {
       yield { type: "assistant", message: "Done" };
     })();
 
-    (query as vi.Mock).mockReturnValue({
-      stream: () => mockStream,
-    });
+    (query as vi.Mock).mockReturnValue(mockStream);
 
     const executor = new AgentExecutor(mockRequest, mockWindow);
     await executor.start();
@@ -111,9 +105,7 @@ describe("AgentExecutor", () => {
       yield { type: "assistant", message: "This should not be sent" };
     })();
 
-    (query as vi.Mock).mockReturnValue({
-      stream: () => mockStream,
-    });
+    (query as vi.Mock).mockReturnValue(mockStream);
 
     const executor = new AgentExecutor(mockRequest, mockWindow);
     const startPromise = executor.start();
@@ -165,9 +157,7 @@ describe("AgentExecutor", () => {
     };
 
     const mockStream = (async function* () {})();
-    (query as vi.Mock).mockReturnValue({
-      stream: () => mockStream,
-    });
+    (query as vi.Mock).mockReturnValue(mockStream);
 
     const executor = new AgentExecutor(mockRequest, mockWindow, customRules);
     await executor.start();
@@ -191,9 +181,7 @@ describe("AgentExecutor", () => {
         throw new Error("Stream interrupted");
       })();
 
-      (query as vi.Mock).mockReturnValue({
-        stream: () => mockStream,
-      });
+      (query as vi.Mock).mockReturnValue(mockStream);
 
       const executor = new AgentExecutor(mockRequest, mockWindow);
       await executor.start();
@@ -230,9 +218,7 @@ describe("AgentExecutor", () => {
         yield { type: "unknown", message: "Unknown type" };
       })();
 
-      (query as vi.Mock).mockReturnValue({
-        stream: () => mockStream,
-      });
+      (query as vi.Mock).mockReturnValue(mockStream);
 
       const executor = new AgentExecutor(mockRequest, mockWindow);
       await executor.start();
@@ -251,9 +237,7 @@ describe("AgentExecutor", () => {
         yield { type: "assistant", message: "Hello" };
       })();
 
-      (query as vi.Mock).mockReturnValue({
-        stream: () => mockStream,
-      });
+      (query as vi.Mock).mockReturnValue(mockStream);
 
       const executor = new AgentExecutor(mockRequest, mockWindow);
       await executor.start();
@@ -273,9 +257,7 @@ describe("AgentExecutor", () => {
       };
 
       const mockStream = (async function* () {})();
-      (query as vi.Mock).mockReturnValue({
-        stream: () => mockStream,
-      });
+      (query as vi.Mock).mockReturnValue(mockStream);
 
       const executor = new AgentExecutor(requestWithoutDir, mockWindow);
       await executor.start();
@@ -287,9 +269,7 @@ describe("AgentExecutor", () => {
     it("should handle empty stream", async () => {
       const mockStream = (async function* () {})();
 
-      (query as vi.Mock).mockReturnValue({
-        stream: () => mockStream,
-      });
+      (query as vi.Mock).mockReturnValue(mockStream);
 
       const executor = new AgentExecutor(mockRequest, mockWindow);
       await executor.start();
