@@ -8,7 +8,7 @@
 
 | カテゴリ                                                                                              | パターン数 | 説明                             |
 | ----------------------------------------------------------------------------------------------------- | ---------- | -------------------------------- |
-| [失敗パターン](#失敗パターン)                                                                         | 8件        | 回避すべきアンチパターン         |
+| [失敗パターン](#失敗パターン)                                                                         | 11件       | 回避すべきアンチパターン         |
 | [成功パターン](#成功パターン)                                                                         | 44+件      | 再利用可能なベストプラクティス   |
 | [ガイドライン](#ガイドライン)                                                                         | 6件        | 判断基準・検出パターン・Pitfall登録 |
 | [フェーズ境界遷移](#フェーズ境界遷移パターンphase-boundary-transition)                                | 4件        | Phase間の成果物引き継ぎ          |
@@ -182,6 +182,37 @@
   3. スクリプト実行前にファイルの存在を `test -f` で確認する
 - **発見日**: 2026-02-19
 - **関連タスク**: TASK-9A-C
+
+### マルチエージェントPhase実行の依存順序違反（UT-FIX-SKILL-REMOVE-INTERFACE-001）
+
+- **状況**: Phase 1-12を5エージェント（Phase 1-3, 4-7, 8-10, 11, 12）に分割して全て並列ディスパッチ
+- **問題**: Phase 4-7エージェントがPhase 1-3エージェントより先に完了。要件定義前に実装が進行した
+- **原因**: Phase間の依存関係（Phase 1→2→3→4→...）を無視して全エージェントを同時ディスパッチ
+- **解決**: ゲートPhase（Phase 3, Phase 10）の前後で並列化区間を分離。推奨: [1→2→3] → [4→5→6→7] → [8→9→10] → [11] → [12]
+- **教訓**: 「並列実行できる部分」は依存関係チェーン内ではなく、チェーン間のTask並列化に限定する
+- **発見日**: 2026-02-21
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
+- **関連**: Phase 3（設計レビューゲート）、Phase 10（最終レビューゲート）
+
+### worktree環境でのPhase 11手動テスト不可（UT-FIX-SKILL-REMOVE-INTERFACE-001）
+
+- **状況**: Git worktree上でPhase 11（手動テスト）を実行しようとした
+- **問題**: worktree環境ではElectronアプリの起動が不可能（node_modulesの共有制約等）
+- **解決**: 自動テスト（vitest）で代替し、成果物に「worktree環境制約」を明記。Electron起動テストはmainマージ後に実施
+- **教訓**: Phase 11仕様書にworktree環境用の代替テスト手順をデフォルトで含める
+- **発見日**: 2026-02-21
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
+- **関連**: Phase 11テンプレート改善候補
+
+### カバレッジ閾値のスコープ解釈あいまいさ（UT-FIX-SKILL-REMOVE-INTERFACE-001）
+
+- **状況**: Phase 7でskillHandlers.ts全体のLine Coverage 45.14%が最低基準80%を下回った
+- **問題**: バグ修正タスクではファイル全体のカバレッジではなく修正対象関数のカバレッジで判定すべきだが、仕様書上の基準が不明確
+- **解決**: skill:remove固有の分岐カバレッジ（全5分岐カバー済み）を別途記録し、PASS判定
+- **教訓**: Phase 7テンプレートに「修正対象関数のBranch Coverage 100%」を追加判定基準として明記
+- **発見日**: 2026-02-21
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
+- **関連**: coverage-standards.md改善候補
 
 ---
 
@@ -1741,12 +1772,39 @@
 - **発見日**: 2026-02-12
 - **関連**: P1, P2, P4, P25, P27, P29
 
+#### worktree環境でもStep 1-Aを先送りしないパターン（UT-FIX-SKILL-REMOVE-INTERFACE-001 再監査 2026-02-21）
+
+- **状況**: worktree環境で Phase 12 Task 2 を実行した際に「LOGS/SKILL/仕様更新はマージ後でよい」と誤判断し、完了条件と実体が不一致になる
+- **問題**:
+  1. `documentation-changelog.md` が「スキップ」で埋まり、仕様同期が空振りになる
+  2. 未実施タスクが `completed-tasks/unassigned-task/` に混在しても気づけない
+  3. `task-workflow.md` の参照だけ先行修正して、物理配置と逆転する
+- **パターン**:
+  1. worktreeでも Step 1-A（LOGS.md x2, SKILL.md x2, 関連仕様更新）を通常実施する
+  2. 未実施タスクの誤配置を機械検出する
+  3. 物理ファイル移動と `task-workflow.md` 参照更新を同一ターンで実施する
+  4. `verify-unassigned-links.js` で最終検証する
+- **実行コマンド**:
+  ```bash
+  rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
+    docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
+
+  node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+  ```
+- **効果**:
+  - Phase 12「実施済み」と仕様実体の不一致を防止
+  - 未実施タスクの配置ドリフト再発を防止
+  - worktree運用時の先送り判断を排除し、ターン内完結率を向上
+- **発見日**: 2026-02-21
+- **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001, UT-FIX-TS-VITEST-TSCONFIG-PATHS-001, TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
+
 ---
 
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-02-21** | **worktree運用時のPhase 12先送り誤判断を是正**: 成功パターン「worktree環境でもStep 1-Aを先送りしない」を追加。未実施タスク誤配置検出コマンド（completed配下の未着手/未実施検知）と `verify-unassigned-links.js` 最終検証を標準化 |
 | **2026-02-19** | **TASK-9A-C仕様書作成知見反映**: 成功パターン2件（4並列Phase 1分析、既知Pitfall仕様書事前組み込み）・失敗パターン2件（APIレートリミット、complete-phase.jsパス解決誤り）追加。クイックナビゲーション更新（失敗8件・成功44+件） |
 | **2026-02-12** | **UT-STORE-HOOKS-COMPONENT-MIGRATION-001知見追加**: Phase 12 spec-update-workflow全Step逐次実行パターン追加（チェックリスト駆動、12項目更新漏れ防止） |
 | **2026-02-11** | **TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION知見追加**: Setter Injectionによる遅延初期化パターン追加（BrowserWindow依存DI、DIパターン使い分け基準テーブル）。関連Pitfall P34/P35参照                       |

@@ -196,6 +196,10 @@ node .claude/skills/task-specification-creator/scripts/generate-index.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --regenerate
 
+# 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
+rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
+  docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
+
 # ESLintキャッシュクリア（Hooksでエラーが残る場合）
 rm -rf node_modules/.cache/eslint-*
 pnpm lint --cache=false

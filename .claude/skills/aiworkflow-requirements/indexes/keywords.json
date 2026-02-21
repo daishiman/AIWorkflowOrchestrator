@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-20T13:25:47.767Z",
-  "totalKeywords": 1166,
+  "generated": "2026-02-21T10:53:49.273Z",
+  "totalKeywords": 1209,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -209,6 +209,7 @@
       "interfaces-rag-search.md",
       "interfaces-rag.md",
       "interfaces-system-prompt.md",
+      "ipc-contract-checklist.md",
       "lessons-learned.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
@@ -318,6 +319,7 @@
       "interfaces-rag-search.md",
       "interfaces-rag.md",
       "interfaces-system-prompt.md",
+      "ipc-contract-checklist.md",
       "lessons-learned.md",
       "llm-embedding.md",
       "llm-ipc-types.md",
@@ -468,11 +470,13 @@
       "api-ipc-auth.md",
       "api-ipc-system.md",
       "arch-ipc-persistence.md",
+      "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk.md",
       "interfaces-llm.md",
       "interfaces-rag-file-selection.md",
       "interfaces-system-prompt.md",
+      "ipc-contract-checklist.md",
       "lessons-learned.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
@@ -893,6 +897,7 @@
       "arch-claude-cli.md",
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
+      "ipc-contract-checklist.md",
       "security-skill-ipc.md",
       "ui-ux-feature-skill-stream.md"
     ],
@@ -1372,6 +1377,12 @@
       "interfaces-agent-sdk-skill.md",
       "testing-component-patterns.md"
     ],
+    "インターフェース不整合修正パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "解決": [
+      "architecture-implementation-patterns.md"
+    ],
     "モノレポ": [
       "architecture-monorepo.md",
       "directory-structure.md"
@@ -1554,7 +1565,8 @@
       "claude-code-agents-workflow.md",
       "claude-code-skills-agents.md",
       "claude-code-skills-process.md",
-      "claude-code-skills-structure.md"
+      "claude-code-skills-structure.md",
+      "lessons-learned.md"
     ],
     "品質基準": [
       "claude-code-agents-workflow.md",
@@ -1729,6 +1741,7 @@
     ],
     "メタ情報": [
       "csrf-state-parameter.md",
+      "ipc-contract-checklist.md",
       "lessons-learned.md",
       "logging-migration-guide.md"
     ],
@@ -1920,6 +1933,7 @@
     "CI": [
       "deployment-gha.md",
       "deployment.md",
+      "lessons-learned.md",
       "technology-devops.md",
       "testing-playwright-e2e.md"
     ],
@@ -2741,6 +2755,46 @@
       "interfaces-workflow.md",
       "plugin-development.md"
     ],
+    "契約チェックリスト": [
+      "ipc-contract-checklist.md"
+    ],
+    "背景": [
+      "ipc-contract-checklist.md"
+    ],
+    "チェックリスト": [
+      "ipc-contract-checklist.md",
+      "testing-accessibility.md"
+    ],
+    "契約ドリフト検出コマンド": [
+      "ipc-contract-checklist.md"
+    ],
+    "ハンドラーと": [
+      "ipc-contract-checklist.md"
+    ],
+    "で同一チャネルの引数名が異なるか確認": [
+      "ipc-contract-checklist.md"
+    ],
+    "safeInvoke": [
+      "ipc-contract-checklist.md"
+    ],
+    "safeOn": [
+      "ipc-contract-checklist.md"
+    ],
+    "CHANNELS": [
+      "ipc-contract-checklist.md"
+    ],
+    "定数を使用していない箇所を検出": [
+      "ipc-contract-checklist.md"
+    ],
+    "trim": [
+      "ipc-contract-checklist.md"
+    ],
+    "を使用していないバリデーション箇所を検出": [
+      "ipc-contract-checklist.md"
+    ],
+    "適用事例": [
+      "ipc-contract-checklist.md"
+    ],
     "Lessons": [
       "lessons-learned.md"
     ],
@@ -2766,6 +2820,95 @@
       "lessons-learned.md"
     ],
     "インターフェース整合修正": [
+      "lessons-learned.md"
+    ],
+    "プロジェクトルートから直接実行": [
+      "lessons-learned.md"
+    ],
+    "vitest": [
+      "lessons-learned.md"
+    ],
+    "config": [
+      "lessons-learned.md"
+    ],
+    "ts": [
+      "lessons-learned.md"
+    ],
+    "が解決されない": [
+      "lessons-learned.md"
+    ],
+    "watch": [
+      "lessons-learned.md"
+    ],
+    "モード": [
+      "lessons-learned.md",
+      "ui-ux-file-selector.md"
+    ],
+    "デフォルト": [
+      "lessons-learned.md"
+    ],
+    "自動実行で停止しない": [
+      "lessons-learned.md"
+    ],
+    "対象パッケージディレクトリから": [
+      "lessons-learned.md"
+    ],
+    "run": [
+      "lessons-learned.md"
+    ],
+    "で実行": [
+      "lessons-learned.md"
+    ],
+    "filter": [
+      "lessons-learned.md"
+    ],
+    "を使用": [
+      "lessons-learned.md"
+    ],
+    "ディレクトリ移動不要": [
+      "lessons-learned.md"
+    ],
+    "特定テスト": [
+      "lessons-learned.md"
+    ],
+    "ID": [
+      "lessons-learned.md"
+    ],
+    "のみ実行": [
+      "lessons-learned.md"
+    ],
+    "未実施タスクの誤配置を検出": [
+      "lessons-learned.md"
+    ],
+    "completed": [
+      "lessons-learned.md"
+    ],
+    "配下に未着手": [
+      "lessons-learned.md"
+    ],
+    "未実施が混在していないか": [
+      "lessons-learned.md"
+    ],
+    "task": [
+      "lessons-learned.md"
+    ],
+    "workflow": [
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md"
+    ],
+    "の参照整合を検証": [
+      "lessons-learned.md"
+    ],
+    "命名の混在を検出": [
+      "lessons-learned.md"
+    ],
+    "配置先の確認": [
+      "lessons-learned.md"
+    ],
+    "検証スクリプト実行": [
+      "lessons-learned.md"
+    ],
+    "対象パッケージディレクトリから実行": [
       "lessons-learned.md"
     ],
     "仕様書再監査": [
@@ -2936,12 +3079,6 @@
       "lessons-learned.md"
     ],
     "成功": [
-      "lessons-learned.md"
-    ],
-    "filter": [
-      "lessons-learned.md"
-    ],
-    "を使用": [
       "lessons-learned.md"
     ],
     "SkillCreator": [
@@ -3749,9 +3886,6 @@
     "ワークフロー仕様": [
       "spec-splitting-guidelines.md"
     ],
-    "workflow": [
-      "spec-splitting-guidelines.md"
-    ],
     "claude": [
       "spec-splitting-guidelines.md"
     ],
@@ -3943,9 +4077,6 @@
       "ui-ux-agent-execution.md",
       "ui-ux-design-principles.md",
       "ui-ux-feature-components.md"
-    ],
-    "チェックリスト": [
-      "testing-accessibility.md"
     ],
     "コンポーネントテストパターン": [
       "testing-component-patterns.md"
@@ -4296,9 +4427,6 @@
       "ui-ux-file-selector.md"
     ],
     "WorkspaceFileSelector": [
-      "ui-ux-file-selector.md"
-    ],
-    "モード": [
       "ui-ux-file-selector.md"
     ],
     "フォルダ一括選択機能": [
