@@ -120,20 +120,21 @@ export function registerSkillHandlers(
   // skill:import - スキルをインポート
   ipcMain.handle(
     IPC_CHANNELS.SKILL_IMPORT,
-    async (event: IpcMainInvokeEvent, args: { skillIds: string[] }) => {
+    async (event: IpcMainInvokeEvent, skillName: string) => {
       const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_IMPORT, {
         getAllowedWindows: () => [mainWindow],
       });
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (!Array.isArray(args?.skillIds)) {
+      // P42準拠: 3段バリデーション（型チェック → 空文字列 → トリム空文字列）
+      if (typeof skillName !== "string" || skillName.trim() === "") {
         throw {
           code: "VALIDATION_ERROR",
-          message: "skillIds must be an array",
+          message: "skillName must be a non-empty string",
         };
       }
-      return skillService.importSkills(args.skillIds);
+      return skillService.importSkills([skillName]);
     },
   );
 

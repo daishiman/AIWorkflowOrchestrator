@@ -54,9 +54,11 @@
 | ---------------------- | --------------------------------- |
 | `skill:list`           | sender検証 + パストラバーサル検証 |
 | `skill:getImported`    | sender検証                        |
-| `skill:import`         | sender検証 + skillIds検証         |
+| `skill:import`         | sender検証 + skillName非空文字列検証（`trim()`含む） |
 | `skill:remove`         | sender検証 + skillName非空文字列検証（`trim()`含む） |
 | `skill:get-detail`     | sender検証 + skillId検証          |
+
+`skill:import` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-IMPORT-INTERFACE-001）。
 
 `skill:remove` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-REMOVE-INTERFACE-001）。
 
@@ -391,6 +393,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
+| v1.8.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` の検証要件を `skillName` 非空文字列（`trim()` 含む3段バリデーション）に更新 |
 | v1.0.0     | 2026-01-25 | 初版作成                                     |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |

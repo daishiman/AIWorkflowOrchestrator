@@ -1655,6 +1655,73 @@ macOS の `activate` イベントでウィンドウを再作成する際に、`i
 
 ---
 
+## IPCインターフェース不整合修正パターン（P44 2026-02-21実装）
+
+> **ステータス**: 解決済み（UT-FIX-SKILL-IMPORT-INTERFACE-001 + UT-FIX-SKILL-REMOVE-INTERFACE-001）
+> P44（skill:import/remove IPCハンドラとPreloadのインターフェース不整合）に対する体系的修正テンプレート。
+
+### 問題: Main Processハンドラの引数型とPreload側実引数の不一致
+
+| レイヤー | 修正前（不整合） | 修正後（統一） |
+|----------|-----------------|----------------|
+| Main Handler (skill:import) | `args: { skillIds: string[] }` | `skillName: string` |
+| Main Handler (skill:remove) | `args: { skillId: string }` | `skillName: string` |
+| Preload (skill-api.ts) | `safeInvoke(channel, skillName)` | 変更なし |
+| Renderer (呼び出し元) | `importSkill(skillName)` | 変更なし |
+
+### 修正テンプレート: P42準拠3段バリデーション
+
+```typescript
+// 修正前（不整合）: ハンドラは object を期待、Preload は string を渡す
+ipcMain.handle("skill:import", async (event, args: { skillIds: string[] }) => {
+  if (!Array.isArray(args?.skillIds)) {
+    throw { code: "VALIDATION_ERROR", message: "skillIds must be an array" };
+  }
+  // args.skillIds は undefined → バリデーションエラー
+});
+
+// 修正後（P42準拠3段バリデーション）: ハンドラを Preload に合わせる
+ipcMain.handle("skill:import", async (event, skillName: string) => {
+  // 3段バリデーション: 型チェック → 空文字列 → トリム空文字列
+  if (typeof skillName !== "string" || skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  // 配列ラップでサービス層API互換性を維持
+  return skillService.importSkills([skillName]);
+});
+```
+
+### 修正判断基準: 「呼び出し元が多い側を変更しない」
+
+| 判断条件 | 変更側 | 理由 |
+|----------|--------|------|
+| Preload/Rendererの呼び出し箇所が多い | Main Handler | 影響範囲の最小化 |
+| Main Handlerの利用箇所が多い | Preload | 変更コストの最小化 |
+| 両方同数 | ドキュメント/仕様書の定義に合わせる | 正本基準 |
+
+### 3箇所同時更新チェックリスト（P23/P32準拠）
+
+| チェック | ファイル | 更新内容 |
+|----------|----------|----------|
+| [ ] | Main Handler (`skillHandlers.ts`) | 引数型を `string` に変更 + 3段バリデーション追加 |
+| [ ] | Preload API (`skill-api.ts`) | 通常は変更不要（確認のみ） |
+| [ ] | テスト (`skillHandlers.test.ts`) | 新引数形式に合わせたテストケース更新 |
+| [ ] | `pnpm typecheck` | 型整合性の検証 |
+| [ ] | `pnpm vitest run` (apps/desktop) | テスト全件PASS確認 |
+
+**関連Pitfall**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）、P44（skill:import/remove IPCインターフェース不整合）、P45（IPC引数命名の契約ドリフト）
+
+**関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001, UT-FIX-SKILL-REMOVE-INTERFACE-001
+
+> **参照**:
+> - IPCインターフェース契約検証の詳細チェックリスト: [ipc-contract-checklist.md](./ipc-contract-checklist.md)
+> - 既知の落とし穴 P44: [06-known-pitfalls.md](../../rules/06-known-pitfalls.md#p44-skillimportremove-ipcハンドラとpreloadのインターフェース不整合)
+
+---
+
 ## SkillEditor 実装パターン（TASK-9A-C spec_created）
 
 > **ステータス**: 仕様書作成済み（実装未着手）
@@ -1748,6 +1815,7 @@ Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }
 | Version | Date | Changes |
 |---------|------|---------|
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
+| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル） |
 | v1.25.0 | 2026-02-19 | TASK-9A-C: SkillEditor実装パターン追加（textareaベースコードエディター、FileTree内部状態管理、IPC連携ファイル編集、Pitfall事前組み込み） |
 | v1.24.0 | 2026-02-19 | TASK-9A-B: isKnownSkillFileError型ガードパターン追加、IPC3層テスト分離パターン追加（Unit 38 / Security 14 / Integration 13、カバレッジ Line 91.14% / Branch 93.93% / Function 100%） |
 | v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |

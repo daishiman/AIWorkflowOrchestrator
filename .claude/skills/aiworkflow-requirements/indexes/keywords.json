@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-21T10:53:49.273Z",
-  "totalKeywords": 1209,
+  "generated": "2026-02-21T12:54:43.862Z",
+  "totalKeywords": 1211,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1360,6 +1360,9 @@
     "型統合パターン": [
       "architecture-implementation-patterns.md"
     ],
+    "インターフェース不整合修正パターン": [
+      "architecture-implementation-patterns.md"
+    ],
     "SkillEditor": [
       "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-skill.md",
@@ -1376,9 +1379,6 @@
       "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-skill.md",
       "testing-component-patterns.md"
-    ],
-    "インターフェース不整合修正パターン": [
-      "architecture-implementation-patterns.md"
     ],
     "解決": [
       "architecture-implementation-patterns.md"
@@ -2810,16 +2810,22 @@
       "master-design.md",
       "patterns.md"
     ],
-    "REMOVE": [
+    "IMPORT": [
       "lessons-learned.md"
     ],
     "INTERFACE": [
       "lessons-learned.md"
     ],
-    "remove": [
+    "import": [
       "lessons-learned.md"
     ],
     "インターフェース整合修正": [
+      "lessons-learned.md"
+    ],
+    "REMOVE": [
+      "lessons-learned.md"
+    ],
+    "remove": [
       "lessons-learned.md"
     ],
     "プロジェクトルートから直接実行": [

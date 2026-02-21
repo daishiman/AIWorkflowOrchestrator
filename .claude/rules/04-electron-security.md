@@ -32,6 +32,13 @@
 - DO: エラーはサニタイズしてから Renderer に送る — 内部情報を漏洩しない
 - DON'T: ハードコード文字列でチャンネル名を指定しない
 
+### IPC 契約ドリフト防止
+
+- DO: IPC ハンドラの引数形式と Preload 側の呼び出し形式が一致していることを検証
+- DO: 新規ハンドラ作成時は [ipc-contract-checklist.md](../skills/aiworkflow-requirements/references/ipc-contract-checklist.md) の Phase 1-6 を実施
+- DON'T: ハンドラの引数名と実際に渡される値のセマンティクスが乖離したまま放置しない
+  → 失敗事例: [06-known-pitfalls.md#P44](./06-known-pitfalls.md)、[06-known-pitfalls.md#P45](./06-known-pitfalls.md)
+
 ## Content Security Policy (CSP)
 
 - DO: 本番: `script-src 'self'`（eval 禁止）、`object-src 'none'`、`frame-src 'none'`

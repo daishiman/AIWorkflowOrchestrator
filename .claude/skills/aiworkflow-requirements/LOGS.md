@@ -67,6 +67,52 @@
 | lessons-learned.md | v1.17.2 | 苦戦箇所4（worktree先送り誤判断）を追加 |
 | SKILL.md | v1.40.2 | 変更履歴へ再是正内容を反映 |
 
+## 2026-02-21: UT-FIX-SKILL-IMPORT-INTERFACE-001 Phase 12再監査反映（苦戦箇所追記）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-SKILL-IMPORT-INTERFACE-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: Phase 12成果物同期 + 教訓追記 + セキュリティ仕様補完 |
+| 対象ファイル | references/lessons-learned.md, references/interfaces-agent-sdk-skill.md, references/security-electron-ipc.md, SKILL.md |
+| 結果         | success |
+| 備考         | 苦戦箇所3件（Phase 12ステータス未同期、旧参照パス残存、Vitest実行ディレクトリ差異）を教訓化。`security-electron-ipc.md` に Skill API の `skillName` + `trim()` 検証パターンを追記 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| lessons-learned.md | 1.18.0 | UT-FIX-SKILL-IMPORT-INTERFACE-001 の苦戦箇所3件 + 5ステップ解決手順を追加 |
+| interfaces-agent-sdk-skill.md | 1.26.0 | 完了タスクに「実装上の課題と教訓」を追記 |
+| security-electron-ipc.md | v1.6.0 | Skill API 引数検証パターン（`skillName` 非空 + `trim()`）を追加 |
+| SKILL.md | v1.42.0 | 本反映内容を変更履歴へ追加 |
+
+---
+
+## 2026-02-21: UT-FIX-SKILL-IMPORT-INTERFACE-001 Phase 12反映（契約同期 + 完了反映）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-FIX-SKILL-IMPORT-INTERFACE-001 |
+| Agent        | aiworkflow-requirements |
+| 操作         | update-spec: `skill:import` 契約同期、残課題→完了反映、参照パス整合 |
+| 対象ファイル | references/interfaces-agent-sdk-skill.md, references/arch-electron-services.md, references/security-skill-ipc.md, references/api-ipc-agent.md, references/task-workflow.md, SKILL.md |
+| 結果         | success |
+| 備考         | Main IPC契約を `skillName: string` に統一し、P42（`trim()`含む3段検証）を明文化。`task-workflow.md` の残課題行を完了化し、`tasks/completed-task/00-ut-fix-skill-import-interface-001.md` へ参照移行 |
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| interfaces-agent-sdk-skill.md | 1.25.0 | `skill:import` リクエスト契約追加、完了タスクセクション追加 |
+| arch-electron-services.md | 6.34.0 | IPC APIの `skill:import` 引数を `skillName: string` に更新 |
+| security-skill-ipc.md | v1.8.0 | `skill:import` 検証要件を `skillName` 非空文字列（`trim()`含む）へ更新 |
+| api-ipc-agent.md | v1.11.0 | `skill:import` 完了タスク記録追加 |
+| task-workflow.md | 1.46.0 | UT-FIX-SKILL-IMPORT-INTERFACE-001 を完了反映（取り消し線 + 完了日） |
+| SKILL.md | v1.41.0 | 本反映内容を変更履歴へ追加 |
+
+---
+
 ## 2026-02-20: UT-FIX-SKILL-REMOVE-INTERFACE-001 未タスク配置整合 + 教訓追記
 
 | 項目         | 内容 |
@@ -4250,3 +4296,33 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 | 5.0.0      | 2026-01-04     | SKILL.md軽量化、詳細をindexes/references/へ分離 |
 | 4.0.0      | 2026-01-03     | kebab-case化、大ファイル分割、47ファイル構成 |
 | 3.0.0      | 2026-01-03     | 仕様正本化、検索中心に再設計 |
+
+## 2026-02-21 - UT-FIX-SKILL-IMPORT-INTERFACE-001 完了
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- タスクID: UT-FIX-SKILL-IMPORT-INTERFACE-001
+- タスク名: skill:import IPCハンドラ・Preloadインターフェース不整合修正
+- Phase: 1-12 完了
+
+### 実施内容
+
+- `skill:import` IPCハンドラの引数契約を `{ skillIds: string[] }` → `skillName: string` に統一
+- P42準拠の3段バリデーション（型チェック → 空文字列 → `.trim()` 空文字列）を追加
+- `skillService.importSkills([skillName])` で単一スキル名を配列ラップして呼び出し
+- テスト13件（SH-IMP-01〜13）全PASS、全104テストPASS
+- api-ipc-agent.md, interfaces-agent-sdk-skill.md, task-workflow.md, lessons-learned.md を更新済み
+- P44パターン（skill:import/remove IPCインターフェース不整合）を完全解決
+
+### 苦戦箇所
+
+1. **Phase 12ステータス未同期**: artifacts.jsonの全Phase statusが「pending」のまま残っていた。complete-phase.jsの実行タイミングが不明確
+2. **旧参照パス残存**: completed-task配下のファイルにstatus: 未実施が残存。ファイル移動時のフロントマター更新漏れ
+3. **LOGS.md/SKILL.md 2ファイル同時更新の忘れやすさ**: P1パターンの再確認が必要
+
+### 結果
+
+- ステータス: success
+- 関連パターン: P23, P32, P42, P44, P45
+- 未タスク検出: 0件

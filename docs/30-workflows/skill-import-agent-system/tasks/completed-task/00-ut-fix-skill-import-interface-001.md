@@ -5,7 +5,7 @@ category: バグ修正
 target_feature: スキルインポート機能
 priority: 高
 scale: 小規模
-status: 未実施
+status: 完了
 source_phase: 開発実行時（ランタイムエラー）
 created_date: 2026-02-20
 dependencies: []
