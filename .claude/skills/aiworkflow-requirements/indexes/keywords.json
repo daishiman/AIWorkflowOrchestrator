@@ -1,6 +1,8 @@
 {
   "generated": "2026-02-22T06:59:04.773Z",
   "totalKeywords": 1226,
+  "generated": "2026-02-22T07:44:28.338Z",
+  "totalKeywords": 1228,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -251,6 +253,7 @@
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
       "ui-ux-design-principles.md",
+      "ui-ux-design-system.md",
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-file-selector.md",
@@ -695,6 +698,7 @@
       "technology-devops.md",
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
+      "ui-ux-design-system.md",
       "ui-ux-feature-components.md",
       "ui-ux-search-panel.md"
     ],
@@ -1043,6 +1047,7 @@
       "llm-streaming.md",
       "spec-splitting-guidelines.md",
       "technology-frontend.md",
+      "testing-component-patterns.md",
       "ui-history-components.md",
       "ui-history-data-types.md",
       "ui-history-design.md",
@@ -1408,6 +1413,7 @@
     ],
     "UX": [
       "architecture-overview.md",
+      "master-design.md",
       "spec-splitting-guidelines.md",
       "ui-ux-advanced.md",
       "ui-ux-components.md",
@@ -2863,6 +2869,7 @@
       "lessons-learned.md"
     ],
     "契約不整合修正": [
+    "IMPORT": [
       "lessons-learned.md"
     ],
     "INTERFACE": [
@@ -2930,6 +2937,28 @@
       "lessons-learned.md"
     ],
     "のみ実行": [
+      "lessons-learned.md"
+    ],
+    "未実施タスクの誤配置を検出": [
+      "lessons-learned.md"
+    ],
+    "completed": [
+      "lessons-learned.md"
+    ],
+    "配下に未着手": [
+      "lessons-learned.md"
+    ],
+    "未実施が混在していないか": [
+      "lessons-learned.md"
+    ],
+    "task": [
+      "lessons-learned.md"
+    ],
+    "workflow": [
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md"
+    ],
+    "の参照整合を検証": [
       "lessons-learned.md"
     ],
     "未実施タスクの誤配置を検出": [
@@ -3336,6 +3365,9 @@
       "master-design.md"
     ],
     "ドキュメント管理": [
+      "master-design.md"
+    ],
+    "言語辞書": [
       "master-design.md"
     ],
     "関連リソース": [
@@ -4174,6 +4206,12 @@
     "ENABLEMENT": [
       "testing-component-patterns.md"
     ],
+    "テーマ横断テストヘルパー": [
+      "testing-component-patterns.md"
+    ],
+    "TOKENS": [
+      "testing-component-patterns.md"
+    ],
     "関連未タスク": [
       "testing-component-patterns.md"
     ],
@@ -4383,6 +4421,17 @@
     "認知負荷の軽減": [
       "ui-ux-design-principles.md"
     ],
+    "Tap": [
+      "ui-ux-design-principles.md",
+      "ui-ux-design-system.md"
+    ],
+    "Discover": [
+      "ui-ux-design-principles.md",
+      "ui-ux-design-system.md"
+    ],
+    "哲学": [
+      "ui-ux-design-principles.md"
+    ],
     "デザインシステム": [
       "ui-ux-design-system.md"
     ],
@@ -4405,6 +4454,9 @@
       "ui-ux-design-system.md"
     ],
     "スペーシングとレイアウト": [
+      "ui-ux-design-system.md"
+    ],
+    "デザイントークン拡張": [
       "ui-ux-design-system.md"
     ],
     "機能別": [

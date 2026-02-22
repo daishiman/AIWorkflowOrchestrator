@@ -60,25 +60,25 @@
   --color-macos-indigo: #5e5ce6;
 
   /* ===== Semantic Colors (Dark Mode - Default) ===== */
-  /* Background */
+  /* ─── Kanagawa Dragon Background Colors ─── */
   --bg-primary: var(--color-slate-900);
   --bg-secondary: var(--color-slate-800);
   --bg-tertiary: var(--color-slate-700);
   --bg-elevated: rgba(255, 255, 255, 0.05);
   --bg-glass: rgba(255, 255, 255, 0.1);
 
-  /* Text */
+  /* ─── Kanagawa Dragon Label Colors ─── */
   --text-primary: var(--color-slate-50);
   --text-secondary: var(--color-slate-400);
   --text-muted: var(--color-slate-500);
   --text-inverse: var(--color-slate-900);
 
-  /* Border */
+  /* ─── Kanagawa Dragon Separator Colors ─── */
   --border-default: var(--color-slate-700);
   --border-emphasis: var(--color-slate-600);
   --border-subtle: rgba(255, 255, 255, 0.1);
 
-  /* Status */
+  /* ─── Kanagawa Dragon Status Colors ─── */
   --status-primary: var(--color-macos-blue);
   --status-primary-hover: var(--color-blue-400);
   --status-success: var(--color-green-500);
@@ -165,6 +165,13 @@
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* ─── Micro-Interaction Tokens ─── */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-anticipate: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  --scale-hover: 1.02;
+  --scale-active: 0.97;
+  --scale-bounce: 1.05;
 }
 
 /* ===== Kanagawa Dragon Theme (Default) ===== */
@@ -204,7 +211,7 @@
 [data-theme="kanagawa-dragon"] {
   color-scheme: dark;
 
-  /* Background */
+  /* ─── Kanagawa Dragon Background Colors ─── */
   --bg-primary: var(--kanagawa-dragon-black-1);
   --bg-secondary: var(--kanagawa-dragon-black-2);
   --bg-tertiary: var(--kanagawa-dragon-black-3);
@@ -212,18 +219,18 @@
   --bg-glass: rgba(18, 18, 15, 0.9);
   --bg-selection: var(--kanagawa-dragon-black-4);
 
-  /* Text */
+  /* ─── Kanagawa Dragon Label Colors ─── */
   --text-primary: var(--kanagawa-dragon-white);
   --text-secondary: var(--kanagawa-dragon-gray-2);
   --text-muted: var(--kanagawa-dragon-gray);
   --text-inverse: var(--kanagawa-dragon-black-1);
 
-  /* Border */
+  /* ─── Kanagawa Dragon Separator Colors ─── */
   --border-default: var(--kanagawa-dragon-black-4);
   --border-emphasis: var(--kanagawa-dragon-black-5);
   --border-subtle: rgba(197, 201, 197, 0.1);
 
-  /* Status */
+  /* ─── Kanagawa Dragon Status Colors ─── */
   --status-primary: var(--kanagawa-dragon-blue);
   --status-primary-hover: var(--kanagawa-dragon-teal);
   --status-success: var(--kanagawa-dragon-green);
@@ -235,7 +242,7 @@
   --status-info: var(--kanagawa-spring-blue);
   --status-info-hover: var(--kanagawa-dragon-blue);
 
-  /* Syntax Highlighting */
+  /* ─── Syntax Highlighting (Kanagawa Dragon) ─── */
   --syntax-keyword: var(--kanagawa-dragon-violet);
   --syntax-function: var(--kanagawa-dragon-blue);
   --syntax-string: var(--kanagawa-dragon-green);
@@ -256,29 +263,92 @@
 [data-theme="light"] {
   color-scheme: light;
 
+  /* ─── Apple System Background Colors ─── */
   --bg-primary: #ffffff;
-  --bg-secondary: var(--color-slate-50);
-  --bg-tertiary: var(--color-slate-100);
-  --bg-elevated: rgba(0, 0, 0, 0.02);
-  --bg-glass: rgba(0, 0, 0, 0.05);
+  --bg-secondary: #f2f2f7;
+  --bg-tertiary: #e5e5ea;
+  --bg-elevated: #ffffff;
+  --bg-glass: rgba(242, 242, 247, 0.8);
+  --bg-selection: rgba(0, 122, 255, 0.15);
 
-  --text-primary: var(--color-slate-900);
-  --text-secondary: var(--color-slate-600);
-  --text-muted: var(--color-slate-400);
-  --text-inverse: var(--color-slate-50);
+  /* ─── Apple Label Colors ─── */
+  --text-primary: #000000;
+  --text-secondary: rgba(60, 60, 67, 0.6);
+  --text-muted: rgba(60, 60, 67, 0.3);
+  --text-inverse: #ffffff;
 
-  --border-default: var(--color-slate-200);
-  --border-emphasis: var(--color-slate-300);
-  --border-subtle: rgba(0, 0, 0, 0.1);
+  /* ─── Apple Separator Colors ─── */
+  --border-default: #c6c6c8;
+  --border-emphasis: #aeaeb2;
+  --border-subtle: rgba(60, 60, 67, 0.12);
 
-  --status-primary: var(--color-blue-600);
-  --status-success: var(--color-green-600);
-  --status-error: var(--color-red-600);
+  /* ─── Apple System Tint Colors (Light) ─── */
+  --status-primary: #007aff;
+  --status-primary-hover: #0056b3;
+  --status-success: #34c759;
+  --status-success-hover: #28a745;
+  --status-warning: #ff9500;
+  --status-warning-hover: #cc7700;
+  --status-error: #ff3b30;
+  --status-error-hover: #cc2f26;
+  --status-info: #5856d6;
+  --status-info-hover: #4240a8;
+
+  /* ─── Syntax Highlighting (Xcode Light) ─── */
+  --syntax-keyword: #9b2393;
+  --syntax-function: #007aff;
+  --syntax-string: #c41a16;
+  --syntax-number: #1c00cf;
+  --syntax-constant: #703daa;
+  --syntax-type: #5856d6;
+  --syntax-comment: #8e8e93;
+  --syntax-variable: #3900a0;
 }
 
 /* ===== Dark Theme (data-theme="dark") ===== */
 [data-theme="dark"] {
   color-scheme: dark;
+
+  /* ─── Apple System Background Colors (Dark) ─── */
+  --bg-primary: #000000;
+  --bg-secondary: #1c1c1e;
+  --bg-tertiary: #2c2c2e;
+  --bg-elevated: #1c1c1e;
+  --bg-glass: rgba(28, 28, 30, 0.8);
+  --bg-selection: rgba(10, 132, 255, 0.25);
+
+  /* ─── Apple Label Colors (Dark) ─── */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-muted: rgba(235, 235, 245, 0.3);
+  --text-inverse: #000000;
+
+  /* ─── Apple Separator Colors (Dark) ─── */
+  --border-default: #38383a;
+  --border-emphasis: #48484a;
+  --border-subtle: rgba(84, 84, 88, 0.36);
+
+  /* ─── Apple System Tint Colors (Dark) ─── */
+  --status-primary: #0a84ff;
+  --status-primary-hover: #409cff;
+  --status-success: #30d158;
+  --status-success-hover: #5bd97d;
+  --status-warning: #ff9f0a;
+  --status-warning-hover: #ffb840;
+  --status-error: #ff453a;
+  --status-error-hover: #ff6961;
+  --status-info: #5e5ce6;
+  --status-info-hover: #7a78eb;
+
+  /* ─── Syntax Highlighting (Xcode Dark) ─── */
+  --syntax-keyword: #fc5fa3;
+  --syntax-function: #0a84ff;
+  --syntax-string: #fc6a5d;
+  --syntax-number: #d0bf69;
+  --syntax-constant: #a167e6;
+  --syntax-type: #5e5ce6;
+  --syntax-comment: #7f8c98;
+  --syntax-variable: #67b7a4;
 }
 
 /* ===== Theme Transition ===== */
@@ -307,4 +377,36 @@ html.theme-transition *::after {
   -webkit-backdrop-filter: var(--blur-xl);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-lg);
+}
+
+/* ===== Micro Interaction Keyframes ===== */
+@keyframes success-bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(var(--scale-bounce));
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes error-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
 }

@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.5.0
-> **更新日**: 2026-02-19
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A-C
+> **バージョン**: 1.6.0
+> **更新日**: 2026-02-22
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A-C, TASK-UI-00-TOKENS
 
 ---
 
@@ -687,6 +687,37 @@ IPC呼び出しの完了を待機するには `await act(async () => {...})` パ
 
 ---
 
+## 12. テーマ横断テストヘルパー（TASK-UI-00-TOKENS）
+
+`tokens.css` の複数テーマ（`kanagawa-dragon` / `light` / `dark`）を同一テストで検証する場合は、`renderWithTheme` / `renderWithAllThemes` を使用する。
+
+### 推奨ヘルパー
+
+| ヘルパー | 用途 | 備考 |
+| --- | --- | --- |
+| `renderWithTheme(ui, { theme })` | 単一テーマの検証 | `data-theme` を都度設定 |
+| `renderWithAllThemes(ui)` | 3テーマ横断の検証 | 回帰テストの網羅性向上 |
+
+### 実装パターン
+
+```typescript
+const { light, dark, "kanagawa-dragon": dragon } = renderWithAllThemes(
+  <StatusIndicator status="success" />,
+);
+
+expect(light.getByRole("status")).toBeInTheDocument();
+expect(dark.getByRole("status")).toBeInTheDocument();
+expect(dragon.getByRole("status")).toBeInTheDocument();
+```
+
+### 注意点
+
+- `afterEach` で `document.documentElement.removeAttribute("data-theme")` を実行する
+- `fireEvent` ベース（P39）を維持し、`userEvent` は導入しない
+- テーマ追加時はヘルパー定数を更新し、関連テストを同時更新する
+
+---
+
 ## 参照
 
 - **テストフィクスチャ**: [testing-fixtures.md](testing-fixtures.md)
@@ -710,6 +741,7 @@ IPC呼び出しの完了を待機するには `await act(async () => {...})` パ
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.6.0   | 2026-02-22 | TASK-UI-00-TOKENS: テーマ横断テストヘルパーパターンを追加（`renderWithTheme`/`renderWithAllThemes`、`data-theme` 後始末ルール、P39準拠注意点） |
 | 1.5.0   | 2026-02-19 | TASK-9A-C: SkillEditorテストパターン追加（textareaテスト、IPC mockパターン、ファイルツリーテスト、キーボードショートカットテスト、非同期テスト）。spec_created（実装未着手）を明記 |
 | 1.4.0   | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: Main Process SDKテスト有効化パターンを追加（mockRejectedValueOnce、beforeEach再設定、Fake Timersタイムアウト検証、モジュールモック時の直接エラー注入） |
 | 1.3.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Store Hooksテストパターンセクション追加（renderHook 6パターン、テスト環境要件、選択基準、テスト実績） |

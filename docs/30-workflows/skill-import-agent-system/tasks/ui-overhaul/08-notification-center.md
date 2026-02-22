@@ -17,6 +17,32 @@
 
 GlobalNavStripのBellアイコンから展開する**お知らせポップオーバー**を実装する。スキル実行結果やシステムイベントをシンプルな時系列リストで表示し、未読管理と左スワイプ削除のみを提供する。フィルター・グルーピング・詳細テキストは一切設けず、「タップして発見する」体験に徹する。
 
+### 2.1 UX言語マッピング（5D準拠）
+
+| 技術用語            | やさしい日本語 | 表示箇所                |
+| ------------------- | -------------- | ----------------------- |
+| Notification Center | お知らせ       | ポップオーバータイトル  |
+| Mark all as read    | すべて既読     | ヘッダー右上ボタン      |
+| Delete              | 削除           | 左スワイプアクション    |
+| Notification        | お知らせ       | EmptyState / バッジ文脈 |
+
+## 2.2 システム仕様（aiworkflow-requirements）
+
+今回の実装は `aiworkflow-requirements` の参照仕様に基づき、UI/UX・アクセシビリティ・品質観点を仕様へ反映する。
+
+| 観点             | 抽出した必須要件                                          | 主参照                                                                                                                                                         |
+| ---------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UI/UX            | Notification UI の責務分離、Atomic Design 境界を維持する  | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                                                        |
+| アクセシビリティ | キーボード操作、フォーカストラップ、ARIA の整合を担保する | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                                                                   |
+| 品質保証         | happy-dom 前提のテスト実装と Vitest 品質ゲートを満たす    | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`, `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` |
+
+## 2.3 実行タスク
+
+- NotificationPopover実装: リスト表示、既読管理、展開UIを実装する
+- 操作体験実装: 左スワイプ削除、すべて既読、バッジ更新を実装する
+- IPC/Store連携: 通知配信と state 管理を実装する
+- 品質実装: コンポーネント/Storeテストを追加し、P31/P39/P40対策を適用する
+
 ## 3. 設計哲学: Tap & Discover
 
 ### Level 1: お知らせリスト（日時順）
@@ -493,6 +519,16 @@ await act(async () => {
 });
 ```
 
+## 11.3 実行手順（task-specification-creator準拠）
+
+| Step | 内容                                                          | 実行方式 |
+| ---- | ------------------------------------------------------------- | -------- |
+| 1    | NotificationPopover/Item/List/Header/Badge を実装             | 直列     |
+| 2    | notificationSlice と IPC 連携を実装                           | 直列     |
+| 3    | 左スワイプ削除・既読化・展開UIを実装                          | 直列     |
+| 4    | テストコード（Store + UI）を追加                              | 直列     |
+| 5    | `cd apps/desktop && pnpm vitest run` で検証し、完了条件を確認 | 直列     |
+
 ## 12. 成果物（ファイルパス）
 
 | 成果物                 | パス                                                                           | 種別 |
@@ -539,6 +575,7 @@ await act(async () => {
 - [ ] アクセシビリティ: Escapeキーで閉じる、フォーカストラップ、ARIAラベル
 - [ ] 関連テストがPASS
 - [ ] フィルタータブ・グルーピング・カウント集計が存在しないこと（削除確認）
+- [ ] UIテキストが Task 5D（UX言語ガイドライン）に準拠していること
 
 ## 14. 既知の落とし穴・教訓
 
@@ -555,14 +592,19 @@ await act(async () => {
 
 ## 15. 参照資料
 
-| 資料                       | パス / 参照先                                 |
-| -------------------------- | --------------------------------------------- |
-| 共通基盤コンポーネント     | TASK-UI-00                                    |
-| アーキテクチャ仕様         | TASK-UI-01                                    |
-| GlobalNavStrip仕様         | TASK-UI-02                                    |
-| 既存Store型定義            | `apps/desktop/src/renderer/store/types.ts`    |
-| 既存NotificationSettings型 | `apps/desktop/src/renderer/store/types.ts:54` |
-| アーキテクチャルール       | `.claude/rules/01-architecture.md`            |
-| Electronセキュリティルール | `.claude/rules/04-electron-security.md`       |
-| 状態管理ルール             | `.claude/rules/03-state-management.md`        |
-| 既知の落とし穴             | `.claude/rules/06-known-pitfalls.md`          |
+| 資料                       | パス / 参照先                                                                     |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| 共通基盤コンポーネント     | TASK-UI-00                                                                        |
+| アーキテクチャ仕様         | TASK-UI-01                                                                        |
+| GlobalNavStrip仕様         | TASK-UI-02                                                                        |
+| UX言語ガイドライン（5D）   | TASK-UI-00 `00-ui-design-foundation.md` Task 5D                                   |
+| UI/UXコンポーネント仕様    | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`           |
+| a11yテスト基準             | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`      |
+| コンポーネントテスト基準   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md` |
+| 品質要件                   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       |
+| 既存Store型定義            | `apps/desktop/src/renderer/store/types.ts`                                        |
+| 既存NotificationSettings型 | `apps/desktop/src/renderer/store/types.ts:54`                                     |
+| アーキテクチャルール       | `.claude/rules/01-architecture.md`                                                |
+| Electronセキュリティルール | `.claude/rules/04-electron-security.md`                                           |
+| 状態管理ルール             | `.claude/rules/03-state-management.md`                                            |
+| 既知の落とし穴             | `.claude/rules/06-known-pitfalls.md`                                              |
