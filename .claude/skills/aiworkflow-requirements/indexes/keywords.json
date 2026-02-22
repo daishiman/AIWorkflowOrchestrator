@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-21T12:14:09.995Z",
-  "totalKeywords": 1211,
+  "generated": "2026-02-22T06:59:04.773Z",
+  "totalKeywords": 1226,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -473,6 +473,7 @@
       "api-ipc-auth.md",
       "api-ipc-system.md",
       "arch-ipc-persistence.md",
+      "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk.md",
       "interfaces-llm.md",
@@ -1363,6 +1364,9 @@
     "型統合パターン": [
       "architecture-implementation-patterns.md"
     ],
+    "インターフェース不整合修正パターン": [
+      "architecture-implementation-patterns.md"
+    ],
     "SkillEditor": [
       "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-skill.md",
@@ -1379,6 +1383,9 @@
       "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-skill.md",
       "testing-component-patterns.md"
+    ],
+    "解決": [
+      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -1562,7 +1569,8 @@
       "claude-code-agents-workflow.md",
       "claude-code-skills-agents.md",
       "claude-code-skills-process.md",
-      "claude-code-skills-structure.md"
+      "claude-code-skills-structure.md",
+      "lessons-learned.md"
     ],
     "品質基準": [
       "claude-code-agents-workflow.md",
@@ -2836,16 +2844,40 @@
       "master-design.md",
       "patterns.md"
     ],
-    "REMOVE": [
+    "IMPORT": [
+      "lessons-learned.md"
+    ],
+    "ID": [
+      "lessons-learned.md"
+    ],
+    "MISMATCH": [
+      "lessons-learned.md"
+    ],
+    "SkillImportDialog": [
+      "lessons-learned.md"
+    ],
+    "id": [
+      "lessons-learned.md"
+    ],
+    "name": [
+      "lessons-learned.md"
+    ],
+    "契約不整合修正": [
       "lessons-learned.md"
     ],
     "INTERFACE": [
       "lessons-learned.md"
     ],
-    "remove": [
+    "import": [
       "lessons-learned.md"
     ],
     "インターフェース整合修正": [
+      "lessons-learned.md"
+    ],
+    "REMOVE": [
+      "lessons-learned.md"
+    ],
+    "remove": [
       "lessons-learned.md"
     ],
     "プロジェクトルートから直接実行": [
@@ -2897,10 +2929,29 @@
     "特定テスト": [
       "lessons-learned.md"
     ],
-    "ID": [
+    "のみ実行": [
       "lessons-learned.md"
     ],
-    "のみ実行": [
+    "未実施タスクの誤配置を検出": [
+      "lessons-learned.md"
+    ],
+    "completed": [
+      "lessons-learned.md"
+    ],
+    "配下に未着手": [
+      "lessons-learned.md"
+    ],
+    "未実施が混在していないか": [
+      "lessons-learned.md"
+    ],
+    "task": [
+      "lessons-learned.md"
+    ],
+    "workflow": [
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md"
+    ],
+    "の参照整合を検証": [
       "lessons-learned.md"
     ],
     "命名の混在を検出": [
@@ -3888,9 +3939,6 @@
       "spec-splitting-guidelines.md"
     ],
     "ワークフロー仕様": [
-      "spec-splitting-guidelines.md"
-    ],
-    "workflow": [
       "spec-splitting-guidelines.md"
     ],
     "claude": [

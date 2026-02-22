@@ -360,7 +360,8 @@ await act(async () => {
 - **原因**: ハンドラは設計時にオブジェクト形式の引数で定義されたが、Preload/Renderer側は単一文字列を渡す設計になっており、インターフェース契約が乖離している。skill:import は「複数一括」想定の `{ skillIds: string[] }`、skill:remove は「ID指定」想定の `{ skillId: string }` で設計されたが、実際の呼び出し元は両方とも `string`（単一スキル名）を渡す
 - **解決策**: ハンドラ側の引数を `string`（単一スキル名）に変更し、P42準拠の3段バリデーション（型チェック → 空文字列 → トリム空文字列）を追加する。内部メソッドの引数名も `skillId` → `skillName` に統一する。変更時は P23/P32 準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
 - **関連パターン**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）、P45（引数命名の契約ドリフト）
-- **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001, UT-FIX-SKILL-REMOVE-INTERFACE-001
+- **Renderer側の同パターン**: IPC/Preload層の修正後も、Renderer側（`SkillImportDialog`）で `skill.id`（ハッシュ値）を `skillName` として渡す不整合が残存し、スキルインポートが100%失敗した。`skill.id` ではなく `skill.name` を使用する修正で解決。IPC層だけでなくRenderer側の呼び出し元も必ず検証すること（✅ UT-FIX-SKILL-IMPORT-ID-MISMATCH-001で解決済み、2026-02-22）
+- **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001, UT-FIX-SKILL-REMOVE-INTERFACE-001, UT-FIX-SKILL-IMPORT-ID-MISMATCH-001
 
 ```typescript
 // ❌ skill:import 不整合：ハンドラは{ skillIds: string[] }を期待

@@ -1,0 +1,183 @@
+{
+  "feature": "skill-import-id-mismatch-fix",
+  "taskId": "UT-FIX-SKILL-IMPORT-ID-MISMATCH-001",
+  "created": "2026-02-22T00:00:00Z",
+  "lastUpdated": "2026-02-22T02:00:02.265Z",
+  "phases": {
+    "1": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "2": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "3": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "4": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "5": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "6": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "7": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "8": {
+      "status": "pending",
+      "artifacts": []
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-22T01:43:37.966Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/lint-report.md",
+          "description": "Lintレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/typecheck-report.md",
+          "description": "型チェックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/test-report.md",
+          "description": "テスト実行レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/ipc-contract-report.md",
+          "description": "IPC契約整合性レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-result.md",
+          "description": "品質ゲート総合判定"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-22T01:50:09.002Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/requirements-review.md",
+          "description": "要件充足レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/design-review.md",
+          "description": "設計準拠レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/test-quality-review.md",
+          "description": "テスト品質レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/code-quality-review.md",
+          "description": "コード品質レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/security-ipc-review.md",
+          "description": "セキュリティ・IPCレビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終判定"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-22T01:47:46.266Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-execution-record.md",
+          "description": "手動テスト実行記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/devtools-verification.md",
+          "description": "DevTools確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/NOTE.txt",
+          "description": "スクリーンショット代替説明"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-22T02:00:02.215Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出集計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-placement-audit.md",
+          "description": "未タスク配置・フォーマット監査レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["12"]
+  }
+}

@@ -132,6 +132,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | task-imp-permission-date-filter | 期間別フィルタリング（PermissionHistoryFilter拡張） | 2026-02-02 |
 | TASK-8B | コンポーネントテスト（全4コンポーネント、280テスト） | 2026-02-02 |
 | TASK-9A-C | SkillEditor UI（仕様書作成済み・実装待ち） | 2026-02-19 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog skill.id→skill.name修正（`onImport`にハッシュではなくスキル名を渡すよう修正、P44 Renderer側バリエーション） | 2026-02-22 |
 
 ---
 
@@ -139,6 +140,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.10.0  | 2026-02-22 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了タスク追加（SkillImportDialog `onImport`がskill.id→skill.nameを渡すよう修正、P44 Renderer側バリエーション） |
 | 2.9.1   | 2026-02-19 | TASK-9A-C: Phase 12準拠監査レポートへの参照を追加（監査済み状態を明確化） |
 | 2.9.0   | 2026-02-19 | TASK-9A-C反映: SkillEditorを主要UIコンポーネント一覧・完了タスク表に追加（仕様書作成済み状態を明記） |
 | 2.8.0   | 2026-02-02 | 両ブランチ統合: task-imp-permission-date-filter完了+TASK-8B完了 |

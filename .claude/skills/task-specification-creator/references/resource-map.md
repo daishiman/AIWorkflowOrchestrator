@@ -65,7 +65,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 ---
 
-## scripts/ （11ファイル）
+## scripts/ （12ファイル）
 
 決定論的処理（100%精度）。
 
@@ -77,6 +77,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | `complete-phase.js` | 各Phase完了時 | Phase完了・成果物登録 |
 | `verify-all-specs.js` | Phase 5全体検証時 | 13ファイル一括検証 |
 | `detect-unassigned-tasks.js` | Phase 12実行時 | TODO/FIXME検出 |
+| `audit-unassigned-tasks.js` | Phase 12監査時 | unassigned-task 配置/フォーマット監査 |
 | `verify-unassigned-links.js` | Phase 12 Step 1-E完了後 | task-workflow.md の unassigned-task 参照パス実在チェック |
 | `generate-documentation-changelog.js` | Phase 12 Task 3実行時 | 更新履歴自動生成 |
 | `validate-schema.js` | スキーマ検証時 | JSON Schema検証 |
