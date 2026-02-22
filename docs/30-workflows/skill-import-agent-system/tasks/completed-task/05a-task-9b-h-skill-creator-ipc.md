@@ -197,7 +197,7 @@ SkillCreatorService を IPC ハンドラーに登録し、Renderer からスキ�
 
 ### 関連タスク
 
-- task-9b-skill-creator.md（親タスク）
+- task-020-task-9b-skill-creator.md（親タスク）
 - TASK-FIX-1-1-TYPE-ALIGNMENT（完了済み）
 
 ---

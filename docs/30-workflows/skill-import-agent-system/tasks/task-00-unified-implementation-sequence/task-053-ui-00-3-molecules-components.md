@@ -586,7 +586,7 @@ describe.each(["kanagawa-dragon", "light", "dark"])("テーマ: %s", (theme) => 
 - `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md` — a11yテスト基準
 - `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` — P31対策
 - `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` — テスト品質要件
-- `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-055-ui-00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
 - `apps/desktop/src/renderer/components/molecules/SkillSearchBar/` — 既存 SkillSearchBar（SearchBar の参考実装）
 - [01-architecture.md](../../../../.claude/rules/01-architecture.md) — Apple HIG 準拠、Atomic Design 原則
 - [06-known-pitfalls.md](../../../../.claude/rules/06-known-pitfalls.md) — テスト環境の落とし穴（P9, P13, P39, P40）

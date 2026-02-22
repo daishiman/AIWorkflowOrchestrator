@@ -324,18 +324,18 @@ export function renderWithTheme(
 
 ## 参照資料
 
-| 資料                                                                                             | 参照目的                                |
-| ------------------------------------------------------------------------------------------------ | --------------------------------------- | -------------- |
-| `docs/30-workflows/TASK-UI-00-TOKENS/phase-4-test-creation.md`                                   | Phase 4 のテストコードとの整合性確認    |
-| `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-1-design-tokens.md`            | Apple HIG カラー値の正確な参照          |
-| `apps/desktop/src/renderer/styles/tokens.css`                                                    | 既存トークンの変更箇所の特定            |
-| `apps/desktop/src/renderer/store/types.ts`                                                       | `ResolvedTheme` 型定義                  |
-| `.claude/rules/01-architecture.md` — カラーパレット                                              | Apple HIG 準拠カラー値                  |
-| [Apple HIG — Color](https://developer.apple.com/design/human-interface-guidelines/color)         | Apple 公式カラーガイドライン            |
-| [Apple HIG — Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode) | ダークモード設計ガイド                  |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                       | トークン体系・テーマ要件                |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                   | Apple HIG/WCAGの設計原則                |
-| テスト仕様書                                                                                     | `outputs/phase-4/test-specification.md` | Phase 4 成果物 |
+| 資料                                                                                                                          | 参照目的                                |
+| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------------- |
+| `docs/30-workflows/TASK-UI-00-TOKENS/phase-4-test-creation.md`                                                                | Phase 4 のテストコードとの整合性確認    |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-051-ui-00-1-design-tokens.md` | Apple HIG カラー値の正確な参照          |
+| `apps/desktop/src/renderer/styles/tokens.css`                                                                                 | 既存トークンの変更箇所の特定            |
+| `apps/desktop/src/renderer/store/types.ts`                                                                                    | `ResolvedTheme` 型定義                  |
+| `.claude/rules/01-architecture.md` — カラーパレット                                                                           | Apple HIG 準拠カラー値                  |
+| [Apple HIG — Color](https://developer.apple.com/design/human-interface-guidelines/color)                                      | Apple 公式カラーガイドライン            |
+| [Apple HIG — Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode)                              | ダークモード設計ガイド                  |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                                    | トークン体系・テーマ要件                |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                                | Apple HIG/WCAGの設計原則                |
+| テスト仕様書                                                                                                                  | `outputs/phase-4/test-specification.md` | Phase 4 成果物 |
 
 ## システム仕様（aiworkflow-requirements）
 

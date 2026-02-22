@@ -25,8 +25,7 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillDocGenerator.ts
-    - apps/desktop/src/renderer/components/skill/GenerateDocsDialog.tsx
-    - apps/desktop/src/renderer/components/skill/DocPreview.tsx
+  # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.3 で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -185,23 +184,19 @@ const defaultTemplate: DocTemplate = {
 
 ### Step 5: GenerateDocsDialog 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/GenerateDocsDialog.tsx`
-
-- スキル選択
-- 出力フォーマット選択
-- 言語選択
-- セクション選択
-- テンプレート選択
-- 生成実行
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05-skill-center-view.md#15b3-generatedocsdialog](./task-030-ui-05-skill-center-view.md#15b3-generatedocsdialog)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 6: DocPreview 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/DocPreview.tsx`
-
-- Markdownプレビュー
-- セクション編集
-- エクスポートボタン
-- コピー機能
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05-skill-center-view.md#15b3-generatedocsdialog](./task-030-ui-05-skill-center-view.md#15b3-generatedocsdialog)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## 依存パッケージ
 

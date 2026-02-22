@@ -115,7 +115,7 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 
 本タスクでは、実装完了後に管理タスク一覧のステータス整合を行う。
 
-- `docs/30-workflows/skill-import-agent-system/tasks/index.md` の Tier 0 テーブルに `TASK-FIX-10-1` を completed として反映
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-090-tasks-index-legacy.md` の Tier 0 テーブルに `TASK-FIX-10-1` を completed として反映
 - `docs/30-workflows/skill-import-agent-system/tasks/completed-task/07-task-fix-10-1-vitest-error-handling.md` のステータスを `完了` に更新
 
 ##### Step 1-C: 関連タスクテーブル更新

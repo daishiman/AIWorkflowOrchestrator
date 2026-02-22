@@ -182,5 +182,5 @@ describe("skillImportStore", () => {
 ## 参考資料
 
 - [specification.md - 6.1 インポート済みスキル保存](../specification.md)
-- [execution-plan.md - Appendix A](../execution-plan.md)
+- [execution-plan.md - Appendix A](../task-00-unified-implementation-sequence/task-003-execution-plan.md)
 - 既存パターン: `apps/desktop/src/main/settings/slideSettingsStore.ts`

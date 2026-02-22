@@ -802,10 +802,10 @@ cd apps/desktop && pnpm vitest run src/renderer/components/organisms/RecentTimel
 
 | 資料                   | パス / 参照先                                              |
 | ---------------------- | ---------------------------------------------------------- |
-| 共通基盤コンポーネント | TASK-UI-00 (`ui-overhaul/00-ui-design-foundation.md`)      |
-| アーキテクチャ仕様     | TASK-UI-01 (`ui-overhaul/01-store-ipc-architecture.md`)    |
-| GlobalNavStrip仕様     | TASK-UI-02 (`ui-overhaul/02-global-nav-core.md`)           |
-| HistorySearch仕様      | TASK-UI-06 (`ui-overhaul/06-history-search-view.md`)       |
+| 共通基盤コンポーネント | TASK-UI-00 (`task-050-ui-00-ui-design-foundation.md`)      |
+| アーキテクチャ仕様     | TASK-UI-01 (`task-056-ui-01-store-ipc-architecture.md`)    |
+| GlobalNavStrip仕様     | TASK-UI-02 (`task-057-ui-02-global-nav-core.md`)           |
+| HistorySearch仕様      | TASK-UI-06 (`task-063-ui-06-history-search-view.md`)       |
 | 既存DashboardView      | `apps/desktop/src/renderer/views/DashboardView/index.tsx`  |
 | 既存dashboardSlice     | `apps/desktop/src/renderer/store/slices/dashboardSlice.ts` |
 | 既存dashboardHandlers  | `apps/desktop/src/main/ipc/dashboardHandlers.ts`           |

@@ -20,15 +20,15 @@
 
 ### 1.2 タスク仕様書・ワークフロー整合
 
-| ファイル                                                                                        | 更新内容                                       |
-| ----------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `docs/30-workflows/skill-import-agent-system/index.md`                                          | TASK-9A-C 参照先を `completed-task/` へ更新    |
-| `docs/30-workflows/skill-import-agent-system/tasks/index.md`                                    | TASK-9A-C のステータスを `spec_created` へ更新 |
-| `docs/30-workflows/skill-import-agent-system/tasks/task-9a-skill-editor.md`                     | サブタスクリンクを `completed-task/` へ更新    |
-| `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-9a-c-skill-editor-ui.md` | `status: spec_created` と `spec_dir` を追加    |
-| `docs/30-workflows/TASK-9A-C-skill-editor-ui/index.md`                                          | Phase一覧の実ファイルリンク・状態表記を是正    |
-| `docs/30-workflows/TASK-9A-C-skill-editor-ui/phase-8-refactoring.md`                            | タスク仕様書参照先を更新                       |
-| `docs/30-workflows/TASK-9A-C-skill-editor-ui/phase-10-final-review.md`                          | タスク仕様書参照先を更新                       |
+| ファイル                                                                                                                     | 更新内容                                       |
+| ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `docs/30-workflows/skill-import-agent-system/index.md`                                                                       | TASK-9A-C 参照先を `completed-task/` へ更新    |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-090-tasks-index-legacy.md`   | TASK-9A-C のステータスを `spec_created` へ更新 |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-021-task-9a-skill-editor.md` | サブタスクリンクを `completed-task/` へ更新    |
+| `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-9a-c-skill-editor-ui.md`                              | `status: spec_created` と `spec_dir` を追加    |
+| `docs/30-workflows/TASK-9A-C-skill-editor-ui/index.md`                                                                       | Phase一覧の実ファイルリンク・状態表記を是正    |
+| `docs/30-workflows/TASK-9A-C-skill-editor-ui/phase-8-refactoring.md`                                                         | タスク仕様書参照先を更新                       |
+| `docs/30-workflows/TASK-9A-C-skill-editor-ui/phase-10-final-review.md`                                                       | タスク仕様書参照先を更新                       |
 
 ## 2. Step 1-A〜Step 2 実施結果
 

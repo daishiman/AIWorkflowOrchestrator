@@ -1267,8 +1267,8 @@ grep -rn "USE_GLOBAL_NAV_STRIP" apps/desktop/src/
 
 | 資料                           | 参照先                                                                    |
 | ------------------------------ | ------------------------------------------------------------------------- |
-| デザイン基盤（テーマ・カラー） | `ui-overhaul/00-ui-design-foundation.md` (TASK-UI-00)                     |
-| アーキテクチャ基盤（ViewType） | `ui-overhaul/01-store-ipc-architecture.md` (TASK-UI-01)                   |
+| デザイン基盤（テーマ・カラー） | `task-050-ui-00-ui-design-foundation.md` (TASK-UI-00)                     |
+| アーキテクチャ基盤（ViewType） | `task-056-ui-01-store-ipc-architecture.md` (TASK-UI-01)                   |
 | 既存 AppDock 実装              | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx`        |
 | 既存 AppDock テスト            | `apps/desktop/src/renderer/components/organisms/AppDock/AppDock.test.tsx` |
 | 既存 NavIcon 実装              | `apps/desktop/src/renderer/components/molecules/NavIcon/index.tsx`        |

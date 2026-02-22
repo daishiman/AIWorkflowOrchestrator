@@ -26,9 +26,7 @@ artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillScheduler.ts
     - apps/desktop/src/main/services/skill/ScheduleStore.ts
-    - apps/desktop/src/renderer/components/skill/ScheduleSkillDialog.tsx
-    - apps/desktop/src/renderer/components/skill/ScheduleList.tsx
-    - apps/desktop/src/renderer/components/skill/CronEditor.tsx
+  # UI成果物は ./task-032-ui-05b-skill-advanced-views.md#3B で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -150,29 +148,27 @@ export class SkillScheduler {
 
 ### Step 6: ScheduleSkillDialog 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/ScheduleSkillDialog.tsx`
-
-- プロンプト入力
-- スケジュールタイプ選択
-- Cron式エディタ / インターバル設定 / 日時指定 / イベント選択
-- 通知設定
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-032-ui-05b-skill-advanced-views.md#3b-schedulemanager)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 7: CronEditor 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/CronEditor.tsx`
-
-- 分/時/日/月/曜日の選択UI
-- プリセット（毎日9時、平日9時、毎時など）
-- Cron式プレビュー
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-032-ui-05b-skill-advanced-views.md#3b-schedulemanager)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 8: ScheduleList 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/ScheduleList.tsx`
-
-- スケジュール一覧表示
-- 有効/無効トグル
-- 次回実行時刻表示
-- 実行履歴表示
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-032-ui-05b-skill-advanced-views.md#3b-schedulemanager)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## 依存パッケージ
 

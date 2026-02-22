@@ -27,8 +27,7 @@ artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillAnalytics.ts
     - apps/desktop/src/main/services/skill/AnalyticsStore.ts
-    - apps/desktop/src/renderer/components/skill/AnalyticsDashboard.tsx
-    - apps/desktop/src/renderer/components/skill/UsageChart.tsx
+  # UI成果物は ./task-032-ui-05b-skill-advanced-views.md#3D で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -176,22 +175,19 @@ export class SkillAnalytics {
 
 ### Step 5: AnalyticsDashboard 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/AnalyticsDashboard.tsx`
-
-- 全体サマリーカード（総実行数、成功率、平均時間）
-- スキル別使用ランキング
-- 最近のアクティビティ
-- 期間フィルター
-- エクスポートボタン
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3d-analyticsdashboard](./task-032-ui-05b-skill-advanced-views.md#3d-analyticsdashboard)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 6: UsageChart 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/UsageChart.tsx`
-
-- 使用トレンドグラフ（折れ線）
-- 成功/エラー比率（円グラフ）
-- ツール使用分布（棒グラフ）
-- 期間切り替え
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3d-analyticsdashboard](./task-032-ui-05b-skill-advanced-views.md#3d-analyticsdashboard)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## 依存パッケージ
 
