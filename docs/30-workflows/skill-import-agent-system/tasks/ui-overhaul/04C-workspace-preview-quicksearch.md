@@ -23,6 +23,33 @@
 
 レイアウト基盤（3ペイン構造、リサイズ機構）は [04A](./04A-workspace-layout-filebrowser.md) で提供される。本ドキュメントでは PreviewPanel と QuickFileSearch の内部設計に集中する。
 
+### 2.1 UX言語マッピング（5D準拠）
+
+| 技術用語         | やさしい日本語                   | 表示箇所                  |
+| ---------------- | -------------------------------- | ------------------------- |
+| Preview          | プレビュー                       | PreviewToolbar タブ       |
+| Source           | コード表示                       | PreviewToolbar タブ       |
+| QuickFileSearch  | ファイルをすばやく探す           | Cmd+P モーダルタイトル    |
+| Reload / Refresh | 再読み込み                       | PreviewToolbar ボタン     |
+| Empty State      | まだ表示するファイルがありません | PreviewPanel ゼロステート |
+
+## 2.2 システム仕様（aiworkflow-requirements）
+
+今回の実装は `aiworkflow-requirements` の参照仕様に基づき、UI/UX・アクセシビリティ・品質観点を仕様へ反映する。
+
+| 観点             | 抽出した必須要件                                                    | 主参照                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UI/UX            | PreviewPanel と検索モーダルの責務分離、Atomic Design 境界を維持する | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                                                        |
+| アクセシビリティ | キーボード操作、フォーカス管理、ARIA の整合を担保する               | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                                                                   |
+| 品質保証         | happy-dom 前提のテスト実装と Vitest 品質ゲートを満たす              | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`, `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` |
+
+## 2.3 実行タスク
+
+- PreviewPanel実装: Source/Preview切替、形式別レンダリング、ゼロステートを実装する
+- QuickFileSearch実装: Cmd+Pモーダル、ファジー検索、キーボード選択を実装する
+- 安全性実装: iframe CSP/サニタイズ、IPC連携、クラッシュ時フォールバックを実装する
+- 品質実装: コンポーネント/Hookテストを追加し、P31/P39/P40対策を適用する
+
 ## 3. PreviewPanel ペイン設計
 
 ### 3.1 概要
@@ -232,6 +259,16 @@ PreviewPanel は既存の `file:read` IPC チャネルを使用してファイ�
 - **P39**: happy-dom 環境では `fireEvent` を使用。`userEvent.setup()` は使わない
 - **P40**: テスト実行は `cd apps/desktop && pnpm vitest run` で実行
 
+## 9.4 実行手順（task-specification-creator準拠）
+
+| Step | 内容                                                                    | 実行方式 |
+| ---- | ----------------------------------------------------------------------- | -------- |
+| 1    | PreviewPanelのコンポーネント実装（Source/Preview/Toolbar/ゼロステート） | 直列     |
+| 2    | QuickFileSearch の Hook とモーダルUI実装（Cmd+P + ファジー検索）        | 直列     |
+| 3    | CSP/サニタイズ/IPC/フォールバックを実装                                 | 直列     |
+| 4    | テストコード（コンポーネント + Hook）を追加                             | 直列     |
+| 5    | `cd apps/desktop && pnpm vitest run` で検証し、完了条件を確認           | 直列     |
+
 ## 10. 成果物一覧
 
 ### 10.1 プロダクションコード
@@ -298,6 +335,7 @@ apps/desktop/src/renderer/
 - [ ] 個別セレクタパターンを使用していること（P31 対策）
 - [ ] happy-dom 環境で `fireEvent` を使用していること（P39 対策）
 - [ ] テスト実行が `cd apps/desktop` から行われること（P40 対策）
+- [ ] UIテキストが Task 5D（UX言語ガイドライン）に準拠していること
 
 ## 12. 既知の落とし穴・教訓
 
@@ -318,18 +356,23 @@ apps/desktop/src/renderer/
 | [04B-workspace-chat-panel.md](./04B-workspace-chat-panel.md)                 | ChatPanel + ファイルコンテキスト連携 + @mention + ストリーミング           |
 | **本ドキュメント（04C）**                                                    | PreviewPanel + Source/Preview切替 + QuickFileSearch(Cmd+P) + CSP           |
 
-### 参照資料
+## 13.1 参照資料
 
-| 資料                       | パス / タスク ID                                                             |
-| -------------------------- | ---------------------------------------------------------------------------- |
-| デザイン基盤               | TASK-UI-00 `00-ui-design-foundation.md`                                      |
-| UI アーキテクチャ          | TASK-UI-01 `01-store-ipc-architecture.md`                                    |
-| レイアウト基盤（04A）      | [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md) |
-| セキュリティルール         | `.claude/rules/04-electron-security.md`                                      |
-| IPC チャネル定義           | `apps/desktop/src/preload/channels.ts`                                       |
-| P5: リスナー二重登録       | `.claude/rules/06-known-pitfalls.md#P5`                                      |
-| P31: Store Hook 無限ループ | `.claude/rules/06-known-pitfalls.md#P31`                                     |
-| P39: happy-dom userEvent   | `.claude/rules/06-known-pitfalls.md#P39`                                     |
+| 資料                       | パス / タスク ID                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------- |
+| デザイン基盤               | TASK-UI-00 `00-ui-design-foundation.md`                                           |
+| UI アーキテクチャ          | TASK-UI-01 `01-store-ipc-architecture.md`                                         |
+| レイアウト基盤（04A）      | [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md)      |
+| UX言語ガイドライン（5D）   | TASK-UI-00 `00-ui-design-foundation.md` Task 5D                                   |
+| UI/UXコンポーネント仕様    | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`           |
+| a11yテスト基準             | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`      |
+| コンポーネントテスト基準   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md` |
+| 品質要件                   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       |
+| セキュリティルール         | `.claude/rules/04-electron-security.md`                                           |
+| IPC チャネル定義           | `apps/desktop/src/preload/channels.ts`                                            |
+| P5: リスナー二重登録       | `.claude/rules/06-known-pitfalls.md#P5`                                           |
+| P31: Store Hook 無限ループ | `.claude/rules/06-known-pitfalls.md#P31`                                          |
+| P39: happy-dom userEvent   | `.claude/rules/06-known-pitfalls.md#P39`                                          |
 
 ## 14. 次の Phase
 

@@ -242,9 +242,25 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 
 ---
 
+## 完了タスク
+
+| タスクID | タスク名 | 完了日 | 概要 |
+|----------|----------|--------|------|
+| TASK-UI-00-TOKENS | デザイントークンCSS変数 Apple HIG準拠 light/dark テーマ定義 | 2026-02-22 | tokens.css に `[data-theme="light"]`/`[data-theme="dark"]` セレクタでApple HIG System Colors準拠のカラー定義を追加。マイクロインタラクション変数（ease-bounce/ease-anticipate/scale-hover/scale-active/scale-bounce）、キーフレームアニメーション（success-bounce/error-shake）、renderWithThemeテストヘルパーを作成。28テスト全PASS、カバレッジ100% |
+
+### 関連未タスク
+
+| タスクID | タスク名 | 優先度 | 参照 |
+|----------|----------|--------|------|
+| UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 中 | `docs/30-workflows/unassigned-task/ut-ui-theme-dynamic-switch-001.md` |
+| UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2.0 | 2026-02-22 | TASK-UI-00-TOKENS完了: Apple HIG System Colors準拠 light/darkテーマCSS変数定義追加、マイクロインタラクション変数・キーフレームアニメーション定義、renderWithThemeテストヘルパー作成（28テスト全PASS） |
 | 1.1.0 | 2026-02-22 | Tap & Discover デザイントークン拡張（マイクロインタラクション、SuggestionBubble、EmptyState mood） |
 | 1.0.0 | - | 初版作成 |

@@ -54,6 +54,57 @@
 
 ---
 
+||||||| Stash base
+## 2026-02-22 - 仕様準拠再監査（リンク整合 + テスト仕様補強）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: DOC-AUDIT-2026-02-22
+- フェーズ: 仕様準拠再監査
+
+### 実施内容
+- `verify-unassigned-links` で検出された未実在参照を是正（`task-workflow.md` 由来）
+- `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md` を追加し、残課題リンクを実在化
+- `ui-overhaul/00-1-design-tokens.md` 参照互換ファイルを追加し、分割仕様群の導線を維持
+- `references/testing-component-patterns.md` にテーマ横断テストヘルパー（`renderWithTheme` / `renderWithAllThemes`）パターンを追加
+- `generate-index.js` 実行により `indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+### 検証結果
+- `verify-unassigned-links`: ALL_LINKS_EXIST（79/79）
+- `verify-all-specs --strict`: PASS（エラー0 / 警告0）
+- `validate-phase-output`: PASS
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-22
+
+---
+
+## 2026-02-22 - TASK-UI-00-TOKENS Phase 1-12完了
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: TASK-UI-00-TOKENS
+- Phase: Phase 1-12 全工程実行
+
+### 実施内容
+- tokens.css に Apple HIG System Colors 準拠の light/dark テーマ定義を追加
+- kanagawa-dragon テーマ（既存）に加えて、`[data-theme="light"]` と `[data-theme="dark"]` セレクタによる3テーマ体制を確立
+- マイクロインタラクション変数（`--ease-bounce`, `--ease-anticipate`, `--scale-hover`, `--scale-active`, `--scale-bounce`）を定義
+- `@keyframes success-bounce` / `@keyframes error-shake` アニメーションを追加
+- renderWithTheme テストヘルパーを新規作成（`renderWithTheme.tsx`）
+- 28テスト全PASS、カバレッジ Line/Branch/Function/Statement 100%
+- Phase 10 最終レビュー: PASS（7/7観点全PASS、MINOR/MAJOR/CRITICAL 指摘0件）
+
+### 苦戦箇所
+- なし（CSS変数定義とテストヘルパーの作成は比較的単純な作業）
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-22
+
+---
+
 ## 2026-02-21 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 1-12実行
 
 ### コンテキスト

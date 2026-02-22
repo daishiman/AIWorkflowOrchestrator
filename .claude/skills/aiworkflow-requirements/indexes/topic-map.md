@@ -52,7 +52,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 目次 | L8 |
 | クイックリファレンス | L81 |
 | ドキュメント管理 | L175 |
-| 関連リソース | L189 |
+| UX言語辞書 | L189 |
+| 関連リソース | L224 |
 
 ### references/overview.md
 
@@ -178,6 +179,10 @@ node scripts/list-specs.js --topics
 | SkillEditor 実装パターン（TASK-9A-C spec_created） | L1845 |
 | IPC インターフェース不整合修正パターン（P44/P45解決） | L1905 |
 | 変更履歴 | L1933 |
+| IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L1710 |
+| SkillEditor 実装パターン（TASK-9A-C spec_created） | L1777 |
+| IPC インターフェース不整合修正パターン（P44/P45解決） | L1837 |
+| 変更履歴 | L1865 |
 
 ### references/architecture-monorepo.md
 
@@ -282,6 +287,18 @@ node scripts/list-specs.js --topics
 | 完了タスク | L1528 |
 | SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1723 |
 | 変更履歴 | L1774 |
+| SkillImportStore（TASK-2B） | L696 |
+| SkillSlice型定義（TASK-6-1） | L748 |
+| ModifierSkill（スライド逆同期機能） | L840 |
+| ChatPanel統合（TASK-7D） | L874 |
+| SkillFileManager（TASK-9A-A） | L909 |
+| テストアーキテクチャ（TASK-8C-A） | L997 |
+| 完了タスク | L1049 |
+| 関連ドキュメント | L1267 |
+| SkillCreatorService（TASK-9B-G） | L1280 |
+| 完了タスク | L1528 |
+| SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1682 |
+| 変更履歴 | L1733 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -772,8 +789,9 @@ node scripts/list-specs.js --topics
 | アクセシビリティ（WCAG 2.1 AA準拠） | L211 |
 | UXデザイン法則 | L272 |
 | 認知負荷の軽減 | L397 |
-| 関連ドキュメント | L418 |
-| 変更履歴 | L427 |
+| Tap & Discover 哲学 | L418 |
+| 関連ドキュメント | L550 |
+| 変更履歴 | L560 |
 
 ### references/ui-ux-design-system.md
 
@@ -783,6 +801,9 @@ node scripts/list-specs.js --topics
 | カラーシステム | L71 |
 | タイポグラフィ | L121 |
 | スペーシングとレイアウト | L160 |
+| Tap & Discover デザイントークン拡張 | L210 |
+| 完了タスク | L245 |
+| 変更履歴 | L260 |
 
 ### references/ui-ux-feature-components.md
 
@@ -1523,6 +1544,24 @@ node scripts/list-specs.js --topics
 | UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L2033 |
 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2180 |
 | UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L2287 |
+| 目次 | L61 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L177 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L247 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L555 |
+| 関連ドキュメント | L694 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L704 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L881 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L939 |
+| TASK-FIX-14-1: console → electron-log 移行 | L1082 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L1186 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1332 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1387 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1669 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L1757 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L1976 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2123 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L2230 |
+| UT-FIX-IPC-RESPONSE-UNWRAP-001: IPCレスポンスラッパー未展開修正 | L2304 |
 
 ### references/llm-embedding.md
 
@@ -1867,6 +1906,9 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L796 |
 | 関連ドキュメント | L914 |
 | 変更履歴 | L924 |
+| 残課題（未タスク） | L769 |
+| 関連ドキュメント | L888 |
+| 変更履歴 | L898 |
 
 ### references/testing-accessibility.md
 
@@ -1897,9 +1939,10 @@ node scripts/list-specs.js --topics
 | 9. Zustand Store Hooks テストパターン | L398 |
 | 10. Main Process SDKテスト有効化パターン（TASK-FIX-11-1-SDK-TEST-ENABLEMENT） | L561 |
 | 11. SkillEditor テストパターン（TASK-9A-C spec_created） | L621 |
-| 参照 | L690 |
-| 関連未タスク | L699 |
-| 変更履歴 | L709 |
+| 12. テーマ横断テストヘルパー（TASK-UI-00-TOKENS） | L690 |
+| 参照 | L721 |
+| 関連未タスク | L730 |
+| 変更履歴 | L740 |
 
 ### references/testing-dialog-patterns.md
 
