@@ -1,8 +1,6 @@
 {
-  "generated": "2026-02-22T06:59:04.773Z",
-  "totalKeywords": 1226,
-  "generated": "2026-02-22T07:44:28.338Z",
-  "totalKeywords": 1228,
+  "generated": "2026-02-22T15:21:17.542Z",
+  "totalKeywords": 1233,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2869,7 +2867,6 @@
       "lessons-learned.md"
     ],
     "契約不整合修正": [
-    "IMPORT": [
       "lessons-learned.md"
     ],
     "INTERFACE": [
@@ -2937,28 +2934,6 @@
       "lessons-learned.md"
     ],
     "のみ実行": [
-      "lessons-learned.md"
-    ],
-    "未実施タスクの誤配置を検出": [
-      "lessons-learned.md"
-    ],
-    "completed": [
-      "lessons-learned.md"
-    ],
-    "配下に未着手": [
-      "lessons-learned.md"
-    ],
-    "未実施が混在していないか": [
-      "lessons-learned.md"
-    ],
-    "task": [
-      "lessons-learned.md"
-    ],
-    "workflow": [
-      "lessons-learned.md",
-      "spec-splitting-guidelines.md"
-    ],
-    "の参照整合を検証": [
       "lessons-learned.md"
     ],
     "未実施タスクの誤配置を検出": [
