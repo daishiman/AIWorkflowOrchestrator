@@ -26,8 +26,7 @@ artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillChain.ts
     - apps/desktop/src/main/services/skill/SkillChainExecutor.ts
-    - apps/desktop/src/renderer/components/skill/SkillChainBuilder.tsx
-    - apps/desktop/src/renderer/components/skill/SkillChainStepEditor.tsx
+  # UI成果物は ./task-032-ui-05b-skill-advanced-views.md#3A で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -147,20 +146,19 @@ export interface StepResult {
 
 ### Step 5: SkillChainBuilder UI実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/SkillChainBuilder.tsx`
-
-- ステップ追加/削除/並び替え
-- 入出力マッピング設定UI
-- エラーハンドリング設定
-- プレビュー表示
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3a-skillchainbuilder](./task-032-ui-05b-skill-advanced-views.md#3a-skillchainbuilder)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 6: SkillChainStepEditor 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/SkillChainStepEditor.tsx`
-
-- スキル選択ドロップダウン
-- 入力マッピングタイプ選択
-- 条件設定UI
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3a-skillchainbuilder](./task-032-ui-05b-skill-advanced-views.md#3a-skillchainbuilder)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## 検証条件
 

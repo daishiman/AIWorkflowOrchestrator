@@ -9,7 +9,7 @@ blocks: [TASK-10A]
 status: split
 priority: high
 estimated_complexity: large
-tags: [frontend, renderer, ui, skill-management, editor]
+tags: [backend, main, skill-management, editor, file-manager]
 
 execution:
   mode: sequential
@@ -24,10 +24,8 @@ verification:
 
 artifacts:
   creates:
-    - apps/desktop/src/renderer/components/skill/SkillEditor.tsx
-    - apps/desktop/src/renderer/components/skill/SkillEditorDialog.tsx
-    - apps/desktop/src/renderer/components/skill/SkillCodeEditor.tsx
     - apps/desktop/src/main/services/skill/SkillFileManager.ts
+  # UI成果物は ./task-031-ui-05a-skill-editor-view.md で定義
   modifies:
     - apps/desktop/src/renderer/store/slices/skillSlice.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
@@ -254,307 +252,19 @@ ipcMain.handle(
 
 ### Step 3: SkillEditor コンポーネント実装
 
-**ツール**: Write
-
-**操作**:
-
-```typescript
-// apps/desktop/src/renderer/components/skill/SkillEditor.tsx
-
-import React, { useState, useEffect } from "react";
-import type { ImportedSkill, SkillSubResource } from "@repo/shared";
-import { useAppStore } from "../../store";
-import { SkillCodeEditor } from "./SkillCodeEditor";
-
-interface SkillEditorProps {
-  skill: ImportedSkill;
-  onClose: () => void;
-}
-
-export const SkillEditor: React.FC<SkillEditorProps> = ({ skill, onClose }) => {
-  const [selectedFile, setSelectedFile] = useState<string>("SKILL.md");
-  const [content, setContent] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
-
-  // ファイル読み込み
-  useEffect(() => {
-    const loadFile = async () => {
-      setIsLoading(true);
-      try {
-        const fileContent = await window.electronAPI.skill.readFile(
-          skill.name,
-          selectedFile
-        );
-        setContent(fileContent);
-        setHasChanges(false);
-      } catch (error) {
-        console.error("Failed to load file:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadFile();
-  }, [skill.name, selectedFile]);
-
-  // 保存
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      await window.electronAPI.skill.writeFile(skill.name, selectedFile, content);
-      setHasChanges(false);
-    } catch (error) {
-      console.error("Failed to save file:", error);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // ファイルツリー構築
-  const fileTree = buildFileTree(skill);
-
-  return (
-    <div className="flex h-full">
-      {/* サイドバー: ファイルツリー */}
-      <div className="w-64 border-r bg-gray-50 overflow-y-auto">
-        <div className="p-2 font-medium text-sm text-gray-600 border-b">
-          📦 {skill.name}
-        </div>
-        <FileTree
-          tree={fileTree}
-          selectedFile={selectedFile}
-          onSelect={setSelectedFile}
-        />
-      </div>
-
-      {/* メインエリア: エディター */}
-      <div className="flex-1 flex flex-col">
-        {/* ツールバー */}
-        <div className="flex items-center justify-between px-4 py-2 border-b">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm">{selectedFile}</span>
-            {hasChanges && (
-              <span className="px-1.5 py-0.5 text-xs bg-yellow-100 text-yellow-800 rounded">
-                未保存
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={!hasChanges || isSaving}
-              className="px-3 py-1 text-sm bg-blue-600 text-white rounded disabled:opacity-50"
-            >
-              {isSaving ? "保存中..." : "保存"}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-3 py-1 text-sm border rounded hover:bg-gray-100"
-            >
-              閉じる
-            </button>
-          </div>
-        </div>
-
-        {/* コードエディター */}
-        <div className="flex-1 overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              読み込み中...
-            </div>
-          ) : (
-            <SkillCodeEditor
-              value={content}
-              onChange={(value) => {
-                setContent(value);
-                setHasChanges(true);
-              }}
-              language={getLanguage(selectedFile)}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ファイルツリーコンポーネント
-interface FileTreeProps {
-  tree: FileNode[];
-  selectedFile: string;
-  onSelect: (path: string) => void;
-}
-
-interface FileNode {
-  name: string;
-  path: string;
-  type: "file" | "directory";
-  children?: FileNode[];
-}
-
-const FileTree: React.FC<FileTreeProps> = ({ tree, selectedFile, onSelect }) => (
-  <ul className="text-sm">
-    {tree.map((node) => (
-      <FileTreeNode
-        key={node.path}
-        node={node}
-        selectedFile={selectedFile}
-        onSelect={onSelect}
-        depth={0}
-      />
-    ))}
-  </ul>
-);
-
-const FileTreeNode: React.FC<{
-  node: FileNode;
-  selectedFile: string;
-  onSelect: (path: string) => void;
-  depth: number;
-}> = ({ node, selectedFile, onSelect, depth }) => {
-  const [expanded, setExpanded] = useState(true);
-  const isSelected = node.path === selectedFile;
-  const paddingLeft = depth * 12 + 8;
-
-  if (node.type === "directory") {
-    return (
-      <li>
-        <button
-          type="button"
-          onClick={() => setExpanded(!expanded)}
-          className="w-full text-left py-1 hover:bg-gray-200"
-          style={{ paddingLeft }}
-        >
-          <span>{expanded ? "📂" : "📁"}</span>
-          <span className="ml-1">{node.name}</span>
-        </button>
-        {expanded && node.children && (
-          <ul>
-            {node.children.map((child) => (
-              <FileTreeNode
-                key={child.path}
-                node={child}
-                selectedFile={selectedFile}
-                onSelect={onSelect}
-                depth={depth + 1}
-              />
-            ))}
-          </ul>
-        )}
-      </li>
-    );
-  }
-
-  return (
-    <li>
-      <button
-        type="button"
-        onClick={() => onSelect(node.path)}
-        className={`w-full text-left py-1 hover:bg-gray-200 ${
-          isSelected ? "bg-blue-100" : ""
-        }`}
-        style={{ paddingLeft }}
-      >
-        <span>📄</span>
-        <span className="ml-1">{node.name}</span>
-      </button>
-    </li>
-  );
-};
-
-// ヘルパー関数
-function buildFileTree(skill: ImportedSkill): FileNode[] {
-  const tree: FileNode[] = [
-    { name: "SKILL.md", path: "SKILL.md", type: "file" },
-  ];
-
-  const addResources = (resources: SkillSubResource[], dirName: string) => {
-    if (resources.length > 0) {
-      tree.push({
-        name: dirName,
-        path: dirName,
-        type: "directory",
-        children: resources.map((r) => ({
-          name: r.filename,
-          path: r.relativePath,
-          type: "file" as const,
-        })),
-      });
-    }
-  };
-
-  addResources(skill.agents, "agents");
-  addResources(skill.references, "references");
-  addResources(skill.scripts, "scripts");
-  addResources(skill.assets, "assets");
-  addResources(skill.schemas, "schemas");
-  addResources(skill.indexes, "indexes");
-
-  return tree;
-}
-
-function getLanguage(filename: string): string {
-  const ext = filename.split(".").pop()?.toLowerCase();
-  const langMap: Record<string, string> = {
-    md: "markdown",
-    ts: "typescript",
-    tsx: "typescript",
-    js: "javascript",
-    jsx: "javascript",
-    json: "json",
-    yaml: "yaml",
-    yml: "yaml",
-    sh: "shell",
-    bash: "shell",
-  };
-  return langMap[ext || ""] || "plaintext";
-}
-```
-
-**期待結果**: スキルエディターコンポーネントが作成される
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05A-skill-editor-view.md](./task-031-ui-05a-skill-editor-view.md)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 4: SkillCodeEditor 実装
 
-**ツール**: Write
-
-**操作**:
-
-```typescript
-// apps/desktop/src/renderer/components/skill/SkillCodeEditor.tsx
-
-import React from "react";
-
-interface SkillCodeEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  language: string;
-}
-
-export const SkillCodeEditor: React.FC<SkillCodeEditorProps> = ({
-  value,
-  onChange,
-  language,
-}) => {
-  // シンプルなtextareaベースのエディター
-  // 将来的にはMonaco Editorに置き換え可能
-  return (
-    <div className="h-full relative">
-      <textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full h-full p-4 font-mono text-sm resize-none focus:outline-none"
-        spellCheck={false}
-        data-language={language}
-      />
-    </div>
-  );
-};
-```
-
-**期待結果**: コードエディターコンポーネントが作成される
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05A-skill-editor-view.md](./task-031-ui-05a-skill-editor-view.md)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## 検証条件
 

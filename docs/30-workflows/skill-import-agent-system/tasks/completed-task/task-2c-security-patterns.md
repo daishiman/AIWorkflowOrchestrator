@@ -252,4 +252,4 @@ describe("Security Patterns", () => {
 ## 参考資料
 
 - [specification.md - 7. セキュリティ考慮事項](../specification.md)
-- [execution-plan.md - Appendix B](../execution-plan.md)
+- [execution-plan.md - Appendix B](../task-00-unified-implementation-sequence/task-003-execution-plan.md)

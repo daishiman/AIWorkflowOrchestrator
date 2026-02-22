@@ -9,7 +9,7 @@
 
 ## エグゼクティブサマリー
 
-設計仕様（specification.md + technical-decisions.md + tasks/index.md）が定める目標に対し、現在の実装で **17件のギャップ** を特定（うち3件は多角的思考分析で新規発見）。
+設計仕様（specification.md + technical-decisions.md + tasks/task-00-unified-implementation-sequence/task-000-master-index.md）が定める目標に対し、現在の実装で **17件のギャップ** を特定（うち3件は多角的思考分析で新規発見）。
 
 **根本診断**: スキルシステムは **3層の断絶** により End-to-End で完全に機能停止している。
 
@@ -680,16 +680,16 @@ Layer 5│── #8完了待ち ─────────────
 
 ## 付録C: 設計参照マップ
 
-| 設計仕様の章               | 内容                       | 関連する実装ギャップ                                     |
-| -------------------------- | -------------------------- | -------------------------------------------------------- |
-| specification.md §3.1      | 全体アーキテクチャ         | #3, #5, #17（Preload-Main接続）, #15（実行ルーティング） |
-| specification.md §4.3      | 状態管理（agentSlice単一） | #9（skillSlice分割）                                     |
-| specification.md §5.1      | 実行エンジン               | #7, #15（SkillExecutor未接続）, #16（APIキー不在）, #1   |
-| technical-decisions.md §1  | Claude Agent SDK採用       | #8（as any暫定統合）, #16（APIキー基盤）                 |
-| technical-decisions.md §3  | electron-store永続化       | #4（データ消失）                                         |
-| technical-decisions.md §5  | スキル実行設計             | #15（ハンドラーがSkillServiceに向いている）              |
-| technical-decisions.md §11 | skill-creatorメタスキル    | #2（IPC未登録）                                          |
-| tasks/index.md Tier 0      | 修正タスク4件              | FIX-1-1完了, FIX-4-1完了, FIX-5-1/6-1未着手              |
+| 設計仕様の章                                                                  | 内容                       | 関連する実装ギャップ                                     |
+| ----------------------------------------------------------------------------- | -------------------------- | -------------------------------------------------------- |
+| specification.md §3.1                                                         | 全体アーキテクチャ         | #3, #5, #17（Preload-Main接続）, #15（実行ルーティング） |
+| specification.md §4.3                                                         | 状態管理（agentSlice単一） | #9（skillSlice分割）                                     |
+| specification.md §5.1                                                         | 実行エンジン               | #7, #15（SkillExecutor未接続）, #16（APIキー不在）, #1   |
+| technical-decisions.md §1                                                     | Claude Agent SDK採用       | #8（as any暫定統合）, #16（APIキー基盤）                 |
+| technical-decisions.md §3                                                     | electron-store永続化       | #4（データ消失）                                         |
+| technical-decisions.md §5                                                     | スキル実行設計             | #15（ハンドラーがSkillServiceに向いている）              |
+| technical-decisions.md §11                                                    | skill-creatorメタスキル    | #2（IPC未登録）                                          |
+| tasks/task-00-unified-implementation-sequence/task-000-master-index.md Tier 0 | 修正タスク4件              | FIX-1-1完了, FIX-4-1完了, FIX-5-1/6-1未着手              |
 
 ---
 

@@ -1011,9 +1011,9 @@ cd apps/desktop && pnpm vitest run src/renderer/views/AgentView/
 
 | 資料                           | 参照先                                                                  |
 | ------------------------------ | ----------------------------------------------------------------------- |
-| デザイン基盤（カードスタイル） | `ui-overhaul/00-design-foundation.md` (TASK-UI-00)                      |
-| アーキテクチャ基盤（ViewType） | `ui-overhaul/01-architecture-foundation.md` (TASK-UI-01)                |
-| GlobalNavStrip（ナビ連携）     | `ui-overhaul/02-global-nav-core.md` (TASK-UI-02)                        |
+| デザイン基盤（カードスタイル） | `task-050-ui-00-ui-design-foundation.md` (TASK-UI-00)                   |
+| アーキテクチャ基盤（ViewType） | `task-056-ui-01-store-ipc-architecture.md` (TASK-UI-01)                 |
+| GlobalNavStrip（ナビ連携）     | `task-057-ui-02-global-nav-core.md` (TASK-UI-02)                        |
 | 既存 AgentView 実装            | `apps/desktop/src/renderer/views/AgentView/index.tsx`                   |
 | 既存 AgentExecutionView        | `apps/desktop/src/renderer/views/AgentExecutionView/`                   |
 | 既存 SkillStreamDisplay        | `apps/desktop/src/renderer/components/AgentView/SkillStreamDisplay.tsx` |

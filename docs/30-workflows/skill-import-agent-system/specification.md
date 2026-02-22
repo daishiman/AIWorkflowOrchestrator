@@ -5543,7 +5543,7 @@ const RETRY_CONFIG = {
 
 ## 9. 実装ロードマップ
 
-詳細なタスク仕様は [tasks/index.md](./tasks/index.md) を参照してください。
+詳細なタスク仕様は [tasks/task-00-unified-implementation-sequence/task-000-master-index.md](./tasks/task-00-unified-implementation-sequence/task-000-master-index.md) を参照してください。
 
 ### Phase 1: 基盤層
 
@@ -9309,7 +9309,7 @@ export function SkillAnalyticsDashboard() {
 ### 本プロジェクトドキュメント
 
 - [技術選定・設計判断](./technical-decisions.md)
-- [タスク一覧](./tasks/index.md)
+- [タスク一覧](./tasks/task-00-unified-implementation-sequence/task-000-master-index.md)
 - [skill-creator統合仕様](./tasks/_skill-creator-integration.md)
 - [UI/UXレビュー](./ui-ux-review.md)
 

@@ -506,7 +506,7 @@ window.matchMedia = createMatchMedia(false);
 - `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md` — a11yテスト基準
 - `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` — P31対策
 - `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` — テスト品質要件
-- `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-055-ui-00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
 - [.claude/rules/01-architecture.md](../../../../../.claude/rules/01-architecture.md) — Apple HIG準拠、Atomic Design、レスポンシブ戦略
 - [.claude/rules/06-known-pitfalls.md](../../../../../.claude/rules/06-known-pitfalls.md) — P9, P13, P31, P39, P40
 - `apps/desktop/src/renderer/store/slices/uiSlice.ts` — ResponsiveMode 定義（desktop / tablet / mobile）
