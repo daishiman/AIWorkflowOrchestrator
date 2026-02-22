@@ -186,6 +186,41 @@ Electronデスクトップアプリでは、ユーザーがLLMプロバイダー
 
 ---
 
+## UX言語辞書
+
+> 参照: [ui-ux-design-principles.md](./ui-ux-design-principles.md) — Tap & Discover 哲学 セクション
+
+### Tap & Discover 哲学
+
+ユーザーインターフェースの設計思想として「Tap & Discover（タップ＆ディスカバー）」哲学を採用する。素人ユーザーが直感的に操作でき、触っているうちに自然に機能を発見できるUI体験を目指す。
+
+| 原則 | 説明 |
+|------|------|
+| Level 1 = 4個以下 | 最初に見えるのは最大4つの大きな要素 |
+| Level 2 = タップで詳細 | 複雑さは全てタップ後に表示（Progressive Disclosure） |
+| 全操作にフィードバック | タップ→バウンス、成功→チェック、失敗→シェイク |
+
+### 画面名称辞書
+
+| 内部名称（技術） | ユーザー向け表示 | 目的 |
+|------------------|----------------|------|
+| Dashboard | ホーム | ユーザーの起点 |
+| AgentView | AIアシスタント | AIとの対話・ツール実行 |
+| SkillCenterView | ツールを探す | ツール（スキル）の管理 |
+| HistorySearchView | あなたの記録 | 履歴のタイムライン表示 |
+| NotificationCenter | お知らせ | 通知の確認 |
+| OnboardingWizard | はじめよう | 初期設定ウィザード |
+| WorkspaceView | 作業スペース | ファイル+チャットのワークスペース |
+
+### 新規共通コンポーネント
+
+| コンポーネント | Atomic Design 分類 | 用途 |
+|---------------|-------------------|------|
+| `SuggestionBubble` | Atom | タップで試すためのバブルUI。チャット/ホーム/オンボーディング共通 |
+| `EmptyState` (mood拡張) | Atom | 空の状態を文脈に応じた感情トーン（welcoming/encouraging/celebrating）で表示 |
+
+---
+
 ## 関連リソース
 
 | リソース     | 説明                   |

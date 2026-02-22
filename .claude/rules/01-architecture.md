@@ -35,22 +35,44 @@ Renderer → Preload (contextBridge) → Main → External Services
 - **Deference**: UI装飾を控え、コンテンツに主役を譲る
 - **Depth**: レイヤーと自然なモーションで空間的な奥行きを表現
 
-### カラーパレット（ライトモード基準）
+### カラーパレット（Apple HIG System Colors 準拠）
 
-| 用途               | 値        |
-| ------------------ | --------- |
-| 背景               | `#FFFFFF` |
-| セカンダリ背景     | `#F5F5F7` |
-| プライマリテキスト | `#1D1D1F` |
-| セカンダリテキスト | `#86868B` |
-| アクセント         | `#007AFF` |
-| 成功               | `#34C759` |
-| エラー             | `#FF3B30` |
-| 警告               | `#FF9500` |
-| ボーダー           | `#D2D2D7` |
+> 出典: [Apple Human Interface Guidelines — Color](https://developer.apple.com/design/human-interface-guidelines/color)
+
+**ライトモード:**
+
+| 用途               | Apple 名称                | 値                      |
+| ------------------ | ------------------------- | ----------------------- |
+| 背景               | systemBackground          | `#FFFFFF`               |
+| セカンダリ背景     | secondarySystemBackground | `#F2F2F7`               |
+| ターシャリ背景     | systemGray5               | `#E5E5EA`               |
+| プライマリテキスト | label                     | `#000000`               |
+| セカンダリテキスト | secondaryLabel            | `rgba(60, 60, 67, 0.6)` |
+| アクセント         | systemBlue                | `#007AFF`               |
+| 成功               | systemGreen               | `#34C759`               |
+| エラー             | systemRed                 | `#FF3B30`               |
+| 警告               | systemOrange              | `#FF9500`               |
+| ボーダー           | opaqueSeparator           | `#C6C6C8`               |
+
+**ダークモード:**
+
+| 用途               | Apple 名称                | 値                         |
+| ------------------ | ------------------------- | -------------------------- |
+| 背景               | systemBackground          | `#000000`                  |
+| セカンダリ背景     | secondarySystemBackground | `#1C1C1E`                  |
+| ターシャリ背景     | tertiarySystemBackground  | `#2C2C2E`                  |
+| プライマリテキスト | label                     | `#FFFFFF`                  |
+| セカンダリテキスト | secondaryLabel            | `rgba(235, 235, 245, 0.6)` |
+| アクセント         | systemBlue                | `#0A84FF`                  |
+| 成功               | systemGreen               | `#30D158`                  |
+| エラー             | systemRed                 | `#FF453A`                  |
+| 警告               | systemOrange              | `#FF9F0A`                  |
+| ボーダー           | opaqueSeparator           | `#38383A`                  |
 
 - DON'T: 高彩度な色を大面積に使わない
 - DON'T: ダークモード風の暗い背景をデフォルトにしない
+- DO: ライト/ダーク両モードで Apple 公式のシステムカラーを使用する
+- DON'T: Tailwind Slate（青みがかった灰色）を light/dark テーマに使用しない — Apple の中性灰を使う
 
 ### ビジュアルスタイル
 
