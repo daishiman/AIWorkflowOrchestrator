@@ -416,7 +416,7 @@ Zustand Sliceパターンで実装された状態管理。
 | ------------------------- | --------------- | --------------------------- | ------------------------------------- |
 | `skill:list-imported`     | Renderer → Main | インポート済みスキル取得    | `OperationResult<Skill[]>`            |
 | `skill:list-available`    | Renderer → Main | 利用可能スキル取得          | `OperationResult<Skill[]>`            |
-| `skill:import`            | Renderer → Main | スキルインポート            | `OperationResult<void>`               |
+| `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `OperationResult<void>`               |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `OperationResult<Skill>`              |
 | `skill:execute`           | Renderer → Main | スキル実行                  | `OperationResult<SkillRunResult>`     |
@@ -445,11 +445,29 @@ Zustand Sliceパターンで実装された状態管理。
 | バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
 | エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` |
 
-#### `skill:import` 関連未タスク
+#### `skill:import` リクエスト契約（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001）
 
-| タスクID | 概要 | ステータス | 指示書パス |
-| -------- | ---- | ---------- | ---------- |
-| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | skill:import 戻り値型不整合修正（ImportResult→ImportedSkill変換） | 未実施 | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-return-type-001.md` |
+| 項目 | 契約 |
+| ---- | ---- |
+| 引数形式 | `skillName: string`（オブジェクトラップなし） |
+| バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
+| 戻り値 | `ImportedSkill`（2ステップ変換: importSkills → getSkillByName） |
+| エラー | `VALIDATION_ERROR` / `IMPORT_ERROR` |
+
+#### `skill:import` 関連タスク（完了）
+
+| タスクID | 概要 | ステータス | 完了日 |
+| -------- | ---- | ---------- | ------ |
+| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | skill:import 戻り値型不整合修正（ImportResult→ImportedSkill変換） | **完了** | 2026-02-21 |
+
+#### skillHandlers 関連未タスク（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12 検出）
+
+| タスクID | 内容 | 優先度 | 指示書パス |
+| -------- | ---- | ------ | ---------- |
+| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-ipc-response-consistency.md` |
+| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一） | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-getdetail-naming-drift.md` |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-validation-consistency.md` |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog（organisms版）がskill.id（ハッシュ）を渡すためgetSkillByName失敗 | 高 | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md` |
 
 #### OperationResult型
 
@@ -1716,6 +1734,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-22 | 1.27.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: skillHandlers 関連未タスクテーブルに追加（skill.idハッシュ→getSkillByName失敗バグ） |
 | 2026-02-21 | 1.26.0     | UT-FIX-SKILL-IMPORT-INTERFACE-001 追補: 「実装上の課題と教訓」を追加（Phase 12ステータス同期、旧参照パス残存、Vitest実行ディレクトリ差異） |
 | 2026-02-21 | 1.25.0     | UT-FIX-SKILL-REMOVE-INTERFACE-001: Phase実行時の追加教訓テーブル追加（Phase依存順序違反・worktree Phase 11制約・カバレッジスコープ解釈） |
 | 2026-02-21 | 1.25.0     | UT-FIX-SKILL-IMPORT-INTERFACE-001完了反映。`skill:import` の引数契約を `skillName: string` に統一し、バリデーション仕様・完了タスク記録を追加 |

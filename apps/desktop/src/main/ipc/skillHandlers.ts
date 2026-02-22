@@ -117,7 +117,7 @@ export function registerSkillHandlers(
     },
   );
 
-  // skill:import - スキルをインポート
+  // skill:import - スキルをインポート（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: ImportedSkill型を返す）
   ipcMain.handle(
     IPC_CHANNELS.SKILL_IMPORT,
     async (event: IpcMainInvokeEvent, skillName: string) => {
@@ -134,7 +134,26 @@ export function registerSkillHandlers(
           message: "skillName must be a non-empty string",
         };
       }
-      return skillService.importSkills([skillName]);
+
+      // Step 1: インポート実行
+      const result = await skillService.importSkills([skillName]);
+
+      // Step 2: インポート成功時、ImportedSkill を取得して返す
+      if (result.success && result.importedCount > 0) {
+        const importedSkill = await skillService.getSkillByName(skillName);
+        if (importedSkill) {
+          return importedSkill;
+        }
+      }
+
+      // Step 3: インポート失敗またはスキル取得失敗時はエラー
+      throw {
+        code: "IMPORT_ERROR",
+        message:
+          result.errors.length > 0
+            ? result.errors.join(", ")
+            : `Failed to import skill: ${skillName}`,
+      };
     },
   );
 

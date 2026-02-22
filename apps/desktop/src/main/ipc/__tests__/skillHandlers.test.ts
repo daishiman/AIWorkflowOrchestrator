@@ -46,7 +46,8 @@ interface SkillScanResult {
   scannedAt: Date;
 }
 
-interface ImportResult {
+// ImportResult型はmockデータの構造参照として保持（型アノテーションとしては未使用）
+interface _ImportResult {
   success: boolean;
   importedCount: number;
   errors: string[];
@@ -61,6 +62,36 @@ interface OperationResult<T> {
   success: boolean;
   data?: T;
   error?: string;
+}
+
+// UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: ImportedSkill型定義
+interface SkillSubResource {
+  name: string;
+  path: string;
+}
+
+interface SkillOtherFile {
+  name: string;
+  path: string;
+  type: string;
+}
+
+interface ImportedSkill {
+  name: string;
+  description: string;
+  allowedTools?: string[];
+  path: string;
+  updatedAt: Date;
+  agents: SkillSubResource[];
+  references: SkillSubResource[];
+  scripts: SkillSubResource[];
+  assets: SkillSubResource[];
+  schemas: SkillSubResource[];
+  indexes: SkillSubResource[];
+  otherFiles: SkillOtherFile[];
+  importedAt: Date;
+  status: "active" | "disabled";
+  content?: string;
 }
 
 // === Mocks ===
@@ -98,6 +129,7 @@ const mockSkillService = {
   importSkills: vi.fn(),
   removeSkill: vi.fn(),
   getSkillById: vi.fn(),
+  getSkillByName: vi.fn(), // UT-FIX-SKILL-IMPORT-RETURN-TYPE-001
   // TASK-FIX-7-1: SkillExecutor委譲
   setSkillExecutor: vi.fn(),
   // TASK-9C: スキル改善機能
@@ -625,27 +657,48 @@ describe("skillHandlers", () => {
   // ===========================================================================
 
   describe("skill:import", () => {
-    it("SH-IMP-01: should call skillService.importSkills with [skillName]", async () => {
-      const mockResult: ImportResult = {
+    // UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: テスト用モックデータ
+    const mockImportedSkill: ImportedSkill = {
+      name: "test-skill",
+      description: "A test skill for import",
+      path: "/test/skills/test-skill/SKILL.md",
+      updatedAt: new Date("2026-02-21T00:00:00Z"),
+      agents: [],
+      references: [],
+      scripts: [],
+      assets: [],
+      schemas: [],
+      indexes: [],
+      otherFiles: [],
+      importedAt: new Date("2026-02-21T01:00:00Z"),
+      status: "active",
+    };
+
+    it("SH-IMP-01: should return ImportedSkill from skill:import handler", async () => {
+      // Given: importSkills 成功、getSkillByName が ImportedSkill を返す
+      mockSkillService.importSkills.mockResolvedValue({
         success: true,
         importedCount: 1,
         errors: [],
-      };
-      mockSkillService.importSkills.mockResolvedValue(mockResult);
+      });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
 
       const handler = handlers.get(SKILL_CHANNELS.IMPORT);
       if (!handler) {
         throw new Error("skill:import handler not registered");
       }
 
-      // When: 文字列skillNameを渡してハンドラーを呼び出す
+      // When: スキル名を渡してハンドラーを呼び出す
       const result = await handler({}, "test-skill");
 
-      // Then: skillService.importSkillsが配列["test-skill"]で呼び出される
-      expect(mockSkillService.importSkills).toHaveBeenCalledWith([
-        "test-skill",
-      ]);
-      expect((result as ImportResult).importedCount).toBe(1);
+      // Then: ImportedSkill型のオブジェクトが返される
+      const imported = result as ImportedSkill;
+      expect(imported.name).toBe("test-skill");
+      expect(imported.description).toBe("A test skill for import");
+      expect(imported.importedAt).toBeDefined();
+      expect(imported.status).toBe("active");
+      expect(imported.path).toBeDefined();
+      expect(imported.agents).toBeInstanceOf(Array);
     });
 
     it("SH-IMP-02: should throw VALIDATION_ERROR when skillName is not a string", async () => {
@@ -714,6 +767,7 @@ describe("skillHandlers", () => {
         importedCount: 1,
         errors: [],
       });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
 
       const handler = handlers.get(SKILL_CHANNELS.IMPORT);
       if (!handler) {
@@ -747,6 +801,7 @@ describe("skillHandlers", () => {
         importedCount: 1,
         errors: [],
       });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
 
       const handler = handlers.get(SKILL_CHANNELS.IMPORT);
       if (!handler) {
@@ -783,7 +838,7 @@ describe("skillHandlers", () => {
       }
     });
 
-    // Phase 6: テスト拡充 — SH-IMP-08〜SH-IMP-13 + 境界値テスト
+    // Phase 6: テスト拡充 -- SH-IMP-08〜SH-IMP-13 + 境界値テスト
 
     it("SH-IMP-08: should throw VALIDATION_ERROR for null argument", async () => {
       const handler = handlers.get(SKILL_CHANNELS.IMPORT);
@@ -850,6 +905,10 @@ describe("skillHandlers", () => {
         importedCount: 1,
         errors: [],
       });
+      mockSkillService.getSkillByName.mockResolvedValue({
+        ...mockImportedSkill,
+        name: "my-skill_v2.0",
+      });
 
       const handler = handlers.get(SKILL_CHANNELS.IMPORT);
       if (!handler) {
@@ -863,7 +922,9 @@ describe("skillHandlers", () => {
       expect(mockSkillService.importSkills).toHaveBeenCalledWith([
         "my-skill_v2.0",
       ]);
-      expect((result as ImportResult).success).toBe(true);
+      // UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: ImportedSkill型が返される
+      const imported = result as ImportedSkill;
+      expect(imported.name).toBe("my-skill_v2.0");
     });
 
     it("SH-IMP-12: should throw VALIDATION_ERROR for tab-only string (P42)", async () => {
@@ -902,6 +963,389 @@ describe("skillHandlers", () => {
           "skillName must be a non-empty string",
         );
       }
+    });
+
+    // === RT-01〜RT-06: 戻り値型検証テスト (UT-FIX-SKILL-IMPORT-RETURN-TYPE-001) ===
+
+    it("RT-01: should return ImportedSkill type from handler", async () => {
+      // Given: インポート成功、スキル取得成功
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 1,
+        errors: [],
+      });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: ハンドラを呼び出す
+      const result = await handler({}, "test-skill");
+
+      // Then: ImportedSkill型のプロパティが存在する
+      const imported = result as ImportedSkill;
+      expect(imported).toHaveProperty("name");
+      expect(imported).toHaveProperty("importedAt");
+      expect(imported).toHaveProperty("status");
+      expect(imported).toHaveProperty("path");
+      expect(imported).toHaveProperty("description");
+      expect(imported).toHaveProperty("agents");
+      expect(imported).toHaveProperty("references");
+    });
+
+    it("RT-02: should not contain ImportResult properties", async () => {
+      // Given: インポート成功、スキル取得成功
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 1,
+        errors: [],
+      });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: ハンドラを呼び出す
+      const result = await handler({}, "test-skill");
+
+      // Then: ImportResult型のプロパティが含まれない
+      expect(result).not.toHaveProperty("importedCount");
+      expect(result).not.toHaveProperty("errors");
+    });
+
+    it("RT-03: should throw IMPORT_ERROR when import fails", async () => {
+      // Given: インポート失敗
+      mockSkillService.importSkills.mockResolvedValue({
+        success: false,
+        importedCount: 0,
+        errors: ["Skill not found in available skills"],
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: IMPORT_ERROR がthrowされる
+      try {
+        await handler({}, "nonexistent-skill");
+        throw new Error("Expected IMPORT_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("IMPORT_ERROR");
+        expect((error as { message: string }).message).toContain(
+          "Skill not found in available skills",
+        );
+      }
+    });
+
+    it("RT-04: should throw IMPORT_ERROR when getSkillByName returns null", async () => {
+      // Given: インポート成功だが、getSkillByName が null を返す
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 1,
+        errors: [],
+      });
+      mockSkillService.getSkillByName.mockResolvedValue(null);
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: IMPORT_ERROR がthrowされる
+      try {
+        await handler({}, "ghost-skill");
+        throw new Error("Expected IMPORT_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("IMPORT_ERROR");
+        expect((error as { message: string }).message).toContain("ghost-skill");
+      }
+    });
+
+    it("RT-05: should return importedAt as Date-compatible value", async () => {
+      // Given: インポート成功、importedAt が Date オブジェクト
+      const skillWithDate = {
+        ...mockImportedSkill,
+        importedAt: new Date("2026-02-21T01:00:00Z"),
+      };
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 1,
+        errors: [],
+      });
+      mockSkillService.getSkillByName.mockResolvedValue(skillWithDate);
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: ハンドラを呼び出す
+      const result = await handler({}, "test-skill");
+
+      // Then: importedAt が Date 互換の値
+      const imported = result as ImportedSkill;
+      expect(imported.importedAt).toBeDefined();
+      expect(imported.importedAt).toBeTruthy();
+      const dateValue = new Date(imported.importedAt);
+      expect(dateValue.getTime()).not.toBeNaN();
+    });
+
+    it("RT-06: should call importSkills and getSkillByName with correct args", async () => {
+      // Given: インポート成功
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 1,
+        errors: [],
+      });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: ハンドラを呼び出す
+      await handler({}, "my-skill");
+
+      // Then: importSkills が配列ラップされたスキル名で呼ばれる
+      expect(mockSkillService.importSkills).toHaveBeenCalledWith(["my-skill"]);
+      // Then: getSkillByName が同じスキル名で呼ばれる
+      expect(mockSkillService.getSkillByName).toHaveBeenCalledWith("my-skill");
+    });
+
+    // === RT-07〜RT-10: エラーケーステスト (Phase 6: テスト拡充) ===
+
+    it("RT-07: should propagate importSkills exception", async () => {
+      // Given: importSkills がランタイムエラーをthrow
+      mockSkillService.importSkills.mockRejectedValue(
+        new Error("File system error during import"),
+      );
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: エラーが伝播する
+      await expect(handler({}, "error-skill")).rejects.toThrow(
+        "File system error during import",
+      );
+    });
+
+    it("RT-08: should propagate getSkillByName exception", async () => {
+      // Given: importSkills 成功、getSkillByName がエラーをthrow
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 1,
+        errors: [],
+      });
+      mockSkillService.getSkillByName.mockRejectedValue(
+        new Error("Cache corruption"),
+      );
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: エラーが伝播する
+      await expect(handler({}, "cache-error-skill")).rejects.toThrow(
+        "Cache corruption",
+      );
+    });
+
+    it("RT-09: should throw IMPORT_ERROR when importedCount is 0 despite success", async () => {
+      // Given: success=true だが importedCount=0（既にインポート済み等）
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 0,
+        errors: [],
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: IMPORT_ERROR がthrowされる
+      try {
+        await handler({}, "already-imported");
+        throw new Error("Expected IMPORT_ERROR");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("IMPORT_ERROR");
+        expect((error as { message: string }).message).toContain(
+          "already-imported",
+        );
+      }
+    });
+
+    it("RT-10: should join multiple error messages in IMPORT_ERROR", async () => {
+      // Given: 複数のエラーメッセージ
+      mockSkillService.importSkills.mockResolvedValue({
+        success: false,
+        importedCount: 0,
+        errors: ["SKILL.md not found", "Invalid directory structure"],
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: エラーメッセージが結合される
+      try {
+        await handler({}, "broken-skill");
+        throw new Error("Expected IMPORT_ERROR");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("IMPORT_ERROR");
+        expect((error as { message: string }).message).toContain(
+          "SKILL.md not found",
+        );
+        expect((error as { message: string }).message).toContain(
+          "Invalid directory structure",
+        );
+      }
+    });
+
+    // === RT-11〜RT-15: 境界値テスト (Phase 6: テスト拡充) ===
+
+    it("RT-11: should reject whitespace-only skillName (P42)", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: スペースのみの文字列を渡す
+      try {
+        await handler({}, "   ");
+        throw new Error("Expected VALIDATION_ERROR");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    it("RT-12: should reject tab/newline-only skillName", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: タブ・改行のみの文字列を渡す
+      try {
+        await handler({}, "\t\n");
+        throw new Error("Expected VALIDATION_ERROR");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    it("RT-13: should reject undefined skillName", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: undefinedを渡す
+      try {
+        await handler({}, undefined);
+        throw new Error("Expected VALIDATION_ERROR");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+      }
+    });
+
+    it("RT-14: should reject non-string skillName (number)", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: 数値を渡す
+      try {
+        await handler({}, 123);
+        throw new Error("Expected VALIDATION_ERROR");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+      }
+    });
+
+    it("RT-15: should reject empty string skillName", async () => {
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When: 空文字列を渡す
+      try {
+        await handler({}, "");
+        throw new Error("Expected VALIDATION_ERROR");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    // === RT-16〜RT-18: セキュリティ検証テスト (Phase 6: テスト拡充) ===
+
+    it("RT-16: should throw when validateIpcSender returns invalid", async () => {
+      const { validateIpcSender, toIPCValidationError } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      (validateIpcSender as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+        valid: false,
+        errorCode: "IPC_UNAUTHORIZED",
+        errorMessage: "Unauthorized sender",
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: セキュリティエラーがthrowされる
+      try {
+        await handler({}, "valid-skill");
+        throw new Error("Expected security error");
+      } catch {
+        expect(toIPCValidationError).toHaveBeenCalledWith({
+          valid: false,
+          errorCode: "IPC_UNAUTHORIZED",
+          errorMessage: "Unauthorized sender",
+        });
+      }
+    });
+
+    it("RT-17: should pass getAllowedWindows callback with mainWindow (P41)", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      mockSkillService.importSkills.mockResolvedValue({
+        success: true,
+        importedCount: 1,
+        errors: [],
+      });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      await handler({}, "test-skill");
+
+      // Then: validateIpcSender が正しい引数で呼ばれている
+      expect(validateIpcSender).toHaveBeenCalledWith(
+        expect.anything(),
+        "skill:import",
+        expect.objectContaining({
+          getAllowedWindows: expect.any(Function),
+        }),
+      );
+
+      // P41準拠: getAllowedWindows コールバックの戻り値を明示的に検証
+      const callArgs = (
+        validateIpcSender as ReturnType<typeof vi.fn>
+      ).mock.calls.find((call: unknown[]) => call[1] === "skill:import");
+      if (callArgs && callArgs[2]?.getAllowedWindows) {
+        const windows = callArgs[2].getAllowedWindows();
+        expect(windows).toContain(mockMainWindow);
+      }
+    });
+
+    it("RT-18: should reject calls from DevTools", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator.js");
+
+      (validateIpcSender as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+        valid: false,
+        errorCode: "IPC_DEVTOOLS_NOT_ALLOWED",
+        errorMessage: "DevTools sender not allowed",
+      });
+
+      const handler = handlers.get(SKILL_CHANNELS.IMPORT);
+      if (!handler) throw new Error("skill:import handler not registered");
+
+      // When & Then: DevTools拒否エラー
+      await expect(handler({}, "test-skill")).rejects.toBeDefined();
     });
   });
 

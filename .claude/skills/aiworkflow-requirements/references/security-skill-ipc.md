@@ -54,7 +54,7 @@
 | ---------------------- | --------------------------------- |
 | `skill:list`           | sender検証 + パストラバーサル検証 |
 | `skill:getImported`    | sender検証                        |
-| `skill:import`         | sender検証 + skillName非空文字列検証（`trim()`含む） |
+| `skill:import`         | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-IMPORT-INTERFACE-001 + UT-FIX-SKILL-IMPORT-RETURN-TYPE-001） |
 | `skill:remove`         | sender検証 + skillName非空文字列検証（`trim()`含む） |
 | `skill:get-detail`     | sender検証 + skillId検証          |
 
@@ -398,6 +398,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.2.0     | 2026-01-27 | TASK-5-1 SkillAPI Preload実装セクション追加  |
 | v1.3.0     | 2026-02-02 | TASK-8C-A完了記録追加（41テスト、IPC統合テスト）       |
+| v1.8.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001反映: `skill:import` の検証要件を `skillName` 非空文字列（`trim()` 含む3段バリデーション）に更新。引数形式を `skillIds: string[]` → `skillName: string` に変更 |
 | v1.7.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` の検証要件を `skillName` 非空文字列（`trim()` 含む3段バリデーション）に更新 |
 | v1.6.0     | 2026-02-12 | TASK-9B-H-SKILL-CREATOR-IPC完了: SkillCreatorService IPCチャネルセキュリティセクション追加（6チャンネル、validateIpcSender適用、引数バリデーション、エラーサニタイズ）|
 | v1.4.0     | 2026-02-04 | TASK-FIX-4-1-IPC-CONSOLIDATION完了（旧チャンネル削除、42テスト） |

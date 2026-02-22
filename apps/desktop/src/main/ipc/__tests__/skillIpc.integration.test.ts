@@ -38,6 +38,7 @@ const mockSkillService = {
   importSkills: vi.fn(),
   removeSkill: vi.fn(),
   getSkillById: vi.fn(),
+  getSkillByName: vi.fn(),
   executeSkill: vi.fn(),
   clearCache: vi.fn(),
   // TASK-FIX-7-1: SkillExecutor委譲
@@ -319,37 +320,36 @@ describe("Skill IPC Integration", () => {
   });
 
   // --- TC-04, TC-05, TC-06: skill:import ---
+  // UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: ハンドラはImportedSkillを返し、失敗時はthrowする
   describe("skill:import", () => {
-    it("TC-04: should import skill and return ImportResult", async () => {
+    it("TC-04: should import skill and return ImportedSkill", async () => {
       mockSkillService.importSkills.mockResolvedValue(MOCK_IMPORT_SUCCESS);
+      mockSkillService.getSkillByName.mockResolvedValue(MOCK_SKILL_A);
       const handler = handlers.get("skill:import")!;
-      const result = (await handler(createMockIpcEvent(), "new-skill")) as {
-        success: boolean;
-        importedCount: number;
-      };
-      expect(result.success).toBe(true);
-      expect(result.importedCount).toBe(1);
+      const result = await handler(createMockIpcEvent(), "new-skill");
+      expect(result).toEqual(MOCK_SKILL_A);
       expect(mockSkillService.importSkills).toHaveBeenCalledWith(["new-skill"]);
+      expect(mockSkillService.getSkillByName).toHaveBeenCalledWith("new-skill");
       expect(validateIpcSender).toHaveBeenCalled();
     });
 
-    it("TC-05: should return error result if skill already imported", async () => {
+    it("TC-05: should throw IMPORT_ERROR if skill already imported", async () => {
       mockSkillService.importSkills.mockResolvedValue({
         success: false,
         importedCount: 0,
         errors: ["Already imported"],
       });
       const handler = handlers.get("skill:import")!;
-      const result = (await handler(
-        createMockIpcEvent(),
-        "existing-skill",
-      )) as { success: boolean; errors: string[] };
-      expect(result.success).toBe(false);
-      expect(result.errors).toContain("Already imported");
+      await expect(
+        handler(createMockIpcEvent(), "existing-skill"),
+      ).rejects.toMatchObject({
+        code: "IMPORT_ERROR",
+        message: "Already imported",
+      });
       expect(validateIpcSender).toHaveBeenCalled();
     });
 
-    it("TC-06: should return error if skill not found", async () => {
+    it("TC-06: should throw when skill not found during import", async () => {
       mockSkillService.importSkills.mockRejectedValue(
         new Error("Skill not found"),
       );
@@ -548,7 +548,7 @@ describe("Skill IPC Integration", () => {
     });
   });
 
-  // --- Edge Cases: skill:import validation ---
+  // --- Edge Cases: skill:import validation (UT-FIX-SKILL-IMPORT-INTERFACE-001: P42準拠) ---
   describe("skill:import - validation", () => {
     it("should throw when skillName is not a string", async () => {
       const handler = handlers.get("skill:import")!;
@@ -566,7 +566,7 @@ describe("Skill IPC Integration", () => {
       });
     });
 
-    it("should throw when skillName is whitespace only", async () => {
+    it("should throw when skillName is whitespace only (P42 trim check)", async () => {
       const handler = handlers.get("skill:import")!;
       await expect(handler(createMockIpcEvent(), "   ")).rejects.toMatchObject({
         code: "VALIDATION_ERROR",

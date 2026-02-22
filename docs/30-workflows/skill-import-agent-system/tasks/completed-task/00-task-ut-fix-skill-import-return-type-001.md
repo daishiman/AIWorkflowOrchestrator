@@ -10,7 +10,7 @@
 | 対象機能     | スキルインポート機能                                                         |
 | 優先度       | 高（引数修正だけでは機能が正常動作しないため）                               |
 | 見積もり規模 | 小規模（2-3時間）                                                            |
-| ステータス   | 未実施                                                                       |
+| ステータス   | 完了                                                                         |
 | 発見元       | 20フレームワーク多角的分析（仮説思考・抽象化思考・垂直思考）（2026-02-21）   |
 | 発見日       | 2026-02-21                                                                   |
 
@@ -20,7 +20,7 @@
 
 ### 1.1 背景
 
-`skill:import` IPCチャンネルには、引数形式の不整合（UT-FIX-SKILL-IMPORT-INTERFACE-001で対応予定）とは別に、**戻り値型の不整合**が存在する。
+`skill:import` IPCチャンネルには、引数形式の不整合（UT-FIX-SKILL-IMPORT-INTERFACE-001で対応済み）とは別に、**戻り値型の不整合**が存在する。
 
 Main Process側の `skillHandlers.ts` は `skillService.importSkills()` を呼び出し、`ImportResult` 型（バッチ操作の結果サマリー）を返す。しかし、Preload側の `skill-api.ts` は `Promise<ImportedSkill>` を戻り値として宣言しており、Renderer側の `agentSlice.ts` はその結果を `ImportedSkill` オブジェクトとして `importedSkills` 配列に直接追加する。
 
@@ -134,7 +134,7 @@ Renderer:   const imported = await window.electronAPI.skill.import(skillName);
 
 | タスクID                          | タスク名                           | ステータス | 依存関係                                              |
 | --------------------------------- | ---------------------------------- | ---------- | ----------------------------------------------------- |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPC引数形式不整合修正 | 未実施     | 同時実施推奨（引数+戻り値を一括で修正するのが効率的） |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPC引数形式不整合修正 | 完了       | 同時実施推奨（引数+戻り値を一括で修正するのが効率的） |
 
 ### 3.3 必要な知識
 
@@ -194,7 +194,7 @@ ipcMain.handle(IPC_CHANNELS.SKILL_IMPORT, async (event, skillName: string) => {
 | **型不整合の不可視性**                   | TypeScriptのコンパイルチェックでは、Preload層の `safeInvoke` が `Promise<any>` を返すため、ハンドラの実際の戻り値型（`ImportResult`）とPreloadの宣言型（`ImportedSkill`）の不一致を検出できない。コンパイルは通るがランタイムでデータ構造が壊れる             | ハンドラ側で明示的に `ImportedSkill` 型を返すように変換ロジックを追加する。将来的にはIPC型スキーマ（Zod等）で両端の型を一元管理する                                | P23: API二重定義の型管理複雑性                  |
 | **2ステップ呼び出し**                    | `importSkills()` は `ImportResult` を返し、`ImportedSkill` を取得するには別途 `getSkillByName()` の呼び出しが必要。1回のIPC呼び出しで2つのサービスメソッドを実行するため、トランザクション的な整合性（インポート成功 → 取得失敗のケース）を考慮する必要がある | `importSkills()` 成功後に `getSkillByName()` を呼び出す。`getSkillByName()` が `null` を返した場合はエラーとして処理する（インポート直後なのでnullは異常状態）     | なし（新規パターン）                            |
 | **Date型のシリアライゼーション**         | `ImportedSkill.importedAt` は `Date` 型だが、Electron IPCのシリアライゼーション（structured clone algorithm）で `Date` オブジェクトが文字列に変換される可能性がある。Renderer側で `new Date()` に再変換が必要になるケースがある                               | Renderer側で受信後に `importedAt` を `new Date(imported.importedAt)` で再変換する、またはハンドラ側で `importedAt` を ISO 8601文字列として送信する設計を検討する   | なし（Electron IPC固有の課題）                  |
-| **P44「解決済み」ステータスの不正確性**  | 06-known-pitfalls.md のP44エントリが「✅ 解決済み」となっているが、実際にはskill:importの引数形式（UT-FIX-SKILL-IMPORT-INTERFACE-001）も戻り値型（本タスク）も未修正。P4パターン（早期「完了」記載）の再発                                                    | 本タスクと UT-FIX-SKILL-IMPORT-INTERFACE-001 の両方が完了するまでP44のステータスを「解決済み」に戻さない。完了時にP44エントリを更新し、解決済みの根拠を明記する    | P4: documentation-changelogへの早期「完了」記載 |
+| **P44「解決済み」ステータスの不正確性**  | 06-known-pitfalls.md のP44エントリが「✅ 解決済み」となっているが、修正前はskill:importの引数形式（UT-FIX-SKILL-IMPORT-INTERFACE-001）と戻り値型（本タスク）が未修正だった。P4パターン（早期「完了」記載）の再発                                              | 本タスクと UT-FIX-SKILL-IMPORT-INTERFACE-001 の両方が完了するまでP44のステータスを「解決済み」に戻さない。完了時にP44エントリを更新し、解決済みの根拠を明記する    | P4: documentation-changelogへの早期「完了」記載 |
 | **20フレームワーク分析での発見プロセス** | 引数形式の不整合（表層的な問題）に注目が集まり、戻り値型の不整合（深層的な問題）の発見が遅れた。仮説思考で「引数修正だけで本当に直るか？」と問い、垂直思考でデータフローを端から端まで追跡して初めて発見された                                                | IPC不整合の調査時は「引数」「戻り値」「エラー形式」の3軸で必ず検証する。IPCチャンネルの修正タスクでは、ipc-contract-checklist.mdを参照して全契約項目をチェックする | ipc-contract-checklist.md                       |
 
 **20フレームワーク分析の主な知見**:
@@ -447,8 +447,8 @@ P44（skill:import/remove IPCインターフェース不整合）を「✅解決
 
 | タスクID                            | 対象   | 修正内容     | ステータス |
 | ----------------------------------- | ------ | ------------ | ---------- |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001   | 引数   | 引数形式統一 | 未実施     |
-| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | 戻り値 | 戻り値型変換 | 未実施     |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001   | 引数   | 引数形式統一 | ✅ 完了    |
+| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | 戻り値 | 戻り値型変換 | ✅ 完了    |
 | UT-FIX-SKILL-REMOVE-INTERFACE-001   | 引数   | 引数形式統一 | ✅ 完了    |
 
 3タスクすべてが完了して初めてP44を「✅解決済み」に更新できる。
