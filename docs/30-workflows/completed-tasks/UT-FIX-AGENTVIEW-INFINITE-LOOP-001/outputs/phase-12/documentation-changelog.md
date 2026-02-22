@@ -59,31 +59,31 @@ Phase 12要件に基づき、Step 1-A〜1-D を実施した。新規インター
 
 ## ソースコード変更ファイル一覧
 
-| ファイルパス                                                                         | 変更内容                                                                                                              |
-| ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `apps/desktop/src/renderer/views/AgentView/index.tsx`                                | インラインセレクタ + useCallbackパターンを個別セレクタHookに移行。debug console.log削除。                             |
-| `apps/desktop/src/renderer/store/index.ts`                                           | AgentView用個別セレクタHook 15個を追加（状態8個、アクション7個）                                                      |
-| `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx`             | 個別Hookモックベースのテストに全面書き換え。53テスト、カバレッジ100%/95.65%/100%/100%                                 |
-| `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`         | P31セクションにAgentView適用拡張を追記、関連タスク更新                                                                |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                 | 完了タスクセクションにUT-FIX-AGENTVIEW-INFINITE-LOOP-001を追加。未タスク参照パスを配置ルールに合わせて是正（v1.31.0） |
-| `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`    | Agent SDK Skill仕様の完了タスクへ追加、備考の継続課題参照を是正                                                       |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`                                     | 完了ログ追加（Step 1-A必須）                                                                                          |
-| `.claude/skills/aiworkflow-requirements/SKILL.md`                                    | 変更履歴追加（Step 1-A必須）                                                                                          |
-| `.claude/skills/task-specification-creator/LOGS.md`                                  | 完了ログ追加（Step 1-A必須）                                                                                          |
-| `.claude/skills/task-specification-creator/SKILL.md`                                 | 変更履歴追加（Step 1-A必須）                                                                                          |
-| `.claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`       | 未タスク参照リンクの実在チェックを自動化（Phase 12再発防止）                                                          |
-| `.claude/skills/task-specification-creator/references/spec-update-workflow.md`       | Step 1-Eに未タスクリンク機械検証を追加                                                                                |
-| `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`          | Phase 12完了条件に未タスクリンク整合チェックを追加                                                                    |
-| `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md` | 完了移動時にtask-workflow参照先更新を必須化                                                                           |
-| `.claude/skills/skill-creator/references/patterns.md`                                | 未タスク参照切れの再発防止パターンを追加                                                                              |
-| `.claude/skills/skill-creator/references/phase-completion-checklist.md`              | Phase 12完了条件に未タスクリンク実在チェックを追加                                                                    |
-| `.claude/skills/skill-creator/LOGS.md`                                               | スキル改善ログを追加                                                                                                  |
-| `.claude/skills/skill-creator/SKILL.md`                                              | 変更履歴に再発防止改善を追加                                                                                          |
-| `docs/30-workflows/skill-import-agent-system/tasks/index.md`                         | `UT-FIX-AGENTVIEW-INFINITE-LOOP-001` を pending → completed へ更新                                                    |
-| `docs/30-workflows/completed-tasks/task-ut-fix-5-1-001-agentview-type-assertion.md`  | 欠落していた未タスク指示書を新規作成（配置不整合の是正）                                                              |
-| `docs/30-workflows/completed-tasks/task-ut-store-hooks-refactor-002-jsdoc.md`        | 未実施タスク指示書をunassigned-task配下に配置（参照整合）                                                             |
-| `docs/30-workflows/completed-tasks/task-ut-store-hooks-refactor-003-migration.md`    | 未実施タスク指示書をunassigned-task配下に配置（参照整合）                                                             |
-| `docs/30-workflows/completed-tasks/task-ut-fix-app-initauth-check.md`                | 未実施タスク指示書をunassigned-task配下に配置（参照整合）                                                             |
+| ファイルパス                                                                                                               | 変更内容                                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                                      | インラインセレクタ + useCallbackパターンを個別セレクタHookに移行。debug console.log削除。                             |
+| `apps/desktop/src/renderer/store/index.ts`                                                                                 | AgentView用個別セレクタHook 15個を追加（状態8個、アクション7個）                                                      |
+| `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx`                                                   | 個別Hookモックベースのテストに全面書き換え。53テスト、カバレッジ100%/95.65%/100%/100%                                 |
+| `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                               | P31セクションにAgentView適用拡張を追記、関連タスク更新                                                                |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                                       | 完了タスクセクションにUT-FIX-AGENTVIEW-INFINITE-LOOP-001を追加。未タスク参照パスを配置ルールに合わせて是正（v1.31.0） |
+| `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`                                          | Agent SDK Skill仕様の完了タスクへ追加、備考の継続課題参照を是正                                                       |
+| `.claude/skills/aiworkflow-requirements/LOGS.md`                                                                           | 完了ログ追加（Step 1-A必須）                                                                                          |
+| `.claude/skills/aiworkflow-requirements/SKILL.md`                                                                          | 変更履歴追加（Step 1-A必須）                                                                                          |
+| `.claude/skills/task-specification-creator/LOGS.md`                                                                        | 完了ログ追加（Step 1-A必須）                                                                                          |
+| `.claude/skills/task-specification-creator/SKILL.md`                                                                       | 変更履歴追加（Step 1-A必須）                                                                                          |
+| `.claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`                                             | 未タスク参照リンクの実在チェックを自動化（Phase 12再発防止）                                                          |
+| `.claude/skills/task-specification-creator/references/spec-update-workflow.md`                                             | Step 1-Eに未タスクリンク機械検証を追加                                                                                |
+| `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                                                | Phase 12完了条件に未タスクリンク整合チェックを追加                                                                    |
+| `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md`                                       | 完了移動時にtask-workflow参照先更新を必須化                                                                           |
+| `.claude/skills/skill-creator/references/patterns.md`                                                                      | 未タスク参照切れの再発防止パターンを追加                                                                              |
+| `.claude/skills/skill-creator/references/phase-completion-checklist.md`                                                    | Phase 12完了条件に未タスクリンク実在チェックを追加                                                                    |
+| `.claude/skills/skill-creator/LOGS.md`                                                                                     | スキル改善ログを追加                                                                                                  |
+| `.claude/skills/skill-creator/SKILL.md`                                                                                    | 変更履歴に再発防止改善を追加                                                                                          |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-090-tasks-index-legacy.md` | `UT-FIX-AGENTVIEW-INFINITE-LOOP-001` を pending → completed へ更新                                                    |
+| `docs/30-workflows/completed-tasks/task-ut-fix-5-1-001-agentview-type-assertion.md`                                        | 欠落していた未タスク指示書を新規作成（配置不整合の是正）                                                              |
+| `docs/30-workflows/completed-tasks/task-ut-store-hooks-refactor-002-jsdoc.md`                                              | 未実施タスク指示書をunassigned-task配下に配置（参照整合）                                                             |
+| `docs/30-workflows/completed-tasks/task-ut-store-hooks-refactor-003-migration.md`                                          | 未実施タスク指示書をunassigned-task配下に配置（参照整合）                                                             |
+| `docs/30-workflows/completed-tasks/task-ut-fix-app-initauth-check.md`                                                      | 未実施タスク指示書をunassigned-task配下に配置（参照整合）                                                             |
 
 ---
 

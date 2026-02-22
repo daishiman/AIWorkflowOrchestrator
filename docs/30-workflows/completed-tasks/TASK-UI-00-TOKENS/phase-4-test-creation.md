@@ -138,14 +138,14 @@ cd apps/desktop && pnpm vitest run src/renderer/tests/helpers/renderWithTheme.te
 
 ## 参照資料
 
-| 資料                                                                                  | 参照目的                             |
-| ------------------------------------------------------------------------------------- | ------------------------------------ |
-| `docs/30-workflows/TASK-UI-00-TOKENS/phase-3-design-review.md`                        | 設計レビュー結果の確認               |
-| `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-1-design-tokens.md` | テスト対象のヘルパー仕様（Task 4/5） |
-| `.claude/rules/06-known-pitfalls.md` — P9, P39, P40                                   | テスト環境制約                       |
-| `apps/desktop/src/renderer/store/types.ts` — `ResolvedTheme` 型                       | テーマ型定義                         |
-| `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`          | a11yテスト観点                       |
-| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`           | テスト品質基準                       |
+| 資料                                                                                                                          | 参照目的                             |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `docs/30-workflows/TASK-UI-00-TOKENS/phase-3-design-review.md`                                                                | 設計レビュー結果の確認               |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-051-ui-00-1-design-tokens.md` | テスト対象のヘルパー仕様（Task 4/5） |
+| `.claude/rules/06-known-pitfalls.md` — P9, P39, P40                                                                           | テスト環境制約                       |
+| `apps/desktop/src/renderer/store/types.ts` — `ResolvedTheme` 型                                                               | テーマ型定義                         |
+| `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                                  | a11yテスト観点                       |
+| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                                   | テスト品質基準                       |
 
 - 依存Phase成果物参照: `phase-1-*`、`phase-2-*`、`phase-3-*`
   | 設計レビュー結果書 | `outputs/phase-3/design-review-result.md` | Phase 3 成果物 |

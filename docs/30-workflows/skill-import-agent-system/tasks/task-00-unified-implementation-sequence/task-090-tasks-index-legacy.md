@@ -12,9 +12,43 @@
 | 🎯 **Tier 1: MVP**    | 基本機能（Phase 1-8）         | 24       | スキル実行・インポート・権限管理                                     |
 | 🚀 **Tier 2: 拡張**   | スキル管理（Phase 9A-C, 10A） | 17       | 作成・編集・改善                                                     |
 | 🔮 **Tier 3: 将来**   | 高度な機能（Phase 9D-J）      | 7        | チェーン・共有・統計                                                 |
-| 🎨 **Tier 4: UI刷新** | Apple HIG準拠UI刷新           | 10       | 基盤・ナビ・ワークスペース・検索・スキル管理・通知・オンボーディング |
+| 🎨 **Tier 4: UI刷新** | Apple HIG準拠UI刷新           | 12       | 基盤・ナビ・ワークスペース・検索・スキル管理・通知・オンボーディング |
 
 **推奨実行順序**: **Tier 0** → Tier 1 完了 → Tier 2 → Tier 3（オプション） / **Tier 4** は Tier 1 以降いつでも並行実行可能
+
+---
+
+## task-9/UI/10A 実装順序（ファイル名ベース・優先参照）
+
+task-9 系と UI/統合の実装順序は、`task-00-unified-implementation-sequence/` を正本として扱う。
+
+- 実行順序インデックス: `./task-00-execution-order-index.md`
+- 依存関係・整合監査仕様: `./task-013-task9-ui-backend-consistency-improvements-001.md`
+
+### 先行で確定するファイル（UT）
+
+1. `./task-010-ut-skill-import-channel-conflict-001.md`
+2. `./task-011-ut-ipc-data-flow-type-gaps-001.md`
+3. `./task-012-ut-skill-ipc-preload-extension-001.md`
+
+### 本体実装順序（提示ファイル対応）
+
+1. `./task-020-task-9b-skill-creator.md`
+2. `./task-021-task-9a-skill-editor.md`
+3. `./task-022-task-9f-skill-share.md`
+4. `./task-023a-task-9g-skill-schedule.md`（並列）
+5. `./task-023b-task-9h-skill-debug.md`（並列）
+6. `./task-023c-task-9i-skill-docs.md`（並列）
+7. `./task-023d-task-9j-skill-analytics.md`（並列）
+8. `./task-023e-task-9d-skill-chain.md`（並列）
+9. `./task-023f-task-9e-skill-fork.md`（並列）
+10. `./task-030-ui-05-skill-center-view.md`
+11. `./task-031-ui-05a-skill-editor-view.md`
+12. `./task-032-ui-05b-skill-advanced-views.md`
+13. `./task-041a-task-10a-a-management-panel.md`（並列）
+14. `./task-041b-task-10a-b-analysis-view.md`（並列）
+15. `./task-041c-task-10a-c-create-wizard.md`（並列）
+16. `./task-042-task-10a-d-integration.md`
 
 ---
 
@@ -277,12 +311,12 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 
 ### Phase 10A: ライフサイクル管理UI
 
-| ID         | タイトル                                                   | 依存       | 複雑度 | ステータス |
-| ---------- | ---------------------------------------------------------- | ---------- | ------ | ---------- |
-| TASK-10A-A | [SkillManagementPanel](./task-10a-a-management-panel.md)   | 9A, 9B, 9C | medium | pending    |
-| TASK-10A-B | [SkillAnalysisView](./task-10a-b-analysis-view.md)         | 9C         | medium | pending    |
-| TASK-10A-C | [SkillCreateWizard](./task-10a-c-create-wizard.md)         | 9B         | medium | pending    |
-| TASK-10A-D | [統合（Slice/IPC/ChatPanel）](./task-10a-d-integration.md) | 10A-A~C    | medium | pending    |
+| ID         | タイトル                                                            | 依存       | 複雑度 | ステータス |
+| ---------- | ------------------------------------------------------------------- | ---------- | ------ | ---------- |
+| TASK-10A-A | [SkillManagementPanel](./task-041a-task-10a-a-management-panel.md)  | 9A, 9B, 9C | medium | pending    |
+| TASK-10A-B | [SkillAnalysisView](./task-041b-task-10a-b-analysis-view.md)        | 9C         | medium | pending    |
+| TASK-10A-C | [SkillCreateWizard](./task-041c-task-10a-c-create-wizard.md)        | 9B         | medium | pending    |
+| TASK-10A-D | [統合（Slice/IPC/ChatPanel）](./task-042-task-10a-d-integration.md) | 10A-A~C    | medium | pending    |
 
 ---
 
@@ -290,19 +324,19 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 
 > 高度なスキル管理機能（優先度: 低、Tier 2完了後に独立実装可能）
 
-| ID      | タイトル                                                  | 依存 | 複雑度 | ステータス |
-| ------- | --------------------------------------------------------- | ---- | ------ | ---------- |
-| TASK-9D | [スキルチェーン機能](./task-9d-skill-chain.md)            | 9B   | large  | pending    |
-| TASK-9E | [スキルフォーク・派生機能](./task-9e-skill-fork.md)       | 9B   | medium | pending    |
-| TASK-9F | [スキル共有・インポート機能](./task-9f-skill-share.md)    | 9B   | large  | pending    |
-| TASK-9G | [スキルスケジュール実行機能](./task-9g-skill-schedule.md) | 9B   | large  | pending    |
-| TASK-9H | [スキルデバッグモード](./task-9h-skill-debug.md)          | 9B   | large  | pending    |
-| TASK-9I | [スキルドキュメント生成機能](./task-9i-skill-docs.md)     | 9B   | medium | pending    |
-| TASK-9J | [スキル使用統計・分析機能](./task-9j-skill-analytics.md)  | 9B   | medium | pending    |
+| ID      | タイトル                                                            | 依存 | 複雑度 | ステータス |
+| ------- | ------------------------------------------------------------------- | ---- | ------ | ---------- |
+| TASK-9D | [スキルチェーン機能](./task-023e-task-9d-skill-chain.md)            | 9B   | large  | pending    |
+| TASK-9E | [スキルフォーク・派生機能](./task-023f-task-9e-skill-fork.md)       | 9B   | medium | pending    |
+| TASK-9F | [スキル共有・インポート機能](./task-022-task-9f-skill-share.md)     | 9B   | large  | pending    |
+| TASK-9G | [スキルスケジュール実行機能](./task-023a-task-9g-skill-schedule.md) | 9B   | large  | pending    |
+| TASK-9H | [スキルデバッグモード](./task-023b-task-9h-skill-debug.md)          | 9B   | large  | pending    |
+| TASK-9I | [スキルドキュメント生成機能](./task-023c-task-9i-skill-docs.md)     | 9B   | medium | pending    |
+| TASK-9J | [スキル使用統計・分析機能](./task-023d-task-9j-skill-analytics.md)  | 9B   | medium | pending    |
 
 ---
 
-## 🎨 Tier 4: UI刷新（10タスク）
+## 🎨 Tier 4: UI刷新（12タスク）
 
 > Apple HIG準拠のUI刷新。レイヤー基盤分割: Layer 0（基盤）→ Layer 1（画面）→ Layer 2（補足）
 > 既存画面は原則変更せず新規Viewを追加（AgentViewのみ既存改修）
@@ -311,30 +345,32 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 
 | ID                                | タイトル                                                                   | 依存         | 複雑度 | ステータス |
 | --------------------------------- | -------------------------------------------------------------------------- | ------------ | ------ | ---------- |
-| TASK-UI-00-DESIGN-FOUNDATION      | [UIデザイン基盤](./ui-overhaul/00-ui-design-foundation.md)                 | -            | medium | pending    |
-| TASK-UI-01-STORE-IPC-ARCHITECTURE | [Store・IPCアーキテクチャ設計](./ui-overhaul/01-store-ipc-architecture.md) | UI-00        | high   | pending    |
-| TASK-UI-02-GLOBAL-NAV-CORE        | [グローバルナビゲーションコア](./ui-overhaul/02-global-nav-core.md)        | UI-00, UI-01 | medium | pending    |
+| TASK-UI-00-DESIGN-FOUNDATION      | [UIデザイン基盤](./task-050-ui-00-ui-design-foundation.md)                 | -            | medium | pending    |
+| TASK-UI-01-STORE-IPC-ARCHITECTURE | [Store・IPCアーキテクチャ設計](./task-056-ui-01-store-ipc-architecture.md) | UI-00        | high   | pending    |
+| TASK-UI-02-GLOBAL-NAV-CORE        | [グローバルナビゲーションコア](./task-057-ui-02-global-nav-core.md)        | UI-00, UI-01 | medium | pending    |
 
 ### Layer 1: 画面層（並列実行可能、Layer 0完了後）
 
-> 詳細な実行順序ガイド: [ui-overhaul/index.md](./ui-overhaul/index.md)
+> 詳細な実行順序ガイド: [task-091-ui-overhaul-index-legacy.md](./task-091-ui-overhaul-index-legacy.md)
 
-| ID                                | タイトル                                                                                   | 依存                 | 複雑度 | ステータス |
-| --------------------------------- | ------------------------------------------------------------------------------------------ | -------------------- | ------ | ---------- |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT | [エージェントビュー強化](./ui-overhaul/03-agent-view-enhancement.md)                       | UI-00, UI-01, UI-02  | medium | pending    |
-| TASK-UI-04A-WORKSPACE-LAYOUT      | [ワークスペースレイアウト・FileBrowser](./ui-overhaul/04A-workspace-layout-filebrowser.md) | UI-00, UI-01, UI-02  | large  | pending    |
-| TASK-UI-04B-WORKSPACE-CHAT        | [ワークスペースChatPanel](./ui-overhaul/04B-workspace-chat-panel.md)                       | UI-00, UI-01, UI-04A | medium | pending    |
-| TASK-UI-04C-WORKSPACE-PREVIEW     | [ワークスペースPreview・QuickSearch](./ui-overhaul/04C-workspace-preview-quicksearch.md)   | UI-00, UI-01, UI-04A | medium | pending    |
-| TASK-UI-05-SKILL-CENTER-VIEW      | [スキルセンター画面](./ui-overhaul/05-skill-center-view.md)                                | UI-00, UI-01, UI-02  | medium | pending    |
-| TASK-UI-06-HISTORY-SEARCH-VIEW    | [履歴・統合検索画面](./ui-overhaul/06-history-search-view.md)                              | UI-00, UI-01, UI-02  | medium | pending    |
+| ID                                | タイトル                                                                                   | 依存                       | 複雑度 | ステータス |
+| --------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------- | ------ | ---------- |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT | [エージェントビュー強化](./task-058-ui-03-agent-view-enhancement.md)                       | UI-00, UI-01, UI-02        | medium | pending    |
+| TASK-UI-04A-WORKSPACE-LAYOUT      | [ワークスペースレイアウト・FileBrowser](./task-060-ui-04a-workspace-layout-filebrowser.md) | UI-00, UI-01, UI-02        | large  | pending    |
+| TASK-UI-04B-WORKSPACE-CHAT        | [ワークスペースChatPanel](./task-061-ui-04b-workspace-chat-panel.md)                       | UI-00, UI-01, UI-04A       | medium | pending    |
+| TASK-UI-04C-WORKSPACE-PREVIEW     | [ワークスペースPreview・QuickSearch](./task-062-ui-04c-workspace-preview-quicksearch.md)   | UI-00, UI-01, UI-04A       | medium | pending    |
+| TASK-UI-05-SKILL-CENTER-VIEW      | [スキルセンター画面](./task-030-ui-05-skill-center-view.md)                                | UI-00, UI-01, UI-02        | medium | pending    |
+| TASK-UI-05A-SKILL-EDITOR-VIEW     | [スキルエディター画面](./task-031-ui-05a-skill-editor-view.md)                             | UI-00, UI-01, UI-02, UI-05 | medium | pending    |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS  | [スキル高度管理ビュー](./task-032-ui-05b-skill-advanced-views.md)                          | UI-00, UI-01, UI-05        | large  | pending    |
+| TASK-UI-06-HISTORY-SEARCH-VIEW    | [履歴・統合検索画面](./task-063-ui-06-history-search-view.md)                              | UI-00, UI-01, UI-02        | medium | pending    |
 
 ### Layer 2: 補足層（並列実行可能、Layer 0完了後）
 
 | ID                               | タイトル                                                            | 依存                | 複雑度 | ステータス |
 | -------------------------------- | ------------------------------------------------------------------- | ------------------- | ------ | ---------- |
-| TASK-UI-07-DASHBOARD-ENHANCEMENT | [ダッシュボード強化](./ui-overhaul/07-dashboard-enhancement.md)     | UI-00, UI-01, UI-02 | small  | pending    |
-| TASK-UI-08-NOTIFICATION-CENTER   | [通知センター](./ui-overhaul/08-notification-center.md)             | UI-00, UI-01, UI-02 | medium | pending    |
-| TASK-UI-09-ONBOARDING-WIZARD     | [オンボーディングウィザード](./ui-overhaul/09-onboarding-wizard.md) | UI-00〜08全て       | small  | pending    |
+| TASK-UI-07-DASHBOARD-ENHANCEMENT | [ダッシュボード強化](./task-064-ui-07-dashboard-enhancement.md)     | UI-00, UI-01, UI-02 | small  | pending    |
+| TASK-UI-08-NOTIFICATION-CENTER   | [通知センター](./task-065-ui-08-notification-center.md)             | UI-00, UI-01, UI-02 | medium | pending    |
+| TASK-UI-09-ONBOARDING-WIZARD     | [オンボーディングウィザード](./task-066-ui-09-onboarding-wizard.md) | UI-00〜08全て       | small  | pending    |
 
 ### Tier 4 依存関係グラフ
 
@@ -364,8 +400,10 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 │         │                                  └──→ [UI-04C Preview・Search]   │
 │         │                                  ※ 04B/04Cは04A完了後に並列      │
 │         │                                                                   │
-│         ├── [UI-05 SkillCenterView]                                        │
-│         │     SkillLibrary + Inspector（スキルCRUD管理）                   │
+│         ├── [UI-05 SkillCenterView] ──┬──→ [UI-05A SkillEditor]           │
+│         │     SkillLibrary + Inspector │                                   │
+│         │                             └──→ [UI-05B AdvancedViews]          │
+│         │                             ※ 05A/05Bは05完了後に並列           │
 │         │                                                                   │
 │         ├── [UI-06 HistorySearchView]                                      │
 │         │     UniversalSearch + Timeline + FTS5                            │
@@ -383,7 +421,7 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-> 詳細な実行順序・依存関係マトリクス・タイムライン図: [ui-overhaul/index.md](./ui-overhaul/index.md)
+> 詳細な実行順序・依存関係マトリクス・タイムライン図: [task-091-ui-overhaul-index-legacy.md](./task-091-ui-overhaul-index-legacy.md)
 
 ### Tier 4 完了条件
 
@@ -414,7 +452,8 @@ Wave 2（並列、UI-02完了後に同時着手可能）:
   ├── UI-03 AgentView強化
   ├── UI-04A Layout・FileBrowser  ──→  UI-04B ChatPanel    ┐ Wave 2b
   │                                ──→  UI-04C Preview     ┘ (04A完了後並列)
-  ├── UI-05 SkillCenterView
+  ├── UI-05 SkillCenterView  ──→  UI-05A SkillEditor    ┐ Wave 2c
+  │                           ──→  UI-05B AdvancedViews  ┘ (05完了後並列)
   ├── UI-06 HistorySearchView
   ├── UI-07 Dashboard強化
   └── UI-08 通知センター

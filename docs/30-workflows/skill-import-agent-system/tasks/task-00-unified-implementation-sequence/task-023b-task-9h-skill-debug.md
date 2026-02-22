@@ -26,8 +26,7 @@ artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillDebugger.ts
     - apps/desktop/src/main/services/skill/DebugSession.ts
-    - apps/desktop/src/renderer/components/skill/DebugPanel.tsx
-    - apps/desktop/src/renderer/components/skill/BreakpointEditor.tsx
+  # UI成果物は ./task-032-ui-05b-skill-advanced-views.md#3C で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -167,22 +166,19 @@ export class SkillDebugger {
 
 ### Step 5: DebugPanel 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/DebugPanel.tsx`
-
-- デバッグコントロール（Continue, Step Over, Step Into, Stop）
-- コールスタック表示
-- 変数ウォッチ
-- ステップ履歴
-- 出力コンソール
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3c-debugpanel](./task-032-ui-05b-skill-advanced-views.md#3c-debugpanel)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 6: BreakpointEditor 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/BreakpointEditor.tsx`
-
-- ツールブレークポイント設定
-- フックブレークポイント設定
-- 条件式入力
-- 有効/無効トグル
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3c-debugpanel](./task-032-ui-05b-skill-advanced-views.md#3c-debugpanel)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## Claude Agent SDK Hooks統合
 

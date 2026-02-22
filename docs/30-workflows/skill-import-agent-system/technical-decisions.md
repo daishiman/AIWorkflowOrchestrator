@@ -1222,7 +1222,7 @@ function anonymize(execution: SkillExecution): AnonymizedExecution {
 ## 26. 関連ドキュメント
 
 - [仕様書](./specification.md)
-- [タスク一覧](./tasks/index.md)
+- [タスク一覧](./tasks/task-00-unified-implementation-sequence/task-000-master-index.md)
 - [Claude Agent SDK リファレンス](/.claude/skills/claude-agent-sdk/references/query-api.md)
 - [既存AgentExecutor](../../../apps/desktop/src/main/services/agent/AgentExecutor.ts)
 - [skill-creator統合仕様](./tasks/_skill-creator-integration.md)

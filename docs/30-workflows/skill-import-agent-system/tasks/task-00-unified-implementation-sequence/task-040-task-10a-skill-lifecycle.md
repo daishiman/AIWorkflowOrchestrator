@@ -39,10 +39,10 @@ artifacts:
 >
 > 実行粒度を細かくするため、以下のサブタスクに分割されています：
 >
-> - [TASK-10A-A: SkillManagementPanel](./task-10a-a-management-panel.md) - スキル一覧・管理パネル
-> - [TASK-10A-B: SkillAnalysisView](./task-10a-b-analysis-view.md) - 分析結果表示・改善適用UI
-> - [TASK-10A-C: SkillCreateWizard](./task-10a-c-create-wizard.md) - 新規スキル作成ウィザード
-> - [TASK-10A-D: 統合（Slice/IPC/ChatPanel）](./task-10a-d-integration.md) - 全機能の統合
+> - [TASK-10A-A: SkillManagementPanel](./task-041a-task-10a-a-management-panel.md) - スキル一覧・管理パネル
+> - [TASK-10A-B: SkillAnalysisView](./task-041b-task-10a-b-analysis-view.md) - 分析結果表示・改善適用UI
+> - [TASK-10A-C: SkillCreateWizard](./task-041c-task-10a-c-create-wizard.md) - 新規スキル作成ウィザード
+> - [TASK-10A-D: 統合（Slice/IPC/ChatPanel）](./task-042-task-10a-d-integration.md) - 全機能の統合
 >
 > 以下は参照用の元仕様です。
 

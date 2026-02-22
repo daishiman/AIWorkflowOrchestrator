@@ -25,7 +25,7 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillForker.ts
-    - apps/desktop/src/renderer/components/skill/ForkSkillDialog.tsx
+  # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.1 で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -96,12 +96,11 @@ export class SkillForker {
 
 ### Step 3: ForkSkillDialog 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/ForkSkillDialog.tsx`
-
-- 新スキル名入力
-- コピー対象選択（agents, references, scripts, assets）
-- 許可ツール変更オプション
-- フォーク実行
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05-skill-center-view.md#15b1-forkskilldialog](./task-030-ui-05-skill-center-view.md#15b1-forkskilldialog)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## 検証条件
 

@@ -365,15 +365,15 @@ describe("renderWithTheme", () => {
 
 ## 参照資料
 
-| 参照仕様                                                                              | 用途                                         | 本設計での参照箇所         |
-| ------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------- |
-| `docs/30-workflows/TASK-UI-00-TOKENS/phase-1-requirements.md`                         | Phase 1 要件定義                             | 全Task の要件根拠          |
-| `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-1-design-tokens.md` | 元タスク仕様書                               | CSS定義の正本              |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`            | Design Token 3層体系                         | Task 1: 3層構造設計        |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`        | マイクロインタラクション定義                 | Task 2: イージング値       |
-| `apps/desktop/src/renderer/styles/tokens.css`                                         | 現行CSS変数構造                              | Task 1: ファイル構造設計   |
-| `apps/desktop/src/renderer/store/types.ts`                                            | ResolvedTheme 型定義                         | Task 3: インターフェース型 |
-| 要件定義書                                                                            | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物             |
+| 参照仕様                                                                                                                      | 用途                                         | 本設計での参照箇所         |
+| ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------- |
+| `docs/30-workflows/TASK-UI-00-TOKENS/phase-1-requirements.md`                                                                 | Phase 1 要件定義                             | 全Task の要件根拠          |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-051-ui-00-1-design-tokens.md` | 元タスク仕様書                               | CSS定義の正本              |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                                    | Design Token 3層体系                         | Task 1: 3層構造設計        |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                                | マイクロインタラクション定義                 | Task 2: イージング値       |
+| `apps/desktop/src/renderer/styles/tokens.css`                                                                                 | 現行CSS変数構造                              | Task 1: ファイル構造設計   |
+| `apps/desktop/src/renderer/store/types.ts`                                                                                    | ResolvedTheme 型定義                         | Task 3: インターフェース型 |
+| 要件定義書                                                                                                                    | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物             |
 
 ## システム仕様（aiworkflow-requirements）
 

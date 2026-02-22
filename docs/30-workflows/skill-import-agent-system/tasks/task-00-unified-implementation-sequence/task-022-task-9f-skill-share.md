@@ -25,8 +25,7 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillShareManager.ts
-    - apps/desktop/src/renderer/components/skill/ImportSkillDialog.tsx
-    - apps/desktop/src/renderer/components/skill/ExportSkillDialog.tsx
+  # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.2 で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -130,20 +129,19 @@ export class SkillShareManager {
 
 ### Step 4: ImportSkillDialog 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/ImportSkillDialog.tsx`
-
-- ソースタイプ選択タブ（GitHub, Gist, URL, Local）
-- 入力フォーム（リポジトリ、Gist ID等）
-- インポートプレビュー
-- インポート実行
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05-skill-center-view.md#15b2-importexport](./task-030-ui-05-skill-center-view.md#15b2-importexport)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ### Step 5: ExportSkillDialog 実装
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/ExportSkillDialog.tsx`
-
-- エクスポート先選択（Gist, Local）
-- 公開/非公開設定
-- 共有URL表示
+> **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
+>
+> Apple HIG 準拠の UI 仕様: [05-skill-center-view.md#15b2-importexport](./task-030-ui-05-skill-center-view.md#15b2-importexport)
+>
+> 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
 ## 検証条件
 

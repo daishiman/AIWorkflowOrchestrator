@@ -41,10 +41,10 @@
 
 **判定: 更新実施**
 
-| ファイル                                                                                                     | 更新内容                                                                    |
-| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
-| `docs/30-workflows/skill-import-agent-system/tasks/index.md`                                                 | Tier 0 のタスク件数を 6→7 に更新し、`TASK-FIX-10-1` を completed として追加 |
-| `docs/30-workflows/skill-import-agent-system/tasks/completed-task/07-task-fix-10-1-vitest-error-handling.md` | ステータスを `完了` に更新                                                  |
+| ファイル                                                                                                                   | 更新内容                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-090-tasks-index-legacy.md` | Tier 0 のタスク件数を 6→7 に更新し、`TASK-FIX-10-1` を completed として追加 |
+| `docs/30-workflows/skill-import-agent-system/tasks/completed-task/07-task-fix-10-1-vitest-error-handling.md`               | ステータスを `完了` に更新                                                  |
 
 ### Step 1-C: 関連タスクテーブル更新
 

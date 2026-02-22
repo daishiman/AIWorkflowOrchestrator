@@ -151,16 +151,16 @@ tokens.css の light/dark テーマを Apple HIG System Colors に全面置き�
 
 ## 参照資料
 
-| 参照仕様                                                                                         | 用途                                    | 本仕様での参照箇所              |
-| ------------------------------------------------------------------------------------------------ | --------------------------------------- | ------------------------------- |
-| `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-1-design-tokens.md`            | 元タスク仕様書（Task 1〜5定義）         | 全要件の根拠                    |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                       | Design Token 3層体系・テーマ管理        | FR-L/FR-D: テーマ定義方式       |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                   | Apple HIG準拠・マイクロインタラクション | FR-MI: イージング・スケール値   |
-| `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                     | WCAG 2.1 AA・ARIA属性検証               | NFR-001/NFR-002: コントラスト比 |
-| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                      | Vitest実行基準・テスト品質ゲート        | NFR-005: テスト実行方式         |
-| `.claude/rules/01-architecture.md`                                                               | Apple HIG カラーパレット定義            | FR-L/FR-D: 公式カラー値         |
-| [Apple HIG — Color](https://developer.apple.com/design/human-interface-guidelines/color)         | Apple 公式 System Colors                | FR-L/FR-D: 全カラー値の正本     |
-| [Apple HIG — Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode) | ダークモード設計原則                    | FR-D: Dark テーマ設計根拠       |
+| 参照仕様                                                                                                                      | 用途                                    | 本仕様での参照箇所              |
+| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------- |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-051-ui-00-1-design-tokens.md` | 元タスク仕様書（Task 1〜5定義）         | 全要件の根拠                    |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                                    | Design Token 3層体系・テーマ管理        | FR-L/FR-D: テーマ定義方式       |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                                | Apple HIG準拠・マイクロインタラクション | FR-MI: イージング・スケール値   |
+| `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                                  | WCAG 2.1 AA・ARIA属性検証               | NFR-001/NFR-002: コントラスト比 |
+| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                                   | Vitest実行基準・テスト品質ゲート        | NFR-005: テスト実行方式         |
+| `.claude/rules/01-architecture.md`                                                                                            | Apple HIG カラーパレット定義            | FR-L/FR-D: 公式カラー値         |
+| [Apple HIG — Color](https://developer.apple.com/design/human-interface-guidelines/color)                                      | Apple 公式 System Colors                | FR-L/FR-D: 全カラー値の正本     |
+| [Apple HIG — Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode)                              | ダークモード設計原則                    | FR-D: Dark テーマ設計根拠       |
 
 ## システム仕様（aiworkflow-requirements）
 
