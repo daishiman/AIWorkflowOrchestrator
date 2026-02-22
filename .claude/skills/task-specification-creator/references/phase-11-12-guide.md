@@ -178,6 +178,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
+- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js` を実行し、フォーマット違反/命名違反/誤配置が0件であることを確認
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
@@ -199,6 +200,9 @@ node .claude/skills/task-specification-creator/scripts/generate-index.js \
 # 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
 rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
   docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
+
+# 未タスク配置・フォーマット監査（0違反で成功）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 # ESLintキャッシュクリア（Hooksでエラーが残る場合）
 rm -rf node_modules/.cache/eslint-*
@@ -225,6 +229,7 @@ pnpm lint --fix
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-22 | 未タスク監査強化: `audit-unassigned-tasks.js` 実行チェックを追加（フォーマット違反/命名違反/誤配置の一括検証） |
 | 2026-02-13 | TASK-FIX-13-1教訓反映: Phase 12完了チェックリストに「苦戦箇所のシステム仕様書記録」を追加 |
 | 2026-02-12 | TASK-9B-I教訓反映: 未タスク配置ディレクトリ確認・テスト数実測値確認・SDK declare module確認の3項目をチェックリストに追加。漏れやすいポイントテーブルに2件追加 |
 | 2026-02-12 | TASK-FIX-7-1スキル改善: 未タスク指示書の物理ファイル存在確認ステップを完了条件チェックリストに追加 |

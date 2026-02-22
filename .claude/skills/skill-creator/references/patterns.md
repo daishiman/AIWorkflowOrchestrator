@@ -12,7 +12,7 @@
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
 | 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載** |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）** | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）** |
+| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換** | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）** |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計** | -                                                      |
@@ -823,6 +823,23 @@
   - [ipc-contract-checklist.md](../../aiworkflow-requirements/references/ipc-contract-checklist.md) - IPC修正時チェックリスト
   - [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md) - IPCセキュリティ仕様
 
+### [IPC/Renderer] Renderer層 id→name 契約変換パターン（UT-FIX-SKILL-IMPORT-ID-MISMATCH-001）
+
+- **状況**: SkillImportDialog が `skill.id`（SHA-256ハッシュ）を `onImport` に渡しており、IPCハンドラ側は `skill.name`（人間可読名）を期待していた。同じ `string` 型のため、コンパイル時に不整合が検出されない
+- **アプローチ**:
+  1. **利用箇所からの逆引き**: `AgentView` の import 文から修正対象を `organisms/SkillImportDialog/index.tsx` に特定
+  2. **境界での明示変換**: `selectedIds`（Set<string>）を `availableSkills.filter(s => selectedIds.has(s.id)).map(s => s.name)` で名前配列に変換
+  3. **命名の契約準拠**: callback の引数名を `skillNames` に統一し、Props 型も `onImport: (skillNames: string[]) => void` に更新
+  4. **否定条件テスト**: 「id が渡されないこと」を `expect(onImport).not.toHaveBeenCalledWith(expect.arrayContaining([skill.id]))` で検証
+- **結果**: Renderer → IPC → Service の全レイヤーで `skill.name` 契約が統一。テスト 88 件全 PASS
+- **適用条件**: 内部識別子（ハッシュ、UUID）と外部識別子（名前、スラッグ）が同じ `string` 型で混在するコンポーネント
+- **発見日**: 2026-02-22
+- **関連タスク**: UT-FIX-SKILL-IMPORT-ID-MISMATCH-001
+- **クロスリファレンス**:
+  - [06-known-pitfalls.md#P44](../../.claude/rules/06-known-pitfalls.md) - IPC インターフェース不整合の教訓
+  - [lessons-learned.md#UT-FIX-SKILL-IMPORT-ID-MISMATCH-001](../../aiworkflow-requirements/references/lessons-learned.md) - 苦戦箇所詳細
+  - [architecture-implementation-patterns.md#S13](../../aiworkflow-requirements/references/architecture-implementation-patterns.md) - IPC 戻り値型変換パターン
+
 ### [Phase12] 未タスク検出の2段階判定（raw→実タスク候補）
 
 - **状況**: `detect-unassigned-tasks.js` が仕様書本文の説明用 TODO まで大量検出し、未タスク件数を過大評価しやすい
@@ -1030,6 +1047,19 @@
 - **発見日**: 2026-02-20
 - **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001, UT-FIX-SKILL-IMPORT-INTERFACE-001
 - **関連Pitfall**: P23, P32, P42, P44
+
+### [IPC/Renderer] Renderer層での識別子混同（id/name）（UT-FIX-SKILL-IMPORT-ID-MISMATCH-001）
+
+- **状況**: SkillImportDialog の `handleImport` が `selectedIds`（Set内はskill.id＝SHA-256ハッシュ）をそのまま `onImport` に渡していた。IPC ハンドラは `skill.name`（人間可読名）を期待しており、`getSkillByName(hash)` が常に null を返すため、スキルインポートが 100% 失敗
+- **原因**:
+  - `skill.id` と `skill.name` が共に `string` 型であるため、型レベルでの検出が不可能
+  - UI上は id をハッシュ表示しないため、開発者が id/name の違いを認識しにくい
+  - IPC ハンドラ側（IMPORT-INTERFACE-001）の修正でハンドラ入口は正常化したが、Renderer 側の送信値が未修正のまま残った
+- **影響**: スキルインポート機能が完全に動作しない（成功率 0%）
+- **対策**: Renderer → IPC 境界に明示的な変換処理を1箇所だけ配置し、変数名を契約準拠（`skillNames`）に統一
+- **再発防止**: 同じ `string` 型の識別子が2種類以上あるコンポーネントでは、変数名で明示的に区別し、テストで「期待値」と「否定条件」を同時に検証
+- **発見日**: 2026-02-22
+- **関連タスク**: UT-FIX-SKILL-IMPORT-ID-MISMATCH-001
 
 ### [Phase12] 未タスクraw検出の誤読（TASK-FIX-11-1）
 

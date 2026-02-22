@@ -77,15 +77,16 @@ Step 2: [2A] [2B] [2C]                    ← 3タスク並列
 
 > **重要**: これらのタスクはTier 1の前提として実行必須。既存実装の仕様書乖離を解消する。
 
-| ID                                 | タイトル                                                                                            | 依存             | 複雑度 | ステータス |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------- | ------ | ---------- |
-| TASK-FIX-1-1                       | [型定義統一](./task-fix-1-1-type-alignment.md)                                                      | -                | medium | pending    |
-| TASK-FIX-4-1                       | [IPCチャンネル整理](./task-fix-4-1-ipc-consolidation.md)                                            | FIX-1-1（推奨）  | medium | pending    |
-| TASK-FIX-5-1                       | [SkillAPI統一](./task-fix-5-1-skill-api-unification.md)                                             | FIX-1-1, FIX-4-1 | medium | pending    |
-| TASK-FIX-6-1                       | [状態管理集約](./task-fix-6-1-state-centralization.md)                                              | FIX-5-1          | medium | pending    |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001 | [AgentView無限ループ修正](./completed-task/00-task-agentview-infinite-loop-fix.md)                  | FIX-6-1          | medium | completed  |
-| TASK-FIX-13-1                      | [deprecatedプロパティ正式移行](./completed-task/06b-task-fix-13-1-deprecated-property-migration.md) | FIX-5-1, FIX-6-1 | small  | completed  |
-| TASK-FIX-10-1                      | [Vitestエラー隠蔽設定解消](./completed-task/07-task-fix-10-1-vitest-error-handling.md)              | FIX-11-1         | medium | completed  |
+| ID                                  | タイトル                                                                                               | 依存             | 複雑度 | ステータス |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------- | ------ | ---------- |
+| TASK-FIX-1-1                        | [型定義統一](./task-fix-1-1-type-alignment.md)                                                         | -                | medium | pending    |
+| TASK-FIX-4-1                        | [IPCチャンネル整理](./task-fix-4-1-ipc-consolidation.md)                                               | FIX-1-1（推奨）  | medium | pending    |
+| TASK-FIX-5-1                        | [SkillAPI統一](./task-fix-5-1-skill-api-unification.md)                                                | FIX-1-1, FIX-4-1 | medium | pending    |
+| TASK-FIX-6-1                        | [状態管理集約](./task-fix-6-1-state-centralization.md)                                                 | FIX-5-1          | medium | pending    |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001  | [AgentView無限ループ修正](./completed-task/00-task-agentview-infinite-loop-fix.md)                     | FIX-6-1          | medium | completed  |
+| TASK-FIX-13-1                       | [deprecatedプロパティ正式移行](./completed-task/06b-task-fix-13-1-deprecated-property-migration.md)    | FIX-5-1, FIX-6-1 | small  | completed  |
+| TASK-FIX-10-1                       | [Vitestエラー隠蔽設定解消](./completed-task/07-task-fix-10-1-vitest-error-handling.md)                 | FIX-11-1         | medium | completed  |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | [SkillImportDialog id/name不一致修正](./completed-task/00-task-ut-fix-skill-import-id-mismatch-001.md) | -                | small  | completed  |
 
 ### Tier 0 完了条件
 

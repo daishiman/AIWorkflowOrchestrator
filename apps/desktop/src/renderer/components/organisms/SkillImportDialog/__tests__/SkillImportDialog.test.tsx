@@ -165,7 +165,7 @@ describe("SkillImportDialog", () => {
   });
 
   describe("インポート", () => {
-    it("選択したスキルIDでonImportを呼び出す", () => {
+    it("選択したスキルのnameでonImportを呼び出す", () => {
       const handleImport = vi.fn();
       render(
         <SkillImportDialog
@@ -181,7 +181,11 @@ describe("SkillImportDialog", () => {
       fireEvent.click(screen.getByLabelText("code-review"));
       fireEvent.click(screen.getByRole("button", { name: /インポート/i }));
 
-      expect(handleImport).toHaveBeenCalledWith(["skill-1", "skill-2"]);
+      expect(handleImport).toHaveBeenCalledWith(
+        expect.arrayContaining(["tdd-principles", "code-review"]),
+      );
+      expect(handleImport).toHaveBeenCalledWith(expect.any(Array));
+      expect(handleImport.mock.calls[0][0]).toHaveLength(2);
     });
 
     it("選択がない場合はインポートボタンを無効化", () => {
@@ -430,7 +434,7 @@ describe("SkillImportDialog", () => {
 
       fireEvent.click(screen.getByLabelText("tdd-principles"));
       fireEvent.click(screen.getByRole("button", { name: /インポート/i }));
-      expect(handleImport).toHaveBeenCalledWith(["skill-1"]);
+      expect(handleImport).toHaveBeenCalledWith(["tdd-principles"]);
 
       // 閉じて再度開く（インポート後の状態をシミュレート）
       rerender(
@@ -476,6 +480,25 @@ describe("SkillImportDialog", () => {
       expect(screen.getByText("code-review")).toBeInTheDocument();
     });
 
+    it("インポート済みスキルはtoggleしても選択状態が変わらない", () => {
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={["skill-1"]}
+          onImport={vi.fn()}
+        />,
+      );
+      const checkbox = screen.getByLabelText("tdd-principles");
+      expect(checkbox).toBeDisabled();
+      expect(checkbox).toBeChecked();
+      // クリックしても状態は変わらない（disabledだが念のためfireEvent確認）
+      fireEvent.click(checkbox);
+      expect(checkbox).toBeChecked();
+      expect(checkbox).toBeDisabled();
+    });
+
     it("トリガーでも検索できる", () => {
       render(
         <SkillImportDialog
@@ -492,6 +515,169 @@ describe("SkillImportDialog", () => {
       });
       expect(screen.queryByText("tdd-principles")).not.toBeInTheDocument();
       expect(screen.getByText("code-review")).toBeInTheDocument();
+    });
+  });
+
+  describe("id→name変換（UT-FIX-SKILL-IMPORT-ID-MISMATCH-001）", () => {
+    it("単一スキル選択時にonImportにskill.nameが渡される", () => {
+      const handleImport = vi.fn();
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={[]}
+          onImport={handleImport}
+        />,
+      );
+
+      fireEvent.click(screen.getByLabelText("tdd-principles"));
+      fireEvent.click(screen.getByRole("button", { name: /インポート/i }));
+
+      // skill.id ("skill-1") ではなく skill.name ("tdd-principles") が渡される
+      expect(handleImport).toHaveBeenCalledWith(["tdd-principles"]);
+    });
+
+    it("複数スキル選択時に全てのskill.nameが渡される", () => {
+      const handleImport = vi.fn();
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={[]}
+          onImport={handleImport}
+        />,
+      );
+
+      fireEvent.click(screen.getByLabelText("tdd-principles"));
+      fireEvent.click(screen.getByLabelText("code-review"));
+      fireEvent.click(screen.getByRole("button", { name: /インポート/i }));
+
+      const passedNames = handleImport.mock.calls[0][0];
+      expect(passedNames).toHaveLength(2);
+      expect(passedNames).toContain("tdd-principles");
+      expect(passedNames).toContain("code-review");
+      // IDが含まれていないことを確認
+      expect(passedNames).not.toContain("skill-1");
+      expect(passedNames).not.toContain("skill-2");
+    });
+
+    it("importedSkillIds判定はskill.idベースで維持される", () => {
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={["skill-1"]}
+          onImport={vi.fn()}
+        />,
+      );
+
+      // skill.id="skill-1" のスキルがインポート済みとして正しく表示される
+      const importedCheckbox = screen.getByLabelText("tdd-principles");
+      expect(importedCheckbox).toBeChecked();
+      expect(importedCheckbox).toBeDisabled();
+
+      // skill.id="skill-2" のスキルは未インポートで選択可能
+      const availableCheckbox = screen.getByLabelText("code-review");
+      expect(availableCheckbox).not.toBeChecked();
+      expect(availableCheckbox).not.toBeDisabled();
+    });
+
+    it("onImportに渡される値にskill.idが含まれない", () => {
+      const handleImport = vi.fn();
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={[]}
+          onImport={handleImport}
+        />,
+      );
+
+      fireEvent.click(screen.getByLabelText("tdd-principles"));
+      fireEvent.click(screen.getByRole("button", { name: /インポート/i }));
+
+      const passedValues = handleImport.mock.calls[0][0];
+      // skill.id が渡されていないことを検証
+      expect(passedValues).not.toContain("skill-1");
+      // skill.name が渡されていることを検証
+      expect(passedValues).toContain("tdd-principles");
+    });
+
+    it("インポート済みスキルを除外して未インポートのみnameを渡す", () => {
+      const handleImport = vi.fn();
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={["skill-1"]}
+          onImport={handleImport}
+        />,
+      );
+
+      // skill-2 のみ選択可能
+      fireEvent.click(screen.getByLabelText("code-review"));
+      fireEvent.click(screen.getByRole("button", { name: /インポート/i }));
+
+      expect(handleImport).toHaveBeenCalledWith(["code-review"]);
+    });
+
+    it("選択なしの場合にonImportは呼ばれない（ボタンがdisabled）", () => {
+      const handleImport = vi.fn();
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={[]}
+          onImport={handleImport}
+        />,
+      );
+
+      // インポートボタンはdisabledなのでクリックしてもonImportは呼ばれない
+      const importButton = screen.getByRole("button", { name: /インポート/i });
+      expect(importButton).toBeDisabled();
+    });
+
+    it("availableSkillsが空の場合にインポートボタンがdisabled", () => {
+      const handleImport = vi.fn();
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={vi.fn()}
+          availableSkills={[]}
+          importedSkillIds={[]}
+          onImport={handleImport}
+        />,
+      );
+
+      expect(
+        screen.getByRole("button", { name: /インポート/i }),
+      ).toBeDisabled();
+    });
+
+    it("選択後にonCloseも呼ばれる", () => {
+      const handleImport = vi.fn();
+      const handleClose = vi.fn();
+      render(
+        <SkillImportDialog
+          isOpen={true}
+          onClose={handleClose}
+          availableSkills={mockAvailableSkills}
+          importedSkillIds={[]}
+          onImport={handleImport}
+        />,
+      );
+
+      fireEvent.click(screen.getByLabelText("tdd-principles"));
+      fireEvent.click(screen.getByRole("button", { name: /インポート/i }));
+
+      expect(handleImport).toHaveBeenCalledWith(["tdd-principles"]);
+      expect(handleClose).toHaveBeenCalledTimes(1);
     });
   });
 });

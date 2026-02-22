@@ -1,0 +1,9 @@
+Phase 11 スクリーンショット代替説明
+
+本タスク（UT-FIX-SKILL-IMPORT-ID-MISMATCH-001）はCI/ビルド環境の制約により
+Electronアプリを実際に起動しての手動テストが不可能であるため、
+スクリーンショットの代わりにコードレビューとテスト結果ベースの検証を実施した。
+
+検証結果の詳細は以下のファイルを参照:
+- manual-test-execution-record.md: 5シナリオの実行結果記録
+- devtools-verification.md: DevToolsでの値確認の代替検証結果

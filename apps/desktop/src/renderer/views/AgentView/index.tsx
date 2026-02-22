@@ -217,14 +217,14 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   }, [selectSkill]);
 
   const handleImport = useCallback(
-    async (skillIds: string[]) => {
+    async (skillNames: string[]) => {
       try {
-        for (const skillName of skillIds) {
+        for (const skillName of skillNames) {
           await importSkillAction(skillName);
         }
         showToast(
           "success",
-          `${skillIds.length}件のスキルをインポートしました`,
+          `${skillNames.length}件のスキルをインポートしました`,
         );
         closeImportDialog();
       } catch (err) {

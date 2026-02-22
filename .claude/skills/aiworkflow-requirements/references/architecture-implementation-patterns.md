@@ -1668,6 +1668,74 @@ IPC ハンドラの戻り値型がサービス層の戻り値型と一致しな�
 
 ---
 
+### S14: Renderer 層 id/name 契約変換パターン（UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 2026-02-22実装）
+
+Renderer コンポーネントが内部識別子（`skill.id`＝SHA-256ハッシュ）と外部識別子（`skill.name`＝人間可読名）を混同する問題を、境界変換で解決するパターン。
+
+| 要素 | 説明 |
+|------|------|
+| 問題 | `SkillImportDialog` の `handleImport` が `selectedIds`（Set に格納された `skill.id`）をそのまま `onImport` コールバックに渡していた。IPC ハンドラ側は `skillName`（人間可読名）を期待しており、`getSkillByName(hashValue)` が常に `null` を返すため、インポートが 100% 失敗 |
+| 発生条件 | 同じ `string` 型の識別子が複数種類（id, name, slug 等）あるコンポーネントで、UI が内部選択状態と外部 API 引数を直接結合している場合 |
+| 検出の困難さ | TypeScript は `string` 型同士の代入を許容するため、コンパイル時に検出不可。IPC ハンドラの修正（IMPORT-INTERFACE-001）完了後も Renderer 側が未修正のまま残り、E2E でのみ検出可能 |
+| 解決策 | 境界変換を1箇所に集約: `availableSkills.filter(s => selectedIds.has(s.id)).map(s => s.name)` |
+
+**境界変換のデータフロー**:
+
+| 段階 | 変数 | 型 | 値の例 | 用途 |
+|------|------|-----|--------|------|
+| UI選択状態 | `selectedIds` | `Set<string>` | `"a1b2c3..."` (SHA-256) | チェックボックスのON/OFF管理 |
+| 変換処理 | `filter + map` | `Skill[] → string[]` | - | id→name の契約変換 |
+| コールバック引数 | `skillNames` | `string[]` | `["my-skill"]` | IPC ハンドラへの入力値 |
+
+**コード例**:
+
+```typescript
+// ❌ 修正前: id をそのまま渡す
+const handleImport = () => {
+  onImport(Array.from(selectedIds)); // selectedIds は skill.id（ハッシュ）
+  onClose();
+};
+
+// ✅ 修正後: id → name への明示的変換
+const handleImport = () => {
+  const selectedNames = availableSkills
+    .filter((skill) => selectedIds.has(skill.id))
+    .map((skill) => skill.name);
+  onImport(selectedNames);
+  onClose();
+};
+```
+
+**苦戦箇所と解決策**:
+
+| # | 苦戦ポイント | 原因 | 解決策 | 教訓 |
+|---|-------------|------|--------|------|
+| 1 | 同名ファイルの修正対象特定 | `SkillImportDialog` が複数配置されており、ファイル名検索だけでは対象を特定できない | `AgentView` の import 文から逆引きし、`organisms/SkillImportDialog/index.tsx` を固定 | UI不具合は「利用箇所 → import先 → 実装本体」の順で特定する |
+| 2 | `skill.id` / `skill.name` の型的区別不可 | 両方 `string` 型のため TypeScript が警告しない | 変数名を `skillNames` に統一し、テストで否定条件（id が渡されない）を追加 | 文字列識別子は「命名」「変換点」「否定条件テスト」の3点で守る |
+| 3 | 偽成功ログによる障害点の誤認 | `importSkills` 関数単位のログだけ確認し、IPC ハンドラの最終戻り値まで追跡しなかった | Renderer入力値 → IPC引数 → `getSkillByName()` 照合を一連で確認 | IPC系は「最終レスポンス契約」を真実源として扱う |
+
+**P44 三層修正の全体像**:
+
+| レイヤー | タスク | 修正内容 | 完了日 |
+|----------|--------|----------|--------|
+| IPC Handler | UT-FIX-SKILL-IMPORT-INTERFACE-001 | 引数を `{ skillIds: string[] }` → `skillName: string` に変更 | 2026-02-21 |
+| IPC Return Type | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | 戻り値を `ImportResult` → `ImportedSkill` に変更（2ステップ変換） | 2026-02-21 |
+| Renderer | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | `skill.id` → `skill.name` への変換処理を追加 | 2026-02-22 |
+
+**適用判断基準**:
+
+| 条件 | 判断 |
+|------|------|
+| コンポーネントの内部状態IDとAPI引数の識別子が一致 | 変換不要 |
+| 内部状態IDとAPI引数が異なる `string` 型で分離可能 | **境界変換パターン適用** |
+| 識別子が `number` や Branded Type で型的に区別可能 | 型チェックで防止可能 |
+
+**関連 Pitfall**: P44（IPC ハンドラと Preload のインターフェース不整合）、P45（IPC引数命名の契約ドリフト）
+
+**関連タスク**: UT-FIX-SKILL-IMPORT-ID-MISMATCH-001（2026-02-22完了）
+
+---
+
 ### IPC ハンドラ二重登録防止パターン（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 2026-02-14実装）
 
 macOS の `activate` イベントでウィンドウを再作成する際に、`ipcMain.handle()` の二重登録例外を防止するパターン。
