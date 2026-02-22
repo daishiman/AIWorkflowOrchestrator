@@ -206,3 +206,45 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 - ウィンドウサイズ変更時のレイアウト崩れを防ぐ
 
 ---
+
+## Tap & Discover デザイントークン拡張
+
+> 参照: [00-ui-design-foundation.md](../../../docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-ui-design-foundation.md) Task 5C
+
+### マイクロインタラクション用トークン
+
+| トークン | 値 | カテゴリ | 用途 |
+|----------|-----|----------|------|
+| `--ease-bounce` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | イージング | 成功時のバウンスアニメーション |
+| `--ease-anticipate` | `cubic-bezier(0.68, -0.55, 0.27, 1.55)` | イージング | 溜めてから跳ねるアニメーション |
+| `--scale-hover` | `1.02` | スケール | ホバー時の微拡大 |
+| `--scale-active` | `0.97` | スケール | タップ/クリック時の微縮小 |
+| `--scale-bounce` | `1.05` | スケール | 成功時のバウンスピーク |
+
+### SuggestionBubble コンポーネントトークン
+
+| トークン | ライトモード | ダークモード | 用途 |
+|----------|-------------|-------------|------|
+| `--suggestion-bg` | `var(--bg-secondary)` | `var(--bg-secondary)` | バブル背景色 |
+| `--suggestion-bg-hover` | `var(--bg-elevated)` | `var(--bg-elevated)` | ホバー時の背景色 |
+| `--suggestion-border` | `var(--border)` | `var(--border)` | ボーダー色 |
+| `--suggestion-text` | `var(--text-primary)` | `var(--text-primary)` | テキスト色 |
+| `--suggestion-icon` | `var(--accent)` | `var(--accent)` | アイコン色 |
+| `--suggestion-radius` | `9999px` | `9999px` | 角丸（pill形状） |
+
+### EmptyState mood トークン
+
+| mood | アイコン色 | 背景色 | テキストトーン |
+|------|-----------|--------|---------------|
+| `welcoming` | `var(--accent)` | `var(--bg-secondary)` | 暖かく迎え入れる |
+| `encouraging` | `var(--status-info)` | `var(--bg-secondary)` | 前向きに促す |
+| `celebrating` | `var(--status-success)` | `var(--bg-secondary)` | 達成を祝う |
+
+---
+
+## 変更履歴
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1.0 | 2026-02-22 | Tap & Discover デザイントークン拡張（マイクロインタラクション、SuggestionBubble、EmptyState mood） |
+| 1.0.0 | - | 初版作成 |
