@@ -327,17 +327,17 @@ describe("theme color map completeness", () => {
 
 ## 参照資料
 
-| 資料                                                                                  | 参照目的                                      |
-| ------------------------------------------------------------------------------------- | --------------------------------------------- | -------------- |
-| `docs/30-workflows/TASK-UI-00-TOKENS/phase-4-test-creation.md`                        | Phase 4 テストケースとの整合性                |
-| `docs/30-workflows/TASK-UI-00-TOKENS/phase-5-implementation.md`                       | 実装コードの確認                              |
-| `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-1-design-tokens.md` | テーマカラーマップ全体像の参照                |
-| `.claude/rules/01-architecture.md` — アクセシビリティ（WCAG 2.1 AA）                  | コントラスト比基準                            |
-| `.claude/rules/02-code-quality.md` — カバレッジ基準                                   | Line 80%+, Branch 60%+, Function 80%+         |
-| `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`          | a11yテスト観点                                |
-| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`           | テスト品質基準                                |
-| テスト仕様書                                                                          | `outputs/phase-4/test-specification.md`       | Phase 4 成果物 |
-| tokens.css更新済み                                                                    | `apps/desktop/src/renderer/styles/tokens.css` | Phase 5 成果物 |
+| 資料                                                                                                                          | 参照目的                                      |
+| ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | -------------- |
+| `docs/30-workflows/TASK-UI-00-TOKENS/phase-4-test-creation.md`                                                                | Phase 4 テストケースとの整合性                |
+| `docs/30-workflows/TASK-UI-00-TOKENS/phase-5-implementation.md`                                                               | 実装コードの確認                              |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-051-ui-00-1-design-tokens.md` | テーマカラーマップ全体像の参照                |
+| `.claude/rules/01-architecture.md` — アクセシビリティ（WCAG 2.1 AA）                                                          | コントラスト比基準                            |
+| `.claude/rules/02-code-quality.md` — カバレッジ基準                                                                           | Line 80%+, Branch 60%+, Function 80%+         |
+| `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                                  | a11yテスト観点                                |
+| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                                   | テスト品質基準                                |
+| テスト仕様書                                                                                                                  | `outputs/phase-4/test-specification.md`       | Phase 4 成果物 |
+| tokens.css更新済み                                                                                                            | `apps/desktop/src/renderer/styles/tokens.css` | Phase 5 成果物 |
 
 ## システム仕様（aiworkflow-requirements）
 

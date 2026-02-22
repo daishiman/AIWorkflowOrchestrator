@@ -83,11 +83,11 @@
 
 ## 参照資料
 
-| 資料名            | パス                                                                         |
-| ----------------- | ---------------------------------------------------------------------------- |
-| 元タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-9b-a-skill-md.md`    |
-| 親タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-9b-skill-creator.md` |
-| 既存skill-creator | `~/.claude/skills/skill-creator/SKILL.md`                                    |
+| 資料名            | パス                                                                                                                          |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 元タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-9b-a-skill-md.md`                                                     |
+| 親タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020-task-9b-skill-creator.md` |
+| 既存skill-creator | `~/.claude/skills/skill-creator/SKILL.md`                                                                                     |
 
 ## 作成日時
 

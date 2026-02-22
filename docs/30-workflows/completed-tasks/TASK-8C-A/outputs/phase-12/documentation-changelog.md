@@ -68,7 +68,7 @@
 
 ### タスク一覧
 
-- 確認ファイル: `docs/30-workflows/skill-import-agent-system/tasks/index.md`
+- 確認ファイル: `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-090-tasks-index-legacy.md`
 - 結果: TASK-8C-Aのステータスはタスク仕様書のfrontmatter（status: pending）で管理。PR時のfrontmatter更新で反映
 
 ## Step 2: システム仕様更新

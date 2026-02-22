@@ -51,11 +51,11 @@
 
 ## 2. 入力
 
-| 入力       | パス                                                                             | 説明                      |
-| ---------- | -------------------------------------------------------------------------------- | ------------------------- |
-| 仕様書     | `docs/30-workflows/skill-import-agent-system/specification.md`                   | §7.1 セキュリティ考慮事項 |
-| 実行計画   | `docs/30-workflows/skill-import-agent-system/execution-plan.md`                  | Appendix B セキュリティ   |
-| タスク定義 | `docs/30-workflows/skill-import-agent-system/tasks/task-2c-security-patterns.md` | タスク詳細                |
+| 入力       | パス                                                                                                                   | 説明                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| 仕様書     | `docs/30-workflows/skill-import-agent-system/specification.md`                                                         | §7.1 セキュリティ考慮事項 |
+| 実行計画   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-003-execution-plan.md` | Appendix B セキュリティ   |
+| タスク定義 | `docs/30-workflows/skill-import-agent-system/tasks/task-2c-security-patterns.md`                                       | タスク詳細                |
 
 ---
 
@@ -175,10 +175,10 @@
 
 ### 7.1 仕様書
 
-| 資料名     | パス                                                            | セクション |
-| ---------- | --------------------------------------------------------------- | ---------- |
-| 機能仕様書 | `docs/30-workflows/skill-import-agent-system/specification.md`  | §7.1-7.4   |
-| 実行計画   | `docs/30-workflows/skill-import-agent-system/execution-plan.md` | Appendix B |
+| 資料名     | パス                                                                                                                   | セクション |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- | ---------- |
+| 機能仕様書 | `docs/30-workflows/skill-import-agent-system/specification.md`                                                         | §7.1-7.4   |
+| 実行計画   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-003-execution-plan.md` | Appendix B |
 
 ### 7.2 システム仕様（aiworkflow-requirements）
 

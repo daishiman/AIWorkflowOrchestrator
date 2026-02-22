@@ -273,7 +273,7 @@ mv docs/30-workflows/skill-import-agent-system/tasks/task-1-1-type-definitions \
 
 ### 9.2 execution-plan.md の更新
 
-`docs/30-workflows/skill-import-agent-system/execution-plan.md` のタスク状態を更新:
+`docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-003-execution-plan.md` のタスク状態を更新:
 
 - [ ] TASK-1-1 の状態を `🟢 完了` に変更
 - [ ] 完了日を記入

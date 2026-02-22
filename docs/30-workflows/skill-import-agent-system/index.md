@@ -6,12 +6,12 @@
 
 ## ドキュメント構成
 
-| ドキュメント                                   | 内容                                  |
-| ---------------------------------------------- | ------------------------------------- |
-| [仕様書](./specification.md)                   | 機能仕様、UI/UX仕様、バックエンド仕様 |
-| [技術選定・設計判断](./technical-decisions.md) | SDK選定、永続化方式、セキュリティ設計 |
-| [実行計画](./execution-plan.md)                | タスク分解、依存関係、実行順序        |
-| [タスク一覧](./tasks/index.md)                 | 個別タスク仕様書（48タスク）          |
+| ドキュメント                                                                           | 内容                                  |
+| -------------------------------------------------------------------------------------- | ------------------------------------- |
+| [仕様書](./specification.md)                                                           | 機能仕様、UI/UX仕様、バックエンド仕様 |
+| [技術選定・設計判断](./technical-decisions.md)                                         | SDK選定、永続化方式、セキュリティ設計 |
+| [実行計画](./tasks/task-00-unified-implementation-sequence/task-003-execution-plan.md) | タスク分解、依存関係、実行順序        |
+| [タスク一覧](./tasks/task-00-unified-implementation-sequence/task-000-master-index.md) | 個別タスク仕様書（48タスク）          |
 
 ## クイックスタート
 
@@ -345,10 +345,10 @@ Tier 3 (将来):     7タスク
 
 ### Phase 10A: ライフサイクル管理
 
-- [ ] [TASK-10A-A](./tasks/task-10a-a-management-panel.md): SkillManagementPanel
-- [ ] [TASK-10A-B](./tasks/task-10a-b-analysis-view.md): SkillAnalysisView
-- [ ] [TASK-10A-C](./tasks/task-10a-c-create-wizard.md): SkillCreateWizard
-- [ ] [TASK-10A-D](./tasks/task-10a-d-integration.md): 統合（Slice/IPC/ChatPanel）
+- [ ] [TASK-10A-A](./tasks/task-09a-task-10a-a-management-panel.md): SkillManagementPanel
+- [ ] [TASK-10A-B](./tasks/task-09b-task-10a-b-analysis-view.md): SkillAnalysisView
+- [ ] [TASK-10A-C](./tasks/task-09c-task-10a-c-create-wizard.md): SkillCreateWizard
+- [ ] [TASK-10A-D](./tasks/task-10-task-10a-d-integration.md): 統合（Slice/IPC/ChatPanel）
 
 ## 関連リソース
 

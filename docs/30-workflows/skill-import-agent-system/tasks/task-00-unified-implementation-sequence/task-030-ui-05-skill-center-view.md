@@ -865,6 +865,245 @@ apps/desktop/src/renderer/
 | stagger アニメーションの SSR    | サーバーサイドでは stagger を無効化し、クライアントのみで実行            |
 | カテゴリタブ下線の位置計算      | タブ要素の `offsetLeft` と `offsetWidth` から動的に計算                  |
 
+## 15B. サブダイアログ定義（task-9 UI移管）
+
+> 以下のダイアログは task-9e / task-9f / task-9i から UI 仕様を移管したもの。
+> バックエンドサービス・IPC 契約は各 task-9 ファイルを参照。
+
+### 15B.1 ForkSkillDialog（task-9e 移管）
+
+> バックエンド仕様: [task-023f-task-9e-skill-fork.md](./task-023f-task-9e-skill-fork.md)
+
+SkillDetailPanel の「このツールをフォーク」アクションから起動するダイアログ。既存スキルを複製し、新しい名前でカスタマイズ可能にする。
+
+#### コンポーネント配置
+
+```
+SkillDetailPanel
+  └── SkillDangerZone
+        ├── [このツールを削除]      ← 既存
+        └── [このツールをフォーク]  ← 新規追加
+              └── ForkSkillDialog（モーダル）
+```
+
+#### ForkSkillDialog コンポーネント
+
+```typescript
+interface ForkSkillDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  sourceSkillName: string;
+  onForkComplete: (newSkillName: string) => void;
+}
+
+interface ForkFormState {
+  newName: string;
+  description: string;
+  copyAgents: boolean;
+  copyReferences: boolean;
+  copyScripts: boolean;
+  copyAssets: boolean;
+}
+```
+
+| 表示項目                   | 配置                     | 説明                                   |
+| -------------------------- | ------------------------ | -------------------------------------- |
+| ダイアログタイトル         | ヘッダー                 | 「{sourceSkillName} をフォーク」       |
+| 新しいツール名             | テキスト入力             | 必須、バリデーション（重複チェック）   |
+| 説明文                     | テキストエリア           | 任意、2行以上                          |
+| コピー対象チェックボックス | チェックボックスグループ | agents / references / scripts / assets |
+| フォーク実行ボタン         | フッター右               | Primary ボタン、処理中はスピナー       |
+| キャンセルボタン           | フッター左               | Ghost ボタン                           |
+
+#### インタラクション
+
+```
+[このツールをフォーク] タップ
+  -> ForkSkillDialog オープン（フェードイン 200ms）
+  -> 新しい名前入力 + コピー対象選択
+  -> [フォークを作成] タップ
+     -> スピナー表示
+     -> IPC: skill:fork（バックエンド: task-9e 参照）
+     -> 成功時: ダイアログ閉じる + Toast「{newName} を作成しました」+ カード一覧更新
+     -> 失敗時: エラーメッセージ表示（ダイアログ内インライン）
+```
+
+#### バリデーション
+
+| フィールド | ルール                          | エラーメッセージ                       |
+| ---------- | ------------------------------- | -------------------------------------- |
+| newName    | 必須、1-50文字、英数字+ハイフン | 「ツール名を入力してください」         |
+| newName    | 既存スキル名と重複不可          | 「このツール名は既に使用されています」 |
+| コピー対象 | 最低1つ選択                     | 「コピー対象を選択してください」       |
+
+### 15B.2 ImportSkillDialog / ExportSkillDialog 拡張（task-9f 移管）
+
+> バックエンド仕様: [task-022-task-9f-skill-share.md](./task-022-task-9f-skill-share.md)
+
+既存の SkillImportSection（セクション 5.1 のコンポーネントツリー参照）を拡張し、複数ソースからのインポートとエクスポート機能を追加する。
+
+#### ImportSkillDialog 拡張
+
+既存の `SkillImportDialog`（organisms/）を拡張して、4つのインポートソースタブを追加。
+
+```typescript
+interface ImportSkillDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onImportComplete: (skillName: string) => void;
+}
+
+type ImportSourceType = "github" | "gist" | "url" | "local";
+
+interface ImportFormState {
+  sourceType: ImportSourceType;
+  // GitHub
+  repoUrl: string;
+  branch: string;
+  path: string;
+  // Gist
+  gistId: string;
+  // URL
+  skillUrl: string;
+  // Local
+  localPath: string;
+}
+```
+
+| タブ     | 入力フォーム                       | IPC チャネル   |
+| -------- | ---------------------------------- | -------------- |
+| GitHub   | リポジトリURL + ブランチ + パス    | `skill:import` |
+| Gist     | Gist ID                            | `skill:import` |
+| URL      | SKILL.md の URL                    | `skill:import` |
+| ローカル | ディレクトリパス（ファイル選択UI） | `skill:import` |
+
+**共通フロー**:
+
+```
+ソースタイプ選択（タブ切替）
+  -> 入力フォーム表示
+  -> [検証] ボタン -> IPC: skill:validateSource -> プレビュー表示
+  -> [インポート] ボタン -> IPC: skill:import -> 完了Toast
+```
+
+#### ExportSkillDialog
+
+```typescript
+interface ExportSkillDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  skillName: string;
+  onExportComplete: (shareUrl?: string) => void;
+}
+
+type ExportDestType = "gist" | "local";
+
+interface ExportFormState {
+  destType: ExportDestType;
+  isPublic: boolean; // Gist の場合
+  localPath: string; // Local の場合
+  description: string;
+}
+```
+
+| 表示項目           | 配置         | 説明                                       |
+| ------------------ | ------------ | ------------------------------------------ |
+| エクスポート先選択 | ラジオボタン | Gist / ローカル                            |
+| 公開設定           | トグル       | Gist の場合のみ表示、デフォルト: 非公開    |
+| 保存先パス         | ファイル選択 | ローカルの場合のみ表示                     |
+| 説明文             | テキスト入力 | Gist の description                        |
+| 共有URL表示        | 読み取り専用 | エクスポート成功後に表示、コピーボタン付き |
+
+#### コンポーネント配置
+
+```
+SkillDetailPanel
+  └── メタ情報セクション（既存）
+        └── [このツールをエクスポート]  ← 新規追加
+              └── ExportSkillDialog（モーダル）
+```
+
+### 15B.3 GenerateDocsDialog / DocPreview（task-9i 移管）
+
+> バックエンド仕様: [task-023c-task-9i-skill-docs.md](./task-023c-task-9i-skill-docs.md)
+
+SkillDetailPanel から起動するドキュメント自動生成ダイアログ。LLM を使ってスキルの構造からドキュメントを生成し、プレビュー・エクスポートする。
+
+#### GenerateDocsDialog
+
+```typescript
+interface GenerateDocsDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  skillName: string;
+}
+
+interface DocGenerationFormState {
+  outputFormat: "markdown" | "html" | "pdf";
+  language: "ja" | "en";
+  includeExamples: boolean;
+  includeApiReference: boolean;
+  selectedSections: string[];
+  templateId: string;
+}
+```
+
+| 表示項目                 | 配置                   | 説明                                          |
+| ------------------------ | ---------------------- | --------------------------------------------- |
+| 出力フォーマット         | ラジオボタン           | Markdown / HTML / PDF                         |
+| 言語選択                 | セグメントコントロール | 日本語 / English                              |
+| セクション選択           | チェックボックスリスト | 概要 / インストール / 使い方 / コマンド一覧等 |
+| テンプレート選択         | ドロップダウン         | Standard / Minimal / Detailed                 |
+| 例を含める               | トグル                 | デフォルト: ON                                |
+| API リファレンスを含める | トグル                 | デフォルト: OFF                               |
+| 生成ボタン               | フッター右             | Primary、処理中はプログレスバー               |
+
+#### DocPreview
+
+```typescript
+interface DocPreviewProps {
+  doc: GeneratedDoc | null;
+  isLoading: boolean;
+  onExport: (format: string, path: string) => void;
+  onCopy: () => void;
+  onClose: () => void;
+}
+```
+
+| 表示項目       | 配置         | 説明                                       |
+| -------------- | ------------ | ------------------------------------------ |
+| プレビュー領域 | メインエリア | Markdown レンダリング（CodeViewer 00参照） |
+| セクション目次 | 左サイドバー | クリックでスクロール                       |
+| エクスポート   | ツールバー右 | ファイル保存ダイアログ                     |
+| コピー         | ツールバー右 | クリップボードにコピー + Toast             |
+| 閉じる         | ヘッダー右   | プレビューを閉じてダイアログに戻る         |
+
+#### インタラクションフロー
+
+```
+SkillDetailPanel > [ドキュメントを生成] タップ
+  -> GenerateDocsDialog オープン
+  -> 設定選択
+  -> [生成する] タップ
+     -> プログレスバー表示（LLM ストリーミング中）
+     -> IPC: skill:docs:generate（バックエンド: task-9i 参照）
+     -> 完了時: DocPreview に遷移
+  -> DocPreview:
+     -> Markdown プレビュー表示
+     -> [エクスポート] -> IPC: skill:docs:export -> ファイル保存
+     -> [コピー] -> クリップボードコピー + Toast「コピーしました」
+```
+
+#### コンポーネント配置
+
+```
+SkillDetailPanel
+  └── SkillMarkdownCollapse（既存「詳しい説明を見る」の下）
+        └── [ドキュメントを生成]  ← 新規追加
+              └── GenerateDocsDialog（モーダル）
+                    └── DocPreview（ダイアログ内遷移）
+```
+
 ## 16. 参照資料
 
 | 資料                          | パス / タスク ID                          |

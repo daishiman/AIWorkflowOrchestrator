@@ -119,12 +119,12 @@
 
 ### Step 1-C: 関連タスクテーブルで更新したファイル
 
-| ファイル                                                                            | 操作           | 内容                                |
-| ----------------------------------------------------------------------------------- | -------------- | ----------------------------------- |
-| `docs/30-workflows/skill-import-agent-system/tasks/index.md`                        | ステータス更新 | TASK-8C-E: completed, B/C/D依存追加 |
-| `docs/30-workflows/skill-import-agent-system/tasks/task-8c-b-e2e-selection.md`      | frontmatter    | depends_on に TASK-8C-E 追加        |
-| `docs/30-workflows/skill-import-agent-system/tasks/task-8c-c-e2e-import-execute.md` | frontmatter    | depends_on に TASK-8C-E 追加        |
-| `docs/30-workflows/skill-import-agent-system/tasks/task-8c-d-e2e-permission.md`     | frontmatter    | depends_on に TASK-8C-E 追加        |
+| ファイル                                                                                                                   | 操作           | 内容                                |
+| -------------------------------------------------------------------------------------------------------------------------- | -------------- | ----------------------------------- |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-090-tasks-index-legacy.md` | ステータス更新 | TASK-8C-E: completed, B/C/D依存追加 |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-8c-b-e2e-selection.md`                                             | frontmatter    | depends_on に TASK-8C-E 追加        |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-8c-c-e2e-import-execute.md`                                        | frontmatter    | depends_on に TASK-8C-E 追加        |
+| `docs/30-workflows/skill-import-agent-system/tasks/task-8c-d-e2e-permission.md`                                            | frontmatter    | depends_on に TASK-8C-E 追加        |
 
 ### Phase 1-11 成果物（参考）
 

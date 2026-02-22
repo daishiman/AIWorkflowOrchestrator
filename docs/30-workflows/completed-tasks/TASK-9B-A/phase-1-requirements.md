@@ -58,12 +58,12 @@ skill-creator スキルの SKILL.md ファイルに求められる要件を明�
 
 ## 参照資料
 
-| 資料名            | パス                                                                         | 説明                 |
-| ----------------- | ---------------------------------------------------------------------------- | -------------------- |
-| 元タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-9b-a-skill-md.md`    | タスク定義           |
-| 親タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-9b-skill-creator.md` | 全体仕様             |
-| スキル構造仕様    | `aiworkflow-requirements: claude-code-skills-structure.md`                   | SKILL.mdフォーマット |
-| 既存skill-creator | `~/.claude/skills/skill-creator/SKILL.md`                                    | 参考実装             |
+| 資料名            | パス                                                                                                                          | 説明                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| 元タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-9b-a-skill-md.md`                                                     | タスク定義           |
+| 親タスク仕様      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020-task-9b-skill-creator.md` | 全体仕様             |
+| スキル構造仕様    | `aiworkflow-requirements: claude-code-skills-structure.md`                                                                    | SKILL.mdフォーマット |
+| 既存skill-creator | `~/.claude/skills/skill-creator/SKILL.md`                                                                                     | 参考実装             |
 
 ## 統合テスト連携【必須】
 

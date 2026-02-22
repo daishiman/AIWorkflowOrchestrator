@@ -450,7 +450,7 @@ describe("renderWithTheme", () => {
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md` — Apple HIG/WCAGの設計原則
 - `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md` — アクセシビリティ検証パターン
 - `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` — テスト品質基準
-- `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-055-ui-00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
 - [Apple HIG — Color](https://developer.apple.com/design/human-interface-guidelines/color) — Apple 公式カラーガイドライン
 - [Apple HIG — Dark Mode](https://developer.apple.com/design/human-interface-guidelines/dark-mode) — ダークモード設計ガイド
-- `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-ui-design-foundation.md` — 親仕様書
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-050-ui-00-ui-design-foundation.md` — 親仕様書

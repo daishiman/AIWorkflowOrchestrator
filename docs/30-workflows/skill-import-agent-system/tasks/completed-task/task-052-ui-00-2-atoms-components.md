@@ -644,7 +644,7 @@ interface RelativeTimeProps {
 - `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md` — a11yテスト基準
 - `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` — P31対策
 - `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` — テスト品質要件
-- `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-055-ui-00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
 - `apps/desktop/src/renderer/components/atoms/Badge/index.tsx` — 既存 Badge 実装
 - `apps/desktop/src/renderer/components/atoms/Badge/Badge.test.tsx` — 既存 Badge テスト（17件）
 - `apps/desktop/src/renderer/components/atoms/EmptyState/index.tsx` — 既存 EmptyState 実装
