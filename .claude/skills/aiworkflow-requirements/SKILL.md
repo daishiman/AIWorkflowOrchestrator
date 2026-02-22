@@ -195,6 +195,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **8.59.0** | **2026-02-23** | **TASK-UI-00-ATOMS Phase 12完了反映**: `ui-ux-components.md` v2.11.0（TASK-UI-00-ATOMS完了タスク追加 + Atoms実装状況テーブル追加）、`ui-ux-design-system.md` v1.3.0（デザイントークン使用パターン追加）。LOGS.md完了記録追加 |
 | **8.58.0** | **2026-02-22** | **UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装パターン体系化**: `architecture-implementation-patterns.md` v1.27.0 に S14「Renderer層 id/name 契約変換パターン」を追加（P44三層修正の全体像テーブル、境界変換データフロー、苦戦箇所3件）。`skill-creator/patterns.md` に成功/失敗パターン各1件を追加 |
 | **8.57.0** | **2026-02-22** | **未タスク配置監査と教訓追記**: `interfaces-agent-sdk-skill.md` に UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 の苦戦箇所と4ステップ簡潔解決手順を追加。`lessons-learned.md` v1.18.2 追記。`task-workflow.md` 等の未タスク参照を `unassigned-task/` に統一し、誤配置6件移動+重複1件整理を反映 |
 | **8.56.0** | **2026-02-22** | **UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了反映**: interfaces-agent-sdk-skill.md v1.28.0（関連未タスクテーブル完了化 + 完了タスクセクション追加）、task-workflow.md v1.50.0（残課題完了化 + 完了タスクセクション追加）。Renderer層のみ変更（skill.id→skill.name） |

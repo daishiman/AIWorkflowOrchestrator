@@ -1,0 +1,273 @@
+{
+  "taskId": "TASK-UI-00-ATOMS",
+  "taskName": "Atoms共通コンポーネント実装（StatusIndicator・FilterChip・SkeletonCard・SuggestionBubble・RelativeTime新規、Badge・EmptyState拡張）",
+  "createdAt": "2026-02-22T21:30:00Z",
+  "updatedAt": "2026-02-22T21:30:00Z",
+  "currentPhase": 13,
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:17:06.126Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/existing-component-analysis.md",
+          "description": "既存コンポーネント分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/component-requirements.md",
+          "description": "コンポーネント要件定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/accessibility-requirements.md",
+          "description": "アクセシビリティ要件"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/theme-requirements.md",
+          "description": "テーマ要件"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/backward-compatibility-requirements.md",
+          "description": "後方互換性要件"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:24:22.619Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/interface-design.md",
+          "description": "インターフェース設計"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:25:56.017Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-summary.md",
+          "description": "レビュー総括レポート"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:36:48.467Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書（7コンポーネント139テスト）"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:36:57.910Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー（7コンポーネント実装・R-1〜R-6対応・barrel export更新）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:45:27.797Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/edge-case-tests.md",
+          "description": "エッジケーステスト追加結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/theme-tests.md",
+          "description": "テーマ横断テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/accessibility-tests.md",
+          "description": "アクセシビリティテスト結果"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:48:32.057Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ確認レポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-22T13:54:36.554Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/code-quality-analysis.md",
+          "description": "コード品質分析結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリングログ"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-22T14:03:45.964Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/lint-report.md",
+          "description": "ESLintレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/typecheck-report.md",
+          "description": "型チェックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/test-report.md",
+          "description": "テストレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-result.md",
+          "description": "品質ゲート判定結果"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-22T15:04:13.534Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/requirements-implementation-alignment.md",
+          "description": "要件-実装整合性検証"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/test-coverage-summary.md",
+          "description": "テストカバレッジ総括"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/design-token-audit.md",
+          "description": "デザイントークン監査"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-22T15:11:59.412Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/theme-test-result.md",
+          "description": "テーマテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/responsive-test-result.md",
+          "description": "レスポンシブテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/interaction-test-result.md",
+          "description": "インタラクションテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/accessibility-test-result.md",
+          "description": "アクセシビリティテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト総括"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-22T15:24:44.002Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "completed",
+      "completedAt": "2026-02-23T00:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報レポート"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "requires": ["TASK-UI-00-TOKENS"],
+    "parallelWith": [],
+    "blocks": ["TASK-UI-00-MOLECULES", "TASK-UI-00-ORGANISMS"]
+  },
+  "metadata": {
+    "tier": 1,
+    "priority": "high",
+    "complexity": "medium",
+    "tags": [
+      "frontend",
+      "renderer",
+      "atoms",
+      "ui-overhaul",
+      "apple-hig",
+      "wcag-2.1-aa"
+    ]
+  },
+  "lastUpdated": "2026-02-23T00:30:00.000Z"
+}

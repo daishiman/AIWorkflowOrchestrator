@@ -36,6 +36,18 @@
 
 📖 詳細: [ui-ux-design-principles.md](./ui-ux-design-principles.md)
 
+### Atoms コンポーネント実装状況
+
+| コンポーネント | タスクID | ステータス | 実装パス |
+|---|---|---|---|
+| StatusIndicator | TASK-UI-00-ATOMS | 完了 | `apps/desktop/src/renderer/components/atoms/StatusIndicator/` |
+| FilterChip | TASK-UI-00-ATOMS | 完了 | `apps/desktop/src/renderer/components/atoms/FilterChip/` |
+| Badge | TASK-UI-00-ATOMS | 完了（拡張） | `apps/desktop/src/renderer/components/atoms/Badge/` |
+| SkeletonCard | TASK-UI-00-ATOMS | 完了 | `apps/desktop/src/renderer/components/atoms/SkeletonCard/` |
+| SuggestionBubble | TASK-UI-00-ATOMS | 完了 | `apps/desktop/src/renderer/components/atoms/SuggestionBubble/` |
+| EmptyState | TASK-UI-00-ATOMS | 完了（拡張） | `apps/desktop/src/renderer/components/atoms/EmptyState/` |
+| RelativeTime | TASK-UI-00-ATOMS | 完了 | `apps/desktop/src/renderer/components/atoms/RelativeTime/` |
+
 ### 主要UIコンポーネント一覧
 
 | コンポーネント | タスクID | 責務 |
@@ -133,6 +145,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-8B | コンポーネントテスト（全4コンポーネント、280テスト） | 2026-02-02 |
 | TASK-9A-C | SkillEditor UI（仕様書作成済み・実装待ち） | 2026-02-19 |
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog skill.id→skill.name修正（`onImport`にハッシュではなくスキル名を渡すよう修正、P44 Renderer側バリエーション） | 2026-02-22 |
+| TASK-UI-00-ATOMS | Atoms共通コンポーネント実装（StatusIndicator・FilterChip・SkeletonCard・SuggestionBubble・RelativeTime新規、Badge・EmptyState拡張） | 2026-02-23 |
 
 ---
 
@@ -140,6 +153,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.11.0  | 2026-02-23 | TASK-UI-00-ATOMS完了: 新規5コンポーネント（StatusIndicator/FilterChip/SkeletonCard/SuggestionBubble/RelativeTime）+ 既存2拡張（Badge/EmptyState）、156テスト全PASS、Atoms実装状況テーブル追加 |
 | 2.10.0  | 2026-02-22 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了タスク追加（SkillImportDialog `onImport`がskill.id→skill.nameを渡すよう修正、P44 Renderer側バリエーション） |
 | 2.9.1   | 2026-02-19 | TASK-9A-C: Phase 12準拠監査レポートへの参照を追加（監査済み状態を明確化） |
 | 2.9.0   | 2026-02-19 | TASK-9A-C反映: SkillEditorを主要UIコンポーネント一覧・完了タスク表に追加（仕様書作成済み状態を明記） |
@@ -165,3 +179,4 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [TASK-9A-C Phase 12準拠監査](../../../../docs/30-workflows/TASK-9A-C-skill-editor-ui/outputs/phase-12/phase12-compliance-audit.md)
 - [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)
 - [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md)
+- [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/task-ui-00-atoms/outputs/phase-12/implementation-guide.md)

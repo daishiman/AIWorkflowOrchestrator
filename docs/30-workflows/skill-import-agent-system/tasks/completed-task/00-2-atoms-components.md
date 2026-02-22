@@ -644,10 +644,18 @@ interface RelativeTimeProps {
 - `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md` — a11yテスト基準
 - `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` — P31対策
 - `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` — テスト品質要件
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-055-ui-00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
+- `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
 - `apps/desktop/src/renderer/components/atoms/Badge/index.tsx` — 既存 Badge 実装
 - `apps/desktop/src/renderer/components/atoms/Badge/Badge.test.tsx` — 既存 Badge テスト（17件）
 - `apps/desktop/src/renderer/components/atoms/EmptyState/index.tsx` — 既存 EmptyState 実装
 - `apps/desktop/src/renderer/components/atoms/EmptyState/EmptyState.test.tsx` — 既存 EmptyState テスト（6件）
 - [01-architecture.md](../../../../.claude/rules/01-architecture.md) — Apple HIG 準拠、Atomic Design 原則
 - [06-known-pitfalls.md](../../../../.claude/rules/06-known-pitfalls.md) — P9, P13, P31, P39, P40
+
+## 関連未タスク（TASK-UI-00-ATOMS Phase 10 MINOR由来）
+
+| タスクID                           | 内容                                                           | 指示書                                                                  |
+| ---------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| UT-UI-ATOMS-PROP-NAMING-001        | RelativeTime Props命名統一（updateInterval → refreshInterval） | `docs/30-workflows/unassigned-task/task-ui-atoms-prop-naming.md`        |
+| UT-UI-ATOMS-TOUCH-TARGET-001       | SuggestionBubble sm タッチターゲット Apple HIG 44px準拠        | `docs/30-workflows/unassigned-task/task-ui-atoms-touch-target.md`       |
+| UT-UI-ATOMS-SPEC-CLARIFICATION-001 | SuggestionBubble success-bounce 責務明確化                     | `docs/30-workflows/unassigned-task/task-ui-atoms-spec-clarification.md` |
