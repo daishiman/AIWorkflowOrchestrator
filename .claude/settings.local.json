@@ -229,5 +229,15 @@
       }
     ]
   },
-  "outputStyle": "Learning"
+  "outputStyle": "Learning",
+  "enabledPlugins": {
+    "document-skills@anthropic-agent-skills": false,
+    "pyright-lsp@claude-plugins-official": false,
+    "lua-lsp@claude-plugins-official": false,
+    "ralph-loop@claude-plugins-official": false,
+    "skill-creator@meta-skill-creator": false,
+    "daishiman-skill-creator@meta-skill-creator": false,
+    "daishiman-google-forms-generator@daishiman-skills": false,
+    "daishiman-skill-creator@daishiman-skills": false
+  }
 }

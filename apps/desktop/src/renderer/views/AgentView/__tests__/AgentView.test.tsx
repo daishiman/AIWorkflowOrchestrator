@@ -864,7 +864,7 @@ describe("AgentView", () => {
         fireEvent.click(dialogImportButton);
       });
 
-      expect(mockImportSkill).toHaveBeenCalledWith("import-skill-1");
+      expect(mockImportSkill).toHaveBeenCalledWith("ImportableSkill");
       expect(mockShowToast).toHaveBeenCalledWith(
         "success",
         "1件のスキルをインポートしました",
@@ -902,7 +902,7 @@ describe("AgentView", () => {
         fireEvent.click(dialogImportButton);
       });
 
-      expect(mockImportSkill).toHaveBeenCalledWith("fail-skill-1");
+      expect(mockImportSkill).toHaveBeenCalledWith("FailSkill");
       expect(mockShowToast).toHaveBeenCalledWith(
         "error",
         "インポートに失敗しました: Import failed",
@@ -936,7 +936,7 @@ describe("AgentView", () => {
         fireEvent.click(dialogImportButton);
       });
 
-      expect(mockImportSkill).toHaveBeenCalledWith("fail-skill-2");
+      expect(mockImportSkill).toHaveBeenCalledWith("FailSkill2");
       expect(mockShowToast).toHaveBeenCalledWith(
         "error",
         "インポートに失敗しました",

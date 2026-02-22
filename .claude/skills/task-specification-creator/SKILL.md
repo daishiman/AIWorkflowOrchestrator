@@ -90,7 +90,7 @@ Phase 4〜5: 検証 → 完了
 | ----------- | --- | -------------------------------------------------------- |
 | agents/     | 9   | [resource-map.md#agents](references/resource-map.md)     |
 | references/ | 15  | [resource-map.md#references](references/resource-map.md) |
-| scripts/    | 10  | [resource-map.md#scripts](references/resource-map.md)    |
+| scripts/    | 12  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
 | assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
 
@@ -321,6 +321,9 @@ node scripts/complete-phase.js --workflow docs/30-workflows/{{FEATURE_NAME}} --p
 # 未タスク検出（Phase 12）
 node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp/unassigned-candidates.json
 
+# 未タスク配置・フォーマット監査（Phase 12）
+node scripts/audit-unassigned-tasks.js
+
 # 未タスク参照リンク整合チェック（Phase 12 Step 1-E後）
 node scripts/verify-unassigned-links.js
 
@@ -372,6 +375,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.80.0** | **2026-02-22** | **未タスク監査自動化を追加**: `scripts/audit-unassigned-tasks.js` を新規追加。`unassigned-task/` の9セクション準拠・命名規則違反・`completed-tasks/unassigned-task/` への未実施混在を一括監査可能にした。`references/commands.md`・`phase-11-12-guide.md`・`resource-map.md` に実行手順を追記 |
+| **9.79.0** | **2026-02-22** | **UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了反映**: Phase 12 Task 2実行記録。interfaces-agent-sdk-skill.md・task-workflow.md更新、LOGS.md 2ファイル・SKILL.md 2ファイル同期更新 |
 | **9.77.0** | **2026-02-21** | **UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase実行知見反映**: patterns.mdにマルチエージェントPhase実行パターン3件追加（Phase依存順序、worktree環境代替手順、カバレッジスコープ解釈）。LOGS.md実行記録追加 |
 | **9.76.0** | **2026-02-21** | **worktree運用時のPhase 12再発防止を標準化**: `spec-update-workflow.md` に「worktree環境なのでStep 1-Aを先送り」の誤判断パターンを追加。`phase-11-12-guide.md` に未実施タスク誤配置検出コマンド（completed配下の未着手/未実施/進行中検出）を追記。`patterns.md` に成功パターン「worktreeでもStep 1-Aを先送りしない」を追加 |
 | **9.76.0** | **2026-02-21** | **verify-all-specs 参照パス検証の精度改善**: インラインコード抽出で改行またぎ誤検出を防止（`` `...` `` を単一行限定）。参照パス存在確認を「workflow相対 + リポジトリ相対」の両方で判定し、ワークフロー移動時の偽陽性（infoノイズ）を解消 |

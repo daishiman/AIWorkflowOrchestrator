@@ -5,6 +5,55 @@
 
 ---
 
+## 2026-02-22 - UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 追加監査（未タスク配置/フォーマット）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-FIX-SKILL-IMPORT-ID-MISMATCH-001
+- Phase: Phase 12 追加監査
+
+### 実施内容
+- `task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` の未タスク参照を `docs/30-workflows/unassigned-task/` へ統一
+- `completed-tasks/unassigned-task/` に残っていた未実施6件を `unassigned-task/` へ移動、重複1件を整理
+- `interfaces-agent-sdk-skill.md` に本タスクの苦戦箇所と再発防止手順を追記
+- `lessons-learned.md` v1.18.2 を追加（id/name混同の4ステップ解決手順）
+
+### 監査結果
+- `verify-unassigned-links.js`: ALL_LINKS_EXIST（83/83）
+- `audit-unassigned-tasks.js`: 誤配置0件、フォーマット未準拠67件、命名違反5件
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-22
+
+---
+
+## 2026-02-22 - UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 Phase 12 Task 2実行
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-FIX-SKILL-IMPORT-ID-MISMATCH-001
+- Phase: Phase 12 Task 2（システム仕様書更新）
+
+### 実施内容
+- interfaces-agent-sdk-skill.md v1.28.0: 関連未タスクテーブル完了化（取り消し線）、完了タスクセクションに詳細記録追加
+- task-workflow.md v1.50.0: 残課題テーブル完了化（取り消し線 + 完了日）、完了タスクセクションに詳細記録追加
+- SKILL.md v8.56.0: 変更履歴にUT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了反映を追記
+- topic-map.md: generate-index.js で再生成
+
+### 更新した仕様書
+
+| 仕様書 | バージョン | 変更内容 |
+| ------ | ---------- | -------- |
+| interfaces-agent-sdk-skill.md | v1.28.0 | 関連未タスクテーブル完了化 + 完了タスクセクション追加 |
+| task-workflow.md | v1.50.0 | 残課題テーブル完了化 + 完了タスクセクション追加 |
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-22
+
+---
+
 ## 2026-02-21 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 1-12実行
 
 ### コンテキスト

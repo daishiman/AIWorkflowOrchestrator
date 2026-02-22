@@ -464,10 +464,10 @@ Zustand Sliceパターンで実装された状態管理。
 
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
-| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-ipc-response-consistency.md` |
-| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一） | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-getdetail-naming-drift.md` |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-skill-validation-consistency.md` |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog（organisms版）がskill.id（ハッシュ）を渡すためgetSkillByName失敗 | 高 | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md` |
+| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消） | 中 | `docs/30-workflows/unassigned-task/task-skill-ipc-response-consistency.md` |
+| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一） | 低 | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完） | 中 | `docs/30-workflows/unassigned-task/task-skill-validation-consistency.md` |
+| ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~ | ~~SkillImportDialog（organisms版）がskill.id（ハッシュ）を渡すためgetSkillByName失敗~~ | ~~高~~ | **完了: 2026-02-22** |
 
 #### OperationResult型
 
@@ -1527,6 +1527,54 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ## 完了タスク
 
+### UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog skill.id→skill.name修正（2026-02-22完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001                                |
+| 完了日       | 2026-02-22                                                           |
+| ステータス   | **完了**                                                             |
+| テスト数     | 49（SkillImportDialog）+ 3（AgentView統合）                         |
+| ドキュメント | `docs/30-workflows/completed-tasks/skill-import-id-mismatch-fix/`   |
+
+#### 変更ポイント
+
+| 変更箇所 | 内容 |
+| -------- | ---- |
+| SkillImportDialog | `onImport(skill.id)` を `onImport(skill.name)` に変更。SHA-256ハッシュプレフィックスではなく人間可読名を渡すように修正 |
+| AgentView | `handleImportSkill` の引数名を `skillId` → `skillName` に変更（P45準拠） |
+| テスト | SkillImportDialogテスト49件（skill.name渡し検証追加）、AgentView統合テスト3件、全PASS |
+
+#### 変更理由
+
+- SkillImportDialogがskill.id（SHA-256ハッシュプレフィックス）をonImportに渡していたが、IPCハンドラ（skill:import）はskill.name（人間可読名）を期待
+- Renderer層のみの変更（IPC/Preload/Main/Store変更なし）
+- P44パターン（IPCインターフェース不整合）のRenderer側バリエーションとして解決
+
+#### 実装上の苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 | 再発防止 |
+| --- | --- | --- | --- |
+| 同名コンポーネントの誤調査 | `SkillImportDialog` が複数箇所に存在し、実際に使用されるファイル特定に時間を要した | `AgentView` の import 元から逆引きし、`apps/desktop/src/renderer/components/organisms/SkillImportDialog/index.tsx` を修正対象として固定 | 変更前に `rg "from .*SkillImportDialog"` で参照元を機械確認してから実装する |
+| `skill.id`/`skill.name` の文字列型混同 | どちらも `string` 型のため、型システムだけでは意味差を検出できなかった | `onImport` の引数名を `skillNames` に統一し、`selectedIds` から `availableSkills.map(skill.name)` への明示変換を追加 | テストに否定条件（`skill.id` を渡さないこと）を必須化する |
+| インポート処理の偽成功ログ | `importSkills` 側ログだけを見ると成功に見えるが、後段の `getSkillByName` で失敗していた | Renderer → IPC → Handler の値をトレースし、失敗点を `getSkillByName` 不一致に特定 | ログ確認時は単一関数ではなく IPCハンドラ最終戻り値まで追跡する |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. `AgentView` など呼び出し元から対象コンポーネントの import 先を確定する。
+2. `skill.id`（内部識別）と `skill.name`（IPC契約）の境界を表にして固定する。
+3. 変換ポイントを1箇所に集約し、引数名を `skillNames` のように意味付き名称へ統一する。
+4. テストに「期待値」と「否定条件（idが渡らない）」を同時追加して回帰を防止する。
+
+#### 検出未タスク（実装苦戦箇所由来）
+
+| タスクID | 内容 | 優先度 | 指示書パス |
+| -------- | ---- | ------ | ---------- |
+| UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 | Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別） | 中 | `docs/30-workflows/unassigned-task/task-type-skill-identifier-branded.md` |
+| UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001 | SkillImportDialog同名コンポーネント解消 | 低 | `docs/30-workflows/unassigned-task/task-refactor-skill-import-dialog-dedup.md` |
+
+---
+
 ### UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import IPCインターフェース不整合修正（2026-02-21完了）
 
 | 項目         | 内容                                                                 |
@@ -1734,6 +1782,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-22 | 1.29.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001苦戦箇所から未タスク2件登録: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001（Branded Type導入）、UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001（同名コンポーネント解消）を完了タスクセクションに参照追加 |
+| 2026-02-22 | 1.28.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了反映: 関連未タスクテーブルを完了化（取り消し線）、完了タスクセクションに詳細記録追加。Renderer層のみ変更（skill.id→skill.name） |
 | 2026-02-22 | 1.27.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: skillHandlers 関連未タスクテーブルに追加（skill.idハッシュ→getSkillByName失敗バグ） |
 | 2026-02-21 | 1.26.0     | UT-FIX-SKILL-IMPORT-INTERFACE-001 追補: 「実装上の課題と教訓」を追加（Phase 12ステータス同期、旧参照パス残存、Vitest実行ディレクトリ差異） |
 | 2026-02-21 | 1.25.0     | UT-FIX-SKILL-REMOVE-INTERFACE-001: Phase実行時の追加教訓テーブル追加（Phase依存順序違反・worktree Phase 11制約・カバレッジスコープ解釈） |
