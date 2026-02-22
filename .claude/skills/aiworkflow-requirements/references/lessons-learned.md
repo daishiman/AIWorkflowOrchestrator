@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-22 | 1.18.2 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 の苦戦箇所3件を追加（同名コンポーネント特定、`skill.id`/`skill.name`混同、偽成功ログの誤読）。同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-21 | 1.18.1 | UT-FIX-SKILL-IMPORT-INTERFACE-001 苦戦箇所2件追加（並列エージェント実行時のコンテキスト分離、completed-task配下のファイル移動時ステータス不整合） |
 | 2026-02-21 | 1.18.0 | UT-FIX-SKILL-IMPORT-INTERFACE-001 教訓追加（Phase 12ステータス未同期、旧参照パス残存、Vitest実行ディレクトリ差異）。同種課題向け簡潔解決手順を追加 |
 | 2026-02-21 | 1.17.4 | UT-FIX-SKILL-REMOVE-INTERFACE-001 に関連未タスク5件テーブルを追加。苦戦箇所から派生した UT-IMP-PHASE11-WORKTREE-PROTOCOL-001、UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001、UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 の3件と既存2件を統合 |
@@ -60,6 +61,11 @@
 
 ## 目次
 
+0. [UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正](#ut-fix-skill-import-id-mismatch-001-skillimportdialog-の-idname-契約不整合修正)
+   - [苦戦箇所1: 同名コンポーネントの誤調査](#1-同名コンポーネントの誤調査)
+   - [苦戦箇所2: `skill.id`/`skill.name` の文字列型混同](#2-skillidskillname-の文字列型混同)
+   - [苦戦箇所3: インポート処理の偽成功ログの誤読](#3-インポート処理の偽成功ログの誤読)
+   - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ)
 0. [UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正](#ut-fix-skill-import-interface-001-skillimport-インターフェース整合修正)
    - [苦戦箇所1: Phase 12成果物と仕様書本体ステータスの不一致](#1-phase-12成果物と仕様書本体ステータスの不一致)
    - [苦戦箇所2: ワークフロー移動後の旧参照パス残存](#2-ワークフロー移動後の旧参照パス残存)
@@ -171,6 +177,57 @@
    - [教訓3: IPC外リスナーの解除漏れを同時に防ぐ](#3-ipc外リスナーの解除漏れを同時に防ぐ)
 8. [関連ドキュメント](#関連ドキュメント)
 9. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+
+---
+
+## UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 |
+| 目的 | Renderer層で `skill.id` を渡していた誤りを `skill.name` 契約へ修正する |
+| 完了日 | 2026-02-22 |
+| ステータス | **完了** |
+| 関連Pitfall | P44, P45 |
+| テスト | SkillImportDialog 49件 + AgentView統合3件 PASS |
+
+### 苦戦箇所と解決策
+
+#### 1. 同名コンポーネントの誤調査
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `SkillImportDialog` が複数配置されており、修正対象コンポーネントの特定に時間を要した |
+| **原因** | ファイル名検索だけで作業を開始し、実際の import 経路を先に固定しなかった |
+| **解決策** | `AgentView` 側の import 文から逆引きし、`organisms/SkillImportDialog/index.tsx` を対象として固定した |
+| **教訓** | UI不具合は「利用箇所 → import 先 → 実装本体」の順で特定すると迷走しにくい |
+
+#### 2. `skill.id`/`skill.name` の文字列型混同
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `skill.id` と `skill.name` がどちらも `string` のため、コンパイル時に契約違反が検出されない |
+| **原因** | 型では区別できない識別子を、変数名と実装規約で分離していなかった |
+| **解決策** | `onImport` を `skillNames` 命名に統一し、`selectedIds` から `name` へ明示変換を追加した |
+| **教訓** | 文字列識別子は「名前」「変換点」「否定条件テスト」の3点セットで守る |
+
+#### 3. インポート処理の偽成功ログの誤読
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `importSkills` の成功ログに引きずられ、障害点を見誤りやすかった |
+| **原因** | 関数単位のログだけ確認し、IPCハンドラの最終戻り値まで追跡しなかった |
+| **解決策** | Renderer入力値 → IPC引数 → `getSkillByName()` の照合結果を一連で確認した |
+| **教訓** | IPC系は「途中成功ログ」より「最終レスポンス契約」を真実源として扱う |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 呼び出し元コンポーネントから import 先を逆引きして、修正対象を1ファイルに固定する。
+2. IPCで期待する識別子（`name` か `id` か）を先に宣言し、実装境界に変換処理を1箇所だけ置く。
+3. 変数名を `skillNames` のように契約準拠へ統一し、曖昧な `skills` 命名を避ける。
+4. テストで「期待値（nameが渡る）」と「否定条件（idが渡らない）」を同時に検証する。
 
 ---
 
@@ -546,9 +603,9 @@ pnpm --filter @repo/shared build && pnpm typecheck
 |---------|---------|--------|--------|
 | UT-FIX-SKILL-VALIDATION-P42-001 | skillHandlers P42準拠バリデーション横展開 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-validation-p42-standardization.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-validation-p42-standardization.md) |
 | UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-error-response-unification.md) |
-| UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md) |
-| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 | IPCハンドラ粒度カバレッジ計測インフラ構築 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md) |
-| UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md) |
+| UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md) |
+| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 | IPCハンドラ粒度カバレッジ計測インフラ構築 | 中 | [`docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md) |
+| UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード | 中 | [`docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md) |
 
 ---
 

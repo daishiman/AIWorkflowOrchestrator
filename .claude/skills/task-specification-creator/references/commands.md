@@ -61,6 +61,16 @@ node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.j
   --output .tmp/unassigned-candidates.json
 ```
 
+### 未タスク配置・フォーマット監査
+
+```bash
+# unassigned-task 配置/フォーマット監査（0違反でexit code 0）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
+
+# JSON出力
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+```
+
 ---
 
 ## ドキュメント更新履歴生成
@@ -137,5 +147,6 @@ node .claude/skills/task-specification-creator/scripts/generate-index.js \
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-22 | audit-unassigned-tasks.js コマンドを追加（未タスク配置・フォーマット監査） |
 | 2026-01-26 | generate-index.jsコマンド追加 |
 | 2026-01-26 | SKILL.mdから分離・作成 |

@@ -43,6 +43,27 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-22 - 未タスク監査自動化（audit-unassigned-tasks.js 追加）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（運用改善）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `scripts/audit-unassigned-tasks.js` を追加（未タスク指示書の9セクション準拠・命名違反・誤配置を一括監査）
+  - `references/commands.md` / `references/phase-11-12-guide.md` / `references/resource-map.md` / `SKILL.md` に実行手順を追記
+  - 監査結果: 誤配置0件、フォーマット未準拠67件、命名違反5件（2026-02-22時点）
+
+---
+
+## [2026-02-22 - UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 Phase 12 Task 2実行]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 Task 2（システム仕様書更新）
+- **Result**: ✓ 成功
+- **Notes**: SkillImportDialog skill.id→skill.name修正のPhase 12 Task 2を実行。interfaces-agent-sdk-skill.md v1.28.0、task-workflow.md v1.50.0、SKILL.md x2、LOGS.md x2を更新。Renderer層のみの変更（IPC/Preload無変更）のためStep 2（システム仕様更新）は不要。topic-map.md再生成実施
+
+---
+
 ## [2026-02-21 - UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12再監査（worktree先送り誤判断是正）]
 
 - **Agent**: task-specification-creator
@@ -4144,3 +4165,19 @@ if (artifactPath) {
 
 - ステータス: success
 - テスト: 104件全PASS
+
+## [2026-02-22T00:43:40.664Z]
+
+- **Agent**: unknown
+- **Phase**: create (Phase 1-13)
+- **Result**: ✓ 成功
+
+---
+
+## [2026-02-22T02:00:22.886Z]
+
+- **Agent**: unknown
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+
+---

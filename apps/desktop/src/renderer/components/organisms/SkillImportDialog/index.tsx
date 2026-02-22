@@ -11,8 +11,8 @@ export interface SkillImportDialogProps {
   availableSkills: Skill[];
   /** インポート済みスキルID一覧 */
   importedSkillIds: string[];
-  /** インポートハンドラ */
-  onImport: (skillIds: string[]) => void;
+  /** インポートハンドラ（スキル名の配列を受け取る） */
+  onImport: (skillNames: string[]) => void;
   /** カスタムクラス */
   className?: string;
 }
@@ -94,7 +94,10 @@ export const SkillImportDialog: React.FC<SkillImportDialogProps> = ({
   };
 
   const handleImport = () => {
-    onImport(Array.from(selectedIds));
+    const selectedNames = availableSkills
+      .filter((skill) => selectedIds.has(skill.id))
+      .map((skill) => skill.name);
+    onImport(selectedNames);
     onClose();
   };
 
