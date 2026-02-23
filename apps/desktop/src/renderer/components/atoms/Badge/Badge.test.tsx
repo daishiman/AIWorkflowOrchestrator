@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Badge } from "./index";
+import { renderWithAllThemes } from "../../../tests/helpers/renderWithTheme";
 
 describe("Badge", () => {
   describe("レンダリング", () => {
@@ -18,32 +19,38 @@ describe("Badge", () => {
   describe("バリアント", () => {
     it("defaultバリアントのスタイルを適用する", () => {
       render(<Badge variant="default">Default</Badge>);
-      expect(screen.getByText("Default")).toHaveClass("bg-gray-600");
+      expect(screen.getByText("Default")).toHaveClass(
+        "bg-[var(--bg-tertiary)]",
+      );
     });
 
     it("successバリアントのスタイルを適用する", () => {
       render(<Badge variant="success">Success</Badge>);
-      expect(screen.getByText("Success")).toHaveClass("bg-green-500");
+      expect(screen.getByText("Success")).toHaveClass(
+        "bg-[var(--status-success)]",
+      );
     });
 
     it("warningバリアントのスタイルを適用する", () => {
       render(<Badge variant="warning">Warning</Badge>);
-      expect(screen.getByText("Warning")).toHaveClass("bg-orange-400");
+      expect(screen.getByText("Warning")).toHaveClass(
+        "bg-[var(--status-warning)]",
+      );
     });
 
     it("errorバリアントのスタイルを適用する", () => {
       render(<Badge variant="error">Error</Badge>);
-      expect(screen.getByText("Error")).toHaveClass("bg-red-500");
+      expect(screen.getByText("Error")).toHaveClass("bg-[var(--status-error)]");
     });
 
     it("infoバリアントのスタイルを適用する", () => {
       render(<Badge variant="info">Info</Badge>);
-      expect(screen.getByText("Info")).toHaveClass("bg-blue-500");
+      expect(screen.getByText("Info")).toHaveClass("bg-[var(--status-info)]");
     });
 
     it("デフォルトでdefaultバリアントを使用する", () => {
       render(<Badge>Badge</Badge>);
-      expect(screen.getByText("Badge")).toHaveClass("bg-gray-600");
+      expect(screen.getByText("Badge")).toHaveClass("bg-[var(--bg-tertiary)]");
     });
   });
 
@@ -128,6 +135,77 @@ describe("Badge", () => {
         "title",
         "Badge tooltip",
       );
+    });
+  });
+
+  describe("Badge拡張", () => {
+    it("variant='primary'でプライマリスタイルを適用する", () => {
+      render(<Badge variant="primary">Primary</Badge>);
+      const badge = screen.getByText("Primary");
+      expect(badge).toHaveClass("bg-[var(--status-primary)]");
+      expect(badge).toHaveClass("text-[var(--text-inverse)]");
+    });
+
+    it("content='テスト'で文字列コンテンツを表示する", () => {
+      render(<Badge content="テスト" />);
+      expect(screen.getByText("テスト")).toBeInTheDocument();
+    });
+
+    it("content={42}で数値コンテンツを表示する", () => {
+      render(<Badge content={42} />);
+      expect(screen.getByText("42")).toBeInTheDocument();
+    });
+
+    it("contentがnumber型でaria-label='{content}件'を自動設定する", () => {
+      render(<Badge content={42} />);
+      const badge = screen.getByRole("status");
+      expect(badge).toHaveAttribute("aria-label", "42件");
+    });
+
+    it("明示的aria-labelが自動付与より優先する", () => {
+      render(<Badge content={42} aria-label="カスタムラベル" />);
+      const badge = screen.getByRole("status");
+      expect(badge).toHaveAttribute("aria-label", "カスタムラベル");
+    });
+
+    it("contentとchildren両方指定時にchildrenを優先する", () => {
+      render(<Badge content={42}>カスタム</Badge>);
+      expect(screen.getByText("カスタム")).toBeInTheDocument();
+      expect(screen.queryByText("42")).not.toBeInTheDocument();
+    });
+
+    it("contentのみ指定（childrenなし）でcontentを表示する", () => {
+      render(<Badge content="バッジ内容" />);
+      expect(screen.getByText("バッジ内容")).toBeInTheDocument();
+    });
+
+    it("3テーマでレンダリングエラーなし", () => {
+      expect(() => {
+        renderWithAllThemes(<Badge content={5} />);
+      }).not.toThrow();
+    });
+  });
+
+  describe("エッジケース", () => {
+    it('BE-01: content={0} で "0" が表示され、aria-label="0件" が設定される', () => {
+      render(<Badge content={0} />);
+      expect(screen.getByText("0")).toBeInTheDocument();
+      const badge = screen.getByRole("status");
+      expect(badge).toHaveAttribute("aria-label", "0件");
+    });
+
+    it('BE-02: content="" で空のBadgeがレンダリングされる', () => {
+      render(<Badge content="" />);
+      const badge = screen.getByRole("status");
+      expect(badge).toBeInTheDocument();
+      expect(badge.textContent).toBe("");
+    });
+
+    it("BE-04: content={99999} で数値がそのまま表示される", () => {
+      render(<Badge content={99999} />);
+      expect(screen.getByText("99999")).toBeInTheDocument();
+      const badge = screen.getByRole("status");
+      expect(badge).toHaveAttribute("aria-label", "99999件");
     });
   });
 });

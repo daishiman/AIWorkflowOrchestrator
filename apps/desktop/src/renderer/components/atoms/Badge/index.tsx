@@ -1,52 +1,75 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, memo } from "react";
 import clsx from "clsx";
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: "default" | "success" | "warning" | "error" | "info";
+export interface BadgeProps extends Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  "content"
+> {
+  variant?: "default" | "primary" | "success" | "warning" | "error" | "info";
   size?: "sm" | "md";
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  content?: string | number;
 }
 
-export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
-  (
-    { variant = "default", size = "md", className, children, ...props },
-    ref,
-  ) => {
-    const baseStyles = clsx(
-      "inline-flex items-center justify-center",
-      "rounded-full font-medium whitespace-nowrap",
-      "transition-colors duration-200",
-    );
+const baseStyles = clsx(
+  "inline-flex items-center justify-center",
+  "rounded-full font-medium whitespace-nowrap",
+  "transition-colors duration-200",
+);
 
-    const variantStyles = {
-      default: "bg-gray-600 text-white",
-      success: "bg-green-500 text-white",
-      warning: "bg-orange-400 text-white",
-      error: "bg-red-500 text-white",
-      info: "bg-blue-500 text-white",
-    };
+const variantStyles: Record<NonNullable<BadgeProps["variant"]>, string> = {
+  default: "bg-[var(--bg-tertiary)] text-[var(--text-primary)]",
+  primary: "bg-[var(--status-primary)] text-[var(--text-inverse)]",
+  success: "bg-[var(--status-success)] text-[var(--text-inverse)]",
+  warning: "bg-[var(--status-warning)] text-[var(--text-inverse)]",
+  error: "bg-[var(--status-error)] text-[var(--text-inverse)]",
+  info: "bg-[var(--status-info)] text-[var(--text-inverse)]",
+};
 
-    const sizeStyles = {
-      sm: "px-2 py-0.5 text-xs h-5",
-      md: "px-2.5 py-1 text-sm h-6",
-    };
+const sizeStyles: Record<NonNullable<BadgeProps["size"]>, string> = {
+  sm: "px-2 py-0.5 text-xs h-5",
+  md: "px-2.5 py-1 text-sm h-6",
+};
 
-    return (
-      <span
-        ref={ref}
-        className={clsx(
-          baseStyles,
-          variantStyles[variant],
-          sizeStyles[size],
-          className,
-        )}
-        role="status"
-        {...props}
-      >
-        {children}
-      </span>
-    );
-  },
+export const Badge = memo(
+  forwardRef<HTMLSpanElement, BadgeProps>(
+    (
+      {
+        variant = "default",
+        size = "md",
+        className,
+        children,
+        content,
+        ...props
+      },
+      ref,
+    ) => {
+      const displayContent =
+        children ?? (content !== undefined ? String(content) : undefined);
+
+      const ariaProps: Record<string, string> = {};
+      if (typeof content === "number" && !props["aria-label"]) {
+        ariaProps["aria-label"] = `${content}件`;
+      }
+
+      return (
+        <span
+          ref={ref}
+          className={clsx(
+            baseStyles,
+            variantStyles[variant],
+            sizeStyles[size],
+            className,
+          )}
+          role="status"
+          {...ariaProps}
+          {...props}
+        >
+          {displayContent}
+        </span>
+      );
+    },
+  ),
 );
 
 Badge.displayName = "Badge";

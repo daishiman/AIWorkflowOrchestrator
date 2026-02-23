@@ -79,7 +79,7 @@ node scripts/list-specs.js --topics
 | テストカバレッジ目標 | L617 |
 | 関連ドキュメント | L694 |
 | 完了タスク | L702 |
-| 変更履歴 | L1008 |
+| 変更履歴 | L981 |
 
 ---
 
@@ -186,7 +186,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| モノレポアーキテクチャ | L8 |
 | 型エクスポートパターン | L219 |
 | 完了タスク | L289 |
-| 変更履歴 | L321 |
+| 変更履歴 | L301 |
 
 ### references/architecture-overview.md
 
@@ -758,11 +758,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L15 |
 | コンポーネント設計概要 | L25 |
-| デザイン原則サマリー | L56 |
-| コンポーネント階層図 | L78 |
-| 完了タスク | L117 |
-| 変更履歴 | L139 |
-| 関連ドキュメント | L160 |
+| デザイン原則サマリー | L68 |
+| コンポーネント階層図 | L90 |
+| 完了タスク | L129 |
+| 変更履歴 | L152 |
+| 関連ドキュメント | L174 |
 
 ### references/ui-ux-design-principles.md
 
@@ -787,7 +787,7 @@ node scripts/list-specs.js --topics
 | スペーシングとレイアウト | L160 |
 | Tap & Discover デザイントークン拡張 | L210 |
 | 完了タスク | L245 |
-| 変更履歴 | L260 |
+| 変更履歴 | L261 |
 
 ### references/ui-ux-feature-components.md
 
@@ -1130,12 +1130,12 @@ node scripts/list-specs.js --topics
 | 依存関係管理戦略 | L176 |
 | 無料枠の活用ガイド | L269 |
 | CI/CDツール選定 | L301 |
-| 学習リソースとコミュニティ | L387 |
-| マイグレーション計画 | L414 |
-| 関連ドキュメント | L435 |
-| 完了タスク | L445 |
-| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L458 |
-| 変更履歴 | L488 |
+| 学習リソースとコミュニティ | L375 |
+| マイグレーション計画 | L402 |
+| 関連ドキュメント | L423 |
+| 完了タスク | L433 |
+| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L445 |
+| 変更履歴 | L475 |
 
 ### references/technology-frontend.md
 
@@ -1510,24 +1510,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L64 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L194 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L368 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L419 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L489 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L797 |
-| 関連ドキュメント | L936 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L946 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1123 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1181 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1324 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1428 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1574 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1629 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1911 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L1999 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L2218 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2365 |
+| 目次 | L62 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L183 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L234 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L304 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L612 |
+| 関連ドキュメント | L751 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L761 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L938 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L996 |
+| TASK-FIX-14-1: console → electron-log 移行 | L1139 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L1243 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1389 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1444 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1726 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L1814 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L2033 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2180 |
+| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L2287 |
 
 ### references/llm-embedding.md
 
@@ -1870,8 +1870,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L796 |
-| 関連ドキュメント | L926 |
-| 変更履歴 | L936 |
+| 関連ドキュメント | L928 |
+| 変更履歴 | L938 |
 
 ### references/testing-accessibility.md
 

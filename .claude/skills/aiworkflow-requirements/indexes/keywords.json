@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-22T23:14:45.257Z",
-  "totalKeywords": 1237,
+  "generated": "2026-02-22T15:21:17.542Z",
+  "totalKeywords": 1233,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2848,27 +2848,6 @@
       "master-design.md",
       "patterns.md"
     ],
-    "IMP": [
-      "lessons-learned.md"
-    ],
-    "MODULE": [
-      "lessons-learned.md"
-    ],
-    "RESOLUTION": [
-      "lessons-learned.md"
-    ],
-    "GUARD": [
-      "lessons-learned.md"
-    ],
-    "repo": [
-      "lessons-learned.md"
-    ],
-    "設定ファイル整合": [
-      "lessons-learned.md"
-    ],
-    "ガード": [
-      "lessons-learned.md"
-    ],
     "IMPORT": [
       "lessons-learned.md"
     ],
@@ -3004,6 +2983,9 @@
     "を参照": [
       "lessons-learned.md"
     ],
+    "MODULE": [
+      "lessons-learned.md"
+    ],
     "NOT": [
       "lessons-learned.md"
     ],
@@ -3035,6 +3017,12 @@
       "lessons-learned.md"
     ],
     "SHARED": [
+      "lessons-learned.md"
+    ],
+    "RESOLUTION": [
+      "lessons-learned.md"
+    ],
+    "repo": [
       "lessons-learned.md"
     ],
     "モジュール解決エラー修正": [
