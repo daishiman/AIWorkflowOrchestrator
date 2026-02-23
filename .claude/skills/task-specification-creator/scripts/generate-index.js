@@ -10,7 +10,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync, readdirSync } from 'fs';
-import { join, resolve, basename } from 'path';
+import { join, resolve, basename, relative, isAbsolute } from 'path';
 
 // Phase名マッピング
 const PHASE_NAMES = {
@@ -92,7 +92,7 @@ function findPhaseFiles(workflowDir) {
 }
 
 // index.md生成
-function generateIndex(workflowDir, artifacts, phaseFiles) {
+function generateIndex(workflowDir, artifacts, phaseFiles, workflowDisplayPath) {
   const featureName = artifacts.feature;
   const createdDate = artifacts.created
     ? new Date(artifacts.created).toISOString().split('T')[0]
@@ -106,7 +106,7 @@ function generateIndex(workflowDir, artifacts, phaseFiles) {
 | ---- | ---- |
 | 機能名 | ${featureName} |
 | 作成日 | ${createdDate} |
-| ステータス | ${STATUS_DISPLAY[artifacts.status] || artifacts.status} |
+| ステータス | ${STATUS_DISPLAY[artifacts.status || 'in_progress'] || artifacts.status || 'in_progress'} |
 | 総Phase数 | 13 |
 
 ---
@@ -154,7 +154,7 @@ Phase 8 → Phase 9 → Phase 10 (Gate) → Phase 11 → Phase 12 → Phase 13 �
 \`\`\`bash
 # Phase完了処理
 node .claude/skills/task-specification-creator/scripts/complete-phase.js \\
-  --workflow ${workflowDir} --phase {{N}} \\
+  --workflow ${workflowDisplayPath} --phase {{N}} \\
   --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 \`\`\`
 
@@ -171,7 +171,15 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \\
     const phaseArtifacts = artifacts.phases?.[String(i)]?.artifacts || [];
     const artifactList =
       phaseArtifacts.length > 0
-        ? phaseArtifacts.map((a) => a.description || a.path).join(', ')
+        ? phaseArtifacts
+            .map((a) => {
+              if (typeof a === 'string') {
+                return a;
+              }
+              return a.description || a.path || '';
+            })
+            .filter(Boolean)
+            .join(', ')
         : '-';
     content += `| ${i} | ${artifactList} |\n`;
   }
@@ -202,6 +210,11 @@ function main() {
   }
 
   const workflowDir = resolve(process.cwd(), args.workflow);
+  const relPath = relative(process.cwd(), workflowDir);
+  const workflowDisplayPath =
+    relPath && !relPath.startsWith('..') && !isAbsolute(relPath)
+      ? relPath
+      : workflowDir;
 
   // ワークフローディレクトリ確認
   if (!existsSync(workflowDir)) {
@@ -238,7 +251,12 @@ function main() {
   const phaseFiles = findPhaseFiles(workflowDir);
 
   // index.md生成
-  const indexContent = generateIndex(workflowDir, artifacts, phaseFiles);
+  const indexContent = generateIndex(
+    workflowDir,
+    artifacts,
+    phaseFiles,
+    workflowDisplayPath
+  );
 
   // ファイル出力
   writeFileSync(indexPath, indexContent, 'utf-8');

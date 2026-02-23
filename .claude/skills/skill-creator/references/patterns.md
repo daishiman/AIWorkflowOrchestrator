@@ -11,7 +11,7 @@
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
 | ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載** |
+| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定** |
 | 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換** | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）** |
 | 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
@@ -875,6 +875,19 @@
 - **発見日**: 2026-02-21
 - **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001
 
+### [Phase 12] 全体監査と対象差分の分離報告（TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001）
+
+- **状況**: `audit-unassigned-tasks.js` はリポジトリ全体を監査するため、既存違反件数が多い場合に「今回作業で壊した」と誤読しやすい
+- **解決策**:
+  1. 監査結果を「全体ベースライン（既存）」と「今回対象ファイル」の2レイヤーで分離する
+  2. 今回対象ファイルは `sed`/`rg` で9見出しテンプレート準拠を個別検証する
+  3. 報告時に「全体違反件数」「今回対象の準拠可否」を同一表で併記し、責務境界を明確化する
+- **効果**: 既存負債と今回差分の切り分けが可能になり、誤った差し戻しや過剰修正を防止できる
+- **適用条件**: 未タスク監査を既存資産が多いリポジトリで実行するPhase 12 Task 4
+- **発見日**: 2026-02-22
+- **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
+- **クロスリファレンス**: [task-specification-creator/scripts/audit-unassigned-tasks.js](../../task-specification-creator/scripts/audit-unassigned-tasks.js), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
+
 ### [ビルド・環境] モノレポ三層モジュール解決整合パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
 
 - **状況**: モノレポ内パッケージ(@repo/shared)のサブパス import で tsc/vitest 両方が解決に失敗する
@@ -953,6 +966,16 @@
 - **対策**: spec-update-workflow に判定分岐（`completed` / `spec_created`）を明文化する
 - **発見日**: 2026-02-19
 - **関連タスク**: TASK-9A-C
+
+### [Phase12] 全体ベースライン違反の今回起因誤判定
+
+- **状況**: 全体監査で多数違反が出た際、対象タスクの新規差分と既存負債を分離せずに「今回の不備」と判定してしまう
+- **問題**: 本来不要な大規模修正を誘発し、今回タスクの完了判断が遅延する
+- **原因**: 監査スコープ（repo-wide）とレビュー対象（今回差分）の境界を定義していない
+- **教訓**: Phase 12報告では「全体件数」と「対象ファイル件数」を必ず別指標で提示する
+- **対策**: 監査テンプレートに「baseline / scope-of-change」2列を追加し、対象ファイルの個別検証結果を併記する
+- **発見日**: 2026-02-22
+- **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
 
 ### [Skill] 全リソース一括読み込み
 
