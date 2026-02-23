@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-22T15:21:17.542Z",
-  "totalKeywords": 1233,
+  "generated": "2026-02-22T23:18:32.809Z",
+  "totalKeywords": 1246,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -120,6 +120,7 @@
       "testing-playwright-e2e.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
+      "ui-ux-atoms-patterns.md",
       "ui-ux-components.md",
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
@@ -249,6 +250,7 @@
       "ui-history-data-types.md",
       "ui-history-design.md",
       "ui-ux-agent-execution.md",
+      "ui-ux-atoms-patterns.md",
       "ui-ux-components.md",
       "ui-ux-design-principles.md",
       "ui-ux-design-system.md",
@@ -369,6 +371,7 @@
       "ui-history-integration.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
+      "ui-ux-atoms-patterns.md",
       "ui-ux-components.md",
       "ui-ux-design-principles.md",
       "ui-ux-feature-components.md",
@@ -1829,7 +1832,8 @@
     "テスト戦略": [
       "database-implementation.md",
       "quality-e2e-testing.md",
-      "quality-requirements.md"
+      "quality-requirements.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "ベクトル検索実装": [
       "database-implementation.md"
@@ -2077,7 +2081,8 @@
     ],
     "apps": [
       "directory-structure.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "web": [
       "directory-structure.md"
@@ -2092,7 +2097,8 @@
     ],
     "desktop": [
       "directory-structure.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "local": [
       "directory-structure.md"
@@ -2111,7 +2117,8 @@
     ],
     "pnpm": [
       "directory-structure.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "workspace": [
       "directory-structure.md",
@@ -2922,7 +2929,8 @@
       "lessons-learned.md"
     ],
     "filter": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "を使用": [
       "lessons-learned.md"
@@ -3129,16 +3137,20 @@
       "lessons-learned.md"
     ],
     "プロジェクトルートから実行": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "失敗": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "から実行": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "成功": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-atoms-patterns.md"
     ],
     "SkillCreator": [
       "lessons-learned.md"
@@ -4190,6 +4202,13 @@
     "関連未タスク": [
       "testing-component-patterns.md"
     ],
+    "Atoms": [
+      "testing-component-patterns.md",
+      "ui-ux-atoms-patterns.md"
+    ],
+    "ATOMS": [
+      "testing-component-patterns.md"
+    ],
     "ダイアログテストパターン仕様": [
       "testing-dialog-patterns.md"
     ],
@@ -4365,6 +4384,39 @@
     ],
     "実装済": [
       "ui-ux-agent-execution.md"
+    ],
+    "コンポーネント実装パターンガイド": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "コンポーネント設計パターン": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "デザイントークン連携パターン": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "苦戦箇所と解決策": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "による実行": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "代替": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "アクセシビリティ実装知見": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "後方互換性パターン": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "Molecules": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "Organisms": [
+      "ui-ux-atoms-patterns.md"
+    ],
+    "実装への推奨事項": [
+      "ui-ux-atoms-patterns.md"
     ],
     "コンポーネント設計概要": [
       "ui-ux-components.md"

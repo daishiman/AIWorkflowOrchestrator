@@ -27,6 +27,18 @@
 | Molecules | FormField, SearchBar, Dropdown, Tooltip    |
 | Organisms | Header, Sidebar, DataTable, Modal, Card    |
 
+#### Atoms Apple HIG準拠パターン
+
+| コンポーネント | HIG準拠ポイント | 実装例 |
+|---|---|---|
+| StatusIndicator | macOS Activity Monitor のステータスドット | 5状態 + パルスアニメーション |
+| FilterChip | Finder/Mail のフィルタリングUI | 選択/非選択トグル、カウント表示 |
+| Badge | System通知バッジ（Dock等） | 数値表示、6色バリアント |
+| SkeletonCard | システム標準ローディング | パルスアニメーション + reduced-motion対応 |
+| SuggestionBubble | Siri/Spotlight サジェスション | 3サイズ、マイクロインタラクション |
+| EmptyState | 標準Empty State パターン | mood別テキストトーン、サジェスション |
+| RelativeTime | システム時刻表示パターン | 相対時間、locale対応 |
+
 ### コンポーネントの命名規則
 
 | ルール                             | 例                                             |
