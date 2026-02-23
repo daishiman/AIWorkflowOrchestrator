@@ -19,6 +19,7 @@
 | 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                              | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
 | 🔧 ビルド・環境        | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**                                                                          | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ** |
 | 🔄 型定義リファクタリング | deprecatedプロパティ段階的移行                                                                                                                                                    | ドキュメント偏重による実装検証省略                     |
+| 🎨 UI/フロントエンド   | **Props駆動Atoms設計**, **Record型バリアント定義**, **テーマ横断テスト（describe.each）**                                                                                          | **HTMLAttributes Props型衝突**, **Props命名の仕様-実装間ドリフト** |
 
 ## 成功パターン
 
@@ -926,6 +927,71 @@
 - **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
 - **クロスリファレンス**: [quality-requirements.md](../../aiworkflow-requirements/references/quality-requirements.md)
 
+### [UI] Props駆動Atoms設計（Store Hooks無限ループ対策）（TASK-UI-00-ATOMS）
+
+- **状況**: UIコンポーネント（Atoms層）の新規作成で、Zustand Storeに依存させるか検討
+- **アプローチ**: Atoms層をZustand Storeに依存させず、全コンポーネントをprops駆動で設計。状態管理はPages/Organisms層が担当
+- **結果**: P31（Store Hooks無限ループ）のリスクを完全排除。テスト記述が大幅に簡素化（Storeモック不要、props渡しのみで動作検証）
+- **適用条件**: Atomic Design の Atoms/Molecules 層のコンポーネント実装時
+- **発見日**: 2026-02-23
+- **関連タスク**: TASK-UI-00-ATOMS
+- **クロスリファレンス**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md), [arch-state-management.md](../../aiworkflow-requirements/references/arch-state-management.md)
+
+### [UI] Record型バリアント定義＋モジュールスコープ抽出（TASK-UI-00-ATOMS）
+
+- **状況**: 複数バリアントを持つコンポーネント（Badge 6色、SkeletonCard 3種等）で、スタイルマッピングの型安全性とパフォーマンスを両立
+- **アプローチ**: `Record<NonNullable<Props["variant"]>, string>` でスタイルマッピングを定義し、モジュールスコープに配置。新規バリアント追加時はRecord型に自動的にキーが追加される
+- **結果**:
+  - TypeScript型チェックで新規バリアント追加時のコンパイルエラー検出（スタイル定義漏れ防止）
+  - React.memoの効果最大化（レンダリング毎のオブジェクト再生成を防止）
+  - コードレビューで「このバリアントのスタイルは？」と探す手間が削減
+- **適用条件**: 2つ以上のバリアントを持つUIコンポーネント
+- **発見日**: 2026-02-23
+- **関連タスク**: TASK-UI-00-ATOMS
+
+```typescript
+// モジュールスコープに配置（レンダリング毎の再生成を防止）
+const variantStyles: Record<NonNullable<BadgeProps["variant"]>, string> = {
+  default: "bg-gray-100 text-gray-800",
+  primary: "bg-blue-100 text-blue-800",
+  success: "bg-green-100 text-green-800",
+  warning: "bg-yellow-100 text-yellow-800",
+  error: "bg-red-100 text-red-800",
+  info: "bg-indigo-100 text-indigo-800",
+};
+
+// 新しいバリアント "secondary" を Props に追加すると、
+// variantStyles に "secondary" キーがないとTypeScriptエラーが発生
+```
+
+### [Testing] テーマ横断テスト（describe.each パターン）（TASK-UI-00-ATOMS）
+
+- **状況**: 3テーマ（kanagawa-dragon/light/dark）対応コンポーネントのテストで、テーマ毎に同じテストケースを繰り返し記述
+- **アプローチ**: `describe.each(["light", "dark", "kanagawa-dragon"])` でテーマ毎のテストを自動生成。各テーマで `data-theme` 属性を設定し、CSS変数ベースのスタイルをテスト
+- **結果**:
+  - テーマ追加時にテストケースが自動的に増加（新テーマを配列に追加するだけ）
+  - 保守コスト最小化（テストロジックは1箇所のみ）
+  - テーマ毎の差分が可視化される（どのテーマで失敗したかが明確）
+- **適用条件**: デザイントークン（CSS変数）ベースのテーマ対応コンポーネント
+- **発見日**: 2026-02-23
+- **関連タスク**: TASK-UI-00-ATOMS
+
+```typescript
+describe.each(["light", "dark", "kanagawa-dragon"] as const)(
+  "Theme: %s",
+  (theme) => {
+    it(`should render with ${theme} theme`, () => {
+      const { container } = render(<Badge />, {
+        wrapper: ({ children }) => (
+          <div data-theme={theme}>{children}</div>
+        ),
+      });
+      expect(container.firstChild).toHaveAttribute("data-theme", theme);
+    });
+  }
+);
+```
+
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
@@ -1185,3 +1251,38 @@ it("削除されたプロパティにアクセスするとエラーになるこ�
 - **発見日**: 2026-02-20
 - **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
 - **関連未タスク**: UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（vitest-tsconfig-paths プラグインによる自動化）
+
+### [UI/TypeScript] HTMLAttributes Props型衝突（TASK-UI-00-ATOMS）
+
+- **状況**: Badge コンポーネントに `content?: string | number` Props を追加
+- **問題**: `React.HTMLAttributes<HTMLSpanElement>` の標準属性 `content?: string` と型衝突し、TS2430エラーが発生
+- **原因**: HTML標準属性と同名のカスタムPropsを定義したため、TypeScriptが型の互換性を検証できなかった
+- **教訓**: `Omit<React.HTMLAttributes<HTMLElement>, "conflictingProp">` で衝突属性を除外してからカスタム型を定義する
+- **発見日**: 2026-02-23
+- **関連タスク**: TASK-UI-00-ATOMS
+- **関連Pitfall**: [06-known-pitfalls.md#P46](../../rules/06-known-pitfalls.md)
+
+```typescript
+// ❌ TS2430エラー
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  content?: string | number; // HTML標準のcontent(string)と衝突
+}
+
+// ✅ Omitで衝突回避
+interface BadgeProps
+  extends Omit<React.HTMLAttributes<HTMLSpanElement>, "content"> {
+  content?: string | number;
+}
+```
+
+**衝突しやすい属性**: `content`, `color`, `translate`, `hidden`, `title`, `dir`, `slot`
+
+### [Phase3] Props命名の仕様-実装間ドリフト（TASK-UI-00-ATOMS）
+
+- **状況**: RelativeTime コンポーネントの自動更新間隔Propsで、仕様書では `updateInterval`、実装では `refreshInterval` と命名が乖離
+- **問題**: Phase 10レビュー時に命名不整合が発覚し、仕様書の修正が必要になった
+- **原因**: Phase 3設計レビューでProps命名の仕様-実装間突合チェックが不足していた
+- **教訓**: Phase 3にProps命名突合チェック項目を追加。仕様書と実装で同一用語を使用する
+- **対策**: Phase 3レビューチェックリストに「Props命名の仕様-実装一致確認」を追加
+- **発見日**: 2026-02-23
+- **関連タスク**: TASK-UI-00-ATOMS
