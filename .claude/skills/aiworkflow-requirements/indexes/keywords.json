@@ -1,8 +1,6 @@
 {
-  "generated": "2026-02-22T06:59:04.773Z",
-  "totalKeywords": 1226,
-  "generated": "2026-02-22T07:44:28.338Z",
-  "totalKeywords": 1228,
+  "generated": "2026-02-22T23:14:45.257Z",
+  "totalKeywords": 1237,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2850,6 +2848,27 @@
       "master-design.md",
       "patterns.md"
     ],
+    "IMP": [
+      "lessons-learned.md"
+    ],
+    "MODULE": [
+      "lessons-learned.md"
+    ],
+    "RESOLUTION": [
+      "lessons-learned.md"
+    ],
+    "GUARD": [
+      "lessons-learned.md"
+    ],
+    "repo": [
+      "lessons-learned.md"
+    ],
+    "設定ファイル整合": [
+      "lessons-learned.md"
+    ],
+    "ガード": [
+      "lessons-learned.md"
+    ],
     "IMPORT": [
       "lessons-learned.md"
     ],
@@ -2869,7 +2888,6 @@
       "lessons-learned.md"
     ],
     "契約不整合修正": [
-    "IMPORT": [
       "lessons-learned.md"
     ],
     "INTERFACE": [
@@ -2961,28 +2979,6 @@
     "の参照整合を検証": [
       "lessons-learned.md"
     ],
-    "未実施タスクの誤配置を検出": [
-      "lessons-learned.md"
-    ],
-    "completed": [
-      "lessons-learned.md"
-    ],
-    "配下に未着手": [
-      "lessons-learned.md"
-    ],
-    "未実施が混在していないか": [
-      "lessons-learned.md"
-    ],
-    "task": [
-      "lessons-learned.md"
-    ],
-    "workflow": [
-      "lessons-learned.md",
-      "spec-splitting-guidelines.md"
-    ],
-    "の参照整合を検証": [
-      "lessons-learned.md"
-    ],
     "命名の混在を検出": [
       "lessons-learned.md"
     ],
@@ -3006,9 +3002,6 @@
       "lessons-learned.md"
     ],
     "を参照": [
-      "lessons-learned.md"
-    ],
-    "MODULE": [
       "lessons-learned.md"
     ],
     "NOT": [
@@ -3042,12 +3035,6 @@
       "lessons-learned.md"
     ],
     "SHARED": [
-      "lessons-learned.md"
-    ],
-    "RESOLUTION": [
-      "lessons-learned.md"
-    ],
-    "repo": [
       "lessons-learned.md"
     ],
     "モジュール解決エラー修正": [

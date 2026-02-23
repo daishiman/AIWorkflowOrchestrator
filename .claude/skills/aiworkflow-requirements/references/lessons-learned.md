@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-23 | 1.19.0 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 教訓追加: CIガードスクリプト実装の苦戦箇所4件（正規表現パース、キー変換設計、typesVersionsスキップ、process.exitCodeテスタビリティ）。実装内容・成果物・関連ドキュメント更新テーブル追加 |
+| 2026-02-22 | 1.18.3 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 の苦戦箇所3件を追加（Phase 10 MINOR残置、Phase 12証跡同期、未タスク監査のベースライン混同）。同種課題向け簡潔解決手順（5ステップ）を追加 |
 | 2026-02-22 | 1.18.2 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 の苦戦箇所3件を追加（同名コンポーネント特定、`skill.id`/`skill.name`混同、偽成功ログの誤読）。同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-21 | 1.18.1 | UT-FIX-SKILL-IMPORT-INTERFACE-001 苦戦箇所2件追加（並列エージェント実行時のコンテキスト分離、completed-task配下のファイル移動時ステータス不整合） |
 | 2026-02-21 | 1.18.0 | UT-FIX-SKILL-IMPORT-INTERFACE-001 教訓追加（Phase 12ステータス未同期、旧参照パス残存、Vitest実行ディレクトリ差異）。同種課題向け簡潔解決手順を追加 |
@@ -61,6 +63,15 @@
 
 ## 目次
 
+0. [TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード](#task-imp-module-resolution-ci-guard-001-reposhared-4設定ファイル整合ciガード)
+   - [苦戦箇所1: Phase 10 MINORの残置（レポート仕様ドリフト）](#1-phase-10-minorの残置レポート仕様ドリフト)
+   - [苦戦箇所2: Phase 12証跡と仕様書本体状態の同期漏れリスク](#2-phase-12証跡と仕様書本体状態の同期漏れリスク)
+   - [苦戦箇所3: 未タスク監査結果のベースライン混同](#3-未タスク監査結果のベースライン混同)
+   - [苦戦箇所4: vitest.config.ts の正規表現パース](#4-vitestconfigts-の正規表現パース)
+   - [苦戦箇所5: キー形式の相互変換設計](#5-キー形式の相互変換設計)
+   - [苦戦箇所6: typesVersions の "." エントリスキップロジック](#6-typesversions-の--エントリスキップロジック)
+   - [苦戦箇所7: process.exitCode vs process.exit() のテスタビリティ](#7-processexitcode-vs-processexit-のテスタビリティ)
+   - [同種課題の簡潔解決手順（5ステップ・CIガード版）](#同種課題の簡潔解決手順5ステップciガード版)
 0. [UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正](#ut-fix-skill-import-id-mismatch-001-skillimportdialog-の-idname-契約不整合修正)
    - [苦戦箇所1: 同名コンポーネントの誤調査](#1-同名コンポーネントの誤調査)
    - [苦戦箇所2: `skill.id`/`skill.name` の文字列型混同](#2-skillidskillname-の文字列型混同)
@@ -177,6 +188,180 @@
    - [教訓3: IPC外リスナーの解除漏れを同時に防ぐ](#3-ipc外リスナーの解除漏れを同時に防ぐ)
 8. [関連ドキュメント](#関連ドキュメント)
 9. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+
+---
+
+## TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 |
+| 目的 | @repo/shared パッケージの4設定ファイル（exports, paths, alias, typesVersions）間の整合性をCIで自動検証するガードスクリプトの実装 |
+| 完了日 | 2026-02-22 |
+| ステータス | **完了** |
+| 関連Pitfall | P3, P4, P43 |
+| テスト | `scripts/__tests__/check-shared-module-sync.test.ts` 43件PASS |
+
+### 実装内容
+
+| 変更内容 | ファイル | 説明 |
+|----------|----------|------|
+| CIガードスクリプト | `scripts/check-shared-module-sync.ts` | 4パーサー + 5チェッカー + 3ヘルパー + 2レポーター = 14関数 |
+| テストスイート | `scripts/__tests__/check-shared-module-sync.test.ts` | 43テスト（8セクション: パーサー/チェッカー/レポーター/統合/ロバスト性/複合不整合/エッジケース/エラーハンドリング） |
+| CI設定 | `.github/workflows/ci.yml` | `check-module-sync` ジョブ追加（buildの前提条件の1つ） |
+
+### 苦戦箇所と解決策
+
+#### 1. Phase 10 MINORの残置（レポート仕様ドリフト）
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | コア検証は完了していたが、レポート仕様（修正ガイダンス/件数サマリー/`printSummary`シグネチャ）がPhase 2設計と一致しなかった |
+| **原因** | 検出ロジックとCI統合を優先し、出力フォーマット整備を後段に回した |
+| **解決策** | MINOR 3件を `TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001` に統合し、`docs/30-workflows/unassigned-task/` に起票してP3 3ステップを完了した |
+| **教訓** | Phase 10のMINORは「次回対応メモ」ではなく、同日中に未タスク化して追跡可能な状態にする |
+
+#### 2. Phase 12証跡と仕様書本体状態の同期漏れリスク
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 成果物が存在しても `phase-12-documentation.md` や関連台帳の状態同期が漏れるリスクがあった |
+| **原因** | 成果物作成と仕様更新が別工程で進み、最終同期チェックが弱かった |
+| **解決策** | `verify-all-specs` / `validate-phase-output` を同時実行し、成果物・仕様書本体・台帳の整合を機械検証した |
+| **教訓** | Phase 12は「成果物がある」だけでは不十分で、状態同期までを完了条件に含める必要がある |
+
+#### 3. 未タスク監査結果のベースライン混同
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `audit-unassigned-tasks.js` で全体違反（既存68件）が出るため、今回対象の未タスク品質判定と混同しやすかった |
+| **原因** | 全件監査結果をそのまま「今回不備」と解釈しやすい出力形式だった |
+| **解決策** | 全体監査と対象ファイル個別確認を分離し、`task-imp-module-sync-report-enhancement.md` のテンプレ準拠を個別確認した |
+| **教訓** | 監査は「全体健全性」と「今回差分」を分けて報告しないと、是正優先順位が崩れる |
+
+#### 4. vitest.config.ts の正規表現パース
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | vitest.config.ts はTypeScriptファイルであり、JSON.parse()できない。alias定義を正規表現で抽出する必要がある |
+| **原因** | `resolve(__dirname, "../../packages/shared/src/utils/index.ts")` のような関数呼び出しが値に含まれ、構造化パースが困難 |
+| **解決策** | `/"(@repo\/shared[^"]*)":\s*resolve\(\s*__dirname,\s*"([^"]+)"\s*\)/g` の正規表現で「キー: resolve(__dirname, "パス")」パターンのみ抽出。タブ/スペース混在、マルチライン、コメント挿入をテストで検証 |
+| **教訓** | TypeScript設定ファイルのパースでは、完全なAST解析ではなく正規表現による部分マッチが現実的。ただしダブルクォート前提・コメント非対応など制約を明文化し、テスト（#29-32）で境界条件を網羅する |
+
+**コード例**:
+
+```typescript
+const ALIAS_PATTERN = /"(@repo\/shared[^"]*)":\s*resolve\(\s*__dirname,\s*"([^"]+)"\s*\)/g;
+
+export function parseAliases(filePath: string): Map<string, string> {
+  const content = readFileSync(filePath, "utf-8");
+  const aliases = new Map<string, string>();
+  let match: RegExpExecArray | null;
+  while ((match = ALIAS_PATTERN.exec(content)) !== null) {
+    aliases.set(match[1], match[2]);
+  }
+  // 0件パース警告（alias キーワード存在時のみ）
+  if (aliases.size === 0 && content.includes("alias")) {
+    console.warn(`Warning: ${filePath} contains alias but no @repo/shared aliases were parsed`);
+  }
+  return aliases;
+}
+```
+
+#### 5. キー形式の相互変換設計
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 4設定ファイル間でキー形式が異なる: exports(`./utils`), paths(`@repo/shared/utils`), aliases(`@repo/shared/utils`), typesVersions(`utils`) |
+| **原因** | npm (exports), TypeScript (paths), Vitest (alias), npm typesVersions がそれぞれ独自のキー命名規則を採用 |
+| **解決策** | 3つのヘルパー関数を作成: `toModuleKey`(exports→paths/alias形式), `toSubpath`(paths/alias→exports形式), `toTypesVersionsKey`(exports→typesVersions形式)。変換ロジックはプレフィックス付加/除去のみでシンプルに保つ |
+| **教訓** | 異なるシステム間のキー変換は、双方向変換関数を対で定義し、チェッカー関数はこれらを通して比較する設計が拡張性を維持しやすい |
+
+**コード例**:
+
+```typescript
+// exports "./utils" → paths/alias "@repo/shared/utils"
+function toModuleKey(subpath: string): string {
+  return subpath === "." ? "@repo/shared" : `@repo/shared/${subpath.slice(2)}`;
+}
+
+// paths "@repo/shared/utils" → exports "./utils"
+function toSubpath(moduleKey: string): string {
+  return moduleKey === "@repo/shared" ? "." : `./${moduleKey.replace("@repo/shared/", "")}`;
+}
+
+// exports "./utils" → typesVersions "utils"（"." はスキップ対象）
+function toTypesVersionsKey(subpath: string): string {
+  return subpath.slice(2); // "./utils" → "utils"
+}
+```
+
+#### 6. typesVersions の "." エントリスキップロジック
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | exports のメインエントリ（"."）は typesVersions に登録不要だが、サブパス（"./utils", "./errors" 等）は必須。この判定ロジックの正確な実装 |
+| **原因** | package.json の typesVersions はサブパス用の型解決にのみ使用され、メインエントリの型は `types` フィールドで指定するため |
+| **解決策** | `checkExportsVsTypesVersions` 内で `if (subpath === ".") continue;` でメインエントリをスキップ。テスト（#22-23）で「.」スキップ動作を明示的に検証 |
+| **教訓** | npm パッケージ設定には「暗黙のルール」（メインエントリの型は types フィールドが担当）が存在する。チェッカー設計時にこれらの例外規則を先にリストアップし、テストで固定化することが重要 |
+
+#### 7. process.exitCode vs process.exit() のテスタビリティ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `process.exit(1)` を使うとテストプロセス自体が終了してしまい、テスト不可能 |
+| **原因** | `process.exit()` はプロセスを即座に終了させるため、Vitest のテストランナーごと終了する |
+| **解決策** | `process.exitCode = 1` を使用し、プロセスは正常終了させる。テストでは `expect(process.exitCode).toBe(1)` で検証。`afterEach` で `process.exitCode = undefined` にリセット |
+| **教訓** | CIスクリプトの終了コードテストでは、`process.exit()` ではなく `process.exitCode` プロパティを使用する。これによりmain関数の呼び出し後も制御がテストに戻る |
+
+**コード例**:
+
+```typescript
+// ❌ テスト不可能
+if (hasFailures) process.exit(1);
+
+// ✅ テスト可能
+if (hasFailures) process.exitCode = 1;
+
+// テストでの検証
+it("不整合がある場合 process.exitCode は 1", () => {
+  main();
+  expect(process.exitCode).toBe(1);
+});
+afterEach(() => { process.exitCode = undefined; });
+```
+
+### 同種課題の簡潔解決手順（5ステップ・CIガード版）
+
+1. Phase 10レビュー直後にMINORを分類し、同一責務なら1つの未タスクへ統合する。
+2. 未タスクは `docs/30-workflows/unassigned-task/` に作成し、`task-workflow.md` と関連仕様書への参照を同時更新する。
+3. Phase 12では成果物作成後に `verify-all-specs` と `validate-phase-output` を連続実行して、仕様書本体状態まで同期確認する。
+4. 未タスク監査は「全体ベースライン（既存違反）」と「今回対象ファイル」の2段で記録する。
+5. `lessons-learned.md` と完了タスク仕様書に苦戦箇所を即日反映し、再発防止手順を固定化する。
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| CIガードスクリプト | `scripts/check-shared-module-sync.ts` |
+| テスト（43件） | `scripts/__tests__/check-shared-module-sync.test.ts` |
+| CI設定 | `.github/workflows/ci.yml` |
+| 実装ガイド | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/outputs/phase-12/implementation-guide.md` |
+| 未タスク指示書 | `docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md` |
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| quality-requirements.md | 完了タスクセクション追加、派生未タスク参照リンク追加 (v1.9.0) |
+| architecture-monorepo.md | 完了タスクセクション追加、ステータス列追加 (v1.3.0) |
+| technology-devops.md | CIジョブテーブルに check-module-sync 追加 |
+| task-workflow.md | 残課題テーブル完了化、TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001 登録 (v1.52.0) |
+| LOGS.md (x2) | 完了ログ追加 |
+| SKILL.md (x2) | 変更履歴追加 (v8.59.0 / v9.81.0) |
+| topic-map.md | 再生成 (148ファイル, 1233キーワード) |
 
 ---
 

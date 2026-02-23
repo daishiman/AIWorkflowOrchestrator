@@ -321,6 +321,18 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | Travis CI       | 老舗で安定             | 無料枠が縮小               | 不採用 |
 | Jenkins         | 完全にカスタマイズ可能 | 自己ホスティングの運用コスト | 不採用 |
 
+### 主要CIジョブ構成（2026-02-22更新）
+
+| ジョブ名 | トリガー | 主な処理 | 依存関係 |
+| --- | --- | --- | --- |
+| `lint` | PR / `main` push | ESLint 実行 | なし |
+| `build-shared` | PR / `main` push | `@repo/shared` ビルド | なし |
+| `check-module-sync` | PR / `main` push | `exports` / `paths` / `alias` / `typesVersions` の3層整合検証 | なし |
+| `typecheck` | PR / `main` push | 全体型チェック | `build-shared` |
+| `test-shared` | PR / `main` push | shared テスト | `build-shared` |
+| `test-desktop` | PR / `main` push | desktop テスト（16 shard） | `build-shared` |
+| `build` | PR / `main` push | 最終ビルド検証 | `lint`, `typecheck`, `test-shared`, `test-desktop`, `build-shared`, `check-module-sync` |
+
 ### Codecov
 
 **採用理由**:
@@ -439,6 +451,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | TASK-CI-FIX-001 | ESLint 9 Flat Config移行 | 2026-01-29 | apps/backend ESLint 9対応完了 |
 | TASK-OPT-CI-TEST-PARALLEL-001 | GitHub Actions CI テスト並列実行最適化 | 2026-02-02 | シャード8→16、maxForks 2→4、fileParallelism有効化、キャッシュ導入 |
 | ENV-INFRA-001 | better-sqlite3 Node.jsバージョン不一致修正 | 2026-02-04 | pnpm store prune + install --forceによる再ビルド、CONTRIBUTING.md作成 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | 2026-02-22 | `scripts/check-shared-module-sync.ts` 新規作成、`check-module-sync` CIジョブ追加、43テスト全PASS |
 
 ---
 
@@ -476,6 +489,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 
 | 日付       | 変更内容                                                                     |
 | ---------- | ---------------------------------------------------------------------------- |
+| 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 3層整合CIガード完了タスク記録追加（check-module-syncジョブ） |
 | 2026-02-04 | ENV-INFRA-001: better-sqlite3バージョン不一致修正完了記録追加                |
 | 2026-02-02 | TASK-OPT-CI-TEST-PARALLEL-001: CI最適化パターン・完了タスクセクション追加    |
 | 2026-01-29 | TASK-CI-FIX-001: ESLint 9 Flat Config移行（apps/backend）完了チェック        |

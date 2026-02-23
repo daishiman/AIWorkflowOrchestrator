@@ -375,9 +375,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                  |
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.82.0** | **2026-02-22** | **再監査是正と互換性改善**: `scripts/generate-index.js` を改善し、`artifacts.json` の文字列配列成果物も index 出力可能にした（`status` 未設定時は `in_progress` フォールバック）。`TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001` の未タスク指示書をテンプレート準拠へ再構成し、`skill-feedback-report.md` を追補 |
+| **9.81.0** | **2026-02-22** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001完了反映**: @repo/shared 3層整合CIガードスクリプト追加。check-module-syncジョブCI統合。43テスト全PASS。quality-requirements.md/architecture-monorepo.md/technology-devops.md更新。LOGS.md完了記録追加 |
 | **9.80.0** | **2026-02-22** | **未タスク監査自動化を追加**: `scripts/audit-unassigned-tasks.js` を新規追加。`unassigned-task/` の9セクション準拠・命名規則違反・`completed-tasks/unassigned-task/` への未実施混在を一括監査可能にした。`references/commands.md`・`phase-11-12-guide.md`・`resource-map.md` に実行手順を追記 |
 | **9.79.0** | **2026-02-22** | **UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了反映**: Phase 12 Task 2実行記録。interfaces-agent-sdk-skill.md・task-workflow.md更新、LOGS.md 2ファイル・SKILL.md 2ファイル同期更新 |
-||||||| Stash base
 | **9.79.0** | **2026-02-22** | **TASK-UI-00-TOKENS Phase 1-12完了反映**: tokens.css Apple HIG System Colors light/darkテーマ定義、マイクロインタラクション変数、renderWithThemeテストヘルパー。28テスト全PASS、カバレッジ100%。LOGS.md完了記録追加 |
 | **9.77.0** | **2026-02-21** | **UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase実行知見反映**: patterns.mdにマルチエージェントPhase実行パターン3件追加（Phase依存順序、worktree環境代替手順、カバレッジスコープ解釈）。LOGS.md実行記録追加 |
 | **9.76.0** | **2026-02-21** | **worktree運用時のPhase 12再発防止を標準化**: `spec-update-workflow.md` に「worktree環境なのでStep 1-Aを先送り」の誤判断パターンを追加。`phase-11-12-guide.md` に未実施タスク誤配置検出コマンド（completed配下の未着手/未実施/進行中検出）を追記。`patterns.md` に成功パターン「worktreeでもStep 1-Aを先送りしない」を追加 |

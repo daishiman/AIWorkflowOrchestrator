@@ -217,6 +217,32 @@ jobs:
           path: apps/desktop/coverage/
           retention-days: 1
 
+  check-module-sync:
+    name: Module Sync Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Configure git to use HTTPS instead of SSH
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check module sync
+        run: pnpm tsx scripts/check-shared-module-sync.ts
+
   security:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -274,7 +300,15 @@ jobs:
     name: Build Check
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [lint, typecheck, test-shared, test-desktop, build-shared]
+    needs:
+      [
+        lint,
+        typecheck,
+        test-shared,
+        test-desktop,
+        build-shared,
+        check-module-sync,
+      ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4

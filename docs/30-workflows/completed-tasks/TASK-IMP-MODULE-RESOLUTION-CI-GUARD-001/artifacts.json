@@ -1,0 +1,205 @@
+{
+  "feature": "task-imp-module-resolution-ci-guard-001",
+  "created": "2026-02-22T21:23:07+09:00",
+  "lastUpdated": "2026-02-23T00:30:00+09:00",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-verification.md",
+          "description": "outputs/phase-1/requirements-verification.md"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-verification.md",
+          "description": "outputs/phase-2/design-verification.md"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-report.md",
+          "description": "outputs/phase-3/design-review-report.md"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "test",
+          "path": "scripts/__tests__/check-shared-module-sync.test.ts",
+          "description": "scripts/__tests__/check-shared-module-sync.test.ts"
+        },
+        {
+          "type": "code",
+          "path": "scripts/check-shared-module-sync.ts",
+          "description": "scripts/check-shared-module-sync.ts"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-results-red.md",
+          "description": "outputs/phase-4/test-results-red.md"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "scripts/check-shared-module-sync.ts",
+          "description": "scripts/check-shared-module-sync.ts"
+        },
+        {
+          "type": "config",
+          "path": ".github/workflows/ci.yml",
+          "description": ".github/workflows/ci.yml"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/test-results-green.md",
+          "description": "outputs/phase-5/test-results-green.md"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "test",
+          "path": "scripts/__tests__/check-shared-module-sync.test.ts",
+          "description": "scripts/__tests__/check-shared-module-sync.test.ts"
+        },
+        {
+          "type": "code",
+          "path": "scripts/check-shared-module-sync.ts",
+          "description": "scripts/check-shared-module-sync.ts"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-results.md",
+          "description": "outputs/phase-6/test-expansion-results.md"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "outputs/phase-7/coverage-report.md"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "scripts/check-shared-module-sync.ts",
+          "description": "scripts/check-shared-module-sync.ts"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "outputs/phase-8/refactoring-report.md"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "outputs/phase-9/quality-report.md"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/review-report.md",
+          "description": "outputs/phase-10/review-report.md"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md",
+          "description": "docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "outputs/phase-11/manual-test-report.md"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "outputs/phase-12/documentation-changelog.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "outputs/phase-12/unassigned-task-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "outputs/phase-12/skill-feedback-report.md"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "issueNumber": 845,
+    "taskId": "TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001"
+  }
+}
