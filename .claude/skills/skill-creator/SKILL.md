@@ -134,21 +134,21 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 
 ## 機能別ガイド
 
-| 機能                         | 参照先                                         |
-| ---------------------------- | ---------------------------------------------- |
-| **問題発見フレームワーク**   | references/problem-discovery-framework.md      |
-| **ドメインモデリング**       | references/domain-modeling-guide.md            |
-| **Clean Architecture**       | references/clean-architecture-for-skills.md    |
-| **スクリプト/LLM分担**       | references/script-llm-patterns.md              |
-| **クロススキル参照パターン** | references/cross-skill-reference-patterns.md   |
-| **外部CLIエージェント統合**  | references/external-cli-agents-guide.md        |
-| スクリプト生成               | references/script-types-catalog.md             |
-| ワークフローパターン         | references/workflow-patterns.md                |
-| オーケストレーション         | references/orchestration-guide.md              |
-| 実行モード選択               | references/execution-mode-guide.md             |
-| ドキュメント生成             | references/api-docs-standards.md               |
-| 自己改善サイクル             | references/self-improvement-cycle.md           |
-| ライブラリ管理               | references/library-management.md               |
+| 機能                         | 参照先                                       |
+| ---------------------------- | -------------------------------------------- |
+| **問題発見フレームワーク**   | references/problem-discovery-framework.md    |
+| **ドメインモデリング**       | references/domain-modeling-guide.md          |
+| **Clean Architecture**       | references/clean-architecture-for-skills.md  |
+| **スクリプト/LLM分担**       | references/script-llm-patterns.md            |
+| **クロススキル参照パターン** | references/cross-skill-reference-patterns.md |
+| **外部CLIエージェント統合**  | references/external-cli-agents-guide.md      |
+| スクリプト生成               | references/script-types-catalog.md           |
+| ワークフローパターン         | references/workflow-patterns.md              |
+| オーケストレーション         | references/orchestration-guide.md            |
+| 実行モード選択               | references/execution-mode-guide.md           |
+| ドキュメント生成             | references/api-docs-standards.md             |
+| 自己改善サイクル             | references/self-improvement-cycle.md         |
+| ライブラリ管理               | references/library-management.md             |
 
 ---
 
@@ -186,6 +186,7 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 | Version    | Date           | Changes                                                                                                                                                                                                                                                                                                            |
 | ---------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **10.14.0** | **2026-02-23** | **TASK-UI-00-ATOMS パターン反映**: references/patterns.md にUI/フロントエンドドメイン成功パターン3件（Props駆動設計・Record型バリアント・テーマ横断テスト）+ 失敗パターン2件（HTMLAttributes型衝突・Props命名ドリフト）を追加 |
+| **10.13.1** | **2026-02-23** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 パターン追加**: patterns.md に成功パターン2件（CIガード自動検証、正規表現TS設定パーサー）+ 失敗パターン1件（AST解析過剰設計）を追加。クイックナビゲーション更新 |
 | **10.13.0** | **2026-02-22** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 パターン反映**: references/patterns.md の Phase 12 ドメインに成功パターン「全体監査と対象差分の分離報告」と失敗パターン「全体ベースライン違反の今回起因誤判定」を追加。既存違反と今回差分の切り分け手順（baseline/scope-of-change）を明文化 |
 | **10.12.0** | **2026-02-22** | **UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 パターン反映**: references/patterns.md に成功パターン「Renderer層 id→name 契約変換」と失敗パターン「Renderer層での識別子混同（id/name）」を追加。クイックナビゲーションの IPC・アーキテクチャ行を更新 |
 | **10.11.2** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-INTERFACE-001 再監査パターン反映**: references/patterns.md に Phase 12 成功パターン「成果物ログとStep判定の同期（先送り禁止）」を追加。クイックナビに同パターンを反映し、失敗パターン「Step2該当なし誤判定 / Phase 13先送り記載」を追記 |

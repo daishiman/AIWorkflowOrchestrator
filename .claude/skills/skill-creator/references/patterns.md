@@ -17,7 +17,7 @@
 | 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
 | 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計** | -                                                      |
 | 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                              | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
-| 🔧 ビルド・環境        | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**                                                                          | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ** |
+| 🔧 ビルド・環境        | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**, **CIガードスクリプトによるモノレポ設定ファイル整合性自動検証**, **正規表現ベースTypeScript設定ファイルパーサー** | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ**, **TypeScript設定ファイル完全AST解析の試行** |
 | 🔄 型定義リファクタリング | deprecatedプロパティ段階的移行                                                                                                                                                    | ドキュメント偏重による実装検証省略                     |
 | 🎨 UI/フロントエンド   | **Props駆動Atoms設計**, **Record型バリアント定義**, **テーマ横断テスト（describe.each）**                                                                                          | **HTMLAttributes Props型衝突**, **Props命名の仕様-実装間ドリフト** |
 
@@ -678,11 +678,11 @@
 
 - **Phase 12での苦戦箇所と解決策**:
 
-| 苦戦箇所 | 原因 | 解決策 |
-|----------|------|--------|
-| CLI環境でのPhase 11手動テスト不可 | Claude Code環境ではElectronアプリ起動・DevTools操作ができない | 自動テスト（116テスト）で代替検証を実施。DevToolsコマンドをドキュメントに記載し、開発者向けリファレンスとして提供 |
+| 苦戦箇所                                 | 原因                                                                 | 解決策                                                                                                                                |
+| ---------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| CLI環境でのPhase 11手動テスト不可        | Claude Code環境ではElectronアプリ起動・DevTools操作ができない        | 自動テスト（116テスト）で代替検証を実施。DevToolsコマンドをドキュメントに記載し、開発者向けリファレンスとして提供                     |
 | コンテキスト分割によるPhase 12整合性管理 | コンテキスト制限でセッション分割。前セッションの成果物状態追跡が困難 | セッション開始時に `Glob` でoutputs/配下の成果物一覧を確認。`TaskOutput` でバックグラウンドエージェント完了を待ってから整合性チェック |
-| Markdownコードブロック内のPrettier干渉 | PostToolUseフックのPrettierがMarkdown内のTypeScript型表記を自動変形 | バックグラウンドエージェント内で修正ステップを追加。ドキュメント作成時はPrettier影響の検証を後処理に組み込む |
+| Markdownコードブロック内のPrettier干渉   | PostToolUseフックのPrettierがMarkdown内のTypeScript型表記を自動変形  | バックグラウンドエージェント内で修正ステップを追加。ドキュメント作成時はPrettier影響の検証を後処理に組み込む                          |
 
 ### [Testing] Store Hook テスト実装パターン（renderHook方式）（UT-STORE-HOOKS-TEST-REFACTOR-001）
 
@@ -696,22 +696,22 @@
 
 - **パターン対応表**:
 
-| 対象 | 旧パターン（非推奨） | 新パターン（推奨） |
-|---|---|---|
-| 状態取得 | `store.getState().field` | `renderHook(() => useField())` |
-| 状態変更 | `store.setState({...})` | `act(() => useAppStore.setState({...}))` |
-| アクション実行 | `store.getState().action()` | `renderHook` + `act()` |
-| 非同期アクション | `await action()` | `await act(async () => { ... })` |
+| 対象             | 旧パターン（非推奨）        | 新パターン（推奨）                       |
+| ---------------- | --------------------------- | ---------------------------------------- |
+| 状態取得         | `store.getState().field`    | `renderHook(() => useField())`           |
+| 状態変更         | `store.setState({...})`     | `act(() => useAppStore.setState({...}))` |
+| アクション実行   | `store.getState().action()` | `renderHook` + `act()`                   |
+| 非同期アクション | `await action()`            | `await act(async () => { ... })`         |
 
 - **テストカテゴリ分類**（代表的な5カテゴリ）:
 
-| カテゴリ | 検証内容 | 対応するCAT |
-|----------|----------|------------|
-| 初期値検証 | セレクタが正しいデフォルト値を返すか | CAT-01 |
-| 状態変更検証 | act() + setState 後にセレクタが正しく更新されるか | CAT-02, CAT-04, CAT-08 |
-| 参照安定性 | rerender() 後もアクション関数の参照が ===  で同一か | CAT-05, CAT-10 |
-| 無限ループ防止 | useEffect依存配列にアクションを含めてもrenderCount < 10か | CAT-07, CAT-16 |
-| 再レンダー最適化 | 無関係なフィールド変更でセレクタが再レンダーされないか | CAT-06, CAT-11 |
+| カテゴリ         | 検証内容                                                  | 対応するCAT            |
+| ---------------- | --------------------------------------------------------- | ---------------------- |
+| 初期値検証       | セレクタが正しいデフォルト値を返すか                      | CAT-01                 |
+| 状態変更検証     | act() + setState 後にセレクタが正しく更新されるか         | CAT-02, CAT-04, CAT-08 |
+| 参照安定性       | rerender() 後もアクション関数の参照が === で同一か        | CAT-05, CAT-10         |
+| 無限ループ防止   | useEffect依存配列にアクションを含めてもrenderCount < 10か | CAT-07, CAT-16         |
+| 再レンダー最適化 | 無関係なフィールド変更でセレクタが再レンダーされないか    | CAT-06, CAT-11         |
 
 - **結果**: getState()パターン48件 → renderHookパターン114件（+export検証23件）に移行。Reactサブスクリプション経路の検証、参照安定性テスト、無限ループ検出が可能に
 - **適用条件**: Zustand Store で個別セレクタHookを使用し、React コンポーネントから利用するテストを書く場合。特に useEffect 依存配列にアクション関数を含める場合は無限ループ防止テスト（CAT-07/16）が必須。
@@ -723,9 +723,9 @@
 
 - **Phase 12での苦戦箇所と解決策**:
 
-| 苦戦箇所 | 原因 | 解決策 |
-|----------|------|--------|
-| Step 2を「該当なし」と誤判定 | テストリファクタリングはインターフェース変更を伴わないため、Step 2不要と判断しがち | テストのみの変更でも、テスト戦略やテストパターンの変更は仕様書（development-guidelines.md等）に記録すべき。Step 2の判断基準に「テスト戦略変更」を含める |
+| 苦戦箇所                                 | 原因                                                                                                            | 解決策                                                                                                                                                        |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Step 2を「該当なし」と誤判定             | テストリファクタリングはインターフェース変更を伴わないため、Step 2不要と判断しがち                              | テストのみの変更でも、テスト戦略やテストパターンの変更は仕様書（development-guidelines.md等）に記録すべき。Step 2の判断基準に「テスト戦略変更」を含める       |
 | 実装ガイドのテストカテゴリテーブル不整合 | Phase 4でテストカテゴリ（CAT-01〜CAT-05）を定義し、Phase 6で拡充したが、実装ガイドのテーブルがPhase 4時点のまま | Phase 6（テスト拡充）完了後に、implementation-guide.md Part 2のテストカテゴリテーブルを必ず再確認・更新する。テスト数やカテゴリ構成が変わった場合は即座に反映 |
 
 ### [Test] SDKテスト有効化モック2段階リセット
@@ -760,9 +760,9 @@
   - 非同期対応: `await act(async () => { fireEvent.click(el) })`でPromise microtask flushを保証
 - **パターン選択基準**:
 
-| テスト環境 | イベントAPI | 理由 |
-|---|---|---|
-| happy-dom（デフォルト） | `fireEvent` | Symbol操作不要、軽量・高速 |
+| テスト環境                  | イベントAPI | 理由                                    |
+| --------------------------- | ----------- | --------------------------------------- |
+| happy-dom（デフォルト）     | `fireEvent` | Symbol操作不要、軽量・高速              |
 | jsdom（ディレクティブ指定） | `userEvent` | 完全なDOM API、アクセシビリティ検証向き |
 
 - **結果**: 環境固有の制約を理解し、適切なAPIを選択することでテスト安定性を確保
@@ -853,6 +853,7 @@
 - **発見日**: 2026-02-13
 - **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
 - **クロスリファレンス**: [unassigned-task-guidelines.md](../../task-specification-creator/references/unassigned-task-guidelines.md)
+
 ---
 
 ### [Phase 12] 実行仕様書ステータス同期（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
@@ -992,6 +993,33 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 );
 ```
 
+### [CI/ビルド] CIガードスクリプトによるモノレポ設定ファイル整合性自動検証（TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001）
+
+- **状況**: モノレポの共有パッケージ（@repo/shared）で exports/paths/alias/typesVersions の4設定ファイルの同期漏れが発生し、228件のエラーを引き起こした
+- **アプローチ**:
+  1. **パーサー分離**: 各設定ファイル（JSON/TypeScript）に専用パーサーを作成（parseExports, parsePaths, parseAliases, parseTypesVersions）
+  2. **双方向チェック**: exports→paths と paths→exports の両方向で整合性を検証。「追加忘れ」と「削除忘れ」を同時検出
+  3. **キー変換ヘルパー**: 4種類のキー形式（`./utils`, `@repo/shared/utils`, `utils`）の相互変換を3ヘルパー関数で標準化
+  4. **CIジョブ統合**: `check-module-sync` ジョブを build の前提条件として配置し、不整合時は build をブロック
+  5. **process.exitCode**: `process.exit(1)` ではなく `process.exitCode = 1` でテスタビリティを確保
+- **結果**: CI上で設定ファイル不整合を即座に検出。43テストで5チェック×正常/異常/エッジケースを網羅
+- **適用条件**: モノレポで共有パッケージの設定ファイル間整合性を自動保証したい場合
+- **発見日**: 2026-02-22
+- **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
+- **クロスリファレンス**: [quality-requirements.md](../../aiworkflow-requirements/references/quality-requirements.md), [architecture-monorepo.md](../../aiworkflow-requirements/references/architecture-monorepo.md), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
+
+### [CI/ビルド] 正規表現ベースTypeScript設定ファイルパーサー（TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001）
+
+- **状況**: vitest.config.ts の `resolve.alias` 設定を抽出する必要があるが、TypeScriptファイルのためJSON.parse()が不可能
+- **アプローチ**:
+  1. `resolve(__dirname, "path")` パターンに特化した正規表現を設計
+  2. ダブルクォート前提・シングルクォート非対応・コメント非対応の制約を明文化
+  3. タブ/スペース混在、マルチライン、0件パース時の警告出力をテストで固定化（#29-32）
+  4. 正規表現の `lastIndex` リセット問題を回避するため、都度 `exec` ループを使用
+- **結果**: vitest.config.ts から @repo/shared 関連のalias定義を正確に抽出。制約はテストで明示的に文書化
+- **適用条件**: TypeScript設定ファイル（vitest.config.ts, jest.config.ts等）から特定パターンの設定値を抽出する場合
+- **発見日**: 2026-02-22
+- **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
@@ -1179,6 +1207,15 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-02-13
 - **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
 
+### [CI/ビルド] TypeScript設定ファイルの完全AST解析の試行
+
+- **状況**: vitest.config.ts のalias設定を抽出するために、TypeScript ASTパーサー（ts-morph等）の使用を検討
+- **問題**: 外部依存の追加、ビルド時間の増加、メンテナンスコストが CIガードスクリプトの目的（設定値の文字列抽出）に対して過大
+- **原因**: 完全な型安全パースを目指しすぎ、実用的な正規表現アプローチを最初から除外した
+- **教訓**: CIガードスクリプトは「設定値の文字列比較」が目的であり、完全なAST解析は不要。正規表現の制約（ダブルクォート前提等）をテストで明文化すれば十分。YAGNI原則を適用する
+- **発見日**: 2026-02-22
+- **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
+
 ---
 
 ## ガイドライン
@@ -1208,10 +1245,12 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 **コンテキスト**: TypeScript型定義で `@deprecated` マーク付きプロパティを推奨代替に移行し、定義を削除する
 
 **課題**:
+
 - 同名プロパティ（`name`, `lastUpdated`）が複数の型に存在し、単純な文字列置換では誤修正のリスクが高い
 - 永続化互換のため残すべきプロパティと削除すべきプロパティの判定が必要
 
 **解決策**:
+
 1. **スコープ分離**: 削除対象の型を明確にし、同名プロパティが存在する他の型（`SkillImportConfig.lastUpdated`, `StorageMetadata.lastUpdated`）をスコープ外として明示
 2. **TDD型レベルテスト**: `@ts-expect-error` ディレクティブで「プロパティが存在しないこと」を型レベルで検証
 3. **型スコープ限定grep**: `Anchor` 型スコープに限定して参照箇所を検索し、汎用プロパティ名の誤検出を回避
@@ -1239,6 +1278,7 @@ it("削除されたプロパティにアクセスするとエラーになるこ�
 **原因**: ドキュメント生成の完了を「実装完了」と混同。並列エージェントの出力に対する品質ゲートが未設定
 
 **教訓**:
+
 1. **コード検証ファースト**: ドキュメント生成前に、テスト・型チェック・grepでコード変更の完了を確認する
 2. **並列エージェント後の統合検証**: 全エージェント完了後に成果物一覧と整合性チェックを実施
 3. **品質ゲートの明示化**: Phase 5（実装）完了の判定基準をテスト結果で定義し、Phase 6以降はその結果を前提とする
