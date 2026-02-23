@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-22 - TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 baseline/scope split pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md に Phase 12 成功パターン「全体監査と対象差分の分離報告」を追加し、失敗パターン「全体ベースライン違反の今回起因誤判定」を追記。`audit-unassigned-tasks` の repo-wide 結果を baseline（既存）と scope-of-change（今回差分）で切り分ける運用を標準化。
+
+---
+
 ## [2026-02-21 - UT-FIX-SKILL-IMPORT-INTERFACE-001 Phase 12 step-sync pattern]
 
 - **Agent**: skill-creator (update)

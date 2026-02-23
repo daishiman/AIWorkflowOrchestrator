@@ -701,6 +701,33 @@ vitest.config.tsで設定済みの閾値:
 
 ## 完了タスク
 
+### TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: `@repo/shared` モジュール解決3層整合CIガード（2026-02-22完了）
+
+**概要**: `@repo/shared` サブパスの3層整合（`exports` / `paths` / `alias`）をCIで自動検証するガードスクリプトを追加。GitHub Actions の `check-module-sync` ジョブとして統合。
+
+**品質ゲート達成状況**:
+
+| ゲート項目 | 結果 | 詳細 |
+| --- | --- | --- |
+| テスト | 43/43 PASS | 全テストケース成功 |
+| Line Coverage | 98.38% | 推奨基準90%超過 |
+| Branch Coverage | 96.96% | 推奨基準70%超過 |
+| Function Coverage | 100% | 最高基準達成 |
+
+**主要成果**:
+
+| 項目 | 結果 |
+| --- | --- |
+| CIガードスクリプト | `scripts/check-shared-module-sync.ts` 新規作成 |
+| CIジョブ | `check-module-sync` ジョブをGitHub Actionsに追加 |
+| 検証内容 | exports↔paths整合、exports↔alias整合、定義順序検証、ソースファイル存在確認 |
+| Issue | #845 |
+
+**派生未タスク**:
+- [TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001](../../../../docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md): レポート拡充（修正ガイダンス・サマリー数値・printSummary設計準拠）— Phase 10 MINOR指摘3件統合
+
+---
+
 ### TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決整合（2026-02-20完了）
 
 **概要**: `@repo/shared` サブパス解決で `exports` / `paths` / `alias` の三層整合ルールを定義し、回帰防止テストを追加。TypeScript型チェックエラー228件を0件に修正。
@@ -982,6 +1009,7 @@ vitest.config.tsで設定済みの閾値:
 
 | Version | Date       | Changes                                                                                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.9.0   | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 3層整合CIガード完了タスク記録追加（43テスト全PASS、Line 98.38%/Branch 96.96%/Function 100%、scripts/check-shared-module-sync.ts、check-module-sync CIジョブ） |
 | 1.8.1   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001記録強化: モジュール解決整合性テストセクション追加（3スイート分類表・品質ゲート項目表・サブパス追加時必須テスト要件7ステップ）。完了タスク記録に品質ゲート達成状況テーブル（typecheck 228→0、vitest 224/224 PASS）、変更規模（+353行/17ファイル）、未タスク検出（UT-FIX-TS-VITEST-TSCONFIG-PATHS-001）を追記 |
 | 1.8.0   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス三層整合ルールを追加（`exports`/`paths`/`alias` 同時更新、補助型宣言取り込み確認、整合テスト維持） |
 | 1.7.0   | 2026-02-19 | TASK-FIX-10-1: 未処理Promise拒否検知ルールを追加（dangerouslyIgnoreUnhandledErrors未設定を明文化）。`@repo/shared` alias 管理ルールと未タスク `task-imp-vitest-alias-sync-automation-001` を追記 |

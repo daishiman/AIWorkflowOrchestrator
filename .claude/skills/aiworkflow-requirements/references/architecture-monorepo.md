@@ -208,11 +208,11 @@ paths マッピングでは解決先がどちらのパターンかを正確に�
 
 #### 関連未タスク
 
-| 未タスクID | 概要 | 仕様書パス |
-| --- | --- | --- |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | vitest-tsconfig-paths プラグイン導入による alias 手動同期の自動化 | `docs/30-workflows/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md` |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理） | `docs/30-workflows/unassigned-task/task-refactor-shared-source-structure-consolidation.md` |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | `docs/30-workflows/unassigned-task/task-imp-module-resolution-ci-guard.md` |
+| 未タスクID | 概要 | 仕様書パス | ステータス |
+| --- | --- | --- | --- |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | vitest-tsconfig-paths プラグイン導入による alias 手動同期の自動化 | `docs/30-workflows/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md` | 未着手 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理） | `docs/30-workflows/unassigned-task/task-refactor-shared-source-structure-consolidation.md` | 未着手 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/` | **完了**（2026-02-22） |
 
 ---
 
@@ -288,6 +288,26 @@ paths マッピングでは解決先がどちらのパターンかを正確に�
 
 ## 完了タスク
 
+### TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001（2026-02-22完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 |
+| 概要 | `@repo/shared` サブパス解決の3層整合（`exports` / `paths` / `alias`）をCIで自動検証するガードスクリプト追加 |
+| 成果物 | `scripts/check-shared-module-sync.ts`（検証スクリプト）、GitHub Actions `check-module-sync` ジョブ |
+| テスト | 43テスト全PASS（Line 98.38%, Branch 96.96%, Function 100%） |
+| Issue | #845 |
+
+#### 実装時の苦戦箇所と対処
+
+| 苦戦箇所 | 原因 | 対処 |
+| --- | --- | --- |
+| Phase 10 MINOR（M1/M2/M3）の残置 | コア検証機能の実装を優先し、レポート表現（修正ガイダンス/件数サマリー/シグネチャ整合）が後回しになった | 派生未タスク `TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001` を起票し、`docs/30-workflows/unassigned-task/` に登録してP3 3ステップ（指示書/残課題表/参照リンク）を完了 |
+| Phase 12証跡と仕様書本体状態の不一致リスク | 成果物生成が先行すると、仕様書本体のステータス同期が漏れやすい | Phase 12で `verify-all-specs` / `validate-phase-output` を実行し、成果物・仕様書・台帳の3点を同時確認 |
+| 未タスク監査結果の誤読リスク | リポジトリ全体には既存の未準拠ファイルが多く、対象タスク由来の課題と混同しやすい | 監査結果を「全体ベースライン」と「今回対象ファイル」に分離し、対象（`task-imp-module-sync-report-enhancement.md`）のみテンプレート準拠を個別確認 |
+
+---
+
 ### TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001（2026-02-20完了）
 
 | 項目 | 内容 |
@@ -302,6 +322,8 @@ paths マッピングでは解決先がどちらのパターンかを正確に�
 
 | バージョン | 日付       | 変更内容                                                                 |
 | ---------- | ---------- | ------------------------------------------------------------------------ |
+| v1.4.0     | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 の実装苦戦箇所と対処を追加（Phase 10 MINOR統合未タスク化、Phase 12証跡同期、未タスク監査のベースライン分離） |
+| v1.3.0     | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: 3層整合CIガード完了タスク記録追加。関連未タスクテーブルにステータス列追加、TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001を完了に更新 |
 | v1.2.0     | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス解決運用を追加（exports/paths/alias 三層整合、ソース直接参照時の補助型宣言取り込み） |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: 全コードブロックを表形式・文章に変換                |
 | v1.0.0     | -          | 初版作成                                                                 |
