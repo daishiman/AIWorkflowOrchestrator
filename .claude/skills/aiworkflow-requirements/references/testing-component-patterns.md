@@ -737,10 +737,113 @@ expect(dragon.getByRole("status")).toBeInTheDocument();
 
 ---
 
+## 13. Atoms コンポーネントテストパターン（TASK-UI-00-ATOMS）
+
+> **実装完了**: 2026-02-23（TASK-UI-00-ATOMS）
+
+### 13.1 Atoms共通テストパターン
+
+Atoms層（基本UIコンポーネント）は外部状態（Zustand Store等）に依存せず、propsのみで動作するため、テストが簡素化される。以下の共通パターンを適用する。
+
+| パターン | 説明 | 例 |
+|---|---|---|
+| **Props駆動テスト** | Atoms層はZustand Storeに依存せず、propsのみで動作するため、モッキング不要で純粋な入出力検証が可能 | `render(<StatusIndicator status="success" />)` |
+| **CSS変数テストアサーション** | `bg-[var(--status-primary)]` のようなTailwind arbitrary valuesのクラス名検証方法 | `expect(el).toHaveClass("bg-[var(--status-primary)]")` |
+| **テーマ横断テスト** | `describe.each(["light", "dark", "kanagawa-dragon"])` パターンで全テーマを自動検証 | セクション 12 の `renderWithAllThemes` 参照 |
+| **displayName検証** | React DevTools用のコンポーネント識別子を検証 | `expect(Component.displayName).toBe("ComponentName")` |
+
+### 13.2 コンポーネント別必須テストケース
+
+| コンポーネント | 必須テストケース | テスト数 |
+|---|---|---|
+| **StatusIndicator** | status色（success/warning/error/info/pending/idle）、pulseアニメーション、サイズVariant（sm/md/lg）、aria-label | 25 |
+| **FilterChip** | isSelected切替、disabled、count表示、icon、キーボード操作（Enter/Space） | 25 |
+| **Badge** | variant 6種（primary/secondary/success/warning/error/info）、size（sm/md/lg）、content（string/number）、後方互換children | 23（新規）+ 17（後方互換）= 40 |
+| **SkeletonCard** | variant 3種（default/compact/detailed）、animate制御、aria-busy、role="status" | 18 |
+| **SuggestionBubble** | size 3種（sm/md/lg）、ホバー色変化、disabled、キーボード操作（Enter/Space） | 21 |
+| **EmptyState** | mood 5種（neutral/confused/sad/encouraged/sleepy）、suggestions配列、compact、action（Node/Object両形式）、後方互換onActionClick | 20（新規）+ 6（後方互換）= 26 |
+| **RelativeTime** | フォーマット精度（秒/分/時/日/週/月/年）、自動更新（setInterval）、locale、prefix | 27 |
+
+**合計**: 156 Unit Tests + 7 Theme Tests = 163 Tests
+
+### 13.3 タイマーテストパターン（RelativeTime向け）
+
+RelativeTimeコンポーネントは `setInterval` で定期的に表示を更新する。タイマーテストでは `vi.useFakeTimers()` + `vi.advanceTimersByTime()` パターンを使用する。
+
+```typescript
+// ❌ NG: 無限ループ
+vi.runAllTimers();
+
+// ✅ OK: 指定時間だけ進める
+beforeEach(() => {
+  vi.useFakeTimers();
+});
+
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
+
+it("自動更新される", () => {
+  const pastDate = new Date(Date.now() - 65000); // 1分5秒前
+  render(<RelativeTime date={pastDate} />);
+
+  expect(screen.getByText("1 minute ago")).toBeInTheDocument();
+
+  // 1分進める（1分5秒前 → 2分5秒前）
+  act(() => {
+    vi.advanceTimersByTime(60000);
+  });
+
+  expect(screen.getByText("2 minutes ago")).toBeInTheDocument();
+});
+```
+
+**参照**: セクション 10（Main Process SDKテスト）のFake Timersパターン
+
+### 13.4 後方互換性テストパターン
+
+既存のPropsを非推奨化する際は、新規Propsと並行動作させ、既存テストを全て維持する。
+
+| コンポーネント | 後方互換Props | 新規Props | 戦略 |
+|---|---|---|---|
+| **Badge** | `children` → `content` | `content: string \| number` | `children` があれば優先、なければ `content` 使用 |
+| **EmptyState** | `onActionClick` → `action` | `action: ReactNode \| { label, onClick }` | `onActionClick` があれば優先、なければ `action` 使用 |
+
+**テスト戦略**:
+- 既存テスト（Badge 17件、EmptyState 6件）を変更せず全PASS維持
+- 新規Props追加時: デフォルト値で既存動作を保持するテスト追加
+- `@deprecated` JSDocタグで移行期間を明示
+
+### 13.5 テスト実績
+
+| カテゴリ | PASS | FAIL | 備考 |
+|---|---|---|---|
+| **Unit Tests** | 156 | 0 | 7コンポーネント × 平均22テスト |
+| **Theme Tests** | 7 | 0 | 全コンポーネント × 1テーマ横断テスト |
+| **Manual Tests** | 20 PASS + 31 CONDITIONAL | 0 | Phase 11手動テスト（条件付き31件は実装後に検証） |
+
+**条件付きテスト（CONDITIONAL）の内訳**:
+- StatusIndicator: pulse速度確認（3件）
+- FilterChip: ホバー色変化確認（5件）
+- Badge: variant色表示確認（6件）
+- SkeletonCard: アニメーション確認（3件）
+- SuggestionBubble: ホバー色変化確認（5件）
+- EmptyState: mood別イラスト表示確認（5件）
+- RelativeTime: 自動更新確認（4件）
+
+**参照**:
+- **Atoms仕様**: [ui-ux-atoms-specs.md](ui-ux-atoms-specs.md)
+- **テーマ横断テスト**: セクション 12（テーマ横断テストヘルパー）
+- **タイマーテスト**: セクション 10（Main Process SDKテスト有効化パターン）
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.7.0   | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネントテストパターンセクション追加（Props駆動テスト、CSS変数アサーション、テーマ横断テスト、displayName検証、7コンポーネント必須テストケース、タイマーテストパターン、後方互換性テストパターン、テスト実績） |
 | 1.6.0   | 2026-02-22 | TASK-UI-00-TOKENS: テーマ横断テストヘルパーパターンを追加（`renderWithTheme`/`renderWithAllThemes`、`data-theme` 後始末ルール、P39準拠注意点） |
 | 1.5.0   | 2026-02-19 | TASK-9A-C: SkillEditorテストパターン追加（textareaテスト、IPC mockパターン、ファイルツリーテスト、キーボードショートカットテスト、非同期テスト）。spec_created（実装未着手）を明記 |
 | 1.4.0   | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: Main Process SDKテスト有効化パターンを追加（mockRejectedValueOnce、beforeEach再設定、Fake Timersタイムアウト検証、モジュールモック時の直接エラー注入） |

@@ -167,6 +167,28 @@ useEffect(() => {
 - **解決策**: セキュリティテストでコールバックの戻り値を明示的に検証する（`mockValidateIpcSender.mock.calls[i][2].getAllowedWindows()` で呼び出し確認）
 - **関連タスク**: TASK-9A-B
 
+### P47: CSS変数ベースのスタイルテストアサーション戦略
+
+- **教訓**: デザイントークン（CSS変数）をTailwind arbitrary valuesで使用した場合、テストで `expect(el).toHaveClass("bg-[var(--status-primary)]")` のような長い文字列比較が必要になる。テストの可読性が低下し、トークン名変更時に全テストの修正が必要
+- **解決策**: variantStyles を `Record<Variant, string>` 型でコンポーネント外部（モジュールスコープ）に抽出し、テスト側もその定数を import して期待値を生成する。これによりトークン名変更がRecord定義1箇所で完結する
+- **関連タスク**: TASK-UI-00-ATOMS
+
+```typescript
+// ❌ テスト内でハードコード文字列
+expect(element).toHaveClass("bg-[var(--status-primary)]");
+expect(element).toHaveClass("text-[var(--text-inverse)]");
+
+// ✅ Record定数をコンポーネントからexport → テストでimport
+// コンポーネント側
+export const variantStyles: Record<Variant, string> = {
+  primary: "bg-[var(--status-primary)] text-[var(--text-inverse)]",
+};
+
+// テスト側
+import { variantStyles } from "./Badge";
+expect(element.className).toContain(variantStyles.primary);
+```
+
 ## Claude Code Hooks
 
 ### P11: PostToolUse フックによる Edit 失敗
@@ -205,6 +227,28 @@ useEffect(() => {
 - **教訓**: `as string[]` などの型キャストは実行時検証を行わない。`electron-store` 等の JSON ストアから取得したデータは、破損や不正値によって型が保証されないため、必ず実行時バリデーションが必要
 - **解決策**: 戻り値を `unknown` 型で受け取り、配列チェック（`Array.isArray()`）と要素フィルタリング（`.filter()`）を行うバリデーション関数を作成する
 - **ルール**: [02-code-quality.md#TypeScript型安全](./02-code-quality.md)
+
+### P46: HTMLAttributes Props型衝突パターン
+
+- **教訓**: `React.HTMLAttributes<HTMLElement>` を extends する際、HTML標準属性と同名のカスタムPropsを定義するとTS2430エラーが発生する。Badge コンポーネントで `content?: string | number` が HTML標準の `content?: string` と衝突した
+- **衝突しやすい属性**: `content`, `color`, `translate`, `hidden`, `title`, `dir`, `slot`
+- **解決策**: `Omit<React.HTMLAttributes<HTMLElement>, "conflictingProp">` で衝突する属性を除外してからカスタム型を定義する
+- **関連タスク**: TASK-UI-00-ATOMS
+
+```typescript
+// ❌ TS2430エラー: content は HTML標準属性(string)と衝突
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  content?: string | number;
+}
+
+// ✅ Omit で衝突属性を除外
+interface BadgeProps extends Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  "content"
+> {
+  content?: string | number;
+}
+```
 
 ## テスト環境
 

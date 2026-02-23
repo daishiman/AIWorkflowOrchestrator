@@ -113,6 +113,186 @@
 
 **メリット**: `Record<DisplayableStatus, ...>`により、新しいステータスが追加された場合にコンパイルエラーで網羅性不足を検出できる。
 
+### Atomsコンポーネント設計パターン（TASK-UI-00-ATOMS）
+
+#### S12: Props最小化パターン
+
+Atoms層はprops駆動を徹底し、Store依存を排除することで、P31（Store Hooks無限ループ）を根本的に防止する。
+
+| 要素         | 実装                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| 必須Props    | 最小限（通常1つのみ）、省略不可                                      |
+| オプション   | デフォルト値を提供し、省略可能にする                                 |
+| Store使用    | **禁止** — 全てprops経由でデータを受け取る                           |
+| 再利用性     | コンテキスト依存ゼロ、どこでも使える                                 |
+
+```typescript
+// ✅ Props最小化パターン
+interface StatusIndicatorProps {
+  status: "running" | "success" | "error" | "warning" | "idle" | "offline"; // 必須は1つだけ
+  size?: "sm" | "md" | "lg";
+  showLabel?: boolean;
+}
+
+// ❌ アンチパターン：過剰なProps
+interface StatusIndicatorProps {
+  status: string;
+  size: string;
+  showLabel: boolean;
+  color: string;
+  backgroundColor: string;
+  borderColor: string;
+  // ... 10個以上のprops
+}
+```
+
+#### S13: Record型バリアント定義パターン
+
+バリアント（variant, size等）のスタイル定義をモジュールスコープの`Record`型として抽出し、React.memoの効果を最大化する。
+
+| 要素             | 実装                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| 型安全性         | `Record<NonNullable<Props["variant"]>, string>`で網羅性保証 |
+| 配置             | モジュールスコープ（コンポーネント外）                       |
+| 新規バリアント   | 追加漏れはコンパイルエラーで検出                             |
+| React.memo効果   | 不変オブジェクトにより再レンダー最小化                       |
+
+```typescript
+// ✅ モジュールスコープに定数抽出
+const variantStyles: Record<NonNullable<BadgeProps["variant"]>, string> = {
+  default: "bg-[var(--bg-tertiary)] text-[var(--text-primary)]",
+  primary: "bg-[var(--status-primary)] text-[var(--text-inverse)]",
+  success: "bg-[var(--status-success)] text-[var(--text-inverse)]",
+  error: "bg-[var(--status-error)] text-[var(--text-inverse)]",
+  warning: "bg-[var(--status-warning)] text-[var(--text-primary)]",
+  info: "bg-[var(--status-info)] text-[var(--text-inverse)]",
+};
+
+// 新規バリアント "secondary" を追加し忘れると：
+// TS2741: Property 'secondary' is missing in type
+
+// ❌ アンチパターン：コンポーネント内で定義
+const Badge = ({ variant }) => {
+  const styles = { // 毎回新しいオブジェクトを生成
+    default: "...",
+    primary: "...",
+  };
+  return <span className={styles[variant]} />;
+};
+```
+
+#### S14: HTMLAttributes Props型衝突回避パターン（P46）
+
+HTML標準属性名（`content`, `color`, `translate`, `hidden`, `title`等）とコンポーネント独自propsが衝突する場合、`Omit`で明示的に除外する。
+
+| 衝突しやすい属性 | HTML標準型          | よくある独自型          | 対策                   |
+| ---------------- | ------------------- | ----------------------- | ---------------------- |
+| content          | `string`            | `string \| number`      | `Omit<..., "content">` |
+| color            | `string`            | `"primary" \| "error"`  | `Omit<..., "color">`   |
+| translate        | `"yes" \| "no"`     | `boolean`               | `Omit<..., "translate">` |
+| hidden           | `boolean`           | `boolean \| "loading"`  | `Omit<..., "hidden">`  |
+| title            | `string`            | `ReactNode`             | `Omit<..., "title">`   |
+
+```typescript
+// ❌ TS2430: content は HTML標準属性（string）と衝突
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  content?: string | number; // Type 'number' is not assignable to type 'string'
+}
+
+// ✅ Omit で衝突する属性を除外
+interface BadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "content"> {
+  content?: string | number; // OK
+}
+```
+
+**検出方法**: TypeScriptコンパイルエラー「TS2430: Interface 'X' incorrectly extends interface 'Y'」が出た場合、衝突している属性を`Omit`で除外する。
+
+#### S15: 後方互換性維持パターン
+
+既存のchildren APIを残しつつ、新しいprops APIを追加する場合、children優先フォールバックで後方互換性を維持する。
+
+| 要素             | 実装                                                     |
+| ---------------- | -------------------------------------------------------- |
+| 既存API          | `<Badge>New</Badge>` — children で表示                   |
+| 新規API          | `<Badge content={42} variant="primary" />` — props で表示 |
+| フォールバック   | `children ?? (content !== undefined ? String(content) : null)` |
+| 移行期間         | 両API共存、段階的に新APIへ移行                           |
+
+```typescript
+// ✅ 後方互換性維持
+const Badge = ({ children, content, variant = "default" }: BadgeProps) => {
+  const displayContent = children ?? (content !== undefined ? String(content) : null);
+  return <span className={variantStyles[variant]}>{displayContent}</span>;
+};
+
+// 既存コード（変更不要）
+<Badge>New</Badge>
+
+// 新規コード
+<Badge content={42} variant="primary" />
+<Badge content="Info" variant="info" />
+```
+
+#### S16: CSS変数＋Tailwind Arbitrary Values パターン
+
+ハードコードカラーを完全排除し、CSS変数（`--status-primary`等）とTailwind Arbitrary Values（`bg-[var(...)]`）を組み合わせる。テーマ切替はCSS変数値の差し替えのみで実現する。
+
+| 要素               | 実装                                                     |
+| ------------------ | -------------------------------------------------------- |
+| カラー定義         | `:root` および `[data-theme="dark"]` でCSS変数定義       |
+| Tailwind使用       | `bg-[var(--status-primary)]` 形式のArbitrary Values      |
+| ハードコード       | **0件** — TS/TSXコードにテーマ固有ロジックが存在しない   |
+| テーマ切替         | CSS変数値の差し替えのみ（JavaScriptコード変更不要）     |
+
+```typescript
+// ✅ CSS変数＋Tailwind Arbitrary Values
+<div className="bg-[var(--status-primary)] text-[var(--text-muted)]" />
+
+// ❌ アンチパターン：ハードコードカラー
+<div className="bg-blue-600 text-gray-500" />
+
+// ❌ アンチパターン：テーマ分岐ロジック
+<div className={theme === "dark" ? "bg-gray-800" : "bg-white"} />
+```
+
+**CSS変数定義例**:
+```css
+:root {
+  --status-primary: #007AFF; /* Apple systemBlue Light */
+  --text-muted: rgba(60, 60, 67, 0.6);
+}
+
+[data-theme="dark"] {
+  --status-primary: #0A84FF; /* Apple systemBlue Dark */
+  --text-muted: rgba(235, 235, 245, 0.6);
+}
+```
+
+#### S17: displayName統一パターン
+
+React DevToolsでの表示名を統一し、デバッグ効率を向上させる。`memo(forwardRef(...))`の場合、`Memo(ForwardRef(...))`ではなくコンポーネント名を表示する。
+
+| 要素          | 実装                                                     |
+| ------------- | -------------------------------------------------------- |
+| displayName   | `ComponentName.displayName = "ComponentName"`            |
+| 配置          | コンポーネント定義直後（export前）                       |
+| DevTools表示  | `Badge` ではなく `Memo(ForwardRef(...))` を回避          |
+| デバッグ      | コンポーネントツリーで即座に識別可能                     |
+
+```typescript
+// ✅ displayName統一パターン
+export const Badge = memo(forwardRef<HTMLSpanElement, BadgeProps>(
+  ({ children, content, variant = "default", ...props }, ref) => {
+    // 実装
+  }
+));
+Badge.displayName = "Badge";
+
+// React DevToolsでの表示:
+// ✅ Badge
+// ❌ Memo(ForwardRef(...))
+```
+
 ---
 
 ## バックエンド実装パターン
@@ -1934,6 +2114,7 @@ Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v_next | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネント設計パターン追加（S12: Props最小化、S13: Record型バリアント定義、S14: HTMLAttributes Props型衝突回避、S15: 後方互換性維持、S16: CSS変数＋Tailwind Arbitrary Values、S17: displayName統一） |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル） |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: S13 IPC戻り値型2ステップ変換パターン追加（苦戦箇所5件記録、適用判断基準テーブル、P42/P44/P45準拠） |

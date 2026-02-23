@@ -249,6 +249,31 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | TASK-UI-00-TOKENS | デザイントークンCSS変数 Apple HIG準拠 light/dark テーマ定義 | 2026-02-22 | tokens.css に `[data-theme="light"]`/`[data-theme="dark"]` セレクタでApple HIG System Colors準拠のカラー定義を追加。マイクロインタラクション変数（ease-bounce/ease-anticipate/scale-hover/scale-active/scale-bounce）、キーフレームアニメーション（success-bounce/error-shake）、renderWithThemeテストヘルパーを作成。28テスト全PASS、カバレッジ100% |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント7種でデザイントークン適用 | 2026-02-23 | 全コンポーネントでCSS変数（`var(--status-primary)`等）を使用、ハードコードカラー0件。EmptyState mood機能でSemanticトークン参照 |
 
+#### StatusIndicator ステータスカラー定義
+
+| status | CSS変数 | ライトモード | ダークモード | 用途 |
+|---|---|---|---|---|
+| running | `--status-primary` | `#007AFF` | `#0A84FF` | 実行中（パルスアニメーション） |
+| success | `--status-success` | `#34C759` | `#30D158` | 成功 |
+| error | `--status-error` | `#FF3B30` | `#FF453A` | エラー |
+| warning | `--status-warning` | `#FF9500` | `#FF9F0A` | 警告 |
+| idle | `--text-tertiary` | `rgba(60,60,67,0.3)` | `rgba(235,235,245,0.3)` | 待機 |
+| offline | `--text-disabled` | `rgba(60,60,67,0.18)` | `rgba(235,235,245,0.18)` | オフライン |
+
+#### Atoms デザイントークン使用パターン
+
+```typescript
+// CSS変数 + Tailwind arbitrary values パターン
+// テーマ切替はCSS変数値差し替えのみ、TSコードにテーマ固有ロジック0件
+<div className="bg-[var(--status-primary)] text-[var(--text-muted)]" />
+
+// Record型でバリアント→トークンマッピングを定義
+const variantStyles: Record<Variant, string> = {
+  default: "bg-[var(--bg-tertiary)]",
+  primary: "bg-[var(--status-primary)]",
+};
+```
+
 ### 関連未タスク
 
 | タスクID | タスク名 | 優先度 | 参照 |
@@ -262,6 +287,7 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4.0 | 2026-02-23 | TASK-UI-00-ATOMS StatusIndicatorステータスカラー定義追加（6状態のCSS変数マッピング）、Atomsデザイントークン使用パターン追加（CSS変数+Tailwind arbitrary valuesパターン、Record型バリアント→トークンマッピング） |
 | 1.3.0 | 2026-02-23 | TASK-UI-00-ATOMS完了: 7コンポーネントでのデザイントークン使用パターン追加（StatusIndicator statusカラー/SuggestionBubble bg-tertiary/EmptyState moodパレット等） |
 | 1.2.0 | 2026-02-22 | TASK-UI-00-TOKENS完了: Apple HIG System Colors準拠 light/darkテーマCSS変数定義追加、マイクロインタラクション変数・キーフレームアニメーション定義、renderWithThemeテストヘルパー作成（28テスト全PASS） |
 | 1.1.0 | 2026-02-22 | Tap & Discover デザイントークン拡張（マイクロインタラクション、SuggestionBubble、EmptyState mood） |
