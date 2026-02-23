@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-23 - TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 patterns update]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md に TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 パターン追加（成功2件: CIガード自動検証、正規表現TSパーサー / 失敗1件: AST解析過剰設計）
+
+---
+
 ## [2026-02-22 - TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 baseline/scope split pattern]
 
 - **Agent**: skill-creator (update)
@@ -39,6 +48,7 @@
 - **Notes**: Phase 12成果物作成済みでも `phase-12-documentation.md` 本体のステータス/チェックリストが未更新で残る失敗を再発防止するため、patterns.md に成功パターン「実行仕様書ステータス同期」を追加。task-specification-creator の Phase 12完了判定に適用可能な形で記録。
 
 ---
+
 ## [2026-02-19 - TASK-9A-C Phase 12 status judgment pattern sync]
 
 - **Agent**: skill-creator (update)
@@ -65,6 +75,7 @@
 - **Notes**: TASK-FIX-10-1-VITEST-ERROR-HANDLING のPhase 12再監査結果を反映し、patterns.mdにテストドメインの成功/失敗パターンを追加。成功: 「Vitest未処理Promise拒否の可視化運用」、失敗: 「dangerouslyIgnoreUnhandledErrors 常時有効化」。クイックナビゲーションおよびSKILL.md変更履歴 v10.9.0 を更新。
 
 ---
+
 ## [2026-02-14 - UT-FIX-IPC-RESPONSE-UNWRAP-001 patterns sync]
 
 - **Agent**: skill-creator (update)
@@ -91,6 +102,7 @@
 - **Notes**: TASK-FIX-14-1-CONSOLE-LOG-MIGRATION の再監査知見を patterns.md に反映。成功パターン「実装差分ベース文書化（ファイル名誤記防止）」と失敗パターン「実装ガイドへの誤ファイル名混入」を追加し、Phase 12クイックナビゲーションを更新。
 
 ---
+
 ## [2026-02-13 - UT-9B-H-003 セキュリティ教訓・パターン記録]
 
 - **Agent**: skill-creator (update)
@@ -126,6 +138,7 @@
 - **Notes**: Phase 12の再監査知見をpatterns.mdに反映。成果物名を `documentation-changelog.md` に統一し、完了済み未タスク指示書の移管（`completed-tasks/unassigned-task/`）と参照パス同期、artifacts最終整合チェックをパターン化。
 
 ---
+
 ## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC completion]
 
 - **Agent**: skill-creator (update)
@@ -206,6 +219,7 @@
 - **Notes**: task-specification-creator スキル改善。Phase 12 Task 2実行時の漏れパターン分析に基づき、SKILL.md（Task 1/2境界明確化、Step 1-C追加、よくある漏れテーブル）とspec-update-workflow.md（フローチャートにStep 1-C/完了チェック追加、確認すべきファイル表拡張、Grepヒント追加、誤判断パターン拡張）を更新。
 
 ---
+
 ## [2026-01-30T01:30:00.000Z]
 
 - **Agent**: skill-creator
@@ -980,20 +994,20 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 ### 追加パターン
 
-| パターン名                             | 説明                                                               |
-| -------------------------------------- | ------------------------------------------------------------------ |
-| OAuthコールバックエラーパラメータ抽出  | URLフラグメント（#）からerror/error_descriptionを正しく抽出        |
-| Zustandリスナー二重登録防止            | モジュールスコープフラグでsubscribe重複実行を防止                  |
-| IPC経由のエラー情報伝達設計            | AUTH_STATE_CHANGEDイベントにerror/errorCodeフィールド追加          |
+| パターン名                            | 説明                                                        |
+| ------------------------------------- | ----------------------------------------------------------- |
+| OAuthコールバックエラーパラメータ抽出 | URLフラグメント（#）からerror/error_descriptionを正しく抽出 |
+| Zustandリスナー二重登録防止           | モジュールスコープフラグでsubscribe重複実行を防止           |
+| IPC経由のエラー情報伝達設計           | AUTH_STATE_CHANGEDイベントにerror/errorCodeフィールド追加   |
 
 ### 苦戦した箇所・知見
 
-| 課題                           | 原因                                        | 解決策                                    |
-| ------------------------------ | ------------------------------------------- | ----------------------------------------- |
-| URLフラグメントのパラメータ抽出 | OAuth Implicit Flowでは`?`でなく`#`を使用   | `url.hash`から`URLSearchParams`でパース   |
-| リスナー二重登録               | React StrictModeで2回実行される             | モジュールスコープの`let flag = false`    |
-| テストでのフラグリセット       | モジュールスコープ変数はテスト間で共有      | `resetAuthListenerFlag()`エクスポート     |
-| エラー情報がRendererに届かない | IPC経由でerror情報が伝達されていなかった    | ペイロードにerror/errorCodeフィールド追加 |
+| 課題                            | 原因                                      | 解決策                                    |
+| ------------------------------- | ----------------------------------------- | ----------------------------------------- |
+| URLフラグメントのパラメータ抽出 | OAuth Implicit Flowでは`?`でなく`#`を使用 | `url.hash`から`URLSearchParams`でパース   |
+| リスナー二重登録                | React StrictModeで2回実行される           | モジュールスコープの`let flag = false`    |
+| テストでのフラグリセット        | モジュールスコープ変数はテスト間で共有    | `resetAuthListenerFlag()`エクスポート     |
+| エラー情報がRendererに届かない  | IPC経由でerror情報が伝達されていなかった  | ペイロードにerror/errorCodeフィールド追加 |
 
 ### 結果
 
@@ -1054,7 +1068,6 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Notes**: TASK-9B-I-SDK-FORMAL-INTEGRATIONタスクからの知見をpatterns.mdに反映。3パターン追加: (1) [SDK] TypeScriptモジュール解決による型安全統合（`as any`除去、SDKQueryOptions内部型定義、compile-timeテスト）、(2) [SDK] カスタムdeclare moduleとSDK実型の共存（失敗パターン: SDK実型優先によるカスタム.d.ts無効化）、(3) [Phase12] 未タスク配置ディレクトリの混同（失敗パターン: unassigned-task/への配置漏れ）。クイックナビゲーションテーブルに「SDK統合」ドメイン行を新規追加。
 
 ---
-
 
 ## [2026-02-10T07:18:55.442Z]
 
