@@ -7,19 +7,19 @@
 
 ## クイックナビゲーション
 
-| ドメイン               | 成功パターン                                                                                                                                                                       | 失敗パターン                                           |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| 🔐 認証・セッション    | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新 | -                                                      |
-| ⏱️ テスト              | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理** | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化 |
-| 📋 Phase 12            | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **補完タスク完了時の元未タスク状態同期** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **補完タスク完了後も元未タスクが未実施のまま残置** |
-| 🔌 IPC・アーキテクチャ | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換** | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）** |
-| 🏗️ DI・設計            | Setter Injection遅延初期化                                                                                                                                                         | -                                                      |
-| 🛡️ セキュリティ         | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                  | 正規表現パターンPrettier干渉                          |
-| 📦 スキル設計          | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計** | -                                                      |
-| 🔗 SDK統合             | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                              | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同 |
-| 🔧 ビルド・環境        | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**, **CIガードスクリプトによるモノレポ設定ファイル整合性自動検証**, **正規表現ベースTypeScript設定ファイルパーサー** | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ**, **TypeScript設定ファイル完全AST解析の試行** |
-| 🔄 型定義リファクタリング | deprecatedプロパティ段階的移行                                                                                                                                                    | ドキュメント偏重による実装検証省略                     |
-| 🎨 UI/フロントエンド   | **Props駆動Atoms設計**, **Record型バリアント定義**, **テーマ横断テスト（describe.each）**                                                                                          | **HTMLAttributes Props型衝突**, **Props命名の仕様-実装間ドリフト** |
+| ドメイン                  | 成功パターン                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | 失敗パターン                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🔐 認証・セッション       | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新                                                                                                                                                                                                                                                                                                                                                                                                           | -                                                                                                                                                                                                                                                                                                                                                                                  |
+| ⏱️ テスト                 | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理**, **grepベース仕様書TDD（spec-onlyタスク）**, **引数形式差異の共通化判断（YAGNI）**                                                                                | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化                                                                                                                                                                                                                                                                    |
+| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化** |
+| 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**                                                                                                                                                                                                                                                                      |
+| 🏗️ DI・設計               | Setter Injection遅延初期化                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | -                                                                                                                                                                                                                                                                                                                                                                                  |
+| 🛡️ セキュリティ           | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | 正規表現パターンPrettier干渉                                                                                                                                                                                                                                                                                                                                                       |
+| 📦 スキル設計             | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計**                                                                                                                                                                                                                                                                                                                                                                                                                                                    | -                                                                                                                                                                                                                                                                                                                                                                                  |
+| 🔗 SDK統合                | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同                                                                                                                                                                                                                                                                                                                  |
+| 🔧 ビルド・環境           | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**, **CIガードスクリプトによるモノレポ設定ファイル整合性自動検証**, **正規表現ベースTypeScript設定ファイルパーサー**                                                                                                                                                                                                                                                                                                                                                               | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ**, **TypeScript設定ファイル完全AST解析の試行**                                                                                                                                                                                                                                                                  |
+| 🔄 型定義リファクタリング | deprecatedプロパティ段階的移行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | ドキュメント偏重による実装検証省略                                                                                                                                                                                                                                                                                                                                                 |
+| 🎨 UI/フロントエンド      | **Props駆動Atoms設計**, **Record型バリアント定義**, **テーマ横断テスト（describe.each）**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | **HTMLAttributes Props型衝突**, **Props命名の仕様-実装間ドリフト**                                                                                                                                                                                                                                                                                                                 |
 
 ## 成功パターン
 
@@ -890,18 +890,6 @@
 - **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
 - **クロスリファレンス**: [task-specification-creator/scripts/audit-unassigned-tasks.js](../../task-specification-creator/scripts/audit-unassigned-tasks.js), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
 
-### [Phase 12] 補完タスク完了時の元未タスク状態同期（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001）
-
-- **状況**: 元未タスク（例: `UT-FIX-SKILL-VALIDATION-P42-001`）を補完タスクで実施完了した後も、残課題テーブル側が「未実施」のまま残る
-- **解決策**:
-  1. 補完タスクの完了時に、`task-workflow.md` とドメイン仕様書（例: `security-skill-ipc.md`）の元未タスク行を同時更新する
-  2. 更新時は「完了: YYYY-MM-DD（補完タスクIDで実施）」を明記し、重複管理を防ぐ
-  3. `lessons-learned.md` に苦戦箇所と再利用手順を同時追記し、再発防止を知識化する
-- **効果**: 同一課題の未実施誤読を防止し、残課題台帳と完了タスク台帳の整合性を維持できる
-- **適用条件**: 未タスク起票後に、別タスクで同一課題を解消した場合
-- **発見日**: 2026-02-24
-- **関連タスク**: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001
-
 ### [ビルド・環境] モノレポ三層モジュール解決整合パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
 
 - **状況**: モノレポ内パッケージ(@repo/shared)のサブパス import で tsc/vitest 両方が解決に失敗する
@@ -1032,6 +1020,74 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **適用条件**: TypeScript設定ファイル（vitest.config.ts, jest.config.ts等）から特定パターンの設定値を抽出する場合
 - **発見日**: 2026-02-22
 - **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
+
+### [IPC] IPCチャネル名競合の予防的解消パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）
+
+- **状況**: 既存 `skill:import`（ローカル用、引数: `string`）と TASK-9F の外部ソースインポート（引数: `ShareTarget`）が同一チャネル名を使用する設計で、`ipcMain.handle()` の二重登録例外（P5）が実装段階で100%発生する構造的問題
+- **アプローチ**: コード実装前に仕様書段階でチャネル名を分離する「予防的仕様書修正」
+  - 命名規則を体系化: `skill:{動詞}` / `skill:{動詞}FromSource` / `skill:{動詞}Source`
+  - 2つの仕様書（task-022, task-030）を同時修正し、6箇所のチャネル名を統一変更
+  - grep ベースの整合性検証（10項目）で修正漏れを検出
+- **結果**: Phase 10 最終レビュー PASS（MINOR 0件）、Phase 11 手動テスト 11/11 PASS。TASK-9F 実装時の P5 リスクを仕様段階で排除
+- **適用条件**: 既存チャネルと同じ動詞を使う新機能を追加する場合。特に引数型が異なる場合は必須
+- **発見日**: 2026-02-24
+- **関連タスク**: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+- **クロスリファレンス**:
+  - [architecture-implementation-patterns.md#IPCチャネル名競合予防パターン](../../aiworkflow-requirements/references/architecture-implementation-patterns.md)
+  - [06-known-pitfalls.md#P5](../../rules/06-known-pitfalls.md)
+  - [06-known-pitfalls.md#P44](../../rules/06-known-pitfalls.md)
+
+### [Phase12] 仕様書修正のみタスクの Phase テンプレート（N/A記録）（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）
+
+- **状況**: コード変更を伴わない仕様書修正タスクで、Phase 6（テスト拡充）・7（カバレッジ）・8（リファクタリング）が不要
+- **アプローチ**: 各 Phase に `not-applicable.md` を作成し、N/A 理由を明記
+  - Phase 6: 「代替検証」セクションで grep 検証が唯一のテスト手段であることを記録
+  - Phase 7-8: N/A 理由のみ記録
+  - Phase 4 の grep コマンドが実質的なテストスイートとして機能
+  - Phase 9 は grep ベースの品質ゲート4項目（整合性・新チャネル・既存互換・Markdown構文）で代替
+- **結果**: 全 Phase 1-12 で成果物が outputs/ 配下に出力され、仕様書修正のみタスクの標準フローとして先例を確立
+- **適用条件**: `taskType: "spec-only"` または `taskType: "spec_created"` のタスク
+- **発見日**: 2026-02-24
+- **関連タスク**: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+
+### [Testing] grepベース仕様書整合性検証（仕様書TDD）（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）
+
+- **状況**: コード変更がないため Vitest/ESLint 等の標準ツールが使えず、仕様書修正の品質保証手段が必要
+- **アプローチ**: Phase 4 で grep 検証コマンドを「テストケース」として設計し、Phase 5 実装後に全実行
+  - 旧チャネル名残存検出（期待: 0件）
+  - 新チャネル名使用確認（期待: N件以上）
+  - 既存互換性検証（ローカル用 `skill:import` が保持されていること）
+  - artifacts.modifies の正確性検証
+  - Markdown テーブル構文検証
+- **結果**: 10検証項目全 PASS。Phase 9 品質ゲートでも同じ grep コマンドを再利用して4ゲート全 PASS
+- **適用条件**: 仕様書修正のみタスク、または複数仕様書の横断的一貫性を検証する場合
+- **発見日**: 2026-02-24
+- **関連タスク**: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+
+### [IPC] P42準拠バリデーション一括移行（return→throw統一）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001）
+
+- **状況**: 6つのIPCハンドラ（skill:get-detail, skill:execute, skill:abort, skill:get-status, skill:analyze, skill:improve）で異なるバリデーションパターンが混在（return false/return null/return { success: false }/throw の4種類）
+- **アプローチ**: `typeof arg !== "string" || arg.trim() === ""` + `throw { code: "VALIDATION_ERROR" }` の統一パターンを全ハンドラに適用
+  - オブジェクト型引数（`args.skillId`等）: 4ハンドラ
+  - 直接引数型（`executionId`）: 2ハンドラ
+  - 全ハンドラでエラー応答を `return` から `throw` に統一
+- **結果**: 59テスト追加（skillHandlers.validation.test.ts）、181テスト全PASS。safeInvokeがRenderer側でthrowをキャッチするため後方互換性維持
+- **適用条件**: IPCハンドラのバリデーションパターンが不統一で、P42準拠への一括移行が必要な場合
+- **教訓**: throw統一はRenderer側のsafeInvoke設計に依存するため、Preload層の実装を事前確認する。safeInvokeがtry/catchでエラーをラップしている場合のみ、return→throw移行が安全
+- **発見日**: 2026-02-24
+- **関連タスク**: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001
+- **関連Pitfall**: P42（.trim()バリデーション漏れ）、P44（IPC引数不整合）
+
+### [Testing] 引数形式差異の分類と共通化判断（YAGNI）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001）
+
+- **状況**: 6ハンドラ中4つがオブジェクト型（`args.skillId`等）、2つが直接引数型（`executionId`）で、共通バリデーション関数の抽出を検討
+- **アプローチ**: 引数アクセスパターンの違い（`args.skillId` vs `executionId`）により、共通関数では引数抽出ロジックまでカバーする必要があり、抽象化コストが利益を上回ると判断。インライン3行バリデーションを各ハンドラに一貫して適用
+- **結果**: 各ハンドラが独自の引数アクセスパターンを保持しつつ、バリデーションロジック自体は統一。59テストで正確性を保証
+- **適用条件**: 複数ハンドラのバリデーション統一時、引数形式が異なる場合
+- **教訓**: YAGNI原則 — 引数形式が統一されるまで共通関数を作らない。3行のインラインバリデーションは許容範囲。将来引数形式が統一された際に初めて共通関数を抽出する
+- **発見日**: 2026-02-24
+- **関連タスク**: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001
+
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
@@ -1219,6 +1275,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-02-13
 - **関連タスク**: TASK-FIX-11-1-SDK-TEST-ENABLEMENT
 
+### [Phase12] Phase 10/11サブエージェント出力の非永続化（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001）
+
+- **状況**: Task subagentでPhase 10最終レビューとPhase 11手動テストを実行したが、出力がファイルとして保存されなかった
+- **問題**: Phase 12のdocumentation-changelogでレビュー結果を参照できず、「サブエージェント実行結果確認」としか記載できない。レビュー判定（PASS/MINOR/MAJOR）の根拠が追跡不能
+- **原因**: Task subagentの出力はメッセージとして返されるが、ファイル書き込み指示が不足していた。サブエージェントに「結果をファイルに出力する」明示的な指示がなかった
+- **教訓**: サブエージェントにPhase実行を委譲する際は、出力ファイルパス（`outputs/phase-N/` 配下）を明示的に指定する。特にPhase 10/11はレビュー判定を含むため、永続化が必須
+- **対策**: Task toolのpromptに `結果を outputs/phase-10/review-result.md に書き出してください` のようなファイル出力指示を含める
+- **発見日**: 2026-02-24
+- **関連タスク**: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001
+
 ### [CI/ビルド] TypeScript設定ファイルの完全AST解析の試行
 
 - **状況**: vitest.config.ts のalias設定を抽出するために、TypeScript ASTパーサー（ts-morph等）の使用を検討
@@ -1302,7 +1368,7 @@ it("削除されたプロパティにアクセスするとエラーになるこ�
 - **解決策**: 4ファイル同時更新チェックリストを development-guidelines.md に配置。整合性テストの追加
 - **発見日**: 2026-02-20
 - **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
-- **関連タスク**: UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（2026-02-24完了、vitest-tsconfig-paths プラグイン導入で手動alias同期を廃止）
+- **関連未タスク**: UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（vitest-tsconfig-paths プラグインによる自動化）
 
 ### [UI/TypeScript] HTMLAttributes Props型衝突（TASK-UI-00-ATOMS）
 
@@ -1321,8 +1387,10 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 // ✅ Omitで衝突回避
-interface BadgeProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, "content"> {
+interface BadgeProps extends Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  "content"
+> {
   content?: string | number;
 }
 ```
@@ -1338,3 +1406,13 @@ interface BadgeProps
 - **対策**: Phase 3レビューチェックリストに「Props命名の仕様-実装一致確認」を追加
 - **発見日**: 2026-02-23
 - **関連タスク**: TASK-UI-00-ATOMS
+
+### [Phase4] 修正箇所数の事前ファイル検証不足（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）
+
+- **状況**: Phase 4（テスト作成）で task-022 の修正箇所を「3箇所」と仕様書に記載
+- **問題**: 実装時に検証したところ、外部ソースインポート文脈の `skill:import` は 1箇所のみだった
+- **原因**: Phase 4 設計時にファイル内容を `grep` で事前検証せず、概算で修正箇所数を決定
+- **教訓**: Phase 4 テスト設計時は対象ファイルを `grep -c` で事前カウントし、期待値を「N件以上」のような柔軟な基準で設計する。P37（ドキュメント数値の早期固定）と同じパターン
+- **対策**: テスト仕様書の期待値は `>=N` 形式で記述し、Phase 5 実行後に実測値で更新
+- **発見日**: 2026-02-24
+- **関連タスク**: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
