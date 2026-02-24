@@ -684,15 +684,18 @@ AgentView は **一切変更しない**。SkillCenter は同じ `agentSlice` の
 
 ## 11. IPC連携
 
-SkillCenterView は既存の IPC チャネルを利用する。新規チャネルの追加は不要。
+SkillCenterView は既存の IPC チャネルを利用する。TASK-9F（スキル共有・インポート機能）で追加されるチャネルも含む。
 
-| 操作           | IPCチャネル          | 引数                | 備考                                  |
-| -------------- | -------------------- | ------------------- | ------------------------------------- |
-| ツール一覧取得 | `skill:list`         | なし                | 初期読み込み・リフレッシュ時          |
-| ツール追加     | `skill:import`       | `skillName: string` | P44解決済み: string を直接渡す        |
-| ツール削除     | `skill:remove`       | `skillName: string` | P44/P45解決済み: skillName に統一済み |
-| ツール詳細取得 | `skill:detail`       | `skillName: string` | DetailPanel 表示用                    |
-| SKILL.md取得   | `skill:readMarkdown` | `skillName: string` | SkillMarkdownCollapse 表示用          |
+| 操作                 | IPCチャネル              | 引数                                              | 備考                                            |
+| -------------------- | ------------------------ | ------------------------------------------------- | ----------------------------------------------- |
+| ツール一覧取得       | `skill:list`             | なし                                              | 初期読み込み・リフレッシュ時                    |
+| ツール追加           | `skill:import`           | `skillName: string`                               | P44解決済み: string を直接渡す（ローカル用）    |
+| ツール削除           | `skill:remove`           | `skillName: string`                               | P44/P45解決済み: skillName に統一済み           |
+| ツール詳細取得       | `skill:detail`           | `skillName: string`                               | DetailPanel 表示用                              |
+| SKILL.md取得         | `skill:readMarkdown`     | `skillName: string`                               | SkillMarkdownCollapse 表示用                    |
+| 外部ソースインポート | `skill:importFromSource` | `ShareTarget`                                     | 外部ソースからのスキルインポート（TASK-9F追加） |
+| インポート元検証     | `skill:validateSource`   | `ShareTarget`                                     | インポート元の検証（TASK-9F追加）               |
+| スキルエクスポート   | `skill:export`           | `{ skillName: string, destination: ShareTarget }` | スキルのエクスポート（TASK-9F追加）             |
 
 ## 12. テスト計画
 
@@ -970,12 +973,12 @@ interface ImportFormState {
 }
 ```
 
-| タブ     | 入力フォーム                       | IPC チャネル   |
-| -------- | ---------------------------------- | -------------- |
-| GitHub   | リポジトリURL + ブランチ + パス    | `skill:import` |
-| Gist     | Gist ID                            | `skill:import` |
-| URL      | SKILL.md の URL                    | `skill:import` |
-| ローカル | ディレクトリパス（ファイル選択UI） | `skill:import` |
+| タブ     | 入力フォーム                       | IPC チャネル             |
+| -------- | ---------------------------------- | ------------------------ |
+| GitHub   | リポジトリURL + ブランチ + パス    | `skill:importFromSource` |
+| Gist     | Gist ID                            | `skill:importFromSource` |
+| URL      | SKILL.md の URL                    | `skill:importFromSource` |
+| ローカル | ディレクトリパス（ファイル選択UI） | `skill:importFromSource` |
 
 **共通フロー**:
 
@@ -983,7 +986,7 @@ interface ImportFormState {
 ソースタイプ選択（タブ切替）
   -> 入力フォーム表示
   -> [検証] ボタン -> IPC: skill:validateSource -> プレビュー表示
-  -> [インポート] ボタン -> IPC: skill:import -> 完了Toast
+  -> [インポート] ボタン -> IPC: skill:importFromSource -> 完了Toast
 ```
 
 #### ExportSkillDialog

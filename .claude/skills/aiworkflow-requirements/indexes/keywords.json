@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-22T23:18:32.809Z",
-  "totalKeywords": 1246,
+  "generated": "2026-02-24T01:51:26.799Z",
+  "totalKeywords": 1255,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1393,6 +1393,31 @@
     "解決": [
       "architecture-implementation-patterns.md"
     ],
+    "チャネル名競合予防パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "SKILL": [
+      "architecture-implementation-patterns.md",
+      "claude-code-skills-structure.md",
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md",
+      "lessons-learned.md"
+    ],
+    "IMPORT": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "CHANNEL": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "CONFLICT": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "策定": [
+      "architecture-implementation-patterns.md"
+    ],
     "モノレポ": [
       "architecture-monorepo.md",
       "directory-structure.md"
@@ -1727,12 +1752,6 @@
     ],
     "構造仕様": [
       "claude-code-skills-structure.md"
-    ],
-    "SKILL": [
-      "claude-code-skills-structure.md",
-      "error-handling.md",
-      "interfaces-agent-sdk-executor.md",
-      "lessons-learned.md"
     ],
     "State": [
       "csrf-state-parameter.md",
@@ -2855,7 +2874,25 @@
       "master-design.md",
       "patterns.md"
     ],
-    "IMPORT": [
+    "IMP": [
+      "lessons-learned.md"
+    ],
+    "MODULE": [
+      "lessons-learned.md"
+    ],
+    "RESOLUTION": [
+      "lessons-learned.md"
+    ],
+    "GUARD": [
+      "lessons-learned.md"
+    ],
+    "repo": [
+      "lessons-learned.md"
+    ],
+    "設定ファイル整合": [
+      "lessons-learned.md"
+    ],
+    "ガード": [
       "lessons-learned.md"
     ],
     "ID": [
@@ -2991,9 +3028,6 @@
     "を参照": [
       "lessons-learned.md"
     ],
-    "MODULE": [
-      "lessons-learned.md"
-    ],
     "NOT": [
       "lessons-learned.md"
     ],
@@ -3025,12 +3059,6 @@
       "lessons-learned.md"
     ],
     "SHARED": [
-      "lessons-learned.md"
-    ],
-    "RESOLUTION": [
-      "lessons-learned.md"
-    ],
-    "repo": [
       "lessons-learned.md"
     ],
     "モジュール解決エラー修正": [
@@ -3177,6 +3205,9 @@
       "lessons-learned.md"
     ],
     "ハンドラ二重登録防止": [
+      "lessons-learned.md"
+    ],
+    "チャネル名競合の予防的解消": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [

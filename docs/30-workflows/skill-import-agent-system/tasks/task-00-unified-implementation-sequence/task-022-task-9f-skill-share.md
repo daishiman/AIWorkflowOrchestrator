@@ -28,7 +28,9 @@ artifacts:
   # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.2 で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
+    - apps/desktop/src/main/ipc/channels.ts
     - apps/desktop/src/preload/skillAPI.ts
+    - apps/desktop/src/preload/types.ts
 ---
 
 # スキル共有・インポート機能実装
@@ -121,9 +123,13 @@ export class SkillShareManager {
 
 ### Step 3: IPC拡張
 
+> **注記**: `skill:import` チャネルは既存のローカルスキルインポート
+> （UT-FIX-SKILL-IMPORT-INTERFACE-001）で使用済み。
+> 外部ソースインポートは `skill:importFromSource` を使用する。
+
 **チャネル追加**:
 
-- `skill:import` - スキルインポート
+- `skill:importFromSource` - 外部ソースからのスキルインポート
 - `skill:export` - スキルエクスポート
 - `skill:validateSource` - インポート元検証
 

@@ -654,8 +654,8 @@ interface RelativeTimeProps {
 
 ## 関連未タスク（TASK-UI-00-ATOMS Phase 10 MINOR由来）
 
-| タスクID                           | 内容                                                           | 指示書                                                                  |
-| ---------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| UT-UI-ATOMS-PROP-NAMING-001        | RelativeTime Props命名統一（updateInterval → refreshInterval） | `docs/30-workflows/unassigned-task/task-ui-atoms-prop-naming.md`        |
-| UT-UI-ATOMS-TOUCH-TARGET-001       | SuggestionBubble sm タッチターゲット Apple HIG 44px準拠        | `docs/30-workflows/unassigned-task/task-ui-atoms-touch-target.md`       |
-| UT-UI-ATOMS-SPEC-CLARIFICATION-001 | SuggestionBubble success-bounce 責務明確化                     | `docs/30-workflows/unassigned-task/task-ui-atoms-spec-clarification.md` |
+| タスクID                           | 内容                                                           | 指示書                                                                                  |
+| ---------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| UT-UI-ATOMS-PROP-NAMING-001        | RelativeTime Props命名統一（updateInterval → refreshInterval） | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-prop-naming.md`        |
+| UT-UI-ATOMS-TOUCH-TARGET-001       | SuggestionBubble sm タッチターゲット Apple HIG 44px準拠        | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-touch-target.md`       |
+| UT-UI-ATOMS-SPEC-CLARIFICATION-001 | SuggestionBubble success-bounce 責務明確化                     | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-spec-clarification.md` |

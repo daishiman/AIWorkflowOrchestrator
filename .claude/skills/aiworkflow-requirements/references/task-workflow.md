@@ -132,6 +132,62 @@
 
 ## 完了タスク
 
+### タスク: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 skill:import IPCチャネル名競合の予防的解消（2026-02-24完了）
+
+| 項目         | 内容                                                             |
+| ------------ | ---------------------------------------------------------------- |
+| タスクID     | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001                             |
+| 完了日       | 2026-02-24                                                       |
+| ステータス   | **完了**                                                         |
+| タスク種別   | 仕様書修正のみ（`spec_created`）                                 |
+| Phase        | Phase 1-13 完了                                                  |
+| コード変更   | なし（仕様書修正のみ）                                           |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| ワークフロー一式     | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/`                                                 |
+| 実装ガイド           | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/outputs/phase-12/implementation-guide.md`        |
+| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/outputs/phase-12/documentation-changelog.md`     |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/outputs/phase-12/unassigned-task-detection.md`   |
+
+#### 変更理由
+
+- `skill:import` をローカルインポート専用のまま維持し、外部インポート用を `skill:importFromSource` に分離してIPCチャネル名競合を予防
+- TASK-9F/TASK-UI-05 仕様書のチャネル表記を統一し、実装前に契約ドリフトを除去
+- 仕様書修正のみタスクとして `spec_created` で完了管理し、Phase 10/11 で追加未タスク 0 件を確認
+
+---
+
+### タスク: TASK-UI-00-ATOMS Atoms共通コンポーネント実装（2026-02-23完了）
+
+| 項目       | 内容                                                             |
+| ---------- | ---------------------------------------------------------------- |
+| タスクID   | TASK-UI-00-ATOMS                                                 |
+| 完了日     | 2026-02-23                                                       |
+| ステータス | **完了**                                                         |
+| Phase      | Phase 1-13 完了                                                  |
+| テスト数   | 156（コンポーネント実装対象テスト、全PASS）                      |
+| 変更範囲   | Atoms新規5件 + 既存2件拡張                                       |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| ワークフロー一式     | `docs/30-workflows/completed-tasks/task-ui-00-atoms/`                                             |
+| 実装ガイド           | `docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/implementation-guide.md`    |
+| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 変更理由
+
+- Atoms層の基盤部品（StatusIndicator/FilterChip/SkeletonCard/SuggestionBubble/RelativeTime）を新規実装し、Badge/EmptyStateを拡張
+- Apple HIG/WCAGとデザイントークン運用を仕様化し、テーマ横断・a11y検証を実施
+- Phase 10 MINOR 3件を未タスク化して `docs/30-workflows/unassigned-task/` に配置し、`task-workflow.md` 残課題テーブルへ登録
+
+---
+
 ### タスク: UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 SkillImportDialog skill.id→skill.name修正（2026-02-22完了）
 
 | 項目       | 内容                                        |
@@ -913,10 +969,12 @@
 | UT-UI-THEME-DYNAMIC-SWITCH-001                     | settingsSlice テーマ動的切替対応（kanagawa-dragon固定 → light/dark/system連動）                                   | 中     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-theme-dynamic-switch-001.md`                                                                              |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001              | Tailwind CSS カスタムプロパティ統合（tokens.css変数をTailwind theme設定に反映）                                   | 低     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md`                                                                       |
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001              | SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗） | 高     | ランタイムエラー調査（2026-02-22）                                          | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md`                                                                    |
-| UT-UI-ATOMS-PROP-NAMING-001                       | RelativeTime Props命名統一（仕様書updateInterval → 実装refreshInterval）                                         | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-1（2026-02-23）                          | `docs/30-workflows/unassigned-task/task-ui-atoms-prop-naming.md`                                                                                   |
-| UT-UI-ATOMS-TOUCH-TARGET-001                      | SuggestionBubble size="sm" タッチターゲット Apple HIG 44px準拠                                                   | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-2（2026-02-23）                          | `docs/30-workflows/unassigned-task/task-ui-atoms-touch-target.md`                                                                                  |
-| UT-UI-ATOMS-SPEC-CLARIFICATION-001                | SuggestionBubble success-bounceマイクロインタラクション仕様書責務記述明確化                                       | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-3（2026-02-23）                          | `docs/30-workflows/unassigned-task/task-ui-atoms-spec-clarification.md`                                                                            |
+| UT-UI-ATOMS-PROP-NAMING-001                       | RelativeTime Props命名統一（仕様書updateInterval → 実装refreshInterval）                                         | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-1（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-prop-naming.md`                                                                                   |
+| UT-UI-ATOMS-TOUCH-TARGET-001                      | SuggestionBubble size="sm" タッチターゲット Apple HIG 44px準拠                                                   | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-2（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-touch-target.md`                                                                                  |
+| UT-UI-ATOMS-SPEC-CLARIFICATION-001                | SuggestionBubble success-bounceマイクロインタラクション仕様書責務記述明確化                                       | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-3（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-spec-clarification.md`                                                                            |
 | TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001       | check-shared-module-sync レポート拡充（修正ガイダンス・サマリー数値・printSummary設計準拠）                       | 低     | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 Phase 10 MINOR（2026-02-22）        | `docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md`                                                                     |
+| UT-IPC-CHANNEL-NAMING-AUDIT-001                   | IPCチャネル命名規則の横断的適用監査と統一                                                                        | 中     | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12（未タスク検出・2026-02-24）   | `docs/30-workflows/unassigned-task/task-ipc-channel-naming-audit-001.md`                                                                               |
+| UT-SPEC-ONLY-TASK-WORKFLOW-001                    | 仕様書修正のみタスクのPhaseテンプレート・grep検証TDD標準化                                                       | 中     | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12（未タスク検出・2026-02-24）   | `docs/30-workflows/unassigned-task/task-spec-only-task-workflow-automation-001.md`                                                                                 |
 
 ### 未タスク管理ルール
 
@@ -940,6 +998,8 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.54.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12 未タスク2件登録**: UT-IPC-CHANNEL-NAMING-AUDIT-001（IPCチャネル命名規則の横断的適用監査と統一）、UT-SPEC-ONLY-TASK-WORKFLOW-001（仕様書修正のみタスクのPhaseテンプレート・grep検証TDD標準化）をP3準拠で残課題テーブルに追加 |
+| **1.53.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 / TASK-UI-00-ATOMS 完了反映**: 完了タスクセクションに2タスクを追加。UTは仕様書修正のみ（`spec_created`）として記録、UI Atomsは完了成果物と未タスク3件の登録状況を追記。併せて `task-ui-00-atoms` の参照パスを `tasks/completed-task/00-2-atoms-components.md` へ正規化 |
 | **1.52.0** | **2026-02-22** | **TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001登録**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 Phase 10 MINOR指摘3件（M1: 修正ガイダンス未実装、M2: サマリーエントリ数未表示、M3: printSummaryシグネチャ設計乖離）を統合した未タスクを残課題テーブルに追加。P3準拠で3ステップ完了（指示書・残課題テーブル・quality-requirements.md参照リンク） |
 | **1.51.0** | **2026-02-22** | **UT-FIX-SKILL-IMPORT-ID-MISMATCH-001苦戦箇所から未タスク2件登録**: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001（Skill識別子Branded Type導入）、UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001（SkillImportDialog同名コンポーネント解消）をP3準拠で残課題テーブルに追加。Section 3.5に苦戦箇所（同名コンポーネント混乱、誤解を招くインポート成功ログ、importedSkillIds二重セマンティクス）を記録 |
 | **1.50.0** | **2026-02-22** | **UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了反映**: 残課題テーブルを完了化（取り消し線 + 完了日）。完了タスクセクションに詳細記録追加。Renderer層のみ変更（skill.id→skill.name、IPC/Preload無変更） |
