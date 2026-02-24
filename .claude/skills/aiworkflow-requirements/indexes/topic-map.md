@@ -180,7 +180,7 @@ node scripts/list-specs.js --topics
 | IPC インターフェース不整合修正パターン（P44/P45解決） | L2085 |
 | IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2113 |
 | P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2208 |
-| 変更履歴 | L2314 |
+| IPC データフロー型ギャップパターン（UT-IPC-DATA-FLOW-TYPE-GAPS-001 2026-02-24実装） | L2313 |
 
 ### references/architecture-monorepo.md
 
@@ -1514,36 +1514,36 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
 | IPC 型不整合の分類 | L18 |
-| 診断ワークフロー | L30 |
-| 解決パターン | L65 |
-| 予防策チェックリスト | L114 |
-| 関連ドキュメント | L129 |
-| 適用実績 | L140 |
-| 変更履歴 | L150 |
+| 診断ワークフロー | L33 |
+| 解決パターン | L68 |
+| 予防策チェックリスト | L205 |
+| 関連ドキュメント | L220 |
+| 適用実績 | L231 |
+| 変更履歴 | L242 |
 
 ### references/lessons-learned.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L68 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L216 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L265 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L439 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L490 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L560 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L868 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L979 |
-| 関連ドキュメント | L1118 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1128 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1305 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1363 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1506 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1610 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1756 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1811 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L2093 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L2181 |
+| 目次 | L70 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L229 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L388 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L437 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L611 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L662 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L732 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1040 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1151 |
+| 関連ドキュメント | L1290 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1300 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1477 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1535 |
+| TASK-FIX-14-1: console → electron-log 移行 | L1678 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L1782 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1928 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1983 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L2265 |
 
 ### references/llm-embedding.md
 
@@ -1885,9 +1885,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L852 |
-| 関連ドキュメント | L985 |
-| 変更履歴 | L995 |
+| 残課題（未タスク） | L907 |
+| 関連ドキュメント | L1039 |
+| 変更履歴 | L1049 |
 
 ### references/testing-accessibility.md
 

@@ -80,7 +80,8 @@ export interface ImportResult {
   skillName: string;
   skillPath: string;
   source: ShareTarget;
-  importedAt: Date;
+  /** @format ISO 8601 — IPC経由では string として送受信。バックエンド内部では Date を使用し、ハンドラ戻り値で .toISOString() に変換する */
+  importedAt: string; // ISO 8601 (例: "2026-02-24T12:00:00.000Z")
 }
 
 export interface ExportResult {
@@ -114,6 +115,20 @@ export class SkillShareManager {
   private validateImport(skillPath: string): Promise<ImportValidation>;
 }
 ```
+
+### IPC シリアライズ方針（Date 型）
+
+本タスクの Date 型フィールドは IPC 経由で ISO 8601 文字列（`string`）として送受信する。
+
+- **バックエンド（Main Process）内部**: `Date` オブジェクトを使用
+- **IPC 境界（ハンドラ戻り値）**: `.toISOString()` で ISO 8601 文字列に変換
+- **Renderer 側**: `string` として受け取り、表示時に `new Date(isoString)` で復元
+
+この方針は以下の理由に基づく:
+
+1. contextBridge の Structured Clone は Date を保持するが、JSON API（Web版）では string に変換される
+2. ISO 8601 文字列であれば `new Date()` で確実に復元可能
+3. IPC 型とドメイン型の混在を避け、型安全性を維持
 
 ### Step 2: GitHub認証統合
 

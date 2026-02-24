@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-24 | 1.23.0 | UT-IPC-DATA-FLOW-TYPE-GAPS-001 実装固有の苦戦箇所4件追加（仕様書修正タスクPhaseテンプレート適用、6ギャップ横断分析、Date型シリアライズ方針統一、positional→object引数移行設計）+ 同種課題向け簡潔解決手順5ステップ追加 |
+| 2026-02-24 | 1.22.0 | UT-IPC-DATA-FLOW-TYPE-GAPS-001 教訓追加: Phase 12再監査で判明した苦戦箇所3件（成果物不足、artifacts.json二重管理非同期、未タスク指示書フォーマット不一致）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-24 | 1.21.1 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 教訓追加: Phase 12再監査で判明した苦戦箇所3件（検出ソース網羅漏れ、検証スクリプト終端依存、全体監査と差分判定の混同）と簡潔解決手順（5ステップ）を追加 |
 | 2026-02-24 | 1.21.0 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 実装固有の苦戦箇所3件追加（6ハンドラ引数形式の違い、return→throwマイグレーション影響分析、コンテキスト枯渇による3セッション分割）+ 実装面解決手順5ステップ追加 |
 | 2026-02-24 | 1.20.0 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 教訓追加: P42準拠バリデーション統一時の苦戦箇所3件（補完タスクと元未タスクの二重管理、Phase 12ステータス同期、未タスクraw検出の既存TODO混在）と同種課題向け簡潔解決手順（4ステップ）を追加 |
@@ -66,6 +68,17 @@
 ---
 
 ## 目次
+
+0. [UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク）](#ut-ipc-data-flow-type-gaps-001-phase-12再監査仕様書修正タスク)
+   - [苦戦箇所1: Phase 12成果物の不足](#苦戦箇所1-phase-12成果物の不足)
+   - [苦戦箇所2: artifactsjson 二重管理の非同期](#苦戦箇所2-artifactsjson-二重管理の非同期)
+   - [苦戦箇所3: 未タスク指示書フォーマット不一致](#苦戦箇所3-未タスク指示書フォーマット不一致)
+   - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ)
+   - [苦戦箇所4: 仕様書修正タスクのPhaseテンプレート適用困難](#苦戦箇所4-仕様書修正タスクのphaseテンプレート適用困難)
+   - [苦戦箇所5: 6ギャップの横断的分析の複雑性](#苦戦箇所5-6ギャップの横断的分析の複雑性)
+   - [苦戦箇所6: Date型シリアライズ方針の統一判断](#苦戦箇所6-date型シリアライズ方針の統一判断)
+   - [苦戦箇所7: positional→object形式のIPC引数移行設計](#苦戦箇所7-positionalobject形式のipc引数移行設計)
+   - [同種課題の簡潔解決手順（5ステップ）- 仕様書修正タスク向け](#同種課題の簡潔解決手順5ステップ-仕様書修正タスク向け)
 
 0. [UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化](#ut-fix-ts-vitest-tsconfig-paths-001-vitest-alias-と-tsconfig-paths-の同期自動化)
    - [苦戦箇所1: Phase 12未タスク検出ソースの網羅漏れ](#苦戦箇所1-phase-12未タスク検出ソースの網羅漏れ)
@@ -210,6 +223,165 @@
    - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ-1)
 9. [関連ドキュメント](#関連ドキュメント)
 10. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+
+---
+
+## UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク）
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-IPC-DATA-FLOW-TYPE-GAPS-001 |
+| 目的 | IPCデータフロー型ギャップ修正タスクの Phase 12 成果物・システム仕様反映を完全同期する |
+| 完了日 | 2026-02-24 |
+| ステータス | **完了** |
+| 関連Pitfall | P1, P2, P3, P4, P29 |
+
+### 苦戦箇所1: Phase 12成果物の不足
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `phase-12-documentation.md` で必須の `spec-update-summary.md` が未生成のまま進行していた |
+| 原因 | `documentation-changelog.md` 更新時に成果物一覧との突合が後手になった |
+| 対処 | `outputs/phase-12/` 実体と成果物表を1対1で突合し、不足成果物を即時作成した |
+| 教訓 | Phase 12 は「文書更新完了」ではなく「成果物セット完了」で判定する |
+
+### 苦戦箇所2: artifactsjson 二重管理の非同期
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `artifacts.json` と `outputs/artifacts.json` の状態・成果物パスが分岐していた |
+| 原因 | 片方のみ更新され、Phase 6/11/12 の成果物名が旧状態で残存した |
+| 対処 | 2ファイルを同一内容へ同期し、completed成果物の実在チェックを実施した |
+| 教訓 | 進捗台帳は同期手順を完了条件に組み込まないと再発する |
+
+### 苦戦箇所3: 未タスク指示書フォーマット不一致
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 未タスク指示書が旧テンプレート見出し（`## 1. メタ情報`）で監査違反になった |
+| 原因 | Why/What/How 必須見出しへの追従不足 |
+| 対処 | 指示書を最新テンプレート（`## メタ情報` + 1〜9セクション）へ全面整形した |
+| 教訓 | 未タスク作成直後に `audit-unassigned-tasks.js` 単体監査を実行する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. `phase-12-documentation.md` の成果物一覧と `outputs/phase-12/` 実体を突合する
+2. `artifacts.json` と `outputs/artifacts.json` を同時更新し、completed成果物の参照切れをゼロ化する
+3. `generate-index.js` 実行結果を `documentation-changelog.md` と `spec-update-summary.md` に記録する
+4. 未タスク指示書は `audit-unassigned-tasks.js` で単体監査し、必須見出し不足を解消してから完了扱いにする
+
+### 苦戦箇所4: 仕様書修正タスクのPhaseテンプレート適用困難
+
+- **タスクID**: UT-IPC-DATA-FLOW-TYPE-GAPS-001
+- **カテゴリ**: タスク管理・ワークフロー
+- **症状**: コード変更なしの仕様書修正タスクでは、Phase 4（テスト作成）、Phase 7（カバレッジ確認）、Phase 11（手動テスト）が本来の意味（ユニットテスト、カバレッジ率、UI操作確認）と合致しない
+- **原因**: Phase 1-13テンプレートはコード実装タスクを前提としており、仕様書修正のみタスクに対する簡略化Phaseガイドが存在しなかった
+- **解決策**:
+  - Phase 4 = grep検証基準設計（49検証項目を正規表現パターンとして定義）
+  - Phase 5 = 仕様書修正実行（7ファイル、28修正項目）
+  - Phase 6-7 = grepベース整合性検証（24項目）+ 網羅性確認（49項目）
+  - Phase 11 = 実装者視点レビュー（3視点×3ケース = 9テスト）
+- **教訓**: 仕様書修正タスクでは、各Phaseの「N/A」判定ではなく、同等の品質保証を別手段で実現する代替アプローチを設計すべき
+
+### 苦戦箇所5: 6ギャップの横断的分析の複雑性
+
+- **タスクID**: UT-IPC-DATA-FLOW-TYPE-GAPS-001
+- **カテゴリ**: 分析・設計
+- **症状**: 7ファイル×6ギャップ = 42交差ポイントの検証で、Gap別に修正すると1ファイル内の整合性が崩れ、ファイル別に修正するとGap間の一貫性が失われる
+- **原因**: 型ギャップは複数ファイルに跨る横断的な問題であり、単一ファイルのスコープでは完全な検証ができない
+- **解決策**:
+  1. Phase 1でGap別に問題を分類し、影響範囲マトリクス（Gap×ファイル）を作成
+  2. Phase 5ではGap別に修正を実行し、各Gap完了時にファイル間整合性を確認
+  3. Phase 6で横断的整合性検証（24項目）、Phase 7で網羅性確認（49項目）を分離
+- **教訓**: 横断的な型ギャップ修正では「Gap別修正→ファイル間検証」のサイクルが効果的。ファイル別に修正すると、後から別Gapの修正で先の修正と矛盾するリスクがある
+
+### 苦戦箇所6: Date型シリアライズ方針の統一判断
+
+- **タスクID**: UT-IPC-DATA-FLOW-TYPE-GAPS-001
+- **カテゴリ**: 設計判断
+- **症状**: 4ファイル（task-9f, 9g, 9h, 9j）に散在する14個のDate型フィールドに対し、IPC境界でのシリアライズ方針が未定義だった。`Date`型のままIPCで送信するとJSONシリアライズでタイムゾーン情報が失われるリスクがあった
+- **原因**: 仕様書作成時にIPC境界での型変換を考慮していなかった。バックエンド側の`Date`型とフロントエンド側の`string`型の間のギャップが暗黙的だった
+- **解決策**:
+  - ISO 8601文字列（`string; // ISO 8601`）を統一基準として採用
+  - Main Processハンドラの戻り値で`.toISOString()`に変換するパターンを標準化
+  - Renderer側では`new Date(isoString)`で復元するパターンを明記
+  - 14フィールド全てに型注記を一括追加
+
+```typescript
+// ❌ IPC境界でDate型を直接使用（シリアライズで情報欠落リスク）
+interface SkillSchedule {
+  nextRun: Date;       // JSONシリアライズで文字列化されるが形式が不定
+  lastRun: Date | null;
+}
+
+// ✅ ISO 8601文字列で統一
+interface SkillSchedule {
+  nextRun: string;       // ISO 8601
+  lastRun: string | null; // ISO 8601
+}
+
+// Main Process側の変換
+return {
+  nextRun: schedule.nextRun.toISOString(),
+  lastRun: schedule.lastRun?.toISOString() ?? null,
+};
+
+// Renderer側の復元
+const nextRun = new Date(schedule.nextRun);
+```
+
+- **教訓**: IPC境界を越えるDate型は必ずISO 8601文字列に変換する方針を仕様書段階で定義すべき。後からの一括修正は14フィールド×4ファイルと影響範囲が大きい
+
+### 苦戦箇所7: positional→object形式のIPC引数移行設計
+
+- **タスクID**: UT-IPC-DATA-FLOW-TYPE-GAPS-001
+- **カテゴリ**: 設計判断・IPC
+- **症状**: task-9a（Skill Editor）の6ハンドラがpositional形式（`safeInvoke(channel, arg1, arg2)`）で定義されていたが、P44/P45の教訓からobject形式（`safeInvoke(channel, { key1: val1, key2: val2 })`）への統一が必要だった
+- **原因**: task-9aの仕様書はP44発見前に作成されており、旧パターンのpositional引数が使用されていた
+- **解決策**:
+  1. 6ハンドラ分のArgs型定義を新規追加（`SkillEditorReadArgs`, `SkillEditorWriteArgs`等）
+  2. P42準拠の3段バリデーション（型チェック→空文字列→trim空文字列）をobject内の各フィールドに適用
+  3. Before/Afterコード例を仕様書に記載し、後続実装者が迷わないようにする
+  4. 既存のpositional形式のsafeInvoke呼び出しも、Preload側でobjectに変換する中間層パターンを設計
+
+```typescript
+// ❌ positional形式（旧パターン、P44リスク）
+safeInvoke(IPC_CHANNELS.SKILL_EDITOR_READ, skillName, relativePath);
+
+// ✅ object形式（P44/P45準拠）
+safeInvoke(IPC_CHANNELS.SKILL_EDITOR_READ, { skillName, relativePath });
+
+// Args型定義
+interface SkillEditorReadArgs {
+  skillName: string;
+  relativePath: string;
+}
+
+// ハンドラ側バリデーション（P42準拠）
+ipcMain.handle('skill:editor:read', async (event, args: SkillEditorReadArgs) => {
+  if (typeof args?.skillName !== 'string' || args.skillName.trim() === '') {
+    throw { code: 'VALIDATION_ERROR', message: 'skillName must be a non-empty string' };
+  }
+  if (typeof args?.relativePath !== 'string' || args.relativePath.trim() === '') {
+    throw { code: 'VALIDATION_ERROR', message: 'relativePath must be a non-empty string' };
+  }
+  // ...
+});
+```
+
+- **教訓**: 仕様書段階でIPC引数形式を統一しておくことで、実装時のP44/P45再発リスクを完全に排除できる。6ハンドラ分のArgs型定義は手間だが、型安全性と保守性の向上に大きく寄与する
+
+### 同種課題の簡潔解決手順（5ステップ）- 仕様書修正タスク向け
+
+仕様書間のデータフロー型ギャップを検出・解消するタスクに遭遇した場合：
+
+1. **ギャップマトリクス作成**: 全対象ファイルを横軸、全ギャップを縦軸とした影響範囲マトリクスを作成し、各セルに「修正要/不要/該当なし」を記入
+2. **grepベースの検証基準設計**: 各ギャップの修正完了を判定する正規表現パターンを事前定義（例: `grep -c "string; // ISO 8601" task-9*.md` で Date型フィールド数を検証）
+3. **Gap別修正→ファイル間検証のサイクル**: Gap単位で全ファイルを修正し、修正完了後にファイル間の整合性をgrepで横断検証
+4. **Phase対応表の事前定義**: コード変更なしタスクの場合、各Phaseで何を代替実施するかを Phase 1 で事前定義（Phase 4=検証基準設計、Phase 6-7=grep検証 等）
+5. **Phase 12の成果物を先に定義**: spec-update-summary.md、documentation-changelog.md、unassigned-task-report.md の3成果物を Phase 12 開始時に空ファイルで作成し、完了時に内容を埋める
 
 ---
 

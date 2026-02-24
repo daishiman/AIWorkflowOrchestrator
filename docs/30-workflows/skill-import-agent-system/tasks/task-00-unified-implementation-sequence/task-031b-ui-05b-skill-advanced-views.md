@@ -316,6 +316,61 @@ interface DebugControlsProps {
 | 一時停止       | `Pause`                  | `F6`           | running           |
 | 停止           | `Square`                 | `Shift+F5`     | running or paused |
 
+### skill:debug:event のイベント購読（P5 対策）
+
+DebugPanel は `skill:debug:event` チャネルを `safeOn` で購読し、デバッグイベント（ステップ実行、ブレークポイントヒット、変数変更等）をリアルタイムで受信する。
+
+#### 購読パターン（React StrictMode 対応）
+
+P5（リスナー二重登録）を防止するため、`useEffect` のクリーンアップ関数でリスナーを解除する:
+
+```typescript
+// DebugPanel のイベント購読パターン（P5 対策）
+useEffect(() => {
+  // safeOn はクリーンアップ関数を返す
+  const cleanup = window.electronAPI.skill.onDebugEvent((event: DebugEvent) => {
+    switch (event.type) {
+      case "step":
+        setCurrentStep(event.step);
+        break;
+      case "breakpoint-hit":
+        setSessionStatus("paused");
+        setCurrentBreakpoint(event.breakpoint);
+        break;
+      case "variable-changed":
+        setVariables((prev) => ({ ...prev, [event.path]: event.value }));
+        break;
+      case "session-ended":
+        setSessionStatus(event.error ? "error" : "completed");
+        break;
+    }
+  });
+
+  // StrictMode 対策: アンマウント時にリスナーを確実に解除
+  return () => cleanup();
+}, []); // 依存配列は空 — リスナーはマウント時に一度だけ登録
+```
+
+#### 注意事項
+
+1. **React StrictMode**: 開発環境では `useEffect` が2回実行される。`cleanup()` 関数で確実にリスナーを解除しないと、リスナーが二重登録される（P5 パターン）
+2. **safeOn の戻り値**: `safeOn` は解除関数（`() => void`）を返す。この戻り値を `useEffect` の return で呼び出す
+3. **DebugEvent 型**: task-9h で定義される `DebugEvent` 型を使用する。IPC 経由のため Date フィールドは ISO 8601 文字列（Gap 1 方針）
+4. **Preload 側の定義**: `safeOn(IPC_CHANNELS.SKILL_DEBUG_EVENT, callback)` として実装。IPC_CHANNELS 定数を使用する（ハードコード文字列禁止 -- P27 対策）
+
+#### Preload API 定義
+
+```typescript
+// Preload API（contextBridge 経由で公開）
+interface SkillAPI {
+  // ... 既存メソッド ...
+
+  /** デバッグイベントの購読（Main → Renderer プッシュ通知） */
+  onDebugEvent: (callback: (event: DebugEvent) => void) => () => void;
+  // 戻り値は解除関数（safeOn パターン）
+}
+```
+
 ### マイクロインタラクション
 
 | 対象                 | トリガー   | アニメーション                                | 時間  |

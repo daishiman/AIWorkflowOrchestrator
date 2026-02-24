@@ -56,7 +56,7 @@
 
 ## Phase 12: ドキュメント更新
 
-### 必須タスク（4タスク - 全て完了必須）
+### 必須タスク（5タスク - 全て完了必須）
 
 #### Task 1: 実装ガイド作成【必須・2パート構成】
 
@@ -159,6 +159,18 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 
 ---
 
+#### Task 5: スキルフィードバックレポート作成【改善点なしでも出力必須】
+
+| 観点 | 確認内容 |
+| --- | --- |
+| テンプレート改善 | Phaseテンプレートの不足・曖昧な判定条件 |
+| ワークフロー改善 | 自動検証化できるチェックポイント |
+| ドキュメント改善 | 横断ガイドライン化すべき知見 |
+
+**出力**: `outputs/phase-12/skill-feedback-report.md`
+
+---
+
 ## Phase 12 完了条件チェックリスト
 
 - [ ] 実装ガイド（Part 1: **中学生レベル概念説明**）が作成されている
@@ -171,11 +183,14 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
 - [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
+- [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
+- [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
+- [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
 - [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js` を実行し、フォーマット違反/命名違反/誤配置が0件であることを確認
@@ -229,6 +244,7 @@ pnpm lint --fix
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-24 | Phase 12整合性改善: 必須タスク数を5に更新（Task 5: skill-feedback-report 必須化）。完了条件に `spec-update-summary.md` 作成・`artifacts.json` 二重台帳同期チェックを追加 |
 | 2026-02-22 | 未タスク監査強化: `audit-unassigned-tasks.js` 実行チェックを追加（フォーマット違反/命名違反/誤配置の一括検証） |
 | 2026-02-13 | TASK-FIX-13-1教訓反映: Phase 12完了チェックリストに「苦戦箇所のシステム仕様書記録」を追加 |
 | 2026-02-12 | TASK-9B-I教訓反映: 未タスク配置ディレクトリ確認・テスト数実測値確認・SDK declare module確認の3項目をチェックリストに追加。漏れやすいポイントテーブルに2件追加 |
