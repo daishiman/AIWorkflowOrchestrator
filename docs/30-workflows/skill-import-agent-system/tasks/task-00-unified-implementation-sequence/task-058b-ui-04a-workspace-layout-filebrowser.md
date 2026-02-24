@@ -2,20 +2,20 @@
 
 ## 1. メタ情報
 
-| 項目             | 値                                                                                                                                           |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID         | TASK-UI-04A-WORKSPACE-LAYOUT                                                                                                                 |
-| 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                          |
-| ステータス       | 未着手                                                                                                                                       |
-| 優先度           | high                                                                                                                                         |
-| 複雑度           | large                                                                                                                                        |
-| 推定ファイル数   | ~14                                                                                                                                          |
-| 依存タスク       | TASK-UI-00（デザイン基盤）, TASK-UI-01（アーキテクチャ）, TASK-UI-02（ナビコア）                                                             |
-| ブロック対象     | TASK-UI-04B（チャットパネル）, TASK-UI-04C（プレビュー・クイック検索）                                                                       |
-| 対象ビュー       | WorkspaceView（新規作成、ViewType=`workspace`）                                                                                              |
-| 関連スライス     | `workspaceSlice`（既存拡張）, `fileSelectionSlice`（既存利用）                                                                               |
-| 関連 IPC         | `workspace:*`, `file:*`                                                                                                                      |
-| 関連ドキュメント | [04B-workspace-chat-panel.md](./04B-workspace-chat-panel.md), [04C-workspace-preview-quicksearch.md](./04C-workspace-preview-quicksearch.md) |
+| 項目             | 値                                                                                                                                                                     |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-UI-04A-WORKSPACE-LAYOUT                                                                                                                                           |
+| 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                                                    |
+| ステータス       | 未着手                                                                                                                                                                 |
+| 優先度           | high                                                                                                                                                                   |
+| 複雑度           | large                                                                                                                                                                  |
+| 推定ファイル数   | ~14                                                                                                                                                                    |
+| 依存タスク       | TASK-UI-00（デザイン基盤）, TASK-UI-01（アーキテクチャ）, TASK-UI-02（ナビコア）                                                                                       |
+| ブロック対象     | TASK-UI-04B（チャットパネル）, TASK-UI-04C（プレビュー・クイック検索）                                                                                                 |
+| 対象ビュー       | WorkspaceView（新規作成、ViewType=`workspace`）                                                                                                                        |
+| 関連スライス     | `workspaceSlice`（既存拡張）, `fileSelectionSlice`（既存利用）                                                                                                         |
+| 関連 IPC         | `workspace:*`, `file:*`                                                                                                                                                |
+| 関連ドキュメント | [04B-workspace-chat-panel.md](./task-059a-ui-04b-workspace-chat-panel.md), [04C-workspace-preview-quicksearch.md](./task-059b-ui-04c-workspace-preview-quicksearch.md) |
 
 ## 2. 目的と背景
 
@@ -23,7 +23,7 @@
 
 **チャットを主役とした1ペイン**から始まり、ユーザーが必要に応じてファイルパネルやプレビューをサイドバーとして明示的に開く作業スペースを新規作成する。「タップ＆ディスカバー」の設計哲学に基づき、初期表示をチャット入力欄とサジェスチョンだけに絞り込み、操作に応じて段階的に機能を開示する。
 
-本ドキュメント（04A）では、チャット中心レイアウトの基盤構造、サイドバートグル、ファイルパネル、リサイズ機構、WorkspaceStatusBar、ファイル変更監視を定義する。チャットパネル本体は [04B](./04B-workspace-chat-panel.md)、プレビューとクイック検索は [04C](./04C-workspace-preview-quicksearch.md) を参照。
+本ドキュメント（04A）では、チャット中心レイアウトの基盤構造、サイドバートグル、ファイルパネル、リサイズ機構、WorkspaceStatusBar、ファイル変更監視を定義する。チャットパネル本体は [04B](./task-059a-ui-04b-workspace-chat-panel.md)、プレビューとクイック検索は [04C](./task-059b-ui-04c-workspace-preview-quicksearch.md) を参照。
 
 ### 背景
 
@@ -345,7 +345,7 @@ interface PanelToggleBarProps {
 
 - ファイルサイドバー: ツリー表示（通常動作）
 - ChatPanel: 通常動作（ファイルの背景情報なしでチャット可能）
-- プレビュー: ゼロステート表示（[04C セクション 6.7](./04C-workspace-preview-quicksearch.md) 参照）
+- プレビュー: ゼロステート表示（[04C セクション 6.7](./task-059b-ui-04c-workspace-preview-quicksearch.md) 参照）
 
 ## 5. ファイルパネル設計
 
@@ -579,7 +579,7 @@ WorkspaceView/ (organisms) -- ViewType="workspace" 用
     +-- usePanelResize.ts                # パネルリサイズロジック
 ```
 
-> **注**: WorkspaceChatPanel は [04B](./04B-workspace-chat-panel.md)、プレビュー・クイック検索は [04C](./04C-workspace-preview-quicksearch.md) を参照。
+> **注**: WorkspaceChatPanel は [04B](./task-059a-ui-04b-workspace-chat-panel.md)、プレビュー・クイック検索は [04C](./task-059b-ui-04c-workspace-preview-quicksearch.md) を参照。
 
 ### 8.2 Atomic Design 分類（04A 範囲）
 
@@ -702,7 +702,7 @@ function computeLayoutMode(
 | `file:watch-stop`          | invoke | ファイル変更監視停止   | `fileHandlers.ts`      |
 | `file:changed`             | on     | ファイル変更通知       | `fileHandlers.ts`      |
 
-> **注**: `llm:*`, `conversation:*` チャネルは [04B](./04B-workspace-chat-panel.md) を参照。`search:*` チャネルは [04C](./04C-workspace-preview-quicksearch.md) を参照。
+> **注**: `llm:*`, `conversation:*` チャネルは [04B](./task-059a-ui-04b-workspace-chat-panel.md) を参照。`search:*` チャネルは [04C](./task-059b-ui-04c-workspace-preview-quicksearch.md) を参照。
 
 ### 10.2 新規 IPC チャネル（必要に応じて追加）
 
@@ -959,11 +959,11 @@ apps/desktop/src/renderer/
 
 ### 04 シリーズ分割ドキュメント
 
-| ファイル                                                                       | 責務                                                                              |
-| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| **本ドキュメント（04A）**                                                      | チャット中心レイアウト + ファイルサイドバー + StatusBar + リサイズ + ファイル監視 |
-| [04B-workspace-chat-panel.md](./04B-workspace-chat-panel.md)                   | チャットパネル + ファイル背景情報連携 + @mention + ストリーミング                 |
-| [04C-workspace-preview-quicksearch.md](./04C-workspace-preview-quicksearch.md) | プレビュー + ソース/表示切替 + クイック検索(Cmd+P) + CSP                          |
+| ファイル                                                                                    | 責務                                                                              |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **本ドキュメント（04A）**                                                                   | チャット中心レイアウト + ファイルサイドバー + StatusBar + リサイズ + ファイル監視 |
+| [04B-workspace-chat-panel.md](./task-059a-ui-04b-workspace-chat-panel.md)                   | チャットパネル + ファイル背景情報連携 + @mention + ストリーミング                 |
+| [04C-workspace-preview-quicksearch.md](./task-059b-ui-04c-workspace-preview-quicksearch.md) | プレビュー + ソース/表示切替 + クイック検索(Cmd+P) + CSP                          |
 
 ### 参照資料
 
@@ -985,6 +985,6 @@ apps/desktop/src/renderer/
 
 ## 19. 次の Phase
 
-- 04A 完了後、[04B](./04B-workspace-chat-panel.md)（チャットパネル）と [04C](./04C-workspace-preview-quicksearch.md)（プレビュー + クイック検索）を**並列実装可能**
+- 04A 完了後、[04B](./task-059a-ui-04b-workspace-chat-panel.md)（チャットパネル）と [04C](./task-059b-ui-04c-workspace-preview-quicksearch.md)（プレビュー + クイック検索）を**並列実装可能**
 - TASK-UI-05（ツールを探す）、TASK-UI-06（あなたの記録）とも**並列実行可能**
 - 全画面が揃った後、TASK-UI-07（ダッシュボード）で作業スペース統計を統合する

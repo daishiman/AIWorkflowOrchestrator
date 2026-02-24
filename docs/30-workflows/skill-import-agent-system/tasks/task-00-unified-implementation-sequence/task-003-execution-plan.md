@@ -966,5 +966,5 @@ const RETRY_CONFIG = {
 
 ## 関連ドキュメント
 
-- [仕様書](./specification.md)
-- [技術選定・設計判断](./technical-decisions.md)
+- [仕様書](../../specification.md)
+- [技術選定・設計判断](../../technical-decisions.md)
