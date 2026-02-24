@@ -2,26 +2,26 @@
 
 ## 1. メタ情報
 
-| 項目             | 値                                                                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID         | TASK-UI-04C-WORKSPACE-PREVIEW                                                                                                              |
-| 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                        |
-| ステータス       | 未着手                                                                                                                                     |
-| 優先度           | high                                                                                                                                       |
-| 複雑度           | medium                                                                                                                                     |
-| 推定ファイル数   | ~12                                                                                                                                        |
-| 依存タスク       | TASK-UI-00（デザイン基盤）, TASK-UI-01（アーキテクチャ）, TASK-UI-04A（レイアウト基盤）                                                    |
-| ブロック対象     | なし（04B と並列実行可能）                                                                                                                 |
-| 対象ビュー       | WorkspaceView 内 PreviewPanel ペイン + QuickFileSearch モーダル                                                                            |
-| 関連スライス     | `workspaceSlice`（既存利用）                                                                                                               |
-| 関連 IPC         | `file:read`（既存利用）                                                                                                                    |
-| 関連ドキュメント | [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md), [04B-workspace-chat-panel.md](./04B-workspace-chat-panel.md) |
+| 項目             | 値                                                                                                                                                                   |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-UI-04C-WORKSPACE-PREVIEW                                                                                                                                        |
+| 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                                                  |
+| ステータス       | 未着手                                                                                                                                                               |
+| 優先度           | high                                                                                                                                                                 |
+| 複雑度           | medium                                                                                                                                                               |
+| 推定ファイル数   | ~12                                                                                                                                                                  |
+| 依存タスク       | TASK-UI-00（デザイン基盤）, TASK-UI-01（アーキテクチャ）, TASK-UI-04A（レイアウト基盤）                                                                              |
+| ブロック対象     | なし（04B と並列実行可能）                                                                                                                                           |
+| 対象ビュー       | WorkspaceView 内 PreviewPanel ペイン + QuickFileSearch モーダル                                                                                                      |
+| 関連スライス     | `workspaceSlice`（既存利用）                                                                                                                                         |
+| 関連 IPC         | `file:read`（既存利用）                                                                                                                                              |
+| 関連ドキュメント | [04A-workspace-layout-filebrowser.md](./task-058b-ui-04a-workspace-layout-filebrowser.md), [04B-workspace-chat-panel.md](./task-059a-ui-04b-workspace-chat-panel.md) |
 
 ## 2. 目的
 
 ワークスペース画面内の PreviewPanel ペインと QuickFileSearch（Cmd+P）モーダルを実装する。選択ファイルの Source/Preview 切替表示と、ワークスペース内のファイル高速検索機能を提供する。
 
-レイアウト基盤（3ペイン構造、リサイズ機構）は [04A](./04A-workspace-layout-filebrowser.md) で提供される。本ドキュメントでは PreviewPanel と QuickFileSearch の内部設計に集中する。
+レイアウト基盤（3ペイン構造、リサイズ機構）は [04A](./task-058b-ui-04a-workspace-layout-filebrowser.md) で提供される。本ドキュメントでは PreviewPanel と QuickFileSearch の内部設計に集中する。
 
 ### 2.1 UX言語マッピング（5D準拠）
 
@@ -214,7 +214,7 @@ PreviewPanel は既存の `file:read` IPC チャネルを使用してファイ�
 | ----------- | ------ | -------------------- | ----------------- |
 | `file:read` | invoke | ファイル内容読み込み | `fileHandlers.ts` |
 
-> **注**: `workspace:*`, `file:*`（ツリー・監視）チャネルは [04A](./04A-workspace-layout-filebrowser.md)、`llm:*`, `conversation:*` チャネルは [04B](./04B-workspace-chat-panel.md) を参照。
+> **注**: `workspace:*`, `file:*`（ツリー・監視）チャネルは [04A](./task-058b-ui-04a-workspace-layout-filebrowser.md)、`llm:*`, `conversation:*` チャネルは [04B](./task-059a-ui-04b-workspace-chat-panel.md) を参照。
 
 ## 7. ゼロステート
 
@@ -350,33 +350,33 @@ apps/desktop/src/renderer/
 
 ### 04 シリーズ分割ドキュメント
 
-| ファイル                                                                     | 責務                                                                       |
-| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md) | 3ペインレイアウト + FileBrowserPanel + StatusBar + リサイズ + ファイル監視 |
-| [04B-workspace-chat-panel.md](./04B-workspace-chat-panel.md)                 | ChatPanel + ファイルコンテキスト連携 + @mention + ストリーミング           |
-| **本ドキュメント（04C）**                                                    | PreviewPanel + Source/Preview切替 + QuickFileSearch(Cmd+P) + CSP           |
+| ファイル                                                                                  | 責務                                                                       |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [04A-workspace-layout-filebrowser.md](./task-058b-ui-04a-workspace-layout-filebrowser.md) | 3ペインレイアウト + FileBrowserPanel + StatusBar + リサイズ + ファイル監視 |
+| [04B-workspace-chat-panel.md](./task-059a-ui-04b-workspace-chat-panel.md)                 | ChatPanel + ファイルコンテキスト連携 + @mention + ストリーミング           |
+| **本ドキュメント（04C）**                                                                 | PreviewPanel + Source/Preview切替 + QuickFileSearch(Cmd+P) + CSP           |
 
 ## 13.1 参照資料
 
-| 資料                       | パス / タスク ID                                                                  |
-| -------------------------- | --------------------------------------------------------------------------------- |
-| デザイン基盤               | TASK-UI-00 `00-ui-design-foundation.md`                                           |
-| UI アーキテクチャ          | TASK-UI-01 `01-store-ipc-architecture.md`                                         |
-| レイアウト基盤（04A）      | [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md)      |
-| UX言語ガイドライン（5D）   | TASK-UI-00 `00-ui-design-foundation.md` Task 5D                                   |
-| UI/UXコンポーネント仕様    | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`           |
-| a11yテスト基準             | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`      |
-| コンポーネントテスト基準   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md` |
-| 品質要件                   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       |
-| セキュリティルール         | `.claude/rules/04-electron-security.md`                                           |
-| IPC チャネル定義           | `apps/desktop/src/preload/channels.ts`                                            |
-| P5: リスナー二重登録       | `.claude/rules/06-known-pitfalls.md#P5`                                           |
-| P31: Store Hook 無限ループ | `.claude/rules/06-known-pitfalls.md#P31`                                          |
-| P39: happy-dom userEvent   | `.claude/rules/06-known-pitfalls.md#P39`                                          |
+| 資料                       | パス / タスク ID                                                                          |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| デザイン基盤               | TASK-UI-00 `00-ui-design-foundation.md`                                                   |
+| UI アーキテクチャ          | TASK-UI-01 `01-store-ipc-architecture.md`                                                 |
+| レイアウト基盤（04A）      | [04A-workspace-layout-filebrowser.md](./task-058b-ui-04a-workspace-layout-filebrowser.md) |
+| UX言語ガイドライン（5D）   | TASK-UI-00 `00-ui-design-foundation.md` Task 5D                                           |
+| UI/UXコンポーネント仕様    | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                   |
+| a11yテスト基準             | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`              |
+| コンポーネントテスト基準   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`         |
+| 品質要件                   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`               |
+| セキュリティルール         | `.claude/rules/04-electron-security.md`                                                   |
+| IPC チャネル定義           | `apps/desktop/src/preload/channels.ts`                                                    |
+| P5: リスナー二重登録       | `.claude/rules/06-known-pitfalls.md#P5`                                                   |
+| P31: Store Hook 無限ループ | `.claude/rules/06-known-pitfalls.md#P31`                                                  |
+| P39: happy-dom userEvent   | `.claude/rules/06-known-pitfalls.md#P39`                                                  |
 
 ## 14. 次の Phase
 
 - 04A（レイアウト基盤）完了後に実装開始
-- [04B](./04B-workspace-chat-panel.md)（ChatPanel）と **並列実装可能**
+- [04B](./task-059a-ui-04b-workspace-chat-panel.md)（ChatPanel）と **並列実装可能**
 - TASK-UI-05（スキルセンター）、TASK-UI-06（履歴・統合検索）とも **並列実行可能**
 - 全画面が揃った後、TASK-UI-07（ダッシュボード）でワークスペース統計を統合する

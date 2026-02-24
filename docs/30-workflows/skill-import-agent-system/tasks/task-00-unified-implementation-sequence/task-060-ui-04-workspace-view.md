@@ -4,11 +4,11 @@
 
 ## 分割先
 
-| ファイル                                                                       | 責務                                                                       | 推定ファイル数 |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------- | -------------- |
-| [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md)   | 3ペインレイアウト + FileBrowserPanel + StatusBar + リサイズ + ファイル監視 | ~14            |
-| [04B-workspace-chat-panel.md](./04B-workspace-chat-panel.md)                   | ChatPanel + ファイルコンテキスト連携 + @mention + ストリーミング           | ~10            |
-| [04C-workspace-preview-quicksearch.md](./04C-workspace-preview-quicksearch.md) | PreviewPanel + Source/Preview切替 + QuickFileSearch(Cmd+P) + CSP           | ~12            |
+| ファイル                                                                                    | 責務                                                                       | 推定ファイル数 |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------- |
+| [04A-workspace-layout-filebrowser.md](./task-058b-ui-04a-workspace-layout-filebrowser.md)   | 3ペインレイアウト + FileBrowserPanel + StatusBar + リサイズ + ファイル監視 | ~14            |
+| [04B-workspace-chat-panel.md](./task-059a-ui-04b-workspace-chat-panel.md)                   | ChatPanel + ファイルコンテキスト連携 + @mention + ストリーミング           | ~10            |
+| [04C-workspace-preview-quicksearch.md](./task-059b-ui-04c-workspace-preview-quicksearch.md) | PreviewPanel + Source/Preview切替 + QuickFileSearch(Cmd+P) + CSP           | ~12            |
 
 ## 分割理由
 

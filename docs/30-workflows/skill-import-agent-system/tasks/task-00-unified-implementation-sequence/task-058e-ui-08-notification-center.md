@@ -7,7 +7,7 @@
 | タスクID   | TASK-UI-08-NOTIFICATION-CENTER              |
 | ティア     | 4 (UI刷新)                                  |
 | 依存       | TASK-UI-00, TASK-UI-01, TASK-UI-02          |
-| 並列可     | TASK-UI-07, TASK-UI-09                      |
+| 並列可     | TASK-UI-07（UI-09は対象外）                 |
 | 複雑度     | low                                         |
 | ステータス | pending                                     |
 | 優先度     | medium                                      |

@@ -25,7 +25,7 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillFileManager.ts
-  # UI成果物は ./task-031-ui-05a-skill-editor-view.md で定義
+  # UI成果物は ./task-031a-ui-05a-skill-editor-view.md で定義
   modifies:
     - apps/desktop/src/renderer/store/slices/skillSlice.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
@@ -37,9 +37,9 @@ artifacts:
 >
 > 実行粒度を細かくするため、以下のサブタスクに分割されています：
 >
-> - [TASK-9A-A: SkillFileManager](./task-9a-a-file-manager.md) - バックアップ・リストア機能付きファイル管理
-> - [TASK-9A-B: ファイル編集IPC](./completed-task/task-9a-b-ipc-file-handlers.md) - ファイル編集用IPCハンドラー
-> - [TASK-9A-C: SkillEditor UI](./completed-task/task-9a-c-skill-editor-ui.md) - エディターUIコンポーネント
+> - [TASK-9A-A: SkillFileManager](../completed-task/task-9a-a-file-manager.md) - バックアップ・リストア機能付きファイル管理
+> - [TASK-9A-B: ファイル編集IPC](../completed-task/task-9a-b-ipc-file-handlers.md) - ファイル編集用IPCハンドラー
+> - [TASK-9A-C: SkillEditor UI](../completed-task/task-9a-c-skill-editor-ui.md) - エディターUIコンポーネント
 >
 > 以下は参照用の元仕様です。
 
@@ -254,7 +254,7 @@ ipcMain.handle(
 
 > **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
 >
-> Apple HIG 準拠の UI 仕様: [05A-skill-editor-view.md](./task-031-ui-05a-skill-editor-view.md)
+> Apple HIG 準拠の UI 仕様: [05A-skill-editor-view.md](./task-031a-ui-05a-skill-editor-view.md)
 >
 > 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
@@ -262,7 +262,7 @@ ipcMain.handle(
 
 > **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
 >
-> Apple HIG 準拠の UI 仕様: [05A-skill-editor-view.md](./task-031-ui-05a-skill-editor-view.md)
+> Apple HIG 準拠の UI 仕様: [05A-skill-editor-view.md](./task-031a-ui-05a-skill-editor-view.md)
 >
 > 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 

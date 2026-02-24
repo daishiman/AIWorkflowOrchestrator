@@ -12,16 +12,26 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ### Phase 1: 契約ギャップ先行解消（UT）
 
-4. `task-010-ut-skill-import-channel-conflict-001.md`
-5. `task-011-ut-ipc-data-flow-type-gaps-001.md`
-6. `task-012-ut-skill-ipc-preload-extension-001.md`
-7. `task-013-task9-ui-backend-consistency-improvements-001.md`
+4. `task-010a-ut-skill-import-channel-conflict-001.md`（並列：010a∥010b）
+5. `task-010b-ut-ipc-data-flow-type-gaps-001.md`（並列：010a∥010b）
+6. `task-012-ut-skill-ipc-preload-extension-001.md`（010a完了後）
+7. `task-013-task9-ui-backend-consistency-improvements-001.md`（012完了後）
 
-### Phase 2: バックエンド基幹（直列）
+```
+010a ─┐
+010b ─┤→ 012 → 013
+```
 
-8. `task-020-task-9b-skill-creator.md`
-9. `task-021-task-9a-skill-editor.md`
-10. `task-022-task-9f-skill-share.md`
+### Phase 2: バックエンド基幹（部分並列）
+
+8. `task-020a-task-9b-skill-creator.md`（並列：020a∥020b）
+9. `task-020b-task-9a-skill-editor.md`（並列：020a∥020b）
+10. `task-022-task-9f-skill-share.md`（020a完了後）
+
+```
+020a ─┐
+020b ─┤→ 022
+```
 
 ### Phase 3: バックエンド拡張（並列）
 
@@ -32,11 +42,16 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 15. `task-023e-task-9d-skill-chain.md`（並列）
 16. `task-023f-task-9e-skill-fork.md`（並列）
 
-### Phase 4: UIスキル管理（直列）
+### Phase 4: UIスキル管理（部分並列）
 
-17. `task-030-ui-05-skill-center-view.md`
-18. `task-031-ui-05a-skill-editor-view.md`
-19. `task-032-ui-05b-skill-advanced-views.md`
+17. `task-030-ui-05-skill-center-view.md`（直列：先行）
+18. `task-031a-ui-05a-skill-editor-view.md`（並列：031a∥031b、030完了後）
+19. `task-031b-ui-05b-skill-advanced-views.md`（並列：031a∥031b、030完了後）
+
+```
+030 → 031a ─┐
+      031b ─┘
+```
 
 ### Phase 5: 10A統合
 
@@ -48,37 +63,77 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ### Phase 6: UI/UX基盤トラック（独立管理）
 
+#### Step 6-A: 基盤構築（直列）
+
 25. `task-050-ui-00-ui-design-foundation.md`
-26. `task-051-ui-00-1-design-tokens.md`
-27. `task-052-ui-00-2-atoms-components.md`
+26. ~~`task-051-ui-00-1-design-tokens.md`~~（完了済み）
+27. ~~`task-052-ui-00-2-atoms-components.md`~~（完了済み）
 28. `task-053-ui-00-3-molecules-components.md`
 29. `task-054-ui-00-4-organisms-components.md`
 30. `task-055-ui-00-foundation-reflection-audit.md`
 31. `task-056-ui-01-store-ipc-architecture.md`
 32. `task-057-ui-02-global-nav-core.md`
-33. `task-058-ui-03-agent-view-enhancement.md`
-34. `task-059-ui-04-workspace-view.md`
-35. `task-060-ui-04a-workspace-layout-filebrowser.md`
-36. `task-061-ui-04b-workspace-chat-panel.md`
-37. `task-062-ui-04c-workspace-preview-quicksearch.md`
-38. `task-063-ui-06-history-search-view.md`
-39. `task-064-ui-07-dashboard-enhancement.md`
-40. `task-065-ui-08-notification-center.md`
-41. `task-066-ui-09-onboarding-wizard.md`
+
+#### Step 6-B: 画面実装（並列、057完了後）
+
+33. `task-058a-ui-03-agent-view-enhancement.md`（並列）
+34. `task-058b-ui-04a-workspace-layout-filebrowser.md`（並列、059a/059bをブロック）
+35. `task-058c-ui-06-history-search-view.md`（並列）
+36. `task-058d-ui-07-dashboard-enhancement.md`（並列）
+37. `task-058e-ui-08-notification-center.md`（並列）
+
+```
+057 ─┬→ 058a (UI-03) ──────────────────────┐
+     ├→ 058b (UI-04A) → 059a∥059b (04B∥04C) ┤
+     ├→ 058c (UI-06) ──────────────────────┤
+     ├→ 058d (UI-07) ──────────────────────┤
+     └→ 058e (UI-08) ──────────────────────┘
+                                             ↓
+```
+
+#### Step 6-C: ワークスペース分割（058b完了後、並列）
+
+38. `task-059a-ui-04b-workspace-chat-panel.md`（並列：059a∥059b）
+39. `task-059b-ui-04c-workspace-preview-quicksearch.md`（並列：059a∥059b）
+
+#### Step 6-D: 参照仕様（060は設計ドキュメント、実装は058b/059a/059bに分割済み）
+
+40. `task-060-ui-04-workspace-view.md`（参照仕様）
+
+#### Step 6-E: オンボーディング（全UI完了後）
+
+41. `task-061-ui-09-onboarding-wizard.md`（全UI完了後）
 
 ## 並列実行ルール
 
+### Phase内の並列化
+
+- `task-010a` と `task-010b` は同時実行可能（依存先が異なる）。`task-012` は `task-010a` 完了後。
+- `task-020a` と `task-020b` は同時実行可能（同一依存元、parallel_with 相互記載）。`task-022` は `task-020a` 完了後。
 - `task-023a`〜`task-023f` は同時実行可能。
-- `task-041a`〜`task-041c` は同時実行可能。
-- `task-042` は `task-041a/b/c` 完了後に実施。
-- `task-050`〜`task-066` は UI/UX独立トラックとして、Phase 2〜5 と並列進行可能。
+- `task-031a` と `task-031b` は同時実行可能（`task-030` 完了後）。
+- `task-041a`〜`task-041c` は同時実行可能。`task-042` は `task-041a/b/c` 完了後。
+- `task-058a`〜`task-058e` は同時実行可能（`task-057` 完了後）。
+- `task-059a` と `task-059b` は同時実行可能（`task-058b` 完了後）。
+- `task-061` は全UIタスク完了後に実施。
+
+### トラック間の並列化
+
+- `task-050`〜`task-061`（Phase 6）は UI/UX独立トラックとして、Phase 2〜5 と並列進行可能。
 
 ## 管理単位（独立）
 
-- バックエンド/IPC契約: `task-010`〜`task-023f`
-- UIスキル管理: `task-030`〜`task-032`
+- バックエンド/IPC契約: `task-010a`〜`task-023f`
+- UIスキル管理: `task-030`〜`task-031b`
 - 統合: `task-040`〜`task-042`
-- UI/UX基盤: `task-050`〜`task-066`
+- UI/UX基盤: `task-050`〜`task-061`
+
+## ファイル命名規約（最適化）
+
+- 正式ファイルは `task-<連番><枝番>-<カテゴリ>-<サブID>-<slug>.md` を使用する。
+- `task-058a` / `task-058b` のような枝番は、同一フェーズ内での分割仕様を示す。
+- 旧命名（`04A-*.md` など）は使用せず、参照リンクは本インデックスの正式ファイル名に統一する。
+- 分割済みの親仕様（例: `task-060-ui-04-workspace-view.md`）はポインタードキュメントとして扱い、実装仕様は分割先（`task-058b`, `task-059a`, `task-059b`）を参照する。
 
 ## 旧インデックス（参考）
 
