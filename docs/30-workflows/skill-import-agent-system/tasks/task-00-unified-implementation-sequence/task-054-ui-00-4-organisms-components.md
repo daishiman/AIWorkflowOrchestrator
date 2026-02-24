@@ -494,10 +494,10 @@ window.matchMedia = createMatchMedia(false);
 
 ## 10. 参照資料
 
-- [00-ui-design-foundation.md](./00-ui-design-foundation.md) — 親仕様書（Organisms セクション: Task 2.3）
-- [00-1-design-tokens.md](./00-1-design-tokens.md) — デザイントークン仕様（CSS変数定義）
-- [00-2-atoms-components.md](./00-2-atoms-components.md) — Atoms仕様（SkeletonCard, EmptyState, FilterChip）
-- [00-3-molecules-components.md](./00-3-molecules-components.md) — Molecules仕様（SearchBar, SlideInPanel）
+- [00-ui-design-foundation.md](./task-050-ui-00-ui-design-foundation.md) — 親仕様書（Organisms セクション: Task 2.3）
+- [00-1-design-tokens.md](../completed-task/00-1-design-tokens.md) — デザイントークン仕様（CSS変数定義）
+- [00-2-atoms-components.md](../completed-task/00-2-atoms-components.md) — Atoms仕様（SkeletonCard, EmptyState, FilterChip）
+- [00-3-molecules-components.md](./task-053-ui-00-3-molecules-components.md) — Molecules仕様（SearchBar, SlideInPanel）
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md` — Organisms責務定義
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md` — Apple HIG/WCAG設計原則
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md` — レスポンシブ/トークン基準
