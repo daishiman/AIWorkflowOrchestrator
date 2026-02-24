@@ -5,6 +5,55 @@
 
 ---
 
+## 2026-02-24 - Phase 12再監査（task-ui-00-atoms / UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-UI-00-ATOMS, UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+- 目的: Phase 12仕様準拠の再確認、参照パス整合、苦戦箇所の体系化
+
+### 実施内容
+- `task-ui-00-atoms` の全Phase/indexに残存していた旧参照 `tasks/ui-overhaul/00-2-atoms-components.md` を `tasks/completed-task/00-2-atoms-components.md` へ統一
+- `index.md` の `00-1-design-tokens.md` / `00-ui-design-foundation.md` 参照を実在パスへ補正
+- `ut-skill-import-channel-conflict-001/{outputs` の空ゴーストディレクトリを削除し、成果物ディレクトリを `outputs/` に一本化
+- `references/task-workflow.md` に完了タスク2件（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 / TASK-UI-00-ATOMS）を追記
+- `references/lessons-learned.md` に苦戦箇所3件と「同種課題の簡潔解決手順（4ステップ）」を追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-24
+- 備考: 仕様書修正のみタスクでも完了台帳（task-workflow）反映が必須であることを明文化
+
+---
+
+## 2026-02-24 - UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12完了記録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+- Phase: Phase 1-12（全Phase完了）
+
+### 実施内容
+- skill:import IPCチャネル名競合の予防的解消（仕様書修正のみ、コード変更なし）
+- task-022（TASK-9F）: チャネル名 `skill:import` → `skill:importFromSource` に改名
+- task-030（UI-05）: セクション15B.2 IPCテーブル4行修正 + セクション11に3チャネル追加
+
+### UT-SKILL-IMPORT-CHANNEL-CONFLICT-001: skill:import IPCチャネル名競合の解消（2026-02-24完了）
+
+| 項目         | 値                                                                   |
+| ------------ | -------------------------------------------------------------------- |
+| タスク種別   | 仕様書修正のみ（コード変更なし）                                     |
+| 修正ファイル | task-022-task-9f-skill-share.md, task-030-ui-05-skill-center-view.md |
+| 修正内容     | チャネル名 skill:import → skill:importFromSource（TASK-9F外部用）    |
+| ドキュメント | implementation-guide.md, documentation-changelog.md                  |
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-24
+- Phase 10 PASS（MINOR 0件）、Phase 11 手動テスト 11/11 PASS
+
+---
+
 ## 2026-02-23 - TASK-UI-00-ATOMS Phase 12完了記録
 
 ### コンテキスト
@@ -4587,3 +4636,33 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - ステータス: success
 - 関連パターン: P23, P32, P42, P44, P45
 - 未タスク検出: 0件
+
+## 2026-02-24 - Phase 12 再監査（task-ui-00-atoms / ut-skill-import-channel-conflict-001）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象ブランチ: task-20260224-061249-wt1
+- 対象ワークフロー:
+  - `docs/30-workflows/completed-tasks/task-ui-00-atoms/`
+  - `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/`
+
+### 実施内容
+
+- `verify-all-specs --strict` を対象2ワークフローに実行し、`エラー0/警告0` を確認
+- `validate-phase-output.js` を対象2ワークフローに実行し、Phase 1-13 の構造整合を確認
+- `verify-unassigned-links.js` を `task-workflow.md` に対して実行し、`92/92` の実在を確認
+- `audit-unassigned-tasks.js` の結果から今回対象3件（`task-ui-atoms-*`）のみ抽出し、フォーマット/命名/配置違反 `0` を確認
+- `outputs/aiworkflow-spec-extraction-audit.md` を確認し、必須仕様抽出漏れなしを再確認
+
+### 苦戦箇所
+
+1. **全体違反と対象違反の混同リスク**: `audit-unassigned-tasks.js` は全体違反を返すため、対象3件抽出を追加して誤判定を防止
+2. **ワークフロー移管後の参照追跡コスト**: `task-ui-00-atoms` の移管後、参照の正本が `completed-tasks` 側であることを再確認して監査範囲を固定
+3. **検証結果の追跡性不足**: コマンド実行のみだと再利用しづらいため、本エントリで検証条件と判定結果を明文化
+
+### 結果
+
+- ステータス: success
+- Phase 12 仕様準拠: PASS（対象2ワークフロー）
+- 未タスク配置（対象3件）: PASS

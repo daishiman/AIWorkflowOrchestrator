@@ -179,4 +179,4 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [TASK-9A-C Phase 12準拠監査](../../../../docs/30-workflows/TASK-9A-C-skill-editor-ui/outputs/phase-12/phase12-compliance-audit.md)
 - [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)
 - [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md)
-- [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/task-ui-00-atoms/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/implementation-guide.md)

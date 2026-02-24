@@ -2110,10 +2110,106 @@ Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }
 
 ---
 
+## IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定）
+
+### 問題
+
+既存IPCチャネル `skill:import`（ローカルスキルインポート、引数: `string`）と、TASK-9Fで新規追加予定の外部ソースインポート機能（引数: `ShareTarget`）が同一チャネル名を使用する設計だった。`ipcMain.handle()` は同一チャネルへの二重登録で例外を送出するため（P5）、実装段階で100%失敗する構造的問題があった。
+
+### 解決アプローチ: 仕様書段階でのチャネル名分離
+
+コード実装前に仕様書レベルで競合を検出・解消する「予防的仕様書修正」パターン。
+
+### IPCチャネル命名規則
+
+| パターン | 用途 | 例 |
+|---------|------|-----|
+| `skill:{動詞}` | 既存ローカル操作 | `skill:import`, `skill:remove`, `skill:list` |
+| `skill:{動詞}FromSource` | 外部ソース経由の操作 | `skill:importFromSource` |
+| `skill:{動詞}Source` | ソース自体への操作（検証等） | `skill:validateSource` |
+
+### チャネル名の既存/新規対応表
+
+| チャネル名 | 引数型 | 用途 | 状態 |
+|-----------|--------|------|------|
+| `skill:list` | なし | ローカルスキル一覧 | 既存 |
+| `skill:import` | `skillName: string` | ローカルスキル読込 | 既存（変更不要） |
+| `skill:remove` | `skillName: string` | ローカルスキル削除 | 既存 |
+| `skill:detail` | `skillName: string` | スキル詳細取得 | 既存 |
+| `skill:readMarkdown` | `skillName: string` | Markdown読み取り | 既存 |
+| `skill:importFromSource` | `ShareTarget` | 外部ソースインポート | TASK-9F新規 |
+| `skill:validateSource` | `ShareTarget` | インポート元の検証 | TASK-9F新規 |
+| `skill:export` | `{ skillName: string, destination: ShareTarget }` | スキルエクスポート | TASK-9F新規 |
+
+### 命名の判断基準
+
+| 条件 | 命名パターン | 理由 |
+|------|------------|------|
+| 既存チャネルと同じ動詞だが用途・引数型が異なる | `skill:{動詞}FromSource` | P5（二重登録例外）を回避しつつ、操作の意図を明確化 |
+| 既存チャネルと名前衝突のリスクがない新規操作 | `skill:{動詞}` | 簡潔さを優先 |
+| 操作対象がソース自体（検証、一覧等） | `skill:{動詞}Source` | 「何に対する操作か」を名前で表現 |
+
+### 実装チェックリスト（TASK-9F実装時）
+
+```typescript
+// apps/desktop/src/main/ipc/channels.ts への追加
+export enum IPC_CHANNELS {
+  // 既存（変更不要）
+  SKILL_IMPORT = "skill:import",
+  // 新規追加
+  SKILL_IMPORT_FROM_SOURCE = "skill:importFromSource",
+  SKILL_VALIDATE_SOURCE = "skill:validateSource",
+  SKILL_EXPORT = "skill:export",
+}
+```
+
+1. `channels.ts` に新チャネル定数を追加
+2. `preload/types.ts` に型定義を追加（P32準拠: 2箇所同時更新）
+3. Main Process ハンドラを実装（P42準拠: 3段バリデーション）
+4. Preload API を実装（`safeInvoke` 使用、P27準拠: 文字列リテラル禁止）
+5. `grep -rn "skill:import" apps/desktop/src/` で既存チャネルとの競合がないことを検証
+
+### 苦戦箇所と教訓
+
+#### 1. Phase 4 での修正箇所数の見積もり誤差
+- **問題**: Phase 4 仕様書で task-022 の修正箇所を「3箇所」と記載したが、実際は1箇所のみだった
+- **原因**: 仕様書設計時にファイル内容を精査せず、概算で修正箇所数を決定
+- **教訓**: Phase 4 テスト設計時は、対象ファイルを `grep` で事前検証し、期待値を「N件以上」のような柔軟な基準で設計する
+
+#### 2. 仕様書修正のみタスクの Phase 6-8 ハンドリング
+- **問題**: コード変更がないため、Phase 6（テスト拡充）・7（カバレッジ）・8（リファクタリング）が不要
+- **解決策**: 各 Phase に `not-applicable.md` を作成し、N/A 理由を明記
+- **教訓**: `taskType: "spec-only"` タスクでは、Phase 6-8 を明示的に N/A 記録する運用が有効。Phase 4 の grep 検証が唯一のテスト手段となる
+
+#### 3. 仕様書間のチャネル名重複検出
+- **問題**: skill-import-agent-system 配下の複数仕様書（task-022, task-030）に同じチャネル名が散在
+- **解決策**: `grep -rn "skill:import" docs/30-workflows/skill-import-agent-system/` で全仕様書横断検索
+- **教訓**: 新規 IPC チャネル追加時は、既存チャネルとの名前衝突を仕様書レベルで事前検証する
+
+### 関連Pitfall
+
+| Pitfall | 概要 | 本パターンでの対応 |
+|---------|------|-------------------|
+| P5 | `ipcMain.handle()` 二重登録例外 | 同名チャネルを分離してリスクを排除 |
+| P44 | IPC ハンドラと Preload の不整合 | チャネル名明確化により引数の曖昧性を解消 |
+| P45 | IPC 引数命名の契約ドリフト | 新チャネルで `ShareTarget` 型を明示的に使用 |
+| P32 | 型定義の2箇所同時更新必須 | チェックリストで `channels.ts` と `preload/types.ts` を明記 |
+| P42 | .trim() バリデーション漏れ | 3段バリデーションをチェックリストに含有 |
+
+### 参照
+
+- [UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 仕様書](../../../../docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/index.md)
+- [06-known-pitfalls.md#P5](../../rules/06-known-pitfalls.md)
+- [06-known-pitfalls.md#P44](../../rules/06-known-pitfalls.md)
+- [ipc-contract-checklist.md](./ipc-contract-checklist.md)
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v_next | 2026-02-24 | IPCチャネル名競合予防パターン追加（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）: チャネル命名規則（skill:{動詞}FromSource）、既存/新規対応表、判断基準、実装チェックリスト、苦戦箇所3件 |
 | v_next | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネント設計パターン追加（S12: Props最小化、S13: Record型バリアント定義、S14: HTMLAttributes Props型衝突回避、S15: 後方互換性維持、S16: CSS変数＋Tailwind Arbitrary Values、S17: displayName統一） |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル） |

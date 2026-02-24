@@ -576,9 +576,9 @@ describe.each(["kanagawa-dragon", "light", "dark"])("テーマ: %s", (theme) => 
 
 ## 参照資料
 
-- [00-ui-design-foundation.md](./00-ui-design-foundation.md) — 親仕様書（デザイン基盤全体）
-- [00-1-design-tokens.md](./00-1-design-tokens.md) — デザイントークン仕様（CSS変数定義）
-- [00-2-atoms-components.md](./00-2-atoms-components.md) — Atoms仕様（依存コンポーネント）
+- [00-ui-design-foundation.md](./task-050-ui-00-ui-design-foundation.md) — 親仕様書（デザイン基盤全体）
+- [00-1-design-tokens.md](../completed-task/00-1-design-tokens.md) — デザイントークン仕様（CSS変数定義）
+- [00-2-atoms-components.md](../completed-task/00-2-atoms-components.md) — Atoms仕様（依存コンポーネント）
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md` — Molecules責務定義
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md` — Apple HIG/WCAG設計原則
 - `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md` — UIアーキテクチャパターン
@@ -588,5 +588,5 @@ describe.each(["kanagawa-dragon", "light", "dark"])("テーマ: %s", (theme) => 
 - `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` — テスト品質要件
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-055-ui-00-foundation-reflection-audit.md` — 分割反映トレーサビリティ監査
 - `apps/desktop/src/renderer/components/molecules/SkillSearchBar/` — 既存 SkillSearchBar（SearchBar の参考実装）
-- [01-architecture.md](../../../../.claude/rules/01-architecture.md) — Apple HIG 準拠、Atomic Design 原則
-- [06-known-pitfalls.md](../../../../.claude/rules/06-known-pitfalls.md) — テスト環境の落とし穴（P9, P13, P39, P40）
+- [01-architecture.md](../../../../../.claude/rules/01-architecture.md) — Apple HIG 準拠、Atomic Design 原則
+- [06-known-pitfalls.md](../../../../../.claude/rules/06-known-pitfalls.md) — テスト環境の落とし穴（P9, P13, P39, P40）

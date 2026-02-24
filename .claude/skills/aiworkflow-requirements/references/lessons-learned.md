@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-24 | 1.20.0 | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 教訓追加: 仕様書修正のみタスクでの反映漏れ（完了台帳未反映、旧参照パス残存、`{outputs` ゴーストディレクトリ）を記録。同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-23 | 1.19.0 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 教訓追加: CIガードスクリプト実装の苦戦箇所4件（正規表現パース、キー変換設計、typesVersionsスキップ、process.exitCodeテスタビリティ）。実装内容・成果物・関連ドキュメント更新テーブル追加 |
 | 2026-02-22 | 1.18.3 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 の苦戦箇所3件を追加（Phase 10 MINOR残置、Phase 12証跡同期、未タスク監査のベースライン混同）。同種課題向け簡潔解決手順（5ステップ）を追加 |
 | 2026-02-22 | 1.18.2 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 の苦戦箇所3件を追加（同名コンポーネント特定、`skill.id`/`skill.name`混同、偽成功ログの誤読）。同種課題向け簡潔解決手順（4ステップ）を追加 |
@@ -186,8 +187,13 @@
    - [教訓1: ipcMain.handle()の二重登録は例外送出](#1-ipcmainhandleの二重登録は例外送出)
    - [教訓2: IPC_CHANNELS 全走査の前提を先に検証する](#2-ipc_channels-全走査の前提を先に検証する)
    - [教訓3: IPC外リスナーの解除漏れを同時に防ぐ](#3-ipc外リスナーの解除漏れを同時に防ぐ)
-8. [関連ドキュメント](#関連ドキュメント)
-9. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+8. [UT-SKILL-IMPORT-CHANNEL-CONFLICT-001: skill:import IPCチャネル名競合の予防的解消](#ut-skill-import-channel-conflict-001-skillimport-ipcチャネル名競合の予防的解消)
+   - [苦戦箇所1: 仕様書修正のみタスクの完了反映が台帳から漏れた](#1-仕様書修正のみタスクの完了反映が台帳から漏れた)
+   - [苦戦箇所2: workflow移管後の旧参照パス残存](#2-workflow移管後の旧参照パス残存)
+   - [苦戦箇所3: 生成ミスによる-outputs-ゴーストディレクトリ](#3-生成ミスによる-outputs-ゴーストディレクトリ)
+   - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ-1)
+9. [関連ドキュメント](#関連ドキュメント)
+10. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -2706,6 +2712,110 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | 解決策 | `themeWatcherUnsubscribe` を保持し、`unregisterAllIpcHandlers()` で IPC 解除と同時に `setupThemeWatcher` の解除処理を実行する |
 | 教訓 | Main Process のライフサイクル修正は「IPC + 非IPCリスナー」を1セットで扱うと再発を防ぎやすい |
 | 関連パターン | [architecture-implementation-patterns.md - IPC ハンドラ二重登録防止パターン](./architecture-implementation-patterns.md#ipc-ハンドラ二重登録防止パターンut-fix-ipc-handler-double-reg-001-2026-02-14実装) |
+
+---
+
+## UT-SKILL-IMPORT-CHANNEL-CONFLICT-001: skill:import IPCチャネル名競合の予防的解消
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 |
+| 目的 | 仕様書段階で `skill:import`（ローカル用）と外部インポート用チャネルの命名競合を解消し、実装時のP5/P44再発を予防 |
+| 完了日 | 2026-02-24 |
+| ステータス | **完了（仕様書修正のみ）** |
+| 変更対象 | `task-022-task-9f-skill-share.md`, `task-030-ui-05-skill-center-view.md` |
+
+### 苦戦箇所と解決策
+
+#### 1. 仕様書修正のみタスクの完了反映が台帳から漏れた
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `SKILL.md` / `LOGS.md` は更新されていたが、`task-workflow.md` の完了タスクセクションに本タスクの記録がなく、実装内容の追跡性が不足した |
+| **原因** | 「コード変更なし」のため、完了反映をログ系ファイルだけで完結した誤判断 |
+| **解決策** | `task-workflow.md` の完了タスクへ `spec_created` として登録し、成果物リンク（implementation-guide / documentation-changelog / unassigned-task-detection）を明示 |
+| **教訓** | 仕様書修正のみでも「完了台帳（task-workflow）」への反映は必須。ログだけでは再利用できる知識にならない |
+
+#### 2. workflow移管後の旧参照パス残存
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `task-ui-00-atoms` 配下に旧パス `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-2-atoms-components.md` が残存し、参照切れ状態だった |
+| **原因** | ワークフローを `completed-tasks/` へ移管した際に、Phase 1-13 / index / Phase 12仕様書内の固定パスを一括更新しきれていなかった |
+| **解決策** | 参照を `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-2-atoms-components.md` に統一し、関連する `00-1-design-tokens.md` / `task-050-ui-00-ui-design-foundation.md` も実在パスへ補正 |
+| **教訓** | ワークフロー移管時は「単一ファイル修正」ではなく、同一ワークフロー配下の全Phase・indexを横断置換して参照実在チェックを行う |
+
+#### 3. 生成ミスによる `{outputs` ゴーストディレクトリ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/{outputs` という空ディレクトリが生成され、成果物ディレクトリ構造のノイズとなった |
+| **原因** | ディレクトリ名テンプレートの展開時に `{` が残存したまま作成された |
+| **解決策** | 空ディレクトリを削除し、`outputs/` 配下のみを正規成果物ディレクトリとして維持 |
+| **教訓** | 仕様書生成タスク後は `find <workflow> -maxdepth 2 -type d` でディレクトリ名を監査し、テンプレート展開漏れを早期に除去する |
+
+#### 4. IPC チャネル命名規則の体系化
+
+- **課題**: 既存の `skill:import` と TASK-9F の外部ソースインポートが同名チャネルを使用する設計だった。P5（`ipcMain.handle()` 二重登録例外）により実装段階で100%失敗する
+- **原因**: 仕様書設計段階でチャネル名の一意性検証が行われていなかった。複数タスク（TASK-9F, UT-FIX-SKILL-IMPORT-INTERFACE-001）が独立して進行し、名前空間の衝突を事前検出する仕組みがなかった
+- **解決策**: チャネル命名規則を3パターンに体系化
+  | パターン | 用途 | 例 |
+  |---------|------|-----|
+  | `skill:{動詞}` | 既存ローカル操作 | `skill:import` |
+  | `skill:{動詞}FromSource` | 外部ソース操作 | `skill:importFromSource` |
+  | `skill:{動詞}Source` | ソース自体への操作 | `skill:validateSource` |
+- **教訓**: 新規 IPC チャネル追加時は `grep -rn "チャネル名" apps/desktop/src/` で既存チャネルとの名前衝突を事前検証する。仕様書レベルでの横断検索（`grep -rn "skill:import" docs/30-workflows/`）も必須
+
+#### 5. grep ベース仕様書 TDD の有効性
+
+- **課題**: コード変更がないため、Vitest 等の標準テストツールが使えない
+- **原因**: 仕様書修正のみタスクに対するテスト手法が確立されていなかった
+- **解決策**: Phase 4 で grep 検証コマンドを「テストケース」として10項目設計し、Phase 5 実装後に全実行。Phase 9 品質ゲートでも同じ grep コマンドを再利用
+  - 旧チャネル名残存検出: `grep -rn "skill:import" | grep -v "importFromSource"` = 0件
+  - 新チャネル名件数検証: `grep -c "importFromSource"` >= 5件
+  - 既存互換性検証: ローカル用 `skill:import` が残存していること
+- **教訓**: 仕様書修正タスクでは grep ベースのTDDが効果的。Red（設計）→ Green（修正）→ Refactor（品質ゲート）の3フェーズで品質担保できる
+
+#### 6. Phase 4 の修正箇所数見積もり精度
+
+- **課題**: Phase 4 仕様書で task-022 の修正箇所を「3箇所」と記載したが、実際は1箇所のみ
+- **原因**: Phase 4 テスト設計時にファイル内容を `grep` で事前検証しなかった（P37パターン: ドキュメント数値の早期固定）
+- **解決策**: grep 検証の期待値を「1件以上」と柔軟に設計し直した。実行結果は2件で PASS
+- **教訓**: Phase 4 の期待値設計は、対象ファイルの `grep -c` 実行結果に基づくべき。概算ではなく実測値ベースで設計する
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. **対象を固定**: `git diff --name-status` で今回対象ワークフローと仕様書更新対象（workflow / aiworkflow-requirements）を先に確定する。  
+2. **参照を一括監査**: `rg -n "ui-overhaul|completed-task|../00-" <workflow-dir>` で旧パスを抽出し、実在パスへまとめて置換する。  
+3. **台帳を同期**: 仕様書修正のみでも `task-workflow.md` 完了タスクと `lessons-learned.md` 苦戦箇所を同時更新する。  
+4. **機械検証で締める**: `verify-unassigned-links.js`・`audit-unassigned-tasks.js`・`generate-index.js` を実行し、リンク・フォーマット・索引を同期する。
+
+#### IPC チャネル名競合の検出・解消手順（5ステップ）
+
+1. `grep -rn "新チャネル名" apps/desktop/src/main/ipc/` で既存チャネルとの名前衝突を検出
+2. 衝突がある場合: `skill:{動詞}FromSource` パターンで新チャネル名を決定
+3. `grep -rn "旧チャネル名" docs/30-workflows/` で仕様書内の全使用箇所を特定
+4. 仕様書修正（チャネル名変更 + artifacts.modifies 追加 + 注記追加）
+5. `grep -rn "旧チャネル名" | grep -v "新チャネル名"` で残存検証（0件 = 完了）
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/outputs/phase-12/implementation-guide.md` |
+| 更新履歴 | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出 | `docs/30-workflows/completed-tasks/ut-skill-import-channel-conflict-001/outputs/phase-12/unassigned-task-detection.md` |
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| `task-workflow.md` | 完了タスク2件（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 / TASK-UI-00-ATOMS）を追記 |
+| `lessons-learned.md` | 本教訓セクション追加（苦戦箇所3件 + 4ステップ手順） |
+| `docs/30-workflows/completed-tasks/task-ui-00-atoms/*` | 旧参照パスを `tasks/completed-task` 正本へ統一 |
 
 ---
 ## テンプレート（新規教訓追加用）
