@@ -26,7 +26,7 @@ artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillScheduler.ts
     - apps/desktop/src/main/services/skill/ScheduleStore.ts
-  # UI成果物は ./task-032-ui-05b-skill-advanced-views.md#3B で定義
+  # UI成果物は ./task-031b-ui-05b-skill-advanced-views.md#3B で定義
   modifies:
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/skillAPI.ts
@@ -150,7 +150,7 @@ export class SkillScheduler {
 
 > **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
 >
-> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-032-ui-05b-skill-advanced-views.md#3b-schedulemanager)
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-031b-ui-05b-skill-advanced-views.md#3b-schedulemanager)
 >
 > 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
@@ -158,7 +158,7 @@ export class SkillScheduler {
 
 > **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
 >
-> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-032-ui-05b-skill-advanced-views.md#3b-schedulemanager)
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-031b-ui-05b-skill-advanced-views.md#3b-schedulemanager)
 >
 > 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 
@@ -166,7 +166,7 @@ export class SkillScheduler {
 
 > **📐 UI仕様は本ディレクトリの UI タスク（task-030/031/032）に移管済み**
 >
-> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-032-ui-05b-skill-advanced-views.md#3b-schedulemanager)
+> Apple HIG 準拠の UI 仕様: [05B-skill-advanced-views.md#3b-schedulemanager](./task-031b-ui-05b-skill-advanced-views.md#3b-schedulemanager)
 >
 > 本ファイルはバックエンドサービス・IPC 契約・型定義のみを定義します。
 

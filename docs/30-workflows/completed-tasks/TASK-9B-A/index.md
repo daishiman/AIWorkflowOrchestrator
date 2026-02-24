@@ -64,5 +64,5 @@ skill-creator スキルの SKILL.md を作成する。
 ## 参照
 
 - [元タスク仕様](../task-9b-a-skill-md.md)
-- [親タスク仕様](../task-020-task-9b-skill-creator.md)
+- [親タスク仕様](../task-020a-task-9b-skill-creator.md)
 - [スキル構造仕様](aiworkflow-requirements: claude-code-skills-structure.md)

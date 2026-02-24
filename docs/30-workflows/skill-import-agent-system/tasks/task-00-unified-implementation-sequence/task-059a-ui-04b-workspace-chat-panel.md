@@ -2,21 +2,21 @@
 
 ## 1. メタ情報
 
-| 項目             | 値                                                                                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID         | TASK-UI-04B-WORKSPACE-CHAT                                                                                                                                   |
-| 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                                          |
-| ステータス       | 未着手                                                                                                                                                       |
-| 優先度           | high                                                                                                                                                         |
-| 複雑度           | medium                                                                                                                                                       |
-| 推定ファイル数   | ~10                                                                                                                                                          |
-| 依存タスク       | TASK-UI-00（デザイン基盤）, TASK-UI-01（アーキテクチャ）, TASK-UI-04A（レイアウト基盤）                                                                      |
-| ブロック対象     | なし（04C と並列実行可能）                                                                                                                                   |
-| 対象ビュー       | WorkspaceView 内 ChatPanel ペイン                                                                                                                            |
-| 関連スライス     | `chatSlice`（パターン参照）, `workspaceChatSlice`（将来検討）                                                                                                |
-| 関連 IPC         | `llm:*`, `conversation:*`                                                                                                                                    |
-| 設計哲学         | **タップ＆ディスカバー** — 大きなサジェスチョンバブルで「次の一歩」を提示し、タップするだけで対話が始まる。入力欄が常に主役                                  |
-| 関連ドキュメント | [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md), [04C-workspace-preview-quicksearch.md](./04C-workspace-preview-quicksearch.md) |
+| 項目             | 値                                                                                                                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-UI-04B-WORKSPACE-CHAT                                                                                                                                                             |
+| 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                                                                    |
+| ステータス       | 未着手                                                                                                                                                                                 |
+| 優先度           | high                                                                                                                                                                                   |
+| 複雑度           | medium                                                                                                                                                                                 |
+| 推定ファイル数   | ~10                                                                                                                                                                                    |
+| 依存タスク       | TASK-UI-00（デザイン基盤）, TASK-UI-01（アーキテクチャ）, TASK-UI-04A（レイアウト基盤）                                                                                                |
+| ブロック対象     | なし（04C と並列実行可能）                                                                                                                                                             |
+| 対象ビュー       | WorkspaceView 内 ChatPanel ペイン                                                                                                                                                      |
+| 関連スライス     | `chatSlice`（パターン参照）, `workspaceChatSlice`（将来検討）                                                                                                                          |
+| 関連 IPC         | `llm:*`, `conversation:*`                                                                                                                                                              |
+| 設計哲学         | **タップ＆ディスカバー** — 大きなサジェスチョンバブルで「次の一歩」を提示し、タップするだけで対話が始まる。入力欄が常に主役                                                            |
+| 関連ドキュメント | [04A-workspace-layout-filebrowser.md](./task-058b-ui-04a-workspace-layout-filebrowser.md), [04C-workspace-preview-quicksearch.md](./task-059b-ui-04c-workspace-preview-quicksearch.md) |
 
 ## 2. 目的
 
@@ -30,7 +30,7 @@
 - **Level 2**: バブルタップでテキスト入力、メッセージのやり取りが始まる
 - **全操作にフィードバック**: ホバー、タップ、送信、応答開始の全てにマイクロインタラクション
 
-レイアウト基盤（3ペイン構造、リサイズ機構）は [04A](./04A-workspace-layout-filebrowser.md) で提供される。本ドキュメントでは ChatPanel の内部設計に集中する。
+レイアウト基盤（3ペイン構造、リサイズ機構）は [04A](./task-058b-ui-04a-workspace-layout-filebrowser.md) で提供される。本ドキュメントでは ChatPanel の内部設計に集中する。
 
 ## 3. ChatPanel ペイン設計
 
@@ -627,7 +627,7 @@ WorkspaceView/hooks/
 
 ### 5.2 既存スライスからの参照
 
-ChatPanel は以下の既存スライスを参照する（詳細は [04A セクション 7.1](./04A-workspace-layout-filebrowser.md) 参照）:
+ChatPanel は以下の既存スライスを参照する（詳細は [04A セクション 7.1](./task-058b-ui-04a-workspace-layout-filebrowser.md) 参照）:
 
 | スライス         | 利用する状態/アクション                                  |
 | ---------------- | -------------------------------------------------------- |
@@ -661,7 +661,7 @@ const [isZeroStateExiting, setIsZeroStateExiting] = useState(false);
 | `conversation:addMessage` | invoke | メッセージ追加            | `conversationHandlers.ts` |
 | `file:read`               | invoke | @mention ファイル内容取得 | `fileHandlers.ts`         |
 
-> **注**: `workspace:*`, `file:*`（ツリー・監視）チャネルは [04A](./04A-workspace-layout-filebrowser.md) を参照。
+> **注**: `workspace:*`, `file:*`（ツリー・監視）チャネルは [04A](./task-058b-ui-04a-workspace-layout-filebrowser.md) を参照。
 
 ## 7. マイクロインタラクション一覧
 
@@ -884,32 +884,32 @@ apps/desktop/src/renderer/
 
 ### 04 シリーズ分割ドキュメント
 
-| ファイル                                                                       | 責務                                                                                                     |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md)   | 3ペインレイアウト + FileBrowserPanel + StatusBar + リサイズ + ファイル監視                               |
-| **本ドキュメント（04B）**                                                      | ChatPanel + ゼロステート強化 + フェードイン挿入 + ファイル背景情報 + @mention + メッセージアニメーション |
-| [04C-workspace-preview-quicksearch.md](./04C-workspace-preview-quicksearch.md) | PreviewPanel + Source/Preview切替 + QuickFileSearch(Cmd+P) + CSP                                         |
+| ファイル                                                                                    | 責務                                                                                                     |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| [04A-workspace-layout-filebrowser.md](./task-058b-ui-04a-workspace-layout-filebrowser.md)   | 3ペインレイアウト + FileBrowserPanel + StatusBar + リサイズ + ファイル監視                               |
+| **本ドキュメント（04B）**                                                                   | ChatPanel + ゼロステート強化 + フェードイン挿入 + ファイル背景情報 + @mention + メッセージアニメーション |
+| [04C-workspace-preview-quicksearch.md](./task-059b-ui-04c-workspace-preview-quicksearch.md) | PreviewPanel + Source/Preview切替 + QuickFileSearch(Cmd+P) + CSP                                         |
 
 ### 参照資料
 
-| 資料                          | パス / タスク ID                                                             |
-| ----------------------------- | ---------------------------------------------------------------------------- |
-| デザイン基盤                  | TASK-UI-00 `00-ui-design-foundation.md`                                      |
-| UI アーキテクチャ             | TASK-UI-01 `01-store-ipc-architecture.md`                                    |
-| レイアウト基盤（04A）         | [04A-workspace-layout-filebrowser.md](./04A-workspace-layout-filebrowser.md) |
-| 既存 AgentChatInterface       | `apps/desktop/src/renderer/components/organisms/AgentChatInterface/`         |
-| IPC チャネル定義              | `apps/desktop/src/preload/channels.ts`                                       |
-| SuggestionBubble定義          | TASK-UI-00 Task 2.1 Atoms                                                    |
-| EmptyState定義                | TASK-UI-00 Task 2.1 Atoms                                                    |
-| マイクロインタラクション      | TASK-UI-00 Task 5C                                                           |
-| UX言語ガイドライン            | TASK-UI-00 Task 5D                                                           |
-| P5: リスナー二重登録          | `.claude/rules/06-known-pitfalls.md#P5`                                      |
-| P13: タイマーテスト無限ループ | `.claude/rules/06-known-pitfalls.md#P13`                                     |
-| P31: Store Hook 無限ループ    | `.claude/rules/06-known-pitfalls.md#P31`                                     |
-| P39: happy-dom userEvent      | `.claude/rules/06-known-pitfalls.md#P39`                                     |
+| 資料                          | パス / タスク ID                                                                          |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| デザイン基盤                  | TASK-UI-00 `00-ui-design-foundation.md`                                                   |
+| UI アーキテクチャ             | TASK-UI-01 `01-store-ipc-architecture.md`                                                 |
+| レイアウト基盤（04A）         | [04A-workspace-layout-filebrowser.md](./task-058b-ui-04a-workspace-layout-filebrowser.md) |
+| 既存 AgentChatInterface       | `apps/desktop/src/renderer/components/organisms/AgentChatInterface/`                      |
+| IPC チャネル定義              | `apps/desktop/src/preload/channels.ts`                                                    |
+| SuggestionBubble定義          | TASK-UI-00 Task 2.1 Atoms                                                                 |
+| EmptyState定義                | TASK-UI-00 Task 2.1 Atoms                                                                 |
+| マイクロインタラクション      | TASK-UI-00 Task 5C                                                                        |
+| UX言語ガイドライン            | TASK-UI-00 Task 5D                                                                        |
+| P5: リスナー二重登録          | `.claude/rules/06-known-pitfalls.md#P5`                                                   |
+| P13: タイマーテスト無限ループ | `.claude/rules/06-known-pitfalls.md#P13`                                                  |
+| P31: Store Hook 無限ループ    | `.claude/rules/06-known-pitfalls.md#P31`                                                  |
+| P39: happy-dom userEvent      | `.claude/rules/06-known-pitfalls.md#P39`                                                  |
 
 ## 13. 次の Phase
 
 - 04A（レイアウト基盤）完了後に実装開始
-- [04C](./04C-workspace-preview-quicksearch.md)（PreviewPanel + QuickSearch）と **並列実装可能**
+- [04C](./task-059b-ui-04c-workspace-preview-quicksearch.md)（PreviewPanel + QuickSearch）と **並列実装可能**
 - TASK-UI-05（スキルセンター）、TASK-UI-06（履歴・統合検索）とも **並列実行可能**

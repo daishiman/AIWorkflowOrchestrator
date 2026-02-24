@@ -27,14 +27,14 @@ task-9 系と UI/統合の実装順序は、`task-00-unified-implementation-sequ
 
 ### 先行で確定するファイル（UT）
 
-1. `./task-010-ut-skill-import-channel-conflict-001.md`
-2. `./task-011-ut-ipc-data-flow-type-gaps-001.md`
+1. `./task-010a-ut-skill-import-channel-conflict-001.md`
+2. `./task-010b-ut-ipc-data-flow-type-gaps-001.md`
 3. `./task-012-ut-skill-ipc-preload-extension-001.md`
 
 ### 本体実装順序（提示ファイル対応）
 
-1. `./task-020-task-9b-skill-creator.md`
-2. `./task-021-task-9a-skill-editor.md`
+1. `./task-020a-task-9b-skill-creator.md`
+2. `./task-020b-task-9a-skill-editor.md`
 3. `./task-022-task-9f-skill-share.md`
 4. `./task-023a-task-9g-skill-schedule.md`（並列）
 5. `./task-023b-task-9h-skill-debug.md`（並列）
@@ -43,8 +43,8 @@ task-9 系と UI/統合の実装順序は、`task-00-unified-implementation-sequ
 8. `./task-023e-task-9d-skill-chain.md`（並列）
 9. `./task-023f-task-9e-skill-fork.md`（並列）
 10. `./task-030-ui-05-skill-center-view.md`
-11. `./task-031-ui-05a-skill-editor-view.md`
-12. `./task-032-ui-05b-skill-advanced-views.md`
+11. `./task-031a-ui-05a-skill-editor-view.md`
+12. `./task-031b-ui-05b-skill-advanced-views.md`
 13. `./task-041a-task-10a-a-management-panel.md`（並列）
 14. `./task-041b-task-10a-b-analysis-view.md`（並列）
 15. `./task-041c-task-10a-c-create-wizard.md`（並列）
@@ -353,24 +353,24 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 
 > 詳細な実行順序ガイド: [task-091-ui-overhaul-index-legacy.md](./task-091-ui-overhaul-index-legacy.md)
 
-| ID                                | タイトル                                                                                   | 依存                       | 複雑度 | ステータス |
-| --------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------- | ------ | ---------- |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT | [エージェントビュー強化](./task-058-ui-03-agent-view-enhancement.md)                       | UI-00, UI-01, UI-02        | medium | pending    |
-| TASK-UI-04A-WORKSPACE-LAYOUT      | [ワークスペースレイアウト・FileBrowser](./task-060-ui-04a-workspace-layout-filebrowser.md) | UI-00, UI-01, UI-02        | large  | pending    |
-| TASK-UI-04B-WORKSPACE-CHAT        | [ワークスペースChatPanel](./task-061-ui-04b-workspace-chat-panel.md)                       | UI-00, UI-01, UI-04A       | medium | pending    |
-| TASK-UI-04C-WORKSPACE-PREVIEW     | [ワークスペースPreview・QuickSearch](./task-062-ui-04c-workspace-preview-quicksearch.md)   | UI-00, UI-01, UI-04A       | medium | pending    |
-| TASK-UI-05-SKILL-CENTER-VIEW      | [スキルセンター画面](./task-030-ui-05-skill-center-view.md)                                | UI-00, UI-01, UI-02        | medium | pending    |
-| TASK-UI-05A-SKILL-EDITOR-VIEW     | [スキルエディター画面](./task-031-ui-05a-skill-editor-view.md)                             | UI-00, UI-01, UI-02, UI-05 | medium | pending    |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS  | [スキル高度管理ビュー](./task-032-ui-05b-skill-advanced-views.md)                          | UI-00, UI-01, UI-05        | large  | pending    |
-| TASK-UI-06-HISTORY-SEARCH-VIEW    | [履歴・統合検索画面](./task-063-ui-06-history-search-view.md)                              | UI-00, UI-01, UI-02        | medium | pending    |
+| ID                                | タイトル                                                                                    | 依存                       | 複雑度 | ステータス |
+| --------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------- | ------ | ---------- |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT | [エージェントビュー強化](./task-058a-ui-03-agent-view-enhancement.md)                       | UI-00, UI-01, UI-02        | medium | pending    |
+| TASK-UI-04A-WORKSPACE-LAYOUT      | [ワークスペースレイアウト・FileBrowser](./task-058b-ui-04a-workspace-layout-filebrowser.md) | UI-00, UI-01, UI-02        | large  | pending    |
+| TASK-UI-04B-WORKSPACE-CHAT        | [ワークスペースChatPanel](./task-059a-ui-04b-workspace-chat-panel.md)                       | UI-00, UI-01, UI-04A       | medium | pending    |
+| TASK-UI-04C-WORKSPACE-PREVIEW     | [ワークスペースPreview・QuickSearch](./task-059b-ui-04c-workspace-preview-quicksearch.md)   | UI-00, UI-01, UI-04A       | medium | pending    |
+| TASK-UI-05-SKILL-CENTER-VIEW      | [スキルセンター画面](./task-030-ui-05-skill-center-view.md)                                 | UI-00, UI-01, UI-02        | medium | pending    |
+| TASK-UI-05A-SKILL-EDITOR-VIEW     | [スキルエディター画面](./task-031a-ui-05a-skill-editor-view.md)                             | UI-00, UI-01, UI-02, UI-05 | medium | pending    |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS  | [スキル高度管理ビュー](./task-031b-ui-05b-skill-advanced-views.md)                          | UI-00, UI-01, UI-05        | large  | pending    |
+| TASK-UI-06-HISTORY-SEARCH-VIEW    | [履歴・統合検索画面](./task-058c-ui-06-history-search-view.md)                              | UI-00, UI-01, UI-02        | medium | pending    |
 
 ### Layer 2: 補足層（並列実行可能、Layer 0完了後）
 
 | ID                               | タイトル                                                            | 依存                | 複雑度 | ステータス |
 | -------------------------------- | ------------------------------------------------------------------- | ------------------- | ------ | ---------- |
-| TASK-UI-07-DASHBOARD-ENHANCEMENT | [ダッシュボード強化](./task-064-ui-07-dashboard-enhancement.md)     | UI-00, UI-01, UI-02 | small  | pending    |
-| TASK-UI-08-NOTIFICATION-CENTER   | [通知センター](./task-065-ui-08-notification-center.md)             | UI-00, UI-01, UI-02 | medium | pending    |
-| TASK-UI-09-ONBOARDING-WIZARD     | [オンボーディングウィザード](./task-066-ui-09-onboarding-wizard.md) | UI-00〜08全て       | small  | pending    |
+| TASK-UI-07-DASHBOARD-ENHANCEMENT | [ダッシュボード強化](./task-058d-ui-07-dashboard-enhancement.md)    | UI-00, UI-01, UI-02 | small  | pending    |
+| TASK-UI-08-NOTIFICATION-CENTER   | [通知センター](./task-058e-ui-08-notification-center.md)            | UI-00, UI-01, UI-02 | medium | pending    |
+| TASK-UI-09-ONBOARDING-WIZARD     | [オンボーディングウィザード](./task-061-ui-09-onboarding-wizard.md) | UI-00〜08全て       | small  | pending    |
 
 ### Tier 4 依存関係グラフ
 

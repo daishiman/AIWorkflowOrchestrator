@@ -1290,6 +1290,7 @@ GlobalNavStrip が完成し、全9 ViewType のルーティングが機能した
 - **TASK-UI-06**: 履歴検索画面（HistorySearchView 新規作成）
 - **TASK-UI-07**: ダッシュボード強化（DashboardView リデザイン）
 - **TASK-UI-08**: 通知センター（NotificationCenter 新規作成）
-- **TASK-UI-09**: オンボーディングウィザード（OnboardingWizard 新規作成）
 
-**注意**: TASK-UI-03〜09 は全て GlobalNavStrip の NavItem からの遷移をエントリポイントとするため、Step 1（並行稼働）が完了するまで着手しないこと。
+**注意**: TASK-UI-03〜08 は GlobalNavStrip の NavItem からの遷移をエントリポイントとするため、Step 1（並行稼働）が完了するまで着手しないこと。
+
+**補足**: TASK-UI-09（オンボーディングウィザード）は TASK-UI-00〜08 完了後の最終タスクとして実施する。

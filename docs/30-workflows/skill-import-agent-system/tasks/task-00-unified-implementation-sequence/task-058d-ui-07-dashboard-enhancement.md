@@ -10,7 +10,7 @@
 | 優先度         | medium                                                                               |
 | 複雑度         | small                                                                                |
 | 依存タスク     | TASK-UI-00（デザイン基盤）, TASK-UI-01（Store/IPC設計）, TASK-UI-02（GlobalNavCore） |
-| 並列可         | TASK-UI-08, TASK-UI-09                                                               |
+| 並列可         | TASK-UI-08（UI-09は対象外）                                                          |
 | 推定ファイル数 | 5-7                                                                                  |
 | ステータス     | pending                                                                              |
 | タグ           | frontend, renderer, ui, home, tap-and-discover                                       |

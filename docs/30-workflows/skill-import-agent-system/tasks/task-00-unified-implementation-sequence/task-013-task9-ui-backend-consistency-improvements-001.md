@@ -26,7 +26,7 @@ task-9 系の仕様は「バックエンド仕様（task-9\*.md）」と「UI仕
 ### 1.2 問題点・課題
 
 - task-9 の対象8ファイル（9A, 9D-9J）は存在するが、UIとの契約を跨ぐ要件が未整合。
-- `task-021-task-9a-skill-editor.md` のファイル操作IPCが positional 引数で記述され、`api-ipc-agent.md` の object 契約と不一致。
+- `task-020b-task-9a-skill-editor.md` のファイル操作IPCが positional 引数で記述され、`api-ipc-agent.md` の object 契約と不一致。
 - `task-022-task-9f-skill-share.md` の `skill:import` が既存 `skill:import`（skillName string）と用途衝突。
 - `task-9f/9g/9j` に Date フィールドが残り、IPC境界でのシリアライズ方針（ISO 8601）が未明記。
 - `task-9h` の `DebugSession.status` と `05B` の `DebugControlsProps` に `idle` 差分がある。
@@ -76,7 +76,7 @@ task-9 の8ファイルと UI仕様（05/05A/05B）を1つの契約体系に再�
 | 成果物                    | パス                                                                                                                                                  |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 本未タスク仕様書          | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-013-task9-ui-backend-consistency-improvements-001.md` |
-| 対象トレーサビリティ対象1 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-021-task-9a-skill-editor.md`                          |
+| 対象トレーサビリティ対象1 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020b-task-9a-skill-editor.md`                         |
 | 対象トレーサビリティ対象2 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023e-task-9d-skill-chain.md`                          |
 | 対象トレーサビリティ対象3 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023f-task-9e-skill-fork.md`                           |
 | 対象トレーサビリティ対象4 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`                           |
@@ -85,8 +85,8 @@ task-9 の8ファイルと UI仕様（05/05A/05B）を1つの契約体系に再�
 | 対象トレーサビリティ対象7 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023c-task-9i-skill-docs.md`                           |
 | 対象トレーサビリティ対象8 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`                      |
 | UI整合対象                | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`                       |
-| UI整合対象                | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031-ui-05a-skill-editor-view.md`                      |
-| UI整合対象                | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-032-ui-05b-skill-advanced-views.md`                   |
+| UI整合対象                | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031a-ui-05a-skill-editor-view.md`                     |
+| UI整合対象                | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031b-ui-05b-skill-advanced-views.md`                  |
 
 ---
 
@@ -138,27 +138,27 @@ task-9 の8ファイルと UI仕様（05/05A/05B）を1つの契約体系に再�
 
 ### 実装順序（ファイル名ベース）
 
-| 順序 | ファイル                                                                                                                                     | 実施内容                                                            | 並列可否            |
-| ---- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------- |
-| 1    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020-task-9b-skill-creator.md`                | 共通基盤契約の固定（9D-9J前提）                                     | 直列                |
-| 2    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-010-ut-skill-import-channel-conflict-001.md` | `skill:import` と `skill:importFromSource` の競合解消仕様を先に確定 | 直列                |
-| 3    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-011-ut-ipc-data-flow-type-gaps-001.md`       | Date/status/export/event の型ギャップ仕様を先に確定                 | 直列                |
-| 4    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-012-ut-skill-ipc-preload-extension-001.md`   | 9D-J の30チャネル拡張計画（channels/preload/types）を確定           | 直列                |
-| 5    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-021-task-9a-skill-editor.md`                 | ファイル操作IPC契約を正本仕様へ整合                                 | 直列                |
-| 6    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`                  | import/export系チャネル定義を確定                                   | 直列                |
-| 7    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md`              | Schedule系日時型のIPC境界定義                                       | 並列                |
-| 8    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md`                 | Debug status/event契約の統一                                        | 並列                |
-| 9    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023c-task-9i-skill-docs.md`                  | Docs exportフローの契約統一                                         | 並列                |
-| 10   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`             | Analytics日時型と返却契約の統一                                     | 並列                |
-| 11   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023e-task-9d-skill-chain.md`                 | Chain系契約確認（30チャネル計画反映後）                             | 並列                |
-| 12   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023f-task-9e-skill-fork.md`                  | Fork系契約確認（05側UI連携確認）                                    | 並列                |
-| 13   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`              | 9E/9F/9I UI契約を反映                                               | 直列（6/9/12後）    |
-| 14   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031-ui-05a-skill-editor-view.md`             | 9A 契約に合わせて I/F 固定                                          | 直列（5後）         |
-| 15   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-032-ui-05b-skill-advanced-views.md`          | 9D/9G/9H/9J UI契約を反映                                            | 直列（7/8/10/11後） |
-| 16   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-041a-task-10a-a-management-panel.md`         | 統合UI 入口の確定                                                   | 並列                |
-| 17   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-041b-task-10a-b-analysis-view.md`            | 分析UIの接続確定                                                    | 並列                |
-| 18   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-041c-task-10a-c-create-wizard.md`            | 作成UIの接続確定                                                    | 並列                |
-| 19   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-042-task-10a-d-integration.md`               | 10A最終統合（ChatPanel連携）                                        | 直列（16-18後）     |
+| 順序 | ファイル                                                                                                                                      | 実施内容                                                            | 並列可否            |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------- |
+| 1    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020a-task-9b-skill-creator.md`                | 共通基盤契約の固定（9D-9J前提）                                     | 直列                |
+| 2    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-010a-ut-skill-import-channel-conflict-001.md` | `skill:import` と `skill:importFromSource` の競合解消仕様を先に確定 | 直列                |
+| 3    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-010b-ut-ipc-data-flow-type-gaps-001.md`       | Date/status/export/event の型ギャップ仕様を先に確定                 | 直列                |
+| 4    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-012-ut-skill-ipc-preload-extension-001.md`    | 9D-J の30チャネル拡張計画（channels/preload/types）を確定           | 直列                |
+| 5    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020b-task-9a-skill-editor.md`                 | ファイル操作IPC契約を正本仕様へ整合                                 | 直列                |
+| 6    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`                   | import/export系チャネル定義を確定                                   | 直列                |
+| 7    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md`               | Schedule系日時型のIPC境界定義                                       | 並列                |
+| 8    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md`                  | Debug status/event契約の統一                                        | 並列                |
+| 9    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023c-task-9i-skill-docs.md`                   | Docs exportフローの契約統一                                         | 並列                |
+| 10   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`              | Analytics日時型と返却契約の統一                                     | 並列                |
+| 11   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023e-task-9d-skill-chain.md`                  | Chain系契約確認（30チャネル計画反映後）                             | 並列                |
+| 12   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023f-task-9e-skill-fork.md`                   | Fork系契約確認（05側UI連携確認）                                    | 並列                |
+| 13   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`               | 9E/9F/9I UI契約を反映                                               | 直列（6/9/12後）    |
+| 14   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031a-ui-05a-skill-editor-view.md`             | 9A 契約に合わせて I/F 固定                                          | 直列（5後）         |
+| 15   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031b-ui-05b-skill-advanced-views.md`          | 9D/9G/9H/9J UI契約を反映                                            | 直列（7/8/10/11後） |
+| 16   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-041a-task-10a-a-management-panel.md`          | 統合UI 入口の確定                                                   | 並列                |
+| 17   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-041b-task-10a-b-analysis-view.md`             | 分析UIの接続確定                                                    | 並列                |
+| 18   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-041c-task-10a-c-create-wizard.md`             | 作成UIの接続確定                                                    | 並列                |
+| 19   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-042-task-10a-d-integration.md`                | 10A最終統合（ChatPanel連携）                                        | 直列（16-18後）     |
 
 ### Wave 1: 契約凍結
 
@@ -192,7 +192,7 @@ task-9 の8ファイルと UI仕様（05/05A/05B）を1つの契約体系に再�
 
 #### 手順
 
-1. `task-020-task-9b-skill-creator.md` → `task-021-task-9a-skill-editor.md` → `task-022-task-9f-skill-share.md` を直列で確認する
+1. `task-020a-task-9b-skill-creator.md` → `task-020b-task-9a-skill-editor.md` → `task-022-task-9f-skill-share.md` を直列で確認する
 2. `task-012-ut-skill-ipc-preload-extension-001.md` を基準に channels/preload/types の追加方針を固定する
 3. `task-023a-task-9g-skill-schedule.md` / `task-023b-task-9h-skill-debug.md` / `task-023c-task-9i-skill-docs.md` / `task-023d-task-9j-skill-analytics.md` / `task-023e-task-9d-skill-chain.md` / `task-023f-task-9e-skill-fork.md` を並列で確認する
 4. 返却型・イベント型・日時型を IPC 境界型へ統一する
@@ -215,8 +215,8 @@ task-9 の8ファイルと UI仕様（05/05A/05B）を1つの契約体系に再�
 #### 手順
 
 1. `task-030-ui-05-skill-center-view.md` を 9E/9F/9I 契約に合わせて更新する
-2. `task-031-ui-05a-skill-editor-view.md` を 9A 契約に合わせて更新する
-3. `task-032-ui-05b-skill-advanced-views.md` を 9D/9G/9H/9J 契約に合わせて更新する
+2. `task-031a-ui-05a-skill-editor-view.md` を 9A 契約に合わせて更新する
+3. `task-031b-ui-05b-skill-advanced-views.md` を 9D/9G/9H/9J 契約に合わせて更新する
 
 #### 成果物
 
@@ -301,7 +301,7 @@ rg -n 'Date;|ISO 8601|toISOString' \
 # debug 状態/イベント購読確認
 rg -n 'idle|skill:debug:event|safeOn|onDebugEvent' \
   docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md \
-  docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-032-ui-05b-skill-advanced-views.md
+  docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031b-ui-05b-skill-advanced-views.md
 ```
 
 ---
@@ -321,7 +321,7 @@ rg -n 'idle|skill:debug:event|safeOn|onDebugEvent' \
 
 ### 関連ドキュメント
 
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-021-task-9a-skill-editor.md`
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020b-task-9a-skill-editor.md`
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023e-task-9d-skill-chain.md`
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023f-task-9e-skill-fork.md`
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`
@@ -330,8 +330,8 @@ rg -n 'idle|skill:debug:event|safeOn|onDebugEvent' \
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023c-task-9i-skill-docs.md`
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031-ui-05a-skill-editor-view.md`
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-032-ui-05b-skill-advanced-views.md`
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031a-ui-05a-skill-editor-view.md`
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031b-ui-05b-skill-advanced-views.md`
 
 ### システム仕様書スキル（aiworkflow-requirements）参照
 
@@ -343,8 +343,8 @@ rg -n 'idle|skill:debug:event|safeOn|onDebugEvent' \
 
 ### 参考未タスク（既存）
 
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-011-ut-ipc-data-flow-type-gaps-001.md`
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-010-ut-skill-import-channel-conflict-001.md`
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-010b-ut-ipc-data-flow-type-gaps-001.md`
+- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-010a-ut-skill-import-channel-conflict-001.md`
 - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-012-ut-skill-ipc-preload-extension-001.md`
 
 ---
