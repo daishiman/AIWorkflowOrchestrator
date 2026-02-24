@@ -585,7 +585,7 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
 - [testing-component-patterns.md](testing-component-patterns.md) — テストパターン
 - [architecture-implementation-patterns.md](architecture-implementation-patterns.md) — 実装パターン
 - [06-known-pitfalls.md](../../rules/06-known-pitfalls.md) — 既知の落とし穴（P31, P39, P40, P46）
-- [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/task-ui-00-atoms/outputs/phase-12/implementation-guide.md) — 詳細な実装ガイド
+- [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/implementation-guide.md) — 詳細な実装ガイド
 
 ## 変更履歴
 
