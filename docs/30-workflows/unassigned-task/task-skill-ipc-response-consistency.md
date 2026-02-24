@@ -3,10 +3,8 @@
 ## メタ情報
 
 ```yaml
-issue_number: 873
+issue_number: 860
 ```
-
-## メタ情報
 
 | 項目         | 内容                                                       |
 | ------------ | ---------------------------------------------------------- |
@@ -130,6 +128,22 @@ skillHandlers.ts内の全14ハンドラのIPCレスポンス形式を統一し�
 - [architecture-implementation-patterns.md S13](../../.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
 - [ipc-type-resolution-guide.md](../../.claude/skills/aiworkflow-requirements/references/ipc-type-resolution-guide.md)
 - [06-known-pitfalls.md P42/P44/P45](../../.claude/rules/06-known-pitfalls.md)
+
+### 3.6 実装課題と解決策（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001からの教訓）
+
+UT-FIX-SKILL-VALIDATION-CONSISTENCY-001（2026-02-24完了）でskill:ハンドラ6件のバリデーション形式をP42準拠に統一した際の苦戦箇所と解決策:
+
+| #   | 苦戦箇所                                                                                                                                                                | 解決策                                                                                                                                                                                                | 本タスクへの適用                                                                                                          |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **return→throw移行のRenderer側影響分析**: バリデーションエラーの応答形式をreturn（各種形式）からthrowに変更すると、Renderer側でエラーハンドリングが変わる可能性があった | Preload層の`safeInvoke`実装を確認し、`ipcRenderer.invoke()`がMain Processのthrowを自動的にrejectに変換し、safeInvokeがキャッチして`{ success: false, error }`形式で返すことを確認。Renderer側修正不要 | 成功レスポンス形式の統一でも同様にPreload層の変換パスを事前確認すること。`safeInvoke` vs `safeInvokeUnwrap`の使い分けが鍵 |
+| 2   | **6ハンドラの引数形式の違い**: 4つがオブジェクト型（`args.skillId`）、2つが直接引数型（`executionId`）で、共通関数抽出が困難                                            | YAGNI原則に従い共通関数抽出を断念。各ハンドラにインラインでP42準拠パターンを適用                                                                                                                      | レスポンス形式統一でも`{ success, data }`ラッパー vs 直接型の2パターンが存在。統一方針を先に決定してからバッチ適用する    |
+| 3   | **describe.eachマトリクステスト**: 全ハンドラ×入力パターンのテストを59件作成。既存テストのアサーション修正も必要だった                                                  | `describe.each`で全ハンドラ名をパラメータ化し、`rejects.toMatchObject`に統一                                                                                                                          | レスポンス形式テストでも同様のマトリクスアプローチを推奨（ハンドラ×レスポンスパターン）                                   |
+
+#### 参照ドキュメント
+
+- [architecture-implementation-patterns.md S18](../../.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md) — P42準拠バリデーション一括移行パターン
+- [lessons-learned.md](../../.claude/skills/aiworkflow-requirements/references/lessons-learned.md) — UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 苦戦箇所1-6
+- [06-known-pitfalls.md P42](../../.claude/rules/06-known-pitfalls.md) — .trim()バリデーション漏れ
 
 ## 4. 実行手順
 

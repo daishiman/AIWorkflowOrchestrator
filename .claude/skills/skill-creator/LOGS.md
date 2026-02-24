@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-24 - UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 completion-sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md の Phase 12 に「補完タスク完了時の元未タスク状態同期」成功パターンを追加。失敗パターン「補完タスク完了後も元未タスクが未実施のまま残置」を追記し、`task-workflow.md` とドメイン仕様書の同時同期を標準化。
+
+---
+
 ## [2026-02-23 - TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 patterns update]
 
 - **Agent**: skill-creator (update)

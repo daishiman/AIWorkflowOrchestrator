@@ -1,0 +1,150 @@
+{
+  "feature": "skill-validation-consistency",
+  "taskId": "UT-FIX-SKILL-VALIDATION-CONSISTENCY-001",
+  "taskName": "skill:ハンドラP42準拠バリデーション形式統一",
+  "created": "2026-02-24T00:00:00Z",
+  "lastUpdated": "2026-02-24T06:30:00Z",
+  "currentPhase": 12,
+  "status": "phase_12_completed",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "phase-1-requirements.md:要件定義書（FR1-FR3, NFR1-NFR5）",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-1/requirements-result.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "phase-2-design.md:設計書（6ハンドラ修正前後比較、P42準拠パターン）",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-2/design-result.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        "phase-3-design-review.md:設計レビュー結果書（PASS判定基準）",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-3/design-review-result.md:PASS判定"
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "phase-4-test-creation.md:テスト設計書",
+        "apps/desktop/src/main/ipc/__tests__/skillHandlers.validation.test.ts:59テスト作成"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "phase-5-implementation.md:実装仕様書",
+        "apps/desktop/src/main/ipc/skillHandlers.ts:6ハンドラP42準拠バリデーション適用"
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "phase-6-test-expansion.md:テスト拡充仕様書",
+        "apps/desktop/src/main/ipc/__tests__/skillHandlers.execute.test.ts:TC-4-006テスト追加",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-6/coverage-gap-analysis.md:カバレッジ不足分析"
+      ]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "phase-7-coverage-check.md:カバレッジ確認仕様書",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/verification-report.md:Line 71.8%, Branch 80.2%",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-7/coverage-results.md:Phase 7集計結果",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-7/gate-decision.md:ゲート判定"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "phase-8-refactoring.md:リファクタリング仕様書",
+        "共通関数抽出不要と判断（6ハンドラの引数形式が異なるため）"
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        "phase-9-quality-assurance.md:品質保証仕様書",
+        "TypeCheck PASS, ESLint PASS, 181テスト全PASS, セキュリティ確認PASS"
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        "phase-10-final-review.md:最終レビュー仕様書",
+        "PASS判定（MINOR 0件）",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-10/final-review-result.md:最終レビュー結果"
+      ]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md:手動テスト仕様書",
+        "worktree環境のため手動テスト代替検証完了",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-11/manual-test-summary.md:手動テスト結果"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md:ドキュメント仕様書",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-12/implementation-guide.md:実装ガイドPart1+Part2",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-12/documentation-changelog.md:全Step記録",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-12/unassigned-task-report.md:未タスク0件"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        "phase-13-pr-creation.md:PR作成仕様書（コミット準備、PR作成、CI確認）",
+        "docs/30-workflows/completed-tasks/skill-validation-consistency/outputs/phase-13/pr-info.md:PR未実施理由と引き継ぎ情報"
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "tier": 1,
+    "priority": "medium",
+    "complexity": "small",
+    "issue": "#874",
+    "tags": [
+      "security",
+      "ipc",
+      "validation",
+      "p42-compliance",
+      "skill-handlers"
+    ]
+  }
+}

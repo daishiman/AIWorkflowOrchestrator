@@ -1396,6 +1396,9 @@
     "チャネル名競合予防パターン": [
       "architecture-implementation-patterns.md"
     ],
+    "準拠バリデーション一括移行パターン": [
+      "architecture-implementation-patterns.md"
+    ],
     "SKILL": [
       "architecture-implementation-patterns.md",
       "claude-code-skills-structure.md",
@@ -1412,6 +1415,14 @@
       "lessons-learned.md"
     ],
     "CONFLICT": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "VALIDATION": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "CONSISTENCY": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
     ],
@@ -2895,6 +2906,9 @@
     "ガード": [
       "lessons-learned.md"
     ],
+    "IMPORT": [
+      "lessons-learned.md"
+    ],
     "ID": [
       "lessons-learned.md"
     ],
@@ -3013,6 +3027,12 @@
       "lessons-learned.md"
     ],
     "対象パッケージディレクトリから実行": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ": [
+      "lessons-learned.md"
+    ],
+    "準拠バリデーション形式統一": [
       "lessons-learned.md"
     ],
     "仕様書再監査": [

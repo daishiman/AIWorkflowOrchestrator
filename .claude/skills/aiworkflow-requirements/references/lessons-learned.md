@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-24 | 1.21.0 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 実装固有の苦戦箇所3件追加（6ハンドラ引数形式の違い、return→throwマイグレーション影響分析、コンテキスト枯渇による3セッション分割）+ 実装面解決手順5ステップ追加 |
+| 2026-02-24 | 1.20.0 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 教訓追加: P42準拠バリデーション統一時の苦戦箇所3件（補完タスクと元未タスクの二重管理、Phase 12ステータス同期、未タスクraw検出の既存TODO混在）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-24 | 1.20.0 | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 教訓追加: 仕様書修正のみタスクでの反映漏れ（完了台帳未反映、旧参照パス残存、`{outputs` ゴーストディレクトリ）を記録。同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-23 | 1.19.0 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 教訓追加: CIガードスクリプト実装の苦戦箇所4件（正規表現パース、キー変換設計、typesVersionsスキップ、process.exitCodeテスタビリティ）。実装内容・成果物・関連ドキュメント更新テーブル追加 |
 | 2026-02-22 | 1.18.3 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 の苦戦箇所3件を追加（Phase 10 MINOR残置、Phase 12証跡同期、未タスク監査のベースライン混同）。同種課題向け簡潔解決手順（5ステップ）を追加 |
@@ -92,6 +94,14 @@
    - [苦戦箇所6: worktree環境でのPhase 11手動テスト制約](#6-worktree環境でのphase-11手動テスト制約)
    - [苦戦箇所7: カバレッジ閾値のスコープ解釈](#7-カバレッジ閾値のスコープ解釈)
    - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ)
+0. [UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一](#ut-fix-skill-validation-consistency-001-skillハンドラp42準拠バリデーション形式統一)
+   - [苦戦箇所1: 補完タスクと元未タスクの二重管理](#1-補完タスクと元未タスクの二重管理)
+   - [苦戦箇所2: Phase 12成果物と仕様書本体ステータスの同期漏れ](#2-phase-12成果物と仕様書本体ステータスの同期漏れ)
+   - [苦戦箇所3: 未タスクraw検出に既存TODOが混在](#3-未タスクraw検出に既存todoが混在)
+   - [苦戦箇所4: 6ハンドラの引数形式の違い（オブジェクト型 vs 直接引数型）](#4-6ハンドラの引数形式の違いオブジェクト型-vs-直接引数型)
+   - [苦戦箇所5: return → throw マイグレーション時のRenderer側影響分析](#5-return--throw-マイグレーション時のrenderer側影響分析)
+   - [苦戦箇所6: コンテキスト枯渇による3セッション分割](#6-コンテキスト枯渇による3セッション分割)
+   - [同種課題の簡潔解決手順（プロセス面4ステップ + 実装面5ステップ）](#同種課題の簡潔解決手順プロセス面4ステップ--実装面5ステップ)
 0. [TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠）](#task-9a-c-skilleditor-仕様書再監査phase-12準拠)
    - [苦戦箇所1: tasks/completed-task 参照混在](#1-taskscompleted-task-参照混在)
    - [苦戦箇所2: phase-09 と phase-9 の表記ゆれ](#2-phase-09-と-phase-9-の表記ゆれ)
@@ -792,11 +802,122 @@ pnpm --filter @repo/shared build && pnpm typecheck
 
 | タスクID | タスク名 | 優先度 | 仕様書 |
 |---------|---------|--------|--------|
-| UT-FIX-SKILL-VALIDATION-P42-001 | skillHandlers P42準拠バリデーション横展開 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-validation-p42-standardization.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-validation-p42-standardization.md) |
-| UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一 | 中 | [`docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/completed-tasks/unassigned-task/task-ipc-skill-error-response-unification.md) |
+| ~~UT-FIX-SKILL-VALIDATION-P42-001~~ | ~~skillHandlers P42準拠バリデーション横展開~~ | ~~中~~ | **完了: 2026-02-24（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001で実施）** |
+| UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一 | 中 | [`docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md) |
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md) |
 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 | IPCハンドラ粒度カバレッジ計測インフラ構築 | 中 | [`docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md) |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード | 中 | [`docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md) |
+
+---
+
+## UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 |
+| 目的 | skillHandlers 6ハンドラのバリデーションを P42 準拠（`typeof` + `trim()` + throw形式）に統一 |
+| 完了日 | 2026-02-24 |
+| ステータス | **完了** |
+| 関連Issue | #874 |
+
+### 苦戦箇所と解決策
+
+#### 1. 補完タスクと元未タスクの二重管理
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `UT-FIX-SKILL-VALIDATION-P42-001`（元未タスク）と `UT-FIX-SKILL-VALIDATION-CONSISTENCY-001`（補完タスク）が併存し、一部仕様書で「未実施」が残った |
+| **原因** | 補完タスク完了時に、残課題テーブル側の元タスク状態を同時更新していなかった |
+| **解決策** | `task-workflow.md` / `security-skill-ipc.md` の該当行を完了同期し、補完タスクで実施済みであることを明記 |
+| **教訓** | 補完タスクを完了したら、元未タスクを「完了または置換済み」に同時更新しないと重複管理になる |
+
+#### 2. Phase 12成果物と仕様書本体ステータスの同期漏れ
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `artifacts.json` は `phase_12_completed` でも、`phase-12-documentation.md` のメタ情報が `pending` のまま残る不整合が発生 |
+| **原因** | 成果物生成と仕様書本体更新を別工程で進めたため、最終同期が漏れた |
+| **解決策** | Phase 12終了時に `artifacts.json` と `phase-12-documentation.md` のステータスを必ず突合し、差分を同一ターンで修正 |
+| **教訓** | 「成果物作成完了」と「仕様書本体の状態更新」は同一完了条件として扱う |
+
+#### 3. 未タスクraw検出に既存TODOが混在
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `detect-unassigned-tasks` が既存TODOを検出し、新規未タスクがあるように見える誤読が発生しやすい |
+| **原因** | raw件数（候補）と精査後件数（新規起票対象）を分けずに扱うと、今回差分と既存負債が混在する |
+| **解決策** | `raw件数` と `精査後件数` を分離記録し、既存管理済みTODOは新規起票対象から除外して判定 |
+| **教訓** | 未タスク監査は「全体ベースライン」と「今回対象差分」を必ず分離報告する |
+
+#### 4. 6ハンドラの引数形式の違い（オブジェクト型 vs 直接引数型）
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 6ハンドラ中4つがオブジェクト型（`args.skillId`, `args.skillName`）、2つが直接引数型（`executionId: string`）で、共通バリデーション関数の抽出が困難 |
+| **原因** | ハンドラ設計時に引数形式の統一規約がなく、skill:abort/get-statusは直接引数型、他はオブジェクト型で設計された |
+| **解決策** | 共通関数抽出を断念し、各ハンドラにインラインでP42準拠3段バリデーション（typeof + .trim() === "" + throw）を適用。YAGNI原則に従い、引数形式統一は別タスク（UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001等）に委ねた |
+| **教訓** | 引数形式が異なるハンドラ群のバリデーション統一では、「バリデーションパターン」と「引数形式」を分離して考える。パターンのみ統一し、形式統一は別スコープにする |
+
+```typescript
+// オブジェクト型（4ハンドラ: skill:import, skill:remove, skill:execute, skill:getDetail）
+if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+  throw { code: "VALIDATION_ERROR", message: "skillName must be a non-empty string" };
+}
+
+// 直接引数型（2ハンドラ: skill:abort, skill:get-status）
+if (typeof executionId !== "string" || executionId.trim() === "") {
+  throw { code: "VALIDATION_ERROR", message: "executionId must be a non-empty string" };
+}
+```
+
+#### 5. return → throw マイグレーション時のRenderer側影響分析
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | バリデーションエラーの応答形式を return（各種形式）から throw に変更すると、Renderer側でエラーハンドリングが変わる可能性があった |
+| **原因** | 6ハンドラで return false / return null / return { success: false } / throw の4種類の応答形式が混在しており、throw統一の影響範囲が不明確 |
+| **解決策** | Preload層の `safeInvoke` 実装を確認し、`ipcRenderer.invoke()` が Main Process の throw を自動的に reject に変換し、safeInvoke がそれをキャッチして `{ success: false, error: message }` 形式で返すことを確認。Renderer側の修正は不要と判断 |
+| **教訓** | IPC throw 移行前に Preload 層の safeInvoke/safeInvokeUnwrap の例外処理パスを必ず確認する。Electron の ipcRenderer.invoke() は Main Process の throw を Promise rejection に変換する |
+
+```typescript
+// safeInvoke の例外処理（preload/ipc-utils.ts）
+export async function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
+  try {
+    return await ipcRenderer.invoke(channel, ...args);
+  } catch (error) {
+    // Main Process の throw はここでキャッチされる
+    return { success: false, error: error.message } as T;
+  }
+}
+```
+
+#### 6. コンテキスト枯渇による3セッション分割
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | Phase 1-12の全実行に3セッションが必要となり、セッション間でのコンテキスト引き継ぎに苦労した |
+| **原因** | Phase 12（ドキュメント更新）が最もコンテキストを消費する。8ファイルの仕様書更新 + topic-map再生成 + IPC契約検証 + documentation-changelog + unassigned-task-report の5タスクを1セッションで完了できなかった |
+| **解決策** | セッション引き継ぎ時のサマリーに「残タスクリスト」「完了済みタスクの成果物パス」「次のアクション」を明示的に含める |
+| **教訓** | Phase 12は仕様書更新を3ファイル以下/バッチに分割する（P43対策）。特に LOGS.md×2 + SKILL.md×2 の「4ファイル同時更新」はバッチ分割必須 |
+
+### 同種課題の簡潔解決手順（プロセス面4ステップ + 実装面5ステップ）
+
+#### プロセス面（4ステップ）
+
+1. 補完タスク完了時に、元未タスクの状態を `task-workflow.md` とドメイン仕様書で同時更新する
+2. `artifacts.json` と `phase-12-documentation.md` のステータスを突合し、差分を即時修正する
+3. 未タスク監査は `raw件数` と `精査後件数` を分けて記録し、既存TODOを除外判定する
+4. `lessons-learned.md` と `skill-creator/references/patterns.md` に再発防止パターンを同期する
+
+#### 実装面（5ステップ）
+
+1. **引数形式の分類**: `grep -n "ipcMain.handle" skillHandlers.ts` で全ハンドラの引数パターンを分類（オブジェクト型/直接引数型）
+2. **Preload層の確認**: `grep -n "safeInvoke\|safeInvokeUnwrap" preload/skill-api.ts` で各ハンドラの呼び出しパターンとエラーハンドリングを確認
+3. **P42パターンの適用**: 各ハンドラに `typeof arg !== "string" || arg.trim() === ""` + `throw { code: "VALIDATION_ERROR" }` を適用
+4. **テストの作成**: `describe.each` で全ハンドラ × 入力パターン（null/undefined/空文字列/スペースのみ/正常値）のマトリクステストを作成
+5. **後方互換性の検証**: 既存テストが全PASS することを確認（`cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillHandlers`）
 
 ---
 
