@@ -5,6 +5,55 @@
 
 ---
 
+## 2026-02-24 - UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 再監査整合
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001
+- Phase: Phase 12（再監査）
+
+### 実施内容
+- `lessons-learned.md` に苦戦箇所3件（補完タスク二重管理、Phase 12ステータス同期漏れ、未タスクraw誤読）と簡潔解決手順（4ステップ）を追加
+- `task-workflow.md` の `UT-FIX-SKILL-VALIDATION-P42-001` を補完タスク実施済みとして完了同期
+- `security-skill-ipc.md` の残課題テーブルを同様に完了同期し、ドキュメント間の状態不整合を解消
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-24
+- 追加検出課題: 0件（新規未タスク起票不要）
+
+---
+
+## 2026-02-24 - UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 Phase 12完了記録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001
+- Phase: Phase 1-12（全Phase完了）
+
+### 実施内容
+- skillHandlers.ts 6ハンドラにP42準拠3段バリデーション（typeof+trim）とthrow形式エラーレスポンスを適用
+- 全11ハンドラのバリデーション形式統一完了
+- security-skill-ipc.md: IPCチャネル検証テーブルに6ハンドラのP42準拠バリデーション記録を追加
+- security-api-electron.md: 完了タスクテーブルにタスク完了記録を追加
+- interfaces-agent-sdk-skill.md: 関連未タスクを完了化
+- task-workflow.md: 残課題テーブルのタスクを完了化
+
+### テスト結果サマリー
+
+| カテゴリ | PASS | FAIL |
+|----------|------|------|
+| Validation Tests | 59 | 0 |
+| All Tests (6 files) | 181 | 0 |
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-24
+- Issue: #874
+- 発見課題: 0件（Phase 10 PASS、MINOR指摘なし）
+
+---
+
 ## 2026-02-24 - Phase 12再監査（task-ui-00-atoms / UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）
 
 ### コンテキスト
@@ -53,7 +102,6 @@
 - Phase 10 PASS（MINOR 0件）、Phase 11 手動テスト 11/11 PASS
 
 ---
-
 ## 2026-02-23 - TASK-UI-00-ATOMS Phase 12完了記録
 
 ### コンテキスト
@@ -375,7 +423,7 @@
 | -------- | ---- | ------ | ---------- |
 | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一 | 中 | `docs/30-workflows/unassigned-task/task-skill-ipc-response-consistency.md` |
 | UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正 | 低 | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション統一 | 中 | `docs/30-workflows/unassigned-task/task-skill-validation-consistency.md` |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション統一 | 中 | `docs/30-workflows/completed-tasks/task-skill-validation-consistency.md` |
 
 ---
 

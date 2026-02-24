@@ -56,7 +56,12 @@
 | `skill:getImported`    | sender検証                        |
 | `skill:import`         | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-IMPORT-INTERFACE-001 + UT-FIX-SKILL-IMPORT-RETURN-TYPE-001） |
 | `skill:remove`         | sender検証 + skillName非空文字列検証（`trim()`含む） |
-| `skill:get-detail`     | sender検証 + skillId検証          |
+| `skill:get-detail`     | sender検証 + skillId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
+| `skill:execute`        | sender検証 + skillId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
+| `skill:abort`          | sender検証 + executionId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
+| `skill:get-status`     | sender検証 + executionId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
+| `skill:analyze`        | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
+| `skill:improve`        | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
 
 `skill:import` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-IMPORT-INTERFACE-001）。
 
@@ -369,7 +374,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 | タスクID | タスク名 | 優先度 | 状態 |
 |----------|----------|--------|------|
 | TASK-IPC-SHARED-CHANNELS-REFACTORING | packages/shared/ipc/channels.ts 整理 | 低 | 未実施 |
-| UT-FIX-SKILL-VALIDATION-P42-001 | skillHandlers P42準拠バリデーション横展開（6ハンドラの`.trim()`追加） | 中 | 未実施 |
+| ~~UT-FIX-SKILL-VALIDATION-P42-001~~ | ~~skillHandlers P42準拠バリデーション横展開（6ハンドラの`.trim()`追加）~~ | ~~中~~ | **完了: 2026-02-24（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 で実施）** |
 | UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一（throw vs return不統一） | 中 | 未実施 |
 
 > **Note**: TASK-FIX-4-1-IPC-CONSOLIDATION で preload/channels.ts への統合は完了したが、packages/shared 配下の整理は他パッケージへの影響調査が必要なため、別タスクとして分離。
@@ -393,6 +398,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
+| v1.9.0     | 2026-02-24 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001完了反映: 残課題 `UT-FIX-SKILL-VALIDATION-P42-001` を完了化（補完タスクで実施済みとして同期） |
 | v1.8.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` の検証要件を `skillName` 非空文字列（`trim()` 含む3段バリデーション）に更新 |
 | v1.0.0     | 2026-01-25 | 初版作成                                     |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |

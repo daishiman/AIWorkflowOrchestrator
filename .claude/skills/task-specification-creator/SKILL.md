@@ -377,6 +377,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | ---------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **v9.84.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 パターン文書化反映**: 仕様書修正のみタスクのPhaseテンプレート先例化。IPCチャネル命名規則パターンの体系化を aiworkflow-requirements に委譲 |
 | **9.83.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001完了反映**: skill:import IPCチャネル名競合の予防的解消（仕様書修正のみ）。task-022/task-030のチャネル名修正。LOGS.md完了記録追加 |
+| **9.83.0** | **2026-02-24** | **UT-FIX-SKILL-VALIDATION-CONSISTENCY-001完了反映**: skillHandlers.ts 6ハンドラP42準拠バリデーション統一のPhase 12ドキュメント更新記録。LOGS.md完了記録追加 |
 | **9.82.0** | **2026-02-23** | **TASK-UI-00-ATOMS Phase 1-12全完了記録**: 新規5+拡張2のAtoms共通コンポーネント、156テスト全PASS。Phase 10 PASS（MINOR 3件→未タスク化）、Phase 11 手動テスト51件。LOGS.md完了記録追加 |
 | **9.81.0** | **2026-02-22** | **再監査是正と互換性改善**: `scripts/generate-index.js` を改善し、`artifacts.json` の文字列配列成果物も index 出力可能にした（`status` 未設定時は `in_progress` フォールバック）。`TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001` の未タスク指示書をテンプレート準拠へ再構成し、`skill-feedback-report.md` を追補 |
 | **9.80.0** | **2026-02-22** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001完了反映**: @repo/shared 3層整合CIガードスクリプト追加。check-module-syncジョブCI統合。43テスト全PASS。quality-requirements.md/architecture-monorepo.md/technology-devops.md更新。LOGS.md完了記録追加 |

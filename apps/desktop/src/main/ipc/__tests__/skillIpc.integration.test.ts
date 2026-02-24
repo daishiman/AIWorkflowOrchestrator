@@ -464,13 +464,14 @@ describe("Skill IPC Integration", () => {
       expect(validateIpcSender).toHaveBeenCalled();
     });
 
-    it("should return error when skillId is not a string", async () => {
+    it("should throw VALIDATION_ERROR when skillId is not a string", async () => {
       const handler = handlers.get("skill:get-detail")!;
-      const result = (await handler(createMockIpcEvent(), {
-        skillId: 123,
-      })) as { success: boolean; error: string };
-      expect(result.success).toBe(false);
-      expect(result.error).toContain("skillId must be a string");
+      await expect(
+        handler(createMockIpcEvent(), { skillId: 123 }),
+      ).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "skillId must be a non-empty string",
+      });
     });
 
     it("should return error when getSkillById throws", async () => {
@@ -487,53 +488,64 @@ describe("Skill IPC Integration", () => {
 
   // --- Edge Cases: skill:get-status ---
   describe("skill:get-status", () => {
-    it("should return null for empty executionId", async () => {
+    it("should throw VALIDATION_ERROR for empty executionId", async () => {
       const handler = handlers.get("skill:get-status")!;
-      const result = await handler(createMockIpcEvent(), "");
-      expect(result).toBeNull();
+      await expect(handler(createMockIpcEvent(), "")).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "executionId must be a non-empty string",
+      });
       expect(validateIpcSender).toHaveBeenCalled();
     });
 
-    it("should return null for non-string executionId", async () => {
+    it("should throw VALIDATION_ERROR for non-string executionId", async () => {
       const handler = handlers.get("skill:get-status")!;
-      const result = await handler(createMockIpcEvent(), 123);
-      expect(result).toBeNull();
+      await expect(handler(createMockIpcEvent(), 123)).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "executionId must be a non-empty string",
+      });
     });
   });
 
   // --- Edge Cases: skill:abort ---
   describe("skill:abort - edge cases", () => {
-    it("should return false for empty executionId", async () => {
+    it("should throw VALIDATION_ERROR for empty executionId", async () => {
       const handler = handlers.get("skill:abort")!;
-      const result = await handler(createMockIpcEvent(), "");
-      expect(result).toBe(false);
+      await expect(handler(createMockIpcEvent(), "")).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "executionId must be a non-empty string",
+      });
       expect(validateIpcSender).toHaveBeenCalled();
     });
 
-    it("should return false for non-string executionId", async () => {
+    it("should throw VALIDATION_ERROR for non-string executionId", async () => {
       const handler = handlers.get("skill:abort")!;
-      const result = await handler(createMockIpcEvent(), 123);
-      expect(result).toBe(false);
+      await expect(handler(createMockIpcEvent(), 123)).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "executionId must be a non-empty string",
+      });
     });
   });
 
   // --- Edge Cases: skill:execute ---
   describe("skill:execute - edge cases", () => {
-    it("should return error for empty skillId", async () => {
+    it("should throw VALIDATION_ERROR for empty skillId", async () => {
       const handler = handlers.get("skill:execute")!;
-      const result = (await handler(createMockIpcEvent(), {
-        skillId: "",
-      })) as { success: boolean; error: string };
-      expect(result.success).toBe(false);
-      expect(result.error).toContain("skillId must be a string");
+      await expect(
+        handler(createMockIpcEvent(), { skillId: "" }),
+      ).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "skillId must be a non-empty string",
+      });
     });
 
-    it("should return error for non-string skillId", async () => {
+    it("should throw VALIDATION_ERROR for non-string skillId", async () => {
       const handler = handlers.get("skill:execute")!;
-      const result = (await handler(createMockIpcEvent(), {
-        skillId: 123,
-      })) as { success: boolean; error: string };
-      expect(result.success).toBe(false);
+      await expect(
+        handler(createMockIpcEvent(), { skillId: 123 }),
+      ).rejects.toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "skillId must be a non-empty string",
+      });
     });
 
     it("should return error when execution fails", async () => {

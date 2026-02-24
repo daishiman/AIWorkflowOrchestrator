@@ -30,6 +30,12 @@ issue_number: 843
 
 UT-FIX-SKILL-REMOVE-INTERFACE-001（2026-02-20）の実装時にこの不統一が顕在化した。skill:remove をthrowパターンに修正した際、他のハンドラ（skill:get-detail, skill:execute 等）がreturnパターンのままであることが確認された。
 
+**2026-02-24 現状更新**: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001（2026-02-24完了）により、以下の6ハンドラがthrowパターンに統一済みである:
+
+- skill:get-detail, skill:execute, skill:abort, skill:get-status, skill:analyze, skill:improve
+
+これにより、パターンA（throw）のハンドラ数が増加し、パターンB/Cの未統一ハンドラ数は減少している。skill:import, skill:remove も既にthrowパターンに統一済みのため、残りの対象はパターンB（return { success: false }）を使用する skill:list, skill:scan, skill:getImported, skill:optimize, skill:optimize:variants, skill:optimize:evaluate の6ハンドラとなる。
+
 ### 1.2 問題点・課題
 
 #### 3つのエラー応答パターンの混在
@@ -285,6 +291,29 @@ getExecutionStatus: (executionId: string): Promise<ExecutionInfo | null> =>
 | 発生状況         | UT-FIX-IPC-RESPONSE-UNWRAP-001 で `safeInvokeUnwrap` が導入されたが、`skill:import`/`skill:remove`/`skill:abort`/`skill:get-status` はまだ `safeInvoke` を使用している。これらのハンドラの応答形式がパターンA/Cのため、`safeInvokeUnwrap` に移行できなかった        |
 | 本タスクでの対策 | ハンドラ側をパターンBに統一した後、Preload 側を `safeInvokeUnwrap` に移行する。順序が逆になるとランタイムエラーが発生するため、必ず **ハンドラ修正 → Preload修正** の順序で実施する                                                                                 |
 | チェック方法     | 統一後に `grep -n "safeInvoke(" apps/desktop/src/preload/skill-api.ts` で `safeInvokeUnwrap` ではなく `safeInvoke` を使用している箇所が、`onStream`/`onPermissionRequest`/`sendPermissionResponse`/`onComplete`/`onError`（イベントリスナー系）のみであることを確認 |
+
+### 3.6 実装課題と解決策（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001からの教訓）
+
+UT-FIX-SKILL-VALIDATION-CONSISTENCY-001（2026-02-24完了）で6ハンドラをthrowパターンに統一した際の知見:
+
+| #   | 苦戦箇所                                                                                                                                               | 解決策                                                                                                                 | 本タスクへの適用                                                                                                                    |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **4種類のreturnパターン混在**: `return { code }`, `return false`, `return null`, `return { success: false }` が混在しており、一括置換が困難            | 各ハンドラを個別に`grep -n "return.*VALIDATION\|return false\|return null\|return.*success.*false"` で分類してから修正 | 本タスクでも同様のパターン分類アプローチが有効。残ハンドラ（skill:list, skill:scan, skill:getImported等）のreturnパターンを先に分類 |
+| 2   | **safeInvoke後方互換性**: Main Processのthrowは`ipcRenderer.invoke()`によりPromise rejectionに変換され、safeInvokeが自動キャッチ。Renderer側の変更不要 | Preload層の`safeInvoke`/`safeInvokeUnwrap`それぞれの例外処理パスを確認した                                             | 本タスクではsafeInvokeUnwrapを使用するハンドラも対象。safeInvokeUnwrapのthrow処理パスも事前確認必須                                 |
+| 3   | **テストアサーション一括修正**: return→throwにより、テストの期待値が`toBe(false)`/`toBeNull()`から`rejects.toMatchObject`に変更                        | `describe.each`マトリクステストで全ハンドラ×入力パターンを自動生成                                                     | 残ハンドラのテストも同様にマトリクスアプローチで効率化                                                                              |
+
+#### 現在の実装状況（2026-02-24時点）
+
+| パターン                            | 対象ハンドラ                                                                                                             | ステータス        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| throw統一済み                       | skill:get-detail, skill:execute, skill:abort, skill:get-status, skill:analyze, skill:improve, skill:import, skill:remove | ✅ P42準拠完了    |
+| 未統一（return { success: false }） | skill:list, skill:scan, skill:getImported, skill:optimize, skill:optimize:variants, skill:optimize:evaluate              | ⬜ 本タスクで対応 |
+
+#### 参照ドキュメント
+
+- [architecture-implementation-patterns.md S18](../../.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md) — P42準拠バリデーション一括移行パターン（移行チェックリスト・後方互換性テーブル含む）
+- [lessons-learned.md](../../.claude/skills/aiworkflow-requirements/references/lessons-learned.md) — UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 苦戦箇所4-6
+- [skill-creator/patterns.md](../../.claude/skills/skill-creator/references/patterns.md) — P42バリデーション一括移行パターン（成功パターン）
 
 ---
 

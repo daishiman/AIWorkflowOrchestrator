@@ -83,6 +83,7 @@ API認証・認可、Electron IPC、スキル実行のセキュリティ設計�
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
 | UT-FIX-5-4 | AgentSDKAPI型定義不一致修正          | 2026-02-10 | `agentSDKAPI.abort()` 戻り値型を `void` → `Promise<void>` に修正（P23パターン準拠） |
 | UT-FIX-5-3 | Preload Agent Abort セキュリティ修正 | 2026-02-10 | `agentSDKAPI.abort()` を `safeInvoke()` 経由に変更、Main側 `ipcMain.handle()` 使用  |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション形式統一 | 2026-02-24 | skillHandlers.ts 6ハンドラにP42準拠3段バリデーション（typeof+trim）とthrow形式エラーを適用。全11ハンドラのバリデーション形式統一完了 |
 
 ---
 

@@ -2205,11 +2205,118 @@ export enum IPC_CHANNELS {
 
 ---
 
+## P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装）
+
+### S18: P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001）
+
+IPCハンドラ群のバリデーション応答形式を一括でP42準拠に統一するための移行パターン。個別ハンドラ修正（P44: skill:import/remove）とは異なり、ファイル内の全ハンドラを横断的に統一する。
+
+#### 問題
+
+IPCハンドラのバリデーションが4種類の応答形式で混在しており、エラーハンドリングの一貫性がなく、セキュリティ上のリスク（スペースのみ入力 `"   "` の通過）がある。
+
+| パターン | 応答形式 | 該当ハンドラ | セキュリティリスク |
+|----------|---------|-------------|------------------|
+| A | `return { code: "VALIDATION_ERROR" }` | skill:get-detail, skill:execute | `.trim()` 未適用 |
+| B | `return false` | skill:abort | 型チェックのみ |
+| C | `return null` | skill:get-status | 型チェックのみ |
+| D | `return { success: false }` | skill:analyze, skill:improve | `.trim()` 未適用 |
+
+#### 解決策
+
+P42準拠の3段バリデーション + throw形式に統一:
+
+| ステップ | チェック内容 | 目的 |
+|----------|------------|------|
+| 1 | `typeof !== "string"` | 型チェック（null, undefined, number等を拒否） |
+| 2 | `.trim() === ""` | スペースのみ入力の拒否（P42の核心） |
+| 3 | `throw { code: "VALIDATION_ERROR" }` | 統一エラー応答（safeInvokeが自動キャッチ） |
+
+```typescript
+// ❌ 修正前: 4種類のバリデーションパターンが混在
+// パターンA
+if (typeof args?.skillId !== "string" || args.skillId === "") {
+  return { code: "VALIDATION_ERROR", message: "skillId must be a non-empty string" };
+}
+// パターンB
+if (!executionId) { return false; }
+// パターンC
+if (!executionId) { return null; }
+// パターンD
+if (typeof args?.skillName !== "string" || args.skillName === "") {
+  return { success: false, error: "スキル名が指定されていません" };
+}
+
+// ✅ 修正後: P42準拠統一パターン（全ハンドラ共通）
+// オブジェクト引数型
+if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+  throw { code: "VALIDATION_ERROR", message: "skillName must be a non-empty string" };
+}
+// 直接引数型
+if (typeof executionId !== "string" || executionId.trim() === "") {
+  throw { code: "VALIDATION_ERROR", message: "executionId must be a non-empty string" };
+}
+```
+
+#### 後方互換性
+
+| レイヤー | 影響 | 理由 |
+|----------|------|------|
+| Main Process | **変更あり** | return → throw に変更 |
+| Preload (safeInvoke) | **変更なし** | Main Processのthrowを自動キャッチしてPromise rejectionに変換（Electron仕様: `ipcRenderer.invoke()` が自動変換） |
+| Renderer | **変更なし** | safeInvokeのエラーハンドリングパスで既にキャッチ済み |
+
+#### 引数形式別の適用パターン
+
+| 引数形式 | バリデーション対象 | 該当ハンドラ | チェック式 |
+|---------|------------------|------------|-----------|
+| オブジェクト型 | `args?.fieldName` | skill:get-detail, skill:execute, skill:analyze, skill:improve | `typeof args?.fieldName !== "string" \|\| args.fieldName.trim() === ""` |
+| 直接引数型 | `argName` | skill:abort, skill:get-status | `typeof argName !== "string" \|\| argName.trim() === ""` |
+
+#### 移行チェックリスト
+
+- [ ] 対象ハンドラのバリデーション形式を分類（`grep -n "return.*VALIDATION\|return false\|return null\|return.*success.*false" skillHandlers.ts`）
+- [ ] Preload層のsafeInvoke例外処理パスを確認（throwがPromise rejectionに変換されることを検証）
+- [ ] 各ハンドラに3段バリデーション（typeof + .trim() + throw）を適用
+- [ ] describe.eachマトリクステストを作成（全ハンドラ × 入力パターン: null, undefined, `""`, `"   "`, 正常値）
+- [ ] 既存テストのアサーション修正（return → throw: `rejects.toMatchObject` に変更）
+- [ ] 全テストPASSを確認
+
+#### テスト戦略: describe.eachマトリクステスト
+
+| 要素 | 説明 |
+|------|------|
+| テスト手法 | `describe.each` で全ハンドラ × 入力パターンのマトリクスを自動生成 |
+| 入力パターン | `null`, `undefined`, 空文字列 `""`, スペースのみ `"   "`, 正常値 |
+| アサーション | `rejects.toMatchObject({ code: "VALIDATION_ERROR" })` |
+| テスト件数 | 59件の新規テスト（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001実績） |
+| 全テスト | 181件PASS（既存テスト含む） |
+
+#### 注意事項
+
+- 共通バリデーション関数の抽出は引数形式（オブジェクト型/直接引数型）が統一されるまで保留（YAGNI原則）
+- throw統一はsafeInvoke設計に依存するため、Preload層の確認が必須前提
+- ネストされたオブジェクト引数（例: `args.analysis` in skill:improve）はP42スコープ外（オブジェクト型のため文字列バリデーション不適用）
+- 引数名のセマンティクスドリフト（skillId→skillName）は別タスク（P45参照）
+
+#### 関連パターン
+
+- P42（.trim()バリデーション漏れ）— 元となるPitfall
+- P44（skill:import/remove IPCインターフェース不整合）— 参照実装（個別ハンドラ修正の先行事例）
+- [IPCインターフェース不整合修正パターン（P44 2026-02-21実装）](#ipcインターフェース不整合修正パターンp44-2026-02-21実装) — P42準拠3段バリデーションの初回適用テンプレート
+- [ipc-contract-checklist.md](./ipc-contract-checklist.md) — IPC契約検証の詳細チェックリスト
+
+**関連タスク**: UT-FIX-SKILL-VALIDATION-CONSISTENCY-001（2026-02-24完了、Issue #874）
+
+---
+
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
 | v_next | 2026-02-24 | IPCチャネル名競合予防パターン追加（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）: チャネル命名規則（skill:{動詞}FromSource）、既存/新規対応表、判断基準、実装チェックリスト、苦戦箇所3件 |
+| v_next | 2026-02-24 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: P42準拠バリデーション一括移行パターン（S18）追加。移行チェックリスト・引数形式別適用パターン・後方互換性注記・describe.eachマトリクステスト戦略を含む |
 | v_next | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネント設計パターン追加（S12: Props最小化、S13: Record型バリアント定義、S14: HTMLAttributes Props型衝突回避、S15: 後方互換性維持、S16: CSS変数＋Tailwind Arbitrary Values、S17: displayName統一） |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル） |
