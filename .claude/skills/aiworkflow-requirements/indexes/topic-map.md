@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-22
+> 自動生成: 2026-02-24
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -79,7 +79,7 @@ node scripts/list-specs.js --topics
 | テストカバレッジ目標 | L617 |
 | 関連ドキュメント | L694 |
 | 完了タスク | L702 |
-| 変更履歴 | L981 |
+| 変更履歴 | L1008 |
 
 ---
 
@@ -178,7 +178,8 @@ node scripts/list-specs.js --topics
 | IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L1958 |
 | SkillEditor 実装パターン（TASK-9A-C spec_created） | L2025 |
 | IPC インターフェース不整合修正パターン（P44/P45解決） | L2085 |
-| 変更履歴 | L2113 |
+| IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2113 |
+| 変更履歴 | L2208 |
 
 ### references/architecture-monorepo.md
 
@@ -186,7 +187,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| モノレポアーキテクチャ | L8 |
 | 型エクスポートパターン | L219 |
 | 完了タスク | L289 |
-| 変更履歴 | L301 |
+| 変更履歴 | L321 |
 
 ### references/architecture-overview.md
 
@@ -1144,12 +1145,12 @@ node scripts/list-specs.js --topics
 | 依存関係管理戦略 | L176 |
 | 無料枠の活用ガイド | L269 |
 | CI/CDツール選定 | L301 |
-| 学習リソースとコミュニティ | L375 |
-| マイグレーション計画 | L402 |
-| 関連ドキュメント | L423 |
-| 完了タスク | L433 |
-| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L445 |
-| 変更履歴 | L475 |
+| 学習リソースとコミュニティ | L387 |
+| マイグレーション計画 | L414 |
+| 関連ドキュメント | L435 |
+| 完了タスク | L445 |
+| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L458 |
+| 変更履歴 | L488 |
 
 ### references/technology-frontend.md
 
@@ -1524,24 +1525,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L62 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L183 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L234 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L304 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L612 |
-| 関連ドキュメント | L751 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L761 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L938 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L996 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1139 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1243 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1389 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1444 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1726 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L1814 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L2033 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2180 |
-| UT-9B-H-003: SkillCreator IPCセキュリティ強化 | L2287 |
+| 目次 | L65 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L200 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L374 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L425 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L495 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L803 |
+| 関連ドキュメント | L942 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L952 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1129 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1187 |
+| TASK-FIX-14-1: console → electron-log 移行 | L1330 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L1434 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1580 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1635 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L1917 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L2005 |
+| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L2224 |
+| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2371 |
 
 ### references/llm-embedding.md
 
@@ -1883,9 +1884,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L796 |
-| 関連ドキュメント | L928 |
-| 変更履歴 | L938 |
+| 残課題（未タスク） | L852 |
+| 関連ドキュメント | L987 |
+| 変更履歴 | L997 |
 
 ### references/testing-accessibility.md
 
