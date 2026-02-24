@@ -218,8 +218,13 @@ class PhaseValidator {
       }
     }
 
+    // "eof" を安定処理するため、疑似的な終端見出しを付与してセクション抽出する
+    const contentWithSentinel = `${content}\n## __END_OF_DOC__`;
+
     // 実行タスクセクションの検証
-    const taskSection = content.match(/^##\s+実行タスク[\s\S]*?(?=^##|\z)/m);
+    const taskSection = contentWithSentinel.match(
+      /^##\s+実行タスク[\s\S]*?(?=^##\s+)/m,
+    );
     if (taskSection) {
       const taskContent = taskSection[0];
       // タスク名と目的のパターン: - タスク名: 目的
@@ -238,8 +243,8 @@ class PhaseValidator {
     }
 
     // 完了条件のチェックリスト形式確認（未完了/完了の両方を許容）
-    const completionSection = content.match(
-      /^##\s+完了条件[\s\S]*?(?=^##|\z)/m,
+    const completionSection = contentWithSentinel.match(
+      /^##\s+完了条件[\s\S]*?(?=^##\s+)/m,
     );
     if (completionSection) {
       const checkboxes = completionSection[0].match(/- \[[ xX]\]/g);

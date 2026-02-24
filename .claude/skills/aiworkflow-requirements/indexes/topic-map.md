@@ -179,16 +179,16 @@ node scripts/list-specs.js --topics
 | SkillEditor 実装パターン（TASK-9A-C spec_created） | L2025 |
 | IPC インターフェース不整合修正パターン（P44/P45解決） | L2085 |
 | IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2113 |
-| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2113 |
-| 変更履歴 | L2218 |
+| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2208 |
+| 変更履歴 | L2314 |
 
 ### references/architecture-monorepo.md
 
 | セクション | 行 |
 |------------|----|\n| モノレポアーキテクチャ | L8 |
-| 型エクスポートパターン | L219 |
-| 完了タスク | L289 |
-| 変更履歴 | L321 |
+| 型エクスポートパターン | L214 |
+| 完了タスク | L284 |
+| 変更履歴 | L316 |
 
 ### references/architecture-overview.md
 
@@ -1150,8 +1150,8 @@ node scripts/list-specs.js --topics
 | マイグレーション計画 | L414 |
 | 関連ドキュメント | L435 |
 | 完了タスク | L445 |
-| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L458 |
-| 変更履歴 | L488 |
+| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L459 |
+| 変更履歴 | L489 |
 
 ### references/technology-frontend.md
 
@@ -1526,25 +1526,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L66 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L204 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L378 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L429 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L499 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L807 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L918 |
-| 関連ドキュメント | L1057 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1067 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1244 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1302 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1445 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1549 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1695 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1750 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L2032 |
-| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L2120 |
-| UT-STORE-HOOKS-TEST-REFACTOR-001: renderHookパターン移行 | L2339 |
-| UT-FIX-AGENTVIEW-INFINITE-LOOP-001: AgentView無限ループ修正テスト | L2371 |
+| 目次 | L68 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L216 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L265 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L439 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L490 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L560 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L868 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L979 |
+| 関連ドキュメント | L1118 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1128 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1305 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1363 |
+| TASK-FIX-14-1: console → electron-log 移行 | L1506 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L1610 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1756 |
+| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1811 |
+| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L2093 |
+| TASK-9B-H: SkillCreatorService IPCハンドラー登録 | L2181 |
 
 ### references/llm-embedding.md
 
@@ -1887,8 +1886,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L852 |
-| 関連ドキュメント | L987 |
-| 変更履歴 | L997 |
+| 関連ドキュメント | L985 |
+| 変更履歴 | L995 |
 
 ### references/testing-accessibility.md
 

@@ -119,29 +119,30 @@
 | --- | --- | --- |
 | 公開境界 | `packages/shared/package.json` (`exports`, `typesVersions`) | サブパスの公開契約 |
 | TypeScript型解決 | `apps/desktop/tsconfig.json` (`compilerOptions.paths`) | `tsc --noEmit` の解決 |
-| テスト時解決 | `apps/desktop/vitest.config.ts` (`resolve.alias`) | Vitest 実行時の解決 |
+| テスト時解決 | `apps/desktop/vitest.config.ts` (`vite-tsconfig-paths`) | Vitest 実行時に `tsconfig.paths` を自動解決 |
 
 #### 三層モジュール解決アーキテクチャ
 
 ```
 [npm 公開境界層]        [TypeScript 解決層]      [テスト解決層]
 package.json            tsconfig.json            vitest.config.ts
-├─ exports              ├─ compilerOptions       ├─ resolve.alias
-│  └─ サブパスマップ     │  └─ paths              │  └─ エイリアスマップ
-└─ typesVersions        │     └─ サブパスマップ    └─ (tsconfig未参照)
+├─ exports              ├─ compilerOptions       ├─ plugins
+│  └─ サブパスマップ     │  └─ paths              │  └─ vite-tsconfig-paths
+└─ typesVersions        │     └─ サブパスマップ    └─ resolve.alias(アプリ内用のみ)
    └─ 型解決マップ      └─ include
                            └─ 補助宣言ファイル
 
-同期方向: exports(正本) → paths(TypeScript用) → alias(Vitest用)
+同期方向: exports(正本) → paths(TypeScript用) → plugin経由でVitest解決
 ```
 
-各層の役割が異なるため、Vitest は tsconfig の paths を自動参照しない。3層すべてを明示的に同期する必要がある。
+Vitest は標準設定では tsconfig の paths を自動参照しないが、本プロジェクトでは `vite-tsconfig-paths` を使用して `paths` を参照する。`@repo/shared` については手動 alias 同期を不要とし、`exports` と `paths` を正本として運用する。
 
 #### 運用ルール
 
-- `exports` にサブパスを追加した場合、同一PRで `paths` と `alias` も更新する
+- `exports` にサブパスを追加した場合、同一PRで `paths` を更新し `pnpm check:module-sync` を実行する
 - 3層の定義順序は「具体サブパス → ルート (`@repo/shared`)」を守る（後述の paths 定義順序ルール参照）
 - 3層の解決先は同一ソースを指すこと
+- `resolve.alias` は `@` / `@renderer` / `@main` などアプリ内 alias のみ管理する
 - 回帰防止として以下の整合性テストを維持する
   `apps/desktop/src/__tests__/shared-module-resolution.test.ts`（59テスト）
   `apps/desktop/src/__tests__/vitest-alias-consistency.test.ts`（108テスト）
@@ -163,7 +164,7 @@ TypeScript の `compilerOptions.paths` は**上から順に照合**される。�
 
 #### サブパス追加の具体例（before/after）
 
-新しいサブパス `@repo/shared/utils/format` を追加する場合の4ファイル変更:
+新しいサブパス `@repo/shared/utils/format` を追加する場合の3ファイル変更:
 
 **1. packages/shared/package.json**（exports + typesVersions）:
 
@@ -178,13 +179,7 @@ TypeScript の `compilerOptions.paths` は**上から順に照合**される。�
 | --- | --- | --- |
 | paths 追加（`@repo/shared/*` より前に配置） | `"@repo/shared/utils/format"` | `["../../packages/shared/src/utils/format.ts"]` |
 
-**3. apps/desktop/vitest.config.ts**（resolve.alias）:
-
-| 変更種別 | キー | 値 |
-| --- | --- | --- |
-| alias 追加 | `"@repo/shared/utils/format"` | `path.resolve(__dirname, "../../packages/shared/src/utils/format.ts")` |
-
-**4. packages/shared/tsup.config.ts**（entry、ビルド対象の場合のみ）:
+**3. packages/shared/tsup.config.ts**（entry、ビルド対象の場合のみ）:
 
 | 変更種別 | キー | 値 |
 | --- | --- | --- |
@@ -206,11 +201,11 @@ paths マッピングでは解決先がどちらのパターンかを正確に�
 `apps/desktop` が `packages/shared/src` を直接参照する場合、shared側の補助型宣言も読み込む。
 現行運用では `apps/desktop/tsconfig.json` の `include` に `../../packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` を含める。
 
-#### 関連未タスク
+#### 関連タスク
 
-| 未タスクID | 概要 | 仕様書パス | ステータス |
+| タスクID | 概要 | 仕様書パス | ステータス |
 | --- | --- | --- | --- |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | vitest-tsconfig-paths プラグイン導入による alias 手動同期の自動化 | `docs/30-workflows/unassigned-task/task-vitest-tsconfig-paths-sync-automation.md` | 未着手 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | vitest-tsconfig-paths プラグイン導入による alias 手動同期の自動化 | `docs/30-workflows/vitest-tsconfig-paths-sync/` | **完了**（2026-02-24） |
 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理） | `docs/30-workflows/unassigned-task/task-refactor-shared-source-structure-consolidation.md` | 未着手 |
 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/` | **完了**（2026-02-22） |
 
@@ -322,6 +317,7 @@ paths マッピングでは解決先がどちらのパターンかを正確に�
 
 | バージョン | 日付       | 変更内容                                                                 |
 | ---------- | ---------- | ------------------------------------------------------------------------ |
+| v1.5.0     | 2026-02-24 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001再監査反映: `vite-tsconfig-paths` 導入後の運用へ更新（Vitest解決層をplugin参照へ変更、`@repo/shared` 手動alias同期の廃止、サブパス追加手順を3ファイル運用に修正） |
 | v1.4.0     | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 の実装苦戦箇所と対処を追加（Phase 10 MINOR統合未タスク化、Phase 12証跡同期、未タスク監査のベースライン分離） |
 | v1.3.0     | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: 3層整合CIガード完了タスク記録追加。関連未タスクテーブルにステータス列追加、TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001を完了に更新 |
 | v1.2.0     | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス解決運用を追加（exports/paths/alias 三層整合、ソース直接参照時の補助型宣言取り込み） |

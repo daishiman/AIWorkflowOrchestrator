@@ -1,18 +1,16 @@
 /**
- * Vitest alias と TypeScript paths の整合性テスト
+ * Vitest と TypeScript paths の整合性テスト（vite-tsconfig-paths 前提）
  *
- * vitest.config.ts の resolve.alias と tsconfig.json の paths が
- * 同一のモジュールを指していることを検証する。
- * TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 4
+ * 旧方式: resolve.alias に @repo/shared を手動列挙
+ * 現方式: vite-tsconfig-paths が tsconfig.json の paths を参照
  */
-import { readFileSync, existsSync } from "fs";
-import { resolve, dirname } from "path";
+import { existsSync, readFileSync } from "fs";
+import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 const desktopRoot = resolve(__dirname, "../..");
 
 function loadDesktopTsconfig(): Record<string, unknown> {
@@ -20,75 +18,47 @@ function loadDesktopTsconfig(): Record<string, unknown> {
   return JSON.parse(content);
 }
 
-/**
- * vitest.config.ts から @repo/shared 関連の alias を抽出する。
- */
-function parseVitestAliases(): Record<string, string> {
-  const content = readFileSync(
-    resolve(desktopRoot, "vitest.config.ts"),
-    "utf-8",
-  );
-
-  const aliases: Record<string, string> = {};
-  const regex =
-    /"(@repo\/shared[^"]*)":\s*resolve\(\s*__dirname,\s*"([^"]+)"\s*,?\s*\)/g;
-  let match;
-  while ((match = regex.exec(content)) !== null) {
-    aliases[match[1]] = match[2];
-  }
-  return aliases;
+function loadVitestConfigRaw(): string {
+  return readFileSync(resolve(desktopRoot, "vitest.config.ts"), "utf-8");
 }
 
 describe("Vitest alias と TypeScript paths の整合性", () => {
   const tsconfig = loadDesktopTsconfig();
   const compilerOptions = tsconfig.compilerOptions as Record<string, unknown>;
   const paths = compilerOptions.paths as Record<string, string[]>;
-  const vitestAliases = parseVitestAliases();
+  const repoSharedPathEntries = Object.entries(paths).filter(([key]) =>
+    key.startsWith("@repo/shared"),
+  );
+  const vitestConfigRaw = loadVitestConfigRaw();
 
-  describe("T-VAC-01: Vitest alias の全エントリが TypeScript paths に存在する", () => {
-    const aliasKeys = Object.keys(vitestAliases);
-    for (const key of aliasKeys) {
-      it(`Vitest alias "${key}" に対応する TypeScript paths が存在する`, () => {
-        expect(paths).toHaveProperty(key);
-      });
+  it("T-VAC-01: vite-tsconfig-paths プラグインが有効化されている", () => {
+    expect(vitestConfigRaw).toContain("tsconfigPaths()");
+  });
+
+  it("T-VAC-02: TypeScript paths に @repo/shared エントリが1件以上ある", () => {
+    expect(repoSharedPathEntries.length).toBeGreaterThan(0);
+  });
+
+  it("T-VAC-03: TypeScript paths の @repo/shared エントリは配列先頭を持つ", () => {
+    for (const [key, values] of repoSharedPathEntries) {
+      expect(Array.isArray(values), `paths[${key}] は配列であること`).toBe(
+        true,
+      );
+      expect(
+        values.length,
+        `paths[${key}] は1件以上の候補を持つこと`,
+      ).toBeGreaterThan(0);
     }
   });
 
-  describe("T-VAC-02: TypeScript paths の @repo/shared エントリが Vitest alias に存在する", () => {
-    const repoSharedPaths = Object.keys(paths).filter((k) =>
-      k.startsWith("@repo/shared"),
-    );
-    for (const key of repoSharedPaths) {
-      it(`TypeScript paths "${key}" に対応する Vitest alias が存在する`, () => {
-        expect(vitestAliases).toHaveProperty(key);
-      });
-    }
-  });
-
-  describe("T-VAC-03: alias と paths が同一のソースファイルを指している", () => {
-    const aliasKeys = Object.keys(vitestAliases);
-    for (const key of aliasKeys) {
-      it(`"${key}" の alias と paths が同じファイルを指す`, () => {
-        const aliasRelPath = vitestAliases[key];
-        const aliasAbsPath = resolve(desktopRoot, aliasRelPath);
-
-        const pathsEntry = paths[key];
-        if (!pathsEntry) return;
-
-        const pathsAbsPath = resolve(desktopRoot, pathsEntry[0]);
-        expect(aliasAbsPath).toBe(pathsAbsPath);
-      });
-    }
-  });
-
-  describe("T-VAC-04: 全てのパスが実在するファイルを指している", () => {
-    const aliasKeys = Object.keys(vitestAliases);
-    for (const key of aliasKeys) {
-      it(`"${key}" の alias パスが実在する`, () => {
-        const aliasRelPath = vitestAliases[key];
-        const aliasAbsPath = resolve(desktopRoot, aliasRelPath);
-        expect(existsSync(aliasAbsPath)).toBe(true);
-      });
+  it("T-VAC-04: TypeScript paths の @repo/shared エントリ先頭は実在する", () => {
+    for (const [key, values] of repoSharedPathEntries) {
+      const firstTarget = values[0];
+      const targetAbsPath = resolve(desktopRoot, firstTarget);
+      expect(
+        existsSync(targetAbsPath),
+        `paths[${key}] -> ${firstTarget} (${targetAbsPath}) が存在すること`,
+      ).toBe(true);
     }
   });
 });

@@ -62,6 +62,37 @@ node scripts/log-usage.js \
 - **Notes**: skill:import IPCチャネル名競合の予防的解消。task-022（TASK-9F）チャネル名修正 + task-030 IPCテーブル修正。コード変更なし。Phase 10 PASS（MINOR 0件）、Phase 11 手動テスト 11/11 PASS。
 
 ---
+
+## [2026-02-24 - UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 Phase 12追補]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 追補（検証ロジック・成果物整合）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `validate-phase-output.js` のセクション抽出を sentinel 見出し方式へ改善し、終端依存の誤判定リスクを解消。`patterns.md` に失敗パターンを追加。`unassigned-task-report.md` を検出ソース5件準拠に補強し、`skill-feedback-report.md` を実改善内容へ更新。
+
+---
+
+## [2026-02-24 - UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 再監査是正]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 13 追補（仕様/成果物整合）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `phase-6/11/13` 命名を推奨形式へ統一。各Phaseの実行タスク記法を機械検証に適合。`artifacts.json` の不一致（phase-4/5/13）を修正し、`completed-tasks/task-vitest-tsconfig-paths-sync-automation.md` を完了状態へ更新。
+
+---
+
+## [2026-02-24 - UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 Phase 1-12全完了]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（全Phase完了）
+- **Result**: ✓ 成功
+- **Duration**: N/A（マルチセッション実行）
+- **Notes**: @repo/shared 4設定整合性CIガード実装。vite-tsconfig-paths導入で手動alias 27件削除。60テスト全PASS、カバレッジ Line 98.57% / Branch 97.46% / Function 100%。Phase 10 MINOR（Phase 1-3ドキュメント不整合→Phase 12で修正）。手動テスト5 PASS + 1 SKIP。
+
+---
+
 ## [2026-02-23 - TASK-UI-00-ATOMS Phase 1-12全完了]
 
 - **Agent**: task-specification-creator

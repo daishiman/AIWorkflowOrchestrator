@@ -52,6 +52,7 @@ const CHECK_NAMES = {
   EXPORTS_VS_ALIASES: "exports -> aliases",
   ALIASES_VS_EXPORTS: "aliases -> exports",
   EXPORTS_VS_TYPES_VERSIONS: "exports -> typesVersions",
+  TYPES_VERSIONS_VS_EXPORTS: "typesVersions -> exports",
 } as const;
 
 /** 後方互換エイリアス */
@@ -131,9 +132,13 @@ export function parsePaths(tsconfigPath: string): Map<string, string[]> {
  */
 export function parseAliases(vitestConfigPath: string): Map<string, string> {
   const content = fs.readFileSync(vitestConfigPath, "utf-8");
+  const usesTsconfigPathsPlugin =
+    content.includes("vite-tsconfig-paths") ||
+    content.includes("tsconfigPaths(");
 
   const result = new Map<string, string>();
 
+  // g フラグ付き正規表現の lastIndex 共有を回避するため、新しいインスタンスを生成
   const aliasRegex = new RegExp(PATTERNS.VITEST_ALIAS.source, "g");
 
   let match: RegExpExecArray | null;
@@ -143,7 +148,11 @@ export function parseAliases(vitestConfigPath: string): Map<string, string> {
     result.set(aliasName, sourcePath);
   }
 
-  if (result.size === 0 && content.includes("alias")) {
+  if (
+    result.size === 0 &&
+    content.includes("alias") &&
+    !usesTsconfigPathsPlugin
+  ) {
     console.warn(
       `Warning: vitest.config.ts contains "alias" but no @repo/shared aliases were parsed. Check the alias format.`,
     );
@@ -224,119 +233,128 @@ function toTypesVersionsKey(subpath: string): string | null {
 // ============================================================
 
 /**
- * チェック1: exports の各エントリが paths に存在するか検証する。
+ * 汎用 Map 包含チェック: source の各キーを変換して target に存在するか検証する。
+ * keyTransform が null を返すキーはスキップされる（typesVersions の "." 対応）。
  */
+function checkMapContainment(
+  source: Map<string, unknown>,
+  target: Map<string, unknown>,
+  checkName: string,
+  keyTransform: (key: string) => string | null = (k) => k,
+): CheckResult {
+  const missing: string[] = [];
+  for (const key of source.keys()) {
+    const transformed = keyTransform(key);
+    if (transformed === null) continue;
+    if (!target.has(transformed)) {
+      missing.push(key);
+    }
+  }
+  return { checkName, passed: missing.length === 0, missing };
+}
+
+/** チェック1: exports の各エントリが paths に存在するか検証する。 */
 export function checkExportsVsPaths(
   exportsMap: Map<string, ExportEntry>,
   paths: Map<string, string[]>,
 ): CheckResult {
-  const missing: string[] = [];
-
-  for (const subpath of exportsMap.keys()) {
-    if (!paths.has(toModuleKey(subpath))) {
-      missing.push(subpath);
-    }
-  }
-
-  return {
-    checkName: CHECK_NAMES.EXPORTS_VS_PATHS,
-    passed: missing.length === 0,
-    missing,
-  };
+  return checkMapContainment(
+    exportsMap,
+    paths,
+    CHECK_NAMES.EXPORTS_VS_PATHS,
+    toModuleKey,
+  );
 }
 
-/**
- * チェック2: paths の各エントリが exports に存在するか検証する。
- */
+/** チェック2: paths の各エントリが exports に存在するか検証する。 */
 export function checkPathsVsExports(
   paths: Map<string, string[]>,
   exportsMap: Map<string, ExportEntry>,
 ): CheckResult {
-  const missing: string[] = [];
-
-  for (const moduleKey of paths.keys()) {
-    if (!exportsMap.has(toSubpath(moduleKey))) {
-      missing.push(moduleKey);
-    }
-  }
-
-  return {
-    checkName: CHECK_NAMES.PATHS_VS_EXPORTS,
-    passed: missing.length === 0,
-    missing,
-  };
+  return checkMapContainment(
+    paths,
+    exportsMap,
+    CHECK_NAMES.PATHS_VS_EXPORTS,
+    toSubpath,
+  );
 }
 
 /**
  * チェック3: exports の各エントリが alias に存在するか検証する。
+ * プラグイン使用時は alias が 0 件になるため、早期 return で PASS を返す。
  */
 export function checkExportsVsAliases(
   exportsMap: Map<string, ExportEntry>,
   aliases: Map<string, string>,
 ): CheckResult {
-  const missing: string[] = [];
-
-  for (const subpath of exportsMap.keys()) {
-    if (!aliases.has(toModuleKey(subpath))) {
-      missing.push(subpath);
-    }
+  if (aliases.size === 0) {
+    return {
+      checkName: CHECK_NAMES.EXPORTS_VS_ALIASES,
+      passed: true,
+      missing: [],
+    };
   }
-
-  return {
-    checkName: CHECK_NAMES.EXPORTS_VS_ALIASES,
-    passed: missing.length === 0,
-    missing,
-  };
+  return checkMapContainment(
+    exportsMap,
+    aliases,
+    CHECK_NAMES.EXPORTS_VS_ALIASES,
+    toModuleKey,
+  );
 }
 
 /**
  * チェック4: alias の各エントリが exports に存在するか検証する。
+ * プラグイン使用時は alias が 0 件になるため、早期 return で PASS を返す。
  */
 export function checkAliasesVsExports(
   aliases: Map<string, string>,
   exportsMap: Map<string, ExportEntry>,
 ): CheckResult {
-  const missing: string[] = [];
-
-  for (const moduleKey of aliases.keys()) {
-    if (!exportsMap.has(toSubpath(moduleKey))) {
-      missing.push(moduleKey);
-    }
+  if (aliases.size === 0) {
+    return {
+      checkName: CHECK_NAMES.ALIASES_VS_EXPORTS,
+      passed: true,
+      missing: [],
+    };
   }
-
-  return {
-    checkName: CHECK_NAMES.ALIASES_VS_EXPORTS,
-    passed: missing.length === 0,
-    missing,
-  };
+  return checkMapContainment(
+    aliases,
+    exportsMap,
+    CHECK_NAMES.ALIASES_VS_EXPORTS,
+    toSubpath,
+  );
 }
 
 /**
  * チェック5: exports の各サブパスエントリが typesVersions に存在するか検証する。
- * "." エントリはスキップする。
+ * toTypesVersionsKey が null を返す "." エントリはスキップされる。
  */
 export function checkExportsVsTypesVersions(
   exportsMap: Map<string, ExportEntry>,
   typesVersions: Map<string, string[]>,
 ): CheckResult {
-  const missing: string[] = [];
+  return checkMapContainment(
+    exportsMap,
+    typesVersions,
+    CHECK_NAMES.EXPORTS_VS_TYPES_VERSIONS,
+    toTypesVersionsKey,
+  );
+}
 
-  for (const subpath of exportsMap.keys()) {
-    const tvKey = toTypesVersionsKey(subpath);
-    // "." はスキップ
-    if (tvKey === null) {
-      continue;
-    }
-    if (!typesVersions.has(tvKey)) {
-      missing.push(subpath);
-    }
-  }
-
-  return {
-    checkName: CHECK_NAMES.EXPORTS_VS_TYPES_VERSIONS,
-    passed: missing.length === 0,
-    missing,
-  };
+/**
+ * チェック6: typesVersions の各エントリが exports に存在するか検証する。
+ * typesVersions のキーを "./{key}" 形式に変換して exports と照合する。
+ */
+export function checkTypesVersionsVsExports(
+  typesVersions: Map<string, string[]>,
+  exportsMap: Map<string, ExportEntry>,
+): CheckResult {
+  return checkMapContainment(
+    typesVersions,
+    exportsMap,
+    CHECK_NAMES.TYPES_VERSIONS_VS_EXPORTS,
+    (k) => `./${k}`,
+  );
 }
 
 // ============================================================
@@ -391,13 +409,14 @@ export function main(): void {
   const aliases = parseAliases(VITEST_CONFIG_PATH);
   const typesVersions = parseTypesVersions(PACKAGE_JSON_PATH);
 
-  // 5つのチェッカーを実行
+  // 6つのチェッカーを実行
   const results: CheckResult[] = [
     checkExportsVsPaths(exportsMap, paths),
     checkPathsVsExports(paths, exportsMap),
     checkExportsVsAliases(exportsMap, aliases),
     checkAliasesVsExports(aliases, exportsMap),
     checkExportsVsTypesVersions(exportsMap, typesVersions),
+    checkTypesVersionsVsExports(typesVersions, exportsMap),
   ];
 
   // レポート出力

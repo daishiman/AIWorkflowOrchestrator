@@ -321,13 +321,13 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | Travis CI       | 老舗で安定             | 無料枠が縮小               | 不採用 |
 | Jenkins         | 完全にカスタマイズ可能 | 自己ホスティングの運用コスト | 不採用 |
 
-### 主要CIジョブ構成（2026-02-22更新）
+### 主要CIジョブ構成（2026-02-24更新）
 
 | ジョブ名 | トリガー | 主な処理 | 依存関係 |
 | --- | --- | --- | --- |
 | `lint` | PR / `main` push | ESLint 実行 | なし |
 | `build-shared` | PR / `main` push | `@repo/shared` ビルド | なし |
-| `check-module-sync` | PR / `main` push | `exports` / `paths` / `alias` / `typesVersions` の3層整合検証 | なし |
+| `check-module-sync` | PR / `main` push | `exports` / `paths` / `alias` / `typesVersions` の4設定整合検証 | なし |
 | `typecheck` | PR / `main` push | 全体型チェック | `build-shared` |
 | `test-shared` | PR / `main` push | shared テスト | `build-shared` |
 | `test-desktop` | PR / `main` push | desktop テスト（16 shard） | `build-shared` |
@@ -452,6 +452,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | TASK-OPT-CI-TEST-PARALLEL-001 | GitHub Actions CI テスト並列実行最適化 | 2026-02-02 | シャード8→16、maxForks 2→4、fileParallelism有効化、キャッシュ導入 |
 | ENV-INFRA-001 | better-sqlite3 Node.jsバージョン不一致修正 | 2026-02-04 | pnpm store prune + install --forceによる再ビルド、CONTRIBUTING.md作成 |
 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | 2026-02-22 | `scripts/check-shared-module-sync.ts` 新規作成、`check-module-sync` CIジョブ追加、43テスト全PASS |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | Vitest alias と tsconfig paths の同期自動化 | 2026-02-24 | `vite-tsconfig-paths` 導入で手動alias 27件削除。CI/ローカル実行コマンドを `pnpm check:module-sync` に統一。60テスト全PASS |
 
 ---
 
@@ -489,6 +490,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 
 | 日付       | 変更内容                                                                     |
 | ---------- | ---------------------------------------------------------------------------- |
+| 2026-02-24 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: 4設定整合運用を反映（`check-module-sync` の説明を4設定整合へ更新、完了タスクを追加） |
 | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 3層整合CIガード完了タスク記録追加（check-module-syncジョブ） |
 | 2026-02-04 | ENV-INFRA-001: better-sqlite3バージョン不一致修正完了記録追加                |
 | 2026-02-02 | TASK-OPT-CI-TEST-PARALLEL-001: CI最適化パターン・完了タスクセクション追加    |

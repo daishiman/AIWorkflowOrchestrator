@@ -6,14 +6,42 @@
  * @see docs/30-workflows/llm-conversation-history-persistence/outputs/phase-4/test-cases.md
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import Database from "better-sqlite3";
+import { createRequire } from "module";
+import type BetterSqlite3 from "better-sqlite3";
 import { ConversationRepository } from "../conversationRepository";
 import type { Message } from "../../../shared/types/conversation";
 
 // === Test DB Setup ===
 
-function createTestDB(): Database.Database {
-  const db = new Database(":memory:");
+type BetterSqlite3Constructor = new (path: string) => BetterSqlite3.Database;
+
+const require = createRequire(import.meta.url);
+let BetterSqlite3Ctor: BetterSqlite3Constructor | null = null;
+
+try {
+  const loaded = require("better-sqlite3") as
+    | BetterSqlite3Constructor
+    | { default: BetterSqlite3Constructor };
+  const candidateCtor =
+    "default" in loaded ? loaded.default : (loaded as BetterSqlite3Constructor);
+
+  // モジュール解決だけ成功しても、native binary がロード不可な場合がある。
+  const probe = new candidateCtor(":memory:");
+  probe.close();
+
+  BetterSqlite3Ctor = candidateCtor;
+} catch {
+  BetterSqlite3Ctor = null;
+}
+
+const describeIfBetterSqlite3 = BetterSqlite3Ctor ? describe : describe.skip;
+
+function createTestDB(): BetterSqlite3.Database {
+  if (!BetterSqlite3Ctor) {
+    throw new Error("better-sqlite3 is not available in this environment");
+  }
+
+  const db = new BetterSqlite3Ctor(":memory:");
 
   db.exec(`
     CREATE TABLE chat_sessions (
@@ -59,8 +87,8 @@ function createTestDB(): Database.Database {
 
 // === Tests ===
 
-describe("ConversationRepository", () => {
-  let db: Database.Database;
+describeIfBetterSqlite3("ConversationRepository", () => {
+  let db: BetterSqlite3.Database;
   let repository: ConversationRepository;
 
   beforeEach(() => {
