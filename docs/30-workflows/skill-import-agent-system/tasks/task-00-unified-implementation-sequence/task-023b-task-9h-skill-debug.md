@@ -60,12 +60,13 @@ artifacts:
 export interface DebugSession {
   id: string;
   skillName: string;
-  status: "running" | "paused" | "completed" | "error";
+  status: "idle" | "running" | "paused" | "completed" | "error";
   breakpoints: Breakpoint[];
   currentStep?: DebugStep;
   variables: Record<string, unknown>;
   callStack: CallStackEntry[];
-  startedAt: Date;
+  /** @format ISO 8601 — IPC経由では string として送受信 */
+  startedAt: string; // ISO 8601
 }
 
 export interface Breakpoint {
@@ -84,14 +85,16 @@ export interface DebugStep {
   hookType?: string;
   input?: unknown;
   output?: unknown;
-  timestamp: Date;
+  /** @format ISO 8601 */
+  timestamp: string; // ISO 8601
 }
 
 export interface CallStackEntry {
   depth: number;
   name: string;
   type: "skill" | "agent" | "tool";
-  startTime: Date;
+  /** @format ISO 8601 */
+  startTime: string; // ISO 8601
 }
 
 export type DebugCommand =
@@ -102,6 +105,29 @@ export type DebugCommand =
   | "pause"
   | "stop";
 ```
+
+### IPC シリアライズ方針（Date 型）
+
+本タスクの Date 型フィールドは IPC 経由で ISO 8601 文字列（`string`）として送受信する。
+
+- **バックエンド（Main Process）内部**: `Date` オブジェクトを使用
+- **IPC 境界（ハンドラ戻り値）**: `.toISOString()` で ISO 8601 文字列に変換
+- **Renderer 側**: `string` として受け取り、表示時に `new Date(isoString)` で復元
+
+この方針は以下の理由に基づく:
+
+1. contextBridge の Structured Clone は Date を保持するが、JSON API（Web版）では string に変換される
+2. ISO 8601 文字列であれば `new Date()` で確実に復元可能
+3. IPC 型とドメイン型の混在を避け、型安全性を維持
+
+### idle 状態の定義
+
+`DebugSession.status` に追加した `"idle"` 値の意味:
+
+- デバッグセッションが未開始の初期状態
+- DebugPanel のマウント時にデフォルトで設定される
+- `skill:debug:start` ハンドラの呼び出し前のデフォルト値として使用する
+- 05B（DebugControlsProps.sessionStatus）の値セット（`"idle" | "running" | "paused" | "completed" | "error"`）と完全一致
 
 ### Step 2: SkillDebugger 実装
 

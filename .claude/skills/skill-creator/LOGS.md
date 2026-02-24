@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-24 - UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 artifacts-sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md の Phase 12 に成功パターン「spec-update-summary + artifacts二重台帳同期」を追加。クイックナビへ同パターンを反映し、失敗パターン「spec-update-summary未作成/artifacts台帳非同期」を明文化。
+
+---
+
 ## [2026-02-24 - UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 completion-sync pattern]
 
 - **Agent**: skill-creator (update)

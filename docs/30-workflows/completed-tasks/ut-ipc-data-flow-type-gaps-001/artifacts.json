@@ -1,0 +1,235 @@
+{
+  "feature": "ut-ipc-data-flow-type-gaps-001",
+  "title": "バックエンド型定義とUI Props間のデータフロー型ギャップ解消",
+  "taskType": "spec-modification-only",
+  "created": "2026-02-24",
+  "lastUpdated": "2026-02-24",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-1/requirements-analysis.md",
+          "description": "6 Gap の詳細分析と受入基準定義",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-1/aiworkflow-requirements-extraction.md",
+          "description": "aiworkflow-requirements から抽出した必須要件マトリクス",
+          "status": "completed"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-2/design-document.md",
+          "description": "各Gapの具体的修正設計と実行順序",
+          "status": "completed"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS判定）",
+          "status": "completed"
+        }
+      ]
+    },
+    "4": {
+      "name": "検証基準設計",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-4/verification-criteria.md",
+          "description": "仕様書修正の検証コマンドとチェックリスト",
+          "status": "completed"
+        }
+      ]
+    },
+    "5": {
+      "name": "仕様書修正（実装に代えて）",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-5/modification-report.md",
+          "description": "7つの仕様書ファイルの修正実施記録",
+          "status": "completed"
+        }
+      ]
+    },
+    "6": {
+      "name": "整合性検証（テスト拡充に代えて）",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-6/verification-result.md",
+          "description": "仕様書間の相互整合性検証結果（24/24 PASS）",
+          "status": "completed"
+        }
+      ]
+    },
+    "7": {
+      "name": "網羅性確認（カバレッジに代えて）",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-7/completeness-report.md",
+          "description": "6 Gap修正の網羅性確認（49/49 PASS）",
+          "status": "completed"
+        }
+      ]
+    },
+    "8": {
+      "name": "仕様書品質改善（リファクタリングに代えて）",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-8/spec-quality-improvement.md",
+          "description": "用語統一・表現統一・構造統一の実施内容（6/6 PASS）",
+          "status": "completed"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "仕様書品質検証結果（60/60 PASS）",
+          "status": "completed"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-10/final-review.md",
+          "description": "最終レビュー判定結果（7観点全てPASS）",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-10/quality-summary.md",
+          "description": "品質サマリ（累計173項目ALL PASS）",
+          "status": "completed"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動検証",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/type-consistency-review.md",
+          "description": "型整合性レビュー（3/3 PASS）",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-11/data-flow-trace-review.md",
+          "description": "データフロー追跡レビュー（3/3 PASS）",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-11/implementer-perspective-review.md",
+          "description": "後続実装者視点レビュー（3/3 PASS）",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題記録（0件）",
+          "status": "completed"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 中学生レベル + Part 2: 技術者向け）",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー（Step 1-A〜3、苦戦箇所、再発防止手順）",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート（1件: Phase 10 MINOR M-1）",
+          "status": "completed"
+        },
+        {
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート（改善点3件・将来検討）",
+          "status": "completed"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [
+        {
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR URL等の情報",
+          "status": "pending"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "specFiles": [
+      "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020b-task-9a-skill-editor.md",
+      "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md",
+      "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md",
+      "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md",
+      "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md",
+      "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md",
+      "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031b-ui-05b-skill-advanced-views.md"
+    ],
+    "pitfalls": ["P5", "P44", "P45", "P42"],
+    "relatedTasks": [
+      "UT-FIX-SKILL-IMPORT-INTERFACE-001",
+      "UT-SKILL-IMPORT-CHANNEL-CONFLICT-001",
+      "UT-SKILL-IPC-PRELOAD-EXTENSION-001"
+    ]
+  },
+  "qualityMetrics": {
+    "gapCount": 6,
+    "modifiedSpecFiles": 7,
+    "taskType": "spec-modification-only",
+    "codeChanges": false,
+    "totalVerificationItems": 173,
+    "verificationResult": "ALL_PASS"
+  }
+}

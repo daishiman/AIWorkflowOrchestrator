@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-24T04:13:50.630Z",
-  "totalKeywords": 1267,
+  "generated": "2026-02-24T12:06:42.359Z",
+  "totalKeywords": 1282,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1428,6 +1428,49 @@
     "CONSISTENCY": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
+    ],
+    "データフロー型ギャップパターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "DATA": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "FLOW": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "TYPE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "GAPS": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "Date": [
+      "architecture-implementation-patterns.md"
+    ],
+    "型フィールドの数を各ファイルで確認": [
+      "architecture-implementation-patterns.md"
+    ],
+    "ISO": [
+      "architecture-implementation-patterns.md"
+    ],
+    "注記の追加状況を確認": [
+      "architecture-implementation-patterns.md"
+    ],
+    "positional": [
+      "architecture-implementation-patterns.md"
+    ],
+    "引数パターンの検出": [
+      "architecture-implementation-patterns.md"
+    ],
+    "object": [
+      "architecture-implementation-patterns.md"
+    ],
+    "形式引数パターンの確認": [
+      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -2884,6 +2927,12 @@
       "logging-migration-guide.md",
       "master-design.md",
       "patterns.md"
+    ],
+    "再監査": [
+      "lessons-learned.md"
+    ],
+    "仕様書修正タスク": [
+      "lessons-learned.md"
     ],
     "TS": [
       "lessons-learned.md"

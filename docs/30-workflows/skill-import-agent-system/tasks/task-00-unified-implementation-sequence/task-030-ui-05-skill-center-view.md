@@ -1067,9 +1067,83 @@ interface DocGenerationFormState {
 interface DocPreviewProps {
   doc: GeneratedDoc | null;
   isLoading: boolean;
-  onExport: (format: string, path: string) => void;
+  /** docId ベースのエクスポート — Main 側で docId からドキュメントを取得して出力する */
+  onExport: (docId: string, format: ExportFormat, outputPath: string) => void;
   onCopy: () => void;
   onClose: () => void;
+}
+
+/** エクスポート形式の型安全な定義 */
+type ExportFormat = "markdown" | "html" | "pdf";
+```
+
+#### DocPreview エクスポートのデータフロー
+
+1. **Renderer（DocPreview）**: ユーザーがエクスポートボタンをクリック
+   - `onExport(doc.id, selectedFormat, outputPath)` を呼び出す
+   - `doc` オブジェクト全体ではなく `doc.id`（docId）のみを渡す
+
+2. **Preload（contextBridge）**: IPC チャネルに変換
+   - `safeInvoke(IPC_CHANNELS.SKILL_DOCS_EXPORT, { docId, format, outputPath })`
+
+3. **Main（IPC ハンドラ）**: ドキュメント取得＋エクスポート実行
+   - `docId` から `GeneratedDoc` を取得（SkillDocsService 経由）
+   - `exportToFile(doc, outputPath)` を実行
+   - 結果を `ExportResult` として返す
+
+4. **Preload → Renderer**: 結果を返す
+   - `ExportResult` をそのまま返す（Date 型フィールドがある場合は ISO 8601 文字列）
+
+**理由**: Renderer から Main へ `GeneratedDoc` オブジェクト全体を渡すのではなく、`docId` のみを渡す。これにより:
+
+1. IPC 経由で大きなオブジェクトを転送するコストを回避
+2. Main 側で最新のドキュメント状態を使用可能
+3. Renderer 側のキャッシュ不整合リスクを排除
+
+#### ExportResult → UI コールバック変換ロジック
+
+`skill:export` IPC ハンドラの戻り値 `ExportResult`（task-9f 定義）を ExportSkillDialog の UI 表示に変換するロジック:
+
+##### 成功時（`ExportResult.success === true`）
+
+- `shareUrl` が存在する場合: 共有 URL をダイアログに表示し、クリップボードコピーボタンを有効化
+- `shareUrl` が `undefined` の場合（ローカルエクスポート）: 「エクスポート完了」メッセージと出力先パスを表示
+- `exportedFiles` の件数を「N 件のファイルをエクスポートしました」として表示
+
+##### 失敗時（`ExportResult.success === false`）
+
+- エラーメッセージを表示（`ExportResult` に `error?: string` フィールドを追加検討）
+- リトライボタンを有効化
+- 連続失敗時（3回以上）は「手動エクスポートを試してください」の案内を表示
+
+```typescript
+// ExportResult → UI 変換の型定義
+interface ExportDialogState {
+  isExporting: boolean;
+  result: ExportResult | null;
+  errorMessage: string | null;
+  retryCount: number;
+}
+
+// 変換関数の概要
+function handleExportResult(
+  result: ExportResult,
+  prev: ExportDialogState,
+): ExportDialogState {
+  if (result.success) {
+    return {
+      isExporting: false,
+      result,
+      errorMessage: null,
+      retryCount: 0,
+    };
+  }
+  return {
+    isExporting: false,
+    result,
+    errorMessage: "エクスポートに失敗しました。再試行してください。",
+    retryCount: prev.retryCount + 1,
+  };
 }
 ```
 

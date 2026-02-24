@@ -3,7 +3,7 @@ id: UT-IPC-DATA-FLOW-TYPE-GAPS-001
 title: "task-9 バックエンド型定義と UI Props 間のデータフロー型ギャップ解消"
 tier: 3
 depends_on: [TASK-9A]
-status: pending
+status: spec_created
 priority: medium
 estimated_complexity: large
 tags: [backend, frontend, types, ipc, data-flow, serialization]
@@ -15,7 +15,7 @@ tags: [backend, frontend, types, ipc, data-flow, serialization]
 
 ### 1.1 背景
 
-task-9 シリーズ（9A-9J）のバックエンド型定義と、UIタスク（task-030-ui-05-skill-center-view.md / task-032-ui-05b-skill-advanced-views.md）のフロントエンド Props 定義の間に、複数のデータフロー型ギャップが検出された。これらのギャップは IPC を介したデータ受け渡し時に型不整合やランタイムエラーを引き起こす。
+task-9 シリーズ（9A-9J）のバックエンド型定義と、UIタスク（task-030-ui-05-skill-center-view.md / task-031b-ui-05b-skill-advanced-views.md）のフロントエンド Props 定義の間に、複数のデータフロー型ギャップが検出された。これらのギャップは IPC を介したデータ受け渡し時に型不整合やランタイムエラーを引き起こす。
 
 ### 1.2 問題点
 
@@ -31,7 +31,7 @@ task-9 シリーズ（9A-9J）のバックエンド型定義と、UIタスク（
 **Gap 2: DebugControls の idle 状態不整合**
 
 - 05B の `DebugControlsProps` に `idle` 状態が含まれる
-- task-9h の `DebugSession.status` は `running | paused | stopped | error` のみで `idle` が含まれない
+- task-9h の `DebugSession.status` は `running | paused | completed | error` のみで `idle` が含まれない
 - フロントエンド側で「セッション未開始」を `idle` として独自マッピングする必要があるが、その変換ロジックが未定義
 
 **Gap 3: DocPreview の onExport 引数不整合**
@@ -101,15 +101,15 @@ task-9 シリーズのバックエンド型定義と 本ディレクトリの UI
 
 ### 2.4 成果物
 
-| 成果物         | パス                                                                                                                                |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| task-9a 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-021-task-9a-skill-editor.md`        |
-| task-9f 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`         |
-| task-9g 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md`     |
-| task-9h 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md`        |
-| task-9j 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`    |
-| 05 UI仕様修正  | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`     |
-| 05B UI仕様修正 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-032-ui-05b-skill-advanced-views.md` |
+| 成果物         | パス                                                                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| task-9a 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020b-task-9a-skill-editor.md`        |
+| task-9f 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`          |
+| task-9g 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md`      |
+| task-9h 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md`         |
+| task-9j 修正   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`     |
+| 05 UI仕様修正  | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`      |
+| 05B UI仕様修正 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031b-ui-05b-skill-advanced-views.md` |
 
 ---
 
@@ -179,7 +179,7 @@ DebugSession が存在しない（未開始）状態を表す `idle` を status 
 
 ### Step 1: Gap 6 修正 — task-9a IPC 引数形式の統一
 
-1. task-021-task-9a-skill-editor.md の Step 2 コード例を確認
+1. task-020b-task-9a-skill-editor.md の Step 2 コード例を確認
 2. `safeInvoke(CHANNELS.SKILL_READ, skillName, filePath)` を `safeInvoke(CHANNELS.SKILL_READ, { skillName, filePath })` に修正
 3. 他の IPC 呼び出し例も同様にオブジェクト形式に統一
 
@@ -254,7 +254,7 @@ grep -n "ISO 8601\|toISOString" docs/30-workflows/skill-import-agent-system/task
 grep -n "idle" docs/30-workflows/skill-import-agent-system/tasks/task-9h*.md
 
 # safeOn パターンが 05B に追加されていることを確認
-grep -n "safeOn\|onDebugEvent" docs/30-workflows/skill-import-agent-system/tasks/task-032-ui-05b-skill-advanced-views.md
+grep -n "safeOn\|onDebugEvent" docs/30-workflows/skill-import-agent-system/tasks/task-031b-ui-05b-skill-advanced-views.md
 
 # task-9a のオブジェクト形式確認
 grep -n "safeInvoke" docs/30-workflows/skill-import-agent-system/tasks/task-9a*.md
@@ -289,18 +289,18 @@ grep -rn "ipcMain.handle.*skill:" apps/desktop/src/main/ipc/
 
 ## 8. References（参照）
 
-| ドキュメント        | パス                                                                                                                                |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| task-9a 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-021-task-9a-skill-editor.md`        |
-| task-9f 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`         |
-| task-9g 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md`     |
-| task-9h 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md`        |
-| task-9j 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`    |
-| 05 UI仕様書         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`     |
-| 05B UI仕様書        | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-032-ui-05b-skill-advanced-views.md` |
-| P5（二重登録）      | `.claude/rules/06-known-pitfalls.md#P5`                                                                                             |
-| P44（IPC不整合）    | `.claude/rules/06-known-pitfalls.md#P44`                                                                                            |
-| P45（命名ドリフト） | `.claude/rules/06-known-pitfalls.md#P45`                                                                                            |
+| ドキュメント        | パス                                                                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| task-9a 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-020b-task-9a-skill-editor.md`        |
+| task-9f 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md`          |
+| task-9g 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md`      |
+| task-9h 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md`         |
+| task-9j 仕様書      | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023d-task-9j-skill-analytics.md`     |
+| 05 UI仕様書         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md`      |
+| 05B UI仕様書        | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-031b-ui-05b-skill-advanced-views.md` |
+| P5（二重登録）      | `.claude/rules/06-known-pitfalls.md#P5`                                                                                              |
+| P44（IPC不整合）    | `.claude/rules/06-known-pitfalls.md#P44`                                                                                             |
+| P45（命名ドリフト） | `.claude/rules/06-known-pitfalls.md#P45`                                                                                             |
 
 ### 関連タスク
 

@@ -197,53 +197,151 @@ export class SkillFileManager {
 ```typescript
 // apps/desktop/src/main/ipc/skillHandlers.ts に追加
 
-// ファイル読み込み
-ipcMain.handle(
-  "skill:readFile",
-  async (_, skillName: string, relativePath: string) => {
-    return fileManager.readFile(skillName, relativePath);
-  },
-);
+// IPC ハンドラ引数型（P42 準拠 3 段バリデーション対応）
+interface SkillReadFileArgs {
+  skillName: string; // 3段バリデーション: typeof === "string" && !== "" && .trim() !== ""
+  relativePath: string; // 3段バリデーション: typeof === "string" && !== "" && .trim() !== ""
+}
 
-// ファイル書き込み
-ipcMain.handle(
-  "skill:writeFile",
-  async (_, skillName: string, relativePath: string, content: string) => {
-    await fileManager.writeFile(skillName, relativePath, content);
-    // スキル再スキャンしてメタデータ更新
-    const updated = await scanner.parseSkill(path.join(skillsDir, skillName));
-    if (updated) {
-      store.update(skillName, updated);
-    }
-  },
-);
+interface SkillWriteFileArgs extends SkillReadFileArgs {
+  content: string; // typeof === "string"（空文字列は許可: 空ファイル作成のケース）
+}
 
-// ファイル作成
-ipcMain.handle(
-  "skill:createFile",
-  async (_, skillName: string, relativePath: string, content: string) => {
-    await fileManager.createFile(skillName, relativePath, content);
-  },
-);
+interface SkillCreateFileArgs extends SkillWriteFileArgs {}
 
-// ファイル削除
-ipcMain.handle(
-  "skill:deleteFile",
-  async (_, skillName: string, relativePath: string) => {
-    await fileManager.deleteFile(skillName, relativePath);
-  },
-);
+interface SkillDeleteFileArgs extends SkillReadFileArgs {}
 
-// バックアップ一覧
-ipcMain.handle("skill:listBackups", async (_, skillName: string) => {
-  return fileManager.listBackups(skillName);
+interface SkillListBackupsArgs {
+  skillName: string; // 3段バリデーション
+}
+
+interface SkillRestoreBackupArgs {
+  skillName: string; // 3段バリデーション
+  backupPath: string; // 3段バリデーション
+}
+
+// ファイル読み込み（P44 対策: オブジェクト形式）
+ipcMain.handle("skill:readFile", async (_, args: SkillReadFileArgs) => {
+  // P42 準拠 3 段バリデーション
+  if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  if (
+    typeof args?.relativePath !== "string" ||
+    args.relativePath.trim() === ""
+  ) {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "relativePath must be a non-empty string",
+    };
+  }
+  return fileManager.readFile(args.skillName, args.relativePath);
 });
 
-// バックアップ復元
+// ファイル書き込み（P44 対策: オブジェクト形式）
+ipcMain.handle("skill:writeFile", async (_, args: SkillWriteFileArgs) => {
+  if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  if (
+    typeof args?.relativePath !== "string" ||
+    args.relativePath.trim() === ""
+  ) {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "relativePath must be a non-empty string",
+    };
+  }
+  if (typeof args?.content !== "string") {
+    throw { code: "VALIDATION_ERROR", message: "content must be a string" };
+  }
+  await fileManager.writeFile(args.skillName, args.relativePath, args.content);
+  // スキル再スキャンしてメタデータ更新
+  const updated = await scanner.parseSkill(
+    path.join(skillsDir, args.skillName),
+  );
+  if (updated) {
+    store.update(args.skillName, updated);
+  }
+});
+
+// ファイル作成（P44 対策: オブジェクト形式）
+ipcMain.handle("skill:createFile", async (_, args: SkillCreateFileArgs) => {
+  if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  if (
+    typeof args?.relativePath !== "string" ||
+    args.relativePath.trim() === ""
+  ) {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "relativePath must be a non-empty string",
+    };
+  }
+  if (typeof args?.content !== "string") {
+    throw { code: "VALIDATION_ERROR", message: "content must be a string" };
+  }
+  await fileManager.createFile(args.skillName, args.relativePath, args.content);
+});
+
+// ファイル削除（P44 対策: オブジェクト形式）
+ipcMain.handle("skill:deleteFile", async (_, args: SkillDeleteFileArgs) => {
+  if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  if (
+    typeof args?.relativePath !== "string" ||
+    args.relativePath.trim() === ""
+  ) {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "relativePath must be a non-empty string",
+    };
+  }
+  await fileManager.deleteFile(args.skillName, args.relativePath);
+});
+
+// バックアップ一覧（P44 対策: オブジェクト形式）
+ipcMain.handle("skill:listBackups", async (_, args: SkillListBackupsArgs) => {
+  if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+    throw {
+      code: "VALIDATION_ERROR",
+      message: "skillName must be a non-empty string",
+    };
+  }
+  return fileManager.listBackups(args.skillName);
+});
+
+// バックアップ復元（P44 対策: オブジェクト形式）
 ipcMain.handle(
   "skill:restoreBackup",
-  async (_, skillName: string, backupPath: string) => {
-    await fileManager.restoreBackup(skillName, backupPath);
+  async (_, args: SkillRestoreBackupArgs) => {
+    if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+      throw {
+        code: "VALIDATION_ERROR",
+        message: "skillName must be a non-empty string",
+      };
+    }
+    if (typeof args?.backupPath !== "string" || args.backupPath.trim() === "") {
+      throw {
+        code: "VALIDATION_ERROR",
+        message: "backupPath must be a non-empty string",
+      };
+    }
+    await fileManager.restoreBackup(args.skillName, args.backupPath);
   },
 );
 ```

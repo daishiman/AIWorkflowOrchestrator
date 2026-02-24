@@ -11,7 +11,7 @@
 
 IPC（Inter-Process Communication）の型不整合は、Electron アプリケーションで最も検出が困難なバグの一つである。Main Process、Preload Bridge、Renderer の3層間でデータ型の契約が乖離すると、コンパイル時には検出されず、ランタイムで初めて問題が顕在化する。
 
-本ガイドは、過去のインシデント（P23, P32, P42, P44, P45）から得た教訓を統合し、IPC 型不整合の診断から解決までの標準ワークフローを提供する。
+本ガイドは、過去のインシデント（P5, P23, P32, P42, P44, P45）から得た教訓を統合し、IPC 型不整合の診断から解決までの標準ワークフローを提供する。v1.1.0 で Date 型シリアライズ、positional→object 引数移行、safeOn 購読パターンを追加。
 
 ---
 
@@ -24,6 +24,9 @@ IPC（Inter-Process Communication）の型不整合は、Electron アプリケ�
 | **引数命名ドリフト** | 引数名のセマンティクスと実際の値が異なる（例: skillId に skillName を渡す） | 中（コードレビューで発見可能） | P45 |
 | **バリデーション漏れ** | .trim() チェックなど、空白文字列のバリデーションが不足 | 中 | P42 |
 | **型定義ファイル乖離** | shared/types.ts と preload/types.ts の定義が異なる | 低（TypeCheck で検出可能） | P23, P32 |
+| **Date型シリアライズ漏れ** | IPC境界でDate型を直接送信し、JSONシリアライズで形式が不定になる | 高（ランタイムのみ） | — (新規) |
+| **引数形式不整合** | positional形式で引数を送信し、handler側でobject形式を期待する | 高（ランタイムのみ） | P44（拡張） |
+| **IPC購読パターン漏れ** | safeOnの購読でcleanupやStrictMode対策が不足 | 中 | P5 |
 
 ---
 
@@ -109,6 +112,94 @@ return importedSkill;
 | 2 | 全レイヤー（handler → service → manager）で引数名を統一 |
 | 3 | テストの変数名も合わせて更新 |
 
+### パターン D: Date型シリアライズ統一（ISO 8601）
+
+**適用条件**: IPC境界でDate型フィールドを送信する場合
+
+| ステップ | 作業 | 説明 |
+|---------|------|------|
+| 1 | 全Date型フィールドを特定 | `grep -rn "Date" task-*.md` で対象フィールドをリストアップ |
+| 2 | 型注記を追加 | `Date` → `string; // ISO 8601` に変換 |
+| 3 | Main Process変換パターン追記 | `.toISOString()` 変換をハンドラ戻り値に記載 |
+| 4 | Renderer復元パターン追記 | `new Date(isoString)` 復元をコンポーネント側に記載 |
+
+```typescript
+// Main Process（送信側）
+return {
+  createdAt: record.createdAt.toISOString(),  // Date → string
+  updatedAt: record.updatedAt.toISOString(),
+  scheduledAt: record.scheduledAt?.toISOString() ?? null,  // nullable対応
+};
+
+// Renderer（受信側）
+const createdAt = new Date(data.createdAt);  // string → Date
+const scheduledAt = data.scheduledAt ? new Date(data.scheduledAt) : null;
+```
+
+**注意**: nullable な Date フィールド（`Date | null`）は `string | null; // ISO 8601` として型定義し、変換時に null チェックを含める。
+
+### パターン E: positional→object形式IPC引数移行
+
+**適用条件**: 既存のpositional引数（`safeInvoke(channel, arg1, arg2)`）をobject形式に統一する場合
+
+| ステップ | 作業 | ファイル |
+|---------|------|---------|
+| 1 | Args型定義を新規作成 | `packages/shared/src/` または仕様書内 |
+| 2 | ハンドラの引数型をobject形式に変更 | `main/ipc/*.ts` |
+| 3 | P42準拠3段バリデーションを各フィールドに追加 | 同上 |
+| 4 | Preload側のsafeInvoke呼び出しをobject形式に変更 | `preload/*.ts` |
+| 5 | テストの引数を新しい型に合わせて更新 | `__tests__/*.test.ts` |
+
+```typescript
+// Before: positional形式
+safeInvoke(IPC_CHANNELS.SKILL_EDITOR_READ, skillName, relativePath);
+
+// After: object形式 + Args型定義
+interface SkillEditorReadArgs {
+  skillName: string;
+  relativePath: string;
+}
+safeInvoke(IPC_CHANNELS.SKILL_EDITOR_READ, { skillName, relativePath });
+
+// ハンドラ側（P42準拠3段バリデーション）
+ipcMain.handle('skill:editor:read', async (event, args: SkillEditorReadArgs) => {
+  if (typeof args?.skillName !== 'string' || args.skillName.trim() === '') {
+    throw { code: 'VALIDATION_ERROR', message: 'skillName must be a non-empty string' };
+  }
+  if (typeof args?.relativePath !== 'string' || args.relativePath.trim() === '') {
+    throw { code: 'VALIDATION_ERROR', message: 'relativePath must be a non-empty string' };
+  }
+  return skillEditorService.readFile(args.skillName.trim(), args.relativePath.trim());
+});
+```
+
+### パターン F: safeOn購読パターン（P5対策付き）
+
+**適用条件**: Renderer側でIPCイベント（`safeOn`）を購読する場合
+
+| ステップ | 作業 | 説明 |
+|---------|------|------|
+| 1 | useEffect内で購読を登録 | React StrictMode対策のためcleanup関数を必ず返す |
+| 2 | cleanup関数でリスナー解除 | `electronAPI.skill.offDebugEvent(handler)` |
+| 3 | Main Process側の二重登録防止 | `unregisterAllIpcHandlers()` → `registerAllIpcHandlers()` パターン |
+
+```typescript
+// ✅ P5対策付き safeOn購読パターン
+useEffect(() => {
+  const handler = (event: DebugEvent) => {
+    setDebugEvents((prev) => [...prev, event]);
+  };
+
+  // 購読登録
+  window.electronAPI.skill.onDebugEvent(handler);
+
+  // cleanup（React StrictMode二重実行対策）
+  return () => {
+    window.electronAPI.skill.offDebugEvent(handler);
+  };
+}, []); // 依存配列は空（P31対策：Zustandアクションを含めない）
+```
+
 ---
 
 ## 予防策チェックリスト
@@ -144,6 +235,7 @@ return importedSkill;
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | 引数型不整合 | パターン A + C | 2026-02-20 |
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | 引数型不整合 + 命名ドリフト | パターン A + C | 2026-02-20 |
 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | 戻り値型不整合 | パターン B（S13） | 2026-02-21 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001 | Date型シリアライズ漏れ + 引数形式不整合 + 購読パターン漏れ | パターン D + E + F | 2026-02-24（仕様書修正のみ） |
 
 ---
 
@@ -151,4 +243,5 @@ return importedSkill;
 
 | Version | Date | Changes |
 |---------|------|---------|
+| **v1.1.0** | **2026-02-24** | **パターンD/E/F追加**: UT-IPC-DATA-FLOW-TYPE-GAPS-001の実装経験に基づくDate型シリアライズ統一、positional→object引数移行、safeOn購読パターンの3解決パターンを追加 |
 | **v1.0.0** | **2026-02-21** | **初版作成**: P23/P32/P42/P44/P45の教訓を統合した IPC 型不整合 診断・解決ガイド。UT-FIX-SKILL-IMPORT-RETURN-TYPE-001の実装経験に基づく |

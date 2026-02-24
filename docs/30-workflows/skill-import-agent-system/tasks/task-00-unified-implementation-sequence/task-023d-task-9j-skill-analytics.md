@@ -62,7 +62,8 @@ export interface SkillUsageEvent {
   id: string;
   skillName: string;
   eventType: "execution" | "error" | "cancellation";
-  timestamp: Date;
+  /** @format ISO 8601 — IPC経由では string として送受信 */
+  timestamp: string; // ISO 8601
   duration?: number;
   success: boolean;
   errorMessage?: string;
@@ -75,7 +76,8 @@ export interface SkillStatistics {
   totalExecutions: number;
   successRate: number;
   averageDuration: number;
-  lastUsed?: Date;
+  /** @format ISO 8601 */
+  lastUsed?: string | null; // ISO 8601
   mostUsedTools: ToolUsageStat[];
   errorRate: number;
   totalTokens: number;
@@ -88,8 +90,10 @@ export interface ToolUsageStat {
 }
 
 export interface AnalyticsPeriod {
-  start: Date;
-  end: Date;
+  /** @format ISO 8601 — Renderer から送信時も ISO 8601 文字列を使用 */
+  start: string; // ISO 8601
+  /** @format ISO 8601 */
+  end: string; // ISO 8601
   granularity: "hour" | "day" | "week" | "month";
 }
 
@@ -99,7 +103,8 @@ export interface UsageTrend {
 }
 
 export interface TrendDataPoint {
-  timestamp: Date;
+  /** @format ISO 8601 */
+  timestamp: string; // ISO 8601
   executions: number;
   errors: number;
   avgDuration: number;
@@ -116,9 +121,24 @@ export interface AnalyticsSummary {
 export interface SkillUsageSummary {
   skillName: string;
   executionCount: number;
-  lastUsed: Date;
+  /** @format ISO 8601 */
+  lastUsed: string; // ISO 8601
 }
 ```
+
+### IPC シリアライズ方針（Date 型）
+
+本タスクの Date 型フィールドは IPC 経由で ISO 8601 文字列（`string`）として送受信する。
+
+- **バックエンド（Main Process）内部**: `Date` オブジェクトを使用
+- **IPC 境界（ハンドラ戻り値）**: `.toISOString()` で ISO 8601 文字列に変換
+- **Renderer 側**: `string` として受け取り、表示時に `new Date(isoString)` で復元
+
+この方針は以下の理由に基づく:
+
+1. contextBridge の Structured Clone は Date を保持するが、JSON API（Web版）では string に変換される
+2. ISO 8601 文字列であれば `new Date()` で確実に復元可能
+3. IPC 型とドメイン型の混在を避け、型安全性を維持
 
 ### Step 2: AnalyticsStore 実装
 
