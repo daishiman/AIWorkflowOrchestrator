@@ -241,7 +241,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check module sync
-        run: pnpm tsx scripts/check-shared-module-sync.ts
+        run: pnpm check:module-sync
 
   security:
     name: Security Audit

@@ -1302,7 +1302,7 @@ it("削除されたプロパティにアクセスするとエラーになるこ�
 - **解決策**: 4ファイル同時更新チェックリストを development-guidelines.md に配置。整合性テストの追加
 - **発見日**: 2026-02-20
 - **関連タスク**: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001
-- **関連未タスク**: UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（vitest-tsconfig-paths プラグインによる自動化）
+- **関連タスク**: UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（2026-02-24完了、vitest-tsconfig-paths プラグイン導入で手動alias同期を廃止）
 
 ### [UI/TypeScript] HTMLAttributes Props型衝突（TASK-UI-00-ATOMS）
 

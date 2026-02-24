@@ -1,0 +1,80 @@
+{
+  "feature": "vitest-tsconfig-paths-sync",
+  "taskId": "UT-FIX-TS-VITEST-TSCONFIG-PATHS-001",
+  "issueNumber": 875,
+  "createdAt": "2026-02-24",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements.md"]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design-document.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-creation-report.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-enhancement-report.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-report.md"]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-docs-update-log.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-13/completion-checklist.md"]
+    }
+  },
+  "dependencies": [
+    { "from": "phase-2", "to": "phase-1" },
+    { "from": "phase-3", "to": "phase-2" },
+    { "from": "phase-4", "to": "phase-3" },
+    { "from": "phase-5", "to": "phase-4" },
+    { "from": "phase-6", "to": "phase-5" },
+    { "from": "phase-7", "to": "phase-6" },
+    { "from": "phase-8", "to": "phase-7" },
+    { "from": "phase-9", "to": "phase-8" },
+    { "from": "phase-10", "to": "phase-9" },
+    { "from": "phase-11", "to": "phase-10" },
+    { "from": "phase-12", "to": "phase-11" },
+    { "from": "phase-13", "to": "phase-12" }
+  ]
+}

@@ -749,7 +749,7 @@ vitest.config.tsで設定済みの閾値:
 | 回帰テスト | module-resolution(57件) + shared-module-resolution(59件) + vitest-alias-consistency(108件) = 計224件 |
 | 変更規模 | +353行（17ファイル）: tsconfig.json +27 paths / package.json +26 typesVersions / vitest.config.ts +3 alias |
 | 検証 | `verify-unassigned-links` / `validate-phase-output` / `verify-all-specs` 全てPASS |
-| 未タスク検出 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001（Vitest alias と tsconfig paths の同期自動化） |
+| 未タスク検出 | ~~UT-FIX-TS-VITEST-TSCONFIG-PATHS-001~~（2026-02-24完了、`docs/30-workflows/vitest-tsconfig-paths-sync/`） |
 
 ---
 
@@ -1009,6 +1009,7 @@ vitest.config.tsで設定済みの閾値:
 
 | Version | Date       | Changes                                                                                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.9.1   | 2026-02-24 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001再監査反映: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001の派生未タスク記載を完了化（2026-02-24完了、実装ワークフロー参照を追記） |
 | 1.9.0   | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 3層整合CIガード完了タスク記録追加（43テスト全PASS、Line 98.38%/Branch 96.96%/Function 100%、scripts/check-shared-module-sync.ts、check-module-sync CIジョブ） |
 | 1.8.1   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001記録強化: モジュール解決整合性テストセクション追加（3スイート分類表・品質ゲート項目表・サブパス追加時必須テスト要件7ステップ）。完了タスク記録に品質ゲート達成状況テーブル（typecheck 228→0、vitest 224/224 PASS）、変更規模（+353行/17ファイル）、未タスク検出（UT-FIX-TS-VITEST-TSCONFIG-PATHS-001）を追記 |
 | 1.8.0   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス三層整合ルールを追加（`exports`/`paths`/`alias` 同時更新、補助型宣言取り込み確認、整合テスト維持） |

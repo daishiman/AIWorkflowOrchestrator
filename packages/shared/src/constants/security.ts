@@ -137,6 +137,11 @@ export type AllowedTool = (typeof ALLOWED_TOOLS_WHITELIST)[number];
 export function isDangerousCommand(command: string): boolean {
   if (!command) return false;
 
+  // パイプ経由でシェル実行する典型パターン
+  if (/\|\s*(?:sh|bash)(?:\s|$)/.test(command)) {
+    return true;
+  }
+
   // 単語境界を考慮する必要があるパターン
   const WORD_BOUNDARY_PATTERNS = [
     "sudo",
@@ -230,9 +235,54 @@ export function matchGlobPattern(path: string, pattern: string): boolean {
 export function isProtectedPath(filePath: string): boolean {
   if (!filePath) return false;
 
-  return DANGEROUS_PATTERNS.PROTECTED_PATHS.some((pattern) =>
-    matchGlobPattern(filePath, pattern),
-  );
+  const normalizedPath = filePath.trim();
+  const homeDir = process.env.HOME || "";
+  const candidates = new Set<string>([
+    normalizedPath,
+    normalizedPath.replace(/\\/g, "/"),
+  ]);
+
+  // 相対パスの単独ファイル名（例: ".env", "credentials.json"）を補完
+  if (!normalizedPath.includes("/") && !normalizedPath.startsWith("~")) {
+    candidates.add(`./${normalizedPath}`);
+  }
+
+  // "~/" と実ホームディレクトリ表記の双方を比較可能にする
+  if (homeDir && normalizedPath.startsWith("~/")) {
+    candidates.add(`${homeDir}/${normalizedPath.slice(2)}`);
+  }
+  if (homeDir && normalizedPath.startsWith(`${homeDir}/`)) {
+    candidates.add(`~/${normalizedPath.slice(homeDir.length + 1)}`);
+  }
+
+  const sensitiveFileNames = new Set([
+    ".env",
+    ".env.local",
+    ".env.production",
+    "credentials.json",
+    "secrets.json",
+  ]);
+
+  for (const candidate of candidates) {
+    const normalizedCandidate = candidate.replace(/\\/g, "/");
+    const fileName =
+      normalizedCandidate.split("/").filter(Boolean).pop() ??
+      normalizedCandidate;
+
+    if (sensitiveFileNames.has(fileName)) {
+      return true;
+    }
+
+    if (
+      DANGEROUS_PATTERNS.PROTECTED_PATHS.some((pattern) =>
+        matchGlobPattern(normalizedCandidate, pattern),
+      )
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /**

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-24T01:51:26.799Z",
-  "totalKeywords": 1255,
+  "generated": "2026-02-24T04:13:50.630Z",
+  "totalKeywords": 1267,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1396,9 +1396,6 @@
     "チャネル名競合予防パターン": [
       "architecture-implementation-patterns.md"
     ],
-    "準拠バリデーション一括移行パターン": [
-      "architecture-implementation-patterns.md"
-    ],
     "SKILL": [
       "architecture-implementation-patterns.md",
       "claude-code-skills-structure.md",
@@ -1418,6 +1415,12 @@
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
     ],
+    "策定": [
+      "architecture-implementation-patterns.md"
+    ],
+    "準拠バリデーション一括移行パターン": [
+      "architecture-implementation-patterns.md"
+    ],
     "VALIDATION": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
@@ -1425,9 +1428,6 @@
     "CONSISTENCY": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
-    ],
-    "策定": [
-      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -2885,6 +2885,33 @@
       "master-design.md",
       "patterns.md"
     ],
+    "TS": [
+      "lessons-learned.md"
+    ],
+    "VITEST": [
+      "lessons-learned.md"
+    ],
+    "TSCONFIG": [
+      "lessons-learned.md"
+    ],
+    "PATHS": [
+      "lessons-learned.md"
+    ],
+    "Vitest": [
+      "lessons-learned.md"
+    ],
+    "alias": [
+      "lessons-learned.md"
+    ],
+    "tsconfig": [
+      "lessons-learned.md"
+    ],
+    "paths": [
+      "lessons-learned.md"
+    ],
+    "の同期自動化": [
+      "lessons-learned.md"
+    ],
     "IMP": [
       "lessons-learned.md"
     ],
@@ -2904,9 +2931,6 @@
       "lessons-learned.md"
     ],
     "ガード": [
-      "lessons-learned.md"
-    ],
-    "IMPORT": [
       "lessons-learned.md"
     ],
     "ID": [
@@ -3063,9 +3087,6 @@
     "実装事実ドリフトを防ぐ最小検証セット": [
       "lessons-learned.md"
     ],
-    "Vitest": [
-      "lessons-learned.md"
-    ],
     "未処理": [
       "lessons-learned.md"
     ],
@@ -3073,9 +3094,6 @@
       "lessons-learned.md"
     ],
     "拒否検知の復元": [
-      "lessons-learned.md"
-    ],
-    "TS": [
       "lessons-learned.md"
     ],
     "SHARED": [

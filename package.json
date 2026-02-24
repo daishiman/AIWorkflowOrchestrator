@@ -23,6 +23,7 @@
     "typecheck:shared": "pnpm --filter @repo/shared typecheck",
     "validate": "run-p lint typecheck test",
     "validate:full": "pnpm lint && pnpm typecheck && pnpm test",
+    "check:module-sync": "tsx scripts/check-shared-module-sync.ts",
     "check": "run-p lint typecheck",
     "clean": "pnpm -r exec rm -rf dist out node_modules/.vite",
     "prepare": "husky",
