@@ -233,61 +233,71 @@ describe("skillHandlers skill:execute", () => {
   // ===========================================================================
 
   describe("TC-4-006: skillIdが文字列でない場合エラー", () => {
-    it("should return error when skillId is not a string", async () => {
+    it("should throw VALIDATION_ERROR when skillId is not a string", async () => {
       const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
       if (!handler) {
         throw new Error("skill:execute handler not registered - Red phase");
       }
 
       // When: skillIdが数値
-      const result = await handler({}, { skillId: 123 });
-
-      // Then: エラーが返される
-      const opResult = result as OperationResult<SkillExecutionResult>;
-      expect(opResult.success).toBe(false);
-      expect(opResult.error).toBeDefined();
+      // Then: VALIDATION_ERRORがthrowされる
+      try {
+        await handler({}, { skillId: 123 });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillId must be a non-empty string",
+        );
+      }
     });
 
-    it("should return error when skillId is null", async () => {
+    it("should throw VALIDATION_ERROR when skillId is null", async () => {
       const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
       if (!handler) {
         throw new Error("skill:execute handler not registered - Red phase");
       }
 
       // When: skillIdがnull
-      const result = await handler({}, { skillId: null });
-
-      // Then: エラーが返される
-      const opResult = result as OperationResult<SkillExecutionResult>;
-      expect(opResult.success).toBe(false);
+      // Then: VALIDATION_ERRORがthrowされる
+      try {
+        await handler({}, { skillId: null });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+      }
     });
 
-    it("should return error when skillId is undefined", async () => {
+    it("should throw VALIDATION_ERROR when skillId is undefined", async () => {
       const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
       if (!handler) {
         throw new Error("skill:execute handler not registered - Red phase");
       }
 
       // When: skillIdがundefined
-      const result = await handler({}, {});
-
-      // Then: エラーが返される
-      const opResult = result as OperationResult<SkillExecutionResult>;
-      expect(opResult.success).toBe(false);
+      // Then: VALIDATION_ERRORがthrowされる
+      try {
+        await handler({}, {});
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+      }
     });
 
-    it("should return error when skillId is empty string", async () => {
+    it("should throw VALIDATION_ERROR when skillId is empty string", async () => {
       const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
       if (!handler) {
         throw new Error("skill:execute handler not registered - Red phase");
       }
 
       // When: skillIdが空文字
-      const result = await handler({}, { skillId: "" });
-
-      // Then: エラーが返される
-      const opResult = result as OperationResult<SkillExecutionResult>;
-      expect(opResult.success).toBe(false);
+      // Then: VALIDATION_ERRORがthrowされる
+      try {
+        await handler({}, { skillId: "" });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+      }
     });
   });
 

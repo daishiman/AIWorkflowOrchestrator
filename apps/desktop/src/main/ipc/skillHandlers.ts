@@ -190,8 +190,11 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof args?.skillId !== "string") {
-        return { success: false, error: "skillId must be a string" };
+      if (typeof args?.skillId !== "string" || args.skillId.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "skillId must be a non-empty string",
+        };
       }
       try {
         const skill = await skillService.getSkillById(args.skillId);
@@ -222,8 +225,11 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof args?.skillId !== "string" || args.skillId === "") {
-        return { success: false, error: "skillId must be a string" };
+      if (typeof args?.skillId !== "string" || args.skillId.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "skillId must be a non-empty string",
+        };
       }
       try {
         const result = await skillService.executeSkill(
@@ -251,8 +257,11 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof executionId !== "string" || executionId === "") {
-        return false;
+      if (typeof executionId !== "string" || executionId.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "executionId must be a non-empty string",
+        };
       }
       if (!_skillExecutorInstance) {
         return false;
@@ -275,8 +284,11 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof executionId !== "string" || executionId === "") {
-        return null;
+      if (typeof executionId !== "string" || executionId.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "executionId must be a non-empty string",
+        };
       }
       if (!_skillExecutorInstance) {
         return null;
@@ -305,8 +317,11 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof args?.skillName !== "string" || args.skillName === "") {
-        return { success: false, error: "スキル名が指定されていません" };
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "skillName must be a non-empty string",
+        };
       }
       try {
         const skill = await skillService.getSkillByName(args.skillName);
@@ -335,11 +350,17 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof args?.skillName !== "string" || args.skillName === "") {
-        return { success: false, error: "スキル名が指定されていません" };
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "skillName must be a non-empty string",
+        };
       }
       if (!args.analysis) {
-        return { success: false, error: "分析結果が指定されていません" };
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "analysis must be provided",
+        };
       }
       try {
         const result = await skillImprover.applyImprovements(

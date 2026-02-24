@@ -3,10 +3,8 @@
 ## メタ情報
 
 ```yaml
-issue_number: 872
+issue_number: 861
 ```
-
-## メタ情報
 
 | 項目         | 内容                                                       |
 | ------------ | ---------------------------------------------------------- |
@@ -119,6 +117,22 @@ skill:get-detailハンドラの引数名をセマンティクスに合致する�
 
 - [06-known-pitfalls.md P45](../../.claude/rules/06-known-pitfalls.md)
 - [architecture-implementation-patterns.md S13](../../.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+
+### 3.6 実装課題と解決策（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001からの教訓）
+
+UT-FIX-SKILL-VALIDATION-CONSISTENCY-001（2026-02-24完了）でP45引数名ドリフトを検出・文書化した際の知見:
+
+| #   | 苦戦箇所                                                                                                                                       | 解決策                                                                                           | 本タスクへの適用                                                                                                               |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | **命名ドリフトの検出方法**: `grep -rn "skillId" apps/desktop/src/main/ipc/skillHandlers.ts` でセマンティクス不一致箇所を特定                   | IPC契約検証（documentation-changelog Step 3）でハンドラ引数名と実際に渡される値を1行ずつ突合した | `getSkillById`→`getSkillByName`等の内部メソッド名も合わせて修正すること。全レイヤー（Handler/Service/Manager）の一括変更が必要 |
+| 2   | **P42バリデーションとの同時適用**: skill:get-detailの引数名を`skillId`→`skillName`に変更する場合、同時にP42準拠の`.trim()`チェックも確認が必要 | 現タスクでP42準拠は適用済み。引数名変更のみが残スコープ                                          | P42準拠3段バリデーションは適用済みのため、引数名の変更とバリデーションメッセージ内の変数名修正のみ                             |
+| 3   | **3箇所同時更新の必要性**: P23/P32準拠でHandler・Preload API・テストの3箇所を同一コミットで修正する必要がある                                  | skill:remove修正時（UT-FIX-SKILL-REMOVE-INTERFACE-001）で検証済みパターン                        | Handler引数名変更→Service/Managerパラメータ名変更→テスト期待値変更を1コミットで実施                                            |
+
+#### 参照ドキュメント
+
+- [06-known-pitfalls.md P45](../../.claude/rules/06-known-pitfalls.md) — IPC引数命名の契約ドリフト
+- [documentation-changelog.md Step 3](../completed-tasks/skill-validation-consistency/outputs/phase-12/documentation-changelog.md) — IPC契約検証結果
+- [ipc-contract-checklist.md](../../.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md) — IPC契約ドリフト防止チェックリスト
 
 ## 4. 実行手順
 
