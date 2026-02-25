@@ -20,6 +20,12 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-25 | 1.24.0 | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 教訓追加: task-9D〜9J 仕様差分是正で発生した苦戦箇所3件（旧パス混在、artifacts必須項目漏れ、Date型方針ドリフト）と同種課題向け簡潔解決手順（5ステップ）を追加 |
+| 2026-02-25 | 1.25.3 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 の簡潔解決テンプレートを追加。目的/前提/4ステップ/検証/失敗時対処を1ページ化し、同種課題の初動時間短縮を明文化 |
+| 2026-02-25 | 1.25.2 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 再監査教訓を追記。全体監査FAILと今回差分FAILの混同、完了移管後リンク更新漏れの2課題を追加し、4ステップ是正手順を明文化 |
+| 2026-02-25 | 1.25.1 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 の参照整合を補正。成果物テーブルの未タスク指示書リンクを `completed-tasks/task-ipc-auth-handle-duplicate-001.md` へ更新 |
+| 2026-02-25 | 1.25.0 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 教訓追加: AUTH IPC登録一元化で「通常経路とfallback経路を同時に宣言化しないと監査ノイズが残る」点を記録。再発防止として「登録配列化 + fallback回帰テスト + rg監査0件確認」の3ステップを追加 |
+| 2026-02-25 | 1.24.0 | UT-IPC-CHANNEL-NAMING-AUDIT-001 教訓追加: 対象外ノイズ（AUTH重複式）を未タスク分離しない場合に完了判定が曖昧化する問題を記録。再発防止として「対象内/対象外分離→未タスク3ステップ→リンク機械検証」の運用手順を追加 |
 | 2026-02-24 | 1.23.0 | UT-IPC-DATA-FLOW-TYPE-GAPS-001 実装固有の苦戦箇所4件追加（仕様書修正タスクPhaseテンプレート適用、6ギャップ横断分析、Date型シリアライズ方針統一、positional→object引数移行設計）+ 同種課題向け簡潔解決手順5ステップ追加 |
 | 2026-02-24 | 1.22.0 | UT-IPC-DATA-FLOW-TYPE-GAPS-001 教訓追加: Phase 12再監査で判明した苦戦箇所3件（成果物不足、artifacts.json二重管理非同期、未タスク指示書フォーマット不一致）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-24 | 1.21.1 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 教訓追加: Phase 12再監査で判明した苦戦箇所3件（検出ソース網羅漏れ、検証スクリプト終端依存、全体監査と差分判定の混同）と簡潔解決手順（5ステップ）を追加 |
@@ -67,7 +73,69 @@
 
 ---
 
+## UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化
+
+### 苦戦箇所: 通常経路とfallback経路の片側のみを整理すると監査ノイズが残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `authHandlers.ts` のみ一元化すると `ipc/index.ts` fallback側に同型重複が残る |
+| 原因 | 監査観点を通常経路に限定し、非Supabase経路を同時対象化していなかった |
+| 対処 | 通常経路・fallback経路の両方を宣言的登録へ統一し、同時に回帰テストを追加 |
+| 教訓 | AUTH系は「通常 + fallback」を1セットで扱わないと再発監査でノイズが残る |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. `AUTH_*` の登録点を通常経路とfallback経路で同時列挙する  
+2. 両経路を配列/マップ化し、`ipcMain.handle` 直接重複を排除する  
+3. `rg -n \"ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_\"` が0件であることを回帰テストと合わせて確認する
+
+### 苦戦箇所: 全体監査FAILと今回差分FAILの混同
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `audit-unassigned-tasks.js` の既存baseline違反を、今回変更差分の失敗と誤認しやすい |
+| 原因 | 全体監査（資産健全性）と対象監査（今回差分）を同じ判定軸で扱っていた |
+| 対処 | `detect-unassigned-tasks --scan <変更ディレクトリ>` を併用し、current/baseline を分離判定 |
+| 教訓 | Phase 12 では「全体監査結果」と「今回差分起因」の両方を同時記録する |
+
+### 同種課題の簡潔解決手順（4ステップ・再監査版）
+
+1. `audit-unassigned-tasks.js` で baseline 健全性を確認する  
+2. `detect-unassigned-tasks --scan <変更範囲>` で current 差分を抽出する  
+3. `unassigned-task-detection.md` に baseline/current を分けて記録する  
+4. 完了移管した未タスク参照は `completed-tasks/` 側へ同期更新する  
+
+### 同種課題の即時実行テンプレート（20分版）
+
+| 項目 | 内容 |
+| --- | --- |
+| 目的 | AUTH系IPCの重複登録と監査誤判定を1回の修正サイクルで解消する |
+| 前提 | 通常経路とfallback経路を同時に編集対象へ含める |
+| 成功条件 | 実装重複0件、回帰テストPASS、仕様/台帳/リンク整合PASS |
+
+| Step | 実施内容 | 成果物/証跡 |
+| --- | --- | --- |
+| 1 | 通常/fallbackのAUTH 5チャネルを同時列挙 | 変更対象リスト |
+| 2 | 共通登録ヘルパー + 配列/ループ登録へ統一 | 差分（`authHandlers.ts`, `index.ts`） |
+| 3 | baseline/current監査を分離して記録 | `unassigned-task-detection.md` |
+| 4 | 仕様書/台帳/リンクを同一ターンで同期 | `task-workflow.md`, `verify-unassigned-links.log` |
+
+| 失敗しやすい点 | 回避策 |
+| --- | --- |
+| `audit-unassigned-tasks` のFAILだけで差分FAILと判断する | `detect-unassigned-tasks --scan` を必ず併記して判定 |
+| 参照更新を後回しにしてリンク切れを残す | 完了移管と同時に `verify-unassigned-links.js` を実行 |
+| 通常経路のみ修正してfallback経路を見落とす | Step 1で対象チャネルを2経路で明示チェック |
+
+---
+
 ## 目次
+
+0. [UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正](#ut-imp-ipc-preload-extension-spec-alignment-001-task-9d9j-仕様差分の統合是正)
+   - [苦戦箇所1: 旧パスが文書内で混在し正本が不明瞭化](#苦戦箇所1-旧パスが文書内で混在し正本が不明瞭化)
+   - [苦戦箇所2: artifacts必須項目の漏れがtaskごとに発生](#苦戦箇所2-artifacts必須項目の漏れがtaskごとに発生)
+   - [苦戦箇所3: Date型方針がtask-9Iのみドリフト](#苦戦箇所3-date型方針がtask-9iのみドリフト)
+   - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ-2)
 
 0. [UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク）](#ut-ipc-data-flow-type-gaps-001-phase-12再監査仕様書修正タスク)
    - [苦戦箇所1: Phase 12成果物の不足](#苦戦箇所1-phase-12成果物の不足)
@@ -382,6 +450,55 @@ ipcMain.handle('skill:editor:read', async (event, args: SkillEditorReadArgs) => 
 3. **Gap別修正→ファイル間検証のサイクル**: Gap単位で全ファイルを修正し、修正完了後にファイル間の整合性をgrepで横断検証
 4. **Phase対応表の事前定義**: コード変更なしタスクの場合、各Phaseで何を代替実施するかを Phase 1 で事前定義（Phase 4=検証基準設計、Phase 6-7=grep検証 等）
 5. **Phase 12の成果物を先に定義**: spec-update-summary.md、documentation-changelog.md、unassigned-task-report.md の3成果物を Phase 12 開始時に空ファイルで作成し、完了時に内容を埋める
+
+---
+
+## UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 |
+| 目的 | task-9D〜9J の参照差分・artifacts差分を統合是正し、実装前の契約ドリフトを防止する |
+| 完了日 | 2026-02-25 |
+| ステータス | **完了** |
+| 関連Pitfall | P32, P44, P45 |
+
+### 苦戦箇所1: 旧パスが文書内で混在し正本が不明瞭化
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `preload/skillAPI.ts` と `preload/skill-api.ts`、`main/ipc/channels.ts` と `preload/channels.ts` が混在していた |
+| 原因 | 移行前後の記述が task ごとに異なる時期で更新され、統一ルールが未適用だった |
+| 対処 | 旧パス検出条件を固定し、対象7仕様書で0件になるまで一括是正 |
+| 教訓 | 参照差分はファイル単位ではなく「対象群一括」で潰すほうが再発しにくい |
+
+### 苦戦箇所2: artifacts必須項目の漏れがtaskごとに発生
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `modifies` / `creates` の記載粒度が task ごとにズレ、実装時の変更対象が不明瞭だった |
+| 原因 | task-9D〜9J で共通必須項目のテンプレート化がされていなかった |
+| 対処 | 必須4項目（`channels.ts`, `skill-api.ts`, `types.ts`, `skill/index.ts`）を共通化し、domain型を task別に補完 |
+| 教訓 | artifacts は「共通セット + domain差分」の2層で設計すると漏れを抑制できる |
+
+### 苦戦箇所3: Date型方針がtask-9Iのみドリフト
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | task-9I の `GeneratedDoc.generatedAt` のみ `Date` 記述が残り、IPC境界方針と矛盾した |
+| 原因 | Dateシリアライズ方針の追記が一部タスクへ未展開だった |
+| 対処 | `string (ISO 8601)` へ統一し、IPCシリアライズ方針セクションを追記 |
+| 教訓 | Date型を含む仕様は「型定義修正」と「方針文章追記」をセットで実施する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 監査対象を task 群へ限定し、全体ベースライン違反と分離する。  
+2. 参照差分（oldPaths）と台帳差分（missingArtifacts）を別指標で収集する。  
+3. 旧参照パスを一括置換し、再監査で0件化する。  
+4. artifacts を共通セット + domain差分で補完し、7/7一致を確認する。  
+5. `task-workflow.md` 完了記録・残課題状態・`LOGS.md` を同一タイミングで同期する。  
 
 ---
 
@@ -3164,6 +3281,65 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | `task-workflow.md` | 完了タスク2件（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 / TASK-UI-00-ATOMS）を追記 |
 | `lessons-learned.md` | 本教訓セクション追加（苦戦箇所3件 + 4ステップ手順） |
 | `docs/30-workflows/completed-tasks/task-ui-00-atoms/*` | 旧参照パスを `tasks/completed-task` 正本へ統一 |
+
+---
+
+## UT-IPC-CHANNEL-NAMING-AUDIT-001: IPCチャネル命名監査の台帳同期（2026-02-25）
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-IPC-CHANNEL-NAMING-AUDIT-001 |
+| 目的 | IPCチャネル命名規則の横断監査結果を台帳・仕様へ同期し、対象外ノイズを未タスク分離する |
+| 完了日 | 2026-02-25 |
+| ステータス | **spec_created（Phase 1-12完了）** |
+
+### 苦戦箇所と解決策
+
+#### 1. 対象内完了と対象外ノイズの混同
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | Skill命名監査は完了しているのに、`AUTH_*` 重複式が残っているため完了判定が曖昧になった |
+| 原因 | 監査結果を「対象内/対象外」で分離せず、単一件数で扱っていた |
+| 解決策 | `UT-IPC-AUTH-HANDLE-DUPLICATE-001` を未タスクとして切り出し、主タスクは `spec_created` で完了化 |
+| 教訓 | 監査タスクは「対象内を完了」「対象外は未タスク化」で同時に閉じる |
+
+#### 2. 参照パス移管時のリンク切れ
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `unassigned-task` から `completed-tasks` へ移管したタスクの旧パスが残りやすい |
+| 原因 | 台帳更新と成果物更新が分離され、先送りが発生 |
+| 解決策 | `task-workflow.md` 更新と `verify-unassigned-links.js` 実行を同一ターンで実施 |
+| 教訓 | 未タスク/完了タスクの移管は必ず「更新 + 機械検証」をワンセットで行う |
+
+#### 3. Phase 12 成果物台帳の二重管理
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `artifacts.json` と `outputs/artifacts.json` の同期漏れが発生しやすい |
+| 原因 | 出力作成後に片方だけ更新して完了扱いにしてしまう |
+| 解決策 | Phase 12 で両ファイルを同時更新し、差分確認を必須化 |
+| 教訓 | 仕様書修正のみタスクでも成果物台帳は二重同期を前提にする |
+
+### 同種課題向け簡潔解決手順（5ステップ）
+
+1. 監査結果を「対象内/対象外」に分離して記録する。  
+2. 対象外の未解決事項がある場合は未タスク指示書を作成する。  
+3. `task-workflow.md` に完了化と未タスク追加を同時反映する。  
+4. `verify-unassigned-links.js` を実行し、参照切れ0件を確認する。  
+5. `artifacts.json` と `outputs/artifacts.json` を同期してから完了判定する。
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 監査ワークフロー | `docs/30-workflows/ut-ipc-channel-naming-audit-001/` |
+| 元タスク指示書（移管先） | `docs/30-workflows/completed-tasks/task-ipc-channel-naming-audit-001.md` |
+| 新規未タスク指示書（完了移管先） | `docs/30-workflows/completed-tasks/task-ipc-auth-handle-duplicate-001.md` |
+| Phase 12 未タスク検出レポート | `docs/30-workflows/ut-ipc-channel-naming-audit-001/outputs/phase-12/unassigned-task-detection.md` |
 
 ---
 ## テンプレート（新規教訓追加用）

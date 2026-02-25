@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.8.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001反映: AUTH IPC登録一元化パターンを追加。重複登録式の宣言的集約と fallback 経路の追跡性維持を明文化 |
 | v1.7.0     | 2026-02-21 | 契約ドリフト防止（P44/P45対策）セクション追加: ipc-contract-checklist.md参照・3箇所同時更新ルール・3段バリデーション検証テーブルを明文化 |
 | v1.6.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: Skill API（`skill:import`/`skill:remove`）の引数検証パターンを `skillName` 非空文字列（`trim()`含む）へ統一し、契約ドリフト対策を明文化 |
 | v1.5.0     | 2026-02-19 | TASK-9A-B: skillFileAPIセキュリティ実装パターン追加（validateIpcSender + 引数バリデーション + SkillFileManager内部検証 + isKnownSkillFileErrorエラーサニタイズ）。6チャンネル、65テスト全PASS |
@@ -308,6 +309,21 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | task-sec-ipc-lifecycle-audit-001     | Electron ライフサイクルイベント IPC リスナー管理監査 | 中     |
 | task-imp-ipc-registration-verify-001 | IPC ハンドラ登録整合性自動検証テスト               | 中     |
 
+#### AUTH IPC登録一元化パターン（UT-IPC-AUTH-HANDLE-DUPLICATE-001）
+
+`AUTH_*` 5チャネルの `ipcMain.handle` 登録は、以下の2箇所で宣言的に集約する。
+
+| 対象 | 実装方針 | セキュリティ要件 |
+| --- | --- | --- |
+| 通常経路（Supabaseあり） | `authHandlers.ts` で共通登録ヘルパーを経由して登録 | `withValidation` を必須適用 |
+| fallback経路（Supabaseなし） | `ipc/index.ts` で fallback ハンドラ配列をループ登録 | 既存エラー契約（AUTH_NOT_CONFIGURED）を維持 |
+
+検証基準:
+
+- 5チャネル（login/logout/get-session/refresh/check-online）が過不足なく登録される
+- `IPC_CHANNELS.AUTH_*` を直接 `ipcMain.handle` に重複記述しない
+- 既存戻り値・エラーコードを変更しない
+
 ---
 
 ## 実装例: skillFileAPI（TASK-9A-B）
@@ -398,3 +414,12 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 - [APIセキュリティ](./security-api.md)
 - [スキル実行セキュリティ](./security-skill-execution.md)
+- [AUTH IPC登録一元化 実装ガイド](../../../docs/30-workflows/ut-ipc-auth-handle-duplicate-001/outputs/phase-12/implementation-guide.md)
+
+---
+
+## 完了タスク
+
+| タスクID | 完了日 | ステータス | 概要 |
+| --- | --- | --- | --- |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001 | 2026-02-25 | 完了 | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持 |

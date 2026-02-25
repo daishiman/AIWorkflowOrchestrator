@@ -112,6 +112,7 @@ Skillは、Claude（メインのオーケストレーター）が **「必要だ
 | aiworkflow-requirements      | プロジェクト仕様管理・検索              | Read, Grep, Glob                                                     |
 | task-specification-creator   | タスク仕様書生成（Phase 1-13）          | Read, Write, Edit                                                    |
 | skill-creator                | スキル作成・更新・プロンプト改善        | Read, Write, Edit, Glob, Grep, Bash, Task, WebFetch, AskUserQuestion |
+| ipc-preload-spec-sync-guardian | task-9D〜9J IPC/Preload仕様差分の統合是正 | Read, Write, Edit, Bash, Glob, Grep, Task |
 | claude-agent-sdk             | Agent SDK統合実装支援                   | Read, Write, Edit, Bash                                              |
 | presentation-slide-generator | HTMLプレゼンスライド生成                | Write, Bash                                                          |
 | github-issue-manager         | GitHub Issue管理・タスク仕様書連携      | Bash, Read, Glob                                                     |

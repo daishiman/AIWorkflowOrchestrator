@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-24T12:06:42.359Z",
-  "totalKeywords": 1282,
+  "generated": "2026-02-25T03:24:37.840Z",
+  "totalKeywords": 1299,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -677,6 +677,7 @@
     ],
     "完了タスク": [
       "api-ipc-agent.md",
+      "api-ipc-auth.md",
       "architecture-auth-security.md",
       "architecture-chat-history.md",
       "architecture-monorepo.md",
@@ -693,6 +694,7 @@
       "quality-e2e-testing.md",
       "quality-requirements.md",
       "security-api-electron.md",
+      "security-electron-ipc.md",
       "security-skill-ipc.md",
       "task-workflow.md",
       "technology-backend.md",
@@ -807,7 +809,9 @@
     "AUTH": [
       "api-ipc-auth.md",
       "architecture-auth-security.md",
-      "error-handling.md"
+      "architecture-implementation-patterns.md",
+      "error-handling.md",
+      "lessons-learned.md"
     ],
     "SESSION": [
       "api-ipc-auth.md",
@@ -1470,6 +1474,32 @@
       "architecture-implementation-patterns.md"
     ],
     "形式引数パターンの確認": [
+      "architecture-implementation-patterns.md"
+    ],
+    "チャネル命名監査の運用パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "NAMING": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "AUDIT": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "実施": [
+      "architecture-implementation-patterns.md"
+    ],
+    "handle": [
+      "architecture-implementation-patterns.md"
+    ],
+    "登録の重複式確認": [
+      "architecture-implementation-patterns.md"
+    ],
+    "チャネル命名監査の対象": [
+      "architecture-implementation-patterns.md"
+    ],
+    "対象外を分離確認": [
       "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
@@ -2922,6 +2952,15 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "HANDLE": [
+      "lessons-learned.md"
+    ],
+    "DUPLICATE": [
+      "lessons-learned.md"
+    ],
+    "登録一元化": [
+      "lessons-learned.md"
+    ],
     "目次": [
       "lessons-learned.md",
       "logging-migration-guide.md",
@@ -2932,6 +2971,27 @@
       "lessons-learned.md"
     ],
     "仕様書修正タスク": [
+      "lessons-learned.md"
+    ],
+    "IMP": [
+      "lessons-learned.md"
+    ],
+    "PRELOAD": [
+      "lessons-learned.md"
+    ],
+    "EXTENSION": [
+      "lessons-learned.md"
+    ],
+    "SPEC": [
+      "lessons-learned.md"
+    ],
+    "ALIGNMENT": [
+      "lessons-learned.md"
+    ],
+    "task": [
+      "lessons-learned.md"
+    ],
+    "仕様差分の統合是正": [
       "lessons-learned.md"
     ],
     "TS": [
@@ -2959,9 +3019,6 @@
       "lessons-learned.md"
     ],
     "の同期自動化": [
-      "lessons-learned.md"
-    ],
-    "IMP": [
       "lessons-learned.md"
     ],
     "MODULE": [
@@ -3078,9 +3135,6 @@
       "lessons-learned.md"
     ],
     "未実施が混在していないか": [
-      "lessons-learned.md"
-    ],
-    "task": [
       "lessons-learned.md"
     ],
     "workflow": [
@@ -3295,6 +3349,9 @@
       "lessons-learned.md"
     ],
     "チャネル名競合の予防的解消": [
+      "lessons-learned.md"
+    ],
+    "チャネル命名監査の台帳同期": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [

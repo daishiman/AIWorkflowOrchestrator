@@ -322,6 +322,62 @@ describe("IPC Handler Double Registration Prevention", () => {
     });
   });
 
+  describe("auth fallback handlers", () => {
+    it("Supabase未設定時にAUTH 5チャネルをfallback登録する", () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+
+      registerAllIpcHandlers(mockWindow);
+
+      const channels = mockIpcMainHandle.mock.calls.map((call) => call[0]);
+      expect(channels).toContain("auth:login");
+      expect(channels).toContain("auth:logout");
+      expect(channels).toContain("auth:get-session");
+      expect(channels).toContain("auth:refresh");
+      expect(channels).toContain("auth:check-online");
+    });
+
+    it("fallbackのAUTH_GET_SESSIONはnullセッションを返す", async () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+
+      registerAllIpcHandlers(mockWindow);
+
+      const getSessionCall = mockIpcMainHandle.mock.calls.find(
+        (call) => call[0] === "auth:get-session",
+      );
+      expect(getSessionCall).toBeDefined();
+
+      const handler = getSessionCall?.[1] as () => Promise<{
+        success: boolean;
+        data: null;
+      }>;
+      const result = await handler();
+
+      expect(result).toEqual({ success: true, data: null });
+    });
+
+    it("fallbackのAUTH_CHECK_ONLINEはonline状態を返す", async () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+
+      registerAllIpcHandlers(mockWindow);
+
+      const checkOnlineCall = mockIpcMainHandle.mock.calls.find(
+        (call) => call[0] === "auth:check-online",
+      );
+      expect(checkOnlineCall).toBeDefined();
+
+      const handler = checkOnlineCall?.[1] as () => Promise<{
+        success: boolean;
+        data: { online: boolean };
+      }>;
+      const result = await handler();
+
+      expect(result).toEqual({ success: true, data: { online: true } });
+    });
+  });
+
   describe("setupThemeWatcher unsubscribe", () => {
     it("再登録時に前回の setupThemeWatcher の unsubscribe が呼ばれる", () => {
       const mockWindow =

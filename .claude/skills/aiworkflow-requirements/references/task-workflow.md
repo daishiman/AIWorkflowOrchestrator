@@ -187,6 +187,78 @@
 
 ---
 
+### タスク: UT-SKILL-IPC-PRELOAD-EXTENSION-001 task-9D-J 30チャネル IPC/Preload 拡張計画の策定（2026-02-25反映）
+
+| 項目       | 内容                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-IPC-PRELOAD-EXTENSION-001                                  |
+| 完了日     | 2026-02-25                                                           |
+| ステータス | **完了（仕様書作成）**                                               |
+| タスク種別 | 仕様書修正のみ（`spec_created`）                                     |
+| Phase      | Phase 1-12 完了（Phase 13は未実施）                                 |
+| コード変更 | なし（`docs/30-workflows/completed-tasks/ut-skill-ipc-preload-extension-001/` のみ） |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                                                                           |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| ワークフロー一式     | `docs/30-workflows/completed-tasks/ut-skill-ipc-preload-extension-001/`                                                           |
+| 要件/設計/品質成果物 | `docs/30-workflows/completed-tasks/ut-skill-ipc-preload-extension-001/outputs/phase-1` 〜 `phase-12`                            |
+| 検証レポート         | `docs/30-workflows/completed-tasks/ut-skill-ipc-preload-extension-001/outputs/verification-report.md`                            |
+| 追補監査レポート     | `docs/30-workflows/completed-tasks/ut-skill-ipc-preload-extension-001/outputs/phase-12/recheck-multithinking-audit.md`          |
+| 未タスク指示書       | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md`                         |
+
+#### 変更理由
+
+- task-9D〜9Jで必要な30チャネル（handle 29 / on 1）の仕様計画を実装前に固定し、P32/P44/P45の契約ドリフトを予防するため。
+- 仕様監査で検出した差分（`main/ipc/channels.ts` 記述残存、命名差分、参照切れ）を未タスクとして分離し、後続実装の手戻りを抑制するため。
+
+---
+
+### タスク: UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 task-9D〜9J仕様差分の統合是正（2026-02-25完了）
+
+| 項目       | 内容                                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001                                                         |
+| 完了日     | 2026-02-25                                                                                                |
+| ステータス | **完了（仕様書修正）**                                                                                    |
+| タスク種別 | 仕様書修正のみ（`spec_created`）                                                                          |
+| Phase      | Phase 1-12 相当（実装コード変更なし）                                                                     |
+| コード変更 | なし（`docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/` のみ） |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| 修正仕様書（task-9系） | `task-022-task-9f-skill-share.md`, `task-023a-task-9g-skill-schedule.md`, `task-023b-task-9h-skill-debug.md`, `task-023c-task-9i-skill-docs.md`, `task-023d-task-9j-skill-analytics.md`, `task-023e-task-9d-skill-chain.md`, `task-023f-task-9e-skill-fork.md` |
+| 付随修正 | `task-003-execution-plan.md` の `skill-api.ts` 参照統一 |
+| 完了記録 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md` |
+
+#### 実装内容（仕様更新）
+
+- 7仕様書の `artifacts.modifies` を現行正本に統一（`preload/channels.ts`, `preload/skill-api.ts`, `preload/types.ts`, `packages/shared/src/types/skill/index.ts`）。
+- 各 task に `packages/shared/src/types/skill/<domain>.ts`（`chain/fork/share/schedule/debug/docs/analytics`）を `artifacts.creates` として明記。
+- 旧参照 `preload/skillAPI.ts` / `main/ipc/channels.ts` / `packages/shared/src/types/skillXxx.ts` を排除。
+- task-9I の `GeneratedDoc.generatedAt` を IPC境界方針に合わせ `Date` → ISO 8601 `string` へ統一。
+
+#### 苦戦箇所と解決策
+
+| 苦戦ポイント | 問題 | 解決策 |
+| --- | --- | --- |
+| 旧パス混在 | `skillAPI.ts` と `skill-api.ts` が混在し、参照の正本が曖昧化 | 監査条件を固定し、旧パスを0件化してから反映 |
+| artifacts 欠落 | taskごとに `modifies/creates` の必須項目が不一致 | 7タスク共通の必須4項目 + task別domain型を先に固定 |
+| 型方針ドリフト | task-9I だけ Date型記述が残り IPC方針と衝突 | Dateシリアライズ方針を追記し、型をISO 8601文字列へ統一 |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. 監査対象を task-9D〜9J に限定してノイズを分離する。  
+2. `oldPaths`（参照差分）と `missingArtifacts`（台帳差分）を分けて検出する。  
+3. 参照差分を一括修正し、次に artifacts を task単位で補完する。  
+4. Date型が残る仕様書は IPC境界方針（ISO 8601 string）へ揃える。  
+5. 完了記録・残課題状態・教訓記録を同一コミット相当で同期する。  
+
+---
+
 ### タスク: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 skill:import IPCチャネル名競合の予防的解消（2026-02-24完了）
 
 | 項目         | 内容                                                             |
@@ -904,6 +976,56 @@
 
 ---
 
+### タスク: UT-IPC-CHANNEL-NAMING-AUDIT-001 IPCチャネル命名規則の横断的適用監査（2026-02-25完了）
+
+| 項目       | 内容                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| タスクID   | UT-IPC-CHANNEL-NAMING-AUDIT-001                                      |
+| 完了日     | 2026-02-25                                                           |
+| ステータス | **spec_created**（監査・計画・仕様更新完了、コード実装は後続タスク） |
+| Phase      | Phase 1-12完了                                                       |
+| 監査結果   | 違反6件を分類（高1/中3/低2）、Skillドメイン重大違反0件               |
+| 未タスク   | 0件（UT-IPC-AUTH-HANDLE-DUPLICATE-001 は2026-02-25完了）             |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| ワークフロー一式     | `docs/30-workflows/completed-tasks/ut-ipc-channel-naming-audit-001/`                                   |
+| 元タスク指示書       | `docs/30-workflows/completed-tasks/task-ipc-channel-naming-audit-001.md`               |
+| 監査レポート         | `docs/30-workflows/completed-tasks/ut-ipc-channel-naming-audit-001/outputs/phase-5/channel-naming-audit-report.md` |
+| リネーム計画         | `docs/30-workflows/completed-tasks/ut-ipc-channel-naming-audit-001/outputs/phase-5/channel-rename-plan.md` |
+| Phase 12 更新サマリ  | `docs/30-workflows/completed-tasks/ut-ipc-channel-naming-audit-001/outputs/phase-12/spec-update-summary.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ut-ipc-channel-naming-audit-001/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 変更理由
+
+- `UT-SKILL-IMPORT-CHANNEL-CONFLICT-001` で策定した命名規則を全体監査へ横展開し、P5/P44/P45 の再発リスクを定量化した。
+- Skillドメインは即時ブロッカーを解消済み、残課題は `AUTH_*` の重複式整理として未タスクへ分離した。
+- Phase 12 Step 1-A/1-C/1-D の漏れ対策として、台帳・教訓・索引・成果物台帳を同一ターンで同期した。
+
+---
+
+### タスク: UT-IPC-AUTH-HANDLE-DUPLICATE-001 AUTH IPC handle重複式の登録一元化（2026-02-25完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-IPC-AUTH-HANDLE-DUPLICATE-001 |
+| 完了日 | 2026-02-25 |
+| ステータス | **完了** |
+| 変更範囲 | `apps/desktop/src/main/ipc/authHandlers.ts`, `apps/desktop/src/main/ipc/index.ts`, `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts` |
+| 監査結果 | AUTH重複登録式（5件）を0件化 |
+
+#### 成果物
+
+| 成果物 | パス |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/ut-ipc-auth-handle-duplicate-001/` |
+| 実装ログ | `docs/30-workflows/completed-tasks/ut-ipc-auth-handle-duplicate-001/outputs/phase-5/implementation-log.md` |
+| 品質レポート | `docs/30-workflows/completed-tasks/ut-ipc-auth-handle-duplicate-001/outputs/phase-9/quality-report.md` |
+
+---
+
 ## 残課題（未タスク）
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
@@ -912,6 +1034,7 @@
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TASK-9A-C                                         | SkillEditor UI（仕様書作成済み・実装未着手）                                                                     | 高     | TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）                            | `docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/` (**spec_created**: Phase 1完了、Phase 2-13未着手)                                   |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
+| ~~UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001~~   | ~~UT-SKILL-IPC-PRELOAD-EXTENSION-001で検出した仕様差分（参照切れ/パス差分/命名差分）の統合是正~~                   | ~~中~~     | **2026-02-25完了** UT-SKILL-IPC-PRELOAD-EXTENSION-001 Phase 10/12（Open Item）                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`                                                          |
 | TASK-3-1-B                                        | SkillExecutor IPC Handler統合                                                                                    | 高     | TASK-3-1-A完了時（blocks）                                                  | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md`                                                                    |
 | TASK-SKILL-PERF-TEST                              | SkillExecutor パフォーマンステスト                                                                               | 低     | TASK-3-1-A Phase 11推奨事項                                                 | `docs/30-workflows/unassigned-task/task-skillexecutor-performance-testing.md`                                                                      |
 | SKILL-E2E-001                                     | スキルインポートE2Eテスト                                                                                        | 中     | Phase 11（手動テスト検証）推奨事項                                          | `docs/30-workflows/unassigned-task/task-skill-import-e2e-testing.md`                                                                               |
@@ -1022,11 +1145,14 @@
 | UT-UI-ATOMS-TOUCH-TARGET-001                      | SuggestionBubble size="sm" タッチターゲット Apple HIG 44px準拠                                                   | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-2（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-touch-target.md`                                                                                  |
 | UT-UI-ATOMS-SPEC-CLARIFICATION-001                | SuggestionBubble success-bounceマイクロインタラクション仕様書責務記述明確化                                       | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-3（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-spec-clarification.md`                                                                            |
 | TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001       | check-shared-module-sync レポート拡充（修正ガイダンス・サマリー数値・printSummary設計準拠）                       | 低     | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 Phase 10 MINOR（2026-02-22）        | `docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md`                                                                     |
-| UT-IPC-CHANNEL-NAMING-AUDIT-001                   | IPCチャネル命名規則の横断的適用監査と統一                                                                        | 中     | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12（未タスク検出・2026-02-24）   | `docs/30-workflows/unassigned-task/task-ipc-channel-naming-audit-001.md`                                                                               |
+| ~~UT-IPC-CHANNEL-NAMING-AUDIT-001~~                   | ~~IPCチャネル命名規則の横断的適用監査と統一~~                                                                        | ~~中~~     | ~~UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12（未タスク検出・2026-02-24）~~ **完了: 2026-02-25（spec_created）**   | `docs/30-workflows/completed-tasks/task-ipc-channel-naming-audit-001.md`                                                                               |
+| ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001~~                  | ~~`AUTH_*` の `ipcMain.handle` 重複式を定数化・登録一元化で解消~~                                                     | ~~中~~     | ~~UT-IPC-CHANNEL-NAMING-AUDIT-001 Phase 12（MINOR M-002・2026-02-25）~~ **完了: 2026-02-25**           | `docs/30-workflows/completed-tasks/task-ipc-auth-handle-duplicate-001.md`                                                                              |
 | UT-SPEC-ONLY-TASK-WORKFLOW-001                    | 仕様書修正のみタスクのPhaseテンプレート・grep検証TDD標準化                                                       | 中     | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12（未タスク検出・2026-02-24）   | `docs/30-workflows/unassigned-task/task-spec-only-task-workflow-automation-001.md`                                                                                 |
 | UT-FIX-SKILL-IPC-ARG-FORM-UNIFICATION-001         | skill:ハンドラIPC引数形式統一（オブジェクト型 vs 直接引数型）                                                    | 低     | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 Phase 12（苦戦箇所4・2026-02-24）   | [`docs/30-workflows/unassigned-task/task-skill-ipc-arg-form-unification.md`](../../../docs/30-workflows/unassigned-task/task-skill-ipc-arg-form-unification.md) |
 | UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001         | SkillUsageSummary.lastUsed nullable整合性修正（Phase 1/2分析 nullable=Yes vs 実仕様 non-nullable差異）            | 低     | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 10 MINOR M-1（2026-02-24）            | `docs/30-workflows/completed-tasks/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md`                                                                |
 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001         | 未タスク監査の対象スコープ制御とベースライン分離（current/baseline判定）                                         | 中     | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 再監査（苦戦箇所・2026-02-24）      | `docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md`                                                              |
+| UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001         | task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧パス/artifacts/Date方針）                                        | 中     | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 実装苦戦箇所（2026-02-25）  | `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md`                                                            |
+| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 
 ### 未タスク管理ルール
 
@@ -1050,6 +1176,13 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.59.0** | **2026-02-25** | **UT-SKILL-IPC-PRELOAD-EXTENSION-001成果物移管反映**: Phase 12完了済みのワークフロー `ut-skill-ipc-preload-extension-001` を `completed-tasks/` へ移動。対応する未タスク指示書 `task-imp-ipc-preload-extension-spec-alignment-001.md` も `completed-tasks/unassigned-task/` へ移管し、参照パスを更新 |
+| **1.58.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001登録**: task-9D〜9J 仕様契約ドリフトの再発防止を目的に、旧参照パス検出・必須artifacts検証・Date方針検証をCIガード化する未タスクを残課題テーブルへ追加。親タスクの苦戦箇所3件を未タスク指示書 Section 3.5 に反映 |
+| **1.57.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001完了反映**: task-9D〜9J の仕様差分是正完了を完了タスクセクションへ追加。残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、完了記録参照を `completed-task/task-013-*` へ更新 |
+| **1.56.0** | **2026-02-25** | **UT-SKILL-IPC-PRELOAD-EXTENSION-001完了反映**: 完了タスクセクションに30チャネルIPC/Preload拡張計画（`spec_created`）を追加。残課題テーブルに `UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001` を登録し、参照切れ・パス差分・命名差分の是正タスクを明示 |
+| **1.58.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001登録**: Phase 12 仕様更新時の参照同期漏れ（baseline/current混同、完了移管後リンク漏れ、通常/fallback片側修正）を再発防止する未タスクを残課題テーブルへ追加。未タスク指示書に苦戦箇所を Section 3.5 として記録 |
+| **1.57.0** | **2026-02-25** | **UT-IPC-AUTH-HANDLE-DUPLICATE-001完了反映**: 完了タスクセクションへ実装完了記録を追加し、残課題テーブルの同タスクを完了化（取り消し線 + completed-tasks参照へ更新）。UT-IPC-CHANNEL-NAMING-AUDIT-001 の未タスク件数を0件に更新 |
+| **1.56.0** | **2026-02-25** | **UT-IPC-CHANNEL-NAMING-AUDIT-001完了反映 + 未タスク1件登録**: 完了タスクセクションに `spec_created` として追加し、残課題テーブルの参照先を `completed-tasks/task-ipc-channel-naming-audit-001.md` へ更新。Phase 10/11 MINOR を `UT-IPC-AUTH-HANDLE-DUPLICATE-001` として未タスク登録（指示書作成・台帳登録・検証連動） |
 | **1.55.1** | **2026-02-24** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001登録**: 未タスク監査の対象スコープ制御（対象監査）とベースライン分離（全体監査）を行う運用改善タスクを残課題テーブルに追加。親タスクの苦戦箇所（全体監査ノイズ、台帳同期負荷、検証タイミング遅延）を Section 3.5 に反映 |
 | **1.55.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001完了反映**: 完了タスクセクションに仕様書修正のみタスク（6 Gap解消・7仕様書修正・173検証項目ALL PASS）を追加。Phase 10 MINOR M-1（SkillUsageSummary.lastUsed nullable差異）を未タスク UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001 として残課題テーブルに登録。P3準拠3ステップ完了 |
 | **1.54.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12 未タスク2件登録**: UT-IPC-CHANNEL-NAMING-AUDIT-001（IPCチャネル命名規則の横断的適用監査と統一）、UT-SPEC-ONLY-TASK-WORKFLOW-001（仕様書修正のみタスクのPhaseテンプレート・grep検証TDD標準化）をP3準拠で残課題テーブルに追加 |

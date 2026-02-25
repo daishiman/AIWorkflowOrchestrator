@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-24
+> 自動生成: 2026-02-25
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -649,14 +649,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証 IPC チャネル | L10 |
-| プロフィール IPC チャネル | L32 |
-| イベントチャネル（Main → Renderer） | L43 |
-| 型定義 | L70 |
-| 認証状態管理 | L128 |
-| IPCセキュリティ実装 | L159 |
-| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L186 |
-| 関連ドキュメント | L240 |
-| 変更履歴 | L249 |
+| プロフィール IPC チャネル | L71 |
+| イベントチャネル（Main → Renderer） | L82 |
+| 型定義 | L109 |
+| 認証状態管理 | L167 |
+| IPCセキュリティ実装 | L198 |
+| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L225 |
+| 関連ドキュメント | L279 |
+| 完了タスク | L289 |
+| 変更履歴 | L303 |
 
 ### references/api-ipc-system.md
 
@@ -1018,15 +1019,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L26 |
-| Content Security Policy (CSP) | L40 |
-| IPC通信のセキュリティ | L57 |
-| 実装例: historyAPI | L110 |
-| 実装例: slideSettingsAPI | L162 |
-| 実装例: skillCreatorAPI | L211 |
-| 実装例: skillFileAPI（TASK-9A-B） | L313 |
-| 自動更新のセキュリティ | L386 |
-| 関連ドキュメント | L397 |
+| セキュリティ設定 | L27 |
+| Content Security Policy (CSP) | L41 |
+| IPC通信のセキュリティ | L58 |
+| 実装例: historyAPI | L111 |
+| 実装例: slideSettingsAPI | L163 |
+| 実装例: skillCreatorAPI | L212 |
+| 実装例: skillFileAPI（TASK-9A-B） | L329 |
+| 自動更新のセキュリティ | L402 |
+| 関連ドキュメント | L413 |
+| 完了タスク | L421 |
 
 ### references/security-implementation.md
 
@@ -1503,11 +1505,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L9 |
 | 変更履歴 | L21 |
-| 背景 | L29 |
-| チェックリスト | L44 |
-| 契約ドリフト検出コマンド | L120 |
-| 関連ドキュメント | L149 |
-| 適用事例 | L163 |
+| 背景 | L30 |
+| チェックリスト | L45 |
+| 契約ドリフト検出コマンド | L125 |
+| 関連ドキュメント | L154 |
+| 適用事例 | L168 |
 
 ### references/ipc-type-resolution-guide.md
 
@@ -1526,24 +1528,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 目次 | L70 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L229 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L388 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L437 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L611 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L662 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L732 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1040 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1151 |
-| 関連ドキュメント | L1290 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1300 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1477 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1535 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1678 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1782 |
-| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L1928 |
-| TASK-FIX-7-1: SkillService executeSkill 委譲実装 | L1983 |
-| UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 | L2265 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L76 |
+| 目次 | L132 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L297 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L456 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L505 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L554 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L728 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L779 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L849 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1157 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1268 |
+| 関連ドキュメント | L1407 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1417 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1594 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1652 |
+| TASK-FIX-14-1: console → electron-log 移行 | L1795 |
+| TASK-FIX-11-1: SDK統合テスト有効化 | L1899 |
+| TASK-FIX-13-1: deprecatedプロパティ正式移行 | L2045 |
 
 ### references/llm-embedding.md
 
@@ -1885,9 +1887,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L907 |
-| 関連ドキュメント | L1039 |
-| 変更履歴 | L1049 |
+| 残課題（未タスク） | L1029 |
+| 関連ドキュメント | L1165 |
+| 変更履歴 | L1175 |
 
 ### references/testing-accessibility.md
 

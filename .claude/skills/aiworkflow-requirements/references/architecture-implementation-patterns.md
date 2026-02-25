@@ -2464,6 +2464,117 @@ grep -n "safeInvoke.*,.*," task-*.md
 grep -n "safeInvoke.*{" task-*.md
 ```
 
+### S22: AUTH IPC登録一元化パターン（UT-IPC-AUTH-HANDLE-DUPLICATE-001 2026-02-25実装）
+
+> **発見タスク**: UT-IPC-AUTH-HANDLE-DUPLICATE-001
+> **関連Pitfall**: P5（二重登録）, P44（契約ドリフト）, P45（命名ドリフト）
+
+#### 問題
+
+AUTH系IPCでは、通常経路（Supabaseあり）とfallback経路（Supabaseなし）で
+`ipcMain.handle` の登録式が重複しやすく、監査ノイズと修正漏れの原因になる。
+
+#### 解決策
+
+通常経路は共通登録ヘルパー、fallback経路は配列定義 + ループ登録に統一する。
+
+```typescript
+// 通常経路: authHandlers.ts
+const registerValidatedAuthHandler = <TArgs extends unknown[]>(
+  channel: AuthInvokeChannel,
+  handler: (event: IpcMainInvokeEvent, ...args: TArgs) => Promise<unknown>,
+): void => {
+  ipcMain.handle(channel, withValidation(channel, handler, { getAllowedWindows: () => [mainWindow] }));
+};
+
+registerValidatedAuthHandler(IPC_CHANNELS.AUTH_LOGIN, async (_event, args) => { /* ... */ });
+
+// fallback経路: ipc/index.ts
+const fallbackAuthHandlers: ReadonlyArray<readonly [string, () => Promise<unknown>]> = [
+  [IPC_CHANNELS.AUTH_LOGIN, async () => notConfiguredResponse],
+  [IPC_CHANNELS.AUTH_LOGOUT, async () => notConfiguredResponse],
+  [IPC_CHANNELS.AUTH_GET_SESSION, async () => ({ success: true, data: null })],
+  [IPC_CHANNELS.AUTH_REFRESH, async () => notConfiguredResponse],
+  [IPC_CHANNELS.AUTH_CHECK_ONLINE, async () => ({ success: true, data: { online: net.isOnline() } })],
+];
+
+for (const [channel, handler] of fallbackAuthHandlers) {
+  ipcMain.handle(channel, handler);
+}
+```
+
+#### 適用チェックリスト
+
+- [ ] 通常経路/ fallback 経路の両方で AUTH 5チャネルが過不足なく登録される
+- [ ] `ipcMain.handle(IPC_CHANNELS.AUTH_*)` の重複直書きを残さない
+- [ ] 既存契約（引数/戻り値/エラーコード）を変更しない
+- [ ] fallback回帰テスト（`auth:get-session`, `auth:check-online`）を追加する
+
+#### 検証コマンド
+
+```bash
+rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
+  apps/desktop/src/main/ipc/authHandlers.ts \
+  apps/desktop/src/main/ipc/index.ts
+```
+
+期待結果: 0件
+
+#### 再利用テンプレート（目的/場所/検証）
+
+| Step | 目的 | 場所 | 実行 | 成功基準 |
+| --- | --- | --- | --- | --- |
+| 1 | 対象固定 | `apps/desktop/src/main/ipc/` | AUTH 5チャネルを2経路（通常/fallback）で列挙 | 対象漏れ0件 |
+| 2 | 実装修正 | `authHandlers.ts`, `index.ts` | 通常=共通登録ヘルパー、fallback=配列/ループ登録へ統一 | `ipcMain.handle(IPC_CHANNELS.AUTH_*)` 直書き0件 |
+| 3 | 回帰検証 | `__tests__/ipc-double-registration.test.ts` | fallback含む重複登録防止テスト実行 | PASS |
+| 4 | 仕様同期 | `references/` + `task-workflow.md` | 実装内容/苦戦箇所/完了記録を同一ターンで更新 | リンク切れ0件 |
+
+| 監査の落とし穴 | 対処 |
+| --- | --- |
+| 全体監査FAILをそのまま差分FAILと扱う | baseline（全体）と current（変更範囲）を分離判定 |
+| 完了移管後の参照更新漏れ | `verify-unassigned-links.js` を完了条件に固定 |
+
+---
+
+## IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施）
+
+### 問題
+
+チャネル命名規則を策定しても、横断監査を定期実行しないと「対象内完了」と「対象外ノイズ（例: AUTH重複式）」が混在し、完了判定と未タスク化の境界が曖昧になる。
+
+### 解決パターン
+
+#### 1. 監査結果を 3 区分で分類する
+
+| 区分 | 判定 | 対応 |
+| --- | --- | --- |
+| 対象内・重大 | 仕様/実装ブロッカー | 現タスクで即時是正 |
+| 対象内・軽微 | 命名揺れ/記述不足 | リネーム計画に登録 |
+| 対象外・軽微 | 別ドメイン由来のノイズ | 未タスクへ分離登録 |
+
+#### 2. 台帳更新を同一ターンで実施する
+
+1. `task-workflow.md` の対象行を完了化（`spec_created` を含む）
+2. 新規未タスクがある場合は `unassigned-task/` に指示書を作成
+3. `verify-unassigned-links.js` 実行でリンク切れを機械検証
+
+#### 3. 重複式ノイズの再発防止コマンドを固定化する
+
+```bash
+# AUTH系 handle 登録の重複式確認
+rg -n "ipcMain\\.handle\\(IPC_CHANNELS\\.AUTH_" apps/desktop/src/main/ipc
+
+# チャネル命名監査の対象/対象外を分離確認
+jq '.duplicateHandlers | length' /tmp/ut-ipc-usage-analysis.json
+jq '[.duplicateHandlers[] | select(.expr | test("SKILL"))] | length' /tmp/ut-ipc-usage-analysis.json
+```
+
+### 適用指針
+
+- 仕様書修正のみタスクでも、`Step 1-A/1-C/1-D`（完了記録・関連台帳・索引再生成）を省略しない。
+- 「対象外の検出」を理由に完了判定を遅延させず、未タスク分離で追跡性を維持する。
+- 未タスク化した項目は、元タスクの Phase 12 レポートと `task-workflow.md` の双方から辿れる状態にする。
+
 ---
 
 
@@ -2471,10 +2582,13 @@ grep -n "safeInvoke.*{" task-*.md
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v_next | 2026-02-24 | UT-IPC-DATA-FLOW-TYPE-GAPS-001: IPCデータフロー型ギャップパターン追加（S19: IPC Date型シリアライズ、S20: IPC引数object形式統一、S21: 仕様書間型ギャップ検出）。S18が既存のため番号をS19-S21にシフト |
-| v_next | 2026-02-24 | IPCチャネル名競合予防パターン追加（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）: チャネル命名規則（skill:{動詞}FromSource）、既存/新規対応表、判断基準、実装チェックリスト、苦戦箇所3件 |
-| v_next | 2026-02-24 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: P42準拠バリデーション一括移行パターン（S18）追加。移行チェックリスト・引数形式別適用パターン・後方互換性注記・describe.eachマトリクステスト戦略を含む |
-| v_next | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネント設計パターン追加（S12: Props最小化、S13: Record型バリアント定義、S14: HTMLAttributes Props型衝突回避、S15: 後方互換性維持、S16: CSS変数＋Tailwind Arbitrary Values、S17: displayName統一） |
+| v1.33.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22に再利用テンプレートを追加（目的/場所/検証/落とし穴対処）。同種課題の初動手順を標準化 |
+| v1.32.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22 AUTH IPC登録一元化パターンを追加（通常/fallback二経路の宣言的集約、回帰テスト固定、監査コマンド標準化） |
+| v1.31.0 | 2026-02-25 | UT-IPC-CHANNEL-NAMING-AUDIT-001: IPCチャネル命名監査の運用パターンを追加（対象内/対象外の3区分判定、未タスク分離、リンク検証、重複式ノイズの再発防止コマンド固定化） |
+| v1.30.0 | 2026-02-24 | UT-IPC-DATA-FLOW-TYPE-GAPS-001: IPCデータフロー型ギャップパターン追加（S19: IPC Date型シリアライズ、S20: IPC引数object形式統一、S21: 仕様書間型ギャップ検出）。S18が既存のため番号をS19-S21にシフト |
+| v1.29.0 | 2026-02-24 | IPCチャネル名競合予防パターン追加（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）: チャネル命名規則（skill:{動詞}FromSource）、既存/新規対応表、判断基準、実装チェックリスト、苦戦箇所3件 |
+| v1.28.0 | 2026-02-24 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: P42準拠バリデーション一括移行パターン（S18）追加。移行チェックリスト・引数形式別適用パターン・後方互換性注記・describe.eachマトリクステスト戦略を含む |
+| v1.27.0 | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネント設計パターン追加（S12: Props最小化、S13: Record型バリアント定義、S14: HTMLAttributes Props型衝突回避、S15: 後方互換性維持、S16: CSS変数＋Tailwind Arbitrary Values、S17: displayName統一） |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル） |
 | v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: S13 IPC戻り値型2ステップ変換パターン追加（苦戦箇所5件記録、適用判断基準テーブル、P42/P44/P45準拠） |

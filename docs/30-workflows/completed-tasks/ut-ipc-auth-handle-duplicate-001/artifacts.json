@@ -1,0 +1,336 @@
+{
+  "feature": "ut-ipc-auth-handle-duplicate-001",
+  "created": "2026-02-25T01:18:08.521Z",
+  "lastUpdated": "2026-02-25T02:10:15.829Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:39.645Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "acceptance-criteria.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "requirements-definition.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/subagent-responsibilities.md",
+          "description": "subagent-responsibilities.md"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:39.828Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-test-mapping.md",
+          "description": "design-test-mapping.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/registration-design.md",
+          "description": "registration-design.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/risk-analysis.md",
+          "description": "risk-analysis.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:39.999Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "design-review-result.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md",
+          "description": "review-findings.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:40.193Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/regression-cases.md",
+          "description": "regression-cases.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-commands.md",
+          "description": "test-commands.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "test-specification.md"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:40.469Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/diff-summary.md",
+          "description": "diff-summary.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/impact-analysis.md",
+          "description": "impact-analysis.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-log.md",
+          "description": "implementation-log.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:40.657Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/delta-report.md",
+          "description": "delta-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/failure-cases.md",
+          "description": "failure-cases.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "test-expansion-result.md"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:40.833Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "coverage-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/uncovered-items.md",
+          "description": "uncovered-items.md"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:41.007Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "refactoring-log.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/regression-check.md",
+          "description": "regression-check.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:41.202Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "quality-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/reproducibility-log.md",
+          "description": "reproducibility-log.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:41.448Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-findings.md",
+          "description": "final-review-findings.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "final-review-result.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-25T01:54:41.631Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-findings.md",
+          "description": "manual-findings.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "manual-test-result.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-25T02:10:15.823Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "documentation-changelog.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "implementation-guide.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/recheck-compliance-report.md",
+          "description": "recheck-compliance-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-spec-compliance-matrix.md",
+          "description": "phase12-spec-compliance-matrix.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "skill-feedback-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-planned-artifacts.md",
+          "description": "spec-planned-artifacts.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "spec-update-summary.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "unassigned-task-detection.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/verify-unassigned-links.log",
+          "description": "verify-unassigned-links.log"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs"
+  }
+}

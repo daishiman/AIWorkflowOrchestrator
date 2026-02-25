@@ -43,6 +43,59 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-25 - UT-SKILL-IPC-PRELOAD-EXTENSION-001 再監査・是正]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再監査・漏れ是正）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - 全体監査（audit-unassigned-tasks）と差分監査（今回ワークフロー）を分離し、未タスク0件判定を再評価
+  - Open Item（参照切れ/パス差分/命名差分）を統合した未タスク `UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001` を作成・登録
+  - `references/patterns.md` に「差分監査と全体監査の分離」成功パターンを追加
+
+---
+
+## [2026-02-25 - UT-IPC-AUTH-HANDLE-DUPLICATE-001 再監査運用改善]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（監査ルール改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `phase-11-12-guide.md` と `spec-update-workflow.md` に baseline/current 分離監査を追加。`audit-unassigned-tasks` 全体FAIL時の誤判定を防ぐため、`detect-unassigned-tasks --scan <変更範囲>` 併記ルールを標準化。
+
+---
+
+## [2026-02-25 - skill-creator連携によるSKILL検証導入]
+
+- **Agent**: task-specification-creator + skill-creator
+- **Phase**: Phase 12（スキル改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `phase-11-12-guide.md` と `spec-update-workflow.md` に `quick_validate.py` の必須チェックを追加。`aiworkflow-requirements` / `task-specification-creator` のSKILLを検証し `Skill is valid!` を確認。
+
+---
+
+## [2026-02-25 - UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 1-12実行]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（実行）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `ut-ipc-auth-handle-duplicate-001` のPhase 1-12成果物を全出力。AUTH IPC登録重複式の実装差分・回帰テスト・品質記録・Phase 12仕様同期（LOGS/SKILL/topic-map/links/artifacts同期）を完了。
+
+---
+
+## [2026-02-25 - UT-IPC-CHANNEL-NAMING-AUDIT-001 Phase 12再監査整合]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新・未タスク登録）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `unassigned-task-detection.md` で検出した1件を `UT-IPC-AUTH-HANDLE-DUPLICATE-001` として指示書化し、`task-workflow.md` 登録まで完了。`outputs/artifacts.json` を追加して `artifacts.json` と同期。`spec-update-summary.md` / `documentation-changelog.md` を Step 1-A/1-C/1-D 実施内容に再整合。
+
+---
+
 ## [2026-02-24 - UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12仕様再整合]
 
 - **Agent**: task-specification-creator
