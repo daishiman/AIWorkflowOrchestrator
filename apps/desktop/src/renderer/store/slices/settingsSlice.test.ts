@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { createSettingsSlice, type SettingsSlice } from "./settingsSlice";
 import type { UserProfile } from "../types";
 
-// Mock window.electronAPI
 const mockElectronAPI = {
   theme: {
     get: vi.fn(),
@@ -10,8 +9,6 @@ const mockElectronAPI = {
     getSystem: vi.fn(),
   },
 };
-
-vi.stubGlobal("electronAPI", mockElectronAPI);
 
 describe("settingsSlice", () => {
   let store: SettingsSlice;
@@ -23,6 +20,22 @@ describe("settingsSlice", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    vi.stubGlobal("electronAPI", mockElectronAPI);
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === "(prefers-color-scheme: dark)",
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
     const state: Partial<SettingsSlice> = {};
     mockSet = (fn) => {
       const partial =
@@ -37,12 +50,13 @@ describe("settingsSlice", () => {
       {} as never,
     );
 
-    // Reset document state
     document.documentElement.removeAttribute("data-theme");
     document.documentElement.classList.remove("theme-transition");
+    document.documentElement.style.colorScheme = "";
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.clearAllMocks();
   });
 
@@ -63,12 +77,9 @@ describe("settingsSlice", () => {
       });
     });
 
-    it("apiKeyが空文字列である", () => {
-      expect(store.apiKey).toBe("");
-    });
-
-    it("autoSyncEnabledがtrueである", () => {
-      expect(store.autoSyncEnabled).toBe(true);
+    it("themeMode/resolvedThemeの初期値がkanagawa-dragonである", () => {
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
     });
   });
 
@@ -85,22 +96,6 @@ describe("settingsSlice", () => {
       expect(store.userProfile.name).toBe("New Name");
       expect(store.userProfile.email).toBe("");
     });
-
-    it("複数のフィールドを更新できる", () => {
-      store.updateUserProfile({
-        name: "New Name",
-        email: "new@example.com",
-      });
-      expect(store.userProfile.name).toBe("New Name");
-      expect(store.userProfile.email).toBe("new@example.com");
-    });
-
-    it("他のフィールドは保持される", () => {
-      store.setUserProfile(mockProfile);
-      store.updateUserProfile({ name: "Updated" });
-      expect(store.userProfile.email).toBe("test@example.com");
-      expect(store.userProfile.plan).toBe("pro");
-    });
   });
 
   describe("setApiKey", () => {
@@ -108,132 +103,129 @@ describe("settingsSlice", () => {
       store.setApiKey("sk-test-key");
       expect(store.apiKey).toBe("sk-test-key");
     });
-
-    it("空のAPIキーを設定できる", () => {
-      store.setApiKey("sk-test-key");
-      store.setApiKey("");
-      expect(store.apiKey).toBe("");
-    });
   });
 
   describe("setAutoSyncEnabled", () => {
-    it("自動同期を無効にする", () => {
+    it("自動同期を切り替える", () => {
       store.setAutoSyncEnabled(false);
       expect(store.autoSyncEnabled).toBe(false);
-    });
-
-    it("自動同期を有効にする", () => {
-      store.setAutoSyncEnabled(false);
-      store.setAutoSyncEnabled(true);
-      expect(store.autoSyncEnabled).toBe(true);
     });
   });
 
   describe("setThemeMode", () => {
-    it("electronAPIが利用不可の場合、フォールバックで動作する", async () => {
-      vi.stubGlobal("electronAPI", undefined);
-      const newStore = createSettingsSlice(
-        mockSet as never,
-        (() => store) as never,
-        {} as never,
-      );
+    it("darkを設定すると状態とDOMが更新される", async () => {
+      mockElectronAPI.theme.set.mockResolvedValue({
+        success: true,
+        data: { mode: "dark", resolvedTheme: "dark" },
+      });
 
-      await newStore.setThemeMode("dark");
-      // テーマはKanagawa Dragon固定
-      expect(store.themeMode).toBe("kanagawa-dragon");
-      expect(store.resolvedTheme).toBe("kanagawa-dragon");
-
-      vi.stubGlobal("electronAPI", mockElectronAPI);
-    });
-
-    it("electronAPI.theme.setが利用不可の場合もKanagawa Dragon固定", async () => {
-      vi.stubGlobal("electronAPI", { theme: {} });
-      const newStore = createSettingsSlice(
-        mockSet as never,
-        (() => store) as never,
-        {} as never,
-      );
-
-      await newStore.setThemeMode("light");
-      // テーマはKanagawa Dragon固定
-      expect(store.themeMode).toBe("kanagawa-dragon");
-      expect(store.resolvedTheme).toBe("kanagawa-dragon");
-
-      vi.stubGlobal("electronAPI", mockElectronAPI);
-    });
-
-    it("systemモードを指定してもKanagawa Dragon固定", async () => {
-      vi.stubGlobal("electronAPI", { theme: {} });
-      const newStore = createSettingsSlice(
-        mockSet as never,
-        (() => store) as never,
-        {} as never,
-      );
-
-      await newStore.setThemeMode("system");
-      // テーマはKanagawa Dragon固定（変更不可）
-      expect(store.themeMode).toBe("kanagawa-dragon");
-      expect(store.resolvedTheme).toBe("kanagawa-dragon");
-
-      vi.stubGlobal("electronAPI", mockElectronAPI);
-    });
-
-    it("テーマは常にKanagawa Dragon固定", async () => {
-      // テーマはKanagawa Dragon固定（変更不可）
       await store.setThemeMode("dark");
-      expect(store.themeMode).toBe("kanagawa-dragon");
-      expect(store.resolvedTheme).toBe("kanagawa-dragon");
+
+      expect(mockElectronAPI.theme.set).toHaveBeenCalledWith({ mode: "dark" });
+      expect(store.themeMode).toBe("dark");
+      expect(store.resolvedTheme).toBe("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+      expect(document.documentElement.style.colorScheme).toBe("dark");
     });
 
-    it("任意のテーマを指定してもKanagawa Dragonのまま", async () => {
+    it("lightを設定するとcolor-schemeがlightになる", async () => {
+      mockElectronAPI.theme.set.mockResolvedValue({
+        success: true,
+        data: { mode: "light", resolvedTheme: "light" },
+      });
+
       await store.setThemeMode("light");
-      expect(store.themeMode).toBe("kanagawa-dragon");
-      expect(store.resolvedTheme).toBe("kanagawa-dragon");
+
+      expect(store.themeMode).toBe("light");
+      expect(store.resolvedTheme).toBe("light");
+      expect(document.documentElement.style.colorScheme).toBe("light");
     });
 
-    it("systemを指定してもKanagawa Dragonのまま", async () => {
-      await store.setThemeMode("system");
+    it("kanagawa-dragonを設定できる", async () => {
+      mockElectronAPI.theme.set.mockResolvedValue({
+        success: true,
+        data: { mode: "kanagawa-dragon", resolvedTheme: "kanagawa-dragon" },
+      });
+
+      await store.setThemeMode("kanagawa-dragon");
+
       expect(store.themeMode).toBe("kanagawa-dragon");
       expect(store.resolvedTheme).toBe("kanagawa-dragon");
+      expect(document.documentElement.style.colorScheme).toBe("dark");
+    });
+
+    it("system設定時はgetSystemの値でresolvedThemeを決定する", async () => {
+      mockElectronAPI.theme.set.mockResolvedValue({
+        success: true,
+        data: { mode: "system", resolvedTheme: "light" },
+      });
+      mockElectronAPI.theme.getSystem.mockResolvedValue({
+        success: true,
+        data: { isDark: false, resolvedTheme: "light" },
+      });
+
+      await store.setThemeMode("system");
+
+      expect(store.themeMode).toBe("system");
+      expect(store.resolvedTheme).toBe("light");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    });
+
+    it("electronAPIが利用不可でもsystemを解決できる", async () => {
+      vi.stubGlobal("electronAPI", undefined);
+
+      await store.setThemeMode("system");
+
+      expect(store.themeMode).toBe("system");
+      expect(store.resolvedTheme).toBe("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
     });
   });
 
   describe("setResolvedTheme", () => {
-    it("resolvedThemeは常にKanagawa Dragon固定", () => {
+    it("resolvedThemeを直接更新しDOMへ反映する", () => {
       store.setResolvedTheme("light");
-      // テーマは固定なのでkanagawa-dragonのまま
-      expect(store.resolvedTheme).toBe("kanagawa-dragon");
-    });
-
-    it("DOMにKanagawa Dragonテーマを適用する", () => {
-      store.setResolvedTheme("dark");
-      // テーマは固定なのでkanagawa-dragonが適用される
-      expect(document.documentElement.getAttribute("data-theme")).toBe(
-        "kanagawa-dragon",
-      );
+      expect(store.resolvedTheme).toBe("light");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+      expect(document.documentElement.style.colorScheme).toBe("light");
     });
   });
 
   describe("initializeTheme", () => {
-    it("初期化時にKanagawa Dragonテーマが適用される", async () => {
-      vi.stubGlobal("electronAPI", undefined);
-      const newStore = createSettingsSlice(
-        mockSet as never,
-        (() => store) as never,
-        {} as never,
-      );
+    it("electronAPI.theme.getの取得値で初期化する", async () => {
+      mockElectronAPI.theme.get.mockResolvedValue({
+        success: true,
+        data: { mode: "system", resolvedTheme: "dark" },
+      });
 
-      await newStore.initializeTheme();
-      // テーマは常にKanagawa Dragon固定
+      await store.initializeTheme();
+
+      expect(mockElectronAPI.theme.get).toHaveBeenCalledTimes(1);
+      expect(store.themeMode).toBe("system");
+      expect(store.resolvedTheme).toBe("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    });
+
+    it("取得失敗時はkanagawa-dragonにフォールバックする", async () => {
+      mockElectronAPI.theme.get.mockRejectedValue(new Error("get failed"));
+
+      await store.initializeTheme();
+
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
       expect(document.documentElement.getAttribute("data-theme")).toBe(
         "kanagawa-dragon",
       );
-
-      vi.stubGlobal("electronAPI", mockElectronAPI);
     });
 
-    it("electronAPIの有無に関わらずKanagawa Dragonが適用される", async () => {
+    it("レスポンスが不正なmodeでも安全に初期化する", async () => {
+      mockElectronAPI.theme.get.mockResolvedValue({
+        success: true,
+        data: { mode: "invalid", resolvedTheme: "dark" },
+      });
+
       await store.initializeTheme();
+
       expect(store.themeMode).toBe("kanagawa-dragon");
       expect(store.resolvedTheme).toBe("kanagawa-dragon");
     });

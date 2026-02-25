@@ -18,9 +18,12 @@ describe("ThemeSelector", () => {
   });
 
   describe("レンダリング", () => {
-    it("3つのテーマオプションボタンを表示する", () => {
+    it("4つのテーマオプションボタンを表示する", () => {
       render(<ThemeSelector {...defaultProps} />);
 
+      expect(
+        screen.getByRole("radio", { name: /Kanagawa/i }),
+      ).toBeInTheDocument();
       expect(
         screen.getByRole("radio", { name: /ライト/i }),
       ).toBeInTheDocument();
@@ -40,13 +43,14 @@ describe("ThemeSelector", () => {
     it("各オプションにradioロールを持つ", () => {
       render(<ThemeSelector {...defaultProps} />);
       const radios = screen.getAllByRole("radio");
-      expect(radios).toHaveLength(3);
+      expect(radios).toHaveLength(4);
     });
 
     it("アイコンを表示する", () => {
       render(<ThemeSelector {...defaultProps} />);
 
       // アイコンはaria-hiddenなので、テストID or 親要素から確認
+      expect(screen.getByTestId("theme-icon-sparkles")).toBeInTheDocument();
       expect(screen.getByTestId("theme-icon-sun")).toBeInTheDocument();
       expect(screen.getByTestId("theme-icon-moon")).toBeInTheDocument();
       expect(screen.getByTestId("theme-icon-monitor")).toBeInTheDocument();
@@ -189,6 +193,7 @@ describe("ThemeSelector", () => {
     it("showLabels=trueでラベルテキストを表示する", () => {
       render(<ThemeSelector {...defaultProps} showLabels />);
 
+      expect(screen.getByText("Kanagawa")).toBeInTheDocument();
       expect(screen.getByText("ライト")).toBeInTheDocument();
       expect(screen.getByText("ダーク")).toBeInTheDocument();
       expect(screen.getByText("システム")).toBeInTheDocument();
@@ -198,6 +203,7 @@ describe("ThemeSelector", () => {
       render(<ThemeSelector {...defaultProps} showLabels={false} />);
 
       // アイコンは表示されているが、テキストラベルは非表示
+      expect(screen.queryByText("Kanagawa")).not.toBeInTheDocument();
       expect(screen.queryByText("ライト")).not.toBeInTheDocument();
       expect(screen.queryByText("ダーク")).not.toBeInTheDocument();
       expect(screen.queryByText("システム")).not.toBeInTheDocument();

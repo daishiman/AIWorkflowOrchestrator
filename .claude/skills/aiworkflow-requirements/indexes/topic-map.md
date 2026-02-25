@@ -765,9 +765,9 @@ node scripts/list-specs.js --topics
 | 4. アクセシビリティ実装知見 | L346 |
 | 5. 後方互換性パターン | L418 |
 | 6. テスト戦略 | L472 |
-| 7. Molecules/Organisms実装への推奨事項 | L538 |
-| 関連ドキュメント | L581 |
-| 変更履歴 | L590 |
+| 7. Molecules/Organisms実装への推奨事項 | L541 |
+| 関連ドキュメント | L584 |
+| 変更履歴 | L593 |
 
 ### references/ui-ux-components.md
 
@@ -800,11 +800,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| デザインシステム概要 | L8 |
 | Spatial Design Tokens（Knowledge Studio） | L34 |
 | カラーシステム | L71 |
-| タイポグラフィ | L121 |
-| スペーシングとレイアウト | L160 |
-| Tap & Discover デザイントークン拡張 | L210 |
-| 完了タスク | L245 |
-| 変更履歴 | L286 |
+| タイポグラフィ | L122 |
+| スペーシングとレイアウト | L161 |
+| Tap & Discover デザイントークン拡張 | L211 |
+| 完了タスク | L246 |
+| 変更履歴 | L305 |
 
 ### references/ui-ux-feature-components.md
 
@@ -1528,24 +1528,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L80 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L134 |
-| 目次 | L199 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L368 |
-| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L527 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L576 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L625 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L799 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L850 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L920 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1228 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1339 |
-| 関連ドキュメント | L1478 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1488 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1665 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1723 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1866 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1970 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L82 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L136 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L199 |
+| 目次 | L247 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L422 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L581 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L630 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L679 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L853 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L904 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L974 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1282 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1393 |
+| 関連ドキュメント | L1532 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1542 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1719 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1777 |
+| TASK-FIX-14-1: console → electron-log 移行 | L1920 |
 
 ### references/llm-embedding.md
 
@@ -1887,9 +1887,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L1071 |
-| 関連ドキュメント | L1210 |
-| 変更履歴 | L1220 |
+| 残課題（未タスク） | L1125 |
+| 関連ドキュメント | L1265 |
+| 変更履歴 | L1275 |
 
 ### references/testing-accessibility.md
 

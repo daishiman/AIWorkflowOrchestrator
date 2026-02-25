@@ -250,6 +250,26 @@ describe("themeHandlers", () => {
       expect(mockStoreSet).toHaveBeenCalledWith("theme.mode", "light");
     });
 
+    it("should save kanagawa-dragon theme", async () => {
+      const handler = handlers.get(IPC_CHANNELS.THEME_SET);
+      if (!handler) {
+        throw new Error("THEME_SET handler not registered");
+      }
+
+      const result = (await handler({}, { mode: "kanagawa-dragon" })) as {
+        success: boolean;
+        data: { mode: ThemeMode; resolvedTheme: ResolvedTheme };
+      };
+
+      expect(result.success).toBe(true);
+      expect(result.data?.mode).toBe("kanagawa-dragon");
+      expect(result.data?.resolvedTheme).toBe("kanagawa-dragon");
+      expect(mockStoreSet).toHaveBeenCalledWith(
+        "theme.mode",
+        "kanagawa-dragon",
+      );
+    });
+
     it("should save system theme and resolve based on OS", async () => {
       const handler = handlers.get(IPC_CHANNELS.THEME_SET);
       if (!handler) {
@@ -507,6 +527,18 @@ describe("themeHandlers", () => {
       expect(result.success).toBe(true);
     });
 
+    it("should accept 'kanagawa-dragon' as valid", async () => {
+      const handler = handlers.get(IPC_CHANNELS.THEME_SET);
+      if (!handler) {
+        throw new Error("THEME_SET handler not registered");
+      }
+
+      const result = (await handler({}, { mode: "kanagawa-dragon" })) as {
+        success: boolean;
+      };
+      expect(result.success).toBe(true);
+    });
+
     it("should reject null", async () => {
       const handler = handlers.get(IPC_CHANNELS.THEME_SET);
       if (!handler) {
@@ -591,6 +623,22 @@ describe("themeHandlers", () => {
       };
 
       expect(result.data?.resolvedTheme).toBe("dark");
+    });
+
+    it("should resolve kanagawa-dragon mode to kanagawa-dragon", async () => {
+      const handler = handlers.get(IPC_CHANNELS.THEME_GET);
+      if (!handler) {
+        throw new Error("THEME_GET handler not registered");
+      }
+
+      mockStoreGet.mockReturnValue("kanagawa-dragon");
+
+      const result = (await handler({})) as {
+        success: boolean;
+        data: { mode: ThemeMode; resolvedTheme: ResolvedTheme };
+      };
+
+      expect(result.data?.resolvedTheme).toBe("kanagawa-dragon");
     });
   });
 });

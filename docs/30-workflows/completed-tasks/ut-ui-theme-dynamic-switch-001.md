@@ -20,7 +20,7 @@ issue_number: 870
 | 発見日      | 2026-02-22                                                    |
 | 関連Pitfall | P31（Zustand Store Hooks無限ループ）                          |
 | 影響範囲    | settingsSlice, ThemeProvider, Main Process, preload, 設定画面 |
-| ステータス  | 未実施                                                        |
+| ステータス  | 完了（2026-02-25）                                            |
 
 ---
 
@@ -30,7 +30,7 @@ issue_number: 870
 
 - TASK-UI-00-TOKENS で `tokens.css` に3テーマ（`kanagawa-dragon` / `light` / `dark`）のCSS変数セットを定義済み
 - `[data-theme="kanagawa-dragon"]`、`[data-theme="light"]`、`[data-theme="dark"]` のセレクタが tokens.css に存在し、31種類のセマンティックCSS変数（`--bg-primary`, `--text-primary`, `--status-primary` 等）がテーマごとに定義されている
-- `ui-ux-design-system.md` でテーマ切替仕様（light / dark / system 対応、nativeTheme API使用、FOUC防止）が策定済み
+- `ui-ux-design-system.md` でテーマ切替仕様（kanagawa-dragon / light / dark / system の4モード、nativeTheme API使用、FOUC防止）が策定済み
 - 現状は `kanagawa-dragon` テーマが固定適用されており、ユーザーが `light` / `dark` テーマを選択する手段がない
 
 ### 1.2 問題点・課題
@@ -98,7 +98,7 @@ issue_number: 870
 | Preload テーマ API            | `apps/desktop/src/preload/theme-api.ts`                                     |
 | テーマ選択 UI                 | `apps/desktop/src/renderer/components/organisms/settings/ThemeSelector.tsx` |
 | テストファイル群              | `apps/desktop/src/renderer/tests/theme/`                                    |
-| Phase 1-12 ワークフロー成果物 | `docs/30-workflows/UT-UI-THEME-DYNAMIC-SWITCH-001/`                         |
+| Phase 1-12 ワークフロー成果物 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/`         |
 
 ---
 
@@ -139,7 +139,7 @@ issue_number: 870
 #### Step 2: Main Process / Preload 連携
 
 1. Main Process で `nativeTheme.on("updated")` を監視し、OS テーマ変更を検知
-2. IPC チャンネル `theme:get-system`, `theme:on-system-change` を定義（`IPC_CHANNELS` 定数に追加）
+2. IPC チャンネル `theme:get-system`, `theme:system-changed` を定義（`IPC_CHANNELS` 定数に追加）
 3. Preload で `safeInvoke` / `safeOn` 経由のテーマ API を公開
 4. `system` モード選択時のみ OS テーマ通知を Renderer に伝達
 
@@ -208,7 +208,7 @@ useEffect(() => {
 
 | 仕様書                          | 参照セクション                                      | 用途                                  |
 | ------------------------------- | --------------------------------------------------- | ------------------------------------- |
-| `ui-ux-design-system.md`        | テーマ切替仕様・3モード定義・永続化方式（行73-94）  | テーマ設計の正本                      |
+| `ui-ux-design-system.md`        | テーマ切替仕様・4モード定義・永続化方式（行73-94）  | テーマ設計の正本                      |
 | `arch-state-management.md`      | Zustand Slice 設計原則・既存 Slice 一覧（行33-100） | settingsSlice 拡張設計                |
 | `testing-component-patterns.md` | テーマ横断テストヘルパー（行690-718）               | renderWithTheme / renderWithAllThemes |
 | `security-api-electron.md`      | IPC セキュリティ原則                                | nativeTheme API・IPC 経由テーマ通知   |
@@ -352,7 +352,7 @@ TDD サイクルに従い、テスト先行でテーマ切替機能を実装す�
 | 7   | ThemeProvider | テーマ切替実行                                       | `html.theme-transition` クラスが一時的に付与される                 |
 | 8   | ThemeProvider | 初回マウント時                                       | FOUC なしで `data-theme` が設定される                              |
 | 9   | IPC           | `theme:get-system` 呼び出し                          | 現在の OS テーマ（`"light"` or `"dark"`）が返る                    |
-| 10  | IPC           | OS テーマ変更イベント発火                            | `theme:on-system-change` で Renderer に通知される                  |
+| 10  | IPC           | OS テーマ変更イベント発火                            | `theme:system-changed` で Renderer に通知される                    |
 | 11  | 永続化        | テーマ変更後にアプリ再起動                           | `electron-store` の値が復元される                                  |
 | 12  | 3テーマ横断   | `renderWithAllThemes` で全テーマをレンダリング       | 3テーマ全てでレイアウト崩れなし                                    |
 | 13  | UI            | 設定画面で4モード選択                                | 各モードの選択が正しく反映される                                   |
@@ -388,7 +388,7 @@ TDD サイクルに従い、テスト先行でテーマ切替機能を実装す�
 
 | 仕様書                          | 関連セクション                                                              |
 | ------------------------------- | --------------------------------------------------------------------------- |
-| `ui-ux-design-system.md`        | テーマ切替仕様・3モード定義・永続化方式                                     |
+| `ui-ux-design-system.md`        | テーマ切替仕様・4モード定義・永続化方式                                     |
 | `arch-state-management.md`      | Zustand Slice 設計原則・P31 対策                                            |
 | `testing-component-patterns.md` | テーマ横断テストヘルパー（renderWithTheme / renderWithAllThemes）・P39 準拠 |
 | `security-api-electron.md`      | nativeTheme API・IPC 経由テーマ通知                                         |

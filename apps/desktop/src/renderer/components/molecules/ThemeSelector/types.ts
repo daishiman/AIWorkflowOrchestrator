@@ -50,6 +50,6 @@ export interface ThemeSelectorProps {
 export interface ThemeOption {
   mode: ThemeMode;
   label: string;
-  icon: "sun" | "moon" | "monitor";
+  icon: "sparkles" | "sun" | "moon" | "monitor";
   description: string;
 }
