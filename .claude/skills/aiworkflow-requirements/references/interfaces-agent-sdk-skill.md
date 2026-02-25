@@ -318,8 +318,8 @@ Skill Dashboard機能は、Electron標準の3レイヤー構成で実装され�
 
 | プロパティ    | 型              | 必須 | 説明               |
 | ------------- | --------------- | ---- | ------------------ |
-| `id`          | `string`        | ✓    | 一意識別子         |
-| `name`        | `string`        | ✓    | スキル名           |
+| `id`          | `SkillId`       | ✓    | 一意識別子（ハッシュ） |
+| `name`        | `SkillName`     | ✓    | スキル名（表示名） |
 | `slug`        | `string`        | ✓    | URLスラッグ        |
 | `description` | `string`        | ✓    | 説明文             |
 | `path`        | `string`        | ✓    | スキルファイルパス |
@@ -327,6 +327,8 @@ Skill Dashboard機能は、Electron標準の3レイヤー構成で実装され�
 | `anchors`     | `Anchor[]`      | ✓    | アンカー情報       |
 | `category`    | `SkillCategory` | -    | カテゴリ（任意）   |
 | `lastModified` | `Date`          | ✓    | 最終更新日時       |
+
+> `SkillId` と `SkillName` は Branded Type（UT-TYPE-SKILL-IDENTIFIER-BRANDED-001）として定義され、相互代入をコンパイル時に禁止する。
 
 #### Anchor型
 
@@ -374,7 +376,7 @@ Zustand Sliceパターンで実装された状態管理。
 | -------------------- | ----------------------- | ---------------------------- |
 | `skills`             | `Skill[]`               | インポート済みスキル一覧     |
 | `availableSkills`    | `Skill[]`               | 利用可能なスキル一覧         |
-| `importedSkillIds`   | `string[]`              | インポート済みスキルID       |
+| `importedSkillIds`   | `SkillId[]`             | インポート済みスキルID       |
 | `selectedSkill`      | `Skill \| null`         | 選択中のスキル               |
 | `skillFilter`        | `string`                | 検索フィルター文字列         |
 | `skillCategory`      | `SkillCategory \| null` | カテゴリフィルター           |
@@ -392,7 +394,7 @@ Zustand Sliceパターンで実装された状態管理。
 | ----------------------- | --------------------------------- | ---------------------- |
 | `setSkills`             | `skills: Skill[]`                 | スキル一覧設定         |
 | `setAvailableSkills`    | `skills: Skill[]`                 | 利用可能スキル設定     |
-| `setImportedSkillIds`   | `ids: string[]`                   | インポート済みID設定   |
+| `setImportedSkillIds`   | `ids: SkillId[]`                  | インポート済みID設定   |
 | `selectSkill`           | `skill: Skill \| null`            | スキル選択             |
 | `setSkillFilter`        | `filter: string`                  | フィルター設定         |
 | `setSkillCategory`      | `category: SkillCategory \| null` | カテゴリ設定           |
@@ -432,7 +434,7 @@ Zustand Sliceパターンで実装された状態管理。
 
 | 項目 | 契約 |
 | ---- | ---- |
-| 引数形式 | `skillName: string`（オブジェクトラップなし） |
+| 引数形式 | `skillName: SkillName`（オブジェクトラップなし） |
 | 変換処理 | Mainハンドラー内部で `skillService.importSkills([skillName])` に配列化 |
 | バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
 | エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` |
@@ -441,7 +443,7 @@ Zustand Sliceパターンで実装された状態管理。
 
 | 項目 | 契約 |
 | ---- | ---- |
-| 引数形式 | `skillName: string`（オブジェクトラップなし） |
+| 引数形式 | `skillName: SkillName`（オブジェクトラップなし） |
 | バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
 | エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` |
 
@@ -449,7 +451,7 @@ Zustand Sliceパターンで実装された状態管理。
 
 | 項目 | 契約 |
 | ---- | ---- |
-| 引数形式 | `skillName: string`（オブジェクトラップなし） |
+| 引数形式 | `skillName: SkillName`（オブジェクトラップなし） |
 | バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
 | 戻り値 | `ImportedSkill`（2ステップ変換: importSkills → getSkillByName） |
 | エラー | `VALIDATION_ERROR` / `IMPORT_ERROR` |
@@ -590,7 +592,7 @@ Permission要求に対してユーザーの応答を送信する。
 
 | パラメータ  | 型       | 必須 | 説明     |
 | ----------- | -------- | ---- | -------- |
-| `skillName` | `string` | ✓    | スキル名 |
+| `skillName` | `SkillName` | ✓    | スキル名 |
 
 **戻り値**: `Promise<ImportedSkill>`
 
@@ -600,7 +602,7 @@ Permission要求に対してユーザーの応答を送信する。
 
 | パラメータ  | 型       | 必須 | 説明     |
 | ----------- | -------- | ---- | -------- |
-| `skillName` | `string` | ✓    | スキル名 |
+| `skillName` | `SkillName` | ✓    | スキル名 |
 
 **戻り値**: `Promise<RemoveResult>`
 
@@ -1572,8 +1574,56 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
-| UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 | Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別） | 中 | `docs/30-workflows/unassigned-task/task-type-skill-identifier-branded.md` |
+| ~~UT-TYPE-SKILL-IDENTIFIER-BRANDED-001~~ | ~~Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/task-type-skill-identifier-branded.md` **（完了: 2026-02-25）** |
 | UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001 | SkillImportDialog同名コンポーネント解消 | 低 | `docs/30-workflows/unassigned-task/task-refactor-skill-import-dialog-dedup.md` |
+| UT-IMP-AIWORKFLOW-RESOURCE-MAP-REGISTRATION-GUARD-001 | aiworkflow-requirements 新規仕様追加時の resource-map 登録漏れ防止（クイックルックアップ/カテゴリ同期ガード） | 中 | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-resource-map-registration-guard-001.md` |
+
+---
+
+### UT-TYPE-SKILL-IDENTIFIER-BRANDED-001: Skill識別子Branded Type導入（2026-02-25完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001                                |
+| 完了日       | 2026-02-25                                                           |
+| ステータス   | **完了**                                                             |
+| テスト数     | 4（shared型テスト）+ 既存回帰テストPASS                              |
+| ドキュメント | `docs/30-workflows/ut-type-skill-identifier-branded-001/outputs/phase-12/implementation-guide.md` |
+
+#### 変更ポイント
+
+| 変更箇所 | 内容 |
+| -------- | ---- |
+| shared型定義 | `SkillBrand` / `SkillId` / `SkillName` / `toSkillId` / `toSkillName` を追加 |
+| Renderer | `SkillImportDialog` の選択状態を `Set<SkillId>`、`onImport` を `SkillName[]` に更新 |
+| Store | `agentSlice` の `importedSkillIds` を `SkillId[]`、`selectedSkillName`/`importingSkillName` を `SkillName \| null` に更新 |
+| IPC境界 | `skillAPI.import/remove` と `skillHandlers` の引数を `SkillName` 文脈へ統一 |
+
+#### 変更理由
+
+- `skill.id`（ハッシュ）と `skill.name`（表示名）が同じ `string` だと取り違えを型で検出できないため。
+- Branded TypeでID/Nameの文脈を分離し、コンパイル時に誤用を停止するため。
+
+#### 実装時の苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 | 再発防止 |
+| --- | --- | --- | --- |
+| 型契約の境界が曖昧（Renderer/Main/Preloadで `string` 混在） | `skill.id` / `skill.name` がどちらも `string` で文脈が失われる | `SkillId` / `SkillName` を shared 型として導入し、境界API（`skillAPI.import/remove`・`skillHandlers`）で `SkillName` を明示 | 新規API追加時は「内部識別子か表示名か」を型名で固定し、`string` 直受けを禁止する |
+| 参照整合の更新漏れ（完了移管後リンク） | 未タスク→完了移管時に `task-workflow.md` 側リンクが旧パスのまま残る | `verify-unassigned-links.js` を実行し、欠損行を `completed-tasks` 参照へ同期 | Phase 12 Step 1-E で `verify-unassigned-links.js` を完了条件として必須化する |
+| Phase 12監査結果の誤読（current/baseline） | `audit-unassigned-tasks.js --json` の値を今回差分判定と誤解しやすい | `--diff-from HEAD` を差分判定、scopeなし `--json` を全体監視として分離記録 | レポートは `currentViolations` と `baselineViolations` を必ず並記する |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. shared で Branded Type を定義し、境界APIの引数を型名で先に固定する。  
+2. Renderer → Preload → Main の順に型を適用し、`string` 直渡し箇所を排除する。  
+3. Phase 12で `verify-unassigned-links` と `audit-unassigned-tasks(--diff-from HEAD)` を同時実行する。  
+4. 仕様書更新時は「実装内容 + 苦戦箇所 + 再発防止」を同一セクションで記録する。 
+
+#### 再利用用プレイブック（skill-creatorテンプレート準拠）
+
+| ドキュメント | 用途 |
+| --- | --- |
+| [workflow-skill-identifier-branded-type-resolution.md](./workflow-skill-identifier-branded-type-resolution.md) | 同種課題を短時間で再実行するための正本（SubAgent分担、監査コマンド、再発防止を集約） |
 
 ---
 
@@ -1784,6 +1834,10 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-25 | 1.33.3     | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 由来の未タスクを追加。`UT-IMP-AIWORKFLOW-RESOURCE-MAP-REGISTRATION-GUARD-001` を検出未タスクテーブルへ登録し、Phase 12で顕在化した `resource-map` 同期漏れ課題を台帳化 |
+| 2026-02-25 | 1.33.2     | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 の再利用導線を最適化。`workflow-skill-identifier-branded-type-resolution.md` を参照する「再利用用プレイブック」セクションを追加し、同種課題の実行手順を正本へ集約 |
+| 2026-02-25 | 1.33.1     | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 教訓追補。実装時の苦戦箇所（型境界曖昧化、完了移管後リンク同期、current/baseline監査誤読）と簡潔解決手順（4ステップ）を追加 |
+| 2026-02-25 | 1.33.0     | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 完了反映。Skill型テーブルとAgentState/AgentActionsに `SkillId` / `SkillName` を追記し、`skill:import/remove` 契約を Branded Type 文脈へ更新。関連未タスク行を完了化（completed-tasks参照へ同期） |
 | 2026-02-25 | 1.32.0     | UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 を再評価クローズへ更新。`skill:get-detail` は `skillId` 契約が実装実体（`cache.set(skill.id, skill)` + `getSkillById`）と一致するため、命名ドリフト未発生と判定 |
 | 2026-02-25 | 1.31.0     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 の実装苦戦箇所から未タスク `UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001` を追加。skillHandlers 関連未タスクテーブルへ契約マトリクス + 自動整合チェックの追跡行を登録 |
 | 2026-02-25 | 1.30.0     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001完了反映: 関連未タスクテーブルを完了化（取り消し線 + 実ワークフロー参照へ更新）。`skill:remove` の戻り値記述を `Promise<void>` から `Promise<RemoveResult>` に同期 |

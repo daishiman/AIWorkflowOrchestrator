@@ -6,6 +6,25 @@
 import type { EnvironmentType } from "./agent";
 
 /**
+ * Skill識別子向け Branded Type
+ * 文字列互換を維持しつつ、SkillId/SkillName の相互代入を禁止する。
+ */
+declare const __skillBrand: unique symbol;
+export type SkillBrand<B extends string> = string & {
+  readonly [__skillBrand]?: B;
+};
+
+/** Skill一意識別子（ハッシュ） */
+export type SkillId = SkillBrand<"SkillId">;
+/** Skill表示名/ディレクトリ名 */
+export type SkillName = SkillBrand<"SkillName">;
+
+/** string -> SkillId 変換 */
+export const toSkillId = (value: string): SkillId => value as SkillId;
+/** string -> SkillName 変換 */
+export const toSkillName = (value: string): SkillName => value as SkillName;
+
+/**
  * アンカー（参照文献）情報
  */
 export interface Anchor {
@@ -68,9 +87,9 @@ export const SKILL_CATEGORIES: Record<
  */
 export interface Skill {
   /** 一意識別子（パスのハッシュ） */
-  id: string;
+  id: SkillId;
   /** スキル名（SKILL.md解析） */
-  name: string;
+  name: SkillName;
   /** ディレクトリ名 */
   slug: string;
   /** 概要説明 */
@@ -118,7 +137,7 @@ export interface SkillDetail extends Skill {
  */
 export interface SkillImportConfig {
   /** インポート済みスキルID */
-  importedSkillIds: string[];
+  importedSkillIds: SkillId[];
   /** 最終更新日時 */
   lastUpdated: string;
 }
@@ -244,7 +263,7 @@ export interface SkillSubResource {
  */
 export interface SkillMetadata {
   /** スキル識別子（ディレクトリ名と一致） */
-  name: string;
+  name: SkillName;
 
   /** スキル説明（トリガー条件含む） */
   description: string;
@@ -305,7 +324,7 @@ export interface ImportedSkill extends SkillMetadata {
  */
 export interface SkillExecutionRequest {
   /** 使用するスキル名 */
-  skillName: string;
+  skillName: SkillName;
 
   /** ユーザープロンプト */
   prompt: string;
@@ -527,7 +546,7 @@ export interface ExecutionInfo {
   id: string;
 
   /** スキルID */
-  skillId: string;
+  skillId: SkillId;
 
   /** 実行状態 */
   state: ExecutionState;
@@ -575,7 +594,7 @@ export interface ExecutionContext {
   id: string;
 
   /** スキルID */
-  skillId: string;
+  skillId: SkillId;
 
   /** 中断コントローラー */
   abortController: AbortController;

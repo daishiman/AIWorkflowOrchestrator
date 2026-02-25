@@ -2,6 +2,12 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 910
+```
+
+## メタ情報
+
 | 項目         | 内容                                                                                |
 | ------------ | ----------------------------------------------------------------------------------- |
 | タスクID     | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001                                          |
@@ -66,12 +72,12 @@ Phase 12 再監査で `skill-creator` の検証コマンドを実行したとこ
 
 ### 2.4 成果物
 
-| 成果物                 | パス                                                                                                |
-| ---------------------- | --------------------------------------------------------------------------------------------------- |
-| 未タスク仕様書（本書） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` |
-| 運用反映（残課題台帳） | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                |
-| 実行ログ               | `.claude/skills/aiworkflow-requirements/LOGS.md`                                                    |
-| 変更履歴               | `.claude/skills/aiworkflow-requirements/SKILL.md`                                                   |
+| 成果物                 | パス                                                                                |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| 未タスク仕様書（本書） | `docs/30-workflows/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` |
+| 運用反映（残課題台帳） | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                |
+| 実行ログ               | `.claude/skills/aiworkflow-requirements/LOGS.md`                                    |
+| 変更履歴               | `.claude/skills/aiworkflow-requirements/SKILL.md`                                   |
 
 ---
 

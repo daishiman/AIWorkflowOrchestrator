@@ -31,6 +31,7 @@ import { SkillImportDialog } from "../../components/organisms/SkillImportDialog"
 import type {
   Skill,
   SkillCategory as SkillCategoryType,
+  SkillName,
 } from "@repo/shared/types/skill";
 import { Plus, RefreshCw, X } from "lucide-react";
 
@@ -217,7 +218,7 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   }, [selectSkill]);
 
   const handleImport = useCallback(
-    async (skillNames: string[]) => {
+    async (skillNames: SkillName[]) => {
       try {
         for (const skillName of skillNames) {
           await importSkillAction(skillName);
