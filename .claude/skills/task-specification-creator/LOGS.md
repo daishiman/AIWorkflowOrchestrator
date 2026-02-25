@@ -96,6 +96,36 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 派生未タスク2件作成]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク指示書化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `docs/30-workflows/unassigned-task/` に `UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001` と `UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001` を9セクション形式で作成。親タスクの苦戦箇所（safeInvoke/safeInvokeUnwrap使い分け、implementation-guide必須要件不足）を 3.5 セクションへ反映し、`task-workflow.md`/`interfaces-agent-sdk-skill.md` を同期更新。
+
+---
+
+## [2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12要件再適合]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 1/Task 4 要件再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `implementation-guide.md` を Part 1（中学生向け・日常例え）/Part 2（型・API・エッジケース）必須要件へ再構成。`phase-12-documentation.md` の完了チェックを実状態へ同期。関連未タスク2件（`task-skill-getdetail-naming-drift.md`, `task-skill-ipc-arg-form-unification.md`）の `unassigned-task/` 配置と9セクション準拠を再確認。
+
+---
+
+## [2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12再監査]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（仕様準拠再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**: `spec-update-workflow` の Step 1-A〜1-E / Step 2 を再実施。`spec-update-summary.md` と `unassigned-task-detection.md` を追加し、`task-workflow.md` / `interfaces-agent-sdk-skill.md` の未タスク参照を完了化。`verify-unassigned-links`・`validate-phase-output`・`verify-all-specs --strict` を再通過。
+
+---
+
 ## [2026-02-24 - UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12仕様再整合]
 
 - **Agent**: task-specification-creator
