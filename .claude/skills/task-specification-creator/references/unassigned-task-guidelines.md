@@ -47,6 +47,32 @@ grep -rn "TODO\|FIXME\|HACK\|XXX" packages/ apps/ --include="*.ts" --include="*.
 grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 ```
 
+### 未タスク監査（current/baseline 分離）
+
+`audit-unassigned-tasks.js` は **対象監査（current）** と **全体監査（baseline）** を分離して扱う。
+
+```bash
+# 1) 対象監査（今回変更分の合否判定）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
+
+# 2) 差分監査（git差分ベースの current 判定）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --diff-from HEAD
+
+# 3) 全体監査（資産健全性監視）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+```
+
+判定ルール:
+
+| モード | fail条件 | 用途 |
+| --- | --- | --- |
+| `--target-file` / `--diff-from` 指定あり | `currentViolations.total > 0` | 今回タスクの合否判定 |
+| scope指定なし | 全体違反（format/naming/misplaced）が1件以上 | baseline監視 |
+
 ### raw検出の誤検知対策（推奨）
 
 `detect-unassigned-tasks.js` の結果は「未タスク候補（raw）」であり、確定件数ではない。仕様書本文の説明用 TODO が多数ヒットするケースがあるため、以下の2段階で判定する。

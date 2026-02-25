@@ -290,7 +290,7 @@ frontmatter は YAML 形式で以下のフィールドを含む：
 | チェック項目                                 | 検証方法                               |
 | -------------------------------------------- | -------------------------------------- |
 | SKILL.md が 500 行以内                       | `wc -l SKILL.md`                       |
-| YAML frontmatter が有効                      | quick_validate.py                      |
+| YAML frontmatter が有効                      | quick_validate.js                      |
 | name がハイフンケース（最大64文字）          | 正規表現で検証                         |
 | description が 1024 文字以内                 | 文字数カウント                         |
 | 書籍参照が含まれている                       | references フィールド確認              |

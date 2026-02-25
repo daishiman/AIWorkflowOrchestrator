@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-25T10:11:25.115Z",
-  "totalKeywords": 1308,
+  "generated": "2026-02-25T09:55:47.430Z",
+  "totalKeywords": 1310,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1502,6 +1502,47 @@
     "対象外を分離確認": [
       "architecture-implementation-patterns.md"
     ],
+    "未タスク監査スコープ分離パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "IMP": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "UNASSIGNED": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "SCOPE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "CONTROL": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "仕様準拠": [
+      "architecture-implementation-patterns.md"
+    ],
+    "未タスク参照整合": [
+      "architecture-implementation-patterns.md"
+    ],
+    "スキル構造検証": [
+      "architecture-implementation-patterns.md"
+    ],
+    "system": [
+      "architecture-implementation-patterns.md"
+    ],
+    "skill": [
+      "architecture-implementation-patterns.md",
+      "claude-code-skills-process.md",
+      "lessons-learned.md",
+      "quality-e2e-testing.md"
+    ],
+    "creator": [
+      "architecture-implementation-patterns.md",
+      "quality-e2e-testing.md"
+    ],
     "モノレポ": [
       "architecture-monorepo.md",
       "directory-structure.md"
@@ -1800,11 +1841,6 @@
     ],
     "フィードバックループ": [
       "claude-code-skills-process.md"
-    ],
-    "skill": [
-      "claude-code-skills-process.md",
-      "lessons-learned.md",
-      "quality-e2e-testing.md"
     ],
     "最小限に維持": [
       "claude-code-skills-process.md"
@@ -2952,42 +2988,6 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "IMP": [
-      "lessons-learned.md"
-    ],
-    "AIWORKFLOW": [
-      "lessons-learned.md"
-    ],
-    "SPEC": [
-      "lessons-learned.md"
-    ],
-    "REFERENCE": [
-      "lessons-learned.md"
-    ],
-    "SYNC": [
-      "lessons-learned.md"
-    ],
-    "仕様更新リンク同期ガード": [
-      "lessons-learned.md"
-    ],
-    "再監査": [
-      "lessons-learned.md"
-    ],
-    "監査結果を次アクションへ接続する運用": [
-      "lessons-learned.md"
-    ],
-    "追補": [
-      "lessons-learned.md"
-    ],
-    "スキル検証ゲート運用": [
-      "lessons-learned.md"
-    ],
-    "quick": [
-      "lessons-learned.md"
-    ],
-    "validate": [
-      "lessons-learned.md"
-    ],
     "HANDLE": [
       "lessons-learned.md"
     ],
@@ -2997,11 +2997,23 @@
     "登録一元化": [
       "lessons-learned.md"
     ],
+    "未タスク監査の": [
+      "lessons-learned.md"
+    ],
+    "scope": [
+      "lessons-learned.md"
+    ],
+    "分離": [
+      "lessons-learned.md"
+    ],
     "目次": [
       "lessons-learned.md",
       "logging-migration-guide.md",
       "master-design.md",
       "patterns.md"
+    ],
+    "再監査": [
+      "lessons-learned.md"
     ],
     "仕様書修正タスク": [
       "lessons-learned.md"
@@ -3010,6 +3022,9 @@
       "lessons-learned.md"
     ],
     "EXTENSION": [
+      "lessons-learned.md"
+    ],
+    "SPEC": [
       "lessons-learned.md"
     ],
     "ALIGNMENT": [
@@ -3659,9 +3674,6 @@
       "quality-e2e-testing.md"
     ],
     "テスト統合パターン": [
-      "quality-e2e-testing.md"
-    ],
-    "creator": [
       "quality-e2e-testing.md"
     ],
     "非機能要件": [

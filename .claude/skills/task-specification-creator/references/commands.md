@@ -69,6 +69,16 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 # JSON出力
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+
+# 対象監査（current判定）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --target-file docs/30-workflows/unassigned-task/{{TASK_FILE}}.md
+
+# 差分監査（git差分をcurrent判定）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --diff-from HEAD
 ```
 
 ---

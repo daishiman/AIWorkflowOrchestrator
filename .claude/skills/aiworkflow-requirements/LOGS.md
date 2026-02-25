@@ -5,162 +5,42 @@
 
 ---
 
-## 2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 完了移管
+## 2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査（仕様同期）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- タスクID: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001
-- 目的: `outputs/phase-12` 生成完了 + Phase 12完了状態に基づき、ワークフローと未タスク指示書を `completed-tasks/` へ移管
+- タスクID: UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001
+- 目的: scope分離実装の教訓・パターン化と、完了済み未タスク指示書の配置整合
 
 ### 実施内容
-- `docs/30-workflows/ut-imp-aiworkflow-spec-reference-sync-001/` を `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/` へ移動
-- `docs/30-workflows/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
-- `task-workflow.md` の成果物参照と残課題テーブル参照を移動先パスへ更新
+- `references/lessons-learned.md` に苦戦箇所2件（current/baseline誤読、完了済み未タスク移管漏れ）と5ステップ解決手順を追加
+- `references/architecture-implementation-patterns.md` に未タスク監査スコープ分離パターンを追加
+- `docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移管し、ステータスを完了へ更新
+- `references/task-workflow.md` の該当行参照を移管先パスへ同期
 
 ### 結果
 - ステータス: success
 - 完了日時: 2026-02-25
-- 補足: `verify-unassigned-links.js` は `ALL_LINKS_EXIST` を維持
+- 補足: 台帳・実ファイル・運用パターンの3点同期を同一ターンで完了
 
 ---
 
-## 2026-02-25 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 未タスク登録
+## 2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 完了反映
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- タスクID: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
-- 目的: `quick_validate.py/.js` 実行経路混在と warning ノイズ運用（referencesリンク警告）の再発防止タスクを台帳化
+- タスクID: UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001
+- 目的: 未タスク監査の scope 分離実装（current/baseline）の完了状態を台帳へ同期
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` を新規作成
-- `references/task-workflow.md` の残課題テーブルへ未タスクを登録
-- 未タスク指示書の Section 3.5 に、親タスク（UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001）での苦戦箇所を反映
+- `references/task-workflow.md` 残課題テーブルの同タスク行を完了化（取り消し線 + 完了日）
+- 参照先を `docs/30-workflows/completed-tasks/ut-imp-unassigned-audit-scope-control-001/index.md` へ更新
+- 変更履歴へ Phase 1-12 完了反映エントリ（v1.60.0）を追加
 
 ### 結果
 - ステータス: success
 - 完了日時: 2026-02-25
-- 補足: `quick_validate` の primary/fallback 運用整備を後続実装タスクとして分離し、Phase 12再監査時の判断コストを削減する方針を明文化
-
----
-
-## 2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査追補
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- タスクID: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001
-- 目的: Phase 12 仕様準拠の再確認と参照ドリフト解消
-
-### 実施内容
-- `references/task-workflow.md` に再監査追補を記録（成果物 `revalidation-audit.md` 追加、同期ルール8ステップ化）
-- `references/lessons-learned.md` に苦戦箇所4（Phase仕様書旧参照 + outputs残置）を追記
-- Phase仕様書4件（1/11/12/13）の旧 `unassigned-task` 参照を `completed-tasks` に正規化
-- `outputs/phase-12` の旧成果物残置と `.tmp-*` 一時ファイルを削除し、`docs/.../outputs` と `outputs` を同期
-
-### 結果
-- ステータス: success
-- 完了日時: 2026-02-25
-- 補足: `verify-unassigned-links.js` は `ALL_LINKS_EXIST`、差分監査 `detect-unassigned-tasks --scan` は 0件
-
----
-
-## 2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 完了反映
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- タスクID: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001
-- 目的: Phase 12 同期ガード強化タスクの完了反映（未タスク→完了移管）
-
-### 実施内容
-- `references/task-workflow.md` に完了タスク記録を追加
-- 残課題テーブルの同タスクを完了化し、参照先を `completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md` へ更新
-- `references/task-workflow.md` に「未タスク参照同期ルール（3点同期 + 検証コマンド順序）」を追記
-- `references/lessons-learned.md` に本タスクの苦戦箇所と再発防止手順を追記
-
-### 結果
-- ステータス: success
-- 完了日時: 2026-02-25
-- 補足: `verify-unassigned-links.js` / `generate-index.js` / `quick_validate.py` の実行前提を同期ルールへ明文化
-
----
-
-## 2026-02-25 - TASK-013 追補未タスク作成（quick_validate運用課題）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-013 再監査の検証運用追補
-- 目的: `quick_validate` で顕在化した課題を未タスク化し、再発防止の実行計画を固定する
-
-### 実施内容
-- `docs/30-workflows/unassigned-task/` に未タスク仕様書2件を作成
-  - `task-imp-task-spec-skill-md-line-budget-001.md`
-  - `task-imp-skill-quick-validate-warning-baseline-control-001.md`
-- `references/task-workflow.md` 残課題テーブルへ2件を登録し、変更履歴を更新
-- `references/lessons-learned.md` に苦戦箇所（500行超過エラー/警告ノイズ）と簡潔解決手順を追記
-
-### 結果
-- ステータス: success
-- 完了日時: 2026-02-25
-- 補足: 未タスク指示書は Why/What/How + 3.5（実装課題と解決策）を満たす形式で作成
-
----
-
-## 2026-02-25 - TASK-013 実装内容・苦戦箇所のテンプレート運用同期
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-013 再監査の再利用性改善
-- 目的: 実装内容と苦戦箇所を「同種課題で即再利用できる形」に固定化
-
-### 実施内容
-- `references/task-workflow.md` の TASK-013 完了セクションに `phase12-action-bridge-template.md` 起点の運用手順を追記
-- `references/lessons-learned.md` に苦戦箇所（action-bridge 記述揺れ）とテンプレート起点の5ステップを追加
-- `SKILL.md` 変更履歴へ v8.77.0 を追記し、テンプレート運用の反映範囲を明示
-
-### 結果
-- ステータス: success
-- 完了日時: 2026-02-25
-- 補足: Phase 12再監査の「監査→実行」変換がテンプレートで再現可能になった
-
----
-
-## 2026-02-25 - TASK-013 Phase 12再確認（実行導線固定 + 未タスク配置是正）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-013 再監査の最終整合
-- 目的: 「監査結果→次アクション」導線と Phase 12 証跡を仕様体系へ確定反映
-
-### 実施内容
-- `references/task-workflow.md` 変更履歴へ TASK-013 再監査の実行導線化（task-013e）を反映
-- `references/lessons-learned.md` に TASK-013 固有の苦戦箇所（指摘止まり/証跡散在/baseline-current混同）を追記
-- 未実施の未タスク6件を `completed-tasks/unassigned-task/` から `docs/30-workflows/unassigned-task/` へ再配置
-- 関連参照（task-workflow/interfaces/完了タスク成果物内リンク）を新パスへ同期
-
-### 結果
-- ステータス: success
-- 完了日時: 2026-02-25
-- 補足: `verify-unassigned-links.js` 91/91 PASS、`quick_validate.py`（3スキル）すべて `Skill is valid!`
-
----
-
-## 2026-02-25 - TASK-013 仕様準拠再監査（UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 再評価クローズ）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-013 再確認 / `UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001`
-- 目的: 監査で検出された命名ドリフト疑義の再判定と台帳整合
-
-### 実施内容
-- `skill:get-detail` の契約を実装で再検証（`cache.set(skill.id, skill)` + `getSkillById`）
-- `references/interfaces-agent-sdk-skill.md` の関連未タスク表を再評価クローズに更新
-- `references/task-workflow.md` の残課題テーブルを再評価クローズに更新
-- `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` を再評価クローズ版へ更新
-- `task-013-subagent-team/outputs` に再監査レポート2件を追加
-
-### 結果
-- ステータス: success
-- 完了日時: 2026-02-25
-- 補足: 参照整合検証 `verify-unassigned-links.js` は 91/91 で成功
+- 補足: current/baseline 分離運用の完了状態を task-workflow 台帳に反映済み
 
 ---
 
@@ -456,12 +336,12 @@
 ### コンテキスト
 - スキル: aiworkflow-requirements
 - 対象: `SKILL.md`
-- 目的: `quick_validate.py` の description 長さ制約（<=1024）準拠
+- 目的: `quick_validate.js` の description 長さ制約（<=1024）準拠
 
 ### 実施内容
 - YAML frontmatter `description` を要約し、トリガー語群をカテゴリ化
 - 仕様管理スキルとしての用途（要件確認/設計確認/API・IPC契約/テスト方針/未タスク登録/教訓反映）を維持
-- `python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/aiworkflow-requirements` で再検証
+- `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements` で再検証
 
 ### 結果
 - ステータス: success
@@ -5287,3 +5167,89 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - ステータス: success
 - Phase 12 仕様準拠: PASS（対象2ワークフロー）
 - 未タスク配置（対象3件）: PASS
+
+## 2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 Phase 12再確認
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: Phase 12 タスク仕様書準拠の再確認
+- 実行形態: SubAgent並列（仕様準拠/未タスク監査/スキル検証/台帳同期）
+
+### 実施内容
+
+- `task-workflow.md` 変更履歴に再確認記録（v1.60.1）を追加
+- `lessons-learned.md` に苦戦箇所2件を追記
+  - 証跡PASS後の台帳未同期リスク
+  - `quick_validate` 実行経路混同
+- `architecture-implementation-patterns.md` に Phase 12 準拠確認チェーンを追加
+- `skill-creator` の `quick_validate.js` で以下を検証
+  - `.claude/skills/aiworkflow-requirements` → `Skill is valid!`
+  - `.claude/skills/task-specification-creator` → `Skill is valid!`
+
+### 苦戦箇所
+
+1. rerunログ増加時に artifacts/index 同期が遅れやすい
+2. quick_validate の実行主体（system skill vs repo script）を誤認しやすい
+
+### 結果
+
+- ステータス: success
+- Phase 12 準拠再確認: PASS
+
+## 2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 最終整合（quick_validate.js統一）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: Phase 12 再確認の最終同期
+- 目的: 検証コマンド表記・実行条件のドリフト防止
+
+### 実施内容
+
+- 旧 `quick_validate` 表記を今回対象スコープで `quick_validate.js` に統一
+- `task-workflow.md` 変更履歴に `v1.60.2` を追加し、`verify-all-specs --workflow` 必須条件を明記
+- `lessons-learned.md` に苦戦箇所を追記（`verify-all-specs` の引数漏れ）し、再確認手順を5ステップ化
+- `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js` を2スキルで再実行しPASS
+
+### 結果
+
+- ステータス: success
+- 仕様反映: 完了（実装内容 + 苦戦箇所 + 再発防止手順）
+- 検証: PASS（quick_validate.js / verify-all-specs / validate-phase / verify-unassigned-links）
+
+## 2026-02-25 - UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001 登録
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: Phase 12再確認で判明したコマンド運用課題の未タスク化
+
+### 実施内容
+
+- `task-workflow.md` 残課題テーブルに `UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001` を追加
+- 課題を `quick_validate.js` 統一 / `verify-all-specs --workflow` 必須化 / `*-final.log` 運用の3点で定義
+- 未タスク仕様書参照を `docs/30-workflows/unassigned-task/task-imp-phase12-validation-command-standardization-001.md` へ登録
+
+### 結果
+
+- ステータス: success
+- 反映範囲: task-workflow / SKILL / LOGS
+
+## 2026-02-25 - Phase 12完了タスクの completed-tasks 移管
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 条件: `outputs/phase-12` 成果物完備 + Phase 12完了確認済み
+
+### 実施内容
+
+- `docs/30-workflows/completed-tasks/ut-imp-unassigned-audit-scope-control-001/` へワークフロー本体を移動
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-validation-command-standardization-001.md` へ未タスク指示書を移動
+- `task-workflow.md` 残課題テーブルの同未タスクを完了化し、参照先を completed 側へ同期
+
+### 結果
+
+- ステータス: success
+- 参照整合: 更新済み

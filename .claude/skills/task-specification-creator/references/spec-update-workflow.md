@@ -76,7 +76,7 @@ Phase 12 Task 2 開始
 | 「task-workflow.md の未タスクリンクは後で直す」 | **Step 1-Eで即時整合** | 参照切れが残ると後続タスクの探索が失敗する。`verify-unassigned-links.js` で機械検証する |
 | 「task-specification-creator/LOGS.mdは後で更新」 | **Step 1-A必須** | 両方のLOGS.md（aiworkflow-requirements + task-specification-creator）を同時に更新すること。後回しにすると漏れる |
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** | worktreeでも仕様書更新は実施可能。先送りすると Phase 12 完了条件未達と契約ドリフト再発を招く |
-| 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** | 既存違反を含む全体監査はFAILになり得る。current差分起因の有無を `detect-unassigned-tasks --scan <変更範囲>` で別判定する |
+| 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** | `--target-file` / `--diff-from` で current を判定し、scope未指定の全体監査は baseline として別記録する |
 | 「仕様書参照パスは後で直す」 | **Step 1-B前に実在確認** | 非実在ファイル参照が残ると更新対象の誤認が発生する。`test -f <path>` で事前に実在確認する |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
@@ -317,7 +317,8 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`等）の残課題テーブルに新規未タスクを登録した
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
-- [ ] `audit-unassigned-tasks.js` がbaseline違反で失敗する場合、今回変更範囲の `detect-unassigned-tasks --scan <dir>` 結果を併記し「新規差分起因0件/あり」を明記した
+- [ ] `audit-unassigned-tasks.js --json --target-file <path>` または `--diff-from <ref>` で current 判定を記録した
+- [ ] scope未指定の `audit-unassigned-tasks.js --json` を baseline 監視結果として併記した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
 
 ### Step 1-F: DevOps関連ファイル更新（CI/CD最適化タスクの場合は必須）
@@ -416,7 +417,7 @@ audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→
 - [ ] task-specification-creator/LOGS.md を更新した
 - [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
 - [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
-- [ ] `skill-creator/scripts/quick_validate.py` で更新したSKILL 2件が `Skill is valid!` であることを確認した
+- [ ] `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js` で更新したSKILL 2件が `Skill is valid!` であることを確認した
 - [ ] ui-ux-components.md（UI/UX関連タスクの場合）の完了タスクと変更履歴を更新した
 - [ ] completed-tasks/ 内の該当タスク仕様書のステータスを更新した（実装完了: `completed` / 仕様書作成のみ: `spec_created`）
 ```
