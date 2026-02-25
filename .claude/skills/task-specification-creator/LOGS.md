@@ -43,6 +43,19 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-25 - UT-SKILL-IPC-PRELOAD-EXTENSION-001 再監査・是正]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再監査・漏れ是正）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - 全体監査（audit-unassigned-tasks）と差分監査（今回ワークフロー）を分離し、未タスク0件判定を再評価
+  - Open Item（参照切れ/パス差分/命名差分）を統合した未タスク `UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001` を作成・登録
+  - `references/patterns.md` に「差分監査と全体監査の分離」成功パターンを追加
+
+---
+
 ## [2026-02-24 - UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12仕様再整合]
 
 - **Agent**: task-specification-creator

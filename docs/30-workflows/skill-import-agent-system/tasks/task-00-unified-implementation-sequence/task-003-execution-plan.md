@@ -296,7 +296,7 @@ SKILL_CHANNELS = {
 
 ### タスク 5.1: SkillAPI 実装
 
-**ファイル**: `apps/desktop/src/preload/skillAPI.ts`
+**ファイル**: `apps/desktop/src/preload/skill-api.ts`
 
 **実装内容**:
 

@@ -26,10 +26,14 @@ artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillChain.ts
     - apps/desktop/src/main/services/skill/SkillChainExecutor.ts
+    - packages/shared/src/types/skill/chain.ts
   # UI成果物は ./task-031b-ui-05b-skill-advanced-views.md#3A で定義
   modifies:
+    - packages/shared/src/types/skill/index.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
-    - apps/desktop/src/preload/skillAPI.ts
+    - apps/desktop/src/preload/channels.ts
+    - apps/desktop/src/preload/skill-api.ts
+    - apps/desktop/src/preload/types.ts
     - apps/desktop/src/renderer/store/slices/skillSlice.ts
 ---
 
@@ -55,7 +59,7 @@ artifacts:
 
 ### Step 1: 型定義追加
 
-**ファイル**: `packages/shared/src/types/skillChain.ts`
+**ファイル**: `packages/shared/src/types/skill/chain.ts`
 
 ```typescript
 export interface SkillChainDefinition {
