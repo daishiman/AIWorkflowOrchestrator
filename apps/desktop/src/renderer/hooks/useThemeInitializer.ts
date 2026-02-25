@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useAppStore } from "../store";
+import { useInitializeTheme } from "../store";
 
 /**
  * Hook to initialize theme on app startup
@@ -8,7 +8,7 @@ import { useAppStore } from "../store";
  * to restore theme settings from electron-store
  */
 export function useThemeInitializer(): void {
-  const initializeTheme = useAppStore((state) => state.initializeTheme);
+  const initializeTheme = useInitializeTheme();
   const initialized = useRef(false);
 
   useEffect(() => {

@@ -122,30 +122,17 @@ export interface PromptTemplate {
 /**
  * テーマモード
  * - kanagawa-dragon: Kanagawa Dragon テーマ（デフォルト）
- * - kanagawa-wave: Kanagawa Wave テーマ
- * - kanagawa-lotus: Kanagawa Lotus テーマ（ライト）
  * - light: ライトテーマ
  * - dark: ダークテーマ
  * - system: システム設定に従う
  */
-export type ThemeMode =
-  | "kanagawa-dragon"
-  | "kanagawa-wave"
-  | "kanagawa-lotus"
-  | "light"
-  | "dark"
-  | "system";
+export type ThemeMode = "kanagawa-dragon" | "light" | "dark" | "system";
 
 /**
  * 解決済みテーマ
  * systemモードを除いた実際に適用されるテーマ
  */
-export type ResolvedTheme =
-  | "kanagawa-dragon"
-  | "kanagawa-wave"
-  | "kanagawa-lotus"
-  | "light"
-  | "dark";
+export type ResolvedTheme = "kanagawa-dragon" | "light" | "dark";
 
 /**
  * テーマカラースキーム
@@ -160,11 +147,9 @@ export type ThemeColorScheme = "light" | "dark";
  */
 export function getThemeColorScheme(theme: ResolvedTheme): ThemeColorScheme {
   switch (theme) {
-    case "kanagawa-lotus":
     case "light":
       return "light";
     case "kanagawa-dragon":
-    case "kanagawa-wave":
     case "dark":
     default:
       return "dark";

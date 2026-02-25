@@ -166,6 +166,16 @@ export const useDashboardStats = () =>
   useAppStore((state) => state.dashboardStats);
 export const useActivityFeed = () => useAppStore((state) => state.activityFeed);
 
+// Theme selectors
+export const useThemeMode = () => useAppStore((state) => state.themeMode);
+export const useResolvedTheme = () =>
+  useAppStore((state) => state.resolvedTheme);
+export const useSetThemeMode = () => useAppStore((state) => state.setThemeMode);
+export const useSetResolvedTheme = () =>
+  useAppStore((state) => state.setResolvedTheme);
+export const useInitializeTheme = () =>
+  useAppStore((state) => state.initializeTheme);
+
 // Auth selectors
 export const useIsAuthenticated = () =>
   useAppStore((state) => state.isAuthenticated);

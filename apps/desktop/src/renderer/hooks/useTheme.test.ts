@@ -24,7 +24,10 @@ const mockOnSystemChanged = vi.fn();
 const mockUnsubscribe = vi.fn();
 
 let systemChangedCallback:
-  | ((event: { isDark: boolean; resolvedTheme: "light" | "dark" }) => void)
+  | ((event: {
+      isDark: boolean;
+      resolvedTheme: "kanagawa-dragon" | "light" | "dark";
+    }) => void)
   | null = null;
 
 // Store original electronAPI
@@ -222,6 +225,14 @@ describe("useTheme", () => {
       const { result } = renderHook(() => useTheme());
 
       expect(result.current.isDark).toBe(false);
+    });
+
+    it("should return true when resolvedTheme is kanagawa-dragon", () => {
+      mockResolvedTheme.mockReturnValue("kanagawa-dragon");
+
+      const { result } = renderHook(() => useTheme());
+
+      expect(result.current.isDark).toBe(true);
     });
   });
 

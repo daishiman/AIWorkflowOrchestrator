@@ -8,6 +8,7 @@ import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { AuthModeSelector } from "../../components/settings/AuthModeSelector";
+import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import {
   useAppStore,
   useAuthMode,
@@ -16,6 +17,7 @@ import {
   useSetAuthMode,
   useInitializeAuthMode,
 } from "../../store";
+import type { ThemeMode } from "../../store/types";
 
 export interface SettingsViewProps {
   className?: string;
@@ -27,6 +29,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   const setAutoSyncEnabledAction = useAppStore(
     (state) => state.setAutoSyncEnabled,
   );
+  const themeMode = useAppStore((state) => state.themeMode);
+  const setThemeModeAction = useAppStore((state) => state.setThemeMode);
 
   // Auth mode - 個別セレクタ（P31対策: 参照が安定）
   const authMode = useAuthMode();
@@ -55,6 +59,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
       setAutoSyncEnabledAction(checked);
     },
     [setAutoSyncEnabledAction],
+  );
+
+  const handleThemeChange = useCallback(
+    async (mode: ThemeMode) => {
+      await setThemeModeAction(mode);
+    },
+    [setThemeModeAction],
   );
 
   const handleSave = useCallback(async () => {
@@ -131,6 +142,22 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
             プロフィール設定
           </h2>
           <ProfileSection />
+        </section>
+
+        {/* Theme Settings */}
+        <section role="region" aria-labelledby="theme-settings-heading">
+          <SettingsCard
+            title="テーマ設定"
+            description="表示テーマを切り替えます"
+            id="theme-settings-heading"
+          >
+            <ThemeSelector
+              value={themeMode}
+              onChange={handleThemeChange}
+              fullWidth
+              aria-labelledby="theme-settings-heading"
+            />
+          </SettingsCard>
         </section>
 
         {/* RAG Settings */}

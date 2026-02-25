@@ -33,7 +33,12 @@ function getThemeStore(): Store<ThemeStoreSchema> {
 }
 
 // Valid theme modes
-const VALID_THEME_MODES: readonly ThemeMode[] = ["light", "dark", "system"];
+const VALID_THEME_MODES: readonly ThemeMode[] = [
+  "kanagawa-dragon",
+  "light",
+  "dark",
+  "system",
+];
 
 /**
  * Validate theme mode input
@@ -46,7 +51,7 @@ export function validateThemeMode(mode: unknown): mode is ThemeMode {
 }
 
 /**
- * Resolve theme mode to actual theme (light or dark)
+ * Resolve theme mode to actual theme
  */
 function resolveTheme(mode: ThemeMode, isDark: boolean): ResolvedTheme {
   if (mode === "system") {

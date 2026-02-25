@@ -27,44 +27,134 @@ const defaultProfile: UserProfile = {
   plan: "free",
 };
 
+const DEFAULT_THEME_MODE: ThemeMode = "kanagawa-dragon";
+const DEFAULT_RESOLVED_THEME: ResolvedTheme = "kanagawa-dragon";
+
+const VALID_THEME_MODES: readonly ThemeMode[] = [
+  "kanagawa-dragon",
+  "light",
+  "dark",
+  "system",
+];
+const VALID_RESOLVED_THEMES: readonly ResolvedTheme[] = [
+  "kanagawa-dragon",
+  "light",
+  "dark",
+];
+
+type ThemeGetResponse = {
+  success: boolean;
+  data?: {
+    mode: ThemeMode;
+    resolvedTheme: ResolvedTheme;
+  };
+};
+
+type ThemeSetResponse = {
+  success: boolean;
+  data?: {
+    mode: ThemeMode;
+    resolvedTheme: ResolvedTheme;
+  };
+};
+
+type ThemeGetSystemResponse = {
+  success: boolean;
+  data?: {
+    isDark: boolean;
+    resolvedTheme: ResolvedTheme;
+  };
+};
+
+type ThemeApi = {
+  get?: () => Promise<ThemeGetResponse>;
+  set?: (request: { mode: ThemeMode }) => Promise<ThemeSetResponse>;
+  getSystem?: () => Promise<ThemeGetSystemResponse>;
+};
+
+type ElectronApiLike = {
+  theme?: ThemeApi;
+};
+
+function getThemeApi(): ThemeApi | undefined {
+  const electronApi = (
+    globalThis as typeof globalThis & {
+      electronAPI?: ElectronApiLike;
+    }
+  ).electronAPI;
+  return electronApi?.theme;
+}
+
 // Helper to apply theme to DOM
 function applyThemeToDOM(resolvedTheme: ResolvedTheme): void {
   if (typeof document !== "undefined") {
-    // Add transition class for smooth animation
     document.documentElement.classList.add("theme-transition");
-
-    // Set data-theme attribute
     document.documentElement.setAttribute("data-theme", resolvedTheme);
+    document.documentElement.style.colorScheme =
+      getThemeColorScheme(resolvedTheme);
 
-    // Set color-scheme for native elements
-    const colorScheme = getThemeColorScheme(resolvedTheme);
-    document.documentElement.style.colorScheme = colorScheme;
-
-    // Remove transition class after animation completes
     setTimeout(() => {
       document.documentElement.classList.remove("theme-transition");
     }, 300);
   }
 }
 
-// Helper to resolve theme based on system preference
-function resolveSystemTheme(): ResolvedTheme {
-  if (typeof window !== "undefined" && window.matchMedia) {
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-    return prefersDark ? "kanagawa-dragon" : "kanagawa-lotus";
-  }
-  return "kanagawa-dragon"; // Default fallback
+function isThemeMode(value: unknown): value is ThemeMode {
+  return (
+    typeof value === "string" && VALID_THEME_MODES.includes(value as ThemeMode)
+  );
 }
 
-// Helper to resolve theme mode (unused but kept for future theme switching support)
-function _resolveTheme(mode: ThemeMode): ResolvedTheme {
-  if (mode === "system") {
-    return resolveSystemTheme();
+function isResolvedTheme(value: unknown): value is ResolvedTheme {
+  return (
+    typeof value === "string" &&
+    VALID_RESOLVED_THEMES.includes(value as ResolvedTheme)
+  );
+}
+
+function resolveSystemThemeFromMediaQuery(): ResolvedTheme {
+  if (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function"
+  ) {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   }
-  // Direct theme modes
-  return mode as ResolvedTheme;
+  return "dark";
+}
+
+async function getSystemResolvedTheme(
+  themeApi?: ThemeApi,
+): Promise<ResolvedTheme> {
+  if (themeApi?.getSystem) {
+    try {
+      const response = await themeApi.getSystem();
+      if (response.success && isResolvedTheme(response.data?.resolvedTheme)) {
+        // system解決値は light/dark のみを受け付ける
+        if (
+          response.data?.resolvedTheme === "light" ||
+          response.data?.resolvedTheme === "dark"
+        ) {
+          return response.data.resolvedTheme;
+        }
+      }
+    } catch {
+      // fallback to media query
+    }
+  }
+
+  return resolveSystemThemeFromMediaQuery();
+}
+
+function resolveThemeMode(
+  mode: ThemeMode,
+  systemResolvedTheme: ResolvedTheme,
+): ResolvedTheme {
+  if (mode === "system") {
+    return systemResolvedTheme;
+  }
+  return mode;
 }
 
 export const createSettingsSlice: StateCreator<
@@ -77,8 +167,8 @@ export const createSettingsSlice: StateCreator<
   userProfile: defaultProfile,
   apiKey: "",
   autoSyncEnabled: true,
-  themeMode: "kanagawa-dragon", // Kanagawa Dragon固定（変更不可）
-  resolvedTheme: "kanagawa-dragon", // Default to Kanagawa Dragon
+  themeMode: DEFAULT_THEME_MODE,
+  resolvedTheme: DEFAULT_RESOLVED_THEME,
 
   // Actions
   setUserProfile: (profile) => {
@@ -99,26 +189,87 @@ export const createSettingsSlice: StateCreator<
     set({ autoSyncEnabled: enabled });
   },
 
-  setThemeMode: async (_mode: ThemeMode) => {
-    // テーマはKanagawa Dragon固定（変更不可）
-    // 変更リクエストを無視し、常にKanagawa Dragonを維持
-    const fixedTheme: ResolvedTheme = "kanagawa-dragon";
-    set({ themeMode: "kanagawa-dragon", resolvedTheme: fixedTheme });
-    applyThemeToDOM(fixedTheme);
+  setThemeMode: async (requestedMode: ThemeMode) => {
+    const mode = isThemeMode(requestedMode)
+      ? requestedMode
+      : DEFAULT_THEME_MODE;
+    const themeApi = getThemeApi();
+
+    let themeMode = mode;
+    let resolvedTheme = resolveThemeMode(
+      mode,
+      mode === "system"
+        ? await getSystemResolvedTheme(themeApi)
+        : DEFAULT_RESOLVED_THEME,
+    );
+
+    if (themeApi?.set) {
+      try {
+        const response = await themeApi.set({ mode });
+        if (response.success && response.data) {
+          themeMode = isThemeMode(response.data.mode)
+            ? response.data.mode
+            : mode;
+
+          if (themeMode === "system") {
+            const systemResolvedTheme = await getSystemResolvedTheme(themeApi);
+            resolvedTheme =
+              response.data.resolvedTheme === "light" ||
+              response.data.resolvedTheme === "dark"
+                ? response.data.resolvedTheme
+                : systemResolvedTheme;
+          } else {
+            resolvedTheme = themeMode;
+          }
+        }
+      } catch {
+        // fallback handled by current values
+      }
+    }
+
+    set({ themeMode, resolvedTheme });
+    applyThemeToDOM(resolvedTheme);
   },
 
-  setResolvedTheme: (_theme: ResolvedTheme) => {
-    // テーマはKanagawa Dragon固定（変更不可）
-    const fixedTheme: ResolvedTheme = "kanagawa-dragon";
-    set({ resolvedTheme: fixedTheme });
-    applyThemeToDOM(fixedTheme);
+  setResolvedTheme: (theme: ResolvedTheme) => {
+    const resolvedTheme = isResolvedTheme(theme)
+      ? theme
+      : DEFAULT_RESOLVED_THEME;
+    set({ resolvedTheme });
+    applyThemeToDOM(resolvedTheme);
   },
 
   initializeTheme: async () => {
-    // テーマはKanagawa Dragon固定（変更不可）
-    // 初期化時も常にKanagawa Dragonを適用
-    const fixedTheme: ResolvedTheme = "kanagawa-dragon";
-    set({ themeMode: "kanagawa-dragon", resolvedTheme: fixedTheme });
-    applyThemeToDOM(fixedTheme);
+    const themeApi = getThemeApi();
+
+    if (themeApi?.get) {
+      try {
+        const response = await themeApi.get();
+        if (response.success && response.data) {
+          const themeMode = isThemeMode(response.data.mode)
+            ? response.data.mode
+            : DEFAULT_THEME_MODE;
+
+          const resolvedTheme =
+            themeMode === "system"
+              ? response.data.resolvedTheme === "light" ||
+                response.data.resolvedTheme === "dark"
+                ? response.data.resolvedTheme
+                : await getSystemResolvedTheme(themeApi)
+              : themeMode;
+
+          set({ themeMode, resolvedTheme });
+          applyThemeToDOM(resolvedTheme);
+          return;
+        }
+      } catch {
+        // fallback below
+      }
+    }
+
+    const fallbackMode = DEFAULT_THEME_MODE;
+    const fallbackResolvedTheme = DEFAULT_RESOLVED_THEME;
+    set({ themeMode: fallbackMode, resolvedTheme: fallbackResolvedTheme });
+    applyThemeToDOM(fallbackResolvedTheme);
   },
 });

@@ -59,6 +59,7 @@ const createMockState = (overrides = {}) => ({
   // SettingsSlice
   apiKey: "sk-test-key",
   autoSyncEnabled: true,
+  themeMode: "system" as const,
   userProfile: {
     name: "Test User",
     email: "test@example.com",
@@ -67,6 +68,7 @@ const createMockState = (overrides = {}) => ({
   },
   setApiKey: vi.fn(),
   setAutoSyncEnabled: vi.fn(),
+  setThemeMode: vi.fn().mockResolvedValue(undefined),
   setUserProfile: vi.fn(),
   updateUserProfile: vi.fn(),
   ...overrides,
@@ -171,6 +173,45 @@ describe("SettingsView", () => {
       });
       fireEvent.click(checkbox);
       expect(mockSetAutoSyncEnabled).toHaveBeenCalledWith(false);
+    });
+  });
+
+  describe("テーマ設定", () => {
+    it("テーマ設定セクションを表示する", () => {
+      render(<SettingsView />);
+      expect(screen.getByText("テーマ設定")).toBeInTheDocument();
+    });
+
+    it("テーマの4モードを表示する", () => {
+      render(<SettingsView />);
+      expect(
+        screen.getByRole("radio", { name: /Kanagawa/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("radio", { name: /ライト/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("radio", { name: /ダーク/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("radio", { name: /システム/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("テーマ変更時にsetThemeModeを呼び出す", async () => {
+      const mockSetThemeMode = vi.fn().mockResolvedValue(undefined);
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({ setThemeMode: mockSetThemeMode }),
+        )) as never);
+
+      render(<SettingsView />);
+      fireEvent.click(screen.getByRole("radio", { name: /ダーク/i }));
+
+      expect(mockSetThemeMode).toHaveBeenCalledWith("dark");
     });
   });
 

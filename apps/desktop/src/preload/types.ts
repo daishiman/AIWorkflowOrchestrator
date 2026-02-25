@@ -335,8 +335,8 @@ export interface MenuActionEvent {
 }
 
 // Theme operations
-export type ThemeMode = "light" | "dark" | "system";
-export type ResolvedTheme = "light" | "dark";
+export type ThemeMode = "kanagawa-dragon" | "light" | "dark" | "system";
+export type ResolvedTheme = "kanagawa-dragon" | "light" | "dark";
 
 // Auth operations
 export type OAuthProvider = "google" | "github" | "discord";

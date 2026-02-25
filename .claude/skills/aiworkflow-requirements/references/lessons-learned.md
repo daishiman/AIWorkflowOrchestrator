@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-25 | 1.25.9 | UT-UI-THEME-DYNAMIC-SWITCH-001 の再利用性を強化: 同種課題向け「転記テンプレート（5分版）」を追加し、苦戦箇所を再発条件ベースで記録する運用を標準化 |
+| 2026-02-25 | 1.25.8 | UT-UI-THEME-DYNAMIC-SWITCH-001 教訓追加: テーマ動的切替実装での苦戦箇所3件（`themeMode`/`resolvedTheme`責務分離、Store Hook再実行ループ、Phase 12証跡同期漏れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-25 | 1.25.7 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 最終追補: `verify-all-specs.js` の `--workflow` 必須条件を苦戦箇所に追加。再検証コマンドを `quick_validate.js` + `verify-all-specs --workflow` に統一 |
 | 2026-02-25 | 1.25.6 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 追補: `quick_validate` 実行経路を `/Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js` に統一。検証コマンドの重複記載を整理し、再利用時の経路混同を防止 |
 | 2026-02-25 | 1.25.5 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12準拠確認で発生した苦戦箇所（証跡同期漏れリスク、quick_validate実行経路の混同）を追加。`target→full→validate→sync` の4ステップを標準手順化 |
@@ -194,10 +196,62 @@
 4. `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` を実行する  
 5. `complete-phase` 後に `generate-index --regenerate` と `artifacts.json` 同期を同一ターンで完了する  
 
+## UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応
+
+### 苦戦箇所: `themeMode` と `resolvedTheme` の責務分離
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `system` モード時に保存値（`themeMode`）と適用値（`resolvedTheme`）を同じ状態として扱うと、OS追従と手動切替が競合しやすい |
+| 原因 | 「ユーザー選択値」と「実解決テーマ」の責務分離が設計上明文化されていなかった |
+| 対処 | stateを2軸化し、SSOTを `themeMode` に固定。`resolvedTheme` は `system` 時の解決値としてのみ更新 |
+| 教訓 | テーマ設計は「選択モード」と「適用テーマ」を分離しないと競合バグが再発する |
+
+### 苦戦箇所: Store Hook依存による再実行ループ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | テーマ反映の `useEffect` が依存参照の不安定性で再実行され続けるリスクがあった |
+| 原因 | 合成Store Hookの返す参照が毎回変わる構造で依存配列に乗っていた |
+| 対処 | `useThemeMode` / `useResolvedTheme` / `useSetThemeMode` の個別セレクタへ分離して参照を安定化 |
+| 教訓 | Zustand連携のUI副作用は合成Hookを避け、個別セレクタを前提に設計する |
+
+### 苦戦箇所: Phase 12成果物と仕様書本体の同期漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` が揃っていても `phase-12-documentation.md` のチェック欄が未更新で残り、監査で不整合になりやすい |
+| 原因 | 実体成果物の存在確認で完了扱いにし、仕様書本体の実行記録更新が後回しになっていた |
+| 対処 | Task 1〜5の証跡を `phase12-task-spec-compliance-check.md` で突合し、同一ターンでチェック欄同期 |
+| 教訓 | Phase 12完了判定は「成果物実体 + 実行記録更新」をセットで扱う |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. `themeMode`（選択値）と `resolvedTheme`（解決値）を状態設計で明示分離する  
+2. UI副作用を持つ箇所は個別セレクタHookで依存を安定化する  
+3. Phase 12では `outputs/phase-12/*` と `phase-12-documentation.md` を1対1で突合する  
+4. `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` の結果を同一レポートに固定する  
+
+### 同種課題向け転記テンプレート（5分版）
+
+| 項目 | 書き方 |
+| --- | --- |
+| 実装内容 | 「何を」「どこを」「なぜ」を2行以内で記載 |
+| 苦戦箇所 | 「課題」「原因」「対処」「再発条件」を1行ずつ記載 |
+| 再利用手順 | 4ステップ以内で、そのまま次タスクで実行できる粒度にする |
+| 仕様反映先 | `task-workflow.md` / `ui-ux-design-system.md` / `lessons-learned.md` を同時更新する |
+| 検証 | `verify-all-specs --workflow --strict` / `verify-unassigned-links.js` の結果を記録する |
+
 ---
 
 ## 目次
 
+0. [UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応](#ut-ui-theme-dynamic-switch-001-settingsslice-テーマ動的切替対応)
+   - [苦戦箇所: `themeMode` と `resolvedTheme` の責務分離](#苦戦箇所-themeMode-と-resolvedtheme-の責務分離)
+   - [苦戦箇所: Store Hook依存による再実行ループ](#苦戦箇所-store-hook依存による再実行ループ)
+   - [苦戦箇所: Phase 12成果物と仕様書本体の同期漏れ](#苦戦箇所-phase-12成果物と仕様書本体の同期漏れ)
+   - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ)
+   - [同種課題向け転記テンプレート（5分版）](#同種課題向け転記テンプレート5分版)
 0. [UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離](#ut-imp-unassigned-audit-scope-control-001-未タスク監査の-scope-分離)
    - [苦戦箇所: 全体監査結果を今回差分の失敗と誤読しやすい](#苦戦箇所-全体監査結果を今回差分の失敗と誤読しやすい)
    - [苦戦箇所: 完了済み未タスク指示書の移管漏れ](#苦戦箇所-完了済み未タスク指示書の移管漏れ)

@@ -132,6 +132,60 @@
 
 ## 完了タスク
 
+### タスク: UT-UI-THEME-DYNAMIC-SWITCH-001 settingsSlice テーマ動的切替対応（2026-02-25完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | UT-UI-THEME-DYNAMIC-SWITCH-001 |
+| 完了日     | 2026-02-25 |
+| ステータス | **完了** |
+| タスク種別 | 実装タスク |
+| Phase      | Phase 1-12 完了（Phase 13未実施） |
+| 変更範囲   | Main / Preload / Renderer / Store / Settings UI |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/phase-12/implementation-guide.md` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/phase-12/spec-update-summary.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/phase-12/unassigned-task-report.md` |
+| 仕様準拠再確認レポート | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 変更理由
+
+- テーマ運用を `kanagawa-dragon` 固定から `kanagawa-dragon / light / dark / system` の4モードへ拡張し、OS追従と永続化を両立させるため。
+- `ThemeMode`（選択）と `resolvedTheme`（適用）を分離し、`system` モード時の状態競合を防ぐため。
+
+#### 苦戦箇所と解決策
+
+| 苦戦ポイント | 問題 | 解決策 |
+| --- | --- | --- |
+| `themeMode` と `resolvedTheme` の責務混在 | `system` 選択時に保存値/適用値が競合しやすい | SSOTを `themeMode` に固定し、`resolvedTheme` は解決値専用に分離 |
+| Store Hook依存の再実行ループ | テーマ反映の `useEffect` が不安定参照で再実行しやすい | 個別セレクタ（`useThemeMode`/`useResolvedTheme`）へ統一 |
+| Phase 12証跡同期漏れ | 成果物実体と `phase-12-documentation.md` が乖離しやすい | Task 1〜5 の証跡突合レポートを追加し、チェック欄を同一ターンで同期 |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 状態を「選択値」と「適用値」の2軸で設計する。  
+2. UI副作用は個別セレクタHookで依存を固定する。  
+3. `outputs/phase-12/*` と `phase-12-documentation.md` を1対1で突合する。  
+4. `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` を完了条件に固定する。  
+
+#### Phase 12 Step 2 転記テンプレート（短縮版）
+
+| 項目 | 記述ルール |
+| --- | --- |
+| 実装内容 | 変更範囲（Main/Preload/Renderer/Store）と狙いを1-2行で記載 |
+| 苦戦箇所 | 「課題」「原因」「対処」を1セットで記載 |
+| 再利用手順 | 4ステップ以内で、次タスクでそのまま実行できる形にする |
+| 反映先 | `task-workflow.md` / `ui-ux-design-system.md` / `lessons-learned.md` の3点セットを同時更新 |
+| 検証 | `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` の結果を記録 |
+
+---
+
 ### タスク: UT-IPC-DATA-FLOW-TYPE-GAPS-001 バックエンド型定義とUI Props間のデータフロー型ギャップ解消（2026-02-24完了）
 
 | 項目         | 内容                                                             |
@@ -1182,8 +1236,9 @@
 | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~           | ~~SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗）~~ | ~~高~~ | ~~ランタイムエラー調査（2026-02-22）~~ **完了: 2026-02-22**                | `docs/30-workflows/completed-tasks/skill-import-id-mismatch-fix/`                                                                                                  |
 | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001              | Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別）                                            | 中     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）             | `docs/30-workflows/unassigned-task/task-type-skill-identifier-branded.md`                                                                          |
 | UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001         | SkillImportDialog同名コンポーネント解消（コンポーネント命名重複リファクタリング）                                | 低     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）             | `docs/30-workflows/unassigned-task/task-refactor-skill-import-dialog-dedup.md`                                                                     |
-| UT-UI-THEME-DYNAMIC-SWITCH-001                     | settingsSlice テーマ動的切替対応（kanagawa-dragon固定 → light/dark/system連動）                                   | 中     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-theme-dynamic-switch-001.md`                                                                              |
+| ~~UT-UI-THEME-DYNAMIC-SWITCH-001~~                     | ~~settingsSlice テーマ動的切替対応（kanagawa-dragon固定 → 4モード動的切替）~~                                   | ~~中~~     | ~~TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）~~ **完了: 2026-02-25**                      | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md`                                                                              |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001              | Tailwind CSS カスタムプロパティ統合（tokens.css変数をTailwind theme設定に反映）                                   | 低     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md`                                                                       |
+| UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001         | テーマ動的切替の再発防止ガード強化（状態責務分離/Hook依存安定化/Phase 12証跡同期）                                | 中     | UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 12（実装苦戦箇所・2026-02-25）         | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md`                                                                |
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001              | SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗） | 高     | ランタイムエラー調査（2026-02-22）                                          | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md`                                                                    |
 | UT-UI-ATOMS-PROP-NAMING-001                       | RelativeTime Props命名統一（仕様書updateInterval → 実装refreshInterval）                                         | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-1（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-prop-naming.md`                                                                                   |
 | UT-UI-ATOMS-TOUCH-TARGET-001                      | SuggestionBubble size="sm" タッチターゲット Apple HIG 44px準拠                                                   | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-2（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-touch-target.md`                                                                                  |
@@ -1197,7 +1252,7 @@
 | ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001~~         | ~~未タスク監査の対象スコープ制御とベースライン分離（current/baseline判定）~~                                         | ~~中~~     | ~~UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 再監査（苦戦箇所・2026-02-24）~~ **完了: 2026-02-25（Phase 1-12）**      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-unassigned-audit-scope-control-001.md`                                                              |
 | ~~UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001~~ | ~~Phase 12 検証コマンド標準化ガード（`quick_validate.js` 統一 + `verify-all-specs --workflow` 必須化）~~                 | ~~中~~     | ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 Phase 12再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-validation-command-standardization-001.md`                                                                  |
 | UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001         | task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧パス/artifacts/Date方針）                                        | 中     | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 実装苦戦箇所（2026-02-25）  | `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md`                                                            |
-| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
+| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 
 ### 未タスク管理ルール
 
@@ -1221,6 +1276,10 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.60.8** | **2026-02-25** | **UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 追加**: UT-UI-THEME-DYNAMIC-SWITCH-001 の苦戦箇所（状態責務混在 / Hook再実行ループ / Phase 12証跡同期漏れ）を再発防止する未タスクを残課題テーブルへ登録 |
+| **1.60.7** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 テンプレート最適化**: 完了タスクセクションに「Phase 12 Step 2 転記テンプレート（短縮版）」を追加。実装内容・苦戦箇所・再利用手順・3仕様書同時更新・検証コマンドの記録形式を標準化 |
+| **1.60.6** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 完了記録追記**: 完了タスクセクションへ実装内容・苦戦箇所・簡潔解決手順（4ステップ）を追加。`outputs/phase-12/phase12-task-spec-compliance-check.md` を証跡として登録し、Phase 12 準拠判定の根拠を固定 |
+| **1.60.5** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 台帳同期完了**: 残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、4モード動的切替（kanagawa-dragon/light/dark/system）完了状態へ整合 |
 | **1.60.4** | **2026-02-25** | **UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001 / UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 完了移管**: Phase 12完了を確認し、未タスク指示書を `completed-tasks/unassigned-task/` へ、実行ワークフローを `completed-tasks/ut-imp-unassigned-audit-scope-control-001/` へ移動。残課題行を完了化して参照パスを同期 |
 | **1.60.3** | **2026-02-25** | **UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001 登録**: Phase 12再確認で顕在化したコマンド運用課題（`quick_validate.js` 統一、`verify-all-specs --workflow` 必須化、`*-final.log` 運用）を未タスクとして残課題テーブルへ追加 |
 | **1.60.2** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 最終整合**: Phase 12 再確認証跡の検証コマンド表記を `quick_validate.js` に統一し、`verify-all-specs` 実行時の `--workflow` 必須条件を運用ルールとして明記 |

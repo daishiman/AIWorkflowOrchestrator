@@ -6,6 +6,12 @@ import type { ThemeMode } from "../../../store/types";
 
 const THEME_OPTIONS: ThemeOption[] = [
   {
+    mode: "kanagawa-dragon",
+    label: "Kanagawa",
+    icon: "sparkles",
+    description: "Kanagawa Dragonテーマを使用",
+  },
+  {
     mode: "light",
     label: "ライト",
     icon: "sun",

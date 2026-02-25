@@ -5,6 +5,83 @@
 
 ---
 
+## 2026-02-25 - UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001
+- 目的: UT-UI-THEME-DYNAMIC-SWITCH-001 の苦戦箇所を再発防止タスクとして台帳化
+
+### 実施内容
+- `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` を新規作成（9セクション + 3.5教訓継承）
+- `references/task-workflow.md` 残課題テーブルへ登録
+- `references/ui-ux-design-system.md` 関連タスクへ登録
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 親タスクの苦戦箇所（状態責務混在 / Hook依存不安定 / Phase 12証跡同期漏れ）を同種課題向けの実行可能タスクへ変換
+
+---
+
+## 2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 12 Step 2 テンプレート最適化
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-UI-THEME-DYNAMIC-SWITCH-001
+- 目的: 実装内容・苦戦箇所の記録形式をテンプレート準拠で標準化し、同種課題の再利用性を向上
+
+### 実施内容
+- `references/task-workflow.md` に「Phase 12 Step 2 転記テンプレート（短縮版）」を追加
+- `references/ui-ux-design-system.md` に「実装内容（テンプレート準拠要約）」を追加
+- `references/lessons-learned.md` に「同種課題向け転記テンプレート（5分版）」を追加
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 実装内容/苦戦箇所/再利用手順の3点を統一形式へ整理し、次回タスクでの転記コストを削減
+
+---
+
+## 2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 12準拠再確認（苦戦箇所追記）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-UI-THEME-DYNAMIC-SWITCH-001
+- 目的: システム仕様書へ実装内容と苦戦箇所を再反映し、Phase 12準拠判定を固定化
+
+### 実施内容
+- `references/task-workflow.md` の完了タスクセクションへ同タスクの詳細（成果物/変更理由/苦戦箇所/4ステップ手順）を追記
+- `references/ui-ux-design-system.md` に実装時の苦戦箇所テーブル（責務分離・Hook再実行・証跡同期）を追記
+- `references/lessons-learned.md` に同タスクの教訓セクションを追加し、再利用手順を明文化
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 実装内容・運用教訓・台帳記録を同時同期し、後続タスクの再利用可能性を向上
+
+---
+
+## 2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 再監査（仕様同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-UI-THEME-DYNAMIC-SWITCH-001
+- 目的: テーマ動的切替実装とシステム仕様書/台帳/成果物の整合回復
+
+### 実施内容
+- `references/ui-ux-design-system.md` を4モード仕様（kanagawa-dragon/light/dark/system）に更新
+- `references/ui-ux-atoms-patterns.md` のテーマ横断テスト方針を解決テーマ3種 + system委譲へ更新
+- `references/task-workflow.md` の同タスク行を完了化（取り消し線 + 完了日）し、変更履歴を追記
+- `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` のステータス/IPC表記を実装契約へ同期
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 実装契約（ThemeMode/IPC）と運用台帳（完了状態）のドリフトを解消
+
+---
+
 ## 2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査（仕様同期）
 
 ### コンテキスト
@@ -5253,3 +5330,23 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 参照整合: 更新済み
+
+## 2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 1-12 実行反映
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: テーマ動的切替タスクのPhase成果物整備
+
+### 実施内容
+
+- `task-workflow.md` の未タスク参照2件を `completed-tasks` へ更新
+  - `ut-ui-theme-dynamic-switch-001.md`
+  - `task-imp-aiworkflow-spec-reference-sync-001.md`
+- `ui-ux-design-system.md` の関連未タスクリンクを `completed-tasks` へ更新
+- `generate-index.js` 実行で indexes/topic-map と keywords を再生成
+
+### 結果
+
+- ステータス: success
+- `verify-unassigned-links.js`: missing 0 / `ALL_LINKS_EXIST`

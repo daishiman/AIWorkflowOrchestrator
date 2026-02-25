@@ -43,6 +43,46 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-25 - UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 未タスク仕様書作成]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク検出→指示書作成→台帳登録）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-theme-dynamic-switch-robustness-001.md` を9セクション形式で新規作成
+  - 親タスク（UT-UI-THEME-DYNAMIC-SWITCH-001）の苦戦箇所3件を `3.5 実装課題と解決策` に継承
+  - `task-workflow.md` 残課題テーブルと `ui-ux-design-system.md` 関連タスクテーブルへ登録
+
+---
+
+## [2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 12準拠再確認]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（準拠チェック + 未タスクフォーマット監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-12-documentation.md` の Task 1〜5 実行記録とチェック欄を成果物実体に同期
+  - `outputs/phase-12/phase12-task-spec-compliance-check.md` を追加し、仕様準拠の証跡を固定
+  - `ut-ui-tailwind-tokens-integration-001.md` を9セクション見出しへ正規化（フォーマット監査の対象是正）
+  - `spec-update-workflow.md` に「成果物実体だけで完了判定しない」誤判断パターンを追加
+
+---
+
+## [2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 12再監査]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（仕様同期・成果物追補）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `spec-update-summary.md` と `documentation-changelog.md` に Step 1-A/1-B/1-C/Step 2 の再実施結果を追記
+  - `recheck-elegance-audit.md` を追加し、多角思考20観点の再監査結果を記録
+  - `artifacts.json` と `phase-12-documentation.md` の成果物定義に再監査レポートを同期
+
+---
+
 ## [2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査]
 
 - **Agent**: task-specification-creator
@@ -4512,3 +4552,23 @@ if (artifactPath) {
 
 - ステータス: success
 - 運用反映: 完了
+
+## 2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 1-12 完了登録
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- 対象: `docs/30-workflows/UT-UI-THEME-DYNAMIC-SWITCH-001`
+
+### 実施内容
+
+- `outputs/phase-1` 〜 `outputs/phase-12` の必須成果物22ファイルを作成
+- `complete-phase.js` をPhase 1→12で順次実行し、`artifacts.json` を完了更新
+- `generate-index.js --workflow ... --regenerate` で index のPhaseステータスを同期
+- `validate-phase-output.js` を実行し 0エラー/0警告を確認
+
+### 結果
+
+- ステータス: success
+- Phase 1〜12: completed
+- Phase 13: pending（コミット/PR未実施）
