@@ -57,9 +57,9 @@
 
 **検出タスク: 1件**
 
-| #   | タスクID                                  | ソース       | 優先度 | 指示書パス                                                                                         |
-| --- | ----------------------------------------- | ------------ | ------ | -------------------------------------------------------------------------------------------------- |
-| 1   | UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001 | Phase 10 M-1 | Low    | `docs/30-workflows/completed-tasks/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md` |
+| #   | タスクID                                  | ソース       | 優先度 | 指示書パス                                                                         |
+| --- | ----------------------------------------- | ------------ | ------ | ---------------------------------------------------------------------------------- |
+| 1   | UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001 | Phase 10 M-1 | Low    | `docs/30-workflows/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md` |
 
 Phase 10 最終レビューで MINOR 1件（M-1: SkillUsageSummary.lastUsed の nullable 差異）が検出された。実ファイルの仕様は意味的に正当であるが、ルール上 MINOR は全て未タスク仕様書に変換必須のため、未タスク化を実施した。
 
@@ -75,4 +75,4 @@ Phase 10 最終レビューで MINOR 1件（M-1: SkillUsageSummary.lastUsed の 
 | 2        | `task-workflow.md` 残課題テーブルに登録 | 親タスク（UT-IPC-DATA-FLOW-TYPE-GAPS-001）Phase 12 で実施  |
 | 3        | 関連仕様書に参照リンク追加              | 本タスクは仕様書修正のみのため、本レポート内のリンクで完結 |
 
-- 指示書パス: `docs/30-workflows/completed-tasks/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md`
+- 指示書パス: `docs/30-workflows/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md`

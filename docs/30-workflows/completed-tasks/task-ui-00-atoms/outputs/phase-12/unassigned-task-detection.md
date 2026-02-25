@@ -85,11 +85,11 @@ Phase 11で3件のMinor severity問題が発見された。
 
 ### Step 1: 指示書作成
 
-| #   | タスクID                           | 指示書パス                                                                              | ファイル存在 |
-| --- | ---------------------------------- | --------------------------------------------------------------------------------------- | ------------ |
-| 1   | UT-UI-ATOMS-PROP-NAMING-001        | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-prop-naming.md`        | 確認済み     |
-| 2   | UT-UI-ATOMS-TOUCH-TARGET-001       | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-touch-target.md`       | 確認済み     |
-| 3   | UT-UI-ATOMS-SPEC-CLARIFICATION-001 | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-spec-clarification.md` | 確認済み     |
+| #   | タスクID                           | 指示書パス                                                              | ファイル存在 |
+| --- | ---------------------------------- | ----------------------------------------------------------------------- | ------------ |
+| 1   | UT-UI-ATOMS-PROP-NAMING-001        | `docs/30-workflows/unassigned-task/task-ui-atoms-prop-naming.md`        | 確認済み     |
+| 2   | UT-UI-ATOMS-TOUCH-TARGET-001       | `docs/30-workflows/unassigned-task/task-ui-atoms-touch-target.md`       | 確認済み     |
+| 3   | UT-UI-ATOMS-SPEC-CLARIFICATION-001 | `docs/30-workflows/unassigned-task/task-ui-atoms-spec-clarification.md` | 確認済み     |
 
 ### Step 2: task-workflow.md 残課題テーブル登録
 

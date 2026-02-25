@@ -466,8 +466,8 @@ Zustand Sliceパターンで実装された状態管理。
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
 | ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~ | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md` **（完了: 2026-02-25）** |
-| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001 | skill IPCレスポンス契約マトリクスと自動整合チェック（Main応答形式とPreloadラッパー選択の機械検証） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md` |
-| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一） | 低 | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` |
+| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001 | skill IPCレスポンス契約マトリクスと自動整合チェック（Main応答形式とPreloadラッパー選択の機械検証） | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md` |
+| ~~UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001~~ | ~~skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一）~~ | ~~低~~ | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` **（再評価クローズ: 2026-02-25 / getSkillById は実装上ID検索）** |
 | ~~UT-FIX-SKILL-VALIDATION-CONSISTENCY-001~~ | ~~skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完）~~ | ~~中~~ | **完了: 2026-02-24** |
 | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~ | ~~SkillImportDialog（organisms版）がskill.id（ハッシュ）を渡すためgetSkillByName失敗~~ | ~~高~~ | **完了: 2026-02-22** |
 
@@ -1784,6 +1784,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-25 | 1.32.0     | UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 を再評価クローズへ更新。`skill:get-detail` は `skillId` 契約が実装実体（`cache.set(skill.id, skill)` + `getSkillById`）と一致するため、命名ドリフト未発生と判定 |
 | 2026-02-25 | 1.31.0     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 の実装苦戦箇所から未タスク `UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001` を追加。skillHandlers 関連未タスクテーブルへ契約マトリクス + 自動整合チェックの追跡行を登録 |
 | 2026-02-25 | 1.30.0     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001完了反映: 関連未タスクテーブルを完了化（取り消し線 + 実ワークフロー参照へ更新）。`skill:remove` の戻り値記述を `Promise<void>` から `Promise<RemoveResult>` に同期 |
 | 2026-02-22 | 1.29.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001苦戦箇所から未タスク2件登録: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001（Branded Type導入）、UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001（同名コンポーネント解消）を完了タスクセクションに参照追加 |

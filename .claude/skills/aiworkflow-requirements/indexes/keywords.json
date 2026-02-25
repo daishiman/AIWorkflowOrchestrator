@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-25T07:31:39.012Z",
-  "totalKeywords": 1303,
+  "generated": "2026-02-25T10:11:25.115Z",
+  "totalKeywords": 1308,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2970,6 +2970,24 @@
     "仕様更新リンク同期ガード": [
       "lessons-learned.md"
     ],
+    "再監査": [
+      "lessons-learned.md"
+    ],
+    "監査結果を次アクションへ接続する運用": [
+      "lessons-learned.md"
+    ],
+    "追補": [
+      "lessons-learned.md"
+    ],
+    "スキル検証ゲート運用": [
+      "lessons-learned.md"
+    ],
+    "quick": [
+      "lessons-learned.md"
+    ],
+    "validate": [
+      "lessons-learned.md"
+    ],
     "HANDLE": [
       "lessons-learned.md"
     ],
@@ -2984,9 +3002,6 @@
       "logging-migration-guide.md",
       "master-design.md",
       "patterns.md"
-    ],
-    "再監査": [
-      "lessons-learned.md"
     ],
     "仕様書修正タスク": [
       "lessons-learned.md"

@@ -691,8 +691,8 @@ SkillCenterView は既存の IPC チャネルを利用する。TASK-9F（スキ�
 | ツール一覧取得       | `skill:list`             | なし                                              | 初期読み込み・リフレッシュ時                    |
 | ツール追加           | `skill:import`           | `skillName: string`                               | P44解決済み: string を直接渡す（ローカル用）    |
 | ツール削除           | `skill:remove`           | `skillName: string`                               | P44/P45解決済み: skillName に統一済み           |
-| ツール詳細取得       | `skill:detail`           | `skillName: string`                               | DetailPanel 表示用                              |
-| SKILL.md取得         | `skill:readMarkdown`     | `skillName: string`                               | SkillMarkdownCollapse 表示用                    |
+| ツール詳細取得       | `skill:get-detail`       | `{ skillId: string }`                             | DetailPanel 表示用（実装契約に準拠）            |
+| SKILL.md取得         | `skill:readFile`         | `{ skillName: string, relativePath: "SKILL.md" }` | SkillMarkdownCollapse 表示用（TASK-9A契約準拠） |
 | 外部ソースインポート | `skill:importFromSource` | `ShareTarget`                                     | 外部ソースからのスキルインポート（TASK-9F追加） |
 | インポート元検証     | `skill:validateSource`   | `ShareTarget`                                     | インポート元の検証（TASK-9F追加）               |
 | スキルエクスポート   | `skill:export`           | `{ skillName: string, destination: ShareTarget }` | スキルのエクスポート（TASK-9F追加）             |

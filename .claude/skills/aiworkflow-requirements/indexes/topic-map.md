@@ -1528,24 +1528,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001: Phase 12 仕様更新リンク同期ガード | L78 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L126 |
-| 目次 | L182 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L347 |
-| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L506 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L555 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L604 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L778 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L829 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L899 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1207 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1318 |
-| 関連ドキュメント | L1457 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1467 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1644 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1702 |
-| TASK-FIX-14-1: console → electron-log 移行 | L1845 |
-| TASK-FIX-11-1: SDK統合テスト有効化 | L1949 |
+| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001: Phase 12 仕様更新リンク同期ガード | L82 |
+| TASK-013 再監査: 監査結果を次アクションへ接続する運用 | L130 |
+| TASK-013 追補: スキル検証ゲート運用（quick_validate） | L185 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L212 |
+| 目次 | L268 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L433 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L592 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L641 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L690 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L864 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L915 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L985 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1293 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1404 |
+| 関連ドキュメント | L1543 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1553 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1730 |
+| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1788 |
 
 ### references/llm-embedding.md
 
@@ -1887,9 +1887,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L1104 |
-| 関連ドキュメント | L1256 |
-| 変更履歴 | L1266 |
+| 残課題（未タスク） | L1147 |
+| 関連ドキュメント | L1301 |
+| 変更履歴 | L1311 |
 
 ### references/testing-accessibility.md
 

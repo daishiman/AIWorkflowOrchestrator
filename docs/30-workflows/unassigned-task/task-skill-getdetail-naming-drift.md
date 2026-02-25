@@ -1,4 +1,4 @@
-# skill:get-detail引数名ドリフト修正 - タスク指示書
+# skill:get-detail引数名ドリフト修正 - タスク指示書（再評価クローズ）
 
 ## メタ情報
 
@@ -14,224 +14,151 @@ issue_number: 861
 | 対象機能     | skill:get-detail IPCハンドラ                               |
 | 優先度       | 低                                                         |
 | 見積もり規模 | 小規模                                                     |
-| ステータス   | 未実施                                                     |
+| ステータス   | 再評価クローズ（対応不要）                                 |
 | 発見元       | Phase 12（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 コード調査） |
 | 発見日       | 2026-02-21                                                 |
+| クローズ日   | 2026-02-25                                                 |
 | issue_number | 861                                                        |
 
 ## 1. なぜこのタスクが必要か（Why）
 
 ### 1.1 背景
 
-UT-FIX-SKILL-REMOVE-INTERFACE-001でP45（IPC引数命名の契約ドリフト）パターンが発見・修正された。skill:removeハンドラの引数名`skillId`が実際にはスキル名（skillName）を受け取っていたため、全レイヤーで`skillName`に統一された。しかし、同様のドリフトパターンがskill:get-detailハンドラにも存在する。
+UT-FIX-SKILL-REMOVE-INTERFACE-001 で P45（IPC引数命名ドリフト）が実際に発生していたため、同系統の `skill:get-detail` も再点検対象として登録された。
 
-### 1.2 問題点・課題
+### 1.2 再評価で判明した事実
 
-skillHandlers.ts L183-210のskill:get-detailハンドラでは以下の状態：
+2026-02-25 の再監査で以下を確認し、当初の前提（`skillId` が実態は `skillName`）は成立しないと判定した。
 
-- 引数型: `args: { skillId: string }` -- 「ID」を受け取る命名
-- 内部呼び出し: `skillService.getSkillById(args.skillId)` -- IDベースの検索メソッド
-- 実際に渡される値: スキルの「名前」（例: "my-skill"）の可能性
+- `SkillService.scanAvailableSkills()` は `this.cache.set(skill.id, skill)` で ID キー保存
+- `SkillService.getSkillById(id)` は `this.cache.get(id)` で ID 検索
+- `skill:get-detail` ハンドラは `args.skillId` を `getSkillById` に渡しており、命名と実装セマンティクスが一致
 
-SkillService.getSkillById()の内部実装が名前ベースの検索を行っている場合、P45パターン（命名と実態の乖離）が発生している。コードレビューで「IDを渡しているのか名前を渡しているのか」が不明確になる。
+### 1.3 放置時の影響
 
-### 1.3 放置した場合の影響
-
-- 将来、スキルにUUID形式のIDを導入した場合、`getSkillById`が名前検索のまま残り、IDベースの検索に移行できない
-- 新規開発者がskillIdという引数名を見て、UUID形式のIDを渡すコードを書く可能性がある
-- skill:importとskill:removeが`skillName`に統一されたのに、skill:get-detailだけ`skillId`が残り、API一貫性が損なわれる
+誤検知のまま未タスクを残すと、実装契約に問題がない箇所を不要変更するリスクがあるため、台帳の状態を正しくクローズする必要がある。
 
 ## 2. 何を達成するか（What）
 
 ### 2.1 目的
 
-skill:get-detailハンドラの引数名をセマンティクスに合致する名称に修正し、P45パターンを解消する。
+本未タスクを「実装不要（再評価クローズ）」として明確化し、仕様・台帳の整合性を回復する。
 
 ### 2.2 最終ゴール
 
-- skill:get-detailの引数が`skillName: string`または適切な名称に修正されている
-- SkillService.getSkillById()のメソッド名が実態に合致している（またはIDベースの検索が正しく機能している）
-- Preload側の型定義と引数名が一致している
-- 全テストPASS
+- 未タスク指示書のステータスがクローズへ更新されている
+- aiworkflow-requirements 側の残課題テーブルがクローズ状態に同期されている
+- 再監査成果物に判断根拠が記録されている
 
 ### 2.3 スコープ
 
 #### 含むもの
 
-- skill:get-detailハンドラの引数名修正（skillHandlers.ts）
-- SkillService.getSkillById()のメソッド名・引数名修正（実態に合わせる）
-- Preload側skill-api.tsの引数名修正
-- preload/types.tsの型定義更新
-- 既存テストの引数名更新
+- 本指示書のクローズ更新
+- `task-workflow.md` / `interfaces-agent-sdk-skill.md` へのクローズ反映
+- 再監査成果物への根拠記録
 
 #### 含まないもの
 
-- 他のIPCハンドラの引数名修正（UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001で対応）
-- UUIDベースのスキルID導入
-- UIコンポーネントの変更
+- `skill:get-detail` の実装変更
+- Preload API/テストの命名変更
 
 ### 2.4 成果物
 
-| 成果物                   | パス                                                      |
-| ------------------------ | --------------------------------------------------------- |
-| 修正済みskillHandlers.ts | apps/desktop/src/main/ipc/skillHandlers.ts                |
-| 修正済みSkillService.ts  | apps/desktop/src/main/services/skill/SkillService.ts      |
-| 修正済みskill-api.ts     | apps/desktop/src/preload/skill-api.ts                     |
-| 修正済みpreload/types.ts | apps/desktop/src/preload/types.ts                         |
-| 更新済みテストファイル   | apps/desktop/src/main/ipc/**tests**/skillHandlers.test.ts |
+| 成果物                     | パス                                                                                                |
+| -------------------------- | --------------------------------------------------------------------------------------------------- |
+| クローズ済み未タスク指示書 | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md`                            |
+| 残課題テーブル更新         | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                |
+| 関連未タスクテーブル更新   | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`                   |
+| 再監査レポート             | `docs/30-workflows/completed-tasks/task-013-subagent-team/outputs/compliance-recheck-2026-02-25.md` |
 
 ## 3. どのように実行するか（How）
 
 ### 3.1 前提条件
 
-- UT-FIX-SKILL-IMPORT-RETURN-TYPE-001が完了していること
-- UT-FIX-SKILL-REMOVE-INTERFACE-001が完了していること（P45修正の先例）
+- `skillHandlers.ts` と `SkillService.ts` の現行実装を確認済みであること
+- 旧監査（2026-02-25 初回）結果との差分を把握していること
 
 ### 3.2 依存タスク
 
-| タスクID                          | 状態 | 依存内容              |
-| --------------------------------- | ---- | --------------------- |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001 | 完了 | P45パターン修正の先例 |
+| タスクID                                | 状態 | 依存内容                                          |
+| --------------------------------------- | ---- | ------------------------------------------------- |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | 完了 | P42バリデーション整合（命名ドリフト判定とは独立） |
 
 ### 3.3 必要な知識
 
-- P45（IPC引数命名の契約ドリフト）パターン
-- P23/P32（3箇所同時更新）
-- Electron IPC通信（ipcMain.handle）
+- P45（IPC引数命名ドリフト）の判定基準
+- `SkillService` の ID/Name 検索の役割分離
 
 ### 3.4 推奨アプローチ
 
-1. まずSkillService.getSkillById()の内部実装を確認し、ID検索か名前検索かを判定する
-2. 名前検索の場合: 全レイヤーで`skillId`→`skillName`に統一（UT-FIX-SKILL-REMOVE-INTERFACE-001と同パターン）
-3. ID検索の場合: 引数名は正しいため、Preload側の呼び出し元が正しいIDを渡しているか確認
-4. P23/P32準拠で3箇所（ハンドラ・Preload API・テスト）を同時更新
+1. ID検索実体（`cache.set(skill.id, skill)`）を先に確認する
+2. ハンドラ引数と呼び出し先メソッドの意味一致を確認する
+3. 未タスクを「実装」ではなく「再評価クローズ」で整理する
 
 ### 3.5 実装課題と解決策（親タスクからの教訓）
 
-| 課題                        | 発見経緯                                                                                          | 解決策                                                  | 教訓                                                               |
-| --------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------ |
-| 引数命名と実態の乖離（P45） | UT-FIX-SKILL-REMOVE-INTERFACE-001でskillId→skillNameドリフトを修正した際に同パターンの存在を確認  | 全レイヤーで引数名を実際のセマンティクスに合致させる    | IPCハンドラの引数名はPreload側で渡す値のセマンティクスと一致させる |
-| 3層同時更新の必要性         | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001でMain/Preload/テストの3箇所を同時更新しないと不整合が発生した | P23/P32準拠で変更前に全レイヤーの該当箇所をリストアップ | 1箇所だけの修正は不整合を生む                                      |
-
-**参照**:
-
-- [06-known-pitfalls.md P45](../../.claude/rules/06-known-pitfalls.md)
-- [architecture-implementation-patterns.md S13](../../.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
-
-### 3.6 実装課題と解決策（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001からの教訓）
-
-UT-FIX-SKILL-VALIDATION-CONSISTENCY-001（2026-02-24完了）でP45引数名ドリフトを検出・文書化した際の知見:
-
-| #   | 苦戦箇所                                                                                                                                       | 解決策                                                                                           | 本タスクへの適用                                                                                                               |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | **命名ドリフトの検出方法**: `grep -rn "skillId" apps/desktop/src/main/ipc/skillHandlers.ts` でセマンティクス不一致箇所を特定                   | IPC契約検証（documentation-changelog Step 3）でハンドラ引数名と実際に渡される値を1行ずつ突合した | `getSkillById`→`getSkillByName`等の内部メソッド名も合わせて修正すること。全レイヤー（Handler/Service/Manager）の一括変更が必要 |
-| 2   | **P42バリデーションとの同時適用**: skill:get-detailの引数名を`skillId`→`skillName`に変更する場合、同時にP42準拠の`.trim()`チェックも確認が必要 | 現タスクでP42準拠は適用済み。引数名変更のみが残スコープ                                          | P42準拠3段バリデーションは適用済みのため、引数名の変更とバリデーションメッセージ内の変数名修正のみ                             |
-| 3   | **3箇所同時更新の必要性**: P23/P32準拠でHandler・Preload API・テストの3箇所を同一コミットで修正する必要がある                                  | skill:remove修正時（UT-FIX-SKILL-REMOVE-INTERFACE-001）で検証済みパターン                        | Handler引数名変更→Service/Managerパラメータ名変更→テスト期待値変更を1コミットで実施                                            |
-
-#### 参照ドキュメント
-
-- [06-known-pitfalls.md P45](../../.claude/rules/06-known-pitfalls.md) — IPC引数命名の契約ドリフト
-- [documentation-changelog.md Step 3](../completed-tasks/skill-validation-consistency/outputs/phase-12/documentation-changelog.md) — IPC契約検証結果
-- [ipc-contract-checklist.md](../../.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md) — IPC契約ドリフト防止チェックリスト
+| #   | 課題                                        | 解決策                                         | 教訓                                                     |
+| --- | ------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------- |
+| 1   | P45は命名だけでなく実データの意味確認が必要 | サービス層のキャッシュキー定義まで遡って確認   | IPC引数名の是正は実データ構造を確認してから判断する      |
+| 2   | 旧監査結果が先行して残課題化される          | 再監査フェーズで「誤検知クローズ」を台帳へ反映 | 未タスクは「追加」だけでなく「クローズ」も同等に運用する |
 
 ## 4. 実行手順
 
 ### Phase構成
 
-本タスクは小規模のため、Phase 1-13の簡略版で実行する。
-
-| Phase | 名称                           | 概要                                   |
-| ----- | ------------------------------ | -------------------------------------- |
-| 1-3   | 要件定義・設計・レビュー       | getSkillById()の実態調査、修正方針決定 |
-| 4-5   | テスト作成・実装               | 引数名修正、テスト更新                 |
-| 6-10  | テスト拡充・品質検証           | カバレッジ確認、Lint/型チェック        |
-| 11-13 | 手動テスト・ドキュメント・完了 | 検証・文書化・PR                       |
-
-### Phase 1: 要件定義
-
-#### 手順
-
-1. SkillService.getSkillById()の実装を確認（IDベースか名前ベースか判定）
-2. Preload側skill-api.tsのgetDetail()呼び出し箇所を確認
-3. Renderer側でgetDetail()に渡される値のセマンティクスを確認
-
-### Phase 5: 実装
-
-#### 手順
-
-1. SkillService.getSkillById()のメソッド名を修正（必要に応じて）
-2. skillHandlers.ts L183-210の引数名を修正
-3. skill-api.tsの引数名を修正
-4. preload/types.tsの型定義を更新
-5. テストの引数名を更新
+| Phase | 名称       | 概要                                 |
+| ----- | ---------- | ------------------------------------ |
+| 1     | 実装再確認 | Handler/Service のセマンティクス確認 |
+| 2     | 台帳同期   | 仕様書テーブルをクローズ状態へ更新   |
+| 3     | 証跡出力   | 再監査成果物へ根拠を出力             |
 
 ## 5. 完了条件チェックリスト
 
 ### 機能要件
 
-- [ ] skill:get-detailの引数名がセマンティクスと一致している
-- [ ] SkillServiceのメソッド名が実態に合致している
-- [ ] Preload側の型定義と引数名が一致している
-- [ ] Renderer側の呼び出し箇所が正しく動作している
+- [x] `skill:get-detail` が ID 検索契約であることを確認
+- [x] 本未タスクのステータスを再評価クローズへ更新
+- [x] 仕様書テーブル（2箇所）をクローズ状態へ同期
 
 ### 品質要件
 
-- [ ] TypeCheck 0エラー
-- [ ] ESLint 0エラー
-- [ ] 全テストPASS
+- [x] 参照リンクが実在パスを指している
+- [x] 再監査根拠が outputs に残っている
 
 ### ドキュメント要件
 
-- [ ] Phase 12 実装ガイド作成
-- [ ] システム仕様書更新
+- [x] aiworkflow-requirements の LOGS/SKILL へ反映
+- [x] task-specification-creator の LOGS/SKILL へ反映
 
 ## 6. 検証方法
 
 ### テストケース
 
-1. skill:get-detailハンドラに正しい引数名で値を渡し、期待通りの結果が返ることを検証
-2. 不正な引数（空文字列、null等）に対してバリデーションエラーが返ることを検証
-3. 型チェックで引数名の不整合がないことを検証
+1. `SkillService.scanAvailableSkills()` が `skill.id` キーでキャッシュ保存していること
+2. `SkillService.getSkillById()` が `Map#get(id)` で取得していること
+3. `skill:get-detail` が `args.skillId` をそのまま `getSkillById` に渡していること
 
 ### 検証手順
 
 ```bash
-pnpm typecheck
-cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillHandlers.test.ts
-pnpm lint
+rg -n "cache\.set\(skill\.id|getSkillById\(|skill:get-detail" apps/desktop/src/main
 ```
 
 ## 7. リスクと対策
 
-| リスク                                                   | 影響度 | 発生確率 | 対策                                                                   |
-| -------------------------------------------------------- | ------ | -------- | ---------------------------------------------------------------------- |
-| getSkillById()がID検索の場合、修正不要と判断されるリスク | 低     | 中       | Phase 1で実装を必ず確認してから方針決定                                |
-| Renderer側の呼び出し箇所での引数名変更漏れ               | 中     | 低       | `grep -rn "getDetail\|skillId" apps/desktop/src/renderer/`で全箇所調査 |
-| テストモックの引数名更新漏れ                             | 低     | 中       | テストファイル内の`skillId`を一括検索・置換                            |
+| リスク                           | 影響度 | 発生確率 | 対策                                                                          |
+| -------------------------------- | ------ | -------- | ----------------------------------------------------------------------------- |
+| 過去成果物に「未解消」記載が残る | 低     | 中       | 再監査レポートで supersede を明記する                                         |
+| 今後 ID/Name 契約が変わる        | 中     | 低       | 変更時に `interfaces-agent-sdk-skill.md` と `task-workflow.md` を同時更新する |
 
 ## 8. 参照情報
 
-### 関連ドキュメント
-
-- [06-known-pitfalls.md P45](../../.claude/rules/06-known-pitfalls.md) - IPC引数命名の契約ドリフト
-- [interfaces-agent-sdk-skill.md](../../.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md) - スキルAPI仕様
-- [ipc-type-resolution-guide.md](../../.claude/skills/aiworkflow-requirements/references/ipc-type-resolution-guide.md) - IPC型不整合診断ガイド
-
-### 関連完了タスク
-
-- UT-FIX-SKILL-REMOVE-INTERFACE-001（P45パターン修正の先例）
-- UT-FIX-SKILL-IMPORT-INTERFACE-001（skill:import引数形式修正）
+- `apps/desktop/src/main/ipc/skillHandlers.ts`
+- `apps/desktop/src/main/services/skill/SkillService.ts`
+- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`
+- `.claude/skills/aiworkflow-requirements/references/task-workflow.md`
 
 ## 9. 備考
 
-### P45パターンの修正実績
-
-UT-FIX-SKILL-REMOVE-INTERFACE-001では以下の修正を実施した（本タスクの参考）：
-
-- ハンドラ引数: `{ skillId: string }` → `skillName: string`
-- 内部メソッド: `removeSkill(skillId)` → `removeSkill(skillName)`
-- 全レイヤーで統一し、テスト全PASS
-
-### 補足事項
-
-skill:get-detailのgetSkillById()が本当にID検索を行っている場合は、引数名の修正は不要です。Phase 1で実装を確認し、方針を決定してください。
+本タスクは「実装不足」ではなく「監査時の仮説が不成立」と判定されたため、完了ではなく**再評価クローズ**として管理する。

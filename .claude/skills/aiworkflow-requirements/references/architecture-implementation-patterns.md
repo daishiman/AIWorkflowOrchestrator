@@ -2135,8 +2135,8 @@ Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }
 | `skill:list` | なし | ローカルスキル一覧 | 既存 |
 | `skill:import` | `skillName: string` | ローカルスキル読込 | 既存（変更不要） |
 | `skill:remove` | `skillName: string` | ローカルスキル削除 | 既存 |
-| `skill:detail` | `skillName: string` | スキル詳細取得 | 既存 |
-| `skill:readMarkdown` | `skillName: string` | Markdown読み取り | 既存 |
+| `skill:get-detail` | `{ skillId: string }` | スキル詳細取得 | 既存 |
+| `skill:readFile` | `{ skillName: string, relativePath: string }` | ファイル読み取り（`SKILL.md` 含む） | 既存 |
 | `skill:importFromSource` | `ShareTarget` | 外部ソースインポート | TASK-9F新規 |
 | `skill:validateSource` | `ShareTarget` | インポート元の検証 | TASK-9F新規 |
 | `skill:export` | `{ skillName: string, destination: ShareTarget }` | スキルエクスポート | TASK-9F新規 |

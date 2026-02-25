@@ -101,6 +101,32 @@ export interface CallStackEntry {
   startTime: string; // ISO 8601
 }
 
+export type DebugEvent =
+  | {
+      type: "step";
+      sessionId: string;
+      step: DebugStep;
+    }
+  | {
+      type: "breakpoint-hit";
+      sessionId: string;
+      breakpoint: Breakpoint;
+      step?: DebugStep;
+    }
+  | {
+      type: "variable-changed";
+      sessionId: string;
+      path: string;
+      value: unknown;
+    }
+  | {
+      type: "session-ended";
+      sessionId: string;
+      error?: string;
+      /** @format ISO 8601 */
+      completedAt?: string; // ISO 8601
+    };
+
 export type DebugCommand =
   | "continue"
   | "stepOver"

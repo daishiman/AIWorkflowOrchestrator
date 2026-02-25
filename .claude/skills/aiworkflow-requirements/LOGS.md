@@ -83,6 +83,87 @@
 
 ---
 
+## 2026-02-25 - TASK-013 追補未タスク作成（quick_validate運用課題）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-013 再監査の検証運用追補
+- 目的: `quick_validate` で顕在化した課題を未タスク化し、再発防止の実行計画を固定する
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/` に未タスク仕様書2件を作成
+  - `task-imp-task-spec-skill-md-line-budget-001.md`
+  - `task-imp-skill-quick-validate-warning-baseline-control-001.md`
+- `references/task-workflow.md` 残課題テーブルへ2件を登録し、変更履歴を更新
+- `references/lessons-learned.md` に苦戦箇所（500行超過エラー/警告ノイズ）と簡潔解決手順を追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 未タスク指示書は Why/What/How + 3.5（実装課題と解決策）を満たす形式で作成
+
+---
+
+## 2026-02-25 - TASK-013 実装内容・苦戦箇所のテンプレート運用同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-013 再監査の再利用性改善
+- 目的: 実装内容と苦戦箇所を「同種課題で即再利用できる形」に固定化
+
+### 実施内容
+- `references/task-workflow.md` の TASK-013 完了セクションに `phase12-action-bridge-template.md` 起点の運用手順を追記
+- `references/lessons-learned.md` に苦戦箇所（action-bridge 記述揺れ）とテンプレート起点の5ステップを追加
+- `SKILL.md` 変更履歴へ v8.77.0 を追記し、テンプレート運用の反映範囲を明示
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: Phase 12再監査の「監査→実行」変換がテンプレートで再現可能になった
+
+---
+
+## 2026-02-25 - TASK-013 Phase 12再確認（実行導線固定 + 未タスク配置是正）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-013 再監査の最終整合
+- 目的: 「監査結果→次アクション」導線と Phase 12 証跡を仕様体系へ確定反映
+
+### 実施内容
+- `references/task-workflow.md` 変更履歴へ TASK-013 再監査の実行導線化（task-013e）を反映
+- `references/lessons-learned.md` に TASK-013 固有の苦戦箇所（指摘止まり/証跡散在/baseline-current混同）を追記
+- 未実施の未タスク6件を `completed-tasks/unassigned-task/` から `docs/30-workflows/unassigned-task/` へ再配置
+- 関連参照（task-workflow/interfaces/完了タスク成果物内リンク）を新パスへ同期
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: `verify-unassigned-links.js` 91/91 PASS、`quick_validate.py`（3スキル）すべて `Skill is valid!`
+
+---
+
+## 2026-02-25 - TASK-013 仕様準拠再監査（UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 再評価クローズ）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-013 再確認 / `UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001`
+- 目的: 監査で検出された命名ドリフト疑義の再判定と台帳整合
+
+### 実施内容
+- `skill:get-detail` の契約を実装で再検証（`cache.set(skill.id, skill)` + `getSkillById`）
+- `references/interfaces-agent-sdk-skill.md` の関連未タスク表を再評価クローズに更新
+- `references/task-workflow.md` の残課題テーブルを再評価クローズに更新
+- `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` を再評価クローズ版へ更新
+- `task-013-subagent-team/outputs` に再監査レポート2件を追加
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 参照整合検証 `verify-unassigned-links.js` は 91/91 で成功
+
+---
+
 ## 2026-02-25 - Phase 12完了済み成果物の completed-tasks への移管
 
 ### コンテキスト
