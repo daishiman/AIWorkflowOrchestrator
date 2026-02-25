@@ -10,12 +10,13 @@ category: 改善
 target_feature: aiworkflow-requirements の Phase 12 台帳同期
 priority: 中
 scale: 小規模
-status: 未着手
+status: 完了（spec_created）
 source_phase: UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認
 created_date: 2026-02-25
+completed_date: 2026-02-25
 dependencies:
   [UT-IPC-AUTH-HANDLE-DUPLICATE-001, UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001]
-spec_path: docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md
+spec_path: docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md
 ```
 
 | 項目         | 値                                                                                            |
@@ -26,7 +27,7 @@ spec_path: docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-
 | 対象機能     | `aiworkflow-requirements` の Phase 12 台帳同期（`task-workflow.md` / `SKILL.md` / `LOGS.md`） |
 | 優先度       | 中                                                                                            |
 | 見積もり規模 | 小規模                                                                                        |
-| ステータス   | 未着手                                                                                        |
+| ステータス   | 完了（spec_created）                                                                          |
 | 発見元       | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認                                              |
 | 発見日       | 2026-02-25                                                                                    |
 

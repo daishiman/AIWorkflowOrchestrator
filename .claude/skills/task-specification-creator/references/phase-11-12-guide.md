@@ -114,6 +114,52 @@
 | 新規定数/設定値追加 | バグ修正（仕様変更なし） |
 | 外部連携インターフェース追加 | テスト追加のみ |
 
+#### 3点同期チェックリスト（task-workflow / SKILL / LOGS）
+
+以下は Phase 12 Task 2 Step 1-A の実行順序で運用する。
+
+1. `task-workflow.md` を更新する
+2. `SKILL.md` を2ファイル更新する
+3. `LOGS.md` を2ファイル更新する（最後に実行）
+
+```markdown
+- [ ] `task-workflow.md` の残課題テーブルと完了タスクセクションを更新した
+- [ ] `aiworkflow-requirements/SKILL.md` の変更履歴を更新した
+- [ ] `task-specification-creator/SKILL.md` の変更履歴を更新した
+- [ ] `aiworkflow-requirements/LOGS.md` に完了記録を追加した
+- [ ] `task-specification-creator/LOGS.md` に完了記録を追加した
+```
+
+突合コマンド:
+
+```bash
+grep -c "UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001" \
+  .claude/skills/aiworkflow-requirements/references/task-workflow.md \
+  .claude/skills/aiworkflow-requirements/SKILL.md \
+  .claude/skills/task-specification-creator/SKILL.md \
+  .claude/skills/aiworkflow-requirements/LOGS.md \
+  .claude/skills/task-specification-creator/LOGS.md
+```
+
+#### baseline / current 分離記録テンプレート
+
+```markdown
+### 監査結果分類
+
+#### baseline（既存課題・スコープ外）
+| 検出内容 | 該当ファイル | 対応方針 |
+| --- | --- | --- |
+| 例: 既存リンク切れ | xxx.md | 別タスク化 |
+
+#### current（今回修正必須）
+| 検出内容 | 該当ファイル | 修正内容 | 修正完了 |
+| --- | --- | --- | --- |
+| 例: 新規参照切れ | yyy.md | 参照パス修正 | [ ] |
+
+#### 最終判定
+audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→ current <PASS/FAIL>
+```
+
 ---
 
 #### Task 3: ドキュメント更新履歴作成
@@ -192,6 +238,8 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
+- [ ] `docs/30-workflows/{{FEATURE_NAME}}/phase-*.md` に完了済みタスクの旧 `unassigned-task` 参照が残っていないことを確認
+- [ ] `docs/30-workflows/{{FEATURE_NAME}}/outputs/` とルート `outputs/` の成果物差分が0件であることを確認（旧成果物残置なし）
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
 - [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js` を実行し、フォーマット違反/命名違反/誤配置が0件であることを確認
@@ -226,6 +274,15 @@ node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.j
   --scan apps/desktop/src/main/ipc \
   --output docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/.tmp-unassigned-candidates.json
 
+# 完了移管後の旧参照残存チェック（Phase仕様書）
+rg -n "docs/30-workflows/unassigned-task/task-.*\\.md" \
+  docs/30-workflows/{{FEATURE_NAME}}/phase-*.md
+
+# outputs同期差分チェック（差分0が正常）
+comm -3 \
+  <(cd docs/30-workflows/{{FEATURE_NAME}}/outputs && find . -type f | sort) \
+  <(cd outputs && find . -type f | sort)
+
 # ESLintキャッシュクリア（Hooksでエラーが残る場合）
 rm -rf node_modules/.cache/eslint-*
 pnpm lint --cache=false
@@ -256,6 +313,7 @@ python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py 
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-25 | 再監査チェックを追加: 完了移管後の旧 `unassigned-task` 参照残存チェックと、`docs/.../outputs` とルート `outputs` の差分0件確認を完了条件/自動化コマンドへ追加 |
 | 2026-02-25 | skill-creator連携を追加: Phase 12完了条件に `quick_validate.py` 検証を追加し、SKILL frontmatterの破損検知を標準化 |
 | 2026-02-25 | 未タスク監査運用を補強: `audit-unassigned-tasks.js` が既存baseline違反で失敗する場合の current差分分離手順（`detect-unassigned-tasks --scan`）と記録要件を追加 |
 | 2026-02-24 | Phase 12整合性改善: 必須タスク数を5に更新（Task 5: skill-feedback-report 必須化）。完了条件に `spec-update-summary.md` 作成・`artifacts.json` 二重台帳同期チェックを追加 |
