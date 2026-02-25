@@ -1,0 +1,418 @@
+{
+  "feature": "ut-imp-unassigned-audit-scope-control-001",
+  "created": "2026-02-25T05:58:57.887Z",
+  "lastUpdated": "2026-02-25T09:48:53.487Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:50.307Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/subagent-responsibilities.md",
+          "description": "SubAgent責務分担"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/aiworkflow-spec-extraction.md",
+          "description": "仕様参照抽出"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:50.607Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/scope-control-design.md",
+          "description": "設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/cli-contract.md",
+          "description": "入出力仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-test-mapping.md",
+          "description": "テストマッピング"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/risk-analysis.md",
+          "description": "リスク分析"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:50.881Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md",
+          "description": "指摘一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/remediation-plan.md",
+          "description": "是正計画"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:51.182Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-commands.md",
+          "description": "実行コマンド集"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/regression-cases.md",
+          "description": "回帰ケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/pre-implementation-red.log",
+          "description": "Red証跡"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:51.463Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-log.md",
+          "description": "実装ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/diff-summary.md",
+          "description": "差分サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/impact-analysis.md",
+          "description": "影響分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/post-implementation-green.log",
+          "description": "Green証跡"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:51.760Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "拡張結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/delta-report.md",
+          "description": "差分レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/failure-cases.md",
+          "description": "失敗ケース分析"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:52.098Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ報告"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/uncovered-items.md",
+          "description": "未網羅一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/requirements-traceability.md",
+          "description": "要件追跡表"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:52.401Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/regression-check.md",
+          "description": "回帰確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/responsibility-map.md",
+          "description": "責務分割図"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:52.687Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/reproducibility-log.md",
+          "description": "再現性ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/operation-readiness.md",
+          "description": "運用評価"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:53.036Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-findings.md",
+          "description": "指摘一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/remediation-plan.md",
+          "description": "是正計画"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-25T07:35:53.324Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-findings.md",
+          "description": "発見事項"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/command-transcript.md",
+          "description": "実行証跡"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-25T09:32:49.270Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキル改善レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/re-audit-compliance-report.md",
+          "description": "再監査コンプライアンス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase12仕様準拠確認レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/audit-script-test-rerun3.log",
+          "description": "auditスクリプトテストログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/verify-all-specs-strict-rerun6.log",
+          "description": "全体整合検証ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/validate-phase-rerun6.log",
+          "description": "Phase出力検証ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/verify-unassigned-links-rerun6.log",
+          "description": "未タスクリンク検証ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/quick-validate-aiworkflow-skillcreator-rerun4.log",
+          "description": "aiworkflow構造検証ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/quick-validate-task-spec-skillcreator-rerun4.log",
+          "description": "task-spec構造検証ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/audit-unassigned-target-rerun6.log",
+          "description": "未タスク対象監査ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/audit-unassigned-format-normalization-target.log",
+          "description": "未タスク正規化タスク監査ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/generate-index-aiworkflow-rerun5.log",
+          "description": "aiworkflow-index再生成ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/generate-index-workflow-rerun9.log",
+          "description": "workflow-index再生成ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/verify-all-specs-strict-final.log",
+          "description": "verify-all-specs --strict 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/validate-phase-final.log",
+          "description": "validate-phase-output 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/verify-unassigned-links-final.log",
+          "description": "verify-unassigned-links 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/quick-validate-aiworkflow-skillcreator-final.log",
+          "description": "aiworkflow-requirements quick_validate 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/quick-validate-task-spec-skillcreator-final.log",
+          "description": "task-specification-creator quick_validate 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/generate-index-aiworkflow-final.log",
+          "description": "aiworkflow-requirements index再生成 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/generate-index-workflow-final.log",
+          "description": "workflow index再生成 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/quick-validate-py-residual-scan-final.log",
+          "description": "旧 quick_validate 表記残存スキャン 最終ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/audit-unassigned-format-normalization-target-final.log",
+          "description": "未タスク対象監査（format-normalization）最終ログ"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "estimatedPhases": 13,
+    "actualPhases": 0
+  }
+}

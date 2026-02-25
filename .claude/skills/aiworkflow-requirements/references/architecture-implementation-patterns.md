@@ -2577,11 +2577,63 @@ jq '[.duplicateHandlers[] | select(.expr | test("SKILL"))] | length' /tmp/ut-ipc
 
 ---
 
+## 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001）
+
+### 問題
+
+未タスク監査を全体実行のみで運用すると、既存違反（baseline）が今回変更（current）の合否判定を覆い隠し、Phase 12 の完了判定が不安定になる。
+
+### 解決パターン
+
+#### 1. 判定軸を current / baseline に分離する
+
+| 監査モード | コマンド | 用途 | fail条件 |
+| --- | --- | --- | --- |
+| 対象監査 | `audit-unassigned-tasks.js --json --target-file <path>` | 今回変更の合否判定 | `currentViolations.total > 0` |
+| 差分監査 | `audit-unassigned-tasks.js --json --diff-from <ref>` | 複数変更ファイルの合否判定 | `currentViolations.total > 0` |
+| 全体監査 | `audit-unassigned-tasks.js --json` | 既存資産健全性の監視 | 全体違反 > 0 |
+
+#### 2. Phase 12 の記録を2段構成で固定する
+
+1. `unassigned-task-detection.md` に current/baseline を分離記録する  
+2. baseline違反は未タスク化の候補として管理し、今回タスクの完了判定とは分離する  
+
+#### 3. 完了済み未タスク指示書の移管を同一ターンで実施する
+
+1. `unassigned-task/` → `completed-tasks/unassigned-task/` へ物理移動  
+2. `task-workflow.md` の参照パスを同期更新  
+3. `verify-unassigned-links.js` で参照整合を確認  
+
+#### 4. Phase 12 準拠確認チェーン（skill-creator連携）を固定する
+
+```bash
+# 1) 仕様準拠
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<workflow> --strict
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>
+
+# 2) 未タスク参照整合
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md
+
+# 3) スキル構造検証（system skill-creator）
+node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
+node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+```
+
+### 適用指針
+
+- full監査結果をそのまま「今回差分fail」と解釈しない。  
+- 完了判定は current、負債管理は baseline に責務分離する。  
+- 台帳更新と物理移管を同一ターンで処理し、運用ドリフトを防止する。  
+
+---
+
 
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
+| v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |
 | v1.33.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22に再利用テンプレートを追加（目的/場所/検証/落とし穴対処）。同種課題の初動手順を標準化 |
 | v1.32.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22 AUTH IPC登録一元化パターンを追加（通常/fallback二経路の宣言的集約、回帰テスト固定、監査コマンド標準化） |
 | v1.31.0 | 2026-02-25 | UT-IPC-CHANNEL-NAMING-AUDIT-001: IPCチャネル命名監査の運用パターンを追加（対象内/対象外の3区分判定、未タスク分離、リンク検証、重複式ノイズの再発防止コマンド固定化） |

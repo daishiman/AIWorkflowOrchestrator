@@ -20,12 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-02-25 | 1.27.0 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査教訓を追加: Phase仕様書内の旧 `unassigned-task` 参照残存と `outputs/phase-12` の旧成果物残置を苦戦箇所として追記。同種課題向け簡潔解決手順を5ステップ化（参照正規化・出力同期・一時ファイル掃除を追加） |
-| 2026-02-25 | 1.26.0 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 教訓追加: Phase 12同期で発生した苦戦箇所3件（baseline/current判定混同、完了移管後リンク漏れ、LOGS先行更新による3点同期崩れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
-| 2026-02-25 | 1.25.7 | TASK-013 再監査の検証運用追補: `quick_validate` で顕在化した「SKILL.md 500行超過エラー」と「大量警告ノイズ」の2課題を追加し、未タスク化（2件）と baseline/current 分離手順を標準化 |
-| 2026-02-25 | 1.25.6 | TASK-013 再監査のテンプレート運用追補: action-bridge の記述揺れを抑制するため `skill-creator/assets/phase12-action-bridge-template.md` を標準化し、同種課題の5ステップ手順へ組み込んだ |
-| 2026-02-25 | 1.25.5 | TASK-013 再監査の追補: 未実施未タスクが `completed-tasks/unassigned-task/` に混在した課題を追加し、配置是正（6件移動）と参照同期を標準手順へ反映 |
-| 2026-02-25 | 1.25.4 | TASK-013 再監査の教訓追加: 「監査結果を次アクションへ落とし込めない」課題を記録し、task-00配下へのアクションブリッジ導線、Phase 12 必須5成果物の固定出力、baseline/current 分離報告の3点を標準手順化 |
+| 2026-02-25 | 1.25.7 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 最終追補: `verify-all-specs.js` の `--workflow` 必須条件を苦戦箇所に追加。再検証コマンドを `quick_validate.js` + `verify-all-specs --workflow` に統一 |
+| 2026-02-25 | 1.25.6 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 追補: `quick_validate` 実行経路を `/Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js` に統一。検証コマンドの重複記載を整理し、再利用時の経路混同を防止 |
+| 2026-02-25 | 1.25.5 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12準拠確認で発生した苦戦箇所（証跡同期漏れリスク、quick_validate実行経路の混同）を追加。`target→full→validate→sync` の4ステップを標準手順化 |
+| 2026-02-25 | 1.25.4 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 教訓追加: `audit-unassigned-tasks.js` の `--target-file`/`--diff-from` による current 判定と、scope未指定の baseline 監視を分離する運用を追加。完了済み未タスク指示書の移管漏れ防止手順を明文化 |
 | 2026-02-25 | 1.24.0 | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 教訓追加: task-9D〜9J 仕様差分是正で発生した苦戦箇所3件（旧パス混在、artifacts必須項目漏れ、Date型方針ドリフト）と同種課題向け簡潔解決手順（5ステップ）を追加 |
 | 2026-02-25 | 1.25.3 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 の簡潔解決テンプレートを追加。目的/前提/4ステップ/検証/失敗時対処を1ページ化し、同種課題の初動時間短縮を明文化 |
 | 2026-02-25 | 1.25.2 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 再監査教訓を追記。全体監査FAILと今回差分FAILの混同、完了移管後リンク更新漏れの2課題を追加し、4ステップ是正手順を明文化 |
@@ -78,136 +76,6 @@
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
 
 ---
-
-## UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001: Phase 12 仕様更新リンク同期ガード
-
-### 苦戦箇所1: baseline/current 判定の混同
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 全体監査FAILを今回差分FAILと誤認し、不要な差し戻しが発生した |
-| 原因 | baseline（既存違反）とcurrent（今回差分）を同一判定で扱った |
-| 対処 | `audit-unassigned-tasks` と `detect-unassigned-tasks --scan <dir>` を併用して分離記録した |
-| 教訓 | 監査判定は「全体健全性」と「今回差分起因」を分離して記録する |
-
-### 苦戦箇所2: 完了移管後リンクの更新漏れ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 完了済みタスクの参照が `unassigned-task/` のまま残り、検証で失敗した |
-| 原因 | 台帳更新とリンク検証を別手順にしていた |
-| 対処 | 完了移管と同一ターンで `verify-unassigned-links.js` を必須実行した |
-| 教訓 | 未タスク移管は「台帳更新 + 参照検証」をワンセットで実施する |
-
-### 苦戦箇所3: 3点同期の実行順序崩れ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | LOGS.md を先に更新し、SKILL.md/台帳との差分が一時残存した |
-| 原因 | Step 1-A の実行順序を固定していなかった |
-| 対処 | `task-workflow.md → SKILL.md x2 → LOGS.md x2` の固定順を明文化した |
-| 教訓 | LOGS.md は最終ステップで更新し、途中完了扱いを禁止する |
-
-### 苦戦箇所4: Phase仕様書と成果物ディレクトリのドリフト
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | Phase仕様書に旧 `unassigned-task` 参照が残り、`outputs/phase-12` に旧成果物が残置した |
-| 原因 | 実体移管後に「仕様書本文」と「出力ディレクトリ」の両方を同時突合していなかった |
-| 対処 | `phase-1/11/12/13` の参照を `completed-tasks` へ正規化し、旧成果物と一時ファイルを削除した |
-| 教訓 | 「台帳更新済み」を根拠にせず、Phase仕様書本文と outputs 実体を最終ターンで再突合する |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. `task-workflow.md` 更新後に `verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認する  
-2. `SKILL.md` 2ファイルと `LOGS.md` 2ファイルを固定順で同期する  
-3. `generate-index.js` を2スキルで実行し、索引差分を吸収する  
-4. `docs/30-workflows/<workflow>/phase-*.md` 内の `unassigned-task/<task>.md` 参照を `completed-tasks/<task>.md` へ正規化する  
-5. 監査結果を baseline/current に分離し、`outputs/phase-12` の旧成果物・一時ファイルを掃除して `spec-update-summary.md` に記録する
-
----
-
-## TASK-013 再監査: 監査結果を次アクションへ接続する運用
-
-### 苦戦箇所: 監査結果が「指摘一覧」で止まり、実行順序が見えない
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 仕様差分の指摘はあるが、次にどのタスクから着手するかが文書化されていない |
-| 原因 | 監査成果物と実行計画が別文書で分断され、橋渡しドキュメントが不在 |
-| 対処 | `task-00-unified-implementation-sequence/task-013e-phase12-action-bridge.md` を新規作成し、優先度・Wave・担当を固定 |
-| 教訓 | 「監査レポート」と「実行計画」を1ステップで接続する文書を必ず置く |
-
-### 苦戦箇所: Phase 12 準拠の証跡が散在し、完了判定が曖昧になる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | Task 1〜5 の成果物が分散し、実施済みかを一目で確認できない |
-| 原因 | `outputs/phase-12/` の固定構成が使われていなかった |
-| 対処 | `implementation-guide.md` / `documentation-changelog.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を標準配置 |
-| 教訓 | Phase 12は「成果物5点セット」を固定化し、欠落を許容しない |
-
-### 苦戦箇所: 全体監査FAILと今回差分FAILの混同
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `audit-unassigned-tasks.js` の既存違反を、今回変更の不備と誤判定しやすい |
-| 原因 | baseline と current を分離せずに1つの結果で報告していた |
-| 対処 | `detect-unassigned-tasks --scan <変更範囲>` を併用し、差分起因を別表で記録 |
-| 教訓 | 監査報告は必ず baseline/current の二層で提示する |
-
-### 苦戦箇所: 未実施未タスクの配置ドリフト（completed配下混在）
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 未実施の未タスク指示書が `completed-tasks/unassigned-task/` に混在し、監査で誤配置扱いになる |
-| 原因 | 完了済み指示書の移管ルールと未実施の配置ルールを同時に運用できていなかった |
-| 対処 | 未実施6件を `docs/30-workflows/unassigned-task/` へ移動し、`task-workflow.md` などの参照を一括同期 |
-| 教訓 | 完了移管と未実施配置は別ルール。Phase 12 で `completed-tasks/unassigned-task` の未実施混在を機械検査する |
-
-### 苦戦箇所: action-bridge 文書の構造が毎回ぶれる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 優先度/Wave/SubAgent/成果物の記載形式がタスクごとに揺れ、レビューで読み直しが発生する |
-| 原因 | action-bridge 専用テンプレートがなく、都度ゼロから記述していた |
-| 対処 | `skill-creator/assets/phase12-action-bridge-template.md` を新規作成し、必須項目を固定化 |
-| 教訓 | 監査後の初手は「テンプレート複製」から始めると、実行導線の品質が安定する |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. `skill-creator/assets/phase12-action-bridge-template.md` を複製し、task-00 配下へ配置する  
-2. P1〜P4 の優先度と Wave（並列/直列）を固定し、着手順を明文化する  
-3. Phase 12 必須5成果物を `outputs/phase-12/` に揃えて出力する  
-4. `verify-unassigned-links.js` と `detect-unassigned-tasks --scan <変更範囲>` を同時実行する  
-5. `completed-tasks/unassigned-task` の未実施混在を検査し、`task-workflow.md` / `lessons-learned.md` / `SKILL.md` / `LOGS.md` を同一ターンで同期する  
-
-## TASK-013 追補: スキル検証ゲート運用（quick_validate）
-
-### 苦戦箇所: task-specification-creator が既知エラーで恒常FAIL
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `quick_validate` 実行時に `task-specification-creator/SKILL.md` が 500行超過で常時エラーとなる |
-| 原因 | 変更履歴肥大化により SKILL 本体が検証制約を超過した |
-| 対処 | 未タスク `UT-IMP-TASK-SPEC-SKILL-MD-LINE-BUDGET-001` を起票し、SKILL本体と履歴の分離を実施対象化 |
-| 教訓 | 既知エラーを放置すると新規差分の品質判定が機能しない |
-
-### 苦戦箇所: quick_validate 警告が多く新規異常を識別しづらい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `aiworkflow-requirements` と `skill-creator` で既知警告が大量出力され、監査ノイズ化する |
-| 原因 | 既知警告の baseline 管理がなく、毎回全量を同列扱いしていた |
-| 対処 | 未タスク `UT-IMP-SKILL-QUICK-VALIDATE-WARNING-BASELINE-CONTROL-001` を起票し、baseline/current 分離運用を整備対象化 |
-| 教訓 | 検証は「全量出力」より「差分検知」を優先しないと継続改善が難しい |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. `quick_validate` のエラーと警告を分離し、エラーは即未タスク化する  
-2. 警告は baseline/current の2層で記録し、新規警告のみ対応対象にする  
-3. 未タスク指示書に「実装課題と解決策（3.5）」を必ず含める  
-4. `task-workflow.md` / `SKILL.md` / `LOGS.md` を同一ターンで同期する  
 
 ## UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化
 
@@ -263,10 +131,77 @@
 | 参照更新を後回しにしてリンク切れを残す | 完了移管と同時に `verify-unassigned-links.js` を実行 |
 | 通常経路のみ修正してfallback経路を見落とす | Step 1で対象チャネルを2経路で明示チェック |
 
+## UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離
+
+### 苦戦箇所: 全体監査結果を今回差分の失敗と誤読しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `audit-unassigned-tasks.js --json` は既存違反を含むため、今回変更が無違反でも fail になる |
+| 原因 | current（今回差分）と baseline（既存資産）を同一判定軸で扱っていた |
+| 対処 | `--target-file` / `--diff-from` で current を抽出し、scope未指定実行は baseline 監視として別記録 |
+| 教訓 | Phase 12 は「対象監査 → 全体監査」の順序を固定すると誤判定が減る |
+
+### 苦戦箇所: 完了済み未タスク指示書の移管漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 完了後も `docs/30-workflows/unassigned-task/` に残置すると台帳と実体がずれる |
+| 原因 | 完了記録（task-workflow更新）と物理移管（completed-tasks移動）が別ターンになりやすい |
+| 対処 | 完了反映時に「行更新・物理移動・リンク検証」を同一ターンで実施 |
+| 教訓 | Step 1-B/1-E は台帳更新だけでなくファイル配置整合まで含めて完了判定する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `audit-unassigned-tasks.js --json --target-file <path>` で current 合否を先に確定する  
+2. `audit-unassigned-tasks.js --json --diff-from <ref>` で差分対象を再確認する  
+3. `audit-unassigned-tasks.js --json` を実行し baseline 健全性を別記録する  
+4. 完了した未タスク指示書を `completed-tasks/unassigned-task/` に移管し、`task-workflow.md` を同期更新する  
+5. `verify-unassigned-links.js` で参照整合を機械検証する  
+
+### 苦戦箇所: Phase 12 証跡はPASSでも台帳未同期が残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | rerunログが増えると、`artifacts.json` と `outputs/artifacts.json` の更新漏れが再発しやすい |
+| 原因 | 検証PASSで完了した気になり、台帳同期と index 再生成を後回しにしやすい |
+| 対処 | `complete-phase` 実行後に `generate-index --regenerate` と `artifacts.json` 同期を同一ターンで固定 |
+| 教訓 | Phase 12 の完了判定は「検証PASS + 台帳同期 + index同期」の3点セットで扱う |
+
+### 苦戦箇所: quick_validate 実行経路の混同
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | リポジトリ側スクリプトと system skill 側スクリプトを混同し、検証手順がぶれやすい |
+| 原因 | 呼び出し経路（ローカル相対パス / 外部スキル絶対パス）を統一していなかった |
+| 対処 | Phase 12 の構造検証は `skill-creator` の `quick_validate.js` を正本手順として固定 |
+| 教訓 | 「どのスキルのどのスクリプトを使うか」を仕様書に絶対パスで明記する |
+
+### 苦戦箇所: verify-all-specs の `--workflow` 引数漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `verify-all-specs.js --strict` だけを実行すると必須引数不足で失敗する |
+| 原因 | workflow対象を暗黙解決できる前提でコマンドを短縮していた |
+| 対処 | `--workflow docs/30-workflows/<task-id>` を必須で付与する形に統一 |
+| 教訓 | strict検証は「対象指定 + strict」の2要素を1セットで記述する |
+
+### 同種課題の簡潔解決手順（5ステップ・再確認版）
+
+1. `audit-unassigned-tasks.js --json --target-file <path>` で current 合否を先に確定する  
+2. `audit-unassigned-tasks.js --json` を実行し baseline 健全性を分離記録する  
+3. `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` を実行する  
+4. `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` を実行する  
+5. `complete-phase` 後に `generate-index --regenerate` と `artifacts.json` 同期を同一ターンで完了する  
+
 ---
 
 ## 目次
 
+0. [UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離](#ut-imp-unassigned-audit-scope-control-001-未タスク監査の-scope-分離)
+   - [苦戦箇所: 全体監査結果を今回差分の失敗と誤読しやすい](#苦戦箇所-全体監査結果を今回差分の失敗と誤読しやすい)
+   - [苦戦箇所: 完了済み未タスク指示書の移管漏れ](#苦戦箇所-完了済み未タスク指示書の移管漏れ)
+   - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ)
 0. [UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正](#ut-imp-ipc-preload-extension-spec-alignment-001-task-9d9j-仕様差分の統合是正)
    - [苦戦箇所1: 旧パスが文書内で混在し正本が不明瞭化](#苦戦箇所1-旧パスが文書内で混在し正本が不明瞭化)
    - [苦戦箇所2: artifacts必須項目の漏れがtaskごとに発生](#苦戦箇所2-artifacts必須項目の漏れがtaskごとに発生)

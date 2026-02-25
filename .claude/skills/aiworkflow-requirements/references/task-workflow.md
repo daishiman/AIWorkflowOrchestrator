@@ -1068,82 +1068,6 @@
 
 ---
 
-### タスク: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 Phase 12 仕様更新リンク同期ガード強化（2026-02-25完了）
-
-| 項目         | 内容                                                                                                           |
-| ------------ | -------------------------------------------------------------------------------------------------------------- |
-| タスクID     | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001                                                                      |
-| 完了日       | 2026-02-25                                                                                                     |
-| ステータス   | **完了（仕様書修正のみ / spec_created）**                                                                     |
-| Phase        | Phase 1-12 完了                                                                                                 |
-| コード変更   | なし（`apps/` / `packages/` 配下の変更なし）                                                                  |
-| 主対象       | `task-workflow.md` / `spec-update-workflow.md` / `phase-11-12-guide.md` の同期ガード強化                     |
-
-#### 成果物
-
-| 成果物               | パス/内容                                                                                                                |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| ワークフロー一式     | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/`                                                          |
-| Phase成果物          | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-1` 〜 `phase-12`                            |
-| 実装ガイド           | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/implementation-guide.md`                 |
-| 仕様更新サマリー     | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/spec-update-summary.md`                  |
-| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/documentation-changelog.md`              |
-| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/unassigned-task-detection.md`            |
-| スキルフィードバック | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/skill-feedback-report.md`                |
-| 再監査レポート       | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/revalidation-audit.md`                   |
-
-#### 変更理由
-
-- Phase 12 の台帳同期で発生していた `baseline/current` 判定混同を運用ルールとして分離した。
-- 未タスク完了移管後の `unassigned-task/` 参照残存を、更新順序と機械検証で再発防止できる構成に統一した。
-- `task-workflow.md` / `SKILL.md` / `LOGS.md` の3点同期を、チェックリストと検証コマンドで同一ターン完了する運用へ改善した。
-- 再監査で Phase仕様書4件の旧参照を `completed-tasks` に正規化し、`outputs/phase-12` の旧成果物残置を解消した。
-
----
-
-### タスク: TASK-013 再監査の実行導線確定と Phase 12 準拠再確認（2026-02-25完了）
-
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-IMP-TASK9-UI-BE-CONSISTENCY-001 |
-| 完了日 | 2026-02-25 |
-| ステータス | **spec_created**（仕様整備完了、コード実装は後続タスク） |
-| 変更範囲 | `task-00` 導線 / `completed-tasks/task-013-subagent-team/outputs/phase-12` / `aiworkflow-requirements` 仕様同期 |
-| 監査結果 | Phase 12 必須5タスク PASS、未タスク誤配置 6件是正（misplaced 0） |
-
-#### 成果物
-
-| 成果物 | パス |
-| --- | --- |
-| 次アクション実行導線 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-013e-phase12-action-bridge.md` |
-| Phase 12 必須成果物 | `docs/30-workflows/completed-tasks/task-013-subagent-team/outputs/phase-12/` |
-| Phase 12 準拠再確認 | `docs/30-workflows/completed-tasks/task-013-subagent-team/outputs/phase-12/phase12-compliance-recheck.md` |
-
-#### 実装内容（仕様更新）
-
-- 監査結果を次アクションへ接続する `task-013e-phase12-action-bridge.md` を追加し、P1-P4優先度とWave（並列/直列）を固定
-- Phase 12 証跡を `outputs/phase-12/` に集約し、Task 1-5 の必須成果物を標準出力
-- `completed-tasks/unassigned-task/` に混在していた未実施6件を `docs/30-workflows/unassigned-task/` に是正配置し、参照リンクを同期
-- `skill-creator` の `assets/phase12-action-bridge-template.md` を再利用テンプレートとして定義し、次回監査の導線作成を定型化
-
-#### 苦戦箇所と解決策
-
-| 苦戦箇所 | 課題 | 解決策 |
-| --- | --- | --- |
-| 監査結果が実行順へ落ちない | 指摘一覧はあるが着手順が曖昧 | task-00配下に action-bridge を作成し、優先度とWaveを固定 |
-| Phase 12証跡の散在 | 完了判定が文書依存で不安定 | 必須5成果物 + 準拠再確認レポートを `outputs/phase-12/` へ統一 |
-| baseline/current混同 | 全体違反を差分違反と誤判定 | `audit` と `detect --scan` を併記し2層判定に分離 |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. `assets/phase12-action-bridge-template.md` を複製して `task-00` 配下へ action-bridge を作成する  
-2. P1-Pn と Wave（並列/直列）を定義し、担当を固定する  
-3. Phase 12 必須5成果物を `outputs/phase-12/` へ揃える  
-4. `verify-unassigned-links` と `detect --scan` を同時実行し、current差分を確定する  
-5. `task-workflow.md` / `lessons-learned.md` / `SKILL.md` / `LOGS.md` を同一ターンで同期する  
-
----
-
 ## 残課題（未タスク）
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
@@ -1250,9 +1174,9 @@
 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001        | マルチエージェントPhase依存順序ガード                                                                            | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`                                                                |
 | ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~      | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~                           | ~~中~~ | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-25** | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md`                                                                            |
-| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001       | skill IPCレスポンス契約マトリクスと自動整合チェック                                                              | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md`                                           |
-| UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001 | Phase 12 実装ガイド必須要件の品質ゲート化（理由先行/日常例え/型API明記の機械検証）                                 | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-phase12-implementation-guide-quality-gate-001.md`                                   |
-| ~~UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001~~            | ~~skill:get-detail引数名ドリフト修正（P45パターン：skillId→skillName統一）~~                                        | ~~低~~     | **2026-02-25再評価クローズ**（`getSkillById` はID検索実装でドリフト未発生）      | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md`                                                                           |
+| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001       | skill IPCレスポンス契約マトリクスと自動整合チェック                                                              | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md`                                           |
+| UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001 | Phase 12 実装ガイド必須要件の品質ゲート化（理由先行/日常例え/型API明記の機械検証）                                 | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-implementation-guide-quality-gate-001.md`                                   |
+| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001            | skill:get-detail引数名ドリフト修正（P45パターン：skillId→skillName統一）                                        | 低     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）      | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md`                                                                           |
 | ~~UT-FIX-SKILL-VALIDATION-CONSISTENCY-001~~            | ~~skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完・苦戦箇所付き）~~               | ~~中~~     | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-24**      | `docs/30-workflows/completed-tasks/skill-validation-consistency/`                                                                            |
 | UT-IMP-UNASSIGNED-FORMAT-NORMALIZATION-001         | 未タスク指示書フォーマット正規化（9セクション未準拠67件の是正）                                                   | 中     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 監査（2026-02-22）                      | `docs/30-workflows/unassigned-task/task-imp-unassigned-task-format-normalization-001.md`                                                            |
 | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~           | ~~SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗）~~ | ~~高~~ | ~~ランタイムエラー調査（2026-02-22）~~ **完了: 2026-02-22**                | `docs/30-workflows/completed-tasks/skill-import-id-mismatch-fix/`                                                                                                  |
@@ -1261,40 +1185,25 @@
 | UT-UI-THEME-DYNAMIC-SWITCH-001                     | settingsSlice テーマ動的切替対応（kanagawa-dragon固定 → light/dark/system連動）                                   | 中     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-theme-dynamic-switch-001.md`                                                                              |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001              | Tailwind CSS カスタムプロパティ統合（tokens.css変数をTailwind theme設定に反映）                                   | 低     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md`                                                                       |
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001              | SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗） | 高     | ランタイムエラー調査（2026-02-22）                                          | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md`                                                                    |
-| UT-UI-ATOMS-PROP-NAMING-001                       | RelativeTime Props命名統一（仕様書updateInterval → 実装refreshInterval）                                         | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-1（2026-02-23）                          | `docs/30-workflows/unassigned-task/task-ui-atoms-prop-naming.md`                                                                                   |
-| UT-UI-ATOMS-TOUCH-TARGET-001                      | SuggestionBubble size="sm" タッチターゲット Apple HIG 44px準拠                                                   | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-2（2026-02-23）                          | `docs/30-workflows/unassigned-task/task-ui-atoms-touch-target.md`                                                                                  |
-| UT-UI-ATOMS-SPEC-CLARIFICATION-001                | SuggestionBubble success-bounceマイクロインタラクション仕様書責務記述明確化                                       | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-3（2026-02-23）                          | `docs/30-workflows/unassigned-task/task-ui-atoms-spec-clarification.md`                                                                            |
+| UT-UI-ATOMS-PROP-NAMING-001                       | RelativeTime Props命名統一（仕様書updateInterval → 実装refreshInterval）                                         | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-1（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-prop-naming.md`                                                                                   |
+| UT-UI-ATOMS-TOUCH-TARGET-001                      | SuggestionBubble size="sm" タッチターゲット Apple HIG 44px準拠                                                   | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-2（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-touch-target.md`                                                                                  |
+| UT-UI-ATOMS-SPEC-CLARIFICATION-001                | SuggestionBubble success-bounceマイクロインタラクション仕様書責務記述明確化                                       | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-3（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-spec-clarification.md`                                                                            |
 | TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001       | check-shared-module-sync レポート拡充（修正ガイダンス・サマリー数値・printSummary設計準拠）                       | 低     | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 Phase 10 MINOR（2026-02-22）        | `docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md`                                                                     |
 | ~~UT-IPC-CHANNEL-NAMING-AUDIT-001~~                   | ~~IPCチャネル命名規則の横断的適用監査と統一~~                                                                        | ~~中~~     | ~~UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12（未タスク検出・2026-02-24）~~ **完了: 2026-02-25（spec_created）**   | `docs/30-workflows/completed-tasks/task-ipc-channel-naming-audit-001.md`                                                                               |
 | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001~~                  | ~~`AUTH_*` の `ipcMain.handle` 重複式を定数化・登録一元化で解消~~                                                     | ~~中~~     | ~~UT-IPC-CHANNEL-NAMING-AUDIT-001 Phase 12（MINOR M-002・2026-02-25）~~ **完了: 2026-02-25**           | `docs/30-workflows/completed-tasks/task-ipc-auth-handle-duplicate-001.md`                                                                              |
 | UT-SPEC-ONLY-TASK-WORKFLOW-001                    | 仕様書修正のみタスクのPhaseテンプレート・grep検証TDD標準化                                                       | 中     | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12（未タスク検出・2026-02-24）   | `docs/30-workflows/unassigned-task/task-spec-only-task-workflow-automation-001.md`                                                                                 |
 | UT-FIX-SKILL-IPC-ARG-FORM-UNIFICATION-001         | skill:ハンドラIPC引数形式統一（オブジェクト型 vs 直接引数型）                                                    | 低     | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 Phase 12（苦戦箇所4・2026-02-24）   | [`docs/30-workflows/unassigned-task/task-skill-ipc-arg-form-unification.md`](../../../docs/30-workflows/unassigned-task/task-skill-ipc-arg-form-unification.md) |
-| UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001         | SkillUsageSummary.lastUsed nullable整合性修正（Phase 1/2分析 nullable=Yes vs 実仕様 non-nullable差異）            | 低     | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 10 MINOR M-1（2026-02-24）            | `docs/30-workflows/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md`                                                                |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001         | 未タスク監査の対象スコープ制御とベースライン分離（current/baseline判定）                                         | 中     | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 再監査（苦戦箇所・2026-02-24）      | `docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md`                                                              |
+| UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001         | SkillUsageSummary.lastUsed nullable整合性修正（Phase 1/2分析 nullable=Yes vs 実仕様 non-nullable差異）            | 低     | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 10 MINOR M-1（2026-02-24）            | `docs/30-workflows/completed-tasks/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md`                                                                |
+| ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001~~         | ~~未タスク監査の対象スコープ制御とベースライン分離（current/baseline判定）~~                                         | ~~中~~     | ~~UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 再監査（苦戦箇所・2026-02-24）~~ **完了: 2026-02-25（Phase 1-12）**      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-unassigned-audit-scope-control-001.md`                                                              |
+| ~~UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001~~ | ~~Phase 12 検証コマンド標準化ガード（`quick_validate.js` 統一 + `verify-all-specs --workflow` 必須化）~~                 | ~~中~~     | ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 Phase 12再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-validation-command-standardization-001.md`                                                                  |
 | UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001         | task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧パス/artifacts/Date方針）                                        | 中     | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 実装苦戦箇所（2026-02-25）  | `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md`                                                            |
-| ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~     | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                   | ~~中~~ | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）** | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
-| ~~UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001~~    | ~~skill-creator検証ゲート整合化（quick_validate実行経路統一 + 警告ノイズ制御）~~                                | ~~中~~ | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 Phase 12 再監査（実装苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（task-spec移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` |
-| ~~UT-IMP-TASK-SPEC-SKILL-MD-LINE-BUDGET-001~~         | ~~task-specification-creator SKILL.md 行数上限制約（500行）の恒久是正~~                                              | ~~高~~     | ~~TASK-013 再監査 最終検証（quick_validate FAIL・2026-02-25）~~ **完了: 2026-02-25（Phase 12完了に伴う移管）**                  | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-spec-skill-md-line-budget-001.md`                                                            |
-| ~~UT-IMP-SKILL-QUICK-VALIDATE-WARNING-BASELINE-CONTROL-001~~ | ~~quick_validate 警告ベースライン管理（既知/新規分離）~~                                                        | ~~中~~     | ~~TASK-013 再監査 最終検証（警告ノイズ・2026-02-25）~~ **完了: 2026-02-25（Phase 12完了に伴う移管）**                           | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-quick-validate-warning-baseline-control-001.md`                                             |
+| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 
 ### 未タスク管理ルール
 
 - 未タスクは `docs/30-workflows/unassigned-task/` に配置
 - タスク完了時は取り消し線でマークし、完了タスクセクションに移動
 - 優先度「高」のタスクから順に実施
-
-### 未タスク参照同期ルール（Phase 12）
-
-以下の順序で同期し、更新直後に検証を実行する。
-
-1. `task-workflow.md` の残課題テーブルと完了タスクセクションを更新する
-2. `aiworkflow-requirements/SKILL.md` と `task-specification-creator/SKILL.md` の変更履歴を更新する
-3. `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` を更新する
-4. `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認する
-5. `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js` を実行する
-6. `python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py` を2スキルへ実行し、`Skill is valid!` を確認する
-7. `docs/30-workflows/<workflow>/phase-*.md` の `unassigned-task/<task>.md` 参照を再確認し、完了移管後は `completed-tasks/<task>.md` へ正規化する
-8. `outputs/phase-12/` の旧成果物と `.tmp-*` 一時ファイルを削除し、`docs/.../outputs` とルート `outputs` を同期する
 
 ---
 
@@ -1312,16 +1221,11 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.63.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 完了移管**: 条件（`outputs/phase-12` 生成済み + Phase 12 completed）を満たしたため、ワークフロー `ut-imp-aiworkflow-spec-reference-sync-001` を `completed-tasks/` へ移動。併せて `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 指示書を `completed-tasks/unassigned-task/` へ移管し、残課題行を完了化 |
-| **1.62.0** | **2026-02-25** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001登録**: `quick_validate.py/.js` 実行経路混在と warning ノイズ（referencesリンク警告）の運用課題を再発防止する未タスクを残課題テーブルへ追加。親タスクの苦戦箇所（経路混在・判定混同・手順再判断）を未タスク指示書 Section 3.5 に反映 |
-| **1.61.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査追補**: Phase仕様書（1/11/12/13）に残存した旧 `unassigned-task` 参照を `completed-tasks` へ正規化。`outputs/phase-12` の旧成果物残置と一時ファイルを除去し、再監査レポート（`revalidation-audit.md`）を成果物へ追加 |
-| **1.60.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001完了反映**: 残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、参照先を `completed-tasks/` へ更新。完了タスクセクションへ Phase 1-12 成果物を追加し、Phase 12向け「未タスク参照同期ルール（3点同期 + 検証コマンド）」を追記 |
-| **1.65.0** | **2026-02-25** | **TASK-013再監査 追補未タスク2件を登録**: `quick_validate` 実行で判明した (1) `task-specification-creator/SKILL.md` 500行超過是正（UT-IMP-TASK-SPEC-SKILL-MD-LINE-BUDGET-001）と (2) 警告ノイズの baseline/current 分離運用（UT-IMP-SKILL-QUICK-VALIDATE-WARNING-BASELINE-CONTROL-001）を残課題テーブルへ追加 |
-| **1.64.0** | **2026-02-25** | **TASK-013 再監査のテンプレート運用を追記**: `skill-creator/assets/phase12-action-bridge-template.md` を再利用元として task-00 導線へ適用する手順を、TASK-013 完了タスク節の実装内容/簡潔解決手順に追加 |
-| **1.63.0** | **2026-02-25** | **TASK-013 実装内容の体系化を追加**: 完了タスクセクションへ「TASK-013 再監査の実行導線確定と Phase 12 準拠再確認」を新設。実装内容（action-bridge追加/必須5成果物集約/誤配置6件是正）と苦戦箇所、5ステップ簡潔解決手順を記録 |
-| **1.62.0** | **2026-02-25** | **未実施未タスクの誤配置是正（6件）**: `completed-tasks/unassigned-task/` に混在していた未実施指示書6件を `docs/30-workflows/unassigned-task/` へ移動し、残課題テーブルの参照パスを同期更新。`audit-unassigned-tasks` の misplaced 判定を解消 |
-| **1.61.0** | **2026-02-25** | **TASK-013再監査の実行計画化を反映**: 監査結果を次アクションへ接続する `task-013e-phase12-action-bridge.md` を追加し、Phase 12必須5成果物を `task-013-subagent-team/outputs/phase-12/` に標準出力。苦戦箇所（実行順序不明瞭/証跡散在/baseline-current混同）を `lessons-learned.md` へ反映 |
-| **1.60.0** | **2026-02-25** | **UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 再評価クローズ反映**: `skill:get-detail` の `skillId` は `SkillService` 実装（`cache.set(skill.id, skill)` + `getSkillById`）と一致しており、命名ドリフト未発生と再判定。残課題テーブルを取り消し線 + 再評価クローズ注記へ更新 |
+| **1.60.4** | **2026-02-25** | **UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001 / UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 完了移管**: Phase 12完了を確認し、未タスク指示書を `completed-tasks/unassigned-task/` へ、実行ワークフローを `completed-tasks/ut-imp-unassigned-audit-scope-control-001/` へ移動。残課題行を完了化して参照パスを同期 |
+| **1.60.3** | **2026-02-25** | **UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001 登録**: Phase 12再確認で顕在化したコマンド運用課題（`quick_validate.js` 統一、`verify-all-specs --workflow` 必須化、`*-final.log` 運用）を未タスクとして残課題テーブルへ追加 |
+| **1.60.2** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 最終整合**: Phase 12 再確認証跡の検証コマンド表記を `quick_validate.js` に統一し、`verify-all-specs` 実行時の `--workflow` 必須条件を運用ルールとして明記 |
+| **1.60.1** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 Phase 12準拠再確認**: `phase12-task-spec-compliance-check.md` を追加し、Task 1〜5の証跡を再点検。`skill-creator` の `quick_validate.js` で2スキルの構造妥当性を再確認し、未タスク指示書の配置（unassigned残置なし / completed存在）を同期記録 |
+| **1.60.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001完了反映（Phase 1-12）**: 残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、参照先を実行ワークフロー `docs/30-workflows/completed-tasks/ut-imp-unassigned-audit-scope-control-001/index.md` へ更新。current/baseline分離運用（`--target-file` / `--diff-from`）の完了状態を台帳同期 |
 | **1.59.0** | **2026-02-25** | **UT-SKILL-IPC-PRELOAD-EXTENSION-001成果物移管反映**: Phase 12完了済みのワークフロー `ut-skill-ipc-preload-extension-001` を `completed-tasks/` へ移動。対応する未タスク指示書 `task-imp-ipc-preload-extension-spec-alignment-001.md` も `completed-tasks/unassigned-task/` へ移管し、参照パスを更新 |
 | **1.58.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001登録**: task-9D〜9J 仕様契約ドリフトの再発防止を目的に、旧参照パス検出・必須artifacts検証・Date方針検証をCIガード化する未タスクを残課題テーブルへ追加。親タスクの苦戦箇所3件を未タスク指示書 Section 3.5 に反映 |
 | **1.57.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001完了反映**: task-9D〜9J の仕様差分是正完了を完了タスクセクションへ追加。残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、完了記録参照を `completed-task/task-013-*` へ更新 |

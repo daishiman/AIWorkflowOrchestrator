@@ -16,9 +16,10 @@ issue_number: 898
 | 対象機能     | `unassigned-task` 監査運用（`audit-unassigned-tasks.js`） |
 | 優先度       | 中                                                        |
 | 見積もり規模 | 中規模                                                    |
-| ステータス   | 未着手                                                    |
+| ステータス   | 完了                                                      |
 | 発見元       | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 再監査            |
 | 発見日       | 2026-02-24                                                |
+| 完了日       | 2026-02-25                                                |
 
 ---
 
@@ -105,7 +106,7 @@ Phase 12 の未タスク監査で、`docs/30-workflows/unassigned-task/` 全体�
 | ---------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------- |
 | 全体監査ノイズで今回変更分の合否が判定しづらい | `audit-unassigned-tasks.js --json` で過去違反が多数検出       | 対象ファイル限定監査を追加し、current/baseline を分離 | 監査は「差分の合否判定」と「資産健全性監視」を分ける |
 | 成果物台帳の二重管理で同期漏れが起きやすい     | `artifacts.json` と `outputs/artifacts.json` の同期作業で発生 | 対象監査結果と台帳同期チェックを同一フローへ統合      | 検証と台帳更新は別工程にしない                       |
-| スキル定義の制約超過を後段で検出しやすい       | `quick_validate.py` で frontmatter `description` 長さ制約違反 | 変更直後に `quick_validate.py` を必須実行             | 仕様更新は「編集→即検証」を1セット化する             |
+| スキル定義の制約超過を後段で検出しやすい       | `quick_validate.js` で frontmatter `description` 長さ制約違反 | 変更直後に `quick_validate.js` を必須実行             | 仕様更新は「編集→即検証」を1セット化する             |
 
 ---
 
@@ -235,7 +236,7 @@ Phase 12 の未タスク監査で、`docs/30-workflows/unassigned-task/` 全体�
 1. `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md`
 2. `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json`
 3. `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
-4. `python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/task-specification-creator`
+4. `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator`
 
 ---
 
