@@ -21,11 +21,50 @@ Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 
 | チャネル            | 用途                 | Request                       | Response                           | 実装箇所            | セキュリティ       |
 | ------------------- | -------------------- | ----------------------------- | ---------------------------------- | ------------------- | ------------------ |
-| `auth:login`        | OAuth ログイン開始   | `{ provider: OAuthProvider }` | `IPCResponse<void>`                | authHandlers.ts:77  | withValidation適用 |
-| `auth:logout`       | ログアウト           | なし                          | `IPCResponse<void>`                | authHandlers.ts:145 | withValidation適用 |
-| `auth:get-session`  | セッション取得       | なし                          | `IPCResponse<AuthSession>`         | authHandlers.ts:187 | withValidation適用 |
-| `auth:refresh`      | トークンリフレッシュ | なし                          | `IPCResponse<AuthSession>`         | authHandlers.ts     | withValidation適用 |
-| `auth:check-online` | オンライン状態確認   | なし                          | `IPCResponse<{ online: boolean }>` | authHandlers.ts     | withValidation適用 |
+| `auth:login`        | OAuth ログイン開始   | `{ provider: OAuthProvider }` | `IPCResponse<void>`                | `authHandlers.ts`（registerAuthHandlers） | withValidation適用 |
+| `auth:logout`       | ログアウト           | なし                          | `IPCResponse<void>`                | `authHandlers.ts`（registerAuthHandlers） | withValidation適用 |
+| `auth:get-session`  | セッション取得       | なし                          | `IPCResponse<AuthSession>`         | `authHandlers.ts`（registerAuthHandlers） | withValidation適用 |
+| `auth:refresh`      | トークンリフレッシュ | なし                          | `IPCResponse<AuthSession>`         | `authHandlers.ts`（registerAuthHandlers） | withValidation適用 |
+| `auth:check-online` | オンライン状態確認   | なし                          | `IPCResponse<{ online: boolean }>` | `authHandlers.ts`（registerAuthHandlers） | withValidation適用 |
+
+### AUTH IPC登録一元化戦略（UT-IPC-AUTH-HANDLE-DUPLICATE-001）
+
+`AUTH_*` 5チャネルは、`authHandlers.ts` 内で共通登録ヘルパー経由に統一し、登録式の重複を排除する。
+非Supabase環境（fallback）も `ipc/index.ts` 側で宣言的登録へ統一し、同一チャネル群の追跡性を維持する。
+
+| 項目 | 方針 |
+| --- | --- |
+| 対象チャネル | `auth:login`, `auth:logout`, `auth:get-session`, `auth:refresh`, `auth:check-online` |
+| 契約互換 | チャネル名・引数・戻り値・エラーコードを不変維持 |
+| セキュリティ | 通常経路の `withValidation` を維持 |
+| 監査性 | `rg -n \"ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_\"` が0件であることを確認 |
+
+#### AUTH IPC登録一元化 クイック解決ガイド（テンプレート準拠）
+
+##### 概要
+
+| 項目 | 内容 |
+| --- | --- |
+| 目的 | AUTH 5チャネルの重複登録式を排除し、通常/fallbackの契約整合を同時に満たす |
+| 前提条件 | `authHandlers.ts` と `ipc/index.ts` の両方を編集対象に含める |
+| 所要時間 | 約20〜30分（コード修正 + 検証 + 仕様同期） |
+
+##### 実行ステップ
+
+| Step | 目的 | 場所 | 操作手順 | 期待結果 | 確認方法 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 対象範囲固定 | `apps/desktop/src/main/ipc/` | AUTH 5チャネル（login/logout/get-session/refresh/check-online）を通常経路とfallback経路で列挙 | 対象漏れがない | `rg -n "AUTH_(LOGIN|LOGOUT|GET_SESSION|REFRESH|CHECK_ONLINE)" apps/desktop/src/main/ipc` |
+| 2 | 登録一元化 | `authHandlers.ts`, `index.ts` | 通常経路は共通ヘルパー経由、fallbackは配列 + ループ登録へ統一 | 直書き重複が消える | `rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" apps/desktop/src/main/ipc/authHandlers.ts apps/desktop/src/main/ipc/index.ts` が0件 |
+| 3 | 回帰確認 | `apps/desktop/src/main/ipc/__tests__/` | fallback経路を含む重複登録防止テストを追加/更新 | 既存契約を壊さずテスト通過 | `pnpm test -- ipc-double-registration.test.ts` |
+| 4 | 仕様同期 | `references/` + `task-workflow.md` | 実装内容、完了記録、苦戦箇所を同一ターンで更新 | 実装・仕様・台帳が一致 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --workflow docs/30-workflows/ut-ipc-auth-handle-duplicate-001` |
+
+##### トラブルシューティング（今回の苦戦箇所）
+
+| 問題 | 原因 | 解決方法 |
+| --- | --- | --- |
+| 通常経路だけ直しても監査ノイズが残る | fallback側の同型重複を未統合 | Step 1で通常/fallbackを同時列挙し、Step 2を両経路同時適用 |
+| 全体監査FAILを今回差分FAILと誤認する | baseline監査とcurrent監査の判定軸混在 | `audit-unassigned-tasks.js`（baseline）と `detect-unassigned-tasks --scan`（current）を分離記録 |
+| 完了移管後に参照が古いまま残る | `unassigned-task/` と `completed-tasks/` の同期漏れ | Phase 12でリンク更新後に `verify-unassigned-links.js` を必ず再実行 |
 
 ---
 
@@ -243,6 +282,21 @@ Main Process上で動作するセッション自動リフレッシュスケジ�
 - [Agent Dashboard IPC](./api-ipc-agent.md)
 - [システムIPC・プロバイダーAPI](./api-ipc-system.md)
 - [セッション自動リフレッシュ実装ガイド](../../../docs/30-workflows/TASK-AUTH-SESSION-REFRESH-001/outputs/phase-12/implementation-guide.md)
+- [AUTH IPC登録一元化 実装ガイド](../../../docs/30-workflows/ut-ipc-auth-handle-duplicate-001/outputs/phase-12/implementation-guide.md)
+
+---
+
+## 完了タスク
+
+### タスク: UT-IPC-AUTH-HANDLE-DUPLICATE-001 AUTH IPC handle重複式の登録一元化（2026-02-25完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-IPC-AUTH-HANDLE-DUPLICATE-001 |
+| 完了日 | 2026-02-25 |
+| ステータス | **完了** |
+| 変更概要 | AUTH 5チャネル登録を宣言的に一元化し、重複登録式を排除 |
+| 契約影響 | なし（引数/戻り値/エラー形式不変） |
 
 ---
 
@@ -250,6 +304,9 @@ Main Process上で動作するセッション自動リフレッシュスケジ�
 
 | バージョン | 日付       | 変更内容                                                                |
 | ---------- | ---------- | ----------------------------------------------------------------------- |
+| v1.6.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 の再利用性強化: AUTH IPC登録一元化のクイック解決ガイド（目的/前提/ステップ/検証/トラブルシューティング）を追加 |
+| v1.5.0     | 2026-02-25 | チャンネル一覧の実装箇所表記を行番号依存から関数依存へ更新（`registerAuthHandlers` 基準）。ドキュメント追従性を改善 |
+| v1.4.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化戦略と完了タスクを追記。関連ドキュメントに実装ガイドを追加 |
 | v1.3.1     | 2026-02-06 | DEBT-SEC-001: CSRF_VALIDATION_FAILEDエラーコード追記、既知のerrorCode値テーブル追加 |
 | v1.3.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshScheduler統合セクション追加、auth:state-changedにexpiresAt追加、autoRefreshToken:false設定変更 |
 | v1.2.0     | 2026-02-05 | TASK-FIX-GOOGLE-LOGIN-001: AuthSessionにrefreshTokenExpiresAt追加、auth:state-changedにerror/errorCode追加 |

@@ -179,6 +179,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 1-A】関連ドキュメントセクションに実装ガイドリンクを追加した
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
+- [ ] `skill-creator/scripts/quick_validate.py` で更新したSKILLを検証し、`Skill is valid!` を確認した
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
@@ -194,6 +195,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
 - [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js` を実行し、フォーマット違反/命名違反/誤配置が0件であることを確認
+- [ ] `audit-unassigned-tasks.js` が既存baseline違反で失敗する場合、**今回タスク差分起因0件**を別途記録した（例: `detect-unassigned-tasks --scan <変更ディレクトリ>`）
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
@@ -219,12 +221,21 @@ rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未�
 # 未タスク配置・フォーマット監査（0違反で成功）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
+# baseline違反がある場合の差分監査（今回変更範囲で新規TODOを持ち込んでいないか）
+node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+  --scan apps/desktop/src/main/ipc \
+  --output docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/.tmp-unassigned-candidates.json
+
 # ESLintキャッシュクリア（Hooksでエラーが残る場合）
 rm -rf node_modules/.cache/eslint-*
 pnpm lint --cache=false
 
 # 未使用importの自動修正
 pnpm lint --fix
+
+# SKILL frontmatter簡易検証（skill-creator）
+python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/aiworkflow-requirements
+python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py .claude/skills/task-specification-creator
 ```
 
 ### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
@@ -236,6 +247,7 @@ pnpm lint --fix
 | P1 | LOGS.md 2ファイル更新漏れ | aiworkflow-requirements + task-specification-creator 両方を同時更新 |
 | P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
 | P3派生 | 未タスク配置ディレクトリの間違い（TASK-9B-I） | 必ず `unassigned-task/` に配置。親タスクの `tasks/` ではない |
+| P48 | 全体監査FAILを今回差分FAILと誤認 | baselineとcurrentを分離し、今回差分起因の有無を別レポートで記録 |
 | - | テスト数の設計時固定値使用（TASK-9B-I） | Phase 12では `grep -c "it\\(" *.test.ts` で実測値を使用 |
 
 ---
@@ -244,6 +256,8 @@ pnpm lint --fix
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-25 | skill-creator連携を追加: Phase 12完了条件に `quick_validate.py` 検証を追加し、SKILL frontmatterの破損検知を標準化 |
+| 2026-02-25 | 未タスク監査運用を補強: `audit-unassigned-tasks.js` が既存baseline違反で失敗する場合の current差分分離手順（`detect-unassigned-tasks --scan`）と記録要件を追加 |
 | 2026-02-24 | Phase 12整合性改善: 必須タスク数を5に更新（Task 5: skill-feedback-report 必須化）。完了条件に `spec-update-summary.md` 作成・`artifacts.json` 二重台帳同期チェックを追加 |
 | 2026-02-22 | 未タスク監査強化: `audit-unassigned-tasks.js` 実行チェックを追加（フォーマット違反/命名違反/誤配置の一括検証） |
 | 2026-02-13 | TASK-FIX-13-1教訓反映: Phase 12完了チェックリストに「苦戦箇所のシステム仕様書記録」を追加 |

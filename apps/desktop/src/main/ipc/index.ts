@@ -218,27 +218,36 @@ function registerAuthFallbackHandlers(): void {
         "Authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.",
     },
   };
+  const fallbackAuthHandlers: ReadonlyArray<
+    readonly [string, () => Promise<unknown>]
+  > = [
+    // auth:login - Return not configured error
+    [IPC_CHANNELS.AUTH_LOGIN, async () => notConfiguredResponse],
+    // auth:logout - Return not configured error
+    [IPC_CHANNELS.AUTH_LOGOUT, async () => notConfiguredResponse],
+    // auth:get-session - Return null session (not authenticated)
+    [
+      IPC_CHANNELS.AUTH_GET_SESSION,
+      async () => ({
+        success: true,
+        data: null,
+      }),
+    ],
+    // auth:refresh - Return not configured error
+    [IPC_CHANNELS.AUTH_REFRESH, async () => notConfiguredResponse],
+    // auth:check-online - Return online status (this doesn't need Supabase)
+    [
+      IPC_CHANNELS.AUTH_CHECK_ONLINE,
+      async () => ({
+        success: true,
+        data: { online: net.isOnline() },
+      }),
+    ],
+  ];
 
-  // auth:login - Return not configured error
-  ipcMain.handle(IPC_CHANNELS.AUTH_LOGIN, async () => notConfiguredResponse);
-
-  // auth:logout - Return not configured error
-  ipcMain.handle(IPC_CHANNELS.AUTH_LOGOUT, async () => notConfiguredResponse);
-
-  // auth:get-session - Return null session (not authenticated)
-  ipcMain.handle(IPC_CHANNELS.AUTH_GET_SESSION, async () => ({
-    success: true,
-    data: null,
-  }));
-
-  // auth:refresh - Return not configured error
-  ipcMain.handle(IPC_CHANNELS.AUTH_REFRESH, async () => notConfiguredResponse);
-
-  // auth:check-online - Return online status (this doesn't need Supabase)
-  ipcMain.handle(IPC_CHANNELS.AUTH_CHECK_ONLINE, async () => ({
-    success: true,
-    data: { online: net.isOnline() },
-  }));
+  for (const [channel, handler] of fallbackAuthHandlers) {
+    ipcMain.handle(channel, handler);
+  }
 }
 
 // Re-export for menu actions

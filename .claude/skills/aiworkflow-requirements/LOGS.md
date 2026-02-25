@@ -84,6 +84,133 @@
 
 ---
 
+## 2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001
+- Phase: Phase 12（未タスク管理・仕様同期）
+
+### SubAgent分担
+- SubAgent-A（未タスク仕様書）: `docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md` を作成
+- SubAgent-B（台帳反映）: `references/task-workflow.md` 残課題テーブルへ登録し、変更履歴を追記
+- SubAgent-C（スキル反映）: `SKILL.md` 変更履歴を更新し、検証コマンドを実行
+
+### 実施内容
+- 未タスク指示書を Why/What/How + 1-9セクション形式で作成
+- 親タスクの苦戦箇所（baseline/current混同、完了移管後リンク漏れ、通常/fallback片側修正）を Section 3.5 に明記
+- `task-workflow.md` の残課題と変更履歴へ同一タスクIDで同期反映
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 参照同期漏れの再発防止を未タスクとして明文化
+
+---
+
+## 2026-02-25 - UT-IPC-AUTH-HANDLE-DUPLICATE-001 テンプレート最適化（skill-creator適用）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IPC-AUTH-HANDLE-DUPLICATE-001
+- Phase: Phase 12（システム仕様書最適化）
+
+### SubAgent分担
+- SubAgent-A（実装記録）: `references/api-ipc-auth.md` にクイック解決ガイドを追加
+- SubAgent-B（苦戦箇所整理）: `references/lessons-learned.md` に20分版テンプレートを追加
+- SubAgent-C（再利用設計）: `references/architecture-implementation-patterns.md` S22に再利用テンプレートを追加
+- Lead（統合）: `SKILL.md` 変更履歴を同期し、インデックス再生成と検証を実施
+
+### 実施内容
+- `skill-creator` のテンプレート方針（目的明示/場所明示/検証可能）を適用
+- 実装内容と苦戦箇所を「同種課題で再利用できる最小手順」に再構成
+- 失敗しやすい点（baseline/current混同、完了移管後リンク漏れ）をトラブルシューティング化
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 追加だけでなく既存3文書の構造をテンプレート準拠へ最適化
+
+---
+
+## 2026-02-25 - UT-IPC-AUTH-HANDLE-DUPLICATE-001 再監査補完
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IPC-AUTH-HANDLE-DUPLICATE-001
+- Phase: Phase 12（再確認・補完）
+
+### 実施内容
+- `references/ipc-contract-checklist.md` に AUTH登録一元化の監査項目（通常/fallback同時確認）を追加
+- `references/api-ipc-auth.md` の実装箇所表記を行番号依存から `registerAuthHandlers` 基準へ変更
+- `references/lessons-learned.md` の `task-ipc-auth-handle-duplicate-001` 参照先を completed-tasks に正規化
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 参照ドリフトを解消し、IPC契約監査観点をスキル仕様へ恒久反映
+
+---
+
+## 2026-02-25 - UT-IPC-AUTH-HANDLE-DUPLICATE-001 実装パターン追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IPC-AUTH-HANDLE-DUPLICATE-001
+- Phase: Phase 12（再監査・再発防止強化）
+
+### 実施内容
+- `references/architecture-implementation-patterns.md` に S22（AUTH IPC登録一元化パターン）を追加
+- `references/lessons-learned.md` に再監査時の苦戦箇所（baseline/current混同、完了移管後リンク同期）を追記
+- `references/api-ipc-auth.md` / `references/ipc-contract-checklist.md` / `references/security-electron-ipc.md` の相互整合を再確認
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 同種課題に対して「通常経路 + fallback経路の同時監査」を標準手順化
+
+---
+
+## 2026-02-25 - UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12完了反映
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IPC-AUTH-HANDLE-DUPLICATE-001
+- Phase: Phase 12（ドキュメント更新）
+
+### 実施内容
+- `references/api-ipc-auth.md` に AUTH IPC登録一元化戦略と完了タスクを追加
+- `references/security-electron-ipc.md` に AUTH登録一元化パターンを追加
+- `references/task-workflow.md` の残課題 `UT-IPC-AUTH-HANDLE-DUPLICATE-001` を完了化し、completed-tasks参照へ更新
+- `references/lessons-learned.md` に本タスクの苦戦箇所と3ステップ再発防止手順を追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: AUTH登録重複監査コマンドで0件を確認
+
+---
+
+## 2026-02-25 - UT-IPC-CHANNEL-NAMING-AUDIT-001 Phase 12再監査是正
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IPC-CHANNEL-NAMING-AUDIT-001
+- Phase: Phase 12（再監査）
+
+### 実施内容
+- `references/task-workflow.md` に `UT-IPC-CHANNEL-NAMING-AUDIT-001` の完了記録（spec_created）を追加し、残課題行を完了化
+- 監査MINOR（`AUTH_*` の `ipcMain.handle` 重複式5件）を `UT-IPC-AUTH-HANDLE-DUPLICATE-001` として未タスク登録
+- `references/architecture-implementation-patterns.md` に監査運用パターン（対象内/対象外分離、リンク検証）を追加
+- `references/lessons-learned.md` に苦戦箇所3件と再発防止5ステップを追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: Step 1-A/1-C/1-D を同一ターンで完了し、参照ドリフトと台帳漏れを同時解消
+
+---
+
 ## 2026-02-24 - 未タスク監査スコープ分離タスク登録
 
 ### コンテキスト
