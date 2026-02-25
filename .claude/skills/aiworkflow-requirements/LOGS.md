@@ -211,6 +211,68 @@
 
 ---
 
+## 2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 派生未タスク2件を登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 親タスクID: UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001
+- Phase: Phase 12（未タスク化と台帳反映）
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/` に未タスク指示書を2件作成
+  - `task-imp-skill-ipc-response-contract-guard-001.md`
+  - `task-imp-phase12-implementation-guide-quality-gate-001.md`
+- `references/task-workflow.md` の残課題テーブルに2件を追加
+  - `UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001`
+  - `UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001`
+- `references/interfaces-agent-sdk-skill.md` の skillHandlers 関連未タスクテーブルへ1件追加
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 親タスクの苦戦箇所（ラッパー選択ミス / Part1-Part2要件不足）を再利用可能な未タスク仕様書として記録
+
+---
+
+## 2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12要件再適合（実装内容/苦戦箇所追記）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001
+- Phase: Phase 12（仕様準拠の再確認）
+
+### 実施内容
+- `references/task-workflow.md` の完了タスク記録に「実装時の苦戦箇所と解決策」および「同種課題の簡潔解決手順（4ステップ）」を追記
+- `outputs/phase-12/implementation-guide.md` を Part 1/Part 2 必須要件へ再構成（Part 1: 日常例え話を含む理由先行説明、Part 2: 型/API/エッジケース/設定項目の明示）
+- `phase-12-documentation.md` の完了条件・サブタスク・末端アクションチェックリストを実状態へ同期
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 「実装内容の仕様書反映」と「苦戦箇所の再利用可能化」を同時に完了
+
+---
+
+## 2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12再監査整合
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001
+- Phase: Phase 12（仕様準拠の再監査）
+
+### 実施内容
+- `references/task-workflow.md` の残課題 `UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001` を完了化し、完了タスクセクションへ成果物6件を追記
+- `references/interfaces-agent-sdk-skill.md` の関連未タスクテーブルを完了状態へ更新し、`skill:remove` 戻り値記述を `Promise<RemoveResult>` へ同期
+- `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/outputs/phase-12/spec-update-summary.md` を追加し、Step 1-A〜1-E / Step 2 の実施結果を文書化
+- `verify-unassigned-links.js` / `validate-phase-output.js` / `verify-all-specs.js --strict --json` で整合性を再検証
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: `unassigned-task` 参照切れと Phase 12 成果物不足（`spec-update-summary.md`）を同時是正
+
+---
+
 ## 2026-02-24 - 未タスク監査スコープ分離タスク登録
 
 ### コンテキスト

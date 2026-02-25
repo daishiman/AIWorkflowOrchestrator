@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 implementation-guide gap pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md の Phase 12 に成功パターン「実装ガイド2パート要件ギャップの即時是正」を追加。併せて失敗パターン「Part 1/Part 2必須要件の欠落」を追記し、`implementation-guide.md` の中学生向け説明不足と技術詳細不足を早期検出する運用を標準化。
+
+---
+
 ## [2026-02-24 - UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 artifacts-sync pattern]
 
 - **Agent**: skill-creator (update)
