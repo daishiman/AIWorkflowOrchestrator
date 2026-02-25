@@ -335,6 +335,82 @@ CI/CD・ビルド・テスト並列化等のDevOps関連タスク完了時は、
   - [ ] パフォーマンス要件（実行時間目標）
 - [ ] ⚠️ DevOps知見は3ファイルに分散するため、漏れやすい。必ず全ファイルを確認すること
 
+### Step 1-G: 検証コマンド順次実行（Phase 12同期ガード）
+
+Phase 12 Task 2 の更新後は、以下を**この順序で**実行する。
+
+#### 1. 未タスク参照リンク検証
+
+```bash
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+```
+
+- 正常時: `ALL_LINKS_EXIST` が出力され、exit code 0
+- 異常時: `missing` と欠損パスが出力されるため、該当参照を修正して再実行
+
+#### 2. 索引再生成
+
+```bash
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+node .claude/skills/task-specification-creator/scripts/generate-index.js
+git diff --stat -- .claude/skills/*/indexes/topic-map.md .claude/skills/*/indexes/keywords.json
+```
+
+- 正常時: 再生成コマンドが exit code 0
+- 異常時: コマンド失敗、または意図しない差分が残る。差分内容を確認し必要箇所を反映
+
+#### 3. SKILL 検証（2スキル）
+
+```bash
+python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
+  .claude/skills/aiworkflow-requirements --verbose
+python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
+  .claude/skills/task-specification-creator --verbose
+```
+
+- 正常時: 両方で `Skill is valid!`
+- 異常時: SKILL構造を修正後に再実行
+
+#### 4. Phase仕様書参照と outputs 実体の整合確認
+
+```bash
+# 完了移管後の旧参照残存を検出
+rg -n "docs/30-workflows/unassigned-task/task-.*\\.md" docs/30-workflows/{{FEATURE_NAME}}/phase-*.md
+
+# docs配下 outputs とルート outputs の差分確認（差分0が正常）
+comm -3 \
+  <(cd docs/30-workflows/{{FEATURE_NAME}}/outputs && find . -type f | sort) \
+  <(cd outputs && find . -type f | sort)
+```
+
+- 正常時: `phase-*.md` に旧 `unassigned-task` 参照が残っていない、`comm -3` の出力が空
+- 異常時: 完了済みタスクの参照を `completed-tasks` に更新し、旧成果物・`.tmp-*` 一時ファイルを削除して再実行
+
+### Step 1-G.1: baseline / current 分離監査（全体FAIL誤判定防止）
+
+監査FAIL時は、以下で `baseline` と `current` を分離する。
+
+```bash
+# 1) 全体監査（既存違反を含む）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+
+# 2) 今回差分の候補抽出（変更範囲を指定）
+node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+  --scan docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001 \
+  --output docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/.tmp-unassigned-candidates.json
+```
+
+判定ルール:
+
+- `baseline`: 着手前から存在する違反。スコープ外として記録し、別途改善対象化
+- `current`: 今回変更で新規発生した違反。今回タスク内で修正必須
+
+記録フォーマット:
+
+```text
+audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→ current <PASS/FAIL>
+```
+
 ### 必須更新ファイル（全タスク共通）
 - [ ] aiworkflow-requirements/LOGS.md を更新した
 - [ ] task-specification-creator/LOGS.md を更新した

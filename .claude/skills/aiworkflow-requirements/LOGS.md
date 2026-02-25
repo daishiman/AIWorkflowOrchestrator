@@ -5,6 +5,84 @@
 
 ---
 
+## 2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 完了移管
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001
+- 目的: `outputs/phase-12` 生成完了 + Phase 12完了状態に基づき、ワークフローと未タスク指示書を `completed-tasks/` へ移管
+
+### 実施内容
+- `docs/30-workflows/ut-imp-aiworkflow-spec-reference-sync-001/` を `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` の成果物参照と残課題テーブル参照を移動先パスへ更新
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: `verify-unassigned-links.js` は `ALL_LINKS_EXIST` を維持
+
+---
+
+## 2026-02-25 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
+- 目的: `quick_validate.py/.js` 実行経路混在と warning ノイズ運用（referencesリンク警告）の再発防止タスクを台帳化
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` を新規作成
+- `references/task-workflow.md` の残課題テーブルへ未タスクを登録
+- 未タスク指示書の Section 3.5 に、親タスク（UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001）での苦戦箇所を反映
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: `quick_validate` の primary/fallback 運用整備を後続実装タスクとして分離し、Phase 12再監査時の判断コストを削減する方針を明文化
+
+---
+
+## 2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001
+- 目的: Phase 12 仕様準拠の再確認と参照ドリフト解消
+
+### 実施内容
+- `references/task-workflow.md` に再監査追補を記録（成果物 `revalidation-audit.md` 追加、同期ルール8ステップ化）
+- `references/lessons-learned.md` に苦戦箇所4（Phase仕様書旧参照 + outputs残置）を追記
+- Phase仕様書4件（1/11/12/13）の旧 `unassigned-task` 参照を `completed-tasks` に正規化
+- `outputs/phase-12` の旧成果物残置と `.tmp-*` 一時ファイルを削除し、`docs/.../outputs` と `outputs` を同期
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: `verify-unassigned-links.js` は `ALL_LINKS_EXIST`、差分監査 `detect-unassigned-tasks --scan` は 0件
+
+---
+
+## 2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 完了反映
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001
+- 目的: Phase 12 同期ガード強化タスクの完了反映（未タスク→完了移管）
+
+### 実施内容
+- `references/task-workflow.md` に完了タスク記録を追加
+- 残課題テーブルの同タスクを完了化し、参照先を `completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md` へ更新
+- `references/task-workflow.md` に「未タスク参照同期ルール（3点同期 + 検証コマンド順序）」を追記
+- `references/lessons-learned.md` に本タスクの苦戦箇所と再発防止手順を追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: `verify-unassigned-links.js` / `generate-index.js` / `quick_validate.py` の実行前提を同期ルールへ明文化
+
+---
+
 ## 2026-02-25 - Phase 12完了済み成果物の completed-tasks への移管
 
 ### コンテキスト

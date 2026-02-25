@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-25 | 1.27.0 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査教訓を追加: Phase仕様書内の旧 `unassigned-task` 参照残存と `outputs/phase-12` の旧成果物残置を苦戦箇所として追記。同種課題向け簡潔解決手順を5ステップ化（参照正規化・出力同期・一時ファイル掃除を追加） |
+| 2026-02-25 | 1.26.0 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 教訓追加: Phase 12同期で発生した苦戦箇所3件（baseline/current判定混同、完了移管後リンク漏れ、LOGS先行更新による3点同期崩れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-25 | 1.24.0 | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 教訓追加: task-9D〜9J 仕様差分是正で発生した苦戦箇所3件（旧パス混在、artifacts必須項目漏れ、Date型方針ドリフト）と同種課題向け簡潔解決手順（5ステップ）を追加 |
 | 2026-02-25 | 1.25.3 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 の簡潔解決テンプレートを追加。目的/前提/4ステップ/検証/失敗時対処を1ページ化し、同種課題の初動時間短縮を明文化 |
 | 2026-02-25 | 1.25.2 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 再監査教訓を追記。全体監査FAILと今回差分FAILの混同、完了移管後リンク更新漏れの2課題を追加し、4ステップ是正手順を明文化 |
@@ -70,6 +72,54 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001: Phase 12 仕様更新リンク同期ガード
+
+### 苦戦箇所1: baseline/current 判定の混同
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 全体監査FAILを今回差分FAILと誤認し、不要な差し戻しが発生した |
+| 原因 | baseline（既存違反）とcurrent（今回差分）を同一判定で扱った |
+| 対処 | `audit-unassigned-tasks` と `detect-unassigned-tasks --scan <dir>` を併用して分離記録した |
+| 教訓 | 監査判定は「全体健全性」と「今回差分起因」を分離して記録する |
+
+### 苦戦箇所2: 完了移管後リンクの更新漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 完了済みタスクの参照が `unassigned-task/` のまま残り、検証で失敗した |
+| 原因 | 台帳更新とリンク検証を別手順にしていた |
+| 対処 | 完了移管と同一ターンで `verify-unassigned-links.js` を必須実行した |
+| 教訓 | 未タスク移管は「台帳更新 + 参照検証」をワンセットで実施する |
+
+### 苦戦箇所3: 3点同期の実行順序崩れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | LOGS.md を先に更新し、SKILL.md/台帳との差分が一時残存した |
+| 原因 | Step 1-A の実行順序を固定していなかった |
+| 対処 | `task-workflow.md → SKILL.md x2 → LOGS.md x2` の固定順を明文化した |
+| 教訓 | LOGS.md は最終ステップで更新し、途中完了扱いを禁止する |
+
+### 苦戦箇所4: Phase仕様書と成果物ディレクトリのドリフト
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase仕様書に旧 `unassigned-task` 参照が残り、`outputs/phase-12` に旧成果物が残置した |
+| 原因 | 実体移管後に「仕様書本文」と「出力ディレクトリ」の両方を同時突合していなかった |
+| 対処 | `phase-1/11/12/13` の参照を `completed-tasks` へ正規化し、旧成果物と一時ファイルを削除した |
+| 教訓 | 「台帳更新済み」を根拠にせず、Phase仕様書本文と outputs 実体を最終ターンで再突合する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `task-workflow.md` 更新後に `verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認する  
+2. `SKILL.md` 2ファイルと `LOGS.md` 2ファイルを固定順で同期する  
+3. `generate-index.js` を2スキルで実行し、索引差分を吸収する  
+4. `docs/30-workflows/<workflow>/phase-*.md` 内の `unassigned-task/<task>.md` 参照を `completed-tasks/<task>.md` へ正規化する  
+5. 監査結果を baseline/current に分離し、`outputs/phase-12` の旧成果物・一時ファイルを掃除して `spec-update-summary.md` に記録する
 
 ---
 
