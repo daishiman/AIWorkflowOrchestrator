@@ -12,15 +12,17 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ### Phase 1: 契約ギャップ先行解消（UT）
 
-4. `task-010a-ut-skill-import-channel-conflict-001.md`（並列：010a∥010b∥014）
-5. `task-010b-ut-ipc-data-flow-type-gaps-001.md`（並列：010a∥010b∥014）
-6. `task-014-ut-fix-skill-execute-interface-001.md`（並列：010a∥010b∥014、依存なし）
-7. `task-012-ut-skill-ipc-preload-extension-001.md`（010a完了後）
-8. `task-013-task9-ui-backend-consistency-improvements-001.md`（012完了後）
+4. `../completed-task/task-010a-ut-skill-import-channel-conflict-001.md`（並列：010a∥011∥014）
+5. `../completed-task/task-011-ut-ipc-data-flow-type-gaps-001.md`（並列：010a∥011∥014）
+6. `task-014-ut-fix-skill-execute-interface-001.md`（並列：010a∥011∥014、依存なし）
+7. `../completed-task/task-012-ut-skill-ipc-preload-extension-001.md`（010a/011完了後）
+8. `../completed-task/task-013-task9-ui-backend-consistency-improvements-001.md`（012完了後）
+   - SubAgent Team: `../../../completed-tasks/task-013-subagent-team/index.md`
+9. `task-013e-phase12-action-bridge.md`（013再監査後、次アクション実行の入口）
 
 ```
 010a ─┐
-010b ─┤→ 012 → 013
+011  ─┤→ 012 → 013
 014  ─┘
 ```
 
@@ -110,7 +112,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ### Phase内の並列化
 
-- `task-010a` と `task-010b` と `task-014` は同時実行可能（相互依存なし）。`task-012` は `task-010a` 完了後。
+- `task-010a` と `task-011` と `task-014` は同時実行可能（相互依存なし）。`task-012` は `task-010a/011` 完了後。
 - `task-020a` と `task-020b` は同時実行可能（同一依存元、parallel_with 相互記載）。`task-022` は `task-020a` 完了後。
 - `task-023a`〜`task-023f` は同時実行可能。
 - `task-031a` と `task-031b` は同時実行可能（`task-030` 完了後）。
@@ -125,7 +127,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ## 管理単位（独立）
 
-- バックエンド/IPC契約: `task-010a`〜`task-023f`
+- バックエンド/IPC契約: `task-010a`〜`task-023f`（`task-011` は `completed-task` 配下参照）
 - UIスキル管理: `task-030`〜`task-031b`
 - 統合: `task-040`〜`task-042`
 - UI/UX基盤: `task-050`〜`task-061`

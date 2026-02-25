@@ -43,6 +43,88 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-25 - SKILL.md 構造最適化（skill-creator準拠）]
+
+- **Agent**: task-specification-creator + skill-creator
+- **Phase**: Phase 12（ドキュメント最適化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `SKILL.md` の変更履歴を `v9.74.0` 以前と `v9.75.0` 以降で分割
+  - `references/changelog-archive.md` を新規作成し、旧履歴を退避
+  - `SKILL.md` を 549行→424行へ圧縮し、`quick_validate.js` 500行制約に適合
+
+---
+
+## [2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査追補]
+
+- **Agent**: task-specification-creator + skill-creator
+- **Phase**: Phase 12（再監査ガード強化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `spec-update-workflow.md` に Step 1-G-4（Phase仕様書旧参照 + outputs同期差分チェック）を追加
+  - `phase-11-12-guide.md` の完了条件に「旧 `unassigned-task` 参照残存チェック」「outputs差分0件チェック」を追加
+  - `quick_validate.py` で2スキルを再検証し `Skill is valid!` を確認
+
+---
+
+## [2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 同期ガード反映]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ガイド更新・同期ルール標準化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `spec-update-workflow.md` に Step 1-G（verify-unassigned-links → generate-index → quick_validate）を追加
+  - baseline/current 分離監査テンプレートを追記し、全体FAILと差分FAILの混同を防止
+  - `phase-11-12-guide.md` に3点同期チェックリスト（task-workflow/SKILL/LOGS）を追加
+  - `phase-templates.md` の曖昧表現1件を具体化し、苦戦箇所の未タスク化3ステップを明文化
+
+---
+
+## [2026-02-25 - TASK-013 追補未タスク仕様書作成（quick_validate運用課題）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク検出・指示書作成）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/` に未タスク2件を新規作成
+    - `task-imp-task-spec-skill-md-line-budget-001.md`
+    - `task-imp-skill-quick-validate-warning-baseline-control-001.md`
+  - 両指示書に Why/What/How と 3.5「実装課題と解決策（親タスクからの教訓）」を記載
+  - `aiworkflow-requirements/references/task-workflow.md` 残課題テーブルへ同期登録済み
+
+---
+
+## [2026-02-25 - TASK-013 再監査：Phase 12準拠再確認 + action-bridge導線固定]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（完了条件再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `task-00` 配下へ `task-013e-phase12-action-bridge.md` を作成し、監査結果を次アクションへ接続
+  - Phase 12必須5成果物（implementation-guide / documentation-changelog / spec-update-summary / unassigned-task-detection / skill-feedback-report）を `outputs/phase-12/` に固定出力
+  - `verify-unassigned-links` 91/91 PASS、`detect-unassigned --scan docs/30-workflows/completed-tasks/task-013-subagent-team` 0件を再確認
+  - `audit-unassigned-tasks` の baseline違反（format 67 / naming 5）と current差分を分離報告
+
+---
+
+## [2026-02-25 - TASK-013 再監査：未タスク再評価クローズ反映]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク管理・仕様同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001` を実装実体で再判定し、誤検知として再評価クローズ化
+  - `unassigned-task` 指示書、`task-workflow.md`、`interfaces-agent-sdk-skill.md` の3点同期を実施
+  - `task-013-subagent-team/outputs` に再確認成果物（`compliance-recheck` / `unassigned-task-detection-recheck`）を出力
+
+---
+
 ## [2026-02-25 - UT-SKILL-IPC-PRELOAD-EXTENSION-001 再監査・是正]
 
 - **Agent**: task-specification-creator

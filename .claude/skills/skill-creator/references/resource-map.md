@@ -200,6 +200,7 @@
 | [agent-template.md](.claude/skills/skill-creator/assets/agent-template.md)           | エージェント生成時           | Task仕様書形式テンプレート       |
 | [agent-task-template.md](.claude/skills/skill-creator/assets/agent-task-template.md) | タスク特化エージェント生成時 | タスク実行用エージェント         |
 | [system-prompt-template.md](.claude/skills/skill-creator/assets/system-prompt-template.md) | LLM System Prompt生成時 | LLM外部呼び出し用System Promptテンプレート |
+| [phase12-action-bridge-template.md](.claude/skills/skill-creator/assets/phase12-action-bridge-template.md) | Phase 12再監査後 | 監査結果を次アクションへ変換する導線テンプレート |
 
 ### テンプレート（ランタイム別）
 

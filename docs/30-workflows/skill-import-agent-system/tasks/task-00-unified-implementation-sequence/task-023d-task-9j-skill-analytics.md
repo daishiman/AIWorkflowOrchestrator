@@ -126,7 +126,7 @@ export interface SkillUsageSummary {
   skillName: string;
   executionCount: number;
   /** @format ISO 8601 */
-  lastUsed: string; // ISO 8601
+  lastUsed?: string | null; // ISO 8601
 }
 ```
 
@@ -238,7 +238,7 @@ async executeSkill(skillName: string, prompt: string) {
     await this.analytics.recordEvent({
       skillName,
       eventType: "execution",
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
       duration: Date.now() - startTime,
       success: true,
       toolsUsed,
@@ -250,7 +250,7 @@ async executeSkill(skillName: string, prompt: string) {
     await this.analytics.recordEvent({
       skillName,
       eventType: "error",
-      timestamp: new Date(),
+      timestamp: new Date().toISOString(),
       duration: Date.now() - startTime,
       success: false,
       errorMessage: error.message,

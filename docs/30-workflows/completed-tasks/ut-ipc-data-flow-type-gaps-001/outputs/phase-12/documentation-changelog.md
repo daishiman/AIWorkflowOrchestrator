@@ -91,13 +91,13 @@
 
 ## Task 4: 未タスク検出
 
-| 項目             | 状態    | 備考                                                                                               |
-| ---------------- | ------- | -------------------------------------------------------------------------------------------------- |
-| 検出レポート     | ✅ 完了 | `outputs/phase-12/unassigned-task-report.md`                                                       |
-| 検出数           | 1件     | Phase 10 MINOR M-1（SkillUsageSummary.lastUsed nullable差異）                                      |
-| 未タスク指示書   | ✅ 完了 | `docs/30-workflows/completed-tasks/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md` |
-| 残課題テーブル   | ✅ 完了 | task-workflow.md に UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001 を登録                               |
-| 関連仕様書リンク | ✅ 完了 | 本タスクは仕様書修正のみのため、本レポート内のリンクで完結                                         |
+| 項目             | 状態    | 備考                                                                               |
+| ---------------- | ------- | ---------------------------------------------------------------------------------- |
+| 検出レポート     | ✅ 完了 | `outputs/phase-12/unassigned-task-report.md`                                       |
+| 検出数           | 1件     | Phase 10 MINOR M-1（SkillUsageSummary.lastUsed nullable差異）                      |
+| 未タスク指示書   | ✅ 完了 | `docs/30-workflows/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md` |
+| 残課題テーブル   | ✅ 完了 | task-workflow.md に UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001 を登録               |
+| 関連仕様書リンク | ✅ 完了 | 本タスクは仕様書修正のみのため、本レポート内のリンクで完結                         |
 
 ### P3 対策確認（3ステップ）
 

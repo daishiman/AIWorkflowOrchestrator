@@ -79,6 +79,13 @@ export interface ForkResult {
   warnings?: string[];
 }
 
+export interface ForkMetadata {
+  forkedFrom: string;
+  /** @format ISO 8601 — IPC経由では string として送受信 */
+  forkedAt: string; // ISO 8601
+  originalDescription?: string;
+}
+
 export class SkillForker {
   async fork(options: ForkOptions): Promise<ForkResult>;
   private modifySkillMd(content: string, options: ForkOptions): string;
@@ -93,6 +100,14 @@ export class SkillForker {
   ): Promise<void>;
 }
 ```
+
+### IPC シリアライズ方針（Date 型）
+
+本タスクの Date 型フィールドは IPC 経由で ISO 8601 文字列（`string`）として送受信する。
+
+- **バックエンド（Main Process）内部**: `Date` オブジェクトを使用
+- **IPC 境界（保存/返却）**: `.toISOString()` で ISO 8601 文字列に変換
+- **Renderer 側**: `string` として受け取り、表示時に `new Date(isoString)` で復元
 
 ### Step 2: IPC拡張
 
