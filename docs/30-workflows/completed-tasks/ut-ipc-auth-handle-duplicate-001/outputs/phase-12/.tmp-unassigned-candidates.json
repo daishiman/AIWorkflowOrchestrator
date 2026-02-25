@@ -1,0 +1,40 @@
+{
+  "scannedAt": "2026-02-25T02:08:58.004Z",
+  "scanDir": "apps/desktop/src/main/ipc",
+  "totalFiles": 78,
+  "totalFindings": 4,
+  "findings": [
+    {
+      "file": "aiHandlers.ts",
+      "line": 134,
+      "type": "TODO",
+      "content": "Replace with actual connection check",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "aiHandlers.ts",
+      "line": 157,
+      "type": "TODO",
+      "content": "Replace with actual indexing logic",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "communityHandlers.ts",
+      "line": 25,
+      "type": "TODO",
+      "content": "Replace with actual service implementation",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "dashboardHandlers.ts",
+      "line": 59,
+      "type": "TODO",
+      "content": "Replace with real data fetching",
+      "priority": "medium",
+      "category": "imp"
+    }
+  ]
+}

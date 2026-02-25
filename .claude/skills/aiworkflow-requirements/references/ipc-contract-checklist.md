@@ -22,6 +22,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-25 | 1.1.0 | AUTH IPC登録一元化（UT-IPC-AUTH-HANDLE-DUPLICATE-001）を反映。通常経路とfallback経路の二重登録監査チェックを追加 |
 | 2026-02-20 | 1.0.0 | 初版作成（UT-FIX-SKILL-REMOVE-INTERFACE-001 の教訓から抽出） |
 
 ---
@@ -64,6 +65,9 @@ IPC ハンドラーまたは Preload API を変更する前に、現在の契約
   - 対象ファイル: `apps/desktop/src/preload/skill-api.ts`
 - [ ] **2-3**: テストの引数更新
   - 対象ファイル: `apps/desktop/src/main/ipc/__tests__/skillHandlers.test.ts` 等
+- [ ] **2-4**: 通常経路 + fallback経路の登録点を同時監査（AUTH系など）
+  - `ipcMain.handle(IPC_CHANNELS.AUTH_*)` の重複直書きがないこと
+  - 配列/共通ヘルパーによる宣言的登録に集約されていること
 
 ### Phase 3: バリデーション確認（P42準拠）
 
@@ -114,6 +118,7 @@ if (
   - 空文字列 `""`
   - スペースのみ `"   "`（P42検証）
 - [ ] **6-4**: セキュリティテスト（sender検証、パストラバーサル検証）
+- [ ] **6-5**: fallback経路（外部依存未設定時）の回帰テストを追加/更新し、戻り値契約を固定
 
 ---
 
@@ -167,3 +172,4 @@ grep -n "typeof.*string.*===" apps/desktop/src/main/ipc/ | grep -v "trim"
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | `skill:remove` | ハンドラー `{ skillId }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一 |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | `skill:import` | ハンドラー `{ skillIds: string[] }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一、内部で `[skillName]` 配列化 |
 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待 | 完了（2026-02-21）: ハンドラーを2ステップ変換（`importSkills` → `getSkillByName`）に修正。記録: `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md` |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001 | `auth:*` | 通常経路/ fallback経路で `ipcMain.handle` 登録式が重複し監査ノイズ化 | 共通登録ヘルパー + fallback配列登録へ集約し、AUTH 5チャネル回帰テストで契約固定 |
