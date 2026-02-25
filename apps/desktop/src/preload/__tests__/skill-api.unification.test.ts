@@ -163,11 +163,11 @@ describe("SkillAPI Type Safety", () => {
       expect(result).not.toBeNull();
     });
 
-    it("remove(skillName) returns Promise<void>", async () => {
-      mockInvoke.mockResolvedValueOnce(undefined);
+    it("remove(skillName) returns Promise<RemoveResult>", async () => {
+      mockInvoke.mockResolvedValueOnce({ success: true, removed: true });
 
       const result = await skillAPI.remove("old-skill");
-      expect(result).toBeUndefined();
+      expect(result).toEqual({ success: true, removed: true });
     });
 
     it("rescan() returns Promise<SkillMetadata[]>", async () => {
@@ -182,7 +182,7 @@ describe("SkillAPI Type Safety", () => {
 
     it("execute(request) returns Promise<SkillExecutionResponse>", async () => {
       const mockResult = { executionId: "exec-001", success: true };
-      mockInvoke.mockResolvedValueOnce(mockResult);
+      mockInvoke.mockResolvedValueOnce({ success: true, data: mockResult });
 
       const result = await skillAPI.execute({
         skillName: "test",
@@ -256,9 +256,9 @@ describe("SkillAPI Boundary Tests", () => {
   });
 
   it("remove() with empty string skillName", async () => {
-    mockInvoke.mockResolvedValueOnce(undefined);
+    mockInvoke.mockResolvedValueOnce({ success: true, removed: true });
     const result = await skillAPI.remove("");
-    expect(result).toBeUndefined();
+    expect(result).toEqual({ success: true, removed: true });
   });
 
   it("abort() with empty string executionId", async () => {
@@ -275,8 +275,11 @@ describe("SkillAPI Boundary Tests", () => {
 
   it("execute() with minimal request (skillName and prompt only)", async () => {
     mockInvoke.mockResolvedValueOnce({
-      executionId: "exec-min",
       success: true,
+      data: {
+        executionId: "exec-min",
+        success: true,
+      },
     });
     const result = await skillAPI.execute({
       skillName: "minimal-skill",
@@ -343,8 +346,11 @@ describe("SkillAPI Integration Scenarios", () => {
   it("Skill execution flow: execute -> onStream -> onComplete", async () => {
     // 実行開始
     mockInvoke.mockResolvedValueOnce({
-      executionId: "flow-001",
       success: true,
+      data: {
+        executionId: "flow-001",
+        success: true,
+      },
     });
     const response = await skillAPI.execute({
       skillName: "flow-skill",
