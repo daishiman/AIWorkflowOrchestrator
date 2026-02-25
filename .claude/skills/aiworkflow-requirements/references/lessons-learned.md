@@ -22,6 +22,10 @@
 |------|-----------|----------|
 | 2026-02-25 | 1.27.0 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査教訓を追加: Phase仕様書内の旧 `unassigned-task` 参照残存と `outputs/phase-12` の旧成果物残置を苦戦箇所として追記。同種課題向け簡潔解決手順を5ステップ化（参照正規化・出力同期・一時ファイル掃除を追加） |
 | 2026-02-25 | 1.26.0 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 教訓追加: Phase 12同期で発生した苦戦箇所3件（baseline/current判定混同、完了移管後リンク漏れ、LOGS先行更新による3点同期崩れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
+| 2026-02-25 | 1.25.7 | TASK-013 再監査の検証運用追補: `quick_validate` で顕在化した「SKILL.md 500行超過エラー」と「大量警告ノイズ」の2課題を追加し、未タスク化（2件）と baseline/current 分離手順を標準化 |
+| 2026-02-25 | 1.25.6 | TASK-013 再監査のテンプレート運用追補: action-bridge の記述揺れを抑制するため `skill-creator/assets/phase12-action-bridge-template.md` を標準化し、同種課題の5ステップ手順へ組み込んだ |
+| 2026-02-25 | 1.25.5 | TASK-013 再監査の追補: 未実施未タスクが `completed-tasks/unassigned-task/` に混在した課題を追加し、配置是正（6件移動）と参照同期を標準手順へ反映 |
+| 2026-02-25 | 1.25.4 | TASK-013 再監査の教訓追加: 「監査結果を次アクションへ落とし込めない」課題を記録し、task-00配下へのアクションブリッジ導線、Phase 12 必須5成果物の固定出力、baseline/current 分離報告の3点を標準手順化 |
 | 2026-02-25 | 1.24.0 | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 教訓追加: task-9D〜9J 仕様差分是正で発生した苦戦箇所3件（旧パス混在、artifacts必須項目漏れ、Date型方針ドリフト）と同種課題向け簡潔解決手順（5ステップ）を追加 |
 | 2026-02-25 | 1.25.3 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 の簡潔解決テンプレートを追加。目的/前提/4ステップ/検証/失敗時対処を1ページ化し、同種課題の初動時間短縮を明文化 |
 | 2026-02-25 | 1.25.2 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 再監査教訓を追記。全体監査FAILと今回差分FAILの混同、完了移管後リンク更新漏れの2課題を追加し、4ステップ是正手順を明文化 |
@@ -122,6 +126,88 @@
 5. 監査結果を baseline/current に分離し、`outputs/phase-12` の旧成果物・一時ファイルを掃除して `spec-update-summary.md` に記録する
 
 ---
+
+## TASK-013 再監査: 監査結果を次アクションへ接続する運用
+
+### 苦戦箇所: 監査結果が「指摘一覧」で止まり、実行順序が見えない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 仕様差分の指摘はあるが、次にどのタスクから着手するかが文書化されていない |
+| 原因 | 監査成果物と実行計画が別文書で分断され、橋渡しドキュメントが不在 |
+| 対処 | `task-00-unified-implementation-sequence/task-013e-phase12-action-bridge.md` を新規作成し、優先度・Wave・担当を固定 |
+| 教訓 | 「監査レポート」と「実行計画」を1ステップで接続する文書を必ず置く |
+
+### 苦戦箇所: Phase 12 準拠の証跡が散在し、完了判定が曖昧になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task 1〜5 の成果物が分散し、実施済みかを一目で確認できない |
+| 原因 | `outputs/phase-12/` の固定構成が使われていなかった |
+| 対処 | `implementation-guide.md` / `documentation-changelog.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を標準配置 |
+| 教訓 | Phase 12は「成果物5点セット」を固定化し、欠落を許容しない |
+
+### 苦戦箇所: 全体監査FAILと今回差分FAILの混同
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `audit-unassigned-tasks.js` の既存違反を、今回変更の不備と誤判定しやすい |
+| 原因 | baseline と current を分離せずに1つの結果で報告していた |
+| 対処 | `detect-unassigned-tasks --scan <変更範囲>` を併用し、差分起因を別表で記録 |
+| 教訓 | 監査報告は必ず baseline/current の二層で提示する |
+
+### 苦戦箇所: 未実施未タスクの配置ドリフト（completed配下混在）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未実施の未タスク指示書が `completed-tasks/unassigned-task/` に混在し、監査で誤配置扱いになる |
+| 原因 | 完了済み指示書の移管ルールと未実施の配置ルールを同時に運用できていなかった |
+| 対処 | 未実施6件を `docs/30-workflows/unassigned-task/` へ移動し、`task-workflow.md` などの参照を一括同期 |
+| 教訓 | 完了移管と未実施配置は別ルール。Phase 12 で `completed-tasks/unassigned-task` の未実施混在を機械検査する |
+
+### 苦戦箇所: action-bridge 文書の構造が毎回ぶれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 優先度/Wave/SubAgent/成果物の記載形式がタスクごとに揺れ、レビューで読み直しが発生する |
+| 原因 | action-bridge 専用テンプレートがなく、都度ゼロから記述していた |
+| 対処 | `skill-creator/assets/phase12-action-bridge-template.md` を新規作成し、必須項目を固定化 |
+| 教訓 | 監査後の初手は「テンプレート複製」から始めると、実行導線の品質が安定する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `skill-creator/assets/phase12-action-bridge-template.md` を複製し、task-00 配下へ配置する  
+2. P1〜P4 の優先度と Wave（並列/直列）を固定し、着手順を明文化する  
+3. Phase 12 必須5成果物を `outputs/phase-12/` に揃えて出力する  
+4. `verify-unassigned-links.js` と `detect-unassigned-tasks --scan <変更範囲>` を同時実行する  
+5. `completed-tasks/unassigned-task` の未実施混在を検査し、`task-workflow.md` / `lessons-learned.md` / `SKILL.md` / `LOGS.md` を同一ターンで同期する  
+
+## TASK-013 追補: スキル検証ゲート運用（quick_validate）
+
+### 苦戦箇所: task-specification-creator が既知エラーで恒常FAIL
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `quick_validate` 実行時に `task-specification-creator/SKILL.md` が 500行超過で常時エラーとなる |
+| 原因 | 変更履歴肥大化により SKILL 本体が検証制約を超過した |
+| 対処 | 未タスク `UT-IMP-TASK-SPEC-SKILL-MD-LINE-BUDGET-001` を起票し、SKILL本体と履歴の分離を実施対象化 |
+| 教訓 | 既知エラーを放置すると新規差分の品質判定が機能しない |
+
+### 苦戦箇所: quick_validate 警告が多く新規異常を識別しづらい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `aiworkflow-requirements` と `skill-creator` で既知警告が大量出力され、監査ノイズ化する |
+| 原因 | 既知警告の baseline 管理がなく、毎回全量を同列扱いしていた |
+| 対処 | 未タスク `UT-IMP-SKILL-QUICK-VALIDATE-WARNING-BASELINE-CONTROL-001` を起票し、baseline/current 分離運用を整備対象化 |
+| 教訓 | 検証は「全量出力」より「差分検知」を優先しないと継続改善が難しい |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. `quick_validate` のエラーと警告を分離し、エラーは即未タスク化する  
+2. 警告は baseline/current の2層で記録し、新規警告のみ対応対象にする  
+3. 未タスク指示書に「実装課題と解決策（3.5）」を必ず含める  
+4. `task-workflow.md` / `SKILL.md` / `LOGS.md` を同一ターンで同期する  
 
 ## UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化
 

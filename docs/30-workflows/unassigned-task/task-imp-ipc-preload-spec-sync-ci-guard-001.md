@@ -277,7 +277,7 @@ node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.j
 
 ### 関連ドキュメント
 
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`
+- `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`
 - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md`
 - `.claude/skills/aiworkflow-requirements/references/task-workflow.md`
 - `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`

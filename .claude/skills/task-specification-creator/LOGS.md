@@ -83,6 +83,48 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-25 - TASK-013 追補未タスク仕様書作成（quick_validate運用課題）]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク検出・指示書作成）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/` に未タスク2件を新規作成
+    - `task-imp-task-spec-skill-md-line-budget-001.md`
+    - `task-imp-skill-quick-validate-warning-baseline-control-001.md`
+  - 両指示書に Why/What/How と 3.5「実装課題と解決策（親タスクからの教訓）」を記載
+  - `aiworkflow-requirements/references/task-workflow.md` 残課題テーブルへ同期登録済み
+
+---
+
+## [2026-02-25 - TASK-013 再監査：Phase 12準拠再確認 + action-bridge導線固定]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（完了条件再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `task-00` 配下へ `task-013e-phase12-action-bridge.md` を作成し、監査結果を次アクションへ接続
+  - Phase 12必須5成果物（implementation-guide / documentation-changelog / spec-update-summary / unassigned-task-detection / skill-feedback-report）を `outputs/phase-12/` に固定出力
+  - `verify-unassigned-links` 91/91 PASS、`detect-unassigned --scan docs/30-workflows/completed-tasks/task-013-subagent-team` 0件を再確認
+  - `audit-unassigned-tasks` の baseline違反（format 67 / naming 5）と current差分を分離報告
+
+---
+
+## [2026-02-25 - TASK-013 再監査：未タスク再評価クローズ反映]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク管理・仕様同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001` を実装実体で再判定し、誤検知として再評価クローズ化
+  - `unassigned-task` 指示書、`task-workflow.md`、`interfaces-agent-sdk-skill.md` の3点同期を実施
+  - `task-013-subagent-team/outputs` に再確認成果物（`compliance-recheck` / `unassigned-task-detection-recheck`）を出力
+
+---
+
 ## [2026-02-25 - UT-SKILL-IPC-PRELOAD-EXTENSION-001 再監査・是正]
 
 - **Agent**: task-specification-creator

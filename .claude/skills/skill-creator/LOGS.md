@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-02-25 - Phase 12 action-bridge template standardization]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `assets/phase12-action-bridge-template.md` を新規作成。監査結果を優先度/Wave/SubAgent/必須5成果物へ直接変換するテンプレートを追加し、`references/resource-map.md` と `references/patterns.md` に連動登録。
+
+---
+
+## [2026-02-25 - TASK-013 再監査 action-bridge pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md の Phase 12 に成功パターン「監査結果→次アクションブリッジ（TASK-013再監査）」と失敗パターン「監査結果の棚卸し止まり（次アクション未定義）」を追加。再監査結果を `task-00` 実行計画へ接続する標準運用を明文化。
+
+---
+
 ## [2026-02-25 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 implementation-guide gap pattern]
 
 - **Agent**: skill-creator (update)
