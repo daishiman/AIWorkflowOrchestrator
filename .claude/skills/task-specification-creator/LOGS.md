@@ -43,6 +43,46 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-25 - SKILL.md 構造最適化（skill-creator準拠）]
+
+- **Agent**: task-specification-creator + skill-creator
+- **Phase**: Phase 12（ドキュメント最適化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `SKILL.md` の変更履歴を `v9.74.0` 以前と `v9.75.0` 以降で分割
+  - `references/changelog-archive.md` を新規作成し、旧履歴を退避
+  - `SKILL.md` を 549行→424行へ圧縮し、`quick_validate.js` 500行制約に適合
+
+---
+
+## [2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査追補]
+
+- **Agent**: task-specification-creator + skill-creator
+- **Phase**: Phase 12（再監査ガード強化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `spec-update-workflow.md` に Step 1-G-4（Phase仕様書旧参照 + outputs同期差分チェック）を追加
+  - `phase-11-12-guide.md` の完了条件に「旧 `unassigned-task` 参照残存チェック」「outputs差分0件チェック」を追加
+  - `quick_validate.py` で2スキルを再検証し `Skill is valid!` を確認
+
+---
+
+## [2026-02-25 - UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 同期ガード反映]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ガイド更新・同期ルール標準化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `spec-update-workflow.md` に Step 1-G（verify-unassigned-links → generate-index → quick_validate）を追加
+  - baseline/current 分離監査テンプレートを追記し、全体FAILと差分FAILの混同を防止
+  - `phase-11-12-guide.md` に3点同期チェックリスト（task-workflow/SKILL/LOGS）を追加
+  - `phase-templates.md` の曖昧表現1件を具体化し、苦戦箇所の未タスク化3ステップを明文化
+
+---
+
 ## [2026-02-25 - UT-SKILL-IPC-PRELOAD-EXTENSION-001 再監査・是正]
 
 - **Agent**: task-specification-creator

@@ -1068,6 +1068,39 @@
 
 ---
 
+### タスク: UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 Phase 12 仕様更新リンク同期ガード強化（2026-02-25完了）
+
+| 項目         | 内容                                                                                                           |
+| ------------ | -------------------------------------------------------------------------------------------------------------- |
+| タスクID     | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001                                                                      |
+| 完了日       | 2026-02-25                                                                                                     |
+| ステータス   | **完了（仕様書修正のみ / spec_created）**                                                                     |
+| Phase        | Phase 1-12 完了                                                                                                 |
+| コード変更   | なし（`apps/` / `packages/` 配下の変更なし）                                                                  |
+| 主対象       | `task-workflow.md` / `spec-update-workflow.md` / `phase-11-12-guide.md` の同期ガード強化                     |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| ワークフロー一式     | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/`                                                          |
+| Phase成果物          | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-1` 〜 `phase-12`                            |
+| 実装ガイド           | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/implementation-guide.md`                 |
+| 仕様更新サマリー     | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/spec-update-summary.md`                  |
+| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/documentation-changelog.md`              |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/unassigned-task-detection.md`            |
+| スキルフィードバック | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/skill-feedback-report.md`                |
+| 再監査レポート       | `docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/revalidation-audit.md`                   |
+
+#### 変更理由
+
+- Phase 12 の台帳同期で発生していた `baseline/current` 判定混同を運用ルールとして分離した。
+- 未タスク完了移管後の `unassigned-task/` 参照残存を、更新順序と機械検証で再発防止できる構成に統一した。
+- `task-workflow.md` / `SKILL.md` / `LOGS.md` の3点同期を、チェックリストと検証コマンドで同一ターン完了する運用へ改善した。
+- 再監査で Phase仕様書4件の旧参照を `completed-tasks` に正規化し、`outputs/phase-12` の旧成果物残置を解消した。
+
+---
+
 ## 残課題（未タスク）
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
@@ -1196,13 +1229,27 @@
 | UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001         | SkillUsageSummary.lastUsed nullable整合性修正（Phase 1/2分析 nullable=Yes vs 実仕様 non-nullable差異）            | 低     | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 10 MINOR M-1（2026-02-24）            | `docs/30-workflows/completed-tasks/unassigned-task/task-ipc-data-flow-nullable-consistency-001.md`                                                                |
 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001         | 未タスク監査の対象スコープ制御とベースライン分離（current/baseline判定）                                         | 中     | UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 再監査（苦戦箇所・2026-02-24）      | `docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md`                                                              |
 | UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001         | task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧パス/artifacts/Date方針）                                        | 中     | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 実装苦戦箇所（2026-02-25）  | `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md`                                                            |
-| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
+| ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~     | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                   | ~~中~~ | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）** | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
+| ~~UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001~~    | ~~skill-creator検証ゲート整合化（quick_validate実行経路統一 + 警告ノイズ制御）~~                                | ~~中~~ | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 Phase 12 再監査（実装苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（task-spec移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` |
 
 ### 未タスク管理ルール
 
 - 未タスクは `docs/30-workflows/unassigned-task/` に配置
 - タスク完了時は取り消し線でマークし、完了タスクセクションに移動
 - 優先度「高」のタスクから順に実施
+
+### 未タスク参照同期ルール（Phase 12）
+
+以下の順序で同期し、更新直後に検証を実行する。
+
+1. `task-workflow.md` の残課題テーブルと完了タスクセクションを更新する
+2. `aiworkflow-requirements/SKILL.md` と `task-specification-creator/SKILL.md` の変更履歴を更新する
+3. `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` を更新する
+4. `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認する
+5. `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js` を実行する
+6. `python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py` を2スキルへ実行し、`Skill is valid!` を確認する
+7. `docs/30-workflows/<workflow>/phase-*.md` の `unassigned-task/<task>.md` 参照を再確認し、完了移管後は `completed-tasks/<task>.md` へ正規化する
+8. `outputs/phase-12/` の旧成果物と `.tmp-*` 一時ファイルを削除し、`docs/.../outputs` とルート `outputs` を同期する
 
 ---
 
@@ -1220,6 +1267,10 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.63.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 完了移管**: 条件（`outputs/phase-12` 生成済み + Phase 12 completed）を満たしたため、ワークフロー `ut-imp-aiworkflow-spec-reference-sync-001` を `completed-tasks/` へ移動。併せて `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 指示書を `completed-tasks/unassigned-task/` へ移管し、残課題行を完了化 |
+| **1.62.0** | **2026-02-25** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001登録**: `quick_validate.py/.js` 実行経路混在と warning ノイズ（referencesリンク警告）の運用課題を再発防止する未タスクを残課題テーブルへ追加。親タスクの苦戦箇所（経路混在・判定混同・手順再判断）を未タスク指示書 Section 3.5 に反映 |
+| **1.61.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 再監査追補**: Phase仕様書（1/11/12/13）に残存した旧 `unassigned-task` 参照を `completed-tasks` へ正規化。`outputs/phase-12` の旧成果物残置と一時ファイルを除去し、再監査レポート（`revalidation-audit.md`）を成果物へ追加 |
+| **1.60.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001完了反映**: 残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、参照先を `completed-tasks/` へ更新。完了タスクセクションへ Phase 1-12 成果物を追加し、Phase 12向け「未タスク参照同期ルール（3点同期 + 検証コマンド）」を追記 |
 | **1.59.0** | **2026-02-25** | **UT-SKILL-IPC-PRELOAD-EXTENSION-001成果物移管反映**: Phase 12完了済みのワークフロー `ut-skill-ipc-preload-extension-001` を `completed-tasks/` へ移動。対応する未タスク指示書 `task-imp-ipc-preload-extension-spec-alignment-001.md` も `completed-tasks/unassigned-task/` へ移管し、参照パスを更新 |
 | **1.58.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001登録**: task-9D〜9J 仕様契約ドリフトの再発防止を目的に、旧参照パス検出・必須artifacts検証・Date方針検証をCIガード化する未タスクを残課題テーブルへ追加。親タスクの苦戦箇所3件を未タスク指示書 Section 3.5 に反映 |
 | **1.57.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001完了反映**: task-9D〜9J の仕様差分是正完了を完了タスクセクションへ追加。残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、完了記録参照を `completed-task/task-013-*` へ更新 |
