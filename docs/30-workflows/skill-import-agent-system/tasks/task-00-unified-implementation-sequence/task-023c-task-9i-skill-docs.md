@@ -25,10 +25,14 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillDocGenerator.ts
+    - packages/shared/src/types/skill/docs.ts
   # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.3 で定義
   modifies:
+    - packages/shared/src/types/skill/index.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
-    - apps/desktop/src/preload/skillAPI.ts
+    - apps/desktop/src/preload/channels.ts
+    - apps/desktop/src/preload/skill-api.ts
+    - apps/desktop/src/preload/types.ts
 ---
 
 # スキルドキュメント生成機能実装
@@ -52,7 +56,7 @@ artifacts:
 
 ### Step 1: 型定義追加
 
-**ファイル**: `packages/shared/src/types/skillDocs.ts`
+**ファイル**: `packages/shared/src/types/skill/docs.ts`
 
 ```typescript
 export interface DocGenerationRequest {
@@ -69,7 +73,8 @@ export interface GeneratedDoc {
   format: "markdown" | "html" | "pdf";
   content: string;
   sections: DocSection[];
-  generatedAt: Date;
+  /** @format ISO 8601 — IPC経由では string として送受信 */
+  generatedAt: string; // ISO 8601
   wordCount: number;
 }
 
@@ -94,6 +99,20 @@ export interface TemplateSection {
   required: boolean;
 }
 ```
+
+### IPC シリアライズ方針（Date 型）
+
+本タスクの Date 型フィールドは IPC 経由で ISO 8601 文字列（`string`）として送受信する。
+
+- **バックエンド（Main Process）内部**: `Date` オブジェクトを使用
+- **IPC 境界（ハンドラ戻り値）**: `.toISOString()` で ISO 8601 文字列に変換
+- **Renderer 側**: `string` として受け取り、表示時に `new Date(isoString)` で復元
+
+この方針は以下の理由に基づく:
+
+1. contextBridge の Structured Clone は Date を保持するが、JSON API（Web版）では string に変換される
+2. ISO 8601 文字列であれば `new Date()` で確実に復元可能
+3. IPC 型とドメイン型の混在を避け、型安全性を維持
 
 ### Step 2: SkillDocGenerator 実装
 

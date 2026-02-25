@@ -190,6 +190,9 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **8.71.0** | **2026-02-25** | **Phase 12完了済み成果物の移管反映**: `ut-skill-ipc-preload-extension-001` ワークフローを `completed-tasks/` へ移動し、対応未タスク `task-imp-ipc-preload-extension-spec-alignment-001.md` も `completed-tasks/unassigned-task/` へ移管。`task-workflow.md` の成果物・未タスク参照を新パスへ更新 |
+| **8.70.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001未タスク登録**: `task-workflow.md` 残課題テーブルへ task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧参照パス/artifacts/Date方針）を追加。親タスク `UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001` の苦戦箇所3件を未タスク指示書 Section 3.5 に反映 |
+| **8.69.0** | **2026-02-25** | **UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001完了反映 + 再発防止スキル登録**: `task-workflow.md` に task-9D〜9J 仕様差分是正タスクの完了記録を追加し、残課題を完了化。`lessons-learned.md` に苦戦箇所3件と5ステップ解決手順を追加。`claude-code-skills-overview.md` に `ipc-preload-spec-sync-guardian` を登録 |
 | **8.68.2** | **2026-02-24** | **未タスク監査スコープ分離タスク登録**: `UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001` を `task-workflow.md` 残課題テーブルへ追加。未タスク監査の対象差分判定（current）と全体ベースライン監視（baseline）を分離する運用改善タスクとして管理開始 |
 | **8.68.1** | **2026-02-24** | **SKILL frontmatter制約準拠化**: `SKILL.md` の YAML `description` を1024文字以内に要約し、`quick_validate.py` で `Skill is valid!` を確認。仕様管理用途（要件/設計/API・IPC契約/テスト/未タスク/教訓反映）のトリガーは維持 |
 | **8.68.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12再監査是正**: `task-workflow.md` の成果物テーブルに `spec-update-summary.md` を追加。`lessons-learned.md` v1.22.0 に苦戦箇所3件（成果物不足 / artifacts二重管理非同期 / 未タスク指示書フォーマット不一致）と4ステップ簡潔解決手順を追記。Phase 12運用の再発防止ルールを明文化 |

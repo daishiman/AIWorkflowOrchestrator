@@ -1,0 +1,132 @@
+{
+  "feature": "ut-skill-ipc-preload-extension-001",
+  "created": "2026-02-24T22:47:12.757Z",
+  "lastUpdated": "2026-02-25T00:05:00.000Z",
+  "status": "spec_created",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/subagent-ownership.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/channel-design.md",
+        "outputs/phase-2/preload-api-design.md",
+        "outputs/phase-2/type-layout-design.md",
+        "outputs/phase-2/spec-update-matrix.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/design-gap-list.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/contract-test-cases.md",
+        "outputs/phase-4/p32-test-cases.md",
+        "outputs/phase-4/subagent-test-cases.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/plan-authoring-procedure.md",
+        "outputs/phase-5/spec-update-procedure.md",
+        "outputs/phase-5/spec-update-targets.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/not-applicable.md"],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-not-applicable.md"],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactor-not-applicable.md",
+        "outputs/phase-8/style-normalization-rules.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/p32-verification.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/open-items.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-check-result.md",
+        "outputs/phase-11/handover-checklist.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-tasks.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/recheck-multithinking-audit.md"
+      ],
+      "completedAt": "2026-02-24T23:59:00.000Z"
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/pr-template.md",
+        "outputs/phase-13/final-summary.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "5", "9"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "specification",
+    "estimatedPhases": 13,
+    "actualPhases": 13
+  }
+}

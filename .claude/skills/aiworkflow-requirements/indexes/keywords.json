@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-24T12:06:42.359Z",
-  "totalKeywords": 1282,
+  "generated": "2026-02-25T01:18:15.923Z",
+  "totalKeywords": 1287,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2934,6 +2934,27 @@
     "仕様書修正タスク": [
       "lessons-learned.md"
     ],
+    "IMP": [
+      "lessons-learned.md"
+    ],
+    "PRELOAD": [
+      "lessons-learned.md"
+    ],
+    "EXTENSION": [
+      "lessons-learned.md"
+    ],
+    "SPEC": [
+      "lessons-learned.md"
+    ],
+    "ALIGNMENT": [
+      "lessons-learned.md"
+    ],
+    "task": [
+      "lessons-learned.md"
+    ],
+    "仕様差分の統合是正": [
+      "lessons-learned.md"
+    ],
     "TS": [
       "lessons-learned.md"
     ],
@@ -2959,9 +2980,6 @@
       "lessons-learned.md"
     ],
     "の同期自動化": [
-      "lessons-learned.md"
-    ],
-    "IMP": [
       "lessons-learned.md"
     ],
     "MODULE": [
@@ -3078,9 +3096,6 @@
       "lessons-learned.md"
     ],
     "未実施が混在していないか": [
-      "lessons-learned.md"
-    ],
-    "task": [
       "lessons-learned.md"
     ],
     "workflow": [
