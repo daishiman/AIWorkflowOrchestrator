@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-25 | 1.24.0 | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 教訓追加: task-9D〜9J 仕様差分是正で発生した苦戦箇所3件（旧パス混在、artifacts必須項目漏れ、Date型方針ドリフト）と同種課題向け簡潔解決手順（5ステップ）を追加 |
 | 2026-02-24 | 1.23.0 | UT-IPC-DATA-FLOW-TYPE-GAPS-001 実装固有の苦戦箇所4件追加（仕様書修正タスクPhaseテンプレート適用、6ギャップ横断分析、Date型シリアライズ方針統一、positional→object引数移行設計）+ 同種課題向け簡潔解決手順5ステップ追加 |
 | 2026-02-24 | 1.22.0 | UT-IPC-DATA-FLOW-TYPE-GAPS-001 教訓追加: Phase 12再監査で判明した苦戦箇所3件（成果物不足、artifacts.json二重管理非同期、未タスク指示書フォーマット不一致）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 2026-02-24 | 1.21.1 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 教訓追加: Phase 12再監査で判明した苦戦箇所3件（検出ソース網羅漏れ、検証スクリプト終端依存、全体監査と差分判定の混同）と簡潔解決手順（5ステップ）を追加 |
@@ -68,6 +69,12 @@
 ---
 
 ## 目次
+
+0. [UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正](#ut-imp-ipc-preload-extension-spec-alignment-001-task-9d9j-仕様差分の統合是正)
+   - [苦戦箇所1: 旧パスが文書内で混在し正本が不明瞭化](#苦戦箇所1-旧パスが文書内で混在し正本が不明瞭化)
+   - [苦戦箇所2: artifacts必須項目の漏れがtaskごとに発生](#苦戦箇所2-artifacts必須項目の漏れがtaskごとに発生)
+   - [苦戦箇所3: Date型方針がtask-9Iのみドリフト](#苦戦箇所3-date型方針がtask-9iのみドリフト)
+   - [同種課題の簡潔解決手順（5ステップ）](#同種課題の簡潔解決手順5ステップ-2)
 
 0. [UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク）](#ut-ipc-data-flow-type-gaps-001-phase-12再監査仕様書修正タスク)
    - [苦戦箇所1: Phase 12成果物の不足](#苦戦箇所1-phase-12成果物の不足)
@@ -382,6 +389,55 @@ ipcMain.handle('skill:editor:read', async (event, args: SkillEditorReadArgs) => 
 3. **Gap別修正→ファイル間検証のサイクル**: Gap単位で全ファイルを修正し、修正完了後にファイル間の整合性をgrepで横断検証
 4. **Phase対応表の事前定義**: コード変更なしタスクの場合、各Phaseで何を代替実施するかを Phase 1 で事前定義（Phase 4=検証基準設計、Phase 6-7=grep検証 等）
 5. **Phase 12の成果物を先に定義**: spec-update-summary.md、documentation-changelog.md、unassigned-task-report.md の3成果物を Phase 12 開始時に空ファイルで作成し、完了時に内容を埋める
+
+---
+
+## UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 |
+| 目的 | task-9D〜9J の参照差分・artifacts差分を統合是正し、実装前の契約ドリフトを防止する |
+| 完了日 | 2026-02-25 |
+| ステータス | **完了** |
+| 関連Pitfall | P32, P44, P45 |
+
+### 苦戦箇所1: 旧パスが文書内で混在し正本が不明瞭化
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `preload/skillAPI.ts` と `preload/skill-api.ts`、`main/ipc/channels.ts` と `preload/channels.ts` が混在していた |
+| 原因 | 移行前後の記述が task ごとに異なる時期で更新され、統一ルールが未適用だった |
+| 対処 | 旧パス検出条件を固定し、対象7仕様書で0件になるまで一括是正 |
+| 教訓 | 参照差分はファイル単位ではなく「対象群一括」で潰すほうが再発しにくい |
+
+### 苦戦箇所2: artifacts必須項目の漏れがtaskごとに発生
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `modifies` / `creates` の記載粒度が task ごとにズレ、実装時の変更対象が不明瞭だった |
+| 原因 | task-9D〜9J で共通必須項目のテンプレート化がされていなかった |
+| 対処 | 必須4項目（`channels.ts`, `skill-api.ts`, `types.ts`, `skill/index.ts`）を共通化し、domain型を task別に補完 |
+| 教訓 | artifacts は「共通セット + domain差分」の2層で設計すると漏れを抑制できる |
+
+### 苦戦箇所3: Date型方針がtask-9Iのみドリフト
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | task-9I の `GeneratedDoc.generatedAt` のみ `Date` 記述が残り、IPC境界方針と矛盾した |
+| 原因 | Dateシリアライズ方針の追記が一部タスクへ未展開だった |
+| 対処 | `string (ISO 8601)` へ統一し、IPCシリアライズ方針セクションを追記 |
+| 教訓 | Date型を含む仕様は「型定義修正」と「方針文章追記」をセットで実施する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 監査対象を task 群へ限定し、全体ベースライン違反と分離する。  
+2. 参照差分（oldPaths）と台帳差分（missingArtifacts）を別指標で収集する。  
+3. 旧参照パスを一括置換し、再監査で0件化する。  
+4. artifacts を共通セット + domain差分で補完し、7/7一致を確認する。  
+5. `task-workflow.md` 完了記録・残課題状態・`LOGS.md` を同一タイミングで同期する。  
 
 ---
 

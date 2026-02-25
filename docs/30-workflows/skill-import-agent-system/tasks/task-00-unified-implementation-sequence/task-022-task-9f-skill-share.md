@@ -25,11 +25,13 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillShareManager.ts
+    - packages/shared/src/types/skill/share.ts
   # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.2 で定義
   modifies:
+    - packages/shared/src/types/skill/index.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
-    - apps/desktop/src/main/ipc/channels.ts
-    - apps/desktop/src/preload/skillAPI.ts
+    - apps/desktop/src/preload/channels.ts
+    - apps/desktop/src/preload/skill-api.ts
     - apps/desktop/src/preload/types.ts
 ---
 
@@ -60,9 +62,11 @@ artifacts:
 
 ## 実装手順
 
-### Step 1: SkillShareManager 実装
+### Step 1: 型定義追加と SkillShareManager 実装
 
-**ファイル**: `apps/desktop/src/main/services/skill/SkillShareManager.ts`
+**ファイル**: `packages/shared/src/types/skill/share.ts`, `apps/desktop/src/main/services/skill/SkillShareManager.ts`
+
+`ShareTarget` / `ImportResult` / `ExportResult` は `packages/shared/src/types/skill/share.ts` に定義し、`SkillShareManager.ts` から import して利用する。
 
 ```typescript
 export interface ShareTarget {

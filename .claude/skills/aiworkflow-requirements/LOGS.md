@@ -5,6 +5,85 @@
 
 ---
 
+## 2026-02-25 - Phase 12完了済み成果物の completed-tasks への移管
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: UT-SKILL-IPC-PRELOAD-EXTENSION-001 / UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001
+- 目的: `outputs/phase-12` 完了済み成果物の配置整合（unassigned-task → completed-tasks）
+
+### 実施内容
+- `docs/30-workflows/ut-skill-ipc-preload-extension-001/` を `docs/30-workflows/completed-tasks/ut-skill-ipc-preload-extension-001/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `references/task-workflow.md` の成果物・未タスク指示書リンクを移動後パスに更新
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 移管対象の未タスク指示書はメタ情報を完了状態へ更新（完了日追記）
+
+---
+
+## 2026-02-25 - UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001
+- 目的: task-9D〜9J 仕様契約ドリフト（旧参照パス/artifacts/Date方針）の再発防止タスクを台帳化
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md` を新規作成
+- `references/task-workflow.md` の残課題テーブルへ未タスクを登録
+- 変更履歴に登録理由（親タスク苦戦箇所3件反映）を追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 親タスクの苦戦箇所を Section 3.5 として未タスクへ転記し、再発防止観点を CI ガード化対象として明示
+
+---
+
+## 2026-02-25 - UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 完了反映 + 再発防止スキル新設
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001
+- 目的: task-9D〜9J 仕様差分是正の完了反映と、同種課題の簡潔再実行手順を資産化
+
+### 実施内容
+- `references/task-workflow.md` に完了タスク記録を追加
+- 残課題テーブルの `UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001` を完了化（取り消し線 + 完了日）
+- 完了記録ファイル `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md` を新規作成
+- `references/lessons-learned.md` に苦戦箇所3件（旧パス混在 / artifacts漏れ / Date方針ドリフト）と5ステップ解決手順を追加
+- `references/claude-code-skills-overview.md` に新規スキル `ipc-preload-spec-sync-guardian` を登録
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 仕様是正の完了記録と再発防止スキルを同時に反映し、次回は監査スクリプト先行で短時間収束できる構成に更新
+
+---
+
+## 2026-02-25 - UT-SKILL-IPC-PRELOAD-EXTENSION-001 再監査反映
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-SKILL-IPC-PRELOAD-EXTENSION-001
+- 目的: 仕様漏れ再監査とシステム仕様書への完了/残課題反映
+
+### 実施内容
+- `references/task-workflow.md` に完了タスク記録（spec_created）を追加
+- 残課題テーブルへ `UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001` を登録
+- 未タスク指示書 `docs/30-workflows/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md` を新規作成
+- ワークフロー成果物（phase-10/12）を再同期し、Step 1-E 実施証跡を追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 全体監査ノイズと今回差分監査を分離し、漏れを未タスク化して追跡可能状態へ修正
+
+---
+
 ## 2026-02-24 - 未タスク監査スコープ分離タスク登録
 
 ### コンテキスト
