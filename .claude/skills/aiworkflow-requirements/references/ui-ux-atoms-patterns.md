@@ -182,7 +182,7 @@ const variantStyles = {
 ```
 
 **メリット**:
-- テーマ切替（light/dark/system）がCSS変数の値変更のみで完結
+- テーマ切替（kanagawa-dragon/light/dark/system）がCSS変数の値変更のみで完結
 - TypeScriptコードにテーマ固有ロジック0件を達成
 - デザイントークンの単一責務原則に準拠
 
@@ -473,21 +473,24 @@ const displayContent = children ?? (content !== undefined ? String(content) : un
 
 ### 6.1 テーマ横断テスト（describe.each）
 
-**パターン**: 全テーマ（light/dark/system）で同一のテストケースを実行する。
+**パターン**: 解決テーマ3種（`light` / `dark` / `kanagawa-dragon`）で同一のテストケースを実行し、`system` は解決結果に委譲する。
 
 ```typescript
-describe.each(["light", "dark"] as const)("%s テーマ", (theme) => {
-  beforeEach(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  });
+describe.each(["light", "dark", "kanagawa-dragon"] as const)(
+  "%s テーマ",
+  (theme) => {
+    beforeEach(() => {
+      document.documentElement.setAttribute("data-theme", theme);
+    });
 
-  it("正しいvariantスタイルを適用する", () => {
-    render(<Badge variant="success">Success</Badge>);
-    const badge = screen.getByRole("status");
-    expect(badge).toHaveClass("bg-[var(--status-success)]");
-    // CSS変数の実際の値はthemeによって変わるが、クラス名は同一
-  });
-});
+    it("正しいvariantスタイルを適用する", () => {
+      render(<Badge variant="success">Success</Badge>);
+      const badge = screen.getByRole("status");
+      expect(badge).toHaveClass("bg-[var(--status-success)]");
+      // CSS変数の実際の値はthemeによって変わるが、クラス名は同一
+    });
+  },
+);
 ```
 
 ### 6.2 タイマーテスト（useFakeTimers + advanceTimersByTime）
@@ -591,4 +594,5 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
 
 | Version | Date       | Changes                                         |
 | ------- | ---------- | ----------------------------------------------- |
+| 1.1.0   | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001反映: テーマ切替記述を4モード（kanagawa-dragon/light/dark/system）へ更新。テーマ横断テスト例を解決テーマ3種 + system委譲の形に修正 |
 | 1.0.0   | 2026-02-23 | TASK-UI-00-ATOMS 実装知見から初版作成（500行以内） |

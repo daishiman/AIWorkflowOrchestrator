@@ -72,12 +72,13 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 
 ### テーマ切り替え機能
 
-| 項目         | 仕様                                                         |
-| ------------ | ------------------------------------------------------------ |
-| テーマモード | light, dark, system の3種類                                  |
-| 永続化       | electron-store による設定保存                                |
-| システム連動 | `nativeTheme` API を使用してOS設定に自動追従（system選択時） |
-| FOUC防止     | `data-theme` 属性による初期テーマ設定                        |
+| 項目         | 仕様                                                                      |
+| ------------ | ------------------------------------------------------------------------- |
+| テーマモード | `kanagawa-dragon`, `light`, `dark`, `system` の4モード                   |
+| 解決テーマ   | `system` 選択時は OS 設定に基づき `light` または `dark` を適用           |
+| 永続化       | electron-store による設定保存                                             |
+| システム連動 | `nativeTheme` API を使用してOS設定に自動追従（`theme:system-changed`）   |
+| FOUC防止     | `data-theme` 属性による初期テーマ設定                                     |
 
 ### ライトモード / ダークモードの色定義
 
@@ -248,6 +249,23 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 |----------|----------|--------|------|
 | TASK-UI-00-TOKENS | デザイントークンCSS変数 Apple HIG準拠 light/dark テーマ定義 | 2026-02-22 | tokens.css に `[data-theme="light"]`/`[data-theme="dark"]` セレクタでApple HIG System Colors準拠のカラー定義を追加。マイクロインタラクション変数（ease-bounce/ease-anticipate/scale-hover/scale-active/scale-bounce）、キーフレームアニメーション（success-bounce/error-shake）、renderWithThemeテストヘルパーを作成。28テスト全PASS、カバレッジ100% |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント7種でデザイントークン適用 | 2026-02-23 | 全コンポーネントでCSS変数（`var(--status-primary)`等）を使用、ハードコードカラー0件。EmptyState mood機能でSemanticトークン参照 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 2026-02-25 | `ThemeMode` を4モードへ拡張し、settingsSlice / ThemeSelector / IPC（`theme:get-system`, `theme:system-changed`）でテーマ即時反映・OS追従・永続化を実装。Phase 1-12成果物を `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/` に出力 |
+
+#### UT-UI-THEME-DYNAMIC-SWITCH-001 実装時の苦戦箇所
+
+| 苦戦箇所 | 問題 | 対策 |
+| --- | --- | --- |
+| `themeMode` と `resolvedTheme` の責務混在 | `system` 選択時に保存値と適用値が混線しやすい | `themeMode`（選択値）と `resolvedTheme`（解決値）を分離し、SSOTを `themeMode` に固定 |
+| Store Hook依存での再実行ループ | テーマ反映 `useEffect` が再実行され続けるリスク | 合成Hookではなく個別セレクタ（`useThemeMode`/`useResolvedTheme`）で参照を安定化 |
+| Phase 12証跡と仕様書本体のズレ | 成果物が揃っても仕様書のチェック欄が未更新で残る | `outputs/phase-12` 実体と `phase-12-documentation.md` を1対1で突合する手順を固定 |
+
+#### UT-UI-THEME-DYNAMIC-SWITCH-001 実装内容（テンプレート準拠要約）
+
+| 観点 | 内容 | 検証観点 |
+| --- | --- | --- |
+| 状態設計 | `themeMode`（選択値）と `resolvedTheme`（適用値）を分離 | `system` でOS追従しつつ手動切替が競合しないこと |
+| UI反映 | ThemeSelector + Store個別セレクタで即時反映 | 依存参照の不安定化による再実行ループがないこと |
+| 運用証跡 | Phase 12成果物と実行記録を同時同期 | `outputs/phase-12` と `phase-12-documentation.md` の整合が取れること |
 
 #### StatusIndicator ステータスカラー定義
 
@@ -274,12 +292,13 @@ const variantStyles: Record<Variant, string> = {
 };
 ```
 
-### 関連未タスク
+### 関連タスク
 
-| タスクID | タスク名 | 優先度 | 参照 |
-|----------|----------|--------|------|
-| UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 中 | `docs/30-workflows/unassigned-task/ut-ui-theme-dynamic-switch-001.md` |
-| UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
+| タスクID | タスク名 | ステータス | 優先度 | 参照 |
+|----------|----------|------------|--------|------|
+| UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 完了（2026-02-25） | 中 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` |
+| UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
+| UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 | テーマ動的切替の再発防止ガード強化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` |
 
 ---
 
@@ -287,6 +306,10 @@ const variantStyles: Record<Variant, string> = {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.3 | 2026-02-25 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 を関連タスクへ追加。UT-UI-THEME-DYNAMIC-SWITCH-001 実装時の苦戦箇所（状態責務混在/Hook依存不安定/Phase 12証跡同期）を再発防止タスクとして管理開始 |
+| 1.5.2 | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001 の実装内容をテンプレート準拠で再編（状態設計/ UI反映/運用証跡の3観点で要約を追加） |
+| 1.5.1 | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001 の苦戦箇所を追記（`themeMode`/`resolvedTheme` 分離、Store Hook再実行ループ回避、Phase 12証跡同期） |
+| 1.5.0 | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001完了反映: テーマ切替仕様を4モード（kanagawa-dragon/light/dark/system）へ更新。関連タスクテーブルを完了/未実施の状態管理に変更し、完了タスクセクションへ実装概要を追記 |
 | 1.4.0 | 2026-02-23 | TASK-UI-00-ATOMS StatusIndicatorステータスカラー定義追加（6状態のCSS変数マッピング）、Atomsデザイントークン使用パターン追加（CSS変数+Tailwind arbitrary valuesパターン、Record型バリアント→トークンマッピング） |
 | 1.3.0 | 2026-02-23 | TASK-UI-00-ATOMS完了: 7コンポーネントでのデザイントークン使用パターン追加（StatusIndicator statusカラー/SuggestionBubble bg-tertiary/EmptyState moodパレット等） |
 | 1.2.0 | 2026-02-22 | TASK-UI-00-TOKENS完了: Apple HIG System Colors準拠 light/darkテーマCSS変数定義追加、マイクロインタラクション変数・キーフレームアニメーション定義、renderWithThemeテストヘルパー作成（28テスト全PASS） |

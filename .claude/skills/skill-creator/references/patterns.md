@@ -11,7 +11,7 @@
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 🔐 認証・セッション       | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新                                                                                                                                                                                                                                                                                                                                                                                                           | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | ⏱️ テスト                 | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理**, **grepベース仕様書TDD（spec-onlyタスク）**, **引数形式差異の共通化判断（YAGNI）**                                                                                | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化                                                                                                                                                                                                                                                                    |
-| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）** |
+| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載** |
 | 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**, **IPC Date→ISO 8601統一（仕様書段階）**, **positional→object引数統一（仕様書段階）**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**                                                                                                                                                                                                                                                                      |
 | 🏗️ DI・設計               | Setter Injection遅延初期化                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | 🛡️ セキュリティ           | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | 正規表現パターンPrettier干渉                                                                                                                                                                                                                                                                                                                                                       |
@@ -930,6 +930,33 @@
 - **関連タスク**: TASK-013E-PHASE12-ACTION-BRIDGE-001
 - **クロスリファレンス**: [task-013e-phase12-action-bridge.md](../../../docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-013e-phase12-action-bridge.md), [phase12-action-bridge-template.md](../assets/phase12-action-bridge-template.md)
 
+### [Phase 12] Task 1〜5証跡突合レポート固定化（UT-UI-THEME-DYNAMIC-SWITCH-001）
+
+- **状況**: `outputs/phase-12` は揃っているが、`phase-12-documentation.md` のチェック欄と実行記録がテンプレート状態のまま残りやすい
+- **解決策**:
+  1. Task 1〜5 の証跡を1ファイル（`phase12-task-spec-compliance-check.md`）に集約する
+  2. 成果物実体と `phase-12-documentation.md` のチェック欄を同一ターンで更新する
+  3. `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` の結果を同レポートに固定する
+  4. SubAgent分担（A:成果物/B:仕様/C:未タスク/D:検証）を明示し、並列確認結果を残す
+- **効果**: Phase 12完了判定の根拠が一本化され、再監査時の差し戻しを減らせる
+- **適用条件**: Phase 12 の再確認や、成果物数が5件以上あるタスク
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-UI-THEME-DYNAMIC-SWITCH-001
+
+### [Phase 12] 実装内容+苦戦箇所テンプレート適用（UT-UI-THEME-DYNAMIC-SWITCH-001）
+
+- **状況**: 実装内容は記録されているが、苦戦箇所が「症状」だけで終わると同種課題で再利用しにくい
+- **解決策**:
+  1. `assets/phase12-system-spec-retrospective-template.md` を起点に、タスクID・反映先3点セット・検証コマンドを固定化する
+  2. 苦戦箇所は「課題/原因/対処」に加えて「再発条件」を必須項目として記録する
+  3. `task-workflow.md` / `ui-ux-design-system.md` / `lessons-learned.md` へ同一ターンで同期する
+  4. SubAgent分担（A:台帳/B:UI仕様/C:教訓/D:検証）を記録し、並列処理時の責務漏れを防ぐ
+- **効果**: 仕様更新の形式が統一され、同種課題に対して短時間で再利用できる
+- **適用条件**: Phase 12 Step 2 で実装内容と苦戦箇所を同時反映するタスク
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-UI-THEME-DYNAMIC-SWITCH-001
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [ui-ux-design-system.md](../../aiworkflow-requirements/references/ui-ux-design-system.md), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
+
 ### [ビルド・環境] モノレポ三層モジュール解決整合パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
 
 - **状況**: モノレポ内パッケージ(@repo/shared)のサブパス import で tsc/vitest 両方が解決に失敗する
@@ -1213,6 +1240,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **対策**: Phase 12 完了条件に「監査→実行ブリッジ文書の作成」を追加し、`outputs/phase-12/spec-update-summary.md` から参照する
 - **発見日**: 2026-02-25
 - **関連タスク**: TASK-013 再監査
+
+### [Phase12] 成果物実体とphase-12実行記録の乖離放置
+
+- **状況**: `outputs/phase-12` のファイルは作成済みだが、`phase-12-documentation.md` の「未実施」行が更新されないまま完了扱いにした
+- **問題**: 監査時に「実施済みなのに未実施表示」という矛盾が発生し、完了判定の信頼性が低下する
+- **原因**: 成果物実体の確認と、仕様書本体の実行記録更新を別工程で扱っていた
+- **教訓**: Phase 12完了判定は「成果物実体 + 実行記録同期」の2条件を同時に満たす必要がある
+- **対策**: Task 1〜5突合レポートを必須化し、`phase-12-documentation.md` のチェック欄更新を完了条件へ昇格
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-UI-THEME-DYNAMIC-SWITCH-001
 
 ### [Skill] 全リソース一括読み込み
 

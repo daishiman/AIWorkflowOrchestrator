@@ -59,7 +59,8 @@ export function useTheme(): UseThemeReturn {
   );
 
   // Compute isDark
-  const isDark = resolvedTheme === "dark";
+  const isDark =
+    resolvedTheme === "dark" || resolvedTheme === "kanagawa-dragon";
 
   return {
     themeMode,

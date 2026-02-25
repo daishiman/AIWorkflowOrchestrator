@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 system-spec retrospective template]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `assets/phase12-system-spec-retrospective-template.md` を新規作成。Phase 12 Step 2 で実装内容・苦戦箇所・再利用手順を `task-workflow.md` / `ui-ux-design-system.md` / `lessons-learned.md` に同期する標準フォーマットを追加し、`resource-map.md` と `patterns.md` を更新。
+
+---
+
+## [2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 12 evidence-sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: patterns.md の Phase 12 に成功パターン「Task 1〜5証跡突合レポート固定化」と失敗パターン「成果物実体とphase-12実行記録の乖離放置」を追加。`outputs/phase-12` と `phase-12-documentation.md` の同時同期を標準運用として明文化。
+
+---
+
 ## [2026-02-25 - Phase 12 action-bridge template standardization]
 
 - **Agent**: skill-creator (update)
