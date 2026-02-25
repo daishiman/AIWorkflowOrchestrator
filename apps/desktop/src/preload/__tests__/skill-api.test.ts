@@ -51,6 +51,7 @@ import type {
   SkillPermissionResponse,
   SkillMetadata,
   ImportedSkill,
+  RemoveResult,
 } from "@repo/shared";
 
 // ============================================================
@@ -105,6 +106,14 @@ const createMockExecutionInfo = (
   skillId: "test-skill",
   state: "running",
   startedAt: Date.now(),
+  ...overrides,
+});
+
+const createMockRemoveResult = (
+  overrides?: Partial<RemoveResult>,
+): RemoveResult => ({
+  success: true,
+  removed: true,
   ...overrides,
 });
 
@@ -239,24 +248,27 @@ describe("統一SkillAPI - 一覧・管理メソッド", () => {
 
   describe("remove(skillName)", () => {
     it("safeInvokeでSKILL_REMOVEチャンネルをskillName引数で呼び出す", async () => {
-      mockInvoke.mockResolvedValue(undefined);
+      mockInvoke.mockResolvedValue(createMockRemoveResult());
 
       await skillAPI.remove("old-skill");
 
-      // RED: スタブはipcRenderer.invokeを呼ばない
       expect(mockInvoke).toHaveBeenCalledWith(
         IPC_CHANNELS.SKILL_REMOVE,
         "old-skill",
       );
     });
 
-    it("戻り値がvoid（undefined）である", async () => {
-      mockInvoke.mockResolvedValue(undefined);
+    it("RemoveResult型で結果を返す", async () => {
+      const removeResult = createMockRemoveResult({
+        success: true,
+        removed: true,
+      });
+      mockInvoke.mockResolvedValue(removeResult);
 
       const result = await skillAPI.remove("old-skill");
 
-      // RED: スタブはboolean(true)を返す
-      expect(result).toBeUndefined();
+      expect(result).toEqual(removeResult);
+      expect(result.removed).toBe(true);
     });
   });
 
@@ -291,7 +303,7 @@ describe("統一SkillAPI - 実行メソッド", () => {
     it("safeInvokeでSKILL_EXECUTEチャンネルをリクエスト引数で呼び出す", async () => {
       const request = createMockExecutionRequest();
       const response = createMockExecutionResponse();
-      mockInvoke.mockResolvedValue(response);
+      mockInvoke.mockResolvedValue({ success: true, data: response });
 
       await skillAPI.execute(request);
 
@@ -307,7 +319,7 @@ describe("統一SkillAPI - 実行メソッド", () => {
         executionId: "exec-test-001",
         success: true,
       });
-      mockInvoke.mockResolvedValue(response);
+      mockInvoke.mockResolvedValue({ success: true, data: response });
 
       const result = await skillAPI.execute(request);
 
@@ -322,7 +334,10 @@ describe("統一SkillAPI - 実行メソッド", () => {
         prompt: "Hello",
         workingDirectory: "/tmp",
       };
-      mockInvoke.mockResolvedValue(createMockExecutionResponse());
+      mockInvoke.mockResolvedValue({
+        success: true,
+        data: createMockExecutionResponse(),
+      });
 
       await skillAPI.execute(request);
 
@@ -761,9 +776,10 @@ describe("統一SkillAPI - API構造検証", () => {
 describe("統一SkillAPI - 統合テスト連携", () => {
   it("execute→onStream→onCompleteのイベントフロー設計", async () => {
     // Step 1: execute呼び出し
-    mockInvoke.mockResolvedValue(
-      createMockExecutionResponse({ executionId: "flow-001" }),
-    );
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: createMockExecutionResponse({ executionId: "flow-001" }),
+    });
     const response = await skillAPI.execute(
       createMockExecutionRequest({ skillName: "flow-skill" }),
     );
@@ -864,9 +880,10 @@ describe("Phase 6: 境界値・異常系テスト", () => {
   it("execute() 空skillNameでもsafeInvokeに委譲", async () => {
     const emptyRequest = createMockExecutionRequest();
     emptyRequest.skillName = "";
-    mockInvoke.mockResolvedValueOnce(
-      createMockExecutionResponse({ executionId: "exec-empty" }),
-    );
+    mockInvoke.mockResolvedValueOnce({
+      success: true,
+      data: createMockExecutionResponse({ executionId: "exec-empty" }),
+    });
 
     const result = await skillAPI.execute(emptyRequest);
     expect(mockInvoke).toHaveBeenCalledWith(
@@ -1034,7 +1051,10 @@ describe("Phase 6: IPCチャンネル統合テスト", () => {
 
   it("execute() はSKILL_EXECUTEチャンネル（'skill:execute'）を呼ぶ", async () => {
     const req = createMockExecutionRequest();
-    mockInvoke.mockResolvedValueOnce(createMockExecutionResponse());
+    mockInvoke.mockResolvedValueOnce({
+      success: true,
+      data: createMockExecutionResponse(),
+    });
     await skillAPI.execute(req);
     expect(mockInvoke).toHaveBeenCalledWith("skill:execute", req);
   });
@@ -1046,7 +1066,7 @@ describe("Phase 6: IPCチャンネル統合テスト", () => {
   });
 
   it("remove() はSKILL_REMOVEチャンネル（'skill:remove'）を呼ぶ", async () => {
-    mockInvoke.mockResolvedValueOnce(undefined);
+    mockInvoke.mockResolvedValueOnce(createMockRemoveResult());
     await skillAPI.remove("test-skill");
     expect(mockInvoke).toHaveBeenCalledWith("skill:remove", "test-skill");
   });

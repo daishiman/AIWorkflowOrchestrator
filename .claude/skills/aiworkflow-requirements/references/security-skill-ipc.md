@@ -272,8 +272,13 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 | ---------------------- | ------------------------------- | ---------------------------- |
 | execute                | Promise<SkillExecutionResponse> | スキル実行開始               |
 | onStream               | () => void                      | ストリームメッセージ受信購読 |
-| abort                  | Promise<boolean>                | 実行中断                     |
+| abort                  | Promise<void>                   | 実行中断                     |
 | getExecutionStatus     | Promise<ExecutionInfo \| null>  | 実行状態取得                 |
+| list                   | Promise<SkillMetadata[]>        | 利用可能スキル一覧取得       |
+| getImported            | Promise<ImportedSkill[]>        | インポート済みスキル一覧取得 |
+| rescan                 | Promise<SkillMetadata[]>        | スキル再スキャン             |
+| import                 | Promise<ImportedSkill>          | スキルインポート             |
+| remove                 | Promise<RemoveResult>           | スキル削除                   |
 | onPermissionRequest    | () => void                      | 権限確認リクエスト購読       |
 | sendPermissionResponse | Promise<{ success: boolean }>   | 権限確認応答送信             |
 
@@ -281,10 +286,17 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 
 | チャネル                    | 方向  | 用途                   | ホワイトリスト          |
 | --------------------------- | ----- | ---------------------- | ----------------------- |
+| `skill:list`                | R→M   | 利用可能スキル一覧取得 | ALLOWED_INVOKE_CHANNELS |
+| `skill:getImported`         | R→M   | インポート済み一覧取得 | ALLOWED_INVOKE_CHANNELS |
+| `skill:scan`                | R→M   | スキル再スキャン       | ALLOWED_INVOKE_CHANNELS |
+| `skill:import`              | R→M   | スキルインポート       | ALLOWED_INVOKE_CHANNELS |
+| `skill:remove`              | R→M   | スキル削除             | ALLOWED_INVOKE_CHANNELS |
 | `skill:execute`             | R→M   | スキル実行開始         | ALLOWED_INVOKE_CHANNELS |
 | `skill:abort`               | R→M   | 実行中断               | ALLOWED_INVOKE_CHANNELS |
 | `skill:get-status`          | R→M   | 実行状態取得           | ALLOWED_INVOKE_CHANNELS |
 | `skill:stream`              | M→R   | ストリームメッセージ   | ALLOWED_ON_CHANNELS     |
+| `skill:complete`            | M→R   | 実行完了イベント       | ALLOWED_ON_CHANNELS     |
+| `skill:error`               | M→R   | 実行エラーイベント     | ALLOWED_ON_CHANNELS     |
 | `skill:permission:request`  | M→R   | 権限確認リクエスト     | ALLOWED_ON_CHANNELS     |
 | `skill:permission:response` | R→M   | 権限確認応答           | ALLOWED_INVOKE_CHANNELS |
 

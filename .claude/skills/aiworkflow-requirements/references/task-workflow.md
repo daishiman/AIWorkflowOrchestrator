@@ -369,6 +369,48 @@
 - P42準拠の3段バリデーション（型チェック → 空文字列 → trim空文字列）を追加
 - 引数形式を `{ skillIds: string[] }` → `skillName: string` に統一（P44/P45解決）
 
+### タスク: UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 skill:ハンドラIPCレスポンス形式統一（2026-02-25完了）
+
+| 項目       | 内容                                        |
+| ---------- | ------------------------------------------- |
+| タスクID   | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001  |
+| 完了日     | 2026-02-25                                  |
+| ステータス | **完了**                                    |
+| Phase      | Phase 1-12完了（Phase 13未実施）            |
+| テスト数   | 394（Preload 133 + Main 145 + Renderer 116、全PASS） |
+
+#### 成果物
+
+| 成果物               | パス/内容                                                                                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| ワークフロー一式     | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/`                                            |
+| 実装ガイド           | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/outputs/phase-12/implementation-guide.md`   |
+| 仕様更新サマリー     | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/outputs/phase-12/spec-update-summary.md`    |
+| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/outputs/phase-12/unassigned-task-report.md`  |
+| スキルフィードバック | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/outputs/phase-12/skill-feedback-report.md`   |
+
+#### 変更理由
+
+- `skill:execute` の Main 応答が `{ success, data }` ラッパー形式であるのに対し、Preload 側が直接型前提で解釈される箇所を是正した
+- `skill:remove` の戻り値契約を `Promise<void>` から `Promise<RemoveResult>` に統一し、Main/Preload/仕様書のドリフトを解消した
+- Phase 12 再監査で未タスクリンク参照切れと成果物不足（`spec-update-summary.md` 未出力）を是正した
+
+#### 実装時の苦戦箇所と解決策
+
+| 苦戦箇所 | 課題 | 解決策 |
+| --- | --- | --- |
+| `safeInvoke` / `safeInvokeUnwrap` の使い分け | `execute` が wrapper 応答、`remove` が直接応答で、Preload側の選択を誤ると実行時に契約崩壊する | Main 応答形式を先に固定し、`execute=unwrap` / `remove=direct` を明文化してテストを更新 |
+| Phase 12 実装ガイド要件の不足 | Part 1 の日常例え・Part 2 の型/API/エッジケース記載が薄いと、task-spec要件未達になりやすい | `implementation-guide.md` を再構成し、Part 1 に例え話、Part 2 に型定義/APIシグネチャ/エッジケースを追加 |
+| 未タスク監査結果の誤読 | repository 全体監査結果（既存負債）を今回差分の失敗と混同しやすい | ベースラインと今回差分を分離して報告し、今回対象の未タスク2件は個別に配置/フォーマットを確認 |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. Main の実応答形式を一覧化し、Preload の `safeInvoke` / `safeInvokeUnwrap` を1対1で対応付ける。
+2. Part 1/Part 2 要件で `implementation-guide.md` を作成し、日常例え・型/API・エッジケースを必ず記載する。
+3. `verify-unassigned-links.js` と `validate-phase-output.js` を実行し、Phase 12 の参照と成果物を機械検証する。
+4. `task-workflow.md` と関連仕様書へ「苦戦箇所 + 解決手順」を同時反映し、再発防止知見を残す。
+
 ### タスク: TASK-9A-B スキルファイル操作IPCハンドラー実装（2026-02-19完了）
 
 | 項目       | 内容                                        |
@@ -1131,7 +1173,9 @@
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001              | Phase 11 Worktree環境手動テスト実行プロトコル策定                                                                | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`                                                              |
 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001        | マルチエージェントPhase依存順序ガード                                                                            | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`                                                                |
-| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001          | skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）                               | 中     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）      | `docs/30-workflows/unassigned-task/task-skill-ipc-response-consistency.md`                                                                         |
+| ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~      | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~                           | ~~中~~ | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-25** | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md`                                                                            |
+| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001       | skill IPCレスポンス契約マトリクスと自動整合チェック                                                              | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md`                                           |
+| UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001 | Phase 12 実装ガイド必須要件の品質ゲート化（理由先行/日常例え/型API明記の機械検証）                                 | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-implementation-guide-quality-gate-001.md`                                   |
 | UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001            | skill:get-detail引数名ドリフト修正（P45パターン：skillId→skillName統一）                                        | 低     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）      | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md`                                                                           |
 | ~~UT-FIX-SKILL-VALIDATION-CONSISTENCY-001~~            | ~~skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完・苦戦箇所付き）~~               | ~~中~~     | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-24**      | `docs/30-workflows/completed-tasks/skill-validation-consistency/`                                                                            |
 | UT-IMP-UNASSIGNED-FORMAT-NORMALIZATION-001         | 未タスク指示書フォーマット正規化（9セクション未準拠67件の是正）                                                   | 中     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 監査（2026-02-22）                      | `docs/30-workflows/unassigned-task/task-imp-unassigned-task-format-normalization-001.md`                                                            |
@@ -1183,6 +1227,9 @@
 | **1.58.0** | **2026-02-25** | **UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001登録**: Phase 12 仕様更新時の参照同期漏れ（baseline/current混同、完了移管後リンク漏れ、通常/fallback片側修正）を再発防止する未タスクを残課題テーブルへ追加。未タスク指示書に苦戦箇所を Section 3.5 として記録 |
 | **1.57.0** | **2026-02-25** | **UT-IPC-AUTH-HANDLE-DUPLICATE-001完了反映**: 完了タスクセクションへ実装完了記録を追加し、残課題テーブルの同タスクを完了化（取り消し線 + completed-tasks参照へ更新）。UT-IPC-CHANNEL-NAMING-AUDIT-001 の未タスク件数を0件に更新 |
 | **1.56.0** | **2026-02-25** | **UT-IPC-CHANNEL-NAMING-AUDIT-001完了反映 + 未タスク1件登録**: 完了タスクセクションに `spec_created` として追加し、残課題テーブルの参照先を `completed-tasks/task-ipc-channel-naming-audit-001.md` へ更新。Phase 10/11 MINOR を `UT-IPC-AUTH-HANDLE-DUPLICATE-001` として未タスク登録（指示書作成・台帳登録・検証連動） |
+| **1.58.0** | **2026-02-25** | **UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 由来の未タスク2件登録**: `UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001`（skill IPCレスポンス契約マトリクス + 自動整合チェック）と `UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001`（Part 1/Part 2 必須要件の品質ゲート化）を残課題テーブルへ追加 |
+| **1.57.0** | **2026-02-25** | **UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 教訓追記**: 完了タスクセクションに「実装時の苦戦箇所と解決策」および「同種課題の簡潔解決手順（4ステップ）」を追加。`safeInvoke/safeInvokeUnwrap` 使い分け・Phase 12 実装ガイド要件不足・未タスク監査のベースライン混同に対する再発防止手順を明文化 |
+| **1.56.0** | **2026-02-25** | **UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001完了反映**: 残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、参照先を `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md` に更新。完了タスクセクションへ成果物6件と変更理由を追記 |
 | **1.55.1** | **2026-02-24** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001登録**: 未タスク監査の対象スコープ制御（対象監査）とベースライン分離（全体監査）を行う運用改善タスクを残課題テーブルに追加。親タスクの苦戦箇所（全体監査ノイズ、台帳同期負荷、検証タイミング遅延）を Section 3.5 に反映 |
 | **1.55.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001完了反映**: 完了タスクセクションに仕様書修正のみタスク（6 Gap解消・7仕様書修正・173検証項目ALL PASS）を追加。Phase 10 MINOR M-1（SkillUsageSummary.lastUsed nullable差異）を未タスク UT-IPC-DATA-FLOW-NULLABLE-CONSISTENCY-001 として残課題テーブルに登録。P3準拠3ステップ完了 |
 | **1.54.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 Phase 12 未タスク2件登録**: UT-IPC-CHANNEL-NAMING-AUDIT-001（IPCチャネル命名規則の横断的適用監査と統一）、UT-SPEC-ONLY-TASK-WORKFLOW-001（仕様書修正のみタスクのPhaseテンプレート・grep検証TDD標準化）をP3準拠で残課題テーブルに追加 |

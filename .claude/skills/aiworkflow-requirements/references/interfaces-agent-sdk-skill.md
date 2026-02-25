@@ -414,12 +414,12 @@ Zustand Sliceパターンで実装された状態管理。
 
 | チャンネル                | 方向            | 説明                        | 戻り値                                |
 | ------------------------- | --------------- | --------------------------- | ------------------------------------- |
-| `skill:list-imported`     | Renderer → Main | インポート済みスキル取得    | `OperationResult<Skill[]>`            |
-| `skill:list-available`    | Renderer → Main | 利用可能スキル取得          | `OperationResult<Skill[]>`            |
+| `skill:getImported`       | Renderer → Main | インポート済みスキル取得    | `{ success: true, data: ImportedSkill[] } \| { success: false, error: string }` |
+| `skill:list`              | Renderer → Main | 利用可能スキル取得          | `{ success: true, data: SkillMetadata[] } \| { success: false, error: string }` |
 | `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
-| `skill:remove`            | Renderer → Main | スキル削除                  | `OperationResult<void>`               |
-| `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `OperationResult<Skill>`              |
-| `skill:execute`           | Renderer → Main | スキル実行                  | `OperationResult<SkillRunResult>`     |
+| `skill:remove`            | Renderer → Main | スキル削除                  | `RemoveResult`                        |
+| `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `{ success: true, data: Skill } \| { success: false, error: string }` |
+| `skill:execute`           | Renderer → Main | スキル実行                  | `{ success: true, data: SkillExecutionResponse } \| { success: false, error: string }` |
 | `skill:abort`             | Renderer → Main | スキル実行中断              | `boolean`                             |
 | `skill:get-status`        | Renderer → Main | 実行ステータス取得          | `ExecutionStatus \| null`             |
 | `skill:analyze`           | Renderer → Main | スキル分析（TASK-9C）       | `OperationResult<SkillAnalysis>`      |
@@ -459,12 +459,14 @@ Zustand Sliceパターンで実装された状態管理。
 | タスクID | 概要 | ステータス | 完了日 |
 | -------- | ---- | ---------- | ------ |
 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | skill:import 戻り値型不整合修正（ImportResult→ImportedSkill変換） | **完了** | 2026-02-21 |
+| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一（execute/removeの戻り値契約整合） | **完了** | 2026-02-25 |
 
 #### skillHandlers 関連未タスク（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12 検出）
 
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
-| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消） | 中 | `docs/30-workflows/unassigned-task/task-skill-ipc-response-consistency.md` |
+| ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~ | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md` **（完了: 2026-02-25）** |
+| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001 | skill IPCレスポンス契約マトリクスと自動整合チェック（Main応答形式とPreloadラッパー選択の機械検証） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md` |
 | UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一） | 低 | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` |
 | ~~UT-FIX-SKILL-VALIDATION-CONSISTENCY-001~~ | ~~skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完）~~ | ~~中~~ | **完了: 2026-02-24** |
 | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~ | ~~SkillImportDialog（organisms版）がskill.id（ハッシュ）を渡すためgetSkillByName失敗~~ | ~~高~~ | **完了: 2026-02-22** |
@@ -600,7 +602,7 @@ Permission要求に対してユーザーの応答を送信する。
 | ----------- | -------- | ---- | -------- |
 | `skillName` | `string` | ✓    | スキル名 |
 
-**戻り値**: `Promise<void>`
+**戻り値**: `Promise<RemoveResult>`
 
 ---
 
@@ -1005,7 +1007,7 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 | カテゴリ            | テスト数 | 検証対象                                                           |
 | ------------------- | -------- | ------------------------------------------------------------------ |
 | ハンドラー登録/解除 | 1        | registerSkillHandlers / unregisterSkillHandlers                    |
-| 基本チャネルテスト  | 12       | list-available, list-imported, import, remove, get-detail, execute |
+| 基本チャネルテスト  | 12       | list, getImported, import, remove, get-detail, execute             |
 | 拡張チャネルテスト  | 2        | abort, get-status                                                  |
 | エラーハンドリング  | 10       | 各チャネルの異常系                                                 |
 | セキュリティ検証    | 2        | validateIpcSender失敗パス（abort, get-status）                     |
@@ -1782,6 +1784,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-25 | 1.31.0     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 の実装苦戦箇所から未タスク `UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001` を追加。skillHandlers 関連未タスクテーブルへ契約マトリクス + 自動整合チェックの追跡行を登録 |
+| 2026-02-25 | 1.30.0     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001完了反映: 関連未タスクテーブルを完了化（取り消し線 + 実ワークフロー参照へ更新）。`skill:remove` の戻り値記述を `Promise<void>` から `Promise<RemoveResult>` に同期 |
 | 2026-02-22 | 1.29.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001苦戦箇所から未タスク2件登録: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001（Branded Type導入）、UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001（同名コンポーネント解消）を完了タスクセクションに参照追加 |
 | 2026-02-22 | 1.28.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001完了反映: 関連未タスクテーブルを完了化（取り消し線）、完了タスクセクションに詳細記録追加。Renderer層のみ変更（skill.id→skill.name） |
 | 2026-02-22 | 1.27.0     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: skillHandlers 関連未タスクテーブルに追加（skill.idハッシュ→getSkillByName失敗バグ） |
