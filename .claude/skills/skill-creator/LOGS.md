@@ -4,6 +4,24 @@
 
 ---
 
+## [2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 template path normalization]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `assets/phase12-system-spec-retrospective-template.md` を最適化し、絶対パス依存コマンドを repo 相対の正規経路へ統一。SubAgent分担表（A:台帳/B:教訓/C:履歴/D:検証）と最新成果物名（`unassigned-task-detection.md`, `skill-feedback-report.md`）へ更新。`references/patterns.md` に成功/失敗パターンを追加。
+
+---
+
+## [2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 completion-record sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` に成功パターン「完了タスク記録の二重同期（成果物実体 + 手順書記録）」と失敗パターン「Step 1-A 完了タスク記録の欠落」を追加。`spec-update-workflow.md` / `phase-11-12-guide.md` への同時追記と `quick_validate.js` + 未タスク監査の連鎖を標準化。
+
+---
+
 ## [2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 system-spec retrospective template]
 
 - **Agent**: skill-creator (update)

@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-25
+> 自動生成: 2026-02-26
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -636,14 +636,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| Agent Dashboard IPC チャネル | L10 |
-| Workspace Chat Edit IPC チャネル | L76 |
-| 完了タスク | L202 |
-| Skill Creator IPC チャネル | L274 |
-| 実装パターン参照 | L344 |
-| 関連ドキュメント | L356 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L368 |
-| 完了タスク | L424 |
-| 変更履歴 | L443 |
+| Workspace Chat Edit IPC チャネル | L78 |
+| 完了タスク | L204 |
+| Skill Creator IPC チャネル | L276 |
+| 実装パターン参照 | L346 |
+| 関連ドキュメント | L358 |
+| スキルファイル操作 IPC チャネル（TASK-9A-B） | L370 |
+| 完了タスク | L426 |
+| 変更履歴 | L445 |
 
 ### references/api-ipc-auth.md
 
@@ -1296,6 +1296,23 @@ node scripts/list-specs.js --topics
 
 ---
 
+## ワークフロー
+
+**関連キーワード**: タスク分解, Git Worktree, PR, CI/CD
+
+### references/workflow-skill-identifier-branded-type-resolution.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| フェーズ構造 | L17 |
+| Phase詳細 | L46 |
+| 苦戦箇所由来のリスクと先回り対策 | L167 |
+| 監視・ログ | L177 |
+| 関連ドキュメント | L197 |
+| 変更履歴 | L208 |
+
+---
+
 ## その他
 
 **関連キーワード**: デプロイ, Railway, 環境変数, Discord, プラグイン
@@ -1340,8 +1357,8 @@ node scripts/list-specs.js --topics
 | P31対策: Store Hooks無限ループ防止パターン | L163 |
 | chatEditSlice（Workspace Chat Edit状態管理） | L625 |
 | skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L715 |
-| permissionHistorySlice（権限要求履歴管理） | L871 |
-| 関連ドキュメント | L1000 |
+| permissionHistorySlice（権限要求履歴管理） | L873 |
+| 関連ドキュメント | L1002 |
 
 ### references/arch-ui-components.md
 
@@ -1528,24 +1545,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L86 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L133 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L187 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L270 |
-| 目次 | L318 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L499 |
-| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L658 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L707 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L756 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L930 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L981 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L1051 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1359 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1470 |
-| 関連ドキュメント | L1609 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1619 |
-| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1796 |
-| TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1854 |
+| UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001: quick_validate 検証ゲート整合化 | L89 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L157 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L204 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L258 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L341 |
+| 目次 | L389 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L570 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L729 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L778 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L827 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L1001 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1052 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L1122 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1430 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1541 |
+| 関連ドキュメント | L1680 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1690 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1867 |
 
 ### references/llm-embedding.md
 
@@ -1888,8 +1905,8 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
 | 残課題（未タスク） | L1193 |
-| 関連ドキュメント | L1336 |
-| 変更履歴 | L1346 |
+| 関連ドキュメント | L1340 |
+| 変更履歴 | L1350 |
 
 ### references/testing-accessibility.md
 

@@ -364,17 +364,93 @@ git diff --stat -- .claude/skills/*/indexes/topic-map.md .claude/skills/*/indexe
 - 正常時: 再生成コマンドが exit code 0
 - 異常時: コマンド失敗、または意図しない差分が残る。差分内容を確認し必要箇所を反映
 
-#### 3. SKILL 検証（2スキル）
+#### 3. SKILL 検証（全3スキル: 正規経路）
 
 ```bash
-python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
-  .claude/skills/aiworkflow-requirements --verbose
-python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
-  .claude/skills/task-specification-creator --verbose
+# 正規経路（primary）: quick_validate.js（Node.js v18以上）
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
 ```
 
-- 正常時: 両方で `Skill is valid!`
-- 異常時: SKILL構造を修正後に再実行
+- 正常時: 全3スキルで Error 0件（終了コード 0）
+- 異常時: Error の内容を確認し、SKILL構造を修正後に再実行
+
+**補助経路（fallback）の使用条件:**
+
+以下の**全条件**を満たす場合のみ、`quick_validate.py` を使用してよい:
+
+1. Node.js ランタイム（v18以上）が利用不可である
+2. Python 3.10 以上がインストールされている
+3. PyYAML ライブラリがインストールされている
+
+```bash
+# 補助経路（Node.js が利用不可の場合のみ）
+python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
+  .claude/skills/aiworkflow-requirements
+python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
+  .claude/skills/task-specification-creator
+```
+
+補助経路使用時は `documentation-changelog.md` に「補助経路を使用した」旨を明記する。
+
+#### 3.1 検証結果の判定基準
+
+**合格基準**: Error 0件で合格。Warning は合否に影響しないが、以下の3段階分類に基づき対応する。
+
+**Warning 3段階分類:**
+
+| 分類   | 定義                                                                   | 対応方針                                                       | 具体例                                                                                                     |
+| ------ | ---------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 許容   | 運用上避けられない Warning で、修正コストが高く機能影響がない          | 件数を記録し、前回比で増加傾向がないことを確認する             | `aiworkflow-requirements` の大量 reference ファイルの参照リンク警告（Progressive Disclosure 設計に起因）   |
+| 要監視 | 新規に発生した Warning で、放置すると品質低下の兆候となる              | 次回 Phase 12 までに対応方針（修正/許容昇格/未タスク化）を決定 | 新規追加した reference ファイルが SKILL.md からリンクされていない                                         |
+| 要対応 | 機能やスキル構造の正確性に直接影響する Warning で、本Phase内で修正必要 | 本 Phase 内で修正する。修正不可の場合は未タスク化              | agents/*.md の必須セクション不足、name フィールドとディレクトリ名の不一致                                 |
+
+**判定フロー:**
+
+```
+Warning 発生
+  │
+  ├─ [Q1] 当該 Warning は Phase 5 以前から存在する既知の Warning か？
+  │   │    判定方法: 前回の Phase 12 検証記録（documentation-changelog.md）
+  │   │    に同一パターンの Warning が記録されているか確認する。
+  │   │    ※ 初回実行時（前回記録なし）は全て NO として扱う。
+  │   │
+  │   ├─ YES → [Q2] 前回比で件数が増加しているか？
+  │   │   │
+  │   │   ├─ YES → 「要監視」に分類
+  │   │   │
+  │   │   └─ NO → 「許容」に分類
+  │   │
+  │   └─ NO → [Q3] スキルの動作・構造の正確性に直接影響するか？
+  │       │    判定基準:
+  │       │    - name フィールドとディレクトリ名の不一致 → YES
+  │       │    - agents/*.md の必須セクション不足 → YES
+  │       │    - SKILL.md の 500行制限超過 → YES
+  │       │    - 不要な補助ドキュメント（README.md等）の存在 → YES
+  │       │    - references/ 内ファイルの SKILL.md リンク切れ → NO
+  │       │    - description の Anchors/Trigger 未記載 → NO
+  │       │
+  │       ├─ YES → 「要対応」に分類
+  │       │
+  │       └─ NO → 「要監視」に分類
+```
+
+**大規模 references スキルの許容条件:**
+
+`references/` 配下のファイル数が20件以上のスキルで、ファイルが SKILL.md からリンクされていない場合、以下の条件を**全て**満たせば「許容」と判定する:
+
+1. 該当ファイルが `indexes/resource-map.md` または `indexes/topic-map.md` からリンクされている
+2. 該当ファイルの内容がスキルの目的に関連する
+
+許容条件に該当しないファイル（いずれのインデックスからもリンクされていない）は「要監視」に分類する。
+
+**既知の制限事項（未タスク）:**
+
+以下は `quick_validate.js` の既知の制限事項であり、未タスクとして管理されている:
+
+- BOM付きUTF-8の SKILL.md で frontmatter 検出が失敗する（[UT-IMP-QUICK-VALIDATE-BOM-UTF8-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md)）
+- name/description フィールドが空の場合に `desc.toLowerCase()` でランタイムエラーが発生する（[UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md)）
 
 #### 4. Phase仕様書参照と outputs 実体の整合確認
 
@@ -431,7 +507,7 @@ audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→
 - [ ] task-specification-creator/LOGS.md を更新した
 - [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
 - [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
-- [ ] `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js` で更新したSKILL 2件が `Skill is valid!` であることを確認した
+- [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（判定基準は Step 1-G.3.1 を参照）
 - [ ] ui-ux-components.md（UI/UX関連タスクの場合）の完了タスクと変更履歴を更新した
 - [ ] completed-tasks/ 内の該当タスク仕様書のステータスを更新した（実装完了: `completed` / 仕様書作成のみ: `spec_created`）
 ```
@@ -688,6 +764,42 @@ grep -rn "permission-tool-icons" references/
 | `aiworkflow-requirements/LOGS.md`| 仕様更新記録                                                  |
 | `task-specification-creator/LOGS.md` | Phase 1-12完了記録                                        |
 | `topic-map.md`                   | 新セクションエントリ追加                                      |
+
+---
+
+## 完了タスク
+
+### タスク: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 skill-creator検証ゲート整合化（2026-02-26完了）
+
+| 項目         | 内容                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------ |
+| タスクID     | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001                                          |
+| 完了日       | 2026-02-26                                                                           |
+| ステータス   | **完了**                                                                             |
+| 実施内容     | `quick_validate.js` 正規経路化、Warning 3段階分類導入、Phase 11/12証跡追補、未タスク整合 |
+| ドキュメント | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/`                     |
+
+#### 成果物
+
+| 成果物                   | パス                                                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| 手動テスト結果           | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-11/manual-test-result.md`                 |
+| 実装ガイド               | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/implementation-guide.md`               |
+| 仕様更新サマリー         | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/spec-update-summary.md`                |
+| 未タスク検出レポート     | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/unassigned-task-detection.md`          |
+| スキルフィードバック      | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/skill-feedback-report.md`              |
+
+## 関連ドキュメント
+
+- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/phase-12-documentation.md`
+- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/implementation-guide.md`
+- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/documentation-changelog.md`
+
+## 更新履歴
+
+| Date | Changes |
+| ---- | ------- |
+| 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` の完了タスク記録と関連ドキュメントを追記 |
 
 ---
 
