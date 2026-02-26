@@ -165,7 +165,7 @@ export function registerSkillCreatorHandlers(
     IPC_CHANNELS.SKILL_CREATOR_CREATE,
     async (
       event: IpcMainInvokeEvent,
-      args: CreateSkillOptions,
+      args: unknown,
     ): Promise<IpcResult<string>> => {
       const validation = validateIpcSender(
         event,
@@ -178,27 +178,40 @@ export function registerSkillCreatorHandlers(
         throw toIPCValidationError(validation);
       }
 
+      const createArgs = args as {
+        name?: unknown;
+        description?: unknown;
+        mode?: unknown;
+        tasksDir?: unknown;
+        skillDir?: unknown;
+        [key: string]: unknown;
+      };
+
       // P42準拠3段バリデーション（型チェック → 空文字列 → トリム空文字列）
       if (
-        typeof args?.name !== "string" ||
-        typeof args?.description !== "string" ||
-        typeof args?.mode !== "string"
+        typeof createArgs?.name !== "string" ||
+        typeof createArgs?.description !== "string" ||
+        typeof createArgs?.mode !== "string"
       ) {
         return {
           success: false,
           error: "スキル名、説明、モードが正しく指定されていません",
         };
       }
-      if (args.name === "" || args.description === "" || args.mode === "") {
+      if (
+        createArgs.name === "" ||
+        createArgs.description === "" ||
+        createArgs.mode === ""
+      ) {
         return {
           success: false,
           error: "スキル名、説明、モードが正しく指定されていません",
         };
       }
       if (
-        args.name.trim() === "" ||
-        args.description.trim() === "" ||
-        args.mode.trim() === ""
+        createArgs.name.trim() === "" ||
+        createArgs.description.trim() === "" ||
+        createArgs.mode.trim() === ""
       ) {
         return {
           success: false,
@@ -206,14 +219,34 @@ export function registerSkillCreatorHandlers(
         };
       }
 
-      // L3: パストラバーサル防止
-      const argsWithPaths = args as CreateSkillOptions & {
+      const allowedModes: SkillCreatorMode[] = [
+        "collaborative",
+        "orchestrate",
+        "create",
+        "update",
+        "improve-prompt",
+      ];
+      if (!allowedModes.includes(createArgs.mode as SkillCreatorMode)) {
+        return {
+          success: false,
+          error: "スキル名、説明、モードが正しく指定されていません",
+        };
+      }
+
+      const validatedArgs = {
+        ...createArgs,
+        name: createArgs.name,
+        description: createArgs.description,
+        mode: createArgs.mode as SkillCreatorMode,
+      } as CreateSkillOptions & {
         tasksDir?: string;
         skillDir?: string;
       };
+
+      // L3: パストラバーサル防止
       if (
-        typeof argsWithPaths.tasksDir === "string" &&
-        !validatePath(argsWithPaths.tasksDir, "tasksDir")
+        typeof validatedArgs.tasksDir === "string" &&
+        !validatePath(validatedArgs.tasksDir, "tasksDir")
       ) {
         return {
           success: false,
@@ -221,8 +254,8 @@ export function registerSkillCreatorHandlers(
         };
       }
       if (
-        typeof argsWithPaths.skillDir === "string" &&
-        !validatePath(argsWithPaths.skillDir, "skillDir")
+        typeof validatedArgs.skillDir === "string" &&
+        !validatePath(validatedArgs.skillDir, "skillDir")
       ) {
         return {
           success: false,
@@ -231,7 +264,7 @@ export function registerSkillCreatorHandlers(
       }
 
       try {
-        const skillDir = await skillCreatorService.createSkill(args);
+        const skillDir = await skillCreatorService.createSkill(validatedArgs);
         return { success: true, data: skillDir };
       } catch (error) {
         return {
