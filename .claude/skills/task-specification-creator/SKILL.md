@@ -391,6 +391,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v9.92.6** | **2026-02-25** | **UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再監査反映**: Phase 12 Step 1-C/1-E の実行手順に合わせて、`task-workflow.md` の未タスク参照切れ是正（UT-TYPE / UT-IMP-AIWORKFLOW）と `outputs/artifacts.json` 同期を実施。`spec-update-summary.md` / `documentation-changelog.md` の記録粒度をコマンド実行結果ベースへ補強 |
 | **v9.92.5** | **2026-02-25** | **Phase 12完了時の移管運用を反映**: Phase 12完了が確認できた場合、`docs/30-workflows/unassigned-task/` の当該未タスク指示書と、実行ワークフロー本体を `docs/30-workflows/completed-tasks/` へ移動し、`task-workflow.md` 残課題行を完了化する運用を適用 |
 | **v9.92.4** | **2026-02-25** | **未タスク仕様書作成運用の追補**: `UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001` を9セクションテンプレート準拠で登録。Phase 12 再発防止（`quick_validate.js` 統一 / `verify-all-specs --workflow` 必須化）を未タスク化するフローを明文化 |
 | **v9.92.3** | **2026-02-25** | **Phase 12最終整合（quick_validate経路統一）**: `references/spec-update-workflow.md` の SKILL検証コマンドを `ObsidianMemo` の `skill-creator/scripts/quick_validate.js` へ統一。`verify-all-specs.js` は `--workflow` 必須で実行する運用を再確認 |

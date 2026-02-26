@@ -1,5 +1,10 @@
 import { StateCreator } from "zustand";
-import type { Skill, SkillCategory } from "@repo/shared/types/skill";
+import type {
+  Skill,
+  SkillCategory,
+  SkillId,
+  SkillName,
+} from "@repo/shared/types/skill";
 import type {
   AgentExecutionStatus,
   AgentMessage,
@@ -66,7 +71,7 @@ export interface AgentState {
   /** 利用可能なスキル一覧（インポート用） */
   availableSkills: Skill[];
   /** インポート済みスキルID一覧 */
-  importedSkillIds: string[];
+  importedSkillIds: SkillId[];
   /** 選択中のスキル */
   selectedSkill: Skill | null;
   /** スキルフィルター文字列 */
@@ -110,7 +115,7 @@ export interface AgentState {
   /** インポート済みスキル一覧 */
   importedSkills: ImportedSkill[];
   /** 選択中のスキル名（nullは未選択） */
-  selectedSkillName: string | null;
+  selectedSkillName: SkillName | null;
   /** スキル実行中フラグ */
   isExecuting: boolean;
   /** 実行ID（nullは未実行） */
@@ -130,7 +135,7 @@ export interface AgentState {
   /** インポート中 */
   isImporting: boolean;
   /** インポート中のスキル名 */
-  importingSkillName: string | null;
+  importingSkillName: SkillName | null;
 }
 
 /**
@@ -143,7 +148,7 @@ export interface AgentActions {
   /** 利用可能スキル一覧を設定 */
   setAvailableSkills: (skills: Skill[]) => void;
   /** インポート済みスキルIDを設定 */
-  setImportedSkillIds: (ids: string[]) => void;
+  setImportedSkillIds: (ids: SkillId[]) => void;
   /** スキルを選択 */
   selectSkill: (skill: Skill | null) => void;
   /** フィルター文字列を設定 */
@@ -228,11 +233,11 @@ export interface AgentActions {
   /** スキルを再スキャン */
   rescanSkills: () => Promise<void>;
   /** スキルをインポート */
-  importSkill: (skillName: string) => Promise<void>;
+  importSkill: (skillName: SkillName) => Promise<void>;
   /** スキルを削除 */
-  removeSkill: (skillName: string) => Promise<void>;
+  removeSkill: (skillName: SkillName) => Promise<void>;
   /** スキルを選択 */
-  selectSkillByName: (skillName: string | null) => void;
+  selectSkillByName: (skillName: SkillName | null) => void;
   /** スキルを実行（race condition対策版） */
   executeSkill: (prompt: string) => Promise<void>;
   /** 実行を中断 */

@@ -7,7 +7,14 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import * as crypto from "crypto";
 import * as yaml from "yaml";
-import type { Skill, Anchor, EnvironmentConfig } from "@repo/shared";
+import {
+  toSkillId,
+  toSkillName,
+  type Skill,
+  type Anchor,
+  type EnvironmentConfig,
+  type SkillId,
+} from "@repo/shared";
 
 interface SkillFrontmatter {
   name?: string;
@@ -39,7 +46,7 @@ export class SkillParser {
 
     return {
       id: this.generateId(skillMdPath),
-      name: frontmatter.name || slug, // Use directory name as fallback
+      name: toSkillName(frontmatter.name || slug), // Use directory name as fallback
       slug,
       description,
       path: skillMdPath,
@@ -131,11 +138,12 @@ export class SkillParser {
   /**
    * ファイルパスからIDを生成する
    */
-  private generateId(filePath: string): string {
-    return crypto
+  private generateId(filePath: string): SkillId {
+    const generated = crypto
       .createHash("sha256")
       .update(filePath)
       .digest("hex")
       .slice(0, 16);
+    return toSkillId(generated);
   }
 }

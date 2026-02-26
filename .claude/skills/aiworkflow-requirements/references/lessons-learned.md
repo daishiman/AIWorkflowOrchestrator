@@ -22,6 +22,8 @@
 |------|-----------|----------|
 | 2026-02-25 | 1.25.9 | UT-UI-THEME-DYNAMIC-SWITCH-001 の再利用性を強化: 同種課題向け「転記テンプレート（5分版）」を追加し、苦戦箇所を再発条件ベースで記録する運用を標準化 |
 | 2026-02-25 | 1.25.8 | UT-UI-THEME-DYNAMIC-SWITCH-001 教訓追加: テーマ動的切替実装での苦戦箇所3件（`themeMode`/`resolvedTheme`責務分離、Store Hook再実行ループ、Phase 12証跡同期漏れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
+| 2026-02-25 | 1.25.9 | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 の即時再利用正本を追加。`workflow-skill-identifier-branded-type-resolution.md` を新設し、SubAgent分担・Phase運用・監査コマンドをテンプレート準拠で集約 |
+| 2026-02-25 | 1.25.8 | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 教訓追加: Branded Type導入時の苦戦箇所（型境界曖昧化、リンク移管同期、監査値誤読）と同種課題向け4ステップ解決手順を追加 |
 | 2026-02-25 | 1.25.7 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 最終追補: `verify-all-specs.js` の `--workflow` 必須条件を苦戦箇所に追加。再検証コマンドを `quick_validate.js` + `verify-all-specs --workflow` に統一 |
 | 2026-02-25 | 1.25.6 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 追補: `quick_validate` 実行経路を `/Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js` に統一。検証コマンドの重複記載を整理し、再利用時の経路混同を防止 |
 | 2026-02-25 | 1.25.5 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12準拠確認で発生した苦戦箇所（証跡同期漏れリスク、quick_validate実行経路の混同）を追加。`target→full→validate→sync` の4ステップを標準手順化 |
@@ -244,6 +246,46 @@
 
 ---
 
+## UT-TYPE-SKILL-IDENTIFIER-BRANDED-001: Skill識別子Branded Type導入（2026-02-25完了）
+
+### 苦戦箇所: ID/Name の意味境界が `string` で消える
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill.id` と `skill.name` が同じ `string` 扱いで、境界APIで取り違えが起きる |
+| 原因 | 型名に意味がなく、Renderer / Preload / Main で契約が暗黙化した |
+| 対処 | `SkillId` / `SkillName` の Branded Type を shared に導入し、境界APIの引数を `SkillName` に統一 |
+| 教訓 | 「内部識別子」と「表示名」は同じプリミティブでも型で分離しないと再発する |
+
+### 苦戦箇所: 完了移管後の参照リンク同期漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未タスクを完了へ移管後、`task-workflow.md` に旧参照が残ってリンク切れになる |
+| 原因 | 物理移動と台帳更新を別タイミングで実施していた |
+| 対処 | 移管と同一ターンで `task-workflow.md` 更新 + `verify-unassigned-links.js` 実行を固定 |
+| 教訓 | 完了移管は「ファイル移動・台帳更新・リンク検証」の3点セットで扱う |
+
+### 苦戦箇所: current/baseline 監査値の誤読
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `audit-unassigned-tasks.js --json` の数値を今回差分のFAILと誤認しやすい |
+| 原因 | 全体監査（scopeなし）と差分監査（`--diff-from`）の用途が混同されやすい |
+| 対処 | 差分判定は `--diff-from HEAD` の `currentViolations`、全体監視は scopeなし `--json` を別記録 |
+| 教訓 | Phase 12レポートは `currentViolations` / `baselineViolations` を常にセットで記述する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. shared型で Branded Type を定義し、境界API引数型を先に固定する。  
+2. Renderer → Preload → Main の順で型を適用し、`string` 直渡しを排除する。  
+3. 完了移管時は `task-workflow` 更新と `verify-unassigned-links` を同一ターンで実施する。  
+4. 監査結果は `--diff-from HEAD`（差分）と scopeなし `--json`（全体）を分離記録する。  
+
+運用の正本テンプレート: [workflow-skill-identifier-branded-type-resolution.md](./workflow-skill-identifier-branded-type-resolution.md)
+
+---
+
 ## 目次
 
 0. [UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応](#ut-ui-theme-dynamic-switch-001-settingsslice-テーマ動的切替対応)
@@ -252,6 +294,11 @@
    - [苦戦箇所: Phase 12成果物と仕様書本体の同期漏れ](#苦戦箇所-phase-12成果物と仕様書本体の同期漏れ)
    - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ)
    - [同種課題向け転記テンプレート（5分版）](#同種課題向け転記テンプレート5分版)
+0. [UT-TYPE-SKILL-IDENTIFIER-BRANDED-001: Skill識別子Branded Type導入（2026-02-25完了）](#ut-type-skill-identifier-branded-001-skill識別子branded-type導入2026-02-25完了)
+   - [苦戦箇所: ID/Name の意味境界が `string` で消える](#苦戦箇所-idname-の意味境界が-string-で消える)
+   - [苦戦箇所: 完了移管後の参照リンク同期漏れ](#苦戦箇所-完了移管後の参照リンク同期漏れ)
+   - [苦戦箇所: current/baseline 監査値の誤読](#苦戦箇所-currentbaseline-監査値の誤読)
+   - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ)
 0. [UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離](#ut-imp-unassigned-audit-scope-control-001-未タスク監査の-scope-分離)
    - [苦戦箇所: 全体監査結果を今回差分の失敗と誤読しやすい](#苦戦箇所-全体監査結果を今回差分の失敗と誤読しやすい)
    - [苦戦箇所: 完了済み未タスク指示書の移管漏れ](#苦戦箇所-完了済み未タスク指示書の移管漏れ)

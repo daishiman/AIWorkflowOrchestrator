@@ -1,0 +1,313 @@
+{
+  "feature": "ut-type-skill-identifier-branded-001",
+  "created": "2026-02-25T12:31:53.138Z",
+  "lastUpdated": "2026-02-25T13:44:09.035Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:12:01.735Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/boundary-definition.md",
+          "description": "変換境界定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/subagent-team-plan.md",
+          "description": "SubAgent責務表"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:12:32.512Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/branded-type-design.md",
+          "description": "型設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/boundary-conversion-design.md",
+          "description": "境界変換設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ipc-contract-alignment.md",
+          "description": "IPC整合設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-matrix.md",
+          "description": "テスト設計マトリクス"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:12:57.610Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md",
+          "description": "指摘一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/remediation-plan.md",
+          "description": "是正計画"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:14:38.367Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/type-test-cases.md",
+          "description": "型テスト一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-cases.md",
+          "description": "統合テスト一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-test-log.txt",
+          "description": "Redログ"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:24:53.723Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-log.md",
+          "description": "実装ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/change-file-matrix.md",
+          "description": "変更ファイル表"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/green-test-log.txt",
+          "description": "Greenログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/type-application-map.md",
+          "description": "型適用マップ"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:25:34.314Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "拡張テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-case-table.md",
+          "description": "回帰ケース表"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/failure-analysis.md",
+          "description": "失敗分析"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:26:28.981Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/uncovered-items.md",
+          "description": "未網羅一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/requirements-traceability.md",
+          "description": "要件追跡表"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:27:13.615Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/regression-check.md",
+          "description": "回帰確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/technical-debt-update.md",
+          "description": "技術負債更新"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:27:34.587Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-audit.md",
+          "description": "セキュリティ監査"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/test-audit.md",
+          "description": "テスト監査"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:27:58.054Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-findings.md",
+          "description": "指摘一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/remediation-plan.md",
+          "description": "是正計画"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:28:16.072Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-findings.md",
+          "description": "発見事項"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-index.md",
+          "description": "エビデンス一覧"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-02-25T13:44:09.033Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキル改善レポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "refactor",
+    "estimatedPhases": 13,
+    "actualPhases": 0
+  }
+}

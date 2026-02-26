@@ -1,5 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import type { Skill } from "@repo/shared/types/skill";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
+import type { Skill, SkillId, SkillName } from "@repo/shared/types/skill";
 import { X, Search, Download } from "lucide-react";
 
 export interface SkillImportDialogProps {
@@ -10,9 +16,9 @@ export interface SkillImportDialogProps {
   /** 利用可能なスキル一覧 */
   availableSkills: Skill[];
   /** インポート済みスキルID一覧 */
-  importedSkillIds: string[];
+  importedSkillIds: SkillId[];
   /** インポートハンドラ（スキル名の配列を受け取る） */
-  onImport: (skillNames: string[]) => void;
+  onImport: (skillNames: SkillName[]) => void;
   /** カスタムクラス */
   className?: string;
 }
@@ -29,9 +35,13 @@ export const SkillImportDialog: React.FC<SkillImportDialogProps> = ({
   onImport,
   className = "",
 }) => {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<SkillId>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const importedSkillIdSet = useMemo(
+    () => new Set(importedSkillIds),
+    [importedSkillIds],
+  );
 
   // ダイアログが開いた時に選択をリセットしフォーカスを移動
   useEffect(() => {
@@ -76,9 +86,9 @@ export const SkillImportDialog: React.FC<SkillImportDialogProps> = ({
     );
   });
 
-  const handleToggleSkill = (skillId: string) => {
+  const handleToggleSkill = (skillId: SkillId) => {
     // インポート済みは選択不可
-    if (importedSkillIds.includes(skillId)) {
+    if (importedSkillIdSet.has(skillId)) {
       return;
     }
 
@@ -156,7 +166,7 @@ export const SkillImportDialog: React.FC<SkillImportDialogProps> = ({
         <div className="flex-1 overflow-y-auto p-4">
           <div className="space-y-2">
             {filteredSkills.map((skill) => {
-              const isImported = importedSkillIds.includes(skill.id);
+              const isImported = importedSkillIdSet.has(skill.id);
               const isSelected = selectedIds.has(skill.id);
 
               return (

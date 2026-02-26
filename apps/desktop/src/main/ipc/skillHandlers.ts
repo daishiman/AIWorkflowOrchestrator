@@ -17,6 +17,7 @@ import {
   validateIpcSender,
   toIPCValidationError,
 } from "../infrastructure/security/ipc-validator";
+import type { SkillName } from "@repo/shared/types/skill";
 import type {
   SkillAnalyzeRequest,
   SkillImproveRequest,
@@ -120,7 +121,7 @@ export function registerSkillHandlers(
   // skill:import - スキルをインポート（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: ImportedSkill型を返す）
   ipcMain.handle(
     IPC_CHANNELS.SKILL_IMPORT,
-    async (event: IpcMainInvokeEvent, skillName: string) => {
+    async (event: IpcMainInvokeEvent, skillName: SkillName) => {
       const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_IMPORT, {
         getAllowedWindows: () => [mainWindow],
       });
@@ -160,7 +161,7 @@ export function registerSkillHandlers(
   // skill:remove - スキルを削除
   ipcMain.handle(
     IPC_CHANNELS.SKILL_REMOVE,
-    async (event: IpcMainInvokeEvent, skillName: string) => {
+    async (event: IpcMainInvokeEvent, skillName: SkillName) => {
       const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_REMOVE, {
         getAllowedWindows: () => [mainWindow],
       });

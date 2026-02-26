@@ -741,6 +741,8 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 <details>
 <summary>統合前の仕様（参考情報）</summary>
 
+> 注記: 以下は統合前の履歴情報。UT-TYPE-SKILL-IDENTIFIER-BRANDED-001（2026-02-25）以降、実装側は `SkillId` / `SkillName` のBranded Typeを使用する。
+
 ### 概要
 
 スキル機能の状態管理Slice。スキルのスキャン・インポート・選択・実行・権限確認の状態を一元管理する。IPCイベントを介してMain Processと連携し、ストリーミング応答や権限リクエストを処理する。

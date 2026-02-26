@@ -5,6 +5,8 @@
  */
 import type {
   Skill,
+  SkillId,
+  SkillName,
   SkillScanResult,
   SkillScanError,
   ImportResult,
@@ -23,7 +25,7 @@ import type {
 } from "./SkillExecutor";
 
 export class SkillService {
-  private cache: Map<string, Skill> = new Map();
+  private cache: Map<SkillId, Skill> = new Map();
   private lastScanTime: Date | null = null;
   private skillExecutor: SkillExecutor | null = null;
 
@@ -100,21 +102,21 @@ export class SkillService {
   /**
    * スキルをインポートする
    */
-  async importSkills(skillIds: string[]): Promise<ImportResult> {
-    return this.importManager.importSkills(skillIds);
+  async importSkills(skillNames: SkillName[]): Promise<ImportResult> {
+    return this.importManager.importSkills(skillNames);
   }
 
   /**
    * スキルを削除する
    */
-  async removeSkill(skillName: string): Promise<RemoveResult> {
+  async removeSkill(skillName: SkillName): Promise<RemoveResult> {
     return this.importManager.removeSkill(skillName);
   }
 
   /**
    * IDでスキルを取得する
    */
-  async getSkillById(id: string): Promise<Skill | null> {
+  async getSkillById(id: SkillId): Promise<Skill | null> {
     if (this.cache.size === 0) {
       await this.scanAvailableSkills();
     }
@@ -132,7 +134,7 @@ export class SkillService {
   /**
    * 名前でスキルを取得する（TASK-9C）
    */
-  async getSkillByName(name: string): Promise<ImportedSkill | null> {
+  async getSkillByName(name: SkillName): Promise<ImportedSkill | null> {
     if (this.cache.size === 0) {
       await this.scanAvailableSkills();
     }
@@ -178,7 +180,7 @@ export class SkillService {
    * @returns SkillExecutionResponse
    */
   async executeSkill(
-    skillId: string,
+    skillId: SkillId,
     params?: {
       prompt?: string;
       timeout?: number;

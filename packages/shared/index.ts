@@ -5,6 +5,9 @@ export * from "./types";
 export type {
   // 既存型
   Anchor,
+  SkillBrand,
+  SkillId,
+  SkillName,
   SkillEnvironmentType,
   EnvironmentConfig,
   SkillCategory,
@@ -39,7 +42,7 @@ export type {
   SkillPermissionResponse,
 } from "./src/types/skill";
 
-export { SKILL_CATEGORIES } from "./src/types/skill";
+export { SKILL_CATEGORIES, toSkillId, toSkillName } from "./src/types/skill";
 
 // Claude CLI types
 export * from "./src/claude-cli";
