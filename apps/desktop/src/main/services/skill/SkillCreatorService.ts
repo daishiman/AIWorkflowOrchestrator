@@ -12,6 +12,7 @@ import {
   DEFAULT_SKILL_CREATOR_PATH,
   DEFAULT_SKILLS_DIR,
   DEFAULT_WORKFLOWS_DIR,
+  MAX_SKILL_NAME_LENGTH,
   TASK_DURATION_MINUTES,
 } from "./constants";
 import type {
@@ -59,6 +60,19 @@ export class SkillCreatorService {
    * @returns 作成されたスキルディレクトリパス
    */
   async createSkill(options: CreateSkillOptions): Promise<string> {
+    // BV-001/BV-002/BV-003/BV-005: 入力バリデーション
+    if (!options.name || options.name.trim() === "") {
+      throw new Error("Skill name must not be empty");
+    }
+    if (options.name.length > MAX_SKILL_NAME_LENGTH) {
+      throw new Error(
+        `Skill name must not exceed ${MAX_SKILL_NAME_LENGTH} characters`,
+      );
+    }
+    if (options.name.includes("\0")) {
+      throw new Error("Skill name must not contain null bytes");
+    }
+
     // collaborativeモードでinterviewResultが空の場合はエラー
     if (
       options.mode === "collaborative" &&
@@ -131,6 +145,17 @@ export class SkillCreatorService {
    * @returns 実行レポート
    */
   async executeTasks(options: ExecuteTasksOptions): Promise<ExecutionReport> {
+    // BV-004: パストラバーサル防止
+    if (options.tasksDir.includes("../") || options.tasksDir.includes("..\\")) {
+      throw new Error("Path traversal detected in tasksDir");
+    }
+    if (options.tasksDir.includes("\0")) {
+      throw new Error("Null byte detected in tasksDir");
+    }
+    if (options.tasksDir.startsWith("\\\\")) {
+      throw new Error("UNC paths are not allowed");
+    }
+
     // タスクをスキャン
     const tasks = await this.scanTasks(options.tasksDir);
 
@@ -237,6 +262,231 @@ export class SkillCreatorService {
       JSON.stringify(data),
     ]);
     return result.success;
+  }
+
+  /**
+   * 既存スキルの改善提案を返す
+   *
+   * @param skillName - スキル名
+   * @param autoApply - 自動適用フラグ
+   * @returns 改善結果
+   */
+  async improveSkill(
+    skillName: string,
+    autoApply: boolean,
+  ): Promise<{
+    suggestions: Array<{
+      category: string;
+      description: string;
+      severity: string;
+      autoFixable: boolean;
+    }>;
+    applied: boolean;
+  }> {
+    const result = await this.scriptExecutor.executeJson<{
+      suggestions: Array<{
+        category: string;
+        description: string;
+        severity: string;
+        autoFixable: boolean;
+      }>;
+    }>("improve_skill.js", [
+      "--name",
+      skillName,
+      ...(autoApply ? ["--auto-apply"] : []),
+    ]);
+    return { suggestions: result.suggestions, applied: autoApply };
+  }
+
+  /**
+   * スキルを複製して新しいディレクトリに生成
+   *
+   * @param sourceName - 元のスキル名
+   * @param newName - 新しいスキル名
+   * @param options - フォークオプション
+   * @returns 新しいスキルのディレクトリパス
+   */
+  async forkSkill(
+    sourceName: string,
+    newName: string,
+    options: {
+      copyAgents?: boolean;
+      copyReferences?: boolean;
+      copyScripts?: boolean;
+      modifyTools?: boolean;
+    },
+  ): Promise<string> {
+    const args = ["--source", sourceName, "--name", newName];
+    if (options.copyAgents) args.push("--copy-agents");
+    if (options.copyReferences) args.push("--copy-references");
+    if (options.copyScripts) args.push("--copy-scripts");
+    if (options.modifyTools) args.push("--modify-tools");
+
+    const result = await this.scriptExecutor.execute("fork_skill.js", args);
+    if (!result.success) {
+      throw new Error(`Failed to fork skill: ${result.stderr}`);
+    }
+    return result.stdout.trim() || path.join(this.skillsDir, newName);
+  }
+
+  /**
+   * スキルをエクスポート形式で共有
+   *
+   * @param action - アクション（export等）
+   * @param target - ターゲット（gist等）
+   * @param skillName - スキル名
+   * @returns エクスポート結果（URLまたはパス）
+   */
+  async shareSkill(
+    action: string,
+    target: string,
+    skillName: string,
+  ): Promise<string> {
+    const result = await this.scriptExecutor.execute("share_skill.js", [
+      "--action",
+      action,
+      "--target",
+      target,
+      "--name",
+      skillName,
+    ]);
+    if (!result.success) {
+      throw new Error(`Failed to share skill: ${result.stderr}`);
+    }
+    return result.stdout.trim();
+  }
+
+  /**
+   * スケジュール設定を保存
+   *
+   * @param skillName - スキル名
+   * @param schedule - スケジュール設定
+   */
+  async scheduleSkill(
+    skillName: string,
+    schedule: {
+      skillName: string;
+      scheduleType: string;
+      value: string;
+      isEnabled: boolean;
+    },
+  ): Promise<void> {
+    const result = await this.scriptExecutor.execute("schedule_skill.js", [
+      "--name",
+      skillName,
+      "--type",
+      schedule.scheduleType,
+      "--value",
+      schedule.value,
+      "--enabled",
+      String(schedule.isEnabled),
+    ]);
+    if (!result.success) {
+      throw new Error(`Failed to schedule skill: ${result.stderr}`);
+    }
+  }
+
+  /**
+   * デバッグモードでスキルを実行
+   *
+   * @param skillName - スキル名
+   * @param options - デバッグオプション
+   * @returns デバッグ結果
+   */
+  async debugSkill(
+    skillName: string,
+    options: { verbose?: boolean; breakpoints?: string[] },
+  ): Promise<{
+    steps: Array<{
+      stepNumber: number;
+      toolName: string;
+      input: unknown;
+      output: unknown;
+      duration: number;
+      hitBreakpoint: boolean;
+    }>;
+  }> {
+    const args = ["--name", skillName];
+    if (options.verbose) args.push("--verbose");
+    if (options.breakpoints) {
+      args.push("--breakpoints", options.breakpoints.join(","));
+    }
+
+    const result = await this.scriptExecutor.executeJson<{
+      steps: Array<{
+        stepNumber: number;
+        toolName: string;
+        input: unknown;
+        output: unknown;
+        duration: number;
+        hitBreakpoint: boolean;
+      }>;
+    }>("debug_skill.js", args);
+
+    return result;
+  }
+
+  /**
+   * スキルのドキュメントを生成
+   *
+   * @param skillName - スキル名
+   * @param format - 出力形式
+   * @param sections - 生成するセクション
+   * @returns 生成されたファイルパス
+   */
+  async generateDocs(
+    skillName: string,
+    format: string,
+    sections: string[],
+  ): Promise<string> {
+    const result = await this.scriptExecutor.execute("generate_docs.js", [
+      "--name",
+      skillName,
+      "--format",
+      format,
+      "--sections",
+      sections.join(","),
+    ]);
+    if (!result.success) {
+      throw new Error(`Failed to generate docs: ${result.stderr}`);
+    }
+    return result.stdout.trim();
+  }
+
+  /**
+   * 使用統計を集計
+   *
+   * @param skillName - スキル名
+   * @param period - 集計期間
+   * @returns 使用統計
+   */
+  async getStats(
+    skillName: string,
+    period: string,
+  ): Promise<{
+    skillName: string;
+    period: string;
+    executionCount: number;
+    successCount: number;
+    failureCount: number;
+    averageDuration: number;
+    topTools: Array<{ tool: string; count: number }>;
+    hourlyDistribution: Record<string, number>;
+    errorTrends: Array<{ date: string; count: number }>;
+  }> {
+    const result = await this.scriptExecutor.executeJson<{
+      skillName: string;
+      period: string;
+      executionCount: number;
+      successCount: number;
+      failureCount: number;
+      averageDuration: number;
+      topTools: Array<{ tool: string; count: number }>;
+      hourlyDistribution: Record<string, number>;
+      errorTrends: Array<{ date: string; count: number }>;
+    }>("get_stats.js", ["--name", skillName, "--period", period]);
+
+    return result;
   }
 
   // ============================================

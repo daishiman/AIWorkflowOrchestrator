@@ -281,6 +281,15 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_VALIDATE_SCHEMA: "skill-creator:validate-schema",
   SKILL_CREATOR_PROGRESS: "skill-creator:progress",
 
+  // Skill Creator extended operations (TASK-9B Phase 5)
+  SKILL_CREATOR_IMPROVE: "skill-creator:improve",
+  SKILL_CREATOR_FORK: "skill-creator:fork",
+  SKILL_CREATOR_SHARE: "skill-creator:share",
+  SKILL_CREATOR_SCHEDULE: "skill-creator:schedule",
+  SKILL_CREATOR_DEBUG: "skill-creator:debug",
+  SKILL_CREATOR_GENERATE_DOCS: "skill-creator:generate-docs",
+  SKILL_CREATOR_STATS: "skill-creator:stats",
+
   // Skill file operations (TASK-9A-B)
   SKILL_READ_FILE: "skill:readFile",
   SKILL_WRITE_FILE: "skill:writeFile",
@@ -496,6 +505,14 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
+  // Skill Creator extended channels (TASK-9B Phase 5)
+  IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
+  IPC_CHANNELS.SKILL_CREATOR_FORK,
+  IPC_CHANNELS.SKILL_CREATOR_SHARE,
+  IPC_CHANNELS.SKILL_CREATOR_SCHEDULE,
+  IPC_CHANNELS.SKILL_CREATOR_DEBUG,
+  IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS,
+  IPC_CHANNELS.SKILL_CREATOR_STATS,
   // Skill file operations (TASK-9A-B)
   IPC_CHANNELS.SKILL_READ_FILE,
   IPC_CHANNELS.SKILL_WRITE_FILE,

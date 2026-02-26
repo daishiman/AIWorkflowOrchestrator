@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-26T07:25:18.539Z",
-  "totalKeywords": 1328,
+  "generated": "2026-02-26T12:51:08.554Z",
+  "totalKeywords": 1325,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2995,21 +2995,6 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "GATE": [
-      "lessons-learned.md"
-    ],
-    "ALIGNMENT": [
-      "lessons-learned.md"
-    ],
-    "quick": [
-      "lessons-learned.md"
-    ],
-    "validate": [
-      "lessons-learned.md"
-    ],
-    "検証ゲート整合化": [
-      "lessons-learned.md"
-    ],
     "EXECUTE": [
       "lessons-learned.md"
     ],
@@ -3074,6 +3059,9 @@
       "lessons-learned.md"
     ],
     "SPEC": [
+      "lessons-learned.md"
+    ],
+    "ALIGNMENT": [
       "lessons-learned.md"
     ],
     "task": [
@@ -3437,6 +3425,9 @@
       "lessons-learned.md"
     ],
     "チャネル命名監査の台帳同期": [
+      "lessons-learned.md"
+    ],
+    "拡張同期": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [

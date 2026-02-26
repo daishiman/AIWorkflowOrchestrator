@@ -2,7 +2,7 @@
  * Skill Creator IPC Handlers
  *
  * TASK-9B-H: SkillCreatorService用のIPCハンドラー
- * 5つのinvokeチャンネル + 1つのprogressチャンネルを提供
+ * 12のinvokeチャンネル + 1つのprogressチャンネルを提供
  *
  * UT-9B-H-003: セキュリティ強化
  * - validatePath: パストラバーサル攻撃防止
@@ -178,11 +178,27 @@ export function registerSkillCreatorHandlers(
         throw toIPCValidationError(validation);
       }
 
-      // 引数バリデーション
+      // P42準拠3段バリデーション（型チェック → 空文字列 → トリム空文字列）
       if (
         typeof args?.name !== "string" ||
         typeof args?.description !== "string" ||
         typeof args?.mode !== "string"
+      ) {
+        return {
+          success: false,
+          error: "スキル名、説明、モードが正しく指定されていません",
+        };
+      }
+      if (args.name === "" || args.description === "" || args.mode === "") {
+        return {
+          success: false,
+          error: "スキル名、説明、モードが正しく指定されていません",
+        };
+      }
+      if (
+        args.name.trim() === "" ||
+        args.description.trim() === "" ||
+        args.mode.trim() === ""
       ) {
         return {
           success: false,
@@ -387,6 +403,237 @@ export function registerSkillCreatorHandlers(
       }
     },
   );
+
+  // skill-creator:improve - スキルを改善
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { skillName: string; autoApply?: boolean },
+    ): Promise<IpcResult<unknown>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        return { success: false, error: "スキル名が指定されていません" };
+      }
+      try {
+        const result = await skillCreatorService.improveSkill(
+          args.skillName,
+          args.autoApply ?? false,
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill-creator:fork - スキルをフォーク
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_FORK,
+    async (
+      event: IpcMainInvokeEvent,
+      args: {
+        sourceName: string;
+        newName: string;
+        options?: Record<string, boolean>;
+      },
+    ): Promise<IpcResult<string>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_FORK,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (
+        typeof args?.sourceName !== "string" ||
+        args.sourceName.trim() === ""
+      ) {
+        return { success: false, error: "元スキル名が指定されていません" };
+      }
+      if (typeof args?.newName !== "string" || args.newName.trim() === "") {
+        return { success: false, error: "新スキル名が指定されていません" };
+      }
+      try {
+        const result = await skillCreatorService.forkSkill(
+          args.sourceName,
+          args.newName,
+          args.options || {},
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill-creator:share - スキルを共有
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_SHARE,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { skillName: string; format: string },
+    ): Promise<IpcResult<string>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_SHARE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        return { success: false, error: "スキル名が指定されていません" };
+      }
+      if (typeof args?.format !== "string" || args.format.trim() === "") {
+        return { success: false, error: "フォーマットが指定されていません" };
+      }
+      try {
+        const result = await skillCreatorService.shareSkill(
+          "export",
+          args.format,
+          args.skillName,
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill-creator:schedule - スキルスケジュール設定
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_SCHEDULE,
+    async (
+      event: IpcMainInvokeEvent,
+      args: {
+        skillName: string;
+        schedule: {
+          skillName: string;
+          scheduleType: string;
+          value: string;
+          isEnabled: boolean;
+        };
+      },
+    ): Promise<IpcResult<void>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_SCHEDULE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        return { success: false, error: "スキル名が指定されていません" };
+      }
+      try {
+        await skillCreatorService.scheduleSkill(args.skillName, args.schedule);
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill-creator:debug - スキルデバッグ
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_DEBUG,
+    async (
+      event: IpcMainInvokeEvent,
+      args: {
+        skillName: string;
+        options?: { verbose?: boolean; breakpoints?: string[] };
+      },
+    ): Promise<IpcResult<unknown>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_DEBUG,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        return { success: false, error: "スキル名が指定されていません" };
+      }
+      try {
+        const result = await skillCreatorService.debugSkill(
+          args.skillName,
+          args.options || {},
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill-creator:generate-docs - ドキュメント生成
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { skillName: string; format?: string; sections?: string[] },
+    ): Promise<IpcResult<string>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        return { success: false, error: "スキル名が指定されていません" };
+      }
+      try {
+        const result = await skillCreatorService.generateDocs(
+          args.skillName,
+          args.format || "markdown",
+          args.sections || [],
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill-creator:stats - 使用統計取得
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_STATS,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { skillName?: string; period?: string },
+    ): Promise<IpcResult<unknown>> => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_STATS,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      try {
+        const result = await skillCreatorService.getStats(
+          args?.skillName || "",
+          args?.period || "7d",
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
 }
 
 /**
@@ -416,4 +663,12 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA);
+  // Phase 5 extended handlers
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_FORK);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_SHARE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_SCHEDULE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DEBUG);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_STATS);
 }

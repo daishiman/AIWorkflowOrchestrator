@@ -391,8 +391,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v9.92.9** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 完了記録を追補**: `references/spec-update-workflow.md` と `references/phase-11-12-guide.md` に完了タスク記録・関連ドキュメントリンク・更新履歴を追加し、Phase 12 Step 1-A の記録漏れを防止 |
-| **v9.92.8** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 仕様反映追補**: `references/spec-update-workflow.md` に SKILL検証の正規経路（`quick_validate.js` 3スキル）と Warning 3段階分類（許容/要監視/要対応）を追加。`references/phase-11-12-guide.md` / `references/phase-templates.md` へ同判定基準の参照を同期し、Phase 12 での検証解釈ブレを削減 |
+| **v9.93.0** | **2026-02-26** | **TASK-9B再監査の教訓反映**: `references/spec-update-workflow.md` に「IPC拡張済みでも旧チャンネル数のままでよい」誤判断パターンを追加し、更新漏れ防止チェックリストへ「チャンネル数/進捗型の実装-仕様一致確認」を追記 |
 | **v9.92.7** | **2026-02-25** | **Phase 12再確認の運用ルール追補**: `references/spec-update-workflow.md` に `--target-file` の判定軸（`currentViolations.total`）と `validate-phase-output.js <workflow-dir>` の位置引数ルールを明記。`references/patterns.md` に scoped監査解釈と検証コマンド誤用防止パターンを追加 |
 | **v9.92.6** | **2026-02-25** | **Phase 12参照整合ガードを追補**: `task-00-unified-implementation-sequence` の参照実在チェック（`task-013e`/`task-014` など）を Phase 12 更新手順へ追加。未タスク完了移管時に `task-workflow.md` のステータス（未実施/完了）と参照先（unassigned/completed）を同時更新するルールを明文化 |
 | **v9.92.5** | **2026-02-25** | **Phase 12完了時の移管運用を反映**: Phase 12完了が確認できた場合、`docs/30-workflows/unassigned-task/` の当該未タスク指示書と、実行ワークフロー本体を `docs/30-workflows/completed-tasks/` へ移動し、`task-workflow.md` 残課題行を完了化する運用を適用 |

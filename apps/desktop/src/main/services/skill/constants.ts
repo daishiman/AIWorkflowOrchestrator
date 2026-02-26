@@ -38,3 +38,8 @@ export const DEFAULT_WORKFLOWS_DIR = path.join(
  * タスク実行時間見積もり（分/タスク）
  */
 export const TASK_DURATION_MINUTES = 5;
+
+/**
+ * スキル名の最大文字数
+ */
+export const MAX_SKILL_NAME_LENGTH = 256;

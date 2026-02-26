@@ -5,68 +5,49 @@
 
 ---
 
-## 2026-02-26 - UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001 未タスク登録（SubAgent分離）
+## 2026-02-26 - TASK-9B 再監査（実装内容+苦戦箇所の仕様反映）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: task-workflow.md / SKILL.md
-- 目的: Phase 12 完了移管時の参照同期ガードを未タスクとして台帳化し、苦戦箇所を再利用可能形式で固定
+- 対象: TASK-9B SkillCreator IPC拡張同期
+- 目的: 実装内容と苦戦箇所を同種課題へ再利用できる形式で仕様書へ固定
 
 ### SubAgent分担
-- SubAgent-A: 未タスク指示書作成（Section 3.5 苦戦箇所の転記）
-- SubAgent-B: `task-workflow.md` 残課題/変更履歴更新
-- SubAgent-C: `SKILL.md` 変更履歴更新
-- SubAgent-D: 監査実行（`verify-unassigned-links` / `audit --target-file`）
+- SubAgent-A: `interfaces-agent-sdk-skill.md`（契約同期 + 苦戦箇所）
+- SubAgent-B: `security-skill-ipc.md`（sender/P42/監査運用）
+- SubAgent-C: `task-workflow.md`（完了台帳 + 検証証跡）
+- SubAgent-D: `lessons-learned.md`（教訓化 + 5ステップ）
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md` を新規作成
-- `task-workflow.md` 残課題テーブルへ同タスクを追加
-- 変更履歴に、苦戦箇所3件（旧参照残存/台帳-実体不一致/テンプレート旧経路残置）の記録先を追記
-- `SKILL.md` 変更履歴へ v8.74.9 を追加
+- `interfaces-agent-sdk-skill.md` に TASK-9B 再監査の SubAgent分担・苦戦箇所・簡潔解決手順を追記
+- `security-skill-ipc.md` に再監査時の苦戦箇所（P42 create未完了、13chドリフト、current/baseline混同）を追記
+- `task-workflow.md` に「TASK-9B 再監査」完了記録（実装要点・苦戦箇所・検証結果）を新設
+- `lessons-learned.md` に TASK-9B 教訓セクションを追加し、同種課題向け5ステップを標準化
 
 ### 結果
 - ステータス: success
-- 完了日時: 2026-02-26
-- 補足: 未タスク指示書・台帳・スキル履歴の3点同期を同一ターンで完了
+- 補足: 仕様書上で実装内容・苦戦箇所・再利用手順が4仕様書で同時同期された状態を確立
 
 ---
 
-## 2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 再利用最適化（SubAgent分離）
+## 2026-02-26 - TASK-9B SkillCreator 仕様再同期（13チャンネル化）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: lessons-learned.md / task-workflow.md
-- 目的: 今回実装内容と苦戦箇所を、同種課題へ即転用できる実行形式へ最適化
+- 対象: TASK-9B skill-creator 再監査
+- 目的: 実装と仕様のドリフト（IPC件数・型契約・参照パス）を解消
 
 ### 実施内容
-- `lessons-learned.md` に仕様書別SubAgent分担マップ（A:台帳/B:教訓/C:履歴/D:検証）を追加
-- 同ファイルに5ステップ即時実行プロトコル（正規経路固定 / 監査2軸分離 / 3点同期）を追加
-- `task-workflow.md` 変更履歴へ `completed-tasks/` 正本同期と再利用手順の標準化を追記
+- `references/api-ipc-agent.md` を 13チャンネル（12 invoke + 1 progress）へ更新
+- `references/interfaces-agent-sdk-skill.md` の SkillCreatorService APIを12メソッドへ同期
+- `references/architecture-overview.md` の `registerSkillCreatorHandlers` 件数と `services/skill-creator` 誤記を修正
+- `references/arch-electron-services.md` に SkillCreatorService（Facade）APIセクションを追加
+- `references/security-skill-ipc.md` に TASK-9B拡張のセキュリティ要件を追記
+- `references/task-workflow.md` の TASK-9B-H 完了リンクを `completed-tasks/skill-creator-ipc/` に正規化
 
 ### 結果
 - ステータス: success
-- 完了日時: 2026-02-26
-- 補足: 仕様反映時の関心分離と並列実行導線をテンプレート化
-
----
-
-## 2026-02-26 - 未タスク台帳の参照整合是正（UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 追補）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: task-workflow.md / interfaces-agent-sdk-skill.md
-- 目的: 完了済み・未実施タスクの配置と参照パスを実体と同期
-
-### 実施内容
-- `UT-TYPE-SKILL-IDENTIFIER-BRANDED-001` を `task-workflow.md` で完了表記へ更新し、参照先を `completed-tasks/` 正本に統一
-- `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` 指示書を `unassigned-task/` へ戻し、未実施ステータスと配置を一致
-- `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` を `task-workflow.md` 残課題テーブルに登録
-- `interfaces-agent-sdk-skill.md` の関連未タスクリンクを同時補正
-
-### 結果
-- ステータス: success
-- 完了日時: 2026-02-26
-- 補足: `verify-unassigned-links.js` の参照切れ（2件）を解消
+- 補足: SkillCreator IPC契約ドリフト（6->13、進捗型不一致）を解消し、Phase 12台帳と仕様正本を同期
 
 ---
 
@@ -5511,21 +5492,3 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 仕様反映: 完了（実装内容 + 苦戦箇所 + 再利用手順）
-
-## 2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 完了
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象: skill-creator検証ゲート整合化（quick_validate実行経路統一 + 警告ノイズ制御）
-
-### 実施内容
-
-- spec-update-workflow.md に SKILL検証の正規経路（`quick_validate.js` 3スキル）と Warning 3段階分類（許容/要監視/要対応）を追加
-- phase-11-12-guide.md / phase-templates.md へ同判定基準の参照を同期
-- Phase 12 での検証解釈ブレを削減するルールを整備
-
-### 結果
-
-- ステータス: success
-- 仕様反映: 完了（検証コマンド統一 + Warning 3段階分類ルール追加）

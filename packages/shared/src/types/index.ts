@@ -110,6 +110,17 @@ export type {
   ScriptResult,
   TaskSpec,
   DependencyGraph,
+  // Phase 5: 新規メソッド用型定義 (TASK-9B)
+  ImproveOptions,
+  ImproveSuggestion,
+  ImproveResult,
+  ForkOptions,
+  ExportFormat,
+  ScheduleConfig,
+  DebugOptions,
+  DebugStep,
+  DebugResult,
+  UsageStats,
 } from "./skillCreator";
 
 // ファイル選択型定義

@@ -4,7 +4,17 @@
  *
  * Test Coverage:
  * - SC-001〜SC-019: detectMode(), createSkill(), executeTasks(), validateSkill(), validateWithSchema()
+ * - SC-020〜SC-021: createSkill() Extended Modes (update, improve-prompt)
+ * - SC-022〜SC-023: improveSkill() [Red - Not Yet Implemented]
+ * - SC-024〜SC-025: forkSkill() [Red - Not Yet Implemented]
+ * - SC-026: shareSkill() [Red - Not Yet Implemented]
+ * - SC-027: scheduleSkill() [Red - Not Yet Implemented]
+ * - SC-028: debugSkill() [Red - Not Yet Implemented]
+ * - SC-029: generateDocs() [Red - Not Yet Implemented]
+ * - SC-030: getStats() [Red - Not Yet Implemented]
+ * - SC-031: executeTasks() Parallel Extension
  * - BC-001〜BC-005: Boundary and error cases
+ * - BV-001〜BV-008: Boundary value tests (validation, security, performance)
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
@@ -487,6 +497,539 @@ describe("SkillCreatorService", () => {
 
       // Act & Assert
       await expect(service.createSkill(options)).rejects.toThrow();
+    });
+  });
+
+  describe("createSkill() - Extended Modes", () => {
+    it("SC-020: should execute update workflow for mode=update", async () => {
+      const options: CreateSkillOptions = {
+        name: "existing-skill",
+        description: "Update existing",
+        mode: "update",
+        skillPath: "/path/to/existing",
+      };
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await service.createSkill(options);
+      expect(result).toContain("existing-skill");
+    });
+
+    it("SC-021: should execute improve-prompt workflow for mode=improve-prompt", async () => {
+      const options: CreateSkillOptions = {
+        name: "prompt-skill",
+        description: "Improve prompt",
+        mode: "improve-prompt",
+      };
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await service.createSkill(options);
+      expect(result).toContain("prompt-skill");
+    });
+  });
+
+  describe("improveSkill() [Red - Not Yet Implemented]", () => {
+    it("SC-022: should analyze existing skill and return improvement suggestions", async () => {
+      // This test will fail until improveSkill() is implemented
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        suggestions: [
+          {
+            category: "prompt",
+            description: "Improve clarity",
+            severity: "medium",
+            autoFixable: true,
+          },
+        ],
+      });
+      const result = await (service as any).improveSkill(
+        "existing-skill",
+        false,
+      );
+      expect(result.suggestions).toBeDefined();
+      expect(result.suggestions.length).toBeGreaterThan(0);
+    });
+
+    it("SC-023: should throw error for non-existent skill", async () => {
+      mockScriptExecutor.executeJson.mockRejectedValue(
+        new Error("Skill not found"),
+      );
+      await expect(
+        (service as any).improveSkill("non-existent", false),
+      ).rejects.toThrow("Skill not found");
+    });
+  });
+
+  describe("forkSkill() [Red - Not Yet Implemented]", () => {
+    it("SC-024: should clone skill to new directory", async () => {
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "/path/to/forked-skill",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await (service as any).forkSkill(
+        "original-skill",
+        "forked-skill",
+        {
+          copyAgents: true,
+          copyReferences: true,
+          copyScripts: true,
+          modifyTools: false,
+        },
+      );
+      expect(result).toContain("forked-skill");
+    });
+
+    it("SC-025: should throw error when target skill name already exists", async () => {
+      mockScriptExecutor.execute.mockRejectedValue(
+        new Error("Skill already exists"),
+      );
+      await expect(
+        (service as any).forkSkill("original", "existing", {}),
+      ).rejects.toThrow("already exists");
+    });
+  });
+
+  describe("shareSkill() [Red - Not Yet Implemented]", () => {
+    it("SC-026: should export skill in shareable format", async () => {
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "https://gist.github.com/abc123",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await (service as any).shareSkill(
+        "export",
+        "gist",
+        "my-skill",
+      );
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe("scheduleSkill() [Red - Not Yet Implemented]", () => {
+    it("SC-027: should save schedule configuration", async () => {
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      await expect(
+        (service as any).scheduleSkill("test-skill", {
+          skillName: "test-skill",
+          scheduleType: "cron",
+          value: "0 9 * * *",
+          isEnabled: true,
+        }),
+      ).resolves.not.toThrow();
+    });
+  });
+
+  describe("debugSkill() [Red - Not Yet Implemented]", () => {
+    it("SC-028: should return debug result with step details", async () => {
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        steps: [
+          {
+            stepNumber: 1,
+            toolName: "Read",
+            input: {},
+            output: "content",
+            duration: 100,
+            hitBreakpoint: false,
+          },
+        ],
+      });
+      const result = await (service as any).debugSkill("test-skill", {});
+      expect(result.steps).toBeDefined();
+      expect(result.steps.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("generateDocs() [Red - Not Yet Implemented]", () => {
+    it("SC-029: should generate documentation files", async () => {
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "/path/to/docs/output.md",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await (service as any).generateDocs(
+        "test-skill",
+        "markdown",
+        ["overview", "api"],
+      );
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe("getStats() [Red - Not Yet Implemented]", () => {
+    it("SC-030: should return usage statistics", async () => {
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        skillName: "test-skill",
+        period: "7d",
+        executionCount: 42,
+        successCount: 38,
+        failureCount: 4,
+        averageDuration: 1500,
+        topTools: [{ tool: "Read", count: 100 }],
+        hourlyDistribution: {},
+        errorTrends: [],
+      });
+      const result = await (service as any).getStats("test-skill", "7d");
+      expect(result.executionCount).toBe(42);
+      expect(result.successCount).toBe(38);
+    });
+  });
+
+  describe("executeTasks() - Parallel Extension", () => {
+    it("SC-031: should execute independent tasks simultaneously in parallel mode", async () => {
+      const options = {
+        tasksDir: "/path/to/parallel-tasks",
+        parallel: true,
+      };
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        tasks: [
+          { id: "task-a", content: "Task A", depends_on: [] },
+          { id: "task-b", content: "Task B", depends_on: [] },
+          { id: "task-c", content: "Task C", depends_on: ["task-a"] },
+        ],
+      });
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await service.executeTasks(options);
+      expect(result.summary?.completed).toBe(3);
+    });
+  });
+
+  describe("Boundary Value Tests", () => {
+    it("BV-001: should throw error for empty skill name", async () => {
+      const options: CreateSkillOptions = {
+        name: "",
+        description: "test",
+        mode: "create",
+      };
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: false,
+        stdout: "",
+        stderr: "Invalid name",
+        exitCode: 1,
+      });
+      await expect(service.createSkill(options)).rejects.toThrow();
+    });
+
+    it("BV-002: should throw error for whitespace-only skill name (P42)", async () => {
+      const options: CreateSkillOptions = {
+        name: "   ",
+        description: "test",
+        mode: "create",
+      };
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: false,
+        stdout: "",
+        stderr: "Invalid name",
+        exitCode: 1,
+      });
+      await expect(service.createSkill(options)).rejects.toThrow();
+    });
+
+    it("BV-003: should throw error for skill name exceeding 256 characters", async () => {
+      const options: CreateSkillOptions = {
+        name: "a".repeat(257),
+        description: "test",
+        mode: "create",
+      };
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: false,
+        stdout: "",
+        stderr: "Name too long",
+        exitCode: 1,
+      });
+      await expect(service.createSkill(options)).rejects.toThrow();
+    });
+
+    it("BV-004: should reject path traversal in directory path", async () => {
+      const options = {
+        tasksDir: "../../../etc/passwd",
+      };
+      await expect(service.executeTasks(options)).rejects.toThrow();
+    });
+
+    it("BV-005: should reject null byte in input string", async () => {
+      const options: CreateSkillOptions = {
+        name: "test\0evil",
+        description: "test",
+        mode: "create",
+      };
+      await expect(service.createSkill(options)).rejects.toThrow();
+    });
+
+    it("BV-006: should handle empty dependency list correctly", async () => {
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        tasks: [{ id: "task-1", content: "Task 1", depends_on: [] }],
+      });
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await service.executeTasks({ tasksDir: "/path" });
+      expect(result.summary?.completed).toBe(1);
+    });
+
+    it("BV-007: should complete topological sort for 1000 tasks", async () => {
+      const tasks = Array.from({ length: 1000 }, (_, i) => ({
+        id: `task-${i}`,
+        content: `Task ${i}`,
+        depends_on: i > 0 ? [`task-${i - 1}`] : [],
+      }));
+      mockScriptExecutor.executeJson.mockResolvedValue({ tasks });
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+      });
+      const result = await service.executeTasks({ tasksDir: "/path" });
+      expect(result.results?.length).toBeGreaterThan(0);
+    });
+
+    it("BV-008: should detect self-referencing circular dependency", async () => {
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        tasks: [{ id: "task-1", content: "Task 1", depends_on: ["task-1"] }],
+      });
+      await expect(service.executeTasks({ tasksDir: "/path" })).rejects.toThrow(
+        /circular/i,
+      );
+    });
+  });
+
+  describe("Phase 6 Expansion Tests", () => {
+    it("SC-EX-001: improveSkill: autoApply=true で自動修正が適用される", async () => {
+      // Arrange
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        suggestions: [
+          {
+            category: "prompt",
+            description: "Improve clarity",
+            severity: "medium",
+            autoFixable: true,
+          },
+        ],
+      });
+
+      // Act
+      const result = await service.improveSkill("existing-skill", true);
+
+      // Assert
+      expect(result.applied).toBe(true);
+      expect(result.suggestions).toBeDefined();
+      expect(result.suggestions.length).toBeGreaterThan(0);
+      expect(result.suggestions[0].autoFixable).toBe(true);
+    });
+
+    it("SC-EX-002: improveSkill: targetAreas 指定で対象領域がexecuteに渡される", async () => {
+      // Arrange
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        suggestions: [],
+      });
+
+      // Act
+      await service.improveSkill("my-skill", false);
+
+      // Assert
+      expect(mockScriptExecutor.executeJson).toHaveBeenCalledWith(
+        "improve_skill.js",
+        expect.arrayContaining(["--name", "my-skill"]),
+      );
+    });
+
+    it("SC-EX-003: forkSkill: sourceName がパストラバーサルで拒否される", async () => {
+      // Arrange
+      mockScriptExecutor.execute.mockRejectedValue(
+        new Error("Failed to fork skill: invalid source path"),
+      );
+
+      // Act & Assert
+      await expect(
+        service.forkSkill("../evil", "new-skill", {}),
+      ).rejects.toThrow();
+    });
+
+    it("SC-EX-004: shareSkill: format='zip' でZIPファイルが生成される", async () => {
+      // Arrange
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "/tmp/my-skill.zip",
+        stderr: "",
+        exitCode: 0,
+      });
+
+      // Act
+      const result = await service.shareSkill("export", "zip", "my-skill");
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+        "share_skill.js",
+        expect.arrayContaining(["--target", "zip"]),
+      );
+    });
+
+    it("SC-EX-005: shareSkill: format='tar' でtarballが生成される", async () => {
+      // Arrange
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "/tmp/my-skill.tar.gz",
+        stderr: "",
+        exitCode: 0,
+      });
+
+      // Act
+      const result = await service.shareSkill("export", "tar", "my-skill");
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+        "share_skill.js",
+        expect.arrayContaining(["--target", "tar"]),
+      );
+    });
+
+    it("SC-EX-006: shareSkill: format='directory' でディレクトリコピーされる", async () => {
+      // Arrange
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: true,
+        stdout: "/tmp/my-skill-copy",
+        stderr: "",
+        exitCode: 0,
+      });
+
+      // Act
+      const result = await service.shareSkill(
+        "export",
+        "directory",
+        "my-skill",
+      );
+
+      // Assert
+      expect(result).toBeDefined();
+      expect(mockScriptExecutor.execute).toHaveBeenCalledWith(
+        "share_skill.js",
+        expect.arrayContaining(["--target", "directory"]),
+      );
+    });
+
+    it("SC-EX-007: scheduleSkill: 不正なcron式でエラーを返す", async () => {
+      // Arrange
+      mockScriptExecutor.execute.mockResolvedValue({
+        success: false,
+        stdout: "",
+        stderr: "Invalid cron expression",
+        exitCode: 1,
+      });
+
+      // Act & Assert
+      await expect(
+        service.scheduleSkill("test-skill", {
+          skillName: "test-skill",
+          scheduleType: "cron",
+          value: "invalid-cron",
+          isEnabled: true,
+        }),
+      ).rejects.toThrow();
+    });
+
+    it("SC-EX-008: debugSkill: breakpoints 指定で特定行で停止する", async () => {
+      // Arrange
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        steps: [
+          {
+            stepNumber: 1,
+            toolName: "Read",
+            input: { path: "/test.ts" },
+            output: "content",
+            duration: 50,
+            hitBreakpoint: false,
+          },
+          {
+            stepNumber: 2,
+            toolName: "Write",
+            input: { path: "/output.ts" },
+            output: "written",
+            duration: 80,
+            hitBreakpoint: true,
+          },
+        ],
+      });
+
+      // Act
+      const result = await service.debugSkill("test-skill", {
+        breakpoints: ["line:10", "line:20"],
+      });
+
+      // Assert
+      expect(result.steps).toBeDefined();
+      expect(result.steps.length).toBe(2);
+      expect(result.steps[1].hitBreakpoint).toBe(true);
+      expect(mockScriptExecutor.executeJson).toHaveBeenCalledWith(
+        "debug_skill.js",
+        expect.arrayContaining(["--breakpoints", "line:10,line:20"]),
+      );
+    });
+
+    it("SC-EX-009: getStats: period パラメータがスクリプトに渡される", async () => {
+      // Arrange
+      mockScriptExecutor.executeJson.mockResolvedValue({
+        skillName: "test-skill",
+        period: "30d",
+        executionCount: 100,
+        successCount: 90,
+        failureCount: 10,
+        averageDuration: 2000,
+        topTools: [],
+        hourlyDistribution: {},
+        errorTrends: [],
+      });
+
+      // Act
+      const result = await service.getStats("test-skill", "30d");
+
+      // Assert
+      expect(result.period).toBe("30d");
+      expect(mockScriptExecutor.executeJson).toHaveBeenCalledWith(
+        "get_stats.js",
+        expect.arrayContaining(["--period", "30d"]),
+      );
+    });
+
+    it("SC-EX-010: executeTasks: タスク0件で空レポートを返す（summaryフィールド検証）", async () => {
+      // Arrange
+      mockScriptExecutor.executeJson.mockResolvedValue({ tasks: [] });
+
+      // Act
+      const result = await service.executeTasks({ tasksDir: "/path/to/empty" });
+
+      // Assert
+      expect(result.summary).toBeDefined();
+      expect(result.summary?.total).toBe(0);
+      expect(result.summary?.completed).toBe(0);
+      expect(result.summary?.failed).toBe(0);
+      expect(result.summary?.skipped).toBe(0);
+      expect(result.results).toBeDefined();
+      expect(result.results?.length).toBe(0);
     });
   });
 });
