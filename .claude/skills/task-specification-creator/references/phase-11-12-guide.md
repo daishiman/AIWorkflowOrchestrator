@@ -179,7 +179,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 1-A】関連ドキュメントセクションに実装ガイドリンクを追加した
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
-- [ ] `skill-creator/scripts/quick_validate.js` で更新したSKILLを検証し、`Skill is valid!` を確認した
+- [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning の分類は `spec-update-workflow.md` Step 1-G.3.1 を参照）
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
@@ -243,9 +243,15 @@ pnpm lint --cache=false
 # 未使用importの自動修正
 pnpm lint --fix
 
-# SKILL frontmatter簡易検証（skill-creator）
-node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
-node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+# SKILL検証（正規経路: quick_validate.js）— 判定基準は spec-update-workflow.md Step 1-G.3.1 参照
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
+
+# 検証結果の読み方:
+#   ✓ = Pass（検証項目をパス）
+#   ⚠ = Warning（合否に影響しない。分類は spec-update-workflow.md Step 1-G.3.1 参照）
+#   ✗ = Error（修正必須）
 ```
 
 ### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
@@ -262,10 +268,30 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 ---
 
+## 完了タスク
+
+### タスク: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 skill-creator検証ゲート整合化（2026-02-26完了）
+
+| 項目       | 内容                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001                                                    |
+| 完了日     | 2026-02-26                                                                                     |
+| ステータス | **完了**                                                                                       |
+| 概要       | `quick_validate.js` 統一経路、Warning判定基準、Phase 11/12成果物の整合、未タスク監査運用を同期 |
+
+## 関連ドキュメント
+
+- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/phase-11-manual-test.md`
+- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/phase-12-documentation.md`
+- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/spec-update-summary.md`
+
+---
+
 ## 変更履歴
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` の完了タスク記録・関連ドキュメントリンクを追加 |
 | 2026-02-25 | `audit-unassigned-tasks.js` の scope制御（`--target-file`/`--diff-from`）を標準手順化。Phase 12チェックリストを「対象監査（current）→全体監査（baseline）」の2段判定に更新 |
 | 2026-02-25 | skill-creator連携を追加: Phase 12完了条件に `quick_validate.js` 検証を追加し、SKILL frontmatterの破損検知を標準化 |
 | 2026-02-25 | 未タスク監査運用を補強: `audit-unassigned-tasks.js` が既存baseline違反で失敗する場合の current差分分離手順（`detect-unassigned-tasks --scan`）と記録要件を追加 |

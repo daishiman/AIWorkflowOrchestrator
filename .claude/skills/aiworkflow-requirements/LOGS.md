@@ -5,6 +5,71 @@
 
 ---
 
+## 2026-02-26 - UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001 未タスク登録（SubAgent分離）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: task-workflow.md / SKILL.md
+- 目的: Phase 12 完了移管時の参照同期ガードを未タスクとして台帳化し、苦戦箇所を再利用可能形式で固定
+
+### SubAgent分担
+- SubAgent-A: 未タスク指示書作成（Section 3.5 苦戦箇所の転記）
+- SubAgent-B: `task-workflow.md` 残課題/変更履歴更新
+- SubAgent-C: `SKILL.md` 変更履歴更新
+- SubAgent-D: 監査実行（`verify-unassigned-links` / `audit --target-file`）
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md` を新規作成
+- `task-workflow.md` 残課題テーブルへ同タスクを追加
+- 変更履歴に、苦戦箇所3件（旧参照残存/台帳-実体不一致/テンプレート旧経路残置）の記録先を追記
+- `SKILL.md` 変更履歴へ v8.74.9 を追加
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: 未タスク指示書・台帳・スキル履歴の3点同期を同一ターンで完了
+
+---
+
+## 2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 再利用最適化（SubAgent分離）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: lessons-learned.md / task-workflow.md
+- 目的: 今回実装内容と苦戦箇所を、同種課題へ即転用できる実行形式へ最適化
+
+### 実施内容
+- `lessons-learned.md` に仕様書別SubAgent分担マップ（A:台帳/B:教訓/C:履歴/D:検証）を追加
+- 同ファイルに5ステップ即時実行プロトコル（正規経路固定 / 監査2軸分離 / 3点同期）を追加
+- `task-workflow.md` 変更履歴へ `completed-tasks/` 正本同期と再利用手順の標準化を追記
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: 仕様反映時の関心分離と並列実行導線をテンプレート化
+
+---
+
+## 2026-02-26 - 未タスク台帳の参照整合是正（UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 追補）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: task-workflow.md / interfaces-agent-sdk-skill.md
+- 目的: 完了済み・未実施タスクの配置と参照パスを実体と同期
+
+### 実施内容
+- `UT-TYPE-SKILL-IDENTIFIER-BRANDED-001` を `task-workflow.md` で完了表記へ更新し、参照先を `completed-tasks/` 正本に統一
+- `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` 指示書を `unassigned-task/` へ戻し、未実施ステータスと配置を一致
+- `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` を `task-workflow.md` 残課題テーブルに登録
+- `interfaces-agent-sdk-skill.md` の関連未タスクリンクを同時補正
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: `verify-unassigned-links.js` の参照切れ（2件）を解消
+
+---
+
 ## 2026-02-25 - UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 未タスク登録
 
 ### コンテキスト
@@ -5446,3 +5511,21 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 仕様反映: 完了（実装内容 + 苦戦箇所 + 再利用手順）
+
+## 2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 完了
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: skill-creator検証ゲート整合化（quick_validate実行経路統一 + 警告ノイズ制御）
+
+### 実施内容
+
+- spec-update-workflow.md に SKILL検証の正規経路（`quick_validate.js` 3スキル）と Warning 3段階分類（許容/要監視/要対応）を追加
+- phase-11-12-guide.md / phase-templates.md へ同判定基準の参照を同期
+- Phase 12 での検証解釈ブレを削減するルールを整備
+
+### 結果
+
+- ステータス: success
+- 仕様反映: 完了（検証コマンド統一 + Warning 3段階分類ルール追加）

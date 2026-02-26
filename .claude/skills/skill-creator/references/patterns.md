@@ -1012,6 +1012,34 @@
 - **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
 - **クロスリファレンス**: [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md)
 
+### [Phase 12] 完了タスク記録の二重同期（UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001）
+
+- **状況**: `outputs/phase-12` と `artifacts.json` は更新済みでも、手順書側（`spec-update-workflow.md` / `phase-11-12-guide.md`）に完了タスク実記録が残らないことがある
+- **解決策**:
+  1. Step 1-A で更新した仕様書に `## 完了タスク` と `## 関連ドキュメント` を同時追記する
+  2. 実装ガイド・更新履歴・未タスク検出レポートへのリンクを同一ターンで同期する
+  3. `LOGS.md` / `SKILL.md` の更新履歴と併せて `quick_validate.js` を3スキルで再実行する
+  4. `verify-unassigned-links.js` と `audit-unassigned-tasks.js --diff-from HEAD` で未タスク整合を最終確認する
+- **効果**: Phase 12 の「成果物実体」と「手順書完了記録」の二重台帳が揃い、再監査時の差し戻しを削減できる
+- **適用条件**: Phase 12 Task 2 で複数スキル（aiworkflow/task-spec/skill-creator）を同時更新するタスク
+- **発見日**: 2026-02-26
+- **関連タスク**: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
+- **クロスリファレンス**: [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [phase-11-12-guide.md](../../task-specification-creator/references/phase-11-12-guide.md)
+
+### [Phase 12] テンプレートの正規経路固定（UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001）
+
+- **状況**: Phase 12用テンプレートに旧環境依存パス（絶対パス）や旧成果物名が残ると、再利用時に誤実行や証跡欠落が発生する
+- **解決策**:
+  1. `assets/phase12-system-spec-retrospective-template.md` の検証コマンドを repo 相対パスへ統一する
+  2. 成果物名を最新仕様（`unassigned-task-detection.md` / `skill-feedback-report.md`）へ同期する
+  3. SubAgent分担（A:台帳/B:教訓/C:履歴/D:検証）をテンプレートに固定し、関心分離を標準化する
+  4. 更新後に `quick_validate.js` と `verify-all-specs` を実行してテンプレート運用の整合を確認する
+- **効果**: 環境依存による手順崩れを防ぎ、別ブランチ/別端末でも同じ実行結果を再現できる
+- **適用条件**: Phase 12 テンプレートを新規作成・更新する全タスク
+- **発見日**: 2026-02-26
+- **関連タスク**: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md)
+
 ### [ビルド・環境] モノレポ三層モジュール解決整合パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
 
 - **状況**: モノレポ内パッケージ(@repo/shared)のサブパス import で tsc/vitest 両方が解決に失敗する
@@ -1325,6 +1353,26 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **対策**: Task 1〜5突合レポートを必須化し、`phase-12-documentation.md` のチェック欄更新を完了条件へ昇格
 - **発見日**: 2026-02-25
 - **関連タスク**: UT-UI-THEME-DYNAMIC-SWITCH-001
+
+### [Phase12] Step 1-A 完了タスク記録の欠落
+
+- **状況**: `implementation-guide.md` や `documentation-changelog.md` は作成済みだが、`spec-update-workflow.md` / `phase-11-12-guide.md` に完了タスク記録が追加されていない
+- **問題**: 実行手順書上では未完了に見え、Phase 12 の完了判定根拠が分断される
+- **原因**: 成果物生成と手順書更新を別担当・別ターンに分離し、Step 1-A の最終チェックが未実施
+- **教訓**: Phase 12 Task 2 は「仕様更新」だけでなく「手順書への完了記録」までを同一タスクとして扱う
+- **対策**: Step 1-A の完了条件に「完了タスク + 関連ドキュメント + 更新履歴」の3点追記を固定し、`quick_validate.js` 実行前に確認する
+- **発見日**: 2026-02-26
+- **関連タスク**: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
+
+### [Phase12] テンプレートに旧環境絶対パスを残す
+
+- **状況**: `quick_validate` などのコマンド例が特定端末の絶対パスで記載され、他環境で実行不能になる
+- **問題**: 同じテンプレートでも実行者ごとに手順が分岐し、検証結果の再現性が崩れる
+- **原因**: テンプレート更新時に「正規経路（repo相対）」への置換チェックを行っていない
+- **教訓**: テンプレートは「誰がどの環境でも実行可能」な相対パス前提で管理する
+- **対策**: assets更新時に「絶対パス禁止」と「成果物名最新化」をチェックリストへ追加する
+- **発見日**: 2026-02-26
+- **関連タスク**: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
 
 ### [Phase12] 仕様書更新の単独進行による同期漏れ
 

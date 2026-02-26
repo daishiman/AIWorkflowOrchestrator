@@ -1,0 +1,40 @@
+{
+  "scannedAt": "2026-02-26T06:43:47.281Z",
+  "scanDir": ".claude/skills/skill-creator/scripts",
+  "totalFiles": 51,
+  "totalFindings": 4,
+  "findings": [
+    {
+      "file": "__tests__/quick_validate.test.js",
+      "line": 500,
+      "type": "TODO",
+      "content": "quick_validate.js に Warning 3段階分類機能を追加する未タスクで対応",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "generate_script.js",
+      "line": 116,
+      "type": "TODO",
+      "content": "タスクロジックを実装",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "generate_script.js",
+      "line": 173,
+      "type": "TODO",
+      "content": "検証ロジックを実装",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "generate_script.js",
+      "line": 270,
+      "type": "TODO",
+      "content": "生成ロジックを実装",
+      "priority": "medium",
+      "category": "imp"
+    }
+  ]
+}

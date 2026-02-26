@@ -1633,7 +1633,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
-| UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 | Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別） | 中 | `docs/30-workflows/unassigned-task/task-type-skill-identifier-branded.md` |
+| ~~UT-TYPE-SKILL-IDENTIFIER-BRANDED-001~~ | ~~Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/task-type-skill-identifier-branded.md` (**完了: 2026-02-25**) |
 | UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001 | SkillImportDialog同名コンポーネント解消 | 低 | `docs/30-workflows/unassigned-task/task-refactor-skill-import-dialog-dedup.md` |
 
 ---
@@ -1845,6 +1845,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-26 | 1.36.0     | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 の参照を完了タスク正本へ更新（`unassigned-task/` → `completed-tasks/`）。UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001 は未実施のため `unassigned-task/` 配置を維持 |
 | 2026-02-25 | 1.35.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 由来の未タスク `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` を追加。4仕様書同期の運用ガード課題を関連未タスクとして記録 |
 | 2026-02-25 | 1.34.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 追補: 仕様書別SubAgent分担（interfaces/security/task-workflow/lessons）を追加し、契約同期の責務分離を明文化 |
 | 2026-02-25 | 1.33.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001完了反映。`skill:execute` の正式契約（`skillName`）と後方互換契約（`skillId`）を仕様化し、Main境界の `name -> id` 変換フローと回帰テスト結果を追記 |
