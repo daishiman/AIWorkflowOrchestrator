@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-26 - TASK-9B system-spec retrospective template generalization]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `assets/phase12-system-spec-retrospective-template.md` を system spec 汎用向けに最適化。`ui-ux-design-system.md` 固定参照を `<domain-spec>.md` へ置換し、SubAgent分担を `A:台帳 / B:ドメイン仕様 / C:教訓 / D:検証` に統一。`quick_validate.js` コマンドを repo 相対へ正規化し、成果物名を `unassigned-task-detection.md` に更新。`references/resource-map.md` と `SKILL.md` 変更履歴を同期。
+
+---
+
 ## [2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 system-spec retrospective template]
 
 - **Agent**: skill-creator (update)

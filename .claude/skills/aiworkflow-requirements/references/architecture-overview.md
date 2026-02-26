@@ -207,7 +207,7 @@
 | registerAuthHandlers             | Pattern 1: mainWindow のみ  | -            | api-ipc-auth.md          |
 | registerSkillHandlers            | Pattern 2: service のみ     | -            | api-ipc-agent.md         |
 | registerChatEditHandlers         | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md         |
-| registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 6 (5 invoke + 1 progress) | api-ipc-agent.md |
+| registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 13 (12 invoke + 1 progress) | api-ipc-agent.md |
 | registerSkillFileHandlers        | Pattern 3: mainWindow + service | 6         | api-ipc-agent.md |
 
 **Pattern 3 詳細（registerSkillFileHandlers）**:
@@ -224,7 +224,7 @@
 - **引数**: `mainWindow: BrowserWindow`, `service: SkillCreatorService`
 - **mainWindow用途**: Sender検証（`validateIpcSender`）、進捗通知（`webContents.send`）
 - **service用途**: SkillCreatorServiceへのビジネスロジック委譲
-- **対応チャンネル**: `skill-creator:detect-mode`, `skill-creator:create`, `skill-creator:execute-tasks`, `skill-creator:validate`, `skill-creator:validate-schema`, `skill-creator:progress`
+- **対応チャンネル**: `skill-creator:detect-mode`, `skill-creator:create`, `skill-creator:execute-tasks`, `skill-creator:validate`, `skill-creator:validate-schema`, `skill-creator:improve`, `skill-creator:fork`, `skill-creator:share`, `skill-creator:schedule`, `skill-creator:debug`, `skill-creator:generate-docs`, `skill-creator:stats`, `skill-creator:progress`
 - **セキュリティ**: 全ハンドラーでSender検証、エラーサニタイズ適用
 - **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
 
@@ -261,7 +261,7 @@
 | apps/desktop/src/main/services/ | Facadeサービス |
 | apps/desktop/src/main/services/environment/ | 環境サービス |
 | apps/desktop/src/main/services/skill/ | スキルサービス |
-| apps/desktop/src/main/services/skill-creator/ | スキル作成サービス |
+| apps/desktop/src/main/services/skill/ | スキル作成サービス（SkillCreatorService含む） |
 | apps/desktop/src/main/ipc/ | IPCハンドラ |
 | apps/desktop/src/main/infrastructure/ | インフラ（DB、セキュリティ） |
 | apps/desktop/src/main/infrastructure/db/ | better-sqlite3 |
@@ -435,6 +435,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.7.0 | 2026-02-26 | TASK-9B反映: `registerSkillCreatorHandlers` のチャンネル数を 13（12 invoke + 1 progress）へ更新。Pattern 3 詳細に拡張7チャンネルを追記し、Main Process構造の `services/skill-creator/` 誤記を `services/skill/` に修正 |
 | 1.6.0 | 2026-02-12 | TASK-9B-H: SkillCreatorService追加。IPCハンドラー登録一覧セクション新設、Facadeパターン・ディレクトリ構造にskill-creator追加 |
 | 1.5.0 | 2026-01-26 | 仕様ガイドライン完全準拠: ASCII図（依存方向図、IPC通信図）を表形式に変換 |
 | 1.4.0 | 2026-01-26 | 仕様ガイドライン準拠: ディレクトリ構造を表形式に変換、参照名修正 |

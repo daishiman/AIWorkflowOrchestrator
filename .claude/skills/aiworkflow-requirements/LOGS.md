@@ -5,6 +5,52 @@
 
 ---
 
+## 2026-02-26 - TASK-9B 再監査（実装内容+苦戦箇所の仕様反映）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-9B SkillCreator IPC拡張同期
+- 目的: 実装内容と苦戦箇所を同種課題へ再利用できる形式で仕様書へ固定
+
+### SubAgent分担
+- SubAgent-A: `interfaces-agent-sdk-skill.md`（契約同期 + 苦戦箇所）
+- SubAgent-B: `security-skill-ipc.md`（sender/P42/監査運用）
+- SubAgent-C: `task-workflow.md`（完了台帳 + 検証証跡）
+- SubAgent-D: `lessons-learned.md`（教訓化 + 5ステップ）
+
+### 実施内容
+- `interfaces-agent-sdk-skill.md` に TASK-9B 再監査の SubAgent分担・苦戦箇所・簡潔解決手順を追記
+- `security-skill-ipc.md` に再監査時の苦戦箇所（P42 create未完了、13chドリフト、current/baseline混同）を追記
+- `task-workflow.md` に「TASK-9B 再監査」完了記録（実装要点・苦戦箇所・検証結果）を新設
+- `lessons-learned.md` に TASK-9B 教訓セクションを追加し、同種課題向け5ステップを標準化
+
+### 結果
+- ステータス: success
+- 補足: 仕様書上で実装内容・苦戦箇所・再利用手順が4仕様書で同時同期された状態を確立
+
+---
+
+## 2026-02-26 - TASK-9B SkillCreator 仕様再同期（13チャンネル化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-9B skill-creator 再監査
+- 目的: 実装と仕様のドリフト（IPC件数・型契約・参照パス）を解消
+
+### 実施内容
+- `references/api-ipc-agent.md` を 13チャンネル（12 invoke + 1 progress）へ更新
+- `references/interfaces-agent-sdk-skill.md` の SkillCreatorService APIを12メソッドへ同期
+- `references/architecture-overview.md` の `registerSkillCreatorHandlers` 件数と `services/skill-creator` 誤記を修正
+- `references/arch-electron-services.md` に SkillCreatorService（Facade）APIセクションを追加
+- `references/security-skill-ipc.md` に TASK-9B拡張のセキュリティ要件を追記
+- `references/task-workflow.md` の TASK-9B-H 完了リンクを `completed-tasks/skill-creator-ipc/` に正規化
+
+### 結果
+- ステータス: success
+- 補足: SkillCreator IPC契約ドリフト（6->13、進捗型不一致）を解消し、Phase 12台帳と仕様正本を同期
+
+---
+
 ## 2026-02-25 - UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 未タスク登録
 
 ### コンテキスト

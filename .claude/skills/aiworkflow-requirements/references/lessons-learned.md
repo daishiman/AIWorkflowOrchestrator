@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-26 | 1.26.1 | TASK-9B SkillCreator IPC拡張同期の再監査教訓を追加。苦戦箇所3件（13チャンネル仕様ドリフト、P42 create未完了、current/baseline監査誤読）と同種課題向け簡潔解決手順（5ステップ）を反映 |
 | 2026-02-25 | 1.25.9 | UT-UI-THEME-DYNAMIC-SWITCH-001 の再利用性を強化: 同種課題向け「転記テンプレート（5分版）」を追加し、苦戦箇所を再発条件ベースで記録する運用を標準化 |
 | 2026-02-25 | 1.25.8 | UT-UI-THEME-DYNAMIC-SWITCH-001 教訓追加: テーマ動的切替実装での苦戦箇所3件（`themeMode`/`resolvedTheme`責務分離、Store Hook再実行ループ、Phase 12証跡同期漏れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 
@@ -491,8 +492,12 @@
    - [苦戦箇所2: workflow移管後の旧参照パス残存](#2-workflow移管後の旧参照パス残存)
    - [苦戦箇所3: 生成ミスによる-outputs-ゴーストディレクトリ](#3-生成ミスによる-outputs-ゴーストディレクトリ)
    - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ-1)
-9. [関連ドキュメント](#関連ドキュメント)
-10. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+9. [TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26）](#task-9b-skillcreator-ipc拡張同期-再監査2026-02-26)
+   - [苦戦箇所1: IPCチャンネル契約数（6/13）の混在](#1-ipcチャンネル契約数613の混在)
+   - [苦戦箇所2: createハンドラーのP42 3段バリデーション未完了](#2-createハンドラーのp42-3段バリデーション未完了)
+   - [苦戦箇所3: 未タスク監査のcurrent/baseline混同](#3-未タスク監査のcurrentbaseline混同)
+10. [関連ドキュメント](#関連ドキュメント)
+11. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -3542,6 +3547,64 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | 元タスク指示書（移管先） | `docs/30-workflows/completed-tasks/task-ipc-channel-naming-audit-001.md` |
 | 新規未タスク指示書（完了移管先） | `docs/30-workflows/completed-tasks/task-ipc-auth-handle-duplicate-001.md` |
 | Phase 12 未タスク検出レポート | `docs/30-workflows/ut-ipc-channel-naming-audit-001/outputs/phase-12/unassigned-task-detection.md` |
+
+---
+## TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26）
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-9B |
+| 目的 | SkillCreator IPC拡張実装（13チャンネル）とシステム仕様書のドリフトを解消し、再利用可能な運用知見へ落とし込む |
+| 完了日 | 2026-02-26 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. IPCチャンネル契約数（6/13）の混在
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 基盤実装の6チャンネル記述と拡張実装の13チャンネル実体が混在し、仕様書ごとに記述がずれた |
+| 原因 | TASK-9B-H（基盤）とTASK-9B（拡張）の仕様同期を同一ターンで束ねていなかった |
+| 解決策 | `channels.ts` を正本にして `interfaces/security/task/lessons` を一括更新し、13チャンネルへ統一 |
+| 教訓 | IPC拡張は「実装完了」より先に「契約数の正本確定」を行うとドリフトを抑制できる |
+
+#### 2. createハンドラーのP42 3段バリデーション未完了
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `create` だけ `trim()` 空白検証が欠落し、P42運用に穴があった |
+| 原因 | 既存ハンドラー改修の水平展開時に、チェック項目の統一基準が暗黙運用だった |
+| 解決策 | `skillCreatorHandlers.ts` に型/空文字/trim空文字を実装し、空文字・空白回帰テストを追加 |
+| 教訓 | P42は「実装 + 回帰テスト」までを1セットで完了判定しないと再発する |
+
+#### 3. 未タスク監査のcurrent/baseline混同
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 全体監査の違反数を今回差分違反と誤認し、不要な是正作業に流れやすい |
+| 原因 | `audit-unassigned-tasks --json` と `--diff-from HEAD` の役割差を明示していなかった |
+| 解決策 | 合否判定は `--diff-from HEAD` の `currentViolations` に固定し、全体監査値は監視値として分離記録 |
+| 教訓 | 監査値は「current=合否」「baseline=既存負債」の2軸で扱うと判断が安定する |
+
+### 同種課題向け簡潔解決手順（5ステップ）
+
+1. `channels.ts` を正本にして契約数・型・方向（invoke/on）を確定する。  
+2. IPCハンドラーは全invokeで `validateIpcSender` + P42 3段バリデーションを適用する。  
+3. 仕様同期は `interfaces/security/task/lessons` を SubAgent 分担で同時に更新する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+5. `spec-update-summary.md` と `unassigned-task-detection.md` に最終数値・時刻を記録して完了判定する。  
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 実行ワークフロー | `docs/30-workflows/completed-tasks/task-9b-skill-creator/` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/spec-update-summary.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/unassigned-task-detection.md` |
+| 整合性監査台帳 | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/elegant-solution-audit.md` |
 
 ---
 ## テンプレート（新規教訓追加用）

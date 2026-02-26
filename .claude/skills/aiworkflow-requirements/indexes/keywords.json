@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-25T22:28:14.095Z",
-  "totalKeywords": 1318,
+  "generated": "2026-02-26T12:51:08.554Z",
+  "totalKeywords": 1325,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -132,7 +132,8 @@
       "ui-ux-portal-patterns.md",
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
+      "ui-ux-system-prompt.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Cases": [
       "api-chat-history.md",
@@ -259,7 +260,8 @@
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
       "ui-ux-history-panel.md",
-      "ui-ux-search-panel.md"
+      "ui-ux-search-panel.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "関連ドキュメント": [
       "api-chat-history.md",
@@ -384,7 +386,8 @@
       "ui-ux-portal-patterns.md",
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
+      "ui-ux-system-prompt.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "設計原則・認証・レート制限": [
       "api-core.md"
@@ -712,7 +715,8 @@
       "claude-code-skills-structure.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
-      "security-skill-ipc.md"
+      "security-skill-ipc.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Creator": [
       "api-ipc-agent.md"
@@ -1698,7 +1702,8 @@
     ],
     "Phase": [
       "claude-code-agents-workflow.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "共通": [
       "claude-code-agents-workflow.md"
@@ -2869,7 +2874,8 @@
       "interfaces-rag.md"
     ],
     "Branded": [
-      "interfaces-rag.md"
+      "interfaces-rag.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Types": [
       "interfaces-rag.md"
@@ -3419,6 +3425,9 @@
       "lessons-learned.md"
     ],
     "チャネル命名監査の台帳同期": [
+      "lessons-learned.md"
+    ],
+    "拡張同期": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [
@@ -4220,7 +4229,8 @@
     ],
     "フェーズ構造": [
       "task-workflow-phases.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "出力テンプレート": [
       "task-workflow-phases.md",
@@ -5024,6 +5034,24 @@
     ],
     "デザイントークン": [
       "ui-ux-system-prompt.md"
+    ],
+    "識別子": [
+      "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "Type": [
+      "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "適用ワークフロー仕様": [
+      "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "詳細": [
+      "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "苦戦箇所由来のリスクと先回り対策": [
+      "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "監視・ログ": [
+      "workflow-skill-identifier-branded-type-resolution.md"
     ]
   }
 }

@@ -43,6 +43,19 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-26 - TASK-9B再監査に伴う Phase 12 ガード強化]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（仕様更新ワークフロー改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/spec-update-workflow.md` に誤判断パターンを追加（IPC拡張時のチャンネル数据え置きを禁止）
+  - 更新漏れ防止チェックリストに「チャンネル数と進捗型（例: SkillCreatorProgress）の実装/仕様一致確認」を追加
+  - TASK-9B再監査で検出したドリフト（6->13、進捗型不一致）を再発防止ルールへ反映
+
+---
+
 ## [2026-02-25 - UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 未タスク仕様書作成]
 
 - **Agent**: task-specification-creator

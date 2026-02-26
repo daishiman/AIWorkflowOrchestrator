@@ -16,7 +16,7 @@ issue_number: 910
 | 対象機能     | task-specification-creator / aiworkflow-requirements / skill-creator 連携運用       |
 | 優先度       | 中                                                                                  |
 | 見積もり規模 | 中規模                                                                              |
-| ステータス   | 未実施                                                                              |
+| ステータス   | 完了（Phase 1-12）                                                                  |
 | 発見元       | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 Phase 12 再監査（実装・検証時の苦戦箇所） |
 | 発見日       | 2026-02-25                                                                          |
 
@@ -72,12 +72,12 @@ Phase 12 再監査で `skill-creator` の検証コマンドを実行したとこ
 
 ### 2.4 成果物
 
-| 成果物                 | パス                                                                                |
-| ---------------------- | ----------------------------------------------------------------------------------- |
-| 未タスク仕様書（本書） | `docs/30-workflows/unassigned-task/task-imp-skill-validation-gate-alignment-001.md` |
-| 運用反映（残課題台帳） | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                |
-| 実行ログ               | `.claude/skills/aiworkflow-requirements/LOGS.md`                                    |
-| 変更履歴               | `.claude/skills/aiworkflow-requirements/SKILL.md`                                   |
+| 成果物                   | パス                                                                                |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| 完了タスク仕様書（本書） | `docs/30-workflows/completed-tasks/task-imp-skill-validation-gate-alignment-001.md` |
+| 運用反映（残課題台帳）   | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                |
+| 実行ログ                 | `.claude/skills/aiworkflow-requirements/LOGS.md`                                    |
+| 変更履歴                 | `.claude/skills/aiworkflow-requirements/SKILL.md`                                   |
 
 ---
 

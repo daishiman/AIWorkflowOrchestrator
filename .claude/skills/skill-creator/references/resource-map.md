@@ -201,7 +201,7 @@
 | [agent-task-template.md](.claude/skills/skill-creator/assets/agent-task-template.md) | タスク特化エージェント生成時 | タスク実行用エージェント         |
 | [system-prompt-template.md](.claude/skills/skill-creator/assets/system-prompt-template.md) | LLM System Prompt生成時 | LLM外部呼び出し用System Promptテンプレート |
 | [phase12-action-bridge-template.md](.claude/skills/skill-creator/assets/phase12-action-bridge-template.md) | Phase 12再監査後 | 監査結果を次アクションへ変換する導線テンプレート |
-| [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を3仕様書へ同期するテンプレート |
+| [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を `task-workflow` / `<domain-spec>` / `lessons` の3仕様書へ同期するテンプレート |
 
 | [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | 仕様書別SubAgent分担で同期漏れを防ぐテンプレート |
 

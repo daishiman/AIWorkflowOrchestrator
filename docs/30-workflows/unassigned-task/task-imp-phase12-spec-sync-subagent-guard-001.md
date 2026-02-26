@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 902
+issue_number: 915
 task_id: UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001
 task_name: Phase 12 仕様書別SubAgent同期ガードの自動化
 category: 改善

@@ -84,6 +84,84 @@ export interface SkillCreatorAPI {
   ) => Promise<IpcResult<boolean>>;
 
   /**
+   * スキルを改善する
+   * @param skillName - スキル名
+   * @param options - 改善オプション
+   * @returns 改善結果
+   */
+  improveSkill: (
+    skillName: string,
+    options?: { autoApply?: boolean },
+  ) => Promise<IpcResult<unknown>>;
+
+  /**
+   * スキルをフォークする
+   * @param sourceName - 元スキル名
+   * @param newName - 新スキル名
+   * @param options - フォークオプション
+   * @returns フォーク結果
+   */
+  forkSkill: (
+    sourceName: string,
+    newName: string,
+    options?: Record<string, boolean>,
+  ) => Promise<IpcResult<string>>;
+
+  /**
+   * スキルを共有する
+   * @param skillName - スキル名
+   * @param format - エクスポートフォーマット
+   * @returns 共有結果
+   */
+  shareSkill: (skillName: string, format: string) => Promise<IpcResult<string>>;
+
+  /**
+   * スキルスケジュールを設定する
+   * @param skillName - スキル名
+   * @param schedule - スケジュール設定
+   * @returns 設定結果
+   */
+  scheduleSkill: (
+    skillName: string,
+    schedule: object,
+  ) => Promise<IpcResult<void>>;
+
+  /**
+   * スキルをデバッグする
+   * @param skillName - スキル名
+   * @param options - デバッグオプション
+   * @returns デバッグ結果
+   */
+  debugSkill: (
+    skillName: string,
+    options?: { verbose?: boolean; breakpoints?: string[] },
+  ) => Promise<IpcResult<unknown>>;
+
+  /**
+   * スキルのドキュメントを生成する
+   * @param skillName - スキル名
+   * @param format - ドキュメントフォーマット
+   * @param sections - 対象セクション
+   * @returns 生成されたドキュメント
+   */
+  generateDocs: (
+    skillName: string,
+    format?: string,
+    sections?: string[],
+  ) => Promise<IpcResult<string>>;
+
+  /**
+   * スキルの使用統計を取得する
+   * @param skillName - スキル名（未指定時は全体統計）
+   * @param period - 期間（デフォルト: "7d"）
+   * @returns 統計データ
+   */
+  getStats: (
+    skillName?: string,
+    period?: string,
+  ) => Promise<IpcResult<unknown>>;
+
+  /**
    * 進捗通知を受信するコールバックを登録する
    * @param callback - 進捗通知受信時のコールバック関数
    * @returns クリーンアップ関数（リスナー解除用）
@@ -149,6 +227,55 @@ export const skillCreatorAPI: SkillCreatorAPI = {
       schemaName,
       data,
     }),
+
+  improveSkill: (
+    skillName: string,
+    options?: { autoApply?: boolean },
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_IMPROVE, { skillName, ...options }),
+
+  forkSkill: (
+    sourceName: string,
+    newName: string,
+    options?: Record<string, boolean>,
+  ): Promise<IpcResult<string>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_FORK, {
+      sourceName,
+      newName,
+      options,
+    }),
+
+  shareSkill: (skillName: string, format: string): Promise<IpcResult<string>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_SHARE, { skillName, format }),
+
+  scheduleSkill: (
+    skillName: string,
+    schedule: object,
+  ): Promise<IpcResult<void>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_SCHEDULE, { skillName, schedule }),
+
+  debugSkill: (
+    skillName: string,
+    options?: { verbose?: boolean; breakpoints?: string[] },
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_DEBUG, { skillName, options }),
+
+  generateDocs: (
+    skillName: string,
+    format?: string,
+    sections?: string[],
+  ): Promise<IpcResult<string>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS, {
+      skillName,
+      format,
+      sections,
+    }),
+
+  getStats: (
+    skillName?: string,
+    period?: string,
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_STATS, { skillName, period }),
 
   onProgress: (
     callback: (progress: SkillCreatorProgress) => void,

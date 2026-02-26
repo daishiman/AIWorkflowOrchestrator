@@ -4,7 +4,7 @@
 > **推奨出力先**: `docs/30-workflows/<TASK-ID>/outputs/phase-12/spec-update-summary.md`
 > **関連仕様書（推奨3点セット）**:
 > - `references/task-workflow.md`（完了台帳）
-> - `references/ui-ux-design-system.md`（UI仕様）
+> - `references/<domain-spec>.md`（ドメイン仕様: interfaces/security/architecture 等）
 > - `references/lessons-learned.md`（再発防止知見）
 
 ---
@@ -16,7 +16,7 @@
 | タスクID | `<TASK-ID>` |
 | 実施日 | `YYYY-MM-DD` |
 | ステータス | `completed` / `spec_created` |
-| SubAgent分担 | `A:台帳 / B:UI仕様 / C:教訓 / D:検証` |
+| SubAgent分担 | `A:台帳 / B:ドメイン仕様 / C:教訓 / D:検証` |
 
 ---
 
@@ -36,7 +36,7 @@
 | 仕様書 | 反映内容 | 証跡 |
 | --- | --- | --- |
 | `task-workflow.md` | 完了タスク・成果物・苦戦箇所・簡潔手順を記録 | `<該当セクション>` |
-| `ui-ux-design-system.md` | 実装仕様・苦戦箇所・関連タスクを記録 | `<該当セクション>` |
+| `<domain-spec>.md` | 実装仕様・契約差分・苦戦箇所・関連タスクを記録 | `<該当セクション>` |
 | `lessons-learned.md` | 再発条件付きの苦戦箇所と再利用手順を記録 | `<該当セクション>` |
 
 ---
@@ -67,7 +67,7 @@
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
-| `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js --target <skill-dir>` | スキル構造検証 | `error: 0` |
+| `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
 ---
 
@@ -76,6 +76,5 @@
 - [ ] `implementation-guide.md`
 - [ ] `spec-update-summary.md`
 - [ ] `documentation-changelog.md`
-- [ ] `unassigned-task-report.md`
+- [ ] `unassigned-task-detection.md`
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
-
