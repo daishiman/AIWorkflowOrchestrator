@@ -176,11 +176,11 @@ node scripts/list-specs.js --topics
 | 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1688 |
 | SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1742 |
 | IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L1958 |
-| SkillEditor 実装パターン（TASK-9A-C spec_created） | L2025 |
-| IPC インターフェース不整合修正パターン（P44/P45解決） | L2085 |
-| IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2113 |
-| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2208 |
-| IPC データフロー型ギャップパターン（UT-IPC-DATA-FLOW-TYPE-GAPS-001 2026-02-24実装） | L2313 |
+| SkillEditor 実装パターン（TASK-9A completed） | L2025 |
+| IPC インターフェース不整合修正パターン（P44/P45解決） | L2088 |
+| IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2116 |
+| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2211 |
+| IPC データフロー型ギャップパターン（UT-IPC-DATA-FLOW-TYPE-GAPS-001 2026-02-24実装） | L2316 |
 
 ### references/architecture-monorepo.md
 
@@ -285,6 +285,9 @@ node scripts/list-specs.js --topics
 | 完了タスク | L1519 |
 | SkillEditor UI 型定義（TASK-9A-C / spec_created） | L1804 |
 | 変更履歴 | L1855 |
+| 完了タスク | L1540 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L1793 |
+| 変更履歴 | L1845 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -644,6 +647,14 @@ node scripts/list-specs.js --topics
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L377 |
 | 完了タスク | L433 |
 | 変更履歴 | L453 |
+| Workspace Chat Edit IPC チャネル | L78 |
+| 完了タスク | L204 |
+| Skill Creator IPC チャネル | L276 |
+| 実装パターン参照 | L346 |
+| 関連ドキュメント | L358 |
+| スキルファイル操作 IPC チャネル（TASK-9A-B） | L370 |
+| 完了タスク | L426 |
+| 変更履歴 | L445 |
 
 ### references/api-ipc-auth.md
 
@@ -779,7 +790,7 @@ node scripts/list-specs.js --topics
 | コンポーネント階層図 | L90 |
 | 完了タスク | L129 |
 | 変更履歴 | L152 |
-| 関連ドキュメント | L174 |
+| 関連ドキュメント | L176 |
 
 ### references/ui-ux-design-principles.md
 
@@ -818,10 +829,10 @@ node scripts/list-specs.js --topics
 | コピー履歴機能（TASK-3-2-D） | L443 |
 | アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L552 |
 | SkillStreamingView コンポーネント（TASK-7D） | L563 |
-| SkillEditor UI（TASK-9A-C / 仕様書作成済み） | L607 |
-| 完了タスク | L732 |
-| 関連ドキュメント | L747 |
-| 変更履歴 | L770 |
+| SkillEditor UI（TASK-9A / 完了） | L608 |
+| 完了タスク | L735 |
+| 関連ドキュメント | L751 |
+| 変更履歴 | L775 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1563,6 +1574,24 @@ node scripts/list-specs.js --topics
 | TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1624 |
 | TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1801 |
 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` モジュール解決エラー修正 | L1859 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L89 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L136 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L190 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L273 |
+| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L321 |
+| 目次 | L359 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L546 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L705 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L754 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L803 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L977 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1028 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L1098 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1406 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1517 |
+| 関連ドキュメント | L1656 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1666 |
+| TASK-FIX-10-1: Vitest未処理Promise拒否検知の復元 | L1843 |
 
 ### references/llm-embedding.md
 
@@ -1907,6 +1936,9 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L1256 |
 | 関連ドキュメント | L1399 |
 | 変更履歴 | L1409 |
+| 残課題（未タスク） | L1229 |
+| 関連ドキュメント | L1373 |
+| 変更履歴 | L1383 |
 
 ### references/testing-accessibility.md
 
@@ -1936,7 +1968,7 @@ node scripts/list-specs.js --topics
 | 8. テストファイル分離パターン（TASK-FIX-4-2） | L343 |
 | 9. Zustand Store Hooks テストパターン | L398 |
 | 10. Main Process SDKテスト有効化パターン（TASK-FIX-11-1-SDK-TEST-ENABLEMENT） | L561 |
-| 11. SkillEditor テストパターン（TASK-9A-C spec_created） | L621 |
+| 11. SkillEditor テストパターン（TASK-9A completed） | L621 |
 | 12. テーマ横断テストヘルパー（TASK-UI-00-TOKENS） | L690 |
 | 参照 | L721 |
 | 関連未タスク | L730 |
