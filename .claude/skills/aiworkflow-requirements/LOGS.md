@@ -82,6 +82,77 @@
 
 ---
 
+## 2026-02-25 - UT-IMP-AIWORKFLOW-RESOURCE-MAP-REGISTRATION-GUARD-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-AIWORKFLOW-RESOURCE-MAP-REGISTRATION-GUARD-001
+- 目的: 新規仕様追加時の `indexes/resource-map.md` 登録漏れを未タスク化し、再発防止する
+
+### SubAgent分担
+- SubAgent-A（未タスク指示書）: `docs/30-workflows/unassigned-task/task-imp-aiworkflow-resource-map-registration-guard-001.md` を 9セクション形式で作成
+- SubAgent-B（台帳同期）: `references/task-workflow.md` 残課題テーブルへ登録
+- SubAgent-C（機能仕様同期）: `references/interfaces-agent-sdk-skill.md` 検出未タスクテーブルへ登録
+- Lead（統合）: `SKILL.md` / `LOGS.md` 更新と検証実行
+
+### 実施内容
+- 未タスク指示書を Why/What/How + 3.5教訓付きで作成
+- 親タスク苦戦箇所（resource-map未同期、generate-index完了誤認、表編集ぶれ）を 3.5 に反映
+- `task-workflow.md` / `interfaces-agent-sdk-skill.md` の未タスク台帳へ同一IDで同期登録
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: システム仕様書スキル（aiworkflow-requirements）へ未タスク作成結果を反映済み
+
+---
+
+## 2026-02-25 - UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 テンプレート最適化（skill-creator適用）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001
+- 目的: 今回の実装内容と苦戦箇所を、同種課題で即再利用できる正本へ再構成
+
+### SubAgent分担
+- SubAgent-A（構造化）: `workflow-skill-identifier-branded-type-resolution.md` を新規作成（SubAgent編成、4フェーズ、監査コマンド）
+- SubAgent-B（仕様同期）: `interfaces-agent-sdk-skill.md` / `lessons-learned.md` にプレイブック参照導線を追加
+- SubAgent-C（索引最適化）: `indexes/resource-map.md` に新規導線を追加
+- Lead（統合）: `SKILL.md` 変更履歴と本ログを同期
+
+### 実施内容
+- `references/workflow-skill-identifier-branded-type-resolution.md` を追加
+- `references/interfaces-agent-sdk-skill.md` に再利用用プレイブック参照を追加
+- `references/lessons-learned.md` に正本テンプレート導線を追加
+- `indexes/resource-map.md` にクイックルックアップ/カテゴリ行を追加
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: 実装内容・苦戦箇所・再発防止を1ファイルに集約し、既存大型仕様書の重複追記を抑制
+
+---
+
+## 2026-02-25 - UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再監査（仕様同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001
+- 目的: Branded Type導入後の仕様書同期漏れ（未タスク参照切れ・型表記ドリフト）を是正
+
+### 実施内容
+- `references/task-workflow.md` の `UT-TYPE-SKILL-IDENTIFIER-BRANDED-001` を完了化し、参照先を `completed-tasks/task-type-skill-identifier-branded.md` へ更新
+- `references/task-workflow.md` の `UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001` 参照を `completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md` へ同期
+- `references/interfaces-agent-sdk-skill.md` に `UT-TYPE-SKILL-IDENTIFIER-BRANDED-001` 完了記録を追加し、`SkillId` / `SkillName` 適用表記へ更新
+- `references/api-ipc-agent.md` の Skill型表記を Branded Type文脈へ更新
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-25
+- 補足: `verify-unassigned-links.js` の欠損2件を解消し、Phase 12 Step 1-C/1-E の台帳整合を再達成
+
+---
+
 ## 2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査（仕様同期）
 
 ### コンテキスト

@@ -18,6 +18,7 @@ import type {
   SkillExecutionResponse,
   ExecutionInfo,
   RemoveResult,
+  SkillName,
 } from "@repo/shared/types/skill";
 import type {
   SkillPermissionRequest,
@@ -103,13 +104,13 @@ export interface SkillAPI {
    * @param skillName - スキル名
    * @returns インポート済みスキル情報
    */
-  import: (skillName: string) => Promise<ImportedSkill>;
+  import: (skillName: SkillName) => Promise<ImportedSkill>;
 
   /**
    * スキルを削除
    * @param skillName - スキル名
    */
-  remove: (skillName: string) => Promise<RemoveResult>;
+  remove: (skillName: SkillName) => Promise<RemoveResult>;
 
   /**
    * 完了イベントを購読
@@ -259,10 +260,10 @@ export const skillAPI: SkillAPI = {
   rescan: (): Promise<SkillMetadata[]> =>
     safeInvokeUnwrap(IPC_CHANNELS.SKILL_SCAN),
 
-  import: (skillName: string): Promise<ImportedSkill> =>
+  import: (skillName: SkillName): Promise<ImportedSkill> =>
     safeInvoke(IPC_CHANNELS.SKILL_IMPORT, skillName),
 
-  remove: (skillName: string): Promise<RemoveResult> =>
+  remove: (skillName: SkillName): Promise<RemoveResult> =>
     safeInvoke(IPC_CHANNELS.SKILL_REMOVE, skillName),
 
   onComplete: (

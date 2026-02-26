@@ -83,6 +83,19 @@ node scripts/log-usage.js \
 
 ---
 
+## [2026-02-25 - UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再監査]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（仕様同期・証跡補強）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `verify-unassigned-links.js` の欠損2件（UT-TYPE / UT-IMP-AIWORKFLOW）を `task-workflow.md` 更新で解消
+  - `outputs/artifacts.json` を `artifacts.json` と同期し、Phase 12 完了条件（二重管理同期）を満たすよう是正
+  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` を再監査実態に合わせて更新
+
+---
+
 ## [2026-02-25 - UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査]
 
 - **Agent**: task-specification-creator

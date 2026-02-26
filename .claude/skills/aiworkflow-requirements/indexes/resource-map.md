@@ -33,6 +33,7 @@
 | Claude Code スキル作成      | claude-code-skills-overview.md                                | claude-code-skills-\*, claude-code-agents-\*                          |
 | 会話履歴機能                | interfaces-chat-history.md, architecture-chat-history.md      | api-chat-history.md, ui-ux-history-panel.md                           |
 | 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |
+| Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
 | 権限履歴/Permission History | ui-ux-settings.md, arch-state-management.md                   | interfaces-agent-sdk-history.md                                       |
@@ -241,6 +242,7 @@
 | plugin-development.md    | プラグイン開発、IWorkflowExecutor実装時    | アーキテクチャ、実装ガイド        |
 | discord-bot.md           | Discord Bot機能実装時                      | イベント、コマンド、通知          |
 | local-agent.md           | ローカルエージェント機能実装時             | ファイル監視、クラウド同期        |
+| workflow-skill-identifier-branded-type-resolution.md | Skill識別子の型境界是正、Phase 12再監査時 | SubAgent分担、4フェーズ実行、監査コマンド |
 
 ### 11. ガイドライン
 
@@ -332,6 +334,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-02-25 | 1.9.0      | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再利用向けの導線最適化。クイックルックアップに「Skill識別子型ドリフト是正」を追加し、`workflow-skill-identifier-branded-type-resolution.md` をその他カテゴリへ登録 |
 | 2026-02-02 | 1.8.0      | TASK-WCE-WORKSPACE-001: llm-workspace-chat-edit.md説明拡張（Main Process実装、IPC統合、workspacePath検証追加）                                                   |
 | 2026-02-01 | 1.7.0      | task-imp-permission-history-001: 権限/Permission実装行に参照先追加、権限履歴/Permission History行新設                                                            |
 | 2026-01-31 | 1.6.0      | TASK-7D追加更新: architecture-overview.md, architecture-implementation-patterns.md, technology-frontend.md, technology-desktop.md, development-guidelines.md追加 |

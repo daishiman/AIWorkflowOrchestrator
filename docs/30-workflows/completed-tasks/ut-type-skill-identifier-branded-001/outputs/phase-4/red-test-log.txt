@@ -1,0 +1,12 @@
+.                                        |  WARN  Unsupported engine: wanted: {"node":">=22.21.1 <23.0.0"} (current: {"node":"v22.20.0","pnpm":"10.9.0"})
+
+> @repo/shared@1.0.0 typecheck /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260225-212224-wt3/packages/shared
+> tsc --noEmit
+
+src/types/skill-identifier-branded.typecheck.ts(1,15): error TS2724: '"./skill"' has no exported member named 'SkillId'. Did you mean 'Skill'?
+src/types/skill-identifier-branded.typecheck.ts(1,24): error TS2305: Module '"./skill"' has no exported member 'SkillName'.
+src/types/skill-identifier-branded.typecheck.ts(6,1): error TS2578: Unused '@ts-expect-error' directive.
+src/types/skill-identifier-branded.typecheck.ts(8,1): error TS2578: Unused '@ts-expect-error' directive.
+/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260225-212224-wt3/packages/shared:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @repo/shared@1.0.0 typecheck: `tsc --noEmit`
+Exit status 2

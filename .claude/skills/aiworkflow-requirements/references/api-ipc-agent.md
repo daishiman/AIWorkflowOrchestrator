@@ -22,7 +22,7 @@ Electronデスクトップアプリでは、IPC通信でスキル管理・エー
 | チャネル               | 方向            | 用途               | Request                     | Response                |
 | ---------------------- | --------------- | ------------------ | --------------------------- | ----------------------- |
 | `agent:get-skills`     | Renderer → Main | スキル一覧取得     | なし                        | `{ skills: Skill[] }`   |
-| `agent:get-skill-detail` | Renderer → Main | スキル詳細取得   | `{ skillId: string }`       | `{ skill: SkillDetail }`|
+| `agent:get-skill-detail` | Renderer → Main | スキル詳細取得   | `{ skillId: SkillId }`      | `{ skill: SkillDetail }`|
 | `agent:execute`        | Renderer → Main | エージェント実行   | `ExecuteRequest`            | `{ executionId: string }` |
 | `agent:abort`          | Renderer → Main | 実行中断           | `{ executionId: string }`   | `{ success: boolean }`  |
 | `agent:get-status`     | Renderer → Main | ステータス取得     | なし                        | `GetStatusResponse`     |
@@ -45,12 +45,14 @@ Electronデスクトップアプリでは、IPC通信でスキル管理・エー
 
 | プロパティ    | 型         | 説明                   |
 | ------------- | ---------- | ---------------------- |
-| `id`          | `string`   | 一意識別子             |
-| `name`        | `string`   | スキル名               |
+| `id`          | `SkillId`  | 一意識別子（ハッシュ） |
+| `name`        | `SkillName`| スキル名（表示名）     |
 | `description` | `string`   | 説明文                 |
 | `path`        | `string`   | スキルファイルパス     |
 | `triggers`    | `string[]` | トリガーキーワード     |
 | `category`    | `string?`  | カテゴリ（任意）       |
+
+> `SkillId` / `SkillName` は `packages/shared/src/types/skill.ts` の Branded Type（UT-TYPE-SKILL-IDENTIFIER-BRANDED-001）を参照する。
 
 ### Anchor型
 

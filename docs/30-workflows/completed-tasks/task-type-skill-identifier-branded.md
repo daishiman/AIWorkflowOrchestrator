@@ -4,6 +4,8 @@
 
 ```yaml
 issue_number: 867
+status: completed
+completed_date: 2026-02-25
 ```
 
 ## メタ情報
@@ -16,7 +18,7 @@ issue_number: 867
 | 対象機能     | スキル管理（Skill Dashboard / SkillImportDialog / AgentView）         |
 | 優先度       | 中                                                                    |
 | 見積もり規模 | 中規模                                                                |
-| ステータス   | 未実施                                                                |
+| ステータス   | 完了                                                                  |
 | 発見元       | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）        |
 | 発見日       | 2026-02-22                                                            |
 
